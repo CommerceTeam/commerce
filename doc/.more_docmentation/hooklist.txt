@@ -1,0 +1,108 @@
+List of Hooks for tx_commerce
+
+tx_commerce_article_price
+
+['postinit']
+Hook after instantiation the class
+['postpricenet']
+After Calculation of the net price
+['postpricegross']
+After Calculation of the gross price
+
+tx_commerce_article
+
+['postinit']
+Hook after instantiation the class
+
+['getActualPriceforScaleUid']
+Hook for replacing the original Method
+
+['calculateDeliveryCost']
+Hook for calculation the delivery cost for one article
+
+['getStock']
+Hook for retrieving stock values from other applications
+
+tx_commerce_attribute
+
+['postinit']
+Hook after instantiation the class
+
+tx_commerce_arttribute_value
+
+['postinit']
+Hook after instantiation the class
+
+
+tx_commerce_product
+
+['postinit']
+Hook after instantiation the class
+
+['articleOrder']
+Oder of the articles for the Product
+
+['aditionalWhere']
+Add an aditional Where to the Select
+
+tx_commerce_category
+['categorytOrder']
+Have your own method for the category order
+
+['categoryOrder']
+Have your own method for the category order
+['ProductOrder']
+Have your own method for the category order
+
+['postinit']
+Hook after instantiation the class
+
+tx_commerce_create_folder
+['postcreatefolder']
+hook after creation of the dafault folders
+['precreatesyscategory']
+hook bevore creating the system category
+['postcreatesyscategory']
+hook bevore creating the system category
+['postcreatediliveryarticles']
+hook after creation of the delivery articles
+
+tx_commerce_pi3
+['postpayment']
+hook after processing the payment
+['preinsert']
+Befor inserting the data to the database
+['preAdminMail']
+Before sending the Admin Email
+['preUserMail']
+Before sending the user Email
+['postFinish']
+After complete processing
+['generateOrderId']
+To Genarte an oredr ID in you own way :-)
+
+['getUserMail']
+Get the Uermail
+['preGenerateMail']
+Before genareting the mails for the user und admin
+['posGeneratingMail']
+After Genareting the USerMail
+
+['ProcessMarker']
+Processing ofMarker in every Method via own Method
+
+tx_comemrcePi2
+['postartAddUid']
+After adding an Article to the basket fo calculatoing the payment
+['postdelArt']
+After Adding the deliveraArticle
+['postpayArt']
+After adding the payment article
+['makeDelivery']
+Genates the delivery selector
+['makepayment']
+Generates the Payment selector
+['makeProductList']
+Hook to implement alternatuive Prefix IDs for Product-Listing
+['makeArticleView']
+Adding aditional Markes to the array

@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<T3locallang>
+	<meta type="array">
+		<description></description>
+		<type>database</type>
+		<csh_table></csh_table>
+		<fileId>EXT:commerce/pi4/locallang.xml</fileId>
+	</meta>
+	<data type="array">
+		<languageKey index="default" type="array">
+			<label index="not_logged_in">You are not logged in, so address management is not available!</label>
+			<label index="label_name">Firstname: </label>
+			<label index="label_surname">Name:</label>
+			<label index="label_company">Company: </label>
+			<label index="label_city">City: </label>
+			<label index="label_zip">ZIP: </label>
+			<label index="label_address">Address: </label>
+			<label index="label_country">Country: </label>
+			<label index="label_email">Email: </label>
+			<label index="label_link_edit">Edit</label>
+			<label index="label_link_delete">Delete</label>
+			<label index="label_addresses_of_type_1">Billing addresses</label>
+			<label index="label_addresses_of_type_2">Delivery addresses</label>
+			<label index="label_link_new">Add new address</label>
+			<label index="label_no_address">No addresses found, please create a new one</label>
+			<label index="label_link_new_type_1">new billing address</label>
+			<label index="label_link_new_type_2">new delivery address</label>
+			<label index="label_is_main_address">This is my main address</label>
+			<label index="label_submit_edit">Save changes</label>
+			<label index="label_submit_yes">Yes</label>
+			<label index="label_submit_no">No</label>
+			<label index="error_field_mandatory">The field is mandatory!</label>
+			<label index="error_field_email">Please enter a correct email address</label>
+			<label index="error_field_string">The input of this field has to be a string</label>
+			<label index="error_field_int">The input of this field has to be an integer</label>
+			<label index="error_field_min">Please enter a minimum number of %d characters</label>
+			<label index="error_field_max">Please enter a maximum number of %d characters</label>
+			<label index="error_field_alpha">Only characters from A to Z or a to z are allowed</label>
+			<label index="question_delete">Do you really want to delete the address above?</label>
+			<label index="message_address_changed">The address was changed</label>
+			<label index="message_address_deleted">The address was deleted</label>
+			<label index="message_address_new">The address was created</label>
+			<label index="message_edit_billing">edit billing address</label>
+			<label index="message_edit_delivery">edit delivery address</label>
+			<label index="message_edit_unknown">edit address</label>
+		</languageKey>
+		<languageKey index="de" type="array">
+			<label index="not_logged_in">Die Addressverwaltung ist nur im eingeloggten Zustand möglich.</label>
+			<label index="label_name">Vorname: </label>
+			<label index="label_surname">Name: </label>
+			<label index="label_company">Firma: </label>
+			<label index="label_city">Stadt: </label>
+			<label index="label_zip">Plz.: </label>
+			<label index="label_address">Strasse/Nr.: </label>
+			<label index="label_country">Land: </label>
+			<label index="label_email">E-Mail: </label>
+			<label index="label_link_edit">Bearbeiten</label>
+			<label index="label_link_delete">Löschen</label>
+			<label index="label_addresses_of_type_1">Rechnungsadresse</label>
+			<label index="label_addresses_of_type_2">Lieferadresse</label>
+			<label index="label_link_new">Neue Adresse hinzufügen</label>
+			<label index="label_no_address">Es wurde keine Adresse gefunden. Bitte legen Sie eine neue an.</label>
+			<label index="label_link_new_type_1">Neue Rechnungsadresse</label>
+			<label index="label_link_new_type_2">Neue Lieferadresse</label>
+			<label index="label_is_main_address">Dies ist meine Standardadresse</label>
+			<label index="label_submit_edit">Änderungen übernehmen</label>
+			<label index="label_submit_yes">Ja</label>
+			<label index="label_submit_no">Nein</label>
+			<label index="error_field_mandatory">Dieses ist ein Pflichtfeld</label>
+			<label index="error_field_email">Bitte geben Sie eine gültige Emailadresse an.</label>
+			<label index="error_field_string">Dieses Feld darf keine Sonderzeichen haben</label>
+			<label index="error_field_int">Bitte geben Sie eine Zahl an.</label>
+			<label index="error_field_min">Bitte geben Sie mindestens %d Zeichen an</label>
+			<label index="error_field_max">Bitte geben Sie nicht mehr als %d Zeichen an</label>
+			<label index="error_field_alpha">Es sind nur Buchstaben erlaubt.</label>
+			<label index="question_delete">Möchten Sie die genannte Adresse wirklich löschen?</label>
+			<label index="message_address_changed">Die Adresse wurde erfolgreich geändert</label>
+			<label index="message_address_deleted">Die Adresse wurde erfolgreich gelöscht</label>
+			<label index="message_address_new">Die Adresse wurde erfolgreich angelegt</label>
+			<label index="message_edit_billing">Rechnungsadresse bearbeiten</label>
+			<label index="message_edit_delivery">Lieferadresse bearbeiten</label>
+			<label index="message_edit_unknown">Adresse bearbeiten</label>
+		</languageKey>
+		<languageKey index="nl" type="array">
+			<label index="not_logged_in">U bent niet ingelogd. Adresbeheer is niet mogelijk.</label>
+			<label index="label_name">Voornaam: </label>
+			<label index="label_surname">Naam: </label>
+			<label index="label_company">Firma: </label>
+			<label index="label_city">Woonplaats: </label>
+			<label index="label_zip">Postcode: </label>
+			<label index="label_address">Straat en huisnummer: </label>
+			<label index="label_country">Land: </label>
+			<label index="label_email">E-Mail: </label>
+			<label index="label_link_edit">Bewerken</label>
+			<label index="label_link_delete">Verwijderen</label>
+			<label index="label_addresses_of_type_1">Factuuradres</label>
+			<label index="label_addresses_of_type_2">Afleveradres</label>
+			<label index="label_link_new">Nieuw adres toevoegen</label>
+			<label index="label_no_address">Er is geen adres gevonden. Alstublieft een nieuw adres aanmaken.</label>
+			<label index="label_link_new_type_1">Nieuw factuuradres</label>
+			<label index="label_link_new_type_2">Nieuw afleveradres</label>
+			<label index="label_is_main_address">Dit is mijn standaardadres</label>
+			<label index="label_submit_edit">Wijzigingen overnemen</label>
+			<label index="label_submit_yes">Ja</label>
+			<label index="label_submit_no">Nee</label>
+			<label index="error_field_mandatory">Dit is een verplicht veld</label>
+			<label index="error_field_email">Geeft u alstublieft een geldig Email adres.</label>
+			<label index="error_field_string">Dit veld mag geen bijzondere tekens bevatten</label>
+			<label index="error_field_int">Geeft u een getal in.</label>
+			<label index="error_field_min">Geeft u een %d teken</label>
+			<label index="error_field_max">Geeft niet meer dan het %d teken</label>
+			<label index="error_field_alpha">Alleen letters zijn toegestaan.</label>
+			<label index="question_delete">Wilt u dit adres echt verwijderen?</label>
+			<label index="message_address_changed">Het adres is succesvol gewijzigd</label>
+			<label index="message_address_deleted">Het adres is succesvol verwijderd</label>
+			<label index="message_address_new">Het adres is succesvol vastgelegd</label>
+			<label index="message_edit_billing">Factuuradres bewerken</label>
+			<label index="message_edit_delivery">Afleveradres bewerken</label>
+			<label index="message_edit_unknown">Adres bewerken</label>
+		</languageKey>
+		<languageKey index="fr" type="array">
+			<label index="not_logged_in">Vous n'êtes pas authentifié</label>
+			<label index="label_name">Prenom : </label>
+			<label index="label_surname">Nom : </label>
+			<label index="label_company">Entreprise : </label>
+			<label index="label_city">Ville : </label>
+			<label index="label_zip">Code postal : </label>
+			<label index="label_address">Rue / Numéro : </label>
+			<label index="label_country">Pays : </label>
+			<label index="label_email">Adresse e-mail : </label>
+			<label index="label_link_edit">Modifier</label>
+			<label index="label_link_delete">Supprimer</label>
+			<label index="label_addresses_of_type_1">Adresse de facturation</label>
+			<label index="label_addresses_of_type_2">Adresse de livraison</label>
+			<label index="label_link_new">Ajouter une nouvelle adresse</label>
+			<label index="label_no_address">Aucune adresse trouvée, merci d'en créer une.</label>
+			<label index="label_link_new_type_1">Nouvelle adresse de facturation</label>
+			<label index="label_link_new_type_2">Nouvelle adresse de livraison</label>
+			<label index="label_is_main_address">Ceci est mon adresse principale</label>
+			<label index="label_submit_edit">Sauvegarder les changements</label>
+			<label index="label_submit_yes">Oui</label>
+			<label index="label_submit_no">Non</label>
+			<label index="error_field_mandatory">Ce champ est obligatoire</label>
+			<label index="error_field_email">Veuillez fournir une adresse email valide</label>
+			<label index="error_field_string">Ce champ doit contenir du texte.</label>
+			<label index="error_field_int">Ce champ doit contenir un nombre entier.</label>
+			<label index="error_field_min">Un minimum de %d caractères est nécessaire</label>
+			<label index="error_field_max">%d caractères maximum.</label>
+			<label index="error_field_alpha">Seulement les caractères de A à Z ou a à z sont authorisés</label>
+			<label index="question_delete">Etes-vous sûr de supprimer cette adresse ?</label>
+			<label index="message_address_changed">L'adresse a bien été modifiée</label>
+			<label index="message_address_deleted">L'adresse a bien été supprimée</label>
+			<label index="message_address_new">L'adresse a bien été crée.</label>
+			<label index="message_edit_billing">Modifier l'adresse de facturation</label>
+			<label index="message_edit_delivery">Modifier l'adresse de livraison</label>
+			<label index="message_edit_unknown">Modifier l'adresse</label>
+		</languageKey>
+	</data>
+</T3locallang>

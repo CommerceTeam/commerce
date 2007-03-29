@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<T3locallang>
+	<meta type="array">
+		<description></description>
+		<type>database</type>
+		<csh_table></csh_table>
+		<fileId>EXT:commerce/mod_orders/locallang.xml</fileId>
+	</meta>
+	<data type="array">
+		<languageKey index="default" type="array">
+			<label index="title">Orders and customer data</label>
+			<label index="CustomerData">Customer data</label>
+			<label index="OrderData">Order data</label>
+			<label index="moveorderto">Move Order to:</label>
+		</languageKey>
+		<languageKey index="de" type="array">
+			<label index="title">Bestell und Kundendaten</label>
+			<label index="CustomerData">Kundendaten</label>
+			<label index="OrderData">Bestelldaten</label>
+			<label index="moveorderto">Bestellungen in den Ordner verschieben:</label>
+		</languageKey>
+		<languageKey index="nl" type="array">
+			<label index="title">Bestelling en Klantengegevens</label>
+			<label index="CustomerData">Klantengegevens</label>
+			<label index="OrderData">Bestelgegevens</label>
+		</languageKey>
+		<languageKey index="br" type="array">
+			<label index="title">Pedidos e dados pessoais do consumidor</label>
+			<label index="CustomerData">Dados pessoais do consumidor</label>
+			<label index="OrderData">Dados do Pedido</label>
+		</languageKey>
+		
+	</data>
+</T3locallang>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<T3locallang>
+	<meta type="array">
+		<description></description>
+		<type>database</type>
+		<csh_table></csh_table>
+		<fileId>EXT:commerce/mod_category/locallang.xml</fileId>
+	</meta>
+	<data type="array">
+		<languageKey index="default" type="array">
+			<label index="category title">Category</label>
+			<label index="product title">Product</label>
+		</languageKey>
+		<languageKey index="de" type="array">
+			<label index="category title">Kategorie</label>
+			<label index="product title">Produkt</label>
+		</languageKey>
+		<languageKey index="nl" type="array">
+			<label index="category title">Categorie</label>
+			<label index="product title">Product</label>
+		</languageKey>
+		<languageKey index="fr" type="array">
+			<label index="category title">Categorie</label>
+			<label index="product title">Produit</label>
+		</languageKey>
+		<languageKey index="br" type="array">
+			<label index="category title">Categoria</label>
+			<label index="product title">Produto</label>
+		</languageKey>
+	</data>
+</T3locallang>

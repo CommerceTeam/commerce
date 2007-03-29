@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<T3locallang>
+	<meta type="array">
+		<description></description>
+		<type>database</type>
+		<csh_table></csh_table>
+		<fileId>EXT:commerce/pi1/locallang_tca.xml</fileId>
+	</meta>
+	<data type="array">
+		<languageKey index="default" type="array">
+			<label index="tx_commerce.pi_flexform.sheet_product">Product data</label>
+			<label index="tx_commerce.pi_flexform.sheet_template">Templates</label>
+			<label index="tx_commerce.pi_flexform.product_id">Product ID:</label>
+			<label index="tx_commerce.pi_flexform.product_name">Product:</label>
+			<label index="tx_commerce.pi_flexform.category_selection">Category selection</label>
+			<label index="tx_commerce.pi_flexform.template">Template file</label>
+			<label index="tx_commerce.pi_flexform.numberOfTopproducts">Number topproducts</label>
+			<label index="tx_commerce.pi_flexform.maxRecords">Number products</label>
+			<label index="tx_commerce.pi_flexform.maxPages">Number pages (Pagebrowser)</label>
+			<label index="tx_commerce.pi_flexform.showPageBrowser">show Pagebrowser</label>
+			<label index="tx_commerce.pi_flexform.type">Display type</label>
+			<label index="tx_commerce.pi_flexform.currency">Currency</label>
+			<label index="tx_commerce.pi_flexform.basketPID">Basket page</label>
+			<label index="tx_commerce.pi_flexform.displayPID">Detail page</label>
+			<label index="tx_commerce.pi_flexform.type.normal">Default view</label>
+			<label index="tx_commerce.pi_flexform.type.teaser">Teaser view</label>
+		</languageKey>
+		<languageKey index="de" type="array">
+			<label index="tx_commerce.pi_flexform.sheet_product">Produktdaten</label>
+			<label index="tx_commerce.pi_flexform.sheet_template">Templatedaten</label>
+			<label index="tx_commerce.pi_flexform.product_id">Detailprodukt (für Singleansicht):</label>
+			<label index="tx_commerce.pi_flexform.product_name">Detailprodukt (für Singleansicht):</label>
+			<label index="tx_commerce.pi_flexform.category_selection">Kategorieauswahl:</label>
+			<label index="tx_commerce.pi_flexform.numberOfTopproducts">Anzahl Topprodukte</label>
+			<label index="tx_commerce.pi_flexform.maxRecords">Anzahl Produkte insgesamt</label>
+			<label index="tx_commerce.pi_flexform.maxPages">Anzahl Seiten (Pagebrowser)</label>
+			<label index="tx_commerce.pi_flexform.showPageBrowser">Zeige Pagebrowser</label>
+			<label index="tx_commerce.pi_flexform.type">Anzeigetyp</label>
+			<label index="tx_commerce.pi_flexform.template">Template Datei</label>
+			<label index="tx_commerce.pi_flexform.currency">Währung</label>
+			<label index="tx_commerce.pi_flexform.displayPID">Detailseite</label>
+			<label index="tx_commerce.pi_flexform.basketPID">Warenkorbseite</label>
+			<label index="tx_commerce.pi_flexform.type.normal">Standardansicht</label>
+			<label index="tx_commerce.pi_flexform.type.teaser">Teaseransicht</label>
+		</languageKey>
+		<languageKey index="nl" type="array">
+			<label index="tx_commerce.pi_flexform.sheet_product">Product gegevens</label>
+			<label index="tx_commerce.pi_flexform.sheet_template">Sjablonen</label>
+			<label index="tx_commerce.pi_flexform.product_id">Product nummer:</label>
+			<label index="tx_commerce.pi_flexform.category_selection">Categorie keuze:</label>
+			<label index="tx_commerce.pi_flexform.template">Sjabloon bestand</label>
+			<label index="tx_commerce.pi_flexform.numberOfTopproducts">Aantal Topproducten</label>
+			<label index="tx_commerce.pi_flexform.maxRecords">Aantal producten</label>
+			<label index="tx_commerce.pi_flexform.maxPages">Aantal pagina's (Pagebrowser)</label>
+			<label index="tx_commerce.pi_flexform.showPageBrowser">Toon Pagebrowser</label>
+			<label index="tx_commerce.pi_flexform.type">Display type</label>
+			<label index="tx_commerce.pi_flexform.currency">Muntsoort</label>
+			<label index="tx_commerce.pi_flexform.displayPID">Detail pagina</label>
+			<label index="tx_commerce.pi_flexform.basketPID">Winkelwagen pagina</label>
+			<label index="tx_commerce.pi_flexform.type.normal">Standaard weergave</label>
+			<label index="tx_commerce.pi_flexform.type.teaser">Teaser weergave</label>
+		</languageKey>
+		<languageKey index="fr" type="array">
+			<label index="tx_commerce.pi_flexform.sheet_product" type="integer">123369230</label>
+			<label index="tx_commerce.pi_flexform.sheet_template" type="integer">132093617</label>
+			<label index="tx_commerce.pi_flexform.product_id" type="integer">16433386</label>
+			<label index="tx_commerce.pi_flexform.category_selection" type="integer">9582094</label>
+			<label index="tx_commerce.pi_flexform.template" type="integer">169140391</label>
+			<label index="tx_commerce.pi_flexform.numberOfTopproducts" type="integer">163098512</label>
+			<label index="tx_commerce.pi_flexform.maxRecords" type="integer">236389446</label>
+			<label index="tx_commerce.pi_flexform.maxPages" type="integer">14746354</label>
+			<label index="tx_commerce.pi_flexform.showPageBrowser" type="integer">171923553</label>
+			<label index="tx_commerce.pi_flexform.type" type="integer">56955293</label>
+			<label index="tx_commerce.pi_flexform.currency" type="integer">59163449</label>
+			<label index="tx_commerce.pi_flexform.basketPID" type="integer">228485280</label>
+			<label index="tx_commerce.pi_flexform.displayPID" type="integer">121664069</label>
+			<label index="tx_commerce.pi_flexform.type.normal" type="integer">107550052</label>
+			<label index="tx_commerce.pi_flexform.type.teaser" type="integer">52017883</label>
+		</languageKey>
+		<languageKey index="br" type="array">
+			<label index="tx_commerce.pi_flexform.sheet_product">Dados do Produto</label>
+			<label index="tx_commerce.pi_flexform.sheet_template">Gabaritos</label>
+			<label index="tx_commerce.pi_flexform.product_id">Identificação do Produto</label>
+			<label index="tx_commerce.pi_flexform.category_selection">Seleção de Categoria(s)</label>
+			<label index="tx_commerce.pi_flexform.template">Arquivo que contém o gabarito</label>
+			<label index="tx_commerce.pi_flexform.numberOfTopproducts">Número do produto mais vendido</label>
+			<label index="tx_commerce.pi_flexform.maxRecords">Número dos produtos</label>
+			<label index="tx_commerce.pi_flexform.maxPages">Número de páginas para inserção de todos os produtos</label>
+			<label index="tx_commerce.pi_flexform.showPageBrowser">Mostrar navegador de páginas</label>
+			<label index="tx_commerce.pi_flexform.type">Mostrar tipo</label>
+			<label index="tx_commerce.pi_flexform.currency">Moeda</label>
+			<label index="tx_commerce.pi_flexform.basketPID">Página do carrinho</label>
+			<label index="tx_commerce.pi_flexform.displayPID">Página de Detalhes</label>
+			<label index="tx_commerce.pi_flexform.type.normal">Modo padrão</label>
+			<label index="tx_commerce.pi_flexform.type.teaser">Modo &quot;teaser&quot;</label>
+		</languageKey>
+	</data>
+</T3locallang>

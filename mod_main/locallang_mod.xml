@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<T3locallang>
+	<meta type="array">
+		<description></description>
+		<type>database</type>
+		<csh_table></csh_table>
+		<fileId>EXT:commerce/mod_main/locallang_mod.xml</fileId>
+	</meta>
+	<data type="array">
+		<languageKey index="default" type="array">
+			<label index="mlang_tabs_tab">Commerce</label>
+			<label index="mlang_labels_tabdescr">Advanced Shopping System</label>
+			<label index="mlang_labels_tablabel">TX Commerce</label>
+		</languageKey>
+		<languageKey index="de" type="array">			
+			<label index="mlang_labels_tabdescr">Hochentwickeltes Shop-System</label>			
+		</languageKey>
+		<languageKey index="fr" type="array">		
+			<label index="mlang_labels_tabdescr">Avancé Shop-Systeme</label>		
+		</languageKey>
+		<languageKey index="nl" type="array">			
+			<label index="mlang_labels_tabdescr">Uitgebreide webshop systeem</label>			
+		</languageKey>
+		<languageKey index="br" type="array">
+			<label index="mlang_labels_tabdescr">Sistema Avançado de Gerenciamento de Compras</label>
+		</languageKey>
+	</data>
+</T3locallang>

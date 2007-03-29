@@ -1,0 +1,50 @@
+# cat=basic/enable; type=boolean; label=Invoice BACKEND LOGIN required: If set, then the Invoice plugin will check for a backend login. If false, everyone can create an invoice with the correct link. So WATCH OUT FOR THIS ONE! It should probably be enabled!
+invoiceBackendOnly = 1
+
+# cat=basic/enable; type=boolean; label=Simple Mode for products: Use this if you only have one article per product
+simpleMode = 0
+
+# cat=basic//30; type=String; label=fields for products...: that should be displayed in simple mode
+coProducts = hidden[starttime|endtime|fe_group],title,subtitle[navtitle],description,images,categories
+
+# cat=basic//30; type=String; label=fields for articles...: that should be displayed in simple mode
+coArticles = ordernumber,eancode,prices
+
+# cat=basic//30; type=int; label=Page-ID for Invoice: Defines which Page displays the Invoice.
+invoicePageID = 0
+
+# cat=basic//30; type=int; label=Invoice Page Type: Defines which pagetype the Invoice should generates. Maybe a PDF-Generator exists and you want to use it, you have to configure the pageType of the PDF-output.
+invoicePageType = 0
+
+# cat=basic//30; type=int; label=Preview Page Type: Defines which Page the Backend (Save and Preview / klickmenue) Preview should use.
+previewPageID = 0
+
+# cat=basic//30; type=String; label=Default Name of E-mail Sender: Defines which Sendername is submitted as the default E-mail Sendername.
+defEmailSendername = John Doe
+
+# cat=basic//30; type=String; label=Default E-Mailaddress of E-mail Sender: Defines which E-Mailaddress is used as the default E-mail Address.
+defEmailAddress = foo@bar.com
+
+# cat=basic; type=string; label=Page-Id for new address records: Specify pid for new tt_address records. New records will be created using this pid.
+create_address_pid = 0
+
+# cat=basic; type=string; label=Field mapping feuser-tt_address: Specify list of feuser <-> address field mappings. Use this format: fe_usersfield,tt_addressfield;
+feuser_address_mapping = company,company;name,surname;title,title;address,address;zip,zip;city,city;country,country;telephone,phone;fax,fax;email,email;www,www;
+
+# cat=basic; type=int; label=Attribute Lokalisation: Definition how attribute values should be translated -> 0 - Set to an empty value, 1 - copy value, 2 - prepend prefixLangTitle : [Translate to .$langRec['title'].:]
+attributeLokalisationType = 0
+
+# cat=basic//30; type=String; label=Exclude Folder from Statistic: Defines which Folder should not be included in Statistics, separate with comma and no whitespace.
+excludeStatisticFolders = 0
+
+# cat=basic//30; type=String; label=Exclude Folder from Statistic: Defines which Folder should not be included in Statistics, separate with comma and no whitespace.
+excludeStatisticFolders = 0
+
+# cat=basic//30; type=String; label=Define the Charset for the csv Files in the order module
+BECSVCharset  = iso-8859-1
+
+# cat=basic//30; type=int; label=OrderFolderRecursiveLevel: Defines the maximum recursions for the drop-down display of the order folder
+OrderFolderRecursiveLevel = 2
+
+
+

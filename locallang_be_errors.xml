@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<T3locallang>
+	<meta type="array">
+		<description></description>
+		<type>database</type>
+		<csh_table></csh_table>
+		<fileId>EXT:commerce/locallang_be_errors.xml</fileId>
+	</meta>
+	<data type="array">
+		<languageKey index="default" type="array">
+			<label index="error">Error</label>
+			<label index="continue">Continue</label>
+			<label index="article.lokalization">Articles can only be lokalized by lokalizing a product</label>
+			<label index="product.lokalization_without_article">Products without articles could not be lokalized</label>
+		</languageKey>
+		<languageKey index="nl" type="array">
+			<label index="error">Fout</label>
+			<label index="continue">Doorgaan</label>
+			<label index="article.lokalization">Artikelen kunnen alleen gelocaliseerd worden door een product te localiseren</label>
+			<label index="product.lokalization_without_article">Producten zonder Artikel kunnen niet gelocaliseerd worden.</label>
+		</languageKey>
+		<languageKey index="de" type="array">
+			<label index="error">Fehler</label>
+			<label index="continue">Weiter</label>
+			<label index="article.lokalization">Artikel werden automatisch bei der Lokalisierung eines Produktes angelegt. Sie koennen daher nicht separat lokalisiert werden.</label>
+			<label index="product.lokalization_without_article">Produkte ohne Artikel koennen nicht lokalisiert werden.</label>
+		</languageKey>
+		<languageKey index="fr" type="array">
+			<label index="error">erreur</label>
+			<label index="continue">continue</label>
+		</languageKey>	
+		<languageKey index="br" type="array">
+			<label index="error">Erro</label>
+			<label index="continue">Continuar</label>
+			<label index="article.lokalization">Artigos só podem ser localizados após a localização do produto</label>
+			<label index="product.lokalization_without_article">Produtos sem artigos não puderam ser localizados</label>
+		</languageKey>
+	</data>
+</T3locallang>
