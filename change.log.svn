@@ -1,0 +1,108 @@
+Changelog for tx_commerce
+
+
+28.03.2007 Ingo Schmitt <is@marketing-factory.de>
+* Fixed BUG 5238, thanks to Christian Sander
+* Fixed a problem with pagebrowser, concerning pointer in Page browser, thanks to Luc Muller <l.muller@ameos.com>
+* Fixed Bug 5194, thanks to batomo
+* Fixed Bug 5051
+
+28.03.2007 Ingo Schmitt <is@marketing-factory.de>
+* Fixed problem with setting empty PID when adding a price to a hidden article
+* Corrected PID handling in DM hooks
+* Added saving of cruser_id whe creating article_prices
+
+22.03.2007	Ingo Schmitt <is@marketing-factory.de>
+* Added support for stock handling service
+* Fixed PHP5 Warning when merging Marker Arrays 
+* Raised Version to 0.8.32
+
+19.03.2007 Franz Holzinger <kontakt@fholzinger.com>
+ * fix bug 247: show clickmenu on root category
+
+15.02.2006 Volker Graubaum <vg@e-netconsulting.de>
+* pi2
+  Added a call to stdWrap for empty basket 
+
+01.02.2006 Volker Graubaum <vg@e-netconsulting.de>
+* pibase
+  Added Hook for Processing MarkerArray in lineView
+  
+22.01.2006 Thomas Hempel <thomas@work.de>
+* added a checkbox for selecting all articles in "create articles" list vis JavaScript
+* fixed a bug in belib in method checkArray (check if the incomming is really an array)
+
+21.01.2006 ingo Schmitt <is@marketing-factory.de>
+* pi3
+  Added $this as parameter to hooks (PostGenerateMail)
+  Added Hooks for Processing Marker Arrays
+  
+16.01.2006 Thomas Hempel <thomas@work.de>
+* pi3
+  Added new template subparts for templating support in address management
+  Added "edit" functionality for addresses in checkout
+* pi4
+  Fixed some bugs in template support for address management
+  Added capability of handling edit from checkout
+  Fixed some bugs in handling of external edit pages
+
+Ingo Schmitt <is@marketing-factory.de>
+*   Corrected typo in locallang.xml files
+*   Added two ne Methods to tx_commerce_product:
+	getArticleUids() to replace getArticles()
+	getArticleObjects() as new method
+*	decared getArticles() in tx_commerce_product as deüpricated
+* 	Changed getArticles in pi_base to getARticleUid()
+
+11.01.2006 Thomas Hempel <thomas@work.de>
+*	Added template for edit addresse form
+
+
+10.01.2006 Ingo Schmitt <is@marketing-factory.de>
+*  Changed refferences in TCA from locallang.php to locallang_db.xml
+
+7.1.2006 (Thomas Hempel <thomas@work.de>)
+*  Changes in pi4 for min items of addresses, insert backpid and targetpid for changing
+
+5.1.2006 (Frank Kröber <fk@marketing-factory.de>)
+*   Generally replace locallang php-files with locallang xml-files. PHP-files will be deleted on 13.01.2006.
+
+3.1.2006 (Ingo Schmitt <is@marketing-factory.de>)
+* pi3
+    Fixed Bug when sendin User- and Adminmail concerning namechange from surename to surname
+    Removed Textual Refferences to Projectname
+	Added OrderID to Object for refference in the Hook-Statements
+    
+* pibase
+    Added Method to Merge the Langmarkers from default and actual language to on Array to Display correct Names for the fields
+
+* class.tx_comemrce_attributeeditor.php
+    Limited the selcetion of Attributes only to the commerce products pid 
+
+* class.tx_commerce_belib.php
+* class.tx_commerce_dmhooks.php
+    Fixed Bug concerning Price changes. Now price changes works again
+
+* class.tx_commerce_dmhooks.php
+    Fixexd Bug concerning changes of Attribute Values
+    
+   (Volker Graubaum <vg@e-netconsulting.de> )
+* changed pi4 for try to use as addressmanagement....
+* Updated setup with example lib for the HMENU
+
+2.1.2006 (Ingo Schmitt <is@marketing-factory.de>)
+* pi2
+	fixed typo with $this-currency. In TYPO Script currency and curency are valid names for setting the currency
+    made EUR as default currency if no currency is defined in TS 
+    > Please Update TS to currency (from curency) to match correct written TS
+* pi3
+    Added init method for handling of TS values (Just moved Things from main to init)
+    Added currency to TS to change default currency
+    Translated English locallang Values to German
+    made EUR as default currency if no currency is defined in TS 
+ constants.txt
+    Added pi3 / currency to constants
+ setup TXT
+    Added pi3 / currency to setup   
+    
+    
