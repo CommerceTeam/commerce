@@ -1,5 +1,8 @@
 Changelog for tx_commerce
 
+02.04.2007 Ingo Schmitt <is@marketing-factory.de>
+* Added change log history
+* Raised Version to 0.8.35
 
 28.03.2007 Ingo Schmitt <is@marketing-factory.de>
 * Fixed BUG 5238, thanks to Christian Sander
@@ -105,4 +108,287 @@ Ingo Schmitt <is@marketing-factory.de>
  setup TXT
     Added pi3 / currency to setup   
     
+ ------------------------------------------------------------------------
+r61 | ingo | 2006-03-02 11:01:54 +0100 (Do, 02 M‰r 2006) | 16 lines
+
+General cleanup for getting rid of install warnings in the EM
+* class.tx_commerce_feuserauth.php 
+  Corrected XCLASS include statement
+* class.tx_commerce_ccvs_lib.php
+  Added basic inherited class to match TYPO3 Guidlines
+* class.tx_commerce_navigation.php
+  Added basic inherited class to match TYPO3 Guidlines
+  Corrected XCLASS include statement
+* class.tx_commerce_order_localrecordlist.php
+  Corrected XCLASS include statement
+* ext/commerce/mod_category/class.user_attributeedit_func.php
+  Corrected XCLASS include statement
+* ext/commerce/payment/class.tx_commerce_payment_cashondelivery.php
+  Corrected XCLASS include statement
+* ext/commerce/payment/class.tx_commerce_payment_paypal.php
+  Corrected XCLASS include statement
+------------------------------------------------------------------------
+r60 | ingo | 2006-03-02 09:52:27 +0100 (Do, 02 M‰r 2006) | 1 line
+
+Fixed some typos
+------------------------------------------------------------------------
+r59 | ingo | 2006-03-02 09:49:01 +0100 (Do, 02 M‰r 2006) | 1 line
+
+Updated Coding Guidlines
+------------------------------------------------------------------------
+r58 | ingo | 2006-03-02 09:30:51 +0100 (Do, 02 M‰r 2006) | 1 line
+
+Updated Projectdescription
+------------------------------------------------------------------------
+r57 | ingo | 2006-02-17 15:39:48 +0100 (Fr, 17 Feb 2006) | 1 line
+
+new versions
+------------------------------------------------------------------------
+r56 | ingo | 2006-02-16 15:08:35 +0100 (Do, 16 Feb 2006) | 1 line
+
+Fixed bug  0001849
+------------------------------------------------------------------------
+r55 | ingo | 2006-02-16 14:54:56 +0100 (Do, 16 Feb 2006) | 1 line
+
+Fixed Buig Raphael Mentioned
+------------------------------------------------------------------------
+r54 | volker | 2006-02-15 12:33:36 +0100 (Mi, 15 Feb 2006) | 2 lines
+
+added change for empty basket
+
+------------------------------------------------------------------------
+r53 | ingo | 2006-02-14 14:09:55 +0100 (Di, 14 Feb 2006) | 1 line
+
+fixed problem with not defined arrays in generateLanguageMaker
+------------------------------------------------------------------------
+r52 | ingo | 2006-02-14 12:30:43 +0100 (Di, 14 Feb 2006) | 1 line
+
+removed debug ..
+------------------------------------------------------------------------
+r51 | ingo | 2006-02-14 12:27:03 +0100 (Di, 14 Feb 2006) | 1 line
+
+test debug
+------------------------------------------------------------------------
+r50 | ingo | 2006-02-14 12:21:32 +0100 (Di, 14 Feb 2006) | 1 line
+
+Bugfiexes for bugs came in twith the changes on sunday
+------------------------------------------------------------------------
+r49 | ingo | 2006-02-14 11:56:20 +0100 (Di, 14 Feb 2006) | 1 line
+
+released a problem 
+------------------------------------------------------------------------
+r48 | ingo | 2006-02-14 11:54:25 +0100 (Di, 14 Feb 2006) | 1 line
+
+fixed bug with call of parent init method
+------------------------------------------------------------------------
+r47 | volker | 2006-02-14 11:44:33 +0100 (Di, 14 Feb 2006) | 2 lines
+
+fix error with " sign, which makes an error in IE
+
+------------------------------------------------------------------------
+r46 | ingo | 2006-02-13 10:48:31 +0100 (Mo, 13 Feb 2006) | 1 line
+
+Updated documentation
+------------------------------------------------------------------------
+r45 | ingo | 2006-02-13 10:48:17 +0100 (Mo, 13 Feb 2006) | 1 line
+
+fixed a bug in typo of method name
+------------------------------------------------------------------------
+r44 | volker | 2006-02-12 12:50:40 +0100 (So, 12 Feb 2006) | 1 line
+
+fix em bug
+------------------------------------------------------------------------
+r43 | thomas | 2006-02-12 10:14:46 +0100 (So, 12 Feb 2006) | 2 lines
+
+* made a copy of pi3 into pi5
+
+------------------------------------------------------------------------
+r42 | ingo | 2006-02-11 19:39:00 +0100 (Sa, 11 Feb 2006) | 1 line
+
+added getfiled and setfield methods for own fields
+------------------------------------------------------------------------
+r41 | ingo | 2006-02-11 19:11:55 +0100 (Sa, 11 Feb 2006) | 1 line
+
+changed naming from get_images to getImages, declared get_images as depricated
+------------------------------------------------------------------------
+r38 | ingo | 2006-02-11 17:50:49 +0100 (Sa, 11 Feb 2006) | 1 line
+
+removed unneded files
+------------------------------------------------------------------------
+r37 | ingo | 2006-02-11 17:50:20 +0100 (Sa, 11 Feb 2006) | 1 line
+
+moved hook files
+------------------------------------------------------------------------
+r36 | ingo | 2006-02-11 15:58:25 +0100 (Sa, 11 Feb 2006) | 1 line
+
+finally removed tca files, as moved to tca folder
+------------------------------------------------------------------------
+r35 | ingo | 2006-02-11 15:56:34 +0100 (Sa, 11 Feb 2006) | 1 line
+
+fixed a commentary bug 
+------------------------------------------------------------------------
+r34 | ingo | 2006-02-11 15:50:08 +0100 (Sa, 11 Feb 2006) | 1 line
+
+moved refference to lib/locallang to locallang_be.xml
+------------------------------------------------------------------------
+r33 | ingo | 2006-02-11 15:45:55 +0100 (Sa, 11 Feb 2006) | 1 line
+
+Hook for basket creation
+------------------------------------------------------------------------
+r32 | ingo | 2006-02-11 15:45:02 +0100 (Sa, 11 Feb 2006) | 2 lines
+
+Moved all hook files to one Folder
+removed xclass use of fe_userinit, as typo3 3.8.0 comes with handy hook 
+------------------------------------------------------------------------
+r31 | ingo | 2006-02-11 15:44:58 +0100 (Sa, 11 Feb 2006) | 2 lines
+
+Moved all hook files to one Folder
+removed xclass use of fe_userinit, as typo3 3.8.0 comes with handy hook 
+------------------------------------------------------------------------
+r30 | volker | 2006-02-11 15:36:25 +0100 (Sa, 11 Feb 2006) | 2 lines
+
+changes the TCA. move tca to own folder
+
+------------------------------------------------------------------------
+r29 | volker | 2006-02-11 15:35:49 +0100 (Sa, 11 Feb 2006) | 2 lines
+
+changes some things
+
+------------------------------------------------------------------------
+r28 | ingo | 2006-02-11 15:09:33 +0100 (Sa, 11 Feb 2006) | 1 line
+
+added dokumentation
+------------------------------------------------------------------------
+r27 | ingo | 2006-02-11 15:09:23 +0100 (Sa, 11 Feb 2006) | 1 line
+
+removed unused files
+------------------------------------------------------------------------
+r26 | volker | 2006-02-11 15:01:07 +0100 (Sa, 11 Feb 2006) | 2 lines
+
+changed documentation in pi1
+
+------------------------------------------------------------------------
+r25 | ingo | 2006-02-11 14:52:01 +0100 (Sa, 11 Feb 2006) | 1 line
+
+Updated dokumentation
+------------------------------------------------------------------------
+r24 | ingo | 2006-02-11 14:50:16 +0100 (Sa, 11 Feb 2006) | 1 line
+
+Removed unused files
+------------------------------------------------------------------------
+r21 | thomas | 2006-02-11 11:30:59 +0100 (Sa, 11 Feb 2006) | 3 lines
+
+* renamed old manual
+* added empty manual template
+
+------------------------------------------------------------------------
+r20 | ingo | 2006-02-10 18:35:13 +0100 (Fr, 10 Feb 2006) | 1 line
+
+Fixed Problem with recursive Lang-Marker in XML Files
+------------------------------------------------------------------------
+r19 | ingo | 2006-02-10 18:19:03 +0100 (Fr, 10 Feb 2006) | 1 line
+
+First release for editor handbook
+------------------------------------------------------------------------
+r18 | volker | 2006-01-29 10:59:27 +0100 (So, 29 Jan 2006) | 5 lines
+
+
+another change for the article type
+
+M    trunk/ext_tables.sql
+
+------------------------------------------------------------------------
+r17 | volker | 2006-01-29 10:57:53 +0100 (So, 29 Jan 2006) | 5 lines
+
+
+change article type
+
+M    trunk/tx_commerce_articles.tca.php
+
+------------------------------------------------------------------------
+r2 | thomas | 2006-01-24 21:14:15 +0100 (Di, 24 Jan 2006) | 2 lines
+
+* initial import of commerce
+
+------------------------------------------------------------------------
+
+Changelog for tx_commerce
+22.01.2006 Thomas Hempel <thomas@work.de>
+* added a checkbox for selecting all articles in "create articles" list vis JavaScript
+* fixed a bug in belib in method checkArray (check if the incomming is really an array)
+
+21.01.2006 ingo Schmitt <is@marketing-factory.de>
+* pi3
+  Added $this as parameter to hooks (PostGenerateMail)
+  Added Hooks for Processing Marker Arrays
+  
+16.01.2006 Thomas Hempel <thomas@work.de>
+* pi3
+  Added new template subparts for templating support in address management
+  Added "edit" functionality for addresses in checkout
+* pi4
+  Fixed some bugs in template support for address management
+  Added capability of handling edit from checkout
+  Fixed some bugs in handling of external edit pages
+
+Ingo Schmitt <is@marketing-factory.de>
+*   Corrected typo in locallang.xml files
+*   Added two ne Methods to tx_commerce_product:
+	getArticleUids() to replace getArticles()
+	getArticleObjects() as new method
+*	decared getArticles() in tx_commerce_product as de√ºpricated
+* 	Changed getArticles in pi_base to getARticleUid()
+
+11.01.2006 Thomas Hempel <thomas@work.de>
+*	Added template for edit addresse form
+
+
+10.01.2006 Ingo Schmitt <is@marketing-factory.de>
+*  Changed refferences in TCA from locallang.php to locallang_db.xml
+
+7.1.2006 (Thomas Hempel <thomas@work.de>)
+*  Changes in pi4 for min items of addresses, insert backpid and targetpid for changing
+
+5.1.2006 (Frank Kr√∂ber <fk@marketing-factory.de>)
+*   Generally replace locallang php-files with locallang xml-files. PHP-files will be deleted on 13.01.2006.
+
+3.1.2006 (Ingo Schmitt <is@marketing-factory.de>)
+* pi3
+    Fixed Bug when sendin User- and Adminmail concerning namechange from surename to surname
+    Removed Textual Refferences to Projectname
+	Added OrderID to Object for refference in the Hook-Statements
     
+* pibase
+    Added Method to Merge the Langmarkers from default and actual language to on Array to Display correct Names for the fields
+
+* class.tx_comemrce_attributeeditor.php
+    Limited the selcetion of Attributes only to the commerce products pid 
+
+* class.tx_commerce_belib.php
+* class.tx_commerce_dmhooks.php
+    Fixed Bug concerning Price changes. Now price changes works again
+
+* class.tx_commerce_dmhooks.php
+    Fixexd Bug concerning changes of Attribute Values
+    
+   (Volker Graubaum <vg@e-netconsulting.de> )
+* changed pi4 for try to use as addressmanagement....
+* Updated setup with example lib for the HMENU
+
+2.1.2006 (Ingo Schmitt <is@marketing-factory.de>)
+* pi2
+	fixed typo with $this-currency. In TYPO Script currency and curency are valid names for setting the currency
+    made EUR as default currency if no currency is defined in TS 
+    > Please Update TS to currency (from curency) to match correct written TS
+* pi3
+    Added init method for handling of TS values (Just moved Things from main to init)
+    Added currency to TS to change default currency
+    Translated English locallang Values to German
+    made EUR as default currency if no currency is defined in TS 
+ constants.txt
+    Added pi3 / currency to constants
+ setup TXT
+    Added pi3 / currency to setup   
+    
+    
+
