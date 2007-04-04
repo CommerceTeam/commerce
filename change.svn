@@ -4,6 +4,7 @@ Changelog for tx_commerce
 * Updated documentation
 * Raised Version to 0.9.0
 * Upload to TER
+* Fixed Problem with product-selector in Content element, concerning ordernumber and eancode
 
 02.04.2007 Ingo Schmitt <is@marketing-factory.de>
 * Added change log history

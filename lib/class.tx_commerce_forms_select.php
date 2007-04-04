@@ -75,18 +75,48 @@
 			if ($rowProducts['anzahl'] > 0) {
 				
 				
-				$resArticles=$GLOBALS['TYPO3_DB']->exec_SELECTquery('eancode,ordernumber','tx_commerce_articles','tx_commerce_articles.uid_product='.$rowProducts['uid'].' and tx_commerce_articles.deleted=0 ');
+				$resArticles=$GLOBALS['TYPO3_DB']->exec_SELECTquery('eancode,l18n_parent,ordernumber','tx_commerce_articles','tx_commerce_articles.uid_product='.$rowProducts['uid'].' and tx_commerce_articles.deleted=0 ');
+				
+				
 				if ($resArticles) {
+					
 					$NumRows=$GLOBALS['TYPO3_DB']->sql_num_rows($resArticles);
 					$count=0;
 					$eancodes=array();
 					$ordernumbers=array();
+					/**
+					 * @since 2007-04-04
+					 * @author	Ingo Schmitt <is@marketing-factory.de>
+					 * Bugfix Using ordernumber from l18nparent
+					 */
 					while (($rowArticles = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($resArticles)) && ($count < $numArticleNumbersShow)) {
-						if ($rowArticles['eancode']<>'') {
-							$eancodes[]=$rowArticles['eancode'];
-						}
-						if ($rowArticles['ordernumber']<>'') {
-							$ordernumbers[]=$rowArticles['ordernumber'];
+						if ($rowArticles['l18n_parent']>0) {
+							$resL18nParent = $GLOBALS['TYPO3_DB']->exec_SELECTquery('eancode,ordernumber','tx_commerce_articles','tx_commerce_articles.uid='.$rowArticles['l18n_parent']);
+							if ($resL18nParent) {
+								$rowL18nParents = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($resL18nParent);
+								if ($rowL18nParents['eancode']<>'') {
+									$eancodes[]=$rowL18nParents['eancode'];
+								}
+								if ($rowL18nParents['ordernumber']<>'') {
+									$ordernumbers[]=$rowL18nParents['ordernumber'];
+								}
+								
+							}else{
+								if ($rowArticles['eancode']<>'') {
+								$eancodes[]=$rowArticles['eancode'];
+								}
+								if ($rowArticles['ordernumber']<>'') {
+									$ordernumbers[]=$rowArticles['ordernumber'];
+								}
+							}
+							
+						}else{
+							if ($rowArticles['eancode']<>'') {
+								$eancodes[]=$rowArticles['eancode'];
+							}
+							if ($rowArticles['ordernumber']<>'') {
+								$ordernumbers[]=$rowArticles['ordernumber'];
+							}
 						}
 						$count++;
 					#	debug($rowArticles);
