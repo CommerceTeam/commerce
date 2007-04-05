@@ -450,6 +450,19 @@
 			}
 			return false;
 		}
+		/**
+		 * returns the Supplier Name of an Article, if set
+		 * @author	Ingo Schmitt	<is@marketing-factory.de>
+		 * @return	string	Name of the supplier
+		 */
+		
+         function getSupplierName() {
+         	if ($this->getSupplierUid()){
+         		return $this->conn_db->getSupplierName($this->getSupplierUid());
+         	}
+         	return '';
+         } 
+         
             
         /**
          * Loads the data and divides comma sparated images in array

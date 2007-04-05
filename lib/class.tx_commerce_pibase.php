@@ -547,6 +547,14 @@ class tx_commerce_pibase extends tslib_pibase {
 
 
 			$markerArray = $this->generateMarkerArray($article->returnAssocArray(),$this->conf['singleView.']['articles.'],'article_');
+			
+			if ($article->getSupplierUid()) {
+				$markerArray['ARTICLE_SUPPLIERNAME'] = $article->getSupplierName();
+			}else {
+				$markerArray['ARTICLE_SUPPLIERNAME']= '';
+			}
+			
+			
 			$markerArray['STARTFRM'] = '<form name="basket_'.$article->getUid().'" action="'.$this->pi_getPageLink($this->conf['basketPid']).'" method="post">';
 			$markerArray['HIDDENFIELDS'] = '<input type="hidden" name="'.$this->prefixId.'[catUid]" value="'.$this->cat.'">';
 			$markerArray['HIDDENFIELDS'] .= '<input type="hidden" name="'.$this->prefixId.'[artAddUid]['.$article->getUid().'][price_id]" value="'.$article->get_article_price_uid().'">';
@@ -560,21 +568,21 @@ class tx_commerce_pibase extends tslib_pibase {
 			$markerArray['DELIVERY_PRICE_GROSS'] = tx_moneylib::format($article->getDeliveryCostGross(),$this->currency);
 			
 			
-			 $hookObjectsArr = array();
-                         if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['articleMarker'])){
-                                 foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['articleMarker'] as $classRef){
-                                          $hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
-                                  }
-                          }
-			  
-                          foreach($hookObjectsArr as $hookObj)   {
-                              if (method_exists($hookObj, 'additionalMarkerArticle')) {
-                                       $markerArray =  $hookObj->additionalMarkerArticle($markerArray,$article,$this);
-                               }
-                          }
+			$hookObjectsArr = array();
+            if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['articleMarker'])){
+                     foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['articleMarker'] as $classRef){
+                              $hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+                      }
+            }
+  
+            foreach($hookObjectsArr as $hookObj)   {
+                  if (method_exists($hookObj, 'additionalMarkerArticle')) {
+                           $markerArray =  $hookObj->additionalMarkerArticle($markerArray,$article,$this);
+                   }
+            }
 			
 	    
-	//		debug($markerArray,'test');
+
 
 			return $markerArray;
 	}
@@ -918,9 +926,7 @@ class tx_commerce_pibase extends tslib_pibase {
 			break;
 
 		}
-		#debug($this->cObj->data);
-		#debug(array($value,$TStype,$TSconf,$output));
-		#debug($TSconf['defaultImgConf.']);
+		
 
 		return $output;
 	}
@@ -1218,6 +1224,9 @@ class tx_commerce_pibase extends tslib_pibase {
 	 */
 
 	function renderProduct($myProduct,$template,$TS,$articleMarker,$articleSubpart='',$iteration=''){
+		if (empty($articleMarker)) {
+			return $this->error('renderProduct',__LINE__,'No ArticleMarker defined in renderProduct ');
+		}
 	#	if (is_object($myProduct)) {
 				$data = $myProduct->return_assoc_array();
 
@@ -1268,8 +1277,9 @@ class tx_commerce_pibase extends tslib_pibase {
 				if($this->conf['useStockHandling'] == 1) {
 					$myProduct = tx_commerce_div::removeNoStockArticles($myProduct , $this->conf['articles.']['showWithNoStock']);
 				}
+				
 				$subpartArray['###'.strtoupper($articleSubpart).'###'] = $this->makeArticleView('list',array(),$myProduct,$articleMarker,$articleTemplate);
-//debug($markerArray,'test');
+
 
 
 		    	$hookObjectsArr = array();

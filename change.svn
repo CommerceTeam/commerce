@@ -1,5 +1,13 @@
 Changelog for tx_commerce
 
+05.04.2007 Ingo Schmitt <is@marketing-factory.de>
+* Added method getSupplierName to class.tx_commerce_articles
+* Added method getSupplierName to class.db_articles
+* Added supplier to Article View
+* Beatified Soucrecode in lib/class.tx_commerce_pibase.php
+* Beatified Soucrecode in pi1/class.tx_commerce_pi1.php
+* Added Errorcode to pibase->renderproduct if no articlemarker is defined
+
 04.04.2007 Ingo Schmitt <is@marketing-factory.de>
 * Updated documentation
 * Raised Version to 0.9.0

@@ -255,6 +255,25 @@ class tx_commerce_db_article extends tx_commerce_db_alib{
  		
  		
  	}
+ 	
+ 	
+ 	/**
+ 	 * returns the supplier name to a given UID, selected from tx_commerce_supplier
+ 	 * @author	ingo Schmitt <is@marketing-factory.de>
+ 	 * @param	integer	supplierUid
+ 	 * @return 	string 	Supplier name
+ 	 */
+ 	 function getSupplierName($supplieruid){
+ 	 	if ($supplieruid > 0) {
+	 		$result= $GLOBALS['TYPO3_DB']->exec_SELECTquery('title','tx_commerce_supplier',"uid = $supplieruid" );
+	 		 if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)==1){
+	 		 	$return_data=$GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
+	 		 	return $return_data['title'];
+	 		 }
+ 	 	}
+	 	return false;	
+ 	 	
+ 	 }
 
 
 

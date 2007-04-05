@@ -328,13 +328,14 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 	
 	function makeArticleView($viewKind,$conf=array(),$prod,$templateMarkerArray = '',$template = ''){
 
+		
 	    $hookObjectsArr = array();
 		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['articleview'])) {
 		   foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['articleview'] as $classRef) {
                   $hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
               }
             }
-	#    debug($hookObjectsArr);
+	
     	
     	
     	
@@ -359,7 +360,7 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 		}
 	
 		
-			$templateCount = count($templateMarker);
+		$templateCount = count($templateMarker);
 		
 		if ($this->conf['templateMarker.'][$viewKind.'_selectAttributes'])	{
 			$templateMarkerAttr = '###'.strtoupper($this->conf['templateMarker.'][$viewKind.'_selectAttributes']).'###';
@@ -407,7 +408,7 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 				for ($i=0;$i<count($prod->articles_uids);$i++) {
 	
 					$attributeArray = $prod->get_Atrribute_Matrix(array($prod->articles_uids[$i]), $this->select_attributes,$showHiddenValues);
-					#debug($attributeArray);
+					
 	        	    if(is_array($attributeArray)) {
 						$attCode = '';
 	                   	foreach($attributeArray as $attribute_uid => $myAttribute) {
