@@ -1,5 +1,8 @@
 Changelog for tx_commerce
 
+09.04.2007 Ingo Schmitt <is@marketing-factory.de>
+* Added method getParentProductuid to class.tx_commerce_articles
+
 05.04.2007 Ingo Schmitt <is@marketing-factory.de>
 * Added method getSupplierName to class.tx_commerce_articles
 * Added method getSupplierName to class.db_articles

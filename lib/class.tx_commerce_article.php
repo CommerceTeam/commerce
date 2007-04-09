@@ -564,7 +564,20 @@
         	return $product;
                 	
         }   
+        /**
+         * returns the parent Product Uid
+         * @see tx_commerce_product
+         * @return	uid of tx_commerce_products
+         */
         
+        function getParentProductUid(){
+        	$products_uid=$this->conn_db->get_parent_product_uid($this->uid);
+        	if ($products_uid>0) {
+        		return $products_uid;
+        	}
+        	return false;
+        	
+        }
         /**
          *  @return string ordernumber
          *  @access public
