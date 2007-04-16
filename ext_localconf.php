@@ -60,11 +60,6 @@ $TYPO3_CONF_VARS['EXTCONF'][COMMERCE_EXTkey]['SYSPRODUCTS']['PAYMENT'] = array(
 			'class' => 'tx_commerce_payment_cashondelivery',
 			'type'=>PAYMENTArticleType,
 		),
-		'paypal' => array (
-			'path' => PATH_txcommerce .'payment/class.tx_commerce_payment_paypal.php',
-			'class' => 'tx_commerce_payment_paypal',
-			'type'=>PAYMENTArticleType,
-		),
 	),
 );
 
