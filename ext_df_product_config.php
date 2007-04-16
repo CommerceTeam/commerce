@@ -96,8 +96,15 @@ $dynaFlexConf = array (
 				'method' => 'add',
 				'path' => 'ROOT/el',
 				'type' => 'fields',
+				'condition' => array (
+					'if' => 'hasValues',
+					'source' => 'db',
+					'table' => 'tx_commerce_products_attributes_mm',
+					'select' => 'uid_foreign',
+					'where' => 'uid_local = ###uid### AND uid_correlationtype=4',
+					'orderby' => 'sorting',
+				),
 				'source' => 'db',
-				'source_type' => 'entry_count',
 				'source_config' => array (
 					'table' => 'tx_commerce_products_attributes_mm',
 					'select' => '*',
