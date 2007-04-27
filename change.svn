@@ -12,6 +12,10 @@ Changelog for tx_commerce
 * Added additionalMarker to pi2->quickView
 * Changed Marker in PI3 ARTICLE_NUMBER to ARTICLE_ORDERNUMBER to have the correct naming sceme
 
+27.04.2007 Volker Graubaum <vg@e-netconsulting.de>
+* Added new hooks for rendering own fields and new steps
+* Fixed Bug 5408
+
 09.04.2007 Ingo Schmitt <is@marketing-factory.de>
 * Added method getParentProductuid to class.tx_commerce_articles
 
