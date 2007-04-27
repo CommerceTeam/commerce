@@ -38,45 +38,46 @@ $TYPO3_CONF_VARS['EXTCONF'][COMMERCE_EXTkey]['SYSPRODUCTS']['PAYMENT'] = array(
 	'tablefields' => array (
 		'title' => 'SYSTEMPRODUCT_PAYMENT',
 		'description' => 'Produkt zum Verwalten der Bezahlung',
-	),
-	'types' => array(
-		'invoice' => array (
-			'path' => PATH_txcommerce .'payment/class.tx_commerce_payment_invoice.php',
-			'class' => 'tx_commerce_payment_invoice',
-			'type'=>PAYMENTArticleType,
-		),
-		'prepayment' => array (
-			'path' => PATH_txcommerce .'payment/class.tx_commerce_payment_prepayment.php',
-			'class' => 'tx_commerce_payment_prepayment',
-			'type'=>PAYMENTArticleType,
-		),
-		'creditcard' => array (
-			'path' => PATH_txcommerce .'payment/class.tx_commerce_payment_creditcard.php',
-			'class' => 'tx_commerce_payment_creditcard',
-			'type'=>PAYMENTArticleType,
-		),
-		'cashondelivery' => array (
-			'path' => PATH_txcommerce .'payment/class.tx_commerce_payment_cashondelivery.php',
-			'class' => 'tx_commerce_payment_cashondelivery',
-			'type'=>PAYMENTArticleType,
-		),
-	),
+	)
 );
+$TYPO3_CONF_VARS['EXTCONF'][COMMERCE_EXTkey]['SYSPRODUCTS']['PAYMENT']['types']['invoice'] = array (
+	'path' => PATH_txcommerce .'payment/class.tx_commerce_payment_invoice.php',
+	'class' => 'tx_commerce_payment_invoice',
+	'type'=>PAYMENTArticleType,
+);
+		
+$TYPO3_CONF_VARS['EXTCONF'][COMMERCE_EXTkey]['SYSPRODUCTS']['PAYMENT']['types']['prepayment'] = array (
+	'path' => PATH_txcommerce .'payment/class.tx_commerce_payment_prepayment.php',
+	'class' => 'tx_commerce_payment_prepayment',
+	'type'=>PAYMENTArticleType,
+);
+$TYPO3_CONF_VARS['EXTCONF'][COMMERCE_EXTkey]['SYSPRODUCTS']['PAYMENT']['types']['creditcard'] = array (
+	'path' => PATH_txcommerce .'payment/class.tx_commerce_payment_creditcard.php',
+	'class' => 'tx_commerce_payment_creditcard',
+	'type'=>PAYMENTArticleType,
+);
+$TYPO3_CONF_VARS['EXTCONF'][COMMERCE_EXTkey]['SYSPRODUCTS']['PAYMENT']['types']['cashondelivery'] = array (
+	'path' => PATH_txcommerce .'payment/class.tx_commerce_payment_cashondelivery.php',
+	'class' => 'tx_commerce_payment_cashondelivery',
+	'type'=>PAYMENTArticleType,
+);
+	
+
 
 
 $TYPO3_CONF_VARS['EXTCONF'][COMMERCE_EXTkey]['SYSPRODUCTS']['DELIVERY'] = array(
 	'tablefields' => array (
 		'title' => 'SYSTEMPRODUCT_DELIVERY',
 		'description' => 'Produkt zum Verwalten der Lieferarten',
-	),
-	'types' => array(
+	)
+);
+$TYPO3_CONF_VARS['EXTCONF'][COMMERCE_EXTkey]['SYSPRODUCTS']['DELIVERY']['types'] = array(
 		'sysdelivery' => array ('type'=>DELIVERYArticleType),
 		#'POST Europa' => array (),
 		#'UPS Weltweit' => array (
 		#	'finishingFunction' => 'script->funktion'
 		#),
-	),
-);
+	);
 
 
 
