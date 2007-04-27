@@ -31,13 +31,14 @@
  * @subpackage	tx_commerce
  * @author		Thomas Hempel	<thomas@work.de>
  * @author		Ingo Schmitt	<is@marketing-factory.de>
- * @maintainer	Thomas Hempel	<thomas@work.de>
+ * @author		Volker Graubaum	<vg@e-netconsulting.de>
+ * @maintainer		Thomas Hempel	<thomas@work.de>
  *
  * $Id: class.tx_commerce_pi3.php 576 2007-03-22 22:38:22Z ingo $
  */
 
 require_once(PATH_tslib.'class.tslib_pibase.php');
-require_once(PATH_t3lib.'class.tcemain.php');
+require_once(PATH_t3lib.'class.t3lib_tcemain.php');
 /**
  * tx_commerce includes
  */
@@ -91,7 +92,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 		$this->pi_loadLL();
 		
 		$this->staticInfo = t3lib_div::makeInstance('tx_staticinfotables_pi1');
-        $this->staticInfo->init();
+	        $this->staticInfo->init();
 		
 		
 		$this->imgFolder = 'uploads/tx_commerce/';
@@ -132,6 +133,28 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 				default:
 			}
 		}
+		
+                /**
+                 * Hook for handling own steps and information   
+                 * @since 27.04.2006
+                 *
+                 */
+
+                $hookObjectsArr = array();
+                
+                if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi3/class.tx_commerce_pi3.php']['main'])){
+                        foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi3/class.tx_commerce_pi3.php']['main']
+                        as $classRef)   {
+                                $hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+                        }
+                }
+                
+                foreach($hookObjectsArr as $hookObj)    {
+                        if (method_exists($hookObj, 'processData'))     {
+                                $hookObj->processData($this);
+                        }
+                } 		
+		
 			// write the billing address into session, if it is present in the REQUEST
 		if (isset($this->piVars['billing']))	$GLOBALS['TSFE']->fe_user->setKey('ses', 'billing', $this->piVars['billing']);
 		if (isset($this->piVars['delivery']))	$GLOBALS['TSFE']->fe_user->setKey('ses', 'delivery', $this->piVars['delivery']);
@@ -206,8 +229,17 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 				$content = $this->finishIt($paymentObj);
 				break;
 			default:
-					// get billing address
-				$content = $this->getBillingAddress();
+                                foreach($hookObjectsArr as $hookObj)    {
+                                        if (method_exists($hookObj, $this->currentStep))        {
+                                                $method = $this->currentStep;
+                                                $content = $hookObj->$method($this);
+                                        }
+                                }
+                                if(!$content){
+                                                // get billing address
+                                        $content = $this->getBillingAddress();
+                                }
+
 		}
 
 		return $this->pi_WrapInBaseClass($content);
@@ -231,7 +263,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 		}
 
 			// get the form
-		$billingForm = '<form name="addressForm" action="" method="post">';
+		$billingForm = '<form name="addressForm" action="'.$this->pi_getPageLink($GLOBALS['TSFE']->id).'" method="post">';
 
 			// if a user is logged in, get the form from the address management
 		if ($GLOBALS['TSFE']->loginUser) {
@@ -320,7 +352,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 		$markerArray['###ADDRESS_DESCRIPTION###'] = $this->pi_getLL('delivery_description');
 
 			// get the form
-		$deliveryForm = '<form name="addressForm" action="" method="post">';
+		$deliveryForm = '<form name="addressForm" action="'.$this->pi_getPageLink($GLOBALS['TSFE']->id).'" method="post">';
 		$deliveryForm .= '<input type="hidden" name="'.$this->prefixId.'[step]" value="payment" />';
 		$deliveryForm .= '<input type="hidden" name="'.$this->prefixId.'[check]" value="delivery" />';
 
@@ -439,7 +471,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 
 			$this->formError = $paymentObj->formError;
 			// show the payment form if it's needed, otherwise go to next step
-			$paymentForm = '<form name="paymentForm" action="" method="post">';
+			$paymentForm = '<form name="paymentForm" action="'.$this->pi_getPageLink($GLOBALS['TSFE']->id).'" method="post">';
 			$paymentForm .= '<input type="hidden" name="'.$this->prefixId.'[step]" value="payment" />';
 
 			$paymentConfig = $this->conf['payment.'];
@@ -491,7 +523,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 
 		if ($this->debug)	debug($GLOBALS['TSFE']->fe_user->tx_commerce_basket);
 
-		$listingForm = '<form name="listingForm" action="" method="post">';
+		$listingForm = '<form name="listingForm" action="'.$this->pi_getPageLink($GLOBALS['TSFE']->id).'" method="post">';
 		$listingForm .= '<input type="hidden" name="'.$this->prefixId.'[step]" value="finish" />';
 
 		$markerArray['###LISTING_TITLE###'] = $this->pi_getLL('listing_title');
