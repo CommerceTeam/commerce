@@ -473,8 +473,9 @@ class tx_commerce_pibase extends tslib_pibase {
 		$category_items_listview_1 = '';
 
 		if(!$this->conf['hideProductsInList']){
-
-				$markerArray['SUBPART_CATEGORY_ITEMS_LISTVIEW'] = $this->renderProductsForList($this->category_products,$this->conf['templateMarker.']['categoryProductList.'],$this->conf['templateMarker.']['categoryProductListIterations']);
+			# Write the current page to The session to have a back to last product link
+			$GLOBALS["TSFE"]->fe_user->setKey('ses','tx_commerce_lastproducturl',$this->pi_linkTP_keepPIvars_url());
+			$markerArray['SUBPART_CATEGORY_ITEMS_LISTVIEW'] = $this->renderProductsForList($this->category_products,$this->conf['templateMarker.']['categoryProductList.'],$this->conf['templateMarker.']['categoryProductListIterations']);
 		}
 
 

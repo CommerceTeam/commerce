@@ -70,6 +70,7 @@
 	###BASKET_DELIVERY_GROSS_SUM###
 	###BASKET_PAYMENT_NET_SUM###
 	###BASKET_PAYMENT_GROSS_SUM###
+	<a href="###BASKET_LASTPRODUCTURL###">###LANG_LAST_PRODUCT###</a>
     <div class="cmrc_mb_next">###BASKET_NEXTBUTTON###</div>
     <div class="cmrc_mb_no_stock">###NO_STOCK MESSAGE###</div>
 </div>

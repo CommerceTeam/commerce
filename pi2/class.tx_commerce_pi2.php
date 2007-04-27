@@ -681,6 +681,7 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 			$markerArray['###BASKET_ITEM_COUNT###'] = $this->basket->basket_items[$art->uid]->get_quantity();
 			$markerArray['###BASKET_ITEM_PRICESUM_NET###'] =  tx_moneylib::format($this->basket->basket_items[$art->uid]->get_item_sum_net(),$this->currency);
 			$markerArray['###BASKET_ITEM_PRICESUM_GROSS###'] =  tx_moneylib::format($this->basket->basket_items[$art->uid]->get_item_sum_gross(),$this->currency);
+			$markerArray['###BASKET_LASTPRODUCTURL###'] = $GLOBALS["TSFE"]->fe_user->getKey('ses','tx_commerce_lastproducturl');
 			
 		#	debug($markerArray);
             $templateMarker = '###PRODUCT_BASKET_FORM_SMALL###';

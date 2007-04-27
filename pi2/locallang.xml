@@ -27,6 +27,7 @@
 			<label index="lang_titel_empty">Your basket is empty</label>
 			<label index="lang_text_empty">Please select the products you want to order first </label>
 			<label index="lang_percent">%</label>
+			<label index="lang_last_product">Last Product</label>
 			<label index="checkoutlink">To the checkout</label>
 			<label index="delete_basket">Clear basket</label>
 			<label index="noStock">The amount of wanted articles is not available at this moment</label>
@@ -51,6 +52,7 @@
 			<label index="lang_titel_empty">Der Warenkorb ist noch leer</label>
 			<label index="lang_text_empty">Bitte waehlen Sie erst Produkte aus, die sie bestellen möchten</label>
 			<label index="lang_percent">%</label>
+			<label index="lang_last_product">Zurück</label>
 			<label index="checkoutlink">Zum Checkout</label>
 			<label index="delete_basket">Warenkorb leeren</label>
 			<label index="noStock">Die Anzahl der gewünschten Artikel ist im Augenblick nicht verfügbar</label>

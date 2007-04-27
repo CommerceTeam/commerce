@@ -11,6 +11,8 @@ Changelog for tx_commerce
 * Beatified Sourcecode
 * Added additionalMarker to pi2->quickView
 * Changed Marker in PI3 ARTICLE_NUMBER to ARTICLE_ORDERNUMBER to have the correct naming sceme
+* Added storage of last product to PI1 an pibase
+* Added ###BASKET_LASTPRODUCTURL### and ###LANG_LAST_PRODUCT### to Basket
 
 27.04.2007 Volker Graubaum <vg@e-netconsulting.de>
 * Added new hooks for rendering own fields and new steps

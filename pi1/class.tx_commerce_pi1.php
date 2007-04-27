@@ -244,6 +244,10 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 		     	$this->product->load_articles();
 	    		$this->product->setPageTitle();
 				$this->master_cat=$this->product->get_masterparent_categorie();
+				
+				# Write the current page to The session to have a back to last product link
+				$GLOBALS["TSFE"]->fe_user->setKey('ses','tx_commerce_lastproducturl',$this->pi_linkTP_keepPIvars_url());
+				
 			}else{
 				// If product ist not valid (url manipulation)
 				// go to listview
