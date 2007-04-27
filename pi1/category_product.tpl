@@ -56,7 +56,7 @@
 		    ###HIDDENFIELDS###
 			<span>###ARTICLE_EANCODE###	</span>
 			<span>###ARTICLE_STOCK###	</span>
-            <span>###ARTICLE_NUMBER###</span>
+            <span>###ARTICLE_ORDERNUMBER###</span>
 			<span>###ARTICLE_PRICE_GROSS###</span>
 			<span>###DELIVERY_PRICE_GROSS###</span>    
 			<div>###ARTICLE_SELECT_ATTRIBUTES###</div>
@@ -71,7 +71,7 @@
 		    ###HIDDENFIELDS###
 			<span>###ARTICLE_EANCODE###	</span>
 			<span>###ARTICLE_STOCK###	</span>
-            <span>###ARTICLE_NUMBER###</span>
+            <span>###ARTICLE_ORDERNUMBER###</span>
 			<span>###ARTICLE_PRICE_GROSS###</span>
 			<span>###DELIVERY_PRICE_GROSS###</span>    
 			<div>###ARTICLE_SELECT_ATTRIBUTES###</div>
@@ -100,7 +100,7 @@
 		    ###HIDDENFIELDS###
 			<span>###ARTICLE_EANCODE###	</span>
 			<span>###ARTICLE_STOCK###	</span>
-            <span>###ARTICLE_NUMBER###</span>
+            <span>###ARTICLE_ORDERNUMBER###</span>
 			<span>###ARTICLE_PRICE_GROSS###</span>
 			<span>###DELIVERY_PRICE_GROSS###</span>    
 			<div>###ARTICLE_SELECT_ATTRIBUTES###</div>
@@ -115,7 +115,7 @@
 		    ###HIDDENFIELDS###
 			<span>###ARTICLE_EANCODE###	</span>
 			<span>###ARTICLE_STOCK###	</span>
-            <span>###ARTICLE_NUMBER###</span>
+            <span>###ARTICLE_ORDERNUMBER###</span>
 			<span>###ARTICLE_PRICE_GROSS###</span>
 			<span>###DELIVERY_PRICE_GROSS###</span>    
 			<div>###ARTICLE_SELECT_ATTRIBUTES###</div>
@@ -144,7 +144,7 @@
 		    ###HIDDENFIELDS###
 			<span>###ARTICLE_EANCODE###	</span>
 			<span>###ARTICLE_STOCK###	</span>
-	                <span>###ARTICLE_NUMBER###</span>
+	                <span>###ARTICLE_ORDERNUMBER###</span>
 			<span>###ARTICLE_PRICE_GROSS###</span>
 			<span>###DELIVERY_PRICE_GROSS###</span>    
 			<span>###NO_STOCK###</span>
@@ -161,7 +161,7 @@
 		    ###HIDDENFIELDS###
 			<span>###ARTICLE_EANCODE###	</span>
 			<span>###ARTICLE_STOCK###	</span>
-	                <span>###ARTICLE_NUMBER###</span>
+	                <span>###ARTICLE_ORDERNUMBER###</span>
 			<span>###ARTICLE_PRICE_GROSS###</span>
 			<span>###DELIVERY_PRICE_GROSS###</span>    
 			<span>###NO_STOCK###</span>
@@ -200,7 +200,7 @@
 		    ###HIDDENFIELDS###
 			<span>###ARTICLE_EANCODE###	</span>
 			<span>###ARTICLE_STOCK###	</span>
-	                <span>###ARTICLE_NUMBER###</span>
+	                <span>###ARTICLE_ORDERNUMBER###</span>
 			<span>###ARTICLE_PRICE_GROSS###</span>
 			<span>###DELIVERY_PRICE_GROSS###</span>    
 			<span>###NO_STOCK###</span>
@@ -217,7 +217,7 @@
 		    ###HIDDENFIELDS###
 			<span>###ARTICLE_EANCODE###	</span>
 			<span>###ARTICLE_STOCK###	</span>
-	                <span>###ARTICLE_NUMBER###</span>
+	                <span>###ARTICLE_ORDERNUMBER###</span>
 			<span>###ARTICLE_PRICE_GROSS###</span>
 			<span>###DELIVERY_PRICE_GROSS###</span>    
 			<span>###NO_STOCK###</span>

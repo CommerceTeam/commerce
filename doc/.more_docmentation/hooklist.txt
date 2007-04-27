@@ -68,6 +68,7 @@ hook bevore creating the system category
 hook after creation of the delivery articles
 
 tx_commerce_pi3
+
 ['postpayment']
 hook after processing the payment
 ['preinsert']
@@ -92,6 +93,8 @@ After Genareting the USerMail
 Processing ofMarker in every Method via own Method
 
 tx_comemrcePi2
+['getQuickView']
+additionalMarker
 ['postartAddUid']
 After adding an Article to the basket fo calculatoing the payment
 ['postdelArt']

@@ -561,6 +561,7 @@ class tx_commerce_pibase extends tslib_pibase {
 			$markerArray['QTY_INPUT_VALUE'] = $this->getArticleAmount($article->getUid());
 			$markerArray['QTY_INPUT_NAME'] = $this->prefixId.'[artAddUid]['.$article->getUid().'][count]';
 			$markerArray['ARTICLE_NUMBER'] = $article->get_ordernumber();
+			$markerArray['ARTICLE_ORDERNUMBER'] = $article->get_ordernumber();
 			
 			$markerArray['ARTICLE_PRICE_NET'] = tx_moneylib::format($article->get_price_net(),$this->currency);
 			$markerArray['ARTICLE_PRICE_GROSS'] = tx_moneylib::format($article->get_price_gross(),$this->currency);

@@ -301,7 +301,7 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 										       
 	
 	    $templateMarker = '###PRODUCT_BASKET_QUICKVIEW###';
-    	    $template = $this->cObj->getSubpart($this->templateCode, $templateMarker);
+    	$template = $this->cObj->getSubpart($this->templateCode, $templateMarker);
 
 	    $basketArray = $this->languageMarker;
 	    $basketArray['###PRICE_GROSS###'] = tx_moneylib::format($this->basket->get_gross_sum(),$this->currency);
@@ -309,7 +309,18 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 	    $basketArray['###ITEMS###'] = count($list);
 	    $basketArray['###URL###'] = $this->pi_linkTP_keepPIvars_url(array(),0,1,$this->conf['basketPid']);
 	    $basketArray['###URL_CHECKOUT###'] = $this->pi_linkTP_keepPIvars_url(array(),0,1,$this->conf['checkoutPid']);
-            $this->content = $this->cObj->substituteMarkerArrayCached($template, $basketArray );
+        $hookObjectsArr = array();
+	    if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['getQuickView'])) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['getQuickView'] as $classRef) {
+		    	    $hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+		  	}
+	    }
+	    foreach($hookObjectsArr as $hookObj)    {
+			if (method_exists($hookObj, 'additionalMarker')) {
+    		    $basketArray =  $hookObj->additionalMarker($basketArray,$this);
+    		}
+	    }	
+        $this->content = $this->cObj->substituteMarkerArrayCached($template, $basketArray );
 	    return true;
 	}
 
