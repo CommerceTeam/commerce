@@ -37,7 +37,7 @@
  */
 
 require_once(PATH_tslib.'class.tslib_pibase.php');
-
+require_once(PATH_t3lib.'class.tcemain.php');
 /**
  * tx_commerce includes
  */
