@@ -32,9 +32,9 @@
 
 
 unset($MCONF);
-require ('conf.php');
-require ($BACK_PATH.'init.php');
-require ($BACK_PATH.'template.php');
+require_once('conf.php');
+require_once($BACK_PATH.'init.php');
+require_once($BACK_PATH.'template.php');
 
 /**
  * Graytree classes

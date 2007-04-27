@@ -1,4 +1,6 @@
 Changelog for tx_commerce
+27.04.2007 Ingo Schmitt <is@marketing-factory.de>
+* Change Module Configuration and instantiation of classes to new TYPO3 style
 
 09.04.2007 Ingo Schmitt <is@marketing-factory.de>
 * Added method getParentProductuid to class.tx_commerce_articles

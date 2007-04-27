@@ -4,8 +4,8 @@
  */
  
 	// DO NOT REMOVE OR CHANGE THESE 3 LINES:
-define('TYPO3_MOD_PATH', '../typo3conf/ext/commerce/mod_tracking/');
-$BACK_PATH='../../../../typo3/';
+define('TYPO3_MOD_PATH', 'ext/commerce/mod_tracking/');
+$BACK_PATH='../../../';
 
 $MCONF['name']='txcommerceM1_tracking';
 $MCONF['access']='user,group';

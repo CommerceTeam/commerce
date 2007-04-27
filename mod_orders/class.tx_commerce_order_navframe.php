@@ -39,9 +39,9 @@
 
 
 unset($MCONF);
-include ('conf.php');
-include ($BACK_PATH.'init.php');
-include ($BACK_PATH.'template.php');
+require_once('conf.php');
+require_once($BACK_PATH.'init.php');
+require_once($BACK_PATH.'template.php');
 require_once(PATH_t3lib.'class.t3lib_browsetree.php');
 
 /**

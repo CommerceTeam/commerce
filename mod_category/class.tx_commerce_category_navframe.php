@@ -33,9 +33,9 @@
  * $Id: class.tx_commerce_category_navframe.php 360 2006-09-22 09:08:20Z ingo $
  */
 unset($MCONF);
-include ('conf.php');
-include ($BACK_PATH.'init.php');
-include ($BACK_PATH.'template.php');
+require_once('conf.php');
+require_once($BACK_PATH.'init.php');
+require_once($BACK_PATH.'template.php');
 
 require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_div.php');
 require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_browsetrees.php');
