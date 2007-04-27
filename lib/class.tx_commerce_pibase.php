@@ -913,12 +913,16 @@ class tx_commerce_pibase extends tslib_pibase {
 
 			break;
 			case 'IMAGE' :
+				if (is_string($value) && !empty($value)) {
 					$TSconf['file'] = $this->imgFolder.$value;
 					$output = $this->cObj->IMAGE($TSconf);
+				}
 			break;
 			case 'IMG_RESOURCE' :
+				if (is_string($value) && !empty($value)) {
 					$TSconf['file'] = $this->imgFolder.$value;
 					$output = $this->cObj->IMG_RESOURCE($TSconf);
+				}
 			break;		
 			case 'STDWRAP' :
 			default :
