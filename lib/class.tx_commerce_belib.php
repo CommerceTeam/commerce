@@ -1088,45 +1088,7 @@ class tx_commerce_belib {
 	}
 	
 	
-	 	/**
-         * update Flexform XML from Database
-         * 
-         * @author      Christian Sander <cs2@marketing-factory>
-         * @param       integer $articleUid             ID of article
-         * @return      boolean Status of method
-         * @see tx_commerce_belib
-         */
-
-        function updatePriceXMLFromDatabase( $articleUid) {
-                $res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-                        '*',
-                        'tx_commerce_article_prices',
-                        'deleted=0 AND uid_article=' .$articleUid
-                );
-                $data = array('data' => array('sDEF' => array('lDEF')));
-                while($priceDataArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)){
-                        $priceUid=$priceDataArray["uid"];
-                        $data['data']['sDEF']['lDEF']['price_net_' .$priceUid] = array('vDEF' => sprintf('%.2f', ($priceDataArray['price_net'] /100)));
-                        $data['data']['sDEF']['lDEF']['price_gross_' .$priceUid] = array('vDEF' => sprintf('%.2f', ($priceDataArray['price_gross'] /100)));
-                        $data['data']['sDEF']['lDEF']['hidden_' .$priceUid] = array('vDEF' => $priceDataArray['hidden']);
-                        $data['data']['sDEF']['lDEF']['starttime_' .$priceUid] = array('vDEF' => $priceDataArray['starttime']);
-                        $data['data']['sDEF']['lDEF']['endtime_' .$priceUid] = array('vDEF' => $priceDataArray['endtime']);
-                        $data['data']['sDEF']['lDEF']['fe_group_' .$priceUid] = array('vDEF' => $priceDataArray['fe_group']);
-                        $data['data']['sDEF']['lDEF']['purchase_price_' .$priceUid] = array('vDEF' => sprintf('%.2f', ($priceDataArray['purchase_price'] /100)));
-                        $data['data']['sDEF']['lDEF']['price_scale_amount_start_' .$priceUid] = array('vDEF' => $priceDataArray['price_scale_amount_start']);
-                        $data['data']['sDEF']['lDEF']['price_scale_amount_end_' .$priceUid] = array('vDEF' => $priceDataArray['price_scale_amount_end']);                       
-                }
-
-                $xml = t3lib_div::array2xml($data, '', 0, 'T3FlexForms');
-
-                $res = $GLOBALS['TYPO3_DB']->exec_UPDATEquery(
-                        'tx_commerce_articles',
-                        'uid=' .$articleUid,
-                        array('prices' => $xml)
-                );
-
-                return (bool)$res;
-    }
+	 	
 	
 	function getOrderFolderSelector($pid,$levels,$aktLevel =0) {
 		$returnArray=array();
@@ -1157,6 +1119,128 @@ class tx_commerce_belib {
   			return false;
   		}	
 	}
+	
+	/**
+         * update Flexform XML from Database
+         * 
+         * @author      Christian Sander <cs2@marketing-factory>
+         * @param       integer $articleUid             ID of article
+         * @return      boolean Status of method
+         * @see tx_commerce_belib
+         */
+
+        function updatePriceXMLFromDatabase( $articleUid) {
+            $res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+                    '*',
+                    'tx_commerce_article_prices',
+                    'deleted=0 AND uid_article=' .$articleUid
+            );
+            $data = array('data' => array('sDEF' => array('lDEF')));
+            while($priceDataArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)){
+                    $priceUid=$priceDataArray["uid"];
+                    $data['data']['sDEF']['lDEF']['price_net_' .$priceUid] = array('vDEF' => sprintf('%.2f', ($priceDataArray['price_net'] /100)));
+                    $data['data']['sDEF']['lDEF']['price_gross_' .$priceUid] = array('vDEF' => sprintf('%.2f', ($priceDataArray['price_gross'] /100)));
+                    $data['data']['sDEF']['lDEF']['hidden_' .$priceUid] = array('vDEF' => $priceDataArray['hidden']);
+                    $data['data']['sDEF']['lDEF']['starttime_' .$priceUid] = array('vDEF' => $priceDataArray['starttime']);
+                    $data['data']['sDEF']['lDEF']['endtime_' .$priceUid] = array('vDEF' => $priceDataArray['endtime']);
+                    $data['data']['sDEF']['lDEF']['fe_group_' .$priceUid] = array('vDEF' => $priceDataArray['fe_group']);
+                    $data['data']['sDEF']['lDEF']['purchase_price_' .$priceUid] = array('vDEF' => sprintf('%.2f', ($priceDataArray['purchase_price'] /100)));
+                    $data['data']['sDEF']['lDEF']['price_scale_amount_start_' .$priceUid] = array('vDEF' => $priceDataArray['price_scale_amount_start']);
+                    $data['data']['sDEF']['lDEF']['price_scale_amount_end_' .$priceUid] = array('vDEF' => $priceDataArray['price_scale_amount_end']);                       
+            }
+
+            $xml = t3lib_div::array2xml($data, '', 0, 'T3FlexForms');
+
+            $res = $GLOBALS['TYPO3_DB']->exec_UPDATEquery(
+                    'tx_commerce_articles',
+                    'uid=' .$articleUid,
+                    array('prices' => $xml)
+            );
+
+            return (bool)$res;
+    }
+	
+	/**
+     * This makes the Xml to draw the price form of an article
+     * Call this function if you have imported data to the database and havn't
+     * updated the Flexform
+     * @author Ricardo Mieres <ricardo.mieres@502.cl>
+     * @param	integer $article_uid
+     * @see updatePriceXMLFromDatabase
+     * 
+     */
+    function fix_articles_price($article_uid=0){
+  		if($article_uid==0){
+  			return ;
+  		}
+  		
+		return updatePriceXMLFromDatabase($article_uid);
+    }
+    
+    /**
+     * This makes the Xml for the product Attributes
+     * Call thos function if you have imported data to the database and havn't
+     * updated the Flexform
+     * @author Ricardo Mieres <ricardo.mieres@502.cl>
+     * @param	integer $product_uid
+     */
+
+    function fix_product_atributte($product_uid=0){
+    	if($product_uid==0){
+  			return ;
+  		}
+  		$fieldSelected='*';
+  		$mm_table='tx_commerce_products_attributes_mm';
+  		$where='uid_local= '.$product_uid;
+    	$rs=$GLOBALS['TYPO3_DB']->exec_SELECTquery('uid_correlationtype,uid_foreign',$mm_table,$where,$groupBy='',$orderBy='',$limit='');
+    	$GLOBALS['TYPO3_DB']->debug('exec_SELECTquery');
+		$xmlArray=array();
+		 while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($rs)){
+        			if(empty($xmlArray['data']['sDEF']['lDEF']['ct_'.$row['uid_correlationtype']]['vDEF']))
+        				$xmlArray['data']['sDEF']['lDEF']['ct_'.$row['uid_correlationtype']]['vDEF']=$row['uid_foreign'];
+        			else
+        				$xmlArray['data']['sDEF']['lDEF']['ct_'.$row['uid_correlationtype']]['vDEF'].=','.$row['uid_foreign'];
+		 }
+		$arrayToSave=array();
+		$xmlText=t3lib_div::array2xml_cs ($xmlArray, 'T3FlexForms', $options=array(), $charset='');
+		$arrayToSave['attributes']=$xmlText;
+
+		$rs=$GLOBALS['TYPO3_DB']->exec_UPDATEquery('tx_commerce_products','uid='.$product_uid,$arrayToSave,$no_quote_fields=false);
+		$GLOBALS['TYPO3_DB']->debug('exec_UPDATEquery');
+
+    }
+    /**
+     * This makes the Xml for the categoryt Attributes
+     * Call thos function if you have imported data to the database and havn't
+     * updated the Flexform
+     * @author Ricardo Mieres <ricardo.mieres@502.cl>
+     * @param	integer $category_uid
+     */
+    
+    function fix_category_atributte($category_uid=0){
+    	if($category_uid==0){
+  			return ;
+  		}
+  		$fieldSelected='*';
+  		$mm_table='tx_commerce_categories_attributes_mm';
+  		$where='uid_local= '.$category_uid;
+    	$rs=$GLOBALS['TYPO3_DB']->exec_SELECTquery('uid_correlationtype,uid_foreign',$mm_table,$where,$groupBy='',$orderBy='',$limit='');
+    	$GLOBALS['TYPO3_DB']->debug('exec_SELECTquery');
+		$xmlArray=array();
+		 while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($rs)){
+        			if(empty($xmlArray['data']['sDEF']['lDEF']['ct_'.$row['uid_correlationtype']]['vDEF']))
+        				$xmlArray['data']['sDEF']['lDEF']['ct_'.$row['uid_correlationtype']]['vDEF']=$row['uid_foreign'];
+        			else
+        				$xmlArray['data']['sDEF']['lDEF']['ct_'.$row['uid_correlationtype']]['vDEF'].=','.$row['uid_foreign'];
+		 }
+		$arrayToSave=array();
+		$xmlText=t3lib_div::array2xml_cs ($xmlArray, 'T3FlexForms', $options=array(), $charset='');
+		$arrayToSave['attributes']=$xmlText;
+
+		$rs=$GLOBALS['TYPO3_DB']->exec_UPDATEquery('tx_commerce_categories','uid='.$category_uid,$arrayToSave,$no_quote_fields=false);
+		$GLOBALS['TYPO3_DB']->debug('exec_UPDATEquery');
+
+    }
 
 }
 

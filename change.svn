@@ -5,6 +5,8 @@ Changelog for tx_commerce
 * Fixed Bug 5402, Thanks to Batomo
 * Fixed Bug 5380, Thanks to heiko özaykut
 * Fixed Bug 3573, Thanks to Batomo
+* Added methods to rebuild flexform XML for the recordsets. Thanks to Ricardo Mieres <ricardo.mieres@502.cl>
+* Beatified Sourcecode
 
 09.04.2007 Ingo Schmitt <is@marketing-factory.de>
 * Added method getParentProductuid to class.tx_commerce_articles
