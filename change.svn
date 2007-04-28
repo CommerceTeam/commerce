@@ -1,6 +1,11 @@
 Changelog for tx_commerce
 (add new changes on top of this file)
 
+27.04.2007 Volker Graubaum <vg@e-netconsulting.de>
+* Add funktion for rendering checkbox fields in pi3 and pi4
+* change fields with label to 2 different marker
+
+
 27.04.2007 Ingo Schmitt <is@marketing-factory.de>
 * Change Module Configuration and instantiation of classes to new TYPO3 style
 * Changed definition of payment types and delivery types in ext_localconf (fixed BUG 5027)

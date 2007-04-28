@@ -411,10 +411,12 @@ class tx_commerce_pi4 extends tslib_pibase {
 		$submitCode .= '<input type="hidden" name="' .$this->prefixId .'[addressType]" value="' .$addressData['tx_commerce_address_type_id'] .'" />';
 		$submitCode .= '<input type="submit" name="' .$this->prefixId .'[check]" value="' .$this->pi_getLL('label_submit_edit') .'" />';
 
-			// create a checkbox where the user can select if the address ishis main address
-		$isMainAddressCode = '<input type="checkbox" name="' .$this->prefixId .'[ismainaddress]"';
-		if ($addressData['tx_commerce_is_main_address']) $isMainAddressCode .= ' checked="checked"';
-		$isMainAddressCode .= ' />' .$this->pi_getLL('label_is_main_address');
+			
+		// create a checkbox where the user can select if the address ishis main address / Changed to label and field
+		$isMainAddressCodeField = '<input type="checkbox" name="' .$this->prefixId .'[ismainaddress]"';
+		if ($addressData['tx_commerce_is_main_address']) $isMainAddressCodeField .= ' checked="checked"';
+		$isMainAddressCodeField .= ' />' .$this->pi_getLL('label_is_main_address');
+		$isMainAddressCodeLabel .= $this->pi_getLL('label_is_main_address');
 
 		//fill additional information
 		if ($addressData['tx_commerce_address_type_id'] == 1) {
@@ -429,7 +431,12 @@ class tx_commerce_pi4 extends tslib_pibase {
 			// fill the markers
 		$baseMA['###ADDRESS_FORM_FIELDS###'] = $formCode;
 		$baseMA['###ADDRESS_FORM_SUBMIT###'] = $submitCode;
-		$baseMA['###ADDRESS_FORM_IS_MAIN_ADDRESS###'] = $isMainAddressCode;
+		
+		$baseMA['###ADDRESS_FORM_IS_MAIN_ADDRESS_FIELD###'] = $isMainAddressCodeField;
+		$baseMA['###ADDRESS_FORM_IS_MAIN_ADDRESS_LABEL###'] = $isMainAddressCodeLabel;
+	
+		// Obsolete Marker, don't use anymore, use Field and label instead
+		$baseMA['###ADDRESS_FORM_IS_MAIN_ADDRESS###'] = $isMainAddressCodeField.' '.$isMainAddressCodeLabel;			
 		$baseMA['###ADDRESS_TYPE###'] = $this->pi_getLL('label_address_of_type_' .$this->piVars['addressType']);
 
 			// get action link
@@ -523,6 +530,8 @@ class tx_commerce_pi4 extends tslib_pibase {
 			case 'static_info_tables':
 				$selected = $fieldValue != '' ? $fieldValue : $fieldConfig['default'];
 			 	return $this->staticInfo->buildStaticInfoSelector($fieldConfig['field'], $this->prefixId.'[' .$fieldName .']', $fieldConfig['cssClass'],$selected,'','','','',$fieldConfig['select']);
+			case 'check':
+			        return $this->getCheckboxInputField($fieldName, $fieldConfig,  $fieldValue);						    	
 			case 'single':
 			default:
 				return $this->getSingleInputField($fieldName, $fieldConfig, $fieldValue);
@@ -592,6 +601,29 @@ class tx_commerce_pi4 extends tslib_pibase {
 		$result .= '</select>';
 		return $result;
 	}
+	
+	/**
+	 * Returns a checkbox
+	 *
+	 * @param	string		$fieldname: The name of the field
+	 * @param	array		$fieldConf: The configuration for this field (normally from TypoScript)
+	 * @param	string		$fieldValue: The current value of this field (Normally fetched from piVars)
+	 * @return	a single checkbox
+	 */
+	
+	function getCheckboxInputField($fieldName, $fieldConfig, $fieldValue = '') {
+	    $result = '<input type="checkbox" name="'.$this->prefixId.'['.$fieldName.']" 
+	    id="'.$this->prefixId.'['.$step.']['.$fieldName.']" value="1" ';
+	    if (($fieldConfig['default']=='1' && $fieldValue!=0) || $fieldValue==1) {
+	        $result.='checked="checked" ';
+	    }
+	    $result .= ' /> ';
+	    if ($fieldConfig['additionalinfo']!='') {
+	          $result.=$fieldConfig['additionalinfo'];
+	    }
+	      return $result;
+	}
+	
 
 	/**
 	 * Reads in the complete configuration for a form, and parses the data that come from the piVars

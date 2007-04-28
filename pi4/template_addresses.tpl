@@ -52,7 +52,7 @@
 <div id="address">
 	<p>###MESSAGE_EDIT###</p>
 	<p>###ADDRESS_FORM_FIELDS###</p>
-	<p>###ADDRESS_FORM_IS_MAIN_ADDRESS###</p>
+	<p>###ADDRESS_FORM_IS_MAIN_ADDRESS_FIELD### ###ADDRESS_FORM_IS_MAIN_ADDRESS_LABEL###</p>
 	<p>###ADDRESS_FORM_SUBMIT###</p>
 </div>
 <!--###ADDRESS_EDIT### end-->

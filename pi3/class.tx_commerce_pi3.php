@@ -554,8 +554,14 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 		 * @TODO TS Coding with Sacha
 		 */
 		$comment = isset($this->piVars['comment']) ? $this->piVars['comment'] : '';
+		// obsolete, user Label and Form field
 		$markerArray['###LISTING_TERMS_ACCEPT###'] = $this->pi_getLL('termstext').'<input type="checkbox" name="'.$this->prefixId.'[terms]" value="termschecked" '.$termsChecked.' />';
 		$markerArray['###LISTING_COMMENT###'] = $this->pi_getLL('comment').'<br/><textarea name="'.$this->prefixId.'[comment]" rows="4" cols="40">'.$comment.'</textarea>';
+		// Use new version with label and field
+		$markerArray['###LISTING_TERMS_ACCEPT_LABEL###'] = $this->pi_getLL('termstext');
+		$markerArray['###LISTING_COMMENT_LABEL###'] = $this->pi_getLL('comment');
+		$markerArray['###LISTING_TERMS_ACCEPT_FIELD###'] = '<input type="checkbox" name="'.$this->prefixId.'[terms]" value="termschecked" '.$termsChecked.' />';
+		$markerArray['###LISTING_COMMENT_FIELD###'] = '<textarea name="'.$this->prefixId.'[comment]" rows="4" cols="40">'.$comment.'</textarea>';
 
 		/**
 		 * Hook for processing Marker Array
@@ -1276,6 +1282,8 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 			case 'static_info_tables':
 				$selected = $fieldValue != '' ? $fieldValue : $fieldConfig['default'];
 			 	return $this->staticInfo->buildStaticInfoSelector($fieldConfig['field'], $this->prefixId.'[' .$step .'][' .$fieldName .']', $fieldConfig['cssClass'],$selected,'','','','',$fieldConfig['select']);
+                        case 'check':
+			            return $this->getCheckboxInputField($fieldName, $fieldConfig,  $fieldValue,$single);
 			case 'single':
 			default:
 				return $this->getSingleInputField($fieldName, $fieldConfig,$step);
@@ -1336,7 +1344,32 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
     			$result .= '</select>';
                         return $result;
 	}			
-					    
+
+        /**
+         * Returns a checkbox
+         *
+         * @param       string          $fieldname: The name of the field
+         * @param       array           $fieldConf: The configuration for this field (normally from TypoScript)
+         * @param       string          $fieldValue: The current value of this field (Normally fetched from piVars)
+         * @param       string          $step: name of the step
+         * @return      a single checkbox
+         */
+
+        function getCheckboxInputField($fieldName, $fieldConfig, $fieldValue = '',$step = '') {
+            $result = '<input type="checkbox" name="'.$this->prefixId.'['.$step.']['.$fieldName.']"
+            id="'.$this->prefixId.'['.$step.']['.$fieldName.']" value="1" ';
+            if (($fieldConfig['default']=='1' && $fieldValue!=0) || $fieldValue==1) {
+                $result.='checked="checked" ';
+            }
+            $result .= ' /> ';
+            if ($fieldConfig['additionalinfo']!='') {
+                  $result.=$fieldConfig['additionalinfo'];
+            }
+              return $result;
+        }
+
+
+
 	/**
 	 * Creates a list of array keys where the last character is removed from it
 	 * but only if the last character is a dot (.)

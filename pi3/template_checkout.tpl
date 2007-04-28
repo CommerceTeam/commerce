@@ -125,8 +125,8 @@ Step 3: finish
 	###BILLING_ADDRESS###
 	###DELIVERY_ADDRESS###
 	<div class="chkout_list_disclaimer">###LISTING_DISCLAIMER###</div>
-	<div class="chkout_list_terms"><span class="error">###ERROR_TERMS_ACCEPT###</span>###LISTING_TERMS_ACCEPT###</div>
-	<div class="chkout_list_comment">###LISTING_COMMENT###</div>
+	<div class="chkout_list_terms"><span class="error">###ERROR_TERMS_ACCEPT###</span>###LISTING_TERMS_ACCEPT_LABEL### ###LISTING_TERMS_ACCEPT_FIELD###</div>
+	<div class="chkout_list_comment">###LISTING_COMMENT_LABEL### ###LISTING_COMMENT_FIELD###</div>
 	<div class="chkout_list_form_submit">###LISTING_FORM_SUBMIT###</div>
 </div>
 <!--###LISTING### end-->
