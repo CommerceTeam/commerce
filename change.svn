@@ -2,6 +2,8 @@ Changelog for tx_commerce
 (add new changes on top of this file)
 
 27.04.2007 Volker Graubaum <vg@e-netconsulting.de>
+* Added new hooks for rendering own fields and new steps
+* Fixed Bug 5408
 * Add funktion for rendering checkbox fields in pi3 and pi4
 * change fields with label to 2 different marker
 
@@ -19,9 +21,6 @@ Changelog for tx_commerce
 * Added storage of last product to PI1 an pibase
 * Added ###BASKET_LASTPRODUCTURL### and ###LANG_LAST_PRODUCT### to Basket
 
-27.04.2007 Volker Graubaum <vg@e-netconsulting.de>
-* Added new hooks for rendering own fields and new steps
-* Fixed Bug 5408
 
 09.04.2007 Ingo Schmitt <is@marketing-factory.de>
 * Added method getParentProductuid to class.tx_commerce_articles
