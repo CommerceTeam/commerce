@@ -1,7 +1,7 @@
 Changelog for tx_commerce
 (add new changes on top of this file)
 
-27.04.2007 Volker Graubaum <vg@e-netconsulting.de>
+28.04.2007 Volker Graubaum <vg@e-netconsulting.de>
 * add new html file with hooklist
 
 28.04.2007 Ingo Schmitt <is@marketing-factory.de>
@@ -9,6 +9,10 @@ Changelog for tx_commerce
 * Patched security Problem in PI4. 
 * Added method getMunufacturerTitle to class.tx_comemrce_products
 * Add postProcessLinkArray to renderProducts
+!!! Update your installation!!!
+* Changed the complet PI6 for use complete templating. Thanks to Sudara <williams@web-crossing.com>
+* Fixed Bug 230
+
 
 27.04.2007 Volker Graubaum <vg@e-netconsulting.de>
 * Added new hooks for rendering own fields and new steps

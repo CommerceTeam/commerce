@@ -666,8 +666,32 @@ plugin.tx_commerce_pi4 {
 plugin.tx_commerce_pi6 {
 	templateFile = {$plugin.tx_commerce_pi6.templateFile}
 	currency = {$plugin.tx_commerce_lib.currency}
-}
 
+    # set this to 1 if you are going to print pdfs
+    # decode = 1
+    invoiceheader = IMAGE
+    invoiceheader.file = fileadmin/images/someimage.gif
+    invoiceheader.file.width = 680
+    shopname.value = Your Shop
+    shopdetails = COA
+    shopdetails{
+        1 = TEXT
+        1.value = 123 Main streetSomewhere, some country
+        2 = TEXT
+        2.value = tel: +123456789fax: +1234567890email: shop@yoursite.com
+    }
+    intro.value = Your order details are below:
+    intro.lang{
+        de = Sie haben sich für den(die) folgenden Artikel entschieden:
+    }
+    thankyou.value = Thank you for your order, and please visit us any time at http://yoursite.com [^]
+    thankyou.lang{
+        de = Vielen Dank für das Vertrauen, das Sie uns mit Ihrem Einkauf auf www.yoursite.com entge
+gengebraucht haben! 
+
+    }
+    
+}
 #
 # Comerce Menue
 #
