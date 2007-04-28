@@ -409,7 +409,7 @@ class tx_commerce_pi4 extends tslib_pibase {
 		$submitCode = '<input type="hidden" name="' .$this->prefixId .'[action]" value="' .$action .'" />';
 		$submitCode .= '<input type="hidden" name="' .$this->prefixId .'[addressid]" value="' .$addressUid .'" />';
 		$submitCode .= '<input type="hidden" name="' .$this->prefixId .'[addressType]" value="' .$addressData['tx_commerce_address_type_id'] .'" />';
-		$submitCode .= '<input type="submit" name="' .$this->prefixId .'[check]" value="' .$this->pi_getLL('label_submit_edit') .'" />';
+		$submitCode .= '<input type="submit" name="' .$this->prefixId .'[check]" value="' .$this->pi_getLL('label_submit_edit') .'"  class="submit" />';
 
 			
 		// create a checkbox where the user can select if the address ishis main address / Changed to label and field
@@ -779,7 +779,8 @@ class tx_commerce_pi4 extends tslib_pibase {
             	        }
 	    	    }
 
-            	    $GLOBALS['TYPO3_DB']->exec_UPDATEquery('tt_address', 'uid=' .intval($this->piVars['addressid']), $newData);
+            	    $sWhere = 'uid=' .intval($this->piVars['addressid'])." AND  tx_commerce_fe_user_id = ".$GLOBALS["TSFE"]->fe_user->user["uid"]."";
+            	    $GLOBALS['TYPO3_DB']->exec_UPDATEquery('tt_address', $sWhere, $newData);
 
 		    foreach($hookObjectsArr as $hookObj)    {
             	         if (method_exists($hookObj, 'afterAddressEdit'))   {

@@ -1233,6 +1233,13 @@ class tx_commerce_pibase extends tslib_pibase {
 		if (empty($articleMarker)) {
 			return $this->error('renderProduct',__LINE__,'No ArticleMarker defined in renderProduct ');
 		}
+		
+				$hookObjectsArr = array();
+			    if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['product'])) {
+			       	foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['product'] as $classRef) {
+	                         $hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+    		    	}
+	    	    }
 	#	if (is_object($myProduct)) {
 				$data = $myProduct->return_assoc_array();
 
@@ -1277,6 +1284,17 @@ class tx_commerce_pibase extends tslib_pibase {
 				if($this->basketHashValue){
 					$linkArray['basketHashValue'] = $this->basketHashValue;
 				}
+				if(is_numeric($this->piVars["manufacturer"])){
+     				$linkArray["manufacturer"] = $this->piVars["manufacturer"];
+    			}
+    			if(is_numeric($this->piVars["mDepth"])){
+     				$linkArray["mDepth"] = $this->piVars["mDepth"];
+   				}
+   				foreach($hookObjectsArr as $hookObj)   {
+				    if (method_exists($hookObj, 'postProcessLinkArray')) {
+		    	    	         $markerArray =  $hookObj->postProcessLinkArray($markerArray,$myProduct,$this);
+	    	        }
+		    	}
 				$wrapMarkerArray['###PRODUCT_LINK_DETAIL###'] = explode('|',$this->pi_list_linkSingle('|',$myProduct->getUid(),1,$linkArray,FALSE,$this->conf['overridePid']));
 				$articleTemplate=$this->cObj->getSubpart($template,'###'.strtoupper($articleSubpart).'###');
 				
@@ -1288,12 +1306,7 @@ class tx_commerce_pibase extends tslib_pibase {
 
 
 
-		    	$hookObjectsArr = array();
-			    if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['product'])) {
-			       	foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['product'] as $classRef) {
-	                         $hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
-    		    	}
-	    	    }
+		    	
     			foreach($hookObjectsArr as $hookObj)   {
 				    if (method_exists($hookObj, 'additionalMarkerProduct')) {
 		    	    	         $markerArray =  $hookObj->additionalMarkerProduct($markerArray,$myProduct,$this);

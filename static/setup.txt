@@ -684,6 +684,9 @@ lib.tx_commerce.navigation {
        	// PID fuer die Anzeige der Seite
        	overridePid = {$plugin.tx_commerce_lib.overridePid}
        	
+       	// List of categories, where to display the manufacturere in adition to the catgeories in the menue
+       	displayManuForCat <
+       	
       	// add parameter deepth an dpath to URL for a even faster rendering of the navigation
 		useRootlineInformationToUrl = {$plugin.tx_commerce_lib.useRootlineInformationToUrl}
        	// Menuebenen

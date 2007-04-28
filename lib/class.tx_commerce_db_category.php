@@ -277,6 +277,34 @@ class tx_commerce_db_category extends tx_commerce_db_alib {
  		return false;
  		
  	}
+ 	
+ 	/**
+ 	 * Returns the Manuafacturer Title to a given Manufacturere UID
+ 	 * @param	intenger	$ManufacturerUid
+ 	 * @return	string		Title
+ 	 * @author Luc Muller <l.mueller@ameos.com>
+ 	 */
+ 	
+ 	function getManufacturerTitle($ManufacturerUid) {
+ 		
+
+		$rSql = $GLOBALS["TYPO3_DB"]->exec_SELECTquery(
+				"*",
+				"tx_commerce_manufacturer",
+				"uid = ".$ManufacturerUid."",
+				"",
+				"",
+				""
+			);
+		
+		while(($aFiche = $db->sql_fetch_assoc($rSql)) !== FALSE) {
+			$sTitle = $aFiche["title"];
+		}
+
+		return $sTitle;	
+ 		
+ 	}
+ 	
 }
 
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']["ext/commerce/lib/class.tx_commerce_db_category.php"])	{

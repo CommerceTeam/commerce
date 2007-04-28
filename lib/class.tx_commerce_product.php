@@ -946,6 +946,17 @@
      	}
      	return false;
      }
+     /**
+      * Returns the manufacturere Title
+      * @return	string	Title of manufacturer
+      */
+     
+     function getManufacturerTitle() {
+     	if ($this->getManufacturerUid()) {
+     		return $this->conn_db->getManufacturerTitle($this->getManufacturerUid());
+     	}
+     	
+     }
      
      /**
       * Returns true if one Article of Product have more than 

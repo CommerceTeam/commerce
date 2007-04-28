@@ -109,3 +109,8 @@ Generates the Payment selector
 Hook to implement alternatuive Prefix IDs for Product-Listing
 ['makeArticleView']
 Adding aditional Markes to the array
+
+
+piBase
+['postProcessLinkArray']
+To change the link array

@@ -47,6 +47,7 @@ if(!class_exists('tx_graytree_db')) {
 }
 require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_browsetrees.php');
 require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_category.php');
+require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_product.php');
 require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_div.php');
 
 
@@ -70,6 +71,7 @@ class tx_commerce_navigation {
 	var $mDepth = 2;
 	var $entryCat = 0;
     var $listNodes=array();
+    var $manufacturerIdentifier=999999999999;
     /**
      * @var	integer	[0-1]	
      * @access private
@@ -167,9 +169,20 @@ class tx_commerce_navigation {
 		
 		$keys=array_keys($this->mTree);
 		
+		if($this->gpVars['catUid']){
+			$this->choosenCat = $this->gpVars['catUid'] ;
+		}elseif($this->gpVars['showUid']){
+			/**
+			 * If a product is shown, we have to detect the parent category as well
+			 * even if wo haven't walked thrue the categories
+			 */
+			$myProduct = t3lib_div::makeInstance('tx_commerce_products');
+        	$myProduct ->init($this->gpVars['showUid']);
+        	$myProduct ->load_data();
+			$this->choosenCat = $myProduct->get_parent_categorie();
+		}
 		
 		
-		$this->choosenCat = $this->gpVars['catUid'] ;
 		
 	    if ($this->gpVars['path']) {
         	$this->PATH = $this->gpVars['path'];
@@ -181,7 +194,10 @@ class tx_commerce_navigation {
         	$myCat = t3lib_div::makeInstance('tx_commerce_category');
         	$myCat ->init($this->choosenCat);
         	$myCat ->load_data();
-        	$tmpArray=$myCat->get_categorie_rootline_uidlist();
+        		//MODIF DE LUC >AMEOS : Get the right path with custom method
+			$aPath = $this->GetRootLine($this->mTree,$this->choosenCat,$this->mConf["expandAll"]);
+        	//$tmpArray=$myCat->get_categorie_rootline_uidlist();
+			$tmpArray = $aPath;
         	/**
         	 * Strip the Staring point and the value 0
         	 */
@@ -199,6 +215,9 @@ class tx_commerce_navigation {
             //debug($this->pathParents);
         	if (!$this->gpVars['mDepth']) {
         		$this->mDepth = count($this->pathParents);
+				if($this->gpVars['manufacturer']){
+					$this->mDepth++;
+				}
         	}
         	
         }else{
@@ -345,9 +364,17 @@ class tx_commerce_navigation {
 				 }else{				 
 				 		 $nodeArray['path']=$dataRow['uid'];
 				 }
+				 $aCatToManu = explode(",",$this->mConf['displayManuForCat']);
+					if(in_array($row['uid_local'],$aCatToManu) || strtolower(trim($aCatToManu["0"])) == "all"){
+						$nodeArray['--subLevel--'] = array();
+						$this->arrayMerge($nodeArray['--subLevel--'],$this->GetManuAsCat($dataRow['pid'],$uidPage,$mainTable, $tableMm,$tableSubMain,$tableSubMm,$row['uid_local'],$mDepth+1,$nodeArray['path'])); 
+					}		
 				 if (!$nodeArray['leaf'] ){
 								
-				 	$nodeArray['--subLevel--']= $this->makeArrayPostRender($uidPage,$mainTable, $tableMm,$tableSubMain,$tableSubMm,$row['uid_local'],$mDepth+1,$nodeArray['path']);
+				 	if(!is_array($nodeArray['--subLevel--'])){
+						$nodeArray['--subLevel--'] = array();
+					}
+				 	$this->arrayMerge($nodeArray['--subLevel--'],$this->makeArrayPostRender($uidPage,$mainTable, $tableMm,$tableSubMain,$tableSubMm,$row['uid_local'],$mDepth+1,$nodeArray['path']));
 				    
 				     
 				    if($nodeArray['hasSubChild']==1 && $this->mConf['showProducts']==1){
@@ -418,13 +445,17 @@ class tx_commerce_navigation {
 	 * @param	array	$uid_root: category Uid
 	 * @param	array	$mDepth:
 	 * @param	array	$path: 
+	 * @param	integer	$Manufacturere Uid
 	 * @return	array	TSConfig with ItemArrayProcFunc
 	 * 
 	 */
-	function makeSubChildArrayPostRender($uidPage,$mainTable, $tableMm,$uid_root,$mDepth=1,$path=0) {
+	function makeSubChildArrayPostRender($uidPage,$mainTable, $tableMm,$uid_root,$mDepth=1,$path=0,$manuuid=false) {
 		$treeList=array();
 		$addWhere=$tableMm.'uid_foreign='.$uid_root;
-		$sql = 'SELECT '.$tableMm.'.* FROM '.$tableMm.','.$mainTable.' WHERE '.$mainTable.'.deleted =0 and '.$mainTable.'.uid = '.$tableMm.'.uid_local and '.$tableMm.'.uid_local<>"" AND '.$tableMm.'.uid_foreign ='.$uid_root;
+		if(is_numeric($manuuid) && $flag != false){
+			$sql_manu = " AND ".$mainTable.".manufacturer_uid = ".$manuuid." ";
+		}
+		$sql = 'SELECT '.$tableMm.'.* FROM '.$tableMm.','.$mainTable.' WHERE '.$mainTable.'.deleted =0 and '.$mainTable.'.uid = '.$tableMm.'.uid_local and '.$tableMm.'.uid_local<>"" AND '.$tableMm.'.uid_foreign ='.$uid_root.' '.$sql_manu;
 		
 		$sorting = ' order by '.$mainTable.'.sorting ';
 		
@@ -477,13 +508,22 @@ class tx_commerce_navigation {
 				$pA = t3lib_div::cHashParams($nodeArray['_ADD_GETVARS'].$GLOBALS['TSFE']->linkVars);
 				$nodeArray['_ADD_GETVARS'] .= ini_get('arg_separator.output') .'cHash='.t3lib_div::shortMD5(serialize($pA));
 				$nodeArray['ITEM_STATE'] = 'NO';
+				if($this->gpVars['manufacturer']){
+					$nodeArray['_ADD_GETVARS'] .="&".$this->prefixId.'[manufacturer]='.$this->gpVars['manufacturer'];
+				}
 				$treeList[$row['uid_local']]=$nodeArray; 
 			}
 		}
 		return $treeList;
 	}
 	function processArrayPostRender(&$treeArray,$path=array(),$mDepth){
-		
+		if($this->gpVars['manufacturer']){
+			foreach($treeArray as $key=>$val){
+				if($val["parent_id"] == $this->choosenCat && $val["manu"] == $this->gpVars['manufacturer']){
+					$path=explode(",",$val["path"]);
+				}
+			}
+		}
 		if ($mDepth!=0){
 			if ($mDepth==1){
 				
@@ -746,12 +786,173 @@ class tx_commerce_navigation {
 			return $row['content'];
 		}
 	}
-   function arrayMerge(&$arr1,&$arr2){
-   	foreach ($arr2 as $key=>$value){
-   		$arr1[$key]=$value;
-   	}
-   }
 	
+   /**
+    * Merges the Array elementes of the second element into the first element
+    * @param 	array 		$arr1
+    * @param	array		$arr2
+    */	
+
+   function arrayMerge(&$arr1,&$arr2){
+   	if(is_array($arr2)){
+   		foreach ($arr2 as $key=>$value){
+   			$arr1[$key]=$value;
+   		}
+	}
+   }
+   
+   /**
+    * Generates the Rootline of a category to have the right parent elements 
+    * if a category has more than one parentes
+    * @param	array	$tree	Menuetree
+    * @param	integer	$choosencat	The actual category
+    * @param	integer	$expand	If the menue has to be expanded
+    * @return	array	Rootline as Array
+    * @since 28.04.2007
+    * @author luc muller <l.muller@ameos.com>
+    */
+   	
+   function GetRootLine($tree,$choosencat,$expand) {
+		foreach($tree as $key=>$val){
+			if($key == $choosencat){
+				if($val["leaf"] != 1){
+					$path = $val["path"];
+					$aPath = explode(',',$path);
+					$aPath = array_reverse($aPath);
+					return $aPath;
+				}elseif($val["tableSubMain"]){
+					$path = $val["path"];
+					$aPath = explode(',',$path);
+					$aPath = array_reverse($aPath);
+					return $aPath;
+				}
+			}else{
+				if(is_array($val)){
+					if(!$val["subChildTable"]){
+						return FALSE;
+					}
+					if($val["--subLevel--"]){
+						$path = $this->GetRootLine($val["--subLevel--"],$choosencat,$expand);
+						if($path){
+							if(is_array($path)){
+								$aPath = $path;	
+							}else{
+								$aPath = explode(',',$path);
+								$aPath = array_reverse($aPath);	
+							}
+							return $aPath;
+						}
+					}
+				}
+			}
+		}
+
+	}
+	
+	/**
+	 * Adds the manuafacturer To the categoiry, as simulated category
+	 * @author	Luc Muller <l.mueller@ameos.com>
+	 * @param	integer	$pid	Page PID for the level
+	 * @param	integer	$uidPage	UidPage for the level
+	 * @param	string	$mainTable	Main Database Table
+	 * @param	string	$tableMm	RelationChip Table
+	 * @param	string	$tableSUbMain	Sub Table below the original table
+	 * @param	string	$tableSubMm	Sub Table Relationship
+	 * @param	integer	$iIdCat	Category ID
+	 * @param	integer	$mDepth Menue Deepth
+	 * @param	string	$path	Path for fast resolving
+	 * @see MakeArrayPostRender
+	 */
+	
+	function GetManuAsCat($pid,$uidPage,$mainTable, $tableMm,$tableSubMain,$tableSubMm,$iIdCat,$mDepth,$path) {
+		
+		$db = $GLOBALS["TYPO3_DB"];
+
+		$rSql = $db->exec_SELECTquery(
+				"*",
+				"tx_commerce_products_categories_mm",
+				"uid_foreign = ".$iIdCat."",
+				"",
+				"",
+				""
+			);
+
+		$aIdProducts = array();
+		while(($aFiche = $db->sql_fetch_assoc($rSql)) !== FALSE) {
+			$aIdProducts[] = $aFiche["uid_local"];
+		}
+
+
+		if(!$aIdProducts){
+			return false;
+		}
+
+		$sIdProducts = implode(",",$aIdProducts);
+
+		$rSql = $db->exec_SELECTquery(
+				"uid,manufacturer_uid",
+				"tx_commerce_products",
+				"uid IN (".$sIdProducts.") AND deleted = 0 and hidden = 0",
+				"",
+				"",
+				""
+			);
+		$aOutPut = array();
+		$firstPath = $path;
+		while(($aFiche = $db->sql_fetch_assoc($rSql)) !== FALSE) {
+
+			if($aFiche["manufacturer_uid"] != "0"){
+				
+				/**
+				 * @TODO not a realy good solution
+				 */
+				$path = $this->manufacturerIdentifier.$aFiche["manufacturer_uid"].",".$firstPath;
+				
+				$myProduct = t3lib_div::makeInstance('tx_commerce_products');
+        		$myProduct ->init($aFiche['uid']);
+        		$myProduct ->load_data();
+				$sManuTitle = $myProduct->getManufacturerTitle();
+				$addGet = "&".$this->prefixId."[catUid]=".$iIdCat."&".$this->prefixId."[manufacturer]=".$aFiche["manufacturer_uid"]."";
+				$pA = t3lib_div::cHashParams($addGet.$GLOBALS['TSFE']->linkVars);
+				$addGet .= ini_get('arg_separator.output') .'cHash='.t3lib_div::shortMD5(serialize($pA));
+				$aLevel = array(
+					"pid" => $pid,
+					"uid" => $uidPage,
+					"title" => $sManuTitle,
+					"parent_id" => $iIdCat,
+					"nav_title" => $sManuTitle,
+					"hidden" => "0",
+					"depth" => $mDepth,
+					"leaf" => $this->isLeaf($iIdCat,$tableMm,$tableSubMm),
+					"hasSubChild" => $this->hasSubChild($iIdCat,$tableSubMm),
+					"subChildTable" => $tableSubMm,
+					"tableSubMain" => $tableSubMain,
+					"path" => $path,
+					"_ADD_GETVARS" => $addGet,
+					"ITEM_STATE" => "NO",
+					"manu" =>$aFiche["manufacturer_uid"],
+				);
+
+			if($this->gpVars['manufacturer']){
+				$this->choosencat = $this->manufacturerIdentifier.$this->gpVars['manufacturer'];
+			}
+
+			if($aLevel['hasSubChild']==1 && $this->mConf['showProducts']==1){
+				$aLevel['--subLevel--'] = 
+					$this->makeSubChildArrayPostRender($uidPage,$tableSubMain,$tableSubMm,$iIdCat,$mDepth+1,$path,"manu",$aFiche["manufacturer_uid"]);
+			}
+
+			if($this->expandAll){
+				$aLevel["_SUB_MENU"] = $aLevel['--subLevel--'];
+			}
+
+			$aOutPut[$this->manufacturerIdentifier.$aFiche["manufacturer_uid"]] = $aLevel;
+			}
+		}
+		
+		return $aOutPut;
+
+	}
 }
 
 
