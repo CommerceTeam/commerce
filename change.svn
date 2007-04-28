@@ -1,6 +1,9 @@
 Changelog for tx_commerce
 (add new changes on top of this file)
 
+27.04.2007 Volker Graubaum <vg@e-netconsulting.de>
+* add new html file with hooklist
+
 28.04.2007 Ingo Schmitt <is@marketing-factory.de>
 * Patched Bug concerning Navigation (thanks to L.Muller <l.muller@ameos.com>
 * Patched security Problem in PI4. 
