@@ -456,11 +456,11 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 		
 		if (
 			$paymentObj->needAdditionalData($this) && (
-				(isset($this->MYSESSION['payment']) && !$paymentObj->proofData($this->MYSESSION['payment'],&$this)) ||
-				(!isset($this->MYSESSION['payment'])|| $paymentObj->getLastError(1,$this))
+				(isset($this->MYSESSION['payment']) && !$paymentObj->proofData($this->MYSESSION['payment'], &$this)) ||
+				(!isset($this->MYSESSION['payment']) || $paymentObj->getLastError(1, $this))
 				)
-			) {
-				$this->formError = $paymentObj->formError;
+			)	{
+			
 				// merge local lang array
 			if (is_array($this->LOCAL_LANG) && isset($paymentObj->LOCAL_LANG))	{
 				foreach ($this->LOCAL_LANG as $llKey => $llData)	{
@@ -468,7 +468,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 					$this->LOCAL_LANG[$llKey] = $newLLData;
 				}
 			}
-
+		
 			$this->formError = $paymentObj->formError;
 			// show the payment form if it's needed, otherwise go to next step
 			$paymentForm = '<form name="paymentForm" action="'.$this->pi_getPageLink($GLOBALS['TSFE']->id).'" method="post">';
@@ -646,7 +646,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 			// merge local lang array
 		if (is_array($this->LOCAL_LANG) && isset($paymentObj->LOCAL_LANG))	{
 			foreach ($this->LOCAL_LANG as $llKey => $llData)	{
-				$newLLData = array_merge($llData, $paymentObj->LOCAL_LANG[$llKey]);
+				$newLLData = array_merge($llData, (array)$paymentObj->LOCAL_LANG[$llKey]);
 				$this->LOCAL_LANG[$llKey] = $newLLData;
 			}
 		}
@@ -793,6 +793,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 		 */
 		$this->sendUserMail($orderId,$orderData);
 		$this->sendAdminMail($orderId,$orderData);
+		
 		foreach($hookObjectsArr as $hookObj) {
     		if (method_exists($hookObj, 'afterMailSend')) {
         			$markerArray=$hookObj->afterMailSend($orderData,$this);
@@ -851,13 +852,14 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 
 		foreach($hookObjectsArr as $hookObj)	{
 			if (method_exists($hookObj, 'postFinish'))	{
-					$hookObj->postFinish($basket,$this);
-				}
+				$hookObj->postFinish($basket,$this);
+			}
 		}
 
 
 		// at last remove some things from the session
 		// change from mySession true real session key
+		
 		$GLOBALS['TSFE']->fe_user->setKey('ses', 'payment', NULL);		
 		$GLOBALS['TSFE']->fe_user->setKey('ses', 'delivery', NULL);		
 		$GLOBALS['TSFE']->fe_user->setKey('ses', 'billing', NULL);		
@@ -1477,7 +1479,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 
 				foreach($hookObjectsArr as $hookObj)	{
 					if (method_exists($hookObj, 'PostGenerateMail'))	{
-						$hookObj->PostGenerateMail($UserMailObj,$this,$GLOBALS['TSFE']->fe_user->tx_commerce_basket,$mailcontent,$this);
+						$hookObj->PostGenerateMail($UserMailObj,$this,$GLOBALS['TSFE']->fe_user->tx_commerce_basket,$mailcontent);
 					}
 				}
 
@@ -1571,6 +1573,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 			$AdminMailObj->templateCode=$this->cObj->fileResource($this->conf['adminmail.']['templateFile']);
 			$AdminMailObj->generateLanguageMarker();
 			$AdminMailObj->userData = $this->userData;
+			
 			foreach($hookObjectsArr as $hookObj)	{
 				if (method_exists($hookObj, 'preGenerateMail'))	{
 					$hookObj->preGenerateMail($AdminMailObj,$this);
@@ -1578,6 +1581,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 			}
 						
 			$mailcontent=$AdminMailObj->generateMail($orderUid, $orderData);
+			
 			foreach($hookObjectsArr as $hookObj)	{
 			    if (method_exists($hookObj, 'PostGenerateMail'))	{
 			    	$hookObj->PostGenerateMail($AdminMailObj,$this,$GLOBALS['TSFE']->fe_user->tx_commerce_basket,$mailcontent,$this);
@@ -1705,7 +1709,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 		}
 
 		$content = $this->cObj->substituteSubpart($content,'###BILLING_ADDRESS###',$billingAdress);
-
+		
 		/**
 		 * Hook for processing Marker Array
 		 * Inspired by tt_news

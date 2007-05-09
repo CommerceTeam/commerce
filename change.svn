@@ -1,6 +1,12 @@
 Changelog for tx_commerce
 (add new changes on top of this file)
 
+09.05.2007 Thomas Hempel <thomas@work.de>
+* Fixed bug concerning double $this in Hook call (0005577)
+* Fixed bug in pi3 concerning merge of non array objects (may be raised in combination with external payments) 
+* Did some code cleanup
+* Fixed a typo3 in belib
+
 28.04.2007 Volker Graubaum <vg@e-netconsulting.de>
 * add new html file with hooklist
 
@@ -25,7 +31,7 @@ Changelog for tx_commerce
 * Change Module Configuration and instantiation of classes to new TYPO3 style
 * Changed definition of payment types and delivery types in ext_localconf (fixed BUG 5027)
 * Fixed Bug 5402, Thanks to Batomo
-* Fixed Bug 5380, Thanks to heiko özaykut
+* Fixed Bug 5380, Thanks to heiko ï¿½zaykut
 * Fixed Bug 3573, Thanks to Batomo
 * Added methods to rebuild flexform XML for the recordsets. Thanks to Ricardo Mieres <ricardo.mieres@502.cl>
 * Beatified Sourcecode
@@ -161,7 +167,7 @@ Ingo Schmitt <is@marketing-factory.de>
     Added pi3 / currency to setup   
     
  ------------------------------------------------------------------------
-r61 | ingo | 2006-03-02 11:01:54 +0100 (Do, 02 Mär 2006) | 16 lines
+r61 | ingo | 2006-03-02 11:01:54 +0100 (Do, 02 Mï¿½r 2006) | 16 lines
 
 General cleanup for getting rid of install warnings in the EM
 * class.tx_commerce_feuserauth.php 
@@ -180,15 +186,15 @@ General cleanup for getting rid of install warnings in the EM
 * ext/commerce/payment/class.tx_commerce_payment_paypal.php
   Corrected XCLASS include statement
 ------------------------------------------------------------------------
-r60 | ingo | 2006-03-02 09:52:27 +0100 (Do, 02 Mär 2006) | 1 line
+r60 | ingo | 2006-03-02 09:52:27 +0100 (Do, 02 Mï¿½r 2006) | 1 line
 
 Fixed some typos
 ------------------------------------------------------------------------
-r59 | ingo | 2006-03-02 09:49:01 +0100 (Do, 02 Mär 2006) | 1 line
+r59 | ingo | 2006-03-02 09:49:01 +0100 (Do, 02 Mï¿½r 2006) | 1 line
 
 Updated Coding Guidlines
 ------------------------------------------------------------------------
-r58 | ingo | 2006-03-02 09:30:51 +0100 (Do, 02 Mär 2006) | 1 line
+r58 | ingo | 2006-03-02 09:30:51 +0100 (Do, 02 Mï¿½r 2006) | 1 line
 
 Updated Projectdescription
 ------------------------------------------------------------------------

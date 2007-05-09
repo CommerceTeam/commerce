@@ -708,11 +708,10 @@ class tx_commerce_belib {
 					foreach ($relation as $key => $data)	{
 						$dataArray[$key] = $data;
 						$where .= ' AND ' .$key .'=\'' .$data .'\'';
-					}
-				}
+					}				}
 				if ($withReference && ($counter > 1))	{
 					$dataArray['is_reference'] = 1;
-					$where .= ' AND is_recerence=1';
+					$where .= ' AND is_reference=1';
 				}
 
 				$dataArray['sorting'] = $counter;
