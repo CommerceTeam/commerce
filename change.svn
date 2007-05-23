@@ -1,6 +1,9 @@
 Changelog for tx_commerce
 (add new changes on top of this file)
 
+23.05.2007 Franz Holzinger <kontakt@fholzinger.com>
+* fix bug 117 (typo3-commerce.org): no products shown any more in field categories tree
+
 09.05.2007 Thomas Hempel <thomas@work.de>
 * Fixed bug concerning double $this in Hook call (0005577)
 * Fixed bug in pi3 concerning merge of non array objects (may be raised in combination with external payments) 

@@ -61,11 +61,19 @@ class tx_commerce_tceFunc_categoryTree extends tx_graytree_browseTree {
 	 * @param 	table name for following data
 	 * @param	startRow		the row where the tree has been started in TCE
 	 * @param	limitCatArray	Array of categories from which no subcategories shall be shown
+	 * @param 	leafInfoArray   Array of leaves to be shown in the TCE field tree
+				example how to display products:
+				'leafInfoArray' => Array (
+					Array (
+						'data' => 'tx_commerce_leafProductData',
+						'view' => 'tx_commerce_leafProductView'
+					)
+				),
 	 * @return	void
 	 */
 	function init($table='', $startRow=array(), $limitCatArray=array(), $leafInfoArray=array())	{
 		global $LANG, $BACK_PATH;
-		
+
 		$this->treeInfoArray = array ('data' => 'tx_graytree_db', 'view' => 'tx_commerce_treeView');
 		
 		$tempArray = array ('data' => 'tx_commerce_leafCategoryData', 'view' => 'tx_commerce_tceCategoryView');

@@ -239,10 +239,6 @@ $TCA['tx_commerce_products'] = Array (
 				'treeView' => 1,
 				'treeClass' => 'tx_commerce_tceFunc_categoryTree',
 				'leafInfoArray' => Array (
-					Array (
-						'data' => 'tx_commerce_leafProductData',
-						'view' => 'tx_commerce_leafProductView'
-					)
 				),
 				'size' => 7,
 				'autoSizeMax' => 10,
