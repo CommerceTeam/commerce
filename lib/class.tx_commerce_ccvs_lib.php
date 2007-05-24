@@ -53,7 +53,7 @@
  * @package    CreditCardValidationSolution
  * @author     Daniel Convissor <danielc@AnalysisAndSolutions.com>
  * @copyright  The Analysis and Solutions Company, 2002-2003
- * @version    $Name:  $ $Id: class.tx_commerce_ccvs_lib.php 483 2007-01-09 17:42:40Z ingo $
+ * @version    $Name:  $ $Id$
  * @link       http://www.ccvs.info/
  */
 
@@ -76,7 +76,7 @@
  * @link       http://www.AnalysisAndSolutions.com/donate/
  * @license    http://www.AnalysisAndSolutions.com/software/license.htm Simple Public License
  * 
- * $Id: class.tx_commerce_ccvs_lib.php 483 2007-01-09 17:42:40Z ingo $
+ * $Id$
  */
 class CreditCardValidationSolution {
 

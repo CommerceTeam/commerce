@@ -30,7 +30,7 @@
  * @package TYPO3
  * @subpackage tx_commerce
  * 
- * $Id: class.tx_commerce_treecategory.php 575 2007-03-19 20:29:59Z franz $
+ * $Id$
  */
 
 

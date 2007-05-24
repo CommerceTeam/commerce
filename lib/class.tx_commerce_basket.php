@@ -40,7 +40,7 @@
  * @see tx_commerce_basic_basket
  * Basic class for basket_handeling inhertited from tx_commerce_basic_basket
  * 
- * $Id: class.tx_commerce_basket.php 509 2007-01-21 18:34:21Z ingo $
+ * $Id$
  **/
  require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_basic_basket.php');
  

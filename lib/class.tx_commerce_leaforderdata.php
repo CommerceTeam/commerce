@@ -29,7 +29,7 @@
  * @package TYPO3
  * @subpackage tx_commerce
  * 
- * $Id: class.tx_commerce_leaforderdata.php 308 2006-07-26 22:23:51Z ingo $
+ * $Id$
  */
 
 

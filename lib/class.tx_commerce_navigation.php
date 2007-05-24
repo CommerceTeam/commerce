@@ -32,7 +32,7 @@
  * @coauthor Ricardo Mieres	<ricardo.mieres@502.cl>
  * @TODO: Clean Up code, documentation
  * 
- * $Id: class.tx_commerce_navigation.php 553 2007-02-05 20:05:09Z ingo $
+ * $Id$
  */
 
 /**

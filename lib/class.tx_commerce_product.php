@@ -41,7 +41,7 @@
  * 
  *  Basic class for handling products
  * 
- * $Id: class.tx_commerce_product.php 576 2007-03-22 22:38:22Z ingo $
+ * $Id$
  */
  /**
   * @todo

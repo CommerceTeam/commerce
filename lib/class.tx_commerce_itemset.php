@@ -39,7 +39,7 @@
  * @subpackage tx_commerce
  * @subpackage tx_commerce_item 
  *
- * $Id: class.tx_commerce_itemset.php 147 2006-04-04 10:43:22Z thomas $
+ * $Id$
  *  */
 
  

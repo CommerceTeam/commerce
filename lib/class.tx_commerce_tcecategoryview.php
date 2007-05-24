@@ -31,10 +31,11 @@
  * @package TYPO3
  * @subpackage tx_commerce
  * 
- * $Id: class.tx_commerce_tcecategoryview.php 510 2007-01-21 18:43:08Z ingo $
+ * $Id$
  */
 
 
+require_once(t3lib_extmgm::extPath('graytree').'lib/class.tx_graytree_div.php');
 
 require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_treecategory.php');
 require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_leafcategoryview.php');
@@ -57,27 +58,13 @@ class tx_commerce_tceCategoryView extends tx_commerce_leafCategoryView {
 			if (in_array($row['uid'],$this->tree->TCEforms_nonSelectableItemsArray)) {
 				return '<span style="color:grey">'.$title.'</span>';
 			} else {
-				$aOnClick = 'setFormValueFromBrowseWin(\''.$this->tree->TCEforms_itemFormElName.'\','.$row['uid'].',\''.$this->slashJS($title).'\'); return false;';
+				$aOnClick = 'setFormValueFromBrowseWin(\''.$this->tree->TCEforms_itemFormElName.'\','.$row['uid'].',\''.tx_graytree_div::slashJS($title).'\'); return false;';
 				return '<a href="#" onclick="'.htmlspecialchars($aOnClick).'">'.$title.'</a>';
 			}
 		} else {
 			return $title;
 		}
 	}
-
-    /**
-     * This function is used to escape any ' -characters when transferring text to JavaScript!
-     * Function copied from DAM 1.0.7, lib/class.tx_dam_selprocbase.php
-     *
-     * @param   string      String to escape
-     * @param   boolean     If set, also backslashes are escaped.
-     * @param   string      The character to escape, default is ' (single-quote)
-     * @return  string      Processed input string
-     */
-    function slashJS($string,$extended=0,$char="'") {
-        if ($extended)  {$string = str_replace ("\\", "\\\\", $string);}
-        return str_replace ($char, "\\".$char, $string);
-    }
 
 }
 

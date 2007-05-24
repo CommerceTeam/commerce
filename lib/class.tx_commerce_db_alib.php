@@ -32,7 +32,7 @@
  * @subpackage tx_commerce
  * @subpackage tx_commerce_db_alib
  * 
- * $Id: class.tx_commerce_db_alib.php 444 2006-12-04 14:12:18Z ingo $
+ * $Id$
  */
  /**
   * @todo change from pascal to php style {}

@@ -29,7 +29,7 @@
  * @package TYPO3
  * @subpackage tx_commerce
  * 
- * $Id: class.tx_commerce_treeview.php 575 2007-03-19 20:29:59Z franz $
+ * $Id$
  */
 
 require_once(t3lib_extmgm::extPath('graytree').'lib/class.tx_graytree_view.php');
@@ -62,16 +62,15 @@ class tx_commerce_treeView extends tx_graytree_View {
 	function init(&$graytree_db, $leafInfoArray, $table, $startRow, $limitCatArray)	{
 		parent::init($graytree_db, $leafInfoArray, $table, $startRow, $limitCatArray);
 
-     	/**
-      	 * Initialize The Folders
-      	 */
-      	require_once (t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_create_folder.php');
-        tx_commerce_create_folder::init_folders();
-        list($modPid,$defaultFolder,$folderList) = tx_graytree_folder_db::initFolders('Commerce', 'commerce');
-        list($prodPid,$defaultFolder,$folderList) = tx_graytree_folder_db::initFolders('Products', 'commerce',$modPid);
-	    $this->rootPid = $prodPid;
+		/**
+		* Initialize The Folders
+		*/
+		require_once (t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_create_folder.php');
+		tx_commerce_create_folder::init_folders();
+		list($modPid,$defaultFolder,$folderList) = tx_graytree_folder_db::initFolders('Commerce', 'commerce');
+		list($prodPid,$defaultFolder,$folderList) = tx_graytree_folder_db::initFolders('Products', 'commerce',$modPid);
+		$this->rootPid = $prodPid;
 	}
-
 
 
 }

@@ -29,7 +29,7 @@
  * @package TYPO3
  * @subpackage tx_commerce
  * 
- * $Id: class.tx_commerce_leafcategoryview.php 575 2007-03-19 20:29:59Z franz $
+ * $Id$
  */
 
 
@@ -75,7 +75,7 @@ class tx_commerce_leafCategoryView extends tx_commerce_browseLeafView {
 
 		if(is_object($LANG))	{
 			$this->title = $LANG->sL('LLL:EXT:commerce/locallang_be.php:category',1);
-		}			
+		}
 		$this->leafName = 'txcommerceCategory';
 		$this->domIdPrefix = $this->leafName;
 		$this->ext_IconMode = true; // no context menu on icons

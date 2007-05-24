@@ -28,7 +28,7 @@
  * @author	Franz Ripfel <fr@abezet.de>
  * @author  Ingo Schmitt <is@markeing-factory.de>
  * 
- * $Id: class.tx_commerce_pibase.php 580 2007-03-28 12:21:04Z ingo $
+ * $Id$
  */
 
 require_once(PATH_tslib.'class.tslib_pibase.php');

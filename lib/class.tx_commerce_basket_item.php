@@ -36,7 +36,7 @@
  * @todo change  {} from pascal to php doc style :-)
  * @todo implementation of language
  * 
- * $Id: class.tx_commerce_basket_item.php 532 2007-02-01 14:19:15Z ingo $
+ * $Id$
  **/
 
 

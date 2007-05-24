@@ -34,7 +34,7 @@
  *
  * @maintainer	Thomas Hempel <thomas@work.de>
  *
- * $Id: class.tx_commerce_belib.php 544 2007-02-05 17:12:50Z ingo $
+ * $Id$
  */
 class tx_commerce_belib {
 	/** PRODUCTS **/

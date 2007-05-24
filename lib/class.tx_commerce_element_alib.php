@@ -33,7 +33,7 @@
  * @subpackage tx_commerce
  * @subpackage tx_commerce_element_alib
  * 
- * $Id: class.tx_commerce_element_alib.php 571 2007-03-12 13:42:05Z volker $
+ * $Id$
  */
  /**
   * @todo always instatiate comm_db

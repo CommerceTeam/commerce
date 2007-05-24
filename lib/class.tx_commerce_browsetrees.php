@@ -31,7 +31,7 @@
  * @package TYPO3
  * @subpackage tx_commerce
  * 
- * $Id: class.tx_commerce_browsetrees.php 324 2006-08-03 16:59:54Z franz $
+ * $Id$
  */
 
 require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_treecategory.php');

@@ -58,7 +58,7 @@
  * @package TYPO3
  * @subpackage tx_commerce
  * 
- * $Id: class.tx_commerce_article.php 576 2007-03-22 22:38:22Z ingo $
+ * $Id$
  */
  
  require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_db_article.php');

@@ -29,7 +29,7 @@
  * @package TYPO3
  * @subpackage tx_commerce
  * 
- * $Id: class.tx_commerce_tcefunc_categorytree.php 411 2006-11-09 15:31:47Z thomas $
+ * $Id$
  */
 
 //require_once(t3lib_extmgm::extPath('commerce')'lib/class.tx_commerce_db.php');

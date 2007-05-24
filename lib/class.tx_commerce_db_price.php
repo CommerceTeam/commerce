@@ -35,7 +35,7 @@
  * @see tx_comerce_article
  * @see tx_commerce_db_price
  * 
- * $Id: class.tx_commerce_db_price.php 444 2006-12-04 14:12:18Z ingo $
+ * $Id$
  */
  /**
   * @todo

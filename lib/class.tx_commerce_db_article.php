@@ -37,7 +37,7 @@
  * @see tx_comerce_article
  * @see tx_commerce_db_alib
  * 
- * $Id: class.tx_commerce_db_article.php 498 2007-01-15 14:47:03Z ingo $
+ * $Id$
  */
  /**
   * @todo

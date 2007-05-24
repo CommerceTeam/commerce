@@ -38,7 +38,7 @@
  * @see tx_commerce_element_alib
  * @see tx_commerce_db_price
  *
- * $Id: class.tx_commerce_article_price.php 474 2007-01-05 09:26:25Z volker $
+ * $Id$
  */
 
   

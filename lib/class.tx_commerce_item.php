@@ -37,7 +37,7 @@
  * @package TYPO3
  * @subpackage tx_commerce
  *
- * $Id: class.tx_commerce_item.php 147 2006-04-04 10:43:22Z thomas $ 
+ * $Id$ 
  **/
 
  

@@ -35,7 +35,7 @@
  * @author  ingo Schmitt <is@marketing-factory.de>
  * @author  Jörg Sprung <jsp@marketing-factory.de>
  * 
- * $Id: class.tx_commerce_order_localrecordlist.php 550 2007-02-05 18:52:38Z ingo $
+ * $Id$
  */
 
  /**

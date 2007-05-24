@@ -29,7 +29,7 @@
  * @package TYPO3
  * @subpackage tx_commerce
  * 
- * $Id: class.tx_commerce_leafproductview.php 569 2007-03-05 17:02:07Z franz $
+ * $Id$
  */
 
 //

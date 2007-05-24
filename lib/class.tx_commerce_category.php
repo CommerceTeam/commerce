@@ -40,7 +40,7 @@
  * 
  * Basic class for handeling categories
  * 
- * $Id: class.tx_commerce_category.php 452 2006-12-11 19:36:35Z ingo $
+ * $Id$
  */
  
  require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_db_category.php');

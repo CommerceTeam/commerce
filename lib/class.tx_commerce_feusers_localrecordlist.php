@@ -32,7 +32,7 @@
  * @author	Kasper Skaarhoj <kasperYYYY@typo3.com>
  * @author  	Volker Graubau  <vg_typo3@e-netconsulting.de>
  * 
- * $Id: class.tx_commerce_feusers_localrecordlist.php 147 2006-04-04 10:43:22Z thomas $
+ * $Id$
  */
  /**
   * @TODO Check Xclass inclusion in inhertation

@@ -29,7 +29,7 @@
  * @package TYPO3
  * @subpackage tx_commerce
  * 
- * $Id: class.tx_commerce_leafproductdata.php 147 2006-04-04 10:43:22Z thomas $
+ * $Id$
  */
 
 require_once(PATH_txgraytree.'lib/class.tx_graytree_leafdata.php');

@@ -35,7 +35,7 @@
  * @see tx_comerce_product
  * @see tx_commerce_db_alib 
  * 
- * $Id: class.tx_commerce_db_attribute_value.php 308 2006-07-26 22:23:51Z ingo $
+ * $Id$
  */
  /**
   * @todo

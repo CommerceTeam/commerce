@@ -31,7 +31,7 @@
  * @package TYPO3
  * @subpackage tx_commerce
  * 
- * $Id: class.tx_commerce_browseleafview.php 575 2007-03-19 20:29:59Z franz $
+ * $Id$
  */
 
 require_once(t3lib_extmgm::extPath('graytree').'lib/class.tx_graytree_leafview.php');
