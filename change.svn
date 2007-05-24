@@ -1,6 +1,9 @@
 Changelog for tx_commerce
 (add new changes on top of this file)
 
+24.05.2007 Franz Holzinger <kontakt@fholzinger.com>
+* fix bug 231 (typo3-commerce.org): move function slashJS from DAM into class.tx_graytree_div.php to have it ready for all JavaScript cases
+
 23.05.2007 Franz Holzinger <kontakt@fholzinger.com>
 * fix bug 117 (typo3-commerce.org): no products shown any more in field categories tree
 
