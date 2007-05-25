@@ -56,47 +56,48 @@
  * @subpackage tx_commerce_db_category
  */
 
+define('COMMERCE_CLICKMENU_DLOG', '0'); // +++ Switch for debugging error messages
+
 require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_db_alib.php');
- 
+
 class tx_commerce_db_category extends tx_commerce_db_alib {
 
- 	
- 	/**
- 	 * @var Database table concerning the data
- 	 * @access private
- 	 */
- 	var $database_table= 'tx_commerce_categories';	
- 	var $mm_database_table='tx_commerce_categories_parent_category_mm';
- 	var $database_attribute_rel_table='tx_commerce_categories_attributes_mm';
- 	var $CategoryOrderField ='tx_commerce_categories.sorting';
- 	var $ProductOrderField ='tx_commerce_products.sorting';
- 	/**
- 	 * Gets the "master" category from this category
- 	 * @param uid = Product UID
- 	 * @return integer Categorie UID
- 	 * 
- 	 */
- 	
- 	function get_parent_category($uid) 	{
- 		
- 		if (is_int($uid) && ($uid > 0)){
-	 		$this->uid=$uid;
-	 		if ($result=$GLOBALS['TYPO3_DB']->exec_SELECTquery('uid_foreign', $this->mm_database_table,"uid_local = $uid and is_reference=0")) 		{
-	 			if ($return_data=$GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) 			{
-	 				
-	 				$GLOBALS['TYPO3_DB']->sql_free_result($result);
-	 				return $return_data['uid_foreign'];
-	 			}
-	 			
-	 			
-	 			
-	 		}
- 		}
- 					
+
+	/**
+	 * @var Database table concerning the data
+	 * @access private
+	 */
+	var $database_table = 'tx_commerce_categories';	
+	var $mm_database_table ='tx_commerce_categories_parent_category_mm';
+	var $database_attribute_rel_table = 'tx_commerce_categories_attributes_mm';
+	var $CategoryOrderField ='tx_commerce_categories.sorting';
+	var $ProductOrderField ='tx_commerce_products.sorting';
+	/**
+	 * Gets the "master" category from this category
+	 * @param uid = Category UID
+	 * @return integer Category UID
+	 * 
+	 */
+
+	function get_parent_category($uid) 	{
+		if (TYPO3_DLOG && COMMERCE_CLICKMENU_DLOG) t3lib_div::devLog('tx_commerce_db_category::get_parent_category  $uid = '.$uid, COMMERCE_EXTkey);
+
+		if (t3lib_div::testInt($uid) && ($uid > 0)){
+			$this->uid=$uid;
+			if (TYPO3_DLOG && COMMERCE_CLICKMENU_DLOG) t3lib_div::devLog('SELECT uid_foreign FROM '.$this->mm_database_table.' WHERE uid_local = '.$uid.' AND is_reference=0' , COMMERCE_EXTkey);
+			if ($result=$GLOBALS['TYPO3_DB']->exec_SELECTquery('uid_foreign', $this->mm_database_table,"uid_local = $uid and is_reference=0")) 	{
+				if ($return_data=$GLOBALS['TYPO3_DB']->sql_fetch_assoc($result))	{
+					$GLOBALS['TYPO3_DB']->sql_free_result($result);
+					if (TYPO3_DLOG && COMMERCE_CLICKMENU_DLOG) t3lib_div::devLog('tx_commerce_db_category::get_parent_category return '.$return_data['uid_foreign'], COMMERCE_EXTkey);
+					return $return_data['uid_foreign'];
+				}
+			}
+		}
+
+		if (TYPO3_DLOG && COMMERCE_CLICKMENU_DLOG) t3lib_div::devLog('tx_commerce_db_category::get_parent_category return FALSE', COMMERCE_EXTkey);
  		return false;
- 		
  	}
- 	
+
  	/**
  	 * Gets the parent categories from this category
  	 * @param uid = Product UID
