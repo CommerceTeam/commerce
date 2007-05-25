@@ -176,10 +176,10 @@ class tx_commerce_navigation {
 			 * If a product is shown, we have to detect the parent category as well
 			 * even if wo haven't walked thrue the categories
 			 */
-			$myProduct = t3lib_div::makeInstance('tx_commerce_products');
+			$myProduct = t3lib_div::makeInstance('tx_commerce_product');
         	$myProduct ->init($this->gpVars['showUid']);
         	$myProduct ->load_data();
-			$this->choosenCat = $myProduct->get_parent_categorie();
+			$this->choosenCat = $myProduct->getMasterparentCategorie();
 		}
 		
 		
@@ -201,6 +201,11 @@ class tx_commerce_navigation {
         	/**
         	 * Strip the Staring point and the value 0
         	 */
+        	
+        	if(!is_array($tmpArray)) {
+        		$tmpArray = array();
+        	}
+        	
         	foreach ($tmpArray as $value) {
         		if (($value <> $this->cat) && ($value > 0)) {
         			$this->pathParents[]=$value;

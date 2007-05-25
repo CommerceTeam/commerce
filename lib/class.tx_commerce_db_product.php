@@ -165,12 +165,15 @@ class tx_commerce_db_product extends tx_commerce_db_alib {
  	 * @TODO change to mm db class function
  	 */
  	
- 	function get_parent_categorie($uid)
- 	{
- 		if ($uid)
- 		{
-	 		if ($result=$GLOBALS['TYPO3_DB']->exec_SELECTquery('categories',$this->database_table,"uid = $uid" . $GLOBALS['TSFE']->sys_page->enableFields($this->database_table, $GLOBALS['TSFE']->showHiddenRecords)))
-	 		{
+ 	function get_parent_categorie($uid)	{
+ 		if ($uid){
+ 			
+ 			if (is_object($GLOBALS['TSFE']) && is_object($GLOBALS['TSFE']->sys_page)) {
+ 				$addWhere = $GLOBALS['TSFE']->sys_page->enableFields($this->database_table, $GLOBALS['TSFE']->showHiddenRecords);
+ 			}else {
+ 				$addWhere='';
+ 			}
+	 		if ($result=$GLOBALS['TYPO3_DB']->exec_SELECTquery('categories',$this->database_table,"uid = $uid " . $addWhere)){
 	 			if ($return_data=$GLOBALS['TYPO3_DB']->sql_fetch_assoc($result))
 	 			{
 	 				
