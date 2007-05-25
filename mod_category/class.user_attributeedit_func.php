@@ -30,7 +30,7 @@
  * @author Ingo Schmitt <is@marketing-factory.de>
  * @maintainer Ingo Schmitt <is@marketing-factory.de>
  * 
- * $Id: class.user_attributeedit_func.php 308 2006-07-26 22:23:51Z ingo $
+ * $Id$
  */
 
 require_once (PATH_t3lib.'class.t3lib_recordlist.php');

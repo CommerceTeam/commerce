@@ -30,7 +30,7 @@
  * @package TYPO3
  * @subpackage tx_comm
  * 
- * $Id: class.tx_commerce_category_navframe.php 360 2006-09-22 09:08:20Z ingo $
+ * $Id$
  */
 unset($MCONF);
 require_once('conf.php');

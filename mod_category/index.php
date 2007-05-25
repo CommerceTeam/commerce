@@ -27,7 +27,7 @@
 /**
  * Module 'Category' for the 'commerce' extension.
  * 
- * $Id: index.php,v 1.42 2005/12/14 09:16:08 mfc_fh Exp $
+ * $Id$
  */
 
 

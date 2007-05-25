@@ -1,6 +1,6 @@
 <?php
 /**
- * $Id: conf.php 147 2006-04-04 10:43:22Z thomas $
+ * $Id$
  */
  
 define('TYPO3_MOD_PATH', '../typo3conf/ext/commerce/mod_category/');
