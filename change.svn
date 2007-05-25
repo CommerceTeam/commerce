@@ -3,6 +3,8 @@ Changelog for tx_commerce
 
 25.05.2007 Ingo Schmitt <is@marketing-factory.de>
 * corrected db_commerce_product to work, when not use in frontent
+* renamed method get_parent_categorie to get_parent_category
+* marked get_parent_categorie as depricated
 * Added Patch to fix Problem in Navigation, Thanks to Joerg Sprung
 
 24.05.2007 Franz Holzinger <kontakt@fholzinger.com>

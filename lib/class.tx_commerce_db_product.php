@@ -165,7 +165,7 @@ class tx_commerce_db_product extends tx_commerce_db_alib {
  	 * @TODO change to mm db class function
  	 */
  	
- 	function get_parent_categorie($uid)	{
+ 	function get_parent_category($uid)	{
  		if ($uid){
  			
  			if (is_object($GLOBALS['TSFE']) && is_object($GLOBALS['TSFE']->sys_page)) {
@@ -201,6 +201,21 @@ class tx_commerce_db_product extends tx_commerce_db_alib {
 	 					
 	 		return false;
  		}
+ 		
+ 	}
+ 	
+ 	
+ 	/**
+ 	 * Gets the "master" category from this product
+ 	 * @param uid = Product UID
+ 	 * @return integer Categorie UID
+ 	 * @depricated
+ 	 * @see get_parent_categorie
+
+ 	 */
+ 	
+ 	function get_parent_categorie($uid)	{
+ 		return $this->get_parent_category($uid);
  		
  	}
  	
