@@ -150,6 +150,7 @@
 			<label index="tx_commerce_orders.delivery">Delivery</label>
 			<label index="tx_commerce_orders.articles">Articles</label>
 			<label index="tx_commerce_orders.pricefromnet">Price from net</label>
+			<label index="tx_commerce_orders.tstamp">Timestamp</label>
 			<label index="tx_commerce_order_articles">Order_articles</label>
 			<label index="tx_commerce_order_articles.article_type_uid">article type</label>
 			<label index="tx_commerce_order_articles.article_uid">article uid</label>
@@ -354,6 +355,7 @@
 			<label index="tx_commerce_orders.delivery">Versand</label>
 			<label index="tx_commerce_orders.articles">Artikel</label>
 			<label index="tx_commerce_orders.pricefromnet">Preiskalkulation vom Netto</label>
+			<label index="tx_commerce_orders.tstamp">Ã„nderung</label>
 			<label index="tx_commerce_order_articles">Bestellte Artikel</label>
 			<label index="tx_commerce_order_articles.article_type_uid">Artikel Typ</label>
 			<label index="tx_commerce_order_articles.article_uid">Artikel ID</label>

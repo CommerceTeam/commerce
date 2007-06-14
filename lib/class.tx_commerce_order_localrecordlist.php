@@ -66,7 +66,7 @@ require_once(PATH_t3lib.'class.t3lib_tceforms.php');
  		}
  		if ($id>0){
  		$query_array=array(
- 			'SELECT' => 'tx_commerce_orders.uid,tx_commerce_orders.pid, tx_commerce_orders.crdate, tx_commerce_orders.order_id, tx_commerce_orders.sum_price_gross,  tt_address.company ,tt_address.name,tt_address.surname, tt_address.address, tt_address.zip, tt_address.city, tt_address.email,tt_address.phone,tx_commerce_orders.cu_iso_3_uid, tx_commerce_orders.uid as payment, tx_commerce_orders.uid as delivery, tx_commerce_orders.uid as articles',
+ 			'SELECT' => 'tx_commerce_orders.uid,tx_commerce_orders.pid, tx_commerce_orders.crdate, tx_commerce_orders.order_id, tx_commerce_orders.sum_price_gross,  tt_address.company ,tt_address.name,tt_address.surname, tt_address.address, tt_address.zip, tt_address.city, tt_address.email,tt_address.phone,tx_commerce_orders.cu_iso_3_uid, tx_commerce_orders.uid as payment, tx_commerce_orders.tstamp, tx_commerce_orders.uid as delivery, tx_commerce_orders.uid as articles',
  			'FROM' =>'tx_commerce_orders,tt_address',
  			'WHERE' =>'tx_commerce_orders.deleted = 0 and tx_commerce_orders.cust_deliveryaddress = tt_address.uid AND tx_commerce_orders.pid='.$id.$addWhere ,
  			'GROUPBY' => '',
@@ -99,7 +99,7 @@ require_once(PATH_t3lib.'class.t3lib_tceforms.php');
  			$list = implode(',',$list);
  			
  			$query_array=array(
- 			'SELECT' => 'tx_commerce_orders.uid,tx_commerce_orders.pid, tx_commerce_orders.crdate, tx_commerce_orders.order_id, tx_commerce_orders.sum_price_gross, tt_address.company,tt_address.name,tt_address.surname, tt_address.address, tt_address.zip, tt_address.city, tt_address.email,tt_address.phone,tx_commerce_orders.cu_iso_3_uid, tx_commerce_orders.uid as payment, tx_commerce_orders.uid as delivery, tx_commerce_orders.uid as articles',
+ 			'SELECT' => 'tx_commerce_orders.uid,tx_commerce_orders.pid, tx_commerce_orders.crdate, tx_commerce_orders.order_id, tx_commerce_orders.sum_price_gross, tt_address.company,tt_address.name,tt_address.surname, tt_address.address, tt_address.zip, tt_address.city, tt_address.email,tt_address.phone,tx_commerce_orders.cu_iso_3_uid, tx_commerce_orders.tstamp, tx_commerce_orders.uid as payment, tx_commerce_orders.uid as delivery, tx_commerce_orders.uid as articles',
  			'FROM' =>'tx_commerce_orders,tt_address',
  			'WHERE' =>'tx_commerce_orders.deleted = 0 and tx_commerce_orders.cust_deliveryaddress = tt_address.uid AND tx_commerce_orders.pid in ('.$list.') '.$addWhere ,
  			'GROUPBY' => '',
@@ -326,7 +326,7 @@ require_once(PATH_t3lib.'class.t3lib_tceforms.php');
 					// Finally, render the list:
 				
 				
-				$this->myfields=array("order_id","crdate","company","surname","name","address","zip","city","email","phone","sum_price_gross","payment","delivery");
+				$this->myfields=array("order_id","crdate","company","surname","name","address","zip","city","email","phone","sum_price_gross","tstamp","payment","delivery");
 				
 				#if ($this->csvOutput) {
 					$this->myfields[]='numarticles';
@@ -415,6 +415,10 @@ require_once(PATH_t3lib.'class.t3lib_tceforms.php');
 					$theData[$fCol]=tx_moneylib::format($row[$fCol],'EUR');
 				}
 			} elseif ($fCol=='crdate') {
+				$theData[$fCol] = t3lib_BEfunc::date($row[$fCol]);
+			
+				$row[$fCol]=t3lib_BEfunc::date($row[$fCol]);
+			}	elseif ($fCol=='tstamp') {
 				$theData[$fCol] = t3lib_BEfunc::date($row[$fCol]);
 			
 				$row[$fCol]=t3lib_BEfunc::date($row[$fCol]);

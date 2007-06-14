@@ -1,6 +1,9 @@
 Changelog for tx_commerce
 (add new changes on top of this file)
 
+14.06.2007 Ingo Schmitt <is@marketing-fcatory.de>
+* Added oder tstamp to orderlist Module
+
 25.05.2007 Franz Holzinger <kontakt@fholzinger.com>
 * fix bug 5008: When you created a new product from the clickmenu then a wrong parent category has been taken.
 

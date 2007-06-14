@@ -534,7 +534,6 @@
  	 * @return booles true / false
  	 */
  	 function hasArticles() {
- 	 	
  	 	if (count($this->basket_items)>0) {
  	 		return true;	
  	 	}else {
