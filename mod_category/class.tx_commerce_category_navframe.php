@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2005-2006 Franz Holzinger (kontakt@fholzinger.com)
+*  (c) 2005-2007 Franz Holzinger (kontakt@fholzinger.com)
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -24,7 +24,7 @@
 /**
  * Main script class for the tree edit navigation frame
  *
- * @author	@author	RenéFritz <r.fritz@colorcube.de>
+ * @author	RenéFritz <r.fritz@colorcube.de>
  * @author	Franz Holzinger <kontakt@fholzinger.com>
  * @maintainer Franz Holzinger <kontakt@fholzinger.com>
  * @package TYPO3
@@ -71,9 +71,17 @@ class tx_commerce_category_navframe {
 		$this->doc->JScode=$this->doc->wrapScriptTags(
 			($this->currentSubScript?'top.currentSubScript=unescape("'.rawurlencode($this->currentSubScript).'");':'').'
 
-			function jumpTo(params,linkObj,highLightID)	{
-				var theUrl = top.TS.PATH_typo3+top.currentSubScript+"?"+params;
-				
+			function jumpTo(params,linkObj,highLightID,script)	{
+				var theUrl;
+
+				if (script)	{
+					theUrl = top.TS.PATH_typo3+script;
+				} else {
+					theUrl = top.TS.PATH_typo3+top.currentSubScript;
+				}
+
+				theUrl = theUrl+"?"+params;
+
 				if (top.condensedMode)	{
 					top.content.document.location=theUrl;
 				} else {

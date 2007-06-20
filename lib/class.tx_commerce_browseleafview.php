@@ -73,10 +73,11 @@ class tx_commerce_browseLeafView extends tx_graytree_leafView {
 		$res = '';
 
 		$extra = '';
-		if($row['uid'] AND $this->modeSelIcons){				
-			$extra = ' &nbsp;<span class="txcommerce-editbar">'.$extra.'</span>';
-		}
-		$res = parent::wrapTitle($title,$row).$extra;
+		/*if($row['uid'] AND $this->modeSelIcons){				
+			$extra1 = ' &nbsp;<span class="txcommerce-editbar">';
+			$extra2 = '</span>';
+		}*/
+		$res = parent::wrapTitle($title,$row);
 
 		return $res;
 	}

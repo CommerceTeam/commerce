@@ -40,16 +40,14 @@
 
 
 require_once(t3lib_extmgm::extPath('graytree').'lib/class.tx_graytree_clickmenu.php');
-require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_db_product.php');
-require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_db_category.php');
 
-define('COMMERCE_CLICKMENU_DLOG', '0'); // +++ Switch for debugging error messages
+define('COMMERCE_CLICKMENU_DLOG', '0'); // Switch for debugging error messages
 
 
 class tx_commerce_clickMenu extends tx_graytree_clickMenu {
 	var $languageFile = 'LLL:EXT:commerce/locallang_cm.xml';
-	var $extKey = COMMERCE_EXTkey;			// extension key is commerce
-	var $dbObjArray = array();
+	var $extKey = COMMERCE_EXTkey;					// extension key is commerce
+
 
 	/**
 	 * Initialize click menu
@@ -64,15 +62,11 @@ class tx_commerce_clickMenu extends tx_graytree_clickMenu {
 	#	$this->defValsMask['tx_commerce_products']['leaf'] = '&defVals[tx_commerce_categories][parent_category]=###UID###&defVals[###TABLE###][parent_id]=###UID###&defVals[###TABLE###][pid]=###PID###'; 
 // to change
 		$this->defValsMask['tx_commerce_products']['tree'] = '&defVals[tx_commerce_categories][parent_category]=###UID###&defVals[###TABLE###][categories]=###UID###&defVals[###TABLE###][pid]=###PID###'; 
-		$this->defValsMask['tx_commerce_products']['leaf'] = '&defVals[tx_commerce_categories][parent_category]=###CATUID###&defVals[###TABLE###][categories]=###CATUID###&defVals[###TABLE###][pid]=###PID###'; 
+		$this->defValsMask['tx_commerce_products']['leaf'] = '&defVals[tx_commerce_categories][parent_category]=###UID###&defVals[###TABLE###][categories]=###UID###&defVals[###TABLE###][pid]=###PID###'; 
 
 		$this->rootTableArray[] = 'tx_commerce_categories';
 		$this->leafTableArray['tx_commerce_categories'] = array('tx_commerce_products');
 		$this->newContentWizScriptPath = t3lib_extMgm::extRelPath($this->extKey).'mod_category/index.php';
-
-		$this->dbObjArray['tx_commerce_products'] = t3lib_div::makeInstance('tx_commerce_db_product');
-		$this->dbObjArray['tx_commerce_categories'] = t3lib_div::makeInstance('tx_commerce_db_category');
-
 		return (parent::init($item));
 	}
 
@@ -125,60 +119,56 @@ class tx_commerce_clickMenu extends tx_graytree_clickMenu {
 	 * @return	array		Item array, element in $menuItems
 	 */
 	function DB_new($table, $uid, $pid, $rootTable = '')	{
+		if ($table == 'tx_commerce_categories' || $table == 'tx_commerce_products')	{ 
 
-		if (!$table)	{
-			return '';
-		}
-		$editOnClick='';
-		$loc='top.content'.(!$this->alwaysContentFrame?'.list_frame':'');
-
-		if (TYPO3_DLOG && COMMERCE_CLICKMENU_DLOG) t3lib_div::devLog('tx_commerce_clickMenu::DB_new  $table = '. $table.' $uid ='.$uid.' $pid ='.$pid.' $rootTable ='.$rootTable, COMMERCE_EXTkey);
-
-		if (is_array($this->defValsMask) && is_array($this->defValsMask[$table]))	{
-			if (TYPO3_DLOG && COMMERCE_CLICKMENU_DLOG) t3lib_div::devLog('tx_commerce_clickMenu::DB_new  $rootTable = '.$rootTable, COMMERCE_EXTkey);
-			if ($rootTable)	{
-				$defVals = str_replace (array('###UID###', '###TABLE###', '###PID###'), array($uid, $table, $pid), $this->defValsMask[$table]['tree']);
-			} else {
-				if (is_object($this->dbObjArray[$table]))	{
-					$catUid = $this->dbObjArray[$table]->get_parent_category($uid);
-					$defVals = str_replace (array('###UID###', '###CATUID###', '###TABLE###', '###PID###'), array($uid, $catUid, $table, $pid), $this->defValsMask[$table]['leaf']);
+			$editOnClick='';
+			$loc='top.content'.(!$this->alwaysContentFrame?'.list_frame':'');
+	
+			if (TYPO3_DLOG && COMMERCE_CLICKMENU_DLOG) t3lib_div::devLog('tx_commerce_clickMenu::DB_new  $table = '. $table.' $uid ='.$uid.' $pid ='.$rootTable.' $rootTable ='.$pid, COMMERCE_EXTkey);
+			
+			if (is_array($this->defValsMask) && is_array($this->defValsMask[$table]))	{
+				if ($rootTable)	{
+					$defVals = str_replace (array('###UID###', '###TABLE###', '###PID###'), array($uid, $table, $pid), $this->defValsMask[$table]['tree']);
+				} else {
+					$defVals = str_replace (array('###UID###', '###TABLE###', '###PID###'), array($uid, $table, $pid), $this->defValsMask[$table]['leaf']);
 				}
 			}
-			if (TYPO3_DLOG && COMMERCE_CLICKMENU_DLOG) t3lib_div::devLog('tx_commerce_clickMenu::DB_new  $defVals = '.$defVals, COMMERCE_EXTkey);
+	
+				// get some configs
+			$extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['commerce']);
+			if ($extConf['simpleMode'] && $table == 'tx_commerce_products')	{
+				$editProduct = '?edit[tx_commerce_products]['.$uid.']=edit';
+					// get the article uid that is assigned to this product
+				$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid', 'tx_commerce_articles', 'uid_product='.$uid);
+				$aUid = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
+				
+				$editArticle = '&edit[tx_commerce_articles]['.$aUid['uid'].']=edit';
+	
+					//the columnsOnly parameter for product and article
+				$columnsOnlyProduct = '&columnsOnly[tx_commerce_products]=' .$extConf['coProducts'];
+				$columnsOnlyArticle = '&columnsOnly[tx_commerce_articles]=' .$extConf['coArticles'];
+	
+				$simpleMode = 'alt_doc.php'.$editProduct.$editArticle.$columnsOnlyProduct.$columnsOnlyArticle;
+			} else {	
+				$simpleMode = '';
+			}
+	
+				$editOnClick='if('.$loc.'){'.$loc.'.document.location=top.TS.PATH_typo3+\''.
+				($this->listFrame?
+					'alt_doc.php?returnUrl=\'+top.rawurlencode('.$this->frameLocation($loc.'.document').')+\'&edit['.$table.'][-'.$uid.']=new' .$defVals .$simpleMode .'\'':	 
+					PATH_txgraytree_rel.'mod_cmd/index.php?CMD=tx_graytree_cmd_new&id='.intval($pid).'&edit['.$table.'][-'.$uid.']=new&' .$defVals .$simpleMode ."'").
+				';}';
+	
+				$linkText = trim($GLOBALS['LANG']->sL($this->languageFile.':tx_graytree_cm1.new_'.$table,1));
+				if (!$linkText)	{
+					$linkText = trim($GLOBALS['LANG']->sL( 'LLL:EXT:graytree/locallang_cm.php:tx_graytree_cm1.newSubCat',1));
+				}
+	
+			$rc = $this->linkItem(
+				$GLOBALS['LANG']->makeEntities($linkText),
+				$this->excludeIcon('<img'.t3lib_iconWorks::skinImg($this->PH_backPath,'gfx/new_'.($table=='pages'&&$this->listFrame?'page':'el').'.gif','width="'.($table=='pages'?'13':'11').'" height="12"').' alt="" />'),
+				$editOnClick.'return hideCM();');
 		}
-
-			// get some configs
-		$extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['commerce']);
-		if ($extConf['simpleMode'] && $table == 'tx_commerce_products')	{
-			$editProduct = '?edit[tx_commerce_products]['.$uid.']=edit';
-				// get the article uid that is assigned to this product
-			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid', 'tx_commerce_articles', 'uid_product='.$uid);
-			$aUid = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
-			$editArticle = '&edit[tx_commerce_articles]['.$aUid['uid'].']=edit';
-
-				//the columnsOnly parameter for product and article
-			$columnsOnlyProduct = '&columnsOnly[tx_commerce_products]=' .$extConf['coProducts'];
-			$columnsOnlyArticle = '&columnsOnly[tx_commerce_articles]=' .$extConf['coArticles'];
-			$simpleMode = 'alt_doc.php'.$editProduct.$editArticle.$columnsOnlyProduct.$columnsOnlyArticle;
-		} else {
-			$simpleMode = '';
-		}
-
-		$editOnClick='if('.$loc.'){'.$loc.'.document.location=top.TS.PATH_typo3+\''.
-			($this->listFrame?
-				'alt_doc.php?returnUrl=\'+top.rawurlencode('.$this->frameLocation($loc.'.document').')+\'&edit['.$table.'][-'.$uid.']=new' .$defVals .$simpleMode .'\'':	 
-				PATH_txgraytree_rel.'mod_cmd/index.php?CMD=tx_graytree_cmd_new&id='.intval($pid).'&edit['.$table.'][-'.$uid.']=new&' .$defVals .$simpleMode ."'").
-			';}';
-
-		$linkText = trim($GLOBALS['LANG']->sL($this->languageFile.':tx_graytree_cm1.new_'.$table,1));
-		if (!$linkText)	{
-			$linkText = trim($GLOBALS['LANG']->sL( 'LLL:EXT:graytree/locallang_cm.php:tx_graytree_cm1.newSubCat',1));
-		}
-
-		$rc = $this->linkItem(
-			$GLOBALS['LANG']->makeEntities($linkText),
-			$this->excludeIcon('<img'.t3lib_iconWorks::skinImg($this->PH_backPath,'gfx/new_'.($table=='pages'&&$this->listFrame?'page':'el').'.gif','width="'.($table=='pages'?'13':'11').'" height="12"').' alt="" />'),
-			$editOnClick.'return hideCM();');
 
 		if (TYPO3_DLOG && COMMERCE_CLICKMENU_DLOG) t3lib_div::devLog('tx_commerce_clickMenu::DB_new  $rc = '. $rc, COMMERCE_EXTkey);
 

@@ -1,6 +1,13 @@
 Changelog for tx_commerce
 (add new changes on top of this file)
 
+20.06.2007 Franz Holzinger <kontakt@fholzinger.com>
+* Fixed Problem with missing categories in category tree
+* Added link to edit-product in category tree
+* removed "add subcategory" item in clickmenue on article
+* removed unneeded span in category tree
+
+
 14.06.2007 Ingo Schmitt <is@marketing-fcatory.de>
 * Added oder tstamp to orderlist Module
 
