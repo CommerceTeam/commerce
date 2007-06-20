@@ -547,7 +547,7 @@ class wirecard
 		// $this->userData['lastname']
 		// $this->userData['firstname']
 		// $this->orderCode
-		debug($xml);
+		#debug($xml);
 		return $xml;
 	}
 	
