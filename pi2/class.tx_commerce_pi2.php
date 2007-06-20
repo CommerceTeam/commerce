@@ -463,13 +463,12 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 				    $price_net =  tx_moneylib::format($articleObj->get_price_net(),$this->currency);
 				    $price_gross =  tx_moneylib::format($articleObj->get_price_gross(),$this->currency);
 				}elseif(!$first){
-				     $price_net =  tx_moneylib::format($articleObj->get_price_net(),$this->currency);
+				    $price_net =  tx_moneylib::format($articleObj->get_price_net(),$this->currency);
 				    $price_gross =  tx_moneylib::format($articleObj->get_price_gross(),$this->currency);
 				   
 				    if(!is_array($this->basketDel)||count($this->basketDel)<1){
 						$this->basket->add_article($articleUid);
 						$this->basket->store_data();
-						#debug($this->basket);
 				    }
 				    $first = 1;
 				}
@@ -480,8 +479,10 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 		$select .= '</form>';
 				
 
-		$this->delProd->articles;
-
+		#debug($this->delProd->articles);
+		#debug($allowedArticles);
+		#debug($this->basket);
+		
 		$basketArray['###DELIVERY_SELECT_BOX###'] = $select;
 		$basketArray['###DELIVERY_PRICE_GROSS###'] = $price_gross;
 		$basketArray['###DELIVERY_PRICE_NET###'] = $price_net;
