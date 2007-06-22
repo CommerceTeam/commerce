@@ -1,6 +1,10 @@
 Changelog for tx_commerce
 (add new changes on top of this file)
 
+22.06.2007 Ingo Schmitt <is@marketing-factory.de>
+* New statistics icon (changed white to blue for a better visibility)
+* added new configuration "genprices" to have the possibility to generazte from gross and net
+
 20.06.2007 Franz Holzinger <kontakt@fholzinger.com>
 * Fixed Problem with missing categories in category tree
 * Added link to edit-product in category tree

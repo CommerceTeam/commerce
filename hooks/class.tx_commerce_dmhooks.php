@@ -68,7 +68,7 @@ class tx_commerce_dmhooks	{
 	 * @author Thomas Hempel <thomas@work.de>
 	 * @since 6.10.2005
 	 * @author Ingo Schmitt <is@marketing-factory.de>
-	 * Calculation of missing price
+	 * 	Calculation of missing price
 	 */
 	function processDatamap_preProcessFieldArray(&$incomingFieldArray, $table, $id, $pObj)	{
 		// debug(array($incomingFieldArray, $table, $id), 'processDatamap_preProcessFieldArray');
@@ -215,16 +215,50 @@ class tx_commerce_dmhooks	{
 							 * @since 06.10.2005
 							 * @author Ingo Schmitt <is@marketing-factory.de>
 							 */
-
+						
 							if (isset($incomingFieldArray['tax']))	{
-								if (($key == 'price_net') && (empty($value) || $value==0))	{
-									$price_gross_value=$incomingFieldArray['prices']['data']['sDEF']['lDEF']['price_gross_'.$pUid]['vDEF'];
-									$value=round(($price_gross_value*100)/(100+$incomingFieldArray['tax'])*100);
-									$incomingFieldArray['prices']['data']['sDEF']['lDEF']['price_net_'.$pUid]['vDEF']=$value/100;
-								} elseif (($key == 'price_gross') && (empty($value) || $value==0))	{
-									$price_net_value=$incomingFieldArray['prices']['data']['sDEF']['lDEF']['price_net_'.$pUid]['vDEF'];
-									$value=round(($price_net_value*100)*(100+$incomingFieldArray['tax'])/100);
-									$incomingFieldArray['prices']['data']['sDEF']['lDEF']['price_gross_'.$pUid]['vDEF']=$value/100;
+								$extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['commerce']);
+								
+										
+								switch ($extConf['genprices']){
+									case 0:
+										/**
+										 * Do nothing;
+										 */
+										break;
+									case 2: 
+										/**
+										 * Calculare from net 
+										 */
+										  if ($key == 'price_gross') {
+										 	$price_net_value=$incomingFieldArray['prices']['data']['sDEF']['lDEF']['price_net_'.$pUid]['vDEF'];
+											$value=round(($price_net_value*100)*(100+$incomingFieldArray['tax'])/100);
+											$incomingFieldArray['prices']['data']['sDEF']['lDEF']['price_gross_'.$pUid]['vDEF']=$value/100;
+										  }
+										 break;
+									case 3:
+										/**
+										 * Calculate from gross
+										 */
+										 if ($key == 'price_net') {
+										 	$price_gross_value=$incomingFieldArray['prices']['data']['sDEF']['lDEF']['price_gross_'.$pUid]['vDEF'];
+											$value=round(($price_gross_value*100)/(100+$incomingFieldArray['tax'])*100);
+											$incomingFieldArray['prices']['data']['sDEF']['lDEF']['price_net_'.$pUid]['vDEF']=$value/100;
+										 }
+										 break;
+									case 1:
+									default:
+										
+										if (($key == 'price_net') && (empty($value) || $value==0))	{
+											$price_gross_value=$incomingFieldArray['prices']['data']['sDEF']['lDEF']['price_gross_'.$pUid]['vDEF'];
+											$value=round(($price_gross_value*100)/(100+$incomingFieldArray['tax'])*100);
+											$incomingFieldArray['prices']['data']['sDEF']['lDEF']['price_net_'.$pUid]['vDEF']=$value/100;
+										} elseif (($key == 'price_gross') && (empty($value) || $value==0))	{
+											$price_net_value=$incomingFieldArray['prices']['data']['sDEF']['lDEF']['price_net_'.$pUid]['vDEF'];
+											$value=round(($price_net_value*100)*(100+$incomingFieldArray['tax'])/100);
+											$incomingFieldArray['prices']['data']['sDEF']['lDEF']['price_gross_'.$pUid]['vDEF']=$value/100;
+										}
+									break;
 								}
 							}
 
@@ -241,7 +275,7 @@ class tx_commerce_dmhooks	{
 					 * Do some Checks with the data,
 					 */
 					$minPrice =0;
-
+					
 					foreach ($pricesData as $onePrice) {
 						if ($onePrice['price_scale_amount_start']>0 && ($minPrice==0 || $minPrice>$onePrice['price_scale_amount_start'])) {
 							$minPrice = $onePrice['price_scale_amount_start'];
@@ -739,6 +773,7 @@ class tx_commerce_dmhooks	{
 	function processDatamap_postProcessFieldArray($status, $table, $id, &$fieldArray, $pObj)	{
 		switch (strtolower((string)$table))	{
 			case 'tx_commerce_article_prices':
+				
 				$fieldArray['price_net'] = $fieldArray['price_net'] *100;
 				$fieldArray['price_gross'] = $fieldArray['price_gross'] *100;
 				$fieldArray['purchase_price'] = $fieldArray['purchase_price'] *100;

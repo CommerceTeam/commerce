@@ -4,6 +4,9 @@ invoiceBackendOnly = 1
 # cat=basic/enable; type=boolean; label=Simple Mode for products: Use this if you only have one article per product
 simpleMode = 0
 
+# cat=basic/enable;  type=int; label=Automatically generate prices while when changing one price accoring to the tax (0 - Do notrhing, 1 recalulate not existing prices, 2 calculate from net, 3 calculate from gross )
+genprices = 1
+
 # cat=basic//30; type=String; label=fields for products...: that should be displayed in simple mode
 coProducts = hidden[starttime|endtime|fe_group],title,subtitle[navtitle],description,images,categories
 
