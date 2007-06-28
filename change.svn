@@ -1,6 +1,10 @@
 Changelog for tx_commerce
 (add new changes on top of this file)
 
+28.06.2007 Ingo Schmitt <is@marketing-fcatory.de>
+* Added max_length patch, you are now able to set the maxlength per field, thanks to Joerg Sprung
+
+
 22.06.2007 Ingo Schmitt <is@marketing-factory.de>
 * New statistics icon (changed white to blue for a better visibility)
 * added new configuration "genprices" to have the possibility to generazte from gross and net
@@ -34,7 +38,7 @@ Changelog for tx_commerce
 * Fixed bug concerning double $this in Hook call (0005577)
 * Fixed bug in pi3 concerning merge of non array objects (may be raised in combination with external payments) 
 * Did some code cleanup
-* Fixed a typo3 in belib
+* Fixed a typo in belib
 
 28.04.2007 Volker Graubaum <vg@e-netconsulting.de>
 * add new html file with hooklist

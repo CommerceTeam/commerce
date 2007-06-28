@@ -1302,8 +1302,14 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 		} else {
 			$value = $this->dbFieldData[$fieldName];
 		}
-
-		$result = '<input type="text" name="'.$this->prefixId.'['.$step.'][' .$fieldName .']" value="' .$value .'" ';
+		
+		$maxlength = '';
+		if(isset($fieldConfig['maxlength']) AND is_numeric($fieldConfig['maxlength'])) {
+			$maxlength = ' maxlength="'.$fieldConfig['maxlength'].'"' ;
+		}
+		
+		
+		$result = '<input type="text" name="'.$this->prefixId.'['.$step.'][' .$fieldName .']" value="' .$value .'" ' . $maxlength;
 		if ($fieldConfig['readonly'] == 1)	{
 			$result .= ' readonly disabled';
 		}
