@@ -1,6 +1,9 @@
 Changelog for tx_commerce
 (add new changes on top of this file)
 
+11.07.2007 Ingo Schmitt <is@marketing-factory.de>
+* Introduced Marker BASKET_ITEM_PRICEGROSSNOSCALE and BASKET_ITEM_PRICENETNOSCALE in Basket output
+
 28.06.2007 Ingo Schmitt <is@marketing-fcatory.de>
 * Added max_length patch, you are now able to set the maxlength per field, thanks to Joerg Sprung
 

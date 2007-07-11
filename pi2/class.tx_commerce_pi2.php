@@ -677,8 +677,10 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
     		$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="'.$this->prefixId.'[artAddUid]['.$art->uid.'][price_id]" value="'.$this->basket->basket_items[$art->uid]->get_price_uid().'" />';
 	    	$markerArray['###QTY_INPUT_VALUE###'] = $this->basket->basket_items[$art->uid]->quantity;
 		    $markerArray['###QTY_INPUT_NAME###'] = $this->prefixId.'[artAddUid]['.$art->uid.'][count]';
-			$markerArray['###BASKET_ITEM_PRICENET###'] =  tx_moneylib::format($this->basket->basket_items[$art->uid]->getNoScalePriceNet(),$this->currency);
-			$markerArray['###BASKET_ITEM_PRICEGROSS###'] =  tx_moneylib::format($this->basket->basket_items[$art->uid]->getNoScalePriceGross(),$this->currency);
+			$markerArray['###BASKET_ITEM_PRICENET###'] =  tx_moneylib::format($this->basket->basket_items[$art->uid]->get_price_net(),$this->currency);
+			$markerArray['###BASKET_ITEM_PRICEGROSS###'] =  tx_moneylib::format($this->basket->basket_items[$art->uid]->get_price_gross(),$this->currency);
+			$markerArray['###BASKET_ITEM_PRICENETNOSCALE###'] =  tx_moneylib::format($this->basket->basket_items[$art->uid]->getNoScalePriceNet(),$this->currency);
+			$markerArray['###BASKET_ITEM_PRICEGROSSNOSCALE###'] =  tx_moneylib::format($this->basket->basket_items[$art->uid]->getNoScalePriceGross(),$this->currency);
 			$markerArray['###BASKET_ITEM_COUNT###'] = $this->basket->basket_items[$art->uid]->get_quantity();
 			$markerArray['###BASKET_ITEM_PRICESUM_NET###'] =  tx_moneylib::format($this->basket->basket_items[$art->uid]->get_item_sum_net(),$this->currency);
 			$markerArray['###BASKET_ITEM_PRICESUM_GROSS###'] =  tx_moneylib::format($this->basket->basket_items[$art->uid]->get_item_sum_gross(),$this->currency);
