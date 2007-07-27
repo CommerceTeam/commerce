@@ -913,7 +913,7 @@ class tx_commerce_navigation {
 				 */
 				$path = $this->manufacturerIdentifier.$aFiche["manufacturer_uid"].",".$firstPath;
 				
-				$myProduct = t3lib_div::makeInstance('tx_commerce_products');
+				$myProduct = t3lib_div::makeInstance('tx_commerce_product');
         		$myProduct ->init($aFiche['uid']);
         		$myProduct ->load_data();
 				$sManuTitle = $myProduct->getManufacturerTitle();
