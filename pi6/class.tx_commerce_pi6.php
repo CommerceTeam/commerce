@@ -98,7 +98,7 @@ class tx_commerce_pi6 extends tx_commerce_pibase{
 		}  
  		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'tx_commerce_orders', $queryString, '', '', '1');
 		$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
-	xghxdghh
+	
 		$phonenumbers = array();
 		
 		if ($row) {
@@ -133,8 +133,7 @@ class tx_commerce_pi6 extends tx_commerce_pibase{
 				}
 			}
 		
-			print_r($this->conf);
-			
+						
 			
 			$queryString = 'order_uid='.$row['uid'] . ' AND article_type_uid = 2 ' ;
 			$queryString.= $this->cObj->enableFields("tx_commerce_order_articles");
