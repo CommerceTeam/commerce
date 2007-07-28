@@ -98,7 +98,7 @@ class tx_commerce_pi6 extends tx_commerce_pibase{
 		}  
  		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'tx_commerce_orders', $queryString, '', '', '1');
 		$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
-	
+	xghxdghh
 		$phonenumbers = array();
 		
 		if ($row) {
@@ -133,7 +133,7 @@ class tx_commerce_pi6 extends tx_commerce_pibase{
 				}
 			}
 		
-			
+			print_r($this->conf);
 			
 			
 			$queryString = 'order_uid='.$row['uid'] . ' AND article_type_uid = 2 ' ;
@@ -143,7 +143,7 @@ class tx_commerce_pi6 extends tx_commerce_pibase{
 			//todo: page break if too many products for one page? is enough, what pdf_generator can do?
 			while ($row_orderlist = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_orderlist)) {
 				$markerArray['###PAYMENT_METHOD###'] = $row_orderlist['title'];			
-				$markerArray['###PAYMENT_COST###']  = tx_moneylib::format(($row_orderlist['amount']*$row_orderlist['price_gross']),$this->conf['currency']);				
+				$markerArray['###PAYMENT_COST###']  = tx_moneylib::format(($row_orderlist['amount']*$row_orderlist['price_gross']),$this->conf['currency'],(boolean)$this->conf['showCurrencySign']);				
 				$paymentmethod = $row_orderlist['title'];
 			}
 			
@@ -154,14 +154,14 @@ class tx_commerce_pi6 extends tx_commerce_pibase{
 			//todo: page break if too many products for one page? is enough, what pdf_generator can do?
 			while ($row_orderlist = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_orderlist)) {
 				$markerArray['###SHIPPING_METHOD###'] = $row_orderlist['title'];
-				$markerArray['###SHIPPING_COST###'] = tx_moneylib::format(($row_orderlist['amount']*$row_orderlist['price_gross']),$this->conf['currency']);				
+				$markerArray['###SHIPPING_COST###'] = tx_moneylib::format(($row_orderlist['amount']*$row_orderlist['price_gross']),$this->conf['currency'],(boolean)$this->conf['showCurrencySign']);				
 			}
 			/**
 			 * @TODO Check if this tax calcuation is correct, or if we do 
 			 * have to hav a tax line for every TAX 
 			 */
-			$markerArray['###ORDER_TAX###'] = tx_moneylib::format($row['sum_price_gross'] - $row['sum_price_net'],$this->conf['currency']);
-			$markerArray['###ORDER_TOTAL###'] = tx_moneylib::format($row['sum_price_gross'],$this->conf['currency']);
+			$markerArray['###ORDER_TAX###'] = tx_moneylib::format($row['sum_price_gross'] - $row['sum_price_net'],$this->conf['currency'],(boolean)$this->conf['showCurrencySign']);
+			$markerArray['###ORDER_TOTAL###'] = tx_moneylib::format($row['sum_price_gross'],$this->conf['currency'],(boolean)$this->conf['showCurrencySign']);
 
 
 			$markerArray["###ORDER_ID###"] = $this->piVars['order_id'];
@@ -226,8 +226,8 @@ class tx_commerce_pi6 extends tx_commerce_pibase{
 			$orderArray['###ARTICLE_NUMBER###'] = $row_orderlist['article_number'];
 			$orderArray['###ARTICLE_TITLE###'] = $row_orderlist['title'];
 			$orderArray['###QUANTITY###'] = $row_orderlist['amount'];
-			$orderArray['###PRICE###'] = tx_moneylib::format ($row_orderlist['price_gross'], $this->conf['currency']);
-			$orderArray['###TOTAL###'] = tx_moneylib::format(($row_orderlist['amount']*$row_orderlist['price_gross']),$this->conf['currency']);
+			$orderArray['###PRICE###'] = tx_moneylib::format ($row_orderlist['price_gross'], $this->conf['currency'],(boolean)$this->conf['showCurrencySign']);
+			$orderArray['###TOTAL###'] = tx_moneylib::format(($row_orderlist['amount']*$row_orderlist['price_gross']),$this->conf['currency'],(boolean)$this->conf['showCurrencySign']);
 			$this->orderItems .= $this->cObj->substituteMarkerArrayCached($this->template['item'], $orderArray);
 		}
 		return $this->orderItems;

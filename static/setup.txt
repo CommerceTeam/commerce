@@ -666,7 +666,8 @@ plugin.tx_commerce_pi4 {
 plugin.tx_commerce_pi6 {
 	templateFile = {$plugin.tx_commerce_pi6.templateFile}
 	currency = {$plugin.tx_commerce_lib.currency}
-
+	# Add the Currency Sign to the invoice Output wherever a Currency is printed
+	showCurrencySign =1
     # set this to 1 if you are going to print pdfs
     # decode = 1
     invoiceheader = IMAGE
