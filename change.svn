@@ -1,5 +1,9 @@
 Changelog for tx_commerce
 (add new changes on top of this file)
+
+28.07.2007 Ingo Schmitt <is@marketing-factory.de>
+* Corrected handling of marker (noit Subparts) in pi6
+
 27.07.2007 Ingo Schmitt <is@marketing-factory.de>
 * Fixed wrong instantiation of tx_commerce_product in lib_navigation. 
 

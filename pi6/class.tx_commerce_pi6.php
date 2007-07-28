@@ -120,9 +120,7 @@ class tx_commerce_pi6 extends tx_commerce_pibase{
 			if ($row['cust_deliveryaddress']) {
 				//todo: correct table join, linking to fe_users necessary?
 				$queryString = 'tx_commerce_fe_user_id='.$row['cust_fe_user'];
-				$queryString.= ' AND tt_address.tx_commerce_fe_user_id = fe_users.uid';
-				//todo: set to correct value
-				$queryString.= ' AND tt_address.tx_commerce_address_type_id=2';
+				$queryString.= ' AND tt_address.uid = '.$row['cust_deliveryaddress'];
 		#		$queryString.= $this->cObj->enableFields("tt_address");
 		#		$queryString.= $this->cObj->enableFields("fe_users");
 		 		$res_address_delivery = $GLOBALS['TYPO3_DB']->exec_SELECTquery('tt_address.name,tt_address.surname, tt_address.address, tt_address.zip, tt_address.city, tt_address.phone ', 'tt_address, fe_users',$queryString, '', '', '1');
@@ -197,7 +195,8 @@ class tx_commerce_pi6 extends tx_commerce_pibase{
 			$subpartArray['###ORDER_ITEMS###'] = $this->getOrderArticles($row['uid']);
 			$this->content = $this->cObj->substituteMarkerArrayCached($this->template['invoice'], array(), $subpartArray);
 			// buid content from template + array		
-			$this->content = $this->cObj->substituteMarkerArrayCached($this->content, array(), $markerArray, array());
+			$this->content = $this->cObj->substituteMarkerArrayCached($this->content,  $markerArray, array(), array());
+			$this->content = $this->cObj->substituteMarkerArrayCached($this->content,  $phonenumbers, array(), array());
 			$this->content = $this->cObj->substituteMarkerArrayCached($this->content, $this->languageMarker,array());	 
 			
 		} else {
