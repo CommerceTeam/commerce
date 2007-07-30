@@ -206,7 +206,7 @@ class tx_commerce_navigation {
         		$tmpArray = array();
         	}
         	
-        	foreach ($tmpArray as $value) {
+        	foreach ((array)$tmpArray as $value) {
         		if (($value <> $this->cat) && ($value > 0)) {
         			$this->pathParents[]=$value;
         		}
