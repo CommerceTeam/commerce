@@ -686,9 +686,8 @@ plugin.tx_commerce_pi6 {
         de = Sie haben sich für den(die) folgenden Artikel entschieden:
     }
     thankyou.value = Thank you for your order, and please visit us any time at http://yoursite.com [^]
-    thankyou.lang{
-        de = Vielen Dank für das Vertrauen, das Sie uns mit Ihrem Einkauf auf www.yoursite.com entge
-gengebraucht haben! 
+    thankyou.lang {
+            de = Vielen Dank für das Vertrauen, das Sie uns mit Ihrem Einkauf auf www.yoursite.com entgegengebraucht haben! 
 
     }
     

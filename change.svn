@@ -1,6 +1,9 @@
 Changelog for tx_commerce
 (add new changes on top of this file)
 
+30.07.2007 Ingo Schmitt <is@marketing-factory.de>
+* Fixed issue 5539, Thanks to Paul Hansen
+
 28.07.2007 Ingo Schmitt <is@marketing-factory.de>
 * Corrected handling of marker (noit Subparts) in pi6
 * Added showCurrencySign to TS for PI6
