@@ -5,6 +5,7 @@ Changelog for tx_commerce
 * Fixed issue 5539, Thanks to Paul Hansen
 * Fixed issue 5968, Thanks to Steffen Kamper
 * Fixed issue 6011, Thanks to Robert Destigter 
+* Fixed issue 5711, Thanks to Martin Holtz
 
 28.07.2007 Ingo Schmitt <is@marketing-factory.de>
 * Corrected handling of marker (noit Subparts) in pi6
