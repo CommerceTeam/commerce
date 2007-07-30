@@ -1030,7 +1030,7 @@ class tx_commerce_pibase extends tslib_pibase {
 	  function formatAttributeValue($matrix,$myAttributeUid) {
 	       /**
 	        * Default return
-		*/
+			*/
 
 //	       $return=$matrix[$myAttributeUid]['values'][0];
 //
@@ -1039,11 +1039,18 @@ class tx_commerce_pibase extends tslib_pibase {
 //	                $return=sprintf($matrix[$myAttributeUid]['valueformat'],$matrix[$myAttributeUid]['values'][0]);
 //	           }
 //		 }
-		 $return = '';
+ 		$return = '';
+ 		 /**
+ 		  * return if empty
+ 		  */
+		 if (!is_array($matrix)) {
+		 	return $return;
+		 }
+		
 		 $i=0;
 		 $AttributeValues=count($matrix[$myAttributeUid]['values']);
 
-		 foreach($matrix[$myAttributeUid]['values'] as $value) {
+		 foreach((array)$matrix[$myAttributeUid]['values'] as $value) {
 		 	$return2 = $value;
 		 	if (is_numeric($value)) {
 	           if ($matrix[$myAttributeUid]['valueformat']) {
