@@ -48,6 +48,8 @@ BECSVCharset  = iso-8859-1
 
 # cat=basic//30; type=int; label=OrderFolderRecursiveLevel: Defines the maximum recursions for the drop-down display of the order folder
 OrderFolderRecursiveLevel = 2
+# cat=basic//30; type=int; label=BasketStoragePid: Defines the page ID to store basket items in
+BasketStoragePid = 0
 
 
 

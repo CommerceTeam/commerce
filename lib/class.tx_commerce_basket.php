@@ -198,6 +198,7 @@
 		 */	
 		foreach ($this->basket_items as $oneuid  => $one_item)
  		{
+			$insert_data['pid']=$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce']['BasketStoragePid'];
  			$insert_data['pos']=$oneuid;
  			$insert_data['sid']=$this->sess_id;
  			$insert_data['article_id']=$one_item->get_article_uid();
