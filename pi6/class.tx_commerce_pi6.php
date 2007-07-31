@@ -109,9 +109,10 @@ class tx_commerce_pi6 extends tx_commerce_pibase{
 			$queryString.= ' AND tt_address.tx_commerce_address_type_id=1';
  		#	$queryString.= $this->cObj->enableFields("tt_address");
  		#	$queryString.= $this->cObj->enableFields("fe_users");
- 			$res_address_invoice = $GLOBALS['TYPO3_DB']->exec_SELECTquery('tt_address.name,tt_address.surname, tt_address.address, tt_address.zip, tt_address.city, tt_address.phone ', 'tt_address, fe_users',$queryString, '', '', '1');			
+ 			$res_address_invoice = $GLOBALS['TYPO3_DB']->exec_SELECTquery('tt_address.name,tt_address.surname, tt_address.company, tt_address.address, tt_address.zip, tt_address.city, tt_address.phone ', 'tt_address, fe_users',$queryString, '', '', '1');			
  			if ($row_address_invoice = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_address_invoice)) {
-				$address_invoice = $row_address_invoice['name'].' ' .$row_address_invoice['surname'].'<br />';
+ 				$address_invoice  = $row_address_invoice['company'].'<br />';
+				$address_invoice .= $row_address_invoice['name'].' ' .$row_address_invoice['surname'].'<br />';
 				$markerArray['###INVOICE_NAME###'] = $row_address_invoice['name'].' ' .$row_address_invoice['surname'];
 				$address_invoice.= $row_address_invoice['address'].'<br />';
 				$address_invoice.= $row_address_invoice['zip'].' '.$row_address_invoice['city'].'<br />';
@@ -123,9 +124,10 @@ class tx_commerce_pi6 extends tx_commerce_pibase{
 				$queryString.= ' AND tt_address.uid = '.$row['cust_deliveryaddress'];
 		#		$queryString.= $this->cObj->enableFields("tt_address");
 		#		$queryString.= $this->cObj->enableFields("fe_users");
-		 		$res_address_delivery = $GLOBALS['TYPO3_DB']->exec_SELECTquery('tt_address.name,tt_address.surname, tt_address.address, tt_address.zip, tt_address.city, tt_address.phone ', 'tt_address, fe_users',$queryString, '', '', '1');
+		 		$res_address_delivery = $GLOBALS['TYPO3_DB']->exec_SELECTquery('tt_address.name,tt_address.surname, tt_address.company, tt_address.address, tt_address.zip, tt_address.city, tt_address.phone ', 'tt_address, fe_users',$queryString, '', '', '1');
 				if ($row_address_delivery = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_address_delivery)) {
 					$address_delivery = '';
+					$address_delivery.= $row_address_delivery['company'].'<br />';
 					$address_delivery.= $row_address_delivery['name'].' ' .$row_address_delivery['surname'] .'<br />';
 					$address_delivery.= $row_address_delivery['address'].'<br />';
 					$address_delivery.= $row_address_delivery['zip'].' '.$row_address_delivery['city'].'<br />';

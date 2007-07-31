@@ -4,6 +4,7 @@ Changelog for tx_commerce
 31.07.2007 ingo Schmitt <is@marketing-factory.de>
 * Beautified sourcecode
 * Fixed a typo in extension Configuration
+* Added company to invoice output
 
 30.07.2007 Ingo Schmitt <is@marketing-factory.de>
 * Fixed issue 5539, Thanks to Paul Hansen
