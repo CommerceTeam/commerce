@@ -1,6 +1,10 @@
 Changelog for tx_commerce
 (add new changes on top of this file)
 
+31.07.2007 ingo Schmitt <is@marketing-factory.de>
+* Beautified sourcecode
+* Fixed a typo in extension Configuration
+
 30.07.2007 Ingo Schmitt <is@marketing-factory.de>
 * Fixed issue 5539, Thanks to Paul Hansen
 * Fixed issue 5968, Thanks to Steffen Kamper

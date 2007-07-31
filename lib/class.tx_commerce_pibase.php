@@ -1241,88 +1241,88 @@ class tx_commerce_pibase extends tslib_pibase {
 			return $this->error('renderProduct',__LINE__,'No ArticleMarker defined in renderProduct ');
 		}
 		
-				$hookObjectsArr = array();
-			    if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['product'])) {
-			       	foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['product'] as $classRef) {
-	                         $hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
-    		    	}
-	    	    }
-	#	if (is_object($myProduct)) {
-				$data = $myProduct->return_assoc_array();
+		$hookObjectsArr = array();
+	    if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['product'])) {
+	       	foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['product'] as $classRef) {
+                     $hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+	    	}
+	    }
 
-				
-				/**
-				 *  Build TS for Linking the Catergory Images
-				 */
-				$lokalTS = $TS;
-				
-				// check if no TYPOLink is already in TS
-				if (!($lokalTS['fields.']['images.']['stdWrap.']['typolink.'])){
-					
-					if ($this->conf['overridePid']) {
-						$typoLinkConf['parameter']=$this->conf['overridePid'];
-					}else{
-						$typoLinkConf['parameter']=$this->pid;
-					}
-					$typoLinkConf['useCacheHash'] = 1;
-					$typoLinkConf['additionalParams'] = ini_get('arg_separator.output').$this->prefixId.'[showUid]='.$myProduct->getUid();
-					
-					$typoLinkConf['additionalParams'].= ini_get('arg_separator.output').$this->prefixId.'[catUid]='.$this->piVars['catUid'];
-					
-					if($this->basketHashValue){
-						$typoLinkConf['additionalParams'].= ini_get('arg_separator.output').$this->prefixId.'[basketHashValue]='.$this->basketHashValue;
-					}
-					$lokalTS['fields.']['images.']['stdWrap.']['typolink.'] = $typoLinkConf;
-					
-					
-				}
-				
+		$data = $myProduct->return_assoc_array();
 
-				$markerArray=$this->generateMarkerArray($data,$lokalTS);
-				while(list($k,$v) = each ($markerArray)){
-				    $markerArrayUp[strtoupper($k)] = $v;
-				}
-				$markerArray = $this->cObj->fillInMarkerArray(array(),$markerArrayUp,implode(',',array_keys($markerArrayUp)),FALSE,'PRODUCT_');
-				$this->can_attributes = $myProduct->get_attributes(array(ATTRIB_can));
-   				$this->select_attributes = $myProduct->get_attributes(array(ATTRIB_selector));
-				$this->shall_attributes = $myProduct->get_attributes(array(ATTRIB_shal));
-	    		    	$markerArray['###SUBPART_PRODUCT_ATTRIBUTES###'] = $this->makeProduktAttributList($myProduct);
-				$linkArray['catUid']=$this->piVars['catUid'];
-				if($this->basketHashValue){
-					$linkArray['basketHashValue'] = $this->basketHashValue;
-				}
-				if(is_numeric($this->piVars["manufacturer"])){
-     				$linkArray["manufacturer"] = $this->piVars["manufacturer"];
-    			}
-    			if(is_numeric($this->piVars["mDepth"])){
-     				$linkArray["mDepth"] = $this->piVars["mDepth"];
-   				}
-   				foreach($hookObjectsArr as $hookObj)   {
-				    if (method_exists($hookObj, 'postProcessLinkArray')) {
-		    	    	         $markerArray =  $hookObj->postProcessLinkArray($markerArray,$myProduct,$this);
-	    	        }
-		    	}
-				$wrapMarkerArray['###PRODUCT_LINK_DETAIL###'] = explode('|',$this->pi_list_linkSingle('|',$myProduct->getUid(),1,$linkArray,FALSE,$this->conf['overridePid']));
-				$articleTemplate=$this->cObj->getSubpart($template,'###'.strtoupper($articleSubpart).'###');
-				
-				if($this->conf['useStockHandling'] == 1) {
-					$myProduct = tx_commerce_div::removeNoStockArticles($myProduct , $this->conf['articles.']['showWithNoStock']);
-				}
-				
-				$subpartArray['###'.strtoupper($articleSubpart).'###'] = $this->makeArticleView('list',array(),$myProduct,$articleMarker,$articleTemplate);
+		
+		/**
+		 *  Build TS for Linking the Catergory Images
+		 */
+		$lokalTS = $TS;
+		
+		// check if no TYPOLink is already in TS
+		if (!($lokalTS['fields.']['images.']['stdWrap.']['typolink.'])){
+			
+			if ($this->conf['overridePid']) {
+				$typoLinkConf['parameter']=$this->conf['overridePid'];
+			}else{
+				$typoLinkConf['parameter']=$this->pid;
+			}
+			$typoLinkConf['useCacheHash'] = 1;
+			$typoLinkConf['additionalParams'] = ini_get('arg_separator.output').$this->prefixId.'[showUid]='.$myProduct->getUid();
+			
+			$typoLinkConf['additionalParams'].= ini_get('arg_separator.output').$this->prefixId.'[catUid]='.$this->piVars['catUid'];
+			
+			if($this->basketHashValue){
+				$typoLinkConf['additionalParams'].= ini_get('arg_separator.output').$this->prefixId.'[basketHashValue]='.$this->basketHashValue;
+			}
+			$lokalTS['fields.']['images.']['stdWrap.']['typolink.'] = $typoLinkConf;
+			
+			
+		}
+		
+
+		$markerArray=$this->generateMarkerArray($data,$lokalTS);
+		while(list($k,$v) = each ($markerArray)){
+		    $markerArrayUp[strtoupper($k)] = $v;
+		}
+		$markerArray = $this->cObj->fillInMarkerArray(array(),$markerArrayUp,implode(',',array_keys($markerArrayUp)),FALSE,'PRODUCT_');
+		$this->can_attributes = $myProduct->get_attributes(array(ATTRIB_can));
+		$this->select_attributes = $myProduct->get_attributes(array(ATTRIB_selector));
+		$this->shall_attributes = $myProduct->get_attributes(array(ATTRIB_shal));
+		    	$markerArray['###SUBPART_PRODUCT_ATTRIBUTES###'] = $this->makeProduktAttributList($myProduct);
+		$linkArray['catUid']=$this->piVars['catUid'];
+		if($this->basketHashValue){
+			$linkArray['basketHashValue'] = $this->basketHashValue;
+		}
+		if(is_numeric($this->piVars["manufacturer"])){
+			$linkArray["manufacturer"] = $this->piVars["manufacturer"];
+		}
+		if(is_numeric($this->piVars["mDepth"])){
+			$linkArray["mDepth"] = $this->piVars["mDepth"];
+		}
+		foreach($hookObjectsArr as $hookObj)   {
+		    if (method_exists($hookObj, 'postProcessLinkArray')) {
+    	    	         $markerArray =  $hookObj->postProcessLinkArray($markerArray,$myProduct,$this);
+	        }
+    	}
+		$wrapMarkerArray['###PRODUCT_LINK_DETAIL###'] = explode('|',$this->pi_list_linkSingle('|',$myProduct->getUid(),1,$linkArray,FALSE,$this->conf['overridePid']));
+		$articleTemplate=$this->cObj->getSubpart($template,'###'.strtoupper($articleSubpart).'###');
+		
+		if($this->conf['useStockHandling'] == 1) {
+			$myProduct = tx_commerce_div::removeNoStockArticles($myProduct , $this->conf['articles.']['showWithNoStock']);
+		}
+		
+		$subpartArray['###'.strtoupper($articleSubpart).'###'] = $this->makeArticleView('list',array(),$myProduct,$articleMarker,$articleTemplate);
 
 
 
-		    	
-    			foreach($hookObjectsArr as $hookObj)   {
-				    if (method_exists($hookObj, 'additionalMarkerProduct')) {
-		    	    	         $markerArray =  $hookObj->additionalMarkerProduct($markerArray,$myProduct,$this);
-	    	        }
-		    	}
+    	
+		foreach($hookObjectsArr as $hookObj)   {
+		    if (method_exists($hookObj, 'additionalMarkerProduct')) {
+    	    	         $markerArray =  $hookObj->additionalMarkerProduct($markerArray,$myProduct,$this);
+	        }
+    	}
+		
+		return 	$this->cObj->substituteMarkerArrayCached($template, $markerArray , $subpartArray ,$wrapMarkerArray);
 
-	    	return 	$this->cObj->substituteMarkerArrayCached($template, $markerArray , $subpartArray ,$wrapMarkerArray);
-
-	#	}
+	
 	}
 
 	function makeArticleView($kind,$articles,$product){
