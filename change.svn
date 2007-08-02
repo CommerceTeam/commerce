@@ -1,6 +1,9 @@
 Changelog for tx_commerce
 (add new changes on top of this file)
 
+02.08.2007 Ingo Schmitt <is@marketing-factory.de>
+* Fixed Problem with auto generating of invoices
+
 31.07.2007 ingo Schmitt <is@marketing-factory.de>
 * Beautified sourcecode
 * Fixed a typo in extension Configuration

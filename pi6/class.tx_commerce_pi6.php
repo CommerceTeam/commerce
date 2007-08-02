@@ -43,7 +43,7 @@ class tx_commerce_pi6 extends tx_commerce_pibase{
 	var $pi_checkCHash = TRUE;
 	var $order_id;
 	/**
-	 * [Put your description here]
+	 * Main Method
 	 */
 	function main($content,$conf)	{
 		$this->conf=$conf;
@@ -92,8 +92,10 @@ class tx_commerce_pi6 extends tx_commerce_pibase{
 		/**
 		 * Add the frontend USer Check to the Invoice Display, to have no
 		 * Security problem, is somone gets the invoice URL
+		 * but do no Check if the Request address is the same than the server,
+		 * this is needed for an automatically generation of invoices
 		 */
-		if(!$GLOBALS['BE_USER']->user['uid']) {
+		if ((!$GLOBALS['BE_USER']->user['uid']) && ($_SERVER["REMOTE_ADDR"] != $_SERVER["SERVER_ADDR"])) {
 			$queryString.= ' AND  tx_commerce_fe_user_id = '.$GLOBALS['TSFE']->fe_user->user['uid'].' ' ;
 		}  
  		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'tx_commerce_orders', $queryString, '', '', '1');
