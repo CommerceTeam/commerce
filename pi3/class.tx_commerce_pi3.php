@@ -81,6 +81,21 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 	var $debug = FALSE;
 
 	/**
+	 * @var 	boolean		true if checkoutmail to user send correctly
+	 */
+	var $userMailOK;
+	/**
+	 * @var 	boolean		true if checkoutmail to Admin send correctly
+	 */
+	var $adminMailOK;
+	
+	/**
+	 * you have to implement a false by your own
+	 * @var		boolean		true if finish IT is ok
+	 * 
+	 */
+	var $finishItOK = true;
+	/**
 	 * Init Method, autmatically called $this->main
 	 * @param 	string	$conf	TypoConfiguration
 	 */
@@ -791,8 +806,8 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 		/**
 		 * Send the emails
 		 */
-		$this->sendUserMail($orderId,$orderData);
-		$this->sendAdminMail($orderId,$orderData);
+		$this->userMailOK = $this->sendUserMail($orderId,$orderData);
+		$this->adminMailOK = $this->sendAdminMail($orderId,$orderData);
 		
 		foreach($hookObjectsArr as $hookObj) {
     		if (method_exists($hookObj, 'afterMailSend')) {
@@ -812,11 +827,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 		$markerArray['###MESSAGE###']='';
 		$markerArray['###LISTING_TITLE###'] = $this->pi_getLL('order_confirmation');
 
-		$markerArray['###FINISH_MESSAGE_GOOD###'] = $this->pi_getLL('finish_message_good');
-		$markerArray['###FINISH_MESSAGE_BAD###'] = $this->pi_getLL('finish_message_bad');
-		$markerArray['###FINISH_MESSAGE_EMAIL###'] = $this->pi_getLL('finish_message_email');
-		$markerArray['###FINISH_MESSAGE_NOEMAIL###'] = $this->pi_getLL('finish_message_noemail');
-		$markerArray['###FINISH_MESSAGE_THANKYOU###'] = $this->pi_getLL('finish_message_thankyou');
+		
 
 		  if (method_exists($paymentObj, 'getSuccessData')) {
 		       $markerArray['###MESSAGE_PAYMENT_OBJECT###'] = $paymentObj->getSuccessData($this);
@@ -872,7 +883,43 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 		return $content;
 	}
 
+	
+
 	/** HELPER ROUTINES **/
+
+	/**
+	 * Fills the MarkerArray with the correct markers, regarding the success of the order
+	 * currently a dummy, will bi filed in future with more error codes
+	 * @param	array	 $markerArray
+	 * @return	array	$markerArray
+	 */
+
+	function FinishItRenderGoodBadMarker($markerArray){
+		
+		$allOK = true;
+		if ($this->finishItOK==true){
+			
+			$markerArray['###FINISH_MESSAGE_GOOD###'] = $this->pi_getLL('finish_message_good');
+			$markerArray['###FINISH_MESSAGE_BAD###'] = '';
+		}else{
+			$markerArray['###FINISH_MESSAGE_BAD###'] = $this->pi_getLL('finish_message_bad');
+			$markerArray['###FINISH_MESSAGE_GOOD###'] = '';
+		}
+		
+		if ($this->userMailOK && $this->adminMailOK) {
+			$markerArray['###FINISH_MESSAGE_EMAIL###'] = $this->pi_getLL('finish_message_email');
+			$markerArray['###FINISH_MESSAGE_NOEMAIL###'] = '';
+		}else{
+			$markerArray['###FINISH_MESSAGE_NOEMAIL###'] = $this->pi_getLL('finish_message_noemail');
+			$markerArray['###FINISH_MESSAGE_EMAIL###'] = '';
+		}
+		if ($allOK == true) {
+			$markerArray['###FINISH_MESSAGE_THANKYOU###'] = $this->pi_getLL('finish_message_thankyou');
+		}else{
+			$markerArray['###FINISH_MESSAGE_THANKYOU###'] = '';
+		}
+		return $markerArray;
+	}
 
 	/**
 	 * check if all Articles of Basket are in stock

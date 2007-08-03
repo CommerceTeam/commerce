@@ -540,53 +540,58 @@ class tx_commerce_pibase extends tslib_pibase {
 	 * This Method will not replace the Subpart, you have to replace your subpart in your template
 	 * by you own
 	 * @param  article	Article Object the marker based on
+	 * @param  priceid	boolean	if set tu true (default) the price-id will berendered into the hiddenfields, otherwhise not
 	 * @return $markerArray Array with all marker needed for the article and the basket form
 	 * @author Volker Graubaum <vg_typo3@e-netconsulting.de>
 	 */
 
-	function getArticleMarker($article){
+	function getArticleMarker($article, $priceid=true){
 
 
-			$markerArray = $this->generateMarkerArray($article->returnAssocArray(),$this->conf['singleView.']['articles.'],'article_');
-			
-			if ($article->getSupplierUid()) {
-				$markerArray['ARTICLE_SUPPLIERNAME'] = $article->getSupplierName();
-			}else {
-				$markerArray['ARTICLE_SUPPLIERNAME']= '';
-			}
-			
-			
-			$markerArray['STARTFRM'] = '<form name="basket_'.$article->getUid().'" action="'.$this->pi_getPageLink($this->conf['basketPid']).'" method="post">';
-			$markerArray['HIDDENFIELDS'] = '<input type="hidden" name="'.$this->prefixId.'[catUid]" value="'.$this->cat.'">';
+		$markerArray = $this->generateMarkerArray($article->returnAssocArray(),$this->conf['singleView.']['articles.'],'article_');
+		
+		if ($article->getSupplierUid()) {
+			$markerArray['ARTICLE_SUPPLIERNAME'] = $article->getSupplierName();
+		}else {
+			$markerArray['ARTICLE_SUPPLIERNAME']= '';
+		}
+		
+		
+		$markerArray['STARTFRM'] = '<form name="basket_'.$article->getUid().'" action="'.$this->pi_getPageLink($this->conf['basketPid']).'" method="post">';
+		$markerArray['HIDDENFIELDS'] = '<input type="hidden" name="'.$this->prefixId.'[catUid]" value="'.$this->cat.'">';
+		if ($priceid==true) {
 			$markerArray['HIDDENFIELDS'] .= '<input type="hidden" name="'.$this->prefixId.'[artAddUid]['.$article->getUid().'][price_id]" value="'.$article->get_article_price_uid().'">';
-			$markerArray['QTY_INPUT_VALUE'] = $this->getArticleAmount($article->getUid());
-			$markerArray['QTY_INPUT_NAME'] = $this->prefixId.'[artAddUid]['.$article->getUid().'][count]';
-			$markerArray['ARTICLE_NUMBER'] = $article->get_ordernumber();
-			$markerArray['ARTICLE_ORDERNUMBER'] = $article->get_ordernumber();
-			
-			$markerArray['ARTICLE_PRICE_NET'] = tx_moneylib::format($article->get_price_net(),$this->currency);
-			$markerArray['ARTICLE_PRICE_GROSS'] = tx_moneylib::format($article->get_price_gross(),$this->currency);
-			$markerArray['DELIVERY_PRICE_NET'] = tx_moneylib::format($article->getDeliveryCostNet(),$this->currency);
-			$markerArray['DELIVERY_PRICE_GROSS'] = tx_moneylib::format($article->getDeliveryCostGross(),$this->currency);
-			
-			
-			$hookObjectsArr = array();
-            if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['articleMarker'])){
-                     foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['articleMarker'] as $classRef){
+		}else{
+			$markerArray['HIDDENFIELDS'] .= '<input type="hidden" name="'.$this->prefixId.'[artAddUid]['.$article->getUid().'][price_id]" value="">';
+		}
+		$markerArray['QTY_INPUT_VALUE'] = $this->getArticleAmount($article->getUid());
+		$markerArray['QTY_INPUT_NAME'] = $this->prefixId.'[artAddUid]['.$article->getUid().'][count]';
+		$markerArray['ARTICLE_NUMBER'] = $article->get_ordernumber();
+		$markerArray['ARTICLE_ORDERNUMBER'] = $article->get_ordernumber();
+		
+		$markerArray['ARTICLE_PRICE_NET'] = tx_moneylib::format($article->get_price_net(),$this->currency);
+		$markerArray['ARTICLE_PRICE_GROSS'] = tx_moneylib::format($article->get_price_gross(),$this->currency);
+		$markerArray['DELIVERY_PRICE_NET'] = tx_moneylib::format($article->getDeliveryCostNet(),$this->currency);
+		$markerArray['DELIVERY_PRICE_GROSS'] = tx_moneylib::format($article->getDeliveryCostGross(),$this->currency);
+		
+		
+		$hookObjectsArr = array();
+        if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['articleMarker'])){
+                 foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['articleMarker'] as $classRef){
                               $hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
                       }
             }
   
             foreach($hookObjectsArr as $hookObj)   {
                   if (method_exists($hookObj, 'additionalMarkerArticle')) {
-                           $markerArray =  $hookObj->additionalMarkerArticle($markerArray,$article,$this);
-                   }
-            }
-			
-	    
+                       $markerArray =  $hookObj->additionalMarkerArticle($markerArray,$article,$this);
+               }
+        }
+		
+    
 
 
-			return $markerArray;
+		return $markerArray;
 	}
 
 	/**

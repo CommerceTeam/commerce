@@ -199,7 +199,11 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 						// instanz zur berechnung der versandkosten		
 						
 						if ($artilceObj->hasStock($v['count'])) {
-							$this->basket->add_article($k,$v['count'],$v['price_id']);
+							if ((int)$v['price_id']>0) {
+								$this->basket->add_article($k,$v['count'],$v['price_id']);
+							}else{
+								$this->basket->add_article($k,$v['count']);
+							}
 						} else {
 							$this->noStock = $this->pi_getLL('noStock');
 						}
@@ -208,7 +212,11 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 						/**
 						 * Add per defaul the article
 						 */
-						$this->basket->add_article($k,$v['count'],$v['price_id']);
+						if ((int)$v['price_id']>0) {
+							$this->basket->add_article($k,$v['count'],$v['price_id']);
+						}else{
+							$this->basket->add_article($k,$v['count']);
+						}
 					}
 				}
 				
