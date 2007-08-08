@@ -168,7 +168,35 @@ class tx_commerce_db_article extends tx_commerce_db_alib{
 		}
 	
 	}
-																																								 	 
+	/**
+	 * Returns an array of all prices
+	 * @param uid= Article uid
+	 * @return array of Price UID
+	 */
+	
+	function getPrices($uid){
+		if ($uid>0) {
+	
+			$price_uid_list=array();
+		    if(is_object($GLOBALS['TSFE']->sys_page)){
+					$proofSQL = $GLOBALS['TSFE']->sys_page->enableFields('tx_commerce_article_prices',$GLOBALS['TSFE']->showHiddenRecords);
+		   	}	
+	        $result=$GLOBALS['TYPO3_DB']->exec_SELECTquery('uid,price_scale_amount_start, price_scale_amount_end','tx_commerce_article_prices',"uid_article = $uid AND price_scale_amount_start >= $count " .  $proofSQL);
+	        if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)>0){
+			 	while ($return_data=$GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)){
+			         $price_uid_list[]=$return_data['uid'];
+			 	}
+		        $GLOBALS['TYPO3_DB']->sql_free_result($result);
+			 	return $price_uid_list;
+		    }else{
+		    	$this->error("exec_SELECTquery('uid','tx_commerce_article_prices',\"uid_article = $uid\"); returns no Result");
+	            return false;
+	        }
+		}else {
+			return false;
+		}
+	
+	}																																						 	 
 	 
  	 /**
  	 * gets all attributes from this product

@@ -3,6 +3,9 @@ Changelog for tx_commerce
 
 08.08.2007 Ingo Schmitt <is@marketing-factory.de>
 * Added Check if object exists in tx_commerce_pibase::renderProduct
+* Added Check to Basket, if a given price ID is a valid price id from this article
+* New Method getPrices in tx_commerce_db_article
+* New Method getPossiblePriceUids in tx_commerce_articles
 
 03.08.2007 Ingo Schmitt <is@marketing-factory.de>
 * fixed Issue 5204 

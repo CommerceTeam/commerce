@@ -112,16 +112,27 @@
 			if(is_object($this->basket_items[$article_uid]) || ($quantity == 0)){
 				$this->change_quantity($article_uid, $quantity);
 			}else{
+				$article=new tx_commerce_article($article_uid,$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid'])	;
+				$article->load_data();
+				$article->load_Prices();
+				$priceids=$article->getPossiblePriceUids();
+				/**
+				 * Check if the given price id is related to the article
+				 */
+				if (!in_array($priceid,$priceids)){
+					$priceid='';
+				}
+				
 				if ($priceid == '')	{
 					// no priceid is given,. get the price from article_object
-					$article=new tx_commerce_article($article_uid,$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid'])	;
-					$article->load_data();
-					$article->load_Prices();
+					
 					$priceid=$article->getActualPriceforScaleUid($quantity);
 					if (!$priceid) {
 						$priceid=$article->get_article_price_uid();
 					}
 				}
+				
+				
 				if ($this->basket_items[$article_uid]=new tx_commerce_basket_item($article_uid,$quantity,$priceid,$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid'])){
 	 				$this->basket_items[$article_uid]->setTaxCalculationMethod($this->pricefromnet);
 	 				$this->recalculate_sums();

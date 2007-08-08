@@ -239,6 +239,15 @@
         }
 
 		/**
+		 * Get Article all possivle  prices as UDI Array
+		 * 
+		 * @return array or priceUid 
+		 */
+		function getPossiblePriceUids(){
+			return $this->conn_db->getPrices($this->uid);
+		}
+
+		/**
 		 * Get Article price scales
 		 * @param	$startcount	Count where to start with th listing of the sacles, default 1
 		 * @return array or priceUid grouped by the different scales
