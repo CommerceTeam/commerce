@@ -1,6 +1,9 @@
 Changelog for tx_commerce
 (add new changes on top of this file)
 
+08.08.2007 Ingo Schmitt <is@marketing-factory.de>
+* Added Check if object exists in tx_commerce_pibase::renderProduct
+
 03.08.2007 Ingo Schmitt <is@marketing-factory.de>
 * fixed Issue 5204 
 * fixed problem with scaled prices and pascet item calculation

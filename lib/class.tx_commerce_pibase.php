@@ -1252,7 +1252,9 @@ class tx_commerce_pibase extends tslib_pibase {
                      $hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
 	    	}
 	    }
-
+		if (!is_object($myProduct)) {
+			return false;
+		}
 		$data = $myProduct->return_assoc_array();
 
 		
