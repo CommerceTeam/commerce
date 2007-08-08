@@ -853,7 +853,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 		}
 		$content = $this->cObj->substituteSubpart($content,'###BILLING_ADDRESS###',$deliveryAdress);
 
-		$this->FinishItRenderGoodBadMarker($markerArray);
+		$markerArray = $this->FinishItRenderGoodBadMarker($markerArray);
 		
 		foreach($hookObjectsArr as $hookObj)	{
 			if (method_exists($hookObj, 'ProcessMarker'))	{
