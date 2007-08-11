@@ -394,8 +394,8 @@
 	 				$GLOBALS['TYPO3_DB']->sql_free_result($result);
 	 			}
 	
-				// Es sollen nur Artikel zur�ckgeliefert werden, die in allen Array's vorkommen.
-				// Daher das Erste Array setzen und dann mit Array Intersect nur noch die �bereinstimmungen
+				// Es sollen nur Artikel zur?ckgeliefert werden, die in allen Array's vorkommen.
+				// Daher das Erste Array setzen und dann mit Array Intersect nur noch die ?bereinstimmungen
 				// behalten.
 				if($first){
 					$attribute_uid_list = $first_array;
@@ -429,6 +429,244 @@
   	 	
   	 }
   	 
+  	 	/**
+	 	 * Generates a Matrix fro these concerning artciles for all Attributes and the values therfor
+	 	 * Realy complex array, so have a lokk at the source
+	 	 * 
+	 	 * @param $articleList [optional]
+	 	 * @param $attribute Exclude List array (list auf attriubute uids to exclkude)
+	 	 * @param $showHiddenValues default true (if hidden values should be shown)
+	 	 * @return array of arrays
+	 	 * @todo split DB connects to db_class
+	 	 * @since 2005 11 02 $showHiddenValues
+	 	 * @since 2005 11 02 Array of arrays also contains valueformat
+	 	 * @since 2005 11 02 Array of arrays also contains internal_title
+	 	 */
+	 
+	 	function get_attribute_matrix($articleList=false, $attribute_include=false, $showHiddenValues=true,$sortingTable = 'tx_commerce_articles_article_attributes_mm'){
+	 
+	 
+	 		$return_array=array();
+	 		/**
+	 		 * if no list is given, take complate arctile-list from product
+	 		 */
+	 
+	 
+	 		if ($this->uid>0) { 
+	 			if ($articleList==false){
+	 				$articleList=$this->load_articles();
+	 			}
+	 
+	 		if (is_array($attribute_include)){
+	 			if (!is_null($attribute_include[0])) {
+	 					$addwhere.=' AND tx_commerce_attributes.uid in ('.implode(',',$attribute_include).')';
+	 				}	
+	 			}
+	 			if(is_array($articleList) && count($articleList)>0) {
+	 				$query_article_list=  implode(',',$articleList);
+	 				$addwhere2 =' AND tx_commerce_articles.uid in ('.$query_article_list.')';
+	 			}
+	 
+	 			$result=$GLOBALS['TYPO3_DB']->exec_SELECT_mm_query('distinct tx_commerce_attributes.uid,tx_commerce_attributes.sys_language_uid,tx_commerce_articles.uid as article ,tx_commerce_attributes.title, tx_commerce_attributes.unit, tx_commerce_attributes.valueformat, tx_commerce_attributes.internal_title,tx_commerce_attributes.icon, '.$sortingTable.'.sorting',
+	 									'tx_commerce_articles',
+	 									'tx_commerce_articles_article_attributes_mm',
+	 									'tx_commerce_attributes',	
+	 									' AND tx_commerce_articles.uid_product = '.$this->uid.' '.$addwhere.$addwhere2.' order by '.$sortingTable.'.sorting'
+	 									);
+	 			$addwhere = $addwhere2;
+	 
+	 			if (($result) && ($GLOBALS['TYPO3_DB']->sql_num_rows($result)>0))	{
+	 				while ($data=$GLOBALS['TYPO3_DB']->sql_fetch_assoc($result))	{
+	 
+	 					/** 
+	 					 * Do the language overlay
+	 					 */
+	 					if ($this->lang_uid>0) {
+	 						if(is_object($GLOBALS['TSFE']->sys_page)){
+	 								$proofSQL = $GLOBALS['TSFE']->sys_page->enableFields('tx_commerce_attributes',$GLOBALS['TSFE']->showHiddenRecords);
+	 						}
+	 						$result2=$GLOBALS['TYPO3_DB']->exec_SELECTquery('*',
+	 							'tx_commerce_attributes',
+	 							'uid = '.$data['uid'].' '.$proofSQL
+	 							);
+	 
+	 
+	 						// Result should contain only one Dataset
+	 						if ($GLOBALS['TYPO3_DB']->sql_num_rows($result2)==1)	{
+	 							$return_data=$GLOBALS['TYPO3_DB']->sql_fetch_assoc($result2);
+	 							$GLOBALS['TYPO3_DB']->sql_free_result($result2);
+	 							$return_data=$GLOBALS['TSFE']->sys_page->getRecordOverlay('tx_commerce_attributes',$return_data,$this->lang_uid,$this->translationMode);
+	 							if (!is_array($return_data)){
+	 							/**
+	 							 * No Translation possible, so next interation
+	 							 */	
+	 								continue;
+	 							}
+	 						}
+	 
+	 						$data['title']=$return_data['title'];
+	 						$data['unit']=$return_data['unit'];
+	 						$data['internal_title']=$return_data['internal_title'];
+	 
+	 
+	 
+	 					}
+	 
+	 					$valueshown=false;
+	 					/**
+	 					 * get the different possible values form value_char an value
+	 					 */
+	 					/**
+	 					 * @since 13.12.2005 Get the lokalized values from tx_commerce_articles_article_attributes_mm
+	 					 * @author Ingo Schmitt <is@marketing-factory.de>
+	 					 */
+	 
+	 					$valuelist=array();
+	 					$attribute_uid=$data['uid'];
+	 					$article=$data['article'];
+	 					$result_value=$GLOBALS['TYPO3_DB']->exec_SELECT_mm_query('distinct tx_commerce_articles_article_attributes_mm.value_char, tx_commerce_articles.uid article_uid, tx_commerce_attributes.uid attribute_uid',
+	 									'tx_commerce_articles',
+	 									'tx_commerce_articles_article_attributes_mm',
+	 									'tx_commerce_attributes',	
+	 									' AND tx_commerce_articles.uid_product = '.$this->uid.' AND tx_commerce_attributes.uid='.$attribute_uid.$addwhere
+	 									);
+	 					if (($result_value) && ($GLOBALS['TYPO3_DB']->sql_num_rows($result_value)>0))	{
+	 							while ($value=$GLOBALS['TYPO3_DB']->sql_fetch_assoc($result_value))		{
+	 
+	 								if (strlen($value['value_char'])>0)	{
+	 
+	 									if ($this->lang_uid>0)	{
+	 										/**
+	 										 * Do the lokalization
+	 										 */
+	 
+	 										$proofSQL_attributes = $GLOBALS['TSFE']->sys_page->enableFields('tx_commerce_attributes',$GLOBALS['TSFE']->showHiddenRecords);
+	 										$proofSQL_articles = $GLOBALS['TSFE']->sys_page->enableFields('tx_commerce_articles',$GLOBALS['TSFE']->showHiddenRecords);
+	 										$res_value_lok=$GLOBALS['TYPO3_DB']->exec_SELECTquery('distinct tx_commerce_articles_article_attributes_mm.value_char, tx_commerce_articles_article_attributes_mm.default_value',
+	 										'tx_commerce_articles_article_attributes_mm, tx_commerce_articles, tx_commerce_attributes',
+	 										"tx_commerce_articles_article_attributes_mm.uid_foreign=".$value['attribute_uid'].
+	 													" and tx_commerce_articles_article_attributes_mm.uid_local=tx_commerce_articles.uid and tx_commerce_articles.sys_language_uid=".$this->lang_uid.
+	 													" and tx_commerce_articles.uid_product>0 and tx_commerce_articles.l18n_parent=".$value['article_uid'].
+	 													" ".$proofSQL_attributes.$proofSQL_articles
+	 										);
+	 
+	 										if (($res_value_lok) && ($GLOBALS['TYPO3_DB']->sql_num_rows($res_value_lok)>0)) {
+	 											while ($lok_value=$GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_value_lok)){
+	 
+	 												if (strlen($lok_value['value_char'])>0){
+	 													$valuelist[]=$lok_value['value_char'];
+	 													$valueshown=true;
+	 												}elseif (strlen($lok_value['default_value'])>0){
+	 													$valuelist[]=$lok_value['default_value'];
+	 													$valueshown=true;
+	 												}
+	 											}
+	 										}
+	 
+	 									}else	{
+	 
+	 										$valuelist[]=$value['value_char'];
+	 										$valueshown=true;
+	 									}
+	 								}
+	 							}
+	 					} 		
+	 
+	 					$result_value=$GLOBALS['TYPO3_DB']->exec_SELECT_mm_query('distinct tx_commerce_articles_article_attributes_mm.default_value,  tx_commerce_articles.uid article_uid, tx_commerce_attributes.uid attribute_uid ',
+	 									'tx_commerce_articles',
+	 									'tx_commerce_articles_article_attributes_mm',
+	 									'tx_commerce_attributes',	
+	 									' AND tx_commerce_articles.uid_product = '.$this->uid." AND tx_commerce_attributes.uid=$attribute_uid".$addwhere
+	 									);
+	 					if (($valueshown == false) && ($result_value) && ($GLOBALS['TYPO3_DB']->sql_num_rows($result_value)>0)){
+	 							while ($value=$GLOBALS['TYPO3_DB']->sql_fetch_assoc($result_value))	{
+	 
+	 								if ($value['default_value']>0)	{
+	 
+	 									if ($this->lang_uid>0){
+	 										/**
+	 										 * Do the lokalization
+	 										 */
+	 
+	 										$proofSQL_attributes = $GLOBALS['TSFE']->sys_page->enableFields('tx_commerce_attributes',$GLOBALS['TSFE']->showHiddenRecords);
+	 										$proofSQL_articles = $GLOBALS['TSFE']->sys_page->enableFields('tx_commerce_articles',$GLOBALS['TSFE']->showHiddenRecords);
+	 										$res_value_lok=$GLOBALS['TYPO3_DB']->exec_SELECTquery('distinct tx_commerce_articles_article_attributes_mm.default_value, tx_commerce_articles_article_attributes_mm.value_char',
+	 										'tx_commerce_articles_article_attributes_mm, tx_commerce_articles, tx_commerce_attributes',
+	 										"tx_commerce_articles_article_attributes_mm.uid_foreign=".$value['attribute_uid'].
+	 													" and tx_commerce_articles_article_attributes_mm.uid_local=tx_commerce_articles.uid and tx_commerce_articles.sys_language_uid=".$this->lang_uid.
+	 													" and tx_commerce_articles.l18n_parent=".$value['article_uid'].
+	 													" ".$proofSQL_attributes.$proofSQL_articles
+	 										);
+	 										if (($res_value_lok) && ($GLOBALS['TYPO3_DB']->sql_num_rows($res_value_lok)>0)) {
+	 											while ($lok_value=$GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_value_lok)){
+	 												if (strlen($lok_value['default_value'])>0){
+	 													$valuelist[]=$lok_value['default_value'];
+	 													$valueshown=true;
+	 												}elseif(strlen($lok_value['value_char'])>0) {
+	 													$valuelist[]=$lok_value['value_char'];
+	 													$valueshown=true;
+	 												}
+	 											}
+	 										}
+	 									}else
+	 									{
+	 										$valuelist[]=$value['default_value'];
+	 										$valueshown=true;
+	 									}
+	 								}
+	 							}
+	 					}
+	 
+	 					$result_value=$GLOBALS['TYPO3_DB']->exec_SELECT_mm_query('distinct tx_commerce_articles_article_attributes_mm.uid_valuelist ',
+	 							'tx_commerce_articles',
+	 							'tx_commerce_articles_article_attributes_mm',
+	 							'tx_commerce_attributes',	
+	 							' AND tx_commerce_articles_article_attributes_mm.uid_valuelist>0 AND tx_commerce_articles.uid_product = '.$this->uid." AND tx_commerce_attributes.uid=$attribute_uid".$addwhere
+	 						);
+	 					if (($valueshown == false) && ($result_value) && ($GLOBALS['TYPO3_DB']->sql_num_rows($result_value)>0)){
+	 							while ($value=$GLOBALS['TYPO3_DB']->sql_fetch_assoc($result_value)){
+	 
+	 								if ($value['uid_valuelist']>0){
+	 
+	 								    $resvalue = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*','tx_commerce_attribute_values','uid = '.$value['uid_valuelist']);
+	 								    $row=$GLOBALS['TYPO3_DB']->sql_fetch_assoc($resvalue);
+	 								    if ($this->lang_uid>0) {
+	 									$row=$GLOBALS['TSFE']->sys_page->getRecordOverlay('tx_commerce_attribute_values',$row,$this->lang_uid,$this->translationMode);
+	 									if (!is_array($row)){
+	 										continue;	
+	 									}
+	 								     }
+	 								    if (($showHiddenValues==true) || (($showHiddenValues==false) && ($row['showvalue']==1))){
+	 
+	 
+	 									 $valuelist[] = $row['value'];
+	 									 $valueshown=true;
+	 								    }
+	 
+	 								}
+	 							}
+	 					}
+	 
+	 
+	 					if ($valueshown==true){
+	 						$return_array[$attribute_uid]=array('title' => $data['title'],
+	 													  'unit' => $data['unit'],
+	 													  'values' => $valuelist,
+	 													  'valueformat' => $data['valueformat'],
+	 													  'Internal_title' => $data['internal_title'],
+	 													  'icon' => $data['icon']
+	 													);
+	 					}
+	 
+	 				}
+	 
+	 				return $return_array;
+	 			}
+	 		}
+	 		return false;
+	 
+	}
+  	 
   	/**
   	 * Generates a Matrix fro these concerning artciles for all Attributes and the values therfor
   	 * Realy complex array, so have a lokk at the source
@@ -443,7 +681,7 @@
   	 * @since 2005 11 02 Array of arrays also contains internal_title
   	 */
   	
-  	function get_atrribute_matrix($articleList=false, $attribute_include=false, $showHiddenValues=true,$sortingTable = 'tx_commerce_articles_article_attributes_mm'){
+  	function get_selectattribute_matrix($articleList=false, $attribute_include=false, $showHiddenValues=true,$sortingTable = 'tx_commerce_articles_article_attributes_mm'){
   		
   		
   		$return_array=array();
@@ -477,10 +715,10 @@
 			
 			if (($result) && ($GLOBALS['TYPO3_DB']->sql_num_rows($result)>0))	{
 	 			while ($data=$GLOBALS['TYPO3_DB']->sql_fetch_assoc($result))	{
-	 				
 	 				/** 
 	 				 * Do the language overlay
 	 				 */
+	 				 
 	 				if ($this->lang_uid>0) {
 	 					if(is_object($GLOBALS['TSFE']->sys_page)){
 			   					$proofSQL = $GLOBALS['TSFE']->sys_page->enableFields('tx_commerce_attributes',$GLOBALS['TSFE']->showHiddenRecords);
@@ -507,115 +745,22 @@
 	 					$data['title']=$return_data['title'];
 	 					$data['unit']=$return_data['unit'];
 	 					$data['internal_title']=$return_data['internal_title'];
-	 					
-	 					
 	 							     	
 	 				}
 	 				
 	 				$valueshown=false;
 	 				/**
-	 				 * get the different possible values form value_char an value
+	 				 * only get select attributs, since we don't need any other in selectattribut Matrix and we need the arrayKeys in this case
 	 				 */
 	 				/**
 	 				 * @since 13.12.2005 Get the lokalized values from tx_commerce_articles_article_attributes_mm
 	 				 * @author Ingo Schmitt <is@marketing-factory.de>
 	 				 */
 	 				
+					
 					$valuelist=array();
-	 				$attribute_uid=$data['uid'];
+					$attribute_uid=$data['uid'];
 	 				$article=$data['article'];
-	 				$result_value=$GLOBALS['TYPO3_DB']->exec_SELECT_mm_query('distinct tx_commerce_articles_article_attributes_mm.value_char, tx_commerce_articles.uid article_uid, tx_commerce_attributes.uid attribute_uid',
-	  	 							'tx_commerce_articles',
-	 								'tx_commerce_articles_article_attributes_mm',
-									'tx_commerce_attributes',	
-									' AND tx_commerce_articles.uid_product = '.$this->uid.' AND tx_commerce_attributes.uid='.$attribute_uid.$addwhere
-									);
-					if (($result_value) && ($GLOBALS['TYPO3_DB']->sql_num_rows($result_value)>0))	{
-	 						while ($value=$GLOBALS['TYPO3_DB']->sql_fetch_assoc($result_value))		{
-	 							
-	 							if (strlen($value['value_char'])>0)	{
-	 								
-	 								if ($this->lang_uid>0)	{
-	 									/**
-	 									 * Do the lokalization
-	 									 */
-	 									
-	 									$proofSQL_attributes = $GLOBALS['TSFE']->sys_page->enableFields('tx_commerce_attributes',$GLOBALS['TSFE']->showHiddenRecords);
-	 									$proofSQL_articles = $GLOBALS['TSFE']->sys_page->enableFields('tx_commerce_articles',$GLOBALS['TSFE']->showHiddenRecords);
-	 									$res_value_lok=$GLOBALS['TYPO3_DB']->exec_SELECTquery('distinct tx_commerce_articles_article_attributes_mm.value_char, tx_commerce_articles_article_attributes_mm.default_value',
-										'tx_commerce_articles_article_attributes_mm, tx_commerce_articles, tx_commerce_attributes',
-										"tx_commerce_articles_article_attributes_mm.uid_foreign=".$value['attribute_uid'].
-													" and tx_commerce_articles_article_attributes_mm.uid_local=tx_commerce_articles.uid and tx_commerce_articles.sys_language_uid=".$this->lang_uid.
-													" and tx_commerce_articles.uid_product>0 and tx_commerce_articles.l18n_parent=".$value['article_uid'].
-													" ".$proofSQL_attributes.$proofSQL_articles
-										);
-										
-										if (($res_value_lok) && ($GLOBALS['TYPO3_DB']->sql_num_rows($res_value_lok)>0)) {
-											while ($lok_value=$GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_value_lok)){
-												
-												if (strlen($lok_value['value_char'])>0){
-													$valuelist[]=$lok_value['value_char'];
-													$valueshown=true;
-												}elseif (strlen($lok_value['default_value'])>0){
-													$valuelist[]=$lok_value['default_value'];
-													$valueshown=true;
-												}
-	 										}
-										}
-										
-									}else	{
-	 															
-	 									$valuelist[]=$value['value_char'];
-										$valueshown=true;
-	 								}
-	 							}
-	 						}
-	 				} 		
-				
-	 				$result_value=$GLOBALS['TYPO3_DB']->exec_SELECT_mm_query('distinct tx_commerce_articles_article_attributes_mm.default_value,  tx_commerce_articles.uid article_uid, tx_commerce_attributes.uid attribute_uid ',
-	  	 							'tx_commerce_articles',
-	 								'tx_commerce_articles_article_attributes_mm',
-									'tx_commerce_attributes',	
-									' AND tx_commerce_articles.uid_product = '.$this->uid." AND tx_commerce_attributes.uid=$attribute_uid".$addwhere
-									);
-					if (($valueshown == false) && ($result_value) && ($GLOBALS['TYPO3_DB']->sql_num_rows($result_value)>0)){
-	 						while ($value=$GLOBALS['TYPO3_DB']->sql_fetch_assoc($result_value))	{
-	 						
-	 							if ($value['default_value']>0)	{
-	 								
-	 								if ($this->lang_uid>0){
-	 									/**
-	 									 * Do the lokalization
-	 									 */
-	 									
-	 									$proofSQL_attributes = $GLOBALS['TSFE']->sys_page->enableFields('tx_commerce_attributes',$GLOBALS['TSFE']->showHiddenRecords);
-	 									$proofSQL_articles = $GLOBALS['TSFE']->sys_page->enableFields('tx_commerce_articles',$GLOBALS['TSFE']->showHiddenRecords);
-	 									$res_value_lok=$GLOBALS['TYPO3_DB']->exec_SELECTquery('distinct tx_commerce_articles_article_attributes_mm.default_value, tx_commerce_articles_article_attributes_mm.value_char',
-										'tx_commerce_articles_article_attributes_mm, tx_commerce_articles, tx_commerce_attributes',
-										"tx_commerce_articles_article_attributes_mm.uid_foreign=".$value['attribute_uid'].
-													" and tx_commerce_articles_article_attributes_mm.uid_local=tx_commerce_articles.uid and tx_commerce_articles.sys_language_uid=".$this->lang_uid.
-													" and tx_commerce_articles.l18n_parent=".$value['article_uid'].
-													" ".$proofSQL_attributes.$proofSQL_articles
-										);
-										if (($res_value_lok) && ($GLOBALS['TYPO3_DB']->sql_num_rows($res_value_lok)>0)) {
-											while ($lok_value=$GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_value_lok)){
-												if (strlen($lok_value['default_value'])>0){
-													$valuelist[]=$lok_value['default_value'];
-													$valueshown=true;
-												}elseif(strlen($lok_value['value_char'])>0) {
-													$valuelist[]=$lok_value['value_char'];
-													$valueshown=true;
-												}
-	 										}
-										}
-									}else
-	 								{
-	 									$valuelist[]=$value['default_value'];
-										$valueshown=true;
-	 								}
-	 							}
-	 						}
-	 				}
 					
 					$result_value=$GLOBALS['TYPO3_DB']->exec_SELECT_mm_query('distinct tx_commerce_articles_article_attributes_mm.uid_valuelist ',
 	  	 					'tx_commerce_articles',
@@ -625,7 +770,6 @@
 						);
 					if (($valueshown == false) && ($result_value) && ($GLOBALS['TYPO3_DB']->sql_num_rows($result_value)>0)){
 	 						while ($value=$GLOBALS['TYPO3_DB']->sql_fetch_assoc($result_value)){
-	 							
 	 							if ($value['uid_valuelist']>0){
 	 							    	
 	 							    $resvalue = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*','tx_commerce_attribute_values','uid = '.$value['uid_valuelist']);
@@ -638,8 +782,7 @@
 	 							     }
 	 							    if (($showHiddenValues==true) || (($showHiddenValues==false) && ($row['showvalue']==1))){
 	 							     
-	 							     
-	 							   	 $valuelist[] = $row['value'];
+	 							   	 $valuelist[$row['uid']] = $row['value'];
 	 							   	 $valueshown=true;
 	 							    }
 	
@@ -666,6 +809,8 @@
  		return false;
   		
   	}
+  	
+  	
   	
   	
   	
@@ -1009,7 +1154,19 @@
   	function set_leng_description($leng = 150)	{
   		$this->description= substr($this->description, 0, $leng).'...';
   		 			
+  	} 
+  	
+  	/**
+	 * returns the attribut matrix
+	 * @see: get_attribute_matrix()
+	 * @depricated
+  	 */
+  	
+  	function get_atrribute_matrix($articleList=false, $attribute_include=false, $showHiddenValues=true,$sortingTable = 'tx_commerce_articles_article_attributes_mm'){
+  		return $this->get_attribute_matrix($articleList, $attribute_include, $showHiddenValues,$sortingTable);
   	}
+
+  	
 }			
 	
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_product.php'])	{
