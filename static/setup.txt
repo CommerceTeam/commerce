@@ -29,10 +29,12 @@ lib.tx_commerce {
 			    	defaultField {
 		    			wrap = |
 		    	    }
+		    	    addToBasketLink = TypoLink
+		    	    defaultQuantity = 0
 		    	    fields {
-			    	    // every colum in this table could be  wraped with the 
-			    	    // stdWrap, IMAGETEXT, IMAGE, GIFBUILDER
-			    		imageFolder = uploads/tx_commerce/
+			    	    // every column in this table could be  wraped with the 
+			    	    // stdWrap, IMAGETEXT, IMAGE
+			    		
 				  	 	title = stdWrap
 				  	 	title {
 				  	 		wrap = |

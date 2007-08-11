@@ -506,7 +506,7 @@ class tx_commerce_pibase extends tslib_pibase {
 		                  $markerArray =  $hookObj->additionalMarker($markerArray,$this);
                        }
 	        }
-
+		$markerArray=$this->addFormMarker($markerArray);
 		$template = $this->cObj->getSubpart($this->templateCode, $templateMarker);
 		$content = $this->cObj->substituteMarkerArray($template, $markerArray ,'###|###',1);
 		return $content;
@@ -547,8 +547,8 @@ class tx_commerce_pibase extends tslib_pibase {
 
 	function getArticleMarker($article, $priceid=true){
 
-
-		$markerArray = $this->generateMarkerArray($article->returnAssocArray(),$this->conf['singleView.']['articles.'],'article_');
+		$tsconf=$this->conf['singleView.']['articles.'];
+		$markerArray = $this->generateMarkerArray($article->returnAssocArray(),$tsconf,'article_');
 		
 		if ($article->getSupplierUid()) {
 			$markerArray['ARTICLE_SUPPLIERNAME'] = $article->getSupplierName();
@@ -556,15 +556,44 @@ class tx_commerce_pibase extends tslib_pibase {
 			$markerArray['ARTICLE_SUPPLIERNAME']= '';
 		}
 		
-		
+		/**
+		 * STARTFRM and HIDDENFIELDS are old marker, used bevor Version 0.9.3
+		 * Still existing for compatibility reasons
+		 * 
+		 * Please use ARTICLE_HIDDENFIEDLS, ARTICLE_FORMACTION and ARTICLE_FORMNAME, ARTICLE_HIDDENCATUID
+		 * 
+		 **/
 		$markerArray['STARTFRM'] = '<form name="basket_'.$article->getUid().'" action="'.$this->pi_getPageLink($this->conf['basketPid']).'" method="post">';
-		$markerArray['HIDDENFIELDS'] = '<input type="hidden" name="'.$this->prefixId.'[catUid]" value="'.$this->cat.'">';
-		if ($priceid==true) {
-			$markerArray['HIDDENFIELDS'] .= '<input type="hidden" name="'.$this->prefixId.'[artAddUid]['.$article->getUid().'][price_id]" value="'.$article->get_article_price_uid().'">';
-		}else{
-			$markerArray['HIDDENFIELDS'] .= '<input type="hidden" name="'.$this->prefixId.'[artAddUid]['.$article->getUid().'][price_id]" value="">';
+		$markerArray['HIDDENFIELDS'] = '<input type="hidden" name="'.$this->prefixId.'[catUid]" value="'.$this->cat.'" />';
+		$markerArray['ARTICLE_FORMACTION'] = $this->pi_getPageLink($this->conf['basketPid']);
+		$markerArray['ARTICLE_FORMNAME'] = 'basket_'.$article->getUid();
+		$markerArray['ARTICLE_HIDDENCATUID'] = '<input type="hidden" name="'.$this->prefixId.'[catUid]" value="'.$this->cat.'" />';
+		$markerArray['ARTICLE_HIDDENFIELDS'] = '';
+		/**
+   		  * Bild Link to put one of this article in basket
+   		  * 
+   		  **/
+		if ($tsconf['addToBasketLink.']) {
+			$typoLinkConf=$tsconf['addToBasketLink.'];
 		}
-		$markerArray['QTY_INPUT_VALUE'] = $this->getArticleAmount($article->getUid());
+		$typoLinkConf['parameter'] = $this->conf['basketPid'];
+		$typoLinkConf['useCacheHash'] = 1;
+		$typoLinkConf['additionalParams'].= ini_get('arg_separator.output').$this->prefixId.'[catUid]='.$this->cat;
+	
+		if ($priceid==true) {
+			$markerArray['ARTICLE_HIDDENFIELDS'] .='<input type="hidden" name="'.$this->prefixId.'[artAddUid]['.$article->getUid().'][price_id]" value="'.$article->get_article_price_uid().'" />';
+			$markerArray['HIDDENFIELDS'] .= '<input type="hidden" name="'.$this->prefixId.'[artAddUid]['.$article->getUid().'][price_id]" value="'.$article->get_article_price_uid().'" />';
+			$typoLinkConf['additionalParams'] .= ini_get('arg_separator.output').$this->prefixId.'[artAddUid]['.$article->getUid().'][price_id]='.$article->get_article_price_uid();
+		}else{
+			$markerArray['HIDDENFIELDS'] .= '<input type="hidden" name="'.$this->prefixId.'[artAddUid]['.$article->getUid().'][price_id]" value="" />';
+			$markerArray['ARTICLE_HIDDENFIELDS'] .='<input type="hidden" name="'.$this->prefixId.'[artAddUid]['.$article->getUid().'][price_id]" value="" />';	
+			$typoLinkConf['additionalParams'] .= ini_get('arg_separator.output').$this->prefixId.'[artAddUid]['.$article->getUid().'][price_id]=';
+		}
+		$typoLinkConf['additionalParams'] .= ini_get('arg_separator.output').$this->prefixId.'[artAddUid]['.$article->getUid().'][count]=1';
+		debug($typoLinkConf);
+		$markerArray['LINKTOPUTINBASKET'] = $this->cObj->typoLink($this->pi_getLL('lang_addtobasketlink'),$typoLinkConf);
+		
+		$markerArray['QTY_INPUT_VALUE'] = $this->getArticleAmount($article->getUid(),$tsconf);
 		$markerArray['QTY_INPUT_NAME'] = $this->prefixId.'[artAddUid]['.$article->getUid().'][count]';
 		$markerArray['ARTICLE_NUMBER'] = $article->get_ordernumber();
 		$markerArray['ARTICLE_ORDERNUMBER'] = $article->get_ordernumber();
@@ -1090,10 +1119,10 @@ class tx_commerce_pibase extends tslib_pibase {
 	#	debug($this->conf,'TYPOSCRIPT Configuration');
 		
 
-		$errorOutput = __FILE__.'<br>';
-		$errorOutput .= get_class($this).'<br>';
-		$errorOutput .= $methodName.'<br>';
-		$errorOutput .= 'Line '.$line.'<br>';
+		$errorOutput = __FILE__.'<br />';
+		$errorOutput .= get_class($this).'<br />';
+		$errorOutput .= $methodName.'<br />';
+		$errorOutput .= 'Line '.$line.'<br />';
 		$errorOutput .= $errortext;
 		if ($aditionaloutput) {
 			$errorOutput .= '<pre>'.$aditionaloutput.'</pre>';
@@ -1183,14 +1212,20 @@ class tx_commerce_pibase extends tslib_pibase {
 	 * @param integer $articleId the articleId check for the amount
 	 */
 
-	function getArticleAmount($articleId){
+	function getArticleAmount($articleId, $TSconf=false){
 
 		if(!$articleId) return false;
 
 			if (is_object($GLOBALS['TSFE']->fe_user->tx_commerce_basket->basket_items[$articleId])) {
 					$amount = $GLOBALS['TSFE']->fe_user->tx_commerce_basket->basket_items[$articleId]->getQuantity();
 			}else{
+				if ($TSconf==false) {
 					$amount = $this->conf['defaultArticleAmount'];
+				}
+				if ($TSconf['defaultQuantity']) {
+					$amount = $TSconf['defaultQuantity'];
+				}
+				
 			}
 
 			return $amount;
@@ -1223,8 +1258,9 @@ class tx_commerce_pibase extends tslib_pibase {
 			  	$category_items_listview .=
 				$this->renderProduct($myProduct,$template,$typoScript,$this->conf['templateMarker.']['basketListView.'],$this->conf['templateMarker.']['basketListViewMarker'],$iterationCount);
 			}
-
-			return $category_items_listview;
+			$markerArray= array();
+			$markerArray=$this->addFormMarker($markerArray);
+			return  $this->cObj->substituteMarkerArray($category_items_listview, $markerArray ,'###|###',1);
 		}
 	}
 
@@ -1330,6 +1366,23 @@ class tx_commerce_pibase extends tslib_pibase {
 		return 	$this->cObj->substituteMarkerArrayCached($template, $markerArray , $subpartArray ,$wrapMarkerArray);
 
 	
+	}
+	
+	/**
+	  * Addsd the global Marker for the formtags to the given marker array
+	  * @author	Ingo Schmitt <is@marketing-factory.de>
+	  * @param	$markerArray	array	Array of marker
+	  * @return	array	Marker Array with the new marker 
+	  * 
+	 **/
+	
+	function addFormMarker($markerArray) {
+		$markerArray['GENERAL_FORM_ACTION'] =  $this->pi_getPageLink($this->conf['basketPid']);
+		if (is_integer($this->cat)) {
+			$markerArray['GENERAL_HIDDENCATUID'] = '<input type="hidden" name="'.$this->prefixId.'[catUid]" value="'.$this->cat.'" />';
+	
+		}
+		return $markerArray;
 	}
 
 	function makeArticleView($kind,$articles,$product){

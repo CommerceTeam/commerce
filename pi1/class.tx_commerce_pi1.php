@@ -119,9 +119,9 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 											
 		
 		if($this->piVars['catUid']){
-			    $this->cat = $this->piVars['catUid'];
+			    $this->cat = (int)$this->piVars['catUid'];
 		}else{
-			    $this->cat = $this->master_cat;
+			    $this->cat = (int)$this->master_cat;
 		}
 						
 	    $this->internal['results_at_a_time']= $this->conf['maxRecords'];

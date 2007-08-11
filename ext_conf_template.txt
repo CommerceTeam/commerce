@@ -19,7 +19,7 @@ invoicePageID = 0
 # cat=basic//30; type=int; label=Invoice Page Type: Defines which pagetype the Invoice should generates. Maybe a PDF-Generator exists and you want to use it, you have to configure the pageType of the PDF-output.
 invoicePageType = 0
 
-# cat=basic//30; type=int; label=Preview Page Type: Defines which Page the Backend (Save and Preview / klickmenue) Preview should use.
+# cat=basic//30; type=int; label=Preview Page ID: Defines which Page the Backend (Save and Preview / klickmenue) Preview should use.
 previewPageID = 0
 
 # cat=basic//30; type=String; label=Default Name of E-mail Sender: Defines which Sendername is submitted as the default E-mail Sendername.

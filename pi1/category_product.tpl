@@ -1,8 +1,51 @@
+<!-- Documentation -->
+
+<!-- 
+Subparts ###ARTICLE_VIEW###  ###ARTICLE_VIEW_NOSTOCK### 
+These subparts are used to render the article into the templates, 
+if an article has stock, ARTICLE_VIEW is used,
+if not ARTICLE_VIEW_NOSTOCK
+
+Inside these subparts following markers are availiabe by default
+###ARTICLE_EANCODE##
+###ARTICLE_STOCK###
+###ARTICLE_ORDERNUMBER###
+###ARTICLE_PRICE_GROSS###
+###DELIVERY_PRICE_GROSS###
+###ARTICLE_SELECT_ATTRIBUTES###
+###LINKTOPUTINBASKET###
+
+You cann add more Marken by generating these. Just add as prefix 
+ARTICLE_ and than the filedname in uppercase, like
+###ARTICLE_TITLE###
+The layout of each field and wraps could be defined by TypoScript, in the fields setup
+
+Generating of forms
+If you want one form per articleview interation you can use 
+following marker to generate the form tags and hidden values
+
+<form name="###ARTICLE_FORMNAME###" action="###ARTICLE_FORMACTION###" method="post">
+###ARTICLE_HIDDENCATUID###
+###ARTICLE_HIDDENFIELDS###
+
+If you want one form per page you should only use the ###ARTICLE_HIDDENFIELDS### 
+inside the ARTICLE_VIEW subparts, since the hidden tag for the catuid will be rendered 
+globally at the beginning of the form tag as marker ###GENERAL_HIDDENCATUID###
+
+
+
+
+-->
+
+
 <!-- Suppart for rendering the category list, complete output from extension -->
 
 <!-- ###CATEGORY_LIST### begin -->
+<form action="###GENERAL_FORM_ACTION###" method="post">
+###GENERAL_HIDDENCATUID###
 <ul>
 <!-- ###CATEGORY_LIST_ITEM### begin -->
+
 <li>###CATEGORY_ITEM_DETAILLINK### ###CATEGORY_ITEM_TITLE### ###CATEGORY_ITEM_DETAILLINK###
 <p>###CATEGORY_ITEM_SUBTITLE###</p>
 <p>###CATEGORY_ITEM_DESCRIPTION###</p>
@@ -13,7 +56,7 @@
 </li>
 <!-- ###CATEGORY_LIST_ITEM### end -->
 </ul>
-
+</form>
 <!-- ###CATEGORY_LIST### end -->
 
 <!-- ###CATEGORY_VIEW_DISPLAY### begin -->
@@ -32,6 +75,7 @@
 
 <!-- TOP PRODUCT / YOU CAN DISPLAY IT IN A SPECIAL WAY -->
 <!-- ###CATEGORY_ITEMS_LISTVIEW_1### begin -->
+
 <div>
 	<h3>
 	    <!-- ###PRODUCT_LINK_DETAIL### -->###PRODUCT_TITLE###<!-- ###PRODUCT_LINK_DETAIL### --> </h3>
@@ -52,33 +96,35 @@
 	<div>
 	<!-- ###PRODUCT_BASKET_FOR_LISTVIEW### -->
 			<!-- ###ARTICLE_VIEW### -->
-		    ###STARTFRM###        
-		    ###HIDDENFIELDS###
+			
+			
+		    ###ARTICLE_HIDDENFIELDS###
 			<span>###ARTICLE_EANCODE###	</span>
 			<span>###ARTICLE_STOCK###	</span>
             <span>###ARTICLE_ORDERNUMBER###</span>
 			<span>###ARTICLE_PRICE_GROSS###</span>
 			<span>###DELIVERY_PRICE_GROSS###</span>    
 			<div>###ARTICLE_SELECT_ATTRIBUTES###</div>
-			<span>###NO_STOCK###</span>
+			###LINKTOPUTINBASKET###
 			<span><input type="input" class="qtyInput" value="###QTY_INPUT_VALUE###" name="###QTY_INPUT_NAME###" size="3">&nbsp
                    <input type="submit" value="abschicken">
-			</form>
+			
 			<!-- ###ARTICLE_VIEW### -->
 			
+			<!-- Use this Subpart, to display a different layout, if you don't ahve a stock for an article -->
 			<!-- ###ARTICLE_VIEW_NOSTOCK### -->
-		    ###STARTFRM###        
-		    ###HIDDENFIELDS###
+			
+			###ARTICLE_HIDDENFIELDS###
 			<span>###ARTICLE_EANCODE###	</span>
 			<span>###ARTICLE_STOCK###	</span>
             <span>###ARTICLE_ORDERNUMBER###</span>
 			<span>###ARTICLE_PRICE_GROSS###</span>
 			<span>###DELIVERY_PRICE_GROSS###</span>    
 			<div>###ARTICLE_SELECT_ATTRIBUTES###</div>
-			<span>###NO_STOCK###</span>
+			###LINKTOPUTINBASKET###
 			<span><input type="input" class="qtyInput" value="###QTY_INPUT_VALUE###" name="###QTY_INPUT_NAME###" size="3">&nbsp
                    <input type="submit" value="abschicken">
-			</form>
+			
 			<!-- ###ARTICLE_VIEW_NOSTOCK### -->
 	<!-- ###PRODUCT_BASKET_FOR_LISTVIEW### -->
 	
@@ -96,33 +142,33 @@
 	<div>
 	<!-- ###PRODUCT_BASKET_FOR_LISTVIEW### -->
 			<!-- ###ARTICLE_VIEW### -->
-		    ###STARTFRM###        
-		    ###HIDDENFIELDS###
+		   
+		    ###ARTICLE_HIDDENFIELDS###
 			<span>###ARTICLE_EANCODE###	</span>
 			<span>###ARTICLE_STOCK###	</span>
             <span>###ARTICLE_ORDERNUMBER###</span>
 			<span>###ARTICLE_PRICE_GROSS###</span>
 			<span>###DELIVERY_PRICE_GROSS###</span>    
 			<div>###ARTICLE_SELECT_ATTRIBUTES###</div>
-			<span>###NO_STOCK###</span>
+			###LINKTOPUTINBASKET###
 			<span><input type="input" class="qtyInput" value="###QTY_INPUT_VALUE###" name="###QTY_INPUT_NAME###" size="3">&nbsp
                    <input type="submit" value="abschicken">
 			</form>
 			<!-- ###ARTICLE_VIEW### -->
 			
 			<!-- ###ARTICLE_VIEW_NOSTOCK### -->
-		    ###STARTFRM###        
-		    ###HIDDENFIELDS###
+		  
+		    ###ARTICLE_HIDDENFIELDS###
 			<span>###ARTICLE_EANCODE###	</span>
 			<span>###ARTICLE_STOCK###	</span>
             <span>###ARTICLE_ORDERNUMBER###</span>
 			<span>###ARTICLE_PRICE_GROSS###</span>
 			<span>###DELIVERY_PRICE_GROSS###</span>    
 			<div>###ARTICLE_SELECT_ATTRIBUTES###</div>
-			<span>###NO_STOCK###</span>
+			###LINKTOPUTINBASKET###
 			<span><input type="input" class="qtyInput" value="###QTY_INPUT_VALUE###" name="###QTY_INPUT_NAME###" size="3">&nbsp
                    <input type="submit" value="abschicken">
-			</form>
+			
 			<!-- ###ARTICLE_VIEW_NOSTOCK### -->
 	<!-- ###PRODUCT_BASKET_FOR_LISTVIEW### -->
 	
@@ -140,35 +186,35 @@
 	<div>
 	<!-- ###PRODUCT_BASKET_FOR_SINGLEVIEW### -->
 			<!-- ###ARTICLE_VIEW### -->
-		    ###STARTFRM###        
-		    ###HIDDENFIELDS###
+		  
+		    ###ARTICLE_HIDDENFIELDS###
 			<span>###ARTICLE_EANCODE###	</span>
 			<span>###ARTICLE_STOCK###	</span>
 	                <span>###ARTICLE_ORDERNUMBER###</span>
 			<span>###ARTICLE_PRICE_GROSS###</span>
 			<span>###DELIVERY_PRICE_GROSS###</span>    
-			<span>###NO_STOCK###</span>
+			###LINKTOPUTINBASKET###
 			<span><input type="input" class="qtyInput" value="###QTY_INPUT_VALUE###" name="###QTY_INPUT_NAME###" size="3">&nbsp
         	       <input type="submit" value="abschicken">
 			</span>
-			</form>
+			
 			<div>###ARTICLE_SELECT_ATTRIBUTES###</div>
 			<table>###SUBPART_ARTICLE_ATTRIBUTES###</table>
 			<!-- ###ARTICLE_VIEW### -->
 			
 			<!-- ###ARTICLE_VIEW_NOSTOCK### -->
-		    ###STARTFRM###        
-		    ###HIDDENFIELDS###
+		  
+		    ###ARTICLE_HIDDENFIELDS###
 			<span>###ARTICLE_EANCODE###	</span>
 			<span>###ARTICLE_STOCK###	</span>
 	                <span>###ARTICLE_ORDERNUMBER###</span>
 			<span>###ARTICLE_PRICE_GROSS###</span>
 			<span>###DELIVERY_PRICE_GROSS###</span>    
-			<span>###NO_STOCK###</span>
+			###LINKTOPUTINBASKET###
 			<span><input type="input" class="qtyInput" value="###QTY_INPUT_VALUE###" name="###QTY_INPUT_NAME###" size="3">&nbsp
         	       <input type="submit" value="abschicken">
 			</span>
-			</form>
+			
 			<div>###ARTICLE_SELECT_ATTRIBUTES###</div>
 			<table>###SUBPART_ARTICLE_ATTRIBUTES###</table>
 			<!-- ###ARTICLE_VIEW_NOSTOCK### -->
@@ -196,35 +242,35 @@
 	<div>
 	<!-- ###PRODUCT_BASKET_FOR_SINGLEVIEW### -->
 			<!-- ###ARTICLE_VIEW### -->
-		    ###STARTFRM###        
-		    ###HIDDENFIELDS###
+		  
+		    ###ARTICLE_HIDDENFIELDS###
 			<span>###ARTICLE_EANCODE###	</span>
 			<span>###ARTICLE_STOCK###	</span>
 	                <span>###ARTICLE_ORDERNUMBER###</span>
 			<span>###ARTICLE_PRICE_GROSS###</span>
 			<span>###DELIVERY_PRICE_GROSS###</span>    
-			<span>###NO_STOCK###</span>
+			###LINKTOPUTINBASKET###
 			<span><input type="input" class="qtyInput" value="###QTY_INPUT_VALUE###" name="###QTY_INPUT_NAME###" size="3">&nbsp
         	       <input type="submit" value="abschicken">
 			</span>
-			</form>
+			
 			<div>###ARTICLE_SELECT_ATTRIBUTES###</div>
 			<table>###SUBPART_ARTICLE_ATTRIBUTES###</table>
 			<!-- ###ARTICLE_VIEW### -->
 			
 			<!-- ###ARTICLE_VIEW_NOSTOCK### -->
-		    ###STARTFRM###        
-		    ###HIDDENFIELDS###
+		  
+		    ###ARTICLE_HIDDENFIELDS###
 			<span>###ARTICLE_EANCODE###	</span>
 			<span>###ARTICLE_STOCK###	</span>
 	                <span>###ARTICLE_ORDERNUMBER###</span>
 			<span>###ARTICLE_PRICE_GROSS###</span>
 			<span>###DELIVERY_PRICE_GROSS###</span>    
-			<span>###NO_STOCK###</span>
+			###LINKTOPUTINBASKET###
 			<span><input type="input" class="qtyInput" value="###QTY_INPUT_VALUE###" name="###QTY_INPUT_NAME###" size="3">&nbsp
         	       <input type="submit" value="abschicken">
 			</span>
-			</form>
+			
 			<div>###ARTICLE_SELECT_ATTRIBUTES###</div>
 			<table>###SUBPART_ARTICLE_ATTRIBUTES###</table>
 			<!-- ###ARTICLE_VIEW_NOSTOCK### -->

@@ -1,5 +1,13 @@
 Changelog for tx_commerce
 (add new changes on top of this file)
+11.08.2007 Ingo Schmitt <is@marketing-factory.de>
+* Corrected Naming of Conf Variable Preview Page UID
+* Added new Marker to pi1, see template for usage
+* Added explicit set of $this->cat in tx_commerce_pi1 to integer
+* Added new TypoScript Property for article object, defaultQuantity
+* Added New Marker to Article Output, LINKTOPUTINBASKET
+* Added new TypoLink addToBasketLink to article rendering
+
 
 08.08.2007 Ingo Schmitt <is@marketing-factory.de>
 * Added Check if object exists in tx_commerce_pibase::renderProduct
@@ -17,7 +25,7 @@ Changelog for tx_commerce
 02.08.2007 Ingo Schmitt <is@marketing-factory.de>
 * Fixed Problem with auto generating of invoices
 
-31.07.2007 ingo Schmitt <is@marketing-factory.de>
+31.07.2007 Ingo Schmitt <is@marketing-factory.de>
 * Beautified sourcecode
 * Fixed a typo in extension Configuration
 * Added company to invoice output

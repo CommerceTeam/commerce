@@ -8,9 +8,21 @@
 	</meta>
 	<data type="array">
 		<languageKey index="default" type="array">
+			<label index="lang_addtobasketlink">Add to Basket</label>
+			<label index="lang_header_image">Image</label>
+			<label index="lang_header_title">Title</label>
+			<label index="lang_header_teaser">Teaser</label>
+			<label index="lang_header_price">Price</label>
+			<label index="lang_header_action"></label>
 		</languageKey>
 		<languageKey index="de" type="array">
-			
+			<label index="lang_addtobasketlink">In den Warenkorb legen</label>
+			<label index="lang_header_image">Bild</label>
+			<label index="lang_header_title">Titel</label>
+			<label index="lang_header_teaser">Beschreibung</label>
+			<label index="lang_header_price">Preis</label>
+			<label index="lang_header_action"></label>
+		
 		</languageKey>
 		<languageKey index="nl" type="array">
 		</languageKey>
