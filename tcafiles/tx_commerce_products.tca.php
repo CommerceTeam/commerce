@@ -164,6 +164,15 @@ $TCA['tx_commerce_products'] = Array (
 				'eval' => 'trim',
 			)
 		),
+		'keywords' => Array (
+			'exclude' => 1,
+			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_products.keywords',
+			'config' => Array (
+				'type' => 'text',
+				'cols' => '30',
+				'rows' => '5',
+			)
+		),
 		'description' => Array (
 			'exclude' => 1,
 			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_products.description',

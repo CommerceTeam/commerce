@@ -104,6 +104,7 @@ CREATE TABLE tx_commerce_products (
     title varchar(80) DEFAULT '' NOT NULL,
     subtitle varchar(80) DEFAULT '' NOT NULL,
     navtitle varchar(80) DEFAULT '' NOT NULL,
+	keywords text NOT NULL,
     description text NOT NULL,
     teaser text NOT NULL,
     teaserimages blob NOT NULL,

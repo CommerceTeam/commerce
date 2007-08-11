@@ -27,6 +27,7 @@
 			<label index="tx_commerce_products.title">title</label>
 			<label index="tx_commerce_products.subtitle">subtitle</label>
 			<label index="tx_commerce_products.navtitle">navigation title</label>
+			<label index="tx_commerce_products.keywords">keywords</label>
 			<label index="tx_commerce_products.description">description</label>
 			<label index="tx_commerce_products.images">images</label>
 			<label index="tx_commerce_products.teaser">teaser</label>
@@ -245,6 +246,7 @@
 			<label index="tx_commerce_products.title">Titel</label>
 			<label index="tx_commerce_products.subtitle">Untertitel</label>
 			<label index="tx_commerce_products.navtitle">Navigationstitel</label>
+			<label index="tx_commerce_produc.keywords">Schlüsselwörter</label>
 			<label index="tx_commerce_products.description">Beschreibung</label>
 			<label index="tx_commerce_products.images">Bilder</label>
 			<label index="tx_commerce_products.teaser">Teaser</label>
