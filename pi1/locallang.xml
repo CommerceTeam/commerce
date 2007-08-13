@@ -15,6 +15,7 @@
 			<label index="lang_header_price">Price</label>
 			<label index="lang_header_action"></label>
 			<label index="lang_submit">Submit</label>
+			<label index="all_options">all</label>
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="lang_addtobasketlink">In den Warenkorb legen</label>
@@ -24,7 +25,7 @@
 			<label index="lang_header_price">Preis</label>
 			<label index="lang_header_action"></label>
 			<label index="lang_submit">Abschicken</label>
-		
+			<label index="all_options">Alle</label>		
 		</languageKey>
 		<languageKey index="nl" type="array">
 		</languageKey>

@@ -422,10 +422,10 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 		
 		// for stdWrap for the delivery address chooser marker
 		
-		$markerArray['###ADDRESS_RADIOFORM_DELIVERY###']  = $this->cObj->stdWrap($markerArray['###ADDRESS_RADIOFORM_DELIVERY###'] ,$this->conf['billing.']['deliveryAdress.']['delivery_radio.']);
-		$markerArray['###ADDRESS_RADIOFORM_NODELIVERY###']  = $this->cObj->stdWrap($markerArray['###ADDRESS_RADIOFORM_NODELIVERY###'] ,$this->conf['billing.']['deliveryAdress.']['nodelivery_radio.']);
-		$markerArray['###ADDRESS_LABEL_DELIVERY###']  = $this->cObj->stdWrap($markerArray['###ADDRESS_LABEL_DELIVERY###'] ,$this->conf['billing.']['deliveryAdress.']['delivery_label.']);
-		$markerArray['###ADDRESS_LABEL_NODELIVERY###']  = $this->cObj->stdWrap($markerArray['###ADDRESS_LABEL_NODELIVERY###'] ,$this->conf['billing.']['deliveryAdress.']['nodelivery_label.']);
+		$markerArray['###ADDRESS_RADIOFORM_DELIVERY###']  = $this->cObj->stdWrap($markerArray['###ADDRESS_RADIOFORM_DELIVERY###'] ,$this->conf['billing.']['deliveryAddress.']['delivery_radio.']);
+		$markerArray['###ADDRESS_RADIOFORM_NODELIVERY###']  = $this->cObj->stdWrap($markerArray['###ADDRESS_RADIOFORM_NODELIVERY###'] ,$this->conf['billing.']['deliveryAddress.']['nodelivery_radio.']);
+		$markerArray['###ADDRESS_LABEL_DELIVERY###']  = $this->cObj->stdWrap($markerArray['###ADDRESS_LABEL_DELIVERY###'] ,$this->conf['billing.']['deliveryAddress.']['delivery_label.']);
+		$markerArray['###ADDRESS_LABEL_NODELIVERY###']  = $this->cObj->stdWrap($markerArray['###ADDRESS_LABEL_NODELIVERY###'] ,$this->conf['billing.']['deliveryAddress.']['nodelivery_label.']);
 		
 
 		//we are thrown back because address data is not valid
