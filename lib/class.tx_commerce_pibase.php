@@ -76,7 +76,15 @@ class tx_commerce_pibase extends tslib_pibase {
      * @access private
      */
     var $useRootlineInformationToUrl = 0;
-
+    
+	/**
+ 	* Category UID for rendering
+ 	*
+ 	* @var integer
+ 	*/
+    
+    var $cat;
+    
 	function init($conf){
 
 
@@ -137,12 +145,16 @@ class tx_commerce_pibase extends tslib_pibase {
 	 * define a number of templates for interations.
 	 * when defining 2 templates you have an odd / even layout
 	 * @param	object	$prodObj: Product Object
-	 * @param	array	$subpartNameArray: array of suppart Names
+	 * @param	array	[optional] $subpartNameArray: array of suppart Names
+	 * @param	array	[optional]	$TS Configuration
 	 * @return	string	HTML-Output rendert
 	 */
 
-	function renderProductAttributeList($prodObj,$subpartNameArray=array()){
+	function renderProductAttributeList($prodObj,$subpartNameArray=array(),$TS=false){
 
+		if ($TS ==false) {
+			$TS = $this->conf['singleView.']['attributes.'];
+		}
 		foreach ($subpartNameArray as $oneSubpartName)	{
 			$templateArray[]=$this->cObj->getSubpart($this->templateCode, $oneSubpartName);
 		}
@@ -182,7 +194,9 @@ class tx_commerce_pibase extends tslib_pibase {
 	                	'unit'	=> $matrix[$myAttributeUid]['unit'],
 	                	'icon'	=> $matrix[$myAttributeUid]['icon'],
 	                );
-	                $markerArray = $this->generateMarkerArray($datas,$this->conf['singleView.']['attributes.'],$prefix='PRODUCT_ATTRIBUTES_');
+	               
+	                $markerArray = $this->generateMarkerArray($datas,$TS,$prefix='PRODUCT_ATTRIBUTES_');
+	               
 					$marker['PRODUCT_ATTRIBUTES_TITLE'] = $matrix[$myAttributeUid]['title'];
 					$product_attributes = $this->cObj->substituteMarkerArray($templateArray[$i],$markerArray,'###|###',1);
 	                $product_attributes_string.= $this->cObj->substituteMarkerArray($product_attributes,  $marker,'###|###',1);
@@ -190,7 +204,7 @@ class tx_commerce_pibase extends tslib_pibase {
 
         	 }
 			
-    	         return $product_attributes_string.' ';
+    	     return $this->cObj->stdWrap($product_attributes_string,$TS);
 		}
 		return '';
 	}
@@ -274,7 +288,6 @@ class tx_commerce_pibase extends tslib_pibase {
 
 		$article_shalAttributes_string = $this->cObj->stdWrap($article_shalAttributes_string,$this->conf['articleShalAttributsWrap.']) ;
 
-
         $matrix = $prodObj->get_atrribute_matrix($articleId,$this->can_attributes,$showHiddenValues);
 		
 		$i = 0;
@@ -314,9 +327,10 @@ class tx_commerce_pibase extends tslib_pibase {
               }
 		}
 		$article_canAttributes_string = $this->cObj->stdWrap($article_canAttributes_string,$this->conf['articleCanAttributsWrap.']) ;
-
+	
 		$article_attributes_string = $this->cObj->stdWrap($article_shalAttributes_string.$article_canAttributes_string,$this->conf['articleAttributsWrap.']) ;
-
+		$article_attributes_string = $this->cObj->stdWrap($article_attributes_string,$this->conf['singleView.']['attributes.']['stdWrap.']);
+		
     	return $article_attributes_string.' ';
 	}
 
@@ -369,45 +383,40 @@ class tx_commerce_pibase extends tslib_pibase {
 				 */
 				$lokalTS = $this->conf['categoryListView.']['categories.'];
 				// check if no TYPOLink is already in TS
-				if (!($this->conf['categoryListView.']['categories.']['fields.']['images.']['stdWrap.']['typolink.'])){
 					
-					if ($this->conf['overridePid']) {
-						$typoLinkConf['parameter']=$this->conf['overridePid'];
-					}else{
-						$typoLinkConf['parameter']=$this->pid;
-					}
-					$typoLinkConf['useCacheHash'] = 1;
-					$typoLinkConf['additionalParams'] = ini_get('arg_separator.output').$this->prefixId.'[catUid]='.$oneCategory->getUid();
-					if ($this->useRootlineInformationToUrl == 1) {
-						$typoLinkConf['additionalParams'].= ini_get('arg_separator.output').$this->prefixId.'[path]='.$this->getPathCat($oneCategory);
-						$typoLinkConf['additionalParams'].= ini_get('arg_separator.output').$this->prefixId.'[mDepth]='.$this->mDepth;
-					}
-					if($this->basketHashValue){
-						$typoLinkConf['additionalParams'].= ini_get('arg_separator.output').$this->prefixId.'[basketHashValue]='.$this->basketHashValue;
-					}
-					$lokalTS['fields.']['images.']['stdWrap.']['typolink.'] = $typoLinkConf;
-					
-					
+				if ($this->conf['overridePid']) {
+					$typoLinkConf['parameter']=$this->conf['overridePid'];
+				}else{
+					$typoLinkConf['parameter']=$this->pid;
 				}
-			
+				$typoLinkConf['useCacheHash'] = 1;
+				$typoLinkConf['additionalParams'] = ini_get('arg_separator.output').$this->prefixId.'[catUid]='.$oneCategory->getUid();
+				if ($this->useRootlineInformationToUrl == 1) {
+					$typoLinkConf['additionalParams'].= ini_get('arg_separator.output').$this->prefixId.'[path]='.$this->getPathCat($oneCategory);
+					$typoLinkConf['additionalParams'].= ini_get('arg_separator.output').$this->prefixId.'[mDepth]='.$this->mDepth;
+				}
+				if($this->basketHashValue){
+					$typoLinkConf['additionalParams'].= ini_get('arg_separator.output').$this->prefixId.'[basketHashValue]='.$this->basketHashValue;
+				}
+				$lokalTS['fields.']['images.']['stdWrap.']['typolink.'] = $typoLinkConf;
+					
+				$lokalTS = $this->addTypoLinkToTS($lokalTS,$typoLinkConf);
 				
-				$categoryOutput.=$this->renderCategory($oneCategory, '###CATEGORY_LIST_ITEM###', $lokalTS,'ITEM');
+				
+				
+				
+				$tmpCategory=$this->renderCategory($oneCategory, '###CATEGORY_LIST_ITEM###', $lokalTS,'ITEM');
 
 				/**
 				 * Build the link
-				 * TODO make it possible to have more than one link
+				 * @depricated
+				 * Please use TYPOLINK instead
 				 */
-				$linkContent=$this->cObj->getSubpart($categoryOutput,'###CATEGORY_ITEM_DETAILLINK###');
-
-				
-				
-				
-
-
+				$linkContent=$this->cObj->getSubpart($tmpCategory,'###CATEGORY_ITEM_DETAILLINK###');
 				$link=$this->pi_linkTP_keepPIvars($linkContent,$linkArray,1,0,$this->conf['overridePid']);
+				$tmpCategory=$this->cObj->substituteSubpart($tmpCategory,'###CATEGORY_ITEM_DETAILLINK###',$link);
 
-				$categoryOutput=$this->cObj->substituteSubpart($categoryOutput,'###CATEGORY_ITEM_DETAILLINK###',$link);
-
+				
 				if($this->conf['groupProductsByCategory'] && !$this->conf['hideProductsInList']){
 
 					$categoryProducts = $oneCategory->getAllProducts();
@@ -421,9 +430,12 @@ class tx_commerce_pibase extends tslib_pibase {
 				 * Insert the Productlist
 				 */
 
-				$categoryOutput.=$this->cObj->substituteSubpart($categoryOutput,'###CATEGORY_ITEM_PRODUCTLIST###',$productList);
+					$tmpCategory=$this->cObj->substituteSubpart($tmpCategory,'###CATEGORY_ITEM_PRODUCTLIST###',$productList);
 
+				}else{
+					$tmpCategory=$this->cObj->substituteMarker($tmpCategory,'###CATEGORY_ITEM_PRODUCTLIST###','');
 				}
+				$categoryOutput.=$tmpCategory;
 
 			}
 		}
@@ -507,8 +519,10 @@ class tx_commerce_pibase extends tslib_pibase {
                        }
 	        }
 		$markerArray=$this->addFormMarker($markerArray);
+		
 		$template = $this->cObj->getSubpart($this->templateCode, $templateMarker);
 		$content = $this->cObj->substituteMarkerArray($template, $markerArray ,'###|###',1);
+		$content = $this->cObj->substituteMarkerArray($content,$this->languageMarker);
 		return $content;
 	}
 
@@ -590,7 +604,7 @@ class tx_commerce_pibase extends tslib_pibase {
 			$typoLinkConf['additionalParams'] .= ini_get('arg_separator.output').$this->prefixId.'[artAddUid]['.$article->getUid().'][price_id]=';
 		}
 		$typoLinkConf['additionalParams'] .= ini_get('arg_separator.output').$this->prefixId.'[artAddUid]['.$article->getUid().'][count]=1';
-		debug($typoLinkConf);
+		
 		$markerArray['LINKTOPUTINBASKET'] = $this->cObj->typoLink($this->pi_getLL('lang_addtobasketlink'),$typoLinkConf);
 		
 		$markerArray['QTY_INPUT_VALUE'] = $this->getArticleAmount($article->getUid(),$tsconf);
@@ -660,15 +674,30 @@ class tx_commerce_pibase extends tslib_pibase {
 	 function makeBasketView($basketObj,$subpartMarker,$articletypes=false,$lineTemplate = '###LISTING_ARTICLE###') {
 	 	$content='';
 	 	$template = $this->cObj->getSubpart($this->templateCode, $subpartMarker);
-
+		
+	 
+	 	
 		if(!is_array($lineTemplate)) {
 			$temp = $lineTemplate;
 			$lineTemplate = array();
 			$lineTemplate[] = $temp;
+		}else{
+			/**
+			 * Check if the subpart is existing, and if not, remove from array
+			 */
+			$tmpArray=array();
+			foreach($lineTemplate as $subpartMarker) {
+				$test = $this->cObj->getSubpart($template, $subpartMarker);
+				if (!empty($test)) {
+					$tmpArray[]=$subpartMarker;
+				}
+			}
+			$lineTemplate = $tmpArray;
+			unset($tmpArray);
 		}
-
+		
 		$templateElements = count($lineTemplate);
-
+		
 	 	/**
 	 	 * Get All Articles in this basket and genarte HTMl-Content per row
 	 	 *
@@ -792,7 +821,7 @@ class tx_commerce_pibase extends tslib_pibase {
 	             }
 
 	 	$content = $this->cObj->substituteMarkerArrayCached($template,$markerArray);
-	 	$content = $this->cObj->substituteMarkerArray($content,$this->languageMarker,'###|###',1);
+	 	$content = $this->cObj->substituteMarkerArray($content,$this->languageMarker);
 
 	 	return $content;
 	 }
@@ -892,7 +921,35 @@ class tx_commerce_pibase extends tslib_pibase {
 	  * + New Methods for rendering
 	  * @since 2005 11 8
 	  */
-
+	/**
+	 * Adds the the commerce TYPO3 Link parameter for commerce to existing typoLink StdWarp
+	 * if typolink.setCommerceValues =1
+	 * is set. 
+	 * @param	$TSArray	Array	Existing TypoScriptConfiguration
+	 * @param	$TypoLinkConf	Array	TypoLink Configuration, buld bie view Method
+	 * @return	Array	Changed TypoScript Configuration
+	 * @Author	Ingo Schmitt <is@marketing-factory.de>
+	 * @since 	12. August 2007
+	 * 
+	 *
+	 */
+	 
+	 function addTypoLinkToTS($TSArray,$TypoLinkConf) {
+	 	
+	 	foreach ($TSArray['fields.'] as $tsKey => $tsValue) {
+	 		if (is_array($TSArray['fields.'][$tsKey]['typolink.'])) {
+	 			if ($TSArray['fields.'][$tsKey]['typolink.']['setCommerceValues'] = 1){
+	 				$TSArray['fields.'][$tsKey]['typolink.']['parameter'] = $TypoLinkConf['parameter'];
+	 				$TSArray['fields.'][$tsKey]['typolink.']['additionalParams'] .= $TypoLinkConf['additionalParams'];
+	 			}
+	 		}
+	  		
+	 	}
+		
+	 	return $TSArray;
+	 	
+	 	
+	 }
 
 	/**
 	 * Generates a markerArray from given data and TypoScript
@@ -942,7 +999,7 @@ class tx_commerce_pibase extends tslib_pibase {
 		
 		switch(strtoupper($TStype)) {
 			case 'IMGTEXT' :
-
+				
 				$TSconf['imgPath'] = $this->imgFolder;
 				$TSconf['imgList'] = $value;
 				$output = $this->cObj->IMGTEXT($TSconf);
@@ -950,8 +1007,9 @@ class tx_commerce_pibase extends tslib_pibase {
 			break;
 			case 'IMAGE' :
 				if (is_string($value) && !empty($value)) {
-					$TSconf['file'] = $this->imgFolder.$value;
-					$output = $this->cObj->IMAGE($TSconf);
+								
+					$TSconf['file'] = $this->imgFolder.$oneImage;
+					$output .= $this->cObj->IMAGE($TSconf);
 				}
 			break;
 			case 'IMG_RESOURCE' :
@@ -1201,7 +1259,13 @@ class tx_commerce_pibase extends tslib_pibase {
 		
 		// ###########    product single    ######################
 
-		return $this->renderSingleView($this->product,$this->category, $subpartName, $subpartNameNostock);
+		$content = $this->renderSingleView($this->product,$this->category, $subpartName, $subpartNameNostock);
+		$content = $this->cObj->substituteMarkerArray($content,$this->languageMarker);
+		$globalMarker = array();
+		$globalMarker = $this->addFormMarker($globalMarker);
+		$content = $this->cObj->substituteMarkerArray($content, $globalMarker ,'###|###',1);
+		$GLOBALS["TSFE"]->fe_user->setKey('ses','tx_commerce_lastproducturl',$this->pi_linkTP_keepPIvars_url());
+		return $content;
 
 
 	}
@@ -1299,27 +1363,28 @@ class tx_commerce_pibase extends tslib_pibase {
 		 */
 		$lokalTS = $TS;
 		
-		// check if no TYPOLink is already in TS
-		if (!($lokalTS['fields.']['images.']['stdWrap.']['typolink.'])){
-			
-			if ($this->conf['overridePid']) {
-				$typoLinkConf['parameter']=$this->conf['overridePid'];
-			}else{
-				$typoLinkConf['parameter']=$this->pid;
-			}
-			$typoLinkConf['useCacheHash'] = 1;
-			$typoLinkConf['additionalParams'] = ini_get('arg_separator.output').$this->prefixId.'[showUid]='.$myProduct->getUid();
-			
-			$typoLinkConf['additionalParams'].= ini_get('arg_separator.output').$this->prefixId.'[catUid]='.$this->piVars['catUid'];
-			
-			if($this->basketHashValue){
-				$typoLinkConf['additionalParams'].= ini_get('arg_separator.output').$this->prefixId.'[basketHashValue]='.$this->basketHashValue;
-			}
-			$lokalTS['fields.']['images.']['stdWrap.']['typolink.'] = $typoLinkConf;
-			
-			
-		}
 		
+		/**
+		 * Generate TypoLink Configuration and ad to fields by addTypoLinkToTs
+		 */
+		
+			
+		if ($this->conf['overridePid']) {
+			$typoLinkConf['parameter']=$this->conf['overridePid'];
+		}else{
+			$typoLinkConf['parameter']=$this->pid;
+		}
+		$typoLinkConf['useCacheHash'] = 1;
+		$typoLinkConf['additionalParams'] = ini_get('arg_separator.output').$this->prefixId.'[showUid]='.$myProduct->getUid();
+		
+		$typoLinkConf['additionalParams'].= ini_get('arg_separator.output').$this->prefixId.'[catUid]='.$this->cat;
+		
+		if($this->basketHashValue){
+			$typoLinkConf['additionalParams'].= ini_get('arg_separator.output').$this->prefixId.'[basketHashValue]='.$this->basketHashValue;
+		}
+				
+			
+		$lokalTS = $this->addTypoLinkToTS($lokalTS, $typoLinkConf);
 
 		$markerArray=$this->generateMarkerArray($data,$lokalTS);
 		while(list($k,$v) = each ($markerArray)){
@@ -1329,7 +1394,14 @@ class tx_commerce_pibase extends tslib_pibase {
 		$this->can_attributes = $myProduct->get_attributes(array(ATTRIB_can));
 		$this->select_attributes = $myProduct->get_attributes(array(ATTRIB_selector));
 		$this->shall_attributes = $myProduct->get_attributes(array(ATTRIB_shal));
-		    	$markerArray['###SUBPART_PRODUCT_ATTRIBUTES###'] = $this->makeProduktAttributList($myProduct);
+		
+		$ProductAttributesSubpartArray[]=array();
+		$ProductAttributesSubpartArray[] = '###'.strtoupper($this->conf['templateMarker.']['productAttributes']).'###';
+		$ProductAttributesSubpartArray[] = '###'.strtoupper($this->conf['templateMarker.']['productAttributes2']).'###';
+		
+		$markerArray['###SUBPART_PRODUCT_ATTRIBUTES###'] = $this->cObj->stdWrap($this->renderProductAttributeList($myProduct,$ProductAttributesSubpartArray,$TS['productAttributes']),$TS['productAttributes']);
+		
+		
 		$linkArray['catUid']=$this->piVars['catUid'];
 		if($this->basketHashValue){
 			$linkArray['basketHashValue'] = $this->basketHashValue;
@@ -1354,7 +1426,26 @@ class tx_commerce_pibase extends tslib_pibase {
 		
 		$subpartArray['###'.strtoupper($articleSubpart).'###'] = $this->makeArticleView('list',array(),$myProduct,$articleMarker,$articleTemplate);
 
-
+		/**
+		 * Get The Checapest Price
+		 * 
+		 */
+		$cheapestArticleUid = $myProduct->getCheapestArticle();
+		$cheapestArticle = t3lib_div::makeInstance('tx_commerce_article');
+		$cheapestArticle ->init($cheapestArticleUid);
+		$cheapestArticle->load_data();
+		$cheapestArticle->load_prices();
+		
+		$markerArray['###PRODUCT_CHEAPEST_PRICE_GROSS###']=tx_moneylib::format($cheapestArticle->get_price_gross(),$this->currency);
+		
+		$cheapestArticleUid = $myProduct->getCheapestArticle(1);
+		$cheapestArticle = t3lib_div::makeInstance('tx_commerce_article');
+		$cheapestArticle ->init($cheapestArticleUid);
+		$cheapestArticle->load_data();
+		$cheapestArticle->load_prices();
+		
+		$markerArray['###PRODUCT_CHEAPEST_PRICE_NET###']=tx_moneylib::format($cheapestArticle->get_price_net(),$this->currency);
+		
 
     	
 		foreach($hookObjectsArr as $hookObj)   {
@@ -1372,15 +1463,22 @@ class tx_commerce_pibase extends tslib_pibase {
 	  * Addsd the global Marker for the formtags to the given marker array
 	  * @author	Ingo Schmitt <is@marketing-factory.de>
 	  * @param	$markerArray	array	Array of marker
+	  * @param 	$wrap		[default=false] if the marker should be wrapped by $wrap.
 	  * @return	array	Marker Array with the new marker 
 	  * 
 	 **/
 	
-	function addFormMarker($markerArray) {
-		$markerArray['GENERAL_FORM_ACTION'] =  $this->pi_getPageLink($this->conf['basketPid']);
+	function addFormMarker($markerArray,$wrap=false) {
+		$NewmarkerArray['GENERAL_FORM_ACTION'] =  $this->pi_getPageLink($this->conf['basketPid']);
 		if (is_integer($this->cat)) {
-			$markerArray['GENERAL_HIDDENCATUID'] = '<input type="hidden" name="'.$this->prefixId.'[catUid]" value="'.$this->cat.'" />';
-	
+			$NewmarkerArray['GENERAL_HIDDENCATUID'] = '<input type="hidden" name="'.$this->prefixId.'[catUid]" value="'.$this->cat.'" />';
+		}
+		if ($wrap){
+			foreach ($NewmarkerArray as $key=>$value){
+				$markerArray[$this->cObj->wrap($key,$wrap)]=$value;
+			}
+		}else{
+			$markerArray=array_merge($markerArray,$NewmarkerArray);
 		}
 		return $markerArray;
 	}

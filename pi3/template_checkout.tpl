@@ -51,59 +51,78 @@ Step 3: finish
 
 
 <!--###ADDRESS_EDIT_FORM###-->
-<strong>###LABEL_NAME###</strong> ###FIELD_NAME###<br />
-<strong>###LABEL_SURNAME###</strong> ###FIELD_SURNAME###<br />
-<strong>###LABEL_COMPANY###</strong> ###FIELD_COMPANY###<br />
-<strong>###LABEL_ADDRESS###</strong> ###FIELD_ADDRESS###<br />
-<strong>###LABEL_CITY###</strong> ###FIELD_CITY###<br />
-<strong>###LABEL_ZIP###</strong> ###FIELD_ZIP###<br />
-<strong>###LABEL_COUNTRY###</strong> ###FIELD_COUNTRY###<br />
-<strong>###LABEL_EMAIL###</strong> ###FIELD_EMAIL###<br />
-<strong>###LABEL_PHONE###</strong> ###FIELD_PHONE###<br />
+<dl>
+<dt>###LABEL_NAME###</dt> <dd>###FIELD_NAME###</dd>
+<dt>###LABEL_SURNAME###</dt> <dd>###FIELD_SURNAME###</dd>
+<dt>###LABEL_COMPANY###</dt> <dd>###FIELD_COMPANY###</dd>
+<dt>###LABEL_ADDRESS###</dt> <dd>###FIELD_ADDRESS###</dd>
+<dt>###LABEL_CITY###</dt> <dd>###FIELD_CITY###</dd>
+<dt>###LABEL_ZIP###</dt> <dd>###FIELD_ZIP###</dd>
+<dt>###LABEL_COUNTRY###</dt> <dd>###FIELD_COUNTRY###</dd>
+<dt>###LABEL_EMAIL###</dt> <dd>###FIELD_EMAIL###</dd>
+<dt>###LABEL_PHONE###</dt> <dd>###FIELD_PHONE###</dd>
+</dl>
 <!--###ADDRESS_EDIT_FORM###-->
 
 <!--###ADDRESS_LIST###-->
-<strong>###HEADER###</strong>
-<strong>###LABEL_NAME###</strong> ###NAME###<br />
-<strong>###LABEL_SURNAME###</strong> ###SURNAME###<br />
-<strong>###LABEL_COMPANY###</strong> ###COMPANY###<br />
-<strong>###LABEL_ADDRESS###</strong> ###ADDRESS###<br />
-<strong>###LABEL_CITY###</strong> ###CITY###<br />
-<strong>###LABEL_ZIP###</strong> ###ZIP###<br />
-<strong>###LABEL_COUNTRY###</strong> ###COUNTRY###<br />
-<strong>###LABEL_EMAIL###</strong> ###EMAIL###<br />
-<strong>###LABEL_PHONE###</strong> ###PHONE###<br />
+<h3>###HEADER###</h3>
+<dl>
+<dt>###LABEL_NAME###</dt> <dd>###NAME###</dd>
+<dt>###LABEL_SURNAME###</dt> <dd>###SURNAME###</dd>
+<dt>###LABEL_COMPANY###</dt> <dd>###COMPANY###</dd>
+<dt>###LABEL_ADDRESS###</dt> <dd>###ADDRESS###</dd>
+<dt>###LABEL_CITY###</dt> <dd>###CITY###</dd>
+<dt>###LABEL_ZIP###</dt> <dd>###ZIP###</dd>
+<dt>###LABEL_COUNTRY###</dt> <dd>###COUNTRY###</dd>
+<dt>###LABEL_EMAIL###</dt> <dd>###EMAIL###</dd>
+<dt>###LABEL_PHONE###</dt> <dd>###PHONE###</dd>
+</dl>
 <!--###ADDRESS_LIST###-->
 
 
 <!--###SINGLE_INPUT### begin-->
-	<tr>
-		<td class="chkout_address_left"><div class="chkout_address_label">###FIELD_LABEL### ###FIELD_ERROR###</div></td>
-		<td valign="middle"><div class="chkout_address_input">###FIELD_INPUT###</div>
-	</tr>
+	<dt class="com-chkout-address-label"><label for="###FIELD_INPUTID###">###FIELD_LABEL###</label> ###FIELD_ERROR###</dt>
+	<dd class="com-chkout-address-input">###FIELD_INPUT###</dd>	
 <!--###SINGLE_INPUT### end-->
 
+
+<!--###SINGLE_CHECKBOX### begin-->
+	<dt class="com-chkout-address-label">###FIELD_INPUT###</dt>
+	<dd class="com-chkout-address-input"><label for="###FIELD_INPUTID###">###FIELD_LABEL###</label> ###FIELD_ERROR###</dd>	
+<!--###SINGLE_CHECKBOX### end-->
 
 <!--=# BASIC SUBPARTS END #=-->
 
 
 
 <!--###ADDRESS_CONTAINER### begin-->
-<div class="chkout_address">
-	<div class="chkout_address_title"><h1>###ADDRESS_TITLE###</h1></div>
-	<div class="chkout_address_desc">###ADDRESS_DESCRIPTION###</div>
-	<div class="chkout_address_fields">
-		###ADDRESS_FORM_FIELDS###
-		<div class="chkout_address_radio">###ADDRESS_RADIO_DELIVERY###<br/>###ADDRESS_RADIO_NODELIVERY###</div>
-		<div class="chkout_address_submit">###ADDRESS_FORM_SUBMIT###</div></form>
+###CHECKOUT_STEPS###
+<div class="com-chkout-address">
+	<h2>###ADDRESS_TITLE###</h2>
+	<p class="com-chkout-address-desc">###ADDRESS_DESCRIPTION###</p>
+	<div class="com-chkout-address-fields">
+		<form action="###GENERAL_FORM_ACTION###" method="post">
+		###HIDDEN_STEP###
+		<dl>
+			###ADDRESS_FORM_INPUTFIELDS###
+		
+		<dd class="com-chkout-address-radio">###ADDRESS_RADIOFORM_DELIVERY###</dd>
+		<dt class="com-chkout-address-radiolabel">###ADDRESS_LABEL_DELIVERY###</dt>
+		<dd class="com-chkout-address-radio">###ADDRESS_RADIOFORM_NODELIVERY###</dd>
+		<dt class="com-chkout-address-radiolabel">###ADDRESS_LABEL_NODELIVERY###</dt>
+		</dl>	
+			
+		<p class="com-chkout-address-fields-submit"> ###ADDRESS_FORM_SUBMIT###</p>
+		</form>
 	</div>
-	<div class="chkout_address_disc">###ADDRESS_DISCLAIMER###</div>
+	<p class="com-chkout-address-fields-disclaimer">###ADDRESS_DISCLAIMER###</p>
 </div>
 <!--###ADDRESS_CONTAINER### end-->
 
 
 
 <!--###PAYMENT### begin-->
+###CHECKOUT_STEPS###
 <div id="payment">
 	<h2>###PAYMENT_TITLE###</h2>
 	<p>###PAYMENT_DESCRIPTION###</p>
@@ -116,19 +135,27 @@ Step 3: finish
 
 
 <!--###LISTING### begin-->
-<div class="listing">
-	<div class="chkout_list_title"><h2>###LISTING_TITLE###</h2></div>
-	<div class="chkout_list_descr">###LISTING_DESCRIPTION###</div>
-	<div class="chkout_list_form_fields">###LISTING_FORM_FIELDS###</div>
-	<div class="chkout_list_basket">###LISTING_BASKET###</div>
-
+<form action="###GENERAL_FORM_ACTION###" method="post">
+###HIDDEN_STEP###
+###CHECKOUT_STEPS###
+<div class="com-chkout-listing">
+	<h2>###LISTING_TITLE###</h2>
+	<p class="com-chkout-listing-descr">###LISTING_DESCRIPTION###</p>
+	<div class="com-chkout-listing-basket">###LISTING_BASKET###</div>
+	<div class="com-chkout-listing-billing-address">
 	###BILLING_ADDRESS###
+	</div>
+	<div class="com-chkout-listing-delivery-address">
 	###DELIVERY_ADDRESS###
-	<div class="chkout_list_disclaimer">###LISTING_DISCLAIMER###</div>
-	<div class="chkout_list_terms"><span class="error">###ERROR_TERMS_ACCEPT###</span>###LISTING_TERMS_ACCEPT_LABEL### ###LISTING_TERMS_ACCEPT_FIELD###</div>
-	<div class="chkout_list_comment">###LISTING_COMMENT_LABEL### ###LISTING_COMMENT_FIELD###</div>
-	<div class="chkout_list_form_submit">###LISTING_FORM_SUBMIT###</div>
+	</div>
+	<div class="com-chkout-listing-footer">
+	<p class="com-chkout-listing-disclaimer">###LISTING_DISCLAIMER###</p>
+	<p class="com-chkout-listing-terms"><span class="error">###ERROR_TERMS_ACCEPT###</span>###LISTING_TERMS_ACCEPT_LABEL### ###LISTING_TERMS_ACCEPT_FIELD###</p>
+	<p class="com-chkout-listing-comment">###LISTING_COMMENT_LABEL### ###LISTING_COMMENT_FIELD###</p>
+	<p class="com-chkout-listing-submit">###LISTING_FORM_SUBMIT###</p>
+	</div>
 </div>
+</form>
 <!--###LISTING### end-->
 
 
@@ -138,57 +165,56 @@ Step 3: finish
  */
 -->
 <!--###BASKET_VIEW### begin -->
-<table>
-	<tr class="cmrc_ProdList2Container_hd">
-		<th>###LANG_ARTICLE_NUMBER###</th>
-		<th width="70%"></th>
-		<th width="70">###LANG_PRICE_GROSS###</th>
-		<th width="50">###LANG_COUNT###</th>
-		<th width="60">###LANG_PRICESUM_GROSS###</th>
-	</tr>
+<table class="com-basket-list" cellspacing="0" cellpadding="0" border="0">
+	<thead>
+		<tr class="com-basket-header">
+			<th class="com-basket-header-art-nr">###LANG_ARTICLE_NUMBER###</th>
+			<th class="com-basket-header-title">###LANG_TITLE###</th>
+			<th class="com-basket-header-price-gross">###LANG_PRICE_GROSS###</th>
+			<th class="com-basket-header-count">###LANG_COUNT###</th>
+			<th class="com-basket-header-price-sum">###LANG_PRICESUM_GROSS###</th>
+		</tr>
+	</thead>
+	<tbody>
 <!--###LISTING_ARTICLE### begin-->
-	<tr class="cmrc_ProdList2Container_even">
-		<td style="padding: 0px 3px; " align="right"><div class="basket_artnr">###ARTICLE_EANCODE###</div></td>
-		<td style="padding: 0px 3px; "><span class="cmrc_ProdListHeadline"><!-- ###PRODUCT_LINK_DETAIL### --> ###PRODUCT_TITLE###<!-- ###PRODUCT_LINK_DETAIL### --></span> ###PRODUCT_SUBTITLE###</td>
-		<td align="right" style="padding: 0px 3px; ">###BASKET_ITEM_PRICEGROSS###</td>
-		<td style="padding: 0px 3px; ">###BASKET_ITEM_COUNT###</td>
-		<td align="right" style="padding: 0px 3px; white-space:nowrap; ">###BASKET_ITEM_PRICESUM_GROSS###</td>
-	</tr>
+<tr class="com-basket-even">
+		<td class="com-text-right">###ARTICLE_ORDERNUMBER###</td>
+		<td>###PRODUCT_TITLE###</td>
+		<td class="com-text-right">###BASKET_ITEM_PRICEGROSS###</td>
+		<td>###BASKET_ITEM_COUNT###</td>
+		<td class="com-text-right">###BASKET_ITEM_PRICESUM_GROSS###</td>
+</tr>
 <!--###LISTING_ARTICLE### end-->
 
 <!--###LISTING_BASKET_WEB### begin-->
 	<tr>
-		<td colspan="4" align="right">###SHIPPING_TITLE###</td>
-		<td align="right">###SUM_SHIPPING_NET###</td>
+		<td colspan="4" class="com-text-right">###SHIPPING_TITLE###</td>
+		<td class="com-text-right">###SUM_SHIPPING_NET###</td>
 	</tr>
 	<tr>
-		<td colspan="4" align="right">###PAYMENT_TITLE###</td>
-		<td align="right">###SUM_PAYMENT_GROSS###</td>
+		<td colspan="4" class="com-text-right">###PAYMENT_TITLE###</td>
+		<td class="com-text-right">###SUM_PAYMENT_GROSS###</td>
 	</tr>
 	<tr>
-		<td colspan="4" align="right">###LABEL_SUM_ARTICLE_GROSS###</td>
-		<td align="right" class="cmrc_mb_total">###SUM_ARTICLE_GROSS###</td>
+		<td colspan="4" class="com-text-right">###LABEL_SUM_ARTICLE_GROSS###</td>
+		<td class="com-text-right">###SUM_ARTICLE_GROSS###</td>
 	</tr>
 	<tr>
-		<td colspan="4" class="cmrc_chkout_tax">###LABEL_SUM_TAX###</td>
-		<td class="cmrc_chkout_tax">###SUM_TAX###</td>
+		<td colspan="4" class="com-text-right">###LABEL_SUM_TAX###</td>
+		<td class="com-text-right">###SUM_TAX###</td>
 	</tr>
 	<!--###TAX_RATE_SUMS### begin -->
 		<tr>
-			<td colspan="4" class="cmrc_chkout_tax">###LABEL_SUM_TAX### ###TAX_RATE######LABEL_PERCENT###</td>
-			<td class="cmrc_chkout_tax">###TAX_RATE_SUM###</td>
+			<td colspan="4" class="com-text-right">###LABEL_SUM_TAX### ###TAX_RATE######LABEL_PERCENT###</td>
+			<td class="com-text-right">###TAX_RATE_SUM###</td>
 		</tr>
 	<!--###TAX_RATE_SUMS### end -->
-	<tr>
-		<td colspan="5"><hr /></td>
+	<tr class="com-chkout-sum">
+		<td colspan="4" class="com-text-right com-bold">###LABEL_SUM_GROSS###</td>
+		<td class="com-text-right com-bold">###SUM_GROSS###</td>
 	</tr>
-	<tr>
-		<td colspan="4" align="right"><strong>###LABEL_SUM_GROSS###</strong></td>
-		<td align="right"><strong>###SUM_GROSS###</strong></td>
-	</tr>
-</table>
 <!--###LISTING_BASKET_WEB### end-->
-
+</table>
 <!--###BASKET_VIEW### end -->
 
 <!--###FINISH### begin-->
@@ -206,3 +232,24 @@ Step 3: finish
 <!--###CHECKOUT_ERROR### begin-->
 <div class="error">###ERROR_MESSAGE###</div>
 <!--###CHECKOUT_ERROR### end-->
+
+<!--###CHECKOUT_STEPS_BAR### begin -->
+<div class="com-chkout-steps">
+
+<!-- ###CHECKOUT_ONE_STEP_ACTIVE### begin -->
+<div class="com-chkout-step-active">
+	###LINKTOSTEP###
+</div>
+<!-- ###CHECKOUT_ONE_STEP_ACTIVE### end -->
+<!-- ###CHECKOUT_ONE_STEP_ACTUAL### begin -->
+<div class="com-chkout-step-actual">
+	###STEPNAME###
+</div>
+<!-- ###CHECKOUT_ONE_STEP_ACTUAL### end -->
+<!-- ###CHECKOUT_ONE_STEP_INACTIVE### begin -->
+<div class="com-chkout-step-inactive">
+	###STEPNAME###
+</div>
+<!-- ###CHECKOUT_ONE_STEP_INACTIVE### end -->
+</div>
+<!--###CHECKOUT_STEPS_BAR### end -->

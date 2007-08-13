@@ -7,91 +7,104 @@
 <BODY>
 <!-- Be careful, if you use pdf_generator, just build Plain HTML 3.2 HTML with templates -->
 <!-- ###TEMPLATE### begin -->
-
-<div class="invoice-header">
-	###INVOICE_HEADER###
-</div>
-
-<div class="invoice-content">
-	
-	<div class="invoice-addresses">
-		<div class="invoice-shop-address">
-			###INVOICE_SHOP_NAME###<br />
-			###INVOICE_SHOP_ADDRESS###
-			<br/>
-			<br/>
-		</div>
-		
-		<div class="invoice-customer-address">
-			###LANG_DELIVERY_ADDRESS### <br/>
-			###INVOICE_DELIVERY_ADDRESS### <br/>
-			###LANG_BILLING_ADDRESS### <br/>
-			###INVOICE_BILLING_ADDRESS### <br/>
-		</div>
-		
-	</div>
-	
-	<br />UID-Nummer: ATU 581 83 922<br />
-###LANG_ORDER_NUM###: ###ORDER_ID### <br/>
-###LANG_ORDER_DATE###: ###ORDER_DATE###<br/><br />
-	
-	<div class="invoice-introduction">
-		###INVOICE_INTRO_MESSAGE###
-	</div>
-	
-	<div class="invoice-order">
-              
-		<table border="1" cellspacing="0">
-			<tbody>
-				<tr>
-					<th>###LANG_POS###</th>
-					<th>###LANG_ARTICLE_NUMBER###</th>
-					<th>###LANG_ARTICLE_DESCRIPTION###</th>
-					<th>###LANG_QUANTITY###</th>
-					<th>###LANG_PRICE###</th>
-					<th>###LANG_TOTAL###</th>
-				</tr>
-		
-				<!-- ###ORDER_ITEMS### begin-->
-				<!-- ###ORDER_ITEM### begin-->
-				<tr>
-					<td>###POSITION###</td>
-					<td>###ARTICLE_NUMBER###</td>
-					<td>###ARTICLE_TITLE###</td>
-					<td>###QUANTITY###</td>
-					<td>###PRICE###</td>
-					<td>###TOTAL###</td>
-				</tr>
-				<!-- ###ORDER_ITEM### end-->
-				<!-- ###ORDER_ITEMS### end-->
+<table border="0" cellspacing="0" cellpadding="0">
+	<thead>
+		<tr>
+			<th colspan="2" class="com-invoice-header">###INVOICE_HEADER###</th>
+		</tr>
+		<tr>
+			<th class="com-invoice-customer-address">
+				<!-- ###ADDRESS_BILLING_DATA### begin-->
+					<h2>###LANG_BILLING_ADDRESS###</h2>
+					###ADDRESS_BILLING_NAME###
+					###ADDRESS_BILLING_SURNAME###
+					###ADDRESS_BILLING_COMPANY###
+					###ADDRESS_BILLING_ADDRESS###
+					###ADDRESS_BILLING_ZIP###
+					###ADDRESS_BILLING_CITY###
+				<!-- ###ADDRESS_BILLING_DATA### end-->	
 				
-		
-				<tr>
-					<td colspan="5">###PAYMENT_METHOD### </td>
-					<td>###PAYMENT_COST###</td>
-				</tr>
-				<tr>
-					<td colspan="5">###SHIPPING_METHOD### </td>
-					<td>###SHIPPING_COST###</td>
-				</tr>
-				<tr>
-					<td colspan="5">###LANG_TAX### </td>
-					<td>###ORDER_TAX###</td>
-				</tr>
-				<tr>
-					<td colspan="5">###LANG_TOTAL### </td>
-					<td>###ORDER_TOTAL###</td>
-				</tr>
+				<!-- ###ADDRESS_DELIVERY_DATA### begin-->
+					<h2>###LANG_DELIVERY_ADDRESS###</h2>
+					###ADDRESS_DELIVERY_NAME###
+					###ADDRESS_DELIVERY_SURNAME###
+					###ADDRESS_DELIVERY_COMPANY###
+					###ADDRESS_DELIVERY_ADDRESS###
+					###ADDRESS_DELIVERY_ZIP###
+					###ADDRESS_DELIVERY_CITY###
+				<!-- ###ADDRESS_DELIVERY_DATA### end-->	
+			</th>
+			<th class="com-invoice-additional">
+				<div class="com-invoice-shop-address">
+					###INVOICE_SHOP_NAME###<br />
+					###INVOICE_SHOP_ADDRESS###
+				</div>
+				<div class="com-invoice-orderdata">
+					###LANG_ORDER_NUM###: ###ORDER_ID###<br/>
+					###LANG_ORDER_DATE###: ###ORDER_DATE###
+				</div>
 				
-			</tbody>
-		</table>
-	</div>
+			</th>
+		</tr>
+		
+		<tr>
+			<th colspan="2" class="com-invoice-introduction">
+				###INVOICE_INTRO_MESSAGE###
+			</th>
+		</tr>	
+	</thead>
 	
-	<div class="invoice-thankyou">
-		<br />###INVOICE_THANKYOU###<br /><br />
-	</div>
-</div>
-
+	<tfoot>
+		<tr>
+			<td colspan="2" class="com-invoice-thankyou">
+				###INVOICE_THANKYOU###
+			</td>
+		</tr>
+	</tfoot>
+	<tbody>
+		<tr>
+			<td colspan="2">
+				<table border="1" cellspacing="0" cellpadding="0" class="com-invoice-order">
+					<tbody>
+						<tr class="com-invoice-order-header">
+							<th>###LANG_POS###</th>
+							<th>###LANG_ARTICLE_NUMBER###</th>
+							<th>###LANG_ARTICLE_DESCRIPTION###</th>
+							<th>###LANG_QUANTITY###</th>
+							<th>###LANG_PRICE###</th>
+							<th>###LANG_SUM_TOTAL###</th>
+						</tr>
+						<!--###LISTING_ARTICLE### begin-->
+						<tr>
+								<td>###ARTICLE_POSITION###</td>								<td>###ARTICLE_ARTICLE_NUMBER###</td>								<td>###ARTICLE_TITLE###</td>								<td>###ARTICLE_AMOUNT###</td>
+								<td>###ARTICLE_PRICE###</td>
+								<td>###ARTICLE_TOTAL###</td>
+						</tr>
+						<!--###LISTING_ARTICLE### end-->
+						<tr>
+							<td colspan="5">###PAYMENT_METHOD### </td>
+							<td>###PAYMENT_COST###</td>
+						</tr>
+						<tr>
+							<td colspan="5">###SHIPPING_METHOD### </td>
+							<td>###SHIPPING_COST###</td>
+						</tr>
+						<tr>
+							<td colspan="5">###LANG_TAX### </td>
+							<td>###ORDER_TAX###</td>
+						</tr>
+						<tr>
+							<td colspan="5">###LANG_TOTAL### </td>
+							<td>###ORDER_TOTAL###</td>
+						</tr>
+						
+					</tbody>
+				</table>
+			
+			</td>
+		<tr>
+	</tbody>
+</table>
 <!-- ###TEMPLATE### end -->
 </body>
 </html>

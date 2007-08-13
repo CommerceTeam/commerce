@@ -28,6 +28,12 @@
 			<label index="lang_text_empty">Please select the products you want to order first </label>
 			<label index="lang_percent">%</label>
 			<label index="lang_last_product">Last Product</label>
+			<label index="lang_title">Title</label>
+			<label index="lang_basket_qv_value">Basket:</label>
+			<label index="lang_basket_qv_link">Basket</label>
+			<label index="lang_basket_qv_chkout">Checkout</label>
+			<label index="lang_basket_update">update</label>
+			<label index="lang_basket_delete_item">delete</label>
 			<label index="checkoutlink">To the checkout</label>
 			<label index="delete_basket">Clear basket</label>
 			<label index="noStock">The amount of wanted articles is not available at this moment</label>
@@ -53,6 +59,12 @@
 			<label index="lang_text_empty">Bitte waehlen Sie erst Produkte aus, die sie bestellen möchten</label>
 			<label index="lang_percent">%</label>
 			<label index="lang_last_product">Zurück</label>
+			<label index="lang_title">Titel</label>
+			<label index="lang_basket_qv_value">Warenkorb (brutto):</label>
+			<label index="lang_basket_qv_link">Warenkorb</label>
+			<label index="lang_basket_qv_chkout">Bestellen</label>
+			<label index="lang_basket_update">Aktualisieren</label>
+			<label index="lang_basket_delete_item">löschen</label>
 			<label index="checkoutlink">Zum Checkout</label>
 			<label index="delete_basket">Warenkorb leeren</label>
 			<label index="noStock">Die Anzahl der gewünschten Artikel ist im Augenblick nicht verfügbar</label>

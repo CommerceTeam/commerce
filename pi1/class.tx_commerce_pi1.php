@@ -29,7 +29,7 @@
  * @see		tx_commerce_pibase
  * 
  * $Id: class.tx_commerce_pi1.php 576 2007-03-22 22:38:22Z ingo $
- */
+ */-
  
 
 /**
@@ -92,6 +92,7 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 		if(!$this->master_cat){
 			$this->master_cat = $this->conf['catUid'];			
 		}
+		
 		
 		
 		if($this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'displayPID', 's_template')){
@@ -283,7 +284,7 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 		// get Category Data
 		$catObj->load_Data();	
 		// render it in the content
-		$category = $this->renderCategory($catObj, '###'.strtoupper($this->conf['templateMarker.']['categorySingleViewMarker']).'###', $this->conf['singleView.']['categories.'],'ITEM',$content);
+		$category = $this->renderCategory($catObj, '###'.strtoupper($this->conf['templateMarker.']['categorySingleViewMarker']).'###', $this->conf['singleView.']['products.']['categories.'],'ITEM',$content);
     		
 		// substitude the subpart
 		
@@ -378,38 +379,34 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 		}
 		
 		if($count > 1) {
-		
+			
 			//parse piVars for values and names of selected attributes
 			foreach($this->piVars as $key=>$val) {
-				if (strstr($key,'attsel_')) {
+				if (strstr($key,'attsel_') && $val) {
 					$arrAttNames[] = substr($key, 7);
 					$arrAttValues[] = $val;
+					$attributeArray[] = array('AttributeUid'=> substr($key, 7),'AttributeValue'=>$val);
 				}
 			}
-
-				
 			if (is_array($arrAttNames)) {
-			
-				$articles_uids = $prod->get_Articles_by_Attribute($arrAttNames[0],$arrAttValues[0],$showHiddenValues);
-		
+				$articles_uids = $prod->get_Articles_by_AttributeArray($attributeArray,1);
 				//TODO: for now we put this so it looks like working, check workflow and results
 				if(count($this->select_attributes)>1){
-					$attributeArray = $prod->get_Atrribute_Matrix($articles_uids, $this->select_attributes,$showHiddenValues);
+					$attributeArray = $prod->get_selectattribute_matrix($articles_uids, $this->select_attributes,$showHiddenValues);
 				}else{
-					$attributeArray = $prod->get_Atrribute_Matrix($articles_uids, $this->select_attributes,$showHiddenValues);
+					$attributeArray = $prod->get_selectattribute_matrix($articles_uids, $this->select_attributes,$showHiddenValues);
 				}
 				
 			} else {
 				$articles_uids = $prod->getArticleUids();
-				$attributeArray = $prod->get_Atrribute_Matrix($articles_uids, $this->select_attributes,$showHiddenValues);
+				$attributeArray = $prod->get_selectattribute_matrix($articles_uids, $this->select_attributes,$showHiddenValues);
 				$articles_uids[0] = $prod->articles_uids[0];
 			}
 			
-			
 			if($this->conf['allArticles']){
-		
-					//TODO: correct like this?
-				for ($i=0;$i<count($prod->articles_uids);$i++) {
+				
+				//TODO: correct like this?
+				for ($i=0;$i<$count;$i++) {
 	
 					$attributeArray = $prod->get_Atrribute_Matrix(array($prod->articles_uids[$i]), $this->select_attributes,$showHiddenValues);
 					
@@ -423,120 +420,119 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 			        		$markerArray["###SELECT_ATTRIBUTES_ICON###"] = $myAttribute['icon'];
 		
 							list($k,$v) = each($myAttribute['values']);
-	                        $markerArray["###SELECT_ATTRIBUTES_VALUE###"] = $v;
-	                        $markerArray["###SELECT_ATTRIBUTES_UNIT###"] = $myAttribute['unit'];
-	                        $attCode .= $this->cObj->substituteMarkerArrayCached($templateAttr, $markerArray , array());
-	            	
-			       
-	                	}
-	        	    }
+							$markerArray["###SELECT_ATTRIBUTES_VALUE###"] = $v;
+							$markerArray["###SELECT_ATTRIBUTES_UNIT###"] = $myAttribute['unit'];
+							
+							$attCode .= $this->cObj->substituteMarkerArrayCached($templateAttr, $markerArray , array());
+						}
+	     			}
 			
 					$markerArray = $this->getArticleMarker($prod->articles[$prod->articles_uids[$i]]);			
 					$markerArray['SUBPART_ARTICLE_ATTRIBUTES'] = $this->makeArticleAttributList($prod,array($prod->articles_uids[$i]));
 					$markerArray['ARTICLE_SELECT_ATTRIBUTES'] = $attCode;
-				
+
 					foreach($hookObjectsArr as $hookObj)    {
-		    			   	if (method_exists($hookObj, 'additionalMarker')) {
-					              $markerArray =  $hookObj->additionalMarker($markerArray,$this,$prod->articles[$prod->articles_uids[$i]]);
-		            		       }
-	    				}
-					
+						if (method_exists($hookObj, 'additionalMarker')) {
+						      $markerArray =  $hookObj->additionalMarker($markerArray,$this,$prod->articles[$prod->articles_uids[$i]]);
+					       }
+					}
+
 					$template_att = $this->cObj->getSubpart($template, $templateMarker[($i%$templateCount)]);
 					if($this->conf['useStockHandling'] == 1 AND $prod->articles[$prod->articles_uids[$i]]->getStock() <= 0) {
-			  			$tempTemplate = $this->cObj->getSubpart($template, $templateMarkerNostock[($i%$templateCount)]);
-			  			if($tempTemplate != '' ) {
-			  				$template_att = $tempTemplate;
-			  			}
-			  		} 
+						$tempTemplate = $this->cObj->getSubpart($template, $templateMarkerNostock[($i%$templateCount)]);
+						if($tempTemplate != '' ) {
+							$template_att = $tempTemplate;
+						}
+					} 
 					$content.= $this->cObj->substituteMarkerArray($template_att, $markerArray,'###|###',1);
 									 
 								            
 				}
 
 	    	}else{
-	
+			
 				if(is_array($attributeArray)) {
 					$attCode = '<form name="attList_'.$prod->get_uid().'" id="attList_'.$prod->get_uid().'" action="'.$this->pi_getPageLink($GLOBALS['TSFE']->id, '_self', array($this->prefixId.'[catUid]'=>$this->piVars['catUid'],$this->prefixId.'[showUid]'=>$this->piVars['showUid'])).'"  method="post"><input type="hidden" name="no_cache" value="1" />';
 					foreach($attributeArray as $attribute_uid => $myAttribute) {
 						$attributeObj = new tx_commerce_attribute($attribute_uid,$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
 						$attributeObj->load_data();
 						$attCode.= $myAttribute['title'].': '; 
-						$attCode.= '<select onChange="javascript:document.attList_'.$prod->get_uid().'.submit();" name="'.$this->prefixId.'[attsel_'.$attribute_uid.']">';
+						$attCode.= '<select onchange="document.getElementById(\'attList_'.$prod->get_uid().'\').submit();" name="'.$this->prefixId.'[attsel_'.$attribute_uid.']" '.$this->conf['selectAttributesParams'].'><option value="">'.$this->pi_getLL('all_options','all',1).'</option>'."\n";
 						foreach($myAttribute['values'] as $key => $val) {
-							$attCode.='<option value="'.$key.'"'.($key == $this->piVars['attsel_'.$attribute_uid] ? 'selected="selected"' : '').'>'.
+							$attCode.='<option value="'.$key.'"'.($key == $this->piVars['attsel_'.$attribute_uid] ? 'selected="selected"' : '').'>'."\n".
 							$val.'</option>';
 						}
-						$attCode.= '</select>';
+						$attCode.= '</select>'."\n";
 						$attCode.= ' '.$myAttribute['unit'].'<br />'; 
 					}
 					$attCode.= '</form>';
 				}
-			
-			 	// TODO: correct like this?
+
+				// TODO: correct like this?
 				if(is_array($articles_uids)){
-				        $artId = $articles_uids[0];
+					$artId = $articles_uids[0];
 				}else{
-			    		$artId = $prod->articles_uids[0];
+					$artId = $prod->articles_uids[0];
 				}
-				$markerArray = $this->getArticleMarker($prod->articles[$prod->articles_uids[0]]);			
+				
+				$markerArray = $this->getArticleMarker($prod->articles[$artId]);			
 				$markerArray['SUBPART_ARTICLE_ATTRIBUTES'] = $this->makeArticleAttributList($prod,array($artId));		
 				$markerArray['ARTICLE_SELECT_ATTRIBUTES'] = $attCode;
 				foreach($hookObjectsArr as $hookObj)    {
-		    		if (method_exists($hookObj, 'additionalMarker')) {
-						$markerArray =  $hookObj->additionalMarker($markerArray,$this,$prod->articles[$prod->articles_uids[0]]);
+					if (method_exists($hookObj, 'additionalMarker')) {
+						$markerArray =  $hookObj->additionalMarker($markerArray,$this,$prod->articles[$artId]);
 					}
-	    		}
-
-				
+		    	}
+		    		
 				$template_att = $this->cObj->getSubpart($template, $templateMarker[0]);
-				if($this->conf['useStockHandling'] == 1 AND $prod->articles[$prod->articles_uids[0]]->getStock() <= 0) {
-	  				$tempTemplate = $this->cObj->getSubpart($template, $templateMarkerNostock[0]);
-	  				if($tempTemplate != '' ) {
-	  					$template_att = $tempTemplate;
-	  				}
-			  	} 
+				if($this->conf['useStockHandling'] == 1 AND $prod->articles[$artId]->getStock() <= 0) {
+					$tempTemplate = $this->cObj->getSubpart($template, $templateMarkerNostock[0]);
+					if($tempTemplate != '' ) {
+						$template_att = $tempTemplate;
+					}
+				} 
 				$content.= $this->cObj->substituteMarkerArray($template_att, $markerArray,'###|###',1);
- 								                
-		 
-    	    }
-		} elseif($count==1){
+	
+			 
+	    	    }
+			} elseif($count==1){
 		    	
 	                  $attributeArray = $prod->get_Atrribute_Matrix(array($prod->articles_uids[0]),$this->select_attributes,$showHiddenValues);
 								      
-                          if(is_array($attributeArray)) {
-	                          $attCode = '';
-	                          foreach($attributeArray as $attribute_uid => $myAttribute) {
-	                                  $attributeObj = new tx_commerce_attribute($attribute_uid,$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
-                                          $attributeObj->load_data();
-                                          $markerArray["###SELECT_ATTRIBUTES_TITLE###"] = $myAttribute['title'];
-                                          $markerArray["###SELECT_ATTRIBUTES_ICON###"] = $myAttribute['icon'];
-                                          list($k,$v) = each($myAttribute['values']);
-                                          $markerArray["###SELECT_ATTRIBUTES_VALUE###"] = $v;
-                                          $markerArray["###SELECT_ATTRIBUTES_UNIT###"] = $myAttribute['unit'];
-	                                  $attCode .= $this->cObj->substituteMarkerArrayCached($templateAttr,$markerArray , array());
-                            	    }
-			}																																																																								      
+                      if(is_array($attributeArray)) {
+	                      $attCode = '';
+	                      foreach($attributeArray as $attribute_uid => $myAttribute) {
+	                          $attributeObj = new tx_commerce_attribute($attribute_uid,$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
+                              $attributeObj->load_data();
+                              $markerArray["###SELECT_ATTRIBUTES_TITLE###"] = $myAttribute['title'];
+                              $markerArray["###SELECT_ATTRIBUTES_ICON###"] = $myAttribute['icon'];
+                              list($k,$v) = each($myAttribute['values']);
+                              $markerArray["###SELECT_ATTRIBUTES_VALUE###"] = $v;
+                              $markerArray["###SELECT_ATTRIBUTES_UNIT###"] = $myAttribute['unit'];
+	                          $attCode .= $this->cObj->substituteMarkerArrayCached($templateAttr,$markerArray , array());
+	                      }	
+                      }																																																																							      
 		
-			$prod->load_articles();
-			
-			$markerArray = $this->getArticleMarker($prod->articles[$prod->articles_uids[0]]);			
-			$markerArray['SUBPART_ARTICLE_ATTRIBUTES'] = $this->makeArticleAttributList($prod,array($prod->articles_uids[0]));			
-			$markerArray['ARTICLE_SELECT_ATTRIBUTES'] = '';
-			
-			foreach($hookObjectsArr as $hookObj)    {
-	    	    	    if (method_exists($hookObj, 'additionalMarker')) {
-			              $markerArray =  $hookObj->additionalMarker($markerArray,$this,$prod->articles[$prod->articles_uids[0]]);
-	        	    }
-    			}
+						$prod->load_articles();
+						
+						$markerArray = $this->getArticleMarker($prod->articles[$prod->articles_uids[0]]);			
+						$markerArray['SUBPART_ARTICLE_ATTRIBUTES'] = $this->makeArticleAttributList($prod,array($prod->articles_uids[0]));			
+						$markerArray['ARTICLE_SELECT_ATTRIBUTES'] = '';
+						
+						foreach($hookObjectsArr as $hookObj)    {
+				    	    	if (method_exists($hookObj, 'additionalMarker')) {
+						              $markerArray =  $hookObj->additionalMarker($markerArray,$this,$prod->articles[$prod->articles_uids[0]]);
+				        	    }
+			    		}
              
-			$template_att = $this->cObj->getSubpart($template, $templateMarker[0]);
-			if($this->conf['useStockHandling'] == 1 AND $prod->articles[$prod->articles_uids[0]]->getStock() <= 0) {
-	  			$tempTemplate = $this->cObj->getSubpart($template, $templateMarkerNostock[0]);
-	  			if($tempTemplate != '' ) {
-	  				$template_att = $tempTemplate;
-	  			}
-			} 
-			$content.= $this->cObj->substituteMarkerArray($template_att, $markerArray,'###|###',1);
+						$template_att = $this->cObj->getSubpart($template, $templateMarker[0]);
+						if($this->conf['useStockHandling'] == 1 AND $prod->articles[$prod->articles_uids[0]]->getStock() <= 0) {
+				  			$tempTemplate = $this->cObj->getSubpart($template, $templateMarkerNostock[0]);
+				  			if($tempTemplate != '' ) {
+				  				$template_att = $tempTemplate;
+				  			}
+						} 
+						$content.= $this->cObj->substituteMarkerArray($template_att, $markerArray,'###|###',1);
 				 
 		}
 		

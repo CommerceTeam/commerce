@@ -116,13 +116,14 @@
 				$article->load_data();
 				$article->load_Prices();
 				$priceids=$article->getPossiblePriceUids();
+				if (is_array($priceids)) {
 				/**
 				 * Check if the given price id is related to the article
 				 */
-				if (!in_array($priceid,$priceids)){
-					$priceid='';
+					if (!in_array($priceid,$priceids)){
+						$priceid='';
+					}
 				}
-				
 				if ($priceid == '')	{
 					// no priceid is given,. get the price from article_object
 					

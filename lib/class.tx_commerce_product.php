@@ -401,12 +401,12 @@
 					$attribute_uid_list = $first_array;
 					$first = 0;
 				}else{
-			
 					$attribute_uid_list = array_intersect($attribute_uid_list,$next_array);
 					$next_array = array();
 				}
 		  	} 				
 	 		if(count($attribute_uid_list)>0){
+	 			sort($attribute_uid_list);
 				return $attribute_uid_list;
  			}else{
 				return false;			

@@ -1,3 +1,16 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<title>COMMERCE TEMPLATE FOR PI1</title>
+    <link href="../res/css/commerce.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+
+<h1>COMMERCE TEMPLATE FOR PI1</h1>
+<h2>DEFAULT</h2>
+
 <!-- Documentation -->
 
 <!-- 
@@ -32,290 +45,519 @@ If you want one form per page you should only use the ###ARTICLE_HIDDENFIELDS###
 inside the ARTICLE_VIEW subparts, since the hidden tag for the catuid will be rendered 
 globally at the beginning of the form tag as marker ###GENERAL_HIDDENCATUID###
 
-
-
-
 -->
 
 
-<!-- Suppart for rendering the category list, complete output from extension -->
+<h3>CATEGORY LIST</h3>
 
 <!-- ###CATEGORY_LIST### begin -->
-<form action="###GENERAL_FORM_ACTION###" method="post">
-###GENERAL_HIDDENCATUID###
-<ul>
-<!-- ###CATEGORY_LIST_ITEM### begin -->
-
-<li>###CATEGORY_ITEM_DETAILLINK### ###CATEGORY_ITEM_TITLE### ###CATEGORY_ITEM_DETAILLINK###
-<p>###CATEGORY_ITEM_SUBTITLE###</p>
-<p>###CATEGORY_ITEM_DESCRIPTION###</p>
-<p>###CATEGORY_ITEM_IMAGES###</p>
-<!-- optional 
-		<p>###CATEGORY_ITEM_PRODUCTLIST###</p>
- optional end  -->
-</li>
-<!-- ###CATEGORY_LIST_ITEM### end -->
-</ul>
-</form>
+	<div class="com-category">
+		<!-- ###CATEGORY_LIST_ITEM### begin -->
+			###CATEGORY_ITEM_TITLE###
+			###CATEGORY_ITEM_DESCRIPTION###
+			###CATEGORY_ITEM_IMAGES###
+			###CATEGORY_ITEM_SUBTITLE###
+	
+			###CATEGORY_ITEM_PRODUCTLIST###
+			
+			
+		<!-- ###CATEGORY_LIST_ITEM### end -->
+	</div>
 <!-- ###CATEGORY_LIST### end -->
 
+
+<br />
+<br />
+<br />
+<h3>CATEGORY LIST</h3>
+<em></em>
+<br />
+
 <!-- ###CATEGORY_VIEW_DISPLAY### begin -->
+<form action="###GENERAL_FORM_ACTION###" method="post">
+###GENERAL_HIDDENCATUID###
+<div class="com-category">
+	###CATEGORY_TITLE###
+	###CATEGORY_DESCRIPTION###
+	###CATEGORY_IMAGES###
+	###CATEGORY_SUB_LIST###
+</div>
 
-	<div><h2>###CATEGORY_TITLE###</h2>
-	<span>###CATEGORY_DESCRIPTION###</span>
-	<span>###CATEGORY_IMAGES###</span>
-	<span>###CATEGORY_SUB_LIST###</span>
-	<span>###SUBPART_CATEGORY_ITEMS_LISTVIEW_TOP###</span>
-	</div>
-	<br />
-	<div>###SUBPART_CATEGORY_ITEMS_LISTVIEW###</div>
-	<div>###CATEGORY_BROWSEBOX###</div>	
+###SUBPART_CATEGORY_ITEMS_LISTVIEW_TOP###
 
+<table class="com-list" cellspacing="0" cellpadding="0" border="0">
+	<thead>
+		<tr class="com-list-header">	      <th class="com-list-header-img">###LANG_HEADER_IMAGE###</th>	      <th class="com-list-header-title">###LANG_HEADER_TITLE###</th>	      <th class="com-list-header-teaser">###LANG_HEADER_TEASER###</th>
+	      <th class="com-list-header-price">###LANG_HEADER_PRICE###</th>
+	      <th class="com-list-header-action">###LANG_HEADER_ACTION###</th>	    </tr>
+	</thead>
+	<tbody>
+		###SUBPART_CATEGORY_ITEMS_LISTVIEW###
+	</tbody>
+</table>
+
+###CATEGORY_BROWSEBOX###	
+</form>
 <!-- ###CATEGORY_VIEW_DISPLAY### end -->
 
-<!-- TOP PRODUCT / YOU CAN DISPLAY IT IN A SPECIAL WAY -->
-<!-- ###CATEGORY_ITEMS_LISTVIEW_1### begin -->
 
-<div>
-	<h3>
-	    <!-- ###PRODUCT_LINK_DETAIL### -->###PRODUCT_TITLE###<!-- ###PRODUCT_LINK_DETAIL### --> </h3>
-	<span>###PRODUCT_IMAGES###</span>
-	<span>###PRODUCT_TEASER###</span>
-	<br/>
+<br />
+<br />
+<br />
+<h3>TOP PRODUCT</h3>
+<em>YOU CAN DISPLAY IT IN A SPECIAL WAY </em>
+<br />
+
+<!-- ###CATEGORY_ITEMS_LISTVIEW_1### begin -->
+<div class="com-list-entry-top">
+	###PRODUCT_TITLE###
+	###PRODUCT_TEASERIMAGES###
+	###PRODUCT_TEASER###
 </div>
 <!-- ###CATEGORY_ITEMS_LISTVIEW_1### end -->
 
-
+<br />
+<br />
+<br />
+<h3>LIST PRODUCT ITEM - EVEN</h3>
+<em></em>
+<br />
 <!-- ###CATEGORY_ITEMS_LISTVIEW_2### begin-->
-<div>
-	<h3><!-- ###PRODUCT_LINK_DETAIL### -->###PRODUCT_TITLE###<!-- ###PRODUCT_LINK_DETAIL### --> </h3>
-	<span>###PRODUCT_IMAGES###</span>
-	<span>###PRODUCT_TEASER###</span>
-	<br/>
-</div>
-	<div>
+<tr class="com-list-even">
+	<td class="com-list-col-img">
+		###PRODUCT_TEASERIMAGES###
+	</td>
+
+	<td class="com-list-col-title">
+		###PRODUCT_TITLE###
+	</td>
+
+	<td class="com-list-col-teaser">
+		###PRODUCT_TEASER###
+	</td>
+
+	<td class="com-list-col-price">
+	###PRODUCT_CHEAPEST_PRICE_GROSS###			
+	</td>
+	<td class="com-list-col-action">
 	<!-- ###PRODUCT_BASKET_FOR_LISTVIEW### -->
-			<!-- ###ARTICLE_VIEW### -->
-			
-			
+		<!-- ###ARTICLE_VIEW### -->   
+		<div class="com-list-action-entry">
 		    ###ARTICLE_HIDDENFIELDS###
-			<span>###ARTICLE_EANCODE###	</span>
-			<span>###ARTICLE_STOCK###	</span>
-            <span>###ARTICLE_ORDERNUMBER###</span>
-			<span>###ARTICLE_PRICE_GROSS###</span>
-			<span>###DELIVERY_PRICE_GROSS###</span>    
-			<div>###ARTICLE_SELECT_ATTRIBUTES###</div>
+			###ARTICLE_EANCODE###
+			###ARTICLE_STOCK###
+            ###ARTICLE_ORDERNUMBER###
+			###ARTICLE_PRICE_GROSS###
+			###DELIVERY_PRICE_GROSS###
+			###ARTICLE_SELECT_ATTRIBUTES###
 			###LINKTOPUTINBASKET###
-			<span><input type="input" class="qtyInput" value="###QTY_INPUT_VALUE###" name="###QTY_INPUT_NAME###" size="3">&nbsp
-                   <input type="submit" value="abschicken">
-			
-			<!-- ###ARTICLE_VIEW### -->
-			
-			<!-- Use this Subpart, to display a different layout, if you don't ahve a stock for an article -->
-			<!-- ###ARTICLE_VIEW_NOSTOCK### -->
-			
-			###ARTICLE_HIDDENFIELDS###
-			<span>###ARTICLE_EANCODE###	</span>
-			<span>###ARTICLE_STOCK###	</span>
-            <span>###ARTICLE_ORDERNUMBER###</span>
-			<span>###ARTICLE_PRICE_GROSS###</span>
-			<span>###DELIVERY_PRICE_GROSS###</span>    
-			<div>###ARTICLE_SELECT_ATTRIBUTES###</div>
+			<input type="input" class="com-input-qty" value="###QTY_INPUT_VALUE###" name="###QTY_INPUT_NAME###" size="2"/>
+			<input type="submit" value="###LANG_SUBMIT###"/>
+		</div>
+		<!-- ###ARTICLE_VIEW### -->
+		
+		<!-- ###ARTICLE_VIEW_NOSTOCK### --> 
+		<div class="com-list-action-entry">    
+		    ###ARTICLE_HIDDENFIELDS###
+			###ARTICLE_EANCODE###
+			###ARTICLE_STOCK###
+            ###ARTICLE_ORDERNUMBER###
+			###ARTICLE_PRICE_GROSS###
+			###DELIVERY_PRICE_GROSS###
+			###ARTICLE_SELECT_ATTRIBUTES###
 			###LINKTOPUTINBASKET###
-			<span><input type="input" class="qtyInput" value="###QTY_INPUT_VALUE###" name="###QTY_INPUT_NAME###" size="3">&nbsp
-                   <input type="submit" value="abschicken">
-			
-			<!-- ###ARTICLE_VIEW_NOSTOCK### -->
-	<!-- ###PRODUCT_BASKET_FOR_LISTVIEW### -->
-	
-	</div>
+			<input type="input" class="com-input-qty" value="###QTY_INPUT_VALUE###" name="###QTY_INPUT_NAME###" size="2"/>
+            <input type="submit" value="###LANG_SUBMIT###"/>
+        </div>
+		<!-- ###ARTICLE_VIEW_NOSTOCK### -->
+	<!-- ###PRODUCT_BASKET_FOR_LISTVIEW### -->		
+	</td>
+</tr>
 <!-- ###CATEGORY_ITEMS_LISTVIEW_2### end -->
 
-
+<br />
+<br />
+<br />
+<h3>LIST PRODUCT ITEM NO STOCK - EVEN</h3>
+<em></em>
+<br />
 <!-- ###CATEGORY_ITEMS_LISTVIEW_2_NOSTOCK### begin-->
-<div>
-	<h3><!-- ###PRODUCT_LINK_DETAIL### -->###PRODUCT_TITLE###<!-- ###PRODUCT_LINK_DETAIL### --> </h3>
-	<span>###PRODUCT_IMAGES###</span>
-	<span>###PRODUCT_TEASER###</span>
-	<br/>
-</div>
-	<div>
+<tr class="com-list-even">
+	<td class="com-list-col-img">
+		###PRODUCT_TEASERIMAGES###
+	</td>
+
+	<td class="com-list-col-title">
+		###PRODUCT_TITLE###
+	</td>
+
+	<td class="com-list-col-teaser">
+		###PRODUCT_TEASER###
+	</td>
+
+	<td class="com-list-col-price">
+	###PRODUCT_CHEAPEST_PRICE_GROSS###			
+	</td>
+	<td class="com-list-col-action">
 	<!-- ###PRODUCT_BASKET_FOR_LISTVIEW### -->
-			<!-- ###ARTICLE_VIEW### -->
-		   
+		<!-- ###ARTICLE_VIEW### -->   
+		<div class="com-list-action-entry">
 		    ###ARTICLE_HIDDENFIELDS###
-			<span>###ARTICLE_EANCODE###	</span>
-			<span>###ARTICLE_STOCK###	</span>
-            <span>###ARTICLE_ORDERNUMBER###</span>
-			<span>###ARTICLE_PRICE_GROSS###</span>
-			<span>###DELIVERY_PRICE_GROSS###</span>    
-			<div>###ARTICLE_SELECT_ATTRIBUTES###</div>
+			###ARTICLE_EANCODE###
+			###ARTICLE_STOCK###
+            ###ARTICLE_ORDERNUMBER###
+			###ARTICLE_PRICE_GROSS###
+			###DELIVERY_PRICE_GROSS###
+			###ARTICLE_SELECT_ATTRIBUTES###
 			###LINKTOPUTINBASKET###
-			<span><input type="input" class="qtyInput" value="###QTY_INPUT_VALUE###" name="###QTY_INPUT_NAME###" size="3">&nbsp
-                   <input type="submit" value="abschicken">
-			</form>
-			<!-- ###ARTICLE_VIEW### -->
-			
-			<!-- ###ARTICLE_VIEW_NOSTOCK### -->
-		  
+			<input type="input" class="com-input-qty" value="###QTY_INPUT_VALUE###" name="###QTY_INPUT_NAME###" size="2"/>
+			<input type="submit" value="###LANG_SUBMIT###"/>
+		</div>
+		<!-- ###ARTICLE_VIEW### -->
+		
+		<!-- ###ARTICLE_VIEW_NOSTOCK### --> 
+		<div class="com-list-action-entry">    
 		    ###ARTICLE_HIDDENFIELDS###
-			<span>###ARTICLE_EANCODE###	</span>
-			<span>###ARTICLE_STOCK###	</span>
-            <span>###ARTICLE_ORDERNUMBER###</span>
-			<span>###ARTICLE_PRICE_GROSS###</span>
-			<span>###DELIVERY_PRICE_GROSS###</span>    
-			<div>###ARTICLE_SELECT_ATTRIBUTES###</div>
+			###ARTICLE_EANCODE###
+			###ARTICLE_STOCK###
+            ###ARTICLE_ORDERNUMBER###
+			###ARTICLE_PRICE_GROSS###
+			###DELIVERY_PRICE_GROSS###
+			###ARTICLE_SELECT_ATTRIBUTES###
 			###LINKTOPUTINBASKET###
-			<span><input type="input" class="qtyInput" value="###QTY_INPUT_VALUE###" name="###QTY_INPUT_NAME###" size="3">&nbsp
-                   <input type="submit" value="abschicken">
-			
-			<!-- ###ARTICLE_VIEW_NOSTOCK### -->
-	<!-- ###PRODUCT_BASKET_FOR_LISTVIEW### -->
-	
-	</div>
+			<input type="input" class="com-input-qty" value="###QTY_INPUT_VALUE###" name="###QTY_INPUT_NAME###" size="2"/>
+            <input type="submit" value="###LANG_SUBMIT###"/>
+        </div>
+		<!-- ###ARTICLE_VIEW_NOSTOCK### -->
+	<!-- ###PRODUCT_BASKET_FOR_LISTVIEW### -->		
+	</td>
+</tr>
 <!-- ###CATEGORY_ITEMS_LISTVIEW_2_NOSTOCK### end -->
 
-<!-- ###PRODUCT_VIEW_DETAIL### begin-->
-<div>
-	<h3><!-- ###PRODUCT_LINK_DETAIL### -->###PRODUCT_TITLE###<!-- ###PRODUCT_LINK_DETAIL### --> </h3>
-	<span>###PRODUCT_IMAGES###</span>
-	<span>###PRODUCT_DESCRIPTION###</span>
-	<table>###SUBPART_PRODUCT_ATTRIBUTES###</table>
-	<br/>
-</div>
-	<div>
-	<!-- ###PRODUCT_BASKET_FOR_SINGLEVIEW### -->
-			<!-- ###ARTICLE_VIEW### -->
-		  
-		    ###ARTICLE_HIDDENFIELDS###
-			<span>###ARTICLE_EANCODE###	</span>
-			<span>###ARTICLE_STOCK###	</span>
-	                <span>###ARTICLE_ORDERNUMBER###</span>
-			<span>###ARTICLE_PRICE_GROSS###</span>
-			<span>###DELIVERY_PRICE_GROSS###</span>    
-			###LINKTOPUTINBASKET###
-			<span><input type="input" class="qtyInput" value="###QTY_INPUT_VALUE###" name="###QTY_INPUT_NAME###" size="3">&nbsp
-        	       <input type="submit" value="abschicken">
-			</span>
-			
-			<div>###ARTICLE_SELECT_ATTRIBUTES###</div>
-			<table>###SUBPART_ARTICLE_ATTRIBUTES###</table>
-			<!-- ###ARTICLE_VIEW### -->
-			
-			<!-- ###ARTICLE_VIEW_NOSTOCK### -->
-		  
-		    ###ARTICLE_HIDDENFIELDS###
-			<span>###ARTICLE_EANCODE###	</span>
-			<span>###ARTICLE_STOCK###	</span>
-	                <span>###ARTICLE_ORDERNUMBER###</span>
-			<span>###ARTICLE_PRICE_GROSS###</span>
-			<span>###DELIVERY_PRICE_GROSS###</span>    
-			###LINKTOPUTINBASKET###
-			<span><input type="input" class="qtyInput" value="###QTY_INPUT_VALUE###" name="###QTY_INPUT_NAME###" size="3">&nbsp
-        	       <input type="submit" value="abschicken">
-			</span>
-			
-			<div>###ARTICLE_SELECT_ATTRIBUTES###</div>
-			<table>###SUBPART_ARTICLE_ATTRIBUTES###</table>
-			<!-- ###ARTICLE_VIEW_NOSTOCK### -->
-	<!-- ###PRODUCT_BASKET_FOR_SINGLEVIEW### -->
 
-	<!-- ###CATEGORY_ITEM### begin -->
-		<li>
-			<h3>###CATEGORY_ITEM_DETAILLINK### ###CATEGORY_ITEM_TITLE### ###CATEGORY_ITEM_DETAILLINK###</h3>
-			<p>###CATEGORY_ITEM_SUBTITLE###</p>
-			<p>###CATEGORY_ITEM_DESCRIPTION###</p>
-			<p>###CATEGORY_ITEM_IMAGES###</p>
-		</li>
-	<!-- ###CATEGORY_ITEM### end -->
+<br />
+<br />
+<br />
+<h3>LIST PRODUCT ITEM 2 - ODD</h3>
+<em></em>
+<br />
+<!-- ###CATEGORY_ITEMS_LISTVIEW_3### begin-->
+<tr class="com-list-odd">
+	<td class="com-list-col-img">
+		###PRODUCT_TEASERIMAGES###
+	</td>
+
+	<td class="com-list-col-title">
+		###PRODUCT_TITLE###
+	</td>
+
+	<td class="com-list-col-teaser">
+		###PRODUCT_TEASER###
+	</td>
+
+	<td class="com-list-col-price">
+	###PRODUCT_CHEAPEST_PRICE_GROSS###			
+	</td>
+	<td class="com-list-col-action">
+	<!-- ###PRODUCT_BASKET_FOR_LISTVIEW### -->
+		<!-- ###ARTICLE_VIEW### -->   
+		<div class="com-list-action-entry">
+		    ###ARTICLE_HIDDENFIELDS###
+			###ARTICLE_EANCODE###
+			###ARTICLE_STOCK###
+            ###ARTICLE_ORDERNUMBER###
+			###ARTICLE_PRICE_GROSS###
+			###DELIVERY_PRICE_GROSS### 
+			###ARTICLE_SELECT_ATTRIBUTES###
+			###LINKTOPUTINBASKET###
+			<input type="input" class="com-input-qty" value="###QTY_INPUT_VALUE###" name="###QTY_INPUT_NAME###" size="2"/>
+			<input type="submit" value="###LANG_SUBMIT###"/>
+		</div>
+		<!-- ###ARTICLE_VIEW### -->
+		
+		<!-- ###ARTICLE_VIEW_NOSTOCK### --> 
+		<div class="com-list-action-entry">    
+		    ###ARTICLE_HIDDENFIELDS###
+			###ARTICLE_EANCODE###
+			###ARTICLE_STOCK###
+            ###ARTICLE_ORDERNUMBER###
+			###ARTICLE_PRICE_GROSS###
+			###DELIVERY_PRICE_GROSS###
+			###ARTICLE_SELECT_ATTRIBUTES###
+			###LINKTOPUTINBASKET###
+			<input type="input" class="com-input-qty" value="###QTY_INPUT_VALUE###" name="###QTY_INPUT_NAME###" size="2"/>
+            <input type="submit" value="###LANG_SUBMIT###"/>
+        </div>
+		<!-- ###ARTICLE_VIEW_NOSTOCK### -->
+	<!-- ###PRODUCT_BASKET_FOR_LISTVIEW### -->		
+	</td>
+</tr>
+<!-- ###CATEGORY_ITEMS_LISTVIEW_3### end -->
+
+<br />
+<br />
+<br />
+<h3>LIST PRODUCT ITEM NO STOCK 2 - ODD</h3>
+<em></em>
+<br />
+<!-- ###CATEGORY_ITEMS_LISTVIEW_3_NOSTOCK### begin-->
+<tr class="com-list-odd">
+	<td class="com-list-col-img">
+		###PRODUCT_TEASERIMAGES###
+	</td>
+
+	<td class="com-list-col-title">
+		###PRODUCT_TITLE###
+	</td>
+
+	<td class="com-list-col-teaser">
+		###PRODUCT_TEASER###
+	</td>
+
+	<td class="com-list-col-price">
+	###PRODUCT_CHEAPEST_PRICE_GROSS###			
+	</td>
+	<td class="com-list-col-action">
+	<!-- ###PRODUCT_BASKET_FOR_LISTVIEW### -->
+		<!-- ###ARTICLE_VIEW### -->   
+		<div class="com-list-action-entry">
+		    ###ARTICLE_HIDDENFIELDS###
+			###ARTICLE_EANCODE###
+			###ARTICLE_STOCK###
+            ###ARTICLE_ORDERNUMBER###
+			###ARTICLE_PRICE_GROSS###
+			###DELIVERY_PRICE_GROSS###
+			###ARTICLE_SELECT_ATTRIBUTES###
+			###LINKTOPUTINBASKET###
+			<input type="input" class="com-input-qty" value="###QTY_INPUT_VALUE###" name="###QTY_INPUT_NAME###" size="2"/>
+			<input type="submit" value="###LANG_SUBMIT###"/>
+		</div>
+		<!-- ###ARTICLE_VIEW### -->
+		
+		<!-- ###ARTICLE_VIEW_NOSTOCK### --> 
+		<div class="com-list-action-entry">    
+		    ###ARTICLE_HIDDENFIELDS###
+			###ARTICLE_EANCODE###
+			###ARTICLE_STOCK###
+            ###ARTICLE_ORDERNUMBER###
+			###ARTICLE_PRICE_GROSS###
+			###DELIVERY_PRICE_GROSS###
+			###ARTICLE_SELECT_ATTRIBUTES###
+			###LINKTOPUTINBASKET###
+			<input type="input" class="com-input-qty" value="###QTY_INPUT_VALUE###" name="###QTY_INPUT_NAME###" size="2"/>
+            <input type="submit" value="###LANG_SUBMIT###"/>
+        </div>
+		<!-- ###ARTICLE_VIEW_NOSTOCK### -->
+	<!-- ###PRODUCT_BASKET_FOR_LISTVIEW### -->		
+	</td>
+</tr>
+<!-- ###CATEGORY_ITEMS_LISTVIEW_3_NOSTOCK### end -->
+
+
+<br />
+<br />
+<br />
+<h3>PRODUCT SINGLEVIEW</h3>
+<em></em>
+<br />
+<!-- ###PRODUCT_VIEW_DETAIL### begin-->
+<form action="###GENERAL_FORM_ACTION###" method="post">
+###GENERAL_HIDDENCATUID###
+<div class="com-single">
+	###PRODUCT_TITLE###
+	###PRODUCT_IMAGES###
+	###PRODUCT_DESCRIPTION###
+	###SUBPART_PRODUCT_ATTRIBUTES###
+
+	<div class="com-single-aticle">
+	<!-- ###PRODUCT_BASKET_FOR_SINGLEVIEW### -->
+			<!-- ###ARTICLE_VIEW### -->
+			<div class="com-single-action-entry">
+			    ###ARTICLE_HIDDENFIELDS###
+				###ARTICLE_EANCODE###
+				###ARTICLE_STOCK###
+	            ###ARTICLE_ORDERNUMBER###
+				###ARTICLE_PRICE_GROSS###
+				###DELIVERY_PRICE_GROSS###
+				###ARTICLE_SELECT_ATTRIBUTES###
+				###SUBPART_ARTICLE_ATTRIBUTES###
+				###LINKTOPUTINBASKET###
+				<input type="input" class="com-input-qty" value="###QTY_INPUT_VALUE###" name="###QTY_INPUT_NAME###" size="3"/>
+				<input type="submit" value="###LANG_SUBMIT###"/>
+			</div>
+			<!-- ###ARTICLE_VIEW### -->
+			
+			<!-- ###ARTICLE_VIEW_NOSTOCK### -->
+			<div class="com-single-action-entry">
+			    ###ARTICLE_HIDDENFIELDS###
+				###ARTICLE_EANCODE###
+				###ARTICLE_STOCK###
+	            ###ARTICLE_ORDERNUMBER###
+				###ARTICLE_PRICE_GROSS###
+				###DELIVERY_PRICE_GROSS###
+				###ARTICLE_SELECT_ATTRIBUTES###
+				###SUBPART_ARTICLE_ATTRIBUTES###
+				###LINKTOPUTINBASKET###
+				<input type="input" class="com-input-qty" value="###QTY_INPUT_VALUE###" name="###QTY_INPUT_NAME###" size="3"/>
+				<input type="submit" value="###LANG_SUBMIT###"/>
+			</div>
+			<!-- ###ARTICLE_VIEW_NOSTOCK### -->
+	<!-- ###PRODUCT_BASKET_FOR_SINGLEVIEW### -->
 	</div>
+</div>
+
+<!-- ###CATEGORY_ITEM### begin -->
+<div class="com-single-cat">
+		###CATEGORY_ITEM_TITLE###
+		###CATEGORY_ITEM_SUBTITLE###
+		###CATEGORY_ITEM_DESCRIPTION###
+		###CATEGORY_ITEM_IMAGES###
+</div>
+<!-- ###CATEGORY_ITEM### end -->
+</form>
 <!-- ###PRODUCT_VIEW_DETAIL### end -->
 
-<!-- ###PRODUCT_VIEW_DETAIL_NOSTOCK### begin-->
-<div>
-	<h3><!-- ###PRODUCT_LINK_DETAIL### -->###PRODUCT_TITLE###<!-- ###PRODUCT_LINK_DETAIL### --> </h3>
-	<span>###PRODUCT_IMAGES###</span>
-	<span>###PRODUCT_DESCRIPTION###</span>
-	<table>###SUBPART_PRODUCT_ATTRIBUTES###</table>
-	<br/>
-</div>
-	<div>
-	<!-- ###PRODUCT_BASKET_FOR_SINGLEVIEW### -->
-			<!-- ###ARTICLE_VIEW### -->
-		  
-		    ###ARTICLE_HIDDENFIELDS###
-			<span>###ARTICLE_EANCODE###	</span>
-			<span>###ARTICLE_STOCK###	</span>
-	                <span>###ARTICLE_ORDERNUMBER###</span>
-			<span>###ARTICLE_PRICE_GROSS###</span>
-			<span>###DELIVERY_PRICE_GROSS###</span>    
-			###LINKTOPUTINBASKET###
-			<span><input type="input" class="qtyInput" value="###QTY_INPUT_VALUE###" name="###QTY_INPUT_NAME###" size="3">&nbsp
-        	       <input type="submit" value="abschicken">
-			</span>
-			
-			<div>###ARTICLE_SELECT_ATTRIBUTES###</div>
-			<table>###SUBPART_ARTICLE_ATTRIBUTES###</table>
-			<!-- ###ARTICLE_VIEW### -->
-			
-			<!-- ###ARTICLE_VIEW_NOSTOCK### -->
-		  
-		    ###ARTICLE_HIDDENFIELDS###
-			<span>###ARTICLE_EANCODE###	</span>
-			<span>###ARTICLE_STOCK###	</span>
-	                <span>###ARTICLE_ORDERNUMBER###</span>
-			<span>###ARTICLE_PRICE_GROSS###</span>
-			<span>###DELIVERY_PRICE_GROSS###</span>    
-			###LINKTOPUTINBASKET###
-			<span><input type="input" class="qtyInput" value="###QTY_INPUT_VALUE###" name="###QTY_INPUT_NAME###" size="3">&nbsp
-        	       <input type="submit" value="abschicken">
-			</span>
-			
-			<div>###ARTICLE_SELECT_ATTRIBUTES###</div>
-			<table>###SUBPART_ARTICLE_ATTRIBUTES###</table>
-			<!-- ###ARTICLE_VIEW_NOSTOCK### -->
-	<!-- ###PRODUCT_BASKET_FOR_SINGLEVIEW### -->
 
-	<!-- ###CATEGORY_ITEM### begin -->
-		<li>
-			<h3>###CATEGORY_ITEM_DETAILLINK### ###CATEGORY_ITEM_TITLE### ###CATEGORY_ITEM_DETAILLINK###</h3>
-			<p>###CATEGORY_ITEM_SUBTITLE###</p>
-			<p>###CATEGORY_ITEM_DESCRIPTION###</p>
-			<p>###CATEGORY_ITEM_IMAGES###</p>
-		</li>
-	<!-- ###CATEGORY_ITEM### end -->
+
+
+<br />
+<br />
+<br />
+<h3>PRODUCT SINGLEVIEW NO STOCK</h3>
+<em></em>
+<br />
+<!-- ###PRODUCT_VIEW_DETAIL_NOSTOCK### begin-->
+<form action="###GENERAL_FORM_ACTION###" method="post">
+###GENERAL_HIDDENCATUID###
+<div class="com-single">
+	###PRODUCT_TITLE###
+	###PRODUCT_IMAGES###
+	###PRODUCT_DESCRIPTION###
+	###SUBPART_PRODUCT_ATTRIBUTES###
+
+	<div class="com-single-aticle">
+	<!-- ###PRODUCT_BASKET_FOR_SINGLEVIEW### -->
+			<!-- ###ARTICLE_VIEW### -->
+			<div class="com-single-action-entry">
+			    ###ARTICLE_HIDDENFIELDS###
+				###ARTICLE_EANCODE###
+				###ARTICLE_STOCK###
+	            ###ARTICLE_ORDERNUMBER###
+				###ARTICLE_PRICE_GROSS###
+				###DELIVERY_PRICE_GROSS### 
+				###ARTICLE_SELECT_ATTRIBUTES###
+				###SUBPART_ARTICLE_ATTRIBUTES###
+				###LINKTOPUTINBASKET###
+				<input type="input" class="com-input-qty" value="###QTY_INPUT_VALUE###" name="###QTY_INPUT_NAME###" size="3"/>
+				<input type="submit" value="###LANG_SUBMIT###"/>
+			</div>
+			<!-- ###ARTICLE_VIEW### -->
+			
+			<!-- ###ARTICLE_VIEW_NOSTOCK### -->
+			<div class="com-single-action-entry">
+			    ###ARTICLE_HIDDENFIELDS###
+				###ARTICLE_EANCODE###
+				###ARTICLE_STOCK###
+	            ###ARTICLE_ORDERNUMBER###
+				###ARTICLE_PRICE_GROSS###
+				###DELIVERY_PRICE_GROSS### 
+				###ARTICLE_SELECT_ATTRIBUTES###
+				###SUBPART_ARTICLE_ATTRIBUTES###
+				###LINKTOPUTINBASKET###
+				<input type="input" class="com-input-qty" value="###QTY_INPUT_VALUE###" name="###QTY_INPUT_NAME###" size="3"/>
+				<input type="submit" value="###LANG_SUBMIT###"/>
+			</div>
+			<!-- ###ARTICLE_VIEW_NOSTOCK### -->
+	<!-- ###PRODUCT_BASKET_FOR_SINGLEVIEW### -->
 	</div>
+</div>
+
+<!-- ###CATEGORY_ITEM### begin -->
+<div class="com-single-cat">
+		###CATEGORY_ITEM_TITLE###
+		###CATEGORY_ITEM_SUBTITLE###
+		###CATEGORY_ITEM_DESCRIPTION###
+		###CATEGORY_ITEM_IMAGES###
+</div>
+<!-- ###CATEGORY_ITEM### end -->
+</form>
 <!-- ###PRODUCT_VIEW_DETAIL_NOSTOCK### end -->
 
 
+<br />
+<br />
+<br />
+<h3>PRODUCT_ATTRIBUTES</h3>
+<em></em>
+<br />
 <!-- ###PRODUCT_ATTRIBUTES### begin-->
-<tr class="specRowEven"><td style="padding-right:8px;">###PRODUCT_ATTRIBUTES_ICON###	###PRODUCT_ATTRIBUTES_TITLE###
+<tr class="com-select-even"><td>###PRODUCT_ATTRIBUTES_ICON###	###PRODUCT_ATTRIBUTES_TITLE###
 </td><td>	###PRODUCT_ATTRIBUTES_VALUE### ###PRODUCT_ATTRIBUTES_UNIT### </td></tr>
 <!-- ###PRODUCT_ATTRIBUTES### end -->
 
+<br />
+<br />
+<br />
+<h3>PRODUCT_ATTRIBUTES2</h3>
+<em></em>
+<br />
 <!-- ###PRODUCT_ATTRIBUTES2### begin-->
-<tr class="specRowOdd"><td style="padding-right:8px;">###PRODUCT_ATTRIBUTES_ICON###	###PRODUCT_ATTRIBUTES_TITLE###
+<tr class="com-select-odd"><td>###PRODUCT_ATTRIBUTES_ICON###	###PRODUCT_ATTRIBUTES_TITLE###
 </td><td>	###PRODUCT_ATTRIBUTES_VALUE### ###PRODUCT_ATTRIBUTES_UNIT### </td></tr>
 <!-- ###PRODUCT_ATTRIBUTES2### end -->
 
-
+<br />
+<br />
+<br />
+<h3>ARTICLE_ATTRIBUTES</h3>
+<em></em>
+<br />
 <!-- ###ARTICLE_ATTRIBUTES### begin-->
-<tr class="specRowEven"><td style="padding-right:8px;">###ARTICLE_ATTRIBUTES_ICON###	###ARTICLE_ATTRIBUTES_TITLE###
-</td><td>	###ARTICLE_ATTRIBUTES_VALUE### ###ARTICLE_ATTRIBUTES_UNIT### </td></tr>
+<tr class="com-select-even">
+	<td>###ARTICLE_ATTRIBUTES_ICON###	###ARTICLE_ATTRIBUTES_TITLE###</td>
+	<td>###ARTICLE_ATTRIBUTES_VALUE### ###ARTICLE_ATTRIBUTES_UNIT### </td>
+</tr>
 <!-- ###ARTICLE_ATTRIBUTES### end -->
 
+<br />
+<br />
+<br />
+<h3>ARTICLE_ATTRIBUTES2</h3>
+<em></em>
+<br />
 <!-- ###ARTICLE_ATTRIBUTES2### begin-->
-<tr class="specRowOdd"><td style="padding-right:8px;">###ARTICLE_ATTRIBUTES_ICON###	###ARTICLE_ATTRIBUTES_TITLE###
-</td><td>	###ARTICLE_ATTRIBUTES_VALUE### ###ARTICLE_ATTRIBUTES_UNIT### </td></tr>
+<tr class="com-select-odd">
+	<td>###ARTICLE_ATTRIBUTES_ICON###	###ARTICLE_ATTRIBUTES_TITLE###</td>
+	<td>###ARTICLE_ATTRIBUTES_VALUE### ###ARTICLE_ATTRIBUTES_UNIT### </td>
+</tr>
 <!-- ###ARTICLE_ATTRIBUTES2### end -->
 
+<br />
+<br />
+<br />
+<h3>SELECT_ATTRIBUTES</h3>
+<em></em>
+<br />
 <!-- ###SELECT_ATTRIBUTES### begin-->
-<table><tr class="specRow"><td style="padding-right:8px;">###SELECT_ATTRIBUTES_ICON###	###SELECT_ATTRIBUTES_TITLE###
-</td><td>	###SELECT_ATTRIBUTES_VALUE### ###SELECT_ATTRIBUTES_UNIT### </td></tr></table>	
+<table class="com-select-attributes" cellspacing="0" cellpadding="0" border="0">
+	<tr class="com-select-row">	
+		<td>###SELECT_ATTRIBUTES_ICON###	###SELECT_ATTRIBUTES_TITLE###</td>
+		<td>###SELECT_ATTRIBUTES_VALUE### ###SELECT_ATTRIBUTES_UNIT### </td>
+	</tr>
+</table>	
 <!-- ###SELECT_ATTRIBUTES### end -->
 
+<br />
+<br />
+<br />
+<h3>PRODUCT_BASKET_SELECT_ATTRIBUTES</h3>
+<em></em>
+<br />
 <!-- ###PRODUCT_BASKET_SELECT_ATTRIBUTES### begin-->
-<DIV class="cmrc_ProdBasketSelAttrContainer">
-	<SPAN class="cmrc_ProdBasketSelAttrText"><u>###SELECT_ATTRIBUTES_TITLE###:</u> ###SELECT_ATTRIBUTES_SELECTBOX###</SPAN>
-</DIV>
+<div class="com-basket-sel-att">
+	<span><u>###SELECT_ATTRIBUTES_TITLE###:</u> ###SELECT_ATTRIBUTES_SELECTBOX###</span>
+</div>
 <!-- ###PRODUCT_BASKET_SELECT_ATTRIBUTES### end -->
+
+</body>
+</html>

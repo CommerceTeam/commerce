@@ -3,7 +3,8 @@
 *  Copyright notice
 *
 *  First Version (c) 2005 - 2006 Franz Ripfel (fr@abezet.de)
-*  This Version written by Sudara (williams@web-crossing.com)
+*  Second Version written by Sudara (williams@web-crossing.com)
+*  This Version written by Tom Rüther (tr@e-netconsulting.de)
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -27,9 +28,17 @@
  *
  * @author	Sudara <williams@web-crossing.com>
  * @author	Franz Ripfel <fr@abezet.de>
+ * @author  Tom Rüther <tr@e-netconsulting.de>
  * 
  * $Id: class.tx_commerce_pi6.php 328 2006-08-03 17:50:20Z ingo $
  */
+
+
+
+/*****************************
+* ToDo:  Multilanguage for Systemarticles
+******************************/
+
 
 
 require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_pibase.php');
@@ -54,12 +63,20 @@ class tx_commerce_pi6 extends tx_commerce_pibase{
 		# Checking backend user login?
 		$this->invoiceBackendOnly($extConf["invoiceBackendOnly"]);
 		
+		# check for the logged in USER
+		# It could be an FE USer, a BE User or an automated skript
+		
+		if ((empty($GLOBALS['TSFE']->fe_user->user)) && (!$GLOBALS['BE_USER']->user['uid']) && ($_SERVER["REMOTE_ADDR"] != $_SERVER["SERVER_ADDR"])){
+			return $this->pi_getLL('not_logged_in');
+		} else {
+			$this->user = $GLOBALS['TSFE']->fe_user->user;
+		}
+		
 		# Lets make this multilingual, eh?
 	  	$this->generateLanguageMarker();
 	 
 		# we may need to do some character conversion tricks
 		$convert = t3lib_div::makeInstance("t3lib_cs");
-		
 	
 		# if there is no order id, this plugin serves no pupose
 		#$this->confirmOrderId($extConf["invoiceEnableFE"]);
@@ -80,108 +97,38 @@ class tx_commerce_pi6 extends tx_commerce_pibase{
 		// get subparts
 		$templateMarker = "###TEMPLATE###";
 		$this->template['invoice'] = $this->cObj->getSubpart($this->templateCode,$templateMarker);
-		$this->template['item'] =  $this->cObj->getSubpart($this->template['invoice'],'###ORDER_ITEM###');
+		$this->template['item'] =  $this->cObj->getSubpart($this->template['invoice'],'###LISTING_ARTICLE###');
 		
 		# markers and content, ready to be populated
 		$markerArray = array();
 		$this->content = '';
-	
-		# grab the order id
-		$queryString = 'order_id="'.$this->order_id.'"';
-		$queryString.= $this->cObj->enableFields("tx_commerce_orders");
-		/**
-		 * Add the frontend USer Check to the Invoice Display, to have no
-		 * Security problem, is somone gets the invoice URL
-		 * but do no Check if the Request address is the same than the server,
-		 * this is needed for an automatically generation of invoices
-		 */
-		if ((!$GLOBALS['BE_USER']->user['uid']) && ($_SERVER["REMOTE_ADDR"] != $_SERVER["SERVER_ADDR"])) {
-			$queryString.= ' AND  tx_commerce_fe_user_id = '.$GLOBALS['TSFE']->fe_user->user['uid'].' ' ;
-		}  
- 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'tx_commerce_orders', $queryString, '', '', '1');
-		$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
-	
-		$phonenumbers = array();
-		
-		if ($row) {
-			//get invoice address
-			//todo: correct table join, linking to fe_users necessary?
-			$queryString = 'tt_address.tx_commerce_fe_user_id='.$row['cust_fe_user'];
-			$queryString.= ' AND tt_address.tx_commerce_fe_user_id = fe_users.uid';
-			$queryString.= ' AND tt_address.tx_commerce_address_type_id=1';
- 		#	$queryString.= $this->cObj->enableFields("tt_address");
- 		#	$queryString.= $this->cObj->enableFields("fe_users");
- 			$res_address_invoice = $GLOBALS['TYPO3_DB']->exec_SELECTquery('tt_address.name,tt_address.surname, tt_address.company, tt_address.address, tt_address.zip, tt_address.city, tt_address.phone ', 'tt_address, fe_users',$queryString, '', '', '1');			
- 			if ($row_address_invoice = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_address_invoice)) {
- 				$address_invoice  = $row_address_invoice['company'].'<br />';
-				$address_invoice .= $row_address_invoice['name'].' ' .$row_address_invoice['surname'].'<br />';
-				$markerArray['###INVOICE_NAME###'] = $row_address_invoice['name'].' ' .$row_address_invoice['surname'];
-				$address_invoice.= $row_address_invoice['address'].'<br />';
-				$address_invoice.= $row_address_invoice['zip'].' '.$row_address_invoice['city'].'<br />';
-			} else $address_invoice = '';
-			//if set, get delivery_address
-			if ($row['cust_deliveryaddress']) {
-				//todo: correct table join, linking to fe_users necessary?
-				$queryString = 'tx_commerce_fe_user_id='.$row['cust_fe_user'];
-				$queryString.= ' AND tt_address.uid = '.$row['cust_deliveryaddress'];
-		#		$queryString.= $this->cObj->enableFields("tt_address");
-		#		$queryString.= $this->cObj->enableFields("fe_users");
-		 		$res_address_delivery = $GLOBALS['TYPO3_DB']->exec_SELECTquery('tt_address.name,tt_address.surname, tt_address.company, tt_address.address, tt_address.zip, tt_address.city, tt_address.phone ', 'tt_address, fe_users',$queryString, '', '', '1');
-				if ($row_address_delivery = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_address_delivery)) {
-					$address_delivery = '';
-					$address_delivery.= $row_address_delivery['company'].'<br />';
-					$address_delivery.= $row_address_delivery['name'].' ' .$row_address_delivery['surname'] .'<br />';
-					$address_delivery.= $row_address_delivery['address'].'<br />';
-					$address_delivery.= $row_address_delivery['zip'].' '.$row_address_delivery['city'].'<br />';
-					$phonenumbers["###ADDRESS_DELIVERY_PHONE###"] = $row_address_delivery['phone'];
-				}
-			}
-		
-						
-			
-			$queryString = 'order_uid='.$row['uid'] . ' AND article_type_uid = 2 ' ;
-			$queryString.= $this->cObj->enableFields("tx_commerce_order_articles");
-	 		$res_orderlist = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'tx_commerce_order_articles', $queryString, '', '');
-			$orderpos = 1;
-			//todo: page break if too many products for one page? is enough, what pdf_generator can do?
-			while ($row_orderlist = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_orderlist)) {
-				$markerArray['###PAYMENT_METHOD###'] = $row_orderlist['title'];			
-				$markerArray['###PAYMENT_COST###']  = tx_moneylib::format(($row_orderlist['amount']*$row_orderlist['price_gross']),$this->conf['currency'],(boolean)$this->conf['showCurrencySign']);				
-				$paymentmethod = $row_orderlist['title'];
-			}
-			
-			$queryString = 'order_uid='.$row['uid'] . ' AND article_type_uid = 3 ' ;
-			$queryString.= $this->cObj->enableFields("tx_commerce_order_articles");
-	 		$res_orderlist = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'tx_commerce_order_articles', $queryString, '', '');
-			$orderpos = 1;
-			//todo: page break if too many products for one page? is enough, what pdf_generator can do?
-			while ($row_orderlist = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_orderlist)) {
-				$markerArray['###SHIPPING_METHOD###'] = $row_orderlist['title'];
-				$markerArray['###SHIPPING_COST###'] = tx_moneylib::format(($row_orderlist['amount']*$row_orderlist['price_gross']),$this->conf['currency'],(boolean)$this->conf['showCurrencySign']);				
-			}
-			/**
-			 * @TODO Check if this tax calcuation is correct, or if we do 
-			 * have to hav a tax line for every TAX 
-			 */
-			$markerArray['###ORDER_TAX###'] = tx_moneylib::format($row['sum_price_gross'] - $row['sum_price_net'],$this->conf['currency'],(boolean)$this->conf['showCurrencySign']);
-			$markerArray['###ORDER_TOTAL###'] = tx_moneylib::format($row['sum_price_gross'],$this->conf['currency'],(boolean)$this->conf['showCurrencySign']);
 
-
-			$markerArray["###ORDER_ID###"] = $this->piVars['order_id'];
-			$markerArray["###ORDER_DATE###"] = strftime("%d.%m.%y", $row['crdate']);
+		$this->order = $this->getOrderData();
+		
+		if($this->order) {
+		
+			$this->orderPayment = $this->getOrderSystemArticles($this->order['uid'],'2','PAYMENT_');
+			$markerArray = array_merge($markerArray,$this->orderPayment);
 			
-			$markerArray["###INVOICE_BILLING_ADDRESS###"] = $address_invoice;
-			$markerArray["###INVOICE_DELIVERY_ADDRESS###"] = $address_delivery;
-			
+			$this->orderDelivery = $this->getOrderSystemArticles($this->order['uid'],'3','SHIPPING_');
+			$markerArray = array_merge($markerArray,$this->orderDelivery);
+				
+			$markerArray['###ORDER_TAX###'] = tx_moneylib::format($this->order['sum_price_gross'] - $this->order['sum_price_net'],$this->conf['currency'],(boolean)$this->conf['showCurrencySign']);
+			$markerArray['###ORDER_TOTAL###'] = tx_moneylib::format($this->order['sum_price_gross'],$this->conf['currency'],(boolean)$this->conf['showCurrencySign']);
+			$markerArray["###ORDER_ID###"] = $this->order['order_id'];
+			$markerArray["###ORDER_DATE###"] = strftime("%d.%m.%y", $this->order['crdate']);	
+				
 			# Fill some of the content from typoscript settings, to ease the 
 			$markerArray['###INVOICE_HEADER###'] = $this->cObj->cObjGetSingle($this->conf['invoiceheader'],$this->conf['invoiceheader.']);
 			$markerArray['###INVOICE_SHOP_NAME###'] = $this->cObj->TEXT($this->conf['shopname.']);
 			$markerArray['###INVOICE_SHOP_ADDRESS###'] = $this->cObj->cObjGetSingle($this->conf['shopdetails'],$this->conf['shopdetails.']);
 			$markerArray['###INVOICE_INTRO_MESSAGE###'] = $this->cObj->TEXT($this->conf['intro.']);
 			$markerArray['###INVOICE_THANKYOU###'] = $this->cObj->TEXT($this->conf['thankyou.']);
-
-			# allow a hook here
-			# always pass reference!!! Please!
+	
+			/*********************************************
+			* Hook for processing the new/changed marker
+			**********************************************/
+			
 			$hookObjectsArr = array();
 			if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi6/class.tx_commerce_pi6.php']['invoice'])) {
 			   foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi6/class.tx_commerce_pi6.php']['invoice'] as $classRef) {
@@ -193,21 +140,28 @@ class tx_commerce_pi6 extends tx_commerce_pibase{
 	                  $markerArray =  $hookObj->additionalMarker($markerArray,&$subpartArray,&$this);
 	             }
 			}
-			
-			# Fill in the order items
-			$subpartArray['###ORDER_ITEMS###'] = $this->getOrderArticles($row['uid']);
+	
+			$subpartArray['###LISTING_ARTICLE###'] = $this->getOrderArticles($this->order['uid'],$this->conf['OrderArticles.'],'ARTICLE_');
+			$subpartArray['###ADDRESS_BILLING_DATA###'] = $this->getAddressData('',$this->conf['addressBilling.'],'ADDRESS_BILLING_');
+			$subpartArray['###ADDRESS_DELIVERY_DATA###'] =$this->getAddressData($this->order['cust_deliveryaddress'],$this->conf['addressDelivery.'],'ADDRESS_DELIVERY_');
+		
 			$this->content = $this->cObj->substituteMarkerArrayCached($this->template['invoice'], array(), $subpartArray);
 			// buid content from template + array		
 			$this->content = $this->cObj->substituteMarkerArrayCached($this->content,  $markerArray, array(), array());
-			$this->content = $this->cObj->substituteMarkerArrayCached($this->content,  $phonenumbers, array(), array());
 			$this->content = $this->cObj->substituteMarkerArrayCached($this->content, $this->languageMarker,array());	 
-			
+				
 		} else {
 			$this->content = $this->pi_getLL('error_nodata');
 		}
 		if($this->conf['decode']=='1') $this->content = $convert->specCharsToASCII('utf-8',$this->content);
 		return $this->pi_wrapInBaseClass($this->content);
 	}
+
+	 /**
+	 * Check Access
+	 * @param	string	[optional]	$enabled
+	 * @return	
+	 */
 
 	function invoiceBackendOnly($enabled=false){
 		if($enabled && !$GLOBALS["BE_USER"]->user["uid"] && ($_SERVER["REMOTE_ADDR"] != $_SERVER["SERVER_ADDR"]))	{
@@ -216,28 +170,106 @@ class tx_commerce_pi6 extends tx_commerce_pibase{
 		}
 	}
 	
-	
-	function getOrderArticles($order_id){
-		$queryString = 'order_uid='.$order_id . ' AND article_type_uid < 2 ' ;
-		$queryString.= $this->cObj->enableFields("tx_commerce_order_articles");
- 		$res_orderlist = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'tx_commerce_order_articles', $queryString, '', '');
-		$orderpos = 1;
-		$this->orderItems = '';
-		//todo: page break if too many products for one page? is enough, what pdf_generator can do?
-		while ($row_orderlist = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_orderlist)) {
-			$orderArray['###POSITION###'] = $orderpos++;
-			$orderArray['###ARTICLE_NUMBER###'] = $row_orderlist['article_number'];
-			$orderArray['###ARTICLE_TITLE###'] = $row_orderlist['title'];
-			$orderArray['###QUANTITY###'] = $row_orderlist['amount'];
-			$orderArray['###PRICE###'] = tx_moneylib::format ($row_orderlist['price_gross'], $this->conf['currency'],(boolean)$this->conf['showCurrencySign']);
-			$orderArray['###TOTAL###'] = tx_moneylib::format(($row_orderlist['amount']*$row_orderlist['price_gross']),$this->conf['currency'],(boolean)$this->conf['showCurrencySign']);
-			$this->orderItems .= $this->cObj->substituteMarkerArrayCached($this->template['item'], $orderArray);
+	 /**
+	 * Renders Ordered Articles 
+	 * @param	array	[optional]	$TS Configuration
+	 * @return	string	HTML-Output rendert
+	 */
+
+	function getOrderArticles($orderUid,$TS=false,$prefix) {
+		if ($TS ==false) {
+			$TS = $this->conf['OrderArticles.'];
 		}
-		return $this->orderItems;
+		
+		$queryString = 'order_uid='.$orderUid . ' AND article_type_uid < 2 ' ;
+		$queryString.= $this->cObj->enableFields("tx_commerce_order_articles");
+ 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'tx_commerce_order_articles', $queryString, '', '');
+		$orderpos = 1;
+ 				
+		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+			$markerArray = $this->generateMarkerArray($row,$TS,$prefix);
+			$markerArray['ARTICLE_PRICE'] = tx_moneylib::format ($row['price_gross'], $this->conf['currency'],(boolean)$this->conf['showCurrencySign']);
+			$markerArray['ARTICLE_TOTAL'] = tx_moneylib::format(($row['amount']*$row_orderlist['price_gross']),$this->conf['currency'],(boolean)$this->conf['showCurrencySign']);
+			$markerArray['ARTICLE_POSITION'] = $orderpos++;
+			$out .= $this->cObj->substituteMarkerArray($this->template['item'], $markerArray ,'###|###',1);
+		}
+				
+	   return $this->cObj->stdWrap($out,$TS);	     				
 	}
+	
+	
+	 /**
+	 * Renders Address data 
+	 * @param	array	[optional]	$TS Configuration
+	 * @return	string	HTML-Output rendert
+	 */
+	
+	function getAddressData($addressUid='',$TS=false,$prefix) {
+
+			if ($TS ==false) {
+				$TS = $this->conf['address.'];
+			}
+	
+ 			$queryString = 'tt_address.tx_commerce_fe_user_id='.$this->order['cust_fe_user'];
+			$queryString.= ' AND tt_address.tx_commerce_fe_user_id = fe_users.uid';
+			
+			if($addressUid) {
+				$queryString.= ' AND tt_address.uid = '.$addressUid;
+			} else {
+				$queryString.= ' AND tt_address.tx_commerce_address_type_id=1';
+			}
+ 			
+ 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('tt_address.* ', 'tt_address, fe_users',$queryString, '', '', '1');			
+ 			
+ 			$markerArray = $this->generateMarkerArray($GLOBALS['TYPO3_DB']->sql_fetch_assoc($res),$TS,$prefix);
+
+			$template = $this->cObj->getSubpart($this->templateCode, '###'.$prefix.'DATA###');			
+			$content = $this->cObj->substituteMarkerArray($template, $markerArray ,'###|###',1);
+			$content = $this->cObj->substituteMarkerArray($content,$this->languageMarker);			
+			
+    	    return $this->cObj->stdWrap($content,$TS);	     			
+	}
+	
+	 /**
+	 * Render Data for Orders
+	 * @param	array	[optional]	$TS Configuration
+	 * @return	array	orderData 
+	 */
+	
+	function getOrderData() {
+
+		$queryString = 'order_id="'.mysql_real_escape_string($this->order_id).'"';
+		$queryString.= $this->cObj->enableFields("tx_commerce_orders");
+		$queryString.= ' AND cust_fe_user = '.$this->user['uid'].' ' ;
+		
+ 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'tx_commerce_orders', $queryString, '', '', '1');
+		$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
+
+		return $row;     			
+	}	
+	
+	 /**
+	 * Render MarkerArray for System Articles
+	 * @param	array	[optional]	$TS Configuration
+	 * @return	array	System Articles 
+	 */
+	
+	function getOrderSystemArticles($orderUid,$articleType='',$prefix) {
+
+			$queryString = 'order_uid='.$orderUid .' ';
+			if($articleType) $queryString .= ' AND article_type_uid = '.$articleType.' ' ;
+			$queryString.= $this->cObj->enableFields("tx_commerce_order_articles");
+			
+	 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'tx_commerce_order_articles', $queryString, '', '','1');
+			$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
+			
+			$markerArray['###'.$prefix.'METHOD###'] = $row['title'];	
+			$markerArray['###'.$prefix.'COST###'] = tx_moneylib::format(($row['amount']*$row['price_gross']),$this->conf['currency'],(boolean)$this->conf['showCurrencySign']);
+			
+    	    return $markerArray;	     		
+	}	
 
 }
-
 
 
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/commerce/pi6/class.tx_commerce_pi6.php'])	{

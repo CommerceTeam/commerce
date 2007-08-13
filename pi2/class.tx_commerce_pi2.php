@@ -159,8 +159,12 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
     		$markerArray['###URL###'] = $this->pi_linkTP_keepPIvars_url(array(),0,1,$this->conf['basketPid']);
 		    $markerArray['###URL_CHECKOUT###'] = $this->pi_linkTP_keepPIvars_url(array(),0,1,$this->conf['checkoutPid']);
 		    $markerArray['###NO_STOCK MESSAGE###'] = $this->noStock;
+		  
+		    
+		    
 		    $this->content = $this->cObj->substituteMarkerArrayCached($template, $markerArray );
-		}
+	}
+		
 		return $this->pi_wrapInBaseClass($this->content);
 	}
 
@@ -421,6 +425,8 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 	    $basketArray['###BASKETURL###'] = $this->pi_linkTP_keepPIvars_url(array(),0,1,$this->conf['basketPid']);
 	    $basketArray['###URL_CHECKOUT###'] = $this->pi_linkTP_keepPIvars_url(array(),0,1,$this->conf['checkoutPid']);
 	    $basketArray['###NO_STOCK MESSAGE###'] = $this->noStock;
+	    $basketArray['###BASKET_LASTPRODUCTURL###'] =  $this->cObj->stdWrap($GLOBALS["TSFE"]->fe_user->getKey('ses','tx_commerce_lastproducturl'),$this->conf['lastProduct']);;
+	    
 	    $basketArray = array_merge($basketArray,$this->languageMarker);
 		/**
 		 * @todo Create hook
@@ -437,6 +443,10 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
     		}
 	    }	
 	    $this->content = $this->cObj->substituteMarkerArrayCached($this->mytemplate,  $basketArray );
+	    $markerArrayGlobal = array();
+	 	$markerArrayGlobal = $this->addFormMarker( $markerArrayGlobal);
+		$this->content = $this->cObj->SubstituteMarkerArray($this->content,$markerArrayGlobal,'###|###');
+	
 	}
 	
 
@@ -452,9 +462,7 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 		$this->delProd->load_articles();
 	
 		$this->basketDel = $this->basket->get_articles_by_article_type_uid_asuidlist(DELIVERYArticleType);
-		$select = '<form name="delivery" action="'.$this->pi_getPageLink($this->conf['basketPid']).'" method="post">
-			    <input type="hidden" name="'.$this->prefixId.'[catUid]" value="'.$this->piVars['catUid'].'" />
-			    <select name="'.$this->prefixId.'[delArt]" onChange="document.delivery.submit()">';
+		$select = '<select name="'.$this->prefixId.'[delArt]" onChange="this.form.submit()">';
 			    
 		if ($this->conf['delivery.']['allowedArticles']) {
 			$allowedArticles = split(',',$this->conf['delivery.']['allowedArticles']);
@@ -484,7 +492,6 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 			}
 		}
 		$select .= '</select>';
-		$select .= '</form>';
 				
 
 		#debug($this->delProd->articles);
@@ -510,9 +517,7 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 		$this->payProd->load_articles();
 		$this->basketPay = $this->basket->get_articles_by_article_type_uid_asuidlist(PAYMENTArticleType);
 		
-		$select = '<form name="payment" action="'.$this->pi_getPageLink($this->conf['basketPid']).'" method="post">
-			    <input type="hidden" name="'.$this->prefixId.'[catUid]" value="'.$this->piVars['catUid'].'" />
-			    <select name="'.$this->prefixId.'[payArt]" onChange="document.payment.submit()">';
+		$select = '<select name="'.$this->prefixId.'[payArt]" onChange="this.form.submit()">';
 		$first=false;
 			    
 		/**
@@ -559,8 +564,7 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 		}
 
 		$select .= '</select>';
-		$select .= '</form>';	
-
+		
 		$basketArray['###PAYMENT_SELECT_BOX###'] = $select;
 		
 		$basketArray['###PAYMENT_PRICE_GROSS###'] = $price_gross;
@@ -683,7 +687,11 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 			$markerArray['###STARTFRM###'] = '<form name="basket_'.$art->uid.'" action="'.$this->pi_getPageLink($this->conf['basketPid']).'" method="post">';
     		$markerArray['###HIDDENFIELDS###'] = '<input type="hidden" name="'.$this->prefixId.'[catUid]" value="'.$this->piVars[catUid].'" />';
     		$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="'.$this->prefixId.'[artAddUid]['.$art->uid.'][price_id]" value="'.$this->basket->basket_items[$art->uid]->get_price_uid().'" />';
-	    	$markerArray['###QTY_INPUT_VALUE###'] = $this->basket->basket_items[$art->uid]->quantity;
+	    	
+    		$markerArray['###ARTICLE_HIDDENFIELDS###'] = '<input type="hidden" name="'.$this->prefixId.'[catUid]" value="'.$this->piVars[catUid].'" />';
+    		$markerArray['###ARTICLE_HIDDENFIELDS###'] .='<input type="hidden" name="'.$this->prefixId.'[artAddUid]['.$art->uid.'][price_id]" value="'.$this->basket->basket_items[$art->uid]->get_price_uid().'" />';
+    		
+    		$markerArray['###QTY_INPUT_VALUE###'] = $this->basket->basket_items[$art->uid]->quantity;
 		    $markerArray['###QTY_INPUT_NAME###'] = $this->prefixId.'[artAddUid]['.$art->uid.'][count]';
 			$markerArray['###BASKET_ITEM_PRICENET###'] =  tx_moneylib::format($this->basket->basket_items[$art->uid]->get_price_net(),$this->currency);
 			$markerArray['###BASKET_ITEM_PRICEGROSS###'] =  tx_moneylib::format($this->basket->basket_items[$art->uid]->get_price_gross(),$this->currency);
@@ -692,7 +700,27 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 			$markerArray['###BASKET_ITEM_COUNT###'] = $this->basket->basket_items[$art->uid]->get_quantity();
 			$markerArray['###BASKET_ITEM_PRICESUM_NET###'] =  tx_moneylib::format($this->basket->basket_items[$art->uid]->get_item_sum_net(),$this->currency);
 			$markerArray['###BASKET_ITEM_PRICESUM_GROSS###'] =  tx_moneylib::format($this->basket->basket_items[$art->uid]->get_item_sum_gross(),$this->currency);
-			$markerArray['###BASKET_LASTPRODUCTURL###'] = $GLOBALS["TSFE"]->fe_user->getKey('ses','tx_commerce_lastproducturl');
+			
+			/**
+	   		  * Bild Link to delete of this article in basket
+	   		  * 
+	   		  **/
+			if (is_array($this->conf['deleteItem.'])) {
+				$typolinkConf = $this->conf['deleteItem.'];
+			}else{
+				$typolinkConf = array();
+			}
+			$typoLinkConf['parameter'] = $this->conf['basketPid'];
+			$typoLinkConf['useCacheHash'] = 1;
+			$typoLinkConf['additionalParams'].= ini_get('arg_separator.output').$this->prefixId.'[catUid]='.$this->piVars[catUid];
+			
+			$typoLinkConf['additionalParams'] .= ini_get('arg_separator.output').$this->prefixId.'[artAddUid]['.$art->uid.'][price_id]='.$this->basket->basket_items[$art->uid]->get_price_uid();
+			
+			$typoLinkConf['additionalParams'] .= ini_get('arg_separator.output').$this->prefixId.'[artAddUid]['.$art->uid.'][count]=0';
+			
+			$markerArray['###DELIOTMFROMBASKETLINK###'] = $this->cObj->typoLink($this->pi_getLL('lang_basket_delete_item'),$typoLinkConf);
+		
+			
 			
 		#	debug($markerArray);
             $templateMarker = '###PRODUCT_BASKET_FORM_SMALL###';
@@ -740,6 +768,7 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 	  	}else {
 	  		$altPrefixSingle= $this->prefixId;
 	  	}
+	  	
 	  	$list = array();
 	  	$articleTypes = explode(',',$this->conf['regularArticleTypes']);
 		while(list($k,$type) = each($articleTypes)){
@@ -757,16 +786,30 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 		    //fill marker arrays with product/article values
 		   	$myItem = $this->basket->basket_items[$v];
 		  
-		  	$markerArray = $this->generateMarkerArray($myItem->getProductAssocArray(''),$this->conf['fields.']['products.'],'product_');
-		    $this->articleMarkerArr = $this->generateMarkerArray($myItem->getArticleAssocArray(''),$this->conf['fields.']['articles.'],'article_');
+		   	$safePrefix=$this->prefixId;
+			$typoLinkConf = array();
+			$typoLinkConf['parameter'] = $this->conf['listPid'];
+			$typoLinkConf['useCacheHash'] = 1;
+			$typoLinkConf['additionalParams'] .= ini_get('arg_separator.output').$this->prefixId.'[catUid]='.$myItem->product->get_masterparent_categorie();
+	    	$typoLinkConf['additionalParams'] .= ini_get('arg_separator.output').$this->prefixId.'[showUid]='.$myItem->product->get_uid();
+			if($this->basketHashValue){
+				$typoLinkConf['additionalParams'].= ini_get('arg_separator.output').$this->prefixId.'[basketHashValue]='.$this->basketHashValue;
+			}
+			$lokalTSProdukt = $this->addTypoLinkToTS($this->conf['fields.']['products.'],$typoLinkConf);	
+			$lokalTSArtikle = $this->addTypoLinkToTS($this->conf['fields.']['articles.'],$typoLinkConf);					
+			$this->prefixId=$altPrefixSingle;			        
+		    $wrapMarkerArray["###PRODUCT_LINK_DETAIL###"] = explode('|',$this->pi_list_linkSingle("|",$myItem->product->get_uid(),1,array('catUid'=>intval($myItem->product->get_masterparent_categorie())),FALSE,$this->conf['listPid']));
+		    		    
+		    $this->prefixId=$safePrefix;
+		    
+		   	
+		  	$markerArray = $this->generateMarkerArray($myItem->getProductAssocArray(''),$lokalTSProdukt,'product_');
+		    $this->articleMarkerArr = $this->generateMarkerArray($myItem->getArticleAssocArray(''),$lokalTSArtikle,'article_');
 						          
 		  	$this->select_attributes = $myItem->product->get_attributes(array(ATTRIB_selector));
 			
-			
-			$safePrefix=$this->prefixId;
-			$this->prefixId=$altPrefixSingle;			        
-		    $wrapMarkerArray["###PRODUCT_LINK_DETAIL###"] = explode('|',$this->pi_list_linkSingle("|",$myItem->product->get_uid(),1,array('catUid'=>intval($myItem->product->get_masterparent_categorie())),FALSE,$this->conf['listPid']));
-		    $this->prefixId=$safePrefix;
+		    
+		    
 		    
 		    $markerArray["PRODUCT_BASKET_FOR_LISTVIEW"] = $this->makeArticleView($myItem->article,$myItem->product);
 							          

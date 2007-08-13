@@ -95,6 +95,14 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 	 * 
 	 */
 	var $finishItOK = true;
+	
+	/**
+	 * Array of Checkout Steps
+	 *
+	 * @var array
+	 */
+	var $CheckOutsteps=array();
+	
 	/**
 	 * Init Method, autmatically called $this->main
 	 * @param 	string	$conf	TypoConfiguration
@@ -105,7 +113,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 		$this->conf = $conf;
 		$this->pi_setPiVarDefaults();
 		$this->pi_loadLL();
-		
+		$this->conf['basketPid']=$GLOBALS['TSFE']->id;
 		$this->staticInfo = t3lib_div::makeInstance('tx_staticinfotables_pi1');
 	        $this->staticInfo->init();
 		
@@ -118,7 +126,30 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 		if (empty($this->currency))	{
 			$this->currency = 'EUR';
 		}
+		$this->CheckOutsteps[0] = 'billing';
+		$this->CheckOutsteps[1] = 'delivery';
+		$this->CheckOutsteps[2] = 'payment'; 
+		$this->CheckOutsteps[3] = 'listing';
+		$this->CheckOutsteps[4] = 'finish';
+		/**
+         * Hook for handling own steps and information   
+         * @since 27.04.2006
+         *
+		 */
 
+         $hookObjectsArr = array();
+                
+         if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi3/class.tx_commerce_pi3.php']['init'])){
+             foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi3/class.tx_commerce_pi3.php']['init'] as $classRef)   {
+                 $hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+             }
+         }
+                
+         foreach($hookObjectsArr as $hookObj)    {
+              if (method_exists($hookObj, 'CheckoutSteps'))     {
+                                $hookObj->CheckoutSteps($this->CheckOutsteps,$this);
+             }
+        } 
 	}
 
 	/**
@@ -243,23 +274,77 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 			case 'finish':
 				$content = $this->finishIt($paymentObj);
 				break;
+			case 'billing':
+				 $content = $this->getBillingAddress();
+				  break;
 			default:
-                                foreach($hookObjectsArr as $hookObj)    {
-                                        if (method_exists($hookObj, $this->currentStep))        {
-                                                $method = $this->currentStep;
-                                                $content = $hookObj->$method($this);
-                                        }
-                                }
-                                if(!$content){
-                                                // get billing address
-                                        $content = $this->getBillingAddress();
-                                }
+                 foreach($hookObjectsArr as $hookObj)    {
+                    if (method_exists($hookObj, $this->currentStep))        {
+                        $method = $this->currentStep;
+                        $content = $hookObj->$method($this);
+                    }
+                 }
+                 if(!$content){
+                       // get billing address
+                       $content = $this->getBillingAddress();
+                  }
+                  break;
 
 		}
-
+		$content = $this->renderSteps($content);
 		return $this->pi_WrapInBaseClass($content);
 	}
-
+	/**
+	 * This method renders the step layout into the checkout process
+	 * It replaces the subpart ###CHECKOUT_STEPS### 
+	 *
+	 * @param string $content
+	 * @return string $content
+	 * @author	Ingo Schmitt <is@marketing-factory.de>
+	 */
+	
+	function renderSteps($content) {
+		
+		$myTemplate = $this->cObj->getSubpart($this->templateCode,'###CHECKOUT_STEPS_BAR###');
+		$activeTemplate = $this->cObj->getSubpart($myTemplate,'###CHECKOUT_ONE_STEP_ACTIVE###');
+		$actualTemplate = $this->cObj->getSubpart($myTemplate,'###CHECKOUT_ONE_STEP_ACTUAL###');
+		$inactiveTemplate = $this->cObj->getSubpart($myTemplate,'###CHECKOUT_ONE_STEP_INACTIVE###');
+		$stepsToNumbers=array_flip($this->CheckOutsteps);
+	
+		$currentStepNumber=$stepsToNumbers[$this->currentStep]+1;
+		
+		$activeContent = '';
+		$inactiveContent = '';
+		for ($i=0;$i<$currentStepNumber;$i++){
+			$localTs=$this->conf['activeStep.'];
+			if ($localTs['typolink.']['setCommerceValues']=1) {
+				$localTs['typolink.']['parameter']=$this->conf['basketPid'];
+				$localTs['typolink.']['additionalParams'] = ini_get('arg_separator.output').$this->prefixId.'[step]='.$this->CheckOutsteps[$i];
+	
+			}
+			
+			$lokContent = $this->cObj->stdWrap($this->pi_getLL('label_step_'.$this->CheckOutsteps[$i]),$localTs);
+			
+			$activeContent.=$this->cObj->substituteMarker($activeTemplate,'###LINKTOSTEP###',$lokContent);
+		}
+		$lokContent = $this->cObj->stdWrap($this->pi_getLL('label_step_'.$this->CheckOutsteps[$i]),$this->conf['actualStep.']);
+		$actualContent = $this->cObj->substituteMarker($actualTemplate,'###STEPNAME###',$lokContent);
+		for ($i=($currentStepNumber+1);$i <= count($this->CheckOutsteps);$i++){
+			
+			$lokContent = $this->cObj->stdWrap($this->pi_getLL('label_step_'.$this->CheckOutsteps[$i]),$this->conf['inactiveStep.']);
+			
+			$inactiveContent.=$this->cObj->substituteMarker($inactiveTemplate,'###STEPNAME###',$lokContent);
+			
+		}
+		$myTemplate=$this->cObj->substituteSubpart($myTemplate,'###CHECKOUT_ONE_STEP_ACTIVE###',$activeContent);
+		$myTemplate=$this->cObj->substituteSubpart($myTemplate,'###CHECKOUT_ONE_STEP_INACTIVE###',$inactiveContent);
+		$myTemplate=$this->cObj->substituteSubpart($myTemplate,'###CHECKOUT_ONE_STEP_ACTUAL###',$actualContent);
+		
+		
+		$content = $this->cObj->substituteMarker($content,'###CHECKOUT_STEPS###',$myTemplate);
+		
+		return $content;
+	}
 	/** STEP ROUTINES **/
 
 	/**
@@ -269,7 +354,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 		$template = $this->cObj->getSubpart($this->templateCode, '###ADDRESS_CONTAINER###');
 
 		$markerArray['###ADDRESS_TITLE###'] = '';
-		$markerArray['###ADDRESS_DESCRIPTION###'] = '';
+		$markerArray['###ADDRESS_DESCRIPTION###'] = '';		
 
 		if ($withTitle == 1)	{
 				// fill some standard markers
@@ -277,9 +362,16 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 			$markerArray['###ADDRESS_DESCRIPTION###'] = $this->pi_getLL('billing_description');
 		}
 
-			// get the form
-		$billingForm = '<form name="addressForm" action="'.$this->pi_getPageLink($GLOBALS['TSFE']->id).'" method="post">';
 
+		
+			// get the form
+		$markerArray['###ADDRESS_FORM_TAG###'] = '<form name="addressForm" action="'.$this->pi_getPageLink($GLOBALS['TSFE']->id).'" method="post" '.$this->conf[$this->step.'.']['formParams'].'>';
+		$markerArray['###ADDRESS_FORM_HIDDENFIELDS###'] = '<input type="hidden" name="'.$this->prefixId.'[check]" value="billing" />';
+		
+		$billingForm = '<form name="addressForm" action="'.$this->pi_getPageLink($GLOBALS['TSFE']->id).'" method="post">';
+		$billingForm .= '<input type="hidden" name="' .$this->prefixId.'[check]" value="billing" />';
+		$markerArray['###HIDDEN_STEP###'] = '<input type="hidden" name="'.$this->prefixId.'[check]" value="billing" />';
+	
 			// if a user is logged in, get the form from the address management
 		if ($GLOBALS['TSFE']->loginUser) {
 				// make an instance of pi4 (address management)
@@ -293,10 +385,11 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 			$addressMgm->init($amConf, false);
 			$addressMgm->addresses = $addressMgm->getAddresses($GLOBALS['TSFE']->fe_user->user['uid'], $this->conf['billing.']['addressType']);
 			$addressMgm->piVars['backpid'] = $GLOBALS['TSFE']->id;
-
-			$billingForm .= $addressMgm->getListing($this->conf['billing.']['addressType'], true, $this->prefixId);
+			$markerArray['###ADDRESS_FORM_INPUTFIELDS###']  = $addressMgm->getListing($this->conf['billing.']['addressType'], true, $this->prefixId);
+			$billingForm .= $markerArray['###ADDRESS_FORM_INPUTFIELDS###'] ;
 		} else {
-			$billingForm .= $this->getInputForm($this->conf['billing.'], 'billing');
+			$markerArray['###ADDRESS_FORM_INPUTFIELDS###'] = $this->getInputForm($this->conf['billing.'], 'billing');
+			$billingForm .= $markerArray['###ADDRESS_FORM_INPUTFIELDS###'] ;
 		}
 
 		/**
@@ -318,21 +411,38 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 			$deliveryChecked = '  ';
 			$paymentChecked = '  ';
 		}
+		
+		
+		// for marker for the delivery address chooser
+		
+		$markerArray['###ADDRESS_RADIOFORM_DELIVERY###'] = '<input type="radio" id="delivery" name="'.$this->prefixId.'[step]" value="delivery" '.$deliveryChecked.'/>';
+		$markerArray['###ADDRESS_RADIOFORM_NODELIVERY###']= '<input type="radio" id="nodelivery"  name="'.$this->prefixId.'[step]" value="payment" '.$paymentChecked.'/>';
+		$markerArray['###ADDRESS_LABEL_DELIVERY###'] = $this->pi_getLL('billing_deliveryaddress');
+		$markerArray['###ADDRESS_LABEL_NODELIVERY###']= $this->pi_getLL('billing_nodeliveryaddress');
+		
+		// for stdWrap for the delivery address chooser marker
+		
+		$markerArray['###ADDRESS_RADIOFORM_DELIVERY###']  = $this->cObj->stdWrap($markerArray['###ADDRESS_RADIOFORM_DELIVERY###'] ,$this->conf['billing.']['deliveryAdress.']['delivery_radio.']);
+		$markerArray['###ADDRESS_RADIOFORM_NODELIVERY###']  = $this->cObj->stdWrap($markerArray['###ADDRESS_RADIOFORM_NODELIVERY###'] ,$this->conf['billing.']['deliveryAdress.']['nodelivery_radio.']);
+		$markerArray['###ADDRESS_LABEL_DELIVERY###']  = $this->cObj->stdWrap($markerArray['###ADDRESS_LABEL_DELIVERY###'] ,$this->conf['billing.']['deliveryAdress.']['delivery_label.']);
+		$markerArray['###ADDRESS_LABEL_NODELIVERY###']  = $this->cObj->stdWrap($markerArray['###ADDRESS_LABEL_NODELIVERY###'] ,$this->conf['billing.']['deliveryAdress.']['nodelivery_label.']);
+		
 
-		$markerArray['###ADDRESS_RADIO_DELIVERY###'] = '<input type="radio" name="'.$this->prefixId.'[step]" value="delivery" '.$deliveryChecked.'/>'.$this->pi_getLL('billing_deliveryaddress');
-		$markerArray['###ADDRESS_RADIO_NODELIVERY###']= '<input type="radio" name="'.$this->prefixId.'[step]" value="payment" '.$paymentChecked.'/>'.$this->pi_getLL('billing_nodeliveryaddress');
-		$billingForm .= '<input type="hidden" name="' .$this->prefixId.'[check]" value="billing" />';
 		//we are thrown back because address data is not valid
 		if (($this->currentStep == 'payment' || $this->currentStep == 'delivery') && !$this->validateAddress('billing')) {
 			$markerArray['###ADDRESS_MANDATORY_MESSAGE###'] = $this->pi_getLL('label_loginUser_mandatory_message','data incorrect');
 		} else {
 			$markerArray['###ADDRESS_MANDATORY_MESSAGE###'] = '';
 		}
-		$markerArray['###ADDRESS_FORM_FIELDS###'] = $billingForm;
+		
 		$markerArray['###ADDRESS_FORM_SUBMIT###'] = '<input type="submit" value="'.$this->pi_getLL('billing_submit').'" />';
 		$markerArray['###ADDRESS_DISCLAIMER###'] = $this->pi_getLL('general_disclaimer');
 
-
+		// @deprecated Marker, use marker above instead (see example Template)
+		$markerArray['###ADDRESS_FORM_FIELDS###'] = $billingForm;
+		$markerArray['###ADDRESS_RADIO_DELIVERY###'] = '<input type="radio" id="delivery" name="'.$this->prefixId.'[step]" value="delivery" '.$deliveryChecked.'/>'.$this->pi_getLL('billing_deliveryaddress');
+		$markerArray['###ADDRESS_RADIO_NODELIVERY###']= '<input type="radio" id="payment"  name="'.$this->prefixId.'[step]" value="payment" '.$paymentChecked.'/>'.$this->pi_getLL('billing_nodeliveryaddress');
+		$markerArray=$this->addFormMarker($markerArray,'###|###');
 		/**
 		 * Hook for processing Marker Array
 		 * Inspired by tt_news
@@ -367,11 +477,17 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 		$markerArray['###ADDRESS_DESCRIPTION###'] = $this->pi_getLL('delivery_description');
 
 			// get the form
+		$markerArray['###ADDRESS_FORM_TAG###'] = '<form name="addressForm" action="'.$this->pi_getPageLink($GLOBALS['TSFE']->id).'" method="post" '.$this->conf[$this->step.'.']['formParams'].'>';
+		
+		$markerArray['###ADDRESS_FORM_HIDDENFIELDS###'] = '<input type="hidden" name="'.$this->prefixId.'[step]" value="payment" />'.
+								  '<input type="hidden" name="'.$this->prefixId.'[check]" value="delivery" />';
+		
 		$deliveryForm = '<form name="addressForm" action="'.$this->pi_getPageLink($GLOBALS['TSFE']->id).'" method="post">';
 		$deliveryForm .= '<input type="hidden" name="'.$this->prefixId.'[step]" value="payment" />';
 		$deliveryForm .= '<input type="hidden" name="'.$this->prefixId.'[check]" value="delivery" />';
-
-			// if a user is logged in, get the form from the address management
+		$markerArray['###HIDDEN_STEP###'] = '<input type="hidden" name="'.$this->prefixId.'[step]" value="payment" />';
+		$markerArray['###HIDDEN_STEP###'].= '<input type="hidden" name="'.$this->prefixId.'[check]" value="delivery" />';
+		// if a user is logged in, get the form from the address management
 		if ($GLOBALS['TSFE']->loginUser) {
 				// make an instance of pi4 (address management)
 			$addressMgm = t3lib_div::makeInstance('tx_commerce_pi4');
@@ -386,13 +502,18 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 			$addressMgm->addresses = $addressMgm->getAddresses($GLOBALS['TSFE']->fe_user->user['uid'], $this->conf['delivery.']['addressType']);
 
 			$addressMgm->piVars['backpid'] = $GLOBALS['TSFE']->id;
-
-			$deliveryForm .= $addressMgm->getListing($this->conf['delivery.']['addressType'], true, $this->prefixId);
+			$markerArray['###ADDRESS_FORM_INPUTFIELDS###'] = $addressMgm->getListing($this->conf['delivery.']['addressType'], true, $this->prefixId);
+			$deliveryForm .= $markerArray['###ADDRESS_FORM_INPUTFIELDS###'] ;
 		} else {
-			$deliveryForm .= $this->getInputForm($this->conf['delivery.'], 'delivery');
+			$markerArray['###ADDRESS_FORM_INPUTFIELDS###'] = $this->getInputForm($this->conf['delivery.'], 'delivery');
+			$deliveryForm .= $markerArray['###ADDRESS_FORM_INPUTFIELDS###'] ;
 		}
-		$markerArray['###ADDRESS_RADIO_DELIVERY###'] = '';
-		$markerArray['###ADDRESS_RADIO_NODELIVERY###'] = '';
+	
+		$markerArray['###ADDRESS_RADIOFORM_DELIVERY###'] = '';
+		$markerArray['###ADDRESS_RADIOFORM_NODELIVERY###']= '';
+		$markerArray['###ADDRESS_LABEL_DELIVERY###'] = '';
+		$markerArray['###ADDRESS_LABEL_NODELIVERY###']= '';
+				
 		$markerArray['###ADDRESS_FORM_FIELDS###'] = $deliveryForm;
 		$markerArray['###ADDRESS_FORM_SUBMIT###'] = '<input type="submit" value="' .$this->pi_getLL('delivery_submit') .'" />';
 		
@@ -404,6 +525,12 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 		}
 		$markerArray['###ADDRESS_DISCLAIMER###'] = $this->pi_getLL('general_disclaimer');
 
+		// @deprecated Marker, use ###ADDRESS_FORM_INPUTFIELDS### and ###ADDRESS_FORM_TAG### instead
+		$markerArray['###ADDRESS_FORM_FIELDS###'] = $deliveryForm;
+		$markerArray['###ADDRESS_RADIO_DELIVERY###'] = '';
+		$markerArray['###ADDRESS_RADIO_NODELIVERY###'] = '';
+	
+		$markerArray=$this->addFormMarker($markerArray,'###|###');
 		/**
 		 * Hook for processing Marker Array
 		 * Inspired by tt_news
@@ -540,7 +667,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 
 		$listingForm = '<form name="listingForm" action="'.$this->pi_getPageLink($GLOBALS['TSFE']->id).'" method="post">';
 		$listingForm .= '<input type="hidden" name="'.$this->prefixId.'[step]" value="finish" />';
-
+		$markerArray['###HIDDEN_STEP###'] = '<input type="hidden" name="'.$this->prefixId.'[step]" value="finish" />';
 		$markerArray['###LISTING_TITLE###'] = $this->pi_getLL('listing_title');
 		$markerArray['###LISTING_DESCRIPTION###'] = $this->pi_getLL('listing_description');
 		$markerArray['###LISTING_FORM_FIELDS###'] = $listingForm;
@@ -548,12 +675,13 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 		$markerArray['###LISTING_BASKET###'] = $this->makeBasketView(
 			$GLOBALS['TSFE']->fe_user->tx_commerce_basket,
 			'###BASKET_VIEW###',
-			t3lib_div::intExplode(',', $this->conf['regularArticleTypes'])
+			t3lib_div::intExplode(',', $this->conf['regularArticleTypes']),
+			array('###LISTING_ARTICLE###','###LISTING_ARTICLE2###')
 		);
 
 		$markerArray['###BILLING_ADDRESS###'] = $this->cObj->stdWrap($this->getAddress('billing'),$this->conf['listing.']['stdWrap_billing_address.']);
 		$markerArray['###DELIVERY_ADDRESS###'] = $this->cObj->stdWrap($this->getAddress('delivery'),$this->conf['listing.']['stdWrap_delivery_address.']);
-		$markerArray['###LISTING_FORM_SUBMIT###'] = '<input type="submit" value="' .$this->pi_getLL('listing_submit') .'" /></form>';
+		$markerArray['###LISTING_FORM_SUBMIT###'] = '<input type="submit" value="' .$this->pi_getLL('listing_submit') .'" />';
 		$markerArray['###LISTING_DISCLAIMER###'] = $this->pi_getLL('listing_disclaimer');
 		if ($this->formError['terms'])	{
 			$markerArray['###ERROR_TERMS_ACCEPT###'] = $this->cObj->dataWrap($this->formError['terms'],$this->conf['terms.']['errorWrap']);
@@ -595,7 +723,8 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 				$markerArray=$hookObj->ProcessMarker($markerArray,$this);
 			}
 		}
-	    
+		
+	   $markerArray = $this->addFormMarker($markerArray,'###|###');
 		return $this->cObj->substituteMarkerArray($this->cObj->substituteMarkerArray($template, $markerArray),$this->languageMarker);
 	}
 
@@ -1206,6 +1335,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
     		 $this->dbFieldData = $this->MYSESSION[$step];
 
 		$fieldTemplate = $this->cObj->getSubpart($this->templateCode, '###SINGLE_INPUT###');
+		$fieldTemplateCheckbox = $this->cObj->getSubpart($this->templateCode, '###SINGLE_CHECKBOX###');
 		$fieldCode = '';
 		foreach ($fieldList as $fieldName)	{
 			$fieldMarkerArray = array();
@@ -1230,10 +1360,16 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 			$arrayName = $fieldName .(($parseList) ? '.' : '');
 			$fieldMarkerArray['###FIELD_INPUT###'] = $this->getInputField($fieldName, $config['sourceFields.'][$arrayName], $this->MYSESSION[$step][$fieldName],$step);
 		        $fieldMarkerArray['###FIELD_NAME###'] = $this->prefixId.'['.$step.'][' .$fieldName .']';
-
+		        $fieldMarkerArray['###FIELD_INPUTID###'] = $step.'-'.$fieldName;
+		        
+		        
 			// save some data for mails
 			$this->MYSESSION['mails'][$step][$fieldName] = array('data' => $this->MYSESSION[$step][$fieldName], 'label' => $fieldLabel);
-			$fieldCode .= $this->cObj->substituteMarkerArray($fieldTemplate, $fieldMarkerArray);
+			if($config['sourceFields.'][$arrayName]['type'] == 'check'){
+				$fieldCode .= $this->cObj->substituteMarkerArray($fieldTemplateCheckbox, $fieldMarkerArray);
+			}else{
+				$fieldCode .= $this->cObj->substituteMarkerArray($fieldTemplate, $fieldMarkerArray);
+			}
 		}
 		$GLOBALS['TSFE']->fe_user->setKey('ses','mails', $this->MYSESSION['mails']);
 		return $fieldCode;
@@ -1332,7 +1468,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 				return $this->getSelectInputField($fieldName, $fieldConfig,  $fieldValue ,$step);
 			case 'static_info_tables':
 				$selected = $fieldValue != '' ? $fieldValue : $fieldConfig['default'];
-			 	return $this->staticInfo->buildStaticInfoSelector($fieldConfig['field'], $this->prefixId.'[' .$step .'][' .$fieldName .']', $fieldConfig['cssClass'],$selected,'','','','',$fieldConfig['select']);
+			 	return $this->staticInfo->buildStaticInfoSelector($fieldConfig['field'], $this->prefixId.'[' .$step .'][' .$fieldName .']', $fieldConfig['cssClass'],$selected,'','',$step.'-'.$fieldName,'',$fieldConfig['select']);
                         case 'check':
 			            return $this->getCheckboxInputField($fieldName, $fieldConfig,  $fieldValue,$single);
 			case 'single':
@@ -1358,7 +1494,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 		}
 		
 		
-		$result = '<input type="text" name="'.$this->prefixId.'['.$step.'][' .$fieldName .']" value="' .$value .'" ' . $maxlength;
+		$result = '<input id="'.$step.'-'.$fieldName.'" type="text" name="'.$this->prefixId.'['.$step.'][' .$fieldName .']" value="' .$value .'" ' . $maxlength;
 		if ($fieldConfig['readonly'] == 1)	{
 			$result .= ' readonly disabled';
 		}
@@ -1373,7 +1509,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 
         function getSelectInputField($fieldName, $fieldConfig, $fieldValue = '',$step = '') {
 
-                $result = '<select name="'.$this->prefixId.'['.$step.'][' .$fieldName .']">';
+                $result = '<select id="'.$step.'-'.$fieldName.'" name="'.$this->prefixId.'['.$step.'][' .$fieldName .']">';
                 if ($fieldValue != '')  {
                             $fieldConfig['default'] = $fieldValue;
                 }
@@ -1413,7 +1549,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
          */
 
         function getCheckboxInputField($fieldName, $fieldConfig, $fieldValue = '',$step = '') {
-            $result = '<input type="checkbox" name="'.$this->prefixId.'['.$step.']['.$fieldName.']"
+            $result = '<input id="'.$step.'-'.$fieldName.'" type="checkbox" name="'.$this->prefixId.'['.$step.']['.$fieldName.']"
             id="'.$this->prefixId.'['.$step.']['.$fieldName.']" value="1" ';
             if (($fieldConfig['default']=='1' && $fieldValue!=0) || $fieldValue==1) {
                 $result.='checked="checked" ';
