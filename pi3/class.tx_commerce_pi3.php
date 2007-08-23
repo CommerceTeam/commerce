@@ -1631,7 +1631,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 			}
 		}
 
-		if (is_array($GLOBALS['TSFE']->fe_user->user&&strlen($GLOBALS['TSFE']->fe_user->user['email'])))	{
+		if (is_array($GLOBALS['TSFE']->fe_user->user) && strlen($GLOBALS['TSFE']->fe_user->user['email']))	{
 			$userMail = $GLOBALS['TSFE']->fe_user->user['email'];
 		} else {
 		 	$userMail = $this->MYSESSION['billing']['email'];
