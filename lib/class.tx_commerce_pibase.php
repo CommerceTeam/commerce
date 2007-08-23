@@ -1008,7 +1008,7 @@ class tx_commerce_pibase extends tslib_pibase {
 			case 'IMAGE' :
 				if (is_string($value) && !empty($value)) {
 								
-					$TSconf['file'] = $this->imgFolder.$oneImage;
+					$TSconf['file'] = $this->imgFolder.$value;;
 					$output .= $this->cObj->IMAGE($TSconf);
 				}
 			break;
