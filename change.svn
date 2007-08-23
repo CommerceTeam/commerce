@@ -7,6 +7,7 @@ Changelog for tx_commerce
 * Added missing commit for ext_localconf.php Thanks to Karsten Dambekalns
 * Fixed Bug 6153, Thanks to Karsten Dambekalns and Peter Ruijter
 * Fixed Bug 6151, Thanks to Thomas Mammitzsch
+* Fixed Bug 6136
 
 13.08.2007 Volker Graubaum <vg@e-netconsulting.de>
 * Updated Documentation and locallang

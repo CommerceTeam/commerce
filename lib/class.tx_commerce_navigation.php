@@ -394,7 +394,7 @@ class tx_commerce_navigation {
 				    	$this->arrayMerge($nodeArray['--subLevel--'], $arraySubChild);
 				    	
 				    	if ($this->mConf['groupOptions.']['onOptions']==1 && $GLOBALS['TSFE']->fe_user->user['usergroup']!=''){
-				    		$arraySubChild=$this->makeSubChildArrayPostRender($uidPage,$tableSubMain,$tableSubMm,$uid_root,$mDepth+1,$nodeArray['path']);
+				    		$arraySubChild=$this->makeSubChildArrayPostRender($uidPage,$tableSubMain,$tableSubMm,$row['uid_local'],$mDepth+1,$nodeArray['path']);
 				    		$this->arrayMerge($nodeArray['--subLevel--'], $arraySubChild);
 				    	}
 				    	
@@ -402,7 +402,7 @@ class tx_commerce_navigation {
 				    if($this->expandAll){
 				    	$nodeArray['_SUB_MENU']=$nodeArray['--subLevel--'];
 				    }
-				 	$nodeArray['_ADD_GETVARS'].= '&'.$this->prefixId.'[catUid]='.$row['uid_local'];
+				 	$nodeArray['_ADD_GETVARS'].= ini_get('arg_separator.output').$this->prefixId.'[catUid]='.$uid_root;
 				 	if ($this->useRootlineInformationToUrl==1) {
 				 		$nodeArray['_ADD_GETVARS'] .= ini_get('arg_separator.output') .$this->prefixId.'[mDepth]='.$mDepth.ini_get('arg_separator.output') .$this->prefixId.'[path]='.$nodeArray['path'];
 				 	}
@@ -412,12 +412,13 @@ class tx_commerce_navigation {
 					$pA = t3lib_div::cHashParams($nodeArray['_ADD_GETVARS'].$GLOBALS['TSFE']->linkVars);
 					$nodeArray['_ADD_GETVARS'] .= ini_get('arg_separator.output') .'cHash='.t3lib_div::shortMD5(serialize($pA));
 				 	$nodeArray['ITEM_STATE'] = 'NO';
+				 
 				 }
 				 else{
-				 	if ($nodeArray['leaf']==1 &&  $nodeArray['hasSubChild']==2)
+				 	#if ($nodeArray['leaf']==1 &&  $nodeArray['hasSubChild']==2)
 				 	  $nodeArray['_ADD_GETVARS'] = ini_get('arg_separator.output') .$this->prefixId.'[catUid]='.$uid_root;
-				 	else
-				 	$nodeArray['_ADD_GETVARS'] = ini_get('arg_separator.output') .$this->prefixId.'[catUid]='.$row['uid_local'];
+				 	#else
+				 	#$nodeArray['_ADD_GETVARS'] = ini_get('arg_separator.output') .$this->prefixId.'[catUid]='.$row['uid_local'];
 				 	
 				 	if($nodeArray['hasSubChild']==2){
 				    	$nodeArray['_ADD_GETVARS'].=ini_get('arg_separator.output') .$this->prefixId.'[showUid]='.$dataRow[uid];
@@ -432,6 +433,7 @@ class tx_commerce_navigation {
 					$pA = t3lib_div::cHashParams($nodeArray['_ADD_GETVARS'].$GLOBALS['TSFE']->linkVars);
 					$nodeArray['_ADD_GETVARS'] .= ini_get('arg_separator.output') .'cHash='.t3lib_div::shortMD5(serialize($pA));
 					$nodeArray['ITEM_STATE'] = 'NO';
+						
 				 }
 				 
 				$treeList[$row['uid_local']]=$nodeArray; 
@@ -496,13 +498,17 @@ class tx_commerce_navigation {
 				}else{				 
 					$nodeArray['path']=$dataRow['uid'];
 				}
-				if ($nodeArray['leaf']==1 &&  $nodeArray['hasSubChild']==2)
+				/**
+				  * Changed here for Bug 6136 
+				  * 
+				  **/
+				#if ($nodeArray['leaf']==1 &&  $nodeArray['hasSubChild']==2)
 					$nodeArray['_ADD_GETVARS'] = ini_get('arg_separator.output') .$this->prefixId.'[catUid]='.$uid_root;
-			 	else
-				 	$nodeArray['_ADD_GETVARS'] = ini_get('arg_separator.output') .$this->prefixId.'[catUid]='.$row['uid_local'];
+			 	#else
+				# 	$nodeArray['_ADD_GETVARS'] = ini_get('arg_separator.output') .$this->prefixId.'[catUid]='.$row['uid_local'];
 				 	
-		    	$nodeArray['_ADD_GETVARS'].=ini_get('arg_separator.output') .$this->prefixId.'[showUid]='.$dataRow[uid];
-				$nodeArray['_ADD_GETVARS'].= ini_get('arg_separator.output') .$this->prefixId.'[mDepth]='.$mDepth.ini_get('arg_separator.output') .$this->prefixId.'[path]='.$nodeArray['path'];
+		    	$nodeArray['_ADD_GETVARS'] .= ini_get('arg_separator.output') .$this->prefixId.'[showUid]='.$dataRow[uid];
+				$nodeArray['_ADD_GETVARS'] .= ini_get('arg_separator.output') .$this->prefixId.'[mDepth]='.$mDepth.ini_get('arg_separator.output') .$this->prefixId.'[path]='.$nodeArray['path'];
 			   
 			 	if ($this->useRootlineInformationToUrl==1) 
 				 		$nodeArray['_ADD_GETVARS'] .= ini_get('arg_separator.output') .$this->prefixId.'[mDepth]='.$mDepth.ini_get('arg_separator.output') .$this->prefixId.'[path]='.$nodeArray['path'];
@@ -516,7 +522,9 @@ class tx_commerce_navigation {
 				if($this->gpVars['manufacturer']){
 					$nodeArray['_ADD_GETVARS'] .="&".$this->prefixId.'[manufacturer]='.$this->gpVars['manufacturer'];
 				}
+				
 				$treeList[$row['uid_local']]=$nodeArray; 
+				
 			}
 		}
 		return $treeList;
