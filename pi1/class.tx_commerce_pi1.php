@@ -118,13 +118,50 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
     	            $this->conf['templateFile'] = $this->templateFolder.$this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'template', 's_template');
                 }
 											
-		
+		/**	
+		  * Validate given showUid, it it's below cat
+		  */
+		$this->category=t3lib_div::makeinstance('tx_commerce_category');
+		$this->category->init($this->cat,$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
+		$categorySubproducts=$this->category-> getProductUids();
+		if (!in_array($this->piVars['showUid'],$categorySubproducts)) {
+			$this->handle='listView';
+			$this->piVars['showUid']=false;
+		}	
+                
 		if($this->piVars['catUid']){
-			    $this->cat = (int)$this->piVars['catUid'];
+				/**
+				  * Validate given CAT UID, if is below master_cat
+				  **/
+				$this->masterCategoryObj = t3lib_div::makeinstance('tx_commerce_category');
+				$this->masterCategoryObj -> init($this->master_cat,$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
+				$this->masterCategoryObj -> load_data();
+				$masterCategorySubCategories = $this->masterCategoryObj->get_rec_child_categories_uidlist();
+				
+				if (in_array($this->piVars['catUid'],$masterCategorySubCategories)) {
+			   		 $this->cat = (int)$this->piVars['catUid'];
+				}else{
+				 /**
+				  * Wrong UID, so start with default UID
+				  **/
+					 $this->cat = (int)$this->master_cat;
+				}
 		}else{
-			    $this->cat = (int)$this->master_cat;
+			  $this->cat = (int)$this->master_cat;
 		}
-						
+		
+		if ( $this->cat <> $this->category->getUid()){
+			/**
+			  * Only, if the category has been changed
+			  **/
+			unset($this->category);
+			$this->category=t3lib_div::makeinstance('tx_commerce_category');
+			$this->category->init($this->cat,$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
+		}
+		
+		
+		
+		
 	    $this->internal['results_at_a_time']= $this->conf['maxRecords'];
 		$this->internal['maxPages'] = $this->conf['maxPages'];
 
@@ -139,15 +176,17 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 	        		}
 	        break; 	    
 	    }	
-	  
+	 
 	  
 		if($this->cat>0){			
-	  	    $this->category=new tx_commerce_category($this->cat,$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
+	  	    
 		    if(!$this->category->isValidUid($this->category->getUid())){
-			unset($this->category);
-			$this->category=new tx_commerce_category($this->master_cat,$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
+				unset($this->category);
+				$this->category=t3lib_div::makeinstance('tx_commerce_category');
+				$this->category->init($this->master_cat,$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
 		    }
-	 	    $this->category->load_data();	 	  
+	 	    $this->category->load_data();	
+	 	     
 	 	    $this->category_array=$this->category->return_assoc_array();
 		    $catConf = $this->category->getCategoryTSconfig();
 		    if(is_array($catConf['catTS.'])){

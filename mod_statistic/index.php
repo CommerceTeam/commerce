@@ -236,12 +236,12 @@ class tx_commerce_statistic extends t3lib_SCbase {
 			
 			$startselect = 'SELECT min(crdate) FROM tx_commerce_order_articles WHERE crdate > 0';
 			$startres = $GLOBALS['TYPO3_DB']->sql_query($startselect);
-			if( $startres AND ( $startrow = $GLOBALS['TYPO3_DB']->sql_fetch_row( $startres ) ) ) {
+			if( $startres AND ( $startrow = $GLOBALS['TYPO3_DB']->sql_fetch_row( $startres ) ) AND $startrow[0] != NULL) {
 				$starttime = $startrow[0];
 				$GLOBALS['TYPO3_DB']->sql_query('truncate tx_commerce_salesfigures');
-				$result = $this->doSalesAggregation($starttime,$endtime);
+				$result .= $this->doSalesAggregation($starttime,$endtime);
 			} else {
-				$result = 'no sales data available';
+				$result .= 'no sales data available';
 			}
 			
 			$endselect = 'SELECT max(crdate) FROM fe_users';
@@ -254,12 +254,12 @@ class tx_commerce_statistic extends t3lib_SCbase {
 			
 			$startselect = 'SELECT min(crdate) FROM fe_users WHERE crdate > 0 AND deleted = 0';
 			$startres = $GLOBALS['TYPO3_DB']->sql_query($startselect);
-			if( $startres AND ( $startrow = $GLOBALS['TYPO3_DB']->sql_fetch_row( $startres ) ) ) {
+			if( $startres AND ( $startrow = $GLOBALS['TYPO3_DB']->sql_fetch_row( $startres ) ) AND $startrow[0] != NULL) {
 				$starttime = $startrow[0];
 				$GLOBALS['TYPO3_DB']->sql_query('truncate tx_commerce_newclients');
 				$result = $this->doClientAggregation($starttime,$endtime);
 			} else {
-				$result = '<br />no client data available';
+				$result .= '<br />no client data available';
 			}
 		} else {
 			$result = "Dieser Vorgang kann eventuell lange dauern<br /><br />";
@@ -280,7 +280,8 @@ class tx_commerce_statistic extends t3lib_SCbase {
 		if(isset($GLOBALS['HTTP_POST_VARS']['incrementalaggregation'])) {
 			$lastAggregationTime = 'SELECT max(tstamp) FROM tx_commerce_salesfigures';
 			$lastAggregationTimeres = $GLOBALS['TYPO3_DB']->sql_query($lastAggregationTime);
-			if( $lastAggregationTimeres AND ( $lastAggregationTimerow = $GLOBALS['TYPO3_DB']->sql_fetch_row( $lastAggregationTimeres ) ) ) {
+			$lastAggregationTimeValue = 0;
+			if( $lastAggregationTimeres AND ( $lastAggregationTimerow = $GLOBALS['TYPO3_DB']->sql_fetch_row( $lastAggregationTimeres ) ) AND $lastAggregationTimerow[0] != NULL ) {
 				$lastAggregationTimeValue = $lastAggregationTimerow[0];
 			}
 			$endselect = 'SELECT max(crdate) FROM tx_commerce_order_articles';
@@ -288,15 +289,16 @@ class tx_commerce_statistic extends t3lib_SCbase {
 			if( $endres AND ( $endrow = $GLOBALS['TYPO3_DB']->sql_fetch_row( $endres ) ) ) {
 				$endtime2 = $endrow[0];
 			}
-			if(strtotime("0",$lastAggregationTimeValue) <= strtotime("0",$endtime2)) {
+				
+			if(strtotime("0",$lastAggregationTimeValue) <= strtotime("0",$endtime2) AND $endtime2 != NULL) {
 				$endtime =  $endtime2 > mktime(0,0,0) ? mktime(0,0,0) : strtotime('+1 hour',$endtime2);
 				$starttime = strtotime("0",$lastAggregationTimeValue);
 				$result .= $this->doSalesAggregation($starttime,$endtime);
 			} else {
 				$result .= 'No new Orders<br />';
 			}
-			
-			$changeselect = 'SELECT crdate FROM tx_commerce_order_articles where tstamp > ' . strtotime("0",$lastAggregationTimeValue);
+
+			$changeselect = 'SELECT crdate FROM tx_commerce_order_articles where tstamp > ' . $lastAggregationTimeValue;
 			$changeres = $GLOBALS['TYPO3_DB']->sql_query($changeselect);
 			$changeDaysArray = array();
 			$changes = 0;
@@ -323,7 +325,7 @@ class tx_commerce_statistic extends t3lib_SCbase {
 			if( $endres AND ( $endrow = $GLOBALS['TYPO3_DB']->sql_fetch_row( $endres ) ) ) {
 				$endtime2 = $endrow[0];
 			}
-			if(strtotime("0",$lastAggregationTimeValue) <= strtotime("0",$endtime2)) {
+			if($lastAggregationTimeValue <= $endtime2 AND $endtime2 != NULL AND $lastAggregationTimeValue != NULL) {
 			
 			
 				$endtime =  $endtime2 > mktime(0,0,0) ? mktime(0,0,0) : strtotime('+1 hour',$endtime2);
