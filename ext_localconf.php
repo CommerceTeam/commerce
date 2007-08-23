@@ -233,6 +233,9 @@ $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY]['create_address_pid'] = $_EXTCO
 // fe_user <-> tt_address field mapping
 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY]['feuser_address_mapping'] = $_EXTCONF['feuser_address_mapping'] ? $_EXTCONF['feuser_address_mapping'] : 'company,company;name,name;last_name,surname;title,title;address,address;zip,zip;city,city;country,country;telephone,phone;fax,fax;email,email;www,www;';
 
+// storage pid for baskets
+$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY]['BasketStoragePid'] = $_EXTCONF['BasketStoragePid'] ? $_EXTCONF['BasketStoragePid'] : 0;
+
 // This line configures to process the code selectConf with the class "tx_commerce_hooks"
 require_once(t3lib_extMgm::extPath(COMMERCE_EXTkey).'hooks/class.tx_commerce_tcehooksHandler.php');
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] = 'tx_commerce_tcehooksHandler';
