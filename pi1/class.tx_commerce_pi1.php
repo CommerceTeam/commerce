@@ -121,9 +121,16 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 		/**	
 		  * Validate given showUid, it it's below cat
 		  */
+		if($this->piVars['catUid']){ 
+			 $this->cat = (int)$this->piVars['catUid'];
+		}else{
+			  $this->cat = (int)$this->master_cat;
+		}
 		$this->category=t3lib_div::makeinstance('tx_commerce_category');
 		$this->category->init($this->cat,$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
+		$this->category->load_data();
 		$categorySubproducts=$this->category-> getProductUids();
+		
 		if (!in_array($this->piVars['showUid'],$categorySubproducts)) {
 			$this->handle='listView';
 			$this->piVars['showUid']=false;
