@@ -117,31 +117,32 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 	       if($this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'template', 's_template') && file_exists($this->templateFolder.$this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'template', 's_template'))){
     	            $this->conf['templateFile'] = $this->templateFolder.$this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'template', 's_template');
                 }
-											
-		/**	
-		  * Validate given showUid, it it's below cat
-		  */
-		if($this->piVars['catUid']){ 
-			 $this->cat = (int)$this->piVars['catUid'];
-		}else{
-			  $this->cat = (int)$this->master_cat;
-		}
-		
-		$this->category=t3lib_div::makeinstance('tx_commerce_category');
-		$this->category->init($this->cat,$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
-		$this->category->load_data();
-		$categorySubproducts = $this->category->getProductUids() ;
-		
-		
-		if (!in_array($this->piVars['showUid'],$categorySubproducts)) {
-			$categoryAllSubproducts = $this->category-> getAllProducts(9999999999);
-		
-			if (!in_array($this->piVars['showUid'],$categoryAllSubproducts)) {
-				$this->handle='listView';
-				$this->piVars['showUid']=false;
+
+       
+			/**	
+			  * Validate given showUid, it it's below cat
+			  */
+			if($this->piVars['catUid']){ 
+				 $this->cat = (int)$this->piVars['catUid'];
+			}else{
+				  $this->cat = (int)$this->master_cat;
 			}
-		}	
-                
+			
+			$this->category=t3lib_div::makeinstance('tx_commerce_category');
+			$this->category->init($this->cat,$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
+			$this->category->load_data();
+			$categorySubproducts = $this->category->getProductUids() ;
+			
+			if (!$this->conf['singleProduct']) {
+				if (!in_array($this->piVars['showUid'],$categorySubproducts)) {
+					$categoryAllSubproducts = $this->category-> getAllProducts(9999999999);
+			
+					if (!in_array($this->piVars['showUid'],$categoryAllSubproducts)) {
+						$this->handle='listView';
+						$this->piVars['showUid']=false;
+					}
+				}	
+        	}
 		if($this->piVars['catUid']){
 				/**
 				  * Validate given CAT UID, if is below master_cat
