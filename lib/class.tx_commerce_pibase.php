@@ -475,7 +475,7 @@ class tx_commerce_pibase extends tslib_pibase {
      		$this->category_products = array_slice($this->category_products,$internalStartPoint, $internalResults);
 		}
 
-	 	$this->category_products = array_slice($this->category_products,$internalStartPoint,$internalResults);
+	 	#$this->category_products = array_slice($this->category_products,$internalStartPoint,$internalResults);
 
 		// ###CATEGORY_LIST###
 
