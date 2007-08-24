@@ -126,14 +126,20 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 		}else{
 			  $this->cat = (int)$this->master_cat;
 		}
+		
 		$this->category=t3lib_div::makeinstance('tx_commerce_category');
 		$this->category->init($this->cat,$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
 		$this->category->load_data();
-		$categorySubproducts=$this->category-> getProductUids();
+		$categorySubproducts = $this->category->getProductUids() ;
+		
 		
 		if (!in_array($this->piVars['showUid'],$categorySubproducts)) {
-			$this->handle='listView';
-			$this->piVars['showUid']=false;
+			$categoryAllSubproducts = $this->category-> getAllProducts(9999999999);
+		
+			if (!in_array($this->piVars['showUid'],$categoryAllSubproducts)) {
+				$this->handle='listView';
+				$this->piVars['showUid']=false;
+			}
 		}	
                 
 		if($this->piVars['catUid']){
