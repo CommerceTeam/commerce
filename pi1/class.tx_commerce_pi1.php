@@ -134,14 +134,23 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 			$categorySubproducts = $this->category->getProductUids() ;
 			
 			if (!$this->conf['singleProduct']) {
-				if (!in_array($this->piVars['showUid'],$categorySubproducts)) {
+				if (is_array($categorySubproducts)) {
+					if (!in_array($this->piVars['showUid'],$categorySubproducts)) {
+						$categoryAllSubproducts = $this->category-> getAllProducts(9999999999);
+						
+						if (!in_array($this->piVars['showUid'],$categoryAllSubproducts)) {
+							$this->handle='listView';
+							$this->piVars['showUid']=false;
+						}
+					}
+				}else{
 					$categoryAllSubproducts = $this->category-> getAllProducts(9999999999);
-			
+				
 					if (!in_array($this->piVars['showUid'],$categoryAllSubproducts)) {
 						$this->handle='listView';
 						$this->piVars['showUid']=false;
 					}
-				}	
+				}
         	}
 		if($this->piVars['catUid']){
 				/**
