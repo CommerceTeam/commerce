@@ -402,7 +402,7 @@ class tx_commerce_navigation {
 				    if($this->expandAll){
 				    	$nodeArray['_SUB_MENU']=$nodeArray['--subLevel--'];
 				    }
-				 	$nodeArray['_ADD_GETVARS'].= ini_get('arg_separator.output').$this->prefixId.'[catUid]='.$uid_root;
+				 	$nodeArray['_ADD_GETVARS'].= ini_get('arg_separator.output').$this->prefixId.'[catUid]='.$row['uid_local'];
 				 	if ($this->useRootlineInformationToUrl==1) {
 				 		$nodeArray['_ADD_GETVARS'] .= ini_get('arg_separator.output') .$this->prefixId.'[mDepth]='.$mDepth.ini_get('arg_separator.output') .$this->prefixId.'[path]='.$nodeArray['path'];
 				 	}
@@ -418,7 +418,7 @@ class tx_commerce_navigation {
 				 	#if ($nodeArray['leaf']==1 &&  $nodeArray['hasSubChild']==2)
 				 	  $nodeArray['_ADD_GETVARS'] = ini_get('arg_separator.output') .$this->prefixId.'[catUid]='.$uid_root;
 				 	#else
-				 	#$nodeArray['_ADD_GETVARS'] = ini_get('arg_separator.output') .$this->prefixId.'[catUid]='.$row['uid_local'];
+				 	#	$nodeArray['_ADD_GETVARS'] = ini_get('arg_separator.output') .$this->prefixId.'[catUid]='.$row['uid_local'];
 				 	
 				 	if($nodeArray['hasSubChild']==2){
 				    	$nodeArray['_ADD_GETVARS'].=ini_get('arg_separator.output') .$this->prefixId.'[showUid]='.$dataRow[uid];
@@ -493,19 +493,18 @@ class tx_commerce_navigation {
 				$nodeArray['hidden'] = $dataRow['hidden'];
 				$nodeArray['depth'] = $mDepth;
 				$nodeArray['leaf'] = 1;
+				$nodeArray['table'] = $mainTable;
 				if ($path!=0) {
 					$nodeArray['path']=$dataRow['uid'].','.$path;
 				}else{				 
 					$nodeArray['path']=$dataRow['uid'];
 				}
-				/**
-				  * Changed here for Bug 6136 
-				  * 
-				  **/
-				#if ($nodeArray['leaf']==1 &&  $nodeArray['hasSubChild']==2)
+				
+				
+				if ($nodeArray['leaf']==1)
 					$nodeArray['_ADD_GETVARS'] = ini_get('arg_separator.output') .$this->prefixId.'[catUid]='.$uid_root;
-			 	#else
-				# 	$nodeArray['_ADD_GETVARS'] = ini_get('arg_separator.output') .$this->prefixId.'[catUid]='.$row['uid_local'];
+			 	else
+				 	$nodeArray['_ADD_GETVARS'] = ini_get('arg_separator.output') .$this->prefixId.'[catUid]='.$row['uid_local'];
 				 	
 		    	$nodeArray['_ADD_GETVARS'] .= ini_get('arg_separator.output') .$this->prefixId.'[showUid]='.$dataRow[uid];
 				$nodeArray['_ADD_GETVARS'] .= ini_get('arg_separator.output') .$this->prefixId.'[mDepth]='.$mDepth.ini_get('arg_separator.output') .$this->prefixId.'[path]='.$nodeArray['path'];

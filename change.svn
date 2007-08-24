@@ -4,6 +4,7 @@ Changelog for tx_commerce
 24.08.2007 Ingo Schmitt <is@marketing-factory.de>
 * Updated documentation
 * Added fix for checking the catuid and showiuid in pi1
+* Fixed bug in navigation, Thanks to Marc Bastian Heinrichs
 
 23.08.2007 Ingo Schmitt <is@marketing-factory.de>
 * Added check of given uid for product and category in pi1
