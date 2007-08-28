@@ -413,7 +413,7 @@ class tx_commerce_pibase extends tslib_pibase {
 				 * Please use TYPOLINK instead
 				 */
 				$linkContent=$this->cObj->getSubpart($tmpCategory,'###CATEGORY_ITEM_DETAILLINK###');
-				$link=$this->pi_linkTP_keepPIvars($linkContent,$linkArray,1,0,$this->conf['overridePid']);
+				$link=$this->pi_linkTP_keepPIvars($linkContent,$linkArray,true,0,$this->conf['overridePid']);
 				$tmpCategory=$this->cObj->substituteSubpart($tmpCategory,'###CATEGORY_ITEM_DETAILLINK###',$link);
 
 				
@@ -876,7 +876,7 @@ class tx_commerce_pibase extends tslib_pibase {
 							$this->pi_getLL('detaillink','details'),
 							array('showUid'=>$basketItemObj->getProductUid(),
 							'catUid'=>intval($basketItemObj->getProductMasterparentCategorie()) ),
-							1,1,$this->conf['listPid']);
+							true,true,$this->conf['listPid']);
 
 
 	          /**
@@ -1417,7 +1417,7 @@ class tx_commerce_pibase extends tslib_pibase {
     	    	         $markerArray =  $hookObj->postProcessLinkArray($markerArray,$myProduct,$this);
 	        }
     	}
-		$wrapMarkerArray['###PRODUCT_LINK_DETAIL###'] = explode('|',$this->pi_list_linkSingle('|',$myProduct->getUid(),1,$linkArray,FALSE,$this->conf['overridePid']));
+		$wrapMarkerArray['###PRODUCT_LINK_DETAIL###'] = explode('|',$this->pi_list_linkSingle('|',$myProduct->getUid(),true,$linkArray,FALSE,$this->conf['overridePid']));
 		$articleTemplate=$this->cObj->getSubpart($template,'###'.strtoupper($articleSubpart).'###');
 		
 		if($this->conf['useStockHandling'] == 1) {

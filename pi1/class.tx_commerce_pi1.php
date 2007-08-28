@@ -364,7 +364,7 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 		 * TODO make it possible to have more than one link, to each of the productCategories
 		 */
 		$linkContent=$this->cObj->getSubpart($content,'###CATEGORY_ITEM_DETAILLINK###');
-		$link=$this->pi_linkTP($linkContent,array('catUid'=>$catObj->get_uid()),$cache=1);
+		$link=$this->pi_linkTP($linkContent,array('catUid'=>$catObj->get_uid()),true);
 		$content=$this->cObj->substituteSubpart($content,'###CATEGORY_ITEM_DETAILLINK###',$link);
 	
 	
