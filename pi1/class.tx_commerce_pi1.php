@@ -143,7 +143,7 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 						if (!in_array($this->piVars['showUid'],$categoryAllSubproducts)) {
 							$this->handle='listView';
 							$this->piVars['showUid']=false;
-							$this->set_no_cache();
+							$GLOBALS['TSFE']->set_no_cache();
 						}
 					}
 				}else{
@@ -152,7 +152,7 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 					if (!in_array($this->piVars['showUid'],$categoryAllSubproducts)) {
 						$this->handle='listView';
 						$this->piVars['showUid']=false;
-						$this->set_no_cache();
+						$GLOBALS['TSFE']->set_no_cache();
 					}
 				}
         	}
@@ -172,11 +172,11 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 				  * Wrong UID, so start with default UID
 				  **/
 					$this->cat = (int)$this->master_cat;
-					$this->set_no_cache();
+					$GLOBALS['TSFE']->set_no_cache();
 				}
 		}else{
 			  $this->cat = (int)$this->master_cat;
-			  $this->set_no_cache();
+			  $GLOBALS['TSFE']->set_no_cache();
 		}
 		
 		if ( $this->cat <> $this->category->getUid()){
