@@ -44,6 +44,7 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 	var $extKey = "commerce";	// The extension key.
 	var $currency = 'EUR';
 	var $pi_checkCHash = TRUE;
+	
 	/**
 	 * Inits the main params for using in the script
 	 *
@@ -59,7 +60,8 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 	    $this->imgFolder = "uploads/tx_commerce/";
 	    $this->templateFolder = "uploads/tx_commerce/";
 		        
-	
+		$this->pi_USER_INT_obj=0;
+		
 	    $this->conf['singleProduct'] = (int)$this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'product_id', 's_product');
 	    // Unset Variable, if smaler than 0, as -1 is returend when no product is selcted in form.
 	    if ($this->conf['singleProduct'] < 0) {
@@ -141,6 +143,7 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 						if (!in_array($this->piVars['showUid'],$categoryAllSubproducts)) {
 							$this->handle='listView';
 							$this->piVars['showUid']=false;
+							$this->set_no_cache();
 						}
 					}
 				}else{
@@ -149,6 +152,7 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 					if (!in_array($this->piVars['showUid'],$categoryAllSubproducts)) {
 						$this->handle='listView';
 						$this->piVars['showUid']=false;
+						$this->set_no_cache();
 					}
 				}
         	}
@@ -167,10 +171,12 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 				 /**
 				  * Wrong UID, so start with default UID
 				  **/
-					 $this->cat = (int)$this->master_cat;
+					$this->cat = (int)$this->master_cat;
+					$this->set_no_cache();
 				}
 		}else{
 			  $this->cat = (int)$this->master_cat;
+			  $this->set_no_cache();
 		}
 		
 		if ( $this->cat <> $this->category->getUid()){
@@ -358,7 +364,7 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 		 * TODO make it possible to have more than one link, to each of the productCategories
 		 */
 		$linkContent=$this->cObj->getSubpart($content,'###CATEGORY_ITEM_DETAILLINK###');
-		$link=$this->pi_linkTP($linkContent,array('catUid'=>$catObj->get_uid()),$cache=0);
+		$link=$this->pi_linkTP($linkContent,array('catUid'=>$catObj->get_uid()),$cache=1);
 		$content=$this->cObj->substituteSubpart($content,'###CATEGORY_ITEM_DETAILLINK###',$link);
 	
 	
