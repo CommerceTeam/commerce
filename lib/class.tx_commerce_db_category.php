@@ -129,7 +129,7 @@ class tx_commerce_db_category extends tx_commerce_db_alib {
  				/**
  				 *  @todo access_check for datasets 
  				 */
- 				$data[]=$return_data['uid_foreign'];
+ 				$data[]=(int)$return_data['uid_foreign'];
  				
  			}
  			$GLOBALS['TYPO3_DB']->sql_free_result($result);
@@ -187,7 +187,7 @@ class tx_commerce_db_category extends tx_commerce_db_alib {
  				/**
  				 *  @todo access_check for datasets 
  				 */
- 				$data[]=$return_data['uid_local'];
+ 				$data[]=(int)$return_data['uid_local'];
  				
  			}
  			$GLOBALS['TYPO3_DB']->sql_free_result($result);
@@ -252,7 +252,7 @@ class tx_commerce_db_category extends tx_commerce_db_alib {
  			while ($return_data=$GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)){
  				if ($lang_uid==0)
  				{
- 					$data[]=$return_data['uid'];
+ 					$data[]=(int)$return_data['uid'];
  				}else{
  					/**
  					 * Check if a lokalised product is availiabe for this product
@@ -265,7 +265,7 @@ class tx_commerce_db_category extends tx_commerce_db_alib {
 					
  					 if ($GLOBALS['TYPO3_DB']->sql_num_rows( $lresult)==1)	 {
  					
- 					 	$data[]=$return_data['uid'];
+ 					 	$data[]=(int)$return_data['uid'];
  					 }
  				}
  				
