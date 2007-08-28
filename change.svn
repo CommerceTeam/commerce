@@ -21,7 +21,7 @@ Changelog for tx_commerce
 
 13.08.2007 Volker Graubaum <vg@e-netconsulting.de>
 * Fix articleselector for pi1
-* rewrite of pi6 - Thanks To Tom Rüter 
+* rewrite of pi6 - Thanks To Tom Rüther 
 
 12.08.2007 Ingo Schmitt <is@marketing-factory.de>
 * Added Processing of Language Marker to PI1, render list view
@@ -32,8 +32,8 @@ Changelog for tx_commerce
 * Fixed Bug with checking priceIDs
 * Fixed Bug 6024
 * Added StepBar in Checkout
-* Made pi2 Templates XHTML valid, generated new default css. Thanks To Carla Froitzheim and Tom Rüter 
-* Made pi3 Templates XHTML valid, generated new default css. Thanks To Carla Froitzheim and Tom Rüter 
+* Made pi2 Templates XHTML valid, generated new default css. Thanks To Carla Froitzheim and Tom Rüther 
+* Made pi3 Templates XHTML valid, generated new default css. Thanks To Carla Froitzheim and Tom Rüther 
 * Added Delete from Basket Link to Basket Entries
 
 11.08.2007 Ingo Schmitt <is@marketing-factory.de>
@@ -43,7 +43,7 @@ Changelog for tx_commerce
 * Added new TypoScript Property for article object, defaultQuantity
 * Added New Marker to Article Output, LINKTOPUTINBASKET
 * Added new TypoLink addToBasketLink to article rendering
-* Made pi1 Templates XHTML valid, generated new default css. Thanks To Carla Froitzheim and Tom Rüter 
+* Made pi1 Templates XHTML valid, generated new default css. Thanks To Carla Froitzheim and Tom Rüther 
 
 
 08.08.2007 Ingo Schmitt <is@marketing-factory.de>
