@@ -106,6 +106,7 @@ lib.tx_commerce {
 			    	
 			  	 	title  < lib.tx_commerce.stdField
 					title.typolink.setCommerceValues =1
+					title.typolink.useCacheHash = 1
 					subtitle < lib.tx_commerce.stdField 
 					navtitle < lib.tx_commerce.stdField 
 					description < lib.tx_commerce.stdField_RTE
@@ -141,9 +142,9 @@ lib.tx_commerce {
 		    	    
 		    		title < lib.tx_commerce.stdField
 		    		title.wrap = <h2>|</h2>
-		    		title.typolink = 1
-		    		title.typolink.setCommerceValues = 1
 		    		
+		    		title.typolink.setCommerceValues = 1
+		    		title.typolink.useCacheHash = 1
 		    		subttitle < lib.tx_commerce.stdField
 		    		subtitle.wrap = <div class="com-category-subtitle">|</div>
 		    		
