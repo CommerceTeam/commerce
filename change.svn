@@ -1,5 +1,8 @@
 Changelog for tx_commerce
 (add new changes on top of this file)
+29.08.2007 Ingo Schmitt <is@marketing-factory.de>
+* Fixed Marker ###ITEMS### and ###BASKEt_ITEMS###
+* Changed link to basket from quickview to be cacheable
 
 24.08.2007 Ingo Schmitt <is@marketing-factory.de>
 * Updated documentation

@@ -318,9 +318,13 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 	    $basketArray = $this->languageMarker;
 	    $basketArray['###PRICE_GROSS###'] = tx_moneylib::format($this->basket->get_gross_sum(),$this->currency);
 	    $basketArray['###PRICE_NET###'] = tx_moneylib::format($this->basket->get_net_sum(),$this->currency);
+	    /**
+		  * ###ITEMS### is depricated
+		  **/
 	    $basketArray['###ITEMS###'] = count($list);
-	    $basketArray['###URL###'] = $this->pi_linkTP_keepPIvars_url(array(),0,1,$this->conf['basketPid']);
-	    $basketArray['###URL_CHECKOUT###'] = $this->pi_linkTP_keepPIvars_url(array(),0,1,$this->conf['checkoutPid']);
+	    $basketArray['###BASKET_ITEMS###'] = count($list);
+	    $basketArray['###URL###'] = $this->pi_linkTP_keepPIvars_url(array(),true,1,$this->conf['basketPid']);
+	    $basketArray['###URL_CHECKOUT###'] = $this->pi_linkTP_keepPIvars_url(array(),false,1,$this->conf['checkoutPid']);
         $hookObjectsArr = array();
 	    if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['getQuickView'])) {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['getQuickView'] as $classRef) {
