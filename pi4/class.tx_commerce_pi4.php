@@ -415,7 +415,7 @@ class tx_commerce_pi4 extends tslib_pibase {
 		// create a checkbox where the user can select if the address ishis main address / Changed to label and field
 		$isMainAddressCodeField = '<input type="checkbox" name="' .$this->prefixId .'[ismainaddress]"';
 		if ($addressData['tx_commerce_is_main_address']) $isMainAddressCodeField .= ' checked="checked"';
-		$isMainAddressCodeField .= ' />' .$this->pi_getLL('label_is_main_address');
+		$isMainAddressCodeField .= ' />';
 		$isMainAddressCodeLabel .= $this->pi_getLL('label_is_main_address');
 
 		//fill additional information
@@ -440,7 +440,7 @@ class tx_commerce_pi4 extends tslib_pibase {
 		$baseMA['###ADDRESS_TYPE###'] = $this->pi_getLL('label_address_of_type_' .$this->piVars['addressType']);
 
 			// get action link
-		if (isset($this->piVars['backpid'])){
+		if ((int)$this->piVars['backpid'])>0){
 			#$link = $this->pi_getPageLink($this->piVars['backpid']);
 			$link = '';
 		} else {
