@@ -536,12 +536,12 @@ class tx_commerce_pibase extends tslib_pibase {
 		array_pop($rootline);
 		$active=array_reverse($rootline);
 		$this->mDepth=0;
-		foreach($active as $cat) {
+		foreach($active as $actCat) {
 			if (!isset($path)){
-				$path=$cat;
+				$path=$actCat;
 			}
 			else{
-			 $path.=','.$cat;
+			 $path.=','.$actCat;
 			 $this->mDepth++;
 			}
 
