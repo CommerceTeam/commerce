@@ -377,7 +377,7 @@
   		if ($this->parent_category_uid>0)  		{
   			$parent=$this->get_parent_category();
   			$parent->load_data();
-  			$result=$parent->get_category_path().$separator.$this->get_title();;
+  			$result=$parent->get_category_path($separator).$separator.$this->get_title();;
   			
   		} else {
   			$result=$this->get_title();
