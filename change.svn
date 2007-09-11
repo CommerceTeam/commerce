@@ -1,6 +1,9 @@
 Changelog for tx_commerce
 (add new changes on top of this file)
 
+11.09.2007 Ingo Schmitt <is@marketing-factory.de>
+* Added return value to tx_commerce_articlecreator::createArticle()
+
 31.08.2007 Ingo schmitt <is@marketing-factory.de>
 * Fixed two bugs in pi4, Thanks to Tom Rüther
 * Fixed Bug 6235, Thanks to "sascha" and Axel Klarmann 

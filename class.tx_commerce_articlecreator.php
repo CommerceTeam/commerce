@@ -433,7 +433,7 @@ class tx_commerce_articleCreator {
 	 *
 	 * @param	array		$PA: ...
 	 * @param	string		$key: The key in the POST var array
-	 * @return	void
+	 * @return	articleUID	Returns the new articleUid if success
 	 */
 	function createArticle($PA, $key)	{
 			// get the create data
@@ -600,7 +600,7 @@ class tx_commerce_articleCreator {
 				
 			}
 		}
-		
+		return $articleUid;
 		
 	}
 
