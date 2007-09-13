@@ -440,7 +440,7 @@ class tx_commerce_pi4 extends tslib_pibase {
 		$baseMA['###ADDRESS_TYPE###'] = $this->pi_getLL('label_address_of_type_' .$this->piVars['addressType']);
 
 			// get action link
-		if ((int)$this->piVars['backpid'])>0){
+		if ((int)$this->piVars['backpid']>0){
 			#$link = $this->pi_getPageLink($this->piVars['backpid']);
 			$link = '';
 		} else {
