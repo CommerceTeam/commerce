@@ -76,7 +76,10 @@
 						</tr>
 						<!--###LISTING_ARTICLE### begin-->
 						<tr>
-								<td>###ARTICLE_POSITION###</td>								<td>###ARTICLE_ARTICLE_NUMBER###</td>								<td>###ARTICLE_TITLE###</td>								<td>###ARTICLE_AMOUNT###</td>
+								<td>###ARTICLE_POSITION###</td>
+								<td>###ARTICLE_ARTICLE_NUMBER###</td>
+								<td>###ARTICLE_TITLE###</td>
+								<td>###ARTICLE_AMOUNT###</td>
 								<td>###ARTICLE_PRICE###</td>
 								<td>###ARTICLE_TOTAL###</td>
 						</tr>

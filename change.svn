@@ -1,6 +1,9 @@
 Changelog for tx_commerce
 (add new changes on top of this file)
 
+20.09.2007 Ingo Schmitt <is@marketing-factory.de>
+* Fixed bug 6310
+
 13.09.2007 Ingo Schmitt <is@marketing-factory.de>
 * Fixed Bug in PI4 
 
@@ -8,7 +11,7 @@ Changelog for tx_commerce
 * Added return value to tx_commerce_articlecreator::createArticle()
 
 31.08.2007 Ingo schmitt <is@marketing-factory.de>
-* Fixed two bugs in pi4, Thanks to Tom Rüther
+* Fixed two bugs in pi4, Thanks to Tom Rï¿½ther
 * Fixed Bug 6235, Thanks to "sascha" and Axel Klarmann 
 * Fixed Bug in connecting Categories in tx_commerce_category, Thanks to "Roland"
 
@@ -36,7 +39,7 @@ Changelog for tx_commerce
 
 13.08.2007 Volker Graubaum <vg@e-netconsulting.de>
 * Fix articleselector for pi1
-* rewrite of pi6 - Thanks To Tom Rüther 
+* rewrite of pi6 - Thanks To Tom Rï¿½ther 
 
 12.08.2007 Ingo Schmitt <is@marketing-factory.de>
 * Added Processing of Language Marker to PI1, render list view
@@ -47,8 +50,8 @@ Changelog for tx_commerce
 * Fixed Bug with checking priceIDs
 * Fixed Bug 6024
 * Added StepBar in Checkout
-* Made pi2 Templates XHTML valid, generated new default css. Thanks To Carla Froitzheim and Tom Rüther 
-* Made pi3 Templates XHTML valid, generated new default css. Thanks To Carla Froitzheim and Tom Rüther 
+* Made pi2 Templates XHTML valid, generated new default css. Thanks To Carla Froitzheim and Tom Rï¿½ther 
+* Made pi3 Templates XHTML valid, generated new default css. Thanks To Carla Froitzheim and Tom Rï¿½ther 
 * Added Delete from Basket Link to Basket Entries
 
 11.08.2007 Ingo Schmitt <is@marketing-factory.de>
@@ -58,7 +61,7 @@ Changelog for tx_commerce
 * Added new TypoScript Property for article object, defaultQuantity
 * Added New Marker to Article Output, LINKTOPUTINBASKET
 * Added new TypoLink addToBasketLink to article rendering
-* Made pi1 Templates XHTML valid, generated new default css. Thanks To Carla Froitzheim and Tom Rüther 
+* Made pi1 Templates XHTML valid, generated new default css. Thanks To Carla Froitzheim and Tom Rï¿½ther 
 
 
 08.08.2007 Ingo Schmitt <is@marketing-factory.de>
@@ -256,7 +259,7 @@ Ingo Schmitt <is@marketing-factory.de>
 7.1.2006 (Thomas Hempel <thomas@work.de>)
 *  Changes in pi4 for min items of addresses, insert backpid and targetpid for changing
 
-5.1.2006 (Frank Kröber <fk@marketing-factory.de>)
+5.1.2006 (Frank Krï¿½ber <fk@marketing-factory.de>)
 *   Generally replace locallang php-files with locallang xml-files. PHP-files will be deleted on 13.01.2006.
 
 3.1.2006 (Ingo Schmitt <is@marketing-factory.de>)
@@ -538,7 +541,7 @@ Ingo Schmitt <is@marketing-factory.de>
 7.1.2006 (Thomas Hempel <thomas@work.de>)
 *  Changes in pi4 for min items of addresses, insert backpid and targetpid for changing
 
-5.1.2006 (Frank Kröber <fk@marketing-factory.de>)
+5.1.2006 (Frank Krï¿½ber <fk@marketing-factory.de>)
 *   Generally replace locallang php-files with locallang xml-files. PHP-files will be deleted on 13.01.2006.
 
 3.1.2006 (Ingo Schmitt <is@marketing-factory.de>)
