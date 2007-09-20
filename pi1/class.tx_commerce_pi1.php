@@ -520,6 +520,9 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 	    	}else{
 			
 				if(is_array($attributeArray)) {
+					/**
+					 * @TODO Volker: Remove no_cache
+					 */
 					$attCode = '<form name="attList_'.$prod->get_uid().'" id="attList_'.$prod->get_uid().'" action="'.$this->pi_getPageLink($GLOBALS['TSFE']->id, '_self', array($this->prefixId.'[catUid]'=>$this->piVars['catUid'],$this->prefixId.'[showUid]'=>$this->piVars['showUid'])).'"  method="post"><input type="hidden" name="no_cache" value="1" />';
 					foreach($attributeArray as $attribute_uid => $myAttribute) {
 						$attributeObj = new tx_commerce_attribute($attribute_uid,$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);

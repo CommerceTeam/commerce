@@ -359,7 +359,7 @@ class tx_commerce_cmhooks {
 				<tr>
 					<td colspan="2" align="center"><br />'.
 				
-					'<form action="'.htmlspecialchars($_SERVER["HTTP_REFERER"]).'"><input type="submit" value="'.$GLOBALS['LANG']->sL('LLL:EXT:commerce/locallang_be_errors.php:continue',1).'" onclick="document.location='.htmlspecialchars($_SERVER["HTTP_REFERER"]).'return false;"></form>'.
+					'<form action="'.htmlspecialchars($_SERVER["HTTP_REFERER"]).'"><input type="submit" value="'.$GLOBALS['LANG']->sL('LLL:EXT:commerce/locallang_be_errors.php:continue',1).'" onclick="document.location='.htmlspecialchars($_SERVER["HTTP_REFERER"]).'return false;" /></form>'.
 					'</td>
 				</tr>';
 
