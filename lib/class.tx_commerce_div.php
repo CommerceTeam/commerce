@@ -174,7 +174,7 @@ class tx_commerce_div {
 			}
 		}
 
-		return $articleUids;
+		return $productObj;
 	}
 
 
