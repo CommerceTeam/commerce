@@ -82,8 +82,7 @@ $TYPO3_CONF_VARS['EXTCONF'][COMMERCE_EXTkey]['leafClasses']['txcommerceCategory'
 $TYPO3_CONF_VARS['EXTCONF'][COMMERCE_EXTkey]['leafClasses']['txcommerceProduct'] = 'EXT:'.COMMERCE_EXTkey.'/lib/class.tx_commerce_leafproductview.php:&tx_commerce_leafProductView';
 $TYPO3_CONF_VARS['EXTCONF'][COMMERCE_EXTkey]['leafClasses']['txcommerceAttribute'] = 'EXT:'.COMMERCE_EXTkey.'/lib/class.tx_commerce_leafattributeview.php:&tx_commerce_leafAttributeView';
  
-t3lib_extMgm::allowTableOnStandardPages('tx_commerce_categories');
-t3lib_extMgm::allowTableOnStandardPages('tx_commerce_products');
+
 
 t3lib_extMgm::addToInsertRecords('tx_commerce_categories');
 t3lib_extMgm::addToInsertRecords('tx_commerce_products');
