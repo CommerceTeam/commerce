@@ -68,7 +68,7 @@ class tx_commerce_pi6 extends tx_commerce_pibase{
 		
 		if ((empty($GLOBALS['TSFE']->fe_user->user)) && (!$GLOBALS['BE_USER']->user['uid']) && ($_SERVER["REMOTE_ADDR"] != $_SERVER["SERVER_ADDR"])){
 			return $this->pi_getLL('not_logged_in');
-		} else {
+		} elseif($GLOBALS['TSFE']->fe_user->user) {
 			$this->user = $GLOBALS['TSFE']->fe_user->user;
 		}
 		
@@ -115,8 +115,8 @@ class tx_commerce_pi6 extends tx_commerce_pibase{
 				
 			$markerArray['###ORDER_TAX###'] = tx_moneylib::format($this->order['sum_price_gross'] - $this->order['sum_price_net'],$this->conf['currency'],(boolean)$this->conf['showCurrencySign']);
 			$markerArray['###ORDER_TOTAL###'] = tx_moneylib::format($this->order['sum_price_gross'],$this->conf['currency'],(boolean)$this->conf['showCurrencySign']);
-			$markerArray["###ORDER_ID###"] = $this->order['order_id'];
-			$markerArray["###ORDER_DATE###"] = strftime("%d.%m.%y", $this->order['crdate']);	
+			$markerArray['###ORDER_ID###'] = $this->order['order_id'];
+			$markerArray['###ORDER_DATE###'] = strftime("%d.%m.%y", $this->order['crdate']);	
 				
 			# Fill some of the content from typoscript settings, to ease the 
 			$markerArray['###INVOICE_HEADER###'] = $this->cObj->cObjGetSingle($this->conf['invoiceheader'],$this->conf['invoiceheader.']);
@@ -240,8 +240,9 @@ class tx_commerce_pi6 extends tx_commerce_pibase{
 
 		$queryString = 'order_id="'.mysql_real_escape_string($this->order_id).'"';
 		$queryString.= $this->cObj->enableFields("tx_commerce_orders");
-		$queryString.= ' AND cust_fe_user = '.$this->user['uid'].' ' ;
-		
+		if($this->user){
+			$queryString.= ' AND cust_fe_user = '.$this->user['uid'].' ' ;
+		}	
  		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'tx_commerce_orders', $queryString, '', '', '1');
 		$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
 
