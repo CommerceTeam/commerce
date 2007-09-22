@@ -2,6 +2,7 @@ Changelog for tx_commerce
 (add new changes on top of this file)
 22.09.2007 Ingo Schmitt <is@marketing-factory.de>
 * Udpated CSS, Thanks to Tom Rüther
+* Removed pass variable by reference to getPathCat
 
 20.09.2007 Ingo Schmitt <is@marketing-factory.de>
 * Fixed bug 6310

@@ -526,11 +526,11 @@ class tx_commerce_pibase extends tslib_pibase {
 		return $content;
 	}
 
-	function makeNaviLink(&$cat){
+	function makeNaviLink($cat){
 
 
 	}
-	function getPathCat(&$cat) {
+	function getPathCat($cat) {
 		$active=array();
 		$rootline = $cat->get_categorie_rootline_uidlist();
 		array_pop($rootline);
