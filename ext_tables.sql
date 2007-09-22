@@ -3,7 +3,6 @@
 #
 CREATE TABLE tt_address (
     surname varchar(80) default '',
-    company varchar(80) default '',
     tx_commerce_default_values int(11) DEFAULT '0' NOT NULL,
     tx_commerce_fe_user_id int(11) DEFAULT '0' NOT NULL,
     tx_commerce_address_type_id int(11) DEFAULT '0' NOT NULL,

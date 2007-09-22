@@ -99,17 +99,6 @@ $tempColumns = Array (
 			
 		)
 	),
-	'company' => Array (
-		'exclude' => 1,
-		'label' => 'LLL:EXT:commerce/locallang_db.xml:tt_address.company',
-		'config' => Array (
-			'type' => 'input',
-			'size' => '40',
-			'max' => '50',
-			
-			
-		)
-	),
 	'tx_commerce_default_values' => Array (
 		'exclude' => 1,
 		'label' => 'LLL:EXT:commerce/locallang_db.xml:tt_address.tx_commerce_default_values',
@@ -180,7 +169,7 @@ for($i=0;$i < $countto ; ++$i) {
 }
 $TCA['tt_address']['interface']['showRecordFieldList'] = implode('',$ttaddressparts);
 t3lib_extMgm::addTCAcolumns('tt_address',$tempColumns,1);
-t3lib_extMgm::addToAllTCAtypes('tt_address','tx_commerce_default_values;;;;1-1-1,tx_commerce_fe_user_id, tx_commerce_address_type_id, surname, company,tx_commerce_is_main_address');
+t3lib_extMgm::addToAllTCAtypes('tt_address','tx_commerce_default_values;;;;1-1-1,tx_commerce_fe_user_id, tx_commerce_address_type_id, surname,tx_commerce_is_main_address');
 
 $tempColumns = Array (
 	'tx_commerce_user_state_id' => Array (

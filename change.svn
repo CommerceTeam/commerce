@@ -8,6 +8,7 @@ Changelog for tx_commerce
 * Fixed Bug 6267
 * Fixed Bug 6277
 * Fixed Bug 6189
+* Removed Company from tt_address aditional fields
 
 20.09.2007 Ingo Schmitt <is@marketing-factory.de>
 * Fixed bug 6310
