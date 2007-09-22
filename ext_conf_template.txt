@@ -1,7 +1,7 @@
 # cat=basic/enable; type=boolean; label=Invoice BACKEND LOGIN required: If set, then the Invoice plugin will check for a backend login. If false, everyone can create an invoice with the correct link. So WATCH OUT FOR THIS ONE! It should probably be enabled!
 invoiceBackendOnly = 1
 
-# cat=basic/enable; type=boolean; label=Simple Mode for products: Use this if you only have one article per product
+# cat=basic/enable; type=boolean; label=Simple Mode for products: Alpha, Alpha !Use this if you only have one article per product
 simpleMode = 0
 
 # cat=basic/enable;  type=int; label=Automatically generate prices while when changing one price accoring to the tax (0 - Do nothing, 1 recalulate not existing prices, 2 calculate from net, 3 calculate from gross )
