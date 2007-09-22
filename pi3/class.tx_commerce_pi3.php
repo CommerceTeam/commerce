@@ -462,6 +462,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 				$markerArray = $hookObj->ProcessMarker($markerArray, $this);
 			}
 		}
+		$this->currentStep='billing';
 		return $this->cObj->substituteMarkerArray($this->cObj->substituteMarkerArray($template, $markerArray), $this->languageMarker);
 	}
 
@@ -549,7 +550,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 				$markerArray=$hookObj->ProcessMarker($markerArray,$this);
 			}
 		}
-
+		$this->currentStep='delivery';
 		return $this->cObj->substituteMarkerArray($this->cObj->substituteMarkerArray($template, $markerArray), $this->languageMarker);
 	}
 
@@ -651,7 +652,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 				$markerArray=$hookObj->ProcessMarker($markerArray,$this);
 			}
 		}
-
+		$this->currentStep='payment';
 		return $this->cObj->substituteMarkerArray($this->cObj->substituteMarkerArray($template, $markerArray),$this->languageMarker);
 	}
 
@@ -727,6 +728,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 		}
 		
 	   $markerArray = $this->addFormMarker($markerArray,'###|###');
+	   $this->currentStep='listing';
 		return $this->cObj->substituteMarkerArray($this->cObj->substituteMarkerArray($template, $markerArray),$this->languageMarker);
 	}
 
