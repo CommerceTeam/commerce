@@ -29,6 +29,7 @@
 			<label index="label_submit_edit">Save changes</label>
 			<label index="label_submit_yes">Yes</label>
 			<label index="label_submit_no">No</label>
+			<label index="label_form_back">Back</label>
 			<label index="error_field_mandatory">The field is mandatory!</label>
 			<label index="error_field_email">Please enter a correct email address</label>
 			<label index="error_field_string">The input of this field has to be a string</label>
@@ -66,6 +67,7 @@
 			<label index="label_submit_edit">Änderungen übernehmen</label>
 			<label index="label_submit_yes">Ja</label>
 			<label index="label_submit_no">Nein</label>
+			<label index="label_form_back">Zurück</label>
 			<label index="error_field_mandatory">Dieses ist ein Pflichtfeld</label>
 			<label index="error_field_email">Bitte geben Sie eine gültige Emailadresse an.</label>
 			<label index="error_field_string">Dieses Feld darf keine Sonderzeichen haben</label>

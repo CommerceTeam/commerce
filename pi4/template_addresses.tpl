@@ -1,74 +1,81 @@
 <!--###ADDRESS_LISTING### begin-->
-<table border="1" cellpadding="0" cellspacing="0">
-	<tr>
-		<td colspan="2">
-			###SYS_MESSAGE###
-		</td>
-	</td>
-	<tr>
-		<td>
-			###LABEL_ADDRESSES_OF_TYPE_1###
-			<ol>
-			###ADDRESS_ITEMS_OF_TYPE_1###
-			</ol>
-			<!--###LINK_NEW_TYPE_1###-->###LABEL_LINK_NEW_TYPE_1###<!--###LINK_NEW_TYPE_1###-->
-		</td>
-		<td>
-			###LABEL_ADDRESSES_OF_TYPE_2###
-			<ol>
-			###ADDRESS_ITEMS_OF_TYPE_2###
-			</ol>
-			<!--###LINK_NEW_TYPE_2###-->###LABEL_LINK_NEW_TYPE_2###<!--###LINK_NEW_TYPE_2###-->
-		</td>
-	</tr>
-</table>
+<div>###SYS_MESSAGE###</div>
+
+<div class="com-address-list">
+	<h2>###LABEL_ADDRESSES_OF_TYPE_1###</h2>
+	<ol>
+	###ADDRESS_ITEMS_OF_TYPE_1###
+	</ol>
+	<div class="com-address-list-link"><!--###LINK_NEW_TYPE_1###-->###LABEL_LINK_NEW_TYPE_1###<!--###LINK_NEW_TYPE_1###--></div>
+</div>
+<div class="com-address-list">
+	<h2>###LABEL_ADDRESSES_OF_TYPE_2###</h2>
+	<ol>
+	###ADDRESS_ITEMS_OF_TYPE_2###
+	</ol>
+	<div class="com-address-list-link"><!--###LINK_NEW_TYPE_2###-->###LABEL_LINK_NEW_TYPE_2###<!--###LINK_NEW_TYPE_2###--></div>
+</div>
 <!--###ADDRESS_LISTING### end-->
 
 <!--###ADDRESS_ITEM###-->
 <li>
-<strong>###LABEL_NAME### ###NAME###</strong><br />
-###LABEL_COMPANY### ###COMPANY###<br />
-###LABEL_ADDRESS### ###ADDRESS###<br />
-###LABEL_CITY### ###CITY###<br />
-###LABEL_ZIP### ###ZIP###<br />
-###LABEL_COUNTRY### ###COUNTRY###<br />
-<!--###LINK_EDIT###-->###LABEL_LINK_EDIT###<!--###LINK_EDIT###--><br />
-<!--###LINK_DELETE###-->###LABEL_LINK_DELETE###<!--###LINK_DELETE###-->
+
+<dl>
+	<dt>###LABEL_NAME###</dt> <dd>###NAME###</dd>
+	<dt>###LABEL_SURNAME###</dt> <dd>###SURNAME###</dd>
+	<dt>###LABEL_COMPANY###</dt> <dd>###COMPANY###</dd>
+	<dt>###LABEL_ADDRESS###</dt> <dd>###ADDRESS###</dd>
+	<dt>###LABEL_CITY###</dt> <dd>###CITY###</dd>
+	<dt>###LABEL_ZIP###</dt> <dd>###ZIP###</dd>
+	<dt>###LABEL_COUNTRY###</dt> <dd>###COUNTRY###</dd>
+	<dt>###LABEL_EMAIL###</dt> <dd>###EMAIL###</dd>
+</dl>
+<div class="com-address-item-link"><!--###LINK_EDIT###-->###LABEL_LINK_EDIT###<!--###LINK_EDIT###--><!--###LINK_DELETE###-->###LABEL_LINK_DELETE###<!--###LINK_DELETE###--></div>
 </li>
 <!--###ADDRESS_ITEM###-->
 
 <!--###ADDRESS_EDIT_FORM###-->
-<strong>###LABEL_NAME###</strong> ###FIELD_NAME###<br />
-<strong>###LABEL_SURNAME###</strong> ###FIELD_SURNAME###<br />
-<strong>###LABEL_COMPANY###</strong> ###FIELD_COMPANY###<br />
-<strong>###LABEL_ADDRESS###</strong> ###FIELD_ADDRESS###<br />
-<strong>###LABEL_CITY###</strong> ###FIELD_CITY###<br />
-<strong>###LABEL_ZIP###</strong> ###FIELD_ZIP###<br />
-<strong>###LABEL_COUNTRY###</strong> ###FIELD_COUNTRY###<br />
-<strong>###LABEL_EMAIL###</strong> ###FIELD_EMAIL###
+<dl>
+<dt>###LABEL_NAME###</dt> <dd>###FIELD_NAME###</dd>
+<dt>###LABEL_SURNAME###</dt> <dd>###FIELD_SURNAME###</dd>
+<dt>###LABEL_COMPANY###</dt> <dd>###FIELD_COMPANY###</dd>
+<dt>###LABEL_ADDRESS###</dt> <dd>###FIELD_ADDRESS###</dd>
+<dt>###LABEL_CITY###</dt> <dd>###FIELD_CITY###</dd>
+<dt>###LABEL_ZIP###</dt> <dd>###FIELD_ZIP###</dd>
+<dt>###LABEL_COUNTRY###</dt> <dd>###FIELD_COUNTRY###</dd>
+<dt>###LABEL_EMAIL###</dt> <dd>###FIELD_EMAIL###</dd>
+</dl>
 <!--###ADDRESS_EDIT_FORM###-->
 
 <!--###ADDRESS_EDIT### begin-->
-<div id="address">
-	<p>###MESSAGE_EDIT###</p>
-	<p>###ADDRESS_FORM_FIELDS###</p>
+<form method="post" action="###ADDRESS_FORM_ACTION###">
+<div class="com-chkout-address-fields">
+	<h2>###MESSAGE_EDIT###</h2>
+	###ADDRESS_FORM_FIELDS###
 	<p>###ADDRESS_FORM_IS_MAIN_ADDRESS_FIELD### ###ADDRESS_FORM_IS_MAIN_ADDRESS_LABEL###</p>
 	<p>###ADDRESS_FORM_SUBMIT###</p>
+	<p>###ADDRESS_FORM_BACK###</p>
 </div>
+</form>
 <!--###ADDRESS_EDIT### end-->
 
 <!--###ADDRESS_DELETE### begin-->
-###LABEL_NAME###: ###SURNAME### ###NAME###
-###LABEL_COMPANY###: ###COMPANY###
-###LABEL_ADDRESS###: ###ADDRESS###
-###LABEL_ZIP### ###LABEL_CITY###: ###ZIP### ###CITY###
-###LABEL_COUNTRY###: ###COUNTRY###
-###LABEL_EMAIL###: ###EMAIL###
-<br />
+<div class="com-address-items">
+<dl>
+	<dt>###LABEL_NAME###</dt> <dd>###NAME###&nbsp;</dd>
+	<dt>###LABEL_SURNAME###</dt> <dd>###SURNAME###&nbsp;</dd>
+	<dt>###LABEL_COMPANY###</dt> <dd>###COMPANY###&nbsp;</dd>
+	<dt>###LABEL_ADDRESS###</dt> <dd>###ADDRESS###&nbsp;</dd>
+	<dt>###LABEL_CITY###</dt> <dd>###CITY###&nbsp;</dd>
+	<dt>###LABEL_ZIP###</dt> <dd>###ZIP###&nbsp;</dd>
+	<dt>###LABEL_COUNTRY###</dt> <dd>###COUNTRY###&nbsp;</dd>
+	<dt>###LABEL_EMAIL###</dt> <dd>###EMAIL###&nbsp;</dd>
+</dl>
+</div>
 <hr />
 
-<strong>###QUESTION###</strong><br />
-<!--###LINK_YES###-->###YES###<!--###LINK_YES###-->&nbsp;<!--###LINK_NO###-->###NO###<!--###LINK_NO###-->
+<p class="com-address-question">###QUESTION###</p>
+<div class="com-address-link"><!--###LINK_YES###-->###YES###<!--###LINK_YES###-->&nbsp;<!--###LINK_NO###-->###NO###<!--###LINK_NO###--></div>
 <!--###ADDRESS_DELETE### end-->
 
 <!--###SINGLE_INPUT### begin-->
