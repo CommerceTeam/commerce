@@ -1,8 +1,11 @@
 Changelog for tx_commerce
 (add new changes on top of this file)
+22.09.2007 Ingo Schmitt <is@marketing-factory.de>
+* Udpated CSS, Thanks to Tom Rüther
 
 20.09.2007 Ingo Schmitt <is@marketing-factory.de>
 * Fixed bug 6310
+* products and categories could not be inserted on pages anymore
 
 13.09.2007 Ingo Schmitt <is@marketing-factory.de>
 * Fixed Bug in PI4 
@@ -11,7 +14,7 @@ Changelog for tx_commerce
 * Added return value to tx_commerce_articlecreator::createArticle()
 
 31.08.2007 Ingo schmitt <is@marketing-factory.de>
-* Fixed two bugs in pi4, Thanks to Tom R�ther
+* Fixed two bugs in pi4, Thanks to Tom Rüther
 * Fixed Bug 6235, Thanks to "sascha" and Axel Klarmann 
 * Fixed Bug in connecting Categories in tx_commerce_category, Thanks to "Roland"
 
@@ -39,7 +42,7 @@ Changelog for tx_commerce
 
 13.08.2007 Volker Graubaum <vg@e-netconsulting.de>
 * Fix articleselector for pi1
-* rewrite of pi6 - Thanks To Tom R�ther 
+* rewrite of pi6 - Thanks To Tom Rüther 
 
 12.08.2007 Ingo Schmitt <is@marketing-factory.de>
 * Added Processing of Language Marker to PI1, render list view
