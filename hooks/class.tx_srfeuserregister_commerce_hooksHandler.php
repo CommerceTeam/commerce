@@ -43,7 +43,7 @@
 
 
 
-class tx_srfeuserregister_hooksHandler {
+class tx_srfeuserregister_commerce_hooksHandler {
 
 
 	/**
