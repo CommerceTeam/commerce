@@ -266,8 +266,10 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 				break;
 			case 'payment':
 				$content = $this->handlePayment($paymentObj);
-					// only break at this point if we need some payment handling otherwise go on to the next step
+				// only break at this point if we need some payment handling otherwise go on to the next step
 				if ($content != false) break;
+				// go on with listing
+				$this->currentStep = 'listing';
 			case 'listing':
 				$content = $this->getListing();
 				break;
@@ -311,7 +313,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 		$inactiveTemplate = $this->cObj->getSubpart($myTemplate,'###CHECKOUT_ONE_STEP_INACTIVE###');
 		$stepsToNumbers=array_flip($this->CheckOutsteps);
 	
-		$currentStepNumber=$stepsToNumbers[$this->currentStep]+1;
+		$currentStepNumber=$stepsToNumbers[$this->currentStep];
 		
 		$activeContent = '';
 		$inactiveContent = '';
