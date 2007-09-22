@@ -1635,10 +1635,16 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 			}
 		}
 
-		if (is_array($GLOBALS['TSFE']->fe_user->user) && strlen($GLOBALS['TSFE']->fe_user->user['email']))	{
+		if (strlen($this->MYSESSION['billing']['email'])) {
+			/**
+			 * if use has email in the formular, use this
+			 */
+			$userMail = $this->MYSESSION['billing']['email'];
+		}
+		elseif (is_array($GLOBALS['TSFE']->fe_user->user) && strlen($GLOBALS['TSFE']->fe_user->user['email']))	{
 			$userMail = $GLOBALS['TSFE']->fe_user->user['email'];
-		} else {
-		 	$userMail = $this->MYSESSION['billing']['email'];
+		} else{
+			return false;
 		}
 
 		/**
