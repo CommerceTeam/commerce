@@ -1,7 +1,11 @@
 Changelog for tx_commerce
 (add new changes on top of this file)
+
+10.10.2007 Ingo Schmitt <is@marketing-factory.de>
+* Changed pi1 Maximum Number of products to PHP_INT_MAX, thanks to Dmitry Dulepov
+
 22.09.2007 Ingo Schmitt <is@marketing-factory.de> & Volker Graubaum <vg@e-netconsulting.de>
-* Udpated CSS, Thanks to Tom RÃ¼ther
+* Udpated CSS, Thanks to Tom Rüther
 * Removed pass variable by reference to getPathCat
 * Fixed Bug 6222, Thanks to Karsten Dambekalns
 * Fixed Bug 6223
@@ -21,7 +25,7 @@ Changelog for tx_commerce
 * Added return value to tx_commerce_articlecreator::createArticle()
 
 31.08.2007 Ingo schmitt <is@marketing-factory.de>
-* Fixed two bugs in pi4, Thanks to Tom RÃ¼ther
+* Fixed two bugs in pi4, Thanks to Tom Rüther
 * Fixed Bug 6235, Thanks to "sascha" and Axel Klarmann 
 * Fixed Bug in connecting Categories in tx_commerce_category, Thanks to "Roland"
 
@@ -49,7 +53,7 @@ Changelog for tx_commerce
 
 13.08.2007 Volker Graubaum <vg@e-netconsulting.de>
 * Fix articleselector for pi1
-* rewrite of pi6 - Thanks To Tom RÃ¼ther 
+* rewrite of pi6 - Thanks To Tom Rüther 
 
 12.08.2007 Ingo Schmitt <is@marketing-factory.de>
 * Added Processing of Language Marker to PI1, render list view
@@ -60,8 +64,8 @@ Changelog for tx_commerce
 * Fixed Bug with checking priceIDs
 * Fixed Bug 6024
 * Added StepBar in Checkout
-* Made pi2 Templates XHTML valid, generated new default css. Thanks To Carla Froitzheim and Tom Rï¿½ther 
-* Made pi3 Templates XHTML valid, generated new default css. Thanks To Carla Froitzheim and Tom Rï¿½ther 
+* Made pi2 Templates XHTML valid, generated new default css. Thanks To Carla Froitzheim and Tom Rüther 
+* Made pi3 Templates XHTML valid, generated new default css. Thanks To Carla Froitzheim and Tom Rüther 
 * Added Delete from Basket Link to Basket Entries
 
 11.08.2007 Ingo Schmitt <is@marketing-factory.de>
