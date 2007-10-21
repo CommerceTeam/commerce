@@ -1051,7 +1051,7 @@ class tx_commerce_pibase extends tslib_pibase {
 			return $this->renderElement($category, $subpartName, $TS, $prefix,'###CATEGORY_',$template);
 	}
 
-		/**
+	/**
 	 * Reders an element as output
 	 * @param 	object	$element	tx_commerce_* object
 	 * @param	string	$subpartName	template-subpart-name
@@ -1088,11 +1088,11 @@ class tx_commerce_pibase extends tslib_pibase {
 		
 		$markerArray=$this->generateMarkerArray($data,$TS);
 		
-                $hookObjectsArr = array();
+			$hookObjectsArr = array();
 	        if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['generalElement'])) {
-		      foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['generalElement'] as $classRef) {
-		                   $hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
-		       }
+				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['generalElement'] as $classRef) {
+					$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+			}
 		}
 		foreach($hookObjectsArr as $hookObj)   {
 		       if (method_exists($hookObj, 'additionalMarkerElement')) {
@@ -1139,20 +1139,26 @@ class tx_commerce_pibase extends tslib_pibase {
  		 /**
  		  * return if empty
  		  */
-		 if (!is_array($matrix)) {
-		 	return $return;
-		 }
-		
-		 $i=0;
-		 $AttributeValues=count($matrix[$myAttributeUid]['values']);
+		if (!is_array($matrix)) {
+			return $return;
+		}
+		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['formatAttributeValue']) {
+			$hookObj = t3lib_div::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['formatAttributeValue']);
+		}
+		$i=0;
+		$AttributeValues=count($matrix[$myAttributeUid]['values']);
 
-		 foreach((array)$matrix[$myAttributeUid]['values'] as $value) {
+		
+		foreach ( (array)$matrix[$myAttributeUid]['values'] as $key => $value) {
 		 	$return2 = $value;
 		 	if (is_numeric($value)) {
 	           if ($matrix[$myAttributeUid]['valueformat']) {
 	                $return2 =sprintf($matrix[$myAttributeUid]['valueformat'],$value);
 	           }
 		 	}
+			if ($hookObj && method_exists($hookObj, 'formatAttributeValue')) {
+				$return2 = $hookObj->formatAttributeValue($key, $myAttributeUid, $matrix[$myAttributeUid]['valueuidlist'][$key], $return2, $this);
+			}
 		 	if ( $AttributeValues > 1) {
 		 		$return2=$this->cObj->stdWrap($return2,$this->conf['mutipleAttributeValueWrap.']) ;
 		 	}

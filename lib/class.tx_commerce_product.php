@@ -522,6 +522,7 @@
 	 					 */
 	 
 	 					$valuelist=array();
+						$valueUidList = array();
 	 					$attribute_uid=$data['uid'];
 	 					$article=$data['article'];
 	 					$result_value=$GLOBALS['TYPO3_DB']->exec_SELECT_mm_query('distinct tx_commerce_articles_article_attributes_mm.value_char, tx_commerce_articles.uid article_uid, tx_commerce_attributes.uid attribute_uid',
@@ -640,6 +641,7 @@
 	 
 	 
 	 									 $valuelist[] = $row['value'];
+										 $valueUidList[] = $row['uid'];
 	 									 $valueshown=true;
 	 								    }
 	 
@@ -652,6 +654,7 @@
 	 						$return_array[$attribute_uid]=array('title' => $data['title'],
 	 													  'unit' => $data['unit'],
 	 													  'values' => $valuelist,
+														  'valueuidlist' => $valueUidList,
 	 													  'valueformat' => $data['valueformat'],
 	 													  'Internal_title' => $data['internal_title'],
 	 													  'icon' => $data['icon']
@@ -759,6 +762,7 @@
 	 				
 					
 					$valuelist=array();
+					$valueUidList = array();
 					$attribute_uid=$data['uid'];
 	 				$article=$data['article'];
 					
@@ -934,7 +938,8 @@
 											while ($lok_value=$GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_value_lok)){
 												if (strlen($lok_value['default_value'])>0){
 													$valuelist[]=$lok_value['default_value'];
-														$valueshown=true;
+													$valueUidList[] = 0;
+													$valueshown=true;
 												}
 	 										}
 										}
@@ -943,6 +948,7 @@
 	 								{
 	 															
 	 									$valuelist[]=$value['default_value'];
+										$valueUidList[] = 0;
 										$valueshown=true;
 	 								}
 	 							}
@@ -973,6 +979,7 @@
 	 							     
 	 							     
 	 							   	 $valuelist[] = $row['value'];
+									 $valueUidList[] = $value['uid_valuelist'];
 	 							   	 $valueshown=true;
 	 							    }
 	
@@ -984,6 +991,7 @@
 	 					$return_array[$attribute_uid]=array('title' => $data['title'],
 	 												  'unit' => $data['unit'],
 	 												  'values' => $valuelist,
+													  'valueuidlist' => $valueUidList,
 	 												  'valueformat' => $data['valueformat'],
 	 												  'Internal_title' => $data['internal_title'],
 	 												  'icon' => $data['icon']

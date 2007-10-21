@@ -264,6 +264,20 @@ Some hook-methods can return data which is used by the calling function. Others 
 					Type: Single<br/>
 					Result: string - The new ORDER BY clause to read the database<br />
 					This hook returns the ORDER BY field(s) that will be passed on to the t3lib_db later on.</div>
+				<div class="hookname">GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_db_category.php']['productQueryPreHook']</div>
+			
+					<div class="Description">productQueryPreHook($data, $this)<br />
+					Type: Single<br/>
+					Result: queryArray -> Modificated QueryArray to work with the database
+					
+					</div>
+				<div class="hookname">GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_db_category.php']['productQueryPostHook']</div>
+			
+					<div class="Description">productQueryPostHook($data, $this)<br />
+					Type: Single<br/>
+					Result: queryArray -> Modificated of data after the query
+					
+					</div>
 	<div class="filename">lib/class.tx_commerce_db_product.php</div>
 	<a name="tx_commerce_db_product"/>
 		<div class="classname">class tx_commerce_db_product</div>
@@ -303,6 +317,14 @@ Some hook-methods can return data which is used by the calling function. Others 
 					Type: Multiple<br/>
 					Result: array() - A new $markerArray<br />
 					ADD some markers to the $markerArray and RETURN it as the result of this hook is used as the new $markerArray</div>
+			
+			<div class="functionname">formatAttributeValue</div>
+				<div class="hookname">GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['formatAttributeValue']</div>
+					<div class="description">Call: formatAttributeValue($key, $myAttributeUid, $matrix[$myAttributeUid]['valueuidlist'][$key], $return2, $this)<br/>
+					Type: Single<br/>
+					Result: string, new formating<br />
+					Changes the default formating</div>
+	
 	<div class="filename">lib/class.tx_commerce_product.php</div>
 		<a name="tx_commerce_product"/>
 		<div class="classname">class tx_commerce_product</div>
