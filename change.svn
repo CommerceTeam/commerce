@@ -2,8 +2,9 @@ Changelog for tx_commerce
 (add new changes on top of this file)
 
 24.10.2007 Ingo Schmitt <is@marketing-factory.de>
-* Fixed Bug 6488
-* Fixed BUG 6556
+* Fixed Bug 6488, Thanks Dmitry Dulepov, Michiel Roos, Sascha Egerer
+* Fixed Bug 6556, Christoph Nikic
+* Fixed Bug 6536, Thanks to Sascha Egerer
 
 21.10.2007 Ingo Schmitt <is@marketing-factory.de
 * Fixed Problem with sorting hook in tx_commerce_db_alib.php, thanks to Dmitry Dulepov
