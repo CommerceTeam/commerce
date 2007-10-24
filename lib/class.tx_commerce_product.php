@@ -816,6 +816,24 @@
   	
   	
   	
+  	/**
+  	 * Generates a Matrix fro these concerning products for all Attributes and the values therfor
+  	 * Realy complex array, so have a lokk at the source
+  	 * 
+  	 * @param $attribute Exclude List array (list auf attriubute uids to exclkude)
+  	 * @param $showHiddenValues default true (if hidden values should be shown)
+  	 * @return array of arrays
+  	 * @todo split DB connects to db_class
+  	 * @since 2005 11 02 $showHiddenValues
+  	 * @since 2005 11 02 Array of arrays also contains valueformat
+  	 * @since 2005 11 02 Array of arrays also contains internal_title
+  	 * @drepricated
+  	 */
+  	
+  	function get_product_atrribute_matrix($attribute_include=false, $showHiddenValues=true,$sortingTable = 'tx_commerce_products_attributes_mm'){
+  		
+  		return get_product_atrribute_matrix($attribute_include, $showHiddenValues,$sortingTable );
+  	}
   	
   	
   	/**
@@ -829,9 +847,10 @@
   	 * @since 2005 11 02 $showHiddenValues
   	 * @since 2005 11 02 Array of arrays also contains valueformat
   	 * @since 2005 11 02 Array of arrays also contains internal_title
+  	 * 
   	 */
   	
-  	function get_product_atrribute_matrix($attribute_include=false, $showHiddenValues=true,$sortingTable = 'tx_commerce_products_attributes_mm')
+  	function get_product_attribute_matrix($attribute_include=false, $showHiddenValues=true,$sortingTable = 'tx_commerce_products_attributes_mm')
   	{
   		
   		
@@ -1174,6 +1193,25 @@
   		return $this->get_attribute_matrix($articleList, $attribute_include, $showHiddenValues,$sortingTable);
   	}
 
+ 
+  	/**
+  	 * Generates a Matrix fro these concerning products for all Attributes and the values therfor
+  	 * Realy complex array, so have a lokk at the source
+  	 * 
+  	 * @param $attribute Exclude List array (list auf attriubute uids to exclkude)
+  	 * @param $showHiddenValues default true (if hidden values should be shown)
+  	 * @return array of arrays
+  	 * @todo split DB connects to db_class
+  	 * @since 2005 11 02 $showHiddenValues
+  	 * @since 2005 11 02 Array of arrays also contains valueformat
+  	 * @since 2005 11 02 Array of arrays also contains internal_title
+  	 * @drepricated
+  	 */
+  	
+  	function get_product_atrribute_matrix($attribute_include=false, $showHiddenValues=true,$sortingTable = 'tx_commerce_products_attributes_mm'){
+  		
+  		return get_product_atrribute_matrix($attribute_include, $showHiddenValues,$sortingTable );
+  	}
   	
 }			
 	
