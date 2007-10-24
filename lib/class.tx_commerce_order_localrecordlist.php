@@ -3,7 +3,7 @@
 *  Copyright notice
 *
 *  (c) 1999 - 2004 Kasper Skaarhoj (kasperYYYY@typo3.com)
-*  (c) 2005 - 2006 Daniel Schöttgen <ds@marketing-factory.de>
+*  (c) 2005 - 2006 Daniel Schï¿½ttgen <ds@marketing-factory.de>
 *  (c) 2005 - 2006 Ingo Schmitt <is@marketing-factory.de>  
 *   All  rights reserved
 *
@@ -31,9 +31,9 @@
  *
  * @internal Maintainer Ingo Schmitt <is@marketing-factory.de> 
  * @author	Kasper Skaarhoj <kasperYYYY@typo3.com>
- * @author	Daniel Schöttgen <ds@marketing-factory.de>
+ * @author	Daniel Schï¿½ttgen <ds@marketing-factory.de>
  * @author  ingo Schmitt <is@marketing-factory.de>
- * @author  Jörg Sprung <jsp@marketing-factory.de>
+ * @author  Jï¿½rg Sprung <jsp@marketing-factory.de>
  * 
  * $Id$
  */
@@ -89,7 +89,7 @@ require_once(PATH_t3lib.'class.t3lib_tceforms.php');
 			 
 			list($orderPid,$defaultFolder,$folderList) = array_unique(tx_graytree_folder_db::initFolders('Orders','Commerce',0,'Commerce'));
  			
- 			$ret = tx_commerce_belib::getOrderFolderSelector($orderPid,9999999) ;
+ 			$ret = tx_commerce_belib::getOrderFolderSelector($orderPid, PHP_INT_MAX ) ;
  			
  			foreach ($ret as $elements) {
  			
@@ -301,7 +301,7 @@ require_once(PATH_t3lib.'class.t3lib_tceforms.php');
 					$this->iLimit=(isset($TCA[$tableName]['interface']['maxDBListItems'])?intval($TCA[$tableName]['interface']['maxDBListItems']):$this->itemsLimitPerTable);
 				}
 				if ($this->showLimit)	$this->iLimit = $this->showLimit;
-				$this->iLimit = 99999999;
+				$this->iLimit = PHP_INT_MAX;
 				/**
 				 * @TODO Change this hard limit
 				 */

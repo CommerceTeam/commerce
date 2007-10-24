@@ -1,6 +1,9 @@
 Changelog for tx_commerce
 (add new changes on top of this file)
 
+24.10.2007 Ingo Schmitt <is@marketing-factory.de>
+* Fixed Bug 6488
+
 21.10.2007 Ingo Schmitt <is@marketing-factory.de
 * Fixed Problem with sorting hook in tx_commerce_db_alib.php, thanks to Dmitry Dulepov
 * New Hooks productQueryPreHook and productQueryPostHook in tx_commerce_db_category, thanks to Dmitry Dulepov 

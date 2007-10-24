@@ -70,8 +70,8 @@ class tx_commerce_navigation {
 	var $out;
 	var $mDepth = 2;
 	var $entryCat = 0;
-    var $listNodes=array();
-    var $manufacturerIdentifier=999999999999;
+    var $listNodes = array();
+    var $manufacturerIdentifier = PHP_INT_MAX;
     /**
      * @var	integer	[0-1]	
      * @access private
