@@ -266,7 +266,7 @@
 	 			$netSumArray[(string)$one_item->get_tax()]+=$one_item->get_item_sum_net();
 	 		}
 	 		foreach ($netSumArray as $taxrate => $rateNetSum) {
-	 			$lokal_sum+=(int)round($rateNetSum / (1 + (((float)$taxrate) / 100)));
+	 			$lokal_sum+=(int)round($rateNetSum * (1 + (((float)$taxrate) / 100)));
 	 		}  			
  		} else {
 	 	    foreach ($this->basket_items as $one_item) {
