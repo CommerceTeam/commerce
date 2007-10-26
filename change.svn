@@ -1,5 +1,7 @@
 Changelog for tx_commerce
 (add new changes on top of this file)
+26.10.2007 Ingo Schmitt <is@marketing-factory.de>
+* Clariefied tx_commerce_categores documentation, regarding child_categories and child_products, Thanks to Joerg Sprung
 
 24.10.2007 Ingo Schmitt <is@marketing-factory.de>
 * Fixed Bug 6488, Thanks to Dmitry Dulepov, Michiel Roos, Sascha Egerer

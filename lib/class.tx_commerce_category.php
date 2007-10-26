@@ -232,7 +232,11 @@
   	 */
   	
     function get_subcategories()  	{
-  		return $this->categories;
+		if (count($this->categories) == 0){
+			return $this->get_child_categories() ;
+		}else{
+  			return $this->categories;
+		}
   	} 
   	
   	/**
@@ -241,8 +245,11 @@
   	 * @acces public
   	 */
      function get_subproducts() 	 {
-  		return $this->products;
-  		
+	 	if (count($this->products) == 0) {
+			return $this->get_child_products();
+		}else{
+  			return $this->products;
+  		}
   	 }
   	/**
   	 * Returns an Array of Images
@@ -299,7 +306,7 @@
   	
   	/**
   	 * Loads the child categories in the categories array
-  	 * @return array of categories
+  	 * @return array of categories as array of category objects
   	 */
   	
   	function get_child_categories()  	{
@@ -327,7 +334,7 @@
   	
   	/**
   	 * Loads the child products in the products array
-  	 * @return array of products
+  	 * @return array of products asarray of products objects
   	 */
   	 
   	 function get_child_products()  	 {
@@ -340,10 +347,18 @@
   	 
   	 /**
   	  * @since 2005 11 03
-  	  * @return array of child products
+  	  * @return array of child products as uid list array
   	  */
   	 function getProductUids()  	 {
   	 	return $this->products_uid;
+  	 }
+	 
+	  /**
+  	  * @since 2005 11 03
+  	  * @return array of child category as uid list array
+  	  */
+  	 function getCategoryUids()  	 {
+  	 	return $this->categories_uid;
   	 }
   	 
   	 /**
