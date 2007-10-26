@@ -88,8 +88,11 @@ class tx_commerce_db_product extends tx_commerce_db_alib {
 			if (method_exists($hookObj, 'articleOrder')) {
 					$localOrderField = $hookObj->articleOrder($this->orderField);
 			}
-				
-			$where="uid_product = $uid" .  $GLOBALS['TSFE']->sys_page->enableFields('tx_commerce_articles', $GLOBALS['TSFE']->showHiddenRecords);																			
+			if (is_object($GLOBALS['TSFE']) && is_object($GLOBALS['TSFE']->sys_page)) {
+				$where="uid_product = $uid" .  $GLOBALS['TSFE']->sys_page->enableFields('tx_commerce_articles', $GLOBALS['TSFE']->showHiddenRecords);																			
+			}else{
+				$where=" uid_product = $uid ";
+			}
 			$aditionalWhere='';
 			
 			if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_product.php']['aditionalWhere']) {
