@@ -863,7 +863,10 @@ class tx_commerce_belib {
 						}
 					}
 				}
-				$xmlData['data']['sDEF']['lDEF']['ct_' .$ct['uid']] = array('vDEF' => implode(',', $value));
+				
+				if (count($value) > 0) {
+					$xmlData['data']['sDEF']['lDEF']['ct_' .$ct['uid']] = array('vDEF' => (string)implode(',', $value));
+				}
 			}
 		}
 

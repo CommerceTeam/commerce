@@ -1,5 +1,8 @@
 Changelog for tx_commerce
 (add new changes on top of this file)
+6.11.2007 Ingo Schmitt <is@marketing-factory.de>
+* Fixed a Problem with PHP 5.2.x, Thanks to Joerg Sprung
+
 26.10.2007 Ingo Schmitt <is@marketing-factory.de>
 * Clariefied tx_commerce_categores documentation, regarding child_categories and child_products, Thanks to Joerg Sprung
 * Fixed bug in tx_commerce_product_db, checking opf GLOBALS[TSFE] is defined, Thanks to Joerg Sprung
