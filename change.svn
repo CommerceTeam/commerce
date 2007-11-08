@@ -3,6 +3,7 @@ Changelog for tx_commerce
 8.11.2007 Ingo Schmitt <is@marketing-factory.de>
 * Fixed Bug 6274, Thanks to Marc Bastian Heinrichs
 * Added Wizzard Icon, Thanks Michiel Roos
+* Fixed problem with manufacturer Title, thanks to alex 
 
 6.11.2007 Ingo Schmitt <is@marketing-factory.de>
 * Fixed a Problem with PHP 5.2.x, Thanks to Joerg Sprung

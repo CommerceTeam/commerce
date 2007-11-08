@@ -235,6 +235,33 @@ class tx_commerce_db_product extends tx_commerce_db_alib {
  		return array($this->get_parent_categorie($uid));
  		
  	}
+	
+	/**
+ 	 * Returns the Manuafacturer Title to a given Manufacturere UID
+ 	 * @param	intenger	$ManufacturerUid
+ 	 * @return	string		Title
+ 	 * @author Luc Muller <l.mueller@ameos.com>
+ 	 */
+
+ 	function getManufacturerTitle($ManufacturerUid) {
+
+
+		$rSql = $GLOBALS["TYPO3_DB"]->exec_SELECTquery(
+				"*",
+				"tx_commerce_manufacturer",
+				"uid = ".$ManufacturerUid."",
+				"",
+				"",
+				""
+			);
+
+		while(($aFiche = $db->sql_fetch_assoc($rSql)) !== FALSE) {
+			$sTitle = $aFiche["title"];
+		}
+
+		return $sTitle;
+
+ 	}
  	
  	
 }
