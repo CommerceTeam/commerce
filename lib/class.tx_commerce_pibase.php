@@ -1405,7 +1405,7 @@ class tx_commerce_pibase extends tslib_pibase {
 		$this->select_attributes = $myProduct->get_attributes(array(ATTRIB_selector));
 		$this->shall_attributes = $myProduct->get_attributes(array(ATTRIB_shal));
 		
-		$ProductAttributesSubpartArray[]=array();
+		$ProductAttributesSubpartArray = array();
 		$ProductAttributesSubpartArray[] = '###'.strtoupper($this->conf['templateMarker.']['productAttributes']).'###';
 		$ProductAttributesSubpartArray[] = '###'.strtoupper($this->conf['templateMarker.']['productAttributes2']).'###';
 		
