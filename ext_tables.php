@@ -765,4 +765,14 @@ t3lib_extMgm::addPlugin(Array('LLL:EXT:commerce/locallang_be.php:tt_content.list
 $TCA['tt_content']['types']['list']['subtypes_excludelist'][$_EXTKEY.'_pi6']='layout,select_key,pages';
 t3lib_extMgm::addPlugin(Array('LLL:EXT:commerce/locallang_be.php:tt_content.list_type_pi6', $_EXTKEY.'_pi6'),'list_type');
 
+
+/*  WIZZICON */
+
+if (TYPO3_MODE=='BE') {
+  $TBE_MODULES_EXT['xMOD_db_new_content_el']['addElClasses']['tx_commerce_pi1_wizicon'] = t3lib_extMgm::extPath($_EXTKEY).'pi1/class.tx_commerce_pi1_wizicon.php';
+  $TBE_MODULES_EXT['xMOD_db_new_content_el']['addElClasses']['tx_commerce_pi2_wizicon'] = t3lib_extMgm::extPath($_EXTKEY).'pi2/class.tx_commerce_pi2_wizicon.php';
+  $TBE_MODULES_EXT['xMOD_db_new_content_el']['addElClasses']['tx_commerce_pi3_wizicon'] = t3lib_extMgm::extPath($_EXTKEY).'pi3/class.tx_commerce_pi3_wizicon.php';
+  $TBE_MODULES_EXT['xMOD_db_new_content_el']['addElClasses']['tx_commerce_pi4_wizicon'] = t3lib_extMgm::extPath($_EXTKEY).'pi4/class.tx_commerce_pi4_wizicon.php';
+  $TBE_MODULES_EXT['xMOD_db_new_content_el']['addElClasses']['tx_commerce_pi6_wizicon'] = t3lib_extMgm::extPath($_EXTKEY).'pi6/class.tx_commerce_pi6_wizicon.php';
+}
 ?>
