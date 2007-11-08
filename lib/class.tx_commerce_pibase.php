@@ -99,6 +99,8 @@ class tx_commerce_pibase extends tslib_pibase {
 	    $this->basketHashValue = $GLOBALS['TSFE']->fe_user->tx_commerce_basket->getBasketHashValue();
 	    $this->piVars['basketHashValue'] = $this->basketHashValue;
 	    $this->imgFolder = 'uploads/tx_commerce/';
+	    $this->addAdditionalLocallang();
+	    
 	    $this->generateLanguageMarker();
 	    if (empty($this->conf['templateFile'])) {
 	  		return $this->error('init',__LINE__,'Template File not defined in TS: ');
@@ -112,7 +114,26 @@ class tx_commerce_pibase extends tslib_pibase {
 		}
 
 	}
-
+	
+	/**
+	 * Getting additional locallang-files through an Hook
+	 */
+	function addAdditionalLocallang() {
+		$hookObjectsArr = array();
+		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['locallang'])){
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['locallang'] as $classRef){
+				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+			}
+		}
+  
+        foreach($hookObjectsArr as $hookObj)   {
+			if (method_exists($hookObj, 'loadAdditionalLocallang')) {
+             	$hookObj->loadAdditionalLocallang($this);
+			}
+        }
+	}
+	
+	
 	/**
 	 * Gets all "lang_ and label_" Marker for substition with substituteMarkerArray
 	 * @since 10.02.06 Changed to XML
@@ -151,10 +172,10 @@ class tx_commerce_pibase extends tslib_pibase {
 	 */
 
 	function renderProductAttributeList($prodObj,$subpartNameArray=array(),$TS=false){
-
 		if ($TS ==false) {
 			$TS = $this->conf['singleView.']['attributes.'];
 		}
+		
 		foreach ($subpartNameArray as $oneSubpartName)	{
 			$templateArray[]=$this->cObj->getSubpart($this->templateCode, $oneSubpartName);
 		}
@@ -196,14 +217,12 @@ class tx_commerce_pibase extends tslib_pibase {
 	                );
 	               
 	                $markerArray = $this->generateMarkerArray($datas,$TS,$prefix='PRODUCT_ATTRIBUTES_');
-	               
 					$marker['PRODUCT_ATTRIBUTES_TITLE'] = $matrix[$myAttributeUid]['title'];
 					$product_attributes = $this->cObj->substituteMarkerArray($templateArray[$i],$markerArray,'###|###',1);
 	                $product_attributes_string.= $this->cObj->substituteMarkerArray($product_attributes,  $marker,'###|###',1);
             		$i++;
 
         	 }
-			
     	     return $this->cObj->stdWrap($product_attributes_string,$TS);
 		}
 		return '';
@@ -1409,8 +1428,8 @@ class tx_commerce_pibase extends tslib_pibase {
 		$ProductAttributesSubpartArray[] = '###'.strtoupper($this->conf['templateMarker.']['productAttributes']).'###';
 		$ProductAttributesSubpartArray[] = '###'.strtoupper($this->conf['templateMarker.']['productAttributes2']).'###';
 		
-		$markerArray['###SUBPART_PRODUCT_ATTRIBUTES###'] = $this->cObj->stdWrap($this->renderProductAttributeList($myProduct,$ProductAttributesSubpartArray,$TS['productAttributes']),$TS['productAttributes']);
-		
+		$markerArray['###SUBPART_PRODUCT_ATTRIBUTES###'] = $this->cObj->stdWrap($this->renderProductAttributeList($myProduct,$ProductAttributesSubpartArray,$TS['productAttributes.']['fields.']),$TS['productAttributes.']);
+ 		
 		
 		$linkArray['catUid']=$this->piVars['catUid'];
 		if($this->basketHashValue){

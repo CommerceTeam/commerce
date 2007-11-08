@@ -100,6 +100,7 @@ Some hook-methods can return data which is used by the calling function. Others 
 	<div class="functionindex">function makeListView</div>
 	<div class="functionindex">function makeBasketInformation</div>
 	<div class="functionindex">function makeLineView</div>
+	<div class="functionindex">function addAdditionalLocallang</div>
 <a href="#tx_commerce_product">
 <div class="classindex">class tx_commerce_product</div>
 </a>
@@ -324,6 +325,12 @@ Some hook-methods can return data which is used by the calling function. Others 
 					Type: Single<br/>
 					Result: string, new formating<br />
 					Changes the default formating</div>
+			
+			<div class="functionname">addAdditionalLocallang</div>
+				<div class="hookname">GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['locallang']</div>
+					<div class="description">Call: loadAdditionalLocallang($this)<br/>
+					Type: Multiple<br/>
+					possibility to add your own locallang-files</div>
 	
 	<div class="filename">lib/class.tx_commerce_product.php</div>
 		<a name="tx_commerce_product"/>
