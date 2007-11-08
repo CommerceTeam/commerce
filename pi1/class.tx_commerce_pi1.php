@@ -606,7 +606,14 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 						$content.= $this->cObj->substituteMarkerArray($template_att, $markerArray,'###|###',1);
 				 
 		}
-		
+		$markerArray=array();
+		foreach($hookObjectsArr as $hookObj)   {
+		    if (method_exists($hookObj, 'additionalMarkerMakeArticleView')) {
+    	    	         $markerArray =  $hookObj->additionalMarkerMakeArticleView($markerArray,$prod,$this);
+	        }
+    	}
+		$content = $this->cObj->substituteMarkerArray($content, $markerArray);
+
 		return $content;
 		
 	}

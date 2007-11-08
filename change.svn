@@ -6,6 +6,7 @@ Changelog for tx_commerce
 * Fixed problem with manufacturer Title, thanks to alex 
 * Raised PHP min Version to 4.4
 * Added new hook in pi_base to add your own XML Locallang file to language marker, thanks to Joerg Sprung for implementing and Metabo for sponsoring
+* New Hook in PI1 makeArticleView->additionalMarkerMakeArticleView
 
 6.11.2007 Ingo Schmitt <is@marketing-factory.de>
 * Fixed a Problem with PHP 5.2.x, Thanks to Joerg Sprung

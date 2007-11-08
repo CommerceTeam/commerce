@@ -362,6 +362,14 @@ Some hook-methods can return data which is used by the calling function. Others 
 					ADD additional Markers to the $markerArray and RETURN it. The result of this hook is used as the new $markerArray<br/>
 					This Hook exists three times. It is called for every possible result of the if-switches, so it is only called once for every call of the function. It is anyway called immediately before the call to substituteMarkerArray is made
 					</div>
+				<div class="hookname">$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['additionalMarkerMakeArticleView']</div>
+					<div class="description">
+					Call: $hookObj->additionalMarkerMakeArticleView$markerArray,$prod,$this)<br/>
+					Type: Multiple<br/>
+					Result: array() - A new $markerArray<br />
+					ADD additional Markers to the $markerArray and RETURN it. The result of this hook is used as the new $markerArray<br/>
+					This Hook is called at the end of the method, for global replace
+					</div>
 	<div class="filename">pi2/class.tx_commerce_pi2.php</div>
 		<div class="description">This class is for showing the basket</div>
 		<a name="tx_commerce_pi2"/>
