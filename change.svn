@@ -1,5 +1,8 @@
 Changelog for tx_commerce
 (add new changes on top of this file)
+9.11.2007 Ingo Schmitt <is@marketing-factory.de>
+* New Hook in pibase -> additionalSubpartsProduct
+
 8.11.2007 Ingo Schmitt <is@marketing-factory.de>
 * Fixed Bug 6274, Thanks to Marc Bastian Heinrichs
 * Added Wizzard Icon, Thanks Michiel Roos

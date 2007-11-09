@@ -1482,6 +1482,12 @@ class tx_commerce_pibase extends tslib_pibase {
     	    	         $markerArray =  $hookObj->additionalMarkerProduct($markerArray,$myProduct,$this);
 	        }
     	}
+		foreach($hookObjectsArr as $hookObj)   {
+		    if (method_exists($hookObj, 'additionalSubpartsProduct')) {
+    	    	         $subpartArray =  $hookObj->additionalSubpartsProduct($subpartArray,$myProduct,$this);
+	        }
+    	}
+		
 		
 		return 	$this->cObj->substituteMarkerArrayCached($template, $markerArray , $subpartArray ,$wrapMarkerArray);
 
