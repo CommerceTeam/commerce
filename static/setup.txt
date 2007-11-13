@@ -236,6 +236,10 @@ plugin.tx_commerce_pi1 {
 	// currency used fro moneylib
 	currency = {$plugin.tx_commerce_lib.currency}
 	
+	// Check if Category Rootline is correct
+	checkCategoryTree = 1
+	
+	
 	// switch on StockHandling
 	useStockHandling  < lib.tx_commerce.useStockHandling
 	

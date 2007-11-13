@@ -4,6 +4,7 @@ Changelog for tx_commerce
 * Corrected Problem with User States Database definition
 * Lowered PHP version requirements to 4.3, added Patch for setting PHP_MAX_INT, thanks to Marc Bastian 
 * Added ARTICLE_PRICE_GROSS, ARTICLE_TOTAL_GROSS, ARTICLE_PRICE_NET, ARTICLE_TOTAL_NET to invoice
+* PI1- new typoscript option checkCategoryTree, see documentation
 
 9.11.2007 Ingo Schmitt <is@marketing-factory.de>
 * New Hook in pibase -> additionalSubpartsProduct

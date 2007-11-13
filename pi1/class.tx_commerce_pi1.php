@@ -55,7 +55,9 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 	function init($conf){
 
 		parent::init($conf);
-	 
+	 	
+	 	
+	 	
 	    //todo: is there a TYPO3 constant or variable with that information for every pi-class?
 	    $this->imgFolder = "uploads/tx_commerce/";
 	    $this->templateFolder = "uploads/tx_commerce/";
@@ -116,47 +118,49 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 			$this->conf['basketPid'] = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'basketPid', 's_template');			
 		}
 	
-	       if($this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'template', 's_template') && file_exists($this->templateFolder.$this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'template', 's_template'))){
+	     if($this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'template', 's_template') && file_exists($this->templateFolder.$this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'template', 's_template'))){
     	            $this->conf['templateFile'] = $this->templateFolder.$this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'template', 's_template');
-                }
+         }
 
        
-			/**	
-			  * Validate given showUid, it it's below cat
-			  */
-			if($this->piVars['catUid']){ 
-				 $this->cat = (int)$this->piVars['catUid'];
-			}else{
-				  $this->cat = (int)$this->master_cat;
-			}
+		/**	
+		  * Validate given showUid, it it's below cat
+		  */
+		if($this->piVars['catUid']){ 
+			 $this->cat = (int)$this->piVars['catUid'];
+		}else{
+			  $this->cat = (int)$this->master_cat;
+		}
 			
-			$this->category=t3lib_div::makeinstance('tx_commerce_category');
-			$this->category->init($this->cat,$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
-			$this->category->load_data();
-			$categorySubproducts = $this->category->getProductUids() ;
+		$this->category=t3lib_div::makeinstance('tx_commerce_category');
+		$this->category->init($this->cat,$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
+		$this->category->load_data();
+		$categorySubproducts = $this->category->getProductUids() ;
 			
-			if (!$this->conf['singleProduct']) {
-				if (is_array($categorySubproducts)) {
-					if (!in_array($this->piVars['showUid'],$categorySubproducts)) {
-						$categoryAllSubproducts = $this->category-> getAllProducts(PHP_INT_MAX);
-						
-						if (!in_array($this->piVars['showUid'],$categoryAllSubproducts)) {
-							$this->handle='listView';
-							$this->piVars['showUid']=false;
-							$GLOBALS['TSFE']->set_no_cache();
-						}
-					}
-				}else{
+		if ((!$this->conf['singleProduct']) && ((int)$this->piVars['showUid']>0)) {
+			if (is_array($categorySubproducts)) {
+				if (!in_array($this->piVars['showUid'],$categorySubproducts)) {
 					$categoryAllSubproducts = $this->category-> getAllProducts(PHP_INT_MAX);
-				
+					
 					if (!in_array($this->piVars['showUid'],$categoryAllSubproducts)) {
 						$this->handle='listView';
 						$this->piVars['showUid']=false;
 						$GLOBALS['TSFE']->set_no_cache();
 					}
 				}
-        	}
-		if($this->piVars['catUid']){
+			}else{
+				$categoryAllSubproducts = $this->category-> getAllProducts(PHP_INT_MAX);
+			
+				if (!in_array($this->piVars['showUid'],$categoryAllSubproducts)) {
+					$this->handle='listView';
+					$this->piVars['showUid']=false;
+					$GLOBALS['TSFE']->set_no_cache();
+				}
+			}
+        }
+        
+	  
+		if(($this->piVars['catUid']) && ($this->conf['checkCategoryTree']==1)) {
 				/**
 				  * Validate given CAT UID, if is below master_cat
 				  **/
@@ -174,9 +178,9 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 					$this->cat = (int)$this->master_cat;
 					$GLOBALS['TSFE']->set_no_cache();
 				}
-		}else{
+		}elseif (!isset($this->piVars['catUid'])){
 			  $this->cat = (int)$this->master_cat;
-			  $GLOBALS['TSFE']->set_no_cache();
+			  
 		}
 		
 		if ( $this->cat <> $this->category->getUid()){
@@ -196,7 +200,7 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 
 	    // Going the long way ??? Just for list view	     
 	    $long = 1;
-
+		
 	    switch($this->handle) {
 	        case 'singleView' : 
 	        		if ($this->initSingleView($this->piVars['showUid'])){
@@ -206,7 +210,7 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 	        break; 	    
 	    }	
 	 
-	  
+	 
 		if($this->cat>0){			
 	  	    
 		    if(!$this->category->isValidUid($this->category->getUid())){
@@ -254,9 +258,8 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 	 */
 	
 	function main($content,$conf)	{
-
 		$this->init($conf);
-
+		
 		// get the template
 		$this->templateCode = $this->cObj->fileResource($this->conf["templateFile"]);
 
