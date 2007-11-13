@@ -177,8 +177,12 @@ $tempColumns = Array (
 		'label' => 'LLL:EXT:commerce/locallang_db.xml:fe_users.tx_commerce_user_state_id',
 		'config' => Array (
 			'type' => 'select',
-			'internal_type' => 'db',
-			'allowed' => 'tx_commerce_user_states',
+			'item' => Array (
+				Array('', 0),
+			),
+			
+			'foreign_table' => 'tx_commerce_user_states',
+#			'foreign_table_where' => 'AND tx_commerce_address_types.pid=0',
 			'size' => 1,
 			'minitems' => 0,
 			'maxitems' => 1,

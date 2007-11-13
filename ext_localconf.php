@@ -29,6 +29,11 @@ if (!defined ('PATH_txgraytree_rel')) {
 	define('PATH_txgraytree_rel', t3lib_extMgm::extRelPath(GRAYTREE_EXTkey));
 }
 
+if (t3lib_div::int_from_ver(phpversion()) < 4004000) {
+        define(PHP_INT_MAX,9999999);
+}
+
+
 // Einfuegen der SonderArtikel
 define(NORMALArticleType,1);
 define(PAYMENTArticleType,2);
