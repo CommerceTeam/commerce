@@ -80,8 +80,8 @@
 								<td>###ARTICLE_ARTICLE_NUMBER###</td>
 								<td>###ARTICLE_TITLE###</td>
 								<td>###ARTICLE_AMOUNT###</td>
-								<td>###ARTICLE_PRICE###</td>
-								<td>###ARTICLE_TOTAL###</td>
+								<td>###ARTICLE_PRICE_GROSS###</td>
+								<td>###ARTICLE_TOTAL_GROSS###</td>
 						</tr>
 						<!--###LISTING_ARTICLE### end-->
 						<tr>

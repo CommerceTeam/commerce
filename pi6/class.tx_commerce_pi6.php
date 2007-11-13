@@ -189,7 +189,13 @@ class tx_commerce_pi6 extends tx_commerce_pibase{
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
 			$markerArray = $this->generateMarkerArray($row,$TS,$prefix);
 			$markerArray['ARTICLE_PRICE'] = tx_moneylib::format ($row['price_gross'], $this->conf['currency'],(boolean)$this->conf['showCurrencySign']);
-			$markerArray['ARTICLE_TOTAL'] = tx_moneylib::format(($row['amount']*$row_orderlist['price_gross']),$this->conf['currency'],(boolean)$this->conf['showCurrencySign']);
+			$markerArray['ARTICLE_PRICE_GROSS'] = tx_moneylib::format ($row['price_gross'], $this->conf['currency'],(boolean)$this->conf['showCurrencySign']);
+			$markerArray['ARTICLE_PRICE_NET'] = tx_moneylib::format ($row['price_net'], $this->conf['currency'],(boolean)$this->conf['showCurrencySign']);
+			
+			$markerArray['ARTICLE_TOTAL'] = tx_moneylib::format(($row['amount']*$row['price_gross']),$this->conf['currency'],(boolean)$this->conf['showCurrencySign']);
+			$markerArray['ARTICLE_TOTAL_GROSS'] = tx_moneylib::format(($row['amount']*$row['price_gross']),$this->conf['currency'],(boolean)$this->conf['showCurrencySign']);
+			$markerArray['ARTICLE_TOTAL_NET'] = tx_moneylib::format(($row['amount']*$row['price_net']),$this->conf['currency'],(boolean)$this->conf['showCurrencySign']);
+			
 			$markerArray['ARTICLE_POSITION'] = $orderpos++;
 			$out .= $this->cObj->substituteMarkerArray($this->template['item'], $markerArray ,'###|###',1);
 		}
