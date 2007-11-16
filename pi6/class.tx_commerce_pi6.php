@@ -68,7 +68,7 @@ class tx_commerce_pi6 extends tx_commerce_pibase{
 		
 		if ((empty($GLOBALS['TSFE']->fe_user->user)) && (!$GLOBALS['BE_USER']->user['uid']) && ($_SERVER["REMOTE_ADDR"] != $_SERVER["SERVER_ADDR"])){
 			return $this->pi_getLL('not_logged_in');
-		} elseif($GLOBALS['TSFE']->fe_user->user) {
+		} elseif(($GLOBALS['TSFE']->fe_user->user) && (!$GLOBALS['BE_USER']->user['uid'])) {
 			$this->user = $GLOBALS['TSFE']->fe_user->user;
 		}
 		
@@ -249,7 +249,7 @@ class tx_commerce_pi6 extends tx_commerce_pibase{
 		if($this->user){
 			$queryString.= ' AND cust_fe_user = '.$this->user['uid'].' ' ;
 		}	
- 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'tx_commerce_orders', $queryString, '', '', '1');
+		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'tx_commerce_orders', $queryString, '', '', '1');
 		$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
 
 		return $row;     			

@@ -1,5 +1,9 @@
 Changelog for tx_commerce
 (add new changes on top of this file)
+
+16.11.2007 Ingo Schmitt <is@marketing-factory.de>
+* Fixed Problem in PI6, when BE user and FE suer are logged in
+
 13.11.2007 Ingo Schmitt <is@marketing-factory.de>
 * Corrected Problem with User States Database definition
 * Lowered PHP version requirements to 4.3, added Patch for setting PHP_MAX_INT, thanks to Marc Bastian 
