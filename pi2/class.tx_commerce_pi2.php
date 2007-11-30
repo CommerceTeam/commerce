@@ -752,6 +752,11 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 	}
 	
 	
+	/**
+	 * Renders the product list for the baske
+	 *
+	 * @return string HTML Content
+	 */
 	
 	
 	function makeProductList(){ 
@@ -789,48 +794,74 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 	    while(list($k,$v) = each($list)) {
 		    //fill marker arrays with product/article values
 		   	$myItem = $this->basket->basket_items[$v];
-		  
-		   	$safePrefix=$this->prefixId;
-			$typoLinkConf = array();
-			$typoLinkConf['parameter'] = $this->conf['listPid'];
-			$typoLinkConf['useCacheHash'] = 1;
-			$typoLinkConf['additionalParams'] .= ini_get('arg_separator.output').$this->prefixId.'[catUid]='.$myItem->product->get_masterparent_categorie();
-	    	$typoLinkConf['additionalParams'] .= ini_get('arg_separator.output').$this->prefixId.'[showUid]='.$myItem->product->get_uid();
-			if($this->basketHashValue){
-				$typoLinkConf['additionalParams'].= ini_get('arg_separator.output').$this->prefixId.'[basketHashValue]='.$this->basketHashValue;
-			}
-			$lokalTSProdukt = $this->addTypoLinkToTS($this->conf['fields.']['products.'],$typoLinkConf);	
-			$lokalTSArtikle = $this->addTypoLinkToTS($this->conf['fields.']['articles.'],$typoLinkConf);					
-			$this->prefixId=$altPrefixSingle;			        
-		    $wrapMarkerArray["###PRODUCT_LINK_DETAIL###"] = explode('|',$this->pi_list_linkSingle("|",$myItem->product->get_uid(),1,array('catUid'=>intval($myItem->product->get_masterparent_categorie())),FALSE,$this->conf['listPid']));
-		    		    
-		    $this->prefixId=$safePrefix;
-		    
 		   	
-		  	$markerArray = $this->generateMarkerArray($myItem->getProductAssocArray(''),$lokalTSProdukt,'product_');
-		    $this->articleMarkerArr = $this->generateMarkerArray($myItem->getArticleAssocArray(''),$lokalTSArtikle,'article_');
-						          
-		  	$this->select_attributes = $myItem->product->get_attributes(array(ATTRIB_selector));
-			
-		    
-		    
-		    
-		    $markerArray["PRODUCT_BASKET_FOR_LISTVIEW"] = $this->makeArticleView($myItem->article,$myItem->product);
+		   	// Check Stock
+		  	$stockOK = false;
+		   	if ( $this->conf['checkStock'] == 1) {
+		   	
+		   		if ($myItem->article->hasStock($myItem->getQuantity())) {
+		   			$stockOK = true; 
+		   		}
+		   	}else{
+		   		$stockOK = true;
+		   	}
+		   	
+		   	// Check accessible
+		   	if ($myItem->product->isAccessible() && $myItem->article->isAccessible()) {
+		   		$access = true;
+		   	}else{
+		   		$access = false;
+		   	}
+		   	
+		   	// Only if Stock is ok and Access is ok (could have been changed since the article was put into the basket
+		   	if (($stockOK == true ) && ($access == true) ) {
+			   	$safePrefix=$this->prefixId;
+				$typoLinkConf = array();
+				$typoLinkConf['parameter'] = $this->conf['listPid'];
+				$typoLinkConf['useCacheHash'] = 1;
+				$typoLinkConf['additionalParams'] .= ini_get('arg_separator.output').$this->prefixId.'[catUid]='.$myItem->product->get_masterparent_categorie();
+		    	$typoLinkConf['additionalParams'] .= ini_get('arg_separator.output').$this->prefixId.'[showUid]='.$myItem->product->get_uid();
+				if($this->basketHashValue){
+					$typoLinkConf['additionalParams'].= ini_get('arg_separator.output').$this->prefixId.'[basketHashValue]='.$this->basketHashValue;
+				}
+				$lokalTSProdukt = $this->addTypoLinkToTS($this->conf['fields.']['products.'],$typoLinkConf);	
+				$lokalTSArtikle = $this->addTypoLinkToTS($this->conf['fields.']['articles.'],$typoLinkConf);					
+				$this->prefixId=$altPrefixSingle;			        
+			    $wrapMarkerArray["###PRODUCT_LINK_DETAIL###"] = explode('|',$this->pi_list_linkSingle("|",$myItem->product->get_uid(),1,array('catUid'=>intval($myItem->product->get_masterparent_categorie())),FALSE,$this->conf['listPid']));
+			    		    
+			    $this->prefixId=$safePrefix;
+			    
+			   	
+			  	$markerArray = $this->generateMarkerArray($myItem->getProductAssocArray(''),$lokalTSProdukt,'product_');
+			    $this->articleMarkerArr = $this->generateMarkerArray($myItem->getArticleAssocArray(''),$lokalTSArtikle,'article_');
 							          
-		    $templateselector = $changerowcount % 2;
-							     
-		    $template = $this->cObj->getSubpart($this->templateCode, $templateMarker[$templateselector]);
-	        $changerowcount++;
-								
-	    	$template = $this->cObj->substituteSubpart($template,'###PRODUCT_BASKET_FORM_SMALL###','');
-									     
-		    $markerArray = array_merge($markerArray,$this->articleMarkerArr);
-	    
-	    	
-	        $tempContent = $this->cObj->substituteMarkerArray($template, $markerArray,'###|###',1);
-		    $tempContent = $this->cObj->substituteMarkerArrayCached($tempContent, $this->languageMarker,$subpartMarkerArray,$wrapMarkerArray );
-										          
-	        $content.=$tempContent;
+			  	$this->select_attributes = $myItem->product->get_attributes(array(ATTRIB_selector));
+				
+			    
+			    
+			    
+			    $markerArray["PRODUCT_BASKET_FOR_LISTVIEW"] = $this->makeArticleView($myItem->article,$myItem->product);
+								          
+			    $templateselector = $changerowcount % 2;
+								     
+			    $template = $this->cObj->getSubpart($this->templateCode, $templateMarker[$templateselector]);
+		        $changerowcount++;
+									
+		    	$template = $this->cObj->substituteSubpart($template,'###PRODUCT_BASKET_FORM_SMALL###','');
+										     
+			    $markerArray = array_merge($markerArray,$this->articleMarkerArr);
+		    
+		    	
+		        $tempContent = $this->cObj->substituteMarkerArray($template, $markerArray,'###|###',1);
+			    $tempContent = $this->cObj->substituteMarkerArrayCached($tempContent, $this->languageMarker,$subpartMarkerArray,$wrapMarkerArray );
+											          
+		        $content.=$tempContent;
+		   	}else{
+		   		// Remove Artikle from Basket
+		   		$this->basket->delete_article($myItem->article->getUid());
+		   		$this->basket->store_data();
+		   		
+		   	}
 	    }
 	    return $content;   
 	}
