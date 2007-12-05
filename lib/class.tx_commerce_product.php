@@ -534,7 +534,7 @@
 	 					if (($result_value) && ($GLOBALS['TYPO3_DB']->sql_num_rows($result_value)>0))	{
 	 							while ($value=$GLOBALS['TYPO3_DB']->sql_fetch_assoc($result_value))		{
 	 
-	 								if (strlen($value['value_char'])>0)	{
+	 								#if (strlen($value['value_char'])>0)	{
 	 
 	 									if ($this->lang_uid>0)	{
 	 										/**
@@ -569,7 +569,7 @@
 	 										$valuelist[]=$value['value_char'];
 	 										$valueshown=true;
 	 									}
-	 								}
+	 								#}
 	 							}
 	 					} 		
 	 
@@ -582,7 +582,7 @@
 	 					if (($valueshown == false) && ($result_value) && ($GLOBALS['TYPO3_DB']->sql_num_rows($result_value)>0)){
 	 							while ($value=$GLOBALS['TYPO3_DB']->sql_fetch_assoc($result_value))	{
 	 
-	 								if ($value['default_value']>0)	{
+	 								#if ($value['default_value']>0)	{
 	 
 	 									if ($this->lang_uid>0){
 	 										/**
@@ -614,7 +614,7 @@
 	 										$valuelist[]=$value['default_value'];
 	 										$valueshown=true;
 	 									}
-	 								}
+	 								#}
 	 							}
 	 					}
 	 
@@ -918,8 +918,7 @@
 	 				{
 	 						while ($value=$GLOBALS['TYPO3_DB']->sql_fetch_assoc($result_value))
 	 						{
-	 							if (strlen($value['default_value'])>0)
-	 							{
+	 							#if (strlen($value['default_value'])>0){
 	 								
 	 								if ($this->lang_uid>0)
 	 								{
@@ -953,7 +952,7 @@
 										$valueUidList[] = 0;
 										$valueshown=true;
 	 								}
-	 							}
+	 							#}
 	 						}
 	 				} 		
 					$result_value=$GLOBALS['TYPO3_DB']->exec_SELECT_mm_query('distinct tx_commerce_products_attributes_mm.uid_valuelist ',
