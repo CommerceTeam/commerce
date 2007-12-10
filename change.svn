@@ -1,5 +1,10 @@
 Changelog for tx_commerce
 (add new changes on top of this file)
+10.12.2007 Ingo Schmitt <is@marketing-fcator.de>
+* Corrected handling of imgFolder, Thanks To Joerg Sprung <jsp@marketing-factory.de>
+* Added Handling for Alt-Tags in Images, Thanks to Christian Ehret <chris@ehret.name>
+* Corrected HTML in PI2 for IE7 and DropDown on Submit, Thanks to Julian Kleinhans <jk@marketing-factory.de>
+
 5.12.2007 Ingo Schmitt <is@marketing-factory.de>
 * Fixed Bug 6376
 

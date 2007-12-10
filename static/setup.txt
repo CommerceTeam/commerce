@@ -38,7 +38,9 @@ lib.tx_commerce {
 		    	fields {
 		    	    // every colum in this table could be  wraped with the 
 		    	    // stdWrap, IMAGETEXT, IMAGE, GIFBUILDER
-		    		imageFolder = uploads/tx_commerce/
+		    		
+		    	    // depricated since 2005
+			    	// imageFolder = uploads/tx_commerce/
 		    		
 		  	 		title < lib.tx_commerce.stdField
 				
@@ -101,8 +103,8 @@ lib.tx_commerce {
 		    	fields {
 		    	    // every colum in this table could be  wraped with the 
 		    	    // stdWrap, IMAGETEXT, IMAGE, GIFBUILDER
-		    	    
-			    	imageFolder = uploads/tx_commerce/
+		    	    // depricated since 2005
+			    	// imageFolder = uploads/tx_commerce/
 			    	
 			  	 	title  < lib.tx_commerce.stdField
 					title.typolink.setCommerceValues =1
@@ -152,7 +154,9 @@ lib.tx_commerce {
 		    		description.wrap = <div class="com-category-desc">|</div>
 						
 		    		// feel free to add every other field from tx_commerce_categories
-					imageFolder = uploads/tx_commerce/
+					
+					// depricated since 2005
+			    	// imageFolder = uploads/tx_commerce/
 					
 		    		images = IMAGE
 		    		images.wrap = <div class="com-category-img">|</div>
@@ -235,10 +239,6 @@ plugin.tx_commerce_pi1 {
 	overridePid = {$plugin.tx_commerce_lib.overridePid}
 	// currency used fro moneylib
 	currency = {$plugin.tx_commerce_lib.currency}
-	
-	// Check if Category Rootline is correct
-	checkCategoryTree = 1
-	
 	
 	// switch on StockHandling
 	useStockHandling  < lib.tx_commerce.useStockHandling

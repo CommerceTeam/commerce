@@ -975,10 +975,12 @@ class tx_commerce_pibase extends tslib_pibase {
 	 * @param	array	$data	Assoc-Array with keys as Database fields and
 	 * values as Values
 	 * @param	array	$TS	TypoScript Configuration
+	 * @param	string	prefix for marker, default empty
+	 * @param	string	tx_commerce table name
 	 * @return	array		Marker Array for using cobj Marker array methods
      * @todo create how to use this method when coding new stuff
 	 */
-	function generateMarkerArray($data,$TS,$prefix='') {
+	function generateMarkerArray($data,$TS,$prefix='',$table='') {
 		
 		if(!$TS['fields.']){
 		    $TS['fields.'] = $TS;
@@ -994,7 +996,19 @@ class tx_commerce_pibase extends tslib_pibase {
 					$type = $TS['defaultField'];
 					$config = $TS['defaultField.'];
 				}
-
+				if ($type == 'IMAGE') {
+                    $config['altText'] = $data['title'];
+                }
+				// Table should be set and as all tx_commerce tables are prefiex with
+				// tx_commerce (12 chars) at least 11 chars long
+				if (isset($table) && (strlen($table) > 11)){
+					// Load only TCA if field is a image type, see  renderValue
+					if ($type == 'IMGTEXT' || $type == 'IMAGE' || $type == 'IMG_RESOURCE' ){
+						t3lib_div::loadTCA($table);
+											
+					}
+				}
+				
 				$markerArray[strtoupper($prefix.$fieldName)]=$this->renderValue($columnValue,$type,$config);
 
 			}
@@ -1015,20 +1029,24 @@ class tx_commerce_pibase extends tslib_pibase {
 
 	function renderValue($value, $TStype,$TSconf) {
 
-		
+		/**
+		  * If you add more TS Types using the imgPath, you should add these also to generateMarkerArray 
+		  */
+		if (!isset($TSconf['imgPath'])) {
+			$TSconf['imgPath'] = $this->imgFolder;
+		}
 		switch(strtoupper($TStype)) {
 			case 'IMGTEXT' :
 				
-				$TSconf['imgPath'] = $this->imgFolder;
 				$TSconf['imgList'] = $value;
 				$output = $this->cObj->IMGTEXT($TSconf);
 
 			break;
 			case 'IMAGE' :
 				if (is_string($value) && !empty($value)) {
-				    $this->cObj->setCurrentVal($this->imgFolder.$value);
+				    $this->cObj->setCurrentVal($TSconf['imgPath'].$value);
 				    if($TSconf['file']<> 'GIFBUILDER'){	
-					$TSconf['file'] = $this->imgFolder.$value;;
+					$TSconf['file'] = $TSconf['imgPath'].$value;;
 				    }
 				    $output .= $this->cObj->IMAGE($TSconf);
 				}elseif(strlen($TSconf['file']) && $TSconf['file']<>'GIFBUILDER'){
@@ -1037,7 +1055,7 @@ class tx_commerce_pibase extends tslib_pibase {
 			break;
 			case 'IMG_RESOURCE' :
 				if (is_string($value) && !empty($value)) {
-					$TSconf['file'] = $this->imgFolder.$value;
+					$TSconf['file'] = $TSconf['imgPath'].$value;
 					$output = $this->cObj->IMG_RESOURCE($TSconf);
 				}
 			break;		
@@ -1414,12 +1432,13 @@ class tx_commerce_pibase extends tslib_pibase {
 				
 			
 		$lokalTS = $this->addTypoLinkToTS($lokalTS, $typoLinkConf);
-
+		
 		$markerArray=$this->generateMarkerArray($data,$lokalTS);
 		while(list($k,$v) = each ($markerArray)){
 		    $markerArrayUp[strtoupper($k)] = $v;
 		}
 		$markerArray = $this->cObj->fillInMarkerArray(array(),$markerArrayUp,implode(',',array_keys($markerArrayUp)),FALSE,'PRODUCT_');
+		
 		$this->can_attributes = $myProduct->get_attributes(array(ATTRIB_can));
 		$this->select_attributes = $myProduct->get_attributes(array(ATTRIB_selector));
 		$this->shall_attributes = $myProduct->get_attributes(array(ATTRIB_shal));

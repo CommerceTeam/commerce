@@ -18,7 +18,7 @@
 <h3>BASKET</h3>
 
 <!--###BASKET### begin -->
-<form action="###GENERAL_FORM_ACTION###" method="post">
+<form action="###GENERAL_FORM_ACTION###" method="post" name="basket">
 <div class="com-basket-container">
     <h2>###LANG_BASKET_HEADER_TITLE###</h2>
     <p class="com-basket-header-text">###LANG_BASKET_HEADER_TEXT###</p>

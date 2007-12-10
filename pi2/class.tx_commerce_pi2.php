@@ -466,7 +466,7 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 		$this->delProd->load_articles();
 	
 		$this->basketDel = $this->basket->get_articles_by_article_type_uid_asuidlist(DELIVERYArticleType);
-		$select = '<select name="'.$this->prefixId.'[delArt]" onChange="this.form.submit()">';
+		$select = '<select name="'.$this->prefixId.'[delArt]" onChange="document.basket.submit();">';
 			    
 		if ($this->conf['delivery.']['allowedArticles']) {
 			$allowedArticles = split(',',$this->conf['delivery.']['allowedArticles']);
@@ -479,7 +479,7 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 				if($articleUid==$this->basketDel[0]){
 				    
 				    $first = 1;
-				    $select .= ' selected';
+				    $select .= ' selected="selected"'; 
 				    $price_net =  tx_moneylib::format($articleObj->get_price_net(),$this->currency);
 				    $price_gross =  tx_moneylib::format($articleObj->get_price_gross(),$this->currency);
 				}elseif(!$first){
@@ -521,7 +521,7 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 		$this->payProd->load_articles();
 		$this->basketPay = $this->basket->get_articles_by_article_type_uid_asuidlist(PAYMENTArticleType);
 		
-		$select = '<select name="'.$this->prefixId.'[payArt]" onChange="this.form.submit()">';
+		$select = '<select name="'.$this->prefixId.'[payArt]" onchange="document.basket.submit();">'; 
 		$first=false;
 			    
 		/**
@@ -545,7 +545,8 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 				if(($articleUid==$this->basketPay[0]) || ($addDefaultPaymentToBasket && ($articleUid==$this->conf['defaultPaymentArticleId']))){
 					$addDefaultPaymentToBasket=false;
 				    $first = true;
-				    $select .= ' selected';
+				  
+				    $select .= ' selected="selected"'; 
 				   
 				     $this->basket->add_article($articleUid);
 						

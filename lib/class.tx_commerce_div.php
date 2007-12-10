@@ -127,6 +127,8 @@ class tx_commerce_div {
 		$GLOBALS['TSFE']->fe_user->tx_commerce_basket->load_data();
 		return;
 	}
+	
+	
 	/***
 	 * Remove Products from list wich have no articles wich are available
 	 * from Stockn
