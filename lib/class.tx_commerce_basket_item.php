@@ -626,6 +626,40 @@ class tx_commerce_basket_item{
  		return $this->getQuantity();
  	}
  	
+ 	/** 
+  	 * set a given field, only to use with custom field without own method 
+  	 * 
+  	 * Warning: commerce provides getMethods for all default fields. For Compatibility
+  	 * reasons always use the built in Methods. Only use this method with you own added fields 
+  	 * @see add_fields_to_fieldlist
+  	 * @see add_field_to_fieldlist
+  	 * 
+  	 * @param string	$field: fieldname
+  	 * @param mixed	$value: value
+  	 * @return void
+  	 */	
+  	
+  	function setField($field,$value){
+		$this->$field = $value;
+	}
+
+  	/** 
+  	 * get a given field value, only to use with custom field without own method 
+  	 * 
+  	 * Warning: commerce provides getMethods for all default fields. For Compatibility
+  	 * reasons always use the built in Methods. Only use this method with you own added fields 
+  	 * @see add_fields_to_fieldlist
+  	 * @see add_field_to_fieldlist
+  	 * 
+  	 * @param string	$field: fieldname
+  	 * @return mixed	value of the field
+  	 */	
+
+	function getField($field){
+		return $this->$field;
+	}
+  	
+ 	
  		
  	
  }

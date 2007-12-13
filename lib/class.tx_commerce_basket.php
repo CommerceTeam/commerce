@@ -160,13 +160,24 @@
 			'pos');
 		
 		if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)>0){
- 			
+			
+			if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_basket.php']['load_data_from_database'])) {
+					foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_basket.php']['load_data_from_database'] as $classRef) {
+							$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+					}
+			}
+			
  			while ($return_data=$GLOBALS['TYPO3_DB']->sql_fetch_assoc($result))	{
  			
  				if (($return_data['quantity']>0) && ($return_data['price_id']>0))  {
  					$this->add_article($return_data['article_id'],$return_data['quantity'],$return_data['price_id']) ;	
  					$this->changePrices($return_data['article_id'],$return_data['price_gross'],$return_data['price_net']);
- 					$this->crdate = $return_data['crdate']; 
+ 					$this->crdate = $return_data['crdate'];
+ 					foreach($hookObjectsArr as $hookObj)	{
+						if (method_exists($hookObj, 'load_data_from_database')) {
+							$hookObj->load_data_from_database($return_data,$this);
+						}
+					} 
  				}
  							
  			}
@@ -192,6 +203,11 @@
  		$result=$GLOBALS['TYPO3_DB']->exec_DELETEquery('tx_commerce_baskets',
 			"sid='".$GLOBALS['TYPO3_DB']->quoteStr($this->sess_id,'tx_commerce_baskets')."' and finished_time = 0");
 		
+		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_basket.php']['store_data_to_database'])) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_basket.php']['store_data_to_database'] as $classRef) {
+				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+			}
+		}
 		
 		/**
 		 * And insert data
@@ -212,6 +228,12 @@
  			}else {
  				$insert_data['crdate'] = $insert_data['tstamp'];
  			}
+ 			
+ 			foreach($hookObjectsArr as $hookObj)	{
+				if (method_exists($hookObj, 'store_data_to_database')) {
+					$insert_data = $hookObj->store_data_to_database($one_item,$insert_data);
+				}
+			} 
  			
 			$result=$GLOBALS['TYPO3_DB']->exec_INSERTquery(
  					'tx_commerce_baskets',
