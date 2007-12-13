@@ -22,5 +22,20 @@
 			<label index="mlang_labels_tabdescr">Consultar, editar e ordenar pedidos</label>
 			<label index="mlang_labels_tablabel">Pedidos</label>
 		</languageKey>
+		 <languageKey index="cz" type="array">
+            <label index="mlang_tabs_tab">Objednávky</label>
+            <label index="mlang_labels_tabdescr">Úpravy objednávek</label>
+            <label index="mlang_labels_tablabel">Objednávky</label>
+        </languageKey>
+		 <languageKey index="pl" type="array">
+            <label index="mlang_tabs_tab">Zamówienia</label>
+            <label index="mlang_labels_tabdescr">Przeglądaj, edytuj i usuwaj zamówienia</label>
+            <label index="mlang_labels_tablabel">Zamówienia</label>
+        </languageKey>
+		 <languageKey index="hu" type="array">
+            <label index="mlang_tabs_tab">Megrendelések</label>
+            <label index="mlang_labels_tabdescr">Megrendelések szerkesztése</label>
+            <label index="mlang_labels_tablabel">Megrendelések</label>
+        </languageKey>
 	</data>
 </T3locallang>

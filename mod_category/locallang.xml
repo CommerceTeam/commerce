@@ -27,5 +27,17 @@
 			<label index="category title">Categoria</label>
 			<label index="product title">Produto</label>
 		</languageKey>
+ 		<languageKey index="cz" type="array">
+            <label index="category title">Kategorie</label>
+            <label index="product title">Produkt</label>
+        </languageKey>
+        <languageKey index="pl" type="array">
+            <label index="category title">Kategoria</label>
+            <label index="product title">Produkt</label>
+        </languageKey>
+  		<languageKey index="hu" type="array">
+            <label index="category title">Kategória</label>
+            <label index="product title">Termék</label>
+        </languageKey>
 	</data>
 </T3locallang>

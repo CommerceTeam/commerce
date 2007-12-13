@@ -1,5 +1,8 @@
 Changelog for tx_commerce
 (add new changes on top of this file)
+13.12.2007 Ingo Schmitt <is@marketing-factory.de>
+* Added Translation pl,cz,hu
+
 10.12.2007 Ingo Schmitt <is@marketing-fcator.de>
 * Corrected handling of imgFolder, Thanks To Joerg Sprung <jsp@marketing-factory.de>
 * Added Handling for Alt-Tags in Images, Thanks to Christian Ehret <chris@ehret.name>

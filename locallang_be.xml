@@ -5,7 +5,7 @@
 		<type>database</type>
 		<csh_table></csh_table>
 		<fileId>EXT:commerce/locallang_be.xml</fileId>
-	</meta>
+	</meta> 
 	<data type="array">
 		<languageKey index="default" type="array">
 			<label index="order_view.order_status">Order status</label>
@@ -41,10 +41,8 @@
 			
 			<label index="attributeview.valuelist">Attribute Werte</label>
 			<label index="attributeview.addvalue">Wert hinzufügen</label>
-			
 			<label index="articles.add_article_price">Neuen Preis hinzufügen</label>
 			<label index="articles.del_article_price">Preis löschen</label>
-			
 			<label index="tt_content.list_type_pi1">Commerce: Produkt Liste</label>
 			<label index="tt_content.list_type_pi2">Commerce: Warenkorb</label>
 			<label index="tt_content.list_type_pi3">Commerce: Checkout</label>
@@ -104,6 +102,60 @@
 			<label index="order">Pedido</label>
 			<label index="commerce">Commerce: Pasta do Sistema</label>
 		</languageKey>
+		<languageKey index="cz" type="array">
+            <label index="order_view.order_status">Stav objednávky</label>
+            <label index="order_view.items.article_list">Seznam zboží</label>
+            <label index="order_view.items.print_invoice">Tisk faktury</label>
+            <label index="order_view.items.add_article">Další zboží</label>
+            <label index="attributeview.valuelist">Vlastnosti hodnot</label>
+            <label index="attributeview.addvalue">Přidat hodnotu</label>
+            <label index="articles.add_article_price">Přidat novou cenu</label>
+            <label index="articles.del_article_price">Odstranit cenu</label>
+            <label index="tt_content.list_type_pi1">Commerce: Seznam zboží</label>
+            <label index="tt_content.list_type_pi2">Commerce: Nákupní koš</label>
+            <label index="tt_content.list_type_pi3">Commerce: Odhlášení</label>
+            <label index="tt_content.list_type_pi4">Commerce: Správa adres</label>
+            <label index="tt_content.list_type_pi6">Commerce: Faktura</label>
+            <label index="category">Kategorie</label>
+            <label index="product">Produkt</label>
+            <label index="order">Objednávka</label>
+        </languageKey>
+        <languageKey index="hu" type="array">
+            <label index="order_view.order_status">Megrendelés állapota</label>
+            <label index="order_view.items.article_list">Terméklista</label>
+            <label index="order_view.items.print_invoice">Számla nyomtatása</label>
+            <label index="order_view.items.add_article">További termékek</label>
+            <label index="attributeview.valuelist">Hozzárendelt értékek</label>
+            <label index="attributeview.addvalue">Hozzáadott értékek</label>
+            <label index="articles.add_article_price">Új ár hozzáadása</label>
+            <label index="articles.del_article_price">Ár törlése</label>
+            <label index="tt_content.list_type_pi1">Kereskedelem: Terméklista</label>
+            <label index="tt_content.list_type_pi2">Kereskedelem: Kosár</label>
+            <label index="tt_content.list_type_pi3">Kereskedelem: Ellenőrzés</label>
+            <label index="tt_content.list_type_pi4">Kereskedelem: Címkezelés</label>
+            <label index="tt_content.list_type_pi6">Kereskedelem: Számla</label>
+            <label index="category">Kategória</label>
+            <label index="product">Termék</label>
+            <label index="order">Megrendelés</label>
+        </languageKey>
+        <languageKey index="pl" type="array">
+            <label index="order_view.order_status">Stan zamówienia</label>
+            <label index="order_view.items.article_list">Lista artykułów</label>
+            <label index="order_view.items.print_invoice">Drukuj rachunek</label>
+            <label index="order_view.items.add_article">Dalsze artykuły</label>
+            <label index="attributeview.valuelist">Atrybuty wartości</label>
+            <label index="attributeview.addvalue">Dodaj wartość</label>
+            <label index="articles.add_article_price">Dodaj nową cenę</label>
+            <label index="articles.del_article_price">Usuń cenę</label>
+            <label index="tt_content.list_type_pi1">Commerce: Lista produktów</label>
+            <label index="tt_content.list_type_pi2">Commerce: Koszyk</label>
+            <label index="tt_content.list_type_pi3">Commerce: Kasa</label>
+            <label index="tt_content.list_type_pi4">Commerce: Zarządzanie adresami</label>
+            <label index="tt_content.list_type_pi6">Commerce: Rachunek</label>
+            <label index="category">Kategoria</label>
+            <label index="product">Produkt</label>
+            <label index="order">Zamówienie</label>
+        </languageKey>
 
 	</data>
 </T3locallang>

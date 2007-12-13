@@ -29,6 +29,21 @@
 			<label index="CustomerData">Dados pessoais do consumidor</label>
 			<label index="OrderData">Dados do Pedido</label>
 		</languageKey>
+		  <languageKey index="cz" type="array">
+            <label index="title">Údaje o objednávkách a zákazníci</label>
+            <label index="CustomerData">Údaje o zákaznících</label>
+            <label index="OrderData">Údaje o objednávkách</label>
+        </languageKey>
+        <languageKey index="pl" type="array">
+            <label index="title">Dane dotyczące zamówienia i klienta</label>
+            <label index="CustomerData">Dane klienta</label>
+            <label index="OrderData">Dane zamówieniowe</label>
+        </languageKey>
+		 <languageKey index="hu" type="array">
+            <label index="title">Megrendelési és ügyféladatok</label>
+            <label index="CustomerData">Ügyféladatok</label>
+            <label index="OrderData">Megrendelés adatai</label>
+        </languageKey>
 		
 	</data>
 </T3locallang>

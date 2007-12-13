@@ -27,5 +27,20 @@
 			<label index="mlang_labels_tabdescr">Categorie pour Produits</label>
 			<label index="mlang_labels_tablabel">Categorie</label>
 		</languageKey>
+  		<languageKey index="cz" type="array">
+            <label index="mlang_tabs_tab">Kategorie</label>
+            <label index="mlang_labels_tabdescr">Kategorie produktů</label>
+            <label index="mlang_labels_tablabel">Kategorie</label>
+        </languageKey>
+        <languageKey index="pl" type="array">
+            <label index="mlang_tabs_tab">Kategoria</label>
+            <label index="mlang_labels_tabdescr">Kategoria produktu</label>
+            <label index="mlang_labels_tablabel">Kategoria</label>
+        </languageKey>
+		  <languageKey index="hu" type="array">
+            <label index="mlang_tabs_tab">Kategória</label>
+            <label index="mlang_labels_tabdescr">Termék-kategória</label>
+            <label index="mlang_labels_tablabel">Kategória</label>
+        </languageKey>
 	</data>
 </T3locallang>

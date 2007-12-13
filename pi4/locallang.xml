@@ -157,5 +157,98 @@
 			<label index="message_edit_delivery">Modifier l'adresse de livraison</label>
 			<label index="message_edit_unknown">Modifier l'adresse</label>
 		</languageKey>
+ 		<languageKey index="cz" type="array">
+            <label index="not_logged_in">Nejste přihlášen. Správa adres není proto k dispozici!</label>
+            <label index="label_name">Jméno</label>
+            <label index="label_company">Společnost</label>
+            <label index="label_city">Město</label>
+            <label index="label_zip">PSČ</label>
+            <label index="label_address">Adresa </label>
+            <label index="label_country">Stát</label>
+            <label index="label_email">E-mail</label>
+            <label index="label_link_edit">Editovat</label>
+            <label index="label_link_delete">Odstranit</label>
+            <label index="label_addresses_of_type_1">Fakturační adresa</label>
+            <label index="label_addresses_of_type_2">Adresa dodání</label>
+            <label index="label_link_new_type_1">Nová fakturační adresa</label>
+            <label index="label_link_new_type_2">Nová adresa dodání</label>
+            <label index="label_is_main_address">Jedná se o moji hlavní adresu.</label>
+            <label index="label_submit_edit">Uložit úpravy</label>
+            <label index="label_submit_yes">Ano</label>
+            <label index="label_submit_no">Ne</label>
+            <label index="error_field_mandatory">Jedná se o povinný údaj!</label>
+            <label index="error_field_email">Prosím zadejte správnou e-mailovou adresu.</label>
+            <label index="error_field_string">Zadaná hodnota musí být text.</label>
+            <label index="error_field_int">Zadaní hodnota musí být celé číslo (integer).</label>
+            <label index="error_field_min">Prosím, zadejte alespoň %d znaků.</label>
+            <label index="error_field_max">Prosím, zadejte nanejvýš %d znaků.</label>
+            <label index="error_field_alpha">Pouze znaky od A do Z a od a do z jsou povoleny.</label>
+            <label index="question_delete">Skutečně si přejete odstranit níže uvedenou adresu?</label>
+            <label index="message_address_changed">Adresa byla upravena.</label>
+            <label index="message_address_deleted">Adresa byla odstraněna.</label>
+            <label index="message_address_new">Adresa byla vytvořena.</label>
+        </languageKey>
+        <languageKey index="hu" type="array">
+            <label index="not_logged_in">Ön nem jelentkezett be, így a címkezelés nem elérhető.</label>
+            <label index="label_name">Név</label>
+            <label index="label_company">Vállalat</label>
+            <label index="label_city">Település</label>
+            <label index="label_zip">Irányítószám</label>
+            <label index="label_address">Cím</label>
+            <label index="label_country">Ország</label>
+            <label index="label_email">Email: </label>
+            <label index="label_link_edit">Szerkesztés</label>
+            <label index="label_link_delete">Törlés</label>
+            <label index="label_addresses_of_type_1">Számlázási címek</label>
+            <label index="label_addresses_of_type_2">Szállítási címek</label>
+            <label index="label_link_new_type_1">új számlázási cím</label>
+            <label index="label_link_new_type_2">új szállítási cím</label>
+            <label index="label_is_main_address">Ez a fő címem</label>
+            <label index="label_submit_edit">Változtatások mentése</label>
+            <label index="label_submit_yes">Igen</label>
+            <label index="label_submit_no">Nem</label>
+            <label index="error_field_mandatory">Ez a mező kötelező!</label>
+            <label index="error_field_email">Kérjük, adjon meg egy helyes email címet</label>
+            <label index="error_field_string">Ebben a mezőben karaktersorozatot kell megadni</label>
+            <label index="error_field_int">Ebben a mezőben egész számot kell megadni</label>
+            <label index="error_field_min">Kérjük, minimum %d számú karaktert adjon meg</label>
+            <label index="error_field_max">Kérjük, maximum %d számú karaktert adjon meg</label>
+            <label index="error_field_alpha">Csak A - Z vagy a - z karakterek engedélyezettek</label>
+            <label index="question_delete">Tényleg törölni szeretné a fenti címet?</label>
+            <label index="message_address_changed">A cím megváltozott</label>
+            <label index="message_address_deleted">A cím törölve</label>
+            <label index="message_address_new">A cím létrehozva</label>
+        </languageKey>
+        <languageKey index="pl" type="array">
+            <label index="not_logged_in">Nie jesteś zalogowany, dlatego system zarządzania adresami nie jest dostępne!</label>
+            <label index="label_name">Imię:</label>
+            <label index="label_company">Firma:</label>
+            <label index="label_city">Miejscowość:</label>
+            <label index="label_zip">Kod pocztowy: </label>
+            <label index="label_address">Adres: </label>
+            <label index="label_country">Kraj: </label>
+            <label index="label_email">Email: </label>
+            <label index="label_link_edit">Edytuj</label>
+            <label index="label_link_delete">Usuń</label>
+            <label index="label_addresses_of_type_1">Adres do faktury</label>
+            <label index="label_addresses_of_type_2">Adres dostawy</label>
+            <label index="label_link_new_type_1">nowy adres do faktury</label>
+            <label index="label_link_new_type_2">nowy adres dostawy</label>
+            <label index="label_is_main_address">To mój główny adres</label>
+            <label index="label_submit_edit">Zapisz zmiany</label>
+            <label index="label_submit_yes">Tak</label>
+            <label index="label_submit_no">Nie</label>
+            <label index="error_field_mandatory">To pole jest obowiązkowe!</label>
+            <label index="error_field_email">Proszę podać prawidłowy adres mailowy</label>
+            <label index="error_field_string">W polu tym należy wprowadzić łańcuch znaków (pole alfanumeryczne)</label>
+            <label index="error_field_int">W polu tym należy wprowadzić liczbę całkowitą</label>
+            <label index="error_field_min">Proszę wprowadzić minimalną liczbę %d znaków</label>
+            <label index="error_field_max">Proszę wprowadzić maksymalną liczbę %d znaków</label>
+            <label index="error_field_alpha">Dopuszczalne są tylko litery alfabetu od A do Z lub od a do z</label>
+            <label index="question_delete">Czy naprawdę chcesz usunąć powyższy adres?</label>
+            <label index="message_address_changed">Adres został zmieniony</label>
+            <label index="message_address_deleted">Adres został usunięty</label>
+            <label index="message_address_new">Adres został utworzony</label>
+        </languageKey>
 	</data>
 </T3locallang>

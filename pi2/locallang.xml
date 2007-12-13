@@ -138,5 +138,98 @@
 			<label index="checkoutlink">Para o caixa</label>
 			<label index="delete_basket">Esvaziar o carrinho</label>
 		</languageKey>
+		 <languageKey index="cz" type="array">
+            <label index="lang_payment">Druh platby</label>
+            <label index="lang_payment_description">Prosím, zvolte si druh platby.</label>
+            <label index="lang_delivery">Druh dodání</label>
+            <label index="lang_delivery_description">Prosím, zvolte si druh dodání.</label>
+            <label index="lang_net_price">Cena netto:</label>
+            <label index="lang_value_added_tax">Započítaná DPH:</label>
+            <label index="lang_gross_price">Cena brutto:</label>
+            <label index="lang_basket_header_title">Váš nákupní koš</label>
+            <label index="lang_basket_header_text">Zde můžete nahlédnout do svého nákupního koše</label>
+            <label index="lang_article_number">Číslo zboží:</label>
+            <label index="lang_price_net">Jednotková cena netto:</label>
+            <label index="lang_price_gross">Jednotková cena brutto:</label>
+            <label index="lang_count">Počet</label>
+            <label index="lang_pricesum_net">Celková cena netto</label>
+            <label index="lang_pricesum_gross">Celková cena brutto</label>
+            <label index="lang_change_number">Upravit počet</label>
+            <label index="lang_titel_empty">Nákupní koš je stále prázdný.</label>
+            <label index="lang_text_empty">Prosím, zvolte nejprve produkty, které si přejete zakoupit.</label>
+            <label index="lang_percent">%</label>
+            <label index="lang_last_product">Zpět</label>
+            <label index="lang_title">Nadpis</label>
+            <label index="lang_basket_qv_value">Nákupní koš (brutto):</label>
+            <label index="lang_basket_qv_link">Nákupní koš</label>
+            <label index="lang_basket_qv_chkout">Objednat</label>
+            <label index="lang_basket_update">Aktualizovat</label>
+            <label index="lang_basket_delete_item">Odstranit</label>
+            <label index="checkoutlink">K odhlášení</label>
+            <label index="delete_basket">Vyprázdnit nákupní koš</label>
+            <label index="noStock">Počet požadovaného zboží není momentálně k dispozici.</label>
+        </languageKey>
+        <languageKey index="hu" type="array">
+            <label index="lang_payment">Fizetési mód </label>
+            <label index="lang_payment_description">Kérjük, válassza ki a fizetés módját </label>
+            <label index="lang_delivery">Szállítási mód </label>
+            <label index="lang_delivery_description">Kérjük, válassza ki a szállítás módját </label>
+            <label index="lang_net_price">Nettó ár:</label>
+            <label index="lang_value_added_tax">ÁFA-tartalom:</label>
+            <label index="lang_gross_price">Brutto ár:</label>
+            <label index="lang_basket_header_title">Az Ön kosara</label>
+            <label index="lang_basket_header_text">Kosara megtekintése </label>
+            <label index="lang_article_number">Cikkszám:</label>
+            <label index="lang_price_net">Netto egyedi ár </label>
+            <label index="lang_price_gross">Brutto egyedi ár</label>
+            <label index="lang_count">Darabszám</label>
+            <label index="lang_pricesum_net">Netto összár </label>
+            <label index="lang_pricesum_gross">Brutto összár</label>
+            <label index="lang_change_number">Darabszám megváltoztatása</label>
+            <label index="lang_titel_empty">A kosár még üres </label>
+            <label index="lang_text_empty">Kérjük, előbb válasszon ki megvásárolni kívánt termékeket </label>
+            <label index="lang_percent">%</label>
+            <label index="lang_last_product">Vissza</label>
+            <label index="lang_title">Cím</label>
+            <label index="lang_basket_qv_value">Kosár (bruttó):</label>
+            <label index="lang_basket_qv_link">Kosár (bruttó):</label>
+            <label index="lang_basket_qv_chkout">Megrendelés</label>
+            <label index="lang_basket_update">Frissítés</label>
+            <label index="lang_basket_delete_item">Törlés</label>
+            <label index="checkoutlink">Ellenőrzéshez</label>
+            <label index="delete_basket">Kosár kiürítése</label>
+            <label index="noStock">A kívánt számú cikk pillanatnyilag nem elérhető</label>
+        </languageKey>
+        <languageKey index="pl" type="array">
+            <label index="lang_payment">Sposób płatności</label>
+            <label index="lang_payment_description">Proszę wybrać sposób płatności</label>
+            <label index="lang_delivery">Sposób odbioru</label>
+            <label index="lang_delivery_description">Proszę wybrać rodzaj dostawy</label>
+            <label index="lang_net_price">Cena netto:</label>
+            <label index="lang_value_added_tax">Zawarty podatek VAT:</label>
+            <label index="lang_gross_price">Cena brutto:</label>
+            <label index="lang_basket_header_title">Twój koszyk</label>
+            <label index="lang_basket_header_text">Tutaj widzisz swój koszyk</label>
+            <label index="lang_article_number">Numer artykułu:</label>
+            <label index="lang_price_net">Cena jednostkowa netto</label>
+            <label index="lang_price_gross">Cena jednostkowa brutto</label>
+            <label index="lang_count">Ilość</label>
+            <label index="lang_pricesum_net">Cena łączna netto</label>
+            <label index="lang_pricesum_gross">Cena łączna brutto</label>
+            <label index="lang_change_number">Zmień ilość</label>
+            <label index="lang_titel_empty">Koszyk jest jeszcze pusty</label>
+            <label index="lang_text_empty">Wybierz, proszę, najpierw produkty, które chcesz zamówić</label>
+            <label index="lang_percent">%</label>
+            <label index="lang_last_product">Cofnij</label>
+            <label index="lang_title">Tytuł</label>
+            <label index="lang_basket_qv_value">Koszyk (brutto):</label>
+            <label index="lang_basket_qv_link">Koszyk</label>
+            <label index="lang_basket_qv_chkout">Zamów</label>
+            <label index="lang_basket_update">Aktualizuj</label>
+            <label index="lang_basket_delete_item">usuń</label>
+            <label index="checkoutlink">Do kasy</label>
+            <label index="delete_basket">Opróżnij koszyk</label>
+            <label index="noStock">Ilość żądanych artykułów nie jest aktualnie dostępna</label>
+        </languageKey>
 	</data>
 </T3locallang>

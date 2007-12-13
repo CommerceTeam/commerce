@@ -35,5 +35,23 @@
 			<label index="article.lokalization">Artigos só podem ser localizados após a localização do produto</label>
 			<label index="product.lokalization_without_article">Produtos sem artigos não puderam ser localizados</label>
 		</languageKey>
+        <languageKey index="cz" type="array">
+            <label index="error">Chyba</label>
+            <label index="continue">Pokračovat</label>
+            <label index="article.lokalization">Zboží se automaticky založí do systému při lokalizaci produktů, proto je nelze lokalizovat odděleně.</label>
+            <label index="product.lokalization_without_article">Produkty bez zboží nelze lokalizovat.</label>
+        </languageKey>
+        <languageKey index="hu" type="array">
+            <label index="error">Hiba</label>
+            <label index="continue">Folytatás</label>
+            <label index="article.lokalization">A cikkek a termék lokalizálásakor automatikusan lokalizálódnak</label>
+            <label index="product.lokalization_without_article">A cikk nélküli termékek nem lokalizálhatók</label>
+        </languageKey>
+        <languageKey index="pl" type="array">
+            <label index="error">Błąd</label>
+            <label index="continue">Dalej</label>
+            <label index="article.lokalization">Artykuły lokalizowane są automatycznie podczas lokalizacji produktu. Dlatego nie można lokalizować ich osobno.</label>
+            <label index="product.lokalization_without_article">Nie można lokalizować produktów bez artykułów.</label>
+        </languageKey>
 	</data>
 </T3locallang>

@@ -28,5 +28,17 @@
 			<label index="tx_graytree_cm1.new_tx_commerce_categories">Nova subcategoria</label>
 			<label index="tx_graytree_cm1.new_tx_commerce_products">Novo produto</label>
 		</languageKey>
+ 		<languageKey index="cz" type="array">
+            <label index="tx_graytree_cm1.new_tx_commerce_categories">Nová podkategorie</label>
+            <label index="tx_graytree_cm1.new_tx_commerce_products">Nový produkt</label>
+        </languageKey>
+        <languageKey index="pl" type="array">
+            <label index="tx_graytree_cm1.new_tx_commerce_categories">Nowa podkategoria</label>
+            <label index="tx_graytree_cm1.new_tx_commerce_products">Nowy produkt</label>
+        </languageKey>
+ 		<languageKey index="hu" type="array">
+            <label index="tx_graytree_cm1.new_tx_commerce_categories">Új alkategória</label>
+            <label index="tx_graytree_cm1.new_tx_commerce_products">Új termék</label>
+        </languageKey>
 	</data>
 </T3locallang>

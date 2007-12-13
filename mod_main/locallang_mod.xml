@@ -24,5 +24,20 @@
 		<languageKey index="br" type="array">
 			<label index="mlang_labels_tabdescr">Sistema Avançado de Gerenciamento de Compras</label>
 		</languageKey>
+		 <languageKey index="cz" type="array">
+            <label index="mlang_tabs_tab">Commerce</label>
+            <label index="mlang_labels_tabdescr">Vysoce pokročilý nákupní systém</label>
+            <label index="mlang_labels_tablabel">TX Commerce</label>
+        </languageKey>
+        <languageKey index="pl" type="array">
+            <label index="mlang_tabs_tab">Commerce</label>
+            <label index="mlang_labels_tabdescr">Wysokorozwinięty system zakupów</label>
+            <label index="mlang_labels_tablabel">TX Commerce</label>
+        </languageKey>
+  		<languageKey index="hu" type="array">
+            <label index="mlang_tabs_tab">Kereskedelem</label>
+            <label index="mlang_labels_tabdescr">Bővített bevásárló rendszer</label>
+            <label index="mlang_labels_tablabel">TX kereskedelem</label>
+        </languageKey>
 	</data>
 </T3locallang>
