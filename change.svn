@@ -1,5 +1,11 @@
 Changelog for tx_commerce
 (add new changes on top of this file)
+22.12.2007 Ingo Schmitt <is@marketing-factory.de>
+* Fixed Bug in static TS, Thanks to Fabian Seltmann <fs@web-factory.de>
+
+19.12.2007 Ingo Schmitt<is@marketing-factory.de>
+* Added Hooks for Processing in PI1, Thanks To Joerg Sprung <jsp@marketing-factory.de>
+
 13.12.2007 Ingo Schmitt <is@marketing-factory.de>
 * Added Translation pl,cz,hu
 * Added Hook for having own fields in Basket,  Thanks To Joerg Sprung <jsp@marketing-factory.de>

@@ -125,7 +125,7 @@ lib.tx_commerce {
 			  	 	teaserimages =IMAGE
 			  	 	teaserimages {  
 			  	 		file.import.current = 1
-    					maxW = 150
+    					file.maxW = 150
 			  	 	}
 			
 		    	}
