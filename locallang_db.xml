@@ -90,6 +90,7 @@
 			<label index="tx_commerce_baskets.price_gross">price_gross</label>
 			<label index="tx_commerce_baskets.price_net">price_net</label>
 			<label index="tx_commerce_baskets.quantity">quantity</label>
+			<label index="tx_commerce_baskets.readonly">Read Only</label>
 			<label index="tx_commerce_attributes">Attributes</label>
 			<label index="tx_commerce_attributes.has_valuelist">has valuelist</label>
 			<label index="tx_commerce_attributes.multiple">allow multiple selection</label>

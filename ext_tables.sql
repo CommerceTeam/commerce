@@ -239,6 +239,7 @@ CREATE TABLE tx_commerce_baskets (
     price_gross int(11) DEFAULT '0' NOT NULL,
     price_net int(11) DEFAULT '0' NOT NULL,
     quantity int(11) DEFAULT '0' NOT NULL,
+    readonly int(11) DEFAULT '0' NOT NULL,
 
     PRIMARY KEY (uid),
     KEY parent (pid),

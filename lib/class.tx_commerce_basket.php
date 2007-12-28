@@ -155,7 +155,7 @@
  		
  		$result=$GLOBALS['TYPO3_DB']->exec_SELECTquery('*',
  			'tx_commerce_baskets',
-			"sid='".$GLOBALS['TYPO3_DB']->quoteStr($this->sess_id,'tx_commerce_baskets')."' and finished_time =0 ",
+			"sid='".$GLOBALS['TYPO3_DB']->quoteStr($this->sess_id,'tx_commerce_baskets')."' and finished_time =0 and pid=".$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce']['BasketStoragePid'],
 			'',
 			'pos');
 		
@@ -166,21 +166,30 @@
 							$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
 					}
 			}
-			
+			$basketReadonly = false;
  			while ($return_data=$GLOBALS['TYPO3_DB']->sql_fetch_assoc($result))	{
  			
  				if (($return_data['quantity']>0) && ($return_data['price_id']>0))  {
  					$this->add_article($return_data['article_id'],$return_data['quantity'],$return_data['price_id']) ;	
  					$this->changePrices($return_data['article_id'],$return_data['price_gross'],$return_data['price_net']);
  					$this->crdate = $return_data['crdate'];
- 					foreach($hookObjectsArr as $hookObj)	{
-						if (method_exists($hookObj, 'load_data_from_database')) {
-							$hookObj->load_data_from_database($return_data,$this);
+ 					if (is_array($hookObjectsArr)){
+	 					foreach($hookObjectsArr as $hookObj)	{
+							if (method_exists($hookObj, 'load_data_from_database')) {
+								$hookObj->load_data_from_database($return_data,$this);
+							}
 						}
-					} 
+ 					} 
+					
  				}
+	 			if ($return_data['readonly'] == 1) {
+	 				$basketReadonly  = true;
+	 			}
  							
  			}
+			if ($basketReadonly === true) {
+	 			$this->setReadOnly();
+	 		}
  			
  			$GLOBALS['TYPO3_DB']->sql_free_result($result);
  			
@@ -222,19 +231,20 @@
  			$insert_data['price_net']=$one_item->get_price_net();
  			$insert_data['price_gross']=$one_item->get_price_gross();
  			$insert_data['quantity']=$one_item->get_quantity();
+ 			$insert_data['readonly']=$this->isReadOnly();
  			$insert_data['tstamp'] = time();
  			if ($this->crdate >0 ) {
  				$insert_data['crdate'] = $this->crdate;
  			}else {
  				$insert_data['crdate'] = $insert_data['tstamp'];
  			}
- 			
- 			foreach($hookObjectsArr as $hookObj)	{
-				if (method_exists($hookObj, 'store_data_to_database')) {
-					$insert_data = $hookObj->store_data_to_database($one_item,$insert_data);
-				}
-			} 
- 			
+ 			if (is_array($hookObjectsArr)){
+	 			foreach($hookObjectsArr as $hookObj)	{
+					if (method_exists($hookObj, 'store_data_to_database')) {
+						$insert_data = $hookObj->store_data_to_database($one_item,$insert_data);
+					}
+				} 
+ 			}
 			$result=$GLOBALS['TYPO3_DB']->exec_INSERTquery(
  					'tx_commerce_baskets',
  					$insert_data

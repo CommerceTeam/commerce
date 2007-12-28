@@ -241,6 +241,10 @@ $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY]['feuser_address_mapping'] = $_E
 // storage pid for baskets
 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY]['BasketStoragePid'] = $_EXTCONF['BasketStoragePid'] ? $_EXTCONF['BasketStoragePid'] : 0;
 
+// Basket locking
+$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY]['lockBasket'] = $_EXTCONF['lockBasket'] ? $_EXTCONF['lockBasket'] : 0;
+
+
 // This line configures to process the code selectConf with the class "tx_commerce_hooks"
 require_once(t3lib_extMgm::extPath(COMMERCE_EXTkey).'hooks/class.tx_commerce_tcehooksHandler.php');
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] = 'tx_commerce_tcehooksHandler';

@@ -115,7 +115,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 		$this->pi_loadLL();
 		$this->conf['basketPid']=$GLOBALS['TSFE']->id;
 		$this->staticInfo = t3lib_div::makeInstance('tx_staticinfotables_pi1');
-	        $this->staticInfo->init();
+	    $this->staticInfo->init();
 		
 		
 		$this->imgFolder = 'uploads/tx_commerce/';
@@ -166,6 +166,16 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 		
 		if ($this->debug) debug($this->piVars);
 
+		
+		/**
+		 * Set basket to readonly, if set in Extension Configuration
+		 * 
+		 */
+		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce']['lockBasket'] == 1) {
+			$GLOBALS['TSFE']->fe_user->tx_commerce_basket->setReadOnly();
+			$GLOBALS['TSFE']->fe_user->tx_commerce_basket->store_data();
+		
+		}
 		if ($this->debug) debug($GLOBALS['TSFE']->fe_user->tx_commerce_basket);
 			// store the current step
 		$this->currentStep = strtolower($this->piVars['step']);
@@ -1009,7 +1019,9 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 		$GLOBALS['TSFE']->fe_user->setKey('ses', 'payment', NULL);		
 		$GLOBALS['TSFE']->fe_user->setKey('ses', 'delivery', NULL);		
 		$GLOBALS['TSFE']->fe_user->setKey('ses', 'billing', NULL);		
-				
+		
+		
+		
 		$GLOBALS['TSFE']->fe_user->tx_commerce_basket->finishOrder();
 		$GLOBALS['TSFE']->fe_user->tx_commerce_basket = t3lib_div::makeInstance('tx_commerce_basket');	
 		$GLOBALS['TSFE']->fe_user->tx_commerce_basket->set_session_id($pObj->fe_user->id);

@@ -37,6 +37,7 @@
 			<label index="checkoutlink">To the checkout</label>
 			<label index="delete_basket">Clear basket</label>
 			<label index="noStock">The amount of wanted articles is not available at this moment</label>
+			<label index="lang_basket_locked">Your Basket is currently locked, since a checkout session is present. Please checkout your basket first</label>	
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="lang_payment">Zahlungsart</label>
@@ -65,9 +66,11 @@
 			<label index="lang_basket_qv_chkout">Bestellen</label>
 			<label index="lang_basket_update">Aktualisieren</label>
 			<label index="lang_basket_delete_item">löschen</label>
-			<label index="checkoutlink">Zum Checkout</label>
+			<label index="checkoutlink">Zur Kasse</label>
 			<label index="delete_basket">Warenkorb leeren</label>
 			<label index="noStock">Die Anzahl der gewünschten Artikel ist im Augenblick nicht verfügbar</label>
+			<label index="lang_basket_locked">Der Warenkorb kann derzeit nicht bearbeitet werden, da dieser bereits in der Kasse bearbeitet wird. Bitte gehen Sie in die Kasse.</label>	
+
 		</languageKey>
 		<languageKey index="nl" type="array">
 			<label index="lang_payment">Betaling</label>

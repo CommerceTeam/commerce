@@ -83,6 +83,12 @@
 
 	var $crdate =0;
  	
+	/**
+	 * Current State of the Bakset
+	 *
+	 * @var boolean
+	 */
+	var $readOnly = false;
  	
  	/**
  	 * Dummy instantiate Method
@@ -108,7 +114,7 @@
  	 */
  	
  	function add_article($article_uid, $quantity=1,$priceid=''){
- 		if ($article_uid) {
+ 		if ($article_uid && $this->isChangeable()) {
 			if(is_object($this->basket_items[$article_uid]) || ($quantity == 0)){
 				$this->change_quantity($article_uid, $quantity);
 			}else{
@@ -154,11 +160,13 @@
  	 * @param $new_price_net
  	 */
  	function changePrices($article_uid,$new_price_gross,$new_price_net){
- 		if(is_object($this->basket_items[$article_uid])){
- 			$this->basket_items[$article_uid]->setPriceNet($new_price_net);
- 			$this->basket_items[$article_uid]->setPriceGross($new_price_gross);
- 			$this->basket_items[$article_uid]->recalculate_item_sums();	
- 		}	
+ 		if ($this->isChangeable()){
+	 		if(is_object($this->basket_items[$article_uid])){
+	 			$this->basket_items[$article_uid]->setPriceNet($new_price_net);
+	 			$this->basket_items[$article_uid]->setPriceGross($new_price_gross);
+	 			$this->basket_items[$article_uid]->recalculate_item_sums();	
+	 		}	
+ 		}
  			
  	}
  	
@@ -169,8 +177,10 @@
  	 * 
  	 */
  	function changeTitle($article_uid,$newtitle){
- 		if(is_object($this->basket_items[$article_uid])){
- 			$this->basket_items[$article_uid]->setTitle($newtitle);
+ 		if ($this->isChangeable()){
+	 		if(is_object($this->basket_items[$article_uid])){
+	 			$this->basket_items[$article_uid]->setTitle($newtitle);
+	 		}
  		}
  		
  	}
@@ -183,21 +193,23 @@
  	 */
  	
  	function change_quantity($article_uid, $quantity=1)
-     {
-         if ($quantity==0)
-         {
-             if(isset($this->basket_items[$article_uid])) {
-                 $this->delete_article($article_uid);
-             }
-             $items = $this->get_articles_by_article_type_uid_asUidlist(1);
-             if(count($items) == 0) {
-                 $this->delete_all_articles();
-             }
-             return true;//$this->delete_article($article_uid);
-         }
-         $this->recalculate_sums();
-         return $this->basket_items[$article_uid]->change_quantity($quantity);
-             
+     {	if ($this->isChangeable()){
+	         if ($quantity==0)
+	         {
+	             if(isset($this->basket_items[$article_uid])) {
+	                 $this->delete_article($article_uid);
+	             }
+	             $items = $this->get_articles_by_article_type_uid_asUidlist(1);
+	             if(count($items) == 0) {
+	                 $this->delete_all_articles();
+	             }
+	             return true;//$this->delete_article($article_uid);
+	         }
+	         $this->recalculate_sums();
+	         return $this->basket_items[$article_uid]->change_quantity($quantity);
+     	}else{
+     		return false;
+     	}
      }
  	/**
  	 * deletes article form basket
@@ -207,14 +219,17 @@
  	
  	function delete_article($article_uid)
  	{
- 		if(!isset($this->basket_items[$article_uid])) {
- 			return false;
+ 		if ($this->isChangeable()){
+	 		if(!isset($this->basket_items[$article_uid])) {
+	 			return false;
+	 		}
+	 		unset($this->basket_items[$article_uid]);
+			
+	 		$this->items--;
+	 		$this->recalculate_sums();
+	 		return true;
  		}
- 		unset($this->basket_items[$article_uid]);
-		
- 		$this->items--;
- 		$this->recalculate_sums();
- 		return true;
+ 		return false;
  	}
 	
 	/**
@@ -224,11 +239,14 @@
  	
  	function delete_all_articles()
  	{
- 		unset($this->basket_items);
-		$this->basket_items = array();
- 		$this->items = '0';
- 		$this->recalculate_sums();
- 		return true;
+ 		if ($this->isChangeable()){
+	 		unset($this->basket_items);
+			$this->basket_items = array();
+	 		$this->items = '0';
+	 		$this->recalculate_sums();
+	 		return true;
+ 		}
+ 		return false;
  	}
 	
 	/**
@@ -572,12 +590,46 @@
  	  * @return  void
  	  */
  	 function setTaxCalculationMethod($priceFromNet) {
+ 	 
  	 	$this->pricefromnet = $priceFromNet;
  	 	foreach ($this->basket_items as $one_item) {
  			$one_item->setTaxCalculationMethod($this->pricefromnet);
  		}
  	 }
  	
+ 	 
+ /**
+ 	 * Sets the Basket to readonly, for checkout
+ 	 *
+ 	 */
+ 	function setReadOnly(){
+ 		$this->readOnly = true;
+ 	}
+ 	/**
+ 	 * returns the currenty readonly statd
+ 	 *
+ 	 * @return boolean: true if readonly
+ 	 */
+ 	
+ 	function isReadOnly(){
+ 		return $this->readOnly;
+ 	}
+ 	/**
+ 	 * returns True if the basket is changeable
+ 	 *
+ 	 * @return unknown
+ 	 */
+ 	function isChangeable(){
+ 		return !$this->readOnly;
+ 	}
+ 	
+ 	/**
+ 	 * releasses the readOnly
+ 	 *
+ 	 */
+ 	function releaseReadOnly(){
+ 		$this->readOnly = false;
+ 	}
  }
  
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']["ext/commerce/lib/class.tx_commerce_basic_basket.php"])	{

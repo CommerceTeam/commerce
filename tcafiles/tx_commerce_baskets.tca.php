@@ -110,14 +110,21 @@ $TCA['tx_commerce_baskets'] = Array (
 				'default' => 0
 			)
 		),
-                'finished_time' => Array (
+         'finished_time' => Array (
                         'exclude' => 1,
                         'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_basket.finished_time',
                         'config' => Array (
 			       'type' => 'input',
 	                       'eval' => 'date',
-	               )
+	           )
 	   ),
+	   ' readonly' => Array(
+	   				 'exclude' => 1,
+	   				 'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_basket.readonly',
+	   				 'config' => array (
+							'type' => 'check',
+					 )
+	   		),
 																					       
 	),
 	'types' => Array (

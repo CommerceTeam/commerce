@@ -135,8 +135,19 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 		
 		$this->init($conf);
 		
-		// get the template
+		if(($this->basket->getItemsCount() == 0) && ($this->basket->getArticleTypeCountFromList(explode(',',$this->conf['regularArticleTypes'])) == 0)){
+		
+			// If basket is Emtpy, it should be rewriteable
+			// release locks, if there are any
+			$this->basket->releaseReadOnly();
+			$this->basket->store_data();
+		}
+		
 		if(($this->basket->getItemsCount()>0) && ($this->basket->getArticleTypeCountFromList(explode(',',$this->conf['regularArticleTypes']))>0)){
+		
+		
+		
+		// get the template
 			
 			
 			switch($this->handle){
@@ -148,6 +159,7 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 			    $this->generateBasket();
 			}
 		}else{
+			
 		    if($this->handle == "QUICKVIEW"){
 		    	$templateMarker = '###PRODUCT_BASKET_QUICKVIEW_EMPTY###';
 		    }else{
@@ -163,7 +175,7 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 		    
 		    
 		    $this->content = $this->cObj->substituteMarkerArrayCached($template, $markerArray );
-	}
+		}
 		
 		return $this->pi_wrapInBaseClass($this->content);
 	}
@@ -350,6 +362,19 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 		$templateMarker = '###BASKET###';
 		$this->mytemplate = $this->cObj->getSubpart($this->templateCode, $templateMarker);
 	  
+		
+		
+		/**
+		 * Render Locked information
+		 */
+		
+		if ($this->basket->isReadOnly()){
+			$basketSubpart = $this->cObj->getSubpart($this->mytemplate,'BASKETLOCKED');
+			$this->mytemplate = $this->cObj->substituteSubpart($this->mytemplate,'BASKETLOCKED',$basketSubpart);
+			
+		}else{
+			$this->mytemplate = $this->cObj->substituteSubpart($this->mytemplate,'BASKETLOCKED','');
+		}
 	    $basketArray['###BASKET_PRODUCT_LIST###'] = $this->makeProductList();
 	   
 	    // Check if an Delivery_article is present

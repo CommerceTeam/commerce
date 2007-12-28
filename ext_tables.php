@@ -338,7 +338,7 @@ $TCA['tx_commerce_articles'] = Array (
 		'iconfile' => PATH_txcommerce_icon_table_rel.'article.gif',		
 	),
 	'feInterface' => Array (
-		'fe_admin_fieldList' => 'sys_language_uid, l18n_parent, l18n_diffsource, hidden, starttime, endtime, fe_group, title, subtitle, navtitle, images, ordernumber, eancode, description_extra,plain_text price_gross, price_net, purchase_price, tax, article_type_uid, products_uid, article_attributes',
+		'fe_admin_fieldList' => 'sys_language_uid, l18n_parent, l18n_diffsource, hidden, starttime, endtime, fe_group, title, subtitle, navtitle, images, ordernumber, eancode, description_extra,plain_text, price_gross, price_net, purchase_price, tax, article_type_uid, products_uid, article_attributes',
 	)
 );
 

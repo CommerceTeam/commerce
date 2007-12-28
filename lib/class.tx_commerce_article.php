@@ -300,7 +300,8 @@
 		}
 		
 		/**
-		 * 
+	
+	 * 
 		 *
 		 * Get Article price scales
 		 * @param	$startcount	Count where to start with teh listing of the sacles, default 1
@@ -604,14 +605,48 @@
          * 'unit' => $unit),
          *  ...
          * )
-         *  
+         *          
+         * @author Sebastian Boettger - Cross Content Media <dev@cross-content.com> 
          * @return array of arrays
          */   
                 
          function get_article_attributes()
          {
-         		
+            $local_table = 'tx_commerce_articles';
+            $mm_table = 'tx_commerce_articles_article_attributes_mm';
+            $foreign_table = 'tx_commerce_attributes';
+            $select = 'DISTINCT '.$foreign_table.'.uid, '.$foreign_table.'.title';
+            $ignore = array('fe_group' => 1);
+            $whereClause = t3lib_pageSelect::enableFields('tx_commerce_attributes', '', $ignore);				
+            
+            $groupBy='';
+            $orderBy='';
+            $limit='';
+            
+         		$setArticleAttributesResult = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
+              $select,
+              $local_table,
+              $mm_table,
+              $foreign_table,
+              $whereClause,
+              $groupBy,
+              $orderBy,
+              $limit);
          	
+         	  while ($return_data=$GLOBALS['TYPO3_DB']->sql_fetch_assoc($setArticleAttributesResult))	{
+         	    if (!empty($return_data['uid']))
+      	 				$attributes_uid_list[$return_data['uid']]=$return_data['title'];
+	 	     		}
+	 			    $GLOBALS['TYPO3_DB']->sql_free_result($setArticleAttributesResult);
+	 			    foreach ($attributes_uid_list as $uid => $title){
+	 			     $value = $this->getAttributeValue($uid);
+	 			     if (!empty($value))
+  	 			     $vals[$uid] = array (
+  	 			       'title' => $title,
+                 'value' => $this->getAttributeValue($uid)
+                );
+            }
+            return $vals;
          }
          
          /**

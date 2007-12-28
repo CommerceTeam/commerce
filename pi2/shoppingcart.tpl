@@ -22,6 +22,9 @@
 <div class="com-basket-container">
     <h2>###LANG_BASKET_HEADER_TITLE###</h2>
     <p class="com-basket-header-text">###LANG_BASKET_HEADER_TEXT###</p>
+    <!--  ###BASKETLOCKED### begin -->
+    <p class="com-basket-header-info">###LANG_BASKET_LOCKED###</p>
+    <!--  ###BASKETLOCKED### end -->
     <div class="com-basket-box">
 	<table class="com-basket-list" cellspacing="0" cellpadding="0" border="0">
 		<thead>
