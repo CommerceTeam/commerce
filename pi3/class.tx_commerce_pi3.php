@@ -490,6 +490,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 		$markerArray['###ADDRESS_DESCRIPTION###'] = $this->pi_getLL('delivery_description');
 
 			// get the form
+		// Marker Depricated
 		$markerArray['###ADDRESS_FORM_TAG###'] = '<form name="addressForm" action="'.$this->pi_getPageLink($GLOBALS['TSFE']->id).'" method="post" '.$this->conf[$this->step.'.']['formParams'].'>';
 		
 		$markerArray['###ADDRESS_FORM_HIDDENFIELDS###'] = '<input type="hidden" name="'.$this->prefixId.'[step]" value="payment" />'.
@@ -526,7 +527,8 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 		$markerArray['###ADDRESS_RADIOFORM_NODELIVERY###']= '';
 		$markerArray['###ADDRESS_LABEL_DELIVERY###'] = '';
 		$markerArray['###ADDRESS_LABEL_NODELIVERY###']= '';
-				
+
+		// Marker Depricated, use new Tepmplate
 		$markerArray['###ADDRESS_FORM_FIELDS###'] = $deliveryForm;
 		$markerArray['###ADDRESS_FORM_SUBMIT###'] = '<input type="submit" value="' .$this->pi_getLL('delivery_submit') .'" />';
 		
