@@ -335,16 +335,19 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 	
 			}
 			
-			$lokContent = $this->cObj->stdWrap($this->pi_getLL('label_step_'.$this->CheckOutsteps[$i]),$localTs);
+			$label = sprintf($this->pi_getLL('label_step_'.$this->CheckOutsteps[$i]), $i + 1);
+			$lokContent = $this->cObj->stdWrap($label, $localTs);
 			
 			$activeContent.=$this->cObj->substituteMarker($activeTemplate,'###LINKTOSTEP###',$lokContent);
 		}
-		$lokContent = $this->cObj->stdWrap($this->pi_getLL('label_step_'.$this->CheckOutsteps[$i]),$this->conf['actualStep.']);
-		$actualContent = $this->cObj->substituteMarker($actualTemplate,'###STEPNAME###',$lokContent);
+		$label = sprintf($this->pi_getLL('label_step_'.$this->CheckOutsteps[$i]), $i + 1);
+		$lokContent = $this->cObj->stdWrap($label, $this->conf['actualStep.']);
+ 		$actualContent = $this->cObj->substituteMarker($actualTemplate,'###STEPNAME###',$lokContent);
 		for ($i=($currentStepNumber+1);$i <= count($this->CheckOutsteps);$i++){
 			
-			$lokContent = $this->cObj->stdWrap($this->pi_getLL('label_step_'.$this->CheckOutsteps[$i]),$this->conf['inactiveStep.']);
-			
+			$label = sprintf($this->pi_getLL('label_step_'.$this->CheckOutsteps[$i]), $i + 1);
+			$lokContent = $this->cObj->stdWrap($label, $this->conf['inactiveStep.']);
+ 			
 			$inactiveContent.=$this->cObj->substituteMarker($inactiveTemplate,'###STEPNAME###',$lokContent);
 			
 		}
