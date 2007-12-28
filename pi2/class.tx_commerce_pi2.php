@@ -737,9 +737,9 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 	   		  * 
 	   		  **/
 			if (is_array($this->conf['deleteItem.'])) {
-				$typolinkConf = $this->conf['deleteItem.'];
+				$typoLinkConf = $this->conf['deleteItem.'];
 			}else{
-				$typolinkConf = array();
+				$typoLinkConf = array();
 			}
 			$typoLinkConf['parameter'] = $this->conf['basketPid'];
 			$typoLinkConf['useCacheHash'] = 1;

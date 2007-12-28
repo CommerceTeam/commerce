@@ -10,6 +10,7 @@ Changelog for tx_commerce
 * fixed Bug 6917, Thanks to Batomo
 * Fixed Bug 6850
 * Fixed Bug 6499, Thanks to Michiel Roos
+* Fixed Bug 6794, Thanks To Sascha Egerer
 
 27.12.2007 Ingo Schmitt <is@marketing-factory.de>
 * Updated Documentation concerning imgPath
