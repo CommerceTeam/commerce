@@ -6,7 +6,7 @@ Changelog for tx_commerce
 * Fixed wrong xclass inclusion code in ux_localrecordlist.php. Thankts to Ricardo Mieres <ricardo.mieres@502.cl>
 * Fixed Typo in ext_tables.php, Thanks to Elena Kuprienko <elena@kuprienko.de>
 * Added method get_article_attributes() to tx_commerce_articles, Thanks to Sebastian Boettger - Cross Content Media <dev@cross-content.com> 
-
+* Fixed Bug 6279, Thanks to Axel Klarmann and Michiel Roos
 
 27.12.2007 Ingo Schmitt <is@marketing-factory.de>
 * Updated Documentation concerning imgPath
