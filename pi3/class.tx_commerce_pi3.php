@@ -1442,9 +1442,32 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 					$feuData['password'] = substr(uniqid(rand()), 0, 6);
 					$feuData['email'] = $this->MYSESSION['billing']['email'];
 					$feuData['name'] = $this->MYSESSION['billing']['name'].' '.$this->MYSESSION['billing']['surname'];
+					/**
+					 * Hook for processing feUserData
+					 * @author Volker Graubaum ( typo3@e-netconsulting.de )
+					 * @since 29.12.2007
+					 *
+					 */
+					$hookObjectsArr = array();
+					if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi3/class.tx_commerce_pi3.php']['handleAddress']))	{
+						foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi3/class.tx_commerce_pi3.php']['handleAddress'] as $classRef)	{
+							$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+						}
+					}
+					foreach($hookObjectsArr as $hookObj)	{
+						if (method_exists($hookObj, 'preProcessUserData'))	{
+							$hookObj->preProcessUserData($feuData,$this);
+						}
+					}
+					
 					$GLOBALS['TYPO3_DB']->exec_INSERTquery('fe_users', $feuData);
 					$dataArray[$config['userConnection']] = $GLOBALS['TYPO3_DB']->sql_insert_id();
 					$GLOBALS['TSFE']->fe_user->user['uid'] = $dataArray[$config['userConnection']];
+					foreach($hookObjectsArr as $hookObj)	{
+						if (method_exists($hookObj, 'postProcessUserData'))	{
+								$hookObj->postProcessUserData($feuData,$this);
+						}
+					}
 					$this->userData = $feuData;
 				}
 			}

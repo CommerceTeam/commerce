@@ -125,6 +125,7 @@ Some hook-methods can return data which is used by the calling function. Others 
 	<div class="functionindex">function getListing</div>
 	<div class="functionindex">function finishIt</div>
 	<div class="functionindex">function getBasketSum</div>
+	<div class="functionindex">function handleAddress</div>
 	<div class="functionindex">function sendUserMail</div>
 	<div class="functionindex">function sendAdminMail</div>
 	<div class="functionindex">function generateMail</div>
@@ -141,9 +142,9 @@ Some hook-methods can return data which is used by the calling function. Others 
 <div class="classindex">tx_commerce_articlecreator</div>
 </a>
 	<div class="functionindex">function createArticle</div>
-	
+
 	<hr/>
-	
+
 	<div class="filename">lib/class.tx_commerce_article.php</div>
 		<a name="tx_commerce_article"/>
 		<div class="classname">class tx_commerce_article</div>
@@ -266,18 +267,18 @@ Some hook-methods can return data which is used by the calling function. Others 
 					Result: string - The new ORDER BY clause to read the database<br />
 					This hook returns the ORDER BY field(s) that will be passed on to the t3lib_db later on.</div>
 				<div class="hookname">GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_db_category.php']['productQueryPreHook']</div>
-			
+
 					<div class="Description">productQueryPreHook($data, $this)<br />
 					Type: Single<br/>
 					Result: queryArray -> Modificated QueryArray to work with the database
-					
+
 					</div>
 				<div class="hookname">GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_db_category.php']['productQueryPostHook']</div>
-			
+
 					<div class="Description">productQueryPostHook($data, $this)<br />
 					Type: Single<br/>
 					Result: queryArray -> Modificated of data after the query
-					
+
 					</div>
 	<div class="filename">lib/class.tx_commerce_db_product.php</div>
 	<a name="tx_commerce_db_product"/>
@@ -318,20 +319,20 @@ Some hook-methods can return data which is used by the calling function. Others 
 					Type: Multiple<br/>
 					Result: array() - A new $markerArray<br />
 					ADD some markers to the $markerArray and RETURN it as the result of this hook is used as the new $markerArray</div>
-			
+
 			<div class="functionname">formatAttributeValue</div>
 				<div class="hookname">GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['formatAttributeValue']</div>
 					<div class="description">Call: formatAttributeValue($key, $myAttributeUid, $matrix[$myAttributeUid]['valueuidlist'][$key], $return2, $this)<br/>
 					Type: Single<br/>
 					Result: string, new formating<br />
 					Changes the default formating</div>
-			
+
 			<div class="functionname">addAdditionalLocallang</div>
 				<div class="hookname">GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['locallang']</div>
 					<div class="description">Call: loadAdditionalLocallang($this)<br/>
 					Type: Multiple<br/>
 					possibility to add your own locallang-files</div>
-	
+
 	<div class="filename">lib/class.tx_commerce_product.php</div>
 		<a name="tx_commerce_product"/>
 		<div class="classname">class tx_commerce_product</div>
@@ -494,6 +495,21 @@ Some hook-methods can return data which is used by the calling function. Others 
 					Result: array() - A new $markerArray<br />
 					ADD additional markers to the $markerArray and RETURN it. The result of this hook is used as the new $markerArray.<br/>
 					This $markerArray is used to substitute the output of the BasketSum. I.e. the "'###LISTING_BASKET_'.strtoupper($type).'###'" sub part of the template.
+					</div>
+			<div class="functionname">function getBasketSum</div>
+				<div class="hookname">$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi3/class.tx_commerce_pi3.php']['handleAddress']</div>
+					<div class="description">
+					Call: preProcessUserData($feuData,$this)<br/>
+					Type: Multiple<br />
+					Result: void<br />
+					manipulation of fe_user Data, for example for creating a md5 password, before the user is created
+					</div>
+					<div class="description">
+							Call: preProcessUserData($feuData,$this)<br/>
+							Type: Multiple<br />
+							Result: void<br />
+							manipulation of fe_user Data, for example after creating a md5 password, after the user is created
+							$feuData will be used in the next steps (for example sending a usermail
 					</div>
 			<div class="functionname">function sendUserMail</div>
 				<div class="hookname">$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi3/class.tx_commerce_pi3.php']['sendUserMail']</div>

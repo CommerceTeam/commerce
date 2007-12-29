@@ -1,5 +1,8 @@
 Changelog for tx_commerce
 (add new changes on top of this file)
+29.12.2007 Volker Graubaum <vg@e-netconsulting.de>
+* add new hook in pi3, concerning Bug 5359, see hooklist in doc path
+
 28.12.2007 Ingo Schmitt <is@narketing-factory.de>
 * Added Feature "Lock Basket" for external Payment provider. Thanks to Thibaut van de Mortel <tibo@goutemesdisques.com> for pointing me to this issue.
 * Cleand up ext_em_conf Template
