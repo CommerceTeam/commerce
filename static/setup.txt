@@ -717,6 +717,8 @@ lib.tx_commerce.navigation {
        	showProducts = 0
        	// PID fuer die Anzeige der Seite
        	overridePid = {$plugin.tx_commerce_lib.overridePid}
+       	// EntryLervel
+       	entryLevel = 0
        	
        	// List of categories, where to display the manufacturere in adition to the catgeories in the menue
        	displayManuForCat <

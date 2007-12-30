@@ -2,6 +2,7 @@ Changelog for tx_commerce
 (add new changes on top of this file)
 30.12.2007 Ingo Schmitt <is@marketing-factory.de>
 * Fixed Bug 5008
+* Fixed Bug 5545
 
 29.12.2007 Volker Graubaum <vg@e-netconsulting.de>
 * add new hook in pi3, concerning Bug 5359, see hooklist in doc path

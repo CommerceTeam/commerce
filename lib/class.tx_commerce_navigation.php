@@ -99,6 +99,8 @@ class tx_commerce_navigation {
 			$this->useRootlineInformationToUrl = $this->mConf['useRootlineInformationToUrl'];
 		}
 		
+	
+		$this->choosenCat = $this->mConf['category'];
 		
 		
 		$this->PID = $this->mConf['overridePid'] ? $this->mConf['overridePid'] : $GLOBALS['TSFE']->id;
@@ -114,7 +116,7 @@ class tx_commerce_navigation {
 		
 		/**
 		 * Detect if a user is logged in and if he or she has usergroups
-		 * as we have to take in accout, taht different usergroups may have different
+		 * as we have to take in accout, that different usergroups may have different
 		 * rights on the commerce tree, so consider this whe calculation the cache hash.
 		 */
 		$usergroups = '';
@@ -124,7 +126,9 @@ class tx_commerce_navigation {
 		
 		
 	    $this->cat =$this->getRootCategory();
-
+	    // Define a default
+		$this->choosenCat = $this->mConf['category'];
+		
 		$this->ShowUid = $this->gpVars['showUid'] ? $this->gpVars['showUid'] : 0;
 		$this->mDepth = $this->gpVars['mDepth'] ? $this->gpVars['mDepth'] : 0;
 		$this->PATH = $this->gpVars['path'] ? $this->gpVars['path'] : 0;
@@ -155,6 +159,15 @@ class tx_commerce_navigation {
         	// Build directly and don't sore, if no_cache=1'
         	
         	$this->mTree=$this->makeArrayPostRender($this->PID,"tx_commerce_categories","tx_commerce_categories_parent_category_mm","tx_commerce_products","tx_commerce_products_categories_mm",$this->cat,1);
+        	
+			/**
+			 * Sorting Options, there is only one type "alphabetiDesc" :) the others must to program
+			 * 
+			 * @todo: implement sortType:alphabetiAsc,byUid, bySorting
+			 */
+        	if ($this->mConf['sortAllitems.']['type']=='alphabetiDesc'){
+				$this->sortAllMenuArray($this->mTree,'alphabetiDesc');
+			}
 	    }elseif (isset($cachedMatrix))  	{
 	    	
 	    	// User the cached version
@@ -163,6 +176,15 @@ class tx_commerce_navigation {
 			
 			// no cache present buld data and stor it in cache
 			$this->mTree=$this->makeArrayPostRender($this->PID,"tx_commerce_categories","tx_commerce_categories_parent_category_mm","tx_commerce_products","tx_commerce_products_categories_mm",$this->cat,1);
+			
+			/**
+			 * Sorting Options, there is only one type "alphabetiDesc" :) the others must to program
+			 * 
+			 * @todo: implement sortType:alphabetiAsc,byUid, bySorting
+			 */
+			if ($this->mConf['sortAllitems.']['type']=='alphabetiDesc'){
+				$this->sortAllMenuArray($this->mTree,'alphabetiDesc');
+			}
 			$this->storeHash($hash,serialize($this->mTree),'COMMERCE_MENU_NAV'.$this->cat);
 		}
 		
@@ -182,8 +204,6 @@ class tx_commerce_navigation {
 			$this->choosenCat = $myProduct->getMasterparentCategorie();
 		}
 		
-		
-		
 	    if ($this->gpVars['path']) {
         	$this->PATH = $this->gpVars['path'];
         	$this->pathParents=split(",",$this->PATH);
@@ -194,10 +214,18 @@ class tx_commerce_navigation {
         	$myCat = t3lib_div::makeInstance('tx_commerce_category');
         	$myCat ->init($this->choosenCat);
         	$myCat ->load_data();
-        		//MODIF DE LUC >AMEOS : Get the right path with custom method
-			$aPath = $this->GetRootLine($this->mTree,$this->choosenCat,$this->mConf["expandAll"]);
-        	//$tmpArray=$myCat->get_categorie_rootline_uidlist();
-			$tmpArray = $aPath;
+			//MODIF DE LUC >AMEOS : Get the right path with custom method
+			$aPath = $this->getRootLine($this->mTree,$this->choosenCat,$this->mConf["expandAll"]);
+        	if (!$aPath){
+        		/**
+				 * if the methode getRootLine fail, we take the path direct from the DB.
+				 */
+        		$tmpArray=$myCat->get_categorie_rootline_uidlist();
+        		$this->fixPathParents($tmpArray,$this->cat);	
+        	}else{
+        		$tmpArray = $aPath;
+        	}
+			//
         	/**
         	 * Strip the Staring point and the value 0
         	 */
@@ -212,12 +240,12 @@ class tx_commerce_navigation {
         		}
         		
         	}
+        	
         	if ($this->mConf['groupOptions.']['onOptions']==1 && $GLOBALS['TSFE']->fe_user->user['usergroup']!=''){
         		$this->fixPathParents($this->pathParents,$keys[0]);	
         	}
         	
      		$this->pathParents=array_reverse($this->pathParents);
-            //debug($this->pathParents);
         	if (!$this->gpVars['mDepth']) {
         		$this->mDepth = count($this->pathParents);
 				if($this->gpVars['manufacturer']){
@@ -236,11 +264,13 @@ class tx_commerce_navigation {
 		
 		
 		if($this->pathParents){
+			
+			
+			
 			$this->processArrayPostRender($this->mTree,$this->pathParents,$this->mDepth);
 			
 		}
-		#t3lib_div::debug($this->pathParents, 'init::pathParents');
-		#t3lib_div::debug($this->mTree, 'init::mTree');
+		
 		return  $this->mTree;
 	}
 	function fixPathParents(&$pathArray,$chosenCatUid){
@@ -348,11 +378,16 @@ class tx_commerce_navigation {
 		
 		#$sql.= 'order by title';
 		$res=$GLOBALS['TYPO3_DB']->sql_query($sql);
+		
+		
+		
+		
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)){
 			$nodeArray = array();
 			$dataRow = $this->getDataRow($row['uid_local'],$mainTable);
 
 			if ($dataRow['deleted']=='0'){
+				 $nodeArray['CommerceMenu'] = true;
 			 	 $nodeArray['pid'] = $dataRow['pid'];
 				 $nodeArray['uid'] = $uidPage;
 				 $nodeArray['title'] = $dataRow['title'];
@@ -364,12 +399,16 @@ class tx_commerce_navigation {
 				 $nodeArray['hasSubChild'] = $this->hasSubChild($row['uid_local'],$tableSubMm);
 				 $nodeArray['subChildTable'] = $tableSubMm;
 				 $nodeArray['tableSubMain'] = $tableSubMain;
+				 $nodeArray['_ADD_GETVARS'].= ini_get('arg_separator.output').$this->prefixId.'[catUid]='.$row['uid_local'];
 				 if ($path!=0) {
 					 $nodeArray['path']=$dataRow['uid'].','.$path;
 				 }else{				 
 				 		 $nodeArray['path']=$dataRow['uid'];
 				 }
 				 $aCatToManu = explode(",",$this->mConf['displayManuForCat']);
+				 if ($this->useRootlineInformationToUrl==1) {
+				 		$nodeArray['_ADD_GETVARS'] .= ini_get('arg_separator.output') .$this->prefixId.'[mDepth]='.$mDepth.ini_get('arg_separator.output') .$this->prefixId.'[path]='.$nodeArray['path'];
+				 }
 					if(in_array($row['uid_local'],$aCatToManu) || strtolower(trim($aCatToManu["0"])) == "all"){
 						$nodeArray['--subLevel--'] = array();
 						$this->arrayMerge($nodeArray['--subLevel--'],$this->GetManuAsCat($dataRow['pid'],$uidPage,$mainTable, $tableMm,$tableSubMain,$tableSubMm,$row['uid_local'],$mDepth+1,$nodeArray['path'])); 
@@ -383,12 +422,7 @@ class tx_commerce_navigation {
 				    
 				     
 				    if($nodeArray['hasSubChild']==1 && $this->mConf['showProducts']==1){
-				    	
-				    	
-				    	
-				   
 				    	$arraySubChild=array();
-				    	
 				    	$arraySubChild=$this->makeSubChildArrayPostRender($uidPage,$tableSubMain,$tableSubMm,$row['uid_local'],$mDepth+1,$nodeArray['path']);
 				    	
 				    	$this->arrayMerge($nodeArray['--subLevel--'], $arraySubChild);
@@ -401,11 +435,7 @@ class tx_commerce_navigation {
 				    }
 				    if($this->expandAll){
 				    	$nodeArray['_SUB_MENU']=$nodeArray['--subLevel--'];
-				    }
-				 	$nodeArray['_ADD_GETVARS'].= ini_get('arg_separator.output').$this->prefixId.'[catUid]='.$row['uid_local'];
-				 	if ($this->useRootlineInformationToUrl==1) {
-				 		$nodeArray['_ADD_GETVARS'] .= ini_get('arg_separator.output') .$this->prefixId.'[mDepth]='.$mDepth.ini_get('arg_separator.output') .$this->prefixId.'[path]='.$nodeArray['path'];
-				 	}
+				    } 	
 				 	if ($this->gpVars['basketHashValue']) {
 						$nodeArray['_ADD_GETVARS'] .=ini_get('arg_separator.output') .$this->prefixId.'[basketHashValue]='.$this->gpVars['basketHashValue'];
 					}
@@ -415,10 +445,6 @@ class tx_commerce_navigation {
 				 
 				 }
 				 else{
-				 	#if ($nodeArray['leaf']==1 &&  $nodeArray['hasSubChild']==2)
-				 	  $nodeArray['_ADD_GETVARS'] = ini_get('arg_separator.output') .$this->prefixId.'[catUid]='.$uid_root;
-				 	#else
-				 	#	$nodeArray['_ADD_GETVARS'] = ini_get('arg_separator.output') .$this->prefixId.'[catUid]='.$row['uid_local'];
 				 	
 				 	if($nodeArray['hasSubChild']==2){
 				    	$nodeArray['_ADD_GETVARS'].=ini_get('arg_separator.output') .$this->prefixId.'[showUid]='.$dataRow[uid];
@@ -442,18 +468,20 @@ class tx_commerce_navigation {
 		if ($treeList==null && $this->mConf['showProducts']==1){
 			$treeList=$this->makeSubChildArrayPostRender($uidPage,$tableSubMain,$tableSubMm,$uid_root,$mDepth,$path);
 		}
+		//t3lib_div::debug($treeList);
 		return $treeList;
 	}
 	/**
-	 * Makes the prodcutlist for the menu
+	 * Makes a set of  ItemMenu product list  of a category.
 	 * @author Ricardo Mieres <ricardo.mieres@502.cl>
+	 * 
 	 * @param	array	$mainTable: main table
 	 * @param	array	$table_mm: mm table
 	 * @param	array	$uid_root: category Uid
 	 * @param	array	$mDepth:
 	 * @param	array	$path: 
 	 * @param	integer	$Manufacturere Uid
-	 * @return	array	TSConfig with ItemArrayProcFunc
+	 * @return	array	array to be processed by HMENU
 	 * 
 	 */
 	function makeSubChildArrayPostRender($uidPage,$mainTable, $tableMm,$uid_root,$mDepth=1,$path=0,$manuuid=false) {
@@ -485,6 +513,7 @@ class tx_commerce_navigation {
 			$nodeArray = array();
 			$dataRow = $this->getDataRow($row['uid_local'],$mainTable);
 			if ($dataRow['deleted']=='0'){
+				$nodeArray['CommerceMenu'] = true;
 			 	$nodeArray['pid'] = $dataRow['pid'];
 				$nodeArray['uid'] = $uidPage;
 				$nodeArray['title'] = $dataRow['title'];
@@ -507,7 +536,7 @@ class tx_commerce_navigation {
 				 	$nodeArray['_ADD_GETVARS'] = ini_get('arg_separator.output') .$this->prefixId.'[catUid]='.$row['uid_local'];
 				 	
 		    	$nodeArray['_ADD_GETVARS'] .= ini_get('arg_separator.output') .$this->prefixId.'[showUid]='.$dataRow[uid];
-				$nodeArray['_ADD_GETVARS'] .= ini_get('arg_separator.output') .$this->prefixId.'[mDepth]='.$mDepth.ini_get('arg_separator.output') .$this->prefixId.'[path]='.$nodeArray['path'];
+				//$nodeArray['_ADD_GETVARS'] .= ini_get('arg_separator.output') .$this->prefixId.'[mDepth]='.$mDepth.ini_get('arg_separator.output') .$this->prefixId.'[path]='.$nodeArray['path'];
 			   
 			 	if ($this->useRootlineInformationToUrl==1) 
 				 		$nodeArray['_ADD_GETVARS'] .= ini_get('arg_separator.output') .$this->prefixId.'[mDepth]='.$mDepth.ini_get('arg_separator.output') .$this->prefixId.'[path]='.$nodeArray['path'];
@@ -528,6 +557,16 @@ class tx_commerce_navigation {
 		}
 		return $treeList;
 	}
+	/**
+	 * Process the menuArray to set state for a selected item
+	 * @author Ricardo Mieres <ricardo.mieres@502.cl>
+	 * 
+	 * @param array byRef $treeArray
+	 * @param array 	$path: path of the itemMen
+	 * @param array 	$mDepth: depth of the itemMenu
+	 * 
+	 */
+	
 	function processArrayPostRender(&$treeArray,$path=array(),$mDepth){
 		if($this->gpVars['manufacturer']){
 			foreach($treeArray as $key=>$val){
@@ -542,14 +581,24 @@ class tx_commerce_navigation {
 				$treeArray[$path[0]]['ITEM_STATE'] = 'ACT';
 					if ($path[0] == $this->choosenCat) {
 						$treeArray[$path[0]]['ITEM_STATE'] = 'CUR';
+						
+						/**
+						 * Sets this node (Product) as current item
+						 */
+						if ($this->ShowUid > 0){
+							$treeArray[$path[0]]['--subLevel--'][$this->ShowUid]['ITEM_STATE']='CUR';
+							$treeArray[$path[0]]['ITEM_STATE'] = 'ACT';
+						}
 					}
+			
 					if($this->ShowUid==$path[0]){
 						$treeArray[$path[0]]['ITEM_STATE'] = 'CUR';
 					}
+					
 					if (count($treeArray[$path[0]]['--subLevel--'])>0) { 
 						$treeArray[$path[0]]['_SUB_MENU']=$treeArray[$path[0]]['--subLevel--'];
 					}
-				return 0;
+				return;
 			}else{
 				if(is_array($path)){
 					if(is_array($treeArray)){
@@ -571,32 +620,56 @@ class tx_commerce_navigation {
 			}
 		}
 	}
+	/**
+	 * Gets the data to fill a node
+	 * @author Ricardo Mieres <ricardo.mieres@502.cl>
+	 * 
+	 * @param int $uid
+	 * @param string $tableName
+	 * 
+	 * @return array
+	 */
 	function getDataRow($uid,$tableName){
 		if ($uid=="" or $tableName==""){
 			return "";
 		}
 		$addWhere=$GLOBALS['TSFE']->sys_page->enableFields($tableName,$GLOBALS['TSFE']->showHiddenRecords);
-		
-		#$sql = $sql = 'SELECT * FROM `'.$tableName.'` WHERE `uid` = '.$uid.$addWhere.' LIMIT 0, 30 ';
-		$sql = $sql = 'SELECT * FROM `'.$tableName.'` WHERE `uid` = '.$uid.$addWhere.' LIMIT 1 ';
-		$res=$GLOBALS['TYPO3_DB']->sql_query ($sql);
-		if ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res))
-			return $row;
+		$where = '`uid` = '.$uid;
+		$row=$GLOBALS['TYPO3_DB']->exec_SELECTgetRows('*',$tableName,$where.$addWhere,$groupBy='',$orderBy='','1','');
+		if ($row[0]){
+			return $row[0];
+		}
+		return array();
 	}
+	/**
+	 * Determines if a item has no sub item 
+	 * @author	Ricardo Mieres <ricardo.mieres@502.cl>
+	 *  
+	 * @param int $uid
+	 * @param string $tableMm
+	 * @param string $subTableMM
+	 * 
+	 * @return int : 0|1|2
+	 */
 	function isLeaf($uid,$tableMm,$subTableMM){
 		if ($uid=="" or $tableMm==""){
 			return 2;
 		}
-		#$sql = $sql = 'SELECT * FROM `'.$tableMm.'` WHERE `uid_foreign` = '.$uid.' LIMIT 0, 30 ';
 		$sql = $sql = 'SELECT * FROM `'.$tableMm.'` WHERE `uid_foreign` = '.$uid.' LIMIT 1 ';
-		
 		$res=$GLOBALS['TYPO3_DB']->sql_query ($sql);
 		$hasSubChild=$this->hasSubchild($uid,$subTableMM);
 		if (($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) or $hasSubChild==1)
 			return 0;
 		return 1;
 		}
-
+	/**
+	 * Determines if a item has sub items in another  tb table
+	 * @author	Ricardo Mieres <ricardo.mieres@502.cl>
+	 * 
+	 * @param int $uid
+	 * @param string $tableMm
+	 * @return int : 0|1|2
+	 */
 	function hasSubChild($uid,$tableMm){
 		if ($uid=="" or $tableMm==""){
 			return 2;
@@ -629,6 +702,12 @@ class tx_commerce_navigation {
 	 * @return	array		return the cleaned menu item
 	 */
 	function clear($menuArr,$conf) {
+		
+		
+		# Clear, if not Commerce Menue Element
+		if ($menuArr[0]['CommerceMenu'] <> true) {
+			$menuArr = array();
+		}
 		while(list(,$item) = each($menuArr)) {
 			if($item['DO_NOT_RENDER'] == '1') {
 				$menuArr = array();
@@ -824,27 +903,20 @@ class tx_commerce_navigation {
     * @author luc muller <l.muller@ameos.com>
     */
    	
-   function GetRootLine($tree,$choosencat,$expand) {
+   function getRootLine(&$tree,$choosencat,$expand) {
 		foreach($tree as $key=>$val){
 			if($key == $choosencat){
-				if($val["leaf"] != 1){
-					$path = $val["path"];
-					$aPath = explode(',',$path);
-					$aPath = array_reverse($aPath);
-					return $aPath;
-				}elseif($val["tableSubMain"]){
-					$path = $val["path"];
-					$aPath = explode(',',$path);
-					$aPath = array_reverse($aPath);
-					return $aPath;
-				}
+				$path = $val["path"];
+				$aPath = explode(',',$path);
+				$aPath = array_reverse($aPath);
+				return $aPath;
 			}else{
 				if(is_array($val)){
 					if(!$val["subChildTable"]){
 						return FALSE;
 					}
 					if($val["--subLevel--"]){
-						$path = $this->GetRootLine($val["--subLevel--"],$choosencat,$expand);
+						$path = $this->getRootLine($val["--subLevel--"],$choosencat,$expand);
 						if($path){
 							if(is_array($path)){
 								$aPath = $path;	
@@ -860,6 +932,7 @@ class tx_commerce_navigation {
 		}
 
 	}
+
 	
 	/**
 	 * Adds the manuafacturer To the categoiry, as simulated category
@@ -965,13 +1038,62 @@ class tx_commerce_navigation {
 		return $aOutPut;
 
 	}
-}
+	
+	/**
+	 * Sorts all items of the array menu
+	 * @author	Ricardo Mires <ricardo.mieres@502.cl>
+	 * 
+	 * @param array byRef $treeArray 
+	 * @return void
+	 */
+	 function sortAllMenuArray(&$treeArray, $sortType='alphabetiDesc'){
+    	if($treeArray){
+	    	foreach($treeArray as $nodeUid => $node){
+	    		if(is_array($node['--subLevel--'])){
+	    			$this->sortArrayList($treeArray[$nodeUid]['--subLevel--'],$sortType);
+	    			$this->sortAllMenuArray($treeArray[$nodeUid]['--subLevel--'],$sortType);
+	    		}
+	    	}	
+    	}
+    }
+   /**
+    * Sorts a list of menu items
+    * @author	Ricardo Mieres <ricardo.mieres@502.cl>
+    * 
+    * @param array byRef $listNodes
+    * @param string $sortType
+    * @return boolean
+    * @todo: implement sortType:alphabetiAsc,byUid, bySorting
+    */
+   function sortArrayList(&$listNodes,$sortType='alphabetiDesc'){
+   		 if($sortType=='alphabetiDesc'){
+   		 	return uasort($listNodes,'compareAlphabeticDesc');
+   		 }
+   		 return false;
+   		  
+   } 
+}	
 
+
+/**
+ * Funciones de comparaciÃ³n  
+ */
+ 
+ /**
+ 	* Compares two strings , this function is called by sortArrayList
+	* @author	Ricardo Mieres <ricardo.mieres@502.cl>
+	* 
+	* @param array node : pointer to the first node
+	* @param array node : pointer to the first node
+	* @return void
+	*/
+	function compareAlphabeticDesc($a,$b){
+		
+		return strcmp(strtoupper($a['title']),strtoupper($b['title']));
+	}
 
 
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']["ext/commerce/lib/class.tx_commerce_navigation.php"])	{
 	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']["ext/commerce/lib/class.tx_commerce_navigation.php"]);
 }
-
-
 ?>
