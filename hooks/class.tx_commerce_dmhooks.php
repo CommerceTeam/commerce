@@ -207,7 +207,7 @@ class tx_commerce_dmhooks	{
 
 
 							if ($key == 'price_net' || $key == 'price_gross' || $key == 'purchase_price')	{
-								if (is_float($value)){
+								if (is_numeric($value)){
 									$value = $value *100;
 								}
 								

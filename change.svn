@@ -5,6 +5,7 @@ Changelog for tx_commerce
 * Fixed Bug 5545
 * Fixed Bug 5164, changed Encoding for usermail and adminmail to UTF8, changed template language to English
 * Fixed Bug 6679, Thanks to Michiel Roos and Dmitry Dulepov
+* Fixed Bug 7066
 
 29.12.2007 Volker Graubaum <vg@e-netconsulting.de>
 * add new hook in pi3, concerning Bug 5359, see hooklist in doc path
