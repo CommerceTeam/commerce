@@ -478,9 +478,8 @@ plugin.tx_commerce_pi3 {
 	inactiveStep.wrap =<i>|</i>
 	// sets Usermail Charset and Encoding
 	usermail {
-		//charset = utf-8
 		showCurrency = 0
-		charset = iso-8859-1
+		charset = utf-8
 		encoding = 8bit
 		from = john.doe@somewhere.com
 		cc = 

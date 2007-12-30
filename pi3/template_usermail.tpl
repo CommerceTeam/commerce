@@ -1,7 +1,6 @@
 <!--###MAILCONTENT### begin-->
 
 ###ORDERID###
-
 <!--###BASKET_VIEW### begin -->
 <!--###LISTING_ARTICLE### begin-->###BASKET_ITEM_COUNT### "###PRODUCT_TITLE###" ###BASKET_ITEM_PRICEGROSS### ###BASKET_ITEM_PRICESUM_GROSS###
 <!--###LISTING_ARTICLE### end-->-----------------------
@@ -21,22 +20,22 @@
 <!--###LISTING_BASKET_WEB### end-->
 
 <!--###BASKET_VIEW### end -->
-Rechnungsadresse:<!--###BILLING_ADDRESS### begin-->###COMPANY###
+Invoiceaddress:<!--###BILLING_ADDRESS### begin-->###COMPANY###
 ###NAME### ###SURNAME###
 ###ADDRESS###
 ###ZIP### ###CITY###
 ###COUNTRY###
 <!--###BILLING_ADDRESS### end-->
-Lieferadresse:<!--###DELIVERY_ADDRESS### begin-->###COMPANY###
+Deliveryaddress:<!--###DELIVERY_ADDRESS### begin-->###COMPANY###
 ###NAME### ###SURNAME###
 ###ADDRESS###
 ###ZIP### ###CITY###
 ###COUNTRY###<!--###DELIVERY_ADDRESS### end--> 
 
 <!--###NEW_USER### begin-->
-Ihre Nutzerdaten fuer den naechsten Besuch:
-Nutzername: ###USERNAME###
-Passwort: ###PASSWORD###
+Your user data for your next fisit:
+User: ###USERNAME###
+password: ###PASSWORD###
 <!--###NEW_USER### end-->
 	
 <!--###MAILCONTENT### end-->

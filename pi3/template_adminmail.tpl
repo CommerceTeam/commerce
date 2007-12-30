@@ -1,9 +1,9 @@
 <!--###MAILCONTENT### begin-->
 SHOPBESTELLUNG 
-Bestellnummer  ###ORDERID###
+Ordernumber  ###ORDERID###
 		
-Kommentar: ###COMMENT###
-		
+Commentary: ###COMMENT###
+	
 <!--###BASKET_VIEW### begin -->
 <!--###LISTING_ARTICLE### begin-->###BASKET_ITEM_COUNT### ###ARTICLE_EANCODE### "###PRODUCT_TITLE### ###PRODUCT_SUBTITLE###" � ###BASKET_ITEM_PRICEGROSS### ###BASKET_ITEM_PRICESUM_GROSS### 
 <!--###LISTING_ARTICLE### end-->
