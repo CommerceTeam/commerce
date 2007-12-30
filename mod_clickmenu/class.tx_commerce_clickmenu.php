@@ -156,7 +156,7 @@ class tx_commerce_clickMenu extends tx_graytree_clickMenu {
 				$editOnClick='if('.$loc.'){'.$loc.'.document.location=top.TS.PATH_typo3+\''.
 				($this->listFrame?
 					'alt_doc.php?returnUrl=\'+top.rawurlencode('.$this->frameLocation($loc.'.document').')+\'&edit['.$table.'][-'.$uid.']=new' .$defVals .$simpleMode .'\'':	 
-					PATH_txgraytree_rel.'mod_cmd/index.php?CMD=tx_graytree_cmd_new&id='.intval($pid).'&edit['.$table.'][-'.$uid.']=new&' .$defVals .$simpleMode ."'").
+					PATH_txgraytree_rel.'mod_cmd/index.php?CMD=tx_graytree_cmd_new&id='.intval($pid).'&edit['.$table.'][-'.$uid.']=new' .$defVals .$simpleMode ."'").
 				';}';
 	
 				$linkText = trim($GLOBALS['LANG']->sL($this->languageFile.':tx_graytree_cm1.new_'.$table,1));
