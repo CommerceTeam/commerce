@@ -117,6 +117,23 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 		if($this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'basketPid', 's_template')){
 			$this->conf['basketPid'] = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'basketPid', 's_template');			
 		}
+
+		// alex widschwendter [media.res] 
+		if($this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'dontLinkActivePage', 's_template')){
+			$this->conf['pageBrowser.']['dontLinkActivePage'] = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'dontLinkActivePage', 's_template');			
+		}
+		if($this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'showFirstLast', 's_template')){
+			$this->conf['pageBrowser.']['showFirstLast'] = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'showFirstLast', 's_template');			
+		}
+		if($this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'showRange', 's_template')){
+			$this->conf['pageBrowser.']['showRange'] = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'showRange', 's_template');			
+		}
+		if($this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'showItemCount', 's_template')){
+			$this->conf['pageBrowser.']['showItemCount'] = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'showItemCount', 's_template');			
+		}
+		if($this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'hscText', 's_template')){
+			$this->conf['pageBrowser.']['hscText'] = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'hscText', 's_template');			
+		}
 	
 	     if($this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'template', 's_template') && file_exists($this->templateFolder.$this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'template', 's_template'))){
     	            $this->conf['templateFile'] = $this->templateFolder.$this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'template', 's_template');

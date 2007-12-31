@@ -18,6 +18,11 @@
 			<label index="tx_commerce.pi_flexform.maxRecords">Number products</label>
 			<label index="tx_commerce.pi_flexform.maxPages">Number pages (Pagebrowser)</label>
 			<label index="tx_commerce.pi_flexform.showPageBrowser">show Pagebrowser</label>
+			<label index="tx_commerce.pi_flexform.dontLinkActivePage">don't link act Page (Pagebrowser)</label>
+			<label index="tx_commerce.pi_flexform.showFirstLast">show First/Last (Pagebrowser)</label>
+			<label index="tx_commerce.pi_flexform.showRange">show Range (Pagebrowser)</label>
+			<label index="tx_commerce.pi_flexform.showItemCount">show Item count (Pagebrowser)</label>
+			<label index="tx_commerce.pi_flexform.hscText">htmlspecialchar Text (Pagebrowser)</label>
 			<label index="tx_commerce.pi_flexform.type">Display type</label>
 			<label index="tx_commerce.pi_flexform.currency">Currency</label>
 			<label index="tx_commerce.pi_flexform.basketPID">Basket page</label>
@@ -34,6 +39,11 @@
 			<label index="tx_commerce.pi_flexform.numberOfTopproducts">Anzahl Topprodukte</label>
 			<label index="tx_commerce.pi_flexform.maxRecords">Anzahl Produkte insgesamt</label>
 			<label index="tx_commerce.pi_flexform.maxPages">Anzahl Seiten (Pagebrowser)</label>
+			<label index="tx_commerce.pi_flexform.dontLinkActivePage">aktive Seite nicht verlinken (Pagebrowser)</label>
+			<label index="tx_commerce.pi_flexform.showFirstLast">zeige letzte/erste Seite (Pagebrowser)</label>
+			<label index="tx_commerce.pi_flexform.showRange">zeige Gruppierung (Pagebrowser)</label>
+			<label index="tx_commerce.pi_flexform.showItemCount">zeige Ergebnistext (Pagebrowser)</label>
+			<label index="tx_commerce.pi_flexform.hscText">htmlspecialchar Text (Pagebrowser)</label>
 			<label index="tx_commerce.pi_flexform.showPageBrowser">Zeige Pagebrowser</label>
 			<label index="tx_commerce.pi_flexform.type">Anzeigetyp</label>
 			<label index="tx_commerce.pi_flexform.template">Template Datei</label>

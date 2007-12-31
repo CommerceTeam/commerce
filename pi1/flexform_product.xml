@@ -153,6 +153,47 @@
 							</config>
 						</TCEforms>
 					</showPageBrowser>					
+					<dontLinkActivePage>
+						<TCEforms>
+							<label>LLL:EXT:commerce/pi1/locallang_tca.xml:tx_commerce.pi_flexform.dontLinkActivePage</label>
+							<config>
+								<type>check</type>
+							</config>
+						</TCEforms>
+					</dontLinkActivePage>
+					<showFirstLast>
+						<TCEforms>
+							<label>LLL:EXT:commerce/pi1/locallang_tca.xml:tx_commerce.pi_flexform.showFirstLast</label>
+							<config>
+								<type>check</type>
+							</config>
+						</TCEforms>
+					</showFirstLast>
+					<showRange>
+						<TCEforms>
+							<label>LLL:EXT:commerce/pi1/locallang_tca.xml:tx_commerce.pi_flexform.showRange</label>
+							<config>
+								<type>check</type>
+							</config>
+						</TCEforms>
+					</showRange>
+					<showItemCount>
+						<TCEforms>
+							<label>LLL:EXT:commerce/pi1/locallang_tca.xml:tx_commerce.pi_flexform.showItemCount</label>
+							<config>
+								<type>check</type>
+							</config>
+						</TCEforms>
+					</showItemCount>
+					<hscText>
+						<TCEforms>
+							<label>LLL:EXT:commerce/pi1/locallang_tca.xml:tx_commerce.pi_flexform.hscText</label>
+							<config>
+								<type>check</type>
+								<default>1</default>
+							</config>
+						</TCEforms>
+					</hscText>						
 				</el>
 			</ROOT>
 		</s_template>

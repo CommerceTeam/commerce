@@ -521,7 +521,15 @@ class tx_commerce_pibase extends tslib_pibase {
 
 		if($this->conf['showPageBrowser']==1){
 			$this->internal['pagefloat']=$this->piVars['pointer'];
-			$markerArray['CATEGORY_BROWSEBOX'] = $this->pi_list_browseresults(0);
+			$this->internal['dontLinkActivePage'] = $this->conf['pageBrowser.']['dontLinkActivePage'];
+			$this->internal['showFirstLast'] = $this->conf['pageBrowser.']['showFirstLast'];
+			$this->internal['showRange'] = $this->conf['pageBrowser.']['showRange'];
+			if ($this->conf['pageBrowser.']['hscText'] != 1) {
+				$hscText = 0;
+			} else {
+				$hscText = 1;
+			}
+			$markerArray['CATEGORY_BROWSEBOX'] = $this->pi_list_browseresults($this->conf['pageBrowser.']['showItemCount'],$this->conf['pageBrowser.']['tableParams.'],$this->conf['pageBrowser.']['wraps.'],'pointer',$hscText);
 		}else{
 			$markerArray['CATEGORY_BROWSEBOX'] = '';
 		}
