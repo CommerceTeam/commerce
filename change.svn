@@ -4,6 +4,7 @@ Changelog for tx_commerce
 * Fixed Bug 5518, since t3lib_db has alreday mm_rec capabilities since the 4.0.x branch
 * Raised Minimum TYPO3 Version to 4.0
 * Patched Feature 6315 to Core, Thanks to Alex Widschwendter
+* Fixed Big 5374
 
 
 30.12.2007 Ingo Schmitt <is@marketing-factory.de>

@@ -12,6 +12,7 @@
 			<label index="continue">Continue</label>
 			<label index="article.lokalization">Articles can only be lokalized by lokalizing a product</label>
 			<label index="product.lokalization_without_article">Products without articles could not be lokalized</label>
+			<label index="product.no_copy_allowed">It's not allowed to copy products that have articles.</label>
 		</languageKey>
 		<languageKey index="nl" type="array">
 			<label index="error">Fout</label>

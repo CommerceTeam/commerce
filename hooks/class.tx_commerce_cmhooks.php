@@ -59,6 +59,20 @@ class tx_commerce_cmhooks {
 			$command='';
 			$this->error('LLL:EXT:commerce/locallang_be_errors.php:article.lokalization');
 		}
+		
+			// at this point we avoid copying of products
+		if ($table == 'tx_commerce_products' && $command == 'copy')	{
+			$belib = t3lib_div::makeInstance('tx_commerce_belib');
+
+				// get all related articles
+			$articles = $belib->getArticlesOfProduct($id);
+
+			if ($articles != false)	{			
+				$command = '';
+				$this->error('LLL:EXT:commerce/locallang_be_errors.php:product.no_copy_allowed');
+			}
+		}
+		
 		if (($table=='tx_commerce_products') && ($command=='localize'))	{
 			$belib = t3lib_div::makeInstance('tx_commerce_belib');
 			
