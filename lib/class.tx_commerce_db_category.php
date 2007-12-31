@@ -116,9 +116,10 @@ class tx_commerce_db_category extends tx_commerce_db_alib {
  		}else{
  			$add_where = '';
  		}
- 		if ($result=$GLOBALS['TYPO3_DB']->exec_SELECT_mm_rec_query('uid_foreign',
+ 		if ($result=$GLOBALS['TYPO3_DB']->exec_SELECT_mm_query('uid_foreign',
  												$this->database_table,
  												$this->mm_database_table,
+ 												$this->database_table,
  												' and '.$this->mm_database_table.'.uid_local= '.$uid.' '.
  												$add_where
  												)
@@ -171,9 +172,10 @@ class tx_commerce_db_category extends tx_commerce_db_alib {
  		}else{
  			$add_where = '';
  		}
- 		if ($result=$GLOBALS['TYPO3_DB']->exec_SELECT_mm_rec_query('uid_local',
+ 		if ($result=$GLOBALS['TYPO3_DB']->exec_SELECT_mm_query('uid_local',
  												$this->database_table,
  												$this->mm_database_table,
+ 												$this->database_table,
  												' and '.$this->mm_database_table.'.uid_foreign= '.$uid.' '.$add_where
  												,
  												'',

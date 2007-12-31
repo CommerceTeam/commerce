@@ -179,11 +179,6 @@ t3lib_extMgm::addUserTSConfig('
 //$TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['typo3/class.alt_menu_functions.inc']=t3lib_extMgm::extPath(GRAYTREE_EXTkey).'class.ux_alt_menu_functions.php';
 
 
-// Only xlcass if old TYPO3 version, since we hope that our Patch will be insertet in 4.0
-if (!method_exists($GLOBALS['TYPO3_DB'],'exec_SELECT_mm_rec_query')){
-    // Adding userclass for extending db_lass for recusrive data structure
-	$TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['t3lib/class.t3lib_db.php'] = t3lib_extMgm::extPath(COMMERCE_EXTkey).'class.ux_t3lib_db.php';
-}
 
 // only in old TYPO3 versions below 4.0 apply extension to TCA Non type
 if (!(substr(TYPO3_version, 0, 3)  >= '4.0')) {
