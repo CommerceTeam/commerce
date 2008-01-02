@@ -177,6 +177,11 @@
 </div>
 <!-- ###PRODUCT_BASKET_QUICKVIEW### end -->
 
+<!-- ###PRODUCT_BASKET_QUICKVIEW_EMPTY### begin -->
+	###EMPTY_BASKET###
+	<div class="com-basket-no-stock">###NO_STOCK MESSAGE###</div>				
+<!-- ###PRODUCT_BASKET_QUICKVIEW_EMPTY### end -->
+
 <br />
 <br />
 <br />

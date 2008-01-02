@@ -521,45 +521,6 @@
         	
         }
         
-//        /**
-//         * Returns the stock for this article
-//         * @return Stock Value 
-//         * @author Ingo Schmitt <is@marketing-factory.de>
-//         * Default return value, unless you have an hook to dou you own calculation
-//         */
-//        
-//        function getStock() {
-//        	
-//         	if (($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_article.php']['getStock'])) {
-//				$hookObject = &t3lib_div::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_article.php']['getStock']);
-//			}
-//        	
-//			if (method_exists($hookObject, 'getStock')) {
-//					$this->stock=$hookObject->getStock($this->stock,$this);
-//			}
-//			return $this->stock;
-//       }
-//       
-//       /**
-//        * Returns True if stock is avaliable
-//        * Returns False if Stock is not avaliable
-//        * @param	$amount	amount to check
-//        * @return	boolen true or false
-//        */
-//       
-//       function hasStock($amount=1) {
-//
-//         	if (($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_article.php']['hasStock'])) {
-//				$hookObject = &t3lib_div::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_article.php']['hasStock']);
-//			}
-//        	
-//			if (method_exists($hookObject, 'hasStock')) {
-//				return $hookObject->hasStock($amount,$this);
-//			}else {
-//				return $this->stock;
-//			}		
-//			
-//       }
         
         /**
          * returns the parent product as object 
