@@ -519,7 +519,7 @@ class tx_commerce_pibase extends tslib_pibase {
 
 
 
-		if($this->conf['showPageBrowser']==1){
+		if(($this->conf['showPageBrowser']==1) && (is_array($this->conf['pageBrowser.']['wraps.']))){
 			$this->internal['pagefloat']=$this->piVars['pointer'];
 			$this->internal['dontLinkActivePage'] = $this->conf['pageBrowser.']['dontLinkActivePage'];
 			$this->internal['showFirstLast'] = $this->conf['pageBrowser.']['showFirstLast'];

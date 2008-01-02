@@ -4,6 +4,7 @@ Changelog for tx_commerce
 02.01.2008 Ingo Schmitt <is@marketing-factory.de>
 * Cleaned Up Code (tx_commerce_articles)
 * Fixed Problem with Quickview and empty quickview basket, Thanks to Fabian Seltmann <fs@web-factory.de>
+* Fixed Bug, when no Pagebrowser is defined in TS.
 
 31.12.2007 Ingo Schmitt <is@marketing-factory.de>
 * Fixed Bug 5518, since t3lib_db has alreday mm_rec capabilities since the 4.0.x branch
