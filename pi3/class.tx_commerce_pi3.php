@@ -225,7 +225,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 			$this->piVars[$this->piVars['address_uid']]['uid'] = $this->piVars['address_uid'];
 			$GLOBALS['TSFE']->fe_user->setKey('ses', $this->piVars['check'], $this->piVars[$this->piVars['address_uid']]);
 		}
-		
+	
 		$this->MYSESSION['billing'] = $GLOBALS['TSFE']->fe_user->getKey('ses', 'billing');
 		$this->MYSESSION['delivery'] = $GLOBALS['TSFE']->fe_user->getKey('ses', 'delivery');
 		$this->MYSESSION['payment'] = $GLOBALS['TSFE']->fe_user->getKey('ses', 'payment');
@@ -1398,7 +1398,6 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 
 	function handleAddress($type)	{
 		if (!is_array($this->MYSESSION[$type])) return;
-
 		$config = $this->conf[$type .'.'];
 		$fieldList = $this->parseFieldList($config['sourceFields.']);
 		
@@ -1537,12 +1536,12 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 			$maxlength = ' maxlength="'.$fieldConfig['maxlength'].'"' ;
 		}
 		
-		
 		$result = '<input id="'.$step.'-'.$fieldName.'" type="text" name="'.$this->prefixId.'['.$step.'][' .$fieldName .']" value="' .$value .'" ' . $maxlength;
 		if ($fieldConfig['readonly'] == 1)	{
-			$result .= ' readonly disabled';
+			$result .= ' readonly disabled /><input type="hidden" name="'.$this->prefixId.'['.$step.'][' .$fieldName .']" value="' .$value .'" ' . $maxlength;' />';
+		}else{
+			$result .= '/>';
 		}
-		$result .= '/>';
 
 		return $result;
 	}
@@ -1765,7 +1764,8 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 
 				if ($this->debug)	print "<b>Usermail to $userMail</b><pre>$plain_message</pre>\n";
 
-				return t3lib_div::plainMailEncoded($userMail, $subject, $plain_message, implode(chr(10),$headers),$this->conf['usermail.']['encoding '],$this->conf['usermail.']['charset']);
+				t3lib_div::plainMailEncoded($userMail, $subject, $plain_message, implode(chr(10),$headers),$this->conf['usermail.']['encoding '],$this->conf['usermail.']['charset']);
+				return true;
 			}
 		}
 
@@ -1881,7 +1881,8 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 
 			if ($this->debug)	print "<b>Adminmail from </b><pre>$plain_message</pre>\n";
 
-			return t3lib_div::plainMailEncoded($this->conf['adminmail.']['mailto'], $subject, $plain_message, implode(chr(10),$headers),$this->conf['adminmail.']['encoding '],$this->conf['adminmail.']['charset']);
+			t3lib_div::plainMailEncoded($this->conf['adminmail.']['mailto'], $subject, $plain_message, implode(chr(10),$headers),$this->conf['adminmail.']['encoding '],$this->conf['adminmail.']['charset']);
+			return true;
 		}
 
 		return false;
