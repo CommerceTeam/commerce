@@ -255,7 +255,7 @@ class tx_commerce_db_product extends tx_commerce_db_alib {
 				""
 			);
 
-		while(($aFiche = $GLOBALS["TYPO3_DB"]->sql_fetch_assoc($rSql)) !== FALSE) {
+		while(($GLOBALS["TYPO3_DB"] = $GLOBALS["TYPO3_DB"]->sql_fetch_assoc($rSql)) !== FALSE) {
 			$sTitle = $aFiche["title"];
 		}
 

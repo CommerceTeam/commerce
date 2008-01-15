@@ -341,9 +341,8 @@
  	{
  		$result_array=array();
  		
- 		foreach ($this->basket_items as $oneuid  => $one_item)
- 		{
- 			$result_arary[$oneuid]=$one_item->get_array_of_assoc_array($prefix);
+ 		foreach ($this->basket_items as $oneuid  => $one_item)	{
+ 			$result_array[$oneuid]=$one_item->get_array_of_assoc_array($prefix);
  		}
  		
  		return $result_array;

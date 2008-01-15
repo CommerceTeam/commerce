@@ -971,9 +971,8 @@ class tx_commerce_navigation {
 	
 	function GetManuAsCat($pid,$uidPage,$mainTable, $tableMm,$tableSubMain,$tableSubMm,$iIdCat,$mDepth,$path) {
 		
-		$db = $GLOBALS["TYPO3_DB"];
-
-		$rSql = $db->exec_SELECTquery(
+		
+		$rSql = $GLOBALS["TYPO3_DB"]->exec_SELECTquery(
 				"*",
 				"tx_commerce_products_categories_mm",
 				"uid_foreign = ".$iIdCat."",
@@ -983,7 +982,7 @@ class tx_commerce_navigation {
 			);
 
 		$aIdProducts = array();
-		while(($aFiche = $db->sql_fetch_assoc($rSql)) !== FALSE) {
+		while(($aFiche = $GLOBALS["TYPO3_DB"]->sql_fetch_assoc($rSql)) !== FALSE) {
 			$aIdProducts[] = $aFiche["uid_local"];
 		}
 
@@ -994,7 +993,7 @@ class tx_commerce_navigation {
 
 		$sIdProducts = implode(",",$aIdProducts);
 
-		$rSql = $db->exec_SELECTquery(
+		$rSql = $GLOBALS["TYPO3_DB"]->exec_SELECTquery(
 				"uid,manufacturer_uid",
 				"tx_commerce_products",
 				"uid IN (".$sIdProducts.") AND deleted = 0 and hidden = 0",
@@ -1004,7 +1003,7 @@ class tx_commerce_navigation {
 			);
 		$aOutPut = array();
 		$firstPath = $path;
-		while(($aFiche = $db->sql_fetch_assoc($rSql)) !== FALSE) {
+		while(($aFiche = $GLOBALS["TYPO3_DB"]->sql_fetch_assoc($rSql)) !== FALSE) {
 
 			if($aFiche["manufacturer_uid"] != "0"){
 				
