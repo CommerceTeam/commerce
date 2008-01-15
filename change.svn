@@ -4,6 +4,7 @@ Changelog for tx_commerce
 15.01.2008 Ingo Schmitt <is@marketing-factory.de>
 * Fixed Bug in Navigation concerning multi-language sites
 * Fixed Bug 7108,7110 Thanks to Sascha Egerer
+* Added Hook to pi3, Thanks to Sascha Egerer
 
 07.01.2008 Ingo Schmitt <is@marketing-factory.de>
 * Fixed Bug with disabled fields in Checkout, Thanks to Fabian Seltmann <fs@web-factory.de>

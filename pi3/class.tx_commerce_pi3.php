@@ -1637,25 +1637,50 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 	 * @return	TRUE if checkout is possible, otherwise it returns on of keywords listed above
 	 */
 	function canMakeCheckout()	{
-			// check if the basket is empty
-		if (!$GLOBALS['TSFE']->fe_user->tx_commerce_basket->hasArticles(1))	{
+
+		$checks = array('noarticles','nopayment','nobilling');
+		$myCheck = false;
+
+		$hookObjectsArr = array();
+		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi3/class.tx_commerce_pi3.php']['canMakeCheckout']))	{
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi3/class.tx_commerce_pi3.php']['canMakeCheckout'] as $classRef)	{
+				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+			}
+		}
+		foreach($hookObjectsArr as $hookObj)	{
+			if (method_exists($hookObj, 'canMakeCheckoutOwnTests'))	{
+				$hookObj->canMakeCheckoutOwnTests($checks,$myCheck);
+			}
+		}
+		
+		// check if the hooks returns an error
+		if (strlen($myCheck) >= 1)	{
+			return $myCheck;
+		}
+
+		// check if the basket is empty
+		if (in_array('noarticles',$checks) && !$GLOBALS['TSFE']->fe_user->tx_commerce_basket->hasArticles(1))	{
 			return 'noarticles';
 		}
 
-			// check if we a payment article in the basket
-		$paymentArticles = $GLOBALS['TSFE']->fe_user->tx_commerce_basket->get_articles_by_article_type_uid_asUidlist(3);
-		if (count($paymentArticles) <= 0)	{
-			return 'nopayment';
+		// check if we a payment article in the basket
+		if(in_array('nopayment',$checks)) {
+
+			$paymentArticles = $GLOBALS['TSFE']->fe_user->tx_commerce_basket->get_articles_by_article_type_uid_asUidlist(3);
+			if (count($paymentArticles) <= 0)	{
+				return 'nopayment';
+			}
 		}
 
-			// check if we have a delivery address, some payment infos and if we are in the finishing step
-		if ($this->currentStep == 'finish' && !isset($this->MYSESSION['billing']))	{
+		// check if we have a delivery address, some payment infos and if we are in the finishing step
+		if (in_array('nobilling',$checks) && $this->currentStep == 'finish' && !isset($this->MYSESSION['billing']))	{
 			return 'nobilling';
 		}
 
-			// if we reach this point, everything is fine and we can return a positive result
+		// if we reach this point, everything is fine and we can return a positive result
 		return true;
 	}
+
 
 	/**
 	 * Sends the Information Mail to the user
