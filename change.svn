@@ -1,8 +1,13 @@
 Changelog for tx_commerce
 (add new changes on top of this file)
+
+15.01.2008 Ingo Schmitt <is@marketing-factory.de>
+* Fixed Bug in Navigation concerning multi-language sites
+
 07.01.2008 Ingo Schmitt <is@marketing-factory.de>
 * Fixed Bug with disabled fields in Checkout, Thanks to Fabian Seltmann <fs@web-factory.de>
 * Fixed Bug 6318 
+
 
 02.01.2008 Ingo Schmitt <is@marketing-factory.de>
 * Cleaned Up Code (tx_commerce_articles)

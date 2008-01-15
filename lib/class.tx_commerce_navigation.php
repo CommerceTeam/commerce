@@ -83,6 +83,13 @@ class tx_commerce_navigation {
      * Array holding the parentes of this cat as uid list
      */
     var $pathParents = array();
+    /**
+     * @Var Translation Mode for getRecordOverlay
+	 * @see class.t3lib_page.php
+	 * @acces private
+	 */
+	
+	 var $translationMode='hideNonTranslated';
     
     
 	/**
@@ -151,7 +158,7 @@ class tx_commerce_navigation {
 		/**
 		 * Unique Hash for this usergroup and page to display the navigation
 		 */
-        $hash = md5('tx_commerce_navigation'.$this->cat.'-'.$this->PID.':'.$usergroups);
+        $hash = md5('tx_commerce_navigation'.$this->cat.'-'.$this->PID.':'.$usergroups.':'.$GLOBALS['TSFE']->linkVars);
         $cachedMatrix = $this->getHash($hash,0);
        
         if ($GLOBALS['TSFE']->no_cache==1) {
@@ -409,10 +416,11 @@ class tx_commerce_navigation {
 				 if ($this->useRootlineInformationToUrl==1) {
 				 		$nodeArray['_ADD_GETVARS'] .= ini_get('arg_separator.output') .$this->prefixId.'[mDepth]='.$mDepth.ini_get('arg_separator.output') .$this->prefixId.'[path]='.$nodeArray['path'];
 				 }
-					if(in_array($row['uid_local'],$aCatToManu) || strtolower(trim($aCatToManu["0"])) == "all"){
+				 if(in_array($row['uid_local'],$aCatToManu) || strtolower(trim($aCatToManu["0"])) == "all"){
 						$nodeArray['--subLevel--'] = array();
 						$this->arrayMerge($nodeArray['--subLevel--'],$this->GetManuAsCat($dataRow['pid'],$uidPage,$mainTable, $tableMm,$tableSubMain,$tableSubMm,$row['uid_local'],$mDepth+1,$nodeArray['path'])); 
-					}		
+				 }	
+				#echo t3lib_div::debug($GLOBALS['TSFE']->linkVars,'LINKVARS');
 				 if (!$nodeArray['leaf'] ){
 								
 				 	if(!is_array($nodeArray['--subLevel--'])){
@@ -440,6 +448,7 @@ class tx_commerce_navigation {
 						$nodeArray['_ADD_GETVARS'] .=ini_get('arg_separator.output') .$this->prefixId.'[basketHashValue]='.$this->gpVars['basketHashValue'];
 					}
 					$pA = t3lib_div::cHashParams($nodeArray['_ADD_GETVARS'].$GLOBALS['TSFE']->linkVars);
+					
 					$nodeArray['_ADD_GETVARS'] .= ini_get('arg_separator.output') .'cHash='.t3lib_div::shortMD5(serialize($pA));
 				 	$nodeArray['ITEM_STATE'] = 'NO';
 				 
@@ -468,7 +477,7 @@ class tx_commerce_navigation {
 		if ($treeList==null && $this->mConf['showProducts']==1){
 			$treeList=$this->makeSubChildArrayPostRender($uidPage,$tableSubMain,$tableSubMm,$uid_root,$mDepth,$path);
 		}
-		//t3lib_div::debug($treeList);
+	
 		return $treeList;
 	}
 	/**
@@ -636,6 +645,17 @@ class tx_commerce_navigation {
 		$addWhere=$GLOBALS['TSFE']->sys_page->enableFields($tableName,$GLOBALS['TSFE']->showHiddenRecords);
 		$where = '`uid` = '.$uid;
 		$row=$GLOBALS['TYPO3_DB']->exec_SELECTgetRows('*',$tableName,$where.$addWhere,$groupBy='',$orderBy='','1','');
+		
+		if (($GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid'] > 0) && $row[0]){
+			$langUid=$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid'];
+		
+ 			/**
+ 			 * Get Overlay, if availiabe
+ 			 */	
+ 			$row[0]=$GLOBALS['TSFE']->sys_page->getRecordOverlay($tableName,$row[0],$langUid,$this->translationMode);
+ 					
+		}
+			
 		if ($row[0]){
 			return $row[0];
 		}
