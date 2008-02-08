@@ -1,15 +1,27 @@
 Changelog for tx_commerce
 (add new changes on top of this file)
 
+06.02.2008 Ingo Schmitt <is@marketing-factory.de>
+* Added Icon to User-States recordset
+* Added Icon to Order-types recordset
+* Listed Order Type icon also in Order List
+* Fixed naming of the Columns in order List
+
+18.01.2008 Fabian Seltmann <fs@marketing-factory.de> -> Approved by Ingo
+* Added comment to order for shop administrator
+* Different Icons in OrderView for Order (has user comment, has admin comment, has different delievery address)
+* Enhanced Order-View
+* List of Article Number and Articles in Order view is configurable in Extension configuration
+
 15.01.2008 Ingo Schmitt <is@marketing-factory.de>
 * Fixed Bug in Navigation concerning multi-language sites
 * Fixed Bug 7108,7110 Thanks to Sascha Egerer
 * Added Hook to pi3, Thanks to Sascha Egerer
 
+
 07.01.2008 Ingo Schmitt <is@marketing-factory.de>
 * Fixed Bug with disabled fields in Checkout, Thanks to Fabian Seltmann <fs@web-factory.de>
 * Fixed Bug 6318 
-
 
 02.01.2008 Ingo Schmitt <is@marketing-factory.de>
 * Cleaned Up Code (tx_commerce_articles)

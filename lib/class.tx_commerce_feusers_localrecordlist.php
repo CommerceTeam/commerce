@@ -229,7 +229,7 @@ require_once(PATH_t3lib.'class.t3lib_tceforms.php');
  			'ORDERBY' => $orderby,
  			'sorting' => '',
 			'LIMIT' => ''
- 			
+ 		
  		
  		);
  		$this->dontShowClipControlPanels = 1;

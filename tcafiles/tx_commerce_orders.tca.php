@@ -57,7 +57,11 @@
 			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_orders.order_type_uid',
 			'config' => Array (
 				'type' => 'select',
+				'items' => Array (
+					Array('' => 0),
+				),
 				'foreign_table' => 'tx_commerce_order_types',
+				'default' => '',
 			)
 		),
 		'order_id' => Array (
@@ -164,11 +168,20 @@
 		'comment' => Array (
                          'exclude' => 1,
 			 'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_orders.comment',
-	                         'config' => Array (
-    		                         'type' => 'text',
-	                                 'cols' => '30',
-	                                 'rows' => '5',
-				    ),
+	         'config' => Array (
+    		     'type' => 'text',
+	             'cols' => '30',
+	             'rows' => '5',
+	),
+		),
+		'internalcomment' => Array (
+                         'exclude' => 1,
+			 'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_orders.internalcomment',
+	         'config' => Array (
+    		     'type' => 'text',
+	             'cols' => '30',
+	             'rows' => '5',
+			 ),
 		),
 		'order_sys_language_uid' => Array (
 			'exclude' => 1,
@@ -205,7 +218,7 @@
 				'cu_iso_3_uid;LLL:EXT:commerce/locallang_db.xml:tx_commerce_orders.cu_iso_3_uid;;;, ' .
 				'newpid;LLL:EXT:commerce/locallang_be.php:order_view.order_status;;;, ' .
 				'paymenttype;LLL:EXT:commerce/locallang_db.xml:tx_commerce_orders.paymenttype;;;, ' .
-				'payment_ref_id;LLL:EXT:commerce/locallang_db.xml:tx_commerce_orders.payment_ref_id;;,comment, ' .
+				'payment_ref_id;LLL:EXT:commerce/locallang_db.xml:tx_commerce_orders.payment_ref_id;;,comment,internalcomment, ' .
 				'order_sys_language_uid;LLL:EXT:lang/locallang_general.php:LGL.language;;;,' .
 				'pricefromnet;LLL:EXT:commerce/locallang_db.xml:tx_commerce_orders.pricefromnet;;;,' .
 				'--div--;LLL:EXT:commerce/locallang_db.xml:tx_commerce_orders.customer, '.
@@ -272,9 +285,25 @@ $TCA['tx_commerce_order_types'] = array (
 				'eval' => 'required,trim',
 			)
 		),
+		'icon' => array (
+			'exclude' => 1,
+			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_order_types.icon',
+			'l10n_mode' => 'mergeIfNotBlank',
+			'config' => array (
+				'type' => 'group',
+				'internal_type' => 'file',
+				'allowed' => $GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext'],
+				'max_size' => $GLOBALS['TYPO3_CONF_VARS']['GFX']['maxFileSize'],
+				'uploadfolder' => 'uploads/tx_commerce',
+				'size' => 1,
+				'minitems' => 0,
+				'maxitems' => 1,
+				'show_thumbs' => 1,
+			),
+		),
 	),
 	'types' => array (
-		'0' => array('showitem' => 'sys_language_uid;;;;1-1-1, l18n_parent, l18n_diffsource, title;;;;2-2-2')
+		'0' => array('showitem' => 'sys_language_uid;;;;1-1-1, l18n_parent, l18n_diffsource, title;;;;2-2-2,icon')
 	),
 	'palettes' => array (
 		'1' => array('showitem' => '')

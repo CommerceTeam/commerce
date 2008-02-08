@@ -126,9 +126,25 @@ $TCA['tx_commerce_user_states'] = Array (
 				'eval' => 'required,trim',
 			)
 		),
+		'icon' => array (
+			'exclude' => 1,
+			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_user_states.icon',
+			'l10n_mode' => 'mergeIfNotBlank',
+			'config' => array (
+				'type' => 'group',
+				'internal_type' => 'file',
+				'allowed' => $GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext'],
+				'max_size' => $GLOBALS['TYPO3_CONF_VARS']['GFX']['maxFileSize'],
+				'uploadfolder' => 'uploads/tx_commerce',
+				'size' => 1,
+				'minitems' => 0,
+				'maxitems' => 1,
+				'show_thumbs' => 1,
+			),
+		),
 	),
 	'types' => Array (
-		'0' => Array('showitem' => 'sys_language_uid;;;;1-1-1, l18n_parent, l18n_diffsource, title;;;;2-2-2')
+		'0' => Array('showitem' => 'sys_language_uid;;;;1-1-1, l18n_parent, l18n_diffsource, title;;;;2-2-2,icon')
 	),
 	'palettes' => Array (
 		'1' => Array('showitem' => '')

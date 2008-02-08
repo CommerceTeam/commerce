@@ -54,4 +54,8 @@ attributeLokalisationType = 0
 # cat=basic/other/150; type=boolean; label=Lock Basket: Locks the baskt during the checkout, no changes are possible in second window. 
 lockBasket = 0
 
+# cat=basic/other/100; type=boolean; label= Show field article number in the BE of orders 
+showArticleNumber  = 0
 
+# cat=basic/other/100; type=boolean; label= Show field article title in the BE of orders 
+showArticleTitle  = 0

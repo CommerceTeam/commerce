@@ -448,6 +448,7 @@ CREATE TABLE tx_commerce_order_types (
     l18n_diffsource mediumblob NOT NULL,
     deleted tinyint(4) unsigned DEFAULT '0' NOT NULL,
     title varchar(80) DEFAULT '' NOT NULL,
+	icon blob NOT NULL,    
 
     PRIMARY KEY (uid),
     KEY lang (sys_language_uid),
@@ -503,6 +504,7 @@ CREATE TABLE tx_commerce_orders (
     order_sys_language_uid int(11) DEFAULT '0' NOT NULL,
     pricefromnet tinyint(4) DEFAULT '0' NOT NULL,
     comment text,
+	internalcomment text,
     
     
     PRIMARY KEY (uid),
@@ -552,6 +554,7 @@ CREATE TABLE tx_commerce_user_states (
     l18n_diffsource mediumblob NOT NULL,
     deleted tinyint(4) unsigned DEFAULT '0' NOT NULL,
     title varchar(80) DEFAULT '' NOT NULL,
+ 	icon blob NOT NULL,    
 
     PRIMARY KEY (uid),
     KEY lang (sys_language_uid),

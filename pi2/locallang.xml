@@ -45,7 +45,7 @@
 			<label index="lang_delivery">Lieferart</label>
 			<label index="lang_delivery_description">Bitte wählen Sie die Versandart</label>
 			<label index="lang_net_price">Netto Preis:</label>
-			<label index="lang_value_added_tax">Enthaltende UST:</label>
+			<label index="lang_value_added_tax">Enthaltende MwSt:</label>
 			<label index="lang_gross_price">Brutto Preis:</label>
 			<label index="lang_basket_header_title">Ihr Warenkorb</label>
 			<label index="lang_basket_header_text">Hier sehen Sie Ihren Warenkorb</label>

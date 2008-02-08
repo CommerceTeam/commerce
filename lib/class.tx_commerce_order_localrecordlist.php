@@ -3,7 +3,7 @@
 *  Copyright notice
 *
 *  (c) 1999 - 2004 Kasper Skaarhoj (kasperYYYY@typo3.com)
-*  (c) 2005 - 2006 Daniel Schï¿½ttgen <ds@marketing-factory.de>
+*  (c) 2005 - 2006 Daniel Schöttgen <ds@marketing-factory.de>
 *  (c) 2005 - 2006 Ingo Schmitt <is@marketing-factory.de>  
 *   All  rights reserved
 *
@@ -31,9 +31,9 @@
  *
  * @internal Maintainer Ingo Schmitt <is@marketing-factory.de> 
  * @author	Kasper Skaarhoj <kasperYYYY@typo3.com>
- * @author	Daniel Schï¿½ttgen <ds@marketing-factory.de>
- * @author  ingo Schmitt <is@marketing-factory.de>
- * @author  Jï¿½rg Sprung <jsp@marketing-factory.de>
+ * @author	Daniel Schöttgen <ds@marketing-factory.de>
+ * @author  Ingo Schmitt <is@marketing-factory.de>
+ * @author  Jörg Sprung <jsp@marketing-factory.de>
  * 
  * $Id$
  */
@@ -64,18 +64,20 @@ require_once(PATH_t3lib.'class.t3lib_tceforms.php');
  		{
  			$orderby='crdate DESC';
  		}
+ 		
  		if ($id>0){
- 		$query_array=array(
- 			'SELECT' => 'tx_commerce_orders.uid,tx_commerce_orders.pid, tx_commerce_orders.crdate, tx_commerce_orders.order_id, tx_commerce_orders.sum_price_gross,  tt_address.company ,tt_address.name,tt_address.surname, tt_address.address, tt_address.zip, tt_address.city, tt_address.email,tt_address.phone,tx_commerce_orders.cu_iso_3_uid, tx_commerce_orders.uid as payment, tx_commerce_orders.tstamp, tx_commerce_orders.uid as delivery, tx_commerce_orders.uid as articles',
- 			'FROM' =>'tx_commerce_orders,tt_address',
- 			'WHERE' =>'tx_commerce_orders.deleted = 0 and tx_commerce_orders.cust_deliveryaddress = tt_address.uid AND tx_commerce_orders.pid='.$id.$addWhere ,
+ 			$query_array=array(
+ 			'SELECT' => 'DISTINCT tx_commerce_order_articles.order_id, delivery_table.order_id as order_number, tx_commerce_order_articles.article_type_uid, tx_commerce_order_articles.title as payment, delivery_table.title as delivery, tx_commerce_orders.uid,tx_commerce_orders.pid, tx_commerce_orders.crdate, tx_commerce_orders.order_id, tx_commerce_orders.sum_price_gross, tt_address.tx_commerce_address_type_id, tt_address.company ,tt_address.name,tt_address.surname, tt_address.address, tt_address.zip, tt_address.city, tt_address.email,tt_address.phone as phone_1, tt_address.mobile as phone_2,tx_commerce_orders.cu_iso_3_uid, tx_commerce_orders.tstamp, tx_commerce_orders.uid as articles, tx_commerce_orders.comment, tx_commerce_orders.internalcomment, tx_commerce_orders.order_type_uid as order_type_uid_noName',
+ 			'FROM' =>'tx_commerce_orders,tt_address, tx_commerce_order_articles, tx_commerce_order_articles as delivery_table',
+ 			'WHERE' =>'delivery_table.order_id = tx_commerce_orders.order_id AND tx_commerce_order_articles.order_id = tx_commerce_orders.order_id AND tx_commerce_order_articles.article_type_uid = '.PAYMENTArticleType.' AND delivery_table.article_type_uid = '.DELIVERYArticleType.' AND tx_commerce_orders.deleted = 0 and tx_commerce_orders.cust_deliveryaddress = tt_address.uid AND tx_commerce_orders.pid='.$id.$addWhere ,
  			'GROUPBY' => '',
  			'ORDERBY' => $orderby,
  			'sorting' => '',
 			'LIMIT' => ''
- 			
+ 	
  		
- 		);}else{
+ 		);
+ 		}else{
  			
  		
 			require_once (t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_create_folder.php');
@@ -99,16 +101,16 @@ require_once(PATH_t3lib.'class.t3lib_tceforms.php');
  			$list = implode(',',$list);
  			
  			$query_array=array(
- 			'SELECT' => 'tx_commerce_orders.uid,tx_commerce_orders.pid, tx_commerce_orders.crdate, tx_commerce_orders.order_id, tx_commerce_orders.sum_price_gross, tt_address.company,tt_address.name,tt_address.surname, tt_address.address, tt_address.zip, tt_address.city, tt_address.email,tt_address.phone,tx_commerce_orders.cu_iso_3_uid, tx_commerce_orders.tstamp, tx_commerce_orders.uid as payment, tx_commerce_orders.uid as delivery, tx_commerce_orders.uid as articles',
- 			'FROM' =>'tx_commerce_orders,tt_address',
- 			'WHERE' =>'tx_commerce_orders.deleted = 0 and tx_commerce_orders.cust_deliveryaddress = tt_address.uid AND tx_commerce_orders.pid in ('.$list.') '.$addWhere ,
+ 			'SELECT' => 'DISTINCT tx_commerce_order_articles.order_id,delivery_table.order_id as order_number, tx_commerce_order_articles.article_type_uid, tx_commerce_order_articles.title as payment, delivery_table.title as delivery, tx_commerce_orders.uid,tx_commerce_orders.pid, tx_commerce_orders.crdate, tx_commerce_orders.order_id, tx_commerce_orders.sum_price_gross, tt_address.tx_commerce_address_type_id, tt_address.company,tt_address.name,tt_address.surname, tt_address.address, tt_address.zip, tt_address.city, tt_address.email,tt_address.phone as phone_1, tt_address.mobile as phone_2,tx_commerce_orders.cu_iso_3_uid, tx_commerce_orders.tstamp, tx_commerce_orders.uid as articles, tx_commerce_orders.comment, tx_commerce_orders.internalcomment, tx_commerce_orders.order_type_uid as order_type_uid_noName',
+ 			'FROM' =>'tx_commerce_orders,tt_address, tx_commerce_order_articles, tx_commerce_order_articles as delivery_table',
+ 			'WHERE' =>'delivery_table.order_id = tx_commerce_orders.order_id AND tx_commerce_order_articles.order_id = tx_commerce_orders.order_id AND tx_commerce_order_articles.article_type_uid = '.PAYMENTArticleType.' AND delivery_table.article_type_uid = '.DELIVERYArticleType.' AND tx_commerce_orders.deleted = 0 and tx_commerce_orders.cust_deliveryaddress = tt_address.uid AND tx_commerce_orders.pid in ('.$list.') '.$addWhere ,
  			'GROUPBY' => '',
  			'ORDERBY' => $orderby,
  			'sorting' => '',
 			'LIMIT' => ''
 			);
  		}
- 		
+ 	
  		$this->dontShowClipControlPanels = 1;
  		return $query_array;
  		#return parent::makeQueryArray($table, $id, $addWhere="",$fieldList='*');
@@ -129,7 +131,10 @@ require_once(PATH_t3lib.'class.t3lib_tceforms.php');
 		$this->pageRow = $row;
 		$this->counter++;
 		$alttext = t3lib_BEfunc::getRecordIconAltText($row,'pages');
-		$iconImg = t3lib_iconWorks::getIconImage('pages',$row,$this->backPath,'class="absmiddle" title="'.htmlspecialchars($alttext).'"');
+		
+		
+		$iconImg = t3lib_iconWorks::getIconImage('pages',$row,$this->backPath,'class="absmiddle" title="'.htmlspecialchars($alttext).'"');	
+	
 		$titleCol = 'test';	// pseudo title column name
 		$this->fieldArray = Array($titleCol,'up');		// Setting the fields to display in the list (this is of course "pseudo fields" since this is the top!)
 
@@ -322,17 +327,26 @@ require_once(PATH_t3lib.'class.t3lib_tceforms.php');
 //				} else {
 //					
 //					$fields = array();
-//				}				
-					// Finally, render the list:
+//				}
+
+					// Finally, render the list:		
 				
+					// Check for order_number and order_title view
+				$_EXTKEY = 'commerce';
+				if($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY]['showArticleNumber'] == 1 && $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY]['showArticleTitle'] == 1){
+					$this->myfields=array('order_type_uid_noName',"order_id","crdate","delivery","payment","numarticles","sum_price_gross","company","surname","name","address","zip","city","email","phone_1","phone_2","articles", "order_number","article_number","article_name");				
+				}else if($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY]['showArticleNumber'] == 1){
+					$this->myfields=array('order_type_uid_noName',"order_id","crdate","delivery","payment","numarticles","sum_price_gross","company","surname","name","address","zip","city","email","phone_1","phone_2","articles", "order_number","article_number");
+				}else if($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY]['showArticleTitle'] == 1){
+					$this->myfields=array('order_type_uid_noName',"order_id","crdate","delivery","payment","numarticles","sum_price_gross","company","surname","name","address","zip","city","email","phone_1","phone_2","articles", "order_number","article_name");
+				}else{
+					$this->myfields=array('order_type_uid_noName',"order_id","crdate","delivery","payment","numarticles","sum_price_gross","company","surname","name","address","zip","city","email","phone_1","phone_2","articles", "order_number");
+				}
+					//CSV Export
+				if ($this->csvOutput){
+					$this->myfields=array("order_id","crdate","delivery","payment","numarticles","sum_price_gross","company","surname","name","address","zip","city","email","phone_1","phone_2", "comment", "internalcomment","articles");
+				}
 				
-				$this->myfields=array("order_id","crdate","company","surname","name","address","zip","city","email","phone","sum_price_gross","tstamp","payment","delivery");
-				
-				#if ($this->csvOutput) {
-					$this->myfields[]='numarticles';
-				
-					$this->myfields[]='articles';
-				#} 
 				$this->HTMLcode.=$this->getTable($tableName, $this->id,implode(',',$this->myfields));
 			}
 		}
@@ -378,7 +392,6 @@ require_once(PATH_t3lib.'class.t3lib_tceforms.php');
 		$iOut = '';
 
 		
-			
 		if (substr(TYPO3_version, 0, 3)  >= '4.0') {
 			// In offline workspace, look for alternative record:
 			t3lib_BEfunc::workspaceOL($table, $row, $GLOBALS['BE_USER']->workspace);
@@ -401,10 +414,39 @@ require_once(PATH_t3lib.'class.t3lib_tceforms.php');
 
 			// The icon with link
 		$iconImg = t3lib_iconWorks::getIconImage($table,$row,$this->backPath,'title="'.htmlspecialchars($alttext).'"'.($indent ? ' style="margin-left: '.$indent.'px;"' : ''));
+		
+			// Icon for order comment and delivery address
+		if ($row['comment'] != '' && $row['internalcomment'] != ''){
+			if($row['tx_commerce_address_type_id'] == 2){
+				$iconImg = '<img'.t3lib_iconWorks::skinImg($this->backPath,t3lib_extMgm::extRelPath(COMMERCE_EXTkey).'res/icons/table/orders_add_user_int.gif','title="'.htmlspecialchars($alttext).'"'.($indent ? ' style="margin-left: '.$indent.'px;"' : ''));
+			}else{
+				$iconImg = '<img'.t3lib_iconWorks::skinImg($this->backPath,t3lib_extMgm::extRelPath(COMMERCE_EXTkey).'res/icons/table/orders_user_int.gif','title="'.htmlspecialchars($alttext).'"'.($indent ? ' style="margin-left: '.$indent.'px;"' : ''));
+			} 
+		}else if($row['comment'] != ''){
+			if($row['tx_commerce_address_type_id'] == 2){
+				$iconImg = '<img'.t3lib_iconWorks::skinImg($this->backPath,t3lib_extMgm::extRelPath(COMMERCE_EXTkey).'res/icons/table/orders_add_user.gif','title="'.htmlspecialchars($alttext).'"'.($indent ? ' style="margin-left: '.$indent.'px;"' : ''));				
+			}else{
+				$iconImg = '<img'.t3lib_iconWorks::skinImg($this->backPath,t3lib_extMgm::extRelPath(COMMERCE_EXTkey).'res/icons/table/orders_user.gif','title="'.htmlspecialchars($alttext).'"'.($indent ? ' style="margin-left: '.$indent.'px;"' : ''));
+			}
+		}else if($row['internalcomment'] != ''){
+			if($row['tx_commerce_address_type_id'] == 2){
+				$iconImg = '<img'.t3lib_iconWorks::skinImg($this->backPath,t3lib_extMgm::extRelPath(COMMERCE_EXTkey).'res/icons/table/orders_add_int.gif','title="'.htmlspecialchars($alttext).'"'.($indent ? ' style="margin-left: '.$indent.'px;"' : ''));				
+			}else{
+				$iconImg = '<img'.t3lib_iconWorks::skinImg($this->backPath,t3lib_extMgm::extRelPath(COMMERCE_EXTkey).'res/icons/table/orders_int.gif','title="'.htmlspecialchars($alttext).'"'.($indent ? ' style="margin-left: '.$indent.'px;"' : ''));
+			}
+		}else{
+			if($row['tx_commerce_address_type_id'] == 2){
+				$iconImg = '<img'.t3lib_iconWorks::skinImg($this->backPath,t3lib_extMgm::extRelPath(COMMERCE_EXTkey).'res/icons/table/orders_add.gif','title="'.htmlspecialchars($alttext).'"'.($indent ? ' style="margin-left: '.$indent.'px;"' : ''));
+			}else{
+				$iconImg = t3lib_iconWorks::getIconImage($table,$row,$this->backPath,'title="'.htmlspecialchars($alttext).'"'.($indent ? ' style="margin-left: '.$indent.'px;"' : ''));
+			}
+		}
+		
 		$theIcon = $this->clickMenuEnabled ? $GLOBALS['SOBE']->doc->wrapClickMenuOnIcon($iconImg,$table,$row['uid']) : $iconImg;
 		$extConf=unserialize($GLOBALS["TYPO3_CONF_VARS"]["EXT"]["extConf"]["commerce"]);
 			// Preparing and getting the data-array
 		$theData = Array();
+		
 		foreach($this->fieldArray as $fCol)	{
 			if ($fCol=='pid') {
 				$theData[$fCol]=$row[$fCol];
@@ -422,18 +464,16 @@ require_once(PATH_t3lib.'class.t3lib_tceforms.php');
 				$theData[$fCol] = t3lib_BEfunc::date($row[$fCol]);
 			
 				$row[$fCol]=t3lib_BEfunc::date($row[$fCol]);
-			} elseif ($fCol=='payment') {
-				$row[$fCol] = '';
-			} elseif ($fCol=='delivery') { 
-				$row[$fCol] = '';
 			} elseif ($fCol=='articles') {
-				$res_articles=$GLOBALS['TYPO3_DB']->exec_SELECTquery('article_number,title','tx_commerce_order_articles','order_uid = '.$row['uid']);
+				$articleNumber = array();
+				$articleName = array();
+				$res_articles=$GLOBALS['TYPO3_DB']->exec_SELECTquery('article_number,title,order_uid','tx_commerce_order_articles','order_uid = '.$row['uid']);
 				while (($lokalRow = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_articles))) {
 					$articles[]=$lokalRow['article_number'].':'.$lokalRow['title'];
-				
-					
+					$articleNumber[] = $lokalRow['article_number'];
+					$articleName[] = $lokalRow['title'];
 				}
-				
+							
 				if ($this->csvOutput) {
 					$theData[$fCol] = implode(',',$articles);
 					$row[$fCol]  = implode(',',$articles);
@@ -448,7 +488,45 @@ require_once(PATH_t3lib.'class.t3lib_tceforms.php');
 					$row[$fCol]  = $lokalRow['anzahl'];
 					
 				}	
+			}elseif ($fCol=='article_number') { 
+				$articleNumber = array();
 			
+				$res_articles=$GLOBALS['TYPO3_DB']->exec_SELECTquery('article_number','tx_commerce_order_articles','order_uid = '.$row['uid'].' and article_type_uid ='.NORMALArticleType);
+				while (($lokalRow = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_articles))) {
+					$articleNumber[] = $lokalRow['article_number'];
+					/**
+					 * @TODO: implement default value, if number is not defined
+					 **/
+				}
+				$theData[$fCol] = 		implode(',',$articleNumber);
+			}elseif ($fCol=='article_name') { 
+				$articleName = array();
+			
+				$res_articles=$GLOBALS['TYPO3_DB']->exec_SELECTquery('title','tx_commerce_order_articles','order_uid = '.$row['uid'].' and article_type_uid ='.NORMALArticleType);
+				while (($lokalRow = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_articles))) {
+					$articleName[] = $lokalRow['title'];
+					/**
+					 * @TODO: implement default value, if title is not defined
+					 **/
+				}
+				$theData[$fCol] = 		implode(',',$articleName);
+			}elseif ($fCol=='order_type_uid_noName') { 
+			
+				$res_type=$GLOBALS['TYPO3_DB']->exec_SELECTquery('*','tx_commerce_order_types','uid = '.$row['order_type_uid_noName']);
+				while (($localRow = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_type))) {
+					
+					if ($localRow['icon']) {
+						$filepath = '../'.$GLOBALS['TCA']['tx_commerce_order_types']['columns']['icon']['config']['uploadfolder'].'/'.$localRow['icon'];
+						
+						$theData[$fCol] = '<img'.t3lib_iconWorks::skinImg($this->backPath,$filepath,'title="'.htmlspecialchars($localRow['title']).'"'.($indent ? ' style="margin-left: '.$indent.'px;"' : ''));
+			
+					}else{
+						$theData[$fCol] = $localRow['title'];
+					}
+				
+				}
+				
+				
 			}elseif ($fCol=='_PATH_') {
 				$theData[$fCol]=$this->recPath($row['pid']);
 			} elseif ($fCol=='_CONTROL_') {
@@ -476,10 +554,11 @@ require_once(PATH_t3lib.'class.t3lib_tceforms.php');
 
 			// Add row to CSV list:
 		if ($this->csvOutput) {
-			// Charset Conversion
-			$csObj=t3lib_div::makeInstance('t3lib_cs');
-			$csObj->initCharset($GLOBALS['TYPO3_CONF_VARS']['BE']['forceCharset']);
 			
+		
+				// Charset Conversion
+			$csObj=t3lib_div::makeInstance('t3lib_cs');
+			$csObj->initCharset($GLOBALS['TYPO3_CONF_VARS']['BE']['forceCharset']);	
 			
 			if (!$extConf['BECSVCharset']){
 				$extConf['BECSVCharset']='iso-8859-1';
@@ -487,6 +566,7 @@ require_once(PATH_t3lib.'class.t3lib_tceforms.php');
 			$csObj->initCharset($extConf['BECSVCharset']);
 			
 			$csObj->convArray($row,$GLOBALS['TYPO3_CONF_VARS']['BE']['forceCharset'],$extConf['BECSVCharset']);
+			
 			#print_r($row);
 			#die();
 			$this->addToCSV($row,$table);	
@@ -498,7 +578,7 @@ require_once(PATH_t3lib.'class.t3lib_tceforms.php');
 		if ($this->thumbs && trim($row[$thumbsCol]))	{
 			$iOut.=$this->addelement(4,'', Array($titleCol=>$this->thumbCode($row,$table,$thumbsCol)),$row_bgColor);
 		}
-
+			
 			// Finally, return table row element:
 		return $iOut;
 	}
@@ -547,15 +627,20 @@ require_once(PATH_t3lib.'class.t3lib_tceforms.php');
 					/**
 					 * Modified from this point to use relationla table queris
 					 */
+					$temp_data = '';
 					$tables=array('tt_address','tx_commerce_orders');
-					$temp_data='';
-					foreach ($tables as $work_table)
-					{
-						if ($TCA[$work_table]['columns'][$fCol])
-						{
-							$temp_data=$this->addSortLink($LANG->sL(t3lib_BEfunc::getItemLabel($work_table,$fCol,'<i>[|]</i>')),$fCol,$table);
-						}	
-						
+					if ($LANG->getLL($fCol)) {
+						foreach ($tables as $work_table){
+							$temp_data = $this->addSortLink($LANG->getLL($fCol),$fCol,$table);
+						}
+					}else{
+						foreach ($tables as $work_table){
+							if ($TCA[$work_table]['columns'][$fCol])
+							{
+								$temp_data=$this->addSortLink($LANG->sL(t3lib_BEfunc::getItemLabel($work_table,$fCol,'<i>[|]</i>')),$fCol,$table);
+							}	
+							
+						}
 					}
 					if ($temp_data)
 					{
@@ -564,8 +649,12 @@ require_once(PATH_t3lib.'class.t3lib_tceforms.php');
 					}
 					else
 					{
-						// default handling
-						$theData[$fCol].=$this->addSortLink($LANG->sL(t3lib_BEfunc::getItemLabel($table,$fCol,'<i>[|]</i>')),$fCol,$table);
+						
+						// Handling for
+						// Elements in the special Locallang file inside of mod_orders
+						
+						$theData[$fCol]=$this->addSortLink('<i>'.$fCol.'</i>',$fCol,$table);
+						
 					}
 				
 				break;
@@ -586,7 +675,7 @@ require_once(PATH_t3lib.'class.t3lib_tceforms.php');
 			// Loading all TCA details for this table:
 		
 		#t3lib_div::loadTCA($table);
-		
+		t3lib_div::loadTCA('tx_commerce_order_types');
 			// Init
 		$addWhere = '';
 		$titleCol = $TCA[$table]['ctrl']['label'];

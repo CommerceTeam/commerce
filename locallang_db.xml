@@ -129,6 +129,7 @@
 			<label index="tx_commerce_trackingcodes.description">description</label>
 			<label index="tx_commerce_order_types">Order Types</label>
 			<label index="tx_commerce_order_types.title">title</label>
+			<label index="tx_commerce_order_types.title">icon</label>
 			<label index="tx_commerce_tracking">Tracking</label>
 			<label index="tx_commerce_tracking.orders_uid">orders_uid</label>
 			<label index="tx_commerce_tracking.trackingcodes_uid">trackingcodes_uid</label>
@@ -165,12 +166,16 @@
 			<label index="tx_commerce_order_articles.amount">amount</label>
 			<label index="tx_commerce_order_articles.order_id">Order number</label>
 			<label index="tx_commerce_order_articles.order_uid">Order</label>
+			<label index="tx_commerce_orders.comment">Customer comment</label>
+			<label index="tx_commerce_orders.internalcomment">Shop comment</label>
 			<label index="tx_commerce_address_types">Address Types</label>
 			<label index="tx_commerce_address_types.title">title</label>
+			
 			<label index="tt_address">Address</label>
 			<label index="tt_address.name">Name</label>
 			<label index="tx_commerce_user_states">User States</label>
 			<label index="tx_commerce_user_states.title">title</label>
+			<label index="tx_commerce_user_states.icon">icon</label>
 			<label index="tx_commerce_moveordermails">Move Order Mail</label>
 			<label index="tx_commerce_moveordermails.hidden">Hide</label>
 			<label index="tx_commerce_moveordermails.name">Name of Template</label>
@@ -370,6 +375,8 @@
 			<label index="tx_commerce_order_articles.tax">Steuer</label>
 			<label index="tx_commerce_order_articles.amount">Betrag</label>
 			<label index="tx_commerce_order_articles.order_uid">Bestellung</label>
+			<label index="tx_commerce_orders.comment">Kundenkommentar</label>
+			<label index="tx_commerce_orders.internalcomment">Shopkommentar</label>
 			<label index="tx_commerce_address_types">Address Typ</label>
 			<label index="tx_commerce_address_types.title">Titel</label>
 			<label index="tt_address">Adressen</label>

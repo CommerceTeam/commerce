@@ -1478,7 +1478,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 				'tt_address',
 				$dataArray
 			);
-			$uid = $GLOBALS['TYPO3_DB']->sql_insert_id();
+			$uid = $GLOBALS['TYPO3_DB']->sql_insert_id();	
 		}
 
 		return $uid;
@@ -1680,7 +1680,6 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 		// if we reach this point, everything is fine and we can return a positive result
 		return true;
 	}
-
 
 	/**
 	 * Sends the Information Mail to the user
@@ -1974,7 +1973,6 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 				$markerArray['###CUST_NAME###']=$data['NAME'];
 			}
 		}
-
 		$content = $this->cObj->substituteSubpart($content,'###BILLING_ADDRESS###',$billingAdress);
 		
 		/**

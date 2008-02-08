@@ -239,6 +239,12 @@ $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY]['BasketStoragePid'] = $_EXTCONF
 // Basket locking
 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY]['lockBasket'] = $_EXTCONF['lockBasket'] ? $_EXTCONF['lockBasket'] : 0;
 
+// Show article number
+$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY]['showArticleNumber'] = $_EXTCONF['showArticleNumber'] ? $_EXTCONF['showArticleNumber'] : 0;
+
+// Show article name
+$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY]['showArticleTitle'] = $_EXTCONF['showArticleTitle'] ? $_EXTCONF['showArticleTitle'] : 0;
+
 
 // This line configures to process the code selectConf with the class "tx_commerce_hooks"
 require_once(t3lib_extMgm::extPath(COMMERCE_EXTkey).'hooks/class.tx_commerce_tcehooksHandler.php');

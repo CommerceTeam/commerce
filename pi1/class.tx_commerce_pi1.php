@@ -135,11 +135,10 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 			$this->conf['pageBrowser.']['hscText'] = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'hscText', 's_template');			
 		}
 	
-	     if($this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'template', 's_template') && file_exists($this->templateFolder.$this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'template', 's_template'))){
-    	            $this->conf['templateFile'] = $this->templateFolder.$this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'template', 's_template');
-         }
-
-       
+	    if($this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'template', 's_template') && file_exists($this->templateFolder.$this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'template', 's_template'))){
+    	    $this->conf['templateFile'] = $this->templateFolder.$this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'template', 's_template');
+        }
+                
 		/**	
 		  * Validate given showUid, it it's below cat
 		  */
@@ -278,8 +277,8 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 		$this->init($conf);
 		
 		// get the template
-		$this->templateCode = $this->cObj->fileResource($this->conf["templateFile"]);
-
+		$this->templateCode = $this->cObj->fileResource($this->conf["templateFile"]);	
+	
 		$this->template = array();
 		$this->markerArray = array();
 		
@@ -289,8 +288,7 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 		}elseif($this->handle == 'listView'){	
 		    $this->content = $this->makeListView($this->cat);
 		}
-		
-		
+	
 		
 		return $this->pi_wrapInBaseClass($this->content);
 	}
