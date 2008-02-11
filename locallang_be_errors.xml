@@ -10,21 +10,21 @@
 		<languageKey index="default" type="array">
 			<label index="error">Error</label>
 			<label index="continue">Continue</label>
-			<label index="article.lokalization">Articles can only be lokalized by lokalizing a product</label>
-			<label index="product.lokalization_without_article">Products without articles could not be lokalized</label>
+			<label index="article.localization">Articles can only be localized by localizing a product</label>
+			<label index="product.localization_without_article">Products without articles could not be localized</label>
 			<label index="product.no_copy_allowed">It's not allowed to copy products that have articles.</label>
 		</languageKey>
 		<languageKey index="nl" type="array">
 			<label index="error">Fout</label>
 			<label index="continue">Doorgaan</label>
-			<label index="article.lokalization">Artikelen kunnen alleen gelocaliseerd worden door een product te localiseren</label>
-			<label index="product.lokalization_without_article">Producten zonder Artikel kunnen niet gelocaliseerd worden.</label>
+			<label index="article.localization">Artikelen kunnen alleen gelocaliseerd worden door een product te localiseren</label>
+			<label index="product.localization_without_article">Producten zonder Artikel kunnen niet gelocaliseerd worden.</label>
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="error">Fehler</label>
 			<label index="continue">Weiter</label>
-			<label index="article.lokalization">Artikel werden automatisch bei der Lokalisierung eines Produktes angelegt. Sie koennen daher nicht separat lokalisiert werden.</label>
-			<label index="product.lokalization_without_article">Produkte ohne Artikel koennen nicht lokalisiert werden.</label>
+			<label index="article.localization">Artikel werden automatisch bei der Lokalisierung eines Produktes angelegt. Sie koennen daher nicht separat lokalisiert werden.</label>
+			<label index="product.localization_without_article">Produkte ohne Artikel koennen nicht lokalisiert werden.</label>
 		</languageKey>
 		<languageKey index="fr" type="array">
 			<label index="error">erreur</label>
@@ -33,26 +33,26 @@
 		<languageKey index="br" type="array">
 			<label index="error">Erro</label>
 			<label index="continue">Continuar</label>
-			<label index="article.lokalization">Artigos só podem ser localizados após a localização do produto</label>
-			<label index="product.lokalization_without_article">Produtos sem artigos não puderam ser localizados</label>
+			<label index="article.localization">Artigos só podem ser localizados após a localização do produto</label>
+			<label index="product.localization_without_article">Produtos sem artigos não puderam ser localizados</label>
 		</languageKey>
         <languageKey index="cz" type="array">
             <label index="error">Chyba</label>
             <label index="continue">Pokračovat</label>
-            <label index="article.lokalization">Zboží se automaticky založí do systému při lokalizaci produktů, proto je nelze lokalizovat odděleně.</label>
-            <label index="product.lokalization_without_article">Produkty bez zboží nelze lokalizovat.</label>
+            <label index="article.localization">Zboží se automaticky založí do systému při lokalizaci produktů, proto je nelze lokalizovat odděleně.</label>
+            <label index="product.localization_without_article">Produkty bez zboží nelze lokalizovat.</label>
         </languageKey>
         <languageKey index="hu" type="array">
             <label index="error">Hiba</label>
             <label index="continue">Folytatás</label>
-            <label index="article.lokalization">A cikkek a termék lokalizálásakor automatikusan lokalizálódnak</label>
-            <label index="product.lokalization_without_article">A cikk nélküli termékek nem lokalizálhatók</label>
+            <label index="article.localization">A cikkek a termék lokalizálásakor automatikusan lokalizálódnak</label>
+            <label index="product.localization_without_article">A cikk nélküli termékek nem lokalizálhatók</label>
         </languageKey>
         <languageKey index="pl" type="array">
             <label index="error">Błąd</label>
             <label index="continue">Dalej</label>
-            <label index="article.lokalization">Artykuły lokalizowane są automatycznie podczas lokalizacji produktu. Dlatego nie można lokalizować ich osobno.</label>
-            <label index="product.lokalization_without_article">Nie można lokalizować produktów bez artykułów.</label>
+            <label index="article.localization">Artykuły lokalizowane są automatycznie podczas lokalizacji produktu. Dlatego nie można lokalizować ich osobno.</label>
+            <label index="product.localization_without_article">Nie można lokalizować produktów bez artykułów.</label>
         </languageKey>
 	</data>
 </T3locallang>

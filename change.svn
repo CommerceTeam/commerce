@@ -1,8 +1,10 @@
 Changelog for tx_commerce
 (add new changes on top of this file)
 
+
 11.02.2008 Ingo Schmitt <is@marketing-factory.de>
 * Fixed Bug 7089, Thanks to Jörg Sprung
+* Fixed Bug 7492 and 7493
 
 06.02.2008 Ingo Schmitt <is@marketing-factory.de>
 * Added Icon to User-States recordset

@@ -22,7 +22,7 @@
 			<label index="tt_content.list_type_pi1">Commerce: Product Listing</label>
 			<label index="tt_content.list_type_pi2">Commerce: Basket</label>
 			<label index="tt_content.list_type_pi3">Commerce: Checkout</label>
-			<label index="tt_content.list_type_pi4">Commerce: Address Managment</label>
+			<label index="tt_content.list_type_pi4">Commerce: Address Management</label>
 			<label index="tt_content.list_type_pi6">Commerce: Invoice</label>
 			
 			<label index="article">Article</label>

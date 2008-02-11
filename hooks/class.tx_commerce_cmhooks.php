@@ -57,7 +57,7 @@ class tx_commerce_cmhooks {
 	function processCmdmap_preProcess(&$command,$table,$id, $value, &$pObj)	{
 		if (($table == 'tx_commerce_articles') && ($command == 'localize'))	{
 			$command='';
-			$this->error('LLL:EXT:commerce/locallang_be_errors.php:article.lokalization');
+			$this->error('LLL:EXT:commerce/locallang_be_errors.php:article.localization');
 		}
 		
 			// at this point we avoid copying of products
@@ -83,7 +83,7 @@ class tx_commerce_cmhooks {
 			if ($articles==false)	{
 					// Error Outpout, no articles
 				$command='';
-				$this->error('LLL:EXT:commerce/locallang_be_errors.php:product.lokalization_without_article');
+				$this->error('LLL:EXT:commerce/locallang_be_errors.php:product.localization_without_article');
 			}
 		}
 	}
@@ -337,7 +337,7 @@ class tx_commerce_cmhooks {
 			} elseif ($locProductARticles == false) {
 					// Error Output, no Articles	
 				$command='';
-				$this->error('LLL:EXT:commerce/locallang_be_errors.php:product.lokalization_without_article');
+				$this->error('LLL:EXT:commerce/locallang_be_errors.php:product.localization_without_article');
 			} 
 		}
 	}
