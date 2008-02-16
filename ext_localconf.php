@@ -39,29 +39,29 @@ define(NORMALArticleType,1);
 define(PAYMENTArticleType,2);
 define(DELIVERYArticleType,3);
 
-$TYPO3_CONF_VARS['EXTCONF'][COMMERCE_EXTkey]['SYSPRODUCTS']['PAYMENT'] = array(
+$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['SYSPRODUCTS']['PAYMENT'] = array(
 	'tablefields' => array (
 		'title' => 'SYSTEMPRODUCT_PAYMENT',
 		'description' => 'Produkt zum Verwalten der Bezahlung',
 	)
 );
-$TYPO3_CONF_VARS['EXTCONF'][COMMERCE_EXTkey]['SYSPRODUCTS']['PAYMENT']['types']['invoice'] = array (
+$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['SYSPRODUCTS']['PAYMENT']['types']['invoice'] = array (
 	'path' => PATH_txcommerce .'payment/class.tx_commerce_payment_invoice.php',
 	'class' => 'tx_commerce_payment_invoice',
 	'type'=>PAYMENTArticleType,
 );
 		
-$TYPO3_CONF_VARS['EXTCONF'][COMMERCE_EXTkey]['SYSPRODUCTS']['PAYMENT']['types']['prepayment'] = array (
+$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['SYSPRODUCTS']['PAYMENT']['types']['prepayment'] = array (
 	'path' => PATH_txcommerce .'payment/class.tx_commerce_payment_prepayment.php',
 	'class' => 'tx_commerce_payment_prepayment',
 	'type'=>PAYMENTArticleType,
 );
-$TYPO3_CONF_VARS['EXTCONF'][COMMERCE_EXTkey]['SYSPRODUCTS']['PAYMENT']['types']['creditcard'] = array (
+$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['SYSPRODUCTS']['PAYMENT']['types']['creditcard'] = array (
 	'path' => PATH_txcommerce .'payment/class.tx_commerce_payment_creditcard.php',
 	'class' => 'tx_commerce_payment_creditcard',
 	'type'=>PAYMENTArticleType,
 );
-$TYPO3_CONF_VARS['EXTCONF'][COMMERCE_EXTkey]['SYSPRODUCTS']['PAYMENT']['types']['cashondelivery'] = array (
+$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['SYSPRODUCTS']['PAYMENT']['types']['cashondelivery'] = array (
 	'path' => PATH_txcommerce .'payment/class.tx_commerce_payment_cashondelivery.php',
 	'class' => 'tx_commerce_payment_cashondelivery',
 	'type'=>PAYMENTArticleType,
@@ -70,13 +70,13 @@ $TYPO3_CONF_VARS['EXTCONF'][COMMERCE_EXTkey]['SYSPRODUCTS']['PAYMENT']['types'][
 
 
 
-$TYPO3_CONF_VARS['EXTCONF'][COMMERCE_EXTkey]['SYSPRODUCTS']['DELIVERY'] = array(
+$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['SYSPRODUCTS']['DELIVERY'] = array(
 	'tablefields' => array (
 		'title' => 'SYSTEMPRODUCT_DELIVERY',
 		'description' => 'Produkt zum Verwalten der Lieferarten',
 	)
 );
-$TYPO3_CONF_VARS['EXTCONF'][COMMERCE_EXTkey]['SYSPRODUCTS']['DELIVERY']['types'] = array(
+$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['SYSPRODUCTS']['DELIVERY']['types'] = array(
 		'sysdelivery' => array ('type'=>DELIVERYArticleType),
 		#'POST Europa' => array (),
 		#'UPS Weltweit' => array (
@@ -175,20 +175,20 @@ t3lib_extMgm::addUserTSConfig('
 	options.saveDocNew.tx_commerce_moveordermails=1
 ');
 
-//$TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['typo3/class.alt_menu_functions.inc']=t3lib_extMgm::extPath(COMMERCE_EXTkey).'class.ux_alt_menu_functions.php';
-//$TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['typo3/class.alt_menu_functions.inc']=t3lib_extMgm::extPath(GRAYTREE_EXTkey).'class.ux_alt_menu_functions.php';
+//$GLOBALS['TYPO3_CONF_VARS']['TYPO3_MODE']['XCLASS']['typo3/class.alt_menu_functions.inc']=t3lib_extMgm::extPath(COMMERCE_EXTkey).'class.ux_alt_menu_functions.php';
+//$GLOBALS['TYPO3_CONF_VARS']['TYPO3_MODE']['XCLASS']['typo3/class.alt_menu_functions.inc']=t3lib_extMgm::extPath(GRAYTREE_EXTkey).'class.ux_alt_menu_functions.php';
 
 
 
 // only in old TYPO3 versions below 4.0 apply extension to TCA Non type
 if (!(substr(TYPO3_version, 0, 3)  >= '4.0')) {
-	$TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['t3lib/class.t3lib_tceforms.php'] = t3lib_extMgm::extPath(COMMERCE_EXTkey).'class.ux_t3lib_tceforms.php';
-	$TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['typo3/alt_doc.php'] = t3lib_extMgm::extPath(COMMERCE_EXTkey).'class.ux_sc_alt_doc.php';
+	$GLOBALS['TYPO3_CONF_VARS']['TYPO3_MODE']['XCLASS']['t3lib/class.t3lib_tceforms.php'] = t3lib_extMgm::extPath(COMMERCE_EXTkey).'class.ux_t3lib_tceforms.php';
+	$GLOBALS['TYPO3_CONF_VARS']['TYPO3_MODE']['XCLASS']['typo3/alt_doc.php'] = t3lib_extMgm::extPath(COMMERCE_EXTkey).'class.ux_sc_alt_doc.php';
 
 }
 
 // add special in db list, to have the ability to search for OrderIds in TYPO 4.0
-$TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['typo3/class.db_list_extra.inc']=t3lib_extMgm::extPath(COMMERCE_EXTkey).'class.ux_localrecordlist.php';
+$GLOBALS['TYPO3_CONF_VARS']['TYPO3_MODE']['XCLASS']['typo3/class.db_list_extra.inc']=t3lib_extMgm::extPath(COMMERCE_EXTkey).'class.ux_localrecordlist.php';
 
 
 // Hooks for datamap procesing
@@ -202,7 +202,7 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['proc
 
 // Intiantation the Basket in the FE User class
 // removed, since TYPO3 3.8.0 comes with a handy hook in initi fe_user :-)
-//$TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['tslib/class.tslib_fe.php'] = t3lib_extMgm::extPath(COMMERCE_EXTkey)."class.ux_tslib_fe.php";
+//$GLOBALS['TYPO3_CONF_VARS']['TYPO3_MODE']['XCLASS']['tslib/class.tslib_fe.php'] = t3lib_extMgm::extPath(COMMERCE_EXTkey)."class.ux_tslib_fe.php";
 
 // Hook for registering the basket
 # $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['initFEuser'][] = 'EXT:commerce/hooks/class.tx_commerce_feuserhooks.php:tx_commerce_feuserhooks->user_addBasket';
@@ -220,7 +220,7 @@ if (empty($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/hooks/class.tx_commer
 }
 
 // languagefile for external creditard check
-$TYPO3_CONF_VARS['EXTCONF']['commerce']['SYSPRODUCTS']['PAYMENT']['types']['creditcard']['ccvs_language_files'] = PATH_txcommerce .'payment/ccvs_language';
+$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce']['SYSPRODUCTS']['PAYMENT']['types']['creditcard']['ccvs_language_files'] = PATH_txcommerce .'payment/ccvs_language';
 
 
 // hooks for sr_feuser_register
@@ -252,7 +252,7 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['proc
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass'][] = 'tx_commerce_tcehooksHandler';
 
 require_once(t3lib_extMgm::extPath(COMMERCE_EXTkey).'hooks/class.tx_srfeuserregister_commerce_hooksHandler.php');
-$TYPO3_CONF_VARS['EXTCONF']['sr_feuser_register']['tx_srfeuserregister_pi1']['registrationProcess'][] = 'tx_srfeuserregister_commerce_hooksHandler';
+$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['sr_feuser_register']['tx_srfeuserregister_pi1']['registrationProcess'][] = 'tx_srfeuserregister_commerce_hooksHandler';
 
 require_once(t3lib_extMgm::extPath(COMMERCE_EXTkey).'hooks/class.tx_commerce_pi4hooksHandler.php');
 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi4/class.tx_commerce_pi4.php']['deleteAddress'][] = 'tx_commerce_pi4hooksHandler';

@@ -77,10 +77,10 @@ if (TYPO3_MODE=='BE')	{
 
 
 
-$TYPO3_CONF_VARS['EXTCONF'][COMMERCE_EXTkey]['leafClasses']['txcommerceCategoryTree'] = 'EXT:'.COMMERCE_EXTkey.'/lib/class.tx_commerce_treecategory.php:&tx_commerce_treeCategory';
-$TYPO3_CONF_VARS['EXTCONF'][COMMERCE_EXTkey]['leafClasses']['txcommerceCategory'] = 'EXT:'.COMMERCE_EXTkey.'/lib/class.tx_commerce_leafcategoryview.php:&tx_commerce_leafCategoryView';
-$TYPO3_CONF_VARS['EXTCONF'][COMMERCE_EXTkey]['leafClasses']['txcommerceProduct'] = 'EXT:'.COMMERCE_EXTkey.'/lib/class.tx_commerce_leafproductview.php:&tx_commerce_leafProductView';
-$TYPO3_CONF_VARS['EXTCONF'][COMMERCE_EXTkey]['leafClasses']['txcommerceAttribute'] = 'EXT:'.COMMERCE_EXTkey.'/lib/class.tx_commerce_leafattributeview.php:&tx_commerce_leafAttributeView';
+$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['leafClasses']['txcommerceCategoryTree'] = 'EXT:'.COMMERCE_EXTkey.'/lib/class.tx_commerce_treecategory.php:&tx_commerce_treeCategory';
+$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['leafClasses']['txcommerceCategory'] = 'EXT:'.COMMERCE_EXTkey.'/lib/class.tx_commerce_leafcategoryview.php:&tx_commerce_leafCategoryView';
+$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['leafClasses']['txcommerceProduct'] = 'EXT:'.COMMERCE_EXTkey.'/lib/class.tx_commerce_leafproductview.php:&tx_commerce_leafProductView';
+$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['leafClasses']['txcommerceAttribute'] = 'EXT:'.COMMERCE_EXTkey.'/lib/class.tx_commerce_leafattributeview.php:&tx_commerce_leafAttributeView';
  
 
 

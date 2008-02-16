@@ -89,7 +89,7 @@ class tx_commerce_leafProductView extends tx_commerce_browseLeafView {
 
 
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_leafproductview.php'])	{
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_leafproductview.php']);
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS']['TYPO3_MODE']['XCLASS']['ext/commerce/lib/class.tx_commerce_leafproductview.php'])	{
+	include_once($GLOBALS['TYPO3_CONF_VARS']['TYPO3_MODE']['XCLASS']['ext/commerce/lib/class.tx_commerce_leafproductview.php']);
 }
 ?>

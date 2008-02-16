@@ -243,8 +243,8 @@ class ux_SC_alt_doc extends SC_alt_doc{
 
 }
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/commerce/class.ux_sc_alt_doc.php'])	{
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/commerce/class.ux_sc_alt_doc.php']);
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS']['TYPO3_MODE']['XCLASS']['ext/commerce/class.ux_sc_alt_doc.php'])	{
+	include_once($GLOBALS['TYPO3_CONF_VARS']['TYPO3_MODE']['XCLASS']['ext/commerce/class.ux_sc_alt_doc.php']);
 }
 
 ?>

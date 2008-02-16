@@ -96,7 +96,7 @@ class ux_localRecordList extends localRecordList {
 
 
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['commerce/ux_localRecordList.php'])	{
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['commerce/ux_localRecordList.php']);
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS']['TYPO3_MODE']['XCLASS']['commerce/ux_localRecordList.php'])	{
+	include_once($GLOBALS['TYPO3_CONF_VARS']['TYPO3_MODE']['XCLASS']['commerce/ux_localRecordList.php']);
 }
 ?>

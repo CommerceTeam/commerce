@@ -216,7 +216,7 @@ class CreditCardValidationSolution {
     function validateCreditCard($Number, $CheckNumber, $Language='en', $Accepted='',
                                   $RequireExp='N', $Month='', $Year='') {
 
-	global $TYPO3_CONF_VARS;
+	
 	
         $this->CCVSNumber      = '';
         $this->CCVSCheckNumber = '';
@@ -228,7 +228,7 @@ class CreditCardValidationSolution {
 
         /* Import the language preferences. */
 
-	$Path = $TYPO3_CONF_VARS['EXTCONF']['commerce']['SYSPRODUCTS']['PAYMENT']['types']['creditcard']['ccvs_language_files'];
+	$Path = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce']['SYSPRODUCTS']['PAYMENT']['types']['creditcard']['ccvs_language_files'];
 
         if ( !file_exists("$Path/ccvs_$Language.inc") ) {
             $this->CCVSError = "The $Language language file can't be found";
@@ -472,7 +472,7 @@ class tx_commerce_ccvs_lib extends CreditCardValidationSolution {
 	
 }
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']["ext/commerce/lib/class.tx_commerce_ccvs_lib.php"])	{
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']["ext/commerce/lib/class.tx_commerce_ccvs_lib.php"]);
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS']['TYPO3_MODE']['XCLASS']["ext/commerce/lib/class.tx_commerce_ccvs_lib.php"])	{
+	include_once($GLOBALS['TYPO3_CONF_VARS']['TYPO3_MODE']['XCLASS']["ext/commerce/lib/class.tx_commerce_ccvs_lib.php"]);
 }
 ?>

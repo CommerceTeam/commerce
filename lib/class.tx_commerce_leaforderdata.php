@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2005 - 2006 Daniel Schöttgen <ds@marketing-factory.de>
+*  (c) 2005 - 2006 Daniel Schï¿½ttgen <ds@marketing-factory.de>
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -25,7 +25,7 @@
  * Contains standard selection trees/rules.
  * Part of the COMMERCE (Advanced Shopping System) extension.
  *
- * @author	Daniel Schöttgen <ds@marketing-factory.de>
+ * @author	Daniel Schï¿½ttgen <ds@marketing-factory.de>
  * @package TYPO3
  * @subpackage tx_commerce
  * 
@@ -74,7 +74,7 @@ class tx_commerce_leafOrderData extends tx_graytree_leafData {
 
 
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_leaforderdata.php'])	{
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_leaforderdata.php']);
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS']['TYPO3_MODE']['XCLASS']['ext/commerce/lib/class.tx_commerce_leaforderdata.php'])	{
+	include_once($GLOBALS['TYPO3_CONF_VARS']['TYPO3_MODE']['XCLASS']['ext/commerce/lib/class.tx_commerce_leaforderdata.php']);
 }
 ?>

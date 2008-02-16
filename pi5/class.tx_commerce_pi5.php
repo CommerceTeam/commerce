@@ -142,7 +142,7 @@ class tx_commerce_pi5 extends tx_commerce_pibase {
 		
 		#print ($this->piVars['step']);
 		$paymentType = $this->getPaymentType();
-		$sysConfig = $TYPO3_CONF_VARS['EXTCONF'][$this->extKey]['SYSPRODUCTS']['PAYMENT'];
+		$sysConfig = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['SYSPRODUCTS']['PAYMENT'];
 		$config = $sysConfig['types'][strtolower((string)$paymentType)];
 		if (!isset($config['class']) || !file_exists($config['path'])) die ('No payment possible because I don\'t know how to handle it!');
 		require_once($config['path']);
@@ -321,8 +321,8 @@ class tx_commerce_pi5 extends tx_commerce_pibase {
 		if (!$this->validateAddress('delivery')) return $this->getDeliveryAddress();
 		if (!$this->validateAddress('billing')) return $this->getBillingAddress();
 		
-		global $TYPO3_CONF_VARS;
-		$sysConfig = $TYPO3_CONF_VARS['EXTCONF'][$this->extKey]['SYSPRODUCTS']['PAYMENT'];
+		
+		$sysConfig = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['SYSPRODUCTS']['PAYMENT'];
 		
 		// currently set the payment type to fixed value for DEVELOPEMENT
 		$paymentType = $this->getPaymentType();
@@ -474,8 +474,8 @@ class tx_commerce_pi5 extends tx_commerce_pibase {
 	 */
 	
 	function finishIt() {
-		global $TYPO3_CONF_VARS;
-		$sysConfig = $TYPO3_CONF_VARS['EXTCONF'][$this->extKey]['SYSPRODUCTS']['PAYMENT'];
+		
+		$sysConfig = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['SYSPRODUCTS']['PAYMENT'];
 		$paymentType = $this->getPaymentType();
 		$config = $sysConfig['types'][strtolower((string)$paymentType)];
 		if (!isset($config['class']) || !file_exists($config['path'])) die ('No payment possible because I don\'t know how to handle it!');
@@ -503,8 +503,8 @@ class tx_commerce_pi5 extends tx_commerce_pibase {
 
 		
 		// first of all, call the finish method from the payment class
-		global $TYPO3_CONF_VARS;
-		$sysConfig = $TYPO3_CONF_VARS['EXTCONF'][$this->extKey]['SYSPRODUCTS']['PAYMENT'];
+	
+		$sysConfig = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['SYSPRODUCTS']['PAYMENT'];
 		
 		$hookObjectsArr = array();
 		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi5/class.tx_commerce_pi5.php']['finishIt'])) {
@@ -1452,6 +1452,6 @@ class tx_commerce_pi5 extends tx_commerce_pibase {
 	}
 }
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']["ext/commerce/pi5/class.tx_commerce_pi5.php"])	{
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']["ext/commerce/pi5/class.tx_commerce_pi5.php"]);
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS']['TYPO3_MODE']['XCLASS']["ext/commerce/pi5/class.tx_commerce_pi5.php"])	{
+	include_once($GLOBALS['TYPO3_CONF_VARS']['TYPO3_MODE']['XCLASS']["ext/commerce/pi5/class.tx_commerce_pi5.php"]);
 }

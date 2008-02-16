@@ -7,16 +7,16 @@
 <style type="text/css">
 /*<![CDATA[*/
   .filename {
-  	font-style:bold;
+  	font-weight:bold;
   	font-size:xx-large;
   }
   .classname {
-	font-style:bold;
+	font-weight:bold;
 	font-size:x-large;
 	margin-left:40px;
   }
   .functionname {
-	font-style:bold;
+	font-weight:bold;
 	font-size:large;
 	margin-left:80px;
   }
@@ -123,6 +123,7 @@ Some hook-methods can return data which is used by the calling function. Others 
 	<div class="functionindex">function getBillingAddress</div>
 	<div class="functionindex">function getDeliveryAddress</div>
 	<div class="functionindex">function getListing</div>
+	<div class="functionindex">function canMakeCheckout</div>
 	<div class="functionindex">function finishIt</div>
 	<div class="functionindex">function getBasketSum</div>
 	<div class="functionindex">function handleAddress</div>
@@ -453,6 +454,18 @@ Some hook-methods can return data which is used by the calling function. Others 
 					Result: array() - A new $markerArray<br />
 					ADD additional markers to the $markerArray and RETURN it. The result of this hook is used as the new $markerArray.<br/>
 					This $markerArray is used to substitute the template-code for the "contents of basket"-page.
+					</div>
+					<div class="functionname">function canMakeCheckout</div>
+				<div class="hookname">$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi3/class.tx_commerce_pi3.php']['canMakeCheckout']</div>
+					<div class="description">
+					Call: canMakeCheckoutOwnTests($checks,$myCheck)<br/>
+					Type: Multiple<br/>
+					Result: void<br />
+					
+					The parameter $checks is an array with the standard checks of commerce. If you remove for example nopayment from the array<br>
+					commerce does not check if there is a payment article included.
+					With the second parameter you can add your own checks. Set $myCheck to a string and it will be used here:
+					return $this->cObj->cObjGetSingle($this->conf['cantMakeCheckout.'][$canMakeCheckout], $this->conf['cantMakeCheckout.'][$canMakeCheckout.'.']);
 					</div>
 			<div class="functionname">function finishIt</div>
 				<div class="hookname">$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi3/class.tx_commerce_pi3.php']['finishIt']</div>

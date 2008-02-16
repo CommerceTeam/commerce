@@ -1,9 +1,12 @@
 Changelog for tx_commerce
 (add new changes on top of this file)
-
+16.02.2008 Ingo Schmitt <is@marketing-factory.de>
+* Patched Bug 7149, Thanks to Sascha Egerer
+* Fixed Bug 7321, changed all occurences of $TYPO3_CONF_VARS to $GLOBALS['TYPO3_CONF_VARS']
+* Fixed CSS in hooks.html
 
 11.02.2008 Ingo Schmitt <is@marketing-factory.de>
-* Fixed Bug 7089, Thanks to Jörg Sprung
+* Fixed Bug 7089, Thanks to JÃ¶rg Sprung
 * Fixed Bug 7492 and 7493
 
 06.02.2008 Ingo Schmitt <is@marketing-factory.de>

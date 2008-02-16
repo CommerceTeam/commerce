@@ -154,11 +154,11 @@ class tx_commerce_category_navframe {
 		$selClass = array();
 					// only a browsee tree for categories:
 					// the first element is the category tree
-		$selClass[] = array ('txcommerceCategoryTree' => $TYPO3_CONF_VARS['EXTCONF'][COMMERCE_EXTkey]['leafClasses']['txcommerceCategoryTree']);
+		$selClass[] = array ('txcommerceCategoryTree' => $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['leafClasses']['txcommerceCategoryTree']);
 				
 					// the next elements are the leaves 			
-		$selClass[] = array ('txcommerceCategory' => $TYPO3_CONF_VARS['EXTCONF'][COMMERCE_EXTkey]['leafClasses']['txcommerceCategory']);
-		$selClass[] = array ('txcommerceProduct' => $TYPO3_CONF_VARS['EXTCONF'][COMMERCE_EXTkey]['leafClasses']['txcommerceProduct']);
+		$selClass[] = array ('txcommerceCategory' => $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['leafClasses']['txcommerceCategory']);
+		$selClass[] = array ('txcommerceProduct' => $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['leafClasses']['txcommerceProduct']);
 		
 		#debug($selClass, 'Aufruf2 $selClass class.tx_commerce_category_navframe.php', __LINE__, __FILE__);
 		$this->browseTrees->initLeafClasses($selClass, 'class.tx_commerce_category_navframe.php');
@@ -217,8 +217,8 @@ class tx_commerce_category_navframe {
 }
 
 // Include extension?
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/commerce/mod_tracking/class.tx_commerce_category_navframe.php'])	{
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/commerce/mod_tracking/class.tx_commerce_category_navframe.php']);
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS']['TYPO3_MODE']['XCLASS']['ext/commerce/mod_tracking/class.tx_commerce_category_navframe.php'])	{
+	include_once($GLOBALS['TYPO3_CONF_VARS']['TYPO3_MODE']['XCLASS']['ext/commerce/mod_tracking/class.tx_commerce_category_navframe.php']);
 }
 
 

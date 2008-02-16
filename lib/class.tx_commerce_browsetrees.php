@@ -54,15 +54,15 @@ class tx_commerce_browseTrees {
 	 * @return	void
 	 */
 	function init($thisScript, $modeEB=false)	{
-		global $BE_USER,$LANG,$BACK_PATH,$TYPO3_CONF_VARS;
+		global $BE_USER,$LANG,$BACK_PATH;
 
-		$this->initLeafClasses($TYPO3_CONF_VARS['EXTCONF']['commerce']['leafClasses'], $thisScript, $modeEB);
+		$this->initLeafClasses($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce']['leafClasses'], $thisScript, $modeEB);
 	}
 
 	/**
 	 * initialize the browsable trees
 	 *
-	 * @param	array		$TYPO3_CONF_VARS['EXTCONF']['commerce']['leafClasses']
+	 * @param	array		$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce']['leafClasses']
 	 * @param	string		script name to link to
 	 * @param	boolean		Element browser mode - unused (TODO: delete this parameter)
 	 * @return	void
@@ -98,7 +98,7 @@ class tx_commerce_browseTrees {
 								$obj->modeEB = $modeEB; // TODO: delete this line
 								$obj->setExtIconMode(true);  // no context menu on icons
 								if (TYPO3_DLOG && COMMERCE_BROWSETREES_DLOG)   
-									t3lib_div::devLog('initLeafClasses $this->arrayTree['.$classKey.'] wird gefüllt', COMMERCE_EXTkey);						
+									t3lib_div::devLog('initLeafClasses $this->arrayTree['.$classKey.'] wird gefï¿½llt', COMMERCE_EXTkey);						
 
 							} else {
 								// the object is an element class like category or product
@@ -144,8 +144,8 @@ class tx_commerce_browseTrees {
 }
 
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_browsetrees.php'])	{
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_browsetrees.php']);
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS']['TYPO3_MODE']['XCLASS']['ext/commerce/lib/class.tx_commerce_browsetrees.php'])	{
+	include_once($GLOBALS['TYPO3_CONF_VARS']['TYPO3_MODE']['XCLASS']['ext/commerce/lib/class.tx_commerce_browsetrees.php']);
 }
 
 

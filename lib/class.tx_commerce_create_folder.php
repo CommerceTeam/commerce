@@ -59,7 +59,7 @@
 	 */
 	function init_folders()	{
 		
-		global $TYPO3_CONF_VARS;
+		
 		/**
 		 * Folder Creation
 		 * @TODO Get list from Order folders from TS
@@ -74,8 +74,8 @@
 		list($xPid,$defaultFolder,$folderList) = tx_graytree_folder_db::initFolders('Delivered', 'commerce',$orderPid);
 
 		$hookObjectsArr = array();
-		if (is_array ($TYPO3_CONF_VARS['EXTCONF']['commerce/class.tx_commerce_create_folder.php']['postcreatefolder'])) {
-				foreach ($TYPO3_CONF_VARS['EXTCONF']['commerce/class.tx_commerce_create_folder.php']['postcreatefolder'] as $classRef) {
+		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/class.tx_commerce_create_folder.php']['postcreatefolder'])) {
+				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/class.tx_commerce_create_folder.php']['postcreatefolder'] as $classRef) {
 						$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
 				}
 		}
@@ -94,8 +94,8 @@
 		$catUid = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
 		$catUid = $catUid['uid'];
 		$hookObjectsArr = array();
-		if (is_array ($TYPO3_CONF_VARS['EXTCONF']['commerce/class.tx_commerce_create_folder.php']['precreatesyscategory'])) {
-				foreach ($TYPO3_CONF_VARS['EXTCONF']['commerce/class.tx_commerce_create_folder.php']['precreatesyscategory'] as $classRef) {
+		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/class.tx_commerce_create_folder.php']['precreatesyscategory'])) {
+				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/class.tx_commerce_create_folder.php']['precreatesyscategory'] as $classRef) {
 						$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
 				}
 		}
@@ -107,19 +107,19 @@
 			$catUid = $GLOBALS['TYPO3_DB']->sql_insert_id();
 		}
 		$hookObjectsArr = array();
-		if (is_array ($TYPO3_CONF_VARS['EXTCONF']['commerce/class.tx_commerce_create_folder.php']['postcreatesyscategory'])) {
-				foreach ($TYPO3_CONF_VARS['EXTCONF']['commerce/class.tx_commerce_create_folder.php']['postcreatesyscategory'] as $classRef) {
+		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/class.tx_commerce_create_folder.php']['postcreatesyscategory'])) {
+				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/class.tx_commerce_create_folder.php']['postcreatesyscategory'] as $classRef) {
 						$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
 				}
 		}
-		if (is_array($TYPO3_CONF_VARS['EXTCONF'][COMMERCE_EXTkey]['SYSPRODUCTS'])) {
-			foreach ($TYPO3_CONF_VARS['EXTCONF'][COMMERCE_EXTkey]['SYSPRODUCTS'] as $type => $data) {
+		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['SYSPRODUCTS'])) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['SYSPRODUCTS'] as $type => $data) {
 				tx_commerce_create_folder::makeSystemCatsProductsArtcilesAndPrices($catUid, strtoupper($type), $addArray);
 			}
 		}
 		$hookObjectsArr = array();
-		if (is_array ($TYPO3_CONF_VARS['EXTCONF']['commerce/class.tx_commerce_create_folder.php']['postcreatediliveryarticles'])) {
-				foreach ($TYPO3_CONF_VARS['EXTCONF']['commerce/class.tx_commerce_create_folder.php']['postcreatediliveryarticles'] as $classRef) {
+		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/class.tx_commerce_create_folder.php']['postcreatediliveryarticles'])) {
+				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/class.tx_commerce_create_folder.php']['postcreatediliveryarticles'] as $classRef) {
 						$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
 				}
 		}
@@ -134,10 +134,10 @@
 	 * @author Volker Graubaum <vg_typo3@e-netconsulting.de>
 	 */
 	function makeSystemCatsProductsArtcilesAndPrices($catUid, $type, $addArray) {
-		global $TYPO3_CONF_VARS;
+		
 		$pUid = tx_commerce_create_folder::makeProduct($catUid, $type, $addArray);
 		// create some articles, depending on the PAYMENT types
-		while (list($key, $value) = each($TYPO3_CONF_VARS['EXTCONF']['commerce']['SYSPRODUCTS'][$type]['types'])) {
+		while (list($key, $value) = each($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce']['SYSPRODUCTS'][$type]['types'])) {
 			tx_commerce_create_folder::makeArticle($pUid, $key, $value, $addArray);
 		}
 	}
@@ -253,8 +253,8 @@
 	
  }
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']["ext/commerce/lib/class.tx_commerce_create_folder.php"])	{
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']["ext/commerce/lib/class.tx_commerce_create_folder.php"]);
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS']['TYPO3_MODE']['XCLASS']["ext/commerce/lib/class.tx_commerce_create_folder.php"])	{
+	include_once($GLOBALS['TYPO3_CONF_VARS']['TYPO3_MODE']['XCLASS']["ext/commerce/lib/class.tx_commerce_create_folder.php"]);
 }
 
  ?>

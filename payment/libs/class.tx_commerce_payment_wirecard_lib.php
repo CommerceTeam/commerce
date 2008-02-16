@@ -32,12 +32,12 @@
 *  				  		  auf z.B. setKKnumber usw)
 * 
 * prepareMethod		- bereitet die Transaktion vor - erstellt die Parameterliste
-* 					  ggf. auch prepareMethod->KK oder ->ELV Muss ich nochmal drüber nachdenken ich
-* 					  denke aber das wäre kein schlechter weg, sonst als array übergeben
+* 					  ggf. auch prepareMethod->KK oder ->ELV Muss ich nochmal drï¿½ber nachdenken ich
+* 					  denke aber das wï¿½re kein schlechter weg, sonst als array ï¿½bergeben
 * 
 * sendTransaction		- sendet zur Schnittstelle
 * 
-* getErrorOfErrorcode	- Gibt den Fehlertext zurück
+* getErrorOfErrorcode	- Gibt den Fehlertext zurï¿½ck
 * getErrortype		    - Warning, schwer, unbekannt, usw.
 * 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -63,8 +63,8 @@ class payment extends wirecard
 	/**
 	* function: getPaymetmethods
 	* 
-	* liefert eine Liste von Zahlungsmöglichkeiten die von der Parentklasse zur 
-	* Verfügunggestellt werden
+	* liefert eine Liste von Zahlungsmï¿½glichkeiten die von der Parentklasse zur 
+	* Verfï¿½gunggestellt werden
 	* 
 	* @param  
 	* @return array
@@ -146,7 +146,7 @@ class payment extends wirecard
 	/**
 	* function: setData
 	* 
-	* Setzt die Übertragunsparameter
+	* Setzt die ï¿½bertragunsparameter
 	* 
 	* @param  
 	* @return bool
@@ -160,7 +160,7 @@ class payment extends wirecard
 	/////////////////////////////////////////////////////////////////////////////////////
 	function setData ($data){
         
-		// Die Benutzerdaten in einem Assoziativen Array übergeben
+		// Die Benutzerdaten in einem Assoziativen Array ï¿½bergeben
 		// folgende Benutzerdaten werdem vom System allgemein beachtet:
 		// 
 		// - firstname
@@ -180,7 +180,7 @@ class payment extends wirecard
 	/**
 	* function: setPaymentData
 	* 
-	* Setzt die Übertragunsparameter - Zahlungsdaten
+	* Setzt die ï¿½bertragunsparameter - Zahlungsdaten
 	* 
 	* @param  
 	* @return bool
@@ -194,7 +194,7 @@ class payment extends wirecard
 	/////////////////////////////////////////////////////////////////////////////////////
 	function setPaymentData ($data){
         
-		// Die Benutzerdaten in einem Assoziativen Array übergeben
+		// Die Benutzerdaten in einem Assoziativen Array ï¿½bergeben
 		// folgende Benutzerdaten werdem vom System allgemein beachtet:
 		// 
 		// Betrifft Kreditkarten
@@ -214,7 +214,7 @@ class payment extends wirecard
 	/**
 	* function: setTransactionData
 	* 
-	* Setzt die Daten für eine bezahlung
+	* Setzt die Daten fï¿½r eine bezahlung
 	* 
 	* @param  
 	* @return bool
@@ -228,7 +228,7 @@ class payment extends wirecard
 	/////////////////////////////////////////////////////////////////////////////////////
 	function setTransactionData ($data){
         
-		// Die Benutzerdaten in einem Assoziativen Array übergeben
+		// Die Benutzerdaten in einem Assoziativen Array ï¿½bergeben
 		// folgende Benutzerdaten werdem vom System allgemein beachtet:
 		//   
 		// - amount
@@ -251,7 +251,7 @@ class payment extends wirecard
 	/**
 	* Intern - function: setReferenzID
 	* 
-	* Setzt eine referenz ID für die Tranksaktion
+	* Setzt eine referenz ID fï¿½r die Tranksaktion
 	* 
 	* @return bool
 	* @since 0.1 - 2005/04/13
@@ -265,10 +265,10 @@ class payment extends wirecard
 	
 	////////////////////////////////////////////////////////////////////////////////////
 	/**
-	* Vererbende Klassen der Schnittstelle werden hier vorbelegt / überschrieben
+	* Vererbende Klassen der Schnittstelle werden hier vorbelegt / ï¿½berschrieben
 	* ----------------------------------------------------------------------------
-	* Ab hier werden die wirklichen Schnittstellen aufgerufen und ausgeführt.
-	* die Methoden in Payment werden hierbei überschrieben ggf. aber von dieser
+	* Ab hier werden die wirklichen Schnittstellen aufgerufen und ausgefï¿½hrt.
+	* die Methoden in Payment werden hierbei ï¿½berschrieben ggf. aber von dieser
 	* Klasse vorbelegt.
 	*/
 	////////////////////////////////////////////////////////////////////////////////////
@@ -278,8 +278,8 @@ class payment extends wirecard
 	/**
 	* function: checkTransactiondata
 	* 
-	* kontrolliert ob alle Daten vollständig sind und damit zum absenden 
-	* an die Schnittstelle geeignet (abhängig vom zu testenden Zahlungstyp)
+	* kontrolliert ob alle Daten vollstï¿½ndig sind und damit zum absenden 
+	* an die Schnittstelle geeignet (abhï¿½ngig vom zu testenden Zahlungstyp)
 	* 
 	* @param  string Welcher Paymenttype
 	* @return bool
@@ -596,7 +596,7 @@ class wirecard
 	}
 } 
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/commerce/payment/libs/class.tx_commerce_payment_wirecard_lib.php'])	{
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/commerce/payment/libs/class.tx_commerce_payment_wirecard_lib.php']);
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS']['TYPO3_MODE']['XCLASS']['ext/commerce/payment/libs/class.tx_commerce_payment_wirecard_lib.php'])	{
+	include_once($GLOBALS['TYPO3_CONF_VARS']['TYPO3_MODE']['XCLASS']['ext/commerce/payment/libs/class.tx_commerce_payment_wirecard_lib.php']);
 }
 ?>

@@ -25,7 +25,7 @@
  * Module 'Orders' for the 'commerce' extension.
  *
  * @author	Ingo Schmitt <is@marketing-factory.de>
- * @author	Daniel Schöttgen <ds@marketing-factory.de>
+ * @author	Daniel Schï¿½ttgen <ds@marketing-factory.de>
  * 
  * $Id: index.php 424 2006-11-16 13:25:58Z ingo $
  */
@@ -880,8 +880,8 @@ class tx_commerce_orders extends t3lib_SCbase {
 	}
 }
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/commerce/mod_orders/index.php'])	{
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/commerce/mod_orders/index.php']);
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS']['TYPO3_MODE']['XCLASS']['ext/commerce/mod_orders/index.php'])	{
+	include_once($GLOBALS['TYPO3_CONF_VARS']['TYPO3_MODE']['XCLASS']['ext/commerce/mod_orders/index.php']);
 }
 t3lib_div::loadTca('tx_commerce_orders');
 /*

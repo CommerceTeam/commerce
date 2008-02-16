@@ -245,7 +245,7 @@ class tx_commerce_attributeEditor {
 	
 }
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']["ext/commerce/class.tx_commerce_attributeeditor.php"])	{
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']["ext/commerce/class.tx_commerce_attributeeditor.php"]);
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS']['TYPO3_MODE']['XCLASS']["ext/commerce/class.tx_commerce_attributeeditor.php"])	{
+	include_once($GLOBALS['TYPO3_CONF_VARS']['TYPO3_MODE']['XCLASS']["ext/commerce/class.tx_commerce_attributeeditor.php"]);
 }
 ?>

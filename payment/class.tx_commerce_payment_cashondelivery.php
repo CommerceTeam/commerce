@@ -103,8 +103,8 @@ class tx_commerce_payment_cashondelivery	{
 	}
 }
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']["ext/commerce/payment/class.tx_commerce_payment_cashondelivery.php"])	{
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']["ext/commerce/payment/class.tx_commerce_payment_cashondelivery.php"]);
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS']['TYPO3_MODE']['XCLASS']["ext/commerce/payment/class.tx_commerce_payment_cashondelivery.php"])	{
+	include_once($GLOBALS['TYPO3_CONF_VARS']['TYPO3_MODE']['XCLASS']["ext/commerce/payment/class.tx_commerce_payment_cashondelivery.php"]);
 }
 
 ?>

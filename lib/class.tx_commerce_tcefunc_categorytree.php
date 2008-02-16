@@ -88,8 +88,8 @@ class tx_commerce_tceFunc_categoryTree extends tx_graytree_browseTree {
 }
 
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_tcefunc_categorytree.php'])	{
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_tcefunc_categorytree.php']);
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS']['TYPO3_MODE']['XCLASS']['ext/commerce/lib/class.tx_commerce_tcefunc_categorytree.php'])	{
+	include_once($GLOBALS['TYPO3_CONF_VARS']['TYPO3_MODE']['XCLASS']['ext/commerce/lib/class.tx_commerce_tcefunc_categorytree.php']);
 }
 
 ?>

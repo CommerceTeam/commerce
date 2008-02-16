@@ -248,26 +248,6 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 			$this->currency = $this->conf['currency'];
 		}
 
-		$paymentType = $this->getPaymentType();
-		$sysConfig = $TYPO3_CONF_VARS['EXTCONF'][$this->extKey]['SYSPRODUCTS']['PAYMENT'];
-		$config = $sysConfig['types'][strtolower((string)$paymentType)];
-
-		$errorStr = NULL;
-		if (!isset($config['class']))	{
-			$errorStr[] = 'class not set!:'.$config['class'];
-		}
-		
-		if (!file_exists($config['path']))	{
-			$errorStr[] = 'file not found!:'.$config['path'];
-		}
-		
-		if (is_array($errorStr))	die ('MAIN:FATAL! No payment possible because I don\'t know how to handle it! ('.implode(', ', $errorStr).')');
-
-		require_once($config['path']);
-		$paymentObj = t3lib_div::makeInstance($config['class']);
-		if (method_exists($paymentObj, 'setStep'))	{
-			$this->piVars['step'] = $paymentObj->setStep($_REQUEST, $this->piVars['step']);
-		}
 		// debug($GLOBALS['TSFE']->fe_user->tx_commerce_basket);
 		switch ($this->currentStep)	{
 			case 'delivery':
@@ -275,6 +255,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 				$content = $this->getDeliveryAddress();
 				break;
 			case 'payment':
+				$paymentObj = $this->getPaymentObject();
 				$content = $this->handlePayment($paymentObj);
 				// only break at this point if we need some payment handling otherwise go on to the next step
 				if ($content != false) break;
@@ -284,6 +265,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 				$content = $this->getListing();
 				break;
 			case 'finish':
+				$paymentObj = $this->getPaymentObject();
 				$content = $this->finishIt($paymentObj);
 				break;
 			case 'billing':
@@ -579,8 +561,8 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 		if (!$this->validateAddress('delivery')) return $this->getDeliveryAddress();
 		if (!$this->validateAddress('billing')) return $this->getBillingAddress();
 
-		global $TYPO3_CONF_VARS;
-		$sysConfig = $TYPO3_CONF_VARS['EXTCONF'][$this->extKey]['SYSPRODUCTS']['PAYMENT'];
+		
+		$sysConfig = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['SYSPRODUCTS']['PAYMENT'];
 		
 		$paymentType = $this->getPaymentType();
 	
@@ -753,8 +735,8 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 	 */
 
 	function finishIt($paymentObj = NULL)	{
-		global $TYPO3_CONF_VARS;
-		$sysConfig = $TYPO3_CONF_VARS['EXTCONF'][$this->extKey]['SYSPRODUCTS']['PAYMENT'];
+		
+		$sysConfig = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['SYSPRODUCTS']['PAYMENT'];
 		$paymentType = $this->getPaymentType();
 		$config = $sysConfig['types'][strtolower((string)$paymentType)];
 
@@ -792,8 +774,8 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 		}
 		
 			// first of all, call the finish method from the payment class
-		/// global $TYPO3_CONF_VARS;
-		// $sysConfig = $TYPO3_CONF_VARS['EXTCONF'][$this->extKey]['SYSPRODUCTS']['PAYMENT'];
+		/// global $GLOBALS['TYPO3_CONF_VARS'];
+		// $sysConfig = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['SYSPRODUCTS']['PAYMENT'];
 
 		$hookObjectsArr = array();
 		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi3/class.tx_commerce_pi3.php']['finishIt']))	{
@@ -1319,7 +1301,42 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 
 		return $result;
 	}
+	
+	
+	/**
+	 * Returns the payment object and includes the Payment Class. If there is no payment it throws an error
+	 *
+	 * @return unknown
+	 */
+	function getPaymentObject()	{
+		
+		
+		$paymentType = $this->getPaymentType();
+		$sysConfig = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['SYSPRODUCTS']['PAYMENT'];
+		
+		$config = $sysConfig['types'][strtolower((string)$paymentType)];
 
+		$errorStr = NULL;
+		if (!isset($config['class']))	{
+			$errorStr[] = 'class not set!:'.$config['class'];
+		}
+		
+		if (!file_exists($config['path']))	{
+			$errorStr[] = 'file not found!:'.$config['path'];
+		}
+		
+		if (is_array($errorStr))	die ('MAIN:FATAL! No payment possible because I don\'t know how to handle it! ('.implode(', ', $errorStr).')');
+
+		require_once($config['path']);
+		$paymentObj = t3lib_div::makeInstance($config['class']);
+		if (method_exists($paymentObj, 'setStep'))	{
+			$this->piVars['step'] = $paymentObj->setStep($_REQUEST, $this->piVars['step']);
+		}
+		
+		return $paymentObj;
+	}
+	
+	
 	/**
 	 * Returns the payment type. The type is extracted from the basket object. The type
 	 * is stored in the basket as a special article.
@@ -2040,6 +2057,6 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 
 }
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']["ext/commerce/pi3/class.tx_commerce_pi3.php"])	{
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']["ext/commerce/pi3/class.tx_commerce_pi3.php"]);
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS']['TYPO3_MODE']['XCLASS']["ext/commerce/pi3/class.tx_commerce_pi3.php"])	{
+	include_once($GLOBALS['TYPO3_CONF_VARS']['TYPO3_MODE']['XCLASS']["ext/commerce/pi3/class.tx_commerce_pi3.php"]);
 }

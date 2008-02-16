@@ -54,9 +54,9 @@ class tx_commerce_payment_debit {
 		),
 		'fr' => array (
 			'payment_debit_bic' => 'Code de banque',
-			'payment_debit_an' => 'Numéro de compte',
+			'payment_debit_an' => 'Numï¿½ro de compte',
 			'payment_debit_bn' => 'Nom bancaire',
-			'payment_debit_ah' => 'Détenteur de compte',
+			'payment_debit_ah' => 'Dï¿½tenteur de compte',
 			'payment_debit_company' => 'Firme',
 		),
 	);
@@ -161,8 +161,8 @@ class tx_commerce_payment_debit {
 }
 
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']["ext/commerce/payment/class.tx_commerce_payment_debit.php"])	{
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']["ext/commerce/payment/class.tx_commerce_payment_debit.php"]);
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS']['TYPO3_MODE']['XCLASS']["ext/commerce/payment/class.tx_commerce_payment_debit.php"])	{
+	include_once($GLOBALS['TYPO3_CONF_VARS']['TYPO3_MODE']['XCLASS']["ext/commerce/payment/class.tx_commerce_payment_debit.php"]);
 }
 
 ?>

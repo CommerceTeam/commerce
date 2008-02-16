@@ -3,7 +3,7 @@
 *  Copyright notice
 *
 *  (c) 1999 - 2004 Kasper Skaarhoj (kasperYYYY@typo3.com)
-*  (c) 2005 - 2006 Daniel Schöttgen <ds@marketing-factory.de>
+*  (c) 2005 - 2006 Daniel Schï¿½ttgen <ds@marketing-factory.de>
 *  (c) 2005 - 2006 Ingo Schmitt <is@marketing-factory.de>  
 *   All  rights reserved
 *
@@ -31,9 +31,9 @@
  *
  * @internal Maintainer Ingo Schmitt <is@marketing-factory.de> 
  * @author	Kasper Skaarhoj <kasperYYYY@typo3.com>
- * @author	Daniel Schöttgen <ds@marketing-factory.de>
+ * @author	Daniel Schï¿½ttgen <ds@marketing-factory.de>
  * @author  Ingo Schmitt <is@marketing-factory.de>
- * @author  Jörg Sprung <jsp@marketing-factory.de>
+ * @author  Jï¿½rg Sprung <jsp@marketing-factory.de>
  * 
  * $Id$
  */
@@ -959,8 +959,8 @@ require_once(PATH_t3lib.'class.t3lib_tceforms.php');
   
  
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_order_localrecordlist.php'])	{
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_order_localrecordlist.php']);
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS']['TYPO3_MODE']['XCLASS']['ext/commerce/lib/class.tx_commerce_order_localrecordlist.php'])	{
+	include_once($GLOBALS['TYPO3_CONF_VARS']['TYPO3_MODE']['XCLASS']['ext/commerce/lib/class.tx_commerce_order_localrecordlist.php']);
 }
 
  ?>
