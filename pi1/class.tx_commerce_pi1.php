@@ -542,15 +542,28 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 					/**
 					 * @TODO Volker: Remove no_cache
 					 */
-					$attCode = '<form name="attList_'.$prod->get_uid().'" id="attList_'.$prod->get_uid().'" action="'.$this->pi_getPageLink($GLOBALS['TSFE']->id, '_self', array($this->prefixId.'[catUid]'=>$this->piVars['catUid'],$this->prefixId.'[showUid]'=>$this->piVars['showUid'])).'"  method="post"><input type="hidden" name="no_cache" value="1" />';
+					$attCode = '<form name="attList_'.$prod->get_uid().'" id="attList_'.$prod->get_uid().'" action="'.$this->pi_getPageLink($GLOBALS['TSFE']->id, '_self', array($this->prefixId.'[catUid]'=>$this->piVars['catUid'],$this->prefixId.'[showUid]'=>$this->piVars['showUid'])).'"  method="post">
+							<input type="hidden" name="no_cache" value="1" />
+							<input type="hidden" name="'.$this->prefixId.'[attList_'.$prod->get_uid().'_changed]" id="attList_'.$prod->get_uid().'_changed" value="1" />';
+						
+												
 					foreach($attributeArray as $attribute_uid => $myAttribute) {
 						$attributeObj = new tx_commerce_attribute($attribute_uid,$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
 						$attributeObj->load_data();
-						$attCode.= $myAttribute['title'].': '; 
-						$attCode.= '<select onchange="document.getElementById(\'attList_'.$prod->get_uid().'\').submit();" name="'.$this->prefixId.'[attsel_'.$attribute_uid.']" '.$this->conf['selectAttributesParams'].'><option value="">'.$this->pi_getLL('all_options','all',1).'</option>'."\n";
+						$attCode.= $myAttribute['title'].': <br/>'; 
+						$attCode.= '<select onchange="document.getElementById(\'attList_'.$prod->get_uid().'_changed\').value = '.$attribute_uid.';document.getElementById(\'attList_'.$prod->get_uid().'\').submit();" name="'.$this->prefixId.'[attsel_'.$attribute_uid.']" '.$this->conf['selectAttributesParams'].'><option value="">'.$this->pi_getLL('all_options','all',1).'</option>'."\n";
+						#echo "test ist".$this->piVars['attList_'.$prod->get_uid().'_changed'].' Test '.$attribute_uid;
+						if($this->piVars['attList_'.$prod->get_uid().'_changed']==$attribute_uid){
+							$fullArray = $prod->get_attribute_matrix(false,array($this->piVars['attList_'.$prod->get_uid().'_changed']));
+							$myAttribute['values'] = array();
+							while(list($localKey,$localVal)=each($fullArray[$this->piVars['attList_'.$prod->get_uid().'_changed']]['values'])){
+								$myAttribute['values'][$fullArray[$this->piVars['attList_'.$prod->get_uid().'_changed']]['valueuidlist'][$localKey]]['value'] = $localVal;
+								$myAttribute['values'][$fullArray[$this->piVars['attList_'.$prod->get_uid().'_changed']]['valueuidlist'][$localKey]]['icon'] = '';
+							}
+						}
 						foreach($myAttribute['values'] as $key => $val) {
 							$attCode.='<option value="'.$key.'"'.($key == $this->piVars['attsel_'.$attribute_uid] ? 'selected="selected"' : '').'>'."\n".
-							$val.'</option>';
+							$val['value'].'</option>';
 						}
 						$attCode.= '</select>'."\n";
 						$attCode.= ' '.$myAttribute['unit'].'<br />'; 
