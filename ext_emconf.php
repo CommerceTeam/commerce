@@ -16,7 +16,7 @@ $EM_CONF[$_EXTKEY] = array(
 	'category' => 'module',
 	'shy' => 0,
 	'dependencies' => 'cms,tt_address,graytree,dynaflex,moneylib,static_info_tables',
-	'conflicts' => '',
+	'conflicts' => 'mc_autokeywords',
 	'priority' => '',
 	'loadOrder' => '',
 	'module' => 'mod_main,mod_category,mod_orders,mod_systemdata,mod_statistic',
@@ -46,6 +46,7 @@ $EM_CONF[$_EXTKEY] = array(
 			'typo3' => '4.0.0-0.0.0',
 		),
 		'conflicts' => array(
+			'mc_autokeywords' => '',
 		),
 		'suggests' => array(
 		),

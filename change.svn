@@ -1,5 +1,8 @@
 Changelog for tx_commerce
 (add new changes on top of this file)
+18.02.2008 Ingo Schmitt <is@marketing-factory.de>
+* Added mc_autokeywords as conflict Extension.
+
 16.02.2008 Ingo Schmitt <is@marketing-factory.de>
 * Patched Bug 7149, Thanks to Sascha Egerer
 * Fixed Bug 7321, changed all occurences of $TYPO3_CONF_VARS to $GLOBALS['TYPO3_CONF_VARS']
