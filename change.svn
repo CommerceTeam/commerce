@@ -1,5 +1,12 @@
 Changelog for tx_commerce
 (add new changes on top of this file)
+
+19.02.2008 Volker Graubaum <vg@e-netconsulting.de>
+* add sys_language_uid Filter in TS for empty basket/checkout
+
+18.02.2008 Volker Graubaum <vg@e-netconsulting.de>
+* Fixed Bug 7213
+
 18.02.2008 Ingo Schmitt <is@marketing-factory.de>
 * Added mc_autokeywords as conflict Extension.
 
