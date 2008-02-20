@@ -53,8 +53,8 @@ class tx_commerce_pi6_wizicon {
 
 
 
-if (defined("TYPO3_MODE") && $GLOBALS['TYPO3_CONF_VARS']['TYPO3_MODE']["XCLASS"]["ext/commerce/pi6/class.tx_commerce_pi6_wizicon.php"])	{
-	include_once($GLOBALS['TYPO3_CONF_VARS']['TYPO3_MODE']["XCLASS"]["ext/commerce/pi6/class.tx_commerce_pi6_wizicon.php"]);
+if (defined("TYPO3_MODE") && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]["XCLASS"]["ext/commerce/pi6/class.tx_commerce_pi6_wizicon.php"])	{
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]["XCLASS"]["ext/commerce/pi6/class.tx_commerce_pi6_wizicon.php"]);
 }
 
 ?>

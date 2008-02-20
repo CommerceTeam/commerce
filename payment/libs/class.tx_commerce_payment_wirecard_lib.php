@@ -596,7 +596,7 @@ class wirecard
 	}
 } 
 
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS']['TYPO3_MODE']['XCLASS']['ext/commerce/payment/libs/class.tx_commerce_payment_wirecard_lib.php'])	{
-	include_once($GLOBALS['TYPO3_CONF_VARS']['TYPO3_MODE']['XCLASS']['ext/commerce/payment/libs/class.tx_commerce_payment_wirecard_lib.php']);
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/payment/libs/class.tx_commerce_payment_wirecard_lib.php'])	{
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/payment/libs/class.tx_commerce_payment_wirecard_lib.php']);
 }
 ?>

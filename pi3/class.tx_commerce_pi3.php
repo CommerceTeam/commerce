@@ -1530,7 +1530,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 				$selected = $fieldValue != '' ? $fieldValue : $fieldConfig['default'];
 			 	return $this->staticInfo->buildStaticInfoSelector($fieldConfig['field'], $this->prefixId.'[' .$step .'][' .$fieldName .']', $fieldConfig['cssClass'],$selected,'','',$step.'-'.$fieldName,'',$fieldConfig['select']);
                         case 'check':
-			            return $this->getCheckboxInputField($fieldName, $fieldConfig,  $fieldValue,$single);
+			            return $this->getCheckboxInputField($fieldName, $fieldConfig,  $fieldValue,$step);
 			case 'single':
 			default:
 				return $this->getSingleInputField($fieldName, $fieldConfig,$step);
@@ -2057,6 +2057,6 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 
 }
 
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS']['TYPO3_MODE']['XCLASS']["ext/commerce/pi3/class.tx_commerce_pi3.php"])	{
-	include_once($GLOBALS['TYPO3_CONF_VARS']['TYPO3_MODE']['XCLASS']["ext/commerce/pi3/class.tx_commerce_pi3.php"]);
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']["ext/commerce/pi3/class.tx_commerce_pi3.php"])	{
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']["ext/commerce/pi3/class.tx_commerce_pi3.php"]);
 }

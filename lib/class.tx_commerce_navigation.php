@@ -158,7 +158,8 @@ class tx_commerce_navigation {
 		/**
 		 * Unique Hash for this usergroup and page to display the navigation
 		 */
-        $hash = md5('tx_commerce_navigation'.$this->cat.'-'.$this->PID.':'.$usergroups.':'.$GLOBALS['TSFE']->linkVars);
+		
+        $hash = md5('tx_commerce_navigation'.implode('-',$this->mConf).':'.$usergroups.':'.$GLOBALS['TSFE']->linkVars);
         $cachedMatrix = $this->getHash($hash,0);
        
         if ($GLOBALS['TSFE']->no_cache==1) {
@@ -222,7 +223,7 @@ class tx_commerce_navigation {
         	$myCat ->init($this->choosenCat);
         	$myCat ->load_data();
 			//MODIF DE LUC >AMEOS : Get the right path with custom method
-			$aPath = $this->getRootLine($this->mTree,$this->choosenCat,$this->mConf["expandAll"]);
+			$aPath = $this->getRootLine($this->mTree,$this->choosenCat,$this->expandAll);
         	if (!$aPath){
         		/**
 				 * if the methode getRootLine fail, we take the path direct from the DB.
@@ -1112,7 +1113,7 @@ class tx_commerce_navigation {
 	}
 
 
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS']['TYPO3_MODE']['XCLASS']["ext/commerce/lib/class.tx_commerce_navigation.php"])	{
-	include_once($GLOBALS['TYPO3_CONF_VARS']['TYPO3_MODE']['XCLASS']["ext/commerce/lib/class.tx_commerce_navigation.php"]);
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']["ext/commerce/lib/class.tx_commerce_navigation.php"])	{
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']["ext/commerce/lib/class.tx_commerce_navigation.php"]);
 }
 ?>

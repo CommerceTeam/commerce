@@ -175,20 +175,20 @@ t3lib_extMgm::addUserTSConfig('
 	options.saveDocNew.tx_commerce_moveordermails=1
 ');
 
-//$GLOBALS['TYPO3_CONF_VARS']['TYPO3_MODE']['XCLASS']['typo3/class.alt_menu_functions.inc']=t3lib_extMgm::extPath(COMMERCE_EXTkey).'class.ux_alt_menu_functions.php';
-//$GLOBALS['TYPO3_CONF_VARS']['TYPO3_MODE']['XCLASS']['typo3/class.alt_menu_functions.inc']=t3lib_extMgm::extPath(GRAYTREE_EXTkey).'class.ux_alt_menu_functions.php';
+//$GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['typo3/class.alt_menu_functions.inc']=t3lib_extMgm::extPath(COMMERCE_EXTkey).'class.ux_alt_menu_functions.php';
+//$GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['typo3/class.alt_menu_functions.inc']=t3lib_extMgm::extPath(GRAYTREE_EXTkey).'class.ux_alt_menu_functions.php';
 
 
 
 // only in old TYPO3 versions below 4.0 apply extension to TCA Non type
 if (!(substr(TYPO3_version, 0, 3)  >= '4.0')) {
-	$GLOBALS['TYPO3_CONF_VARS']['TYPO3_MODE']['XCLASS']['t3lib/class.t3lib_tceforms.php'] = t3lib_extMgm::extPath(COMMERCE_EXTkey).'class.ux_t3lib_tceforms.php';
-	$GLOBALS['TYPO3_CONF_VARS']['TYPO3_MODE']['XCLASS']['typo3/alt_doc.php'] = t3lib_extMgm::extPath(COMMERCE_EXTkey).'class.ux_sc_alt_doc.php';
+	$GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['t3lib/class.t3lib_tceforms.php'] = t3lib_extMgm::extPath(COMMERCE_EXTkey).'class.ux_t3lib_tceforms.php';
+	$GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['typo3/alt_doc.php'] = t3lib_extMgm::extPath(COMMERCE_EXTkey).'class.ux_sc_alt_doc.php';
 
 }
 
 // add special in db list, to have the ability to search for OrderIds in TYPO 4.0
-$GLOBALS['TYPO3_CONF_VARS']['TYPO3_MODE']['XCLASS']['typo3/class.db_list_extra.inc']=t3lib_extMgm::extPath(COMMERCE_EXTkey).'class.ux_localrecordlist.php';
+$GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['typo3/class.db_list_extra.inc']=t3lib_extMgm::extPath(COMMERCE_EXTkey).'class.ux_localrecordlist.php';
 
 
 // Hooks for datamap procesing
@@ -202,7 +202,7 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['proc
 
 // Intiantation the Basket in the FE User class
 // removed, since TYPO3 3.8.0 comes with a handy hook in initi fe_user :-)
-//$GLOBALS['TYPO3_CONF_VARS']['TYPO3_MODE']['XCLASS']['tslib/class.tslib_fe.php'] = t3lib_extMgm::extPath(COMMERCE_EXTkey)."class.ux_tslib_fe.php";
+//$GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['tslib/class.tslib_fe.php'] = t3lib_extMgm::extPath(COMMERCE_EXTkey)."class.ux_tslib_fe.php";
 
 // Hook for registering the basket
 # $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['initFEuser'][] = 'EXT:commerce/hooks/class.tx_commerce_feuserhooks.php:tx_commerce_feuserhooks->user_addBasket';

@@ -965,7 +965,7 @@ class tx_commerce_pibase extends tslib_pibase {
 	 	
 	 	foreach ($TSArray['fields.'] as $tsKey => $tsValue) {
 	 		if (is_array($TSArray['fields.'][$tsKey]['typolink.'])) {
-	 			if ($TSArray['fields.'][$tsKey]['typolink.']['setCommerceValues'] = 1){
+	 			if ($TSArray['fields.'][$tsKey]['typolink.']['setCommerceValues'] == 1){
 	 				$TSArray['fields.'][$tsKey]['typolink.']['parameter'] = $TypoLinkConf['parameter'];
 	 				$TSArray['fields.'][$tsKey]['typolink.']['additionalParams'] .= $TypoLinkConf['additionalParams'];
 	 			}
@@ -1552,7 +1552,7 @@ class tx_commerce_pibase extends tslib_pibase {
 
 }
 
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS']['TYPO3_MODE']['XCLASS']['ext/commerce/lib/class.tx_commerce_pibase.php'])	{
-	include_once($GLOBALS['TYPO3_CONF_VARS']['TYPO3_MODE']['XCLASS']['ext/commerce/lib/class.tx_commerce_pibase.php']);
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_pibase.php'])	{
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_pibase.php']);
 }
 ?>
