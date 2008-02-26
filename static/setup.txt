@@ -378,6 +378,23 @@ plugin.tx_commerce_pi1 {
   	
   	
     categoryListView.categories < lib.tx_commerce.categories
+    
+    pageBrowser {
+	    #dontLinkActivePage = 1
+	    #showFirstLast = 1
+	    #showItemCount = 1
+	    tableParams =
+	    #showRange = 1
+	    wraps {
+	        disabledLinkWrap = <span class="disabled">|</span>
+	        inactiveLinkWrap = |
+	        activeLinkWrap = <strong>|</strong>
+	        browseLinksWrap = |
+	        showResultsWrap = <div>|</div>
+	        showResultsNumbersWrap = |
+	        browseBoxWrap = <div class="pagebrowser">|</div>
+	    }
+	}
    
 }
 plugin.tx_commerce_pi2 {

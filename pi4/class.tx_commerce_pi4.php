@@ -441,8 +441,7 @@ class tx_commerce_pi4 extends tslib_pibase {
 
 			// get action link
 		if ((int)$this->piVars['backpid']>0){
-			#$link = $this->pi_getPageLink($this->piVars['backpid']);
-			$link = '';
+			$link = $this->pi_getPageLink($this->piVars['backpid']);
 		} else {
 			$link = '';
 		}
