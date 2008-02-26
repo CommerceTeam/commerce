@@ -91,7 +91,7 @@ class tx_commerce_pi4 extends tslib_pibase {
 
 		if ($formValid && isset($this->piVars['check']) && $this->piVars['backpid'] != $GLOBALS['TSFE']->id) {
 		    unset($this->piVars['check']);
-		    t3lib_div::locationHeaderUrl($this->pi_getPageLink($this->piVars['backpid'],'',array('tx_commerce_pi3[addressType]' => $this->piVars['addressType'], $this->prefixId.'[addressid]' => $this->piVars['addressid'])));
+		    header('Location: ' . t3lib_div::locationHeaderUrl($this->pi_getPageLink($this->piVars['backpid'],'',array('tx_commerce_pi3[addressType]' => $this->piVars['addressType'], $this->prefixId.'[addressid]' => $this->piVars['addressid']))));
 		}
 
 
