@@ -1360,8 +1360,9 @@ class tx_commerce_pibase extends tslib_pibase {
 				}
 				$template = $this->cObj->getSubpart($this->templateCode, '###'.$templateMarker[$iterationCount].'###');
 				
-
-				$myProduct=new tx_commerce_product($myProductId,$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
+				$myProduct = t3lib_div::makeInstance(tx_commerce_product);
+				
+				$myProduct->init($myProductId,$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
 				$myProduct->load_data();
 				$myProduct->load_articles();
 				if($this->conf['useStockHandling'] == 1 AND $myProduct->hasStock() === false) {

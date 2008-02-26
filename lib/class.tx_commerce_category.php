@@ -312,7 +312,8 @@
   	function get_child_categories()  	{
   		
 		foreach ($this->categories_uid as $load_uid){
-			$this->categories[$load_uid]=new tx_commerce_category($load_uid,$this->lang_uid);	
+			$this->categories[$load_uid]=t3lib_div::makeInstance('tx_commerce_category');
+			$this->categories[$load_uid]->init($load_uid,$this->lang_uid);	
 			
 		}  		
   		return $this->categories;
