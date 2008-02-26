@@ -1,5 +1,7 @@
 Changelog for tx_commerce
 (add new changes on top of this file)
+26.02.2008 Ingo Schmitt <is@marketing-factory.de>
+* Replaced while(list()) calls by foreach
 
 20.02.2008 Ingo Schmitt <is@marketing-factory.de>
 * Fixed Bug 5802, Thanks to Christian Buelter

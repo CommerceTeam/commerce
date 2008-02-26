@@ -289,9 +289,9 @@ require_once(PATH_t3lib.'class.t3lib_tceforms.php');
 		reset($TCA);
 	
 		/**
-		 * @TODO auf eine tabell ebeschr�nken, keine while liste mehr
+		 * @TODO auf eine tabell ebeschraenken
 		 */
-		while (list($tableName)=each($TCA))	{
+		foreach ($TCA as $tableName){
 			
 				// Checking if the table should be rendered:
 			if ((!$this->table || $tableName==$this->table) && (!$this->tableList || t3lib_div::inList($this->tableList,$tableName)) && $GLOBALS['BE_USER']->check('tables_select',$tableName))	{		// Checks that we see only permitted/requested tables:

@@ -415,7 +415,7 @@ class tx_commerce_dmhooks	{
 
 			$usedAttributes = array();
 
-			while (list($key, $data) = each($CTs))	{
+			foreach ($CTs as $key =>  $data)	{
 				$keyData = array();
 				$ctUid = $this->belib->getUidFromKey($key, $keyData);
 				if ($keyData[0] == 'ct')	{

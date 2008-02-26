@@ -306,13 +306,13 @@
  	function getMarkerArray(&$cobj,$conf,$prefix=''){
  		$output='';
  		$markContentArray=$this->return_assoc_array('');
- 		while(list($k,$v)=each($markContentArray)){
+ 		foreach ($markContentArray as $k => $v){
 			switch(strtoupper($conf[$k])) {
 				case 'IMGTEXT' :
 				case 'IMAGE' :
 						$i = 1;
 						$imgArray = explode(';',$v);
-						while(list(,$img)=each($imgArray)){
+						foreach($imgArray as $img){
 							$conf[$k.'.'][$i.'.'] = $conf[$k.'.']['defaultImgConf.'];
 							$conf[$k.'.'][$i.'.']['file'] = $conf['imageFolder'].$img;
 							$vr = $cobj->IMAGE($conf[$k.'.'][$i.'.']);

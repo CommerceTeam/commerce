@@ -153,7 +153,7 @@ class tx_commerce_pibase extends tslib_pibase {
 		}else{
 			$markerArr=$this->LOCAL_LANG[$GLOBALS['TSFE']->tmpl->setup['config.']['language']];
 		}
-	    while(list($k,$v)=each($markerArr)){
+		foreach ($markerArr as $k => $v) {
 			if(stristr($k,'lang_') OR stristr($k,'label_')) {
 				$this->languageMarker['###'.strtoupper($k).'###'] = $this->pi_getLL($k);
 			}
@@ -1442,7 +1442,7 @@ class tx_commerce_pibase extends tslib_pibase {
 		$lokalTS = $this->addTypoLinkToTS($lokalTS, $typoLinkConf);
 		
 		$markerArray=$this->generateMarkerArray($data,$lokalTS);
-		while(list($k,$v) = each ($markerArray)){
+		foreach ($markerArray as $k => $v){
 		    $markerArrayUp[strtoupper($k)] = $v;
 		}
 		$markerArray = $this->cObj->fillInMarkerArray(array(),$markerArrayUp,implode(',',array_keys($markerArrayUp)),FALSE,'PRODUCT_');

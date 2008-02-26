@@ -666,8 +666,8 @@
 			             ($GLOBALS['TSFE']->loginUser ||  count($GLOBALS['TSFE']->fe_user->groupData['uid'])>0 )){
 	    	        	
 					$tempGroups = $GLOBALS['TSFE']->fe_user->groupData['uid'];
-					while(list($k,$v) = each($tempGroups)){
-				    		$groups[] = $v;
+					foreach ($tempGroups as $values) {
+					   		$groups[] =$values;
 					}
 					
 					$i = 0;

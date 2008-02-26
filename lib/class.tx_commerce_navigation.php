@@ -347,7 +347,7 @@ class tx_commerce_navigation {
 	 */
 	function processConf($conf) {
 		$i = 1;
-		while(list($k,) = each($conf)) {
+		foreach ($conf as $k) {
 			if($k == $i.'.') {
 				$conf[$i.'.']['itemArrayProcFunc'] = 'user_tx_commerce_catmenu_pub->clear';
 				$i++;
@@ -729,7 +729,7 @@ class tx_commerce_navigation {
 		if ($menuArr[0]['CommerceMenu'] <> true) {
 			$menuArr = array();
 		}
-		while(list(,$item) = each($menuArr)) {
+		foreach($menuArr as $item){
 			if($item['DO_NOT_RENDER'] == '1') {
 				$menuArr = array();
 			}

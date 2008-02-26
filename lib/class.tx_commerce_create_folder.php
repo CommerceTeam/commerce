@@ -137,7 +137,7 @@
 		
 		$pUid = tx_commerce_create_folder::makeProduct($catUid, $type, $addArray);
 		// create some articles, depending on the PAYMENT types
-		while (list($key, $value) = each($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce']['SYSPRODUCTS'][$type]['types'])) {
+		foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce']['SYSPRODUCTS'][$type]['types'] as $key => $value) {
 			tx_commerce_create_folder::makeArticle($pUid, $key, $value, $addArray);
 		}
 	}
