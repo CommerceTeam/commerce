@@ -93,12 +93,17 @@
 							<td>###SHIPPING_COST###</td>
 						</tr>
 						<tr>
+							<td colspan="5">###LANG_NET_TOTAL### </td>
+							<td>###ORDER_NET_TOTAL###</td>
+						</tr>
+						<tr>
 							<td colspan="5">###LANG_TAX### </td>
 							<td>###ORDER_TAX###</td>
 						</tr>
+						
 						<tr>
-							<td colspan="5">###LANG_TOTAL### </td>
-							<td>###ORDER_TOTAL###</td>
+							<td colspan="5">###LANG_GROSS_TOTAL### </td>
+							<td>###ORDER_GROSS_TOTAL###</td>
 						</tr>
 						
 					</tbody>

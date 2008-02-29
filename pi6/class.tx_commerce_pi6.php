@@ -115,6 +115,8 @@ class tx_commerce_pi6 extends tx_commerce_pibase{
 				
 			$markerArray['###ORDER_TAX###'] = tx_moneylib::format($this->order['sum_price_gross'] - $this->order['sum_price_net'],$this->conf['currency'],(boolean)$this->conf['showCurrencySign']);
 			$markerArray['###ORDER_TOTAL###'] = tx_moneylib::format($this->order['sum_price_gross'],$this->conf['currency'],(boolean)$this->conf['showCurrencySign']);
+			$markerArray['###ORDER_NET_TOTAL###'] = tx_moneylib::format($this->order['sum_price_net'],$this->conf['currency'],(boolean)$this->conf['showCurrencySign']);
+			$markerArray['###ORDER_GROSS_TOTAL###'] = tx_moneylib::format($this->order['sum_price_gross'],$this->conf['currency'],(boolean)$this->conf['showCurrencySign']);
 			$markerArray['###ORDER_ID###'] = $this->order['order_id'];
 			$markerArray['###ORDER_DATE###'] = strftime("%d.%m.%y", $this->order['crdate']);	
 				

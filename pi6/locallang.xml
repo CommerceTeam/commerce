@@ -20,6 +20,8 @@
 			<label index="lang_article_description">Description</label>
 			<label index="lang_price">Price</label>
 			<label index="lang_total">Total</label>
+			<label index="lang_gross_total">Gross total</label>
+			<label index="lang_net_total">Net total</label>
 			<label index="lang_sum_total">Sum</label>
 			<label index="lang_tax">Tax (included in total)</label>
 			<label index="lang_order_date">Order Date</label>
@@ -38,6 +40,8 @@
 			<label index="lang_article_description">Beschreibung</label>
 			<label index="lang_price">Preis</label>
 			<label index="lang_total">Rechnungssumme</label>
+			<label index="lang_gross_total">Bruttosumme</label>
+			<label index="lang_net_total">Nettosumme</label>
 			<label index="lang_sum_total">Summe</label>
 			<label index="lang_order_date">Bestelldatum</label>
 			<label index="lang_order_num">Rechnungsnummer</label>
