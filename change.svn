@@ -1,5 +1,8 @@
 Changelog for tx_commerce
 (add new changes on top of this file)
+5.03.2008 ingo Schmitt <is@marketing-factory.de>
+* Fixed Bug in Order view.
+
 29.02.2008 Ingo Schmitt <is@marketing-factory.de>
 * Added Gross Total and Net Total to Invoice (pi6)
 * Removed unneded pi6/locallang.php file
