@@ -286,9 +286,7 @@ require_once(PATH_t3lib.'class.t3lib_tceforms.php');
 		global $TCA;
 		t3lib_div::loadTCA("tx_commerce_orders");
 			// Traverse the TCA table array:
-		reset($TCA);
-	
-	
+			
 		foreach ($TCA as  $tableName => $dummy ){
 	
 			

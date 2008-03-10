@@ -72,6 +72,12 @@ class tx_commerce_pi6 extends tx_commerce_pibase{
 			$this->user = $GLOBALS['TSFE']->fe_user->user;
 		}
 		
+		# If it's an automated process, no caching
+		if ($_SERVER["REMOTE_ADDR"] == $_SERVER["SERVER_ADDR"]){
+			$GLOBALS['TSFE']->set_no_cache();
+			
+		}
+		
 		# Lets make this multilingual, eh?
 	  	$this->generateLanguageMarker();
 	 

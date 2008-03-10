@@ -1,6 +1,12 @@
 Changelog for tx_commerce
 (add new changes on top of this file)
-5.03.2008 ingo Schmitt <is@marketing-factory.de>
+10.03.2008 Ingo Schmitt <is@marketing-factory.de>
+* Fixed Bug in local record list
+* Added Fetaure in invoice (pi6), automatic processing -> no_cache
+* Fixed Bug: Allow more than one Image in fields (Thanks to Julian Kleinhans)
+* Fixed Bug: Rootline was not started at given UID (Thanks to Julian Kleinhans)
+
+05.03.2008 ingo Schmitt <is@marketing-factory.de>
 * Fixed Bug in Order view.
 
 29.02.2008 Ingo Schmitt <is@marketing-factory.de>

@@ -756,11 +756,16 @@ class tx_commerce_navigation {
 		tx_commerce_div::initializeFeUserBasket();
 		
 		$this->gpVars['basketHashValue'] =  $GLOBALS['TSFE']->fe_user->tx_commerce_basket->getBasketHashValue();
-		
+		if (!is_object($this->category)) {
+			$this->category = t3lib_div::makeInstance('tx_commerce_category');
+			$this->category -> init($this->mConf['category'],$GLOBALS['TSFE']->sys_language_uid);
+			$this->category -> load_data();
+		}
 			
 		$returnArray=array();
 			
-		$returnArray=$this->getCategoryRootlineforTS($this->gpVars['catUid'],$this->category);
+		$returnArray=$this->getCategoryRootlineforTS($this->gpVars['catUid'],$returnArray);
+		
 		/**
 		 * Add product to rootline, if a product is displayed and showProducts is set via TS
 		 */
@@ -816,11 +821,10 @@ class tx_commerce_navigation {
 	  		$CategoryObject= t3lib_div::makeInstance('tx_commerce_category');
 			$CategoryObject->init($catID,$GLOBALS['TSFE']->sys_language_uid);
 			$CategoryObject->load_data();
-	  		if ($CategoryObject->parent_category_uid>0)
-	  		{
+	  		if ($CategoryObject->parent_category_uid>0)	{
 	  			
-	  			if ($CategoryObject->parent_category_uid <> $this->category ){
-	  				$result=$this->getCategoryRootlineforTS($CategoryObject->parent_category_uid,$result=array());
+	  			if ($CategoryObject->parent_category_uid <> $this->category->getUid() ){
+	  				$result=$this->getCategoryRootlineforTS($CategoryObject->parent_category_uid,$result);
 	  			}
 	  			
 	  			

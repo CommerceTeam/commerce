@@ -1052,11 +1052,13 @@ class tx_commerce_pibase extends tslib_pibase {
 			break;
 			case 'IMAGE' :
 				if (is_string($value) && !empty($value)) {
-				    $this->cObj->setCurrentVal($TSconf['imgPath'].$value);
-				    if($TSconf['file']<> 'GIFBUILDER'){	
-					$TSconf['file'] = $TSconf['imgPath'].$value;;
-				    }
-				    $output .= $this->cObj->IMAGE($TSconf);
+					foreach (split(',',$value) as $oneValue) {
+					    $this->cObj->setCurrentVal($TSconf['imgPath'].$oneValue);
+					    if($TSconf['file']<> 'GIFBUILDER'){	
+							$TSconf['file'] = $TSconf['imgPath'].$oneValue;
+					    }
+					    $output .= $this->cObj->IMAGE($TSconf);
+					}
 				}elseif(strlen($TSconf['file']) && $TSconf['file']<>'GIFBUILDER'){
 				    $output .= $this->cObj->IMAGE($TSconf);
 				}
