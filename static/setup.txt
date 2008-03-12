@@ -89,6 +89,8 @@ lib.tx_commerce {
 					   			}
 								file.maxW = 150
 						}
+						
+												
 				   }
 			}
 			
@@ -118,6 +120,7 @@ lib.tx_commerce {
 			                   defaultImgConf {
 				               		file.import.current = 1
 				            	}
+				            	file.import.current = 1
 								file.maxW = 150
 					}
 										
@@ -166,6 +169,12 @@ lib.tx_commerce {
 			            	}
 				    		file.maxW = 150
 					}
+					teaser < lib.tx_commerce.stdField_RTE
+			  	 	teaserimages =IMAGE
+			  	 	teaserimages {  
+			  	 		file.import.current = 1
+    					file.maxW = 69
+			  	 	}
 			 	}
 		    }
     

@@ -92,6 +92,9 @@
   	
   	var  $products=array();		// array of tx_commerce_product ( private )
   	
+  	var $teaser = '';
+  	var $teaserImages='';				// images database field (private) 	
+  	var $teaserImagesArray = array(); 		// Images for the categorie  	(private)
   	
   	/**
   	 * @var is truee when data is loaded
@@ -129,7 +132,7 @@
 	 */
 	function init($uid,$lang_uid=0) {
 		
-		 $this->fieldlist=array('uid','title','subtitle','description','navtitle','keywords','images','ts_config','l18n_parent');
+		 $this->fieldlist=array('uid','title','subtitle','description','teaser','teaserimages','navtitle','keywords','images','ts_config','l18n_parent');
 		 $this->database_class='tx_commerce_db_category';
 		
 		 if ($uid>0 )	 {
@@ -195,6 +198,25 @@
     function get_subtitle()  	{
   		return $this->subtitle;	
   	}
+  	
+    /**
+  	 * Returns the category teaser
+  	 * @return string;
+  	 * @access public
+  	 */
+  	function get_teaser()  	{
+  		return $this->teaser;
+  	}  	
+  	
+    /**
+  	 * Returns an Array of Images
+  	 * @return array;
+  	 * @access public
+  	 */
+  	
+  	function getTeaserImages()  	{
+  		return $this->teaserImagesArray;
+  	}  	
   	
   	/**
   	 * Returns the category description
@@ -300,6 +322,7 @@
 	  		$this->categories_uid=$this->conn_db->get_child_categories($this->uid);
 			$this->parent_category_uid=intval($this->conn_db->get_parent_category($this->uid));
 	  		$this->products_uid=$this->conn_db->get_child_products($this->uid, $this->lang_uid);
+	  		$this->teaserImagesArray=t3lib_div::trimExplode(',',$this->teaserImages);
 	  		$this->data_loaded=true;
   		}
   	}

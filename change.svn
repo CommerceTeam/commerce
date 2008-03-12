@@ -1,5 +1,9 @@
 Changelog for tx_commerce
 (add new changes on top of this file)
+12.03.2008 Ingo Schmitt <is@marketing-factory.de>
+* Quickfix for String is not Array in BE Lib
+* Added teaser and teaser-images to category (Thanks to Julian Kleinhans)
+
 10.03.2008 Ingo Schmitt <is@marketing-factory.de>
 * Fixed Bug in local record list
 * Added Fetaure in invoice (pi6), automatic processing -> no_cache

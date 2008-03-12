@@ -871,7 +871,12 @@ class tx_commerce_belib {
 		}
 
 			// build new XML
-		$xmlData = t3lib_div::array2xml($xmlData, '', 0, 'T3FlexForms');
+		if (is_array($xmlData)) {
+			// Dump Quickfix
+			$xmlData = t3lib_div::array2xml($xmlData, '', 0, 'T3FlexForms');
+		}else{
+			$xmlData = '';
+		}
 
 			// update database entry
 		$GLOBALS['TYPO3_DB']->exec_UPDATEquery($table, 'uid=' .$uid, array($xmlField => $xmlData));

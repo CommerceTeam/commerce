@@ -481,7 +481,7 @@ $TCA['tx_commerce_categories'] = Array (
 		'dividers2tabs' => '1',
 	),
 	'feInterface' => Array (
-		'fe_admin_fieldList' => 'sys_language_uid, l18n_parent, l18n_diffsource, hidden, starttime, endtime, fe_group, title, subtitle, description, images, navtitle, keywords, attributes, parent_category',
+		'fe_admin_fieldList' => 'sys_language_uid, l18n_parent, l18n_diffsource, hidden, starttime, endtime, fe_group, title, subtitle, description, images, navtitle, keywords, attributes, parent_category, teaser, teaserimages',
 	)
 );
 

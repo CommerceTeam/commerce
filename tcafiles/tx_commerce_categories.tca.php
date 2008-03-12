@@ -48,7 +48,7 @@ require_once(PATH_txcommerce.'lib/class.tx_commerce_leafproductview.php');
 $TCA['tx_commerce_categories'] = Array (
 	'ctrl' => $TCA['tx_commerce_categories']['ctrl'],
 	'interface' => Array (
-		'showRecordFieldList' => 'sys_language_uid,l18n_parent,l18n_diffsource,hidden,starttime,endtime,fe_group,title,subtitle,navtitle,description,images,keywords'
+		'showRecordFieldList' => 'sys_language_uid,l18n_parent,l18n_diffsource,hidden,starttime,endtime,fe_group,title,subtitle,navtitle,description,images,keywords, teaser, teaserimages'
 	),
 	'feInterface' => $TCA['tx_commerce_categories']['feInterface'],
 	'columns' => Array (
@@ -268,10 +268,35 @@ $TCA['tx_commerce_categories'] = Array (
 				),
 			),
 		),
+		'teaser' => Array (
+			'exclude' => 1,
+			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_products.teaser',
+			'config' => Array (
+				'type' => 'text',
+				'cols' => '30',
+				'rows' => '10',
+			)
+		),
+		'teaserimages' => Array (
+			'exclude' => 1,
+			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_products.teaserimages',
+			'l10n_mode' => 'mergeIfNotBlank',
+			'config' => Array (
+				'type' => 'group',
+				'internal_type' => 'file',
+				'allowed' => $GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext'],
+				'max_size' => $GLOBALS['TYPO3_CONF_VARS']['GFX']['maxFileSize'],
+				'uploadfolder' => 'uploads/tx_commerce',
+				'show_thumbs' => 1,
+				'size' => 3,
+				'minitems' => 0,
+				'maxitems' => 5,
+			)
+		),		
 	),
 	'types' => Array (
 		'0' => Array('showitem' => '
-			sys_language_uid;;;;1-1-1, l18n_parent, l18n_diffsource, hidden;;1, title;;;;2-2-2, subtitle;;;;3-3-3, description;;;richtext[paste|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|image]:rte_transform[mode=ts], images, navtitle, keywords,parent_category;;;;1-1-1, relatedpage;;;;1-1-1, ts_config;;;;1-1-1,
+			sys_language_uid;;;;1-1-1, l18n_parent, l18n_diffsource, hidden;;1, title;;;;2-2-2, subtitle;;;;3-3-3, description;;;richtext[paste|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|image]:rte_transform[mode=ts], images, teaser;;;;3-3-3, teaserimages, navtitle, keywords,parent_category;;;;1-1-1, relatedpage;;;;1-1-1, ts_config;;;;1-1-1,
 			--div--;LLL:EXT:commerce/locallang_db.xml:tx_commerce_categories.select_attributes,attributes;;;;1-1-1'
 		)
 	),

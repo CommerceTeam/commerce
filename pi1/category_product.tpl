@@ -54,8 +54,10 @@ globally at the beginning of the form tag as marker ###GENERAL_HIDDENCATUID###
 	<div class="com-category">
 		<!-- ###CATEGORY_LIST_ITEM### begin -->
 			###CATEGORY_ITEM_TITLE###
-			###CATEGORY_ITEM_DESCRIPTION###
-			###CATEGORY_ITEM_IMAGES###
+			###CATEGORY_ITEM_TEASER###
+			###CATEGORY_ITEM_TEASERIMAGES###			
+			
+			<!--###CATEGORY_ITEM_DESCRIPTION### ###CATEGORY_ITEM_IMAGES###-->
 			###CATEGORY_ITEM_SUBTITLE###
 	
 			###CATEGORY_ITEM_PRODUCTLIST###

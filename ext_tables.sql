@@ -391,6 +391,8 @@ CREATE TABLE tx_commerce_categories (
     subtitle varchar(255) DEFAULT '' NOT NULL,
     description text NOT NULL,
     images blob NOT NULL,
+    teaser text NOT NULL,
+    teaserimages blob NOT NULL,
     navtitle varchar(80) DEFAULT '' NOT NULL,
     keywords text NOT NULL,
     attributes mediumtext NOT NULL,
