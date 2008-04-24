@@ -497,6 +497,8 @@ class tx_commerce_statistic extends t3lib_SCbase {
        			if(!$res) {
             		$result = false;
             	}
+            	print ".";
+            	flush();
        				
 	        }
 	        $oldtimestart = mktime(++$hour,0,0,$month,$day,$year);

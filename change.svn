@@ -1,5 +1,10 @@
 Changelog for tx_commerce
 (add new changes on top of this file)
+24.04.2008 Ingo Schmitt <is@marketing-factory.de>
+* Added Output for Last Change in Order View
+* Changed Compatibility to maximum 4.1.9 TYPO3 Version, since Tree is not working with 4.2.0
+* Fixed BUG 8234, Thanks to Frank RŸske
+
 12.03.2008 Ingo Schmitt <is@marketing-factory.de>
 * Quickfix for String is not Array in BE Lib
 * Added teaser and teaser-images to category (Thanks to Julian Kleinhans)

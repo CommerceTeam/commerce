@@ -270,12 +270,17 @@ class tx_commerce_db_category extends tx_commerce_db_alib {
 
  			$data=array();
  			while (false !== ($return_data = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result))) {
+ 				
+ 				
+ 				
  				if ($lang_uid == 0)
  				{
  					$data[]=(int)$return_data['uid'];
  				}else{
  						//	 Check if a lokalised product is availiabe for this product
-
+					/**
+					 * @TODO: Check if this is correct in Multi Tree Sites
+					 */
  					 $lresult=$GLOBALS['TYPO3_DB']->exec_SELECTquery('uid',
 			 			'tx_commerce_products',
 						'l18n_parent = '.$return_data['uid'].' AND sys_language_uid=' . $lang_uid

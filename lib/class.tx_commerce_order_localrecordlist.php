@@ -67,7 +67,7 @@ require_once(PATH_t3lib.'class.t3lib_tceforms.php');
  		
  		if ($id>0){
  			$query_array=array(
- 			'SELECT' => 'DISTINCT tx_commerce_order_articles.order_id, delivery_table.order_id as order_number, tx_commerce_order_articles.article_type_uid, tx_commerce_order_articles.title as payment, delivery_table.title as delivery, tx_commerce_orders.uid,tx_commerce_orders.pid, tx_commerce_orders.crdate, tx_commerce_orders.order_id, tx_commerce_orders.sum_price_gross, tt_address.tx_commerce_address_type_id, tt_address.company ,tt_address.name,tt_address.surname, tt_address.address, tt_address.zip, tt_address.city, tt_address.email,tt_address.phone as phone_1, tt_address.mobile as phone_2,tx_commerce_orders.cu_iso_3_uid, tx_commerce_orders.tstamp, tx_commerce_orders.uid as articles, tx_commerce_orders.comment, tx_commerce_orders.internalcomment, tx_commerce_orders.order_type_uid as order_type_uid_noName',
+ 			'SELECT' => 'DISTINCT tx_commerce_order_articles.order_id, delivery_table.order_id as order_number, tx_commerce_order_articles.article_type_uid, tx_commerce_order_articles.title as payment, delivery_table.title as delivery, tx_commerce_orders.uid,tx_commerce_orders.pid, tx_commerce_orders.crdate, tx_commerce_orders.tstamp, tx_commerce_orders.order_id, tx_commerce_orders.sum_price_gross, tt_address.tx_commerce_address_type_id, tt_address.company ,tt_address.name,tt_address.surname, tt_address.address, tt_address.zip, tt_address.city, tt_address.email,tt_address.phone as phone_1, tt_address.mobile as phone_2,tx_commerce_orders.cu_iso_3_uid, tx_commerce_orders.tstamp, tx_commerce_orders.uid as articles, tx_commerce_orders.comment, tx_commerce_orders.internalcomment, tx_commerce_orders.order_type_uid as order_type_uid_noName',
  			'FROM' =>'tx_commerce_orders,tt_address, tx_commerce_order_articles, tx_commerce_order_articles as delivery_table',
  			'WHERE' =>'delivery_table.order_id = tx_commerce_orders.order_id AND tx_commerce_order_articles.order_id = tx_commerce_orders.order_id AND tx_commerce_order_articles.article_type_uid = '.PAYMENTArticleType.' AND delivery_table.article_type_uid = '.DELIVERYArticleType.' AND tx_commerce_orders.deleted = 0 and tx_commerce_orders.cust_deliveryaddress = tt_address.uid AND tx_commerce_orders.pid='.$id.$addWhere ,
  			'GROUPBY' => '',
@@ -76,7 +76,7 @@ require_once(PATH_t3lib.'class.t3lib_tceforms.php');
 			'LIMIT' => ''
  	
  		
- 		);
+ 			);
  		}else{
  			
  		
@@ -101,7 +101,7 @@ require_once(PATH_t3lib.'class.t3lib_tceforms.php');
  			$list = implode(',',$list);
  			
  			$query_array=array(
- 			'SELECT' => 'DISTINCT tx_commerce_order_articles.order_id,delivery_table.order_id as order_number, tx_commerce_order_articles.article_type_uid, tx_commerce_order_articles.title as payment, delivery_table.title as delivery, tx_commerce_orders.uid,tx_commerce_orders.pid, tx_commerce_orders.crdate, tx_commerce_orders.order_id, tx_commerce_orders.sum_price_gross, tt_address.tx_commerce_address_type_id, tt_address.company,tt_address.name,tt_address.surname, tt_address.address, tt_address.zip, tt_address.city, tt_address.email,tt_address.phone as phone_1, tt_address.mobile as phone_2,tx_commerce_orders.cu_iso_3_uid, tx_commerce_orders.tstamp, tx_commerce_orders.uid as articles, tx_commerce_orders.comment, tx_commerce_orders.internalcomment, tx_commerce_orders.order_type_uid as order_type_uid_noName',
+ 			'SELECT' => 'DISTINCT tx_commerce_order_articles.order_id,delivery_table.order_id as order_number, tx_commerce_order_articles.article_type_uid, tx_commerce_order_articles.title as payment, delivery_table.title as delivery, tx_commerce_orders.uid,tx_commerce_orders.pid, tx_commerce_orders.crdate, tx_commerce_orders.tstamp, tx_commerce_orders.order_id, tx_commerce_orders.sum_price_gross, tt_address.tx_commerce_address_type_id, tt_address.company,tt_address.name,tt_address.surname, tt_address.address, tt_address.zip, tt_address.city, tt_address.email,tt_address.phone as phone_1, tt_address.mobile as phone_2,tx_commerce_orders.cu_iso_3_uid, tx_commerce_orders.tstamp, tx_commerce_orders.uid as articles, tx_commerce_orders.comment, tx_commerce_orders.internalcomment, tx_commerce_orders.order_type_uid as order_type_uid_noName',
  			'FROM' =>'tx_commerce_orders,tt_address, tx_commerce_order_articles, tx_commerce_order_articles as delivery_table',
  			'WHERE' =>'delivery_table.order_id = tx_commerce_orders.order_id AND tx_commerce_order_articles.order_id = tx_commerce_orders.order_id AND tx_commerce_order_articles.article_type_uid = '.PAYMENTArticleType.' AND delivery_table.article_type_uid = '.DELIVERYArticleType.' AND tx_commerce_orders.deleted = 0 and tx_commerce_orders.cust_deliveryaddress = tt_address.uid AND tx_commerce_orders.pid in ('.$list.') '.$addWhere ,
  			'GROUPBY' => '',
@@ -331,17 +331,17 @@ require_once(PATH_t3lib.'class.t3lib_tceforms.php');
 					// Check for order_number and order_title view
 				$_EXTKEY = 'commerce';
 				if($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY]['showArticleNumber'] == 1 && $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY]['showArticleTitle'] == 1){
-					$this->myfields=array('order_type_uid_noName',"order_id","crdate","delivery","payment","numarticles","sum_price_gross","company","surname","name","address","zip","city","email","phone_1","phone_2","articles", "order_number","article_number","article_name");				
+					$this->myfields=array('order_type_uid_noName',"order_id","tstamp","crdate","delivery","payment","numarticles","sum_price_gross","company","surname","name","address","zip","city","email","phone_1","phone_2","articles", "order_number","article_number","article_name");				
 				}else if($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY]['showArticleNumber'] == 1){
-					$this->myfields=array('order_type_uid_noName',"order_id","crdate","delivery","payment","numarticles","sum_price_gross","company","surname","name","address","zip","city","email","phone_1","phone_2","articles", "order_number","article_number");
+					$this->myfields=array('order_type_uid_noName',"order_id","tstamp","crdate","delivery","payment","numarticles","sum_price_gross","company","surname","name","address","zip","city","email","phone_1","phone_2","articles", "order_number","article_number");
 				}else if($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY]['showArticleTitle'] == 1){
-					$this->myfields=array('order_type_uid_noName',"order_id","crdate","delivery","payment","numarticles","sum_price_gross","company","surname","name","address","zip","city","email","phone_1","phone_2","articles", "order_number","article_name");
+					$this->myfields=array('order_type_uid_noName',"order_id","tstamp","crdate","delivery","payment","numarticles","sum_price_gross","company","surname","name","address","zip","city","email","phone_1","phone_2","articles", "order_number","article_name");
 				}else{
-					$this->myfields=array('order_type_uid_noName',"order_id","crdate","delivery","payment","numarticles","sum_price_gross","company","surname","name","address","zip","city","email","phone_1","phone_2","articles", "order_number");
+					$this->myfields=array('order_type_uid_noName',"order_id","tstamp","crdate","delivery","payment","numarticles","sum_price_gross","company","surname","name","address","zip","city","email","phone_1","phone_2","articles", "order_number");
 				}
 					//CSV Export
 				if ($this->csvOutput){
-					$this->myfields=array("order_id","crdate","delivery","payment","numarticles","sum_price_gross","company","surname","name","address","zip","city","email","phone_1","phone_2", "comment", "internalcomment","articles");
+					$this->myfields=array("order_id","crdate","tstamp","delivery","payment","numarticles","sum_price_gross","company","surname","name","address","zip","city","email","phone_1","phone_2", "comment", "internalcomment","articles");
 				}
 				
 				$this->HTMLcode.=$this->getTable($tableName, $this->id,implode(',',$this->myfields));

@@ -459,7 +459,7 @@ class tx_commerce_pibase extends tslib_pibase {
 			}
 		}
 
-		$categoryListSubpart= $this->cObj->getSubpart($this->template,'##CATEGORY_LIST###');
+		$categoryListSubpart= $this->cObj->getSubpart($this->template,'###CATEGORY_LIST###');
 		$markerArray['CATEGORY_SUB_LIST'] = $this->cObj->substituteSubpart($categoryListSubpart,'###CATEGORY_LIST_ITEM###',$categoryOutput);
 		$startPoint = ($this->piVars['pointer']) ? $this->internal['results_at_a_time']*$this->piVars['pointer'] : 0;
 
