@@ -6,6 +6,7 @@ Changelog for tx_commerce
 * Fixed BUG 8234, Thanks to Frank RŸske
 * Fixed Bug 7966
 * Update ext_em_conf.php for Upload in TER
+* Raised version to 0.9.5 as new DEV Version
 
 12.03.2008 Ingo Schmitt <is@marketing-factory.de>
 * Quickfix for String is not Array in BE Lib
