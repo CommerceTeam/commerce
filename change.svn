@@ -4,6 +4,8 @@ Changelog for tx_commerce
 * Added Output for Last Change in Order View
 * Changed Compatibility to maximum 4.1.9 TYPO3 Version, since Tree is not working with 4.2.0
 * Fixed BUG 8234, Thanks to Frank RŸske
+* Fixed Bug 7966
+* Update ext_em_conf.php for Upload in TER
 
 12.03.2008 Ingo Schmitt <is@marketing-factory.de>
 * Quickfix for String is not Array in BE Lib

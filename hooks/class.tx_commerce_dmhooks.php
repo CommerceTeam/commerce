@@ -614,8 +614,7 @@ class tx_commerce_dmhooks	{
 		}
 
 		// update all articles of this product
-
-		if (isset($fieldArray['attributesedit']))	{
+		if (! empty($fieldArray['attributesedit'])) {
 			if (!$ctList) $ctList = $this->belib->getAllCorrelationTypes();
 
 			$ffData = t3lib_div::xml2array($fieldArray['attributesedit']);

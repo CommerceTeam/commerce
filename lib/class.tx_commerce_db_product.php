@@ -227,12 +227,12 @@ class tx_commerce_db_product extends tx_commerce_db_alib {
  	 * @param uid = Product UID
  	 * @return array of parent categories
  	 * @TODO Change to correct handling way concering databas model, currently wrongly interperted
- 	 * @TODO currently only call to get_parent_categorie
+ 	 * @TODO currently only call to get_parent_category
  	 */
  	
  	function get_parent_categories($uid)
  	{
- 		return array($this->get_parent_categorie($uid));
+ 		return array($this->get_parent_category($uid));
  		
  	}
 	
