@@ -961,8 +961,9 @@ class tx_commerce_pibase extends tslib_pibase {
 	 *
 	 */
 	 
+	 
 	 function addTypoLinkToTS($TSArray,$TypoLinkConf) {
-	 	
+	 
 	 	foreach ($TSArray['fields.'] as $tsKey => $tsValue) {
 	 		if (is_array($TSArray['fields.'][$tsKey]['typolink.'])) {
 	 			if ($TSArray['fields.'][$tsKey]['typolink.']['setCommerceValues'] == 1){
@@ -970,12 +971,18 @@ class tx_commerce_pibase extends tslib_pibase {
 	 				$TSArray['fields.'][$tsKey]['typolink.']['additionalParams'] .= $TypoLinkConf['additionalParams'];
 	 			}
 	 		}
-	  		
+	 		if (is_array($TSArray['fields.'][$tsKey])) { 
+	 			if (is_array($TSArray['fields.'][$tsKey]['stdWrap.'])) {
+			 		if (is_array($TSArray['fields.'][$tsKey]['stdWrap.']['typolink.'])) {
+			 			if ($TSArray['fields.'][$tsKey]['stdWrap.']['typolink.']['setCommerceValues'] == 1){
+			 				$TSArray['fields.'][$tsKey]['stdWrap.']['typolink.']['parameter'] = $TypoLinkConf['parameter'];
+			 				$TSArray['fields.'][$tsKey]['stdWrap.']['typolink.']['additionalParams'] .= $TypoLinkConf['additionalParams'];
+			 			}
+			 		}
+		 		}
+	 		}
 	 	}
-		
 	 	return $TSArray;
-	 	
-	 	
 	 }
 
 	/**

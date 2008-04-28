@@ -119,7 +119,7 @@ class tx_commerce_navigation {
 		$this->gpVars['basketHashValue'] =  $GLOBALS['TSFE']->fe_user->tx_commerce_basket->getBasketHashValue();
 		$this->pageRootline = $GLOBALS['TSFE']->rootLine;
 		$this->menuType = $this->mConf['1'];
-		$this->entryLevel = $this->mConf['entryLevel'];
+		$this->entryLevel = (int)$this->mConf['entryLevel'];
 		
 		/**
 		 * Detect if a user is logged in and if he or she has usergroups
@@ -162,6 +162,11 @@ class tx_commerce_navigation {
         $hash = md5('tx_commerce_navigation'.implode('-',$this->mConf).':'.$usergroups.':'.$GLOBALS['TSFE']->linkVars);
         $cachedMatrix = $this->getHash($hash,0);
        
+       /**
+		 *
+		 * Render Menue Array and store in cache, if possible 
+		 **/
+       
         if ($GLOBALS['TSFE']->no_cache==1) {
         	
         	// Build directly and don't sore, if no_cache=1'
@@ -197,7 +202,15 @@ class tx_commerce_navigation {
 		}
 		
 		
+		/**
+		  * finish menue array rendering, now postprocessing array with current status of menue
+		  **/
+		
 		$keys=array_keys($this->mTree);
+		
+		/**
+		 * Detect rootline
+		 **/
 		
 		if($this->gpVars['catUid']){
 			$this->choosenCat = $this->gpVars['catUid'] ;
@@ -270,7 +283,29 @@ class tx_commerce_navigation {
         	$this->mDepth =0;
         }
 		
-		
+		/**
+		* If we do have an entry level,
+		* we strip away the number of array levels of the entry level value
+		*/ 			        
+        if ($this->entryLevel > 0  ) {        	
+        	$newParentes = array_reverse($this->pathParents);
+      
+        	/**
+			* Foreach entry level detect the array for this level and remove it from $this->mTree
+			*/
+        	
+			for ($i=0; $i <  $this->entryLevel; $i++) {        	        		
+        		$this->mTree = $this->mTree[$newParentes[$i]]['--subLevel--'];
+        		
+        		/**
+				* Reduce elementes in pathParents and decrese menue depth 
+				*/
+
+        		array_pop($this->pathParents);
+        		$this->mDepth--;
+        	}
+        }
+        
 		if($this->pathParents){
 			
 			

@@ -125,11 +125,20 @@ lib.tx_commerce {
 					}
 										
 					teaser < lib.tx_commerce.stdField_RTE
-			  	 	teaserimages =IMAGE
-			  	 	teaserimages {  
-			  	 		file.import.current = 1
-    					file.maxW = 150
-			  	 	}
+			  	 	
+					teaserimages >
+					teaserimages = IMAGE
+					teaserimages {
+						wrap = <div class="com-category-teaser-img">|</div>
+					  			
+						file.import.current = 1
+			    		file.maxW = 69
+						
+						stdWrap {	 
+						  typolink.setCommerceValues = 1
+						  typolink.useCacheHash = 1 			
+						}
+					}
 			
 		    	}
 		    	
