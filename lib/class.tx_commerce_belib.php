@@ -775,7 +775,8 @@ class tx_commerce_belib {
 	 * @return	void
 	 */
 	function updateArticleXML($articleRelations, $add = false, $articleUid = NULL, $productUid = NULL)	{
-		if ($add && is_numeric($articleUid))	{
+	   $xmlData = array();
+	   if ($add && is_numeric($articleUid))	{
 			$xmlData = $GLOBALS['TYPO3_DB']->exec_SELECTquery('attributesedit', 'tx_commerce_articles', 'uid=' .$articleUid);
 			$xmlData = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($xmlData);
 			$xmlData = t3lib_div::xml2array($xmlData['attributesedit']);
@@ -817,6 +818,7 @@ class tx_commerce_belib {
 				$xmlData['data']['sDEF']['lDEF']['attribute_' .$articleRelation['uid_foreign']] = array('vDEF' => $value);
 		    }
 		}
+		
 		$xmlData = t3lib_div::array2xml($xmlData, '', 0, 'T3FlexForms');
 	
 		if ($articleUid)	{

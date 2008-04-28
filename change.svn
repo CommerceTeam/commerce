@@ -5,6 +5,7 @@ Changelog for tx_commerce
 * Implemented as general solution commerce typolink on stdWrap on IMAGE
 * Default TS: Teaser Image added link to item below
 * Implemented Entrylevel on Menue
+* fixed Problem with non intitalised XML Array in BE lib
 
 24.04.2008 Ingo Schmitt <is@marketing-factory.de>
 * Added Output for Last Change in Order View
