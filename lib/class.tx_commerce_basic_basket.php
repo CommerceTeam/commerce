@@ -199,7 +199,7 @@
 	             if(isset($this->basket_items[$article_uid])) {
 	                 $this->delete_article($article_uid);
 	             }
-	             $items = $this->get_articles_by_article_type_uid_asUidlist(1);
+	             $items = $this->get_articles_by_article_type_uid_asUidlist(NORMALArticleType);
 	             if(count($items) == 0) {
 	                 $this->delete_all_articles();
 	             }

@@ -1676,14 +1676,14 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 		}
 
 		// check if the basket is empty
-		if (in_array('noarticles',$checks) && !$GLOBALS['TSFE']->fe_user->tx_commerce_basket->hasArticles(1))	{
+		if (in_array('noarticles',$checks) && !$GLOBALS['TSFE']->fe_user->tx_commerce_basket->hasArticles(NORMALArticleType))	{
 			return 'noarticles';
 		}
 
 		// check if we a payment article in the basket
 		if(in_array('nopayment',$checks)) {
 
-			$paymentArticles = $GLOBALS['TSFE']->fe_user->tx_commerce_basket->get_articles_by_article_type_uid_asUidlist(3);
+			$paymentArticles = $GLOBALS['TSFE']->fe_user->tx_commerce_basket->get_articles_by_article_type_uid_asUidlist(PAYMENTArticleType);
 			if (count($paymentArticles) <= 0)	{
 				return 'nopayment';
 			}
