@@ -317,12 +317,9 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 	 */
 
 	function getQuickView(){
-           $list = array();
-	       $articleTypes = explode(',',$this->conf['regularArticleTypes']);
-			       
-	       while(list($k,$type) = each($articleTypes)){
-	               $list = array_merge($list,$this->basket->get_articles_by_article_type_uid_asuidlist($type));
-	       }
+		
+		$articleTypes = explode(',',$this->conf['regularArticleTypes']);
+       	
 										       
 	
 	    $templateMarker = '###PRODUCT_BASKET_QUICKVIEW###';
@@ -334,8 +331,8 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 	    /**
 		  * ###ITEMS### is depricated
 		  **/
-	    $basketArray['###ITEMS###'] = count($list);
-	    $basketArray['###BASKET_ITEMS###'] = count($list);
+	    $basketArray['###ITEMS###'] = $this->basket->getArticleTypeCountFromList($articleTypes);
+	    $basketArray['###BASKET_ITEMS###'] = $this->basket->getArticleTypeCountFromList($articleTypes);
 	    $basketArray['###URL###'] = $this->pi_linkTP_keepPIvars_url(array(),true,1,$this->conf['basketPid']);
 	    $basketArray['###URL_CHECKOUT###'] = $this->pi_linkTP_keepPIvars_url(array(),false,1,$this->conf['checkoutPid']);
         $hookObjectsArr = array();

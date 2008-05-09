@@ -3,7 +3,7 @@
 *  Copyright notice
 *
 *  (c) 1999 - 2004 Kasper Skaarhoj (kasperYYYY@typo3.com)
-*  (c) 2005 - 2006 Daniel Sch�ttgen <ds@marketing-factory.de>
+*  (c) 2005 - 2006 Daniel Schöttgen <ds@marketing-factory.de>
 *  (c) 2005 - 2006 Ingo Schmitt <is@marketing-factory.de>  
 *   All  rights reserved
 *
@@ -31,9 +31,9 @@
  *
  * @internal Maintainer Ingo Schmitt <is@marketing-factory.de> 
  * @author	Kasper Skaarhoj <kasperYYYY@typo3.com>
- * @author	Daniel Sch�ttgen <ds@marketing-factory.de>
+ * @author	Daniel Schöttgen <ds@marketing-factory.de>
  * @author  Ingo Schmitt <is@marketing-factory.de>
- * @author  J�rg Sprung <jsp@marketing-factory.de>
+ * @author  Jörg Sprung <jsp@marketing-factory.de>
  * 
  * $Id$
  */

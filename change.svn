@@ -1,6 +1,12 @@
 Changelog for tx_commerce
 (add new changes on top of this file)
 
+09.05.2008 Ingo Schmitt <is@marketing-factory.de>
+* Added Edit-Wizzar to fe_user record in order detailed view
+* Fixed Bug 8359, Thanks to Franz RÃ¼ske
+* Changed Minibasket to use API Basket Methods, instead of own methods
+* checked all references to ArticleTypes and changed to Constants 
+
 28.04.2008 Ingo Schmitt <is@marketing-factory.de>
 * Implemented as general solution commerce typolink on stdWrap on IMAGE
 * Default TS: Teaser Image added link to item below
@@ -10,7 +16,7 @@ Changelog for tx_commerce
 24.04.2008 Ingo Schmitt <is@marketing-factory.de>
 * Added Output for Last Change in Order View
 * Changed Compatibility to maximum 4.1.9 TYPO3 Version, since Tree is not working with 4.2.0
-* Fixed BUG 8234, Thanks to Frank RŸske
+* Fixed BUG 8234, Thanks to Frank Rï¿½ske
 * Fixed Bug 7966
 * Update ext_em_conf.php for Upload in TER
 * Raised version to 0.9.5 as new DEV Version

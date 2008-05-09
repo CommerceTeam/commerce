@@ -111,7 +111,19 @@
 				'size' => 1,
 				'minitems' => 0,
 				'maxitems' => 1,
-			)
+				'wizards' => Array(
+					'_PADDING' => 1,
+					'_VERTICAL' => 1,
+					'edit' => Array(
+						'type' => 'popup',
+						'title' => 'Edit user',
+						'script' => 'wizard_edit.php',
+						'popup_onlyOpenIfSelected' => 1,
+						'icon' => 'edit2.gif',
+						'JSopenParams' => 'height=350,width=580,status=0,menubar=0,scrollbars=1',
+            		),
+				),
+			),
 		),
 		'cust_invoice' => Array (
 			'exclude' => 1,
