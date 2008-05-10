@@ -144,9 +144,11 @@
 	 				$this->basket_items[$article_uid]->setTaxCalculationMethod($this->pricefromnet);
 	 				$this->recalculate_sums();
 	 				$this->items++;
-	 				return true;
+	 				 
 	 			}
+	 			
 			}
+			return true;
  		}
  		return false;
 			

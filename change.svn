@@ -1,6 +1,9 @@
 Changelog for tx_commerce
 (add new changes on top of this file)
 
+10.05.2008 Ingo Schmtt <is@marketing-factory.de>
+* Raised dependency to graytree 0.2.x as minimum requirement
+
 09.05.2008 Ingo Schmitt <is@marketing-factory.de>
 * Added Edit-Wizzar to fe_user record in order detailed view
 * Fixed Bug 8359, Thanks to Franz Rüske
