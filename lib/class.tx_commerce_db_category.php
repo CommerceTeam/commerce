@@ -281,11 +281,8 @@ class tx_commerce_db_category extends tx_commerce_db_alib {
 					/**
 					 * @TODO: Check if this is correct in Multi Tree Sites
 					 */
- 					 $lresult=$GLOBALS['TYPO3_DB']->exec_SELECTquery('uid',
-			 			'tx_commerce_products',
-						'l18n_parent = '.$return_data['uid'].' AND sys_language_uid=' . $lang_uid
-
-						);
+ 					 $lresult=$GLOBALS['TYPO3_DB']->exec_SELECTquery('uid',	'tx_commerce_products',	 'l18n_parent = '.$return_data['uid'] 	.' AND sys_language_uid=' . $lang_uid .$GLOBALS['TSFE']->sys_page->enableFields('tx_commerce_products', $GLOBALS['TSFE']->showHiddenRecords)
+ 						);
 
  					 if ($GLOBALS['TYPO3_DB']->sql_num_rows( $lresult) == 1)	 {
 
