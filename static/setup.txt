@@ -488,6 +488,11 @@ plugin.tx_commerce_pi3 {
 	noStockBackPID = 20
 	useStockHandling  < lib.tx_commerce.useStockHandling
 	checkStock = 1
+	
+	// defines the systemproducts ID's has to be changed later, so that it isn't needed anymore
+	delProdId = {$plugin.tx_commerce_lib.delProdId}    
+	payProdId = {$plugin.tx_commerce_lib.payProdId}
+	
 	// Comma separated list of PIDs with the commerce plugin pi1 to clear cache
 	clearCacheAfterFinishWithStock <
 	

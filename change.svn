@@ -1,6 +1,12 @@
 Changelog for tx_commerce
 (add new changes on top of this file)
 
+06.05.2008 Ingo Schmitt <is@marketing-factory.de>
+* Added feature to basket (pi2) to have the possibility of posting more than one payment and delivery article
+* newMethod for basic_basket getQuantity, getPriceGrosss,  getPriceNet
+* Beautified Sourcecode, tx_commerce_pibase
+* Added delProdId and payProdId as additional TS Conf variables to pi3 (checkout)
+
 10.05.2008 Ingo Schmtt <is@marketing-factory.de>
 * Raised dependency to graytree 0.2.x as minimum requirement
 * Syncronised to TER version 0.9.6
@@ -20,7 +26,7 @@ Changelog for tx_commerce
 24.04.2008 Ingo Schmitt <is@marketing-factory.de>
 * Added Output for Last Change in Order View
 * Changed Compatibility to maximum 4.1.9 TYPO3 Version, since Tree is not working with 4.2.0
-* Fixed BUG 8234, Thanks to Frank R�ske
+* Fixed BUG 8234, Thanks to Frank Rüske
 * Fixed Bug 7966
 * Update ext_em_conf.php for Upload in TER
 * Raised version to 0.9.5 as new DEV Version

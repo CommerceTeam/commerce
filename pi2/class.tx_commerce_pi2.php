@@ -263,7 +263,15 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 		    	$this->basket->delete_article($actualPaymentArticle);
 	    	}
 	    	// and add new article
-		    $this->basket->add_article($this->piVars['payArt']);
+	    	if (is_array($this->piVars['payArt'])) {
+	    		foreach ($this->piVars['payArt'] as $articleUid => $articleCount) {
+	    			$this->basket->add_article($articleUid, $articleCount['count']);
+	    		}
+	    	}else{
+	    		$this->basket->add_article($this->piVars['payArt']);
+	    	}
+	    	
+		     
 		    /**
 			 * Hook for processing the basker,after adding the payment
 			 */
@@ -288,8 +296,14 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 			
 	    	     $this->basket->delete_article($actualDeliveryArticle);
 	    	}
-	    	$this->basket->add_article($this->piVars['delArt']);
-	    	
+	    	if (is_array($this->piVars['delArt'])) {
+	    		  		
+	    		foreach ($this->piVars['delArt'] as $articleUid => $articleCount) {
+	    			$this->basket->add_article($articleUid, $articleCount['count']);
+	    		}
+	    	}else{
+	    		$this->basket->add_article($this->piVars['delArt']);
+	    	}
 	    	
 	    	/**
 			 * Hook for processing the basker,after adding the delivery Article

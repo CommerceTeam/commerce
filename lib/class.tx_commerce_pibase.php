@@ -835,18 +835,20 @@ class tx_commerce_pibase extends tslib_pibase {
 		    * @since 01.02.2006
 		    *
 		    */
-		   $hookObjectsArr = array();
-			if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['makeBasketInformation'])) {
-			   foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['makeBasketInformation'] as $classRef) {
-                                   $hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
-	                     }
-	               }
-	             foreach($hookObjectsArr as $hookObj)    {
-	                   if (method_exists($hookObj, 'processMarkerBasketInformation')) {
-	                         $markerArray=$hookObj->processMarkerBasketInformation($markerArray,$basketObj,$this);
-	                   }
-	             }
-
+		
+		$hookObjectsArr = array();
+		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['makeBasketInformation'])) {
+		    foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['makeBasketInformation'] as $classRef) {
+                  $hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+            }
+        	
+            foreach($hookObjectsArr as $hookObj)    {
+            	
+                if (method_exists($hookObj, 'processMarkerBasketInformation')) {
+                   $markerArray=$hookObj->processMarkerBasketInformation($markerArray,$basketObj,$this);
+                }
+            }
+		}
 	 	$content = $this->cObj->substituteMarkerArrayCached($template,$markerArray);
 	 	$content = $this->cObj->substituteMarkerArray($content,$this->languageMarker);
 

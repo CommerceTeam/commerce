@@ -173,6 +173,39 @@
  	}
  	
  	/**
+ 	 * returns the gross price of the article in the basket
+ 	 *
+ 	 * @param integer $articleUid	article_uid
+ 	 * @return iteger	money value
+ 	 */
+ 	
+ 	function getPriceGrosss($articleUid){
+ 	 
+ 		if(is_object($this->basket_items[$articleUid])) {
+ 			return $this->basket_items[$articleUid]->get_item_sum_gross();
+ 		}
+ 		return false;
+ 	}
+ 	
+ /**
+ 	 * returns the gross price of the article in the basket
+ 	 *
+ 	 * @param integer $articleUid	article_uid
+ 	 * @return iteger	money value
+ 	 */
+ 	
+ 	function getPriceNet($articleUid){
+ 	 
+ 		if(is_object($this->basket_items[$articleUid])) {
+ 			return $this->basket_items[$articleUid]->get_item_sum_net();
+ 		}
+ 		return false;
+ 	}
+ 		
+ 	
+ 	
+ 	
+ 	/**
  	 * Changes the Title for one Article
  	 * @param $article_uid
  	 * @param $newtitle
@@ -212,6 +245,23 @@
      	}else{
      		return false;
      	}
+     }
+     
+     
+     
+     /**
+      * returns the quantity of the given article_uid
+      * @author	Ingo Schmitt <is@marketing-factory.de>
+      *
+      * @param integer $article_uid	uid of an article
+      * @return	integer	quantity
+      */
+     function getQuantity($articleUid) {
+     	if (is_object($this->basket_items[$articleUid])){
+     		return $this->basket_items[$articleUid]->get_quantity();
+     	}
+     	return 0;
+     	
      }
  	/**
  	 * deletes article form basket
