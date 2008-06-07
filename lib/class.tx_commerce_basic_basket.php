@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c)  2005 - 2006 Ingo Schmitt <is@marketing-factory.de>
+*  (c)  2005 - 2008 Ingo Schmitt <is@marketing-factory.de>
 *  All   rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -118,7 +118,8 @@
 			if(is_object($this->basket_items[$article_uid]) || ($quantity == 0)){
 				$this->change_quantity($article_uid, $quantity);
 			}else{
-				$article=new tx_commerce_article($article_uid,$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid'])	;
+				$article = t3lib_div::makeInstance('tx_commerce_article');
+				$article->init($article_uid,$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid'])	;
 				$article->load_data();
 				$article->load_Prices();
 				$priceids=$article->getPossiblePriceUids();
@@ -139,8 +140,8 @@
 					}
 				}
 				
-				
-				if ($this->basket_items[$article_uid]=new tx_commerce_basket_item($article_uid,$quantity,$priceid,$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid'])){
+				$this->basket_items[$article_uid] = t3lib_div::makeInstance('tx_commerce_basket_item');
+				if ($this->basket_items[$article_uid]->init($article_uid,$quantity,$priceid,$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid'])){
 	 				$this->basket_items[$article_uid]->setTaxCalculationMethod($this->pricefromnet);
 	 				$this->recalculate_sums();
 	 				$this->items++;

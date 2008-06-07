@@ -4,6 +4,7 @@ Changelog for tx_commerce
 06.07.2008 Ingo Schmitt <is@marketing-factory.de>
 * Fixed bug in navigation with HidePagesifnottranslated, thanks to Intermezzo AG for Sponsoring.
 * Fixed issue 8629, Thankks to intermezzo AG
+* Fixed issue 8549
 
 06.06.2008 Ingo Schmitt <is@marketing-factory.de>
 * Added feature to basket (pi2) to have the possibility of posting more than one payment and delivery article

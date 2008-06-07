@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2005 - 2006 Ingo Schmitt <is@marketing-factory.de>
+*  (c) 2005 - 2008 Ingo Schmitt <is@marketing-factory.de>
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -143,7 +143,8 @@ class tx_commerce_div {
 		}
 
 		foreach ( $productUids as $arrayKey => $productUid ) {
-			$productObj = new tx_commerce_product($productUid);
+			$productObj = t3lib_div::makeInstance('tx_commerce_product');
+			$productObj->init($productUid);
 			$productObj->load_data();
 			
 			if(!($productObj->hasStock())) {

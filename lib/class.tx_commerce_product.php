@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c)  2005 - 2006 Ingo Schmitt <is@marketing-factory.de>
+*  (c)  2005 - 2008 Ingo Schmitt <is@marketing-factory.de>
 *  All   rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -277,7 +277,8 @@
 	  			foreach ($this->articles_uids as $article_uid)
 	  			{
 	  				// initialise Array of articles 
-	  				$this->articles[$article_uid]=new tx_commerce_article($article_uid,$this->lang_uid);
+	  				$this->articles[$article_uid] = t3lib_div::makeInstance('tx_commerce_article'); 
+	  				$this->articles[$article_uid] ->init($article_uid,$this->lang_uid);
 					$this->articles[$article_uid]->load_data();	  				
 	  			}
 	  			$this->articles_loaded=true;
@@ -1071,8 +1072,9 @@
 	             //now run the price test
 	           $articleUidList = array();
 	           foreach ($rawArticleUidList as $rawArticleUid) {
-		               $tmpArticle = new tx_commerce_article($rawArticleUid,$this->lang_uid);
-		               $tmpArticle->load_data();
+	           	 		$tmpArticle  = t3lib_div::makeInstance('tx_commerce_article');
+		               	$tmpArticle ->init($rawArticleUid,$this->lang_uid);
+		               	$tmpArticle->load_data();
 			       $myPrice = $usePriceGrossInstead ? $tmpArticle->get_price_gross() : $tmpArticle->get_price_net();
 			       if (($priceMin <= $myPrice) && ($myPrice <= $priceMax)) {
 			                   $articleUidList[] = $tmpArticle->get_uid();

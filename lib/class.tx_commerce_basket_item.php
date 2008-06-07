@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c)  2005 - 2006 Ingo Schmitt <is@marketing-factory.de>
+*  (c)  2005 - 2008 Ingo Schmitt <is@marketing-factory.de>
 *  All   rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -174,7 +174,8 @@ class tx_commerce_basket_item{
 	 			
 	 			
 	 			$this->priceid = $priceid; 
-				$this->price = new tx_commerce_article_price($priceid,$this->lang_id);
+	 			$this->price = t3lib_div::makeInstance('tx_commerce_article_price');
+				$this->price->init($priceid,$this->lang_id);
 				$this->price->load_data();
 				$this->priceNet=$this->price->get_price_net();
 				$this->priceGross=$this->price->get_price_gross();

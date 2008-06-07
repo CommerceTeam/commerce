@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c)  2005 - 2006 Ingo Schmitt <is@marketing-factory.de>
+*  (c)  2005 - 2008 Ingo Schmitt <is@marketing-factory.de>
 *  All   rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -315,7 +315,8 @@
 			if (is_array($arrayOfPricesUids)) {
 				foreach ($arrayOfPricesUids as $startCount => $tmpArray) {
 					foreach ($tmpArray as $endCount => $pricdUid) {
-						$return[$startCount][$endCount] = new tx_commerce_article_price($pricdUid);
+						$return[$startCount][$endCount] = t3lib_div::makeInstance('tx_commerce_article_price');
+						$return[$startCount][$endCount]->init($pricdUid);
 						$return[$startCount][$endCount] ->load_data();
 					}
 				}
@@ -531,7 +532,8 @@
         	
 	    	
             $products_uid=$this->conn_db->get_parent_product_uid($this->uid);
-        	$product=new tx_commerce_product($products_uid);
+            $product = t3lib_div::makeInstance('tx_commerce_product');
+        	$product -> init($products_uid);
         	return $product;
                 	
         }   
@@ -675,33 +677,38 @@
 					    $i++;
 					}
 					if($groups[$i]){
-					    $this->price = new tx_commerce_article_price($this->prices_uids[$groups[$i]][0]);
+					    $this->price = t3lib_div::makeInstance(' tx_commerce_article_price') ;
+					    $this->price->init($this->prices_uids[$groups[$i]][0]);
 					    $this->price->load_data();
 					    $this->price_uid = $this->prices_uids[$groups[$i]][0];
 					}else{
 					    if($this->prices_uids['-2']){
-						$this->price = new tx_commerce_article_price($this->prices_uids['-2'][0]);
+					    $this->price = t3lib_div::makeInstance(' tx_commerce_article_price') ;
+						$this->price->init($this->prices_uids['-2'][0]);
 						$this->price->load_data();
 						$this->price_uid = $this->prices_uids['-2'][0];
 					    }else{
-							$this->price = new tx_commerce_article_price($this->prices_uids[0][0]);
-							if($this->price){
+					    	 $this->price = t3lib_div::makeInstance(' tx_commerce_article_price') ;
+							 $this->price->init($this->prices_uids[0][0]);
+							 if($this->price){
 							    $this->price->load_data();
 							    $this->price_uid = $this->prices_uids['0'][0];
-							}else{
+							 }else{
 							    return false;
-						    }
+						     }
 						}					
 					}				
 				}else{
 					// No special Handling if no special usergroup is logged in
 				
 				    if($this->prices_uids['-1']){
-						$this->price = new tx_commerce_article_price($this->prices_uids['-1'][0]);
+				    	$this->price = t3lib_div::makeInstance(' tx_commerce_article_price') ;
+						$this->price->init($this->prices_uids['-1'][0]);
 						$this->price->load_data();
 						$this->price_uid = $this->prices_uids['-1'][0];
 				    }else{
-					    $this->price = new tx_commerce_article_price($this->prices_uids[0][0]);
+				    	$this->price = t3lib_div::makeInstance(' tx_commerce_article_price') ;
+					    $this->price->init($this->prices_uids[0][0]);
 					    if($this->price){
 						    $this->price->load_data();
 						    $this->price_uid = $this->prices_uids['0'][0];

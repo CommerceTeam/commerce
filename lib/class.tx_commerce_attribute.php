@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c)  2005 - 2006 Ingo Schmitt <is@marketing-factory.de>
+*  (c)  2005 - 2008 Ingo Schmitt <is@marketing-factory.de>
 *  All   rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -146,21 +146,18 @@ require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_attribute_
     */
   	
    
-  	function get_all_values()
-  	{
+  	function get_all_values(){
   	
-  		if ($this->attribute_value_uids=$this->conn_db->get_attribute_value_uids($this->uid))
-  		{
-  			foreach ($this->attribute_value_uids as $value_uid)
-  			{
-  				$this->attribute_values[$value_uid]=new tx_commerce_attribute_value($value_uid,$this->lang_uid);
+  		if ($this->attribute_value_uids=$this->conn_db->get_attribute_value_uids($this->uid)){
+  			foreach ($this->attribute_value_uids as $value_uid){
+  				$this->attribute_values[$value_uid] = t3lib_div::makeInstnace('tx_commerce_attribute_value');
+  				$this->attribute_values[$value_uid]->init($value_uid,$this->lang_uid);
   				$this->attribute_values[$value_uid]->load_data();
   			}	
   			
   		}
   		$return_array=array();
-  		foreach ($this->attribute_values as $value_uid => $one_value)
-  		{
+  		foreach ($this->attribute_values as $value_uid => $one_value){
   			$return_array[$value_uid]=$one_value->get_value();
   			
   		}

@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c)  2005 - 2006 Ingo Schmitt <is@marketing-factory.de>
+*  (c)  2005 - 2008 Ingo Schmitt <is@marketing-factory.de>
 *  All   rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -363,7 +363,8 @@
   	 
   	 function get_child_products()  	 {
   	 	foreach ($this->products_uid as $load_uid)	 	{
-  	 		$this->products[$load_uid]=new tx_commerce_product($load_uid,$this->lang_uid);
+  	 		$this->products[$load_uid] = t3lib_div::makeInstance('tx_commerce_product');
+  	 		$this->products[$load_uid]->init($load_uid,$this->lang_uid);
   	 	}	
   	 	return $this->products;
   	 	
@@ -471,8 +472,8 @@
 	  	 	$childCategoriesList=$this->get_rec_child_categories_uidlist($depth);
 	  	 	
 	  	 	foreach ($childCategoriesList as $oneCategoryUid)	{
-	  	 		
-	  	 		$category= new tx_commerce_category($oneCategoryUid,$this->lang_uid);
+	  	 		$category = t3lib_div::makeInstance('tx_commerce_category');
+	  	 		$category ->init($oneCategoryUid,$this->lang_uid);
 	  	 		$category ->load_data();
 	  	 		
 	  	 		$return_list=array_merge($return_list,$category->getProductUids());

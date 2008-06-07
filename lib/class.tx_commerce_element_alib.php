@@ -409,7 +409,8 @@
   		if ($this->attributes_uids=$this->conn_db->get_attributes($this->uid,$attribute_corelation_type_list)){
   			foreach ($this->attributes_uids as $attribute_uid){
   				// initialise Array of articles 
-  				$this->attribute[$attribute_uid]=new tx_commerce_attribute($attribute_uid,$this->lang_uid);
+  				$this->attribute[$attribute_uid] = t3lib_div::makeInstance('tx_commerce_attribute');
+  				$this->attribute[$attribute_uid] ->init($attribute_uid,$this->lang_uid);
   				$this->attribute[$attribute_uid]->load_data();
   			}
   			return $this->attributes_uids;

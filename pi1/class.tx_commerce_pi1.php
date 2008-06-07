@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *  
-*  (c) 2005 - 2006 Volker Graubaum <vg@e-netconsulting.de>
+*  (c) 2005 - 2008 Volker Graubaum <vg@e-netconsulting.de>
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is 
@@ -312,7 +312,8 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 	 		if($GLOBALS['TYPO3_DB']->sql_num_rows($mainProductRes) == 1 AND $row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($mainProductRes) AND $row['l18n_parent'] != 0) {
 	 			$prodID = $row['l18n_parent'];
 	 		}
-	 		$this->product=new tx_commerce_product($prodID,$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
+	 		$this->product = t3lib_div::makeInstance('tx_commerce_produkt');
+	 		$this->product -init($prodID,$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
 			$this->product->load_data();	
 			if ($this->product->isAccessible()) {
 		 		foreach($this->product->articles as $article)
@@ -548,7 +549,8 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 						
 												
 					foreach($attributeArray as $attribute_uid => $myAttribute) {
-						$attributeObj = new tx_commerce_attribute($attribute_uid,$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
+						$attributeObj = t3lib_div::makeInstance('tx_commerce_attribute');
+						$attributeObj ->init($attribute_uid,$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
 						$attributeObj->load_data();
 						$attCode.= $myAttribute['title'].': <br/>'; 
 						$attCode.= '<select onchange="document.getElementById(\'attList_'.$prod->get_uid().'_changed\').value = '.$attribute_uid.';document.getElementById(\'attList_'.$prod->get_uid().'\').submit();" name="'.$this->prefixId.'[attsel_'.$attribute_uid.']" '.$this->conf['selectAttributesParams'].'><option value="">'.$this->pi_getLL('all_options','all',1).'</option>'."\n";
@@ -605,7 +607,8 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
                       if(is_array($attributeArray)) {
 	                      $attCode = '';
 	                      foreach($attributeArray as $attribute_uid => $myAttribute) {
-	                          $attributeObj = new tx_commerce_attribute($attribute_uid,$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
+	                      	  $attributeObj = t3lib_div::makeInstance('tx_commerce_attribute');
+	                          $attributeObj->init($attribute_uid,$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
                               $attributeObj->load_data();
                               $markerArray["###SELECT_ATTRIBUTES_TITLE###"] = $myAttribute['title'];
                               $markerArray["###SELECT_ATTRIBUTES_ICON###"] = $myAttribute['icon'];
