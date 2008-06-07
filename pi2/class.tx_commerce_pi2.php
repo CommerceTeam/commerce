@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *  
-*  (c) 2005 - 2006 Volker Graubaum <vg@e-netconsulting.de>
+*  (c) 2005 - 2008 Volker Graubaum <vg@e-netconsulting.de>
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is 
@@ -498,7 +498,8 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 	 * @return Array 	Marker of Array
 	 */
 	function makeDelivery($basketArray){
-		$this->delProd = new tx_commerce_product($this->conf['delProdId'],$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
+		$this->delProd = t3lib_div::makeInstance('tx_commerce_product');
+		$this->delProd ->init($this->conf['delProdId'],$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
 		$this->delProd->load_data();
 		$this->delProd->load_articles();
 	
@@ -553,7 +554,8 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 	 */
 	function makePayment($basketArray){
 	#debug($this->get_articles_by_article_type_uid_asuidlist());
-		$this->payProd = new tx_commerce_product($this->conf['payProdId'],$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
+		$this->payProd = t3lib_div::makeInstance('tx_commerce_product');
+		$this->payProd ->init($this->conf['payProdId'],$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
 		$this->payProd->load_data();
 		$this->payProd->load_articles();
 		$this->basketPay = $this->basket->get_articles_by_article_type_uid_asuidlist(PAYMENTArticleType);
@@ -710,7 +712,8 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 		        	    $attCode = '';
         		    	$templateAttr = $this->cObj->getSubpart($this->templateCode, '###BASKET_SELECT_ATTRIBUTES###');
 				    	foreach($attributeArray as $attribute_uid => $myAttribute) {
-		    		        $attributeObj = new tx_commerce_attribute($attribute_uid,$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
+				    		$attributeObj = t3lib_div::makeInstance('tx_commerce_attribute');
+		    		        $attributeObj ->init($attribute_uid,$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
 		        			$attributeObj->load_data();
 		    				$markerArray["###SELECT_ATTRIBUTES_TITLE###"] = $myAttribute['title'];
 		        			list($k,$v) = each($myAttribute['values']);
