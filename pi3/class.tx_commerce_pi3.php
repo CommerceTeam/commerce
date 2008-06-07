@@ -1238,7 +1238,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 						}
 						break;
 					case 'int':
-						if (!is_integer($value))	{
+						 if (!is_integer($value) && preg_match('/^\d+$/', $value) !== 1) {
 							$this->formError[$name] = $this->pi_getLL('error_field_int');
 							$returnVal = false;
 						}
