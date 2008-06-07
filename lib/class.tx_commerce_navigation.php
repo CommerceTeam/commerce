@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2005 - 2006 Volker Graubaum  (vg_typo3@e-netconsulting.de)
+*  (c) 2005 - 2008 Ingo Schmitt  (is@marketing-factory.de)
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -434,6 +434,13 @@ class tx_commerce_navigation {
 			 	 $nodeArray['pid'] = $dataRow['pid'];
 				 $nodeArray['uid'] = $uidPage;
 				 $nodeArray['title'] = $dataRow['title'];
+				 if ($GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid'] > 0) {
+				 	/**
+				 	 * Add Pages Overlayto Array, if not syslaguage
+				 	 */
+				 	$nodeArray['_PAGES_OVERLAY'] = $dataRow['title'];
+				 }
+				 $nodeArray['parent_id'] = $uid_root;
 				 $nodeArray['parent_id'] = $uid_root;
 				 $nodeArray['nav_title'] = $dataRow['navtitle'];
 				 $nodeArray['hidden'] = $dataRow['hidden'];

@@ -1,7 +1,10 @@
 Changelog for tx_commerce
 (add new changes on top of this file)
 
-06.05.2008 Ingo Schmitt <is@marketing-factory.de>
+06.07.2008 Ingo Schmitt <is@marketing-factory.de>
+* Fixed bug in navigation with HidePagesifnottranslated, thanks to Intermezzo AG for Sponsoring.
+
+06.06.2008 Ingo Schmitt <is@marketing-factory.de>
 * Added feature to basket (pi2) to have the possibility of posting more than one payment and delivery article
 * newMethod for basic_basket getQuantity, getPriceGrosss,  getPriceNet
 * Beautified Sourcecode, tx_commerce_pibase
