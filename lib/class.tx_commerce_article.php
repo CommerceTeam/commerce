@@ -677,18 +677,18 @@
 					    $i++;
 					}
 					if($groups[$i]){
-					    $this->price = t3lib_div::makeInstance(' tx_commerce_article_price') ;
+					    $this->price = t3lib_div::makeInstance('tx_commerce_article_price');
 					    $this->price->init($this->prices_uids[$groups[$i]][0]);
 					    $this->price->load_data();
 					    $this->price_uid = $this->prices_uids[$groups[$i]][0];
 					}else{
 					    if($this->prices_uids['-2']){
-					    $this->price = t3lib_div::makeInstance(' tx_commerce_article_price') ;
+					    $this->price = t3lib_div::makeInstance('tx_commerce_article_price');
 						$this->price->init($this->prices_uids['-2'][0]);
 						$this->price->load_data();
 						$this->price_uid = $this->prices_uids['-2'][0];
 					    }else{
-					    	 $this->price = t3lib_div::makeInstance(' tx_commerce_article_price') ;
+					    	 $this->price = t3lib_div::makeInstance('tx_commerce_article_price');
 							 $this->price->init($this->prices_uids[0][0]);
 							 if($this->price){
 							    $this->price->load_data();
@@ -702,12 +702,12 @@
 					// No special Handling if no special usergroup is logged in
 				
 				    if($this->prices_uids['-1']){
-				    	$this->price = t3lib_div::makeInstance(' tx_commerce_article_price') ;
+				    	$this->price = t3lib_div::makeInstance('tx_commerce_article_price');
 						$this->price->init($this->prices_uids['-1'][0]);
 						$this->price->load_data();
 						$this->price_uid = $this->prices_uids['-1'][0];
 				    }else{
-				    	$this->price = t3lib_div::makeInstance(' tx_commerce_article_price') ;
+				    	$this->price = t3lib_div::makeInstance('tx_commerce_article_price');
 					    $this->price->init($this->prices_uids[0][0]);
 					    if($this->price){
 						    $this->price->load_data();
