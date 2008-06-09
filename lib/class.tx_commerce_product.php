@@ -278,7 +278,7 @@
 	  			{
 	  				// initialise Array of articles 
 	  				$this->articles[$article_uid] = t3lib_div::makeInstance('tx_commerce_article'); 
-	  				$this->articles[$article_uid] ->init($article_uid,$this->lang_uid);
+	  				$this->articles[$article_uid]->init($article_uid,$this->lang_uid);
 					$this->articles[$article_uid]->load_data();	  				
 	  			}
 	  			$this->articles_loaded=true;
@@ -1073,7 +1073,7 @@
 	           $articleUidList = array();
 	           foreach ($rawArticleUidList as $rawArticleUid) {
 	           	 		$tmpArticle  = t3lib_div::makeInstance('tx_commerce_article');
-		               	$tmpArticle ->init($rawArticleUid,$this->lang_uid);
+		               	$tmpArticle->init($rawArticleUid,$this->lang_uid);
 		               	$tmpArticle->load_data();
 			       $myPrice = $usePriceGrossInstead ? $tmpArticle->get_price_gross() : $tmpArticle->get_price_net();
 			       if (($priceMin <= $myPrice) && ($myPrice <= $priceMax)) {

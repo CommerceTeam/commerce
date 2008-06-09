@@ -220,8 +220,8 @@ class tx_commerce_navigation {
 			 * even if wo haven't walked thrue the categories
 			 */
 			$myProduct = t3lib_div::makeInstance('tx_commerce_product');
-        	$myProduct ->init($this->gpVars['showUid']);
-        	$myProduct ->load_data();
+        	$myProduct->init($this->gpVars['showUid']);
+        	$myProduct->load_data();
 			$this->choosenCat = $myProduct->getMasterparentCategorie();
 		}
 		
@@ -233,8 +233,8 @@ class tx_commerce_navigation {
         	 * Bulild the path by or own
         	 */
         	$myCat = t3lib_div::makeInstance('tx_commerce_category');
-        	$myCat ->init($this->choosenCat);
-        	$myCat ->load_data();
+        	$myCat->init($this->choosenCat);
+        	$myCat->load_data();
 			//MODIF DE LUC >AMEOS : Get the right path with custom method
 			$aPath = $this->getRootLine($this->mTree,$this->choosenCat,$this->expandAll);
         	if (!$aPath){
@@ -800,8 +800,8 @@ class tx_commerce_navigation {
 		$this->gpVars['basketHashValue'] =  $GLOBALS['TSFE']->fe_user->tx_commerce_basket->getBasketHashValue();
 		if (!is_object($this->category)) {
 			$this->category = t3lib_div::makeInstance('tx_commerce_category');
-			$this->category -> init($this->mConf['category'],$GLOBALS['TSFE']->sys_language_uid);
-			$this->category -> load_data();
+			$this->category->init($this->mConf['category'],$GLOBALS['TSFE']->sys_language_uid);
+			$this->category->load_data();
 		}
 			
 		$returnArray=array();
@@ -1060,8 +1060,8 @@ class tx_commerce_navigation {
 				$path = $this->manufacturerIdentifier.$aFiche["manufacturer_uid"].",".$firstPath;
 				
 				$myProduct = t3lib_div::makeInstance('tx_commerce_product');
-        		$myProduct ->init($aFiche['uid']);
-        		$myProduct ->load_data();
+        		$myProduct->init($aFiche['uid']);
+        		$myProduct->load_data();
 				$sManuTitle = $myProduct->getManufacturerTitle();
 				$addGet = "&".$this->prefixId."[catUid]=".$iIdCat."&".$this->prefixId."[manufacturer]=".$aFiche["manufacturer_uid"]."";
 				$pA = t3lib_div::cHashParams($addGet.$GLOBALS['TSFE']->linkVars);

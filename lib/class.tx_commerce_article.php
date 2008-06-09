@@ -317,7 +317,7 @@
 					foreach ($tmpArray as $endCount => $pricdUid) {
 						$return[$startCount][$endCount] = t3lib_div::makeInstance('tx_commerce_article_price');
 						$return[$startCount][$endCount]->init($pricdUid);
-						$return[$startCount][$endCount] ->load_data();
+						$return[$startCount][$endCount]->load_data();
 					}
 				}
 				
@@ -533,7 +533,7 @@
 	    	
             $products_uid=$this->conn_db->get_parent_product_uid($this->uid);
             $product = t3lib_div::makeInstance('tx_commerce_product');
-        	$product -> init($products_uid);
+        	$product->init($products_uid);
         	return $product;
                 	
         }   

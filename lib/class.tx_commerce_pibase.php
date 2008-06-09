@@ -1500,7 +1500,7 @@ class tx_commerce_pibase extends tslib_pibase {
 		 */
 		$cheapestArticleUid = $myProduct->getCheapestArticle();
 		$cheapestArticle = t3lib_div::makeInstance('tx_commerce_article');
-		$cheapestArticle ->init($cheapestArticleUid);
+		$cheapestArticle->init($cheapestArticleUid);
 		$cheapestArticle->load_data();
 		$cheapestArticle->load_prices();
 		
@@ -1508,7 +1508,7 @@ class tx_commerce_pibase extends tslib_pibase {
 		
 		$cheapestArticleUid = $myProduct->getCheapestArticle(1);
 		$cheapestArticle = t3lib_div::makeInstance('tx_commerce_article');
-		$cheapestArticle ->init($cheapestArticleUid);
+		$cheapestArticle->init($cheapestArticleUid);
 		$cheapestArticle->load_data();
 		$cheapestArticle->load_prices();
 		

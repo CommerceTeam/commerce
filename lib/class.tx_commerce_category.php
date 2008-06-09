@@ -473,8 +473,8 @@
 	  	 	
 	  	 	foreach ($childCategoriesList as $oneCategoryUid)	{
 	  	 		$category = t3lib_div::makeInstance('tx_commerce_category');
-	  	 		$category ->init($oneCategoryUid,$this->lang_uid);
-	  	 		$category ->load_data();
+	  	 		$category->init($oneCategoryUid,$this->lang_uid);
+	  	 		$category->load_data();
 	  	 		
 	  	 		$return_list=array_merge($return_list,$category->getProductUids());
 	  	 		
@@ -534,7 +534,7 @@
 
 
         /**
-         * Returns the category TSconfig array based on the currect ->rootLine
+         * Returns the category TSconfig array based on the currect->rootLine
          *
          * @return      array
          */

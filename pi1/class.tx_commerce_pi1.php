@@ -156,7 +156,7 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 		if ((!$this->conf['singleProduct']) && ((int)$this->piVars['showUid']>0)) {
 			if (is_array($categorySubproducts)) {
 				if (!in_array($this->piVars['showUid'],$categorySubproducts)) {
-					$categoryAllSubproducts = $this->category-> getAllProducts(PHP_INT_MAX);
+					$categoryAllSubproducts = $this->category->getAllProducts(PHP_INT_MAX);
 					
 					if (!in_array($this->piVars['showUid'],$categoryAllSubproducts)) {
 						$this->handle='listView';
@@ -165,7 +165,7 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 					}
 				}
 			}else{
-				$categoryAllSubproducts = $this->category-> getAllProducts(PHP_INT_MAX);
+				$categoryAllSubproducts = $this->category->getAllProducts(PHP_INT_MAX);
 			
 				if (!in_array($this->piVars['showUid'],$categoryAllSubproducts)) {
 					$this->handle='listView';
@@ -181,8 +181,8 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 				  * Validate given CAT UID, if is below master_cat
 				  **/
 				$this->masterCategoryObj = t3lib_div::makeinstance('tx_commerce_category');
-				$this->masterCategoryObj -> init($this->master_cat,$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
-				$this->masterCategoryObj -> load_data();
+				$this->masterCategoryObj->init($this->master_cat,$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
+				$this->masterCategoryObj->load_data();
 				$masterCategorySubCategories = $this->masterCategoryObj->get_rec_child_categories_uidlist();
 				
 				if (in_array($this->piVars['catUid'],$masterCategorySubCategories)) {
@@ -313,7 +313,7 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 	 			$prodID = $row['l18n_parent'];
 	 		}
 	 		$this->product = t3lib_div::makeInstance('tx_commerce_produkt');
-	 		$this->product -init($prodID,$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
+	 		$this->product->init($prodID,$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
 			$this->product->load_data();	
 			if ($this->product->isAccessible()) {
 		 		foreach($this->product->articles as $article)
@@ -550,7 +550,7 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 												
 					foreach($attributeArray as $attribute_uid => $myAttribute) {
 						$attributeObj = t3lib_div::makeInstance('tx_commerce_attribute');
-						$attributeObj ->init($attribute_uid,$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
+						$attributeObj->init($attribute_uid,$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
 						$attributeObj->load_data();
 						$attCode.= $myAttribute['title'].': <br/>'; 
 						$attCode.= '<select onchange="document.getElementById(\'attList_'.$prod->get_uid().'_changed\').value = '.$attribute_uid.';document.getElementById(\'attList_'.$prod->get_uid().'\').submit();" name="'.$this->prefixId.'[attsel_'.$attribute_uid.']" '.$this->conf['selectAttributesParams'].'><option value="">'.$this->pi_getLL('all_options','all',1).'</option>'."\n";

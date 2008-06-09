@@ -368,7 +368,7 @@
  	/**
  	 * Checks in the Database if object is 
  	 * basically checks against the enableFields
- 	 * @see: class.tx_commerce_db_alib.php ->isAccessible(
+ 	 * @see: class.tx_commerce_db_alib.php->isAccessible(
 
  	 * @return 	true	if is accessible
  	 * 			false	if is not accessible
@@ -410,7 +410,7 @@
   			foreach ($this->attributes_uids as $attribute_uid){
   				// initialise Array of articles 
   				$this->attribute[$attribute_uid] = t3lib_div::makeInstance('tx_commerce_attribute');
-  				$this->attribute[$attribute_uid] ->init($attribute_uid,$this->lang_uid);
+  				$this->attribute[$attribute_uid]->init($attribute_uid,$this->lang_uid);
   				$this->attribute[$attribute_uid]->load_data();
   			}
   			return $this->attributes_uids;
