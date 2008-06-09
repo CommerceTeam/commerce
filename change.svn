@@ -2,7 +2,7 @@ Changelog for tx_commerce
 (add new changes on top of this file)
 
 06.07.2008 Ingo Schmitt <is@marketing-factory.de>
-* Fixed bug in navigation with HidePagesifnottranslated, thanks to Intermezzo AG for Sponsoring.
+* Fixed bug in navigation with HidePagesifnottranslated, thanks to internezzo AG for Sponsoring.
 * Fixed issue 8629, Thankks to intermezzo AG
 * Fixed issue 8549
 * Fixed issue 8536, Thanks to Heiko Haensge
