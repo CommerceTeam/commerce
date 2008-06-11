@@ -1,11 +1,15 @@
 Changelog for tx_commerce
 (add new changes on top of this file)
 
+11.07.2008 Ingo Schmitt <is@marketing-factory.de>
+* Fixed naming error product
+
 06.07.2008 Ingo Schmitt <is@marketing-factory.de>
 * Fixed bug in navigation with HidePagesifnottranslated, thanks to internezzo AG for Sponsoring.
 * Fixed issue 8629, Thankks to intermezzo AG
 * Fixed issue 8549
 * Fixed issue 8536, Thanks to Heiko Haensge
+
 
 06.06.2008 Ingo Schmitt <is@marketing-factory.de>
 * Added feature to basket (pi2) to have the possibility of posting more than one payment and delivery article

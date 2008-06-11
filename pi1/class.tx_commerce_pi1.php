@@ -312,7 +312,7 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 	 		if($GLOBALS['TYPO3_DB']->sql_num_rows($mainProductRes) == 1 AND $row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($mainProductRes) AND $row['l18n_parent'] != 0) {
 	 			$prodID = $row['l18n_parent'];
 	 		}
-	 		$this->product = t3lib_div::makeInstance('tx_commerce_produkt');
+	 		$this->product = t3lib_div::makeInstance('tx_commerce_product');
 	 		$this->product->init($prodID,$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
 			$this->product->load_data();	
 			if ($this->product->isAccessible()) {
@@ -322,7 +322,7 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 		 	 	}
 	
 				$this->select_attributes = $this->product->get_attributes(array(ATTRIB_selector));
-				#$this->product_attributes = $this->product->get_attributes(array(ATTRIB_produkt));
+				#$this->product_attributes = $this->product->get_attributes(array(ATTRIB_product));
 				$this->product_attributes = $this->product->get_attributes(array(ATTRIB_product));
 				$this->can_attributes = $this->product->get_attributes(array(ATTRIB_can));
 				$this->shall_attributes = $this->product->get_attributes(array(ATTRIB_shal));
@@ -446,10 +446,10 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 			}
 			
 		}else {
-			$templateMarker[] = '###'.strtoupper($this->conf['templateMarker.'][$viewKind.'_produktArticleList']).'###';
-			$templateMarker[] = '###'.strtoupper($this->conf['templateMarker.'][$viewKind.'_produktArticleList2']).'###';
-			$templateMarkerNostock[] = '###'.strtoupper($this->conf['templateMarker.'][$viewKind.'_produktArticleList']).'_NOSTOCK###';
-			$templateMarkerNostock[] = '###'.strtoupper($this->conf['templateMarker.'][$viewKind.'_produktArticleList2']).'_NOSTOCK###';
+			$templateMarker[] = '###'.strtoupper($this->conf['templateMarker.'][$viewKind.'_productArticleList']).'###';
+			$templateMarker[] = '###'.strtoupper($this->conf['templateMarker.'][$viewKind.'_productArticleList2']).'###';
+			$templateMarkerNostock[] = '###'.strtoupper($this->conf['templateMarker.'][$viewKind.'_productArticleList']).'_NOSTOCK###';
+			$templateMarkerNostock[] = '###'.strtoupper($this->conf['templateMarker.'][$viewKind.'_productArticleList2']).'_NOSTOCK###';
 		}
 	
 		

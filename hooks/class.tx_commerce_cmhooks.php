@@ -179,7 +179,7 @@ class tx_commerce_cmhooks {
 		
 		/**
 		 * localize all articles that are related to the current product
-		 *  and lokalise all produkt attributes realted to this product from 
+		 *  and lokalise all product attributes realted to this product from 
 		 */
 			// 
 		if ($table == 'tx_commerce_products' && $command == 'localize')	{

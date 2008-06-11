@@ -865,7 +865,7 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 				if($this->basketHashValue){
 					$typoLinkConf['additionalParams'].= ini_get('arg_separator.output').$this->prefixId.'[basketHashValue]='.$this->basketHashValue;
 				}
-				$lokalTSProdukt = $this->addTypoLinkToTS($this->conf['fields.']['products.'],$typoLinkConf);	
+				$lokalTSproduct = $this->addTypoLinkToTS($this->conf['fields.']['products.'],$typoLinkConf);	
 				$lokalTSArtikle = $this->addTypoLinkToTS($this->conf['fields.']['articles.'],$typoLinkConf);					
 				$this->prefixId=$altPrefixSingle;			        
 			    $wrapMarkerArray["###PRODUCT_LINK_DETAIL###"] = explode('|',$this->pi_list_linkSingle("|",$myItem->product->get_uid(),1,array('catUid'=>intval($myItem->product->get_masterparent_categorie())),FALSE,$this->conf['listPid']));
@@ -873,7 +873,7 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 			    $this->prefixId=$safePrefix;
 			    
 			   	
-			  	$markerArray = $this->generateMarkerArray($myItem->getProductAssocArray(''),$lokalTSProdukt,'product_');
+			  	$markerArray = $this->generateMarkerArray($myItem->getProductAssocArray(''),$lokalTSproduct,'product_');
 			    $this->articleMarkerArr = $this->generateMarkerArray($myItem->getArticleAssocArray(''),$lokalTSArtikle,'article_');
 							          
 			  	$this->select_attributes = $myItem->product->get_attributes(array(ATTRIB_selector));

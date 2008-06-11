@@ -42,7 +42,7 @@ define(DELIVERYArticleType,3);
 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['SYSPRODUCTS']['PAYMENT'] = array(
 	'tablefields' => array (
 		'title' => 'SYSTEMPRODUCT_PAYMENT',
-		'description' => 'Produkt zum Verwalten der Bezahlung',
+		'description' => 'product zum Verwalten der Bezahlung',
 	)
 );
 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['SYSPRODUCTS']['PAYMENT']['types']['invoice'] = array (
@@ -73,7 +73,7 @@ $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['SYSPRODUCTS']['PAYMENT'
 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['SYSPRODUCTS']['DELIVERY'] = array(
 	'tablefields' => array (
 		'title' => 'SYSTEMPRODUCT_DELIVERY',
-		'description' => 'Produkt zum Verwalten der Lieferarten',
+		'description' => 'product zum Verwalten der Lieferarten',
 	)
 );
 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['SYSPRODUCTS']['DELIVERY']['types'] = array(

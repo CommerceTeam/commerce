@@ -1270,7 +1270,7 @@ class tx_commerce_pibase extends tslib_pibase {
 	 *
 	 */
 
-	function makeProduktAttributList($myProduct){
+	function makeproductAttributList($myProduct){
 
 		$subpartArray[] = '###'.strtoupper($this->conf['templateMarker.']['productAttributes']).'###';
 		$subpartArray[] = '###'.strtoupper($this->conf['templateMarker.']['productAttributes2']).'###';
