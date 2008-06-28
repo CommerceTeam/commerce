@@ -32,7 +32,7 @@
  * 
  * $Id: class.tx_commerce_pi5.php 308 2006-07-26 22:23:51Z ingo $
  */
-
+die(' user pi3');
 require_once(PATH_tslib."class.tslib_pibase.php");
 
 /**

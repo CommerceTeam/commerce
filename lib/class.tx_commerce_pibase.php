@@ -142,9 +142,9 @@ class tx_commerce_pibase extends tslib_pibase {
 	 */
 	function generateLanguageMarker(){
 		if (
-			(is_array($this->LOCAL_LANG[$GLOBALS['TSFE']->tmpl->setup['config.']['language']]))
-			&&
-			(is_array($this->LOCAL_LANG['default']))
+		(is_array($this->LOCAL_LANG[$GLOBALS['TSFE']->tmpl->setup['config.']['language']]))
+		&&
+		(is_array($this->LOCAL_LANG['default']))
 		){
 			$markerArr = t3lib_div::array_merge($this->LOCAL_LANG['default'],$this->LOCAL_LANG[$GLOBALS['TSFE']->tmpl->setup['config.']['language']]);
 		}elseif (is_array($this->LOCAL_LANG['default']))
@@ -157,8 +157,8 @@ class tx_commerce_pibase extends tslib_pibase {
 			if(stristr($k,'lang_') OR stristr($k,'label_')) {
 				$this->languageMarker['###'.strtoupper($k).'###'] = $this->pi_getLL($k);
 			}
- 	    }
-	 }
+		}
+	}
 
 
 	/**

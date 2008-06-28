@@ -179,9 +179,38 @@ class tx_commerce_div {
 
 		return $productObj;
 	}
-
-
 	
+	/**
+	* Generates a session key for identifiing session contents and matching to user
+	* @param	String	Key
+	* @return	Encoded Key as mixture of key and FE-User Uid
+	* 
+	*/
+	function generateSessionKey($key) {
+
+		$extConf = unserialize($GLOBALS["TYPO3_CONF_VARS"]["EXT"]["extConf"]["commerce"]);	
+
+		if (intval($extConf['userSessionMd5Encrypt']) == 1) {
+			$sessionKey = md5($key.":".$GLOBALS['TSFE']->fe_user->user['uid']);
+		} else {
+			$sessionKey = $key.":".$GLOBALS['TSFE']->fe_user->user['uid'];
+		}
+		
+		$hookObjectsArr = array();
+		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_div.php']['generateSessionKey']))	{
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_div.php']['generateSessionKey'] as $classRef)	{
+				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+			}
+		}
+		foreach($hookObjectsArr as $hookObj) {
+			if (method_exists($hookObj, 'postGenerateSessionKey')) {
+				$sessionKey = $hookObj->postGenerateSessionKey($key);
+			}
+		}
+		
+		return $sessionKey;
+		
+	}
 
 
 

@@ -192,11 +192,15 @@ class tx_commerce_pi4 extends tslib_pibase {
 
 	/**
 	 * Returns the listing html of addresses.
-	 *
+	 * 
 	 * @param	integer		$addressType: The type of addresses that should be returned. If this is 0 all types will be returned
+	 * @param	boolean	Create hidden fields
+	 * @param	string	hiddenPrefix (Prefix for field names)
+	 * @param	integer	selectAdressId	Adress ID which should be selected by default
+	 * 
 	 * @return	HTML with addresses
 	 */
-	function getListing($addressType = 0, $createHiddenFields = false, $hiddenFieldPrefix = '') {
+	function getListing($addressType = 0, $createHiddenFields = false, $hiddenFieldPrefix = '', $selectAddressId = false) {
 		$tplBase = $this->cObj->getSubpart($this->templateCode, '###ADDRESS_LISTING###');
 		$tplItem = $this->cObj->getSubpart($this->templateCode, '###ADDRESS_ITEM###');
 
@@ -205,8 +209,12 @@ class tx_commerce_pi4 extends tslib_pibase {
 		  $hiddenFieldPrefix = $this->prefixId;
 		}
 
-		// set a var editAddressId for checked
-		$editAddressId = (int)$this->piVars['addressid'];
+		if ($this->piVars['addressid']) {
+			// set a var editAddressId for checked
+			$editAddressId = (int)$this->piVars['addressid'];
+		}elseif ($selectAddressId) {
+				$editAddressId  = (int) $selectAddressId;
+		}
 			// unset some piVars we don't need here
 		unset($this->piVars['check']);
 		unset($this->piVars['addressid']);
@@ -292,7 +300,10 @@ class tx_commerce_pi4 extends tslib_pibase {
 			$itemMA['###SELECT###'] = '<input type="radio" ';
 			if (($editAddressId == $address['uid']) || (empty($editAddressId) && $address['tx_commerce_is_main_address'])) {
 				$itemMA['###SELECT###'].= 'checked="checked" ';
+				
 			}
+			
+			
 			$itemMA['###SELECT###'].= 'name="' .$hiddenFieldPrefix .'[address_uid]" value="' .$address['uid'] .'" />';
 			$addressFound = true;
 			$addressItems[$address['tx_commerce_address_type_id']] .= $this->cObj->substituteMarkerArrayCached($tplItem, $itemMA, array(), $linkMA);
@@ -353,6 +364,8 @@ class tx_commerce_pi4 extends tslib_pibase {
 			// build a query for selecting an address from the database if we have a logged in user
 		$addressData = ($addressUid != NULL) ? $this->addresses[$addressUid] : array();
 
+		debug($config,'PI4 config');
+		
 		if (count($this->formError) > 0)	{
 			$addressData = $this->piVars;
 		}
@@ -441,11 +454,12 @@ class tx_commerce_pi4 extends tslib_pibase {
 
 			// get action link
 		if ((int)$this->piVars['backpid']>0){
-			$link = $this->pi_getPageLink($this->piVars['backpid']);
+			$link = $this->pi_linkTP_keepPIvars_url();
 		} else {
 			$link = '';
 		}
-
+		
+		$baseMA['###ADDRESS_FORM_BACK###'] =  $this->pi_linkToPage($this->pi_getLL('label_form_back','back'),$this->piVars['backpid'],'',array('tx_commerce_pi3'=> array('step'=>$GLOBALS['TSFE']->fe_user->getKey('ses', tx_commerce_div::generateSessionKey('currentStep')))));
 		return '<form method="post" action="' .$link .'">' .$this->cObj->substituteMarkerArray($tplBase, $baseMA) .'</form>';
 	}
 

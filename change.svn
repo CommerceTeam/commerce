@@ -1,6 +1,19 @@
 Changelog for tx_commerce
 (add new changes on top of this file)
 
+28.06.2008 Ingo Schmitt <is@marketing-factory.de>
+1st Commerce-Workshop, Tom RŸther, Michael Duttlinger, Dirk Krause, Ingo Schmitt
+* Fixed Bug 8453
+* Fixed Documentation bug in pi4
+* Fixed bug: Already selected delivery addresses are checked now
+* fixed bug: If delievery address is selected, it's cheked in step 1 automatically
+* fixed bug: ###ADDRESS_FORM_BACK### was not replaced in PI4
+* fixed bug: Correct backlink for address management
+* fixed bug: 8749
+1st Commerce-Workshop, Christian Ehret
+* Fixed Bug 8710
+
+
 11.07.2008 Ingo Schmitt <is@marketing-factory.de>
 * Fixed naming error product
 
@@ -23,7 +36,7 @@ Changelog for tx_commerce
 
 09.05.2008 Ingo Schmitt <is@marketing-factory.de>
 * Added Edit-Wizzar to fe_user record in order detailed view
-* Fixed Bug 8359, Thanks to Franz RÃ¼ske
+* Fixed Bug 8359, Thanks to Franz Rueske
 * Changed Minibasket to use API Basket Methods, instead of own methods
 * checked all references to ArticleTypes and changed to Constants 
 

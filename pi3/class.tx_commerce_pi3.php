@@ -78,7 +78,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 	/**
 	 * If set to TRUE some debug message will be printed.
 	 */
-	var $debug = FALSE;
+	var $debug = false;
 
 	/**
 	 * @var 	boolean		true if checkoutmail to user send correctly
@@ -101,7 +101,21 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 	 *
 	 * @var array
 	 */
-	var $CheckOutsteps=array();
+	var $CheckOutsteps = array();
+
+	 /**
+	 * Array of the ExtConf
+	 *
+	 * @var array
+	 */
+	var $extConf = array();
+
+	 /**
+	 * String to clear Session after checkout
+	 *
+	 * @var array
+	 */
+	var $clearSessionAfterCheckout = true;
 	
 	/**
 	 * Init Method, autmatically called $this->main
@@ -117,6 +131,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 		$this->staticInfo = t3lib_div::makeInstance('tx_staticinfotables_pi1');
 	    $this->staticInfo->init();
 		
+	    $this->extConf = unserialize($GLOBALS["TYPO3_CONF_VARS"]["EXT"]["extConf"]["commerce"]);
 		
 		$this->imgFolder = 'uploads/tx_commerce/';
 
@@ -162,10 +177,11 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 	function main($content, $conf)	{
 		global $TYPO3_CONF_VARS;
 		$this->init($conf);
-		$GLOBALS['TSFE']->set_no_cache();
+		#$GLOBALS['TSFE']->set_no_cache();
 		
-		if ($this->debug) debug($this->piVars);
+		if ($this->debug) debug($this->piVars, 'piVars' , __FILE__ , __LINE__);
 
+	
 		
 		/**
 		 * Set basket to readonly, if set in Extension Configuration
@@ -176,9 +192,12 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 			$GLOBALS['TSFE']->fe_user->tx_commerce_basket->store_data();
 		
 		}
-		if ($this->debug) debug($GLOBALS['TSFE']->fe_user->tx_commerce_basket);
+		if ($this->debug) debug($GLOBALS['TSFE']->fe_user->tx_commerce_basket, 'commerce_basket', __FILE__ , __LINE__);
 			// store the current step
-		$this->currentStep = strtolower($this->piVars['step']);
+		$this->currentStep = strtolower($this->piVars['step'] );
+		
+		
+		
 		
 			// set deliverytyp as current step, if the user comes from pi4 and created a new address
 		if (empty($this->currentStep) && $this->piVars['addressType']) {
@@ -212,9 +231,9 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
                 } 		
 		
 			// write the billing address into session, if it is present in the REQUEST
-		if (isset($this->piVars['billing']))	$GLOBALS['TSFE']->fe_user->setKey('ses', 'billing', $this->piVars['billing']);
-		if (isset($this->piVars['delivery']))	$GLOBALS['TSFE']->fe_user->setKey('ses', 'delivery', $this->piVars['delivery']);
-		if (isset($this->piVars['payment'])) 	$GLOBALS['TSFE']->fe_user->setKey('ses', 'payment', $this->piVars['payment']);
+		if (isset($this->piVars['billing']))	$GLOBALS['TSFE']->fe_user->setKey('ses', tx_commerce_div::generateSessionKey('billing'), $this->piVars['billing']);
+		if (isset($this->piVars['delivery']))	$GLOBALS['TSFE']->fe_user->setKey('ses', tx_commerce_div::generateSessionKey('delivery'), $this->piVars['delivery']);
+		if (isset($this->piVars['payment'])) 	$GLOBALS['TSFE']->fe_user->setKey('ses', tx_commerce_div::generateSessionKey('payment'), $this->piVars['payment']);
 
 			// fetch the address data from hidden fields if the address_id is set what means that
 			// the address was selected from list with radio buttons.
@@ -223,14 +242,19 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 				//this way email is not necessarily mandatory for billing/delivery address
 			if (!$this->conf['randomUser'] && !t3lib_div::validEmail($this->piVars[$this->piVars['address_uid']]['email'])) $this->piVars[$this->piVars['address_uid']]['email'] = $GLOBALS["TSFE"]->fe_user->user['email'];
 			$this->piVars[$this->piVars['address_uid']]['uid'] = $this->piVars['address_uid'];
-			$GLOBALS['TSFE']->fe_user->setKey('ses', $this->piVars['check'], $this->piVars[$this->piVars['address_uid']]);
+			$GLOBALS['TSFE']->fe_user->setKey('ses', tx_commerce_div::generateSessionKey($this->piVars['check']), $this->piVars[$this->piVars['address_uid']]);
 		}
 	
-		$this->MYSESSION['billing'] = $GLOBALS['TSFE']->fe_user->getKey('ses', 'billing');
-		$this->MYSESSION['delivery'] = $GLOBALS['TSFE']->fe_user->getKey('ses', 'delivery');
-		$this->MYSESSION['payment'] = $GLOBALS['TSFE']->fe_user->getKey('ses', 'payment');
-		$this->MYSESSION['mails'] = $GLOBALS['TSFE']->fe_user->getKey('ses', 'mails');
-
+		$this->MYSESSION['billing'] = $GLOBALS['TSFE']->fe_user->getKey('ses', tx_commerce_div::generateSessionKey('billing'));
+		$this->MYSESSION['delivery'] = $GLOBALS['TSFE']->fe_user->getKey('ses', tx_commerce_div::generateSessionKey('delivery'));
+		$this->MYSESSION['payment'] = $GLOBALS['TSFE']->fe_user->getKey('ses', tx_commerce_div::generateSessionKey('payment'));
+		$this->MYSESSION['mails'] = $GLOBALS['TSFE']->fe_user->getKey('ses', tx_commerce_div::generateSessionKey('mails'));
+		
+		if(($this->piVars['check'] == 'billing') && ($this->piVars['step'] == 'payment')){
+			// remove reference to delivery address
+			$this->MYSESSION['delivery'] = false;
+			$GLOBALS['TSFE']->fe_user->setKey('ses', tx_commerce_div::generateSessionKey('delivery'),false);
+		}
 		/**
 		* Return if checkout is not allowed. Currently the method always returns TRUE right now.
 		* Some functionality has to be implemented in future.
@@ -247,7 +271,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 		if ($this->conf['currency']>'')	{
 			$this->currency = $this->conf['currency'];
 		}
-
+		if ($this->debug) debug($this->currentStep);
 		// debug($GLOBALS['TSFE']->fe_user->tx_commerce_basket);
 		switch ($this->currentStep)	{
 			case 'delivery':
@@ -285,6 +309,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
                   break;
 
 		}
+		$GLOBALS['TSFE']->fe_user->setKey('ses', tx_commerce_div::generateSessionKey('currentStep'), $this->currentStep);
 		$content = $this->renderSteps($content);
 		return $this->pi_WrapInBaseClass($content);
 	}
@@ -408,6 +433,12 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 			$deliveryChecked = '  ';
 			$paymentChecked = '  ';
 		}
+
+		if ($this->debug) debug($this->MYSESSION, 'MYSESSION', __LINE__, __FILE__ );
+		if (is_array($this->MYSESSION['delivery']) && (count($this->MYSESSION['delivery']) > 0))  {
+			$deliveryChecked = ' checked="checked" ';
+			$paymentChecked = '  ';
+		}
 		
 		
 		// for marker for the delivery address chooser
@@ -469,7 +500,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 		$this->validateAddress('delivery');
 
 		$template = $this->cObj->getSubpart($this->templateCode, '###ADDRESS_CONTAINER###');
-
+		 debug($this->MYSESSION, 'MYSESSION', __LINE__, __FILE__ );
 			// fill some standard markers
 		$markerArray['###ADDRESS_TITLE###'] = $this->pi_getLL('delivery_title');
 		$markerArray['###ADDRESS_DESCRIPTION###'] = $this->pi_getLL('delivery_description');
@@ -501,7 +532,8 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 			$addressMgm->addresses = $addressMgm->getAddresses($GLOBALS['TSFE']->fe_user->user['uid'], $this->conf['delivery.']['addressType']);
 
 			$addressMgm->piVars['backpid'] = $GLOBALS['TSFE']->id;
-			$markerArray['###ADDRESS_FORM_INPUTFIELDS###'] = $addressMgm->getListing($this->conf['delivery.']['addressType'], true, $this->prefixId);
+			$markerArray['###ADDRESS_FORM_INPUTFIELDS###'] = $addressMgm->getListing($this->conf['delivery.']['addressType'], true, $this->prefixId,$this->MYSESSION['delivery']['uid']);
+			if ($this->debug) debug (	$markerArray['###ADDRESS_FORM_INPUTFIELDS###'], 'result of getListing', __LINE__, __FILE__ );
 			$deliveryForm .= $markerArray['###ADDRESS_FORM_INPUTFIELDS###'] ;
 		} else {
 			$markerArray['###ADDRESS_FORM_INPUTFIELDS###'] = $this->getInputForm($this->conf['delivery.'], 'delivery');
@@ -1002,11 +1034,11 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 
 		// at last remove some things from the session
 		// change from mySession true real session key
-		
-		$GLOBALS['TSFE']->fe_user->setKey('ses', 'payment', NULL);		
-		$GLOBALS['TSFE']->fe_user->setKey('ses', 'delivery', NULL);		
-		$GLOBALS['TSFE']->fe_user->setKey('ses', 'billing', NULL);		
-		
+		if($this->clearSessionAfterCheckout == true) {
+			$GLOBALS['TSFE']->fe_user->setKey('ses', tx_commerce_div::generateSessionKey('payment'), NULL);		
+			$GLOBALS['TSFE']->fe_user->setKey('ses', tx_commerce_div::generateSessionKey('delivery'), NULL);		
+			$GLOBALS['TSFE']->fe_user->setKey('ses', tx_commerce_div::generateSessionKey('billing'), NULL);		
+		}
 		
 		
 		$GLOBALS['TSFE']->fe_user->tx_commerce_basket->finishOrder();
@@ -1193,7 +1225,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 		$typeLower = strtolower($addressType);
 		$config = $this->conf[$typeLower .'.'];
 		$returnVal = true;
-	
+		if ($this->debug) debug($config, 'TS Config', __LINE__, __FILE__ );
 		$this->formError = array();
 		
 		if ($this->piVars['check'] != $addressType) return true;
@@ -1212,6 +1244,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 			}
 			
 			$eval = explode(',', $config['sourceFields.'][$name .'.']['eval']);
+			
 			foreach ($eval as $method)	{
 				$method = explode('_', $method);
 				switch (strtolower($method[0]))	{
@@ -1397,8 +1430,8 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 
 			$arrayName = $fieldName .(($parseList) ? '.' : '');
 			$fieldMarkerArray['###FIELD_INPUT###'] = $this->getInputField($fieldName, $config['sourceFields.'][$arrayName], $this->MYSESSION[$step][$fieldName],$step);
-		        $fieldMarkerArray['###FIELD_NAME###'] = $this->prefixId.'['.$step.'][' .$fieldName .']';
-		        $fieldMarkerArray['###FIELD_INPUTID###'] = $step.'-'.$fieldName;
+		    $fieldMarkerArray['###FIELD_NAME###'] = $this->prefixId.'['.$step.'][' .$fieldName .']';
+		    $fieldMarkerArray['###FIELD_INPUTID###'] = $step.'-'.$fieldName;
 		        
 		        
 			// save some data for mails
@@ -1409,7 +1442,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 				$fieldCode .= $this->cObj->substituteMarkerArray($fieldTemplate, $fieldMarkerArray);
 			}
 		}
-		$GLOBALS['TSFE']->fe_user->setKey('ses','mails', $this->MYSESSION['mails']);
+		$GLOBALS['TSFE']->fe_user->setKey('ses',tx_commerce_div::generateSessionKey('mails'), $this->MYSESSION['mails']);
 		return $fieldCode;
 	}
 

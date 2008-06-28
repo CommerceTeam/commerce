@@ -50,7 +50,7 @@ $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['SYSPRODUCTS']['PAYMENT'
 	'class' => 'tx_commerce_payment_invoice',
 	'type'=>PAYMENTArticleType,
 );
-		
+
 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['SYSPRODUCTS']['PAYMENT']['types']['prepayment'] = array (
 	'path' => PATH_txcommerce .'payment/class.tx_commerce_payment_prepayment.php',
 	'class' => 'tx_commerce_payment_prepayment',
@@ -66,7 +66,7 @@ $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['SYSPRODUCTS']['PAYMENT'
 	'class' => 'tx_commerce_payment_cashondelivery',
 	'type'=>PAYMENTArticleType,
 );
-	
+
 
 
 
@@ -181,10 +181,15 @@ t3lib_extMgm::addUserTSConfig('
 
 
 // only in old TYPO3 versions below 4.0 apply extension to TCA Non type
-if (!(substr(TYPO3_version, 0, 3)  >= '4.0')) {
+if (t3lib_div::int_from_ver(TYPO3_version) < '4000000') {
 	$GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['t3lib/class.t3lib_tceforms.php'] = t3lib_extMgm::extPath(COMMERCE_EXTkey).'class.ux_t3lib_tceforms.php';
 	$GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['typo3/alt_doc.php'] = t3lib_extMgm::extPath(COMMERCE_EXTkey).'class.ux_sc_alt_doc.php';
 
+}
+
+// only in TYPO3 versions greater or equal 4.2
+if (t3lib_div::int_from_ver(TYPO3_version) >= '4002000') {
+	$GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['typo3/classes/class.modulemenu.php'] = t3lib_extMgm::extPath(COMMERCE_EXTkey).'class.ux_modulemenu.php';
 }
 
 // add special in db list, to have the ability to search for OrderIds in TYPO 4.0
