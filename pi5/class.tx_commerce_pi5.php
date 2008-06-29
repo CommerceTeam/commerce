@@ -527,7 +527,7 @@ class tx_commerce_pi5 extends tx_commerce_pibase {
 		}
 		$paymentObj->parentObj = $this;
 		if (method_exists($paymentObj, 'hasSpecialFinishingForm') && $paymentObj->hasSpecialFinishingForm($_REQUEST)) {
-			$content = $paymentObj->getSpecialFinishingForm($config, &$this->MYSESSION, $basket);
+			$content = $paymentObj->getSpecialFinishingForm($config, $this->MYSESSION, $basket);
 			return $content;
 		} else {
 			if (!$paymentObj->finishingFunction($config, $this->MYSESSION, $basket)) {

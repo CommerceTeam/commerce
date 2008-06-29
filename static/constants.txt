@@ -39,10 +39,10 @@ plugin.tx_commerce_lib {
 	# cat=plugin.commerce: General/Others/a9; type=int+; label= USER Group ID: The UID of the usergroup for new user
 	userGroup = 1
 
-	# cat=plugin.commerce: General/Others/b5; type=string; label= Currency: The currency ISO code
+	# cat=plugin.commerce: General/Others/b5; type=string; label= Currency: The currency ISO code, be aware that you have to change the CurrencyID too!
 	currency = EUR
 	
-	# cat=plugin.commerce: General/Others/b7; type=string; label= Currency: The ID to the currency ISO code (see staticInfoTable)
+	# cat=plugin.commerce: General/Others/b5; type=string; label= Currency: The ID to the currency ISO code (see staticInfoTable), be aware that you have to change the Currency too!
 	currencyId = 49
 	
 	# cat=plugin.commerce: General/Others/b8; type=string; label= ArticleTypes: Regular article types for basket and checkoutlisting
@@ -76,14 +76,23 @@ plugin.tx_commerce_pi2 {
 }
 		
 plugin.tx_commerce_pi3 {
-	# cat=plugin.commerce: Checkout/file/1; type=file[html,htm,tmpl,txt]; label= Template File: HTML-template for display the checkout
+	# cat=plugin.commerce: Checkout/others/1; type=boolean; label=switch to Html-Mail: If you want to send Html-Mail please check
+	useHtmlMail = 0	
+
+	# cat=plugin.commerce: Checkout/file/10; type=file[html,htm,tmpl,txt]; label= Template File: HTML-template for display the checkout
 	templateFile = EXT:commerce/pi3/template_checkout.tpl
 	
-	# cat=plugin.commerce: Checkout/file/5; type=file[html,htm,tmpl,txt]; label= Template File: HTML-template for the email that is send to the user after checking out
+	# cat=plugin.commerce: Checkout/file/15; type=file[html,htm,tmpl,txt]; label= Template File: HTML-template for the email that is send to the user after checking out
 	UserMailTemplateFile =  EXT:commerce/pi3/template_usermail.tpl
 	
-	# cat=plugin.commerce: Checkout/file/10; type=file[html,htm,tmpl,txt]; label= Template File: HTML-template for the email that is send to the administrator after checking out
+	# cat=plugin.commerce: Checkout/file/20; type=file[html,htm,tmpl,txt]; label= Template File: HTML-template for the email that is send to the administrator after checking out
 	AdminMailTemplateFile =  EXT:commerce/pi3/template_adminmail.tpl
+	
+	# cat=plugin.commerce: Checkout/file/25; type=file[html,htm,tmpl,txt]; label= Template File: HTML-template for the email that is send to the user after checking out in HTML Format
+	UserMailTemplateFileHtml =  EXT:commerce/pi3/template_usermail_html.tpl
+
+	# cat=plugin.commerce: Checkout/file/30; type=file[html,htm,tmpl,txt]; label= Template File: HTML-template for the email that is send to the administrator after checking out in HTML Format
+	AdminMailTemplateFileHtml =  EXT:commerce/pi3/template_adminmail_html.tpl	
 	
 }
 

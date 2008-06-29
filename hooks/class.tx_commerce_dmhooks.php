@@ -564,8 +564,9 @@ class tx_commerce_dmhooks	{
 
 				// extract all attributes from FlexForm
 			$ffData = t3lib_div::xml2array($fieldArray['attributes']);
-			$this->belib->mergeAttributeListFromFFData($ffData['data']['sDEF']['lDEF'], 'ct_', $ctList, $pUid, $paList);
-
+			if (is_array($ffData)) {
+				$this->belib->mergeAttributeListFromFFData($ffData['data']['sDEF']['lDEF'], 'ct_', $ctList, $pUid, $paList);
+			}
 				// get the list of uid_foreign and save relations for this category
 			$uidList = $this->belib->extractFieldArray($paList, 'uid_foreign', true, array('uid_correlationtype'));
 
@@ -866,7 +867,7 @@ class tx_commerce_dmhooks	{
 		}
 
 			// update the page tree
-		t3lib_BEfunc::getSetUpdateSignal('updatePageTree');
+		t3lib_BEfunc::setUpdateSignal('updatePageTree');
 
 		if (t3lib_extMgm::isLoaded('dynaflex') && !empty($dynaFlexConf))	{
 			$dynaFlexConf[0]['uid'] = $id;

@@ -588,6 +588,8 @@ CREATE TABLE tx_commerce_moveordermails (
     senderemail varchar(255) DEFAULT '' NOT NULL,
     otherreceiver varchar(255) DEFAULT '' NOT NULL,
     BCC varchar(255) DEFAULT '' NOT NULL,
+    htmltemplate blob NOT NULL,
+    mailcharset varchar(255) DEFAULT '' NOT NULL,
     
     PRIMARY KEY (uid),
     KEY lang (sys_language_uid),

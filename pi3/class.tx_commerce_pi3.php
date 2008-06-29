@@ -46,6 +46,7 @@ require_once(PATH_txcommerce.'lib/class.tx_commerce_product.php');
 require_once(PATH_txcommerce.'lib/class.tx_commerce_category.php');
 require_once(PATH_txgraytree.'lib/class.tx_graytree_folder_db.php');
 require_once(PATH_txcommerce.'lib/class.tx_commerce_pibase.php');
+require_once(PATH_txcommerce.'lib/class.tx_commerce_div.php');
 require_once(PATH_txcommerce.'pi4/class.tx_commerce_pi4.php');
 require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinfotables_pi1.php');
 
@@ -350,7 +351,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 		$label = sprintf($this->pi_getLL('label_step_'.$this->CheckOutsteps[$i]), $i + 1);
 		$lokContent = $this->cObj->stdWrap($label, $this->conf['actualStep.']);
  		$actualContent = $this->cObj->substituteMarker($actualTemplate,'###STEPNAME###',$lokContent);
-		for ($i=($currentStepNumber+1);$i <= count($this->CheckOutsteps);$i++){
+		for ($i=($currentStepNumber+1);$i < count($this->CheckOutsteps);$i++){
 			
 			$label = sprintf($this->pi_getLL('label_step_'.$this->CheckOutsteps[$i]), $i + 1);
 			$lokContent = $this->cObj->stdWrap($label, $this->conf['inactiveStep.']);
@@ -373,7 +374,12 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 	 * Creates a form for collection the billing address data.
 	 */
 	function getBillingAddress($withTitle = 1)	{
-		$template = $this->cObj->getSubpart($this->templateCode, '###ADDRESS_CONTAINER###');
+		
+		if ($this->conf['billing.']['subpartMarker.']['containerWrap']) {
+			$template = $this->cObj->getSubpart($this->templateCode, strtoupper($this->conf['billing.']['subpartMarker.']['containerWrap']));
+		} else {
+			$template = $this->cObj->getSubpart($this->templateCode, '###ADDRESS_CONTAINER###');
+		}
 
 		$markerArray['###ADDRESS_TITLE###'] = '';
 		$markerArray['###ADDRESS_DESCRIPTION###'] = '';		
@@ -499,7 +505,12 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 		if (!$this->validateAddress('billing')){ return $this->getBillingAddress(); }
 		$this->validateAddress('delivery');
 
-		$template = $this->cObj->getSubpart($this->templateCode, '###ADDRESS_CONTAINER###');
+		if ($this->conf['delivery.']['subpartMarker.']['containerWrap']) {
+			$template = $this->cObj->getSubpart($this->templateCode, strtoupper($this->conf['delivery.']['subpartMarker.']['containerWrap']));
+		} else {
+			$template = $this->cObj->getSubpart($this->templateCode, '###ADDRESS_CONTAINER###');
+		}
+		
 		 debug($this->MYSESSION, 'MYSESSION', __LINE__, __FILE__ );
 			// fill some standard markers
 		$markerArray['###ADDRESS_TITLE###'] = $this->pi_getLL('delivery_title');
@@ -598,7 +609,13 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 		
 		$paymentType = $this->getPaymentType();
 	
-		$template = $this->cObj->getSubpart($this->templateCode, '###PAYMENT###');
+		
+		if ($this->conf[$paymentType.'.']['subpartMarker.']['listWrap']) {
+			$template = $this->cObj->getSubpart($this->templateCode, strtoupper($this->conf[$paymentType.'.']['subpartMarker.']['listWrap']));
+		} else {
+			$template = $this->cObj->getSubpart($this->templateCode, '###PAYMENT###');
+		}
+		
 
 			// fill some standard markers
 		$markerArray['###PAYMENT_TITLE###'] = $this->pi_getLL('payment_title');
@@ -630,7 +647,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 		
 		if (
 			$paymentObj->needAdditionalData($this) && (
-				(isset($this->MYSESSION['payment']) && !$paymentObj->proofData($this->MYSESSION['payment'], &$this)) ||
+				(isset($this->MYSESSION['payment']) && !$paymentObj->proofData($this->MYSESSION['payment'], $this)) ||
 				(!isset($this->MYSESSION['payment']) || $paymentObj->getLastError(1, $this))
 				)
 			)	{
@@ -920,7 +937,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 				$hookObj->preinsert($orderData,$this);
 			}
 		}
-		
+		debug($orderData);
 		$GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_commerce_orders', $orderData);
 		$orderUid = $GLOBALS['TYPO3_DB']->sql_insert_id();
 			// make orderUid avaible in hookObjects
@@ -1210,7 +1227,11 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 				$addressArray['###LABEL_'.strtoupper($key).'###'] = $this->pi_getLL('general_' .$key);
 				$addressArray['###'.strtoupper($key).'###'] = $value;
 			}
-			$template = $this->cObj->getSubpart($this->templateCode, '###ADDRESS_LIST###');
+			if ($this->conf[$addressType.'.']['subpartMarker.']['listItem']) {
+				$template = $this->cObj->getSubpart($this->templateCode, strtoupper($this->conf[$addressType.'.']['subpartMarker.']['listItem']));
+			} else {
+				$template = $this->cObj->getSubpart($this->templateCode, '###ADDRESS_LIST###');
+			}
 			return $this->cObj->substituteMarkerArray($template, $addressArray);
 		} else {
 			return '';
@@ -1760,11 +1781,10 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 			return false;
 		}
 
-		/**
-		 * Check for no injection codes
-		 */
-		 
-		if (strstr($userMail, '@') && !eregi("\r",$userMail) && !eregi("\n",$userMail))	{
+
+		$userMail = tx_commerce_div::validEmailList($userMail);
+		
+		if ($userMail && !eregi("\r",$userMail) && !eregi("\n",$userMail))	{
 
 			foreach($hookObjectsArr as $hookObj)	{
 				if (method_exists($hookObj, 'getUserMail'))	{
@@ -1796,7 +1816,16 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 						$hookObj->PostGenerateMail($UserMailObj,$this,$GLOBALS['TSFE']->fe_user->tx_commerce_basket,$mailcontent);
 					}
 				}
-
+				if($this->conf['usermail.']['useHtml'] == '1' && $this->conf['usermail.']['templateFileHtml']) {
+					$UserMailObj->templateCode=$this->cObj->fileResource($this->conf['usermail.']['templateFileHtml']);
+					$htmlContent=$UserMailObj->generateMail($orderUid, $orderData,$userMarker,true);
+	
+					foreach($hookObjectsArr as $hookObj)	{
+						if (method_exists($hookObj, 'PostGenerateMail'))	{
+							$hookObj->PostGenerateMail($UserMailObj,$this,$GLOBALS['TSFE']->fe_user->tx_commerce_basket,$htmlContent);
+						}
+					}
+				}
 				/**
 				 * @since 2005 12th November
 				 * Noved to plainMailEncoded
@@ -1805,16 +1834,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 				$subject=trim($parts[0]);
 				$plain_message=trim($parts[1]);
 
-				$headers=array();
-				$headers[]='From: '.$this->conf['usermail.']['from_name'].' <'.$this->conf['usermail.']['from'].'>';
-				$headers[]='Reply-To: '.$this->conf['usermail.']['from'];
-				if(isset($this->conf['usermail.']['cc']) AND $this->conf['usermail.']['cc'] != '') {
-					$headers[]='Cc: '.$this->conf['usermail.']['cc'];
-				}
 				
-				if(isset($this->conf['usermail.']['bcc']) AND $this->conf['usermail.']['bcc'] != '') {
-					$headers[]='Bcc: '.$this->conf['usermail.']['bcc'];
-				}
 				/**
 				 * Check if charset ist set by TS
 				 * Otherwise set to default Charset
@@ -1824,8 +1844,8 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 				if (!$this->conf['usermail.']['charset'])	{
 					$this->conf['usermail.']['charset']=$GLOBALS['TSFE']->renderCharset;
 				}
-				if (!$this->conf['usermail.']['encoding '])	{
-				 	$this->conf['usermail.']['encoding ']='8bit';
+				if (!$this->conf['usermail.']['encoding'])	{
+				 	$this->conf['usermail.']['encoding']='8bit';
 				}
 
 				/**
@@ -1837,8 +1857,36 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 				$subject=$GLOBALS['TSFE']->csConvObj->conv($subject,$GLOBALS['TSFE']->renderCharset,strtolower($this->conf['usermail.']['charset']));
 
 				if ($this->debug)	print "<b>Usermail to $userMail</b><pre>$plain_message</pre>\n";
+				
+				/**
+				* Mailconf for  tx_commerce_div::sendMail($mailconf);
+				*
+				* @author	Tom Rüther <tr@e-netconsulting.de>
+				* @since	29th June 2008
+				**/
+				$mailconf = array(
+					'plain' => Array (
+								'content'=> $plain_message
+								),
+					'html' => Array (
+						'content'=> $htmlContent,
+						'path' => '',
+						'useHtml' => $this->conf['usermail.']['useHtml']
+					),
+					'defaultCharset' => $this->conf['usermail.']['charset'],
+					'encoding' => $this->conf['usermail.']['encoding'],
+					'attach' => $this->conf['usermail.']['attach.'],
+					'alternateSubject' => $this->conf['usermail.']['alternateSubject'],
+					'recipient' => $userMail.','.$this->conf['usermail.']['cc'], 
+					'recipient_copy' =>  $this->conf['usermail.']['bcc'],
+					'fromEmail' => $this->conf['usermail.']['from'], 
+					'fromName' => $this->conf['usermail.']['from_name'],
+					'replayTo' => $this->conf['usermail.']['from'], 
+					'priority' => $this->conf['usermail.']['priority'], 
+					'callLocation' => 'sendUserMail' 
+				);
 
-				t3lib_div::plainMailEncoded($userMail, $subject, $plain_message, implode(chr(10),$headers),$this->conf['usermail.']['encoding '],$this->conf['usermail.']['charset']);
+				tx_commerce_div::sendMail($mailconf);
 				return true;
 			}
 		}
@@ -1902,7 +1950,17 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 			    	$hookObj->PostGenerateMail($AdminMailObj,$this,$GLOBALS['TSFE']->fe_user->tx_commerce_basket,$mailcontent,$this);
 			    }
 			}
-
+			
+			if($this->conf['adminmail.']['useHtml'] == '1' && $this->conf['adminmail.']['templateFileHtml']) {
+				$AdminMailObj->templateCode=$this->cObj->fileResource($this->conf['adminmail.']['templateFileHtml']);
+				$htmlContent=$AdminMailObj->generateMail($orderUid, $orderData,'',true);
+	
+				foreach($hookObjectsArr as $hookObj)	{
+					if (method_exists($hookObj, 'PostGenerateMail'))	{
+						$hookObj->PostGenerateMail($AdminMailObj,$this,$GLOBALS['TSFE']->fe_user->tx_commerce_basket,$htmlContent);
+					}
+				}
+			}
 			/**
 			 * @since 2005 12th November
 			 * Noved to plainMailEncoded
@@ -1936,27 +1994,44 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 			/**
 			 * Check if user Mail is set
 			 */
-			$headers=array();
 			if (($userMail) && ($userName))	{
-				$headers[] = 'From: '.$username_mailencoded.' <'.$userMail.'>';
-				$headers[] = 'Reply-To: '.$userMail;
+				$mailconf['fromEmail'] = $username_mailencoded;
+				$mailconf['fromName'] = $userMail;
 			} else	{
-				$headers[] = 'From: '.$this->conf['adminmail.']['from_name'].' <'.$this->conf['adminmail.']['from'].'>';
-				$headers[] = 'Reply-To: '.$this->conf['adminmail.'];
-			}
-			
-			if(isset($this->conf['adminmail.']['cc']) AND $this->conf['adminmail.']['cc'] != '') {
-					$headers[]='Cc: '.$this->conf['adminmail.']['cc'];
-			}
-			
-			if(isset($this->conf['adminmail.']['bcc']) AND $this->conf['adminmail.']['bcc'] != '') {
-				$headers[]='Bcc: '.$this->conf['adminmail.']['bcc'];
+				$mailconf['fromEmail'] = $this->conf['adminmail.']['from_name'];
+				$mailconf['fromName'] = $this->conf['adminmail.'];
 			}
 
 			if ($this->debug)	print "<b>Adminmail from </b><pre>$plain_message</pre>\n";
-
-			t3lib_div::plainMailEncoded($this->conf['adminmail.']['mailto'], $subject, $plain_message, implode(chr(10),$headers),$this->conf['adminmail.']['encoding '],$this->conf['adminmail.']['charset']);
-			return true;
+		
+			/**
+			* Mailconf for  tx_commerce_div::sendMail($mailconf);
+			*
+			* @author	Tom R√ºther <tr@e-netconsulting.de>
+			* @since	29th June 2008
+			**/
+			$mailconf = array(
+				'plain' => Array (
+							'content'=> $plain_message
+							),
+				'html' => Array (
+					'content'=> $htmlContent,
+					'path' => '',
+					'useHtml' => $this->conf['adminmail.']['useHtml']
+				),
+				'defaultCharset' => $this->conf['adminmail.']['charset'],
+				'encoding' => $this->conf['adminmail.']['encoding'],
+				'attach' => $this->conf['adminmail.']['attach.'],
+				'alternateSubject' => $this->conf['adminmail.']['alternateSubject'],
+				'recipient' => $this->conf['adminmail.']['mailto'].','.$this->conf['usermail.']['cc'], 
+				'recipient_copy' =>  $this->conf['adminmail.']['bcc'],
+				'replayTo' => $this->conf['adminmail.']['from'], 
+				'priority' => $this->conf['adminmail.']['priority'], 
+				'callLocation' => 'sendAdminMail' 
+			);
+		
+			tx_commerce_div::sendMail($mailconf);
+				return true;
 		}
 
 		return false;

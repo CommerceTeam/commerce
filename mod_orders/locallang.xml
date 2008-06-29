@@ -18,6 +18,7 @@
 			<label index="payment">payment</label>
 			<label index="numarticles">articles</label>
 			<label index="tstamp">Last Change</label>
+			<label index="cu_iso_3">Currency</label>
 			<label index="phone_1">user phone</label>
 			<label index="phone_2">delivery phone</label>
 			<label index="articles">-</label>
@@ -35,6 +36,7 @@
 			<label index="payment">Bezahlung</label>
 			<label index="numarticles">Artikel</label>
 			<label index="tstamp">Änderung</label>
+			<label index="cu_iso_3">Währung</label>
 			<label index="phone_1">Kunde Tel.</label>
 			<label index="phone_2">Versand Tel.</label>
 			

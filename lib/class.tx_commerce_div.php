@@ -212,6 +212,154 @@ class tx_commerce_div {
 		
 	}
 
+	
+
+	/**
+	* Invokes the HTML mailing class
+	*
+	* @author	Tom Rüther <tr@e-netconsulting.de>
+	* @since	29th June 2008
+	* @param	array  $mailconf configuration for the mailerengine 
+	* Example for $mailconf 
+	*
+	* $mailconf = array(
+	* 	'plain' => Array (
+	* 				'content'=> '' 	// plain content as string
+	* 				),
+	* 	'html' => Array (
+	* 		'content'=> '', 			// html content as string
+	* 		'path' => '', 
+	* 		'useHtml' => '' 			// is set mail is send as multipart
+	* 	),
+	* 	'defaultCharset' => 'utf-8',		// your chartset
+	* 	'encoding' => '8-bit',			// your encoding
+	* 	'attach' => Array (),			// your attachment as array
+	* 	'alternateSubject' => '',			// is subject empty will be ste alternateSubject
+	* 	'recipient' => '', 				// comma seperate list of recipient
+	* 	'recipient_copy' =>  '',			// bcc
+	* 	'fromEmail' => '', 				// fromMail
+	* 	'fromName' => '',				// fromName
+	* 	'replayTo' => '', 				// replayTo
+	* 	'priority' => '3', 				// priority of your Mail - 1 = highest, 5 = lowest, 3 = normal
+	* 	'callLocation' => 'myFunction' 		// Where call the function it is nescesary when you will use hooks?
+	* );
+	*
+	* @return	void
+	*/
+	function sendMail($mailconf) {
+	
+		$hookObjectsArr = array();
+		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_div.php']['sendMail']))	{
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_div.php']['sendMail'] as $classRef)	{
+				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+			}
+		}
+
+		foreach($hookObjectsArr as $hookObj)	{
+			if (method_exists($hookObj, 'preProcessHtmlMail'))	{
+				$htmlMail=$hookObj->postProcessHtmlMail($mailconf);
+			}
+		}
+		
+		// validate e-mail addesses
+		$mailconf['recipient'] = tx_commerce_div::validEmailList($mailconf['recipient']);
+	
+		if ($mailconf['recipient']) {
+			$parts = spliti('<title>|</title>', $mailconf['htmlContent'], 3);
+			$subject = trim($parts[1]) ? strip_tags(trim($parts[1])) : $mailconf['alternateSubject'];
+			$htmlMail = t3lib_div::makeInstance('t3lib_htmlmail');
+			$htmlMail->charset = $mailconf['defaultCharset'];
+			$htmlMail->start();
+			
+			if($mailconf['encoding'] =='base64') {
+				$htmlMail->useBase64();
+			} elseif($mailconf['encoding'] == '8bit') {
+				$htmlMail->use8Bit();
+			}
+			
+			$htmlMail->mailer = 'TYPO3 Mailer :: commerce';
+			$htmlMail->subject = $subject;
+			$htmlMail->from_email = tx_commerce_div::validEmailList($mailconf['fromEmail']);
+			$htmlMail->from_name = $mailconf['fromName'];
+			$htmlMail->from_name = implode(' ' , t3lib_div::trimExplode(',', $htmlMail->from_name));
+			$htmlMail->replyto_email = $mailconf['replyTo'] ? $mailconf['replyTo'] :$mailconf['fromEmail'];
+			$htmlMail->replyto_name = $mailconf['replyTo'] ? '' : $mailconf['fromName'];
+			$htmlMail->replyto_name = implode(' ' , t3lib_div::trimExplode(',', $htmlMail->replyto_name));
+			
+			if(isset($mailconf['recipient_copy']) && $mailconf['recipient_copy'] != '') {
+				$mailconf['recipient_copy'] = tx_commerce_div::validEmailList($mailconf['recipient_copy']);
+				
+				if($mailconf['recipient_copy'] != '') $htmlMail->add_header('Bcc: '.$mailconf['recipient_copy']);
+			}
+
+			$htmlMail->returnPath = $mailconf['fromEmail'];
+			$htmlMail->organisation = $mailconf['formName'];
+			$htmlMail->priority = $mailconf['priority'];
+
+			// add Html content
+			if ($mailconf['html']['useHtml'] && trim($mailconf['html']['content'])) {
+				$htmlMail->theParts['html']['content'] = $mailconf['html']['content'];
+				$htmlMail->theParts['html']['path'] = $mailconf['html']['path'];
+				$htmlMail->extractMediaLinks();
+				$htmlMail->extractHyperLinks();
+				$htmlMail->fetchHTMLMedia();
+				$htmlMail->substMediaNamesInHTML(0);
+				$htmlMail->substHREFsInHTML();
+				$htmlMail->setHTML($htmlMail->encodeMsg($htmlMail->theParts['html']['content']));
+			}
+			// add Plan-Text content 
+			$htmlMail->addPlain($htmlMail->encodeMsg($mailconf['plain']['content']));
+			
+			// add attachment 
+			if (is_array($mailconf['attach'])) {
+				foreach($mailconf['attach'] as $file) {	
+					if ($file && file_exists($file)) {
+						$htmlMail->addAttachment($file);
+					}
+				}
+			}
+			
+			// set Headerdata
+			$htmlMail->setHeaders();
+			$htmlMail->setContent();
+			$htmlMail->setRecipient($mailconf['recipient']);
+			
+			foreach($hookObjectsArr as $hookObj)	{
+				if (method_exists($hookObj, 'postProcessMail'))	{
+					$htmlMail=$hookObj->postProcessMail($htmlMail);
+				}
+			}
+			$htmlMail->sendtheMail();
+			
+			return true;
+		}		
+		return false;	
+	}
+
+	/**
+	* Helperfunction for email validation
+	*
+	* @author	Tom Rüther <tr@e-netconsulting.de>
+	* @since	29th June 2008
+	* @param	array	$list comma seperierte list of email addresses
+	*
+	* @return	string
+	*/
+
+	
+	function validEmailList($list) {
+	
+		$dataArray = t3lib_div::trimExplode(',',$list);
+			
+		foreach ($dataArray as $data) {
+			if (t3lib_div::validEmail($data))	{
+				$returnArray[] = $data;
+			}					
+		}
+		if(is_array($returnArray)) $newList = implode(',',$returnArray);
+		
+		return $newList;
+	}
 
 
 }

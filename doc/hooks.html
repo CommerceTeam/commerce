@@ -333,8 +333,16 @@ Some hook-methods can return data which is used by the calling function. Others 
 					<div class="description">Call: loadAdditionalLocallang($this)<br/>
 					Type: Multiple<br/>
 					possibility to add your own locallang-files</div>
+					
+			<div class="functionname">function makeBasketInformation</div>
+				<div class="hookname">GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['makeBasketInformation']</div>
+<div class="description">Call: processMarkerTaxInformation($taxRateTemplate,$basketObj,$this)<br/>
+  Type: Multiple<br/>
+					Result: $taxRateTemplate <br />
+  possibility to regenerates taxrates and $taxRateTemplate in order to recalculate
+  taxes.</div>
 
-	<div class="filename">lib/class.tx_commerce_product.php</div>
+	                <div class="filename">lib/class.tx_commerce_product.php</div>
 		<a name="tx_commerce_product"/>
 		<div class="classname">class tx_commerce_product</div>
 			<div class="functionname">function init</div>

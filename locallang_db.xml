@@ -182,7 +182,9 @@
 			<label index="tx_commerce_moveordermails.mailkind.I.0">Mail when move in</label>
 			<label index="tx_commerce_moveordermails.mailkind.I.1">Mail when move out</label>
 			<label index="tx_commerce_moveordermails.mailkind">When should mail be send</label>
-			<label index="tx_commerce_moveordermails.mailtemplate">Reference to Mailtemplate</label>
+			<label index="tx_commerce_moveordermails.mailtemplate">Reference to PLAIN-Mailtemplate</label>
+			<label index="tx_commerce_moveordermails.htmltemplate">Reference to HTML-Mailtemplate</label>
+			<label index="tx_commerce_moveordermails.mailcharset">Mail Charset</label>
 			<label index="tx_commerce_moveordermails.sendername">E-Mail Sendername (if not set: Mailaddress)</label>
 			<label index="tx_commerce_moveordermails.senderemail">E-Mailaddress of Sender (if not set: Moduledefault)</label>
 			<label index="tx_commerce_moveordermails.otherreceiver">Other Mailreceiver than Customer</label>
@@ -363,7 +365,7 @@
 			<label index="tx_commerce_orders.delivery">Versand</label>
 			<label index="tx_commerce_orders.articles">Artikel</label>
 			<label index="tx_commerce_orders.pricefromnet">Preiskalkulation vom Netto</label>
-			<label index="tx_commerce_orders.tstamp">Ã„nderung</label>
+			<label index="tx_commerce_orders.cu_iso_3">Währung</label>
 			<label index="tx_commerce_order_articles">Bestellte Artikel</label>
 			<label index="tx_commerce_order_articles.article_type_uid">Artikel Typ</label>
 			<label index="tx_commerce_order_articles.article_uid">Artikel ID</label>

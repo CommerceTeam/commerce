@@ -646,7 +646,7 @@ $TCA['tx_commerce_moveordermails'] = Array (
         'iconfile' => PATH_txcommerce_icon_table_rel.'moveordermails.gif',
     ),
     'feInterface' => Array (
-        'fe_admin_fieldList' => 'sys_language_uid, l18n_parent, l18n_diffsource, hidden, starttime, endtime, fe_group, name, mailkind, mailtemplate, sendername, senderemail,otherreceiver,BCC',
+        'fe_admin_fieldList' => 'sys_language_uid, l18n_parent, l18n_diffsource, hidden, starttime, endtime, fe_group, name, mailkind, mailtemplate, htmltemplate, mailcharset, sendername, senderemail,otherreceiver,BCC',
     )
 );
 

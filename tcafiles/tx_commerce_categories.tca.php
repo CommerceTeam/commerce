@@ -53,6 +53,7 @@ $TCA['tx_commerce_categories'] = Array (
 	'feInterface' => $TCA['tx_commerce_categories']['feInterface'],
 	'columns' => Array (
 		'sys_language_uid' => Array (
+			'displayCond' => 'FIELD:sys_language_uid:>:0',
 			'exclude' => 1,
 			'label' => 'LLL:EXT:lang/locallang_general.php:LGL.language',
 			'config' => Array (

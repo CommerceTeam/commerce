@@ -172,6 +172,9 @@ class tx_commerce_db_category extends tx_commerce_db_alib {
  		}else{
  			$add_where = '';
  		}
+ 		
+ 		
+ 		
  		if ($result=$GLOBALS['TYPO3_DB']->exec_SELECT_mm_query('uid_local',
  												$this->database_table,
  												$this->mm_database_table,
@@ -261,7 +264,7 @@ class tx_commerce_db_category extends tx_commerce_db_alib {
 		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_db_category.php']['productQueryPreHook']) {
 			$hookObj = t3lib_div::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_db_category.php']['productQueryPreHook']);
 			if (is_object($hookObj) && method_exists($hookObj, 'productQueryPreHook')) {
-				$queryArray = $hookObj->productQueryPreHook($data, $this);
+				$queryArray = $hookObj->productQueryPreHook($queryArray, $this);
 			}
 		}
 

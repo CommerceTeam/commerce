@@ -145,7 +145,7 @@ class tx_commerce_pi6 extends tx_commerce_pibase{
 	        }
 	        foreach($hookObjectsArr as $hookObj)    {
 		         if (method_exists($hookObj, 'additionalMarker')) {
-	                  $markerArray =  $hookObj->additionalMarker($markerArray,&$subpartArray,&$this);
+	                  $markerArray =  $hookObj->additionalMarker($markerArray,&$subpartArray,$this);
 	             }
 			}
 	

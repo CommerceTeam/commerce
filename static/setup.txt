@@ -96,6 +96,12 @@ lib.tx_commerce {
 			
         
 		    products {
+			    
+			    // Activate Edit Panel
+			    // !!! EditIcons are not Edit Panel !
+			    // editPanel = 1 
+			    // editPanel.allow = edit, new
+			    
 			    // unset default new line to br, since we are using RTE rendering for TeaserFields
 			    nl2br = 0
 		      	stdWrap < lib.tx_commerce.stdField
@@ -111,6 +117,10 @@ lib.tx_commerce {
 			  	 	title  < lib.tx_commerce.stdField
 					title.typolink.setCommerceValues =1
 					title.typolink.useCacheHash = 1
+					// Activate editIcons
+					// !!! EditIcons are not Edit Panel !
+					// title.editIcons = tx_commerce_products:title
+					// title.editIcons.allow = edit
 					subtitle < lib.tx_commerce.stdField 
 					navtitle < lib.tx_commerce.stdField 
 					description < lib.tx_commerce.stdField_RTE
@@ -522,12 +532,17 @@ plugin.tx_commerce_pi3 {
 		showCurrency = 0
 		charset = utf-8
 		encoding = 8bit
+		priority = 3 
 		from = john.doe@somewhere.com
 		cc = 
 		bcc = 
 		// Do not user non Asci-Chars here, as not supported by MAIL
 		from_name = Commerce ShopMaster
+		alternateSubject = NEW ORDER at Commerce
 		templateFile = {$plugin.tx_commerce_pi3.UserMailTemplateFile} 
+		// use Html-Mail
+		useHtml = {$plugin.tx_commerce_pi3.useHtmlMail} 
+		templateFileHtml = {$plugin.tx_commerce_pi3.UserMailTemplateFileHtml}
 	}
 	
 	// sets AdminMail Charset and Encoding
@@ -535,13 +550,18 @@ plugin.tx_commerce_pi3 {
 		showCurrency = 0
 		charset = utf-8
 		encoding = 8bit
+		priority = 3
 		// Only used, when no userMial is given thou the checkout
 		from = john.doe@somewhere.com
 		from_name = Commerce ShopMaster
+		alternateSubject = ADMIN SHOP MAIL
 		cc = 
 		bcc = 
 		mailto = yourname@server.com
-		templateFile = {$plugin.tx_commerce_pi3.AdminMailTemplateFile} 
+		templateFile = {$plugin.tx_commerce_pi3.AdminMailTemplateFile} 	
+		// use Html-Mail
+		useHtml = {$plugin.tx_commerce_pi3.useHtmlMail}
+		templateFileHtml = {$plugin.tx_commerce_pi3.AdminMailTemplateFileHtml}
 	}
 	
 	// currency used for moneylib
@@ -549,10 +569,22 @@ plugin.tx_commerce_pi3 {
 	// currency Id used for orderData
 	currencyId = {$plugin.tx_commerce_lib.currencyId}
 	
+	
+	// define a Marker for payment example "creditcard"
+	creditcard {
+		subpartMarker {
+			listItem = ###PAYMENT###
+		}
+	}
+	
 	billing {
 		// additional formparams for the address form tag
 		formParams = 
 
+		subpartMarker {
+			listItem = ###ADDRESS_LIST###
+			containerWrap = ###ADDRESS_CONTAINER###
+		}
 		deliveryAdress.delivery_radio.wrap = |
 		deliveryAdress.nodelivery_radio.wrap = |
 		deliveryAdress.delivery_label.wrap = <label for="delivery">|</label>
@@ -642,6 +674,27 @@ plugin.tx_commerce_pi4 {
 	selectAddressTypes = 1,2
 	editAddressPid = {$plugin.tx_commerce_lib.editAddressPid}
 	addressPid = {$plugin.tx_commerce_lib.addressPid}
+	
+	billing < lib.tx_commerce.billing
+	billing {
+		subpartMarker {
+			listItem = ###ADDRESS_ITEM###
+			listWrap = ###ADDRESS_LISTING###
+			editWrap = ###ADDRESS_EDIT###
+			editItem = ###ADDRESS_EDIT_FORM###
+			editField = ###SINGLE_INPUT###
+		}
+	}
+	delivery < lib.tx_commerce.delivery
+	delivery  {
+		subpartMarker {
+			listItem = ###ADDRESS_ITEM###
+			listWrap = ###ADDRESS_LISTING###
+			editWrap = ###ADDRESS_EDIT###
+			editItem = ###ADDRESS_EDIT_FORM###
+			editField = ###SINGLE_INPUT###
+		}
+	}
 	
 	# some wraps
 	addressHeaderWrap.wrap = <h1>|</h1>

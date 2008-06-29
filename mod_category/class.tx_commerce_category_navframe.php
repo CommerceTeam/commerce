@@ -124,6 +124,18 @@ class tx_commerce_category_navframe {
 					theObj.style.backgroundColor="'.t3lib_div::modifyHTMLColorAll($this->doc->bgColor,-20).'";
 				}
 			}
+			
+			var Tree = {
+				
+				// does the complete page refresh (previously known as "_refresh_nav()")
+				refresh: function() {
+					var r = new Date();
+					// randNum is useful so pagetree does not get cached in browser cache when refreshing
+					var search = window.location.search.replace(/&randNum=\d+/, "");
+					window.location.search = search+"&randNum=" + r.getTime();
+				},
+			}
+			
 		');
 
 		$CMparts=$this->doc->getContextMenuCode();

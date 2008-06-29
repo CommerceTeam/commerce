@@ -70,6 +70,11 @@
 			<label index="lang_titel_empty">The shopping bag is currently empty.</label>
 			<label index="lang_text_empty">Please return to the shop for more shopping.</label>
 			<label index="lang_title">Title</label>
+			<label index="lang_billing_title">Billing address:</label>
+			<label index="lang_delivery_title">Delivery address:</label>
+			<label index="lang_username">User:</label>
+			<label index="lang_password">password:</label>
+			<label index="lang_intro_newuser">Your user data for your next visit:</label>			
 			<label index="label_sum_article_net">Net product total</label>
 			<label index="label_sum_article_gross">Product total</label>
 			<label index="label_sum_shipping_net">Net deliver costs</label>
@@ -159,6 +164,11 @@
 			<label index="lang_titel_empty">Der Warenkorb ist noch leer</label>
 			<label index="lang_text_empty">Bitte wählen Sie erst Produkte aus, die sie bestellen moechten</label>
 			<label index="lang_title">Titel</label>
+			<label index="lang_billing_title">Rechnungsadresse:</label>
+			<label index="lang_delivery_title">Lieferadresse:</label>
+			<label index="lang_username">Benutzername:</label>
+			<label index="lang_password">Passwort:</label>
+			<label index="lang_intro_newuser">Mit folgenden Daten können Sie sich beim nächsten Besuch in unserem Shop anmelden:</label>						
 			<label index="label_sum_article_net">Netto Artikel Gesamt</label>
 			<label index="label_sum_article_gross">Artikel Gesamt</label>
 			<label index="label_sum_shipping_net">Versandkosten</label>

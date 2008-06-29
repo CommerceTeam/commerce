@@ -432,7 +432,12 @@ class tx_commerce_pibase extends tslib_pibase {
 				 * Please use TYPOLINK instead
 				 */
 				$linkContent=$this->cObj->getSubpart($tmpCategory,'###CATEGORY_ITEM_DETAILLINK###');
-				$link=$this->pi_linkTP_keepPIvars($linkContent,$linkArray,true,0,$this->conf['overridePid']);
+				if ($linkContent) {
+					$link=$this->pi_linkTP_keepPIvars($linkContent,$linkArray,true,0,$this->conf['overridePid']);
+				}else{
+					$link = '';
+				}
+				
 				$tmpCategory=$this->cObj->substituteSubpart($tmpCategory,'###CATEGORY_ITEM_DETAILLINK###',$link);
 
 				
@@ -514,7 +519,7 @@ class tx_commerce_pibase extends tslib_pibase {
 		$templateMarker = '###'.strtoupper($this->conf['templateMarker.']['categoryView']).'###';
 
 
-		$markerArrayCat =  $this->generateMarkerArray($this->category->returnAssocArray(),$this->conf['singleView.']['categories.'],'category_');
+		$markerArrayCat =  $this->generateMarkerArray($this->category->returnAssocArray(),$this->conf['singleView.']['categories.'],'category_','tx_commerce_categories');
 		$markerArray = array_merge($markerArrayCat,$markerArray);
 
 
@@ -589,7 +594,7 @@ class tx_commerce_pibase extends tslib_pibase {
 	function getArticleMarker($article, $priceid=true){
 
 		$tsconf=$this->conf['singleView.']['articles.'];
-		$markerArray = $this->generateMarkerArray($article->returnAssocArray(),$tsconf,'article_');
+		$markerArray = $this->generateMarkerArray($article->returnAssocArray(),$tsconf,'article_','tx_commerce_article');
 		
 		if ($article->getSupplierUid()) {
 			$markerArray['ARTICLE_SUPPLIERNAME'] = $article->getSupplierName();
@@ -823,6 +828,24 @@ class tx_commerce_pibase extends tslib_pibase {
 			$taxRateRows .= $this->cObj->substituteMarkerArray($taxRateTemplate,$taxRowArray);
 		}
 		
+		/**
+	    * Hook for processing Taxes
+	    * Inspired by tx_commerce
+	    * @author Michael Duttlinger 
+		* @since 29.06.2008
+		*
+		*/
+		 $hookObjectsArr = array();
+		 if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['makeBasketInformation'])) {
+		 	foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['makeBasketInformation'] as $classRef) {
+		 		$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+		 	}
+		 }
+		 foreach($hookObjectsArr as $hookObj) {
+		 	if (method_exists($hookObj, 'processMarkerTaxInformation')) {
+		 		$taxRateRows = $hookObj->processMarkerTaxInformation($taxRateTemplate, $basketObj, $this);
+		 	}
+		 }
 		
 		$template = $this->cObj->substituteSubpart($template,'###TAX_RATE_SUMS###',$taxRateRows);
 		
@@ -1026,7 +1049,7 @@ class tx_commerce_pibase extends tslib_pibase {
 					}
 				}
 				
-				$markerArray[strtoupper($prefix.$fieldName)]=$this->renderValue($columnValue,$type,$config);
+				$markerArray[strtoupper($prefix.$fieldName)]=$this->renderValue($columnValue,$type,$config,$fieldName,$table,$data['uid']);
 
 			}
 		}
@@ -1034,17 +1057,20 @@ class tx_commerce_pibase extends tslib_pibase {
 
 	}
 
-	 /**
-	 * Renders one Value to TS
-	 * Availiabe TS types are IMGTEXT, IMAGE, STDWRAP
-	 * @param	mixed 	$value	Outputvalue
-	 * @param 	string	$TStype	TypoScript Type for this value
-	 * @param	array	$TSconf	TypoScript Config for this value
-    	 * @todo create how to use this method when coding new stuff 	 *
-	 * @return 	string		html-content
-	 */
+	/**
+	* Renders one Value to TS
+	* Availiabe TS types are IMGTEXT, IMAGE, STDWRAP
+	* @param	mixed 	$value	Outputvalue
+	* @param 	string	$TStype	TypoScript Type for this value
+	* @param	array	$TSconf	TypoScript Config for this value
+	* @param	string	$field	Database field name
+	* @param	string	$table	Database table name
+	* @param	integer	$uid	Uid of record
+    * @todo create how to use this method when coding new stuff 
+	* @return 	string		html-content
+	*/
 
-	function renderValue($value, $TStype,$TSconf) {
+	function renderValue($value, $TStype,$TSconf,$field='',$table = '',$uid = '') {
 
 		/**
 		  * If you add more TS Types using the imgPath, you should add these also to generateMarkerArray 
@@ -1059,6 +1085,59 @@ class tx_commerce_pibase extends tslib_pibase {
 				$output = $this->cObj->IMGTEXT($TSconf);
 
 			break;
+			case 'RELATION' :
+				$singleValue = explode(',',$value);
+				#debug($singleValue);
+				#$var = array_flip($singleValue);
+
+				#debug(array($singleValue,$TSconf),$value);
+				while(list($k,$uid) = each($singleValue)) {
+					$data = $this->pi_getRecord($TSconf['table'],$uid);
+					if ($data) {
+						$singleOutput = $this->renderTable($data,$TSconf['dataTS.'],$TSconf['subpart'],$TSconf['table'].'_');
+						$output .= $this->cObj->stdWrap($singleOutput,$TSconf['singleStdWrap.']);
+					}
+				}
+				if ($output){
+					$output = $this->cObj->stdWrap($output,$TSconf['stdWrap.']);
+				}
+			break;
+			case 'MMRELATION' :
+				$local 		= 'uid_local';
+				$foreign	= 'uid_foreign';
+				if ($TSconf['switchFields']){
+					$foreign = 'uid_local';
+					$local = 'uid_foreign';
+				}
+				$res = $GLOBALS['TYPO3_DB']->SELECTquery("distinct( $foreign )",$TSconf['tableMM'],$local.' = '.$uid.'  '.$TSconf['table.']['addWhere'],'',' sorting ');
+				$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+					"distinct( $foreign )",
+					$TSconf['tableMM'],
+					$local.' = '.$uid.'  '.$TSconf['table.']['addWhere'],
+					'',
+					' sorting '
+				);
+				while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)){
+					$data = $this->pi_getRecord($TSconf['table'],$row[$foreign]);
+					if ($data){
+						$singleOutput  = $this->renderTable($data,$TSconf['dataTS.'],$TSconf['subpart'],$TSconf['table'].'_');
+						$output .= $this->cObj->stdWrap($singleOutput,$TSconf['singleStdWrap.']);
+					}
+				}
+				#if ($output){
+					$output = trim(trim($output),' ,:;');
+					$output = $this->cObj->stdWrap($output,$TSconf['stdWrap.']);
+				#}
+			break;
+			case 'FILES' :
+				  $files = explode(',',$value);
+			    	  while(list($k,$v) = each($files)){
+				          $file = $this->imgFolder.$v;
+				          $text = $this->cObj->stdWrap($file,$TSconf['linkStdWrap.']).$v;
+				          $output .= $this->cObj->stdWrap($text,$TSconf['stdWrap.']);
+				   }
+			$output = $this->cObj->stdWrap($output,$TSconf['allStdWrap.']);
+	    		break;
 			case 'IMAGE' :
 				if (is_string($value) && !empty($value)) {
 					foreach (split(',',$value) as $oneValue) {
@@ -1077,7 +1156,15 @@ class tx_commerce_pibase extends tslib_pibase {
 					$TSconf['file'] = $TSconf['imgPath'].$value;
 					$output = $this->cObj->IMG_RESOURCE($TSconf);
 				}
-			break;		
+			break;
+			case 'TCA' :
+				$ctrl = $this->makeControl($table);
+				$savevalue = $value;
+				$value = $this->getLabelFromTCA($ctrl,$field,$value);
+			case 'NUMBERFORMAT' :
+				if($TSconf['format']){
+					$value = number_format((float)$value,$TSconf['format.']['decimals'],$TSconf['format.']['dec_point'],$TSconf['format.']['thousands_sep']);
+				}
 			case 'STDWRAP' :
 			default :
 				    $output = $this->cObj->stdWrap($value,$TSconf);
@@ -1085,7 +1172,30 @@ class tx_commerce_pibase extends tslib_pibase {
 
 		}
 		
+		
+		$hookObjectsArr = array();
+		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['locallang'])){
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['locallang'] as $classRef){
+				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+			}
+		}
 
+		if(is_array($hookObjectsArr)){
+			foreach($hookObjectsArr as $hookObj)	{
+				if (method_exists($hookObj, 'postRenderValue')) {
+					$output = $hookObj->postRenderValue($output,array($value, $TStype,$TSconf,$field,$table,$uid));
+				}
+			}
+		}
+
+		
+		/**
+		 * Add admin panel
+		 */
+		if (is_string($table ) && is_string($field) ){
+			$this->cObj->currentRecord = $table.':'.$uid;
+			#$content = $this->cObj->editIcons($content,$table.':'.'$field')
+		}
 		return $output;
 	}
 
@@ -1453,7 +1563,7 @@ class tx_commerce_pibase extends tslib_pibase {
 			
 		$lokalTS = $this->addTypoLinkToTS($lokalTS, $typoLinkConf);
 		
-		$markerArray=$this->generateMarkerArray($data,$lokalTS);
+		$markerArray=$this->generateMarkerArray($data,$lokalTS,'','tx_commerce_products');
 		foreach ($markerArray as $k => $v){
 		    $markerArrayUp[strtoupper($k)] = $v;
 		}
@@ -1527,8 +1637,11 @@ class tx_commerce_pibase extends tslib_pibase {
 	        }
     	}
 		
-		
-		return 	$this->cObj->substituteMarkerArrayCached($template, $markerArray , $subpartArray ,$wrapMarkerArray);
+    	$content = $this->cObj->substituteMarkerArrayCached($template, $markerArray , $subpartArray ,$wrapMarkerArray);
+    	if ($TS['editPanel']== 1) {
+			$content = $this->cObj->editPanel($content,$TS['editPanel.'],'tx_commerce_products:'.$myProduct->getUid());
+    	}
+		return 	$content;
 
 	
 	}
@@ -1561,6 +1674,114 @@ class tx_commerce_pibase extends tslib_pibase {
 
 	    // to define in sub class
 	}
+	
+	
+	/**
+	 * Returns the TCA for either $this->table(if neither $table nor $this->TCA is set), $table(if set) or $this->TCA
+	 *
+	 * @param	string		$table: The table to use
+	 * @return	array		The TCA
+	 */
+	
+	function makeControl($table=''){
+		if(!$table && !$this->TCA){
+			t3lib_div::loadTCA($this->table);
+			$this->TCA = $GLOBALS['TCA'][$this->table];
+		}
+		if(!$table){
+			return $this->TCA;
+		}
+	
+		t3lib_div::loadTCA($table);
+		$localTCA = $GLOBALS['TCA'][$table];
+		return $localTCA;
+	}
+	
+	/**
+	 * Returns a field label from TCA
+	 *
+	 * @param	mixed		$ctrl: ctrl array for tableTCA
+	 * @param	string		$colName: The colon name of the field
+	 * @param	string		$value: A default value for the result
+	 * @return	string		The label
+	 */
+	function getLabelFromTCA($ctrl,$colName,$value,$seperator = ''){
+		$dataArray[$colName] = $value;
+		$colSettings = $ctrl['columns'][$colName];
+		$colConfig = $colSettings['config'];
+	#	print_r($ctrl);
+
+		$colContent = '';
+			// Configure preview based on input type
+		switch ($colConfig['type']) {
+			//case 'input':
+			case 'text':
+				$colContent = nl2br(htmlspecialchars($dataArray[$colName]));
+				break;
+			case 'check':
+				// <Ries van Twisk added support for multiple checkboxes>
+				if (is_array($colConfig['items'])) {
+					$colContent = '<ul class="tx-srfeuserregister-multiple-checked-values">';
+					foreach ($colConfig['items'] AS $key => $value) {
+						$checked = ($dataArray[$colName] & (1 << $key)) ? 'checked' : '';
+						$colContent .= $checked ? '<li>' . $this->getLLFromString($colConfig['items'][$key][0]) . '</li>' : '';
+					}
+					$colContent .= '</ul>';
+					// </Ries van Twisk added support for multiple checkboxes>
+				} else {
+					$colContent = $dataArray[$colName]?$this->pi_getLL('yes'):$this->pi_getLL('no');
+				}
+				break;
+			case 'radio':
+				if ($dataArray[$colName] != '') {
+					$colContent = $this->getLLFromString($colConfig['items'][$dataArray[$colName]][0]);
+				}
+				break;
+			case 'select':
+				if ($dataArray[$colName] != '') {
+					$valuesArray = is_array($dataArray[$colName]) ? $dataArray[$colName] : explode(',',$dataArray[$colName]);
+					if (is_array($colConfig['items'])) {
+						for ($i = 0; $i < count ($valuesArray); $i++) {
+							foreach($colConfig['items'] as $id => $item){
+								if($item[1] == $valuesArray[$i]){
+									$colContent .= ($i ? '<br />': '') . $this->getLLFromString($item[0]);
+								}
+							}
+						}
+					}
+					if ($colConfig['foreign_table']) {
+						t3lib_div::loadTCA($colConfig['foreign_table']);
+						$reservedValues = array();
+						if ($this->theTable == 'fe_users' && $colName == 'usergroup') {
+							$reservedValues = array_merge(t3lib_div::trimExplode(',', $this->conf['create.']['overrideValues.']['usergroup'],1), t3lib_div::trimExplode(',', $this->conf['setfixed.']['APPROVE.']['usergroup'],1), t3lib_div::trimExplode(',', $this->conf['setfixed.']['ACCEPT.']['usergroup'],1));
+						}
+						$valuesArray = array_diff($valuesArray, $reservedValues);
+						if (!empty($valuesArray)) {
+							$titleField = $TCA[$colConfig['foreign_table']]['ctrl']['label'];
+							$res = $TYPO3_DB->exec_SELECTquery(
+								'*',
+								$colConfig['foreign_table'],
+								'uid IN ('.implode(',', $valuesArray).')'
+								);
+							$i = 0;
+							while ($row = $TYPO3_DB->sql_fetch_assoc($res)) {
+								if ($localizedRow = $TSFE->sys_page->getRecordOverlay($colConfig['foreign_table'], $row, $this->sys_language_content)) {
+									$row = $localizedRow;
+								}
+								$colContent .= ($i++ ? $seperator: '') . $row[$titleField];
+							}
+						}
+					}
+				}
+			break;
+			default:
+			// unsupported input type
+			$colContent .= $colConfig['type'].':'.$this->pi_getLL('unsupported','unsupported TCA TYPE');
+		}			
+	
+		return $colContent;
+	}
+	
 
 }
 

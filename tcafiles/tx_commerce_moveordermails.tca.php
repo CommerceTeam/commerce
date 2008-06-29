@@ -9,7 +9,7 @@ if (!defined ('TYPO3_MODE'))     die ('Access denied.');
 $TCA['tx_commerce_moveordermails'] = Array (
     'ctrl' => $TCA['tx_commerce_moveordermails']['ctrl'],
     'interface' => Array (
-        'showRecordFieldList' => 'sys_language_uid,l18n_parent,l18n_diffsource,hidden,starttime,endtime,fe_group,name,mailkind,mailtemplate,sendername,senderemail,otherreceiver,BCC'
+        'showRecordFieldList' => 'sys_language_uid,l18n_parent,l18n_diffsource,hidden,starttime,endtime,fe_group,name,mailkind,mailtemplate,htmltemplate,mailcharset,sendername,senderemail,otherreceiver,BCC'
     ),
     'feInterface' => $TCA['tx_commerce_moveordermails']['feInterface'],
     'columns' => Array (
@@ -132,6 +132,31 @@ $TCA['tx_commerce_moveordermails'] = Array (
                 'maxitems' => 1,
             )
         ),
+        'htmltemplate' => Array (        
+            'exclude' => 1,       
+            'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_moveordermails.htmltemplate',        
+            'config' => Array (
+                'type' => 'group',
+                'internal_type' => 'file',
+                'allowed' => '',    
+                'disallowed' => 'php,php3',    
+                'max_size' => $GLOBALS['TYPO3_CONF_VARS']['GFX']['maxFileSize'],  
+                'uploadfolder' => 'uploads/tx_commerce',
+                'size' => 3,    
+                'minitems' => 0,
+                'maxitems' => 1,
+            )
+        ),
+        'mailcharset' => Array (        
+            'exclude' => 1,       
+            'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_moveordermails.mailcharset',        
+            'config' => Array (
+                'type' => 'input',    
+                'size' => '30',    
+                'eval' => 'required,trim',
+                'default' => 'utf-8',
+            )
+        ),             
         'sendername' => Array (        
             'exclude' => 1,     
             'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_moveordermails.sendername',        
@@ -170,7 +195,7 @@ $TCA['tx_commerce_moveordermails'] = Array (
         ),
     ),
     'types' => Array (
-        '0' => Array('showitem' => 'sys_language_uid;;;;1-1-1, l18n_parent, l18n_diffsource,hidden;;1;;1-1-1, name, mailkind, mailtemplate, sendername, senderemail, otherreceiver, BCC')
+        '0' => Array('showitem' => 'sys_language_uid;;;;1-1-1, l18n_parent, l18n_diffsource,hidden;;1;;1-1-1, name, mailkind, mailtemplate,htmltemplate, mailcharset, sendername, senderemail, otherreceiver, BCC')
     ),
     'palettes' => Array (
         '1' => Array('showitem' => 'starttime, endtime, fe_group')

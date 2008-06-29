@@ -166,7 +166,7 @@ class tx_commerce_clickMenu extends tx_graytree_clickMenu {
 	
 			$rc = $this->linkItem(
 				$GLOBALS['LANG']->makeEntities($linkText),
-				$this->excludeIcon('<img'.t3lib_iconWorks::skinImg($this->PH_backPath,'gfx/new_'.($table=='pages'&&$this->listFrame?'page':'el').'.gif','width="'.($table=='pages'?'13':'11').'" height="12"').' alt="" />'),
+				$this->excludeIcon('<img'.t3lib_iconWorks::skinImg($this->PH_backPath,'gfx/new_'.($table=='pages' && $this->listFrame?'page':'el').'.gif','width="'.($table=='pages'?'13':'11').'" height="12"').' alt="" />'),
 				$editOnClick.'return hideCM();');
 		}
 

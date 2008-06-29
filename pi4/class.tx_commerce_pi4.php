@@ -55,6 +55,11 @@ class tx_commerce_pi4 extends tslib_pibase {
 	 */	
 	var $staticInfo;
 	
+	/**
+	 * If set to TRUE some debug message will be printed.
+	 */
+	var $debug = false;
+	
 	
 	/**
 	 * Main method. Starts the magic...
@@ -154,6 +159,24 @@ class tx_commerce_pi4 extends tslib_pibase {
 		
 		$this->staticInfo = t3lib_div::makeInstance('tx_staticinfotables_pi1');
         $this->staticInfo->init();
+        
+		if(!empty($this->piVars['adressType'])) {
+			$addressType = intval($this->piVars['adressType']);
+		}
+		
+		switch($addressType) {
+			case '2':
+				$addressType = 'delivery';
+				break;
+			default:
+				$addressType = 'billing';
+				break;
+		}
+		if(!is_array($this->conf['formFields'])) {
+			if(is_array($this->conf[$addressType.'.']['formFields.'])) {
+				$this->conf['formFields'] = $this->conf[$addressType.'.']['formFields.'];
+			}
+		}
 		
 		$this->fieldList = $this->parseFieldList($this->conf['formFields.']);
 
@@ -201,9 +224,25 @@ class tx_commerce_pi4 extends tslib_pibase {
 	 * @return	HTML with addresses
 	 */
 	function getListing($addressType = 0, $createHiddenFields = false, $hiddenFieldPrefix = '', $selectAddressId = false) {
-		$tplBase = $this->cObj->getSubpart($this->templateCode, '###ADDRESS_LISTING###');
-		$tplItem = $this->cObj->getSubpart($this->templateCode, '###ADDRESS_ITEM###');
 
+		if ($this->conf[$addressType.'.']['subpartMarker.']['listWrap']) {
+			$tplBase = $this->cObj->getSubpart($this->templateCode, strtoupper($this->conf[$addressType.'.']['subpartMarker.']['listWrap']));
+		} else {
+			$tplBase = $this->cObj->getSubpart($this->templateCode, '###ADDRESS_LISTING###');
+		}
+		if ($this->conf[$addressType.'.']['subpartMarker.']['listItem']) {
+			$tplItem  = $this->cObj->getSubpart($this->templateCode, strtoupper($this->conf[$addressType.'.']['subpartMarker.']['listItem']));
+		} else {
+			$tplItem = $this->cObj->getSubpart($this->templateCode, '###ADDRESS_ITEM###');
+		}
+	
+
+		if(!is_array($this->conf['formFields'])) {
+			if(is_array($this->conf[$addressType.'.']['formFields.'])) {
+				$this->conf['formFields'] = $this->conf[$addressType.'.']['formFields.'];
+			}
+		}
+				
 		// set the prefix if not set
 		if (empty($hiddenFieldPrefix)){
 		  $hiddenFieldPrefix = $this->prefixId;
@@ -234,6 +273,7 @@ class tx_commerce_pi4 extends tslib_pibase {
 		$addressItems = '';
 
 		foreach ($this->addresses as $address)	{
+			
 			if ($addressType > 0 && $address['tx_commerce_address_type_id'] != $addressType) continue;
 
 			$itemMA = array();
@@ -277,9 +317,11 @@ class tx_commerce_pi4 extends tslib_pibase {
 				$piArray = array('backpid' => $GLOBALS['TSFE']->id);
 				$linkTarget = $this->conf['editAddressPid'];
 			} else {
-				$piArray = array();
+				$piArray = array('backpid' => $GLOBALS['TSFE']->id);
 				$linkTarget = $this->conf['addressMgmPid'];
 			}
+			
+			if ($this->debug) debug($this->conf,'conf',__LINE__,__FILE__);
 
 			// set delete link only if addresses may be deleted, otherwise set it empty
 
@@ -293,7 +335,7 @@ class tx_commerce_pi4 extends tslib_pibase {
 	    		}
 
 
-			$linkMA['###LINK_EDIT###'] = explode('|', $this->pi_linkTP_keepPIvars('|', array_merge($piArray, array('action' => 'edit', 'addressid' => $address['uid'])), false, false, $linkTarget));
+			$linkMA['###LINK_EDIT###'] = explode('|', $this->pi_linkTP_keepPIvars('|', array_merge($piArray, array('action' => 'edit', 'addressid' => $address['uid'], 'addressType' => $address['tx_commerce_address_type_id'])), false, false, $linkTarget));
 			$itemMA['###LABEL_LINK_EDIT###'] = $this->cObj->stdWrap($this->pi_getLL('label_link_edit'), $this->conf['editLinkWrap.']);
 
 			// add an edit radio button, checked selected previously
@@ -361,10 +403,24 @@ class tx_commerce_pi4 extends tslib_pibase {
 	 * @return	The HTML code with the form for editing an address
 	 */
 	function getAddressForm($action = 'new', $addressUid = NULL, $config) {
+	
+     
+		if(!empty($this->piVars['adressType'])) {
+			$addressType = intval($this->piVars['adressType']);
+		}
+		
+		switch($addressType) {
+			case '2':
+				$addressType = 'delivery';
+				break;
+			default:
+				$addressType = 'billing';
+				break;
+		}		
 			// build a query for selecting an address from the database if we have a logged in user
 		$addressData = ($addressUid != NULL) ? $this->addresses[$addressUid] : array();
 
-		debug($config,'PI4 config');
+		if ($this->debug) debug($config,'PI4 config');
 		
 		if (count($this->formError) > 0)	{
 			$addressData = $this->piVars;
@@ -374,10 +430,23 @@ class tx_commerce_pi4 extends tslib_pibase {
 			$addressData['tx_commerce_address_type_id'] = $this->piVars['addressType'];
 		}
 
-     		// get the templates
-		$tplBase = $this->cObj->getSubpart($this->templateCode, '###ADDRESS_EDIT###');
-		$tplForm = $this->cObj->getSubpart($this->templateCode, '###ADDRESS_EDIT_FORM###');
-		$tplField = $this->cObj->getSubpart($this->templateCode, '###SINGLE_INPUT###');
+			// get the templates
+		if ($this->conf[$addressType.'.']['subpartMarker.']['editWrap']) {
+			$tplBase = $this->cObj->getSubpart($this->templateCode, strtoupper($this->conf[$addressType.'.']['subpartMarker.']['editWrap']));
+		} else {
+			$tplBase = $this->cObj->getSubpart($this->templateCode, '###ADDRESS_EDIT###');
+		}
+		if ($this->conf[$addressType.'.']['subpartMarker.']['editItem']) {
+			$tplForm = $this->cObj->getSubpart($this->templateCode, strtoupper($this->conf[$addressType.'.']['subpartMarker.']['editItem']));
+		} else {
+			$tplForm = $this->cObj->getSubpart($this->templateCode, '###ADDRESS_EDIT_FORM###');
+		}
+		if ($this->conf[$addressType.'.']['subpartMarker.']['editField']) {
+			$tplField = $this->cObj->getSubpart($this->templateCode, strtoupper($this->conf[$addressType.'.']['subpartMarker.']['editField']));
+		} else {
+			$tplField = $this->cObj->getSubpart($this->templateCode, '###SINGLE_INPUT###');
+		}		
+     	
 
 			// create the form fields
 		$fieldsMarkerArray = array();
@@ -460,7 +529,7 @@ class tx_commerce_pi4 extends tslib_pibase {
 		}
 		
 		$baseMA['###ADDRESS_FORM_BACK###'] =  $this->pi_linkToPage($this->pi_getLL('label_form_back','back'),$this->piVars['backpid'],'',array('tx_commerce_pi3'=> array('step'=>$GLOBALS['TSFE']->fe_user->getKey('ses', tx_commerce_div::generateSessionKey('currentStep')))));
-		return '<form method="post" action="' .$link .'">' .$this->cObj->substituteMarkerArray($tplBase, $baseMA) .'</form>';
+		return '<form method="post" action="' .$link .'" '.$this->conf[addressType.'.']['formParams'].'>' .$this->cObj->substituteMarkerArray($tplBase, $baseMA) .'</form>';
 	}
 
 	/**
@@ -740,7 +809,7 @@ class tx_commerce_pi4 extends tslib_pibase {
 		}
 		$newData['tstamp'] = time();
 
-		//debug($newData);
+		if ($this->debug) debug($newData);
 
 		foreach ($this->fieldList as $name) {
 			$newData[$name] = $this->piVars[$name];

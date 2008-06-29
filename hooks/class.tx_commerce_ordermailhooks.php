@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /***************************************************************
 *  Copyright notice
 *
@@ -37,7 +37,7 @@ require_once(PATH_t3lib.'class.t3lib_cs.php');
 require_once(PATH_t3lib.'class.t3lib_htmlmail.php');
 require_once(PATH_t3lib.'class.t3lib_formmail.php');
 require_once(PATH_t3lib.'class.t3lib_page.php');
-
+require_once(PATH_txcommerce.'lib/class.tx_commerce_div.php');
 
 class tx_commerce_ordermailhooks  {
 
@@ -108,79 +108,24 @@ class tx_commerce_ordermailhooks  {
 	/**
 	 * This method converts an sends mails.
 	 *
-	 * @param	String		$mailcontent		Containing the Mailcontent with subject in Line1^
-	 * @param	String		$mailfromname		The Sending E-Mailname
-	 * @param	String		$mailfromaddress	The Sending E-Mailadress
-	 * @param	String		$userMail			Mailadress of Customer
+	 * @param	array		$mailconf		
 	 * @return	return		of t3lib_div::plainMailEncoded
 	 */
-    function ordermoveSendMail($mailcontent,$mailfromname,$mailfromaddress,$userMail,$bcc,&$orderdata,&$template) {
+    function ordermoveSendMail($mailconf,&$orderdata,&$template) {
     	
-    	
-		if (!strstr($userMail, '@') || eregi("\r",$userMail) || eregi("\n",$userMail)) {
-			return false;
-		}
+		$parts = split(chr(10),$mailconf['plain']['content'],2);		// First line is subject
+		$mailconf['alternateSubject']=trim($parts[0]); // add mail subject
+		$mailconf['plain']['content']=trim($parts[1]); // replace plaintext content	 
 
-
-		/**
-		 * @since 2005 12th November
-		 * Noved to plainMailEncoded
-		 */
-		$parts = split(chr(10),$mailcontent,2);		// First line is subject
-		$subject=trim($parts[0]);
-		$plain_message=trim($parts[1]);
-
-		$headers=array();
-		$headers[]='From: '.$mailfromname.' <'.$mailfromaddress.'>';
-		$headers[]='Reply-To: '.$mailfromaddress;
-		if($bcc!= '' AND strstr($bcc, '@') AND !eregi("\r",$bcc) AND !eregi("\n",$bcc)) {
-			$headers[]='Bcc: '.$bcc;
-		}
-		/**
-		 * Check if charset ist set by TS
-		 * Otherwise set to default Charset
-		 * Checck if mailencoding ist set
-		 * otherwise set to 8bit
-		 */
-//				if (!$this->conf['usermail.']['charset'])
-//				{
-//					$this->conf['usermail.']['charset']=$GLOBALS['TSFE']->renderCharset;
-//				}
-//				if (!$this->conf['usermail.']['encoding '])
-//				{
-//				 	$this->conf['usermail.']['encoding ']='8bit';
-//				}
 		/**
 		 * Convert Text to charset
 		 */
 		$this->csConvObj->initCharset('utf-8');
 		$this->csConvObj->initCharset('8bit');
-		$plain_message=$this->csConvObj->conv($plain_message,'utf-8','utf-8');
-		$subject=$this->csConvObj->conv($subject,'utf-8','utf-8');
+		$mailconf['plain']['content'] = $this->csConvObj->conv($mailconf['plain']['content'],'utf-8','utf-8');
+		$mailconf['alternateSubject']=$this->csConvObj->conv($mailconf['alternateSubject'],'utf-8','utf-8');
+	
 
-//		if ($this->debugMail==true)
-//		{
-//			print"<b>Usermail to $userMail</b><pre>$plain_message</pre>\n";
-//		}
-
-		#debug($userMail)
-		$myHTMLmailobj = t3lib_div::makeInstance('t3lib_htmlmail');
-		$myHTMLmailobj->messageid = md5(microtime()).'@' . $_SERVER['SERVER_NAME'];
-		unset($myHTMLmailobj->organisation);
-		unset($myHTMLmailobj->mailer);
-		$myHTMLmailobj->from_email = $mailfromaddress;
-		$myHTMLmailobj->from_name = $mailfromname;
-		$myHTMLmailobj->replyto_email = $mailfromaddress;
-		$myHTMLmailobj->replyto_name = $mailfromname; 
-		$myHTMLmailobj->setHeaders();
-		if($bcc!= '' AND strstr($bcc, '@') AND !eregi("\r",$bcc) AND !eregi("\n",$bcc)) {
-			$myHTMLmailobj->add_header('Bcc: '.$bcc);
-		}
-		$myHTMLmailobj->recipient=$userMail;
-		$myHTMLmailobj->subject=$subject;
-		$myHTMLmailobj->setplain($plain_message);
-		$myHTMLmailobj->plain_text_header='Content-Type: text/plain; charset=utf-8'.chr(10).'Content-Transfer-Encoding: 8bit';
-		
 		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/hooks/class.tx_commerce_ordermailhooks.php']['ordermoveSendMail'])) {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/hooks/class.tx_commerce_ordermailhooks.php']['ordermoveSendMail'] as $classRef) {
 				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
@@ -188,14 +133,13 @@ class tx_commerce_ordermailhooks  {
 		}
 		if(is_array($hookObjectsArr)){
 			foreach($hookObjectsArr as $hookObj)	{
-				if (method_exists($hookObj, 'attachToOrdermail')) {
-					$hookObj->attachToOrdermail($myHTMLmailobj,$orderdata,$template);
+				if (method_exists($hookObj, 'postOrdermoveSendMail')) {
+					$hookObj->postOrdermoveSendMail($mailconf,$orderdata,$template);
 			    }
 			}
 		}
-				
-		$myHTMLmailobj->setContent();
-		return $myHTMLmailobj->sendTheMail();
+
+		return tx_commerce_div::sendMail($mailconf, $this);
 	}
 	
 
@@ -236,13 +180,15 @@ class tx_commerce_ordermailhooks  {
 	 * @return	void
 	 */
 	function processOrdermails(&$orderdata,&$detaildata,$mailkind) {
+	
+	
 		#$this->customermailadress = '';
 		$templates = $this->generateTemplatearray($mailkind,$orderdata['pid'],$detaildata['order_sys_language_uid']);
-	
+
 		foreach($templates as $template) {
-			
-			
+		
 			$this->templateCode = t3lib_div::getURL($this->templatePath . $template['mailtemplate']);
+			$this->templateCodeHtml = t3lib_div::getURL($this->templatePath . $template['htmltemplate']);
 			
 			$senderemail = $template['senderemail'] == '' ? $this->extConf['defEmailAddress'] : $template['senderemail'];
 			if($template['sendername'] == '') {
@@ -254,16 +200,46 @@ class tx_commerce_ordermailhooks  {
 			} else {
 				$sendername = $template['sendername'];
 			}
-			$mail = $this->generateMail($orderdata['order_id'],$detaildata);
+
+
+				/**
+				* Mailconf for  tx_commerce_div::sendMail($mailconf);
+				*
+				* @author	Tom Rüther <tr@e-netconsulting.de>
+				* @since	29th June 2008
+				**/
+				$mailconf = array(
+					'plain' => Array (
+								'content'=> $this->generateMail($orderdata['order_id'],$detaildata,$this->templateCode),
+								),
+					'html' => Array (
+						'content'=> $this->generateMail($orderdata['order_id'],$detaildata,$this->templateCodeHtml),
+						'path' => '',
+						'useHtml' => ($this->templateCodeHtml) ? '1' : '',
+					),
+					'defaultCharset' => 'utf-8',
+					'encoding' => '8bit',
+					'attach' => '',
+					'alternateSubject' => 'TYPO3 :: commerce',
+					'recipient' => '', 
+					'recipient_copy' =>  $template['BCC'],
+					'fromEmail' => $senderemail, 
+					'fromName' => $sendername,
+					'replayTo' => $this->conf['usermail.']['from'], 
+					'priority' => '3', 
+					'callLocation' => 'processOrdermails' 
+				);
 			
 			if ($template['otherreceiver'] != '') {
 				
+				$mailconf['recipient'] = $template['otherreceiver'];
+				$this->ordermoveSendMail($mailconf,$orderdata,$template);
 				
-				$this->ordermoveSendMail($mail,$sendername,$senderemail,$template['otherreceiver'],$template['BCC'],$orderdata,$template);
+				
 			} else {
 				
-				
-				$this->ordermoveSendMail($mail,$sendername,$senderemail,$this->customermailadress,$template['BCC'],$orderdata,$template);
+				$mailconf['recipient'] = $this->customermailadress;
+				$this->ordermoveSendMail($mailconf,$orderdata,$template);
 			}
 		}
 	}
@@ -323,7 +299,7 @@ class tx_commerce_ordermailhooks  {
 	 * @param	Array		$orderData	Contaning additional data like Customer UIDs.
 	 * @return	String		The built Mailcontent
 	 */
-	function generateMail($orderUid, $orderData)
+	function generateMail($orderUid, $orderData,$templateCode)
 	{
 		$content='';
 		$markeArray=array();
@@ -334,7 +310,7 @@ class tx_commerce_ordermailhooks  {
 		/**
 		 * Since The first line of the mail is the Subject, trim the template
 		 */
-		$content = ltrim($this->cObj->getSubpart($this->templateCode, '###MAILCONTENT###'));
+		$content = ltrim($this->cObj->getSubpart($templateCode, '###MAILCONTENT###'));
 
 		// Get The addresses
 		$deliveryAdress='';

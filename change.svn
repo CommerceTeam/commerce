@@ -1,8 +1,25 @@
 Changelog for tx_commerce
 (add new changes on top of this file)
 
+29.06.2008 Ingo Schmitt <is@marketing-factory.de>
+
+* Fixed Bug 8749, 8850, 8815, 8839, 8813, 8800, 8702, 8754, 8119, 8681, 8541
+
+1st Commerce-Workshop, Tom Rüther, Michael Duttlinger, Dirk Krause, Ingo Schmitt
+* Fixed Bug 8850, Thanks to Tom Buskens
+* Fixed Bug 8815, 8817, Thanks to Thomas
+* Fixed Bug with Backlink in PI4
+
+1st Commerce-Workshop, Christian Ehret, Ingo Schmitt
+* Implemented Feature 8800
+
+
+1st Commerce-Workshop, Sebastian Böttger
+* Fixed Bug in PI1, category could be displayed if not accessible to user
+
+
 28.06.2008 Ingo Schmitt <is@marketing-factory.de>
-1st Commerce-Workshop, Tom R�ther, Michael Duttlinger, Dirk Krause, Ingo Schmitt
+1st Commerce-Workshop, Tom Rüther, Michael Duttlinger, Dirk Krause, Ingo Schmitt
 * Fixed Bug 8453
 * Fixed Documentation bug in pi4
 * Fixed bug: Already selected delivery addresses are checked now

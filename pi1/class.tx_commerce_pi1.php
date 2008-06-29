@@ -139,14 +139,26 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
     	    $this->conf['templateFile'] = $this->templateFolder.$this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'template', 's_template');
         }
                 
-		/**	
-		  * Validate given showUid, it it's below cat
-		  */
+        
+		$tmpCategory=t3lib_div::makeinstance('tx_commerce_category');                
 		if($this->piVars['catUid']){ 
-			 $this->cat = (int)$this->piVars['catUid'];
-		}else{
-			  $this->cat = (int)$this->master_cat;
+			$this->cat = (int)$this->piVars['catUid'];
+			$tmpCategory->init($this->cat,$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
 		}
+    
+		/**	
+		  * Validate given catUid, if it's given and accessible
+		  */
+		if (!$this->piVars['catUid'] || !$tmpCategory->isAccessible()) {
+			unset($tmpCategory);
+			$tmpCategory=t3lib_div::makeinstance('tx_commerce_category');                
+			$this->cat = (int)$this->master_cat;
+			$tmpCategory->init($this->cat,$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
+		}
+		
+		$this->category = $tmpCategory;	
+        
+		
 			
 		$this->category=t3lib_div::makeinstance('tx_commerce_category');
 		$this->category->init($this->cat,$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
@@ -383,8 +395,12 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 		 * TODO make it possible to have more than one link, to each of the productCategories
 		 */
 		$linkContent=$this->cObj->getSubpart($content,'###CATEGORY_ITEM_DETAILLINK###');
-		$link=$this->pi_linkTP($linkContent,array('tx_commerce_pi1[catUid]'=>$catObj->get_uid()),true);
 		
+		if ($linkContent) {
+			$link=$this->pi_linkTP($linkContent,array('tx_commerce_pi1[catUid]'=>$catObj->get_uid()),true);
+		}else{
+			$link = '';
+		}
 		$content=$this->cObj->substituteSubpart($content,'###CATEGORY_ITEM_DETAILLINK###',$link);
 	
 	
