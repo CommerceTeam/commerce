@@ -624,6 +624,7 @@ require_once(PATH_t3lib.'class.t3lib_tceforms.php');
 					/**
 					 * Modified from this point to use relationla table queris
 					 */
+					$tables = array('tt_address','tx_commerce_orders');
 					$temp_data = '';
 					if ($LANG->getLL($fCol)) {
 						foreach ($tables as $work_table){

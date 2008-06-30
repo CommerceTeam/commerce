@@ -3,6 +3,7 @@ Changelog for tx_commerce
 
 30.06.2008 Ingo Schmitt <is@marketing-factory.de>
 * removed some debug
+* Fixed Bug in Orderlist
 
 29.06.2008 Ingo Schmitt <is@marketing-factory.de>
 
