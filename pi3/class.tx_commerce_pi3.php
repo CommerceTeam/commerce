@@ -511,7 +511,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 			$template = $this->cObj->getSubpart($this->templateCode, '###ADDRESS_CONTAINER###');
 		}
 		
-		 debug($this->MYSESSION, 'MYSESSION', __LINE__, __FILE__ );
+		if ($this->debug) debug($this->MYSESSION, 'MYSESSION', __LINE__, __FILE__ );
 			// fill some standard markers
 		$markerArray['###ADDRESS_TITLE###'] = $this->pi_getLL('delivery_title');
 		$markerArray['###ADDRESS_DESCRIPTION###'] = $this->pi_getLL('delivery_description');
@@ -937,7 +937,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 				$hookObj->preinsert($orderData,$this);
 			}
 		}
-		debug($orderData);
+		if ($this->debug) debug($orderData);
 		$GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_commerce_orders', $orderData);
 		$orderUid = $GLOBALS['TYPO3_DB']->sql_insert_id();
 			// make orderUid avaible in hookObjects

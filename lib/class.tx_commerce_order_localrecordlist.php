@@ -443,7 +443,7 @@ require_once(PATH_t3lib.'class.t3lib_tceforms.php');
 		$extConf=unserialize($GLOBALS["TYPO3_CONF_VARS"]["EXT"]["extConf"]["commerce"]);
 			// Preparing and getting the data-array
 		$theData = Array();
-		debug($this->fieldArray);
+		#debug($this->fieldArray);
 		foreach($this->fieldArray as $fCol)	{
 			if ($fCol=='pid') {
 				$theData[$fCol]=$row[$fCol];

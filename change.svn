@@ -1,6 +1,9 @@
 Changelog for tx_commerce
 (add new changes on top of this file)
 
+30.06.2008 Ingo Schmitt <is@marketing-factory.de>
+* removed some debug
+
 29.06.2008 Ingo Schmitt <is@marketing-factory.de>
 
 * Fixed Bug 8749, 8850, 8815, 8839, 8813, 8800, 8702, 8754, 8119, 8681, 8541

@@ -1202,7 +1202,7 @@ class tx_commerce_belib {
   		$mm_table='tx_commerce_products_attributes_mm';
   		$where='uid_local= '.$product_uid;
     	$rs=$GLOBALS['TYPO3_DB']->exec_SELECTquery('uid_correlationtype,uid_foreign',$mm_table,$where,$groupBy='',$orderBy='',$limit='');
-    	$GLOBALS['TYPO3_DB']->debug('exec_SELECTquery');
+    	#$GLOBALS['TYPO3_DB']->debug('exec_SELECTquery');
 		$xmlArray=array();
 		 while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($rs)){
         			if(empty($xmlArray['data']['sDEF']['lDEF']['ct_'.$row['uid_correlationtype']]['vDEF']))
@@ -1215,7 +1215,7 @@ class tx_commerce_belib {
 		$arrayToSave['attributes']=$xmlText;
 
 		$rs=$GLOBALS['TYPO3_DB']->exec_UPDATEquery('tx_commerce_products','uid='.$product_uid,$arrayToSave,$no_quote_fields=false);
-		$GLOBALS['TYPO3_DB']->debug('exec_UPDATEquery');
+	#	$GLOBALS['TYPO3_DB']->debug('exec_UPDATEquery');
 
     }
     /**
@@ -1234,7 +1234,7 @@ class tx_commerce_belib {
   		$mm_table='tx_commerce_categories_attributes_mm';
   		$where='uid_local= '.$category_uid;
     	$rs=$GLOBALS['TYPO3_DB']->exec_SELECTquery('uid_correlationtype,uid_foreign',$mm_table,$where,$groupBy='',$orderBy='',$limit='');
-    	$GLOBALS['TYPO3_DB']->debug('exec_SELECTquery');
+    	#$GLOBALS['TYPO3_DB']->debug('exec_SELECTquery');
 		$xmlArray=array();
 		 while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($rs)){
         			if(empty($xmlArray['data']['sDEF']['lDEF']['ct_'.$row['uid_correlationtype']]['vDEF']))
@@ -1247,7 +1247,7 @@ class tx_commerce_belib {
 		$arrayToSave['attributes']=$xmlText;
 
 		$rs=$GLOBALS['TYPO3_DB']->exec_UPDATEquery('tx_commerce_categories','uid='.$category_uid,$arrayToSave,$no_quote_fields=false);
-		$GLOBALS['TYPO3_DB']->debug('exec_UPDATEquery');
+		#$GLOBALS['TYPO3_DB']->debug('exec_UPDATEquery');
 
     }
 
