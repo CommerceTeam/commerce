@@ -436,14 +436,26 @@ Some hook-methods can return data which is used by the calling function. Others 
 	<div class="description">Handles the checkout</div>
 		<a name="tx_commerce_pi3"/>
 		<div class="classname">class tx_commerce_pi3</div>
+			<div class="functionname">function main</div>
 			<div class="functionname">function getBillingAddress</div>
-				<div class="hookname">$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi3/class.tx_commerce_pi3.php']['getBillingAddress']</div>
+				<div class="hookname">$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi3/class.tx_commerce_pi3.php']['main']</div>
 					<div class="description">
-					Call: ProcessMarker($markerArray, $this)<br/>
+					Call: preSwitch($this->currentStep, $this)<br/>
 					Type: Multiple<br/>
-					Result: array() - A new $markerArray<br />
-					ADD additional markers to the $markerArray and RETURN it. The result of this hook is used as the new $markerArray.<br/>
-					This $markerArray is used to substitute the template-code for the "get billing address"-page.
+					Result: non<br />
+					Method to manipulate $this and other GLOBAL Vars
+					</div>
+					<div class="description">
+					Call: postSwitch($this->currentStep, $content,$this)<br/>
+					Type: Multiple<br/>
+					Result: $content<br />
+					Manuipulate Content after call of method
+					</div>
+					<div class="description">
+					Call:postRender($this->currentStep, $content, $this)<br/>
+					Type: Multiple<br/>
+					Result: $content<br />
+					Manuipulate Content after call of method render steps
 					</div>
 			<div class="functionname">function getDeliveryAddress</div>
 				<div class="hookname">$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi3/class.tx_commerce_pi3.php']['getDeliveryAddress']</div>

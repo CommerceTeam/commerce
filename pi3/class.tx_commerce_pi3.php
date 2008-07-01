@@ -181,7 +181,12 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 		#$GLOBALS['TSFE']->set_no_cache();
 		
 		if ($this->debug) debug($this->piVars, 'piVars' , __FILE__ , __LINE__);
-
+		$hookObjectsArr = array();
+		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi3/class.tx_commerce_pi3.php']['main']))	{
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi3/class.tx_commerce_pi3.php']['main'] as $classRef)	{
+				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+			}
+		}
 	
 		
 		/**
@@ -274,6 +279,15 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 		}
 		if ($this->debug) debug($this->currentStep);
 		// debug($GLOBALS['TSFE']->fe_user->tx_commerce_basket);
+		
+		
+		foreach($hookObjectsArr as $hookObj)	{
+			if (method_exists($hookObj, 'preSwitch'))	{
+				 $hookObj->preSwitch($this->currentStep, $this);
+			}
+		}
+		
+		
 		switch ($this->currentStep)	{
 			case 'delivery':
 					// get delivery address
@@ -310,8 +324,20 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
                   break;
 
 		}
+		foreach($hookObjectsArr as $hookObj)	{
+			if (method_exists($hookObj, 'postSwitch'))	{
+				$content = $hookObj->postSwitch($this->currentStep, $content, $this);
+			}
+		}
 		$GLOBALS['TSFE']->fe_user->setKey('ses', tx_commerce_div::generateSessionKey('currentStep'), $this->currentStep);
+		
 		$content = $this->renderSteps($content);
+		
+		foreach($hookObjectsArr as $hookObj)	{
+			if (method_exists($hookObj, 'postRender'))	{
+				$content = $hookObj->postRender($this->currentStep, $content, $this);
+			}
+		}
 		return $this->pi_WrapInBaseClass($content);
 	}
 	/**

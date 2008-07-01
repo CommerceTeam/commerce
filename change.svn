@@ -1,6 +1,9 @@
 Changelog for tx_commerce
 (add new changes on top of this file)
 
+01.07.2008 Ingo Schmitt <is@marketing-factory.de>
+* Added new HookObj to pi3 (main) with 3 Methods. Please See hook dokumentation
+
 30.06.2008 Ingo Schmitt <is@marketing-factory.de>
 * removed some debug
 * Fixed Bug in Orderlist
