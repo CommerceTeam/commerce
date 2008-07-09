@@ -287,9 +287,9 @@ class tx_commerce_div {
 			$htmlMail->replyto_name = implode(' ' , t3lib_div::trimExplode(',', $htmlMail->replyto_name));
 			
 			if(isset($mailconf['recipient_copy']) && $mailconf['recipient_copy'] != '') {
-				$mailconf['recipient_copy'] = tx_commerce_div::validEmailList($mailconf['recipient_copy']);
+				#$mailconf['recipient_copy'] = tx_commerce_div::validEmailList($mailconf['recipient_copy']);
 				
-				if($mailconf['recipient_copy'] != '') $htmlMail->add_header('Bcc: '.$mailconf['recipient_copy']);
+				if($mailconf['recipient_copy'] != '') $htmlMail->recipient_copy = $mailconf['recipient_copy'];
 			}
 
 			$htmlMail->returnPath = $mailconf['fromEmail'];

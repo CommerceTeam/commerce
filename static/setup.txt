@@ -551,7 +551,8 @@ plugin.tx_commerce_pi3 {
 		charset = utf-8
 		encoding = 8bit
 		priority = 3
-		// Only used, when no userMial is given thou the checkout
+		// send adminmail withusername set "sendAsUser" = 1
+		sendAsUser = 1
 		from = john.doe@somewhere.com
 		from_name = Commerce ShopMaster
 		alternateSubject = ADMIN SHOP MAIL

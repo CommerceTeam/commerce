@@ -1903,7 +1903,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 					'encoding' => $this->conf['usermail.']['encoding'],
 					'attach' => $this->conf['usermail.']['attach.'],
 					'alternateSubject' => $this->conf['usermail.']['alternateSubject'],
-					'recipient' => $userMail.','.$this->conf['usermail.']['cc'], 
+					'recipient' => implode(',',$recipient), 
 					'recipient_copy' =>  $this->conf['usermail.']['bcc'],
 					'fromEmail' => $this->conf['usermail.']['from'], 
 					'fromName' => $this->conf['usermail.']['from_name'],
@@ -2049,13 +2049,23 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 				'encoding' => $this->conf['adminmail.']['encoding'],
 				'attach' => $this->conf['adminmail.']['attach.'],
 				'alternateSubject' => $this->conf['adminmail.']['alternateSubject'],
-				'recipient' => $this->conf['adminmail.']['mailto'].','.$this->conf['usermail.']['cc'], 
+				'recipient' => implode(',',$recipient), 
 				'recipient_copy' =>  $this->conf['adminmail.']['bcc'],
 				'replayTo' => $this->conf['adminmail.']['from'], 
 				'priority' => $this->conf['adminmail.']['priority'], 
 				'callLocation' => 'sendAdminMail' 
 			);
-		
+			/**
+			 * Check if user Mail is set
+			 */
+			if (($userMail) && ($username_mailencoded) && ($this->conf['adminmail.']['sendAsUser'] == 1))	{
+				$mailconf['fromEmail'] = $userMail;
+				$mailconf['fromName'] = $username_mailencoded;
+			} else	{
+				$mailconf['fromEmail'] = $this->conf['adminmail.']['from'];
+				$mailconf['fromName'] = $this->conf['adminmail.']['from_name'];
+			}			
+
 			tx_commerce_div::sendMail($mailconf);
 				return true;
 		}
