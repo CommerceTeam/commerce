@@ -1890,6 +1890,14 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 				* @author	Tom Rüther <tr@e-netconsulting.de>
 				* @since	29th June 2008
 				**/
+				$recipient = array();
+				
+				if ($this->conf['usermail.']['cc']) {
+					$recipient = t3lib_div::trimExplode(',',$this->conf['usermail.']['cc']);
+				}
+				if (is_array($recipient)) {
+					array_push($recipient, $userMail);
+				}
 				$mailconf = array(
 					'plain' => Array (
 								'content'=> $plain_message
