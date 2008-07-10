@@ -1912,6 +1912,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 					'attach' => $this->conf['usermail.']['attach.'],
 					'alternateSubject' => $this->conf['usermail.']['alternateSubject'],
 					'recipient' => implode(',',$recipient), 
+					
 					'recipient_copy' =>  $this->conf['usermail.']['bcc'],
 					'fromEmail' => $this->conf['usermail.']['from'], 
 					'fromName' => $this->conf['usermail.']['from_name'],
@@ -2025,25 +2026,26 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 			$subject=$GLOBALS['TSFE']->csConvObj->conv($subject,$GLOBALS['TSFE']->renderCharset,strtolower($this->conf['adminmail.']['charset']));
 			$username_mailencoded=$GLOBALS['TSFE']->csConvObj->specCharsToASCII($GLOBALS['TSFE']->renderCharset,$userName);
 
-			/**
-			 * Check if user Mail is set
-			 */
-			if (($userMail) && ($userName))	{
-				$mailconf['fromEmail'] = $username_mailencoded;
-				$mailconf['fromName'] = $userMail;
-			} else	{
-				$mailconf['fromEmail'] = $this->conf['adminmail.']['from_name'];
-				$mailconf['fromName'] = $this->conf['adminmail.'];
-			}
+			
 
 			if ($this->debug)	print "<b>Adminmail from </b><pre>$plain_message</pre>\n";
-		
 			/**
-			* Mailconf for  tx_commerce_div::sendMail($mailconf);
-			*
-			* @author	Tom R√ºther <tr@e-netconsulting.de>
-			* @since	29th June 2008
-			**/
+ 			* Mailconf for  tx_commerce_div::sendMail($mailconf);
+ 			*
+
+			* @author	Tom Rüther <tr@e-netconsulting.de>
+ 			* @since	29th June 2008
+ 			**/
+			
+			$recipient = array();
+			
+			if ($this->conf['adminmail.']['cc']) {
+				$recipient = t3lib_div::trimExplode(',',$this->conf['adminmail.']['cc']);
+			}
+			if (is_array($recipient)) {
+				array_push($recipient, $this->conf['adminmail.']['mailto']);
+			}
+			
 			$mailconf = array(
 				'plain' => Array (
 							'content'=> $plain_message
