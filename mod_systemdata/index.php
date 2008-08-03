@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2005 - 2006 Ingo Schmitt <is@marketing-factory.de>
+*  (c) 2005 - 2008 Ingo Schmitt <is@marketing-factory.de>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -287,18 +287,30 @@ class tx_commerce_systemdata extends t3lib_SCbase {
 	function getManufacturerListing()	{
 		global $LANG;
 		
+		$extConf = unserialize($GLOBALS["TYPO3_CONF_VARS"]["EXT"]["extConf"]['commerce']);		
+		$fields = explode(',', $extConf['coSuppliers']);
+		$table = 'tx_commerce_manufacturer';
+		
 		$comPath = t3lib_extMgm::extRelPath('commerce');
 		
-		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'tx_commerce_manufacturer', 'pid=' .$this->modPid .' AND hidden=0 AND deleted=0', '', 'title');
+		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', $table, 'pid=' .$this->modPid .' AND hidden=0 AND deleted=0', '', 'title');
 		$result = '<table>';
-		$result .= '<tr><td></td><td class="bgColor6"><strong>'.$LANG->getLL('title_manufacturer').'</strong></td></td></tr>';
+		
+		$result .= '<tr><td></td>';
+		for ($i = 0; $i < count($fields); $i++) {			
+			$fieldname = $LANG->sL(t3lib_BEfunc::getItemLabel($table, $fields[$i]));
+			$result .= '<td class="bgColor6"><strong>'.$fieldname.'</strong></td>';
+		}
+		$result .= '</tr>';
+		
 		while ($res AND $manufacturer = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res))	{
 			$result .= '<tr><td valign="top" class="bgColor5"><a href="#" onclick="document.location=\''.$this->doc->backPath.'alt_doc.php?returnUrl='.$comPath.'mod_systemdata/index.php&amp;edit[tx_commerce_manufacturer]['.$manufacturer['uid'].']=edit\'; return false;">';
 			$result .= '<img src="'.$this->doc->backPath.'gfx/edit2.gif" border="0" /></a>';
 			$result .= '<a href="#" onclick="deleteRecord(\'tx_commerce_manufacturer\', ' .$manufacturer['uid'] .', \''.$comPath.'mod_systemdata/index.php\',\''.$LANG->JScharCode($LANG->getLL('deleteWarningManufacturer')).'\');"><img src="'.$this->doc->backPath.'gfx/garbage.gif" border="0" /></a>';
 			$result .= '</td>';
-			$result .= '<td valign="top" class="bgColor4"><strong>' .$manufacturer['title'] .'</strong>';
-						
+			for ($i = 0; $i < count($fields); $i++) {
+				$result .= '<td valign="top" class="bgColor4"><strong>' .$manufacturer[$fields[$i]] .'</strong>';
+			}			
 			$result .= '</td></tr>';
 		}
 		
@@ -320,18 +332,31 @@ class tx_commerce_systemdata extends t3lib_SCbase {
 	 */	
 	function getSupplierListing()	{
 		global $LANG;
-		
 		$comPath = t3lib_extMgm::extRelPath('commerce');
 		
-		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'tx_commerce_supplier', 'pid=' .$this->modPid .' AND hidden=0 AND deleted=0', '', 'title');
+		$extConf = unserialize($GLOBALS["TYPO3_CONF_VARS"]["EXT"]["extConf"]['commerce']);		
+		$fields = explode(',', $extConf['coSuppliers']);
+		$table = 'tx_commerce_supplier';
+		
+		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', $table, 'pid=' .$this->modPid .' AND hidden=0 AND deleted=0', '', 'title');
+		
 		$result = '<table>';
-		$result .= '<tr><td></td><td class="bgColor6"><strong>'.$LANG->getLL('title_supplier').'</strong></td></td></tr>';
+		$result .= '<tr><td></td>';
+		for ($i = 0; $i < count($fields); $i++) {			
+			$fieldname = $LANG->sL(t3lib_BEfunc::getItemLabel($table, $fields[$i]));
+			$result .= '<td class="bgColor6"><strong>'.$fieldname.'</strong></td>';
+		}
+		$result .= '</tr>';
+		
 		while ($res AND $supplier = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res))	{
 			$result .= '<tr><td valign="top" class="bgColor5"><a href="#" onclick="document.location=\''.$this->doc->backPath.'alt_doc.php?returnUrl='.$comPath.'mod_systemdata/index.php&amp;edit[tx_commerce_supplier]['.$supplier['uid'].']=edit\'; return false;">';
 			$result .= '<img src="'.$this->doc->backPath.'gfx/edit2.gif" border="0" /></a>';
 			$result .= '<a href="#" onclick="deleteRecord(\'tx_commerce_supplier\', ' .$supplier['uid'] .', \''.$comPath.'mod_systemdata/index.php\',\''.$LANG->JScharCode($LANG->getLL('deleteWarningsupplier')).'\');"><img src="'.$this->doc->backPath.'gfx/garbage.gif" border="0" /></a>';
 			$result .= '</td>';
-			$result .= '<td valign="top" class="bgColor4"><strong>' .$supplier['title'] .'</strong>';
+			
+			for ($i = 0; $i < count($fields); $i++) {
+				$result .= '<td valign="top" class="bgColor4"><strong>' .$supplier[$fields[$i]] .'</strong>';
+			}
 						
 			$result .= '</td></tr>';
 		}
@@ -343,6 +368,7 @@ class tx_commerce_systemdata extends t3lib_SCbase {
 		$result .= '</td></tr>';
 		
 		$result .= '</table>';
+		
 		
 		return $result;
 		// debug($this->attrUid);

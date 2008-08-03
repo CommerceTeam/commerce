@@ -42,6 +42,14 @@ coProducts = hidden[starttime|endtime|fe_group],title,subtitle[navtitle],descrip
 # cat=basic/other/100; type=String; label=fields for articles...: that should be displayed in simple mode
 coArticles = ordernumber,eancode,prices
 
+# cat=basic/other/100; type=String; label=fields for suppliers...: which fields are displayed in the backend 
+coSuppliers = title
+
+
+
+# cat=basic/other/100; type=String; label=fields for manufacturers...: which fields are displayed in the backend
+coManufacturers = title
+
 # cat=basic/other/100; type=String; label=Define the Charset for the csv Files in the order module
 BECSVCharset  = iso-8859-1
 

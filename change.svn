@@ -1,7 +1,7 @@
 Changelog for tx_commerce
 (add new changes on top of this file)
 03.08.2008 Ingo Schmitt <is@marketing-factory.de>
-* Testcommit on forge
+* Added Feature: You can define which fields are displayed in Supplier and Manufacturer listing, Thanks to Cynthia Mattingly <cm@marketing-factory.de>
 
 09.07.2008 Ingo Schmitt <is@marketing-factory.de>
 * Fixed Bug 8868, Thanks to Tom Rüther
