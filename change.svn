@@ -1,5 +1,8 @@
 Changelog for tx_commerce
 (add new changes on top of this file)
+04.08.2008 Ingo Schmitt <is@marketing-factory.de>
+* Fixed BUG 8921, Thanks to Sascha Egerer and Christian Ehret
+
 03.08.2008 Ingo Schmitt <is@marketing-factory.de>
 * Added Feature: You can define which fields are displayed in Supplier and Manufacturer listing, Thanks to Cynthia Mattingly <cm@marketing-factory.de>
 
