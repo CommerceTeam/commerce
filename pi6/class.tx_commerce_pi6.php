@@ -29,6 +29,7 @@
  * @author	Sudara <williams@web-crossing.com>
  * @author	Franz Ripfel <fr@abezet.de>
  * @author  Tom Rüther <tr@e-netconsulting.de>
+ * @author Ingo Schmitt <is@marketing-factory.de>
  * 
  * $Id: class.tx_commerce_pi6.php 328 2006-08-03 17:50:20Z ingo $
  */
@@ -223,18 +224,24 @@ class tx_commerce_pi6 extends tx_commerce_pibase{
 			if ($TS ==false) {
 				$TS = $this->conf['address.'];
 			}
-	
- 			$queryString = 'tt_address.tx_commerce_fe_user_id='.$this->order['cust_fe_user'];
-			$queryString.= ' AND tt_address.tx_commerce_fe_user_id = fe_users.uid';
-			
-			if($addressUid) {
-				$queryString.= ' AND tt_address.uid = '.$addressUid;
-			} else {
-				$queryString.= ' AND tt_address.tx_commerce_address_type_id=1';
+			if($this->user){
+ 				$queryString = 'tt_address.tx_commerce_fe_user_id='.$this->order['cust_fe_user'];
+ 				$queryString.= ' AND tt_address.tx_commerce_fe_user_id = fe_users.uid';
+				if($addressUid) {
+					$queryString.= ' AND tt_address.uid = '.$addressUid;
+				} else {
+					$queryString.= ' AND tt_address.tx_commerce_address_type_id=1';
+				}
+				$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('tt_address.* ', 'tt_address, fe_users',$queryString, '', '', '1');		
+			}else{
+				$queryString  = '';
+				if($addressUid) {
+					$queryString.= ' tt_address.uid = '.$addressUid;
+				} else {
+					$queryString.= ' AND tt_address.tx_commerce_address_type_id=1';
+				}
+				$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('tt_address.* ', 'tt_address',$queryString, '', '', '1');		
 			}
- 			
- 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('tt_address.* ', 'tt_address, fe_users',$queryString, '', '', '1');			
- 			
  			$markerArray = $this->generateMarkerArray($GLOBALS['TYPO3_DB']->sql_fetch_assoc($res),$TS,$prefix);
 
 			$template = $this->cObj->getSubpart($this->templateCode, '###'.$prefix.'DATA###');			
