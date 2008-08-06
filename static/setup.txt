@@ -815,6 +815,10 @@ lib.tx_commerce.navigation {
        	// EntryLervel
        	entryLevel = 0
        	
+       	// additionalFields 
+       	// comma separated list auf additional fields to process to the menue
+       	// additionalFields = teaser, teaserimages
+       	
        	// List of categories, where to display the manufacturere in adition to the catgeories in the menue
        	displayManuForCat <
        	

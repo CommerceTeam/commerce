@@ -109,6 +109,7 @@ class tx_commerce_navigation {
 	
 		$this->choosenCat = $this->mConf['category'];
 		
+		$this->nodeArrayAdditionalFields = t3lib_div::trimExplode(',',$this->mConf['additionalFields'],0);
 		
 		$this->PID = $this->mConf['overridePid'] ? $this->mConf['overridePid'] : $GLOBALS['TSFE']->id;
 		$this->gpVars = t3lib_div::GParrayMerged('tx_commerce_pi1');
@@ -443,6 +444,12 @@ class tx_commerce_navigation {
 				 $nodeArray['parent_id'] = $uid_root;
 				 $nodeArray['parent_id'] = $uid_root;
 				 $nodeArray['nav_title'] = $dataRow['navtitle'];
+				 
+				 // Add custom Fields to array
+				 foreach ($this->nodeArrayAdditionalFields as $field => $fvalDummy) {
+				 	$nodeArray[$field] = $dataRow[$field];
+				 }
+				 
 				 $nodeArray['hidden'] = $dataRow['hidden'];
 				 $nodeArray['depth'] = $mDepth;
 				 $nodeArray['leaf'] = $this->isLeaf($row['uid_local'],$tableMm,$tableSubMm);
@@ -572,6 +579,10 @@ class tx_commerce_navigation {
 				$nodeArray['parent_id'] = $uid_root;
 				$nodeArray['nav_title'] = $dataRow['navtitle'];
 				$nodeArray['hidden'] = $dataRow['hidden'];
+				// Add custom Fields to array
+				 foreach ($this->nodeArrayAdditionalFields as $field => $fvalDummy) {
+				 	$nodeArray[$field] = $dataRow[$field];
+				 }
 				$nodeArray['depth'] = $mDepth;
 				$nodeArray['leaf'] = 1;
 				$nodeArray['table'] = $mainTable;

@@ -3,6 +3,7 @@ Changelog for tx_commerce
 
 05.08.2008 Ingo Schmitt <is@marketing-factory.de>
 * Fixed Bug (8856) in PI6, Invoice is not displayed if no user is generated.
+* Implemented Feature 9111
 
 04.08.2008 Ingo Schmitt <is@marketing-factory.de>
 * Fixed BUG 8921, Thanks to Sascha Egerer and Christian Ehret
