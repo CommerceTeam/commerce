@@ -445,7 +445,7 @@ class tx_commerce_pibase extends tslib_pibase {
 
 					$categoryProducts = $oneCategory->getAllProducts();
 					if($this->conf['useStockHandling'] == 1) {
-			  			$this->category_products = tx_commerce_div::removeNoStockProducts($categoryProducts,$this->conf['products.']['showWithNoStock']);
+			  			$categoryProducts = tx_commerce_div::removeNoStockProducts($categoryProducts,$this->conf['products.']['showWithNoStock']);
 			  		}
 					$categoryProducts = array_slice($categoryProducts,0,$this->conf['numberProductsInSubCategory']);
 					$productList = $this->renderProductsForList($categoryProducts,$this->conf['templateMarker.']['categoryProductList.'],$this->conf['templateMarker.']['categoryProductListIterations']);
@@ -507,13 +507,13 @@ class tx_commerce_pibase extends tslib_pibase {
 		$templateMarker = '###'.strtoupper($this->conf['templateMarker.']['categoryProductList']).'###';
 
 		$category_items_listview_1 = '';
-
+		
 		if(!$this->conf['hideProductsInList']){
 			# Write the current page to The session to have a back to last product link
 			$GLOBALS["TSFE"]->fe_user->setKey('ses','tx_commerce_lastproducturl',$this->pi_linkTP_keepPIvars_url());
 			$markerArray['SUBPART_CATEGORY_ITEMS_LISTVIEW'] = $this->renderProductsForList($this->category_products,$this->conf['templateMarker.']['categoryProductList.'],$this->conf['templateMarker.']['categoryProductListIterations']);
 		}
-
+	
 
 		//###CATEGORY_VIEW_DISPLAY###
 		$templateMarker = '###'.strtoupper($this->conf['templateMarker.']['categoryView']).'###';

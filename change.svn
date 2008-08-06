@@ -1,5 +1,7 @@
 Changelog for tx_commerce
 (add new changes on top of this file)
+06.08.2008 Ingo Schmitt <is@marketing-factory.de>
+* Fixed Bug in recursive display, thanks to Steffen Kamper in reporting and debugging
 
 05.08.2008 Ingo Schmitt <is@marketing-factory.de>
 * Fixed Bug (8856) in PI6, Invoice is not displayed if no user is generated.
