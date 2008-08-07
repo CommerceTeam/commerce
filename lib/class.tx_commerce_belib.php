@@ -466,6 +466,36 @@ class tx_commerce_belib {
 			return false;
 		}
 	}
+	
+/**
+	 * Return all articles that where created from a given product.
+	 *
+	 * @param	integer		$pUid: The UID of the product
+	 * @return	An array of article UIDs, ready to implode for coma separed list
+	 *
+	 * @since 20.12.2005 Check if article exists
+	 */
+	function getArticlesOfProductAsUidList($pUid, $additionalWhere = '', $orderBy = '')	{
+		$where = 'uid_product=' .$pUid;
+
+		$where .= ' AND deleted=0';
+
+		if ($additionalWhere != '') {
+			$where .= ' AND ' .$additionalWhere;
+		}
+
+		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid', 'tx_commerce_articles', $where, '', $orderBy);
+		if ($res && $GLOBALS['TYPO3_DB']->sql_num_rows($res) > 0)	{
+			$result = array();
+			while ($article = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res))	{
+				$result[] = $article['uid'];
+			}
+			return $result;
+		} else {
+			return false;
+		}
+	}
+	
 
 	/**
 	 * Returns the product from which an article was created.

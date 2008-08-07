@@ -1,5 +1,13 @@
 Changelog for tx_commerce
 (add new changes on top of this file)
+07.08.2008 Ingo Schmitt <is@marketing-factory.de>
+* Added feature to generate the Mail-Subjects also via TEXT Templates
+* Added new HOOK in PI3 modifyBasketPreSave
+* Removed old methods from div class (where already commented, so no changes to your installation)
+* Added modTSConfig for OrderModule mod.commerce.orders.delProdUid and mod.commerce.orders.payProdUid
+* Fixed a Bug in PI6 selecting addresses
+* Added Fearure in PI6 to have multiple payment and sippment items. Template for invoice was changed!
+
 06.08.2008 Ingo Schmitt <is@marketing-factory.de>
 * Fixed Bug in recursive display, thanks to Steffen Kamper in reporting and debugging
 

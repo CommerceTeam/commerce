@@ -116,7 +116,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 	 *
 	 * @var array
 	 */
-	var $clearSessionAfterCheckout = true;
+	var $clearSessionAfterCheckout =  true; //true;
 	
 	/**
 	 * Init Method, autmatically called $this->main
@@ -971,6 +971,13 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 			// call the update method from the payment class
  		$paymentObj->updateOrder($orderUid, $this->MYSESSION,$this);
 
+	// insert order
+		foreach($hookObjectsArr as $hookObj)	{
+			if (method_exists($hookObj, 'modifyBasketPreSave'))	{
+				$hookObj->modifyBasketPreSave($basket,$this);
+			}
+		}
+ 		
 			// save order articles
 		if (is_array($basket->basket_items))	{
 			foreach ($basket->basket_items as $artUid => $basketItem)	{
@@ -1900,7 +1907,8 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 				}
 				$mailconf = array(
 					'plain' => Array (
-								'content'=> $plain_message
+								'content'=> $plain_message,
+								'subject'=> $subject
 								),
 					'html' => Array (
 						'content'=> $htmlContent,
@@ -2048,7 +2056,8 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 			
 			$mailconf = array(
 				'plain' => Array (
-							'content'=> $plain_message
+							'content'=> $plain_message,
+							'subject' => $subject
 							),
 				'html' => Array (
 					'content'=> $htmlContent,

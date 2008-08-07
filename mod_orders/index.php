@@ -308,7 +308,7 @@ class tx_commerce_orders extends t3lib_SCbase {
 	{
 		global $BE_USER,$LANG,$BACK_PATH,$TCA,$TYPO3_CONF_VARS,$CLIENT;	
 		$this->table='tx_commerce_orders';
-
+		
 		$this->content=$content;
 			// Start document template object:
 		$this->doc = t3lib_div::makeInstance('template');

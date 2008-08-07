@@ -50,50 +50,7 @@ class tx_commerce_div {
 
 
 
-	/***************************************
-	 *
-	 *	 files folders paths
-	 *
-	 ***************************************/
-
-
-
-	/**
-	 * convert a path to a relative path if possible
-	 * @author	Ren� Fritz <r.fritz@colorcube.de>
-	 * @param	string		Path to convert
-	 * @param	string		Path which will be used as base path. Otherwise PATH_site is used.
-	 * @return	string		Relative path
-	 * @deprecated 
-	 */
-	 /*
-	function getRelPath ($path, $mountpath=NULL) {
-
-		$mountpath = is_null($mountpath) ? PATH_site : $mountpath;
-
-			// remove the site path from the beginning to make the path relative
-			// all other's stay absolute
-		return preg_replace('#^'.preg_quote($mountpath).'#','',$path);
-	}
-	*/
-
-
-	/**
-	 * Convert a path to an absolute path
-	 * @author	Ren� Fritz <r.fritz@colorcube.de>
-	 * @param	string		Path to convert
-	 * @param	string		Path which will be used as base path. Otherwise PATH_site is used.
-	 * @return	string		Absolute path
-	 * @deprecated 
-	 
-	function getAbsPath ($path) {
-		if(t3lib_div::isAbsPath($path)) {
-			return $path;
-		}
-		$mountpath = is_null($mountpath) ? PATH_site : $mountpath;
-		return $mountpath.$path;
-	}
-	*/
+	
 	/**
 	 * Formates a price for the designated output
 	 * @author	Ingo Schmitt <is@marketing-factory.de>
@@ -260,13 +217,18 @@ class tx_commerce_div {
 				$htmlMail=$hookObj->postProcessHtmlMail($mailconf);
 			}
 		}
-		
 		// validate e-mail addesses
 		$mailconf['recipient'] = tx_commerce_div::validEmailList($mailconf['recipient']);
 	
 		if ($mailconf['recipient']) {
 			$parts = spliti('<title>|</title>', $mailconf['htmlContent'], 3);
-			$subject = trim($parts[1]) ? strip_tags(trim($parts[1])) : $mailconf['alternateSubject'];
+			if (trim($parts[1])) {
+				$subject = strip_tags(trim($parts[1]));
+			}elseif( $mailconf['plain']['subject']){
+				$subject = $mailconf['plain']['subject'];
+			}else{
+				$subject = $mailconf['alternateSubject'];
+			}
 			$htmlMail = t3lib_div::makeInstance('t3lib_htmlmail');
 			$htmlMail->charset = $mailconf['defaultCharset'];
 			$htmlMail->start();

@@ -115,10 +115,10 @@ class tx_commerce_pi6 extends tx_commerce_pibase{
 		if($this->order) {
 		
 			$this->orderPayment = $this->getOrderSystemArticles($this->order['uid'],'2','PAYMENT_');
-			$markerArray = array_merge($markerArray,$this->orderPayment);
+			#$markerArray = array_merge($markerArray,$this->orderPayment);
 			
 			$this->orderDelivery = $this->getOrderSystemArticles($this->order['uid'],'3','SHIPPING_');
-			$markerArray = array_merge($markerArray,$this->orderDelivery);
+			#$markerArray = array_merge($markerArray,$this->orderDelivery);
 				
 			$markerArray['###ORDER_TAX###'] = tx_moneylib::format($this->order['sum_price_gross'] - $this->order['sum_price_net'],$this->conf['currency'],(boolean)$this->conf['showCurrencySign']);
 			$markerArray['###ORDER_TOTAL###'] = tx_moneylib::format($this->order['sum_price_gross'],$this->conf['currency'],(boolean)$this->conf['showCurrencySign']);
@@ -151,11 +151,13 @@ class tx_commerce_pi6 extends tx_commerce_pibase{
 			}
 	
 			$subpartArray['###LISTING_ARTICLE###'] = $this->getOrderArticles($this->order['uid'],$this->conf['OrderArticles.'],'ARTICLE_');
-			$subpartArray['###ADDRESS_BILLING_DATA###'] = $this->getAddressData('',$this->conf['addressBilling.'],'ADDRESS_BILLING_');
+			$subpartArray['###ADDRESS_BILLING_DATA###'] = $this->getAddressData($this->order['cust_invoice'],$this->conf['addressBilling.'],'ADDRESS_BILLING_');
 			$subpartArray['###ADDRESS_DELIVERY_DATA###'] =$this->getAddressData($this->order['cust_deliveryaddress'],$this->conf['addressDelivery.'],'ADDRESS_DELIVERY_');
 		
 			$this->content = $this->cObj->substituteMarkerArrayCached($this->template['invoice'], array(), $subpartArray);
 			// buid content from template + array		
+			$this->content = $this->cObj->substituteSubpart($this->content,'###LISTING_PAYMENT_ROW###',$this->orderPayment);
+			$this->content = $this->cObj->substituteSubpart($this->content,'###LISTING_SHIPPING_ROW###',$this->orderDelivery);
 			$this->content = $this->cObj->substituteMarkerArrayCached($this->content,  $markerArray, array(), array());
 			$this->content = $this->cObj->substituteMarkerArrayCached($this->content, $this->languageMarker,array());	 
 				
@@ -234,9 +236,9 @@ class tx_commerce_pi6 extends tx_commerce_pibase{
 				}
 				$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('tt_address.* ', 'tt_address, fe_users',$queryString, '', '', '1');		
 			}else{
-				$queryString  = '';
+				$queryString  = ' 1 = 1 ';
 				if($addressUid) {
-					$queryString.= ' tt_address.uid = '.$addressUid;
+					$queryString.= ' AND tt_address.uid = '.$addressUid;
 				} else {
 					$queryString.= ' AND tt_address.tx_commerce_address_type_id=1';
 				}
@@ -277,18 +279,27 @@ class tx_commerce_pi6 extends tx_commerce_pibase{
 	 */
 	
 	function getOrderSystemArticles($orderUid,$articleType='',$prefix) {
-
+		
 			$queryString = 'order_uid='.$orderUid .' ';
 			if($articleType) $queryString .= ' AND article_type_uid = '.$articleType.' ' ;
 			$queryString.= $this->cObj->enableFields("tx_commerce_order_articles");
 			
-	 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'tx_commerce_order_articles', $queryString, '', '','1');
-			$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
+	 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'tx_commerce_order_articles', $queryString);
+	 		$content = '';
+			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)){
+				
+				$subpart = $this->cObj->getSubpart($this->templateCode,'###LISTING_'.$prefix.'ROW###');
+				/**
+				 * @todo: Use 	$markerArray = $this->generateMarkerArray($row,'',$prefix);
+				 */
+				$markerArray['###'.$prefix.'AMOUNT###'] = $row['amount'];	
+				$markerArray['###'.$prefix.'METHOD###'] = $row['title'];	
+				$markerArray['###'.$prefix.'COST###'] = tx_moneylib::format(($row['amount']*$row['price_gross']),$this->conf['currency'],(boolean)$this->conf['showCurrencySign']);
+				
+				$content.= $this->cObj->substituteMarkerArray($subpart,$markerArray);
+			}
 			
-			$markerArray['###'.$prefix.'METHOD###'] = $row['title'];	
-			$markerArray['###'.$prefix.'COST###'] = tx_moneylib::format(($row['amount']*$row['price_gross']),$this->conf['currency'],(boolean)$this->conf['showCurrencySign']);
-			
-    	    return $markerArray;	     		
+    	    return $content;	     		
 	}	
 
 }

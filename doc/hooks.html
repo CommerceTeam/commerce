@@ -505,7 +505,13 @@ Some hook-methods can return data which is used by the calling function. Others 
 					Call: preinsert($orderData,$this)<br/>
 					Type: Multiple<br/>
 					Result: void<br />
-					Your last chance to change the order data. Next step is to inject the data into the database.
+					Your last chance to change the order data (cncerning the Addresses). Next step is to inject the data into the database.
+					</div>
+					<div class="description">
+					Call: modifyBasketPreSave($basket,$this)<br/>
+					Type: Multiple<br/>
+					Result: void<br />
+					Your last chance to change the order content (basket). Next step is to inject the data into the database.
 					</div>
 					<div class="description">
 					Call: afterMailSend($orderData,$this)<br/>

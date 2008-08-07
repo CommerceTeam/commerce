@@ -45,7 +45,9 @@
 require_once (PATH_typo3.'class.db_list.inc');
 require_once (PATH_typo3.'class.db_list_extra.inc');
 require_once (t3lib_extMgm::extPath('moneylib').'class.tx_moneylib.php');
+require_once (t3lib_extMgm::extPath('commerce').'lib/class.tx_commerce_belib.php');
 require_once(PATH_t3lib.'class.t3lib_tceforms.php');
+require_once(PATH_t3lib.'class.t3lib_befunc.php');
 
  
  class tx_commerce_order_localRecordlist extends localRecordList {
@@ -53,6 +55,8 @@ require_once(PATH_t3lib.'class.t3lib_tceforms.php');
   
  	function makeQueryArray($table, $id, $addWhere="",$fieldList='*')
  	{
+ 		
+ 		
  		if ($this->sortField){
  			$orderby=$this->sortField.' ';
  			if ($this->sortRev==1)
@@ -109,6 +113,30 @@ require_once(PATH_t3lib.'class.t3lib_tceforms.php');
  			'sorting' => '',
 			'LIMIT' => ''
 			);
+ 		}
+ 		
+ 		// get Module TSConfig
+ 		$temp = t3lib_BEfunc::getModTSconfig($id,'mod.commerce.orders');
+ 		$moduleConfig = t3lib_BEfunc::implodeTSParams($temp['properties']);
+ 		$delProdUid = $moduleConfig['delProdUid'];
+ 		$payProdUid = $moduleConfig['payProdUid'];
+ 		if (	$delProdUid > 0) {
+ 			$delArticles = tx_commerce_belib::getArticlesOfProductAsUidList($delProdUid);
+ 			$delArticlesList = implode(',',$delArticles);
+ 		
+ 			if ($delArticlesList) {
+				$query_array['WHERE'] .= ' AND delivery_table.article_uid in ('.$delArticlesList.') ';
+ 			}
+ 			
+ 		}
+ 		if (	$payProdUid > 0) {
+ 			$payArticles = tx_commerce_belib::getArticlesOfProductAsUidList($payProdUid);
+ 			$payArticlesList = implode(',',$payArticles);
+ 		
+ 			if ($payArticlesList) {
+				$query_array['WHERE'] .= ' AND delivery_table.article_uid in ('.$payArticlesList.') ';
+ 			}
+ 			
  		}
  	
  		$this->dontShowClipControlPanels = 1;
@@ -352,7 +380,7 @@ require_once(PATH_t3lib.'class.t3lib_tceforms.php');
 	
 	/**
 	 * Wrapping input code in link to URL or email if $testString is either.
-	 * @see TYPO3 4.0.0, coped from there
+	 * @see TYPO3 4.0.0, copied from there
 	 * @return	string		Link-Wrapped $code value, if $testString was URL or email.
 	 */
 	function mylinkUrlMail($code,$testString)	{

@@ -84,14 +84,18 @@
 								<td>###ARTICLE_TOTAL_GROSS###</td>
 						</tr>
 						<!--###LISTING_ARTICLE### end-->
+						<!--###LISTING_PAYMENT_ROW### begin -->
 						<tr>
 							<td colspan="5">###PAYMENT_METHOD### </td>
 							<td>###PAYMENT_COST###</td>
 						</tr>
+						<!--###LISTING_PAYMENT_ROW### end -->
+						<!--###LISTING_SHIPPING_ROW### begin -->
 						<tr>
 							<td colspan="5">###SHIPPING_METHOD### </td>
 							<td>###SHIPPING_COST###</td>
 						</tr>
+						<!--###LISTING_SHIPPING_ROW### end -->
 						<tr>
 							<td colspan="5">###LANG_NET_TOTAL### </td>
 							<td>###ORDER_NET_TOTAL###</td>
