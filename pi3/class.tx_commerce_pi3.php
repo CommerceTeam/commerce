@@ -2192,6 +2192,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 	function parseRawData ($data=array(),$TS) {
 		if (!is_array($data))	return array();
 		if ($this->debug) debug($TS);
+		$newdata = array();
 		foreach ($data as $key => $value) {
 			$upperKey = strtoupper($key);
 			// get the value from the database if the field is a select box
@@ -2203,17 +2204,16 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 				$fields.= $fieldConfig['value'] .' AS value';
 				$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($fields, $table, $select);
 				$value = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
-				$data[$key] = $value['label'];
+			 	$newdata[$key] = $value['label'];
 			}
 			if($TS[$key .'.']['type'] == 'static_info_tables'){
 				$fieldConfig = $TS[$key .'.'];
 				$field = $fieldConfig['field'];
 				$valueHidden = $this->staticInfo->getStaticInfoName($field, $value);
-				$value = $valueHidden;
-				$data[$key] = $valueHidden;
+				$newdata[$key] = $valueHidden;
 			}
 		}
-		return $data;
+		return $newdata;
 	}
 
 
