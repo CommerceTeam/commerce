@@ -215,7 +215,18 @@ $TCA['tx_commerce_products'] = Array (
 			'config' => Array (
 				'type' => 'text',
 				'cols' => '30',
-				'rows' => '10',
+				'rows' => '5',
+				'wizards' => Array(
+					'_PADDING' => 2,
+					'RTE' => Array(
+						'notNewRecords' => 1,
+						'RTEonly' => 1,
+						'type' => 'script',
+						'title' => 'Full screen Rich Text Editing|Formatteret redigering i hele vinduet',
+						'icon' => 'wizard_rte2.gif',
+						'script' => 'wizard_rte.php',
+					),
+				),
 			)
 		),
 		'teaserimages' => Array (
@@ -426,7 +437,7 @@ $TCA['tx_commerce_products'] = Array (
 	),
 	'types' => Array (
 		'0' => Array('showitem' => '
-			sys_language_uid;;;;1-1-1, l18n_parent, l18n_diffsource, hidden;;1, title;;;;1-1-1, subtitle;;;;3-3-3,navtitle, description;;;richtext[cut|copy|paste|formatblock|textcolor|bold|italic|underline|left|center|right|orderedlist|unorderedlist|outdent|indent|link|table|image|line|chMode]:rte_transform[mode=ts_css|imgpath=uploads/tx_commerce/rte/], images, teaser;;;;3-3-3, teaserimages, categories;;;;4-4-4, manufacturer_uid;;;;2-2-2, relatedpage;;;;1-1-1'
+			sys_language_uid;;;;1-1-1, l18n_parent, l18n_diffsource, hidden;;1, title;;;;1-1-1, subtitle;;;;3-3-3,navtitle, description;;;richtext[cut|copy|paste|formatblock|textcolor|bold|italic|underline|left|center|right|orderedlist|unorderedlist|outdent|indent|link|table|image|line|chMode]:rte_transform[mode=ts_css|imgpath=uploads/tx_commerce/rte/], images, teaser;;;richtext[cut|copy|paste|formatblock|textcolor|bold|italic|underline|left|center|right|orderedlist|unorderedlist|outdent|indent|link|table|image|line|chMode]:rte_transform[mode=ts_css|imgpath=uploads/tx_commerce/rte/];3-3-3, teaserimages, categories;;;;4-4-4, manufacturer_uid;;;;2-2-2, relatedpage;;;;1-1-1'
 		)
 	),
 	'palettes' => Array (
