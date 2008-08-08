@@ -1,5 +1,8 @@
 Changelog for tx_commerce
 (add new changes on top of this file)
+08.08.2008 Ingo Schmitt <is@marketing-factory.de>
+* Fixed forge Issue 1252 and bugs issue 9111
+
 07.08.2008 Ingo Schmitt <is@marketing-factory.de>
 * Added feature to generate the Mail-Subjects also via TEXT Templates
 * Added new HOOK in PI3 modifyBasketPreSave

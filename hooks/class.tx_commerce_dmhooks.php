@@ -865,9 +865,13 @@ class tx_commerce_dmhooks	{
 
 				break;
 		}
-
-			// update the page tree
-		t3lib_BEfunc::setUpdateSignal('updatePageTree');
+		
+		// update the page tree  difefreent in version 4.1 and 4.2
+		if (t3lib_div::int_from_ver(TYPO3_version) >= '4002000') { 	
+			t3lib_BEfunc::setUpdateSignal('updatePageTree');
+		}else{
+			t3lib_BEfunc::getSetUpdateSignal('updatePageTree');
+		}
 
 		if (t3lib_extMgm::isLoaded('dynaflex') && !empty($dynaFlexConf))	{
 			$dynaFlexConf[0]['uid'] = $id;

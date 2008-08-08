@@ -446,7 +446,7 @@ class tx_commerce_navigation {
 				 $nodeArray['nav_title'] = $dataRow['navtitle'];
 				 
 				 // Add custom Fields to array
-				 foreach ($this->nodeArrayAdditionalFields as $field => $fvalDummy) {
+				 foreach ($this->nodeArrayAdditionalFields as $field) {
 				 	$nodeArray[$field] = $dataRow[$field];
 				 }
 				 
@@ -580,7 +580,7 @@ class tx_commerce_navigation {
 				$nodeArray['nav_title'] = $dataRow['navtitle'];
 				$nodeArray['hidden'] = $dataRow['hidden'];
 				// Add custom Fields to array
-				 foreach ($this->nodeArrayAdditionalFields as $field => $fvalDummy) {
+				 foreach ($this->nodeArrayAdditionalFields as $field) {
 				 	$nodeArray[$field] = $dataRow[$field];
 				 }
 				$nodeArray['depth'] = $mDepth;
