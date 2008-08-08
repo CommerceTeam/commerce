@@ -4,6 +4,7 @@ Changelog for tx_commerce
 * Fixed forge Issue 1252 and bugs issue 9111
 * Added RTE for teaser in product
 * Fixed bugs issue 8452, thanks to Dmitry Pikhno 
+* Fixed Bug in recaluclating the item sum when changing the price in the basket
 
 07.08.2008 Ingo Schmitt <is@marketing-factory.de>
 * Added feature to generate the Mail-Subjects also via TEXT Templates

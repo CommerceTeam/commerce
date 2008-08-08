@@ -221,20 +221,22 @@ class tx_commerce_basket_item{
  	
  	/**
  	 * recalculates the itm sums
+ 	 * @param $useValues	boolean		Use the stored values instead of calculating gross or net price
  	 */
  	
- 	function recalculate_item_sums() 	{
- 		$this->calculate_net_sum();
- 		$this->calculate_gross_sum();
+ 	function recalculate_item_sums($useValues = false) 	{
+ 		$this->calculate_net_sum($useValues);
+ 		$this->calculate_gross_sum($useValues);
  	}
  	
  	/**
  	 * Calculates the net_sum
+ 	 * @param $useValues	boolean		Use the stored values instead of calculating gross or net price
  	 * @return integer net_sum 
  	 * @todo add hook for this function
  	 */
- 	function calculate_net_sum() 	{
- 		if($this->pricefromnet == 0) {
+ 	function calculate_net_sum($useValues = false) 	{
+ 		if(($this->pricefromnet == 0) && ($useValues == false)){
  			$this->calculate_gross_sum();
  			$taxrate = $this->get_tax();
  			$this->item_net_sum = (int)round($this->item_gross_sum / (1 + ($taxrate / 100)));
@@ -246,11 +248,12 @@ class tx_commerce_basket_item{
  	
  	/**
  	 * Calculates the gross_sum
+ 	 *  @param $useValues	boolean		Use the stored values instead of calculating gross or net price
  	 * @return integer gross_sum 
  	 * @todo add hook for this function
  	 */
- 	function calculate_gross_sum() 	{
- 		if($this->pricefromnet == 1) {
+ 	function calculate_gross_sum($useValues = false) 	{
+ 		if(($this->pricefromnet == 1) && ($useValues == false)) {
  			$this->calculate_net_sum();
  			$taxrate = $this->get_tax();
  			$this->item_gross_sum = (int)round($this->item_net_sum * (1 + ($taxrate / 100)));

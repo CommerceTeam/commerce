@@ -139,7 +139,7 @@
 						$priceid=$article->get_article_price_uid();
 					}
 				}
-				
+			
 				$this->basket_items[$article_uid] = t3lib_div::makeInstance('tx_commerce_basket_item');
 				if ($this->basket_items[$article_uid]->init($article_uid,$quantity,$priceid,$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid'])){
 	 				$this->basket_items[$article_uid]->setTaxCalculationMethod($this->pricefromnet);
@@ -167,7 +167,7 @@
 	 		if(is_object($this->basket_items[$article_uid])){
 	 			$this->basket_items[$article_uid]->setPriceNet($new_price_net);
 	 			$this->basket_items[$article_uid]->setPriceGross($new_price_gross);
-	 			$this->basket_items[$article_uid]->recalculate_item_sums();	
+	 			$this->basket_items[$article_uid]->recalculate_item_sums(true);	
 	 		}	
  		}
  			
