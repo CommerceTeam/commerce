@@ -1,5 +1,8 @@
 Changelog for tx_commerce
 (add new changes on top of this file)
+09.08.2008 Ingo Schmitt <is@marketing-factory.de>
+* Fixed Bug in db_article by defining SQL Staements as DISTINCT
+
 08.08.2008 Ingo Schmitt <is@marketing-factory.de>
 * Fixed forge Issue 1252 and bugs issue 9111
 * Added RTE for teaser in product

@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c)  2005 - 2006 Ingo Schmitt <is@marketing-factory.de>
+*  (c)  2005 - 2008 Ingo Schmitt <is@marketing-factory.de>
 *  All   rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -229,14 +229,14 @@ class tx_commerce_db_article extends tx_commerce_db_alib{
 					$proofSQL = $GLOBALS['TSFE']->sys_page->enableFields('tx_commerce_attributes',$GLOBALS['TSFE']->showHiddenRecords);
 		    	}	    
 	          
-	 		 $result= $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid,has_valuelist','tx_commerce_attributes',"uid = $attribute_uid " .  $proofSQL);
+	 		 $result= $GLOBALS['TYPO3_DB']->exec_SELECTquery('DISTINCT uid,has_valuelist','tx_commerce_attributes',"uid = $attribute_uid " .  $proofSQL);
 	 		 if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)==1){
 	 		 	$return_data=$GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
 	 		 	
 	 		 	if ($return_data['has_valuelist']==1)
 	 		 	{
 	 		 		// Attribute has a valuelist, so do separate query
-	 		 		$a_result= $GLOBALS['TYPO3_DB']->exec_SELECTquery('distinct tx_commerce_attribute_values.value,tx_commerce_attribute_values.uid  ',
+	 		 		$a_result= $GLOBALS['TYPO3_DB']->exec_SELECTquery('DISTINCT distinct tx_commerce_attribute_values.value,tx_commerce_attribute_values.uid  ',
 							'tx_commerce_articles_article_attributes_mm, tx_commerce_attribute_values',
 							"tx_commerce_articles_article_attributes_mm.uid_valuelist = tx_commerce_attribute_values.uid AND uid_local = $uid and uid_foreign= $attribute_uid" );
 	 		 		if($GLOBALS['TYPO3_DB']->sql_num_rows($a_result)==1)
@@ -256,7 +256,7 @@ class tx_commerce_db_article extends tx_commerce_db_alib{
 	 		 	}else{
 	 		 		
 	 		 		// attribute has no valuelist, so do normal query
-	 		 		$a_result= $GLOBALS['TYPO3_DB']->exec_SELECTquery('value_char,default_value','tx_commerce_articles_article_attributes_mm',"uid_local = $uid and uid_foreign= $attribute_uid" );
+	 		 		$a_result= $GLOBALS['TYPO3_DB']->exec_SELECTquery('DISTINCT value_char,default_value','tx_commerce_articles_article_attributes_mm',"uid_local = $uid and uid_foreign= $attribute_uid" );
 	 		 		if($GLOBALS['TYPO3_DB']->sql_num_rows($a_result)==1)
 	 		 		{
 	 		 			
