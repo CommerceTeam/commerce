@@ -395,7 +395,8 @@
   		
 		if ($this->parent_category_uid>0)	{
 		
-			$this->parent_category= new tx_commerce_category($this->parent_category_uid,$this->lang_uid);	
+			$this->parent_category= t3lib_div::makeInstance('tx_commerce_category');
+			$this->parent_category->init($this->parent_category_uid,$this->lang_uid);	
 			return 	$this->parent_category;
 		} else {
 			return false;	

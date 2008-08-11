@@ -2,6 +2,7 @@ Changelog for tx_commerce
 (add new changes on top of this file)
 11.08.2008 Ingo Schmitt
 * Fixed Bug in pi3.parseRawdata, no default value was set
+* Changed all new classname to makeInstance
 
 09.08.2008 Ingo Schmitt <is@marketing-factory.de>
 * Fixed Bug in db_article by defining SQL Staements as DISTINCT

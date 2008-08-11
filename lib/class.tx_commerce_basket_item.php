@@ -160,7 +160,8 @@ class tx_commerce_basket_item{
  		
  		$this->quantity=$quantity;
  		$this->lang_id=$lang_id;
- 		$this->article = new tx_commerce_article($uid,$this->lang_id);
+ 		$this->article = t3lib_div::makeInstance('tx_commerce_article');
+ 		$this->article->init($uid,$this->lang_id);
  		
  		
 		if($quantity < 1 ) return false;
@@ -211,7 +212,8 @@ class tx_commerce_basket_item{
  		$this->quantity=$quantity;
  		$this->priceid=$this->article->getActualPriceforScaleUid($quantity);
  		
- 		$this->price = new tx_commerce_article_price($this->priceid,$this->lang_id);
+ 		$this->price = t3lib_div::makeInstance('tx_commerce_article_price');
+ 		$this->price->init($this->priceid,$this->lang_id);
 		$this->price->load_data();
  		$this->priceNet=$this->price->get_price_net();
 		$this->priceGross=$this->price->get_price_gross();

@@ -518,7 +518,8 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 						$attCode = '';
 	                   	foreach($attributeArray as $attribute_uid => $myAttribute) {
 	                   		
-	                        $attributeObj = new tx_commerce_attribute($attribute_uid,$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
+	                   		$attributeObj = t3lib_div::makeInstance('tx_commerce_attribute');
+	                        $attributeObj->init($attribute_uid,$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
 	                      	$attributeObj->load_data();
 	                        $markerArray["###SELECT_ATTRIBUTES_TITLE###"] = $myAttribute['title'];
 			        		$markerArray["###SELECT_ATTRIBUTES_ICON###"] = $myAttribute['icon'];
