@@ -2195,6 +2195,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 		$newdata = array();
 		foreach ($data as $key => $value) {
 			$upperKey = strtoupper($key);
+			$newdata[$key] = $value;
 			// get the value from the database if the field is a select box
 			if ($TS[$key .'.']['type'] == 'select')	{
 				$fieldConfig = $TS[$key .'.'];
