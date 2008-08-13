@@ -1,5 +1,8 @@
 Changelog for tx_commerce
 (add new changes on top of this file)
+13.08.2008 Ingo Schmitt
+* Corrected german translation for products_not_copy
+
 11.08.2008 Ingo Schmitt
 * Fixed Bug in pi3.parseRawdata, no default value was set
 * Changed all new classname to makeInstance

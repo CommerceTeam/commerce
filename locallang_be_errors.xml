@@ -25,6 +25,7 @@
 			<label index="continue">Weiter</label>
 			<label index="article.localization">Artikel werden automatisch bei der Lokalisierung eines Produktes angelegt. Sie koennen daher nicht separat lokalisiert werden.</label>
 			<label index="product.localization_without_article">Produkte ohne Artikel koennen nicht lokalisiert werden.</label>
+			<label index="product.no_copy_allowed">Produkte können nicht kopiert werden.</label>
 		</languageKey>
 		<languageKey index="fr" type="array">
 			<label index="error">erreur</label>
