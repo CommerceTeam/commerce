@@ -93,7 +93,7 @@ class tx_commerce_articlehooks{
  		/**
  		 * Instantiate article class
  		 */
- 		$artilce = t3lib_div::makeInstance('tx_commerce_article');
+ 		$article = t3lib_div::makeInstance('tx_commerce_article');
 		$article->init($article_uid,$article_obj->get_lang());
 		/**
 		 * Do not call load_data at this point, since load_data recalls this hook, so we have a

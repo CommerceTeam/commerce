@@ -1,9 +1,12 @@
 Changelog for tx_commerce
 (add new changes on top of this file)
-13.08.2008 Ingo Schmitt
+15.08.2008 Ingo Schmitt <is@marketing-factory.de>
+* Fixed Bug in artikel_hook, thanks to Christian Ehret for reporting and fixing
+
+13.08.2008 Ingo Schmitt <is@marketing-factory.de>
 * Corrected german translation for products_not_copy
 
-11.08.2008 Ingo Schmitt
+11.08.2008 Ingo Schmitt <is@marketing-factory.de>
 * Fixed Bug in pi3.parseRawdata, no default value was set
 * Changed all new classname to makeInstance
 
