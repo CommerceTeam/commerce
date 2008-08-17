@@ -201,21 +201,21 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 				if ($v['count'] <0 ){
 					$v['count']=1;
 				}
-				$artilceObj = t3lib_div::makeInstance('tx_commerce_article');	
-				$artilceObj->init($k);
-				$artilceObj->load_data();
-				$productObj = $artilceObj->get_parent_product();
+				$articleObj = t3lib_div::makeInstance('tx_commerce_article');	
+				$articleObj->init($k);
+				$articleObj->load_data();
+				$productObj = $articleObj->get_parent_product();
 				$productObj->load_data();
 	 					
 	 			
-				if ($artilceObj->isAccessible() && $productObj->isAccessible()) {
+				if ($articleObj->isAccessible() && $productObj->isAccessible()) {
 					
 					// Only if product and article is accesible
 					
 					if ( $this->conf['checkStock'] == 1) {
 						// instanz zur berechnung der versandkosten		
 						
-						if ($artilceObj->hasStock($v['count'])) {
+						if ($articleObj->hasStock($v['count'])) {
 							if ((int)$v['price_id']>0) {
 								$this->basket->add_article($k,$v['count'],$v['price_id']);
 							}else{

@@ -1,11 +1,13 @@
 ﻿Changelog for tx_commerce
 (add new changes on top of this file)
 
+18.08.23008 Ingo Schmitt <is@marketing-factory.de>
+* Fixed a naming TYPO $artilceObj 
+
 17.08.2008 Volker Graubaum <vg@e-netconsulting.de>
 * Add new hook for manipulating the productlist (pi_base / preProcessorProductsListView)
 * Add new hook for adding marker to the productView in the basket for example to mix article and product Marker
   (pi2 / additionalMarkerProductList)
-
 
 15.08.2008 Ingo Schmitt <is@marketing-factory.de>
 * Fixed Bug in artikel_hook, thanks to Christian Ehret for reporting and fixing
