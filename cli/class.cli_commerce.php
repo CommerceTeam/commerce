@@ -76,7 +76,7 @@ class tx_commerce_cli extends t3lib_cli {
         $this->cli_help['synopsis'] = '###OPTIONS###';
         $this->cli_help['description'] = "CLI Wrapper for commerce";
         $this->cli_help['options'] = "statistics [Tasktype] run Statistics Tasks, Task Types are [incrementalAggregation|completeAggregation], if no type is given, completeAggregation is calculated";
-        $this->cli_help['examples'] = "/.../cli_dispatch.phpsh commerce  statistcis incrementalAggregation \n/.../cli_dispatch.phpsh commerce  statistcis completeAggregation";
+        $this->cli_help['examples'] = "/.../cli_dispatch.phpsh commerce  statistics incrementalAggregation \n/.../cli_dispatch.phpsh commerce  statistics completeAggregation";
         $this->cli_help['author'] = "Ingo Schmitt, (c) 2008 <is@marketing-factory.de>";
     }
 
