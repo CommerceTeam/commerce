@@ -43,11 +43,13 @@
 <body>
 <div style="text-align:center"><h1>Hooks in commerce</h1>
 <h2>by Michael Knabe <a href="mailto:mk@e-netconsulting.de">&lt;mk@e-netconsulting.de&gt;</a></h2>
-<h3>as of 01/04/2007</h3></div>
+<h3>as of 01/04/2007</h3>
+<h3>Update ist coming soon,in the moment there are about 50-60 Functions with hooks, more to follow</h3></div>
 This document describes all the hooks in the typo3 extension  commerce (version 0.8.17) as of 01/04/2007. The hooks are sorted by the classes and functions they can be found in.<br />
 Each hook has a type which  is either Single or Multiple. Single hook classes are written directly to the $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$filename][$hookname] variable as there may never be more than one hook-object.<br />
 For hooks with the type "multiple" $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$filename][$hookname] is an array which can contain multiple hook objects. Each of them is called in the order they are found in the array by foreach.<br />
 Some hook-methods can return data which is used by the calling function. Others may return some values but they are ignored. For those I used the return type void as known from the C programming language
+
 	<br/><br/><br/>
 	Functions: 38<br/>
 	Classes: 18<br/>
@@ -101,6 +103,9 @@ Some hook-methods can return data which is used by the calling function. Others 
 	<div class="functionindex">function makeBasketInformation</div>
 	<div class="functionindex">function makeLineView</div>
 	<div class="functionindex">function addAdditionalLocallang</div>
+	<div class="functionindex">function renderProductsForList</div>
+	<div class="functionindex">function renderProduct</div>
+	<div class="functionindex">function getArticleMarker</div>
 <a href="#tx_commerce_product">
 <div class="classindex">class tx_commerce_product</div>
 </a>
@@ -333,7 +338,7 @@ Some hook-methods can return data which is used by the calling function. Others 
 					<div class="description">Call: loadAdditionalLocallang($this)<br/>
 					Type: Multiple<br/>
 					possibility to add your own locallang-files</div>
-					
+
 			<div class="functionname">function makeBasketInformation</div>
 				<div class="hookname">GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['makeBasketInformation']</div>
 <div class="description">Call: processMarkerTaxInformation($taxRateTemplate,$basketObj,$this)<br/>
@@ -481,7 +486,7 @@ Some hook-methods can return data which is used by the calling function. Others 
 					Call: canMakeCheckoutOwnTests($checks,$myCheck)<br/>
 					Type: Multiple<br/>
 					Result: void<br />
-					
+
 					The parameter $checks is an array with the standard checks of commerce. If you remove for example nopayment from the array<br>
 					commerce does not check if there is a payment article included.
 					With the second parameter you can add your own checks. Set $myCheck to a string and it will be used here:

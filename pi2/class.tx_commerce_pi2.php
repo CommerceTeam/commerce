@@ -169,7 +169,7 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 		    $template = $this->cObj->getSubpart($this->templateCode, $templateMarker);
 		    $markerArray = $this->languageMarker;
 		    $markerArray['###EMPTY_BASKET###'] = $this->cObj->cObjGetSingle($this->conf['emptyContent'],$this->conf['emptyContent.']);
-    		$markerArray['###URL###'] = $this->pi_linkTP_keepPIvars_url(array(),0,1,$this->conf['basketPid']);
+    		    $markerArray['###URL###'] = $this->pi_linkTP_keepPIvars_url(array(),0,1,$this->conf['basketPid']);
 		    $markerArray['###URL_CHECKOUT###'] = $this->pi_linkTP_keepPIvars_url(array(),0,1,$this->conf['checkoutPid']);
 		    $markerArray['###NO_STOCK MESSAGE###'] = $this->noStock;
 		  
@@ -783,7 +783,7 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 	    		if (method_exists($hookObj, 'additionalMarker')) {
     		    		 $markerArray =  $hookObj->additionalMarker($markerArray,$this,$art,$prod);
     			}
-	   		}
+   		}
 	    	
 	            
 	        $content = $this->cObj->substituteMarkerArrayCached($template, $markerArray );
@@ -890,11 +890,18 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 									
 		    	$template = $this->cObj->substituteSubpart($template,'###PRODUCT_BASKET_FORM_SMALL###','');
 										     
-			    $markerArray = array_merge($markerArray,$this->articleMarkerArr);
+			$markerArray = array_merge($markerArray,$this->articleMarkerArr);
 		    
+		    	foreach($hookObjectsArr as $hookObj)    {
+				if (method_exists($hookObj, 'additionalMarkerProductList')) {
+			    		 $markerArray =  $hookObj->additionalMarkerProductList($markerArray,$myItem,$this);
+				}
+			}
+
+		    	
 		    	
 		        $tempContent = $this->cObj->substituteMarkerArray($template, $markerArray,'###|###',1);
-			    $tempContent = $this->cObj->substituteMarkerArrayCached($tempContent, $this->languageMarker,$subpartMarkerArray,$wrapMarkerArray );
+			$tempContent = $this->cObj->substituteMarkerArrayCached($tempContent, $this->languageMarker,$subpartMarkerArray,$wrapMarkerArray );
 											          
 		        $content.=$tempContent;
 		   	}else{

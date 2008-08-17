@@ -1472,6 +1472,19 @@ class tx_commerce_pibase extends tslib_pibase {
 	}
 
 	function renderProductsForList($categoryProducts,$templateMarker,$iterations,$TS_marker=''){
+		$hookObjectsArr = array();
+	   	if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['renderProductsForList'])) {
+	       		foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['renderProductsForList'] as $classRef) {
+	                    	$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+	    		}
+	    	}
+	    	foreach($hookObjectsArr as $hookObj)   {
+			    if (method_exists($hookObj, 'preProcessorProductsListView')) {
+		   	         $markerArray =  $hookObj->preProcessorProductsListView($categoryProducts,$templateMarker,$iterations,$TS_marker,$this);
+		        }
+		}
+
+	
 		$iterationCount = 0;
 		if (is_array($categoryProducts)){
 			foreach ($categoryProducts as $myProductId) {
@@ -1524,11 +1537,11 @@ class tx_commerce_pibase extends tslib_pibase {
 		}
 		
 		$hookObjectsArr = array();
-	    if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['product'])) {
-	       	foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['product'] as $classRef) {
-                     $hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+	   	if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['product'])) {
+	       		foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['product'] as $classRef) {
+                     	$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+	    		}
 	    	}
-	    }
 		if (!is_object($myProduct)) {
 			return false;
 		}
