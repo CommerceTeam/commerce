@@ -25,7 +25,7 @@
  * Module 'Orders' for the 'commerce' extension.
  *
  * @author	Ingo Schmitt <is@marketing-factory.de>
- * @author	Daniel Sch�ttgen <ds@marketing-factory.de>
+ * @author	Daniel Schöttgen <ds@marketing-factory.de>
  * 
  * $Id: index.php 424 2006-11-16 13:25:58Z ingo $
  */
@@ -288,15 +288,14 @@ class tx_commerce_orders extends t3lib_SCbase {
 				$this->noTopView = 1;
 				if(!$this->userID){
 					break;
-				}			case 2:				
+				}
+			default:			
+			case 2:				
 				#$this->content.=$this->doc->section($LANG->getLL("OrderList"),$content,0,1);
 				$this->orderList($this->content);
 							
 			break;
-			case 3:
-				$content="<div align=center><strong>Menu item #3...</strong></div>";
-				$this->content.=$this->doc->section("Message #3:",$content,0,1);
-			break;
+			
 		}
 	}
 	/**
@@ -446,7 +445,7 @@ class tx_commerce_orders extends t3lib_SCbase {
 			*/
 
 				// Initialize the listing object, dblist, for rendering the list:
-			$this->pointer = t3lib_div::intInRange($this->pointer,0,100000);
+			$this->pointer = t3lib_div::intInRange($this->pointer,0,PHP_INT_MAX);
 			
 			$dblist->start($this->id,$this->table,$this->pointer,$this->search_field,$this->search_levels,$this->showLimit);
 			

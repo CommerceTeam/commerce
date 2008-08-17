@@ -462,8 +462,18 @@ class tx_commerce_articleCreator {
 			'article_attributes' => count($this->attributes['rest']) +count($data),
 			'attribute_hash' => $hash,
 			'article_type_uid' => 1,
+			
 		);
-
+		
+		$temp = t3lib_BEfunc::getModTSconfig($this->pid,'mod.commerce.category');
+		if ($temp) {
+	 		$moduleConfig = t3lib_BEfunc::implodeTSParams($temp['properties']);
+	 		$defaultTax= (int)$moduleConfig['defaultTaxValue'];
+			if ($defaultTax > 0) {
+				$articleData['tax'] = $defaultTax;
+			}
+		}
+		
 
 		$hookObjectsArr = array();
 		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/class.tx_commerce_articlecreator.php']['preinsert'])) {
