@@ -263,6 +263,13 @@ require_once(t3lib_extMgm::extPath(COMMERCE_EXTkey).'hooks/class.tx_commerce_pi4
 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi4/class.tx_commerce_pi4.php']['deleteAddress'][] = 'tx_commerce_pi4hooksHandler';
 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi4/class.tx_commerce_pi4.php']['saveAddress'][] = 'tx_commerce_pi4hooksHandler';
 
+// CLI Skript configration
+if (TYPO3_MODE=='BE')    {
+    // Setting up scripts that can be run from the cli_dispatch.phpsh script.
+    $TYPO3_CONF_VARS['SC_OPTIONS']['GLOBAL']['cliKeys'][$_EXTKEY] = array('EXT:'.$_EXTKEY.'/cli/class.cli_commerce.php','_CLI_commerce');
+}
+
+
 
 require_once(t3lib_extMgm::extPath(COMMERCE_EXTkey).'lib/class.tx_commerce_forms_select.php');
 ?>

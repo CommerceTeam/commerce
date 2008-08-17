@@ -3,6 +3,7 @@
 
 18.08.23008 Ingo Schmitt <is@marketing-factory.de>
 * Fixed a naming TYPO $artilceObj 
+* Added CLI Scripts for calculation of statistics
 
 17.08.2008 Volker Graubaum <vg@e-netconsulting.de>
 * Add new hook for manipulating the productlist (pi_base / preProcessorProductsListView)

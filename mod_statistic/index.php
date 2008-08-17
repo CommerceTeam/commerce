@@ -53,7 +53,7 @@ require_once (PATH_t3lib.'class.t3lib_clipboard.php');
 
 require_once (t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_order_localrecordlist.php');
 require_once (t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_feusers_localrecordlist.php');
-
+require_once (t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_statistics.php');
 require_once (t3lib_extmgm::extPath('graytree').'lib/class.tx_graytree_folder_db.php');
 
 /**
@@ -77,9 +77,10 @@ class tx_commerce_statistic extends t3lib_SCbase {
 		
 		parent::init();
 		$this->extConf = unserialize($GLOBALS["TYPO3_CONF_VARS"]["EXT"]["extConf"]["commerce"]);
-		$this->excludePids = $this->extConf['excludeStatisticFolders'] != '' ? $this->extConf['excludeStatisticFolders'] : 0;
 		$order_pid = array_unique(tx_graytree_folder_db::initFolders('Orders','Commerce',0,'Commerce'));
 		$this->order_pid = $order_pid[0];
+		$this->statistics = t3lib_div::makeInstance('tx_commerce_statistics');
+		$this->statistics->init($this->extConf['excludeStatisticFolders'] != '' ? $this->extConf['excludeStatisticFolders'] : 0);
 		/**
 		 * @TODO Find a better solution for the fist array element
 		 * 
@@ -239,7 +240,7 @@ class tx_commerce_statistic extends t3lib_SCbase {
 			if( $startres AND ( $startrow = $GLOBALS['TYPO3_DB']->sql_fetch_row( $startres ) ) AND $startrow[0] != NULL) {
 				$starttime = $startrow[0];
 				$GLOBALS['TYPO3_DB']->sql_query('truncate tx_commerce_salesfigures');
-				$result .= $this->doSalesAggregation($starttime,$endtime);
+				$result .= $this->statistics->doSalesAggregation($starttime,$endtime);
 			} else {
 				$result .= 'no sales data available';
 			}
@@ -257,7 +258,7 @@ class tx_commerce_statistic extends t3lib_SCbase {
 			if( $startres AND ( $startrow = $GLOBALS['TYPO3_DB']->sql_fetch_row( $startres ) ) AND $startrow[0] != NULL) {
 				$starttime = $startrow[0];
 				$GLOBALS['TYPO3_DB']->sql_query('truncate tx_commerce_newclients');
-				$result = $this->doClientAggregation($starttime,$endtime);
+				$result = $this->statistics->doClientAggregation($starttime,$endtime);
 			} else {
 				$result .= '<br />no client data available';
 			}
@@ -293,7 +294,7 @@ class tx_commerce_statistic extends t3lib_SCbase {
 			if(strtotime("0",$lastAggregationTimeValue) <= strtotime("0",$endtime2) AND $endtime2 != NULL) {
 				$endtime =  $endtime2 > mktime(0,0,0) ? mktime(0,0,0) : strtotime('+1 hour',$endtime2);
 				$starttime = strtotime("0",$lastAggregationTimeValue);
-				$result .= $this->doSalesAggregation($starttime,$endtime);
+				$result .= $this->statistics->doSalesAggregation($starttime,$endtime);
 			} else {
 				$result .= 'No new Orders<br />';
 			}
@@ -308,7 +309,7 @@ class tx_commerce_statistic extends t3lib_SCbase {
 				#$result .= date('r',$starttime) . '<br />';
 				if(!in_array($starttime,$changeDaysArray)) {
 					$changeDaysArray[] = $starttime;
-					$result .= $this->doSalesUpdateAggregation($starttime,$endtime);
+					$result .= $this->statistics->doSalesUpdateAggregation($starttime,$endtime);
 					++$changes;
 				}
 			}
@@ -334,7 +335,7 @@ class tx_commerce_statistic extends t3lib_SCbase {
 				$startres = $GLOBALS['TYPO3_DB']->sql_query($startselect);
 
 				$starttime = strtotime("0",$lastAggregationTimeValue);
-				$result .= $this->doClientAggregation($starttime,$endtime);
+				$result .= $this->statistics->doClientAggregation($starttime,$endtime);
 			} else {
 				$result .= "No new Customers<br />";
 			}
@@ -348,221 +349,7 @@ class tx_commerce_statistic extends t3lib_SCbase {
 		return $result;
 	}
 	
-	/**
-	 * Aggregate ans Insert the Salesfigures per Hour in the timespare from
-	 * $starttime to $enttime
-	 * 
-	 * @param integer $starttime Timestamp of timecode to start the aggregation
-	 * @param integer $endtime Timestamp of timecode to end the aggregation
-	 * @return boolean result of aggregation
-	 */
-	function doSalesAggregation($starttime,$endtime) {
-		$hour   =       date('h',$starttime);
-		$day    =       date('d',$starttime);
-		$month  =       date('m',$starttime);
-		$year   =       date('Y',$starttime);
-		$today  =       $endtime;
-		$stats  =       '';
-		$result = true;
-		$oldtimestart=  mktime($hour,0,0,$month,$day,$year);
-		$oldtimeend  =  mktime($hour,59,59,$month,$day,$year);
-		while($oldtimeend < $endtime) {
-	        $statquery = sprintf('
-	                        SELECT
-	                                sum(toa.amount),
-	                                sum(toa.amount * toa.price_gross),
-	                                count(distinct toa.order_id),
-	                                toa.pid,
-	                                sum(toa.amount * toa.price_net)
-	                        FROM
-	                                tx_commerce_order_articles toa,
-	                                tx_commerce_orders tco
-	                        WHERE                        	
-	                                toa.article_type_uid <= 1
-	                        AND
-	                                toa.crdate >= %u
-	                        AND
-	                                toa.crdate <= %u
-	                        AND
-	                        		toa.pid not in(%s)
-	                        AND
-	                                toa.order_id = tco.order_id
-	                        AND
-	                                tco.deleted = 0
-	                        GROUP BY
-	                                toa.pid',
-	                        $oldtimestart,
-	                        $oldtimeend,
-	                        $this->excludePids
-	                        );
-	        $statres = $GLOBALS['TYPO3_DB']->sql_query($statquery);
-	        while($statrow = $GLOBALS['TYPO3_DB']->sql_fetch_row($statres)) {
-            	$insertStatArray = array( 	'pid' 		=> $statrow[3],
-            								'year'		=> date('Y',$oldtimeend),
-            								'month'		=> date('m',$oldtimeend),
-            								'day'		=> date('d',$oldtimeend),
-            								'dow'		=> date('w',$oldtimeend),
-            								'hour'		=> date('H',$oldtimeend),
-            								'pricegross'=> $statrow[1],
-            								'amount'	=> $statrow[0],
-            								'orders'	=> $statrow[2],
-            								'pricenet'	=> $statrow[4],
-            								'crdate'	=> time(),
-            								'tstamp'	=> time()
-            							);
-
-            	$res = $GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_commerce_salesfigures',$insertStatArray);
-            	if(!$res) {
-            		$result = false;
-            	}
-            	
-            	
-	        }
-	        $oldtimestart = mktime(++$hour,0,0,$month,$day,$year);
-	        $oldtimeend   = mktime($hour,59,59,$month,$day,$year);
-		}
-		
-		return $result;
-	}
 	
-	
-	/**
-	 * Aggregate and Update the Salesfigures per Hour in the timespare from
-	 * $starttime to $enttime
-	 * 
-	 * @param integer $starttime Timestamp of timecode to start the aggregation
-	 * @param integer $endtime Timestamp of timecode to end the aggregation
-	 * @return boolean result of aggregation
-	 */
-	function doSalesUpdateAggregation($starttime,$endtime) {
-		$hour   =       date('h',$starttime);
-		$day    =       date('d',$starttime);
-		$month  =       date('m',$starttime);
-		$year   =       date('Y',$starttime);
-		$today  =       $endtime;
-		$stats  =       '';
-		$result = 		true;
-		$oldtimestart=  mktime($hour,0,0,$month,$day,$year);
-		$oldtimeend  =  mktime($hour,59,59,$month,$day,$year);
-		while($oldtimeend < $endtime) {
-	        
-	        $statquery = sprintf('
-	                        SELECT
-	                                sum(toa.amount),
-	                                sum(toa.amount * toa.price_gross),
-	                                count(distinct toa.order_id),
-	                                toa.pid,
-	                                sum(toa.amount * toa.price_net)
-	                        FROM
-	                                tx_commerce_order_articles toa,
-	                                tx_commerce_orders tco
-	                        WHERE                        	
-	                                toa.article_type_uid <= 1
-	                        AND
-	                                toa.crdate >= %u
-	                        AND
-	                                toa.crdate <= %u
-	                        AND
-	                        		toa.pid not in(%s)
-	                        AND
-	                                toa.order_id = tco.order_id
-	                        AND
-	                                tco.deleted = 0
-	                        GROUP BY
-	                                toa.pid',
-	                        $oldtimestart,
-	                        $oldtimeend,
-	                        $this->excludePids
-	                        );
-
-	        $statres = $GLOBALS['TYPO3_DB']->sql_query($statquery);
-	        while($statrow = $GLOBALS['TYPO3_DB']->sql_fetch_row($statres)) {
-            	$updateStatArray = array( 	'pid' 		=> $statrow[3],
-            								'year'		=> date('Y',$oldtimeend),
-            								'month'		=> date('m',$oldtimeend),
-            								'day'		=> date('d',$oldtimeend),
-            								'dow'		=> date('w',$oldtimeend),
-            								'hour'		=> date('H',$oldtimeend),
-            								'pricegross'=> $statrow[1],
-            								'amount'	=> $statrow[0],
-            								'orders'	=> $statrow[2],
-            								'pricenet'	=> $statrow[4],
-            								'tstamp'	=> time()
-            							);
-				$whereClause = 	'year = ' .date('Y',$oldtimeend) .
-								' AND month = ' . date('m',$oldtimeend) .
-								' AND day = ' . date('d',$oldtimeend) .
-								' AND hour = ' . date('H',$oldtimeend);
-            	$res = $GLOBALS['TYPO3_DB']->exec_UPDATEquery('tx_commerce_salesfigures',$whereClause,$updateStatArray);
-       			if(!$res) {
-            		$result = false;
-            	}
-            	print ".";
-            	flush();
-       				
-	        }
-	        $oldtimestart = mktime(++$hour,0,0,$month,$day,$year);
-	        $oldtimeend   = mktime($hour,59,59,$month,$day,$year);
-		}
-		
-		return $stats;
-	}
-	
-	/**
-	 * Aggregate and Insert the New Users (Registrations in fe_user)) per hour
-	 * in the timespare from $starttime to $enttime
-	 * 
-	 * @param integer $starttime Timestamp of timecode to start the aggregation
-	 * @param integer $endtime Timestamp of timecode to end the aggregation
-	 * @return boolean result of aggregation
-	 */	
-	function doClientAggregation($starttime,$endtime) {
-		$hour   =       date('h',$starttime);
-		$day    =       date('d',$starttime);
-		$month  =       date('m',$starttime);
-		$year   =       date('Y',$starttime);
-		$today  =       $endtime;
-		$stats  =       '';
-		$oldtimestart=  mktime($hour,0,0,$month,$day,$year);
-		$oldtimeend  =  mktime($hour,59,59,$month,$day,$year);
-		while($oldtimeend < $endtime) {
-	        $statquery = sprintf('
-	                        SELECT  
-	                        		count(*),
-	                                pid
-	                        FROM
-	                                fe_users
-	                        WHERE
-	                                crdate >= %u
-	                        AND
-	                                crdate <= %u
-	                        GROUP BY
-	                                pid',
-	                        $oldtimestart,
-	                        $oldtimeend);
-	        #echo $statquery , "\n";
-	        $statres = $GLOBALS['TYPO3_DB']->sql_query($statquery);
-	        while($statrow = $GLOBALS['TYPO3_DB']->sql_fetch_row($statres)) {
-            	$insertStatArray = array( 	'pid' 		=> $statrow[1],
-            								'year'		=> date('Y',$oldtimeend),
-            								'month'		=> date('m',$oldtimeend),
-            								'day'		=> date('d',$oldtimeend),
-            								'dow'		=> date('w',$oldtimeend),
-            								'hour'		=> date('H',$oldtimeend),
-            								'registration'	=> $statrow[0],
-            								'crdate'	=> time(),
-            								'tstamp'	=> time()
-            							);
-
-            	$GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_commerce_newclients',$insertStatArray);
-            	
-	        }
-	        $oldtimestart = mktime(++$hour,0,0,$month,$day,$year);
-	        $oldtimeend   = mktime($hour,59,59,$month,$day,$year);
-		}
-		
-		return $stats;
-	}
 	
 	/**
 	 * Generate the Statistictables
