@@ -145,7 +145,7 @@ class tx_commerce_cli extends t3lib_cli {
 						}
 						
 					} else {
-						$this->cli_echo('No new Orders<br />');
+						$this->cli_echo('No new Orders');
 					}
 		
 					$changeselect = 'SELECT crdate FROM tx_commerce_order_articles where tstamp > ' . $lastAggregationTimeValue;
