@@ -290,8 +290,12 @@ class tx_commerce_statistic extends t3lib_SCbase {
 			if( $endres AND ( $endrow = $GLOBALS['TYPO3_DB']->sql_fetch_row( $endres ) ) ) {
 				$endtime2 = $endrow[0];
 			}
-				
-			if(strtotime("0",$lastAggregationTimeValue) <= strtotime("0",$endtime2) AND $endtime2 != NULL) {
+			$starttime = strtotime("0",$lastAggregationTimeValue);
+    		// It seams that strottime("0") is not valid on all systems
+			if (empty($starttime)) {
+					$starttime = $lastAggregationTimeValue;
+			}
+			if($starttime <= strtotime("0",$endtime2) AND $endtime2 != NULL) {
 				$endtime =  $endtime2 > mktime(0,0,0) ? mktime(0,0,0) : strtotime('+1 hour',$endtime2);
 				$starttime = strtotime("0",$lastAggregationTimeValue);
 				$result .= $this->statistics->doSalesAggregation($starttime,$endtime);
@@ -304,7 +308,12 @@ class tx_commerce_statistic extends t3lib_SCbase {
 			$changeDaysArray = array();
 			$changes = 0;
 			while($changeres AND $changerow = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($changeres)) {
+				
 				$starttime = strtotime("0",$changerow['crdate']);
+				// It seams that strottime("0") is not valid on all systems
+				if (empty($starttime)) {
+					$starttime = $changerow['crdate'];
+				}
 				$endtime = strtotime("23:59:59",$changerow['crdate']);
 				#$result .= date('r',$starttime) . '<br />';
 				if(!in_array($starttime,$changeDaysArray)) {
