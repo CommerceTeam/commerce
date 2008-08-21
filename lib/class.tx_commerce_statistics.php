@@ -1,4 +1,7 @@
 <?php
+
+
+
 /***************************************************************
 *  Copyright notice
 *
@@ -43,6 +46,12 @@ class tx_commerce_statistics {
 	 * @var string
 	 */
 	var 	$excludePids;
+	/**
+	 * How mayn dasys the update agregation wil recaluclate
+	 *
+	 * @var integer	
+	 */
+	var 	$daysback = 10;
 	
 	
 	function init($excludePids){
@@ -50,6 +59,14 @@ class tx_commerce_statistics {
 		
 	}
 	
+	/**
+	 * Public method to return days back
+	 * 	
+	 * @return integer
+	 */
+	function getDaysBack(){
+		return $this->daysback;
+	}
 	/**
 	 * Aggregate ans Insert the Salesfigures per Hour in the timespare from
 	 * $starttime to $enttime
@@ -59,7 +76,7 @@ class tx_commerce_statistics {
 	 * @return boolean result of aggregation
 	 */
 	function doSalesAggregation($starttime,$endtime) {
-		$hour   =       date('h',$starttime);
+		$hour   =       date('H',$starttime);
 		$day    =       date('d',$starttime);
 		$month  =       date('m',$starttime);
 		$year   =       date('Y',$starttime);
@@ -68,7 +85,7 @@ class tx_commerce_statistics {
 		$result = true;
 		$oldtimestart=  mktime($hour,0,0,$month,$day,$year);
 		$oldtimeend  =  mktime($hour,59,59,$month,$day,$year);
-		while($oldtimeend < $endtime) {
+		while($oldtimeend <= $endtime) {
 	        $statquery = sprintf('
 	                        SELECT
 	                                sum(toa.amount),
@@ -138,7 +155,7 @@ class tx_commerce_statistics {
 	 * @return boolean result of aggregation
 	 */
 	function doSalesUpdateAggregation($starttime,$endtime,$doOutput = true) {
-		$hour   =       date('h',$starttime);
+		$hour   =       date('H',$starttime);
 		$day    =       date('d',$starttime);
 		$month  =       date('m',$starttime);
 		$year   =       date('Y',$starttime);
@@ -147,8 +164,9 @@ class tx_commerce_statistics {
 		$result = 		true;
 		$oldtimestart=  mktime($hour,0,0,$month,$day,$year);
 		$oldtimeend  =  mktime($hour,59,59,$month,$day,$year);
-		while($oldtimeend < $endtime) {
+		while($oldtimeend <= $endtime) {
 	        
+		
 	        $statquery = sprintf('
 	                        SELECT
 	                                sum(toa.amount),
@@ -197,8 +215,10 @@ class tx_commerce_statistics {
 								' AND day = ' . date('d',$oldtimeend) .
 								' AND hour = ' . date('H',$oldtimeend);
             	$res = $GLOBALS['TYPO3_DB']->exec_UPDATEquery('tx_commerce_salesfigures',$whereClause,$updateStatArray);
+            	#echo  $GLOBALS['TYPO3_DB']->UPDATEquery('tx_commerce_salesfigures',$whereClause,$updateStatArray);
        			if(!$res) {
             		$result = false;
+            	#	print "Error on ".$GLOBALS['TYPO3_DB']->UPDATEquery('tx_commerce_salesfigures',$whereClause,$updateStatArray);
             	}
             	if ($doOutput) {
 	            	print ".";
@@ -222,7 +242,7 @@ class tx_commerce_statistics {
 	 * @return boolean result of aggregation
 	 */	
 	function doClientAggregation($starttime,$endtime) {
-		$hour   =       date('h',$starttime);
+		$hour   =       date('H',$starttime);
 		$day    =       date('d',$starttime);
 		$month  =       date('m',$starttime);
 		$year   =       date('Y',$starttime);
@@ -267,6 +287,26 @@ class tx_commerce_statistics {
 		}
 		
 		return $return;
+	}
+	
+	/**
+	 * Retursn the first second of a day as Timestamp
+	 *
+	 * @param integer $timestamp
+	 * @return	integer Timestamp
+	 */
+	function  firstSecondOfDay($timestamp) {
+		return (int)mktime(0,0,0,strftime("%m",$timestamp),strftime("%d",$timestamp),strftime("%Y",$timestamp));
+	}
+	
+/**
+	 * Retursn the last second of a day as Timestamp
+	 *
+	 * @param integer $timestamp
+	 * @return	integer Timestamp
+	 */
+	function  lastSecondOfDay($timestamp) {
+		return (int)mktime(23,59,59,strftime("%m",$timestamp),strftime("%d",$timestamp),strftime("%Y",$timestamp));
 	}
 	
 

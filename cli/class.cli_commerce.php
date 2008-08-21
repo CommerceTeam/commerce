@@ -89,6 +89,7 @@ class tx_commerce_cli extends t3lib_cli {
     function cli_main($argv) {
     	$this->extConf = unserialize($GLOBALS["TYPO3_CONF_VARS"]["EXT"]["extConf"]["commerce"]);
         // get task (function)
+      
         $this->MainTask = (string)$this->cli_args['_DEFAULT'][1];
         $this->subTask = (string)$this->cli_args['_DEFAULT'][2];
         if (!$this->MainTask){
@@ -96,7 +97,7 @@ class tx_commerce_cli extends t3lib_cli {
             $this->cli_help();
             exit;
         }
-	
+		
         switch ($this->MainTask) {
         	case 'statistics':
         		
@@ -121,7 +122,6 @@ class tx_commerce_cli extends t3lib_cli {
 		$this->statistics->init($this->extConf['excludeStatisticFolders'] != '' ? $this->extConf['excludeStatisticFolders'] : 0);
 		
 		
-		
     	switch ($subTaks) {
     		
     		case 'incrementalAggregation':
@@ -131,18 +131,15 @@ class tx_commerce_cli extends t3lib_cli {
 					if( $lastAggregationTimeres AND ( $lastAggregationTimerow = $GLOBALS['TYPO3_DB']->sql_fetch_row( $lastAggregationTimeres ) ) AND $lastAggregationTimerow[0] != NULL ) {
 						$lastAggregationTimeValue = $lastAggregationTimerow[0];
 					}
-					
+					$lastAggretagionTimeValue = $this->statistics->firstSecondOfDay($lastAggretagionTimeValue);
 					$endselect = 'SELECT max(crdate) FROM tx_commerce_order_articles';
 					$endres = $GLOBALS['TYPO3_DB']->sql_query($endselect);
 					if( $endres AND ( $endrow = $GLOBALS['TYPO3_DB']->sql_fetch_row( $endres ) ) ) {
 						$endtime2 = $endrow[0];
 					}
-    				$starttime = strtotime("0",$lastAggregationTimeValue);
-    				// It seams that strottime("0") is not valid on all systems
-					if (empty($starttime)) {
-							$starttime = $lastAggregationTimeValue;
-					}
-					if($starttime <= strtotime("0",$endtime2) AND $endtime2 != NULL) {
+    				$starttime = $this->statistics->firstSecondOfDay($lastAggregationTimeValue);
+    				
+					if($starttime <= $this->statistics->firstSecondOfDay($endtime2) AND $endtime2 != NULL) {
 						$endtime =  $endtime2 > mktime(0,0,0) ? mktime(0,0,0) : strtotime('+1 hour',$endtime2);
 					
 						
@@ -156,20 +153,19 @@ class tx_commerce_cli extends t3lib_cli {
 						$this->cli_echo("No new Orders\n");
 					}
 		
-					$changeselect = 'SELECT crdate FROM tx_commerce_order_articles where tstamp > ' . $lastAggregationTimeValue;
+					$changeselect = 'SELECT distinct crdate FROM tx_commerce_order_articles where tstamp > ' . ($lastAggregationTimeValue - ($this->statistics->getDaysBack()*24*60*60));
 					$changeres = $GLOBALS['TYPO3_DB']->sql_query($changeselect);
 					$changeDaysArray = array();
 					$changes = 0;
 					while($changeres AND $changerow = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($changeres)) {
-						$starttime = strtotime("0",$changerow['crdate']);
-						// It seams that strottime("0") is not valid on all systems
-						if (empty($starttime)) {
-							$starttime = $changerow['crdate'];
-						}
-						$endtime = strtotime("23:59:59",$changerow['crdate']);
+						$starttime =  $this->statistics->firstSecondOfDay($changerow['crdate']);
+						$endtime =  $this->statistics->lastSecondOfDay($changerow['crdate']);
 						#$result .= date('r',$starttime) . '<br />';
 						if(!in_array($starttime,$changeDaysArray)) {
 							$changeDaysArray[] = $starttime;
+							$this->cli_echo('Incremental Sales UpdateAgregation for sales for the period from '.$starttime.' to '.$endtime." (Timestamp)\n");
+							$this->cli_echo('Incremental Sales UpdateAgregation for sales for the period from '.strftime("%d.%m.%Y",$starttime).' to '.strftime("%d.%m.%Y",$endtime)." (DD.MM.YYYY)\n");
+							
 							$result .= $this->statistics->doSalesUpdateAggregation($starttime,$endtime,false);
 							++$changes;
 						}
@@ -182,9 +178,8 @@ class tx_commerce_cli extends t3lib_cli {
 					if( $lastAggregationTimeres AND ( $lastAggregationTimerow = $GLOBALS['TYPO3_DB']->sql_fetch_row( $lastAggregationTimeres ) ) ) {
 						$lastAggregationTimeValue = $lastAggregationTimerow[0];
 					}
-    				if (empty($lastAggregationTimeValue)) {
-							$lastAggregationTimeValue = $lastAggregationTimeValue;
-					}
+					$lastAggregationTimeValue =  $this->statistics->firstSecondOfDay($lastAggregationTimeValue);
+    				
 					$endselect = 'SELECT max(crdate) FROM fe_users';
 					$endres = $GLOBALS['TYPO3_DB']->sql_query($endselect);
 					if( $endres AND ( $endrow = $GLOBALS['TYPO3_DB']->sql_fetch_row( $endres ) ) ) {
@@ -198,10 +193,9 @@ class tx_commerce_cli extends t3lib_cli {
 						$startselect = 'SELECT min(crdate) FROM fe_users WHERE crdate > 0 AND deleted = 0';
 						$startres = $GLOBALS['TYPO3_DB']->sql_query($startselect);
 					
-						$starttime = strtotime("0",$lastAggregationTimeValue);
-						if (empty($starttime)) {
-							$starttime = $lastAggregationTimeValue;
-						}
+						$starttime = $this->statistics->firstSecondOfDay($lastAggregationTimeValue);
+						
+						
 						$this->cli_echo('Incremental Client Agregation for sales for the period from '.$starttime.' to '.$endtime."\n");
 						$this->cli_echo('Incremental Client Agregation for sales for the period from '.strftime("%d.%m.%Y",$starttime).' to '.strftime("%d.%m.%Y",$endtime)."\n");
 						
@@ -225,7 +219,7 @@ class tx_commerce_cli extends t3lib_cli {
 					if( $endres AND ( $endrow = $GLOBALS['TYPO3_DB']->sql_fetch_row( $endres ) ) ) {
 						$endtime2 = $endrow[0];
 					}
-					
+		
 					$endtime =  $endtime2 > mktime(0,0,0) ? mktime(0,0,0) : strtotime('+1 hour',$endtime2);
 					
 					$startselect = 'SELECT min(crdate) FROM tx_commerce_order_articles WHERE crdate > 0';
