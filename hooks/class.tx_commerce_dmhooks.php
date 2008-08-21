@@ -252,12 +252,12 @@ class tx_commerce_dmhooks	{
 									case 1:
 									default:
 										
-										if (($key == 'price_net') && (!isset($value)) || ($value === '') || (strlen($value)==0))	{
+										if (($key == 'price_net') && (!isset($value) || ($value === '') || (strlen($value)==0)))	{
 											
 											$price_gross_value=$incomingFieldArray['prices']['data']['sDEF']['lDEF']['price_gross_'.$pUid]['vDEF'];
 											$value=round(($price_gross_value*100)/(100+$incomingFieldArray['tax'])*100);
 											$incomingFieldArray['prices']['data']['sDEF']['lDEF']['price_net_'.$pUid]['vDEF']=$value/100;
-										} elseif (($key == 'price_gross') && (!isset($value)) || ($value === '') || (strlen($value)==0))	{
+										} elseif (($key == 'price_gross') && (!isset($value) || ($value === '') || (strlen($value)==0)))	{
 											$price_net_value=$incomingFieldArray['prices']['data']['sDEF']['lDEF']['price_net_'.$pUid]['vDEF'];
 											$value=round(($price_net_value*100)*(100+$incomingFieldArray['tax'])/100);
 											$incomingFieldArray['prices']['data']['sDEF']['lDEF']['price_gross_'.$pUid]['vDEF']=$value/100;
