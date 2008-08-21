@@ -70,3 +70,6 @@ showArticleTitle  = 0
 
 # cat=basic/other/100; type=boolean; label= User Sessionkey md5 encrypt 
 userSessionMd5Encrypt  = 1
+
+# cat=basic/other/100; type=boolean; label= Aggregation Allow: Allow Statistics Aggregation in BE if not using a cron
+allowAggregation  = 1

@@ -109,13 +109,26 @@ class tx_commerce_statistic extends t3lib_SCbase {
 	 */
 	function menuConfig()	{
 		global $LANG;
-		$this->MOD_MENU = Array (
+		$this->extConf = unserialize($GLOBALS["TYPO3_CONF_VARS"]["EXT"]["extConf"]["commerce"]);
+		 
+		if ($this->extConf['allowAggregation'] == 1) {
+			$this->MOD_MENU = Array (
+				"function" => Array (
+					"1" => $LANG->getLL("statistics"),
+					"2" => $LANG->getLL("incremental_aggregation"),
+					"3" => $LANG->getLL("complete_aggregation"),
+				)
+			);
+		}else{
+			
+			$this->MOD_MENU = Array (
 			"function" => Array (
 				"1" => $LANG->getLL("statistics"),
-				"2" => $LANG->getLL("incremental_aggregation"),
-				"3" => $LANG->getLL("complete_aggregation"),
+			
 			)
 		);
+		
+		}
 		parent::menuConfig();
 	}
 
@@ -295,9 +308,12 @@ class tx_commerce_statistic extends t3lib_SCbase {
 			if (empty($starttime)) {
 					$starttime = $lastAggregationTimeValue;
 			}
+		
 			if($starttime <= strtotime("0",$endtime2) AND $endtime2 != NULL) {
 				$endtime =  $endtime2 > mktime(0,0,0) ? mktime(0,0,0) : strtotime('+1 hour',$endtime2);
-				$starttime = strtotime("0",$lastAggregationTimeValue);
+								
+				echo 'Incremental Sales Agregation for sales for the period from '.strftime("%d.%m.%Y",$starttime).' to '.strftime("%d.%m.%Y",$endtime)." (DD.MM.YYYY)<br />\n";
+				flush();
 				$result .= $this->statistics->doSalesAggregation($starttime,$endtime);
 			} else {
 				$result .= 'No new Orders<br />';
@@ -315,9 +331,14 @@ class tx_commerce_statistic extends t3lib_SCbase {
 					$starttime = $changerow['crdate'];
 				}
 				$endtime = strtotime("23:59:59",$changerow['crdate']);
+				if (empty($endtime)) {
+					$endtime  = $changerow['crdate'];
+				}
 				#$result .= date('r',$starttime) . '<br />';
 				if(!in_array($starttime,$changeDaysArray)) {
 					$changeDaysArray[] = $starttime;
+					echo 'Incremental Sales Udpate Agregation for sales for the period from '.strftime("%d.%m.%Y",$starttime).' to '.strftime("%d.%m.%Y",$endtime)." (DD.MM.YYYY)<br />\n";
+					flush();
 					$result .= $this->statistics->doSalesUpdateAggregation($starttime,$endtime);
 					++$changes;
 				}
@@ -344,6 +365,11 @@ class tx_commerce_statistic extends t3lib_SCbase {
 				$startres = $GLOBALS['TYPO3_DB']->sql_query($startselect);
 
 				$starttime = strtotime("0",$lastAggregationTimeValue);
+				if (empty($starttime)) {
+					$starttime = $lastAggregationTimeValue;
+				}
+				echo 'Incremental Sales Udpate Agregation for sales for the period from '.strftime("%d.%m.%Y",$starttime).' to '.strftime("%d.%m.%Y",$endtime)." (DD.MM.YYYY)<br />\n";
+					flush();
 				$result .= $this->statistics->doClientAggregation($starttime,$endtime);
 			} else {
 				$result .= "No new Customers<br />";
