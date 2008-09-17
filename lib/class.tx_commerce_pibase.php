@@ -728,35 +728,38 @@ class tx_commerce_pibase extends tslib_pibase {
 			unset($tmpArray);
 		}
 		
-		$templateElements = count($lineTemplate);
-		
-	 	/**
-	 	 * Get All Articles in this basket and genarte HTMl-Content per row
-	 	 *
-	 	 */
-	 	 $articleLines='';
-	 	 $count = 0;
-	 	foreach ($basketObj->basket_items as $ArticleUid => $itemObj)
-	 	{
-	 		$part = $count % $templateElements;
-	 		/**
-	 		 * Only if valid parameter
-	 		 */
-	 		if (($articletypes) && (is_array($articletypes)) && (count($articletypes)>0)){
-
-	 			if (in_array($itemObj->getArticleTypeUid(),$articletypes)){
-	 				$articleLines .= $this->makeLineView($itemObj,$lineTemplate[$part]);
-	 			}
-	 		}
-	 		else{
-	 			$articleLines .= $this->makeLineView($itemObj,$lineTemplate[$part]);
-	 		}
-
-	 		++$count;
-	 	}
-
-
-	 	$content = $this->cObj->substituteSubpart($template,'###LISTING_ARTICLE###',$articleLines);
+	 	$templateElements = count($lineTemplate);
+		if ($templateElements > 0) {
+		 	/**
+		 	 * Get All Articles in this basket and genarte HTMl-Content per row
+		 	 *
+		 	 */
+		 	 $articleLines='';
+		 	 $count = 0;
+		 	foreach ($basketObj->basket_items as $ArticleUid => $itemObj)
+		 	{
+		 		$part = $count % $templateElements;
+		 		/**
+		 		 * Only if valid parameter
+		 		 */
+		 		if (($articletypes) && (is_array($articletypes)) && (count($articletypes)>0)){
+	
+		 			if (in_array($itemObj->getArticleTypeUid(),$articletypes)){
+		 				$articleLines .= $this->makeLineView($itemObj,$lineTemplate[$part]);
+		 			}
+		 		}
+		 		else{
+		 			$articleLines .= $this->makeLineView($itemObj,$lineTemplate[$part]);
+		 		}
+	
+		 		++$count;
+		 	}
+			
+	
+		 	$content = $this->cObj->substituteSubpart($template,'###LISTING_ARTICLE###',$articleLines);
+		}else{
+			$content = $this->cObj->substituteSubpart($template,'###LISTING_ARTICLE###','');
+		}
 
 	 	$content = $this->cObj->substituteSubpart(
 	 			$content,

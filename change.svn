@@ -1,5 +1,7 @@
 ﻿Changelog for tx_commerce
 (add new changes on top of this file)
+17.09.2008 Ingo Schmitt <is@marketing-factory.de>
+* Fixed a dividion by zero bug in pibase
 
 21.08.2008 Ingo Schmitt <is@marketing-factory.de>
 * Fixed a bug in manual Sales Aggregation
