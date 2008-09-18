@@ -154,7 +154,6 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 		 */
 
          $hookObjectsArr = array();
-                
          if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi3/class.tx_commerce_pi3.php']['init'])){
              foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi3/class.tx_commerce_pi3.php']['init'] as $classRef)   {
                  $hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
@@ -286,44 +285,56 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 				 $hookObj->preSwitch($this->currentStep, $this);
 			}
 		}
-		
-		
-		switch ($this->currentStep)	{
-			case 'delivery':
-					// get delivery address
-				$content = $this->getDeliveryAddress();
-				break;
-			case 'payment':
-				$paymentObj = $this->getPaymentObject();
-				$content = $this->handlePayment($paymentObj);
-				// only break at this point if we need some payment handling otherwise go on to the next step
-				if ($content != false) break;
-				// go on with listing
-				$this->currentStep = 'listing';
-			case 'listing':
-				$content = $this->getListing();
-				break;
-			case 'finish':
-				$paymentObj = $this->getPaymentObject();
-				$content = $this->finishIt($paymentObj);
-				break;
-			case 'billing':
-				 $content = $this->getBillingAddress();
-				  break;
-			default:
-                 foreach($hookObjectsArr as $hookObj)    {
-                    if (method_exists($hookObj, $this->currentStep))        {
-                        $method = $this->currentStep;
-                        $content = $hookObj->$method($this);
-                    }
-                 }
-                 if(!$content){
-                       // get billing address
-                       $content = $this->getBillingAddress();
-                  }
-                  break;
 
+		#The purpose of the while loop is simply to be able to define any step as the step after payment.		
+		#To prevent infinite loops with poor setup shops we use this counter
+		$finiteloop=0;
+		$content=false;
+		while ( $content=== false && $finiteloop<10 ){
+			switch ($this->currentStep)	{
+				case 'delivery':
+						// get delivery address
+					$content = $this->getDeliveryAddress();
+					break;
+				case 'payment':
+					$paymentObj = $this->getPaymentObject();
+					$content = $this->handlePayment($paymentObj);
+					// only break at this point if we need some payment handling otherwise go on to the next step
+					if ($content != false) break;
+					// go on with listing
+					$this->currentStep = $this->getStepAfter('payment');
+					break;
+				case 'listing':
+					$content = $this->getListing();
+					break;
+				case 'finish':
+					$paymentObj = $this->getPaymentObject();
+					$content = $this->finishIt($paymentObj);
+					break;
+				case 'billing':
+					 $content = $this->getBillingAddress();
+					  break;
+				default:
+    	             foreach($hookObjectsArr as $hookObj)    {
+    	                if (method_exists($hookObj, $this->currentStep))        {
+    	                    $method = $this->currentStep;
+    	                    $content = $hookObj->$method($this);
+    	                }
+    	             }
+    	             if(!$content){
+    	                   // get billing address
+    	                   $content = $this->getBillingAddress();
+    	              }
+    	              break;
+	
+			}
+			$finiteloop++;
 		}
+
+		if ( $content===false ){
+			$content="Been redirected internally $finiteloop times, this suggest a configuration error";
+		}		
+
 		foreach($hookObjectsArr as $hookObj)	{
 			if (method_exists($hookObj, 'postSwitch'))	{
 				$content = $hookObj->postSwitch($this->currentStep, $content, $this);
@@ -474,9 +485,10 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 		
 		
 		// for marker for the delivery address chooser
-		
+		$step_nodelivery = $this->getStepAfter('delivery');
+
 		$markerArray['###ADDRESS_RADIOFORM_DELIVERY###'] = '<input type="radio" id="delivery" name="'.$this->prefixId.'[step]" value="delivery" '.$deliveryChecked.'/>';
-		$markerArray['###ADDRESS_RADIOFORM_NODELIVERY###']= '<input type="radio" id="nodelivery"  name="'.$this->prefixId.'[step]" value="payment" '.$paymentChecked.'/>';
+		$markerArray['###ADDRESS_RADIOFORM_NODELIVERY###']= '<input type="radio" id="nodelivery"  name="'.$this->prefixId.'[step]" value="' . $step_nodelivery . '" '.$paymentChecked.'/>';
 		$markerArray['###ADDRESS_LABEL_DELIVERY###'] = $this->pi_getLL('billing_deliveryaddress');
 		$markerArray['###ADDRESS_LABEL_NODELIVERY###']= $this->pi_getLL('billing_nodeliveryaddress');
 		
@@ -501,7 +513,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 		// @deprecated Marker, use marker above instead (see example Template)
 		$markerArray['###ADDRESS_FORM_FIELDS###'] = $billingForm;
 		$markerArray['###ADDRESS_RADIO_DELIVERY###'] = '<input type="radio" id="delivery" name="'.$this->prefixId.'[step]" value="delivery" '.$deliveryChecked.'/>'.$this->pi_getLL('billing_deliveryaddress');
-		$markerArray['###ADDRESS_RADIO_NODELIVERY###']= '<input type="radio" id="payment"  name="'.$this->prefixId.'[step]" value="payment" '.$paymentChecked.'/>'.$this->pi_getLL('billing_nodeliveryaddress');
+		$markerArray['###ADDRESS_RADIO_NODELIVERY###']= '<input type="radio" id="payment"  name="'.$this->prefixId.'[step]" value="' . $step_nodelivery . '" '.$paymentChecked.'/>'.$this->pi_getLL('billing_nodeliveryaddress');
 		$markerArray=$this->addFormMarker($markerArray,'###|###');
 		/**
 		 * Hook for processing Marker Array
@@ -545,12 +557,12 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 			// get the form
 		// Marker Depricated
 		$markerArray['###ADDRESS_FORM_TAG###'] = '<form name="addressForm" action="'.$this->pi_getPageLink($GLOBALS['TSFE']->id).'" method="post" '.$this->conf[$this->step.'.']['formParams'].'>';
-		
-		$markerArray['###ADDRESS_FORM_HIDDENFIELDS###'] = '<input type="hidden" name="'.$this->prefixId.'[step]" value="payment" />'.
+		$nextstep = $this->getStepAfter('delivery');
+		$markerArray['###ADDRESS_FORM_HIDDENFIELDS###'] = '<input type="hidden" name="'.$this->prefixId.'[step]" value="' . $nextstep . '" />'.
 								  '<input type="hidden" name="'.$this->prefixId.'[check]" value="delivery" />';
 		
 		$deliveryForm = '<form name="addressForm" action="'.$this->pi_getPageLink($GLOBALS['TSFE']->id).'" method="post">';
-		$deliveryForm .= '<input type="hidden" name="'.$this->prefixId.'[step]" value="payment" />';
+		$deliveryForm .= '<input type="hidden" name="'.$this->prefixId.'[step]" value="' . $nextstep . '" />';
 		$deliveryForm .= '<input type="hidden" name="'.$this->prefixId.'[check]" value="delivery" />';
 		$markerArray['###HIDDEN_STEP###'] = '<input type="hidden" name="'.$this->prefixId.'[step]" value="payment" />';
 		$markerArray['###HIDDEN_STEP###'].= '<input type="hidden" name="'.$this->prefixId.'[check]" value="delivery" />';
@@ -741,8 +753,9 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 		if ($this->debug)	debug($GLOBALS['TSFE']->fe_user->tx_commerce_basket);
 
 		$listingForm = '<form name="listingForm" action="'.$this->pi_getPageLink($GLOBALS['TSFE']->id).'" method="post">';
-		$listingForm .= '<input type="hidden" name="'.$this->prefixId.'[step]" value="finish" />';
-		$markerArray['###HIDDEN_STEP###'] = '<input type="hidden" name="'.$this->prefixId.'[step]" value="finish" />';
+		$nextStep=$this->getStepAfter($this->currentStep);
+		$listingForm .= '<input type="hidden" name="'.$this->prefixId.'[step]" value="'.$nextStep.'" />';
+		$markerArray['###HIDDEN_STEP###'] = '<input type="hidden" name="'.$this->prefixId.'[step]" value="'.$nextStep.'" />';
 		$markerArray['###LISTING_TITLE###'] = $this->pi_getLL('listing_title');
 		$markerArray['###LISTING_DESCRIPTION###'] = $this->pi_getLL('listing_description');
 		$markerArray['###LISTING_FORM_FIELDS###'] = $listingForm;
@@ -2217,7 +2230,10 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 		return $newdata;
 	}
 
-
+	function getStepAfter($step) {
+		$rev=array_flip($this->CheckOutsteps);
+		return $this->CheckOutsteps[++$rev[$step]];
+	}
 
 }
 
