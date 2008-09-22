@@ -287,9 +287,10 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 		}
 
 		#The purpose of the while loop is simply to be able to define any step as the step after payment.		
-		#To prevent infinite loops with poor setup shops we use this counter
+		#To prevent infinite loops with poorly setup shops we use this counter
 		$finiteloop=0;
 		$content=false;
+		if (!$this->validateAddress('billing')){ $this->currentStep='billing';}
 		while ( $content=== false && $finiteloop<10 ){
 			switch ($this->currentStep)	{
 				case 'delivery':
@@ -303,7 +304,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 					if ($content != false) break;
 					// go on with listing
 					$this->currentStep = $this->getStepAfter('payment');
-					break;
+					break; #Breaking to get to the next step
 				case 'listing':
 					$content = $this->getListing();
 					break;
@@ -457,10 +458,14 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 			$billingForm .= $markerArray['###ADDRESS_FORM_INPUTFIELDS###'] ;
 		}
 
+
+		// for marker for the delivery address chooser
+		$step_nodelivery = $this->getStepAfter('delivery');
+
 		/**
 		 * Build pre selcted Radio Boxes
 		 */
-		if ($this->piVars['step']=='payment')	{
+		if ($this->piVars['step']==$step_nodelivery)	{
 			$deliveryChecked = '  ';
 			$paymentChecked = ' checked="checked" ';
 		} elseif ($this->piVars['step'] == 'delivery')	{
@@ -484,8 +489,6 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 		}
 		
 		
-		// for marker for the delivery address chooser
-		$step_nodelivery = $this->getStepAfter('delivery');
 
 		$markerArray['###ADDRESS_RADIOFORM_DELIVERY###'] = '<input type="radio" id="delivery" name="'.$this->prefixId.'[step]" value="delivery" '.$deliveryChecked.'/>';
 		$markerArray['###ADDRESS_RADIOFORM_NODELIVERY###']= '<input type="radio" id="nodelivery"  name="'.$this->prefixId.'[step]" value="' . $step_nodelivery . '" '.$paymentChecked.'/>';
