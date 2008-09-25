@@ -375,7 +375,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 		$inactiveContent = '';
 		for ($i=0;$i<$currentStepNumber;$i++){
 			$localTs=$this->conf['activeStep.'];
-			if ($localTs['typolink.']['setCommerceValues']=1) {
+			if ($localTs['typolink.']['setCommerceValues']==1) {
 				$localTs['typolink.']['parameter']=$this->conf['basketPid'];
 				$localTs['typolink.']['additionalParams'] = ini_get('arg_separator.output').$this->prefixId.'[step]='.$this->CheckOutsteps[$i];
 	
@@ -1244,6 +1244,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 		 *
 		 */
 		$hookObjectsArr = array();
+
 		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi3/class.tx_commerce_pi3.php']['getBasketSum']))	{
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi3/class.tx_commerce_pi3.php']['getBasketSum'] as $classRef)	{
 				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
