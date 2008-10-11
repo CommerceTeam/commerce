@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<T3locallang>
+	<meta type="array">
+		<description></description>
+		<type>database</type>
+		<csh_table></csh_table>
+		<fileId>EXT:commerce/mod_tracking/locallang_mod.xml</fileId>
+	</meta>
+	<data type="array">
+		<languageKey index="default" type="array">
+			<label index="mlang_tabs_tab">Tracking</label>
+			<label index="mlang_labels_tabdescr">Track the orders</label>
+			<label index="mlang_labels_tablabel">Tracking</label>
+		</languageKey>
+		<languageKey index="de" type="array">
+			<label index="mlang_tabs_tab">Tracking</label>
+			<label index="mlang_labels_tabdescr">Track der Bestellungen</label>
+			<label index="mlang_labels_tablabel">Tracking</label>
+		</languageKey>
+		<languageKey index="nl" type="array">
+			<label index="mlang_tabs_tab">Volgen</label>
+			<label index="mlang_labels_tabdescr">De orders volgen</label>
+			<label index="mlang_labels_tablabel">Volgen</label>
+		</languageKey>
+		  <languageKey index="cz" type="array">
+            <label index="mlang_tabs_tab">Tracking</label>
+            <label index="mlang_labels_tabdescr">Sledovat objednávky</label>
+            <label index="mlang_labels_tablabel">Tracking</label>
+        </languageKey>
+        <languageKey index="pl" type="array">
+            <label index="mlang_tabs_tab">Śledzenie</label>
+            <label index="mlang_labels_tabdescr">Śledź zamówienia</label>
+            <label index="mlang_labels_tablabel">Śledzenie</label>
+        </languageKey>
+		 <languageKey index="hu" type="array">
+            <label index="mlang_tabs_tab">Követés</label>
+            <label index="mlang_labels_tabdescr">A megrendelések követése</label>
+            <label index="mlang_labels_tablabel">Követés</label>
+        </languageKey>
+	</data>
+</T3locallang>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<T3locallang>
+	<meta type="array">
+		<description></description>
+		<type>database</type>
+		<csh_table></csh_table>
+		<fileId>EXT:commerce/locallang_cm.xml</fileId>
+	</meta>
+	<data type="array">
+		<languageKey index="default" type="array">
+			<label index="tx_graytree_cm1.new_tx_commerce_categories">New subcategory</label>
+			<label index="tx_graytree_cm1.new_tx_commerce_products">New product</label>
+		</languageKey>
+		<languageKey index="de" type="array">
+			<label index="tx_graytree_cm1.new_tx_commerce_categories">Neue Unter-Kategorie</label>
+			<label index="tx_graytree_cm1.new_tx_commerce_products">Neues Produkt</label>
+		</languageKey>
+		
+		<languageKey index="nl" type="array">
+			<label index="tx_graytree_cm1.new_tx_commerce_categories">Nieuwe subcategorie</label>
+			<label index="tx_graytree_cm1.new_tx_commerce_products">Nieuw Product</label>
+		</languageKey>
+		<languageKey index="fr" type="array">
+			<label index="tx_graytree_cm1.new_tx_commerce_categories">Nouvelle Sous-Categorie</label>
+			<label index="tx_graytree_cm1.new_tx_commerce_products">Nouveau produit</label>
+		</languageKey>
+		<languageKey index="br" type="array">
+			<label index="tx_graytree_cm1.new_tx_commerce_categories">Nova subcategoria</label>
+			<label index="tx_graytree_cm1.new_tx_commerce_products">Novo produto</label>
+		</languageKey>
+ 		<languageKey index="cz" type="array">
+            <label index="tx_graytree_cm1.new_tx_commerce_categories">Nová podkategorie</label>
+            <label index="tx_graytree_cm1.new_tx_commerce_products">Nový produkt</label>
+        </languageKey>
+        <languageKey index="pl" type="array">
+            <label index="tx_graytree_cm1.new_tx_commerce_categories">Nowa podkategoria</label>
+            <label index="tx_graytree_cm1.new_tx_commerce_products">Nowy produkt</label>
+        </languageKey>
+ 		<languageKey index="hu" type="array">
+            <label index="tx_graytree_cm1.new_tx_commerce_categories">Új alkategória</label>
+            <label index="tx_graytree_cm1.new_tx_commerce_products">Új termék</label>
+        </languageKey>
+	</data>
+</T3locallang>

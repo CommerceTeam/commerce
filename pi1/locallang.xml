@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<T3locallang>
+	<meta type="array">
+		<description></description>
+		<type>database</type>
+		<csh_table></csh_table>
+		<fileId>EXT:commerce/pi1/locallang.xml</fileId>
+	</meta>
+	<data type="array">
+		<languageKey index="default" type="array">
+			<label index="lang_addtobasketlink">Add to Basket</label>
+			<label index="lang_header_image">Image</label>
+			<label index="lang_header_title">Title</label>
+			<label index="lang_header_teaser">Teaser</label>
+			<label index="lang_header_price">Price</label>
+			<label index="lang_header_action"></label>
+			<label index="lang_submit">Submit</label>
+			<label index="all_options">all</label>
+		</languageKey>
+		<languageKey index="de" type="array">
+			<label index="lang_addtobasketlink">In den Warenkorb legen</label>
+			<label index="lang_header_image">Bild</label>
+			<label index="lang_header_title">Titel</label>
+			<label index="lang_header_teaser">Beschreibung</label>
+			<label index="lang_header_price">Preis</label>
+			<label index="lang_header_action"></label>
+			<label index="lang_submit">Abschicken</label>
+			<label index="all_options">Alle</label>		
+		</languageKey>
+		<languageKey index="nl" type="array">
+		</languageKey>
+	</data>
+</T3locallang>

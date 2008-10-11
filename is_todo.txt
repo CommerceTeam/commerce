@@ -1,0 +1,5 @@
+* Payment_types separate Table with default Data
+* Using FormatPrice with TS / Moneylib
+* Change Money value fileds to integer
+
+

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<T3locallang>
+	<meta type="array">
+		<description></description>
+		<type>database</type>
+		<csh_table></csh_table>
+		<fileId>EXT:commerce/mod_orders/locallang.xml</fileId>
+	</meta>
+	<data type="array">
+		<languageKey index="default" type="array">
+			<label index="title">Orders and customer data</label>
+			
+			<label index="CustomerData">Customer data</label>
+			<label index="OrderData">Order data</label>
+			<label index="moveorderto">Move Order to:</label>
+			<label index="order_type_uid_noName">Type</label>
+			<label index="delivery">delivery</label>
+			<label index="payment">payment</label>
+			<label index="numarticles">articles</label>
+			<label index="tstamp">Last Change</label>
+			<label index="phone_1">user phone</label>
+			<label index="phone_2">delivery phone</label>
+			<label index="articles">-</label>
+			<label index="order_number">Order number</label>
+			<label index="article_number">article numbers</label>
+			<label index="article_name">articles in this order</label>
+
+		</languageKey>
+		<languageKey index="de" type="array">
+			<label index="title">Bestell und Kundendaten</label>
+			<label index="CustomerData">Kundendaten</label>
+			<label index="OrderData">Bestelldaten</label>
+			<label index="moveorderto">Bestellungen in den Ordner verschieben:</label>
+			<label index="delivery">Versand</label>
+			<label index="payment">Bezahlung</label>
+			<label index="numarticles">Artikel</label>
+			<label index="tstamp">Änderung</label>
+			<label index="phone_1">Kunde Tel.</label>
+			<label index="phone_2">Versand Tel.</label>
+			
+			<label index="order_number">Order ID</label>
+			<label index="article_number">Artikelnummern</label>
+			<label index="article_name">Artikel in der Bestellung</label>
+		
+		</languageKey>
+		<languageKey index="nl" type="array">
+			<label index="title">Bestelling en Klantengegevens</label>
+			<label index="CustomerData">Klantengegevens</label>
+			<label index="OrderData">Bestelgegevens</label>
+		</languageKey>
+		<languageKey index="br" type="array">
+			<label index="title">Pedidos e dados pessoais do consumidor</label>
+			<label index="CustomerData">Dados pessoais do consumidor</label>
+			<label index="OrderData">Dados do Pedido</label>
+		</languageKey>
+		  <languageKey index="cz" type="array">
+            <label index="title">Údaje o objednávkách a zákazníci</label>
+            <label index="CustomerData">Údaje o zákaznících</label>
+            <label index="OrderData">Údaje o objednávkách</label>
+        </languageKey>
+        <languageKey index="pl" type="array">
+            <label index="title">Dane dotyczące zamówienia i klienta</label>
+            <label index="CustomerData">Dane klienta</label>
+            <label index="OrderData">Dane zamówieniowe</label>
+        </languageKey>
+		 <languageKey index="hu" type="array">
+            <label index="title">Megrendelési és ügyféladatok</label>
+            <label index="CustomerData">Ügyféladatok</label>
+            <label index="OrderData">Megrendelés adatai</label>
+        </languageKey>
+		
+	</data>
+</T3locallang>
