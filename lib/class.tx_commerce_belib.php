@@ -666,7 +666,8 @@ class tx_commerce_belib {
 		}
 	}
 
-	/**	
+	/**
+	
 	 * Searches for a string in an array of arrays.
 	 *
 	 * @param	string		$needle: The string you want to check for
@@ -730,15 +731,18 @@ class tx_commerce_belib {
 		$delWhere = array();
 		$counter = 1;
 		$usedRelations = array();
-		if(is_array($relationData)){
+
+		if(is_array($relationData)){
 			foreach ($relationData as $relation)	{
 				$where = 'uid_local=' .$uid_local;
 				$dataArray = array ('uid_local' => $uid_local);
-				if(is_array($relation)){
+
+				if(is_array($relation)){
 					foreach ($relation as $key => $data)	{
 						$dataArray[$key] = $data;
 						$where .= ' AND ' .$key .'=\'' .$data .'\'';
-					}				}
+					}
+				}
 				if ($withReference && ($counter > 1))	{
 					$dataArray['is_reference'] = 1;
 					$where .= ' AND is_reference=1';
