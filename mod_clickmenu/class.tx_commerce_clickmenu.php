@@ -87,7 +87,7 @@ class tx_commerce_clickMenu extends tx_graytree_clickMenu {
 		if ($extConf['simpleMode'] && $table == 'tx_commerce_products')	{
 			$editProduct = '?edit[tx_commerce_products]['.$uid.']=edit';
 				// get the article uid that is assigned to this product
-			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid', 'tx_commerce_articles', 'uid_product='.$uid);
+			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid', 'tx_commerce_articles', 'uid_product='.intval($uid));
 			$aUid = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
 			
 			$editArticle = '&edit[tx_commerce_articles]['.$aUid['uid'].']=edit';
@@ -139,7 +139,7 @@ class tx_commerce_clickMenu extends tx_graytree_clickMenu {
 			if ($extConf['simpleMode'] && $table == 'tx_commerce_products')	{
 				$editProduct = '?edit[tx_commerce_products]['.$uid.']=edit';
 					// get the article uid that is assigned to this product
-				$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid', 'tx_commerce_articles', 'uid_product='.$uid);
+				$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid', 'tx_commerce_articles', 'uid_product='.intval($uid));
 				$aUid = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
 				
 				$editArticle = '&edit[tx_commerce_articles]['.$aUid['uid'].']=edit';

@@ -517,10 +517,10 @@ class tx_commerce_dmhooks	{
 		$extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['commerce']);
 		if ($extConf['simpleMode'] && $pUid != NULL)	{
 				// search for an article of this product
-			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'tx_commerce_articles', 'uid_product=' .$pUid, '', '', 1);
+			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'tx_commerce_articles', 'uid_product=' .intval($pUid), '', '', 1);
 			if ($GLOBALS['TYPO3_DB']->sql_num_rows($res) == 0)	{
 					// create a new article if no one exists
-				$pRes = $GLOBALS['TYPO3_DB']->exec_SELECTquery('title', 'tx_commerce_products', 'uid=' .$pUid, '', '', 1);
+				$pRes = $GLOBALS['TYPO3_DB']->exec_SELECTquery('title', 'tx_commerce_products', 'uid=' .intval($pUid), '', '', 1);
 				$productData = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($pRes);
 
 				$aRes = $GLOBALS['TYPO3_DB']->exec_INSERTquery(
@@ -539,7 +539,7 @@ class tx_commerce_dmhooks	{
 			}
 
 				// check if the article has already a price
-			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'tx_commerce_article_prices', 'uid_article=' .$aUid, '', '', 1);
+			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'tx_commerce_article_prices', 'uid_article=' .intval($aUid), '', '', 1);
 			if ($GLOBALS['TYPO3_DB']->sql_num_rows($res) == 0)	{
 					// create a new price if no one exists
 				$pRes = $GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_commerce_article_prices', array('pid' => $fieldArray['pid'],'uid_article' => $aUid));
@@ -548,7 +548,7 @@ class tx_commerce_dmhooks	{
 
 		$delete = true;
 		if (isset($fieldArray['categories']))	{
-			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid_foreign', 'tx_commerce_products_categories_mm', 'uid_local=' .$pUid);
+			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid_foreign', 'tx_commerce_products_categories_mm', 'uid_local=' .intval($pUid));
 			while ($sres = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) $catList[] = $sres['uid_foreign'];
 			$paList = $this->belib->getAttributesForCategoryList($catList);
 			$uidList = $this->belib->extractFieldArray($paList, 'uid_foreign', true, array('uid_correlationtype'));
@@ -581,7 +581,7 @@ class tx_commerce_dmhooks	{
 			$this->belib->updateXML('attributes', 'tx_commerce_products', $pUid, 'product', $ctList);
 
 				// update the XML for this product, we remove everything that is not set for current attributes
-			$pXML = $GLOBALS['TYPO3_DB']->exec_SELECTquery('attributesedit', 'tx_commerce_products', 'uid=' .$pUid);
+			$pXML = $GLOBALS['TYPO3_DB']->exec_SELECTquery('attributesedit', 'tx_commerce_products', 'uid=' .intval($pUid));
 			$pXML = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($pXML);
 
 			if (!empty($pXML['attributesedit']))	{
@@ -653,8 +653,8 @@ class tx_commerce_dmhooks	{
 								'tx_commerce_products_attributes_mm',
 								array_merge(
 									array (
-										'uid_local' => $pUid,
-										'uid_foreign' => $attributeKey,
+										'uid_local' => intval($pUid),
+										'uid_foreign' => intval($attributeKey),
 										'uid_correlationtype' => 4,
 									),
 									$updateData[0]
@@ -723,8 +723,8 @@ class tx_commerce_dmhooks	{
 								$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 									'uid_local, uid_foreign',
 									'tx_commerce_articles_article_attributes_mm',
-									'uid_local=' .$article['uid'] .' AND uid_foreign=' .$attributeKey
-								);
+									'uid_local=' .intval($article['uid']) .' AND uid_foreign=' .intval($attributeKey)
+								);	
 								if ($GLOBALS['TYPO3_DB']->sql_num_rows($res) > 0)	{
 									$GLOBALS['TYPO3_DB']->exec_UPDATEquery(
 										'tx_commerce_articles_article_attributes_mm',
@@ -767,7 +767,7 @@ class tx_commerce_dmhooks	{
 			}
 		}
 		// Check if we do have some localosed products an clal the recursvly
-		$resLocalised=$GLOBALS['TYPO3_DB']->exec_SELECTquery('uid','tx_commerce_products','deleted=0 and l18n_parent='.$pUid);
+		$resLocalised=$GLOBALS['TYPO3_DB']->exec_SELECTquery('uid','tx_commerce_products','deleted=0 and l18n_parent='. intval($pUid));
 		while ($rowLocalised = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($resLocalised)) {
 			$this->saveProductRelations($rowLocalised['uid'], $fieldArray);
 
@@ -851,7 +851,7 @@ class tx_commerce_dmhooks	{
 					$uidArticleRes = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 						'uid_article',
 						'tx_commerce_article_prices',
-						'uid=' .$id
+						'uid=' .intval($id)
 					);
 					$uidArticle = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($uidArticleRes);
 					$uidArticle = $uidArticle['uid_article'];
@@ -905,8 +905,8 @@ class tx_commerce_dmhooks	{
 			*
 			*/
 
-				// Move Order articles
-			$res_order_id=$GLOBALS['TYPO3_DB']->exec_SELECTquery('order_id,pid,uid',$table,'uid='.$id);
+				// Move Order articles 
+			$res_order_id=$GLOBALS['TYPO3_DB']->exec_SELECTquery('order_id,pid,uid',$table,'uid='.intval($id));
 			if (!$GLOBALS['TYPO3_DB']->sql_error())	{
 
 
@@ -986,7 +986,7 @@ class tx_commerce_dmhooks	{
 	 */
 	function recalculateOrderSum($status, $table, $id, &$fieldArray, &$th_obj)	{
 		$foreign_table = 'tx_commerce_orders';
-		$res_order_id = $GLOBALS['TYPO3_DB']->exec_SELECTquery('order_id', $table, 'uid=' .$id);
+		$res_order_id = $GLOBALS['TYPO3_DB']->exec_SELECTquery('order_id', $table, 'uid=' .intval($id));
 		if (!$GLOBALS['TYPO3_DB']->sql_error())	{
 			list($order_id)=$GLOBALS['TYPO3_DB']->sql_fetch_row($res_order_id);
 			$res_order_articles=$GLOBALS['TYPO3_DB']->exec_SELECTquery('*','tx_commerce_order_articles',"order_id='".$GLOBALS['TYPO3_DB']->quoteStr($order_id,'tx_commerce_order_articles')."'");

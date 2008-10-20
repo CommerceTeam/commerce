@@ -222,8 +222,8 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 				//override missing or incorrect email with username if username is email, because we need to be sure to have at least one correct mail address
 				//this way email is not necessarily mandatory for billing/delivery address
 			if (!$this->conf['randomUser'] && !t3lib_div::validEmail($this->piVars[$this->piVars['address_uid']]['email'])) $this->piVars[$this->piVars['address_uid']]['email'] = $GLOBALS["TSFE"]->fe_user->user['email'];
-			$this->piVars[$this->piVars['address_uid']]['uid'] = $this->piVars['address_uid'];
-			$GLOBALS['TSFE']->fe_user->setKey('ses', $this->piVars['check'], $this->piVars[$this->piVars['address_uid']]);
+			$this->piVars[$this->piVars['address_uid']]['uid'] = intval($this->piVars['address_uid']);
+			$GLOBALS['TSFE']->fe_user->setKey('ses', $this->piVars['check'], intval($this->piVars[$this->piVars['address_uid']]));
 		}
 	
 		$this->MYSESSION['billing'] = $GLOBALS['TSFE']->fe_user->getKey('ses', 'billing');
@@ -1273,7 +1273,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 		
 		    $table = 'fe_users';
 		    $fields = 'uid';
-		    $select = 'username = \''.$username.'\'';
+		    $select = 'username = '.$GLOBALS['TYPO3_DB']->fullQuoteStr($username, $table).' ';
 		    $select.= t3lib_befunc::deleteClause($table);
 			$select .= ' AND pid = ' . $this->conf['userPID'];
 		    $res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($fields, $table, $select);
@@ -1973,7 +1973,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 		// Get The addresses
 		$deliveryAdress='';
 		if ($orderData['cust_deliveryaddress'])	{
-			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'tt_address', 'uid='.$orderData['cust_deliveryaddress']);
+			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'tt_address', 'uid='.intval($orderData['cust_deliveryaddress']));
 			if ($data= $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res))	{
 			    $data = $this->parseRawData($data,$this->conf['delivery.']['sourceFields.']);	
 			    $deliveryAdress = $this->makeAdressView($data,'###DELIVERY_ADDRESS###');
@@ -1983,7 +1983,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 		$content = $this->cObj->substituteSubpart($content,'###DELIVERY_ADDRESS###',$deliveryAdress);
 		$billingAdress = '';
 		if ($orderData['cust_invoice'])	{
-			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'tt_address', 'uid='.$orderData['cust_invoice']);
+			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'tt_address', 'uid='.intval($orderData['cust_invoice']));
 			if ($data= $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res))	{
 				$data = $this->parseRawData($data,$this->conf['billing.']['sourceFields.']);
 				$billingAdress = $this->makeAdressView($data,'###BILLING_ADDRESS###');

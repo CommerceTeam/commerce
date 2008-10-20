@@ -1,5 +1,8 @@
 Changelog for tx_commerce
 (add new changes on top of this file)
+20.10.2008 Ingo Schmitt <is@marketing-factory.de>
+* Fixed security issue TYPO3-20081020-2, please see http://typo3.org/teams/security/security-bulletins/typo3-20081020-2/
+* Raised Version to 0.9.7
 
 10.05.2008 Ingo Schmtt <is@marketing-factory.de>
 * Raised dependency to graytree 0.2.x as minimum requirement

@@ -97,6 +97,8 @@
 	    /**
 	    * Define variables
 	    */
+	    $uid = intval($uid);
+	    $lang_uid = intval($lang_uid);
 	    
 	     $this->database_class='tx_commerce_db_price';
 	     $this->fieldlist=array('price_net','price_gross','fe_group','price_scale_amount_start','price_scale_amount_end');

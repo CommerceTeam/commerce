@@ -158,6 +158,10 @@ class tx_commerce_basket_item{
  	 */
  	function init($uid,$quantity,$priceid,$lang_id=0){
  		
+		$uid = intval($uid);
+	    $lang_uid = intval($lang_uid);
+	    $priceid = intval($priceid);
+	    
  		$this->quantity=$quantity;
  		$this->lang_id=$lang_id;
  		$this->article = new tx_commerce_article($uid,$this->lang_id);

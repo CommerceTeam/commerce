@@ -126,6 +126,8 @@
 	 */
 	function init($uid,$lang_uid=0) {
 		
+		 $uid = intval($uid);
+	     $lang_uid = intval($lang_uid);
 		 $this->database_class='tx_commerce_db_product';
 		 $this->fieldlist=array('uid','title','subtitle','description','teaser','images','teaserimages','relatedpage','l18n_parent','manufacturer_uid');
 		
@@ -364,12 +366,12 @@
 			  //  Nach dem charwert immer ueberpruefen, solange value_char noch nicht drin ist.
 	    
 		  	 	if (is_float($uid_val_pair['AttributeValue']) || is_integer(intval($uid_val_pair['AttributeValue'])))	 	{
-		  	 		$addwheretmp.=	" OR (tx_commerce_attributes.uid = ".$uid_val_pair['AttributeUid']."  and tx_commerce_articles_article_attributes_mm.default_value in (".
+		  	 		$addwheretmp.=	" OR (tx_commerce_attributes.uid = ".intval($uid_val_pair['AttributeUid'])."  and tx_commerce_articles_article_attributes_mm.default_value in (".
 										$uid_val_pair['AttributeValue']." ) )";
 		  	 	}
 		 
 		  	 	if (is_float($uid_val_pair['AttributeValue']) || is_integer(intval($uid_val_pair['AttributeValue']))) 	{
-		  	 		$addwheretmp.=	" OR (tx_commerce_attributes.uid = ".$uid_val_pair['AttributeUid']."  and tx_commerce_articles_article_attributes_mm.uid_valuelist in (".
+		  	 		$addwheretmp.=	" OR (tx_commerce_attributes.uid = ".intval($uid_val_pair['AttributeUid'])."  and tx_commerce_articles_article_attributes_mm.uid_valuelist in (".
 										$uid_val_pair['AttributeValue'].") )";
 		  	 	}
 				$addwhere = ' AND (0 '.$addwheretmp. ') ';	

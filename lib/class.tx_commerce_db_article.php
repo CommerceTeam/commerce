@@ -108,7 +108,8 @@ class tx_commerce_db_article extends tx_commerce_db_alib{
 		   
       function get_prices($uid,$count=1,$orderField = 'price_net'){
     	
-    		$orderField;
+		$uid = intval($uid);
+		$count = intval($count);
 		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_article.php']['priceOrder']) {
 		       $hookObj = &t3lib_div::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_article.php']['priceOrder']);
 		}
@@ -146,6 +147,9 @@ class tx_commerce_db_article extends tx_commerce_db_alib{
 	 */
 	
 	function getPriceScales($uid,$count=1){
+		
+		$uid = intval($uid);
+		$count = intval($count);
 		if ($uid>0) {
 	
 			$price_uid_list=array();
@@ -175,6 +179,7 @@ class tx_commerce_db_article extends tx_commerce_db_alib{
 	 */
 	
 	function getPrices($uid){
+		$uid = intval($uid);
 		if ($uid>0) {
 	
 			$price_uid_list=array();
@@ -222,7 +227,8 @@ class tx_commerce_db_article extends tx_commerce_db_alib{
  	 */
  	
  	function getAttributeValue($uid, $attribute_uid,$valueListAsUid=false){
- 		 
+ 		$uid = intval($uid);
+		 $attribute_uid = intval( $attribute_uid);
  		 if ($uid > 0) {
 	 		 // First select attribute, to detecxt if is valuelist
 	 		  if(is_object($GLOBALS['TSFE']->sys_page)){
@@ -295,7 +301,7 @@ class tx_commerce_db_article extends tx_commerce_db_alib{
  	 */
  	 function getSupplierName($supplieruid){
  	 	if ($supplieruid > 0) {
-	 		$result= $GLOBALS['TYPO3_DB']->exec_SELECTquery('title','tx_commerce_supplier',"uid = $supplieruid" );
+	 		$result= $GLOBALS['TYPO3_DB']->exec_SELECTquery('title','tx_commerce_supplier',"uid = ".intval($supplieruid) );
 	 		 if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)==1){
 	 		 	$return_data=$GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
 	 		 	return $return_data['title'];

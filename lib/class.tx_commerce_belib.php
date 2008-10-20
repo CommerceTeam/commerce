@@ -47,7 +47,7 @@ class tx_commerce_belib {
 	 */
 	function getCategoriesForProductFromDB($pUid)	{
 			// get categories that are directly stored in the product dataset
-		$pCategories = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid_foreign', 'tx_commerce_products_categories_mm', 'uid_local=' .$pUid);
+		$pCategories = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid_foreign', 'tx_commerce_products_categories_mm', 'uid_local=' .intval($pUid));
 		$result = array();
 		while ($cUid = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($pCategories))	{
 			$this->getParentCategories($cUid['uid_foreign'], $result);
@@ -76,7 +76,7 @@ class tx_commerce_belib {
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			'distinct *',
 			'tx_commerce_products_attributes_mm',
-			'uid_local=' .$pUid,
+			'uid_local=' .intval($pUid),
 			'',
 			'sorting, uid_foreign DESC, uid_correlationtype ASC'
 		);
@@ -91,7 +91,7 @@ class tx_commerce_belib {
 				$aRes = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 					'*',
 					'tx_commerce_attributes',
-					'uid=' .$relData['uid_foreign'] .$this->enableFields('tx_commerce_attributes'),
+					'uid=' .intval($relData['uid_foreign']) .$this->enableFields('tx_commerce_attributes'),
 					'', 'uid'
 				);
 				$aData = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($aRes);
@@ -101,7 +101,7 @@ class tx_commerce_belib {
 					$vlRes = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 						'*',
 						'tx_commerce_attribute_values',
-						'attributes_uid=' .$aData['uid'] .$this->enableFields('tx_commerce_attribute_values'),
+						'attributes_uid=' .intval($aData['uid']) .$this->enableFields('tx_commerce_attribute_values'),
 						'', 'uid'
 					);
 					$vlData = array();
@@ -156,7 +156,7 @@ class tx_commerce_belib {
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 				'uid_foreign',
 				'tx_commerce_categories_parent_category_mm',
-				'uid_local=' .$cUid,
+				'uid_local=' .intval($cUid),
 				'', 'uid_foreign'
 			);
 
@@ -192,7 +192,7 @@ class tx_commerce_belib {
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 				'uid_local',
 				'tx_commerce_categories_parent_category_mm',
-				'uid_foreign=' .$cUid,
+				'uid_foreign=' .intval($cUid),
 				'',
 				'uid_local'
 			);
@@ -243,7 +243,7 @@ class tx_commerce_belib {
 		$data = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			$select,
 			'tx_commerce_categories',
-			'uid=' .$cUid,
+			'uid=' .intval($cUid),
 			$groupBy,
 			$orderBy
 		);
@@ -288,12 +288,12 @@ class tx_commerce_belib {
 		$where = 'uid_local=' .$cUid;
 
 			// select only for a special correlation type?
-		($ct == NULL) ? '' : $where .= ' AND uid_correlationtype=' .$ct;
+		($ct == NULL) ? '' : $where .= ' AND uid_correlationtype=' .intval($ct);
 
 			// should we exclude some attributes
 		if (is_array($excludeAttributes) && count($excludeAttributes) > 0)	{
 			$eAttributes = array();
-			foreach ($excludeAttributes as $eAttribute) $eAttributes[] = $eAttribute['uid_foreign'];
+			foreach ($excludeAttributes as $eAttribute) $eAttributes[] = (int)$eAttribute['uid_foreign'];
 			$where .= ' AND uid_foreign NOT IN (' .implode(',', $eAttributes) .')';
 		}
 
@@ -351,7 +351,7 @@ class tx_commerce_belib {
 	 * @return	An associative array with the attributeData
 	 */
 	function getAttributeData($aUid, $select = '*')	{
-		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($select, 'tx_commerce_attributes', 'uid=' .$aUid);
+		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($select, 'tx_commerce_attributes', 'uid=' .intval($aUid));
 		return $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
 	}
 
@@ -378,7 +378,7 @@ class tx_commerce_belib {
 			$relRes = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 				'uid_valuelist,default_value,value_char',
 				$relationTable,
-				'uid_local=' .$pUid .' AND uid_foreign=' .$aUid
+				'uid_local=' .intval($pUid) .' AND uid_foreign=' .intval($aUid)
 			);
 			$relationData = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($relRes);
 
@@ -392,7 +392,7 @@ class tx_commerce_belib {
 						$valueRes = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 							'value',
 							'tx_commerce_attribute_values',
-							'uid=' .$relation['uid_valuelist'] .$this->enableFields('tx_commerce_attribute_values')
+							'uid=' .intval($relation['uid_valuelist']) .$this->enableFields('tx_commerce_attribute_values')
 						);
 						$value = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($valueRes);
 						$result[] = $value['value'];
@@ -405,7 +405,7 @@ class tx_commerce_belib {
 				$valueRes = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 					'value',
 					'tx_commerce_attribute_values',
-					'uid=' .$relationData['uid_valuelist'] .$this->enableFields('tx_commerce_attribute_values')
+					'uid=' .intval($relationData['uid_valuelist']) .$this->enableFields('tx_commerce_attribute_values')
 				);
 				$value = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($valueRes);
 				return $value['value'];
@@ -429,7 +429,7 @@ class tx_commerce_belib {
 		$ctRes = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			'uid_correlationtype',
 			'tx_commerce_products_attributes_mm',
-			'uid_local=' .$pUid .' AND uid_foreign=' .$aUid
+			'uid_local=' .intval($pUid) .' AND uid_foreign=' .intval($aUid)
 		);
 		$uidCT = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($ctRes);
 		return $uidCT['uid_correlationtype'];
@@ -447,7 +447,7 @@ class tx_commerce_belib {
 	 * @since 20.12.2005 Check if article exists
 	 */
 	function getArticlesOfProduct($pUid, $additionalWhere = '', $orderBy = '')	{
-		$where = 'uid_product=' .$pUid;
+		$where = 'uid_product=' .intval($pUid);
 
 		$where .= ' AND deleted=0';
 
@@ -501,7 +501,7 @@ class tx_commerce_belib {
 	 */
 	function getAttributesForArticle($aUid, $ct = NULL, $excludeAttributes = NULL)	{
 			// build the basic query
-		$where = 'uid_local=' .$aUid;
+		$where = 'uid_local=' .intval($aUid);
 
 		if ($ct != NULL)	{
 			$pUid = $this->getProductOfArticle($aUid, 'uid');
@@ -555,7 +555,7 @@ class tx_commerce_belib {
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 				'*',
 				'tx_commerce_articles_article_attributes_mm',
-				'uid_local='.$aUid.' AND uid_foreign IN ('.implode(',', $fullAttributeList).')'
+				'uid_local='. intval($aUid) .' AND uid_foreign IN ('.implode(',', $fullAttributeList).')'
 			);
 
 			while ($attributeData = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res))	{
@@ -591,7 +591,7 @@ class tx_commerce_belib {
 			// update the article
 		$GLOBALS['TYPO3_DB']->exec_UPDATEquery(
 			'tx_commerce_articles',
-			'uid='.$aUid,
+			'uid='. intval($aUid),
 			array ('attribute_hash' => $hash)
 		);
 	}
@@ -744,7 +744,7 @@ class tx_commerce_belib {
 			}
 			$GLOBALS['TYPO3_DB']->exec_DELETEquery(
 				$relationTable,
-				'uid_local=' .$uid_local .$where
+				'uid_local=' .intval($uid_local) .$where
 			);
 		}
 	}
@@ -781,7 +781,7 @@ class tx_commerce_belib {
 	function updateArticleXML($articleRelations, $add = false, $articleUid = NULL, $productUid = NULL)	{
 	   $xmlData = array();
 	   if ($add && is_numeric($articleUid))	{
-			$xmlData = $GLOBALS['TYPO3_DB']->exec_SELECTquery('attributesedit', 'tx_commerce_articles', 'uid=' .$articleUid);
+			$xmlData = $GLOBALS['TYPO3_DB']->exec_SELECTquery('attributesedit', 'tx_commerce_articles', 'uid=' .intval($articleUid));
 			$xmlData = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($xmlData);
 			$xmlData = t3lib_div::xml2array($xmlData['attributesedit']);
 		}
@@ -792,10 +792,10 @@ class tx_commerce_belib {
 		 * Build Relation Data
 		 */
 		if ($productUid) {
-			$resRelationData = $GLOBALS['TYPO3_DB']->exec_SELECTquery('tx_commerce_articles_article_attributes_mm.*','tx_commerce_articles, tx_commerce_articles_article_attributes_mm',' tx_commerce_articles.uid = tx_commerce_articles_article_attributes_mm.uid_local and tx_commerce_articles.uid_product = '.$productUid);
+			$resRelationData = $GLOBALS['TYPO3_DB']->exec_SELECTquery('tx_commerce_articles_article_attributes_mm.*','tx_commerce_articles, tx_commerce_articles_article_attributes_mm',' tx_commerce_articles.uid = tx_commerce_articles_article_attributes_mm.uid_local and tx_commerce_articles.uid_product = '.intval($productUid));
 		}
 		if ($articleUid) {
-			$resRelationData = $GLOBALS['TYPO3_DB']->exec_SELECTquery('tx_commerce_articles_article_attributes_mm.*','tx_commerce_articles, tx_commerce_articles_article_attributes_mm',' tx_commerce_articles.uid = tx_commerce_articles_article_attributes_mm.uid_local and tx_commerce_articles.uid = '.$articleUid);
+			$resRelationData = $GLOBALS['TYPO3_DB']->exec_SELECTquery('tx_commerce_articles_article_attributes_mm.*','tx_commerce_articles, tx_commerce_articles_article_attributes_mm',' tx_commerce_articles.uid = tx_commerce_articles_article_attributes_mm.uid_local and tx_commerce_articles.uid = '.intval($articleUid));
 		}
 		if ($GLOBALS['TYPO3_DB']->sql_num_rows($resRelationData)>0) {
 			
@@ -1092,7 +1092,7 @@ class tx_commerce_belib {
 		
 		$res = $GLOBALS['TYPO3_DB']->exec_UPDATEquery(
 			'tx_commerce_articles',
-			'uid=' .$articleUid,
+			'uid=' .intval($articleUid),
 			array('prices' => $xml)
 		);
 		
@@ -1166,7 +1166,7 @@ class tx_commerce_belib {
 
             $res = $GLOBALS['TYPO3_DB']->exec_UPDATEquery(
                     'tx_commerce_articles',
-                    'uid=' .$articleUid,
+                    'uid=' .intval($articleUid),
                     array('prices' => $xml)
             );
 
@@ -1236,7 +1236,7 @@ class tx_commerce_belib {
   		}
   		$fieldSelected='*';
   		$mm_table='tx_commerce_categories_attributes_mm';
-  		$where='uid_local= '.$category_uid;
+  		$where='uid_local= '.intval($category_uid);
     	$rs=$GLOBALS['TYPO3_DB']->exec_SELECTquery('uid_correlationtype,uid_foreign',$mm_table,$where,$groupBy='',$orderBy='',$limit='');
     	$GLOBALS['TYPO3_DB']->debug('exec_SELECTquery');
 		$xmlArray=array();

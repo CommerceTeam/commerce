@@ -262,7 +262,7 @@ class tx_commerce_cmhooks {
 					 * Update the flexform
 					 */
 					 
-					$resProduct = $GLOBALS['TYPO3_DB']->exec_SELECTquery('attributesedit,attributes','tx_commerce_products','uid ='.$id);
+					$resProduct = $GLOBALS['TYPO3_DB']->exec_SELECTquery('attributesedit,attributes','tx_commerce_products','uid ='.intval($id));
 					#print_r($GLOBALS['TYPO3_DB']->SELECTquery('attributesedit,attributes','tx_commerce_products','uid ='.$id));
 					if ($rowProduct = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($resProduct)) {
 						
@@ -323,7 +323,7 @@ class tx_commerce_cmhooks {
 						$locAUid = $GLOBALS['TYPO3_DB']->sql_insert_id(); 
 			
 						// get all relations to attributes from the old article and copy them to new article
-						$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'tx_commerce_articles_article_attributes_mm', 'uid_local=' .$origArticle['uid'] .' AND uid_valuelist=0');
+						$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'tx_commerce_articles_article_attributes_mm', 'uid_local=' .intval($origArticle['uid']) .' AND uid_valuelist=0');
 						while ($origRelation = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res))	{
 							$origRelation['uid_local'] = $locAUid;
 							$GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_commerce_articles_article_attributes_mm', $origRelation);

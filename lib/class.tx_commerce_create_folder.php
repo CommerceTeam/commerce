@@ -196,11 +196,11 @@
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			'uid_local',
 			'tx_commerce_products_categories_mm',
-			'uid_foreign=' .$cUid
+			'uid_foreign=' .intval($cUid)
 		);
 		$pList = array();
 		while ($pUid = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
-			$pList[] = $pUid['uid_local'];
+			$pList[] = (int)$pUid['uid_local'];
 		}
 		// if no products where found for this category, we can return false
 		if (count($pList) <= 0) return false;
@@ -239,8 +239,8 @@
 		$aArray = $addArray;
 		$aArray['classname'] = $key;
 		$aArray['title'] = $key;
-		$aArray['uid_product'] = $pUid;
-		$aArray['article_type_uid'] = $value['type'];
+		$aArray['uid_product'] = (int)$pUid;
+		$aArray['article_type_uid'] = (int)$value['type'];
 		$GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_commerce_articles', $aArray);		
 		$aUid = $GLOBALS['TYPO3_DB']->sql_insert_id();
 		

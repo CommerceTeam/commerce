@@ -84,8 +84,8 @@ class tx_commerce_db_category extends tx_commerce_db_alib {
 
 		if (t3lib_div::testInt($uid) && ($uid > 0)){
 			$this->uid=$uid;
-			if (TYPO3_DLOG && COMMERCE_CLICKMENU_DLOG) t3lib_div::devLog('SELECT uid_foreign FROM '.$this->mm_database_table.' WHERE uid_local = '.$uid.' AND is_reference=0' , COMMERCE_EXTkey);
-			if ($result=$GLOBALS['TYPO3_DB']->exec_SELECTquery('uid_foreign', $this->mm_database_table,"uid_local = $uid and is_reference=0")) 	{
+			if (TYPO3_DLOG && COMMERCE_CLICKMENU_DLOG) t3lib_div::devLog('SELECT uid_foreign FROM '.$this->mm_database_table.' WHERE uid_local = '.intval($uid).' AND is_reference=0' , COMMERCE_EXTkey);
+			if ($result=$GLOBALS['TYPO3_DB']->exec_SELECTquery('uid_foreign', $this->mm_database_table,'uid_local = '.intval($uid).' and is_reference=0')) 	{
 				if ($return_data=$GLOBALS['TYPO3_DB']->sql_fetch_assoc($result))	{
 					$GLOBALS['TYPO3_DB']->sql_free_result($result);
 					if (TYPO3_DLOG && COMMERCE_CLICKMENU_DLOG) t3lib_div::devLog('tx_commerce_db_category::get_parent_category return '.$return_data['uid_foreign'], COMMERCE_EXTkey);
@@ -120,7 +120,7 @@ class tx_commerce_db_category extends tx_commerce_db_alib {
  												$this->database_table,
  												$this->mm_database_table,
  												$this->database_table,
- 												' and '.$this->mm_database_table.'.uid_local= '.$uid.' '.
+ 												' and '.$this->mm_database_table.'.uid_local= '.intval($uid).' '.
  												$add_where
  												)
  			)
@@ -176,7 +176,7 @@ class tx_commerce_db_category extends tx_commerce_db_alib {
  												$this->database_table,
  												$this->mm_database_table,
  												$this->database_table,
- 												' and '.$this->mm_database_table.'.uid_foreign= '.$uid.' '.$add_where
+ 												' and '.$this->mm_database_table.'.uid_foreign= '.intval($uid).' '.$add_where
  												,
  												'',
  												$localOrderField
@@ -238,7 +238,7 @@ class tx_commerce_db_category extends tx_commerce_db_alib {
 		}
 
 
- 		$where_clause = 'AND tx_commerce_products_categories_mm.uid_foreign = ' . $uid;
+ 		$where_clause = 'AND tx_commerce_products_categories_mm.uid_foreign = ' . intval($uid);
  		$where_clause.= ' AND tx_commerce_products.uid=tx_commerce_articles.uid_product ';
  		$where_clause.= ' AND tx_commerce_articles.uid=tx_commerce_article_prices.uid_article ';
  		if(is_object($GLOBALS['TSFE']->sys_page)){
@@ -283,7 +283,7 @@ class tx_commerce_db_category extends tx_commerce_db_alib {
 					 */
  					 $lresult=$GLOBALS['TYPO3_DB']->exec_SELECTquery('uid',
 			 			'tx_commerce_products',
-						'l18n_parent = '.$return_data['uid'].' AND sys_language_uid=' . $lang_uid
+						'l18n_parent = '.intval($return_data['uid']).' AND sys_language_uid=' . $lang_uid
 
 						);
 
