@@ -99,6 +99,8 @@
   
    function init($uid,$lang_uid=0)
    {
+   		$uid = intval($uid);
+	    $lang_uid = intval($lang_uid);
 		/*
 		 * Define variables
 		 */

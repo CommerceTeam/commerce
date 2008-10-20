@@ -525,7 +525,7 @@ class tx_commerce_pibase extends tslib_pibase {
 
 
 		if(($this->conf['showPageBrowser']==1) && (is_array($this->conf['pageBrowser.']['wraps.']))){
-			$this->internal['pagefloat']=$this->piVars['pointer'];
+			$this->internal['pagefloat']=(int)$this->piVars['pointer'];
 			$this->internal['dontLinkActivePage'] = $this->conf['pageBrowser.']['dontLinkActivePage'];
 			$this->internal['showFirstLast'] = $this->conf['pageBrowser.']['showFirstLast'];
 			$this->internal['showRange'] = $this->conf['pageBrowser.']['showRange'];
@@ -1112,11 +1112,11 @@ class tx_commerce_pibase extends tslib_pibase {
 					$foreign = 'uid_local';
 					$local = 'uid_foreign';
 				}
-				$res = $GLOBALS['TYPO3_DB']->SELECTquery("distinct( $foreign )",$TSconf['tableMM'],$local.' = '.$uid.'  '.$TSconf['table.']['addWhere'],'',' sorting ');
+				$res = $GLOBALS['TYPO3_DB']->SELECTquery("distinct( $foreign )",$TSconf['tableMM'],$local.' = '.intval($uid).'  '.$TSconf['table.']['addWhere'],'',' sorting ');
 				$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 					"distinct( $foreign )",
 					$TSconf['tableMM'],
-					$local.' = '.$uid.'  '.$TSconf['table.']['addWhere'],
+					$local.' = '.intval($uid).'  '.$TSconf['table.']['addWhere'],
 					'',
 					' sorting '
 				);
@@ -1596,7 +1596,7 @@ class tx_commerce_pibase extends tslib_pibase {
 		$markerArray['###SUBPART_PRODUCT_ATTRIBUTES###'] = $this->cObj->stdWrap($this->renderProductAttributeList($myProduct,$ProductAttributesSubpartArray,$TS['productAttributes.']['fields.']),$TS['productAttributes.']);
  		
 		
-		$linkArray['catUid']=$this->piVars['catUid'];
+		$linkArray['catUid']=(int)$this->piVars['catUid'];
 		if($this->basketHashValue){
 			$linkArray['basketHashValue'] = $this->basketHashValue;
 		}

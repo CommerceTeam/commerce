@@ -112,6 +112,8 @@
  	
  	function get_data($uid,$lang_uid=-1)
  	{
+ 		$uid=intval($uid);
+ 		$lang_uid=intval($lang_uid);
  		if ($lang_uid==-1)
  		{
  			unset($lang_uid);	
@@ -126,7 +128,7 @@
 		
  		$result=$GLOBALS['TYPO3_DB']->exec_SELECTquery('*',
  			$this->database_table,
-			"uid = '$uid' " .$proofSQL
+			"uid = $uid " .$proofSQL
 			);
 			
 		
@@ -163,6 +165,7 @@
 		if(!$uid){
 		    return false;
 		}
+		$uid=intval($uid);
 		$result=$GLOBALS['TYPO3_DB']->exec_SELECTquery('uid',
  			$this->database_table,
 			"uid = $uid"
@@ -186,7 +189,7 @@
  	 */
  	
  	function isAccessible($uid) {
- 		
+ 		$uid=intval($uid);
  		if ($uid >0) {
  			
  			 if (is_object($GLOBALS['TSFE']->sys_page)){
@@ -194,7 +197,7 @@
  			 }
 	 		 $result=$GLOBALS['TYPO3_DB']->exec_SELECTquery('*',
 	 			$this->database_table,
-				"uid = '$uid' " .$proofSQL
+				"uid = $uid " .$proofSQL
 				);
 			
 			if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)==1) {
@@ -232,7 +235,7 @@
   	 * @return array of attribute UID 
  	 */
  	function getAttributes($uid,$attribute_corelation_type_list=''){
-
+		$uid=intval($uid);
  		if ($this->database_attribute_rel_table==''){
  			/**
  			 * No table defined
@@ -255,7 +258,7 @@
 				
  		if (($result) && ($GLOBALS['TYPO3_DB']->sql_num_rows($result)>0)){
  			while ($return_data=$GLOBALS['TYPO3_DB']->sql_fetch_assoc($result))	{
- 				$attribute_uid_list[]=$return_data['uid'];
+ 				$attribute_uid_list[]=(int)$return_data['uid'];
  			}
  			$GLOBALS['TYPO3_DB']->sql_free_result($result);
  			return $attribute_uid_list;

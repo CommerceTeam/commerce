@@ -73,7 +73,7 @@ require_once(PATH_t3lib.'class.t3lib_befunc.php');
  			$query_array=array(
  			'SELECT' => 'DISTINCT tx_commerce_order_articles.order_id, delivery_table.order_id as order_number, tx_commerce_order_articles.article_type_uid, tx_commerce_order_articles.title as payment, delivery_table.title as delivery, tx_commerce_orders.uid,tx_commerce_orders.pid, tx_commerce_orders.crdate, tx_commerce_orders.tstamp, tx_commerce_orders.order_id, tx_commerce_orders.sum_price_gross, tt_address.tx_commerce_address_type_id, tt_address.company ,tt_address.name,tt_address.surname, tt_address.address, tt_address.zip, tt_address.city, tt_address.email,tt_address.phone as phone_1, tt_address.mobile as phone_2,tx_commerce_orders.cu_iso_3_uid, tx_commerce_orders.tstamp, tx_commerce_orders.uid as articles, tx_commerce_orders.comment, tx_commerce_orders.internalcomment, tx_commerce_orders.order_type_uid as order_type_uid_noName, static_currencies.cu_iso_3',
  			'FROM' =>'tx_commerce_orders,tt_address, tx_commerce_order_articles, tx_commerce_order_articles as delivery_table, static_currencies',
- 			'WHERE' =>'static_currencies.uid = tx_commerce_orders.cu_iso_3_uid and delivery_table.order_id = tx_commerce_orders.order_id AND tx_commerce_order_articles.order_id = tx_commerce_orders.order_id AND tx_commerce_order_articles.article_type_uid = '.PAYMENTArticleType.' AND delivery_table.article_type_uid = '.DELIVERYArticleType.' AND tx_commerce_orders.deleted = 0 and tx_commerce_orders.cust_deliveryaddress = tt_address.uid AND tx_commerce_orders.pid='.$id.$addWhere ,
+ 			'WHERE' =>'static_currencies.uid = tx_commerce_orders.cu_iso_3_uid and delivery_table.order_id = tx_commerce_orders.order_id AND tx_commerce_order_articles.order_id = tx_commerce_orders.order_id AND tx_commerce_order_articles.article_type_uid = '.PAYMENTArticleType.' AND delivery_table.article_type_uid = '.DELIVERYArticleType.' AND tx_commerce_orders.deleted = 0 and tx_commerce_orders.cust_deliveryaddress = tt_address.uid AND tx_commerce_orders.pid='.$id.' '.$addWhere ,
  			'GROUPBY' => '',
  			'ORDERBY' => $orderby,
  			'sorting' => '',
@@ -492,7 +492,7 @@ require_once(PATH_t3lib.'class.t3lib_befunc.php');
 			} elseif ($fCol=='articles') {
 				$articleNumber = array();
 				$articleName = array();
-				$res_articles=$GLOBALS['TYPO3_DB']->exec_SELECTquery('article_number,title,order_uid','tx_commerce_order_articles','order_uid = '.$row['uid']);
+				$res_articles=$GLOBALS['TYPO3_DB']->exec_SELECTquery('article_number,title,order_uid','tx_commerce_order_articles','order_uid = '.intval($row['uid']));
 				while (($lokalRow = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_articles))) {
 					$articles[]=$lokalRow['article_number'].':'.$lokalRow['title'];
 					$articleNumber[] = $lokalRow['article_number'];
@@ -506,7 +506,7 @@ require_once(PATH_t3lib.'class.t3lib_befunc.php');
 					$theData[$fCol] = '<input type="checkbox" name="orderUid[]" value="'.$row['uid'].'">';
 				}
 			}elseif ($fCol=='numarticles') { 
-				$res_articles=$GLOBALS['TYPO3_DB']->exec_SELECTquery('sum(amount) anzahl','tx_commerce_order_articles','order_uid = '.$row['uid'].' and article_type_uid ='.NORMALArticleType);
+				$res_articles=$GLOBALS['TYPO3_DB']->exec_SELECTquery('sum(amount) anzahl','tx_commerce_order_articles','order_uid = '.intval($row['uid']).' and article_type_uid ='.NORMALArticleType);
 				if (($lokalRow = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_articles))) {
 					
 					$theData[$fCol] = $lokalRow['anzahl'];
@@ -516,7 +516,7 @@ require_once(PATH_t3lib.'class.t3lib_befunc.php');
 			}elseif ($fCol=='article_number') { 
 				$articleNumber = array();
 			
-				$res_articles=$GLOBALS['TYPO3_DB']->exec_SELECTquery('article_number','tx_commerce_order_articles','order_uid = '.$row['uid'].' and article_type_uid ='.NORMALArticleType);
+				$res_articles=$GLOBALS['TYPO3_DB']->exec_SELECTquery('article_number','tx_commerce_order_articles','order_uid = '.intval($row['uid']).' and article_type_uid ='.NORMALArticleType);
 				while (($lokalRow = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_articles))) {
 					$articleNumber[] = $lokalRow['article_number'];
 					/**
@@ -527,7 +527,7 @@ require_once(PATH_t3lib.'class.t3lib_befunc.php');
 			}elseif ($fCol=='article_name') { 
 				$articleName = array();
 			
-				$res_articles=$GLOBALS['TYPO3_DB']->exec_SELECTquery('title','tx_commerce_order_articles','order_uid = '.$row['uid'].' and article_type_uid ='.NORMALArticleType);
+				$res_articles=$GLOBALS['TYPO3_DB']->exec_SELECTquery('title','tx_commerce_order_articles','order_uid = '.intval($row['uid']).' and article_type_uid ='.NORMALArticleType);
 				while (($lokalRow = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_articles))) {
 					$articleName[] = $lokalRow['title'];
 					/**
@@ -537,7 +537,7 @@ require_once(PATH_t3lib.'class.t3lib_befunc.php');
 				$theData[$fCol] = 		implode(',',$articleName);
 			}elseif ($fCol=='order_type_uid_noName') { 
 			
-				$res_type=$GLOBALS['TYPO3_DB']->exec_SELECTquery('*','tx_commerce_order_types','uid = '.$row['order_type_uid_noName']);
+				$res_type=$GLOBALS['TYPO3_DB']->exec_SELECTquery('*','tx_commerce_order_types','uid = '.intval($row['order_type_uid_noName']));
 				while (($localRow = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_type))) {
 					
 					if ($localRow['icon']) {

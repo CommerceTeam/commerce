@@ -179,6 +179,8 @@
          * @param lang_uid integer language uid, default 0
          */
       	function init($uid,$lang_uid=0){
+      		$uid = intval($uid);
+	   		$lang_uid = intval($lang_uid);
       		$this->database_class='tx_commerce_db_article';
       		$this->fieldlist=array('uid','title','subtitle','description_extra','teaser','tax','ordernumber','eancode','article_type_uid','images','classname','relatedpage','supplier_uid','plain_text');
         

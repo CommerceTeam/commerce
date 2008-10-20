@@ -94,9 +94,9 @@ class tx_commerce_pi4 extends tslib_pibase {
 		*
 		*/
 
-		if ($formValid && isset($this->piVars['check']) && $this->piVars['backpid'] != $GLOBALS['TSFE']->id) {
+		if ($formValid && isset($this->piVars['check']) && (int)$this->piVars['backpid'] != $GLOBALS['TSFE']->id) {
 		    unset($this->piVars['check']);
-		    header('Location: ' . t3lib_div::locationHeaderUrl($this->pi_getPageLink($this->piVars['backpid'],'',array('tx_commerce_pi3[addressType]' => $this->piVars['addressType'], $this->prefixId.'[addressid]' => $this->piVars['addressid']))));
+		    header('Location: ' . t3lib_div::locationHeaderUrl($this->pi_getPageLink((int)$this->piVars['backpid'],'',array('tx_commerce_pi3[addressType]' => $this->piVars['addressType'], $this->prefixId.'[addressid]' => (int)$this->piVars['addressid']))));
 		}
 
 
@@ -104,7 +104,7 @@ class tx_commerce_pi4 extends tslib_pibase {
 			case 'new':
 				if ($formValid) {
 					$this->sysMessage = $this->pi_getLL('message_address_new');
-					$this->saveAddressData(true, $this->piVars['addressType']);
+					$this->saveAddressData(true, intval($this->piVars['addressType']));
 					$content = $this->getListing();
 					break;
 				}
@@ -135,7 +135,7 @@ class tx_commerce_pi4 extends tslib_pibase {
 			case 'listing':
 			default:
 			  if ($formValid){
-		    		 $this->saveAddressData(false, $this->piVars['addressType']);
+		    		 $this->saveAddressData(false, intval($this->piVars['addressType']));
 			  }
 				$content = $this->getListing();
 				break;
@@ -194,7 +194,7 @@ class tx_commerce_pi4 extends tslib_pibase {
 		}
 
 		if (isset($this->piVars['check']) && $this->piVars['action'] == 'edit' && $this->checkAddressForm()){
-		  $this->saveAddressData(false, $this->piVars['addressType']);
+		  $this->saveAddressData(false, intval($this->piVars['addressType']));
 		}
 
 			// Get addresses for this user
@@ -427,7 +427,7 @@ class tx_commerce_pi4 extends tslib_pibase {
 		}
 
 		if ($addressData['tx_commerce_address_type_id'] == NULL) {
-			$addressData['tx_commerce_address_type_id'] = $this->piVars['addressType'];
+			$addressData['tx_commerce_address_type_id'] = (int)$this->piVars['addressType'];
 		}
 
 			// get the templates
@@ -582,7 +582,7 @@ class tx_commerce_pi4 extends tslib_pibase {
 
 		foreach($hookObjectsArr as $hookObj)    {
     		     if (method_exists($hookObj, 'deleteAddress'))   {
-            		 $message = $hookObj->deleteAddress($this->piVars['addressid'],$this);
+            		 $message = $hookObj->deleteAddress((int)$this->piVars['addressid'],$this);
             	    }
     		}
 		if($message){
@@ -632,9 +632,9 @@ class tx_commerce_pi4 extends tslib_pibase {
 		if (($fieldConfig['default']) && empty($fieldValue)) {
 			$value = $fieldConfig['default'];
 		} else {
-			$value = $fieldValue;
+			$value = addslashes(htmlentities($fieldValue));
 		}
-
+	
 		$result = '<input type="text" name="'.$this->prefixId.'[' .$fieldName .']" value="' .$value .'" ';
 		if ($fieldConfig['readonly'] == 1) {
 			$result .= 'readonly="readonly" disabled="disabled" ';
@@ -857,7 +857,7 @@ class tx_commerce_pi4 extends tslib_pibase {
 
 		    foreach($hookObjectsArr as $hookObj)    {
 		         if (method_exists($hookObj, 'beforeAddressEdit'))   {
-        			 $hookObj->beforeAddressEdit($this->piVars['addressid'],$newData,$this);
+        			 $hookObj->beforeAddressEdit((int)$this->piVars['addressid'],$newData,$this);
         	        }
     	    }
 
@@ -866,7 +866,7 @@ class tx_commerce_pi4 extends tslib_pibase {
 
 		    foreach($hookObjectsArr as $hookObj)    {
         	   if (method_exists($hookObj, 'afterAddressEdit'))   {
-    			 $hookObj->afterAddressEdit($this->piVars['addressid'],$newData,$this);
+    			 $hookObj->afterAddressEdit((int)$this->piVars['addressid'],$newData,$this);
     	        }
     	    }
 
@@ -899,9 +899,9 @@ class tx_commerce_pi4 extends tslib_pibase {
 	 * @return	An array with addresses where the keys are the UIDs and the values are the complete addresses data
 	 */
 	function getAddresses($userId, $addressType = 0)	{
-		$select = 'tx_commerce_fe_user_id=' .$userId .t3lib_Befunc::BEenableFields('tt_address');
+		$select = 'tx_commerce_fe_user_id=' .intval($userId) .t3lib_Befunc::BEenableFields('tt_address');
 		if ($addressType > 0) {
-		  $select .= ' AND tx_commerce_address_type_id=' .$addressType;
+		  $select .= ' AND tx_commerce_address_type_id=' .intval($addressType);
 		} elseif (isset($this->conf['selectAddressTypes']))	{
 			$select .= ' AND tx_commerce_address_type_id IN (' .$this->conf['selectAddressTypes'] .')';
 		} else {

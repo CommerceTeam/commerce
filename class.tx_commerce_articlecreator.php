@@ -558,10 +558,10 @@ class tx_commerce_articleCreator {
 		 */
 		// Now check, if the parent Product is already lokalised, so creat Article in the lokalised version
 		// Select from Database different localisations
-		$resOricArticle=$GLOBALS['TYPO3_DB']->exec_SELECTquery('*','tx_commerce_articles','uid='.$articleUid.' and deleted = 0');
+		$resOricArticle=$GLOBALS['TYPO3_DB']->exec_SELECTquery('*','tx_commerce_articles','uid='.intval($articleUid).' and deleted = 0');
 		$origArticle=$GLOBALS['TYPO3_DB']->sql_fetch_assoc($resOricArticle);
 		
-		$resLocalisedProducts=$GLOBALS['TYPO3_DB']->exec_SELECTquery('*','tx_commerce_products','l18n_parent='.$this->uid.' and deleted = 0');
+		$resLocalisedProducts=$GLOBALS['TYPO3_DB']->exec_SELECTquery('*','tx_commerce_products','l18n_parent='.intval($this->uid).' and deleted = 0');
 		
 		if (($resLocalisedProducts) && ($GLOBALS['TYPO3_DB']->sql_num_rows($resLocalisedProducts)>0)) {
 			// Only if there are products
@@ -599,7 +599,7 @@ class tx_commerce_articleCreator {
 				
 				
 				// get all relations to attributes from the old article and copy them to new article
-				$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'tx_commerce_articles_article_attributes_mm', 'uid_local=' .$origArticle['uid'] .' AND uid_valuelist=0');
+				$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'tx_commerce_articles_article_attributes_mm', 'uid_local=' .intval($origArticle['uid']) .' AND uid_valuelist=0');
 			
 				while ($origRelation = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res))	{
 					$origRelation['uid_local'] = $LocArticleUid;

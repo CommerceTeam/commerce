@@ -75,8 +75,8 @@ class tx_commerce_db_product extends tx_commerce_db_alib {
  	 * @return array of Article UID 
  	 */
  	
- 	function get_articles($uid)
- 	{
+ 	function get_articles($uid)	{
+ 		$uid = intval($uid);
  		$article_uid_list=array();
  		if ($uid)
  		{
@@ -127,8 +127,9 @@ class tx_commerce_db_product extends tx_commerce_db_alib {
  	 * @return array of Article UID 
  	 */
  	
- 	function get_attributes($uid,$correlationtypes)
- 	{
+ 	function get_attributes($uid,$correlationtypes){
+ 		
+ 		$uid = intval($uid);
  		if ($uid>0) {
  	
 		// here some strang changes, 
@@ -140,7 +141,7 @@ class tx_commerce_db_product extends tx_commerce_db_alib {
 	 		if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)>0){
 	 			while ($return_data=$GLOBALS['TYPO3_DB']->sql_fetch_assoc($result))
 	 			{
-	 				$article_uid_list[]=$return_data['uid'];
+	 				$article_uid_list[]=(int)$return_data['uid'];
 	 			}
 	 			$GLOBALS['TYPO3_DB']->sql_free_result($result);
 	 			return $article_uid_list;
@@ -169,6 +170,7 @@ class tx_commerce_db_product extends tx_commerce_db_alib {
  	 */
  	
  	function get_parent_category($uid)	{
+ 		$uid = intval($uid);
  		if ($uid){
  			
  			if (is_object($GLOBALS['TSFE']) && is_object($GLOBALS['TSFE']->sys_page)) {
@@ -249,7 +251,7 @@ class tx_commerce_db_product extends tx_commerce_db_alib {
 		$rSql = $GLOBALS["TYPO3_DB"]->exec_SELECTquery(
 				"*",
 				"tx_commerce_manufacturer",
-				"uid = ".$ManufacturerUid."",
+				"uid = ".intval($ManufacturerUid)."",
 				"",
 				"",
 				""

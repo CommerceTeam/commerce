@@ -81,7 +81,7 @@ class tx_commerce_db_price extends tx_commerce_db_alib {
  	
  	function get_data($uid,$lang_uid=-1)
  	{
- 		
+ 		$uid = intval($uid);
  		unset($lang_uid);	
  		
 		if(is_object($GLOBALS['TSFE']->sys_page)){
@@ -90,7 +90,7 @@ class tx_commerce_db_price extends tx_commerce_db_alib {
 		
 		$result=$GLOBALS['TYPO3_DB']->exec_SELECTquery('*',
  			$this->database_table,
-			"uid = '$uid' " .$proofSQL
+			"uid = $uid " .$proofSQL
 			);
 		
 		#}

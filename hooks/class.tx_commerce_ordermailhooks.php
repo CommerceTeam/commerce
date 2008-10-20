@@ -316,7 +316,7 @@ class tx_commerce_ordermailhooks  {
 		$deliveryAdress='';
 		if ($orderData['cust_deliveryaddress'])
 		{
-			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'tt_address', 'uid='.$orderData['cust_deliveryaddress']);
+			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'tt_address', 'uid='.intval($orderData['cust_deliveryaddress']));
 			if ($data= $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res))
 			{
 				$deliveryAdress = $this->makeAdressView($data,'###DELIVERY_ADDRESS###');
@@ -328,7 +328,7 @@ class tx_commerce_ordermailhooks  {
 		$billingAdress='';
 		if ($orderData['cust_invoice'])
 		{
-			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'tt_address', 'uid='.$orderData['cust_invoice']);
+			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'tt_address', 'uid='.intval($orderData['cust_invoice']));
 			if ($data= $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res))
 			{
 				$billingAdress = $this->makeAdressView($data,'###BILLING_ADDRESS###');

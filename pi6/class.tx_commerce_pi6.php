@@ -192,7 +192,7 @@ class tx_commerce_pi6 extends tx_commerce_pibase{
 			$TS = $this->conf['OrderArticles.'];
 		}
 		
-		$queryString = 'order_uid='.$orderUid . ' AND article_type_uid < 2 ' ;
+		$queryString = 'order_uid='.intval($orderUid) . ' AND article_type_uid < 2 ' ;
 		$queryString.= $this->cObj->enableFields("tx_commerce_order_articles");
  		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'tx_commerce_order_articles', $queryString, '', '');
 		$orderpos = 1;
@@ -227,10 +227,10 @@ class tx_commerce_pi6 extends tx_commerce_pibase{
 				$TS = $this->conf['address.'];
 			}
 			if($this->user){
- 				$queryString = 'tt_address.tx_commerce_fe_user_id='.$this->order['cust_fe_user'];
+ 				$queryString = 'tt_address.tx_commerce_fe_user_id='.intval($this->order['cust_fe_user']);
  				$queryString.= ' AND tt_address.tx_commerce_fe_user_id = fe_users.uid';
 				if($addressUid) {
-					$queryString.= ' AND tt_address.uid = '.$addressUid;
+					$queryString.= ' AND tt_address.uid = '.intval($addressUid);
 				} else {
 					$queryString.= ' AND tt_address.tx_commerce_address_type_id=1';
 				}
@@ -264,7 +264,7 @@ class tx_commerce_pi6 extends tx_commerce_pibase{
 		$queryString = 'order_id="'.mysql_real_escape_string($this->order_id).'"';
 		$queryString.= $this->cObj->enableFields("tx_commerce_orders");
 		if($this->user){
-			$queryString.= ' AND cust_fe_user = '.$this->user['uid'].' ' ;
+			$queryString.= ' AND cust_fe_user = '.intval($this->user['uid']).' ' ;
 		}	
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'tx_commerce_orders', $queryString, '', '', '1');
 		$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);

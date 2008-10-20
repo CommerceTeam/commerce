@@ -145,8 +145,8 @@ class basic_mapper {
 
  		$dbFields = '*';
  		$dbTable = $this->dbTable;
- 		$dbWhere = '(uid="'.$uid.'")';
- 		$dbWhere .= 'AND (deleted="0")';
+ 		$dbWhere = '(uid='.intval($uid).')';
+ 		$dbWhere .= 'AND (deleted=0)';
  		
 		//execute query
 //		debug(array('dbSelectById' => $GLOBALS['TYPO3_DB']->SELECTquery($dbFields, $dbTable, $dbWhere)),get_class($this));

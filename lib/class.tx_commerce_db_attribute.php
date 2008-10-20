@@ -82,14 +82,14 @@ class tx_commerce_db_attribute extends tx_commerce_db_alib {
  	 	$attribute_value_uid_list=array();
  	 	$result=$GLOBALS['TYPO3_DB']->exec_SELECTquery('uid',
  			$this->child_database_table,
-			"attributes_uid = $uid"
+			'attributes_uid = '.intval($uid)
 			);
  		// a result is availiabe
  		if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)>0)
  		{
  			while ($return_data=$GLOBALS['TYPO3_DB']->sql_fetch_assoc($result))
  			{
- 				$attribute_value_uid_list[]=$return_data['uid'];
+ 				$attribute_value_uid_list[]=(int)$return_data['uid'];
  			}
  			$GLOBALS['TYPO3_DB']->sql_free_result($result);
  			return $attribute_value_uid_list;

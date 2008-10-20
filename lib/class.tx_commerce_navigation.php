@@ -697,7 +697,7 @@ class tx_commerce_navigation {
 			return "";
 		}
 		$addWhere=$GLOBALS['TSFE']->sys_page->enableFields($tableName,$GLOBALS['TSFE']->showHiddenRecords);
-		$where = '`uid` = '.$uid;
+		$where = 'uid = '.intval($uid);
 		$row=$GLOBALS['TYPO3_DB']->exec_SELECTgetRows('*',$tableName,$where.$addWhere,$groupBy='',$orderBy='','1','');
 		
 		if (($GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid'] > 0) && $row[0]){
@@ -729,7 +729,7 @@ class tx_commerce_navigation {
 		if ($uid=="" or $tableMm==""){
 			return 2;
 		}
-		$sql = $sql = 'SELECT * FROM `'.$tableMm.'` WHERE `uid_foreign` = '.$uid.' LIMIT 1 ';
+		$sql = $sql = 'SELECT * FROM `'.$tableMm.'` WHERE `uid_foreign` = '.intval($uid).' LIMIT 1 ';
 		$res=$GLOBALS['TYPO3_DB']->sql_query ($sql);
 		$hasSubChild=$this->hasSubchild($uid,$subTableMM);
 		if (($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) or $hasSubChild==1)
@@ -748,7 +748,7 @@ class tx_commerce_navigation {
 		if ($uid=="" or $tableMm==""){
 			return 2;
 		}
-		$sql = $sql = 'SELECT * FROM `'.$tableMm.'` WHERE `uid_foreign` = '.$uid.' LIMIT 1 ';
+		$sql = $sql = 'SELECT * FROM `'.$tableMm.'` WHERE `uid_foreign` = '.intval($uid).' LIMIT 1 ';
 		
 		$res=$GLOBALS['TYPO3_DB']->sql_query ($sql);
 		if ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res))
@@ -1033,7 +1033,7 @@ class tx_commerce_navigation {
 		$rSql = $GLOBALS["TYPO3_DB"]->exec_SELECTquery(
 				"*",
 				"tx_commerce_products_categories_mm",
-				"uid_foreign = ".$iIdCat."",
+				"uid_foreign = ".intval($iIdCat)."",
 				"",
 				"",
 				""

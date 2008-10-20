@@ -198,6 +198,8 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 	    if($this->piVars['artAddUid']){
 			while(list($k,$v)=each($this->piVars['artAddUid'])){
 				
+				$k = intval($k);
+				
 				if ($v['count'] <0 ){
 					$v['count']=1;
 				}
@@ -265,10 +267,14 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 	    	// and add new article
 	    	if (is_array($this->piVars['payArt'])) {
 	    		foreach ($this->piVars['payArt'] as $articleUid => $articleCount) {
+	    			// Set to integer to be shure it is integer
+	    			$articleUid = intval($articleUid);
+	    			$articleCount = intval($articleCount);
 	    			$this->basket->add_article($articleUid, $articleCount['count']);
 	    		}
 	    	}else{
-	    		$this->basket->add_article($this->piVars['payArt']);
+	    		
+	    		$this->basket->add_article((int)$this->piVars['payArt']);
 	    	}
 	    	
 		     
@@ -299,10 +305,12 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 	    	if (is_array($this->piVars['delArt'])) {
 	    		  		
 	    		foreach ($this->piVars['delArt'] as $articleUid => $articleCount) {
+	    			$articleUid = intval($articleUid);
+	    			$articleCount = intval($articleCount);
 	    			$this->basket->add_article($articleUid, $articleCount['count']);
 	    		}
 	    	}else{
-	    		$this->basket->add_article($this->piVars['delArt']);
+	    		$this->basket->add_article((int)$this->piVars['delArt']);
 	    	}
 	    	
 	    	/**
@@ -730,10 +738,10 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 			$markerArray['###ARTICLE_SELECT_ATTRIBUTES###'] =$attCode;
     		$markerArray['###ARTICLE_UID###']= $art->getUid();	
 			$markerArray['###STARTFRM###'] = '<form name="basket_'.$art->uid.'" action="'.$this->pi_getPageLink($this->conf['basketPid']).'" method="post">';
-    		$markerArray['###HIDDENFIELDS###'] = '<input type="hidden" name="'.$this->prefixId.'[catUid]" value="'.$this->piVars[catUid].'" />';
+    		$markerArray['###HIDDENFIELDS###'] = '<input type="hidden" name="'.$this->prefixId.'[catUid]" value="'.(int)$this->piVars[catUid].'" />';
     		$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="'.$this->prefixId.'[artAddUid]['.$art->uid.'][price_id]" value="'.$this->basket->basket_items[$art->uid]->get_price_uid().'" />';
 	    	
-    		$markerArray['###ARTICLE_HIDDENFIELDS###'] = '<input type="hidden" name="'.$this->prefixId.'[catUid]" value="'.$this->piVars[catUid].'" />';
+    		$markerArray['###ARTICLE_HIDDENFIELDS###'] = '<input type="hidden" name="'.$this->prefixId.'[catUid]" value="'.(int)$this->piVars[catUid].'" />';
     		$markerArray['###ARTICLE_HIDDENFIELDS###'] .='<input type="hidden" name="'.$this->prefixId.'[artAddUid]['.$art->uid.'][price_id]" value="'.$this->basket->basket_items[$art->uid]->get_price_uid().'" />';
     		
     		$markerArray['###QTY_INPUT_VALUE###'] = $this->basket->basket_items[$art->uid]->quantity;
@@ -757,7 +765,7 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 			}
 			$typoLinkConf['parameter'] = $this->conf['basketPid'];
 			$typoLinkConf['useCacheHash'] = 1;
-			$typoLinkConf['additionalParams'].= ini_get('arg_separator.output').$this->prefixId.'[catUid]='.$this->piVars[catUid];
+			$typoLinkConf['additionalParams'].= ini_get('arg_separator.output').$this->prefixId.'[catUid]='.(int)$this->piVars[catUid];
 			
 			$typoLinkConf['additionalParams'] .= ini_get('arg_separator.output').$this->prefixId.'[artAddUid]['.$art->uid.'][price_id]='.$this->basket->basket_items[$art->uid]->get_price_uid();
 			

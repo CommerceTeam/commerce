@@ -131,7 +131,8 @@
 	 * @param integer integer language_uid , default 0
 	 */
 	function init($uid,$lang_uid=0) {
-		
+		 $uid = intval($uid);
+	     $lang_uid = intval($lang_uid);
 		 $this->fieldlist=array('uid','title','subtitle','description','teaser','teaserimages','navtitle','keywords','images','ts_config','l18n_parent');
 		 $this->database_class='tx_commerce_db_category';
 		

@@ -148,7 +148,7 @@ class basic_dao_mapper {
 
  		$dbFields = '*';
  		$dbTable = $this->dbTable;
- 		$dbWhere = '(uid="'.$uid.'")';
+ 		$dbWhere = '(uid="'.intval($uid).'")';
  		$dbWhere .= 'AND (deleted="0")';
  		
 		//execute query

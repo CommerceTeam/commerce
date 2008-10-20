@@ -111,7 +111,8 @@ require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_attribute_
   	
    function init($uid,$lang_uid=0)
    {
-		
+		 $uid = intval($uid);
+	     $lang_uid = intval($lang_uid);
 		 $this->fieldlist=array('title','unit','has_valuelist','l18n_parent');
 		 $this->database_class='tx_commerce_db_attribute';
 		 if ($uid>0)

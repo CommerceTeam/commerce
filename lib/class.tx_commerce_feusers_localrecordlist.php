@@ -210,6 +210,7 @@ require_once(PATH_t3lib.'class.t3lib_tceforms.php');
 
  	function makeQueryArray($table, $id, $addWhere="",$fieldList='*')
  	{
+ 		$id = intval($id);
  		if ($this->sortField){
  			$orderby=$this->sortField.' ';
  			if ($this->sortRev==1)
@@ -224,7 +225,7 @@ require_once(PATH_t3lib.'class.t3lib_tceforms.php');
  		$query_array=array(
  			'SELECT' => 'fe_users.uid,fe_users.username,fe_users.name,fe_users.email,count(tx_commerce_orders.uid) as bestellungen ',
  			'FROM' =>'tx_commerce_orders,fe_users',
- 			'WHERE' =>'fe_users.deleted = 0 AND tx_commerce_orders.cust_fe_user  = fe_users.uid AND tx_commerce_orders.pid='.$id.$addWhere ,
+ 			'WHERE' =>'fe_users.deleted = 0 AND tx_commerce_orders.cust_fe_user  = fe_users.uid AND tx_commerce_orders.pid='.$id.' '.$addWhere ,
  			'GROUPBY' => 'fe_users.uid,fe_users.username,fe_users.name,fe_users.email',
  			'ORDERBY' => $orderby,
  			'sorting' => '',

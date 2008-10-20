@@ -106,7 +106,7 @@ class address_observer {
 
  		$dbFields = 'uid';
  		$dbTable = 'fe_users';
- 		$dbWhere = '(tx_commerce_tt_address_id="'.$id.'")';
+ 		$dbWhere = '(tx_commerce_tt_address_id="'.intval($id).'")';
  		$dbWhere .= 'AND (deleted="0")';
 
 		//execute query

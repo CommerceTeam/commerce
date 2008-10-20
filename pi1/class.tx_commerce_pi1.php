@@ -69,8 +69,8 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 	    if ($this->conf['singleProduct'] < 0) {
 	    	$this->conf['singleProduct'] = false;
 	    }
-	    $this->piVars[showUid] =  $this->piVars[showUid] ?  $this->piVars[showUid] : ($this->conf['singleProduct']  ? $this->conf['singleProduct'] : '');  
-	    $this->handle =   $this->piVars[showUid] ? 'singleView' : 'listView';
+	    $this->piVars['showUid'] = intval( $this->piVars['showUid'] ?  $this->piVars['showUid'] : ($this->conf['singleProduct']  ? $this->conf['singleProduct'] : ''));  
+	    $this->handle =   $this->piVars['showUid'] ? 'singleView' : 'listView';
 	    
 	    /**
 	     * @TODO: Auf TS endern
@@ -315,7 +315,7 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 	 */
 
 	function initSingleView($prodID){
-
+		$prodID = intval($prodID);
 		if($prodID>0){	
 	 	// product
 	 		// get not localized Product
@@ -485,6 +485,7 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 		if($count > 1) {
 			
 			//parse piVars for values and names of selected attributes
+			// TODO: Set TYPES via Typecaste when generating the array
 			foreach($this->piVars as $key=>$val) {
 				if (strstr($key,'attsel_') && $val) {
 					$arrAttNames[] = substr($key, 7);
