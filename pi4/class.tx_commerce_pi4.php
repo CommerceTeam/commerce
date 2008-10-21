@@ -91,7 +91,7 @@ class tx_commerce_pi4 extends tslib_pibase {
 
 		if ($formValid && isset($this->piVars['check']) && (int)$this->piVars['backpid'] != $GLOBALS['TSFE']->id) {
 		    unset($this->piVars['check']);
-		    header('Location: ' . t3lib_div::locationHeaderUrl((int)$this->pi_getPageLink($this->piVars['backpid'],'',array('tx_commerce_pi3[addressType]' => $this->piVars['addressType'], $this->prefixId.'[addressid]' => $this->piVars['addressid']))));
+		    header('Location: ' . t3lib_div::locationHeaderUrl($this->pi_getPageLink($this->piVars['backpid'],'',array('tx_commerce_pi3[addressType]' => $this->piVars['addressType'], $this->prefixId.'[addressid]' => $this->piVars['addressid']))));
 		}
 
 
@@ -106,7 +106,7 @@ class tx_commerce_pi4 extends tslib_pibase {
 				$content = $this->getAddressForm('new', intval($this->piVars['addressid']), $this->conf);
 				break;
 			case 'delete':
-				$addresses = $this->getAddresses($this->user['uid'], intval($this->addresses[$this->piVars['addressid']]['tx_commerce_address_type_id']));
+				$addresses = $this->getAddresses($this->user['uid'], intval($this->addresses[intval($this->piVars['addressid'])]['tx_commerce_address_type_id']));
 				if (count($addresses) <= $this->conf['minAddressCount']){
 					$this->sysMessage = $this->pi_getLL('message_cant_delete');
 					$content = $this->getListing();
@@ -549,7 +549,7 @@ class tx_commerce_pi4 extends tslib_pibase {
 		if (($fieldConfig['default']) && empty($fieldValue)) {
 			$value = $fieldConfig['default'];
 		} else {
-			$value =$value = addslashes(htmlentities($fieldValue));
+			$value = addslashes(htmlentities($fieldValue));
 		}
 
 		$result = '<input type="text" name="'.$this->prefixId.'[' .$fieldName .']" value="' .$value .'" ';
