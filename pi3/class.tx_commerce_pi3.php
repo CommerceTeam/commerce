@@ -223,7 +223,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 				//this way email is not necessarily mandatory for billing/delivery address
 			if (!$this->conf['randomUser'] && !t3lib_div::validEmail($this->piVars[$this->piVars['address_uid']]['email'])) $this->piVars[$this->piVars['address_uid']]['email'] = $GLOBALS["TSFE"]->fe_user->user['email'];
 			$this->piVars[$this->piVars['address_uid']]['uid'] = intval($this->piVars['address_uid']);
-			$GLOBALS['TSFE']->fe_user->setKey('ses', $this->piVars['check'], intval($this->piVars[$this->piVars['address_uid']]));
+			$GLOBALS['TSFE']->fe_user->setKey('ses', $this->piVars['check'], $this->piVars[intval($this->piVars['address_uid'])]);
 		}
 	
 		$this->MYSESSION['billing'] = $GLOBALS['TSFE']->fe_user->getKey('ses', 'billing');
