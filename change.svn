@@ -2,6 +2,7 @@ Changelog for tx_commerce
 (add new changes on top of this file)
 
 22.10.2008 Ingo Schmitt <is@marketing-factory.de>
+* Raised Version to 0.9.8
 * Fixed a Bug in PI3, Thanks to Cedric Spindler
 
 21.10.2008 Ingo Schmitt <is@marketing-factory.de>
