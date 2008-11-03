@@ -757,6 +757,10 @@ class tx_commerce_pibase extends tslib_pibase {
 			
 	
 		 	$content = $this->cObj->substituteSubpart($template,'###LISTING_ARTICLE###',$articleLines);
+		 	//Unset Subparts, if not used
+			foreach($lineTemplate as $subpartMarker) {
+		 		$content = $this->cObj->substituteSubpart($content,$subpartMarker,'');
+		 	}
 		}else{
 			$content = $this->cObj->substituteSubpart($template,'###LISTING_ARTICLE###','');
 		}

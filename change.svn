@@ -1,5 +1,8 @@
 ﻿Changelog for tx_commerce
 (add new changes on top of this file)
+03.10.2008 Ingo Schmitt <is@marketing-factory.de>
+* Fixed a Bug in pibase concerning different markers, Thanks to Christian Ehret
+
 22.10.2008 Ingo Schmitt <is@marketing-factory.de>
 * Fixed a Bug in PI3, Thanks to Cedric Spindler
 
