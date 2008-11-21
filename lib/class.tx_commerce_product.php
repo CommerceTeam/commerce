@@ -80,7 +80,10 @@
   	
   	var $attributes = array();
   	var $attributes_uids=array();
-  	
+
+	var $relatedProducts = array();
+	var $relatedProduct_uids = array();
+  	var $relatedProducts_loaded=false;
   	/**
   	 * @var articles_loaded
   	 * is true when artciles are loaded, so that load articles can simply return with the values from the object
@@ -304,12 +307,12 @@
   	/**
   	 * Loads the data and divides comma sparated images in array
   	 * inherited from parent 
+  	 * @param $translationMode Transaltio Mode of the record, default false to use the default way of translation
   	 */
   	
-  	function load_data()
-  	{
-  		
-  		$return=parent::load_data();	
+  	function load_data($translationMode = false){
+  
+  		$return=parent::load_data($translationMode);	
   		$this->images_array=t3lib_div::trimExplode(',',$this->images);
   		$this->teaserImagesArray=t3lib_div::trimExplode(',',$this->teaserimages);
   		return $return;
@@ -324,6 +327,31 @@
   		return $this->conn_db->get_parent_categorie($this->uid);
   		 			
   	}
+
+	/**
+	 * Gets related products
+	 * @return array instances of Related products
+	 * @TODO:Check for stock/show_with_no_stock=1 ?
+	 */
+	 function getRelatedProducts(){
+		if ( !$this->relatedProducts_loaded ) { 
+			$this->relatedProduct_uids=$this->conn_db->get_related_product_uids($this->uid);
+			if ( count($this->relatedProduct_uids)>0){
+				foreach ($this->relatedProduct_uids as $productID => $categoryID ){
+	 				$product = t3lib_div::makeInstance('tx_commerce_product');
+	 				$product->init($productID,$this->lang_uid);
+					$product->load_data();	#TODO: is it our job to load here?
+					if ($product->isAccessible()) { //Check if the user is alowed to acces the product
+
+							$this->relatedProducts[]=$product;
+					}
+				}
+			}
+			$this->relatedProducts_loaded=true;
+		}	
+		return $this->relatedProducts;
+	 }
+
   	/**
   	 * gets all parent categories 
   	 * @return array of uid of category
@@ -642,10 +670,24 @@
 	 								    if (($showHiddenValues==true) || (($showHiddenValues==false) && ($row['showvalue']==1))){
 	 
 	 
-	 									 $valuelist[] = $row['value'];
+	 									 $valuelist[] = $row;
 										 $valueUidList[] = $row['uid'];
 	 									 $valueshown=true;
 	 								    }
+	 									/**
+		 						 * Sort values by the sorting field.
+		 						 * Is there a better way to do this?
+		 						 */
+		 						$valuelist_temp = $valuelist;
+		 						$valuelist = array();
+		 						$valuelist_temp_sort = array();
+		 						foreach ($valuelist_temp as $value_temp) {
+		 							$valuelist_temp_sort[$value_temp['sorting']] = $value_temp;
+		 						}
+		 						ksort($valuelist_temp_sort);
+		 						foreach ($valuelist_temp_sort as $value_temp) {
+		 							$valuelist[] = $value_temp;
+		 						}
 	 
 	 								}
 	 							}
@@ -799,9 +841,23 @@
 	 							     }
 	 							    if (($showHiddenValues==true) || (($showHiddenValues==false) && ($row['showvalue']==1))){
 	 							     
-	 							   	 $valuelist[$row['uid']] = $row['value'];
+	 							   	 $valuelist[$row['uid']] = $row;
 	 							   	 $valueshown=true;
 	 							    }
+	 							/**
+	 						 * Sort values by the sorting field.
+	 						 * Is there a better way to do this?
+	 						 */
+	 						$valuelist_temp = $valuelist;
+	 						$valuelist = array();
+	 						$valuelist_temp_sort = array();
+	 						foreach ($valuelist_temp as $value_temp) {
+	 							$valuelist_temp_sort[$value_temp['sorting']] = $value_temp;
+	 						}
+	 						ksort($valuelist_temp_sort);
+	 						foreach ($valuelist_temp_sort as $value_temp) {
+	 							$valuelist[] = $value_temp;
+	 						}
 	
 	 							}
 	 						}
@@ -828,7 +884,50 @@
   	}
   	
   	
+ /**
+	 * Generates a Matrix fro these concerning products for all Attributes and the values therefor
+	 * Realy complex array, so have a look at the source
+	 * 
+	 * 
+	 *
+	 *
+	 */
+	 
+	 function getRelevantArticles($attributeArray = false){
   	
+	 	//first of all we need all possible Attribute id's (not attribute value id's)
+	 	foreach ($this->attribute as $attribute) {
+	 		$att_is_in_array = false;
+	 		foreach ($attributeArray as $attribute_temp) {
+	 			if($attribute_temp['AttributeUid'] == $attribute->uid) $att_is_in_array = true;
+	 		}
+	 		if(!$att_is_in_array) $attributeArray[] = array('AttributeUid'=>$attribute->uid,'AttributeValue'=>NULL);
+	 	}
+	
+  		if ($this->uid>0 && is_array($attributeArray) && count($attributeArray)) {
+  			foreach($attributeArray as $key=>$attr){
+  				if($attr['AttributeValue']){
+		  			$unionSelects[] = 'SELECT uid_local AS article_id,uid_valuelist FROM tx_commerce_articles_article_attributes_mm,tx_commerce_articles WHERE uid_local = uid AND uid_valuelist = '.intval($attr['AttributeValue']).' AND tx_commerce_articles.uid_product = '.$this->uid.' AND uid_foreign = '.intval($attr['AttributeUid']).$GLOBALS['TSFE']->sys_page->enableFields('tx_commerce_articles',$GLOBALS['TSFE']->showHiddenRecords);;
+		  		} else {
+		  			$unionSelects[] = 'SELECT uid_local AS article_id,uid_valuelist FROM tx_commerce_articles_article_attributes_mm,tx_commerce_articles WHERE uid_local = uid AND tx_commerce_articles.uid_product = '.$this->uid.' AND uid_foreign = '.intval($attr['AttributeUid']).$GLOBALS['TSFE']->sys_page->enableFields('tx_commerce_articles',$GLOBALS['TSFE']->showHiddenRecords);;
+		  		}
+	  		}
+	  		if(is_array($unionSelects)){
+	  			$sql  = ' SELECT count(article_id) AS counter, article_id FROM ( ';
+	  			$sql .= implode(" \n UNION \n ",$unionSelects);
+	  			$sql .= ') AS data GROUP BY article_id having COUNT(article_id) >= '.(count($unionSelects)-1).'';
+	  		}
+	  		
+	  		$res = $GLOBALS['TYPO3_DB']->sql_query($sql);
+	  		while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)){
+	  			$article_uid_list[] = $row['article_id'];
+	  		}
+	  		
+			return $article_uid_list;
+		}
+  	
+		return false;
+  	}
   	
   	
   	
@@ -999,7 +1098,23 @@
 	
 	 							}
 	 						}
-	 				}
+	 				
+	 				 						
+	 						/**
+	 						 * Sort values by the sorting field.
+	 						 * Is there a better way to do this?
+	 						 */
+	 						$valuelist_temp = $valuelist;
+	 						$valuelist = array();
+	 						$valuelist_temp_sort = array();
+	 						foreach ($valuelist_temp as $value_temp) {
+	 							$valuelist_temp_sort[$value_temp['sorting']] = $value_temp;
+	 						}
+	 						ksort($valuelist_temp_sort);
+	 						foreach ($valuelist_temp_sort as $value_temp) {
+	 							$valuelist[] = $value_temp;
+	 						}
+	 					}
 	 				if ($valueshown==false){
 	 					$return_array[$attribute_uid]=array('title' => $data['title'],
 	 												  'unit' => $data['unit'],

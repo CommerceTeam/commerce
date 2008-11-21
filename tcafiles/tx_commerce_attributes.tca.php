@@ -182,10 +182,23 @@ $TCA['tx_commerce_attributes'] = array (
 			'exclude' => 1,
 			'displayCond' => 'FIELD:has_valuelist:=:1',
 			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_attributes.valuelist',
-			'l10n_mode' => 'exclude',
+			/*'l10n_mode' => 'exclude',*/
 			'config' => array(
-				'type' => 'user',
-				'userFunc' => 'user_attributeedit_func->valuelist',
+				'type' => 'inline',
+				'foreign_table' => 'tx_commerce_attribute_values',
+				'foreign_field' => 'attributes_uid',
+				'foreign_sortby' => 'sorting',
+				'foreign_label' => 'value',
+				
+				'appearance' => array(
+					'showSynchronizationLink' => 1,
+					'showAllLocalizationLink' => 1,
+					'showPossibleLocalizationRecords' => 1,
+					'showRemovedLocalizationRecords' => 1,		
+				),
+				'behaviour' => array(
+					'localizationMode' => 'select',
+				),
 			)
 		),
 		'multiple' => array (
@@ -213,12 +226,20 @@ $TCA['tx_commerce_attributes'] = array (
 				'show_thumbs' => 1,
 			),
 		),
+		'iconmode' => array (
+			'exclude' => 1,
+			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_attributes.iconMode',
+			'l10n_mode' => 'exclude',
+			'config' => array (
+				'type' => 'check',
+			),
+		),
 		
 	),
 	'types' => array (
 		'0' => array('showitem' => 
 						'--div--;LLL:EXT:commerce/locallang_db.xml:tx_commerce_attributes.basis,'.
-						'sys_language_uid;;;;1-1-1, l18n_parent, l18n_diffsource, hidden;;1, has_valuelist, multiple, valueformat, title;;;;2-2-2, internal_title, unit, icon;;;;3-3-3;,'.
+						'sys_language_uid;;;;1-1-1, l18n_parent, l18n_diffsource, hidden;;1, has_valuelist, multiple, valueformat, title;;;;2-2-2, internal_title, unit, icon;;;;3-3-3;,iconmode,'.
 						'--div--;LLL:EXT:commerce/locallang_db.xml:tx_commerce_attributes.valuelistlist,'.
 						'valuelist' )
 	),
@@ -227,11 +248,5 @@ $TCA['tx_commerce_attributes'] = array (
 	)
 );
 
-/**
- * Includion of Class for editing
- */
- if (TYPO3_MODE=='BE')
- {
-     require_once(t3lib_extMgm::extPath(COMMERCE_EXTkey).'mod_category/class.user_attributeedit_func.php');
- }
+
 ?>

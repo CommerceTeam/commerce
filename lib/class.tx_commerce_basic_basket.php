@@ -120,7 +120,22 @@
 			}else{
 				$article = t3lib_div::makeInstance('tx_commerce_article');
 				$article->init($article_uid,$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid'])	;
-				$article->load_data();
+				$article->load_data('basket');
+				/*
+				// If the record is not translated for this language, 
+				// initialise the laguage fallback
+				// if no language Fallback, use default language (0)
+				if ($GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_fallBackOrder']) {
+					$fallbackLanguages = split(',',$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_fallBackOrder']) ;
+					while (($article->isTranslated() == false) && (count($fallbackLanguages>0))){
+						$article->init($artilce_uid,array_pop($fallbackLanguages));
+						$article->load_data();
+					}
+				}
+				if ($article->isTranslated() == false){
+					$article->init($article_uid,0)	;
+					$article->load_data();
+				}*/
 				$article->load_Prices();
 				$priceids=$article->getPossiblePriceUids();
 				if (is_array($priceids)) {
@@ -139,15 +154,14 @@
 						$priceid=$article->get_article_price_uid();
 					}
 				}
-			
+				
 				$this->basket_items[$article_uid] = t3lib_div::makeInstance('tx_commerce_basket_item');
 				if ($this->basket_items[$article_uid]->init($article_uid,$quantity,$priceid,$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid'])){
 	 				$this->basket_items[$article_uid]->setTaxCalculationMethod($this->pricefromnet);
 	 				$this->recalculate_sums();
 	 				$this->items++;
 	 				 
-	 			}
-	 			
+	 			}	
 			}
 			return true;
  		}
@@ -409,12 +423,10 @@
  	 */
  	
  	function get_articles_by_article_type_uid_asUidlist($article_type_uid){
- 	
  		$result_array=array();
- 		foreach ($this->basket_items as $oneuid  => $one_item)
- 		{
- 			if ($one_item->article->article_type_uid == $article_type_uid)
- 			{
+ 		foreach ($this->basket_items as $oneuid  => $one_item){
+ 			
+ 			if ($one_item->article->article_type_uid == $article_type_uid){
 			    	$result_array[]=$oneuid;	
  			}
  			

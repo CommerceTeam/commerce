@@ -252,7 +252,7 @@ class tx_commerce_systemdata extends t3lib_SCbase {
 			$result .= '<td valign="top">';
 			
 			if ($attribute['has_valuelist'] == 1)	{
-				$valueRes = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'tx_commerce_attribute_values', 'attributes_uid='.$attribute['uid'].' AND hidden=0 AND deleted=0');
+				$valueRes = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'tx_commerce_attribute_values', 'attributes_uid='.$attribute['uid'].' AND hidden=0 AND deleted=0','','sorting');
 				if ($GLOBALS['TYPO3_DB']->sql_num_rows($valueRes) > 0)	{
 					$result .= '<table border="0" cellspacing="0" cellpadding="0">';
 					while ($value = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($valueRes))	{

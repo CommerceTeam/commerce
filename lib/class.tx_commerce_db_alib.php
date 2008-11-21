@@ -103,15 +103,22 @@
  	/**
  	 * 
  	 * @param uid integer UID for Data
+ 	 * @param lang_uid	Language Uid
+ 	 * @param TranslatioMode Translation Mode for recordset
  	 * @return array assoc Array with data
+ 	 * 
  	 * @todo implement access_check concering category tree
  	 * 
  	 
  	 **/
  	 
  	
- 	function get_data($uid,$lang_uid=-1)
+ 	function get_data($uid,$lang_uid=-1,$translationMode=false)
  	{
+ 		
+ 		if ($translationMode == false){
+ 			$translationMode = $this->translationMode;
+ 		}
  		$uid=intval($uid);
  		$lang_uid=intval($lang_uid);
  		if ($lang_uid==-1)
@@ -131,19 +138,32 @@
 			"uid = $uid " .$proofSQL
 			);
 			
-		
-		
- 		// Result should contain only one Dataset
+		 // Result should contain only one Dataset
  		if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)==1)	{
  			$return_data=$GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
  			$GLOBALS['TYPO3_DB']->sql_free_result($result);
- 			
+ 				
  			if (($lang_uid>0) ) {
  			/**
  			 * Get Overlay, if availiabe
  			 */	
+ 				switch($translationMode) {
+ 					case 'basket':
+ 					// special Treatment for basket, so you could have a product not transleted inti a language
+ 					// but the basket is in the not translated laguage
+ 							$newData = $GLOBALS['TSFE']->sys_page->getRecordOverlay($this->database_table,$return_data,$lang_uid,$this->translationMode);	
+ 							
+ 							if (!empty($newData)) {
+ 								$return_data = $newData;
+ 							}
+ 					break;
+ 					default:
+ 						$return_data=$GLOBALS['TSFE']->sys_page->getRecordOverlay($this->database_table,$return_data,$lang_uid,$this->translationMode);	
+ 					break;
  				
- 				$return_data=$GLOBALS['TSFE']->sys_page->getRecordOverlay($this->database_table,$return_data,$lang_uid,$this->translationMode);
+ 					
+ 				}
+ 				
  				
  			}
  			

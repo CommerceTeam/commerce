@@ -314,11 +314,11 @@
   	
   	/**
   	 * Load the data
-  	 * 
+  	 * @param $translationMode Transaltio Mode of the record, default false to use the default way of translation
   	 */
-  	function load_data()  	{
+  	function load_data($translationMode = false)  	{
   		if ($this->data_loaded==false)		{
-	  		parent::load_data();	
+	  		parent::load_data($translationMode);	
 	  		$this->images_array=t3lib_div::trimExplode(',',$this->images);
 	  		$this->categories_uid=$this->conn_db->get_child_categories($this->uid);
 			$this->parent_category_uid=intval($this->conn_db->get_parent_category($this->uid));

@@ -68,6 +68,7 @@ class tx_commerce_db_product extends tx_commerce_db_alib {
  	var $database_table= 'tx_commerce_products';	
  	var $database_attribute_rel_table='tx_commerce_products_attributes_mm';
  	var $database_category_rel_table='tx_commerce_products_categories_mm';
+	var $database_products_related_table='tx_commerce_products_related_mm';
 	var $orderField = 'sorting'; 	
  	/**
  	 * gets all articles form database related to this product
@@ -157,9 +158,26 @@ class tx_commerce_db_product extends tx_commerce_db_alib {
  		}
  		
  	}
-	
-	
-
+	 
+	/**
+	 * Returns a list of uid's that are related to this product
+	 * @param uid product uid
+	 * @return array Product UIDs
+	 * @TODO:we dont really need to extract category uids
+	 */
+	function get_related_product_uids($uid){
+		$uid=intval($uid);
+		$res=$GLOBALS['TYPO3_DB']->exec_SELECTquery(
+			'R.uid_foreign as rID,C.uid_foreign as cID',
+			$this->database_products_related_table.' R,'.$this->database_category_rel_table.' as C',
+			'R.uid_foreign = C.uid_local AND R.uid_local='.intval($uid),
+			'rID');
+		$relatedProducts=array();
+		while( $data=$GLOBALS['TYPO3_DB']->sql_fetch_assoc($res) ){
+			$relatedProducts[$data['rID']]=$data['cID'];			
+		}
+		return $relatedProducts;
+	}
 
  	/**
  	 * Gets the "master" category from this product
@@ -216,7 +234,6 @@ class tx_commerce_db_product extends tx_commerce_db_alib {
  	 * @return integer Categorie UID
  	 * @depricated
  	 * @see get_parent_categorie
-
  	 */
  	
  	function get_parent_categorie($uid)	{

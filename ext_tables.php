@@ -436,6 +436,7 @@ $TCA['tx_commerce_attribute_values'] = Array (
 		'tstamp' => 'tstamp',
 		'crdate' => 'crdate',
 		'cruser_id' => 'cruser_id',
+		'sortby' => 'sorting',
 		'thumbnail' => 'icon',
 		'versioning' => '1',
 		'languageField' => 'sys_language_uid',

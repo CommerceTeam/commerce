@@ -877,46 +877,50 @@ class tx_commerce_belib {
 	function updateXML($xmlField, $table, $uid, $type, $ctList)	{
 		$xmlData = $GLOBALS['TYPO3_DB']->exec_SELECTquery($xmlField, $table, 'uid=' .intval($uid));
 		$xmlData = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($xmlData);
-		$xmlData = t3lib_div::xml2array($xmlData[$xmlField]);
-
-		switch (strtolower($type))	{
-			case 'category':
-				$relList = $this->getAttributesForCategory($uid);
-			break;
-			case 'product':
-				$relList = $this->getAttributesForProduct($uid);
-			break;
-		}
-
-			// write the data
-		if (is_array($ctList))	{
-			foreach ($ctList as $ct)	{
-				$value = array();
-				if (is_array($relList)) {
-					foreach ($relList as $relation)	{
-						if ($relation['uid_correlationtype'] == $ct['uid'])	{
-							$value[] = $relation['uid_foreign'];
+		if($xmlData[$xmlField]) {
+			$xmlData = t3lib_div::xml2array($xmlData[$xmlField]);
+			
+			switch (strtolower($type))	{
+				case 'category':
+					$relList = $this->getAttributesForCategory($uid);
+				break;
+				case 'product':
+					$relList = $this->getAttributesForProduct($uid);
+				break;
+			}
+	
+				// write the data
+			if (is_array($ctList))	{
+				foreach ($ctList as $ct)	{
+					$value = array();
+					if (is_array($relList)) {
+						foreach ($relList as $relation)	{
+							if ($relation['uid_correlationtype'] == $ct['uid'])	{
+								$value[] = $relation['uid_foreign'];
+							}
 						}
 					}
-				}
-				
-				if (count($value) > 0) {
-					$xmlData['data']['sDEF']['lDEF']['ct_' .$ct['uid']] = array('vDEF' => (string)implode(',', $value));
+					
+					if (count($value) > 0) {
+						$xmlData['data']['sDEF']['lDEF']['ct_' .$ct['uid']] = array('vDEF' => (string)implode(',', $value));
+					}
 				}
 			}
+	
+				// build new XML
+			if (is_array($xmlData)) {
+				// Dump Quickfix
+				$xmlData = t3lib_div::array2xml($xmlData, '', 0, 'T3FlexForms');
+			}else{
+				$xmlData = '';
+			}
+	
+				// update database entry
+			$GLOBALS['TYPO3_DB']->exec_UPDATEquery($table, 'uid=' .$uid, array($xmlField => $xmlData));
+			return array($xmlField => $xmlData);
+		} else {
+			return '';
 		}
-
-			// build new XML
-		if (is_array($xmlData)) {
-			// Dump Quickfix
-			$xmlData = t3lib_div::array2xml($xmlData, '', 0, 'T3FlexForms');
-		}else{
-			$xmlData = '';
-		}
-
-			// update database entry
-		$GLOBALS['TYPO3_DB']->exec_UPDATEquery($table, 'uid=' .$uid, array($xmlField => $xmlData));
-		return array($xmlField => $xmlData);
 	}
 
 	/**

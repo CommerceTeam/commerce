@@ -299,7 +299,7 @@ class tx_commerce_pibase extends tslib_pibase {
 //        	    $markerArray["###ARTICLE_ATTRIBUTES_TITLE###"] = $matrix[$myAttributeUid]['title'];
 //	            $markerArray["###ARTICLE_ATTRIBUTES_VALUE###"] =  $this->formatAttributeValue($matrix,$myAttributeUid);
 //    	        $markerArray["###ARTICLE_ATTRIBUTES_UNIT###"] = $matrix[$myAttributeUid]['unit'];
-//        	    $article_shalAttributes_string.= $this->cObj->substituteMarkerArrayCached($templateArray[$i], $markerArray , array());
+//        	    $article_shalAttributes_string.= $this->cObj->substituteMarkerArrayNoCached($templateArray[$i], $markerArray , array());
         	    $i++;
 
 		 	}
@@ -341,7 +341,7 @@ class tx_commerce_pibase extends tslib_pibase {
 //                 $markerArray["###ARTICLE_ATTRIBUTES_TITLE###"] = $matrix[$myAttributeUid]['title'];
 //                 $markerArray["###ARTICLE_ATTRIBUTES_VALUE###"]=   $this->formatAttributeValue($matrix,$myAttributeUid);
 //                 $markerArray["###ARTICLE_ATTRIBUTES_UNIT###"] = $matrix[$myAttributeUid]['unit'];;
-//                 $article_canAttributes_string.= $this->cObj->substituteMarkerArrayCached($templateArray[$i],$markerArray , array());
+//                 $article_canAttributes_string.= $this->cObj->substituteMarkerArrayNoCached($templateArray[$i],$markerArray , array());
 
               }
 		}
@@ -521,9 +521,16 @@ class tx_commerce_pibase extends tslib_pibase {
 
 		$markerArrayCat =  $this->generateMarkerArray($this->category->returnAssocArray(),$this->conf['singleView.']['categories.'],'category_','tx_commerce_categories');
 		$markerArray = array_merge($markerArrayCat,$markerArray);
-
-
-
+		
+	
+		/*
+		 * @TODO Track this issue down
+		 * 
+		 * The pibase pagebrowser checks if all given GET Parametres Values are Interger and are lower than 5
+		 * This is done in the pi_isOnlyFields. Check why this only is valid for integer and only working for values
+		 * less than 4
+		 */
+		
 		if(($this->conf['showPageBrowser']==1) && (is_array($this->conf['pageBrowser.']['wraps.']))){
 			$this->internal['pagefloat']=(int)$this->piVars['pointer'];
 			$this->internal['dontLinkActivePage'] = $this->conf['pageBrowser.']['dontLinkActivePage'];
@@ -879,7 +886,7 @@ class tx_commerce_pibase extends tslib_pibase {
                 }
             }
 		}
-	 	$content = $this->cObj->substituteMarkerArrayCached($template,$markerArray);
+	 	$content = $this->cObj->substituteMarkerArrayNoCached($template,$markerArray);
 	 	$content = $this->cObj->substituteMarkerArray($content,$this->languageMarker);
 
 	 	return $content;
@@ -956,7 +963,7 @@ class tx_commerce_pibase extends tslib_pibase {
 	                   }
 	             }
 
-	 	$content = $this->cObj->substituteMarkerArrayCached($template,$markerArray);
+	 	$content = $this->cObj->substituteMarkerArrayNoCached($template,$markerArray);
 	 	/**
 	 	 * Basket Artikcel Lementes
 	 	 */
@@ -1657,10 +1664,11 @@ class tx_commerce_pibase extends tslib_pibase {
 	        }
     	}
 		
-    	$content = $this->cObj->substituteMarkerArrayCached($template, $markerArray , $subpartArray ,$wrapMarkerArray);
+    	$content = $this->cObj->substituteMarkerArrayNoCached($template, $markerArray , $subpartArray ,$wrapMarkerArray);
     	if ($TS['editPanel']== 1) {
 			$content = $this->cObj->editPanel($content,$TS['editPanel.'],'tx_commerce_products:'.$myProduct->getUid());
     	}
+    	
 		return 	$content;
 
 	
@@ -1717,7 +1725,96 @@ class tx_commerce_pibase extends tslib_pibase {
 		return $localTCA;
 	}
 	
+ 	/* Multi substitution function with caching.
+ 	 * Copy from tslib_content -> substituteMarkerArrayNoCached
+ 	 * Without caching 
+ 	 * @see substituteMarkerArrayNoCached
+	 *
+	 * This function should be a one-stop substitution function for working with HTML-template. It does not substitute by str_replace but by splitting. This secures that the value inserted does not themselves contain markers or subparts.
+	 * This function takes three kinds of substitutions in one:
+	 * $markContentArray is a regular marker-array where the 'keys' are substituted in $content with their values
+	 * $subpartContentArray works exactly like markContentArray only is whole subparts substituted and not only a single marker.
+	 * $wrappedSubpartContentArray is an array of arrays with 0/1 keys where the subparts pointed to by the main key is wrapped with the 0/1 value alternating.
+	 *
+	 * @param	string		The content stream, typically HTML template content.
+	 * @param	array		Regular marker-array where the 'keys' are substituted in $content with their values
+	 * @param	array		Exactly like markContentArray only is whole subparts substituted and not only a single marker.
+	 * @param	array		An array of arrays with 0/1 keys where the subparts pointed to by the main key is wrapped with the 0/1 value alternating.
+	 * @return	string		The output content stream
+	 * @see substituteSubpart(), substituteMarker(), substituteMarkerInObject(), TEMPLATE()
+	 */
+	function substituteMarkerArrayNoCached($content,$markContentArray=array(),$subpartContentArray=array(),$wrappedSubpartContentArray=array())	{
+		$GLOBALS['TT']->push('substituteMarkerArrayNoCache');
+
+			// If not arrays then set them
+		if (!is_array($markContentArray))	$markContentArray=array();	// Plain markers
+		if (!is_array($subpartContentArray))	$subpartContentArray=array();	// Subparts being directly substituted
+		if (!is_array($wrappedSubpartContentArray))	$wrappedSubpartContentArray=array();	// Subparts being wrapped
+			// Finding keys and check hash:
+		$sPkeys = array_keys($subpartContentArray);
+		$wPkeys = array_keys($wrappedSubpartContentArray);
+		$aKeys = array_merge(array_keys($markContentArray),$sPkeys,$wPkeys);
+		if (!count($aKeys))	{
+			$GLOBALS['TT']->pull();
+			return $content;
+		}
+		asort($aKeys);
+		
+		
+			// Initialize storeArr
+		$storeArr=array();
+
+			// Finding subparts and substituting them with the subpart as a marker
+		reset($sPkeys);
+		while(list(,$sPK)=each($sPkeys))	{
+			$content =$this->substituteSubpart($content,$sPK,$sPK);
+		}
+
+			// Finding subparts and wrapping them with markers
+		reset($wPkeys);
+		while(list(,$wPK)=each($wPkeys))	{
+			$content =$this->substituteSubpart($content,$wPK,array($wPK,$wPK));
+		}
+
+			// traverse keys and quote them for reg ex.
+		reset($aKeys);
+		while(list($tK,$tV)=each($aKeys))	{
+			$aKeys[$tK]=quotemeta($tV);
+		}
+		$regex = implode('|',$aKeys);
+			// Doing regex's
+		$storeArr['c'] = split($regex,$content);
+		preg_match_all('/'.$regex.'/',$content,$keyList);
+		$storeArr['k']=$keyList[0];
 	
+
+		$GLOBALS['TT']->setTSlogMessage('Parsing',0);
+		
+		
+
+			// Substitution/Merging:
+			// Merging content types together, resetting
+		$valueArr = array_merge($markContentArray,$subpartContentArray,$wrappedSubpartContentArray);
+
+		$wSCA_reg=array();
+		reset($storeArr['k']);
+		$content = '';
+			// traversin the keyList array and merging the static and dynamic content
+		while(list($n,$keyN)=each($storeArr['k']))	{
+			$content.=$storeArr['c'][$n];
+			if (!is_array($valueArr[$keyN]))	{
+				$content.=$valueArr[$keyN];
+			} else {
+				$content.=$valueArr[$keyN][(intval($wSCA_reg[$keyN])%2)];
+				$wSCA_reg[$keyN]++;
+			}
+		}
+		$content.=$storeArr['c'][count($storeArr['k'])];
+
+		$GLOBALS['TT']->pull();
+		return $content;
+	}
+	 
 	
 
 }

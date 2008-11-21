@@ -190,15 +190,20 @@
 	 * Loads the Data from the database
 	 * via the named database class $database_class
 	 * 
+	 * @param $translationMode Transaltio Mode of the record, default false to use the default way of translation
 	 */
 	
-	function load_data(){	
+	function load_data($translationMode=false){	
+		if ($translationMode) {
+			$this->translationMode = $translationMode;
+		}
+		
 		if ($this->conn_db){
-			$data=$this->conn_db->get_data($this->uid,$this->lang_uid);	
+			$data=$this->conn_db->get_data($this->uid,$this->lang_uid,$translationMode);	
 		}else{
     			
 			$this->conn_db = new $this->database_class();
-			$data=$this->conn_db->get_data($this->uid,$this->lang_uid);
+			$data=$this->conn_db->get_data($this->uid,$this->lang_uid,$translationMode);
 		}
 		if (!$data){
 			$this->recordTranslated=false;
@@ -216,7 +221,17 @@
 		foreach ($this->fieldlist as $field){
 			$this->$field=$data[$field];	
 		}
+		
 		return $data;
+	}
+	
+	/**
+	 * Returns true, if a translation for the initialised Laguage is availiable
+	 *
+	 * @return boolean
+	 */
+	function isTranslated(){
+		return $this->recordTranslated;
 	}
  	
  	/**

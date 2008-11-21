@@ -80,10 +80,10 @@ class tx_commerce_db_article extends tx_commerce_db_alib{
  	  * 
  	  */
  	 
- 	 function get_parent_product_uid($uid){
+ 	 function get_parent_product_uid($uid,$translationMode = false){
  	 	
  	 
- 	 	$data=parent::get_data($uid);
+ 	 	$data=parent::get_data($uid,$translationMode);
  	 	if ($data) 	{
  	 		/**
  	 		 * Backwards Compatibility

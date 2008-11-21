@@ -172,20 +172,19 @@ class tx_commerce_basket_item{
 		
 		if (is_object($this->article)) {
 	 		
-	 			$this->article->load_data();
+	 			$this->article->load_data('basket');
 	 					
 	 			$this->product=$this->article->get_parent_product();
-	 			$this->product->load_data();
+	 			$this->product->load_data('basket');
 	 			
 	 			
 	 			$this->priceid = $priceid; 
 	 			$this->price = t3lib_div::makeInstance('tx_commerce_article_price');
 				$this->price->init($priceid,$this->lang_id);
-				$this->price->load_data();
+				$this->price->load_data('basket');
 				$this->priceNet=$this->price->get_price_net();
 				$this->priceGross=$this->price->get_price_gross();
 				$this->recalculate_item_sums();
-	 		
 	 			return true;
 	 			
 				

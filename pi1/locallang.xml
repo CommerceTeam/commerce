@@ -16,6 +16,8 @@
 			<label index="lang_header_action"></label>
 			<label index="lang_submit">Submit</label>
 			<label index="all_options">all</label>
+			<label index="error.productNotFound">Product not found</label>
+			<label index="error.categoryNotFound">Category not found</label>
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="lang_addtobasketlink">In den Warenkorb legen</label>
@@ -26,6 +28,8 @@
 			<label index="lang_header_action"></label>
 			<label index="lang_submit">Abschicken</label>
 			<label index="all_options">Alle</label>		
+			<label index="error.productNotFound">Produkt nicht gefunden</label>
+			<label index="error.productNotFound">Kategorie nicht gefunden</label>
 		</languageKey>
 		<languageKey index="nl" type="array">
 		</languageKey>

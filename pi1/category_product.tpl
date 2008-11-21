@@ -76,8 +76,6 @@ globally at the beginning of the form tag as marker ###GENERAL_HIDDENCATUID###
 <br />
 
 <!-- ###CATEGORY_VIEW_DISPLAY### begin -->
-<form action="###GENERAL_FORM_ACTION###" method="post">
-###GENERAL_HIDDENCATUID###
 <div class="com-category">
 	###CATEGORY_TITLE###
 	###CATEGORY_DESCRIPTION###
@@ -89,9 +87,13 @@ globally at the beginning of the form tag as marker ###GENERAL_HIDDENCATUID###
 
 <table class="com-list" cellspacing="0" cellpadding="0" border="0">
 	<thead>
-		<tr class="com-list-header">	      <th class="com-list-header-img">###LANG_HEADER_IMAGE###</th>	      <th class="com-list-header-title">###LANG_HEADER_TITLE###</th>	      <th class="com-list-header-teaser">###LANG_HEADER_TEASER###</th>
+		<tr class="com-list-header">
+	      <th class="com-list-header-img">###LANG_HEADER_IMAGE###</th>
+	      <th class="com-list-header-title">###LANG_HEADER_TITLE###</th>
+	      <th class="com-list-header-teaser">###LANG_HEADER_TEASER###</th>
 	      <th class="com-list-header-price">###LANG_HEADER_PRICE###</th>
-	      <th class="com-list-header-action">###LANG_HEADER_ACTION###</th>	    </tr>
+	      <th class="com-list-header-action">###LANG_HEADER_ACTION###</th>
+	    </tr>
 	</thead>
 	<tbody>
 		###SUBPART_CATEGORY_ITEMS_LISTVIEW###
@@ -99,7 +101,6 @@ globally at the beginning of the form tag as marker ###GENERAL_HIDDENCATUID###
 </table>
 
 ###CATEGORY_BROWSEBOX###	
-</form>
 <!-- ###CATEGORY_VIEW_DISPLAY### end -->
 
 
@@ -145,7 +146,6 @@ globally at the beginning of the form tag as marker ###GENERAL_HIDDENCATUID###
 	<!-- ###PRODUCT_BASKET_FOR_LISTVIEW### -->
 		<!-- ###ARTICLE_VIEW### -->   
 		<div class="com-list-action-entry">
-		    ###ARTICLE_HIDDENFIELDS###
 			###ARTICLE_EANCODE###
 			###ARTICLE_STOCK###
             ###ARTICLE_ORDERNUMBER###
@@ -153,14 +153,17 @@ globally at the beginning of the form tag as marker ###GENERAL_HIDDENCATUID###
 			###DELIVERY_PRICE_GROSS###
 			###ARTICLE_SELECT_ATTRIBUTES###
 			###LINKTOPUTINBASKET###
+			<form action="###GENERAL_FORM_ACTION###" method="post">
+			###GENERAL_HIDDENCATUID###
+			###ARTICLE_HIDDENFIELDS###
 			<input type="input" class="com-input-qty" value="###QTY_INPUT_VALUE###" name="###QTY_INPUT_NAME###" size="2"/>
 			<input type="submit" value="###LANG_SUBMIT###"/>
+			</form>
 		</div>
 		<!-- ###ARTICLE_VIEW### -->
 		
 		<!-- ###ARTICLE_VIEW_NOSTOCK### --> 
 		<div class="com-list-action-entry">    
-		    ###ARTICLE_HIDDENFIELDS###
 			###ARTICLE_EANCODE###
 			###ARTICLE_STOCK###
             ###ARTICLE_ORDERNUMBER###
@@ -168,8 +171,12 @@ globally at the beginning of the form tag as marker ###GENERAL_HIDDENCATUID###
 			###DELIVERY_PRICE_GROSS###
 			###ARTICLE_SELECT_ATTRIBUTES###
 			###LINKTOPUTINBASKET###
+			<form action="###GENERAL_FORM_ACTION###" method="post">
+			###GENERAL_HIDDENCATUID###
+			###ARTICLE_HIDDENFIELDS###
 			<input type="input" class="com-input-qty" value="###QTY_INPUT_VALUE###" name="###QTY_INPUT_NAME###" size="2"/>
             <input type="submit" value="###LANG_SUBMIT###"/>
+            </form>
         </div>
 		<!-- ###ARTICLE_VIEW_NOSTOCK### -->
 	<!-- ###PRODUCT_BASKET_FOR_LISTVIEW### -->		
@@ -204,7 +211,6 @@ globally at the beginning of the form tag as marker ###GENERAL_HIDDENCATUID###
 	<!-- ###PRODUCT_BASKET_FOR_LISTVIEW### -->
 		<!-- ###ARTICLE_VIEW### -->   
 		<div class="com-list-action-entry">
-		    ###ARTICLE_HIDDENFIELDS###
 			###ARTICLE_EANCODE###
 			###ARTICLE_STOCK###
             ###ARTICLE_ORDERNUMBER###
@@ -212,14 +218,17 @@ globally at the beginning of the form tag as marker ###GENERAL_HIDDENCATUID###
 			###DELIVERY_PRICE_GROSS###
 			###ARTICLE_SELECT_ATTRIBUTES###
 			###LINKTOPUTINBASKET###
+			<form action="###GENERAL_FORM_ACTION###" method="post">
+			###GENERAL_HIDDENCATUID###
+			###ARTICLE_HIDDENFIELDS###
 			<input type="input" class="com-input-qty" value="###QTY_INPUT_VALUE###" name="###QTY_INPUT_NAME###" size="2"/>
 			<input type="submit" value="###LANG_SUBMIT###"/>
+			<form>
 		</div>
 		<!-- ###ARTICLE_VIEW### -->
 		
 		<!-- ###ARTICLE_VIEW_NOSTOCK### --> 
 		<div class="com-list-action-entry">    
-		    ###ARTICLE_HIDDENFIELDS###
 			###ARTICLE_EANCODE###
 			###ARTICLE_STOCK###
             ###ARTICLE_ORDERNUMBER###
@@ -227,8 +236,12 @@ globally at the beginning of the form tag as marker ###GENERAL_HIDDENCATUID###
 			###DELIVERY_PRICE_GROSS###
 			###ARTICLE_SELECT_ATTRIBUTES###
 			###LINKTOPUTINBASKET###
+			<form action="###GENERAL_FORM_ACTION###" method="post">
+				###GENERAL_HIDDENCATUID###
+				###ARTICLE_HIDDENFIELDS###
 			<input type="input" class="com-input-qty" value="###QTY_INPUT_VALUE###" name="###QTY_INPUT_NAME###" size="2"/>
             <input type="submit" value="###LANG_SUBMIT###"/>
+            </form>
         </div>
 		<!-- ###ARTICLE_VIEW_NOSTOCK### -->
 	<!-- ###PRODUCT_BASKET_FOR_LISTVIEW### -->		
@@ -264,7 +277,6 @@ globally at the beginning of the form tag as marker ###GENERAL_HIDDENCATUID###
 	<!-- ###PRODUCT_BASKET_FOR_LISTVIEW### -->
 		<!-- ###ARTICLE_VIEW### -->   
 		<div class="com-list-action-entry">
-		    ###ARTICLE_HIDDENFIELDS###
 			###ARTICLE_EANCODE###
 			###ARTICLE_STOCK###
             ###ARTICLE_ORDERNUMBER###
@@ -272,14 +284,17 @@ globally at the beginning of the form tag as marker ###GENERAL_HIDDENCATUID###
 			###DELIVERY_PRICE_GROSS### 
 			###ARTICLE_SELECT_ATTRIBUTES###
 			###LINKTOPUTINBASKET###
+			<form action="###GENERAL_FORM_ACTION###" method="post">
+			###GENERAL_HIDDENCATUID###
+			###ARTICLE_HIDDENFIELDS###
 			<input type="input" class="com-input-qty" value="###QTY_INPUT_VALUE###" name="###QTY_INPUT_NAME###" size="2"/>
 			<input type="submit" value="###LANG_SUBMIT###"/>
+			</form>
 		</div>
 		<!-- ###ARTICLE_VIEW### -->
 		
 		<!-- ###ARTICLE_VIEW_NOSTOCK### --> 
 		<div class="com-list-action-entry">    
-		    ###ARTICLE_HIDDENFIELDS###
 			###ARTICLE_EANCODE###
 			###ARTICLE_STOCK###
             ###ARTICLE_ORDERNUMBER###
@@ -287,8 +302,12 @@ globally at the beginning of the form tag as marker ###GENERAL_HIDDENCATUID###
 			###DELIVERY_PRICE_GROSS###
 			###ARTICLE_SELECT_ATTRIBUTES###
 			###LINKTOPUTINBASKET###
+			<form action="###GENERAL_FORM_ACTION###" method="post">
+			###GENERAL_HIDDENCATUID###
+			###ARTICLE_HIDDENFIELDS###
 			<input type="input" class="com-input-qty" value="###QTY_INPUT_VALUE###" name="###QTY_INPUT_NAME###" size="2"/>
             <input type="submit" value="###LANG_SUBMIT###"/>
+            </form>
         </div>
 		<!-- ###ARTICLE_VIEW_NOSTOCK### -->
 	<!-- ###PRODUCT_BASKET_FOR_LISTVIEW### -->		
@@ -323,7 +342,6 @@ globally at the beginning of the form tag as marker ###GENERAL_HIDDENCATUID###
 	<!-- ###PRODUCT_BASKET_FOR_LISTVIEW### -->
 		<!-- ###ARTICLE_VIEW### -->   
 		<div class="com-list-action-entry">
-		    ###ARTICLE_HIDDENFIELDS###
 			###ARTICLE_EANCODE###
 			###ARTICLE_STOCK###
             ###ARTICLE_ORDERNUMBER###
@@ -331,14 +349,17 @@ globally at the beginning of the form tag as marker ###GENERAL_HIDDENCATUID###
 			###DELIVERY_PRICE_GROSS###
 			###ARTICLE_SELECT_ATTRIBUTES###
 			###LINKTOPUTINBASKET###
+			<form action="###GENERAL_FORM_ACTION###" method="post">
+			###GENERAL_HIDDENCATUID###
+			###ARTICLE_HIDDENFIELDS###
 			<input type="input" class="com-input-qty" value="###QTY_INPUT_VALUE###" name="###QTY_INPUT_NAME###" size="2"/>
 			<input type="submit" value="###LANG_SUBMIT###"/>
+			</form>
 		</div>
 		<!-- ###ARTICLE_VIEW### -->
 		
 		<!-- ###ARTICLE_VIEW_NOSTOCK### --> 
 		<div class="com-list-action-entry">    
-		    ###ARTICLE_HIDDENFIELDS###
 			###ARTICLE_EANCODE###
 			###ARTICLE_STOCK###
             ###ARTICLE_ORDERNUMBER###
@@ -346,8 +367,12 @@ globally at the beginning of the form tag as marker ###GENERAL_HIDDENCATUID###
 			###DELIVERY_PRICE_GROSS###
 			###ARTICLE_SELECT_ATTRIBUTES###
 			###LINKTOPUTINBASKET###
+			<form action="###GENERAL_FORM_ACTION###" method="post">
+			###GENERAL_HIDDENCATUID###
+			###ARTICLE_HIDDENFIELDS###
 			<input type="input" class="com-input-qty" value="###QTY_INPUT_VALUE###" name="###QTY_INPUT_NAME###" size="2"/>
             <input type="submit" value="###LANG_SUBMIT###"/>
+            </form>
         </div>
 		<!-- ###ARTICLE_VIEW_NOSTOCK### -->
 	<!-- ###PRODUCT_BASKET_FOR_LISTVIEW### -->		
@@ -371,6 +396,8 @@ globally at the beginning of the form tag as marker ###GENERAL_HIDDENCATUID###
 	###PRODUCT_DESCRIPTION###
 	###SUBPART_PRODUCT_ATTRIBUTES###
 
+
+	
 	<div class="com-single-aticle">
 	<!-- ###PRODUCT_BASKET_FOR_SINGLEVIEW### -->
 			<!-- ###ARTICLE_VIEW### -->
@@ -416,6 +443,22 @@ globally at the beginning of the form tag as marker ###GENERAL_HIDDENCATUID###
 		###CATEGORY_ITEM_IMAGES###
 </div>
 <!-- ###CATEGORY_ITEM### end -->
+
+<!-- ###RELATED_PRODUCTS### begin -->
+<!-- ###RELATED_PRODUCT_SINGLE### begin -->
+	###PRODUCT_TITLE###
+	###PRODUCT_IMAGES###
+	###PRODUCT_DESCRIPTION###
+<!-- ###RELATED_PRODUCT_SINGLE### end -->
+
+<!-- ###RELATED_PRODUCT_SINGLE_NOSTOCK### begin -->
+nostock
+	###PRODUCT_TITLE###
+	###PRODUCT_IMAGES###
+	###PRODUCT_DESCRIPTION###
+<!-- ###RELATED_PRODUCT_SINGLE_NOSTOCK### end -->
+
+<!-- ###RELATED_PRODUCTS### end -->
 </form>
 <!-- ###PRODUCT_VIEW_DETAIL### end -->
 
@@ -541,13 +584,18 @@ globally at the beginning of the form tag as marker ###GENERAL_HIDDENCATUID###
 <em></em>
 <br />
 <!-- ###SELECT_ATTRIBUTES### begin-->
-<table class="com-select-attributes" cellspacing="0" cellpadding="0" border="0">
-	<tr class="com-select-row">	
+	<tr class="com-select-row-odd">	
 		<td>###SELECT_ATTRIBUTES_ICON###	###SELECT_ATTRIBUTES_TITLE###</td>
 		<td>###SELECT_ATTRIBUTES_VALUE### ###SELECT_ATTRIBUTES_UNIT### </td>
 	</tr>
-</table>	
 <!-- ###SELECT_ATTRIBUTES### end -->
+
+<!-- ###SELECT_ATTRIBUTES###2 begin-->
+	<tr class="com-select-row-even">	
+		<td>###SELECT_ATTRIBUTES_ICON###	###SELECT_ATTRIBUTES_TITLE###</td>
+		<td>###SELECT_ATTRIBUTES_VALUE### ###SELECT_ATTRIBUTES_UNIT### </td>
+	</tr>
+<!-- ###SELECT_ATTRIBUTES###2 end -->
 
 <br />
 <br />

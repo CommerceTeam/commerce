@@ -154,12 +154,12 @@ class tx_commerce_pi6 extends tx_commerce_pibase{
 			$subpartArray['###ADDRESS_BILLING_DATA###'] = $this->getAddressData($this->order['cust_invoice'],$this->conf['addressBilling.'],'ADDRESS_BILLING_');
 			$subpartArray['###ADDRESS_DELIVERY_DATA###'] =$this->getAddressData($this->order['cust_deliveryaddress'],$this->conf['addressDelivery.'],'ADDRESS_DELIVERY_');
 		
-			$this->content = $this->cObj->substituteMarkerArrayCached($this->template['invoice'], array(), $subpartArray);
+			$this->content = $this->cObj->substituteMarkerArrayNoCached($this->template['invoice'], array(), $subpartArray);
 			// buid content from template + array		
 			$this->content = $this->cObj->substituteSubpart($this->content,'###LISTING_PAYMENT_ROW###',$this->orderPayment);
 			$this->content = $this->cObj->substituteSubpart($this->content,'###LISTING_SHIPPING_ROW###',$this->orderDelivery);
-			$this->content = $this->cObj->substituteMarkerArrayCached($this->content,  $markerArray, array(), array());
-			$this->content = $this->cObj->substituteMarkerArrayCached($this->content, $this->languageMarker,array());	 
+			$this->content = $this->cObj->substituteMarkerArrayNoCached($this->content,  $markerArray, array(), array());
+			$this->content = $this->cObj->substituteMarkerArrayNoCached($this->content, $this->languageMarker,array());	 
 				
 		} else {
 			$this->content = $this->pi_getLL('error_nodata');

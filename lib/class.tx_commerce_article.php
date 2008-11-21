@@ -84,6 +84,8 @@
         
         var  $eancode;                          // Eancode for this article (private)
         
+        var $uid_product;					// Parent product Uid
+        
         var  $article_type_uid;         // UID for the article Type (should be refered to table tx_commerce_article_types) (private)
         
         /**
@@ -182,7 +184,7 @@
       		$uid = intval($uid);
 	   		$lang_uid = intval($lang_uid);
       		$this->database_class='tx_commerce_db_article';
-      		$this->fieldlist=array('uid','title','subtitle','description_extra','teaser','tax','ordernumber','eancode','article_type_uid','images','classname','relatedpage','supplier_uid','plain_text');
+      		$this->fieldlist=array('uid','title','subtitle','description_extra','teaser','tax','ordernumber','eancode','uid_product','article_type_uid','images','classname','relatedpage','supplier_uid','plain_text');
         
       		 if ($uid>0) {
 					$this->uid=$uid;
@@ -483,10 +485,9 @@
          * @return void
          */
         
-        function load_data()   {
-                
-            parent::load_data();    
-            $this->load_prices();
+        function load_data($translationMode = false)   {
+            parent::load_data($translationMode);  
+            $this->load_prices($translationMode);
 			$this->images_array=t3lib_div::trimExplode(',',$this->images);
 			$this->calculateDeliveryCosts();
                 
@@ -532,8 +533,11 @@
          */        
         function get_parent_product(){
         	
-	    	
-            $products_uid=$this->conn_db->get_parent_product_uid($this->uid);
+        	if ($this->uid_product) {
+        		$products_uid =  $this->uid_product;
+        	}else{
+            	$products_uid=$this->conn_db->get_parent_product_uid($this->uid);
+        	}
             $product = t3lib_div::makeInstance('tx_commerce_product');
         	$product->init($products_uid);
         	return $product;
@@ -546,6 +550,9 @@
          */
         
         function getParentProductUid(){
+        	if ($this->uid_product) {
+        		return $this->uid_product;
+        	}
         	$products_uid=$this->conn_db->get_parent_product_uid($this->uid);
         	if ($products_uid>0) {
         		return $products_uid;
@@ -656,7 +663,7 @@
        * @author Volker Graubaum
        * @return the price_uid
        */
- 	   function load_prices(){
+ 	   function load_prices($translationMode = false){
 	
 		 if ($this->prices_loaded==false){
 		 	
@@ -681,19 +688,19 @@
 					if($groups[$i]){
 					    $this->price = t3lib_div::makeInstance('tx_commerce_article_price');
 					    $this->price->init($this->prices_uids[$groups[$i]][0]);
-					    $this->price->load_data();
+					    $this->price->load_data($translationMode);
 					    $this->price_uid = $this->prices_uids[$groups[$i]][0];
 					}else{
 					    if($this->prices_uids['-2']){
 					    $this->price = t3lib_div::makeInstance('tx_commerce_article_price');
 						$this->price->init($this->prices_uids['-2'][0]);
-						$this->price->load_data();
+						$this->price->load_data($translationMode);
 						$this->price_uid = $this->prices_uids['-2'][0];
 					    }else{
 					    	 $this->price = t3lib_div::makeInstance('tx_commerce_article_price');
 							 $this->price->init($this->prices_uids[0][0]);
 							 if($this->price){
-							    $this->price->load_data();
+							    $this->price->load_data($translationMode);
 							    $this->price_uid = $this->prices_uids['0'][0];
 							 }else{
 							    return false;
@@ -706,13 +713,13 @@
 				    if($this->prices_uids['-1']){
 				    	$this->price = t3lib_div::makeInstance('tx_commerce_article_price');
 						$this->price->init($this->prices_uids['-1'][0]);
-						$this->price->load_data();
+						$this->price->load_data($translationMode);
 						$this->price_uid = $this->prices_uids['-1'][0];
 				    }else{
 				    	$this->price = t3lib_div::makeInstance('tx_commerce_article_price');
 					    $this->price->init($this->prices_uids[0][0]);
 					    if($this->price){
-						    $this->price->load_data();
+						    $this->price->load_data($translationMode);
 						    $this->price_uid = $this->prices_uids['0'][0];
 					    }else{
 						    return false;

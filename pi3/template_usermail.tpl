@@ -33,7 +33,7 @@ Deliveryaddress:<!--###DELIVERY_ADDRESS### begin-->###COMPANY###
 ###COUNTRY###<!--###DELIVERY_ADDRESS### end--> 
 
 <!--###NEW_USER### begin-->
-Your user data for your next fisit:
+Your user data for your next visit:
 User: ###USERNAME###
 password: ###PASSWORD###
 <!--###NEW_USER### end-->

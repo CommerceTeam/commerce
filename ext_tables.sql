@@ -115,12 +115,25 @@ CREATE TABLE tx_commerce_products (
     attributesedit mediumtext NOT NULL,
     uname varchar(80) DEFAULT '' NOT NULL,
     relatedpage int(11) DEFAULT '0' NOT NULL,
+    relatedproducts int(11) DEFAULT '0' NOT NULL
     KEY lang (sys_language_uid),
     KEY langpar (l18n_parent),
     PRIMARY KEY (uid),
     KEY parent (pid)
 );
-                                            
+
+#
+# Table structure for table 'tx_commerce_products_related_mm'
+# 
+#
+CREATE TABLE tx_commerce_products_related_mm (
+  uid_local int(11) DEFAULT '0' NOT NULL,
+  uid_foreign int(11) DEFAULT '0' NOT NULL,
+  tablenames varchar(30) DEFAULT '' NOT NULL,
+  sorting int(11) DEFAULT '0' NOT NULL,
+  KEY uid_local (uid_local),
+  KEY uid_foreign (uid_foreign)
+);
 
 #
 # Table structure for table 'tx_commerce_articles_article_attributes_mm'
@@ -198,9 +211,6 @@ CREATE TABLE tx_commerce_article_prices (
     t3ver_oid int(11) DEFAULT '0' NOT NULL,
     t3ver_id int(11) DEFAULT '0' NOT NULL,
     t3ver_label varchar(30) DEFAULT '' NOT NULL,
-    sys_language_uid int(11) DEFAULT '0' NOT NULL,
-    l18n_parent int(11) DEFAULT '0' NOT NULL,
-    l18n_diffsource mediumblob NOT NULL,
     deleted tinyint(4) DEFAULT '0' NOT NULL,
     hidden tinyint(4) DEFAULT '0' NOT NULL,
     starttime int(11) DEFAULT '0' NOT NULL,
@@ -277,7 +287,8 @@ CREATE TABLE tx_commerce_attributes (
     unit varchar(80) DEFAULT '' NOT NULL,
     valueformat varchar(80) DEFAULT '' NOT NULL,
     valuelist varchar(255) DEFAULT '' NOT NULL
-    icon blob NOT NULL,    
+    icon blob NOT NULL, 
+    iconmode tinyint(3) DEFAULT '0' NOT NULL,   
     PRIMARY KEY (uid),
     KEY lang (sys_language_uid),
     KEY langpar (l18n_parent),
@@ -317,6 +328,7 @@ CREATE TABLE tx_commerce_attribute_values (
     hidden tinyint(4) DEFAULT '0' NOT NULL,
     starttime int(11) DEFAULT '0' NOT NULL,
     endtime int(11) DEFAULT '0' NOT NULL,
+   	sorting int(11) DEFAULT '0' NOT NULL,
     value varchar(255) DEFAULT '' NOT NULL,
     attributes_uid blob NOT NULL,
     icon blob NOT NULL,    

@@ -32,8 +32,10 @@ lib.tx_commerce {
 			stdField_RTE.parseFunc < lib.parseFunc_RTE
 			attributes {
 		      	stdWrap < lib.tx_commerce.stdField
-		      	stdWrap.wrap = <table class="com-select-attributes" cellspacing="0" cellpadding="0" border="0"> | </table>
+#		      	stdWrap.wrap = <table class="com-select-attributes" cellspacing="0" cellpadding="0" border="0"> | </table>
 		    	defaultField < lib.tx_commerce.stdField
+		    	
+		    	iconMode = 0
 		    	
 		    	fields {
 		    	    // every colum in this table could be  wraped with the 
@@ -329,12 +331,18 @@ plugin.tx_commerce_pi1 {
    		categoryView = CATEGORY_VIEW_DISPLAY
    		categoryProductList = CATEGORY_ITEMS_LISTVIEW_2
    		productView = PRODUCT_VIEW_DETAIL
+		relatedProductSingle = RELATED_PRODUCT_SINGLE
+		relatedProductList = RELATED_PRODUCTS
 		// Default: use the same template for all attributes
    		productAttributes = PRODUCT_ATTRIBUTES
    		productAttributes2 = PRODUCT_ATTRIBUTES2
   		articleAttributes = ARTICLE_ATTRIBUTES
    		articleAttributes2 = ARTICLE_ATTRIBUTES2
-		list_selectAttributes = SELECT_ATTRIBUTES
+		list_selectAttributes.0 = SELECT_ATTRIBUTES
+		list_selectAttributes.1 = SELECT_ATTRIBUTES2
+		productAttributesSelectorDropdown = SELECTOR_ATTRIBUTES_DROPDOWN
+		productAttributesSelectorRadiobutton = SELECTOR_ATTRIBUTES_RADIOBUTTON
+		
   		// make a selector Element or show all Artikels
   	}
 	 
@@ -371,11 +379,19 @@ plugin.tx_commerce_pi1 {
 				title.wrap = <h3>|</h3>
 			}
 		}
+		products.relatedProducts < lib.tx_commerce.products
 		articles < lib.tx_commerce.articles
 		products.nostock < lib.tx_commerce.products
 		articles.nostock < lib.tx_commerce.articles
 		attributes < lib.tx_commerce.attributes
 		categories < lib.tx_commerce.categories
+		products.productAttributes.iconMode = 0
+		
+		articleAttributesList = stdWrap
+		articleAttributesList.wrap = <table class="com-list-attributes" cellspacing="0" cellpadding="0" border="0"> | </table>
+		articleAttributesSelectList = stdWrap
+		articleAttributesSelectList.wrap = <table class="com-select-attributes" cellspacing="0" cellpadding="0" border="0"> | </table>
+		
 		
 	}	
 	
@@ -411,7 +427,7 @@ plugin.tx_commerce_pi1 {
 	    #dontLinkActivePage = 1
 	    #showFirstLast = 1
 	    #showItemCount = 1
-	    tableParams =
+	    tableParams = 
 	    #showRange = 1
 	    wraps {
 	        disabledLinkWrap = <span class="disabled">|</span>

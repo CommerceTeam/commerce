@@ -48,6 +48,7 @@
 			<label index="tx_commerce_products.select_all_articles">Select all articles</label>
 			<label index="tx_commerce_products.no_article">No articles existing for this product</label>
 			<label index="tx_commerce_products.relatedpage">Related Page</label>
+			<label index="tx_commerce_products.relatedproducts">Related Products</label>
 			<label index="tx_commerce_products.noManufacturer">----</label>
 			<label index="tx_commerce_article_types">Article Types</label>
 			<label index="tx_commerce_article_types.title">Title</label>
@@ -242,7 +243,7 @@
 			<label index="tt_address.tx_commerce_address_type_id">Adresstyp</label>
 			<label index="tt_address.tx_commerce_is_main_address">Ist Hauptadresse</label>
 			<label index="fe_users.tx_commerce_feuser_orders">Kunden Bestellungen</label>
-			<label index="fe_users.tx_commerce_user_state_id">Kundenstatus</label>
+			<label index="fe_users.tx_commerce_user_state_id">Benutzerzustand</label>
 			<label index="fe_users.tx_commerce_tt_address_id">Kundenadresse</label>
 			<label index="tx_commerce.ct_selector">Auswahl</label>
 			<label index="tx_commerce.ct_shall">Sollte</label>
@@ -383,7 +384,7 @@
 			<label index="tx_commerce_address_types.title">Titel</label>
 			<label index="tt_address">Adressen</label>
 			<label index="tt_address.name">Name</label>
-			<label index="tx_commerce_user_states">Benutzer Zustände</label>
+			<label index="tx_commerce_user_states">Benutzerzustand</label>
 			<label index="tx_commerce_user_states.title">Titel</label>
 			<label index="tx_commerce_moveordermails.otherreceiver">Anderer Mailempfänger als Kunde</label>
 			<label index="tx_commerce_moveordermails.BCC">BCC Mail an</label>
