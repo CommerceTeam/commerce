@@ -466,7 +466,7 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
             	    }
 		}
 
-		$content = $this->cObj->substituteMarkerArrayNoCached($content, $markerArray, array(),  array());
+		$content = $this->substituteMarkerArrayNoCached($content, $markerArray, array(),  array());
 		
 		return ($content);
 	}
@@ -604,7 +604,7 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 							
 							$numTemplate = $ct % $countTemplateInterations;
 							
-							$attCode .= $this->cObj->substituteMarkerArrayNoCached($templateAttr[$numTemplate], $markerArray , array());
+							$attCode .= $this->substituteMarkerArrayNoCached($templateAttr[$numTemplate], $markerArray , array());
 							$ct++;
 						}
 	     			}

@@ -299,7 +299,7 @@ class tx_commerce_pibase extends tslib_pibase {
 //        	    $markerArray["###ARTICLE_ATTRIBUTES_TITLE###"] = $matrix[$myAttributeUid]['title'];
 //	            $markerArray["###ARTICLE_ATTRIBUTES_VALUE###"] =  $this->formatAttributeValue($matrix,$myAttributeUid);
 //    	        $markerArray["###ARTICLE_ATTRIBUTES_UNIT###"] = $matrix[$myAttributeUid]['unit'];
-//        	    $article_shalAttributes_string.= $this->cObj->substituteMarkerArrayNoCached($templateArray[$i], $markerArray , array());
+//        	    $article_shalAttributes_string.= $this->substituteMarkerArrayNoCached($templateArray[$i], $markerArray , array());
         	    $i++;
 
 		 	}
@@ -341,7 +341,7 @@ class tx_commerce_pibase extends tslib_pibase {
 //                 $markerArray["###ARTICLE_ATTRIBUTES_TITLE###"] = $matrix[$myAttributeUid]['title'];
 //                 $markerArray["###ARTICLE_ATTRIBUTES_VALUE###"]=   $this->formatAttributeValue($matrix,$myAttributeUid);
 //                 $markerArray["###ARTICLE_ATTRIBUTES_UNIT###"] = $matrix[$myAttributeUid]['unit'];;
-//                 $article_canAttributes_string.= $this->cObj->substituteMarkerArrayNoCached($templateArray[$i],$markerArray , array());
+//                 $article_canAttributes_string.= $this->substituteMarkerArrayNoCached($templateArray[$i],$markerArray , array());
 
               }
 		}
@@ -886,7 +886,7 @@ class tx_commerce_pibase extends tslib_pibase {
                 }
             }
 		}
-	 	$content = $this->cObj->substituteMarkerArrayNoCached($template,$markerArray);
+	 	$content = $this->substituteMarkerArrayNoCached($template,$markerArray);
 	 	$content = $this->cObj->substituteMarkerArray($content,$this->languageMarker);
 
 	 	return $content;
@@ -963,7 +963,7 @@ class tx_commerce_pibase extends tslib_pibase {
 	                   }
 	             }
 
-	 	$content = $this->cObj->substituteMarkerArrayNoCached($template,$markerArray);
+	 	$content = $this->substituteMarkerArrayNoCached($template,$markerArray);
 	 	/**
 	 	 * Basket Artikcel Lementes
 	 	 */
@@ -1664,7 +1664,7 @@ class tx_commerce_pibase extends tslib_pibase {
 	        }
     	}
 		
-    	$content = $this->cObj->substituteMarkerArrayNoCached($template, $markerArray , $subpartArray ,$wrapMarkerArray);
+    	$content = $this->substituteMarkerArrayNoCached($template, $markerArray , $subpartArray ,$wrapMarkerArray);
     	if ($TS['editPanel']== 1) {
 			$content = $this->cObj->editPanel($content,$TS['editPanel.'],'tx_commerce_products:'.$myProduct->getUid());
     	}
@@ -1767,13 +1767,13 @@ class tx_commerce_pibase extends tslib_pibase {
 			// Finding subparts and substituting them with the subpart as a marker
 		reset($sPkeys);
 		while(list(,$sPK)=each($sPkeys))	{
-			$content =$this->substituteSubpart($content,$sPK,$sPK);
+			$content =$this->cObj->substituteSubpart($content,$sPK,$sPK);
 		}
 
 			// Finding subparts and wrapping them with markers
 		reset($wPkeys);
 		while(list(,$wPK)=each($wPkeys))	{
-			$content =$this->substituteSubpart($content,$wPK,array($wPK,$wPK));
+			$content =$this->cObj->substituteSubpart($content,$wPK,array($wPK,$wPK));
 		}
 
 			// traverse keys and quote them for reg ex.

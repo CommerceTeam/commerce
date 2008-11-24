@@ -36,7 +36,7 @@
 require_once(PATH_tslib .'class.tslib_pibase.php');
 require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinfotables_pi1.php');
 
-class tx_commerce_pi4 extends tslib_pibase {
+class tx_commerce_pi3 extends tx_commerce_pibase {
 	var $prefixId = 'tx_commerce_pi4';						// Same as class name
 	var $scriptRelPath = 'pi4/class.tx_commerce_pi4.php';	// Path to this script relative to the extension dir.
 	var $extKey = 'commerce';								// The extension key.
@@ -348,7 +348,7 @@ class tx_commerce_pi4 extends tslib_pibase {
 			
 			$itemMA['###SELECT###'].= 'name="' .$hiddenFieldPrefix .'[address_uid]" value="' .$address['uid'] .'" />';
 			$addressFound = true;
-			$addressItems[$address['tx_commerce_address_type_id']] .= $this->cObj->substituteMarkerArrayNoCached($tplItem, $itemMA, array(), $linkMA);
+			$addressItems[$address['tx_commerce_address_type_id']] .= $this->substituteMarkerArrayNoCached($tplItem, $itemMA, array(), $linkMA);
 		}
 		
 		$linkMA = array();
@@ -390,7 +390,7 @@ class tx_commerce_pi4 extends tslib_pibase {
 		}
 
 			// replace markers and return the content
-		return $this->cObj->substituteMarkerArrayNoCached($tplBase, $baseMA, array(), $linkMA);
+		return $this->substituteMarkerArrayNoCached($tplBase, $baseMA, array(), $linkMA);
 	}
 
 	/**
@@ -554,7 +554,7 @@ class tx_commerce_pi4 extends tslib_pibase {
 		$linkMA['###LINK_NO###'] = explode('|', $this->pi_linkTP_keepPIvars('|', array('action' => 'listing')));
 
 		$content = $this->cObj->substituteMarkerArray($tplBase, $baseMA, '###|###', 1);
-		return $this->cObj->substituteMarkerArrayNoCached($content, array(), array(), $linkMA);
+		return $this->substituteMarkerArrayNoCached($content, array(), array(), $linkMA);
 	}
 
 

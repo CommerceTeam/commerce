@@ -175,7 +175,7 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 		  
 		    
 		    
-		    $this->content = $this->cObj->substituteMarkerArrayNoCached($template, $markerArray );
+		    $this->content = $this->substituteMarkerArrayNoCached($template, $markerArray );
 		}
 		
 		return $this->pi_wrapInBaseClass($this->content);
@@ -368,7 +368,7 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
     		    $basketArray =  $hookObj->additionalMarker($basketArray,$this);
     		}
 	    }	
-        $this->content = $this->cObj->substituteMarkerArrayNoCached($template, $basketArray );
+        $this->content = $this->substituteMarkerArrayNoCached($template, $basketArray );
 	    return true;
 	}
 
@@ -422,7 +422,7 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 		else
 		{
 			$deliveryArray=$this->makeDelivery($deliveryArray);
-			$inhaltDelivery=$this->cObj->substituteMarkerArrayNoCached($inhaltDelivery,  $deliveryArray );
+			$inhaltDelivery=$this->substituteMarkerArrayNoCached($inhaltDelivery,  $deliveryArray );
 			$this->mytemplate=$this->cObj->substituteSubpart($this->mytemplate,'###DELIVERYBOX###',$inhaltDelivery);
 		}	  
 		$inhaltPayment= $this->cObj->getSubpart($this->templateCode, '###PAYMENTBOX###');
@@ -434,7 +434,7 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 		else
 		{
 			$paymentArray=$this->makePayment($paymentArray);
-			$inhaltPayment=$this->cObj->substituteMarkerArrayNoCached($inhaltPayment,  $paymentArray );
+			$inhaltPayment=$this->substituteMarkerArrayNoCached($inhaltPayment,  $paymentArray );
 			$this->mytemplate=$this->cObj->substituteSubpart($this->mytemplate,'###PAYMENTBOX###',$inhaltPayment);
 		}
 		
@@ -491,7 +491,7 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
     		    $basketArray =  $hookObj->additionalMarker($basketArray,$this);
     		}
 	    }	
-	    $this->content = $this->cObj->substituteMarkerArrayNoCached($this->mytemplate,  $basketArray );
+	    $this->content = $this->substituteMarkerArrayNoCached($this->mytemplate,  $basketArray );
 	    $markerArrayGlobal = array();
 	 	$markerArrayGlobal = $this->addFormMarker( $markerArrayGlobal);
 		$this->content = $this->cObj->SubstituteMarkerArray($this->content,$markerArrayGlobal,'###|###');
@@ -696,7 +696,7 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 					
 				
 			    $tempContent = $this->cObj->substituteMarkerArray($template, $markerArray,'###|###',1);
-			    $tempContent = $this->cObj->substituteMarkerArrayNoCached($tempContent, $this->languageMarker,$subpartMarkerArray,$wrapMarkerArray );
+			    $tempContent = $this->substituteMarkerArrayNoCached($tempContent, $this->languageMarker,$subpartMarkerArray,$wrapMarkerArray );
       
 				$content.=$tempContent;
 		}
@@ -728,7 +728,7 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 		        			$markerArray["###SELECT_ATTRIBUTES_VALUE###"] = $v;
 		    	        	$markerArray["###SELECT_ATTRIBUTES_UNIT###"] = $myAttribute['unit'];
 			
-			    			$attCode .= $this->cObj->substituteMarkerArrayNoCached($templateAttr, $markerArray , array());
+			    			$attCode .= $this->substituteMarkerArrayNoCached($templateAttr, $markerArray , array());
     	    			}
     	 			}
 			}
@@ -794,7 +794,7 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
    		}
 	    	
 	            
-	        $content = $this->cObj->substituteMarkerArrayNoCached($template, $markerArray );
+	        $content = $this->substituteMarkerArrayNoCached($template, $markerArray );
 	    #        debug($markerArray,$template);
 	  
 	      return $content;
@@ -909,7 +909,7 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 		    	
 		    	
 		        $tempContent = $this->cObj->substituteMarkerArray($template, $markerArray,'###|###',1);
-			$tempContent = $this->cObj->substituteMarkerArrayNoCached($tempContent, $this->languageMarker,$subpartMarkerArray,$wrapMarkerArray );
+			$tempContent = $this->substituteMarkerArrayNoCached($tempContent, $this->languageMarker,$subpartMarkerArray,$wrapMarkerArray );
 											          
 		        $content.=$tempContent;
 		   	}else{
