@@ -46,7 +46,7 @@ require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_pibase.php
 require_once(PATH_t3lib.'class.t3lib_cs.php');
 require_once (t3lib_extMgm::extPath('moneylib').'class.tx_moneylib.php');
 
-class tx_commerce_pi6 extends tx_commerce_pibase{
+class tx_commerce_pi6 extends tx_commerce_pibase {
 	var $prefixId = 'tx_commerce_pi6';		// Same as class name
 	var $scriptRelPath = 'pi6/class.tx_commerce_pi6.php';	// Path to this script relative to the extension dir.
 	var $extKey = 'commerce';	// The extension key.
@@ -154,12 +154,12 @@ class tx_commerce_pi6 extends tx_commerce_pibase{
 			$subpartArray['###ADDRESS_BILLING_DATA###'] = $this->getAddressData($this->order['cust_invoice'],$this->conf['addressBilling.'],'ADDRESS_BILLING_');
 			$subpartArray['###ADDRESS_DELIVERY_DATA###'] =$this->getAddressData($this->order['cust_deliveryaddress'],$this->conf['addressDelivery.'],'ADDRESS_DELIVERY_');
 		
-			$this->content = $this->cObj->substituteMarkerArrayNoCached($this->template['invoice'], array(), $subpartArray);
+			$this->content = $this->substituteMarkerArrayNoCached($this->template['invoice'], array(), $subpartArray);
 			// buid content from template + array		
 			$this->content = $this->cObj->substituteSubpart($this->content,'###LISTING_PAYMENT_ROW###',$this->orderPayment);
 			$this->content = $this->cObj->substituteSubpart($this->content,'###LISTING_SHIPPING_ROW###',$this->orderDelivery);
-			$this->content = $this->cObj->substituteMarkerArrayNoCached($this->content,  $markerArray, array(), array());
-			$this->content = $this->cObj->substituteMarkerArrayNoCached($this->content, $this->languageMarker,array());	 
+			$this->content = $this->substituteMarkerArrayNoCached($this->content,  $markerArray, array(), array());
+			$this->content = $this->substituteMarkerArrayNoCached($this->content, $this->languageMarker,array());	 
 				
 		} else {
 			$this->content = $this->pi_getLL('error_nodata');
