@@ -4,6 +4,9 @@ Changelog for tx_commerce
 24.11.2008 Ingo Schmitt <is@marketing-factory.de>
 * Fixed Error 2192
 
+3.12.2008 Ingo Schmitt <is@marketing-factory.de>
+* Fixed Error in PI Base, wrong parameter to postProcessLinkArray, Thanks to Ralf Merz
+
 19.11.2008 Ingo Schmitt <is@marketing-factory.de>
 * Created substituteMarkerArrayNoCached and replaced all calls to substituteMarkerArrayCached to prevent DoS on Cache Entries
 
