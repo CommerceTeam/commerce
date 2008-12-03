@@ -1619,7 +1619,7 @@ class tx_commerce_pibase extends tslib_pibase {
 		}
 		foreach($hookObjectsArr as $hookObj)   {
 		    if (method_exists($hookObj, 'postProcessLinkArray')) {
-    	    	         $markerArray =  $hookObj->postProcessLinkArray($linkArray,$myProduct,$this);
+    	    	        $linkArray =  $hookObj->postProcessLinkArray($linkArray,$myProduct,$this);
 	        }
     	}
 		$wrapMarkerArray['###PRODUCT_LINK_DETAIL###'] = explode('|',$this->pi_list_linkSingle('|',$myProduct->getUid(),true,$linkArray,FALSE,$this->conf['overridePid']));
