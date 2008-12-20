@@ -632,7 +632,8 @@ class tx_commerce_pi4 extends tx_commerce_pibase {
 		if (($fieldConfig['default']) && empty($fieldValue)) {
 			$value = $fieldConfig['default'];
 		} else {
-			$value = addslashes(htmlentities($fieldValue));
+			# $value = addslashes(htmlentities($fieldValue));
+			 $value = $fieldValue;
 		}
 	
 		$result = '<input type="text" name="'.$this->prefixId.'[' .$fieldName .']" value="' .$value .'" ';

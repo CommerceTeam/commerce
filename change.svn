@@ -5,7 +5,26 @@ Changelog for tx_commerce
 * Fixed Error 2202
 * Fixed Error 1980
   insert patch and remove some method calls from pi2 since they are also in pibase
+* Fixed Error 1979
+  Fixed in 2 ways, insert fix for pagebrowser ´´, but use $this->cat instead of $this->piVars in DetailLink    
+* Added new hooks to pi3 finishIt
+    modifyOrderArticlePreSave
+    modifyOrderArticlePreSave
+* Raised Version to 0.10.2
+* changed pi4 getSingleInputField 
+    from  # $value = addslashes(htmlentities($fieldValue));
+    to $value = $fieldValue;
+ since it's making more problems than helping
+* fixe problems with article_prices and missing LanguageFields, removed from ext_tables.php/sql 
+* add missing ?> to pi3
+* remove title from css include since it should be persistent
+ Specify that the style sheet is persistent, preferred, or alternate:
+  * To make a style sheet persistent, set the rel attribute to "stylesheet" and don't set the title attribute.
+  * To make a style sheet preferred, set the rel attribute to "stylesheet" and name the style sheet with the title attribute.
+  * To specify an alternate style sheet, set the rel attribute to "alternate stylesheet" and name the style sheet with the title attribute.
+ src: http://www.w3.org/TR/html4/present/styles.html#style-external 
 
+						  
 
 3.12.2008 Ingo Schmitt <is@marketing-factory.de>
 * Fixed Error in PI Base, wrong parameter to postProcessLinkArray, Thanks to Ralf Merz

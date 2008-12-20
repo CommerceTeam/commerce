@@ -516,7 +516,19 @@ Some hook-methods can return data which is used by the calling function. Others 
 					Call: modifyBasketPreSave($basket,$this)<br/>
 					Type: Multiple<br/>
 					Result: void<br />
-					Your last chance to change the order content (basket). Next step is to inject the data into the database.
+					Your last chance to change the order content (basket). Next step is to insert the data into the database.
+					</div>
+					<div class="description">
+					Call: modifyOrderArticlePreSave($newUid, $oaData, $this);<br/>
+					Type: Multiple<br/>
+					Result: void<br />
+					Change insert OrderData before they are inserted
+					</div>					
+					<div class="description">
+					Call: modifyOrderArticlePostSave($newUid, $oaData, $this)<br/>
+					Type: Multiple<br/>
+					Result: void<br />
+					possibility to rewert changes made in the presave hook
 					</div>
 					<div class="description">
 					Call: afterMailSend($orderData,$this)<br/>

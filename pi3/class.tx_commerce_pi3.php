@@ -987,7 +987,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 			// call the update method from the payment class
  		$paymentObj->updateOrder($orderUid, $this->MYSESSION,$this);
 
-	// insert order
+		// insert order
 		foreach($hookObjectsArr as $hookObj)	{
 			if (method_exists($hookObj, 'modifyBasketPreSave'))	{
 				$hookObj->modifyBasketPreSave($basket,$this);
@@ -1016,11 +1016,23 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 
 				if ($this->debug)	debug($oaData);
 
+                                foreach($hookObjectsArr as $hookObj) {
+				  if(method_exists($hookObj, 'modifyOrderArticlePostSave')) {
+				      $hookObj->modifyOrderArticlePreSave($newUid, $oaData, $this);
+				  }
+				}
+
 					// insert
 				if ( $this->conf['useStockHandling'] == 1) {
 					$basketItem->article->reduceStock($basketItem->get_quantity());
 				}
 				$GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_commerce_order_articles', $oaData);
+				
+				foreach($hookObjectsArr as $hookObj) {
+			    	    if(method_exists($hookObj, 'modifyOrderArticlePostSave')) {
+					$hookObj->modifyOrderArticlePostSave($newUid, $oaData, $this);
+				    }
+				}				
 			}
 		}
 		if ( $this->conf['useStockHandling'] == 1) {
@@ -2244,3 +2256,4 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']["ext/commerce/pi3/class.tx_commerce_pi3.php"])	{
 	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']["ext/commerce/pi3/class.tx_commerce_pi3.php"]);
 }
+?>

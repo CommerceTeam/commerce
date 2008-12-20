@@ -225,8 +225,6 @@ CREATE TABLE tx_commerce_article_prices (
     price_scale_amount_end int(11) DEFAULT '1',
     PRIMARY KEY (uid),
     KEY parent (pid),
-    KEY lang (sys_language_uid),
-    KEY langpar (l18n_parent),
     KEY uarticle (uid_article)
 );
 
