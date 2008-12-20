@@ -69,18 +69,14 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 
 	function init($conf){
 	
+	    parent::init($conf);
+	    
 	    $this->conf = $conf;
 	
-	    $this->pi_setPiVarDefaults();
-	    $this->pi_loadLL();
-
-		tx_commerce_div::initializeFeUserBasket();
-	    
 	    $this->basket = &$GLOBALS['TSFE']->fe_user->tx_commerce_basket;
 
 	    $this->basket->setTaxCalculationMethod($this->conf['priceFromNet']); 
 	    $this->basket->load_data_from_database();
-	    
 	  
 
 	    if($this->conf['defaultCode']){
@@ -103,7 +99,7 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 	    $this->template = array();
 	    $this->markerArray = array();
 	    $this->handleBasket();
-	    $this->generateLanguageMarker();
+	    
 	    // define the currency
 	    /**
 	     * Use of curency is depricated as it was only a typo :-)

@@ -3,6 +3,8 @@ Changelog for tx_commerce
 
 20.12.2008 Volker Graubaum <vg@e-netconsulting.de>
 * Fixed Error 2202
+* Fixed Error 1980
+  insert patch and remove some method calls from pi2 since they are also in pibase
 
 
 3.12.2008 Ingo Schmitt <is@marketing-factory.de>

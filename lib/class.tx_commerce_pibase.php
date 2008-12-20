@@ -1607,7 +1607,8 @@ class tx_commerce_pibase extends tslib_pibase {
 		$markerArray['###SUBPART_PRODUCT_ATTRIBUTES###'] = $this->cObj->stdWrap($this->renderProductAttributeList($myProduct,$ProductAttributesSubpartArray,$TS['productAttributes.']['fields.']),$TS['productAttributes.']);
  		
 		
-		$linkArray['catUid']=(int)$this->piVars['catUid'];
+		$linkArray['catUid']=(int)$this->cat;
+		
 		if($this->basketHashValue){
 			$linkArray['basketHashValue'] = $this->basketHashValue;
 		}

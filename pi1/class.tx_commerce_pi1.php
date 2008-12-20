@@ -157,6 +157,10 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 			$tmpCategory->init($this->cat,$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
 		}
 		
+		if ( !isset($this->piVars['catUid']) ){
+		    $this->piVars['catUid']=$this->master_cat;
+		}
+		
 		$this->category = $tmpCategory;	
         
 		
