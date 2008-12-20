@@ -36,7 +36,7 @@
 require_once(PATH_tslib .'class.tslib_pibase.php');
 require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinfotables_pi1.php');
 
-class tx_commerce_pi3 extends tx_commerce_pibase {
+class tx_commerce_pi4 extends tx_commerce_pibase {
 	var $prefixId = 'tx_commerce_pi4';						// Same as class name
 	var $scriptRelPath = 'pi4/class.tx_commerce_pi4.php';	// Path to this script relative to the extension dir.
 	var $extKey = 'commerce';								// The extension key.
