@@ -1,12 +1,15 @@
 Changelog for tx_commerce
-(add new changes on top of this file)
+
+29.12.2008 Ingo Schmitt <is@marketing-factory.de>
+* Fixed Type in hooks.html
+
 
 20.12.2008 Volker Graubaum <vg@e-netconsulting.de>
 * Fixed Error 2202
 * Fixed Error 1980
   insert patch and remove some method calls from pi2 since they are also in pibase
 * Fixed Error 1979
-  Fixed in 2 ways, insert fix for pagebrowser ´´, but use $this->cat instead of $this->piVars in DetailLink    
+  Fixed in 2 ways, insert fix for pagebrowser , but use $this->cat instead of $this->piVars in DetailLink    
 * Added new hooks to pi3 finishIt
     modifyOrderArticlePreSave
     modifyOrderArticlePreSave
