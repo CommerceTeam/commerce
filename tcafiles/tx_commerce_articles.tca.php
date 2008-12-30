@@ -298,9 +298,9 @@ $TCA['tx_commerce_articles'] = Array (
 			'l10n_mode' => 'exclude',
 			'config' => array (
 				'type' => 'inline',
-               'foreign_table'=>'tx_commerce_article_prices',
-               'foreign_field'=>'uid_article',
-               'foreign_label'=>'purchase_price',
+				'foreign_table'=>'tx_commerce_article_prices',
+				'foreign_field'=>'uid_article',
+				'foreign_label'=>'purchase_price',
 			),
 		),
 		'tax' => Array (
@@ -335,7 +335,7 @@ $TCA['tx_commerce_articles'] = Array (
 				'size' => 1,
 				'minitems' => 0,
 				'maxitems' => 1,
-	    			'default'=>1,
+	    		'default'=>1,
 			),
 		),
 		'relatedpage' => Array (
@@ -420,6 +420,7 @@ $TCA['tx_commerce_articles'] = Array (
 );
 /**
   * @TODO Ingo Check if needed
+  **/
 $postEdit = t3lib_div::_GP('edit');
 $postData = t3lib_div::_GP('data');
 if (!$simpleMode && is_array($postEdit['tx_commerce_articles']) && $postData == NULL && t3lib_extMgm::isLoaded('dynaflex') ) {
@@ -569,7 +570,7 @@ $TCA['tx_commerce_article_prices'] = Array (
 	),
 	'types' => Array (
 		'0' => Array('showitem' => '
-			sys_language_uid;;;;1-1-1, l18n_parent, l18n_diffsource, hidden;;1, price_gross, price_net, price_scale_amount, purchase_price;;;;3-3-3, uid_article'),
+			sys_language_uid;;;;1-1-1, l18n_parent, l18n_diffsource, hidden;;1, price_gross, price_net, price_scale_amount_start, price_scale_amount_end, purchase_price;;;;3-3-3, uid_article'),
 	),
 	'palettes' => Array (
 		'1' => Array('showitem' => 'starttime, endtime, fe_group')
