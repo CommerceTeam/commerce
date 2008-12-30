@@ -159,6 +159,7 @@ class tx_commerce_db_product extends tx_commerce_db_alib {
  		
  	}
 	 
+
 	/**
 	 * Returns a list of uid's that are related to this product
 	 * @param uid product uid

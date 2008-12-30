@@ -46,8 +46,69 @@ require_once(t3lib_extMgm::extPath('commerce').'dao/class.address_observer.php')
 
 class tx_commerce_tcehooksHandler {
 
+	/**
+	* At this place we process prices, before they are written to the database. We use this for tax calculation
+	*
+	* @param array $incomingFieldArray: The values from the form, by reference
+	* @param string $table: The table we are working on
+	* @param int $id: The uid we are working on
+	* @param mixed $pObj: The caller
+	*/
+	function processDatamap_preProcessFieldArray(&$incomingFieldArray, $table, $id, $pObj) {
+		if($table=='tx_commerce_article_prices') {
+			//Get the whole price, not only the tce-form fields
+			foreach($pObj->datamap['tx_commerce_articles'] as $v){
+				$uids = explode(',',$v['prices']);
+				if(in_array($id, $uids)) {
+					$this->calculateTax($incomingFieldArray, doubleval($v['tax']));
+				}
+			}
+			foreach($incomingFieldArray as $key => $value){
+				if ($key == 'price_net' || $key == 'price_gross' || $key == 'purchase_price')   {
+					if (is_numeric($value)){
+						$incomingFieldArray[$key] = intval($value *100);
+					}
+				}
+			}
+		}
+	}
+	
+	function calculateTax(&$fieldArray, $tax) {
+		$extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['commerce']);
+		if($extConf['genprices']==0) {
+			return;
+		} else {
+			if($extConf['genprices']==2 || !isset($fieldArray['price_gross']) || $fieldArray['price_gross']==='' || strlen($fieldArray['price_gross'])==0 || doubleval($fieldArray['price_gross'])===0.0) {
+				$fieldArray['price_gross']=round(($fieldArray['price_net']*100)*(100+$tax)/100)/100;
+			}
+			if($extConf['genprices']==3 || !isset($fieldArray['price_net']) || $fieldArray['price_net']==='' || strlen($fieldArray['price_net'])==0 || doubleval($fieldArray['price_net'])===0.0) {
+				$fieldArray['price_net']=round(($fieldArray['price_gross']*100)/(100+$tax)*100)/100;
+			}
+		}
+	}
 
-
+	/**
+	* processDatamap_postProcessFieldArray()
+	* this function is called by the Hook in tce from class.t3lib_tcemain.php after processing insert & update database operations
+	*
+	* @param string $status: update or new
+	* @param string $table: database table
+	* @param string $id: database table
+	* @param array $fieldArray: reference to the incoming fields
+	* @param object $pObj: page Object reference
+	*/
+	
+	function processDatamap_postProcessFieldArray($status, $table, $id, &$fieldArray, &$pObj){
+		if($table=='tx_commerce_article_prices') {
+			// ugly hack since typo3 makes ugly checks
+			foreach($fieldArray as $key => $value){
+				if ($key == 'price_net' || $key == 'price_gross' || $key == 'purchase_price')   {
+					$fieldArray[$key] = intval($value);
+				}
+			}
+		}
+	}
+	
 	/**
 	* processDatamap_afterDatabaseOperations()
 	* this function is called by the Hook in tce from class.t3lib_tcemain.php after processing insert & update database operations
@@ -72,6 +133,46 @@ class tx_commerce_tcehooksHandler {
 			//do something...
 			$this->notify_addressObserver($status, $table, $id, $fieldArray, $pObj);
 		}
+		$extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['commerce']);
+       
+        if ($table=='tx_commerce_articles' && $extConf['simpleMode'] && ($articleId = $pObj->substNEWwithIDs[$id])) {
+           
+            /**
+             * @author     Ingo Schmitt    <is@marketing-factory.de>
+             */
+            // Now check, if the parent Product is already lokalised, so creat Article in the lokalised version
+            // Select from Database different localisations
+           
+            $resOrigArticle=$GLOBALS['TYPO3_DB']->exec_SELECTquery('*','tx_commerce_articles','uid='.intval($articleId).' and deleted = 0');
+            $origArticle=$GLOBALS['TYPO3_DB']->sql_fetch_assoc($resOrigArticle);
+            $resLocalisedProducts=$GLOBALS['TYPO3_DB']->exec_SELECTquery('*','tx_commerce_products','l18n_parent='.intval($origArticle['uid_product']).' and deleted = 0');
+            if (($resLocalisedProducts) && ($GLOBALS['TYPO3_DB']->sql_num_rows($resLocalisedProducts)>0)) {
+                // Only if there are products
+                while ($localisedProducts = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($resLocalisedProducts))    {
+                    // walk thru and create articles
+                    $destLanguage=$localisedProducts['sys_language_uid'];
+                    // get the highest sorting
+                    $langIsoCode = t3lib_BEfunc::getRecord('sys_language', intval($destLanguage), 'static_lang_isocode');
+                    $langIdent = t3lib_BEfunc::getRecord('static_languages', intval($langIsoCode['static_lang_isocode']), 'lg_typo3');
+                    $langIdent = strtoupper($langIdent['lg_typo3']);
+   
+                    // create article data array
+                    $articleData = array(
+                        'pid' => intval($fieldArray['pid']),
+                        'crdate' => time(),
+                        'title' => $fieldArray['title'],
+                        'uid_product' => intval($localisedProducts['uid']),
+                        'sys_language_uid' => intval($localisedProducts['sys_language_uid']),
+                        'l18n_parent' => intval($articleId),
+                        'sorting' => (intval($fieldArray['sorting']) *2),
+                        'article_type_uid' => intval($fieldArray['article_type_uid']),
+                    );
+                   
+                        // create the article
+                    $articleRes = $GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_commerce_articles', $articleData);
+                }
+            }
+        }
 	}
 
 

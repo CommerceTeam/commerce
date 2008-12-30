@@ -39,7 +39,7 @@ require_once(t3lib_extmgm::extPath('commerce').'class.tx_commerce_attributeedito
 
         // field templates for usage in other tables to link categories
 require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_tcefunc_categorytree.php');
-require_once(t3lib_extmgm::extPath('graytree') .'lib/class.tx_graytree_tcefunc.php');
+//require_once(t3lib_extmgm::extPath('graytree') .'lib/class.tx_graytree_tcefunc.php'); ###IS THIS NEEDED ANYMORE?###
 
 	// needed only for the leaf classes to be shown in the TCE category tree
 require_once(PATH_txcommerce.'lib/class.tx_commerce_leafproductdata.php');
@@ -496,5 +496,20 @@ if (is_array($postEdit['tx_commerce_products']) &&
 	
 	// write back the modified TCA
 	$TCA = $dynaflex->getDynamicTCA();
+	$simpleMode = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['commerce']);
+	$simpleMode = $simpleMode['simpleMode'];
+	if($simpleMode) {
+		$TCA['tx_commerce_products']['columns']['articles'] = array (
+			'exclude' => 1,
+			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_products.articles',
+			'config' => array (
+				'type' => 'inline',
+				'foreign_table'=>'tx_commerce_articles',
+				'foreign_field'=>'uid_product',
+				'minitems'=>0,
+			),
+		);
+		$TCA['tx_commerce_products']['types']['0']['showitem'] = str_replace('articleslok', 'articles', $TCA['tx_commerce_products']['types']['0']['showitem']);
+	}
 }
 ?>

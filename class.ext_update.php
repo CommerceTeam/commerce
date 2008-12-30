@@ -121,14 +121,15 @@ class ext_update {
 	
 		
 		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid','tx_commerce_categories','uid not in (select uid_local from tx_commerce_categories_parent_category_mm) and tx_commerce_categories.deleted = 0');
-		if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)>0) {
+		
+		if (($result) && ($GLOBALS['TYPO3_DB']->sql_num_rows($result)>0)) {
 			return true;
 		}
 		/**
 		 * No userrights set, must be an update
 		 */
 		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid','tx_commerce_categories','perms_user=0 or perms_group=0 or perms_everybody = 0');
-		if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)>0) {
+		if  (($result) && ($GLOBALS['TYPO3_DB']->sql_num_rows($result)>0)) {
 				return true;
 		}
 		

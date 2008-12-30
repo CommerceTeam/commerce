@@ -1128,6 +1128,7 @@ class tx_commerce_belib {
 	}
 	
 	/**
+	 * Removed with irre implementation. Stub left for api compatibility
 	 * save Price-Flexform with given Article-UID
 	 * 
 	 * @author	Joerg Sprung <jsp@marketing-factory>
@@ -1138,40 +1139,6 @@ class tx_commerce_belib {
 	 * @see tx_commerce_belib
 	 */
 	function savePriceFlexformWithArticle( $priceUid , $articleUid, $priceDataArray) {
-				
-		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-			'prices',
-			'tx_commerce_articles',
-			'uid=' .intval($articleUid)
-		);
-		
-		$prices = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
-		if (strlen($prices['prices']) > 0)	{
-			$data = t3lib_div::xml2array($prices['prices']);
-		} else {
-			$data = array('data' => array('sDEF' => array('lDEF')));
-		}
-		
-		$data['data']['sDEF']['lDEF']['price_net_' .$priceUid] = array('vDEF' => sprintf('%.2f', ($priceDataArray['price_net'] /100)));
-		$data['data']['sDEF']['lDEF']['price_gross_' .$priceUid] = array('vDEF' => sprintf('%.2f', ($priceDataArray['price_gross'] /100)));
-		$data['data']['sDEF']['lDEF']['hidden_' .$priceUid] = array('vDEF' => $priceDataArray['hidden']);
-		$data['data']['sDEF']['lDEF']['starttime_' .$priceUid] = array('vDEF' => $priceDataArray['starttime']);
-		$data['data']['sDEF']['lDEF']['endtime_' .$priceUid] = array('vDEF' => $priceDataArray['endtime']);
-		$data['data']['sDEF']['lDEF']['fe_group_' .$priceUid] = array('vDEF' => $priceDataArray['fe_group']);
-		$data['data']['sDEF']['lDEF']['purchase_price_' .$priceUid] = array('vDEF' => sprintf('%.2f', ($priceDataArray['purchase_price'] /100)));
-	 	$data['data']['sDEF']['lDEF']['price_scale_amount_start_' .$priceUid] = array('vDEF' => $priceDataArray['price_scale_amount_start']);
-        $data['data']['sDEF']['lDEF']['price_scale_amount_end_' .$priceUid] = array('vDEF' => $priceDataArray['price_scale_amount_end']);                       
-  
-		$xml = t3lib_div::array2xml($data, '', 0, 'T3FlexForms');
-		
-		$res = $GLOBALS['TYPO3_DB']->exec_UPDATEquery(
-			'tx_commerce_articles',
-			'uid=' .$articleUid,
-			array('prices' => $xml)
-		);
-		
-		return (bool)$res;
-	 	
 	}
 	
 	

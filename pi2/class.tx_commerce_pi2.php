@@ -581,6 +581,17 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 		if ($this->conf['payment.']['allowedArticles']) {
 			$allowedArticles = split(',',$this->conf['payment.']['allowedArticles']);
 		}
+		// hook to allow to define/overwrite individually, which payment articles are allowed (Melanie Meyer, 2008-10-09)
+		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['paymentArticles']))      {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['paymentArticles'] as $classRef)  {
+				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+			}
+		}
+		foreach($hookObjectsArr as $hookObj)    {
+			if (method_exists($hookObj, 'paymentAllowedArticles'))   {
+				$allowedArticles = $hookObj->paymentAllowedArticles($this,$allowedArticles);
+			}
+		}
 		foreach ($this->payProd->articles as $articleUid => $articleObj) {
 		
 			if ((!is_array($allowedArticles)) || in_array($articleUid,$allowedArticles)) {

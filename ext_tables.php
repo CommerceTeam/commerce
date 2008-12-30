@@ -392,7 +392,7 @@ $TCA['tx_commerce_article_prices'] = Array (
 		'title' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_article_prices',
 		'label' => 'price_net',
 		/**
-		 * @TODO Extnesion Config for choosing toe price to display
+		 * @TODO Extension Config for choosing price to display
 		 */
 		'label_alt' => 'price_net,price_gross,purchase_price',
 		'label_alt_force' => 1,

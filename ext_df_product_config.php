@@ -63,7 +63,7 @@ $dynaFlexConf = array (
 				'source_config' => array (
 					 'table' => 'tx_commerce_attribute_correlationtypes',
 					 'select' => '*',
-					 'where' => 'uid != 1',
+					 'where' => ($simpleMode==1)?'uid = 4':'uid != 1',
 				 ),
 				'field_config' => array (
 					1 => array (
@@ -209,28 +209,43 @@ $dynaFlexConf = array (
 						 // add "Localisze Articel" tab if we are in a localised language
 						array (
 						 'method' => 'add',
-						 'type' => 'append',
-						  'condition' => array (
- 								        'table' => 'tx_commerce_products',
- 									     'select' => 'l18n_parent',
- 									     'where' => 'uid=###uid###',
- 									     'isXML' => false,
- 									     'if' => 'isGreater',
- 									     'compareTo' => 0,
- 									     ),
-
-						 'config' => array (
-								    'text' => ',--div--;LLL:EXT:commerce/locallang_db.xml:tx_commerce_products.lokalise_articles,articleslok;;;;1-1-1',
-								    ),
-						 ),
+                             'type' => 'append',
+                              'condition' => array (
+                                     'table' => 'tx_commerce_products',
+                                      'select' => 'l18n_parent',
+                                      'where' => 'uid=###uid### AND 0='.$simpleMode,
+                                      'isXML' => false,
+                                      'if' => 'isGreater',
+                                      'compareTo' => 0,
+                            ),
+                            'config' => array (
+                                'text' => ',--div--;LLL:EXT:commerce/locallang_db.xml:tx_commerce_products.lokalise_articles,articleslok;;;;1-1-1',
+                            ),
+						),
+						// add "Localize Articel" tab if we are in a localised language
+                         array (
+                          'method' => 'add',
+                          'type' => 'append',
+                            'condition' => array (
+                            'table' => 'tx_commerce_products',
+                            'select' => 'l18n_parent',
+                            'where' => 'uid=###uid### AND 0!='.$simpleMode,
+                            'isXML' => false,
+                            'if' => 'isGreater',
+                            'compareTo' => 0,
+                            ),
+                              'config' => array (
+                                'text' => ',--div--;LLL:EXT:commerce/locallang_db.xml:tx_commerce_products.lokalise_articles,articles;;;;1-1-1',
+                              ),
+                    ),	
 					  array (
 						 'method' => 'add',
 						 'type' => 'append',
-						# 'condition' => array (
-						#		       'source' => 'language',
-						#		       'if' => 'isEqual',
-						#		       'compareTo' => 'DEF',
-						#		       ),
+						 'condition' => array (
+								       'source' => 'language',
+								       'if' => 'isEqual',
+								       'compareTo' => 'DEF',
+								       ),
 						 'config' => array (
 								    'text' => ',--div--;LLL:EXT:commerce/locallang_db.xml:tx_commerce_products.extras'
 								    ),

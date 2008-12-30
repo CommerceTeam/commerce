@@ -730,7 +730,7 @@ class tx_commerce_navigation {
 			return "";
 		}
 		$addWhere=$GLOBALS['TSFE']->sys_page->enableFields($tableName,$GLOBALS['TSFE']->showHiddenRecords);
-		$where = '`uid` = '.$uid;
+		$where = 'uid = '.intval($uid);
 		$row=$GLOBALS['TYPO3_DB']->exec_SELECTgetRows('*',$tableName,$where.$addWhere,$groupBy='',$orderBy='','1','');
 		
 		if (($GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid'] > 0) && $row[0]){

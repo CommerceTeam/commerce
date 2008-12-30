@@ -64,7 +64,7 @@ $dynaFlexConf = array (
 	* prices have it's own access fields, so the user can define different prices
 	* for various usergroups.
 		*/
-	1 => array (
+	/*1 => array (
 		'path' => 'tx_commerce_articles/columns/prices/config/ds/default',
 		'modifications' => array (
 			array (
@@ -278,8 +278,8 @@ $dynaFlexConf = array (
 									),
 						     ),
 					      ),
-		    ),
-	3 => array (
+		    ),*/
+	1 => array (
 		'path' => 'tx_commerce_articles/types/0/showitem',
 		'parseXML' => false,
 		'modifications' => array (

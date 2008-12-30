@@ -1016,7 +1016,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 
 				if ($this->debug)	debug($oaData);
 
-                                foreach($hookObjectsArr as $hookObj) {
+                foreach($hookObjectsArr as $hookObj) {
 				  if(method_exists($hookObj, 'modifyOrderArticlePostSave')) {
 				      $hookObj->modifyOrderArticlePreSave($newUid, $oaData, $this);
 				  }

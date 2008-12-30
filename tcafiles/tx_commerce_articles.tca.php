@@ -37,6 +37,10 @@ if(!defined('TYPO3_MODE')) die("Access denied.");
 require_once(t3lib_extmgm::extPath('commerce').'class.tx_commerce_articlecreator.php');
 require_once(t3lib_extmgm::extPath('commerce').'class.tx_commerce_attributeeditor.php');
 
+$simpleMode = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['commerce']);
+$coArticles = $simpleMode['coArticles'];
+$simpleMode = $simpleMode['simpleMode'];
+
 $TCA['tx_commerce_article_types'] = Array (
 	'ctrl' => $TCA['tx_commerce_article_types']['ctrl'],
 	'interface' => Array (
@@ -293,28 +297,10 @@ $TCA['tx_commerce_articles'] = Array (
 			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_articles.prices',
 			'l10n_mode' => 'exclude',
 			'config' => array (
-				'type' => 'flex',
-				'ds' => Array (
-					'default' => '
-						<T3DataStructure>
-							<meta>
-								<langDisable>1</langDisable>
-							</meta>
-							<ROOT>
-								<type>array</type>
-								<el>
-									<dummy>
-										<TCEforms>
-											<config>
-												<type>input</type>
-											</config>
-										</TCEforms>
-									</dummy>
-								</el>
-							</ROOT>
-						</T3DataStructure>
-					'
-				),
+				'type' => 'inline',
+               'foreign_table'=>'tx_commerce_article_prices',
+               'foreign_field'=>'uid_article',
+               'foreign_label'=>'purchase_price',
 			),
 		),
 		'tax' => Array (
@@ -423,14 +409,30 @@ $TCA['tx_commerce_articles'] = Array (
 	),
 	'types' => Array (
 		'0' => Array('showitem' => '
-			sys_language_uid;;;;1-1-1, l18n_parent, l18n_diffsource, hidden;;1, title;;;;2-2-2, subtitle;;;;3-3-3,ordernumber,eancode, description_extra;;;richtext[cut|copy|paste|formatblock|textcolor|bold|italic|underline|left|center|right|orderedlist|unorderedlist|outdent|indent|link|table|image|line|chMode]:rte_transform[mode=ts_css|imgpath=uploads/tx_commerce/rte/],images ,plain_text, tax, supplier_uid, article_type_uid, relatedpage;;;;1-1-1, products_uid, article_attributes,' .
-			'--div--;LLL:EXT:commerce/locallang_db.xml:tx_commerce_products.edit_attributes,attributesedit;;;;1-1-1'
+			hidden;;1, title;;;;2-2-2, subtitle;;;;3-3-3,ordernumber,eancode, description_extra;;;richtext[cut|copy|paste|formatblock|textcolor|bold|italic|underline|left|center|right|orderedlist|unorderedlist|outdent|indent|link|table|image|line|chMode]:rte_transform[mode=ts_css|imgpath=uploads/tx_commerce/rte/],images ,plain_text, tax, supplier_uid, article_type_uid, relatedpage;;;;1-1-1, products_uid, article_attributes,' .
+            ($simpleMode?'':'--div--;LLL:EXT:commerce/locallang_db.xml:tx_commerce_products.edit_attributes,attributesedit;;;;1-1-1,').
+		    '--div--;LLL:EXT:commerce/locallang_db.xml:tx_commerce_articles.prices,prices'
 			),
 	),
 	'palettes' => Array (
 		'1' => Array('showitem' => 'starttime, endtime, fe_group')
 	)
 );
+/**
+  * @TODO Ingo Check if needed
+$postEdit = t3lib_div::_GP('edit');
+$postData = t3lib_div::_GP('data');
+if (!$simpleMode && is_array($postEdit['tx_commerce_articles']) && $postData == NULL && t3lib_extMgm::isLoaded('dynaflex') ) {
+    // Load the configuration from a file
+    require_once(t3lib_extMgm::extPath('commerce') .'ext_df_article_config.php');
+    $dynaFlexConf['workingTable'] = 'tx_commerce_articles';
+
+    // And start the dynyflex processing
+    require_once(t3lib_extMgm::extPath('dynaflex') .'class.dynaflex.php');
+    $dynaflex = new dynaflex($TCA, $dynaFlexConf);
+    // write back the modified TCA
+    $TCA = $dynaflex->getDynamicTCA();
+}
 
 
 $TCA['tx_commerce_article_prices'] = Array (
@@ -440,40 +442,6 @@ $TCA['tx_commerce_article_prices'] = Array (
 	),
 	'feInterface' => $TCA['tx_commerce_articles']['feInterface'],
 	'columns' => Array (
-		'sys_language_uid' => Array (
-			'exclude' => 1,
-			'label_alt' => 'price_net,price_gross,purchase_price',
-			'label_alt_force' => 1,
-		//	'label' => 'LLL:EXT:lang/locallang_general.php:LGL.language',
-			'label' => 'price_gross',
-			'config' => Array (
-				'type' => 'select',
-				'foreign_table' => 'sys_language',
-				'foreign_table_where' => 'ORDER BY sys_language.title',
-				'items' => Array(
-					Array('LLL:EXT:lang/locallang_general.php:LGL.allLanguages',-1),
-					Array('LLL:EXT:lang/locallang_general.php:LGL.default_value',0)
-				)
-			)
-		),
-		'l18n_parent' => Array (
-			'displayCond' => 'FIELD:sys_language_uid:>:0',
-			'exclude' => 1,
-			'label' => 'LLL:EXT:lang/locallang_general.php:LGL.l18n_parent',
-			'config' => Array (
-				'type' => 'select',
-				'items' => Array (
-					Array('', 0),
-				),
-				'foreign_table' => 'tx_commerce_article_prices',
-				'foreign_table_where' => 'AND tx_commerce_article_prices.pid=###CURRENT_PID### AND tx_commerce_article_prices.sys_language_uid IN (-1,0)',
-			)
-		),
-		'l18n_diffsource' => Array (
-			'config' => Array (
-				'type' => 'passthrough'
-			)
-		),
 		'hidden' => Array (
 			'exclude' => 1,
 			'label' => 'LLL:EXT:lang/locallang_general.php:LGL.hidden',

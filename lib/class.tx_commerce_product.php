@@ -81,8 +81,11 @@
   	
   	var $attributes = array();
   	var $attributes_uids=array();
-
-		
+  	
+  	var $relatedProducts = array();
+	var $relatedProduct_uids = array();
+  	var $relatedProducts_loaded=false;
+  	
 	//Versioning
 	var $t3ver_oid		= 0;
 	var $t3ver_id  		= 0;
@@ -92,10 +95,6 @@
 	var $t3ver_stage	= 0;
 	var $t3ver_tstamp 	= 0;
 	
-
-	var $relatedProducts = array();
-	var $relatedProduct_uids = array();
-  	var $relatedProducts_loaded=false;
   	/**
   	 * @var articles_loaded
   	 * is true when artciles are loaded, so that load articles can simply return with the values from the object
@@ -144,7 +143,7 @@
 		 $uid = intval($uid);
 	     $lang_uid = intval($lang_uid);
 		 $this->database_class='tx_commerce_db_product';
-		 $this->fieldlist=array('uid','title','pid','subtitle','description','teaser','images','teaserimages','relatedpage','l18n_parent','manufacturer_uid');
+		 $this->fieldlist=array('uid','title','pid','subtitle','description','teaser','images','teaserimages','relatedpage','l18n_parent','manufacturer_uid', 't3ver_oid', 't3ver_id', 't3ver_label', 't3ver_wsid', 't3ver_stage', 't3ver_state', 't3ver_tstamp');
 		
 		 if  ($uid > 0) {
 		 	
@@ -749,20 +748,6 @@
 										 $valueUidList[] = $row['uid'];
 	 									 $valueshown=true;
 	 								    }
-	 									/**
-		 						 * Sort values by the sorting field.
-		 						 * Is there a better way to do this?
-		 						 */
-		 						$valuelist_temp = $valuelist;
-		 						$valuelist = array();
-		 						$valuelist_temp_sort = array();
-		 						foreach ($valuelist_temp as $value_temp) {
-		 							$valuelist_temp_sort[$value_temp['sorting']] = $value_temp;
-		 						}
-		 						ksort($valuelist_temp_sort);
-		 						foreach ($valuelist_temp_sort as $value_temp) {
-		 							$valuelist[] = $value_temp;
-		 						}
 	 
 	 								}
 	 							}
@@ -842,7 +827,7 @@
 	  	 							'tx_commerce_articles',
 	 								'tx_commerce_articles_article_attributes_mm',
 									'tx_commerce_attributes',	
-									' AND tx_commerce_articles.uid_product = '.$this->uid.' '.$addwhere.' '.$addwhere2.' order by '.$sortingTable.'.sorting'
+									' AND tx_commerce_articles.uid_product = '.$this->uid.' '.$addwhere.$addwhere2.' order by '.$sortingTable.'.sorting'
 									);
 	 		$addwhere = $addwhere2;
 			
@@ -919,20 +904,6 @@
 	 							   	 $valuelist[$row['uid']] = $row['value'];
 	 							   	 $valueshown=true;
 	 							    }
-	 							/**
-	 						 * Sort values by the sorting field.
-	 						 * Is there a better way to do this?
-	 						 */
-	 						$valuelist_temp = $valuelist;
-	 						$valuelist = array();
-	 						$valuelist_temp_sort = array();
-	 						foreach ($valuelist_temp as $value_temp) {
-	 							$valuelist_temp_sort[$value_temp['sorting']] = $value_temp;
-	 						}
-	 						ksort($valuelist_temp_sort);
-	 						foreach ($valuelist_temp_sort as $value_temp) {
-	 							$valuelist[] = $value_temp;
-	 						}
 	
 	 							}
 	 						}
@@ -1003,7 +974,6 @@
   	
 		return false;
   	}
-  	
   	
   	
   	/**
@@ -1173,23 +1143,7 @@
 	
 	 							}
 	 						}
-	 				
-	 				 						
-	 						/**
-	 						 * Sort values by the sorting field.
-	 						 * Is there a better way to do this?
-	 						 */
-	 						$valuelist_temp = $valuelist;
-	 						$valuelist = array();
-	 						$valuelist_temp_sort = array();
-	 						foreach ($valuelist_temp as $value_temp) {
-	 							$valuelist_temp_sort[$value_temp['sorting']] = $value_temp;
-	 						}
-	 						ksort($valuelist_temp_sort);
-	 						foreach ($valuelist_temp_sort as $value_temp) {
-	 							$valuelist[] = $value_temp;
-	 						}
-	 					}
+	 				}
 	 				if ($valueshown==false){
 	 					$return_array[$attribute_uid]=array('title' => $data['title'],
 	 												  'unit' => $data['unit'],

@@ -584,13 +584,9 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 			}
 			if (is_array($arrAttNames)) {
 				$articles_uids = $prod->get_Articles_by_AttributeArray($attributeArray,1);
-				//TODO: for now we put this so it looks like working, check workflow and results
-				if(count($this->select_attributes)>1){
-					$attributeArray = $prod->get_selectattribute_matrix($articles_uids, $this->select_attributes,$showHiddenValues);
-				}else{
-					$attributeArray = $prod->get_selectattribute_matrix($articles_uids, $this->select_attributes,$showHiddenValues);
-				}
-				
+				$relevantArticleUids = $prod->getRelevantArticles($attributeArray);
+				$attributeArray = $prod->get_selectattribute_matrix($relevantArticleUids, $this->select_attributes,$showHiddenValues);
+
 			} else {
 				$articles_uids = $prod->getArticleUids();
 				$attributeArray = $prod->get_selectattribute_matrix($articles_uids, $this->select_attributes,$showHiddenValues);

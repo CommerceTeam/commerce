@@ -7,6 +7,14 @@ simpleMode = 0
 # cat=basic/enable/10;  type=int; label=Automatically generate prices while when changing one price accoring to the tax (0 - Do nothing, 1 recalulate not existing prices, 2 calculate from net, 3 calculate from gross )
 genprices = 1
 
+# cat=basic/enable/10; type=int; label=UID of the PAYMENT-Product (for simple mode)
+paymentID = 1
+
+# cat=basic/enable/10; type=int; label=UID of the DELIVERY-Product (for simple mode)
+deliveryID = 2
+
+# cat=basic/enable/10; type=int; label=UID of the SYSTEM-Category. Simple mode will be disabled for this category to allow multiple payment & delivery articles
+systemCategoryID = 1
 
 # cat=basic/enable/30; type=int; label=Page-ID for Invoice: Defines which Page displays the Invoice.
 invoicePageID = 0

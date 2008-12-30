@@ -118,13 +118,19 @@ class tx_commerce_db_article extends tx_commerce_db_alib{
 		}
 																							
       
-      	
+		// hook to define any additional restrictions in where clause (Melanie Meyer, 2008-09-17)
+		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_article.php']['additionalPriceWhere']) {
+			$hookObj = &t3lib_div::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_article.php']['additionalPriceWhere']);
+		}
+		if (method_exists($hookObj, 'additionalPriceWhere')) {
+			$additionalWhere = $hookObj->additionalPriceWhere($this,$uid);
+		}
       		if ($uid>0) {
 	            $price_uid_list=array();
 		    if(is_object($GLOBALS['TSFE']->sys_page)){
 				$proofSQL = $GLOBALS['TSFE']->sys_page->enableFields('tx_commerce_article_prices',$GLOBALS['TSFE']->showHiddenRecords);
 		    }	    
-	            $result=$GLOBALS['TYPO3_DB']->exec_SELECTquery('uid,fe_group','tx_commerce_article_prices',"uid_article = $uid and price_scale_amount_start <= $count and price_scale_amount_end >= $count" .  $proofSQL,'',$orderField);
+	            $result=$GLOBALS['TYPO3_DB']->exec_SELECTquery('uid,fe_group','tx_commerce_article_prices',"uid_article = $uid and price_scale_amount_start <= $count and price_scale_amount_end >= $count" .  $proofSQL . $additionalWhere,'',$orderField);
 	            if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)>0){
 			while ($return_data=$GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)){
 			            $price_uid_list[$return_data['fe_group']][]=$return_data['uid'];

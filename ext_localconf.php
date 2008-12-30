@@ -233,7 +233,6 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['proc
 // for processing the order sfe, when changing the pid
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processVersionSwapClass'][] = 'EXT:commerce/hooks/class.tx_commerce_versionhooks.php:tx_commerce_versionhooks';
 
-
 // Intiantation the Basket in the FE User class
 // removed, since TYPO3 3.8.0 comes with a handy hook in initi fe_user :-)
 //$GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['tslib/class.tslib_fe.php'] = t3lib_extMgm::extPath(COMMERCE_EXTkey)."class.ux_tslib_fe.php";
@@ -291,6 +290,11 @@ $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY]['useGraytree'] = $_EXTCONF['use
 require_once(t3lib_extMgm::extPath(COMMERCE_EXTkey).'hooks/class.tx_commerce_tcehooksHandler.php');
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] = 'tx_commerce_tcehooksHandler';
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass'][] = 'tx_commerce_tcehooksHandler';
+
+require_once(t3lib_extMgm::extPath(COMMERCE_EXTkey).'hooks/class.tx_commerce_irrehooks.php');
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tceforms_inline.php']['tceformsInlineHook'][] = 'tx_commerce_irrehooks';
+require_once(t3lib_extMgm::extPath(COMMERCE_EXTkey).'hooks/class.tx_commerce_tceforms_hooks.php');
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tceforms.php']['getSingleFieldClass'][] = 'tx_commerce_tceforms_hooks';
 
 require_once(t3lib_extMgm::extPath(COMMERCE_EXTkey).'hooks/class.tx_srfeuserregister_commerce_hooksHandler.php');
 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['sr_feuser_register']['tx_srfeuserregister_pi1']['registrationProcess'][] = 'tx_srfeuserregister_commerce_hooksHandler';

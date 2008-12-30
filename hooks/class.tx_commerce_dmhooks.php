@@ -232,162 +232,10 @@ class tx_commerce_dmhooks	{
 					}
 				}
 
-					// update article prices
-				if (isset($incomingFieldArray['prices']))	{
-					$prices = $incomingFieldArray['prices']['data']['sDEF']['lDEF'];
-					$pricesData = array();
-					foreach ($prices as $pKey => $keyData)	{
-						if ($keyData)	{
-							$value = $keyData['vDEF'];
-							$pUid = $this->belib->getUidFromKey($pKey, $keyData);
-
-							unset($keyData[(count($keyData) -1)]);
-							$key = implode('_', $keyData);
-
-
-							if ($key == 'price_net' || $key == 'price_gross' || $key == 'purchase_price')	{
-								if (is_numeric($value)){
-									$value = $value *100;
-								}
-								
-							}
-
-							/**
-							 * Price from tax calculation
-							 * @since 06.10.2005
-							 * @author Ingo Schmitt <is@marketing-factory.de>
-							 */
-						
-							if (isset($incomingFieldArray['tax']))	{
-								$extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['commerce']);
-								
-										
-								switch ($extConf['genprices']){
-									case 0:
-										/**
-										 * Do nothing;
-										 */
-										break;
-									case 2: 
-										/**
-										 * Calculare from net 
-										 */
-										  if ($key == 'price_gross') {
-										 	$price_net_value=$incomingFieldArray['prices']['data']['sDEF']['lDEF']['price_net_'.$pUid]['vDEF'];
-											$value=round(($price_net_value*100)*(100+$incomingFieldArray['tax'])/100);
-											$incomingFieldArray['prices']['data']['sDEF']['lDEF']['price_gross_'.$pUid]['vDEF']=$value/100;
-										  }
-										 break;
-									case 3:
-										/**
-										 * Calculate from gross
-										 */
-										 if ($key == 'price_net') {
-										 	$price_gross_value=$incomingFieldArray['prices']['data']['sDEF']['lDEF']['price_gross_'.$pUid]['vDEF'];
-											$value=round(($price_gross_value*100)/(100+$incomingFieldArray['tax'])*100);
-											$incomingFieldArray['prices']['data']['sDEF']['lDEF']['price_net_'.$pUid]['vDEF']=$value/100;
-										 }
-										 break;
-									case 1:
-									default:
-										
-										if (($key == 'price_net') && (!isset($value) || ($value === '') || (strlen($value)==0)))	{
-											
-											$price_gross_value=$incomingFieldArray['prices']['data']['sDEF']['lDEF']['price_gross_'.$pUid]['vDEF'];
-											$value=round(($price_gross_value*100)/(100+$incomingFieldArray['tax'])*100);
-											$incomingFieldArray['prices']['data']['sDEF']['lDEF']['price_net_'.$pUid]['vDEF']=$value/100;
-										} elseif (($key == 'price_gross') && (!isset($value) || ($value === '') || (strlen($value)==0)))	{
-											$price_net_value=$incomingFieldArray['prices']['data']['sDEF']['lDEF']['price_net_'.$pUid]['vDEF'];
-											$value=round(($price_net_value*100)*(100+$incomingFieldArray['tax'])/100);
-											$incomingFieldArray['prices']['data']['sDEF']['lDEF']['price_gross_'.$pUid]['vDEF']=$value/100;
-										}
-									break;
-								}
-							}
-							
-							if ($value > '')	{
-								$pricesData[$pUid][$key] = $value;
-							}
-						}
-					}
-					$error=false;
-					/**
-					 * @TODO Do Localisation in Output
-					 */
-					/**
-					 * Do some Checks with the data,
-					 */
-					$minPrice =0;
-					
-					foreach ($pricesData as $onePrice) {
-						if ($onePrice['price_scale_amount_start']>0 && ($minPrice==0 || $minPrice>$onePrice['price_scale_amount_start'])) {
-							$minPrice = $onePrice['price_scale_amount_start'];
-						}
-
-						if ($onePrice['price_scale_amount_start'] >$onePrice['price_scale_amount_end']) {
-							$pObj->log($table,$id,2,0,1,"Price Scale Amount Start was greater than price scale amount end",1,array($table));
-							$error=true;
-						}
-					}
-					if ($minPrice >1) {
-						$pObj->log($table,$id,2,0,1,"Minimum Price Sacale amount was more than 1",1,array($table));
-					}
-					if ($error) {
-						// Unset Array to change no value
-
-						$incomingFieldArray = array();
-					}
-
-					if (is_array($pricesData) && $error===false)	{
-						foreach ($pricesData as $pUid => $pArray)	{
-
-							unset($pArray["create_new_scale_prices_fe"]);
-							if (count($pArray)==0) continue;
-							$GLOBALS['TYPO3_DB']->exec_UPDATEquery(
-								'tx_commerce_article_prices',
-								'uid=' .$pUid,
-								$pArray
-							);
-						}
-					}
-				}
-
+				$extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['commerce']);
 					// create a new price if the checkbox was toggled get pid of article
-				if ($incomingFieldArray['create_new_price'] == 'on')	{
-					    // somehow hook is used two times sometime. So switch off new creating.
-				    $incomingFieldArray['create_new_price'] = 'off';
 
 
-					list($modPid,$defaultFolder,$folderList) = tx_commerce_folder_db::initFolders('Commerce', 'commerce');
-					list($prodPid,$defaultFolder,$folderList) = tx_commerce_folder_db::initFolders('Products', 'commerce',$modPid);
-
-
-					$aPid = $prodPid;
-
-						// set some status vars
-					$time = time();
-
-						// create the price
-					$GLOBALS['TYPO3_DB']->exec_INSERTquery(
-						'tx_commerce_article_prices',
-						array(
-							'pid' => $aPid,
-							'tstamp' => $time,
-							'crdate' => $time,
-							'cruser_id' => $GLOBALS['BE_USER']->user['uid'],
-							'uid_article' => $id,
-						)
-					);
-				}
-
-
-					// create new scale prices if all fields were filled out correcly
-
-					// $create_new_scale_prices_count:	how many steps? (e.g. 3)
-					// $create_new_scale_prices_steps:	how big is the step from amount to the next? (e.g. 5)
-					// $create_new_scale_prices_startamount:	what is the first amount? (e.g. 10)
-
-					// example values above will create 3 prices with amounts 10-14, 15-19 and 20-24
 				$create_new_scale_prices_count=is_numeric($incomingFieldArray['create_new_scale_prices_count'])?intval($incomingFieldArray['create_new_scale_prices_count']):0;
 				$create_new_scale_prices_steps=is_numeric($incomingFieldArray['create_new_scale_prices_steps'])?intval($incomingFieldArray['create_new_scale_prices_steps']):0;
 				$create_new_scale_prices_startamount=is_numeric($incomingFieldArray['create_new_scale_prices_startamount'])?intval($incomingFieldArray['create_new_scale_prices_startamount']):0;
@@ -427,9 +275,6 @@ class tx_commerce_dmhooks	{
 						$myScaleAmountStart+=$create_new_scale_prices_steps;
 						$myScaleAmountEnd+=$create_new_scale_prices_steps;
 					}
-					$this->belib->updatePriceXMLFromDatabase($id);
-
-
 				}
 				break;
 			case 'tx_commerce_orders':
@@ -816,7 +661,7 @@ class tx_commerce_dmhooks	{
 				}
 			}
 		}
-		// Check if we do have some localosed products an clal the recursvly
+		// Check if we do have some localised products an call the method recursivly
 		$resLocalised=$GLOBALS['TYPO3_DB']->exec_SELECTquery('uid','tx_commerce_products','deleted=0 and l18n_parent='.intval($pUid));
 		while ($rowLocalised = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($resLocalised)) {
 			$this->saveProductRelations($rowLocalised['uid'], $fieldArray);
@@ -1211,8 +1056,6 @@ class tx_commerce_dmhooks	{
 				} else {
 					$uidArticle = $fieldArray['uid_article'];
 				}
-
-
 				$this->belib->savePriceFlexformWithArticle( $id , $uidArticle , $fieldArray );
 
 				break;

@@ -77,6 +77,13 @@ class tx_commerce_treeCategory extends tx_graytree_browseTree {
 		$tempArray = array ('data' => 'tx_commerce_leafArticleData', 'view' => 'tx_commerce_leafArticleView');
 		$this->leafInfoArray[] = $tempArray;
 		
+		$simpleMode = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['commerce']);
+		$simpleMode = $simpleMode['simpleMode'];
+		if(!$simpleMode) {
+			$tempArray = array ('data' => 'tx_commerce_leafArticleData', 'view' => 'tx_commerce_leafArticleView');
+			$this->leafInfoArray[] = $tempArray;
+		}
+		
 			//+++ TODO: nicht im Konstruktor! $this->init($this->leafArray);
 	}
 
