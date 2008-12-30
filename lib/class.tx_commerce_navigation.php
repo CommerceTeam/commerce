@@ -37,20 +37,19 @@
 
 /**
  * @TODO: Buld Method to build UP Add Get Vars parameter to 
- * Have a sentral Methgod to build chahs parameters
- * @TODO: Replace & by the php configured seperator
+ * Have a central Method to build chash parameters
  */
 
 if(!class_exists('tx_graytree_db')) {
 	$TYPO3_CONF_VARS = $GLOBALS['TYPO3_CONF_VARS'];
-	require_once(t3lib_extmgm::extPath('graytree').'lib/class.tx_graytree_db.php');
+	require_once(t3lib_extmgm::extPath('graytree').'lib/class.tx_graytree_db.php'); ###REPLACE ALL GRAYTREE HERE###
 }
 require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_browsetrees.php');
 require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_category.php');
 require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_product.php');
 require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_div.php');
 
-
+###WHAT IS THIS FOR? SEARCH FOR WHERE THIS GETS INCLUDED###
 class user_tx_commerce_catmenu_pub extends tx_commerce_navigation {
 
 
@@ -106,7 +105,6 @@ class tx_commerce_navigation {
 			$this->useRootlineInformationToUrl = $this->mConf['useRootlineInformationToUrl'];
 		}
 		
-	
 		$this->choosenCat = $this->mConf['category'];
 		
 		$this->nodeArrayAdditionalFields = t3lib_div::trimExplode(',',$this->mConf['additionalFields'],0);
@@ -202,7 +200,7 @@ class tx_commerce_navigation {
 			$this->storeHash($hash,serialize($this->mTree),'COMMERCE_MENU_NAV'.$this->cat);
 		}
 		
-		
+		#t3lib_div::debug($this->mTree);
 		/**
 		  * finish menue array rendering, now postprocessing array with current status of menue
 		  **/
@@ -231,7 +229,7 @@ class tx_commerce_navigation {
         	$this->pathParents=split(",",$this->PATH);
  	    } elseif((is_numeric($this->choosenCat)) && ($this->choosenCat>0)) {
         	/**
-        	 * Bulild the path by or own
+        	 * Build the path by or own
         	 */
         	$myCat = t3lib_div::makeInstance('tx_commerce_category');
         	$myCat->init($this->choosenCat);
@@ -435,7 +433,7 @@ class tx_commerce_navigation {
 			 	 $nodeArray['pid'] = $dataRow['pid'];
 				 $nodeArray['uid'] = $uidPage;
 				 $nodeArray['title'] = $dataRow['title'];
-				 if ($GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid'] > 0) {
+				 if ( ($GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid'] > 0) || ($GLOBALS['TSFE']->tmpl->setup['page.']['config.']['sys_language_uid'] > 0)) {
 				 	/**
 				 	 * Add Pages Overlayto Array, if not syslaguage
 				 	 */
@@ -500,7 +498,7 @@ class tx_commerce_navigation {
 					$pA = t3lib_div::cHashParams($nodeArray['_ADD_GETVARS'].$GLOBALS['TSFE']->linkVars);
 					
 					$nodeArray['_ADD_GETVARS'] .= ini_get('arg_separator.output') .'cHash='.t3lib_div::shortMD5(serialize($pA));
-				 	$nodeArray['ITEM_STATE'] = 'NO';
+				 	$nodeArray['ITEM_STATE'] = 'IFSUB';
 				 
 				 }
 				 else{
@@ -591,13 +589,15 @@ class tx_commerce_navigation {
 				}else{				 
 					$nodeArray['path']=$dataRow['uid'];
 				}
-				
-				
-				if ($nodeArray['leaf']==1)
+				// Set default
+				$nodeArray['ITEM_STATE'] = 'NO';
+				if ($nodeArray['leaf']==1){
 					$nodeArray['_ADD_GETVARS'] = ini_get('arg_separator.output') .$this->prefixId.'[catUid]='.$uid_root;
-			 	else
+					
+				}else{
 				 	$nodeArray['_ADD_GETVARS'] = ini_get('arg_separator.output') .$this->prefixId.'[catUid]='.$row['uid_foreign'];
-				 	
+					
+				} 	
 		    	$nodeArray['_ADD_GETVARS'] .= ini_get('arg_separator.output') .$this->prefixId.'[showUid]='.$dataRow[uid];
 				//$nodeArray['_ADD_GETVARS'] .= ini_get('arg_separator.output') .$this->prefixId.'[mDepth]='.$mDepth.ini_get('arg_separator.output') .$this->prefixId.'[path]='.$nodeArray['path'];
 			   
@@ -642,36 +642,69 @@ class tx_commerce_navigation {
 			if ($mDepth==1){
 				
 				$treeArray[$path[0]]['ITEM_STATE'] = 'ACT';
-					if ($path[0] == $this->choosenCat) {
+				if ($path[0] == $this->choosenCat) {
+
+					if (count($treeArray[$path[0]]['--subLevel--'])>0) {
+						//$treeArray[$path[0]]['ITEM_STATE'] = 'CURIFSUB';					
+						$treeArray[$path[0]]['ITEM_STATE'] = 'IFSUB';
+					}else {
 						$treeArray[$path[0]]['ITEM_STATE'] = 'CUR';
-						
-						/**
-						 * Sets this node (Product) as current item
-						 */
-						if ($this->ShowUid > 0){
-							$treeArray[$path[0]]['--subLevel--'][$this->ShowUid]['ITEM_STATE']='CUR';
+					}
+
+					/**
+					 * Sets this node (Product) as current item
+					 */
+					if ($this->ShowUid > 0){
+						$treeArray[$path[0]]['--subLevel--'][$this->ShowUid]['ITEM_STATE']='CUR';
+						if (count($treeArray[$path[0]]['--subLevel--'])>0) {
+							//$treeArray[$path[0]]['ITEM_STATE'] = 'ACTIFSUB';
+							$treeArray[$path[0]]['ITEM_STATE'] = 'IFSUB';
+						}else{
 							$treeArray[$path[0]]['ITEM_STATE'] = 'ACT';
 						}
+						
 					}
-			
-					if($this->ShowUid==$path[0]){
+
+				}
+		
+				if($this->ShowUid==$path[0]){
+					if (count($treeArray[$path[0]]['--subLevel--'])>0) {
+						//$treeArray[$path[0]]['ITEM_STATE'] = 'CURIFSUB';					
+						$treeArray[$path[0]]['ITEM_STATE'] = 'IFSUB';
+					}else {
 						$treeArray[$path[0]]['ITEM_STATE'] = 'CUR';
 					}
-					
-					if (count($treeArray[$path[0]]['--subLevel--'])>0) { 
-						$treeArray[$path[0]]['_SUB_MENU']=$treeArray[$path[0]]['--subLevel--'];
-					}
+				}
+				
+				if (count($treeArray[$path[0]]['--subLevel--'])>0) { 
+					$treeArray[$path[0]]['_SUB_MENU']=$treeArray[$path[0]]['--subLevel--'];
+				}
 				return;
 			}else{
 				if(is_array($path)){
 					if(is_array($treeArray)){
 						$nodeId=array_pop($path);
 						$treeArray[$nodeId]['ITEM_STATE'] = 'ACT';
+						if (count($treeArray[$nodeId]['--subLevel--'])>0){
+							//$treeArray[$nodeId]['ITEM_STATE'] = 'ACTIFSUB';
+							$treeArray[$path[0]]['ITEM_STATE'] = 'IFSUB';
+						}
 						if ($nodeId == $this->choosenCat) {
-							$treeArray[$nodeId]['ITEM_STATE'] = 'CUR';
+							if (count($treeArray[$nodeId]['--subLevel--'])>0){
+								$treeArray[$nodeId]['ITEM_STATE'] = 'CUR'; 
+							}else{
+								//$treeArray[$nodeId]['ITEM_STATE'] = 'CURIFSUB'; 
+								$treeArray[$path[0]]['ITEM_STATE'] = 'IFSUB';
+							}
 						}
 						if($this->ShowUid==$treeArray[$nodeId]['parent_id']){
 							$treeArray[$nodeId]['ITEM_STATE'] = 'CUR';
+							if (count($treeArray[$nodeId]['--subLevel--'])>0){
+								$treeArray[$nodeId]['ITEM_STATE'] = 'CUR'; 
+							}else{
+								//$treeArray[$nodeId]['ITEM_STATE'] = 'CURIFSUB'; 
+								$treeArray[$path[0]]['ITEM_STATE'] = 'IFSUB';
+							}
 						}
 						$this->processArrayPostRender($treeArray[$nodeId]['--subLevel--'],$path,$mDepth-1);
 						if (count($treeArray[$nodeId]['--subLevel--'])>0){
@@ -697,7 +730,7 @@ class tx_commerce_navigation {
 			return "";
 		}
 		$addWhere=$GLOBALS['TSFE']->sys_page->enableFields($tableName,$GLOBALS['TSFE']->showHiddenRecords);
-		$where = 'uid = '.intval($uid);
+		$where = '`uid` = '.$uid;
 		$row=$GLOBALS['TYPO3_DB']->exec_SELECTgetRows('*',$tableName,$where.$addWhere,$groupBy='',$orderBy='','1','');
 		
 		if (($GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid'] > 0) && $row[0]){
@@ -707,8 +740,8 @@ class tx_commerce_navigation {
  			 * Get Overlay, if availiabe
  			 */	
  			$row[0]=$GLOBALS['TSFE']->sys_page->getRecordOverlay($tableName,$row[0],$langUid,$this->translationMode);
- 					
-		}
+ 		
+ 		}
 			
 		if ($row[0]){
 			return $row[0];
@@ -845,16 +878,17 @@ class tx_commerce_navigation {
   			 * 			'nav_title' => $ProductObject->get_navtitle(),
   			 */
   			
+  			$itemState = ( $ProductObject->uid === $this->gpVars['showUid'] ? 'CUR':'NO');
+  			
   			$returnArray[]=array(
 						'title'=>$ProductObject->get_title(),
   			
 						'uid'=>$this->PID,
 						 '_ADD_GETVARS' => $add_getvars.ini_get('arg_separator.output') .'cHash='.t3lib_div::shortMD5(serialize($GP_Temp)),
-						 'ITEM_STATE' => 'NO',
+						 'ITEM_STATE' => $itemState,
 						
 						
-						);
-			
+						);			
 		
 		}
 			
@@ -895,11 +929,12 @@ class tx_commerce_navigation {
 					$add_getvars.=ini_get('arg_separator.output') .$this->prefixId.'[basketHashValue]='.$this->gpVars['basketHashValue'];
 				}
 	  			$GP_Temp = t3lib_div::cHashParams($add_getvars.$GLOBALS['TSFE']->linkVars);
+	  			$itemState = ( $CategoryObject->uid === $catID ? 'CUR':'NO');
 	  			$result[]=array('title'=>$CategoryObject->get_title(),
 	  						'nav_title' => $CategoryObject->get_navtitle(),
 							'uid'=>$this->PID,
 							 '_ADD_GETVARS' => $add_getvars.ini_get('arg_separator.output') .'cHash='.t3lib_div::shortMD5(serialize($GP_Temp)),
-							 'ITEM_STATE' => 'NO',
+							 'ITEM_STATE' => $itemState,
 							
 							
 							);

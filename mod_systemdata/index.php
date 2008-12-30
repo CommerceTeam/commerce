@@ -59,8 +59,8 @@ class tx_commerce_systemdata extends t3lib_SCbase {
 		parent::init();
 			require_once (t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_create_folder.php');
 			tx_commerce_create_folder::init_folders();
-			list($modPid,$defaultFolder,$folderList) = tx_graytree_folder_db::initFolders('Commerce', 'commerce');
-			list($this->attrUid,$defaultFolder,$folderList) = tx_graytree_folder_db::initFolders('Attributes', 'commerce', $modPid);
+			list($modPid,$defaultFolder,$folderList) = tx_commerce_folder_db::initFolders('Commerce', 'commerce');
+			list($this->attrUid,$defaultFolder,$folderList) = tx_commerce_folder_db::initFolders('Attributes', 'commerce', $modPid);
 			$this->modPid = $modPid;
 		/*
 		if (t3lib_div::_GP("clear_all_cache"))	{
@@ -252,7 +252,7 @@ class tx_commerce_systemdata extends t3lib_SCbase {
 			$result .= '<td valign="top">';
 			
 			if ($attribute['has_valuelist'] == 1)	{
-				$valueRes = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'tx_commerce_attribute_values', 'attributes_uid='.$attribute['uid'].' AND hidden=0 AND deleted=0','','sorting');
+				$valueRes = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'tx_commerce_attribute_values', 'attributes_uid='.$attribute['uid'].' AND hidden=0 AND deleted=0');
 				if ($GLOBALS['TYPO3_DB']->sql_num_rows($valueRes) > 0)	{
 					$result .= '<table border="0" cellspacing="0" cellpadding="0">';
 					while ($value = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($valueRes))	{
@@ -288,6 +288,7 @@ class tx_commerce_systemdata extends t3lib_SCbase {
 		global $LANG;
 		
 		$extConf = unserialize($GLOBALS["TYPO3_CONF_VARS"]["EXT"]["extConf"]['commerce']);		
+		
 		$fields = explode(',', $extConf['coSuppliers']);
 		$table = 'tx_commerce_manufacturer';
 		

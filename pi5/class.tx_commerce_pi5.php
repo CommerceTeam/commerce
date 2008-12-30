@@ -40,7 +40,7 @@ require_once(PATH_tslib."class.tslib_pibase.php");
  */
 require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_product.php');
 require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_category.php');
-require_once(t3lib_extmgm::extPath('graytree').'lib/class.tx_graytree_folder_db.php');
+require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_folder_db.php');
 require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_pibase.php');
 require_once(t3lib_extmgm::extPath('commerce').'pi4/class.tx_commerce_pi4.php');
 
@@ -415,7 +415,7 @@ class tx_commerce_pi5 extends tx_commerce_pibase {
 		$markerArray['###LISTING_BASKET###'] = $this->makeBasketView(
 								$GLOBALS['TSFE']->fe_user->tx_commerce_basket,
 								'###BASKET_VIEW###',
-								array(NORMALArticleType));
+								t3lib_div::intExplode(',', $this->conf['regularArticleTypes']));
 	
 	#	$markerArray['###LISTING_BASKET_GENERAL###'] = $this->getBasketSum();
 		
@@ -590,9 +590,9 @@ class tx_commerce_pi5 extends tx_commerce_pibase {
 		$orderData['paymenttype'] = $this->getPaymentType();
 		$orderData['sum_price_net'] = $basket->get_net_sum();
 		$orderData['sum_price_gross'] = $basket->get_gross_sum();
-		$comPid = array_keys(tx_graytree_folder_db::getFolders('commerce', 0, 'COMMERCE'));
-		$ordPid = array_keys(tx_graytree_folder_db::getFolders('commerce', $comPid[0], 'Orders'));
-		$incPid = array_keys(tx_graytree_folder_db::getFolders('commerce', $ordPid[0], 'Incoming'));
+		$comPid = array_keys(tx_commerce_folder_db::getFolders('commerce', 0, 'COMMERCE'));
+		$ordPid = array_keys(tx_commerce_folder_db::getFolders('commerce', $comPid[0], 'Orders'));
+		$incPid = array_keys(tx_commerce_folder_db::getFolders('commerce', $ordPid[0], 'Incoming'));
 		$orderData['pid'] = $incPid[0];
 		$orderData['crdate'] = $now;
 		$orderData['tstamp'] = $now;
@@ -1045,7 +1045,7 @@ class tx_commerce_pi5 extends tx_commerce_pibase {
 			if (isset($this->conf['addressFolder']))	{
 				$dataArray['pid'] = $this->conf['addressFolder'];
 			} else {
-				list($commercePid, $defaultFolder, $folderList) = tx_graytree_folder_db::initFolders('Commerce', 'commerce', $modPid);
+				list($commercePid, $defaultFolder, $folderList) = tx_commerce_folder_db::initFolders('Commerce', 'commerce', $modPid);
 				$dataArray['pid'] = $commercePid;
 			}
 			

@@ -56,7 +56,9 @@ require_once (PATH_t3lib.'class.t3lib_clipboard.php');
 require_once (t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_order_localrecordlist.php');
 require_once (t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_feusers_localrecordlist.php');
 require_once (t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_statistics.php');
-require_once (t3lib_extmgm::extPath('graytree').'lib/class.tx_graytree_folder_db.php');
+require_once (t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_folder_db.php');
+
+
 
 /**
  * Load Locallang
@@ -79,7 +81,8 @@ class tx_commerce_statistic extends t3lib_SCbase {
 		
 		parent::init();
 		$this->extConf = unserialize($GLOBALS["TYPO3_CONF_VARS"]["EXT"]["extConf"]["commerce"]);
-		$order_pid = array_unique(tx_graytree_folder_db::initFolders('Orders','Commerce',0,'Commerce'));
+		$this->excludePids = $this->extConf['excludeStatisticFolders'] != '' ? $this->extConf['excludeStatisticFolders'] : 0;
+		$order_pid = array_unique(tx_commerce_folder_db::initFolders('Orders','Commerce',0,'Commerce'));
 		$this->order_pid = $order_pid[0];
 		$this->statistics = t3lib_div::makeInstance('tx_commerce_statistics');
 		$this->statistics->init($this->extConf['excludeStatisticFolders'] != '' ? $this->extConf['excludeStatisticFolders'] : 0);

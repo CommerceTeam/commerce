@@ -36,7 +36,7 @@ if(!defined('TYPO3_MODE')) die("Access denied.");
 
         // field templates for usage in other tables to link categories
 require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_tcefunc_categorytree.php');
-require_once(t3lib_extmgm::extPath('graytree') .'lib/class.tx_graytree_tcefunc.php');
+//require_once(t3lib_extmgm::extPath('graytree') .'lib/class.tx_graytree_tcefunc.php'); ###IS THIS NEEDED ANYMORE?###
 
 	// needed only for the leaf classes to be shown in the TCE category tree
 require_once(PATH_txcommerce.'lib/class.tx_commerce_leafproductdata.php');
@@ -144,7 +144,7 @@ $TCA['tx_commerce_categories'] = Array (
 			)
 		),
 		'title' => Array (
-			'exclude' => 1,
+			'exclude' => 0,
 			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_categories.title',
 			'config' => Array (
 				'type' => 'input',
@@ -219,11 +219,11 @@ $TCA['tx_commerce_categories'] = Array (
 			)
 		),
 		'parent_category' => Array (
-			'exclude' => 1,
+			'exclude' => 0,
 			'l10n_mode' => 'exclude',
 			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_categories.parent_category',
 			'config' => Array (
-				'type' => 'group',
+				/*'type' => 'group',
 				'internal_type' => 'db',
 				'allowed' => 'tx_commerce_categories',
 				'form_type' => 'user',
@@ -235,7 +235,16 @@ $TCA['tx_commerce_categories'] = Array (
 				'size' => 7,
 				'autoSizeMax' => 10,
 				'minitems' => 0,
-				'maxitems' => 100,
+				'maxitems' => 100,*/
+				'type' => 'passthrough',
+				'form_type' => 'user',
+				'userFunc' => 'EXT:'.COMMERCE_EXTkey.'/treelib/class.tx_commerce_tcefunc.php:&tx_commerce_tceFunc->getSingleField_selectCategories',
+			
+				'treeViewBrowseable' => true,
+				'size' => 10,
+				'autoSizeMax' => 30,
+				'minitems' => 0,
+				'maxitems' => 20,
 			),
 		), 
 		'ts_config' => Array (
@@ -310,7 +319,9 @@ $TCA['tx_commerce_categories'] = Array (
 // Only perform from TCA if the BE form is called the first time ('First time' also means
 // calling the editform of an product), no data has to be saved and extension dynaflex is
 // available (of course!)
-$postEdit = t3lib_div::_GP('edit');
+
+//Obsolete, @see dcafiles/tx_commerce_categories_dfconfig
+/*$postEdit = t3lib_div::_GP('edit');
 $postData = t3lib_div::_GP('data');
 if (is_array($postEdit['tx_commerce_categories']) &&
 	($postData == NULL) && 
@@ -327,6 +338,6 @@ if (is_array($postEdit['tx_commerce_categories']) &&
 	
 	// write back the modified TCA
 	$TCA = $dynaflex->getDynamicTCA();
-}
+}*/
 
 ?>

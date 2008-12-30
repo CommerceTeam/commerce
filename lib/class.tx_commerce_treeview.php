@@ -41,9 +41,9 @@ define('COMMERCE_TREEVIEW_DLOG', '0');
 
 class tx_commerce_treeView extends tx_graytree_View {
 	var $rootIconName = 'commerce_globus.gif';  // Icon for the root of the tree
-	var $treeName = 'txcommerceCategoryTree';
+	var $treeName = 'txcommerceCategoryGrayTree';
 	var $title = 'Category';	
-	var $domIdPrefix = 'txcommerceCategoryTree';
+	var $domIdPrefix = 'txcommerceCategoryGrayTree';
 
 
 	/**

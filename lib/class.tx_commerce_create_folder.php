@@ -38,7 +38,7 @@
  * 
  * $Id$
  */
- require_once(t3lib_extmgm::extPath('graytree').'lib/class.tx_graytree_folder_db.php');
+ require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_folder_db.php');
  require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_belib.php');
  
  /**
@@ -64,14 +64,14 @@
 		 * Folder Creation
 		 * @TODO Get list from Order folders from TS
 		 */
-		list($modPid,$defaultFolder,$folderList) = tx_graytree_folder_db::initFolders('Commerce', 'commerce');
-		list($prodPid,$defaultFolder,$folderList) = tx_graytree_folder_db::initFolders('Products', 'commerce',$modPid);
-		list($attrPid,$defaultFolder,$folderList) = tx_graytree_folder_db::initFolders('Attributes', 'commerce',$modPid);
-		list($orderPid,$defaultFolder,$folderList) = tx_graytree_folder_db::initFolders('Orders', 'commerce',$modPid);
-		list($xPid,$defaultFolder,$folderList) = tx_graytree_folder_db::initFolders('Incoming', 'commerce',$orderPid);
-		list($xPid,$defaultFolder,$folderList) = tx_graytree_folder_db::initFolders('Working', 'commerce',$orderPid);
-		list($xPid,$defaultFolder,$folderList) = tx_graytree_folder_db::initFolders('Waiting', 'commerce',$orderPid);
-		list($xPid,$defaultFolder,$folderList) = tx_graytree_folder_db::initFolders('Delivered', 'commerce',$orderPid);
+		list($modPid,$defaultFolder,$folderList) = tx_commerce_folder_db::initFolders('Commerce', 'commerce');
+		list($prodPid,$defaultFolder,$folderList) = tx_commerce_folder_db::initFolders('Products', 'commerce',$modPid);
+		list($attrPid,$defaultFolder,$folderList) = tx_commerce_folder_db::initFolders('Attributes', 'commerce',$modPid);
+		list($orderPid,$defaultFolder,$folderList) = tx_commerce_folder_db::initFolders('Orders', 'commerce',$modPid);
+		list($xPid,$defaultFolder,$folderList) = tx_commerce_folder_db::initFolders('Incoming', 'commerce',$orderPid);
+		list($xPid,$defaultFolder,$folderList) = tx_commerce_folder_db::initFolders('Working', 'commerce',$orderPid);
+		list($xPid,$defaultFolder,$folderList) = tx_commerce_folder_db::initFolders('Waiting', 'commerce',$orderPid);
+		list($xPid,$defaultFolder,$folderList) = tx_commerce_folder_db::initFolders('Delivered', 'commerce',$orderPid);
 
 		$hookObjectsArr = array();
 		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/class.tx_commerce_create_folder.php']['postcreatefolder'])) {

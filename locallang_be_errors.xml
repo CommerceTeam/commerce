@@ -13,6 +13,7 @@
 			<label index="article.localization">Articles can only be localized by localizing a product</label>
 			<label index="product.localization_without_article">Products without articles could not be localized</label>
 			<label index="product.no_copy_allowed">It's not allowed to copy products that have articles.</label>
+			<label index="product.no_find_uid">The uid of the localized product could not be found. Localization was NOT successful.</label>
 		</languageKey>
 		<languageKey index="nl" type="array">
 			<label index="error">Fout</label>

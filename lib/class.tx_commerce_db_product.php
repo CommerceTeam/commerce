@@ -158,26 +158,9 @@ class tx_commerce_db_product extends tx_commerce_db_alib {
  		}
  		
  	}
-	 
-	/**
-	 * Returns a list of uid's that are related to this product
-	 * @param uid product uid
-	 * @return array Product UIDs
-	 * @TODO:we dont really need to extract category uids
-	 */
-	function get_related_product_uids($uid){
-		$uid=intval($uid);
-		$res=$GLOBALS['TYPO3_DB']->exec_SELECTquery(
-			'R.uid_foreign as rID,C.uid_foreign as cID',
-			$this->database_products_related_table.' R,'.$this->database_category_rel_table.' as C',
-			'R.uid_foreign = C.uid_local AND R.uid_local='.intval($uid),
-			'rID');
-		$relatedProducts=array();
-		while( $data=$GLOBALS['TYPO3_DB']->sql_fetch_assoc($res) ){
-			$relatedProducts[$data['rID']]=$data['cID'];			
-		}
-		return $relatedProducts;
-	}
+	
+	
+
 
  	/**
  	 * Gets the "master" category from this product
@@ -185,6 +168,7 @@ class tx_commerce_db_product extends tx_commerce_db_alib {
  	 * @return integer Categorie UID
  	 * @TODO Change to correct handling way concering databas model, currently wrongly interperted
  	 * @TODO change to mm db class function
+ 	 * @deprecated use getParentCategories instead; note that getParentCategories will return an array
  	 */
  	
  	function get_parent_category($uid)	{
@@ -247,6 +231,7 @@ class tx_commerce_db_product extends tx_commerce_db_alib {
  	 * @return array of parent categories
  	 * @TODO Change to correct handling way concering databas model, currently wrongly interperted
  	 * @TODO currently only call to get_parent_category
+ 	 * @deprecated use getParentCategories instead
  	 */
  	
  	function get_parent_categories($uid)
@@ -254,6 +239,56 @@ class tx_commerce_db_product extends tx_commerce_db_alib {
  		return array($this->get_parent_category($uid));
  		
  	}
+ 	
+ 	/**
+ 	 * Returns an array of sys_language_uids of the i18n products
+ 	 * Only use in BE
+ 	 * 
+ 	 * @return {array}	 uids
+ 	 * @param $uid {int} uid of the product we want to get the i18n languages from
+ 	 */
+ 	function get_l18n_products($uid) {
+		
+ 		if ((empty($uid)) || (!is_numeric($uid)) ){
+ 			return false;
+ 		}
+ 		
+ 		$this->uid = $uid;
+ 		
+ 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('t1.title, t1.uid, t2.flag, t2.uid as sys_language', $this->database_table.' AS t1 LEFT JOIN sys_language AS t2 ON t1.sys_language_uid = t2.uid', 'l18n_parent = '.$uid.' AND deleted = 0');
+ 		
+ 		$uids = array();
+ 		
+ 		while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+ 			$uids[] =  $row;
+ 		}
+ 		
+ 		return $uids;
+ 	}
+	
+	/**
+	 * Gets the parent categories of th
+	 * @return {array}		parent categories for products
+	 * @param $uid {int}	uid of the product
+	 */
+	function getParentCategories($uid) {
+		if(!$uid || !is_numeric($uid)) {
+			$this->error('getparentCategories has not been delivered a proper uid');
+			return null;
+		}
+		
+		$uids = array();
+		
+		//read from sql
+ 		$result 	 = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid_foreign',$this->database_category_rel_table,'uid_local = '.$uid);
+		while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
+			$uids[] = $row['uid_foreign'];
+		}
+		
+		$GLOBALS['TYPO3_DB']->sql_free_result($result);
+		
+		return $uids;
+	}
 	
 	/**
  	 * Returns the Manuafacturer Title to a given Manufacturere UID

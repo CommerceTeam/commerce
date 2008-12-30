@@ -127,15 +127,15 @@ class tx_commerce_attributeEditor {
 		 */
 		 
 		tx_commerce_create_folder::init_folders();
-        list($modPid,$defaultFolder,$folderList) = tx_graytree_folder_db::initFolders('Commerce', 'commerce');
-        list($prodPid,$defaultFolder,$folderList) = tx_graytree_folder_db::initFolders('Products', 'commerce', $modPid);
-		list($attrPid, $defaultFolder, $folderList) = tx_graytree_folder_db::initFolders('Attributes', 'commerce', $modPid);
+        list($modPid,$defaultFolder,$folderList) = tx_commerce_folder_db::initFolders('Commerce', 'commerce');
+        list($prodPid,$defaultFolder,$folderList) = tx_commerce_folder_db::initFolders('Products', 'commerce', $modPid);
+		list($attrPid, $defaultFolder, $folderList) = tx_commerce_folder_db::initFolders('Attributes', 'commerce', $modPid);
 	  
 		if ($aData['has_valuelist'] == 1)	{
 			$config['config'] = array (
 				'type' => 'select',
 				'foreign_table' => 'tx_commerce_attribute_values',
-				'foreign_table_where' => 'AND attributes_uid=' .intval($aData['uid']) .' and tx_commerce_attribute_values.pid='.intval($attrPid).'  ORDER BY value',
+				'foreign_table_where' => 'AND attributes_uid=' .$aData['uid'] .' and tx_commerce_attribute_values.pid='.$attrPid.'  ORDER BY value',
 				'size' => 1,
 				'minitems' => 0,
 				'maxitems' => 1,
@@ -219,7 +219,7 @@ class tx_commerce_attributeEditor {
 		$relRes = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			'uid_valuelist,default_value,value_char',
 			'tx_commerce_articles_article_attributes_mm',
-			'uid_local=' .intval($PA['row']['uid']) .' AND uid_foreign=' .intval($aUid)
+			'uid_local=' .$PA['row']['uid'] .' AND uid_foreign=' .$aUid
 		);
 		
 		$attributeData = $this->belib->getAttributeData($aUid, 'has_valuelist,multiple,unit');

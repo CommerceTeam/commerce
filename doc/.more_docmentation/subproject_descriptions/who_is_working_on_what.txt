@@ -113,7 +113,7 @@ Volker
 
 28. Whishlist Module
 Claush@typoconsult.dk
-Lars Härig <Haerig@2im.de>
+Lars Hï¿½rig <Haerig@2im.de>
 Status: Project description missing 
 
 29. Translating to Slovene

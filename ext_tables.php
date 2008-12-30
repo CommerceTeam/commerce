@@ -10,8 +10,24 @@ if (!defined ("TYPO3_MODE")) 	die ("Access denied.");
 t3lib_extMgm::addStaticFile($_EXTKEY,'static/','COMMERCE');
 
 
+// mountpoints field in be_groups, be_users
+$GLOBALS['T3_VAR']['ext'][COMMERCE_EXTkey]['TCA']['mountpoints_config'] = array (
+		// a special format is stored - that's why 'passthrough'
+		// see: flag TCEFormsSelect_prefixTreeName
+		// see: tx_dam_treelib_tceforms::getMountsForTree()
+	'type' => 'passthrough',
+	'form_type' => 'user',
+	'userFunc' => 'EXT:'.COMMERCE_EXTkey.'/treelib/class.tx_commerce_tcefunc.php:&tx_commerce_tceFunc->getSingleField_selectCategories',
 
-$GLOBALS['T3_VAR']['ext'][COMMERCE_EXTkey]['TCA']['category_config'] =
+	'treeViewBrowseable' => true,
+	'size' => 10,
+	'autoSizeMax' => 30,
+	'minitems' => 0,
+	'maxitems' => 20,
+);
+
+###UNCOMMENTED - THIS IS THE ONLY LINES WHERE THIS IS USED IN THE WHOLE EXTENSION - IF IT WORKS WITHOUT IT, DELETE###
+/*$GLOBALS['T3_VAR']['ext'][COMMERCE_EXTkey]['TCA']['category_config'] =
 		Array (
 				'type' => 'group',
 				'internal_type' => 'db',
@@ -31,6 +47,7 @@ $GLOBALS['T3_VAR']['ext'][COMMERCE_EXTkey]['TCA']['category_field'] =
 			'label' => 'LLL:EXT:'.COMMERCE_EXTkey.'/locallang_db.php:tx_commerce_item.category',
 			'config' => $GLOBALS['T3_VAR']['ext'][COMMERCE_EXTkey]['TCA']['category_config'],
 		);
+*/
 
 
 if (TYPO3_MODE=='BE')	{
@@ -54,7 +71,10 @@ if (TYPO3_MODE=='BE')	{
 	t3lib_extMgm::addModule('txcommerceM1','','',t3lib_extmgm::extPath('commerce').'mod_main/');
 		// add category module
 	t3lib_extMgm::addModule('txcommerceM1','category','',t3lib_extmgm::extPath('commerce').'mod_category/');
-	
+	//Access Module
+	t3lib_extMgm::addModule('txcommerceM1','access','',t3lib_extmgm::extPath('commerce').'mod_access/');
+	//Performance Module
+	//t3lib_extMgm::addModule('txcommerceM1','performance','',t3lib_extmgm::extPath('commerce').'mod_perftest/');
 	// Orders module
 	t3lib_extMgm::addModule('txcommerceM1','orders','',t3lib_extmgm::extPath('commerce').'mod_orders/');
 
@@ -83,6 +103,11 @@ $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['leafClasses']['txcommer
 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['leafClasses']['txcommerceAttribute'] = 'EXT:'.COMMERCE_EXTkey.'/lib/class.tx_commerce_leafattributeview.php:&tx_commerce_leafAttributeView';
  
 
+// add context menu
+$GLOBALS['TBE_MODULES_EXT']['xMOD_alt_clickmenu']['extendCMclasses'][]=array(
+	'name' => 'tx_commerce_clickmenu',
+	'path' => PATH_txcommerce.'mod_clickmenu/commerce_clickmenu.php'
+);
 
 t3lib_extMgm::addToInsertRecords('tx_commerce_categories');
 t3lib_extMgm::addToInsertRecords('tx_commerce_products');
@@ -234,27 +259,45 @@ if (TYPO3_MODE=='BE') {
 }
 
 
+$tempColumns = Array (
+	'tx_commerce_foldereditorder' => Array (
+		'displayCond' => 'FIELD:tx_graytree_foldername:REQ:true',
+		'exclude' => 1,
+		'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_pages.tx_commerce_foldereditorder',
+		'config' => Array (
+			'type' => 'check',
+			'default' => '0'
+		)
+		
+	),
+);
 
-	$tempColumns = Array (
-		'tx_commerce_foldereditorder' => Array (
-			'displayCond' => 'FIELD:tx_graytree_foldername:REQ:true',
-			'exclude' => 1,
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_pages.tx_commerce_foldereditorder',
-			'config' => Array (
-				'type' => 'check',
-				'default' => '0'
-			)
-			
-		),
-	);
-	
-	
-	t3lib_div::loadTCA('pages');
-	
-	
-	t3lib_extMgm::addTCAcolumns('pages',$tempColumns,1);
-	t3lib_extMgm::addToAllTCAtypes('pages','tx_commerce_foldereditorder;;;;1-1-1');
-	
+
+t3lib_div::loadTCA('pages');
+
+
+t3lib_extMgm::addTCAcolumns('pages',$tempColumns,1);
+t3lib_extMgm::addToAllTCAtypes('pages','tx_commerce_foldereditorder;;;;1-1-1');
+
+
+// extend beusers/begroups for access control
+$tempColumns = array(
+	'tx_commerce_mountpoints' => array(
+		'exclude' => 1,
+		'label' => 'LLL:EXT:commerce/locallang_db.xml:label.tx_commerce_mountpoints',
+		'config' => $GLOBALS['T3_VAR']['ext'][COMMERCE_EXTkey]['TCA']['mountpoints_config'],
+	),
+);
+
+t3lib_div::loadTCA('be_groups');
+t3lib_extMgm::addTCAcolumns('be_groups',$tempColumns,1);
+t3lib_extMgm::addToAllTCAtypes('be_groups','tx_commerce_mountpoints','','after:file_mountpoints');
+
+t3lib_div::loadTCA('be_users');
+t3lib_extMgm::addTCAcolumns('be_users',$tempColumns,1);
+t3lib_extMgm::addToAllTCAtypes('be_users','tx_commerce_mountpoints','','after:fileoper_perms');
+
+unset($tempColumns);
 	
 
 $TCA['tx_commerce_products'] = Array (
@@ -269,6 +312,8 @@ $TCA['tx_commerce_products'] = Array (
 		'languageField' => 'sys_language_uid',
 		'transOrigPointerField' => 'l18n_parent',
 		'transOrigDiffSourceField' => 'l18n_diffsource',
+		'versioningWS' => TRUE,
+		//'shadowColumnsForNewPlaceholders' => 'categories, subtitle',
 		'delete' => 'deleted',
 		'thumbnail' => 'images',
 		'enablecolumns' => Array (
@@ -356,6 +401,9 @@ $TCA['tx_commerce_article_prices'] = Array (
 		'crdate' => 'crdate',
 		'cruser_id' => 'cruser_id',
 		'versioning' => '1',
+		'languageField' => 'sys_language_uid',
+		'transOrigPointerField' => 'l18n_parent',
+		'transOrigDiffSourceField' => 'l18n_diffsource',
 		'default_sortby' => 'ORDER BY crdate',
 		'delete' => 'deleted',
 		'enablecolumns' => Array (

@@ -38,7 +38,7 @@ require_once (PATH_t3lib.'class.t3lib_div.php');
 require_once (PATH_typo3.'class.db_list.inc');
 require_once (PATH_typo3.'class.db_list_extra.inc');
  
-require_once (t3lib_extmgm::extPath('graytree').'lib/class.tx_graytree_folder_db.php');
+require_once (t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_folder_db.php');
 require_once (t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_create_folder.php');
 require_once (t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_div.php');
 require_once (t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_belib.php');
@@ -390,7 +390,7 @@ class user_orderedit_func
 		
 		# Find the right pid for the Ordersfolder 
 				 
-		list($orderPid,$defaultFolder,$folderList) = array_unique(tx_graytree_folder_db::initFolders('Orders','Commerce',0,'Commerce'));
+		list($orderPid,$defaultFolder,$folderList) = array_unique(tx_commerce_folder_db::initFolders('Orders','Commerce',0,'Commerce'));
  		
  		/**
  		 * Get the poages below $order_pid
@@ -598,7 +598,7 @@ class user_orderedit_func
  		require_once (t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_order_localrecordlist.php');
 		require_once (t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_feusers_localrecordlist.php');
 
-		require_once (t3lib_extmgm::extPath('graytree').'lib/class.tx_graytree_folder_db.php');
+		require_once (t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_folder_db.php');
  		$dblist = t3lib_div::makeInstance('tx_commerce_order_localRecordlist');
 		#$dblist->additionalOutTop = $this->doc->section("",$this->doc->funcMenu($headerSection,t3lib_BEfunc::getFuncMenu($this->id,"SET[function]",$this->MOD_SETTINGS["function"],$this->MOD_MENU["function"])));
 		$dblist->backPath = $GLOBALS['BACK_PATH'];

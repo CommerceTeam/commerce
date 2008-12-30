@@ -23,6 +23,20 @@ CREATE TABLE fe_users (
 );
 
 #
+# Table structure for table 'be_users'
+#
+CREATE TABLE be_users (
+	tx_commerce_mountpoints tinytext
+);
+
+#
+# Table structure for table 'be_groups'
+#
+CREATE TABLE be_groups (
+	tx_commerce_mountpoints tinytext
+);
+
+#
 # Table structure for table 'tx_commerce_products_categories_mm'
 #
 #
@@ -92,6 +106,11 @@ CREATE TABLE tx_commerce_products (
     t3ver_oid int(11) DEFAULT '0' NOT NULL,
     t3ver_id int(11) DEFAULT '0' NOT NULL,
     t3ver_label varchar(30) DEFAULT '' NOT NULL,
+    t3ver_wsid int(11) DEFAULT '0' NOT NULL,
+    t3ver_state tinyint(4) DEFAULT '0' NOT NULL,
+    t3ver_stage tinyint(4) DEFAULT '0' NOT NULL,
+    t3ver_count int(11) DEFAULT '0' NOT NULL,
+    t3ver_tstamp int(11) DEFAULT '0' NOT NULL,
     sys_language_uid int(11) DEFAULT '0' NOT NULL,
     l18n_parent int(11) DEFAULT '0' NOT NULL,
     l18n_diffsource mediumblob NOT NULL,
@@ -103,7 +122,7 @@ CREATE TABLE tx_commerce_products (
     title varchar(80) DEFAULT '' NOT NULL,
     subtitle varchar(80) DEFAULT '' NOT NULL,
     navtitle varchar(80) DEFAULT '' NOT NULL,
-	keywords text NOT NULL,
+    keywords text NOT NULL,
     description text NOT NULL,
     teaser text NOT NULL,
     teaserimages blob NOT NULL,
@@ -115,7 +134,6 @@ CREATE TABLE tx_commerce_products (
     attributesedit mediumtext NOT NULL,
     uname varchar(80) DEFAULT '' NOT NULL,
     relatedpage int(11) DEFAULT '0' NOT NULL,
-    relatedproducts int(11) DEFAULT '0' NOT NULL
     KEY lang (sys_language_uid),
     KEY langpar (l18n_parent),
     PRIMARY KEY (uid),

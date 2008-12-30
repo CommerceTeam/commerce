@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2005-2007 Franz Holzinger (kontakt@fholzinger.com)
+*  (c) 2008 Marketing Factory Consulting GmbH <typo3@marketing-factory.de>
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -22,56 +22,69 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 /**
- * Main script class for the tree edit navigation frame
- *
- * @author	Ren�Fritz <r.fritz@colorcube.de>
- * @author	Franz Holzinger <kontakt@fholzinger.com>
- * @maintainer Franz Holzinger <kontakt@fholzinger.com>
- * @package TYPO3
- * @subpackage tx_comm
- * 
- * $Id$
+ * Implements the navframe for the categories
+ * @author Marketing Factory
+ * @maintainer Erik Frister
  */
 unset($MCONF);
-require_once('conf.php');
-require_once($BACK_PATH.'init.php');
-require_once($BACK_PATH.'template.php');
 
-require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_div.php');
-require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_browsetrees.php');
+/**
+ * @TODO: Find a better solution for the @ at this place, since some globals could not be defined
+*/
+	if (!(@is_numeric(TYPO3_REQUESTTYPE) || @is_numeric(TYPO3_REQUESTTYPE_AJAX))) {
+		require_once('conf.php');
+		require_once($BACK_PATH.'init.php');
+		require_once(PATH_typo3.'template.php');
+	} else {
+		//In case of an AJAX Request the script including this script is ajax.php, from which the BACK PATH is ''
+		require_once('init.php');
+		require('template.php');
+	}
 
+
+require_once(t3lib_extmgm::extPath('commerce').'treelib/class.tx_commerce_categorytree.php');
 
 class tx_commerce_category_navframe {
 
 	var $categoryTree;
-
+	var $BACK_PATH = '../../../../typo3/'; ###MAKE THIS BE CALCULATED###
 	var $doc;
 	var $content;
 
 		// Internal, static: _GP
 	var $currentSubScript;
+	
+	/**
+	 * Initializes the Tree
+	 */
+	function init() {
+		//Get the Category Tree without the Products and the Articles
+		$this->categoryTree = t3lib_div::makeInstance('tx_commerce_categorytree');
+		$this->categoryTree->setBare(false);
+		$this->categoryTree->init();
+	}
+	
+	/**
+	 * Initializes the Page
+	 */
+	function initPage() {
+		global $BE_USER;
 
-		// Constructor:
-	function init()	{
-		global $BE_USER,$LANG,$BACK_PATH,$TYPO3_CONF_VARS;
 
+		// Create template object:
 		$this->doc = t3lib_div::makeInstance('template');
-		$this->doc->backPath = $BACK_PATH;
-
-		$this->currentSubScript = t3lib_div::_GP('currentSubScript');
-
-			// Setting highlight mode:
-		$this->doHighlight = !$BE_USER->getTSConfigVal('options.pageTree.disableTitleHighlight');
-
-
+		$this->doc->backPath = $this->BACK_PATH;
+		$this->doc->setModuleTemplate('../typo3conf/ext/commerce/mod_category/templates/alt_db_navframe.html'); ###MAKE THIS PATH BE CALCULATED###
+		$this->doc->docType  = 'xhtml_trans';
+		
 		$this->doc->JScode='';
 
 
-			// Setting JavaScript for menu.
+		// Setting JavaScript for menu.
 		$this->doc->JScode=$this->doc->wrapScriptTags(
 			($this->currentSubScript?'top.currentSubScript=unescape("'.rawurlencode($this->currentSubScript).'");':'').'
 
-			function jumpTo(params,linkObj,highLightID,script)	{
+			function jumpTo(id,linkObj,highLightID,script)	{
 				var theUrl;
 
 				if (script)	{
@@ -80,7 +93,7 @@ class tx_commerce_category_navframe {
 					theUrl = top.TS.PATH_typo3+top.currentSubScript;
 				}
 
-				theUrl = theUrl+"?"+params;
+				theUrl = theUrl+"?"+id;
 
 				if (top.condensedMode)	{
 					top.content.document.location=theUrl;
@@ -98,126 +111,126 @@ class tx_commerce_category_navframe {
 			function refresh_nav()	{
 				window.setTimeout("_refresh_nav();",0);
 			}
-
-	/**
-	 * [Describe function...]
-	 *
-	 * @return	[type]		...
-	 */
-			function _refresh_nav()	{
-				document.location="class.tx_commerce_category_navframe.php?unique='.time().'";
-			}
-
-				// Highlighting rows in the page tree:
-			function hilight_row(frameSetModule,highLightID) {	//
-
-					// Remove old:
-				theObj = document.getElementById(top.fsMod.navFrameHighlightedID[frameSetModule]);
-				if (theObj)	{
-					theObj.style.backgroundColor="";
-				}
-
-					// Set new:
-				top.fsMod.navFrameHighlightedID[frameSetModule] = highLightID;
-				theObj = document.getElementById(highLightID);
-				if (theObj)	{
-					theObj.style.backgroundColor="'.t3lib_div::modifyHTMLColorAll($this->doc->bgColor,-20).'";
-				}
-			}
-			
-			var Tree = {
-				
-				// does the complete page refresh (previously known as "_refresh_nav()")
-				refresh: function() {
-					var r = new Date();
-					// randNum is useful so pagetree does not get cached in browser cache when refreshing
-					var search = window.location.search.replace(/&randNum=\d+/, "");
-					window.location.search = search+"&randNum=" + r.getTime();
-				}
-			}
-			
 		');
+		
+		$this->doc->loadJavascriptLib('contrib/prototype/prototype.js');
+		$this->doc->loadJavascriptLib('../typo3conf/ext/commerce/mod_access/tree.js'); ###MAKE PATH BE CALCULATED, NOT FIXED### ###WHAT TO DO WITH THOSE FILES? BETTER MAKE RES FOLDER###
+		$this->doc->JScode .= $this->doc->wrapScriptTags('Tree.ajaxID = "tx_commerce_category_navframe::ajaxExpandCollapse";');
+		// Adding javascript code for AJAX (prototype), drag&drop and the pagetree as well as the click menu code
+		//$this->doc->getDragDropCode('pages');
+		$this->doc->getContextMenuCode();
+		//$this->doc->loadJavascriptLib('contrib/scriptaculous/scriptaculous.js?load=effects');
 
-		$CMparts=$this->doc->getContextMenuCode();
-		$this->doc->bodyTagAdditions = $CMparts[1];
-		$this->doc->JScode.=$CMparts[0];
-		$this->doc->postCode.= $CMparts[2];
-			// should be float but gives bad results
-		$this->doc->inDocStyles .= '
-			.txcommerce-editbar, .txcommerce-editbar > a >img {
-				background-color:'.t3lib_div::modifyHTMLcolor($this->doc->bgColor,-15,-15,-15).';
-			}
-			';
-			
-			// the trees
-		$this->browseTrees = t3lib_div::makeInstance('tx_commerce_browseTrees');
-		
-		$selClass = array();
+		/*$this->doc->JScode .= $this->doc->wrapScriptTags(
+		($this->currentSubScript?'top.currentSubScript=unescape("'.rawurlencode($this->currentSubScript).'");':'').'
+		// setting prefs for pagetree and drag & drop
+		'.($this->doHighlight ? 'Tree.highlightClass = "'.$hlClass.'";' : '').'
 
-			// only a browsee tree for categories: the first element is the category tree
-		$selClass[] = array ('txcommerceCategoryTree' => $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['leafClasses']['txcommerceCategoryTree']);
-				
-			// the next elements are the leaves 			
-		$selClass[] = array ('txcommerceCategory' => $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['leafClasses']['txcommerceCategory']);
-		
-		$this->browseTrees->initLeafClasses($selClass, 'class.tx_commerce_category_navframe.php');
-		
-			// there will only be an arrayTree for the categories
-		$this->browseTrees->arrayTree['txcommerceCategoryTree']->setExtIconMode(false); // context menu on icons
-		$this->browseTrees->arrayTree['txcommerceCategoryTree']->modeSelIcons = false;
+		// Function, loading the list frame from navigation tree:
+		function jumpTo(id, linkObj, highlightID, bank)	{ //
+			var theUrl = top.TS.PATH_typo3 + top.currentSubScript + "?id=" + id;
+			top.fsMod.currentBank = bank;
+
+			if (top.condensedMode) top.content.location.href = theUrl;
+			else                   parent.list_frame.location.href=theUrl;
+
+			'.($this->doHighlight ? 'Tree.highlightActiveItem("web", highlightID + "_" + bank);' : '').'
+			'.(!$GLOBALS['CLIENT']['FORMSTYLE'] ? '' : 'if (linkObj) linkObj.blur(); ').'
+			return false;
+		}
+		'.($this->cMR?"jumpTo(top.fsMod.recentIds['web'],'');":'').
+
+			($this->hasFilterBox ? 'var TYPO3PageTreeFilter = new PageTreeFilter();' : '') . '
+
+		');*/
+
+		$this->doc->bodyTagId = 'typo3-pagetree';
 	}
-
-	/**
-	 * Main function, rendering the browsable page tree
-	 *
-	 * @return	void
-	 */
-	function main()	{
-		global $LANG,$BACK_PATH;
-
-		$this->content = '';
-		$this->content.= $this->doc->startPage('Navigation');
+	
+	function main() {
+		global $LANG,$CLIENT;
 		
-	    $this->content.= $this->browseTrees->getTrees();
+		//Get the Browseable Tree
+		$tree = $this->categoryTree->getBrowseableTree();
 		
+		// Outputting page tree:
+		$this->content .= '<div id="PageTreeDiv">'.$tree.'</div>';
+		
+		$markers = array(
+			'IMG_RESET'     => '',//'<img'.t3lib_iconWorks::skinImg($GLOBALS['BACK_PATH'], 'gfx/close_gray.gif', ' width="16" height="16"').' id="treeFilterReset" alt="Reset Filter" />',
+			'WORKSPACEINFO' => '',//$this->getWorkspaceInfo(),
+			'CONTENT'       => $this->content
+		);
+		$subparts = array();
 
-		$this->content.= '
-			<p class="c-refresh">
-				<a href="'.htmlspecialchars(t3lib_div::getIndpEnv('REQUEST_URI')).'">'.
-				'<img'.t3lib_iconWorks::skinImg($BACK_PATH,'gfx/refresh_n.gif','width="14" height="14"').' title="'.$LANG->sL('LLL:EXT:lang/locallang_core.php:labels.refresh',1).'" alt="" />'.
-				$LANG->sL('LLL:EXT:lang/locallang_core.php:labels.refresh',1).'</a>
-			</p>
-			<br />';
-
-			// Adding highlight - JavaScript
-		if ($this->doHighlight)	$this->content .=$this->doc->wrapScriptTags('
-			hilight_row("",top.fsMod.navFrameHighlightedID["web"]);
-		');
-	}
-
-
-	/**
-	 * Outputting the accumulated content to screen
-	 *
-	 * @return	void
-	 */
-	function printContent()	{
+		if (!$this->hasFilterBox) {
+			$subparts['###SECOND_ROW###'] = '';
+		}
+		
+		// Build the <body> for the module
+		$this->content = $this->doc->startPage('Commerce Category List');
+		$this->content.= $this->doc->moduleBody('', '', $markers, $subparts);
 		$this->content.= $this->doc->endPage();
+
+		//$this->content = $this->doc->insertStylesAndJS($this->content);
+	}
+	
+	function printContent() {
 		echo $this->content;
+	}
+	
+	/**
+	 * Makes the AJAX call to expand or collapse the categorytree.
+	 * Called by typo3/ajax.php
+	 *
+	 * @param	array		$params: additional parameters (not used here)
+	 * @param	TYPO3AJAX	&$ajaxObj: reference of the TYPO3AJAX object of this request
+	 * @return	void
+	 */
+	function ajaxExpandCollapse($params, &$ajaxObj) {
+		global $LANG;
+		
+		//Extract the ID and Bank
+		$id   = 0; 
+		$bank = 0;
+		
+		$PM = t3lib_div::_GP('PM');
+		// IE takes anchor as parameter
+		if(($PMpos = strpos($PM, '#')) !== false) { $PM = substr($PM, 0, $PMpos); }
+		$PM = explode('_', $PM);
+		
+		//Now we should have a PM Array looking like:
+		//0: treeName, 1: leafIndex, 2: Mount, 3: set/clear [4:,5:,.. further leafIndices], 5[+++]: Item UID
+		
+		if(is_array($PM) && count($PM) >= 4) {
+			$id 	= $PM[count($PM)-1]; //ID is always the last Item
+			$bank 	= $PM[2];
+		}
+
+		//Load the tree
+		$this->init();
+		$tree = $this->categoryTree->getBrowseableAjaxTree($PM);
+		
+		//if (!$this->categoryTree->ajaxStatus) { ###CHECK THE AJAX ERROR###
+		//	$ajaxObj->setError($tree);
+		//} else	{
+			$ajaxObj->addContent('tree', $tree);
+		//}
 	}
 
 }
 
-	// Include extension?
+//XClass Statement
 if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/mod_category/class.tx_commerce_category_navframe.php'])	{
 	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/mod_category/class.tx_commerce_category_navframe.php']);
 }
 
-	// Make instance:
-$SOBE = t3lib_div::makeInstance('tx_commerce_category_navframe');
-$SOBE->init();
-$SOBE->main();
-$SOBE->printContent();
-
-
+// Make instance if it is not an AJAX call
+if (!(TYPO3_REQUESTTYPE & TYPO3_REQUESTTYPE_AJAX)) {
+	$SOBE = t3lib_div::makeInstance('tx_commerce_category_navframe');
+	$SOBE->init();
+	$SOBE->initPage();
+	$SOBE->main();
+	$SOBE->printContent();
+}
 ?>

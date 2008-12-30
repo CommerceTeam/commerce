@@ -68,6 +68,7 @@
   	 * Data Variables
   	 */
   	var $title = ''; 				// Title of the product e.g.productname  	(private)
+  	var $pid = 0;
   	var $subtitle = '';			// Subtitle of the product  (private)	
   	var $description = '';		//  product description  (private)	
   	var $teaser = '';
@@ -80,10 +81,16 @@
   	
   	var $attributes = array();
   	var $attributes_uids=array();
-
-	var $relatedProducts = array();
-	var $relatedProduct_uids = array();
-  	var $relatedProducts_loaded=false;
+  	
+	//Versioning
+	var $t3ver_oid		= 0;
+	var $t3ver_id  		= 0;
+	var $t3ver_label 	= '';
+	var $t3ver_wsid 	= 0;
+	var $t3ver_state	= 0;
+	var $t3ver_stage	= 0;
+	var $t3ver_tstamp 	= 0;
+	
   	/**
   	 * @var articles_loaded
   	 * is true when artciles are loaded, so that load articles can simply return with the values from the object
@@ -132,7 +139,7 @@
 		 $uid = intval($uid);
 	     $lang_uid = intval($lang_uid);
 		 $this->database_class='tx_commerce_db_product';
-		 $this->fieldlist=array('uid','title','subtitle','description','teaser','images','teaserimages','relatedpage','l18n_parent','manufacturer_uid');
+		 $this->fieldlist=array('uid','title','pid','subtitle','description','teaser','images','teaserimages','relatedpage','l18n_parent','manufacturer_uid', 't3ver_oid', 't3ver_id', 't3ver_label', 't3ver_wsid', 't3ver_stage', 't3ver_state', 't3ver_tstamp');
 		
 		 if  ($uid > 0) {
 		 	
@@ -177,6 +184,22 @@
   		return $this->title;	
   	}
 
+	/**
+	 * Returns the product pid
+	 * @return {int}
+	 * @access public
+	 */
+	function get_pid() {
+		return $this->pid;
+	}
+	
+	/**
+	 * Returns the uid of the live version of this 
+	 * @return 
+	 */
+	function get_t3ver_oid() {
+		return $this->t3ver_oid;
+	}
 
   	/**
   	 * Returns the related page for the product
@@ -277,7 +300,11 @@
   	function load_articles()  	{
   		if ($this->articles_loaded==false)
   		{
-			if ($this->articles_uids=$this->conn_db->get_articles($this->uid))
+  			$uidToLoadFrom  = $this->uid;
+  			if (($this->get_t3ver_oid() <> $this->uid) && (is_Object($GLOBALS['TSFE']) && $GLOBALS['TSFE']->beUserLogin)){
+  				$uidToLoadFrom = $this->get_t3ver_oid();
+  			}
+			if ($this->articles_uids=$this->conn_db->get_articles($uidToLoadFrom))
 	  		{
 	  			foreach ($this->articles_uids as $article_uid)
 	  			{
@@ -307,7 +334,6 @@
   	/**
   	 * Loads the data and divides comma sparated images in array
   	 * inherited from parent 
-  	 * @param $translationMode Transaltio Mode of the record, default false to use the default way of translation
   	 */
   	
   	function load_data($translationMode = false){
@@ -319,11 +345,22 @@
   	}
   	/**
   	 * gets the category master parent
+  	 * @depricated
   	 * @return uid of category
   	 */
   	
-  	function getMasterparentCategorie()
-  	{
+  	function getMasterparentCategorie(){
+  		return $this->conn_db->get_parent_categorie($this->uid);
+  		 			
+  	}
+  	
+  	/**
+  	 * gets the category master parent
+  	 * 
+  	 * @return uid of category
+  	 */
+  	
+  	function getMasterparentCategory(){
   		return $this->conn_db->get_parent_categorie($this->uid);
   		 			
   	}
@@ -355,6 +392,7 @@
   	/**
   	 * gets all parent categories 
   	 * @return array of uid of category
+  	 * @deprecated use getParentCategories instead, this function only returns 1 parent category
   	 */
   	
   	function get_parent_categories()
@@ -362,6 +400,25 @@
   		return $this->conn_db->get_parent_categories($this->uid);	
   		
   	}
+  	
+  	/**
+  	 * Returns an array with the different l18n for the product
+  	 * 
+  	 * @return {array}	Categories
+  	 */
+  	function get_l18n_products() {
+  		$uid_lang = $this->conn_db->get_l18n_products($this->uid);
+  		
+		return $uid_lang;
+  	} 
+	
+	/**
+	 * Gets all parent categories
+	 * @return {array}	Array of category uids that serve as parent
+	 */
+	function getParentCategories() {
+		return $this->conn_db->getParentCategories($this->uid);
+	}
   	
   	
   	 /**
@@ -467,6 +524,7 @@
 	 	 * @param $articleList [optional]
 	 	 * @param $attribute Exclude List array (list auf attriubute uids to exclkude)
 	 	 * @param $showHiddenValues default true (if hidden values should be shown)
+	 	 * @Param $fallbackToDefault if set to true, the dfeault language value will beused, if no local value is existent
 	 	 * @return array of arrays
 	 	 * @todo split DB connects to db_class
 	 	 * @since 2005 11 02 $showHiddenValues
@@ -474,7 +532,7 @@
 	 	 * @since 2005 11 02 Array of arrays also contains internal_title
 	 	 */
 	 
-	 	function get_attribute_matrix($articleList=false, $attribute_include=false, $showHiddenValues=true,$sortingTable = 'tx_commerce_articles_article_attributes_mm'){
+	 	function get_attribute_matrix($articleList=false, $attribute_include=false, $showHiddenValues=true,$sortingTable = 'tx_commerce_articles_article_attributes_mm',$fallbackToDefault = false){
 	 
 	 		$return_array=array();
 	 		/**
@@ -487,8 +545,8 @@
 	 				$articleList=$this->load_articles();
 	 			}
 	 
-	 		if (is_array($attribute_include)){
-	 			if (!is_null($attribute_include[0])) {
+	 			if (is_array($attribute_include)){
+	 				if (!is_null($attribute_include[0])) {
 	 					$addwhere.=' AND tx_commerce_attributes.uid in ('.implode(',',$attribute_include).')';
 	 				}	
 	 			}
@@ -559,13 +617,13 @@
 	 									'tx_commerce_articles',
 	 									'tx_commerce_articles_article_attributes_mm',
 	 									'tx_commerce_attributes',	
-	 									' AND tx_commerce_articles.uid_product = '.$this->uid.' AND tx_commerce_attributes.uid='.$attribute_uid.$addwhere
+	 									' AND tx_commerce_articles.uid_product = '.$this->uid.' AND tx_commerce_attributes.uid='.$attribute_uid.$addwhere.' order by tx_commerce_articles.sorting '
 	 									);
 	 					if (($result_value) && ($GLOBALS['TYPO3_DB']->sql_num_rows($result_value)>0))	{
 	 							while ($value=$GLOBALS['TYPO3_DB']->sql_fetch_assoc($result_value))		{
 	 
 	 								if (strlen($value['value_char'])>0)	{
-	 
+	 										$lokAval = false;
 	 									if ($this->lang_uid>0)	{
 	 										/**
 	 										 * Do the lokalization
@@ -591,7 +649,12 @@
 	 													$valuelist[]=$lok_value['default_value'];
 	 													$valueshown=true;
 	 												}
+	 												$lokAval = true;
 	 											}
+	 										}
+	 										if ($fallbackToDefault && $lokAval == false) {
+	 											$valuelist[]=$value['value_char'];
+	 											$valueshown=true;
 	 										}
 	 
 	 									}else	{
@@ -607,13 +670,13 @@
 	 									'tx_commerce_articles',
 	 									'tx_commerce_articles_article_attributes_mm',
 	 									'tx_commerce_attributes',	
-	 									' AND tx_commerce_articles.uid_product = '.$this->uid." AND tx_commerce_attributes.uid=$attribute_uid".$addwhere
+	 									' AND tx_commerce_articles.uid_product = '.$this->uid." AND tx_commerce_attributes.uid=$attribute_uid".$addwhere.' order by tx_commerce_articles.sorting '
 	 									);
 	 					if (($valueshown == false) && ($result_value) && ($GLOBALS['TYPO3_DB']->sql_num_rows($result_value)>0)){
 	 							while ($value=$GLOBALS['TYPO3_DB']->sql_fetch_assoc($result_value))	{
 	 
 	 								if ($value['default_value']>0)	{
-	 
+	 									$lokAval = false;
 	 									if ($this->lang_uid>0){
 	 										/**
 	 										 * Do the lokalization
@@ -638,6 +701,12 @@
 	 													$valueshown=true;
 	 												}
 	 											}
+	 											$lokAval = true;
+	 										}
+	 										
+	 										if ($fallbackToDefault && $lokAval == false) {
+	 											$valuelist[]=$value['default_value'];
+	 											$valueshown=true;
 	 										}
 	 									}else
 	 									{
@@ -652,7 +721,7 @@
 	 							'tx_commerce_articles',
 	 							'tx_commerce_articles_article_attributes_mm',
 	 							'tx_commerce_attributes',	
-	 							' AND tx_commerce_articles_article_attributes_mm.uid_valuelist>0 AND tx_commerce_articles.uid_product = '.$this->uid." AND tx_commerce_attributes.uid=$attribute_uid".$addwhere
+	 							' AND tx_commerce_articles_article_attributes_mm.uid_valuelist>0 AND tx_commerce_articles.uid_product = '.$this->uid." AND tx_commerce_attributes.uid=$attribute_uid".$addwhere.' order by tx_commerce_articles.sorting '
 	 						);
 	 					if (($valueshown == false) && ($result_value) && ($GLOBALS['TYPO3_DB']->sql_num_rows($result_value)>0)){
 	 							while ($value=$GLOBALS['TYPO3_DB']->sql_fetch_assoc($result_value)){
@@ -662,32 +731,18 @@
 	 								    $resvalue = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*','tx_commerce_attribute_values','uid = '.$value['uid_valuelist']);
 	 								    $row=$GLOBALS['TYPO3_DB']->sql_fetch_assoc($resvalue);
 	 								    if ($this->lang_uid>0) {
-	 									$row=$GLOBALS['TSFE']->sys_page->getRecordOverlay('tx_commerce_attribute_values',$row,$this->lang_uid,$this->translationMode);
-	 									if (!is_array($row)){
-	 										continue;	
-	 									}
-	 								     }
+		 									$row=$GLOBALS['TSFE']->sys_page->getRecordOverlay('tx_commerce_attribute_values',$row,$this->lang_uid,$this->translationMode);
+		 									if (!is_array($row)){
+		 										continue;	
+		 									}
+	 								    }
 	 								    if (($showHiddenValues==true) || (($showHiddenValues==false) && ($row['showvalue']==1))){
 	 
 	 
-	 									 $valuelist[] = $row;
+	 									 $valuelist[] = $row['value'];
 										 $valueUidList[] = $row['uid'];
 	 									 $valueshown=true;
 	 								    }
-	 									/**
-		 						 * Sort values by the sorting field.
-		 						 * Is there a better way to do this?
-		 						 */
-		 						$valuelist_temp = $valuelist;
-		 						$valuelist = array();
-		 						$valuelist_temp_sort = array();
-		 						foreach ($valuelist_temp as $value_temp) {
-		 							$valuelist_temp_sort[$value_temp['sorting']] = $value_temp;
-		 						}
-		 						ksort($valuelist_temp_sort);
-		 						foreach ($valuelist_temp_sort as $value_temp) {
-		 							$valuelist[] = $value_temp;
-		 						}
 	 
 	 								}
 	 							}
@@ -767,7 +822,7 @@
 	  	 							'tx_commerce_articles',
 	 								'tx_commerce_articles_article_attributes_mm',
 									'tx_commerce_attributes',	
-									' AND tx_commerce_articles.uid_product = '.$this->uid.' '.$addwhere.' '.$addwhere2.' order by '.$sortingTable.'.sorting'
+									' AND tx_commerce_articles.uid_product = '.$this->uid.' '.$addwhere.$addwhere2.' order by '.$sortingTable.'.sorting'
 									);
 	 		$addwhere = $addwhere2;
 			
@@ -841,23 +896,9 @@
 	 							     }
 	 							    if (($showHiddenValues==true) || (($showHiddenValues==false) && ($row['showvalue']==1))){
 	 							     
-	 							   	 $valuelist[$row['uid']] = $row;
+	 							   	 $valuelist[$row['uid']] = $row['value'];
 	 							   	 $valueshown=true;
 	 							    }
-	 							/**
-	 						 * Sort values by the sorting field.
-	 						 * Is there a better way to do this?
-	 						 */
-	 						$valuelist_temp = $valuelist;
-	 						$valuelist = array();
-	 						$valuelist_temp_sort = array();
-	 						foreach ($valuelist_temp as $value_temp) {
-	 							$valuelist_temp_sort[$value_temp['sorting']] = $value_temp;
-	 						}
-	 						ksort($valuelist_temp_sort);
-	 						foreach ($valuelist_temp_sort as $value_temp) {
-	 							$valuelist[] = $value_temp;
-	 						}
 	
 	 							}
 	 						}
@@ -884,50 +925,7 @@
   	}
   	
   	
- /**
-	 * Generates a Matrix fro these concerning products for all Attributes and the values therefor
-	 * Realy complex array, so have a look at the source
-	 * 
-	 * 
-	 *
-	 *
-	 */
-	 
-	 function getRelevantArticles($attributeArray = false){
   	
-	 	//first of all we need all possible Attribute id's (not attribute value id's)
-	 	foreach ($this->attribute as $attribute) {
-	 		$att_is_in_array = false;
-	 		foreach ($attributeArray as $attribute_temp) {
-	 			if($attribute_temp['AttributeUid'] == $attribute->uid) $att_is_in_array = true;
-	 		}
-	 		if(!$att_is_in_array) $attributeArray[] = array('AttributeUid'=>$attribute->uid,'AttributeValue'=>NULL);
-	 	}
-	
-  		if ($this->uid>0 && is_array($attributeArray) && count($attributeArray)) {
-  			foreach($attributeArray as $key=>$attr){
-  				if($attr['AttributeValue']){
-		  			$unionSelects[] = 'SELECT uid_local AS article_id,uid_valuelist FROM tx_commerce_articles_article_attributes_mm,tx_commerce_articles WHERE uid_local = uid AND uid_valuelist = '.intval($attr['AttributeValue']).' AND tx_commerce_articles.uid_product = '.$this->uid.' AND uid_foreign = '.intval($attr['AttributeUid']).$GLOBALS['TSFE']->sys_page->enableFields('tx_commerce_articles',$GLOBALS['TSFE']->showHiddenRecords);;
-		  		} else {
-		  			$unionSelects[] = 'SELECT uid_local AS article_id,uid_valuelist FROM tx_commerce_articles_article_attributes_mm,tx_commerce_articles WHERE uid_local = uid AND tx_commerce_articles.uid_product = '.$this->uid.' AND uid_foreign = '.intval($attr['AttributeUid']).$GLOBALS['TSFE']->sys_page->enableFields('tx_commerce_articles',$GLOBALS['TSFE']->showHiddenRecords);;
-		  		}
-	  		}
-	  		if(is_array($unionSelects)){
-	  			$sql  = ' SELECT count(article_id) AS counter, article_id FROM ( ';
-	  			$sql .= implode(" \n UNION \n ",$unionSelects);
-	  			$sql .= ') AS data GROUP BY article_id having COUNT(article_id) >= '.(count($unionSelects)-1).'';
-	  		}
-	  		
-	  		$res = $GLOBALS['TYPO3_DB']->sql_query($sql);
-	  		while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)){
-	  			$article_uid_list[] = $row['article_id'];
-	  		}
-	  		
-			return $article_uid_list;
-		}
-  	
-		return false;
-  	}
   	
   	
   	
@@ -1098,23 +1096,7 @@
 	
 	 							}
 	 						}
-	 				
-	 				 						
-	 						/**
-	 						 * Sort values by the sorting field.
-	 						 * Is there a better way to do this?
-	 						 */
-	 						$valuelist_temp = $valuelist;
-	 						$valuelist = array();
-	 						$valuelist_temp_sort = array();
-	 						foreach ($valuelist_temp as $value_temp) {
-	 							$valuelist_temp_sort[$value_temp['sorting']] = $value_temp;
-	 						}
-	 						ksort($valuelist_temp_sort);
-	 						foreach ($valuelist_temp_sort as $value_temp) {
-	 							$valuelist[] = $value_temp;
-	 						}
-	 					}
+	 				}
 	 				if ($valueshown==false){
 	 					$return_array[$attribute_uid]=array('title' => $data['title'],
 	 												  'unit' => $data['unit'],
@@ -1265,6 +1247,36 @@
      	}
      	return false;
      }
+	 
+	 /**
+	 * Carries out the move of the product to the new parent
+	 * Permissions are NOT checked, this MUST be done beforehand
+	 * @return {bool}			Success
+	 * @param $uid {int}		uid of the move target
+	 * @param $op {string}		Operation of move (can be 'after' or 'into'
+	 */
+	function move($uid, $op = 'after') {
+		
+		if('into' == $op) {
+			//the $uid is a future parent
+			$parent_uid = $uid;
+		} else {
+			return false;	
+		}
+		
+		//update parent_category
+		$set = $this->conn_db->updateRecord($this->uid, array('categories' => $parent_uid));
+		
+		//only update relations if parent_category was successfully set
+		if($set) {
+			$catList = array($parent_uid);
+			$catList = tx_commerce_belib::getUidListFromList($catList);
+			$catList = tx_commerce_belib::extractFieldArray($catList, 'uid_foreign', true);
+	
+			tx_commerce_belib::saveRelations($this->uid, $catList, 'tx_commerce_products_categories_mm', true);
+		} else return false;
+		return true;
+	}
           
      /**
       * Depricated Methods
@@ -1288,7 +1300,7 @@
   	 */
   	
   	function get_masterparent_categorie() 	{
-  		return $this->getMasterparentCategorie();
+  		return $this->getMasterparentCategory();
   		 			
   	}
   	

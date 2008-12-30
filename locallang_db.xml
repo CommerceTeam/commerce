@@ -234,6 +234,7 @@
             <label index="tx_commerce_supplier.contactperson">Contact Person</label>
             <label index="tx_commerce_supplier.logo">Logo</label>
 			<label index='tx_commerce_pages.tx_commerce_foldereditorder'>Orders in this folder editable</label>
+			<label index="label.tx_commerce_mountpoints">Commerce Mounts:</label>
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="tt_address.surname">Nachname</label>
@@ -415,6 +416,7 @@
             <label index="tx_commerce_supplier.contactperson">Kontaktperson</label>
             <label index="tx_commerce_supplier.logo">Logo</label>
 			<label index='tx_commerce_pages.tx_commerce_foldereditorder'>Bestellungen in diesem Ordner bearbeitbar</label>
+			<label index="label.tx_commerce_mountpoints">Commerce Mounts:</label>
 		</languageKey>
 		<languageKey index="nl" type="array">
 			<label index="tt_address.surname">Achternaam</label>
@@ -550,6 +552,7 @@
 			<label index="tx_commerce_user_states.title">Titel</label>
 			<label index="tx_commerce_moveordermails.otherreceiver">Ander mailontvanger is klant</label>
 			<label index="tx_commerce_moveordermails.BCC">BCC Mail aan</label>
+			<label index="label.tx_commerce_mountpoints">Commerce Mounts:</label>
 		</languageKey>
 		<languageKey index="fr" type="array">
 			<label index="tt_address.surname">nom de famille</label>
@@ -685,6 +688,7 @@
 			<label index="tt_address.name">nom</label>
 			<label index="tx_commerce_user_states">Type de client</label>
 			<label index="tx_commerce_user_states.title">titre</label>
+			<label index="label.tx_commerce_mountpoints">Commerce Mounts:</label>
 		</languageKey>
 		<languageKey index="br" type="array">
 			<label index="tt_address.surname">Sobrenome</label>
@@ -823,6 +827,7 @@
 			<label index="tx_commerce_moveordermails.senderemail">Endereço de email do remetente do email (se não existir, o endereço de email será o padrão do módulo)</label>
 			<label index="tx_commerce_moveordermails.otherreceiver">Recipientes Adicionais</label>
 			<label index="tx_commerce_moveordermails.BCC">Enviar BCC para</label>
+			<label index="label.tx_commerce_mountpoints">Commerce Mounts:</label>
 		</languageKey>
        <languageKey index="cz" type="array">
             <label index="tt_address.surname">Příjmení</label>
@@ -977,6 +982,7 @@
             <label index="tx_commerce_moveordermails.senderemail">E-mailová adresa odesílatele (pokud není zadána: přednastavený modul)</label>
             <label index="tx_commerce_moveordermails.otherreceiver">Pokračovat příjemce e-mailu jako zákazník</label>
             <label index="tx_commerce_moveordermails.BCC">Kopie e-mailu obdrží</label>
+			<label index="label.tx_commerce_mountpoints">Commerce Mounts:</label>
         </languageKey>
         <languageKey index="hu" type="array">
             <label index="tt_address.surname">Vezetéknév</label>

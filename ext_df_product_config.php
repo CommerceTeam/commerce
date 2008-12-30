@@ -226,11 +226,11 @@ $dynaFlexConf = array (
 					  array (
 						 'method' => 'add',
 						 'type' => 'append',
-						 'condition' => array (
-								       'source' => 'language',
-								       'if' => 'isEqual',
-								       'compareTo' => 'DEF',
-								       ),
+						# 'condition' => array (
+						#		       'source' => 'language',
+						#		       'if' => 'isEqual',
+						#		       'compareTo' => 'DEF',
+						#		       ),
 						 'config' => array (
 								    'text' => ',--div--;LLL:EXT:commerce/locallang_db.xml:tx_commerce_products.extras'
 								    ),

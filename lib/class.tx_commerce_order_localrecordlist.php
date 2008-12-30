@@ -93,7 +93,7 @@ require_once(PATH_t3lib.'class.t3lib_befunc.php');
 					 
 			# Find the right pid for the Ordersfolder 
 			 
-			list($orderPid,$defaultFolder,$folderList) = array_unique(tx_graytree_folder_db::initFolders('Orders','Commerce',0,'Commerce'));
+			list($orderPid,$defaultFolder,$folderList) = array_unique(tx_commerce_folder_db::initFolders('Orders','Commerce',0,'Commerce'));
  			
  			$ret = tx_commerce_belib::getOrderFolderSelector($orderPid, PHP_INT_MAX ) ;
  			
@@ -951,7 +951,7 @@ require_once(PATH_t3lib.'class.t3lib_befunc.php');
 		 		 * Get the poages below $order_pid
 		 		 */
 		 			$ExtConf=unserialize($GLOBALS["TYPO3_CONF_VARS"]["EXT"]["extConf"]["commerce"]);
-		 			list($orderPid,$defaultFolder,$folderList) = array_unique(tx_graytree_folder_db::initFolders('Orders','Commerce',0,'Commerce'));
+		 			list($orderPid,$defaultFolder,$folderList) = array_unique(tx_commerce_folder_db::initFolders('Orders','Commerce',0,'Commerce'));
 		 		 	$ret = tx_commerce_belib::getOrderFolderSelector($orderPid,$ExtConf['OrderFolderRecursiveLevel']) ;
 		 		 	global $LANG;
 		 		 	$out.=$LANG->getLL("moveorderto");

@@ -168,7 +168,7 @@
 			}
 			$basketReadonly = false;
  			while ($return_data=$GLOBALS['TYPO3_DB']->sql_fetch_assoc($result))	{
- 				
+ 			
  				if (($return_data['quantity']>0) && ($return_data['price_id']>0))  {
  					$this->add_article($return_data['article_id'],$return_data['quantity'],$return_data['price_id']) ;	
  					$this->changePrices($return_data['article_id'],$return_data['price_gross'],$return_data['price_net']);

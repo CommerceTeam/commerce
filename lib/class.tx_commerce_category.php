@@ -45,6 +45,8 @@
  
  require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_db_category.php');
  require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_element_alib.php'); 
+ require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_belib.php'); 
+
  /**
  * Main script class for the handling of categories. Categories contains
  * categoreis (Reverse datat structure) and products
@@ -102,10 +104,17 @@
   	 */
   	var $data_loaded=false;
   	
-  	
-  	
-  	
+	var $perms_record;	//the perms array with the fields in it
 	
+	//explicit fields
+  	var $perms_userid;
+	var $perms_groupid;
+	var $perms_user;
+	var $perms_group;
+	var $perms_everybody;
+	var $editlock;
+	
+	var $permsLoaded;	//flag if perms have been loaded
 	
 	/**
 	 * Constructor, basically calls init 
@@ -179,6 +188,50 @@
   	function get_title() 	{
   		return $this->title;	
   	}
+	
+	/**
+	 * Loads the perms
+	 * @return {void}
+	 */
+	function load_perms() {
+		if(!$this->permsLoaded) {
+			$this->permsLoaded = true;
+			
+			$this->perms_record 	= 	$this->conn_db->getPermissionsRecord($this->uid);
+		
+			//if the record isnt loaded, abort.
+			if(0 >= count($this->perms_record)) {
+				$this->perms_record = null;
+				return;	
+			}
+			
+			$this->perms_userid 	= $this->perms_record['perms_userid'];
+			$this->perms_groupid 	= $this->perms_record['perms_groupid'];
+			$this->perms_user 		= $this->perms_record['perms_userid'];
+			$this->perms_group 		= $this->perms_record['perms_group'];
+			$this->perms_everybody 	= $this->perms_record['perms_everybody'];
+			$this->editlock 		= $this->perms_record['editlock'];
+		}
+	}
+	
+	/**
+	 * Returns whether the permission is set and allowed for the current user
+	 * @return {boolean}
+	 */
+	function isPSet($perm) {
+		if(!is_string($perm)) return false;
+		$this->load_perms();
+		
+		return tx_commerce_belib::isPSet($perm, $this->perms_record);
+	}
+	
+	/**
+	 * Returns the UID of the Category
+	 * @return {int}
+	 */
+	function getUid() {
+		return $this->uid;	
+	}
   	
   	/**
   	 * Returns the category title
@@ -283,6 +336,56 @@
   	function getImages()  	{
   		return $this->images_array;
   	}
+	
+	/**
+	 * Returns the Group-ID of the Category
+	 * @return {int}
+	 */
+	function getPermsGroupId() {
+		return $this->perms_groupid;
+	}
+	
+	/**
+	 * Returns the User-ID
+	 * @return {int}
+	 */
+	function getPermsUserId() {
+		return $this->perms_userid;
+	}
+	
+	/**
+	 * Returns the Permissions for everybody
+	 * @return {int}
+	 */
+	function getPermsEverybody() {
+		return $this->perms_everybody;
+	}
+	
+	/**
+	 * Returns the Permissions for the group
+	 * @return {int}
+	 */
+	function getPermsGroup(){
+		return $this->perms_group;
+	}
+	
+	/**
+	 * Returns the Permissions for the user
+	 * @return {int}
+	 */
+	function getPermsUser() {
+		return $this->perms_user;
+	}
+	
+	/**
+	 * Returns the editlock flag
+	 * @return {int}
+	 */
+	function getEditlock() {
+		return $this->editlock;
+	}
+	
+	
   	/**
   	 * true if the actual categorie has subcategories
   	 * @return boolean 
@@ -327,6 +430,17 @@
 	  		$this->data_loaded=true;
   		}
   	}
+  	
+  	/**
+  	 * Returns an array with the different l18n for the category
+  	 * 
+  	 * @return {array}	Categories
+  	 */
+  	function get_l18n_categories() {
+  		$uid_lang = $this->conn_db->get_l18n_categories($this->uid);
+  		
+		return $uid_lang;
+  	} 
   	
   	/**
   	 * Loads the child categories in the categories array
@@ -393,7 +507,6 @@
   	 */
   	
   	function get_parent_category()  	{
-  		
 		if ($this->parent_category_uid>0)	{
 		
 			$this->parent_category= t3lib_div::makeInstance('tx_commerce_category');
@@ -404,6 +517,98 @@
 		}
 		
   	}
+	
+	/**
+	 * Returns an array with category objects (unloaded) that serve as the category's parent
+	 * @return {array}
+	 */
+	function getParentCategories() {
+		$parents = $this->conn_db->get_parent_categories($this->uid);
+		$parentCats = array();
+		
+		for($i = 0, $l = count($parents); $i < $l; $i ++) {
+			$cat = t3lib_div::makeInstance('tx_commerce_category');
+			$cat->init($parents[$i]);
+			
+			$parentCats[] = $cat;
+		}
+		
+		return $parentCats;
+	}
+	
+	/**
+	 * Returns false if the current category is not in the categorymounts of the user
+	 * @return {boolean}		Is in mounts?
+	 */
+	/*function isInCommerceMounts() {
+		 
+		 require_once(t3lib_extmgm::extPath('commerce').'treelib/class.tx_commerce_categorymounts.php'); 
+		
+		//get all mounts
+		$mounts = t3lib_div::makeInstance('tx_commerce_categorymounts');
+		$mounts->init($GLOBALS['BE_USER']->user['uid']);
+		
+		$categories = $mounts->getMountData();
+		
+		//is user admin? has mount 0? is parentcategory in mounts?
+		if($GLOBALS['BE_USER']->isAdmin() || in_array(0, $categories) || in_array($this->uid, $categories)) return true;
+		
+		//load the category and go up the tree until we either reach a mount or we reach root
+		$tmpCats 	= $this->getParentCategories();
+		$tmpParents = null;
+		$i 			= 1000;
+		
+		while(!is_null($cat = @array_pop($tmpCats))) {
+			//Prevent endless recursion
+			if($i < 0) {
+				if (TYPO3_DLOG) t3lib_div::devLog('isInCommerceMounts (category) has aborted because $i has reached its allowed recursive maximum.', COMMERCE_EXTkey, 3);	
+				return false;
+			}
+			
+			//true if we can find any parent category of this category in the commerce mounts
+			if(in_array($cat->getUid(), $categories)) {
+				return true;	
+			}
+			
+			$tmpParents = $cat->getParentCategories();
+
+			if(is_array($tmpParents) && 0 < count($tmpParents)) {
+				$tmpCats = array_merge($tmpCats, $tmpParents);	
+			}
+			$i --;
+		}
+		return false;
+	}*/
+	
+	/**
+	 * Carries out the move of the category to the new parent
+	 * Permissions are NOT checked, this MUST be done beforehand
+	 * @return {bool}			Success
+	 * @param $uid {int}		uid of the move target
+	 * @param $op {string}		Operation of move (can be 'after' or 'into'
+	 */
+	function move($uid, $op = 'after') {
+		
+		if('into' == $op) {
+			//the $uid is a future parent
+			$parent_uid = $uid;
+		} else {
+			return false;	
+		}
+		
+		//update parent_category
+		$set = $this->conn_db->updateRecord($this->uid, array('parent_category' => $parent_uid));
+		
+		//only update relations if parent_category was successfully set
+		if($set) {
+			$catList = array($parent_uid);
+			$catList = tx_commerce_belib::getUidListFromList($catList);
+			$catList = tx_commerce_belib::extractFieldArray($catList, 'uid_foreign', true);
+	
+			tx_commerce_belib::saveRelations($this->uid, $catList, 'tx_commerce_categories_parent_category_mm', true);
+		} else return false;
+		return true;
+	}
   	
   	
   	/**
@@ -567,7 +772,7 @@
         
         
         /**
-      * Depricated Methods
+      * Deprecated Methods
       * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
       */
       

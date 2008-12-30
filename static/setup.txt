@@ -4,8 +4,10 @@
 includeLibs.user_tx_commerce_catmenu_pub = EXT:commerce/lib/class.tx_commerce_navigation.php
  
 
+
 page.includeCSS {
 	commerce = EXT:commerce/res/css/commerce.css
+	commerce.title = CSS-Style for Commerce Extension
 	commerce.media = all 
 }
 

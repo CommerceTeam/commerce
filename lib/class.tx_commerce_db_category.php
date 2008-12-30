@@ -67,11 +67,11 @@ class tx_commerce_db_category extends tx_commerce_db_alib {
 	 * @var Database table concerning the data
 	 * @access private
 	 */
-	var $database_table = 'tx_commerce_categories';
-	var $mm_database_table ='tx_commerce_categories_parent_category_mm';
-	var $database_attribute_rel_table = 'tx_commerce_categories_attributes_mm';
-	var $CategoryOrderField ='tx_commerce_categories.sorting';
-	var $ProductOrderField ='tx_commerce_products.sorting';
+	var $database_table 				= 'tx_commerce_categories';
+	var $mm_database_table 				= 'tx_commerce_categories_parent_category_mm';
+	var $database_attribute_rel_table 	= 'tx_commerce_categories_attributes_mm';
+	var $CategoryOrderField 			= 'tx_commerce_categories.sorting';
+	var $ProductOrderField 				= 'tx_commerce_products.sorting';
 	/**
 	 * Gets the "master" category from this category
 	 * @param uid = Category UID
@@ -97,6 +97,19 @@ class tx_commerce_db_category extends tx_commerce_db_alib {
 		if (TYPO3_DLOG && COMMERCE_CLICKMENU_DLOG) t3lib_div::devLog('tx_commerce_db_category::get_parent_category return FALSE', COMMERCE_EXTkey);
  		return false;
  	}
+	
+	/**
+	 * Returns the permissions information for the category with the uid
+	 * @return {array}
+	 * @param $uid {int}	Category UID
+	 */
+	function getPermissionsRecord($uid) {
+		if (t3lib_div::testInt($uid) && ($uid > 0)){
+			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('perms_everybody, perms_user, perms_group, perms_userid, perms_groupid, editlock', $this->database_table, 'uid = '.$uid);
+			return $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
+			
+		} else return array();
+	}
 
  	/**
  	 * Gets the parent categories from this category
@@ -110,7 +123,7 @@ class tx_commerce_db_category extends tx_commerce_db_alib {
  			return false;
  		}
 
- 		$this->uid=$uid;
+ 		$this->uid = $uid;
  		if (is_object($GLOBALS['TSFE']->sys_page)) {
  			$add_where = $GLOBALS['TSFE']->sys_page->enableFields($this->database_table, $GLOBALS['TSFE']->showHiddenRecords);
  		}else{
@@ -142,6 +155,53 @@ class tx_commerce_db_category extends tx_commerce_db_alib {
  		return false;
 
  	}
+ 	
+ 	/**
+ 	 * Returns an array of sys_language_uids of the i18n categories
+ 	 * Only use in BE
+ 	 * 
+ 	 * @return {array}	 uids
+ 	 * @param $uid {int} uid of the category we want to get the i18n languages from
+ 	 */
+ 	function get_l18n_categories($uid) {
+		
+ 		if ((empty($uid)) || (!is_numeric($uid)) ){
+ 			return false;
+ 		}
+ 		
+ 		$this->uid = $uid;
+ 		
+ 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('t1.title, t1.uid, t2.flag, t2.uid as sys_language', $this->database_table.' AS t1 LEFT JOIN sys_language AS t2 ON t1.sys_language_uid = t2.uid', 'l18n_parent = '.$uid.' AND deleted = 0');
+ 		
+ 		$uids = array();
+ 		
+ 		while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+ 			$uids[] =  $row;
+ 		}
+ 		
+ 		return $uids;
+ 	}
+	
+	/**
+	 * Returns an array with uids of all direct child categories for the category
+	 * @return {array}
+	 * @param $uid {int}	Category to start
+	 */
+	function getChildCategories($uid) {
+		if(!is_numeric($uid)) {
+			if (TYPO3_DLOG) t3lib_div::devLog('getChildCategories (db_category) gets passed invalid parameters.', COMMERCE_EXTkey, 3);	
+			return array();
+		}
+		
+		$uids = array();
+		
+		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid_local AS uid', 'tx_commerce_categories_parent_category_mm', 'uid_foreign = '.$uid);
+		
+		while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+			$uids[] = $row['uid'];
+		}
+		return $uids;
+	}
 
  	/**
  	 * Gets the child categories from this category
@@ -249,6 +309,9 @@ class tx_commerce_db_category extends tx_commerce_db_alib {
 		  $where_clause .= $GLOBALS['TSFE']->sys_page->enableFields('tx_commerce_articles', $GLOBALS['TSFE']->showHiddenRecords);
 		  $where_clause .= $GLOBALS['TSFE']->sys_page->enableFields('tx_commerce_article_prices', $GLOBALS['TSFE']->showHiddenRecords);
 		}
+		
+		//Versioning - no deleted or versioned records, nor live placeholders
+		$where_clause .= ' AND tx_commerce_products.deleted = 0 AND tx_commerce_products.pid != -1 AND tx_commerce_products.t3ver_state != 1';
 
 
 

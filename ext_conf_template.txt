@@ -73,3 +73,6 @@ userSessionMd5Encrypt  = 1
 
 # cat=basic/other/100; type=boolean; label= Aggregation Allow: Allow Statistics Aggregation in BE if not using a cron
 allowAggregation  = 1
+
+# cat=basic/other/100; type=boolean; label= Use graytree: Use graytree to render the trees
+useGraytree  = 0

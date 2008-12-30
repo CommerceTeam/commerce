@@ -193,7 +193,7 @@ class tx_commerce_order_navframe {
 
 #		$this->settingTemporaryMountPoint(11);
 			// Temporary DB mounts:
-		$this->pagetree->MOUNTS=array_unique(tx_graytree_folder_db::initFolders('Orders','Commerce',0,'Commerce'));
+		$this->pagetree->MOUNTS=array_unique(tx_commerce_folder_db::initFolders('Orders','Commerce',0,'Commerce'));
 		$this->initializeTemporaryDBmount();
 
 			// Setting highlight mode:

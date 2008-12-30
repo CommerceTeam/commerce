@@ -64,6 +64,13 @@ class tx_commerce_pibase extends tslib_pibase {
  	 */
 
 	var $basketHashValue = false;
+	
+	/**
+	 * Holds the workspace, if one is used
+	 *
+	 * @var integer
+	 */
+	var $workspace = false;
 
 	/**
 	 * Standard Init Method for all
@@ -88,7 +95,16 @@ class tx_commerce_pibase extends tslib_pibase {
 	function init($conf){
 
 
+		#debug($GLOBALS['TSFE']);
+		if ($GLOBALS['TSFE']->beUserLogin) {
+			$this->workspace = $GLOBALS['BE_USER']->workspace;
+			
+			
+		}
 
+		
+		
+		
 	    $this->conf = $conf;
 	    $this->pi_setPiVarDefaults();
 	    $this->pi_loadLL();

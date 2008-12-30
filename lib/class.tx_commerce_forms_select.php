@@ -30,7 +30,7 @@
  * 
  * 
  */
- require_once (t3lib_extmgm::extPath('graytree').'lib/class.tx_graytree_folder_db.php');
+ require_once (t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_folder_db.php');
  require_once (t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_create_folder.php');
  
  class tx_commerce_forms_select {

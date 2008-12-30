@@ -121,7 +121,7 @@ class tx_commerce_div {
 	 * @param	$dontRemoveArticles = 1	integer	switch to show or not show articles
 	 * @return	Object	Cleaned up Productobjectt
 	 */
-		function removeNoStockArticles( $productObj, $dontRemoveArticles = 1 ) {
+	function removeNoStockArticles( $productObj, $dontRemoveArticles = 1 ) {
 		if($dontRemoveArticles == 1) {
 			return $productObj;
 		}

@@ -45,9 +45,9 @@ include ($BACK_PATH.'template.php');
 require_once(PATH_t3lib.'class.t3lib_browsetree.php');
 
 /**
- * Require for graytree
+ * Require for commerce
  */
-require_once (t3lib_extmgm::extPath('graytree').'lib/class.tx_graytree_folder_db.php');
+require_once (t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_commerce_db.php');
 
 
 /**
@@ -192,7 +192,7 @@ class tx_commerce_statistic_navframe {
 
 #		$this->settingTemporaryMountPoint(11);
 			// Temporary DB mounts:
-		$this->pagetree->MOUNTS=array_unique(tx_graytree_folder_db::initFolders('Orders','Commerce',0,'Commerce'));
+		$this->pagetree->MOUNTS=array_unique(tx_commerce_folder_db::initFolders('Orders','Commerce',0,'Commerce'));
 		$this->initializeTemporaryDBmount();
 
 			// Setting highlight mode:

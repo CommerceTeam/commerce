@@ -57,7 +57,7 @@ require_once (PATH_t3lib.'class.t3lib_tcemain.php');
 require_once (t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_order_localrecordlist.php');
 require_once (t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_feusers_localrecordlist.php');
 
-require_once (t3lib_extmgm::extPath('graytree').'lib/class.tx_graytree_folder_db.php');
+require_once (t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_folder_db.php');
 
 /**
  * Load Locallang
@@ -110,7 +110,7 @@ class tx_commerce_orders extends t3lib_SCbase {
 				 
 		# Find the right pid for the Ordersfolder 
 		 
-		$order_pid = array_unique(tx_graytree_folder_db::initFolders('Orders','Commerce',0,'Commerce'));
+		$order_pid = array_unique(tx_commerce_folder_db::initFolders('Orders','Commerce',0,'Commerce'));
 		/**
 		 * @TODO Find a better solution for the fist array element
 		 * 

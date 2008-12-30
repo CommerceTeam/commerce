@@ -57,6 +57,17 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 
 		parent::init($conf);
 	 	
+	 	// Merge Default Vars, if other prefix_id
+		if ($this->prefixID <> 'tx_commerce_pi1') {
+			$tx_commerce_vars = t3lib_div:: GPvar('tx_commerce');
+			if (is_array($tx_commerce_vars)) {
+				foreach($tx_commerce_vars as $key => $value) {
+					if (empty($this->piVars[$key])) {
+						$this->piVars[$key] = $value;
+					}
+				}
+			}
+		}
 	 	
 	 	
 	    //todo: is there a TYPO3 constant or variable with that information for every pi-class?
@@ -169,8 +180,8 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 		$this->category->init($this->cat,$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
 		$this->category->load_data();
 		$categorySubproducts = $this->category->getProductUids() ;
-			
-		if ((!$this->conf['singleProduct']) && ((int)$this->piVars['showUid']>0)) {
+		
+		if ((!$this->conf['singleProduct']) && ((int)$this->piVars['showUid']>0) && (!$GLOBALS['TSFE']->beUserLogin)) {
 			if (is_array($categorySubproducts)) {
 				if (!in_array($this->piVars['showUid'],$categorySubproducts)) {
 					$categoryAllSubproducts = $this->category->getAllProducts(PHP_INT_MAX);
@@ -573,9 +584,13 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 			}
 			if (is_array($arrAttNames)) {
 				$articles_uids = $prod->get_Articles_by_AttributeArray($attributeArray,1);
-				$relevantArticleUids = $prod->getRelevantArticles($attributeArray);
-				$attributeArray = $prod->get_selectattribute_matrix($relevantArticleUids, $this->select_attributes,$showHiddenValues);
-
+				//TODO: for now we put this so it looks like working, check workflow and results
+				if(count($this->select_attributes)>1){
+					$attributeArray = $prod->get_selectattribute_matrix($articles_uids, $this->select_attributes,$showHiddenValues);
+				}else{
+					$attributeArray = $prod->get_selectattribute_matrix($articles_uids, $this->select_attributes,$showHiddenValues);
+				}
+				
 			} else {
 				$articles_uids = $prod->getArticleUids();
 				$attributeArray = $prod->get_selectattribute_matrix($articles_uids, $this->select_attributes,$showHiddenValues);

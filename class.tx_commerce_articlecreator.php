@@ -53,6 +53,20 @@ class tx_commerce_articleCreator {
 		$this->belib = t3lib_div::makeInstance('tx_commerce_belib');
 		$this->returnUrl = htmlspecialchars(urlencode(t3lib_div::_GP('returnUrl')));
 	}
+	
+	/**
+	 * Initializes the Article Creator if it is not called directly from the Flexforms
+	 * 
+	 * @return {void}
+	 * @param $uid int 	uid of the product
+	 * @param $pid int	page id
+	 */
+	function init($uid, $pid) {
+		$this->uid = intval($uid);
+		$this->pid = intval($pid);
+		
+		if ($this->attributes == NULL) $this->attributes = $this->belib->getAttributesForProduct($this->uid, true, true, true);
+	}
 
 	/**
 	 * Get all articles that already exist. Add some buttons for editing.
@@ -70,8 +84,9 @@ class tx_commerce_articleCreator {
 			// get all attributes for this product, if they where not fetched yet
 		if ($this->attributes == NULL) $this->attributes = $this->belib->getAttributesForProduct($this->uid, true, true, true);
 
-		$this->createArticles($PA);
-		$this->updateArticles($PA);
+		// @todo: remove if the implementation of this has been migrated to the dmhooks
+		//$this->createArticles($PA);
+		//$this->updateArticles($PA);
 
 			// get existing articles for this product, if they where not fetched yet
 		if ($this->existingArticles == NULL) $this->existingArticles = $this->belib->getArticlesOfProduct($this->uid, '', 'sorting');
@@ -386,7 +401,7 @@ class tx_commerce_articleCreator {
 	 * @param	array		$PA: ...
 	 * @return	void
 	 */
-	function createArticles($PA)	{
+	function createArticles($PA)	{		
 		if (is_array(t3lib_div::_GP('createList')))	{
 			foreach (t3lib_div::_GP('createList') as $key => $switch)	{
 				$this->createArticle($PA, $key);
@@ -404,12 +419,13 @@ class tx_commerce_articleCreator {
 	 */
 	function updateArticles($PA)	{
 		$fullAttributeList = array();
+
 		if (!is_array($this->attributes['ct1']))	return;
 		
 		foreach ($this->attributes['ct1'] as $attributeData)	{
 			$fullAttributeList[] = $attributeData['uid_foreign'];
 		}
-
+		
 		if (is_array(t3lib_div::_GP('updateData')))	{
 			foreach (t3lib_div::_GP('updateData') as $articleUid => $relData)	{
 				foreach ($relData as $attributeUid => $attributeValueUid)	{
@@ -436,7 +452,7 @@ class tx_commerce_articleCreator {
 	 * @return	articleUID	Returns the new articleUid if success
 	 */
 	function createArticle($PA, $key)	{
-			// get the create data
+		// get the create data
 		$data = t3lib_div::_GP('createData');
 		$data = $data[$key];
 		$hash = md5($data);
@@ -456,7 +472,7 @@ class tx_commerce_articleCreator {
 		$articleData = array(
 			'pid' => $this->pid,
 			'crdate' => time(),
-			'title' => $PA['row']['title'],
+			'title' => $PA['title'],
 			'uid_product' => $this->uid,
 			'sorting' => ($sorting['sorting'] *2),
 			'article_attributes' => count($this->attributes['rest']) +count($data),
@@ -510,6 +526,7 @@ class tx_commerce_articleCreator {
 
 		$createdArticleRelations = array();
 		$relationCreateData = $relationBaseData;
+	
 		if (is_array($data))	{
 			foreach ($data as $selectAttributeUid => $selectAttributeValueUid)	{
 				$relationCreateData['uid_foreign'] = $selectAttributeUid;
@@ -519,7 +536,7 @@ class tx_commerce_articleCreator {
 				$GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_commerce_articles_article_attributes_mm', $relationCreateData);
 			}
 		}
-
+		
 		if (is_array($this->attributes['rest']))	{
 			foreach ($this->attributes['rest'] as $attribute)	{
 				if (empty($attribute['attributeData']['uid']))	continue;
@@ -543,6 +560,7 @@ class tx_commerce_articleCreator {
 				}
 
 				$createdArticleRelations[] = $relationCreateData;
+				
 				$GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_commerce_articles_article_attributes_mm', $relationCreateData);
 			}
 		}
@@ -581,7 +599,7 @@ class tx_commerce_articleCreator {
 				$articleData = array(
 					'pid' => $this->pid,
 					'crdate' => time(),
-					'title' => $PA['row']['title'],
+					'title' => $PA['title'],
 					'uid_product' => $localisedProducts['uid'],
 					'sys_language_uid' => $localisedProducts['sys_language_uid'],
 					'l18n_parent' => $articleUid,

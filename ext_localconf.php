@@ -39,6 +39,11 @@ define(NORMALArticleType,1);
 define(PAYMENTArticleType,2);
 define(DELIVERYArticleType,3);
 
+
+
+require_once(PATH_txcommerce.'/treelib/class.tx_commerce_tcefunc.php');
+
+
 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['SYSPRODUCTS']['PAYMENT'] = array(
 	'tablefields' => array (
 		'title' => 'SYSTEMPRODUCT_PAYMENT',
@@ -192,8 +197,28 @@ if (t3lib_div::int_from_ver(TYPO3_version) >= '4002000') {
 	$GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['typo3/classes/class.modulemenu.php'] = t3lib_extMgm::extPath(COMMERCE_EXTkey).'class.ux_modulemenu.php';
 }
 
+/**
+ * Xclass for VersionPreview
+ */
+$GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/version/cm1/index.php'] = t3lib_extMgm::extPath(COMMERCE_EXTkey).'class.ux_versionindex.php';
+
 // add special in db list, to have the ability to search for OrderIds in TYPO 4.0
 $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['typo3/class.db_list_extra.inc']=t3lib_extMgm::extPath(COMMERCE_EXTkey).'class.ux_localrecordlist.php';
+
+//Add class for clickmenu on category
+//@deprecated
+//$GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['typo3/alt_clickmenu.php'] = t3lib_extMgm::extPath(COMMERCE_EXTkey).'/mod_clickmenu/ux_clickmenu.php';
+
+//add linkhandler for "commerce"
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_content.php']['typolinkLinkHandler']['	^^'] = 'EXT:commerce/hooks/class.tx_commerce_linkhandler.php:&tx_commerce_linkhandler';
+
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/class.browse_links.php']['browseLinksHook'][]='EXT:commerce/hooks/class.tx_commerce_browselinkshooks.php:tx_commerce_browselinkshooks';
+//@this clas does not use the hook
+//$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/browse_links.php']['browseLinksHook'][]='EXT:commerce/hooks/class.tx_commerce_browselinkshooks.php:tx_commerce_browselinkshooks';
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/rtehtmlarea/mod3/class.tx_rtehtmlarea_browse_links.php']['browseLinksHook'][] = 'EXT:commerce/hooks/class.tx_commerce_browselinkshooks.php:tx_commerce_browselinkshooks';
+
+// add ajax listener for tree in linkcommerce
+$GLOBALS['TYPO3_CONF_VARS']['BE']['AJAX']['tx_commerce_browselinkshooks::ajaxExpandCollapse'] = 'typo3conf/ext/commerce/hooks/class.tx_commerce_browselinkshooks.php:tx_commerce_browselinkshooks->ajaxExpandCollapse';
 
 
 // Hooks for datamap procesing
@@ -203,6 +228,10 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['proc
 // Hooks for commandmap processing
 // for new drawing of the category tree after having deleted a record
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass'][] = 'EXT:commerce/hooks/class.tx_commerce_cmhooks.php:tx_commerce_cmhooks';
+
+// Hooks for versionswap procesing
+// for processing the order sfe, when changing the pid
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processVersionSwapClass'][] = 'EXT:commerce/hooks/class.tx_commerce_versionhooks.php:tx_commerce_versionhooks';
 
 
 // Intiantation the Basket in the FE User class
@@ -250,6 +279,13 @@ $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY]['showArticleNumber'] = $_EXTCON
 // Show article name
 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY]['showArticleTitle'] = $_EXTCONF['showArticleTitle'] ? $_EXTCONF['showArticleTitle'] : 0;
 
+//Adding the AJAX listeners for Permission change/Browsing the Category tree
+$GLOBALS['TYPO3_CONF_VARS']['BE']['AJAX']['SC_mod_access_perm_ajax::dispatch'] = 'typo3conf/ext/commerce/mod_access/class.sc_mod_access_perm_ajax.php:SC_mod_access_perm_ajax->dispatch';
+$GLOBALS['TYPO3_CONF_VARS']['BE']['AJAX']['tx_commerce_access_navframe::ajaxExpandCollapse'] = 'typo3conf/ext/commerce/mod_access/class.tx_commerce_access_navframe.php:tx_commerce_access_navframe->ajaxExpandCollapse';
+$GLOBALS['TYPO3_CONF_VARS']['BE']['AJAX']['tx_commerce_category_navframe::ajaxExpandCollapse'] = 'typo3conf/ext/commerce/mod_category/class.tx_commerce_category_navframe.php:tx_commerce_category_navframe->ajaxExpandCollapse';
+
+// Graytree or not
+$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY]['useGraytree'] = $_EXTCONF['useGraytree'] ? $_EXTCONF['useGraytree'] : 0;
 
 // This line configures to process the code selectConf with the class "tx_commerce_hooks"
 require_once(t3lib_extMgm::extPath(COMMERCE_EXTkey).'hooks/class.tx_commerce_tcehooksHandler.php');
@@ -270,6 +306,7 @@ if (TYPO3_MODE=='BE')    {
 }
 
 
+$GLOBALS['T3_VAR']['ext']['dynaflex']['tx_commerce_categories'][] = 'EXT:commerce/dcafiles/class.tx_commerce_categories_dfconfig.php:tx_commerce_categories_dfconfig';
 
 require_once(t3lib_extMgm::extPath(COMMERCE_EXTkey).'lib/class.tx_commerce_forms_select.php');
 ?>

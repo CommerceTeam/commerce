@@ -63,10 +63,10 @@
 				    		<label>LLL:EXT:commerce/pi1/locallang_tca.xml:tx_commerce.pi_flexform.category_selection</label>
 				    		<config>
 				    			<type>group</type>
-								<internal_type>db</internal_type>
+								<internal_type>passthrough</internal_type>
 								<allowed>tx_commerce_categories</allowed>
 								<form_type>user</form_type>
-								<userFunc>tx_graytree_tceFunc->getSingleField_selectTree</userFunc>
+								<userFunc>tx_commerce_tceFunc->getSingleField_selectCategories</userFunc>
 								<treeView>1</treeView>
 								<treeClass>tx_commerce_tceFunc_categoryTree</treeClass>
 								<size>7</size>

@@ -142,7 +142,17 @@
  		if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)==1)	{
  			$return_data=$GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
  			$GLOBALS['TYPO3_DB']->sql_free_result($result);
- 				
+ 			
+ 			//@since 8.10.2008: get workspace version if available
+ 			if(!is_null($GLOBALS['TSFE']->sys_page)) {
+ 				$GLOBALS['TSFE']->sys_page->versionOL($this->database_table, $return_data); 			
+ 			}
+			
+ 			if(!is_array($return_data)) {
+ 				$this->error('There was an error overlaying the record with the version');
+ 				return false;
+ 			}
+ 			
  			if (($lang_uid>0) ) {
  			/**
  			 * Get Overlay, if availiabe
@@ -302,6 +312,27 @@
 	function get_attributes($uid,$attribute_corelation_type_list=''){
 	    
 		return $this->getAttributes($uid,$attribute_corelation_type_list);
+	}
+	
+	/**
+	 * Update record data
+	 * @return {boolean}
+	 * @param $uid {int}		uid of the item
+	 * @param $field {array}	Assoc. array with update fields
+	 */
+ 	function updateRecord($uid, $fields) {
+ 		if(!is_numeric($uid) || !is_array($fields)) {
+			if (TYPO3_DLOG) t3lib_div::devLog('updateRecord (db_alib) gets passed invalid parameters.', COMMERCE_EXTkey, 3);	
+			return false;	
+		}
+		
+		@$GLOBALS['TYPO3_DB']->exec_UPDATEquery($this->database_table, 'uid = '.$uid, $fields);	
+		
+		if($GLOBALS['TYPO3_DB']->sql_error()) {
+			if (TYPO3_DLOG) t3lib_div::devLog('updateRecord (db_alib): invalid sql.', COMMERCE_EXTkey, 3);	
+			return false;	
+		}
+		return true;
 	}
   	
  	

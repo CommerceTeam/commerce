@@ -2,6 +2,13 @@ Changelog for tx_commerce
 
 29.12.2008 Ingo Schmitt <is@marketing-factory.de>
 * Fixed Type in hooks.html
+* Added Save-And Preview functionality
+* Added feature to load tx_commerce.Pi1 vars if other prefix is defined
+* Raised Version to 0.11.2beta
+* Sponsored Feature: Added Versioning and Workspaces to Commerce
+* Sponsored Feature: Added Acces Rights to Category Tree to Commerce
+* Sponsored Feature: Replaced Graytree by a much faster tree
+* Feature: Added Link Tab to Link Select Popup, Thanks to Christian Ehret und Erik Frister
 
 
 20.12.2008 Volker Graubaum <vg@e-netconsulting.de>
@@ -26,7 +33,6 @@ Changelog for tx_commerce
   * To make a style sheet preferred, set the rel attribute to "stylesheet" and name the style sheet with the title attribute.
   * To specify an alternate style sheet, set the rel attribute to "alternate stylesheet" and name the style sheet with the title attribute.
  src: http://www.w3.org/TR/html4/present/styles.html#style-external 
-
 						  
 
 3.12.2008 Ingo Schmitt <is@marketing-factory.de>
@@ -43,7 +49,7 @@ Changelog for tx_commerce
 16.11.2008 Morten Olesen <mo@idefa.dk>
 * Integrated related products in product single view. 
 16.11.2008 Ingo Schmitt <is@marketing-factory.de>
-* Fixed bug when changing lnagauage in basket to language where no translation exists for product
+* Fixed bug when changing language in basket to language where no translation exists for product
 * Fixed naming problems in German language
 * Removed no cache on product not found, only open PageBrowser and no_cache, see commet in code
 * removed empty manual.sxw 

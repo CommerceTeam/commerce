@@ -1,8 +1,8 @@
-Die Klassen im dao Verzeichnis sorgen für die Verbindung der fe_user und tt_address Datensätze.
+Die Klassen im dao Verzeichnis sorgen fï¿½r die Verbindung der fe_user und tt_address Datensï¿½tze.
 
 INSTALLATION:
 
-*** Folgende Werte MÜSSEN Extension Manager gesetzt werden:
+*** Folgende Werte Mï¿½SSEN Extension Manager gesetzt werden:
 
 (A)
 Page-Id for new address records	[create_address_pid]
@@ -25,9 +25,9 @@ Danach sollte alles funktionieren.
 
 TECHNISCHER AUFBAU:
 
-dao/*   Klassen für Objekte, Persistenz (DAO), zentrales Fieldmapping, 2 zentrale Observer (address und feusers)
+dao/*   Klassen fï¿½r Objekte, Persistenz (DAO), zentrales Fieldmapping, 2 zentrale Observer (address und feusers)
 hooks/*hooksHandler    Klassen um die Observer in commerce_pi4, tcemain und srfeuserregister Hooks zu integrieren
 ext_localconf.php Definition der Hooks, Extension Settings
 ext_conf_template.txt Extension Settings
 
-Weitere Info später.
+Weitere Info spï¿½ter.

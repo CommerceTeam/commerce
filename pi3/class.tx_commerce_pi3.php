@@ -44,7 +44,7 @@ require_once(PATH_t3lib.'class.t3lib_tcemain.php');
  */
 require_once(PATH_txcommerce.'lib/class.tx_commerce_product.php');
 require_once(PATH_txcommerce.'lib/class.tx_commerce_category.php');
-require_once(PATH_txgraytree.'lib/class.tx_graytree_folder_db.php');
+require_once(PATH_txcommerce.'lib/class.tx_commerce_folder_db.php');
 require_once(PATH_txcommerce.'lib/class.tx_commerce_pibase.php');
 require_once(PATH_txcommerce.'lib/class.tx_commerce_div.php');
 require_once(PATH_txcommerce.'pi4/class.tx_commerce_pi4.php');
@@ -957,9 +957,9 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
  		
  		if (empty($orderData['pid']) || ($orderData['pid']< 0)) {
  			
- 			$comPid = array_keys(tx_graytree_folder_db::getFolders('commerce', 0, 'COMMERCE'));
-			$ordPid = array_keys(tx_graytree_folder_db::getFolders('commerce', $comPid[0], 'Orders'));
-			$incPid = array_keys(tx_graytree_folder_db::getFolders('commerce', $ordPid[0], 'Incoming'));
+ 			$comPid = array_keys(tx_commerce_folder_db::getFolders('commerce', 0, 'COMMERCE'));
+			$ordPid = array_keys(tx_commerce_folder_db::getFolders('commerce', $comPid[0], 'Orders'));
+			$incPid = array_keys(tx_commerce_folder_db::getFolders('commerce', $ordPid[0], 'Incoming'));
 			$orderData['pid'] = $incPid[0];
  		}
 		
@@ -1061,7 +1061,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 		$markerArray['###LISTING_BASKET###'] = $this->makeBasketView(
 			$GLOBALS['TSFE']->fe_user->tx_commerce_basket,
 			'###BASKET_VIEW###',
-			array(NORMALArticleType)
+			t3lib_div::intExplode(',', $this->conf['regularArticleTypes'])
 		);
 
 		$markerArray['###MESSAGE###']='';
@@ -1547,7 +1547,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 			if (isset($this->conf['addressPid']))	{
 				$dataArray['pid'] = $this->conf['addressPid'];
 			} else {
-				list($commercePid, $defaultFolder, $folderList) = tx_graytree_folder_db::initFolders('Commerce', 'commerce', $modPid);
+				list($commercePid, $defaultFolder, $folderList) = tx_commerce_folder_db::initFolders('Commerce', 'commerce', $modPid);
 				$dataArray['pid'] = $commercePid;
 			}
 
