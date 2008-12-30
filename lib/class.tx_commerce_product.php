@@ -81,7 +81,8 @@
   	
   	var $attributes = array();
   	var $attributes_uids=array();
-  	
+
+		
 	//Versioning
 	var $t3ver_oid		= 0;
 	var $t3ver_id  		= 0;
@@ -91,6 +92,10 @@
 	var $t3ver_stage	= 0;
 	var $t3ver_tstamp 	= 0;
 	
+
+	var $relatedProducts = array();
+	var $relatedProduct_uids = array();
+  	var $relatedProducts_loaded=false;
   	/**
   	 * @var articles_loaded
   	 * is true when artciles are loaded, so that load articles can simply return with the values from the object
@@ -139,7 +144,7 @@
 		 $uid = intval($uid);
 	     $lang_uid = intval($lang_uid);
 		 $this->database_class='tx_commerce_db_product';
-		 $this->fieldlist=array('uid','title','pid','subtitle','description','teaser','images','teaserimages','relatedpage','l18n_parent','manufacturer_uid', 't3ver_oid', 't3ver_id', 't3ver_label', 't3ver_wsid', 't3ver_stage', 't3ver_state', 't3ver_tstamp');
+		 $this->fieldlist=array('uid','title','pid','subtitle','description','teaser','images','teaserimages','relatedpage','l18n_parent','manufacturer_uid');
 		
 		 if  ($uid > 0) {
 		 	
@@ -334,6 +339,7 @@
   	/**
   	 * Loads the data and divides comma sparated images in array
   	 * inherited from parent 
+  	 * @param $translationMode Transaltio Mode of the record, default false to use the default way of translation
   	 */
   	
   	function load_data($translationMode = false){
@@ -743,6 +749,20 @@
 										 $valueUidList[] = $row['uid'];
 	 									 $valueshown=true;
 	 								    }
+	 									/**
+		 						 * Sort values by the sorting field.
+		 						 * Is there a better way to do this?
+		 						 */
+		 						$valuelist_temp = $valuelist;
+		 						$valuelist = array();
+		 						$valuelist_temp_sort = array();
+		 						foreach ($valuelist_temp as $value_temp) {
+		 							$valuelist_temp_sort[$value_temp['sorting']] = $value_temp;
+		 						}
+		 						ksort($valuelist_temp_sort);
+		 						foreach ($valuelist_temp_sort as $value_temp) {
+		 							$valuelist[] = $value_temp;
+		 						}
 	 
 	 								}
 	 							}
@@ -822,7 +842,7 @@
 	  	 							'tx_commerce_articles',
 	 								'tx_commerce_articles_article_attributes_mm',
 									'tx_commerce_attributes',	
-									' AND tx_commerce_articles.uid_product = '.$this->uid.' '.$addwhere.$addwhere2.' order by '.$sortingTable.'.sorting'
+									' AND tx_commerce_articles.uid_product = '.$this->uid.' '.$addwhere.' '.$addwhere2.' order by '.$sortingTable.'.sorting'
 									);
 	 		$addwhere = $addwhere2;
 			
@@ -899,6 +919,20 @@
 	 							   	 $valuelist[$row['uid']] = $row['value'];
 	 							   	 $valueshown=true;
 	 							    }
+	 							/**
+	 						 * Sort values by the sorting field.
+	 						 * Is there a better way to do this?
+	 						 */
+	 						$valuelist_temp = $valuelist;
+	 						$valuelist = array();
+	 						$valuelist_temp_sort = array();
+	 						foreach ($valuelist_temp as $value_temp) {
+	 							$valuelist_temp_sort[$value_temp['sorting']] = $value_temp;
+	 						}
+	 						ksort($valuelist_temp_sort);
+	 						foreach ($valuelist_temp_sort as $value_temp) {
+	 							$valuelist[] = $value_temp;
+	 						}
 	
 	 							}
 	 						}
@@ -925,7 +959,50 @@
   	}
   	
   	
+ /**
+	 * Generates a Matrix fro these concerning products for all Attributes and the values therefor
+	 * Realy complex array, so have a look at the source
+	 * 
+	 * 
+	 *
+	 *
+	 */
+	 
+	 function getRelevantArticles($attributeArray = false){
   	
+	 	//first of all we need all possible Attribute id's (not attribute value id's)
+	 	foreach ($this->attribute as $attribute) {
+	 		$att_is_in_array = false;
+	 		foreach ($attributeArray as $attribute_temp) {
+	 			if($attribute_temp['AttributeUid'] == $attribute->uid) $att_is_in_array = true;
+	 		}
+	 		if(!$att_is_in_array) $attributeArray[] = array('AttributeUid'=>$attribute->uid,'AttributeValue'=>NULL);
+	 	}
+	
+  		if ($this->uid>0 && is_array($attributeArray) && count($attributeArray)) {
+  			foreach($attributeArray as $key=>$attr){
+  				if($attr['AttributeValue']){
+		  			$unionSelects[] = 'SELECT uid_local AS article_id,uid_valuelist FROM tx_commerce_articles_article_attributes_mm,tx_commerce_articles WHERE uid_local = uid AND uid_valuelist = '.intval($attr['AttributeValue']).' AND tx_commerce_articles.uid_product = '.$this->uid.' AND uid_foreign = '.intval($attr['AttributeUid']).$GLOBALS['TSFE']->sys_page->enableFields('tx_commerce_articles',$GLOBALS['TSFE']->showHiddenRecords);;
+		  		} else {
+		  			$unionSelects[] = 'SELECT uid_local AS article_id,uid_valuelist FROM tx_commerce_articles_article_attributes_mm,tx_commerce_articles WHERE uid_local = uid AND tx_commerce_articles.uid_product = '.$this->uid.' AND uid_foreign = '.intval($attr['AttributeUid']).$GLOBALS['TSFE']->sys_page->enableFields('tx_commerce_articles',$GLOBALS['TSFE']->showHiddenRecords);;
+		  		}
+	  		}
+	  		if(is_array($unionSelects)){
+	  			$sql  = ' SELECT count(article_id) AS counter, article_id FROM ( ';
+	  			$sql .= implode(" \n UNION \n ",$unionSelects);
+	  			$sql .= ') AS data GROUP BY article_id having COUNT(article_id) >= '.(count($unionSelects)-1).'';
+	  		}
+	  		
+	  		$res = $GLOBALS['TYPO3_DB']->sql_query($sql);
+	  		while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)){
+	  			$article_uid_list[] = $row['article_id'];
+	  		}
+	  		
+			return $article_uid_list;
+		}
+  	
+		return false;
+  	}
   	
   	
   	
@@ -1096,7 +1173,23 @@
 	
 	 							}
 	 						}
-	 				}
+	 				
+	 				 						
+	 						/**
+	 						 * Sort values by the sorting field.
+	 						 * Is there a better way to do this?
+	 						 */
+	 						$valuelist_temp = $valuelist;
+	 						$valuelist = array();
+	 						$valuelist_temp_sort = array();
+	 						foreach ($valuelist_temp as $value_temp) {
+	 							$valuelist_temp_sort[$value_temp['sorting']] = $value_temp;
+	 						}
+	 						ksort($valuelist_temp_sort);
+	 						foreach ($valuelist_temp_sort as $value_temp) {
+	 							$valuelist[] = $value_temp;
+	 						}
+	 					}
 	 				if ($valueshown==false){
 	 					$return_array[$attribute_uid]=array('title' => $data['title'],
 	 												  'unit' => $data['unit'],
