@@ -39,7 +39,7 @@ require_once(t3lib_extmgm::extPath('commerce').'class.tx_commerce_attributeedito
 
         // field templates for usage in other tables to link categories
 require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_tcefunc_categorytree.php');
-//require_once(t3lib_extmgm::extPath('graytree') .'lib/class.tx_graytree_tcefunc.php'); ###IS THIS NEEDED ANYMORE?###
+require_once(t3lib_extmgm::extPath('graytree') .'lib/class.tx_graytree_tcefunc.php');
 
 	// needed only for the leaf classes to be shown in the TCE category tree
 require_once(PATH_txcommerce.'lib/class.tx_commerce_leafproductdata.php');
@@ -310,6 +310,19 @@ $TCA['tx_commerce_products'] = Array (
 				'maxitems' => 1,
 			),
 		),
+		"relatedproducts" => Array (		
+			"exclude" => 1,		
+			"label" => "LLL:EXT:commerce/locallang_db.xml:tx_commerce_products.relatedproducts",
+			"config" => Array (
+				"type" => "group",	
+				"internal_type" => "db",	
+				"allowed" => "tx_commerce_products",	
+				"size" => 10,	
+				"minitems" => 0,
+				"maxitems" => 20,	
+				"MM" => "tx_commerce_products_related_mm",
+			)
+		),
 		'attributes' => Array (
 			'exclude' => 1,
 	#		'l10n_mode' => 'exclude',
@@ -445,7 +458,7 @@ $TCA['tx_commerce_products'] = Array (
 	),
 	'types' => Array (
 		'0' => Array('showitem' => '
-			sys_language_uid;;;;1-1-1, l18n_parent, l18n_diffsource, hidden;;1, title;;;;1-1-1, subtitle;;;;3-3-3,navtitle, description;;;richtext[cut|copy|paste|formatblock|textcolor|bold|italic|underline|left|center|right|orderedlist|unorderedlist|outdent|indent|link|table|image|line|chMode]:rte_transform[mode=ts_css|imgpath=uploads/tx_commerce/rte/], images, teaser;;;richtext[cut|copy|paste|formatblock|textcolor|bold|italic|underline|left|center|right|orderedlist|unorderedlist|outdent|indent|link|table|image|line|chMode]:rte_transform[mode=ts_css|imgpath=uploads/tx_commerce/rte/];3-3-3, teaserimages, categories;;;;4-4-4, manufacturer_uid;;;;2-2-2, relatedpage;;;;1-1-1'
+			sys_language_uid;;;;1-1-1, l18n_parent, l18n_diffsource, hidden;;1, title;;;;1-1-1, subtitle;;;;3-3-3,navtitle, description;;;richtext[cut|copy|paste|formatblock|textcolor|bold|italic|underline|left|center|right|orderedlist|unorderedlist|outdent|indent|link|table|image|line|chMode]:rte_transform[mode=ts_css|imgpath=uploads/tx_commerce/rte/], images, teaser;;;richtext[cut|copy|paste|formatblock|textcolor|bold|italic|underline|left|center|right|orderedlist|unorderedlist|outdent|indent|link|table|image|line|chMode]:rte_transform[mode=ts_css|imgpath=uploads/tx_commerce/rte/];3-3-3, teaserimages, categories;;;;4-4-4, manufacturer_uid;;;;2-2-2, relatedpage;;;;1-1-1, relatedproducts;;;;1-1-1'
 		)
 	),
 	'palettes' => Array (
