@@ -614,7 +614,7 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 			        		$markerArray["###SELECT_ATTRIBUTES_ICON###"] = $myAttribute['icon'];
 		
 							list($k,$v) = each($myAttribute['values']);
-							$markerArray["###SELECT_ATTRIBUTES_VALUE###"] = $v;
+							$markerArray["###SELECT_ATTRIBUTES_VALUE###"] = $v['value'];
 							$markerArray["###SELECT_ATTRIBUTES_UNIT###"] = $myAttribute['unit'];
 							
 							$numTemplate = $ct % $countTemplateInterations;

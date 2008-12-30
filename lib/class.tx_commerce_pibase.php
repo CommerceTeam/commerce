@@ -94,15 +94,11 @@ class tx_commerce_pibase extends tslib_pibase {
     
 	function init($conf){
 
-
 		#debug($GLOBALS['TSFE']);
 		if ($GLOBALS['TSFE']->beUserLogin) {
-			$this->workspace = $GLOBALS['BE_USER']->workspace;
-			
+			$this->workspace = $GLOBALS['BE_USER']->workspace;			
 			
 		}
-
-		
 		
 		
 	    $this->conf = $conf;
@@ -112,6 +108,7 @@ class tx_commerce_pibase extends tslib_pibase {
 	    
 		tx_commerce_div::initializeFeUserBasket();
 	    
+	    $this->pid = $GLOBALS['TSFE']->id;
 	    $this->basketHashValue = $GLOBALS['TSFE']->fe_user->tx_commerce_basket->getBasketHashValue();
 	    $this->piVars['basketHashValue'] = $this->basketHashValue;
 	    $this->imgFolder = 'uploads/tx_commerce/';
