@@ -70,16 +70,14 @@ class tx_commerce_browselinkshooks implements t3lib_browseLinksHook {
 		$this->treeObj->init();
     }
     
-    // Onglets autoris�s:
-    // Pour �tre affich�, l'onglet doit se trouver dans ce tableau. C'est le moment d'ajouter l'id du n�tre (ou d'en enlever...) !
+
     function addAllowedItems ($currentlyAllowedItems) {
         $currentlyAllowedItems[] = 'commerce_tab';
         
         return $currentlyAllowedItems;
     }
     
-    // Propri�t�s des onglets:
-    // Pour �tre affich�, un onglet doit �tre configur�. 
+    
     function modifyMenuDefinition ($menuDefinition) {
         $key = 'commerce_tab';
         $menuDefinition[$key]['isActive'] = $this->pObj->act == $key;
@@ -250,90 +248,7 @@ class tx_commerce_browselinkshooks implements t3lib_browseLinksHook {
     	return $content;     
     }
     
-	/******************************************************************
-	 *
-	 * Record listing
-	 *
-	 ******************************************************************/
-	/**
-	 * For RTE: This displays all content elements on a page and lets you create a link to the element.
-	 *
-	 * @return	string		HTML output. Returns content only if the ->expandPage value is set (pointing to a page uid to show tt_content records from ...)
-	 */
-	/*function expandPageRecords() {
-		
-		
-		global $TCA,$BE_USER, $BACK_PATH;
-
-		$out='';
-		if ($this->pObj->expandPage >= 0 && t3lib_div::testInt($this->pObj->expandPage) && $BE_USER->isInWebMount($this->pObj->expandPage))	{
-			
-			$tables = '*';
-
-				// Headline for selecting records:
-			$out .= $this->pObj->barheader($GLOBALS['LANG']->getLL('selectRecords').':');
-
-				// Create the header, showing the current page for which the listing is. Includes link to the page itself, if pages are amount allowed tables.
-			$titleLen=intval($GLOBALS['BE_USER']->uc['titleLen']);
-			$mainPageRec = t3lib_BEfunc::getRecordWSOL('pages',$this->pObj->expandPage);
-			$ATag='';
-			$ATag_e='';
-			$ATag2='';
-			if (in_array('pages',$tablesArr))	{
-				$ficon=t3lib_iconWorks::getIcon('pages',$mainPageRec);
-				$ATag="<a href=\"#\" onclick=\"return insertElement('pages', '".$mainPageRec['uid']."', 'db', ".t3lib_div::quoteJSvalue($mainPageRec['title']).", '', '', '".$ficon."','',1);\">";
-				$ATag2="<a href=\"#\" onclick=\"return insertElement('pages', '".$mainPageRec['uid']."', 'db', ".t3lib_div::quoteJSvalue($mainPageRec['title']).", '', '', '".$ficon."','',0);\">";
-				$ATag_alt=substr($ATag,0,-4).",'',1);\">";
-				$ATag_e='</a>';
-			}
-			$picon=t3lib_iconWorks::getIconImage('pages',$mainPageRec,$BACK_PATH,'');
-			$pBicon=$ATag2?'<img'.t3lib_iconWorks::skinImg($BACK_PATH,'gfx/plusbullet2.gif','width="18" height="16"').' alt="" />':'';
-			$pText=htmlspecialchars(t3lib_div::fixed_lgd_cs($mainPageRec['title'],$titleLen));
-			$out.=$picon.$ATag2.$pBicon.$ATag_e.$ATag.$pText.$ATag_e.'<br />';
-
-				// Initialize the record listing:
-			$id = $this->pObj->expandPage;
-			$pointer = t3lib_div::intInRange($this->pObj->pointer,0,100000);
-			$perms_clause = $GLOBALS['BE_USER']->getPagePermsClause(1);
-			$pageinfo = t3lib_BEfunc::readPageAccess($id,$perms_clause);
-			$table='';
-
-				// Generate the record list:
-			$dblist = t3lib_div::makeInstance('TBE_browser_recordListRTE');
-			$dblist->hookObj=&$this;
-			$dblist->browselistObj=&$this->pObj;
-			$dblist->this->pObjScript=$this->pObj->this->pObjScript;
-			$dblist->backPath = $GLOBALS['BACK_PATH'];
-			$dblist->thumbs = 0;
-			$dblist->calcPerms = $GLOBALS['BE_USER']->calcPerms($pageinfo);
-			$dblist->noControlPanels=1;
-			$dblist->clickMenuEnabled=0;
-			$dblist->tableList=implode(',',$tablesArr);
-
-			$dblist->start($id,t3lib_div::_GP('table'),$pointer,
-				t3lib_div::_GP('search_field'),
-				t3lib_div::_GP('search_levels'),
-				t3lib_div::_GP('showLimit')
-			);
-
-			$dblist->setDispFields();			
-			$dblist->generateList();
-			$dblist->writeBottom();
-
-				//	Add the HTML for the record list to output variable:
-			$out.=$dblist->HTMLcode;
-			$out.=$dblist->getSearchBox();
-		}
-
-			// Return accumulated content:
-		return $out;
-	}*/
-    
-   /* function render($mode, $pObject) {
-    	return 'Commerce Tab';
-    }*/
-    
-    // Permet de r�cup�rer d'�ventuels param�tres
+	
     function parseCurrentUrl ($href, $siteUrl, $info) {
 			//depending on link and setup the href string can contain complete absolute link			
 			if (substr($href,0,7)=='http://') {
@@ -356,9 +271,10 @@ class tx_commerce_browselinkshooks implements t3lib_browseLinksHook {
         return $info;
     }
     
-    // @todo: where is this used?
-	/*function isValid($type, &$pObj)	{
+    
+	function isValid($type, &$pObj)	{
 		$isValid = false;
+
 		$pArr = explode('|', t3lib_div::_GP('bparams'));
 
 		if ($type === 'rte' ) {
@@ -369,36 +285,19 @@ class tx_commerce_browselinkshooks implements t3lib_browseLinksHook {
 		}
 		
 		return $isValid;
-	} */  
+	}   
 	
 	/**
 	* returns additional addonparamaters - required to keep several informations for the RTE linkwizard
 	**/
-	/*function getaddPassOnParams() {
+	function getaddPassOnParams() {
 		if (!$this->isRTE()) {
 						$P2=t3lib_div::_GP('P');
 						return t3lib_div::implodeArrayForUrl('P',$P2);
 		}
-	}*/	
+	}	
 
-	/*function _getaddPassOnParams() {
-		if ($this->pObj->mode!='rte') {
-				if ($this->cachedParams!='') {
-				
-				}else {
-						$P_GET=t3lib_div::_GP('P');
-						$P3=array();
-						if (is_array($P_GET)) {
-							foreach ($P_GET as $k=>$v) {
-								if (!is_array($v) && $k != 'returnUrl' && $k != 'md5ID' && $v != '')
-									$P3[$k]=$v;
-							}												
-						}						
-						$this->cachedParams= t3lib_div::implodeArrayForUrl('P',$P3);
-				}
-				return $this->cachedParams;
-		}
-	}*/
+
 	
 	private function isRTE() {
 		if ($this->pObj->mode=='rte') {

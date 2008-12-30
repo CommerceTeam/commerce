@@ -96,7 +96,7 @@ class ext_update {
 	
 	function createParentMMRecords(){
 		$countRecords =0;
-		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid','tx_commerce_categories','uid not in (select uid_local from tx_commerce_categories_parent_category_mm) and tx_commerce_categories.deleted = 0');
+		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid','tx_commerce_categories','l18n_parent = 0 and uid not in (select uid_local from tx_commerce_categories_parent_category_mm) and tx_commerce_categories.deleted = 0');
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
 			$data=array('uid_local' => $row['uid'],
 						'uid_foreign' => 0,

@@ -32,7 +32,14 @@ class tx_commerce_linkhandler {
 		}		
 
 		$localcObj = t3lib_div::makeInstance('tslib_cObj');
-		$lconf = array ( "parameter" => $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_commerce_pi1.']['overridePid'],
+		
+		$DisplayPID = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_commerce_pi1.']['overridePid'];
+		if (empty($DispalyPID)) {
+			$extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['commerce']);
+			$DisplayPID = $extConf['previewPageID'];
+		}
+	
+		$lconf = array ( "parameter" => $DisplayPID,
 						"additionalParams" => $addparams,
 						"additionalParams.insertData" => 1,
 						"useCacheHash" => 1);
