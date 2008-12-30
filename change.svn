@@ -67,7 +67,7 @@ Changelog for tx_commerce
 * Removed no cache on product not found, only open PageBrowser and no_cache, see commet in code
 * removed empty manual.sxw 
 * Fixed a typo in template_usermail.tpl
-* 16.10.2008 Sascha Eggerer <seg@softvision.de>
+16.10.2008 Sascha Eggerer <seg@softvision.de>
 * Implemented Drop-Downs for the frontend
 * Fixed Bug concerning rootline
 * Changed Attribute-Values to IRRE in BE Module Systemdata
