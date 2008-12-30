@@ -1,12 +1,17 @@
 Changelog for tx_commerce
 
-30.12.2008 Volker Graubaum <vg@e-netconsulting.de>
+30.12.2008 Ingo Schmitt <is@marketing-factory.de>
+* Checked in Patch from Michael Knabe Michael Knabe <mk@e-netconsulting.de>
+  * Changed prices to IRRE instead of dynaflex
+  * Changed articles to IRRE instead of dynaflex (for simple mode only)
 
+30.12.2008 Volker Graubaum <vg@e-netconsulting.de>
 * Fixed small issue in detailview with allArticles = 1
 * Fixed small issue in listview, $this->pid was not set and is needed for title link to single view
 
+
 29.12.2008 Ingo Schmitt <is@marketing-factory.de>
-* Fixed Type in hooks.html
+* Fixed Typo in hooks.html
 * Added Save-And Preview functionality
 * Added feature to load tx_commerce.Pi1 vars if other prefix is defined
 * Raised Version to 0.11.2beta

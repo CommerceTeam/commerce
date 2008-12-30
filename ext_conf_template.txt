@@ -43,7 +43,6 @@ OrderFolderRecursiveLevel = 2
 # cat=basic/other/30; type=int; label=BasketStoragePid: Defines the page ID to store basket items in
 BasketStoragePid = 0
 
-
 # cat=basic/other/100; type=String; label=fields for products...: that should be displayed in simple mode
 coProducts = hidden[starttime|endtime|fe_group],title,subtitle[navtitle],description,images,categories
 
@@ -52,8 +51,6 @@ coArticles = ordernumber,eancode,prices
 
 # cat=basic/other/100; type=String; label=fields for suppliers...: which fields are displayed in the backend 
 coSuppliers = title
-
-
 
 # cat=basic/other/100; type=String; label=fields for manufacturers...: which fields are displayed in the backend
 coManufacturers = title
