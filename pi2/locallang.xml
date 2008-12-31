@@ -118,6 +118,38 @@
 			<label index="checkoutlink">poursuivre votre commande</label>
 			<label index="delete_basket">vider le panier</label>
 		</languageKey>
+		<languageKey index="it" type="array">
+			<label index="lang_payment">Tipo di pagamento</label>
+			<label index="lang_payment_description">Selezionate il tipo di pagamento</label>
+			<label index="lang_delivery">Tipo di consegna</label>
+			<label index="lang_delivery_description">Selezionate il tipo di consegna</label>
+			<label index="lang_net_price">Prezzo netto</label>
+			<label index="lang_value_added_tax">IVA inclusa:</label>
+			<label index="lang_gross_price">Prezzo lordo:</label>
+			<label index="lang_basket_header_title">Carrello</label>
+			<label index="lang_basket_header_text">Qui vedete il carrello</label>
+			<label index="lang_article_number">Numero articolo: </label>
+			<label index="lang_price_net">Prezzo singolo netto</label>
+			<label index="lang_price_gross">Prezzo singolo lordo</label>
+			<label index="lang_count">Quantit√†</label>
+			<label index="lang_pricesum_net">Prezzo complessivo netto</label>
+			<label index="lang_pricesum_gross">Prezzo complessivo lordo</label>
+			<label index="lang_change_number">Modifica quantit√†</label>
+			<label index="lang_titel_empty">Il carrello √® ancora vuolo</label>
+			<label index="lang_text_empty">Prima selezionate i prodotti che desiderate ordinare</label>
+			<label index="lang_percent">%</label>
+			<label index="lang_last_product">Indietro</label>
+			<label index="lang_title">Titolo</label>
+			<label index="lang_basket_qv_value">Carrello (lordo):</label>
+			<label index="lang_basket_qv_link">Carrello</label>
+			<label index="lang_basket_qv_chkout">Ordina</label>
+			<label index="lang_basket_update">Aggiorna</label>
+			<label index="lang_basket_delete_item">Cancella</label>
+			<label index="checkoutlink">Alla cassa</label>
+			<label index="delete_basket">Svuota il carrello</label>
+			<label index="noStock">La quantit√† di articoli desiderati non √® al momento disponibile</label>
+			<label index="lang_basket_locked">Al momento √® impossibile modificare il carrello, poich√© √® gi√† in corso una modifica nella cassa. Passate alla cassa.</label>
+		</languageKey>
 		<languageKey index="br" type="array">
 			<label index="lang_payment">Pagamento</label>
 			<label index="lang_payment_description">Por favor, escolha a forma de pagamento</label>
