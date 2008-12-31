@@ -586,7 +586,6 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 				$articles_uids = $prod->get_Articles_by_AttributeArray($attributeArray,1);
 				$relevantArticleUids = $prod->getRelevantArticles($attributeArray);
 				$attributeArray = $prod->get_selectattribute_matrix($relevantArticleUids, $this->select_attributes,$showHiddenValues);
-
 			} else {
 				$articles_uids = $prod->getArticleUids();
 				$attributeArray = $prod->get_selectattribute_matrix($articles_uids, $this->select_attributes,$showHiddenValues);
@@ -683,6 +682,7 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 
 						//disable the icon mode by default
 						$iconMode = false;
+
 						//if the icon mode is enabled in TS check if any attribute value has an icon, if there is an icon enable the attribute mode
 						if($this->conf[$this->handle.'.']['products.']['productAttributes.']['iconMode'] == '1') {
 							if($myAttribute['iconmode']) $iconMode = true;
@@ -707,6 +707,7 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 						$itemsContent = '';
 						$i = 1;
 						foreach($myAttribute['values'] as $val) {
+							$markerArrayItem = $markerArray;
 							$markerArrayItem['###SELECT_ATTRIBUTES_VALUE_VALUE###'] = $val['uid'];
 							$markerArrayItem['###SELECT_ATTRIBUTES_VALUE_NAME###'] = $val['value'];
 							$markerArrayItem['###SELECT_ATTRIBUTES_VALUE_ICON###'] = $this->renderValue($val['icon'],'IMAGE',$this->conf[$this->handle.'.']['products.']['productAttributes.']['fields.']['icon.']);
@@ -798,6 +799,7 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 						$itemsContent = '';
 						$i = 1;
 						foreach($myAttribute['values'] as $val) {
+							$markerArrayItem = $markerArray;
 							$markerArrayItem['###SELECT_ATTRIBUTES_VALUE_VALUE###'] = $val['uid'];
 							$markerArrayItem['###SELECT_ATTRIBUTES_VALUE_NAME###'] = $val['value'];
 							$markerArrayItem['###SELECT_ATTRIBUTES_VALUE_ICON###'] = $this->renderValue($val['icon'],'IMAGE',$this->conf[$this->handle.'.']['products.']['productAttributes.']['fields.']['icon.']);
