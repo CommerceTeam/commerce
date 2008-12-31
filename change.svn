@@ -1,6 +1,8 @@
 Changelog for tx_commerce
 31.12.2008 Ingo Schmitt <is@marketing-factory.de>
 * Added Italien Translation to FE Plugins, Thanks to Cedric Spindler <cs@cabag.ch>
+* Fixed Issue 2321, Thanks to Cedric Spindler <cs@cabag.ch>
+
 
 30.12.2008 Ingo Schmitt <is@marketing-factory.de>
 * Checked in Patch from Michael Knabe Michael Knabe <mk@e-netconsulting.de>

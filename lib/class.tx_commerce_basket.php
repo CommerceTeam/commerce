@@ -113,16 +113,16 @@
  	 * @acces public
  	 */
  	
- 	function load_data()
- 	{
+ 	function load_data(){
  		
- 		switch($this->storage_type)
- 		{
+ 		switch($this->storage_type){
  			case 'database':
  				$this->load_data_from_database();
  				break;
  				
  		}
+ 		// Method of Parent, load the payentArticle, if availiable
+ 		parent::load_data();
  		
  	}
  	

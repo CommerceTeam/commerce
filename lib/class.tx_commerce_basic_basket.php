@@ -98,7 +98,18 @@
  				
  	}
  	
+ 	/**
+ 	 * Loads the Basket_data from the session/database
+ 	 * 
+ 	 * 
+ 	 */
  	
+ 	function load_data(){
+ 		// check if paymentarticle is available and set default if not
+		if(count($this->get_articles_by_article_type_uid_asUidlist(PAYMENTArticleType)) < 1){
+			$this->add_article($this->conf['defaultPaymentArticleId']);
+		}
+ 	}
  	
  	/**
  	 * Addes an article to the basket
