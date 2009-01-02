@@ -200,10 +200,13 @@ if (t3lib_div::int_from_ver(TYPO3_version) >= '4002000') {
 /**
  * Xclass for VersionPreview
  */
-$GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/version/cm1/index.php'] = t3lib_extMgm::extPath(COMMERCE_EXTkey).'class.ux_versionindex.php';
+#$GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/version/cm1/index.php'] = t3lib_extMgm::extPath(COMMERCE_EXTkey).'class.ux_versionindex.php';
 
 // add special in db list, to have the ability to search for OrderIds in TYPO 4.0
 $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['typo3/class.db_list_extra.inc']=t3lib_extMgm::extPath(COMMERCE_EXTkey).'class.ux_localrecordlist.php';
+
+#$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['version/cm1/index.php']['links']= 'EXT:commerce/hooks/class.tx_commerce_versionhooks.php:tx_commerce_versionhooks:tx_commerce_versionhooks';
+
 
 //Add class for clickmenu on category
 //@deprecated
@@ -218,7 +221,7 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/class.browse_links.php']['brows
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/rtehtmlarea/mod3/class.tx_rtehtmlarea_browse_links.php']['browseLinksHook'][] = 'EXT:commerce/hooks/class.tx_commerce_browselinkshooks.php:tx_commerce_browselinkshooks';
 
 // add ajax listener for tree in linkcommerce
-$GLOBALS['TYPO3_CONF_VARS']['BE']['AJAX']['tx_commerce_browselinkshooks::ajaxExpandCollapse'] = 'typo3conf/ext/commerce/hooks/class.tx_commerce_browselinkshooks.php:tx_commerce_browselinkshooks->ajaxExpandCollapse';
+$GLOBALS['TYPO3_CONF_VARS']['BE']['AJAX']['tx_commerce_browselinkshooks::ajaxExpandCollapse'] = 'EXT:commerce//hooks/class.tx_commerce_browselinkshooks.php:tx_commerce_browselinkshooks->ajaxExpandCollapse';
 
 
 // Hooks for datamap procesing
@@ -279,9 +282,9 @@ $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY]['showArticleNumber'] = $_EXTCON
 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY]['showArticleTitle'] = $_EXTCONF['showArticleTitle'] ? $_EXTCONF['showArticleTitle'] : 0;
 
 //Adding the AJAX listeners for Permission change/Browsing the Category tree
-$GLOBALS['TYPO3_CONF_VARS']['BE']['AJAX']['SC_mod_access_perm_ajax::dispatch'] = 'typo3conf/ext/commerce/mod_access/class.sc_mod_access_perm_ajax.php:SC_mod_access_perm_ajax->dispatch';
-$GLOBALS['TYPO3_CONF_VARS']['BE']['AJAX']['tx_commerce_access_navframe::ajaxExpandCollapse'] = 'typo3conf/ext/commerce/mod_access/class.tx_commerce_access_navframe.php:tx_commerce_access_navframe->ajaxExpandCollapse';
-$GLOBALS['TYPO3_CONF_VARS']['BE']['AJAX']['tx_commerce_category_navframe::ajaxExpandCollapse'] = 'typo3conf/ext/commerce/mod_category/class.tx_commerce_category_navframe.php:tx_commerce_category_navframe->ajaxExpandCollapse';
+$GLOBALS['TYPO3_CONF_VARS']['BE']['AJAX']['SC_mod_access_perm_ajax::dispatch'] = 'EXT:commerce/mod_access/class.sc_mod_access_perm_ajax.php:SC_mod_access_perm_ajax->dispatch';
+$GLOBALS['TYPO3_CONF_VARS']['BE']['AJAX']['tx_commerce_access_navframe::ajaxExpandCollapse'] = 'EXT:commerce/mod_access/class.tx_commerce_access_navframe.php:tx_commerce_access_navframe->ajaxExpandCollapse';
+$GLOBALS['TYPO3_CONF_VARS']['BE']['AJAX']['tx_commerce_category_navframe::ajaxExpandCollapse'] = 'EXT:commerce/mod_category/class.tx_commerce_category_navframe.php:tx_commerce_category_navframe->ajaxExpandCollapse';
 
 // Graytree or not
 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY]['useGraytree'] = $_EXTCONF['useGraytree'] ? $_EXTCONF['useGraytree'] : 0;
