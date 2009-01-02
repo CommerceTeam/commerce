@@ -633,7 +633,7 @@ class tx_commerce_pi4 extends tx_commerce_pibase {
 			$value = $fieldConfig['default'];
 		} else {
 			# $value = addslashes(htmlentities($fieldValue));
-			 $value = $fieldValue;
+			 $value = t3lib_div::removeXSS($fieldValue);
 		}
 	
 		$result = '<input type="text" name="'.$this->prefixId.'[' .$fieldName .']" value="' .$value .'" ';
