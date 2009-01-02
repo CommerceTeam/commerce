@@ -2,6 +2,7 @@ Changelog for tx_commerce
 02.01.2008 Ingo Schmitt <is@marketing-factory.de>
 * Fixed Hooks References
 * Added removeXSS to G/P Parameter to better prevent XSS
+* Added Feature Insert Record, Thanks to Cedric Spindler <cs@cabag.ch>
 
 31.12.2008 Ingo Schmitt <is@marketing-factory.de>
 * Added Italien Translation to FE Plugins, Thanks to Cedric Spindler <cs@cabag.ch>

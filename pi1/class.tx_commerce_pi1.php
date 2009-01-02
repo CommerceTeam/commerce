@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *  
-*  (c) 2005 - 2008 Volker Graubaum <vg@e-netconsulting.de>
+*  (c) 2005 - 2009 Volker Graubaum <vg@e-netconsulting.de>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is 
@@ -308,6 +308,16 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 	 */
 	
 	function main($content,$conf)	{
+		// if product or categorie is inserted by insert record use uid from insert record cObj
+		if(!empty($conf['insertRecord'])){
+			if($conf['insertRecord']=='products'){
+				$this->piVars['showUid'] = $this->cObj->data['uid'];
+				$this->piVars['catUid'] = $this->cObj->data['categories'];
+			} else {
+				$this->piVars['catUid'] = $this->cObj->data['uid'];
+			}
+		}
+		
 		$this->init($conf);
 		
 		// get the template
