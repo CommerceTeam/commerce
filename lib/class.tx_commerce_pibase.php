@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2005-2006 Volker Graubaum <vg@e-netconsulting.de>
+*  (c) 2005-2009 Volker Graubaum <vg@e-netconsulting.de>
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -613,7 +613,12 @@ class tx_commerce_pibase extends tslib_pibase {
 
 	function getArticleMarker($article, $priceid=true){
 
-		$tsconf=$this->conf['singleView.']['articles.'];
+		if (($this->handle) && is_array($this->conf[$this->handle.'.']) && is_array($this->conf[$this->handle.'.']['articles.'])){
+			$tsconf=$this->conf[$this->handle.'.']['articles.'];
+		}else{
+			// Set default
+			$tsconf=$this->conf['singleView.']['articles.'];
+		}
 		$markerArray = $this->generateMarkerArray($article->returnAssocArray(),$tsconf,'article_','tx_commerce_article');
 		
 		if ($article->getSupplierUid()) {

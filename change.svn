@@ -4,6 +4,7 @@ Changelog for tx_commerce
 * Fixed undefined Array in PI2
 * Raised Version to 0.11.4
 * Added tx_commerce_create_folder::init_folders() to category module
+* Added Fix to PIbase, no different TS was used for article view, Thanks to Martin Haagen (Datafant AB) <martin.haagen@datafant.se>
 
 02.01.2008 Ingo Schmitt <is@marketing-factory.de>
 * Fixed Hooks References
