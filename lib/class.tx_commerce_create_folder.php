@@ -231,7 +231,7 @@
 		// and the correct classname
 		$this->belib = t3lib_div::makeInstance('tx_commerce_belib');
 		$articles = $this->belib->getArticlesOfProduct($pUid, 'classname=\'' .$key .'\'');
-
+		debug($articles,'articles');
 		if (is_array($articles) AND count($articles) > 0) {
 			return $articles[0]['uid'];
 			

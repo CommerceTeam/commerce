@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *  
-*  (c) 2005 - 2008 Volker Graubaum <vg@e-netconsulting.de>
+*  (c) 2005 - 2009 Volker Graubaum <vg@e-netconsulting.de>
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is 
@@ -582,11 +582,13 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 			$allowedArticles = split(',',$this->conf['payment.']['allowedArticles']);
 		}
 		// hook to allow to define/overwrite individually, which payment articles are allowed (Melanie Meyer, 2008-10-09)
+		$hookObjectsArr = array();
 		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['paymentArticles']))      {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['paymentArticles'] as $classRef)  {
 				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
 			}
 		}
+		
 		foreach($hookObjectsArr as $hookObj)    {
 			if (method_exists($hookObj, 'paymentAllowedArticles'))   {
 				$allowedArticles = $hookObj->paymentAllowedArticles($this,$allowedArticles);
