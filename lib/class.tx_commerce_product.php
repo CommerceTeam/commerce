@@ -305,7 +305,7 @@
   		if ($this->articles_loaded==false)
   		{
   			$uidToLoadFrom  = $this->uid;
-  			if (($this->get_t3ver_oid() <> $this->uid) && (is_Object($GLOBALS['TSFE']) && $GLOBALS['TSFE']->beUserLogin)){
+  			if (($this->get_t3ver_oid() >0) && ($this->get_t3ver_oid() <> $this->uid) && (is_Object($GLOBALS['TSFE']) && $GLOBALS['TSFE']->beUserLogin)){
   				$uidToLoadFrom = $this->get_t3ver_oid();
   			}
 			if ($this->articles_uids=$this->conn_db->get_articles($uidToLoadFrom))
