@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2006-2007 Franz Holzinger <kontakt@fholzinger.com>
+*  (c) 2006-2009 Franz Holzinger <kontakt@fholzinger.com>
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -34,7 +34,7 @@
 
 require_once(t3lib_extmgm::extPath('graytree').'lib/class.tx_graytree_view.php');
 require_once(t3lib_extmgm::extPath('graytree').'lib/class.tx_graytree_div.php');
-
+ require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_folder_db.php');
 
 define('COMMERCE_TREEVIEW_DLOG', '0');
 
@@ -67,8 +67,8 @@ class tx_commerce_treeView extends tx_graytree_View {
 		*/
 		require_once (t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_create_folder.php');
 		tx_commerce_create_folder::init_folders();
-		list($modPid,$defaultFolder,$folderList) = tx_graytree_folder_db::initFolders('Commerce', 'commerce');
-		list($prodPid,$defaultFolder,$folderList) = tx_graytree_folder_db::initFolders('Products', 'commerce',$modPid);
+		list($modPid,$defaultFolder,$folderList) = tx_commerce_folder_db::initFolders('Commerce', 'commerce');
+		list($prodPid,$defaultFolder,$folderList) = tx_commerce_folder_db::initFolders('Products', 'commerce',$modPid);
 		$this->rootPid = $prodPid;
 	}
 

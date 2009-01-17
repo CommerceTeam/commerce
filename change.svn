@@ -2,6 +2,7 @@ Changelog for tx_commerce
 17.01.2009 Ingo Schmitt <is@marketing-factory.de>
 * Fixed Bug 2474, Thanks to Sascha Egerer
 * Fixed Bug 2464, Thanks to Ralf Merz and Sascha Egerer
+* Fixed Bug 2458
 
 16.01.2009 ingo Schmitt <is@marketing-factory.de>
 * Fixed Linkpicker issue, Thanks to Erik Frister
