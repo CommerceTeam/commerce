@@ -682,8 +682,10 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 						$attributeObj->init($attribute_uid,$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
 						$attributeObj->load_data();
 
+						//Get all values of the changed attribute
 						if($this->piVars['attList_'.$prod->get_uid().'_changed']==$attribute_uid){
 							$fullArray = $prod->get_attribute_matrix(false,array($this->piVars['attList_'.$prod->get_uid().'_changed']));
+							//delete the values because we add all values again
 							$myAttribute['values'] = array();
 							foreach ($fullArray[$this->piVars['attList_'.$prod->get_uid().'_changed']]['values'] as $localKey => $localVal) {
 								$myAttribute['values'][$fullArray[$this->piVars['attList_'.$prod->get_uid().'_changed']]['valueuidlist'][$localKey]] = $localVal;
@@ -716,6 +718,7 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 					
 						$itemsContent = '';
 						$i = 1;
+						
 						foreach($myAttribute['values'] as $val) {
 							$markerArrayItem = $markerArray;
 							$markerArrayItem['###SELECT_ATTRIBUTES_VALUE_VALUE###'] = $val['uid'];

@@ -134,6 +134,7 @@ CREATE TABLE tx_commerce_products (
     attributesedit mediumtext NOT NULL,
     uname varchar(80) DEFAULT '' NOT NULL,
     relatedpage int(11) DEFAULT '0' NOT NULL,
+    relatedproducts blob NOT NULL,
     KEY lang (sys_language_uid),
     KEY langpar (l18n_parent),
     PRIMARY KEY (uid),

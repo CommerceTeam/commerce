@@ -438,7 +438,7 @@
   	
   	 function get_Articles_by_AttributeArray($attribute_Array,$proofUid=1){
 		if($proofUid){  	 	
-	  	 	 $whereUid = ' and tx_commerce_articles.uid_product = '.$this->uid;
+	  	 	 $whereUid = ' and tx_commerce_articles.uid_product = '.intval($this->uid);
 		}
   	 	$first = 1;
 		// Setzen der Arrays damit array_intersect keine Fehlermeldung ausgibt	
@@ -451,19 +451,19 @@
 	
 	  	 		// attribute char wird noch nicht verwendet, dafuer muss eine Pruefung auf die ID
 		  	 	if (is_string($uid_val_pair['AttributeValue']))	 	{
-		  	 		$addwheretmp .=	" OR (tx_commerce_attributes.uid = ".$uid_val_pair['AttributeUid']."  and tx_commerce_articles_article_attributes_mm.value_char='".
+		  	 		$addwheretmp .=	" OR (tx_commerce_attributes.uid = ".intval($uid_val_pair['AttributeUid'])."  and tx_commerce_articles_article_attributes_mm.value_char='".
 										$GLOBALS['TYPO3_DB']->quoteStr($uid_val_pair['AttributeValue'],'tx_commerce_articles_article_attributes_mm')."' )";
 		  	 	}
 			  //  Nach dem charwert immer ueberpruefen, solange value_char noch nicht drin ist.
 	    
 		  	 	if (is_float($uid_val_pair['AttributeValue']) || is_integer(intval($uid_val_pair['AttributeValue'])))	 	{
-		  	 		$addwheretmp.=	" OR (tx_commerce_attributes.uid = ".intval($uid_val_pair['AttributeUid'])."  and tx_commerce_articles_article_attributes_mm.default_value in (".
-										$uid_val_pair['AttributeValue']." ) )";
+		  	 		$addwheretmp.=	" OR (tx_commerce_attributes.uid = ".intval($uid_val_pair['AttributeUid'])."  and tx_commerce_articles_article_attributes_mm.default_value in ('".
+										$GLOBALS['TYPO3_DB']->quoteStr($uid_val_pair['AttributeValue'],'tx_commerce_articles_article_attributes_mm')."' ) )";
 		  	 	}
 		 
 		  	 	if (is_float($uid_val_pair['AttributeValue']) || is_integer(intval($uid_val_pair['AttributeValue']))) 	{
-		  	 		$addwheretmp.=	" OR (tx_commerce_attributes.uid = ".intval($uid_val_pair['AttributeUid'])."  and tx_commerce_articles_article_attributes_mm.uid_valuelist in (".
-										$uid_val_pair['AttributeValue'].") )";
+		  	 		$addwheretmp.=	" OR (tx_commerce_attributes.uid = ".intval($uid_val_pair['AttributeUid'])."  and tx_commerce_articles_article_attributes_mm.uid_valuelist in ('".
+										$GLOBALS['TYPO3_DB']->quoteStr($uid_val_pair['AttributeValue'],'tx_commerce_articles_article_attributes_mm')."') )";
 		  	 	}
 				$addwhere = ' AND (0 '.$addwheretmp. ') ';	
 	  	 	
@@ -744,10 +744,24 @@
 	 								    if (($showHiddenValues==true) || (($showHiddenValues==false) && ($row['showvalue']==1))){
 	 
 	 
-	 									 $valuelist[] = $row['value'];
+	 								    	$valuelist[] = $row;
 										 $valueUidList[] = $row['uid'];
 	 									 $valueshown=true;
 	 								    }
+	 									/**
+				 						 * Sort values by the sorting field.
+				 						 * Is there a better way to do this?
+				 						 */
+				 						$valuelist_temp = $valuelist;
+				 						$valuelist = array();
+				 						$valuelist_temp_sort = array();
+				 						foreach ($valuelist_temp as $value_temp) {
+				 							$valuelist_temp_sort[$value_temp['sorting']] = $value_temp;
+				 						}
+				 						ksort($valuelist_temp_sort);
+				 						foreach ($valuelist_temp_sort as $value_temp) {
+				 							$valuelist[] = $value_temp;
+				 						}
 	 
 	 								}
 	 							}
@@ -901,14 +915,26 @@
 	 							     }
 	 							    if (($showHiddenValues==true) || (($showHiddenValues==false) && ($row['showvalue']==1))){
 	 							     
-	 							   	 $valuelist[$row['uid']] = $row['value'];
+	 							   	 $valuelist[$row['uid']] = $row;
 	 							   	 $valueshown=true;
 	 							    }
-	
+		 							/**
+			 						 * Sort values by the sorting field.
+			 						 * Is there a better way to do this?
+			 						 */
+			 						$valuelist_temp = $valuelist;
+			 						$valuelist = array();
+			 						$valuelist_temp_sort = array();
+			 						foreach ($valuelist_temp as $value_temp) {
+			 							$valuelist_temp_sort[$value_temp['sorting']] = $value_temp;
+			 						}
+			 						ksort($valuelist_temp_sort);
+			 						foreach ($valuelist_temp_sort as $value_temp) {
+			 							$valuelist[] = $value_temp;
+			 						}
 	 							}
 	 						}
 	 				}
-	 				
 	 				
 	 				if ($valueshown==true){
 	 					$return_array[$attribute_uid]=array('title' => $data['title'],
@@ -1137,14 +1163,28 @@
 	 							    if (($showHiddenValues==true) || (($showHiddenValues==false) && ($row['showvalue']==1))){
 	 							     
 	 							     
-	 							   	 $valuelist[] = $row['value'];
+	 							   	 $valuelist[] = $row;
 									 $valueUidList[] = $value['uid_valuelist'];
 	 							   	 $valueshown=true;
 	 							    }
 	
 	 							}
 	 						}
-	 				}
+	 						/**
+	 						 * Sort values by the sorting field.
+	 						 * Is there a better way to do this?
+	 						 */
+	 						$valuelist_temp = $valuelist;
+	 						$valuelist = array();
+	 						$valuelist_temp_sort = array();
+	 						foreach ($valuelist_temp as $value_temp) {
+	 							$valuelist_temp_sort[$value_temp['sorting']] = $value_temp;
+	 						}
+	 						ksort($valuelist_temp_sort);
+	 						foreach ($valuelist_temp_sort as $value_temp) {
+	 							$valuelist[] = $value_temp;
+	 						}
+	 					}
 	 				if ($valueshown==false){
 	 					$return_array[$attribute_uid]=array('title' => $data['title'],
 	 												  'unit' => $data['unit'],

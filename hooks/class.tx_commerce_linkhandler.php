@@ -38,12 +38,12 @@ class tx_commerce_linkhandler {
 			$extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['commerce']);
 			$DisplayPID = $extConf['previewPageID'];
 		}
-	
+		
 		$lconf = array ( "parameter" => $DisplayPID,
 						"additionalParams" => $addparams,
 						"additionalParams.insertData" => 1,
 						"useCacheHash" => 1);
-
+		
 		return $localcObj->typoLink($linktxt, $lconf);
 
 	}
