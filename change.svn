@@ -28,7 +28,7 @@ Changelog for tx_commerce
 
 
 30.12.2008 Ingo Schmitt <is@marketing-factory.de>
-* Checked in Patch from Michael Knabe Michael Knabe <mk@e-netconsulting.de>
+* Checked in Patch from Michael Knabe <mk@e-netconsulting.de>
   * Changed prices to IRRE instead of dynaflex
   * Changed articles to IRRE instead of dynaflex (for simple mode only)
 * Cleaned up Browselinks
