@@ -740,15 +740,6 @@ CREATE TABLE tx_commerce_supplier (
 
 
 #
-# Table structure for table 'pages'
-#
-CREATE TABLE pages (
-    tx_commerce_foldereditorder tinyint(4) unsigned DEFAULT '0' NOT NULL,
-    KEY tx_commerce_foldereditorder (tx_commerce_foldereditorder),
-);
-
-
-#
 # Table structure for table 'tx_commerce_salesfigures'
 #
 CREATE TABLE tx_commerce_salesfigures (
@@ -852,15 +843,6 @@ CREATE TABLE tx_commerce_supplier (
     logo blob NOT NULL,
     PRIMARY KEY (uid),
 
-);
-
-
-#
-# Table structure for table 'pages'
-#
-CREATE TABLE pages (
-    tx_commerce_foldereditorder tinyint(4) unsigned DEFAULT '0' NOT NULL,
-    KEY tx_commerce_foldereditorder (tx_commerce_foldereditorder),
 );
 
 
