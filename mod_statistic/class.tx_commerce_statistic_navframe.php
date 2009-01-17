@@ -2,10 +2,10 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2005-2006 Ingo Schmitt <is@marketing-factory.de>
+*  (c) 2005-2009 Ingo Schmitt <is@marketing-factory.de>
 *  All rights reserved
 *
-*  This script is part of the Typo3 project. The Typo3 project is
+*  This script is part of the TYPO3 project. The TYPO3 project is
 *  free software; you can redistribute it and/or modify
 *  it under the terms of the GNU General Public License as published by
 *  the Free Software Foundation; either version 2 of the License, or
@@ -47,7 +47,7 @@ require_once(PATH_t3lib.'class.t3lib_browsetree.php');
 /**
  * Require for commerce
  */
-require_once (t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_commerce_db.php');
+require_once (t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_db_list.php');
 
 
 /**
