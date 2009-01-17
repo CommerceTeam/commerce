@@ -44,10 +44,9 @@ class tx_commerce_tceforms_hooks {
 	 * @result string: The $price divided by 100
 	 */
 	private function centurionDivision($price) {
-		assert(is_int($price));
-		
-		$result = intval($price/100).'.'.intval($price%100).(intval($price%100)?'':'0');
-		assert (is_string($result));
+	
+		$price = floatval($price);
+		$result = sprintf("%01.2f",($price/100));
 		return $result;
 	}
 	
