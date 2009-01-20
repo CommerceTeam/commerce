@@ -31,7 +31,10 @@
  * Basically checks for the new Tree, if all records have a MM relation to Record UID 0
  * if not, these records are created
  */
-require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_folder_db.php');
+if (t3lib_extmgm::isLoaded('commerce')) {
+	require_once(t3lib_extmgm::extPath('commerce').'./lib/class.tx_commerce_folder_db.php');
+}
+
 class ext_update {
 
 	/**
@@ -119,6 +122,7 @@ class ext_update {
 	
 	function access() {
 	
+		
 		
 		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid','tx_commerce_categories','uid not in (select uid_local from tx_commerce_categories_parent_category_mm) and tx_commerce_categories.deleted = 0');
 		

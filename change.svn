@@ -1,4 +1,7 @@
 Changelog for tx_commerce
+20.01.2009 Ingo Schmitt <is@marketing-factory.de>
+* Fixed Bug 2489, Thanks to Rald Merz & Sascha Egerer
+
 17.01.2009 Ingo Schmitt <is@marketing-factory.de>
 * Fixed Bug 2474, Thanks to Sascha Egerer
 * Fixed Bug 2464, Thanks to Ralf Merz and Sascha Egerer
