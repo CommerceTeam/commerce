@@ -41,7 +41,12 @@ if (@defined(TYPO3_REQUESTTYPE) && @defined(TYPO3_REQUESTTYPE_AJAX)) {
 	}
 }else{
 	require_once('conf.php');
-	require_once($BACK_PATH.'init.php');
+	
+	if (PATH_typo3) {
+		require_once(PATH_typo3.'init.php');
+	} else {
+		require_once('../../../../typo3/'.'init.php');
+	}
 	require_once(PATH_typo3.'template.php');
 }
 

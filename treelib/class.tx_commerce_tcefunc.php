@@ -1,4 +1,5 @@
 <?php
+require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_category.php'); 
 /**
  * Holds the TCE Functions
  * 
@@ -108,32 +109,58 @@ class tx_commerce_tceFunc {
 		}
 
 		// get selected processed items - depending on the table we want to insert into (tx_commerce_products, tx_commerce_categories, be_users)
+		// if row['uid'] is defined and is an integer we do display an existing record
+		// otherwhise it's a new record, so get default values
 		$itemArray = array();
 		
-		switch($table) {
-			case 'tx_commerce_categories':
-				$itemArray = $renderBrowseTrees->processItemArrayForBrowseableTreePCategory($browseTrees, $row['uid']);
-				break;
-			
-			case 'tx_commerce_products':
-				$itemArray = $renderBrowseTrees->processItemArrayForBrowseableTreeProduct($browseTrees, $row['uid']);
-				break;
+		if (intval($row['uid']) > 0){
+			// existing Record
+			switch($table) {
+				case 'tx_commerce_categories':
+					$itemArray = $renderBrowseTrees->processItemArrayForBrowseableTreePCategory($browseTrees, $row['uid']);
+					break;
 				
-			case 'be_users':
-				$itemArray = $renderBrowseTrees->processItemArrayForBrowseableTree($browseTrees, $row['uid']);
-				break;
+				case 'tx_commerce_products':
+					$itemArray = $renderBrowseTrees->processItemArrayForBrowseableTreeProduct($browseTrees, $row['uid']);
+					break;
+					
+				case 'be_users':
+					$itemArray = $renderBrowseTrees->processItemArrayForBrowseableTree($browseTrees, $row['uid']);
+					break;
+					
+				case 'be_groups':
+					$itemArray = $renderBrowseTrees->processItemArrayForBrowseableTreeGroups($browseTrees, $row['uid']);
+					break;
+					
+				case 'tt_content':
+					// Perform modification of the selected items array:
+					$itemArray = t3lib_div::trimExplode(',',$PA['itemFormElValue'],1);		
+					$itemArray = $renderBrowseTrees->processItemArrayForBrowseableTreeCategory($browseTrees, $itemArray[0]);
+					break;
+			}
+		}else{
+			// New record
+			$defVals= t3lib_div::_GP('defVals');
+			switch($table) {
 				
-			case 'be_groups':
-				$itemArray = $renderBrowseTrees->processItemArrayForBrowseableTreeGroups($browseTrees, $row['uid']);
-				break;
+				case 'tx_commerce_categories':
+						$cat = t3lib_div::makeInstance('tx_commerce_category');
+						$cat->init($defVals['tx_commerce_categories']['parent_category']);
+						$cat->load_data();
+						$itemArray = array($cat->getUid().'|'.$cat->get_title()); 
+					break;
 				
-			case 'tt_content':
-				// Perform modification of the selected items array:
-				$itemArray = t3lib_div::trimExplode(',',$PA['itemFormElValue'],1);		
-				$itemArray = $renderBrowseTrees->processItemArrayForBrowseableTreeCategory($browseTrees, $itemArray[0]);
-				break;
+				case 'tx_commerce_products':
+					$cat = t3lib_div::makeInstance('tx_commerce_category');
+					$cat->init($defVals['tx_commerce_products']['categories']);
+					$cat->load_data();
+					$itemArray = array($cat->getUid().'|'.$cat->get_title()); 
+				
+					break;
+					
+				
+			}
 		}
-		
 		
 		//
 		// process selected values
@@ -185,7 +212,7 @@ class tx_commerce_tceFunc {
 			'readOnly' => $disabled,
 			'thumbnails' => $thumbnails
 		);
-		
+	
 		$item .= $this->tceforms->dbFileIcons($PA['itemFormElName'], $config['internal_type'], $config['allowed'], $itemArray, '', $params, $PA['onFocus']);
 
 

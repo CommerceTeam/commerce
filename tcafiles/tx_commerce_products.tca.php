@@ -272,6 +272,7 @@ $TCA['tx_commerce_products'] = Array (
 				'autoSizeMax' => 30,
 				'minitems' => 0,
 				'maxitems' => 20,
+				'eval' => 'required',
 		),
 		
 //			'config' => Array (

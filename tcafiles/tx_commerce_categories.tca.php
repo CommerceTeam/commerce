@@ -245,6 +245,7 @@ $TCA['tx_commerce_categories'] = Array (
 				'autoSizeMax' => 30,
 				'minitems' => 0,
 				'maxitems' => 20,
+				'eval' => 'required',
 			),
 		), 
 		'ts_config' => Array (

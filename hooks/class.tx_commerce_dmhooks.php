@@ -683,11 +683,18 @@ class tx_commerce_dmhooks	{
 		switch (strtolower((string)$table))	{
 			case 'tx_commerce_article_prices':
 				
+				/**
+				 * Removed since it multiplies all prices
+				 * @Since 20090134 Ingo Schmitt
+				 * @ToDo: Is copy process still working?
 				if(!$GLOBALS['BE_USER']->uc['txcommerce_copyProcess']) {
 					$fieldArray['price_net'] = $fieldArray['price_net'] *100;
 					$fieldArray['price_gross'] = $fieldArray['price_gross'] *100;
 					$fieldArray['purchase_price'] = $fieldArray['purchase_price'] *100;
 				}
+				**/
+
+
 			break;
 			//Permissions <- used for recursive assignment of the persmissions in Permissions[EDIT]
 			
