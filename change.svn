@@ -4,6 +4,7 @@ Changelog for tx_commerce
 * Added required to Category Fileds in category and products
 * Added default values to category select fields
 * fixed Error 2396, Thanks to Sascha Eggerer
+* Updated to 0.11.5
 
 20.01.2009 Ingo Schmitt <is@marketing-factory.de>
 * Fixed Bug 2489, Thanks to Rald Merz & Sascha Egerer
