@@ -439,7 +439,7 @@ if (!$simpleMode && is_array($postEdit['tx_commerce_articles']) && $postData == 
 $TCA['tx_commerce_article_prices'] = Array (
 	'ctrl' => $TCA['tx_commerce_article_prices']['ctrl'],
 	'interface' => Array (
-		'showRecordFieldList' => 'sys_language_uid,l18n_parent,l18n_diffsource,hidden,starttime,endtime,fe_group,price_gross,price_net,purchase_price',
+		'showRecordFieldList' => 'hidden,starttime,endtime,fe_group,price_gross,price_net,purchase_price',
 	),
 	'feInterface' => $TCA['tx_commerce_articles']['feInterface'],
 	'columns' => Array (
@@ -496,7 +496,6 @@ $TCA['tx_commerce_article_prices'] = Array (
 		'price_gross' => Array (
 			'exclude' => 1,
 			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_article_prices.price_gross',
-			'l10n_mode' => 'exclude',
 			'config' => Array (
 				'type' => 'input',
 				'size' => '30',
@@ -506,7 +505,6 @@ $TCA['tx_commerce_article_prices'] = Array (
 		'price_net' => Array (
 			'exclude' => 1,
 			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_article_prices.price_net',
-			'l10n_mode' => 'exclude',
 			'config' => Array (
 				'type' => 'input',
 				'size' => '30',
@@ -517,7 +515,6 @@ $TCA['tx_commerce_article_prices'] = Array (
 		'purchase_price' => Array (
 			'exclude' => 1,
 			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_article_prices.purchase_price',
-			'l10n_mode' => 'exclude',
 			'config' => Array (
 				'type' => 'input',
 				'size' => '30',
@@ -527,7 +524,6 @@ $TCA['tx_commerce_article_prices'] = Array (
 		'price_scale_amount_start' => Array (
 			'exclude' => 1,
 			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_articles.price_scale_amount_start',
-			'l10n_mode' => 'exclude',
 			'config' => Array (
 				'type' => 'input',
 				'size' => '10',
@@ -539,7 +535,6 @@ $TCA['tx_commerce_article_prices'] = Array (
 		'price_scale_amount_end' => Array (
 			'exclude' => 1,
 			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_articles.price_scale_amount_end',
-			'l10n_mode' => 'exclude',
 			'config' => Array (
 				'type' => 'input',
 				'size' => '10',
@@ -551,7 +546,6 @@ $TCA['tx_commerce_article_prices'] = Array (
 		'purchase_price' => Array (
 			'exclude' => 1,
 			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_article_prices.purchase_price',
-			'l10n_mode' => 'exclude',
 			'config' => Array (
 				'type' => 'input',
 				'size' => '30',
@@ -560,7 +554,6 @@ $TCA['tx_commerce_article_prices'] = Array (
 		),
 		'uid_article' => Array(
 			'exclude' => 1,
-			'l10n_mode' => 'exclude',
 			'label' => 'Article UID',
 			'config' => array (
 				'type' => 'user',
@@ -570,7 +563,7 @@ $TCA['tx_commerce_article_prices'] = Array (
 	),
 	'types' => Array (
 		'0' => Array('showitem' => '
-			sys_language_uid;;;;1-1-1, l18n_parent, l18n_diffsource, hidden;;1, price_gross, price_net, price_scale_amount_start, price_scale_amount_end, purchase_price;;;;3-3-3, uid_article'),
+			hidden;;1, price_gross, price_net, price_scale_amount_start, price_scale_amount_end, purchase_price;;;;3-3-3, uid_article'),
 	),
 	'palettes' => Array (
 		'1' => Array('showitem' => 'starttime, endtime, fe_group')

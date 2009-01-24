@@ -1,4 +1,7 @@
 Changelog for tx_commerce
+24.01.2008 Volker Graubaum <vg@e-netconsulting.de>
+* remove all localization specific elements fro prices, since no localization for prices are needed
+
 23.01.2009 Ingo Schmitt <is@marketing-factory.de>
 * Fixed small bug in Treview concerning include paths
 * Added required to Category Fileds in category and products
