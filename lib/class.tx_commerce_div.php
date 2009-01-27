@@ -78,10 +78,19 @@ class tx_commerce_div {
 		if(is_object($GLOBALS['TSFE']->fe_user->tx_commerce_basket)) {
 			return;
 		}
+		$BasketID = $GLOBALS['TSFE']->fe_user->getKey('ses', 'commerceBasketId');
+	
+		if (empty($BasketID)) {
+			$BasketID = md5($pObj->fe_user->id.':'.rand(0,PHP_INT_MAX));
+			$GLOBALS['TSFE']->fe_user->setKey('ses', 'commerceBasketId', $BasketID);
+		}
+		
 		
 		$GLOBALS['TSFE']->fe_user->tx_commerce_basket = t3lib_div::makeInstance('tx_commerce_basket');	
-		$GLOBALS['TSFE']->fe_user->tx_commerce_basket->set_session_id($GLOBALS['TSFE']->fe_user->id);
+		$GLOBALS['TSFE']->fe_user->tx_commerce_basket->set_session_id($BasketID);
 		$GLOBALS['TSFE']->fe_user->tx_commerce_basket->load_data();
+		
+		
 		return;
 	}
 	

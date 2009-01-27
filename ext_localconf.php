@@ -236,12 +236,6 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['proc
 // for processing the order sfe, when changing the pid
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processVersionSwapClass'][] = 'EXT:commerce/hooks/class.tx_commerce_versionhooks.php:tx_commerce_versionhooks';
 
-// Intiantation the Basket in the FE User class
-// removed, since TYPO3 3.8.0 comes with a handy hook in initi fe_user :-)
-//$GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['tslib/class.tslib_fe.php'] = t3lib_extMgm::extPath(COMMERCE_EXTkey)."class.ux_tslib_fe.php";
-
-// Hook for registering the basket
-# $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['initFEuser'][] = 'EXT:commerce/hooks/class.tx_commerce_feuserhooks.php:tx_commerce_feuserhooks->user_addBasket';
 
 require_once(PATH_txcommerce.'lib/class.tx_commerce_tcefunc_categorytree.php');
 

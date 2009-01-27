@@ -1,5 +1,10 @@
 Changelog for tx_commerce
-24.01.2008 Volker Graubaum <vg@e-netconsulting.de>
+27.01.2009 Ingo Schmitt <is@marketing-factory.de>
+* removed unneeded class.tx_commerce_feuserhooks.php
+* Rewrote Session Handling (see http://bugs.typo3.org/view.php?id=10205)
+* Set Version to 0.11.6
+
+24.01.2009 Volker Graubaum <vg@e-netconsulting.de>
 * remove all localization specific elements fro prices, since no localization for prices are needed
 
 23.01.2009 Ingo Schmitt <is@marketing-factory.de>

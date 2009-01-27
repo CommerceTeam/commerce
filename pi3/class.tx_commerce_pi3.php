@@ -1028,7 +1028,10 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 		
 		$GLOBALS['TSFE']->fe_user->tx_commerce_basket->finishOrder();
 		$GLOBALS['TSFE']->fe_user->tx_commerce_basket = t3lib_div::makeInstance('tx_commerce_basket');	
-		$GLOBALS['TSFE']->fe_user->tx_commerce_basket->set_session_id($pObj->fe_user->id);
+		// Generate a new Basket-ID
+		$BasketID = md5($pObj->fe_user->id.':'.rand(0,PHP_INT_MAX));
+		$GLOBALS['TSFE']->fe_user->setKey('ses', 'commerceBasketId', $BasketID);
+		$GLOBALS['TSFE']->fe_user->tx_commerce_basket->set_session_id($BasketID);
 		$GLOBALS['TSFE']->fe_user->tx_commerce_basket->load_data();
 		
 		return $content;
