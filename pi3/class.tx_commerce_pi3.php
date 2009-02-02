@@ -946,7 +946,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
  		}
 		
 		// save the order, execute the hooks and stock
-  		$this->saveOrder($orderId, $orderData['pid'], $basket, $paymentObj,true,true);
+  		$orderData = $this->saveOrder($orderId, $orderData['pid'], $basket, $paymentObj,true,true);
  		
  		
 				
@@ -957,9 +957,9 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 		$this->adminMailOK = $this->sendAdminMail($orderId,$orderData);
 		
 		foreach($hookObjectsArr as $hookObj) {
-    		if (method_exists($hookObj, 'afterMailSend')) {
+	    		if (method_exists($hookObj, 'afterMailSend')) {
         			$markerArray=$hookObj->afterMailSend($orderData,$this);
-    		}
+    			}
 		}
 		/**
 		 * Do the output
@@ -2167,7 +2167,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
  	 * @param	object	$paymentObj		Payment Object
  	 * @param	boolean	$doHook			Flag if the hooks should be executed - don't touch unless you know what you are doing
  	 * @param	boolen	$doStock		Flag if stockreduce should be executed - don't touch unless you know what you are doing
- 	 * @return 	int						uid of the created order
+	 * @return 	array	$orderData		Array with all the order data
  	 */
  	public function saveOrder($orderId, $pid, $basket, $paymentObj, $doHook = true, $doStock = true) {
  		
@@ -2257,12 +2257,26 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
  				$oaData['order_id'] = $orderId;
  
  				if ($this->debug)	debug($oaData);
+
+                                foreach($hookObjectsArr as $hookObj) {
+                                        if(method_exists($hookObj, 'modifyOrderArticlePostSave')) {
+                                                $hookObj->modifyOrderArticlePreSave($newUid, $oaData, $this);
+                                        }
+                                }
+																					
  
  				// insert
  				if (( $this->conf['useStockHandling'] == 1)  && ($doStock = true)){
  					$basketItem->article->reduceStock($basketItem->get_quantity());
  				}
  				$GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_commerce_order_articles', $oaData);
+
+                                foreach($hookObjectsArr as $hookObj) {
+                                    if(method_exists($hookObj, 'modifyOrderArticlePostSave')) {
+                                        $hookObj->modifyOrderArticlePostSave($newUid, $oaData, $this);
+                                    }
+                                }
+																												
  			}
  		}
 	
