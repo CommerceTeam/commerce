@@ -1,3 +1,8 @@
+24.01.2009 Volker Graubaum <vg@e-netconsulting.de>
+* Fixed Bug 2529, Thanks to Ralf Merz and internezzo_ag
+* added two "old" hooks (see change from 20.12.2008)
+
+
 Changelog for tx_commerce
 27.01.2009 Ingo Schmitt <is@marketing-factory.de>
 * removed unneeded class.tx_commerce_feuserhooks.php
