@@ -2280,7 +2280,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
  			}
  		}
 	
-		return $orderUid;
+		return $orderData;
  	}
 	
 	/**
