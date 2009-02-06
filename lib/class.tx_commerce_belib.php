@@ -2702,7 +2702,7 @@ class tx_commerce_belib {
 		
 		$data = self::getOverwriteData($table, $uidFrom, $uidTo);
 		
-		echo t3lib_div::debug($data,__LINE__.__FILE__);
+		#echo t3lib_div::debug($data,__LINE__.__FILE__);
 		
 		unset($data[$table][$uidTo]['uid'],
 			  $data[$table][$uidTo]['cruser_id'],
