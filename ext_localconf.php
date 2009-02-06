@@ -200,7 +200,7 @@ if (t3lib_div::int_from_ver(TYPO3_version) >= '4002000') {
 /**
  * Xclass for VersionPreview
  */
-#$GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/version/cm1/index.php'] = t3lib_extMgm::extPath(COMMERCE_EXTkey).'class.ux_versionindex.php';
+$GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/version/cm1/index.php'] = t3lib_extMgm::extPath(COMMERCE_EXTkey).'class.ux_versionindex.php';
 
 // add special in db list, to have the ability to search for OrderIds in TYPO 4.0
 $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['typo3/class.db_list_extra.inc']=t3lib_extMgm::extPath(COMMERCE_EXTkey).'class.ux_localrecordlist.php';

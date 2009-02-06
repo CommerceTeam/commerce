@@ -2,6 +2,7 @@ Changelog for tx_commerce
 
 06.02.2009 Ingo Schmitt <is@marketing-factory.de>
 * Removed some debug output
+* Set Version to 0.11.7
 
 04.02.2009 Volker Graubaum <vg@e-netconsulting.de>
 * Fixed Bug 2529, Thanks to Ralf Merz and internezzo_ag this time complete
