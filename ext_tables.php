@@ -91,7 +91,9 @@ if (TYPO3_MODE=='BE')	{
 	$ICON_TYPES['commerce'] = Array('icon' => PATH_txcommerce_icon_table_rel.'commerce_folder.gif');
 	
 	$TCA['pages']['columns']['module']['config']['items'][] = Array('LLL:EXT:commerce/locallang_be.xml:commerce', 'commerce');	
-           
+
+	
+	include_once(t3lib_extMgm::extPath('commerce').'lib/class.tx_commerce_article_price.php');
 }
 
 
@@ -396,7 +398,7 @@ $TCA['tx_commerce_article_prices'] = Array (
 		 */
 		'label_alt' => 'price_net,price_gross,purchase_price',
 		'label_alt_force' => 1,
-	
+		'label_userFunc' => 'tx_commerce_article_price->getTCARecordTitle',
 		'tstamp' => 'tstamp',
 		'crdate' => 'crdate',
 		'cruser_id' => 'cruser_id',

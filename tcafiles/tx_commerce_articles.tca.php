@@ -298,9 +298,13 @@ $TCA['tx_commerce_articles'] = Array (
 			'l10n_mode' => 'exclude',
 			'config' => array (
 				'type' => 'inline',
+				'appearance' => array(
+						'newRecordLinkAddTitle' => true,
+						'newRecordLinkPosition' =>'bottom',
+							),
 				'foreign_table'=>'tx_commerce_article_prices',
 				'foreign_field'=>'uid_article',
-				'foreign_label'=>'purchase_price',
+				#'foreign_label'=>'purchase_price',
 			),
 		),
 		'tax' => Array (
@@ -439,7 +443,7 @@ if (!$simpleMode && is_array($postEdit['tx_commerce_articles']) && $postData == 
 $TCA['tx_commerce_article_prices'] = Array (
 	'ctrl' => $TCA['tx_commerce_article_prices']['ctrl'],
 	'interface' => Array (
-		'showRecordFieldList' => 'hidden,starttime,endtime,fe_group,price_gross,price_net,purchase_price',
+		'showRecordFieldList' => 'hidden,starttime,endtime,fe_group,price_gross,price_net,purchase_price,price_scale_amount_start,price_scale_amount_end',
 	),
 	'feInterface' => $TCA['tx_commerce_articles']['feInterface'],
 	'columns' => Array (

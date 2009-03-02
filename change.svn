@@ -1,5 +1,9 @@
 Changelog for tx_commerce
 
+02.03.2009 Ingo Schmitt <is@marketing-factory.de>
+* Improved IRRE Handling of prices (display price in list)
+* Set Version to 0.11.8
+
 06.02.2009 Ingo Schmitt <is@marketing-factory.de>
 * Removed some debug output
 * Set Version to 0.11.7

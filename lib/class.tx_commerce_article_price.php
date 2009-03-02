@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c)  2005 - 2006 Ingo Schmitt <is@marketing-factory.de>
+*  (c)  2005 - 2009 Ingo Schmitt <is@marketing-factory.de>
 *  All   rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -44,6 +44,7 @@
   
   require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_element_alib.php'); 
   require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_db_price.php');
+  require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_div.php');
  
  /**
  * 
@@ -209,13 +210,33 @@
 	}
 	
 	/**
-	 * returns The Proce Scae Amount End
+	 * returns The Price Scale Amount End
 	 * @return integer 
 	 */
 	function getPriceScaleAmountEnd(){
 		return $this->price_scale_amount_end;
 	}
  	
+	/**
+	 * Returns the label for the TCA
+	 * Only for use in TCA
+	 * @params array	record value
+	 * @params object	Parent Object
+	 * @return array	new record values
+	 */
+	function getTCARecordTitle($params, $pObj){
+		global $LANG;
+		
+		debug($LANG,'LANG',__LINE__,__FILE__);
+	
+		$params['title'] = 
+			$LANG->sL(t3lib_befunc::getItemLabel('tx_commerce_article_prices','price_gross'),1).': '.tx_commerce_div::FormatPrice($params['row']['price_gross']/100).
+			' ,'.$LANG->sL(t3lib_befunc::getItemLabel('tx_commerce_article_prices','price_net'),1).': '.tx_commerce_div::FormatPrice($params['row']['price_net']/100).
+			' ('.$LANG->sL(t3lib_befunc::getItemLabel('tx_commerce_article_prices','price_scale_amount_start'),1).': '.$params['row']['price_scale_amount_start'].
+			'  '.$LANG->sL(t3lib_befunc::getItemLabel('tx_commerce_article_prices','price_scale_amount_end'),1).': '.$params['row']['price_scale_amount_end'].') '
+			;
+		return $params;
+	}
  	
  	/**
 	 * Returns the net price as value
@@ -238,6 +259,8 @@
 	function get_price_gross(){
 	    return $this->getPriceGross();
 	}
+	
+	
  	
  }
  
