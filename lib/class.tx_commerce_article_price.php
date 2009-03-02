@@ -227,8 +227,6 @@
 	function getTCARecordTitle($params, $pObj){
 		global $LANG;
 		
-		debug($LANG,'LANG',__LINE__,__FILE__);
-	
 		$params['title'] = 
 			$LANG->sL(t3lib_befunc::getItemLabel('tx_commerce_article_prices','price_gross'),1).': '.tx_commerce_div::FormatPrice($params['row']['price_gross']/100).
 			' ,'.$LANG->sL(t3lib_befunc::getItemLabel('tx_commerce_article_prices','price_net'),1).': '.tx_commerce_div::FormatPrice($params['row']['price_net']/100).
