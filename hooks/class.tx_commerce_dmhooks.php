@@ -733,8 +733,9 @@ class tx_commerce_dmhooks	{
 				}
 				
 				//check new categories
-				$newCats = array_diff(explode(',',t3lib_div::uniqueList($data['categories'])), $parentCategories);
-				
+				//$newCats = array_diff(explode(',',t3lib_div::uniqueList($data['categories'])), $parentCategories);
+				$newCats = $this->single_diff_assoc(explode(',',t3lib_div::uniqueList($data['categories'])), $parentCategories);
+
 				if(!tx_commerce_belib::checkPermissionsOnCategoryContent($newCats, array('editcontent'))) {
 					$pObj->newlog('You do not have the permissions to add one or all categories you added.'.t3lib_div::uniqueList($data['categories']),1);
 					$fieldArray = array();	
@@ -743,7 +744,7 @@ class tx_commerce_dmhooks	{
 				if(isset($fieldArray['categories'])) {
 					$fieldArray['categories'] = t3lib_div::uniqueList($fieldArray['categories']);
 				}
-				
+				 
 				
 			break;
 			
@@ -935,6 +936,27 @@ class tx_commerce_dmhooks	{
 	}
 
 	/**
+	 * This Function is simlar to array_diff but looks for array sorting too.
+	 * @param array		$a1
+	 * @param array		$a2
+	 * @return array	$r		different fields between a1 & a2 
+	 */
+	function single_diff_assoc(&$a1,&$a2) {
+		$r = array(); // return
+
+		foreach ($a1 as $k => $pl) {
+			if (! isset($a2[$k]) || $a2[$k] != $pl)
+				$r[$k] = $pl;
+		}
+
+		foreach ($a2 as $k => $pl) {
+			if ( (! isset($a1[$k]) || $a1[$k] != $pl ) && ! isset($r[$k]) )
+				$r[$k] = $pl;
+		}
+		return $r;
+	}
+
+	/**
 	 * When all operations in the database where made from TYPO3 side, we have to make some special
 	 * entries for the shop. Because we don't use the built in routines to save relations between
 	 * tables, we have to do this on our own. We make it manually because we save some additonal information
@@ -988,9 +1010,10 @@ class tx_commerce_dmhooks	{
 				break;
 
 			case 'tx_commerce_products':
-				
+
 				// if fieldArray has been unset, do not save anything, but load dynaflex config
 				if(0 < count($fieldArray)) {
+
 					$item = t3lib_div::makeInstance('tx_commerce_product');
 					$item->init($id);
 					$item->load_data();

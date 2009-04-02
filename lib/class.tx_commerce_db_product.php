@@ -298,7 +298,7 @@ class tx_commerce_db_product extends tx_commerce_db_alib {
 		$uids = array();
 		
 		//read from sql
- 		$result 	 = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid_foreign',$this->database_category_rel_table,'uid_local = '.$uid);
+ 		$result 	 = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid_foreign',$this->database_category_rel_table,'uid_local = '.$uid, '', 'sorting ASC');
 		while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
 			$uids[] = $row['uid_foreign'];
 		}
