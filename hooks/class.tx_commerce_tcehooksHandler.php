@@ -63,10 +63,14 @@ class tx_commerce_tcehooksHandler {
 					$this->calculateTax($incomingFieldArray, doubleval($v['tax']));
 				}
 			}
+			
 			foreach($incomingFieldArray as $key => $value){
 				if ($key == 'price_net' || $key == 'price_gross' || $key == 'purchase_price')   {
 					if (is_numeric($value)){
-						$incomingFieldArray[$key] = intval($value *100);
+						//first convert the float value to a string - this is required because of a php "bug"
+						//details on http://forge.typo3.org/issues/show/2986
+						//and http://de.php.net/manual/en/function.intval.php
+						$incomingFieldArray[$key] = intval(strval($value *100));
 					}
 				}
 			}
