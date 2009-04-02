@@ -4,6 +4,7 @@ Changelog for tx_commerce
 * Fixed Bug 2831, Thanks to David Rühr (dr@marketing-factory.de>
 * Fixed Bug 3006, Thanks to Ralf Merz 
 * Fixed Bug 2986, Thanks to Sascha Eggerer
+* Fixed Bug 2953, Thanks to Markus Kleinhenz (mkleinhenz@gmail.com)
 * Set Version to 0.11.9
 
 02.03.2009 Ingo Schmitt <is@marketing-factory.de>

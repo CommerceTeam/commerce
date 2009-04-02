@@ -467,7 +467,7 @@ class tx_commerce_pibase extends tslib_pibase {
 				 * Insert the Productlist
 				 */
 
-					$tmpCategory=$this->cObj->substituteSubpart($tmpCategory,'###CATEGORY_ITEM_PRODUCTLIST###',$productList);
+					$tmpCategory=$this->cObj->substituteMarker($tmpCategory,'###CATEGORY_ITEM_PRODUCTLIST###',$productList);
 
 				}else{
 					$tmpCategory=$this->cObj->substituteMarker($tmpCategory,'###CATEGORY_ITEM_PRODUCTLIST###','');
