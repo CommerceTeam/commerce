@@ -405,8 +405,8 @@ class tx_commerce_pi4 extends tx_commerce_pibase {
 	function getAddressForm($action = 'new', $addressUid = NULL, $config) {
 	
      
-		if(!empty($this->piVars['adressType'])) {
-			$addressType = intval($this->piVars['adressType']);
+		if(!empty($this->piVars['addressType'])) {
+			$addressType = intval($this->piVars['addressType']);
 		}
 		
 		switch($addressType) {
