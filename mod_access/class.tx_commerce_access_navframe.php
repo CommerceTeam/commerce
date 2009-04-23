@@ -29,6 +29,7 @@
  */
 unset($MCONF);
 
+/*
 if (@defined(TYPO3_REQUESTTYPE) && @defined(TYPO3_REQUESTTYPE_AJAX)) {
 	if (!(is_numeric(TYPO3_REQUESTTYPE) || is_numeric(TYPO3_REQUESTTYPE_AJAX))) {
 		require_once('conf.php');
@@ -49,6 +50,17 @@ if (@defined(TYPO3_REQUESTTYPE) && @defined(TYPO3_REQUESTTYPE_AJAX)) {
 	}
 	require_once(PATH_typo3.'template.php');
 }
+
+*/
+    if (!(@is_numeric(TYPO3_REQUESTTYPE) || @is_numeric(TYPO3_REQUESTTYPE_AJAX))) {
+        require_once('conf.php');
+        require_once($BACK_PATH.'init.php');
+        require_once(PATH_typo3.'template.php');
+    } else {
+        //In case of an AJAX Request the script including this script is ajax.php, from which the BACK PATH is ''
+        require_once('init.php');
+        require('template.php');
+    }								
 
 require_once(t3lib_extmgm::extPath('commerce').'treelib/class.tx_commerce_categorytree.php');
 

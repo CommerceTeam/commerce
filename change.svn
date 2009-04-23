@@ -1,3 +1,9 @@
+Changelog for tx_commerce
+
+24.04.2009 Volker Graubaum <vg@e-netconsulting.de>
+* commit old changes
+* change mod_access include, now use the same code as mod_category
+
 02.04.2009 Ingo Schmitt <is@marketing-factory.de>
 * Fixed Bug 2831, Thanks to David Rühr (dr@marketing-factory.de>
 * Fixed Bug 3006, Thanks to Ralf Merz 
@@ -5,7 +11,6 @@
 * Fixed Bug 2953, Thanks to Markus Kleinhenz (mkleinhenz@gmail.com)
 * Set Version to 0.11.9
 
-Changelog for tx_commerce
 10.03.2009 Volker Graubaum <vg@e-netconsulting.de>
 * change in pi3 userMail and adminMail, add a HTML flag before calling "postGenerateMailHook" with HTML content
 * change in dmhooks for simplemode and attributes in articles
