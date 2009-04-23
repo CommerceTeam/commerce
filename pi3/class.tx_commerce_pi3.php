@@ -135,6 +135,8 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 	    $this->extConf = unserialize($GLOBALS["TYPO3_CONF_VARS"]["EXT"]["extConf"]["commerce"]);
 		
 		$this->imgFolder = 'uploads/tx_commerce/';
+		
+		$GLOBALS['TSFE']->fe_user->tx_commerce_basket->setTaxCalculationMethod($this->conf['priceFromNet']); 
 
 		if ($this->conf['currency']>'')	{
 			$this->currency = $this->conf['currency'];
@@ -756,7 +758,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 		if ($this->debug)	debug($GLOBALS['TSFE']->fe_user->tx_commerce_basket);
 
 		$listingForm = '<form name="listingForm" action="'.$this->pi_getPageLink($GLOBALS['TSFE']->id).'" method="post">';
-		$nextStep=$this->getStepAfter($this->currentStep);
+		$nextStep = $this->getStepAfter($this->currentStep) ? $this->getStepAfter($this->currentStep) : $this->currentStep;
 		$listingForm .= '<input type="hidden" name="'.$this->prefixId.'[step]" value="'.$nextStep.'" />';
 		$markerArray['###HIDDEN_STEP###'] = '<input type="hidden" name="'.$this->prefixId.'[step]" value="'.$nextStep.'" />';
 		$markerArray['###LISTING_TITLE###'] = $this->pi_getLL('listing_title');
@@ -1791,12 +1793,13 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 				if($this->conf['usermail.']['useHtml'] == '1' && $this->conf['usermail.']['templateFileHtml']) {
 					$UserMailObj->templateCode=$this->cObj->fileResource($this->conf['usermail.']['templateFileHtml']);
 					$htmlContent=$UserMailObj->generateMail($orderUid, $orderData,$userMarker,true);
-	
+					$UserMailObj->isHTMLMail = true;
 					foreach($hookObjectsArr as $hookObj)	{
 						if (method_exists($hookObj, 'PostGenerateMail'))	{
 							$hookObj->PostGenerateMail($UserMailObj,$this,$GLOBALS['TSFE']->fe_user->tx_commerce_basket,$htmlContent);
 						}
 					}
+					unset($UserMailObj->isHTMLMail);
 				}
 				/**
 				 * @since 2005 12th November
@@ -1936,12 +1939,13 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 			if($this->conf['adminmail.']['useHtml'] == '1' && $this->conf['adminmail.']['templateFileHtml']) {
 				$AdminMailObj->templateCode=$this->cObj->fileResource($this->conf['adminmail.']['templateFileHtml']);
 				$htmlContent=$AdminMailObj->generateMail($orderUid, $orderData,'',true);
-	
+				$AdminMailObj->isHTMLMail = true;
 				foreach($hookObjectsArr as $hookObj)	{
 					if (method_exists($hookObj, 'PostGenerateMail'))	{
 						$hookObj->PostGenerateMail($AdminMailObj,$this,$GLOBALS['TSFE']->fe_user->tx_commerce_basket,$htmlContent);
 					}
 				}
+				unset($AdminMailObj->isHTMLMai);
 			}
 			/**
 			 * @since 2005 12th November

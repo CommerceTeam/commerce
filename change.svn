@@ -1,11 +1,14 @@
-Changelog for tx_commerce
-
 02.04.2009 Ingo Schmitt <is@marketing-factory.de>
 * Fixed Bug 2831, Thanks to David Rühr (dr@marketing-factory.de>
 * Fixed Bug 3006, Thanks to Ralf Merz 
 * Fixed Bug 2986, Thanks to Sascha Eggerer
 * Fixed Bug 2953, Thanks to Markus Kleinhenz (mkleinhenz@gmail.com)
 * Set Version to 0.11.9
+
+Changelog for tx_commerce
+10.03.2009 Volker Graubaum <vg@e-netconsulting.de>
+* change in pi3 userMail and adminMail, add a HTML flag before calling "postGenerateMailHook" with HTML content
+* change in dmhooks for simplemode and attributes in articles
 
 02.03.2009 Ingo Schmitt <is@marketing-factory.de>
 * Improved IRRE Handling of prices (display price in list)

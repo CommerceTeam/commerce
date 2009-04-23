@@ -1098,15 +1098,43 @@ class tx_commerce_dmhooks	{
 			t3lib_BEfunc::getSetUpdateSignal('updatePageTree');
 		}
 		
+		$loadDynaFlex = true;
+		$extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['commerce']);
+		if ($extConf['simpleMode']){
+		    if(trim(strtolower((string)$table))== 'tx_commerce_articles'){
+				$loadDynaFlex = false;
+		    }
+		
+		}
 		//txcommerce_copyProcess: this is so that dynaflex is not called when we copy an article - otherwise we would get an error
 		//@see tx_commerce_belib::copyArticle
-		if (t3lib_extMgm::isLoaded('dynaflex') && !empty($dynaFlexConf) && (!isset($GLOBALS['BE_USER']->uc['txcommerce_copyProcess']) || !$GLOBALS['BE_USER']->uc['txcommerce_copyProcess']))	{
+		if ($loadDynaFlex && t3lib_extMgm::isLoaded('dynaflex') && !empty($dynaFlexConf) && (!isset($GLOBALS['BE_USER']->uc['txcommerce_copyProcess']) || !$GLOBALS['BE_USER']->uc['txcommerce_copyProcess']))	{
 			$dynaFlexConf[0]['uid'] = $id;
 			$dynaFlexConf[1]['uid'] = $id;
 			require_once(t3lib_extMgm::extPath('dynaflex') .'class.dynaflex.php');
 			
 			$dynaflex = new dynaflex($GLOBALS['TCA'], $dynaFlexConf);
 			$GLOBALS['TCA'] = $dynaflex->getDynamicTCA();
+			// change for simple mode
+			// override the dynaflex settings after the DynamicTCA
+        	if($extConf['simpleMode'] && trim(strtolower((string)$table))== 'tx_commerce_products') {
+                $GLOBALS['TCA']['tx_commerce_products']['columns']['articles'] = array (
+                        'exclude' => 1,
+                        'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_products.articles',
+                        'config' => array (
+                                'type' => 'inline',
+                                'foreign_table'=>'tx_commerce_articles',
+                                'foreign_field'=>'uid_product',
+                                'minitems'=>0,
+                        ),
+                );
+                # print_r( $GLOBALS['TCA']['tx_commerce_products']['types']['0']['showitem']);
+                $GLOBALS['TCA']['tx_commerce_products']['types']['0']['showitem'] = str_replace('articleslok', 'articles', $GLOBALS['TCA']['tx_commerce_products']['types']['0']['showitem']);
+               # print_r( $GLOBALS['TCA']['tx_commerce_products']['types']['0']['showitem']);
+        	}
+        #	print_r($GLOBALS['TCA']['tx_commerce_products']['columns']);
+        #	echo "\n\n<br><br>";
+			
 		}
 	}
 
