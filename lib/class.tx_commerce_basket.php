@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c)  2005 - 2006 Ingo Schmitt <is@marketing-factory.de>
+*  (c)  2005 - 2009 Ingo Schmitt <is@marketing-factory.de>
 *  All   rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -217,6 +217,13 @@
 				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
 			}
 		}
+			
+		//Get the arraykeys from basketitems to store correct position in basket
+		$ar_basket_items_keys = array_keys($this->basket_items);
+		
+		//After getting the keys in a array, flip it and you can get the position of each basketitem		 		
+		$ar_basket_items_keys = array_flip($ar_basket_items_keys);
+		
 		
 		/**
 		 * And insert data
@@ -224,7 +231,7 @@
 		foreach ($this->basket_items as $oneuid  => $one_item)
  		{
 			$insert_data['pid']=$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce']['BasketStoragePid'];
- 			$insert_data['pos']=$oneuid;
+ 			$insert_data['pos']=$ar_basket_items_keys[$oneuid];
  			$insert_data['sid']=$this->sess_id;
  			$insert_data['article_id']=$one_item->get_article_uid();
  			$insert_data['price_id']=$one_item->get_price_uid();
