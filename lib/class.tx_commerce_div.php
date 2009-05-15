@@ -223,7 +223,7 @@ class tx_commerce_div {
 
 		foreach($hookObjectsArr as $hookObj)	{
 			if (method_exists($hookObj, 'preProcessHtmlMail'))	{
-				$htmlMail=$hookObj->postProcessHtmlMail($mailconf);
+				$htmlMail=$hookObj->preProcessHtmlMail($mailconf);
 			}
 		}
 		// validate e-mail addesses
