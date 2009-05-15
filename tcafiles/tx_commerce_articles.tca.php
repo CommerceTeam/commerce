@@ -547,15 +547,7 @@ $TCA['tx_commerce_article_prices'] = Array (
 				'default' => '1',
 			)
 		),
-		'purchase_price' => Array (
-			'exclude' => 1,
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_article_prices.purchase_price',
-			'config' => Array (
-				'type' => 'input',
-				'size' => '30',
-				'eval' => 'double2,nospace',
-			)
-		),
+		
 		'uid_article' => Array(
 			'exclude' => 1,
 			'label' => 'Article UID',
