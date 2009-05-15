@@ -1,5 +1,8 @@
 Changelog for tx_commerce
 
+15.05.2009 Michael Staatz <micsta@e-netconsulting.de>
+* Fixed Bug 1759, repaired wrong Substitution
+
 15.05.2009 Ingo Schmitt <is@marketing-factory.de>
 * Fixed Bug in FolderDB, concerning quotes and double quotes, thanks to karsten@typo3.org
 

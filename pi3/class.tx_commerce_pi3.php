@@ -994,13 +994,13 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 
 		$billingAdress = '';
 		if ($orderData['cust_invoice'])	{
-			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'tt_address', 'uid='.$orderData['cust_deliveryaddress']);
+			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'tt_address', 'uid='.$orderData['cust_invoice']);
 			if ($data= $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res))	{
 				$billingAdress = $this->makeAdressView($data,'###BILLING_ADDRESS###');
 				$markerArray['###CUST_NAME###']=$data['NAME'];
 			}
 		}
-		$content = $this->cObj->substituteSubpart($content,'###BILLING_ADDRESS###',$deliveryAdress);
+		$content = $this->cObj->substituteSubpart($content,'###BILLING_ADDRESS###',$billingAdress);
 
 		$markerArray = $this->FinishItRenderGoodBadMarker($markerArray);
 		
