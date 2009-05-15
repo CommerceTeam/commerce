@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2005 - 2008 Ingo Schmitt  (is@marketing-factory.de)
+*  (c) 2005 - 2009 Ingo Schmitt  (is@marketing-factory.de)
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -41,7 +41,7 @@
  */
 
 
-require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_browsetrees.php');
+
 require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_category.php');
 require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_product.php');
 require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_div.php');
