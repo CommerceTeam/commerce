@@ -1,1 +1,0 @@
-in pi1 werden alle notwendigen Dateien abgelegt die zur Anzeige der Kategorien, produkte udn ARtikel notwendig sind.

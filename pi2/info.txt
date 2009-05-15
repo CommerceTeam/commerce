@@ -1,1 +1,0 @@
-In pi2 werden alle Dateien abgelegt die zur Darstellung des Warenkorbes notwendig sind.
