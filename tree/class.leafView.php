@@ -38,8 +38,8 @@ class leafView extends langbase {
 	 */
 	
 	public function __construct(){
-		$this->iconPath = t3lib_div::getIndpEnv('TYPO3_SITE_PATH').TYPO3_mainDir.PATH_txcommerce_icon_tree_rel;
-		$this->BACK_PATH = t3lib_div::getIndpEnv('TYPO3_SITE_PATH').TYPO3_mainDir;
+		$this->iconPath = '/'.t3lib_div::getIndpEnv('TYPO3_SITE_PATH').TYPO3_mainDir.PATH_txcommerce_icon_tree_rel;
+		$this->BACK_PATH = '/'.t3lib_div::getIndpEnv('TYPO3_SITE_PATH').TYPO3_mainDir;
 		
 	}
 	/**
