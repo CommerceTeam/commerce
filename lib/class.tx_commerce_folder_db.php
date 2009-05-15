@@ -55,7 +55,7 @@ class tx_commerce_folder_db {
 	 */#
 	function getFolders($module = 'commerce',$pid = 0,$title ='' ) {
 		$rows=array();
-		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid,pid,title', 'pages', 'doktype=254 and tx_graytree_foldername = "'.strtolower($title).'"and pid = "'.$pid.'"and module="'.$module.'" '.t3lib_BEfunc::deleteClause('pages'));
+		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid,pid,title', 'pages', 'doktype=254 and tx_graytree_foldername = \''.strtolower($title).'\' AND pid = '.(int)$pid.' AND module=\''.$module.'\' '.t3lib_BEfunc::deleteClause('pages'));
     		if ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res))	{
 			$rows[$row['uid']]=$row;
 		}

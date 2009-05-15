@@ -1,5 +1,8 @@
 Changelog for tx_commerce
 
+15.05.2009 Ingo Schmitt <is@marketing-factory.de>
+* Fixed Bug in FolderDB, concerning quotes and double quotes, thanks to karsten@typo3.org
+
 24.04.2009 Volker Graubaum <vg@e-netconsulting.de>
 * commit old changes
 * change mod_access include, now use the same code as mod_category
