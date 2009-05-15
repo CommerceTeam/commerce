@@ -1397,8 +1397,8 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 			$fieldList = array_keys($config['sourceFields.']);
 		}
 
-	        #$this->dbFieldData = $this->getAddressFromDB($config, $step, $fieldList);
-    		 $this->dbFieldData = $this->MYSESSION[$step];
+	    #$this->dbFieldData = $this->getAddressFromDB($config, $step, $fieldList);
+    	$this->dbFieldData = $this->MYSESSION[$step];
 
 		$fieldTemplate = $this->cObj->getSubpart($this->templateCode, '###SINGLE_INPUT###');
 		$fieldTemplateCheckbox = $this->cObj->getSubpart($this->templateCode, '###SINGLE_CHECKBOX###');
@@ -1431,11 +1431,27 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 		        
 			// save some data for mails
 			$this->MYSESSION['mails'][$step][$fieldName] = array('data' => $this->MYSESSION[$step][$fieldName], 'label' => $fieldLabel);
+			
 			if($config['sourceFields.'][$arrayName]['type'] == 'check'){
-				$fieldCode .= $this->cObj->substituteMarkerArray($fieldTemplateCheckbox, $fieldMarkerArray);
+				$fieldCodeTemplate = $fieldTemplateCheckbox;
 			}else{
-				$fieldCode .= $this->cObj->substituteMarkerArray($fieldTemplate, $fieldMarkerArray);
+				$fieldCodeTemplate = $fieldTemplate;
 			}
+			
+			$hookObjectsArr = array();
+            if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi3/class.tx_commerce_pi3.php']['processInputForm'])) {
+            	foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi3/class.tx_commerce_pi3.php']['processInputForm'] as $classRef) {
+                	$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+                }
+            }
+            
+            foreach($hookObjectsArr as $hookObj) {
+            	if (method_exists($hookObj, 'processInputForm')) {
+					$hookObj->processInputForm($fieldName, $fieldMarkerArray, $config, $step, $fieldCodeTemplate, $this);
+                }
+            }
+            
+            $fieldCode .= $this->cObj->substituteMarkerArray($fieldCodeTemplate, $fieldMarkerArray);
 		}
 		$GLOBALS['TSFE']->fe_user->setKey('ses',tx_commerce_div::generateSessionKey('mails'), $this->MYSESSION['mails']);
 		return $fieldCode;

@@ -295,7 +295,20 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 		}else{
 			$this->content = $this->cObj->stdWrap($this->conf['emptyCOA'],$this->conf['emptyCOA.']);
 			$this->handle = FALSE;
-		}	
+		}
+		
+	 	$hookObjectsArr = array();
+        if (is_array +($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi1/class.tx_commerce_pi1.php']['postInit'])) {
+            foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi1/class.tx_commerce_pi1.php']['postInit'] as $classRef) {
+                $hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+            }
+        }
+	
+        foreach($hookObjectsArr as $hookObj)    {
+           if (method_exists($hookObj, 'postInit')) {
+               $hookObj->postInit($this);
+           }
+       }
 	}	
 	
 	/**

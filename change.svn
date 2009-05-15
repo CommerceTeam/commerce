@@ -1,6 +1,10 @@
 Changelog for tx_commerce
 
 15.05.2009 Michael Staatz <micsta@e-netconsulting.de>
+* Added Feature 1563, new hook in pi1 'postInit' at the end of init.
+* And new hook in pi3 'processInputForm' for processing formfields  
+
+15.05.2009 Michael Staatz <micsta@e-netconsulting.de>
 * Fixed Bug 1759, repaired wrong Substitution
 
 15.05.2009 Ingo Schmitt <is@marketing-factory.de>
