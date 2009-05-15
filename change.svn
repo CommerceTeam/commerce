@@ -9,6 +9,7 @@ Changelog for tx_commerce
 15.05.2009 Ingo Schmitt <is@marketing-factory.de>
 * Fixed Bug in FolderDB, concerning quotes and double quotes, thanks to karsten@typo3.org
 * Removed graytree completely 
+* Fixed Bug 2949, Thanks to Markus Kleinhenz 
 
 24.04.2009 Volker Graubaum <vg@e-netconsulting.de>
 * commit old changes

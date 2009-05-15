@@ -5,6 +5,7 @@
  *
  *  (c) 1999-2003 Kasper Sk�rh�j (kasper@typo3.com)
  *  (c) 2005 Franz Holzinger <kontakt@fholzinger.com>
+ *  (c) 2009 Ingo Schmitt <is@marketing-factory.de>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -705,7 +706,7 @@ class commerceRecordList extends localRecordList {
 							$lab = 'V';
 						}
 
-						$cells[]='<a href="'.htmlspecialchars(t3lib_extMgm::extRelPath('version')).'cm1/index.php?table='.rawurlencode($table).'&uid='.rawurlencode($row['uid']).'" style="'.htmlspecialchars($st).'">'.
+						$cells[]='<a href="'.$this->backPath.htmlspecialchars(t3lib_extMgm::extRelPath('version')).'cm1/index.php?table='.rawurlencode($table).'&uid='.rawurlencode($row['uid']).'" class="typo3-ctrl-versioning" style="'.htmlspecialchars($st).'">'.
 								$lab.
 								'</a>';
 					}
