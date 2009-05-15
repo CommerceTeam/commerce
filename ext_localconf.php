@@ -22,12 +22,9 @@ if (!defined ('PATH_txcommerce_icon_table_rel')) {
 if (!defined ('PATH_txcommerce_icon_tree_rel')) {
 	define('PATH_txcommerce_icon_tree_rel', PATH_txcommerce_rel.'res/icons/table/');
 }
-if (!defined ('PATH_txgraytree')) {
-	define('PATH_txgraytree', t3lib_extMgm::extPath('graytree'));
-}
-if (!defined ('PATH_txgraytree_rel')) {
-	define('PATH_txgraytree_rel', t3lib_extMgm::extRelPath(GRAYTREE_EXTkey));
-}
+
+
+
 
 if (t3lib_div::int_from_ver(phpversion()) < 4004000) {
         define(PHP_INT_MAX,9999999);
@@ -180,11 +177,6 @@ t3lib_extMgm::addUserTSConfig('
 	options.saveDocNew.tx_commerce_moveordermails=1
 ');
 
-//$GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['typo3/class.alt_menu_functions.inc']=t3lib_extMgm::extPath(COMMERCE_EXTkey).'class.ux_alt_menu_functions.php';
-//$GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['typo3/class.alt_menu_functions.inc']=t3lib_extMgm::extPath(GRAYTREE_EXTkey).'class.ux_alt_menu_functions.php';
-
-
-
 // only in old TYPO3 versions below 4.0 apply extension to TCA Non type
 if (t3lib_div::int_from_ver(TYPO3_version) < '4000000') {
 	$GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['t3lib/class.t3lib_tceforms.php'] = t3lib_extMgm::extPath(COMMERCE_EXTkey).'class.ux_t3lib_tceforms.php';
@@ -237,7 +229,7 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['proc
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processVersionSwapClass'][] = 'EXT:commerce/hooks/class.tx_commerce_versionhooks.php:tx_commerce_versionhooks';
 
 
-require_once(PATH_txcommerce.'lib/class.tx_commerce_tcefunc_categorytree.php');
+
 
 // adding some hooks for tx_commerce_article_processing
 // as basic hook for calculation the delivery_costs
@@ -280,8 +272,7 @@ $GLOBALS['TYPO3_CONF_VARS']['BE']['AJAX']['SC_mod_access_perm_ajax::dispatch'] =
 $GLOBALS['TYPO3_CONF_VARS']['BE']['AJAX']['tx_commerce_access_navframe::ajaxExpandCollapse'] = 'EXT:commerce/mod_access/class.tx_commerce_access_navframe.php:tx_commerce_access_navframe->ajaxExpandCollapse';
 $GLOBALS['TYPO3_CONF_VARS']['BE']['AJAX']['tx_commerce_category_navframe::ajaxExpandCollapse'] = 'EXT:commerce/mod_category/class.tx_commerce_category_navframe.php:tx_commerce_category_navframe->ajaxExpandCollapse';
 
-// Graytree or not
-$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY]['useGraytree'] = $_EXTCONF['useGraytree'] ? $_EXTCONF['useGraytree'] : 0;
+
 
 // This line configures to process the code selectConf with the class "tx_commerce_hooks"
 require_once(t3lib_extMgm::extPath(COMMERCE_EXTkey).'hooks/class.tx_commerce_tcehooksHandler.php');

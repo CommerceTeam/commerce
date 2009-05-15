@@ -852,5 +852,7 @@ CREATE TABLE tx_commerce_supplier (
 #
 CREATE TABLE pages (
     tx_commerce_foldereditorder tinyint(4) unsigned DEFAULT '0' NOT NULL,
+    tx_graytree_foldername varchar(30) DEFAULT '' NOT NULL,
     KEY tx_commerce_foldereditorder (tx_commerce_foldereditorder),
+    KEY tx_gray_folder (tx_graytree_foldername),
 );

@@ -83,7 +83,7 @@ class tx_commerce_folder_db {
 	 * @return	array		
 	 */#
 	function initFolders($title = 'Commerce', $module = 'commerce',$pid=0,$parentTitle='')	{
-		// creates a GRAYTREE folder on the fly
+		// creates a Commerce folder on the fly
 		// not really a clean way ...
 		
 		if($parentTitle){

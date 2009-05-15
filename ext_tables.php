@@ -26,28 +26,7 @@ $GLOBALS['T3_VAR']['ext'][COMMERCE_EXTkey]['TCA']['mountpoints_config'] = array 
 	'maxitems' => 20,
 );
 
-###UNCOMMENTED - THIS IS THE ONLY LINES WHERE THIS IS USED IN THE WHOLE EXTENSION - IF IT WORKS WITHOUT IT, DELETE###
-/*$GLOBALS['T3_VAR']['ext'][COMMERCE_EXTkey]['TCA']['category_config'] =
-		Array (
-				'type' => 'group',
-				'internal_type' => 'db',
-				'allowed' => 'tx_commerce_categories',
-				'form_type' => 'user',
-				'userFunc' => 'tx_graytree_tceFunc->getSingleField_selectTree',
-				'treeView' => 1,
-				'treeClass' => 'tx_commerce_tceFunc_categoryTree',
-				'size' => 7,
-				'autoSizeMax' => 10,
-				'minitems' => 0,
-				'maxitems' => 100,
-		);
-		
-$GLOBALS['T3_VAR']['ext'][COMMERCE_EXTkey]['TCA']['category_field'] =
-		Array (
-			'label' => 'LLL:EXT:'.COMMERCE_EXTkey.'/locallang_db.php:tx_commerce_item.category',
-			'config' => $GLOBALS['T3_VAR']['ext'][COMMERCE_EXTkey]['TCA']['category_config'],
-		);
-*/
+
 
 
 if (TYPO3_MODE=='BE')	{

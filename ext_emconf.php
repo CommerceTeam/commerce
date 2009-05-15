@@ -15,7 +15,7 @@ $EM_CONF[$_EXTKEY] = array(
 	'description' => 'TYPO3 commerce shopping system',
 	'category' => 'module',
 	'shy' => 0,
-	'dependencies' => 'cms,tt_address,graytree,dynaflex,moneylib,static_info_tables',
+	'dependencies' => 'cms,tt_address,dynaflex,moneylib,static_info_tables',
 	'conflicts' => 'mc_autokeywords',
 	'priority' => '',
 	'loadOrder' => '',
@@ -38,7 +38,7 @@ $EM_CONF[$_EXTKEY] = array(
 		'depends' => array(
 			'cms' => '',
 			'tt_address' => '2.1.0-',
-			'graytree' => '0.2.1-',
+		
 			'dynaflex' => '1.6.0-',
 			'moneylib' => '1.2.0-',
 			'static_info_tables' => '2.0.0-',

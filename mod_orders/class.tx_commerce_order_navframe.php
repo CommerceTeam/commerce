@@ -44,16 +44,14 @@ require_once($BACK_PATH.'init.php');
 require_once($BACK_PATH.'template.php');
 require_once(PATH_t3lib.'class.t3lib_browsetree.php');
 
-/**
- * Require for graytree
- */
-require_once (t3lib_extmgm::extPath('graytree').'lib/class.tx_graytree_folder_db.php');
+
 
 
 /**
  * Require for commerce
  */
- require_once (t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_create_folder.php');
+require_once (t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_folder_db.php');
+require_once (t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_create_folder.php');
 /**
  * Extension class for the t3lib_browsetree class, specially made for browsing pages in the Web module
  *

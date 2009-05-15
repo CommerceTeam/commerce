@@ -33,6 +33,16 @@ class leafView extends langbase {
 	protected $iconGenerated = false;
 	
 	/**
+	 * Initialises the variables iconPath and BACK_PATH
+	 * @return {void}
+	 */
+	
+	public function __construct(){
+		$this->iconPath = t3lib_div::getIndpEnv('TYPO3_SITE_PATH').TYPO3_mainDir.PATH_txcommerce_icon_tree_rel;
+		$this->BACK_PATH = t3lib_div::getIndpEnv('TYPO3_SITE_PATH').TYPO3_mainDir;
+		
+	}
+	/**
 	 * Sets the Leaf Index
 	 * 
 	 * @param $index {int}	Leaf Index
@@ -152,8 +162,8 @@ class leafView extends langbase {
 			if (TYPO3_DLOG) t3lib_div::devLog('getRootIcon (leafview) gets passed invalid parameters.', COMMERCE_EXTkey, 3);	
 			return '';	
 		}
-		
-		$icon = '<img'.t3lib_iconWorks::skinImg($this->BACK_PATH.$this->iconPath, $this->rootIconName,'width="18" height="16"').' title="Root" alt="" />';
+
+		$icon = '<img'.t3lib_iconWorks::skinImg($this->iconPath, $this->rootIconName,'width="18" height="16"').' title="Root" alt="" />';
 	
 		return $this->wrapIcon($icon, $row);
 	}

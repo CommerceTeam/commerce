@@ -38,12 +38,7 @@ require_once(t3lib_extmgm::extPath('commerce').'class.tx_commerce_articlecreator
 require_once(t3lib_extmgm::extPath('commerce').'class.tx_commerce_attributeeditor.php');
 
         // field templates for usage in other tables to link categories
-require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_tcefunc_categorytree.php');
-//require_once(t3lib_extmgm::extPath('graytree') .'lib/class.tx_graytree_tcefunc.php'); ###IS THIS NEEDED ANYMORE?###
 
-	// needed only for the leaf classes to be shown in the TCE category tree
-require_once(PATH_txcommerce.'lib/class.tx_commerce_leafproductdata.php');
-require_once(PATH_txcommerce.'lib/class.tx_commerce_leafproductview.php');
 
 
 $TCA['tx_commerce_products'] = Array (
@@ -250,19 +245,6 @@ $TCA['tx_commerce_products'] = Array (
 			'l10n_mode' => 'exclude',
 			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_products.categories',
 			'config' => Array (
-				/*'type' => 'group',
-				'internal_type' => 'db',
-				'allowed' => 'tx_commerce_categories',
-				'form_type' => 'user',
-				'userFunc' => 'tx_graytree_tceFunc->getSingleField_selectTree',
-				'treeView' => 1,
-				'treeClass' => 'tx_commerce_tceFunc_categoryTree',
-				'leafInfoArray' => Array (
-				),
-				'size' => 7,
-				'autoSizeMax' => 10,
-				'minitems' => 1,
-				'maxitems' => 100,*/
 				'type' => 'passthrough',
 				'form_type' => 'user',
 				'userFunc' => 'EXT:'.COMMERCE_EXTkey.'/treelib/class.tx_commerce_tcefunc.php:&tx_commerce_tceFunc->getSingleField_selectCategories',

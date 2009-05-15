@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2005 - 2006 Ingo Schmitt <is@marketing-factory.de>
+*  (c) 2005 - 2009 Ingo Schmitt <is@marketing-factory.de>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -38,19 +38,13 @@
  	function productsSelector(&$data,&$pObj){
  		
  		$numArticleNumbersShow=3;
- 		#debug($data);
- 		#debug($pObj);
- 		#debug($data['row']['sys_language_uid']);
- 		#tx_commerce_create_folder::init_folders();
- 		#list($modPid,$defaultFolder,$folderList) = tx_graytree_folder_db::initFolders('Commerce', 'commerce');
-		#list($prodPid,$defaultFolder,$folderList) = tx_graytree_folder_db::initFolders('Products', 'commerce',$modPid);
+ 		
 		$addWhere = ' AND tx_commerce_articles.article_type_uid='.NORMALArticleType.' ';
 		if ($data['row']['sys_language_uid']>0) {
 			$addWhere .= ' and tx_commerce_products.sys_language_uid='.$data['row']['sys_language_uid'].' ';
 		}
 		$addWhere .= ' and tx_commerce_products.deleted = 0 and tx_commerce_articles.deleted =0 ';
 		$resProducts=$GLOBALS['TYPO3_DB']->exec_SELECTquery('distinct tx_commerce_products.title,tx_commerce_products.uid, tx_commerce_products.sys_language_uid, count(tx_commerce_articles.uid) as anzahl','tx_commerce_products,tx_commerce_articles',"tx_commerce_products.uid=tx_commerce_articles.uid_product ".$addWhere,'tx_commerce_products.title,tx_commerce_products.uid, tx_commerce_products.sys_language_uid','tx_commerce_products.title,tx_commerce_products.sys_language_uid');
-		#debug($GLOBALS['TYPO3_DB']->SELECTquery('distinct tx_commerce_products.title,tx_commerce_products.uid, tx_commerce_products.sys_language_uid','tx_commerce_products,tx_commerce_articles',"tx_commerce_products.uid=tx_commerce_articles.uid_product ".$addWhere,'','tx_commerce_products.title'));
 		$data['items'] = array();
 		$items=array();
 		$items[] = array('',-1);

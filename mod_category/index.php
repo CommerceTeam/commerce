@@ -7,10 +7,10 @@
  * @author	Marketing Factory
  * @maintainer Erik Frister
  */
-
-/*unset($MCONF);
+	
+unset($MCONF);
 require_once('conf.php');
-require_once($BACK_PATH.'init.php');*/
+require_once($BACK_PATH.'init.php');
 require_once($BACK_PATH.'template.php');
 
 require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_db_list.php');
@@ -39,7 +39,7 @@ class tx_commerce_categories extends tx_commerce_db_list {
 				'parent'   => 'categories')
 		);
 		
-		//$this->scriptNewWizard = $BACK_PATH.PATH_txgraytree_rel.'mod_cmd/class.tx_graytree_cmd_wizard.php';
+
 		$this->scriptNewWizard = 'class.tx_commerce_cmd_wizard.php';
 		parent::init();
 	}

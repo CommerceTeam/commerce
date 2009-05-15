@@ -44,6 +44,7 @@
 require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_category.php'); 
 require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_product.php'); 
 
+
 class tx_commerce_treelib_tceforms {
 
 	/**
@@ -241,6 +242,7 @@ class tx_commerce_treelib_tceforms {
 	 * @return 	string the rendered trees (HTML)
 	 */
 	function renderBrowsableMountTrees (&$browseTree, $divTreeAttribute=' style="margin:5px"' ) {
+		
 		/*$this->treeItemC = 0;
 		$this->treesC = 0;
 		$this->treeContent = '';
@@ -321,9 +323,11 @@ class tx_commerce_treelib_tceforms {
 		if ($width==NULL) {
 			list($width, $height) = $this->calcFrameSizeCSS();
 		}
-
+		global $BACK_PATH;
+		$BACK_PATH='../typo3/';
 		$divStyle = 'position:relative; left:0px; top:0px; height:'.$height.'; width:'.$width.';border:solid 1px;overflow:auto;background:#fff;';
 		$divFrame = '<div  name="'.$this->PA['itemFormElName'].'_selTree" style="'.htmlspecialchars($divStyle).'">';
+		
 		$divFrame .= $this->treeContent;
 		$divFrame .= '</div>';
 		

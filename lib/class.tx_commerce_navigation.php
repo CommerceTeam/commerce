@@ -40,10 +40,7 @@
  * Have a central Method to build chash parameters
  */
 
-if(!class_exists('tx_graytree_db')) {
-	$TYPO3_CONF_VARS = $GLOBALS['TYPO3_CONF_VARS'];
-	require_once(t3lib_extmgm::extPath('graytree').'lib/class.tx_graytree_db.php'); ###REPLACE ALL GRAYTREE HERE###
-}
+
 require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_browsetrees.php');
 require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_category.php');
 require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_product.php');

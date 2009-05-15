@@ -7,8 +7,7 @@
 if (!defined ('TYPO3_MODE')) 	die ('Access denied.');
 
 require_once(t3lib_extmgm::extPath('commerce').'ext_localconf.php');
-require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_tcefunc_categorytree.php');
-require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_tcecategoryview.php');
+
 
 $TCA['tx_commerce_address_types'] = Array (
 	'ctrl' => $TCA['tx_commerce_address_types']['ctrl'],
