@@ -11,6 +11,7 @@ Changelog for tx_commerce
 * Removed graytree completely 
 * Fixed Bug 2949, Thanks to Markus Kleinhenz 
 * Fixed Bug 2590, Thanks to Michael Staatz
+* Fixed Bug 2866
 
 24.04.2009 Volker Graubaum <vg@e-netconsulting.de>
 * commit old changes

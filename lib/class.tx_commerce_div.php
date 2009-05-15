@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2005 - 2008 Ingo Schmitt <is@marketing-factory.de>
+*  (c) 2005 - 2009 Ingo Schmitt <is@marketing-factory.de>
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -220,17 +220,35 @@ class tx_commerce_div {
 				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
 			}
 		}
+		
+		if ($mailconf['additionalData']) {
+			$additionalData = $mailconf['additionalData'];
+		}
+		
 
 		foreach($hookObjectsArr as $hookObj)	{
+			/**
+			 * @depricated: This Hook is depricated
+			 */
 			if (method_exists($hookObj, 'preProcessHtmlMail'))	{
 				$htmlMail=$hookObj->preProcessHtmlMail($mailconf);
 			}
+			
+			/**
+			 * this is the current hook
+			 */
+			if (method_exists($hookObj, 'preProcessMail'))	{
+				$hookObj->preProcessMail($mailconf,$additionalData);
+ 			}
+			
+			
 		}
 		// validate e-mail addesses
 		$mailconf['recipient'] = tx_commerce_div::validEmailList($mailconf['recipient']);
 	
 		if ($mailconf['recipient']) {
-			$parts = spliti('<title>|</title>', $mailconf['htmlContent'], 3);
+			$parts = spliti('<title>|</title>', $mailconf['html']['content'], 3);
+			
 			if (trim($parts[1])) {
 				$subject = strip_tags(trim($parts[1]));
 			}elseif( $mailconf['plain']['subject']){
@@ -297,7 +315,8 @@ class tx_commerce_div {
 			
 			foreach($hookObjectsArr as $hookObj)	{
 				if (method_exists($hookObj, 'postProcessMail'))	{
-					$htmlMail=$hookObj->postProcessMail($htmlMail);
+					$htmlMail=$hookObj->postProcessMail($htmlMail,$mailconf,$additionalData);
+					
 				}
 			}
 			$htmlMail->sendtheMail();
