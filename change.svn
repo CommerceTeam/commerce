@@ -1,5 +1,8 @@
 Changelog for tx_commerce
 
+16.05.2009 Michael Staatz <micsta@e-netconsulting.de>
+* Fixed Bug 1480, Thanks to Christian
+
 15.05.2009 Michael Staatz <micsta@e-netconsulting.de>
 * Fixed Bug 1515, Thanks to Tom Rüther
 * Added Feature 1563, new hook in pi1 'postInit' at the end of init.

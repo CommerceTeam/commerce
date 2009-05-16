@@ -160,8 +160,8 @@ class tx_commerce_pi4 extends tx_commerce_pibase {
 		$this->staticInfo = t3lib_div::makeInstance('tx_staticinfotables_pi1');
         $this->staticInfo->init();
         
-		if(!empty($this->piVars['adressType'])) {
-			$addressType = intval($this->piVars['adressType']);
+		if(!empty($this->piVars['addressType'])) {
+			$addressType = intval($this->piVars['addressType']);
 		}
 		
 		switch($addressType) {
@@ -640,7 +640,11 @@ class tx_commerce_pi4 extends tx_commerce_pibase {
 		if ($fieldConfig['readonly'] == 1) {
 			$result .= 'readonly="readonly" disabled="disabled" ';
 		}
-
+		
+		if (isset($fieldConfig['class'])) {
+			$result .= 'class="' . $fieldConfig['class'] . '" ';
+		}
+		
 		$result .= '/>';
 		return $result;
 	}
