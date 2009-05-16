@@ -122,6 +122,9 @@ Some hook-methods can return data which is used by the calling function. Others 
 	<div class="functionindex">function generateBasket</div>
 	<div class="functionindex">function makeArticleView</div>
 	<div class="functionindex">function makeProductList</div>
+	<div class="functionindex">function makePayment</div>
+	<div class="functionindex">function makeDelivery</div>
+	
 <a href="#tx_commerce_pi3">
 <div class="classindex">class tx_commerce_pi3</div>
 </a>
@@ -436,6 +439,22 @@ Some hook-methods can return data which is used by the calling function. Others 
 					Type: Multiple<br/>
 					Result: integer - The new prefixId<br />
 					Changes the prefixId used to create the links to the detail page.
+					</div>
+			<div class="functionname">function makePayment</div>
+				<div class="hookname">$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['paymentArticles']</div>
+					<div class="description">
+					Call: paymentAllowedArticles($this,$allowedArticles);<br/>
+					Type: Multiple<br/>
+					Result: Array of articles<br />
+					Changes the allowed articles for Payment
+					</div>
+			<div class="functionname">function makeDelivery</div>
+				<div class="hookname">$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['deliveryArticles']</div>
+					<div class="description">
+					Call: deliveryAllowedArticles($this,$allowedArticles);<br/>
+					Type: Multiple<br/>
+					Result: Array of articles<br />
+					Changes the allowed articles for Delivery
 					</div>
 	<div class="filename">pi3/class.tx_commerce_pi3.php</div>
 	<div class="description">Handles the checkout</div>

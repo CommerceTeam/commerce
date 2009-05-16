@@ -257,6 +257,8 @@
  					$insert_data
 					); 		
  		}
+		$this->basket_items[$oneuid]->calculate_net_sum();
+		$this->basket_items[$oneuid]->calculate_gross_sum();
  	}
  	
  	/**

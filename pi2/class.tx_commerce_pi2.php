@@ -508,13 +508,25 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 		$this->delProd->load_articles();
 	
 		$this->basketDel = $this->basket->get_articles_by_article_type_uid_asuidlist(DELIVERYArticleType);
-		$select = '<select name="'.$this->prefixId.'[delArt]" onChange="document.basket.submit();">';
+
+		$select = '<select name="'.$this->prefixId.'[delArt]" onChange="this.form.submit();">';
 			    
 		if ($this->conf['delivery.']['allowedArticles']) {
 			$allowedArticles = split(',',$this->conf['delivery.']['allowedArticles']);
 		}	    
+		// hook to allow to define/overwrite individually, which delivery articles are allowed (Melanie Meyer, 2009-05-05)
+		$hookObjectsArr = array();
+		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['deliveryArticles']))      {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['deliveryArticles'] as $classRef)  {
+				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+			}
+		}
 		
-			    
+		foreach($hookObjectsArr as $hookObj)    {
+			if (method_exists($hookObj, 'deliveryAllowedArticles'))   {
+				$allowedArticles = $hookObj->deliveryAllowedArticles($this,$allowedArticles);
+			}
+		}
 		foreach ($this->delProd->articles as $articleUid => $articleObj) {
 			if ((!is_array($allowedArticles)) || in_array($articleUid,$allowedArticles)) {
 			    $select .= '<option value="'.$articleUid.'"';
@@ -564,7 +576,8 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 		$this->payProd->load_articles();
 		$this->basketPay = $this->basket->get_articles_by_article_type_uid_asuidlist(PAYMENTArticleType);
 		
-		$select = '<select name="'.$this->prefixId.'[payArt]" onchange="document.basket.submit();">'; 
+
+		$select = '<select name="'.$this->prefixId.'[payArt]" onChange="this.form.submit();">';
 		$first=false;
 			    
 		/**

@@ -1,5 +1,10 @@
 Changelog for tx_commerce
 
+16.05.2009 Ingo Schmitt <is@marketing-factory.de>
+* Added Hook in PI2 for allowed articles, Thanks to Melanie Meyer info@melaniemeyer.de
+* Fixed problem with recalculation of prices in basket, Thanks to Melanie Meyer info@melaniemeyer.de
+* Reload basket after changing the payment and delivery articles, Thanks to Melanie Meyer info@melaniemeyer.de
+
 16.05.2009 Michael Staatz <micsta@e-netconsulting.de>
 * Fixed Bug 1480, Thanks to Christian
 * Fixed Bug 2546, Thanks to Martin Holtz
