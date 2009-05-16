@@ -4,6 +4,7 @@ Changelog for tx_commerce
 * Added Hook in PI2 for allowed articles, Thanks to Melanie Meyer info@melaniemeyer.de
 * Fixed problem with recalculation of prices in basket, Thanks to Melanie Meyer info@melaniemeyer.de
 * Reload basket after changing the payment and delivery articles, Thanks to Melanie Meyer info@melaniemeyer.de
+* Fixed Problem with TYPO3_SITE_PATH, added fix for older TYPO3 Version
 
 16.05.2009 Michael Staatz <micsta@e-netconsulting.de>
 * Fixed Bug 1480, Thanks to Christian

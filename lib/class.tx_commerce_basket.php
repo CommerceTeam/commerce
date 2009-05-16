@@ -149,7 +149,7 @@
  	
  	/**
  	 * Loads the Basket Data from the database
- 	 * @todo handling f�r special prices
+ 	 * @todo handling for special prices
  	 */
  	function load_data_from_database()	{
  		

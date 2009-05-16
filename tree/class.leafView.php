@@ -38,9 +38,15 @@ class leafView extends langbase {
 	 */
 	
 	public function __construct(){
-		if (t3lib_div::getIndpEnv('TYPO3_SITE_PATH')) {
-			$rootPathT3 = t3lib_div::getIndpEnv('TYPO3_SITE_PATH');
+		
+		if (t3lib_div::int_from_ver(TYPO3_version) >= '4002006') {
+		 	$rootPathT3 = t3lib_div::getIndpEnv('TYPO3_SITE_PATH');
 		}else{
+			// Code TYPO3 Site Path manually, backport from TYPO3 4.2.6
+			$rootPathT3 = substr(t3lib_div::getIndpEnv('TYPO3_SITE_URL'), strlen(t3lib_div::getIndpEnv('TYPO3_REQUEST_HOST')));
+		}
+		// If we don't have any data, set /
+		if (empty($rootPathT3)){
 			$rootPathT3 = '/';
 		}
 		$this->iconPath = $rootPathT3.TYPO3_mainDir.PATH_txcommerce_icon_tree_rel;
