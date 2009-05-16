@@ -2,6 +2,7 @@ Changelog for tx_commerce
 
 16.05.2009 Michael Staatz <micsta@e-netconsulting.de>
 * Fixed Bug 1480, Thanks to Christian
+* Fixed Bug 2546, Thanks to Martin Holtz
 
 15.05.2009 Michael Staatz <micsta@e-netconsulting.de>
 * Fixed Bug 1515, Thanks to Tom Rüther

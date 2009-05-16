@@ -34,7 +34,7 @@ class tx_commerce_linkhandler {
 		$localcObj = t3lib_div::makeInstance('tslib_cObj');
 		
 		$DisplayPID = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_commerce_pi1.']['overridePid'];
-		if (empty($DispalyPID)) {
+		if (empty($DisplayPID)) {
 			$extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['commerce']);
 			$DisplayPID = $extConf['previewPageID'];
 		}
