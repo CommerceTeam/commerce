@@ -39,12 +39,10 @@ class leafView extends langbase {
 	
 	public function __construct(){
 		
-		if (t3lib_div::int_from_ver(TYPO3_version) >= '4002006') {
-		 	$rootPathT3 = t3lib_div::getIndpEnv('TYPO3_SITE_PATH');
-		}else{
-			// Code TYPO3 Site Path manually, backport from TYPO3 4.2.6
-			$rootPathT3 = substr(t3lib_div::getIndpEnv('TYPO3_SITE_URL'), strlen(t3lib_div::getIndpEnv('TYPO3_REQUEST_HOST')));
-		}
+		// if we offer an option to calculate the TYPO3_SITE_PATH ourself if it's not set, we can also calculate it always.
+		// Otherwise we open a new error source, happened with my 4.2.6 version
+		$rootPathT3 = substr(t3lib_div::getIndpEnv('TYPO3_SITE_URL'), strlen(t3lib_div::getIndpEnv('TYPO3_REQUEST_HOST')));
+
 		// If we don't have any data, set /
 		if (empty($rootPathT3)){
 			$rootPathT3 = '/';
