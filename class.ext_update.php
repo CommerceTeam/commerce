@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2008 Ingo Schmitt <is@marketing-factory.de>
+*  (c) 2008 - 2009 Ingo Schmitt <is@marketing-factory.de>
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -129,12 +129,13 @@ class ext_update {
 		if (($result) && ($GLOBALS['TYPO3_DB']->sql_num_rows($result)>0)) {
 			return true;
 		}
+		
 		/**
-		 * No userrights set, must be an update
+		 * No userrights set at all, must be an update.
 		 */
-		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid','tx_commerce_categories','perms_user=0 or perms_group=0 or perms_everybody = 0');
-		if  (($result) && ($GLOBALS['TYPO3_DB']->sql_num_rows($result)>0)) {
-				return true;
+		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid','tx_commerce_categories','perms_user = 0 AND perms_group = 0 AND perms_everybody = 0');
+		if  (($result) && ($GLOBALS['TYPO3_DB']->sql_num_rows($result)>0)) {	
+			return true;
 		}
 		
 			

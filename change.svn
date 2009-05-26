@@ -1,5 +1,9 @@
 Changelog for tx_commerce
 
+26.05.2009 Ingo Schmitt <is@marketing-factory.de>
+* Fixed Problem in Basket with wrong instantiating of classes
+* Fixed BUG 3164 and Feature 2478, thanks to Erik Frister 
+
 16.05.2009 Ingo Schmitt <is@marketing-factory.de>
 * Added Hook in PI2 for allowed articles, Thanks to Melanie Meyer info@melaniemeyer.de
 * Fixed problem with recalculation of prices in basket, Thanks to Melanie Meyer info@melaniemeyer.de

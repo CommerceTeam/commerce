@@ -25,6 +25,9 @@ require_once (t3lib_extmgm::extPath('commerce').'treelib/class.tx_commerce_leaf_
 require_once (t3lib_extmgm::extPath('commerce').'treelib/class.tx_commerce_leaf_articleview.php');
 require_once (t3lib_extmgm::extPath('commerce').'treelib/class.tx_commerce_leaf_articledata.php');
 
+// Require ext update script.
+require_once(t3lib_extmgm::extPath('commerce').'class.ext_update.php'); 
+
 class tx_commerce_categorytree extends browsetree {
 	
 	//Set the Tree Name
@@ -32,7 +35,8 @@ class tx_commerce_categorytree extends browsetree {
 	protected $bare				= true;							//Should the tree be only Categories? Or also Products and Articles?
 	protected $minCategoryPerms = 'show'; 
 	protected $noClickList		= '';
-
+	protected $simpleMode  		= false;
+	
 	/**
 	 * Initializes the Categorytree
 	 * 
@@ -87,7 +91,11 @@ class tx_commerce_categorytree extends browsetree {
 			$articleleaf->initBasic($articleview, t3lib_div::makeInstance('tx_commerce_leaf_articledata'));
 
 			$categoryLeaf->addLeaf($productleaf);
-			$productleaf->addLeaf($articleleaf);
+			
+			// Do not show articles in simple mode.
+			if(!$this->simpleMode) {
+				$productleaf->addLeaf($articleleaf);
+			}
 		}
 	}
 	
@@ -125,6 +133,16 @@ class tx_commerce_categorytree extends browsetree {
 			if (TYPO3_DLOG) t3lib_div::devLog('Bare-Mode of the tree was set with a non-boolean flag!', COMMERCE_EXTkey, 2);	
 		}
 		$this->bare = $bare;
+	}
+	
+	/**
+	 * Sets if we are running in simple mode.
+	 * 
+	 * @param int $sm	SimpleMode?
+	 * @return void
+	 */
+	public function setSimpleMode($sm = 1) {
+		$this->simpleMode = $sm;
 	}
 	
 	/**

@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c)  2005 - 2008 Ingo Schmitt <is@marketing-factory.de>
+*  (c)  2005 - 2009 Ingo Schmitt <is@marketing-factory.de>
 *  All   rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -189,7 +189,7 @@
  	 */
  	function changePrices($article_uid,$new_price_gross,$new_price_net){
  		if ($this->isChangeable()){
-	 		if(is_object($this->basket_items[$article_uid])){
+	 		if((is_object($this->basket_items[$article_uid])) && (is_a($this->basket_items[$article_uid],'tx_commerce_basket_item'))){
 	 			$this->basket_items[$article_uid]->setPriceNet($new_price_net);
 	 			$this->basket_items[$article_uid]->setPriceGross($new_price_gross);
 	 			$this->basket_items[$article_uid]->recalculate_item_sums(true);	

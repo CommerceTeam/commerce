@@ -10,10 +10,12 @@
 		<languageKey index="default" type="array">
 			<label index="category title">Category</label>
 			<label index="product title">Product</label>
+			<label index="ext.update">You need to "UPDATE!" the commerce extension. Please go to Extensions->Commerce. Then choose "UPDATE!" in the select-box.</label>
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="category title">Kategorie</label>
 			<label index="product title">Produkt</label>
+			<label index="ext.update">Sie müssen ein "UPDATE!" im Commerce Extension im Erw-Manager ausführen. Gehen Sie auf  Erw-Manager->Commerce. Wählen Sie dann "UPDATE!" in der Select-Box.</label>
 		</languageKey>
 		<languageKey index="nl" type="array">
 			<label index="category title">Categorie</label>

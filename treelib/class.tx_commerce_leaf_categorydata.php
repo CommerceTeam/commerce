@@ -27,8 +27,8 @@ class tx_commerce_leaf_categorydata extends leafMasterData {
 	/**
 	 * Sets the Permission Mask for reading Categories from the db
 	 * 
-	 * @return {void}
-	 * @param $mask {int}	mask for reading the permissions
+	 * @return void
+	 * @param $mask int		mask for reading the permissions
 	 */
 	function setPermsMask($mask) {
 		if(!is_numeric($mask)) {
@@ -43,8 +43,8 @@ class tx_commerce_leaf_categorydata extends leafMasterData {
 	 * Initializes the categorydata
 	 * Builds the Permission-Statement
 	 * 
-	 * @return {void}
-	 * @param {int} $uid - Category UID
+	 * @return void
+	 * @param int $uid - Category UID
 	 */
 	function init() {
 		$this->whereClause = ' deleted = 0 AND '.tx_commerce_belib::getCategoryPermsClause($this->permsMask);
@@ -55,9 +55,9 @@ class tx_commerce_leaf_categorydata extends leafMasterData {
 	/**
 	 * Loads and returns the Array of Records (for db_list)
 	 * 
-	 * @return {array}
-	 * @param $uid {int}	UID of the starting Category
-	 * @param $depth {int}[optional] Recursive Depth
+	 * @return array
+	 * @param $uid int	UID of the starting Category
+	 * @param $depth int[optional] Recursive Depth
 	 */
 	public function getRecordsDbList($uid, $depth = 2) {
 		if(!is_numeric($uid) || !is_numeric($depth)) {
@@ -81,7 +81,7 @@ class tx_commerce_leaf_categorydata extends leafMasterData {
 	
 	/**
 	 * Returns the Category Root record
-	 * @return {array}
+	 * @return array
 	 */
 	protected function getRootRecord() {
 		$root = array();
@@ -100,7 +100,7 @@ class tx_commerce_leaf_categorydata extends leafMasterData {
 	 * This function is used to normalize the records in the tx_commerce_categories
 	 * Any category that has the parent_category = '' will be updated
 	 * 
-	 * @return {void}
+	 * @return void
 	 */
 	protected function normalizeRecords() {
 		/*$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid', 'tx_commerce_categories', 'parent_category = ""');
@@ -109,6 +109,8 @@ class tx_commerce_leaf_categorydata extends leafMasterData {
 		
 		}*/
 	}
+	
+	
 }
 
 //XClass Statement

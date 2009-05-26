@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2008 Marketing Factory Consulting GmbH <typo3@marketing-factory.de>
+*  (c) 2008 - 2009 Marketing Factory Consulting GmbH <typo3@marketing-factory.de>
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -31,17 +31,22 @@ unset($MCONF);
 /**
  * @TODO: Find a better solution for the @ at this place, since some globals could not be defined
 */
-	if (!(@is_numeric(TYPO3_REQUESTTYPE) || @is_numeric(TYPO3_REQUESTTYPE_AJAX))) {
-		require_once('conf.php');
-		require_once($BACK_PATH.'init.php');
-		require_once(PATH_typo3.'template.php');
-	} else {
-		//In case of an AJAX Request the script including this script is ajax.php, from which the BACK PATH is ''
-		require_once('init.php');
-		require('template.php');
-	}
+if (!(@is_numeric(TYPO3_REQUESTTYPE) || @is_numeric(TYPO3_REQUESTTYPE_AJAX))) {
+	require_once('conf.php');
+	require_once($BACK_PATH.'init.php');
+	require_once(PATH_typo3.'template.php');
+	
+	$LANG->includeLLFile('EXT:commerce/mod_category/locallang.xml');
+	
+} else {
+	//In case of an AJAX Request the script including this script is ajax.php, from which the BACK PATH is ''
+	require_once('init.php');
+	require('template.php');
+}	
 
-
+// Require ext update script.
+require_once(t3lib_extmgm::extPath('commerce').'class.ext_update.php'); 
+	
 require_once(t3lib_extmgm::extPath('commerce').'treelib/class.tx_commerce_categorytree.php');
 
 class tx_commerce_category_navframe {
@@ -58,10 +63,20 @@ class tx_commerce_category_navframe {
 	 * Initializes the Tree
 	 */
 	function init() {
-		//Get the Category Tree without the Products and the Articles
+		//Get the Category Tree
 		$this->categoryTree = t3lib_div::makeInstance('tx_commerce_categorytree');
 		$this->categoryTree->setBare(false);
+		
+		// Get SimpleMode.
+		$extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['commerce']);
+		$sm = (int)$extConf['simpleMode'];
+		
+		// Assign config.
+		$this->categoryTree->setSimpleMode($sm);
+		
 		$this->categoryTree->init();
+		
+		
 	}
 	
 	/**
@@ -150,8 +165,14 @@ class tx_commerce_category_navframe {
 	function main() {
 		global $LANG,$CLIENT;
 		
-		//Get the Browseable Tree
-		$tree = $this->categoryTree->getBrowseableTree();
+		// Check if commerce needs to be updated.
+		if($this->isUpdateNecessary()) {
+			$tree = $LANG->getLL('ext.update');
+		} else {
+			//Get the Browseable Tree
+			$tree = $this->categoryTree->getBrowseableTree();
+		}
+		
 		
 		// Outputting page tree:
 		$this->content .= '<div id="PageTreeDiv">'.$tree.'</div>';
@@ -177,6 +198,19 @@ class tx_commerce_category_navframe {
 	
 	function printContent() {
 		echo $this->content;
+	}
+	
+	/**
+	 * Checks if an update of the commerce extension is necessary
+	 * 
+	 * @author	Erik Frister
+	 * 
+	 * @return boolean
+	 */
+	protected function isUpdateNecessary() {
+		$updater = t3lib_div::makeInstance('ext_update');
+		
+		return $updater->access();
 	}
 	
 	/**
