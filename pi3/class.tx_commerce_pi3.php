@@ -1502,6 +1502,8 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 					$feuData['password'] = substr(uniqid(rand()), 0, 6);
 					$feuData['email'] = $this->MYSESSION['billing']['email'];
 					$feuData['name'] = $this->MYSESSION['billing']['name'].' '.$this->MYSESSION['billing']['surname'];
+					$feuData['first_name'] = $this->MYSESSION['billing']['name'];
+					$feuData['last_name'] = $this->MYSESSION['billing']['surname'];
 					/**
 					 * Hook for processing feUserData
 					 * @author Volker Graubaum ( typo3@e-netconsulting.de )
