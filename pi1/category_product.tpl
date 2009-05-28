@@ -452,7 +452,7 @@ globally at the beginning of the form tag as marker ###GENERAL_HIDDENCATUID###
 <!-- ###RELATED_PRODUCT_SINGLE### end -->
 
 <!-- ###RELATED_PRODUCT_SINGLE_NOSTOCK### begin -->
-nostock
+
 	###PRODUCT_TITLE###
 	###PRODUCT_IMAGES###
 	###PRODUCT_DESCRIPTION###
