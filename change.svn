@@ -3,6 +3,7 @@ Changelog for tx_commerce
 28.05.2009 Ingo Schmitt <is@marketing-factory.de>
 * Changed leafView, TYPO3_SITE_URL is availiable from 4.2.7
 * Removed nostock as text from Template
+* Changed Version to 0.11.10
 
 26.05.2009 Ingo Schmitt <is@marketing-factory.de>
 * Fixed Problem in Basket with wrong instantiating of classes
