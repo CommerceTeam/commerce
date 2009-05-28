@@ -484,14 +484,34 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 
 			);
 		}
+		// @author: David Rühr <dr@marketing-factory.de>
+		// @date: 2009-05-28
+		// Additonal headers for "related products" are overwritten by subparts
+		// so we will change this here. In thought of sorting, we can't split the entrys. 
 
-		$content=$this->cObj->substituteSubpart(
-			$content,
-			'###'.strtoupper($this->conf['templateMarker.']['relatedProductList']).'###',
-			$relatedProductsSubpart
-		);
-		#$markerArray['###'.strtoupper($this->conf['templateMarker.']['relatedProductList']).'###']=		$relatedProductsSubpart;
-
+		if ($relatedProductsSubpart != '') {
+			// set first subpart empty
+			$contentTmp = $this->cObj->substituteSubpart(
+				$content,
+				'###'.strtoupper($this->conf['templateMarker.']['relatedProductSingle']).'###',
+				''
+			);
+			
+			// fill the second with our data
+			$content = $this->cObj->substituteSubpart(
+				$contentTmp,
+				'###'.strtoupper($this->conf['templateMarker.']['relatedProductSingle']).'_NOSTOCK###',
+				$relatedProductsSubpart
+			);
+		// when we have no related products, than overwrite the header
+		} else {
+			$content=$this->cObj->substituteSubpart(
+				$content,
+				'###'.strtoupper($this->conf['templateMarker.']['relatedProductList']).'###',
+				''
+			);
+		}
+		
 		$hookObjectsArr = array();
 		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['singleview'])) {
 		   foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['singleview'] as $classRef) {
@@ -795,7 +815,7 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
     		 }
 		
 		$content = $this->cObj->substituteMarkerArray($content, $markerArray);
-
+		
 		return $content;
 
 	}
