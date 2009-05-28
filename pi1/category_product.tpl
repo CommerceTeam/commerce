@@ -445,6 +445,7 @@ globally at the beginning of the form tag as marker ###GENERAL_HIDDENCATUID###
 <!-- ###CATEGORY_ITEM### end -->
 
 <!-- ###RELATED_PRODUCTS### begin -->
+
 <!-- ###RELATED_PRODUCT_SINGLE### begin -->
 	###PRODUCT_TITLE###
 	###PRODUCT_IMAGES###
