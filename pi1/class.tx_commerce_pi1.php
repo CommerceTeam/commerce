@@ -30,7 +30,7 @@
  * @see		tx_commerce_pibase
  *
  * $Id: class.tx_commerce_pi1.php 576 2007-03-22 22:38:22Z ingo $
- */-
+ */
 
 
 /**
