@@ -53,7 +53,7 @@ require_once (PATH_t3lib.'class.t3lib_scbase.php');
  * @author	Rene Fritz <r.fritz@colorcube.de>
  * @package DAM-Treelib
  */
-debug($BACK_PATH);
+
 class tx_commerce_treelib_browser extends t3lib_SCbase {
 
 
