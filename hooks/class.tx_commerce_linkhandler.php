@@ -39,7 +39,20 @@ class tx_commerce_linkhandler {
 			$DisplayPID = $extConf['previewPageID'];
 		}
 		
-		$lconf = array ( "parameter" => $DisplayPID,
+		//remove the first param of "$link_param" (this is the page id wich is set by $DisplayPID) and add all params left (e.g. css class, target...) to the value of $lconf["paramter"]
+		$link_param_array = explode(" ",$link_param);
+		if(is_array($link_param_array)) {
+			$link_param_array = array_splice($link_param_array,1);
+			if(count($link_param_array) > 0) {
+				$link_param = $DisplayPID . " " . implode(" ", $link_param_array);
+			} else {
+				$link_param = $DisplayPID;
+			}
+		} else {
+			$link_param = $DisplayPID;
+		}
+		
+		$lconf = array ( "parameter" => $link_param,
 						"additionalParams" => $addparams,
 						"additionalParams.insertData" => 1,
 						"useCacheHash" => 1);
