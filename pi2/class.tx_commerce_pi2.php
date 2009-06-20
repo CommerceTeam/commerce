@@ -747,7 +747,7 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 		        			$attributeObj->load_data();
 		    				$markerArray["###SELECT_ATTRIBUTES_TITLE###"] = $myAttribute['title'];
 		        			list($k,$v) = each($myAttribute['values']);
-		        			$markerArray["###SELECT_ATTRIBUTES_VALUE###"] = $v;
+		        			$markerArray["###SELECT_ATTRIBUTES_VALUE###"] = $v['value'];
 		    	        	$markerArray["###SELECT_ATTRIBUTES_UNIT###"] = $myAttribute['unit'];
 			
 			    			$attCode .= $this->substituteMarkerArrayNoCached($templateAttr, $markerArray , array());
