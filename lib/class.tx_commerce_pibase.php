@@ -391,6 +391,7 @@ class tx_commerce_pibase extends tslib_pibase {
 		
 		
 		if ($this->category->has_subcategories ( )){
+			
 			foreach ($this->category->categories as $categoryUid => $oneCategory)	{
 
 				$oneCategory->load_Data();
@@ -508,8 +509,8 @@ class tx_commerce_pibase extends tslib_pibase {
 
 
 		// ###########    product list    ######################
-		if (is_array($this->category_products)){
-     		$this->category_products = array_slice($this->category_products,$internalStartPoint, $internalResults);
+		if (is_array($this->category_products)){			
+     		$this->category_products = array_slice($this->category_products,$internalStartPoint, $internalResults);     		
 		}
 
 	 	#$this->category_products = array_slice($this->category_products,$internalStartPoint,$internalResults);
@@ -1546,7 +1547,8 @@ class tx_commerce_pibase extends tslib_pibase {
 			}
 			$markerArray= array();
 			$markerArray=$this->addFormMarker($markerArray);
-			return  $this->cObj->substituteMarkerArray($category_items_listview, $markerArray ,'###|###',1);
+			
+			return $this->cObj->stdWrap($this->cObj->substituteMarkerArray($category_items_listview, $markerArray ,'###|###',1), $this->conf['listView.']['products.']['stdWrap.']);
 		}
 	}
 
