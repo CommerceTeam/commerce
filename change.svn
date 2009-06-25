@@ -1,5 +1,8 @@
 Changelog for tx_commerce
 
+25.06.2009 Ingo Schmitt <is@marketing-factory.de>
+* Fixed PHP -Error in commerce_pi1
+
 24.06.2009 Volker Graubaum <vg@e-netconsulting.de>
 * fixed BUG 3704 
 

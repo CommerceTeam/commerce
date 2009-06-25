@@ -298,7 +298,7 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 		}
 
 	 	$hookObjectsArr = array();
-        if (is_array +($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi1/class.tx_commerce_pi1.php']['postInit'])) {
+        if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi1/class.tx_commerce_pi1.php']['postInit'])) {
             foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi1/class.tx_commerce_pi1.php']['postInit'] as $classRef) {
                 $hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
             }
