@@ -3,6 +3,10 @@ Changelog for tx_commerce
 24.06.2009 Volker Graubaum <vg@e-netconsulting.de>
 * fixed BUG 3704 
 
+20.06.2009 Sascha Egerer <seg@softvision.de>
+* fixed Bug #2599
+* fixed Bug #1678 
+
 09.06.1009 Christian Kuhn <lolli@schwarzbu.ch>
 * Fixed minor cgl issues (superfuous dash in pi1, missing closing php tag in pi2, pi4 and pi5)
 
