@@ -58,25 +58,26 @@
 	 * @var Stoarge-type for the data
 	 * @access private
 	 */ 	 
- 	 var $storage_type='database';
+ 	 private $storage_type='database';
  	 
  	 
  	 /**
  	  * @var sess_id (note not session id, as ssesison_id ist PHP5 method )
  	  * @access private
  	  */
- 	 var $sess_id='';
+ 	 private $sess_id='';
  	
  	/**
  	 * Dummy instanatiate class
  	 * 
  	 */
- 	function tx_commerce_basket()
- 	{
- 			
- 	}
- 	
- 	
+	 
+ 	public function tx_commerce_basket(){		
+		
+		if($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce']['basketType']=='persistent'){
+		    $this->storage_type='persistent';
+		} 			
+ 	} 	
  		
  	
  	/**
@@ -86,8 +87,7 @@
  	
  	
  	
- 	function set_session_id($session_id)
- 	{
+ 	public function set_session_id($session_id) {
  		$this->sess_id=$session_id;	
  	}
 
@@ -95,16 +95,17 @@
 	 * Finishes the order
 	 * @access public
 	 */ 	
- 	function finishOrder()
- 	{
- 		switch($this->storage_type)
- 		{
+ 	public function finishOrder() 	{
+ 		switch($this->storage_type){
+			case 'persistent' : 
+                    	    // unset sessionvalue from user
+	                    $GLOBALS['TSFE']->fe_user->setKey('ses', 'txCommercePersistantSessionId', '');
+    	                    $GLOBALS["TSFE"]->fe_user->storeSessionData();												    
  			case 'database':
- 				$this->finishOrderInDatabase();
- 				break;
+ 			    $this->finishOrderInDatabase();
+ 			    break;
  				
- 		}
- 		
+ 		} 		
  	}
  	/**
  	 * Loads the Basket_data from the session/database
@@ -113,9 +114,11 @@
  	 * @acces public
  	 */
  	
- 	function load_data(){
+ 	public function load_data(){
  		
  		switch($this->storage_type){
+			case 'persistent' : $this->restoreBasket();
+			break;
  			case 'database':
  				$this->load_data_from_database();
  				break;
@@ -133,12 +136,10 @@
  	 * @acces public
  	 */
  	
- 	function store_data()
- 	{
+ 	public function store_data(){
  		
- 		switch($this->storage_type)
- 		{
- 			
+ 		switch($this->storage_type){
+			case 'persistent' :		
  			case 'database':
  				$this->store_data_to_database();
  				break;
@@ -146,12 +147,76 @@
  		}
  		
  	}
+	
+	private function restoreBasket(){
+	    if($GLOBALS['TSFE']->fe_user->user){
+		    $userSessionID = $GLOBALS['TSFE']->fe_user->getKey('user','txCommercePersistantSessionId');
+		    if($userSessionID && $userSessionID != $this->sess_id){			
+			    $this->loadPersistantDataFromDatabase($userSessionID);			
+			    $this->load_data_from_database();
+			    $GLOBALS['TSFE']->fe_user->setKey('user','txCommercePersistantSessionId',$this->sess_id);
+			    $this->store_data_to_database();
+		    }else{
+			    $this->load_data_from_database();		    
+		    }
+	    }else{
+		$this->load_data_from_database();
+	    }
+	
+	}
+	
  	
  	/**
  	 * Loads the Basket Data from the database
  	 * @todo handling for special prices
  	 */
- 	function load_data_from_database()	{
+ 	private function loadPersistantDataFromDatabase($sessionID){ 		
+		
+		
+
+			$result=$GLOBALS['TYPO3_DB']->exec_SELECTquery('*',
+ 				'tx_commerce_baskets',
+				"sid='".$GLOBALS['TYPO3_DB']->quoteStr($sessionID,'tx_commerce_baskets')."' and finished_time =0 and pid=".$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce']['BasketStoragePid'],
+				'',
+				'pos');
+
+			if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)>0){
+
+	
+			if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_basket.php']['loadPersistantDataFromDatabase'])) {
+				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_basket.php']['loadPersistantDataFromDatabase'] as $classRef) {
+					$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+				}
+			}
+						
+			$basketReadonly = false;
+ 			while ($return_data=$GLOBALS['TYPO3_DB']->sql_fetch_assoc($result))	{ 			
+ 				if (($return_data['quantity']>0) && ($return_data['price_id']>0))  {					
+ 					$this->add_article($return_data['article_id'],$return_data['quantity']) ;	
+ 					$this->crdate = $return_data['crdate'];
+ 					if (is_array($hookObjectsArr)){
+	 					foreach($hookObjectsArr as $hookObj)	{
+							if (method_exists($hookObj, 'loadPersistantDataFromDatabase')) {
+								$hookObj->loadPersistantDataFromDatabase($return_data,$this);
+							}
+						}
+ 					} 
+					
+ 				}
+ 			}
+ 			$GLOBALS['TYPO3_DB']->sql_free_result($result);
+ 			
+ 		}
+ 	
+ 		
+	 	
+ 	}
+
+ 	/**
+ 	 * Loads the Basket Data from the database
+ 	 * @todo handling for special prices
+ 	 */
+ 	private function load_data_from_database()	{
  		
  		$result=$GLOBALS['TYPO3_DB']->exec_SELECTquery('*',
  			'tx_commerce_baskets',
@@ -167,8 +232,7 @@
 					}
 			}
 			$basketReadonly = false;
- 			while ($return_data=$GLOBALS['TYPO3_DB']->sql_fetch_assoc($result))	{
- 			
+ 			while ($return_data=$GLOBALS['TYPO3_DB']->sql_fetch_assoc($result))	{ 			
  				if (($return_data['quantity']>0) && ($return_data['price_id']>0))  {
  					$this->add_article($return_data['article_id'],$return_data['quantity'],$return_data['price_id']) ;	
  					$this->changePrices($return_data['article_id'],$return_data['price_gross'],$return_data['price_net']);
@@ -189,8 +253,7 @@
  			}
 			if ($basketReadonly === true) {
 	 			$this->setReadOnly();
-	 		}
- 			
+	 		} 			
  			$GLOBALS['TYPO3_DB']->sql_free_result($result);
  			
  		}
@@ -198,13 +261,14 @@
  		
 	 	
  	}
+
+	
  	/**
  	 * stores the Basket Data to the database
  	 * @todo handling f�r special prices
 	 * @change real delete the data
  	 */
- 	function store_data_to_database()
- 	{
+ 	private function store_data_to_database() { 
  		/**
  		 * First delete all records from session
  		 */	
@@ -228,8 +292,7 @@
 		/**
 		 * And insert data
 		 */	
-		foreach ($this->basket_items as $oneuid  => $one_item)
- 		{
+		foreach ($this->basket_items as $oneuid  => $one_item) {
 			$insert_data['pid']=$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce']['BasketStoragePid'];
  			$insert_data['pos']=$ar_basket_items_keys[$oneuid];
  			$insert_data['sid']=$this->sess_id;
@@ -268,8 +331,7 @@
  	 * to finihs the datanasbe
  	 */
  	
- 	function finishOrderInDatabase()
- 	{
+ 	private function finishOrderInDatabase() {
  		$update_array['finished_time']=time();
  		$result=$GLOBALS['TYPO3_DB']->exec_UPDATEquery('tx_commerce_baskets',
 			"sid='".$GLOBALS['TYPO3_DB']->quoteStr($this->sess_id,'tx_commerce_baskets')."' and finished_time = 0",
