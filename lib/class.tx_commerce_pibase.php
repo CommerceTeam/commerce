@@ -129,6 +129,37 @@ class tx_commerce_pibase extends tslib_pibase {
 	}
 	
 	/**
+	 * Returns the payment object and includes the Payment Class. If there is no payment it throws an error
+	 *
+	 * @return paymentObj
+	 */
+	function getPaymentObject($paymentType = '')	{
+		$sysConfig = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['SYSPRODUCTS']['PAYMENT'];
+		
+		$config = $sysConfig['types'][strtolower((string)$paymentType)];
+
+		$errorStr = NULL;
+		if (!isset($config['class']))	{
+			$errorStr[] = 'class not set!:'.$config['class'];
+		}
+		
+		if (!file_exists($config['path']))	{
+			$errorStr[] = 'file not found!:'.$config['path'];
+		}
+		
+		if (is_array($errorStr)) die ('MAIN:FATAL! No payment possible because I don\'t know how to handle it! (' . implode(', ', $errorStr) . ')');
+
+		require_once($config['path']);
+		$paymentObjClassName = t3lib_div::makeInstanceClassName($config['class']);
+		$paymentObj = new $paymentObjClassName($this);		
+		// @TODO is this needed?
+		if (method_exists($paymentObj, 'setStep'))	{
+			$this->piVars['step'] = $paymentObj->setStep($_REQUEST, $this->piVars['step']);
+		}								
+		return $paymentObj;
+	}
+	
+	/**
 	 * Getting additional locallang-files through an Hook
 	 */
 	function addAdditionalLocallang() {

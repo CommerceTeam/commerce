@@ -38,11 +38,11 @@
   * Kreditkarte			Testnummer 
   * Visa      			4111 1111 1111 1111
   * MasterCard			5500 0000 0000 0004
-  * American Express	3400 0000 0000 009
+  * American Express		3400 0000 0000 009
   * Diner's Club		3000 0000 0000 04  
   * Carte Blanche		3000 0000 0000 04
   * Discover			6011 0000 0000 0004
-  * JCB					3088 0000 0000 0009
+  * JCB				3088 0000 0000 0009
   *
   */
  
@@ -79,32 +79,10 @@ class tx_commerce_payment_creditcard {
 	}
 
 	function getAdditonalFieldsConfig($pObj) {
-		if(!is_object($this->pObj)) {
-			$this->pObj = $pObj;
+		if($this->provider !== null){
+			return $this->provider->getAdditonalFieldsConfig();
 		}
-		$result = array(
-			'cc_type.' => array (
-				'mandatory' => 1,
-				'type' => 'select',
-				'values' => array (
-					'Visa',
-					'Mastercard',
-					'Amercican Express',
-					'Diners Club',
-					'JCB',
-					'Switch',
-					'VISA Carte Bancaire',
-					'Visa Electron',
-					'UATP',
-				),
-			),
-			'cc_number.' => array ('mandatory' => 1),
-			'cc_expirationYear.' => array ('mandatory' => 1),
-			'cc_expirationMonth.' => array ('mandatory' => 1),
-			'cc_holder.' => array ('mandatory' => 1),
-			'cc_checksum.' => array ('mandatory' => 1),
-		);
-		return $result;
+		return null;
 	}
 	
 	function proofData($formData,$pObj) {
@@ -176,9 +154,10 @@ class tx_commerce_payment_creditcard {
 				}
 			}
 		}
-		
-		
 		unset($ccvs);
+		if($result && $this->provider !== null){
+		    return $this->provider->proofData($formData,$result);
+		}
 		return $result;
 	}
 	
@@ -193,136 +172,16 @@ class tx_commerce_payment_creditcard {
 	 *
 	 * @return boolean	True or false
 	 */
-	function finishingFunction($config,$session, $basket,$pObj) {
+	function finishingFunction($config,$session, $basket,$pObj) {		
+	
 		if(!is_object($this->pObj)) {
 			$this->pObj = $pObj;
 		}
-		// make some checks with worldpay or whatever...
-		// all data is stored in $session
-		
-		
-		$paymentLib = new payment;
-		
-		/*
-		
-		user data can be found in
-			$_SESSION['billing']
-			$_SESSION['delivery']
-			$GLOBALS['TSFE']->fe_user->user
-		
-		$paymentLib->userData = array(
-			'firstname' => 
-		);
-		
-		
-		$paymentLib->userData(
-			array(
-				"firstname" => $formData['firstname'],
-				"lastname"  => $formData['lastname'],
-				"street"	=> $formData['strees'],
-				"zip"		=> $formData['zip'],
-				"city"		=> $formData['city'],
-				"telephone" => $formData['telephone'],
-				"country"	=> $formData['contry'],
-				"email"		=> $formData['email'],
-				"userid"	=> $formData['userid']
-			)
-		);
-		*/
-		
-		
-		
-		$paymentLib->paymentmethod = 'creditcard';
-		$paymentLib->paymenttype = 'cc';
-		
-		$paymentLib->PaymentData = array(
-			'kk_number' => $session['payment']['cc_number'],
-			'exp_month' => $session['payment']['cc_expirationMonth'],
-			'exp_year' => $session['payment']['cc_expirationYear'],
-			'holder' => $session['payment']['cc_holder'],
-			'cvc' => $session['payment']['cc_checksum']
-		);
-		
-		$actCurrency = $pObj->conf['currency'] != '' ?  $pObj->conf['currency'] : 'EUR';
-		
-		$paymentLib->TransactionData = array (
-			'amount' => $basket->get_gross_sum(),
-			'currency' => $actCurrency,
-		);
-		
-		$paymentLib->sendData = $paymentLib->getwirecardXML();
-		$back = $paymentLib->sendTransaction();
-		if (!$back) {
-			
-			$this->errorMessages = $paymentLib->getError();
-			return false;
-			
-			
-		} else {
-			$this->paymentRefId = $paymentLib->referenzID;
-			
-			/*
-				Irgendwo hier m�sste diese ReferenzID gesichert werden, damit sie
-				in "updateOrder" in den Datensatz geschrieben werden kann.
-			*/
-			return true;
-		}
+		if($this->provider !== null){
+		    return $this->provider->finishingFunction($config,$session, $basket);
+		}		
+		return false
 	}
-	
-	/**
-	 * This method can make something with the created order. For example add the
-	 * reference id for payments with creditcards.
-	 */
-	function updateOrder($orderUid, $session,$pObj) {
-		if(!is_object($this->pObj)) {
-			$this->pObj = $pObj;
-		}
-		/*
-			Hier muss die vom checkout erzeugte Order geupdatet werden!
-			Bei Kreditkartenzahlung muss eine Referenz ID im Feld payment_ref_id
-			gespeichert werden. (Ich habe keine Ahnung voher die kommt, aber ich
-			sch�tze mal das m�sste wirecard liefern!?)
-			Die UID des angelegten order Datensatzes steht in $orderUid! Um die
-			Order upzudaten m�sste folgendes reichen:
-		*/
-		$GLOBALS['TYPO3_DB']->exec_UPDATEquery(
-			'tx_commerce_orders','uid = '.$orderUid,
-			array('payment_ref_id' => $this->paymentRefId)
-		);
-		/*
-			Es m�sste also irgendwo in dieser Methode oder in der "fisnishingFunction"
-			die Variable $this->paymentRefId gesetzt werden.
-			Das wars dann.
-		*/
-	}
-	
-	/**
-	 * Returns the last error message
-	 */
-	function getLastError($finish = 0,$pObj) {
-		if(!is_object($this->pObj)) {
-			$this->pObj = $pObj;
-		}
-		if($finish){
-		    return $this->getReadableError();
-		}else{
-			return $this->errorMessages[(count($this->errorMessages) -1)];
-		}
-	}
-	
-	// creditcard Error Code Handling
-	
-	function getReadableError(){
-
-		$back = '';
-		reset($this->errorMessages);
-	    while(list($k,$v) =each($this->errorMessages)){
-			$back .= $v;
-	    }
-		return $back;
-	
-	}
-	
 	
 }
 

@@ -190,7 +190,30 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 	     */
 	    if($this->piVars['delBasket']){
 		$this->basket->delete_all_articles();		
-	    }	    
+	    }	   
+               /**
+        * Hook for processing the basker, after adding an article to the basket
+        */
+       $hookObjectsArr = array();
+       // @deprecated use $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['artAddUid'] instead
+       if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['postartAddUid'])) {
+               foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['postartAddUid'] as $classRef) {
+                       $hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+               }
+       }
+       if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['artAddUid'])) {
+               foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['artAddUid'] as $classRef) {
+                       $hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+               }
+       }
+       foreach($hookObjectsArr as $hookObj)    {
+               if (method_exists($hookObj, 'preartAddUid')) {
+                       $hookObj->preartAddUid($this->basket,$this);
+               }
+       }
+
+
+ 
 	    if($this->piVars['artAddUid']){
 			while(list($k,$v)=each($this->piVars['artAddUid'])){
 				
@@ -204,7 +227,12 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 				$articleObj->load_data('basket');
 				$productObj = $articleObj->get_parent_product();
 				$productObj->load_data('basket');
-	 					
+                                foreach($hookObjectsArr as $hookObj)    {
+                                    if (method_exists($hookObj, 'preartAddUidSingle')) {
+                                            $hookObj->preartAddUidSingle($k,$v,$productObj,$articleObj,$this->basket,$this);
+	                            }
+	                        }
+																									 					
 	 			
 				if ($articleObj->isAccessible() && $productObj->isAccessible()) {
 					
@@ -234,17 +262,13 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 						}
 					}
 				}
+				 foreach($hookObjectsArr as $hookObj)    {
+                                     if (method_exists($hookObj, 'postartAddUidSingle')) {
+				         $hookObj->postartAddUidSingle($k,$v,$productObj,$articleObj,$this->basket,$this);
+				     }
+				}							 				
 				
 			}  
-			/**
-			 * Hook for processing the basker, after adding an article to the basket
-			 */
-			$hookObjectsArr = array();
-			if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['postartAddUid'])) {
-					foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['postartAddUid'] as $classRef) {
-						$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
-					}
-			}
 			foreach($hookObjectsArr as $hookObj)	{
 				if (method_exists($hookObj, 'postartAddUid')) {
 					$hookObj->postartAddUid($this->basket,$this);
@@ -273,21 +297,21 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 	    		$this->basket->add_article((int)$this->piVars['payArt']);
 	    	}
 	    	
-		     
-		    /**
-			 * Hook for processing the basker,after adding the payment
-			 */
-			$hookObjectsArr = array();
-			if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['postpayArt'])) {
-					foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['postpayArt'] as $classRef) {
-						$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
-					}
-			}
-			foreach($hookObjectsArr as $hookObj)	{
-				if (method_exists($hookObj, 'postpayArt')) {
-					$hookObj->postpayArt($this->basket,$this);
+		/**
+		 * Hook for processing the basker, after adding an article to the basket
+		 */
+		$hookObjectsArr = array();
+		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['postpayArt'])) {
+				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['postpayArt'] as $classRef) {
+					$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
 				}
-			}  
+		}
+		     
+		foreach($hookObjectsArr as $hookObj)	{
+			if (method_exists($hookObj, 'postpayArt')) {
+				$hookObj->postpayArt($this->basket,$this);
+			}
+		}  
 		    
 		    
 	    }	    
@@ -341,7 +365,7 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 										       
 	
 	    $templateMarker = '###PRODUCT_BASKET_QUICKVIEW###';
-    	$template = $this->cObj->getSubpart($this->templateCode, $templateMarker);
+    	    $template = $this->cObj->getSubpart($this->templateCode, $templateMarker);
 
 	    $basketArray = $this->languageMarker;
 	    $basketArray['###PRICE_GROSS###'] = tx_moneylib::format($this->basket->get_gross_sum(),$this->currency);
@@ -353,7 +377,7 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 	    $basketArray['###BASKET_ITEMS###'] = $this->basket->getArticleTypeCountFromList($articleTypes);
 	    $basketArray['###URL###'] = $this->pi_linkTP_keepPIvars_url(array(),true,1,$this->conf['basketPid']);
 	    $basketArray['###URL_CHECKOUT###'] = $this->pi_linkTP_keepPIvars_url(array(),false,1,$this->conf['checkoutPid']);
-        $hookObjectsArr = array();
+    	    $hookObjectsArr = array();
 	    if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['getQuickView'])) {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['getQuickView'] as $classRef) {
 		    	    $hookObjectsArr[] = &t3lib_div::getUserObj($classRef);

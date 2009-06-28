@@ -413,6 +413,8 @@ class tx_commerce_dmhooks	{
 					'tx_commerce_articles',
 					array(
 						'pid' => $fieldArray['pid'],
+						'tstamp' => time(),
+						'crdate' => time(),
 						'uid_product' => $pUid,
 						'article_type_uid' => 1,
 						'title' => $productData['title']
@@ -426,9 +428,9 @@ class tx_commerce_dmhooks	{
 
 				// check if the article has already a price
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'tx_commerce_article_prices', 'uid_article=' .intval($aUid), '', '', 1);
-			if ($GLOBALS['TYPO3_DB']->sql_num_rows($res) == 0)	{
+			if ($GLOBALS['TYPO3_DB']->sql_num_rows($res) == 0 && $aRes['sys_language_uid']<1)	{
 					// create a new price if no one exists
-				$pRes = $GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_commerce_article_prices', array('pid' => $fieldArray['pid'],'uid_article' => $aUid));
+				$pRes = $GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_commerce_article_prices', array('pid' => $fieldArray['pid'],'uid_article' => $aUid, 'tstamp' => time(),'crdate' => time()));
 			}
 		}
 

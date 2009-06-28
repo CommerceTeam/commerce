@@ -1334,34 +1334,11 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 	/**
 	 * Returns the payment object and includes the Payment Class. If there is no payment it throws an error
 	 *
-	 * @return unknown
+	 * @return paymentObj
 	 */
-	function getPaymentObject()	{
-		
-		
+	function getPaymentObject($paymentType = '')	{
 		$paymentType = $this->getPaymentType();
-		$sysConfig = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['SYSPRODUCTS']['PAYMENT'];
-		
-		$config = $sysConfig['types'][strtolower((string)$paymentType)];
-
-		$errorStr = NULL;
-		if (!isset($config['class']))	{
-			$errorStr[] = 'class not set!:'.$config['class'];
-		}
-		
-		if (!file_exists($config['path']))	{
-			$errorStr[] = 'file not found!:'.$config['path'];
-		}
-		
-		if (is_array($errorStr))	die ('MAIN:FATAL! No payment possible because I don\'t know how to handle it! ('.implode(', ', $errorStr).')');
-
-		require_once($config['path']);
-		$paymentObj = t3lib_div::makeInstance($config['class']);
-		if (method_exists($paymentObj, 'setStep'))	{
-			$this->piVars['step'] = $paymentObj->setStep($_REQUEST, $this->piVars['step']);
-		}
-		
-		return $paymentObj;
+		return parent::getPaymentObject($paymentType);
 	}
 	
 	
@@ -1377,9 +1354,9 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 	function getPaymentType($id = false)	{
 		$basket = $GLOBALS['TSFE']->fe_user->tx_commerce_basket;
 		$payment = $basket->get_articles_by_article_type_uid_asuidlist(PAYMENTArticleType);
-		if($id){
-	                  return $payment[0];
-                }					                    
+		if ($id) {
+			return $payment[0];
+		}					                    
 		$paymenttitle = $basket->basket_items[$payment[0]]->article->classname;
 		return strtolower($paymenttitle);
 	}

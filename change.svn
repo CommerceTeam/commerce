@@ -5,6 +5,7 @@ Changelog for tx_commerce
 
 24.06.2009 Volker Graubaum <vg@e-netconsulting.de>
 * fixed BUG 3704 
+* remove default nav_frame from mod_main module, so other modules can be displayed in commerce, without using a navframe
 
 20.06.2009 Sascha Egerer <seg@softvision.de>
 * fixed Bug #2599

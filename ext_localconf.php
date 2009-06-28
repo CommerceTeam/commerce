@@ -51,6 +51,38 @@ $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['SYSPRODUCTS']['PAYMENT'
 	'path' => PATH_txcommerce .'payment/class.tx_commerce_payment_invoice.php',
 	'class' => 'tx_commerce_payment_invoice',
 	'type'=>PAYMENTArticleType,
+	'criteria' => array(
+		'static_country'  => array(
+			'class' => 'EXT:commerce/payment/criteria/class.tx_commerce_criteria_staticcountry.php&tx_commerce_criteria_staticCountry',
+			'options' => array(
+				    'allowedCountries' => Array( 'DEU','CHF','AUT'),
+			),
+		),
+	),
+	'provider' => array(
+		'wirecard' => array(
+			'class' => 'EXT:commerce/payment/provider/class.tx_commerce_provider_wirecard.php&tx_commerce_provider_wirecard',
+			'criteria' => array(
+			    'static_country'  => array(
+				'class' => 'EXT:commerce/payment/criteria/class.tx_commerce_criteria_staticcountry.php&tx_commerce_criteria_staticCountry',
+				'options' => array(
+				    'allowedCountries' => Array( 'DEU','AUT'),
+				),
+			    ),
+			),	
+		),
+		'saferpay' => array(
+			'class' => 'EXT:commerce/payment/provider/class.tx_commerce_provider_saferpay.php&tx_commerce_provider_saferpay',
+			'criteria' => array(
+			    'static_country'  => array(
+				'class' => 'EXT:commerce/payment/criteria/class.tx_commerce_criteria_staticcountry.php&tx_commerce_criteria_staticCountry',
+				'options' => array(
+				    'notAllowedCountries' => Array( 'DEU','AUT'),				    
+				),
+			    ),
+			),	
+		),		
+	),
 );
 
 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['SYSPRODUCTS']['PAYMENT']['types']['prepayment'] = array (
@@ -291,11 +323,20 @@ require_once(t3lib_extMgm::extPath(COMMERCE_EXTkey).'hooks/class.tx_commerce_pi4
 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi4/class.tx_commerce_pi4.php']['deleteAddress'][] = 'tx_commerce_pi4hooksHandler';
 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi4/class.tx_commerce_pi4.php']['saveAddress'][] = 'tx_commerce_pi4hooksHandler';
 
+
+require_once(t3lib_extMgm::extPath(COMMERCE_EXTkey).'hooks/class.tx_commerce_paymentarticlehandler.php');
+$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['paymentArticles'][] = 'tx_commerce_paymentarticlehandler';
+
 // CLI Skript configration
 if (TYPO3_MODE=='BE')    {
     // Setting up scripts that can be run from the cli_dispatch.phpsh script.
     $TYPO3_CONF_VARS['SC_OPTIONS']['GLOBAL']['cliKeys'][$_EXTKEY] = array('EXT:'.$_EXTKEY.'/cli/class.cli_commerce.php','_CLI_commerce');
 }
+
+
+// clear basket if user logs out
+
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_userauth.php']['logoff_pre_processing'][] = 'EXT:commerce/hooks/class.tx_t3lib_userauth_hook.php:&tx_t3lib_userauth_hook->logoff_pre_processing';
 
 
 $GLOBALS['T3_VAR']['ext']['dynaflex']['tx_commerce_categories'][] = 'EXT:commerce/dcafiles/class.tx_commerce_categories_dfconfig.php:tx_commerce_categories_dfconfig';
