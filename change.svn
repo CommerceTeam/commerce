@@ -1,10 +1,18 @@
 Changelog for tx_commerce
 
+29.06.2009 Volker Graubaum <vg@e-netconsulting.de>
+* Fixed error while creating categories Relations in Database
+
+
+28.06.2009 Volker Graubaum <vg@e-netconsulting.de>
+* create new tag for persistent basket and new payment concept
+
 25.06.2009 Ingo Schmitt <is@marketing-factory.de>
 * Fixed PHP -Error in commerce_pi1
 
 24.06.2009 Volker Graubaum <vg@e-netconsulting.de>
 * fixed BUG 3704 
+* remove default nav_frame from mod_main module, so other modules can be displayed in commerce, without using a navframe
 
 20.06.2009 Sascha Egerer <seg@softvision.de>
 * fixed Bug #2599
