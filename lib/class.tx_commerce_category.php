@@ -487,10 +487,10 @@
   	 
   	 /**
   	  * @since 2005 11 03
-  	  * @return array of child products as uid list array
+  	  * @return array  of child products as uid list unique array
   	  */
   	 function getProductUids()  	 {
-  	 	return $this->products_uid;
+  	 	return array_unique($this->products_uid);
   	 }
 	 
 	  /**

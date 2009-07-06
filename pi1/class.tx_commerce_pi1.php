@@ -179,8 +179,8 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 		$this->category=t3lib_div::makeinstance('tx_commerce_category');
 		$this->category->init($this->cat,$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
 		$this->category->load_data();
-		$categorySubproducts = $this->category->getProductUids() ;
-
+		$categorySubproducts = $this->category->getProductUids();
+		
 		if ((!$this->conf['singleProduct']) && ((int)$this->piVars['showUid']>0) && (!$GLOBALS['TSFE']->beUserLogin)) {
 			if (is_array($categorySubproducts)) {
 				if (!in_array($this->piVars['showUid'],$categorySubproducts)) {
@@ -340,9 +340,8 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 		$this->markerArray = array();
 
 		if($this->handle == 'singleView'){
-
 		    $this->content = $this->makeSingleView();
-		}elseif($this->handle == 'listView'){
+		}elseif($this->handle == 'listView'){			
 		    $this->content = $this->makeListView($this->cat);
 		}
 

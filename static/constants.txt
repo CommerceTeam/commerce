@@ -54,11 +54,15 @@ plugin.tx_commerce_lib {
 	# cat=plugin.commerce: General/Others/b9; type=int+; label= DisplayErrors: Allow displaying errors in the frontend
 	showErrors = 1
 	
+	# cat=plugin.commerce: General/Others/b10; type=boolean; label=Display product direct: display product direct if only one product exist
+	displayProductIfOneProduct = 1	
+	
 	# cat=plugin.commerce: General/Basket/b6; type=boolean; label=Calculating Method for VAT: If you Calculate your prices from net please check
 	priceFromNet = 0
 	
 	# cat=plugin.commerce: General/StockHandling/b6; type=boolean; label=switch for Stockhandling: If you want stockhandling please check
 	useStockHandling = 0
+
 }
 
 plugin.tx_commerce_pi1 {

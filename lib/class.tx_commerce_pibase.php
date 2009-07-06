@@ -394,7 +394,7 @@ class tx_commerce_pibase extends tslib_pibase {
 			
 			foreach ($this->category->categories as $categoryUid => $oneCategory)	{
 
-				$oneCategory->load_Data();
+				$oneCategory->load_Data();			
 				
 				$linkArray['catUid']=$oneCategory->getUid();
 				if ($this->useRootlineInformationToUrl == 1) {
@@ -424,6 +424,12 @@ class tx_commerce_pibase extends tslib_pibase {
 				}
 				$typoLinkConf['useCacheHash'] = 1;
 				$typoLinkConf['additionalParams'] = ini_get('arg_separator.output').$this->prefixId.'[catUid]='.$oneCategory->getUid();
+
+				$productArray = $oneCategory->getAllProducts();
+				if (1 == $this->conf['displayProductIfOneProduct'] && 1 == count($productArray)) { 																
+					$typoLinkConf['additionalParams'] .= ini_get('arg_separator.output').$this->prefixId.'[showUid]='.$productArray[0];
+				}					
+				
 				if ($this->useRootlineInformationToUrl == 1) {
 					$typoLinkConf['additionalParams'].= ini_get('arg_separator.output').$this->prefixId.'[path]='.$this->getPathCat($oneCategory);
 					$typoLinkConf['additionalParams'].= ini_get('arg_separator.output').$this->prefixId.'[mDepth]='.$this->mDepth;
@@ -509,7 +515,7 @@ class tx_commerce_pibase extends tslib_pibase {
 
 
 		// ###########    product list    ######################
-		if (is_array($this->category_products)){			
+		if (is_array($this->category_products)){	
      		$this->category_products = array_slice($this->category_products,$internalStartPoint, $internalResults);     		
 		}
 

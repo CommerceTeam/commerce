@@ -1,8 +1,10 @@
 Changelog for tx_commerce
 
+06.07.2009 Julian Kleinhans <jk@marketing-factory.de>
+* Add Feature: display product direct if only one product exist
+
 29.06.2009 Volker Graubaum <vg@e-netconsulting.de>
 * Fixed error while creating categories Relations in Database
-
 
 28.06.2009 Volker Graubaum <vg@e-netconsulting.de>
 * create new tag for persistent basket and new payment concept

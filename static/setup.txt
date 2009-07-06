@@ -107,7 +107,7 @@ lib.tx_commerce {
 			    
 			    // unset default new line to br, since we are using RTE rendering for TeaserFields
 			    nl2br = 0
-		      	stdWrap < lib.tx_commerce.stdField
+		      	stdWrap < lib.tx_commerce.stdField		      	
 		      	
 		    	defaultField  < lib.tx_commerce.stdField
 		    	productAttributes < lib.tx_commerce.attributes
@@ -262,6 +262,9 @@ lib.tx_commerce {
 // -----------------------------------------------------------------------
 // -----------------------------------------------------------------------
 plugin.tx_commerce_pi1 {
+    
+    # boolean - display product direct if only one product exist
+    displayProductIfOneProduct = {$plugin.tx_commerce_lib.displayProductIfOneProduct}
     
       showErrors = {$plugin.tx_commerce_lib.showErrors}
     // ID wo das Basket als Template eingebunden ist.
