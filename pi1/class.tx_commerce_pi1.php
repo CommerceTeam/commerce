@@ -45,6 +45,13 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 	var $extKey = "commerce";	// The extension key.
 	var $currency = 'EUR';
 	var $pi_checkCHash = TRUE;
+	
+	/**
+	 * 
+	 * @var Boolean, will be set to true, if the plugin was inserted as plugin to show one produkt, or one product was set via TypoScript.
+	 * 
+	 */
+	var $singleViewAsPlugin = false;
 
 	/**
 	 * Inits the main params for using in the script
@@ -77,6 +84,10 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 		$this->pi_USER_INT_obj=0;
 
 	    $this->conf['singleProduct'] = (int)$this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'product_id', 's_product');
+	    if ( $this->conf['singleProduct'] > 0) {
+			// product UID was set by Plugin or TS
+	    	$this->singleViewAsPlugin =  true;
+	    }
 	    // Unset Variable, if smaler than 0, as -1 is returend when no product is selcted in form.
 	    if ($this->conf['singleProduct'] < 0) {
 	    	$this->conf['singleProduct'] = false;
@@ -386,7 +397,14 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 
 
 		     	$this->product->load_articles();
-	    		$this->product->setPageTitle();
+		     	# Check if the product was inserted as plugin on a page,
+		     	# or if it was rednernd as a leaf from the category view
+		     	if ($this->conf['singleView.']['renderProductNameAsPageTitle'] == 1) {
+		     		$this->product->setPageTitle();
+		     	}elseif (($this->conf['singleView.']['renderProductNameAsPageTitle'] == 2) && ($this->singleViewAsPlugin ===false)){
+		     		$this->product->setPageTitle();
+		     	}
+	    		
 				$this->master_cat=$this->product->get_masterparent_categorie();
 
 				# Write the current page to The session to have a back to last product link

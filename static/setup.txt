@@ -396,7 +396,10 @@ plugin.tx_commerce_pi1 {
 		articleAttributesSelectList = stdWrap
 		articleAttributesSelectList.wrap = <table class="com-select-attributes" cellspacing="0" cellpadding="0" border="0"> | </table>
 		
-		
+		renderProductNameAsPageTitle = 1
+		# 0 dont' render product title as page title
+		# 1 render always product title as page title in single view
+		# 2 only render product title as page title, if product was not inserted as plugin with one product to display and if product was not set via TS
 	}	
 	
 	listView {
