@@ -1,5 +1,8 @@
 Changelog for tx_commerce
 
+06.07.2009 Christian Kuhn <lolli@schwarzbu.ch>
+* CGL cleanup in pi1/class.tx_commerce_pi1.php
+
 06.07.2009 ingo Schmitt <is@marketing-factoryde>
 * Add Feature: plugin.tx_commerce_pi1.singleView.renderProductNameAsPageTitle to decide if the produtc name should be rendered as title to the page. See Documentation or wiki
 * Changed Version to 0.11.12
