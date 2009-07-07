@@ -1,5 +1,8 @@
 Changelog for tx_commerce
 
+07.07.2009 Christian Kuhn <lolli@schwarzbu.ch>
+* CGL cleanup in pi2/class.tx_commerce_pi2.php
+
 06.07.2009 Christian Kuhn <lolli@schwarzbu.ch>
 * CGL cleanup in pi1/class.tx_commerce_pi1.php
 
