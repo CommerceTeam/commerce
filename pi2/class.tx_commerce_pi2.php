@@ -176,32 +176,38 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 					$v['count'] = 1;
 				}
 
-				$articleObj = t3lib_div::makeInstance('tx_commerce_article');
-				$articleObj->init($k);
-				$articleObj->load_data('basket');
-
-				$productObj = $articleObj->get_parent_product();
-				$productObj->load_data('basket');
-
-				if ($articleObj->isAccessible() && $productObj->isAccessible()) {
-					// Only if product and article are accesible
-					if ($this->conf['checkStock'] == 1) {
-						// Instance to calculate shipping costs
-						if ($articleObj->hasStock($v['count'])) {
+				if ((int)$v['count'] === 0) {
+					if ($this->basket>getQuantity($k)) > 0) {
+						$this->basket->delete_article($k);
+					}
+				}else{
+					$articleObj = t3lib_div::makeInstance('tx_commerce_article');
+					$articleObj->init($k);
+					$articleObj->load_data('basket');
+	
+					$productObj = $articleObj->get_parent_product();
+					$productObj->load_data('basket');
+	
+					if ($articleObj->isAccessible() && $productObj->isAccessible()) {
+						// Only if product and article are accesible
+						if ($this->conf['checkStock'] == 1) {
+							// Instance to calculate shipping costs
+							if ($articleObj->hasStock($v['count'])) {
+								if ((int)$v['price_id'] > 0) {
+									$this->basket->add_article($k, $v['count'], $v['price_id']);
+								} else {
+									$this->basket->add_article($k, $v['count']);
+								}
+							} else {
+								$this->noStock = $this->pi_getLL('noStock');
+							}
+						} else {
+							// Add article by default
 							if ((int)$v['price_id'] > 0) {
 								$this->basket->add_article($k, $v['count'], $v['price_id']);
 							} else {
 								$this->basket->add_article($k, $v['count']);
 							}
-						} else {
-							$this->noStock = $this->pi_getLL('noStock');
-						}
-					} else {
-						// Add article by default
-						if ((int)$v['price_id'] > 0) {
-							$this->basket->add_article($k, $v['count'], $v['price_id']);
-						} else {
-							$this->basket->add_article($k, $v['count']);
 						}
 					}
 				}

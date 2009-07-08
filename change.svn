@@ -2,6 +2,7 @@ Changelog for tx_commerce
 
 08.07.2009 Ingo Schmitt <is@marketing-factory.de>
 * Updated Ext EM Conf File
+* Added Shortcut for deleting Articles in pi2
 
 08.07.2009 Christian Kuhn <lolli@schwarzbu.ch>
 * Fixed XCLASS inclusion in pi1 to make EM happy
