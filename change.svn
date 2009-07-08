@@ -1,5 +1,8 @@
 Changelog for tx_commerce
 
+08.07.2009 Ingo Schmitt <is@marketing-factory.de>
+* Updated Ext EM Conf File
+
 08.07.2009 Christian Kuhn <lolli@schwarzbu.ch>
 * Fixed XCLASS inclusion in pi1 to make EM happy
 * CGL cleanup in pi2/class.tx_commerce_pi2.php
