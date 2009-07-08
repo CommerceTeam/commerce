@@ -5,6 +5,7 @@ Changelog for tx_commerce
 * Added Shortcut for deleting Articles in pi2
 
 08.07.2009 Christian Kuhn <lolli@schwarzbu.ch>
+* CGL cleanup in pi1/class.tx_commerce_pi1_wizicon.php
 * Fixed XCLASS inclusion in pi1 to make EM happy
 * CGL cleanup in pi2/class.tx_commerce_pi2.php
 
