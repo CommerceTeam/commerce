@@ -177,7 +177,7 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 				}
 
 				if ((int)$v['count'] === 0) {
-					if ($this->basket>getQuantity($k)) > 0) {
+					if ($this->basket>getQuantity($k) > 0) {
 						$this->basket->delete_article($k);
 					}
 				}else{
