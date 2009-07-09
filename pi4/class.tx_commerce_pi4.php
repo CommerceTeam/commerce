@@ -33,7 +33,7 @@
  * $Id: class.tx_commerce_pi4.php 567 2007-03-05 07:47:13Z thomas $
  */
 
-require_once(PATH_tslib .'class.tslib_pibase.php');
+require_once(t3lib_extmgm::extPath('commerce') . 'lib/class.tx_commerce_pibase.php');
 require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinfotables_pi1.php');
 
 class tx_commerce_pi4 extends tx_commerce_pibase {
