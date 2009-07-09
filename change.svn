@@ -1,6 +1,7 @@
 Changelog for tx_commerce
 
 10.07.2009 Christian Kuhn <lolli@schwarzbu.ch>
+* Fixed bug #3804: pi3 checks for the wrong method in hook (Thanks to Morten Olesen and Christoph Niewerth)
 * Fixed bug #3789: commerce_pibase->makeLineView dies with fatal error
 * CGL cleanup in pi4/class.tx_commerce_pi4.php
 * CGL cleanup in pi3/class.tx_commerce_pi3.php

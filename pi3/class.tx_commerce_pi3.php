@@ -2372,7 +2372,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 					debug($oaData);
 				}
 				foreach($hookObjectsArr as $hookObj) {
-					if (method_exists($hookObj, 'modifyOrderArticlePostSave')) {
+					if (method_exists($hookObj, 'modifyOrderArticlePreSave')) {
 						$hookObj->modifyOrderArticlePreSave($newUid, $oaData, $this);
 					}
 				}
