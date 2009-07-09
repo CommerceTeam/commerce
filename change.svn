@@ -1,5 +1,8 @@
 Changelog for tx_commerce
 
+09.07.2009 Ingo Schmitt <is@marketing-factory.de>
+* Fixed not working Hook in renderProductsForList (pibase)
+
 09.07.2009 Michael Knabe <mk@e-netconsulting.de>
 * Fixed Issue 3850: ext_localconf.php is included twice
 

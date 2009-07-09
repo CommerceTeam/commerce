@@ -1512,6 +1512,7 @@ class tx_commerce_pibase extends tslib_pibase {
 
 	function renderProductsForList($categoryProducts,$templateMarker,$iterations,$TS_marker=''){
 		$hookObjectsArr = array();
+		$markerArray= array();
 	   	if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['renderProductsForList'])) {
 	       		foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['renderProductsForList'] as $classRef) {
 	                    	$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
@@ -1551,7 +1552,7 @@ class tx_commerce_pibase extends tslib_pibase {
 			  	$category_items_listview .=
 				$this->renderProduct($myProduct,$template,$typoScript,$this->conf['templateMarker.']['basketListView.'],$this->conf['templateMarker.']['basketListViewMarker'],$iterationCount);
 			}
-			$markerArray= array();
+			
 			$markerArray=$this->addFormMarker($markerArray);
 			
 			return $this->cObj->stdWrap($this->cObj->substituteMarkerArray($category_items_listview, $markerArray ,'###|###',1), $this->conf['listView.']['products.']['stdWrap.']);
