@@ -1001,7 +1001,7 @@ class tx_commerce_pibase extends tslib_pibase {
 	 	$content = $this->cObj->substituteMarkerArray($content, $article_array,'###|###',1);
 
 
-	 	$content = $this->cObj->substituteMarkerArray($content, $this->MergedLangMarker,'###|###',1);
+		$content = $this->cObj->substituteMarkerArray($content, $this->languageMarker, '###|###', 1);
 
 	 	return $content;
 	 }
