@@ -1,6 +1,7 @@
 Changelog for tx_commerce
 
 10.07.2009 Christian Kuhn <lolli@schwarzbu.ch>
+* CGL cleanup in pi4/class.tx_commerce_pi4.php
 * CGL cleanup in pi3/class.tx_commerce_pi3.php
 * CGL cleanup in pi4/class.tx_commerce_pi4_wizicon.php
 * CGL cleanup in pi3/class.tx_commerce_pi3_wizicon.php

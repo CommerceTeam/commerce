@@ -5,7 +5,7 @@
 *  (c) 2006 Thomas Hempel <thomas@work.de>
 *  All rights reserved
 *
-*  This script is part of the Typo3 project. The Typo3 project is
+*  This script is part of the TYPO3 project. The TYPO3 project is
 *  free software; you can redistribute it and/or modify
 *  it under the terms of the GNU General Public License as published by
 *  the Free Software Foundation; either version 2 of the License, or
@@ -21,6 +21,8 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
+
 /**
  * Plugin 'addresses' for the 'commerce' extension.
  * This class handles all the address stuff, like creating, editing and deleting.
@@ -34,85 +36,78 @@
  */
 
 require_once(t3lib_extmgm::extPath('commerce') . 'lib/class.tx_commerce_pibase.php');
-require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinfotables_pi1.php');
+require_once (t3lib_extMgm::extPath('static_info_tables') . 'pi1/class.tx_staticinfotables_pi1.php');
 
 class tx_commerce_pi4 extends tx_commerce_pibase {
-	var $prefixId = 'tx_commerce_pi4';						// Same as class name
-	var $scriptRelPath = 'pi4/class.tx_commerce_pi4.php';	// Path to this script relative to the extension dir.
-	var $extKey = 'commerce';								// The extension key.
+	var $prefixId = 'tx_commerce_pi4'; // Same as class name
+	var $scriptRelPath = 'pi4/class.tx_commerce_pi4.php'; // Path to this script relative to the extension dir.
+	var $extKey = 'commerce'; // The extension key.
 	var $imgFolder = '';
-
 	var $user = NULL;
 	var $addresses = array();
 	var $formError = array();
 	var $fieldList = array();
 	var $sysMessage = '';
-	
+
 	/**
 	 * Holding the Static_info Object
-	 * 
+	 *
 	 * @var Object
-	 */	
+	 */
 	var $staticInfo;
-	
+
 	/**
 	 * If set to TRUE some debug message will be printed.
 	 */
-	var $debug = false;
-	
-	
+	var $debug = FALSE;
+
 	/**
 	 * Main method. Starts the magic...
 	 *
-	 * @param	string		$content: The content of this plugin
-	 * @param	array		$conf: The TS configuration for this plugin
-	 * @return	The compiled content
+	 * @param string $content: Content of this plugin
+	 * @param array $conf: TS configuration for this plugin
+	 * @return string Compiled content
 	 */
 	function main($content, $conf) {
 		$this->init($conf);
 
-		if(!$GLOBALS['TSFE']->loginUser)	{
-		    return $this->noUser();
+		if (!$GLOBALS['TSFE']->loginUser) {
+			return $this->noUser();
 		}
 
 		if (isset($this->piVars['check'])) {
 			$formValid = $this->checkAddressForm();
 		} else {
-			$formValid = false;
+			$formValid = FALSE;
 		}
-
-
-		/* can this be deleted
-			if (!$formValid && isset($this->piVars['check']) && $this->conf['editAddressPid'] > 0){
-				    unset($this->piVars['check']);
-				    	    header('Location: ' .$this->pi_linkTP_keepPIvars_url(array('backpid' => $GLOBALS['TSFE']->id), false, false, $this->conf['editAddressPid']));
-		    	}
-		*
-		*
-		* @ToDo: Check if the pi3 variable can be transfered otherwise, hardcoded stuff is ok, but not nice
-		*
-		*
-		*/
 
 		if ($formValid && isset($this->piVars['check']) && (int)$this->piVars['backpid'] != $GLOBALS['TSFE']->id) {
-		    unset($this->piVars['check']);
-		    header('Location: ' . t3lib_div::locationHeaderUrl($this->pi_getPageLink((int)$this->piVars['backpid'],'',array('tx_commerce_pi3[addressType]' => (int)$this->piVars['addressType'], $this->prefixId.'[addressid]' => (int)$this->piVars['addressid']))));
+			unset($this->piVars['check']);
+			header('Location: ' .
+				t3lib_div::locationHeaderUrl(
+					$this->pi_getPageLink((int)$this->piVars['backpid'],
+					'',
+					array(
+						'tx_commerce_pi3[addressType]' => (int)$this->piVars['addressType'],
+						$this->prefixId . '[addressid]' => (int)$this->piVars['addressid'])
+					)
+				)
+			);
 		}
-
 
 		switch (strtolower($this->piVars['action'])) {
 			case 'new':
 				if ($formValid) {
 					$this->sysMessage = $this->pi_getLL('message_address_new');
-					$this->saveAddressData(true, intval($this->piVars['addressType']));
+					$this->saveAddressData(TRUE, intval($this->piVars['addressType']));
 					$content = $this->getListing();
 					break;
 				}
 				$content = $this->getAddressForm('new', intval($this->piVars['addressid']), $this->conf);
-				break;
+			break;
 			case 'delete':
 				$addresses = $this->getAddresses($this->user['uid'], intval($this->addresses[$this->piVars['addressid']]['tx_commerce_address_type_id']));
-				if (count($addresses) <= $this->conf['minAddressCount']){
+				if (count($addresses) <= $this->conf['minAddressCount']) {
 					$this->sysMessage = $this->pi_getLL('message_cant_delete');
 					$content = $this->getListing();
 					break;
@@ -123,238 +118,256 @@ class tx_commerce_pi4 extends tx_commerce_pibase {
 					break;
 				}
 				$content = $this->deleteAddressQuestion();
-				break;
+			break;
 			case 'edit':
-			  if ($formValid) {
+				if ($formValid) {
 					$this->sysMessage = $this->pi_getLL('message_address_changed');
 					$content = $this->getListing();
 					break;
 				}
 				$content = $this->getAddressForm('edit', intval($this->piVars['addressid']), $this->conf);
-				break;
+			break;
 			case 'listing':
 			default:
-			  if ($formValid){
-		    		 $this->saveAddressData(false, intval($this->piVars['addressType']));
-			  }
+				if ($formValid) {
+					$this->saveAddressData(FALSE, intval($this->piVars['addressType']));
+				}
 				$content = $this->getListing();
-				break;
-
+			break;
 		}
 
 		return $this->pi_wrapInBaseClass($content);
 	}
 
+
 	/**
-	 * The initialization. This method has to be called before the magic can start... ;-)
+	 * Initialization. This method has to be called before the magic can start... ;-)
 	 *
-	 * @param	array		$conf: The TS configuration for this template
-	 * @param	boolean		$getAddresses: If this is set to true, this method will fetch all addresses into $this->addresses (Default is true)
-	 * @return 	void
+	 * @param array $conf TS configuration for this template
+	 * @param boolean $getAddresses If this is set to TRUE, this method will fetch all addresses into $this->addresses (Default is TRUE)
+	 * @return void
 	 */
-	function init($conf, $getAddresses = true) {
+	function init($conf, $getAddresses = TRUE) {
 		$this->conf = $conf;
 		$this->pi_setPiVarDefaults();
 		$this->pi_loadLL();
-		
+
 		$this->staticInfo = t3lib_div::makeInstance('tx_staticinfotables_pi1');
-        $this->staticInfo->init();
-        
-		if(!empty($this->piVars['addressType'])) {
+		$this->staticInfo->init();
+
+		if (!empty($this->piVars['addressType'])) {
 			$addressType = intval($this->piVars['addressType']);
 		}
-		
-		switch($addressType) {
+
+		switch ($addressType) {
 			case '2':
 				$addressType = 'delivery';
-				break;
+			break;
 			default:
 				$addressType = 'billing';
-				break;
+			break;
 		}
-		if(!is_array($this->conf['formFields'])) {
-			if(is_array($this->conf[$addressType.'.']['formFields.'])) {
-				$this->conf['formFields'] = $this->conf[$addressType.'.']['formFields.'];
+
+		if (!is_array($this->conf['formFields'])) {
+			if (is_array($this->conf[$addressType . '.']['formFields.'])) {
+				$this->conf['formFields'] = $this->conf[$addressType . '.']['formFields.'];
 			}
 		}
-		
+
 		$this->fieldList = $this->parseFieldList($this->conf['formFields.']);
 
-		// get the template
+		// Get the template
 		$this->templateCode = $this->cObj->fileResource($this->conf['templateFile']);
 
-		// clear form errors
+		// Clear form errors
 		$this->formError = array();
 
-		// check for the logged in USER
+		// Check for logged in user
 		if (empty($GLOBALS['TSFE']->fe_user->user)) {
 			return $this->pi_getLL('not_logged_in');
 		} else {
 			$this->user = $GLOBALS['TSFE']->fe_user->user;
 		}
 
-		if (isset($this->piVars['check']) && $this->piVars['action'] == 'edit' && $this->checkAddressForm()){
-		  $this->saveAddressData(false, intval($this->piVars['addressType']));
+		if (isset($this->piVars['check']) && $this->piVars['action'] == 'edit' && $this->checkAddressForm()) {
+			$this->saveAddressData(FALSE, intval($this->piVars['addressType']));
 		}
 
-			// Get addresses for this user
-		if ($getAddresses)	{
+		// Get addresses of this user
+		if ($getAddresses) {
 			$this->addresses = $this->getAddresses($this->user['uid']);
 		}
 	}
+
 
 	/**
 	 * Is called whenever the address handling is called without a logged in fe_user.
 	 * Currently this is just a dummy with no function.
 	 *
 	 * TODO: Here we could return a template and / or call a hook
+	 *
+	 * @return void
 	 */
-	function noUser(){
-
+	function noUser() {
 	}
 
-	/**
-	 * Returns the listing html of addresses.
-	 * 
-	 * @param	integer		$addressType: The type of addresses that should be returned. If this is 0 all types will be returned
-	 * @param	boolean	Create hidden fields
-	 * @param	string	hiddenPrefix (Prefix for field names)
-	 * @param	integer	selectAdressId	Adress ID which should be selected by default
-	 * 
-	 * @return	HTML with addresses
-	 */
-	function getListing($addressType = 0, $createHiddenFields = false, $hiddenFieldPrefix = '', $selectAddressId = false) {
 
-		if ($this->conf[$addressType.'.']['subpartMarker.']['listWrap']) {
-			$tplBase = $this->cObj->getSubpart($this->templateCode, strtoupper($this->conf[$addressType.'.']['subpartMarker.']['listWrap']));
+	/**
+	 * Returns the listing HTML of addresses.
+	 *
+	 * @param integer $addressType Type of addresses that should be returned. If this is 0 all types will be returned
+	 * @param boolean $createHiddenFields Create hidden fields
+	 * @param string $hiddenPrefix Prefix for field names
+	 * @param integer $selectAdressId Adress ID which should be selected by default
+	 * @return string HTML with addresses
+	 */
+	function getListing($addressType = 0, $createHiddenFields = FALSE, $hiddenFieldPrefix = '', $selectAddressId = FALSE) {
+		if ($this->conf[$addressType . '.']['subpartMarker.']['listWrap']) {
+			$tplBase = $this->cObj->getSubpart($this->templateCode, strtoupper($this->conf[$addressType . '.']['subpartMarker.']['listWrap']));
 		} else {
 			$tplBase = $this->cObj->getSubpart($this->templateCode, '###ADDRESS_LISTING###');
 		}
-		if ($this->conf[$addressType.'.']['subpartMarker.']['listItem']) {
-			$tplItem  = $this->cObj->getSubpart($this->templateCode, strtoupper($this->conf[$addressType.'.']['subpartMarker.']['listItem']));
+
+		if ($this->conf[$addressType . '.']['subpartMarker.']['listItem']) {
+			$tplItem = $this->cObj->getSubpart($this->templateCode, strtoupper($this->conf[$addressType . '.']['subpartMarker.']['listItem']));
 		} else {
 			$tplItem = $this->cObj->getSubpart($this->templateCode, '###ADDRESS_ITEM###');
 		}
-	
 
-		if(!is_array($this->conf['formFields'])) {
-			if(is_array($this->conf[$addressType.'.']['formFields.'])) {
-				$this->conf['formFields'] = $this->conf[$addressType.'.']['formFields.'];
+		if (!is_array($this->conf['formFields'])) {
+			if (is_array($this->conf[$addressType . '.']['formFields.'])) {
+				$this->conf['formFields'] = $this->conf[$addressType . '.']['formFields.'];
 			}
 		}
-				
-		// set the prefix if not set
-		if (empty($hiddenFieldPrefix)){
-		  $hiddenFieldPrefix = $this->prefixId;
+
+		// Set prefix if not set
+		if (empty($hiddenFieldPrefix)) {
+			$hiddenFieldPrefix = $this->prefixId;
+		}
+		if ($this->piVars['addressid']) {
+			// Set var editAddressId for checked
+			$editAddressId = (int)$this->piVars['addressid'];
+		} elseif ($selectAddressId) {
+			$editAddressId = (int)$selectAddressId;
 		}
 
-		if ($this->piVars['addressid']) {
-			// set a var editAddressId for checked
-			$editAddressId = (int)$this->piVars['addressid'];
-		}elseif ($selectAddressId) {
-				$editAddressId  = (int) $selectAddressId;
-		}
-			// unset some piVars we don't need here
+		// Unset some piVars we don't need here
 		unset($this->piVars['check']);
 		unset($this->piVars['addressid']);
 		unset($this->piVars['ismainaddress']);
-		foreach ($this->fieldList as $name) unset($this->piVars[$name]);
 
-			// get all addresses for the desired address types
+		foreach($this->fieldList as $name) {
+			unset($this->piVars[$name]);
+		}
+
+		// Get all addresses for the desired address types
 		$addressTypes = t3lib_div::trimExplode(',', $this->conf['selectAddressTypes']);
-		$valueHidden = '';
-		//count the different address types
+
+		// Count different address types
 		$addressTypeCounter = array();
-		foreach ($this->addresses as $address)	{
+		foreach($this->addresses as $address) {
 			$addressTypeCounter[$address['tx_commerce_address_type_id']]++;
 		}
 
-
+		// @TODO FIXME Initializad as string, but used as array
 		$addressItems = '';
 
-		foreach ($this->addresses as $address)	{
-			
-			if ($addressType > 0 && $address['tx_commerce_address_type_id'] != $addressType) continue;
+		foreach($this->addresses as $address) {
+			if ($addressType > 0 && $address['tx_commerce_address_type_id'] != $addressType) {
+				continue;
+			}
 
 			$itemMA = array();
 			$linkMA = array();
 
-				// fill the marker array
-			foreach ($address as $key => $value) {
+			// Fill marker array
+			foreach($address as $key => $value) {
 				$valueHidden = '';
 				$upperKey = strtoupper($key);
-				if ($this->conf['hideEmptyFields'] && empty($value)) continue;
-				if (empty($value)) $value = $this->conf['emptyFieldSign'];
-					// get the value from the database if the field is a select box
-				if ($this->conf['formFields.'][$key .'.']['type'] == 'select')	{
-					$fieldConfig = $this->conf['formFields.'][$key .'.'];
+
+				if ($this->conf['hideEmptyFields'] && empty($value)) {
+					continue;
+				}
+
+				if (empty($value)) {
+					$value = $this->conf['emptyFieldSign'];
+				}
+
+				// Get value from database if the field is a select box
+				if ($this->conf['formFields.'][$key . '.']['type'] == 'select') {
+					$fieldConfig = $this->conf['formFields.'][$key . '.'];
 					$table = $fieldConfig['table'];
-					$select = $fieldConfig['value'] .'=\'' .$value .'\'' .$this->cObj->enableFields($fieldConfig['table']);
-					$fields = $fieldConfig['label'] .' AS label,';
-					$fields.= $fieldConfig['value'] .' AS value';
-					$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($fields, $table, $select);
+					$select = $fieldConfig['value'] . '=\'' . $value . '\'' . $this->cObj->enableFields($fieldConfig['table']);
+					$fields = $fieldConfig['label'] . ' AS label,';
+					$fields.= $fieldConfig['value'] . ' AS value';
+					$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+						$fields,
+						$table,
+						$select
+					);
 					$value = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
 					$valueHidden = $value['value'];
 					$value = $value['label'];
 				}
-				if($this->conf['formFields.'][$key .'.']['type'] == 'static_info_tables'){
-					$fieldConfig = $this->conf['formFields.'][$key .'.'];
+
+				if ($this->conf['formFields.'][$key . '.']['type'] == 'static_info_tables') {
+					$fieldConfig = $this->conf['formFields.'][$key . '.'];
 					$field = $fieldConfig['field'];
 					$valueHidden = $value;
 					$value = $this->staticInfo->getStaticInfoName($field, $value);
 				}
 
 				$hidden = '';
-				if ($createHiddenFields)	{
-					$hidden = '<input type="hidden" name="' .$hiddenFieldPrefix .'[' .$address['uid'] .'][' .$key .']" value="' .($valueHidden ? $valueHidden : $value).'" />';
+				if ($createHiddenFields) {
+					$hidden = '<input type="hidden" name="' . $hiddenFieldPrefix . '[' . $address['uid'] . '][' . $key . ']" value="' . ($valueHidden ? $valueHidden : $value) . '" />';
 				}
-				$itemMA['###LABEL_' .$upperKey .'###'] = $this->pi_getLL('label_' .$key);
-				$itemMA['###' .$upperKey .'###'] = $value .$hidden;
+
+				$itemMA['###LABEL_' . $upperKey . '###'] = $this->pi_getLL('label_' . $key);
+				$itemMA['###' . $upperKey . '###'] = $value . $hidden;
 			}
 
-				// create an pivars array for merging with link to edit page
-			if ($this->conf['editAddressPid'] > 0){
+			// Create a pivars array for merging with link to edit page
+			if ($this->conf['editAddressPid'] > 0) {
 				$piArray = array('backpid' => $GLOBALS['TSFE']->id);
 				$linkTarget = $this->conf['editAddressPid'];
 			} else {
 				$piArray = array('backpid' => $GLOBALS['TSFE']->id);
 				$linkTarget = $this->conf['addressMgmPid'];
 			}
-			
-			if ($this->debug) debug($this->conf,'conf',__LINE__,__FILE__);
 
-			// set delete link only if addresses may be deleted, otherwise set it empty
+			if ($this->debug) {
+				debug($this->conf, 'conf', __LINE__, __FILE__);
+			}
 
+			// Set delete link only if addresses may be deleted, otherwise set it empty
 			if ((int)$addressTypeCounter[$address['tx_commerce_address_type_id']] > (int)$this->conf['minAddressCount']) {
-	    				$linkMA['###LINK_DELETE###'] = explode('|', $this->pi_linkTP_keepPIvars('|', array('action' => 'delete', 'addressid' => $address['uid'])));
-	    				$itemMA['###LABEL_LINK_DELETE###'] = $this->cObj->stdWrap($this->pi_getLL('label_link_delete'), $this->conf['deleteLinkWrap.']);
-	    		} else {
-	    				$linkMA['###LINK_DELETE###'][0] = '';
-					$linkMA['###LINK_DELETE###'][1] = '';
-	    				$itemMA['###LABEL_LINK_DELETE###'] = '';
-	    		}
+				$linkMA['###LINK_DELETE###'] = explode('|', $this->pi_linkTP_keepPIvars('|', array('action' => 'delete', 'addressid' => $address['uid'])));
+				$itemMA['###LABEL_LINK_DELETE###'] = $this->cObj->stdWrap($this->pi_getLL('label_link_delete'), $this->conf['deleteLinkWrap.']);
+			} else {
+				$linkMA['###LINK_DELETE###'][0] = '';
+				$linkMA['###LINK_DELETE###'][1] = '';
+				$itemMA['###LABEL_LINK_DELETE###'] = '';
+			}
 
-
-			$linkMA['###LINK_EDIT###'] = explode('|', $this->pi_linkTP_keepPIvars('|', array_merge($piArray, array('action' => 'edit', 'addressid' => $address['uid'], 'addressType' => $address['tx_commerce_address_type_id'])), false, false, $linkTarget));
+			$linkMA['###LINK_EDIT###'] = explode('|', $this->pi_linkTP_keepPIvars('|', array_merge($piArray, array('action' => 'edit', 'addressid' => $address['uid'], 'addressType' => $address['tx_commerce_address_type_id'])), FALSE, FALSE, $linkTarget));
 			$itemMA['###LABEL_LINK_EDIT###'] = $this->cObj->stdWrap($this->pi_getLL('label_link_edit'), $this->conf['editLinkWrap.']);
-
 			// add an edit radio button, checked selected previously
 			$itemMA['###SELECT###'] = '<input type="radio" ';
+
 			if (($editAddressId == $address['uid']) || (empty($editAddressId) && $address['tx_commerce_is_main_address'])) {
 				$itemMA['###SELECT###'].= 'checked="checked" ';
-				
 			}
-			
-			
-			$itemMA['###SELECT###'].= 'name="' .$hiddenFieldPrefix .'[address_uid]" value="' .$address['uid'] .'" />';
-			$addressFound = true;
-			$addressItems[$address['tx_commerce_address_type_id']] .= $this->substituteMarkerArrayNoCached($tplItem, $itemMA, array(), $linkMA);
+
+			$itemMA['###SELECT###'].= 'name="' . $hiddenFieldPrefix . '[address_uid]" value="' . $address['uid'] . '" />';
+			$addressFound = TRUE;
+
+			$addressItems[$address['tx_commerce_address_type_id']].= $this->substituteMarkerArrayNoCached($tplItem, $itemMA, array(), $linkMA);
 		}
-		
+
 		$linkMA = array();
 
-			// create an pivars array for merging with link to edit page
-		if ($this->conf['editAddressPid'] > 0)	{
+		// Create a pivars array for merging with link to edit page
+		if ($this->conf['editAddressPid'] > 0) {
 			$piArray = array('backpid' => $GLOBALS['TSFE']->id);
 			$linkTarget = $this->conf['editAddressPid'];
 		} else {
@@ -362,357 +375,387 @@ class tx_commerce_pi4 extends tx_commerce_pibase {
 			$linkTarget = $this->conf['addressMgmPid'];
 		}
 
-		// create links and labels for every address type
-		if ($addressType == 0)	{
-			foreach ($addressTypes as $addressType) {
-				$baseMA['###ADDRESS_ITEMS_OF_TYPE_' .$addressType .'###'] = $addressItems[$addressType];
-				$baseMA['###LABEL_ADDRESSES_OF_TYPE_' .$addressType .'###'] = $this->pi_getLL('label_addresses_of_type_' .$addressType);
-				$linkMA['###LINK_NEW_TYPE_' .$addressType .'###'] = explode('|', $this->pi_linkTP_keepPIvars('|', array_merge($piArray, array('action' => 'new', 'addressType' => $addressType)), false, false, $linkTarget));
-				$baseMA['###LABEL_LINK_NEW_TYPE_' .$addressType .'###'] = $this->cObj->stdWrap($this->pi_getLL('label_link_new_type_' .$addressType), $this->conf['newLinkWrap.']);
+		// Create links and labels for every address type
+		if ($addressType == 0) {
+			foreach($addressTypes as $addressType) {
+				$baseMA['###ADDRESS_ITEMS_OF_TYPE_' . $addressType . '###'] = $addressItems[$addressType];
+				$baseMA['###LABEL_ADDRESSES_OF_TYPE_' . $addressType . '###'] = $this->pi_getLL('label_addresses_of_type_' . $addressType);
+				$linkMA['###LINK_NEW_TYPE_' . $addressType . '###'] = explode('|', $this->pi_linkTP_keepPIvars('|', array_merge($piArray, array('action' => 'new', 'addressType' => $addressType)), FALSE, FALSE, $linkTarget));
+				$baseMA['###LABEL_LINK_NEW_TYPE_' . $addressType . '###'] = $this->cObj->stdWrap($this->pi_getLL('label_link_new_type_' . $addressType), $this->conf['newLinkWrap.']);
 			}
 		} else {
 			$baseMA['###ADDRESS_ITEMS###'] = $addressItems[$addressType];
-			$linkMA['###LINK_NEW###'] = explode('|', $this->pi_linkTP_keepPIvars('|', array_merge($piArray, array('action' => 'new', 'addressType' => $addressType)), false, false, $linkTarget));
+			$linkMA['###LINK_NEW###'] = explode('|', $this->pi_linkTP_keepPIvars('|', array_merge($piArray, array('action' => 'new', 'addressType' => $addressType)), FALSE, FALSE, $linkTarget));
 			$baseMA['###LABEL_LINK_NEW###'] = $this->cObj->stdWrap($this->pi_getLL('label_link_new'), $this->conf['newLinkWrap.']);
 		}
 
-		if(!$addressFound){
+		if (!$addressFound) {
 			$baseMA['###NO_ADDRESS###'] = $this->cObj->stdWrap($this->pi_getLL('label_no_address'), $this->conf['noAddressWrap.']);
-		}else{
-		        $baseMA['###NO_ADDRESS###'] = '';
+		} else {
+			$baseMA['###NO_ADDRESS###'] = '';
 		}
 
-		// fill sysMessage marker if set
-		if (!empty($this->sysMessage))	{
+		// Fill sysMessage marker if set
+		if (!empty($this->sysMessage)) {
 			$baseMA['###SYS_MESSAGE###'] = $this->cObj->stdWrap($this->sysMessage, $this->conf['sysMessageWrap.']);
 		} else {
 			$baseMA['###SYS_MESSAGE###'] = '';
 		}
 
-			// replace markers and return the content
+		// Replace markers and return content
 		return $this->substituteMarkerArrayNoCached($tplBase, $baseMA, array(), $linkMA);
 	}
 
+
 	/**
-	 * Returns the HTML form for a single address. The fields are fetched from
-	 * tt_address and are configured in TS.
+	 * Returns HTML form for a single address. The fields are fetched from
+	 * tt_address and configured in TS.
 	 *
-	 * @param	string		$action: The action that should be performed (can be "new" or "edit")
-	 * @param	integer		$addressUid: The uid of the page where the addresses are stored
-	 * @param	array		$config: The configuration array for all fields
-	 * @return	The HTML code with the form for editing an address
+	 * @param string $action Action that should be performed (can be "new" or "edit")
+	 * @param integer $addressUid UID of the page where the addresses are stored
+	 * @param array $config Configuration array for all fields
+	 * @return string HTML code with the form for editing an address
 	 */
 	function getAddressForm($action = 'new', $addressUid = NULL, $config) {
-	
-     
-		if(!empty($this->piVars['addressType'])) {
+		if (!empty($this->piVars['addressType'])) {
 			$addressType = intval($this->piVars['addressType']);
 		}
-		
-		switch($addressType) {
+
+		switch ($addressType) {
 			case '2':
 				$addressType = 'delivery';
-				break;
+			break;
 			default:
 				$addressType = 'billing';
-				break;
-		}		
-			// build a query for selecting an address from the database if we have a logged in user
-		$addressData = ($addressUid != NULL) ? $this->addresses[$addressUid] : array();
-
-		if ($this->debug) debug($config,'PI4 config');
-		
-		if (count($this->formError) > 0)	{
-			$addressData = $this->piVars;
+			break;
 		}
 
+		// Build query to select an address from the database if we have a logged in user
+		$addressData = ($addressUid != NULL) ? $this->addresses[$addressUid] : array();
+
+		if ($this->debug) {
+			debug($config, 'PI4 config');
+		}
+
+		if (count($this->formError) > 0) {
+			$addressData = $this->piVars;
+		}
 		if ($addressData['tx_commerce_address_type_id'] == NULL) {
 			$addressData['tx_commerce_address_type_id'] = (int)$this->piVars['addressType'];
 		}
 
-			// get the templates
-		if ($this->conf[$addressType.'.']['subpartMarker.']['editWrap']) {
-			$tplBase = $this->cObj->getSubpart($this->templateCode, strtoupper($this->conf[$addressType.'.']['subpartMarker.']['editWrap']));
+		// Get the templates
+		if ($this->conf[$addressType . '.']['subpartMarker.']['editWrap']) {
+			$tplBase = $this->cObj->getSubpart($this->templateCode, strtoupper($this->conf[$addressType . '.']['subpartMarker.']['editWrap']));
 		} else {
 			$tplBase = $this->cObj->getSubpart($this->templateCode, '###ADDRESS_EDIT###');
 		}
-		if ($this->conf[$addressType.'.']['subpartMarker.']['editItem']) {
-			$tplForm = $this->cObj->getSubpart($this->templateCode, strtoupper($this->conf[$addressType.'.']['subpartMarker.']['editItem']));
+		if ($this->conf[$addressType . '.']['subpartMarker.']['editItem']) {
+			$tplForm = $this->cObj->getSubpart($this->templateCode, strtoupper($this->conf[$addressType . '.']['subpartMarker.']['editItem']));
 		} else {
 			$tplForm = $this->cObj->getSubpart($this->templateCode, '###ADDRESS_EDIT_FORM###');
 		}
-		if ($this->conf[$addressType.'.']['subpartMarker.']['editField']) {
-			$tplField = $this->cObj->getSubpart($this->templateCode, strtoupper($this->conf[$addressType.'.']['subpartMarker.']['editField']));
+		if ($this->conf[$addressType . '.']['subpartMarker.']['editField']) {
+			$tplField = $this->cObj->getSubpart($this->templateCode, strtoupper($this->conf[$addressType . '.']['subpartMarker.']['editField']));
 		} else {
 			$tplField = $this->cObj->getSubpart($this->templateCode, '###SINGLE_INPUT###');
-		}		
-     	
+		}
 
-			// create the form fields
+		// Create form fields
 		$fieldsMarkerArray = array();
-		foreach ($this->fieldList as $fieldName) {
+		foreach($this->fieldList as $fieldName) {
 			$fieldMA = array();
 			$lowerName = strtolower($fieldName);
 			$upperName = strtoupper($fieldName);
 
-				// get the fieldlabel
-			$fieldLabel = $this->pi_getLL('label_' .$lowerName, $fieldName);
+			// Get field label
+			$fieldLabel = $this->pi_getLL('label_' . $lowerName, $fieldName);
 
-				// check if the field is manadatory and append the mandatorySign to the label
-			if ($config['formFields.'][$fieldName .'.']['mandatory'] == '1') {
-				$fieldLabel .= ' ' .$config['mandatorySign'];
+			// Check if the field is manadatory and append the mandatory sign to the label
+			if ($config['formFields.'][$fieldName . '.']['mandatory'] == '1') {
+				$fieldLabel.= ' ' . $config['mandatorySign'];
 			}
 
-				// insert the error message for this specific field
+			// Insert error message for this specific field
 			if (strlen($this->formError[$fieldName]) > 0) {
 				$fieldMA['###FIELD_ERROR###'] = $this->formError[$fieldName];
 			} else {
 				$fieldMA['###FIELD_ERROR###'] = '';
 			}
 
-				// create input field
-				// In this version we only create some simple text fields.
-			$fieldMA['###FIELD_INPUT###'] = $this->getInputField($fieldName, $config['formFields.'][$fieldName .'.'], $addressData[$fieldName]);
+			// Create input field
+			// In this version we only create some simple text fields.
+			$fieldMA['###FIELD_INPUT###'] = $this->getInputField($fieldName, $config['formFields.'][$fieldName . '.'], $addressData[$fieldName]);
 
-
-				// save some data for mails
-			// $this->MYSESSION['mails'][$step][$fieldName] = array('data' => $this->MYSESSION[$step][$fieldName], 'label' => $fieldLabel);
-
-				// get the field item
-
-			$fieldsMarkerArray['###FIELD_' .strtoupper($fieldName) .'###'] = $this->cObj->substituteMarkerArray($tplField, $fieldMA);
-			$fieldsMarkerArray['###LABEL_' .strtoupper($fieldName).'###'] = $fieldLabel;
+			// Get field item
+			$fieldsMarkerArray['###FIELD_' . strtoupper($fieldName) . '###'] = $this->cObj->substituteMarkerArray($tplField, $fieldMA);
+			$fieldsMarkerArray['###LABEL_' . strtoupper($fieldName) . '###'] = $fieldLabel;
 		}
 
-			// put the fields to the form template
+		// Merge fields with form template
 		$formCode = $this->cObj->substituteMarkerArray($tplForm, $fieldsMarkerArray);
 
-			// create the submit button and some hidden fields
-		$submitCode = '<input type="hidden" name="' .$this->prefixId .'[action]" value="' .$action .'" />';
-		$submitCode .= '<input type="hidden" name="' .$this->prefixId .'[addressid]" value="' .$addressUid .'" />';
-		$submitCode .= '<input type="hidden" name="' .$this->prefixId .'[addressType]" value="' .$addressData['tx_commerce_address_type_id'] .'" />';
-		$submitCode .= '<input type="submit" name="' .$this->prefixId .'[check]" value="' .$this->pi_getLL('label_submit_edit') .'" />';
+		// Create submit button and some hidden fields
+		$submitCode = '<input type="hidden" name="' . $this->prefixId . '[action]" value="' . $action . '" />';
+		$submitCode.= '<input type="hidden" name="' . $this->prefixId . '[addressid]" value="' . $addressUid . '" />';
+		$submitCode.= '<input type="hidden" name="' . $this->prefixId . '[addressType]" value="' . $addressData['tx_commerce_address_type_id'] . '" />';
+		$submitCode.= '<input type="submit" name="' . $this->prefixId . '[check]" value="' . $this->pi_getLL('label_submit_edit') . '" />';
 
-			
-		// create a checkbox where the user can select if the address ishis main address / Changed to label and field
-		$isMainAddressCodeField = '<input type="checkbox" name="' .$this->prefixId .'[ismainaddress]"';
-		if ($addressData['tx_commerce_is_main_address']) $isMainAddressCodeField .= ' checked="checked"';
-		$isMainAddressCodeField .= ' />';
-		$isMainAddressCodeLabel .= $this->pi_getLL('label_is_main_address');
+		// Create a checkbox where the user can select if the address is his main address / Changed to label and field
+		$isMainAddressCodeField = '<input type="checkbox" name="' . $this->prefixId . '[ismainaddress]"';
+		if ($addressData['tx_commerce_is_main_address']) {
+			$isMainAddressCodeField.= ' checked="checked"';
+		}
+		$isMainAddressCodeField.= ' />';
+		$isMainAddressCodeLabel.= $this->pi_getLL('label_is_main_address');
 
-		//fill additional information
+		//Fill additional information
 		if ($addressData['tx_commerce_address_type_id'] == 1) {
 			$baseMA['###MESSAGE_EDIT###'] = $this->pi_getLL('message_edit_billing');
-		} else if ($addressData['tx_commerce_address_type_id'] == 2) {
+		} elseif ($addressData['tx_commerce_address_type_id'] == 2) {
 			$baseMA['###MESSAGE_EDIT###'] = $this->pi_getLL('message_edit_delivery');
 		} else {
 			$baseMA['###MESSAGE_EDIT###'] = $this->pi_getLL('message_edit_unknown');
 		}
 
-
-			// fill the markers
+		// Fill the marker
 		$baseMA['###ADDRESS_FORM_FIELDS###'] = $formCode;
 		$baseMA['###ADDRESS_FORM_SUBMIT###'] = $submitCode;
-		
 		$baseMA['###ADDRESS_FORM_IS_MAIN_ADDRESS_FIELD###'] = $isMainAddressCodeField;
 		$baseMA['###ADDRESS_FORM_IS_MAIN_ADDRESS_LABEL###'] = $isMainAddressCodeLabel;
-	
-		// Obsolete Marker, don't use anymore, use Field and label instead
-		$baseMA['###ADDRESS_FORM_IS_MAIN_ADDRESS###'] = $isMainAddressCodeField.' '.$isMainAddressCodeLabel;			
-		$baseMA['###ADDRESS_TYPE###'] = $this->pi_getLL('label_address_of_type_' .$this->piVars['addressType']);
 
-			// get action link
-		if ((int)$this->piVars['backpid']>0){
+		// @Deprecated Obsolete Marker, use Field and label instead
+		$baseMA['###ADDRESS_FORM_IS_MAIN_ADDRESS###'] = $isMainAddressCodeField . ' ' . $isMainAddressCodeLabel;
+		$baseMA['###ADDRESS_TYPE###'] = $this->pi_getLL('label_address_of_type_' . $this->piVars['addressType']);
+
+		// Get action link
+		if ((int)$this->piVars['backpid'] > 0) {
 			$link = $this->pi_linkTP_keepPIvars_url();
 		} else {
 			$link = '';
 		}
-		
-		$baseMA['###ADDRESS_FORM_BACK###'] =  $this->pi_linkToPage($this->pi_getLL('label_form_back','back'),$this->piVars['backpid'],'',array('tx_commerce_pi3'=> array('step'=>$GLOBALS['TSFE']->fe_user->getKey('ses', tx_commerce_div::generateSessionKey('currentStep')))));
-		return '<form method="post" action="' .$link .'" '.$this->conf[addressType.'.']['formParams'].'>' .$this->cObj->substituteMarkerArray($tplBase, $baseMA) .'</form>';
+
+		$baseMA['###ADDRESS_FORM_BACK###'] = $this->pi_linkToPage(
+			$this->pi_getLL('label_form_back', 'back'),
+			$this->piVars['backpid'],
+			'',
+			array(
+				'tx_commerce_pi3' => array(
+					'step' => $GLOBALS['TSFE']->fe_user->getKey('ses', tx_commerce_div::generateSessionKey('currentStep'))
+				)
+			)
+		);
+
+		return '<form method="post" action="' . $link . '" ' . $this->conf[addressType . '.']['formParams'] . '>' . $this->cObj->substituteMarkerArray($tplBase, $baseMA) . '</form>';
 	}
 
+
 	/**
-	 * Returns the html code for a confirmation if the user wants to delete one of his addresses.
+	 * Returns HTML code for a confirmation if the user wants to delete one of his addresses.
 	 *
-	 * @return	The html source with the delete confirmation form
+	 * @return string The HTML source with the delete confirmation form
 	 */
 	function deleteAddressQuestion() {
 		$tplBase = $this->cObj->getSubpart($this->templateCode, '###ADDRESS_DELETE###');
 
-		// fill the address data into the markers
-		foreach ($this->fieldList as $name) {
-			$baseMA['label_'.$name] = $this->pi_getLL('label_' .$name);
-	    		$baseMA[$name] = $this->addresses[intval($this->piVars['addressid'])][$name];
-	    	}
+		// Fill address data to marker
+		foreach($this->fieldList as $name) {
+			$baseMA['label_' . $name] = $this->pi_getLL('label_' . $name);
+			$baseMA[$name] = $this->addresses[intval($this->piVars['addressid']) ][$name];
+		}
 
 		$baseMA['QUESTION'] = $this->pi_getLL('question_delete');
 		$baseMA['YES'] = $this->cObj->stdWrap($this->pi_getLL('label_submit_yes'), $this->conf['yesLinkWrap.']);
 		$baseMA['NO'] = $this->cObj->stdWrap($this->pi_getLL('label_submit_no'), $this->conf['noLinkWrap.']);
-
 		$linkMA['###LINK_YES###'] = explode('|', $this->pi_linkTP_keepPIvars('|', array('action' => 'delete', 'confirmed' => 'yes')));
 		$linkMA['###LINK_NO###'] = explode('|', $this->pi_linkTP_keepPIvars('|', array('action' => 'listing')));
 
 		$content = $this->cObj->substituteMarkerArray($tplBase, $baseMA, '###|###', 1);
+
 		return $this->substituteMarkerArrayNoCached($content, array(), array(), $linkMA);
 	}
 
 
 	/**
-	 * Deletes an address from the database. It doesn't deletes the dataset in real, but it set's the deleted flag like it's
+	 * Deletes an address from the database. It doesn't delete the dataset in real, but it sets the deleted flag like it's
 	 * done inside TYPO3.
-	 * This method has no params, because it get's his data from the piVars currently.
+	 * This method has no params, because it currently gets the data from piVars.
 	 *
-	 * @return void
+	 * @return unknown
 	 */
 	function deleteAddress() {
-		if (!in_array(intval($this->piVars['addressid']), array_keys($this->addresses))) return true;
-		/**
-		  * Hook for deleting an address
-                  * @since 03.08.2006
-                  * @author Volker Graubaum
-		 */
-
-		 $hookObjectsArr = array();
-		 if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi4/class.tx_commerce_pi4.php']['deleteAddress']))      {
-	                 foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi4/class.tx_commerce_pi4.php']['deleteAddress'] as $classRef)  {
-	                     $hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
-                     }
-                 }
-
-		foreach($hookObjectsArr as $hookObj)    {
-    		     if (method_exists($hookObj, 'deleteAddress'))   {
-            		 $message = $hookObj->deleteAddress((int)$this->piVars['addressid'],$this);
-            	    }
-    		}
-		if($message){
-			$this->sysMessage = $message;
-			return true;
+		if (!in_array(intval($this->piVars['addressid']), array_keys($this->addresses))) {
+			return TRUE;
 		}
 
+		// Hook to delete an address
+		$hookObjectsArr = array();
+		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi4/class.tx_commerce_pi4.php']['deleteAddress'])) {
+			foreach($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi4/class.tx_commerce_pi4.php']['deleteAddress'] as $classRef) {
+				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+			}
+		}
+		foreach($hookObjectsArr as $hookObj) {
+			if (method_exists($hookObj, 'deleteAddress')) {
+				$message = $hookObj->deleteAddress((int)$this->piVars['addressid'], $this);
+			}
+		}
 
-		$GLOBALS['TYPO3_DB']->exec_UPDATEquery('tt_address', 'uid=' .intval($this->piVars['addressid']), array('deleted' => 1));
-		unset($this->addresses[intval($this->piVars['addressid'])]);
+		if ($message) {
+			$this->sysMessage = $message;
+			return TRUE;
+		}
+
+		$GLOBALS['TYPO3_DB']->exec_UPDATEquery(
+			'tt_address',
+			'uid=' . intval($this->piVars['addressid']),
+			array(
+				'deleted' => 1
+			)
+		);
+
+		unset($this->addresses[intval($this->piVars['addressid']) ]);
 		unset($this->piVars['confirmed']);
 	}
 
+
 	/**
 	 * Returns a single input form field.
-	 * In fact this is just a switch between the specific methods.
+	 * This is just a switch between the specific methods.
 	 *
-	 * @param	string		$fieldname: The name of the field
-	 * @param	array		$fieldConf: The configuration for this field (normally from TypoScript)
-	 * @param	string		$fieldValue: The current value of this field (Normally fetched from piVars)
-	 * @return	The result of the specific field methods (Normally an html string)
+	 * @param string $fieldname Name of the field
+	 * @param array $fieldConf Configuration for this field (usually from TypoScript)
+	 * @param string $fieldValue Current value of this field (usually fetched from piVars)
+	 * @return string Result of the specific field methods (usually a html string)
 	 */
 	function getInputField($fieldName, $fieldConfig, $fieldValue = '') {
 		switch (strtolower($fieldConfig['type'])) {
 			case 'select':
 				return $this->getSelectInputField($fieldName, $fieldConfig, $fieldValue);
+			break;
 			case 'static_info_tables':
 				$selected = $fieldValue != '' ? $fieldValue : $fieldConfig['default'];
-			 	return $this->staticInfo->buildStaticInfoSelector($fieldConfig['field'], $this->prefixId.'[' .$fieldName .']', $fieldConfig['cssClass'],$selected,'','','','',$fieldConfig['select']);
+				return $this->staticInfo->buildStaticInfoSelector($fieldConfig['field'], $this->prefixId . '[' . $fieldName . ']', $fieldConfig['cssClass'], $selected, '', '', '', '', $fieldConfig['select']);
+			break;
 			case 'check':
-			        return $this->getCheckboxInputField($fieldName, $fieldConfig,  $fieldValue);						    	
+				return $this->getCheckboxInputField($fieldName, $fieldConfig, $fieldValue);
+			break;
 			case 'single':
 			default:
 				return $this->getSingleInputField($fieldName, $fieldConfig, $fieldValue);
+			break;
 		}
 	}
+
 
 	/**
 	 * Returns a single textfield
 	 *
-	 * @param	string		$fieldname: The name of the field
-	 * @param	array		$fieldConf: The configuration for this field (normally from TypoScript)
-	 * @param	string		$fieldValue: The current value of this field (Normally fetched from piVars)
-	 * @return	A single field with type = text
+	 * @param string $fieldname Name of the field
+	 * @param array $fieldConf Configuration for this field (normally from TypoScript)
+	 * @param string $fieldValue Current value of this field (Normally fetched from piVars)
+	 * @return string A single field with type = text
 	 */
 	function getSingleInputField($fieldName, $fieldConfig, $fieldValue = '') {
 		if (($fieldConfig['default']) && empty($fieldValue)) {
 			$value = $fieldConfig['default'];
 		} else {
-			# $value = addslashes(htmlentities($fieldValue));
-			 $value = t3lib_div::removeXSS($fieldValue);
+			$value = t3lib_div::removeXSS($fieldValue);
 		}
-	
-		$result = '<input type="text" name="'.$this->prefixId.'[' .$fieldName .']" value="' .$value .'" ';
+
+		$result = '<input type="text" name="' . $this->prefixId . '[' . $fieldName . ']" value="' . $value . '" ';
+
 		if ($fieldConfig['readonly'] == 1) {
-			$result .= 'readonly="readonly" disabled="disabled" ';
+			$result.= 'readonly="readonly" disabled="disabled" ';
 		}
-		
 		if (isset($fieldConfig['class'])) {
-			$result .= 'class="' . $fieldConfig['class'] . '" ';
+			$result.= 'class="' . $fieldConfig['class'] . '" ';
 		}
-		
-		$result .= '/>';
+
+		$result.= '/>';
+
 		return $result;
 	}
 
+
 	/**
-	 * Returns a selectbox
+	 * Create a selectbox
 	 *
-	 * @param	string		$fieldname: The name of the field
-	 * @param	array		$fieldConf: The configuration for this field (normally from TypoScript)
-	 * @param	string		$fieldValue: The current value of this field (Normally fetched from piVars)
-	 * @return	Returns the html code for a select box with a set of options
+	 * @param string $fieldname Name of the field
+	 * @param array $fieldConf Configuration for this field (normally from TypoScript)
+	 * @param string $fieldValue Current value of this field (Normally fetched from piVars)
+	 * @return string HTML code for a select box with a set of options
 	 */
 	function getSelectInputField($fieldName, $fieldConfig, $fieldValue = '') {
-		$result = '<select name="'.$this->prefixId.'[' .$fieldName .']">';
+		$result = '<select name="' . $this->prefixId . '[' . $fieldName . ']">';
 
-		if ($fieldValue != '')	{
+		if ($fieldValue != '') {
 			$fieldConfig['default'] = $fieldValue;
 		}
 
-			// if static items are set
+		// If static items are set
 		if (is_array($fieldConfig['values'])) {
-			foreach ($fieldConfig['values'] as $option) {
-				$result .= '<option name="' .$option .'" value="' .$option .'"';
-				if ($fieldValue === $option)	$result .= ' selected="selected"';
-				$result .= '>' .$option .'</option>' ."\n";
+			foreach($fieldConfig['values'] as $option) {
+				$result.= '<option name="' . $option . '" value="' . $option . '"';
+				if ($fieldValue === $option) $result.= ' selected="selected"';
+				$result.= '>' . $option . '</option>' . "\n";
 			}
 		} else {
-			// try to fetch some data from database
+			// Fetch data from database
 			$table = $fieldConfig['table'];
-			$select = $fieldConfig['select'] .$this->cObj->enableFields($fieldConfig['table']);
-			$fields = $fieldConfig['label'] .' AS label,' .$fieldConfig['value'] .' AS value';
+			$select = $fieldConfig['select'] . $this->cObj->enableFields($fieldConfig['table']);
+			$fields = $fieldConfig['label'] . ' AS label,' . $fieldConfig['value'] . ' AS value';
 			$orderby = $fieldConfig['orderby'];
-			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($fields, $table, $select, '', $orderby);
+			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+				$fields,
+				$table,
+				$select,
+				'',
+				$orderby
+			);
 			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
-				$result .= '<option name="' .$row['value'] .'" value="' .$row['value'] .'"';
-				if ($row['value'] === $fieldConfig['default'])	$result .= ' selected="selected"';
-				$result .= '>' .$row['label'] .'</option>' ."\n";
+				$result.= '<option name="' . $row['value'] . '" value="' . $row['value'] . '"';
+				if ($row['value'] === $fieldConfig['default']) {
+					$result.= ' selected="selected"';
+				}
+				$result.= '>' . $row['label'] . '</option>' . "\n";
 			}
 		}
+		$result.= '</select>';
 
-		$result .= '</select>';
 		return $result;
 	}
-	
+
+
 	/**
 	 * Returns a checkbox
 	 *
-	 * @param	string		$fieldname: The name of the field
-	 * @param	array		$fieldConf: The configuration for this field (normally from TypoScript)
-	 * @param	string		$fieldValue: The current value of this field (Normally fetched from piVars)
-	 * @return	a single checkbox
+	 * @param string $fieldname Name of the field
+	 * @param array $fieldConf Configuration for this field (normally from TypoScript)
+	 * @param string $fieldValue Current value of this field (Normally fetched from piVars)
+	 * @return string A single checkbox
 	 */
-	
 	function getCheckboxInputField($fieldName, $fieldConfig, $fieldValue = '') {
-	    $result = '<input type="checkbox" name="'.$this->prefixId.'['.$fieldName.']" 
-	    id="'.$this->prefixId.'['.$step.']['.$fieldName.']" value="1" ';
-	    if (($fieldConfig['default']=='1' && $fieldValue!=0) || $fieldValue==1) {
-	        $result.='checked="checked" ';
-	    }
-	    $result .= ' /> ';
-	    if ($fieldConfig['additionalinfo']!='') {
-	          $result.=$fieldConfig['additionalinfo'];
-	    }
-	      return $result;
+		$result = '<input type="checkbox" name="' . $this->prefixId . '[' . $fieldName . ']" id="' . $this->prefixId . '[' . $step . '][' . $fieldName . ']" value="1" ';
+
+		if (($fieldConfig['default'] == '1' && $fieldValue != 0) || $fieldValue == 1) {
+			$result.= 'checked="checked" ';
+		}
+
+		$result.= ' /> ';
+
+		if ($fieldConfig['additionalinfo'] != '') {
+			$result.= $fieldConfig['additionalinfo'];
+		}
+
+		return $result;
 	}
-	
+
 
 	/**
+	 *
+	 * @TODO Fix denglish
+	 *
 	 * Reads in the complete configuration for a form, and parses the data that come from the piVars
 	 * and checks if this values fit the configuration for the field.
 	 * If errors occur, it writes it into a class var called formError. The key will be the name of the
@@ -723,59 +766,58 @@ class tx_commerce_pi4 extends tx_commerce_pibase {
 	function checkAddressForm() {
 		$this->formError = array();
 		$config = $this->conf['formFields.'];
-		$result = true;
+		$result = TRUE;
 
-		// if the address doesn't exsist in the session it's valid. For the case that
-		// not delivery address was set
-		foreach ($this->fieldList as $name) {
+		// If the address doesn't exsist in session it's valid. In case no delivery address was set.
+		foreach($this->fieldList as $name) {
 			$value = $this->piVars[$name];
-			$options = $this->conf['formFields.'][$name .'.'];
+			$options = $this->conf['formFields.'][$name . '.'];
 
 			if ($options['mandatory'] == 1 && strlen($value) == 0) {
 				$this->formError[$name] = $this->pi_getLL('error_field_mandatory');
-				$result = false;
+				$result = FALSE;
 			}
 
-			$eval = explode(',', $config[$name .'.']['eval']);
-			foreach ($eval as $method) {
+			$eval = explode(',', $config[$name . '.']['eval']);
+			foreach($eval as $method) {
 				$method = explode('_', $method);
 				switch (strtolower($method[0])) {
 					case 'email':
 						if (!empty($value) && !t3lib_div::validEmail($value)) {
 							$this->formError[$name] = $this->pi_getLL('error_field_email');
-							$result = false;
+							$result = FALSE;
 						}
-						break;
+					break;
 					case 'string':
 						if (!is_string($value)) {
 							$this->formError[$name] = $this->pi_getLL('error_field_string');
-							$result = false;
+							$result = FALSE;
 						}
-						break;
+					break;
 					case 'int':
 						if (!is_integer($value)) {
 							$this->formError[$name] = $this->pi_getLL('error_field_int');
-							$result = false;
+							$result = FALSE;
 						}
-						break;
+					break;
 					case 'min':
 						if (strlen((string)$value) < intval($method[1])) {
 							$this->formError[$name] = sprintf($this->pi_getLL('error_field_min'), $method[1]);
-							$result = false;
+							$result = FALSE;
 						}
-						break;
+					break;
 					case 'max':
 						if (strlen((string)$value) > intval($method[1])) {
 							$this->formError[$name] = sprintf($this->pi_getLL('error_field_max'), $method[1]);
-							$result = false;
+							$result = FALSE;
 						}
-						break;
+					break;
 					case 'alpha':
 						if (preg_match('/[0-9]/', $value) === 1) {
 							$this->formError[$name] = $this->pi_getLL('error_field_alpha');
-							$result = false;
+							$result = FALSE;
 						}
-						break;
+					break;
 				}
 			}
 		}
@@ -783,112 +825,115 @@ class tx_commerce_pi4 extends tx_commerce_pibase {
 		return $result;
 	}
 
+
 	/**
-	 * Saves some data from the piVars as address into the database.
+	 * Save some data from piVars as address into database.
 	 *
-	 * @param	boolean		$new: If this is true, a new address will be created, otherwise it searches for an existing dataset and updates it
-	 * @param	integer		$addressType: The type of the address that comes from the piVars
-	 * @return	void
+	 * @param boolean $new If this is TRUE, a new address will be created, otherwise it searches for an existing dataset and updates it
+	 * @param integer $addressType Type of address delivered by piVars
+	 * @return void
 	 */
-	function saveAddressData($new = false, $addressType = 0) {
-
-
-
+	function saveAddressData($new = FALSE, $addressType = 0) {
 		$newData = array();
 
-			// set some basic data
+		// Set basic data
 		if (empty($addressType)) $addressType = 0;
-		if ($this->piVars['ismainaddress'] == 'on')	{
+		if ($this->piVars['ismainaddress'] == 'on') {
 			$newData['tx_commerce_is_main_address'] = 1;
-
-				// remove all "is main address" flags from addresses that are assigned to this user
+			// Remove all "is main address" flags from addresses that are assigned to this user
 			$GLOBALS['TYPO3_DB']->exec_UPDATEquery(
 				'tt_address',
-				'pid=' .$this->conf['addressPid'] .
-					' AND tx_commerce_fe_user_id=' .$this->user['uid'] .
-					' AND tx_commerce_address_type_id=' .$addressType,
+				'pid=' . $this->conf['addressPid'] . ' AND tx_commerce_fe_user_id=' . $this->user['uid'] . ' AND tx_commerce_address_type_id=' . $addressType,
 				array('tx_commerce_is_main_address' => 0)
 			);
 		} else {
 			$newData['tx_commerce_is_main_address'] = 0;
 		}
+
 		$newData['tstamp'] = time();
 
-		if ($this->debug) debug($newData);
-
-		foreach ($this->fieldList as $name) {
-			$newData[$name] = $this->piVars[$name];
-			if (!$new) $this->addresses[intval($this->piVars['addressid'])][$name] = $this->piVars[$name];
+		if ($this->debug) {
+			debug($newData);
 		}
 
-                /**
-		  * Hook for processing the new/changed address
-                  * @since 03.08.2006
-                  * @author Volker Graubaum
-		 */
+		foreach($this->fieldList as $name) {
+			$newData[$name] = $this->piVars[$name];
+			if (!$new) {
+				$this->addresses[intval($this->piVars['addressid']) ][$name] = $this->piVars[$name];
+			}
+		}
 
-		 $hookObjectsArr = array();
-		 if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi4/class.tx_commerce_pi4.php']['saveAddress']))      {
-	                 foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi4/class.tx_commerce_pi4.php']['saveAddress'] as $classRef)  {
-	                     $hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
-                     }
-                 }
 
+		// Hook to process new/changed address
+		$hookObjectsArr = array();
+		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi4/class.tx_commerce_pi4.php']['saveAddress'])) {
+			foreach($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi4/class.tx_commerce_pi4.php']['saveAddress'] as $classRef) {
+				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+			}
+		}
 
 		if ($new) {
 			$newData['tx_commerce_fe_user_id'] = $this->user['uid'];
 			$newData['tx_commerce_address_type_id'] = $addressType;
-
 			$newData['pid'] = $this->conf['addressPid'];
 
-			foreach($hookObjectsArr as $hookObj)    {
-            		     if (method_exists($hookObj, 'beforeAddressSave'))   {
-                    		 $hookObj->beforeAddressSave($newData,$this);
-	            	    }
-	    		}
+			foreach($hookObjectsArr as $hookObj) {
+				if (method_exists($hookObj, 'beforeAddressSave')) {
+					$hookObj->beforeAddressSave($newData, $this);
+				}
+			}
 
-			$GLOBALS['TYPO3_DB']->exec_INSERTquery('tt_address', $newData);
+			$GLOBALS['TYPO3_DB']->exec_INSERTquery(
+				'tt_address',
+				$newData
+			);
 			$newUid = $GLOBALS['TYPO3_DB']->sql_insert_id();
 
-			foreach($hookObjectsArr as $hookObj)    {
-            		     if (method_exists($hookObj, 'afterAddressSave'))   {
-                    		 $hookObj->afterAddressSave($newUid,$newData,$this);
-	            	    }
-	    		}
+			foreach($hookObjectsArr as $hookObj) {
+				if (method_exists($hookObj, 'afterAddressSave')) {
+					$hookObj->afterAddressSave($newUid, $newData, $this);
+				}
+			}
+
 			$this->addresses = $this->getAddresses($this->user['uid']);
-
-
 		} else {
+			foreach($hookObjectsArr as $hookObj) {
+				if (method_exists($hookObj, 'beforeAddressEdit')) {
+					$hookObj->beforeAddressEdit((int)$this->piVars['addressid'], $newData, $this);
+				}
+			}
 
-		    foreach($hookObjectsArr as $hookObj)    {
-		         if (method_exists($hookObj, 'beforeAddressEdit'))   {
-        			 $hookObj->beforeAddressEdit((int)$this->piVars['addressid'],$newData,$this);
-        	        }
-    	    }
+			$sWhere = 'uid=' . intval($this->piVars['addressid']) . " AND  tx_commerce_fe_user_id = " . $GLOBALS["TSFE"]->fe_user->user["uid"] . ' ';
 
-            $sWhere = 'uid=' .intval($this->piVars['addressid'])." AND  tx_commerce_fe_user_id = ".$GLOBALS["TSFE"]->fe_user->user["uid"].' ' ;
-            $GLOBALS['TYPO3_DB']->exec_UPDATEquery('tt_address', $sWhere, $newData);
+			$GLOBALS['TYPO3_DB']->exec_UPDATEquery(
+				'tt_address',
+				$sWhere,
+				$newData
+			);
 
-		    foreach($hookObjectsArr as $hookObj)    {
-        	   if (method_exists($hookObj, 'afterAddressEdit'))   {
-    			 $hookObj->afterAddressEdit((int)$this->piVars['addressid'],$newData,$this);
-    	        }
-    	    }
-
+			foreach($hookObjectsArr as $hookObj) {
+				if (method_exists($hookObj, 'afterAddressEdit')) {
+					$hookObj->afterAddressEdit((int)$this->piVars['addressid'], $newData, $this);
+				}
+			}
 		}
 	}
 
+
 	/**
-	 * Creates a list of array keys where the last character is removed from it.
+	 * Create a list of array keys where the last character is removed from it.
 	 *
-	 * @param	array		$dataArray: The array where the keys should be cleaned
-	 * @return	An array with the cleaned arraykeys or the orginal data if it was no array
+	 * @param array $dataArray Array where the keys should be cleaned
+	 * @return array An array with the cleaned arraykeys or the orginal data if it was no array
 	 */
 	function parseFieldList($dataArray) {
 		$result = array();
-		if (!is_array($dataArray)) return $result;
 
-		foreach ($dataArray as $key => $data) {
+		if (!is_array($dataArray)) {
+			return $result;
+		}
+
+		foreach($dataArray as $key => $data) {
 			// remove the trailing '.'
 			$result[] = substr($key, 0, -1);
 		}
@@ -896,31 +941,34 @@ class tx_commerce_pi4 extends tx_commerce_pibase {
 		return $result;
 	}
 
+
 	/**
 	 * Get all addresses from the database that are assigned to the current user.
 	 *
-	 * @param	integer		$userId: The UID of the user you want to have the addresses from
-	 * @param	integer		$addressType: The type of addresses you which to have (0 (default) means get all types)
-	 * @return	An array with addresses where the keys are the UIDs and the values are the complete addresses data
+	 * @param integer $userId UID of the user
+	 * @param integer $addressType Type of addresses to retrieve (0 (default) means get all types)
+	 * @return array Keys with UIDs and values with complete addresses data
 	 */
-	function getAddresses($userId, $addressType = 0)	{
-		$select = 'tx_commerce_fe_user_id=' .intval($userId) .t3lib_Befunc::BEenableFields('tt_address');
+	function getAddresses($userId, $addressType = 0) {
+		$select = 'tx_commerce_fe_user_id=' . intval($userId) . t3lib_Befunc::BEenableFields('tt_address');
+
 		if ($addressType > 0) {
-		  $select .= ' AND tx_commerce_address_type_id=' .intval($addressType);
-		} elseif (isset($this->conf['selectAddressTypes']))	{
-			$select .= ' AND tx_commerce_address_type_id IN (' .$this->conf['selectAddressTypes'] .')';
+			$select.= ' AND tx_commerce_address_type_id=' . intval($addressType);
+		} elseif (isset($this->conf['selectAddressTypes'])) {
+			$select.= ' AND tx_commerce_address_type_id IN (' . $this->conf['selectAddressTypes'] . ')';
 		} else {
 			$this->addresses = array();
 			return;
 		}
-		$select .= ' AND deleted=0 AND pid=' .$this->conf['addressPid'];
+
+		$select.= ' AND deleted=0 AND pid=' . $this->conf['addressPid'];
+
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			'*',
 			'tt_address',
 			$select,
 			'',
 			'tx_commerce_is_main_address desc'
-
 		);
 
 		$result = array();
@@ -932,7 +980,7 @@ class tx_commerce_pi4 extends tx_commerce_pibase {
 	}
 }
 
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/pi4/class.tx_commerce_pi4.php'])	{
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/pi4/class.tx_commerce_pi4.php']);
+if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/commerce/pi4/class.tx_commerce_pi4.php']) {
+	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/commerce/pi4/class.tx_commerce_pi4.php']);
 }
 ?>
