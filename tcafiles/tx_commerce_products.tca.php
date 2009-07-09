@@ -479,20 +479,20 @@ if (is_array($postEdit['tx_commerce_products']) &&
 	
 	// write back the modified TCA
 	$TCA = $dynaflex->getDynamicTCA();
-	$simpleMode = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['commerce']);
-	$simpleMode = $simpleMode['simpleMode'];
-	if($simpleMode) {
-		$TCA['tx_commerce_products']['columns']['articles'] = array (
-			'exclude' => 1,
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_products.articles',
-			'config' => array (
-				'type' => 'inline',
-				'foreign_table'=>'tx_commerce_articles',
-				'foreign_field'=>'uid_product',
-				'minitems'=>0,
-			),
-		);
-		$TCA['tx_commerce_products']['types']['0']['showitem'] = str_replace('articleslok', 'articles', $TCA['tx_commerce_products']['types']['0']['showitem']);
-	}
+}
+$simpleMode = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['commerce']);
+$simpleMode = $simpleMode['simpleMode'];
+if($simpleMode) {
+	$TCA['tx_commerce_products']['columns']['articles'] = array (
+		'exclude' => 1,
+		'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_products.articles',
+		'config' => array (
+			'type' => 'inline',
+			'foreign_table'=>'tx_commerce_articles',
+			'foreign_field'=>'uid_product',
+			'minitems'=>0,
+		),
+	);
+	$TCA['tx_commerce_products']['types']['0']['showitem'] = str_replace('articleslok', 'articles', $TCA['tx_commerce_products']['types']['0']['showitem']);
 }
 ?>
