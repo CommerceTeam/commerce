@@ -303,13 +303,11 @@ class tx_commerce_navigation {
         }
         
 		if($this->pathParents){
-			
-			
-			
+
 			$this->processArrayPostRender($this->mTree,$this->pathParents,$this->mDepth);
-			
+	
 		}
-		t3lib_div::debug($this->mTree,'mtree',__LINE__,__FILE__);
+	
 		return  $this->mTree;
 	}
 	function fixPathParents(&$pathArray,$chosenCatUid){
@@ -497,8 +495,7 @@ class tx_commerce_navigation {
 					$nodeArray['_ADD_GETVARS'] .= ini_get('arg_separator.output') .'cHash='.t3lib_div::shortMD5(serialize($pA));
 				 	$nodeArray['ITEM_STATE'] = 'IFSUB';
 				 
-				 }
-				 else{
+				 }else{
 				 	
 				 	if($nodeArray['hasSubChild']==2){
 				    	$nodeArray['_ADD_GETVARS'].=ini_get('arg_separator.output') .$this->prefixId.'[showUid]='.$dataRow[uid];
@@ -515,7 +512,7 @@ class tx_commerce_navigation {
 					$nodeArray['ITEM_STATE'] = 'NO';
 						
 				 }
-				 
+				
 				$treeList[$row['uid_local']]=$nodeArray; 
 			}
 		}
@@ -560,6 +557,7 @@ class tx_commerce_navigation {
 		
 		
 		$sql.= $sorting;
+
 		
 		#$sql.= 'order by title';
 		$res=$GLOBALS['TYPO3_DB']->sql_query($sql);
@@ -606,9 +604,14 @@ class tx_commerce_navigation {
 			 	
 				$pA = t3lib_div::cHashParams($nodeArray['_ADD_GETVARS'].$GLOBALS['TSFE']->linkVars);
 				$nodeArray['_ADD_GETVARS'] .= ini_get('arg_separator.output') .'cHash='.t3lib_div::shortMD5(serialize($pA));
-				$nodeArray['ITEM_STATE'] = 'NO';
+				
 				if($this->gpVars['manufacturer']){
 					$nodeArray['_ADD_GETVARS'] .="&".$this->prefixId.'[manufacturer]='.$this->gpVars['manufacturer'];
+				}
+				
+				// if this product is displayed set to CUR
+				if (($mainTable == 'tx_commerce_products') && ($dataRow['uid'] == $this->ShowUid)){
+					$nodeArray['ITEM_STATE'] = 'CUR';
 				}
 				
 				$treeList[$row['uid_local']]=$nodeArray; 
@@ -787,7 +790,7 @@ class tx_commerce_navigation {
 		}
 	/**
 	 * Gets all active categories from the rootline to change the ItemState
-	 *
+	 * @depricated
 	 * @return	array	array of all active Categories
 	 */
 	function getActiveCats() {
