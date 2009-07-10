@@ -224,7 +224,7 @@ class leafMaster extends leaf{
 		$out 			= '';
 		$level 			= 0;
 		$lastLevel		= 0;
-		$crazyStart = $crazyRecursion = 100000;	//Max. number of loops we make
+		$crazyStart = $crazyRecursion = 10000;	//Max. number of loops we make
 		$tempChildren 	= array();				//temporary child stack
 		$tempLevels		= array(0);				//temporary level stack - already filled with a 0 because the starting child is on level 0
 		$levelOpener	= array();				//holds which uid openend which level

@@ -932,6 +932,52 @@ class tx_commerce_dmhooks	{
 						$fieldArray = array();	
 					}
 					
+					// make sure the category does not end up as its own parent - would lead to endless recursion.
+					if('' != $fieldArray['parent_category'] && 'new' != $status) {
+						$catUids = t3lib_div::intExplode(',', $fieldArray['parent_category']);
+						
+						foreach($catUids as $catUid) {
+							
+							// Skip root.
+							if(0 == $catUid) continue;
+							
+							// Make sure we did not assign self as parent category
+							if($catUid == $id) {
+								$pObj->newlog('You cannot select this category itself as a parent category.', 1);
+								$fieldArray = array();
+							}
+							
+							$catDirect = t3lib_div::makeInstance('tx_commerce_category');
+							$catDirect->init($catUid);
+							$catDirect->load_data();
+					
+							$tmpCats 	= $catDirect->getParentCategories();
+							$tmpParents = null;
+							$i 			= 1000;
+							
+							while(!is_null($cat = @array_pop($tmpCats))) {
+								
+								//Prevent endless recursion
+								if($i < 0) {
+									$pObj->newlog('Endless recursion occured while processing your request. Notify your admin if this error persists.', 1);
+									$fieldArray = array();
+								}
+								
+								
+								if($cat->getUid() == $id) {
+									$pObj->newlog('You cannot select a child category or self as a parent category. Selected Category in question: ' . $catDirect->getTitle(), 1);
+									$fieldArray = array();	
+								}
+								
+								$tmpParents = $cat->getParentCategories();
+					
+								if(is_array($tmpParents) && 0 < count($tmpParents)) {
+									$tmpCats = array_merge($tmpCats, $tmpParents);	
+								}
+								$i --;
+							}
+						}
+					}
 				}
 			break;
 		}
@@ -994,12 +1040,24 @@ class tx_commerce_dmhooks	{
 				if(0 < count($fieldArray)) {
 					
 					if (isset($fieldArray['parent_category']))	{
-						
+
 						// get the list of categories for this category and save the relations in the database
 						$catList = explode(',', $fieldArray['parent_category']);
+						
+						// preserve the 0 as root.
+						$preserve = array();
+						
+						if(in_array(0, $catList)) {
+							$preserve[] = 0;	
+						}
+						
+						// extract uids.
 						$catList = $this->belib->getUidListFromList($catList);
 						$catList = $this->belib->extractFieldArray($catList, 'uid_foreign', true);
-	
+						
+						// add preserved
+						$catList = array_merge($catList, $preserve);
+
 						$this->belib->saveRelations($id, $catList, 'tx_commerce_categories_parent_category_mm', true);
 					}
 	

@@ -636,13 +636,15 @@ class tx_commerce_treelib_tceforms {
 		
 		if(is_array($parent)) {	
 			for($i = 0, $l = count($parent); $i < $l; $i ++) {
+				
 				$parent[$i]->load_data();
 				
 				//Separate Key and Title with a |
 				$title = ($parent[$i]->isPSet('show') && $mounts->isInCommerceMounts($parent[$i]->getUid())) ? $parent[$i]->getTitle() : $GLOBALS['LANG']->sL('LLL:EXT:commerce/locallang_treelib.php:leaf.restrictedAccess',1); 
-				$this->itemArrayProcessed = array($parent[$i]->getUid().'|'.$title); 
+				$this->itemArrayProcessed[] = $parent[$i]->getUid().'|'.$title; 
 			}
 		}
+	
 		return $this->itemArrayProcessed;
 	}
 	

@@ -309,7 +309,7 @@ class tx_commerce_navigation {
 			$this->processArrayPostRender($this->mTree,$this->pathParents,$this->mDepth);
 			
 		}
-		
+		t3lib_div::debug($this->mTree,'mtree',__LINE__,__FILE__);
 		return  $this->mTree;
 	}
 	function fixPathParents(&$pathArray,$chosenCatUid){

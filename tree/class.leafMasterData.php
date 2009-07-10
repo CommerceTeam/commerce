@@ -39,6 +39,11 @@ abstract class leafMasterData extends leafData{
 			return;
 		}
 		
+		// Check if we have access to the records.
+		if(!$GLOBALS['BE_USER']->check('tables_select',$this->table)) {
+			return;
+		}
+		
 		//Get the records
 		if($this->useMountpoints) {
 			//Get the records by Mountpoint
@@ -47,7 +52,6 @@ abstract class leafMasterData extends leafData{
 			//Get the records by Uid
 			$this->records = &$this->getRecordsByUid();
 		}
-		
 	}
 	
 	/**

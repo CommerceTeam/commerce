@@ -322,7 +322,7 @@ class leafData extends langbase {
 	 * @return {array}	Records array
 	 */
 	function loadRecords() {
-
+		
 		//Add the extended fields to the select statement
 		$select = (is_string($this->extendedFields) && '' != $this->extendedFields) ? $this->defaultFields.','.$this->extendedFields : $this->defaultFields;
 		
@@ -352,8 +352,10 @@ class leafData extends langbase {
 			return array();	
 		}
 		
+		$checkRightRow = false;	// Will hold a record to check rights against after this loop.
+		
 		while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res))
-		{
+		{	
 			//get the version overlay if wanted
 			$parentItem = $row['item_parent'];	//store parent item
 			unset($row['item_parent']);			//unset the pseudo-field (no pseudo-fields allowed for workspaceOL)
@@ -380,10 +382,18 @@ class leafData extends langbase {
 				//store
 				$rows['pid'][$row['item_parent']][] = $row;
 			}
+			
+			$checkRightRow = (false === $checkRightRow) ? $row : $checkRightRow;
 		}
 		
 		//free memory
 		$GLOBALS['TYPO3_DB']->sql_free_result($res);
+		
+		// Check perms on Commerce folders.
+		if(false !== $checkRightRow && !$this->checkAccess($this->itemTable, $checkRightRow)) {
+			if (TYPO3_DLOG) t3lib_div::devLog('loadRecords (leafdata) could not load records because it doesnt have permissions on the commerce folder. Return empty array.', COMMERCE_EXTkey, 3);	
+			return array();
+		}
 		
 		//Calculate the records which are last
 		if(is_array($rows['pid'])) {
@@ -394,8 +404,6 @@ class leafData extends langbase {
 			for($i = 0; $i < $l; $i ++) {
 				$lastIndex = end(array_keys($rows['pid'][$keys[$i]]));
 				
-					
-				
 				//Change last-attribute in 'uid' and 'pid' array - this now holds under which pids the record is last
 				$uidItem = $rows['uid'][$rows['pid'][$keys[$i]][$lastIndex]['uid']]; //sh
 				
@@ -403,10 +411,45 @@ class leafData extends langbase {
 				$rows['pid'][$keys[$i]][$lastIndex]['lastNode'] = $keys[$i];
 			}
 		}
-
+		
 		$this->records = $rows;
 		
 		return $this->records;
+	}
+	
+	/**
+	 * Checks the page access rights (Code for access check mostly taken from alt_doc.php)
+	 * as well as the table access rights of the user.
+	 *
+	 * @see 	tx_recycler
+	 * @param	string		$cmd: The command that sould be performed ('new' or 'edit')
+	 * @param	string		$table: The table to check access for
+	 * @param	string		$theUid: The record uid of the table
+	 * @return	boolean		Returns true is the user has access, or false if not
+	 */
+	public function checkAccess($table, $row) {
+		// Checking if the user has permissions? (Only working as a precaution, because the final permission check is always down in TCE. But it's good to notify the user on beforehand...)
+		// First, resetting flags.
+		$hasAccess = 0;
+		$deniedAccessReason = '';
+		
+		$calcPRec = $row;
+		t3lib_BEfunc::fixVersioningPid($table,$calcPRec);
+		if (is_array($calcPRec)) {
+			if ($table=='pages') {	// If pages:
+				$CALC_PERMS = $GLOBALS['BE_USER']->calcPerms($calcPRec);
+				$hasAccess = $CALC_PERMS & 2 ? 1 : 0;
+			} else {
+				$CALC_PERMS = $GLOBALS['BE_USER']->calcPerms(t3lib_BEfunc::getRecord('pages',$calcPRec['pid']));	// Fetching pid-record first.
+				$hasAccess = $CALC_PERMS & 16 ? 1 : 0;
+			}
+		}
+		
+		if($hasAccess) {
+			$hasAccess = $GLOBALS['BE_USER']->isInWebMount($calcPRec['pid'], '1=1');
+		}
+
+		return $hasAccess ? true : false;
 	}
 }
 ?>

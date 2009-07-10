@@ -29,10 +29,7 @@ class langbase {
 	 * @return {void}
 	 */
 	public function loadLL() {
-		global $LANG;
-
-		$LANG->includeLLFile($this->llFile);
-		$this->lang = &$LANG;
+		$GLOBALS['LANG']->includeLLFile($this->llFile);
 	}
 	
 	/**
@@ -41,7 +38,7 @@ class langbase {
 	 * @param $field {string}	LL Field
 	 */
 	public function getLL($field) {
-		return $this->lang->getLL($field);
+		return $GLOBALS['LANG']->getLL($field);
 	}
 }
 ?>
