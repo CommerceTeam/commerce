@@ -50,10 +50,6 @@ Ready on 6th April
 Thomas Hempel
 Ready on 6th April
 
-11. Move pi6 to pi5 and delete pi6 and old pi5 contents
-J�rg Sprung 
-Ready on 6th April
-
 12. Merge the changelog files
 Thomas Hempel
 

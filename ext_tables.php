@@ -784,10 +784,6 @@ t3lib_extMgm::addPlugin(Array('LLL:EXT:commerce/locallang_be.php:tt_content.list
 $TCA['tt_content']['types']['list']['subtypes_excludelist'][$_EXTKEY .'_pi4'] = 'layout,select_key,pages';
 t3lib_extMgm::addPlugin(Array('LLL:EXT:commerce/locallang_be.php:tt_content.list_type_pi4', $_EXTKEY .'_pi4'), 'list_type');
 
-/* ################# PI5 (checkout - old) ##################### */
-#$TCA['tt_content']['types']['list']['subtypes_excludelist'][$_EXTKEY .'_pi5'] = 'layout,select_key,pages';
-#t3lib_extMgm::addPlugin(Array('LLL:EXT:commerce/locallang_be.php:tt_content.list_type_pi5', $_EXTKEY .'_pi5'), 'list_type');
-
 /* ################ PI6 (invoice)############################*/
 
 $TCA['tt_content']['types']['list']['subtypes_excludelist'][$_EXTKEY.'_pi6']='layout,select_key,pages';

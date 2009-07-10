@@ -5,6 +5,7 @@ Changelog for tx_commerce
 * Added CUR as Menue Item state to navigation for products
 
 10.07.2009 Christian Kuhn <lolli@schwarzbu.ch>
+* Fixed bug #3870: Remove pi5 from trunk
 * Removed is_todo.txt: Issues are documented on forge
 * Fixed bug #3869: Remove obsolete XCLASS from trunk
 * Fixed bug #3804: pi3 checks for the wrong method in hook (Thanks to Morten Olesen and Christoph Niewerth)
