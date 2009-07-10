@@ -177,13 +177,6 @@ t3lib_extMgm::addUserTSConfig('
 	options.saveDocNew.tx_commerce_moveordermails=1
 ');
 
-// only in old TYPO3 versions below 4.0 apply extension to TCA Non type
-if (t3lib_div::int_from_ver(TYPO3_version) < '4000000') {
-	$GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['t3lib/class.t3lib_tceforms.php'] = t3lib_extMgm::extPath(COMMERCE_EXTkey).'class.ux_t3lib_tceforms.php';
-	$GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['typo3/alt_doc.php'] = t3lib_extMgm::extPath(COMMERCE_EXTkey).'class.ux_sc_alt_doc.php';
-
-}
-
 // only in TYPO3 versions greater or equal 4.2
 if (t3lib_div::int_from_ver(TYPO3_version) >= '4002000') {
 	$GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['typo3/classes/class.modulemenu.php'] = t3lib_extMgm::extPath(COMMERCE_EXTkey).'class.ux_modulemenu.php';
