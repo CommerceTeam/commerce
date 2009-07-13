@@ -1,5 +1,8 @@
 Changelog for tx_commerce
 
+13.07.2009 Christian Kuhn <lolli@schwarzbu.ch>
+* Minor comment fix in pi3
+
 10.07.2009 Ingo Schmitt <is@marketing-factory.de>
 * Fixed Bug 3847, 3729, 3629, 3504, 3499, Thanks to Erik Frister <efrister@marketing-factory.de>
 * Added CUR as Menue Item state to navigation for products
