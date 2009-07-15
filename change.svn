@@ -1,5 +1,9 @@
 Changelog for tx_commerce
 
+15.06.2009 Ingo Schmitt <is@marketing-factory.de>
+* Added Xclass for fix T3Core Bug 10331 which will be solved in 4.3.x, Thanks to David Rühr for debugging!
+* Increased Version Number
+
 13.07.2009 Christian Kuhn <lolli@schwarzbu.ch>
 * Minor comment fix in pi3
 

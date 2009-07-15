@@ -204,6 +204,15 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/class.browse_links.php']['brows
 //$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/browse_links.php']['browseLinksHook'][]='EXT:commerce/hooks/class.tx_commerce_browselinkshooks.php:tx_commerce_browselinkshooks';
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/rtehtmlarea/mod3/class.tx_rtehtmlarea_browse_links.php']['browseLinksHook'][] = 'EXT:commerce/hooks/class.tx_commerce_browselinkshooks.php:tx_commerce_browselinkshooks';
 
+// only in TYPO3 versions less than 4.3
+// xlass t3lib_parsehtml_proc to fix TYPO3 issue 10331
+// @see http://bugs.typo3.org/view.php?id=10331
+if (t3lib_div::int_from_ver(TYPO3_version) < '4003000') {
+	require_once(t3lib_extMgm::extPath(COMMERCE_EXTkey).'class.ux_t3lib_parsehtml_proc.php');
+	$TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['t3lib/class.t3lib_parsehtml_proc.php'] = t3lib_extMgm::extPath(COMMERCE_EXTkey).'class.ux_t3lib_parsehtml_proc.php';
+}
+
+
 // add ajax listener for tree in linkcommerce
 $GLOBALS['TYPO3_CONF_VARS']['BE']['AJAX']['tx_commerce_browselinkshooks::ajaxExpandCollapse'] = 'EXT:commerce/hooks/class.tx_commerce_browselinkshooks.php:tx_commerce_browselinkshooks->ajaxExpandCollapse';
 
