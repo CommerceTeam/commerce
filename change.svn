@@ -1,4 +1,6 @@
 Changelog for tx_commerce
+16.06.2009 Christian Kuhn <lolli@schwarzbu.ch>
+* CGL cleanup in pi6/class.tx_commerce_pi6_wizicon.php
 
 15.06.2009 Ingo Schmitt <is@marketing-factory.de>
 * Added Xclass for fix T3Core Bug 10331 which will be solved in 4.3.x, Thanks to David Rühr for debugging!
