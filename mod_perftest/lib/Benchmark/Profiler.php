@@ -445,3 +445,4 @@ class Benchmark_Profiler extends PEAR {
         return $microtime[1] . substr($microtime[0], 1);
     }
 }
+?>

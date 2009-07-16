@@ -165,3 +165,4 @@ class Benchmark_Iterate extends Benchmark_Timer {
         return $result;
     }
 }
+?>

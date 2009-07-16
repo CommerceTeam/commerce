@@ -319,3 +319,4 @@ class Benchmark_Timer extends PEAR {
         return $microtime[1] . substr($microtime[0], 1);
     }
 }
+?>
