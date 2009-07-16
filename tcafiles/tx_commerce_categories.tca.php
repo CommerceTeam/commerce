@@ -30,15 +30,10 @@
  * 
  * $Id: tx_commerce_categories.tca.php 577 2007-03-27 18:22:11Z ingo $
  */
- 
- 
-if(!defined('TYPO3_MODE')) die("Access denied.");
 
-
-
-
-		
-
+if(!defined('TYPO3_MODE')) {
+	die('Access denied.');
+}
 
 $TCA['tx_commerce_categories'] = Array (
 	'ctrl' => $TCA['tx_commerce_categories']['ctrl'],
@@ -221,7 +216,6 @@ $TCA['tx_commerce_categories'] = Array (
 				'type' => 'passthrough',
 				'form_type' => 'user',
 				'userFunc' => 'EXT:commerce/treelib/class.tx_commerce_tcefunc.php:&tx_commerce_tceFunc->getSingleField_selectCategories',
-			
 				'treeViewBrowseable' => true,
 				'size' => 10,
 				'autoSizeMax' => 30,
@@ -240,7 +234,6 @@ $TCA['tx_commerce_categories'] = Array (
 				'rows' => '10',
 			),
 		),
-
 		'attributes' => Array (
 			'exclude' => 1,
 			'l10n_mode' => 'exclude',
@@ -285,7 +278,7 @@ $TCA['tx_commerce_categories'] = Array (
 				'minitems' => 0,
 				'maxitems' => 5,
 			)
-		),		
+		),
 	),
 	'types' => Array (
 		'0' => Array('showitem' => '
@@ -297,30 +290,4 @@ $TCA['tx_commerce_categories'] = Array (
 		'1' => Array('showitem' => 'starttime, endtime, fe_group, extendToSubpages')
 	)
 );
-
-
-// Only perform from TCA if the BE form is called the first time ('First time' also means
-// calling the editform of an product), no data has to be saved and extension dynaflex is
-// available (of course!)
-
-//Obsolete, @see dcafiles/tx_commerce_categories_dfconfig
-/*$postEdit = t3lib_div::_GP('edit');
-$postData = t3lib_div::_GP('data');
-if (is_array($postEdit['tx_commerce_categories']) &&
-	($postData == NULL) && 
-	t3lib_extMgm::isLoaded('dynaflex')
-	) {
-	// Load the configuration from a file
-	require_once(t3lib_extMgm::extPath('commerce') .'ext_df_category_config.php');
-	$uid = array_keys($postEdit['tx_commerce_categories']);
-	$dynaFlexConf[0]['uid'] = $uid[0];
-	
-	// And start the dynyflex processing
-	require_once(t3lib_extMgm::extPath('dynaflex') .'class.dynaflex.php');
-	$dynaflex = new dynaflex($TCA, $dynaFlexConf);
-	
-	// write back the modified TCA
-	$TCA = $dynaflex->getDynamicTCA();
-}*/
-
 ?>
