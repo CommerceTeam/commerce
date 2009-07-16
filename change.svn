@@ -1,5 +1,6 @@
 Changelog for tx_commerce
 16.06.2009 Christian Kuhn <lolli@schwarzbu.ch>
+* Fixed XCLASS inclusions in lib/ classes to make EM more happy
 * CGL cleanup in pi6/class.tx_commerce_pi6.php
 * CGL cleanup in pi6/class.tx_commerce_pi6_wizicon.php
 
