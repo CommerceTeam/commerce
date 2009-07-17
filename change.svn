@@ -1,4 +1,7 @@
 Changelog for tx_commerce
+17.06.2009 Christian Kuhn <lolli@schwarzbu.ch>
+* Remove dynaflex call for categories in dmhooks. This is handled by dynaflex itself by registering dcafiles/class.tx_commerce_categories_dfconfig.php in ext_localconf.php
+
 16.06.2009 Christian Kuhn <lolli@schwarzbu.ch>
 * Removed obsolete code from tcafiles/tx_commerce_categories.tca.php
 * Fixed missing closing php tags in mod_perftest

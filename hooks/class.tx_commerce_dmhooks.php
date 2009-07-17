@@ -1064,10 +1064,7 @@ class tx_commerce_dmhooks	{
 						// save all relations concerning categories
 					$this->saveCategoryRelations($id, $fieldArray);
 				}
-				
-				// load dynaflex config
-				require_once(t3lib_extMgm::extPath('commerce') .'ext_df_category_config.php');
-				break;
+			break;
 
 			case 'tx_commerce_products':
 
