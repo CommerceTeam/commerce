@@ -275,6 +275,7 @@ $TCA['tx_commerce_products'] = Array (
 			'config' => Array (
 				'type' => 'select',
 				'foreign_table' => 'tx_commerce_manufacturer',
+				'foreign_table_where' => 'ORDER BY tx_commerce_manufacturer.title ASC',
 				'items' => Array(
 					Array('LLL:EXT:commerce/locallang_db.xml:tx_commerce_products.noManufacturer',0)
 				)

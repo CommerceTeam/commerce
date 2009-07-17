@@ -1,5 +1,6 @@
 Changelog for tx_commerce
 18.06.2009 Christian Kuhn <lolli@schwarzbu.ch>
+* Fixed bug #3871: Order manufacturer alphabetically in BE
 * Fixed bug #3868: Saving category in root tree throws SQL error (Thanks to Christoph Niewerth)
 
 17.06.2009 Christian Kuhn <lolli@schwarzbu.ch>
