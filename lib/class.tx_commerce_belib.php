@@ -784,13 +784,17 @@ class tx_commerce_belib {
 					$GLOBALS['TYPO3_DB']->exec_UPDATEquery($relationTable, $where, array('sorting' => $counter));
 				}
 
-				$delClause = 'uid_foreign=' .$relation['uid_foreign'];
-	 			if (isset($relation['uid_correlationtype'])) $delClause .= ' AND uid_correlationtype=' .$relation['uid_correlationtype'];
- 				$delWhere[] = $delClause;
+				if (isset($relation['uid_foreign'])) {
+					$delClause = 'uid_foreign=' . $relation['uid_foreign'];
+					if (isset($relation['uid_correlationtype'])) {
+						$delClause .= ' AND uid_correlationtype=' . $relation['uid_correlationtype'];
+					}
+					$delWhere[] = $delClause;
+				}
 		    }
 		}
 
-		if ($delete && is_array($delWhere))	{
+		if ($delete && (count($delWhere) > 0)) {
 			$where = '';
 			if (count($delWhere) > 0)	{
 				$where = ' AND NOT ((' .implode(') OR (', $delWhere) .'))';

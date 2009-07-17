@@ -1,4 +1,7 @@
 Changelog for tx_commerce
+18.06.2009 Christian Kuhn <lolli@schwarzbu.ch>
+* Fixed bug #3868: Saving category in root tree throws SQL error
+
 17.06.2009 Christian Kuhn <lolli@schwarzbu.ch>
 * Remove unused file ext_df_category_config.php
 * Remove dynaflex call for categories in dmhooks. This is handled by dynaflex itself by registering dcafiles/class.tx_commerce_categories_dfconfig.php in ext_localconf.php
