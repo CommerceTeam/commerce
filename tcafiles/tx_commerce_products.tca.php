@@ -481,8 +481,7 @@ if (is_array($postEdit['tx_commerce_products']) &&
 	// write back the modified TCA
 	$TCA = $dynaflex->getDynamicTCA();
 }
-$simpleMode = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['commerce']);
-$simpleMode = $simpleMode['simpleMode'];
+$simpleMode = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['extConf']['simpleMode'];
 if($simpleMode) {
 	$TCA['tx_commerce_products']['columns']['articles'] = array (
 		'exclude' => 1,

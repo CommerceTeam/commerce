@@ -64,10 +64,9 @@ class tx_commerce_pi6 extends tx_commerce_pibase {
 		$this->conf = $conf;
 		$this->pi_setPiVarDefaults();
 		$this->pi_loadLL();
-		$extConf = unserialize($GLOBALS["TYPO3_CONF_VARS"]["EXT"]["extConf"]["commerce"]);
 
 		// Checking backend user login
-		$this->invoiceBackendOnly($extConf["invoiceBackendOnly"]);
+		$this->invoiceBackendOnly($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['extConf']['invoiceBackendOnly']);
 
 		// Check for the logged in USER
 		// It could be an FE USer, a BE User or an automated script

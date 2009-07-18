@@ -37,9 +37,8 @@ if(!defined('TYPO3_MODE')) die("Access denied.");
 require_once(t3lib_extmgm::extPath('commerce').'class.tx_commerce_articlecreator.php');
 require_once(t3lib_extmgm::extPath('commerce').'class.tx_commerce_attributeeditor.php');
 
-$simpleMode = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['commerce']);
-$coArticles = $simpleMode['coArticles'];
-$simpleMode = $simpleMode['simpleMode'];
+$coArticles = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['extConf']['coArticles'];
+$simpleMode = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['extConf']['simpleMode'];
 
 $TCA['tx_commerce_article_types'] = Array (
 	'ctrl' => $TCA['tx_commerce_article_types']['ctrl'],

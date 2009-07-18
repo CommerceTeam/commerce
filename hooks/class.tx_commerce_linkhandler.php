@@ -35,8 +35,7 @@ class tx_commerce_linkhandler {
 		
 		$DisplayPID = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_commerce_pi1.']['overridePid'];
 		if (empty($DisplayPID)) {
-			$extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['commerce']);
-			$DisplayPID = $extConf['previewPageID'];
+			$DisplayPID = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['extConf']['previewPageID'];
 		}
 		
 		//remove the first param of "$link_param" (this is the page id wich is set by $DisplayPID) and add all params left (e.g. css class, target...) to the value of $lconf["paramter"]

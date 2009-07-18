@@ -64,7 +64,13 @@ define(DELIVERYArticleType,3);
 require_once(PATH_txcommerce.'/treelib/class.tx_commerce_tcefunc.php');
 
 
+// Unserialize the plugin configuration so we can use it
+$_EXTCONF = unserialize($_EXTCONF);
+
 // This array holds global definitions of arbitrary commerce settings
+// Add unserialized ext conf settings to global array for easy access of those settings
+$TYPO3_CONF_VARS['EXTCONF'][COMMERCE_EXTkey]['extConf'] = $_EXTCONF;
+
 // Payment settings
 $TYPO3_CONF_VARS['EXTCONF'][COMMERCE_EXTkey]['SYSPRODUCTS']['PAYMENT'] = array(
 	'tablefields' => array(
@@ -92,7 +98,7 @@ $TYPO3_CONF_VARS['EXTCONF'][COMMERCE_EXTkey]['SYSPRODUCTS']['PAYMENT']['types'][
 $TYPO3_CONF_VARS['EXTCONF'][COMMERCE_EXTkey]['SYSPRODUCTS']['PAYMENT']['types']['cashondelivery'] = array(
 	'path' => PATH_txcommerce .'payment/class.tx_commerce_payment_cashondelivery.php',
 	'class' => 'tx_commerce_payment_cashondelivery',
-	'type'=>PAYMENTArticleType,
+	'type' => PAYMENTArticleType,
 );
 
 // Delivery settings
@@ -104,12 +110,9 @@ $TYPO3_CONF_VARS['EXTCONF'][COMMERCE_EXTkey]['SYSPRODUCTS']['DELIVERY'] = array(
 );
 $TYPO3_CONF_VARS['EXTCONF'][COMMERCE_EXTkey]['SYSPRODUCTS']['DELIVERY']['types'] = array(
 	'sysdelivery' => array(
-		'type'=>DELIVERYArticleType
+		'type' => DELIVERYArticleType
 	),
 );
-
-// Unserialize the plugin configuration so we can use it
-$_EXTCONF = unserialize($_EXTCONF);
 
 // pid for new tt_address records
 $TYPO3_CONF_VARS['EXTCONF'][COMMERCE_EXTkey]['create_address_pid'] = $_EXTCONF['create_address_pid'] ? $_EXTCONF['create_address_pid'] : '0';

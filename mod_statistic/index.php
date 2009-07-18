@@ -80,7 +80,7 @@ class tx_commerce_statistic extends t3lib_SCbase {
 		global $BE_USER,$LANG,$BACK_PATH,$TCA_DESCR,$TCA,$CLIENT,$TYPO3_CONF_VARS;
 		
 		parent::init();
-		$this->extConf = unserialize($GLOBALS["TYPO3_CONF_VARS"]["EXT"]["extConf"]["commerce"]);
+		$this->extConf = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['extConf'];
 		$this->excludePids = $this->extConf['excludeStatisticFolders'] != '' ? $this->extConf['excludeStatisticFolders'] : 0;
 		$order_pid = array_unique(tx_commerce_folder_db::initFolders('Orders','Commerce',0,'Commerce'));
 		$this->order_pid = $order_pid[0];
@@ -115,9 +115,8 @@ class tx_commerce_statistic extends t3lib_SCbase {
 	 */
 	function menuConfig()	{
 		global $LANG;
-		$this->extConf = unserialize($GLOBALS["TYPO3_CONF_VARS"]["EXT"]["extConf"]["commerce"]);
 		 
-		if ($this->extConf['allowAggregation'] == 1) {
+		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['extConf']['allowAggregation'] == 1) {
 			$this->MOD_MENU = Array (
 				"function" => Array (
 					"1" => $LANG->getLL("statistics"),

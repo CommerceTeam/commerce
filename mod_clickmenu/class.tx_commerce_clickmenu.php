@@ -83,8 +83,7 @@ class tx_commerce_clickMenu extends tx_graytree_clickMenu {
 	 */
 	function DB_editRecord($table,$uid)	{
 			// get some configs
-		$extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['commerce']);
-		if ($extConf['simpleMode'] && $table == 'tx_commerce_products')	{
+		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['extConf']['simpleMode'] && $table == 'tx_commerce_products') {
 			$editProduct = '?edit[tx_commerce_products]['.$uid.']=edit';
 				// get the article uid that is assigned to this product
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid', 'tx_commerce_articles', 'uid_product='.intval($uid));
@@ -93,8 +92,8 @@ class tx_commerce_clickMenu extends tx_graytree_clickMenu {
 			$editArticle = '&edit[tx_commerce_articles]['.$aUid['uid'].']=edit';
 
 				//the columnsOnly parameter for product and article
-			$columnsOnlyProduct = '&columnsOnly[tx_commerce_products]=' .$extConf['coProducts'];
-			$columnsOnlyArticle = '&columnsOnly[tx_commerce_articles]=' .$extConf['coArticles'];
+			$columnsOnlyProduct = '&columnsOnly[tx_commerce_products]=' . $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['extConf']['coProducts'];
+			$columnsOnlyArticle = '&columnsOnly[tx_commerce_articles]=' . $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['extConf']['coArticles'];
 			
 			$url = 'alt_doc.php'.$editProduct.$editArticle.$columnsOnlyProduct.$columnsOnlyArticle;
 		} else {	
@@ -135,8 +134,7 @@ class tx_commerce_clickMenu extends tx_graytree_clickMenu {
 			}
 	
 				// get some configs
-			$extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['commerce']);
-			if ($extConf['simpleMode'] && $table == 'tx_commerce_products')	{
+			if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['extConf']['simpleMode'] && $table == 'tx_commerce_products') {
 				$editProduct = '?edit[tx_commerce_products]['.$uid.']=edit';
 					// get the article uid that is assigned to this product
 				$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid', 'tx_commerce_articles', 'uid_product='.intval($uid));
@@ -145,8 +143,8 @@ class tx_commerce_clickMenu extends tx_graytree_clickMenu {
 				$editArticle = '&edit[tx_commerce_articles]['.$aUid['uid'].']=edit';
 	
 					//the columnsOnly parameter for product and article
-				$columnsOnlyProduct = '&columnsOnly[tx_commerce_products]=' .$extConf['coProducts'];
-				$columnsOnlyArticle = '&columnsOnly[tx_commerce_articles]=' .$extConf['coArticles'];
+				$columnsOnlyProduct = '&columnsOnly[tx_commerce_products]=' . $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['extConf']['coProducts'];
+				$columnsOnlyArticle = '&columnsOnly[tx_commerce_articles]=' . $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['extConf']['coArticles'];
 	
 				$simpleMode = 'alt_doc.php'.$editProduct.$editArticle.$columnsOnlyProduct.$columnsOnlyArticle;
 			} else {	

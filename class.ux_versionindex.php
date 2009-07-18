@@ -87,8 +87,7 @@ class ux_tx_version_cm1 extends tx_version_cm1 {
 					if ($pagesTSC['tx_commerce.']['singlePid']) {
 						$previewPageID = $pagesTSC['tx_commerce.']['singlePid'];
 					}else{
-						$extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['commerce']);
-						$previewPageID = $extConf['previewPageID'];
+						$previewPageID = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['extConf']['previewPageID'];
 					}
 					$productObj = t3lib_div::makeInstance('tx_commerce_product');
 					$productObj -> init($row['t3ver_oid'],sys_language_uid);

@@ -2,9 +2,8 @@
 /**
  * $Id: ext_df_product_config.php 445 2006-12-04 19:21:39Z ingo $
  */
-$simpleMode = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['commerce']);
-$simpleMode = $simpleMode['simpleMode'];
- 
+$simpleMode = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['extConf']['simpleMode'];
+
 // the dynamic Flexform for products
 $dynaFlexConf = array (
 	/* This is the configuration for the correlationtype fields on tab "select attributes"

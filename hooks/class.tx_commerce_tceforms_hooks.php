@@ -5,7 +5,7 @@ class tx_commerce_tceforms_hooks {
 	private $next=FALSE;
 	
 	function __construct() {
-		$this->extconf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['commerce']);
+		$this->extconf = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['extConf'];
 	}
 
 	/**

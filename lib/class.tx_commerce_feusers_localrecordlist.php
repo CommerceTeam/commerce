@@ -311,7 +311,7 @@ require_once(PATH_t3lib.'class.t3lib_tceforms.php');
 	function renderListRow($table,$row,$cc,$titleCol,$thumbsCol,$indent=0)	{
 	global $BE_USER;
 		$iOut = '';
-		$extConf=unserialize($GLOBALS["TYPO3_CONF_VARS"]["EXT"]["extConf"]["commerce"]);
+		$extConf = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['extConf'];
 		
 		if (substr(TYPO3_version, 0, 3)  >= '4.0') {
 			// In offline workspace, look for alternative record:

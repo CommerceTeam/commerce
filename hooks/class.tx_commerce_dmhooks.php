@@ -141,8 +141,7 @@ class tx_commerce_dmhooks	{
 					if ($pagesTSC['tx_commerce.']['singlePid']) {
 						$previewPageID = $pagesTSC['tx_commerce.']['singlePid'];
 					}else{
-						$extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['commerce']);
-						$previewPageID = $extConf['previewPageID'];
+						$previewPageID = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['extConf']['previewPageID'];
 					}
 					#debug($previewPageID,'$previewPageID',__LINE__,__FILE__);
 					if ($previewPageID > 0) {
@@ -232,10 +231,7 @@ class tx_commerce_dmhooks	{
 					}
 				}
 
-				$extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['commerce']);
 					// create a new price if the checkbox was toggled get pid of article
-
-
 				$create_new_scale_prices_count=is_numeric($incomingFieldArray['create_new_scale_prices_count'])?intval($incomingFieldArray['create_new_scale_prices_count']):0;
 				$create_new_scale_prices_steps=is_numeric($incomingFieldArray['create_new_scale_prices_steps'])?intval($incomingFieldArray['create_new_scale_prices_steps']):0;
 				$create_new_scale_prices_startamount=is_numeric($incomingFieldArray['create_new_scale_prices_startamount'])?intval($incomingFieldArray['create_new_scale_prices_startamount']):0;
@@ -399,8 +395,7 @@ class tx_commerce_dmhooks	{
 		// We don't have to check for any parent categories, because the attributes from them should already be saved for this product.
 
 		// create an article and a new price for a new product
-		$extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['commerce']);
-		if ($extConf['simpleMode'] && $pUid != NULL)	{
+		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['extConf']['simpleMode'] && $pUid != NULL)	{
 		
 				// search for an article of this product
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'tx_commerce_articles', 'uid_product=' .intval($pUid), '', '', 1);
@@ -1156,8 +1151,7 @@ class tx_commerce_dmhooks	{
 		}
 		
 		$loadDynaFlex = true;
-		$extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['commerce']);
-		if ($extConf['simpleMode']){
+		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['extConf']['simpleMode']){
 		    if(trim(strtolower((string)$table))== 'tx_commerce_articles'){
 				$loadDynaFlex = false;
 		    }
@@ -1174,7 +1168,7 @@ class tx_commerce_dmhooks	{
 			$GLOBALS['TCA'] = $dynaflex->getDynamicTCA();
 			// change for simple mode
 			// override the dynaflex settings after the DynamicTCA
-        	if($extConf['simpleMode'] && trim(strtolower((string)$table))== 'tx_commerce_products') {
+        	if($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['extConf']['simpleMode'] && trim(strtolower((string)$table))== 'tx_commerce_products') {
                 $GLOBALS['TCA']['tx_commerce_products']['columns']['articles'] = array (
                         'exclude' => 1,
                         'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_products.articles',

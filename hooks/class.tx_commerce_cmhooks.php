@@ -275,10 +275,7 @@ class tx_commerce_cmhooks {
 				$langIsoCode = t3lib_BEfunc::getRecord('sys_language', intval($value), 'static_lang_isocode');
 				$langIdent = t3lib_BEfunc::getRecord('static_languages', intval($langIsoCode['static_lang_isocode']), 'lg_typo3');
 				$langIdent = strtoupper($langIdent['lg_typo3']);
-			
-			 	$extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['commerce']);
-			 	
-			 	
+
 				if (is_array($productAttributes)) {
 					foreach ($productAttributes as $oneAttribute) {
 						if (($oneAttribute['uid_correlationtype'] == 4) && (!$oneAttribute['has_valuelist']=='1') ) {
@@ -300,7 +297,7 @@ class tx_commerce_cmhooks {
 					
 							unset($locAttributeMM['attributeData']);
 							unset($locAttributeMM['has_valuelist']);
-							switch ($extConf['attributeLokalisationType']){
+							switch ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['extConf']['attributeLokalisationType']) {
 							 	case 0:
 							 		unset($locAttributeMM['default_value']);
 							 	break;

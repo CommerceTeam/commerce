@@ -1107,8 +1107,7 @@ class tx_commerce_belib {
 			 * 2: prepend [Translate to .$langRec['title'].:]
 			 */
 			
-			 $extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['commerce']);
-			 switch ($extConf['attributeLokalisationType'])
+			 switch ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['extConf']['attributeLokalisationType'])
 			 {
 			 	case 0:
 			 		unset($attrFFData['data']['sDEF']['lDEF']);

@@ -96,7 +96,7 @@ class tx_commerce_ordermailhooks  {
 	 * @author Joerg Sprung <jsp@marketing-factory.de>
 	 */
 	function tx_commerce_ordermailhooks() {
-		$this->extConf = unserialize($GLOBALS["TYPO3_CONF_VARS"]["EXT"]["extConf"]["commerce"]);
+		$this->extConf = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['extConf'];
 		$this->cObj = t3lib_div::makeInstance("tslib_cObj");
 		$this->csConvObj = t3lib_div::makeInstance("t3lib_cs");
 		$this->templatePath = PATH_site.'/uploads/tx_commerce/';

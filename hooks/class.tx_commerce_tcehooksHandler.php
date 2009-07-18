@@ -78,7 +78,7 @@ class tx_commerce_tcehooksHandler {
 	}
 	
 	function calculateTax(&$fieldArray, $tax) {
-		$extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['commerce']);
+		$extConf = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['extConf'];
 		if($extConf['genprices']==0) {
 			return;
 		} else {
@@ -137,9 +137,8 @@ class tx_commerce_tcehooksHandler {
 			//do something...
 			$this->notify_addressObserver($status, $table, $id, $fieldArray, $pObj);
 		}
-		$extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['commerce']);
        
-        if ($table=='tx_commerce_articles' && $extConf['simpleMode'] && ($articleId = $pObj->substNEWwithIDs[$id])) {
+        if ($table=='tx_commerce_articles' && $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['extConf']['simpleMode'] && ($articleId = $pObj->substNEWwithIDs[$id])) {
            
             /**
              * @author     Ingo Schmitt    <is@marketing-factory.de>

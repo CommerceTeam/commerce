@@ -164,7 +164,7 @@ class user_orderedit_func
 			  		$theData[$titleCol] = '<span class="c-table">'.$GLOBALS['LANG']->sL('LLL:EXT:commerce/locallang_be.php:order_view.items.article_list',1).'</span> ('.$dbCount.')';
 			 		
 			 		
-			 	    $extConf = unserialize($GLOBALS["TYPO3_CONF_VARS"]["EXT"]["extConf"]["commerce"]);
+			 	    $extConf = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['extConf'];
 					
 					if ($extConf["invoicePageID"] > 0)	{
 						$theData[$titleCol] .= ' <a href="../index.php?id='.$extConf["invoicePageID"].'&amp;tx_commerce_pi6[order_id]='.$order_id.'&amp;type='.$extConf["invoicePageType"] . '" target="_blank">'.$GLOBALS['LANG']->sL('LLL:EXT:commerce/locallang_be.php:order_view.items.print_invoice',1).' *</a>';
@@ -422,17 +422,10 @@ class user_orderedit_func
 	 			
  			}
  		}
- 		$ExtConf=unserialize($GLOBALS["TYPO3_CONF_VARS"]["EXT"]["extConf"]["commerce"]);
-	 			
-	 	$data['items'] = tx_commerce_belib::getOrderFolderSelector($orderPid,$ExtConf['OrderFolderRecursiveLevel']) ;
- 		
- 		
- 		
- 		
- 		
- 		
- 		
- 	}
+	 	$data['items'] = tx_commerce_belib::getOrderFolderSelector($orderPid, $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['extConf']['OrderFolderRecursiveLevel']);
+	}
+
+
  	/**
  	 * Invoice Adresss
  	 * Renders the invoice adresss

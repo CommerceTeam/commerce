@@ -287,9 +287,7 @@ class tx_commerce_systemdata extends t3lib_SCbase {
 	function getManufacturerListing()	{
 		global $LANG;
 		
-		$extConf = unserialize($GLOBALS["TYPO3_CONF_VARS"]["EXT"]["extConf"]['commerce']);		
-		
-		$fields = explode(',', $extConf['coSuppliers']);
+		$fields = explode(',', $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['extConf']['coSuppliers']);
 		$table = 'tx_commerce_manufacturer';
 		
 		$comPath = t3lib_extMgm::extRelPath('commerce');
@@ -335,8 +333,7 @@ class tx_commerce_systemdata extends t3lib_SCbase {
 		global $LANG;
 		$comPath = t3lib_extMgm::extRelPath('commerce');
 		
-		$extConf = unserialize($GLOBALS["TYPO3_CONF_VARS"]["EXT"]["extConf"]['commerce']);		
-		$fields = explode(',', $extConf['coSuppliers']);
+		$fields = explode(',', $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['extConf']['coSuppliers']);
 		$table = 'tx_commerce_supplier';
 		
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', $table, 'pid=' .$this->modPid .' AND hidden=0 AND deleted=0', '', 'title');

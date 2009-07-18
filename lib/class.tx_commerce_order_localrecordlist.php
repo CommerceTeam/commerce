@@ -468,7 +468,8 @@ require_once(PATH_t3lib.'class.t3lib_befunc.php');
 		}
 		
 		$theIcon = $this->clickMenuEnabled ? $GLOBALS['SOBE']->doc->wrapClickMenuOnIcon($iconImg,$table,$row['uid']) : $iconImg;
-		$extConf=unserialize($GLOBALS["TYPO3_CONF_VARS"]["EXT"]["extConf"]["commerce"]);
+
+		$extConf = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['extConf'];
 			// Preparing and getting the data-array
 		$theData = Array();
 		#debug($this->fieldArray);
@@ -950,9 +951,8 @@ require_once(PATH_t3lib.'class.t3lib_befunc.php');
 		 		/**
 		 		 * Get the poages below $order_pid
 		 		 */
-		 			$ExtConf=unserialize($GLOBALS["TYPO3_CONF_VARS"]["EXT"]["extConf"]["commerce"]);
 		 			list($orderPid,$defaultFolder,$folderList) = array_unique(tx_commerce_folder_db::initFolders('Orders','Commerce',0,'Commerce'));
-		 		 	$ret = tx_commerce_belib::getOrderFolderSelector($orderPid,$ExtConf['OrderFolderRecursiveLevel']) ;
+		 		 	$ret = tx_commerce_belib::getOrderFolderSelector($orderPid, $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['extConf']['OrderFolderRecursiveLevel']);
 		 		 	global $LANG;
 		 		 	$out.=$LANG->getLL("moveorderto");
 		 		 	$out.='<select name="modeDestUid" size="1">';

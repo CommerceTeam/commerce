@@ -15,7 +15,7 @@ class tx_commerce_irrehooks implements t3lib_tceformsInlineHook {
 	}
 	
 	function __construct() {
-		$this->extconf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['commerce']);
+		$this->extconf = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['extConf'];
 	}
 
 	/**

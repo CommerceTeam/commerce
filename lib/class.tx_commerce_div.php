@@ -153,10 +153,7 @@ class tx_commerce_div {
 	* 
 	*/
 	function generateSessionKey($key) {
-
-		$extConf = unserialize($GLOBALS["TYPO3_CONF_VARS"]["EXT"]["extConf"]["commerce"]);	
-
-		if (intval($extConf['userSessionMd5Encrypt']) == 1) {
+		if (intval($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['extConf']['userSessionMd5Encrypt']) == 1) {
 			$sessionKey = md5($key.":".$GLOBALS['TSFE']->fe_user->user['uid']);
 		} else {
 			$sessionKey = $key.":".$GLOBALS['TSFE']->fe_user->user['uid'];

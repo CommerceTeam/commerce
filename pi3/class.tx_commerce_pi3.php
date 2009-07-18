@@ -141,7 +141,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 		$this->staticInfo = t3lib_div::makeInstance('tx_staticinfotables_pi1');
 		$this->staticInfo->init();
 
-		$this->extConf = unserialize($GLOBALS["TYPO3_CONF_VARS"]["EXT"]["extConf"]["commerce"]);
+		$this->extConf = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['extConf'];
 		$this->imgFolder = 'uploads/tx_commerce/';
 		$GLOBALS['TSFE']->fe_user->tx_commerce_basket->setTaxCalculationMethod($this->conf['priceFromNet']);
 

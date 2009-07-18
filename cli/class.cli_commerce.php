@@ -87,7 +87,6 @@ class tx_commerce_cli extends t3lib_cli {
      * @return    void
      */
     function cli_main($argv) {
-    	$this->extConf = unserialize($GLOBALS["TYPO3_CONF_VARS"]["EXT"]["extConf"]["commerce"]);
         // get task (function)
       
         $this->MainTask = (string)$this->cli_args['_DEFAULT'][1];
@@ -119,7 +118,7 @@ class tx_commerce_cli extends t3lib_cli {
     		
 		require_once (t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_statistics.php');
     	$this->statistics = t3lib_div::makeInstance('tx_commerce_statistics');
-		$this->statistics->init($this->extConf['excludeStatisticFolders'] != '' ? $this->extConf['excludeStatisticFolders'] : 0);
+		$this->statistics->init($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['extConf']['excludeStatisticFolders'] != '' ? $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['extConf']['excludeStatisticFolders'] : 0);
 		
 		
     	switch ($subTaks) {
