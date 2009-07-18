@@ -155,7 +155,7 @@
  		
  		$result=$GLOBALS['TYPO3_DB']->exec_SELECTquery('*',
  			'tx_commerce_baskets',
-			"sid='".$GLOBALS['TYPO3_DB']->quoteStr($this->sess_id,'tx_commerce_baskets')."' and finished_time =0 and pid=".$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce']['BasketStoragePid'],
+			"sid='" . $GLOBALS['TYPO3_DB']->quoteStr($this->sess_id, 'tx_commerce_baskets') . "' and finished_time =0 and pid=" . $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['extConf']['BasketStoragePid'],
 			'',
 			'pos');
 		
@@ -230,7 +230,7 @@
 		 */	
 		foreach ($this->basket_items as $oneuid  => $one_item)
  		{
-			$insert_data['pid']=$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce']['BasketStoragePid'];
+			$insert_data['pid'] = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['extConf']['BasketStoragePid'];
  			$insert_data['pos']=$ar_basket_items_keys[$oneuid];
  			$insert_data['sid']=$this->sess_id;
  			$insert_data['article_id']=$one_item->get_article_uid();

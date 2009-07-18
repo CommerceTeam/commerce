@@ -357,12 +357,12 @@ require_once(PATH_t3lib.'class.t3lib_befunc.php');
 					// Finally, render the list:		
 				
 					// Check for order_number and order_title view
-				$_EXTKEY = 'commerce';
-				if($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY]['showArticleNumber'] == 1 && $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY]['showArticleTitle'] == 1){
+				if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['extConf']['showArticleNumber'] == 1 &&
+					$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['extConf']['showArticleTitle'] == 1) {
 					$this->myfields=array('order_type_uid_noName',"order_id","tstamp","crdate","delivery","payment","numarticles","sum_price_gross",'cu_iso_3',"company","surname","name","address","zip","city","email","phone_1","phone_2","articles", "order_number","article_number","article_name" );				
-				}else if($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY]['showArticleNumber'] == 1){
+				} else if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['extConf']['showArticleNumber'] == 1) {
 					$this->myfields=array('order_type_uid_noName',"order_id","tstamp","crdate","delivery","payment","numarticles","sum_price_gross",'cu_iso_3',"company","surname","name","address","zip","city","email","phone_1","phone_2","articles", "order_number","article_number");
-				}else if($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY]['showArticleTitle'] == 1){
+				} else if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['extConf']['showArticleTitle'] == 1){
 					$this->myfields=array('order_type_uid_noName',"order_id","tstamp","crdate","delivery","payment","numarticles","sum_price_gross",'cu_iso_3',"company","surname","name","address","zip","city","email","phone_1","phone_2","articles", "order_number","article_name");
 				}else{
 					$this->myfields=array('order_type_uid_noName',"order_id","tstamp","crdate","delivery","payment","numarticles","sum_price_gross",'cu_iso_3',"company","surname","name","address","zip","city","email","phone_1","phone_2","articles", "order_number");

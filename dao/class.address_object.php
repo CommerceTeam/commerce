@@ -104,7 +104,7 @@ class address_dao_mapper extends basic_dao_mapper {
 
  	function init() {
 	 	$this->dbTable = 'tt_address';	//dbtable for persistence
-	 	$this->createPid = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce']['create_address_pid'];   //new record pid
+		$this->createPid = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['extConf']['create_address_pid'];   //new record pid
  	}
 
 // 	function save(&$obj) {

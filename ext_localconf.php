@@ -114,24 +114,6 @@ $TYPO3_CONF_VARS['EXTCONF'][COMMERCE_EXTkey]['SYSPRODUCTS']['DELIVERY']['types']
 	),
 );
 
-// pid for new tt_address records
-$TYPO3_CONF_VARS['EXTCONF'][COMMERCE_EXTkey]['create_address_pid'] = $_EXTCONF['create_address_pid'] ? $_EXTCONF['create_address_pid'] : '0';
-
-// fe_user <-> tt_address field mapping
-$TYPO3_CONF_VARS['EXTCONF'][COMMERCE_EXTkey]['feuser_address_mapping'] = $_EXTCONF['feuser_address_mapping'] ? $_EXTCONF['feuser_address_mapping'] : 'company,company;name,name;last_name,surname;title,title;address,address;zip,zip;city,city;country,country;telephone,phone;fax,fax;email,email;www,www;';
-
-// Storage pid for baskets
-$TYPO3_CONF_VARS['EXTCONF'][COMMERCE_EXTkey]['BasketStoragePid'] = $_EXTCONF['BasketStoragePid'] ? $_EXTCONF['BasketStoragePid'] : 0;
-
-// Basket locking
-$TYPO3_CONF_VARS['EXTCONF'][COMMERCE_EXTkey]['lockBasket'] = $_EXTCONF['lockBasket'] ? $_EXTCONF['lockBasket'] : 0;
-
-// Show article number
-$TYPO3_CONF_VARS['EXTCONF'][COMMERCE_EXTkey]['showArticleNumber'] = $_EXTCONF['showArticleNumber'] ? $_EXTCONF['showArticleNumber'] : 0;
-
-// Show article name
-$TYPO3_CONF_VARS['EXTCONF'][COMMERCE_EXTkey]['showArticleTitle'] = $_EXTCONF['showArticleTitle'] ? $_EXTCONF['showArticleTitle'] : 0;
-
 
 // Add frontend plugins to content.default static template
 t3lib_extMgm::addPItoST43(COMMERCE_EXTkey, 'pi1/class.tx_commerce_pi1.php', '_pi1', 'list_type', 1);

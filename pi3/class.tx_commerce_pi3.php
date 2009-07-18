@@ -197,7 +197,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 		}
 
 		// Set basket to readonly, if set in extension configuration
-		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce']['lockBasket'] == 1) {
+		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['extConf']['lockBasket'] == 1) {
 			$GLOBALS['TSFE']->fe_user->tx_commerce_basket->setReadOnly();
 			$GLOBALS['TSFE']->fe_user->tx_commerce_basket->store_data();
 		}
