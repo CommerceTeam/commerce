@@ -24,13 +24,6 @@ if (!defined ('PATH_txcommerce_icon_tree_rel')) {
 }
 
 
-
-
-if (t3lib_div::int_from_ver(phpversion()) < 4004000) {
-        define(PHP_INT_MAX,9999999);
-}
-
-
 // Einfuegen der SonderArtikel
 define(NORMALArticleType,1);
 define(PAYMENTArticleType,2);
