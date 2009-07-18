@@ -243,7 +243,7 @@ $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce']['SYSPRODUCTS']['PAYMENT']['ty
 
 
 $_EXTCONF = unserialize($_EXTCONF);    // unserializing the configuration so we can use it
-$_EXTKEY='commerce';
+
 // pid for new tt_address records
 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY]['create_address_pid'] = $_EXTCONF['create_address_pid'] ? $_EXTCONF['create_address_pid'] : '0';
 // fe_user <-> tt_address field mapping
