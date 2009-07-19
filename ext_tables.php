@@ -74,9 +74,38 @@ if (TYPO3_MODE=='BE')	{
 
 	
 	include_once(t3lib_extMgm::extPath('commerce').'lib/class.tx_commerce_article_price.php');
+
+	// Add default User TS config
+	t3lib_extMgm::addUserTSConfig('
+		options.saveDocNew {
+			tx_commerce_products=1
+			tx_commerce_article_types=1
+			tx_commerce_attributes=1
+			tx_commerce_attribute_values=1
+			tx_commerce_categories=1
+			tx_commerce_trackingcodes=1
+			tx_commerce_moveordermails=1
+		}
+	');
+
+	// Add default page TS config
+	t3lib_extMgm::addPageTSConfig('
+		# CONFIGURATION of RTE in table "tx_commerce_products", field "description"
+		RTE.config.tx_commerce_products.description {
+			hidePStyleItems = H1, H4, H5, H6
+			proc.exitHTMLparser_db=1
+			proc.exitHTMLparser_db {
+				keepNonMatchedTags=1
+				tags.font.allowedAttribs= color
+				tags.font.rmTagIfNoAttrib = 1
+				tags.font.nesting = global
+			}
+		}
+
+		# CONFIGURATION of RTE in table "tx_commerce_articles", field "description_extra"
+		RTE.config.tx_commerce_articles.description_extra < RTE.config.tx_commerce_products.description
+	');
 }
-
-
 
 
 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['leafClasses']['txcommerceCategoryTree'] = 'EXT:'.COMMERCE_EXTkey.'/lib/class.tx_commerce_treecategory.php:&tx_commerce_treeCategory';
