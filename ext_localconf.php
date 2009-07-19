@@ -61,9 +61,6 @@ define(PAYMENTArticleType,2);
 define(DELIVERYArticleType,3);
 
 
-require_once(PATH_txcommerce.'/treelib/class.tx_commerce_tcefunc.php');
-
-
 // Unserialize the plugin configuration so we can use it
 $_EXTCONF = unserialize($_EXTCONF);
 

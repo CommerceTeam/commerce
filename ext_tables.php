@@ -17,6 +17,7 @@ $GLOBALS['T3_VAR']['ext'][COMMERCE_EXTkey]['TCA']['mountpoints_config'] = array 
 		// see: tx_dam_treelib_tceforms::getMountsForTree()
 	'type' => 'passthrough',
 	'form_type' => 'user',
+	// TYPO3 core will require_once the file automatically when needed
 	'userFunc' => 'EXT:'.COMMERCE_EXTkey.'/treelib/class.tx_commerce_tcefunc.php:&tx_commerce_tceFunc->getSingleField_selectCategories',
 
 	'treeViewBrowseable' => true,

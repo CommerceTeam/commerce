@@ -1,5 +1,6 @@
 Changelog for tx_commerce
 19.06.2009 Christian Kuhn <lolli@schwarzbu.ch>
+* Removed require_once() of treelib/class.tx_commerce_tcefunc.php from ext_localconf.php. This is only used in BE as a userFunc for TCA fields and core takes care of loading source file.
 * Synced changes from ext_df_product_config.php to currently unused dcafiles/class.tx_commerce_products_dfconfig.php and cleaned up dcafiles/class.tx_commerce_products_dfconfig.php
 
 18.06.2009 Christian Kuhn <lolli@schwarzbu.ch>
