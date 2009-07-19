@@ -1,15 +1,35 @@
 <?php
+/***************************************************************
+*  Copyright notice
+*
+*  (c) 2008 - 2009 Erick Frister <efrister@marketing-factory.de>
+*  All rights reserved
+*
+*  This script is part of the TYPO3 project. The TYPO3 project is
+*  free software; you can redistribute it and/or modify
+*  it under the terms of the GNU General Public License as published by
+*  the Free Software Foundation; either version 2 of the License, or
+*  (at your option) any later version.
+*
+*  The GNU General Public License can be found at
+*  http://www.gnu.org/copyleft/gpl.html.
+*
+*  This script is distributed in the hope that it will be useful,
+*  but WITHOUT ANY WARRANTY; without even the implied warranty of
+*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*  GNU General Public License for more details.
+*
+*  This copyright notice MUST APPEAR in all copies of the script!
+***************************************************************/
 /**
- * Created on 04.11.2008
- * 
  * Implements the dynafley configuration for the 'tx_commerce_products' table
- * 
+ *
  * @author Erik Frister <efrister@marketing-factory.de>
  */
 class tx_commerce_products_dfconfig {
-
 	var $DCA = array (
-		/* This is the configuration for the correlationtype fields on tab "select attributes"
+		/**
+		 * This is the configuration for the correlationtype fields on tab "select attributes"
 		 * We fetch all correlationtypes from the database and for every ct we create two fields.
 		 * The first one is field of type none. The only reason for this field is to display all
 		 * attributes from the parent categories the product is assigned to. This field is filled
@@ -21,9 +41,9 @@ class tx_commerce_products_dfconfig {
 		0 => array (
 			'path' => 'tx_commerce_products/columns/attributes/config/ds/default',
 			'cleanup' => array (
-					    'table' => 'tx_commerce_products',
-					    'field' => 'attributes',
-					    ),
+				'table' => 'tx_commerce_products',
+				'field' => 'attributes',
+			),
 			'modifications' => array (
 				array (
 					'method' => 'add',
@@ -32,9 +52,9 @@ class tx_commerce_products_dfconfig {
 					'source' => 'db',
 					'source_type' => 'entry_count',
 					'source_config' => array (
-						 'table' => 'tx_commerce_attribute_correlationtypes',
-						 'select' => '*',
-						 'where' => 'uid = 1',
+						'table' => 'tx_commerce_attribute_correlationtypes',
+						'select' => '*',
+						'where' => 'uid = 1',
 					 ),
 					'field_config' => array (
 						1 => array (
@@ -43,7 +63,7 @@ class tx_commerce_products_dfconfig {
 							'config' => array (
 								'type' => 'select',
 								'foreign_table' => 'tx_commerce_attributes',
-								'foreign_table_where' => '  AND sys_language_uid in (0,-1) AND has_valuelist=1 AND multiple=0 ORDER BY title',
+								'foreign_table_where' => ' AND sys_language_uid in (0,-1) AND has_valuelist=1 AND multiple=0 ORDER BY title',
 								'size' => 5,
 								'minitems' => 0,
 								'maxitems' => 50,
@@ -63,9 +83,9 @@ class tx_commerce_products_dfconfig {
 					'source' => 'db',
 					'source_type' => 'entry_count',
 					'source_config' => array (
-						 'table' => 'tx_commerce_attribute_correlationtypes',
-						 'select' => '*',
-						 'where' => 'uid != 1',
+						'table' => 'tx_commerce_attribute_correlationtypes',
+						'select' => '*',
+						'where' => $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['extConf']['simpleMode'] ? 'uid = 4' : 'uid != 1',
 					 ),
 					'field_config' => array (
 						1 => array (
@@ -74,7 +94,7 @@ class tx_commerce_products_dfconfig {
 							'config' => array (
 								'type' => 'select',
 								'foreign_table' => 'tx_commerce_attributes',
-								'foreign_table_where' => '  AND sys_language_uid in (0,-1) ORDER BY title',
+								'foreign_table_where' => ' AND sys_language_uid in (0,-1) ORDER BY title',
 								'size' => 5,
 								'minitems' => 0,
 								'maxitems' => 50,
@@ -84,7 +104,7 @@ class tx_commerce_products_dfconfig {
 				),
 			),
 		),
-		/*
+		/**
 		 * Here we define the fields on "edit attributes" tab. They will be defined by a userfunction.
 		 * This userfunction IS NOT the same as the userdefined field thing of TYPO3. It's something
 		 * dynaflex related! We fetch all attributes with ct 4 for this product and pass the data to
@@ -120,7 +140,7 @@ class tx_commerce_products_dfconfig {
 				),
 			),
 		),
-		/*
+		/**
 		 * At last we have to decide which tabs have to be displayed. We do this with a
 		 * dynaflex condition and if it triggers, we append something at the showitem value
 		 * in the products TCA.
@@ -129,121 +149,133 @@ class tx_commerce_products_dfconfig {
 			'path' => 'tx_commerce_products/types/0/showitem',
 			'parseXML' => false,
 			'modifications' => array (
-						  // display the "select attributes only in def language
-						  array (
-							 'method' => 'add',
-							 'type' => 'append',
-							 'condition' => array (
-									       'source' => 'language',
-									       'if' => 'isEqual',
-									       'compareTo' => 'DEF',
-									       ),
-							 'config' => array (
-									    'text' => ',--div--;LLL:EXT:commerce/locallang_db.xml:tx_commerce_products.select_attributes,attributes;;;;1-1-1',
-									    ),
-							 ),
-						  // add "edit attributes" tab if minimum one attribute with correlationtype 4 exists for this product
-						  // this also recognizes attributes from categories of this product.
-						  array (
-							 'method' => 'add',
-							 'type' => 'append',
-							 'conditions' => array (
-										array (
-										       'if' => 'isGreater',
-										       'table' => 'tx_commerce_products_attributes_mm pa',
-										       'select' => 'COUNT(*)',
-										       'where' => 'uid_correlationtype=4 AND uid_local=###uid###',
-										       'isXML' => false,
-										       'compareTo' => 0,
-										       ),
-										array (
-										       'source' => 'language',
-										       'if' => 'isEqual',
-										       'compareTo' => 'DEF'
-										       ),
-										),
-							 'config' => array (
-									    'text' => ',--div--;LLL:EXT:commerce/locallang_db.xml:tx_commerce_products.edit_attributes,attributesedit;;;;1-1-1',
-									    ),
-							 ),
-							 
-							// add "localise attributes" tab if minimum one attribute with correlationtype 4 exists for this product
-						  	// and we are in a localised view
-						  array (
-							 'method' => 'add',
-							 'type' => 'append',
-							 'conditions' => array (
-										array (
-										       'if' => 'isGreater',
-										       'table' => 'tx_commerce_products_attributes_mm pa',
-										       'select' => 'COUNT(*)',
-										       'where' => 'uid_correlationtype=4 AND uid_local=###uid###',
-										       'isXML' => false,
-										       'compareTo' => 0,
-										       ),
-										array (
-										       'source' => 'language',
-										       'if' => 'notEqual',
-										       'compareTo' => 'DEF'
-										       ),
-										),
-							 'config' => array (
-									    'text' => ',--div--;LLL:EXT:commerce/locallang_db.xml:tx_commerce_products.localedit_attributes,attributesedit;;;;1-1-1',
-									    ),
-							 ),
-						  // add "create articles" tab if minimum one attribute with correlationtype 1 exists for this product
-						  // this also recognizes attributes from categories of this product.
-						  // The fields on the tab are allready defined in the TCA!
-						  
-						  array (
-							 'method' => 'add',
-							 'type' => 'append',
-							 'condition' => array (
-									       'source' => 'language',
-									       'if' => 'isEqual',
-									       'compareTo' => 'DEF',
-									       ),
-							 'config' => array (
-									    'text' => ',--div--;LLL:EXT:commerce/locallang_db.xml:tx_commerce_products.create_articles,articles;;;;1-1-1',
-									    ),
-							 ),
-							 
-							 // add "Localisze Articel" tab if we are in a localised language
-							array (
-							 'method' => 'add',
-							 'type' => 'append',
-							  'condition' => array (
-	 								        'table' => 'tx_commerce_products',
-	 									     'select' => 'l18n_parent',
-	 									     'where' => 'uid=###uid###',
-	 									     'isXML' => false,
-	 									     'if' => 'isGreater',
-	 									     'compareTo' => 0,
-	 									     ),
-	
-							 'config' => array (
-									    'text' => ',--div--;LLL:EXT:commerce/locallang_db.xml:tx_commerce_products.lokalise_articles,articleslok;;;;1-1-1',
-									    ),
-							 ),
-						  array (
-							 'method' => 'add',
-							 'type' => 'append',
-							# 'condition' => array (
-							#		       'source' => 'language',
-							#		       'if' => 'isEqual',
-							#		       'compareTo' => 'DEF',
-							#		       ),
-							 'config' => array (
-								'text' => ',--div--;LLL:EXT:commerce/locallang_db.xml:tx_commerce_products.extras' // @important: do NOT EVER change this name; it is used in the mfc_bibus_catalouge extension (ext_tables)
-							 ),
-						  ),
-						  array (
-							 'method' => 'move',
-							 'type' => 'extraFields',
-							 'table' => 'tx_commerce_products',
-							 ),
-						  ),
+				// display the "select attributes only in def language
+				array (
+					'method' => 'add',
+					'type' => 'append',
+					'condition' => array (
+						'source' => 'language',
+						'if' => 'isEqual',
+						'compareTo' => 'DEF',
+					),
+					'config' => array (
+						'text' => ',--div--;LLL:EXT:commerce/locallang_db.xml:tx_commerce_products.select_attributes,attributes;;;;1-1-1',
+					),
+				),
+				// add "edit attributes" tab if minimum one attribute with correlationtype 4 exists for this product
+				// this also recognizes attributes from categories of this product.
+				array (
+					'method' => 'add',
+					'type' => 'append',
+					'conditions' => array (
+						array (
+							'if' => 'isGreater',
+							'table' => 'tx_commerce_products_attributes_mm pa',
+							'select' => 'COUNT(*)',
+							'where' => 'uid_correlationtype=4 AND uid_local=###uid###',
+							'isXML' => false,
+							'compareTo' => 0,
+						),
+						array (
+							'source' => 'language',
+							'if' => 'isEqual',
+							'compareTo' => 'DEF'
+						),
+					),
+					'config' => array (
+						'text' => ',--div--;LLL:EXT:commerce/locallang_db.xml:tx_commerce_products.edit_attributes,attributesedit;;;;1-1-1',
+					),
+				),
+				// add "localise attributes" tab if minimum one attribute with correlationtype 4 exists for this product
+				// and we are in a localised view
+				array (
+					'method' => 'add',
+					'type' => 'append',
+					'conditions' => array (
+						array (
+							'if' => 'isGreater',
+							'table' => 'tx_commerce_products_attributes_mm pa',
+							'select' => 'COUNT(*)',
+							'where' => 'uid_correlationtype=4 AND uid_local=###uid###',
+							'isXML' => false,
+							'compareTo' => 0,
+						),
+						array (
+							'source' => 'language',
+							'if' => 'notEqual',
+							'compareTo' => 'DEF'
+						),
+					),
+					'config' => array (
+						'text' => ',--div--;LLL:EXT:commerce/locallang_db.xml:tx_commerce_products.localedit_attributes,attributesedit;;;;1-1-1',
+					),
+				),
+				// add "create articles" tab if minimum one attribute with correlationtype 1 exists for this product
+				// this also recognizes attributes from categories of this product.
+				// The fields on the tab are allready defined in the TCA!
+				array (
+					'method' => 'add',
+					'type' => 'append',
+					'condition' => array (
+						'source' => 'language',
+						'if' => 'isEqual',
+						'compareTo' => 'DEF',
+					),
+					'config' => array (
+						'text' => ',--div--;LLL:EXT:commerce/locallang_db.xml:tx_commerce_products.create_articles,articles;;;;1-1-1',
+					),
+				),
+				// add "Localisze Articel" tab if we are in a localised language
+				array (
+					'method' => 'add',
+					'type' => 'append',
+					'condition' => array (
+						'table' => 'tx_commerce_products',
+						'select' => 'l18n_parent',
+						'where' => 'uid=###uid### AND 0=' . $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['extConf']['simpleMode'],
+						'isXML' => false,
+						'if' => 'isGreater',
+						'compareTo' => 0,
+					),
+					'config' => array (
+						'text' => ',--div--;LLL:EXT:commerce/locallang_db.xml:tx_commerce_products.lokalise_articles,articleslok;;;;1-1-1',
+					),
+				),
+				// add "Localize Articel" tab if we are in a localised language
+				array (
+					'method' => 'add',
+					'type' => 'append',
+					'condition' => array (
+						'table' => 'tx_commerce_products',
+						'select' => 'l18n_parent',
+						'where' => 'uid=###uid### AND 0!=' . $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['extConf']['simpleMode'],
+						'isXML' => false,
+						'if' => 'isGreater',
+						'compareTo' => 0,
+					),
+					'config' => array (
+						'text' => ',--div--;LLL:EXT:commerce/locallang_db.xml:tx_commerce_products.lokalise_articles,articles;;;;1-1-1',
+					),
+				),
+				array (
+					'method' => 'add',
+					'type' => 'append',
+					'condition' => array (
+						'source' => 'language',
+						'if' => 'isEqual',
+						'compareTo' => 'DEF',
+					),
+					'config' => array (
+						'text' => ',--div--;LLL:EXT:commerce/locallang_db.xml:tx_commerce_products.extras'
+					),
+				),
+				array (
+					'method' => 'move',
+					'type' => 'extraFields',
+					'table' => 'tx_commerce_products',
+				),
 			),
+		),
 	);
 
 	var $cleanUpField = 'attributesedit';

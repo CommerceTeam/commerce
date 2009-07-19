@@ -1,4 +1,7 @@
 Changelog for tx_commerce
+19.06.2009 Christian Kuhn <lolli@schwarzbu.ch>
+* Synced changes from ext_df_product_config.php to currently unused dcafiles/class.tx_commerce_products_dfconfig.php and cleaned up dcafiles/class.tx_commerce_products_dfconfig.php
+
 18.06.2009 Christian Kuhn <lolli@schwarzbu.ch>
 * Removed default settings of extConf values from ext_localconf, EM handles this already. Moved access to those settings to $TYPO3_CONF_VARS['EXTCONF']['commerce']['extConf'].
 * Registered unserialized extConf array as global var in $TYPO3_CONF_VARS['EXTCONF']['commerce']['extConf'] in ext_localconf.php. Refactored extConf access throughout the extension.
