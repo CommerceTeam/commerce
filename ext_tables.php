@@ -73,13 +73,6 @@ if (TYPO3_MODE=='BE')	{
 	$TCA['pages']['columns']['module']['config']['items'][] = Array('LLL:EXT:commerce/locallang_be.xml:commerce', 'commerce');	
 
 
-	// Load an XCLASS of the main BE module menu to fix an issue in TYPO3 core versions 4.2.0 and 4.2.1
-	// @see http://bugs.typo3.org/view.php?id=8851
-	if (t3lib_div::int_from_ver(TYPO3_version) >= '4002000' && t3lib_div::int_from_ver(TYPO3_version) <= '4002001') {
-		$TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['typo3/classes/class.modulemenu.php'] = t3lib_extMgm::extPath(COMMERCE_EXTkey) . 'class.ux_modulemenu.php';
-	}
-
-
 	include_once(t3lib_extMgm::extPath('commerce').'lib/class.tx_commerce_article_price.php');
 
 	// Add default User TS config
