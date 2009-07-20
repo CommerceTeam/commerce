@@ -1,4 +1,7 @@
 Changelog for tx_commerce
+20.07.2009 Christian Kuhn <lolli@schwarzbu.ch>
+* Cleanup, re-sorting and duplicate deletion in ext_tables.sql
+
 19.06.2009 Christian Kuhn <lolli@schwarzbu.ch>
 * Refactored addUserTSConfig and addPageTSConfig calls in ext_localconf.php and moved to ext_tables.php as this is only relevant in BE
 * Removed require_once() of treelib/class.tx_commerce_tcefunc.php from ext_localconf.php. This is only used in BE as a userFunc for TCA fields and core takes care of loading source file.
