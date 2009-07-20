@@ -125,11 +125,6 @@ t3lib_extMgm::addTypoScript(COMMERCE_EXTkey, 'editorcfg', '
 ', 43);
 
 
-// Only in TYPO3 versions greater or equal 4.2
-if (t3lib_div::int_from_ver(TYPO3_version) >= '4002000') {
-	$TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['typo3/classes/class.modulemenu.php'] = t3lib_extMgm::extPath(COMMERCE_EXTkey) . 'class.ux_modulemenu.php';
-}
-
 // Xclass for version preview
 $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/version/cm1/index.php'] = t3lib_extMgm::extPath(COMMERCE_EXTkey) . 'class.ux_versionindex.php';
 
