@@ -2,12 +2,12 @@ Changelog for tx_commerce
 20.07.2009 Christian Kuhn <lolli@schwarzbu.ch>
 * Cleanup, re-sorting and duplicate deletion in ext_tables.sql
 
-19.06.2009 Christian Kuhn <lolli@schwarzbu.ch>
+19.07.2009 Christian Kuhn <lolli@schwarzbu.ch>
 * Refactored addUserTSConfig and addPageTSConfig calls in ext_localconf.php and moved to ext_tables.php as this is only relevant in BE
 * Removed require_once() of treelib/class.tx_commerce_tcefunc.php from ext_localconf.php. This is only used in BE as a userFunc for TCA fields and core takes care of loading source file.
 * Synced changes from ext_df_product_config.php to currently unused dcafiles/class.tx_commerce_products_dfconfig.php and cleaned up dcafiles/class.tx_commerce_products_dfconfig.php
 
-18.06.2009 Christian Kuhn <lolli@schwarzbu.ch>
+18.07.2009 Christian Kuhn <lolli@schwarzbu.ch>
 * Removed default settings of extConf values from ext_localconf, EM handles this already. Moved access to those settings to $TYPO3_CONF_VARS['EXTCONF']['commerce']['extConf'].
 * Registered unserialized extConf array as global var in $TYPO3_CONF_VARS['EXTCONF']['commerce']['extConf'] in ext_localconf.php. Refactored extConf access throughout the extension.
 * CGL cleanup and minor re-ordering in ext_localconf.php
@@ -17,18 +17,18 @@ Changelog for tx_commerce
 * Fixed bug #3871: Order manufacturer alphabetically in BE
 * Fixed bug #3868: Saving category in root tree throws SQL error (Thanks to Christoph Niewerth)
 
-17.06.2009 Christian Kuhn <lolli@schwarzbu.ch>
+17.07.2009 Christian Kuhn <lolli@schwarzbu.ch>
 * Remove unused file ext_df_category_config.php
 * Remove dynaflex call for categories in dmhooks. This is handled by dynaflex itself by registering dcafiles/class.tx_commerce_categories_dfconfig.php in ext_localconf.php
 
-16.06.2009 Christian Kuhn <lolli@schwarzbu.ch>
+16.07.2009 Christian Kuhn <lolli@schwarzbu.ch>
 * Removed obsolete code from tcafiles/tx_commerce_categories.tca.php
 * Fixed missing closing php tags in mod_perftest
 * Fixed XCLASS inclusions in lib/ classes to make EM more happy
 * CGL cleanup in pi6/class.tx_commerce_pi6.php
 * CGL cleanup in pi6/class.tx_commerce_pi6_wizicon.php
 
-15.06.2009 Ingo Schmitt <is@marketing-factory.de>
+15.07.2009 Ingo Schmitt <is@marketing-factory.de>
 * Added Xclass for fix T3Core Bug 10331 which will be solved in 4.3.x, Thanks to David Rühr for debugging!
 * Increased Version Number
 
