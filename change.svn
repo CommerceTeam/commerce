@@ -1,5 +1,6 @@
 Changelog for tx_commerce
 20.07.2009 Christian Kuhn <lolli@schwarzbu.ch>
+* Added tx_commerce_address_types to ext_tables.sql which was only in ext_tables_static+adt.sql until now. Otherwise install tool db compare wants to rename / remove this table.
 * Cleanup, re-sorting and duplicate deletion in ext_tables.sql
 
 19.07.2009 Christian Kuhn <lolli@schwarzbu.ch>
