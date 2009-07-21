@@ -1,4 +1,9 @@
 Changelog for tx_commerce
+
+21.07.2009 Ingo Schmitt <is@marketing-factory.de>
+* Added commerce-typolink to teaserimages field
+* Set version to 0.11.14
+
 20.07.2009 Christian Kuhn <lolli@schwarzbu.ch>
 * Fixed fatal error / non working XCLASS class.ux_t3lib_parsehtml_proc.php, added a warning comment.
 * Reverted parts of latest change: Moved XCLASS loading of ux_modulemenu back to ext_localconf to not trigger new race conditions in different loading order. Encapsulated in an "if BE" clause instead.

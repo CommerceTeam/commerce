@@ -438,6 +438,7 @@ class tx_commerce_pibase extends tslib_pibase {
 					$typoLinkConf['additionalParams'].= ini_get('arg_separator.output').$this->prefixId.'[basketHashValue]='.$this->basketHashValue;
 				}
 				$lokalTS['fields.']['images.']['stdWrap.']['typolink.'] = $typoLinkConf;
+				$lokalTS['fields.']['teaserimages.']['stdWrap.']['typolink.'] = $typoLinkConf;
 					
 				$lokalTS = $this->addTypoLinkToTS($lokalTS,$typoLinkConf);
 				
