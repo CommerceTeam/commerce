@@ -131,6 +131,16 @@ if (TYPO3_MODE == 'BE') {
 	if (t3lib_div::int_from_ver(TYPO3_version) >= '4002000' && t3lib_div::int_from_ver(TYPO3_version) <= '4002001') {
 		$TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['typo3/classes/class.modulemenu.php'] = t3lib_extMgm::extPath(COMMERCE_EXTkey) . 'class.ux_modulemenu.php';
 	}
+
+	// Only in TYPO3 versions less than 4.3
+	// XCLASS t3lib_parsehtml_proc to fix TYPO3 issue 10331
+	// @see http://bugs.typo3.org/view.php?id=10331
+	// Warning: If this XCLASS isn't loaded for you, make sure no other extension loaded prior to commerce
+	// in extList requires t3lib/class.t3lib_parsehtml_proc.php! This could even happen indirectly,
+	// eg. timtab_embeddedvideo requires t3lib_tcemain which requires parsehtml_proc.
+	if (t3lib_div::int_from_ver(TYPO3_version) < '4003000') {
+		$TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['t3lib/class.t3lib_parsehtml_proc.php'] = t3lib_extMgm::extPath(COMMERCE_EXTkey) . 'class.ux_t3lib_parsehtml_proc.php';
+	}
 }
 
 
@@ -148,13 +158,6 @@ $TYPO3_CONF_VARS['SC_OPTIONS']['typo3/class.browse_links.php']['browseLinksHook'
 $TYPO3_CONF_VARS['SC_OPTIONS']['ext/rtehtmlarea/mod3/class.tx_rtehtmlarea_browse_links.php']['browseLinksHook'][] = 'EXT:commerce/hooks/class.tx_commerce_browselinkshooks.php:tx_commerce_browselinkshooks';
 
 
-// Only in TYPO3 versions less than 4.3
-// xlass t3lib_parsehtml_proc to fix TYPO3 issue 10331
-// @see http://bugs.typo3.org/view.php?id=10331
-if (t3lib_div::int_from_ver(TYPO3_version) < '4003000') {
-	require_once(t3lib_extMgm::extPath(COMMERCE_EXTkey) . 'class.ux_t3lib_parsehtml_proc.php');
-	$TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['t3lib/class.t3lib_parsehtml_proc.php'] = t3lib_extMgm::extPath(COMMERCE_EXTkey) . 'class.ux_t3lib_parsehtml_proc.php';
-}
 
 
 // Add ajax listener for tree in linkcommerce
