@@ -141,14 +141,19 @@ if (TYPO3_MODE == 'BE') {
 	if (t3lib_div::int_from_ver(TYPO3_version) < '4003000') {
 		$TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['t3lib/class.t3lib_parsehtml_proc.php'] = t3lib_extMgm::extPath(COMMERCE_EXTkey) . 'class.ux_t3lib_parsehtml_proc.php';
 	}
+
+	// XCLASS for version preview
+	// This XCLASS will create a link to singlePID / previewPageID in version module for commerce products
+	$TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/version/cm1/index.php'] = t3lib_extMgm::extPath(COMMERCE_EXTkey) . 'class.ux_versionindex.php';
+
+	// XCLASS for db list enable the search module to search in OrderIds
+	// Field tx_commerce_orders.order_id is of type none, but the BE list module doesn't search in those fields by default
+	// @see http://bugs.typo3.org/view.php?id=5676
+	$TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['typo3/class.db_list_extra.inc'] = t3lib_extMgm::extPath(COMMERCE_EXTkey) . 'class.ux_localrecordlist.php';
 }
 
 
-// Xclass for version preview
-$TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/version/cm1/index.php'] = t3lib_extMgm::extPath(COMMERCE_EXTkey) . 'class.ux_versionindex.php';
 
-// Add special in db list, to have the ability to search for OrderIds in TYPO 4.0
-$TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['typo3/class.db_list_extra.inc']=t3lib_extMgm::extPath(COMMERCE_EXTkey) . 'class.ux_localrecordlist.php';
 
 // Add linkhandler for "commerce"
 $TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_content.php']['typolinkLinkHandler']['commerce'] = 'EXT:commerce/hooks/class.tx_commerce_linkhandler.php:&tx_commerce_linkhandler';
