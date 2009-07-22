@@ -153,12 +153,21 @@
  	 */
  	function load_data_from_database()	{
  		
- 		$result=$GLOBALS['TYPO3_DB']->exec_SELECTquery('*',
- 			'tx_commerce_baskets',
-			"sid='" . $GLOBALS['TYPO3_DB']->quoteStr($this->sess_id, 'tx_commerce_baskets') . "' and finished_time =0 and pid=" . $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['extConf']['BasketStoragePid'],
-			'',
-			'pos');
-		
+ 		
+ 		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['extConf']['BasketStoragePid'] > 0) {
+ 		
+	 		$result=$GLOBALS['TYPO3_DB']->exec_SELECTquery('*',
+	 			'tx_commerce_baskets',
+				"sid='" . $GLOBALS['TYPO3_DB']->quoteStr($this->sess_id, 'tx_commerce_baskets') . "' and finished_time =0 and pid=" . $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['extConf']['BasketStoragePid'],
+				'',
+				'pos');
+ 		}else{
+ 			$result=$GLOBALS['TYPO3_DB']->exec_SELECTquery('*',
+	 			'tx_commerce_baskets',
+				"sid='" . $GLOBALS['TYPO3_DB']->quoteStr($this->sess_id, 'tx_commerce_baskets') . "' and finished_time =0 " ,
+				'',
+				'pos');
+ 		}
 		if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)>0){
 			
 			if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_basket.php']['load_data_from_database'])) {

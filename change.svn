@@ -1,5 +1,8 @@
 Changelog for tx_commerce
 
+22.07.2009 Ingo Schmitt <is@marketing-factory.de>
+* Fixed Error in basket loading, when no storage PID is defined.
+
 21.07.2009 Ingo Schmitt <is@marketing-factory.de>
 * Added commerce-typolink to teaserimages field
 * Set version to 0.11.14
