@@ -168,9 +168,9 @@ class tx_commerce_pi4 extends tx_commerce_pibase {
 			break;
 		}
 
-		if (!is_array($this->conf['formFields'])) {
+		if (!is_array($this->conf['formFields.'])) {
 			if (is_array($this->conf[$addressType . '.']['formFields.'])) {
-				$this->conf['formFields'] = $this->conf[$addressType . '.']['formFields.'];
+				$this->conf['formFields.'] = $this->conf[$addressType . '.']['formFields.'];
 			}
 		}
 
