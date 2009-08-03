@@ -594,65 +594,6 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 	}
 
 
-	/**
-	 * Generates a product list for the basket
-	 *
-	 * @TODO Use foreach instead of while
-	 * @Deprecated Replaced with new function down, use makeProductList() instead
-	 *
-	 * @return string HTML-Content
-	 */
-	function makeProductListOld() {
-		$list = array();
-
-		$articleTypes = explode(',', $this->conf['regularArticleTypes']);
-
-		while (list($k, $type) = each($articleTypes)) {
-			$list = array_merge($list, $this->basket->get_articles_by_article_type_uid_asuidlist($type));
-		}
-
-		// ###CATEGORY_ITEMS_LISTVIEW_1###
-		$templateMarker[] = '###' . strtoupper($this->conf['templateMarker.']['items_listview']) . '###';
-		$templateMarker[] = '###' . strtoupper($this->conf['templateMarker.']['items_listview2']) . '###';
-		$category_items_listview_1 = "";
-
-		// ###CATEGORY_ITEMS_LISTVIEW_2###
-		$category_items_listview_2 = "";
-		$changerowcount = 0;
-
-		while (list($k, $v) = each($list)) {
-			//fill marker arrays with product/article values
-			$myItem = $this->basket->basket_items[$v];
-
-			$markerArray = $this->generateMarkerArray($myItem->getProductAssocArray('product_'), $this->conf['fields.']);
-
-			$this->generateMarkerArray($myItem->getProductAssocArray(), $this->conf['fields.']['products.'], 'product_');
-
-			$this->select_attributes = $myItem->product->get_attributes(array(ATTRIB_selector));
-
-			$markerArray["###ARTICLE_IMAGES###"] = $imgHtmlCode;
-			$wrapMarkerArray["###PRODUCT_LINK_DETAIL###"] = explode('|', $this->pi_list_linkSingle("|", $myItem->product->get_uid(), 1, array('catUid' => intval($myItem->product->get_masterparent_categorie())), FALSE, $this->conf['listPid']));
-
-			$markerArray["###PRODUCT_BASKET_FOR_LISTVIEW###"] = $this->makeArticleView($myItem->article, $myItem->product);
-
-			$templateselector = $changerowcount % 2;
-			$template = $this->cObj->getSubpart($this->templateCode, $templateMarker[$templateselector]);
-
-			$changerowcount++;
-
-			// @TODO This substitution is connected with the upper on. Clean this up
-			$template = $this->cObj->substituteSubpart($template, '###PRODUCT_BASKET_FORM_SMALL###', '');
-			$markerArray = array_merge($markerArray, $this->articleMarkerArr);
-
-			$tempContent = $this->cObj->substituteMarkerArray($template, $markerArray, '###|###', 1);
-			$tempContent = $this->substituteMarkerArrayNoCached($tempContent, $this->languageMarker, $subpartMarkerArray, $wrapMarkerArray);
-
-			$content.= $tempContent;
-		}
-
-		return $content;
-	}
-
 
 	/**
 	 * Generates the Basket Forms per line
