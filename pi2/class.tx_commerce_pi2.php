@@ -758,12 +758,16 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 
 				$markerArray = $this->generateMarkerArray($myItem->getProductAssocArray(''), $lokalTSproduct, 'product_');
 				$this->articleMarkerArr = $this->generateMarkerArray($myItem->getArticleAssocArray(''), $lokalTSArtikle, 'article_');
-
 				$this->select_attributes = $myItem->product->get_attributes(array(ATTRIB_selector));
-
 				$markerArray["PRODUCT_BASKET_FOR_LISTVIEW"] = $this->makeArticleView($myItem->article, $myItem->product);
-
 				$templateselector = $changerowcount % 2;
+				
+				foreach($hookObjectsArr as $hookObj)    {
+					if (method_exists($hookObj, 'changeProductTemplate')) {
+						$templateMarker =  $hookObj->changeProductTemplate($templateMarker, $myItem, $this);
+					}
+				}
+				
 				$template = $this->cObj->getSubpart($this->templateCode, $templateMarker[$templateselector]);
 				$changerowcount++;
 
