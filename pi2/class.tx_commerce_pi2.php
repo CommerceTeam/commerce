@@ -626,6 +626,7 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 			}
 		} // End of if is object $prod
 
+		$markerArray = $art->getMarkerArray($this->cObj, $this->conf['articleTS.'], 'article_');
 		$markerArray['###ARTICLE_SELECT_ATTRIBUTES###'] = $attCode;
 		$markerArray['###ARTICLE_UID###'] = $art->getUid();
 		$markerArray['###STARTFRM###'] = '<form name="basket_' . $art->uid . '" action="' . $this->pi_getPageLink($this->conf['basketPid']) . '" method="post">';
