@@ -27,7 +27,7 @@
  * @package commerce
  * @subpackage payment
  * @author Volker Graubaum <vg@e-netconsulting.de>
- * @internal Maintainer Michael Staatz
+ * @internal Maintainer Michael Staatz <michael.staatz@e-netconsulting.com>
  */
 
 

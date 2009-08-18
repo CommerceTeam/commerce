@@ -27,7 +27,7 @@
  * @package commerce
  * @subpackage payment
  * @author Volker Graubaum <vg@e-netconsulting.de>
- * @internal Maintainer Michael Staatz
+ * @internal Maintainer Michael Staatz <michael.staatz@e-netconsulting.com>
  */
 
 require_once (t3lib_extmgm::extPath('commerce') . 'payment/criteria/class.tx_commerce_criteria_abstract.php');
@@ -37,7 +37,7 @@ class tx_commerce_criteria_allowed_articles extends tx_commerce_criteria_abstrac
 	public function isAllowed() {
 		if (is_array($this->options['allowedArticles'])) {
 			$articles = array();
-			foreach($this->options['allowedArticles'] as $typeUid) {
+			foreach ($this->options['allowedArticles'] as $typeUid) {
 				$articles = array_merge(
 					$articles,
 					$GLOBALS['TSFE']->fe_user->tx_commerce_basket->get_articles_by_article_type_uid_asUidlist($typeUid)
@@ -46,7 +46,7 @@ class tx_commerce_criteria_allowed_articles extends tx_commerce_criteria_abstrac
 			return (count($articles) > 0);
 		} elseif (is_array($this->options['notAllowedArticles'])) {
 			$articles = array();
-			foreach($this->options['notAllowedArticles'] as $typeUid) {
+			foreach ($this->options['notAllowedArticles'] as $typeUid) {
 				$articles = array_merge(
 					$articles,
 					$GLOBALS['TSFE']->fe_user->tx_commerce_basket->get_articles_by_article_type_uid_asUidlist($typeUid)

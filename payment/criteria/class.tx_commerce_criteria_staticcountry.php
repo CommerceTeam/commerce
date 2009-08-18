@@ -27,7 +27,7 @@
  * @package commerce
  * @subpackage payment
  * @author Volker Graubaum <vg@e-netconsulting.de>
- * @internal Maintainer Michael Staatz
+ * @internal Maintainer Michael Staatz <michael.staatz@e-netconsulting.com>
  */
 
 require_once (t3lib_extmgm::extPath('commerce') . 'payment/criteria/class.tx_commerce_criteria_abstract.php');

@@ -27,7 +27,7 @@
  * @package commerce
  * @subpackage payment
  * @author Volker Graubaum <vg@e-netconsulting.de>
- * @internal Maintainer Michael Staatz
+ * @internal Maintainer Michael Staatz <michael.staatz@e-netconsulting.com>
  */
 
 require_once (t3lib_extmgm::extPath('commerce') . 'payment/criteria/class.tx_commerce_criteria_abstract.php');
@@ -37,13 +37,13 @@ class tx_commerce_criteria_articles_types extends tx_commerce_criteria_abstract 
 	public function isAllowed() {
 		if (is_array($this->options['allowedArticlesTypes'])) {
 			$articlesTypes = 0;
-			foreach($this->options['allowedArticlesTypes'] as $typeUid) {
+			foreach ($this->options['allowedArticlesTypes'] as $typeUid) {
 				$articlesTypes += $GLOBALS['TSFE']->fe_user->tx_commerce_basket->getArticleTypeCount($typeUid);
 			}
 			return ($articlesTypes > 0);
 		} elseif (is_array($this->options['notAllowedArticlesTypes'])) {
 			$articlesTypes = 0;
-			foreach($this->options['notAllowedArticlesTypes'] as $typeUid) {
+			foreach ($this->options['notAllowedArticlesTypes'] as $typeUid) {
 				$articlesTypes += $GLOBALS['TSFE']->fe_user->tx_commerce_basket->getArticleTypeCount($typeUid);
 			}
 			return ($articlesTypes == 0);

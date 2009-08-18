@@ -27,34 +27,7 @@
  * @package commerce
  * @subpackage payment
  * @author Volker Graubaum <vg@e-netconsulting.de>
- * @internal Maintainer Michael Staatz
- */
-
- /*
-  * for testing
-  *
-  * Kreditkarte			Testnummer
-  * Visa      			4111 1111 1111 1111
-  * MasterCard			5500 0000 0000 0004
-  * American Express	3400 0000 0000 009
-  * Diner's Club		3000 0000 0000 04
-  * Carte Blanche		3000 0000 0000 04
-  * Discover			6011 0000 0000 0004
-  * JCB					3088 0000 0000 0009
-  *
-  */
-
-/*
- * Take new Test URL an VISA - Data from E-Netconsulting - Project = LMO
- * https://c3-test.wirecard.com
- * $paymentData = array(
-		'cc_number' => '4200000000000000',
-		'cvc' => '000',
-		'exp_year' => '2010',
-		'exp_month' => '01',
-		'holder' => 'Wire Card Test',
-	);
- *
+ * @internal Maintainer Michael Staatz <michael.staatz@e-netconsulting.com>
  */
 
 
@@ -185,7 +158,7 @@ class tx_commerce_provider_wirecard extends tx_commerce_provider_abstract {
 	 */
 	function getLastError($finish = 0) {
 		if($finish){
-		    return $this->getReadableError();
+			return $this->getReadableError();
 		}else{
 			return $this->errorMessages[(count($this->errorMessages) -1)];
 		}
@@ -195,9 +168,9 @@ class tx_commerce_provider_wirecard extends tx_commerce_provider_abstract {
 	function getReadableError(){
 		$back = '';
 		reset($this->errorMessages);
-	    while (list($k,$v) = each($this->errorMessages)) {
+		while (list($k,$v) = each($this->errorMessages)) {
 			$back .= $v;
-	    }
+		}
 		return $back;
 	}
 }

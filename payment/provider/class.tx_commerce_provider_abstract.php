@@ -26,7 +26,7 @@
  * @package commerce
  * @subpackage payment
  * @author Volker Graubaum <vg@e-netconsulting.de>
- * @internal Maintainer Michael Staatz
+ * @internal Maintainer Michael Staatz <michael.staatz@e-netconsulting.com>
  */
 
 abstract class tx_commerce_provider_abstract {
@@ -42,7 +42,7 @@ abstract class tx_commerce_provider_abstract {
 		// The Provider needs also an type like the payment class
 	protected $type = '';
 
-	// array of criteria objects for check if a paymentMethod is allowed
+		// array of criteria objects for check if a paymentMethod is allowed
 	protected $criterias = NULL;
 
 	/**
@@ -97,7 +97,7 @@ abstract class tx_commerce_provider_abstract {
 	 * @return boolean: True iff this provider can and may handle the payment.
 	 */
 	public function isAllowed() {
-		if(NULL == $this->criterias) {
+		if (NULL == $this->criterias) {
 			$this->loadCriterias();
 		}
 		foreach ($this->criterias as $criteria) {
@@ -170,9 +170,9 @@ abstract class tx_commerce_provider_abstract {
 	 * Returns the last error message
 	 */
 	function getLastError($finish = 0) {
-		if($finish){
+		if ($finish){
 			return $this->getReadableError();
-		}else{
+		} else {
 			return $this->errorMessages[(count($this->errorMessages) - 1)];
 		}
 	}
@@ -180,7 +180,7 @@ abstract class tx_commerce_provider_abstract {
 	function getReadableError(){
 		$back = '';
 		reset($this->errorMessages);
-		while(list($k, $v) = each($this->errorMessages)){
+		while (list($k, $v) = each($this->errorMessages)){
 			$back .= $v;
 		}
 		return $back;
