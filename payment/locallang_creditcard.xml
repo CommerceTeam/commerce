@@ -30,6 +30,7 @@
 			<label index='CCVSErrExpired'>Card has expired</label>
 			<label index='CCVSErrCheckNumber'>Length of controlnumber is not ok</label>
 			<label index='defaultPaymentDataError'>DataError: Please check your data or choose another paymentmethod</label>
+			
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index='payment_cc_number'>Kartennummer</label>
@@ -78,6 +79,150 @@
 			<label index='CCVSErrExpired'>La carte est expirée</label>
 			<label index='CCVSErrCheckNumber'>Length of controlnumber is not ok</label>
 			<label index='defaultPaymentDataError'>Erreur de données : Veuillez SVP vérifier vos données ou choisissez un autre moyen de paiement</label>
+		</languageKey>
+		<languageKey index="uk" type="array">
+			<label index='payment_cc_number'>Card Number</label>
+			<label index='payment_cc_type'>Credit Card</label>
+			<label index='payment_cc_checksum'>Credit card controlnumber</label>
+			<label index='payment_addtext'>(To find your creditcard's CVV2 number, refer to the last three numbers on the back of your creditcard)</label>
+			<label index='payment_cc_expirationYear'>Expiration year (XXXX)</label>
+			<label index='payment_cc_expirationMonth'>Expiration month (XX)</label>
+			<label index='payment_cc_holder'>Holder</label>
+			<label index='CCVSErrNumberString'>Number isn't a string</label>
+			<label index='CCVSErrVisa14'>Visa usually has 16 or 13 digits, but you entered 14</label>
+			<label index='CCVSErrUnknown'>First four digits indicate unknown card type</label>
+			<label index='CCVSErrAccepted'>Programmer improperly used the Accepted argument</label>
+			<label index='CCVSErrNoAccept'>We don't accept your choosen cards</label>
+			<label index='CCVSErrShort'>Card Number is too short</label>
+			<label index='CCVSErrLong'>Card Number is too long</label>
+			<label index='CCVSErrChecksum'>Number failed checksum test</label>
+			<label index='CCVSErrMonthString'>Month isn't a string</label>
+			<label index='CCVSErrMonthFormat'>Month has invalid format</label>
+			<label index='CCVSErrYearString'>Year isn't a string</label>
+			<label index='CCVSErrYearFormat'>Year has invalid format</label>
+			<label index='CCVSErrExpired'>Card has expired</label>
+			<label index='CCVSErrCheckNumber'>Length of controlnumber is not ok</label>
+			<label index='defaultPaymentDataError'>DataError: Please check your data or choose another paymentmethod</label>
+		</languageKey>
+		<languageKey index="fr" type="array">
+			<label index='payment_cc_number'>Card Number</label>
+			<label index='payment_cc_type'>Credit Card</label>
+			<label index='payment_cc_checksum'>Credit card controlnumber</label>
+			<label index='payment_addtext'>(To find your creditcard's CVV2 number, refer to the last three numbers on the back of your creditcard)</label>
+			<label index='payment_cc_expirationYear'>Expiration year (XXXX)</label>
+			<label index='payment_cc_expirationMonth'>Expiration month (XX)</label>
+			<label index='payment_cc_holder'>Holder</label>
+			<label index='CCVSErrNumberString'>Number isn't a string</label>
+			<label index='CCVSErrVisa14'>Visa usually has 16 or 13 digits, but you entered 14</label>
+			<label index='CCVSErrUnknown'>First four digits indicate unknown card type</label>
+			<label index='CCVSErrAccepted'>Programmer improperly used the Accepted argument</label>
+			<label index='CCVSErrNoAccept'>We don't accept your choosen cards</label>
+			<label index='CCVSErrShort'>Card Number is too short</label>
+			<label index='CCVSErrLong'>Card Number is too long</label>
+			<label index='CCVSErrChecksum'>Number failed checksum test</label>
+			<label index='CCVSErrMonthString'>Month isn't a string</label>
+			<label index='CCVSErrMonthFormat'>Month has invalid format</label>
+			<label index='CCVSErrYearString'>Year isn't a string</label>
+			<label index='CCVSErrYearFormat'>Year has invalid format</label>
+			<label index='CCVSErrExpired'>Card has expired</label>
+			<label index='CCVSErrCheckNumber'>Length of controlnumber is not ok</label>
+			<label index='defaultPaymentDataError'>DataError: Please check your data or choose another paymentmethod</label>
+		</languageKey>
+		<languageKey index="it" type="array">
+			<label index='payment_cc_number'>Card Number</label>
+			<label index='payment_cc_type'>Credit Card</label>
+			<label index='payment_cc_checksum'>Credit card controlnumber</label>
+			<label index='payment_addtext'>(To find your creditcard's CVV2 number, refer to the last three numbers on the back of your creditcard)</label>
+			<label index='payment_cc_expirationYear'>Expiration year (XXXX)</label>
+			<label index='payment_cc_expirationMonth'>Expiration month (XX)</label>
+			<label index='payment_cc_holder'>Holder</label>
+			<label index='CCVSErrNumberString'>Number isn't a string</label>
+			<label index='CCVSErrVisa14'>Visa usually has 16 or 13 digits, but you entered 14</label>
+			<label index='CCVSErrUnknown'>First four digits indicate unknown card type</label>
+			<label index='CCVSErrAccepted'>Programmer improperly used the Accepted argument</label>
+			<label index='CCVSErrNoAccept'>We don't accept your choosen cards</label>
+			<label index='CCVSErrShort'>Card Number is too short</label>
+			<label index='CCVSErrLong'>Card Number is too long</label>
+			<label index='CCVSErrChecksum'>Number failed checksum test</label>
+			<label index='CCVSErrMonthString'>Month isn't a string</label>
+			<label index='CCVSErrMonthFormat'>Month has invalid format</label>
+			<label index='CCVSErrYearString'>Year isn't a string</label>
+			<label index='CCVSErrYearFormat'>Year has invalid format</label>
+			<label index='CCVSErrExpired'>Card has expired</label>
+			<label index='CCVSErrCheckNumber'>Length of controlnumber is not ok</label>
+			<label index='defaultPaymentDataError'>DataError: Please check your data or choose another paymentmethod</label>
+		</languageKey>
+		<languageKey index="nl" type="array">
+			<label index='payment_cc_number'>Card Number</label>
+			<label index='payment_cc_type'>Credit Card</label>
+			<label index='payment_cc_checksum'>Credit card controlnumber</label>
+			<label index='payment_addtext'>(To find your creditcard's CVV2 number, refer to the last three numbers on the back of your creditcard)</label>
+			<label index='payment_cc_expirationYear'>Expiration year (XXXX)</label>
+			<label index='payment_cc_expirationMonth'>Expiration month (XX)</label>
+			<label index='payment_cc_holder'>Holder</label>
+			<label index='CCVSErrNumberString'>Number isn't a string</label>
+			<label index='CCVSErrVisa14'>Visa usually has 16 or 13 digits, but you entered 14</label>
+			<label index='CCVSErrUnknown'>First four digits indicate unknown card type</label>
+			<label index='CCVSErrAccepted'>Programmer improperly used the Accepted argument</label>
+			<label index='CCVSErrNoAccept'>We don't accept your choosen cards</label>
+			<label index='CCVSErrShort'>Card Number is too short</label>
+			<label index='CCVSErrLong'>Card Number is too long</label>
+			<label index='CCVSErrChecksum'>Number failed checksum test</label>
+			<label index='CCVSErrMonthString'>Month isn't a string</label>
+			<label index='CCVSErrMonthFormat'>Month has invalid format</label>
+			<label index='CCVSErrYearString'>Year isn't a string</label>
+			<label index='CCVSErrYearFormat'>Year has invalid format</label>
+			<label index='CCVSErrExpired'>Card has expired</label>
+			<label index='CCVSErrCheckNumber'>Length of controlnumber is not ok</label>
+			<label index='defaultPaymentDataError'>DataError: Please check your data or choose another paymentmethod</label>
+		</languageKey>
+		<languageKey index="es" type="array">
+			<label index='payment_cc_number'>Card Number</label>
+			<label index='payment_cc_type'>Credit Card</label>
+			<label index='payment_cc_checksum'>Credit card controlnumber</label>
+			<label index='payment_addtext'>(To find your creditcard's CVV2 number, refer to the last three numbers on the back of your creditcard)</label>
+			<label index='payment_cc_expirationYear'>Expiration year (XXXX)</label>
+			<label index='payment_cc_expirationMonth'>Expiration month (XX)</label>
+			<label index='payment_cc_holder'>Holder</label>
+			<label index='CCVSErrNumberString'>Number isn't a string</label>
+			<label index='CCVSErrVisa14'>Visa usually has 16 or 13 digits, but you entered 14</label>
+			<label index='CCVSErrUnknown'>First four digits indicate unknown card type</label>
+			<label index='CCVSErrAccepted'>Programmer improperly used the Accepted argument</label>
+			<label index='CCVSErrNoAccept'>We don't accept your choosen cards</label>
+			<label index='CCVSErrShort'>Card Number is too short</label>
+			<label index='CCVSErrLong'>Card Number is too long</label>
+			<label index='CCVSErrChecksum'>Number failed checksum test</label>
+			<label index='CCVSErrMonthString'>Month isn't a string</label>
+			<label index='CCVSErrMonthFormat'>Month has invalid format</label>
+			<label index='CCVSErrYearString'>Year isn't a string</label>
+			<label index='CCVSErrYearFormat'>Year has invalid format</label>
+			<label index='CCVSErrExpired'>Card has expired</label>
+			<label index='CCVSErrCheckNumber'>Length of controlnumber is not ok</label>
+			<label index='defaultPaymentDataError'>DataError: Please check your data or choose another paymentmethod</label>
+		</languageKey>
+		<languageKey index="pt" type="array">
+			<label index='payment_cc_number'>Card Number</label>
+			<label index='payment_cc_type'>Credit Card</label>
+			<label index='payment_cc_checksum'>Credit card controlnumber</label>
+			<label index='payment_addtext'>(To find your creditcard's CVV2 number, refer to the last three numbers on the back of your creditcard)</label>
+			<label index='payment_cc_expirationYear'>Expiration year (XXXX)</label>
+			<label index='payment_cc_expirationMonth'>Expiration month (XX)</label>
+			<label index='payment_cc_holder'>Holder</label>
+			<label index='CCVSErrNumberString'>Number isn't a string</label>
+			<label index='CCVSErrVisa14'>Visa usually has 16 or 13 digits, but you entered 14</label>
+			<label index='CCVSErrUnknown'>First four digits indicate unknown card type</label>
+			<label index='CCVSErrAccepted'>Programmer improperly used the Accepted argument</label>
+			<label index='CCVSErrNoAccept'>We don't accept your choosen cards</label>
+			<label index='CCVSErrShort'>Card Number is too short</label>
+			<label index='CCVSErrLong'>Card Number is too long</label>
+			<label index='CCVSErrChecksum'>Number failed checksum test</label>
+			<label index='CCVSErrMonthString'>Month isn't a string</label>
+			<label index='CCVSErrMonthFormat'>Month has invalid format</label>
+			<label index='CCVSErrYearString'>Year isn't a string</label>
+			<label index='CCVSErrYearFormat'>Year has invalid format</label>
+			<label index='CCVSErrExpired'>Card has expired</label>
+			<label index='CCVSErrCheckNumber'>Length of controlnumber is not ok</label>
+			<label index='defaultPaymentDataError'>DataError: Please check your data or choose another paymentmethod</label>
 		</languageKey>
 	</data>
 </T3locallang>

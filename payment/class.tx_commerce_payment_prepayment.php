@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2005 - 2006 Thomas Hempel (thomas@work.de)
+*  (c) 2009 Volker Graubaum <vg@e-netconsulting.de>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -21,85 +21,22 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
 /**
- * 
+ *
  *
  * @package commerce
  * @subpackage payment
- * @author Thomas Hempel <thomas@work.de>
- * @internal Maintainer Thomas Hempel
- * 
- * $Id: class.tx_commerce_payment_prepayment.php 483 2007-01-09 17:42:40Z ingo $
+ * @author Volker Graubaum <vg@e-netconsulting.de>
+ * @internal Maintainer Michael Staatz
  */
 
- 
-class tx_commerce_payment_prepayment {
-	/// In this var the wrong fields are stored (for future use)
-	var $errorFields = array();
-	
-	/// This var holds the errormessages (keys are the fieldnames)
-	var $errorMessages = array();
-	
-	
-	function needAdditionalData($pObj) {
-		if(!is_object($this->pObj)) {
-			$this->pObj = $pObj;
-		}
-		return false;
-	}
+require_once(t3lib_extmgm::extPath('commerce') .'payment/class.tx_commerce_payment_abstract.php');
 
-	function getAdditonalFieldsConfig($pObj) {
-		if(!is_object($this->pObj)) {
-			$this->pObj = $pObj;
-		}
-		return NULL;
-	}
-	
-	function proofData($formData,$pObj) {
-		if(!is_object($this->pObj)) {
-			$this->pObj = $pObj;
-		}
-		return true;
-	}
-	
-	/**
-	 * This method is called in the last step. Here can be made some final checks or whatever is
-	 * needed to be done before saving some data in the database.
-	 * Write any errors into $this->errorMessages!
-	 * To save some additonal data in the database use the method updateOrder().
-	 *
-	 * @param	array	$config: The configuration from the TYPO3_CONF_VARS
-	 * @param	boolean	True or false
-	 */
-	function finishingFunction($config,$session, $basket,$pObj) {
-		if(!is_object($this->pObj)) {
-			$this->pObj = $pObj;
-		}
-		// make some checks with worldpay or whatever...
-		// all data is stored in $session
-		return true;
-	}
-	
-	/**
-	 * This method can make something with the created order. For example add the
-	 * reference id for payments with creditcards.
-	 */
-	function updateOrder($orderUid, $session,$pObj) {
-		if(!is_object($this->pObj)) {
-			$this->pObj = $pObj;
-		}
-		
-	}
-	
-	/**
-	 * Returns the last error message
-	 */
-	function getLastError($finish = 0,$pObj) {
-		if(!is_object($this->pObj)) {
-			$this->pObj = $pObj;
-		}
-		return $this->errorMessages[(count($this->errorMessages) -1)];
-	}
+class tx_commerce_payment_prepayment extends tx_commerce_payment_abstract {
+
+	protected $type = 'prepayment';
+
 }
 
 if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']["ext/commerce/payment/class.tx_commerce_payment_prepayment.php"])	{

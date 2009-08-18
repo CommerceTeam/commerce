@@ -1,0 +1,101 @@
+
+<h3 id="news_headline">3. Schritt: Bezahlung</h3>
+
+<script type="text/javascript" language="JavaScript">
+  $(document).ready(function() {
+    $('.payment_type_jquery').each(function() {
+      $(this).hide();
+    });
+    $('.'+$('#payment_type_selector').val()).show();
+    $('.payment_type_value').val($('#payment_type_selector').val());
+    
+    $('#payment_type_selector').change(function() {
+      $('.payment_type_jquery').each(function() {
+        $(this).slideUp('slow');
+      });
+      $('.'+$(this).val()).slideDown('slow');
+      $('.payment_type_value').val($(this).val());
+    });
+  });
+</script>
+<dl class="form-design">
+    <dt class="c">
+      <label for="payment_type">###PAYMENT_TYPE_LBL###</label>
+    </dt>
+    <dd>
+      <select name="payment_type" size="1" id="payment_type_selector">
+		    ###PAYMENT_TYPE###
+	     </select>
+    </dd>
+</dl>
+<div class="###PAYMENT_TYPE_CLASS_CREDITCARD### payment_type_jquery">
+<form action="###FORM_ACTION###" method="post">
+  <input type="hidden" name="tx_commerce_handlePayment_hook[payment_type]" class="payment_type_value" value="">
+	<!-- ###SHOW_ON_FAILED### -->
+	 Oops, da ist was schief gegangen: ###LAST_ERROR### 
+	<!-- ###SHOW_ON_FAILED### -->
+  <dl class="form-design">
+    <dt class="c">
+      <label for="cardbrand">###CARDBRAND_LBL###</label>
+    </dt>
+    <dd>
+      <select name='cardbrand' size='1'>
+		    ###CARDBRAND_VALUE###
+	     </select>
+    </dd>
+    
+    <dt class="c">
+      <label for="cardholder">###CARDHOLDER_LBL###</label>
+    </dt>
+    <dd>
+      <input type='text' name='cardholder' size='25' maxlength='50' value=""/>
+    </dd>
+    
+    <dt class="c">
+      <label for="sfpCardNumber">###CARDNUMBER_LBL###</label>
+    </dt>
+    <dd>
+      <input type='text' name='sfpCardNumber' size='25' maxlength='50' value=""/>
+    </dd>
+    
+    <dt class="c">
+      <label for="sfpCardExpiryMonth">###CARD_EXPIRE_LBL###</label>
+    </dt>
+    <dd>
+      <select name="sfpCardExpiryMonth" size='1'>###CARD_EXPIRE_MONTH_VALUE###</select>
+      <select name='sfpCardExpiryYear' size='1'>###CARD_EXPIRE_YEAR_VALUE###</select>
+    </dd>
+  
+    <dt class="c">
+      <label for="CVC">###CVC_LBL###</label>
+    </dt>
+    <dd>
+      <input type='text' name='CVC' value="" size='4' maxlength='4'/>
+    </dd>
+  </dl>
+  <p class="com-chkout-payment-fields-submit">
+    ###PAYMENT_FORM_SUBMIT###
+  </p>
+  
+</form>
+</div>
+
+###PAYMENT_TYPE_DEFAULT_DIVS###
+<div class="###PAYMENT_TYPE_CLASS_INVOICE### ###PAYMENT_TYPE_CLASS_PREPAYMENT### ###PAYMENT_TYPE_CLASS_NACHNAME### payment_type_jquery" style="display:block;">
+  <form action="###ALTERNATIVE_ACTION###" method="post">
+    <input type="hidden" name="tx_commerce_handlePayment_hook[payment_type]" class="payment_type_value" value="">
+    <p class="com-chkout-payment-fields-submit">
+      ###PAYMENT_FORM_SUBMIT###
+    </p>
+  </form>
+</div>
+
+
+<div class="###PAYMENT_TYPE_CLASS_LASTSCHRIFT### payment_type_jquery" style="display:block;">
+  <form action="###ALTERNATIVE_ACTION###" method="post">
+    <input type="hidden" name="tx_commerce_handlePayment_hook[payment_type]" class="payment_type_value" value="">
+    <p class="com-chkout-payment-fields-submit">
+      ###PAYMENT_FORM_SUBMIT###
+    </p>
+  </form>
+</div>
