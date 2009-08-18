@@ -279,8 +279,9 @@ class tx_commerce_pi4 extends tx_commerce_pibase {
 
 			$itemMA = array();
 			$linkMA = array();
-
+			
 			// Fill marker array
+			$address = tx_commerce_div::removeXSSStripTagsArray($address);
 			foreach($address as $key => $value) {
 				$valueHidden = '';
 				$upperKey = strtoupper($key);
@@ -432,7 +433,7 @@ class tx_commerce_pi4 extends tx_commerce_pibase {
 
 		// Build query to select an address from the database if we have a logged in user
 		$addressData = ($addressUid != NULL) ? $this->addresses[$addressUid] : array();
-
+		
 		if ($this->debug) {
 			debug($config, 'PI4 config');
 		}
@@ -440,6 +441,7 @@ class tx_commerce_pi4 extends tx_commerce_pibase {
 		if (count($this->formError) > 0) {
 			$addressData = $this->piVars;
 		}
+		$addressData = tx_commerce_div::removeXSSStripTagsArray($addressData);
 		if ($addressData['tx_commerce_address_type_id'] == NULL) {
 			$addressData['tx_commerce_address_type_id'] = (int)$this->piVars['addressType'];
 		}
@@ -660,7 +662,7 @@ class tx_commerce_pi4 extends tx_commerce_pibase {
 		if (($fieldConfig['default']) && empty($fieldValue)) {
 			$value = $fieldConfig['default'];
 		} else {
-			$value = t3lib_div::removeXSS($fieldValue);
+			$value = t3lib_div::removeXSS(strip_tags($fieldValue));
 		}
 
 		$result = '<input type="text" name="' . $this->prefixId . '[' . $fieldName . ']" value="' . $value . '" ';
@@ -853,13 +855,13 @@ class tx_commerce_pi4 extends tx_commerce_pibase {
 		$newData['tstamp'] = time();
 
 		if ($this->debug) {
-			debug($newData);
+			debug($newData,'newdata');
 		}
 
 		foreach($this->fieldList as $name) {
-			$newData[$name] = $this->piVars[$name];
+			$newData[$name] = t3lib_div::removeXSS(strip_tags($this->piVars[$name]));
 			if (!$new) {
-				$this->addresses[intval($this->piVars['addressid']) ][$name] = $this->piVars[$name];
+				$this->addresses[intval($this->piVars['addressid']) ][$name] = t3lib_div::removeXSS(strip_tags($this->piVars[$name]));
 			}
 		}
 
@@ -960,7 +962,7 @@ class tx_commerce_pi4 extends tx_commerce_pibase {
 			$this->addresses = array();
 			return;
 		}
-
+		
 		$select.= ' AND deleted=0 AND pid=' . $this->conf['addressPid'];
 
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
@@ -973,7 +975,7 @@ class tx_commerce_pi4 extends tx_commerce_pibase {
 
 		$result = array();
 		while ($address = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
-			$result[$address['uid']] = $address;
+			$result[$address['uid']] = tx_commerce_div::removeXSSStripTagsArray($address);
 		}
 
 		return $result;

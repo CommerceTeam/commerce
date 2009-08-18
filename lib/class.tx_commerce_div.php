@@ -46,7 +46,25 @@ require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_basket.php
 
 class tx_commerce_div {
 
-
+	/**
+	 * Removes XSS code and strips tags from an array recursivly
+	 * @Author Ingo Schmitt <is@marketing-factory.de>
+	 * @param $array	Array of elements
+	 * @return $array
+	 */
+	function removeXSSStripTagsArray($array){
+		$return = array();
+		if (is_array($array) && (count($array)>0)){
+			foreach ($array as $key => $value){
+				if (is_array($value)){
+					$return[$key] = tx_commerce_div::removeXSSStripTagsArray($value);
+				}else{
+					$return[$key]= t3lib_div::removeXSS(strip_tags($value));
+				}
+			}
+		}
+		return $return;
+	}
 
 
 
