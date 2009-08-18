@@ -212,9 +212,9 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
                 } 		
 		
 			// write the billing address into session, if it is present in the REQUEST
-		if (isset($this->piVars['billing']))	$GLOBALS['TSFE']->fe_user->setKey('ses', 'billing', $this->piVars['billing']);
-		if (isset($this->piVars['delivery']))	$GLOBALS['TSFE']->fe_user->setKey('ses', 'delivery', $this->piVars['delivery']);
-		if (isset($this->piVars['payment'])) 	$GLOBALS['TSFE']->fe_user->setKey('ses', 'payment', $this->piVars['payment']);
+		if (isset($this->piVars['billing']))	$GLOBALS['TSFE']->fe_user->setKey('ses', 'billing', tx_commerce_div::removeXSSStripTagsArray($this->piVars['billing']));
+		if (isset($this->piVars['delivery']))	$GLOBALS['TSFE']->fe_user->setKey('ses', 'delivery', tx_commerce_div::removeXSSStripTagsArray($this->piVars['delivery']));
+		if (isset($this->piVars['payment'])) 	$GLOBALS['TSFE']->fe_user->setKey('ses', 'payment', tx_commerce_div::removeXSSStripTagsArray($this->piVars['payment']));
 
 			// fetch the address data from hidden fields if the address_id is set what means that
 			// the address was selected from list with radio buttons.
@@ -226,9 +226,9 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 			$GLOBALS['TSFE']->fe_user->setKey('ses', $this->piVars['check'], $this->piVars[intval($this->piVars['address_uid'])]);
 		}
 	
-		$this->MYSESSION['billing'] = $GLOBALS['TSFE']->fe_user->getKey('ses', 'billing');
-		$this->MYSESSION['delivery'] = $GLOBALS['TSFE']->fe_user->getKey('ses', 'delivery');
-		$this->MYSESSION['payment'] = $GLOBALS['TSFE']->fe_user->getKey('ses', 'payment');
+		$this->MYSESSION['billing'] = tx_commerce_div::removeXSSStripTagsArray($GLOBALS['TSFE']->fe_user->getKey('ses', 'billing'));
+		$this->MYSESSION['delivery'] = tx_commerce_div::removeXSSStripTagsArray($GLOBALS['TSFE']->fe_user->getKey('ses', 'delivery'));
+		$this->MYSESSION['payment'] = tx_commerce_div::removeXSSStripTagsArray($GLOBALS['TSFE']->fe_user->getKey('ses', 'payment'));
 		$this->MYSESSION['mails'] = $GLOBALS['TSFE']->fe_user->getKey('ses', 'mails');
 
 		/**
@@ -696,7 +696,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 		/**
 		 * @TODO TS Coding with Sacha
 		 */
-		$comment = isset($this->piVars['comment']) ? $this->piVars['comment'] : '';
+		$comment = isset($this->piVars['comment']) ? t3lib_div::removeXSS(strip_tags($this->piVars['comment'])) : '';
 		// obsolete, user Label and Form field
 		$markerArray['###LISTING_TERMS_ACCEPT###'] = $this->pi_getLL('termstext').'<input type="checkbox" name="'.$this->prefixId.'[terms]" value="termschecked" '.$termsChecked.' />';
 		$markerArray['###LISTING_COMMENT###'] = $this->pi_getLL('comment').'<br/><textarea name="'.$this->prefixId.'[comment]" rows="4" cols="40">'.$comment.'</textarea>';
@@ -879,7 +879,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 		 * Those could be changed in new static_currencies Versions in the future
 		 */
 		$orderData['cu_iso_3_uid'] = $this->conf['currencyId'];
-		$orderData['comment'] = $this->piVars['comment'];
+		$orderData['comment'] = t3lib_div::removeXSS(strip_tags($this->piVars['comment']));
 		$orderData['pricefromnet'] = $basket->pricefromnet;
 		
 		// insert order
@@ -1396,7 +1396,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 				// create input field
 
 			$arrayName = $fieldName .(($parseList) ? '.' : '');
-			$fieldMarkerArray['###FIELD_INPUT###'] = $this->getInputField($fieldName, $config['sourceFields.'][$arrayName], $this->MYSESSION[$step][$fieldName],$step);
+			$fieldMarkerArray['###FIELD_INPUT###'] = $this->getInputField($fieldName, $config['sourceFields.'][$arrayName], t3lib_div::removeXSS(strip_tags($this->MYSESSION[$step][$fieldName])),$step);
 		        $fieldMarkerArray['###FIELD_NAME###'] = $this->prefixId.'['.$step.'][' .$fieldName .']';
 		        $fieldMarkerArray['###FIELD_INPUTID###'] = $step.'-'.$fieldName;
 		        

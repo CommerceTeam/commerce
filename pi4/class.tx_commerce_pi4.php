@@ -230,8 +230,8 @@ class tx_commerce_pi4 extends tslib_pibase {
 
 			$itemMA = array();
 			$linkMA = array();
-
-				// fill the marker array
+			$address = tx_commerce_div::removeXSSStripTagsArray($address);
+					// fill the marker array
 			foreach ($address as $key => $value) {
 				$valueHidden = '';
 				$upperKey = strtoupper($key);
@@ -356,7 +356,7 @@ class tx_commerce_pi4 extends tslib_pibase {
 		if (count($this->formError) > 0)	{
 			$addressData = $this->piVars;
 		}
-
+		$addressData = tx_commerce_div::removeXSSStripTagsArray($addressData);
 		if ($addressData['tx_commerce_address_type_id'] == NULL) {
 			$addressData['tx_commerce_address_type_id'] = intval($this->piVars['addressType']);
 		}
@@ -640,7 +640,7 @@ class tx_commerce_pi4 extends tslib_pibase {
 		// if the address doesn't exsist in the session it's valid. For the case that
 		// not delivery address was set
 		foreach ($this->fieldList as $name) {
-			$value = $this->piVars[$name];
+			$value = t3lib_div::removeXSS(strip_tags($this->piVars[$name]));
 			$options = $this->conf['formFields.'][$name .'.'];
 
 			if ($options['mandatory'] == 1 && strlen($value) == 0) {
@@ -729,7 +729,7 @@ class tx_commerce_pi4 extends tslib_pibase {
 		//debug($newData);
 
 		foreach ($this->fieldList as $name) {
-			$newData[$name] = $this->piVars[$name];
+			$newData[$name] = t3lib_div::removeXSS(strip_tags($this->piVars[$name]));
 			if (!$new) $this->addresses[intval($this->piVars['addressid'])][$name] = $this->piVars[$name];
 		}
 

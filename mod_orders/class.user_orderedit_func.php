@@ -563,7 +563,7 @@ class user_orderedit_func
  				 	 */
  				 	
  				 	 $local_row_name=$GLOBALS['LANG']->sL(t3lib_BEfunc::getItemLabel($table,$key));
- 			 		 $display_arr[$key]=array( $local_row_name,$value);
+ 			 		 $display_arr[$key]=array( $local_row_name,htmlspecialchars($value));
  				 }
  			 	
  			 }
