@@ -1,5 +1,8 @@
 Changelog for tx_commerce
 
+25.08.2009 Christian Kuhn <lolli@schwarzbu.ch>
+* Fixed bug #4288: Marker ADDRESS_MANDATORY_MESSAGE is always set to empty string in pi3
+
 22.07.2009 Ingo Schmitt <is@marketing-factory.de>
 * Fixed Error in basket loading, when no storage PID is defined.
 

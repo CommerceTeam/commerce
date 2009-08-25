@@ -513,7 +513,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 		$markerArray['###ADDRESS_LABEL_NODELIVERY###'] = $this->cObj->stdWrap($markerArray['###ADDRESS_LABEL_NODELIVERY###'], $this->conf['billing.']['deliveryAddress.']['nodelivery_label.']);
 
 		// We are thrown back because address data is not valid
-		if (($this->currentStep == 'payment' || $this->currentStep == 'delivery') && !$this->validateAddress('billing')) {
+		if (($this->currentStep == 'billing' || $this->currentStep == 'delivery') && !$this->validateAddress('billing')) {
 			$markerArray['###ADDRESS_MANDATORY_MESSAGE###'] = $this->pi_getLL('label_loginUser_mandatory_message', 'data incorrect');
 		} else {
 			$markerArray['###ADDRESS_MANDATORY_MESSAGE###'] = '';
@@ -611,7 +611,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 		$markerArray['###ADDRESS_RADIOFORM_NODELIVERY###'] = '';
 		$markerArray['###ADDRESS_LABEL_DELIVERY###'] = '';
 		$markerArray['###ADDRESS_LABEL_NODELIVERY###'] = '';
-		
+
 		// @Depricated marker, use new template
 		$markerArray['###ADDRESS_FORM_FIELDS###'] = $deliveryForm;
 		$markerArray['###ADDRESS_FORM_SUBMIT###'] = '<input type="submit" value="' . $this->pi_getLL('delivery_submit') . '" />';
@@ -2170,7 +2170,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 		$content = $this->cObj->substituteSubpart($template, '###NEW_USER###', $templateUser);
 
 		$basketContent = $this->makeBasketView($GLOBALS['TSFE']->fe_user->tx_commerce_basket, '###BASKET_VIEW###', t3lib_div::intExplode(',', $this->conf['regularArticleTypes']));
-		
+
 		$content = $this->cObj->substituteSubpart($content, '###BASKET_VIEW###', $basketContent);
 
 		// Get addresses
