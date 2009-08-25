@@ -234,9 +234,9 @@ class tx_commerce_pi4 extends tx_commerce_pibase {
 			$tplItem = $this->cObj->getSubpart($this->templateCode, '###ADDRESS_ITEM###');
 		}
 
-		if (!is_array($this->conf['formFields'])) {
+		if (!is_array($this->conf['formFields.'])) {
 			if (is_array($this->conf[$addressType . '.']['formFields.'])) {
-				$this->conf['formFields'] = $this->conf[$addressType . '.']['formFields.'];
+				$this->conf['formFields.'] = $this->conf[$addressType . '.']['formFields.'];
 			}
 		}
 
@@ -279,7 +279,7 @@ class tx_commerce_pi4 extends tx_commerce_pibase {
 
 			$itemMA = array();
 			$linkMA = array();
-			
+
 			// Fill marker array
 			$address = tx_commerce_div::removeXSSStripTagsArray($address);
 			foreach($address as $key => $value) {
@@ -433,7 +433,7 @@ class tx_commerce_pi4 extends tx_commerce_pibase {
 
 		// Build query to select an address from the database if we have a logged in user
 		$addressData = ($addressUid != NULL) ? $this->addresses[$addressUid] : array();
-		
+
 		if ($this->debug) {
 			debug($config, 'PI4 config');
 		}
@@ -962,7 +962,7 @@ class tx_commerce_pi4 extends tx_commerce_pibase {
 			$this->addresses = array();
 			return;
 		}
-		
+
 		$select.= ' AND deleted=0 AND pid=' . $this->conf['addressPid'];
 
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(

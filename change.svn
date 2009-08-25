@@ -1,6 +1,7 @@
 Changelog for tx_commerce
 
 25.08.2009 Christian Kuhn <lolli@schwarzbu.ch>
+* Fixed bug #4286: Wrong if in tx_commerce_pi4->getListing "formFields" (Thanks to Michael Staatz)
 * Fixed bug #4288: Marker ADDRESS_MANDATORY_MESSAGE is always set to empty string in pi3 (Thanks to Michael Staatz)
 
 22.07.2009 Ingo Schmitt <is@marketing-factory.de>
