@@ -783,16 +783,26 @@ class tx_commerce_dmhooks	{
 				if(is_array($data)) {
 					
 					$locale = false;
+                    $l18nParent = (isset($data['l18n_parent'])) ? $data['l18n_parent'] : 0;
 					
 					//check if the user has the permission to edit this category; abort if he doesnt.
 					if('new' != $status)  {
+					    
+                        //check if we have the right to edit and are in commerce mounts
+                        $checkId = $id;
+                        
+                        // Use the l18n parent as category for permission checks.
+                        if ($l18nParent > 0) {
+                            $checkId = $l18nParent;
+                        }
+                        
 						$category = t3lib_div::makeInstance('tx_commerce_category');
-						$category->init($id);
+						$category->init($checkId);
 						
 						$mounts = t3lib_div::makeInstance('tx_commerce_categorymounts');
 						$mounts->init($GLOBALS['BE_USER']->user['uid']);
-						
-						//check
+                        
+                        // check
 						if(!$category->isPSet('edit') || !$mounts->isInCommerceMounts($category->getUid())) {
 							$pObj->newlog('You dont have the permissions to edit this category.',1);
 							$fieldArray = array();	
