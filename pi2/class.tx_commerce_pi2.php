@@ -532,8 +532,16 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 
 		// Check if a Payment is selected if not, add standard payment
 		if (count($this->basketPay) == 0) {
-			// No payment article is in the basket, so add the first one
-			$addDefaultPaymentToBasket = TRUE;
+			// Check if Payment selection is forced
+			if($this->conf['payment.']['forceSelection']) {
+				// Add Please Select Option
+				$select .= '<option value="-1" selected="selected">' . $this->pi_getLL('lang_payment_force') . '</option>';
+				$addPleaseSelect = TRUE;
+			} 
+			else {
+				// No payment article is in the basket, so add the first one
+				$addDefaultPaymentToBasket = TRUE;
+			}
 		}
 
 		if ($this->conf['payment.']['allowedArticles']) {
@@ -556,7 +564,7 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 		foreach($this->payProd->articles as $articleUid => $articleObj) {
 			if ((!is_array($allowedArticles)) || in_array($articleUid, $allowedArticles)) {
 				$select.= '<option value="' . $articleUid . '"';
-				if (($articleUid == $this->basketPay[0]) || ($addDefaultPaymentToBasket && ($articleUid == $this->conf['defaultPaymentArticleId']))) {
+				if (($articleUid == $this->basketPay[0]) || ($addDefaultPaymentToBasket && ($articleUid == $this->conf['defaultPaymentArticleId'])) && !$addPleaseSelect) { 
 					$addDefaultPaymentToBasket = FALSE;
 					$first = TRUE;
 					$select.= ' selected="selected"';
