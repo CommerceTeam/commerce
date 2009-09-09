@@ -1,6 +1,9 @@
 Changelog for tx_commerce
 
 09.09.2009 Volker Graubaum <vg@e-netconsulting.de>
+* Feature #4514: Add Hooks for manipulating the Adding of Articles
+
+09.09.2009 Volker Graubaum <vg@e-netconsulting.de>
 * Fixed issue #4511: Add Hooks for manipulating markerArray in pi4 Addresslisting
 
 09.09.2009 Volker Graubaum <vg@e-netconsulting.de>
