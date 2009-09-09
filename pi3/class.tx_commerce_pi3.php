@@ -657,6 +657,20 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 	 * @return string Substituted template
 	 */
 	function handlePayment($paymentObj = NULL) {
+
+		// Hook to process marker array
+		$hookObjectsArr = array();
+		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi3/class.tx_commerce_pi3.php']['handlePayment'])) {
+			foreach($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi3/class.tx_commerce_pi3.php']['handlePayment'] as $classRef) {
+				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+			}
+		}
+		foreach($hookObjectsArr as $hookObj){
+			if (method_exists($hookObj, 'alternativePaymentStep')){
+				return $hookObj->alternativePaymentStep($paymentObj, $this);
+			}
+		}
+
 		if (!$this->validateAddress('delivery')) {
 			return $this->getDeliveryAddress();
 		}
@@ -737,14 +751,6 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 		} else {
 			// Redirect to the next page because no additonal payment information is needed or everything is correct
 			return FALSE;
-		}
-
-		// Hook to process marker array
-		$hookObjectsArr = array();
-		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi3/class.tx_commerce_pi3.php']['handlePayment'])) {
-			foreach($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi3/class.tx_commerce_pi3.php']['handlePayment'] as $classRef) {
-				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
-			}
 		}
 		foreach($hookObjectsArr as $hookObj) {
 			if (method_exists($hookObj, 'ProcessMarker')) {

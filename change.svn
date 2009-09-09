@@ -1,6 +1,9 @@
 Changelog for tx_commerce
 
 09.09.2009 Volker Graubaum <vg@e-netconsulting.de>
+* Fixed issue #4114: Alternative Paymentstep
+
+09.09.2009 Volker Graubaum <vg@e-netconsulting.de>
 * add a preInit Hook in pi1
 
 09.09.2009 Volker Graubaum <vg@e-netconsulting.de>
