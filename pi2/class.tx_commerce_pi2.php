@@ -195,6 +195,13 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 			while (list($k, $v) = each($this->piVars['artAddUid'])) {
 				$k = intval($k);
 
+				// Safe old quantity for pricelimit
+				if ($this->basket->basket_items[$k]) {
+					$oldCountValue = $this->basket->basket_items[$k]->getQuantity();
+				} else {
+					$oldCountValue = 0;
+				}
+
 				if ($v['count'] < 0) {
 					$v['count'] = 1;
 				}
@@ -244,6 +251,14 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 						if (method_exists($hookObj, 'postartAddUidSingle')) {
 							$hookObj->postartAddUidSingle($k, $v, $productObj, $articleObj, $this->basket, $this);
 						}
+					}
+
+					/******************************
+					 * check for basket pricelimit
+					 ******************************/
+					if (intval($this->conf['priceLimitForBasket']) > 0 && $this->basket->get_gross_sum() > intval($this->conf['priceLimitForBasket'])) {
+						$this->basket->add_article($k, $oldCountValue);
+						$this->priceLimitForBasket = 1;
 					}
 				}
 			}

@@ -1,6 +1,9 @@
 Changelog for tx_commerce
 
 09.09.2009 Volker Graubaum <vg@e-netconsulting.de>
+* Feature #4515: Set Pricelimit for Basket
+
+09.09.2009 Volker Graubaum <vg@e-netconsulting.de>
 * Feature #4514: Add Hooks for manipulating the Adding of Articles
 
 09.09.2009 Volker Graubaum <vg@e-netconsulting.de>
