@@ -581,6 +581,12 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 		}
 
 		$select.= '</select>';
+		
+		// Set Prices to 0, if "please select " is shown
+		if($addPleaseSelect) {
+			$price_gross = tx_moneylib::format(0, $this->currency);
+			$price_net = tx_moneylib::format(0, $this->currency);
+		}
 
 		$basketArray['###PAYMENT_SELECT_BOX###'] = $select;
 		$basketArray['###PAYMENT_PRICE_GROSS###'] = $price_gross;

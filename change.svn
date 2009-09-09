@@ -1,4 +1,7 @@
 Changelog for tx_commerce
+09.09.2009 Benny Schimmer <bschimmer@cross-content.com>
+* Fixed Bug #4506: The "Please select"-option (payment) has the price 0,00 now
+
 08.09.2009 Benny Schimmer <bschimmer@cross-content.com>
 * Add feature: If plugin.tx_commerce_pi2.payment.forceSelection is set via TS, users are forced to select a payment on the basket page before going to checkout.
 
