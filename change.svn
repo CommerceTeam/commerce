@@ -1,6 +1,9 @@
 Changelog for tx_commerce
 
 09.09.2009 Volker Graubaum <vg@e-netconsulting.de>
+* Fixed issue #4117: Own handling for $orderUid in finishIt and saveOrder - function
+
+09.09.2009 Volker Graubaum <vg@e-netconsulting.de>
 * Fixed issue #4114: Alternative Paymentstep
 
 09.09.2009 Volker Graubaum <vg@e-netconsulting.de>

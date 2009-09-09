@@ -931,6 +931,23 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 				$hookObj->postpayment($paymentObj, $basket, $this);
 			}
 		}
+		
+		/**
+		 * We implement a new TS - Setting to handle the generating of orders.
+		 * if you want to use the "generateOrderId" - Hook and need a unique ID
+		 * this is only possible if you insert an empty order an make an update
+		 * later.
+		 */
+		if (isset($this->conf['lockOrderIdInGenerateOrderId']) && $this->conf['lockOrderIdInGenerateOrderId'] == 1) {
+			$orderData = array();
+			$now = time();
+			$orderData['crdate'] = $now;
+			$orderData['tstamp'] = $now;
+			$GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_commerce_orders', $orderData);
+			$orderUid = $GLOBALS['TYPO3_DB']->sql_insert_id();
+			// make orderUid avaible in hookObjects
+			$this->orderUid = $orderUid;
+		}
 
 		// Real finishing starts here !
 
@@ -2341,14 +2358,22 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 			debug($orderData);
 		}
 
-		$GLOBALS['TYPO3_DB']->exec_INSERTquery(
-			'tx_commerce_orders',
-			$orderData
-		);
-		$orderUid = $GLOBALS['TYPO3_DB']->sql_insert_id();
-
-		// Make orderUid avaible in hook objects
-		$this->orderUid = $orderUid;
+		if (isset($this->conf['lockOrderIdInGenerateOrderId']) && $this->conf['lockOrderIdInGenerateOrderId'] == 1) {
+			$GLOBALS['TYPO3_DB']->exec_UPDATEquery(
+				'tx_commerce_orders',
+				'uid=' . (int) $this->orderUid,
+				$orderData
+			);
+			$orderUid = $this->orderUid;
+		} else {
+			$GLOBALS['TYPO3_DB']->exec_INSERTquery(
+				'tx_commerce_orders', 
+				$orderData
+			);
+			$orderUid = $GLOBALS['TYPO3_DB']->sql_insert_id();
+			// make orderUid avaible in hookObjects
+			$this->orderUid = $orderUid;
+		}
 
 		// Call update method from the payment class
 		$paymentObj->updateOrder($orderUid, $this->MYSESSION, $this);
