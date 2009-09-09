@@ -21,7 +21,7 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
-/** 
+/**
  * Basket pi for commerce. This class is used to handle all events concerning
  * the basket. E.g. Adding things to basket, changing basket
  *
@@ -168,6 +168,29 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 			$this->basket->delete_all_articles();
 		}
 
+	 	/**
+		 * Hook for processing the basker, after adding an article to the basket
+		 */
+		$hookObjectsArr = array();
+		// @depreacted please use new general hook artAddUid now
+		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['postartAddUid'])) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['postartAddUid'] as $classRef) {
+				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+			}
+		}
+
+		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['artAddUid'])) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['artAddUid'] as $classRef) {
+				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+			}
+		}
+
+		foreach ($hookObjectsArr as $hookObj) {
+			if (method_exists($hookObj, 'preartAddUid')) {
+				$hookObj->preartAddUid($this->basket, $this);
+			}
+		}
+
 		if ($this->piVars['artAddUid']) {
 			while (list($k, $v) = each($this->piVars['artAddUid'])) {
 				$k = intval($k);
@@ -184,10 +207,16 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 					$articleObj = t3lib_div::makeInstance('tx_commerce_article');
 					$articleObj->init($k);
 					$articleObj->load_data('basket');
-	
+
 					$productObj = $articleObj->get_parent_product();
 					$productObj->load_data('basket');
-	
+
+					foreach ($hookObjectsArr as $hookObj) {
+						if (method_exists($hookObj, 'preartAddUidSingle')) {
+							$hookObj->preartAddUidSingle($k, $v, $productObj, $articleObj, $this->basket, $this);
+						}
+					}
+
 					if ($articleObj->isAccessible() && $productObj->isAccessible()) {
 						// Only if product and article are accesible
 						if ($this->conf['checkStock'] == 1) {
@@ -210,16 +239,15 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 							}
 						}
 					}
+
+					foreach ($hookObjectsArr as $hookObj) {
+						if (method_exists($hookObj, 'postartAddUidSingle')) {
+							$hookObj->postartAddUidSingle($k, $v, $productObj, $articleObj, $this->basket, $this);
+						}
+					}
 				}
 			}
 
-			// Hook to process the basket after adding an article to it
-			$hookObjectsArr = array();
-			if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['postartAddUid'])) {
-				foreach($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['postartAddUid'] as $classRef) {
-					$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
-				}
-			}
 			foreach($hookObjectsArr as $hookObj) {
 				if (method_exists($hookObj, 'postartAddUid')) {
 					$hookObj->postartAddUid($this->basket, $this);
