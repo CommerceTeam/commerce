@@ -1985,7 +1985,8 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 					'fromName' => $this->conf['usermail.']['from_name'],
 					'replayTo' => $this->conf['usermail.']['from'],
 					'priority' => $this->conf['usermail.']['priority'],
-					'callLocation' => 'sendUserMail'
+					'callLocation' => 'sendUserMail',
+					'additionalData' => $this
 				);
 
 				tx_commerce_div::sendMail($mailconf);
@@ -2119,7 +2120,8 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 				'recipient_copy' => $this->conf['adminmail.']['bcc'],
 				'replayTo' => $this->conf['adminmail.']['from'],
 				'priority' => $this->conf['adminmail.']['priority'],
-				'callLocation' => 'sendAdminMail'
+				'callLocation' => 'sendAdminMail',
+				'additionalData' => $this
 			);
 
 			// Check if user mail is set

@@ -141,7 +141,7 @@
 	 */
 	function init($uid,$lang_uid=0) {
 		 $uid = intval($uid);
-	     $lang_uid = intval($lang_uid);
+		 $lang_uid = intval($lang_uid);
 		 $this->fieldlist=array('uid','title','subtitle','description','teaser','teaserimages','navtitle','keywords','images','ts_config','l18n_parent');
 		 $this->database_class='tx_commerce_db_category';
 		
@@ -194,10 +194,10 @@
 	 * @return {void}
 	 */
 	function load_perms() {
-		if(!$this->permsLoaded) {
+		if(!$this->permsLoaded && $this->uid) {
 			$this->permsLoaded = true;
 			
-			$this->perms_record 	= 	$this->conn_db->getPermissionsRecord($this->uid);
+			$this->perms_record 	= $this->conn_db->getPermissionsRecord($this->uid);
 		
 			//if the record isnt loaded, abort.
 			if(0 >= count($this->perms_record)) {

@@ -258,6 +258,17 @@ class tx_commerce_div {
 			
 			
 		}
+		
+		foreach($hookObjectsArr as $hookObj)	{
+			if (method_exists($hookObj, 'ownMailRendering'))	{
+				$this->hookObjects = $hookObjectsArr;
+				return $hookObj->ownMailRendering($mailconf,$additionalData,$this);
+			}
+		}
+
+		
+		
+		
 		// validate e-mail addesses
 		$mailconf['recipient'] = tx_commerce_div::validEmailList($mailconf['recipient']);
 	

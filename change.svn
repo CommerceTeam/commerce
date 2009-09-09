@@ -1,4 +1,11 @@
 Changelog for tx_commerce
+
+09.09.2009 Volker Graubaum <vg@e-netconsulting.de>
+* fix error in product_attribute_list with attribut sorting values
+* added hook for own mail rendering
+* fix error in load_perms if no uid is set 
+* add attribute for sendMail in pi3, now pi3 object can be used in hooks
+
 09.09.2009 Benny Schimmer <bschimmer@cross-content.com>
 * Fixed Bug #4506: The "Please select"-option (payment) has the price 0,00 now
 
@@ -11,6 +18,12 @@ Changelog for tx_commerce
 25.08.2009 Christian Kuhn <lolli@schwarzbu.ch>
 * Fixed bug #4286: Wrong if in tx_commerce_pi4->getListing "formFields" (Thanks to Michael Staatz)
 * Fixed bug #4288: Marker ADDRESS_MANDATORY_MESSAGE is always set to empty string in pi3 (Thanks to Michael Staatz)
+
+03.08.2009 Volker Graubaum <vg@e-netconsulting.de>
+* Fixed error in pi4, now it's possible to handle address different per type
+* added a lot of hooks
+* remove deprecated method makeProductListOld
+* add new articleMarker for articleview, this is an old feature, which gets lost
 
 22.07.2009 Ingo Schmitt <is@marketing-factory.de>
 * Fixed Error in basket loading, when no storage PID is defined.
