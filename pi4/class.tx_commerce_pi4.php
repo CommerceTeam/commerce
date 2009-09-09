@@ -222,6 +222,13 @@ class tx_commerce_pi4 extends tx_commerce_pibase {
 	 * @return string HTML with addresses
 	 */
 	function getListing($addressType = 0, $createHiddenFields = FALSE, $hiddenFieldPrefix = '', $selectAddressId = FALSE) {
+		$hookObjectsArr = array();
+		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi4/class.tx_commerce_pi4.php']['getListing']))	{
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi4/class.tx_commerce_pi4.php']['getListing'] as $classRef)	{
+				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+			}
+		}
+		
 		if ($this->conf[$addressType . '.']['subpartMarker.']['listWrap']) {
 			$tplBase = $this->cObj->getSubpart($this->templateCode, strtoupper($this->conf[$addressType . '.']['subpartMarker.']['listWrap']));
 		} else {
@@ -403,6 +410,12 @@ class tx_commerce_pi4 extends tx_commerce_pibase {
 			$baseMA['###SYS_MESSAGE###'] = '';
 		}
 
+		foreach($hookObjectsArr as $hookObj) {
+			if (method_exists($hookObj, 'processListingMarker'))	{
+				$hookObj->processListingMarker($baseMA, $linkMA, $addressItems, $addressType, $piArray, $this);
+			}
+		}
+
 		// Replace markers and return content
 		return $this->substituteMarkerArrayNoCached($tplBase, $baseMA, array(), $linkMA);
 	}
@@ -418,6 +431,13 @@ class tx_commerce_pi4 extends tx_commerce_pibase {
 	 * @return string HTML code with the form for editing an address
 	 */
 	function getAddressForm($action = 'new', $addressUid = NULL, $config) {
+		$hookObjectsArr = array();
+		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi4/class.tx_commerce_pi4.php']['getAddressFormItem']))	{
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi4/class.tx_commerce_pi4.php']['getAddressFormItem'] as $classRef)	{
+				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+			}
+		}
+
 		if (!empty($this->piVars['addressType'])) {
 			$addressType = intval($this->piVars['addressType']);
 		}
@@ -492,6 +512,12 @@ class tx_commerce_pi4 extends tx_commerce_pibase {
 			// Get field item
 			$fieldsMarkerArray['###FIELD_' . strtoupper($fieldName) . '###'] = $this->cObj->substituteMarkerArray($tplField, $fieldMA);
 			$fieldsMarkerArray['###LABEL_' . strtoupper($fieldName) . '###'] = $fieldLabel;
+		}
+		
+		foreach($hookObjectsArr as $hookObj) {
+			if (method_exists($hookObj, 'processAddressfieldsMarkerArray'))	{
+				$fieldsMarkerArray = $hookObj->processAddressfieldsMarkerArray($fieldsMarkerArray, $tplField, $addressData, $action, $addressUid, $config , $this);
+			}
 		}
 
 		// Merge fields with form template
