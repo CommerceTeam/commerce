@@ -70,6 +70,15 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 			}
 		}
 
+		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi1/class.tx_commerce_pi1.php']['init'])){
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi1/class.tx_commerce_pi1.php']['init'] as $classRef)   {
+				$hookObj = &t3lib_div::getUserObj($classRef);
+				if (method_exists($hookObj, 'preInit')) {
+					$hookObj->preInit($this);
+				}
+			}
+		}
+
 		// @TODO: Is there a TYPO3 constant or variable with that information for every pi-class?
 		$this->imgFolder = "uploads/tx_commerce/";
 		$this->templateFolder = "uploads/tx_commerce/";

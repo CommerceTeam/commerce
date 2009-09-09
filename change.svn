@@ -1,6 +1,9 @@
 Changelog for tx_commerce
 
 09.09.2009 Volker Graubaum <vg@e-netconsulting.de>
+* add a preInit Hook in pi1
+
+09.09.2009 Volker Graubaum <vg@e-netconsulting.de>
 * fix error in product_attribute_list with attribut sorting values
 * added hook for own mail rendering
 * fix error in load_perms if no uid is set 
