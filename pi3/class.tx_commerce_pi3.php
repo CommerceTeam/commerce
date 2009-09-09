@@ -1265,6 +1265,15 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 		$config = $this->conf[$typeLower . '.'];
 		$returnVal = TRUE;
 
+
+		$hookObjectsArr = array();
+		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi3/class.tx_commerce_pi3.php']['bevorValidateAddress'])){
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi3/class.tx_commerce_pi3.php']['bevorValidateAddress'] as $classRef) {
+				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+			}
+		}
+
+
 		if ($this->debug) {
 			debug($config, 'TS Config', __LINE__, __FILE__);
 		}
@@ -1342,6 +1351,17 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 							$returnVal = FALSE;
 						}
 					break;
+					default:
+						if (!empty($method[0])) {
+							$act_method = 'validationMethod_' . strtolower($method[0]);
+							foreach ($hookObjectsArr as $hookObj) {
+								if (method_exists($hookObj, $act_method)) {
+									if (!$hookObj->$act_method($this,$name,$value)) {
+										$returnVal = false;
+									}
+								}
+							}
+						}
 				}
 			}
 		}

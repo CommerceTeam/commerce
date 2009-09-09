@@ -766,6 +766,13 @@ class tx_commerce_pi4 extends tx_commerce_pibase {
 	 * @return void
 	 */
 	function checkAddressForm() {
+		$hookObjectsArr = array();
+		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi4/class.tx_commerce_pi4.php']['checkAddressForm'])){
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi4/class.tx_commerce_pi4.php']['checkAddressForm'] as $classRef) {
+				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+			}
+		}
+
 		$this->formError = array();
 		$config = $this->conf['formFields.'];
 		$result = TRUE;
@@ -820,6 +827,17 @@ class tx_commerce_pi4 extends tx_commerce_pibase {
 							$result = FALSE;
 						}
 					break;
+					default:
+						if (!empty($method[0])) {
+							$act_method = 'validationMethod_' . strtolower($method[0]);
+							foreach ($hookObjectsArr as $hookObj) {
+								if (method_exists($hookObj, $act_method)) {
+									if (!$hookObj->$act_method($this,$name,$value)) {
+										$result = false;
+									}
+								}
+							}
+						}
 				}
 			}
 		}
