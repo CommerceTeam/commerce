@@ -49,10 +49,11 @@ This document describes all the hooks in the typo3 extension  commerce (version 
 Each hook has a type which  is either Single or Multiple. Single hook classes are written directly to the $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$filename][$hookname] variable as there may never be more than one hook-object.<br />
 For hooks with the type "multiple" $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$filename][$hookname] is an array which can contain multiple hook objects. Each of them is called in the order they are found in the array by foreach.<br />
 Some hook-methods can return data which is used by the calling function. Others may return some values but they are ignored. For those I used the return type void as known from the C programming language
-
+<h3>Updated by Michael Staatz <a href="mailto:michael.staatz@e-netconsulting.com">&lt;michael.staatz@e-netconsulting.com&gt;</a></h3>
+<h3>as of 09/10/2009</h3>
 	<br/><br/><br/>
-	Functions: 38<br/>
-	Classes: 18<br/>
+	Functions: 53<br/>
+	Classes: 17<br/>
 <a href="#tx_commerce_article">
 	<div class="classindex">class tx_commerce_article</div>
 </a>
@@ -113,6 +114,7 @@ Some hook-methods can return data which is used by the calling function. Others 
 <a href="#tx_commerce_pi1">
 <div class="classindex">class tx_commerce_pi1</div>
 </a>
+	<div class="functionindex">function preInit</div>
 	<div class="functionindex">function renderSingleView</div>
 	<div class="functionindex">function makeArticleView</div>
 <a href="#tx_commerce_pi2">
@@ -138,12 +140,17 @@ Some hook-methods can return data which is used by the calling function. Others 
 	<div class="functionindex">function sendUserMail</div>
 	<div class="functionindex">function sendAdminMail</div>
 	<div class="functionindex">function generateMail</div>
+	<div class="functionindex">function validationMethod_</div>
+	<div class="functionindex">function alternativePaymentStep</div>
 <a href="#tx_commerce_pi4">
 <div class="classindex">class tx_commerce_pi4</div>
 </a>
 	<div class="functionindex">function noUser</div>
 	<div class="functionindex">function deleteAddress</div>
 	<div class="functionindex">function saveAddressData</div>
+	<div class="functionindex">function validationMethod_</div>
+	<div class="functionindex">function processListingMarker</div>
+	<div class="functionindex">function processAddressfieldsMarkerArray</div>
 <a href="#tx_commerce_articlecreator">
 <div class="classindex">tx_commerce_articlecreator</div>
 </a>
@@ -360,6 +367,14 @@ Some hook-methods can return data which is used by the calling function. Others 
 		<div class="description">This class is for generating the product listings. (single and list view)</div>
 		<a name="tx_commerce_pi1"/>
 		<div class="classname">class tx_commerce_pi1</div>
+			<div class="functionname">function preInit</div>
+				<div class="hookname">$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi1/class.tx_commerce_pi1.php']['init']</div>
+					<div class="description">
+					Call: preInit($this)<br/>
+					Type: Multiple<br/>
+					Result: void<br />
+					Hook for rewriting something like configuration in the init of the extension.
+					</div>
 			<div class="functionname">function renderSingleView</div>
 				<div class="hookname">$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['singleview']</div>
 					<div class="description">
@@ -626,6 +641,24 @@ Some hook-methods can return data which is used by the calling function. Others 
 					ADD additional markers to the $markerArray and RETURN it. The result of this hook is used as the new $markerArray.<br/>
 					$markerArray will be used to substitute the markers in the mail template
 					</div>
+			<div class="functionname">function validationMethod_</div>
+				<div class="hookname">$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi3/class.tx_commerce_pi3.php']['bevorValidateAddress']</div>
+					<div class="description">
+					$act_method is build by the string "validationMethod_" and your method - name<br />
+					Call: $act_method($this,$name,$value)<br />
+					Type: Multiple<br />
+					Result: BOOL<br />
+					this hook can be used to implement own validation methods.
+					</div>
+			<div class="functionname">function alternativePaymentStep</div>
+				<div class="hookname">$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi3/class.tx_commerce_pi3.php']['handlePayment']</div>
+					<div class="description">
+					Call: alternativePaymentStep($paymentObj, $this);<br />
+					Type: Multiple<br />
+					Result: BOOL<br />
+					this hook can be used to implement your own payment handling.
+					</div>
+
 	<div class="filename">pi4/class.tx_commerce_pi4.php</div>
 		<a name="tx_commerce_pi4"/>
 		<div class="classname">class tx_commerce_pi4</div>
@@ -678,6 +711,32 @@ Some hook-methods can return data which is used by the calling function. Others 
 					$this->piVars['addressid'] is the uid of the address in the "tt_address"-table<br />
 					For a description of $newData look at <a href="#beforeAddressSave">beforeAddressSave($newData,$this)-hook</a> in this section
 					</div>
+			<div class="functionname">function validationMethod_</div>
+				<div class="hookname">$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi3/class.tx_commerce_pi3.php']['bevorValidateAddress']</div>
+					<div class="description">
+					$act_method is build by the string "validationMethod_" and your method - name<br />
+					Call: $act_method($this,$name,$value)<br />
+					Type: Multiple<br />
+					Result: BOOL<br />
+					this hook can be used to implement own validation methods.
+					</div>
+			<div class="functionname">function processListingMarker</div>
+				<div class="hookname">$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi4/class.tx_commerce_pi4.php']['getListing']</div>
+					<div class="description">
+					Call: processListingMarker($baseMA, $linkMA, $addressItems, $addressType, $piArray, $this)<br />
+					Type: Multiple<br />
+					Result: void<br />
+					this hook can be used to manipulate the listing of addresses.
+					</div>
+			<div class="functionname">function processAddressfieldsMarkerArray</div>
+				<div class="hookname">$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi4/class.tx_commerce_pi4.php']['getAddressFormItem']</div>
+					<div class="description">
+					Call: processAddressfieldsMarkerArray($fieldsMarkerArray, $tplField, $addressData, $action, $addressUid, $config , $this)<br />
+					Type: Multiple<br />
+					Result: void<br />
+					this hook can be used to manipulate the one address from the listing of addresses.
+					</div>
+
 	<div class="filename">class.tx_commerce_articlecreator.php</div>
 		<a name="tx_commerce_articlecreator"/>
 		<div class="classname">tx_commerce_articlecreator</div>
