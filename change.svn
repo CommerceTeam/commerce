@@ -1,5 +1,8 @@
 Changelog for tx_commerce
 
+10.09.2009 Michael Staatz <michael.staatz@e-netconsulting.com>
+* Feature #4532: Updated version of hooks.html in the doc folder
+
 09.09.2009 Volker Graubaum <vg@e-netconsulting.de>
 * Feature #4515: Set Pricelimit for Basket
 
