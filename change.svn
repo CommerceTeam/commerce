@@ -1,6 +1,9 @@
 Changelog for tx_commerce
 
 10.09.2009 Michael Staatz <michael.staatz@e-netconsulting.com>
+* Feature #4533: Updated version of manual.sxw in the doc folder
+
+10.09.2009 Michael Staatz <michael.staatz@e-netconsulting.com>
 * Feature #4532: Updated version of hooks.html in the doc folder
 
 09.09.2009 Volker Graubaum <vg@e-netconsulting.de>
