@@ -50,9 +50,9 @@ Each hook has a type which  is either Single or Multiple. Single hook classes ar
 For hooks with the type "multiple" $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$filename][$hookname] is an array which can contain multiple hook objects. Each of them is called in the order they are found in the array by foreach.<br />
 Some hook-methods can return data which is used by the calling function. Others may return some values but they are ignored. For those I used the return type void as known from the C programming language
 <h3>Updated by Michael Staatz <a href="mailto:michael.staatz@e-netconsulting.com">&lt;michael.staatz@e-netconsulting.com&gt;</a></h3>
-<h3>as of 09/10/2009</h3>
+<h3>as of 09/11/2009</h3>
 	<br/><br/><br/>
-	Functions: 53<br/>
+	Functions: 55<br/>
 	Classes: 17<br/>
 <a href="#tx_commerce_article">
 	<div class="classindex">class tx_commerce_article</div>
@@ -151,6 +151,8 @@ Some hook-methods can return data which is used by the calling function. Others 
 	<div class="functionindex">function validationMethod_</div>
 	<div class="functionindex">function processListingMarker</div>
 	<div class="functionindex">function processAddressfieldsMarkerArray</div>
+	<div class="functionindex">processAddressMarker</div>
+	<div class="functionindex">processAddressFormMarker</div>
 <a href="#tx_commerce_articlecreator">
 <div class="classindex">tx_commerce_articlecreator</div>
 </a>
@@ -726,7 +728,23 @@ Some hook-methods can return data which is used by the calling function. Others 
 					Call: processListingMarker($baseMA, $linkMA, $addressItems, $addressType, $piArray, $this)<br />
 					Type: Multiple<br />
 					Result: void<br />
-					this hook can be used to manipulate the listing of addresses.
+					this hook can be used to manipulate markers in the listing of addresses.
+					</div>
+			<div class="functionname">function processAddressMarker</div>
+				<div class="hookname">$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi4/class.tx_commerce_pi4.php']['getListing']</div>
+					<div class="description">
+					Call: processAddressMarker($itemMA, $address, $piArray, $this)<br />
+					Type: Multiple<br />
+					Result: void<br />
+					this hook can be used to manipulate markers in the listing of addresses.
+					</div>
+			<div class="functionname">function processAddressFormMarker</div>
+				<div class="hookname">$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi4/class.tx_commerce_pi4.php']['getAddressFormItem']</div>
+					<div class="description">
+					Call: processAddressFormMarker($baseMA, $action, $addressUid, $addressData, $config, $this)<br />
+					Type: Multiple<br />
+					Result: void<br />
+					this hook can be used to manipulate markers from one address from the listing of addresses.
 					</div>
 			<div class="functionname">function processAddressfieldsMarkerArray</div>
 				<div class="hookname">$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi4/class.tx_commerce_pi4.php']['getAddressFormItem']</div>
@@ -734,7 +752,7 @@ Some hook-methods can return data which is used by the calling function. Others 
 					Call: processAddressfieldsMarkerArray($fieldsMarkerArray, $tplField, $addressData, $action, $addressUid, $config , $this)<br />
 					Type: Multiple<br />
 					Result: void<br />
-					this hook can be used to manipulate the one address from the listing of addresses.
+					this hook can be used to manipulate markers from one address from the listing of addresses.
 					</div>
 
 	<div class="filename">class.tx_commerce_articlecreator.php</div>
