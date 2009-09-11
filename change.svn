@@ -1,5 +1,8 @@
 Changelog for tx_commerce
 
+11.09.2009 Michael Staatz <michael.staatz@e-netconsulting.com>
+* fixed typo in hook for own mail rendering
+
 11.09.2009 Volker Graubaum <vg@e-netconsulting.de>
 * FEATURE #4567: Add Hooks for manipulating markerArray in pi4 Addresslisting / part 2
 * FEATURE #4568: Set Pricelimit for Basket / part 2

@@ -261,7 +261,7 @@ class tx_commerce_div {
 		
 		foreach($hookObjectsArr as $hookObj)	{
 			if (method_exists($hookObj, 'ownMailRendering'))	{
-				$this->hookObjects = $hookObjectsArr;
+				$this->hookObjectsArr = $hookObjectsArr;
 				return $hookObj->ownMailRendering($mailconf,$additionalData,$this);
 			}
 		}
