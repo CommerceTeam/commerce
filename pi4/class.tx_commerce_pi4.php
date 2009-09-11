@@ -367,6 +367,13 @@ class tx_commerce_pi4 extends tx_commerce_pibase {
 			}
 
 			$itemMA['###SELECT###'].= 'name="' . $hiddenFieldPrefix . '[address_uid]" value="' . $address['uid'] . '" />';
+
+			foreach($hookObjectsArr as $hookObj)	{
+				if (method_exists($hookObj, 'processAddressMarker'))	{
+					$itemMA = $hookObj->processAddressMarker($itemMA, $address, $piArray, $this);
+				}
+			}
+
 			$addressFound = TRUE;
 
 			$addressItems[$address['tx_commerce_address_type_id']].= $this->substituteMarkerArrayNoCached($tplItem, $itemMA, array(), $linkMA);
@@ -573,6 +580,12 @@ class tx_commerce_pi4 extends tx_commerce_pibase {
 				)
 			)
 		);
+
+		foreach($hookObjectsArr as $hookObj) {
+			if (method_exists($hookObj, 'processAddressFormMarker')) {
+				$hookObj->processAddressFormMarker($baseMA, $action, $addressUid, $addressData, $config, $this);
+			}
+		}
 
 		return '<form method="post" action="' . $link . '" ' . $this->conf[addressType . '.']['formParams'] . '>' . $this->cObj->substituteMarkerArray($tplBase, $baseMA) . '</form>';
 	}

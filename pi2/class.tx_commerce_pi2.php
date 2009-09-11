@@ -469,6 +469,12 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 		$basketArray['###NO_STOCK MESSAGE###'] = $this->noStock;
 		$basketArray['###BASKET_LASTPRODUCTURL###'] = $this->cObj->stdWrap($GLOBALS["TSFE"]->fe_user->getKey('ses', 'tx_commerce_lastproducturl'), $this->conf['lastProduct']);
 
+		if($this->priceLimitForBasket == 1 && $this->conf['priceLimitForBasketMessage']) {
+			$basketArray['###BASKET_PRICELIMIT###'] = $this->cObj->cObjGetSingle($this->conf['priceLimitForBasketMessage'], $this->conf['priceLimitForBasketMessage.']);
+		} else {
+			$basketArray['###BASKET_PRICELIMIT###'] = '';
+		}
+
 		$basketArray = array_merge($basketArray, $this->languageMarker);
 
 		$hookObjectsArr = array();
