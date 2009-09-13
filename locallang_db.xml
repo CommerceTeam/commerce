@@ -106,6 +106,7 @@
 			<label index="tx_commerce_attributes.basis"> Basic Data </label>
 			<label index="tx_commerce_attributes.valuelistlist"> Related Values </label>
 			<label index="tx_commerce_attributes.icon">Icon</label>
+			<label index="tx_commerce_attributes.iconMode">Icon Mode (inactive = dropdowns, active = radiobuttons)</label>
 			<label index="tx_commerce_attribute_correlationtypes">Attribute Correlationtypes</label>
 			<label index="tx_commerce_attribute_correlationtypes.title">title</label>
 			<label index="tx_commerce_attribute_values">Attribute Values</label>

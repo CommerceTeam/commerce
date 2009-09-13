@@ -230,6 +230,7 @@ $TCA['tx_commerce_attributes'] = array (
 			'exclude' => 1,
 			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_attributes.iconMode',
 			'l10n_mode' => 'exclude',
+			'displayCond' => 'FIELD:has_valuelist:=:1',		
 			'config' => array (
 				'type' => 'check',
 			),
