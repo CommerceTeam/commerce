@@ -632,7 +632,7 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 					//disable the icon mode by default
 					$iconMode = FALSE;
 
-					//if the icon mode is enabled in TS check if any attribute value has an icon, if there is an icon enable the attribute mode
+					//if the icon mode is enabled in TS check if the iconMode is also enabled for this attribute
 					if ($this->conf[$this->handle . '.']['products.']['productAttributes.']['iconMode'] == '1') {
 						if ($myAttribute['iconmode']) {
 							$iconMode = TRUE;

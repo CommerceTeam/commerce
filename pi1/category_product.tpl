@@ -223,7 +223,7 @@ globally at the beginning of the form tag as marker ###GENERAL_HIDDENCATUID###
 			###ARTICLE_HIDDENFIELDS###
 			<input type="input" class="com-input-qty" value="###QTY_INPUT_VALUE###" name="###QTY_INPUT_NAME###" size="2"/>
 			<input type="submit" value="###LANG_SUBMIT###"/>
-			<form>
+			</form>
 		</div>
 		<!-- ###ARTICLE_VIEW### -->
 		
@@ -388,7 +388,6 @@ globally at the beginning of the form tag as marker ###GENERAL_HIDDENCATUID###
 <em></em>
 <br />
 <!-- ###PRODUCT_VIEW_DETAIL### begin-->
-<form action="###GENERAL_FORM_ACTION###" method="post">
 ###GENERAL_HIDDENCATUID###
 <div class="com-single">
 	###PRODUCT_TITLE###
@@ -402,7 +401,6 @@ globally at the beginning of the form tag as marker ###GENERAL_HIDDENCATUID###
 	<!-- ###PRODUCT_BASKET_FOR_SINGLEVIEW### -->
 			<!-- ###ARTICLE_VIEW### -->
 			<div class="com-single-action-entry">
-			    ###ARTICLE_HIDDENFIELDS###
 				###ARTICLE_EANCODE###
 				###ARTICLE_STOCK###
 	            ###ARTICLE_ORDERNUMBER###
@@ -411,14 +409,16 @@ globally at the beginning of the form tag as marker ###GENERAL_HIDDENCATUID###
 				###ARTICLE_SELECT_ATTRIBUTES###
 				###SUBPART_ARTICLE_ATTRIBUTES###
 				###LINKTOPUTINBASKET###
+				<form action="###GENERAL_FORM_ACTION###" method="post">
+				###ARTICLE_HIDDENFIELDS###
 				<input type="input" class="com-input-qty" value="###QTY_INPUT_VALUE###" name="###QTY_INPUT_NAME###" size="3"/>
 				<input type="submit" value="###LANG_SUBMIT###"/>
+				</form>
 			</div>
 			<!-- ###ARTICLE_VIEW### -->
 			
 			<!-- ###ARTICLE_VIEW_NOSTOCK### -->
 			<div class="com-single-action-entry">
-			    ###ARTICLE_HIDDENFIELDS###
 				###ARTICLE_EANCODE###
 				###ARTICLE_STOCK###
 	            ###ARTICLE_ORDERNUMBER###
@@ -427,8 +427,11 @@ globally at the beginning of the form tag as marker ###GENERAL_HIDDENCATUID###
 				###ARTICLE_SELECT_ATTRIBUTES###
 				###SUBPART_ARTICLE_ATTRIBUTES###
 				###LINKTOPUTINBASKET###
+				<form action="###GENERAL_FORM_ACTION###" method="post">
+				###ARTICLE_HIDDENFIELDS###
 				<input type="input" class="com-input-qty" value="###QTY_INPUT_VALUE###" name="###QTY_INPUT_NAME###" size="3"/>
 				<input type="submit" value="###LANG_SUBMIT###"/>
+				</form>
 			</div>
 			<!-- ###ARTICLE_VIEW_NOSTOCK### -->
 	<!-- ###PRODUCT_BASKET_FOR_SINGLEVIEW### -->
@@ -460,7 +463,6 @@ globally at the beginning of the form tag as marker ###GENERAL_HIDDENCATUID###
 <!-- ###RELATED_PRODUCT_SINGLE_NOSTOCK### end -->
 
 <!-- ###RELATED_PRODUCTS### end -->
-</form>
 <!-- ###PRODUCT_VIEW_DETAIL### end -->
 
 
@@ -473,7 +475,6 @@ globally at the beginning of the form tag as marker ###GENERAL_HIDDENCATUID###
 <em></em>
 <br />
 <!-- ###PRODUCT_VIEW_DETAIL_NOSTOCK### begin-->
-<form action="###GENERAL_FORM_ACTION###" method="post">
 ###GENERAL_HIDDENCATUID###
 <div class="com-single">
 	###PRODUCT_TITLE###
@@ -485,7 +486,6 @@ globally at the beginning of the form tag as marker ###GENERAL_HIDDENCATUID###
 	<!-- ###PRODUCT_BASKET_FOR_SINGLEVIEW### -->
 			<!-- ###ARTICLE_VIEW### -->
 			<div class="com-single-action-entry">
-			    ###ARTICLE_HIDDENFIELDS###
 				###ARTICLE_EANCODE###
 				###ARTICLE_STOCK###
 	            ###ARTICLE_ORDERNUMBER###
@@ -494,14 +494,16 @@ globally at the beginning of the form tag as marker ###GENERAL_HIDDENCATUID###
 				###ARTICLE_SELECT_ATTRIBUTES###
 				###SUBPART_ARTICLE_ATTRIBUTES###
 				###LINKTOPUTINBASKET###
+				<form action="###GENERAL_FORM_ACTION###" method="post">
+				###ARTICLE_HIDDENFIELDS###
 				<input type="input" class="com-input-qty" value="###QTY_INPUT_VALUE###" name="###QTY_INPUT_NAME###" size="3"/>
 				<input type="submit" value="###LANG_SUBMIT###"/>
+				</form>
 			</div>
 			<!-- ###ARTICLE_VIEW### -->
 			
 			<!-- ###ARTICLE_VIEW_NOSTOCK### -->
 			<div class="com-single-action-entry">
-			    ###ARTICLE_HIDDENFIELDS###
 				###ARTICLE_EANCODE###
 				###ARTICLE_STOCK###
 	            ###ARTICLE_ORDERNUMBER###
@@ -510,8 +512,11 @@ globally at the beginning of the form tag as marker ###GENERAL_HIDDENCATUID###
 				###ARTICLE_SELECT_ATTRIBUTES###
 				###SUBPART_ARTICLE_ATTRIBUTES###
 				###LINKTOPUTINBASKET###
+				<form action="###GENERAL_FORM_ACTION###" method="post">
+				###ARTICLE_HIDDENFIELDS###
 				<input type="input" class="com-input-qty" value="###QTY_INPUT_VALUE###" name="###QTY_INPUT_NAME###" size="3"/>
 				<input type="submit" value="###LANG_SUBMIT###"/>
+				</form>
 			</div>
 			<!-- ###ARTICLE_VIEW_NOSTOCK### -->
 	<!-- ###PRODUCT_BASKET_FOR_SINGLEVIEW### -->
@@ -526,7 +531,6 @@ globally at the beginning of the form tag as marker ###GENERAL_HIDDENCATUID###
 		###CATEGORY_ITEM_IMAGES###
 </div>
 <!-- ###CATEGORY_ITEM### end -->
-</form>
 <!-- ###PRODUCT_VIEW_DETAIL_NOSTOCK### end -->
 
 
@@ -597,6 +601,51 @@ globally at the beginning of the form tag as marker ###GENERAL_HIDDENCATUID###
 		<td>###SELECT_ATTRIBUTES_VALUE### ###SELECT_ATTRIBUTES_UNIT### </td>
 	</tr>
 <!-- ###SELECT_ATTRIBUTES###2 end -->
+
+<br />
+<br />
+<h3>SELECTOR_ATTRIBUTES_RADIOBUTTON</h3>
+<em></em>
+<br />
+<!-- ###SELECTOR_ATTRIBUTES_RADIOBUTTON### begin-->
+<table class="com-select-attributes" cellspacing="0" cellpadding="0" border="0">
+	<tr class="com-select-row">	
+		<td>###SELECT_ATTRIBUTES_TITLE###:</td>
+		<td>
+		<!-- ###SELECTOR_ATTRIBUTES_RADIOBUTTON_ITEM### begin-->
+			<label for="###SELECT_ATTRIBUTES_HTML_ELEMENT_KEY###_###SELECT_ATTRIBUTES_VALUE_VALUE###">###SELECT_ATTRIBUTES_VALUE_ICON### ###SELECT_ATTRIBUTES_VALUE_NAME###</label>
+			<input type="radio" onClick="###SELECT_ATTRIBUTES_ON_CHANGE###" name="###SELECT_ATTRIBUTES_HTML_ELEMENT_NAME###" id="###SELECT_ATTRIBUTES_HTML_ELEMENT_KEY###_###SELECT_ATTRIBUTES_VALUE_VALUE###" value="###SELECT_ATTRIBUTES_VALUE_VALUE###" ###SELECT_ATTRIBUTES_VALUE_SELECTED### />
+			<br />
+		<!-- ###SELECTOR_ATTRIBUTES_RADIOBUTTON_ITEM### end-->
+
+		###SELECT_ATTRIBUTES_UNIT###
+		</td>
+	</tr>
+</table>	
+<!-- ###SELECTOR_ATTRIBUTES_RADIOBUTTON### end -->
+
+<br />
+<br />
+<h3>SELECTOR_ATTRIBUTES_DROPDOWN</h3>
+<em></em>
+<br />
+<!-- ###SELECTOR_ATTRIBUTES_DROPDOWN### begin-->
+<table class="com-select-attributes" cellspacing="0" cellpadding="0" border="0">
+	<tr class="com-select-row">	
+		<td>###SELECT_ATTRIBUTES_TITLE###</td>
+		<td>
+		<select onchange="###SELECT_ATTRIBUTES_ON_CHANGE###" name="###SELECT_ATTRIBUTES_HTML_ELEMENT_NAME###">
+		<!-- ###SELECTOR_ATTRIBUTES_DROPDOWN_ITEM### begin-->
+		<option value="###SELECT_ATTRIBUTES_VALUE_VALUE###" ###SELECT_ATTRIBUTES_VALUE_SELECTED###>
+			###SELECT_ATTRIBUTES_VALUE_NAME###
+		</option>
+		<!-- ###SELECTOR_ATTRIBUTES_DROPDOWN_ITEM### end-->
+		</select>
+		###SELECT_ATTRIBUTES_UNIT###
+		</td>
+	</tr>
+</table>	
+<!-- ###SELECTOR_ATTRIBUTES_DROPDOWN### end -->
 
 <br />
 <br />

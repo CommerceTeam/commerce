@@ -1,6 +1,9 @@
 Changelog for tx_commerce
 
 13.09.2009 Sascha Egerer <seg@softvision.de>
+* added some needed stuff for the dropdowns to the template
+
+13.09.2009 Sascha Egerer <seg@softvision.de>
 * added missing label for the "icon mode"
 * display the "icon mode" option only if the attribute has a valuelist
 
