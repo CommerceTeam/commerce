@@ -1,5 +1,8 @@
 Changelog for tx_commerce
 
+16.09.2009 Christian Kuhn <lolli@schwarzbu.ch>
+* Fixed bug #4610: Rev 22511 breaks ability to select category in page insert plugin (Thanks to Cees Lensink)
+
 13.09.2009 Sascha Egerer <seg@softvision.de>
 * added some needed stuff for the dropdowns to the template
 
