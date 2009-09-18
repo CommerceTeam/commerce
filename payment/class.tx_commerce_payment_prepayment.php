@@ -22,6 +22,10 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+
+require_once(t3lib_extmgm::extPath('commerce') .'payment/class.tx_commerce_payment_abstract.php');
+
+
 /**
  *
  *
@@ -30,17 +34,16 @@
  * @author Volker Graubaum <vg@e-netconsulting.de>
  * @internal Maintainer Michael Staatz <michael.staatz@e-netconsulting.com>
  */
-
-require_once(t3lib_extmgm::extPath('commerce') .'payment/class.tx_commerce_payment_abstract.php');
-
 class tx_commerce_payment_prepayment extends tx_commerce_payment_abstract {
 
 	protected $type = 'prepayment';
 
 }
 
+
 if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']["ext/commerce/payment/class.tx_commerce_payment_prepayment.php"])	{
 	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']["ext/commerce/payment/class.tx_commerce_payment_prepayment.php"]);
 }
+
 
 ?>

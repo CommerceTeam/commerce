@@ -21,6 +21,14 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
+
+// library for credit card checks
+require_once(t3lib_extmgm::extPath('commerce') .'lib/class.tx_commerce_ccvs_lib.php');
+require_once(t3lib_extmgm::extPath('commerce') .'payment/libs/class.tx_commerce_payment_wirecard_lib.php');
+require_once(t3lib_extmgm::extPath('commerce') .'payment/provider/class.tx_commerce_provider_abstract.php');
+
+
 /**
  *
  *
@@ -30,25 +38,36 @@
  * @internal Maintainer Michael Staatz <michael.staatz@e-netconsulting.com>
  */
 
-
-// library for credit card checks
-require_once(t3lib_extmgm::extPath('commerce') .'lib/class.tx_commerce_ccvs_lib.php');
-require_once(t3lib_extmgm::extPath('commerce') .'payment/libs/class.tx_commerce_payment_wirecard_lib.php');
-require_once(t3lib_extmgm::extPath('commerce') .'payment/provider/class.tx_commerce_provider_abstract.php');
-
+/*
+ * for testing
+ *
+ * Kreditkarte			Testnummer
+ * Visa      			4111 1111 1111 1111
+ * MasterCard			5500 0000 0000 0004
+ * American Express		3400 0000 0000 009
+ * Diner's Club			3000 0000 0000 04
+ * Carte Blanche		3000 0000 0000 04
+ * Discover				6011 0000 0000 0004
+ * JCB					3088 0000 0000 0009
+ *
+ */
 class tx_commerce_provider_wirecard extends tx_commerce_provider_abstract {
 
-		// You have to set the type for each new provider to get criterias and
-		// configuration for each from ext_locaconf.php
+	// You have to set the type for each new provider to get criterias and
+	// configuration for each from ext_locaconf.php
 	protected $type = 'wirecard';
 
 	/**
 	 * The locallang array for this payment module
 	 * This is only needed, if individual fields are defined
 	 */
-	public $LOCAL_LANG = array ( );
+	public $LOCAL_LANG = array ();
 
 
+	/**
+	 * @see tx_commerce_payment_abstract, tx_commerce_provider_abstract
+	 * and the implementation of tx_commerce_payment_creditcard
+	 */
 	function getAdditonalFieldsConfig() {
 		$result = array(
 			'cc_type.' => array (
@@ -66,14 +85,44 @@ class tx_commerce_provider_wirecard extends tx_commerce_provider_abstract {
 					'UATP',
 				),
 			),
-			'cc_number.' => array ('mandatory' => 1),
-			'cc_expirationYear.' => array ('mandatory' => 1),
-			'cc_expirationMonth.' => array ('mandatory' => 1),
-			'cc_holder.' => array ('mandatory' => 1),
-			'cc_checksum.' => array ('mandatory' => 1),
+			'cc_number.' => array(
+				'mandatory' => 1
+			),
+			'cc_expirationYear.' => array(
+				'mandatory' => 1
+			),
+			'cc_expirationMonth.' => array(
+				'mandatory' => 1
+			),
+			'cc_holder.' => array(
+				'mandatory' => 1
+			),
+			'cc_checksum.' => array(
+				'mandatory' => 1
+			),
 		);
+
 		return $result;
 	}
+
+
+	/**
+	 * @see tx_commerce_payment_abstract, tx_commerce_provider_abstract
+	 * and the implementation of tx_commerce_payment_creditcard
+	 */
+	public function checkExternalData($globalRequest, $session, $pObj) {
+		return true;
+	}
+
+
+	/**
+	 * @see tx_commerce_payment_abstract, tx_commerce_provider_abstract
+	 * and the implementation of tx_commerce_payment_creditcard
+	 */
+	public function proofData($formData, $parentResult, $pObj) {
+		return $parentResult;
+	}
+
 
 	/**
 	 * This method is called in the last step. Here can be made some final checks or whatever is
@@ -82,13 +131,45 @@ class tx_commerce_provider_wirecard extends tx_commerce_provider_abstract {
 	 * To save some additonal data in the database use the method updateOrder().
 	 *
 	 * @param	array	$config: The configuration from the TYPO3_CONF_VARS
+	 * @param	array	$session
 	 * @param	array	$basket: The basket object
 	 *
 	 * @return boolean	True or false
 	 */
 	function finishingFunction($config, $session, $basket) {
-		// classdefinition is in payment/libs/class.tx_commerce_payment_wirecard_lib.php
+		// classdefinition is in libs/class.tx_commerce_payment_wirecard_lib.php
 		$paymentLib = new payment();
+
+		// i think there is a new URL for testing with wirecard, so overwrite
+		// the old value. you can replace this with your own.
+		$paymentLib->url = 'https://c3-test.wirecard.com';
+
+		/*
+
+		user data can be found in
+			$_SESSION['billing']
+			$_SESSION['delivery']
+			$GLOBALS['TSFE']->fe_user->user
+
+		$paymentLib->userData = array(
+			'firstname' =>
+		);
+
+
+		$paymentLib->userData(
+			array(
+				"firstname" => $formData['firstname'],
+				"lastname"  => $formData['lastname'],
+				"street"	=> $formData['strees'],
+				"zip"		=> $formData['zip'],
+				"city"		=> $formData['city'],
+				"telephone" => $formData['telephone'],
+				"country"	=> $formData['contry'],
+				"email"		=> $formData['email'],
+				"userid"	=> $formData['userid']
+			)
+		);
+		*/
 
 		$paymentLib->paymentmethod = 'creditcard';
 		$paymentLib->paymenttype = 'cc';
@@ -101,7 +182,7 @@ class tx_commerce_provider_wirecard extends tx_commerce_provider_abstract {
 			'cvc' => $session['payment']['cc_checksum']
 		);
 
-		$actCurrency = $this->parentObject->conf['currency'] != '' ?  $this->parentObject->conf['currency'] : 'EUR';
+		$actCurrency = $this->pObj->getPObj()->conf['currency'] != '' ?  $this->pObj->getPObj()->conf['currency'] : 'EUR';
 
 		$paymentLib->TransactionData = array (
 			'amount' => $basket->get_gross_sum(),
@@ -114,7 +195,7 @@ class tx_commerce_provider_wirecard extends tx_commerce_provider_abstract {
 
 		if (!$back) {
 
-			$this->errorMessages = $paymentLib->getError();
+			$this->errorMessages = array_merge($this->errorMessages, (array)$paymentLib->getError());
 			return false;
 
 
@@ -128,6 +209,7 @@ class tx_commerce_provider_wirecard extends tx_commerce_provider_abstract {
 			return true;
 		}
 	}
+
 
 	/**
 	 * This method can make something with the created order. For example add the
@@ -153,31 +235,37 @@ class tx_commerce_provider_wirecard extends tx_commerce_provider_abstract {
 		*/
 	}
 
+
 	/**
 	 * Returns the last error message
 	 */
 	function getLastError($finish = 0) {
-		if($finish){
+		if ($finish) {
 			return $this->getReadableError();
-		}else{
+		} else {
 			return $this->errorMessages[(count($this->errorMessages) -1)];
 		}
 	}
 
-	// creditcard Error Code Handling
+
+	/**
+	 * creditcard Error Code Handling
+	 */
 	function getReadableError(){
 		$back = '';
 		reset($this->errorMessages);
 		while (list($k,$v) = each($this->errorMessages)) {
 			$back .= $v;
 		}
+
 		return $back;
 	}
 }
 
 
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']["ext/commerce/payment/class.tx_commerce_payment_provider_wirecard.php"])	{
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']["ext/commerce/payment/class.tx_commerce_payment_provider_wirecard.php"]);
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']["ext/com_pay_wirecard/class.tx_commerce_payment_provider_wirecard.php"])	{
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']["ext/com_pay_wirecard/class.tx_commerce_payment_provider_wirecard.php"]);
 }
+
 
 ?>

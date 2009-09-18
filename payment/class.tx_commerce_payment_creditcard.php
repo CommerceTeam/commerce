@@ -21,20 +21,20 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
-/**
- *
- *
- * @package commerce
- * @subpackage payment
- * @author Volker Graubaum <vg@e-netconsulting.de>
- * @internal Maintainer Michael Staatz <michael.staatz@e-netconsulting.com>
- */
 
 
 // library for credit card checks
 require_once(t3lib_extmgm::extPath('commerce') . 'lib/class.tx_commerce_ccvs_lib.php');
 require_once(t3lib_extmgm::extPath('commerce') . 'payment/class.tx_commerce_payment_abstract.php');
 
+
+/**
+ *
+ * @package commerce
+ * @subpackage payment
+ * @author Volker Graubaum <vg@e-netconsulting.de>
+ * @internal Maintainer Michael Staatz <michael.staatz@e-netconsulting.com>
+ */
 class tx_commerce_payment_creditcard extends tx_commerce_payment_abstract {
 
 	/**
@@ -45,10 +45,12 @@ class tx_commerce_payment_creditcard extends tx_commerce_payment_abstract {
 
 	protected $type = 'creditcard';
 
-	function needAdditionalData($pObj) {
+
+	public function needAdditionalData($pObj) {
 		if (!is_object($this->pObj)) {
 			$this->pObj = $pObj;
 		}
+
 		$basePath = t3lib_extMgm::extPath($pObj->extKey) . dirname($this->scriptRelPath) . 'payment/locallang_creditcard.xml';
 
 		foreach($this->pObj->LOCAL_LANG as $llKey => $llData) {
@@ -60,24 +62,30 @@ class tx_commerce_payment_creditcard extends tx_commerce_payment_abstract {
 			$tempLOCAL_LANG = t3lib_div::readLLfile($basePath, $this->pObj->altLLkey);
 			$this->LOCAL_LANG = array_merge(is_array($this->LOCAL_LANG) ? $this->LOCAL_LANG : array(), $tempLOCAL_LANG);
 		}
+
 		if ($this->provider !== null) {
-			return $this->provider->needAdditionalData($pObj);
+			return $this->provider->needAdditionalData($this);
 		}
+
 		return true;
 	}
 
-	function checkExternalData($globalRequest, $session, $pObj) {
+
+	public function checkExternalData($globalRequest, $session, $pObj) {
 		if ($this->provider !== null) {
 			return $this->provider->checkExternalData($globalRequest, $session, $pObj);
 		}
+
 		return true;
 	}
 
-	function proofData($formData, $pObj) {
+
+	public function proofData($formData, $pObj) {
 		if (!is_object($this->pObj)) {
 			$this->pObj = $pObj;
 		}
-		/*
+
+
 		$ccvs = new CreditCardValidationSolution();
 		$result = $ccvs->validateCreditCard($formData['cc_number'], $formData['cc_checksum']);
 		$this->errorMessages[] = $ccvs->CCVSError;
@@ -142,14 +150,16 @@ class tx_commerce_payment_creditcard extends tx_commerce_payment_abstract {
 				}
 			}
 		}
-		unset($ccvs);
-		*/
 
-		if($this->provider !== null) {
+		unset($ccvs);
+
+		if ($this->provider !== null) {
 			return $this->provider->proofData($formData, $result, $this);
 		}
+
 		return $result;
 	}
+
 
 	/**
 	 * This method is called in the last step. Here can be made some final checks or whatever is
@@ -164,14 +174,15 @@ class tx_commerce_payment_creditcard extends tx_commerce_payment_abstract {
 	 *
 	 * @return	boolean		True or false
 	 */
-	function finishingFunction($config, $session, $basket, $pObj) {
-
-		if(!is_object($this->pObj)) {
+	public function finishingFunction($config, $session, $basket, $pObj) {
+		if (!is_object($this->pObj)) {
 			$this->pObj = $pObj;
 		}
+
 		if ($this->provider !== null) {
 			return $this->provider->finishingFunction($config, $session, $basket);
 		}
+
 		return false;
 	}
 }
@@ -180,4 +191,6 @@ class tx_commerce_payment_creditcard extends tx_commerce_payment_abstract {
 if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']["ext/commerce/payment/class.tx_commerce_payment_creditcard.php"])	{
 	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']["ext/commerce/payment/class.tx_commerce_payment_creditcard.php"]);
 }
+
+
 ?>

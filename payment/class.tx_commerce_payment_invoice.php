@@ -22,6 +22,10 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+
+require_once(t3lib_extmgm::extPath('commerce') . 'payment/class.tx_commerce_payment_abstract.php');
+
+
 /**
  *
  *
@@ -30,9 +34,6 @@
  * @author Volker Graubaum <vg@e-netconsulting.de>
  * @internal Maintainer Michael Staatz <michael.staatz@e-netconsulting.com>
  */
-
-require_once (t3lib_extmgm::extPath('commerce') . 'payment/class.tx_commerce_payment_abstract.php');
-
 class tx_commerce_payment_invoice extends tx_commerce_payment_abstract {
 
 	protected $type = 'invoice';

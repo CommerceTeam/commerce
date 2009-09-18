@@ -31,34 +31,64 @@
 
 abstract class tx_commerce_provider_abstract {
 
-		// In this var the wrong fields are stored (for future use)
+	/**
+	 * In this var the wrong fields are stored (for future use)
+	 *
+	 * @var mixed
+	 */
 	public $errorFields = array();
 
-		// This var holds the errormessages (keys are the fieldnames)
+	/**
+	 * This var holds the errormessages (keys are the fieldnames)
+	 *
+	 * @var mixed
+	 */
 	public $errorMessages = array();
 
+	/**
+	 * Holds an copy of the payment object for the provider
+	 *
+	 * @var object
+	 */
 	protected $pObj = null;
 
-		// The Provider needs also an type like the payment class
+	/**
+	 * The Provider needs also an type like the payment class
+	 *
+	 * @var string
+	 */
 	protected $type = '';
 
-		// array of criteria objects for check if a paymentMethod is allowed
+	/**
+	 * Array of criteria objects for check if a paymentMethod is allowed
+	 * @var mixed
+	 */
 	protected $criterias = NULL;
+
 
 	/**
 	 * Initializes the payment provider. (i.e. builds the criteria array to check if this payment provider is allowed later on.)
 	 *
-	 * @param tx_commerce_payment_abstract $pObj: This is the payment object
+	 * @param	object	$pObj: This is the payment object
 	 */
 	public function init(tx_commerce_payment_abstract $pObj) {
 		$this->pObj = $pObj;
 	}
 
+
+	/**
+	 * Load all configured criterias
+	 *
+	 * @param void
+	 * @return void
+	 */
 	protected function loadCriterias() {
-			//clear the old criterias first
+		//clear the old criterias first
 		$this->criterias = array();
-			//check if type has criterias, create all needed objects
+
+		//check if type has criterias, create all needed objects
 		$criteraConfigurations = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['SYSPRODUCTS']['PAYMENT']['types'][$this->pObj->getType()]['provider'][$this->type]['criteria'];
+
 		if (is_array($criteraConfigurations)) {
 			foreach ($criteraConfigurations as $criteriaConfiguration) {
 				$criteria = t3lib_div::getUserObj($criteriaConfiguration['class']);
@@ -73,14 +103,16 @@ abstract class tx_commerce_provider_abstract {
 		}
 	}
 
+
 	/**
 	 * Returns the parent object.
 	 *
-	 * @return tx_commerce_payment_abstract : The commerce default payment object.
+	 * @return object : The commerce default payment object.
 	 */
 	public function getPObj() {
 		return $this->pObj->getPObj();
 	}
+
 
 	/**
 	 * Returns the type of the provider
@@ -90,6 +122,7 @@ abstract class tx_commerce_provider_abstract {
 	public function getType() {
 		return $this->type;
 	}
+
 
 	/**
 	 * Checks, if this payment provider is allowed for the current amount, payment type etc.
@@ -108,38 +141,40 @@ abstract class tx_commerce_provider_abstract {
 		return true;
 	}
 
+
 	/**
-	 * This method gets called by commerce, in order to check if all data required to fullfill the mayment is already available
+	 * This method gets called by commerce, in order to check if all data required
+	 * to fullfill the payment is already available.
 	 *
 	 * @return boolean: False iff the customer should be queried for more data
-	 * @todo Check whether this method shouldn't be abstract instead
 	 */
 	public function needAdditionalData() {
 		return true;
 	}
 
+
 	/**
 	 * Returns an array containing some configuration for the fields the customer shall enter his data into.
 	 *
-	 * @return array
-	 * @see EXT:commerce/pi3/class.tx_commerce_pi3.php to see how this is used.
-	 * @todo Check whether this method shouldn't be abstract instead
+	 * @return mixed
+	 * @see class.tx_commerce_provider_wirecard.php to see how this can be used.
 	 */
 	public function getAdditonalFieldsConfig() {
 		return null;
 	}
 
+
 	/**
 	 * This function gets called by commerce and allows you to handle the data that the customer has entered
 	 *
-	 * @param array $formData: The data the customer has entered into the payment form
-	 * @param tx_commerce_payment_abstract $pObj: The payment object
-	 * @return boolean: True if the data you handle is correct. Otherwhise you should write your error messages into $this->errorMessages usually
-	 * @todo Check whether this method shouldn't be abstract instead.
+	 * @param mixed		$formData	The data the customer has entered into the payment form
+	 * @param object	$pObj		The payment object
+	 * @return boolean	 			True if the data you handle is correct. Otherwhise you should write your error messages into $this->errorMessages usually
 	 */
 	public function proofData($formData, tx_commerce_payment_abstract $pObj = null) {
 		return true;
 	}
+
 
 	/**
 	 * This method is called in the last step. Here can be made some final checks or whatever is
@@ -156,27 +191,38 @@ abstract class tx_commerce_provider_abstract {
 		return true;
 	}
 
+
 	/**
 	 * This method can make something with the created order. For example add the
 	 * reference id for payments with creditcards.
 	 *
-	 * @todo Add some documentation (params, result etc.)
+	 * @param int	$orderUid	the uid from the last inserted databaserecord
+	 * @param mixed	$session	this came from commerce checkout = MYSESSION
 	 */
 	public function updateOrder($orderUid, $session) {
-		// Here we con do something
+		// Write your code here...
 	}
+
 
 	/**
 	 * Returns the last error message
+	 *
+	 * @param int $finish
 	 */
 	function getLastError($finish = 0) {
-		if ($finish){
+		if ($finish) {
 			return $this->getReadableError();
 		} else {
 			return $this->errorMessages[(count($this->errorMessages) - 1)];
 		}
 	}
 
+
+	/**
+	 * Get all errormessages as concated string
+	 *
+	 * @return string
+	 */
 	function getReadableError(){
 		$back = '';
 		reset($this->errorMessages);
@@ -187,8 +233,10 @@ abstract class tx_commerce_provider_abstract {
 	}
 }
 
+
 if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']["ext/commerce/payment/provider/class.tx_commerce_provider_abstract.php"])	{
 	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']["ext/commerce/payment/provider/class.tx_commerce_provider_abstract.php"]);
 }
+
 
 ?>

@@ -22,6 +22,10 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+
+require_once(t3lib_extmgm::extPath('commerce') . 'payment/class.tx_commerce_payment_abstract.php');
+
+
 /**
  *
  *
@@ -30,17 +34,15 @@
  * @author Volker Graubaum <vg@e-netconsulting.de>
  * @internal Maintainer Michael Staatz <michael.staatz@e-netconsulting.com>
  */
-
-require_once (t3lib_extmgm::extPath('commerce') . 'payment/class.tx_commerce_payment_abstract.php');
-
 class tx_commerce_payment_debit extends tx_commerce_payment_abstract {
 
 	protected $type = 'debit';
+
 	/**
 	 * The locallang array for this payment module
 	 * This is only needed, if individual fields are defined
 	 */
-	var $LOCAL_LANG = array (
+	public $LOCAL_LANG = array (
 		'default' => array (
 			'payment_debit_bic' => 'Bank Identification Number',
 			'payment_debit_an' => 'Account number',
@@ -66,22 +68,40 @@ class tx_commerce_payment_debit extends tx_commerce_payment_abstract {
 
 
 	public function getAdditonalFieldsConfig($pObj) {
-		if(!is_object($this->pObj)) {
+		if (!is_object($this->pObj)) {
 			$this->pObj = $pObj;
 		}
 		$result = array(
-			'debit_bic.' => array ('mandatory' => 1),
-			'debit_an.' => array ('mandatory' => 1),
-			'debit_bn.' => array ('mandatory' => 1),
-			'debit_ah.' => array ('mandatory' => 1),
-			'debit_company.' => array ('mandatory' => 0)
+			'debit_bic.' => array(
+				'mandatory' => 1
+			),
+			'debit_an.' => array(
+				'mandatory' => 1
+			),
+			'debit_bn.' => array(
+				'mandatory' => 1
+			),
+			'debit_ah.' => array(
+				'mandatory' => 1
+			),
+			'debit_company.' => array(
+				'mandatory' => 0
+			)
 		);
 		return $result;
 	}
 
+
 	public function proofData($formData, $pObj = null) {
 		if ($pObj !== null) {
 			$this->pObj = $pObj;
+		}
+
+		// if formData is empty we know that this is the very first
+		// call from tx_commerce_pi3->handlePayment and at this time
+		// there can't be formData.
+		if (empty($formData)) {
+			return false;
 		}
 
 		$config['sourceFields.'] = $this->getAdditonalFieldsConfig($this->pObj);
@@ -89,30 +109,31 @@ class tx_commerce_payment_debit extends tx_commerce_payment_abstract {
 		$result = true;
 
 		foreach ($formData as $name => $value) {
-			if ($config['sourceFields.'][$name .'.']['mandatory'] == 1 && strlen($value) == 0) {
+			if ($config['sourceFields.'][$name . '.']['mandatory'] == 1 && strlen($value) == 0) {
 				$result = false;
 			}
 		}
 
-		if($this->provider !== null) {
+		if ($this->provider !== null) {
 			return $this->provider->proofData($formData, $result, $this);
 		}
 
 		return $result;
 	}
 
+
 	/**
 	 * This method can make something with the created order. For example add the
 	 * reference id for payments with creditcards.
 	 */
-	function updateOrder($orderUid, $session, $pObj) {
-		if(!is_object($this->pObj)) {
+	public function updateOrder($orderUid, $session, $pObj) {
+		if (!is_object($this->pObj)) {
 			$this->pObj = $pObj;
 		}
 
 		$GLOBALS['TYPO3_DB']->exec_UPDATEquery(
 			'tx_commerce_orders',
-			'uid = ' .$orderUid,
+			'uid = ' . $orderUid,
 			array(
 				'payment_debit_bic' => $session['payment']['debit_bic'],
 				'payment_debit_an' => $session['payment']['debit_an'],
@@ -124,8 +145,10 @@ class tx_commerce_payment_debit extends tx_commerce_payment_abstract {
 	}
 }
 
+
 if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']["ext/commerce/payment/class.tx_commerce_payment_debit.php"])	{
 	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']["ext/commerce/payment/class.tx_commerce_payment_debit.php"]);
 }
+
 
 ?>

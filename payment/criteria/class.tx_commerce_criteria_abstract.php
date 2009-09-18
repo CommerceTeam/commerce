@@ -75,7 +75,7 @@ abstract class tx_commerce_criteria_abstract {
 	/**
 	 * Abstract function. Every criteria has to implement its own method
 	 * The paymentobject or providerobject initialise the criterias and set the configuration
-	 * option. Then the paymentpbject iterate over the criterias to see
+	 * option. Then the paymentpobject iterate over the criterias to see
 	 * if there is a condition where the paymentobject is allowed or not.
 	 *
 	 * @param	void
@@ -84,7 +84,10 @@ abstract class tx_commerce_criteria_abstract {
 	abstract public function isAllowed();
 }
 
+
 if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']["ext/commerce/payment/criteria/class.tx_commerce_criteria_abstract.php"])	{
 	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']["ext/commerce/payment/criteria/class.tx_commerce_criteria_abstract"]);
 }
+
+
 ?>
