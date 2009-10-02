@@ -50,11 +50,12 @@ class tx_commerce_div {
 	 * Removes XSS code and strips tags from an array recursivly
 	 * @Author Ingo Schmitt <is@marketing-factory.de>
 	 * @param $array	Array of elements
-	 * @return $array
+	 * @return $array ist $array is an array, otherwhise false
 	 */
 	function removeXSSStripTagsArray($array){
-		$return = array();
+		
 		if (is_array($array) && (count($array)>0)){
+			$return = array();
 			foreach ($array as $key => $value){
 				if (is_array($value)){
 					$return[$key] = tx_commerce_div::removeXSSStripTagsArray($value);
@@ -62,8 +63,11 @@ class tx_commerce_div {
 					$return[$key]= t3lib_div::removeXSS(strip_tags($value));
 				}
 			}
+			return $return;
+		}else{
+			return false;
 		}
-		return $return;
+		
 	}
 
 
