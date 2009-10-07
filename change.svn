@@ -1,5 +1,8 @@
 Changelog for tx_commerce
 
+07.10.2009 Volker Graubaum <vg@e-netconsulting.de>
+* Set version to 0.12.0 preparing new payment, see activity in the next days
+
 02.10.2009 Ingo Schmitt <is@marketing-factory.de>
 * Fixed bug with empty Arrays in removeXSS, Thanks to Tom Rüther and Michael Staatz
 
