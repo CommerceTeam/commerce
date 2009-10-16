@@ -1,5 +1,8 @@
 Changelog for tx_commerce
 
+16.10.2009 Ingo Schmitt <is@marketing-factory.de>
+* Fixed Issue #4358, Thanks to Rik Willems
+
 02.10.2009 Ingo Schmitt <is@marketing-factory.de>
 * Fixed bug with empty Arrays in removeXSS, Thanks to Tom Rüther and Michael Staatz
 
@@ -116,7 +119,7 @@ Changelog for tx_commerce
 * CGL cleanup in pi6/class.tx_commerce_pi6_wizicon.php
 
 15.07.2009 Ingo Schmitt <is@marketing-factory.de>
-* Added Xclass for fix T3Core Bug 10331 which will be solved in 4.3.x, Thanks to David Rühr for debugging!
+* Added Xclass for fix T3Core Bug 10331 which will be solved in 4.3.x, Thanks to David R√ºhr for debugging!
 * Increased Version Number
 
 13.07.2009 Christian Kuhn <lolli@schwarzbu.ch>
@@ -190,7 +193,7 @@ Changelog for tx_commerce
 * Changed leafView, TYPO3_SITE_URL is availiable from 4.2.7
 * Removed nostock as text from Template
 * Changed Version to 0.11.10
-* Fixed BUG #3500 thanks to David Rühr 
+* Fixed BUG #3500 thanks to David R√ºhr 
 
 26.05.2009 Ingo Schmitt <is@marketing-factory.de>
 * Fixed Problem in Basket with wrong instantiating of classes
@@ -207,7 +210,7 @@ Changelog for tx_commerce
 * Fixed Bug 2546, Thanks to Martin Holtz
 
 15.05.2009 Michael Staatz <micsta@e-netconsulting.de>
-* Fixed Bug 1515, Thanks to Tom Rüther
+* Fixed Bug 1515, Thanks to Tom R√ºther
 * Added Feature 1563, new hook in pi1 'postInit' at the end of init.
 * And new hook in pi3 'processInputForm' for processing formfields  
 * Fixed Bug 1759, repaired wrong Substitution
@@ -225,7 +228,7 @@ Changelog for tx_commerce
 * change mod_access include, now use the same code as mod_category
 
 02.04.2009 Ingo Schmitt <is@marketing-factory.de>
-* Fixed Bug 2831, Thanks to David Rühr (dr@marketing-factory.de>
+* Fixed Bug 2831, Thanks to David R√ºhr (dr@marketing-factory.de>
 * Fixed Bug 3006, Thanks to Ralf Merz 
 * Fixed Bug 2986, Thanks to Sascha Eggerer
 * Fixed Bug 2953, Thanks to Markus Kleinhenz (mkleinhenz@gmail.com)
@@ -454,7 +457,7 @@ Changelog for tx_commerce
 * Added Feature: You can define which fields are displayed in Supplier and Manufacturer listing, Thanks to Cynthia Mattingly <cm@marketing-factory.de>
 
 09.07.2008 Ingo Schmitt <is@marketing-factory.de>
-* Fixed Bug 8868, Thanks to Tom Rüther
+* Fixed Bug 8868, Thanks to Tom R√ºther
 
 08.07.2008 Ingo Schmitt <is@marketing-factory.de>
 * Set MD5 Encoding as default for Session-Key
@@ -472,7 +475,7 @@ Changelog for tx_commerce
 
 * Fixed Bug 8749, 8850, 8815, 8839, 8813, 8800, 8702, 8754, 8119, 8681, 8541
 
-1st Commerce-Workshop, Tom Rüther, Michael Duttlinger, Dirk Krause, Ingo Schmitt
+1st Commerce-Workshop, Tom R√ºther, Michael Duttlinger, Dirk Krause, Ingo Schmitt
 * Fixed Bug 8850, Thanks to Tom Buskens
 * Fixed Bug 8815, 8817, Thanks to Thomas
 * Fixed Bug with Backlink in PI4
@@ -481,12 +484,12 @@ Changelog for tx_commerce
 * Implemented Feature 8800
 
 
-1st Commerce-Workshop, Sebastian Böttger
+1st Commerce-Workshop, Sebastian B√∂ttger
 * Fixed Bug in PI1, category could be displayed if not accessible to user
 
 
 28.06.2008 Ingo Schmitt <is@marketing-factory.de>
-1st Commerce-Workshop, Tom Rüther, Michael Duttlinger, Dirk Krause, Ingo Schmitt
+1st Commerce-Workshop, Tom R√ºther, Michael Duttlinger, Dirk Krause, Ingo Schmitt
 * Fixed Bug 8453
 * Fixed Documentation bug in pi4
 * Fixed bug: Already selected delivery addresses are checked now
@@ -533,7 +536,7 @@ Changelog for tx_commerce
 24.04.2008 Ingo Schmitt <is@marketing-factory.de>
 * Added Output for Last Change in Order View
 * Changed Compatibility to maximum 4.1.9 TYPO3 Version, since Tree is not working with 4.2.0
-* Fixed BUG 8234, Thanks to Frank R√ºske
+* Fixed BUG 8234, Thanks to Frank R‚àö¬∫ske
 * Fixed Bug 7966
 * Update ext_em_conf.php for Upload in TER
 * Raised version to 0.9.5 as new DEV Version
@@ -587,7 +590,7 @@ Changelog for tx_commerce
 * Fixed CSS in hooks.html
 
 11.02.2008 Ingo Schmitt <is@marketing-factory.de>
-* Fixed Bug 7089, Thanks to J√∂rg Sprung
+* Fixed Bug 7089, Thanks to J‚àö‚àÇrg Sprung
 * Fixed Bug 7492 and 7493
 
 06.02.2008 Ingo Schmitt <is@marketing-factory.de>
@@ -715,7 +718,7 @@ sponsored by Impulse Network Limited: http://www.schutzgeld.de/
 * Changed pi1 Maximum Number of products to PHP_INT_MAX, thanks to Dmitry Dulepov
 
 22.09.2007 Ingo Schmitt <is@marketing-factory.de> & Volker Graubaum <vg@e-netconsulting.de>
-* Udpated CSS, Thanks to Tom R√ºther
+* Udpated CSS, Thanks to Tom R‚àö¬∫ther
 * Removed pass variable by reference to getPathCat
 * Fixed Bug 6222, Thanks to Karsten Dambekalns
 * Fixed Bug 6223
@@ -735,7 +738,7 @@ sponsored by Impulse Network Limited: http://www.schutzgeld.de/
 * Added return value to tx_commerce_articlecreator::createArticle()
 
 31.08.2007 Ingo schmitt <is@marketing-factory.de>
-* Fixed two bugs in pi4, Thanks to Tom R√ºther
+* Fixed two bugs in pi4, Thanks to Tom R‚àö¬∫ther
 * Fixed Bug 6235, Thanks to "sascha" and Axel Klarmann 
 * Fixed Bug in connecting Categories in tx_commerce_category, Thanks to "Roland"
 
@@ -763,7 +766,7 @@ sponsored by Impulse Network Limited: http://www.schutzgeld.de/
 
 13.08.2007 Volker Graubaum <vg@e-netconsulting.de>
 * Fix articleselector for pi1
-* rewrite of pi6 - Thanks To Tom R√ºther 
+* rewrite of pi6 - Thanks To Tom R‚àö¬∫ther 
 
 12.08.2007 Ingo Schmitt <is@marketing-factory.de>
 * Added Processing of Language Marker to PI1, render list view
@@ -774,8 +777,8 @@ sponsored by Impulse Network Limited: http://www.schutzgeld.de/
 * Fixed Bug with checking priceIDs
 * Fixed Bug 6024
 * Added StepBar in Checkout
-* Made pi2 Templates XHTML valid, generated new default css. Thanks To Carla Froitzheim and Tom RÔøΩther 
-* Made pi3 Templates XHTML valid, generated new default css. Thanks To Carla Froitzheim and Tom RÔøΩther 
+* Made pi2 Templates XHTML valid, generated new default css. Thanks To Carla Froitzheim and Tom R√î√∏Œ©ther 
+* Made pi3 Templates XHTML valid, generated new default css. Thanks To Carla Froitzheim and Tom R√î√∏Œ©ther 
 * Added Delete from Basket Link to Basket Entries
 
 11.08.2007 Ingo Schmitt <is@marketing-factory.de>
@@ -785,7 +788,7 @@ sponsored by Impulse Network Limited: http://www.schutzgeld.de/
 * Added new TypoScript Property for article object, defaultQuantity
 * Added New Marker to Article Output, LINKTOPUTINBASKET
 * Added new TypoLink addToBasketLink to article rendering
-* Made pi1 Templates XHTML valid, generated new default css. Thanks To Carla Froitzheim and Tom RÔøΩther 
+* Made pi1 Templates XHTML valid, generated new default css. Thanks To Carla Froitzheim and Tom R√î√∏Œ©ther 
 
 
 08.08.2007 Ingo Schmitt <is@marketing-factory.de>
@@ -889,7 +892,7 @@ sponsored by Impulse Network Limited: http://www.schutzgeld.de/
 * Change Module Configuration and instantiation of classes to new TYPO3 style
 * Changed definition of payment types and delivery types in ext_localconf (fixed BUG 5027)
 * Fixed Bug 5402, Thanks to Batomo
-* Fixed Bug 5380, Thanks to heiko ÔøΩzaykut
+* Fixed Bug 5380, Thanks to heiko √î√∏Œ©zaykut
 * Fixed Bug 3573, Thanks to Batomo
 * Added methods to rebuild flexform XML for the recordsets. Thanks to Ricardo Mieres <ricardo.mieres@502.cl>
 * Beatified Sourcecode
@@ -970,7 +973,7 @@ Ingo Schmitt <is@marketing-factory.de>
 *   Added two ne Methods to tx_commerce_product:
 	getArticleUids() to replace getArticles()
 	getArticleObjects() as new method
-*	decared getArticles() in tx_commerce_product as de√ºpricated
+*	decared getArticles() in tx_commerce_product as de‚àö¬∫pricated
 * 	Changed getArticles in pi_base to getARticleUid()
 
 11.01.2006 Thomas Hempel <thomas@work.de>
@@ -983,7 +986,7 @@ Ingo Schmitt <is@marketing-factory.de>
 7.1.2006 (Thomas Hempel <thomas@work.de>)
 *  Changes in pi4 for min items of addresses, insert backpid and targetpid for changing
 
-5.1.2006 (Frank KrÔøΩber <fk@marketing-factory.de>)
+5.1.2006 (Frank Kr√î√∏Œ©ber <fk@marketing-factory.de>)
 *   Generally replace locallang php-files with locallang xml-files. PHP-files will be deleted on 13.01.2006.
 
 3.1.2006 (Ingo Schmitt <is@marketing-factory.de>)
@@ -1025,7 +1028,7 @@ Ingo Schmitt <is@marketing-factory.de>
     Added pi3 / currency to setup   
     
  ------------------------------------------------------------------------
-r61 | ingo | 2006-03-02 11:01:54 +0100 (Do, 02 MÔøΩr 2006) | 16 lines
+r61 | ingo | 2006-03-02 11:01:54 +0100 (Do, 02 M√î√∏Œ©r 2006) | 16 lines
 
 General cleanup for getting rid of install warnings in the EM
 * class.tx_commerce_feuserauth.php 
@@ -1044,15 +1047,15 @@ General cleanup for getting rid of install warnings in the EM
 * ext/commerce/payment/class.tx_commerce_payment_paypal.php
   Corrected XCLASS include statement
 ------------------------------------------------------------------------
-r60 | ingo | 2006-03-02 09:52:27 +0100 (Do, 02 MÔøΩr 2006) | 1 line
+r60 | ingo | 2006-03-02 09:52:27 +0100 (Do, 02 M√î√∏Œ©r 2006) | 1 line
 
 Fixed some typos
 ------------------------------------------------------------------------
-r59 | ingo | 2006-03-02 09:49:01 +0100 (Do, 02 MÔøΩr 2006) | 1 line
+r59 | ingo | 2006-03-02 09:49:01 +0100 (Do, 02 M√î√∏Œ©r 2006) | 1 line
 
 Updated Coding Guidlines
 ------------------------------------------------------------------------
-r58 | ingo | 2006-03-02 09:30:51 +0100 (Do, 02 MÔøΩr 2006) | 1 line
+r58 | ingo | 2006-03-02 09:30:51 +0100 (Do, 02 M√î√∏Œ©r 2006) | 1 line
 
 Updated Projectdescription
 ------------------------------------------------------------------------
@@ -1252,7 +1255,7 @@ Ingo Schmitt <is@marketing-factory.de>
 *   Added two ne Methods to tx_commerce_product:
 	getArticleUids() to replace getArticles()
 	getArticleObjects() as new method
-*	decared getArticles() in tx_commerce_product as de√ºpricated
+*	decared getArticles() in tx_commerce_product as de‚àö¬∫pricated
 * 	Changed getArticles in pi_base to getARticleUid()
 
 11.01.2006 Thomas Hempel <thomas@work.de>
@@ -1265,7 +1268,7 @@ Ingo Schmitt <is@marketing-factory.de>
 7.1.2006 (Thomas Hempel <thomas@work.de>)
 *  Changes in pi4 for min items of addresses, insert backpid and targetpid for changing
 
-5.1.2006 (Frank KrÔøΩber <fk@marketing-factory.de>)
+5.1.2006 (Frank Kr√î√∏Œ©ber <fk@marketing-factory.de>)
 *   Generally replace locallang php-files with locallang xml-files. PHP-files will be deleted on 13.01.2006.
 
 3.1.2006 (Ingo Schmitt <is@marketing-factory.de>)

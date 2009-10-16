@@ -218,7 +218,7 @@
 			<label index="listing_description">Wilt u uw bestelgegevens controleren.</label>
 			<label index="listing_submit">Verder</label>
 			<label index="listing_price_item">Prijs</label>
-			<label index="listing_disclaimer">Na het plaatsen van de bestelling ontvangt u een Email met alle relevante koopgegevens. Wij adviseren de gegeven en de leveringsvoorwaarden af te durkken, en op een makkelijk bereikbare plaats te bewaren.</label>
+			<label index="listing_disclaimer">Na het plaatsen van de bestelling ontvangt u een email met alle relevante koopgegevens. Wij adviseren de gegeven en de leveringsvoorwaarden af te drukken, en op een makkelijk bereikbare plaats te bewaren.</label>
 			<label index="listing_article_net">Artikel zonder BTW.:</label>
 			<label index="listing_article_gross">Artikel met BTW.:</label>
 			<label index="listing_tax">BTW:</label>
