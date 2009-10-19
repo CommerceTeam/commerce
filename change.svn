@@ -1,5 +1,8 @@
 Changelog for tx_commerce
 
+19.10.2009 Ingo Schmitt <is@marketing-factory.de>
+* Fixed Issue 2770
+
 16.10.2009 Ingo Schmitt <is@marketing-factory.de>
 * Fixed Issue #4358, Thanks to Rik Willems
 
