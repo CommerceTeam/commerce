@@ -584,7 +584,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 		$deliveryForm.= '<input type="hidden" name="' . $this->prefixId . '[step]" value="' . $nextstep . '" />';
 		$deliveryForm.= '<input type="hidden" name="' . $this->prefixId . '[check]" value="delivery" />';
 
-		$markerArray['###HIDDEN_STEP###'] = '<input type="hidden" name="' . $this->prefixId . '[step]" value="payment" />';
+		$markerArray['###HIDDEN_STEP###'] = '<input type="hidden" name="'.$this->prefixId.'[step]" value="' . $nextstep . '" />';
 		$markerArray['###HIDDEN_STEP###'].= '<input type="hidden" name="' . $this->prefixId . '[check]" value="delivery" />';
 
 		// If a user is logged in, get form from the address management
