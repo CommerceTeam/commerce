@@ -727,7 +727,9 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 			// Merge local lang array
 			if (is_array($this->LOCAL_LANG) && isset($paymentObj->LOCAL_LANG)) {
 				foreach($this->LOCAL_LANG as $llKey => $llData) {
-					$newLLData = array_merge($llData, $paymentObj->LOCAL_LANG[$llKey]);
+					if (isset($paymentObj->LOCAL_LANG[$llKey]) && is_array($paymentObj->LOCAL_LANG[$llKey])) {
+						$newLLData = array_merge($llData, $paymentObj->LOCAL_LANG[$llKey]);
+					}
 					$this->LOCAL_LANG[$llKey] = $newLLData;
 				}
 			}
