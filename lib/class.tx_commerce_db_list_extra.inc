@@ -3,7 +3,7 @@
  * ************************************************************
  *  Copyright notice
  *
- *  (c) 1999-2003 Kasper Sk�rh�j (kasper@typo3.com)
+ *  (c) 1999-2003 Kasper Skaarhoj (kasper@typo3.com)
  *  (c) 2005 Franz Holzinger <kontakt@fholzinger.com>
  *  (c) 2009 Ingo Schmitt <is@marketing-factory.de>
  *  All rights reserved
@@ -1047,8 +1047,7 @@ class commerceRecordList extends localRecordList {
 
 
 }
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/graytree/modfunc_list_list/class.tx_graytree_db_list_extra.inc'])    {
-    include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/graytree/modfunc_list_list/class.tx_graytree_db_list_extra.inc']);
+if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_db_list_extra.inc']) {
+ 	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_db_list_extra.inc']);
 }
-
 ?>
