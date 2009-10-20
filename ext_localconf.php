@@ -92,6 +92,12 @@ $TYPO3_CONF_VARS['EXTCONF'][COMMERCE_EXTkey]['SYSPRODUCTS']['PAYMENT']['types'][
 	// Language file for external credit card check
 	'ccvs_language_files' => PATH_txcommerce . 'payment/ccvs_language',
 );
+$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['SYSPRODUCTS']['PAYMENT']['types']['debit'] = array (
+	'path' => PATH_txcommerce .'payment/class.tx_commerce_payment_debit.php',
+	'class' => 'tx_commerce_payment_debit',
+	'type'=>PAYMENTArticleType,
+);
+
 $TYPO3_CONF_VARS['EXTCONF'][COMMERCE_EXTkey]['SYSPRODUCTS']['PAYMENT']['types']['cashondelivery'] = array(
 	'path' => PATH_txcommerce .'payment/class.tx_commerce_payment_cashondelivery.php',
 	'class' => 'tx_commerce_payment_cashondelivery',

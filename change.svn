@@ -3,6 +3,7 @@ Changelog for tx_commerce
 20.10.2009 Ingo Schmitt <is@marketing-factory.de>
 * Fixed issue 5038, Thanks to Dimitri Koenig
 * Fixed a TYPO
+* Fixed isse 1386, Thanks to Frank Roeske
 
 19.10.2009 Ingo Schmitt <is@marketing-factory.de>
 * Fixed Issue 2770
