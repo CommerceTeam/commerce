@@ -5,6 +5,10 @@ Changelog for tx_commerce
 * Fixed a TYPO
 * Fixed Issue 1439, Thanks to Frank Roeske
 
+21.10.2009 Ingo Schmitt <is@marketing-factory.de>
+* Fixed a Bug "Fatal Error", when data in XML Filed is corrupted
+* Raised Version to 0.12.1 
+
 19.10.2009 Ingo Schmitt <is@marketing-factory.de>
 * Fixed Issue 2770
 

@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2006 Thomas Hempel (thomas@work.de)
+*  (c) 2006 - 2009 Thomas Hempel (thomas@work.de)
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -905,7 +905,9 @@ class tx_commerce_belib {
 		$xmlData = $GLOBALS['TYPO3_DB']->exec_SELECTquery($xmlField, $table, 'uid=' .intval($uid));
 		$xmlData = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($xmlData);
 		$xmlData = t3lib_div::xml2array($xmlData[$xmlField]);
-		
+		if (!is_array($xmlData)) {
+			$xmlData = array();
+		}
 		switch (strtolower($type))	{
 			case 'category':
 				$relList = $this->getAttributesForCategory($uid);
@@ -923,20 +925,20 @@ class tx_commerce_belib {
 				$value = array();
 				if (is_array($relList)) {
 					foreach ($relList as $relation)	{
-						if ($relation['uid_correlationtype'] == $ct['uid'])	{
+						if ($relation['uid_correlationtype'] == (int)$ct['uid'])	{
 							
 							// add ctype to checklist in case we need to rebuild
 							if(!in_array($ct['uid'], $cTypes)) {
-								$cTypes[] = $ct['uid'];
+								$cTypes[] = (int)$ct['uid'];
 							}
 							
 							$value[] = $relation['uid_foreign'];
 						}
 					}
 				}
-
+			
 				if (count($value) > 0) {
-					$xmlData['data']['sDEF']['lDEF']['ct_' .$ct['uid']] = array('vDEF' => (string)implode(',', $value));
+					$xmlData['data']['sDEF']['lDEF']['ct_' .(string)$ct['uid']] = array('vDEF' => (string)implode(',', $value));
 				}
 			}
 		}
@@ -946,7 +948,7 @@ class tx_commerce_belib {
 		if($rebuild && 0 < count($cTypes) && is_array($ctList)) {
 			foreach ($ctList as $ct)	{
 				if (!in_array($ct['uid'], $cTypes)) {
-					$xmlData['data']['sDEF']['lDEF']['ct_' .$ct['uid']] = array('vDEF' => '');
+					$xmlData['data']['sDEF']['lDEF']['ct_' .(string)$ct['uid']] = array('vDEF' => '');
 				}
 			}
 		}
