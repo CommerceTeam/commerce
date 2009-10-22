@@ -1,4 +1,6 @@
 Changelog for tx_commerce
+22.10.2009 Ingo Schmitt <is@marketing-factory.de>
+* Added drag and drop sorting to attribute values
 
 21.10.2009 Ingo Schmitt <is@marketing-factory.de>
 * Fixed a Bug "Fatal Error", when data in XML Filed is corrupted
