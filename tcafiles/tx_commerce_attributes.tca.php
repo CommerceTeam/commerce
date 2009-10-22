@@ -195,6 +195,7 @@ $TCA['tx_commerce_attributes'] = array (
 					'showAllLocalizationLink' => 1,
 					'showPossibleLocalizationRecords' => 1,
 					'showRemovedLocalizationRecords' => 1,		
+					'useSortable' => 1,
 				),
 				'behaviour' => array(
 					'localizationMode' => 'select',
