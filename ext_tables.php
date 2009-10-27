@@ -294,7 +294,6 @@ t3lib_extMgm::addToAllTCAtypes('pages','tx_commerce_foldereditorder;;;;1-1-1');
 // extend beusers/begroups for access control
 $tempColumns = array(
 	'tx_commerce_mountpoints' => array(
-		'exclude' => 1,
 		'label' => 'LLL:EXT:commerce/locallang_db.xml:label.tx_commerce_mountpoints',
 		'config' => $GLOBALS['T3_VAR']['ext'][COMMERCE_EXTkey]['TCA']['mountpoints_config'],
 	),
