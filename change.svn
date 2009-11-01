@@ -1,4 +1,8 @@
 Changelog for tx_commerce
+01.11.2009 Ingo Schmitt <is@marketing-factory.de>
+* Changed all spli calles to explode ore preg_split, since split will be depricated
+
+
 22.10.2009 Ingo Schmitt <is@marketing-factory.de>
 * Added drag and drop sorting to attribute values
 

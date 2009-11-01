@@ -71,7 +71,7 @@ class tx_commerce_tceforms_hooks {
 		}
 		if($table=='tx_commerce_articles' && $field == 'prices' && !$row['sys_language_uid'] && strpos($row['uid_product'],'_'.$this->extconf['paymentID'].'|') === false && strpos($row['uid_product'],'_'.$this->extconf['deliveryID'].'|') === false && is_numeric($row['uid'])) {
 			$splitText='<div class="typo3-newRecordLink">';
-			$outa = split($splitText, $out, 2);
+			$outa = explode($splitText, $out, 2);
 			$out=$outa[0].$this->getScaleAmount($row['uid']).$splitText.$outa[1];
 		}
 	}

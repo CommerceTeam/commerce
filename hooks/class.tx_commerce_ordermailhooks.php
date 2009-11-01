@@ -113,7 +113,7 @@ class tx_commerce_ordermailhooks  {
 	 */
     function ordermoveSendMail($mailconf,&$orderdata,&$template) {
     	
-		$parts = split(chr(10),$mailconf['plain']['content'],2);		// First line is subject
+		$parts = explode(chr(10),$mailconf['plain']['content'],2);		// First line is subject
 		$mailconf['alternateSubject']=trim($parts[0]); // add mail subject
 		$mailconf['plain']['content']=trim($parts[1]); // replace plaintext content	 
 

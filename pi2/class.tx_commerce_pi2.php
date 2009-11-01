@@ -515,7 +515,7 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 		$select = '<select name="' . $this->prefixId . '[delArt]" onChange="this.form.submit();">';
 
 		if ($this->conf['delivery.']['allowedArticles']) {
-			$allowedArticles = split(',', $this->conf['delivery.']['allowedArticles']);
+			$allowedArticles = explode(',', $this->conf['delivery.']['allowedArticles']);
 		}
 
 		// Hook to define/overwrite individually, which delivery articles are allowed
@@ -594,7 +594,7 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 		}
 
 		if ($this->conf['payment.']['allowedArticles']) {
-			$allowedArticles = split(',', $this->conf['payment.']['allowedArticles']);
+			$allowedArticles = explode(',', $this->conf['payment.']['allowedArticles']);
 		}
 
 		// Hook to allow to define/overwrite individually, which payment articles are allowed
