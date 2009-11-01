@@ -1975,7 +1975,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 				}
 
 				// Moved to plainMailEncoded
-				$parts = split(chr(10), $mailcontent, 2);
+				$parts = explode(chr(10), $mailcontent, 2);
 				// First line is subject
 				$subject = trim($parts[0]);
 				$plain_message = trim($parts[1]);
@@ -2113,7 +2113,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 			}
 
 			// Moved to plainMailEncoded
-			$parts = split(chr(10), $mailcontent, 2); // First line is subject
+			$parts = explode(chr(10), $mailcontent, 2); // First line is subject
 			$subject = trim($parts[0]);
 			$plain_message = trim($parts[1]);
 

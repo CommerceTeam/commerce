@@ -1,4 +1,7 @@
 Changelog for tx_commerce
+01.11.2009 Ingo Schmitt <is@marketing-factory.de>
+* Changed all spli calles to explode ore preg_split, since split will be depricated
+
 27.10.2009 Christian Kuhn <lolli@schwarzbu.ch>
  * Removed exclude=1 definition from be_user and be_groups field tx_commerce_mountpoints, they are admin-only tables anyway
 
