@@ -1180,7 +1180,7 @@ class tx_commerce_pibase extends tslib_pibase {
 	    		break;
 			case 'IMAGE' :
 				if (is_string($value) && !empty($value)) {
-					foreach (split(',',$value) as $oneValue) {
+					foreach (explode(',',$value) as $oneValue) {
 					    $this->cObj->setCurrentVal($TSconf['imgPath'].$oneValue);
 					    if($TSconf['file']<> 'GIFBUILDER'){	
 							$TSconf['file'] = $TSconf['imgPath'].$oneValue;
@@ -1812,7 +1812,7 @@ class tx_commerce_pibase extends tslib_pibase {
 		}
 		$regex = implode('|',$aKeys);
 			// Doing regex's
-		$storeArr['c'] = split($regex,$content);
+		$storeArr['c'] = preg_split($regex,$content);
 		preg_match_all('/'.$regex.'/',$content,$keyList);
 		$storeArr['k']=$keyList[0];
 	

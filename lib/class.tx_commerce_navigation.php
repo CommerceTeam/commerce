@@ -223,7 +223,7 @@ class tx_commerce_navigation {
 		
 	    if ($this->gpVars['path']) {
         	$this->PATH = $this->gpVars['path'];
-        	$this->pathParents=split(",",$this->PATH);
+        	$this->pathParents=explode(",",$this->PATH);
  	    } elseif((is_numeric($this->choosenCat)) && ($this->choosenCat>0)) {
         	/**
         	 * Build the path by or own
@@ -327,12 +327,12 @@ class tx_commerce_navigation {
 			$catOptionsCount=count($this->mConf['groupOptions.']);	
 			$chosenCatUid=array();
 			for($i=1; $i<=$catOptionsCount;$i++){
-				$chosenGroups=split(',',$this->mConf['groupOptions.'][$i.'.']['group']);
+				$chosenGroups=explode(',',$this->mConf['groupOptions.'][$i.'.']['group']);
 				if ($GLOBALS['TSFE']->fe_user->user['usergroup']==''){
 					
 					return $this->mConf['category'];
 				}
-				$fe_groups=split(',',$GLOBALS['TSFE']->fe_user->user['usergroup']);
+				$fe_groups=explode(',',$GLOBALS['TSFE']->fe_user->user['usergroup']);
 					
 				foreach($chosenGroups as $group){
 					if (in_array($group,$fe_groups)===true){	
