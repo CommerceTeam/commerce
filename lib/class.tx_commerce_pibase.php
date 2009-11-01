@@ -1812,9 +1812,10 @@ class tx_commerce_pibase extends tslib_pibase {
 		}
 		$regex = implode('|',$aKeys);
 			// Doing regex's
-		$storeArr['c'] = preg_split($regex,$content);
-		preg_match_all('/'.$regex.'/',$content,$keyList);
+		$storeArr['c'] = preg_split($regex, $content);
+		preg_match_all($regex, $content, $keyList);
 		$storeArr['k']=$keyList[0];
+		
 	
 
 		$GLOBALS['TT']->setTSlogMessage('Parsing',0);
