@@ -1804,18 +1804,19 @@ class tx_commerce_pibase extends tslib_pibase {
 		while(list(,$wPK)=each($wPkeys))	{
 			$content =$this->cObj->substituteSubpart($content,$wPK,array($wPK,$wPK));
 		}
-
-			// traverse keys and quote them for reg ex.
+		
+		// traverse keys and quote them for reg ex.
 		reset($aKeys);
 		while(list($tK,$tV)=each($aKeys))	{
 			$aKeys[$tK]=quotemeta($tV);
 		}
 		$regex = implode('|',$aKeys);
 			// Doing regex's
-		$storeArr['c'] = preg_split($regex, $content);
-		preg_match_all($regex, $content, $keyList);
+		$storeArr['c'] = split($regex,$content);
+		preg_match_all('/'.$regex.'/',$content,$keyList);
 		$storeArr['k']=$keyList[0];
-		
+
+			
 	
 
 		$GLOBALS['TT']->setTSlogMessage('Parsing',0);
