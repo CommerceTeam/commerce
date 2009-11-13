@@ -1226,6 +1226,7 @@ class tx_commerce_belib {
      * @author Ricardo Mieres <ricardo.mieres@502.cl>
      * @param	integer $article_uid
      * @see updatePriceXMLFromDatabase
+     * @deprecated, see $this->updateXML
      * 
      */
     function fix_articles_price($article_uid=0){
@@ -1242,6 +1243,7 @@ class tx_commerce_belib {
      * updated the Flexform
      * @author Ricardo Mieres <ricardo.mieres@502.cl>
      * @param	integer $product_uid
+     * @deprecated, see $this->updateXML
      */
 
     function fix_product_atributte($product_uid=0){
@@ -2148,6 +2150,7 @@ class tx_commerce_belib {
      * updated the Flexform
      * @author Ricardo Mieres <ricardo.mieres@502.cl>
      * @param	integer $category_uid
+     * @deprecated, see $this->updateXML
      */
     
     function fix_category_atributte($category_uid=0){

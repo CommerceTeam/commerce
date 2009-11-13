@@ -40,6 +40,9 @@ Changelog for tx_commerce
 * Fixed 2479
 * Fixed issue #3920
 * Fixed issue #4362
+* Set Methodes as deprecated (belib:fix_articles_price, belib:fix_product_atributte, belib:fix_category_atributte)
+
+
 01.11.2009 Ingo Schmitt <is@marketing-factory.de>
 * Changed all spli calles to explode ore preg_split, since split will be depricated
 
