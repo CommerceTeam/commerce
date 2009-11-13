@@ -1754,12 +1754,14 @@ class tx_commerce_pibase extends tslib_pibase {
 		return $localTCA;
 	}
 	
- 	/* Multi substitution function with caching.
- 	 * Copy from tslib_content -> substituteMarkerArrayNoCached
- 	 * Without caching 
- 	 * @see substituteMarkerArrayNoCached
+	/**
+	 * Multi substitution function
 	 *
-	 * This function should be a one-stop substitution function for working with HTML-template. It does not substitute by str_replace but by splitting. This secures that the value inserted does not themselves contain markers or subparts.
+	 * Copy from tslib_content -> substituteMarkerArrayNoCached, but without caching
+	 * @see tslib_content: substituteMarkerArrayCached
+	 *
+	 * This function should be a one-stop substitution function for working with HTML-template.
+	 * It does not substitute by str_replace but by splitting. This secures that the value inserted does not themselves contain markers or subparts.
 	 * This function takes three kinds of substitutions in one:
 	 * $markContentArray is a regular marker-array where the 'keys' are substituted in $content with their values
 	 * $subpartContentArray works exactly like markContentArray only is whole subparts substituted and not only a single marker.
@@ -1770,10 +1772,9 @@ class tx_commerce_pibase extends tslib_pibase {
 	 * @param	array		Exactly like markContentArray only is whole subparts substituted and not only a single marker.
 	 * @param	array		An array of arrays with 0/1 keys where the subparts pointed to by the main key is wrapped with the 0/1 value alternating.
 	 * @return	string		The output content stream
-	 * @see substituteSubpart(), substituteMarker(), substituteMarkerInObject(), TEMPLATE()
 	 */
-	function substituteMarkerArrayNoCached($content,$markContentArray=array(),$subpartContentArray=array(),$wrappedSubpartContentArray=array())	{
-		$GLOBALS['TT']->push('substituteMarkerArrayNoCache');
+	function substituteMarkerArrayNoCached($content, $markContentArray = array(), $subpartContentArray = array(),$wrappedSubpartContentArray = array()) {
+		$GLOBALS['TT']->push('commerce: substituteMarkerArrayNoCache');
 
 			// If not arrays then set them
 		if (!is_array($markContentArray))	$markContentArray=array();	// Plain markers
@@ -1788,65 +1789,51 @@ class tx_commerce_pibase extends tslib_pibase {
 			return $content;
 		}
 		asort($aKeys);
-		
-		
+
 			// Initialize storeArr
 		$storeArr=array();
 
 			// Finding subparts and substituting them with the subpart as a marker
-		reset($sPkeys);
-		while(list(,$sPK)=each($sPkeys))	{
-			$content =$this->cObj->substituteSubpart($content,$sPK,$sPK);
+		foreach ($sPkeys as $sPK) {
+			$content = $this->cObj->substituteSubpart($content, $sPK, $sPK);
 		}
 
 			// Finding subparts and wrapping them with markers
-		reset($wPkeys);
-		while(list(,$wPK)=each($wPkeys))	{
-			$content =$this->cObj->substituteSubpart($content,$wPK,array($wPK,$wPK));
+		foreach ($wPkeys as $wPK) {
+			$content = $this->cObj->substituteSubpart($content, $wPK, array($wPK, $wPK));
 		}
-		
-		// traverse keys and quote them for reg ex.
-		reset($aKeys);
-		while(list($tK,$tV)=each($aKeys))	{
-			$aKeys[$tK]=quotemeta($tV);
+
+			// traverse keys and quote them for reg ex.
+		foreach ($aKeys as $tK => $tV) {
+			$aKeys[$tK] = preg_quote($tV, '/');
 		}
-		$regex = implode('|',$aKeys);
+		$regex = '/' . implode('|', $aKeys) . '/';
 			// Doing regex's
-		$storeArr['c'] = split($regex,$content);
-		preg_match_all('/'.$regex.'/',$content,$keyList);
-		$storeArr['k']=$keyList[0];
-
-			
-	
-
-		$GLOBALS['TT']->setTSlogMessage('Parsing',0);
-		
-		
+		$storeArr['c'] = preg_split($regex, $content);
+		preg_match_all($regex, $content, $keyList);
+		$storeArr['k'] = $keyList[0];
 
 			// Substitution/Merging:
 			// Merging content types together, resetting
-		$valueArr = array_merge($markContentArray,$subpartContentArray,$wrappedSubpartContentArray);
+		$valueArr = array_merge($markContentArray, $subpartContentArray, $wrappedSubpartContentArray);
 
-		$wSCA_reg=array();
-		reset($storeArr['k']);
+		$wSCA_reg = array();
 		$content = '';
-			// traversin the keyList array and merging the static and dynamic content
-		while(list($n,$keyN)=each($storeArr['k']))	{
-			$content.=$storeArr['c'][$n];
-			if (!is_array($valueArr[$keyN]))	{
-				$content.=$valueArr[$keyN];
+			// traversing the keyList array and merging the static and dynamic content
+		foreach ($storeArr['k'] as $n => $keyN) {
+			$content .= $storeArr['c'][$n];
+			if (!is_array($valueArr[$keyN])) {
+				$content .= $valueArr[$keyN];
 			} else {
-				$content.=$valueArr[$keyN][(intval($wSCA_reg[$keyN])%2)];
-				$wSCA_reg[$keyN]++;
+				$content .= $valueArr[$keyN][(intval($wSCA_reg[$keyN])%2)];
+				$wSCA_reg[$keyN] ++;
 			}
 		}
-		$content.=$storeArr['c'][count($storeArr['k'])];
+		$content .= $storeArr['c'][count($storeArr['k'])];
 
 		$GLOBALS['TT']->pull();
 		return $content;
 	}
-	 
-	
 
 }
 
