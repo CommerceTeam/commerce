@@ -902,6 +902,13 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 		// Handle orders
 		$basket = $GLOBALS['TSFE']->fe_user->tx_commerce_basket;
 
+		foreach($hookObjectsArr as $hookObj) {
+			if (method_exists($hookObj, 'prepayment')) {
+				$hookObj->prepayment($paymentObj, $basket, $this);
+			}
+		}
+
+
 		if ($this->debug) {
 			debug($basket);
 		}

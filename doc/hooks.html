@@ -52,7 +52,7 @@ Some hook-methods can return data which is used by the calling function. Others 
 <h3>Updated by Michael Staatz <a href="mailto:michael.staatz@e-netconsulting.com">&lt;michael.staatz@e-netconsulting.com&gt;</a></h3>
 <h3>as of 09/11/2009</h3>
 	<br/><br/><br/>
-	Functions: 55<br/>
+	Functions: 56<br/>
 	Classes: 17<br/>
 <a href="#tx_commerce_article">
 	<div class="classindex">class tx_commerce_article</div>
@@ -142,6 +142,7 @@ Some hook-methods can return data which is used by the calling function. Others 
 	<div class="functionindex">function generateMail</div>
 	<div class="functionindex">function validationMethod_</div>
 	<div class="functionindex">function alternativePaymentStep</div>
+	<div class="functionindex">function prepayment</div>
 <a href="#tx_commerce_pi4">
 <div class="classindex">class tx_commerce_pi4</div>
 </a>
@@ -527,6 +528,12 @@ Some hook-methods can return data which is used by the calling function. Others 
 					</div>
 			<div class="functionname">function finishIt</div>
 				<div class="hookname">$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi3/class.tx_commerce_pi3.php']['finishIt']</div>
+					<div class="description">
+					Call: prepayment($paymentObj,$basket,$this)<br/>
+					Type: Multiple<br/>
+					Result: void<br />
+					This is called right after the basket is loaded and before the payment is called.<br/>
+					</div>
 					<div class="description">
 					Call: postpayment($paymentObj,$basket,$this)<br/>
 					Type: Multiple<br/>
