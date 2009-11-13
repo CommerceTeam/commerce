@@ -201,7 +201,8 @@ $TCA['tx_commerce_products'] = Array (
 				'show_thumbs' => 1,
 				'size' => 3,
 				'minitems' => 0,
-				'maxitems' => 5,
+				'maxitems' => 200,
+				'autoSizeMax' => 40,
 			)
 		),
 		'teaser' => Array (
@@ -237,7 +238,8 @@ $TCA['tx_commerce_products'] = Array (
 				'show_thumbs' => 1,
 				'size' => 3,
 				'minitems' => 0,
-				'maxitems' => 5,
+				'maxitems' => 200,
+				'autoSizeMax' => 40,
 			)
 		),
 		'categories' => Array (
