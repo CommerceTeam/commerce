@@ -1,4 +1,7 @@
 Changelog for tx_commerce
+13.11.2009 Volker Graubaum <vg@e-netconsulting.de>
+* finish issue #2385 now usergroup is displayed
+
 13.11.2009 Christian Kuhn <lolli@schwarzbu.ch>
 * Merge substituteMarkerArrayNoCached with its parent in TYPO3v4 trunk, changing while to foreach, split to preg_split and quotemeta to preg_quote
 * Fixed issue #5340: Small mistake in pi3 mailconf, changed replayTo to replyTo in mails
