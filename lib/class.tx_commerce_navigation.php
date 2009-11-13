@@ -101,7 +101,6 @@ class tx_commerce_navigation {
 		if ($this->mConf['useRootlineInformationToUrl']) {
 			$this->useRootlineInformationToUrl = $this->mConf['useRootlineInformationToUrl'];
 		}
-		
 		$this->choosenCat = $this->mConf['category'];
 		
 		$this->nodeArrayAdditionalFields = t3lib_div::trimExplode(',',$this->mConf['additionalFields'],0);
@@ -307,9 +306,10 @@ class tx_commerce_navigation {
 			$this->processArrayPostRender($this->mTree,$this->pathParents,$this->mDepth);
 	
 		}
-	
 		return  $this->mTree;
 	}
+	
+	
 	function fixPathParents(&$pathArray,$chosenCatUid){
 		if ($pathArray==null){
 				return;
@@ -687,14 +687,14 @@ class tx_commerce_navigation {
 						$treeArray[$nodeId]['ITEM_STATE'] = 'ACT';
 						if (count($treeArray[$nodeId]['--subLevel--'])>0){
 							//$treeArray[$nodeId]['ITEM_STATE'] = 'ACTIFSUB';
-							$treeArray[$path[0]]['ITEM_STATE'] = 'IFSUB';
+							$treeArray[$nodeId]['ITEM_STATE'] = 'IFSUB';
 						}
 						if ($nodeId == $this->choosenCat) {
 							if (count($treeArray[$nodeId]['--subLevel--'])>0){
 								$treeArray[$nodeId]['ITEM_STATE'] = 'CUR'; 
 							}else{
 								//$treeArray[$nodeId]['ITEM_STATE'] = 'CURIFSUB'; 
-								$treeArray[$path[0]]['ITEM_STATE'] = 'IFSUB';
+								$treeArray[$nodeId]['ITEM_STATE'] = 'IFSUB';
 							}
 						}
 						if($this->ShowUid==$treeArray[$nodeId]['parent_id']){
@@ -703,7 +703,7 @@ class tx_commerce_navigation {
 								$treeArray[$nodeId]['ITEM_STATE'] = 'CUR'; 
 							}else{
 								//$treeArray[$nodeId]['ITEM_STATE'] = 'CURIFSUB'; 
-								$treeArray[$path[0]]['ITEM_STATE'] = 'IFSUB';
+								$treeArray[$nodeId]['ITEM_STATE'] = 'IFSUB';
 							}
 						}
 						$this->processArrayPostRender($treeArray[$nodeId]['--subLevel--'],$path,$mDepth-1);
