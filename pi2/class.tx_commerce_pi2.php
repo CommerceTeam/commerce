@@ -93,10 +93,10 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 
 		// Define the currency
 		// @Deprecated curency (only a typo)
-		if ($this->conf['curency'] > '') {
+		if ($this->conf['curency'] <> '') {
 			$this->currency = $this->conf['curency'];
 		}
-		if ($this->conf['currency'] > '') {
+		if ($this->conf['currency'] <> '') {
 			$this->currency = $this->conf['currency'];
 		}
 		if (empty($this->currency)) {
@@ -114,6 +114,23 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 	 */
 	function main($content, $conf) {
 		$this->init($conf);
+
+		$hookObjectsArr = array();
+		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['main'])) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['main'] as $classRef) {
+				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+			}
+		}
+
+		foreach ($hookObjectsArr as $hookObj) {
+			if (method_exists($hookObj, 'postInit')) {
+				$result = $hookObj->postInit($this);
+				if ($result === false) {
+					return $this->pi_wrapInBaseClass($this->content);
+				}
+			}
+		}
+
 
 		if (($this->basket->getItemsCount() == 0) && ($this->basket->getArticleTypeCountFromList(explode(',', $this->conf['regularArticleTypes'])) == 0)) {
 			// If basket is emtpy, it should be rewritable
@@ -403,7 +420,7 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 		}
 
 		$basketArray['###BASKET_PRODUCT_LIST###'] = $this->makeProductList();
-		
+
 		// @Deprecated getBasket hook
 		if (($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['getBasket'])) {
 			$hookObject = &t3lib_div::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['getBasket']);
@@ -586,7 +603,7 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 				// Add Please Select Option
 				$select .= '<option value="-1" selected="selected">' . $this->pi_getLL('lang_payment_force') . '</option>';
 				$addPleaseSelect = TRUE;
-			} 
+			}
 			else {
 				// No payment article is in the basket, so add the first one
 				$addDefaultPaymentToBasket = TRUE;
@@ -613,7 +630,7 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 		foreach($this->payProd->articles as $articleUid => $articleObj) {
 			if ((!is_array($allowedArticles)) || in_array($articleUid, $allowedArticles)) {
 				$select.= '<option value="' . $articleUid . '"';
-				if (($articleUid == $this->basketPay[0]) || ($addDefaultPaymentToBasket && ($articleUid == $this->conf['defaultPaymentArticleId'])) && !$addPleaseSelect) { 
+				if (($articleUid == $this->basketPay[0]) || ($addDefaultPaymentToBasket && ($articleUid == $this->conf['defaultPaymentArticleId'])) && !$addPleaseSelect) {
 					$addDefaultPaymentToBasket = FALSE;
 					$first = TRUE;
 					$select.= ' selected="selected"';
@@ -630,7 +647,7 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 		}
 
 		$select.= '</select>';
-		
+
 		// Set Prices to 0, if "please select " is shown
 		if($addPleaseSelect) {
 			$price_gross = tx_moneylib::format(0, $this->currency);
@@ -825,13 +842,13 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 				$this->select_attributes = $myItem->product->get_attributes(array(ATTRIB_selector));
 				$markerArray["PRODUCT_BASKET_FOR_LISTVIEW"] = $this->makeArticleView($myItem->article, $myItem->product);
 				$templateselector = $changerowcount % 2;
-				
+
 				foreach($hookObjectsArr as $hookObj)    {
 					if (method_exists($hookObj, 'changeProductTemplate')) {
 						$templateMarker =  $hookObj->changeProductTemplate($templateMarker, $myItem, $this);
 					}
 				}
-				
+
 				$template = $this->cObj->getSubpart($this->templateCode, $templateMarker[$templateselector]);
 				$changerowcount++;
 

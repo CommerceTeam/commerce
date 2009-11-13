@@ -126,7 +126,7 @@ Some hook-methods can return data which is used by the calling function. Others 
 	<div class="functionindex">function makeProductList</div>
 	<div class="functionindex">function makePayment</div>
 	<div class="functionindex">function makeDelivery</div>
-	
+	<div class="functionindex">postInit</div>
 <a href="#tx_commerce_pi3">
 <div class="classindex">class tx_commerce_pi3</div>
 </a>
@@ -417,6 +417,13 @@ Some hook-methods can return data which is used by the calling function. Others 
 		<a name="tx_commerce_pi2"/>
 		<div class="classname">class tx_commerce_pi2</div>
 			<div class="functionname">function handleBasket</div>
+				<div class="hookname">$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['main']</div>
+					<div class="description">
+					Call: postInit($this)<br/>
+					Type: Multiple<br/>
+					Result: bool<br />
+					Hook in the init of pi2 for own basket rendering.
+					</div>
 				<div class="hookname">$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['postartAddUid']</div>
 					<div class="description">
 					Call: postartAddUid($this->basket,$this)<br/>
