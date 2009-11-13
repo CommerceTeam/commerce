@@ -86,7 +86,25 @@ class tx_commerce_navigation {
 	 */
 	
 	 var $translationMode='hideNonTranslated';
-    
+	 
+
+	 /**
+	  * Default Menue Items States order by the defined Order
+	  * @see: http://typo3.org/documentation/document-library/references/doc_core_tsref/4.1.0/view/10/2/
+	  * @var array
+	  */
+	 
+	 var $MenueItemStates = array(
+	 	0=> 'USERDEF2',
+	 	1=> 'USERDEF1',
+	 	2=> 'SPC',
+	 	3=> 'USR',
+	 	4=> 'CURIFSUB',
+	 	5=> 'CUR',
+	 	6=> 'ACTIFSUB',
+	 	7=> 'ACT',
+	 	8=> 'IFSUB',);
+   
     
 	/**
 	 * Init Method for initialising the navigation
@@ -96,7 +114,7 @@ class tx_commerce_navigation {
 	 *
 	 */
 	function init($content,$conf) {
-		
+	
 		$this->mConf = $this->processConf($conf);
 		if ($this->mConf['useRootlineInformationToUrl']) {
 			$this->useRootlineInformationToUrl = $this->mConf['useRootlineInformationToUrl'];
@@ -494,6 +512,8 @@ class tx_commerce_navigation {
 					
 					$nodeArray['_ADD_GETVARS'] .= ini_get('arg_separator.output') .'cHash='.t3lib_div::shortMD5(serialize($pA));
 				 	$nodeArray['ITEM_STATE'] = 'IFSUB';
+				 	$nodeArray['ITEM_STATES_LIST'] = 'IFSUB,NO';
+				 	
 				 
 				 }else{
 				 	
@@ -519,7 +539,6 @@ class tx_commerce_navigation {
 		if ($treeList==null && $this->mConf['showProducts']==1){
 			$treeList=$this->makeSubChildArrayPostRender($uidPage,$tableSubMain,$tableSubMm,$uid_root,$mDepth,$path);
 		}
-	
 		return $treeList;
 	}
 	/**
@@ -638,30 +657,55 @@ class tx_commerce_navigation {
 				}
 			}
 		}
+		/** 
+		 * We also store the possible States for each element, to select later, which state will be set in clear
+		 */
 		if ($mDepth!=0){
 			if ($mDepth==1){
-				
+				/**
+				 * States: If you would like to preset an element to be recognized as a SPC, IFSUB, ACT, CUR or USR mode item, you can do so by specifying one of these values in the key “ITEM_STATE” of the page record. This setting will override the natural state-evaluation.
+				 * @See: http://typo3.org/documentation/document-library/references/doc_core_tsref/4.1.0/view/8/11/#id4080403
+				 * So Only Implement ACT, CUR, IFSUB
+				 * Other states should be implemented below in clear
+				 */
 				$treeArray[$path[0]]['ITEM_STATE'] = 'ACT';
+				$treeArray[$path[0]]['ITEM_STATES_LIST'] = 'ACT,NO';				
 				if ($path[0] == $this->choosenCat) {
 
+					/**
+					 * Set CUR: 
+					 * a menu item if the item is the current page.
+					 * @see http://typo3.org/documentation/document-library/references/doc_core_tsref/4.1.0/view/10/2/
+					 */
+					$treeArray[$path[0]]['ITEM_STATE'] = 'CUR';
+					$treeArray[$path[0]]['ITEM_STATES_LIST'] = 'CUR,ACT,NO';				
+					
+					/**
+					 * Set IFSUB: 
+					 */
 					if (count($treeArray[$path[0]]['--subLevel--'])>0) {
-						//$treeArray[$path[0]]['ITEM_STATE'] = 'CURIFSUB';					
 						$treeArray[$path[0]]['ITEM_STATE'] = 'IFSUB';
-					}else {
-						$treeArray[$path[0]]['ITEM_STATE'] = 'CUR';
+						$treeArray[$path[0]]['ITEM_STATES_LIST'] = 'CURIFSUB,CUR,ACTIFSUB,ACT,IFSUB,NO';				
 					}
 
 					/**
 					 * Sets this node (Product) as current item
 					 */
 					if ($this->ShowUid > 0){
-						$treeArray[$path[0]]['--subLevel--'][$this->ShowUid]['ITEM_STATE']='CUR';
-						if (count($treeArray[$path[0]]['--subLevel--'])>0) {
-							//$treeArray[$path[0]]['ITEM_STATE'] = 'ACTIFSUB';
-							$treeArray[$path[0]]['ITEM_STATE'] = 'IFSUB';
-						}else{
-							$treeArray[$path[0]]['ITEM_STATE'] = 'ACT';
-						}
+						/**
+						 * If we do have a product
+						 * This must be the deepethst Element in the menue
+						 * SO, this MUST Be CUR and The Level Above must be
+						 * 
+						 */
+						$treeArray[$path[0]]['--subLevel--'][$this->ShowUid]['ITEM_STATE'] = 'CUR';
+						$treeArray[$path[0]]['--subLevel--'][$this->ShowUid]['ITEM_STATES_LIST'] = 'CUR,ACT,NO';
+						
+						#if (count($treeArray[$path[0]]['--subLevel--'])>0) {
+						#	$treeArray[$path[0]]['ITEM_STATE'] = 'IFSUB';
+						#}
+						$treeArray[$path[0]]['ITEM_STATE'] = 'ACT';
+						$treeArray[$path[0]]['ITEM_STATES_LIST'] = 'ACTIFSUB,ACT,IFSUB,NO';
 						
 					}
 
@@ -669,41 +713,49 @@ class tx_commerce_navigation {
 		
 				if($this->ShowUid==$path[0]){
 					if (count($treeArray[$path[0]]['--subLevel--'])>0) {
-						//$treeArray[$path[0]]['ITEM_STATE'] = 'CURIFSUB';					
 						$treeArray[$path[0]]['ITEM_STATE'] = 'IFSUB';
+						$treeArray[$path[0]]['ITEM_STATES_LIST'] = 'IFSUB,NO';				
 					}else {
 						$treeArray[$path[0]]['ITEM_STATE'] = 'CUR';
+						$treeArray[$path[0]]['ITEM_STATES_LIST'] = 'CUR,ACT,IFSUB,NO';	
+						
 					}
 				}
 				
 				if (count($treeArray[$path[0]]['--subLevel--'])>0) { 
 					$treeArray[$path[0]]['_SUB_MENU']=$treeArray[$path[0]]['--subLevel--'];
 				}
+				
 				return;
 			}else{
 				if(is_array($path)){
 					if(is_array($treeArray)){
 						$nodeId=array_pop($path);
 						$treeArray[$nodeId]['ITEM_STATE'] = 'ACT';
+						$treeArray[$nodeId]['ITEM_STATES_LIST'] = 'ACT,NO';	
 						if (count($treeArray[$nodeId]['--subLevel--'])>0){
-							//$treeArray[$nodeId]['ITEM_STATE'] = 'ACTIFSUB';
 							$treeArray[$nodeId]['ITEM_STATE'] = 'IFSUB';
+							$treeArray[$nodeId]['ITEM_STATES_LIST'] = 'ACTIFSUB,ACT,IFSUB,NO';	
 						}
+						
 						if ($nodeId == $this->choosenCat) {
 							if (count($treeArray[$nodeId]['--subLevel--'])>0){
 								$treeArray[$nodeId]['ITEM_STATE'] = 'CUR'; 
-							}else{
-								//$treeArray[$nodeId]['ITEM_STATE'] = 'CURIFSUB'; 
-								$treeArray[$nodeId]['ITEM_STATE'] = 'IFSUB';
+								$treeArray[$nodeId]['ITEM_STATES_LIST'] = 'CURIFSUB,CUR,ACTIFSUB,ACT,NO';	
 							}
+							if ($treeArray[$nodeId]['tableSubMain'] == 'tx_commerce_products') {
+								$treeArray[$nodeId]['ITEM_STATE'] = 'ACT'; 
+								$treeArray[$nodeId]['ITEM_STATES_LIST'] = 'ACTIFSUB,ACT,IFSUB,NO';	
+							}
+							
 						}
 						if($this->ShowUid==$treeArray[$nodeId]['parent_id']){
 							$treeArray[$nodeId]['ITEM_STATE'] = 'CUR';
+							$treeArray[$nodeId]['ITEM_STATES_LIST'] = 'CUR,ACT,NO';	
+					
 							if (count($treeArray[$nodeId]['--subLevel--'])>0){
-								$treeArray[$nodeId]['ITEM_STATE'] = 'CUR'; 
-							}else{
-								//$treeArray[$nodeId]['ITEM_STATE'] = 'CURIFSUB'; 
-								$treeArray[$nodeId]['ITEM_STATE'] = 'IFSUB';
+								$treeArray[$nodeId]['ITEM_STATE'] = 'IFSUB'; 
+								$treeArray[$nodeId]['ITEM_STATES_LIST'] = 'CURIFSUB,CUR,ACTIFSUB,ACT,NO';
 							}
 						}
 						$this->processArrayPostRender($treeArray[$nodeId]['--subLevel--'],$path,$mDepth-1);
@@ -802,6 +854,15 @@ class tx_commerce_navigation {
 		return $active;
 	}
 	/**
+	 * Functions Sets needed Item-States, based on the Item-States set by the TS Admin
+	 * for the Menue
+	 * Availiable Item-Steates for a Menue-Levels are stored as
+	 * array in $conf['parentObj']->mconf
+	 * 
+	 * Menue Item State Priority
+	 * Order of priority: USERDEF2, USERDEF1, SPC, USR, CURIFSUB, CUR, ACTIFSUB, ACT, IFSUB
+	 * @see http://typo3.org/documentation/document-library/references/doc_core_tsref/4.1.0/view/10/2/
+	 * 
 	 * Function clears all subelements. This is needed for clear error with mix up pages and categories
 	 *
 	 * @param	array		$menuArr: Array with menu item
@@ -819,6 +880,39 @@ class tx_commerce_navigation {
 			if($item['DO_NOT_RENDER'] == '1') {
 				$menuArr = array();
 			}
+		}
+		if ($menuArr[0]['CommerceMenu'] == true) {
+			$availiableItemStates = $conf['parentObj']->mconf;
+			foreach ($menuArr as $MIndex => $value) {
+				if ($menuArr[$MIndex]['ITEM_STATE']<>'NO') {
+			
+					if ($menuArr[$MIndex]['ITEM_STATES_LIST']){
+						/**
+						 * Get the possible Item States
+						 * and walk thrue the list of configured item states
+						 * and set the first item-State match as Item State
+						 */
+						$menuArr[$MIndex]['ITEM_STATE'] = '';
+						$possibleItemStatesForItem = explode(',',$menuArr[$MIndex]['ITEM_STATES_LIST']);
+									
+						ksort($this->MenueItemStates);
+						foreach ($this->MenueItemStates as $prio => $state){
+							if (($availiableItemStates[$state]==1) && (empty($menuArr[$MIndex]['ITEM_STATE'])) ) {
+								if (in_array($state,$possibleItemStatesForItem))	{
+									$menuArr[$MIndex]['ITEM_STATE'] = $state;
+								}		
+							}
+						}
+						
+						if (empty($menuArr[$MIndex]['ITEM_STATE'])) {
+							$menuArr[$MIndex]['ITEM_STATE'] = 'NO';
+						}
+						#$menuArr[$MIndex]['title'] .= '('.$menuArr[$MIndex]['ITEM_STATES_LIST'].') !'.$menuArr[$MIndex]['ITEM_STATE'].'!';
+					}
+				}
+			}			
+			
+			
 		}
 		return $menuArr;
 	}
@@ -877,16 +971,23 @@ class tx_commerce_navigation {
   			 * 	Currentyl no Navtitle in tx_commerce_products
   			 * 			'nav_title' => $ProductObject->get_navtitle(),
   			 */
-  			
+  			if ($ProductObject->uid === $this->gpVars['showUid']) {
+  				$itemState ='CUR';
+  				$itemStateList = 'CUR,NO';
+  			}else{
+  				$itemState = 'NO';
+  				$itemStateList = 'NO';
+  			}
   			$itemState = ( $ProductObject->uid === $this->gpVars['showUid'] ? 'CUR':'NO');
   			
+  			$itemStateLists = '';
   			$returnArray[]=array(
 						'title'=>$ProductObject->get_title(),
   			
 						'uid'=>$this->PID,
 						 '_ADD_GETVARS' => $add_getvars.ini_get('arg_separator.output') .'cHash='.t3lib_div::shortMD5(serialize($GP_Temp)),
 						 'ITEM_STATE' => $itemState,
-						
+						 'ITEM_STATES_LIST' => $itemStateList
 						
 						);			
 		
@@ -930,6 +1031,7 @@ class tx_commerce_navigation {
 				}
 	  			$GP_Temp = t3lib_div::cHashParams($add_getvars.$GLOBALS['TSFE']->linkVars);
 	  			$itemState = ( $CategoryObject->uid === $catID ? 'CUR':'NO');
+	  			
 	  			$result[]=array('title'=>$CategoryObject->get_title(),
 	  						'nav_title' => $CategoryObject->get_navtitle(),
 							'uid'=>$this->PID,
