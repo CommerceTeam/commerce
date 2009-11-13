@@ -1,6 +1,10 @@
 Changelog for tx_commerce
 
 13.11.2009 Michael Staatz <michael.staatz@e-netconsulting.com>
+* finish issue #4290 Better rendering Output for Mandatory - Messages in Checkout
+
+
+13.11.2009 Michael Staatz <michael.staatz@e-netconsulting.com>
 * finish issue #4273 new hook prepayment in tx_commerce_pi3 finishIt, thanks to Dimitri Koenig
 
 13.11.2009 Michael Staatz <michael.staatz@e-netconsulting.com>

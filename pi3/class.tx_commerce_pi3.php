@@ -514,7 +514,10 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 
 		// We are thrown back because address data is not valid
 		if (($this->currentStep == 'billing' || $this->currentStep == 'delivery') && !$this->validateAddress('billing')) {
-			$markerArray['###ADDRESS_MANDATORY_MESSAGE###'] = $this->pi_getLL('label_loginUser_mandatory_message', 'data incorrect');
+			$markerArray['###ADDRESS_MANDATORY_MESSAGE###'] = $this->cObj->stdWrap(
+				$this->pi_getLL('label_loginUser_mandatory_message', 'data incorrect'),
+				$this->conf['billing.']['errorWrap.']
+			);
 		} else {
 			$markerArray['###ADDRESS_MANDATORY_MESSAGE###'] = '';
 		}
