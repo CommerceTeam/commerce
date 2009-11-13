@@ -926,7 +926,11 @@
 			 						$valuelist = array();
 			 						$valuelist_temp_sort = array();
 			 						foreach ($valuelist_temp as $value_temp) {
-			 							$valuelist_temp_sort[$value_temp['sorting']] = $value_temp;
+		 								if (!isset($valuelist_temp_sort[$value_temp['sorting']])) {
+		 									$valuelist_temp_sort[$value_temp['sorting']] = $value_temp;
+										} else {
+											$valuelist_temp_sort[] = $value_temp;
+										}
 			 						}
 			 						ksort($valuelist_temp_sort);
 			 						foreach ($valuelist_temp_sort as $value_temp) {
