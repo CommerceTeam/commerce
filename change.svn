@@ -23,6 +23,7 @@ Changelog for tx_commerce
 * Fixed issue #4281 thanks to Florian Bachmann
 
 13.11.2009 Christian Kuhn <lolli@schwarzbu.ch>
+* Performance improvement: Do not call stdWrap by default if not given. Warning: This might break backwards compatibility if your TS was not configured properly. So if you need stdWrap on your value, you must explicitly define it now.
 * Merge substituteMarkerArrayNoCached with its parent in TYPO3v4 trunk, changing while to foreach, split to preg_split and quotemeta to preg_quote
 * Fixed issue #5340: Small mistake in pi3 mailconf, changed replayTo to replyTo in mails
 

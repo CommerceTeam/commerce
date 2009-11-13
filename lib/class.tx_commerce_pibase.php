@@ -1116,7 +1116,6 @@ class tx_commerce_pibase extends tslib_pibase {
 	*/
 
 	function renderValue($value, $TStype,$TSconf,$field='',$table = '',$uid = '') {
-
 		/**
 		  * If you add more TS Types using the imgPath, you should add these also to generateMarkerArray 
 		  */
@@ -1211,13 +1210,14 @@ class tx_commerce_pibase extends tslib_pibase {
 					$value = number_format((float)$value,$TSconf['format.']['decimals'],$TSconf['format.']['dec_point'],$TSconf['format.']['thousands_sep']);
 				}
 			case 'STDWRAP' :
+				$output = $this->cObj->stdWrap($value, $TSconf);
+				break;
 			default :
-				    $output = $this->cObj->stdWrap($value,$TSconf);
+				$output = $value;
 			break;
-
 		}
-		
-		
+
+
 		$hookObjectsArr = array();
 		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['locallang'])){
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['locallang'] as $classRef){
