@@ -25,6 +25,8 @@ Changelog for tx_commerce
 * add feature #3159 stdWrap for override PID thanks to Cedric Spindler
 * some cleanup in pibase
 * Fixed issue #4281 thanks to Florian Bachmann
+* fixed some spelling mistakes in pi3 and change check if $this->conf['currency'] is set
+* change LocalLang_DB for issue #4844
 
 13.11.2009 Christian Kuhn <lolli@schwarzbu.ch>
 * Fixed issue #2353: Remove street, zip and city as mandatory fields for manufacturer and supplier
