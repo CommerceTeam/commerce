@@ -49,25 +49,36 @@ class tx_commerce_div {
 	/**
 	 * Removes XSS code and strips tags from an array recursivly
 	 * @Author Ingo Schmitt <is@marketing-factory.de>
-	 * @param $array	Array of elements
+	 * @param  $input	Array of elements or other 
 	 * @return $array ist $array is an array, otherwhise false
 	 */
-	function removeXSSStripTagsArray($array){
+	function removeXSSStripTagsArray($input){
 		
-		if (is_array($array) && (count($array)>0)){
-			$return = array();
-			foreach ($array as $key => $value){
+		/**
+		 * In Some cases this function is called with an empty variable, therfore
+		 * check the Value and the type
+		 */
+		if (!is_set($input)) {
+			return NULL;
+		}
+		if (is_boolean($input)){
+			return $input;
+		}
+		if (is_string($input)) {
+			return (string)t3lib_div::removeXSS(strip_tags($input));
+		}
+		if (is_array($input)){
+			$returnValue = array();
+			foreach ($input as $key => $value){
 				if (is_array($value)){
-					$return[$key] = tx_commerce_div::removeXSSStripTagsArray($value);
+					$returnValue[$key] = tx_commerce_div::removeXSSStripTagsArray($value);
 				}else{
-					$return[$key]= t3lib_div::removeXSS(strip_tags($value));
+					$returnValue[$key]= t3lib_div::removeXSS(strip_tags($value));
 				}
 			}
-			return $return;
-		}else{
-			return false;
+			return $returnValue;
 		}
-		
+		return false;
 	}
 
 

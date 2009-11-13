@@ -1,4 +1,7 @@
 Changelog for tx_commerce
+13.11.2009 Ingo Schmitt <is@marketing-factory.de>
+* Fixed issue 4892, Thanks to Michael Staatz
+
 01.11.2009 Ingo Schmitt <is@marketing-factory.de>
 * Changed all spli calles to explode ore preg_split, since split will be depricated
 
