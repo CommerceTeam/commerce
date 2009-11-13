@@ -8,8 +8,9 @@ Changelog for tx_commerce
 
 13.11.2009 Volker Graubaum <vg@e-netconsulting.de>
 * finish issue #2385 now usergroup is displayed
-* add feature #3159 stdWrap for override PID
+* add feature #3159 stdWrap for override PID thanks to Cedric Spindler
 * some cleanup in pibase
+* Fixed issue #4281 thanks to Florian Bachmann
 
 13.11.2009 Christian Kuhn <lolli@schwarzbu.ch>
 * Merge substituteMarkerArrayNoCached with its parent in TYPO3v4 trunk, changing while to foreach, split to preg_split and quotemeta to preg_quote

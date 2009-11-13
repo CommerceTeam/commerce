@@ -217,7 +217,7 @@
 		
 		return $pUid;
 	}
-	
+
 	/**
 	 * Creates an article for the product. Used for sysarticles (e.g. payment articles)
 	 * @param 	integer	$pUid: Product Uid under wich the articles are created
@@ -234,11 +234,11 @@
 		#debug($articles,'articles');
 		if (is_array($articles) AND count($articles) > 0) {
 			return $articles[0]['uid'];
-			
+
 		}
 		$aArray = $addArray;
 		$aArray['classname'] = $key;
-		$aArray['title'] = $key;
+		$aArray['title'] = !$value['title'] ? $key : $value['title'];
 		$aArray['uid_product'] = (int)$pUid;
 		$aArray['article_type_uid'] = (int)$value['type'];
 		$GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_commerce_articles', $aArray);		
@@ -248,6 +248,9 @@
 		$pArray['uid_article'] = $aUid;
 		// create a price
 		$GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_commerce_article_prices', $pArray);
+
+		return $aUid;
+
 	}
 
 	
