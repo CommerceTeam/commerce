@@ -1,5 +1,8 @@
 Changelog for tx_commerce
 
+13.11.2009 Michael Staatz <michael.staatz@e-netconsulting.com>
+* finish issue #3963 pi3/function saveOrder - wrong variable $newUid for article hooks, thanks to Dmitry Pikhno
+
 13.11.2009 Matthias Krappitz <matthias@aemka.de>
 * Fixed problem that attributes in detail-view select-box did not get listed when they had the same sorting value in database table
 * Raised maximum images for products and articles from 5 to 200

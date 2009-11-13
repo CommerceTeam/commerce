@@ -2440,7 +2440,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 				}
 				foreach($hookObjectsArr as $hookObj) {
 					if (method_exists($hookObj, 'modifyOrderArticlePreSave')) {
-						$hookObj->modifyOrderArticlePreSave($newUid, $oaData, $this);
+						$hookObj->modifyOrderArticlePreSave($artUid, $oaData, $this);
 					}
 				}
 				if (($this->conf['useStockHandling'] == 1) && ($doStock = TRUE)) {
@@ -2454,7 +2454,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 
 				foreach($hookObjectsArr as $hookObj) {
 					if (method_exists($hookObj, 'modifyOrderArticlePostSave')) {
-						$hookObj->modifyOrderArticlePostSave($newUid, $oaData, $this);
+						$hookObj->modifyOrderArticlePostSave($artUid, $oaData, $this);
 					}
 				}
 			}
