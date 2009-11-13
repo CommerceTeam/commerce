@@ -1,5 +1,8 @@
 Changelog for tx_commerce
 
+13.11.2009 Michael Knabe <mk@e-netconsulting.de>
+* fixed issue #4225 Cleaned up the dynaflex-definition for products. (Thanks to Robert Heel)
+
 13.11.2009 Michael Staatz <michael.staatz@e-netconsulting.com>
 * finish issue #4516 PostInit - Hook for tx_commerce_pi2 
 * finish issue #4299 added one more parameter buildStaticInfoSelector to change the language, thanks to David

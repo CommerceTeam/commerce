@@ -225,36 +225,20 @@ class tx_commerce_products_dfconfig {
 						'text' => ',--div--;LLL:EXT:commerce/locallang_db.xml:tx_commerce_products.create_articles,articles;;;;1-1-1',
 					),
 				),
-				// add "Localisze Articel" tab if we are in a localised language
+				// add "Localize Article" tab if we are in a localised language
 				array (
 					'method' => 'add',
 					'type' => 'append',
 					'condition' => array (
 						'table' => 'tx_commerce_products',
 						'select' => 'l18n_parent',
-						'where' => 'uid=###uid### AND 0=' . $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['extConf']['simpleMode'],
+						'where' => 'uid=###uid###',
 						'isXML' => false,
 						'if' => 'isGreater',
 						'compareTo' => 0,
 					),
 					'config' => array (
-						'text' => ',--div--;LLL:EXT:commerce/locallang_db.xml:tx_commerce_products.lokalise_articles,articleslok;;;;1-1-1',
-					),
-				),
-				// add "Localize Articel" tab if we are in a localised language
-				array (
-					'method' => 'add',
-					'type' => 'append',
-					'condition' => array (
-						'table' => 'tx_commerce_products',
-						'select' => 'l18n_parent',
-						'where' => 'uid=###uid### AND 0!=' . $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['extConf']['simpleMode'],
-						'isXML' => false,
-						'if' => 'isGreater',
-						'compareTo' => 0,
-					),
-					'config' => array (
-						'text' => ',--div--;LLL:EXT:commerce/locallang_db.xml:tx_commerce_products.lokalise_articles,articles;;;;1-1-1',
+						'text' => ',--div--;LLL:EXT:commerce/locallang_db.xml:tx_commerce_products.lokalise_articles,articles'.($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['extConf']['simpleMode'] ? '' : 'lok').';;;;1-1-1',
 					),
 				),
 				array (
