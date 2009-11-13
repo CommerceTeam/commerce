@@ -323,6 +323,20 @@ class leafData extends langbase {
 	 */
 	function loadRecords() {
 		
+		$hookObjectsArr = array();
+
+		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/tree/class.leafData.php']['loadRecords'])) {
+			foreach($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/tree/class.leafData.php']['loadRecords'] as $classRef) {
+				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+			}
+		}
+		foreach($hookObjectsArr as $hookObj) {
+			if (method_exists($hookObj, 'addExtendedFields')) {
+				$this->extendedFields .= $hookObj->addExtendedFields($this->itemTable, $this->extendedFields);
+			}
+		}
+	
+		
 		//Add the extended fields to the select statement
 		$select = (is_string($this->extendedFields) && '' != $this->extendedFields) ? $this->defaultFields.','.$this->extendedFields : $this->defaultFields;
 		

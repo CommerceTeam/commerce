@@ -39,7 +39,7 @@ Changelog for tx_commerce
 * Fixed first part of 1345
 * Fixed 2479
 * Fixed issue #3920
-
+* Fixed issue #4362
 01.11.2009 Ingo Schmitt <is@marketing-factory.de>
 * Changed all spli calles to explode ore preg_split, since split will be depricated
 
