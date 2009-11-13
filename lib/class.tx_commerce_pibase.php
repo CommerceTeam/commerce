@@ -83,54 +83,60 @@ class tx_commerce_pibase extends tslib_pibase {
      * @access private
      */
     var $useRootlineInformationToUrl = 0;
-    
+
 	/**
- 	* Category UID for rendering
- 	*
- 	* @var integer
- 	*/
-    
+	* Category UID for rendering
+	*
+	* @var integer
+	*/
+
     var $cat;
-    
+
 	function init($conf){
 
 		#debug($GLOBALS['TSFE']);
 		if ($GLOBALS['TSFE']->beUserLogin) {
-			$this->workspace = $GLOBALS['BE_USER']->workspace;			
+			$this->workspace = $GLOBALS['BE_USER']->workspace;
 			
 		}
-		
-		
-	    $this->conf = $conf;
-	    $this->pi_setPiVarDefaults();
-	    $this->pi_loadLL();
-	    $this->pi_initPIflexForm();
-	    
+
+		// enable typoscript objects for overridePid
+		if(!empty($conf['overridePid.'])) {
+		    $conf['overridePid'] = $this->cObj->cObjGetSingle($conf['overridePid'], $conf['overridePid.']);
+		    unset($conf['overridePid.']);
+		}
+
+		$this->conf = $conf;
+		$this->pi_setPiVarDefaults();
+		$this->pi_loadLL();
+		$this->pi_initPIflexForm();
+
 		tx_commerce_div::initializeFeUserBasket();
-	    
-	    $this->pid = $GLOBALS['TSFE']->id;
-	    $this->basketHashValue = $GLOBALS['TSFE']->fe_user->tx_commerce_basket->getBasketHashValue();
-	    $this->piVars['basketHashValue'] = $this->basketHashValue;
-	    $this->imgFolder = 'uploads/tx_commerce/';
-	    $this->addAdditionalLocallang();
-	    
-	    $this->generateLanguageMarker();
-	    if (empty($this->conf['templateFile'])) {
-	  		return $this->error('init',__LINE__,'Template File not defined in TS: ');
-	  	}
-	    $this->templateCode = $this->cObj->fileResource($this->conf['templateFile']);
-	  	if (empty($this->templateCode)) {
-	  		return $this->error('init',__LINE__,"Template File not loaded, maybe it doesn't exist: ".$this->conf['templateFile']);
-	  	}		
-	    if ($this->conf['useRootlineInformationToUrl']) {
+
+		$this->pid = $GLOBALS['TSFE']->id;
+		$this->basketHashValue = $GLOBALS['TSFE']->fe_user->tx_commerce_basket->getBasketHashValue();
+		$this->piVars['basketHashValue'] = $this->basketHashValue;
+		$this->imgFolder = 'uploads/tx_commerce/';
+		$this->addAdditionalLocallang();
+
+		$this->generateLanguageMarker();
+		if (empty($this->conf['templateFile'])) {
+			return $this->error('init',__LINE__,'Template File not defined in TS: ');
+		}
+		$this->templateCode = $this->cObj->fileResource($this->conf['templateFile']);
+		if (empty($this->templateCode)) {
+			return $this->error('init',__LINE__,"Template File not loaded, maybe it doesn't exist: ".$this->conf['templateFile']);
+		}		
+		if ($this->conf['useRootlineInformationToUrl']) {
 			$this->useRootlineInformationToUrl = $this->conf['useRootlineInformationToUrl'];
 		}
 
 	}
-	
+
 	/**
 	 * Getting additional locallang-files through an Hook
 	 */
+
 	function addAdditionalLocallang() {
 		$hookObjectsArr = array();
 		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['locallang'])){
@@ -138,15 +144,14 @@ class tx_commerce_pibase extends tslib_pibase {
 				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
 			}
 		}
-  
-        foreach($hookObjectsArr as $hookObj)   {
+
+		foreach($hookObjectsArr as $hookObj)   {
 			if (method_exists($hookObj, 'loadAdditionalLocallang')) {
-             	$hookObj->loadAdditionalLocallang($this);
+				$hookObj->loadAdditionalLocallang($this);
 			}
-        }
+		}
 	}
-	
-	
+
 	/**
 	 * Gets all "lang_ and label_" Marker for substition with substituteMarkerArray
 	 * @since 10.02.06 Changed to XML
@@ -188,11 +193,11 @@ class tx_commerce_pibase extends tslib_pibase {
 		if ($TS ==false) {
 			$TS = $this->conf['singleView.']['attributes.'];
 		}
-		
+
 		foreach ($subpartNameArray as $oneSubpartName)	{
 			$templateArray[]=$this->cObj->getSubpart($this->templateCode, $oneSubpartName);
 		}
-		
+
 		if(!$this->product_attributes){
 			$this->product_attributes = $prodObj->get_attributes(array(ATTRIB_product));
 		}
@@ -205,18 +210,18 @@ class tx_commerce_pibase extends tslib_pibase {
 			$showHiddenValues = false;
 		}
 
-  		#$matrix = $prodObj->get_atrribute_matrix('',$this->product_attributes,$showHiddenValues);
-  		$matrix = $prodObj->get_product_attribute_matrix($this->product_attributes,$showHiddenValues);
+		#$matrix = $prodObj->get_atrribute_matrix('',$this->product_attributes,$showHiddenValues);
+		$matrix = $prodObj->get_product_attribute_matrix($this->product_attributes,$showHiddenValues);
 
 		$i = 0;
 		if (is_array($this->product_attributes)){
-            foreach ($this->product_attributes as $myAttributeUid) {
-				  	if(!$matrix[$myAttributeUid]['values'][0] && $this->conf['hideEmptyProdAttr']){
-						continue;
-			  	  	}
-		  			if($i==count($templateArray)){
-	                      $i = 0;
-	                }
+			foreach ($this->product_attributes as $myAttributeUid) {
+				if(!$matrix[$myAttributeUid]['values'][0] && $this->conf['hideEmptyProdAttr']){
+					continue;
+				}
+				if($i==count($templateArray)){
+					$i = 0;
+				}
 	                /**
 	                 * @Since 2006.07.13
 	                 * Output for Attribute Icons
