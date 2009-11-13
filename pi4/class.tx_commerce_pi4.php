@@ -228,7 +228,7 @@ class tx_commerce_pi4 extends tx_commerce_pibase {
 				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
 			}
 		}
-		
+
 		if ($this->conf[$addressType . '.']['subpartMarker.']['listWrap']) {
 			$tplBase = $this->cObj->getSubpart($this->templateCode, strtoupper($this->conf[$addressType . '.']['subpartMarker.']['listWrap']));
 		} else {
@@ -520,7 +520,7 @@ class tx_commerce_pi4 extends tx_commerce_pibase {
 			$fieldsMarkerArray['###FIELD_' . strtoupper($fieldName) . '###'] = $this->cObj->substituteMarkerArray($tplField, $fieldMA);
 			$fieldsMarkerArray['###LABEL_' . strtoupper($fieldName) . '###'] = $fieldLabel;
 		}
-		
+
 		foreach($hookObjectsArr as $hookObj) {
 			if (method_exists($hookObj, 'processAddressfieldsMarkerArray'))	{
 				$fieldsMarkerArray = $hookObj->processAddressfieldsMarkerArray($fieldsMarkerArray, $tplField, $addressData, $action, $addressUid, $config , $this);
@@ -676,7 +676,18 @@ class tx_commerce_pi4 extends tx_commerce_pibase {
 			break;
 			case 'static_info_tables':
 				$selected = $fieldValue != '' ? $fieldValue : $fieldConfig['default'];
-				return $this->staticInfo->buildStaticInfoSelector($fieldConfig['field'], $this->prefixId . '[' . $fieldName . ']', $fieldConfig['cssClass'], $selected, '', '', '', '', $fieldConfig['select']);
+				return $this->staticInfo->buildStaticInfoSelector(
+					$fieldConfig['field'],
+					$this->prefixId . '[' . $fieldName . ']',
+					$fieldConfig['cssClass'],
+					$selected,
+					'',
+					'',
+					'',
+					'',
+					$fieldConfig['select'],
+					$GLOBALS['TSFE']->tmpl->setup['config.']['language']
+				);
 			break;
 			case 'check':
 				return $this->getCheckboxInputField($fieldName, $fieldConfig, $fieldValue);

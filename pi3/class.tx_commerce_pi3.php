@@ -145,7 +145,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 		$this->imgFolder = 'uploads/tx_commerce/';
 		$GLOBALS['TSFE']->fe_user->tx_commerce_basket->setTaxCalculationMethod($this->conf['priceFromNet']);
 
-		if ($this->conf['currency'] > '') {
+		if ($this->conf['currency'] <> '') {
 			$this->currency = $this->conf['currency'];
 		}
 		if (empty($this->currency)) {
@@ -1013,6 +1013,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 			$markerArray['###MESSAGE_PAYMENT_OBJECT###'] = '';
 		}
 
+		$deliveryAddress = '';
 		if ($orderData['cust_deliveryaddress']) {
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 				'*',
@@ -1020,13 +1021,13 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 				'uid=' . $orderData['cust_deliveryaddress']
 			);
 			if ($data = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
-				$deliveryAdress = $this->makeAdressView($data, '###DELIVERY_ADDRESS###');
+				$deliveryAddress = $this->makeAdressView($data, '###DELIVERY_ADDRESS###');
 			}
 		}
 
-		$content = $this->cObj->substituteSubpart($content, '###DELIVERY_ADDRESS###', $deliveryAdress);
+		$content = $this->cObj->substituteSubpart($content, '###DELIVERY_ADDRESS###', $deliveryAddress);
 
-		$billingAdress = '';
+		$billingAddress = '';
 		if ($orderData['cust_invoice']) {
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 				'*',
@@ -1034,12 +1035,12 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 				'uid=' . $orderData['cust_invoice']
 			);
 			if ($data = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
-				$billingAdress = $this->makeAdressView($data, '###BILLING_ADDRESS###');
+				$billingAddress = $this->makeAdressView($data, '###BILLING_ADDRESS_SUB###');
 				$markerArray['###CUST_NAME###'] = $data['NAME'];
 			}
 		}
 
-		$content = $this->cObj->substituteSubpart($content, '###BILLING_ADDRESS###', $billingAdress);
+		$content = $this->cObj->substituteSubpart($content, '###BILLING_ADDRESS###', $billingAddress);
 
 		$markerArray = $this->FinishItRenderGoodBadMarker($markerArray);
 
@@ -1706,7 +1707,16 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 			break;
 			case 'static_info_tables':
 				$selected = $fieldValue != '' ? $fieldValue : $fieldConfig['default'];
-				return $this->staticInfo->buildStaticInfoSelector($fieldConfig['field'], $this->prefixId . '[' . $step . '][' . $fieldName . ']', $fieldConfig['cssClass'], $selected, '', '', $step . '-' . $fieldName, '', $fieldConfig['select']);
+				return $this->staticInfo->buildStaticInfoSelector(
+					$fieldConfig['field'],
+					$this->prefixId . '[' . $step . '][' . $fieldName . ']',
+					$fieldConfig['cssClass'],
+					$selected,
+					'',
+					'',
+					$step . '-' . $fieldName, '', $fieldConfig['select'],
+					$GLOBALS['TSFE']->tmpl->setup['config.']['language']
+				);
 			break;
 			case 'check':
 				return $this->getCheckboxInputField($fieldName, $fieldConfig, $fieldValue, $step);
