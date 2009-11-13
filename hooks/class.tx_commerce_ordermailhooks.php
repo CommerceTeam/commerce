@@ -225,7 +225,7 @@ class tx_commerce_ordermailhooks  {
 					'recipient_copy' =>  $template['BCC'],
 					'fromEmail' => $senderemail, 
 					'fromName' => $sendername,
-					'replayTo' => $this->conf['usermail.']['from'], 
+					'replyTo' => $this->conf['usermail.']['from'], 
 					'priority' => '3', 
 					'callLocation' => 'processOrdermails' 
 				);

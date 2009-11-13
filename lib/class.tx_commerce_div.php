@@ -235,7 +235,7 @@ class tx_commerce_div {
 	* 	'recipient_copy' =>  '',			// bcc
 	* 	'fromEmail' => '', 				// fromMail
 	* 	'fromName' => '',				// fromName
-	* 	'replayTo' => '', 				// replayTo
+	* 	'replyTo' => '', 				// replyTo
 	* 	'priority' => '3', 				// priority of your Mail - 1 = highest, 5 = lowest, 3 = normal
 	* 	'callLocation' => 'myFunction' 		// Where call the function it is nescesary when you will use hooks?
 	* );

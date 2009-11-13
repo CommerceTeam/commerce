@@ -2028,7 +2028,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 					'recipient_copy' => $this->conf['usermail.']['bcc'],
 					'fromEmail' => $this->conf['usermail.']['from'],
 					'fromName' => $this->conf['usermail.']['from_name'],
-					'replayTo' => $this->conf['usermail.']['from'],
+					'replyTo' => $this->conf['usermail.']['from'],
 					'priority' => $this->conf['usermail.']['priority'],
 					'callLocation' => 'sendUserMail',
 					'additionalData' => $this
@@ -2163,7 +2163,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 				'alternateSubject' => $this->conf['adminmail.']['alternateSubject'],
 				'recipient' => implode(',', $recipient),
 				'recipient_copy' => $this->conf['adminmail.']['bcc'],
-				'replayTo' => $this->conf['adminmail.']['from'],
+				'replyTo' => $this->conf['adminmail.']['from'],
 				'priority' => $this->conf['adminmail.']['priority'],
 				'callLocation' => 'sendAdminMail',
 				'additionalData' => $this

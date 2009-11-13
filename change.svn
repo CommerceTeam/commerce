@@ -1,4 +1,7 @@
 Changelog for tx_commerce
+13.11.2009 Christian Kuhn <lolli@schwarzbu.ch>
+* Fixed issue #5340: Small mistake in pi3 mailconf, changed replayTo to replyTo in mails
+
 13.11.2009 Ingo Schmitt <is@marketing-factory.de>
 * Fixed issue 4892, Thanks to Michael Staatz
 
