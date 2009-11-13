@@ -503,9 +503,9 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 
 		$markerArray['###ADDRESS_RADIOFORM_DELIVERY###'] = '<input type="radio" id="delivery" name="' . $this->prefixId . '[step]" value="delivery" ' . $deliveryChecked . '/>';
 		$markerArray['###ADDRESS_RADIOFORM_NODELIVERY###'] = '<input type="radio" id="nodelivery"  name="' . $this->prefixId . '[step]" value="' . $step_nodelivery . '" ' . $paymentChecked . '/>';
-		$markerArray['###ADDRESS_LABEL_DELIVERY###'] = $this->pi_getLL('billing_deliveryaddress');
-		$markerArray['###ADDRESS_LABEL_NODELIVERY###'] = $this->pi_getLL('billing_nodeliveryaddress');
-
+		$markerArray['###ADDRESS_LABEL_DELIVERY###'] = '<label for="delivery">'.$this->pi_getLL('billing_deliveryaddress').'</label>';
+		$markerArray['###ADDRESS_LABEL_NODELIVERY###'] = '<label for="nodelivery">'.$this->pi_getLL('billing_nodeliveryaddress').'</label>';
+		
 		// stdWrap for the delivery address chooser marker
 		$markerArray['###ADDRESS_RADIOFORM_DELIVERY###'] = $this->cObj->stdWrap($markerArray['###ADDRESS_RADIOFORM_DELIVERY###'], $this->conf['billing.']['deliveryAddress.']['delivery_radio.']);
 		$markerArray['###ADDRESS_RADIOFORM_NODELIVERY###'] = $this->cObj->stdWrap($markerArray['###ADDRESS_RADIOFORM_NODELIVERY###'], $this->conf['billing.']['deliveryAddress.']['nodelivery_radio.']);
