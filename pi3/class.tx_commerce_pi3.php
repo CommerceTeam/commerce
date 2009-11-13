@@ -1873,6 +1873,13 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 			}
 		}
 
+		foreach($hookObjectsArr as $hookObj) {
+			if (method_exists($hookObj, 'canMakeCheckoutOwnAdvancedTests')) {
+				$params = array('checks' => $checks, 'myCheck' => $myCheck);
+				$hookObj->canMakeCheckoutOwnAdvancedTests($params, $this);
+			}
+		}
+
 		// Check if the hooks returned an error
 		if (strlen($myCheck) >= 1) {
 			return $myCheck;
