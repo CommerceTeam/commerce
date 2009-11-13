@@ -933,7 +933,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 				$hookObj->postpayment($paymentObj, $basket, $this);
 			}
 		}
-		
+
 		/**
 		 * We implement a new TS - Setting to handle the generating of orders.
 		 * if you want to use the "generateOrderId" - Hook and need a unique ID
@@ -2389,7 +2389,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 			$orderUid = $this->orderUid;
 		} else {
 			$GLOBALS['TYPO3_DB']->exec_INSERTquery(
-				'tx_commerce_orders', 
+				'tx_commerce_orders',
 				$orderData
 			);
 			$orderUid = $GLOBALS['TYPO3_DB']->sql_insert_id();
@@ -2460,6 +2460,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 	/**
 	 * getStepAfter
 	 * returns Name of the next step
+	 * if no next step is found, it returns itself, the actual step
 	 *
 	 * @param string $step Step
 	 * @return string
@@ -2467,7 +2468,13 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 	function getStepAfter($step) {
 		$rev = array_flip($this->CheckOutsteps);
 
-		return $this->CheckOutsteps[++$rev[$step]];
+		$nextStep = $this->CheckOutsteps[++$rev[$step]];
+
+		if (empty($nextStep)) {
+			return $step;
+		} else {
+			return $nextStep;
+		}
 	}
 
 }

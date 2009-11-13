@@ -1,4 +1,7 @@
 Changelog for tx_commerce
+13.11.2009 Michael Staatz <michael.staatz@e-netconsulting.com>
+* finish issue #2380 wrong step after not accepting terms, thanks to Ralf Merz
+
 13.11.2009 Volker Graubaum <vg@e-netconsulting.de>
 * finish issue #2385 now usergroup is displayed
 
