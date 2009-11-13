@@ -58,10 +58,10 @@ class tx_commerce_div {
 		 * In Some cases this function is called with an empty variable, therfore
 		 * check the Value and the type
 		 */
-		if (!is_set($input)) {
+		if (!isset($input)) {
 			return NULL;
 		}
-		if (is_boolean($input)){
+		if (is_bool($input)){
 			return $input;
 		}
 		if (is_string($input)) {

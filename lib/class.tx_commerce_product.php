@@ -1286,19 +1286,21 @@
 	 * @return article id, false if no article
 	 */
 	
-	  function getCheapestArticle($usePriceNet=0) {
-	              $this->load_articles();
-	              $priceArr = array();
-		      if (!is_array($this->articles_uids)) return false;
-		      for($j=0;$j<count($this->articles_uids);$j++) {
-		              $priceArr[$this->articles[$this->articles_uids[$j]]->get_uid()] = ($usePriceNet) ? $this->articles[$this->articles_uids[$j]]->get_price_net() : $this->articles[$this->articles_uids[$j]]->get_price_gross();
-		      }
-		      asort($priceArr);
-		      reset($priceArr);
-		      foreach($priceArr as $key => $value) {
-		        return $key;
-		      }
-          }
+	function getCheapestArticle($usePriceNet=0) {
+		$this->load_articles();
+		$priceArr = array();
+		if (!is_array($this->articles_uids)) return false;
+		for($j=0;$j<count($this->articles_uids);$j++) {
+			if (is_object($this->articles[$this->articles_uids[$j]]) && ($this->articles[$this->articles_uids[$j]] instanceof tx_commerce_article)) {
+				$priceArr[$this->articles[$this->articles_uids[$j]]->get_uid()] = ($usePriceNet) ? $this->articles[$this->articles_uids[$j]]->get_price_net() : $this->articles[$this->articles_uids[$j]]->get_price_gross();
+			}
+		}
+		asort($priceArr);
+		reset($priceArr);
+		foreach($priceArr as $key => $value) {
+			return $key;
+		}
+	}
           
      /**
       * Returns the Manufacturer UID of the Product if set
