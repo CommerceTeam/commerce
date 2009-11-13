@@ -231,7 +231,8 @@
 			$LANG->sL(t3lib_befunc::getItemLabel('tx_commerce_article_prices','price_gross'),1).': '.tx_commerce_div::FormatPrice($params['row']['price_gross']/100).
 			' ,'.$LANG->sL(t3lib_befunc::getItemLabel('tx_commerce_article_prices','price_net'),1).': '.tx_commerce_div::FormatPrice($params['row']['price_net']/100).
 			' ('.$LANG->sL(t3lib_befunc::getItemLabel('tx_commerce_article_prices','price_scale_amount_start'),1).': '.$params['row']['price_scale_amount_start'].
-			'  '.$LANG->sL(t3lib_befunc::getItemLabel('tx_commerce_article_prices','price_scale_amount_end'),1).': '.$params['row']['price_scale_amount_end'].') '
+			'  '.$LANG->sL(t3lib_befunc::getItemLabel('tx_commerce_article_prices','price_scale_amount_end'),1).': '.$params['row']['price_scale_amount_end'].') '.
+			' '.($params['row']['fe_group'] ?( $LANG->sL(t3lib_befunc::getItemLabel('tx_commerce_article_prices','fe_group'),1).' '.t3lib_BEfunc::getProcessedValueExtra('tx_commerce_article_prices','fe_group',$params['row']['fe_group'],100,$params['row']['uid'])) : '')
 			;
 		return $params;
 	}
