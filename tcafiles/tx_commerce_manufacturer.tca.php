@@ -58,7 +58,7 @@ $TCA['tx_commerce_manufacturer'] = Array (
 				'type' => 'input',
 				'size' => '40',
 				'max' => '80',
-				'eval' => 'required,trim',
+				'eval' => 'trim',
 			)
 		),
 		'number' => Array (
@@ -78,7 +78,7 @@ $TCA['tx_commerce_manufacturer'] = Array (
 				'type' => 'input',
 				'size' => '40',
 				'max' => '80',
-				'eval' => 'required,trim',
+				'eval' => 'trim',
 			)
 		),
 		'city' => Array (
@@ -88,7 +88,7 @@ $TCA['tx_commerce_manufacturer'] = Array (
 				'type' => 'input',
 				'size' => '40',
 				'max' => '80',
-				'eval' => 'required,trim',
+				'eval' => 'trim',
 			)
 		),
 		'country' => Array (
