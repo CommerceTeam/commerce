@@ -1,4 +1,6 @@
 Changelog for tx_commerce
+15.11.2009 Christian Kuhn <lolli@schwarzbu.ch>
+* Cleanup mod_orders/index.php
 
 13.11.2009 Michael Knabe <mk@e-netconsulting.de>
 * fixed issue #4225 Cleaned up the dynaflex-definition for products. (Thanks to Robert Heel)
