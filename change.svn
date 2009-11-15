@@ -1,5 +1,6 @@
 Changelog for tx_commerce
 15.11.2009 Christian Kuhn <lolli@schwarzbu.ch>
+* Fixed bug #2617: Pagebrowser for orders in BE isn't working
 * mod_orders: Make link "Orders" in header row work with TYPO3 4.3
 * Cleanup mod_orders/index.php
 

@@ -68,7 +68,12 @@ require_once(PATH_t3lib.'class.t3lib_befunc.php');
  		{
  			$orderby='crdate DESC';
  		}
- 		
+
+		$limit = '';
+		if ($this->iLimit) {
+			$limit = ($this->firstElementNumber ? intval($this->firstElementNumber) . ',' : '') . (intval($this->iLimit + 1));
+		}
+
  		if ($id>0){
  			$query_array=array(
  			'SELECT' => 'DISTINCT tx_commerce_order_articles.order_id, delivery_table.order_id as order_number, tx_commerce_order_articles.article_type_uid, tx_commerce_order_articles.title as payment, delivery_table.title as delivery, tx_commerce_orders.uid,tx_commerce_orders.pid, tx_commerce_orders.crdate, tx_commerce_orders.tstamp, tx_commerce_orders.order_id, tx_commerce_orders.sum_price_gross, tt_address.tx_commerce_address_type_id, tt_address.company ,tt_address.name,tt_address.surname, tt_address.address, tt_address.zip, tt_address.city, tt_address.email,tt_address.phone as phone_1, tt_address.mobile as phone_2,tx_commerce_orders.cu_iso_3_uid, tx_commerce_orders.tstamp, tx_commerce_orders.uid as articles, tx_commerce_orders.comment, tx_commerce_orders.internalcomment, tx_commerce_orders.order_type_uid as order_type_uid_noName, static_currencies.cu_iso_3',
@@ -77,7 +82,7 @@ require_once(PATH_t3lib.'class.t3lib_befunc.php');
  			'GROUPBY' => '',
  			'ORDERBY' => $orderby,
  			'sorting' => '',
-			'LIMIT' => ''
+			'LIMIT' => $limit,
  	
  		
  			);
@@ -111,7 +116,7 @@ require_once(PATH_t3lib.'class.t3lib_befunc.php');
  			'GROUPBY' => '',
  			'ORDERBY' => $orderby,
  			'sorting' => '',
-			'LIMIT' => ''
+			'LIMIT' => $limit,
 			);
  		}
  		
@@ -331,7 +336,6 @@ require_once(PATH_t3lib.'class.t3lib_befunc.php');
 					$this->iLimit=(isset($TCA[$tableName]['interface']['maxDBListItems'])?intval($TCA[$tableName]['interface']['maxDBListItems']):$this->itemsLimitPerTable);
 				}
 				if ($this->showLimit)	$this->iLimit = $this->showLimit;
-				$this->iLimit = PHP_INT_MAX;
 				/**
 				 * @TODO Change this hard limit
 				 */

@@ -113,6 +113,12 @@ class tx_commerce_orders extends t3lib_SCbase {
 		} else {
 			$this->id = $order_pid[0];
 		}
+
+			// Initialize page browser
+		$this->pointer = 0;
+		if (t3lib_div::_GP('pointer')) {
+			$this->pointer = intval(t3lib_div::_GP('pointer'));
+		}
 	}
 
 	/**
