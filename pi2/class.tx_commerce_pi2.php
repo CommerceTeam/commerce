@@ -165,6 +165,13 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 			$markerArray['###URL###'] = $this->pi_linkTP_keepPIvars_url(array(), 0, 1, $this->conf['basketPid']);
 			$markerArray['###URL_CHECKOUT###'] = $this->pi_linkTP_keepPIvars_url(array(), 0, 1, $this->conf['checkoutPid']);
 			$markerArray['###NO_STOCK MESSAGE###'] = $this->noStock;
+			
+			// Hook for additional markers in empty quick view basket template
+			foreach ($hookObjectsArr as $hookObj) {
+				if(method_exists($hookObj, 'additionalMarker')) {
+					$markerArray = $hookObj->additionalMarker($markerArray, $this);
+				}
+			}
 
 			$this->content = $this->substituteMarkerArrayNoCached($template, $markerArray);
 		}
