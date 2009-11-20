@@ -66,9 +66,13 @@ class tx_commerce_tceFunc {
 			$browseTrees->setBare(false);
 		}
 		
+		if ($config['substituteRealValues']) {
+			$browseTrees->substituteRealValues();
+		}
+		
 		/**
 		 * Disallows clicks on certain leafs
-		 * Values is a comma-separated list of leaf names (e.g. tx_commerce_categories)
+		 * Values is a comma-separated list of leaf names (e.g. tx_commerce_leaf_category)
 		 */
 		$browseTrees->disallowClick($config['disallowClick']);
 		
@@ -137,6 +141,9 @@ class tx_commerce_tceFunc {
 					$itemArray = t3lib_div::trimExplode(',',$PA['itemFormElValue'],1);		
 					$itemArray = $renderBrowseTrees->processItemArrayForBrowseableTreeCategory($browseTrees, $itemArray[0]);
 					break;
+				default:
+					$itemArray = $renderBrowseTrees->processItemArrayForBrowseableTreeDefault($PA['itemFormElValue']);
+					break;
 			}
 		}else{
 			// New record
@@ -181,7 +188,7 @@ class tx_commerce_tceFunc {
 			}
 			$itemArray[$tk] = implode('|', $tvP);
 		}
-
+		
 		//
 		// Rendering and output
 		//
@@ -215,14 +222,13 @@ class tx_commerce_tceFunc {
 	
 		$item .= $this->tceforms->dbFileIcons($PA['itemFormElName'], $config['internal_type'], $config['allowed'], $itemArray, '', $params, $PA['onFocus']);
 
-
 			// Wizards:
 		if (!$disabled) {
 			$specConf = $this->tceforms->getSpecConfFromString($PA['extra'], $PA['fieldConf']['defaultExtras']);
 			$altItem = '<input type="hidden" name="'.$PA['itemFormElName'].'" value="'.htmlspecialchars($PA['itemFormElValue']).'" />';
 			$item = $this->tceforms->renderWizards(array($item, $altItem), $config['wizards'], $table, $row, $field, $PA, $PA['itemFormElName'], $specConf);
 		}
-
+		
 		return $item;
 	}
 }

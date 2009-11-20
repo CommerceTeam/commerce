@@ -36,6 +36,7 @@ class tx_commerce_categorytree extends browsetree {
 	protected $minCategoryPerms = 'show'; 
 	protected $noClickList		= '';
 	protected $simpleMode  		= false;
+	protected $realValues 		= false;
 	
 	/**
 	 * Initializes the Categorytree
@@ -75,16 +76,26 @@ class tx_commerce_categorytree extends browsetree {
 			
 			$productview = t3lib_div::makeInstance('tx_commerce_leaf_productview');
 			
-			//Configure the noOnclick for the leaf
+			// Configure the noOnclick for the leaf
 			if(t3lib_div::inList($this->noClickList, 'tx_commerce_leaf_product')) {
 				$productview->noOnclick();
 			}
 			
+			// Configure real values
+			if ($this->realValues) {
+				$productview->substituteRealValues();
+			}
+			
 			$articleview = t3lib_div::makeInstance('tx_commerce_leaf_articleview');
 			
-			//Configure the noOnclick for the leaf
+			// Configure the noOnclick for the leaf
 			if(t3lib_div::inList($this->noClickList, 'tx_commerce_leaf_article')) {
 				$articleview->noOnclick();
+			}
+			
+			// Configure real values
+			if ($this->realValues) {
+				$articleview->substituteRealValues();
 			}
 			
 			$productleaf->initBasic($productview, t3lib_div::makeInstance('tx_commerce_leaf_productdata'));
@@ -143,6 +154,16 @@ class tx_commerce_categorytree extends browsetree {
 	 */
 	public function setSimpleMode($sm = 1) {
 		$this->simpleMode = $sm;
+	}
+	
+	/**
+	 * Will set the real values to the views
+	 * for products and articles, instead of "edit"
+	 * 
+	 * @return void
+	 */
+	public function substituteRealValues() {
+		$this->realValues = true;
 	}
 	
 	/**

@@ -75,10 +75,11 @@ class tx_commerce_treelib_browser extends t3lib_SCbase {
 		$this->itemFormElName = t3lib_div::_GP('elname');		
 		$this->flex_config = t3lib_div::_GP('config');
 		$seckey = t3lib_div::_GP('seckey');
-
+		$allowProducts = t3lib_div::_GP('allowProducts');
+		
 
 			// since we are worried about someone forging parameters (XSS security hole) we will check with sent md5 hash:
-		if (!($seckey===t3lib_div::shortMD5($this->table.'|'.$this->field.'|'.$this->uid.'|'.$this->itemFormElName.'|'.$this->flex_config.'|'.$GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey']))) {
+		if (!($seckey===t3lib_div::shortMD5($this->table.'|'.$this->field.'|'.$this->uid.'|'.$this->itemFormElName.'|'.$this->flex_config.'|'.$allowProducts.'|'.$GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey']))) {
 			die('access denied');
 		}
 
@@ -128,12 +129,17 @@ class tx_commerce_treelib_browser extends t3lib_SCbase {
 		$this->doc->loadJavascriptLib('contrib/prototype/prototype.js');
 		$this->doc->loadJavascriptLib('../typo3conf/ext/commerce/mod_access/tree.js'); ###MAKE PATH BE CALCULATED, NOT FIXED###
 		
+		// Check if we need to allow browsing of products.
+		if (1 == $allowProducts) {
+			$this->doc->JScode .= $this->doc->wrapScriptTags('Tree.ajaxID = "tx_commerce_category_navframe::ajaxExpandCollapse";');
+		}
+		
 		// Setting JavaScript for menu
 		// in this context, the function jumpTo is different
 		// it adds the Category to the mountpoints
 		// DAM actually calls the function parent.setFormValueFromBrowseWin directly - we sneak around it ;)
 		###MAYBE WE SHOULD just use a different leaf_categoryview and give it a different JS function - DEPENDS how often a manipulation like this is needed###
-		$this->doc->JScode=$this->doc->wrapScriptTags(
+		$this->doc->JScode .= $this->doc->wrapScriptTags(
 			($this->currentSubScript?'top.currentSubScript=unescape("'.rawurlencode($this->currentSubScript).'");':'').'
 
 			function jumpTo(id,linkObj,highLightID,script)	{

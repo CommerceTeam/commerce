@@ -418,11 +418,18 @@ class tx_commerce_treelib_tceforms {
 			$config = base64_encode(serialize($this->PA['fieldConf']));			
 		}
 		
+		$allowProducts = 0;
+		
+		if (1 == $this->config['allowProducts']) {
+			$allowProducts = 1;
+		}
+		
 		$params['table'] = $table;
 		$params['field'] = $field;
 		$params['uid'] = $uid;
 		$params['elname'] = $this->PA['itemFormElName'];
 		$params['config'] = $config;
+		$params['allowProducts'] = $allowProducts;
 		$params['seckey'] = t3lib_div::shortMD5(implode('|', $params).'|'.$GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey']);
 		return t3lib_div::implodeArrayForUrl('', $params);
 	}
@@ -727,7 +734,78 @@ class tx_commerce_treelib_tceforms {
 		
 		return $this->itemArrayProcessed;
 	}
+	
+	/**
+	 * Extracts the ID and the Title from which every item we have
+	 * 
+	 * @param string $itemFormElValue tx_commerce_products_512,tx_commerce_article_42
+	 * @return array
+	 */
+	function processItemArrayForBrowseableTreeDefault($itemFormElValue) 
+	{
+		$tmp1 = t3lib_div::trimExplode(',', $itemFormElValue, true);
+		
+		$itemArray = array();
+		
+		// Walk the records we have.
+		foreach ($tmp1 as $value) {
+			
+			// Get parts.
+			$parts = t3lib_div::trimExplode('_', $value, true);
+			
+			$uid = array_pop($parts);
+			$table = implode('_', $parts);
 
+			// Product
+			if ('tx_commerce_products' == $table) {
+				
+				// product.
+				$prod = t3lib_div::makeInstance('tx_commerce_product');
+				$prod->init($uid);
+				$prod->load_data();
+				
+				$itemArray[] = $value . '|' . $prod->get_title();
+				
+			} else if ('tx_commerce_articles' == $table) {
+				
+				// article.
+				$article = t3lib_div::makeInstance('tx_commerce_article');
+				$article->init($uid);
+				$article->load_data();
+				
+				$itemArray[] = $value . '|' . $article->get_title();
+				
+			} else if ('tx_commerce_categories' == $table) {
+				
+				// category.
+				$category = t3lib_div::makeInstance('tx_commerce_category');
+				$category->init($uid);
+				$category->load_data();
+				
+				$itemArray[] = $value . '|' . $category->get_title();
+				
+			} else {
+				
+				// Hook:
+				$hookObjectsArr = array();
+				if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/treelib/class.tx_commerce_treelib_tceforms.php']['processItemArrayForBrowseableTreeDefault'])) {
+						foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/treelib/class.tx_commerce_treelib_tceforms.php']['processItemArrayForBrowseableTreeDefault'] as $classRef) {
+							$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+						}
+				}
+				foreach($hookObjectsArr as $hookObj)	{
+					if (method_exists($hookObj, 'processDefault')) {
+						$hookObj->processDefault($itemFormElValue, $table, $uid);
+					}
+				}
+				
+			}
+			
+		}
+		
+		return $itemArray;
+	}
+	
 	/**
 	 * Extracts the id's from $PA['itemFormElValue'] in standard TCE format.
 	 *

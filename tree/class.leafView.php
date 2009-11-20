@@ -27,6 +27,7 @@ class leafView extends langbase {
 	protected $noClickmenu;							//Should clickmenu be enabled
 	protected $noRootOnclick = false;				//Should the root item have a title-onclick?
 	protected $noOnclick = false;					//hould the otem in general have a title-onclick?
+	protected $realValues = false;					// use real values for leafs that otherwise just have "edit"
 	
 	//Internal
 	protected $icon;
@@ -142,6 +143,16 @@ class leafView extends langbase {
 	}
 	
 	/**
+	 * Will set the real values to the views
+	 * for products and articles, instead of "edit"
+	 * 
+	 * @return void
+	 */
+	public function substituteRealValues() {
+		$this->realValues = true;
+	}
+	
+	/**
 	 * Get icon for the row.
 	 * If $this->iconPath and $this->iconName is set, try to get icon based on those values.
 	 *
@@ -224,7 +235,7 @@ class leafView extends langbase {
 		$title = ('' != $title) ? t3lib_div::fixed_lgd_cs($title, 30) : $this->getLL('leaf.noTitle');
 		
 		$aOnClick = 'return jumpTo(\''.$this->getJumpToParam($row).'\',this,\''.$this->domIdPrefix.$row['uid'].'_'.$bank.'\',\'\');';
-		
+
 		$res = (($this->noRootOnclick && 0 == $row['uid']) || $this->noOnclick) ? $title : '<a href="#" onclick="'.htmlspecialchars($aOnClick).'">'.$title.'</a>';
 
 		return $res;

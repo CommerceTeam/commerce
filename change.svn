@@ -1,4 +1,9 @@
 Changelog for tx_commerce
+
+20.11.2009 Erik Frister <ef@aijko.de>
+* Fixed #4447: Fatal error in product list view
+* Fixed tcefunc for TCA records field displaying the category tree, thanks to Julian Kleinhans
+
 19.11.2009 Benny Schimmer <bschimmer@cross-content.com>
 * Fixed #5433: new Hook for Marker Manipulation of empty QV-Basket
 

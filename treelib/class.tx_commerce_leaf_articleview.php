@@ -35,8 +35,7 @@ class tx_commerce_leaf_articleview extends leafView {
 		
 		$aOnClick = 'return jumpTo(\''.$this->getJumpToParam($row).'\',this,\''.$this->domIdPrefix.$row['uid'].'_'.$bank.'\',\'alt_doc.php\');';
 		
-		$res = '<a href="#" onclick="'.htmlspecialchars($aOnClick).'">'.$title.'</a>';
-
+		$res = ($this->noOnclick) ? $title : '<a href="#" onclick="'.htmlspecialchars($aOnClick).'">'.$title.'</a>';
 		return $res;
 	}
 
@@ -53,7 +52,13 @@ class tx_commerce_leaf_articleview extends leafView {
 			return '';
 		}
 		
-		$res = 'edit['.$this->table.']['.$row['uid'].']=edit';
+		$value = 'edit';
+		
+		if ($this->realValues) {
+			$value = $this->table . '_' . $row['uid'];
+		}
+		
+		$res = 'edit['.$this->table.']['.$row['uid'].']=' . $value;
 		return $res;
 	}
 }

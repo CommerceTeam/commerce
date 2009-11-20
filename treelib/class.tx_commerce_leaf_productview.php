@@ -50,7 +50,14 @@ class tx_commerce_leaf_productview extends leafView {
 			if (TYPO3_DLOG) t3lib_div::devLog('getJumpToParam (productview) gets passed invalid parameters.', COMMERCE_EXTkey, 3);	
 			return '';	
 		}
-		$res = 'edit['.$this->table.']['.$row['uid'].']=edit';
+		
+		$value = 'edit';
+		
+		if ($this->realValues) {
+			$value = $this->table . '_' . $row['uid'];
+		}
+		
+		$res = 'edit['.$this->table.']['.$row['uid'].']=' . $value;
 		return $res;
 	}
 }

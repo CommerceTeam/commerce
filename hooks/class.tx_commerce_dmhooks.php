@@ -730,12 +730,16 @@ class tx_commerce_dmhooks	{
 				}
 				
 				//check new categories
-				//$newCats = array_diff(explode(',',t3lib_div::uniqueList($data['categories'])), $parentCategories);
-				$newCats = $this->single_diff_assoc(explode(',',t3lib_div::uniqueList($data['categories'])), $parentCategories);
-
-				if(!tx_commerce_belib::checkPermissionsOnCategoryContent($newCats, array('editcontent'))) {
-					$pObj->newlog('You do not have the permissions to add one or all categories you added.'.t3lib_div::uniqueList($data['categories']),1);
-					$fieldArray = array();	
+				if (isset($data['categories'])) {
+				    $newCats = $this->single_diff_assoc(explode(',',t3lib_div::uniqueList($data['categories'])), $parentCategories);
+			         
+					 
+					t3lib_div::debug(tx_commerce_belib::checkPermissionsOnCategoryContent($newCats, array('editcontent')));
+					die;
+					if(!tx_commerce_belib::checkPermissionsOnCategoryContent($newCats, array('editcontent'))) {
+						$pObj->newlog('You do not have the permissions to add one or all categories you added.'.t3lib_div::uniqueList($data['categories']),1);
+						$fieldArray = array();	
+					}
 				}
 				
 				if(isset($fieldArray['categories'])) {
