@@ -2388,22 +2388,23 @@ class tx_commerce_belib {
 		$mounts->init($GLOBALS['BE_USER']->user['uid']);
 		
 		for($i = 0; $i < $l; $i ++) {
-			//$pageinfo = t3lib_BEfunc::getRecord('tx_commerce_categories', $categoryUids[$keys[$i]], 'perms_everybody, perms_user, perms_group, perms_groupid, perms_userid');
 			
 			$category = t3lib_div::makeInstance('tx_commerce_category');
 			$category->init($categoryUids[$keys[$i]]);
 			/**
 			 * @TODO Check why not wiorking at kneipp
+			 * @NOTE: Whoever wrote this TODO, next time, specify what EXACTLY is not working
+			 * Can't reproduce. 20.11.2009, Erik Frister
 			 */
 			//check if the category is in the commerce mounts
-			#if(!$mounts->isInCommerceMounts($category->getUid())) return false;
+			if(!$mounts->isInCommerceMounts($category->getUid())) return false;
 			
 			//check perms
 			for($j = 0, $m = count($perms); $j < $m; $j ++) {
 				if(!$category->isPSet($perms[$j])) {
+					
 					//return false if perms are not granted
-				
-					#return false;
+					return false;
 				}
 			}
 		}
