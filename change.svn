@@ -1,5 +1,8 @@
 Changelog for tx_commerce
 
+24.11.2009 Erik Frister <ef@aijko.de>
+* Cleanup of dmhook permission checks
+
 20.11.2009 Erik Frister <ef@aijko.de>
 * Fixed #5349: Add functionaloty to belib:checkPermissionsOnCategoryContent
 * Fixed #4447: Fatal error in product list view
