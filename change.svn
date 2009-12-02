@@ -1,5 +1,8 @@
 Changelog for tx_commerce
 
+2.12.2009 Erik Frister <ef@aijko.de>
+* Enabled substitution of realValues for categories as well in tcefunc.
+
 24.11.2009 Erik Frister <ef@aijko.de>
 * Cleanup of dmhook permission checks
 

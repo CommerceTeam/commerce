@@ -30,6 +30,11 @@ class tx_commerce_leaf_categoryview extends leafView{
 		$prodPid = tx_commerce_belib::getProductFolderUid();
 		
 		$res = 'id='.$prodPid.'&control['.$this->table.'][uid]='.$row['uid'];
+
+		if ($this->realValues) {
+            $res = $this->table . '_' . $row['uid'];
+        }
+		
 		return $res;
 	}
 	

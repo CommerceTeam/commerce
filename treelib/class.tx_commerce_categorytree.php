@@ -58,6 +58,11 @@ class tx_commerce_categorytree extends browsetree {
 		$categoryview = t3lib_div::makeInstance('tx_commerce_leaf_categoryview');
 		$categoryview->noRootOnclick(($this->minCategoryPerms == 'editcontent')); //disable the root onclick if the perms are set to editcontent - this way we cannot select the root as a parent for any content item
 		
+		// Configure real values
+        if ($this->realValues) {
+            $categoryview->substituteRealValues();
+        }
+		
 		//Configure the noOnclick for the leaf
 		if(t3lib_div::inList($this->noClickList, 'tx_commerce_leaf_category')) {
 			$categoryview->noOnclick();
