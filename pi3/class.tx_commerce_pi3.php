@@ -2458,9 +2458,10 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 				if ($this->debug) {
 					debug($oaData);
 				}
+				$newUid = 0;
 				foreach($hookObjectsArr as $hookObj) {
 					if (method_exists($hookObj, 'modifyOrderArticlePreSave')) {
-						$hookObj->modifyOrderArticlePreSave($artUid, $oaData, $this);
+						$hookObj->modifyOrderArticlePreSave($newUid, $oaData, $this);
 					}
 				}
 				if (($this->conf['useStockHandling'] == 1) && ($doStock = TRUE)) {
@@ -2472,9 +2473,11 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 					$oaData
 				);
 
+				$newUid = $GLOBALS['TYPO3_DB']->sql_insert_id();
+
 				foreach($hookObjectsArr as $hookObj) {
 					if (method_exists($hookObj, 'modifyOrderArticlePostSave')) {
-						$hookObj->modifyOrderArticlePostSave($artUid, $oaData, $this);
+						$hookObj->modifyOrderArticlePostSave($newUid, $oaData, $this);
 					}
 				}
 			}

@@ -1,5 +1,8 @@
 Changelog for tx_commerce
 
+08.12.2009 Michael Staatz <michael.staatz@e-netconsulting.com>
+* Fixed #3963: pi3->function saveOrder - wrong variable $newUid for article hooks
+
 2.12.2009 Erik Frister <ef@aijko.de>
 * Enabled substitution of realValues for categories as well in tcefunc.
 
