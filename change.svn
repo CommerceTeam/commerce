@@ -1,5 +1,9 @@
 Changelog for tx_commerce
 
+10.12.2009 Michael Staatz <michael.staatz@e-netconsulting.com>
+* Fixed #5145: Errors when using tx_commerce_attribute->get_all_values(), thanks to Robert Heel
+* Fixed #5684: typing error in lib/class.tx_commerce_attribute.php (double entry), thanks to Jens Witt
+
 08.12.2009 Michael Staatz <michael.staatz@e-netconsulting.com>
 * Fixed #3963: pi3->function saveOrder - wrong variable $newUid for article hooks
 

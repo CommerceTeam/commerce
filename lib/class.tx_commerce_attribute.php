@@ -151,7 +151,7 @@ require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_attribute_
   	
   		if ($this->attribute_value_uids=$this->conn_db->get_attribute_value_uids($this->uid)){
   			foreach ($this->attribute_value_uids as $value_uid){
-  				$this->attribute_values[$value_uid] = t3lib_div::makeInstnace('tx_commerce_attribute_value');
+  				$this->attribute_values[$value_uid] = t3lib_div::makeInstance('tx_commerce_attribute_value');
   				$this->attribute_values[$value_uid]->init($value_uid,$this->lang_uid);
   				$this->attribute_values[$value_uid]->load_data();
   			}	
