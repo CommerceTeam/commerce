@@ -234,6 +234,12 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 					if ($this->basket->getQuantity($k) > 0) {
 						$this->basket->delete_article($k);
 					}
+
+					foreach ($hookObjectsArr as $hookObj) {
+						if (method_exists($hookObj, 'postDeleteArtUidSingle')) {
+							$hookObj->postDeleteArtUidSingle($k, $v, $oldCountValue, $this->basket, $this);
+						}
+					}					
 				}else{
 					$articleObj = t3lib_div::makeInstance('tx_commerce_article');
 					$articleObj->init($k);

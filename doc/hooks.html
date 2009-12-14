@@ -52,7 +52,7 @@ Some hook-methods can return data which is used by the calling function. Others 
 <h3>Updated by Michael Staatz <a href="mailto:michael.staatz@e-netconsulting.com">&lt;michael.staatz@e-netconsulting.com&gt;</a></h3>
 <h3>as of 09/11/2009</h3>
 	<br/><br/><br/>
-	Functions: 56<br/>
+	Functions: 57<br/>
 	Classes: 17<br/>
 <a href="#tx_commerce_article">
 	<div class="classindex">class tx_commerce_article</div>
@@ -126,7 +126,8 @@ Some hook-methods can return data which is used by the calling function. Others 
 	<div class="functionindex">function makeProductList</div>
 	<div class="functionindex">function makePayment</div>
 	<div class="functionindex">function makeDelivery</div>
-	<div class="functionindex">postInit</div>
+	<div class="functionindex">function postInit</div>
+	<div class="functionindex">function postDeleteArtUidSingle</div>
 <a href="#tx_commerce_pi3">
 <div class="classindex">class tx_commerce_pi3</div>
 </a>
@@ -430,6 +431,13 @@ Some hook-methods can return data which is used by the calling function. Others 
 					Type: Multiple<br/>
 					Result: void<br />
 					Hook for editing the basket after adding an article to it
+					</div>
+				<div class="hookname">$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['postartAddUid']</div>
+					<div class="description">
+					Call: postDeleteArtUidSingle($k, $v, $oldCountValue, $this->basket, $this)<br/>
+					Type: Multiple<br/>
+					Result: void<br />
+					Hook for editing the basket after deleting article form basket
 					</div>
 				<div class="hookname">$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['postpayArt']</div>
 					<div class="description">
