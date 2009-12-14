@@ -538,7 +538,7 @@ class tx_commerce_pi4 extends tx_commerce_pibase {
 
 		// Create a checkbox where the user can select if the address is his main address / Changed to label and field
 		$isMainAddressCodeField = '<input type="checkbox" name="' . $this->prefixId . '[ismainaddress]"';
-		if ($addressData['tx_commerce_is_main_address']) {
+		if ($addressData['tx_commerce_is_main_address'] || $addressData['ismainaddress']) {
 			$isMainAddressCodeField.= ' checked="checked"';
 		}
 		$isMainAddressCodeField.= ' />';

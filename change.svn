@@ -2,6 +2,7 @@ Changelog for tx_commerce
 
 14.12.2009 Michael Staatz <michael.staatz@e-netconsulting.com>
 * Fixed #4671: new Hook-Method after deleting articles from basket
+* Fixed #5683: Wrong handling of the checkbox tx_commerce_pi4->getAddressForm
 
 10.12.2009 Michael Staatz <michael.staatz@e-netconsulting.com>
 * Fixed #5145: Errors when using tx_commerce_attribute->get_all_values(), thanks to Robert Heel
