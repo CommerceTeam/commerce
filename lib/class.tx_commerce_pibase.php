@@ -1663,7 +1663,11 @@ class tx_commerce_pibase extends tslib_pibase {
 			$myProduct = tx_commerce_div::removeNoStockArticles($myProduct , $this->conf['articles.']['showWithNoStock']);
 		}
 		
-		$subpartArray['###'.strtoupper($articleSubpart).'###'] = $this->makeArticleView('list',array(),$myProduct,$articleMarker,$articleTemplate);
+		if (isset($this->conf['disableArticleViewForProductlist']) && $this->conf['disableArticleViewForProductlist'] == 1) {
+			$subpartArray['###'.strtoupper($articleSubpart).'###'] = '';
+		} else {
+			$subpartArray['###'.strtoupper($articleSubpart).'###'] = $this->makeArticleView('list',array(),$myProduct,$articleMarker,$articleTemplate);
+		}
 
 		/**
 		 * Get The Checapest Price
