@@ -403,7 +403,7 @@ class SC_tx_commerce_cce_db {
 		//Hook: afterCommit
 		foreach($hookObjectsArr as $hookObj)	{
 			if (method_exists($hookObj, 'afterCommit')) {
-				$hookObj-afterCommit($uidClip, $uidTarget, $command);
+				$hookObj->afterCommit($uidClip, $uidTarget, $command);
 			}
 		}
 		
