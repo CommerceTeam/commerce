@@ -587,7 +587,7 @@ class tx_commerce_pi4 extends tx_commerce_pibase {
 			}
 		}
 
-		return '<form method="post" action="' . $link . '" ' . $this->conf[addressType . '.']['formParams'] . '>' . $this->cObj->substituteMarkerArray($tplBase, $baseMA) . '</form>';
+		return '<form method="post" action="' . $link . '" ' . $this->conf[$addressType . '.']['formParams'] . '>' . $this->cObj->substituteMarkerArray($tplBase, $baseMA) . '</form>';
 	}
 
 

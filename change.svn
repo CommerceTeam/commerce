@@ -1,5 +1,8 @@
 Changelog for tx_commerce
 
+11.02.2010 Benny Schimmer <bschimmer@cross-content.com>
+* Fixed: #6445: added $, changed addessType from const to var.
+
 23.12.2009 Michael Staatz <michael.staatz@e-netconsulting.com>
 * added a new ts constant that makes it possible to to disable the article rendering in the pibase method
   renderProduct. In some cases that can fix performance issues.
