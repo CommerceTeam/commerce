@@ -5,6 +5,8 @@
 		<type>database</type>
 		<csh_table></csh_table>
 		<fileId>EXT:commerce/mod_access/locallang_treelib.xml</fileId>
+				<!-- please keep in mind, labels always should start with a capital letter -->
+
 	</meta>
 	<data type="array">
 		<languageKey index="default" type="array">

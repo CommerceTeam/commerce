@@ -1,5 +1,8 @@
 Changelog for tx_commerce
 
+19.02.2010 Ingo Schmitt <is@marketing-factory.de>
+* Changed BE Labels, thanks to Eckhard M. Jäger <systeme@familie-redlich.de>
+
 11.02.2010 Benny Schimmer <bschimmer@cross-content.com>
 * Fixed: #6445: added $, changed addessType from const to var.
 
