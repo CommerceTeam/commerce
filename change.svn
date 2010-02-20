@@ -1,5 +1,8 @@
 Changelog for tx_commerce
 
+20.02.2010 Christian Kuhn <lolli@schwarzbu.ch>
+* Fixed deprecated method call get_atrribute_matrix
+
 20.02.2010 Erik Frister <ef@aijko.de>
 * Fixed Bug #5475
 

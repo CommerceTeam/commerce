@@ -210,7 +210,6 @@ class tx_commerce_pibase extends tslib_pibase {
 			$showHiddenValues = false;
 		}
 
-		#$matrix = $prodObj->get_atrribute_matrix('',$this->product_attributes,$showHiddenValues);
 		$matrix = $prodObj->get_product_attribute_matrix($this->product_attributes,$showHiddenValues);
 
 		$i = 0;
@@ -288,7 +287,7 @@ class tx_commerce_pibase extends tslib_pibase {
 		$this->shall_attributes = $prodObj->get_attributes(array(ATTRIB_shal));
 		
 		
-  		$matrix = $prodObj->get_atrribute_matrix($articleId,$this->shall_attributes,$showHiddenValues);
+  		$matrix = $prodObj->get_attribute_matrix($articleId,$this->shall_attributes,$showHiddenValues);
 	 	$i = 0;
 		if(is_array($this->shall_attributes)){
           	 foreach ($this->shall_attributes as $myAttributeUid) {
@@ -325,7 +324,7 @@ class tx_commerce_pibase extends tslib_pibase {
 
 		$article_shalAttributes_string = $this->cObj->stdWrap($article_shalAttributes_string,$this->conf['articleShalAttributsWrap.']) ;
 
-        $matrix = $prodObj->get_atrribute_matrix($articleId,$this->can_attributes,$showHiddenValues);
+        $matrix = $prodObj->get_attribute_matrix($articleId,$this->can_attributes,$showHiddenValues);
 		
 		$i = 0;
 		if(is_array($this->can_attributes)){
