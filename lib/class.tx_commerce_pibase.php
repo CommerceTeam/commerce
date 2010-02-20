@@ -1360,6 +1360,9 @@ class tx_commerce_pibase extends tslib_pibase {
 
 		
 		foreach ( (array)$matrix[$myAttributeUid]['values'] as $key => $value) {
+			if (is_array($value) && isset($value['value']) && $value['value'] != '') {
+			    $value = $value['value'];
+			}
 		 	$return2 = $value;
 		 	if (is_numeric($value)) {
 	           if ($matrix[$myAttributeUid]['valueformat']) {
