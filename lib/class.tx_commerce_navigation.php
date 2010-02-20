@@ -1018,32 +1018,23 @@ class tx_commerce_navigation {
 	  			
 	  		}
 	  		
-	  		/**
-	  		 * Only add if Rootline below $this->category
-	  		 * 
-	  		 */
-	  		if ($CategoryObject->parent_category_uid <> $this->category ){
-	  			   
-	  			$add_getvars=ini_get('arg_separator.output') .$this->prefixId.'[catUid]='.$CategoryObject->getUid();
+			$add_getvars=ini_get('arg_separator.output') .$this->prefixId.'[catUid]='.$CategoryObject->getUid();
 
-				if (is_string($this->gpVars['basketHashValue'])) {
-					$add_getvars.=ini_get('arg_separator.output') .$this->prefixId.'[basketHashValue]='.$this->gpVars['basketHashValue'];
-				}
-	  			$GP_Temp = t3lib_div::cHashParams($add_getvars.$GLOBALS['TSFE']->linkVars);
-	  			$itemState = ( $CategoryObject->uid === $catID ? 'CUR':'NO');
-	  			
-	  			$result[]=array('title'=>$CategoryObject->get_title(),
-	  						'nav_title' => $CategoryObject->get_navtitle(),
-							'uid'=>$this->PID,
-							 '_ADD_GETVARS' => $add_getvars.ini_get('arg_separator.output') .'cHash='.t3lib_div::shortMD5(serialize($GP_Temp)),
-							 'ITEM_STATE' => $itemState,
-							
-							
-							);
-				
-				 
+			if (is_string($this->gpVars['basketHashValue'])) {
+				$add_getvars.=ini_get('arg_separator.output') .$this->prefixId.'[basketHashValue]='.$this->gpVars['basketHashValue'];
+			}
+			$GP_Temp = t3lib_div::cHashParams($add_getvars.$GLOBALS['TSFE']->linkVars);
+			$itemState = ( $CategoryObject->uid === $catID ? 'CUR':'NO');
+			
+			$result[]=array('title'=>$CategoryObject->get_title(),
+						'nav_title' => $CategoryObject->get_navtitle(),
+						'uid'=>$this->PID,
+						 '_ADD_GETVARS' => $add_getvars.ini_get('arg_separator.output') .'cHash='.t3lib_div::shortMD5(serialize($GP_Temp)),
+						 'ITEM_STATE' => $itemState,
+						
+						
+						);
 					
-	  		}
 	  		return $result;
   		}
   		

@@ -1228,7 +1228,7 @@ class tx_commerce_dmhooks	{
 			*/
 
 				// Move Order articles
-			$res_order_id=$GLOBALS['TYPO3_DB']->exec_SELECTquery('order_id,pid,uid',$table,'uid='.intval($id));
+			$res_order_id=$GLOBALS['TYPO3_DB']->exec_SELECTquery('order_id,pid,uid,order_sys_language_uid',$table,'uid='.intval($id));
 			if (!$GLOBALS['TYPO3_DB']->sql_error())	{
 
 
@@ -1242,6 +1242,8 @@ class tx_commerce_dmhooks	{
 
 				if ($order_row['pid']<>$fieldArray['newpid']) {
 
+					// order_sys_language_uid is not always set in fieldArray so we overwrite it with our order data
+					if($fieldArray['order_sys_language_uid'] === NULL) $fieldArray['order_sys_language_uid'] = $order_row['order_sys_language_uid'];
 
 					foreach($hookObjectsArr as $hookObj)	{
 						if (method_exists($hookObj, 'moveOrders_preMoveOrder'))	{

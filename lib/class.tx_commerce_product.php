@@ -756,10 +756,9 @@
 											 $valueUidList[] = $row['uid'];
 	 										 $valueshown=true;
 	 								    }
-				 						usort($valuelist, array('tx_commerce_product', 'compareBySorting'));
-	 
 	 								}
 	 							}
+	 							usort($valuelist, array('tx_commerce_product', 'compareBySorting'));
 	 					}
 	 					if ($valueshown == false) {
 	 						$return_array[$attribute_uid]=array('title' => $data['title'],
@@ -913,26 +912,29 @@
 	 							   	 $valuelist[$row['uid']] = $row;
 	 							   	 $valueshown=true;
 	 							    }
-		 							/**
-			 						 * Sort values by the sorting field.
-			 						 * Is there a better way to do this?
-			 						 */
-			 						$valuelist_temp = $valuelist;
-			 						$valuelist = array();
-			 						$valuelist_temp_sort = array();
-			 						foreach ($valuelist_temp as $value_temp) {
-		 								if (!isset($valuelist_temp_sort[$value_temp['sorting']])) {
-		 									$valuelist_temp_sort[$value_temp['sorting']] = $value_temp;
-										} else {
-											$valuelist_temp_sort[] = $value_temp;
-										}
-			 						}
-			 						ksort($valuelist_temp_sort);
-			 						foreach ($valuelist_temp_sort as $value_temp) {
-			 							$valuelist[] = $value_temp;
-			 						}
 	 							}
 	 						}
+
+	 						usort($valuelist, array('tx_commerce_product', 'compareBySorting'));
+							/**
+							 * Sort values by the sorting field.
+							 * Is there a better way to do this?
+							 * Yes, don't repeat this every row!
+							 */
+							/* $valuelist_temp = $valuelist;
+							$valuelist = array();
+							$valuelist_temp_sort = array();
+							foreach ($valuelist_temp as $value_temp) {
+								if (!isset($valuelist_temp_sort[$value_temp['sorting']])) {
+									$valuelist_temp_sort[$value_temp['sorting']] = $value_temp;
+								} else {
+									$valuelist_temp_sort[] = $value_temp;
+								}
+							}
+							ksort($valuelist_temp_sort);
+							foreach ($valuelist_temp_sort as $value_temp) {
+								$valuelist[] = $value_temp;
+							} */
 	 				}
 	 				
 	 				if ($valueshown==true){

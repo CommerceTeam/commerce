@@ -147,7 +147,6 @@
 					$article->init($article_uid,0)	;
 					$article->load_data();
 				}*/
-				$article->load_Prices();
 				$priceids=$article->getPossiblePriceUids();
 				if (is_array($priceids)) {
 				/**

@@ -1,12 +1,21 @@
 Changelog for tx_commerce
 
+20.02.2010 Erik Frister <ef@aijko.de>
+* Fixed Bug #5475
+
 20.02.2010 Dimitri König <dk@cabag.ch>
 * removed 'Customer Data' from mod_orders
-* added 'postdelBasket' hook in pi2, forge Feature #6487
+* Feature #6487: added 'postdelBasket' hook in pi2
+* Feature #6531: added 'editSelectStatement' hook in pi4->getAddresses
+* Feature #6532: added 'postGetInputField' hook in pi4->getInputField
+* Feature #5315 fixed: Date format (strftime) on invoice is hard-coded in pi6
+* Feature #5425 fixed: empty basketpid -> basket on every page
+* fixed Bug #5401
 
 20.02.2010 Ingo Schmitt <is@marketing-factory.de>
 * Splitted tx_commerce_order_navframe to two files, since two classes 
 * Fixed some typos
+* Fixed Bug #6107
 
 19.02.2010 Ingo Schmitt <is@marketing-factory.de>
 * Changed BE Labels, thanks to Eckhard M. Jäger <systeme@familie-redlich.de>

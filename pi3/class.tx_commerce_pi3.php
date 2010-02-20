@@ -2136,7 +2136,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 						$hookObj->PostGenerateMail($AdminMailObj, $this, $GLOBALS['TSFE']->fe_user->tx_commerce_basket, $htmlContent);
 					}
 				}
-				unset($AdminMailObj->isHTMLMai);
+				unset($AdminMailObj->isHTMLMail);
 			}
 
 			// Moved to plainMailEncoded

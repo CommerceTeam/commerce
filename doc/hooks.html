@@ -149,6 +149,8 @@ Some hook-methods can return data which is used by the calling function. Others 
 </a>
 	<div class="functionindex">function noUser</div>
 	<div class="functionindex">function deleteAddress</div>
+	<div class="functionindex">function getAddresses</div>
+	<div class="functionindex">function getInputField</div>
 	<div class="functionindex">function saveAddressData</div>
 	<div class="functionindex">function validationMethod_</div>
 	<div class="functionindex">function processListingMarker</div>
@@ -713,6 +715,20 @@ Some hook-methods can return data which is used by the calling function. Others 
 					Result: string - A system message (potentially ignored)<br />
 					The result of the last called hook will replace the ###SYS_MESSAGE### marker in the address listing generated later on.<br />
 					<div class="warning">ATTENTION: If there are multiple hooks the results of the prior called ones are ignored. Of cause these hooks could be useful by changing &amp;$this->piVars['addressid'] or &amp;$this</div>
+					</div>
+			<div class="functionname">function getAddresses</div>
+				<div class="hookname">$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi4/class.tx_commerce_pi4.php']['getAddresses']</div>
+					<div class="description">
+					Call: editSelectStatement($select, $userId, $addressType, $this)<br />
+					Type: Multiple<br />
+					Result: manipulates the select statement
+					</div>
+			<div class="functionname">function getInputField</div>
+				<div class="hookname">$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi4/class.tx_commerce_pi4.php']['getInputField']</div>
+					<div class="description">
+					Call: postGetInputField($content, $fieldName, $fieldConfig, $fieldValue, $this)<br />
+					Type: Multiple<br />
+					Result: returns manipulated content
 					</div>
 			<div class="functionname">function saveAddressData</div>
 				<div class="hookname">$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi4/class.tx_commerce_pi4.php']['saveAddress']</div>

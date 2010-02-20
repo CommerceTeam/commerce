@@ -670,13 +670,14 @@ class tx_commerce_pi4 extends tx_commerce_pibase {
 	 * @return string Result of the specific field methods (usually a html string)
 	 */
 	function getInputField($fieldName, $fieldConfig, $fieldValue = '') {
+		$content = '';
 		switch (strtolower($fieldConfig['type'])) {
 			case 'select':
-				return $this->getSelectInputField($fieldName, $fieldConfig, $fieldValue);
+				$content = $this->getSelectInputField($fieldName, $fieldConfig, $fieldValue);
 			break;
 			case 'static_info_tables':
 				$selected = $fieldValue != '' ? $fieldValue : $fieldConfig['default'];
-				return $this->staticInfo->buildStaticInfoSelector(
+				$content = $this->staticInfo->buildStaticInfoSelector(
 					$fieldConfig['field'],
 					$this->prefixId . '[' . $fieldName . ']',
 					$fieldConfig['cssClass'],
@@ -690,13 +691,29 @@ class tx_commerce_pi4 extends tx_commerce_pibase {
 				);
 			break;
 			case 'check':
-				return $this->getCheckboxInputField($fieldName, $fieldConfig, $fieldValue);
+				$content = $this->getCheckboxInputField($fieldName, $fieldConfig, $fieldValue);
 			break;
 			case 'single':
 			default:
-				return $this->getSingleInputField($fieldName, $fieldConfig, $fieldValue);
+				$content = $this->getSingleInputField($fieldName, $fieldConfig, $fieldValue);
 			break;
 		}
+
+		/** * Hook for processing the content
+		*/
+		$hookObjectsArr = array();
+		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['getInputField'])) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['getInputField'] as $classRef) {
+				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+			}
+		}
+		foreach($hookObjectsArr as $hookObj) {
+			if (method_exists($hookObj, 'postGetInputField')) {
+				$content = $hookObj->postGetInputField($content, $fieldName, $fieldConfig, $fieldValue, $this);
+			}
+		}
+
+		return $content;
 	}
 
 
@@ -1032,6 +1049,20 @@ class tx_commerce_pi4 extends tx_commerce_pibase {
 		}
 
 		$select.= ' AND deleted=0 AND pid=' . $this->conf['addressPid'];
+
+		/** * Hook for adding select statement
+		*/
+		$hookObjectsArr = array();
+		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi4/class.tx_commerce_pi4.php']['getAddresses'])) {
+			foreach($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi4/class.tx_commerce_pi4.php']['getAddresses'] as $classRef) {
+ 	 			$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+ 	 		}
+ 	 	}
+ 	 	foreach($hookObjectsArr as $hookObj) {
+ 	 		if (method_exists($hookObj, 'editSelectStatement')) {
+ 	 			$select = $hookObj->editSelectStatement($select, $userId, $addressType, $this);
+ 	 		}
+ 	 	}
 
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			'*',

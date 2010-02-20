@@ -1723,6 +1723,11 @@ class tx_commerce_pibase extends tslib_pibase {
 	
 	function addFormMarker($markerArray,$wrap=false) {
 		$NewmarkerArray['GENERAL_FORM_ACTION'] =  $this->pi_getPageLink($this->conf['basketPid']);
+		if(!empty($this->conf['basketPid.'])) {
+			$basketConf = $this->conf['basketPid.'];
+			$basketConf['returnLast'] = 'url';
+			$NewmarkerArray['GENERAL_FORM_ACTION'] =  $this->cObj->typoLink('', $basketConf);
+		}
 		if (is_integer($this->cat)) {
 			$NewmarkerArray['GENERAL_HIDDENCATUID'] = '<input type="hidden" name="'.$this->prefixId.'[catUid]" value="'.$this->cat.'" />';
 		}
