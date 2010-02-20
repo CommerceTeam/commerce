@@ -523,8 +523,18 @@
   	 }
   	 
   	 	/**
-	 	 * Generates a Matrix from these concerning artciles for all Attributes and the values therfor
-	 	 * Realy complex array, so have a look at the source
+  	 	 * compares an array record by the sorting value
+  	 	 * @param $arr1 array left
+  	 	 * @param $arr2 array right
+  	 	 */
+ 		public static function compareBySorting($arr1, $arr2) {
+ 			return $arr1['sorting'] - $arr2['sorting'];
+ 		}
+   
+  	 
+  	 	/**
+	 	 * Generates a Matrix fro these concerning artciles for all Attributes and the values therfor
+	 	 * Realy complex array, so have a lokk at the source
 	 	 * 
 	 	 * @param $articleList [optional]
 	 	 * @param $attribute Exclude List array (list auf attriubute uids to exclkude)
@@ -741,27 +751,12 @@
 		 										continue;	
 		 									}
 	 								    }
-	 								    if (($showHiddenValues==true) || (($showHiddenValues==false) && ($row['showvalue']==1))){
-	 
-	 
+	 								    if (($showHiddenValues==true) || ($row['showvalue']==1)){
 	 								    	$valuelist[] = $row;
-										 $valueUidList[] = $row['uid'];
-	 									 $valueshown=true;
+											 $valueUidList[] = $row['uid'];
+	 										 $valueshown=true;
 	 								    }
-	 									/**
-				 						 * Sort values by the sorting field.
-				 						 * Is there a better way to do this?
-				 						 */
-				 						$valuelist_temp = $valuelist;
-				 						$valuelist = array();
-				 						$valuelist_temp_sort = array();
-				 						foreach ($valuelist_temp as $value_temp) {
-				 							$valuelist_temp_sort[$value_temp['sorting']] = $value_temp;
-				 						}
-				 						ksort($valuelist_temp_sort);
-				 						foreach ($valuelist_temp_sort as $value_temp) {
-				 							$valuelist[] = $value_temp;
-				 						}
+				 						usort($valuelist, array('tx_commerce_product', 'compareBySorting'));
 	 
 	 								}
 	 							}

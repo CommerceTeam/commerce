@@ -94,16 +94,26 @@ class tx_commerce_db_product extends tx_commerce_db_alib {
 			}else{
 				$where=" uid_product = $uid ";
 			}
-			$aditionalWhere='';
+			$additionalWhere='';
 			
+			/**
+			 * @deprecated
+			 */
 			if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_product.php']['aditionalWhere']) {
 		        	$hookObj = &t3lib_div::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_product.php']['aditionalWhere']);
 			}
 			if (method_exists($hookObj, 'aditionalWhere')) {
-					$aditionalWhere = $hookObj->aditionalWhere($where);
+					$additionalWhere = $hookObj->aditionalWhere($where);
 			}
 		
-	 		$result=$GLOBALS['TYPO3_DB']->exec_SELECTquery('uid','tx_commerce_articles',$where.' '.$aditionalWhere,'',$localOrderField);
+			if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_product.php']['additionalWhere']) {
+		        	$hookObj = &t3lib_div::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_product.php']['additionalWhere']);
+			}
+			if (method_exists($hookObj, 'additionalWhere')) {
+					$additionalWhere = $hookObj->additionalWhere($where);
+			}
+		
+			$result=$GLOBALS['TYPO3_DB']->exec_SELECTquery('uid','tx_commerce_articles',$where.' '.$additionalWhere,'',$localOrderField);
 	 		if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)>0){
 	 			while ($return_data=$GLOBALS['TYPO3_DB']->sql_fetch_assoc($result))	{
 	 				$article_uid_list[]=$return_data['uid'];
@@ -298,7 +308,7 @@ class tx_commerce_db_product extends tx_commerce_db_alib {
 		$uids = array();
 		
 		//read from sql
- 		$result 	 = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid_foreign',$this->database_category_rel_table,'uid_local = '.$uid, '', 'sorting ASC');
+ 		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid_foreign',$this->database_category_rel_table,'uid_local = '.$uid, '', 'sorting ASC');
 		while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
 			$uids[] = $row['uid_foreign'];
 		}

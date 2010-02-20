@@ -393,12 +393,10 @@
   	 */
   	
     function has_subcategories()  	{
-  		if (count($this->categories_uid) > 0)
-  		{
+  		if (count($this->categories_uid) > 0) {
   			return true;	
-  		}	else	{
-  			return false;	
   		}
+  		return false;	 		
   	}
   	
   	/**
@@ -408,11 +406,10 @@
   	 */
   	
   	 function has_subproducts()  	 {
-  		if (count($this->products_uid) > 0) 		{
+  		if (count($this->products_uid) > 0) {
   			return true;	
-  		}	else	{
-  			return false;	
   		}
+  		return false;	
   	 }
   	
   	/**
@@ -507,15 +504,12 @@
   	 */
   	
   	function get_parent_category()  	{
-		if ($this->parent_category_uid>0)	{
-		
+		if ($this->parent_category_uid>0)	{		
 			$this->parent_category= t3lib_div::makeInstance('tx_commerce_category');
 			$this->parent_category->init($this->parent_category_uid,$this->lang_uid);	
 			return 	$this->parent_category;
-		} else {
-			return false;	
 		}
-		
+		return false;	
   	}
 	
 	/**
@@ -536,49 +530,7 @@
 		return $parentCats;
 	}
 	
-	/**
-	 * Returns false if the current category is not in the categorymounts of the user
-	 * @return {boolean}		Is in mounts?
-	 */
-	/*function isInCommerceMounts() {
-		 
-		 require_once(t3lib_extmgm::extPath('commerce').'treelib/class.tx_commerce_categorymounts.php'); 
-		
-		//get all mounts
-		$mounts = t3lib_div::makeInstance('tx_commerce_categorymounts');
-		$mounts->init($GLOBALS['BE_USER']->user['uid']);
-		
-		$categories = $mounts->getMountData();
-		
-		//is user admin? has mount 0? is parentcategory in mounts?
-		if($GLOBALS['BE_USER']->isAdmin() || in_array(0, $categories) || in_array($this->uid, $categories)) return true;
-		
-		//load the category and go up the tree until we either reach a mount or we reach root
-		$tmpCats 	= $this->getParentCategories();
-		$tmpParents = null;
-		$i 			= 1000;
-		
-		while(!is_null($cat = @array_pop($tmpCats))) {
-			//Prevent endless recursion
-			if($i < 0) {
-				if (TYPO3_DLOG) t3lib_div::devLog('isInCommerceMounts (category) has aborted because $i has reached its allowed recursive maximum.', COMMERCE_EXTkey, 3);	
-				return false;
-			}
-			
-			//true if we can find any parent category of this category in the commerce mounts
-			if(in_array($cat->getUid(), $categories)) {
-				return true;	
-			}
-			
-			$tmpParents = $cat->getParentCategories();
 
-			if(is_array($tmpParents) && 0 < count($tmpParents)) {
-				$tmpCats = array_merge($tmpCats, $tmpParents);	
-			}
-			$i --;
-		}
-		return false;
-	}*/
 	
 	/**
 	 * Carries out the move of the category to the new parent
@@ -606,7 +558,10 @@
 			$catList = tx_commerce_belib::extractFieldArray($catList, 'uid_foreign', true);
 	
 			tx_commerce_belib::saveRelations($this->uid, $catList, 'tx_commerce_categories_parent_category_mm', true);
-		} else return false;
+		} else {
+			return false;
+		}
+		
 		return true;
 	}
   	
