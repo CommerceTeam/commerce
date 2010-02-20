@@ -523,13 +523,13 @@
   	 }
   	 
   	 	/**
-	 	 * Generates a Matrix fro these concerning artciles for all Attributes and the values therfor
-	 	 * Realy complex array, so have a lokk at the source
+	 	 * Generates a Matrix from these concerning artciles for all Attributes and the values therfor
+	 	 * Realy complex array, so have a look at the source
 	 	 * 
 	 	 * @param $articleList [optional]
 	 	 * @param $attribute Exclude List array (list auf attriubute uids to exclkude)
 	 	 * @param $showHiddenValues default true (if hidden values should be shown)
-	 	 * @Param $fallbackToDefault if set to true, the dfeault language value will beused, if no local value is existent
+	 	 * @Param $fallbackToDefault if set to true, the default language value will beused, if no local value is existent
 	 	 * @return array of arrays
 	 	 * @todo split DB connects to db_class
 	 	 * @since 2005 11 02 $showHiddenValues

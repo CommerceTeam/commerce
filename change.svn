@@ -1,5 +1,13 @@
 Changelog for tx_commerce
 
+20.02.2010 Dimitri König <dk@cabag.ch>
+* removed 'Customer Data' from mod_orders
+* added 'postdelBasket' hook in pi2, forge Feature #6487
+
+20.02.2010 Ingo Schmitt <is@marketing-factory.de>
+* Splitted tx_commerce_order_navframe to two files, since two classes 
+* Fixed some typos
+
 19.02.2010 Ingo Schmitt <is@marketing-factory.de>
 * Changed BE Labels, thanks to Eckhard M. Jäger <systeme@familie-redlich.de>
 
