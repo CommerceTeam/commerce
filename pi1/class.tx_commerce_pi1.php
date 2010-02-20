@@ -586,7 +586,7 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 						if (is_array($v) && isset($v['value']) && $v['value'] != '') {
 							$v = $v['value'];
 						}
-						$markerArray["###SELECT_ATTRIBUTES_VALUE###"] = $v['value'];
+						$markerArray["###SELECT_ATTRIBUTES_VALUE###"] = $v;
 						$markerArray["###SELECT_ATTRIBUTES_UNIT###"] = $myAttribute['unit'];
 						$numTemplate = $ct % $countTemplateInterations;
 						$attCode.= $this->substituteMarkerArrayNoCached($templateAttr[$numTemplate], $markerArray, array());
