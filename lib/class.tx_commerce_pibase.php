@@ -310,7 +310,7 @@ class tx_commerce_pibase extends tslib_pibase {
                 	'icon'	=> $matrix[$myAttributeUid]['icon'],
                 );
     	        $markerArray = $this->generateMarkerArray($datas,$this->conf['singleView.']['attributes.'],$prefix='ARTICLE_ATTRIBUTES_');
-		    	$marker['ARTICLE_ATTRIBUTES_TITLE'] = $matrix[$myAttributeUid]['title'];
+		    	$markerArray['ARTICLE_ATTRIBUTES_TITLE'] = $matrix[$myAttributeUid]['title'];
 
   	            $article_shalAttributes_string .= $this->cObj->substituteMarkerArray($templateArray[$i],$markerArray,'###|###',1);
 //        	    $markerArray["###ARTICLE_ATTRIBUTES_TITLE###"] = $matrix[$myAttributeUid]['title'];

@@ -70,7 +70,7 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 
 		$this->basket = &$GLOBALS['TSFE']->fe_user->tx_commerce_basket;
 		$this->basket->setTaxCalculationMethod($this->conf['priceFromNet']);
-		$this->basket->load_data_from_database();
+		$this->basket->load_data();
 
 		if ($this->conf['defaultCode']) {
 			$this->handle = strtoupper($this->conf['defaultCode']);
