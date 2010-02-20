@@ -569,7 +569,7 @@
 	 				$query_article_list=  implode(',',$articleList);
 	 				$addwhere2 =' AND tx_commerce_articles.uid in ('.$query_article_list.')';
 	 			}
-	 
+
 	 			$result=$GLOBALS['TYPO3_DB']->exec_SELECT_mm_query('distinct tx_commerce_attributes.uid,tx_commerce_attributes.sys_language_uid,tx_commerce_articles.uid as article ,tx_commerce_attributes.title, tx_commerce_attributes.unit, tx_commerce_attributes.valueformat, tx_commerce_attributes.internal_title,tx_commerce_attributes.icon, '.$sortingTable.'.sorting',
 	 									'tx_commerce_articles',
 	 									'tx_commerce_articles_article_attributes_mm',
@@ -610,9 +610,6 @@
 	 						$data['title']=$return_data['title'];
 	 						$data['unit']=$return_data['unit'];
 	 						$data['internal_title']=$return_data['internal_title'];
-	 
-	 
-	 
 	 					}
 	 
 	 					$valueshown=false;
@@ -784,11 +781,11 @@
 	 					}
 	 					
 	 
-	 				}
-	 
+	 				} // end of while attribute rows
+	 				$GLOBALS['TYPO3_DB']->sql_free_result($result);
 	 				return $return_array;
 	 			}
-	 		}
+	 		} //end if ($this->uid>0)
 	 		return false;
 	 
 	}

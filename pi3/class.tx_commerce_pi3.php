@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2005 - 2009 Ingo Schmitt <is@marketing-factory.de>
+*  (c) 2005 - 2010 Ingo Schmitt <is@marketing-factory.de>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -1779,10 +1779,10 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 		}
 
 		// If static items are set
-		if (is_array($fieldConfig['values'])) {
-			foreach($fieldConfig['values'] as $option) {
-				$result.= '<option name="' . $option . '" value="' . $option . '"';
-				if ($fieldValue === $option) $result.= ' selected="selected"';
+		if (is_array($fieldConfig['values.'])) {
+			foreach($fieldConfig['values.'] as $key => $option) {
+				$result.= '<option name="' . $key . '" value="' . $key . '"';
+				if ($fieldValue === $key) $result.= ' selected="selected"';
 				$result.= '>' . $option . '</option>' . "\n";
 			}
 		} else {

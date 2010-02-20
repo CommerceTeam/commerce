@@ -41,7 +41,7 @@ $EM_CONF[$_EXTKEY] = array(
 			'dynaflex' => '1.7.2-',
 			'moneylib' => '1.2.0-',
 			'static_info_tables' => '2.0.0-',
-			'php' => '5.0.0-0.0.0',
+			'php' => '5.2.0-0.0.0',
 			'typo3' => '4.2.0-0.0.0',
 		),
 		'conflicts' => array(

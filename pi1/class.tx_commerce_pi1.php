@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2005 - 2009 Volker Graubaum <vg@e-netconsulting.de>
+*  (c) 2005 - 2010 Volker Graubaum <vg@e-netconsulting.de>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -153,15 +153,16 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 			$this->conf['templateFile'] = $this->templateFolder . $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'template', 's_template');
 		}
 
-		$tmpCategory = t3lib_div::makeinstance('tx_commerce_category');
+		$accessible = false;
 		if ($this->piVars['catUid']) {
+			$tmpCategory = t3lib_div::makeinstance('tx_commerce_category');
 			$this->cat = (int)$this->piVars['catUid'];
 			$tmpCategory->init($this->cat, $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
+			$accessible = $tmpCategory->isAccessible();
 		}
 
 		// Validate given catUid, if it's given and accessible
-		if (!$this->piVars['catUid'] || !$tmpCategory->isAccessible()) {
-			unset($tmpCategory);
+		if (!$this->piVars['catUid'] || !$accessible) {
 			$tmpCategory = t3lib_div::makeinstance('tx_commerce_category');
 			$this->cat = (int)$this->master_cat;
 			$tmpCategory->init($this->cat, $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
@@ -169,11 +170,9 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 		if (!isset($this->piVars['catUid'])) {
 			$this->piVars['catUid'] = $this->master_cat;
 		}
-
+		$tmpCategory->load_data();
 		$this->category = $tmpCategory;
-		$this->category = t3lib_div::makeinstance('tx_commerce_category');
-		$this->category->init($this->cat, $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
-		$this->category->load_data();
+		
 
 		$categorySubproducts = $this->category->getProductUids();
 
@@ -218,6 +217,7 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 			unset($this->category);
 			$this->category = t3lib_div::makeinstance('tx_commerce_category');
 			$this->category->init($this->cat, $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
+			$this->category->load_data();
 		}
 
 		$this->internal['results_at_a_time'] = $this->conf['maxRecords'];
@@ -234,12 +234,18 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 		}
 
 		if ($this->cat > 0) {
+			/*
+			 * @since 2010-02-20 Commerce Weekend
+			 * @depricated
+			 * this check is not needed
+			 * @TODO: Cleanup
 			if (!$this->category->isValidUid($this->category->getUid())) {
 				unset($this->category);
 				$this->category = t3lib_div::makeinstance('tx_commerce_category');
 				$this->category->init($this->master_cat, $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
 			}
-			$this->category->load_data();
+			*/
+			
 			$this->category_array = $this->category->return_assoc_array();
 
 			$catConf = $this->category->getCategoryTSconfig();
@@ -321,7 +327,7 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 	 * Init the singleView for one product
 	 *
 	 * @param integer $prodID ProductID for single view
-	 * @return void
+	 * @return boolean
 	 */
 	function initSingleView($prodID) {
 		$prodID = intval($prodID);
@@ -339,7 +345,7 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 
 			if ($this->product->isAccessible()) {
 
-				//TODO: Der folgende Teil scheint ŸberflŸssig zu sein. Wir kommentieren den jetzt aus, und schauen ob wer schreit ;)
+				//TODO: Der folgende Teil scheint ï¿½berflï¿½ssig zu sein. Wir kommentieren den jetzt aus, und schauen ob wer schreit ;)
 				/*
 				foreach($this->product->articles as $article) {
 					$this->article_array = $article->return_assoc_array();
@@ -365,12 +371,13 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 
 				// Write the current page to the session to have a back to last product link
 				$GLOBALS["TSFE"]->fe_user->setKey('ses', 'tx_commerce_lastproducturl', $this->pi_linkTP_keepPIvars_url());
+				return TRUE;
 			} else {
 				// If product ist not valid (url manipulation) go to listview
 				$this->handle = 'listView';
-				return FALSE;
 			}
 		}
+		return FALSE;
 	}
 
 
@@ -439,7 +446,7 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 		// So we will change this here. In thought of sorting, we can't split the entries.
 		if ($relatedProductsSubpart != '') {
 			// Set first subpart empty
-			$contentTmp = $this->cObj->substituteSubpart($content, '###' . strtoupper($this->conf['templateMarker.']['relatedProductSingle']) . '###', '');
+			$contentTmp = $this->cObj->substituteSubpart($content, '###' . strtoupper($this->conf['templateMarker.']['relatedProductSingle']) . '###', $relatedProductsSubpart);
 			// Fill the second with our data
 			$content = $this->cObj->substituteSubpart($contentTmp, '###' . strtoupper($this->conf['templateMarker.']['relatedProductSingle']) . '_NOSTOCK###', $relatedProductsSubpart);
 		} else {

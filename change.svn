@@ -5,6 +5,8 @@ Changelog for tx_commerce
 
 20.02.2010 Erik Frister <ef@aijko.de>
 * Fixed Bug #5475
+* Fixed Bug #5478
+* Fixed Bug #6302
 
 20.02.2010 Dimitri König <dk@cabag.ch>
 * removed 'Customer Data' from mod_orders
@@ -14,11 +16,17 @@ Changelog for tx_commerce
 * Feature #5315 fixed: Date format (strftime) on invoice is hard-coded in pi6
 * Feature #5425 fixed: empty basketpid -> basket on every page
 * fixed Bug #5401
+* fixed Bug #5944
+* added feature: producible articles will have all attributes in title
 
 20.02.2010 Ingo Schmitt <is@marketing-factory.de>
 * Splitted tx_commerce_order_navframe to two files, since two classes 
 * Fixed some typos
 * Fixed Bug #6107
+* Fixed Bug #6415
+* Fixed todo #6328
+* Fixed Bug #6050
+* Fixed Bug #5679, thanks to Klaus Gössl
 
 19.02.2010 Ingo Schmitt <is@marketing-factory.de>
 * Changed BE Labels, thanks to Eckhard M. Jäger <systeme@familie-redlich.de>

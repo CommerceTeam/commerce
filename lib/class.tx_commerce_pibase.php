@@ -210,6 +210,7 @@ class tx_commerce_pibase extends tslib_pibase {
 			$showHiddenValues = false;
 		}
 
+		#$matrix = $prodObj->get_atrribute_matrix('',$this->product_attributes,$showHiddenValues);
 		$matrix = $prodObj->get_product_attribute_matrix($this->product_attributes,$showHiddenValues);
 
 		$i = 0;
@@ -287,7 +288,7 @@ class tx_commerce_pibase extends tslib_pibase {
 		$this->shall_attributes = $prodObj->get_attributes(array(ATTRIB_shal));
 		
 		
-  		$matrix = $prodObj->get_attribute_matrix($articleId,$this->shall_attributes,$showHiddenValues);
+  		$matrix = $prodObj->get_atrribute_matrix($articleId,$this->shall_attributes,$showHiddenValues);
 	 	$i = 0;
 		if(is_array($this->shall_attributes)){
           	 foreach ($this->shall_attributes as $myAttributeUid) {
@@ -310,7 +311,7 @@ class tx_commerce_pibase extends tslib_pibase {
                 	'icon'	=> $matrix[$myAttributeUid]['icon'],
                 );
     	        $markerArray = $this->generateMarkerArray($datas,$this->conf['singleView.']['attributes.'],$prefix='ARTICLE_ATTRIBUTES_');
-		    	$markerArray['ARTICLE_ATTRIBUTES_TITLE'] = $matrix[$myAttributeUid]['title'];
+		    	$marker['ARTICLE_ATTRIBUTES_TITLE'] = $matrix[$myAttributeUid]['title'];
 
   	            $article_shalAttributes_string .= $this->cObj->substituteMarkerArray($templateArray[$i],$markerArray,'###|###',1);
 //        	    $markerArray["###ARTICLE_ATTRIBUTES_TITLE###"] = $matrix[$myAttributeUid]['title'];
@@ -324,7 +325,7 @@ class tx_commerce_pibase extends tslib_pibase {
 
 		$article_shalAttributes_string = $this->cObj->stdWrap($article_shalAttributes_string,$this->conf['articleShalAttributsWrap.']) ;
 
-        $matrix = $prodObj->get_attribute_matrix($articleId,$this->can_attributes,$showHiddenValues);
+        $matrix = $prodObj->get_atrribute_matrix($articleId,$this->can_attributes,$showHiddenValues);
 		
 		$i = 0;
 		if(is_array($this->can_attributes)){
@@ -1362,8 +1363,8 @@ class tx_commerce_pibase extends tslib_pibase {
 		foreach ( (array)$matrix[$myAttributeUid]['values'] as $key => $value) {
 			if (is_array($value) && isset($value['value']) && $value['value'] != '') {
 			    $value = $value['value'];
-			}
-		 	$return2 = $value;
+			} 
+			$return2 = $value;
 		 	if (is_numeric($value)) {
 	           if ($matrix[$myAttributeUid]['valueformat']) {
 	                $return2 =sprintf($matrix[$myAttributeUid]['valueformat'],$value);
@@ -1542,7 +1543,7 @@ class tx_commerce_pibase extends tslib_pibase {
 				}
 				$template = $this->cObj->getSubpart($this->templateCode, '###'.$templateMarker[$iterationCount].'###');
 				
-				$myProduct = t3lib_div::makeInstance('tx_commerce_product');
+				$myProduct = t3lib_div::makeInstance(tx_commerce_product);
 				
 				$myProduct->init($myProductId,$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
 				$myProduct->load_data();
@@ -1596,6 +1597,13 @@ class tx_commerce_pibase extends tslib_pibase {
 		}
 		$data = $myProduct->return_assoc_array();
 
+		//maybe this is a related product so category may be wrong
+		$cat=$this->cat;
+		$prod_cats=$myProduct->getParentCategories();
+		if(!in_array($cat,$prod_cats,false)){
+			$cat=$prod_cats[0];	
+		}
+		
 		
 		/**
 		 *  Build TS for Linking the Catergory Images
@@ -1616,7 +1624,7 @@ class tx_commerce_pibase extends tslib_pibase {
 		$typoLinkConf['useCacheHash'] = 1;
 		$typoLinkConf['additionalParams'] = ini_get('arg_separator.output').$this->prefixId.'[showUid]='.$myProduct->getUid();
 		
-		$typoLinkConf['additionalParams'].= ini_get('arg_separator.output').$this->prefixId.'[catUid]='.$this->cat;
+		$typoLinkConf['additionalParams'].= ini_get('arg_separator.output').$this->prefixId.'[catUid]='.$cat;
 		
 		if($this->basketHashValue){
 			$typoLinkConf['additionalParams'].= ini_get('arg_separator.output').$this->prefixId.'[basketHashValue]='.$this->basketHashValue;
@@ -1642,7 +1650,7 @@ class tx_commerce_pibase extends tslib_pibase {
 		$markerArray['###SUBPART_PRODUCT_ATTRIBUTES###'] = $this->cObj->stdWrap($this->renderProductAttributeList($myProduct,$ProductAttributesSubpartArray,$TS['productAttributes.']['fields.']),$TS['productAttributes.']);
  		
 		
-		$linkArray['catUid']=(int)$this->cat;
+		$linkArray['catUid']=(int)$cat;
 		
 		if($this->basketHashValue){
 			$linkArray['basketHashValue'] = $this->basketHashValue;

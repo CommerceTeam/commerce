@@ -772,7 +772,8 @@ class tx_commerce_belib {
 				}
 
 				$dataArray['sorting'] = $counter;
-				
+				$counter++;
+
 				$checkRes = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid_local', $relationTable, $where);
 				$exists = ($GLOBALS['TYPO3_DB']->sql_num_rows($checkRes) > 0);
 
@@ -782,8 +783,6 @@ class tx_commerce_belib {
 					
 					$GLOBALS['TYPO3_DB']->exec_UPDATEquery($relationTable, $where, array('sorting' => $counter));
 				}
-				
-				$counter++;
 
 				if (isset($relation['uid_foreign'])) {
 					$delClause = 'uid_foreign=' . $relation['uid_foreign'];
@@ -871,9 +870,10 @@ class tx_commerce_belib {
 				} elseif (!empty($articleRelation['value_char']))	{
 					$value = $articleRelation['value_char'];
 				} else {
-					if ($articleRelation['default_value']<>0) {
+					if ($articleRelation['default_value'] <> 0) {
 						$value = $articleRelation['default_value'];
-						$value='';
+					} else {
+						$value = '';
 					}
 				}
 				
@@ -883,7 +883,7 @@ class tx_commerce_belib {
 		
 		$xmlData = t3lib_div::array2xml($xmlData, '', 0, 'T3FlexForms');
 	
-		if ($articleUid)	{
+		if ($articleUid) {
 			$GLOBALS['TYPO3_DB']->exec_UPDATEquery('tx_commerce_articles', 'uid=' .$articleUid .' AND deleted=0', array('attributesedit' => $xmlData));
 		} elseif ($productUid) {
 			$GLOBALS['TYPO3_DB']->exec_UPDATEquery('tx_commerce_articles', 'uid_product=' .$productUid .' AND deleted=0', array('attributesedit' => $xmlData));

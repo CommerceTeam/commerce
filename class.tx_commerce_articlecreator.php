@@ -40,6 +40,7 @@ require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_belib.php'
 class tx_commerce_articleCreator {
 	var $existingArticles = NULL;
 	var $attributes = NULL;
+	var $flattedAttributes = array();
 
 	var $uid = 0;
 	var $pid = 0;
@@ -403,6 +404,14 @@ class tx_commerce_articleCreator {
 	 */
 	function createArticles($PA)	{		
 		if (is_array(t3lib_div::_GP('createList')))	{
+			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+				'uid,value',
+				'tx_commerce_attribute_values',
+				'deleted = 0'
+			);
+			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+				$this->flattedAttributes[$row['uid']] = $row['value'];
+			}
 			foreach (t3lib_div::_GP('createList') as $key => $switch)	{
 				$this->createArticle($PA, $key);
 			}
@@ -443,6 +452,30 @@ class tx_commerce_articleCreator {
 		}
 	}
 
+	
+	/**
+	 * Creates article title out of attributes
+	 *
+	 * @param	array		$PA: ...
+	 * @param	string		$key: The key in the POST var array
+	 * @return	string	    Returns the product title + attribute titles for article title
+	 */
+	function createArticleTitleFromAttributes($PA, $key, $data) {
+		$content = $PA['title'];
+		if(is_array($data) && count($data)) {
+			$selectedValues = array();
+			foreach($data as $value) {
+				if($this->flattedAttributes[$value]) {
+					$selectedValues[] = $this->flattedAttributes[$value]; 
+				}
+			}
+			if(count($selectedValues)) {
+				$content .= ' (' . implode(', ', $selectedValues) . ')';
+			}
+		}
+		return $content;
+	}
+	
 	/**
 	 * Creates an article in the database and all needed releations to attributes and values.
 	 * It also creates a new prices and assignes it to the new article.
@@ -467,12 +500,11 @@ class tx_commerce_articleCreator {
 		);
 		$sorting = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
 
-
 			// create article data array
 		$articleData = array(
 			'pid' => $this->pid,
 			'crdate' => time(),
-			'title' => $PA['title'],
+			'title' => $this->createArticleTitleFromAttributes($PA, $key, $data),
 			'uid_product' => $this->uid,
 			'sorting' => ($sorting['sorting'] *2),
 			'article_attributes' => count($this->attributes['rest']) +count($data),
@@ -480,7 +512,7 @@ class tx_commerce_articleCreator {
 			'article_type_uid' => 1,
 			
 		);
-		
+
 		$temp = t3lib_BEfunc::getModTSconfig($this->pid,'mod.commerce.category');
 		if ($temp) {
 	 		$moduleConfig = t3lib_BEfunc::implodeTSParams($temp['properties']);
@@ -526,24 +558,26 @@ class tx_commerce_articleCreator {
 
 		$createdArticleRelations = array();
 		$relationCreateData = $relationBaseData;
-
+		
 		$productsAttributesRes = $GLOBALS['TYPO3_DB']->exec_SELECTquery('sorting,uid_local,uid_foreign', 'tx_commerce_products_attributes_mm', 'uid_local = ' . intval($this->uid));
 		while ($productsAttributes = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($productsAttributesRes)){
 			$attributesSorting[$productsAttributes['uid_foreign']] = $productsAttributes['sorting'];
 		}
 		
+
+		
 		if (is_array($data))	{
 			foreach ($data as $selectAttributeUid => $selectAttributeValueUid)	{
 				$relationCreateData['uid_foreign'] = $selectAttributeUid;
 				$relationCreateData['uid_valuelist'] = $selectAttributeValueUid;
-				
-				$relationCreateData['sorting'] = $attributesSorting[$selectAttributeUid];
 
+				$relationCreateData['sorting'] = $attributesSorting[$selectAttributeUid];
+				
 				$createdArticleRelations[] = $relationCreateData;
 				$GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_commerce_articles_article_attributes_mm', $relationCreateData);
 			}
 		}
-
+		
 		if (is_array($this->attributes['rest']))	{
 			foreach ($this->attributes['rest'] as $attribute)	{
 				if (empty($attribute['attributeData']['uid']))	continue;
