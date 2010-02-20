@@ -526,17 +526,24 @@ class tx_commerce_articleCreator {
 
 		$createdArticleRelations = array();
 		$relationCreateData = $relationBaseData;
-	
+
+		$productsAttributesRes = $GLOBALS['TYPO3_DB']->exec_SELECTquery('sorting,uid_local,uid_foreign', 'tx_commerce_products_attributes_mm', 'uid_local = ' . intval($this->uid));
+		while ($productsAttributes = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($productsAttributesRes)){
+			$attributesSorting[$productsAttributes['uid_foreign']] = $productsAttributes['sorting'];
+		}
+		
 		if (is_array($data))	{
 			foreach ($data as $selectAttributeUid => $selectAttributeValueUid)	{
 				$relationCreateData['uid_foreign'] = $selectAttributeUid;
 				$relationCreateData['uid_valuelist'] = $selectAttributeValueUid;
+				
+				$relationCreateData['sorting'] = $attributesSorting[$selectAttributeUid];
 
 				$createdArticleRelations[] = $relationCreateData;
 				$GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_commerce_articles_article_attributes_mm', $relationCreateData);
 			}
 		}
-		
+
 		if (is_array($this->attributes['rest']))	{
 			foreach ($this->attributes['rest'] as $attribute)	{
 				if (empty($attribute['attributeData']['uid']))	continue;

@@ -440,7 +440,8 @@ class tx_commerce_dmhooks	{
 			$this->belib->updateXML('attributes', 'tx_commerce_products', $pUid, 'product', $ctList);
 			$delete = false;
 		}
-		if (isset($fieldArray['attributes']) && !isset($_REQUEST['createList']))	{
+
+		if (isset($fieldArray['attributes'])) {
 				// get all correlation types
 			$ctList = $this->belib->getAllCorrelationTypes();
 			$paList = array();
@@ -1098,7 +1099,7 @@ class tx_commerce_dmhooks	{
 					
 					$this->saveProductRelations($id, $fieldArray);
 				}
-			
+
 				// sometimes the array is unset because only the checkbox "create new article" has been checked
 				// if that is the case and we have the rights, create the articles
 				// so we check if the product is already created and if we have edit rights on it

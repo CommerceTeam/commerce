@@ -772,8 +772,7 @@ class tx_commerce_belib {
 				}
 
 				$dataArray['sorting'] = $counter;
-				$counter++;
-
+				
 				$checkRes = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid_local', $relationTable, $where);
 				$exists = ($GLOBALS['TYPO3_DB']->sql_num_rows($checkRes) > 0);
 
@@ -783,6 +782,8 @@ class tx_commerce_belib {
 					
 					$GLOBALS['TYPO3_DB']->exec_UPDATEquery($relationTable, $where, array('sorting' => $counter));
 				}
+				
+				$counter++;
 
 				if (isset($relation['uid_foreign'])) {
 					$delClause = 'uid_foreign=' . $relation['uid_foreign'];

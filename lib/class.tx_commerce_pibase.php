@@ -1539,7 +1539,7 @@ class tx_commerce_pibase extends tslib_pibase {
 				}
 				$template = $this->cObj->getSubpart($this->templateCode, '###'.$templateMarker[$iterationCount].'###');
 				
-				$myProduct = t3lib_div::makeInstance(tx_commerce_product);
+				$myProduct = t3lib_div::makeInstance('tx_commerce_product');
 				
 				$myProduct->init($myProductId,$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
 				$myProduct->load_data();
