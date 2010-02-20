@@ -190,10 +190,24 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 	function handleBasket() {
 		if ($this->piVars['delBasket']) {
 			$this->basket->delete_all_articles();
+
+			/** * Hook for processing the basket after deleting all articles from basket
+			*/
+			$hookObjectsArr = array();
+			if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['postdelBasket'])) {
+				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['postdelBasket'] as $classRef) {
+					$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+				}
+			}
+			foreach($hookObjectsArr as $hookObj) {
+				if (method_exists($hookObj, 'postdelBasket')) {
+					$hookObj->postdelBasket($this->basket, $this);
+				}
+			}
 		}
 
 	 	/**
-		 * Hook for processing the basker, after adding an article to the basket
+		 * Hook for processing the basket, after adding an article to basket
 		 */
 		$hookObjectsArr = array();
 		// @depreacted please use new general hook artAddUid now
