@@ -1,5 +1,10 @@
 Changelog for tx_commerce
 
+20.02.2010 Sascha Egerer <seg@softvision.de>
+* fixed attribute sorting of new generated articles
+* fixed variable namechanged load_data_from_database to load_data
+* fixed bug #4812
+
 20.02.2010 Christian Kuhn <lolli@schwarzbu.ch>
 * Fixed deprecated method call get_atrribute_matrix
 
