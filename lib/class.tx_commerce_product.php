@@ -791,6 +791,95 @@
 	}
   	 
   	/**
+	 * Generates the the matrix for attribute values for the select Options in the frontend
+	 *
+	 *
+	 * @param $articleList list of articles for selecting articles
+	 * qparam $attributeValues array of attribute -> value pair, used as default.
+	 *
+	 * @return array of values
+	 */
+	
+	
+	function getSelectAttributeValueMatrix($articleList=false, $attributeValues = array(3=>8,4=>10)){
+			
+	    if ($this->uid>0) { 
+		if ($articleList==false){
+		    $articleList=$this->load_articles();
+		}
+		if(is_array($articleList) && count($articleList)>0) {
+			$queryArticleList=  implode(',',$articleList);
+			$addWhere =' AND uid_local in ('.$queryArticleList.')';
+		}
+		
+		$records = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows('uid_local,uid_foreign,uid_valuelist','tx_commerce_articles_article_attributes_mm','1 '.$addWhere,'','uid_local,sorting');
+		
+		$levels = array();
+		$article = -1;
+		$values = array();
+		$levelAttributes = array();
+		
+		foreach($records as $record){
+		    if($article != $record['uid_local']){
+			$current = &$values;
+			if(count($levels)){
+			    foreach($levels as $level){
+				if(!isset($current[$level])){
+				    $current[$level] = array();
+				}
+				$current = &$current[$level];
+			    }
+			}
+			$levels = array();
+			$levelAttributes = array();
+			$article = $record['uid_local'];
+		    }
+		    $levels[] = $record['uid_valuelist'];
+		    $levelAttributes[] = $record['uid_foreign'];
+		}
+		$current = &$values;
+		if(count($levels)){
+		    foreach($levels as $level){
+			if(!isset($current[$level])){
+			    $current[$level] = array();
+			}
+			$current = &$current[$level];
+		    }
+		}
+	    }
+		$selectMatrix = array();
+		$possible = $values;
+		$impossible = array();
+
+		foreach($levelAttributes as $kV) {
+		    $tImpossible = array();
+		    $tPossible = array();
+		    $selected = $attributeValues[$kV];
+
+		    foreach ($impossible as $key => $val) {
+			$selectMatrix[$kV][$key] = 'disabled';
+			foreach($val as $k => $v) {
+			    $tImpossible[$k] = $v;
+			}
+		    }
+		
+		    foreach ($possible as $key => $val) {
+		        $selectMatrix[$kV][$key] = $selected == $key ? 'selected' : 'possible';
+			    foreach($val as $k => $v) {
+				if (!$selected || $key == $selected) {
+				    $tPossible[$k] = $v;
+				} else {
+				    $tImpossible[$k] = $v;
+				}
+			    }
+			}
+			$possible = $tPossible;
+			$impossible = $tImpossible;
+		}
+	    return $selectMatrix;
+	}
+
+	/**
   	 * Generates a Matrix fro these concerning artciles for all Attributes and the values therfor
   	 * Realy complex array, so have a lokk at the source
   	 * 
