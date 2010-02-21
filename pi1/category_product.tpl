@@ -45,6 +45,9 @@ If you want one form per page you should only use the ###ARTICLE_HIDDENFIELDS###
 inside the ARTICLE_VIEW subparts, since the hidden tag for the catuid will be rendered 
 globally at the beginning of the form tag as marker ###GENERAL_HIDDENCATUID###
 
+STOCK and NOSTOCK SUBPARTS will be rendered into one subpart, so normally the _NOSTOCK part will be inserted into the normal part and 
+_NOSTOCK part will be deleted in the output
+
 -->
 
 
@@ -448,6 +451,7 @@ globally at the beginning of the form tag as marker ###GENERAL_HIDDENCATUID###
 <!-- ###CATEGORY_ITEM### end -->
 
 <!-- ###RELATED_PRODUCTS### begin -->
+
 
 <!-- ###RELATED_PRODUCT_SINGLE### begin -->
 	###PRODUCT_TITLE###

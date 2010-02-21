@@ -1,5 +1,8 @@
 Changelog for tx_commerce
 
+21.02.2010 Ingo Schmitt <is@marketing-factory.de>
+* Added description of markers in the default template
+
 21.02.2010 Dimitri König <dk@cabag.ch>
 * fixed bug #5430
 

@@ -446,7 +446,7 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 		// So we will change this here. In thought of sorting, we can't split the entries.
 		if ($relatedProductsSubpart != '') {
 			// Set first subpart empty
-			$contentTmp = $this->cObj->substituteSubpart($content, '###' . strtoupper($this->conf['templateMarker.']['relatedProductSingle']) . '###', $relatedProductsSubpart);
+			$contentTmp = $this->cObj->substituteSubpart($content, '###' . strtoupper($this->conf['templateMarker.']['relatedProductSingle']) . '###', '');
 			// Fill the second with our data
 			$content = $this->cObj->substituteSubpart($contentTmp, '###' . strtoupper($this->conf['templateMarker.']['relatedProductSingle']) . '_NOSTOCK###', $relatedProductsSubpart);
 		} else {
