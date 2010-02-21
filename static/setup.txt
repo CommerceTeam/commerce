@@ -152,9 +152,14 @@ lib.tx_commerce {
 						  typolink.useCacheHash = 1 			
 						}
 					}
-			
+				
 		    	}
-		    	
+		    	#listView.products.maxArticles >
+				#maxArticles defines the amount of articles which will be shown per Product in the categories
+				# list view. If the max amount is reached the __MORETHANMAX subpart is rendered
+				# to have a replacement for the different articles
+				# Also speeds up the rendering of the cartegory view, since no articles and attributes are initialised
+		    	# @TODO: Pending documentation
 		    }
     		
     		topproducts < products
@@ -410,6 +415,7 @@ plugin.tx_commerce_pi1 {
 		products.nostock < lib.tx_commerce.products
 		articles.nostock < lib.tx_commerce.articles
 	}
+	
 	
 	
 	listViewTop {

@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2005-2009 Volker Graubaum <vg@e-netconsulting.de>
+*  (c) 2005-2010 Volker Graubaum <vg@e-netconsulting.de>
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -654,7 +654,7 @@ class tx_commerce_pibase extends tslib_pibase {
 		$markerArray['ARTICLE_HIDDENCATUID'] = '<input type="hidden" name="'.$this->prefixId.'[catUid]" value="'.$this->cat.'" />';
 		$markerArray['ARTICLE_HIDDENFIELDS'] = '';
 		/**
-   		  * Bild Link to put one of this article in basket
+   		  * Build Link to put one of this article in basket
    		  * 
    		  **/
 		if ($tsconf['addToBasketLink.']) {
@@ -1673,12 +1673,19 @@ class tx_commerce_pibase extends tslib_pibase {
 			$myProduct = tx_commerce_div::removeNoStockArticles($myProduct , $this->conf['articles.']['showWithNoStock']);
 		}
 		
+		
+		// Set RenderMaxArtickles to TS value
+		if ((!empty($lokalTS['maxArticles'])) && ((int)$lokalTS['maxArticles'] > 0)){
+			$myProduct->setRenderMaxArticles((int)$lokalTS['maxArticles']);
+		}
+		
 		if (isset($this->conf['disableArticleViewForProductlist']) && $this->conf['disableArticleViewForProductlist'] == 1) {
 			$subpartArray['###'.strtoupper($articleSubpart).'###'] = '';
 		} else {
 			$subpartArray['###'.strtoupper($articleSubpart).'###'] = $this->makeArticleView('list',array(),$myProduct,$articleMarker,$articleTemplate);
 		}
-
+	
+			
 		/**
 		 * Get The Checapest Price
 		 * 

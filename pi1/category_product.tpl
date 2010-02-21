@@ -182,6 +182,12 @@ _NOSTOCK part will be deleted in the output
             </form>
         </div>
 		<!-- ###ARTICLE_VIEW_NOSTOCK### -->
+		
+		<!-- ###ARTICLE_VIEW_MORETHANMAX### -->
+		###LINKTOPRODUCT###
+		
+		<!-- ###ARTICLE_VIEW_MORETHANMAX### -->
+		
 	<!-- ###PRODUCT_BASKET_FOR_LISTVIEW### -->		
 	</td>
 </tr>
@@ -247,7 +253,14 @@ _NOSTOCK part will be deleted in the output
             </form>
         </div>
 		<!-- ###ARTICLE_VIEW_NOSTOCK### -->
-	<!-- ###PRODUCT_BASKET_FOR_LISTVIEW### -->		
+		
+		<!-- ###ARTICLE_VIEW_MORETHANMAX### -->
+		###LINKTOPRODUCT###
+		
+		<!-- ###ARTICLE_VIEW_MORETHANMAX### -->
+		
+	<!-- ###PRODUCT_BASKET_FOR_LISTVIEW### -->	
+		
 	</td>
 </tr>
 <!-- ###CATEGORY_ITEMS_LISTVIEW_2_NOSTOCK### end -->
@@ -313,6 +326,12 @@ _NOSTOCK part will be deleted in the output
             </form>
         </div>
 		<!-- ###ARTICLE_VIEW_NOSTOCK### -->
+		
+		<!-- ###ARTICLE_VIEW_MORETHANMAX### -->
+		###LINKTOPRODUCT###
+		
+		<!-- ###ARTICLE_VIEW_MORETHANMAX### -->
+		
 	<!-- ###PRODUCT_BASKET_FOR_LISTVIEW### -->		
 	</td>
 </tr>

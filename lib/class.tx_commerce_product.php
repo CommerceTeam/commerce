@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c)  2005 - 2008 Ingo Schmitt <is@marketing-factory.de>
+*  (c)  2005 - 2010 Ingo Schmitt <is@marketing-factory.de>
 *  All   rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -85,6 +85,12 @@
   	var $relatedProducts = array();
 	var $relatedProduct_uids = array();
   	var $relatedProducts_loaded=false;
+  	
+  	/**
+  	 * 
+  	 * @var int		Maximum Articles to render for this product. Normally PHP_INT_MAX
+  	 */
+  	var $renderMaxArticles = PHP_INT_MAX;	
   	
 	//Versioning
 	var $t3ver_oid		= 0;
@@ -1462,7 +1468,27 @@
 		} else return false;
 		return true;
 	}
-          
+
+	
+	 /**
+	  * Sets the renderMaxArticles Value in the Object
+	  * @param int New Value
+	  */
+	  
+	 function setRenderMaxArticles($count){
+	 	$this->renderMaxArticles = (int)$count;
+	 }
+     
+	 
+	/**
+	  * get the renderMaxArticles Value in the Object
+	  * @return int RenderMaxArticles
+	  */
+	  
+	 function getRenderMaxArticles(){
+	 	return $this->renderMaxArticles;
+	 }
+     
      /**
       * Depricated Methods
       * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
