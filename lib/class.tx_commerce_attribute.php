@@ -22,8 +22,8 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 /**
- * Libary for Frontend-Rendering of attributes. This class 
- * should be used for all Fronten-Rendering, no Database calls 
+ * Libary for Frontend-Rendering of attributes. This class
+ * should be used for all Fronten-Rendering, no Database calls
  * to the commerce tables should be made directly
  * This Class is inhertited from tx_commerce_element_alib, all
  * basic Database calls are made from a separate Database Class
@@ -37,13 +37,13 @@
  * @subpackage tx_commerce_attribute
  * @see tx_commerce_element_alib
  * @see tx_commerce_db_attrubute
- * 
+ *
  * Basic class for handeleing attribures
  *  */
-require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_element_alib.php'); 
+require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_element_alib.php');
 require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_db_attribute.php');
 require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_attribute_value.php');
- 
+
  /**
  * Main script class for the handling of attributes. An attribute desribes the
  * technical data of an article
@@ -51,47 +51,49 @@ require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_attribute_
  * @author		Ingo Schmitt <is@marketing-factory.de>
  * @package TYPO3
  * @subpackage tx_commerce
- * 
+ *
  * $Id$
  */
   class tx_commerce_attribute extends tx_commerce_element_alib {
-  
-  	
+
+
   	var $title=''; 				// Title of Attribute (private)
-  	
+
   	var $unit='';				// Unit auf the attribute (private)
-  	
+
   	var $has_valuelist=0;		//  If the attribute has a separate value_list for selecting the value (private)
-  	
+
+	private $attributeValuesLoaded = false; // check if attribute values are already loaded
+
   	/**
   	 * Attribute value uid list
   	 * @acces private
   	 */
-  	
+
   	var $attribute_value_uids=array();
-  	
+
   	/**
   	 * Attribute value object list
   	 * @acces private
   	 */
-  	
+
   	var $attribute_values=array();
-  	
-  	
-  
-        
-        
-   
-       
-    
+
+
+
+
+
+
+
+
    /** Constructor class, basically calls init
     * @param uid integer uid or attribute
     * @param lang_uid integer language uid, default 0
     */
-  	
+
    function tx_commerce_attribute() {
    		if ((func_num_args()>0) && (func_num_args()<=2)){
-			$uid = func_get_arg(0); 
+			$uid = func_get_arg(0);
 			if (func_num_args()==2){
 				$lang_uid=func_get_arg(1);
 			}else
@@ -100,15 +102,15 @@ require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_attribute_
 			}
 			return $this->init($uid,$lang_uid);
 		}
-   	
-   }   
-	
-   
+
+   }
+
+
    /** Constructor class, basically calls init
     * @param uid integer uid or attribute
     * @param lang_uid integer language uid, default 0
     */
-  	
+
    function init($uid,$lang_uid=0)
    {
 		 $uid = intval($uid);
@@ -117,7 +119,7 @@ require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_attribute_
 		 $this->database_class='tx_commerce_db_attribute';
 		 if ($uid>0)
 		 {
-		 	
+
 				$this->uid=$uid;
 				$this->lang_uid=$lang_uid;
 				$this->conn_db=new $this->database_class;
@@ -136,44 +138,54 @@ require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_attribute_
 		 }
 		 else
 		 {
-		 	return false;	
+		 	return false;
 		 }
    }
-		
-		
+
+
    /** Franz: how do we take care about depencies between attributes?
+    * @param returnObjects condition to return the value objects instead of values
+    * @since 21.02.2010 added param returnObjects
     * @return array values of attribute
+    * 
     * @access public
     */
-  	
-   
-  	function get_all_values(){
-  	
-  		if ($this->attribute_value_uids=$this->conn_db->get_attribute_value_uids($this->uid)){
+
+
+  	function get_all_values($returnObjects = false){
+
+  		if($this->attributeValuesLoaded === false){
+  		    if ($this->attribute_value_uids=$this->conn_db->get_attribute_value_uids($this->uid)){
   			foreach ($this->attribute_value_uids as $value_uid){
   				$this->attribute_values[$value_uid] = t3lib_div::makeInstance('tx_commerce_attribute_value');
   				$this->attribute_values[$value_uid]->init($value_uid,$this->lang_uid);
   				$this->attribute_values[$value_uid]->load_data();
-  			}	
-  			
+  				
+  			}
+  			$this->attributeValuesLoaded = true;
+  		    }
   		}
+  		if($returnObjects){
+  		    return $this->attribute_values;
+  		}
+  		
   		$return_array=array();
   		foreach ($this->attribute_values as $value_uid => $one_value){
   			$return_array[$value_uid]=$one_value->get_value();
-  			
+
   		}
-  		
-  		return $return_array;	
+
+  		return $return_array;
   	}
-  	
+
   	/**
   	 * synonym to get_all_values
   	 * @see tx_commerce_attributes->get_all_values()
-  	 * 
+  	 *
   	 */
   	function get_values()
   	{
-  		return $this->get_all_values();	
+  		return $this->get_all_values();
   	}
 
   	/**
@@ -187,7 +199,7 @@ require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_attribute_
   		{
   			if ($this->has_valuelist)
   			{
-  				
+
   			}
   			else
   			{
@@ -197,13 +209,13 @@ require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_attribute_
   		}
   		else
   		{
-  			return false;	
+  			return false;
   		}
-		
+
   	}
 
 
-   /** 
+   /**
     * removed get_uid since inherited from elemenet_alib
     */
 	/**
@@ -213,34 +225,34 @@ require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_attribute_
 	 */
   	function get_title()
   	{
-  		return $this->title;	
+  		return $this->title;
   	}
   	/**
-  	 * 
+  	 *
   	 * @return string unit
   	 *  @access public
   	 */
   	function get_unit()
   	{
-  		return $this->unit;	
+  		return $this->unit;
   	}
-  	
+
   	/**
   	 * Overwrite get_attributes as attributes cant hav attributes
   	 * @return false;
   	 */
   	function get_attributes()
   	{
-  		return false;	
+  		return false;
   	}
-  	
-  	
-  	
-  	
-  	
-  	
+
+
+
+
+
+
   }
-  
+
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_attribute.php']) {
 	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_attribute.php']);
 }

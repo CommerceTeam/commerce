@@ -131,13 +131,25 @@
 	 */
 	
 	/**
+	 * @deprecated alias for getValue
+	 *
+	 */
+	 
+	 function get_value($checkvalue){
+	 
+	    return $this->getValue($checkvalue);
+	 
+	 }
+	
+	
+	/**
 	 * gets the attribute title
-	 * @param optional check if value shoudl be show in FE
+	 * @param checkvalue optional check if value shoudl be show in FE
 	 * @return string title
 	 * @access public
-	 * @since 2005 01. 11. parameter checkvalue
+	 * @since 2010 02. 20
 	 */
-  	function get_value($checkvalue=false)
+  	function getValue($checkvalue=false)
   	{
   		if (($checkvalue) && ($this->showicon))
   		{
