@@ -1,5 +1,8 @@
 Changelog for tx_commerce
 
+21.02.2010 Volker Graubaum <vg@e-netconsulting.de>
+* change select Matrix complete, see documentation in the wiki (soon)
+
 21.02.2010 Ingo Schmitt <is@marketing-factory.de>
 * Added description of markers in the default template
 * Added additional Subpart for rendering link to product instead of all articles in category listview
