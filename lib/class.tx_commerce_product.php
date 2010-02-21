@@ -917,6 +917,7 @@
 							 * Sort values by the sorting field.
 							 * Is there a better way to do this?
 							 * Yes, don't repeat this every row!
+							 * TODO: clean up comments
 							 */
 							/* $valuelist_temp = $valuelist;
 							$valuelist = array();

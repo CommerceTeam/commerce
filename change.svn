@@ -1,5 +1,8 @@
 Changelog for tx_commerce
 
+21.02.2010 Dimitri König <dk@cabag.ch>
+* fixed bug #5430
+
 20.02.2010 Sascha Egerer <seg@softvision.de>
 * fixed attribute sorting of new generated articles
 * fixed variable namechanged load_data_from_database to load_data
