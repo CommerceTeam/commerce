@@ -801,7 +801,7 @@
 	 */
 	
 	
-	function getSelectAttributeValueMatrix($articleList=false, $attributeValues = array(3=>8,4=>10)){
+	function getSelectAttributeValueMatrix($articleList=false, $attributeValues = array()){
 			
 	    if ($this->uid>0) { 
 		if ($articleList==false){
@@ -876,6 +876,9 @@
 			$possible = $tPossible;
 			$impossible = $tImpossible;
 		}
+		
+		// @ToDo sort selectMatrix again
+		
 	    return $selectMatrix;
 	}
 
