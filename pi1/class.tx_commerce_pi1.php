@@ -60,7 +60,7 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 
 		// Merge default vars, if other prefix_id
 		if ($this->prefixID <> 'tx_commerce_pi1') {
-			$tx_commerce_vars = t3lib_div::GPvar('tx_commerce');
+			$tx_commerce_vars = t3lib_div::_GP('tx_commerce');
 			if (is_array($tx_commerce_vars)) {
 				foreach($tx_commerce_vars as $key => $value) {
 					if (empty($this->piVars[$key])) {

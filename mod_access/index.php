@@ -692,7 +692,7 @@ class SC_mod_access_perm_index {
 			$rowIcon = (0 == $pageId) ? $rootIcon : $icon;
 			
 			$cells[]='
-					<td align="left" nowrap="nowrap"'.($cellAttrib ? $cellAttrib : $bgCol).'>'.$PMicon.$rowIcon.htmlspecialchars(t3lib_div::fixed_lgd($row['title'],$tLen)).'&nbsp;</td>';
+					<td align="left" nowrap="nowrap"'.($cellAttrib ? $cellAttrib : $bgCol).'>'.$PMicon.$rowIcon.htmlspecialchars(t3lib_div::fixed_lgd_cs($row['title'],$tLen)).'&nbsp;</td>';
 
 				// "Edit permissions" -icon
 			if ($editPermsAllowed && $pageId) {

@@ -33,6 +33,7 @@ class tx_commerce_leaf_productview extends leafView {
 		$title = ('' != trim($title)) ? t3lib_div::fixed_lgd_cs($title, 30) : $this->getLL('leaf.noTitle');
 		
 		$aOnClick = 'return jumpTo(\''.$this->getJumpToParam($row).'\',this,\''.$this->domIdPrefix.$row['uid'].'_'.$bank.'\',\'alt_doc.php\');';
+#		$aOnClick = 'return jumpTo(\'alt_doc.php?'.$this->getJumpToParam($row).'&returnUrl=id%3D2%26control%5Btx_commerce_categories%5D%5buid%5D%3D7&\',this,\''.$this->domIdPrefix.$row['uid'].'_'.$bank.'\',\'\');';
 		
 		$res = '<a href="#" onclick="'.htmlspecialchars($aOnClick).'">'.$title.'</a>';
 
