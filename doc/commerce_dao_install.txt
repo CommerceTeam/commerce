@@ -1,0 +1,33 @@
+Die Klassen im dao Verzeichnis sorgen f�r die Verbindung der fe_user und tt_address Datens�tze.
+
+INSTALLATION:
+
+*** Folgende Werte M�SSEN Extension Manager gesetzt werden:
+
+(A)
+Page-Id for new address records	[create_address_pid]
+Specify pid for new tt_address records. New records will be created using this pid.
+
+Default: 0
+
+
+*** Folgender Wert kann im Extension Manager angepasst werden (Normalerweise sind die Default Werte ausreichend):
+
+(B)
+Field mapping feuser-tt_address	[feuser_address_mapping]
+Specify list of feuser <-> address field mappings. Use this format: fe_usersfield,tt_addressfield
+
+Default: company,company;name,name;last_name,surname;title,title;address,address;zip,zip;city,city;country,country;telephone,phone;fax,fax;email,email;www,www;
+
+
+Danach sollte alles funktionieren.
+
+
+TECHNISCHER AUFBAU:
+
+dao/*   Klassen f�r Objekte, Persistenz (DAO), zentrales Fieldmapping, 2 zentrale Observer (address und feusers)
+hooks/*hooksHandler    Klassen um die Observer in commerce_pi4, tcemain und srfeuserregister Hooks zu integrieren
+ext_localconf.php Definition der Hooks, Extension Settings
+ext_conf_template.txt Extension Settings
+
+Weitere Info sp�ter.

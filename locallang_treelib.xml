@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<T3locallang>
+	<meta type="array">
+		<description></description>
+		<type>database</type>
+		<csh_table></csh_table>
+		<fileId>EXT:commerce/mod_access/locallang_treelib.xml</fileId>
+				<!-- please keep in mind, labels always should start with a capital letter -->
+
+	</meta>
+	<data type="array">
+		<languageKey index="default" type="array">
+			<label index="leaf.noMount">You have no mounts enabled. Please contact your Site Administrator.</label>
+			<label index="leaf.category.root">Category</label>
+			<label index="leaf.noTitle">[no title]</label>
+			<label index="leaf.leaf.root">[root]</label>
+			<label index="leaf.maxRecursion">The output of the items has been stopped because the loop crossed the max. allowed recursion count.</label>
+			<label index="leaf.restrictedAccess">Restricted Category</label>
+			<label index="clickmenu.copy">Copy</label>
+			<label index="clickmenu.overwrite">Overwrite</label>
+			<label index="clickmenu.overwriteConfirm">Write "%s" to "%s"?</label>
+			<label index="clickmenu.paste">Paste into</label>
+			<label index="clickmenu.pasteConfirm">Paste "%s" into "%s"?</label>
+		</languageKey>
+		<languageKey index="de" type="array">
+			<label index="leaf.noMount">Du hast keine Mounts. Bitte kontaktiere deinen Site Administrator.</label>
+			<label index="leaf.category.root">Kategorie</label>
+			<label index="leaf.noTitle">[kein Titel]</label>
+			<label index="leaf.leaf.root">[root]</label>
+			<label index="leaf.maxRecursion">Der Output der Element wurde gestoppt, weil die Schleife die maximal erlaubte Rekursionstiefe erreicht hat.</label>
+			<label index="leaf.restrictedAccess">Restricted Category</label>
+			<label index="clickmenu.copy">Kopieren</label>
+			<label index="clickmenu.overwrite">Überschreiben</label>
+			<label index="clickmenu.overwriteConfirm">Soll "%s" mit "%s" überschrieben werden?</label>
+			<label index="clickmenu.paste">Einfügen in</label>
+			<label index="clickmenu.pasteConfirm">Füge "%s" in "%s" ein?</label>
+		</languageKey>
+	</data>
+</T3locallang>
