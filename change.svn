@@ -1,4 +1,6 @@
 Changelog for tx_commerce
+22.02.2010 Ingo Schmitt <is@marketing-factory.de>
+* Raised Version to 0.12.2
 
 21.02.2010 Sascha Egerer <seg@softvision.de>
 * fixed attribute value sorting
