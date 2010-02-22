@@ -807,85 +807,115 @@
 	 */
 	
 	
-	function getSelectAttributeValueMatrix($articleList=false, $attributeValues = array()){
+	function getSelectAttributeValueMatrix($attributeValues = array()){
+		
+		if ($this->uid > 0) {
 			
-	    if ($this->uid>0) { 
-		if ($articleList==false){
-		    $articleList=$this->load_articles();
-		}
-		if(is_array($articleList) && count($articleList)>0) {
-			$queryArticleList=  implode(',',$articleList);
-			$addWhere =' AND uid_local in ('.$queryArticleList.')';
-		}
-		
-		$records = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows('uid_local,uid_foreign,uid_valuelist','tx_commerce_articles_article_attributes_mm','1 '.$addWhere,'','uid_local,sorting');
-		
-		$levels = array();
-		$article = -1;
-		$values = array();
-		$levelAttributes = array();
-		
-		foreach($records as $record){
-		    if($article != $record['uid_local']){
-			$current = &$values;
-			if(count($levels)){
-			    foreach($levels as $level){
-				if(!isset($current[$level])){
-				    $current[$level] = array();
-				}
-				$current = &$current[$level];
-			    }
+			$articleList = $this->load_articles();
+			
+			$addWhere = '';
+			if (is_array($articleList) && count($articleList) > 0) {
+				$queryArticleList = implode(',', $articleList);
+				$addWhere = 'uid_local in (' . $queryArticleList . ')';
 			}
+			
+			$articleAttributes = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows('uid_local,uid_foreign,uid_valuelist', 'tx_commerce_articles_article_attributes_mm', $addWhere, '', 'uid_local,sorting');
+			
 			$levels = array();
+			$article = false;
+			$values = array();
 			$levelAttributes = array();
-			$article = $record['uid_local'];
-		    }
-		    $levels[] = $record['uid_valuelist'];
-		    $levelAttributes[] = $record['uid_foreign'];
-		}
-		$current = &$values;
-		if(count($levels)){
-		    foreach($levels as $level){
-			if(!isset($current[$level])){
-			    $current[$level] = array();
+			$attributeValuesList = array();
+			$attributeValueSortIndex = array();
+			
+			foreach($articleAttributes as $articleAttribute) {
+				$attributeValuesList[] = $articleAttribute['uid_valuelist'];
+				if ($article != $articleAttribute['uid_local']) {
+					$current = &$values;
+					if (count($levels)) {
+						foreach($levels as $level) {
+							if (! isset($current[$level])) {
+								$current[$level] = array();
+							}
+							$current = &$current[$level];
+						}
+					}
+					$levels = array();
+					$levelAttributes = array();
+					$article = $articleAttribute['uid_local'];
+				}
+				$levels[] = $articleAttribute['uid_valuelist'];
+				$levelAttributes[] = $articleAttribute['uid_foreign'];
 			}
-			$current = &$current[$level];
-		    }
+			
+			$current = &$values;
+			if (count($levels)) {
+				foreach($levels as $level) {
+					if (! isset($current[$level])) {
+						$current[$level] = array();
+					}
+					$current = &$current[$level];
+				}
+			}
+			
+			//get the sorting value for all attribute values
+			if(count($attributeValuesList) > 0) {
+				$attributeValuesList = array_unique($attributeValuesList);
+				$attributeValuesList = implode($attributeValuesList,',');
+				$attributeValueSortQuery = $GLOBALS['TYPO3_DB']->exec_SELECTquery('sorting,uid', 'tx_commerce_attribute_values', 'uid IN (' . $attributeValuesList . ')');
+				while($attributeValueSort = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($attributeValueSortQuery)) {
+					$attributeValueSortIndex[$attributeValueSort['uid']] = $attributeValueSort['sorting'];
+				}
+			}
 		}
-	    }
+		
 		$selectMatrix = array();
 		$possible = $values;
 		$impossible = array();
-
-		foreach($levelAttributes as $kV) {
-		    $tImpossible = array();
-		    $tPossible = array();
-		    $selected = $attributeValues[$kV];
-
-		    foreach ($impossible as $key => $val) {
-			$selectMatrix[$kV][$key] = 'disabled';
-			foreach($val as $k => $v) {
-			    $tImpossible[$k] = $v;
-			}
-		    }
 		
-		    foreach ($possible as $key => $val) {
-		        $selectMatrix[$kV][$key] = $selected == $key ? 'selected' : 'possible';
-			    foreach($val as $k => $v) {
-				if (!$selected || $key == $selected) {
-				    $tPossible[$k] = $v;
-				} else {
-				    $tImpossible[$k] = $v;
+		foreach($levelAttributes as $kV) {
+			$tImpossible = array();
+			$tPossible = array();
+			$selected = $attributeValues[$kV];
+			
+			foreach($impossible as $key => $val) {
+				$selectMatrix[$kV][$key] = 'disabled';
+				foreach($val as $k => $v) {
+					$tImpossible[$k] = $v;
 				}
-			    }
+			}
+			
+			foreach($possible as $key => $val) {
+				$selectMatrix[$kV][$key] = $selected == $key ? 'selected' : 'possible';
+				foreach($val as $k => $v) {
+					if (! $selected || $key == $selected) {
+						$tPossible[$k] = $v;
+					} else {
+						$tImpossible[$k] = $v;
+					}
+				}
 			}
 			$possible = $tPossible;
 			$impossible = $tImpossible;
 		}
 		
-		// @ToDo sort selectMatrix again
-		
-	    return $selectMatrix;
+		//sort attribute matrix
+		//is there a faster and better way to do this?
+		foreach($selectMatrix as $attribute => $attributeValues) {
+			$temp_array = array();
+			foreach($attributeValues as $attributeValue => $attributeValueStatus) {
+				$temp_array[$attributeValueSortIndex[$attributeValue]][$attributeValue] = $attributeValueStatus;
+			}
+			ksort($temp_array);
+			$temp_array_sorted = array();
+			foreach($temp_array as $temp_item) {
+				list($key, $val) = each($temp_item);
+				$temp_array_sorted[$key] = $val;
+			}
+			$selectMatrix[$attribute] = $temp_array_sorted;
+		}
+
+		return $selectMatrix;
 	}
 
 	/**

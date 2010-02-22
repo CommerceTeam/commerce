@@ -560,7 +560,7 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 				}
 			}
 			if (is_array($arrAttSubmit)) {
-				$attributeMatrix = $prod->getSelectAttributeValueMatrix(false, $arrAttSubmit);
+				$attributeMatrix = $prod->getSelectAttributeValueMatrix($arrAttSubmit);
 			} else {
 				$attributeMatrix = $prod->getSelectAttributeValueMatrix();
 			}

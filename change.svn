@@ -2,6 +2,7 @@ Changelog for tx_commerce
 
 21.02.2010 Sascha Egerer <seg@softvision.de>
 * fixed attribute value sorting
+* sort attribute-values in the select-attribute matrix function
 
 21.02.2010 Volker Graubaum <vg@e-netconsulting.de>
 * change select Matrix complete, see documentation in the wiki (soon)
