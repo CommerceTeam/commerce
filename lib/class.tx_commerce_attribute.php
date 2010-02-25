@@ -114,7 +114,7 @@ require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_attribute_
    function init($uid,$lang_uid=0)
    {
 		 $uid = intval($uid);
-	     $lang_uid = intval($lang_uid);
+		 $lang_uid = intval($lang_uid);
 		 $this->fieldlist=array('title','unit','has_valuelist','l18n_parent');
 		 $this->database_class='tx_commerce_db_attribute';
 		 if ($uid>0)
@@ -177,6 +177,19 @@ require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_attribute_
 
   		return $return_array;
   	}
+
+	/**
+	 *  @param includeValues array of allowed values, if empty all values are allowed
+	 *  @return first attribute uid
+	 *  @access public
+	 */
+	function getFirstAttributeValueUid ($includeValues = false) {
+		$attributes = $this->conn_db->get_attribute_value_uids($this->uid);
+		if(is_array($includeValues) && count($includeValues)>0){
+		    $attributes = array_intersect($attributes,array_keys($includeValues));
+		}
+		return array_shift($attributes);
+	}
 
   	/**
   	 * synonym to get_all_values

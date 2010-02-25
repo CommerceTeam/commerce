@@ -807,7 +807,7 @@
 	 */
 	
 	
-	function getSelectAttributeValueMatrix($attributeValues = array()){
+	function getSelectAttributeValueMatrix(&$attributeValues = array()){
 		
 		if ($this->uid > 0) {
 			
@@ -877,6 +877,12 @@
 			$tImpossible = array();
 			$tPossible = array();
 			$selected = $attributeValues[$kV];
+			if(!$selected){
+			    $attributeObj = t3lib_div::makeInstance('tx_commerce_attribute');
+			    $attributeObj->init($kV, $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
+			    $attributeObj->load_data();
+			    $attributeValues[$kV] = $selected = $attributeObj->getFirstAttributeValueUid($possible);
+			}
 			
 			foreach($impossible as $key => $val) {
 				$selectMatrix[$kV][$key] = 'disabled';
@@ -898,23 +904,6 @@
 			$possible = $tPossible;
 			$impossible = $tImpossible;
 		}
-		
-		//sort attribute matrix
-		//is there a faster and better way to do this?
-		foreach($selectMatrix as $attribute => $attributeValues) {
-			$temp_array = array();
-			foreach($attributeValues as $attributeValue => $attributeValueStatus) {
-				$temp_array[$attributeValueSortIndex[$attributeValue]][$attributeValue] = $attributeValueStatus;
-			}
-			ksort($temp_array);
-			$temp_array_sorted = array();
-			foreach($temp_array as $temp_item) {
-				list($key, $val) = each($temp_item);
-				$temp_array_sorted[$key] = $val;
-			}
-			$selectMatrix[$attribute] = $temp_array_sorted;
-		}
-
 		return $selectMatrix;
 	}
 

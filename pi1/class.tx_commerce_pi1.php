@@ -545,6 +545,11 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 			
 			// Parse piVars for values and names of selected attributes
 			// @TODO: Set TYPES via Typecaste when generating the array
+			
+			
+			// define $arrAttSubmit for finding the right article later
+			$arrAttSubmit = array();
+			
 			foreach($this->piVars as $key => $val) {
 				if (strstr($key, 'attsel_') && $val) {
 					$arrAttSubmit[intval(substr($key, 7))] = intval($val);
@@ -562,8 +567,10 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 			if (is_array($arrAttSubmit)) {
 				$attributeMatrix = $prod->getSelectAttributeValueMatrix($arrAttSubmit);
 			} else {
-				$attributeMatrix = $prod->getSelectAttributeValueMatrix();
+				$attributeMatrix = $prod->getSelectAttributeValueMatrix($arrAttSubmit);
 			}
+			
+			
 			
 			if ($this->conf['allArticles'] || $count == 1) {
 				//@TODO: Correct like this?
@@ -613,7 +620,14 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 					$content .= $this->cObj->substituteMarkerArray($template_att, $markerArray, '###|###', 1);
 				}
 			} else {
-				$artId = $prod->articles_uids[0];
+				$sortedAttributeArray = array();
+				$i = 0;
+				foreach($arrAttSubmit as $attrUid => $attrValUid){
+				    $sortedAttributeArray[$i]['AttributeUid'] = $attrUid;
+				    $sortedAttributeArray[$i]['AttributeValue'] = $attrValUid;
+				    $i++;
+				}
+				$artId = array_shift($prod->get_Articles_by_AttributeArray($sortedAttributeArray));
 				$attCode = '';
 				if (is_array($attributeMatrix)) {
 					$attCode = '<form name="attList_' . $prod->get_uid() . '" id="attList_' . $prod->get_uid() . '" action="' . $this->pi_getPageLink($GLOBALS['TSFE']->id, '_self', array($this->prefixId . '[catUid]' => $this->piVars['catUid'], $this->prefixId . '[showUid]' => $this->piVars['showUid'])) . '#att"  method="post">' . 
