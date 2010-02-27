@@ -1,4 +1,7 @@
 Changelog for tx_commerce
+27.02.2010 Christian Kuhn <lolli@schwarzbu.ch>
+* CGL cleanup in lib/class.tx_commerce_product.php
+
 25.02.2010 Volker Graubaum <vg@e-netconsulting.de>
 * change select Matrix complete, see documentation in the wiki (soon)
 * first version with complete working select attribute handling, now iconmode has to be checked to
