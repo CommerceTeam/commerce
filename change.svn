@@ -1,5 +1,6 @@
 Changelog for tx_commerce
 27.02.2010 Christian Kuhn <lolli@schwarzbu.ch>
+* Fixed deprecated method call get_atrribute_matrix again
 * CGL cleanup in lib/class.tx_commerce_product.php
 
 25.02.2010 Volker Graubaum <vg@e-netconsulting.de>
