@@ -1,4 +1,7 @@
 Changelog for tx_commerce
+28.02.2010 Ingo Schmitt <is@marketing-factory.de>
+* Added guidlines to SVN, See http://forge.typo3.org/wiki/extension-commerce/Guidlines
+
 27.02.2010 Christian Kuhn <lolli@schwarzbu.ch>
 * Fixed deprecated method call get_atrribute_matrix again
 * CGL cleanup in lib/class.tx_commerce_product.php
