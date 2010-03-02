@@ -695,7 +695,7 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 							$markerArrayItem['###SELECT_ATTRIBUTES_VALUE_SELECTED###'] = $markerArrayItem['###SELECT_ATTRIBUTES_VALUE_STATUS###'];
 							foreach($hookObjectsArr as $hookObj) {
 								if (method_exists($hookObj, 'additionalAttributeMarker')) {
-									$markerArrayItem = $hookObj->additionalAttributeMarker($markerArrayItem, $this, $val['uid']);
+									$markerArrayItem = $hookObj->additionalAttributeMarker($markerArrayItem, $this, $val->getUid());
 								}
 							}
 							$itemsContent .= $this->cObj->substituteMarkerArray($templateAttrSelectorItem, $markerArrayItem);
