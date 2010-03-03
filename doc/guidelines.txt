@@ -1,4 +1,4 @@
-TYPO3 Commerce Guidlines¶
+TYPO3 Commerce Guidelines¶
 CGL¶
 
 The TYPO3 Commerce defines the latest Version of the TYPO3 Core CGL to be used for TYPO3 Commerce. All new code must be created by the CGL, patches should also be fix CGL issues.
