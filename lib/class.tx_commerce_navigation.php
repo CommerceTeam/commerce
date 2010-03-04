@@ -502,7 +502,7 @@ class tx_commerce_navigation {
 				    	}
 				    	
 				    }
-				    if($this->expandAll){
+				    if (($this->expandAll > 0) || ($this->expandAll < 0 && (-$this->expandAll >= $mDepth))){
 				    	$nodeArray['_SUB_MENU']=$nodeArray['--subLevel--'];
 				    } 	
 				 	if ($this->gpVars['basketHashValue']) {
@@ -1236,7 +1236,7 @@ class tx_commerce_navigation {
 					$this->makeSubChildArrayPostRender($uidPage,$tableSubMain,$tableSubMm,$iIdCat,$mDepth+1,$path,"manu",$aFiche["manufacturer_uid"]);
 			}
 
-			if($this->expandAll){
+			if (($this->expandAll > 0) || ($this->expandAll < 0 && (-$this->expandAll >= $mDepth))){
 				$aLevel["_SUB_MENU"] = $aLevel['--subLevel--'];
 			}
 
