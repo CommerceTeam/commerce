@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2005 - 2009 Ingo Schmitt  (is@marketing-factory.de)
+*  (c) 2005 - 2010 Ingo Schmitt  (is@marketing-factory.de)
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -883,6 +883,10 @@ class tx_commerce_navigation {
 		}
 		if ($menuArr[0]['CommerceMenu'] == true) {
 			$availiableItemStates = $conf['parentObj']->mconf;
+			/**
+			 * @TODO: Try to get the expAll state from the TS Menue config and process it here
+			 * Data from TS Menue is stored in $conf['parentObj']->mconf['expAll']
+			 */
 			foreach ($menuArr as $MIndex => $value) {
 				if ($menuArr[$MIndex]['ITEM_STATE']<>'NO') {
 			

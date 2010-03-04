@@ -1,5 +1,8 @@
 Changelog for tx_commerce
 
+04.03.2010 Ingo Schmitt <is@marketing-factory.de>
+* nobrainer, Added Comment to lib_navigation
+
 02.03.2010 Sascha Egerer <seg@softvision.de>
 * fixed nobrainer in pi1 - object was used as an array
 
