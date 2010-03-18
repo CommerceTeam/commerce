@@ -360,6 +360,19 @@ Some hook-methods can return data which is used by the calling function. Others 
 					<div class="description">Call: loadAdditionalLocallang($this)<br/>
 					Type: Multiple<br/>
 					possibility to add your own locallang-files</div>
+					
+					
+			<div class="functionname">renderProduct</div>
+				<div class="hookname">GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['product']</div>
+					<div class="description">Call: additionalMarkerProduct($markerArray,$myProduct,$this)<br/>
+					Type: Multiple<br/>
+					Possibilty to modify Marker</div>
+					<div class="description">additionalSubpartsProduct($subpartArray,$myProduct,$this)<br/>
+					Type: Multiple<br/>
+					Possibilty to modify Subparts</div>
+					<div class="description">ModifyContentProduct($content,$myProduct,$this)<br/>
+					Type: Multiple<br/>
+					Possibilty to modify content</div>
 
 			<div class="functionname">function makeBasketInformation</div>
 				<div class="hookname">GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['makeBasketInformation']</div>

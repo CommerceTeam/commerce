@@ -1705,7 +1705,7 @@ class tx_commerce_pibase extends tslib_pibase {
 		
 		$markerArray['###PRODUCT_CHEAPEST_PRICE_NET###']=tx_moneylib::format($cheapestArticle->get_price_net(),$this->currency);
 		
-
+		
     	
 		foreach($hookObjectsArr as $hookObj)   {
 		    if (method_exists($hookObj, 'additionalMarkerProduct')) {
@@ -1721,6 +1721,12 @@ class tx_commerce_pibase extends tslib_pibase {
     	$content = $this->substituteMarkerArrayNoCached($template, $markerArray , $subpartArray ,$wrapMarkerArray);
     	if ($TS['editPanel']== 1) {
 			$content = $this->cObj->editPanel($content,$TS['editPanel.'],'tx_commerce_products:'.$myProduct->getUid());
+    	}
+    	
+		foreach($hookObjectsArr as $hookObj)   {
+		    if (method_exists($hookObj, 'ModifyContentProduct')) {
+    	    	         $content =  $hookObj->ModifyContentProduct($content,$myProduct,$this);
+	        }
     	}
     	
 		return 	$content;
