@@ -1,5 +1,8 @@
 Changelog for tx_commerce
 
+24.03.2010 Sascha Egerer <seg@softvision.de>
+* Related product without valid article causes PHP error #6662
+
 18.03.2010 Ingo Schmitt <is@marketing-factory.de>
 * Updated documentation concerning hooks in renderproduct
 * Raised version to 0.12.3

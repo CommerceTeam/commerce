@@ -332,18 +332,20 @@ class tx_commerce_product extends tx_commerce_element_alib {
 		if (!$this->relatedProducts_loaded) {
 			$this->relatedProduct_uids = $this->conn_db->get_related_product_uids($this->uid);
 			if (count($this->relatedProduct_uids) > 0) {
-				foreach($this->relatedProduct_uids as $productID => $categoryID) {
+				foreach ($this->relatedProduct_uids as $productId => $categoryId) {
 					$product = t3lib_div::makeInstance('tx_commerce_product');
-					$product->init($productID, $this->lang_uid);
-					$product->load_data(); #TODO: is it our job to load here?
-					if ($product->isAccessible()) { //Check if the user is alowed to acces the product
+					$product->init($productId, $this->lang_uid);
+					$product->load_data(); // TODO: is it our job to load here?
+					$product->load_articles();
+					// Check if the user is allowed to access the product and if the product has at least one article
+					if ($product->isAccessible() && $product->getNumberOfArticles() >= 1) {
 						$this->relatedProducts[] = $product;
 					}
 				}
 			}
 			$this->relatedProducts_loaded = TRUE;
 		}
-
+		
 		return $this->relatedProducts;
 	}
 
