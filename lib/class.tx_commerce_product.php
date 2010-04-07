@@ -483,6 +483,335 @@ class tx_commerce_product extends tx_commerce_element_alib {
 
 
 	/**
+	 * Get attribute matrix of products and articles
+	 * Both products and articles have a mm relation to the attribute table
+	 * This method gets the attributes of a product or an article and compiles them to an unified array of attributes
+	 * This method handles the different types of values of an attribute: character values, integer values and value lists
+	 *
+	 * @param mixed Array of restricted product articles (usually shall, must, ...), FALSE for all, FALSE for product attribute list
+	 * @param mixed Array of restricted attributes, FALSE for all
+	 * @param boolean TRUE if 'showvalue' field of value list table should be cared of
+	 * @param string Name of table with sorting field of table to order records
+	 * @param boolean TRUE if a fallback to default value should be done if a localization of an attribute value or value char is not available in localized row
+	 * @param string Name of parent table, either tx_commerce_articles or tx_commerce_products
+	 * @return mixed Array if attributes where found, else FALSE
+	 */
+	public function getAttributeMatrix(
+			$articleList = FALSE,
+			$attributeListInclude = FALSE,
+			$valueListShowValueInArticleProduct = TRUE,
+			$sortingTable = 'tx_commerce_articles_article_attributes_mm',
+			$localizationAttributeValuesFallbackToDefault = FALSE,
+			$parentTable = 'tx_commerce_articles'
+		) {
+
+			// Early return if no product is given
+		if (!$this->uid > 0) {
+			return FALSE;
+		}
+
+		if ($parentTable == 'tx_commerce_articles') {
+				// mm table for article->attribute
+			$mmTable = 'tx_commerce_articles_article_attributes_mm';
+		} else {
+				// mm table for product->attribute
+			$mmTable = 'tx_commerce_products_attributes_mm';
+		}
+
+			// Execute main query
+		$attributeDataArrayRessource = $GLOBALS['TYPO3_DB']->sql_query(
+			$this->getAttributeMatrixQuery(
+				$parentTable,
+				$mmTable,
+				$sortingTable,
+				$articleList,
+				$attributeListInclude
+			)
+		);
+
+			// Accumulated result array
+		$targetDataArray = array();
+
+			// Attributes uids are added to this array if there is no language overlay for an attribute
+			// to prevent fetching of non-existing language overlays in subsequent rows for the same attribute
+		$attributeLanguageOverlayBlacklist = array();
+
+			// Compile target data array
+		while ($attributeDataRow = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($attributeDataArrayRessource)) {
+				// AttributeUid affected by this reord
+			$currentAttributeUid = $attributeDataRow['attributes_uid'];
+
+				// Don't handle this row if a prior row was already unable to fetch a language overlay of the attribute
+			if ($this->lang_uid > 0 && count(array_intersect(array($currentAttributeUid), $attributeLanguageOverlayBlacklist)) > 0) {
+				continue;
+			}
+
+				// Initialize array for this attribute uid and fetch attribute language overlay for localization
+			if (!isset($targetDataArray[$currentAttributeUid])) {
+					// Initialize target row and fill in attribute values
+				$targetDataArray[$currentAttributeUid]['title'] = $attributeDataRow['attributes_title'];
+				$targetDataArray[$currentAttributeUid]['unit'] = $attributeDataRow['attributes_unit'];
+				$targetDataArray[$currentAttributeUid]['values'] = array();
+				$targetDataArray[$currentAttributeUid]['valueuidlist'] = array();
+				$targetDataArray[$currentAttributeUid]['valueformat'] = $attributeDataRow['attributes_valueformat'];
+				$targetDataArray[$currentAttributeUid]['Internal_title'] = $attributeDataRow['attributes_internal_title'];
+				$targetDataArray[$currentAttributeUid]['icon'] = $attributeDataRow['attributes_icon'];
+				
+					// Fetch language overlay of attribute if given
+					// Overwrite title, unit and Internal_title (sic!) of attribute
+					// @TODO: This should be refactored to some language overlay method of an attribute object
+				if ($this->lang_uid > 0) {
+					$overwriteValues = array();
+					$overwriteValues['uid'] = $currentAttributeUid;
+					$overwriteValues['pid'] = $attributeDataRow['attributes_pid'];
+					$overwriteValues['sys_language_uid'] = $attributeDataRow['attritubes_sys_language_uid'];
+					$overwriteValues['title'] = $attributeDataRow['attributes_title'];
+					$overwriteValues['unit'] = $attributeDataRow['attributes_unit'];
+					$overwriteValues['internal_title'] = $attributeDataRow['attributes_internal_title'];
+					$languageOverlayRecord = $GLOBALS['TSFE']->sys_page->getRecordOverlay(
+						'tx_commerce_attributes',
+						$overwriteValues,
+						$this->lang_uid,
+						$this->translationMode
+					);
+					if ($languageOverlayRecord) {
+						$targetDataArray[$currentAttributeUid]['title'] = $languageOverlayRecord['title'];
+						$targetDataArray[$currentAttributeUid]['unit'] = $languageOverlayRecord['unit'];
+						$targetDataArray[$currentAttributeUid]['Internal_title'] = $languageOverlayRecord['internal_title'];
+					} else {
+							// Throw away array if there is no lang overlay, add to blacklist
+						unset($targetDataArray[$currentAttributeUid]);
+						$attributeLanguageOverlayBlacklist[] = $currentAttributeUid;
+						continue;
+					}
+				} // End of language handling
+			} // End of if new attribute uid
+
+				// There is a nasty difference between article and product attributes regarding default_value field:
+				// For attributes: default_value must be an integer value and string values are stored in value_char
+				// For products: Everything is stored in default_value
+			$defaultValue = FALSE;
+			if ($parentTable == 'tx_commerce_articles') {
+				if ($attributeDataRow['default_value'] > 0) {
+					$defaultValue = TRUE;
+				}
+			} else {
+				if (strlen($attributeDataRow['default_value']) > 0) {
+					$defaultValue = TRUE;
+				}
+			}
+
+				// Handle value, default_value and value lists of attributes
+			if ((strlen($attributeDataRow['value_char']) > 0) || $defaultValue) {
+					// Localization of value_char
+				if ($this->lang_uid > 0) {
+						// Get uid of localized article (lang_uid = selected lang and l18n_parent = current article)
+						// @TODO: Add a db key on l18n_parent + sys_language_uid, it probably makes sense for this type of query
+					$localizedArticleUid = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+						'uid',
+						$parentTable,
+						'l18n_parent=' . $attributeDataRow['parent_uid'] .
+							' AND sys_language_uid=' . $this->lang_uid .
+							$GLOBALS['TSFE']->sys_page->enableFields($parentTable, $GLOBALS['TSFE']->showHiddenRecords)
+					);
+
+						// Fetch the article-attribute mm record with localized article uid and current attribute
+					$localizedArticleUid = (int)$localizedArticleUid[0]['uid'];
+					if ($localizedArticleUid > 0) {
+						$selectFields = array();
+						$selectFields[] = 'default_value';
+							// Again difference between product->attribute and article->attribute
+						if ($parentTable == 'tx_commerce_articles') {
+							$selectFields[] = 'value_char';
+						}
+							// Fetch mm record with overlay values
+						$localizedArticleAttributeValues = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+							implode(', ', $selectFields),
+							$mmTable,
+							'uid_local=' . $localizedArticleUid .
+								' AND uid_foreign=' . $currentAttributeUid
+						);
+							// Use value_char if set, else check for default_value, else use non localized value if enabled fallback
+						if (strlen($localizedArticleAttributeValues[0]['value_char']) > 0) {
+							$targetDataArray[$currentAttributeUid]['values'][] = $localizedArticleAttributeValues[0]['value_char'];
+						} else if (strlen($localizedArticleAttributeValues[0]['default_value']) > 0) {
+							$targetDataArray[$currentAttributeUid]['values'][] = $localizedArticleAttributeValues[0]['default_value'];
+						} else if ($localizationAttributeValuesFallbackToDefault) {
+							$targetDataArray[$currentAttributeUid]['values'][] = $attributeDataRow['value_char'];
+						}
+					} // End of localization handling
+				} else { // Not localized record
+						// Use value_char if set, else default_value
+					if (strlen($attributeDataRow['value_char']) > 0) {
+						$targetDataArray[$currentAttributeUid]['values'][] = $attributeDataRow['value_char'];
+					} else {
+						$targetDataArray[$currentAttributeUid]['values'][] = $attributeDataRow['default_value'];
+					}
+				}
+			} else if ($attributeDataRow['uid_valuelist']) {
+					// Get value list rows
+				$valueListArrayRows = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+					'*',
+					'tx_commerce_attribute_values',
+					'uid IN (' . $attributeDataRow['uid_valuelist'] . ')'
+				);
+				foreach ($valueListArrayRows as $valueListArrayRowNumber => $valueListArrayRow) {
+						// Ignore row if this value list has already been calculated
+						// This might happen if method is called with multiple article uid's
+					if (count(array_intersect(array($valueListArrayRow['uid']), $targetDataArray[$currentAttributeUid]['valueuidlist'])) > 0) {
+						continue;
+					}
+
+						// Value lists must be localized. So overwrite current row with localization record
+						// @TODO: This doesn't seem to be very clever and is just a re-implementation of the original matrix method
+					if ($this->lang_uid > 0) {
+						$valueListArrayRow = $GLOBALS['TSFE']->sys_page->getRecordOverlay(
+							'tx_commerce_attribute_values',
+							$valueListArrayRow,
+							$this->lang_uid,
+							$this->translationMode
+						);
+					}
+					if (!$valueListArrayRow) {
+							// @TODO: There is probably a bug with this: An attribute value should be
+							// unset if no value list had a language overlay
+							// This is a bug re-implementation from the original matrix method!
+						continue;
+					}
+					
+						// Add value list row to target array
+					if ($valueListShowValueInArticleProduct || $valueListArrayRow['showvalue'] == 1) {
+						$targetDataArray[$currentAttributeUid]['values'][] = $valueListArrayRow;
+						$targetDataArray[$currentAttributeUid]['valueuidlist'][] = $valueListArrayRow['uid'];
+					}
+				} // End of value list iteration
+			} // End of attribute value list handling
+
+		} // End of while fetch mm rows
+
+			// Free ressources of main query
+		$GLOBALS['TYPO3_DB']->sql_free_result($attributeDataArrayRessource);
+
+			// Return "I didn't found anything, so I'm not an array"
+			// This hack is a re-implementation of the original matrix behaviour
+		if (count($targetDataArray) == 0) {
+			return FALSE;
+		}
+
+			// Sort value lists by sorting value
+		foreach ($targetDataArray as $attributeUid => $attributeValues) {
+			if (count($attributeValues['valueuidlist']) > 1) {
+					// compareBySorting is a special callback function to order the array by its sorting value
+				usort($targetDataArray[$attributeUid]['values'], array('tx_commerce_product', 'compareBySorting'));
+
+					// Sort valuelist as well to get deterministic array output
+				sort($attributeValues['valueuidlist']);
+				$targetDataArray[$attributeUid]['valueuidlist'] = $attributeValues['valueuidlist'];
+			}
+		}
+
+		return $targetDataArray;
+	}
+
+
+	/**
+	 * Create query to get all attributes of articles or products
+	 * This is a join over three tables:
+	 * 		parent table, either tx_commerce_articles or tx_commerce_producs
+	 *		corresponding mm table
+	 *		tx_commerce_attributes
+	 *
+	 * @param string Name of the parent table, either tx_commerce_articles or tx_commerce_products
+	 * @param string Name of the mm table, either tx_commerce_articles_article_attributes_mm or tx_commerce_products_attributes_mm
+	 * @param string Name of table with .sorting field to order records
+	 * @param mixed Array of some restricted articles of this product (shall, must, ...), FALSE for all articles of product, FALSE if $parentTable = tx_commerce_products
+	 * @param mixed Array of restricted attributes, FALSE for all attributes
+	 * @return string Query to be executed
+	 */
+	protected function getAttributeMatrixQuery(
+			$parentTable = 'tx_commerce_articles',
+			$mmTable = 'tx_commerce_articles_article_attributes_mm',
+			$sortingTable = 'tx_commerce_articles_article_attributes_mm',
+			$articleList = FALSE,
+			$attributeList = FALSE
+		) {
+
+		$selectFields = array();
+		$selectWhere = array();
+
+			// Distinguish differences between product->attribute and article->attribute query
+		if ($parentTable == 'tx_commerce_articles') {
+				// Load full article list of product if not given
+			if ($articleList === FALSE) {
+				$articleList = $this->load_articles();
+			}
+				// Get article attributes of current product only
+			$selectWhere[] = $parentTable . '.uid_product = ' . $this->uid;
+				// value_char is only available in article->attribute mm table
+			$selectFields[] = $mmTable . '.value_char';
+				// Restrict article list if given
+			if (is_array($articleList) && count($articleList) > 0) {
+				$selectWhere[] = $parentTable . '.uid IN (' . implode(',', $articleList) . ')';
+			}
+		} else {
+				// Get attributes of current product only
+			$selectWhere[] = $parentTable . '.uid = ' . $this->uid;
+		}
+
+		$selectFields[] = $parentTable . '.uid AS parent_uid';
+		$selectFields[] = 'tx_commerce_attributes.uid AS attributes_uid';
+		$selectFields[] = 'tx_commerce_attributes.pid AS attributes_pid';
+		$selectFields[] = 'tx_commerce_attributes.sys_language_uid AS attributes_sys_language_uid';
+		$selectFields[] = 'tx_commerce_attributes.title AS attributes_title';
+		$selectFields[] = 'tx_commerce_attributes.unit AS attributes_unit';
+		$selectFields[] = 'tx_commerce_attributes.valueformat AS attributes_valueformat';
+		$selectFields[] = 'tx_commerce_attributes.internal_title AS attributes_internal_title';
+		$selectFields[] = 'tx_commerce_attributes.icon AS attributes_icon';
+		$selectFields[] = $mmTable . '.default_value';
+		$selectFields[] = $mmTable . '.uid_valuelist';
+		$selectFields[] = $sortingTable . '.sorting';
+
+		$selectFrom = array();
+		$selectFrom[] = $parentTable;
+		$selectFrom[] = $mmTable;
+		$selectFrom[] = 'tx_commerce_attributes';
+
+			// mm join restriction
+		$selectWhere[] = $parentTable . '.uid = ' . $mmTable . '.uid_local';
+		$selectWhere[] = 'tx_commerce_attributes.uid = ' . $mmTable . '.uid_foreign';
+
+			// Restrict attribute list if given
+		if (is_array($attributeList)) {
+			$selectWhere[] = 'tx_commerce_attributes.uid IN (' . implode(',', $attributeList) . ')';
+		}
+
+			// Get enabled rows only
+		$selectWhere[] = ' 1 ' . $GLOBALS['TSFE']->sys_page->enableFields(
+			'tx_commerce_attributes',
+			$GLOBALS['TSFE']->showHiddenRecords
+		);
+		$selectWhere[] = ' 1 ' . $GLOBALS['TSFE']->sys_page->enableFields(
+			$parentTable,
+			$GLOBALS['TSFE']->showHiddenRecords
+		);
+
+			// Order rows by given sorting table
+		$selectOrder = $sortingTable . '.sorting';
+
+			// Compile query
+		$attributeMmQuery = $GLOBALS['TYPO3_DB']->SELECTquery(
+			'DISTINCT ' . implode(', ', $selectFields),
+			implode(', ', $selectFrom),
+			implode(' AND ', $selectWhere),
+			'',
+			$selectOrder
+		);
+
+		return($attributeMmQuery);
+	}
+
+
+	/**
 	 * Generates a Matrix from these concerning articles for all attributes and the values therefor
 	 *
 	 * @TODO Split DB connects to db_class
