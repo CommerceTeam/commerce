@@ -1,6 +1,7 @@
 Changelog for tx_commerce
 
 08.04.2010 Christian Kuhn <lolli@schwarzbu.ch>
+* Bug #6634: Refactor tx_commerce_products get_attribute_matrix() and get_product_attribute_matrix(): Test patch running old and new method in parallel, revert svn to this version to hunt bugs in the new implementation
 * Bug #6634: Refactor tx_commerce_products get_attribute_matrix() and get_product_attribute_matrix(): Main patch that introduces the new methods getAttributeMatrix() and getAttributeMatrixQuery()
 * Bug #6634: Refactor tx_commerce_products get_attribute_matrix() and get_product_attribute_matrix(): Pre patch to the existing methods to fix some minor issues and to make the result arrays more predictable
 
