@@ -210,7 +210,7 @@ class tx_commerce_pibase extends tslib_pibase {
 			$showHiddenValues = false;
 		}
 
-		$matrix = $prodObj->get_product_attribute_matrix($this->product_attributes,$showHiddenValues);
+		$matrix = $prodObj->getAttributeMatrix(FALSE, $this->product_attributes, $showHiddenValues, 'tx_commerce_products_attributes_mm', FALSE, 'tx_commerce_products');
 
 		$i = 0;
 		if (is_array($this->product_attributes)){
@@ -285,9 +285,9 @@ class tx_commerce_pibase extends tslib_pibase {
 
 		$this->can_attributes = $prodObj->get_attributes(array(ATTRIB_can));
 		$this->shall_attributes = $prodObj->get_attributes(array(ATTRIB_shal));
-		
-		
-  		$matrix = $prodObj->get_attribute_matrix($articleId,$this->shall_attributes,$showHiddenValues);
+
+		$matrix = $prodObj->getAttributeMatrix($articleId, $this->shall_attributes, $showHiddenValues);
+
 	 	$i = 0;
 		if(is_array($this->shall_attributes)){
           	 foreach ($this->shall_attributes as $myAttributeUid) {
@@ -324,8 +324,8 @@ class tx_commerce_pibase extends tslib_pibase {
 
 		$article_shalAttributes_string = $this->cObj->stdWrap($article_shalAttributes_string,$this->conf['articleShalAttributsWrap.']) ;
 
-        $matrix = $prodObj->get_attribute_matrix($articleId,$this->can_attributes,$showHiddenValues);
-		
+		$matrix = $prodObj->getAttributeMatrix($articleId, $this->can_attributes, $showHiddenValues);
+
 		$i = 0;
 		if(is_array($this->can_attributes)){
               foreach ($this->can_attributes as $myAttributeUid) {
