@@ -721,6 +721,7 @@ class tx_commerce_product extends tx_commerce_element_alib {
 					}
 
 					if ($valueshown == TRUE) {
+						sort($valueUidList);
 						$return_array[$attribute_uid] = array(
 							'title' => $data['title'],
 							'unit' => $data['unit'],
@@ -734,8 +735,11 @@ class tx_commerce_product extends tx_commerce_element_alib {
 				} // End of while attribute rows
 
 				$GLOBALS['TYPO3_DB']->sql_free_result($result);
-
-				return $return_array;
+				if (count($return_array) == 0) {
+					return FALSE;
+				} else {
+					return $return_array;
+				}
 			} // End of if attributes
 
 		} // End of if ($this->uid>0)
@@ -1101,6 +1105,7 @@ class tx_commerce_product extends tx_commerce_element_alib {
 						// @since 13.12.2005 Get the lokalized values from tx_commerce_products_attributes_mm
 						// @author Ingo Schmitt <is@marketing-factory.de>
 					$valuelist = array();
+					$valueUidList = array();
 					$attribute_uid = $data['uid'];
 					$article = $data['product'];
 
@@ -1135,14 +1140,12 @@ class tx_commerce_product extends tx_commerce_element_alib {
 										while ($lok_value = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_value_lok)) {
 											if (strlen($lok_value['default_value']) > 0) {
 												$valuelist[] = $lok_value['default_value'];
-												$valueUidList[] = 0;
 												$valueshown = TRUE;
 											}
 										}
 									}
 								} else {
 									$valuelist[] = $value['default_value'];
-									$valueUidList[] = 0;
 									$valueshown = TRUE;
 								}
 							}
