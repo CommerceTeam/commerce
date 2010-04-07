@@ -811,270 +811,6 @@ class tx_commerce_product extends tx_commerce_element_alib {
 	}
 
 
-	/**
-	 * Generates a Matrix from these concerning articles for all attributes and the values therefor
-	 *
-	 * @TODO Split DB connects to db_class
-	 * @param mixed Uids of articles or FALSE
-	 * @param mixed Array of attribute uids to include or FALSE for all attributes
-	 * @param boolean Wether or net hidden values should be shown
-	 * @param string Default order by of attributes
-	 * @param boolean If TRUE, the default language value will beused, if no local value is existent
-	 * @return array of arrays
-	 */
-	function get_attribute_matrix($articleList = FALSE, $attribute_include = FALSE, $showHiddenValues = TRUE, $sortingTable = 'tx_commerce_articles_article_attributes_mm', $fallbackToDefault = FALSE) {
-		$return_array = array();
-
-			// If no list is given, take complate arctile-list from product
-		if ($this->uid > 0) {
-			if ($articleList == FALSE) {
-				$articleList = $this->load_articles();
-			}
-
-			if (is_array($attribute_include)) {
-				if (!is_null($attribute_include[0])) {
-					$addwhere.= ' AND tx_commerce_attributes.uid in (' . implode(',', $attribute_include) . ')';
-				}
-			}
-
-			if (is_array($articleList) && count($articleList) > 0) {
-				$query_article_list = implode(',', $articleList);
-				$addwhere2 = ' AND tx_commerce_articles.uid in (' . $query_article_list . ')';
-			}
-
-			$result = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
-				'distinct tx_commerce_attributes.uid,tx_commerce_attributes.sys_language_uid,tx_commerce_articles.uid as article ,tx_commerce_attributes.title, tx_commerce_attributes.unit, tx_commerce_attributes.valueformat, tx_commerce_attributes.internal_title,tx_commerce_attributes.icon, ' . $sortingTable . '.sorting',
-				'tx_commerce_articles',
-				'tx_commerce_articles_article_attributes_mm',
-				'tx_commerce_attributes',
-				' AND tx_commerce_articles.uid_product = ' . $this->uid . ' ' .
-					$addwhere .
-					$addwhere2 .
-					' order by ' .
-					$sortingTable . '.sorting'
-			);
-
-			$addwhere = $addwhere2;
-
-			if (($result) && ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0)) {
-				while ($data = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
-						// Language overlay
-					if ($this->lang_uid > 0) {
-						if (is_object($GLOBALS['TSFE']->sys_page)) {
-							$proofSQL = $GLOBALS['TSFE']->sys_page->enableFields('tx_commerce_attributes', $GLOBALS['TSFE']->showHiddenRecords);
-						}
-
-						$result2 = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-							'*',
-							'tx_commerce_attributes',
-							'uid = ' . $data['uid'] . ' ' . $proofSQL
-						);
-							// Result should contain only one Dataset
-						if ($GLOBALS['TYPO3_DB']->sql_num_rows($result2) == 1) {
-							$return_data = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result2);
-							$GLOBALS['TYPO3_DB']->sql_free_result($result2);
-							$return_data = $GLOBALS['TSFE']->sys_page->getRecordOverlay('tx_commerce_attributes', $return_data, $this->lang_uid, $this->translationMode);
-							if (!is_array($return_data)) {
-								 // No Translation possible, so next interation
-								continue;
-							}
-						}
-
-						$data['title'] = $return_data['title'];
-						$data['unit'] = $return_data['unit'];
-						$data['internal_title'] = $return_data['internal_title'];
-					} // End of language overlay
-
-					$valueshown = FALSE;
-
-						// Get different possible values form value_char an value
-						// @since 13.12.2005 Get the lokalized values from tx_commerce_articles_article_attributes_mm
-						// @author Ingo Schmitt <is@marketing-factory.de>
-					$valuelist = array();
-					$valueUidList = array();
-
-					$attribute_uid = $data['uid'];
-					$article = $data['article'];
-
-					$result_value = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
-						'distinct tx_commerce_articles_article_attributes_mm.value_char, tx_commerce_articles.uid article_uid, tx_commerce_attributes.uid attribute_uid',
-						'tx_commerce_articles',
-						'tx_commerce_articles_article_attributes_mm',
-						'tx_commerce_attributes',
-						' AND tx_commerce_articles.uid_product = ' . $this->uid .
-							' AND tx_commerce_attributes.uid=' . $attribute_uid .
-							$addwhere .
-							' order by tx_commerce_articles.sorting'
-					);
-					if (($result_value) && ($GLOBALS['TYPO3_DB']->sql_num_rows($result_value) > 0)) {
-						while ($value = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result_value)) {
-							if (strlen($value['value_char']) > 0) {
-								$lokAval = FALSE;
-								if ($this->lang_uid > 0) {
-										// Lokalization
-									$proofSQL_attributes = $GLOBALS['TSFE']->sys_page->enableFields('tx_commerce_attributes', $GLOBALS['TSFE']->showHiddenRecords);
-									$proofSQL_articles = $GLOBALS['TSFE']->sys_page->enableFields('tx_commerce_articles', $GLOBALS['TSFE']->showHiddenRecords);
-									$res_value_lok = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-										'distinct tx_commerce_articles_article_attributes_mm.value_char, tx_commerce_articles_article_attributes_mm.default_value',
-										'tx_commerce_articles_article_attributes_mm, tx_commerce_articles, tx_commerce_attributes',
-										"tx_commerce_articles_article_attributes_mm.uid_foreign=" . $value['attribute_uid'] .
-											" and tx_commerce_articles_article_attributes_mm.uid_local=tx_commerce_articles.uid " .
-											" and tx_commerce_articles.sys_language_uid=" . $this->lang_uid .
-											" and tx_commerce_articles.uid_product>0" .
-											" and tx_commerce_articles.l18n_parent=" . $value['article_uid'] . " " 
-											. $proofSQL_attributes
-											. $proofSQL_articles
-										);
-									if (($res_value_lok) && ($GLOBALS['TYPO3_DB']->sql_num_rows($res_value_lok) > 0)) {
-										while ($lok_value = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_value_lok)) {
-											if (strlen($lok_value['value_char']) > 0) {
-												$valuelist[] = $lok_value['value_char'];
-												$valueshown = TRUE;
-											} elseif (strlen($lok_value['default_value']) > 0) {
-												$valuelist[] = $lok_value['default_value'];
-												$valueshown = TRUE;
-											}
-											$lokAval = TRUE;
-										}
-									}
-									if ($fallbackToDefault && $lokAval == FALSE) {
-										$valuelist[] = $value['value_char'];
-										$valueshown = TRUE;
-									}
-								} else {
-									$valuelist[] = $value['value_char'];
-									$valueshown = TRUE;
-								}
-							}
-						}
-					} // End of get different possible values form value_char an value
-
-					$result_value = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
-						'distinct tx_commerce_articles_article_attributes_mm.default_value,  tx_commerce_articles.uid article_uid, tx_commerce_attributes.uid attribute_uid ',
-						'tx_commerce_articles',
-						'tx_commerce_articles_article_attributes_mm',
-						'tx_commerce_attributes',
-						' AND tx_commerce_articles.uid_product = ' . $this->uid .
-							" AND tx_commerce_attributes.uid=$attribute_uid" .
-							$addwhere .
-							' order by tx_commerce_articles.sorting'
-					);
-					if (($valueshown == FALSE) && ($result_value) && ($GLOBALS['TYPO3_DB']->sql_num_rows($result_value) > 0)) {
-						while ($value = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result_value)) {
-							if ($value['default_value'] > 0) {
-								$lokAval = FALSE;
-								if ($this->lang_uid > 0) {
-										// Localisation
-									$proofSQL_attributes = $GLOBALS['TSFE']->sys_page->enableFields('tx_commerce_attributes', $GLOBALS['TSFE']->showHiddenRecords);
-									$proofSQL_articles = $GLOBALS['TSFE']->sys_page->enableFields('tx_commerce_articles', $GLOBALS['TSFE']->showHiddenRecords);
-									$res_value_lok = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-										'distinct tx_commerce_articles_article_attributes_mm.default_value, tx_commerce_articles_article_attributes_mm.value_char',
-										'tx_commerce_articles_article_attributes_mm, tx_commerce_articles, tx_commerce_attributes',
-										"tx_commerce_articles_article_attributes_mm.uid_foreign=" . $value['attribute_uid'] .
-											" and tx_commerce_articles_article_attributes_mm.uid_local=tx_commerce_articles.uid" .
-											" and tx_commerce_articles.sys_language_uid=" . $this->lang_uid .
-											" and tx_commerce_articles.l18n_parent=" . $value['article_uid'] . " " .
-											$proofSQL_attributes .
-											$proofSQL_articles
-									);
-									if (($res_value_lok) && ($GLOBALS['TYPO3_DB']->sql_num_rows($res_value_lok) > 0)) {
-										while ($lok_value = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_value_lok)) {
-											if (strlen($lok_value['default_value']) > 0) {
-												$valuelist[] = $lok_value['default_value'];
-												$valueshown = TRUE;
-											} elseif (strlen($lok_value['value_char']) > 0) {
-												$valuelist[] = $lok_value['value_char'];
-												$valueshown = TRUE;
-											}
-										}
-										$lokAval = TRUE;
-									}
-									if ($fallbackToDefault && $lokAval == FALSE) {
-										$valuelist[] = $value['default_value'];
-										$valueshown = TRUE;
-									}
-								} else {
-									$valuelist[] = $value['default_value'];
-									$valueshown = TRUE;
-								}
-							}
-						}
-					}
-
-					$result_value = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
-						'distinct tx_commerce_articles_article_attributes_mm.uid_valuelist',
-						'tx_commerce_articles',
-						'tx_commerce_articles_article_attributes_mm',
-						'tx_commerce_attributes',
-						' AND tx_commerce_articles_article_attributes_mm.uid_valuelist>0' .
-							' AND tx_commerce_articles.uid_product = ' . $this->uid .
-							" AND tx_commerce_attributes.uid=$attribute_uid" .
-							$addwhere .
-							' order by tx_commerce_articles.sorting'
-					);
-					if (($valueshown == FALSE) && ($result_value) && ($GLOBALS['TYPO3_DB']->sql_num_rows($result_value) > 0)) {
-						while ($value = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result_value)) {
-							if ($value['uid_valuelist'] > 0) {
-								$resvalue = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-									'*',
-									'tx_commerce_attribute_values',
-									'uid = ' . $value['uid_valuelist']
-								);
-								$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($resvalue);
-								if ($this->lang_uid > 0) {
-									$row = $GLOBALS['TSFE']->sys_page->getRecordOverlay('tx_commerce_attribute_values', $row, $this->lang_uid, $this->translationMode);
-									if (!is_array($row)) {
-										continue;
-									}
-								}
-								if (($showHiddenValues == TRUE) || ($row['showvalue'] == 1)) {
-									$valuelist[] = $row;
-									$valueUidList[] = $row['uid'];
-									$valueshown = TRUE;
-								}
-							}
-						}
-						usort($valuelist, array('tx_commerce_product', 'compareBySorting'));
-					}
-
-					if ($valueshown == FALSE) {
-						$return_array[$attribute_uid] = array(
-							'title' => $data['title'],
-							'unit' => $data['unit'],
-							'values' => array(),
-							'valueuidlist' => array(),
-							'valueformat' => $data['valueformat'],
-							'Internal_title' => $data['internal_title'],
-							'icon' => $data['icon']
-						);
-					}
-
-					if ($valueshown == TRUE) {
-						sort($valueUidList);
-						$return_array[$attribute_uid] = array(
-							'title' => $data['title'],
-							'unit' => $data['unit'],
-							'values' => $valuelist,
-							'valueuidlist' => $valueUidList,
-							'valueformat' => $data['valueformat'],
-							'Internal_title' => $data['internal_title'],
-							'icon' => $data['icon']
-						);
-					}
-				} // End of while attribute rows
-
-				$GLOBALS['TYPO3_DB']->sql_free_result($result);
-				if (count($return_array) == 0) {
-					return FALSE;
-				} else {
-					return $return_array;
-				}
-			} // End of if attributes
-
-		} // End of if ($this->uid>0)
-
-		return FALSE;
-	}
 
 
 	/**
@@ -1368,201 +1104,6 @@ class tx_commerce_product extends tx_commerce_element_alib {
 
 
 	/**
-	 * Generates a Matrix from these concerning articles for all attributes and the values therefor
-	 *
-	 * @TODO Split DB connects to db_class
-	 * @param mixed Array of attribute uids to include or FALSE for all attributes
-	 * @param boolean Wether or net hidden values should be shown
-	 * @param string Default order by of attributes
-	 * @return array of arrays
-	 */
-	function get_product_attribute_matrix($attribute_include = FALSE, $showHiddenValues = TRUE, $sortingTable = 'tx_commerce_products_attributes_mm') {
-		$return_array = array();
-
-			// If no list is given, take complate arctile-list from product
-		if ($this->uid > 0) {
-			if (is_array($attribute_include)) {
-				if (!is_null($attribute_include[0])) {
-					$addwhere.= ' AND tx_commerce_attributes.uid in (' . implode(',', $attribute_include) . ')';
-				}
-			}
-
-			$result = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
-				'distinct tx_commerce_attributes.uid,tx_commerce_attributes.sys_language_uid,tx_commerce_products.uid as product, tx_commerce_attributes.title, tx_commerce_attributes.unit, tx_commerce_attributes.valueformat, tx_commerce_attributes.internal_title,tx_commerce_attributes.icon, ' . $sortingTable . '.sorting',
-				'tx_commerce_products',
-				'tx_commerce_products_attributes_mm',
-				'tx_commerce_attributes',
-				' AND tx_commerce_products.uid = ' . $this->uid . ' ' .
-					$addwhere .
-					' order by ' . $sortingTable . '.sorting'
-			);
-
-			if (($result) && ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0)) {
-				while ($data = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
-
-						// Language overlay
-					if ($this->lang_uid > 0) {
-						if (is_object($GLOBALS['TSFE']->sys_page)) {
-							$proofSQL = $GLOBALS['TSFE']->sys_page->enableFields('tx_commerce_attributes', $GLOBALS['TSFE']->showHiddenRecords);
-						}
-
-						$result2 = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-							'*',
-							'tx_commerce_attributes',
-							'uid = ' . $data['uid'] . ' ' .
-							$proofSQL
-						);
-
-							// Result should contain only one Dataset
-						if ($GLOBALS['TYPO3_DB']->sql_num_rows($result2) == 1) {
-							$return_data = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result2);
-							$GLOBALS['TYPO3_DB']->sql_free_result($result2);
-							$return_data = $GLOBALS['TSFE']->sys_page->getRecordOverlay('tx_commerce_attributes', $return_data, $this->lang_uid, $this->translationMode);
-							if (!is_array($return_data)) {
-									// No Translation possible, so next interation
-								continue;
-							}
-						}
-						$data['title'] = $return_data['title'];
-						$data['unit'] = $return_data['unit'];
-						$data['internal_title'] = $return_data['internal_title'];
-					}
-
-					$valueshown = FALSE;
-
-						// Get the different possible values form value_char an value
-						// @since 13.12.2005 Get the lokalized values from tx_commerce_products_attributes_mm
-						// @author Ingo Schmitt <is@marketing-factory.de>
-					$valuelist = array();
-					$valueUidList = array();
-					$attribute_uid = $data['uid'];
-					$article = $data['product'];
-
-					$result_value = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
-						'distinct tx_commerce_products_attributes_mm.default_value, tx_commerce_products.uid product_uid, tx_commerce_attributes.uid attribute_uid',
-						'tx_commerce_products',
-						'tx_commerce_products_attributes_mm',
-						'tx_commerce_attributes',
-						' AND tx_commerce_products.uid = ' . $this->uid .
-							' AND tx_commerce_attributes.uid=' . $attribute_uid
-					);
-
-					if (($result_value) && ($GLOBALS['TYPO3_DB']->sql_num_rows($result_value) > 0)) {
-						while ($value = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result_value)) {
-							if (strlen($value['default_value']) > 0) {
-								if ($this->lang_uid > 0) {
-										// Localization
-									$proofSQL_attributes = $GLOBALS['TSFE']->sys_page->enableFields('tx_commerce_attributes', $GLOBALS['TSFE']->showHiddenRecords);
-									$proofSQL_articles = $GLOBALS['TSFE']->sys_page->enableFields('tx_commerce_products', $GLOBALS['TSFE']->showHiddenRecords);
-									$res_value_lok = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-										'distinct tx_commerce_products_attributes_mm.default_value',
-										'tx_commerce_products_attributes_mm, tx_commerce_products, tx_commerce_attributes',
-										"tx_commerce_products_attributes_mm.uid_foreign=" . $value['attribute_uid'] .
-											" and tx_commerce_products_attributes_mm.uid_local=tx_commerce_products.uid" .
-											" and tx_commerce_products.sys_language_uid=" . $this->lang_uid .
-											" and tx_commerce_products.uid>0" .
-											" AND tx_commerce_products.l18n_parent=" . $value['product_uid'] . " " .
-											$proofSQL_attributes .
-											$proofSQL_articles
-									);
-									if (($res_value_lok) && ($GLOBALS['TYPO3_DB']->sql_num_rows($res_value_lok) > 0)) {
-										while ($lok_value = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_value_lok)) {
-											if (strlen($lok_value['default_value']) > 0) {
-												$valuelist[] = $lok_value['default_value'];
-												$valueshown = TRUE;
-											}
-										}
-									}
-								} else {
-									$valuelist[] = $value['default_value'];
-									$valueshown = TRUE;
-								}
-							}
-						}
-					}
-
-					$result_value = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
-						'distinct tx_commerce_products_attributes_mm.uid_valuelist',
-						'tx_commerce_products',
-						'tx_commerce_products_attributes_mm',
-						'tx_commerce_attributes',
-						' AND tx_commerce_products.uid = ' . $this->uid .
-							" AND tx_commerce_attributes.uid=$attribute_uid"
-					);
-
-					if (($result_value) && ($GLOBALS['TYPO3_DB']->sql_num_rows($result_value) > 0)) {
-						while ($value = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result_value)) {
-							if ($value['uid_valuelist']) {
-								$resvalue = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*',
-									'tx_commerce_attribute_values',
-									'uid = ' . $value['uid_valuelist']
-								);
-								$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($resvalue);
-								if ($this->lang_uid > 0) {
-									$row = $GLOBALS['TSFE']->sys_page->getRecordOverlay('tx_commerce_attribute_values', $row, $this->lang_uid, $this->translationMode);
-									if (!is_array($row)) {
-										continue;
-									}
-								}
-								if (($showHiddenValues == TRUE) || (($showHiddenValues == FALSE) && ($row['showvalue'] == 1))) {
-									$valuelist[] = $row;
-									$valueUidList[] = $value['uid_valuelist'];
-									$valueshown = TRUE;
-								}
-							}
-						}
-
-							// Sort values by the sorting field.
-							// Is there a better way to do this?
-						$valuelist_temp = $valuelist;
-						$valuelist = array();
-						$valuelist_temp_sort = array();
-						foreach($valuelist_temp as $value_temp) {
-							if ($valuelist_temp_sort[$value_temp['sorting']]) {
-								$valuelist_temp_sort[] = $value_temp;
-							} else {
-								$valuelist_temp_sort[$value_temp['sorting']] = $value_temp;
-							}
-						}
-						ksort($valuelist_temp_sort);
-						foreach($valuelist_temp_sort as $value_temp) {
-							$valuelist[] = $value_temp;
-						}
-					}
-
-					if ($valueshown == FALSE) {
-						$return_array[$attribute_uid] = array(
-							'title' => $data['title'],
-							'unit' => $data['unit'],
-							'values' => array(),
-							'valueuidlist' => array(),
-							'valueformat' => $data['valueformat'],
-							'Internal_title' => $data['internal_title'],
-							'icon' => $data['icon']
-						);
-					}
-					if ($valueshown == TRUE) {
-						$return_array[$attribute_uid] = array(
-							'title' => $data['title'],
-							'unit' => $data['unit'],
-							'values' => $valuelist,
-							'valueuidlist' => $valueUidList,
-							'valueformat' => $data['valueformat'],
-							'Internal_title' => $data['internal_title'],
-							'icon' => $data['icon']
-						);
-					}
-				}
-
-				return $return_array;
-			}
-		}
-
-		return FALSE;
-	}
-
-
-	/**
 	 * Returns list of articles (from this product) filtered by price
 	 *
 	 * @todo Move DB connector to db_product
@@ -1825,22 +1366,44 @@ class tx_commerce_product extends tx_commerce_element_alib {
 	/**
 	 * Returns the attribute matrix
 	 *
-	 * @see: get_attribute_matrix()
+	 * @see getAttributeMatrix()
+	 * @deprecated Will be removed after 2011-04-08
+	 */
+	function get_attribute_matrix($articleList = FALSE, $attribute_include = FALSE, $showHiddenValues = TRUE, $sortingTable = 'tx_commerce_articles_article_attributes_mm', $fallbackToDefault = FALSE) {
+		return $this->getAttributeMatrix($articleList, $attribute_include, $showHiddenValues, $sortingTable, $fallbackToDefault);
+	}
+
+
+	/**
+	 * Returns the attribute matrix
+	 *
+	 * @see getAttributeMatrix()
 	 * @deprecated Will be removed after 2011-02-27
 	 */
 	function get_atrribute_matrix($articleList = FALSE, $attribute_include = FALSE, $showHiddenValues = TRUE, $sortingTable = 'tx_commerce_articles_article_attributes_mm') {
-		return $this->get_attribute_matrix($articleList, $attribute_include, $showHiddenValues, $sortingTable);
+		return $this->getAttributeMatrix($articleList, $attribute_include, $showHiddenValues, $sortingTable);
+	}
+
+
+	/**
+	 * Returns the attribute matrix
+	 *
+	 * @see getAttributeMatrix()
+	 * @deprecated Will be removed after 2011-04-08
+	 */
+	function get_product_attribute_matrix($attribute_include = FALSE, $showHiddenValues = TRUE, $sortingTable = 'tx_commerce_products_attributes_mm') {	
+		return $this->getAttributeMatrix(FALSE, $attribute_include, $showHiddenValues, $sortingTable, FALSE, 'tx_commerce_products');
 	}
 
 
 	/**
 	 * Generates a Matrix fro these concerning products for all Attributes and the values therfor
 	 *
-	 * @ see get_product_attribute_matrix()
+	 * @see getAttributeMatrix()
 	 * @deprecated Will be removed after 2011-02-27
 	 */
 	function get_product_atrribute_matrix($attribute_include = FALSE, $showHiddenValues = TRUE, $sortingTable = 'tx_commerce_products_attributes_mm') {
-		return $this->get_product_attribute_matrix($attribute_include, $showHiddenValues, $sortingTable);
+		return $this->getAttributeMatrix(FALSE, $attribute_include,  $showHiddenValues, $sortingTable, FALSE, 'tx_commerce_products');
 	}
 }
 
