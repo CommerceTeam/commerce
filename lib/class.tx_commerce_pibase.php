@@ -211,14 +211,6 @@ class tx_commerce_pibase extends tslib_pibase {
 		}
 
 		$matrix = $prodObj->get_product_attribute_matrix($this->product_attributes,$showHiddenValues);
-		$newMatrix = $prodObj->getAttributeMatrix(FALSE, $this->product_attributes, $showHiddenValues, 'tx_commerce_products_attributes_mm', FALSE, 'tx_commerce_products');
-			// This is a hack to prevent a really nasty bug in cc_debug
-		$this->multiDimensionalArrayReset($newMatrix);
-		if(md5(serialize($matrix)) != md5(serialize($newMatrix))) {
-			debug ($matrix, 'product attribute matrix old ' . implode(',', $articleId));
-			debug ($newMatrix, 'product attribute matrix new ' . implode(',', $articleId));
-		}
-
 
 		$i = 0;
 		if (is_array($this->product_attributes)){
@@ -294,15 +286,8 @@ class tx_commerce_pibase extends tslib_pibase {
 		$this->can_attributes = $prodObj->get_attributes(array(ATTRIB_can));
 		$this->shall_attributes = $prodObj->get_attributes(array(ATTRIB_shal));
 		
-		$matrix = $prodObj->get_attribute_matrix($articleId,$this->shall_attributes,$showHiddenValues);
-		$newMatrix = $prodObj->getAttributeMatrix($articleId,$this->shall_attributes,$showHiddenValues);
-		$this->multiDimensionalArrayReset($newMatrix);
-		if(md5(serialize($matrix)) != md5(serialize($newMatrix))) {
-			debug ($matrix, 'attribute matrix old shall ' . implode(',', $articleId));
-			debug ($newMatrix, 'attribute matrix new shall ' . implode(',', $articleId));
-		}
-
-
+		
+  		$matrix = $prodObj->get_attribute_matrix($articleId,$this->shall_attributes,$showHiddenValues);
 	 	$i = 0;
 		if(is_array($this->shall_attributes)){
           	 foreach ($this->shall_attributes as $myAttributeUid) {
@@ -339,13 +324,7 @@ class tx_commerce_pibase extends tslib_pibase {
 
 		$article_shalAttributes_string = $this->cObj->stdWrap($article_shalAttributes_string,$this->conf['articleShalAttributsWrap.']) ;
 
-		$matrix = $prodObj->get_attribute_matrix($articleId,$this->can_attributes,$showHiddenValues);
-		$newMatrix = $prodObj->getAttributeMatrix($articleId,$this->can_attributes,$showHiddenValues);
-		$this->multiDimensionalArrayReset($newMatrix);
-		if(md5(serialize($matrix)) != md5(serialize($newMatrix))) {
-			debug ($matrix, 'attribute matrix old shall ' . implode(',', $articleId));
-			debug ($newMatrix, 'attribute matrix new shall ' . implode(',', $articleId));
-		}
+        $matrix = $prodObj->get_attribute_matrix($articleId,$this->can_attributes,$showHiddenValues);
 		
 		$i = 0;
 		if(is_array($this->can_attributes)){
@@ -1788,21 +1767,7 @@ class tx_commerce_pibase extends tslib_pibase {
 
 	    // to define in sub class
 	}
-
-	/**
-	 * Recursivly reset all pointers to multi dimensional array
-	 * This method is just a temporary debugging hack to prevent cc_debug from false output
-	 *
-	 * @param array A multidimensional array, call by reference!
-	 */
-	protected function multiDimensionalArrayReset(&$arrayReference) {
-		foreach ($arrayReference as $key=>$val) {
-			if (is_array($val)) {
-				$this->multiDimensionalArrayReset($val);
-				reset($arrayReference[$key]);
-			}
-		}
-	}
+	
 	
 	/**
 	 * Returns the TCA for either $this->table(if neither $table nor $this->TCA is set), $table(if set) or $this->TCA
