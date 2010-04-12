@@ -1,6 +1,7 @@
 Changelog for tx_commerce
 
-08.04.2010 Dimitri Koenig <dk@cabag.ch>
+12.04.2010 Dimitri Koenig <dk@cabag.ch>
+* Bug #7134: CategoryTree will be displayed in other Linkhandler Tabs: solved
 * Bug #7133: Copying of an not existing object in Typoscript: solved
 
 08.04.2010 Christian Kuhn <lolli@schwarzbu.ch>

@@ -92,69 +92,71 @@ class tx_commerce_browselinkshooks implements t3lib_browseLinksHook {
     // Contenu du nouvel onglet
     function getTab($act) {
     	global $TCA,$BE_USER, $BACK_PATH;
-    	
-    	//strip http://commerce: in front of url
-    	$url = $this->pObj->curUrlInfo['value'];
-    	$url = substr($url, stripos($url, 'commerce:') + strlen('commerce:'));
-		
-		$product_uid 	= 0;
-		$cat_uid 		= 0;
-		
-    	$linkHandlerData = t3lib_div::trimExplode('|',$url);
 
-		foreach ($linkHandlerData as $linkData) {
-			$params = t3lib_div::trimExplode(':',$linkData);
-		if (isset($params[0])){
-			if ($params[0] == 'tx_commerce_products') {
-				$product_uid = (int)$params[1];
-			} elseif ($params[0] == 'tx_commerce_categories') {
-				$cat_uid = (int)$params[1];
+		if($act == 'commerce_tab') {
+			//strip http://commerce: in front of url
+			$url = $this->pObj->curUrlInfo['value'];
+			$url = substr($url, stripos($url, 'commerce:') + strlen('commerce:'));
+			
+			$product_uid 	= 0;
+			$cat_uid 		= 0;
+			
+			$linkHandlerData = t3lib_div::trimExplode('|',$url);
+	
+			foreach ($linkHandlerData as $linkData) {
+				$params = t3lib_div::trimExplode(':',$linkData);
+			if (isset($params[0])){
+				if ($params[0] == 'tx_commerce_products') {
+					$product_uid = (int)$params[1];
+				} elseif ($params[0] == 'tx_commerce_categories') {
+					$cat_uid = (int)$params[1];
+				}
 			}
-		}
-		if (isset($params[2])){
-			if ($params[2] == 'tx_commerce_products') {
-				$product_uid = (int)$params[3];
-			} elseif ($params[2] == 'tx_commerce_categories') {
-				$cat_uid = (int)$params[3];
+			if (isset($params[2])){
+				if ($params[2] == 'tx_commerce_products') {
+					$product_uid = (int)$params[3];
+				} elseif ($params[2] == 'tx_commerce_categories') {
+					$cat_uid = (int)$params[3];
+				}
+			}			
+			}		
+			if ($product_uid > 0 && $cat_uid > 0){
+				//$this->pObj->expandPage = $cat_uid;
 			}
-		}			
-		}		
-		if ($product_uid > 0 && $cat_uid > 0){
-			//$this->pObj->expandPage = $cat_uid;
+			
+			if ($this->isRTE()) {
+					if (isset($this->pObj->classesAnchorJSOptions)) {
+					$this->pObj->classesAnchorJSOptions[$act]=@$this->pObj->classesAnchorJSOptions['page']; //works for 4.1.x patch, in 4.2 they make this property protected! -> to enable classselector in 4.2 easoiest is to path rte. 
+				}    
+			}
+			
+			// set product/category of current link for the tree to expand it there
+			if($product_uid > 0) {
+				$this->treeObj->setOpenProduct($product_uid);
+			}
+			
+			if($cat_uid > 0) {
+				$this->treeObj->setOpenCategory($cat_uid);
+			}
+			
+			// get the tree
+			$tree = $this->treeObj->getBrowseableTree();
+			
+			$cattable = '<h3 class="bgColor5">Category Tree:</h3><div id="PageTreeDiv">'.$tree.'</div>';
+			
+			$content = $this->script;
+			$content .= $cattable;
+			
+			
+			
+			
+			
+			if ($this->isRTE()) {
+				$content .= $this->pObj->addAttributesForm();	
+				
+			}
+			return $content;
 		}
-    	
-    	if ($this->isRTE()) {
-    			if (isset($this->pObj->classesAnchorJSOptions)) {
-				$this->pObj->classesAnchorJSOptions[$act]=@$this->pObj->classesAnchorJSOptions['page']; //works for 4.1.x patch, in 4.2 they make this property protected! -> to enable classselector in 4.2 easoiest is to path rte. 
-			}    
-    	}
-    	
-    	// set product/category of current link for the tree to expand it there
-    	if($product_uid > 0) {
-    		$this->treeObj->setOpenProduct($product_uid);
-    	}
-    	
-    	if($cat_uid > 0) {
-    		$this->treeObj->setOpenCategory($cat_uid);
-    	}
-    	
-    	// get the tree
-    	$tree = $this->treeObj->getBrowseableTree();
-    	
-    	$cattable = '<h3 class="bgColor5">Category Tree:</h3><div id="PageTreeDiv">'.$tree.'</div>';
-    	
-    	$content = $this->script;
-    	$content .= $cattable;
-    	
-    	
-    	
-    	
-    	
-        if ($this->isRTE()) {
-        	$content .= $this->pObj->addAttributesForm();	
-        	
-    	}
-    	return $content;     
     }
     
 	
