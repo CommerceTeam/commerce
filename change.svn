@@ -1,5 +1,8 @@
 Changelog for tx_commerce
 
+08.04.2010 Dimitri Koenig <dk@cabag.ch>
+* Bug #7133: Copying of an not existing object in Typoscript: solved
+
 08.04.2010 Christian Kuhn <lolli@schwarzbu.ch>
 * Bug #6634: Refactor tx_commerce_products get_attribute_matrix() and get_product_attribute_matrix(): Change old methods to wrappers of new method and deprecate them
 * Bug #6634: Refactor tx_commerce_products get_attribute_matrix() and get_product_attribute_matrix(): Use new methods instead of old ones

@@ -705,7 +705,7 @@ plugin.tx_commerce_pi4 {
 	editAddressPid = {$plugin.tx_commerce_lib.editAddressPid}
 	addressPid = {$plugin.tx_commerce_lib.addressPid}
 	
-	billing < lib.tx_commerce.billing
+	billing < plugin.tx_commerce_pi3.billing
 	billing {
 		subpartMarker {
 			listItem = ###ADDRESS_ITEM###
@@ -715,7 +715,7 @@ plugin.tx_commerce_pi4 {
 			editField = ###SINGLE_INPUT###
 		}
 	}
-	delivery < lib.tx_commerce.delivery
+	delivery < plugin.tx_commerce_pi3.delivery
 	delivery  {
 		subpartMarker {
 			listItem = ###ADDRESS_ITEM###
