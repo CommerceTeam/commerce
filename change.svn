@@ -1,5 +1,8 @@
 Changelog for tx_commerce
 
+21.05.2010 Sascha Egerer <seg@softvision.de>
+* Bug #7861: Fixed attribute status marker naming in category_product.tpl
+
 12.04.2010 Dimitri Koenig <dk@cabag.ch>
 * Bug #7134: CategoryTree will be displayed in other Linkhandler Tabs: solved
 * Bug #7133: Copying of an not existing object in Typoscript: solved
