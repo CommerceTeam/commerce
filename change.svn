@@ -1,4 +1,7 @@
 Changelog for tx_commerce
+07.06.2010 Sascha Egerer <seg@softvision.de>
+* Bug #7809: missing parameter in exec_SELECTquery
+
 22.05.2010 Ingo Schmitt <is@marketing-factory.de>
 * Added commerce documentation, thanks to Techdivision GmbH (fixed Feature #1804)
 

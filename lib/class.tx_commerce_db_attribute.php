@@ -83,6 +83,7 @@ class tx_commerce_db_attribute extends tx_commerce_db_alib {
  	 	$result=$GLOBALS['TYPO3_DB']->exec_SELECTquery('uid',
  			$this->child_database_table,
 			'attributes_uid = '.intval($uid),
+			'',
  			'sorting'
 			);
  		// a result is availiabe
