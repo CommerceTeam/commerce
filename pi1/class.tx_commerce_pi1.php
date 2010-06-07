@@ -549,18 +549,14 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 			
 			// define $arrAttSubmit for finding the right article later
 			$arrAttSubmit = array();
-			
 			foreach($this->piVars as $key => $val) {
 				if (strstr($key, 'attsel_') && $val) {
-					$arrAttSubmit[intval(substr($key, 7))] = intval($val);
-					if ($this->piVars['attList_' . $prod->getUid() . '_changed'] == intval(substr($key, 7))) {
-						break;
-					}
 					//set only if it is the selected product - for listing mode
 					if ($this->piVars['changedProductUid'] == $prod->get_uid() || $this->piVars['showUid'] == $prod->get_uid()) {
-						$attributeArray[] = array(
-							'AttributeUid' => substr($key, 7), 'AttributeValue' => $val
-						);
+						$arrAttSubmit[intval(substr($key, 7))] = intval($val);
+						if ($this->piVars['attList_' . $prod->getUid() . '_changed'] == intval(substr($key, 7))) {
+							break;
+						}
 					}
 				}
 			}
@@ -575,7 +571,7 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 			if ($this->conf['allArticles'] || $count == 1) {
 				//@TODO: Correct like this?
 				for($i = 0; $i < $count; $i ++) {
-					$attributeArray = $prod->get_Atrribute_Matrix(array(
+					$attributeArray = $prod->getAttributeMatrix(array(
 						$prod->articles_uids[$i]
 					), $this->select_attributes, $showHiddenValues);
 					if (is_array($attributeArray)) {
@@ -669,7 +665,7 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 						$markerArray['###SELECT_ATTRIBUTES_UNIT###'] = $attributeObj->get_unit();
 						$itemsContent = '';
 						$i = 1;
-						$attributeValues = $attributeObj->get_all_values(true);
+						$attributeValues = $attributeObj->get_all_values(true,$prod);
 						foreach($attributeValues as $val) {
 							
 							// ($this->piVars['changedProductUid'] == $prod->get_uid() &&  $this->piVars['showUid'] == $prod->get_uid()))

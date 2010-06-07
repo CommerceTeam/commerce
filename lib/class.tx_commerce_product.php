@@ -378,7 +378,7 @@ class tx_commerce_product extends tx_commerce_element_alib {
 	 * @TODO Create useful and understandable comments in english ...
 	 * @param array (
 	 * 			array('AttributeUid'=>$attributeUID, 'AttributeValue'=>$attributeValue),
-	 * 			array('AttributeUid'=>$attributreUID, 'AttributeValue'=>$attributeValue),
+	 * 			array('AttributeUid'=>$attributeUID, 'AttributeValue'=>$attributeValue),
 	 * 		...
 	 * 		)
 	 * @param Proof if script is running without instance and so without a single product
@@ -392,7 +392,6 @@ class tx_commerce_product extends tx_commerce_element_alib {
 		$first = 1;
 
 			// Initialize arrays to prevent warningn in array_intersect()
-		$first_array = array();
 		$next_array = array();
 
 		$addwhere = '';
@@ -418,7 +417,7 @@ class tx_commerce_product extends tx_commerce_element_alib {
 
 				$result = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
 					'distinct tx_commerce_articles.uid',
-					'tx_commerce_articles ',
+					'tx_commerce_articles',
 					'tx_commerce_articles_article_attributes_mm',
 					'tx_commerce_attributes',
 					$addwhere . " AND tx_commerce_articles.hidden = 0 and tx_commerce_articles.deleted = 0" . $whereUid
@@ -426,11 +425,7 @@ class tx_commerce_product extends tx_commerce_element_alib {
 
 				if (($result) && ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0)) {
 					while ($return_data = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
-						if ($first) {
-							$first_array[] = $return_data['uid'];
-						} else {
-							$next_array[] = $return_data['uid'];
-						}
+						$next_array[] = $return_data['uid'];
 					}
 					$GLOBALS['TYPO3_DB']->sql_free_result($result);
 				}
@@ -439,7 +434,7 @@ class tx_commerce_product extends tx_commerce_element_alib {
 					// Daher das Erste Array setzen und dann mit Array Intersect nur noch die ?bereinstimmungen
 					// behalten.
 				if ($first) {
-					$attribute_uid_list = $first_array;
+					$attribute_uid_list = $next_array;
 					$first = 0;
 				} else {
 					$attribute_uid_list = array_intersect($attribute_uid_list, $next_array);
@@ -451,7 +446,7 @@ class tx_commerce_product extends tx_commerce_element_alib {
 				sort($attribute_uid_list);
 				return $attribute_uid_list;
 			} else {
-				return FALSE;
+				return array();
 			}
 		}
 	}

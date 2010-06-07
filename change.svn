@@ -3,6 +3,7 @@ Changelog for tx_commerce
 * Bug #7809: missing parameter in exec_SELECTquery
 * Bug #6595: Iconmode not working
 * Bug #6595: Pointer variable missing
+* Bug #6595: Select attribute selection not working
 
 22.05.2010 Ingo Schmitt <is@marketing-factory.de>
 * Added commerce documentation, thanks to Techdivision GmbH (fixed Feature #1804)

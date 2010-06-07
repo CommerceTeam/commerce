@@ -143,36 +143,51 @@ require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_attribute_
    }
 
 
-   /** Franz: how do we take care about depencies between attributes?
+   /** 
+    * Franz: how do we take care about depencies between attributes?
     * @param returnObjects condition to return the value objects instead of values
+    * @param productObject return only attribute values that are possible for the given product
     * @since 21.02.2010 added param returnObjects
     * @return array values of attribute
     * 
     * @access public
     */
-
-
-  	function get_all_values($returnObjects = false){
+  	function get_all_values($returnObjects = false, $productObject = false){
 
   		if($this->attributeValuesLoaded === false){
   		    if ($this->attribute_value_uids=$this->conn_db->get_attribute_value_uids($this->uid)){
-  			foreach ($this->attribute_value_uids as $value_uid){
-  				$this->attribute_values[$value_uid] = t3lib_div::makeInstance('tx_commerce_attribute_value');
-  				$this->attribute_values[$value_uid]->init($value_uid,$this->lang_uid);
-  				$this->attribute_values[$value_uid]->load_data();
-  				
-  			}
-  			$this->attributeValuesLoaded = true;
+	  			foreach ($this->attribute_value_uids as $value_uid){
+	  				$this->attribute_values[$value_uid] = t3lib_div::makeInstance('tx_commerce_attribute_value');
+	  				$this->attribute_values[$value_uid]->init($value_uid,$this->lang_uid);
+	  				$this->attribute_values[$value_uid]->load_data();
+	  			}
+	  			$this->attributeValuesLoaded = true;
   		    }
   		}
+  		
+  		$attributeValues = $this->attribute_values;
+  		
+  		// if productObject is a productObject we have to remove the attribute values wich are not possible at all for this product
+  		if(is_object($productObject)) {
+  			$tAttributeValues = array();
+  			$productSelectAttributeValues = $productObject->get_selectattribute_matrix(false,array($this->uid));
+  			foreach($attributeValues as $attributeKey => $attributeValue) {
+  				foreach($productSelectAttributeValues[$this->uid]['values'] as $selectAttributeValue) {
+  					if($attributeValue->getUid() == $selectAttributeValue['uid']) {
+  						$tAttributeValues[$attributeKey] = $attributeValue;
+  					}
+  				}
+  			}
+  			$attributeValues = $tAttributeValues;
+  		}
+  		
   		if($returnObjects){
-  		    return $this->attribute_values;
+  		    return $attributeValues;
   		}
   		
   		$return_array=array();
-  		foreach ($this->attribute_values as $value_uid => $one_value){
+  		foreach ($attributeValues as $value_uid => $one_value){
   			$return_array[$value_uid]=$one_value->get_value();
-
   		}
 
   		return $return_array;
