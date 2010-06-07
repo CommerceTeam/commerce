@@ -627,10 +627,16 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 				    $sortedAttributeArray[$i]['AttributeValue'] = $attrValUid;
 				    $i++;
 				}
+
 				$artId = array_shift($prod->get_Articles_by_AttributeArray($sortedAttributeArray));
 				$attCode = '';
 				if (is_array($attributeMatrix)) {
-					$attCode = '<form name="attList_' . $prod->get_uid() . '" id="attList_' . $prod->get_uid() . '" action="' . $this->pi_getPageLink($GLOBALS['TSFE']->id, '_self', array($this->prefixId . '[catUid]' => $this->piVars['catUid'], $this->prefixId . '[showUid]' => $this->piVars['showUid'])) . '#att"  method="post">' . 
+					$getVarList = array('catUid','showUid','pointer');
+					$getVars = array();
+					foreach($getVarList as $getVar) {
+						if(isset($this->piVars[$getVar])) $getVars[$this->prefixId.'['.$getVar.']'] = $this->piVars[$getVar];
+					}
+					$attCode = '<form name="attList_' . $prod->get_uid() . '" id="attList_' . $prod->get_uid() . '" action="' . $this->pi_getPageLink($GLOBALS['TSFE']->id, '_self', $getVars) . '#att"  method="post">' . 
 						'<input type="hidden" name="' . $this->prefixId . '[changedProductUid]" value="' . $prod->get_uid() . '" />' . 
 						'<input type="hidden" name="' . $this->prefixId . '[attList_' . $prod->get_uid() . '_changed]" id="attList_' . $prod->get_uid() . '_changed" value="1" />' . 
 						'<input type="hidden" name="tx_commerce_pi1[catUid]" value="' . $this->piVars['catUid'] . '" />';
