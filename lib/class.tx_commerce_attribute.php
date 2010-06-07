@@ -115,7 +115,7 @@ require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_attribute_
    {
 		 $uid = intval($uid);
 		 $lang_uid = intval($lang_uid);
-		 $this->fieldlist=array('title','unit','has_valuelist','l18n_parent');
+		 $this->fieldlist=array('title','unit','iconmode','has_valuelist','l18n_parent');
 		 $this->database_class='tx_commerce_db_attribute';
 		 if ($uid>0)
 		 {
@@ -259,12 +259,17 @@ require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_attribute_
   		return false;
   	}
 
-
-
-
-
-
-  }
+  	/**
+  	 * Check if it is an Iconmode Attribute
+  	 * @return boolean 
+  	 */
+  	function isIconmode() {
+  		if($this->iconmode == "1") {
+  			return true;
+  		}
+  		return false;
+	}
+}
 
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_attribute.php']) {
 	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_attribute.php']);

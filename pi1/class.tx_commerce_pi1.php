@@ -642,14 +642,9 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 						//disable the icon mode by default
 						$iconMode = FALSE;
 						
-						// $attributeArray[$attrUid] = '';
-						
-
 						//if the icon mode is enabled in TS check if the iconMode is also enabled for this attribute
 						if ($this->conf[$this->handle . '.']['products.']['productAttributes.']['iconMode'] == '1') {
-							if ($myAttribute['iconmode']) {
-								$iconMode = TRUE;
-							}
+							$iconMode = $attributeObj->isIconmode();
 						}
 						if ($iconMode) {
 							$templateAttrSelector = $templateAttrSelectorRadiobutton;
