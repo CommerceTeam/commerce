@@ -366,6 +366,9 @@ plugin.tx_commerce_pi1 {
 	displayTopProducts = 1
 	topProductTSMarker = Top
 	catUid = {$plugin.tx_commerce_lib.catUid}
+	
+	hideEmptyCategories = {$plugin.tx_commerce_lib.hideEmptyCategories}
+	
 	// how to handle attributes
 	// hide empty ones?
 	hideEmptyProdAttr = 1
@@ -844,6 +847,9 @@ lib.tx_commerce.navigation {
        	overridePid = {$plugin.tx_commerce_lib.overridePid}
        	// EntryLervel
        	entryLevel = 0
+       	
+       	// Hide empty Categories
+       	hideEmptyCategories = {$plugin.tx_commerce_lib.hideEmptyCategories}
        	
        	// additionalFields 
        	// comma separated list auf additional fields to process to the menue

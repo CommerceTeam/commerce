@@ -62,7 +62,9 @@ plugin.tx_commerce_lib {
 	
 	# cat=plugin.commerce: General/StockHandling/b6; type=boolean; label=switch for Stockhandling: If you want stockhandling please check
 	useStockHandling = 0
-
+	
+	# cat=plugin.commerce: General/EmpytCategories/b6; type=boolean; label=Hide Categories if cateory and subcategories are empty
+	hideEmptyCategories = 0
 }
 
 plugin.tx_commerce_pi1 {

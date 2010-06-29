@@ -400,6 +400,16 @@ class tx_commerce_pibase extends tslib_pibase {
 
 				$oneCategory->load_Data();			
 				
+				if ($this->conf['hideEmptyCategories'] == 1) {
+					// First check TS setting (ceap)
+					// afterwards do the recursive call (expensive)
+					if (!$oneCategory->ProductsBelowCategory())	{
+						// This category is empty, so 
+						// skip this iteration and do next
+						continue;
+					}				
+				}
+				
 				$linkArray['catUid']=$oneCategory->getUid();
 				if ($this->useRootlineInformationToUrl == 1) {
 					$linkArray['path']=$this->getPathCat($oneCategory);
@@ -571,7 +581,7 @@ class tx_commerce_pibase extends tslib_pibase {
 			$markerArray['CATEGORY_BROWSEBOX'] = '';
 		}
 
-	        $hookObjectsArr = array();
+	    $hookObjectsArr = array();
 		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['listview'])) {
 		   foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['listview'] as $classRef) {
                          $hookObjectsArr[] = &t3lib_div::getUserObj($classRef);

@@ -628,7 +628,7 @@
   	 * Check if deepth is gerater than 0
   	 * 
   	 */
-  	 function getAllProducts($depth=false){
+  	 function getAllProducts($depth = false){
   	 	$return_list=$this->getProductUids();
   	 	if ($depth > 0) 	{
 	  	 	$childCategoriesList=$this->get_rec_child_categories_uidlist($depth);
@@ -644,6 +644,49 @@
   	 	}
   	  	return array_unique($return_list);
   	 	
+  	 }
+	/**
+	 * @since 2010 05 22
+	 * @author Ingo Schmitt <is@marketing-factory.de>
+	 * Returns true, if this category has products
+	 */
+	 	 
+  	 function hasProducts() {
+		if (count($this->getProductUids())>0) {
+			return true;
+		}
+		return false;
+  	 }
+  	 /**
+  	  * @since 2010 05 22
+  	  * @Author Ingo Schmitt <is@marketing-factory.de>
+  	  * 
+  	  * Returns true if this category has active products or if sub categories have active products
+  	  * @param optional deepth maximum deepth for going recursive, if not set go for maximum
+  	  * @return boolen
+  	  *
+  	  */
+  	 function ProductsBelowCategory($deepth = false){
+  	 	if ($this->hasProducts()) {
+  	 		return true;
+  	 	}
+  	 	if ($deepth == false) {
+  	 		$deepth = PHP_INT_MAX;
+  	 	}
+  	 	if ($depth > 0) 	{
+	  	 	$childCategoriesList=$this->get_rec_child_categories_uidlist($depth);
+	  	 	
+	  	 	foreach ($childCategoriesList as $oneCategoryUid)	{
+	  	 		$category = t3lib_div::makeInstance('tx_commerce_category');
+	  	 		$category->init($oneCategoryUid,$this->lang_uid);
+	  	 		$category->load_data();
+	  	 		$returnValue = $category->ProductsBelowCategory($deepth);
+	  	 		if ($returnValue == true) {
+	  	 			return true;
+	  	 		}
+	  	 	}
+  	 	}
+  	 	return false;
   	 }
   	
   		/**

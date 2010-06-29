@@ -436,11 +436,12 @@ class tx_commerce_navigation {
 		
 		
 		
-		
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)){
 			$nodeArray = array();
 			$dataRow = $this->getDataRow($row['uid_local'],$mainTable);
-
+			
+			
+			
 			if ($dataRow['deleted']=='0'){
 				 $nodeArray['CommerceMenu'] = true;
 			 	 $nodeArray['pid'] = $dataRow['pid'];
@@ -794,7 +795,19 @@ class tx_commerce_navigation {
  			$row[0]=$GLOBALS['TSFE']->sys_page->getRecordOverlay($tableName,$row[0],$langUid,$this->translationMode);
  		
  		}
-			
+
+ 		
+		if ($this->mConf['hideEmptyCategories'] && $tableName == 'tx_commerce_categories' && is_array($row[0])) {
+	   		// Process Empty Categories
+	   		// Solution: Create Category Object and use tx_commerce_category->ProductsBelowCategory
+	   		$localCategory = t3lib_div::makeinstance('tx_commerce_category');
+	   		$localCategory->init($row[0]['uid'],$row[0]['sys_language_uid']);
+	   		$localCategory->load_Data();		
+	   		if (!$localCategory->ProductsBelowCategory()) {
+	   			return array();
+	   		}
+	   	}
+	   	
 		if ($row[0]){
 			return $row[0];
 		}

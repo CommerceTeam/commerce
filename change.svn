@@ -1,4 +1,8 @@
 Changelog for tx_commerce
+
+28.06.2010 Ingo schmitt <is@marketing-factory.de>
+* Fixed Todo 7874
+
 07.06.2010 Sascha Egerer <seg@softvision.de>
 * Bug #7809: missing parameter in exec_SELECTquery
 * Bug #6595: Iconmode not working
