@@ -630,6 +630,9 @@
   	 */
   	 function getAllProducts($depth = false){
   	 	$return_list=$this->getProductUids();
+  	 	if ($depth === false) {
+  	 		$depth = PHP_INT_MAX;
+  	 	}
   	 	if ($depth > 0) 	{
 	  	 	$childCategoriesList=$this->get_rec_child_categories_uidlist($depth);
 	  	 	
@@ -666,12 +669,12 @@
   	  * @return boolen
   	  *
   	  */
-  	 function ProductsBelowCategory($deepth = false){
+  	 function ProductsBelowCategory($depth = false){
   	 	if ($this->hasProducts()) {
   	 		return true;
   	 	}
-  	 	if ($deepth == false) {
-  	 		$deepth = PHP_INT_MAX;
+  	 	if ($depth === false) {
+  	 		$depth = PHP_INT_MAX;
   	 	}
   	 	if ($depth > 0) 	{
 	  	 	$childCategoriesList=$this->get_rec_child_categories_uidlist($depth);

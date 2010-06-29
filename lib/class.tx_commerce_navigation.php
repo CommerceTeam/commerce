@@ -797,7 +797,7 @@ class tx_commerce_navigation {
  		}
 
  		
-		if ($this->mConf['hideEmptyCategories'] && $tableName == 'tx_commerce_categories' && is_array($row[0])) {
+		if ($this->mConf['hideEmptyCategories'] == 1 && $tableName == 'tx_commerce_categories' && is_array($row[0])) {
 	   		// Process Empty Categories
 	   		// Solution: Create Category Object and use tx_commerce_category->ProductsBelowCategory
 	   		$localCategory = t3lib_div::makeinstance('tx_commerce_category');
