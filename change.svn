@@ -1,7 +1,10 @@
 Changelog for tx_commerce
 
+01.07.2010 Ingo Schmitt <is@marketing-factory.de>
+* Fixed Todo #8557
+
 28.06.2010 Ingo schmitt <is@marketing-factory.de>
-* Fixed Todo 7874
+* Fixed Todo #7874
 
 07.06.2010 Sascha Egerer <seg@softvision.de>
 * Bug #7809: missing parameter in exec_SELECTquery

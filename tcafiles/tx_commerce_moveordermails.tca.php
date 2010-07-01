@@ -81,20 +81,25 @@ $TCA['tx_commerce_moveordermails'] = Array (
                 )
             )
         ),
-        'fe_group' => Array (        
-            'exclude' => 1,    
-            'label' => 'LLL:EXT:lang/locallang_general.php:LGL.fe_group',
-            'config' => Array (
-                'type' => 'select',    
-                'items' => Array (
-                    Array('', 0),
-                    Array('LLL:EXT:lang/locallang_general.php:LGL.hide_at_login', -1),
-                    Array('LLL:EXT:lang/locallang_general.php:LGL.any_login', -2),
-                    Array('LLL:EXT:lang/locallang_general.php:LGL.usergroups', '--div--')
-                ),
-                'foreign_table' => 'fe_groups'
-            )
-        ),
+		'fe_group' => Array (
+			'exclude' => 1,
+			'label' => 'LLL:EXT:lang/locallang_general.php:LGL.fe_group',
+			'config' => Array (
+				'type' => 'select',
+				'size' => 5,
+				'maxitems' => 20,
+				'items' => array (
+					array('LLL:EXT:lang/locallang_general.xml:LGL.hide_at_login', -1),
+					array('LLL:EXT:lang/locallang_general.xml:LGL.any_login', -2),
+					array('LLL:EXT:lang/locallang_general.xml:LGL.usergroups', '--div--')
+				),
+				'exclusiveKeys' => '-1,-2',
+				'foreign_table' => 'fe_groups',
+				'foreign_table_where' => 'ORDER BY fe_groups.title',
+			
+			)
+		),
+             ),
         'name' => Array (        
             'exclude' => 1,       
             'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_moveordermails.name',        
