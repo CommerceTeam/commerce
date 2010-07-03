@@ -99,7 +99,6 @@ $TCA['tx_commerce_moveordermails'] = Array (
 			
 			)
 		),
-             ),
         'name' => Array (        
             'exclude' => 1,       
             'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_moveordermails.name',        

@@ -1,4 +1,6 @@
 Changelog for tx_commerce
+03.07.2010 Ingo Schmitt <is@marketing-factory.de>
+* Fixed Bug #8605. Thanks to internezzo AG
 
 01.07.2010 Ingo Schmitt <is@marketing-factory.de>
 * Fixed Todo #8557
