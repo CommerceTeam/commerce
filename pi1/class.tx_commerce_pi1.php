@@ -344,14 +344,6 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 			$this->product->load_data();
 
 			if ($this->product->isAccessible()) {
-
-				//TODO: Der folgende Teil scheint �berfl�ssig zu sein. Wir kommentieren den jetzt aus, und schauen ob wer schreit ;)
-				/*
-				foreach($this->product->articles as $article) {
-					$this->article_array = $article->return_assoc_array();
-				}
-				*/
-				
 				$this->select_attributes = $this->product->get_attributes(array(ATTRIB_selector));
 				$this->product_attributes = $this->product->get_attributes(array(ATTRIB_product));
 				$this->can_attributes = $this->product->get_attributes(array(ATTRIB_can));

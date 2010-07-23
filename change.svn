@@ -1,4 +1,7 @@
 Changelog for tx_commerce
+23.07.2010 Christian Kuhn <lolli@schwarzbu.ch>
+* Nobrainer: Removing german comment and unused code
+
 03.07.2010 Ingo Schmitt <is@marketing-factory.de>
 * Fixed Bug #8605. Thanks to internezzo AG
 
