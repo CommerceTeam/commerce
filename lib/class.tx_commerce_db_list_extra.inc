@@ -603,7 +603,7 @@ class commerceRecordList extends localRecordList {
 							$editIdList = implode(',',$currentIdList);
 							if ($this->clipNumPane()) $editIdList = "'+editList('".$table."','".$editIdList."')+'";
 							$params='&edit['.$table.']['.$editIdList.']=edit&columnsOnly='.$fCol.'&disHelp=1'.$this->defVals; // Korr: Graytree
-							$iTitle = sprintf($LANG->getLL('editThisColumn'),rtrim(trim($LANG->sL(t3lib_BEfunc::getItemLabel($table,$fCol))), ':'));
+							$iTitle = sprintf($LANG->getLL('editThisColumn'),ereg_replace(':$','',trim($LANG->sL(t3lib_BEfunc::getItemLabel($table,$fCol)))));
 							$temp = '<a href="#" onclick="'.htmlspecialchars(t3lib_BEfunc::editOnClick($params,$this->backPath,-1)).'">'.  // Korr: Graytree
 											'<img'.t3lib_iconWorks::skinImg($this->backPath,'gfx/edit2.gif','width="11" height="12"').' title="'.htmlspecialchars($iTitle).'" alt="" />'.
 											'</a>';

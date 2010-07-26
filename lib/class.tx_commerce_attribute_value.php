@@ -79,10 +79,6 @@ class tx_commerce_attribute_value extends tx_commerce_element_alib {
 	 * @param lang_uid integer language uid, default 0
 	 */
 	function tx_commerce_attribute_value($uid,$lang_uid=0) {
-		if (!count(func_get_args())) {
-			debug_print_backtrace();
-			die();
-		}
 		return $this->init($uid,$lang_uid) ;
 	}
 
