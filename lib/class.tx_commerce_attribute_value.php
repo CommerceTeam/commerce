@@ -130,7 +130,7 @@ class tx_commerce_attribute_value extends tx_commerce_element_alib {
 	function getValue($checkvalue=false) {
 		if (($checkvalue) && ($this->showicon)) {
 			return $this->value;
-		elseif ($checkvalue==false) {
+		} elseif ($checkvalue==false) {
 			return $this->value;
 		} else {
 			return false;
