@@ -74,7 +74,7 @@ class tx_commerce_category extends tx_commerce_element_alib{
 	 */
 	var  $description='';
 
-	var  $images=array(); 		// Images for the product( private )
+	var  $images = '';		// Images for the product( private )
 
 	var $images_array = array(); 		// Images for the product  (private)
 
