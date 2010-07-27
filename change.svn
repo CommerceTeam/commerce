@@ -1,4 +1,11 @@
 Changelog for tx_commerce
+27.07.2010 Michael Knabe <t3@aafhh.de>
+* Bug # 9033: Removed use of deprecated ereg_replace
+
+26.07.2010 Michael Knabe <t3@aafhh.de>
+* Fixed code formatting in lib/class.tx_commerce_category.php
+* Fixed code formatting in lib/class.tx_commerce_attribute_value.php
+
 23.07.2010 Christian Kuhn <lolli@schwarzbu.ch>
 * Nobrainer: Removing german comment and unused code
 
