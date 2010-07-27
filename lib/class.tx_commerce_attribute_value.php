@@ -75,11 +75,14 @@ class tx_commerce_attribute_value extends tx_commerce_element_alib {
 
 	/**
 	 * Constructor Class
-	 * @param uid integer uid or attribute
+	 * If $uid is not given on construction you MUST call init manually
+	 * @param uid integer uid or attribute, default false
 	 * @param lang_uid integer language uid, default 0
 	 */
-	function tx_commerce_attribute_value($uid,$lang_uid=0) {
-		return $this->init($uid,$lang_uid) ;
+	function tx_commerce_attribute_value($uid = FALSE, $lang_uid = 0) {
+		if ($uid !== FALSE) {
+			$this->init($uid, $lang_uid);
+		}
 	}
 
 	/**

@@ -1,6 +1,7 @@
 Changelog for tx_commerce
 27.07.2010 Michael Knabe <t3@aafhh.de>
-* Bug # 9033: Removed use of deprecated ereg_replace
+* Bug #9033: Removed use of deprecated ereg_replace
+* Bug #7862: Class constructor of tx_commerce_attribute_value causes PHP Warning (Thanks to Sascha Egerer)
 
 26.07.2010 Michael Knabe <t3@aafhh.de>
 * Fixed code formatting in lib/class.tx_commerce_category.php
