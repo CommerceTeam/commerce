@@ -1,4 +1,7 @@
 Changelog for tx_commerce
+02.08.2010 Christian Kuhn <lolli@schwarzbu.ch>
+* Bug #9068: Category tree in BE pi1 broken with TYPO3 4.4
+
 30.07.2010 Michael Knabe <t3@aafhh.de>
 * Bug #9035: PHP warning due to wrong parameter type
 
