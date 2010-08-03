@@ -1,4 +1,7 @@
 Changelog for tx_commerce
+03.08.2010 Michael Knabe <t3@aafhh.de>
+* Documented Bug #9120 in manual.sxw (known issues)
+
 02.08.2010 Christian Kuhn <lolli@schwarzbu.ch>
 * Bug #9068: Category tree in BE pi1 broken with TYPO3 4.4
 
