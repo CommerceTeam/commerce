@@ -624,6 +624,8 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 					foreach($getVarList as $getVar) {
 						if(isset($this->piVars[$getVar])) $getVars[$this->prefixId.'['.$getVar.']'] = $this->piVars[$getVar];
 					}
+						// Makes pi1 a user int so form values are updated as one selects an attribute
+					$getVars['commerce_pi1_user_int'] = 1;
 					$attCode = '<form name="attList_' . $prod->get_uid() . '" id="attList_' . $prod->get_uid() . '" action="' . $this->pi_getPageLink($GLOBALS['TSFE']->id, '_self', $getVars) . '#att"  method="post">' . 
 						'<input type="hidden" name="' . $this->prefixId . '[changedProductUid]" value="' . $prod->get_uid() . '" />' . 
 						'<input type="hidden" name="' . $this->prefixId . '[attList_' . $prod->get_uid() . '_changed]" id="attList_' . $prod->get_uid() . '_changed" value="1" />' . 

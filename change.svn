@@ -1,4 +1,7 @@
 Changelog for tx_commerce
+11.08.2010 Michael Knabe <t3@aafhh.de>
+* Bug #9055: Attribute selections cannot be changed due to caching
+
 03.08.2010 Michael Knabe <t3@aafhh.de>
 * Documented Bug #9120 in manual.sxw (known issues)
 

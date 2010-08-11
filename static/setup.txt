@@ -3,7 +3,10 @@
 
 includeLibs.user_tx_commerce_catmenu_pub = EXT:commerce/lib/class.tx_commerce_navigation.php
  
-
+# Allow pi1 to become a USER_INT via GPVar
+[globalVar = GP:commerce_pi1_user_int = 1]
+	plugin.tx_commerce_pi1 = USER_INT
+[global]
 
 page.includeCSS {
 	commerce = EXT:commerce/res/css/commerce.css
