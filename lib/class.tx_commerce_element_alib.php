@@ -240,7 +240,6 @@
 	 * Basically it creates an array with the string as value
 	 * and calls $this->add_fields_to_fieldlist
 	 * @param $fieldname Database fieldname
-
  	 */
  	
  	function add_field_to_fieldlist($fieldname){
@@ -250,7 +249,6 @@
  	 * Adds a set of fields to the $fieldlist variable
 	 * used for hooks to add own fields to the output
 	 * @param $fieldlistr array of databse filednames
-
  	 */
  	
  	function add_fields_to_fieldlist($fieldarray){
