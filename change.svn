@@ -1,4 +1,8 @@
 Changelog for tx_commerce
+
+27.08.2010 Ingo Schmitt <is@marketing-factory.de>
+* Bug #9471: Speedup for add_fields_to_fieldlist 
+
 11.08.2010 Michael Knabe <t3@aafhh.de>
 * Bug #9055: Attribute selections cannot be changed due to caching
 

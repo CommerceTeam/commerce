@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c)  2005 - 2006 Ingo Schmitt <is@marketing-factory.de>
+*  (c)  2005 - 2010 Ingo Schmitt <is@marketing-factory.de>
 *  All   rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -235,28 +235,26 @@
 	}
  	
  	/**
- 	 * Addes a field to Class fieldlist
- 	 * used for hook to add own fields to output
- 	 * @param $fieldname Databas fieldname
- 	 * @todo Add Check if field exists in Database
+ 	 * Adds a field to the $fieldlist variable
+	 * used for hooks to add own fields to the output
+	 * Basically it creates an array with the string as value
+	 * and calls $this->add_fields_to_fieldlist
+	 * @param $fieldname Database fieldname
+
  	 */
  	
  	function add_field_to_fieldlist($fieldname){
- 		array_push($this->fieldlist, trim($fieldname));
+ 		$this->add_fields_to_fieldlist(array(trim($fieldname)));
  	}
  	/**
- 	 * Addes a fields to Class fieldlist
- 	 * used for hook to add own fields to output
- 	 * Basically calls $this->add_fiel_to_fieldlist for each element
- 	 * @param $fieldlistr arary of databse filednames
- 	 * @todo Add Check if field exists in Database
+ 	 * Adds a set of fields to the $fieldlist variable
+	 * used for hooks to add own fields to the output
+	 * @param $fieldlistr array of databse filednames
+
  	 */
  	
  	function add_fields_to_fieldlist($fieldarray){
- 		foreach ($fieldarray as $newfield){
- 			$this->add_field_to_fieldlist($newfield);
- 		}
- 		
+ 		$this->fieldlist = array_merge($this->fieldlist, (array)$fieldarray);
  	}
  	
 	/**
