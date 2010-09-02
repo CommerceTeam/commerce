@@ -187,7 +187,7 @@ $TCA['tx_commerce_articles'] = Array (
 			'config' => Array (
 				'type' => 'select',
 				'size' => 5,
-				'maxitems' => 20,
+				'maxitems' => 50,
 				'items' => array (
 					array('LLL:EXT:lang/locallang_general.xml:LGL.hide_at_login', -1),
 					array('LLL:EXT:lang/locallang_general.xml:LGL.any_login', -2),
@@ -494,7 +494,7 @@ $TCA['tx_commerce_article_prices'] = Array (
 			'config' => Array (
 				'type' => 'select',
 				'size' => 5,
-				'maxitems' => 20,
+				'maxitems' => 50,
 				'items' => array (
 					array('LLL:EXT:lang/locallang_general.xml:LGL.hide_at_login', -1),
 					array('LLL:EXT:lang/locallang_general.xml:LGL.any_login', -2),
