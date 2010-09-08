@@ -130,14 +130,24 @@ class tx_commerce_articles_dfconfig {
  						'label' => 'LLL:EXT:lang/locallang_general.php:LGL.fe_group',
 						'config' => Array (
 							'type' => 'select',
-							'items' => Array (
-								Array('', 0),
-								Array('LLL:EXT:lang/locallang_general.php:LGL.hide_at_login', -1),
-								Array('LLL:EXT:lang/locallang_general.php:LGL.any_login', -2),
-								Array('LLL:EXT:lang/locallang_general.php:LGL.usergroups', '--div--')
+							'size' => 5,
+							'maxitems' => 50,
+							'items' => array (
+								array('LLL:EXT:lang/locallang_general.xml:LGL.hide_at_login', -1),
+								array('LLL:EXT:lang/locallang_general.xml:LGL.any_login', -2),
+								array('LLL:EXT:lang/locallang_general.xml:LGL.usergroups', '--div--')
 							),
-							'foreign_table' => 'fe_groups'
+							'exclusiveKeys' => '-1,-2',
+							'foreign_table' => 'fe_groups',
+							'foreign_table_where' => 'ORDER BY fe_groups.title',
+						
 						)
+						
+						
+			
+			
+			)
+						
 					),
 					7 => array (
 						'name' => 'purchase_price_###uid###',

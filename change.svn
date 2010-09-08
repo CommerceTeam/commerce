@@ -1,6 +1,7 @@
 Changelog for tx_commerce
 08.09.2010 Ingo Schmitt <is@marketing-factory.de>
 * Fixed Naming if renderValue Hook
+* Corrected DCA File for tx_commerce_articles_dfconfig
 
 02.09.2010 Ingo Schmitt <is@marketing-factory.de>
 * Nobrainer: Increased number of possible FE groups
