@@ -20,7 +20,8 @@ CREATE TABLE fe_users (
 	tx_commerce_tt_address_id blob NOT NULL
 	first_name varchar(50) DEFAULT '' NOT NULL,
 	last_name varchar(50) DEFAULT '' NOT NULL,
-	static_info_country char(3) DEFAULT '' NOT NULL
+	static_info_country char(3) DEFAULT '' NOT NULL,
+	tx_commerce_orders char(3) DEFAULT '' NOT NULL
 );
 
 #
@@ -565,6 +566,7 @@ CREATE TABLE tx_commerce_products (
 	uname varchar(80) DEFAULT '' NOT NULL,
 	relatedpage int(11) DEFAULT '0' NOT NULL,
 	relatedproducts blob NOT NULL,
+	articleslok tinyint(4) DEFAULT '0' NOT NULL,
 
 	KEY lang (sys_language_uid),
 	KEY langpar (l18n_parent),
