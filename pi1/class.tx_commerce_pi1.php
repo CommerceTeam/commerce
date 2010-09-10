@@ -264,7 +264,7 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 				} elseif ($this->conf['showProductsRecLevel']) {
 					$this->category_products = $this->category->getAllProducts($this->conf['showProductsRecLevel']);
 				} else {
-					$this->category_products = $this->category->getAllProducts();
+					$this->category_products = $this->category->getAllProducts(0);
 				}
 				if ($this->conf['useStockHandling'] == 1) {
 					$this->category_products = tx_commerce_div::removeNoStockProducts($this->category_products, $this->conf['products.']['showWithNoStock']);

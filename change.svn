@@ -2,6 +2,7 @@ Changelog for tx_commerce
 10.09.2010 Ingo Schmitt <is@marketing-factory.de>
 * Fixed #8988, Thanks to Ingo Renner for reporting this issue
 * Fixed #9584, Thanks to Markus Gerlach
+* Fixed #9655, Thanks to Markus Gerlach
 
 08.09.2010 Ingo Schmitt <is@marketing-factory.de>
 * Fixed Naming if renderValue Hook
