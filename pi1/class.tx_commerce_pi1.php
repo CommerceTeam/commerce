@@ -151,6 +151,9 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 		}
 		if ($this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'template', 's_template') && file_exists($this->templateFolder . $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'template', 's_template'))) {
 			$this->conf['templateFile'] = $this->templateFolder . $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'template', 's_template');
+			if ($this->cObj->fileResource($this->conf['templateFile'])) {
+				$this->templateCode = $this->cObj->fileResource($this->conf['templateFile']);	
+			}
 		}
 
 		$accessible = false;
