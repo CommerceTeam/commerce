@@ -146,7 +146,7 @@ class tx_commerce_articles_dfconfig {
 						
 			
 			
-			)
+					
 						
 					),
 					7 => array (
