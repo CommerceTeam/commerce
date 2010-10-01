@@ -391,12 +391,12 @@ class tx_commerce_product extends tx_commerce_element_alib {
 
 		$first = 1;
 
-			// Initialize arrays to prevent warningn in array_intersect()
-		$next_array = array();
-
 		$addwhere = '';
 		if (is_array($attribute_Array)) {
 			foreach($attribute_Array as $uid_val_pair) {
+				// Initialize arrays to prevent warningn in array_intersect()
+				$next_array = array();
+
 				$addwheretmp = '';
 
 					// attribute char wird noch nicht verwendet, dafuer muss eine Pruefung auf die ID
@@ -438,7 +438,6 @@ class tx_commerce_product extends tx_commerce_element_alib {
 					$first = 0;
 				} else {
 					$attribute_uid_list = array_intersect($attribute_uid_list, $next_array);
-					$next_array = array();
 				}
 			}
 

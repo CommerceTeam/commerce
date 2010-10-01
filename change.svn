@@ -1,4 +1,7 @@
 Changelog for tx_commerce
+01.10.2010 Sascha Egerer <seg@softvision.de>
+* Fixed #9894: tx_commerce_product->get_Articles_by_AttributeArray returns wrong articles
+
 10.09.2010 Ingo Schmitt <is@marketing-factory.de>
 * Fixed #8988, Thanks to Ingo Renner for reporting this issue
 * Fixed #9584, Thanks to Markus Gerlach
