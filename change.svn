@@ -1,4 +1,7 @@
 Changelog for tx_commerce
+05.11.2010 Benny Schimmer <bschimmer@cross-content.com>
+* Fixed #10645 Deprecated COde in ext_tables.php
+
 01.10.2010 Sascha Egerer <seg@softvision.de>
 * Fixed #9894: tx_commerce_product->get_Articles_by_AttributeArray returns wrong articles
 

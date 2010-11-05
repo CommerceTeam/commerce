@@ -68,7 +68,11 @@ if (TYPO3_MODE=='BE')	{
 	t3lib_extMgm::addModule('txcommerceM1','statistic','',t3lib_extMgm::extPath('commerce').'mod_statistic/');
 
 	// commerce icon
-	$ICON_TYPES['commerce'] = Array('icon' => PATH_txcommerce_icon_table_rel.'commerce_folder.gif');
+	if ( t3lib_div::int_from_ver( TYPO3_version ) >= 4004000 ) {
+		t3lib_SpriteManager::addTcaTypeIcon('pages', 'contains-commerce', '../typo3conf/ext/commerce/res/icons/table/commerce_folder.gif');
+	} else {
+		$ICON_TYPES['commerce'] = '../typo3conf/ext/commerce/res/icons/table/commerce_folder.gif';
+	}
 	
 	$TCA['pages']['columns']['module']['config']['items'][] = Array('LLL:EXT:commerce/locallang_be.xml:commerce', 'commerce');	
 
