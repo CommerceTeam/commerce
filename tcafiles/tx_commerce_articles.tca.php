@@ -305,7 +305,7 @@ $TCA['tx_commerce_articles'] = Array (
 				'type' => 'inline',
 				'appearance' => array(
 						'newRecordLinkAddTitle' => true,
-						'newRecordLinkPosition' =>'bottom',
+						'levelLinksPosition' =>'bottom',
 							),
 				'foreign_table'=>'tx_commerce_article_prices',
 				'foreign_field'=>'uid_article',
