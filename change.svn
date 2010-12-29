@@ -1,4 +1,7 @@
 Changelog for tx_commerce
+29.12.2010 Benny Schimmer <bschimmer@cross-content.com>
+* Fixed #11417 Static template breakes CSS-Layout
+
 22.11.2010 Benny Schimmer <bschimmer@cross-content.com>
 * Fixed #10852 TCA contains a deprecated definition using "newRecordLinkPosition"
 
