@@ -192,7 +192,9 @@ class tx_commerce_browselinkshooks implements t3lib_browseLinksHook {
 			$isValid = true;
 		}
 		else {
-			$valid = parent::isValid($type, $pObj);
+			// parent won't be availiabe, since this calss only implements not extends
+			// @todo: log a warning
+			#$valid = parent::isValid($type, $pObj);
 		}
 		
 		return $isValid;
