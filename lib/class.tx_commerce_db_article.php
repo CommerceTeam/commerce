@@ -126,6 +126,10 @@ class tx_commerce_db_article extends tx_commerce_db_alib {
 			);
 			if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)>0) {
 				while ($return_data=$GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
+					// Some users of the prices depend on fe_group being 0 when no group is selected. See bug #8894
+					if ($return_data['fe_group'] == '') {
+						$return_data['fe_group'] = '0';
+					}
 					$price_uid_list[$return_data['fe_group']][]=$return_data['uid'];
 				}
 				$GLOBALS['TYPO3_DB']->sql_free_result($result);

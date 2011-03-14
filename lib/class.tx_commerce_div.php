@@ -288,7 +288,7 @@ class tx_commerce_div {
 		$mailconf['recipient'] = tx_commerce_div::validEmailList($mailconf['recipient']);
 	
 		if ($mailconf['recipient']) {
-			$parts = spliti('<title>|</title>', $mailconf['html']['content'], 3);
+			$parts = preg_split('/<title>|<\/title>/i', $mailconf['html']['content'], 3);
 			
 			if (trim($parts[1])) {
 				$subject = strip_tags(trim($parts[1]));

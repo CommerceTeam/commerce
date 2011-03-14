@@ -1,4 +1,10 @@
 Changelog for tx_commerce
+14.03.2011 Benny Schimmer <bschimmer@cross-content.com>
+* Fixed #8894 Article prices get stored wrong way in DB (Thanks to Michael Knabe)
+* Fixed #13334 Remove split and ereg calls (see #11922 and #11921)
+* Fixed #11921 Problem at checkout (php 5.3) with spliti in class.tx_comerce_div.php (Thanks to Jochen Biedermann)
+* Fixed #11922 Problem with Checkout (PH 5.3) with eregi in class.tx_commerce_pi3 (Thanks to Simon Schick)
+
 29.12.2010 Benny Schimmer <bschimmer@cross-content.com>
 * Fixed #11417 Static template breakes CSS-Layout
 

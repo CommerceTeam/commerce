@@ -1955,7 +1955,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 
 		$userMail = tx_commerce_div::validEmailList($userMail);
 
-		if ($userMail && !eregi("\r", $userMail) && !eregi("\n", $userMail)) {
+		if ($userMail && !preg_match("/\r/i", $userMail) && !preg_match("/\n/i", $userMail)) {
 			foreach($hookObjectsArr as $hookObj) {
 				if (method_exists($hookObj, 'getUserMail')) {
 					$hookObj->getUserMail($userMail, $orderUid, $orderData);

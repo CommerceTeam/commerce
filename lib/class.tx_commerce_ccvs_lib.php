@@ -247,7 +247,7 @@ class CreditCardValidationSolution {
         $Number = substr($Number, 0, 30);
 
         /* Remove non-numeric characters. */
-        $this->CCVSNumber = ereg_replace('[^0-9]', '', $Number);
+        $this->CCVSNumber = preg_replace('/[^0-9]/', '', $Number);
 
         /* Set up variables. */
 
@@ -429,7 +429,7 @@ class CreditCardValidationSolution {
                 return FALSE;
             }
 
-            if ( !ereg('^(0?[1-9]|1[0-2])$', $Month) ) {
+            if ( !preg_match('/^(0?[1-9]|1[0-2])$/', $Month) ) {
                 $this->CCVSError = $CCVSErrMonthFormat;
                 return FALSE;
             }
@@ -439,7 +439,7 @@ class CreditCardValidationSolution {
                 return FALSE;
             }
 
-            if ( !ereg('^[0-9]{4}$', $Year) ) {
+            if ( !preg_match('/^[0-9]{4}$/', $Year) ) {
                 $this->CCVSError = $CCVSErrYearFormat;
                 return FALSE;
             }
