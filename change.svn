@@ -1,4 +1,7 @@
 Changelog for tx_commerce
+18.04.2011 Christian Kuhn <lolli@schwarzbu.ch>
+* CGL Whitespace changes in pi1/flexform_product.xml
+
 14.03.2011 Benny Schimmer <bschimmer@cross-content.com>
 * Fixed #8894 Article prices get stored wrong way in DB (Thanks to Michael Knabe)
 * Fixed #13334 Remove split and ereg calls (see #11922 and #11921)
