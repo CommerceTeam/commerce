@@ -9,7 +9,6 @@
 	<data type="array">
 		<languageKey index="default" type="array">
 			<label index="title">Systemdata</label>
-			
 			<label index="title_attributes">Attributes</label>
 			<label index="desc_attributes">Create and edit the attributes which are used for defining articles from products.</label>
 			<label index="title_values">Values</label>
@@ -28,55 +27,6 @@
 			<label index="desc_supplier">Create and edit the suppliers.</label>
 			<label index="create_supplier">Create new supplier</label>
 			<label index="deleteWarningSupplier">Do you really want to delete this supplier?</label>
-		</languageKey>
-		<languageKey index="de" type="array">
-			<label index="title">Stammdaten</label>
-			
-			<label index="title_attributes">Attribute</label>
-			<label index="desc_attributes">Erzeugen und bearbeiten von Attributen aus denen Artikel aus Produkten erzeugt werden.</label>
-			<label index="title_values">Werte</label>
-			<label index="create_attribute">Neues Attribut</label>
-			<label index="deleteWarning">Wollen Sie dieses Attribut wirklich löschen?</label>
-			<label index="no_values">Dieses Attribut besitzt keine Werte</label>
-			<label index="no_valuelist">Dieses Attribut hat keine Werteliste</label>
-			<label index="usage">Benutzt in</label>
-			<label index="categories">Kategorien</label>
-			<label index="title_manufacturer">Hersteller</label>
-			<label index="desc_manufacturer">Erzeugen und Bearbeiten der Herstellerinformationen.</label>
-			<label index="create_manufacturer">Neuen Hersteller erzeugen</label>
-			<label index="deleteWarningManufacturer">Wollen Sie diesen Hersteller wirklich löschen?</label>
-			<label index="title_supplier">Lieferant</label>
-			<label index="desc_supplier">Erzeugen und Bearbeiten der Lieferanteninformationen.</label>
-			<label index="create_supplier">Neuen Lieferanten erzeugen</label>
-			<label index="deleteWarningSupplier">Wollen Sie diesen Lieferanten wirklich löschen?</label>
-			<label index="products">Produkten</label>
-		</languageKey>
-		<languageKey index="nl" type="array">
-			<label index="title">Systeemgegevens</label>
-			
-			<label index="title_attributes">Attributen</label>
-			<label index="desc_attributes">Aanmaken en wijzigen van Attributen welke gebruikt worden om artikelen van producten te definieeern.</label>
-			<label index="title_values">Waarden</label>
-			<label index="create_attribute">Maak nieuwe Attribuut</label>
-			<label index="deleteWarning">Wilt u deze deze Attribuut werkelijk verwijderen?</label>
-			<label index="no_values">Deze Attribuut heeft geen waarde</label>
-			<label index="no_valuelist">Deze Attribuut heeft geen waardelijst</label>
-			<label index="usage">Gebruik in</label>
-			<label index="categories">Categorien</label>
-			<label index="products">Producten</label>
-		</languageKey>
-		<languageKey index="br" type="array">
-			<label index="title">Dados do Sistema</label>
-			<label index="title_attributes">Atributos</label>
-			<label index="desc_attributes">Criar e editar os atributos que são utilizados para definir artigos a partir de produtos</label>
-			<label index="title_values">Valores</label>
-			<label index="create_attribute">Criar novo atributo</label>
-			<label index="deleteWarning">Você realmente quer excluir este atributo?</label>
-			<label index="no_values">Este atributo não possui valores</label>
-			<label index="no_valuelist">Este atributo não possui uma lista de valores</label>
-			<label index="usage">Utilização em</label>
-			<label index="categories">Categorias</label>
-			<label index="products">Produtos</label>
 		</languageKey>
 	</data>
 </T3locallang>

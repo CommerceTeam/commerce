@@ -31,53 +31,5 @@
 			<label index='CCVSErrCheckNumber'>Length of controlnumber is not ok</label>
 			<label index='defaultPaymentDataError'>DataError: Please check your data or choose another paymentmethod</label>
 		</languageKey>
-		<languageKey index="de" type="array">
-			<label index='payment_cc_number'>Kartennummer</label>
-			<label index='payment_cc_type'>Kreditkarte</label>
-			<label index='payment_cc_checksum'>Kartenprüfnummer</label>
-			<label index='payment_addtext'>(Die CVV2 Nummer sind die letzen drei Stellen Ihrer Kreditkarte)</label>
-			<label index='payment_cc_expirationYear'>Ablaufjahr (XXXX)</label>
-			<label index='payment_cc_expirationMonth'>Ablaufmonat (XX)</label>
-			<label index='payment_cc_holder'>Karteninhaber</label>
-			<label index='CCVSErrNumberString'>Nummer ist keine Zeichenkette</label>
-			<label index='CCVSErrVisa14'>Visa hat normalerweise 16 oder 13 Stellen, aber Sie gaben eine 14 stellige Nummer ein</label>
-			<label index='CCVSErrUnknown'>Den ersten vier Stellen zufolge handelt es sich um eine unbekannte Kartenart</label>
-			<label index='CCVSErrAccepted'>Der Programmierer verwendete das 'accepted' Argument falsch</label>
-			<label index='CCVSErrNoAccept'>Wir nehmen nicht die von Ihnen gewählte Karte</label>
-			<label index='CCVSErrShort'>Kartennummer ist zu kurz</label>
-			<label index='CCVSErrLong'>Kartennummer ist zu lang</label>
-			<label index='CCVSErrChecksum'>Prüfsummenfehler</label>
-			<label index='CCVSErrMonthString'>Monat ist keine Zeichenkette</label>
-			<label index='CCVSErrMonthFormat'>Monat hat ein ungültiges Format</label>
-			<label index='CCVSErrYearString'>Jahr ist keine Zeichenkette</label>
-			<label index='CCVSErrYearFormat'>Jahr hat ein ungültiges Format</label>
-			<label index='CCVSErrExpired'>Karte ist abgelaufen</label>
-			<label index='CCVSErrCheckNumber'>Die Länge Ihrer Kontrollnummer ist nicht korrekt</label>
-			<label index='defaultPaymentDataError'>DatenFehler: Bitte überprüfen Sie Ihre Daten oder wählen Sie eine andere Zahlart</label>
-		</languageKey>
-		<languageKey index="fr" type="array">
-			<label index='payment_cc_number'>Numéro de carte</label>
-			<label index='payment_cc_type'>Carte de crédit</label>
-			<label index='payment_cc_checksum'>cryptogramme, 3 derniers chiffres au dos de la carte</label>
-			<label index='payment_addtext'><small>(To find your creditcard\'s CVV2 number, refer to the last three numbers on the back of your creditcard)</small></label>
-			<label index='payment_cc_expirationYear'>année d'expiration (XXXX)</label>
-			<label index='payment_cc_expirationMonth'>Mois d'expiration (XX)</label>
-			<label index='payment_cc_holder'>titulaire de la carte</label>
-			<label index='CCVSErrNumberString'>Le numéro n'est pas une chaîne</label>
-			<label index='CCVSErrVisa14'>Visa a habituellement 16 ou 13 chiffres, mais vous en avez écrit 14</label>
-			<label index='CCVSErrUnknown'>Les quatres premiers chiffres n'indiquent pas un type de carte connu</label>
-			<label index='CCVSErrAccepted'>Le programmeur a incorrectement employé l'argument Accepted</label>
-			<label index='CCVSErrNoAccept'>Nous n'acceptons pas les cartes tu chossier</label>
-			<label index='CCVSErrShort'>Le numéro manque %s chiffre(s)</label>
-			<label index='CCVSErrLong'>Le numéro a chiffre en trop</label>
-			<label index='CCVSErrChecksum'>Le numéro a échoué à la vérification de somme</label>
-			<label index='CCVSErrMonthString'>Mois n'est pas une chaîne</label>
-			<label index='CCVSErrMonthFormat'>Le mois n'a pas un format admissible</label>
-			<label index='CCVSErrYearString'>Année n'est pas une chaîne</label>
-			<label index='CCVSErrYearFormat'>L'année n'a pas un format admissible</label>
-			<label index='CCVSErrExpired'>La carte est expirée</label>
-			<label index='CCVSErrCheckNumber'>Length of controlnumber is not ok</label>
-			<label index='defaultPaymentDataError'>Erreur de données : Veuillez SVP vérifier vos données ou choisissez un autre moyen de paiement</label>
-		</languageKey>
 	</data>
 </T3locallang>

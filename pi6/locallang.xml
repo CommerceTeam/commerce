@@ -27,45 +27,5 @@
 			<label index="lang_order_date">Order Date</label>
 			<label index="lang_order_num">Order Number</label>
 		</languageKey>
-		<languageKey index="de" type="array">
-			<label index="not_logged_in">Die Rechungsansicht ist nur im eingeloggten Zustand möglich.</label>
-		    <label index="error_orderid">Keine Bestellung ausgewaehlt.</label>
-			<label index="error_nodata">Ein Fehler ist aufgetreten. Bitte versuchen Sie es später erneut oder wenden Sie sich an den Shopbetreiber.</label>
-			<label index="lang_delivery_address">Lieferadresse</label>
-			<label index="lang_billing_address">Rechnungsadresse </label>
-			<label index="lang_introduction">Liebe/r Frau/Herr</label>
-			<label index="lang_pos">Pos</label>
-			<label index="lang_quantity">Anz.</label>
-			<label index="lang_article_number">Artikelnummer</label>
-			<label index="lang_article_description">Beschreibung</label>
-			<label index="lang_price">Preis</label>
-			<label index="lang_total">Rechnungssumme</label>
-			<label index="lang_gross_total">Bruttosumme</label>
-			<label index="lang_net_total">Nettosumme</label>
-			<label index="lang_sum_total">Summe</label>
-			<label index="lang_order_date">Bestelldatum</label>
-			<label index="lang_order_num">Rechnungsnummer</label>
-			<label index="lang_tax">Enthaltende UST:</label>
-		</languageKey>
-		<languageKey index="it" type="array">
-			<label index="not_logged_in">La visualizzazione della fattura √® solo possibile dopo avere effettuato il login.</label>
-			<label index="error_orderid">Nessuna fattura selezionata.</label>
-			<label index="error_nodata">Si √® verificato un errore. Vi preghiamo di riprovare di nuovo pi√π tardi o di rivolgervi al gestore del negozio online.</label>
-			<label index="lang_delivery_address">Indirizzo consegna</label>
-			<label index="lang_billing_address">Indirizzo fattura </label>
-			<label index="lang_introduction">Gentile Sig.ra/Sig.</label>
-			<label index="lang_pos">Pos.</label>
-			<label index="lang_quantity">Q.t√†</label>
-			<label index="lang_article_number">Numero articolo</label>
-			<label index="lang_article_description">Descrizione</label>
-			<label index="lang_price">Prezzo</label>
-			<label index="lang_total">Totale fattura</label>
-			<label index="lang_gross_total">Totale lordo</label>
-			<label index="lang_net_total">Totale netto</label>
-			<label index="lang_sum_total">Totale</label>
-			<label index="lang_order_date">Data ordine</label>
-			<label index="lang_order_num">Numero fattura</label>
-			<label index="lang_tax">IVA inclusa:</label>
-		</languageKey>
 	</data>
 </T3locallang>

@@ -1,4 +1,7 @@
 Changelog for tx_commerce
+26.04.2011 Christian Kuhn <lolli@schwarzbu.ch>
+* Fixed #26085 Remove all labels except default
+
 18.04.2011 Christian Kuhn <lolli@schwarzbu.ch>
 * CGL Whitespace changes in pi1/flexform_product.xml
 

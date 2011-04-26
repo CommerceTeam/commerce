@@ -12,35 +12,5 @@
 			<label index="mlang_labels_tabdescr">Browse, edit and delete systemdata</label>
 			<label index="mlang_labels_tablabel">Systemdata</label>
 		</languageKey>
-		<languageKey index="de" type="array">
-			<label index="mlang_tabs_tab">Stammdaten</label>
-			<label index="mlang_labels_tabdescr">Bearbeiten und löschen der Stammdaten</label>
-			<label index="mlang_labels_tablabel">Stammdaten</label>
-		</languageKey>
-		<languageKey index="nl" type="array">
-			<label index="mlang_tabs_tab">Systeemgegevens</label>
-			<label index="mlang_labels_tabdescr">Bewerken en verwijderen van Systeemgegevens</label>
-			<label index="mlang_labels_tablabel">Systeemgegevens</label>
-		</languageKey>
-		<languageKey index="br" type="array">
-			<label index="mlang_tabs_tab">Dados do Sistema</label>
-			<label index="mlang_labels_tabdescr">Consultar, editar e excluir dados do sistema</label>
-			<label index="mlang_labels_tablabel">Dados do Sistema</label>
-		</languageKey>
-		 <languageKey index="cz" type="array">
-            <label index="mlang_tabs_tab">Systémové údaje</label>
-            <label index="mlang_labels_tabdescr">Prohlížet, upravit a odstranit systémové údaje</label>
-            <label index="mlang_labels_tablabel">Systémové údaje</label>
-        </languageKey>
-        <languageKey index="pl" type="array">
-            <label index="mlang_tabs_tab">Dane systemowe</label>
-            <label index="mlang_labels_tabdescr">Przeglądaj, edytuj i usuwaj dane systemowe</label>
-            <label index="mlang_labels_tablabel">Dane systemowe</label>
-        </languageKey>
-		 <languageKey index="hu" type="array">
-            <label index="mlang_tabs_tab">Rendszeradatok</label>
-            <label index="mlang_labels_tabdescr">Rendszeradatok szerkesztése és törlése</label>
-            <label index="mlang_labels_tablabel">Rendszeradatok</label>
-        </languageKey>
 	</data>
 </T3locallang>
