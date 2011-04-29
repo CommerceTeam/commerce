@@ -1962,7 +1962,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 				}
 			}
 
-			if ($userMail != '' && $this->cObj->checkEmail($userMail)) {
+			if ($userMail != '' && t3lib_div::validEmail($userMail)) {
 				$UserMailObj = t3lib_div::makeInstance('tx_commerce_pi3');
 				$UserMailObj->conf = $this->conf;
 				$UserMailObj->pi_setPiVarDefaults();

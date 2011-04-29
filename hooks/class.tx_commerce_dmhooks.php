@@ -1159,7 +1159,7 @@ class tx_commerce_dmhooks	{
 		if (t3lib_div::int_from_ver(TYPO3_version) >= '4002000') { 	
 			t3lib_BEfunc::setUpdateSignal('updatePageTree');
 		}else{
-			t3lib_BEfunc::getSetUpdateSignal('updatePageTree');
+			t3lib_BEfunc::setUpdateSignal('updatePageTree');
 		}
 		
 		$loadDynaFlex = true;

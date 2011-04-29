@@ -1,4 +1,7 @@
 Changelog for tx_commerce
+29.04.2011 Benny Schimmer <bschimmer@cross-content.com>
+* Fixed #14035 deprecation warnings (Thanks to Daniel)
+
 26.04.2011 Christian Kuhn <lolli@schwarzbu.ch>
 * Fixed #26085 Remove all labels except default
 

@@ -124,7 +124,7 @@ class tx_commerce_navigation {
 		$this->nodeArrayAdditionalFields = t3lib_div::trimExplode(',',$this->mConf['additionalFields'],0);
 		
 		$this->PID = $this->mConf['overridePid'] ? $this->mConf['overridePid'] : $GLOBALS['TSFE']->id;
-		$this->gpVars = t3lib_div::GParrayMerged('tx_commerce_pi1');
+		$this->gpVars = t3lib_div::_GPmerged('tx_commerce_pi1');
 		
 		tx_commerce_div::initializeFeUserBasket();
 		
@@ -948,7 +948,7 @@ class tx_commerce_navigation {
 	
 		$this->mConf = $this->processConf($conf);
 		$this->PID =  intval($this->mConf['overridePid'] ? $this->mConf['overridePid'] : $GLOBALS['TSFE']->id);   
-		$this->gpVars = t3lib_div::GParrayMerged('tx_commerce_pi1');
+		$this->gpVars = t3lib_div::_GPmerged('tx_commerce_pi1');
 		
 		tx_commerce_div::initializeFeUserBasket();
 		

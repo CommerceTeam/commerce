@@ -452,7 +452,7 @@ class tx_commerce_db_list {
 						$tce->process_cmdmap();
 	
 						if (isset($cmd['pages']))	{
-							t3lib_BEfunc::getSetUpdateSignal('updatePageTree');
+							t3lib_BEfunc::setUpdateSignal('updatePageTree');
 						}
 	
 						$tce->printLogErrorMessages(t3lib_div::getIndpEnv('REQUEST_URI'));

@@ -409,7 +409,7 @@ class SC_tx_commerce_cce_db {
 		
 		// Update page tree?
 		if ($this->uPT && (isset($this->data['pages'])||isset($this->cmd['pages'])))	{
-			t3lib_BEfunc::getSetUpdateSignal('updatePageTree');
+			t3lib_BEfunc::setUpdateSignal('updatePageTree');
 		}
 	}
 

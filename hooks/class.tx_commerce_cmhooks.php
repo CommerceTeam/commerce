@@ -149,7 +149,7 @@ class tx_commerce_cmhooks {
 		global $BE_USER;
 			
 			// update the page tree
-		t3lib_BEfunc::getSetUpdateSignal('updatePageTree');
+		t3lib_BEfunc::setUpdateSignal('updatePageTree');
 		
 		/**
 		 * Delete all categories->products->articles if a category should be deleted.

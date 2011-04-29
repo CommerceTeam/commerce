@@ -80,7 +80,7 @@ class tx_commerce_attributeEditor {
 		 * @author ingo schmitt <is@marketing-factory.de>
 		 */
 		 
-		$getPostedit=t3lib_div::GParrayMerged('edit');
+		$getPostedit=t3lib_div::_GPmerged('edit');
 		if (is_array($getPostedit['tx_commerce_articles']))	{
 			$articleUid = array_keys($getPostedit['tx_commerce_articles']);
 			if ($articleUid[0] > 0)	{
