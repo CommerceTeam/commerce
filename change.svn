@@ -1,4 +1,7 @@
 Changelog for tx_commerce
+03.05.2011 Ingo Schmitt <is@marketing-factory.de>
+* Released 0.12.5 in TER as "Current Version"
+
 29.04.2011 Benny Schimmer <bschimmer@cross-content.com>
 * Fixed #14035 deprecation warnings (Thanks to Daniel)
 
