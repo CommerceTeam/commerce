@@ -31,11 +31,6 @@
  * @author Ingo Schmitt <is@marketing-factory.de>
  */
 
-/*
- * @ToDo Multilanguage for system articles
- */
-
-require_once (t3lib_extmgm::extPath('commerce') . 'lib/class.tx_commerce_pibase.php');
 require_once (PATH_t3lib . 'class.t3lib_cs.php');
 require_once (t3lib_extMgm::extPath('moneylib') . 'class.tx_moneylib.php');
 

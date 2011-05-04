@@ -30,8 +30,6 @@
  * @subpackage tx_commerce
  * @author Thomas Hempel <thomas@work.de>
  */
-
-require_once(t3lib_extmgm::extPath('commerce') . 'lib/class.tx_commerce_pibase.php');
 require_once (t3lib_extMgm::extPath('static_info_tables') . 'pi1/class.tx_staticinfotables_pi1.php');
 
 class tx_commerce_pi4 extends tx_commerce_pibase {

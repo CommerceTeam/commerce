@@ -1,5 +1,6 @@
 Changelog for tx_commerce
 04.05.2011 Christian Kuhn <lolli@schwarzbu.ch>
+* Use autoloader and remove some require_once statements
 * Copyright year and whitespace fixes in pi files
 
 03.05.2011 ingo Schmitt <is@marketing-factory.de>

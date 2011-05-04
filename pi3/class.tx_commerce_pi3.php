@@ -37,14 +37,11 @@
  *
  * $Id: class.tx_commerce_pi3.php 576 2007-03-22 22:38:22Z ingo $
  */
-
-require_once (PATH_tslib . 'class.tslib_pibase.php');
 require_once (PATH_t3lib . 'class.t3lib_tcemain.php');
 
 require_once (PATH_txcommerce . 'lib/class.tx_commerce_product.php');
 require_once (PATH_txcommerce . 'lib/class.tx_commerce_category.php');
 require_once (PATH_txcommerce . 'lib/class.tx_commerce_folder_db.php');
-require_once (PATH_txcommerce . 'lib/class.tx_commerce_pibase.php');
 require_once (PATH_txcommerce . 'lib/class.tx_commerce_div.php');
 require_once (PATH_txcommerce . 'pi4/class.tx_commerce_pi4.php');
 

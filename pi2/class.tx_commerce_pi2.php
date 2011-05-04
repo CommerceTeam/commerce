@@ -28,24 +28,16 @@
  *
  * The basket itself is stored inside $GLOBALS['TSFE']->fe_user->tx_commerce_basket;
  *
- * @author	Volker Graubaum <vg@e-netconsulting.de>
- * @author	Ingo Schmitt <is@marketing-factory.de>
- *
- * @TODO: Cleanup hooks
+ * @author Volker Graubaum <vg@e-netconsulting.de>
+ * @author Ingo Schmitt <is@marketing-factory.de>
  *
  * @see tx_commerce_basket
  * @see tx_commerce_basic_basekt
- *
- * $Id: class.tx_commerce_pi2.php 576 2007-03-22 22:38:22Z ingo $
  */
-
-require_once (PATH_tslib . "class.tslib_pibase.php");
 require_once (t3lib_extmgm::extPath('commerce') . 'lib/class.tx_commerce_div.php');
 require_once (t3lib_extmgm::extPath('commerce') . 'lib/class.tx_commerce_product.php');
 require_once (t3lib_extmgm::extPath('commerce') . 'lib/class.tx_commerce_basket.php');
 require_once (t3lib_extmgm::extPath('commerce') . 'lib/class.tx_commerce_category.php');
-require_once (t3lib_extmgm::extPath('commerce') . 'lib/class.tx_commerce_pibase.php');
-
 
 class tx_commerce_pi2 extends tx_commerce_pibase {
 

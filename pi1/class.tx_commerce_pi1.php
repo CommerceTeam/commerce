@@ -29,13 +29,8 @@
  * @author Franz Ripfel <fr@abezet.de>
  * @author Ingo Schmitt <is@marketing-factory.de>
  */
-
-/**
- * tx_commerce includes
- */
-require_once (t3lib_extmgm::extPath('commerce') . 'lib/class.tx_commerce_pibase.php');
-
 class tx_commerce_pi1 extends tx_commerce_pibase {
+
 	var $prefixId = "tx_commerce_pi1"; // Same as class name
 	var $scriptRelPath = "pi1/class.tx_commerce_pi1.php"; // Path to this script relative to the extension dir.
 	var $extKey = "commerce"; // The extension key.
