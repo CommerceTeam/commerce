@@ -28,10 +28,6 @@
  * @author Ingo Schmitt <is@markeing-factory.de>
  */
 
-/**
- * tx_commerce includes
- */
-require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_category.php');
 require_once (t3lib_extMgm::extPath('moneylib').'class.tx_moneylib.php');
 
 class tx_commerce_pibase extends tslib_pibase {

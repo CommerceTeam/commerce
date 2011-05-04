@@ -1,48 +1,44 @@
 <?php
 /***************************************************************
-*  Copyright notice
-*
-*  (c)  2005 - 2009 Ingo Schmitt <is@marketing-factory.de>
-*  All   rights reserved
-*
-*  This script is part of the Typo3 project. The Typo3 project is
-*  free software; you can redistribute it and/or modify
-*  it under the terms of the GNU General Public License as published by
-*  the Free Software Foundation; either version 2 of the License, or
-*  (at your option) any later version.
-*
-*  The GNU General Public License can be found at
-*  http://www.gnu.org/copyleft/gpl.html.
-*
-*  This script is distributed in the hope that it will be useful,
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*  GNU General Public License for more details.
-*
-*  This copyright notice MUST APPEAR in all copies of the script!
-***************************************************************/
+ *  Copyright notice
+ *
+ *  (c) 2005 - 2011 Ingo Schmitt <is@marketing-factory.de>
+ *  All rights reserved
+ *
+ *  This script is part of the Typo3 project. The Typo3 project is
+ *  free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  The GNU General Public License can be found at
+ *  http://www.gnu.org/copyleft/gpl.html.
+ *
+ *  This script is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  This copyright notice MUST APPEAR in all copies of the script!
+ ***************************************************************/
+
 /**
+ * Basic class for basket_handling
+ *
  * Abstract libary for Basket Handling. This class should not be used directly,
  * instead use tx_commerce_basket.
  * Do not acces class variables directly, allways use the get and set methods,
  * variables will be changed in php5 to private 
  *
- * @author	Ingo Schmitt <is@marketing-factory.de>
- * @internal Maintainer Ingo Schmitt
+ * @author Ingo Schmitt <is@marketing-factory.de>
  * @package TYPO3
  * @subpackage tx_commerce
- * @subpackage tx_commerce_basic_basket 
  * @see tx_commerce_basket
  * @see tx_commerce_basket_item
- * Basic class for basket_handeling
- * 
- * $Id$
- **/
- 
- require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_basket_item.php');
- 
- class tx_commerce_basic_basket{
- 	
+ */
+
+class tx_commerce_basic_basket {
+
  	/**
  	 * Internal associative array for storing basket_items in the basket
  	 * 

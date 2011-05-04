@@ -1,49 +1,34 @@
 <?php
 /***************************************************************
-*  Copyright notice
-*
-*  (c) 2005 - 2009 Ingo Schmitt <is@marketing-factory.de>
-*  All rights reserved
-*
-*  This script is part of the Typo3 project. The Typo3 project is
-*  free software; you can redistribute it and/or modify
-*  it under the terms of the GNU General Public License as published by
-*  the Free Software Foundation; either version 2 of the License, or
-*  (at your option) any later version.
-*
-*  The GNU General Public License can be found at
-*  http://www.gnu.org/copyleft/gpl.html.
-*
-*  This script is distributed in the hope that it will be useful,
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*  GNU General Public License for more details.
-*
-*  This copyright notice MUST APPEAR in all copies of the script!
-***************************************************************/
-/**
- * Part of the COMMERCE (Advanced Shopping System) extension.
+ *  Copyright notice
  *
- * @author	
- * @package TYPO3
- * @subpackage tx_commerce
- */
-
-
+ *  (c) 2005 - 2011 Ingo Schmitt <is@marketing-factory.de>
+ *  All rights reserved
+ *
+ *  This script is part of the Typo3 project. The Typo3 project is
+ *  free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  The GNU General Public License can be found at
+ *  http://www.gnu.org/copyleft/gpl.html.
+ *
+ *  This script is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  This copyright notice MUST APPEAR in all copies of the script!
+ ***************************************************************/
 
 /**
  * Misc COMMERCE functions
  *
- * 
- * @author  Ingo Schmitt <is@marketing-factory.de>
+ * @author Ingo Schmitt <is@marketing-factory.de>
  * @package TYPO3
  * @subpackage tx_commerce
- * 
- * $Id$
  */
- 
-require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_basket.php');
-
 class tx_commerce_div {
 
 	/**

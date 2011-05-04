@@ -1,5 +1,4 @@
 <?php
-require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_category.php'); 
 /**
  * Holds the TCE Functions
  * 

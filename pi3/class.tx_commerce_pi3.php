@@ -34,7 +34,6 @@
  * @author Ingo Schmitt <is@marketing-factory.de>
  * @author Volker Graubaum <vg@e-netconsulting.de>
  */
-require_once (PATH_txcommerce . 'lib/class.tx_commerce_category.php');
 require_once (PATH_txcommerce . 'lib/class.tx_commerce_folder_db.php');
 require_once (PATH_txcommerce . 'pi4/class.tx_commerce_pi4.php');
 

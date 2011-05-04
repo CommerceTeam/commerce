@@ -34,9 +34,6 @@
  * @see tx_commerce_basket
  * @see tx_commerce_basic_basekt
  */
-require_once (t3lib_extmgm::extPath('commerce') . 'lib/class.tx_commerce_basket.php');
-require_once (t3lib_extmgm::extPath('commerce') . 'lib/class.tx_commerce_category.php');
-
 class tx_commerce_pi2 extends tx_commerce_pibase {
 
 	var $prefixId = 'tx_commerce_pi1'; // Same as class name

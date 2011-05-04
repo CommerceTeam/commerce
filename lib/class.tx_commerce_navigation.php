@@ -39,8 +39,6 @@
  * Have a central Method to build chash parameters
  */
 
-require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_category.php');
-
 ###WHAT IS THIS FOR? SEARCH FOR WHERE THIS GETS INCLUDED###
 class user_tx_commerce_catmenu_pub extends tx_commerce_navigation {
 }

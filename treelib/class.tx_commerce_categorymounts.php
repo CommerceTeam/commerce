@@ -7,7 +7,6 @@
  * @maintainer 	Erik Frister <typo3@marketing-factory.de>
  */
 
-require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_category.php'); 
 require_once(t3lib_extmgm::extPath('commerce').'tree/class.mounts.php'); 
 
 class tx_commerce_categorymounts extends mounts {

@@ -1,43 +1,46 @@
 <?php
 /***************************************************************
-*  Copyright notice
-*
-*  (c) 2008 Christian Ehret 
-*  All rights reserved
-*
-*  This script is part of the TYPO3 project. The TYPO3 project is
-*  free software; you can redistribute it and/or modify
-*  it under the terms of the GNU General Public License as published by
-*  the Free Software Foundation; either version 2 of the License, or
-*  (at your option) any later version.
-*
-*  The GNU General Public License can be found at
-*  http://www.gnu.org/copyleft/gpl.html.
-*  A copy is found in the textfile GPL.txt and important notices to the license
-*  from the author is found in LICENSE.txt distributed with these scripts.
-*
-*
-*  This script is distributed in the hope that it will be useful,
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*  GNU General Public License for more details.
-*
-*  This copyright notice MUST APPEAR in all copies of the script!
-***************************************************************/
-
+ *  Copyright notice
+ *
+ *  (c) 2008 - 2011 Christian Ehret
+ *  All rights reserved
+ *
+ *  This script is part of the TYPO3 project. The TYPO3 project is
+ *  free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  The GNU General Public License can be found at
+ *  http://www.gnu.org/copyleft/gpl.html.
+ *  A copy is found in the textfile GPL.txt and important notices to the license
+ *  from the author is found in LICENSE.txt distributed with these scripts.
+ *
+ *
+ *  This script is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  This copyright notice MUST APPEAR in all copies of the script!
+ ***************************************************************/
 
 /**
  * hook to adjust linkwizard (linkbrowser)
  *
- * @author	Christian Ehret <chris@ehret.name>
+ * @author Christian Ehret <chris@ehret.name>
  * @package TYPO3
  * @subpackage linkcommerce
  */
-if (!defined ('TYPO3_MODE')) 	die ('Access denied.');
-// include defined interface for hook
+
+if (!defined ('TYPO3_MODE')) {
+	die ('Access denied.');
+}
+
+	// include defined interface for hook
 require_once (PATH_t3lib.'interfaces/interface.t3lib_browselinkshook.php');
 
-// include the treelib from commerce
+	// include the treelib from commerce
 require_once(t3lib_extmgm::extPath('commerce').'treelib/link/class.tx_commerce_categorytree.php');
 
 class tx_commerce_browselinkshooks implements t3lib_browseLinksHook {
