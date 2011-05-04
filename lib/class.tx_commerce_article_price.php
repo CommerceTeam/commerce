@@ -1,26 +1,27 @@
 <?php
 /***************************************************************
-*  Copyright notice
-*
-*  (c)  2005 - 2009 Ingo Schmitt <is@marketing-factory.de>
-*  All   rights reserved
-*
-*  This script is part of the Typo3 project. The Typo3 project is
-*  free software; you can redistribute it and/or modify
-*  it under the terms of the GNU General Public License as published by
-*  the Free Software Foundation; either version 2 of the License, or
-*  (at your option) any later version.
-*
-*  The GNU General Public License can be found at
-*  http://www.gnu.org/copyleft/gpl.html.
-*
-*  This script is distributed in the hope that it will be useful,
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*  GNU General Public License for more details.
-*
-*  This copyright notice MUST APPEAR in all copies of the script!
-***************************************************************/
+ *  Copyright notice
+ *
+ *  (c)  2005 - 2011 Ingo Schmitt <is@marketing-factory.de>
+ *  All rights reserved
+ *
+ *  This script is part of the Typo3 project. The Typo3 project is
+ *  free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  The GNU General Public License can be found at
+ *  http://www.gnu.org/copyleft/gpl.html.
+ *
+ *  This script is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  This copyright notice MUST APPEAR in all copies of the script!
+ ***************************************************************/
+
 /**
  * Libary for Frontend-Rendering of article prices. This class 
  * should be used for all Fronten-Rendering, no Database calls 
@@ -37,35 +38,26 @@
  * @subpackage tx_commerce_element_alib
  * @see tx_commerce_element_alib
  * @see tx_commerce_db_price
- *
- * $Id$
  */
 
-  
-  require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_element_alib.php'); 
-  require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_db_price.php');
-  require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_div.php');
- 
- /**
- * 
+require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_element_alib.php'); 
+require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_db_price.php');
+
+/**
  *
- * @author		Volker Graubaum <vg@e-netconsulting.de>
- * @coauthor	Ingo Schmitt	<is@marketing-factory.de>
+ * @author Volker Graubaum <vg@e-netconsulting.de>
+ * @coauthor Ingo Schmitt <is@marketing-factory.de>
  * @package TYPO3
  * @subpackage tx_commerce
  * @subpackage tx_commerce_article_prices
  */
- 
- class tx_commerce_article_price extends tx_commerce_element_alib {
+class tx_commerce_article_price extends tx_commerce_element_alib {
 
-	
-	
-	
 	/**
 	 * @var currency for price, will move into shop system
 	 */
+	var $currency = 'EUR';
 
-	 var $currency = 'EUR';
 	 /**
 	  * @Price Scae amount Start
 	  * @access private

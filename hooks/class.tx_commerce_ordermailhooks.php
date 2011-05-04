@@ -28,8 +28,6 @@
  *
  * @package commerce
  * @author Joerg Sprung <jsp@marketing-factory.de>
- *
- * $Id: class.tx_commerce_ordermailhooks.php 459 2006-12-14 18:16:52Z ingo $
  */
 
 require_once(t3lib_extmgm::extPath('cms').'tslib/class.tslib_content.php');
@@ -37,7 +35,6 @@ require_once(PATH_t3lib.'class.t3lib_cs.php');
 require_once(PATH_t3lib.'class.t3lib_htmlmail.php');
 require_once(PATH_t3lib.'class.t3lib_formmail.php');
 require_once(PATH_t3lib.'class.t3lib_page.php');
-require_once(PATH_txcommerce.'lib/class.tx_commerce_div.php');
 
 class tx_commerce_ordermailhooks  {
 

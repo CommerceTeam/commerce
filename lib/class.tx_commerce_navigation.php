@@ -1,50 +1,46 @@
 <?php
 /***************************************************************
-*  Copyright notice
-*
-*  (c) 2005 - 2010 Ingo Schmitt  (is@marketing-factory.de)
-*  All rights reserved
-*
-*  This script is part of the Typo3 project. The Typo3 project is
-*  free software; you can redistribute it and/or modify
-*  it under the terms of the GNU General Public License as published by
-*  the Free Software Foundation; either version 2 of the License, or
-*  (at your option) any later version.
-*
-*  The GNU General Public License can be found at
-*  http://www.gnu.org/copyleft/gpl.html.
-*
-*  This script is distributed in the hope that it will be useful,
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*  GNU General Public License for more details.
-*
-*  This copyright notice MUST APPEAR in all copies of the script!
-***************************************************************/
-/**
- *	Menulibary for having a navigation menu as a normal userfunction based on
- *  categories (and products) of commerce
- *	Thanks to Daniel Thomas, who build a class for his mediadb, which was
- *	the basic for this class 
+ *  Copyright notice
  *
- * @author	 Volker Graubaum <vg_typo3@e-netconsulting.de>  
- * @coauthor Ingo Schmitt 	<is@marketing-factory.de>
- * @coauthor Ricardo Mieres	<ricardo.mieres@502.cl>
- * @TODO: Clean Up code, documentation
- * 
- * $Id$
+ *  (c) 2005 - 2011 Ingo Schmitt <is@marketing-factory.de>
+ *  All rights reserved
+ *
+ *  This script is part of the Typo3 project. The Typo3 project is
+ *  free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  The GNU General Public License can be found at
+ *  http://www.gnu.org/copyleft/gpl.html.
+ *
+ *  This script is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  This copyright notice MUST APPEAR in all copies of the script!
+ ***************************************************************/
+
+/**
+ * Menu libary a navigation menu as a normal user function based on
+ * categories (and products) of commerce
+ * Thanks to Daniel Thomas, who build a class for his mediadb, which was
+ * the basic for this class 
+ *
+ * @author  Volker Graubaum <vg_typo3@e-netconsulting.de>  
+ * @coauthor Ingo Schmitt <is@marketing-factory.de>
+ * @coauthor Ricardo Mieres <ricardo.mieres@502.cl>
  */
 
 /**
- * @TODO: Buld Method to build UP Add Get Vars parameter to 
+ * @TODO: Clean Up code, documentation
+ * @TODO: Buld Method to build UP Add Get Vars parameter to
  * Have a central Method to build chash parameters
  */
 
-
-
 require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_category.php');
 require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_product.php');
-require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_div.php');
 
 ###WHAT IS THIS FOR? SEARCH FOR WHERE THIS GETS INCLUDED###
 class user_tx_commerce_catmenu_pub extends tx_commerce_navigation {

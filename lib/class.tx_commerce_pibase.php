@@ -34,7 +34,6 @@
 require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_product.php');
 require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_category.php');
 require_once (t3lib_extMgm::extPath('moneylib').'class.tx_moneylib.php');
-require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_div.php');
 
 class tx_commerce_pibase extends tslib_pibase {
 

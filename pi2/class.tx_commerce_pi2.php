@@ -34,7 +34,6 @@
  * @see tx_commerce_basket
  * @see tx_commerce_basic_basekt
  */
-require_once (t3lib_extmgm::extPath('commerce') . 'lib/class.tx_commerce_div.php');
 require_once (t3lib_extmgm::extPath('commerce') . 'lib/class.tx_commerce_product.php');
 require_once (t3lib_extmgm::extPath('commerce') . 'lib/class.tx_commerce_basket.php');
 require_once (t3lib_extmgm::extPath('commerce') . 'lib/class.tx_commerce_category.php');

@@ -1,26 +1,26 @@
 <?php
 /***************************************************************
-*  Copyright notice
-*
-*  (c) 2005 - 2006 Ingo Schmitt <is@marketing-factory.de>
-*  All rights reserved
-*
-*  This script is part of the TYPO3 project. The TYPO3 project is
-*  free software; you can redistribute it and/or modify
-*  it under the terms of the GNU General Public License as published by
-*  the Free Software Foundation; either version 2 of the License, or
-*  (at your option) any later version.
-*
-*  The GNU General Public License can be found at
-*  http://www.gnu.org/copyleft/gpl.html.
-*
-*  This script is distributed in the hope that it will be useful,
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*  GNU General Public License for more details.
-*
-*  This copyright notice MUST APPEAR in all copies of the script!
-***************************************************************/
+ *  Copyright notice
+ *
+ *  (c) 2005 - 2011 Ingo Schmitt <is@marketing-factory.de>
+ *  All rights reserved
+ *
+ *  This script is part of the TYPO3 project. The TYPO3 project is
+ *  free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  The GNU General Public License can be found at
+ *  http://www.gnu.org/copyleft/gpl.html.
+ *
+ *  This script is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  This copyright notice MUST APPEAR in all copies of the script!
+ ***************************************************************/
 
 /**
  * User Class for displaying Orders
@@ -28,29 +28,22 @@
  * @package commerce
  * @subpackage order view
  * @author Ingo Schmitt <is@marketing-factory.de>
- * @maintainer Ingo Schmitt <is@marketing-factory.de>
- * 
- * $Id: class.user_attributeedit_func.php 12925 2008-10-11 13:13:34Z ischmittis $
  */
 
 require_once (PATH_t3lib.'class.t3lib_recordlist.php');
 require_once (PATH_t3lib.'class.t3lib_div.php');
 require_once (PATH_typo3.'class.db_list.inc');
 require_once (PATH_typo3.'class.db_list_extra.inc');
- 
-require_once (t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_div.php');
 
-class user_attributeedit_func
- {
- 	
- 	
- 	/**
- 	 * valuelis
- 	 * renders the valulist to a value
- 	 * @param  $PA
- 	 * @param $fobj
- 	 * @return HTML-Content
- 	 */
+class user_attributeedit_func {
+
+	/**
+	 * valuelis
+	 * renders the valulist to a value
+	 * @param  $PA
+	 * @param $fobj
+	 * @return HTML-Content
+	 */
 	function valuelist($PA, $fobj)	
 	{
 		global $TCA;

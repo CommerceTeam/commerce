@@ -28,21 +28,15 @@
  * Every step is a collection of single modules. Each module is represented by a class that provides several methods
  * for displaying forms, checking data and storing data.
  *
- * @package		TYPO3
- * @subpackage	tx_commerce
- * @author		Thomas Hempel	<thomas@work.de>
- * @author		Ingo Schmitt	<is@marketing-factory.de>
- * @author		Volker Graubaum	<vg@e-netconsulting.de>
- * @maintainer		Thomas Hempel	<thomas@work.de>
- *
- * $Id: class.tx_commerce_pi3.php 576 2007-03-22 22:38:22Z ingo $
+ * @package TYPO3
+ * @subpackage tx_commerce
+ * @author Thomas Hempel <thomas@work.de>
+ * @author Ingo Schmitt <is@marketing-factory.de>
+ * @author Volker Graubaum <vg@e-netconsulting.de>
  */
-require_once (PATH_t3lib . 'class.t3lib_tcemain.php');
-
 require_once (PATH_txcommerce . 'lib/class.tx_commerce_product.php');
 require_once (PATH_txcommerce . 'lib/class.tx_commerce_category.php');
 require_once (PATH_txcommerce . 'lib/class.tx_commerce_folder_db.php');
-require_once (PATH_txcommerce . 'lib/class.tx_commerce_div.php');
 require_once (PATH_txcommerce . 'pi4/class.tx_commerce_pi4.php');
 
 require_once (t3lib_extMgm::extPath('static_info_tables') . 'pi1/class.tx_staticinfotables_pi1.php');
