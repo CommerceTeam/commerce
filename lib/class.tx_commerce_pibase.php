@@ -2,7 +2,7 @@
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2005-2011 Volker Graubaum <vg@e-netconsulting.de>
+ *  (c) 2005 - 2011 Volker Graubaum <vg@e-netconsulting.de>
  *  All rights reserved
  *
  *  This script is part of the Typo3 project. The Typo3 project is
@@ -31,7 +31,6 @@
 /**
  * tx_commerce includes
  */
-require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_product.php');
 require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_category.php');
 require_once (t3lib_extMgm::extPath('moneylib').'class.tx_moneylib.php');
 

@@ -14,7 +14,6 @@ require ($BACK_PATH.'template.php');
 
 require_once(t3lib_extmgm::extPath('commerce') .'lib/class.tx_commerce_belib.php');
 require_once(t3lib_extmgm::extPath('commerce') .'lib/class.tx_commerce_category.php');
-require_once(t3lib_extmgm::extPath('commerce') .'lib/class.tx_commerce_product.php');
 //Commerce Leafs
 require_once(t3lib_extmgm::extPath('commerce').'treelib/class.tx_commerce_leaf_categorydata.php');
 require_once(t3lib_extmgm::extPath('commerce').'treelib/class.tx_commerce_leaf_productdata.php');

@@ -9,7 +9,6 @@
 
 require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_belib.php');
 require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_category.php');
-require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_product.php');
 require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_article.php');
 
 require_once(t3lib_extmgm::extPath('commerce').'treelib/class.tx_commerce_categorymounts.php');

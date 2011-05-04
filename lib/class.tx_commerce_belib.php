@@ -1,26 +1,26 @@
 <?php
 /***************************************************************
-*  Copyright notice
-*
-*  (c) 2006 - 2009 Thomas Hempel (thomas@work.de)
-*  All rights reserved
-*
-*  This script is part of the TYPO3 project. The TYPO3 project is
-*  free software; you can redistribute it and/or modify
-*  it under the terms of the GNU General Public License as published by
-*  the Free Software Foundation; either version 2 of the License, or
-*  (at your option) any later version.
-*
-*  The GNU General Public License can be found at
-*  http://www.gnu.org/copyleft/gpl.html.
-*
-*  This script is distributed in the hope that it will be useful,
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*  GNU General Public License for more details.
-*
-*  This copyright notice MUST APPEAR in all copies of the script!
-***************************************************************/
+ *  Copyright notice
+ *
+ *  (c) 2006 - 2011 Thomas Hempel (thomas@work.de)
+ *  All rights reserved
+ *
+ *  This script is part of the TYPO3 project. The TYPO3 project is
+ *  free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  The GNU General Public License can be found at
+ *  http://www.gnu.org/copyleft/gpl.html.
+ *
+ *  This script is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  This copyright notice MUST APPEAR in all copies of the script!
+ ***************************************************************/
 
 /**
  * This metaclass provides several helper methods for handling relations in the backend.
@@ -28,22 +28,15 @@
  * And products can be assigned to several categories and a category can have a lot of parent
  * categories.
  *
- * @package		TYPO3
- * @subpackage	commerce
- * @author		Thomas Hempel <thomas@work.de>
- *
- * @maintainer	Thomas Hempel <thomas@work.de>
- *
- * $Id$
+ * @package TYPO3
+ * @subpackage commerce
+ * @author Thomas Hempel <thomas@work.de>
  */
 
 require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_folder_db.php');
 require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_article.php'); 
-require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_product.php'); 
-require_once (PATH_t3lib.'class.t3lib_tcemain.php');
 
 class tx_commerce_belib {
-	/** PRODUCTS **/
 
 	/**
 	 * This gets all categories for a product from the database (even those that are not direct).

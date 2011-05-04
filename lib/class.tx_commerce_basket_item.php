@@ -1,56 +1,43 @@
 <?php
 /***************************************************************
-*  Copyright notice
-*
-*  (c)  2005 - 2008 Ingo Schmitt <is@marketing-factory.de>
-*  All   rights reserved
-*
-*  This script is part of the Typo3 project. The Typo3 project is
-*  free software; you can redistribute it and/or modify
-*  it under the terms of the GNU General Public License as published by
-*  the Free Software Foundation; either version 2 of the License, or
-*  (at your option) any later version.
-*
-*  The GNU General Public License can be found at
-*  http://www.gnu.org/copyleft/gpl.html.
-*
-*  This script is distributed in the hope that it will be useful,
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*  GNU General Public License for more details.
-*
-*  This copyright notice MUST APPEAR in all copies of the script!
-***************************************************************/
+ *  Copyright notice
+ *
+ *  (c) 2005 - 2011 Ingo Schmitt <is@marketing-factory.de>
+ *  All rights reserved
+ *
+ *  This script is part of the Typo3 project. The Typo3 project is
+ *  free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  The GNU General Public License can be found at
+ *  http://www.gnu.org/copyleft/gpl.html.
+ *
+ *  This script is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  This copyright notice MUST APPEAR in all copies of the script!
+ ***************************************************************/
+
 /**
- * Libary for handling basket-items in the Frontend. 
- * 
+ * Basic class for basket_items.
+ * Libary for handling basket-items in the Frontend.
+ *
  * Do not acces class variables directly, allways use the get and set methods,
  * variables will be changed in php5 to private
  *
- * @author	Ingo Schmitt <is@marketing-factory.de>
- * @internal Maintainer Ingo Schmitt
+ * @author Ingo Schmitt <is@marketing-factory.de>
  * @package TYPO3
  * @subpackage tx_commerce
- * @subpackage tx_commerce_basket 
- * Basic class for basket_items
- * @todo change  {} from pascal to php doc style :-)
- * @todo implementation of language
- * 
- * $Id$
- **/
-
+ */
 
 require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_article.php'); 
-require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_product.php'); 
 
- 
-/**
- * Class for defining one Item in the basket
- * 
-*/
+class tx_commerce_basket_item {
 
-class tx_commerce_basket_item{
- 	
  	/**
  	 * object Article_object
  	 * @see tx_commerce_article

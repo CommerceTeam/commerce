@@ -1,74 +1,45 @@
 <?php
 /***************************************************************
-*  Copyright notice
-*
-*  (c)  2005 - 2008 Ingo Schmitt <is@marketing-factory.de>
-*  All   rights reserved
-*
-*  This script is part of the Typo3 project. The Typo3 project is
-*  free software; you can redistribute it and/or modify
-*  it under the terms of the GNU General Public License as published by
-*  the Free Software Foundation; either version 2 of the License, or
-*  (at your option) any later version.
-*
-*  The GNU General Public License can be found at
-*  http://www.gnu.org/copyleft/gpl.html.
-*
-*  This script is distributed in the hope that it will be useful,
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*  GNU General Public License for more details.
-*
-*  This copyright notice MUST APPEAR in all copies of the script!
-***************************************************************/
-/**
- * Libary for Frontend-Rendering of articles . This class 
- * should be used for all Fronten-Rendering, no Database calls 
- * to the commerce tables should be made directly
- * This Class is inhertited from tx_commerce_element_alib, all
- * basic Database calls are made from a separate Database Class
+ *  Copyright notice
  *
- * Do not acces class variables directly, allways use the get and set methods,
- * variables will be changed in php5 to private
- * @author      Ingo Schmitt <is@marketing-factory.de>
- * @internal Maintainer Ingo Schmitt
- * @package TYPO3
- * @subpackage tx_commerce
- * @subpackage tx_commerce_article
- * @see tx_commerce_element_alib
- * @see tx_commerce_article_db
- * 
- * Basic class for handeling articles
- * @Version 1.11
- */
- /**
-  * @todo changes fomr pascal to perl style {}
-  * @todo move functionality from constructor class to init method for php5 compaitbilty
-  * @todo implementation of language
-  * 
-  */
-  
- /**
+ *  (c) 2005 - 2011 Ingo Schmitt <is@marketing-factory.de>
+ *  All rights reserved
+ *
+ *  This script is part of the Typo3 project. The Typo3 project is
+ *  free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  The GNU General Public License can be found at
+ *  http://www.gnu.org/copyleft/gpl.html.
+ *
+ *  This script is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  This copyright notice MUST APPEAR in all copies of the script!
+ ***************************************************************/
+
+/**
  * Main script class for the handling of articles. Normaly used
  * for frontend rendering. This class provides basic methodes for acessing
- * articles
- * inherited from tx_commerce_element_alib
+ * articles.
+ * Inherited from tx_commerce_element_alib
  *
- * @author              Ingo Schmitt <is@marketing-factory.de>
+ * @author Ingo Schmitt <is@marketing-factory.de>
  * @package TYPO3
  * @subpackage tx_commerce
- * 
- * $Id$
  */
- 
- require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_db_article.php');
- require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_element_alib.php'); 
- require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_product.php'); 
- require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_article_price.php'); 
- 
- class tx_commerce_article extends tx_commerce_element_alib{
-        
-        var  $title;    // Title of the article, e.g. articlename (private)
+
+require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_db_article.php');
+require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_element_alib.php');
+require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_article_price.php');
+
+class tx_commerce_article extends tx_commerce_element_alib {
+
+	var  $title;    // Title of the article, e.g. articlename (private)
         
         var  $subtitle; // Subtitle of the article (private)
         

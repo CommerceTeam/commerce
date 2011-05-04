@@ -40,16 +40,10 @@
  */
 
 require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_category.php');
-require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_product.php');
 
 ###WHAT IS THIS FOR? SEARCH FOR WHERE THIS GETS INCLUDED###
 class user_tx_commerce_catmenu_pub extends tx_commerce_navigation {
-
-
-
 }
-
-
 
 class tx_commerce_navigation {
 

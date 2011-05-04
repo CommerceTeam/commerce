@@ -1,4 +1,5 @@
 05.05.2011 Christian Kuhn <lolli@schwarzbu.ch>
+* Use autoloader for tx_commerce_product
 * Add tx_commerce_div to autoloader
 
 04.05.2011 Christian Kuhn <lolli@schwarzbu.ch>

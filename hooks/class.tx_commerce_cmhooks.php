@@ -1,26 +1,26 @@
 <?php
 /***************************************************************
-*  Copyright notice
-*
-*  (c) 2005 - 2006 Franz Holzinger <kontakt@fholzinger.com>
-*  All rights reserved
-*
-*  This script is part of the TYPO3 project. The TYPO3 project is
-*  free software; you can redistribute it and/or modify
-*  it under the terms of the GNU General Public License as published by
-*  the Free Software Foundation; either version 2 of the License, or
-*  (at your option) any later version.
-*
-*  The GNU General Public License can be found at
-*  http://www.gnu.org/copyleft/gpl.html.
-*
-*  This script is distributed in the hope that it will be useful,
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*  GNU General Public License for more details.
-*
-*  This copyright notice MUST APPEAR in all copies of the script!
-***************************************************************/
+ *  Copyright notice
+ *
+ *  (c) 2005 - 2011 Franz Holzinger <kontakt@fholzinger.com>
+ *  All rights reserved
+ *
+ *  This script is part of the TYPO3 project. The TYPO3 project is
+ *  free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  The GNU General Public License can be found at
+ *  http://www.gnu.org/copyleft/gpl.html.
+ *
+ *  This script is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  This copyright notice MUST APPEAR in all copies of the script!
+ ***************************************************************/
 
 /**
  * Part of the COMMERCE (Advanced Shopping System) extension.
@@ -28,20 +28,16 @@
  * This class contains some hooks for processing formdata.
  * Hook for saving order data and order_articles.
  *
- * @author		Franz Holzinger <kontakt@fholzinger.com>
- * @author		Thomas Hempel	<thomas@work.de>
- * @maintainer	Thomas Hempel	<thomas@work.de>
- * 
+ * @author Franz Holzinger <kontakt@fholzinger.com>
+ * @author Thomas Hempel <thomas@work.de>
+ *
  * @package TYPO3
  * @subpackage tx_commerce
- * 
- * $Id: class.tx_commerce_cmhooks.php 570 2007-03-08 07:40:31Z franz $
  */
 
 require_once(t3lib_extmgm::extPath('commerce') .'lib/class.tx_commerce_belib.php');
 require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_category.php'); 
 require_once(t3lib_extmgm::extPath('commerce').'treelib/class.tx_commerce_categorymounts.php');
-require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_product.php'); 
 require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_article.php'); 
 
 class tx_commerce_cmhooks {
