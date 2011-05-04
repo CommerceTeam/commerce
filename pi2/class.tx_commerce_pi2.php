@@ -1,26 +1,27 @@
 <?php
 /***************************************************************
-*  Copyright notice
-*
-*  (c) 2005 - 2009 Volker Graubaum <vg@e-netconsulting.de>
-*  All rights reserved
-*
-*  This script is part of the TYPO3 project. The TYPO3 project is
-*  free software; you can redistribute it and/or modify
-*  it under the terms of the GNU General Public License as published by
-*  the Free Software Foundation; either version 2 of the License, or
-*  (at your option) any later version.
-*
-*  The GNU General Public License can be found at
-*  http://www.gnu.org/copyleft/gpl.html.
-*
-*  This script is distributed in the hope that it will be useful,
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*  GNU General Public License for more details.
-*
-*  This copyright notice MUST APPEAR in all copies of the script!
-***************************************************************/
+ *  Copyright notice
+ *
+ *  (c) 2005 - 2011 Volker Graubaum <vg@e-netconsulting.de>
+ *  All rights reserved
+ *
+ *  This script is part of the TYPO3 project. The TYPO3 project is
+ *  free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  The GNU General Public License can be found at
+ *  http://www.gnu.org/copyleft/gpl.html.
+ *
+ *  This script is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  This copyright notice MUST APPEAR in all copies of the script!
+ ***************************************************************/
+
 /**
  * Basket pi for commerce. This class is used to handle all events concerning
  * the basket. E.g. Adding things to basket, changing basket
@@ -38,7 +39,6 @@
  * $Id: class.tx_commerce_pi2.php 576 2007-03-22 22:38:22Z ingo $
  */
 
-
 require_once (PATH_tslib . "class.tslib_pibase.php");
 require_once (t3lib_extmgm::extPath('commerce') . 'lib/class.tx_commerce_div.php');
 require_once (t3lib_extmgm::extPath('commerce') . 'lib/class.tx_commerce_product.php');
@@ -48,6 +48,7 @@ require_once (t3lib_extmgm::extPath('commerce') . 'lib/class.tx_commerce_pibase.
 
 
 class tx_commerce_pi2 extends tx_commerce_pibase {
+
 	var $prefixId = 'tx_commerce_pi1'; // Same as class name
 	var $scriptRelPath = 'pi2/class.tx_commerce_pi2.php'; // Path to this script relative to the extension dir.
 	var $extKey = 'commerce'; // The extension key.

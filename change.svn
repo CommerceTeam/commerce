@@ -1,4 +1,7 @@
 Changelog for tx_commerce
+04.05.2011 Christian Kuhn <lolli@schwarzbu.ch>
+* Copyright year and whitespace fixes in pi files
+
 03.05.2011 ingo Schmitt <is@marketing-factory.de>
 * Created Version 0.13.x
 * Raised TYPO3 Version to 4.5
@@ -1596,4 +1599,3 @@ Ingo Schmitt <is@marketing-factory.de>
     Added pi3 / currency to setup   
     
     
-

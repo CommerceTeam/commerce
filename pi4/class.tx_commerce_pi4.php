@@ -1,44 +1,41 @@
 <?php
 /***************************************************************
-*  Copyright notice
-*
-*  (c) 2010 Thomas Hempel <thomas@work.de>
-*  All rights reserved
-*
-*  This script is part of the TYPO3 project. The TYPO3 project is
-*  free software; you can redistribute it and/or modify
-*  it under the terms of the GNU General Public License as published by
-*  the Free Software Foundation; either version 2 of the License, or
-*  (at your option) any later version.
-*
-*  The GNU General Public License can be found at
-*  http://www.gnu.org/copyleft/gpl.html.
-*
-*  This script is distributed in the hope that it will be useful,
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*  GNU General Public License for more details.
-*
-*  This copyright notice MUST APPEAR in all copies of the script!
-***************************************************************/
-
+ *  Copyright notice
+ *
+ *  (c) 2010-2011 Thomas Hempel <thomas@work.de>
+ *  All rights reserved
+ *
+ *  This script is part of the TYPO3 project. The TYPO3 project is
+ *  free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  The GNU General Public License can be found at
+ *  http://www.gnu.org/copyleft/gpl.html.
+ *
+ *  This script is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  This copyright notice MUST APPEAR in all copies of the script!
+ ***************************************************************/
 
 /**
  * Plugin 'addresses' for the 'commerce' extension.
  * This class handles all the address stuff, like creating, editing and deleting.
  *
- * @package		TYPO3
- * @subpackage	tx_commerce
- * @author		Thomas Hempel <thomas@work.de>
- * @maintainer	Thomas Hempel <thomas@work.de>
- *
- * $Id: class.tx_commerce_pi4.php 567 2007-03-05 07:47:13Z thomas $
+ * @package TYPO3
+ * @subpackage tx_commerce
+ * @author Thomas Hempel <thomas@work.de>
  */
 
 require_once(t3lib_extmgm::extPath('commerce') . 'lib/class.tx_commerce_pibase.php');
 require_once (t3lib_extMgm::extPath('static_info_tables') . 'pi1/class.tx_staticinfotables_pi1.php');
 
 class tx_commerce_pi4 extends tx_commerce_pibase {
+
 	var $prefixId = 'tx_commerce_pi4'; // Same as class name
 	var $scriptRelPath = 'pi4/class.tx_commerce_pi4.php'; // Path to this script relative to the extension dir.
 	var $extKey = 'commerce'; // The extension key.

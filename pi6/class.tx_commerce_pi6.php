@@ -1,39 +1,35 @@
 <?php
 /***************************************************************
-*  Copyright notice
-*
-*  First Version (c) 2005 - 2006 Franz Ripfel (fr@abezet.de)
-*  Second Version written by Sudara (williams@web-crossing.com)
-*  This Version written by Tom Rüther (tr@e-netconsulting.de)
-*  All rights reserved
-*
-*  This script is part of the TYPO3 project. The TYPO3 project is
-*  free software; you can redistribute it and/or modify
-*  it under the terms of the GNU General Public License as published by
-*  the Free Software Foundation; either version 2 of the License, or
-*  (at your option) any later version.
-*
-*  The GNU General Public License can be found at
-*  http://www.gnu.org/copyleft/gpl.html.
-*
-*  This script is distributed in the hope that it will be useful,
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*  GNU General Public License for more details.
-*
-*  This copyright notice MUST APPEAR in all copies of the script!
-***************************************************************/
+ *  Copyright notice
+ *
+ *  (c) 2005 - 2011 Franz Ripfel (fr@abezet.de)
+ *  All rights reserved
+ *
+ *  This script is part of the TYPO3 project. The TYPO3 project is
+ *  free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  The GNU General Public License can be found at
+ *  http://www.gnu.org/copyleft/gpl.html.
+ *
+ *  This script is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  This copyright notice MUST APPEAR in all copies of the script!
+ ***************************************************************/
+
 /**
  * Plugin 'commerce_invoice' for the 'commerce_invoice' extension.
  *
- * @author	Sudara <williams@web-crossing.com>
- * @author	Franz Ripfel <fr@abezet.de>
- * @author  Tom Rüther <tr@e-netconsulting.de>
+ * @author Sudara <williams@web-crossing.com>
+ * @author Franz Ripfel <fr@abezet.de>
+ * @author Tom Rüther <tr@e-netconsulting.de>
  * @author Ingo Schmitt <is@marketing-factory.de>
- *
- * $Id: class.tx_commerce_pi6.php 328 2006-08-03 17:50:20Z ingo $
  */
-
 
 /*
  * @ToDo Multilanguage for system articles
@@ -43,8 +39,8 @@ require_once (t3lib_extmgm::extPath('commerce') . 'lib/class.tx_commerce_pibase.
 require_once (PATH_t3lib . 'class.t3lib_cs.php');
 require_once (t3lib_extMgm::extPath('moneylib') . 'class.tx_moneylib.php');
 
-
 class tx_commerce_pi6 extends tx_commerce_pibase {
+
 	var $prefixId = 'tx_commerce_pi6'; // Same as class name
 	var $scriptRelPath = 'pi6/class.tx_commerce_pi6.php'; // Path to this script relative to the extension dir.
 	var $extKey = 'commerce'; // The extension key.
