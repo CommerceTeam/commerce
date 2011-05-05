@@ -1,3 +1,9 @@
+05.05.2011 Ingo Schmitt <is@marketing-factory.de>
+* TYPO3 Commerce is now 5.3 compatible
+* Removed unneded xclasses for older TYPO3 Versions
+* Made xclasses PHP 5.3 compatible
+
+
 05.05.2011 Christian Kuhn <lolli@schwarzbu.ch>
 * tx_commerce_folder_db in autoloader and casual cgl cleanups
 * Further autoloader usages and cleanups

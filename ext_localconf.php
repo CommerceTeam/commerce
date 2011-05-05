@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2006 - 2009 Ingo Schmitt <is@marketing-factory.de>
+*  (c) 2006 - 2011 Ingo Schmitt <is@marketing-factory.de>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -126,22 +126,7 @@ t3lib_extMgm::addTypoScript(COMMERCE_EXTkey, 'editorcfg', '
 
 
 if (TYPO3_MODE == 'BE') {
-	// Load an XCLASS of the main BE module menu to fix an issue in TYPO3 core versions 4.2.0 and 4.2.1
-	// @see http://bugs.typo3.org/view.php?id=8851
-	if (t3lib_div::int_from_ver(TYPO3_version) >= '4002000' && t3lib_div::int_from_ver(TYPO3_version) <= '4002001') {
-		$TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['typo3/classes/class.modulemenu.php'] = t3lib_extMgm::extPath(COMMERCE_EXTkey) . 'class.ux_modulemenu.php';
-	}
-
-	// Only in TYPO3 versions less than 4.3
-	// XCLASS t3lib_parsehtml_proc to fix TYPO3 issue 10331
-	// @see http://bugs.typo3.org/view.php?id=10331
-	// Warning: If this XCLASS isn't loaded for you, make sure no other extension loaded prior to commerce
-	// in extList requires t3lib/class.t3lib_parsehtml_proc.php! This could even happen indirectly,
-	// eg. timtab_embeddedvideo requires t3lib_tcemain which requires parsehtml_proc.
-	if (t3lib_div::int_from_ver(TYPO3_version) < '4003000') {
-		$TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['t3lib/class.t3lib_parsehtml_proc.php'] = t3lib_extMgm::extPath(COMMERCE_EXTkey) . 'class.ux_t3lib_parsehtml_proc.php';
-	}
-
+	
 	// XCLASS for version preview
 	// This XCLASS will create a link to singlePID / previewPageID in version module for commerce products
 	$TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/version/cm1/index.php'] = t3lib_extMgm::extPath(COMMERCE_EXTkey) . 'class.ux_versionindex.php';
@@ -149,6 +134,7 @@ if (TYPO3_MODE == 'BE') {
 	// XCLASS for db list enable the search module to search in OrderIds
 	// Field tx_commerce_orders.order_id is of type none, but the BE list module doesn't search in those fields by default
 	// @see http://bugs.typo3.org/view.php?id=5676
+	// @see http://forge.typo3.org/issues/17329
 	$TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['typo3/class.db_list_extra.inc'] = t3lib_extMgm::extPath(COMMERCE_EXTkey) . 'class.ux_localrecordlist.php';
 }
 
