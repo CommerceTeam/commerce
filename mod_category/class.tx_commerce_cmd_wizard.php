@@ -18,9 +18,9 @@ $LANG->includeLLFile('EXT:lang/locallang_misc.xml');
 // ***************************
 
 require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_belib.php');
-require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_folder_db.php');
 
 class tx_commerce_cmd_wizard {
+
 	var $pageinfo;
 	var $pidInfo;
 	var $newContentInto;

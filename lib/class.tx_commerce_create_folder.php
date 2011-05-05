@@ -1,57 +1,50 @@
 <?php
 /***************************************************************
-*  Copyright notice
-*
-*  (c) 2005-2006 Ingo Schmitt <is@marketing-factory.de>
-*  All rights reserved
-*
-*  This script is part of the Typo3 project. The Typo3 project is
-*  free software; you can redistribute it and/or modify
-*  it under the terms of the GNU General Public License as published by
-*  the Free Software Foundation; either version 2 of the License, or
-*  (at your option) any later version.
-*
-*  The GNU General Public License can be found at
-*  http://www.gnu.org/copyleft/gpl.html.
-*
-*  This script is distributed in the hope that it will be useful,
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*  GNU General Public License for more details.
-*
-*  This copyright notice MUST APPEAR in all copies of the script!
-***************************************************************/
-/**
- * Handling of sysfolders inseide tx_commerce. Basically creates
- * the needed sysfolders and the needed system_articles. 
- * 
- * The method of this Class should be called by 
- * tx_commerce_create_folder::methodname
- * 
+ *  Copyright notice
  *
- * @author	Ingo Schmitt <is@marketing-factory.de>
- * @author	Thomas Hempel <thomas@work.de>
- * @author 	Volker Graubaum <vg_typo3@e-netconsulting.de>
+ *  (c) 2005-2011 Ingo Schmitt <is@marketing-factory.de>
+ *  All rights reserved
+ *
+ *  This script is part of the Typo3 project. The Typo3 project is
+ *  free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  The GNU General Public License can be found at
+ *  http://www.gnu.org/copyleft/gpl.html.
+ *
+ *  This script is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  This copyright notice MUST APPEAR in all copies of the script!
+ ***************************************************************/
+
+/**
+ * This class creates the systemfolders for TX_commerce
+ * Handling of sysfolders inside tx_commerce. Basically creates
+ * needed sysfolders and system_articles.
+ *
+ * The method of this class should be called by
+ * tx_commerce_create_folder::methodname
+ *
+ * Creation of tx_commerce_basic folders 
+ * call: tx_commerce_create_folder::init_folders()
+ *
+ * @author Ingo Schmitt <is@marketing-factory.de>
+ * @author Thomas Hempel <thomas@work.de>
+ * @author Volker Graubaum <vg_typo3@e-netconsulting.de>
  *
  * @package TYPO3
- * @subpackage tx_commerce  
- * 
- * $Id$
+ * @subpackage tx_commerce
  */
- require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_folder_db.php');
- require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_belib.php');
- 
- /**
-  * Creation of tx_commerce_basic folders 
-  * call: tx_commerce_create_folder::init_folders()
-  */
-  
-  /**
-   * This class creates the systemfolders for TX_commerce
-   * @author Ingo Schmitt
-   * 
-   */
- class tx_commerce_create_folder {
+
+require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_belib.php');
+
+class tx_commerce_create_folder {
+
 	/**
 	 * Initializes the folders for tx_commerce
 	 * @access public

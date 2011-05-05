@@ -1,53 +1,40 @@
 <?php
 /***************************************************************
-*  Copyright notice
-*  
-*  (c) 2004 Joerg Sprung (typo3@marketing-factory.de)
-*  (c) 2008 Ingo Schmitt (is@marketing-factory.de)
-*  All rights reserved
-*
-*  This script is part of the TYPO3 project. The TYPO3 project is 
-*  free software; you can redistribute it and/or modify
-*  it under the terms of the GNU General Public License as published by
-*  the Free Software Foundation; either version 2 of the License, or
-*  (at your option) any later version.
-* 
-*  The GNU General Public License can be found at
-*  http://www.gnu.org/copyleft/gpl.html.
-* 
-*  This script is distributed in the hope that it will be useful,
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*  GNU General Public License for more details.
-*
-*  This copyright notice MUST APPEAR in all copies of the script!
-***************************************************************/
-/** 
- * Module 'Statistics' for the 'commerce' extension.
+ *  Copyright notice
  *
- * @author	Joerg Sprung <typo3@marketing-factory.de>
- * @author  Ingo Schmitt <is@marketing-factory.de>
- */
+ *  (c) 2004 - 2011 Joerg Sprung (typo3@marketing-factory.de)
+ *  (c) 2008 - 2011 Ingo Schmitt (is@marketing-factory.de)
+ *  All rights reserved
+ *
+ *  This script is part of the TYPO3 project. The TYPO3 project is 
+ *  free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  The GNU General Public License can be found at
+ *  http://www.gnu.org/copyleft/gpl.html.
+ *
+ *  This script is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  This copyright notice MUST APPEAR in all copies of the script!
+ ***************************************************************/
 
-
-
-	// DEFAULT initialization of a module [BEGIN]
-unset($MCONF);	
+unset($MCONF);
 require_once('conf.php');
 require_once($BACK_PATH.'init.php');
 require_once($BACK_PATH.'template.php');
 $LANG->includeLLFile("EXT:commerce/mod_statistic/locallang.php");
 $LANG->includeLLFile("EXT:commerce/mod_statistic/locallang_weekday.php");
-#include ("locallang.php");
 require_once (PATH_t3lib."class.t3lib_scbase.php");
 $BE_USER->modAccess($MCONF,1);	// This checks permissions and exits if the users has no permission for entry.
-	// DEFAULT initialization of a module [END]
-
 
 /**
  * Load TYPO3 core libaries
  */
-
 require_once (PATH_t3lib.'class.t3lib_page.php');
 require_once (PATH_t3lib.'class.t3lib_pagetree.php');
 require_once (PATH_t3lib.'class.t3lib_recordlist.php');
@@ -56,21 +43,20 @@ require_once (PATH_t3lib.'class.t3lib_clipboard.php');
 require_once (t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_order_localrecordlist.php');
 require_once (t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_feusers_localrecordlist.php');
 require_once (t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_statistics.php');
-require_once (t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_folder_db.php');
-
-
 
 /**
  * Load Locallang
  */
-
 $LANG->includeLLFile('EXT:lang/locallang_mod_web_list.php');
 
-
-
-
-
+/**
+ * Module 'Statistics' for the 'commerce' extension.
+ *
+ * @author Joerg Sprung <typo3@marketing-factory.de>
+ * @author Ingo Schmitt <is@marketing-factory.de>
+ */
 class tx_commerce_statistic extends t3lib_SCbase {
+
 	var $pageinfo;
 	var $order_pid;
 	/**

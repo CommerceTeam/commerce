@@ -1,42 +1,26 @@
 <?php
 /***************************************************************
-*  Copyright notice
-*
-*  (c) 2005-2010 Ingo Schmitt <is@marketing-factory.de>
-*  All rights reserved
-*
-*  This script is part of the Typo3 project. The Typo3 project is
-*  free software; you can redistribute it and/or modify
-*  it under the terms of the GNU General Public License as published by
-*  the Free Software Foundation; either version 2 of the License, or
-*  (at your option) any later version.
-*
-*  The GNU General Public License can be found at
-*  http://www.gnu.org/copyleft/gpl.html.
-*
-*  This script is distributed in the hope that it will be useful,
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*  GNU General Public License for more details.
-*
-*  This copyright notice MUST APPEAR in all copies of the script!
-***************************************************************/
-/**
- * COMMERCE order edit nav frame.
- * Part of the COMMERCE (Advanced Shopping System) extension.
+ *  Copyright notice
  *
- * @author	Ingo Schmitt <is@marketing-factory.de>
- * @author	Kasper Skaarhoj <kasperYYYY@typo3.com>
- * @package TYPO3
- * @subpackage tx_commerce  
- * @subpackage orders
- * @see alt_db_navframe.php
- * 
- * $Id: class.tx_commerce_order_navframe.php 547 2007-02-05 18:27:02Z ingo $
- */
-
-
-
+ *  (c) 2005-2011 Ingo Schmitt <is@marketing-factory.de>
+ *  All rights reserved
+ *
+ *  This script is part of the Typo3 project. The Typo3 project is
+ *  free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  The GNU General Public License can be found at
+ *  http://www.gnu.org/copyleft/gpl.html.
+ *
+ *  This script is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  This copyright notice MUST APPEAR in all copies of the script!
+ ***************************************************************/
 
 unset($MCONF);
 require_once('conf.php');
@@ -44,25 +28,18 @@ require_once($BACK_PATH.'init.php');
 require_once($BACK_PATH.'template.php');
 require_once(PATH_t3lib.'class.t3lib_browsetree.php');
 
-
-
-
-/**
- * Require for commerce
- */
-require_once (t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_folder_db.php');
 require_once (t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_create_folder.php');
 require_once (t3lib_extmgm::extPath('commerce').'mod_orders/class.tx_commerce_order_pagetree.php');
 
 /**
  * Main script class for the tree edit navigation frame
- * @author	Kasper Skaarhoj <kasperYYYY@typo3.com>
- * @author	Ingo Schmitt <is@marketing-factory.de>
+ *
+ * @author Kasper Skaarhoj <kasperYYYY@typo3.com>
+ * @author Ingo Schmitt <is@marketing-factory.de>
  * @package TYPO3
- * @subpackage tx_commerce 
+ * @subpackage tx_commerce
  * @subpackage orders
  * @see altr_db_navframe.php
- * 
  */
 class tx_commerce_order_navframe {
 

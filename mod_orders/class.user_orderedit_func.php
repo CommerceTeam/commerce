@@ -1,26 +1,26 @@
 <?php
 /***************************************************************
-*  Copyright notice
-*
-*  (c) 2005 - 2006 Ingo Schmitt <is@marketing-factory.de>
-*  All rights reserved
-*
-*  This script is part of the TYPO3 project. The TYPO3 project is
-*  free software; you can redistribute it and/or modify
-*  it under the terms of the GNU General Public License as published by
-*  the Free Software Foundation; either version 2 of the License, or
-*  (at your option) any later version.
-*
-*  The GNU General Public License can be found at
-*  http://www.gnu.org/copyleft/gpl.html.
-*
-*  This script is distributed in the hope that it will be useful,
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*  GNU General Public License for more details.
-*
-*  This copyright notice MUST APPEAR in all copies of the script!
-***************************************************************/
+ *  Copyright notice
+ *
+ *  (c) 2005 - 2011 Ingo Schmitt <is@marketing-factory.de>
+ *  All rights reserved
+ *
+ *  This script is part of the TYPO3 project. The TYPO3 project is
+ *  free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  The GNU General Public License can be found at
+ *  http://www.gnu.org/copyleft/gpl.html.
+ *
+ *  This script is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  This copyright notice MUST APPEAR in all copies of the script!
+ ***************************************************************/
 
 /**
  * User Class for displaying Orders
@@ -28,9 +28,6 @@
  * @package commerce
  * @subpackage order view
  * @author Ingo Schmitt <is@marketing-factory.de>
- * @maintainer Ingo Schmitt <is@marketing-factory.de>
- * 
- * $Id: class.user_orderedit_func.php 552 2007-02-05 19:55:30Z ingo $
  */
 
 require_once (PATH_t3lib.'class.t3lib_recordlist.php');
@@ -38,14 +35,11 @@ require_once (PATH_t3lib.'class.t3lib_div.php');
 require_once (PATH_typo3.'class.db_list.inc');
 require_once (PATH_typo3.'class.db_list_extra.inc');
 
-require_once (t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_folder_db.php');
 require_once (t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_create_folder.php');
 require_once (t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_belib.php');
 
-class user_orderedit_func
- {
- 	
- 	
+class user_orderedit_func {
+
  	/**
  	 * Artcile order_id
  	 * Just a hidden field
@@ -590,7 +584,6 @@ class user_orderedit_func
  		require_once (t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_order_localrecordlist.php');
 		require_once (t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_feusers_localrecordlist.php');
 
-		require_once (t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_folder_db.php');
  		$dblist = t3lib_div::makeInstance('tx_commerce_order_localRecordlist');
 		#$dblist->additionalOutTop = $this->doc->section("",$this->doc->funcMenu($headerSection,t3lib_BEfunc::getFuncMenu($this->id,"SET[function]",$this->MOD_SETTINGS["function"],$this->MOD_MENU["function"])));
 		$dblist->backPath = $GLOBALS['BACK_PATH'];
