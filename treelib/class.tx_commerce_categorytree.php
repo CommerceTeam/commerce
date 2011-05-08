@@ -6,24 +6,9 @@
  * @author 		Marketing Factory <typo3@marketing-factory.de>
  * @maintainer 	Erik Frister <typo3@marketing-factory.de>
  */
- 
+
 //Require Base Class
 require_once (t3lib_extmgm::extPath('commerce').'tree/class.browsetree.php');
-
-//Require Mounts
-require_once (t3lib_extmgm::extPath('commerce').'treelib/class.tx_commerce_categorymounts.php');
-
-//Require Leafs
-require_once (t3lib_extmgm::extPath('commerce').'treelib/class.tx_commerce_leaf_category.php');
-require_once (t3lib_extmgm::extPath('commerce').'treelib/class.tx_commerce_leaf_article.php');
-require_once (t3lib_extmgm::extPath('commerce').'treelib/class.tx_commerce_leaf_product.php');
-
-require_once (t3lib_extmgm::extPath('commerce').'treelib/class.tx_commerce_leaf_categoryview.php');
-require_once (t3lib_extmgm::extPath('commerce').'treelib/class.tx_commerce_leaf_categorydata.php');
-require_once (t3lib_extmgm::extPath('commerce').'treelib/class.tx_commerce_leaf_productview.php');
-require_once (t3lib_extmgm::extPath('commerce').'treelib/class.tx_commerce_leaf_productdata.php');
-require_once (t3lib_extmgm::extPath('commerce').'treelib/class.tx_commerce_leaf_articleview.php');
-require_once (t3lib_extmgm::extPath('commerce').'treelib/class.tx_commerce_leaf_articledata.php');
 
 // Require ext update script.
 require_once(t3lib_extmgm::extPath('commerce').'class.ext_update.php'); 

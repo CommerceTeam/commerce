@@ -29,24 +29,8 @@ require_once($BACK_PATH.'init.php');
 require_once($BACK_PATH.'template.php');
 $LANG->includeLLFile("EXT:commerce/mod_statistic/locallang.php");
 $LANG->includeLLFile("EXT:commerce/mod_statistic/locallang_weekday.php");
-require_once (PATH_t3lib."class.t3lib_scbase.php");
 $BE_USER->modAccess($MCONF,1);	// This checks permissions and exits if the users has no permission for entry.
 
-/**
- * Load TYPO3 core libaries
- */
-require_once (PATH_t3lib.'class.t3lib_page.php');
-require_once (PATH_t3lib.'class.t3lib_pagetree.php');
-require_once (PATH_t3lib.'class.t3lib_recordlist.php');
-require_once (PATH_t3lib.'class.t3lib_clipboard.php');
-
-require_once (t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_order_localrecordlist.php');
-require_once (t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_feusers_localrecordlist.php');
-require_once (t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_statistics.php');
-
-/**
- * Load Locallang
- */
 $LANG->includeLLFile('EXT:lang/locallang_mod_web_list.php');
 
 /**

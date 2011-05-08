@@ -12,11 +12,6 @@ require_once('conf.php');
 require ($BACK_PATH.'init.php');
 require ($BACK_PATH.'template.php');
 
-require_once(t3lib_extmgm::extPath('commerce') .'lib/class.tx_commerce_belib.php');
-//Commerce Leafs
-require_once(t3lib_extmgm::extPath('commerce').'treelib/class.tx_commerce_leaf_categorydata.php');
-require_once(t3lib_extmgm::extPath('commerce').'treelib/class.tx_commerce_leaf_productdata.php');
-
 $LANG->includeLLFile('EXT:commerce/mod_cce/locallang_mod.xml');
 
 class SC_tx_commerce_cce_db {

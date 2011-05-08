@@ -35,23 +35,9 @@ require_once($BACK_PATH.'init.php');
 require_once($BACK_PATH.'template.php');
 
 $LANG->includeLLFile("EXT:commerce/mod_orders/locallang.php");
-require_once (PATH_t3lib."class.t3lib_scbase.php");
 $BE_USER->modAccess($MCONF,1);	// This checks permissions and exits if the users has no permission for entry.
 
-require_once (PATH_t3lib.'class.t3lib_page.php');
-require_once (PATH_t3lib.'class.t3lib_pagetree.php');
-require_once (PATH_t3lib.'class.t3lib_recordlist.php');
-require_once (PATH_t3lib.'class.t3lib_clipboard.php');
-require_once (PATH_t3lib.'class.t3lib_tcemain.php');
-
-require_once (t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_order_localrecordlist.php');
-
-/**
- * Load Locallang
- */
-
 $LANG->includeLLFile('EXT:lang/locallang_mod_web_list.php');
-
 
 class tx_commerce_orders extends t3lib_SCbase {
 
@@ -90,7 +76,6 @@ class tx_commerce_orders extends t3lib_SCbase {
 		parent::init();
 		$this->table='tx_commerce_orders';
 		$this->clickMenuEnabled=1;
-		require_once (t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_create_folder.php');
 		tx_commerce_create_folder::init_folders();
 
 		$order_pid = array_unique(tx_commerce_folder_db::initFolders('Orders','Commerce',0,'Commerce'));

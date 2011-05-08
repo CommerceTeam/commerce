@@ -22,6 +22,9 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+require_once (PATH_typo3.'class.db_list.inc');
+require_once (PATH_typo3.'class.db_list_extra.inc');
+
 /**
  * User Class for displaying Orders
  *
@@ -29,15 +32,6 @@
  * @subpackage order view
  * @author Ingo Schmitt <is@marketing-factory.de>
  */
-
-require_once (PATH_t3lib.'class.t3lib_recordlist.php');
-require_once (PATH_t3lib.'class.t3lib_div.php');
-require_once (PATH_typo3.'class.db_list.inc');
-require_once (PATH_typo3.'class.db_list_extra.inc');
-
-require_once (t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_create_folder.php');
-require_once (t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_belib.php');
-
 class user_orderedit_func {
 
  	/**
@@ -581,9 +575,6 @@ class user_orderedit_func {
  	function fe_user_orders($PA, $fobj){
  		global $BE_USER;
  	
- 		require_once (t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_order_localrecordlist.php');
-		require_once (t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_feusers_localrecordlist.php');
-
  		$dblist = t3lib_div::makeInstance('tx_commerce_order_localRecordlist');
 		#$dblist->additionalOutTop = $this->doc->section("",$this->doc->funcMenu($headerSection,t3lib_BEfunc::getFuncMenu($this->id,"SET[function]",$this->MOD_SETTINGS["function"],$this->MOD_MENU["function"])));
 		$dblist->backPath = $GLOBALS['BACK_PATH'];

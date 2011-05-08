@@ -29,8 +29,6 @@
  * @author	Rene Fritz <r.fritz@colorcube.de>
  * @package DAM-Treelib
  */
-require_once (PATH_t3lib.'class.t3lib_scbase.php');
-
 
 /**
  * Base class for the (iframe) treeview in TCEforms elements
@@ -164,7 +162,6 @@ class tx_commerce_treelib_browser extends t3lib_SCbase {
 
 		$this->content .= $this->doc->startPage('Treeview Browser');
 
-		require_once (PATH_t3lib.'class.t3lib_tceforms.php');
 		$form = t3lib_div::makeInstance('t3lib_tceforms');
 		$form->initDefaultBEmode();
 		$form->backPath = $this->backPath;
@@ -220,7 +217,6 @@ class tx_commerce_treelib_browser extends t3lib_SCbase {
 
 			// This will render MM relation fields in the correct way.
 			// Read the whole record, which is not needed, but there's no other way.
-		require_once (PATH_t3lib.'class.t3lib_transferdata.php');
 		$trData = t3lib_div::makeInstance('t3lib_transferData');
 		$trData->addRawData = true;
 		$trData->lockRecords = true;

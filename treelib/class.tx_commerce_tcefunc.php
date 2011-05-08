@@ -55,8 +55,6 @@ class tx_commerce_tceFunc {
 				break;
 		}
 		
-		//Include the tree and the renderer
-		require_once(PATH_txcommerce.'treelib/class.tx_commerce_categorytree.php');
 		$browseTrees = t3lib_div::makeInstance('tx_commerce_categorytree');
 		$browseTrees->noClickmenu();	//disabled clickmenu
 		$browseTrees->setMinCategoryPerms($perms); //set the minimum permissions
@@ -77,7 +75,6 @@ class tx_commerce_tceFunc {
 		
 		$browseTrees->init();
 		
-		require_once(PATH_txcommerce.'treelib/class.tx_commerce_treelib_tceforms.php');
 		$renderBrowseTrees = t3lib_div::makeInstance('tx_commerce_treelib_tceforms');
 		$renderBrowseTrees->init ($PA, $fObj);
 		$renderBrowseTrees->setIFrameTreeBrowserScript($this->tceforms->backPath.PATH_txcommerce_rel.'mod_treebrowser/index.php');

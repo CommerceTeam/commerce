@@ -6,7 +6,6 @@
  * @maintainer 	Erik Frister <typo3@marketing-factory.de>
  **/
 
-require_once(PATH_t3lib.'class.t3lib_beuserauth.php');
 require_once(t3lib_extmgm::extPath('commerce').'tree/class.langbase.php');
 
 class mounts extends langbase{

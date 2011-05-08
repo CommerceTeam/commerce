@@ -28,7 +28,6 @@ require_once($BACK_PATH.'init.php');
 require_once($BACK_PATH.'template.php');
 require_once(PATH_t3lib.'class.t3lib_browsetree.php');
 
-require_once (t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_create_folder.php');
 require_once (t3lib_extmgm::extPath('commerce').'mod_orders/class.tx_commerce_order_pagetree.php');
 
 /**

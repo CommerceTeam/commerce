@@ -52,7 +52,6 @@ class tx_commerce_systemdata extends t3lib_SCbase {
 		global $BE_USER,$LANG,$BACK_PATH,$TCA_DESCR,$TCA,$CLIENT,$TYPO3_CONF_VARS;
 
 		parent::init();
-			require_once (t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_create_folder.php');
 			tx_commerce_create_folder::init_folders();
 			list($modPid,$defaultFolder,$folderList) = tx_commerce_folder_db::initFolders('Commerce', 'commerce');
 			list($this->attrUid,$defaultFolder,$folderList) = tx_commerce_folder_db::initFolders('Attributes', 'commerce', $modPid);

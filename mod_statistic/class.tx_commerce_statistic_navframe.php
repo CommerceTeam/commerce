@@ -1,67 +1,44 @@
 <?php
 /***************************************************************
-*  Copyright notice
-*
-*  (c) 2005-2009 Ingo Schmitt <is@marketing-factory.de>
-*  All rights reserved
-*
-*  This script is part of the TYPO3 project. The TYPO3 project is
-*  free software; you can redistribute it and/or modify
-*  it under the terms of the GNU General Public License as published by
-*  the Free Software Foundation; either version 2 of the License, or
-*  (at your option) any later version.
-*
-*  The GNU General Public License can be found at
-*  http://www.gnu.org/copyleft/gpl.html.
-*
-*  This script is distributed in the hope that it will be useful,
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*  GNU General Public License for more details.
-*
-*  This copyright notice MUST APPEAR in all copies of the script!
-***************************************************************/
+ *  Copyright notice
+ *
+ *  (c) 2005-2011 Ingo Schmitt <is@marketing-factory.de>
+ *  All rights reserved
+ *
+ *  This script is part of the TYPO3 project. The TYPO3 project is
+ *  free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  The GNU General Public License can be found at
+ *  http://www.gnu.org/copyleft/gpl.html.
+ *
+ *  This script is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  This copyright notice MUST APPEAR in all copies of the script!
+ ***************************************************************/
+
 /**
  * COMMERCE order edit nav frame.
  * Part of the COMMERCE (Advanced Shopping System) extension.
  *
- * @author	Inog Schmitt <is@marketing-factory.de>
- * @author	Kasper Skaarhoj <kasperYYYY@typo3.com>
+ * Extension class for the t3lib_browsetree class, specially made for browsing pages in the Web module
+ *
+ * @author Inog Schmitt <is@marketing-factory.de>
+ * @author Kasper Skaarhoj <kasperYYYY@typo3.com>
  * @package TYPO3
- * @subpackage tx_commerce  
- * @subpackage orders
- * @see alt_db_navframe.php
- * 
- * $Id: class.tx_commerce_statistic_navframe.php 308 2006-07-26 22:23:51Z ingo $
+ * @subpackage tx_commerce
  */
-
-
-
 
 unset($MCONF);
 include ('conf.php');
 include ($BACK_PATH.'init.php');
 include ($BACK_PATH.'template.php');
-require_once(PATH_t3lib.'class.t3lib_browsetree.php');
 
-/**
- * Require for commerce
- */
-require_once (t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_db_list.php');
-
-
-/**
- * Require for commerce
- */
- require_once (t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_create_folder.php');
-/**
- * Extension class for the t3lib_browsetree class, specially made for browsing pages in the Web module
- *
- * @author	Kasper Skaarhoj <kasperYYYY@typo3.com>
- * @package TYPO3
- * @subpackage core
- * @see class t3lib_browseTree
- */
 class localPageTree extends t3lib_browseTree {
 
 	var $ext_showPageId;

@@ -34,11 +34,6 @@
  * @package TYPO3
  * @subpackage tx_commerce
  */
-
-require_once(t3lib_extmgm::extPath('commerce') .'lib/class.tx_commerce_belib.php');
-require_once(t3lib_extmgm::extPath('commerce').'treelib/class.tx_commerce_categorymounts.php');
-require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_article.php'); 
-
 class tx_commerce_cmhooks {
 
 	/**

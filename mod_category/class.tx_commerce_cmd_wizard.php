@@ -13,12 +13,6 @@ require ($BACK_PATH.'template.php');
 
 $LANG->includeLLFile('EXT:lang/locallang_misc.xml');
 
-// ***************************
-// Including classes
-// ***************************
-
-require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_belib.php');
-
 class tx_commerce_cmd_wizard {
 
 	var $pageinfo;

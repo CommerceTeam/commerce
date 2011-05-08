@@ -9,7 +9,7 @@
  */
 require_once(t3lib_extmgm::extPath('commerce').'tree/class.leafView.php');
 
-class tx_commerce_leaf_productview extends leafView {
+class tx_commerce_treelib_link_leaf_productview extends leafView {
 	protected $table 		= 'tx_commerce_products';	//DB Table
 	protected $domIdPrefix 	= 'txcommerceProduct';
 	protected $openProd		= 0; // uid of the open product

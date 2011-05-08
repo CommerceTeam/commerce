@@ -14,7 +14,6 @@ require_once($BACK_PATH.'init.php');
 require_once($BACK_PATH.'template.php');
 
 require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_db_list.php');
-require_once (t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_create_folder.php');
 
 $BE_USER->modAccess($MCONF,1);	// This checks permissions and exits if the users has no permission for entry.
 t3lib_BEfunc::lockRecords();

@@ -1,4 +1,5 @@
 08.05.2011 Christian Kuhn <lolli@schwarzbu.ch>
+* Finish migration to autoloader for now
 * Remove unused and broken perftest be module
 * Remove unused and broken tracking be module
 * Move mod_clickmenu/commerce_clickmenu.php to mod_clickmenu/class.tx_commerce_clickmenu.php

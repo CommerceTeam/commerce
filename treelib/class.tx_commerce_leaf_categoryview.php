@@ -8,7 +8,6 @@
  * @maintainer 	Erik Frister <typo3@marketing-factory.de>
  */
 require_once(t3lib_extmgm::extPath('commerce').'tree/class.leafView.php');
-require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_belib.php');
 
 class tx_commerce_leaf_categoryview extends leafView{
 	protected $table 			= 'tx_commerce_categories';	//DB Table ##isnt this read automatically?###

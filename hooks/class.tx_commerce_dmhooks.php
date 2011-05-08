@@ -32,12 +32,6 @@
  * @author Thomas Hempel <thomas@work.de>
  * @author Ingo Schmitt <is@marketing-factory.de>
  */
-require_once(t3lib_extmgm::extPath('commerce') .'lib/class.tx_commerce_belib.php');
-require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_article.php'); 
-require_once(t3lib_extmgm::extPath('commerce').'treelib/class.tx_commerce_categorymounts.php');
-
-require_once(t3lib_extmgm::extPath('commerce').'class.tx_commerce_articlecreator.php'); // holds methods for adding/updating articles from the product-detailview
-
 class tx_commerce_dmhooks {
 
 	var $belib;

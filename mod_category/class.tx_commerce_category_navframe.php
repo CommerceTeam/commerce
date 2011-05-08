@@ -46,8 +46,6 @@ if (!(@is_numeric(TYPO3_REQUESTTYPE) || @is_numeric(TYPO3_REQUESTTYPE_AJAX))) {
 
 // Require ext update script.
 require_once(t3lib_extmgm::extPath('commerce').'class.ext_update.php'); 
-	
-require_once(t3lib_extmgm::extPath('commerce').'treelib/class.tx_commerce_categorytree.php');
 
 class tx_commerce_category_navframe {
 

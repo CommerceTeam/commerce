@@ -1,5 +1,4 @@
 <?php
-require_once(PATH_t3lib.'interfaces/interface.t3lib_tceformsinlinehook.php');
 class tx_commerce_irrehooks implements t3lib_tceformsInlineHook {
 	var $parentObject;
 	private $extconf;

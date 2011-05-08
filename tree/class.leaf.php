@@ -7,9 +7,6 @@
  **/
 require_once(t3lib_extmgm::extPath('commerce').'tree/class.langbase.php');
 
-require_once (PATH_t3lib.'class.t3lib_iconworks.php');
-
-
 abstract class leaf extends langbase{
 	
 	public $view;			//LeafView Object of the Leaf

@@ -5,7 +5,6 @@
  * @author 		Marketing Factory <typo3@marketing-factory.de>
  * @maintainer 	Erik Frister <typo3@marketing-factory.de>
  **/
-require_once(t3lib_extmgm::extPath('commerce') .'lib/class.tx_commerce_belib.php');
 
 class tx_commerce_versionhooks {
 	

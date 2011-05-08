@@ -8,9 +8,8 @@
  * @maintainer 	Erik Frister <typo3@marketing-factory.de>
  */
 require_once(t3lib_extmgm::extPath('commerce').'tree/class.leafView.php');
-require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_belib.php');
 
-class tx_commerce_leaf_categoryview extends leafView{
+class tx_commerce_treelib_link_leaf_categoryview extends leafView{
 	protected $table 		= 'tx_commerce_categories';	//DB Table ##isnt this read automatically?###
 	protected $domIdPrefix 	= 'txcommerceCategory';
 	protected $openCat		= 0; // the linked category
@@ -69,7 +68,7 @@ class tx_commerce_leaf_categoryview extends leafView{
 }
 
 //XClass Statement
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/commerce/treelib/link/class.tx_commerce_leaf_categoryview.php'])	{
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/commerce/treelib/link/class.tx_commerce_leaf_categoryview.php']);
+if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/commerce/treelib/link/class.tx_commerce_treelib_link_leaf_categoryview.php'])	{
+	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/commerce/treelib/link/class.tx_commerce_treelib_link_leaf_categoryview.php']);
 }
 ?>

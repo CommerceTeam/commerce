@@ -1,55 +1,47 @@
 <?php
 /***************************************************************
-*  Copyright notice
-*
-*  (c) 2005 - 2006 Thomas Hempel (thomas@work.de)
-*  All rights reserved
-*
-*  This script is part of the TYPO3 project. The TYPO3 project is
-*  free software; you can redistribute it and/or modify
-*  it under the terms of the GNU General Public License as published by
-*  the Free Software Foundation; either version 2 of the License, or
-*  (at your option) any later version.
-*
-*  The GNU General Public License can be found at
-*  http://www.gnu.org/copyleft/gpl.html.
-*
-*  This script is distributed in the hope that it will be useful,
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*  GNU General Public License for more details.
-*
-*  This copyright notice MUST APPEAR in all copies of the script!
-***************************************************************/
-/**
- * 
+ *  Copyright notice
+ *
+ *  (c) 2005 - 2011 Thomas Hempel (thomas@work.de)
+ *  All rights reserved
+ *
+ *  This script is part of the TYPO3 project. The TYPO3 project is
+ *  free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  The GNU General Public License can be found at
+ *  http://www.gnu.org/copyleft/gpl.html.
+ *
+ *  This script is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  This copyright notice MUST APPEAR in all copies of the script!
+ ***************************************************************/
+
+/*
+ * For testing
+ *
+ * Kreditkarte			Testnummer
+ * Visa				4111 1111 1111 1111
+ * MasterCard			5500 0000 0000 0004
+ * American Express	3400 0000 0000 009
+ * Diner's Club		3000 0000 0000 04
+ * Carte Blanche		3000 0000 0000 04
+ * Discover			6011 0000 0000 0004
+ * JCB					3088 0000 0000 0009
  *
  * @package commerce
- * @subpackage payment
  * @author Thomas Hempel <thomas@work.de>
- * @internal Maintainer Thomas Hempel
- * 
- * $Id: class.tx_commerce_payment_creditcard.php 501 2007-01-15 14:57:56Z ingo $
  */
- 
- /*
-  * for testing
-  *
-  * Kreditkarte			Testnummer 
-  * Visa      			4111 1111 1111 1111
-  * MasterCard			5500 0000 0000 0004
-  * American Express	3400 0000 0000 009
-  * Diner's Club		3000 0000 0000 04  
-  * Carte Blanche		3000 0000 0000 04
-  * Discover			6011 0000 0000 0004
-  * JCB					3088 0000 0000 0009
-  *
-  */
- 
+
 // library for credit card checks
 require_once(t3lib_extmgm::extPath('commerce') .'lib/class.tx_commerce_ccvs_lib.php');
 require_once(t3lib_extmgm::extPath('commerce') .'payment/libs/class.tx_commerce_payment_wirecard_lib.php');
- 
+
 class tx_commerce_payment_creditcard {
 	/**
 	 * The locallang array for this payment module

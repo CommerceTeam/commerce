@@ -6,21 +6,10 @@
  * @maintainer Erik Frister
  */ 
  
-$LANG->includeLLFile('EXT:lang/locallang_mod_web_list.xml');
-require_once (PATH_t3lib.'class.t3lib_page.php');
-require_once (PATH_t3lib.'class.t3lib_pagetree.php');
-require_once (PATH_t3lib.'class.t3lib_recordlist.php');
-require_once (PATH_t3lib.'class.t3lib_clipboard.php');
-require_once (PATH_t3lib.'class.t3lib_parsehtml.php');
-require_once ($BACK_PATH.'class.db_list.inc');
-require_once ($BACK_PATH.'class.db_list_extra.inc');
-$BE_USER->modAccess($MCONF,1);
-
+$GLOBALS['LANG']->includeLLFile('EXT:lang/locallang_mod_web_list.xml');
+require_once(PATH_typo3 . 'class.db_list.inc');
+require_once(PATH_typo3 . 'class.db_list_extra.inc');
 require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_db_list_extra.inc');
-
-//Commerce Leafs
-require_once(t3lib_extmgm::extPath('commerce').'treelib/class.tx_commerce_leaf_categorydata.php');
-require_once(t3lib_extmgm::extPath('commerce').'treelib/class.tx_commerce_leaf_productdata.php');
 
 class tx_commerce_db_list {
 		// Internal, GPvars:

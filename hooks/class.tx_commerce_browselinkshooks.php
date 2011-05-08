@@ -37,12 +37,6 @@ if (!defined ('TYPO3_MODE')) {
 	die ('Access denied.');
 }
 
-	// include defined interface for hook
-require_once (PATH_t3lib.'interfaces/interface.t3lib_browselinkshook.php');
-
-	// include the treelib from commerce
-require_once(t3lib_extmgm::extPath('commerce').'treelib/link/class.tx_commerce_categorytree.php');
-
 class tx_commerce_browselinkshooks implements t3lib_browseLinksHook {
     // Sauvegarde locale du cObj parent
     protected $pObj;
@@ -69,7 +63,7 @@ class tx_commerce_browselinkshooks implements t3lib_browseLinksHook {
     
     function initTree() {
     	// initialiize the tree     
-		$this->treeObj = t3lib_div::makeInstance('tx_commerce_categorytree');
+		$this->treeObj = t3lib_div::makeInstance('tx_commerce_treelib_link_categorytree');
 		$this->treeObj->init();
     }
     

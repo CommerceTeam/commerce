@@ -30,8 +30,6 @@
  * @author Ingo Schmitt <is@marketing-factory.de>
  */
 
-require_once (PATH_t3lib.'class.t3lib_recordlist.php');
-require_once (PATH_t3lib.'class.t3lib_div.php');
 require_once (PATH_typo3.'class.db_list.inc');
 require_once (PATH_typo3.'class.db_list_extra.inc');
 
