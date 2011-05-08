@@ -59,7 +59,6 @@ class feusers_observer {
 		$observable->addObserver($this);
 	}
 
-
 	/**
 	 * Handle update event.
 	 * Is called from observable or hook handlers upon event.
@@ -72,28 +71,13 @@ class feusers_observer {
 	 * @param array $changedFieldArray: reference to the incoming fields
 	 */
 	function update($status, $id, &$changedFieldArray) {
-
-//		xdebug_start_trace();
-
-//		debug($changedFieldArray,'changedFieldArray');
-//
-//		if($changedFieldArray['tx_commerce_tt_address_id']) {
-//
-//		}
-
-
 		//get complete feuser object
 		$feuser_dao =& new feuser_dao($id);
-//		debug($feuser_dao);
-		//$feuser_obj =& $feuser_dao->getObject();
 
 		//get main address id from feuser object
 		$top_id = $feuser_dao->get('tx_commerce_tt_address_id');
 
-		//debug($top_id);
-
 		if(empty($top_id)) {
-
 			//get new address object
 			$address_dao =& new address_dao();
 
@@ -102,17 +86,13 @@ class feusers_observer {
 			$address_dao->set('tx_commerce_is_main_address','1');
 
 			//set address type if not yet defined
-			if(!$address_dao->issetProperty('tx_commerce_address_type_id'))$address_dao->set('tx_commerce_address_type_id',1);
-
+			if(!$address_dao->issetProperty('tx_commerce_address_type_id')) {
+				$address_dao->set('tx_commerce_address_type_id',1);
+			}
 		} else {
-
-			//get existing address object
+				//get existing address object
 			$address_dao =& new address_dao($top_id);
 		}
-
-//		debug($address_dao,'$address_dao');
-//		debug($feuser_dao,'$feuser_dao');
-//		debug($status);
 
 		//apply changes to address object
 		$field_mapper = new feuser_address_fieldmapper;
@@ -126,18 +106,12 @@ class feusers_observer {
 			$feuser_dao->set('tx_commerce_tt_address_id',$address_dao->get('id'));
 			$feuser_dao->save();
 		}
-
-//		debug($address_dao,'$address_dao');
-//		debug($feuser_dao,'$feuser_dao');
-
-//		debug(xdebug_get_function_trace(),'xdebug_get_function_trace()');
-//		xdebug_stop_trace();
 	}
-
-
 }
+
  // Include extension?
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/dao/class.feusers_observer.php'])	{
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/dao/class.feusers_observer.php']) {
 	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/dao/class.feusers_observer.php']);
 }
+
 ?>
