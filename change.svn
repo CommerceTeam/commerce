@@ -1,4 +1,5 @@
 08.05.2011 Christian Kuhn <lolli@schwarzbu.ch>
+* Remove unused file mod_clickmenu/class.tx_commerce_clickmenu.php
 * Autoloader and CGL fixes
 
 05.05.2011 Ingo Schmitt <is@marketing-factory.de>
