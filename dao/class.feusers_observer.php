@@ -72,14 +72,14 @@ class feusers_observer {
 	 */
 	function update($status, $id, &$changedFieldArray) {
 		//get complete feuser object
-		$feuser_dao =& new feuser_dao($id);
+		$feuser_dao = new feuser_dao($id);
 
 		//get main address id from feuser object
 		$top_id = $feuser_dao->get('tx_commerce_tt_address_id');
 
 		if(empty($top_id)) {
 			//get new address object
-			$address_dao =& new address_dao();
+			$address_dao = new address_dao();
 
 			//set feuser uid and main address flag
 			$address_dao->set('tx_commerce_fe_user_id',$feuser_dao->get('id'));
@@ -91,7 +91,7 @@ class feusers_observer {
 			}
 		} else {
 				//get existing address object
-			$address_dao =& new address_dao($top_id);
+			$address_dao = new address_dao($top_id);
 		}
 
 		//apply changes to address object
