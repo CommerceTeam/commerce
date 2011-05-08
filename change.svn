@@ -1,4 +1,5 @@
 08.05.2011 Christian Kuhn <lolli@schwarzbu.ch>
+* Fix usage of deprecated method fixed_lgd_pre in mod_statistic/index.php
 * Fix a fatal in mod_access if workspace extension is loaded
 * Fix further PHP 5.3 deprecation messages in dao/
 * Fix a PHP 5.3 deprecation message in dao/class.feusers_observer.php
