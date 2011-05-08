@@ -1,44 +1,39 @@
 <?php
 /***************************************************************
-*  Copyright notice
-*
-*  (c) 2005 - 2008 Ingo Schmitt <is@marketing-factory.de>
-*  All rights reserved
-*
-*  This script is part of the TYPO3 project. The TYPO3 project is
-*  free software; you can redistribute it and/or modify
-*  it under the terms of the GNU General Public License as published by
-*  the Free Software Foundation; either version 2 of the License, or
-*  (at your option) any later version.
-*
-*  The GNU General Public License can be found at
-*  http://www.gnu.org/copyleft/gpl.html.
-*
-*  This script is distributed in the hope that it will be useful,
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*  GNU General Public License for more details.
-*
-*  This copyright notice MUST APPEAR in all copies of the script!
-***************************************************************/
+ *  Copyright notice
+ *
+ *  (c) 2005 - 2011 Ingo Schmitt <is@marketing-factory.de>
+ *  All rights reserved
+ *
+ *  This script is part of the TYPO3 project. The TYPO3 project is
+ *  free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  The GNU General Public License can be found at
+ *  http://www.gnu.org/copyleft/gpl.html.
+ *
+ *  This script is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  This copyright notice MUST APPEAR in all copies of the script!
+ ***************************************************************/
+
 /**
  * Module 'Systemdata' for the 'commerce' extension.
  *
- * @author	Thomas Hempel <thomas@work.de>
- * 
- * $Id: index.php 455 2006-12-13 10:11:30Z ingo $
+ * @author Thomas Hempel <thomas@work.de>
  */
-	// DEFAULT initialization of a module [BEGIN]
+
 unset($MCONF);
 require_once('conf.php');
 require_once($BACK_PATH.'init.php');
 require_once($BACK_PATH.'template.php');
 $LANG->includeLLFile("EXT:commerce/mod_systemdata/locallang.xml");
-#include ("locallang.php");
-require_once (PATH_t3lib."class.t3lib_scbase.php");
-require_once (PATH_t3lib."class.t3lib_recordlist.php");
 $BE_USER->modAccess($MCONF,1);	// This checks permissions and exits if the users has no permission for entry.
-	// DEFAULT initialization of a module [END]
 
 class tx_commerce_systemdata extends t3lib_SCbase {
 	var $pageinfo;
@@ -62,11 +57,6 @@ class tx_commerce_systemdata extends t3lib_SCbase {
 			list($modPid,$defaultFolder,$folderList) = tx_commerce_folder_db::initFolders('Commerce', 'commerce');
 			list($this->attrUid,$defaultFolder,$folderList) = tx_commerce_folder_db::initFolders('Attributes', 'commerce', $modPid);
 			$this->modPid = $modPid;
-		/*
-		if (t3lib_div::_GP("clear_all_cache"))	{
-			$this->include_once[]=PATH_t3lib."class.t3lib_tcemain.php";
-		}
-		*/
 	}
 	
 	/**
@@ -90,15 +80,6 @@ class tx_commerce_systemdata extends t3lib_SCbase {
 	 */
 	function main()	{
 		global $BE_USER,$LANG,$BACK_PATH,$TCA_DESCR,$TCA,$CLIENT,$TYPO3_CONF_VARS;
-
-		// Access check!
-		// The page will show only if there is a valid page and if this page may be viewed by the user
-		/*
-		$this->pageinfo = t3lib_BEfunc::readPageAccess($this->id,$this->perms_clause);
-		$access = is_array($this->pageinfo) ? 1 : 0;
-		
-		if (($this->id && $access) || ($BE_USER->user["admin"] && !$this->id))	{
-		*/	
 
 				// Draw the header.
 			$this->doc = t3lib_div::makeInstance("noDoc");
@@ -144,19 +125,6 @@ class tx_commerce_systemdata extends t3lib_SCbase {
 			}
 
 			$this->content.=$this->doc->spacer(10);
-		/*
-		} else {
-				// If no access or if ID == zero
-
-			$this->doc = t3lib_div::makeInstance("noDoc");
-			$this->doc->backPath = $BACK_PATH;
-
-			$this->content.=$this->doc->startPage($LANG->getLL("title"));
-			$this->content.=$this->doc->header($LANG->getLL("title"));
-			$this->content.=$this->doc->spacer(5);
-			$this->content.=$this->doc->spacer(10);
-		}
-		*/
 	}
 
 	/**

@@ -1,64 +1,46 @@
 <?php
 /***************************************************************
-*  Copyright notice
-*
-*  (c)  2005 - 2006 Ingo Schmitt <is@marketing-factory.de>
-*  All   rights reserved
-*
-*  This script is part of the Typo3 project. The Typo3 project is
-*  free software; you can redistribute it and/or modify
-*  it under the terms of the GNU General Public License as published by
-*  the Free Software Foundation; either version 2 of the License, or
-*  (at your option) any later version.
-*
-*  The GNU General Public License can be found at
-*  http://www.gnu.org/copyleft/gpl.html.
-*
-*  This script is distributed in the hope that it will be useful,
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*  GNU General Public License for more details.
-*
-*  This copyright notice MUST APPEAR in all copies of the script!
-***************************************************************/
+ *  Copyright notice
+ *
+ *  (c) 2005 - 2011 Ingo Schmitt <is@marketing-factory.de>
+ *  All rights reserved
+ *
+ *  This script is part of the Typo3 project. The Typo3 project is
+ *  free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  The GNU General Public License can be found at
+ *  http://www.gnu.org/copyleft/gpl.html.
+ *
+ *  This script is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  This copyright notice MUST APPEAR in all copies of the script!
+ ***************************************************************/
+
+require_once(t3lib_extMgm::extPath('moneylib').'/class.tx_moneylib.php');
+
 /**
  * Database Class for tx_commerce_article_prices. All database calle should
  * be made by this class. In most cases you should use the methodes 
  * provided by tx_commerce_article_price to get informations for articles.
  * Inherited from tx_commerce_db_alib
  *
- * @author	Ingo Schmitt <is@marketing-factory.de>
- * @internal Maintainer Ingo Schmitt
+ * Basic abtract Class for Database Query for 
+ * Database retrival class fro product
+ * inherited from tx_commerce_db_alib
+ *
+ * @author Ingo Schmitt <is@marketing-factory.de>
  * @package TYPO3
  * @subpackage tx_commerce
  * @subpackage tx_commerce_db_alib
  * @see tx_comerce_article
  * @see tx_commerce_db_price
- * 
- * $Id$
  */
- /**
-  * @todo
-  * 
-  */
-  
- /**
- * Basic abtract Class for Database Query for 
- * Database retrival class fro product
- * inherited from tx_commerce_db_alib
- * 
- * 
- *
- * @author		Ingo Schmitt <is@marketing-factory.de>
-
- * @package TYPO3
- * @subpackage tx_commerce
- * @subpackage tx_commerce_db__product
- */
-
-require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_db_alib.php');
-require_once(t3lib_extMgm::extPath('moneylib').'/class.tx_moneylib.php');
- 
 class tx_commerce_db_price extends tx_commerce_db_alib {
 
  	

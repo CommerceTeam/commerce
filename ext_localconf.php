@@ -186,21 +186,16 @@ $TYPO3_CONF_VARS['BE']['AJAX']['tx_commerce_category_navframe::ajaxExpandCollaps
 
 
 // This line configures to process the code selectConf with the class "tx_commerce_hooks"
-require_once(t3lib_extMgm::extPath(COMMERCE_EXTkey) . 'hooks/class.tx_commerce_tcehooksHandler.php');
-$TYPO3_CONF_VARS['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] = 'tx_commerce_tcehooksHandler';
-$TYPO3_CONF_VARS['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass'][] = 'tx_commerce_tcehooksHandler';
+$TYPO3_CONF_VARS['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] = 'EXT:commerce/hooks/class.tx_commerce_tcehooksHandler.php:tx_commerce_tcehooksHandler';
+$TYPO3_CONF_VARS['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass'][] = 'EXT:commerce/hooks/class.tx_commerce_tcehooksHandler.php:tx_commerce_tcehooksHandler';
 
-require_once(t3lib_extMgm::extPath(COMMERCE_EXTkey) . 'hooks/class.tx_commerce_irrehooks.php');
-$TYPO3_CONF_VARS['SC_OPTIONS']['t3lib/class.t3lib_tceforms_inline.php']['tceformsInlineHook'][] = 'tx_commerce_irrehooks';
-require_once(t3lib_extMgm::extPath(COMMERCE_EXTkey) . 'hooks/class.tx_commerce_tceforms_hooks.php');
-$TYPO3_CONF_VARS['SC_OPTIONS']['t3lib/class.t3lib_tceforms.php']['getSingleFieldClass'][] = 'tx_commerce_tceforms_hooks';
+$TYPO3_CONF_VARS['SC_OPTIONS']['t3lib/class.t3lib_tceforms_inline.php']['tceformsInlineHook'][] = 'EXT:commerce/hooks/class.tx_commerce_irrehooks.php:tx_commerce_irrehooks';
+$TYPO3_CONF_VARS['SC_OPTIONS']['t3lib/class.t3lib_tceforms.php']['getSingleFieldClass'][] = 'EXT:commerce/hooks/class.tx_commerce_tceforms_hooks.php:tx_commerce_tceforms_hooks';
 
-require_once(t3lib_extMgm::extPath(COMMERCE_EXTkey) . 'hooks/class.tx_srfeuserregister_commerce_hooksHandler.php');
-$TYPO3_CONF_VARS['EXTCONF']['sr_feuser_register']['tx_srfeuserregister_pi1']['registrationProcess'][] = 'tx_srfeuserregister_commerce_hooksHandler';
+$TYPO3_CONF_VARS['EXTCONF']['sr_feuser_register']['tx_srfeuserregister_pi1']['registrationProcess'][] = 'EXT:commerce/hooks/class.tx_srfeuserregister_commerce_hooksHandler.php:tx_srfeuserregister_commerce_hooksHandler';
 
-require_once(t3lib_extMgm::extPath(COMMERCE_EXTkey) . 'hooks/class.tx_commerce_pi4hooksHandler.php');
-$TYPO3_CONF_VARS['EXTCONF']['commerce/pi4/class.tx_commerce_pi4.php']['deleteAddress'][] = 'tx_commerce_pi4hooksHandler';
-$TYPO3_CONF_VARS['EXTCONF']['commerce/pi4/class.tx_commerce_pi4.php']['saveAddress'][] = 'tx_commerce_pi4hooksHandler';
+$TYPO3_CONF_VARS['EXTCONF']['commerce/pi4/class.tx_commerce_pi4.php']['deleteAddress'][] = 'EXT:commerce/hooks/class.tx_commerce_pi4hooksHandler.php:tx_commerce_pi4hooksHandler';
+$TYPO3_CONF_VARS['EXTCONF']['commerce/pi4/class.tx_commerce_pi4.php']['saveAddress'][] = 'EXT:commerce/hooks/class.tx_commerce_pi4hooksHandler.php:tx_commerce_pi4hooksHandler';
 
 
 // CLI Skript configration
@@ -214,6 +209,4 @@ if (TYPO3_MODE == 'BE') {
 
 // Register dynaflex dca files
 $GLOBALS['T3_VAR']['ext']['dynaflex']['tx_commerce_categories'][] = 'EXT:commerce/dcafiles/class.tx_commerce_categories_dfconfig.php:tx_commerce_categories_dfconfig';
-
-require_once(t3lib_extMgm::extPath(COMMERCE_EXTkey).'lib/class.tx_commerce_forms_select.php');
 ?>

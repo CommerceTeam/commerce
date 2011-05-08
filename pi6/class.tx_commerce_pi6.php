@@ -22,6 +22,8 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+require_once (t3lib_extMgm::extPath('moneylib') . 'class.tx_moneylib.php');
+
 /**
  * Plugin 'commerce_invoice' for the 'commerce_invoice' extension.
  *
@@ -30,10 +32,6 @@
  * @author Tom Rüther <tr@e-netconsulting.de>
  * @author Ingo Schmitt <is@marketing-factory.de>
  */
-
-require_once (PATH_t3lib . 'class.t3lib_cs.php');
-require_once (t3lib_extMgm::extPath('moneylib') . 'class.tx_moneylib.php');
-
 class tx_commerce_pi6 extends tx_commerce_pibase {
 
 	var $prefixId = 'tx_commerce_pi6'; // Same as class name

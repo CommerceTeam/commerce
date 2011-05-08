@@ -23,33 +23,22 @@
  ***************************************************************/
 
 /**
- * Libary for Frontend-Rendering of article prices. This class 
- * should be used for all Fronten-Rendering, no Database calls 
+ * Libary for Frontend-Rendering of article prices. This class
+ * should be used for all Fronten-Rendering, no Database calls
  * to the commerce tables should be made directly
  * This Class is inhertited from tx_commerce_element_alib, all
  * basic Database calls are made from a separate Database Class
  *
  * Do not acces class variables directly, allways use the get and set methods,
  * variables will be changed in php5 to private
- * @author	Ingo Schmitt <is@marketing-factory.de>
- * @internal Maintainer Ingo Schmitt
- * @package TYPO3
- * @subpackage tx_commerce
- * @subpackage tx_commerce_element_alib
- * @see tx_commerce_element_alib
- * @see tx_commerce_db_price
- */
-
-require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_element_alib.php'); 
-require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_db_price.php');
-
-/**
  *
  * @author Volker Graubaum <vg@e-netconsulting.de>
  * @coauthor Ingo Schmitt <is@marketing-factory.de>
  * @package TYPO3
  * @subpackage tx_commerce
- * @subpackage tx_commerce_article_prices
+ * @subpackage tx_commerce_element_alib
+ * @see tx_commerce_element_alib
+ * @see tx_commerce_db_price
  */
 class tx_commerce_article_price extends tx_commerce_element_alib {
 

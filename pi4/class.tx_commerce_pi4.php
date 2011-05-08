@@ -22,6 +22,8 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+require_once (t3lib_extMgm::extPath('static_info_tables') . 'pi1/class.tx_staticinfotables_pi1.php');
+
 /**
  * Plugin 'addresses' for the 'commerce' extension.
  * This class handles all the address stuff, like creating, editing and deleting.
@@ -30,8 +32,6 @@
  * @subpackage tx_commerce
  * @author Thomas Hempel <thomas@work.de>
  */
-require_once (t3lib_extMgm::extPath('static_info_tables') . 'pi1/class.tx_staticinfotables_pi1.php');
-
 class tx_commerce_pi4 extends tx_commerce_pibase {
 
 	var $prefixId = 'tx_commerce_pi4'; // Same as class name

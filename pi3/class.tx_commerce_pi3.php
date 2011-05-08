@@ -22,6 +22,8 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+require_once (t3lib_extMgm::extPath('static_info_tables') . 'pi1/class.tx_staticinfotables_pi1.php');
+
 /**
  * Plugin 'checkout' for the 'commerce' extension.
  * This plugin handles everything concerning the checkout. It gets his configuration completely from TypoScript.
@@ -34,10 +36,6 @@
  * @author Ingo Schmitt <is@marketing-factory.de>
  * @author Volker Graubaum <vg@e-netconsulting.de>
  */
-require_once (PATH_txcommerce . 'pi4/class.tx_commerce_pi4.php');
-
-require_once (t3lib_extMgm::extPath('static_info_tables') . 'pi1/class.tx_staticinfotables_pi1.php');
-
 class tx_commerce_pi3 extends tx_commerce_pibase {
 
 	var $prefixId = 'tx_commerce_pi3'; // Same as class name

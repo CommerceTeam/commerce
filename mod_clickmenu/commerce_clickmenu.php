@@ -2,19 +2,11 @@
 /**
  * Extended Functionality for the Clickmenu when commerce-tables are hit
  * Basically does the same as the alt_clickmenu.php, only that for Categories the output needs to be overridden depending on the rights
- * 
- * @author 		Marketing Factory <typo3@marketing-factory.de>
- * @maintainer 	Erik Frister <typo3@marketing-factory.de>
+ *
+ * @author Marketing Factory <typo3@marketing-factory.de>
  */
-
-require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_belib.php');
-require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_article.php');
-
-require_once(t3lib_extmgm::extPath('commerce').'treelib/class.tx_commerce_categorymounts.php');
-
-
 class tx_commerce_clickmenu {
-	
+
 	protected $rec;
 	protected $pObj;
 	
