@@ -2,7 +2,7 @@
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2005 - 2009 Ingo Schmitt <is@marketing-factory.de>
+ *  (c) 2005 - 2011 Ingo Schmitt <is@marketing-factory.de>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -28,8 +28,6 @@
  * @package commerce
  * @author Ingo Schmitt <is@marketing-factory.de>
  */
-require_once (t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_create_folder.php');
-
 class tx_commerce_forms_select {
 
  	function productsSelector(&$data,&$pObj){

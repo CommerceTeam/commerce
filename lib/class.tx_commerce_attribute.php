@@ -2,8 +2,8 @@
 /***************************************************************
  *  Copyright notice
  *
- *  (c)  2005 - 2008 Ingo Schmitt <is@marketing-factory.de>
- *  All   rights reserved
+ *  (c) 2005 - 2011 Ingo Schmitt <is@marketing-factory.de>
+ *  All rights reserved
  *
  *  This script is part of the Typo3 project. The Typo3 project is
  *  free software; you can redistribute it and/or modify
@@ -21,7 +21,11 @@
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+
 /**
+ * Main script class for the handling of attributes. An attribute desribes the
+ * technical data of an article
+ *
  * Libary for Frontend-Rendering of attributes. This class
  * should be used for all Fronten-Rendering, no Database calls
  * to the commerce tables should be made directly
@@ -30,31 +34,15 @@
  *
  * Do not acces class variables directly, allways use the get and set methods,
  * variables will be changed in php5 to private
- * @author	Ingo Schmitt <is@marketing-factory.de>
- * @internal Maintainer Ingo Schmitt
- * @package TYPO3
- * @subpackage tx_commerce
- * @subpackage tx_commerce_attribute
- * @see tx_commerce_element_alib
- * @see tx_commerce_db_attrubute
- *
- * Basic class for handeleing attribures
- *  */
-require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_element_alib.php');
-require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_db_attribute.php');
-require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_attribute_value.php');
-
-/**
- * Main script class for the handling of attributes. An attribute desribes the
- * technical data of an article
  *
  * @author Ingo Schmitt <is@marketing-factory.de>
  * @package TYPO3
  * @subpackage tx_commerce
  *
- * $Id$
+ * Basic class for handleing attributes
  */
 class tx_commerce_attribute extends tx_commerce_element_alib {
+
 		// Title of Attribute (private)
 	var $title='';
 

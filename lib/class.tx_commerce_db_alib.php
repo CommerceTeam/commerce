@@ -1,70 +1,45 @@
 <?php
 /***************************************************************
-*  Copyright notice
-*
-*  (c)  2005 - 2006 Ingo Schmitt <is@marketing-factory.de>
-*  All   rights reserved
-*
-*  This script is part of the Typo3 project. The Typo3 project is
-*  free software; you can redistribute it and/or modify
-*  it under the terms of the GNU General Public License as published by
-*  the Free Software Foundation; either version 2 of the License, or
-*  (at your option) any later version.
-*
-*  The GNU General Public License can be found at
-*  http://www.gnu.org/copyleft/gpl.html.
-*
-*  This script is distributed in the hope that it will be useful,
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*  GNU General Public License for more details.
-*
-*  This copyright notice MUST APPEAR in all copies of the script!
-***************************************************************/
+ *  Copyright notice
+ *
+ *  (c) 2005 - 2011 Ingo Schmitt <is@marketing-factory.de>
+ *  All rights reserved
+ *
+ *  This script is part of the Typo3 project. The Typo3 project is
+ *  free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  The GNU General Public License can be found at
+ *  http://www.gnu.org/copyleft/gpl.html.
+ *
+ *  This script is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  This copyright notice MUST APPEAR in all copies of the script!
+ ***************************************************************/
+
 /**
  * Abstract Class for handling almost all Database-Calls for all
  * FE Rendering processes. This Class is mostly extended by distinct
  * Classes for spezified Objects
  *
- * @author	Ingo Schmitt <is@marketing-factory.de>
- * @internal Maintainer Ingo Schmitt
- * @package TYPO3
- * @subpackage tx_commerce
- * @subpackage tx_commerce_db_alib
- * 
- * $Id$
- */
- /**
-  * @todo change from pascal to php style {}
-  * @todo implementation of accessCheck to isUid and get_data
-  * 
-  */
-  
-  /*
-   * Include cObj
-   */
-   require_once(PATH_t3lib."class.t3lib_page.php");
-   
-  
-  
- /**
  * Basic abtract Class for Database Query for 
  * tx_commerce_product
  * tx_commerce_article
  * tx_commerce_category
  * tx_commerce_attribute
- * 
- * 
  *
- * @author		Ingo Schmitt <is@marketing-factory.de>
-
+ * @author Ingo Schmitt <is@marketing-factory.de>
  * @package TYPO3
  * @subpackage tx_commerce
  * @subpackage tx_commerce_db_alib
  */
- 
- class tx_commerce_db_alib{ 
- 
+class tx_commerce_db_alib {
+
  	/**
  	 * @var Database table concerning the data
  	 * @access private

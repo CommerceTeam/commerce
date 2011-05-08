@@ -32,9 +32,6 @@
  * @subpackage commerce
  * @author Thomas Hempel <thomas@work.de>
  */
-
-require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_article.php'); 
-
 class tx_commerce_belib {
 
 	/**

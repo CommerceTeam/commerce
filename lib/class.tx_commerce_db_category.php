@@ -1,67 +1,38 @@
 <?php
 /***************************************************************
-*  Copyright notice
-*
-*  (c)  2005 - 2006 Ingo Schmitt <is@marketing-factory.de>
-*  All   rights reserved
-*
-*  This script is part of the Typo3 project. The Typo3 project is
-*  free software; you can redistribute it and/or modify
-*  it under the terms of the GNU General Public License as published by
-*  the Free Software Foundation; either version 2 of the License, or
-*  (at your option) any later version.
-*
-*  The GNU General Public License can be found at
-*  http://www.gnu.org/copyleft/gpl.html.
-*
-*  This script is distributed in the hope that it will be useful,
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*  GNU General Public License for more details.
-*
-*  This copyright notice MUST APPEAR in all copies of the script!
-***************************************************************/
+ *  Copyright notice
+ *
+ *  (c) 2005 - 2011 Ingo Schmitt <is@marketing-factory.de>
+ *  All rights reserved
+ *
+ *  This script is part of the Typo3 project. The Typo3 project is
+ *  free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  The GNU General Public License can be found at
+ *  http://www.gnu.org/copyleft/gpl.html.
+ *
+ *  This script is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  This copyright notice MUST APPEAR in all copies of the script!
+ ***************************************************************/
+
 /**
  * Database Class for tx_commerce_categories. All database calle should
  * be made by this class. In most cases you should use the methodes
  * provided by tx_commerce_category to get informations for articles.
  * Inherited from tx_commerce_db_alib
  *
- * @author	Ingo Schmitt <is@marketing-factory.de>
- * @internal Maintainer Ingo Schmitt
+ * @author Ingo Schmitt <is@marketing-factory.de>
  * @package TYPO3
  * @subpackage tx_commerce
- * @subpackage tx_commerce_db_category
- * @see tx_comerce_category
- * @see tx_commerce_db_alib
- *
- * $Id$
  */
- /**
-  * @todo
-  *
-  */
-
- /**
- * Basic abtract Class for Database Query for
- * Database retrival class fro product
- * inherited from tx_commerce_db_alib
- *
- *
- *
- * @author		Ingo Schmitt <is@marketing-factory.de>
-
- * @package TYPO3
- * @subpackage tx_commerce
- * @subpackage tx_commerce_db_category
- */
-
-define('COMMERCE_CLICKMENU_DLOG', '0'); // +++ Switch for debugging error messages
-
-require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_db_alib.php');
-
 class tx_commerce_db_category extends tx_commerce_db_alib {
-
 
 	/**
 	 * @var Database table concerning the data
@@ -80,21 +51,15 @@ class tx_commerce_db_category extends tx_commerce_db_alib {
 	 */
 
 	function get_parent_category($uid) 	{
-		if (TYPO3_DLOG && COMMERCE_CLICKMENU_DLOG) t3lib_div::devLog('tx_commerce_db_category::get_parent_category  $uid = '.$uid, COMMERCE_EXTkey);
-
 		if (t3lib_div::testInt($uid) && ($uid > 0)){
 			$this->uid=$uid;
-			if (TYPO3_DLOG && COMMERCE_CLICKMENU_DLOG) t3lib_div::devLog('SELECT uid_foreign FROM '.$this->mm_database_table.' WHERE uid_local = '.intval($uid).' AND is_reference=0' , COMMERCE_EXTkey);
 			if ($result=$GLOBALS['TYPO3_DB']->exec_SELECTquery('uid_foreign', $this->mm_database_table,'uid_local = '.intval($uid).' and is_reference=0')) 	{
 				if ($return_data=$GLOBALS['TYPO3_DB']->sql_fetch_assoc($result))	{
 					$GLOBALS['TYPO3_DB']->sql_free_result($result);
-					if (TYPO3_DLOG && COMMERCE_CLICKMENU_DLOG) t3lib_div::devLog('tx_commerce_db_category::get_parent_category return '.$return_data['uid_foreign'], COMMERCE_EXTkey);
 					return $return_data['uid_foreign'];
 				}
 			}
 		}
-
-		if (TYPO3_DLOG && COMMERCE_CLICKMENU_DLOG) t3lib_div::devLog('tx_commerce_db_category::get_parent_category return FALSE', COMMERCE_EXTkey);
  		return false;
  	}
 	

@@ -1,48 +1,42 @@
 <?php
 /***************************************************************
-*  Copyright notice
-*
-*  (c) 1999-2006 Kasper Skaarhoj (kasperYYYY@typo3.com)
-*  (c) 2006- Volker Graubau  <vg_typo3@e-netconsulting.de>  
-*   All  rights reserved
-*
-*  This script is part of the TYPO3 project. The TYPO3 project is
-*  free software; you can redistribute it and/or modify
-*  it under the terms of the GNU General Public License as published by
-*  the Free Software Foundation; either version 2 of the License, or
-*  (at your option) any later version.
-*
-*  The GNU General Public License can be found at
-*  http://www.gnu.org/copyleft/gpl.html.
-*  A copy is found in the textfile GPL.txt and important notices to the license
-*  from the author is found in LICENSE.txt distributed with these scripts.
-*
-*
-*  This script is distributed in the hope that it will be useful,
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*  GNU General Public License for more details.
-*
-*  This copyright notice MUST APPEAR in all copies of the script!
-***************************************************************/
+ *  Copyright notice
+ *
+ *  (c) 1999 - 2011 Kasper Skaarhoj (kasperYYYY@typo3.com)
+ *  (c) 2006 - 2011 Volker Graubaum <vg_typo3@e-netconsulting.de>
+ *  All rights reserved
+ *
+ *  This script is part of the TYPO3 project. The TYPO3 project is
+ *  free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  The GNU General Public License can be found at
+ *  http://www.gnu.org/copyleft/gpl.html.
+ *  A copy is found in the textfile GPL.txt and important notices to the license
+ *  from the author is found in LICENSE.txt distributed with these scripts.
+ *
+ *
+ *  This script is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  This copyright notice MUST APPEAR in all copies of the script!
+ ***************************************************************/
+
+require_once(PATH_typo3.'class.db_list.inc');
+require_once(PATH_typo3.'class.db_list_extra.inc');
+require_once(t3lib_extMgm::extPath('moneylib').'class.tx_moneylib.php');
+
 /**
  * Renders the Orderlist in the BE oredrmodule
  *
- * @internal Maintainer Volker Graubau  <vg_typo3@e-netconsulting.de> 
- * @author	Kasper Skaarhoj <kasperYYYY@typo3.com>
- * @author  	Volker Graubau  <vg_typo3@e-netconsulting.de>
- * 
- * $Id$
+ * @author Kasper Skaarhoj <kasperYYYY@typo3.com>
+ * @author Volker Graubaum <vg_typo3@e-netconsulting.de>
  */
- /**
-  * @TODO Check Xclass inclusion in inhertation
-  */
-require_once (PATH_typo3.'class.db_list.inc');
-require_once (PATH_typo3.'class.db_list_extra.inc');
-require_once (t3lib_extMgm::extPath('moneylib').'class.tx_moneylib.php');
-require_once(PATH_t3lib.'class.t3lib_tceforms.php');
- 
- class tx_commerce_feusers_localRecordlist extends localRecordList {
+class tx_commerce_feusers_localRecordlist extends localRecordList {
 
 	var $alternateBgColors = 1;
 

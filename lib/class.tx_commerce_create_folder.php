@@ -40,9 +40,6 @@
  * @package TYPO3
  * @subpackage tx_commerce
  */
-
-require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_belib.php');
-
 class tx_commerce_create_folder {
 
 	/**

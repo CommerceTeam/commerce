@@ -2,7 +2,7 @@
 /***************************************************************
  *  Copyright notice
  *
- *  (c)  2005 - 2011 Ingo Schmitt <is@marketing-factory.de>
+ *  (c) 2005 - 2011 Ingo Schmitt <is@marketing-factory.de>
  *  All rights reserved
  *
  *  This script is part of the Typo3 project. The Typo3 project is
@@ -36,9 +36,6 @@
  * @coauthor Ingo Schmitt <is@marketing-factory.de>
  * @package TYPO3
  * @subpackage tx_commerce
- * @subpackage tx_commerce_element_alib
- * @see tx_commerce_element_alib
- * @see tx_commerce_db_price
  */
 class tx_commerce_article_price extends tx_commerce_element_alib {
 

@@ -2,8 +2,8 @@
 /***************************************************************
  *  Copyright notice
  *
- *  (c)  2005 - 2006 Ingo Schmitt <is@marketing-factory.de>
- *  All   rights reserved
+ *  (c) 2005 - 2011 Ingo Schmitt <is@marketing-factory.de>
+ *  All rights reserved
  *
  *  This script is part of the Typo3 project. The Typo3 project is
  *  free software; you can redistribute it and/or modify
@@ -21,6 +21,7 @@
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+
 /**
  * Libary for Frontend-Rendering of attribute values. This class 
  * should be used for all Fronten-Rendering, no Database calls 
@@ -28,29 +29,15 @@
  * This Class is inhertited from tx_commerce_element_alib, all
  * basic Database calls are made from a separate Database Class
  *
- * Do not acces class variables directly, allways use the get and set methods,
- * variables will be changed in php5 to private
- * @author	Ingo Schmitt <is@marketing-factory.de>
- * @internal Maintainer Ingo Schmitt
- * @package TYPO3
- * @subpackage tx_commerce
- * @subpackage tx_commerce_attribute_value
- * @see tx_commerce_element_alib
- * @see tx_commerce_db_attribute_value
- * 
- * Basic class for handeleing attribure_values  */
-require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_element_alib.php'); 
-require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_db_attribute_value.php');
-
-/**
  * Main script class for the handling of attribute Values. An attribute_value
  * desribes the technical data of an article
+ *
+ * Do not acces class variables directly, allways use the get and set methods,
+ * variables will be changed in php5 to private
  *
  * @author Ingo Schmitt <is@marketing-factory.de>
  * @package TYPO3
  * @subpackage tx_commerce
- *
- * $Id$
  */
 class tx_commerce_attribute_value extends tx_commerce_element_alib {
 		// Title of Attribute (private)

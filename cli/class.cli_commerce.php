@@ -104,8 +104,6 @@ class tx_commerce_cli extends t3lib_cli {
      * @param string $subTaks	Which SubTask should be und, possible: completeAggregation,incrementalAggregation
      */
     function runStatisticsTask($subTaks) {
-    		
-		require_once (t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_statistics.php');
     	$this->statistics = t3lib_div::makeInstance('tx_commerce_statistics');
 		$this->statistics->init($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['extConf']['excludeStatisticFolders'] != '' ? $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['extConf']['excludeStatisticFolders'] : 0);
 		

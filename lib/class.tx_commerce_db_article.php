@@ -1,62 +1,40 @@
 <?php
 /***************************************************************
-*  Copyright notice
-*
-*  (c)  2005 - 2008 Ingo Schmitt <is@marketing-factory.de>
-*  All   rights reserved
-*
-*  This script is part of the Typo3 project. The Typo3 project is
-*  free software; you can redistribute it and/or modify
-*  it under the terms of the GNU General Public License as published by
-*  the Free Software Foundation; either version 2 of the License, or
-*  (at your option) any later version.
-*
-*  The GNU General Public License can be found at
-*  http://www.gnu.org/copyleft/gpl.html.
-*
-*  This script is distributed in the hope that it will be useful,
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*  GNU General Public License for more details.
-*
-*  This copyright notice MUST APPEAR in all copies of the script!
-***************************************************************/
+ *  Copyright notice
+ *
+ *  (c) 2005 - 2011 Ingo Schmitt <is@marketing-factory.de>
+ *  All rights reserved
+ *
+ *  This script is part of the Typo3 project. The Typo3 project is
+ *  free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  The GNU General Public License can be found at
+ *  http://www.gnu.org/copyleft/gpl.html.
+ *
+ *  This script is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  This copyright notice MUST APPEAR in all copies of the script!
+ ***************************************************************/
+
 /**
  * Database Class for tx_commerce_articles. All database calle should
  * be made by this class. In most cases you should use the methodes
  * provided by tx_commerce_article to get informations for articles.
  * Inherited from tx_commerce_db_alib
  *
- *
- *
- * @author	Ingo Schmitt <is@marketing-factory.de>
+ * @author Ingo Schmitt <is@marketing-factory.de>
  * @internal Maintainer Ingo Schmitt
  * @package TYPO3
  * @subpackage tx_commerce
- * @subpackage tx_commerce_db_article
- * @see tx_comerce_article
- * @see tx_commerce_db_alib
- *
- * $Id$
  */
-
- /**
- * Basic abtract Class for Database Query for 
- * Database retrival class fro product
- * inherited from tx_commerce_db_alib
- * 
- * 
- *
- * @author		Ingo Schmitt <is@marketing-factory.de>
-
- * @package TYPO3
- * @subpackage tx_commerce
- * @subpackage tx_commerce_db_article
- */
-
-require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_db_alib.php');
-
 class tx_commerce_db_article extends tx_commerce_db_alib {
+
 	var $database_attribute_rel_table = 'tx_commerce_articles_article_attributes_mm';
 
  	/**

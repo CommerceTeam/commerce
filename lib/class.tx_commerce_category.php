@@ -22,10 +22,6 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_db_category.php');
-require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_element_alib.php');
-require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_belib.php');
-
 /**
  * Main script class for the handling of categories. Categories contains
  * categories (Reverse data structure) and products

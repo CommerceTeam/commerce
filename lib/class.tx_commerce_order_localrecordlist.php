@@ -1,62 +1,50 @@
 <?php
 /***************************************************************
-*  Copyright notice
-*
-*  (c) 1999 - 2004 Kasper Skaarhoj (kasperYYYY@typo3.com)
-*  (c) 2005 - 2006 Daniel Schöttgen <ds@marketing-factory.de>
-*  (c) 2005 - 2006 Ingo Schmitt <is@marketing-factory.de>  
-*   All  rights reserved
-*
-*  This script is part of the TYPO3 project. The TYPO3 project is
-*  free software; you can redistribute it and/or modify
-*  it under the terms of the GNU General Public License as published by
-*  the Free Software Foundation; either version 2 of the License, or
-*  (at your option) any later version.
-*
-*  The GNU General Public License can be found at
-*  http://www.gnu.org/copyleft/gpl.html.
-*  A copy is found in the textfile GPL.txt and important notices to the license
-*  from the author is found in LICENSE.txt distributed with these scripts.
-*
-*
-*  This script is distributed in the hope that it will be useful,
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*  GNU General Public License for more details.
-*
-*  This copyright notice MUST APPEAR in all copies of the script!
-***************************************************************/
-/**
- * Renders the Orderlist in the BE oredrmodule
+ *  Copyright notice
  *
- * @internal Maintainer Ingo Schmitt <is@marketing-factory.de> 
- * @author	Kasper Skaarhoj <kasperYYYY@typo3.com>
- * @author	Daniel Schöttgen <ds@marketing-factory.de>
- * @author  Ingo Schmitt <is@marketing-factory.de>
- * @author  Jörg Sprung <jsp@marketing-factory.de>
- * 
- * $Id$
+ *  (c) 1999 - 2011 Kasper Skaarhoj (kasperYYYY@typo3.com)
+ *  (c) 2005 - 2011 Daniel Schöttgen <ds@marketing-factory.de>
+ *  (c) 2005 - 2011 Ingo Schmitt <is@marketing-factory.de>
+ *  All rights reserved
+ *
+ *  This script is part of the TYPO3 project. The TYPO3 project is
+ *  free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  The GNU General Public License can be found at
+ *  http://www.gnu.org/copyleft/gpl.html.
+ *  A copy is found in the textfile GPL.txt and important notices to the license
+ *  from the author is found in LICENSE.txt distributed with these scripts.
+ *
+ *
+ *  This script is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  This copyright notice MUST APPEAR in all copies of the script!
+ ***************************************************************/
+
+/**
+ * Renders order list in the BE order module
+ *
+ * @author Kasper Skaarhoj <kasperYYYY@typo3.com>
+ * @author Daniel Schöttgen <ds@marketing-factory.de>
+ * @author Ingo Schmitt <is@marketing-factory.de>
+ * @author Jörg Sprung <jsp@marketing-factory.de>
  */
 
- /**
-  * @TODO Check Xclass inclusion in inhertation
-  */
+require_once(PATH_typo3 . 'class.db_list.inc');
+require_once(PATH_typo3 . 'class.db_list_extra.inc');
+require_once(t3lib_extMgm::extPath('moneylib') . 'class.tx_moneylib.php');
 
-require_once (PATH_typo3.'class.db_list.inc');
-require_once (PATH_typo3.'class.db_list_extra.inc');
-require_once (t3lib_extMgm::extPath('moneylib').'class.tx_moneylib.php');
-require_once (t3lib_extMgm::extPath('commerce').'lib/class.tx_commerce_belib.php');
-require_once(PATH_t3lib.'class.t3lib_tceforms.php');
-require_once(PATH_t3lib.'class.t3lib_befunc.php');
+class tx_commerce_order_localRecordlist extends localRecordList {
 
- 
- class tx_commerce_order_localRecordlist extends localRecordList {
-  var $alternateBgColors = 1;
-  
- 	function makeQueryArray($table, $id, $addWhere="",$fieldList='*')
- 	{
- 		
- 		
+	var $alternateBgColors = 1;
+
+	function makeQueryArray($table, $id, $addWhere="",$fieldList='*') {
  		if ($this->sortField){
  			$orderby=$this->sortField.' ';
  			if ($this->sortRev==1)
@@ -87,9 +75,6 @@ require_once(PATH_t3lib.'class.t3lib_befunc.php');
  		
  			);
  		}else{
- 			
- 		
-			require_once (t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_create_folder.php');
 			tx_commerce_create_folder::init_folders();
 			
 			/**

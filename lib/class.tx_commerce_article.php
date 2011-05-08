@@ -32,11 +32,6 @@
  * @package TYPO3
  * @subpackage tx_commerce
  */
-
-require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_db_article.php');
-require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_element_alib.php');
-require_once(t3lib_extmgm::extPath('commerce').'lib/class.tx_commerce_article_price.php');
-
 class tx_commerce_article extends tx_commerce_element_alib {
 
 	var  $title;    // Title of the article, e.g. articlename (private)
