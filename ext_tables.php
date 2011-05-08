@@ -61,9 +61,6 @@ if (TYPO3_MODE=='BE')	{
 	// Systemdata module
 	t3lib_extMgm::addModule('txcommerceM1','systemdata','',t3lib_extmgm::extPath('commerce').'mod_systemdata/');
 
-	// Tracking module
-	// t3lib_extMgm::addModule('txcommerceM1','tracking','',t3lib_extmgm::extPath('commerce').'mod_tracking/');
-
 	// Statistic Module
 	t3lib_extMgm::addModule('txcommerceM1','statistic','',t3lib_extMgm::extPath('commerce').'mod_statistic/');
 

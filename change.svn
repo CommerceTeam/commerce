@@ -1,4 +1,5 @@
 08.05.2011 Christian Kuhn <lolli@schwarzbu.ch>
+* Remove unused and broken tracking be module
 * Move mod_clickmenu/commerce_clickmenu.php to mod_clickmenu/class.tx_commerce_clickmenu.php
 * Remove unused file mod_clickmenu/class.tx_commerce_clickmenu.php
 * Autoloader and CGL fixes
