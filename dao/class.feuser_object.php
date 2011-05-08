@@ -42,19 +42,7 @@ require_once(dirname(__FILE__).'/class.feuser_address_fieldmapper.php');
 
 class feuser_object extends basic_object {
 
- 	//var $name;
- 	//var $first_name;
- 	//var $last_name;
- 	//var $title;
- 	//var $company;
- 	//var $address;
- 	//var $city;
- 	//var $zip;
- 	//var $country;
- 	//var $telephone;
- 	//var $email;
- 	//var $fax;
-    var $tx_commerce_tt_address_id;
+	var $tx_commerce_tt_address_id;
 
 
 	function feuser_object() {
@@ -127,9 +115,9 @@ class feuser_mapper extends basic_dao_mapper {
 class feuser_dao extends basic_dao {
 
  	function init() {
- 		$this->parser =& new feuser_parser();
- 		$this->mapper =& new feuser_mapper($this->parser);
- 		$this->obj =& new feuser_object;
+ 		$this->parser = new feuser_parser();
+ 		$this->mapper = new feuser_mapper($this->parser);
+ 		$this->obj = new feuser_object;
  	}
 
 }

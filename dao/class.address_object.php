@@ -48,7 +48,7 @@ class address_object extends basic_object {
 
 	function address_object() {
 		//add mapped fields to object
-		$fieldmapper =& new feuser_address_fieldmapper;
+		$fieldmapper = new feuser_address_fieldmapper;
 		$field_arr = $fieldmapper->get_address_fieldarray();
 		foreach($field_arr as $field) {
 			$this->$field='';
@@ -101,9 +101,9 @@ class address_dao_mapper extends basic_dao_mapper {
 class address_dao extends basic_dao {
 
 	function init() {
-		$this->parser =& new address_dao_parser();
-		$this->mapper =& new address_dao_mapper($this->parser);
-		$this->obj =& new address_object;
+		$this->parser = new address_dao_parser();
+		$this->mapper = new address_dao_mapper($this->parser);
+		$this->obj = new address_object;
 	}
 }
 

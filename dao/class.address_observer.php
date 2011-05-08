@@ -72,18 +72,15 @@ class address_observer {
 	 * @param array $changedFieldArray: reference to the incoming fields
 	 */
 	function update($status, $id, &$changedFieldArray) {
-
-//		xdebug_start_trace();
-
 		//get complete address object
-		$address_dao =& new address_dao($id);
+		$address_dao = new address_dao($id);
 
 		//get feuser id
 		$feuser_id = $address_dao->get('tx_commerce_fe_user_id');
 
 		if(!empty($feuser_id)) {
 			//get associated feuser object
-			$feuser_dao =& new feuser_dao($feuser_id);
+			$feuser_dao = new feuser_dao($feuser_id);
 
 			//update feuser object
 			$field_mapper = new feuser_address_fieldmapper;
@@ -93,12 +90,6 @@ class address_observer {
 			$feuser_dao->set('tx_commerce_tt_address_id',$id);
 			$feuser_dao->save();
 		}
-
-//		debug($address_dao,'$address_dao');
-//		debug($feuser_dao,'$feuser_dao');
-
-//		debug(xdebug_get_function_trace(),'xdebug_get_function_trace()');
-//		xdebug_stop_trace();
 	}
 
 
@@ -109,8 +100,6 @@ class address_observer {
  		$dbWhere = '(tx_commerce_tt_address_id="'.intval($id).'")';
  		$dbWhere .= 'AND (deleted="0")';
 
-		//execute query
-//		debug(array('dbSelectById' => $GLOBALS['TYPO3_DB']->SELECTquery($dbFields, $dbTable, $dbWhere)),get_class($this));
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($dbFields, $dbTable, $dbWhere);
 
         //check dependencies (selected rows)

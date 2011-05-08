@@ -57,9 +57,9 @@ class basic_dao {
  	
 
 	function init() {
- 		$this->parser =& new basic_dao_parser();
- 		$this->mapper =& new basic_dao_mapper($this->parser);
- 		$this->obj =& new basic_object;
+ 		$this->parser = new basic_dao_parser();
+ 		$this->mapper = new basic_dao_mapper($this->parser);
+ 		$this->obj = new basic_object;
 	}
 
 
