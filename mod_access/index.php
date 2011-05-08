@@ -366,11 +366,6 @@ class SC_mod_access_perm_index {
 			// CSH
 		$buttons['csh'] = t3lib_BEfunc::cshItem('_MOD_web_info', '', $GLOBALS['BACK_PATH'], '', TRUE);
 
-			// View page
-		$buttons['view'] = '<a href="#" onclick="' . htmlspecialchars(t3lib_BEfunc::viewonclick($this->pageinfo['uid'], $GLOBALS['BACK_PATH'], t3lib_BEfunc::BEgetRootLine($this->pageinfo['uid']))) . '">' .
-				'<img' . t3lib_iconWorks::skinImg($GLOBALS['BACK_PATH'], 'gfx/zoom.gif') . ' title="' . $GLOBALS['LANG']->sL('LLL:EXT:lang/locallang_core.php:labels.showPage', 1) . '" hspace="3" alt="" />' .
-				'</a>';
-
 			// Shortcut
 		if ($GLOBALS['BE_USER']->mayMakeShortcut())	{
 			$buttons['shortcut'] = $this->doc->makeShortcutIcon('id, edit_record, pointer, new_unique_uid, search_field, search_levels, showLimit', implode(',', array_keys($this->MOD_MENU)), $this->MCONF['name']);
@@ -894,9 +889,4 @@ $SOBE = t3lib_div::makeInstance('SC_mod_access_perm_index');
 $SOBE->init();
 $SOBE->main();
 $SOBE->printContent();
-
-if ($TYPO3_CONF_VARS['BE']['compressionLevel'])	{
-	new gzip_encode($TYPO3_CONF_VARS['BE']['compressionLevel']);
-}
-
 ?>
