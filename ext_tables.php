@@ -53,8 +53,6 @@ if (TYPO3_MODE=='BE')	{
 	t3lib_extMgm::addModule('txcommerceM1','category','',t3lib_extmgm::extPath('commerce').'mod_category/');
 	//Access Module
 	t3lib_extMgm::addModule('txcommerceM1','access','',t3lib_extmgm::extPath('commerce').'mod_access/');
-	//Performance Module
-	//t3lib_extMgm::addModule('txcommerceM1','performance','',t3lib_extmgm::extPath('commerce').'mod_perftest/');
 	// Orders module
 	t3lib_extMgm::addModule('txcommerceM1','orders','',t3lib_extmgm::extPath('commerce').'mod_orders/');
 
