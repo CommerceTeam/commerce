@@ -1,4 +1,5 @@
 08.05.2011 Christian Kuhn <lolli@schwarzbu.ch>
+* Clean up some include_once statements
 * Finish migration to autoloader for now
 * Remove unused and broken perftest be module
 * Remove unused and broken tracking be module

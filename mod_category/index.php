@@ -49,8 +49,6 @@ class tx_commerce_categories extends tx_commerce_db_list {
 $SOBE = t3lib_div::makeInstance('tx_commerce_categories');
 $SOBE->init();
 
-	// Include files?
-foreach	($SOBE->include_once as $INC_FILE)	include_once($INC_FILE);
 $SOBE->clearCache();
 $SOBE->main();
 $SOBE->printContent();

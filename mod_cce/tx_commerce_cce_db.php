@@ -36,9 +36,6 @@ class SC_tx_commerce_cce_db {
 	 * @var template
 	 */
 	public $doc;
-	
-		// Internal, dynamic:
-	var $include_once = array();		// Files to include after init() function is called:
 
 	/**
 	 * Commerce Core Engine
@@ -81,12 +78,6 @@ class SC_tx_commerce_cce_db {
 		$this->doc->loadJavascriptLib('contrib/prototype/prototype.js');
 		$this->doc->loadJavascriptLib('../typo3conf/ext/commerce/mod_cce/copyPaste.js');
 		$this->doc->form = '<form action="tx_commerce_cce_db.php?'.$cbString.'&vC='.$this->vC.'&uPT='.$this->uPT.'&redirect='.rawurlencode($this->redirect).'&prErr='.$this->prErr.'&cmd=commit" method="post" name="localeform" id="localeform">';
-
-		
-			// Clipboard?
-		if (is_array($this->CB))	{
-			$this->include_once[] = PATH_t3lib.'class.t3lib_clipboard.php';
-		}
 	}
 
 	/**
@@ -434,9 +425,6 @@ if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['typo3/tce_d
 // Make instance:
 $SOBE = t3lib_div::makeInstance('SC_tx_commerce_cce_db');
 $SOBE->init();
-
-// Include files?
-foreach($SOBE->include_once as $INC_FILE)	include_once($INC_FILE);
 
 $SOBE->initClipboard();
 $SOBE->main();

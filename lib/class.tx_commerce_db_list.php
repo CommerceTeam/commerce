@@ -41,7 +41,6 @@ class tx_commerce_db_list {
 	var $MCONF=array();			// Module configuration
 	var $MOD_MENU=array();		// Menu configuration
 	var $MOD_SETTINGS=array();	// Module settings (session variable)
-	var $include_once=array();	// Array, where files to include is accumulated in the init() function
 
 		// Internal, dynamic:
 	var $content;				// Module output accumulation
@@ -90,11 +89,6 @@ class tx_commerce_db_list {
 			// Initialize menu
 		$this->menuConfig();
 
-			// Inclusions?
-		if ($this->clear_cache || $this->cmd=='delete')	{
-			$this->include_once[]=PATH_t3lib.'class.t3lib_tcemain.php';
-		}
-		
 		$this->params = t3lib_div::getIndpEnv('QUERY_STRING'); // Current script name with parameters
 		$this->script = t3lib_div::getIndpEnv('TYPO3_REQUEST_SCRIPT'); // Current script name
 	}

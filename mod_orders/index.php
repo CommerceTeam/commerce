@@ -65,7 +65,6 @@ class tx_commerce_orders extends t3lib_SCbase {
 	var $MCONF=array();			// Module configuration
 	var $MOD_MENU=array();		// Menu configuration
 	var $MOD_SETTINGS=array();	// Module settings (session variable)
-	var $include_once=array();	// Array, where files to include is accumulated in the init() function
 
 	/**
 	 *
@@ -403,9 +402,6 @@ if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['
 // Make instance:
 $SOBE = t3lib_div::makeInstance('tx_commerce_orders');
 $SOBE->init();
-
-// Include files?
-foreach($SOBE->include_once as $INC_FILE)	include_once($INC_FILE);
 
 $SOBE->main();
 $SOBE->printContent();

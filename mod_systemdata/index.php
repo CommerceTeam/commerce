@@ -352,9 +352,6 @@ if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['
 $SOBE = t3lib_div::makeInstance('tx_commerce_systemdata');
 $SOBE->init();
 
-// Include files?
-foreach($SOBE->include_once as $INC_FILE)	include_once($INC_FILE);
-
 $SOBE->main();
 $SOBE->printContent();
 

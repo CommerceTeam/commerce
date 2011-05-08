@@ -71,13 +71,6 @@ class tx_commerce_statistic extends t3lib_SCbase {
 		{
 			$this->id = $order_pid[0];
 		}
-		
-		/*
-		if (t3lib_div::_GP("clear_all_cache"))	{
-			$this->include_once[]=PATH_t3lib."class.t3lib_tcemain.php";
-		}
-		*/
-		
 	}
 
 	/**
@@ -455,9 +448,6 @@ if (defined("TYPO3_MODE") && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]["XCLASS"]["
 // Make instance:
 $SOBE = t3lib_div::makeInstance("tx_commerce_statistic");
 $SOBE->init();
-
-// Include files?
-foreach($SOBE->include_once as $INC_FILE)	include_once($INC_FILE);
 
 $SOBE->main();
 $SOBE->printContent();
