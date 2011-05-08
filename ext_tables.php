@@ -118,10 +118,10 @@ $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['leafClasses']['txcommer
 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['leafClasses']['txcommerceAttribute'] = 'EXT:'.COMMERCE_EXTkey.'/lib/class.tx_commerce_leafattributeview.php:&tx_commerce_leafAttributeView';
  
 
-// add context menu
-$GLOBALS['TBE_MODULES_EXT']['xMOD_alt_clickmenu']['extendCMclasses'][]=array(
+	// Add context menu for category trees in BE
+$GLOBALS['TBE_MODULES_EXT']['xMOD_alt_clickmenu']['extendCMclasses'][] = array(
 	'name' => 'tx_commerce_clickmenu',
-	'path' => PATH_txcommerce.'mod_clickmenu/commerce_clickmenu.php'
+	'path' => PATH_txcommerce . 'mod_clickmenu/class.tx_commerce_clickmenu.php'
 );
 
 t3lib_extMgm::addToInsertRecords('tx_commerce_categories');
