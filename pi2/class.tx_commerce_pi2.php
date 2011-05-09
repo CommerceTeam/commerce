@@ -879,7 +879,7 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 				}
 
 				$tempContent = $this->cObj->substituteMarkerArray($template, $markerArray, '###|###', 1);
-				$content = $this->substituteMarkerArrayNoCached($tempContent, $this->languageMarker, array(), $wrapMarkerArray);
+				$content .= $this->substituteMarkerArrayNoCached($tempContent, $this->languageMarker, array(), $wrapMarkerArray);
 			} else {
 				// Remove article from basket
 				$this->basket->delete_article($myItem->article->getUid());
