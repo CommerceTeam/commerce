@@ -1,3 +1,6 @@
+09.05.2011 Christian Kuhn <lolli@schwarzbu.ch>
+* Minor CGL fixes to make IDE's more happy
+
 08.05.2011 Christian Kuhn <lolli@schwarzbu.ch>
 * Fix usage of deprecated method fixed_lgd_pre in mod_statistic/index.php
 * Fix a fatal in mod_access if workspace extension is loaded
