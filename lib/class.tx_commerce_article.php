@@ -495,7 +495,7 @@ class tx_commerce_article extends tx_commerce_element_alib {
         /**
          * returns the parent product as object 
          * @see tx_commerce_product
-         * @return product object
+         * @return tx_commerce_product Product object
          */        
         function get_parent_product(){
         	
@@ -504,6 +504,7 @@ class tx_commerce_article extends tx_commerce_element_alib {
         	}else{
             	$products_uid=$this->conn_db->get_parent_product_uid($this->uid);
         	}
+	        /** @var $product tx_commerce_product */
             $product = t3lib_div::makeInstance('tx_commerce_product');
         	$product->init($products_uid);
         	return $product;

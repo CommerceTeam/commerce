@@ -61,31 +61,31 @@ class tx_commerce_pibase extends tslib_pibase {
 	var $workspace = false;
 
 	/**
-	 * Standard Init Method for all
-	 * pi plugins fro tx_commerce
-	 * @param 	array	$conf
+	 * @param array	$conf
 	 */
+	public $conf = array();
 
-	  /**
+	/**
      * @var	integer	[0-1]	
      * @access private
      */
     var $useRootlineInformationToUrl = 0;
 
 	/**
+	 * @var string $handle A handle to do something
+	 */
+	protected $handle = '';
+
+	/**
 	* Category UID for rendering
 	*
 	* @var integer
 	*/
-
     var $cat;
 
-	function init($conf){
-
-		#debug($GLOBALS['TSFE']);
+	protected function init(array $conf = array()) {
 		if ($GLOBALS['TSFE']->beUserLogin) {
 			$this->workspace = $GLOBALS['BE_USER']->workspace;
-			
 		}
 
 		// enable typoscript objects for overridePid

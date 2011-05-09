@@ -44,7 +44,7 @@ class tx_commerce_basic_basket {
  	 * 
  	 * @access public
  	 */
- 	var $basket_items=array();
+ 	public $basket_items = array();
  	
  	/**
  	 * net Basket Summ
@@ -110,7 +110,7 @@ class tx_commerce_basic_basket {
  	/**
  	 * Addes an article to the basket
 	 * @change Volker Graubaum, proofs if item exists
- 	 * @param article_uid Article UID
+ 	 * @param integer $article_uid Article UID
  	 * @param quantity quantity for this basket
  	 * @return true if success / false if no success
  	 * @acces public
@@ -160,7 +160,7 @@ class tx_commerce_basic_basket {
 						$priceid=$article->get_article_price_uid();
 					}
 				}
-				
+
 				$this->basket_items[$article_uid] = t3lib_div::makeInstance('tx_commerce_basket_item');
 				if ($this->basket_items[$article_uid]->init($article_uid,$quantity,$priceid,$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid'])){
 	 				$this->basket_items[$article_uid]->setTaxCalculationMethod($this->pricefromnet);
