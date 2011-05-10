@@ -1,3 +1,6 @@
+10.05.2011 Christian Kuhn <lolli@schwarzbu.ch>
+* CGL cleanup and method visibility in lib/class.tx_commerce_basket.php
+
 09.05.2011 Christian Kuhn <lolli@schwarzbu.ch>
 * Fix a regression introduced with latest pi2 change, leading to one item displayed in basket only
 * CGL changes and type hinting in pi2
