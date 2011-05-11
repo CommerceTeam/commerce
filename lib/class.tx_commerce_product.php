@@ -671,7 +671,7 @@ class tx_commerce_product extends tx_commerce_element_alib {
 
 		} // End of while fetch mm rows
 
-			// Free ressources of main query
+			// Free resources of main query
 		$GLOBALS['TYPO3_DB']->sql_free_result($attributeDataArrayRessource);
 
 			// Return "I didn't found anything, so I'm not an array"
@@ -1308,7 +1308,7 @@ class tx_commerce_product extends tx_commerce_element_alib {
 	 * @return uid of master parent category
 	 */
 	function getMasterparentCategorie() {
-		return $this->conn_db->get_parent_categorie($this->uid);
+		return $this->getMasterparentCategory();
 	}
 
 
