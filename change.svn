@@ -1,4 +1,5 @@
 11.05.2011 Christian Kuhn <lolli@schwarzbu.ch>
+* Cleanup tx_commerce_basic_basket a bit: add getBasketItem(), change isReadOnly() to getIsReadOnly()
 * Cleanup tx_commerce_basket_item a bit: deprecate two methods, add getProduct(), fix usage of deprecated methods
 * Fix usage of some deprecated methods in tx_commerce_article
 * Initialize $lang_uid to 0 in tx_commerce_element_alib

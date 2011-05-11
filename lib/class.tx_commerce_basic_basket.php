@@ -33,8 +33,8 @@
  * @author Ingo Schmitt <is@marketing-factory.de>
  * @package TYPO3
  * @subpackage tx_commerce
- * @see tx_commerce_basket
- * @see tx_commerce_basket_item
+ *
+ * @TODO: Implement basket as singleton 
  */
 
 class tx_commerce_basic_basket {
@@ -267,9 +267,23 @@ class tx_commerce_basic_basket {
      		return false;
      	}
      }
-     
-     
-     
+
+	/**
+	 * Get a specific item object from basket
+	 *
+	 * @param  $itemUid The item uid to get
+	 * @return tx_commerce_basket_item Item object
+	 */
+	public function getBasketItem($itemUid) {
+		if (!array_key_exists($itemUid, $this->basket_items)) {
+			throw new Exception(
+				'Item id does not exist in basket',
+				1305046736
+			);
+		}
+		return $this->basket_items[$itemUid];
+	}
+
      /**
       * returns the quantity of the given article_uid
       * @author	Ingo Schmitt <is@marketing-factory.de>
@@ -675,15 +689,22 @@ class tx_commerce_basic_basket {
  	function setReadOnly(){
  		$this->readOnly = true;
  	}
- 	/**
- 	 * returns the currenty readonly statd
+
+	/**
+ 	 * Get read only state
  	 *
- 	 * @return boolean: true if readonly
+ 	 * @return boolean TRUE if read only
  	 */
- 	
- 	function isReadOnly(){
- 		return $this->readOnly;
+	public function getIsReadOnly() {
+		return $this->readOnly;
+	}
+	/**
+	 * @deprecated since 2011-05-09
+ 	 */
+ 	public function isReadOnly(){
+ 		return $this->getIsReadOnly();
  	}
+
  	/**
  	 * returns True if the basket is changeable
  	 *
