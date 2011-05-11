@@ -1,4 +1,5 @@
 11.05.2011 Christian Kuhn <lolli@schwarzbu.ch>
+* CGL clean up in tx_commerce_basic_basket
 * Clean up change.svn
 * Clean up tx_commerce_basic_basket a bit: add getBasketItem(), change isReadOnly() to getIsReadOnly()
 * Clean up tx_commerce_basket_item a bit: deprecate two methods, add getProduct(), fix usage of deprecated methods
