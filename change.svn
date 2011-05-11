@@ -1,3 +1,6 @@
+11.05.2011 Christian Kuhn <lolli@schwarzbu.ch>
+* CGL cleanup and method visibility in lib/class.tx_commerce_article_price.php
+
 10.05.2011 Christian Kuhn <lolli@schwarzbu.ch>
 * CGL cleanup and method visibility in lib/class.tx_commerce_basket.php
 
