@@ -1,4 +1,5 @@
 11.05.2011 Christian Kuhn <lolli@schwarzbu.ch>
+* Initialize $lang_uid to 0 in tx_commerce_element_alib
 * No-brainer cleanup in lib/class.tx_commerce_product.php
 * CGL cleanup and method visibility in lib/class.tx_commerce_article_price.php
 

@@ -95,12 +95,12 @@ class tx_commerce_element_alib {
   	 */
 	var  $uid;	
 	
-	
+
 	/**
-	 * @var integer language uid
+	 * @var integer Language uid
 	 */
-	var  $lang_uid;
-	
+	var $lang_uid = 0;
+
 	/**
 	 * @var integer language uid
 	 */
