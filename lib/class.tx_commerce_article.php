@@ -305,7 +305,7 @@ class tx_commerce_article extends tx_commerce_element_alib {
           */
         function get_price_gross()  {
 	         if(is_object($this->price)){	
-	        	return $this->price->get_price_gross();
+	        	return $this->price->getPriceGross();
         	}else{
         		return 'no valid price';
         	}      
@@ -319,7 +319,7 @@ class tx_commerce_article extends tx_commerce_element_alib {
           */      
         function get_price_net()   {
         	if(is_object($this->price)){	
-	        	return $this->price->get_price_net();
+	        	return $this->price->getPriceNet();
         	}else{
         		return 'no valid price';
         	}
@@ -358,18 +358,17 @@ class tx_commerce_article extends tx_commerce_element_alib {
          */
       	function getPriceUid() 	{
        		return $this->price_uid;
-       	}
-       
-       
-       /**
-        * Get the price Object
-        * @Return 	object price
-        */
-       function getPriceObj(){
-       		return $this->price;
-       	
-       }
-          
+	}
+
+	/**
+	 * Get price object
+	 *
+	 * @return tx_commerce_article_price Price object
+	 */
+	public function getPriceObj() {
+		return $this->price;
+	}
+
         /**
           * @return double tax
          * @access public
