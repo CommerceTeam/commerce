@@ -166,8 +166,8 @@ class tx_commerce_basket_item {
 	 			$this->price = t3lib_div::makeInstance('tx_commerce_article_price');
 				$this->price->init($priceid,$this->lang_id);
 				$this->price->load_data('basket');
-				$this->priceNet=$this->price->get_price_net();
-				$this->priceGross=$this->price->get_price_gross();
+				$this->priceNet=$this->price->getPriceNet();
+				$this->priceGross=$this->price->getPriceGross();
 				$this->recalculate_item_sums();
 	 			return true;
 	 			
@@ -202,8 +202,8 @@ class tx_commerce_basket_item {
  		$this->price = t3lib_div::makeInstance('tx_commerce_article_price');
  		$this->price->init($this->priceid,$this->lang_id);
 		$this->price->load_data();
- 		$this->priceNet=$this->price->get_price_net();
-		$this->priceGross=$this->price->get_price_gross();
+ 		$this->priceNet=$this->price->getPriceNet();
+		$this->priceGross=$this->price->getPriceGross();
 		$this->recalculate_item_sums();
  		return true;
  	}
@@ -257,7 +257,6 @@ class tx_commerce_basket_item {
  	 */
  	
  	function get_price_net() 	{
- 		#return $this->price->get_price_net();
  		return $this->priceNet;
  	}
  	
@@ -400,23 +399,27 @@ class tx_commerce_basket_item {
  			return 	$this->item_net_sum;
  		}
  	}
- 	
- 	/**
- 	 * retruns the item_sum_gross
- 	 * @param recalculate if the sum shoudl be recalculated, defaul false
- 	 * @return item sum gross
- 	 */
- 	function get_item_sum_gross($recalculate=false){
- 		if ($recalculate==true)
- 		{
- 			return $this->calculate_gross_sum();
- 		}
- 		else
- 		{
- 			return 	$this->item_gross_sum;
- 		}
- 	}
- 	
+
+	/**
+	 * Return calculated item sum gross
+	 *
+	 * @param $recalculate True if sum should be recalculated
+	 * @return integer Sum gross price
+	 */
+	public function getItemSumGross($recalculate = FALSE){
+		if ($recalculate === TRUE) {
+			return $this->calculate_gross_sum();
+		} else {
+			return $this->item_gross_sum;
+		}
+	}
+	/**
+	 * @deprecated since 2011-05-11
+	 */
+	public function get_item_sum_gross($recalculate = FALSE) {
+		return $this->getItemSumGross($recalculate);
+	}
+
  	/**
  	 * retruns the absolut TAX
  	 * @param recalculate if the sum shoudl be recalculated, defaul false
@@ -511,7 +514,16 @@ class tx_commerce_basket_item {
  	 * Product Methods
  	 * ----------------------------------------------------------------------
  	 */
- 	
+
+	/**
+	 * Get product object of item
+	 *
+	 * @return tx_commerce_product Product object
+	 */
+	public function getProduct() {
+		return $this->product;
+	}
+
  	/**
  	 * gets the uid from the product
  	 * @return  uid
