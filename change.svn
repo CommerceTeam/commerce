@@ -1,3 +1,6 @@
+12.05.2011 Christian Kuhn <lolli@schwarzbu.ch>a
+* Remove patches/ folder, containing patches are obsolete with TYPO3 4.5
+
 11.05.2011 Christian Kuhn <lolli@schwarzbu.ch>
 * CGL clean up in tx_commerce_basic_basket
 * Clean up change.svn
