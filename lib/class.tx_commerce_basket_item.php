@@ -485,16 +485,16 @@ class tx_commerce_basket_item {
  	function getArticleAssocArray($prefix) {
  		return $this->article->return_assoc_array($prefix);	
  	}
- 	
- 	/**
- 	 * Returns the ArticleObject
- 	 * @return article object
- 	 */
- 	function getArticleObj()
- 	{
- 		
- 		return $this->article;	
+
+	/**
+	 * Get article object
+	 *
+	 * @return tx_commerce_article Article object
+	 */
+	public function getArticleObj() {
+ 		return $this->article;
  	}
+
  	/**
  	 * gets the article_assoc_array
  	 * @param prefix Prefix for the keys or returnung array optional
