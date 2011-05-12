@@ -150,8 +150,8 @@ class tx_commerce_basic_basket {
 	 * @param integer $articleUid Article uid
 	 * @return mixed Integer price gross or FALSE if item is not in basket
 	 */
-	public function getPriceGrosss($articleUid) {
-		if(is_object($this->basket_items[$articleUid])) {
+	public function getPriceGross($articleUid) {
+		if (is_object($this->basket_items[$articleUid])) {
 			return $this->basket_items[$articleUid]->get_item_sum_gross();
 		}
 		return FALSE;
@@ -164,7 +164,7 @@ class tx_commerce_basic_basket {
 	 * @return mixed Integer price net or FALSE if item is not in basket
 	 */
 	public function getPriceNet($articleUid) {
-		if(is_object($this->basket_items[$articleUid])) {
+		if (is_object($this->basket_items[$articleUid])) {
 			return $this->basket_items[$articleUid]->get_item_sum_net();
 		}
 		return FALSE;
@@ -241,7 +241,7 @@ class tx_commerce_basic_basket {
 	/**
 	 * Remove an article from basket
 	 *
-	 * @param $article_uid Article uid
+	 * @param integer $article_uid Article uid
 	 * @return boolean TRUE on success
 	 */
 	public function delete_article($article_uid) {
@@ -287,32 +287,39 @@ class tx_commerce_basic_basket {
 	 * @return void
 	 */
 	public function recalculate_sums() {
-		$this->get_net_sum();
-		$this->get_gross_sum(FALSE);
+		$this->getNetSum();
+		$this->getGrossSum();
 	}
 
 	/**
 	 * Get basket gross sum
-	 * @param boolean $again TRUE to force recalculation
+	 *
 	 * @return integer Basket gross sum
 	 */
-	public function get_gross_sum($again = TRUE) {
-		$lokal_sum=0;
-	 if ($this->pricefromnet == 1) {
-		$netSumArray = array();
-		foreach ($this->basket_items as $one_item) {
-			$netSumArray[(string)$one_item->get_tax()] += $one_item->get_item_sum_net();
-		}
-		foreach ($netSumArray as $taxrate => $rateNetSum) {
-			$lokal_sum+=(int)round($rateNetSum * (1 + (((float)$taxrate) / 100)));
-		}
+	public function getGrossSum() {
+		$lokal_sum = 0;
+		if ($this->pricefromnet == 1) {
+			$netSumArray = array();
+			foreach ($this->basket_items as $one_item) {
+				$netSumArray[(string)$one_item->get_tax()] += $one_item->get_item_sum_net();
+			}
+			foreach ($netSumArray as $taxrate => $rateNetSum) {
+				$lokal_sum += (int)round($rateNetSum * (1 + (((float)$taxrate) / 100)));
+			}
 		} else {
 			foreach ($this->basket_items as $one_item) {
 				$lokal_sum += $one_item->get_item_sum_gross();
 			}
 		}
-		$this->basket_sum_gross=$lokal_sum;
+		$this->basket_sum_gross = $lokal_sum;
+
 		return $this->basket_sum_gross;
+	}
+	/**
+	 * @deprecated since 2011-05-12
+	 */
+	public function get_gross_sum($again = TRUE) {
+		return $this->getGrossSum();
 	}
 
 	/**
@@ -320,23 +327,29 @@ class tx_commerce_basic_basket {
 	 *
 	 * @return integer Basket net sum
 	 */
-	public function get_net_sum() {
-		$lokal_sum=0;
+	public function getNetSum() {
+		$lokal_sum = 0;
 		if($this->pricefromnet == 0) {
 			$grossSumArray = array();
 			foreach ($this->basket_items as $one_item) {
 				$grossSumArray[(string)$one_item->get_tax()]+=$one_item->get_item_sum_gross();
 			}
 			foreach ($grossSumArray as $taxrate => $rateGrossSum) {
-				$lokal_sum+=(int)round($rateGrossSum / (1 + (((float)$taxrate) / 100)));
+				$lokal_sum += (int)round($rateGrossSum / (1 + (((float)$taxrate) / 100)));
 			}
 		} else {
 			foreach ($this->basket_items as $one_item) {
-				$lokal_sum+=$one_item->get_item_sum_net();
+				$lokal_sum += $one_item->get_item_sum_net();
 			}
 		}
-		$this->basket_sum_net=$lokal_sum;
+		$this->basket_sum_net = $lokal_sum;
 		return $lokal_sum;
+	}
+	/**
+	 * @deprecated since 2011-05-12
+	 */
+	public function get_net_sum() {
+		return $this->getNetSum();
 	}
 
 	/**

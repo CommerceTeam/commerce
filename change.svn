@@ -1,4 +1,7 @@
-12.05.2011 Christian Kuhn <lolli@schwarzbu.ch>a
+13.05.2011 Christian Kuhn <lolli@schwarzbu.ch>
+* tx_commerce_basic_basket: introduce getGrossSum and getNetSum, deprecated get_gross_sum and get_net_num
+
+12.05.2011 Christian Kuhn <lolli@schwarzbu.ch>
 * Remove patches/ folder, containing patches are obsolete with TYPO3 4.5
 
 11.05.2011 Christian Kuhn <lolli@schwarzbu.ch>
