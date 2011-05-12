@@ -256,20 +256,14 @@ class tx_commerce_element_alib {
  	}
  	
 	/**
+	 * Get uid of item
 	 * 
-	 * @return return uid, use e.g. with pi-link-functions
-	 * @depricated 
-	 * @access public
+	 * @return integer Uid
 	 */
-	 
-	 
-	function getUid(){
+	public function getUid() {
 		return $this->uid;
 	}
 
-
-
- 	
  	/**
  	 * @deprecated version - 08.11.2005 
  	 * Returns  the data of this object als array
@@ -461,21 +455,15 @@ class tx_commerce_element_alib {
 		return $this->$field;
 	}
   	
-
 	/**
+	 * Get uid of object
 	 * 
-	 * @return return uid, use e.g. with pi-link-functions
+	 * @return integer uid
 	 * @deprecated 
-	 * @access public
 	 */
-	 
-	 
-	function get_uid(){
+	public function get_uid() {
 		return $this->getUid();
 	}
-
-
- 	
  }
 
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_element_alib.php']) {

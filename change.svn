@@ -1,4 +1,5 @@
 13.05.2011 Christian Kuhn <lolli@schwarzbu.ch>
+* Minor GGL fixes in tx_commerce_element_alib
 * Minor GGL cleanup in tx_commerce_basket_item
 * tx_commerce_basic_basket: introduce getGrossSum and getNetSum, deprecated get_gross_sum and get_net_num
 
