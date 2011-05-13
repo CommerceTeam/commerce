@@ -112,9 +112,6 @@ class tx_commerce_pibase extends tslib_pibase {
 			return $this->error('init',__LINE__,'Template File not defined in TS: ');
 		}
 		$this->templateCode = $this->cObj->fileResource($this->conf['templateFile']);
-		if (empty($this->templateCode)) {
-			return $this->error('init',__LINE__,"Template File not loaded, maybe it doesn't exist: ".$this->conf['templateFile']);
-		}		
 		if ($this->conf['useRootlineInformationToUrl']) {
 			$this->useRootlineInformationToUrl = $this->conf['useRootlineInformationToUrl'];
 		}
