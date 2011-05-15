@@ -45,9 +45,14 @@ class tx_commerce_pi4 extends tx_commerce_pibase {
 	var $sysMessage = '';
 
 	/**
+	 * @var string Template file content
+	 */
+	protected $templateCode = '';
+
+	/**
 	 * Holding the Static_info Object
 	 *
-	 * @var Object
+	 * @var tx_staticinfotables_pi1
 	 */
 	var $staticInfo;
 
@@ -95,39 +100,39 @@ class tx_commerce_pi4 extends tx_commerce_pibase {
 				if ($formValid) {
 					$this->sysMessage = $this->pi_getLL('message_address_new');
 					$this->saveAddressData(TRUE, intval($this->piVars['addressType']));
-					$content = $this->getListing();
+					$content .= $this->getListing();
 					break;
 				}
-				$content = $this->getAddressForm('new', intval($this->piVars['addressid']), $this->conf);
+				$content .= $this->getAddressForm('new', intval($this->piVars['addressid']), $this->conf);
 			break;
 			case 'delete':
-				$addresses = $this->getAddresses($this->user['uid'], intval($this->addresses[$this->piVars['addressid']]['tx_commerce_address_type_id']));
+				$addresses = $this->getAddresses(intval($this->user['uid']), intval($this->addresses[$this->piVars['addressid']]['tx_commerce_address_type_id']));
 				if (count($addresses) <= $this->conf['minAddressCount']) {
 					$this->sysMessage = $this->pi_getLL('message_cant_delete');
-					$content = $this->getListing();
+					$content .= $this->getListing();
 					break;
 				}
 				if ($this->piVars['confirmed'] == 'yes') {
 					$this->deleteAddress();
-					$content = $this->getListing();
+					$content .= $this->getListing();
 					break;
 				}
-				$content = $this->deleteAddressQuestion();
+				$content .= $this->deleteAddressQuestion();
 			break;
 			case 'edit':
 				if ($formValid) {
 					$this->sysMessage = $this->pi_getLL('message_address_changed');
-					$content = $this->getListing();
+					$content .= $this->getListing();
 					break;
 				}
-				$content = $this->getAddressForm('edit', intval($this->piVars['addressid']), $this->conf);
+				$content .= $this->getAddressForm('edit', intval($this->piVars['addressid']), $this->conf);
 			break;
 			case 'listing':
 			default:
 				if ($formValid) {
 					$this->saveAddressData(FALSE, intval($this->piVars['addressType']));
 				}
-				$content = $this->getListing();
+				$content .= $this->getListing();
 			break;
 		}
 
@@ -150,6 +155,7 @@ class tx_commerce_pi4 extends tx_commerce_pibase {
 		$this->staticInfo = t3lib_div::makeInstance('tx_staticinfotables_pi1');
 		$this->staticInfo->init();
 
+		$addressType = 1;
 		if (!empty($this->piVars['addressType'])) {
 			$addressType = intval($this->piVars['addressType']);
 		}
@@ -190,7 +196,7 @@ class tx_commerce_pi4 extends tx_commerce_pibase {
 
 		// Get addresses of this user
 		if ($getAddresses) {
-			$this->addresses = $this->getAddresses($this->user['uid']);
+			$this->addresses = $this->getAddresses(intval($this->user['uid']));
 		}
 	}
 
@@ -220,7 +226,7 @@ class tx_commerce_pi4 extends tx_commerce_pibase {
 		$hookObjectsArr = array();
 		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi4/class.tx_commerce_pi4.php']['getListing']))	{
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi4/class.tx_commerce_pi4.php']['getListing'] as $classRef)	{
-				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+				$hookObjectsArr[] = t3lib_div::getUserObj($classRef);
 			}
 		}
 
@@ -246,6 +252,7 @@ class tx_commerce_pi4 extends tx_commerce_pibase {
 		if (empty($hiddenFieldPrefix)) {
 			$hiddenFieldPrefix = $this->prefixId;
 		}
+		$editAddressId = 0;
 		if ($this->piVars['addressid']) {
 			// Set var editAddressId for checked
 			$editAddressId = (int)$this->piVars['addressid'];
@@ -271,9 +278,9 @@ class tx_commerce_pi4 extends tx_commerce_pibase {
 			$addressTypeCounter[$address['tx_commerce_address_type_id']]++;
 		}
 
-		// @TODO FIXME Initializad as string, but used as array
 		$addressItems = '';
 
+		$addressFound = FALSE;
 		foreach($this->addresses as $address) {
 			if ($addressType > 0 && $address['tx_commerce_address_type_id'] != $addressType) {
 				continue;
@@ -364,7 +371,8 @@ class tx_commerce_pi4 extends tx_commerce_pibase {
 			$itemMA['###SELECT###'].= 'name="' . $hiddenFieldPrefix . '[address_uid]" value="' . $address['uid'] . '" />';
 
 			foreach($hookObjectsArr as $hookObj)	{
-				if (method_exists($hookObj, 'processAddressMarker'))	{
+				if (method_exists($hookObj, 'processAddressMarker')) {
+						/** @noinspection PhpUndefinedMethodInspection */
 					$itemMA = $hookObj->processAddressMarker($itemMA, $address, $piArray, $this);
 				}
 			}
@@ -413,7 +421,8 @@ class tx_commerce_pi4 extends tx_commerce_pibase {
 		}
 
 		foreach($hookObjectsArr as $hookObj) {
-			if (method_exists($hookObj, 'processListingMarker'))	{
+			if (method_exists($hookObj, 'processListingMarker')) {
+					/** @noinspection PhpUndefinedMethodInspection */
 				$hookObj->processListingMarker($baseMA, $linkMA, $addressItems, $addressType, $piArray, $this);
 			}
 		}
@@ -436,10 +445,11 @@ class tx_commerce_pi4 extends tx_commerce_pibase {
 		$hookObjectsArr = array();
 		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi4/class.tx_commerce_pi4.php']['getAddressFormItem']))	{
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi4/class.tx_commerce_pi4.php']['getAddressFormItem'] as $classRef)	{
-				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+				$hookObjectsArr[] = t3lib_div::getUserObj($classRef);
 			}
 		}
 
+		$addressType = 1;
 		if (!empty($this->piVars['addressType'])) {
 			$addressType = intval($this->piVars['addressType']);
 		}
@@ -490,7 +500,6 @@ class tx_commerce_pi4 extends tx_commerce_pibase {
 		foreach($this->fieldList as $fieldName) {
 			$fieldMA = array();
 			$lowerName = strtolower($fieldName);
-			$upperName = strtoupper($fieldName);
 
 			// Get field label
 			$fieldLabel = $this->pi_getLL('label_' . $lowerName, $fieldName);
@@ -518,6 +527,7 @@ class tx_commerce_pi4 extends tx_commerce_pibase {
 
 		foreach($hookObjectsArr as $hookObj) {
 			if (method_exists($hookObj, 'processAddressfieldsMarkerArray'))	{
+					/** @noinspection PhpUndefinedMethodInspection */
 				$fieldsMarkerArray = $hookObj->processAddressfieldsMarkerArray($fieldsMarkerArray, $tplField, $addressData, $action, $addressUid, $config , $this);
 			}
 		}
@@ -537,7 +547,7 @@ class tx_commerce_pi4 extends tx_commerce_pibase {
 			$isMainAddressCodeField.= ' checked="checked"';
 		}
 		$isMainAddressCodeField.= ' />';
-		$isMainAddressCodeLabel.= $this->pi_getLL('label_is_main_address');
+		$isMainAddressCodeLabel = $this->pi_getLL('label_is_main_address');
 
 		//Fill additional information
 		if ($addressData['tx_commerce_address_type_id'] == 1) {
@@ -578,6 +588,7 @@ class tx_commerce_pi4 extends tx_commerce_pibase {
 
 		foreach($hookObjectsArr as $hookObj) {
 			if (method_exists($hookObj, 'processAddressFormMarker')) {
+					/** @noinspection PhpUndefinedMethodInspection */
 				$hookObj->processAddressFormMarker($baseMA, $action, $addressUid, $addressData, $config, $this);
 			}
 		}
@@ -625,14 +636,16 @@ class tx_commerce_pi4 extends tx_commerce_pibase {
 		}
 
 		// Hook to delete an address
+		$message = '';
 		$hookObjectsArr = array();
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi4/class.tx_commerce_pi4.php']['deleteAddress'])) {
 			foreach($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi4/class.tx_commerce_pi4.php']['deleteAddress'] as $classRef) {
-				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+				$hookObjectsArr[] = t3lib_div::getUserObj($classRef);
 			}
 		}
 		foreach($hookObjectsArr as $hookObj) {
 			if (method_exists($hookObj, 'deleteAddress')) {
+					/** @noinspection PhpUndefinedMethodInspection */
 				$message = $hookObj->deleteAddress((int)$this->piVars['addressid'], $this);
 			}
 		}
@@ -668,11 +681,11 @@ class tx_commerce_pi4 extends tx_commerce_pibase {
 		$content = '';
 		switch (strtolower($fieldConfig['type'])) {
 			case 'select':
-				$content = $this->getSelectInputField($fieldName, $fieldConfig, $fieldValue);
+				$content .= $this->getSelectInputField($fieldName, $fieldConfig, $fieldValue);
 			break;
 			case 'static_info_tables':
 				$selected = $fieldValue != '' ? $fieldValue : $fieldConfig['default'];
-				$content = $this->staticInfo->buildStaticInfoSelector(
+				$content .= $this->staticInfo->buildStaticInfoSelector(
 					$fieldConfig['field'],
 					$this->prefixId . '[' . $fieldName . ']',
 					$fieldConfig['cssClass'],
@@ -686,11 +699,11 @@ class tx_commerce_pi4 extends tx_commerce_pibase {
 				);
 			break;
 			case 'check':
-				$content = $this->getCheckboxInputField($fieldName, $fieldConfig, $fieldValue);
+				$content .= $this->getCheckboxInputField($fieldName, $fieldConfig, $fieldValue);
 			break;
 			case 'single':
 			default:
-				$content = $this->getSingleInputField($fieldName, $fieldConfig, $fieldValue);
+				$content .= $this->getSingleInputField($fieldName, $fieldConfig, $fieldValue);
 			break;
 		}
 
@@ -699,11 +712,12 @@ class tx_commerce_pi4 extends tx_commerce_pibase {
 		$hookObjectsArr = array();
 		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['getInputField'])) {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['getInputField'] as $classRef) {
-				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+				$hookObjectsArr[] = t3lib_div::getUserObj($classRef);
 			}
 		}
 		foreach($hookObjectsArr as $hookObj) {
 			if (method_exists($hookObj, 'postGetInputField')) {
+					/** @noinspection PhpUndefinedMethodInspection */
 				$content = $hookObj->postGetInputField($content, $fieldName, $fieldConfig, $fieldValue, $this);
 			}
 		}
@@ -800,7 +814,7 @@ class tx_commerce_pi4 extends tx_commerce_pibase {
 	 * @return string A single checkbox
 	 */
 	function getCheckboxInputField($fieldName, $fieldConfig, $fieldValue = '') {
-		$result = '<input type="checkbox" name="' . $this->prefixId . '[' . $fieldName . ']" id="' . $this->prefixId . '[' . $step . '][' . $fieldName . ']" value="1" ';
+		$result = '<input type="checkbox" name="' . $this->prefixId . '[' . $fieldName . ']" id="' . $this->prefixId . '[][' . $fieldName . ']" value="1" ';
 
 		if (($fieldConfig['default'] == '1' && $fieldValue != 0) || $fieldValue == 1) {
 			$result.= 'checked="checked" ';
@@ -831,7 +845,7 @@ class tx_commerce_pi4 extends tx_commerce_pibase {
 		$hookObjectsArr = array();
 		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi4/class.tx_commerce_pi4.php']['checkAddressForm'])){
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi4/class.tx_commerce_pi4.php']['checkAddressForm'] as $classRef) {
-				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+				$hookObjectsArr[] = t3lib_div::getUserObj($classRef);
 			}
 		}
 
@@ -894,6 +908,7 @@ class tx_commerce_pi4 extends tx_commerce_pibase {
 							$act_method = 'validationMethod_' . strtolower($method[0]);
 							foreach ($hookObjectsArr as $hookObj) {
 								if (method_exists($hookObj, $act_method)) {
+										/** @noinspection PhpUndefinedMethodInspection */
 									if (!$hookObj->$act_method($this,$name,$value)) {
 										$result = false;
 									}
@@ -950,7 +965,7 @@ class tx_commerce_pi4 extends tx_commerce_pibase {
 		$hookObjectsArr = array();
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi4/class.tx_commerce_pi4.php']['saveAddress'])) {
 			foreach($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi4/class.tx_commerce_pi4.php']['saveAddress'] as $classRef) {
-				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+				$hookObjectsArr[] = t3lib_div::getUserObj($classRef);
 			}
 		}
 
@@ -961,6 +976,7 @@ class tx_commerce_pi4 extends tx_commerce_pibase {
 
 			foreach($hookObjectsArr as $hookObj) {
 				if (method_exists($hookObj, 'beforeAddressSave')) {
+						/** @noinspection PhpUndefinedMethodInspection */
 					$hookObj->beforeAddressSave($newData, $this);
 				}
 			}
@@ -973,14 +989,16 @@ class tx_commerce_pi4 extends tx_commerce_pibase {
 
 			foreach($hookObjectsArr as $hookObj) {
 				if (method_exists($hookObj, 'afterAddressSave')) {
+						/** @noinspection PhpUndefinedMethodInspection */
 					$hookObj->afterAddressSave($newUid, $newData, $this);
 				}
 			}
 
-			$this->addresses = $this->getAddresses($this->user['uid']);
+			$this->addresses = $this->getAddresses(intval($this->user['uid']));
 		} else {
 			foreach($hookObjectsArr as $hookObj) {
 				if (method_exists($hookObj, 'beforeAddressEdit')) {
+						/** @noinspection PhpUndefinedMethodInspection */
 					$hookObj->beforeAddressEdit((int)$this->piVars['addressid'], $newData, $this);
 				}
 			}
@@ -995,6 +1013,7 @@ class tx_commerce_pi4 extends tx_commerce_pibase {
 
 			foreach($hookObjectsArr as $hookObj) {
 				if (method_exists($hookObj, 'afterAddressEdit')) {
+						/** @noinspection PhpUndefinedMethodInspection */
 					$hookObj->afterAddressEdit((int)$this->piVars['addressid'], $newData, $this);
 				}
 			}
@@ -1050,12 +1069,13 @@ class tx_commerce_pi4 extends tx_commerce_pibase {
 		$hookObjectsArr = array();
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi4/class.tx_commerce_pi4.php']['getAddresses'])) {
 			foreach($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi4/class.tx_commerce_pi4.php']['getAddresses'] as $classRef) {
- 	 			$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+ 	 			$hookObjectsArr[] = t3lib_div::getUserObj($classRef);
  	 		}
  	 	}
  	 	foreach($hookObjectsArr as $hookObj) {
  	 		if (method_exists($hookObj, 'editSelectStatement')) {
- 	 			$select = $hookObj->editSelectStatement($select, $userId, $addressType, $this);
+					/** @noinspection PhpUndefinedMethodInspection */
+ 	 		    $select = $hookObj->editSelectStatement($select, $userId, $addressType, $this);
  	 		}
  	 	}
 
@@ -1076,7 +1096,7 @@ class tx_commerce_pi4 extends tx_commerce_pibase {
 	}
 }
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/commerce/pi4/class.tx_commerce_pi4.php']) {
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/commerce/pi4/class.tx_commerce_pi4.php']);
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/pi4/class.tx_commerce_pi4.php']) {
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/pi4/class.tx_commerce_pi4.php']);
 }
 ?>
