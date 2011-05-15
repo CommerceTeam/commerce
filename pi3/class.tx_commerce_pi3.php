@@ -2301,13 +2301,14 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 			$upperKey = strtoupper($key);
 			$newdata[$key] = $value;
 
+			$fieldConfig = $TS[$key . '.'];
 			// Get the value from database if the field is a select box
-			if ($TS[$key . '.']['type'] == 'select') {
-				$fieldConfig = $TS[$key . '.'];
+			if ($fieldConfig['type'] == 'select' &&
+					strlen($fieldConfig['table'])) {
 				$table = $fieldConfig['table'];
 				$select = $fieldConfig['value'] . '=\'' . $value . '\'' . $this->cObj->enableFields($fieldConfig['table']);
 				$fields = $fieldConfig['label'] . ' AS label,';
-				$fields.= $fieldConfig['value'] . ' AS value';
+				$fields .= $fieldConfig['value'] . ' AS value';
 				$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 					$fields,
 					$table,
@@ -2316,6 +2317,11 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 				$value = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
 
 				$newdata[$key] = $value['label'];
+			} elseif ($fieldConfig['type'] == 'select' &&
+					is_array($fieldConfig['values.'])) {
+				$newdata[$key] = $fieldConfig['values.'][$value];
+			} elseif ($fieldConfig['type'] == 'select') {
+				throw new Exception('Neither table nor value-list defined for select field ' . $key, 1304333953);
 			}
 			if ($TS[$key . '.']['type'] == 'static_info_tables') {
 				$fieldConfig = $TS[$key . '.'];

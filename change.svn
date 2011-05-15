@@ -1,4 +1,5 @@
 17.05.2011 Christian Kuhn <lolli@schwarzbu.ch>
+* Fixed #26552: Can not store addresses when using select field with value list (Thanks to Michael Knabe)
 * Remove unused broken marker pricefromnet from pi3
 * Further cleanups in pi4: Use initialized class variables and remove debug handling
 * Clean up pi4 a bit to make IDE's more happy

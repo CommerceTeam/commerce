@@ -300,12 +300,13 @@ class tx_commerce_pi4 extends tx_commerce_pibase {
 				}
 
 				// Get value from database if the field is a select box
-				if ($this->conf['formFields.'][$key . '.']['type'] == 'select') {
+				if ($this->conf['formFields.'][$key . '.']['type'] == 'select' &&
+						strlen($this->conf['formFields.'][$key . '.']['table']) > 0) {
 					$fieldConfig = $this->conf['formFields.'][$key . '.'];
 					$table = $fieldConfig['table'];
 					$select = $fieldConfig['value'] . '=\'' . $value . '\'' . $this->cObj->enableFields($fieldConfig['table']);
 					$fields = $fieldConfig['label'] . ' AS label,';
-					$fields.= $fieldConfig['value'] . ' AS value';
+					$fields .= $fieldConfig['value'] . ' AS value';
 					$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 						$fields,
 						$table,
@@ -314,6 +315,12 @@ class tx_commerce_pi4 extends tx_commerce_pibase {
 					$value = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
 					$valueHidden = $value['value'];
 					$value = $value['label'];
+				} elseif($this->conf['formFields.'][$key . '.']['type'] == 'select' &&
+						is_array($this->conf['formFields.'][$key . '.']['values.'])) {
+					$valueHidden = $value;
+					$value = $this->conf['formFields.'][$key . '.']['values.'][$value];
+				} elseif($this->conf['formFields.'][$key . '.']['type'] == 'select') {
+					throw new Exception('Neither table nor value-list defined for select field ' . $key, 1304333953);
 				}
 
 				if ($this->conf['formFields.'][$key . '.']['type'] == 'static_info_tables') {
