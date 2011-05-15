@@ -170,7 +170,7 @@ class tx_commerce_div {
 	* @return	Encoded Key as mixture of key and FE-User Uid
 	* 
 	*/
-	function generateSessionKey($key) {
+	public static function generateSessionKey($key) {
 		if (intval($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['extConf']['userSessionMd5Encrypt']) == 1) {
 			$sessionKey = md5($key.":".$GLOBALS['TSFE']->fe_user->user['uid']);
 		} else {

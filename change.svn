@@ -1,4 +1,5 @@
 17.05.2011 Christian Kuhn <lolli@schwarzbu.ch>
+* Define generateSessionKey as public static in tx_commerce_div
 * Define removeXSSStripTagsArray as public static in tx_commerce_div
 
 13.05.2011 Christian Kuhn <lolli@schwarzbu.ch>
