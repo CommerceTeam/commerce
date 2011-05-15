@@ -37,7 +37,7 @@ class tx_commerce_div {
 	 * @param  $input	Array of elements or other 
 	 * @return $array ist $array is an array, otherwhise false
 	 */
-	function removeXSSStripTagsArray($input){
+	public static function removeXSSStripTagsArray($input) {
 		
 		/**
 		 * In Some cases this function is called with an empty variable, therfore
