@@ -22,6 +22,7 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+	/** @define "t3lib_extMgm::extPath('static_info_tables')" "../../static_info_tables/" */
 require_once (t3lib_extMgm::extPath('static_info_tables') . 'pi1/class.tx_staticinfotables_pi1.php');
 
 /**
@@ -40,7 +41,12 @@ class tx_commerce_pi4 extends tx_commerce_pibase {
 	var $imgFolder = '';
 	var $user = NULL;
 	var $addresses = array();
-	var $formError = array();
+
+	/**
+	 * @var array Holds form error messages
+	 */
+	protected $formError = array();
+
 	var $fieldList = array();
 	var $sysMessage = '';
 
@@ -50,16 +56,9 @@ class tx_commerce_pi4 extends tx_commerce_pibase {
 	protected $templateCode = '';
 
 	/**
-	 * Holding the Static_info Object
-	 *
-	 * @var tx_staticinfotables_pi1
+	 * @var tx_staticinfotables_pi1 Instance of static info view helper
 	 */
 	var $staticInfo;
-
-	/**
-	 * If set to TRUE some debug message will be printed.
-	 */
-	var $debug = FALSE;
 
 	/**
 	 * Main method. Starts the magic...
@@ -179,9 +178,6 @@ class tx_commerce_pi4 extends tx_commerce_pibase {
 
 		// Get the template
 		$this->templateCode = $this->cObj->fileResource($this->conf['templateFile']);
-
-		// Clear form errors
-		$this->formError = array();
 
 		// Check for logged in user
 		if (empty($GLOBALS['TSFE']->fe_user->user)) {
@@ -345,10 +341,6 @@ class tx_commerce_pi4 extends tx_commerce_pibase {
 				$linkTarget = $this->conf['addressMgmPid'];
 			}
 
-			if ($this->debug) {
-				debug($this->conf, 'conf', __LINE__, __FILE__);
-			}
-
 			// Set delete link only if addresses may be deleted, otherwise set it empty
 			if ((int)$addressTypeCounter[$address['tx_commerce_address_type_id']] > (int)$this->conf['minAddressCount']) {
 				$linkMA['###LINK_DELETE###'] = explode('|', $this->pi_linkTP_keepPIvars('|', array('action' => 'delete', 'addressid' => $address['uid'])));
@@ -465,10 +457,6 @@ class tx_commerce_pi4 extends tx_commerce_pibase {
 
 		// Build query to select an address from the database if we have a logged in user
 		$addressData = ($addressUid != NULL) ? $this->addresses[$addressUid] : array();
-
-		if ($this->debug) {
-			debug($config, 'PI4 config');
-		}
 
 		if (count($this->formError) > 0) {
 			$addressData = $this->piVars;
@@ -849,7 +837,6 @@ class tx_commerce_pi4 extends tx_commerce_pibase {
 			}
 		}
 
-		$this->formError = array();
 		$config = $this->conf['formFields.'];
 		$result = TRUE;
 
@@ -948,10 +935,6 @@ class tx_commerce_pi4 extends tx_commerce_pibase {
 		}
 
 		$newData['tstamp'] = time();
-
-		if ($this->debug) {
-			debug($newData,'newdata');
-		}
 
 		foreach($this->fieldList as $name) {
 			$newData[$name] = t3lib_div::removeXSS(strip_tags($this->piVars[$name]));
