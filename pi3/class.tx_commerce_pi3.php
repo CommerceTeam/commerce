@@ -2374,7 +2374,6 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 		$orderData['tstamp'] = $now;
 		$orderData['cu_iso_3_uid'] = $this->conf['currencyId'];
 		$orderData['comment'] = t3lib_div::removeXSS(strip_tags($this->piVars['comment']));
-		$orderData['pricefromnet'] = $basket->pricefromnet;
 
 		// Get hook objects
 		$hookObjectsArr = array();
