@@ -42,75 +42,76 @@ class tx_commerce_category extends tx_commerce_element_alib {
 	 */
 	protected $subtitle='';
 
-        /**
+	/**
 	 * @var string Description
 	 */
 	protected $description = '';
 
-        /**
+	/**
 	 * @var string Images for the category
 	 */
 	protected $images = '';
 
-        /**
+	/**
 	 * @var Image-Array for the category
 	 */
-        protected $images_array = array();
+	protected $images_array = array();
 
-        /**
+	/**
 	 * @var string Title for navigation an Menu Rendering
 	 */
-        protected $navtitle = '';
+	protected $navtitle = '';
 
-        /**
+	/**
 	 * @var string Keywords for meta informations
 	 */
 	protected $keywords = '';
 
-        /**
+	/**
 	 * @var array Array of tx_commerce_category_uid
 	 */
-        protected $categories_uid = array();
+	protected $categories_uid = array();
 
-        /**
+	/**
 	 * @var integer UID of parent category
 	 */
-        protected $parent_category_uid = 0;
+	protected $parent_category_uid = 0;
 
-        /**
+	/**
 	 * @var object Parent category object 
 	 */
-        protected $parent_category = '';
+	protected $parent_category = '';
 
-        /**
+	/**
 	 * @var array Array of tx_commerce_product_uid
 	 */
 	protected $products_uid = array();
 
-        /**
+	/**
 	 * @var array Array of tx_commerce_categories
+	 * @TODO: Make protected if this variable is not used directly anymore
 	 */
-        protected $categories = array();
+	public $categories = array();
 
-        /**
+	/**
 	 * @var array Array of tx_commerce_products
 	 */
-        protected $products = array();
+	protected $products = array();
 
-        /**
-	 * @var string 
+	/**
+	 * @var string Teaser text
 	 */
 	protected $teaser = '';
-        
-        /**
+
+	/**
 	 * @var string Images database field
 	 */
 	protected $teaserImages = '';
 
-        /**
+	/**
 	 * @var array Images for the category
 	 */
-        protected $teaserImagesArray = array();
+	protected $teaserImagesArray = array();
 
 	/**
 	 * @var boolean Is true when data is loaded
@@ -120,46 +121,47 @@ class tx_commerce_category extends tx_commerce_element_alib {
 	/**
 	 * @var array The permissions array with the fields from the category
 	 */
-        public $perms_record = array();
+	public $perms_record = array();
 
 	/**
 	 * @var integer The uid of the user owning the category
 	 */
-        public $perms_userid = 0;
-        
+	public $perms_userid = 0;
+
 	/**
 	 * @var integer The uid of the group owning the category
 	 */
-        public $perms_groupid = 0;
-	
+	public $perms_groupid = 0;
+
 	/**
 	 * @var integer User permissions
 	 */
-        public $perms_user = 0;
-	
+	public $perms_user = 0;
+
 	/**
 	 * @var integer Group permissions
 	 */
-        public $perms_group = 0;
-	
+	public $perms_group = 0;
+
 	/**
 	 * @var integer Everybody permissions 
 	 */
-        public $perms_everybody = 0;
-	
+	public $perms_everybody = 0;
+
 	/**
 	 * @var integer Editlock-flag
 	 */
-        public $editlock = 0;
+	public $editlock = 0;
+
 
 	/**
 	 * @var boolean Flag if permissions have been loaded
 	 */
-        public $permsLoaded = FALSE;
+	public $permsLoaded = FALSE;
 
 	/**
 	 * Constructor, basically calls init
-         * 
+	 *
 	 * @param integer uid of category
 	 * @param integer language_uid , default 0
 	 */
@@ -177,10 +179,10 @@ class tx_commerce_category extends tx_commerce_element_alib {
 
 	/**
 	 * Init called by the constructor
-         * 
+	 *
 	 * @param integer $uid Uid of category
 	 * @param integer $lang_uid Language_uid , default 0
-         * @return boolean TRUE on success, FALSE if no $uid is submitted
+	 * @return boolean TRUE on success, FALSE if no $uid is submitted
 	 */
 	public function init($uid, $lang_uid = 0) {
 		$uid = intval($uid);
@@ -214,7 +216,7 @@ class tx_commerce_category extends tx_commerce_element_alib {
 
 	/**
 	 * Loads the permissions
-         * 
+	 *
 	 * @return void
 	 */
 	public function load_perms() {
@@ -239,9 +241,9 @@ class tx_commerce_category extends tx_commerce_element_alib {
 	}
 
 	/**
-	 * Returns whether the permission is set and allowed for the current user
-         * 
-         * @param integer $perm Permission
+	 * Returns whether the permission is set and allowed for the current usera
+	 *
+	 * @param integer $perm Permission
 	 * @return boolean TRUE if permission is set, FALSE if permission is not set
 	 */
 	public function isPSet($perm) {
@@ -252,7 +254,7 @@ class tx_commerce_category extends tx_commerce_element_alib {
 
 	/**
 	 * Returns the UID of the category
-         * 
+	 *
 	 * @return integer UID of the category
 	 */
 	public function getUid() {
@@ -261,8 +263,8 @@ class tx_commerce_category extends tx_commerce_element_alib {
 
 	/**
 	 * Returns the title of the category
-         * 
-	 * @return string Title 
+	 *
+	 * @return string Title
 	 */
 	public function getTitle() {
 		return $this->title;
@@ -270,7 +272,7 @@ class tx_commerce_category extends tx_commerce_element_alib {
 
 	/**
 	 * Returns the subtitle of the category
-         * 
+	 *
 	 * @return string Subtitle;
 	 */
 	public function get_subtitle() {
@@ -279,7 +281,7 @@ class tx_commerce_category extends tx_commerce_element_alib {
 
 	/**
 	 * Returns the category teaser
-         * 
+	 *
 	 * @return string Teaser;
 	 */
 	public function get_teaser() {
@@ -288,7 +290,7 @@ class tx_commerce_category extends tx_commerce_element_alib {
 
 	/**
 	 * Returns an array of teaserimages
-         * 
+	 *
 	 * @return array Teaserimages;
 	 */
 	public function getTeaserImages() {
@@ -297,7 +299,7 @@ class tx_commerce_category extends tx_commerce_element_alib {
 
 	/**
 	 * Returns the category description
-         * 
+	 *
 	 * @return string Description;
 	 */
 	public function get_description() {
@@ -306,7 +308,7 @@ class tx_commerce_category extends tx_commerce_element_alib {
 
 	/**
 	 * Returns the category navigationtitle
-         * 
+	 *
 	 * @return string Navigationtitle;
 	 */
 	public function get_navtitle() {
@@ -315,7 +317,7 @@ class tx_commerce_category extends tx_commerce_element_alib {
 
 	/**
 	 * Returns the category keywords
-         * 
+	 *
 	 * @return string Keywords;
 	 */
 	public function get_keywords() {
@@ -324,33 +326,33 @@ class tx_commerce_category extends tx_commerce_element_alib {
 
 	/**
 	 * Returns Subcategories from the existiog categories
-         * 
+	 *
 	 * @return array Array of subcategories
 	 */
 	public function get_subcategories() {
-		if (count($this->categories) == 0){
-			return $this->get_child_categories() ;
-		}else{
+		if (count($this->categories) == 0) {
+			return $this->get_child_categories();
+		} else {
 			return $this->categories;
 		}
 	}
 
 	/**
 	 * Returns childproducts from the existing categories
-         * 
+	 *
 	 * @return array Array og childproducts
 	 */
 	public function get_subproducts() {
 		if (count($this->products) == 0) {
 			return $this->get_child_products();
-		}else{
+		} else {
 			return $this->products;
 		}
 	}
 
-        /**
+	/**
 	 * Returns an array of categoryimages
-         * 
+	 *
 	 * @return array Array of images;
 	 */
 	public function getImages() {
@@ -359,7 +361,7 @@ class tx_commerce_category extends tx_commerce_element_alib {
 
 	/**
 	 * Returns the Group-ID of the category
-         * 
+	 *
 	 * @return integer UID of group
 	 */
 	public function getPermsGroupId() {
@@ -368,7 +370,7 @@ class tx_commerce_category extends tx_commerce_element_alib {
 
 	/**
 	 * Returns the User-ID of the category
-         * 
+	 *
 	 * @return integer UID of user
 	 */
 	public function getPermsUserId() {
@@ -377,7 +379,7 @@ class tx_commerce_category extends tx_commerce_element_alib {
 
 	/**
 	 * Returns the permissions for everybody
-         * 
+	 *
 	 * @return integer Permissions for everybody
 	 */
 	public function getPermsEverybody() {
@@ -386,7 +388,7 @@ class tx_commerce_category extends tx_commerce_element_alib {
 
 	/**
 	 * Returns the Permissions for the group
-         * 
+	 *
 	 * @return integer Permissions for group
 	 */
 	public function getPermsGroup(){
@@ -395,7 +397,7 @@ class tx_commerce_category extends tx_commerce_element_alib {
 
 	/**
 	 * Returns the Permissions for the user
-         * 
+	 *
 	 * @return integer Permissions for user
 	 */
 	public function getPermsUser() {
@@ -404,7 +406,7 @@ class tx_commerce_category extends tx_commerce_element_alib {
 
 	/**
 	 * Returns the editlock flag
-         * 
+	 *
 	 * @return integer Editlock-Flag
 	 */
 	public function getEditlock() {
@@ -413,7 +415,7 @@ class tx_commerce_category extends tx_commerce_element_alib {
 
 	/**
 	 * Returns if the actual category has subcategories
-         * 
+	 *
 	 * @return boolean TRUE if the category has subcategories, FALSE if not
 	 */
 	public function has_subcategories() {
@@ -425,7 +427,7 @@ class tx_commerce_category extends tx_commerce_element_alib {
 
 	/**
 	 * Returns if the actual category has subproducts
-         * 
+	 *
 	 * @return boolean TRUE if the category has subproducts, FALSE if not
 	 */
 	public function has_subproducts() {
@@ -437,7 +439,7 @@ class tx_commerce_category extends tx_commerce_element_alib {
 
 	/**
 	 * Loads the data
-         * 
+	 *
 	 * @param mixed $translationMode Transaltionmode of the record, default FALSE to use the default way of translation
 	 */
 	public function load_data($translationMode = FALSE) {
@@ -464,7 +466,7 @@ class tx_commerce_category extends tx_commerce_element_alib {
 
 	/**
 	 * Loads the child categories in the categories array
-         * 
+	 *
 	 * @return array of categories as array of category objects
 	 */
 	public function get_child_categories() {
@@ -477,7 +479,7 @@ class tx_commerce_category extends tx_commerce_element_alib {
 
 	/**
 	 * Returns the number of child categories
-         * 
+	 *
 	 * @return integer Number of child categories
 	 */
 	public function numOfChildCategories() {
@@ -489,7 +491,7 @@ class tx_commerce_category extends tx_commerce_element_alib {
 
 	/**
 	 * Loads the child products in the products array
-         * 
+	 *
 	 * @return array Array of products as array of products objects
 	 */
 
@@ -503,7 +505,7 @@ class tx_commerce_category extends tx_commerce_element_alib {
 
 	/**
 	 * Returns the childproducts as unique UID list
-         * 
+	 *
 	 * @return array Array of child products UIDs
 	 */
 	public function getProductUids() {
@@ -511,8 +513,8 @@ class tx_commerce_category extends tx_commerce_element_alib {
 	}
 
 	/**
-         * Returns the child categories as an list of UIDs
-         * 
+	 * Returns the child categories as an list of UIDs
+	 *
 	 * @return array Array of child category UIDs
 	 */
 	public function getCategoryUids() {
@@ -521,7 +523,7 @@ class tx_commerce_category extends tx_commerce_element_alib {
 
 	/**
 	 * Loads the parent category in the parent-category variable
-         * 
+	 *
 	 * @return mixed category object or FALSE if this category is already the topmost category
 	 */
 	public function get_parent_category() {
@@ -535,8 +537,8 @@ class tx_commerce_category extends tx_commerce_element_alib {
 
 	/**
 	 * Returns an array of category objects (unloaded) that serve as the category's parent
-	 * 
-         * @return array Array of category objects
+	 *
+	 * @return array Array of category objects
 	 */
 	public function getParentCategories() {
 		$parents = $this->conn_db->get_parent_categories($this->uid);
@@ -552,9 +554,9 @@ class tx_commerce_category extends tx_commerce_element_alib {
 	/**
 	 * Carries out the move of the category to the new parent
 	 * Permissions are NOT checked, this MUST be done beforehand
-         * 
-         * @param integer $uid UID of the move target
-         * @param string $op Operation of move (can be 'after' or 'into')
+	 *
+	 * @param integer $uid UID of the move target
+	 * @param string $op Operation of move (can be 'after' or 'into')
 	 * @return boolean TRUE if the move was successfull, FALSE if not
 	 */
 	public function move($uid, $op='after') {
@@ -564,9 +566,9 @@ class tx_commerce_category extends tx_commerce_element_alib {
 		} else {
 			return FALSE;
 		}
-		//update parent_category
+			// Update parent_category
 		$set = $this->conn_db->updateRecord($this->uid, array('parent_category' => $parent_uid));
-		//only update relations if parent_category was successfully set
+			// Only update relations if parent_category was successfully set
 		if($set) {
 			$catList = array($parent_uid);
 			$catList = tx_commerce_belib::getUidListFromList($catList);
@@ -582,8 +584,8 @@ class tx_commerce_category extends tx_commerce_element_alib {
 
 	/**
 	 * Returns recursivly the category path as text
-	 * path segments are glued with $separator
-         * 
+	 * path segments are glued with $separatora
+	 *
 	 * @param string $separator default '-'
 	 * @return string Category path segment
 	 */
@@ -601,14 +603,14 @@ class tx_commerce_category extends tx_commerce_element_alib {
 
 	/**
 	 * Returns a list of all child categories from this category
-         * 
-	 * @param integer $depth Maximum depth for going recursive 
+	 *
+	 * @param integer $depth Maximum depth for going recursive
 	 * @return array List of category uids
 	 */
 	public function get_rec_child_categories_uidlist($depth = FALSE){
 		$return_list = array();
 		if ($depth) {
-			$depth--;
+			$depth --;
 		}
 		$this->load_data();
 		$this->get_child_categories();
@@ -621,16 +623,15 @@ class tx_commerce_category extends tx_commerce_element_alib {
 			$return_list = array_merge($return_list, $this->categories_uid);
 		}
 		return $return_list;
-
 	}
 
 	/**
 	 * Returns a list of all products under this category
-         * 
+	 *
 	 * @param integer $depth Depth maximum deepth for going recursive
 	 * @return array Array with list of product UIDs
 	 */
-	public function getAllProducts($depth = FALSE){
+	public function getAllProducts($depth = FALSE) {
 		$return_list = $this->getProductUids();
 		if ($depth === FALSE) {
 			$depth = PHP_INT_MAX;
@@ -647,7 +648,7 @@ class tx_commerce_category extends tx_commerce_element_alib {
 		return array_unique($return_list);
 	}
 
-        /**
+	/**
 	 * Returns if this category has products
 	 * @return boolean TRUE, if this category has products, FALSE if not
 	 */
@@ -657,10 +658,10 @@ class tx_commerce_category extends tx_commerce_element_alib {
 		}
 		return FALSE;
 	}
-        
+
 	/**
 	 * Returns TRUE if this category has active products or if sub categories have active products
-         * 
+	 *
 	 * @param integer $depth maximum deepth for going recursive, if not set go for maximum
 	 * @return boolen Returns TRUE, if category/subcategories hav active products 
 	 */
@@ -703,7 +704,7 @@ class tx_commerce_category extends tx_commerce_element_alib {
 
 	/**
 	 * Returns the first image, if not availiabe, walk recursive up, to get the image
-         * 
+	 *
 	 * @return mixed Image/FALSE, if no image found
 	 */
 	public function getTeaserImage() {
@@ -721,7 +722,7 @@ class tx_commerce_category extends tx_commerce_element_alib {
 
 	/**
 	 * Returns the category TSconfig array based on the currect->rootLine
-         * 
+	 *
 	 * @todo Make recursiv category TS merging
 	 * @return array
 	 */
@@ -739,25 +740,26 @@ class tx_commerce_category extends tx_commerce_element_alib {
 
 	/**
 	 * Returns an Array of Images
-         * 
-         * @deprecated
+	 *
+	 * @deprecated
 	 * @return array Array of images
 	 */
 	public function get_images() {
 		return $this->getImages();
 	}
-        
-        /**
-         * Returns the category title
-         * @deprecated
-         * @return string Returns the Category title
-         */
+
+	/**
+	 * Returns the category title
+	 *
+	 * @deprecated
+	 * @return string Returns the Category title
+	 */
 	public function get_title() {
 		return $this->title;
-	}        
+	}
 }
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_category.php']) {
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_category.php']);
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_category.php']) {
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_category.php']);
 }
 ?>

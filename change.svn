@@ -1,13 +1,14 @@
-17.05.2011 Christian Kuhn <lolli@schwarzbu.ch>
+16.05.2011 Torben Hansen <t.hansen@skyfillers.com>
+* CGL cleanup in tx_commerce_category.php
+
+16.05.2011 Christian Kuhn <lolli@schwarzbu.ch>
+* Follow-up to CGL cleanup of Torben in tx_commerce_category
 * Fixed #26552: Can not store addresses when using select field with value list (Thanks to Michael Knabe)
 * Remove unused broken marker pricefromnet from pi3
 * Further cleanups in pi4: Use initialized class variables and remove debug handling
 * Clean up pi4 a bit to make IDE's more happy
 * Define generateSessionKey as public static in tx_commerce_div
 * Define removeXSSStripTagsArray as public static in tx_commerce_div
-
-16.05.2011 Torben Hansen <t.hansen@skyfillers.com>
-* CGL cleanup in tx_commerce_category.php
 
 13.05.2011 Christian Kuhn <lolli@schwarzbu.ch>
 * Remove error message from lib/class.tx_commerce_pibase, it should be an exception anyway
