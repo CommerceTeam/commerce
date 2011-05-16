@@ -90,7 +90,7 @@ $TYPO3_CONF_VARS['EXTCONF'][COMMERCE_EXTkey]['SYSPRODUCTS']['PAYMENT']['types'][
 	'class' => 'tx_commerce_payment_creditcard',
 	'type' => PAYMENTArticleType,
 	// Language file for external credit card check
-	'ccvs_language_files' => PATH_txcommerce . 'payment/ccvs_language',
+	'ccvs_language_files' => PATH_txcommerce . 'payment/ccvs/language',
 );
 $TYPO3_CONF_VARS['EXTCONF'][COMMERCE_EXTkey]['SYSPRODUCTS']['PAYMENT']['types']['cashondelivery'] = array(
 	'path' => PATH_txcommerce .'payment/class.tx_commerce_payment_cashondelivery.php',

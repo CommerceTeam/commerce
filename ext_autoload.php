@@ -56,5 +56,7 @@ return array(
 	'tx_commerce_treelib_link_leaf_categoryview' => $extensionPath . 'treelib/link/class.tx_commerce_treelib_link_leaf_categoryview.php',
 	'tx_commerce_treelib_link_leaf_productview' => $extensionPath . 'treelib/link/class.tx_commerce_treelib_link_leaf_productview.php',
 	'tx_commerce_treelib_tceforms' => $extensionPath . 'treelib/class.tx_commerce_treelib_tceforms.php',
+
+	'tx_commerce_payment_ccvs' => $extensionPath . 'payment/ccvs/class.tx_commerce_payment_ccvs.php',
 );
 ?>

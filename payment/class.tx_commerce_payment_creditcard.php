@@ -38,8 +38,6 @@
  * @author Thomas Hempel <thomas@work.de>
  */
 
-// library for credit card checks
-require_once(t3lib_extmgm::extPath('commerce') .'lib/class.tx_commerce_ccvs_lib.php');
 require_once(t3lib_extmgm::extPath('commerce') .'payment/libs/class.tx_commerce_payment_wirecard_lib.php');
 
 class tx_commerce_payment_creditcard {
@@ -103,7 +101,8 @@ class tx_commerce_payment_creditcard {
 		if(!is_object($this->pObj)) {
 			$this->pObj = $pObj;
 		}
-		$ccvs = new CreditCardValidationSolution();
+			/** @var $ccvs tx_commerce_payment_Ccvs */
+		$ccvs = t3lib_div::makeInstance('tx_commerce_payment_Ccvs');
 		$result = $ccvs->validateCreditCard($formData['cc_number'],$formData['cc_checksum']);
 		$this->errorMessages[] = $ccvs->CCVSError;
 		

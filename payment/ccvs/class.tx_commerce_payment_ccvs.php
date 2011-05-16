@@ -468,8 +468,7 @@ class CreditCardValidationSolution {
 	}
 }
 
-class tx_commerce_ccvs_lib extends CreditCardValidationSolution {
-	
+class tx_commerce_payment_Ccvs extends CreditCardValidationSolution {
 }
 
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_ccvs_lib.php']) {
