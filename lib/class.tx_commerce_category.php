@@ -33,98 +33,164 @@
 class tx_commerce_category extends tx_commerce_element_alib {
 
 	/**
-	 * @var title
-	 * @acces private
+	 * @var string Title
 	 */
-	var  $title='';
+	protected $title = '';
 
 	/**
-	 * @var subtitle
-	 * @acces private
+	 * @var string Subtitle
 	 */
-	var  $subtitle='';
+	protected $subtitle='';
+
+        /**
+	 * @var string Description
+	 */
+	protected $description = '';
+
+        /**
+	 * @var string Images for the category
+	 */
+	protected $images = '';
+
+        /**
+	 * @var Image-Array for the category
+	 */
+        protected $images_array = array();
+
+        /**
+	 * @var string Title for navigation an Menu Rendering
+	 */
+        protected $navtitle = '';
+
+        /**
+	 * @var string Keywords for meta informations
+	 */
+	protected $keywords = '';
+
+        /**
+	 * @var array Array of tx_commerce_category_uid
+	 */
+        protected $categories_uid = array();
+
+        /**
+	 * @var integer UID of parent category
+	 */
+        protected $parent_category_uid = 0;
+
+        /**
+	 * @var object Parent category object 
+	 */
+        protected $parent_category = '';
+
+        /**
+	 * @var array Array of tx_commerce_product_uid
+	 */
+	protected $products_uid = array();
+
+        /**
+	 * @var array Array of tx_commerce_categories
+	 */
+        protected $categories = array();
+
+        /**
+	 * @var array Array of tx_commerce_products
+	 */
+        protected $products = array();
+
+        /**
+	 * @var string 
+	 */
+	protected $teaser = '';
+        
+        /**
+	 * @var string Images database field
+	 */
+	protected $teaserImages = '';
+
+        /**
+	 * @var array Images for the category
+	 */
+        protected $teaserImagesArray = array();
+
 	/**
-	 * @var description
-	 * @acces private
+	 * @var boolean Is true when data is loaded
 	 */
-	var  $description='';
-
-	var  $images = '';		// Images for the product( private )
-
-	var $images_array = array(); 		// Images for the product  (private)
-
-	var  $navtitle='';			// Title for navigation an Menu Rendering( private )
-
-	var  $keywords='';			// keywords for meta informations ( private )
-
-	var  $categories_uid=array();	// array of tx_commerce_category_uid ( private )
-
-	var  $parent_category_uid='';			// UID of parent categorie ( private )
-
-	var  $parent_category='';			// parent category object ( private )
-
-	var  $products_uid=array();		// array of tx_commerce_product_uid ( private )
-
-	var  $categories=array();	// array of tx_commerce_category ( private )
-
-	var  $products=array();		// array of tx_commerce_product ( private )
-
-	var $teaser = '';
-	var $teaserImages='';				// images database field (private)
-	var $teaserImagesArray = array(); 		// Images for the categorie (private)
+	protected $data_loaded = FALSE;
 
 	/**
-	 * @var is truee when data is loaded
-	 * @acces orivate
+	 * @var array The permissions array with the fields from the category
 	 */
-	var $data_loaded=false;
+        public $perms_record = array();
 
-	var $perms_record;	//the perms array with the fields in it
+	/**
+	 * @var integer The uid of the user owning the category
+	 */
+        public $perms_userid = 0;
+        
+	/**
+	 * @var integer The uid of the group owning the category
+	 */
+        public $perms_groupid = 0;
+	
+	/**
+	 * @var integer User permissions
+	 */
+        public $perms_user = 0;
+	
+	/**
+	 * @var integer Group permissions
+	 */
+        public $perms_group = 0;
+	
+	/**
+	 * @var integer Everybody permissions 
+	 */
+        public $perms_everybody = 0;
+	
+	/**
+	 * @var integer Editlock-flag
+	 */
+        public $editlock = 0;
 
-	//explicit fields
-	var $perms_userid;
-	var $perms_groupid;
-	var $perms_user;
-	var $perms_group;
-	var $perms_everybody;
-	var $editlock;
-
-	var $permsLoaded;	//flag if perms have been loaded
+	/**
+	 * @var boolean Flag if permissions have been loaded
+	 */
+        public $permsLoaded = FALSE;
 
 	/**
 	 * Constructor, basically calls init
+         * 
 	 * @param integer uid of category
-	 * @param integer integer language_uid , default 0
+	 * @param integer language_uid , default 0
 	 */
-	function tx_commerce_category() {
-
-		if ((func_num_args()>0) && (func_num_args()<=2)){
+	public function tx_commerce_category() {
+		if ((func_num_args() > 0) && (func_num_args() <= 2)) {
 			$uid = func_get_arg(0);
-			if (func_num_args()==2){
-				$lang_uid=func_get_arg(1);
-			}else{
-				$lang_uid=0;
+			if (func_num_args() == 2){
+				$lang_uid = func_get_arg(1);
+			} else {
+				$lang_uid = 0;
 			}
-			return $this->init($uid,$lang_uid);
+			return $this->init($uid, $lang_uid);
 		}
 	}
 
 	/**
-	 * Constructor
-	 * @param integer uid of category
-	 * @param integer integer language_uid , default 0
+	 * Init called by the constructor
+         * 
+	 * @param integer $uid Uid of category
+	 * @param integer $lang_uid Language_uid , default 0
+         * @return boolean TRUE on success, FALSE if no $uid is submitted
 	 */
-	function init($uid,$lang_uid=0) {
+	public function init($uid, $lang_uid = 0) {
 		$uid = intval($uid);
 		$lang_uid = intval($lang_uid);
-		$this->fieldlist=array('uid','title','subtitle','description','teaser','teaserimages','navtitle','keywords','images','ts_config','l18n_parent');
-		$this->database_class='tx_commerce_db_category';
-
-		if ($uid>0 ) {
-			$this->uid=$uid;
-			$this->lang_uid=$lang_uid;
-
-			$this->conn_db=new $this->database_class;
+		$this->fieldlist = array('uid', 'title', 'subtitle', 'description', 'teaser', 'teaserimages', 'navtitle', 'keywords', 'images', 'ts_config', 'l18n_parent');
+		$this->database_class = 'tx_commerce_db_category';
+		if ($uid > 0) {
+			$this->uid = $uid;
+			$this->lang_uid = $lang_uid;
+			$this->conn_db = new $this->database_class;
 			$hookObjectsArr = array();
 			if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_category.php']['postinit'])) {
 				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_category.php']['postinit'] as $classRef) {
@@ -136,153 +202,132 @@ class tx_commerce_category extends tx_commerce_element_alib {
 					$hookObj->postinit($this);
 				}
 			}
-			return true;
+			return TRUE;
 		} else {
-			return false;
+			return FALSE;
 		}
-
-	}
-
-	/*
-	 * ******************************************************************************************
-	 * Public Methods
-	 * for
-	 * data
-	 * retrival
-	 * ******************************************************************************************
-	 */
-
-	/**
-	 * Returns the category title
-	 * @return string;
-	 * @acces public
-	 * @depricated
-	 * @see getTitle()
-	 */
-
-	function get_title() {
-		return $this->title;
 	}
 
 	/**
-	 * Loads the perms
-	 * @return {void}
+	 * Public methods for data retrieval
 	 */
-	function load_perms() {
+
+	/**
+	 * Loads the permissions
+         * 
+	 * @return void
+	 */
+	public function load_perms() {
 		if(!$this->permsLoaded && $this->uid) {
-			$this->permsLoaded = true;
+			$this->permsLoaded = TRUE;
 
-			$this->perms_record 	= $this->conn_db->getPermissionsRecord($this->uid);
+			$this->perms_record = $this->conn_db->getPermissionsRecord($this->uid);
 
-			//if the record isnt loaded, abort.
-			if(0 >= count($this->perms_record)) {
-				$this->perms_record = null;
+			// if the record is´nt loaded, abort.
+			if(count($this->perms_record) <= 0) {
+				$this->perms_record = NULL;
 				return;
 			}
 
-			$this->perms_userid 	= $this->perms_record['perms_userid'];
-			$this->perms_groupid 	= $this->perms_record['perms_groupid'];
-			$this->perms_user 		= $this->perms_record['perms_userid'];
-			$this->perms_group 		= $this->perms_record['perms_group'];
-			$this->perms_everybody 	= $this->perms_record['perms_everybody'];
-			$this->editlock 		= $this->perms_record['editlock'];
+			$this->perms_userid = $this->perms_record['perms_userid'];
+			$this->perms_groupid = $this->perms_record['perms_groupid'];
+			$this->perms_user = $this->perms_record['perms_userid'];
+			$this->perms_group = $this->perms_record['perms_group'];
+			$this->perms_everybody = $this->perms_record['perms_everybody'];
+			$this->editlock = $this->perms_record['editlock'];
 		}
 	}
 
 	/**
 	 * Returns whether the permission is set and allowed for the current user
-	 * @return {boolean}
+         * 
+         * @param integer $perm Permission
+	 * @return boolean TRUE if permission is set, FALSE if permission is not set
 	 */
-	function isPSet($perm) {
-		if(!is_string($perm)) return false;
+	public function isPSet($perm) {
+		if(!is_string($perm)) return FALSE;
 		$this->load_perms();
-
 		return tx_commerce_belib::isPSet($perm, $this->perms_record);
 	}
 
 	/**
-	 * Returns the UID of the Category
-	 * @return {int}
+	 * Returns the UID of the category
+         * 
+	 * @return integer UID of the category
 	 */
-	function getUid() {
+	public function getUid() {
 		return $this->uid;
 	}
 
 	/**
-	 * Returns the category title
-	 * @return string;
-	 * @acces public
-	 *
+	 * Returns the title of the category
+         * 
+	 * @return string Title 
 	 */
-
-	function getTitle() {
+	public function getTitle() {
 		return $this->title;
 	}
 
 	/**
-	 * Returns the category subtitle
-	 * @return string;
-	 * @acces public
+	 * Returns the subtitle of the category
+         * 
+	 * @return string Subtitle;
 	 */
-	function get_subtitle() {
+	public function get_subtitle() {
 		return $this->subtitle;
 	}
 
 	/**
 	 * Returns the category teaser
-	 * @return string;
-	 * @access public
+         * 
+	 * @return string Teaser;
 	 */
-	function get_teaser() {
+	public function get_teaser() {
 		return $this->teaser;
 	}
 
 	/**
-	 * Returns an Array of Images
-	 * @return array;
-	 * @access public
+	 * Returns an array of teaserimages
+         * 
+	 * @return array Teaserimages;
 	 */
-
-	function getTeaserImages() {
+	public function getTeaserImages() {
 		return $this->teaserImagesArray;
 	}
 
 	/**
 	 * Returns the category description
-	 * @return string;
-	 * @acces public
+         * 
+	 * @return string Description;
 	 */
-	function get_description() {
+	public function get_description() {
 		return $this->description;
 	}
 
 	/**
-	 * Returns the category navtitle
-	 * @return string;
-	 * @acces public
+	 * Returns the category navigationtitle
+         * 
+	 * @return string Navigationtitle;
 	 */
-	function get_navtitle() {
+	public function get_navtitle() {
 		return $this->navtitle;
 	}
 
 	/**
 	 * Returns the category keywords
-	 * @return string;
-	 * @acces public
+         * 
+	 * @return string Keywords;
 	 */
-	function get_keywords() {
+	public function get_keywords() {
 		return $this->keywords;
 	}
 
-
-
 	/**
-	 * Returns Subcategories from the existiong categories
-	 * @return array
-	 * @acces public
+	 * Returns Subcategories from the existiog categories
+         * 
+	 * @return array Array of subcategories
 	 */
-
-	function get_subcategories() {
+	public function get_subcategories() {
 		if (count($this->categories) == 0){
 			return $this->get_child_categories() ;
 		}else{
@@ -291,270 +336,262 @@ class tx_commerce_category extends tx_commerce_element_alib {
 	}
 
 	/**
-	 * Returns subproducts from the existing categories
-	 * @return array
-	 * @acces public
+	 * Returns childproducts from the existing categories
+         * 
+	 * @return array Array og childproducts
 	 */
-	function get_subproducts() {
+	public function get_subproducts() {
 		if (count($this->products) == 0) {
 			return $this->get_child_products();
 		}else{
 			return $this->products;
 		}
 	}
-	/**
-	 * Returns an Array of Images
-	 * @return array;
-	 * @access public
-	 */
 
-	function getImages() {
+        /**
+	 * Returns an array of categoryimages
+         * 
+	 * @return array Array of images;
+	 */
+	public function getImages() {
 		return $this->images_array;
 	}
 
 	/**
-	 * Returns the Group-ID of the Category
-	 * @return {int}
+	 * Returns the Group-ID of the category
+         * 
+	 * @return integer UID of group
 	 */
-	function getPermsGroupId() {
+	public function getPermsGroupId() {
 		return $this->perms_groupid;
 	}
 
 	/**
-	 * Returns the User-ID
-	 * @return {int}
+	 * Returns the User-ID of the category
+         * 
+	 * @return integer UID of user
 	 */
-	function getPermsUserId() {
+	public function getPermsUserId() {
 		return $this->perms_userid;
 	}
 
 	/**
-	 * Returns the Permissions for everybody
-	 * @return {int}
+	 * Returns the permissions for everybody
+         * 
+	 * @return integer Permissions for everybody
 	 */
-	function getPermsEverybody() {
+	public function getPermsEverybody() {
 		return $this->perms_everybody;
 	}
 
 	/**
 	 * Returns the Permissions for the group
-	 * @return {int}
+         * 
+	 * @return integer Permissions for group
 	 */
-	function getPermsGroup(){
+	public function getPermsGroup(){
 		return $this->perms_group;
 	}
 
 	/**
 	 * Returns the Permissions for the user
-	 * @return {int}
+         * 
+	 * @return integer Permissions for user
 	 */
-	function getPermsUser() {
+	public function getPermsUser() {
 		return $this->perms_user;
 	}
 
 	/**
 	 * Returns the editlock flag
-	 * @return {int}
+         * 
+	 * @return integer Editlock-Flag
 	 */
-	function getEditlock() {
+	public function getEditlock() {
 		return $this->editlock;
 	}
 
-
 	/**
-	 * true if the actual categorie has subcategories
-	 * @return boolean
-	 * @acces public
+	 * Returns if the actual category has subcategories
+         * 
+	 * @return boolean TRUE if the category has subcategories, FALSE if not
 	 */
-
-	function has_subcategories() {
+	public function has_subcategories() {
 		if (count($this->categories_uid) > 0) {
-			return true;
+			return TRUE;
 		}
-		return false;
+		return FALSE;
 	}
 
 	/**
-	 * true if the actual categorie has subcategories
-	 * @return boolean
-	 * @acces public
+	 * Returns if the actual category has subproducts
+         * 
+	 * @return boolean TRUE if the category has subproducts, FALSE if not
 	 */
-
-	function has_subproducts() {
+	public function has_subproducts() {
 		if (count($this->products_uid) > 0) {
-			return true;
+			return TRUE;
 		}
-		return false;
+		return FALSE;
 	}
 
 	/**
-	 * Load the data
-	 * @param $translationMode Transaltio Mode of the record, default false to use the default way of translation
+	 * Loads the data
+         * 
+	 * @param mixed $translationMode Transaltionmode of the record, default FALSE to use the default way of translation
 	 */
-	function load_data($translationMode = false) {
-		if ($this->data_loaded==false) {
+	public function load_data($translationMode = FALSE) {
+		if ($this->data_loaded == FALSE) {
 			parent::load_data($translationMode);
-			$this->images_array=t3lib_div::trimExplode(',',$this->images);
-			$this->categories_uid=$this->conn_db->get_child_categories($this->uid);
-			$this->parent_category_uid=intval($this->conn_db->get_parent_category($this->uid));
-			$this->products_uid=$this->conn_db->get_child_products($this->uid, $this->lang_uid);
-			$this->teaserImagesArray=t3lib_div::trimExplode(',',$this->teaserImages);
-			$this->data_loaded=true;
+			$this->images_array = t3lib_div::trimExplode(',', $this->images);
+			$this->categories_uid = $this->conn_db->get_child_categories($this->uid);
+			$this->parent_category_uid = intval($this->conn_db->get_parent_category($this->uid));
+			$this->products_uid = $this->conn_db->get_child_products($this->uid, $this->lang_uid);
+			$this->teaserImagesArray = t3lib_div::trimExplode(',', $this->teaserImages);
+			$this->data_loaded = TRUE;
 		}
 	}
 
 	/**
 	 * Returns an array with the different l18n for the category
 	 *
-	 * @return {array}	Categories
+	 * @return array Categories
 	 */
-	function get_l18n_categories() {
+	public function get_l18n_categories() {
 		$uid_lang = $this->conn_db->get_l18n_categories($this->uid);
-
 		return $uid_lang;
 	}
 
 	/**
 	 * Loads the child categories in the categories array
+         * 
 	 * @return array of categories as array of category objects
 	 */
-
-	function get_child_categories() {
-
+	public function get_child_categories() {
 		foreach ($this->categories_uid as $load_uid){
-			$this->categories[$load_uid]=t3lib_div::makeInstance('tx_commerce_category');
-			$this->categories[$load_uid]->init($load_uid,$this->lang_uid);
-
+			$this->categories[$load_uid] = t3lib_div::makeInstance('tx_commerce_category');
+			$this->categories[$load_uid]->init($load_uid, $this->lang_uid);
 		}
 		return $this->categories;
 	}
 
 	/**
-	 * returns the number of child categories
-	 * @author	Ingo Schmitt <is@marketing-factory.de>
-	 * @return	integer	Number of child categories
+	 * Returns the number of child categories
+         * 
+	 * @return integer Number of child categories
 	 */
-
-	function numOfChildCategories() {
+	public function numOfChildCategories() {
 		if (is_array($this->categories_uid)) {
-			return count($this->categories_uid );
+			return count($this->categories_uid);
 		}
 		return 0;
-
 	}
 
 	/**
 	 * Loads the child products in the products array
-	 * @return array of products asarray of products objects
+         * 
+	 * @return array Array of products as array of products objects
 	 */
 
-	function get_child_products() {
+	public function get_child_products() {
 		foreach ($this->products_uid as $load_uid) {
 			$this->products[$load_uid] = t3lib_div::makeInstance('tx_commerce_product');
-			$this->products[$load_uid]->init($load_uid,$this->lang_uid);
+			$this->products[$load_uid]->init($load_uid, $this->lang_uid);
 		}
 		return $this->products;
-
 	}
 
 	/**
-	 * @since 2005 11 03
-	 * @return array  of child products as uid list unique array
+	 * Returns the childproducts as unique UID list
+         * 
+	 * @return array Array of child products UIDs
 	 */
-	function getProductUids() {
+	public function getProductUids() {
 		return array_unique($this->products_uid);
 	}
 
 	/**
-	 * @since 2005 11 03
-	 * @return array of child category as uid list array
+         * Returns the child categories as an list of UIDs
+         * 
+	 * @return array Array of child category UIDs
 	 */
-	function getCategoryUids() {
+	public function getCategoryUids() {
 		return $this->categories_uid;
 	}
 
 	/**
-	 * Loads the parent categoriy in the parenT-category variable
-	 * @return cateory object or false if this category is already the topmost category
+	 * Loads the parent category in the parent-category variable
+         * 
+	 * @return mixed category object or FALSE if this category is already the topmost category
 	 */
-
-	function get_parent_category() {
-		if ($this->parent_category_uid>0) {
-			$this->parent_category= t3lib_div::makeInstance('tx_commerce_category');
-			$this->parent_category->init($this->parent_category_uid,$this->lang_uid);
-			return 	$this->parent_category;
+	public function get_parent_category() {
+		if ($this->parent_category_uid > 0) {
+			$this->parent_category = t3lib_div::makeInstance('tx_commerce_category');
+			$this->parent_category->init($this->parent_category_uid, $this->lang_uid);
+			return $this->parent_category;
 		}
-		return false;
+		return FALSE;
 	}
 
 	/**
-	 * Returns an array with category objects (unloaded) that serve as the category's parent
-	 * @return {array}
+	 * Returns an array of category objects (unloaded) that serve as the category's parent
+	 * 
+         * @return array Array of category objects
 	 */
-	function getParentCategories() {
+	public function getParentCategories() {
 		$parents = $this->conn_db->get_parent_categories($this->uid);
 		$parentCats = array();
-
-		for($i = 0, $l = count($parents); $i < $l; $i ++) {
+		for($i=0, $l=count($parents); $i<$l; $i ++) {
 			$cat = t3lib_div::makeInstance('tx_commerce_category');
 			$cat->init($parents[$i]);
-
 			$parentCats[] = $cat;
 		}
-
 		return $parentCats;
 	}
-
-
 
 	/**
 	 * Carries out the move of the category to the new parent
 	 * Permissions are NOT checked, this MUST be done beforehand
-	 * @return {bool}			Success
-	 * @param $uid {int}		uid of the move target
-	 * @param $op {string}		Operation of move (can be 'after' or 'into'
+         * 
+         * @param integer $uid UID of the move target
+         * @param string $op Operation of move (can be 'after' or 'into')
+	 * @return boolean TRUE if the move was successfull, FALSE if not
 	 */
-	function move($uid, $op = 'after') {
-
+	public function move($uid, $op='after') {
 		if('into' == $op) {
 			//the $uid is a future parent
 			$parent_uid = $uid;
 		} else {
-			return false;
+			return FALSE;
 		}
-
 		//update parent_category
 		$set = $this->conn_db->updateRecord($this->uid, array('parent_category' => $parent_uid));
-
 		//only update relations if parent_category was successfully set
 		if($set) {
 			$catList = array($parent_uid);
 			$catList = tx_commerce_belib::getUidListFromList($catList);
-			$catList = tx_commerce_belib::extractFieldArray($catList, 'uid_foreign', true);
+			$catList = tx_commerce_belib::extractFieldArray($catList, 'uid_foreign', TRUE);
 
-			tx_commerce_belib::saveRelations($this->uid, $catList, 'tx_commerce_categories_parent_category_mm', true);
+			tx_commerce_belib::saveRelations($this->uid, $catList, 'tx_commerce_categories_parent_category_mm', TRUE);
 		} else {
-			return false;
+			return FALSE;
 		}
-
-		return true;
+		return TRUE;
 	}
 
 
 	/**
-	 * returns recursvly the category path as text
+	 * Returns recursivly the category path as text
 	 * path segments are glued with $separator
-	 * @param	[optional] string	$separator default '-'
-	 * @return category path segment
-	 * @since 2005 November 18th
+         * 
+	 * @param string $separator default '-'
+	 * @return string Category path segment
 	 */
-
-	function get_category_path($separator=',') {
-
-		if ($this->parent_category_uid>0) {
-			$parent=$this->get_parent_category();
+	public function get_category_path($separator = ',') {
+		if ($this->parent_category_uid > 0) {
+			$parent = $this->get_parent_category();
 			$parent->load_data();
-			$result=$parent->get_category_path($separator).$separator.$this->get_title();;
+			$result = $parent->get_category_path($separator) . $separator . $this->get_title();
 
 		} else {
 			$result=$this->get_title();
@@ -562,183 +599,137 @@ class tx_commerce_category extends tx_commerce_element_alib {
 		return $result;
 	}
 
-
-
 	/**
-	 *
-	 * Returns a list of all child categories from thos categorie
-	 * @param deepth maximum deepth for going recursive
-	 * @return array list of category uids
+	 * Returns a list of all child categories from this category
+         * 
+	 * @param integer $depth Maximum depth for going recursive 
+	 * @return array List of category uids
 	 */
-
-	function get_rec_child_categories_uidlist($depth=false){
-
-		$return_list=array();
+	public function get_rec_child_categories_uidlist($depth = FALSE){
+		$return_list = array();
 		if ($depth) {
 			$depth--;
 		}
 		$this->load_data();
 		$this->get_child_categories();
-
-		if (count($this->categories)>0) {
-			if (($depth===false) || ($depth>0)) {
+		if (count($this->categories) > 0) {
+			if (($depth === FALSE) || ($depth > 0)) {
 				foreach ($this->categories as $c_uid => $one_category) {
-					$return_list=array_merge($return_list, $one_category->get_rec_child_categories_uidlist($depth));
+					$return_list = array_merge($return_list, $one_category->get_rec_child_categories_uidlist($depth));
 				}
 			}
-			$return_list=array_merge($return_list,$this->categories_uid);
+			$return_list = array_merge($return_list, $this->categories_uid);
 		}
 		return $return_list;
 
 	}
 
 	/**
-	 * @since 2005 11 02
-	 * Returns a list of all Products unter this categores
-	 * @since 12 November 2005
-	 * added array_unique to result set
-	 * @param deepth maximum deepth for going recursive
-	 * @return array list of product uids
-	 * @since 18th November 2005
-	 * Check if deepth is gerater than 0
-	 *
+	 * Returns a list of all products under this category
+         * 
+	 * @param integer $depth Depth maximum deepth for going recursive
+	 * @return array Array with list of product UIDs
 	 */
-	function getAllProducts($depth = false){
-		$return_list=$this->getProductUids();
-		if ($depth === false) {
+	public function getAllProducts($depth = FALSE){
+		$return_list = $this->getProductUids();
+		if ($depth === FALSE) {
 			$depth = PHP_INT_MAX;
 		}
 		if ($depth > 0) {
-			$childCategoriesList=$this->get_rec_child_categories_uidlist($depth);
-
+			$childCategoriesList = $this->get_rec_child_categories_uidlist($depth);
 			foreach ($childCategoriesList as $oneCategoryUid) {
 				$category = t3lib_div::makeInstance('tx_commerce_category');
-				$category->init($oneCategoryUid,$this->lang_uid);
+				$category->init($oneCategoryUid, $this->lang_uid);
 				$category->load_data();
-
-				$return_list=array_merge($return_list,$category->getProductUids());
-
+				$return_list = array_merge($return_list, $category->getProductUids());
 			}
 		}
 		return array_unique($return_list);
-
 	}
-	/**
-	 * @since 2010 05 22
-	 * @author Ingo Schmitt <is@marketing-factory.de>
-	 * Returns true, if this category has products
-	 */
 
-	function hasProducts() {
-		if (count($this->getProductUids())>0) {
-			return true;
+        /**
+	 * Returns if this category has products
+	 * @return boolean TRUE, if this category has products, FALSE if not
+	 */
+	public function hasProducts() {
+		if (count($this->getProductUids()) > 0) {
+			return TRUE;
 		}
-		return false;
+		return FALSE;
 	}
+        
 	/**
-	 * @since 2010 05 22
-	 * @Author Ingo Schmitt <is@marketing-factory.de>
-	 *
-	 * Returns true if this category has active products or if sub categories have active products
-	 * @param optional deepth maximum deepth for going recursive, if not set go for maximum
-	 * @return boolen
-	 *
+	 * Returns TRUE if this category has active products or if sub categories have active products
+         * 
+	 * @param integer $depth maximum deepth for going recursive, if not set go for maximum
+	 * @return boolen Returns TRUE, if category/subcategories hav active products 
 	 */
-	function ProductsBelowCategory($depth = false){
+	public function ProductsBelowCategory($depth = FALSE){
 		if ($this->hasProducts()) {
-			return true;
+			return TRUE;
 		}
-		if ($depth === false) {
+		if ($depth === FALSE) {
 			$depth = PHP_INT_MAX;
 		}
 		if ($depth > 0) {
 			$childCategoriesList=$this->get_rec_child_categories_uidlist($depth);
-
 			foreach ($childCategoriesList as $oneCategoryUid) {
 				$category = t3lib_div::makeInstance('tx_commerce_category');
-				$category->init($oneCategoryUid,$this->lang_uid);
+				$category->init($oneCategoryUid, $this->lang_uid);
 				$category->load_data();
 				$returnValue = $category->ProductsBelowCategory($deepth);
-				if ($returnValue == true) {
-					return true;
+				if ($returnValue == TRUE) {
+					return TRUE;
 				}
 			}
 		}
-		return false;
+		return FALSE;
 	}
 
 	/**
-	 * @TODO
+	 * Returns all catogory ID's above this uid
+	 *
+	 * @return array List of category uids
 	 */
-
-	/**
-	 * gets all catogores ID's above this uid
-	 *
-	 * @since 12 November 2005
-	 * added array_unique to result set
-	 * @return array list of category uids
-	 *
-	 *
-	 */
-
-	function get_categorie_rootline_uidlist() {
-		$return_list=array();
-
+	public function get_categorie_rootline_uidlist() {
+		$return_list = array();
 		$this->load_data();
-
-		if($parentCategory=$this->get_parent_category()) {
-			$return_list=$parentCategory->	get_categorie_rootline_uidlist();
+		if(($parentCategory = $this->get_parent_category())) {
+			$return_list = $parentCategory->get_categorie_rootline_uidlist();
 		}
-		$return_list=array_merge($return_list,array($this->uid));
-
+		$return_list = array_merge($return_list, array($this->uid));
 		return array_unique($return_list);
-
 	}
 
 	/**
-	 * getTeaserImage
-	 * returns the first image, if not availiabe, walk recusrive up, to get the image
-	 * If no IMage found, return false
-	 * @return 	string 	image
+	 * Returns the first image, if not availiabe, walk recursive up, to get the image
+         * 
+	 * @return mixed Image/FALSE, if no image found
 	 */
-	function getTeaserImage() {
+	public function getTeaserImage() {
 		if (!empty($this->images_array[0])) {
-			return 	$this->images_array[0];
-		}	else {
-			if($parentCategory=$this->get_parent_category()) {
+			return $this->images_array[0];
+		} else {
+			if(($parentCategory = $this->get_parent_category())) {
 				$parentCategory->load_Data();
 				return $parentCategory->getTeaserImage();
-			}	else {
+			} else {
 				return false;
 			}
 		}
-
 	}
-
 
 	/**
 	 * Returns the category TSconfig array based on the currect->rootLine
-	 *
-	 * @return      array
+         * 
+	 * @todo Make recursiv category TS merging
+	 * @return array
 	 */
-	function getCategoryTSconfig() {
+	public function getCategoryTSconfig() {
 		if (!is_array($this->categoryTSconfig)) {
-
-
-# @ToDo make recursiv category TS merging
-# reset($this->rootLine);
-# $TSdataArray = array();
-# $TSdataArray[] = $this->TYPO3_CONF_VARS['BE']['defaultPageTSconfig'];   // Setting default configurat
-# while(list($k,$v)=each($this->rootLine)) {
-#         $TSdataArray[]=$v['TSconfig'];
-# }
-#        // Parsing the user TS (or getting from cache)
-
-
 			$TSdataArray[] = $this->ts_config;
 			$TSdataArray = t3lib_TSparser::checkIncludeLines_array($TSdataArray);
-			$categoryTS = implode(chr(10).'[GLOBAL]'.chr(10),$TSdataArray);
-
+			$categoryTS = implode(chr(10) . '[GLOBAL]' . chr(10), $TSdataArray);
 			$parseObj = t3lib_div::makeInstance('t3lib_TSparser');
 			$parseObj->parse($categoryTS);
 			$this->categoryTSconfig = $parseObj->setup;
@@ -746,23 +737,24 @@ class tx_commerce_category extends tx_commerce_element_alib {
 		return $this->categoryTSconfig;
 	}
 
-
-	/**
-	 * Deprecated Methods
-	 * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-	 */
-
 	/**
 	 * Returns an Array of Images
-	 * @return array;
-	 * @access public
-	 * @depricated
+         * 
+         * @deprecated
+	 * @return array Array of images
 	 */
-
-	function get_images() {
+	public function get_images() {
 		return $this->getImages();
 	}
-
+        
+        /**
+         * Returns the category title
+         * @deprecated
+         * @return string Returns the Category title
+         */
+	public function get_title() {
+		return $this->title;
+	}        
 }
 
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_category.php']) {
