@@ -6,6 +6,9 @@
 * Define generateSessionKey as public static in tx_commerce_div
 * Define removeXSSStripTagsArray as public static in tx_commerce_div
 
+16.05.2011 Torben Hansen <t.hansen@skyfillers.com>
+* CGL cleanup in tx_commerce_category.php
+
 13.05.2011 Christian Kuhn <lolli@schwarzbu.ch>
 * Remove error message from lib/class.tx_commerce_pibase, it should be an exception anyway
 * Minor GGL fixes in tx_commerce_element_alib
