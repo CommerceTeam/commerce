@@ -3,6 +3,7 @@
 * CGL cleanup in tx_commerce_db_category
 
 16.05.2011 Christian Kuhn <lolli@schwarzbu.ch>
+* Remove empty folder payment/ccvs_language
 * Move tx_commerce_ccvs_lib to payment/ccvs and add to autoloader
 * Follow-up to CGL cleanup of Torben in tx_commerce_category fixing a regression
 * CGL cleanup tx_commerce_db_attribute (Thanks to Julius Detlefsen)
