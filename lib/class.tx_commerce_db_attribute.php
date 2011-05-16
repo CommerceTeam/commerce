@@ -23,10 +23,9 @@
  ***************************************************************/
 
 /**
- * Database Class for tx_commerce_attributes. All database calle should
- * be made by this class. In most cases you should use the methodes 
+ * Database class for tx_commerce_attributes. All database calls should
+ * be made by this class. In most cases you should use the methodes
  * provided by tx_commerce_attribute to get informations for articles.
- * Inherited from tx_commerce_db_alib
  *
  * @author Ingo Schmitt <is@marketing-factory.de>
  * @package TYPO3
@@ -34,53 +33,47 @@
  */
 class tx_commerce_db_attribute extends tx_commerce_db_alib {
 
- 	
- 	var $child_database_table='tx_commerce_attribute_values';
- 	/**
- 	 	* Setting the Class Datebase Table
- 	 	* @access private
- 	 */
- 	 function tx_commerce_db_attribute()
- 	 {
- 	 	
- 		$this->database_table= 'tx_commerce_attributes';	
- 		#parent::tx_commerce_db_alib();
- 	 }
- 	 
- 	 /**
- 	  * Gets a list of attribute_value_uids
- 	  * @return array
- 	  */
- 	 function get_attribute_value_uids($uid)
- 	 {
- 	 	$attribute_value_uid_list=array();
- 	 	$result=$GLOBALS['TYPO3_DB']->exec_SELECTquery('uid',
- 			$this->child_database_table,
-			'attributes_uid = '.intval($uid),
+	/**
+	 * @var string Child database table
+	 */
+	protected $child_database_table = 'tx_commerce_attribute_values';
+
+	/**
+	 * Default constructor sets database table
+	 *
+	 * @return void
+	 */
+	public function __construct() {
+		$this->database_table = 'tx_commerce_attributes';
+	}
+
+	/**
+	 * Gets a list of attribute_value_uids
+	 *
+	 * @return array
+	 */
+	public function get_attribute_value_uids($uid) {
+		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+			'uid',
+			$this->child_database_table,
+			'attributes_uid = ' . intval($uid),
 			'',
- 			'sorting'
-			);
- 		// a result is availiabe
- 		if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)>0)
- 		{
- 			while ($return_data=$GLOBALS['TYPO3_DB']->sql_fetch_assoc($result))
- 			{
- 				$attribute_value_uid_list[]=(int)$return_data['uid'];
- 			}
- 			$GLOBALS['TYPO3_DB']->sql_free_result($result);
- 			return $attribute_value_uid_list;
- 		}
- 		$GLOBALS['TYPO3_DB']->sql_free_result($result);
- 		return $attribute_value_uid_list;
- 	 	
- 	 }
- 	 
- 	
- 	
- 	
+			'sorting'
+		);
+
+		$attribute_value_uid_list = array();
+		if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
+			while ($return_data = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
+				$attribute_value_uid_list[] = (int)$return_data['uid'];
+			}
+		}
+		$GLOBALS['TYPO3_DB']->sql_free_result($result);
+
+		return $attribute_value_uid_list;
+	}
 }
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_db_attribute.php']) {
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_db_attribute.php']);
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_db_attribute.php']) {
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_db_attribute.php']);
 }
 ?>
