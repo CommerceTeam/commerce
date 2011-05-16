@@ -1,5 +1,6 @@
 16.05.2011 Torben Hansen <t.hansen@skyfillers.com>
 * CGL cleanup in tx_commerce_category.php
+* CGL cleanup in tx_commerce_db_category
 
 16.05.2011 Christian Kuhn <lolli@schwarzbu.ch>
 * CGL cleanup tx_commerce_db_attribute (Thanks to Julius Detlefsen)
