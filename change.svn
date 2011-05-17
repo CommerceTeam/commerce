@@ -1,3 +1,6 @@
+16.05.2011 Christian Kuhn <lolli@schwarzbu.ch>
+* Fix a regression in pi4 from latest cleanups accessing a now protected variable (Thanks to Jonas)
+
 16.05.2011 Torben Hansen <t.hansen@skyfillers.com>
 * CGL cleanup in tx_commerce_category.php
 * CGL cleanup in tx_commerce_db_category

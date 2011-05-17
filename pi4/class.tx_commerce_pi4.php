@@ -53,7 +53,7 @@ class tx_commerce_pi4 extends tx_commerce_pibase {
 	/**
 	 * @var string Template file content
 	 */
-	protected $templateCode = '';
+	public $templateCode = '';
 
 	/**
 	 * @var tx_staticinfotables_pi1 Instance of static info view helper
