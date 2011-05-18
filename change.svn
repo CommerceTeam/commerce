@@ -1,4 +1,5 @@
 18.05.2011 Christian Kuhn <lolli@schwarzbu.ch>
+* Remove unused class tx_commerce_item
 * Fixed #26842: Invalid SQL in class.tx_commerce_db_article.php->getAttributeValue() (Thanks to Saleh Matani)
 
 16.05.2011 Christian Kuhn <lolli@schwarzbu.ch>
