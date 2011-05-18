@@ -1,3 +1,6 @@
+18.05.2011 Torben Hansen <t.hansen@skyfillers.com>
+* Fix a regression in tx_commerce_category.php from latest cleanups accessing a now protected variable
+
 18.05.2011 Christian Kuhn <lolli@schwarzbu.ch>
 * Fixed #13747: substituteMarkerArray is called with null instead of array (Thanks to Sebastian Fischer)
 * Remove unused class tx_commerce_item

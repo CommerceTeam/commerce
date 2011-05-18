@@ -74,8 +74,9 @@ class tx_commerce_category extends tx_commerce_element_alib {
 
 	/**
 	 * @var integer UID of parent category
+	 * @TODO: Make protected if this variable is not used directly anymore
 	 */
-	protected $parent_category_uid = 0;
+	public $parent_category_uid = 0;
 
 	/**
 	 * @var object Parent category object 
