@@ -219,9 +219,9 @@ class tx_commerce_db_article extends tx_commerce_db_alib {
 					$a_result= $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 						'DISTINCT distinct tx_commerce_attribute_values.value,tx_commerce_attribute_values.uid',
 						'tx_commerce_articles_article_attributes_mm, tx_commerce_attribute_values',
-						'tx_commerce_articles_article_attributes_mm.uid_valuelist = tx_commerce_attribute_values.uid AND' .
-							'uid_local = ' . $uid . ' AND' .
-							'uid_foreign = ' .$attribute_uid
+						'tx_commerce_articles_article_attributes_mm.uid_valuelist = tx_commerce_attribute_values.uid' .
+							' AND uid_local = ' . $uid .
+							' AND uid_foreign = ' . $attribute_uid
 					);
 					if($GLOBALS['TYPO3_DB']->sql_num_rows($a_result)==1) {
 						$value_data=$GLOBALS['TYPO3_DB']->sql_fetch_assoc($a_result);

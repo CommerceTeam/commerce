@@ -1,3 +1,6 @@
+18.05.2011 Christian Kuhn <lolli@schwarzbu.ch>
+* Fixed #26842: Invalid SQL in class.tx_commerce_db_article.php->getAttributeValue() (Thanks to Saleh Matani)
+
 16.05.2011 Christian Kuhn <lolli@schwarzbu.ch>
 * Fix a regression in pi4 from latest cleanups accessing a now protected variable (Thanks to Jonas)
 
