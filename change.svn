@@ -1,4 +1,5 @@
 18.05.2011 Christian Kuhn <lolli@schwarzbu.ch>
+* Fixed #13747: substituteMarkerArray is called with null instead of array (Thanks to Sebastian Fischer)
 * Remove unused class tx_commerce_item
 * Fixed #26842: Invalid SQL in class.tx_commerce_db_article.php->getAttributeValue() (Thanks to Saleh Matani)
 

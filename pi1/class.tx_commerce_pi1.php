@@ -37,7 +37,7 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 
 	var $currency = 'EUR';
 	var $pi_checkCHash = TRUE;
-	
+
 	/**
 	 * @var Boolean, will be set to TRUE, if the plugin was inserted as plugin to show one produkt, or one product was set via TypoScript.
 	 */
@@ -145,7 +145,7 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 		if ($this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'template', 's_template') && file_exists($this->templateFolder . $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'template', 's_template'))) {
 			$this->conf['templateFile'] = $this->templateFolder . $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'template', 's_template');
 			if ($this->cObj->fileResource($this->conf['templateFile'])) {
-				$this->templateCode = $this->cObj->fileResource($this->conf['templateFile']);	
+				$this->templateCode = $this->cObj->fileResource($this->conf['templateFile']);
 			}
 		}
 
@@ -168,7 +168,7 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 		}
 		$tmpCategory->load_data();
 		$this->category = $tmpCategory;
-		
+
 
 		$categorySubproducts = $this->category->getProductUids();
 
@@ -241,7 +241,7 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 				$this->category->init($this->master_cat, $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
 			}
 			*/
-			
+
 			$this->category_array = $this->category->return_assoc_array();
 
 			$catConf = $this->category->getCategoryTSconfig();
@@ -457,7 +457,7 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 		$content = $this->substituteMarkerArrayNoCached($content, $markerArray, array(), array());
 		return ($content);
 	}
-	
+
 	/**
 	 * Makes the rendering for all articles for a given product
 	 * Renders different view, based on viewKind and number of articles
@@ -477,14 +477,14 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
 			}
 		}
-		
+
 		$count = is_array($prod->articles_uids) ? count($prod->articles_uids) : FALSE;
-		
+
 		//do nothing if no articles, BE-user-error, should not happen
 		if (strlen($template) < 1) {
 			$template = $this->templateCode;
 		}
-		
+
 		if (is_array($templateMarkerArray)) {
 			while ( list($k, $v) = each($templateMarkerArray) ) {
 				$templateMarker[] = '###' . strtoupper($v) . '###';
@@ -498,18 +498,19 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 			$templateMarkerNostock[] = '###' . strtoupper($this->conf['templateMarker.'][$viewKind . '_productArticleList2']) . '_NOSTOCK###';
 			$templateMarkerMoreThanMax[] = '###' . strtoupper($v) . '_MORETHANMAX###';
 		}
-		
+
+		$markerArray = array();
 		if ($prod->getRenderMaxArticles() > $prod->getNumberOfArticles()) {
 			// Only if the number of articles is smaller than defined
-			
+
 
 			$templateAttrSelectorDropdown = $this->cObj->getSubpart($this->templateCode, '###' . strtoupper($this->conf['templateMarker.']['productAttributesSelectorDropdown']) . '###');
 			$templateAttrSelectorDropdownItem = $this->cObj->getSubpart($templateAttrSelectorDropdown, '###' . strtoupper($this->conf['templateMarker.']['productAttributesSelectorDropdown']) . '_ITEM###');
 			$templateAttrSelectorRadiobutton = $this->cObj->getSubpart($this->templateCode, '###' . strtoupper($this->conf['templateMarker.']['productAttributesSelectorRadiobutton']) . '###');
 			$templateAttrSelectorRadiobuttonItem = $this->cObj->getSubpart($templateAttrSelectorRadiobutton, '###' . strtoupper($this->conf['templateMarker.']['productAttributesSelectorRadiobutton']) . '_ITEM###');
-			
+
 			$templateCount = count($templateMarker);
-			
+
 			$templateAttr = array();
 			if (is_array($this->conf['templateMarker.'][$viewKind . '_selectAttributes.'])) {
 				foreach($this->conf['templateMarker.'][$viewKind . '_selectAttributes.'] as $oneMarker) {
@@ -523,18 +524,18 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 				$templateMarkerAttr = '###' . strtoupper($this->conf['templateMarker.'][$viewKind . '_selectAttributes']) . '###';
 				$templateAttr[] = $this->cObj->getSubpart($this->templateCode, $templateMarkerAttr);
 			}
-			
+
 			$countTemplateInterations = count($templateAttr);
 			if ($this->conf['showHiddenValues'] == 1) {
 				$showHiddenValues = TRUE;
 			} else {
 				$showHiddenValues = FALSE;
 			}
-			
+
 			// Parse piVars for values and names of selected attributes
 			// @TODO: Set TYPES via Typecaste when generating the array
-			
-			
+
+
 			// define $arrAttSubmit for finding the right article later
 			$arrAttSubmit = array();
 			foreach($this->piVars as $key => $val) {
@@ -553,9 +554,9 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 			} else {
 				$attributeMatrix = $prod->getSelectAttributeValueMatrix($arrAttSubmit);
 			}
-			
-			
-			
+
+
+
 			if ($this->conf['allArticles'] || $count == 1) {
 				//@TODO: Correct like this?
 				for($i = 0; $i < $count; $i ++) {
@@ -582,15 +583,15 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 							$ct ++;
 						}
 					}
-					$markerArray = $this->getArticleMarker($prod->articles[$prod->articles_uids[$i]]);
+					$markerArray = (array) $this->getArticleMarker($prod->articles[$prod->articles_uids[$i]]);
 					$markerArray['SUBPART_ARTICLE_ATTRIBUTES'] = $this->cObj->stdWrap($this->makeArticleAttributList($prod, array(
 						$prod->articles_uids[$i]
 					)), $this->conf['singleView.']['articleAttributesList.']);
 					$markerArray['ARTICLE_SELECT_ATTRIBUTES'] = $this->cObj->stdWrap($attCode, $this->conf['singleView.']['articleAttributesSelectList.']);
-					
+
 					foreach($hookObjectsArr as $hookObj) {
 						if (method_exists($hookObj, 'additionalMarker')) {
-							$markerArray = $hookObj->additionalMarker($markerArray, $this, $prod->articles[$prod->articles_uids[$i]]);
+							$markerArray = (array) $hookObj->additionalMarker($markerArray, $this, $prod->articles[$prod->articles_uids[$i]]);
 						}
 					}
 					$template_att = $this->cObj->getSubpart($template, $templateMarker[($i % $templateCount)]);
@@ -600,7 +601,7 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 							$template_att = $tempTemplate;
 						}
 					}
-					
+
 					$content .= $this->cObj->substituteMarkerArray($template_att, $markerArray, '###|###', 1);
 				}
 			} else {
@@ -622,18 +623,18 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 					}
 						// Makes pi1 a user int so form values are updated as one selects an attribute
 					$getVars['commerce_pi1_user_int'] = 1;
-					$attCode = '<form name="attList_' . $prod->get_uid() . '" id="attList_' . $prod->get_uid() . '" action="' . $this->pi_getPageLink($GLOBALS['TSFE']->id, '_self', $getVars) . '#att"  method="post">' . 
-						'<input type="hidden" name="' . $this->prefixId . '[changedProductUid]" value="' . $prod->get_uid() . '" />' . 
-						'<input type="hidden" name="' . $this->prefixId . '[attList_' . $prod->get_uid() . '_changed]" id="attList_' . $prod->get_uid() . '_changed" value="1" />' . 
+					$attCode = '<form name="attList_' . $prod->get_uid() . '" id="attList_' . $prod->get_uid() . '" action="' . $this->pi_getPageLink($GLOBALS['TSFE']->id, '_self', $getVars) . '#att"  method="post">' .
+						'<input type="hidden" name="' . $this->prefixId . '[changedProductUid]" value="' . $prod->get_uid() . '" />' .
+						'<input type="hidden" name="' . $this->prefixId . '[attList_' . $prod->get_uid() . '_changed]" id="attList_' . $prod->get_uid() . '_changed" value="1" />' .
 						'<input type="hidden" name="tx_commerce_pi1[catUid]" value="' . $this->piVars['catUid'] . '" />';
-					$markerArray = '';
+					$markerArray = array();
 					foreach($attributeMatrix as $attrUid => $values) {
 						$attributeObj = t3lib_div::makeInstance('tx_commerce_attribute');
 						$attributeObj->init($attrUid, $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
 						$attributeObj->load_data();
 						//disable the icon mode by default
 						$iconMode = FALSE;
-						
+
 						//if the icon mode is enabled in TS check if the iconMode is also enabled for this attribute
 						if ($this->conf[$this->handle . '.']['products.']['productAttributes.']['iconMode'] == '1') {
 							$iconMode = $attributeObj->isIconmode();
@@ -645,7 +646,7 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 							$templateAttrSelector = $templateAttrSelectorDropdown;
 							$templateAttrSelectorItem = $templateAttrSelectorDropdownItem;
 						}
-						
+
 						$markerArray['###SELECT_ATTRIBUTES_TITLE###'] = $attributeObj->get_title();
 						$markerArray['###SELECT_ATTRIBUTES_ON_CHANGE###'] = 'document.getElementById(\'attList_' . $prod->get_uid() . '_changed\').value = ' . $attrUid . ';document.getElementById(\'attList_' . $prod->get_uid() . '\').submit();';
 						$markerArray['###SELECT_ATTRIBUTES_HTML_ELEMENT_KEY###'] = $this->prefixId . '_' . $attrUid;
@@ -657,7 +658,7 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 						$i = 1;
 						$attributeValues = $attributeObj->get_all_values(true,$prod);
 						foreach($attributeValues as $val) {
-							
+
 							// ($this->piVars['changedProductUid'] == $prod->get_uid() &&  $this->piVars['showUid'] == $prod->get_uid()))
 							//  empty($this->piVars['attsel_' . $attribute_uid]) && $i == 1) {
 							$markerArrayItem = $markerArray;
@@ -677,7 +678,7 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 							} else {
 								$markerArrayItem['###SELECT_ATTRIBUTES_VALUE_STATUS###'] = '';
 							}
-							
+
 							// @deprecated, used for backwards compatibility
 							$markerArrayItem['###SELECT_ATTRIBUTES_VALUE_SELECTED###'] = $markerArrayItem['###SELECT_ATTRIBUTES_VALUE_STATUS###'];
 							foreach($hookObjectsArr as $hookObj) {
@@ -689,7 +690,7 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 							$i ++;
 						} // end of foreach $myAttribute['values']
 						$attributeContent = $this->cObj->substituteMarkerArray($templateAttrSelector, $markerArray);
-						
+
 						if ($iconMode) {
 							$attCode .= $this->cObj->substituteSubpart($attributeContent, '###' . strtoupper($this->conf['templateMarker.']['productAttributesSelectorRadiobutton']) . '_ITEM###', $itemsContent);
 						} else {
@@ -697,22 +698,22 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 						}
 					} // end of foreach $attributeArray
 					$attCode .= '</form>';
-				
-				} // end of if is_array($attributeArray)
-				
 
-				$markerArray = $this->getArticleMarker($prod->articles[$artId]);
+				} // end of if is_array($attributeArray)
+
+
+				$markerArray = (array) $this->getArticleMarker($prod->articles[$artId]);
 				$markerArray['SUBPART_ARTICLE_ATTRIBUTES'] = $this->makeArticleAttributList($prod, array(
 					$artId
 				));
 				$markerArray['ARTICLE_SELECT_ATTRIBUTES'] = $attCode;
-				
+
 				foreach($hookObjectsArr as $hookObj) {
 					if (method_exists($hookObj, 'additionalMarker')) {
-						$markerArray = $hookObj->additionalMarker($markerArray, $this, $prod->articles[$artId]);
+						$markerArray = (array) $hookObj->additionalMarker($markerArray, $this, $prod->articles[$artId]);
 					}
 				}
-				
+
 				$template_att = $this->cObj->getSubpart($template, $templateMarker[0]);
 				if ($this->conf['useStockHandling'] == 1 and $prod->articles[$artId]->getStock() <= 0) {
 					$tempTemplate = $this->cObj->getSubpart($template, $templateMarkerNostock[0]);
@@ -720,34 +721,34 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 						$template_att = $tempTemplate;
 					}
 				}
-				
+
 				$content .= $this->cObj->substituteMarkerArray($template_att, $markerArray, '###|###', 1);
 			} // end of else (if $this->conf['allArticles'] || $count == 1))
 		} else {
-			
+
 			// Special Marker and rendering when more articles are existing than are allowed to render
 			// @see tx_commerce_products->getNumberOfArticles
 			$localContent = $this->cObj->getSubpart($template, reset($templateMarkerMoreThanMax));
-			
+
 			$cat = $this->cat;
 			$prod_cats = $prod->getParentCategories();
 			if (! in_array($cat, $prod_cats, false)) {
 				$cat = $prod_cats[0];
 			}
-			
+
 			/**
 			 *
 			 * Build TS for Linking the Catergory Images
 			 *
 			 */
 			$lokalTS = $TS;
-			
+
 			/**
 			 *
 			 * Generate TypoLink Configuration and ad to fields by addTypoLinkToTs
 			 *
 			 */
-			
+
 			if ($this->conf['overridePid']) {
 				$typoLinkConf['parameter'] = $this->conf['overridePid'];
 			} else {
@@ -756,22 +757,22 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 			$typoLinkConf['useCacheHash'] = 1;
 			$typoLinkConf['additionalParams'] = ini_get('arg_separator.output') . $this->prefixId . '[showUid]=' . $prod->getUid();
 			$typoLinkConf['additionalParams'] .= ini_get('arg_separator.output') . $this->prefixId . '[catUid]=' . $cat;
-			
+
 			if ($this->basketHashValue) {
 				$typoLinkConf['additionalParams'] .= ini_get('arg_separator.output') . $this->prefixId . '[basketHashValue]=' . $this->basketHashValue;
 			}
 			$markerArray['LINKTOPRODUCT'] = $this->cObj->typoLink($this->pi_getLL('lang_toproduct'), $typoLinkConf);
 			$content = $this->cObj->substituteMarkerArray($localContent, $markerArray, '###|###', 1);
-			
+
 			$markerArray = array();
 			foreach($hookObjectsArr as $hookObj) {
 				if (method_exists($hookObj, 'additionalMarkerMakeArticleView')) {
-					$markerArray = $hookObj->additionalMarkerMakeArticleView($markerArray, $prod, $this);
+					$markerArray = (array) $hookObj->additionalMarkerMakeArticleView($markerArray, $prod, $this);
 				}
 			}
 		}
 		$content = $this->cObj->substituteMarkerArray($content, $markerArray);
-		
+
 		return $content;
 	} // end of function makeArticleView
 }
