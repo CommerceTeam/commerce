@@ -94,7 +94,7 @@ class tx_commerce_clickmenu {
 				$item = t3lib_div::makeInstance('tx_commerce_product');
 				$item->init($productUid);
 				
-				$parentCategories = $item->get_parent_categories();
+				$parentCategories = $item->getParentCategories();
 				
 				//store the rights in the flags
 				$delete = tx_commerce_belib::checkPermissionsOnCategoryContent($parentCategories, array('editcontent'));	

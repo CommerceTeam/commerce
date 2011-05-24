@@ -745,13 +745,15 @@ class tx_commerce_dmhooks {
 				if('new' != $status && !$GLOBALS['BE_USER']->uc['txcommerce_copyProcess']) {
 					$item = t3lib_div::makeInstance('tx_commerce_article');
 					$item->init($id);
+					$data = $pObj->newFieldArray($table);
 					$productUid = $item->getParentProductUid();
 		
 					//get the parent categories of the product
 					$item = t3lib_div::makeInstance('tx_commerce_product');
 					$item->init($productUid);
 					
-					$parentCategories = $item->get_parent_categories();
+					$parentCategories = $item->getParentCategories();
+					debug($parentCategories);
 				}
 				
 				// read new assigned product

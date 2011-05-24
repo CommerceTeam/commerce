@@ -112,7 +112,7 @@ class tx_commerce_cmhooks {
 			$item = t3lib_div::makeInstance('tx_commerce_product');
 			$item->init($productUid);
 			
-			$parentCategories = $item->get_parent_categories();
+			$parentCategories = $item->getParentCategories();
 			
 			if(!tx_commerce_belib::checkPermissionsOnCategoryContent($parentCategories, array('editcontent'))) {
 				$pObj->log($table,$id,3,0,1,'Attempt to '.$command.' record without '.$command.'-permissions'); //Log the error
