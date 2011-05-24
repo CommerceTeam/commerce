@@ -1,3 +1,6 @@
+24.05.2011 Ingo Schmitt <is@marketing-factory.de>
+* Removed deprecated function call in dmhooks, cmhooks and clickmenu
+
 18.05.2011 Torben Hansen <t.hansen@skyfillers.com>
 * Fix a regression in tx_commerce_category.php from latest cleanups accessing a now protected variable
 
