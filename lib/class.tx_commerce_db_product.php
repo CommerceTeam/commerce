@@ -174,6 +174,7 @@ class tx_commerce_db_product extends tx_commerce_db_alib {
  	 */
  	
  	function get_parent_category($uid)	{
+ 		t3lib_div::logDeprecatedFunction();
  		$uid = intval($uid);
  		if ($uid){
  			
@@ -223,6 +224,7 @@ class tx_commerce_db_product extends tx_commerce_db_alib {
  	 */
  	
  	function get_parent_categorie($uid)	{
+ 		t3lib_div::logDeprecatedFunction();
  		return $this->get_parent_category($uid);
  		
  	}
@@ -236,8 +238,8 @@ class tx_commerce_db_product extends tx_commerce_db_alib {
  	 * @deprecated use getParentCategories instead
  	 */
  	
- 	function get_parent_categories($uid)
- 	{
+ 	function get_parent_categories($uid){
+ 		t3lib_div::logDeprecatedFunction();
  		return array($this->get_parent_category($uid));
  		
  	}

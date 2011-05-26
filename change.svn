@@ -1,5 +1,6 @@
 26.05.2011 Ingo Schmitt <is@marketing-factory.de>
 * Fixed Issue #27021, non Admins can't edit lokaized articles
+* Added calls to t3lib_div::logDeprecatedFunction() when method is depricated
 
 24.05.2011 Ingo Schmitt <is@marketing-factory.de>
 * Removed deprecated function call in dmhooks, cmhooks and clickmenu
