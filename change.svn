@@ -2,6 +2,7 @@ Changelog for tx_commerce
 26.05.2011 Ingo Schmitt <is@marketing-factory.de>
 * Fixed Issue #27021, non Admins can't edit lokaized articles
 * Released 0.12.6 in TER
+* Released 0.12.7 in TER du a problem in the 0.12.6 package
 
 03.05.2011 Ingo Schmitt <is@marketing-factory.de>
 * Released 0.12.5 in TER as "Current Version"
