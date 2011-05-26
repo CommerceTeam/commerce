@@ -314,7 +314,19 @@ class tx_commerce_db_product extends tx_commerce_db_alib {
 		}
 		
 		$GLOBALS['TYPO3_DB']->sql_free_result($result);
-		
+
+			// If $uids is empty, the record might be a localized product, related to issue #27021
+		if (count($uids) === 0) {
+			$rows = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+				'l18n_parent',
+				$this->database_table,
+				'uid = ' . $uid
+			);
+			if ($rows[0] && (int)$rows[0]['l18n_parent'] > 0) {
+				$uids = $this->getParentCategories($rows[0]['l18n_parent']);
+			}
+		}
+
 		return $uids;
 	}
 	
