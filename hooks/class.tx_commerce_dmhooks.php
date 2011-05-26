@@ -753,7 +753,7 @@ class tx_commerce_dmhooks {
 					$item->init($productUid);
 					
 					$parentCategories = $item->getParentCategories();
-					debug($parentCategories);
+					
 				}
 				
 				// read new assigned product
