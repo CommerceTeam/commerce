@@ -2,7 +2,7 @@
 /***************************************************************
  *  Copyright notice
  *
- *  (c)  2005 - 2010 Ingo Schmitt <is@marketing-factory.de>
+ *  (c)  2005 - 2011 Ingo Schmitt <is@marketing-factory.de>
  *  All   rights reserved
  *
  *  This script is part of the Typo3 project. The Typo3 project is
@@ -1343,7 +1343,7 @@ class tx_commerce_product extends tx_commerce_element_alib {
 	 * @deprecated Will be removed after 2011-02-27, this method returns only one parent category
 	 */
 	function get_parent_categories() {
-		return $this->conn_db->get_parent_categories($this->uid);
+		return $this->conn_db->getParentCategories($this->uid);
 	}
 
 
