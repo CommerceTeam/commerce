@@ -76,7 +76,7 @@ class tx_commerce_payment_creditcard {
 			'cc_type.' => array (
 				'mandatory' => 1,
 				'type' => 'select',
-				'values' => array (
+				'values.' => array (
 					'Visa',
 					'Mastercard',
 					'Amercican Express',

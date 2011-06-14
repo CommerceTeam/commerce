@@ -1,3 +1,6 @@
+14.06.2011 Christian Kuhn <lolli@schwarzbu.ch>
+* Fixed issue #7916: tx_commerce_payment_creditcard.php contains wrong TS for selectbox (Thanks to Pim Snel)
+
 26.05.2011 Ingo Schmitt <is@marketing-factory.de>
 * Fixed Issue #27021, non Admins can't edit lokaized articles
 * Added calls to t3lib_div::logDeprecatedFunction() when method is depricated
