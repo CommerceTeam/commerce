@@ -1,3 +1,6 @@
+19.07.2011 Michael Knabe <mk@e-netconsulting.com>
+* Fixed issue #28312 - Increase length of title & subtitle fields in commerce base entities (Thanks to Marcus Krause)
+
 14.06.2011 Christian Kuhn <lolli@schwarzbu.ch>
 * Fixed issue #7916: tx_commerce_payment_creditcard.php contains wrong TS for selectbox (Thanks to Pim Snel)
 

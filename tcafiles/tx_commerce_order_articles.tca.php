@@ -84,7 +84,7 @@ $TCA['tx_commerce_order_articles'] = Array (
 			'config' => Array (
 				'type' => 'input',
 				'size' => '40',
-				'max' => '80',
+				'max' => '255',
 				'eval' => 'required,trim',
 			)
 		),
@@ -94,7 +94,7 @@ $TCA['tx_commerce_order_articles'] = Array (
 			'config' => Array (
 				'type' => 'input',
 				'size' => '40',
-				'max' => '80',
+				'max' => '255',
 				'eval' => 'trim',
 			)
 		),
