@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2005 - 2006 Thomas Hempel (thomas@work.de)
+*  (c) 2009 Volker Graubaum <vg@e-netconsulting.de>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -21,38 +21,40 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
 /**
- * 
+ * Debit payment implementation
  *
  * @package commerce
  * @subpackage payment
- * @author Thomas Hempel <thomas@work.de>
- * @internal Maintainer Thomas Hempel
- * 
- * $Id: class.tx_commerce_payment_debit.php 483 2007-01-09 17:42:40Z ingo $
+ * @author Volker Graubaum <vg@e-netconsulting.de>
  */
- 
-class tx_commerce_payment_debit {
+class tx_commerce_payment_debit extends tx_commerce_payment_abstract {
+
 	/**
-	 * The locallang array for this payment module
-	 * This is only needed, if individual fields are defined
+	 * @var string Payment type
 	 */
-	var $LOCAL_LANG = array (
-		'default' => array (
+	protected $type = 'debit';
+
+	/**
+	 * @var array Locallang array, only needed if individual fields are defined
+	 */
+	public $LOCAL_LANG = array(
+		'default' => array(
 			'payment_debit_bic' => 'Bank Identification Number',
 			'payment_debit_an' => 'Account number',
 			'payment_debit_bn' => 'Bankname',
 			'payment_debit_ah' => 'Account holder',
 			'payment_debit_company' => 'Company',
 		),
-		'de' => array (
+		'de' => array(
 			'payment_debit_bic' => 'Bankleitzahl',
 			'payment_debit_an' => 'Kontonummer',
 			'payment_debit_bn' => 'Bankname',
 			'payment_debit_ah' => 'Kontoinhaber',
 			'payment_debit_company' => 'Firma',
 		),
-		'fr' => array (
+		'fr' => array(
 			'payment_debit_bic' => 'Code de banque',
 			'payment_debit_an' => 'Num�ro de compte',
 			'payment_debit_bn' => 'Nom bancaire',
@@ -61,70 +63,74 @@ class tx_commerce_payment_debit {
 		),
 	);
 
-	/// In this var the wrong fields are stored (for future use)
-	var $errorFields = array();
-	
-	/// This var holds the errormessages (keys are the fieldnames)
-	var $errorMessages = array();
-	
-	
-	function needAdditionalData($pObj) {
-		if(!is_object($this->pObj)) {
-			$this->pObj = $pObj;
-		}
-		return true;
-	}
-
-	function getAdditonalFieldsConfig($pObj) {
-		if(!is_object($this->pObj)) {
-			$this->pObj = $pObj;
-		}
+	/**
+	 * Get configuration of additional fields
+	 *
+	 * @return mixed|null
+	 */
+	public function getAdditionalFieldsConfig() {
 		$result = array(
-			'debit_bic' => array ('mandatory' => 1),
-			'debit_an' => array ('mandatory' => 1),
-			'debit_bn' => array ('mandatory' => 1),
-			'debit_ah' => array ('mandatory' => 1),
-			'debit_company' => array ('mandatory' => 0)
+			'debit_bic.' => array(
+				'mandatory' => 1
+			),
+			'debit_an.' => array(
+				'mandatory' => 1
+			),
+			'debit_bn.' => array(
+				'mandatory' => 1
+			),
+			'debit_ah.' => array(
+				'mandatory' => 1
+			),
+			'debit_company.' => array(
+				'mandatory' => 0
+			)
 		);
 		return $result;
 	}
-	
-	function proofData($formData,$pObj) {
-		if(!is_object($this->pObj)) {
-			$this->pObj = $pObj;
-		}
-		return true;
-	}
-	
+
 	/**
-	 * This method is called in the last step. Here can be made some final checks or whatever is
-	 * needed to be done before saving some data in the database.
-	 * Write any errors into $this->errorMessages!
-	 * To save some additonal data in the database use the method updateOrder().
+	 * Check if provided data is ok
 	 *
-	 * @param	array	$config: The configuration from the TYPO3_CONF_VARS
-	 * @param	array	$basket: The basket object
-	 *
-	 * @return boolean	True or false
+	 * @param array $formData Current form data
+	 * @return bool TRUE if data is ok
 	 */
-	function finishingFunction($config, $session, $basket,$pObj) {
-		if(!is_object($this->pObj)) {
-			$this->pObj = $pObj;
+	public function proofData(array $formData = array()) {
+			// If formData is empty we know that this is the very first
+			// call from tx_commerce_pi3->handlePayment and at this time
+			// there can't be form data.
+		if (empty($formData)) {
+			return false;
 		}
-		return true;
+
+		$config['sourceFields.'] = $this->getAdditionalFieldsConfig($this->pObj);
+
+		$result = TRUE;
+
+		foreach ($formData as $name => $value) {
+			if ($config['sourceFields.'][$name . '.']['mandatory'] == 1 && strlen($value) == 0) {
+				$result = FALSE;
+			}
+		}
+
+		if ($this->provider !== NULL) {
+			return $this->provider->proofData($formData, $result);
+		}
+
+		return $result;
 	}
-	
+
 	/**
-	 * This method can make something with the created order. For example add the
-	 * reference id for payments with creditcards.
+	 * Update order data after order has been finished
+	 *
+	 * @param integer $orderUid Id of this order
+	 * @param array $session Session data
+	 * @return void
 	 */
-	function updateOrder($orderUid, $session,$pObj) {
-		if(!is_object($this->pObj)) {
-			$this->pObj = $pObj;
-		}
+	public function updateOrder($orderUid, array $session = array()) {
 		$GLOBALS['TYPO3_DB']->exec_UPDATEquery(
 			'tx_commerce_orders',
-			'uid = ' .$orderUid,
+			'uid = ' . $orderUid,
 			array(
 				'payment_debit_bic' => $session['payment']['debit_bic'],
 				'payment_debit_an' => $session['payment']['debit_an'],
@@ -134,35 +140,12 @@ class tx_commerce_payment_debit {
 			)
 		);
 	}
-	
-	/**
-	 * Returns the last error message
-	 */
-	function getLastError($finish = 0,$pObj) {
-		if(!is_object($this->pObj)) {
-			$this->pObj = $pObj;
-		}
-		if ($finish) {
-			return $this->getReadableError();
-		} else {
-			return $this->errorMessages[(count($this->errorMessages) -1)];
-		}
-	}
-	
-	// creditcard Error Code Handling
-	
-	function getReadableError(){
-		$back = 'es wurde folgender Fehler zurueckgegeben';
-		while(list($k, $v) = each($this->errorMessages)) {
-			$back .= '<br> '.$k. ' => '.$v;
-	    }
-		return $back;
-	}
 }
 
 
 if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']["ext/commerce/payment/class.tx_commerce_payment_debit.php"])	{
 	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']["ext/commerce/payment/class.tx_commerce_payment_debit.php"]);
 }
+
 
 ?>

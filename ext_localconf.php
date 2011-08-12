@@ -68,34 +68,38 @@ $_EXTCONF = unserialize($_EXTCONF);
 // Add unserialized ext conf settings to global array for easy access of those settings
 $TYPO3_CONF_VARS['EXTCONF'][COMMERCE_EXTkey]['extConf'] = $_EXTCONF;
 
-// Payment settings
+	// Payment settings
 $TYPO3_CONF_VARS['EXTCONF'][COMMERCE_EXTkey]['SYSPRODUCTS']['PAYMENT'] = array(
 	'tablefields' => array(
 		'title' => 'SYSTEMPRODUCT_PAYMENT',
-		'description' => 'product zum Verwalten der Bezahlung',
-	)
-);
-$TYPO3_CONF_VARS['EXTCONF'][COMMERCE_EXTkey]['SYSPRODUCTS']['PAYMENT']['types']['invoice'] = array(
-	'path' => PATH_txcommerce .'payment/class.tx_commerce_payment_invoice.php',
-	'class' => 'tx_commerce_payment_invoice',
-	'type' => PAYMENTArticleType,
-);
-$TYPO3_CONF_VARS['EXTCONF'][COMMERCE_EXTkey]['SYSPRODUCTS']['PAYMENT']['types']['prepayment'] = array(
-	'path' => PATH_txcommerce .'payment/class.tx_commerce_payment_prepayment.php',
-	'class' => 'tx_commerce_payment_prepayment',
-	'type' => PAYMENTArticleType,
-);
-$TYPO3_CONF_VARS['EXTCONF'][COMMERCE_EXTkey]['SYSPRODUCTS']['PAYMENT']['types']['creditcard'] = array(
-	'path' => PATH_txcommerce .'payment/class.tx_commerce_payment_creditcard.php',
-	'class' => 'tx_commerce_payment_creditcard',
-	'type' => PAYMENTArticleType,
-	// Language file for external credit card check
-	'ccvs_language_files' => PATH_txcommerce . 'payment/ccvs/language',
-);
-$TYPO3_CONF_VARS['EXTCONF'][COMMERCE_EXTkey]['SYSPRODUCTS']['PAYMENT']['types']['cashondelivery'] = array(
-	'path' => PATH_txcommerce .'payment/class.tx_commerce_payment_cashondelivery.php',
-	'class' => 'tx_commerce_payment_cashondelivery',
-	'type' => PAYMENTArticleType,
+		'description' => 'Products to manage payment',
+	),
+	'types' => array(
+		'invoice' => array(
+			'class' => 'tx_commerce_payment_invoice',
+			'type' => PAYMENTArticleType,
+		),
+		'prepayment' => array(
+			'class' => 'tx_commerce_payment_prepayment',
+			'type' => PAYMENTArticleType,
+		),
+		'cashondelivery' => array(
+			'class' => 'tx_commerce_payment_cashondelivery',
+			'type' => PAYMENTArticleType,
+		),
+		'creditcard' => array(
+			'class' => 'tx_commerce_payment_creditcard',
+			'type' => PAYMENTArticleType,
+				// Language file for external credit card check
+			'ccvs_language_files' => PATH_txcommerce . 'payment/ccvs/language',
+			'provider' => array(
+				'wirecard' => array(
+						// @TODO: Remove this implementation if it turns out that it does not work anymore
+					'class' => 'tx_commerce_payment_provider_wirecard',
+				),
+			),
+		),
+	),
 );
 
 // Delivery settings
@@ -126,15 +130,14 @@ t3lib_extMgm::addTypoScript(COMMERCE_EXTkey, 'editorcfg', '
 
 
 if (TYPO3_MODE == 'BE') {
-	
-	// XCLASS for version preview
-	// This XCLASS will create a link to singlePID / previewPageID in version module for commerce products
+		// XCLASS for version preview
+		// This XCLASS will create a link to singlePID / previewPageID in version module for commerce products
 	$TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/version/cm1/index.php'] = t3lib_extMgm::extPath(COMMERCE_EXTkey) . 'class.ux_versionindex.php';
 
-	// XCLASS for db list enable the search module to search in OrderIds
-	// Field tx_commerce_orders.order_id is of type none, but the BE list module doesn't search in those fields by default
-	// @see http://bugs.typo3.org/view.php?id=5676
-	// @see http://forge.typo3.org/issues/17329
+		// XCLASS for db list enable the search module to search in OrderIds
+		// Field tx_commerce_orders.order_id is of type none, but the BE list module doesn't search in those fields by default
+		// @see http://bugs.typo3.org/view.php?id=5676
+		// @see http://forge.typo3.org/issues/17329
 	$TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['typo3/class.db_list_extra.inc'] = t3lib_extMgm::extPath(COMMERCE_EXTkey) . 'class.ux_localrecordlist.php';
 }
 
@@ -196,7 +199,6 @@ $TYPO3_CONF_VARS['EXTCONF']['sr_feuser_register']['tx_srfeuserregister_pi1']['re
 
 $TYPO3_CONF_VARS['EXTCONF']['commerce/pi4/class.tx_commerce_pi4.php']['deleteAddress'][] = 'EXT:commerce/hooks/class.tx_commerce_pi4hooksHandler.php:tx_commerce_pi4hooksHandler';
 $TYPO3_CONF_VARS['EXTCONF']['commerce/pi4/class.tx_commerce_pi4.php']['saveAddress'][] = 'EXT:commerce/hooks/class.tx_commerce_pi4hooksHandler.php:tx_commerce_pi4hooksHandler';
-
 
 // CLI Skript configration
 if (TYPO3_MODE == 'BE') {

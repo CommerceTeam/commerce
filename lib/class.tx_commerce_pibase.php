@@ -119,6 +119,64 @@ class tx_commerce_pibase extends tslib_pibase {
 	}
 
 	/**
+	 * Returns the payment object for a specific payment type (creditcard, invoice, ...)
+	 *
+	 * @throws Exception If payment object can not be created or is invalid
+	 * @param string $paymentType Payment type to get
+	 * @return tx_commerce_payment_abstract Current payment object
+	 */
+	protected function getPaymentObject($paymentType = '') {
+		if (!is_string($paymentType)) {
+			throw new Exception(
+				'Expected variable of type string for $paymentType but a ' . getType($paymentType) . ' was given.',
+				1305675802
+			);
+		}
+		if (strlen($paymentType) < 1) {
+			throw new Exception(
+				'$paymentType not given.',
+				1307015821
+			);
+		}
+
+		$config = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['SYSPRODUCTS']['PAYMENT']['types'][$paymentType];
+
+		if (!is_array($config)) {
+			throw new Exception(
+				'No configuration found for payment type ' . $paymentType,
+				1305675991
+			);
+		}
+		if (!isset($config['class'])) {
+			throw new Exception(
+				'No target implementation found for payment type ' . $paymentType,
+				1305676132
+			);
+		}
+
+			// @TODO: Remove after 2012-05-20
+		if (strlen($config['path']) > 0) {
+			t3lib_div::deprecationLog($config['path'] . ' should be unset, the class should be added to the ext_autoload.php');
+			require_once($config['path']);
+		}
+
+		try {
+			$paymentObject = t3lib_div::makeInstance($config['class'], $this);
+		} catch (ReflectionException $e) {
+				// @TODO: Let exception pass instead after 2012-05-20
+			t3lib_div::deprecationLog($config['class'] . ' must implement tx_commerce_payment');
+			$paymentObject = t3lib_div::makeInstance($config['class']);
+		}
+
+		if (!$paymentObject instanceof tx_commerce_payment) {
+				// @TODO: Throw an exception instead after 2012-05-20
+			t3lib_div::deprecationLog($config['class'] . ' must implement tx_commerce_payment');
+		}
+
+		return $paymentObject;
+	}
+
+	/**
 	 * Getting additional locallang-files through an Hook
 	 */
 

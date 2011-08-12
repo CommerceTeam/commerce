@@ -628,6 +628,35 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 			$allowedArticles = explode(',', $this->conf['payment.']['allowedArticles']);
 		}
 
+			// Check if payment articles are allowed
+		foreach ($this->payProd->articles as $articleUid => $articleObj) {
+			if ((!is_array($allowedArticles)) || in_array($articleUid, $allowedArticles)) {
+				$articleObj->load_data();
+				$paymentType = $articleObj->classname;
+				$payment = $this->getPaymentObject($paymentType);
+				if (method_exists($payment, 'isAllowed')) {
+					if ($payment->isAllowed()) {
+						$newAllowedArticles[] = $articleUid;
+					}
+				} else {
+						// This code is kept for backwards compatibility with
+						// 'old' payment that had no 'isAllowed' handling.
+						// @TODO: Remove
+					$newAllowedArticles[] = $articleUid;
+				}
+			}
+		}
+			// If default Paymentarticle is, for example, credit card
+			// but when we have an article in the basket with the only possible
+			// payment method like debit, this ensures that there is still the correct
+			// payment article in the basket.
+			// @TODO: Refactor default handling
+		if (count($newAllowedArticles) == 1 && $this->conf['defaultPaymentArticleId'] != $newAllowedArticles[0]) {
+			$this->conf['defaultPaymentArticleId'] = $newAllowedArticles[0];
+		}
+		$allowedArticles = $newAllowedArticles;
+		unset ($newAllowedArticles);
+
 		// Hook to allow to define/overwrite individually, which payment articles are allowed
 		$hookObjectsArr = array();
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['paymentArticles'])) {

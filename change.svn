@@ -1,3 +1,6 @@
+12.08.2011 Christian Kuhn <lolli@schwarzbu.ch>
+* Added feature #4980: New payment interface (Thanks to Michael Staatz, Michael Knabe and Tom Rüther)
+
 19.07.2011 Michael Knabe <mk@e-netconsulting.com>
 * Fixed issue #28312 - Increase length of title & subtitle fields in commerce base entities (Thanks to Marcus Krause)
 

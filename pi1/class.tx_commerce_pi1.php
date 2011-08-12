@@ -430,7 +430,7 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 			$relatedProductsSubpart.= $this->renderProduct($relatedProduct, $localTemplate, $localTypoScript, '###no#artikel#subpart#here###');
 		}
 
-		// Additonal headers for "related products" are overwritten by subparts
+		// Additional headers for "related products" are overwritten by subparts
 		// So we will change this here. In thought of sorting, we can't split the entries.
 		if ($relatedProductsSubpart != '') {
 			// Set first subpart empty

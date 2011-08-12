@@ -57,6 +57,23 @@ return array(
 	'tx_commerce_treelib_link_leaf_productview' => $extensionPath . 'treelib/link/class.tx_commerce_treelib_link_leaf_productview.php',
 	'tx_commerce_treelib_tceforms' => $extensionPath . 'treelib/class.tx_commerce_treelib_tceforms.php',
 
+
+	'tx_commerce_payment' => $extensionPath . 'payment/interfaces/interface.tx_commerce_payment.php',
+	'tx_commerce_payment_abstract' => $extensionPath . 'payment/class.tx_commerce_payment_abstract.php',
+	'tx_commerce_payment_cashondelivery' => $extensionPath . 'payment/class.tx_commerce_payment_cashondelivery.php',
+	'tx_commerce_payment_creditcard' => $extensionPath . 'payment/class.tx_commerce_payment_creditcard.php',
+	'tx_commerce_payment_debit' => $extensionPath . 'payment/class.tx_commerce_payment_debit.php',
+	'tx_commerce_payment_invoice' => $extensionPath . 'payment/class.tx_commerce_payment_invoice.php',
+	'tx_commerce_payment_prepayment' => $extensionPath . 'payment/class.tx_commerce_payment_prepayment.php',
+
+	'tx_commerce_payment_criterion' => $extensionPath . 'payment/interfaces/interface.tx_commerce_payment_criterion.php',
+
+	'tx_commerce_payment_provider' => $extensionPath . 'payment/provider/interfaces/interface.tx_commerce_payment_provider.php',
+	'tx_commerce_payment_provider_abstract' => $extensionPath . 'payment/provider/class.tx_commerce_payment_provider_abstract.php',
+	'tx_commerce_payment_provider_wirecard' => $extensionPath . 'payment/provider/class.tx_commerce_payment_provider_wirecard.php',
+
+	'tx_commerce_payment_provider_criterion' => $extensionPath . 'payment/provider/criteria/interfaces/interface.tx_commerce_payment_provider_criterion.php',
+
 	'tx_commerce_payment_ccvs' => $extensionPath . 'payment/ccvs/class.tx_commerce_payment_ccvs.php',
 );
 ?>

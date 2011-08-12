@@ -22,7 +22,7 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-require_once (t3lib_extMgm::extPath('static_info_tables') . 'pi1/class.tx_staticinfotables_pi1.php');
+require_once(t3lib_extMgm::extPath('static_info_tables') . 'pi1/class.tx_staticinfotables_pi1.php');
 
 /**
  * Plugin 'checkout' for the 'commerce' extension.
@@ -708,6 +708,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 
 		// @TODO Find a comment to explain this if construct
 		if (
+				// @deprecated $this will be removed, the payment objects gets $this in it's constructor
 			$paymentObj->needAdditionalData($this) && (
 				(isset($this->MYSESSION['payment']) && !$paymentObj->proofData($this->MYSESSION['payment'], $this)) ||
 				(!isset($this->MYSESSION['payment']) || $paymentObj->getLastError(1, $this))
@@ -724,14 +725,24 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 				}
 			}
 
+			$formAction = $this->pi_getPageLink($GLOBALS['TSFE']->id);
+			if (method_exists($paymentObj, 'getProvider')) {
+				$paymentProvider = $paymentObj->getProvider();
+				if (method_exists($paymentProvider, 'getAlternativFormAction')) {
+					$formAction = $paymentProvider->getAlternativFormAction($this);
+				}
+			}
+
 			$this->formError = $paymentObj->formError;
 
 			// Show the payment form if it's needed, otherwise go to next step
-			$paymentForm = '<form name="paymentForm" action="' . $this->pi_getPageLink($GLOBALS['TSFE']->id) . '" method="post">';
+			$paymentForm = '<form name="paymentForm" action="' . $formAction . '" method="post">';
 			$paymentForm.= '<input type="hidden" name="' . $this->prefixId . '[step]" value="payment" />';
 			$paymentConfig = $this->conf['payment.'];
-			$paymentConfig['sourceFields.'] = $paymentObj->getAdditonalFieldsConfig($this);
+				// @deprecated: $this will be removed
+			$paymentConfig['sourceFields.'] = $paymentObj->getAdditionalFieldsConfig($this);
 			$paymentForm.= $this->getInputForm($paymentConfig, 'payment', TRUE);
+				// @deprecated: 1 and $this
 			$paymentErr = $paymentObj->getLastError(1, $this);
 
 			$markerArray['###PAYMENT_PAYMENTOBJ_MESSAGE###'] = $this->pi_getLL($paymentErr);
@@ -741,7 +752,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 			$markerArray['###PAYMENT_FORM_FIELDS###'] = $paymentForm;
 			$markerArray['###PAYMENT_FORM_SUBMIT###'] = '<input type="submit" value="' . $this->pi_getLL('payment_submit') . '" /></form>';
 		} else {
-			// Redirect to the next page because no additonal payment information is needed or everything is correct
+			// Redirect to the next page because no additional payment information is needed or everything is correct
 			return FALSE;
 		}
 		foreach($hookObjectsArr as $hookObj) {
@@ -851,7 +862,9 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 			$paymentObj = t3lib_div::makeInstance($config['class']);
 		}
 
+			// @deprecated: checkExternalData is defined in interface
 		if (method_exists($paymentObj, 'checkExternalData')) {
+				// @deprecated: $this will be removed
 			$paymentDone = $paymentObj->checkExternalData($_REQUEST, $this->MYSESSION, $this);
 		} else {
 			$paymentDone = FALSE;
@@ -892,6 +905,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 		// Handle orders
 		$basket = $GLOBALS['TSFE']->fe_user->tx_commerce_basket;
 
+			// @deprecated: $this will be removed
 		foreach($hookObjectsArr as $hookObj) {
 			if (method_exists($hookObj, 'prepayment')) {
 				$hookObj->prepayment($paymentObj, $basket, $this);
@@ -913,11 +927,13 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 
 		$paymentObj->parentObj = $this;
 
+			// @deprecated: $this will be removed
 		if (method_exists($paymentObj, 'hasSpecialFinishingForm') && $paymentObj->hasSpecialFinishingForm($_REQUEST, $this)) {
 			$content = $paymentObj->getSpecialFinishingForm($config, $this->MYSESSION, $basket, $this);
 
 			return $content;
 		} else {
+				// @deprecated: $this will be removed
 			if (!$paymentObj->finishingFunction($config, $this->MYSESSION, $basket, $this)) {
 				$content.= $this->handlePayment($paymentObj);
 
@@ -1424,31 +1440,11 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 	 *
 	 * @return unknown
 	 */
-	function getPaymentObject() {
-		$paymentType = $this->getPaymentType();
-		$sysConfig = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['SYSPRODUCTS']['PAYMENT'];
-		$config = $sysConfig['types'][strtolower((string)$paymentType) ];
-		$errorStr = NULL;
-
-		if (!isset($config['class'])) {
-			$errorStr[] = 'class not set!:' . $config['class'];
+	function getPaymentObject($paymentType = '')	{
+		if (empty($paymentType)) {
+			$paymentType = $this->getPaymentType();
 		}
-		if (!file_exists($config['path'])) {
-			$errorStr[] = 'file not found!:' . $config['path'];
-		}
-
-		if (is_array($errorStr)) {
-			die('MAIN:FATAL! No payment possible because I don\'t know how to handle it! (' . implode(', ', $errorStr) . ')');
-		}
-
-		require_once ($config['path']);
-		$paymentObj = t3lib_div::makeInstance($config['class']);
-
-		if (method_exists($paymentObj, 'setStep')) {
-			$this->piVars['step'] = $paymentObj->setStep($_REQUEST, $this->piVars['step']);
-		}
-
-		return $paymentObj;
+		return parent::getPaymentObject($paymentType);
 	}
 
 
@@ -1735,14 +1731,21 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 		if (isset($fieldConfig['maxlength']) AND is_numeric($fieldConfig['maxlength'])) {
 			$maxlength = ' maxlength="' . $fieldConfig['maxlength'] . '"';
 		}
-
-		$result = '<input id="' . $step . '-' . $fieldName . '" type="text" name="' . $this->prefixId . '[' . $step . '][' . $fieldName . ']" value="' . $value . '" ' . $maxlength;
-
-		if ($fieldConfig['readonly'] == 1) {
-			$result.= ' readonly disabled /><input type="hidden" name="' . $this->prefixId . '[' . $step . '][' . $fieldName . ']" value="' . $value . '" ' . $maxlength;
-			' />';
+		
+		if ($fieldConfig['noPrefix'] == 1) {
+			$result = '<input id="' . $step . '-' . $fieldName . '" type="text" name="' . $fieldName . '" value="' . $value . '" ' . $maxlength;
+			if ($fieldConfig['readonly'] == 1) {
+				$result .= ' readonly disabled /><input type="hidden" name="' . $fieldName . '" value="' . $value . '" ' . $maxlength . ' />';
+			} else {
+				$result .= '/>';
+			}
 		} else {
-			$result.= '/>';
+			$result = '<input id="' . $step . '-' . $fieldName . '" type="text" name="' . $this->prefixId . '[' . $step . '][' . $fieldName . ']" value="' . $value .'" ' . $maxlength;
+			if ($fieldConfig['readonly'] == 1) {
+				$result .= ' readonly disabled /><input type="hidden" name="' . $this->prefixId . '[' . $step . '][' . $fieldName .']" value="' . $value .'" ' . $maxlength . ' />';
+			} else {
+				$result .= '/>';
+			}
 		}
 
 		return $result;
@@ -2417,6 +2420,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 		}
 
 		// Call update method from the payment class
+		// @deprecated: $this will be removed
 		$paymentObj->updateOrder($orderUid, $this->MYSESSION, $this);
 
 		// Insert order
