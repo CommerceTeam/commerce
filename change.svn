@@ -1,3 +1,6 @@
+13.08.2011 Christian Kuhn <lolli@schwarzbu.ch>
+* Fixed bug #28576: Wrong XCLASS definition in tx_commerce_cce_db (Thanks to Tymoteusz Motylewski)
+
 12.08.2011 Christian Kuhn <lolli@schwarzbu.ch>
 * Added feature #4980: New payment interface (Thanks to Michael Staatz, Michael Knabe and Tom Rüther)
 
