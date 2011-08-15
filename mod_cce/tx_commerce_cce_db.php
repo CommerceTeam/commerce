@@ -353,8 +353,8 @@ class SC_tx_commerce_cce_db {
 		// First prepare user defined objects (if any) for hooks which extend this function:
 		$hookObjectsArr = array();
 		if (is_array ($TYPO3_CONF_VARS['EXTCONF']['commerce/mod_cce/class.tx_commerce_cce_db.php']['commitCommandClass'])) {
-			foreach ($TYPO3_CONF_VARS['EXTCONF']['commerce/lib/class.tx_commerce_cce_db.php']['commitCommandClass'] as $classRef) {
-				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+			foreach ($TYPO3_CONF_VARS['EXTCONF']['commerce/mod_cce/class.tx_commerce_cce_db.php']['commitCommandClass'] as $classRef) {
+				$hookObjectsArr[] = t3lib_div::getUserObj($classRef);
 			}
 		}
 		

@@ -1,3 +1,6 @@
+15.08.2011 Christian Kuhn <lolli@schwarzbu.ch>a
+* Fixed bug #28412: Wrong hook name in tx_commerce_cce_db (Thanks to Tymoteusz Motylewski)
+
 13.08.2011 Christian Kuhn <lolli@schwarzbu.ch>
 * Fixed bug #28576: Wrong XCLASS definition in tx_commerce_cce_db (Thanks to Tymoteusz Motylewski)
 
