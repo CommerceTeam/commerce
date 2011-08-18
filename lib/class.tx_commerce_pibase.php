@@ -797,7 +797,12 @@ class tx_commerce_pibase extends tslib_pibase {
 	 	$content='';
 	 	$template = $this->cObj->getSubpart($this->templateCode, $subpartMarker);
 		
-	 
+	 	$hookObjectsArr = array();
+		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['makeBasketView'])) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['makeBasketView'] as $classRef) {
+				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+			}
+		}
 	 	
 		if(!is_array($lineTemplate)) {
 			$temp = $lineTemplate;
@@ -853,6 +858,12 @@ class tx_commerce_pibase extends tslib_pibase {
 		 	}
 		}else{
 			$content = $this->cObj->substituteSubpart($template,'###LISTING_ARTICLE###','');
+		}
+
+		foreach($hookObjectsArr as $hookObj) {
+			if (method_exists($hookObj, 'postBasketView')) {
+				$content =  $hookObj->postBasketView($content, $articletypes, $lineTemplate, $template, $basketObj, $this);
+			}
 		}
 
 	 	$content = $this->cObj->substituteSubpart(
