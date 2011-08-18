@@ -186,6 +186,16 @@ Step 3: finish
 </tr>
 <!--###LISTING_ARTICLE### end-->
 
+<!--###LISTING_ARTICLE2### begin-->
+<tr class="com-basket-odd">
+		<td class="com-text-right">###ARTICLE_ORDERNUMBER###</td>
+		<td>###PRODUCT_TITLE###</td>
+		<td class="com-text-right">###BASKET_ITEM_PRICEGROSS###</td>
+		<td>###BASKET_ITEM_COUNT###</td>
+		<td class="com-text-right">###BASKET_ITEM_PRICESUM_GROSS###</td>
+</tr>
+<!--###LISTING_ARTICLE2### end-->
+
 <!--###LISTING_BASKET_WEB### begin-->
 	<tr>
 		<td colspan="4" class="com-text-right">###SHIPPING_TITLE###</td>

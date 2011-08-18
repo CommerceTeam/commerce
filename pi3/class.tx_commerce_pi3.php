@@ -1006,7 +1006,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 		// Start content rendering
 		$content = $this->cObj->getSubpart($this->templateCode, '###FINISH###');
 
-		$markerArray['###LISTING_BASKET###'] = $this->makeBasketView($GLOBALS['TSFE']->fe_user->tx_commerce_basket, '###BASKET_VIEW###', t3lib_div::intExplode(',', $this->conf['regularArticleTypes']));
+		$markerArray['###LISTING_BASKET###'] = $this->makeBasketView($GLOBALS['TSFE']->fe_user->tx_commerce_basket, '###BASKET_VIEW###', t3lib_div::intExplode(',', $this->conf['regularArticleTypes']), array('###LISTING_ARTICLE###', '###LISTING_ARTICLE2###'));
 		$markerArray['###MESSAGE###'] = '';
 		$markerArray['###LISTING_TITLE###'] = $this->pi_getLL('order_confirmation');
 
@@ -2233,7 +2233,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 
 		$content = $this->cObj->substituteSubpart($template, '###NEW_USER###', $templateUser);
 
-		$basketContent = $this->makeBasketView($GLOBALS['TSFE']->fe_user->tx_commerce_basket, '###BASKET_VIEW###', t3lib_div::intExplode(',', $this->conf['regularArticleTypes']));
+		$basketContent = $this->makeBasketView($GLOBALS['TSFE']->fe_user->tx_commerce_basket, '###BASKET_VIEW###', t3lib_div::intExplode(',', $this->conf['regularArticleTypes']), array('###LISTING_ARTICLE###', '###LISTING_ARTICLE2###'));
 
 		$content = $this->cObj->substituteSubpart($content, '###BASKET_VIEW###', $basketContent);
 
