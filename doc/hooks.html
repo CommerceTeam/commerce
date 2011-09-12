@@ -93,6 +93,10 @@ Some hook-methods can return data which is used by the calling function. Others 
 <div class="classindex">class tx_commerce_db_product</div>
 </a>
 	<div class="functionindex">function get_articles</div>
+<a href="#tx_commerce_dmhooks">
+<div class="classindex">class tx_commerce_dmhooks</div>
+</a>
+	<div class="functionindex">function moveOrders</div>
 <a href="#tx_commerce_navigation">
 <div class="classindex">class tx_commerce_navigation</div>
 </a>
@@ -319,6 +323,28 @@ Some hook-methods can return data which is used by the calling function. Others 
 				Type: Single<br/>
 				Result: string - The new WHERE clause to read the database<br />
 				The result of this hook is concatenated with the where clause which will be passed on to the t3lib_db later on.</div>
+	<div class="filename">hooks/class.tx_commerce_dmhooks.php</div>
+	<a name="tx_commerce_dmhooks"/>
+		<div class="classname">class tx_commerce_dmhooks</div>
+			<div class="functionname">function moveOrders</div>
+				<div class="hookname">$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/hooks/class.tx_commerce_dmhooks.php']['moveOrders']</div>
+				<div class="description">
+					Call: moveOrders_preMoveOrder($order_row,$fieldArray) <br/>
+					Type: Multiple<br/>
+					Result: void<br />
+					The hook gets called before an order is moved to another page. <br/>
+					The $order_row array contains the fields order_id,pid,uid,order_sys_language_uid and can be changed by the hook (i.e. will be writen to the order record later on)<br/>
+					$fieldArray seems to be prety much the same (but the use of it is not clear to me atm)
+				</div>
+				<div class="hookname">$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/hooks/class.tx_commerce_dmhooks.php']['moveOrders']</div>
+				<div class="description">
+					Call: moveOrders_postMoveOrder($order_row,$fieldArray) <br/>
+					Type: Multiple<br/>
+					Result: void<br />
+					The hook gets called after an order is moved to another page. <br/>
+					The parameters are the same as in the preMoveOrder-hook but changing them should have no effect.<br/>
+					<b>I'm not quite sure about $fieldArray though as it gets passed by reference to moveOrders() in the first place</b>
+				</div>
 	<div class="filename">lib/class.tx_commerce_navigation.php</div>
 		<a name="tx_commerce_navigation"/>
 		<div class="classname">class tx_commerce_navigation</div>
