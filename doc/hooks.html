@@ -334,7 +334,8 @@ Some hook-methods can return data which is used by the calling function. Others 
 					Result: void<br />
 					The hook gets called before an order is moved to another page. <br/>
 					The $order_row array contains the fields order_id,pid,uid,order_sys_language_uid and can be changed by the hook (i.e. will be writen to the order record later on)<br/>
-					$fieldArray seems to be prety much the same (but the use of it is not clear to me atm)
+					<b>pid and tstamp cannot be changed here as they are overwritten with the new values after the hook is called</b>
+					$fieldArray contains some additional data from the order (especially newpid which contains the pid that will be set as soon as the hook finishes)
 				</div>
 				<div class="hookname">$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/hooks/class.tx_commerce_dmhooks.php']['moveOrders']</div>
 				<div class="description">
