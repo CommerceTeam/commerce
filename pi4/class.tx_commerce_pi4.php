@@ -465,7 +465,7 @@ class tx_commerce_pi4 extends tx_commerce_pibase {
 		// Build query to select an address from the database if we have a logged in user
 		$addressData = ($addressUid != NULL) ? $this->addresses[$addressUid] : array();
 
-		if (count($this->formError) > 0) {
+		if ($this->formErrors()) {
 			$addressData = $this->piVars;
 		}
 		$addressData = tx_commerce_div::removeXSSStripTagsArray($addressData);
@@ -505,8 +505,8 @@ class tx_commerce_pi4 extends tx_commerce_pibase {
 			}
 
 			// Insert error message for this specific field
-			if (strlen($this->formError[$fieldName]) > 0) {
-				$fieldMA['###FIELD_ERROR###'] = $this->formError[$fieldName];
+			if (strlen($this->getFormError($fieldName)) > 0) {
+				$fieldMA['###FIELD_ERROR###'] = $this->getFormError($fieldName);
 			} else {
 				$fieldMA['###FIELD_ERROR###'] = '';
 			}
@@ -827,14 +827,14 @@ class tx_commerce_pi4 extends tx_commerce_pibase {
 
 	/**
 	 *
-	 * @TODO Fix denglish
+	 * @TODO Fix english
 	 *
 	 * Reads in the complete configuration for a form, and parses the data that come from the piVars
 	 * and checks if this values fit the configuration for the field.
-	 * If errors occur, it writes it into a class var called formError. The key will be the name of the
-	 * field and the value will be the error message.
+	 * Errors are stored in internal formError Array. The key will be the name of the field and the value will be the error message.
 	 *
 	 * @return void
+	 * @see setFormError()
 	 */
 	function checkAddressForm() {
 		$hookObjectsArr = array();
@@ -853,7 +853,7 @@ class tx_commerce_pi4 extends tx_commerce_pibase {
 			$options = $this->conf['formFields.'][$name . '.'];
 
 			if ($options['mandatory'] == 1 && strlen($value) == 0) {
-				$this->formError[$name] = $this->pi_getLL('error_field_mandatory');
+				$this->setFormError($name,$this->pi_getLL('error_field_mandatory'));
 				$result = FALSE;
 			}
 
@@ -863,37 +863,37 @@ class tx_commerce_pi4 extends tx_commerce_pibase {
 				switch (strtolower($method[0])) {
 					case 'email':
 						if (!empty($value) && !t3lib_div::validEmail($value)) {
-							$this->formError[$name] = $this->pi_getLL('error_field_email');
+							$this->setFormError($name,$this->pi_getLL('error_field_email'));
 							$result = FALSE;
 						}
 					break;
 					case 'string':
 						if (!is_string($value)) {
-							$this->formError[$name] = $this->pi_getLL('error_field_string');
+							$this->setFormError($name,$this->pi_getLL('error_field_string'));
 							$result = FALSE;
 						}
 					break;
 					case 'int':
 						if (!is_integer($value)) {
-							$this->formError[$name] = $this->pi_getLL('error_field_int');
+							$this->setFormError($name,$this->pi_getLL('error_field_int'));
 							$result = FALSE;
 						}
 					break;
 					case 'min':
 						if (strlen((string)$value) < intval($method[1])) {
-							$this->formError[$name] = sprintf($this->pi_getLL('error_field_min'), $method[1]);
+							$this->setFormError($name,sprintf($this->pi_getLL('error_field_min'), $method[1]));
 							$result = FALSE;
 						}
 					break;
 					case 'max':
 						if (strlen((string)$value) > intval($method[1])) {
-							$this->formError[$name] = sprintf($this->pi_getLL('error_field_max'), $method[1]);
+							$this->setFormError($name,sprintf($this->pi_getLL('error_field_max'), $method[1]));
 							$result = FALSE;
 						}
 					break;
 					case 'alpha':
 						if (preg_match('/[0-9]/', $value) === 1) {
-							$this->formError[$name] = $this->pi_getLL('error_field_alpha');
+							$this->setFormError($name,$this->pi_getLL('error_field_alpha'));
 							$result = FALSE;
 						}
 					break;
@@ -1084,6 +1084,38 @@ class tx_commerce_pi4 extends tx_commerce_pibase {
 
 		return $result;
 	}
+
+	/**
+	 * Returns if there are any form field errors
+	 * @return boolean
+	 */
+	public function formErrors() {
+		if(count($this->formError) > 0) {
+			return TRUE;
+		}
+		else {
+			return FALSE;
+		}
+	}
+
+	/**
+	 * Returns if given $fieldName was not submitted correctly
+	 * @param string $fieldName The name of the field
+	 * @return string error message or empty string if no error
+	 */
+	public function getFormError($fieldName) {
+		return (string)($this->formError[$fieldName]);
+	}
+
+	/**
+	 * Set an error for a field
+	 * @param string $fieldName The name of the field
+	 * @param string $errorMsg The error message for the field
+	 */
+	public function setFormError($fieldName,$errorMsg) {
+		$this->formError[$fieldName] = (string)$errorMsg;
+	}
+
 }
 
 if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/pi4/class.tx_commerce_pi4.php']) {
