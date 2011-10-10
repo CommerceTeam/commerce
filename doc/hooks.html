@@ -1,0 +1,892 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>All hooks in the commerce extension as of 01/02/2007</title>
+
+<style type="text/css">
+/*<![CDATA[*/
+  .filename {
+  	font-weight:bold;
+  	font-size:xx-large;
+  }
+  .classname {
+	font-weight:bold;
+	font-size:x-large;
+	margin-left:40px;
+  }
+  .functionname {
+	font-weight:bold;
+	font-size:large;
+	margin-left:80px;
+  }
+  .hookname {
+	font-style:italic;
+	color:green;
+	margin-left:120px;
+  }
+  .description {
+	margin-left:160px;
+	margin-bottom:10px;
+	background-color:rgb(200,200,255);
+  }
+  .warning {
+  	color: red;
+  }
+  H1 { background-color: #999999; text-align: center; padding: 20px 2px 20px 2px; }
+  H1.c-details {margin-top: 100px; }
+  .classindex { background-color: #cccccc; padding: 2px 2px 2px 10px; margin-left:70px; margin-bottom:5px;}
+  .functionindex { background-color: #eeeeee;  padding: 2px 2px 2px 10px; margin-left:50px; margin-bottom:5px;}
+	/*]]>*/
+</style>
+</head>
+<body>
+<div style="text-align:center"><h1>Hooks in commerce</h1>
+<h2>by Michael Knabe <a href="mailto:mk@e-netconsulting.de">&lt;mk@e-netconsulting.de&gt;</a></h2>
+<h3>as of 01/04/2007</h3>
+<h3>Update ist coming soon,in the moment there are about 50-60 Functions with hooks, more to follow</h3></div>
+This document describes all the hooks in the typo3 extension  commerce (version 0.8.17) as of 01/04/2007. The hooks are sorted by the classes and functions they can be found in.<br />
+Each hook has a type which  is either Single or Multiple. Single hook classes are written directly to the $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$filename][$hookname] variable as there may never be more than one hook-object.<br />
+For hooks with the type "multiple" $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$filename][$hookname] is an array which can contain multiple hook objects. Each of them is called in the order they are found in the array by foreach.<br />
+Some hook-methods can return data which is used by the calling function. Others may return some values but they are ignored. For those I used the return type void as known from the C programming language
+<h3>Updated by Michael Staatz <a href="mailto:michael.staatz@e-netconsulting.com">&lt;michael.staatz@e-netconsulting.com&gt;</a></h3>
+<h3>as of 09/11/2009</h3>
+	<br/><br/><br/>
+	Functions: 57<br/>
+	Classes: 17<br/>
+<a href="#tx_commerce_article">
+	<div class="classindex">class tx_commerce_article</div>
+</a>
+	<div class="functionindex">function init</div>
+	<div class="functionindex">function getActualPriceforScaleUid</div>
+	<div class="functionindex">function calculateDeliveryCosts</div>
+	<div class="functionindex">function getStock</div>
+	<div class="functionindex">function hasStock</div>
+	<div class="functionindex"> getSpecialPrice</div>
+<a href="#tx_commerce_attribute_value">
+	<div class="classindex">class tx_commerce_attribute_value</div>
+</a>
+	<div class="functionindex">function init</div>
+<a href="#tx_commerce_attribute">
+<div class="classindex">class tx_commerce_attribute</div>
+</a>
+	<div class="functionindex">function init</div>
+<a href="#tx_commerce_basket_item">
+<div class="classindex">class tx_commerce_basket_item</div>
+</a>
+	<div class="functionindex">function calculate_net_sum</div>
+	<div class="functionindex">function calculate_gross_sum</div>
+<a href="#tx_commerce_category">
+<div class="classindex">class tx_commerce_category</div>
+</a>
+	<div class="functionindex">function init</div>
+<a href="#tx_commerce_db_article">
+<div class="classindex">class tx_commerce_db_article</div>
+</a>
+	<div class="functionindex">function get_prices</div>
+<a href="#tx_commerce_db_category">
+<div class="classindex">class tx_commerce_db_category</div>
+</a>
+	<div class="functionindex">function get_child_categories</div>
+	<div class="functionindex">function get_child_products</div>
+<a href="#tx_commerce_db_product">
+<div class="classindex">class tx_commerce_db_product</div>
+</a>
+	<div class="functionindex">function get_articles</div>
+<a href="#tx_commerce_dmhooks">
+<div class="classindex">class tx_commerce_dmhooks</div>
+</a>
+	<div class="functionindex">function moveOrders</div>
+<a href="#tx_commerce_navigation">
+<div class="classindex">class tx_commerce_navigation</div>
+</a>
+	<div class="functionindex">function makeArrayPostRender</div>
+	<div class="functionindex">function getDataRow</div>
+<a href="#tx_commerce_pibase">
+<div class="classindex">class tx_commerce_pibase</div>
+</a>
+	<div class="functionindex">function makeListView</div>
+	<div class="functionindex">function makeBasketInformation</div>
+	<div class="functionindex">function makeLineView</div>
+	<div class="functionindex">function addAdditionalLocallang</div>
+	<div class="functionindex">function renderProductsForList</div>
+	<div class="functionindex">function renderProduct</div>
+	<div class="functionindex">function getArticleMarker</div>
+	<div class="functionindex">function makeBasketView</div>
+<a href="#tx_commerce_product">
+<div class="classindex">class tx_commerce_product</div>
+</a>
+	<div class="functionindex">function init</div>
+<a href="#tx_commerce_pi1">
+<div class="classindex">class tx_commerce_pi1</div>
+</a>
+	<div class="functionindex">function preInit</div>
+	<div class="functionindex">function renderSingleView</div>
+	<div class="functionindex">function makeArticleView</div>
+<a href="#tx_commerce_pi2">
+<div class="classindex">class tx_commerce_pi2</div>
+</a>
+	<div class="functionindex">function handleBasket</div>
+	<div class="functionindex">function generateBasket</div>
+	<div class="functionindex">function makeArticleView</div>
+	<div class="functionindex">function makeProductList</div>
+	<div class="functionindex">function makePayment</div>
+	<div class="functionindex">function makeDelivery</div>
+	<div class="functionindex">function postInit</div>
+	<div class="functionindex">function postDeleteArtUidSingle</div>
+<a href="#tx_commerce_pi3">
+<div class="classindex">class tx_commerce_pi3</div>
+</a>
+	<div class="functionindex">function getBillingAddress</div>
+	<div class="functionindex">function getDeliveryAddress</div>
+	<div class="functionindex">function getListing</div>
+	<div class="functionindex">function canMakeCheckout</div>
+	<div class="functionindex">function finishIt</div>
+	<div class="functionindex">function getBasketSum</div>
+	<div class="functionindex">function handleAddress</div>
+	<div class="functionindex">function sendUserMail</div>
+	<div class="functionindex">function sendAdminMail</div>
+	<div class="functionindex">function generateMail</div>
+	<div class="functionindex">function validationMethod_</div>
+	<div class="functionindex">function alternativePaymentStep</div>
+	<div class="functionindex">function prepayment</div>
+<a href="#tx_commerce_pi4">
+<div class="classindex">class tx_commerce_pi4</div>
+</a>
+	<div class="functionindex">function noUser</div>
+	<div class="functionindex">function deleteAddress</div>
+	<div class="functionindex">function getAddresses</div>
+	<div class="functionindex">function getInputField</div>
+	<div class="functionindex">function saveAddressData</div>
+	<div class="functionindex">function validationMethod_</div>
+	<div class="functionindex">function processListingMarker</div>
+	<div class="functionindex">function processAddressfieldsMarkerArray</div>
+	<div class="functionindex">function processAddressMarker</div>
+	<div class="functionindex">function processAddressFormMarker</div>
+	
+	
+	<a href="#tx_commerce_categorytree">
+<div class="classindex">class tx_commerce_categorytree</div>
+</a>
+	
+	<div class="functionindex">function loadRecords</div>
+<a href="#tx_commerce_articlecreator">
+	
+	
+<div class="classindex">tx_commerce_articlecreator</div>
+</a>
+	<div class="functionindex">function createArticle</div>
+
+	<hr/>
+
+	<div class="filename">lib/class.tx_commerce_article.php</div>
+		<a name="tx_commerce_article"/>
+		<div class="classname">class tx_commerce_article</div>
+			<div class="functionname">function init</div>
+				<div class="hookname">$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_article.php']['postinit']</div>
+					<div class="description">
+					Call: postinit($this) <br/>
+					Type: Multiple <br/>
+					Result: void<br />
+					These hooks are called after the initialization of the Object.
+					</div>
+			<div class="functionname">function getActualPriceforScaleUid</div>
+				<div class="hookname">$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_article.php']['getActualPriceforScaleUid']</div>
+					<div class="description">
+					Call: getActualPriceforScaleUid($count,$this) <br/>
+					Type: Single <br/>
+					Result: float - The price for $count times the article
+					The hook should return the uid of the price depending on the $count parameter which contains the number of articles to be bought.
+					</div>
+			<div class="functionname">function calculateDeliveryCosts</div>
+				<div class="hookname">$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_article.php']['calculateDeliveryCost']</div>
+					<div class="description">
+					Call: calculateDeliveryCostNet($this-&gt;deliveryCostNet,$this)<br/>
+					Type: Single<br/>
+					Result: void<br />
+					This hooks job is to set the $deliveryCostNet variable to the net delivery cost
+					</div>
+					<div class="description">
+					Call: calculateDeliveryCostGross($this-&gt;deliveryCostGross,$this)<br/>
+					Type: Single<br/>
+					Result: void<br />
+					This hooks job is to set the $deliveryCostGross variable to the gross delivery cost
+					</div>
+			<div class="functionname">function getStock</div>
+				<div class="hookname">$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_article.php']['getStock']</div>
+					<div class="description">
+					Call: getStock($this-&gt;stock,$this)<br/>
+					Type: Single <br/>
+					Result: void<br />
+					Set the stock available for this article using this hook</div>
+			<div class="functionname">function hasStock</div>
+				<div class="hookname">$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_article.php']['hasStock']</div>
+					<div class="description">
+					Call: hasStock($amount,$this)<br/>
+					Type: Single <br/>
+					Result: boolean - Are there enough articles in stock<br />
+					Return true iff there are enough articles in stock where $amount is the number of articles to be bought</div>
+			<a name="getSpecialPrice"/>
+			<div class="functionname"> getSpecialPrice</div>
+				<div class="hookname">$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_article.php']['specialPrice']</div>
+					<div class="description">
+					Call: specialPrice($specialPrice, $this->prices_uids)<br/>
+					Type: Single<br/>
+					Result: void<br />
+					Set the $specialPrice for this article. $specialPrice is an array with current price and PriceUid. $this->prices_uid is an array containing all the valid prices.
+					</div>
+	<div class="filename">lib/class.tx_commerce_attribute_value.php</div>
+		<a name="tx_commerce_attribute_value"/>
+		<div class="classname">class tx_commerce_attribute_value</div>
+			<div class="functionname">function init</div>
+				<div class="hookname">$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_attribute_value.php']['postinit']</div>
+					<div class="description">
+					Call: postinit($this)<br/>
+					Type: Multiple<br/>
+					Result: void<br />
+					These hooks are called after the initialization of the Object.</div>
+	<div class="filename">lib/class.tx_commerce_attribute.php</div>
+		<a name="tx_commerce_attribute"/>
+		<div class="classname">class tx_commerce_attribute</div>
+			<div class="functionname">function init</div>
+				<div class="hookname">$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_attribute.php']['postinit']</div>
+					<div class="description">
+					Call: postinit($this)<br/>
+					Type: Multiple<br/>
+					Result: void<br />
+					These hooks are called after the initialization of the Object.
+					</div>
+	<div class="filename">lib/class.tx_commerce_basket_item.php</div>
+		<a name="tx_commerce_basket_item"/>
+		<div class="classname">class tx_commerce_basket_item</div>
+			<div class="functionname">function calculate_net_sum</div>
+					<div class="description">TODO</div>
+			<div class="functionname">function calculate_gross_sum</div>
+					<div class="description">TODO</div>
+	<div class="filename">lib/class.tx_commerce_category.php</div>
+		<a name="tx_commerce_category"/>
+		<div class="classname">class tx_commerce_category</div>
+			<div class="functionname">function init</div>
+				<div class="hookname">$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_category.php']['postinit']</div>
+					<div class="description">
+					Call: postinit($this)<br/>
+					Type: Multiple
+					Result: void<br />
+					These hooks are called after the initialization of the Object.</div>
+	<div class="filename">lib/class.tx_commerce_db_article.php</div>
+		<a name="tx_commerce_db_article"/>
+		<div class="classname">class tx_commerce_db_article</div>
+			<div class="functionname">function get_prices</div>
+				<div class="hookname">$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_db_article.php']['priceOrder']</div>
+					<div class="description">
+					Call: priceOrder($orderField)
+					Type: Single<br />
+					Result: string - The new ORDER BY clause to read the database<br />
+					Change the order for the price field and return a new $orderField
+				</div>
+	<div class="filename">lib/class.tx_commerce_db_category.php</div>
+		<a name="tx_commerce_db_category"/>
+		<div class="classname">class tx_commerce_db_category</div>
+			<div class="functionname">function get_child_categories</div>
+				<div class="hookname">GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_db_category.php']['categoryOrder']</div>
+					<div class="description">
+					Call: categoryOrder($this-&gt;CategoryOrderField,$this)<br/>
+					Type: Single<br/>
+					Result: string - The new ORDER BY clause to read the database<br />
+					This hook returns the ORDER BY field(s) that will be passed on to the t3lib_db later on.</div>
+			<div class="functionname">function get_child_products</div>
+				<div class="hookname">GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_db_category.php']['productOrder']</div>
+					<div class="description">Call: productOrder($this-&gt;orderField,$this)<br/>
+					Type: Single<br/>
+					Result: string - The new ORDER BY clause to read the database<br />
+					This hook returns the ORDER BY field(s) that will be passed on to the t3lib_db later on.</div>
+				<div class="hookname">GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_db_category.php']['productQueryPreHook']</div>
+
+					<div class="Description">productQueryPreHook($data, $this)<br />
+					Type: Single<br/>
+					Result: queryArray -> Modificated QueryArray to work with the database
+
+					</div>
+				<div class="hookname">GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_db_category.php']['productQueryPostHook']</div>
+
+					<div class="Description">productQueryPostHook($data, $this)<br />
+					Type: Single<br/>
+					Result: queryArray -> Modificated of data after the query
+
+					</div>
+	<div class="filename">lib/class.tx_commerce_db_product.php</div>
+	<a name="tx_commerce_db_product"/>
+		<div class="classname">class tx_commerce_db_product</div>
+			<div class="functionname">function get_articles</div>
+				<div class="hookname">GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_product.php']['articleOrder']</div>
+				<div class="description">Call: additionalWhere($where) <br/>
+				Type: Single<br/>
+				Result: string - The new WHERE clause to read the database<br />
+				The result of this hook is concatenated with the where clause which will be passed on to the t3lib_db later on.</div>
+	<div class="filename">hooks/class.tx_commerce_dmhooks.php</div>
+	<a name="tx_commerce_dmhooks"/>
+		<div class="classname">class tx_commerce_dmhooks</div>
+			<div class="functionname">function moveOrders</div>
+				<div class="hookname">$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/hooks/class.tx_commerce_dmhooks.php']['moveOrders']</div>
+				<div class="description">
+					Call: moveOrders_preMoveOrder($order_row,$fieldArray) <br/>
+					Type: Multiple<br/>
+					Result: void<br />
+					The hook gets called before an order is moved to another page. <br/>
+					The $order_row array contains the fields order_id,pid,uid,order_sys_language_uid and can be changed by the hook (i.e. will be writen to the order record later on)<br/>
+					<b>pid and tstamp cannot be changed here as they are overwritten with the new values after the hook is called</b>
+					$fieldArray contains some additional data from the order (especially newpid which contains the pid that will be set as soon as the hook finishes)
+				</div>
+				<div class="hookname">$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/hooks/class.tx_commerce_dmhooks.php']['moveOrders']</div>
+				<div class="description">
+					Call: moveOrders_postMoveOrder($order_row,$fieldArray) <br/>
+					Type: Multiple<br/>
+					Result: void<br />
+					The hook gets called after an order is moved to another page. <br/>
+					The parameters are the same as in the preMoveOrder-hook but changing them should have no effect.<br/>
+					<b>I'm not quite sure about $fieldArray though as it gets passed by reference to moveOrders() in the first place</b>
+				</div>
+	<div class="filename">lib/class.tx_commerce_navigation.php</div>
+		<a name="tx_commerce_navigation"/>
+		<div class="classname">class tx_commerce_navigation</div>
+			<div class="functionname">function makeArrayPostRender</div>
+				<div class="hookname">GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_db_navigation.php']['sortingOrder']</div>
+					<div class="description">Call: sortingOrder($sorting,$uid_root,$mainTable,$tableMm,$mDepth,$path,$this)<br/>
+					Type: Multiple<br/>
+					TODO: Add a description for this hook<br/>
+					As I did not understand what this function does I was not able to describe this hook</div>
+			<div class="functionname">function getDataRow</div>
+				<div class="hookname">GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_navigation.php']['getDataRow']</div>
+					<div class="description">Call: processDataRow($row,$tableName,$this)<br/>
+					Type: Multiple<br/>
+					posibilty to modify records used in navigation</div>
+					
+					
+					
+	<div class="filename">lib/class.tx_commerce_pibase.php</div>
+		<a name="tx_commerce_pibase"/>
+		<div class="classname">class tx_commerce_pibase</div>
+			<div class="functionname">function makeListView</div>
+				<div class="hookname">GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['listview']</div>
+				<div class="description">Call: additionalMarker($markerArray,$this)<br/>
+				Type: Multiple <br/>
+				Result: array() - A new $markerArray<br />
+				ADD some markers to the $markerArray and RETURN it as the result of this hook is used as the new $markerArray</div>
+			<div class="functionname">function makeBasketInformation</div>
+				<div class="hookname">GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['makeBasketInformation']</div>
+					<div class="description">Call: processMarkerBasketInformation($markerArray,$basketObj,$this)<br/>
+					Type: Multiple<br/>
+					Result: array() - A new $markerArray<br />
+					ADD some markers to the $markerArray and RETURN it as the result of this hook is used as the new $markerArray</div>
+			<div class="functionname">function makeLineView</div>
+				<div class="hookname">GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['makeLineView']</div>
+					<div class="description">Call: processMarkerLineView($markerArray,$basketItemObj,$this)<br/>
+					Type: Multiple<br/>
+					Result: array() - A new $markerArray<br />
+					ADD some markers to the $markerArray and RETURN it as the result of this hook is used as the new $markerArray</div>
+
+			<div class="functionname">formatAttributeValue</div>
+				<div class="hookname">GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['formatAttributeValue']</div>
+					<div class="description">Call: formatAttributeValue($key, $myAttributeUid, $matrix[$myAttributeUid]['valueuidlist'][$key], $return2, $this)<br/>
+					Type: Single<br/>
+					Result: string, new formating<br />
+					Changes the default formating</div>
+
+			<div class="functionname">addAdditionalLocallang</div>
+				<div class="hookname">GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['locallang']</div>
+					<div class="description">Call: loadAdditionalLocallang($this)<br/>
+					Type: Multiple<br/>
+					possibility to add your own locallang-files</div>
+					
+					
+			<div class="functionname">renderProduct</div>
+				<div class="hookname">GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['product']</div>
+					<div class="description">Call: additionalMarkerProduct($markerArray,$myProduct,$this)<br/>
+					Type: Multiple<br/>
+					Possibilty to modify Marker</div>
+					<div class="description">additionalSubpartsProduct($subpartArray,$myProduct,$this)<br/>
+					Type: Multiple<br/>
+					Possibilty to modify Subparts</div>
+					<div class="description">ModifyContentProduct($content,$myProduct,$this)<br/>
+					Type: Multiple<br/>
+					Possibilty to modify content</div>
+
+			<div class="functionname">function makeBasketInformation</div>
+				<div class="hookname">GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['makeBasketInformation']</div>
+<div class="description">Call: processMarkerTaxInformation($taxRateTemplate,$basketObj,$this)<br/>
+  Type: Multiple<br/>
+					Result: $taxRateTemplate <br />
+  possibility to regenerates taxrates and $taxRateTemplate in order to recalculate
+  taxes.</div>
+			<div class="functionname">function makeBasketView</div>
+				<div class="hookname">GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['makeBasketView']</div>
+				<div class="description">Call: postBasketView($content, $articletypes, $lineTemplate, $template, $basketObj, $this)<br/>
+				Type: Multiple <br/>
+				Result: string - Basket View HTML code</div>
+
+	                <div class="filename">lib/class.tx_commerce_product.php</div>
+		<a name="tx_commerce_product"/>
+		<div class="classname">class tx_commerce_product</div>
+			<div class="functionname">function init</div>
+				<div class="hookname">GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['makeLineView']</div>
+					<div class="description">Call: postinit($this)<br/>
+					Type: Multiple<br/>
+					Result: void<br />
+					These hooks are called after the initialization of the Object.</div>
+	<div class="filename">pi1/class.tx_commerce_pi1.php</div>
+		<div class="description">This class is for generating the product listings. (single and list view)</div>
+		<a name="tx_commerce_pi1"/>
+		<div class="classname">class tx_commerce_pi1</div>
+			<div class="functionname">function preInit</div>
+				<div class="hookname">$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi1/class.tx_commerce_pi1.php']['init']</div>
+					<div class="description">
+					Call: preInit($this)<br/>
+					Type: Multiple<br/>
+					Result: void<br />
+					Hook for rewriting something like configuration in the init of the extension.
+					</div>
+			<div class="functionname">function renderSingleView</div>
+				<div class="hookname">$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['singleview']</div>
+					<div class="description">
+					Call: additionalMarker($markerArray,$this)<br/>
+					Type: Multiple<br/>
+					Result: array() - A new $markerArray<br />
+					ADD additional Markers to the $markerArray and RETURN it. The result of this hook is used as the new $markerArray
+					</div>
+			<div class="functionname">function makeArticleView</div>
+				<div class="hookname">$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['articleview']</div>
+					<div class="description">
+					Call: $hookObj->additionalMarker($markerArray,$this)<br/>
+					Type: Multiple<br/>
+					Result: array() - A new $markerArray<br />
+					ADD additional Markers to the $markerArray and RETURN it. The result of this hook is used as the new $markerArray<br/>
+					This Hook exists three times. It is called for every possible result of the if-switches, so it is only called once for every call of the function. It is anyway called immediately before the call to substituteMarkerArray is made
+					</div>
+				<div class="hookname">$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['additionalMarkerMakeArticleView']</div>
+					<div class="description">
+					Call: $hookObj->additionalMarkerMakeArticleView$markerArray,$prod,$this)<br/>
+					Type: Multiple<br/>
+					Result: array() - A new $markerArray<br />
+					ADD additional Markers to the $markerArray and RETURN it. The result of this hook is used as the new $markerArray<br/>
+					This Hook is called at the end of the method, for global replace
+					</div>
+	<div class="filename">pi2/class.tx_commerce_pi2.php</div>
+		<div class="description">This class is for showing the basket</div>
+		<a name="tx_commerce_pi2"/>
+		<div class="classname">class tx_commerce_pi2</div>
+			<div class="functionname">function handleBasket</div>
+				<div class="hookname">$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['main']</div>
+					<div class="description">
+					Call: postInit($this)<br/>
+					Type: Multiple<br/>
+					Result: bool<br />
+					Hook in the init of pi2 for own basket rendering.
+					</div>
+				<div class="hookname">$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['postdelBasket']</div>
+					<div class="description">
+					Call: postdelBasket($this->basket, $this)<br/>
+					Type: Multiple<br/>
+					Result: void<br />
+					Hook after deleting the basket
+					</div>
+				<div class="hookname">$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['postartAddUid']</div>
+					<div class="description">
+					Call: postartAddUid($this->basket,$this)<br/>
+					Type: Multiple<br/>
+					Result: void<br />
+					Hook for editing the basket after adding an article to it
+					</div>
+				<div class="hookname">$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['postartAddUid']</div>
+					<div class="description">
+					Call: postDeleteArtUidSingle($k, $v, $oldCountValue, $this->basket, $this)<br/>
+					Type: Multiple<br/>
+					Result: void<br />
+					Hook for editing the basket after deleting article form basket
+					</div>
+				<div class="hookname">$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['postpayArt']</div>
+					<div class="description">
+					Call: postpayArt($this->basket,$this)<br/>
+					Type: Multiple<br/>
+					Result: void<br />
+					Hook for editing the basket after adding a payment article to it
+					</div>
+				<div class="hookname">$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['postdelArt']</div>
+					<div class="description">
+					Call: postdelArt($this->basket,$this)<br/>
+					Type: Multiple<br/>
+					Result: void<br />
+					Hook for editing the basket after adding a delivery article to it
+					</div>
+			<div class="functionname">function generateBasket</div>
+				<div class="hookname">$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['generateBasketMarker']</div>
+					<div class="description">
+					Call: additionalMarker($basketArray,$this)<br/>
+					Type: Multiple<br/>
+					Result: array() - A new $markerArray<br />
+					ADD additional markers to the $markerArray and RETURN it. The result of this hook is used as the new $markerArray.
+					This $markerArray is then used to substitute the template-code for the basket.
+					</div>
+			<div class="functionname">function makeArticleView</div>
+				<div class="hookname">$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['makeArticleView']</div>
+					<div class="description">
+					Call: additionalMarker($basketArray,$this,$art,$prod)<br/>
+					Type: Multiple<br/>
+					Result: array() - A new $markerArray<br />
+					ADD additional markers to the $markerArray and RETURN it. The result of this hook is used as the new $markerArray.
+					This $markerArray is then used to substitute the template-code for the article view.
+					</div>
+			<div class="functionname">function makeProductList</div>
+				<div class="hookname">$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['makeProductList']</div>
+					<div class="description">
+					Call: SingeDisplayPrefixId()<br/>
+					Type: Multiple<br/>
+					Result: integer - The new prefixId<br />
+					Changes the prefixId used to create the links to the detail page.
+					</div>
+			<div class="functionname">function makePayment</div>
+				<div class="hookname">$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['paymentArticles']</div>
+					<div class="description">
+					Call: paymentAllowedArticles($this,$allowedArticles);<br/>
+					Type: Multiple<br/>
+					Result: Array of articles<br />
+					Changes the allowed articles for Payment
+					</div>
+			<div class="functionname">function makeDelivery</div>
+				<div class="hookname">$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['deliveryArticles']</div>
+					<div class="description">
+					Call: deliveryAllowedArticles($this,$allowedArticles);<br/>
+					Type: Multiple<br/>
+					Result: Array of articles<br />
+					Changes the allowed articles for Delivery
+					</div>
+	<div class="filename">pi3/class.tx_commerce_pi3.php</div>
+	<div class="description">Handles the checkout</div>
+		<a name="tx_commerce_pi3"/>
+		<div class="classname">class tx_commerce_pi3</div>
+			<div class="functionname">function main</div>
+			<div class="functionname">function getBillingAddress</div>
+				<div class="hookname">$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi3/class.tx_commerce_pi3.php']['main']</div>
+					<div class="description">
+					Call: preSwitch($this->currentStep, $this)<br/>
+					Type: Multiple<br/>
+					Result: non<br />
+					Method to manipulate $this and other GLOBAL Vars
+					</div>
+					<div class="description">
+					Call: postSwitch($this->currentStep, $content,$this)<br/>
+					Type: Multiple<br/>
+					Result: $content<br />
+					Manuipulate Content after call of method
+					</div>
+					<div class="description">
+					Call:postRender($this->currentStep, $content, $this)<br/>
+					Type: Multiple<br/>
+					Result: $content<br />
+					Manuipulate Content after call of method render steps
+					</div>
+			<div class="functionname">function getDeliveryAddress</div>
+				<div class="hookname">$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi3/class.tx_commerce_pi3.php']['getDeliveryAddress']</div>
+					<div class="description">
+					Call: ProcessMarker($markerArray, $this)<br/>
+					Type: Multiple<br/>
+					Result: array() - A new $markerArray<br />
+					ADD additional markers to the $markerArray and RETURN it. The result of this hook is used as the new $markerArray.<br/>
+					This $markerArray is used to substitute the template-code for the "get delivery address"-page.
+					</div>
+			<div class="functionname">function getListing</div>
+				<div class="hookname">$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi3/class.tx_commerce_pi3.php']['getListing']</div>
+					<div class="description">
+					Call: ProcessMarker($markerArray,$this)<br/>
+					Type: Multiple<br/>
+					Result: array() - A new $markerArray<br />
+					ADD additional markers to the $markerArray and RETURN it. The result of this hook is used as the new $markerArray.<br/>
+					This $markerArray is used to substitute the template-code for the "contents of basket"-page.
+					</div>
+					<div class="functionname">function canMakeCheckout</div>
+				<div class="hookname">$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi3/class.tx_commerce_pi3.php']['canMakeCheckout']</div>
+					<div class="description">
+					Call: canMakeCheckoutOwnTests($checks,$myCheck)<br/>
+					Type: Multiple<br/>
+					Result: void<br />
+
+					The parameter $checks is an array with the standard checks of commerce. If you remove for example nopayment from the array<br>
+					commerce does not check if there is a payment article included.
+					With the second parameter you can add your own checks. Set $myCheck to a string and it will be used here:
+					return $this->cObj->cObjGetSingle($this->conf['cantMakeCheckout.'][$canMakeCheckout], $this->conf['cantMakeCheckout.'][$canMakeCheckout.'.']);
+					</div>
+			<div class="functionname">function finishIt</div>
+				<div class="hookname">$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi3/class.tx_commerce_pi3.php']['finishIt']</div>
+					<div class="description">
+					Call: prepayment($paymentObj,$basket,$this)<br/>
+					Type: Multiple<br/>
+					Result: void<br />
+					This is called right after the basket is loaded and before the payment is called.<br/>
+					</div>
+					<div class="description">
+					Call: postpayment($paymentObj,$basket,$this)<br/>
+					Type: Multiple<br/>
+					Result: void<br />
+					This is called when the payment is finished.<br/>
+					</div>
+					<div class="description">
+					Call: generateOrderId($orderId, $basket, $this)<br/>
+					Type: Multiple<br/>
+					Result: void<br />
+					This is your chance to change the orderId. Return the new $orderId<br/>
+					</div>
+					<div class="description">
+					Call: preinsert($orderData,$this)<br/>
+					Type: Multiple<br/>
+					Result: void<br />
+					Your last chance to change the order data (cncerning the Addresses). Next step is to inject the data into the database.
+					</div>
+					<div class="description">
+					Call: modifyBasketPreSave($basket,$this)<br/>
+					Type: Multiple<br/>
+					Result: void<br />
+					Your last chance to change the order content (basket). Next step is to insert the data into the database.
+					</div>
+					<div class="description">
+					Call: modifyOrderArticlePreSave($newUid, $oaData, $this);<br/>
+					Type: Multiple<br/>
+					Result: void<br />
+					Change insert OrderData before they are inserted
+					</div>					
+					<div class="description">
+					Call: modifyOrderArticlePostSave($newUid, $oaData, $this)<br/>
+					Type: Multiple<br/>
+					Result: void<br />
+					possibility to revert changes made in the presave hook
+					</div>
+					<div class="description">
+					Call: afterMailSend($orderData,$this)<br/>
+					Type: Multiple<br/>
+					Result: void<br />
+					Now it's to late. We just sent the acknowledgment to the customer and the admin. But you can change the orderData before the acknowledgment is written to the browser
+					</div>
+					<div class="description">
+					Call: ProcessMarker($markerArray,$this)<br/>
+					Type: Multiple<br/>
+					Result: array() - A new $markerArray<br />
+					ADD additional markers to the $markerArray and RETURN it. The result of this hook is used as the new $markerArray.<br/>
+					One more chance to change the $markerArray. Now it's used to display the page confirming the ordering
+					</div>
+			<div class="functionname">function getBasketSum</div>
+				<div class="hookname">$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi3/class.tx_commerce_pi3.php']['getBasketSum']</div>
+					<div class="description">
+					Call: ProcessMarker($markerArray,$this)<br/>
+					Type: Multiple<br />
+					Result: array() - A new $markerArray<br />
+					ADD additional markers to the $markerArray and RETURN it. The result of this hook is used as the new $markerArray.<br/>
+					This $markerArray is used to substitute the output of the BasketSum. I.e. the "'###LISTING_BASKET_'.strtoupper($type).'###'" sub part of the template.
+					</div>
+			<div class="functionname">function getBasketSum</div>
+				<div class="hookname">$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi3/class.tx_commerce_pi3.php']['handleAddress']</div>
+					<div class="description">
+					Call: preProcessUserData($feuData,$this)<br/>
+					Type: Multiple<br />
+					Result: void<br />
+					manipulation of fe_user Data, for example for creating a md5 password, before the user is created
+					</div>
+					<div class="description">
+							Call: preProcessUserData($feuData,$this)<br/>
+							Type: Multiple<br />
+							Result: void<br />
+							manipulation of fe_user Data, for example after creating a md5 password, after the user is created
+							$feuData will be used in the next steps (for example sending a usermail
+					</div>
+			<div class="functionname">function sendUserMail</div>
+				<div class="hookname">$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi3/class.tx_commerce_pi3.php']['sendUserMail']</div>
+					<div class="description">
+					Call: getUserMail($userMail,$orderUid,$orderData)<br/>
+					Type: Multiple<br />
+					Result: string - The email address of the user<br />
+					At this point you should return the email address of the user.
+					</div>
+					<div class="description">
+					Call: preGenerateMail($UserMailObj,$this)
+					Type: Multiple<br />
+					Result: void<br />
+					This hook is called before the mail content is created by calling $UserMailObj->generateMail($orderUid, $orderData,$userMarker) where $UserMailObj is an instance of the class tx_commerce_pi3.
+					</div>
+					<div class="description">
+					Call: PostGenerateMail($UserMailObj,$this,$GLOBALS['TSFE']->fe_user->tx_commerce_basket,$mailcontent,$this)<br/>
+					Type: Multiple<br />
+					Result: void<br />
+					This hook is called immediately after creating the mailcontent. It could be used to edit $mailcontent for example.
+					</div>
+			<div class="functionname">function sendAdminMail</div>
+				<div class="hookname">$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi3/class.tx_commerce_pi3.php']['sendAdminMail']</div>
+					<div class="description">
+					Call: preGenerateMail($AdminMailObj,$this)<br />
+					Type: Multiple<br />
+					Result: void<br />
+					This hook is called before the mail content is created by calling $AdminMailObj->generateMail($orderUid, $orderData) where $UserMailObj is an instance of the class tx_commerce_pi3.
+					</div>
+					<div class="description">
+					Call: $hookObj->PostGenerateMail($AdminMailObj,$this,$GLOBALS['TSFE']->fe_user->tx_commerce_basket,$mailcontent,$this)<br />
+					Type: Multiple<br />
+					Result: void<br />
+					This hook is called immediately after creating the mailcontent. It could be used to edit $mailcontent for example.
+					</div>
+			<div class="functionname">function generateMail</div>
+				<div class="hookname">$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi3/class.tx_commerce_pi3.php']['generateMail']</div>
+					<div class="description">
+					Call: ProcessMarker($markerArray,$this)<br />
+					Type: Multiple<br />
+					Result: array() - A new $markerArray<br />
+					ADD additional markers to the $markerArray and RETURN it. The result of this hook is used as the new $markerArray.<br/>
+					$markerArray will be used to substitute the markers in the mail template
+					</div>
+			<div class="functionname">function validationMethod_</div>
+				<div class="hookname">$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi3/class.tx_commerce_pi3.php']['bevorValidateAddress']</div>
+					<div class="description">
+					$act_method is build by the string "validationMethod_" and your method - name<br />
+					Call: $act_method($this,$name,$value)<br />
+					Type: Multiple<br />
+					Result: BOOL<br />
+					this hook can be used to implement own validation methods.
+					</div>
+			<div class="functionname">function alternativePaymentStep</div>
+				<div class="hookname">$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi3/class.tx_commerce_pi3.php']['handlePayment']</div>
+					<div class="description">
+					Call: alternativePaymentStep($paymentObj, $this);<br />
+					Type: Multiple<br />
+					Result: BOOL<br />
+					this hook can be used to implement your own payment handling.
+					</div>
+
+	<div class="filename">pi4/class.tx_commerce_pi4.php</div>
+		<a name="tx_commerce_pi4"/>
+		<div class="classname">class tx_commerce_pi4</div>
+		<div class="description">handles everything concerning the addresses</div>
+			<div class="functionname">function noUser</div>
+					<div class="description">[TODO]</div>
+			<div class="functionname">function deleteAddress</div>
+				<div class="hookname">$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi4/class.tx_commerce_pi4.php']['deleteAddress']</div>
+					<div class="description">
+					Call: deleteAddress($this->piVars['addressid'],$this)<br />
+					Type: Multiple<br />
+					Result: string - A system message (potentially ignored)<br />
+					The result of the last called hook will replace the ###SYS_MESSAGE### marker in the address listing generated later on.<br />
+					<div class="warning">ATTENTION: If there are multiple hooks the results of the prior called ones are ignored. Of cause these hooks could be useful by changing &amp;$this->piVars['addressid'] or &amp;$this</div>
+					</div>
+			<div class="functionname">function getAddresses</div>
+				<div class="hookname">$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi4/class.tx_commerce_pi4.php']['getAddresses']</div>
+					<div class="description">
+					Call: editSelectStatement($select, $userId, $addressType, $this)<br />
+					Type: Multiple<br />
+					Result: manipulates the select statement
+					</div>
+			<div class="functionname">function getInputField</div>
+				<div class="hookname">$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi4/class.tx_commerce_pi4.php']['getInputField']</div>
+					<div class="description">
+					Call: postGetInputField($content, $fieldName, $fieldConfig, $fieldValue, $this)<br />
+					Type: Multiple<br />
+					Result: returns manipulated content
+					</div>
+			<div class="functionname">function saveAddressData</div>
+				<div class="hookname">$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi4/class.tx_commerce_pi4.php']['saveAddress']</div>
+					<a name="beforeAddressSave"/>
+					<div class="description">
+					Call: beforeAddressSave($newData,$this)<br />
+					Type: Multiple<br />
+					Result: void<br />
+					This hook is called before the new address is saved to the database.<br />
+					$newdata is an array consisting of the following elements:<br />
+					$newData['tx_commerce_fe_user_id'] - The users id in the "fe_user"-table<br />
+					$newData['tx_commerce_address_type_id'] - The id of the address type<br />
+					$newData['pid'] - The pid of the address<br />
+					</div>
+					<div class="description">
+					Call: afterAddressSave($newUid,$newData,$this)<br />
+					Type: Multiple<br />
+					Result: void<br />
+					This hook is called after the new address is saved to the database.<br />
+					$newUid is the uid of the address in the "tt_address"-table<br />
+					For a description of $newData look at <a href="#beforeAddressSave">beforeAddressSave($newData,$this)-hook</a> in this section
+					</div>
+					<div class="description">
+					Call: beforeAddressEdit($this->piVars['addressid'],$newData,$this)<br />
+					Type: Multiple<br />
+					Result: void<br />
+					This hook is called before the address is changed<br />
+					$this->piVars['addressid'] is the uid of the address in the "tt_address"-table<br />
+					For a description of $newData look at <a href="#beforeAddressSave">beforeAddressSave($newData,$this)-hook</a> in this section
+					</div>
+					<div class="description">
+					Call: afterAddressEdit($this->piVars['addressid'],$newData,$this)<br />
+					Type: Multiple<br />
+					Result: void<br />
+					This hook is called after the address is changed<br />
+					$this->piVars['addressid'] is the uid of the address in the "tt_address"-table<br />
+					For a description of $newData look at <a href="#beforeAddressSave">beforeAddressSave($newData,$this)-hook</a> in this section
+					</div>
+			<div class="functionname">function validationMethod_</div>
+				<div class="hookname">$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi3/class.tx_commerce_pi3.php']['bevorValidateAddress']</div>
+					<div class="description">
+					$act_method is build by the string "validationMethod_" and your method - name<br />
+					Call: $act_method($this,$name,$value)<br />
+					Type: Multiple<br />
+					Result: BOOL<br />
+					this hook can be used to implement own validation methods.
+					</div>
+			<div class="functionname">function processListingMarker</div>
+				<div class="hookname">$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi4/class.tx_commerce_pi4.php']['getListing']</div>
+					<div class="description">
+					Call: processListingMarker($baseMA, $linkMA, $addressItems, $addressType, $piArray, $this)<br />
+					Type: Multiple<br />
+					Result: void<br />
+					this hook can be used to manipulate markers in the listing of addresses.
+					</div>
+			<div class="functionname">function processAddressMarker</div>
+				<div class="hookname">$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi4/class.tx_commerce_pi4.php']['getListing']</div>
+					<div class="description">
+					Call: processAddressMarker($itemMA, $address, $piArray, $this)<br />
+					Type: Multiple<br />
+					Result: void<br />
+					this hook can be used to manipulate markers in the listing of addresses.
+					</div>
+			<div class="functionname">function processAddressFormMarker</div>
+				<div class="hookname">$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi4/class.tx_commerce_pi4.php']['getAddressFormItem']</div>
+					<div class="description">
+					Call: processAddressFormMarker($baseMA, $action, $addressUid, $addressData, $config, $this)<br />
+					Type: Multiple<br />
+					Result: void<br />
+					this hook can be used to manipulate markers from one address from the listing of addresses.
+					</div>
+			<div class="functionname">function processAddressfieldsMarkerArray</div>
+				<div class="hookname">$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi4/class.tx_commerce_pi4.php']['getAddressFormItem']</div>
+					<div class="description">
+					Call: processAddressfieldsMarkerArray($fieldsMarkerArray, $tplField, $addressData, $action, $addressUid, $config , $this)<br />
+					Type: Multiple<br />
+					Result: void<br />
+					this hook can be used to manipulate markers from one address from the listing of addresses.
+					</div>
+
+	<div class="filename">class.tx_commerce_articlecreator.php</div>
+		<a name="tx_commerce_articlecreator"/>
+		<div class="classname">tx_commerce_articlecreator</div>
+			<div class="functionname">function createArticle</div>
+				<div class="hookname">$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/class.tx_commerce_articlecreator.php']['preinsert']</div>
+					<div class="description">
+					Call: preinsert($articleData)<br />
+					Type: Multiple<br />
+					Result: void<br />
+					This hook is called before a new article is added to the database.
+					</div>
+					
+					
+					<div class="filename">class.leadData.php</div>
+		<a name="leafData"/>
+		<div class="classname">leafData</div>
+			<div class="functionname">function loadRecords</div>
+				<div class="hookname">$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/tree/class.leafData.php']['loadRecords']</div>
+					<div class="description">
+					Call: extendedFields($articleData)<br />
+					Type: Multiple<br />
+					Result: void<br />
+					This Hooks adds additional fields to the TreeData
+					</div>
+</body>
+</html>
