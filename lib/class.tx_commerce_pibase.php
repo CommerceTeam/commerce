@@ -1741,8 +1741,8 @@ class tx_commerce_pibase extends tslib_pibase {
 		if ((!empty($lokalTS['maxArticles'])) && ((int)$lokalTS['maxArticles'] > 0)){
 			$myProduct->setRenderMaxArticles((int)$lokalTS['maxArticles']);
 		}
-		
-		if (isset($this->conf['disableArticleViewForProductlist']) && $this->conf['disableArticleViewForProductlist'] == 1) {
+
+		if ($this->conf['disableArticleViewForProductlist'] == 1 && !$this->piVars['showUid'] || $this->conf['disableArticleView'] == 1) {
 			$subpartArray['###'.strtoupper($articleSubpart).'###'] = '';
 		} else {
 			$subpartArray['###'.strtoupper($articleSubpart).'###'] = $this->makeArticleView('list',array(),$myProduct,$articleMarker,$articleTemplate);
