@@ -589,7 +589,7 @@ class tx_commerce_basic_basket {
 	 * @return string Basket hash value
 	 */
 	public function getBasketHashValue() {
-		if (count($this->basket_items) > 0) {
+		if (!$GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_commerce_pi1.']['dontUseBasketHashValue'] && count($this->basket_items) > 0) {
 			return t3lib_div::shortMD5(serialize($this->basket_items));
 		} else {
 			return FALSE;
