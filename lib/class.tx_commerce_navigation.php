@@ -497,9 +497,8 @@ class tx_commerce_navigation {
 				 	if ($this->gpVars['basketHashValue']) {
 						$nodeArray['_ADD_GETVARS'] .=ini_get('arg_separator.output') .$this->prefixId.'[basketHashValue]='.$this->gpVars['basketHashValue'];
 					}
-					$pA = t3lib_div::cHashParams($nodeArray['_ADD_GETVARS'].$GLOBALS['TSFE']->linkVars);
-					
-					$nodeArray['_ADD_GETVARS'] .= ini_get('arg_separator.output') .'cHash='.t3lib_div::shortMD5(serialize($pA));
+					$cHash = t3lib_div::generateCHash($nodeArray['_ADD_GETVARS'].$GLOBALS['TSFE']->linkVars);
+					$nodeArray['_ADD_GETVARS'] .= ini_get('arg_separator.output') .'cHash='.$cHash;
 				 	$nodeArray['ITEM_STATE'] = 'IFSUB';
 				 	$nodeArray['ITEM_STATES_LIST'] = 'IFSUB,NO';
 				 	
@@ -516,8 +515,8 @@ class tx_commerce_navigation {
 				 	if ($this->gpVars['basketHashValue']) {
 						$nodeArray['_ADD_GETVARS'] .=ini_get('arg_separator.output') .$this->prefixId.'[basketHashValue]='.$this->gpVars['basketHashValue'];
 					}
-					$pA = t3lib_div::cHashParams($nodeArray['_ADD_GETVARS'].$GLOBALS['TSFE']->linkVars);
-					$nodeArray['_ADD_GETVARS'] .= ini_get('arg_separator.output') .'cHash='.t3lib_div::shortMD5(serialize($pA));
+					$cHash = t3lib_div::generateCHash($nodeArray['_ADD_GETVARS'].$GLOBALS['TSFE']->linkVars);
+					$nodeArray['_ADD_GETVARS'] .= ini_get('arg_separator.output') .'cHash='.$cHash;
 					$nodeArray['ITEM_STATE'] = 'NO';
 						
 				 }
@@ -609,9 +608,9 @@ class tx_commerce_navigation {
 
 			 	if ($this->gpVars['basketHashValue']) 
 						$nodeArray['_ADD_GETVARS'] .=ini_get('arg_separator.output') .$this->prefixId.'[basketHashValue]='.$this->gpVars['basketHashValue'];
-			 	
-				$pA = t3lib_div::cHashParams($nodeArray['_ADD_GETVARS'].$GLOBALS['TSFE']->linkVars);
-				$nodeArray['_ADD_GETVARS'] .= ini_get('arg_separator.output') .'cHash='.t3lib_div::shortMD5(serialize($pA));
+
+				$cHash = t3lib_div::generateCHash($nodeArray['_ADD_GETVARS'].$GLOBALS['TSFE']->linkVars);
+				$nodeArray['_ADD_GETVARS'] .= ini_get('arg_separator.output') .'cHash='.$cHash;
 				
 				if($this->gpVars['manufacturer']){
 					$nodeArray['_ADD_GETVARS'] .="&".$this->prefixId.'[manufacturer]='.$this->gpVars['manufacturer'];
@@ -970,7 +969,7 @@ class tx_commerce_navigation {
 			if (is_string($this->gpVars['basketHashValue'])) {
 				$add_getvars.=ini_get('arg_separator.output') .$this->prefixId.'[basketHashValue]='.$this->gpVars['basketHashValue'];
 			}
-  			$GP_Temp = t3lib_div::cHashParams($add_getvars.$GLOBALS['TSFE']->linkVars);
+			$cHash = t3lib_div::generateCHash($add_getvars.$GLOBALS['TSFE']->linkVars);
   			
   			/**
   			 * 	Currentyl no Navtitle in tx_commerce_products
@@ -990,7 +989,7 @@ class tx_commerce_navigation {
 						'title'=>$ProductObject->get_title(),
   			
 						'uid'=>$this->PID,
-						 '_ADD_GETVARS' => $add_getvars.ini_get('arg_separator.output') .'cHash='.t3lib_div::shortMD5(serialize($GP_Temp)),
+						 '_ADD_GETVARS' => $add_getvars.ini_get('arg_separator.output') .'cHash='.$cHash,
 						 'ITEM_STATE' => $itemState,
 						 'ITEM_STATES_LIST' => $itemStateList
 						
@@ -1028,13 +1027,13 @@ class tx_commerce_navigation {
 			if (is_string($this->gpVars['basketHashValue'])) {
 				$add_getvars.=ini_get('arg_separator.output') .$this->prefixId.'[basketHashValue]='.$this->gpVars['basketHashValue'];
 			}
-			$GP_Temp = t3lib_div::cHashParams($add_getvars.$GLOBALS['TSFE']->linkVars);
+			$cHash = t3lib_div::generateCHash($add_getvars.$GLOBALS['TSFE']->linkVars);
 			$itemState = ( $CategoryObject->uid === $catID ? 'CUR':'NO');
 			
 			$result[]=array('title'=>$CategoryObject->get_title(),
 						'nav_title' => $CategoryObject->get_navtitle(),
 						'uid'=>$this->PID,
-						 '_ADD_GETVARS' => $add_getvars.ini_get('arg_separator.output') .'cHash='.t3lib_div::shortMD5(serialize($GP_Temp)),
+						 '_ADD_GETVARS' => $add_getvars.ini_get('arg_separator.output') .'cHash='.$cHash,
 						 'ITEM_STATE' => $itemState,
 						
 						
@@ -1208,8 +1207,8 @@ class tx_commerce_navigation {
         		$myProduct->load_data();
 				$sManuTitle = $myProduct->getManufacturerTitle();
 				$addGet = "&".$this->prefixId."[catUid]=".$iIdCat."&".$this->prefixId."[manufacturer]=".$aFiche["manufacturer_uid"]."";
-				$pA = t3lib_div::cHashParams($addGet.$GLOBALS['TSFE']->linkVars);
-				$addGet .= ini_get('arg_separator.output') .'cHash='.t3lib_div::shortMD5(serialize($pA));
+				$cHash = t3lib_div::generateCHash($addGet.$GLOBALS['TSFE']->linkVars);
+				$addGet .= ini_get('arg_separator.output') .'cHash='.$cHash;
 				$aLevel = array(
 					"pid" => $pid,
 					"uid" => $uidPage,
