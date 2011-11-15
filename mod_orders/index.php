@@ -221,17 +221,9 @@ class tx_commerce_orders extends t3lib_SCbase {
 		$dblist = t3lib_div::makeInstance('tx_commerce_order_localRecordlist');
 		$dblist->additionalOutTop = $this->doc->section("",$this->doc->funcMenu($headerSection,t3lib_BEfunc::getFuncMenu($this->id,"SET[function]",$this->MOD_SETTINGS["function"],$this->MOD_MENU["function"])));
 		$dblist->backPath = $BACK_PATH;
-
-			// Since TYPO3 core revision 5135 (Followup for bug #2859) BACK_PATH is added to recordList->listURL()
-			// This made the headerRow "Orders" link to the wrong URL
-			// So we now ask for the current TYPO3 version and add a proper path to this script
-		if (t3lib_div::int_from_ver(TYPO3_version) >= 4003000) {
-			$dblist->script = t3lib_extMgM::extRelPath('commerce') . 'mod_orders/index.php';
-		} else {
-				// @TODO: Remove this when commerce requires 4.3
-			$dblist->script = 'index.php';
-		}
-
+			
+		$dblist->script = 'index.php';
+            
 		$dblist->calcPerms = $BE_USER->calcPerms($this->pageinfo);
 		$dblist->thumbs = $BE_USER->uc['thumbnailsByDefault'];
 		$dblist->returnUrl=$this->returnUrl;

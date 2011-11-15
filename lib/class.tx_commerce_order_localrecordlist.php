@@ -554,12 +554,12 @@ class tx_commerce_order_localRecordlist extends localRecordList {
 				$theData[$fCol.'b'] = $lC2;
 			} elseif ($fCol=='_LOCALIZATION_b') {
 				// Do nothing, has been done above.
-			} else {
+            } else {
 				/**
 				 * Use own method, if typo3 4.0.0 is not installed
 				 */
 				if (substr(TYPO3_version, 0, 3) >= '4.0') {
-					$theData[$fCol] = $this->linkUrlMail(htmlspecialchars(t3lib_BEfunc::getProcessedValueExtra($table,$fCol,$row[$fCol],100,$row['uid'])),$row[$fCol]);
+					$theData[$fCol] = $this->linkUrlMail(htmlspecialchars(t3lib_BEfunc::getProcessedValueExtra($table,$fCol,$row[$fCol],100,$row['uid'])),$row[$fCol]);					
 				} else {
 					$theData[$fCol] = $this->mylinkUrlMail(htmlspecialchars(t3lib_BEfunc::getProcessedValueExtra($table,$fCol,$row[$fCol],100,$row['uid'])),$row[$fCol]);
 					
@@ -891,7 +891,7 @@ class tx_commerce_order_localRecordlist extends localRecordList {
 
 								// For each available translation, render the record:
 							foreach($translations as $lRow)	{
-								$iOut.=$this->renderListRow($table,$lRow,$cc,$titleCol,$thumbsCol,18);
+								$iOut.=$this->renderListRow($table,$lRow,$cc,$titleCol,$thumbsCol,18);								
 							}
 						}
 					}
@@ -965,7 +965,33 @@ class tx_commerce_order_localRecordlist extends localRecordList {
 		return $out;
 	}
 	
-	
+    /**
+     * @NOTE: Since Typo3 4.5 we can't use listURL from parent class ("class.db_list.inc" - class recordList) anymore. It would lead to wrong url linking to web_list.
+     * This is just a copy of function listURL from Typo3 4.2
+     * 
+     * Creates the URL to this script, including all relevant GPvars
+     * Fixed GPvars are id, table, imagemode, returlUrl, search_field, search_levels and showLimit
+     * The GPvars "sortField" and "sortRev" are also included UNLESS they are found in the $exclList variable.
+     *
+     * @param   string      Alternative id value. Enter blank string for the current id ($this->id)
+     * @param   string      Tablename to display. Enter "-1" for the current table.
+     * @param   string      Commalist of fields NOT to include ("sortField" or "sortRev")
+     * @return  string      URL
+     */
+    function listURL($altId='',$table=-1,$exclList='')  {
+        return $this->script.
+            '?id='.(strcmp($altId,'')?$altId:$this->id).
+            '&table='.rawurlencode($table==-1?$this->table:$table).
+            ($this->thumbs?'&imagemode='.$this->thumbs:'').
+            ($this->returnUrl?'&returnUrl='.rawurlencode(t3lib_div::sanitizeLocalUrl($this->returnUrl)):'').
+            ($this->searchString?'&search_field='.rawurlencode($this->searchString):'').
+            ($this->searchLevels?'&search_levels='.rawurlencode($this->searchLevels):'').
+            ($this->showLimit?'&showLimit='.rawurlencode($this->showLimit):'').
+            ($this->firstElementNumber?'&pointer='.rawurlencode($this->firstElementNumber):'').
+            ((!$exclList || !t3lib_div::inList($exclList,'sortField')) && $this->sortField?'&sortField='.rawurlencode($this->sortField):'').
+            ((!$exclList || !t3lib_div::inList($exclList,'sortRev')) && $this->sortRev?'&sortRev='.rawurlencode($this->sortRev):'')
+            ;
+    }    
 	
  
   }
