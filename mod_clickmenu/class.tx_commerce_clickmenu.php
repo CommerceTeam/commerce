@@ -79,7 +79,7 @@ class tx_commerce_clickmenu {
 					$paste = ($uid == $clipRecord['uid']) ? false : $paste;
 				}
 				
-				$version = ($BE_USER->check('modules','web_txversionM1'));
+				$version = ($BE_USER->check('modules','web_txversionM1')) && t3lib_extMgm::isLoaded('version');
 				$review  = ($version && ($this->rec['t3ver_oid'] != 0) && (($this->rec['t3ver_stage'] == 0) || ($this->rec['t3ver_stage'] == 1)));
 				break;
 				
