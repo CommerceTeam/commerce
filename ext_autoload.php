@@ -75,5 +75,6 @@ return array(
 	'tx_commerce_payment_provider_criterion' => $extensionPath . 'payment/provider/criteria/interfaces/interface.tx_commerce_payment_provider_criterion.php',
 
 	'tx_commerce_payment_ccvs' => $extensionPath . 'payment/ccvs/class.tx_commerce_payment_ccvs.php',
+    'feusers_observer' => $extensionPath . 'dao/class.feusers_observer.php'    
 );
 ?>
