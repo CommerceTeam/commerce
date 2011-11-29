@@ -554,7 +554,9 @@ class tx_commerce_order_localRecordlist extends localRecordList {
 				$theData[$fCol.'b'] = $lC2;
 			} elseif ($fCol=='_LOCALIZATION_b') {
 				// Do nothing, has been done above.
-            } else {
+		} else if($fCol=='order_id') {
+			$theData[$fCol] = $row[$fCol];
+		} else {
 				/**
 				 * Use own method, if typo3 4.0.0 is not installed
 				 */
