@@ -1733,19 +1733,16 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 		}
 		
 		if ($fieldConfig['noPrefix'] == 1) {
-			$result = '<input id="' . $step . '-' . $fieldName . '" type="text" name="' . $fieldName . '" value="' . $value . '" ' . $maxlength;
-			if ($fieldConfig['readonly'] == 1) {
-				$result .= ' readonly disabled /><input type="hidden" name="' . $fieldName . '" value="' . $value . '" ' . $maxlength . ' />';
-			} else {
-				$result .= '/>';
-			}
+			$formFieldName = $fieldName;
 		} else {
-			$result = '<input id="' . $step . '-' . $fieldName . '" type="text" name="' . $this->prefixId . '[' . $step . '][' . $fieldName . ']" value="' . $value .'" ' . $maxlength;
-			if ($fieldConfig['readonly'] == 1) {
-				$result .= ' readonly disabled /><input type="hidden" name="' . $this->prefixId . '[' . $step . '][' . $fieldName .']" value="' . $value .'" ' . $maxlength . ' />';
-			} else {
-				$result .= '/>';
-			}
+			$formFieldName = $this->prefixId . '[' . $step . '][' . $fieldName .']';
+		}
+
+		$result = '<input id="' . $step . '-' . $fieldName . '" type="text" name="' . $fieldName . '" value="' . $value . '" ' . $maxlength;
+		if ($fieldConfig['readonly'] == 1) {
+			$result .= ' readonly disabled /><input type="hidden" name="' . $fieldName . '" value="' . $value . '" ' . $maxlength . ' />';
+		} else {
+			$result .= '/>';
 		}
 
 		return $result;
@@ -1762,7 +1759,12 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 	 * @return string Single selectbox
 	 */
 	function getSelectInputField($fieldName, $fieldConfig, $fieldValue = '', $step = '') {
-		$result = '<select id="' . $step . '-' . $fieldName . '" name="' . $this->prefixId . '[' . $step . '][' . $fieldName . ']">';
+		if ($fieldConfig['noPrefix'] == 1) {
+			$formFieldName = $fieldName;
+		} else {
+			$formFieldName = $this->prefixId . '[' . $step . '][' . $fieldName .']';
+		}
+		$result = '<select id="' . $step . '-' . $fieldName . '" name="' . $formFieldName .'">';
 
 		if ($fieldValue != '') {
 			$fieldConfig['default'] = $fieldValue;
