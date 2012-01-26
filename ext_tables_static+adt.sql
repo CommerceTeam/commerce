@@ -70,3 +70,4 @@ CREATE TABLE tx_commerce_article_types (
 INSERT INTO tx_commerce_article_types (uid, pid, title) VALUES ('1', '0', 'article');
 INSERT INTO tx_commerce_article_types (uid, pid, title) VALUES ('2', '0', 'payment');
 INSERT INTO tx_commerce_article_types (uid, pid, title) VALUES ('3', '0', 'delivery');
+INSERT INTO tx_commerce_article_types (uid, pid, title) VALUES ('1299001005', '0', 'rebate');
