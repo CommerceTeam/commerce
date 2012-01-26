@@ -1512,6 +1512,8 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 			$fieldMarkerArray['###FIELD_INPUT###'] = $this->getInputField($fieldName, $config['sourceFields.'][$arrayName], t3lib_div::removeXSS(strip_tags($this->MYSESSION[$step][$fieldName])), $step);
 			$fieldMarkerArray['###FIELD_NAME###'] = $this->prefixId . '[' . $step . '][' . $fieldName . ']';
 			$fieldMarkerArray['###FIELD_INPUTID###'] = $step . '-' . $fieldName;
+			$fieldMarkerArray['###FIELD_LABEL_CLASSES###'] = $config['sourceFields.'][$arrayName]['labelClasses'];
+			$fieldMarkerArray['###FIELD_CLASSES###'] = $config['sourceFields.'][$arrayName]['classes'];
 
 			// Save some data for mails
 			$this->MYSESSION['mails'][$step][$fieldName] = array('data' => $this->MYSESSION[$step][$fieldName], 'label' => $fieldLabel);
