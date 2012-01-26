@@ -2223,6 +2223,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 		$markerArray['###ORDERID###'] = $orderUid;
 		$markerArray['###ORDERDATE###'] = date($this->conf['generalMail.']['orderDate_format'], $orderData['tstamp']);
 		$markerArray['###COMMENT###'] = $orderData['comment'];
+		$markerArray['###PAYMENT_REF_ID###'] = $orderData['payment_ref_id'];
 		$markerArray['###LABEL_PAYMENTTYPE###'] = $this->pi_getLL('payment_paymenttype_' . $orderData['paymenttype'], $orderData['paymenttype']);
 
 		// Since The first line of the mail is the Suibject, trim the template
@@ -2482,6 +2483,9 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 				}
 			}
 		}
+
+		$newOrderData = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows('*','tx_commerce_orders','uid = '.intval($orderUid));
+		$orderData = $newOrderData[0];
 
 		return $orderData;
 	}
