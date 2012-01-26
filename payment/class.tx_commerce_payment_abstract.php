@@ -183,7 +183,7 @@ abstract class tx_commerce_payment_abstract implements tx_commerce_payment {
 	public function getAdditionalFieldsConfig() {
 		$result = NULL;
 		if ($this->provider !== NULL) {
-			$result = $this->provider->getAdditionalFieldsConfig();
+			$result = $this->provider->getAdditionalFieldsConfig($pObj);
 		}
 		return $result;
 	}
