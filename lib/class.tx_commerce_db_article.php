@@ -137,7 +137,9 @@ class tx_commerce_db_article extends tx_commerce_db_alib {
 			}
 			$result=$GLOBALS['TYPO3_DB']->exec_SELECTquery('uid,price_scale_amount_start, price_scale_amount_end',
 				'tx_commerce_article_prices',
-				"uid_article = $uid AND price_scale_amount_start >= $count " .  $proofSQL
+				"uid_article = $uid AND price_scale_amount_start >= $count " .  $proofSQL,
+				'',
+				'fe_group DESC'
 			);
 			if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)>0) {
 				while ($return_data=$GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
@@ -169,7 +171,9 @@ class tx_commerce_db_article extends tx_commerce_db_alib {
 			$result=$GLOBALS['TYPO3_DB']->exec_SELECTquery(
 				'uid,price_scale_amount_start, price_scale_amount_end',
 				'tx_commerce_article_prices',
-				'uid_article = ' . $uid .  $proofSQL
+				'uid_article = ' . $uid .  $proofSQL,
+				'',
+				'fe_group DESC'
 			);
 			if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)>0) {
 			 	while ($return_data=$GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
