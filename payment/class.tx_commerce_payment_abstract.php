@@ -183,7 +183,7 @@ abstract class tx_commerce_payment_abstract implements tx_commerce_payment {
 	public function getAdditionalFieldsConfig() {
 		$result = NULL;
 		if ($this->provider !== NULL) {
-			$result = $this->provider->getAdditionalFieldsConfig($pObj);
+			$result = $this->provider->getAdditionalFieldsConfig();
 		}
 		return $result;
 	}
@@ -213,7 +213,7 @@ abstract class tx_commerce_payment_abstract implements tx_commerce_payment {
 	public function finishingFunction(array $config= array(), array $session = array(), tx_commerce_basket $basket = NULL) {
 		$result = TRUE;
 		if ($this->provider !== NULL) {
-			$result = $this->provider->finishingFunction($config, $session, $basket, $pObj);
+			$result = $this->provider->finishingFunction($config, $session, $basket);
 		}
 		return $result;
 	}

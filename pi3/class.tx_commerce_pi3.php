@@ -1512,8 +1512,6 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 			$fieldMarkerArray['###FIELD_INPUT###'] = $this->getInputField($fieldName, $config['sourceFields.'][$arrayName], t3lib_div::removeXSS(strip_tags($this->MYSESSION[$step][$fieldName])), $step);
 			$fieldMarkerArray['###FIELD_NAME###'] = $this->prefixId . '[' . $step . '][' . $fieldName . ']';
 			$fieldMarkerArray['###FIELD_INPUTID###'] = $step . '-' . $fieldName;
-			$fieldMarkerArray['###FIELD_LABEL_CLASSES###'] = $config['sourceFields.'][$arrayName]['labelClasses'];
-			$fieldMarkerArray['###FIELD_CLASSES###'] = $config['sourceFields.'][$arrayName]['classes'];
 
 			// Save some data for mails
 			$this->MYSESSION['mails'][$step][$fieldName] = array('data' => $this->MYSESSION[$step][$fieldName], 'label' => $fieldLabel);
@@ -1735,16 +1733,19 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 		}
 		
 		if ($fieldConfig['noPrefix'] == 1) {
-			$formFieldName = $fieldName;
+			$result = '<input id="' . $step . '-' . $fieldName . '" type="text" name="' . $fieldName . '" value="' . $value . '" ' . $maxlength;
+			if ($fieldConfig['readonly'] == 1) {
+				$result .= ' readonly disabled /><input type="hidden" name="' . $fieldName . '" value="' . $value . '" ' . $maxlength . ' />';
+			} else {
+				$result .= '/>';
+			}
 		} else {
-			$formFieldName = $this->prefixId . '[' . $step . '][' . $fieldName .']';
-		}
-
-		$result = '<input id="' . $step . '-' . $fieldName . '" type="text" name="' . $fieldName . '" value="' . $value . '" ' . $maxlength;
-		if ($fieldConfig['readonly'] == 1) {
-			$result .= ' readonly disabled /><input type="hidden" name="' . $fieldName . '" value="' . $value . '" ' . $maxlength . ' />';
-		} else {
-			$result .= '/>';
+			$result = '<input id="' . $step . '-' . $fieldName . '" type="text" name="' . $this->prefixId . '[' . $step . '][' . $fieldName . ']" value="' . $value .'" ' . $maxlength;
+			if ($fieldConfig['readonly'] == 1) {
+				$result .= ' readonly disabled /><input type="hidden" name="' . $this->prefixId . '[' . $step . '][' . $fieldName .']" value="' . $value .'" ' . $maxlength . ' />';
+			} else {
+				$result .= '/>';
+			}
 		}
 
 		return $result;
@@ -1761,12 +1762,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 	 * @return string Single selectbox
 	 */
 	function getSelectInputField($fieldName, $fieldConfig, $fieldValue = '', $step = '') {
-		if ($fieldConfig['noPrefix'] == 1) {
-			$formFieldName = $fieldName;
-		} else {
-			$formFieldName = $this->prefixId . '[' . $step . '][' . $fieldName .']';
-		}
-		$result = '<select id="' . $step . '-' . $fieldName . '" name="' . $formFieldName .'">';
+		$result = '<select id="' . $step . '-' . $fieldName . '" name="' . $this->prefixId . '[' . $step . '][' . $fieldName . ']">';
 
 		if ($fieldValue != '') {
 			$fieldConfig['default'] = $fieldValue;
@@ -2223,7 +2219,6 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 		$markerArray['###ORDERID###'] = $orderUid;
 		$markerArray['###ORDERDATE###'] = date($this->conf['generalMail.']['orderDate_format'], $orderData['tstamp']);
 		$markerArray['###COMMENT###'] = $orderData['comment'];
-		$markerArray['###PAYMENT_REF_ID###'] = $orderData['payment_ref_id'];
 		$markerArray['###LABEL_PAYMENTTYPE###'] = $this->pi_getLL('payment_paymenttype_' . $orderData['paymenttype'], $orderData['paymenttype']);
 
 		// Since The first line of the mail is the Suibject, trim the template
@@ -2483,9 +2478,6 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 				}
 			}
 		}
-
-		$newOrderData = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows('*','tx_commerce_orders','uid = '.intval($orderUid));
-		$orderData = $newOrderData[0];
 
 		return $orderData;
 	}

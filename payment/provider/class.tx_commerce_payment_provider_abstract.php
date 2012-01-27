@@ -128,7 +128,7 @@ abstract class tx_commerce_payment_provider_abstract implements tx_commerce_paym
 	 * @return boolean TRUE if the provider should be queried for more data
 	 */
 	public function needAdditionalData() {
-		return FALSE;
+		return TRUE;
 	}
 
 	/**

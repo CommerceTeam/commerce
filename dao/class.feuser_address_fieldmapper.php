@@ -62,15 +62,8 @@ class feuser_address_fieldmapper {
 
 	function map_feuser_to_address(&$feuser_dao, &$address_dao) {
 		if (empty($this->feuser_field_arr)) $this->explode_mapping();
-
 		foreach ($this->feuser_field_arr as $key => $field) {
-			$value = $feuser_dao->get($field);
-
-			if ($field == 'gender') {
-				$value += ;
-			}
-
-			$address_dao->set($this->address_field_arr[$key], $value);
+			$address_dao->set($this->address_field_arr[$key],$feuser_dao->get($field));
 		}
 	}
 

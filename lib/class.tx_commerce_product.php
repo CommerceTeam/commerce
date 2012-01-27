@@ -296,18 +296,6 @@ class tx_commerce_product extends tx_commerce_element_alib {
 		$this->images_array = t3lib_div::trimExplode(',', $this->images);
 		$this->teaserImagesArray = t3lib_div::trimExplode(',', $this->teaserimages);
 
-		$hookObjectsArr = array();
-		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_product.php']['afterLoadData'])) {
-			foreach($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_product.php']['afterLoadData'] as $classRef) {
-				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
-			}
-		}
-		foreach($hookObjectsArr as $hookObj) {
-			if (method_exists($hookObj, 'afterLoadData')) {
-				$hookObj->afterLoadData($this);
-			}
-		}
-
 		return $return;
 	}
 
