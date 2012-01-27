@@ -143,12 +143,15 @@ class tx_commerce_db_article extends tx_commerce_db_alib {
 			);
 			if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)>0) {
 				while ($return_data=$GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
-					$price_uid_list[$return_data['price_scale_amount_start']][$return_data['price_scale_amount_end']]=$return_data['uid'];
+					if(!$price_uid_list[$return_data['price_scale_amount_start']][$return_data['price_scale_amount_end']]) {
+						$price_uid_list[$return_data['price_scale_amount_start']][$return_data['price_scale_amount_end']]=$return_data['uid'];
+					}
 				}
 				$GLOBALS['TYPO3_DB']->sql_free_result($result);
 				return $price_uid_list;
 			} else {
 				$this->error("exec_SELECTquery('uid','tx_commerce_article_prices',\"uid_article = $uid\"); returns no Result");
+				$GLOBALS['TYPO3_DB']->sql_free_result($result);
 				return false;
 			}
 		}else {
