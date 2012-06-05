@@ -40,19 +40,19 @@
 function checkChange(checknames, varname) {
 	var res = 0;
 	for (var a=1; a<=5; a++)	{
-		if (document.editform[checknames+'['+a+']'].checked) {
+		if (document.tceAction[checknames+'['+a+']'].checked) {
 			res|=Math.pow(2,a-1);
 		}
 	}
-	document.editform[varname].value = res | (checknames == 'check[perms_user]' ? 1 : 0);
+	document.tceAction[varname].value = res | (checknames == 'check[perms_user]' ? 1 : 0);
 	setCheck(checknames, varname);
 }
 
 function setCheck(checknames, varname) {
-	if (document.editform[varname])	{
-		var res = document.editform[varname].value;
+	if (document.tceAction[varname])	{
+		var res = document.tceAction[varname].value;
 		for (var a=1; a<=5; a++) {
-			document.editform[checknames+'['+a+']'].checked = (res & Math.pow(2,a-1));
+			document.tceAction[checknames+'['+a+']'].checked = (res & Math.pow(2,a-1));
 		}
 	}
 }

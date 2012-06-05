@@ -3,6 +3,7 @@
  *  Copyright notice
  *
  *  (c) 1999-2011 Kasper Skaarhoj (kasperYYYY@typo3.com)
+ *  (c) 2011-2012 TYPO3 Commerce Team (team@typo3-commerce.org)
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -29,7 +30,7 @@
  * Module: Permission setting
  *
  * @author	Marketing Factory
- * @maintainer Erik Frister
+ * @maintainer Erik Frister <typo3@marketing-factory.de>
  */
 unset($MCONF);
 require('conf.php');
@@ -83,11 +84,11 @@ class SC_mod_access_perm_index {
 	 * @var string
 	 */
 	public $content;
-	
+
 	var $BACK_PATH = '../../../../typo3/'; ###MAKE THIS BE CALCULATED OR ANDERS ERMITTELT###
 	var $iconPath = '../typo3conf/ext/commerce/res/icons/table/';
 	var $rootIconName = 'commerce_globus.gif';
-	
+
 	/**
 	 * Module menu
 	 * @var array
@@ -181,7 +182,7 @@ class SC_mod_access_perm_index {
 		$this->edit 	 	= t3lib_div::_GP('edit');
 		$this->return_id 	= t3lib_div::_GP('return_id');
 		$this->lastEdited 	= t3lib_div::_GP('lastEdited');
-		
+
 		// Module name;
 		$this->MCONF = $GLOBALS['MCONF'];
 
@@ -192,7 +193,7 @@ class SC_mod_access_perm_index {
 		$this->doc->backPath 	= $GLOBALS['BACK_PATH'];
 		$this->doc->docType 	= 'xhtml_trans';
 		$this->doc->setModuleTemplate('../typo3conf/ext/commerce/mod_access/templates/perm.html'); ###MAKE PATH BE CALCULATED, NOT FIXED###
-		$this->doc->form = '<form action="'.$GLOBALS['BACK_PATH'].'tce_db.php" method="post" name="editform">';
+		$this->doc->form = '<form action="'.$GLOBALS['BACK_PATH'].'tce_db.php" method="post" name="tceAction">';
 		//$this->doc->loadJavascriptLib('../t3lib/jsfunc.updateform.js');
 		//$this->doc->loadJavascriptLib('contrib/prototype/prototype.js');
 		$this->doc->loadJavascriptLib('../typo3conf/ext/commerce/mod_access/perm.js'); ###MAKE PATH BE CALCULATED, NOT FIXED###
@@ -234,12 +235,12 @@ class SC_mod_access_perm_index {
 		// Clean up settings:
 		$this->MOD_SETTINGS = t3lib_BEfunc::getModuleData($this->MOD_MENU, t3lib_div::_GP('SET'), $this->MCONF['name']);
 	}
-	
+
 	/**
 	 * Returns the info for the Category Path
-	 * 
+	 *
 	 * @param {array} $row - Row
-	 * @return {string} 
+	 * @return {string}
 	 */
 	public function categoryInfo(&$row) {
 		global $BE_USER;
@@ -256,7 +257,7 @@ class SC_mod_access_perm_index {
 		$pageInfo = $iconImg . '<em>[pid: ' . $row['uid'] . ']</em>';
 		return $pageInfo;
 	}
-	
+
 	/**
 	 * Returns the Category Path info
 	 * @return {string}
@@ -264,9 +265,9 @@ class SC_mod_access_perm_index {
 	 */
 	public function categoryPath(&$row) {
 		global $LANG;
-			
+
 		$title = $row['title'];
-	
+
 		// Setting the path of the page
 		$pagePath = $LANG->sL('LLL:EXT:lang/locallang_core.php:labels.path', 1) . ': <span class="typo3-docheader-pagePath">' . htmlspecialchars(t3lib_div::fixed_lgd_cs($title, -50)) . '</span>';
 		return $pagePath;
@@ -279,20 +280,20 @@ class SC_mod_access_perm_index {
 	 */
 	public function main() {
 		global $BE_USER, $LANG;
-		
+
 		// Access check...
 		// The page will show only if there is a valid page and if this page may be viewed by the user
 		$this->pageinfo = tx_commerce_belib::readCategoryAccess($this->id, $this->perms_clause);
 		$access = is_array($this->pageinfo);
-		
-		
+
+
 			// Checking access:
 		if (($this->id && $access) || ($BE_USER->isAdmin() && !$this->id)) {
 			if ($BE_USER->isAdmin() && !$this->id)	{
 				$this->pageinfo=array('title' => '[Category]','uid'=>0,'pid'=>0);
 			}
 
-			// This decides if the editform can and will be drawn:
+			// This decides if the editform (tceAction) can and will be drawn:
 			$this->editingAllowed = ($this->pageinfo['perms_userid'] == $BE_USER->user['uid'] || $BE_USER->isAdmin());
 			$this->edit = $this->edit && $this->editingAllowed;
 
@@ -469,7 +470,7 @@ class SC_mod_access_perm_index {
 		$this->content.=$this->doc->divider(5);
 		$this->content.=$this->doc->section($LANG->getLL('Group').':',$selector);
 
-			// Permissions checkbox matrix:
+		// Permissions checkbox matrix:
 		$code='
 			<table border="0" cellspacing="2" cellpadding="0" id="typo3-permissionMatrix">
 				<tr>
@@ -510,12 +511,13 @@ class SC_mod_access_perm_index {
 			<input type="hidden" name="data[tx_commerce_categories]['.$this->id.'][perms_user]" value="'.$this->pageinfo['perms_user'].'" />
 			<input type="hidden" name="data[tx_commerce_categories]['.$this->id.'][perms_group]" value="'.$this->pageinfo['perms_group'].'" />
 			<input type="hidden" name="data[tx_commerce_categories]['.$this->id.'][perms_everybody]" value="'.$this->pageinfo['perms_everybody'].'" />
-			'.$this->getRecursiveSelect($this->id,$this->perms_clause).'
+			'.$this->getRecursiveSelect($this->id,$this->perms_clause).
+			t3lib_TCEforms::getHiddenTokenField('tceAction').'
 			<input type="submit" name="submit" value="'.$LANG->getLL('Save',1).'" />'.
 			'<input type="submit" value="'.$LANG->getLL('Abort',1).'" onclick="'.htmlspecialchars('jumpToUrl(\'index.php?id='.$this->id.'\'); return false;').'" />
 			<input type="hidden" name="redirect" value="'.htmlspecialchars(TYPO3_MOD_PATH.'index.php?mode='.$this->MOD_SETTINGS['mode'].'&depth='.$this->MOD_SETTINGS['depth'].'&id='.intval($this->return_id).'&lastEdited='.$this->id).'" />
 		';
-		
+
 			// Adding section with the permission setting matrix:
 		$this->content.=$this->doc->divider(5);
 		$this->content.=$this->doc->section($LANG->getLL('permissions').':',$code);
@@ -545,7 +547,7 @@ class SC_mod_access_perm_index {
 	 */
 	public function notEdit() {
 		global $BE_USER,$LANG,$BACK_PATH;
-	
+
 		// Get usernames and groupnames: The arrays we get in return contains only 1) users which are members of the groups of the current user, 2) groups that the current user is member of
 		$beGroupKeys = $BE_USER->userGroupsUID;
 		$beUserArray = t3lib_BEfunc::getUserNames();
@@ -569,19 +571,19 @@ class SC_mod_access_perm_index {
 
 			// Initialize tree object:
 		$tree = t3lib_div::makeInstance('tx_commerce_categorytree');
-	
+
 		$tree->setBare();
 		$tree->init();
 		$tree->readRecursively($this->id, $this->MOD_SETTINGS['depth']);
 		// Create the tree from $this->id:
 		$tree->getTree();
-		
+
 		//Get the tree records
 		$records = $tree->getRecordsAsArray($this->id);
-		
+
 			// Make header of table:
 		$code='';
-		
+
 		if ($this->MOD_SETTINGS['mode']=='perms') {
 			$code.='
 				<tr>
@@ -606,22 +608,22 @@ class SC_mod_access_perm_index {
 					<td class="bgColor2" align="center"><b>'.$LANG->getLL('EditLock',1).'</b></td>':'').'
 				</tr>';
 		}
-		
+
 		// Creating category Icon
 		$icon 		= t3lib_iconWorks::getIconImage('tx_commerce_categories',$this->pageinfo,$BACK_PATH,'align="top" class="c-recIcon"');
 		$rootIcon 	= '<img'.t3lib_iconWorks::skinImg($this->BACK_PATH.$this->iconPath, $this->rootIconName,'width="18" height="16"').' title="Root" alt="" />';
-		
+
 		// Traverse tree:
 		$depthStop = array();	//stores which depths already have their last item
 		$l = count($records);
 		$lastDepth = 0;
-		
+
 		for($i = 0; $i < $l; $i ++) {
 			$row = $records[$i]['record'];
-			
+
 			$cells  = array();
 			$pageId = $row['uid'];
-		
+
 			// Background colors:
 			$bgCol = ($this->lastEdited == $pageId ? ' class="bgColor-20"' : '');
 			$lE_bgCol = $bgCol;
@@ -641,17 +643,17 @@ class SC_mod_access_perm_index {
 			// First column:
 			//$cellAttrib = ($data['row']['_CSSCLASS'] ? ' class="'.$data['row']['_CSSCLASS'].'"' : '');
 			$cellAttrib = '';
-			
+
 			$PMicon = '';
 
-			//Add PM only if we are not looking at the root	
+			//Add PM only if we are not looking at the root
 			if(0 < $records[$i]['depth']) {
-		
+
 					//Add simple join-images for categories that are deeper level than 1
 					if(1 < $records[$i]['depth']) {
 						$k = $records[$i]['depth'];
 						$n = count($depthStop);
-						
+
 						for($j = 1; $j < $k; $j ++) {
 							if(!array_key_exists($j, $depthStop) || $depthStop[$j] != 1) {
 								$PMicon .= '<img'.t3lib_iconWorks::skinImg($this->BACK_PATH,'gfx/ol/line.gif','width="18" height="16"').' alt="" />';
@@ -660,29 +662,29 @@ class SC_mod_access_perm_index {
 							}
 						}
 					}
-					
+
 					if($lastDepth > $records[$i]['depth']) {
 						for($j = $records[$i]['depth'] + 1; $j <= $lastDepth; $j ++) {
 							$depthStop[$j] = 0;
 						}
 					}
-					
+
 					//Add cross or bottom
 					$bottom = (true == $records[$i]['last']) ? 'bottom' : '';
-					
+
 					//save that the depth of the current record has its last item - is used to add blanks, not lines to following deeper elements
 					if(true == $records[$i]['last']) {
 						$depthStop[$records[$i]['depth']] = 1;
-					}	
-					
+					}
+
 					$lastDepth = $records[$i]['depth'];
-					
+
 					$PMicon .= '<img'.t3lib_iconWorks::skinImg($this->BACK_PATH,'gfx/ol/join'.$bottom.'.gif','width="18" height="16"').' alt="" />';
 			}
-			
+
 			//determine which icon to use
 			$rowIcon = (0 == $pageId) ? $rootIcon : $icon;
-			
+
 			$cells[]='
 					<td align="left" nowrap="nowrap"'.($cellAttrib ? $cellAttrib : $bgCol).'>'.$PMicon.$rowIcon.htmlspecialchars(t3lib_div::fixed_lgd_cs($row['title'],$tLen)).'&nbsp;</td>';
 
@@ -695,7 +697,7 @@ class SC_mod_access_perm_index {
 				$cells[]='
 					<td'.$bgCol.'></td>';
 			}
-			
+
 				// Rest of columns (depending on mode)
 			if ($this->MOD_SETTINGS['mode'] == 'perms') {
 				$cells[]='
@@ -817,16 +819,16 @@ class SC_mod_access_perm_index {
 	 * @return	string		Select form element for recursive levels (if any levels are found)
 	 */
 	public function getRecursiveSelect($id,$perms_clause) {
-		
+
 		// Initialize tree object:
 		$tree = t3lib_div::makeInstance('tx_commerce_categorytree');
 		$tree->setBare();
 		$tree->readRecursively($this->id, $this->getLevels);
 		$tree->init();
-		
+
 		// Create the tree from $this->id:
 		$tree->getTree();
-		
+
 		//Get the tree records
 		$recsPerLevel = $tree->getRecordsPerLevelArray($this->id);
 
@@ -838,7 +840,7 @@ class SC_mod_access_perm_index {
 			$label_levels 	= $GLOBALS['LANG']->getLL('levels');
 			$label_pA 		= $GLOBALS['LANG']->getLL('pages_affected');
 			$theIdListArr	= array();
-			
+
 			//Put dummy entry so user is not forced to select
 			$opts = '<option value=""></option>';
 
@@ -846,11 +848,11 @@ class SC_mod_access_perm_index {
 			for ($a = 0; $a <= $this->getLevels; $a ++)	{
 				//Go through the levels
 				if (is_array($recsPerLevel[$a])) {
-					
+
 					foreach($recsPerLevel[$a] as $theId)	{
-						
+
 						$cat = $tree->getCategory($theId); //get the category record
-						
+
 						//Check if the category uid should be added as a child
 						if ($GLOBALS['BE_USER']->isAdmin() || $GLOBALS['BE_USER']->user['uid'] == $cat['perms_userid'])	{
 							$theIdListArr[] = $theId;

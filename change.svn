@@ -5,6 +5,7 @@
 * Fixed issue #30824: Wrong makeInstance call in tx_commerce_payment_provider_abstract, Thanks to Michael Staatz
 * Fixed issue #31337: Modifying products for non admins, Thanks to Roman Schürmann
 * Fixed issue #31262: Sorting of translated categories in list view, Thanks to Roman Schürmann
+* Fixed issue #34424: Cannot use BE module to set access on categories, Thanks to G.Gothe and Torben Hansen
 
 12.09.2011 Michael Knabe <mk@e-netconsulting.com>
 * Added documentation for the moveOrder-hooks to hooks.html
