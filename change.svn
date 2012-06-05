@@ -8,7 +8,7 @@
 * Fixed issue #34424: Cannot use BE module to set access on categories, Thanks to G.Gothe and Torben Hansen
 * Fixed Issue #29113: Cannot change ordering of articles, Thanks to Benny Schimmer, G. Gothe, Roman Schürmann
 * Fixed Issue #7756: Not taken account of scaled prices when putting an article into basket. Thanks to Robert Heel, Torben Hanse, Roman Schürmann
-
+* Set Dynaflex 0.13.2 as required, ste PHP 5.3 as required
 
 
 12.09.2011 Michael Knabe <mk@e-netconsulting.com>
