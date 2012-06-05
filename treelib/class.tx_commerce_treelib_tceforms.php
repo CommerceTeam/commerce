@@ -789,7 +789,7 @@ class tx_commerce_treelib_tceforms {
 				}
 				foreach($hookObjectsArr as $hookObj)	{
 					if (method_exists($hookObj, 'processDefault')) {
-						$hookObj->processDefault($itemFormElValue, $table, $uid);
+						$itemArray[] = $hookObj->processDefault($itemFormElValue, $table, $uid);
 					}
 				}
 				
