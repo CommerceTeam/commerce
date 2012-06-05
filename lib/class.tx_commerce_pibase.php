@@ -2,7 +2,7 @@
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2005 - 2011 Volker Graubaum <vg@e-netconsulting.de>
+ *  (c) 2005 - 2012 Volker Graubaum <vg@e-netconsulting.de>
  *  All rights reserved
  *
  *  This script is part of the Typo3 project. The Typo3 project is
@@ -256,6 +256,7 @@ class tx_commerce_pibase extends tslib_pibase {
 		$matrix = $prodObj->getAttributeMatrix(FALSE, $this->product_attributes, $showHiddenValues, 'tx_commerce_products_attributes_mm', FALSE, 'tx_commerce_products');
 
 		$i = 0;
+        $product_attributes_string = '';
 		if (is_array($this->product_attributes)){
 			foreach ($this->product_attributes as $myAttributeUid) {
 				if(!$matrix[$myAttributeUid]['values'][0] && $this->conf['hideEmptyProdAttr']){
@@ -330,7 +331,7 @@ class tx_commerce_pibase extends tslib_pibase {
 		$this->shall_attributes = $prodObj->get_attributes(array(ATTRIB_shal));
 
 		$matrix = $prodObj->getAttributeMatrix($articleId, $this->shall_attributes, $showHiddenValues);
-
+        $article_shalAttributes_string = '';
 	 	$i = 0;
 		if(is_array($this->shall_attributes)){
           	 foreach ($this->shall_attributes as $myAttributeUid) {
@@ -368,7 +369,7 @@ class tx_commerce_pibase extends tslib_pibase {
 		$article_shalAttributes_string = $this->cObj->stdWrap($article_shalAttributes_string,$this->conf['articleShalAttributsWrap.']) ;
 
 		$matrix = $prodObj->getAttributeMatrix($articleId, $this->can_attributes, $showHiddenValues);
-
+        $article_canAttributes_string = '';
 		$i = 0;
 		if(is_array($this->can_attributes)){
               foreach ($this->can_attributes as $myAttributeUid) {
@@ -676,7 +677,7 @@ class tx_commerce_pibase extends tslib_pibase {
 	 * @author Volker Graubaum <vg_typo3@e-netconsulting.de>
 	 */
 
-	function getArticleMarker($article, $priceid=true){
+	function getArticleMarker($article, $priceid=false){
 
 		if (($this->handle) && is_array($this->conf[$this->handle.'.']) && is_array($this->conf[$this->handle.'.']['articles.'])){
 			$tsconf=$this->conf[$this->handle.'.']['articles.'];
@@ -1182,6 +1183,7 @@ class tx_commerce_pibase extends tslib_pibase {
 		/**
 		  * If you add more TS Types using the imgPath, you should add these also to generateMarkerArray 
 		  */
+        $output = '';
 		if (!isset($TSconf['imgPath'])) {
 			$TSconf['imgPath'] = $this->imgFolder;
 		}
@@ -1596,7 +1598,7 @@ class tx_commerce_pibase extends tslib_pibase {
 		        }
 		}
 
-	
+	    $category_items_listview = '';
 		$iterationCount = 0;
 		if (is_array($categoryProducts)){
 			foreach ($categoryProducts as $myProductId) {

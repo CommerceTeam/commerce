@@ -2,7 +2,7 @@
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2005 - 2011 Thomas Hempel (thomas@work.de)
+ *  (c) 2005 - 2012 Thomas Hempel (thomas@work.de)
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -89,6 +89,9 @@ class tx_commerce_articleCreator {
 		if ((count($this->existingArticles) == 0) || ($this->uid==0) || ($this->existingArticles===false))	{
 			return 'No articles existing for this product';
 		}
+		
+        //generate the security token
+        $formSecurityToken = '&prErr=1&vC=' . $GLOBALS['BE_USER']->veriCode() . t3lib_BEfunc::getUrlToken('tceAction');
 
 		$colCount = 0;
 		$headRow = $this->getHeadRow($colCount, NULL, NULL, false);
@@ -141,7 +144,7 @@ class tx_commerce_articleCreator {
 			$result .= '<img src="../typo3/gfx/edit2.gif" border="0" /></a></td>';
 
 				// add the hide button
-			$result .= '<td style="border-top:1px black solid"><a href="#" onclick="return jumpToUrl(\'tce_db.php?&amp;data[tx_commerce_articles][' .$article['uid'] .'][hidden]=' .(!$article['hidden']) .'&amp;redirect=alt_doc.php?edit[tx_commerce_products][' .$this->uid .']=edit\');">';
+			$result .= '<td style="border-top:1px black solid"><a href="#" onclick="return jumpToUrl(\'tce_db.php?&amp;data[tx_commerce_articles][' .$article['uid'] .'][hidden]=' .(!$article['hidden']) .'&amp;redirect=alt_doc.php?edit[tx_commerce_products][' .$this->uid .']=edit' . $formSecurityToken .'\');">';
 			$result .= '<img src="../typo3/gfx/button_' .(($article['hidden']) ? 'un' : '') .'hide.gif" border="0" /></a></td>';
 
 				// add the sorting buttons
@@ -153,7 +156,7 @@ class tx_commerce_articleCreator {
 					$moveItTo = $article['pid'];
 				}
 				$params = 'cmd[tx_commerce_articles][' .$article['uid'] .'][move]=' .$moveItTo;
-				$result .= '<td style="border-top:1px black solid"><a href="#" onClick="return jumpToUrl(\'tce_db.php?' .$params .'&redirect=alt_doc.php?edit[tx_commerce_products][' .$this->uid .']=edit\');"><img src="../typo3/gfx/button_up.gif" width="11" height="10" border="0" align="top" /></a></td>';
+				$result .= '<td style="border-top:1px black solid"><a href="#" onClick="return jumpToUrl(\'tce_db.php?' .$params .$formSecurityToken .'&redirect=alt_doc.php?edit[tx_commerce_products][' .$this->uid .']=edit\');"><img src="../typo3/gfx/button_up.gif" width="11" height="10" border="0" align="top" /></a></td>';
 			} else {
 				$result .= '<td style="border-top:1px black solid"><img src="clear.gif" width="11" height="10" align="top"></td>';
 			}
@@ -161,7 +164,7 @@ class tx_commerce_articleCreator {
 				// DOWN
 			if (isset($this->existingArticles[($i +1)]))	{
 				$params = 'cmd[tx_commerce_articles][' .$article['uid'] .'][move]=-' .$this->existingArticles[($i +1)]['uid'];
-				$result .= '<td style="border-top:1px black solid"><a href="#" onClick="return jumpToUrl(\'tce_db.php?'.$params .'&redirect=alt_doc.php?edit[tx_commerce_products][' .$this->uid .']=edit\');"><img src="../typo3/gfx/button_down.gif" width="11" height="10" border="0" align="top" /></a></td>';
+				$result .= '<td style="border-top:1px black solid"><a href="#" onClick="return jumpToUrl(\'tce_db.php?'.$params .$formSecurityToken .'&redirect=alt_doc.php?edit[tx_commerce_products][' .$this->uid .']=edit\');"><img src="../typo3/gfx/button_down.gif" width="11" height="10" border="0" align="top" /></a></td>';
 			} else {
 				$result .= '<td style="border-top:1px black solid"><img src="clear.gif" width="11" height="10" align="top"></td>';
 			}
@@ -372,6 +375,7 @@ class tx_commerce_articleCreator {
 	 * @return	The HTML header code
 	 */
 	function getHeadRow(&$colCount, $acBefore = NULL, $acAfter = NULL, $addTR = true)	{
+        $result = '';
 		if ($addTR)	{ $result .= '<tr>'; }
 		
 		if ($acBefore != NULL) $result .= '<th>' .implode('</th><th>', $acBefore) .'</th>';
@@ -672,6 +676,7 @@ class tx_commerce_articleCreator {
 	 * The handling for creating the new price is inside the tcehooks
 	 */
 	function createNewPriceCB($PA, $fObj) {
+        $content = '';
 		$content .= '<div id="typo3-newRecordLink">';
 		$content .= '<input type="checkbox" name="data[tx_commerce_articles][' .$PA['row']['uid'] .'][create_new_price]" />';
 		$content .= $GLOBALS['LANG']->sL('LLL:EXT:commerce/locallang_be.php:articles.add_article_price', 1);
@@ -737,6 +742,7 @@ class tx_commerce_articleCreator {
 	 * Returns a hidden field with the name and value of the current form element
 	 */
 	function articleUid($PA, $fObj) {
+        $content = '';
 		$content.='<input type="hidden" name="'.$PA['itemFormElName'].'" value="'.htmlspecialchars($PA['itemFormElValue']).'">';
  		return $content;
 	}
