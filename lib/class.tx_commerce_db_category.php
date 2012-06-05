@@ -2,7 +2,7 @@
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2005 - 2011 Ingo Schmitt <is@marketing-factory.de>
+ *  (c) 2005 - 2012 Ingo Schmitt <is@marketing-factory.de>
  *  All rights reserved
  *
  *  This script is part of the Typo3 project. The Typo3 project is
@@ -222,6 +222,20 @@ class tx_commerce_db_category extends tx_commerce_db_alib {
 					// @TODO Access check for data sets
 				$data[] = (int)$return_data['uid_local'];
 			}
+			if(is_array($data)) {
+				if($GLOBALS['TSFE']->sys_language_uid > 0){
+					foreach ($data as $k => $v) {
+						$results = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows('title', 'tx_commerce_categories', 'l18n_parent =' . $v .' AND sys_language_uid = ' .$GLOBALS['TSFE']->sys_language_uid .
+						' AND hidden = 0 AND deleted = 0');
+						$tempCats[$v] = $results[0]['title'];
+					}
+					asort($tempCats);
+					$data = array();
+					foreach($tempCats as $key => $value) {
+						$data[] = $key;
+					}
+				}
+			}
 			$GLOBALS['TYPO3_DB']->sql_free_result($result);
 			return $data;
 		}
@@ -304,6 +318,24 @@ class tx_commerce_db_category extends tx_commerce_db_alib {
 				if (is_object($hookObj) && method_exists($hookObj, 'productQueryPostHook')) {
 					$data = $hookObj->productQueryPostHook($data, $this);
 				}
+			}
+			if (is_array($data) && !empty($data)) {
+				if ($GLOBALS['TSFE']->sys_language_uid > 0) {
+					$wherePart = 'l18n_parent in (%1$s) AND sys_language_uid = ' . $GLOBALS['TSFE']->sys_language_uid;
+				} else {
+					$wherePart = 'uid in (%1$s)';
+				}
+				$uids = implode(',',array_values($data));
+				$tempProducts = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+					'uid, title',
+					'tx_commerce_products',
+					sprintf($wherePart, t3lib_DB::cleanIntList($uids)) . ' AND hidden = 0 AND deleted = 0',
+					'',
+					'title',
+					'',
+					'uid'
+				);
+				$data = array_keys($tempProducts);
 			}
 			return $data;
 		}
