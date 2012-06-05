@@ -2,7 +2,7 @@
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2005 - 2011 Ingo Schmitt <is@marketing-factory.de>
+ *  (c) 2005 - 2012 Ingo Schmitt <is@marketing-factory.de>
  *  All rights reserved
  *
  *  This script is part of the Typo3 project. The Typo3 project is
@@ -79,7 +79,7 @@ class tx_commerce_category extends tx_commerce_element_alib {
 	public $parent_category_uid = 0;
 
 	/**
-	 * @var object Parent category object 
+	 * @var object Parent category object
 	 */
 	protected $parent_category = '';
 
@@ -145,7 +145,7 @@ class tx_commerce_category extends tx_commerce_element_alib {
 	public $perms_group = 0;
 
 	/**
-	 * @var integer Everybody permissions 
+	 * @var integer Everybody permissions
 	 */
 	public $perms_everybody = 0;
 
@@ -450,7 +450,7 @@ class tx_commerce_category extends tx_commerce_element_alib {
 			$this->categories_uid = $this->conn_db->get_child_categories($this->uid);
 			$this->parent_category_uid = intval($this->conn_db->get_parent_category($this->uid));
 			$this->products_uid = $this->conn_db->get_child_products($this->uid, $this->lang_uid);
-			$this->teaserImagesArray = t3lib_div::trimExplode(',', $this->teaserImages);
+			$this->teaserImagesArray = t3lib_div::trimExplode(',', $this->teaserimages);
 			$this->data_loaded = TRUE;
 		}
 	}
@@ -664,7 +664,7 @@ class tx_commerce_category extends tx_commerce_element_alib {
 	 * Returns TRUE if this category has active products or if sub categories have active products
 	 *
 	 * @param integer $depth maximum deepth for going recursive, if not set go for maximum
-	 * @return boolen Returns TRUE, if category/subcategories hav active products 
+	 * @return boolean Returns TRUE, if category/subcategories hav active products
 	 */
 	public function ProductsBelowCategory($depth = FALSE){
 		if ($this->hasProducts()) {
@@ -689,7 +689,7 @@ class tx_commerce_category extends tx_commerce_element_alib {
 	}
 
 	/**
-	 * Returns all catogory ID's above this uid
+	 * Returns all category ID's above this uid
 	 *
 	 * @return array List of category uids
 	 */
