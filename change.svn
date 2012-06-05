@@ -1,6 +1,7 @@
 05.06.2012 Ingo Schmitt <is@marketing-factory.de>
 * Fixed issue #31785: languageFlags for translating products don't show up anymore (Thanks to Georg Schönweger)
 * Clenup Code in class.tx_commerce_db_list_extra.inc
+* Fixed issue #30743: Wrong path ext_autoload.php,  Thanks to Michael Staatz
 
 12.09.2011 Michael Knabe <mk@e-netconsulting.com>
 * Added documentation for the moveOrder-hooks to hooks.html
