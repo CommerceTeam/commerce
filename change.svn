@@ -10,7 +10,8 @@
 * Fixed Issue #7756: Not taken account of scaled prices when putting an article into basket. Thanks to Robert Heel, Torben Hanse, Roman Schürmann
 * Set Dynaflex 0.13.2 as required, ste PHP 5.3 as required
 * Fixed issue #7476: Hook processItemArrayForBrowseableTreeDefault has no return value, but must have. Thanks to Ralf Merz
-
+* Feature: Added TS Configuration lib.tx_commerce.navigation.special.maxLevel and lib.tx_commerce.navigation.special.noAct for speed up generation of Navigation
+* Added navigation TS properties to documentation
 
 12.09.2011 Michael Knabe <mk@e-netconsulting.com>
 * Added documentation for the moveOrder-hooks to hooks.html

@@ -849,7 +849,14 @@ lib.tx_commerce.navigation {
        	overridePid = {$plugin.tx_commerce_lib.overridePid}
        	// EntryLervel
        	entryLevel = 0
-       	
+
+       	// Maximum Level in the Navigation
+       	maxLevel = PHP_INT_MAX
+
+       	// No Active Elements
+       	// saves lots of renderTime
+       	noAct = 0
+
        	// Hide empty Categories
        	hideEmptyCategories = {$plugin.tx_commerce_lib.hideEmptyCategories}
        	

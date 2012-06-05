@@ -2,7 +2,7 @@
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2005 - 2011 Ingo Schmitt <is@marketing-factory.de>
+ *  (c) 2005 - 2012 Ingo Schmitt <is@marketing-factory.de>
  *  All rights reserved
  *
  *  This script is part of the Typo3 project. The Typo3 project is
@@ -92,8 +92,18 @@ class tx_commerce_navigation {
 	 	6=> 'ACTIFSUB',
 	 	7=> 'ACT',
 	 	8=> 'IFSUB',);
-   
-    
+
+
+    /**
+     * @var int Maximum Level for Menu, Default all PHP_INT_MAX
+     */
+    private $maxLevel = PHP_INT_MAX;
+
+    /**
+     * @var bool    Do not check if an element is active
+     */
+    private $noAct = false;
+
 	/**
 	 * Init Method for initialising the navigation
 	 * @param $content	string	$content passed to method
@@ -121,7 +131,16 @@ class tx_commerce_navigation {
 		$this->pageRootline = $GLOBALS['TSFE']->rootLine;
 		$this->menuType = $this->mConf['1'];
 		$this->entryLevel = (int)$this->mConf['entryLevel'];
-		
+
+        if ((int)$this->mConf['noAct'] > 0) {
+             $this->noAct = true;
+        }
+
+        if ((int)$this->mConf['maxLevel']>0) {
+            $this->maxLevel = (int)$this->mConf['maxLevel'];
+        }
+
+
 		/**
 		 * Detect if a user is logged in and if he or she has usergroups
 		 * as we have to take in accout, that different usergroups may have different
@@ -151,7 +170,7 @@ class tx_commerce_navigation {
       	if (count($MenueErrorname)>0) {	
       		
       		foreach ($MenueErrorname as $oneEoor) {
-      			t3lib_div::debug($this->mConf,$oneEoor);
+                  t3lib_utility_Debug::debug($this->mConf,$oneEoor);
       		}
       		
         	return $this->makeErrorMenu(5);
@@ -172,7 +191,7 @@ class tx_commerce_navigation {
         	
         	// Build directly and don't sore, if no_cache=1'
         	
-        	$this->mTree=$this->makeArrayPostRender($this->PID,"tx_commerce_categories","tx_commerce_categories_parent_category_mm","tx_commerce_products","tx_commerce_products_categories_mm",$this->cat,1);
+        	$this->mTree=$this->makeArrayPostRender($this->PID,"tx_commerce_categories","tx_commerce_categories_parent_category_mm","tx_commerce_products","tx_commerce_products_categories_mm",$this->cat,1,0,$this->maxLevel);
         	
 			/**
 			 * Sorting Options, there is only one type "alphabetiDesc" :) the others must to program
@@ -189,7 +208,7 @@ class tx_commerce_navigation {
 		} else {
 			
 			// no cache present buld data and stor it in cache
-			$this->mTree=$this->makeArrayPostRender($this->PID,"tx_commerce_categories","tx_commerce_categories_parent_category_mm","tx_commerce_products","tx_commerce_products_categories_mm",$this->cat,1);
+			$this->mTree=$this->makeArrayPostRender($this->PID,"tx_commerce_categories","tx_commerce_categories_parent_category_mm","tx_commerce_products","tx_commerce_products_categories_mm",$this->cat,1,0,$this->maxLevel);
 			
 			/**
 			 * Sorting Options, there is only one type "alphabetiDesc" :) the others must to program
@@ -210,10 +229,13 @@ class tx_commerce_navigation {
 		$keys=array_keys($this->mTree);
 		
 		/**
-		 * Detect rootline
+		 * Detect rootline, neassary
 		 **/
-		
-		if($this->gpVars['catUid']){
+		if ($this->noAct === true) {
+
+            $this->pathParents = array();
+            $this->mDepth =0;
+        }elseif($this->gpVars['catUid']){
 			$this->choosenCat = $this->gpVars['catUid'] ;
 		}elseif($this->gpVars['showUid']){
 			/**
@@ -399,11 +421,18 @@ class tx_commerce_navigation {
 	 * @param	array	$uid_root:
 	 * @return	array	TSConfig with ItemArrayProcFunc
 	 */
-	function makeArrayPostRender($uidPage,$mainTable, $tableMm,$tableSubMain,$tableSubMm,$uid_root,$mDepth=1,$path=0) {
+	function makeArrayPostRender($uidPage,$mainTable, $tableMm,$tableSubMain,$tableSubMm,$uid_root,$mDepth=1,$path=0,$maxLevel = PHP_INT_MAX) {
 		$treeList=array();
-		$addWhere=$tableMm.'uid_foreign='.$uid_root;
+
+        $maxLevel--;
+        if ($maxLevel < 0) {
+            return array();
+        }
+
+      	$addWhere=$tableMm.'uid_foreign='.$uid_root;
 		$sql = 'SELECT '.$tableMm.'.* FROM '.$tableMm.','.$mainTable.' WHERE '.$mainTable.'.deleted =0 and '.$mainTable.'.uid = '.$tableMm.'.uid_local and '.$tableMm.'.uid_local<>"" AND '.$tableMm.'.uid_foreign ='.$uid_root;
-		
+
+
 		$sorting = ' order by '.$mainTable.'.sorting ';
 		
 		/**
@@ -476,23 +505,26 @@ class tx_commerce_navigation {
 				 	if(!is_array($nodeArray['--subLevel--'])){
 						$nodeArray['--subLevel--'] = array();
 					}
-				 	$this->arrayMerge($nodeArray['--subLevel--'],$this->makeArrayPostRender($uidPage,$mainTable, $tableMm,$tableSubMain,$tableSubMm,$row['uid_local'],$mDepth+1,$nodeArray['path']));
+
+				 	$this->arrayMerge($nodeArray['--subLevel--'],$this->makeArrayPostRender($uidPage,$mainTable, $tableMm,$tableSubMain,$tableSubMm,$row['uid_local'],$mDepth+1,$nodeArray['path'],$maxLevel));
 				    
 				     
 				    if($nodeArray['hasSubChild']==1 && $this->mConf['showProducts']==1){
 				    	$arraySubChild=array();
-				    	$arraySubChild=$this->makeSubChildArrayPostRender($uidPage,$tableSubMain,$tableSubMm,$row['uid_local'],$mDepth+1,$nodeArray['path']);
+				    	$arraySubChild=$this->makeSubChildArrayPostRender($uidPage,$tableSubMain,$tableSubMm,$row['uid_local'],$mDepth+1,$nodeArray['path'],$maxLevel);
 				    	
 				    	$this->arrayMerge($nodeArray['--subLevel--'], $arraySubChild);
 				    	
 				    	if ($this->mConf['groupOptions.']['onOptions']==1 && $GLOBALS['TSFE']->fe_user->user['usergroup']!=''){
-				    		$arraySubChild=$this->makeSubChildArrayPostRender($uidPage,$tableSubMain,$tableSubMm,$row['uid_local'],$mDepth+1,$nodeArray['path']);
+				    		$arraySubChild=$this->makeSubChildArrayPostRender($uidPage,$tableSubMain,$tableSubMm,$row['uid_local'],$mDepth+1,$nodeArray['path'],$maxLevel);
 				    		$this->arrayMerge($nodeArray['--subLevel--'], $arraySubChild);
 				    	}
 				    	
 				    }
 				    if (($this->expandAll > 0) || ($this->expandAll < 0 && (-$this->expandAll >= $mDepth))){
-				    	$nodeArray['_SUB_MENU']=$nodeArray['--subLevel--'];
+
+				        $nodeArray['_SUB_MENU']=$nodeArray['--subLevel--'];
+
 				    } 	
 				 	if ($this->gpVars['basketHashValue']) {
 						$nodeArray['_ADD_GETVARS'] .=ini_get('arg_separator.output') .$this->prefixId.'[basketHashValue]='.$this->gpVars['basketHashValue'];
@@ -525,7 +557,7 @@ class tx_commerce_navigation {
 			}
 		}
 		if ($treeList==null && $this->mConf['showProducts']==1){
-			$treeList=$this->makeSubChildArrayPostRender($uidPage,$tableSubMain,$tableSubMm,$uid_root,$mDepth,$path);
+			$treeList=$this->makeSubChildArrayPostRender($uidPage,$tableSubMain,$tableSubMm,$uid_root,$mDepth,$path,$maxLevel);
 		}
 		return $treeList;
 	}
@@ -539,16 +571,17 @@ class tx_commerce_navigation {
 	 * @param	array	$mDepth:
 	 * @param	array	$path: 
 	 * @param	integer	$Manufacturere Uid
+     * @param   integer $maxLevel   Maximum Level for Navigation
 	 * @return	array	array to be processed by HMENU
 	 * 
 	 */
-	function makeSubChildArrayPostRender($uidPage,$mainTable, $tableMm,$uid_root,$mDepth=1,$path=0,$manuuid=false) {
+	function makeSubChildArrayPostRender($uidPage,$mainTable, $tableMm,$uid_root,$mDepth=1,$path=0,$manuuid=false,$maxLevel) {
 		$treeList=array();
-		$addWhere=$tableMm.'uid_foreign='.$uid_root;
-		if(is_numeric($manuuid) && $flag != false){
-			$sql_manu = " AND ".$mainTable.".manufacturer_uid = ".$manuuid." ";
+		$addWhere=$tableMm.'uid_foreign='.(int)$uid_root;
+		if(is_numeric($manuuid)){
+			$sql_manu = " AND ".$mainTable.".manufacturer_uid = ".(int)$manuuid." ";
 		}
-		$sql = 'SELECT '.$tableMm.'.* FROM '.$tableMm.','.$mainTable.' WHERE '.$mainTable.'.deleted =0 and '.$mainTable.'.uid = '.$tableMm.'.uid_local and '.$tableMm.'.uid_local<>"" AND '.$tableMm.'.uid_foreign ='.$uid_root.' '.$sql_manu;
+		$sql = 'SELECT '.$tableMm.'.* FROM '.$tableMm.','.$mainTable.' WHERE '.$mainTable.'.deleted =0 and '.$mainTable.'.uid = '.$tableMm.'.uid_local and '.$tableMm.'.uid_local<>"" AND '.$tableMm.'.uid_foreign ='.(int)$uid_root.' '.$sql_manu;
 		
 		$sorting = ' order by '.$mainTable.'.sorting ';
 		
