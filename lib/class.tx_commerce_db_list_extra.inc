@@ -5,7 +5,7 @@
  *
  *  (c) 1999-2003 Kasper Skaarhoj (kasper@typo3.com)
  *  (c) 2005 Franz Holzinger <kontakt@fholzinger.com>
- *  (c) 2009 Ingo Schmitt <is@marketing-factory.de>
+ *  (c) 2009-2012 Ingo Schmitt <is@marketing-factory.de>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -31,10 +31,10 @@
  * Script class for the graytree list view (old version - not used any more)
  *
  * @author	Franz Holzinger <kontakt@fholzinger.com>
- * @maintainer	Franz Holzinger <kontakt@fholzinger.com>
+ * @maintainer	TYPO3 Commerce team <team@typo3-commerce.org>
  * @package TYPO3
  * @subpackage tx_graytree
- * $Id: class.tx_graytree_db_list_extra.inc 362 2006-09-26 16:43:13Z ingo $
+ *
  *
  *
  */
@@ -42,11 +42,6 @@
 //require ('conf.php');
 require_once ($BACK_PATH.'class.db_list.inc');
 require_once ($BACK_PATH.'class.db_list_extra.inc');
-
-
-//require_once(PATH_txgraytree.'lib/class.tx_graytree_clickmenu.php');
-
-#define('GRAYTREE_DB_LIST_DLOG', '0');
 
 
 
@@ -73,7 +68,7 @@ class commerceRecordList extends localRecordList {
 		$iconImg = t3lib_iconWorks::getIconImage('pages',$row,$this->backPath,'class="absmiddle" title="'.htmlspecialchars($alttext).'"');
 		$titleCol = 'test';	// pseudo title column name
 		$this->fieldArray = Array($titleCol,'up');		// Setting the fields to display in the list (this is of course "pseudo fields" since this is the top!)
-
+        $out = '';
 
 			// Filling in the pseudo data array:
 		$theData = Array();
@@ -127,12 +122,7 @@ class commerceRecordList extends localRecordList {
 				}
 			}
 
-				// Adding "move page" button:
-			if ($this->id)	{
-				$theCtrlPanel[]='<a href="#" onclick="'.htmlspecialchars('return jumpExt(\'move_el.php?table=pages&uid='.$row['uid'].'\');').'">'.
-								'<img'.t3lib_iconWorks::skinImg($this->backPath,'gfx/move_'.($table=='tt_content'?'record':'page').'.gif','width="11" height="12"').' title="'.$LANG->getLL('move_page',1).'" alt="" />'.
-								'</a>';
-			}
+
 		}
 
 			// "Paste into page" link:
@@ -891,65 +881,53 @@ class commerceRecordList extends localRecordList {
 											<div class="typo3-clipCtrl">'.implode('',$cells).'</div>';
 	}
 
+    
+    /**
+     * Creates the localization panel
+     *
+     * @param   string      The table
+     * @param   array       The record for which to make the localization panel.
+     * @return  array       Array with key 0/1 with content for column 1 and 2
+     */
+    function makeLocalizationPanel($table,$row) {
+        global $TCA,$LANG;
 
-	/**
-	 * Creates the localization panel
-	 *
-	 * @param	string		The table
-	 * @param	array		The record for which to make the localization panel.
-	 * @return	array		Array with key 0/1 with content for column 1 and 2
-	 */
-	function makeLocalizationPanel($table,$row)	{
-		global $TCA,$LANG;
+        $out = array(
+            0 => '',
+            1 => '',
+        );
+        $translations = $this->translateTools->translationInfo($table, $row['uid'], 0, $row, $this->selFieldList);
+        $this->translations = $translations['translations'];
 
-		$out = array(
-			0 => '',
-			1 => '',
-		);
-		if ($TCA[$table]['ctrl']['languageField'] && $TCA[$table]['ctrl']['transOrigPointerField'] && !$TCA[$table]['ctrl']['transOrigPointerTable'])	{
+            // Language title and icon:
+        $out[0] = $this->languageFlag($row[$TCA[$table]['ctrl']['languageField']]);
 
-				// Language title and icon:
-			$out[0] = $this->languageFlag($row[$TCA[$table]['ctrl']['languageField']]);
+        if (is_array($translations))    {
 
-				// Create new localizations links:
-			if ($row[$TCA[$table]['ctrl']['languageField']] <=0)	{
+            // Traverse page translations and add icon for each language that does NOT yet exist:
+            $lNew = '';
+            foreach($this->pageOverlays as $lUid_OnPage => $lsysRec)    {
+                if (!isset($translations['translations'][$lUid_OnPage]) && $GLOBALS['BE_USER']->checkLanguageAccess($lUid_OnPage))  {
+                    $href = $GLOBALS['TBE_TEMPLATE']->issueCommand('&cmd['.$table.']['.$row['uid'].'][localize]='.$lUid_OnPage,$rUrl='');
+					$href = $this->backPath . $href; // Korr. Graytree
+                    $language = t3lib_BEfunc::getRecord('sys_language', $lUid_OnPage, 'title');
+                    if ($this->languageIconTitles[$lUid_OnPage]['flagIcon']) {
+                        $lC = t3lib_iconWorks::getSpriteIcon($this->languageIconTitles[$lUid_OnPage]['flagIcon']);;
+                    } else {
+                        $lC = $this->languageIconTitles[$lUid_OnPage]['title'];
+                    }
+                    $lC = '<a href="' . htmlspecialchars($href) . '" title="' . htmlspecialchars($language['title']) . '">' . $lC . '</a> ';
 
-					// Look for translations of this record, index by language field value:
-				$translations = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
-					'uid,'.$TCA[$table]['ctrl']['languageField'],
-					$table,
-					'pid='.intval($this->id).
-						' AND '.$TCA[$table]['ctrl']['languageField'].'>0'.
-						' AND '.$TCA[$table]['ctrl']['transOrigPointerField'].'='.intval($row['uid']).
-						t3lib_BEfunc::deleteClause($table),
-					'',
-					'',
-					'',
-					$TCA[$table]['ctrl']['languageField']
-				);
-				
-					// Traverse page translations and add icon for each language that does NOT yet exist:
-				$lNew = '';
-				foreach($this->pageOverlays as $lUid_OnPage => $lsysRec)	{
-					if (!isset($translations[$lUid_OnPage]))	{
-						$href = $GLOBALS['TBE_TEMPLATE']->issueCommand('&cmd['.$table.']['.$row['uid'].'][localize]='.$lUid_OnPage,$rUrl='');
-						$href = $this->backPath . $href; // Korr. Graytree
+                    $lNew.=$lC;
+                }
+            }
 
-						$lC = ($this->languageIconTitles[$lUid_OnPage]['flagIcon'] ? '<img src="'.$this->languageIconTitles[$lUid_OnPage]['flagIcon'].'" class="absmiddle" alt="" />' : $this->languageIconTitles[$lUid_OnPage]['title']);
-						$lC = '<a href="'.htmlspecialchars($href).'">'.$lC.'</a> ';
-
-						$lNew.=$lC;
-					}
-				}
-
-				if ($lNew)	$out[1].= $lNew;
-			} else {
-				$out[0] = '&nbsp;&nbsp;&nbsp;&nbsp;'.$out[0];
-			}
-		}
-
-		return $out;
-	}
+            if ($lNew)  $out[1].= $lNew;
+        } else if ($row['l18n_parent']) {
+            $out[0] = '&nbsp;&nbsp;&nbsp;&nbsp;'.$out[0];
+        }
+        return $out;
+    }
 
 
 	/**
