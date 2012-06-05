@@ -3,6 +3,7 @@
 * Clenup Code in class.tx_commerce_db_list_extra.inc
 * Fixed issue #30743: Wrong path ext_autoload.php,  Thanks to Michael Staatz
 * Fixed issue #30824: Wrong makeInstance call in tx_commerce_payment_provider_abstract, Thanks to Michael Staatz
+* Fixed issee #31337: Modifying products for non admins, Thanks to Roman Schürmann
 
 12.09.2011 Michael Knabe <mk@e-netconsulting.com>
 * Added documentation for the moveOrder-hooks to hooks.html

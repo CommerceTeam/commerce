@@ -3,6 +3,7 @@
  *  Copyright notice
  *
  *  (c) 2005 - 2011 Thomas Hempel <thomas@work.de>
+ *  (c) 2011 - 2012 Ingo Schmitt <is@marketing-factory.de>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -743,17 +744,25 @@ class tx_commerce_dmhooks {
 				
 				//Read the old parent product - skip this if we are copying or overwriting the article
 				if('new' != $status && !$GLOBALS['BE_USER']->uc['txcommerce_copyProcess']) {
-					$item = t3lib_div::makeInstance('tx_commerce_article');
-					$item->init($id);
-					$data = $pObj->newFieldArray($table);
-					$productUid = $item->getParentProductUid();
-		
-					//get the parent categories of the product
-					$item = t3lib_div::makeInstance('tx_commerce_product');
-					$item->init($productUid);
-					
-					$parentCategories = $item->getParentCategories();
-					
+					$article = t3lib_div::makeInstance('tx_commerce_article');
+					$article->init($id);
+					$article->load_data();
+ 					$productUid = $article->getParentProductUid();
+
+						//get the parent categories of the product
+					$product = t3lib_div::makeInstance('tx_commerce_product');
+					$product->init($productUid);
+					$product->load_data();
+					$parentCategories = $product->get_parent_categories();
+
+					if (!current($parentCategories)) {
+						$languageParentUid = $product->getL18nParent();
+						$l18nParent = t3lib_div::makeInstance('tx_commerce_product');
+						$l18nParent->init($languageParentUid);
+						$l18nParent->load_data();
+						$parentCategories = $l18nParent->get_parent_categories();
+					}
+
 				}
 				
 				// read new assigned product
@@ -779,18 +788,20 @@ class tx_commerce_dmhooks {
 					
 					//check if the user has the permission to edit this category; abort if he doesnt.
 					if('new' != $status)  {
-					    
-                        //check if we have the right to edit and are in commerce mounts
-                        $checkId = $id;
-                        
-                        // Use the l18n parent as category for permission checks.
-                        if ($l18nParent > 0) {
-                            $checkId = $l18nParent;
-                        }
-                        
+
+							//check if we have the right to edit and are in commerce mounts
+						$checkId = $id;
 						$category = t3lib_div::makeInstance('tx_commerce_category');
-						$category->init($checkId);
-						
+ 						$category->init($checkId);
+ 						$category->load_data();
+
+							// Use the l18n parent as category for permission checks.
+						if ($l18nParent > 0 || $category->getField('l18n_parent') > 0) {
+							$checkId = $category->getField('l18n_parent');
+							$category = t3lib_div::makeInstance('tx_commerce_category');
+							$category->init($checkId);
+						}
+
 						$mounts = t3lib_div::makeInstance('tx_commerce_categorymounts');
 						$mounts->init($GLOBALS['BE_USER']->user['uid']);
                         
@@ -1300,6 +1311,7 @@ class tx_commerce_dmhooks {
 	 * @author Ingo Schmitt <is@marketing-factory.de>
 	 */
 	function recalculateOrderSum($status, $table, $id, &$fieldArray, &$th_obj)	{
+        $sum = array();
 		$foreign_table = 'tx_commerce_orders';
 		$res_order_id = $GLOBALS['TYPO3_DB']->exec_SELECTquery('order_id', $table, 'uid=' .intval($id));
 		if (!$GLOBALS['TYPO3_DB']->sql_error())	{
