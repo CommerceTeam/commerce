@@ -76,7 +76,7 @@ abstract class tx_commerce_payment_provider_abstract implements tx_commerce_paym
 					$criterionConfiguration['options'] = array();
 				}
 				/** @var $criterion tx_commerce_payment_provider_criterion */
-				$criterion = t3lib_div::makeInstance($criterionConfiguration['class'], $this);
+				$criterion = t3lib_div::makeInstance($criterionConfiguration['class'], $this, $criterionConfiguration['options']);
 				if (!($criterion instanceof tx_commerce_payment_provider_criterion)) {
 					throw new Exception(
 						'Criterion ' . $criterionConfiguration['class'] . ' must implement interface tx_commerce_payment_provider_criterion',
