@@ -69,7 +69,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 	/**
 	 * If set to TRUE some debug message will be printed.
 	 */
-	var $debug = FALSE;
+	var $debug = TRUE;
 
 	/**
 	 * @var boolean TRUE if checkoutmail to user sent correctly
@@ -169,7 +169,9 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 	 */
 	function main($content, $conf) {
 		global $TYPO3_CONF_VARS;
-
+        if ($this->debug) {
+            debug($GLOBALS['TSFE']->fe_user->getKey('ses', tx_commerce_div::generateSessionKey('billing')), 'billingsession', __LINE__, __FILE__);
+        }
 		$this->init($conf);
 
 		if ($this->debug) {
@@ -190,7 +192,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 		}
 
 		if ($this->debug) {
-			debug($GLOBALS['TSFE']->fe_user->tx_commerce_basket, 'commerce_basket', __FILE__, __LINE__);
+		#	debug($GLOBALS['TSFE']->fe_user->tx_commerce_basket, 'commerce_basket', __FILE__, __LINE__);
 		}
 
 		// Store current step
@@ -251,6 +253,9 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 		$this->MYSESSION['delivery'] = tx_commerce_div::removeXSSStripTagsArray($GLOBALS['TSFE']->fe_user->getKey('ses', tx_commerce_div::generateSessionKey('delivery')));
 		$this->MYSESSION['payment'] = tx_commerce_div::removeXSSStripTagsArray($GLOBALS['TSFE']->fe_user->getKey('ses', tx_commerce_div::generateSessionKey('payment')));
 		$this->MYSESSION['mails'] = $GLOBALS['TSFE']->fe_user->getKey('ses', tx_commerce_div::generateSessionKey('mails'));
+
+
+
 
 		if (($this->piVars['check'] == 'billing') && ($this->piVars['step'] == 'payment')) {
 			// Remove reference to delivery address
@@ -417,6 +422,10 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 	 * @return string $content
 	 */
 	function getBillingAddress($withTitle = 1) {
+
+        if ($this->debug) {
+            debug($this->MYSESSION, 'MYSESSION', __LINE__, __FILE__);
+        }
 		if ($this->conf['billing.']['subpartMarker.']['containerWrap']) {
 			$template = $this->cObj->getSubpart($this->templateCode, strtoupper($this->conf['billing.']['subpartMarker.']['containerWrap']));
 		} else {
@@ -1380,6 +1389,20 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 						}
 				}
 			}
+
+			foreach ($hookObjectsArr as $hookObj) {
+				if (method_exists($hookObj, 'validateField')) {
+					$params = array(
+						'fieldName' => $name,
+						'fieldValue' => $value,
+						'addressType' => $addressType,
+                        'config' => $config['sourceFields.'][$name . '.']
+					);
+					if (!$hookObj->validateField($params, $this)) {
+						$returnVal = FALSE;
+					}
+				}
+			}
 		}
 
 		return $returnVal;
@@ -1479,6 +1502,14 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 	 * @return string Form HTML
 	 */
 	function getInputForm($config, $step, $parseList = TRUE) {
+
+		$hookObjectsArr = array();
+		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi3/class.tx_commerce_pi3.php']['processInputForm'])) {
+			foreach($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi3/class.tx_commerce_pi3.php']['processInputForm'] as $classRef) {
+				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+			}
+		}
+
 		// Build a query for selecting an address from database if we have a logged in user
 		if ($parseList) {
 			$fieldList = $this->parseFieldList($config['sourceFields.']);
@@ -1521,12 +1552,6 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 				$fieldCodeTemplate = $fieldTemplate;
 			}
 
-			$hookObjectsArr = array();
-			if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi3/class.tx_commerce_pi3.php']['processInputForm'])) {
-				foreach($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi3/class.tx_commerce_pi3.php']['processInputForm'] as $classRef) {
-					$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
-				}
-			}
 			foreach($hookObjectsArr as $hookObj) {
 				if (method_exists($hookObj, 'processInputForm')) {
 					$hookObj->processInputForm($fieldName, $fieldMarkerArray, $config, $step, $fieldCodeTemplate, $this);

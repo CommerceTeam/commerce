@@ -1,3 +1,8 @@
+19.07.2012 Ingo Schmitt <is@marketing-factory.de>
+* Added Hook (Issue #39057), Thanks to Sebastian Michaelsen
+* Fixed Issue 39053, Thanks to Sebastian Michaelsen
+
+
 05.06.2012 Ingo Schmitt <is@marketing-factory.de>
 * Fixed issue #31785: languageFlags for translating products don't show up anymore (Thanks to Georg Schönweger)
 * Clenup Code in class.tx_commerce_db_list_extra.inc
