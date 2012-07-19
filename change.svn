@@ -1,6 +1,7 @@
 19.07.2012 Ingo Schmitt <is@marketing-factory.de>
 * Added Hook (Issue #39057), Thanks to Sebastian Michaelsen
-* Fixed Issue 39053, Thanks to Sebastian Michaelsen
+* Fixed Issue #39053, thanks to Sebastian Michaelsen
+* Fixed Issue #38681, thanks to Peter Niederlag
 
 
 05.06.2012 Ingo Schmitt <is@marketing-factory.de>

@@ -331,7 +331,7 @@ class tx_commerce_db_category extends tx_commerce_db_alib {
 					'tx_commerce_products',
 					sprintf($wherePart, t3lib_DB::cleanIntList($uids)) . ' AND hidden = 0 AND deleted = 0',
 					'',
-					'title',
+					$localOrderField, // use $localOrderField for sorting
 					'',
 					'uid'
 				);
