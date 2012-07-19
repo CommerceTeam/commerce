@@ -69,7 +69,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 	/**
 	 * If set to TRUE some debug message will be printed.
 	 */
-	var $debug = TRUE;
+	var $debug = FALSE;
 
 	/**
 	 * @var boolean TRUE if checkoutmail to user sent correctly
