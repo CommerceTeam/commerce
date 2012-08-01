@@ -294,6 +294,12 @@ Some hook-methods can return data which is used by the calling function. Others 
 					Type: Single<br/>
 					Result: string - The new ORDER BY clause to read the database<br />
 					This hook returns the ORDER BY field(s) that will be passed on to the t3lib_db later on.</div>
+                <div class="hookname">GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_db_category.php']['categoryQueryPostHook']</div>
+                <div class="description">
+                    Call: categoryQueryPostHook($data, $this);<br/>
+                    Type: Single<br/>
+                    Possibility to modify the sorting after teh database result
+                </div>
 			<div class="functionname">function get_child_products</div>
 				<div class="hookname">GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_db_category.php']['productOrder']</div>
 					<div class="description">Call: productOrder($this-&gt;orderField,$this)<br/>

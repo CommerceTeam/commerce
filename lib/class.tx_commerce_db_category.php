@@ -222,18 +222,10 @@ class tx_commerce_db_category extends tx_commerce_db_alib {
 					// @TODO Access check for data sets
 				$data[] = (int)$return_data['uid_local'];
 			}
-			if(is_array($data)) {
-				if($GLOBALS['TSFE']->sys_language_uid > 0){
-					foreach ($data as $k => $v) {
-						$results = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows('title', 'tx_commerce_categories', 'l18n_parent =' . $v .' AND sys_language_uid = ' .$GLOBALS['TSFE']->sys_language_uid .
-						' AND hidden = 0 AND deleted = 0');
-						$tempCats[$v] = $results[0]['title'];
-					}
-					asort($tempCats);
-					$data = array();
-					foreach($tempCats as $key => $value) {
-						$data[] = $key;
-					}
+            if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_db_category.php']['categoryQueryPostHook']) {
+				$hookObj = t3lib_div::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_db_category.php']['categoryQueryPostHook']);
+				if (is_object($hookObj) && method_exists($hookObj, 'categoryQueryPostHook')) {
+					$data = $hookObj->categoryQueryPostHook($data, $this);
 				}
 			}
 			$GLOBALS['TYPO3_DB']->sql_free_result($result);
@@ -319,24 +311,7 @@ class tx_commerce_db_category extends tx_commerce_db_alib {
 					$data = $hookObj->productQueryPostHook($data, $this);
 				}
 			}
-			if (is_array($data) && !empty($data)) {
-				if ($GLOBALS['TSFE']->sys_language_uid > 0) {
-					$wherePart = 'l18n_parent in (%1$s) AND sys_language_uid = ' . $GLOBALS['TSFE']->sys_language_uid;
-				} else {
-					$wherePart = 'uid in (%1$s)';
-				}
-				$uids = implode(',',array_values($data));
-				$tempProducts = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
-					'uid, title',
-					'tx_commerce_products',
-					sprintf($wherePart, t3lib_DB::cleanIntList($uids)) . ' AND hidden = 0 AND deleted = 0',
-					'',
-					$localOrderField, // use $localOrderField for sorting
-					'',
-					'uid'
-				);
-				$data = array_keys($tempProducts);
-			}
+
 			return $data;
 		}
 		return FALSE;
