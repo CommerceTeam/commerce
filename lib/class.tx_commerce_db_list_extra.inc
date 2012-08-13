@@ -882,52 +882,58 @@ class commerceRecordList extends localRecordList {
 	}
 
     
-    /**
-     * Creates the localization panel
-     *
-     * @param   string      The table
-     * @param   array       The record for which to make the localization panel.
-     * @return  array       Array with key 0/1 with content for column 1 and 2
-     */
-    function makeLocalizationPanel($table,$row) {
-        global $TCA,$LANG;
+	/**
+	 * Creates the localization panel
+	 *
+	 * @param string $table The table
+	 * @param array $row The record for which to make the localization panel.
+	 * @return array Array with key 0/1 with content for column 1 and 2
+	 */
+	public function makeLocalizationPanel($table, $row) {
+		$out = array(
+			0 => '',
+			1 => '',
+		);
 
-        $out = array(
-            0 => '',
-            1 => '',
-        );
-        $translations = $this->translateTools->translationInfo($table, $row['uid'], 0, $row, $this->selFieldList);
-        $this->translations = $translations['translations'];
+		$translations = $this->translateTools->translationInfo($table, $row['uid'], 0, $row, $this->selFieldList);
+		$this->translations = $translations['translations'];
 
-            // Language title and icon:
-        $out[0] = $this->languageFlag($row[$TCA[$table]['ctrl']['languageField']]);
+			// Language title and icon:
+		$out[0] = $this->languageFlag($row[$GLOBALS['TCA'][$table]['ctrl']['languageField']]);
 
-        if (is_array($translations))    {
+		if (is_array($translations)) {
 
-            // Traverse page translations and add icon for each language that does NOT yet exist:
-            $lNew = '';
-            foreach($this->pageOverlays as $lUid_OnPage => $lsysRec)    {
-                if (!isset($translations['translations'][$lUid_OnPage]) && $GLOBALS['BE_USER']->checkLanguageAccess($lUid_OnPage))  {
-                    $href = $GLOBALS['TBE_TEMPLATE']->issueCommand('&cmd['.$table.']['.$row['uid'].'][localize]='.$lUid_OnPage,$rUrl='');
-					$href = $this->backPath . $href; // Korr. Graytree
-                    $language = t3lib_BEfunc::getRecord('sys_language', $lUid_OnPage, 'title');
-                    if ($this->languageIconTitles[$lUid_OnPage]['flagIcon']) {
-                        $lC = t3lib_iconWorks::getSpriteIcon($this->languageIconTitles[$lUid_OnPage]['flagIcon']);;
-                    } else {
-                        $lC = $this->languageIconTitles[$lUid_OnPage]['title'];
-                    }
-                    $lC = '<a href="' . htmlspecialchars($href) . '" title="' . htmlspecialchars($language['title']) . '">' . $lC . '</a> ';
+				// Traverse page translations and add icon for each language that does NOT yet exist:
+			$lNew = '';
+			foreach ($this->pageOverlays as $lUid_OnPage => $lsysRec) {
+				if (!isset($translations['translations'][$lUid_OnPage]) && $GLOBALS['BE_USER']->checkLanguageAccess($lUid_OnPage)) {
+					$url = substr($this->listURL(), strlen($this->backPath));
+					$href = $GLOBALS['SOBE']->doc->issueCommand(
+						'&cmd[' . $table . '][' . $row['uid'] . '][localize]=' . $lUid_OnPage,
+						$url . '&justLocalized=' . rawurlencode($table . ':' . $row['uid'] . ':' . $lUid_OnPage)
+					);
+					$language = t3lib_BEfunc::getRecord('sys_language', $lUid_OnPage, 'title');
+					if ($this->languageIconTitles[$lUid_OnPage]['flagIcon']) {
+						$lC = t3lib_iconWorks::getSpriteIcon($this->languageIconTitles[$lUid_OnPage]['flagIcon']);
+					} else {
+						$lC = $this->languageIconTitles[$lUid_OnPage]['title'];
+					}
+					$lC = '<a href="' . htmlspecialchars($href) . '" title="' . htmlspecialchars($language['title']) . '">' . $lC . '</a> ';
 
-                    $lNew.=$lC;
-                }
-            }
+					$lNew .= $lC;
+				}
+			}
 
-            if ($lNew)  $out[1].= $lNew;
-        } else if ($row['l18n_parent']) {
-            $out[0] = '&nbsp;&nbsp;&nbsp;&nbsp;'.$out[0];
-        }
-        return $out;
-    }
+			if ($lNew) {
+				$out[1] .= $lNew;
+			}
+		} else if ($row['l18n_parent']) {
+			$out[0] = '&nbsp;&nbsp;&nbsp;&nbsp;' . $out[0];
+		}
+
+
+		return $out;
+	}
 
 
 	/**
