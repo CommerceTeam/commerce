@@ -447,7 +447,7 @@ class tx_commerce_category extends tx_commerce_element_alib {
 		if ($this->data_loaded == FALSE) {
 			parent::load_data($translationMode);
 			$this->images_array = t3lib_div::trimExplode(',', $this->images);
-			$this->categories_uid = $this->conn_db->get_child_categories($this->uid);
+			$this->categories_uid = $this->conn_db->get_child_categories($this->uid, $this->lang_uid);
 			$this->parent_category_uid = intval($this->conn_db->get_parent_category($this->uid));
 			$this->products_uid = $this->conn_db->get_child_products($this->uid, $this->lang_uid);
 			$this->teaserImagesArray = t3lib_div::trimExplode(',', $this->teaserimages);
