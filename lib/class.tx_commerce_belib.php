@@ -2266,6 +2266,7 @@ class tx_commerce_belib {
 		$mask = 0;
 		
 		switch ($perm) {
+			case 'read':
 			case 'show':
 			case 'copy':
 				$mask = 1; break;
