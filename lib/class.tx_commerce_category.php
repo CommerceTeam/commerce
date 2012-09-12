@@ -629,7 +629,7 @@ class tx_commerce_category extends tx_commerce_element_alib {
 	/**
 	 * Returns a list of all products under this category
 	 *
-	 * @param integer $depth Depth maximum deepth for going recursive
+	 * @param bool|int $depth Depth maximum depth for going recursive
 	 * @return array Array with list of product UIDs
 	 */
 	public function getAllProducts($depth = FALSE) {
@@ -716,7 +716,7 @@ class tx_commerce_category extends tx_commerce_element_alib {
 				$parentCategory->load_Data();
 				return $parentCategory->getTeaserImage();
 			} else {
-				return false;
+				return FALSE;
 			}
 		}
 	}
