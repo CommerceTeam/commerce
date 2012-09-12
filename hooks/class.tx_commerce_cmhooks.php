@@ -81,6 +81,14 @@ class tx_commerce_cmhooks {
 		if('tx_commerce_categories' == $table && ('delete' == $command)) {
 			$cat = t3lib_div::makeInstance('tx_commerce_category');
 			$cat->init($id);
+			$cat->load_data();
+
+				// check if category is a translation and get l18n parent for access right handling
+			if ($cat->getField('l18n_parent') > 0) {
+				$parentId = $cat->getField('l18n_parenti');
+				$cat = t3lib_div::makeInstance('tx_commerce_category');
+				$cat->init($parentId);
+			}
 			
 			$mounts = t3lib_div::makeInstance('tx_commerce_categorymounts');
 			$mounts->init($GLOBALS['BE_USER']->user['uid']);
