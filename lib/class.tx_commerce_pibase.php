@@ -1382,8 +1382,12 @@ class tx_commerce_pibase extends tslib_pibase {
 		}
 		$markerWrap.='|###';
 		
-		$output = $this->cObj->substituteMarkerArray($output,$markerArray,$markerWrap,1);
-		$output = $this->cObj->stdWrap($output,$TS['stdWrap.']);
+		if (is_array($markerArray) && count($markerArray)) {
+			$output = $this->cObj->substituteMarkerArray($output,$markerArray,$markerWrap,1);
+			$output = $this->cObj->stdWrap($output,$TS['stdWrap.']);
+		} else {
+			$output = '';
+		}
 
 		return $output;
 	}
