@@ -46,7 +46,7 @@ require_once ($BACK_PATH.'class.db_list_extra.inc');
 
 
 class commerceRecordList extends localRecordList {
-	
+
 	var $uid;						// uid - unique recore ids
 	var $params;					// the paramters for the script
 	var $defVals;					// default values necessary for the flexform
@@ -58,14 +58,12 @@ class commerceRecordList extends localRecordList {
 	 * @param	array		Current page record
 	 * @return	void		(Adds content to internal variable, $this->HTMLcode)
 	 */
-	function writeTop($row)	{
+	function writeTop($row) {
 		global $LANG;
 
 			// Makes the code for the pageicon in the top
 		$this->pageRow = $row;
 		$this->counter++;
-		$alttext = t3lib_BEfunc::getRecordIconAltText($row,'pages');
-		$iconImg = t3lib_iconWorks::getIconImage('pages',$row,$this->backPath,'class="absmiddle" title="'.htmlspecialchars($alttext).'"');
 		$titleCol = 'test';	// pseudo title column name
 		$this->fieldArray = Array($titleCol,'up');		// Setting the fields to display in the list (this is of course "pseudo fields" since this is the top!)
         $out = '';
@@ -84,146 +82,142 @@ class commerceRecordList extends localRecordList {
 		$theCtrlPanel =array();
 
 			// "View page" icon is added:
-		$theCtrlPanel[]='<a href="#" onclick="'.htmlspecialchars(t3lib_BEfunc::viewOnClick($this->id,'',t3lib_BEfunc::BEgetRootLine($this->id))).'">'.
-						'<img'.t3lib_iconWorks::skinImg($this->backPath,'gfx/zoom.gif','width="12" height="12"').' title="'.$LANG->sL('LLL:EXT:lang/locallang_core.php:labels.showPage',1).'" alt="" />'.
-						'</a>';
+		$zoomIcon = t3lib_iconWorks::getSpriteIcon('actions-document-view', array('title' => $LANG->sL('LLL:EXT:lang/locallang_core.php:labels.showPage', 1)));
+		$theCtrlPanel[] = '<a href="#" onclick="' . htmlspecialchars(t3lib_BEfunc::viewOnClick($this->id, '', t3lib_BEfunc::BEgetRootLine($this->id))) . '">' .
+			$zoomIcon . '</a>';
 
 			// If edit permissions are set (see class.t3lib_userauthgroup.php)
-		if ($localCalcPerms&2)	{
+		if ($localCalcPerms & 2) {
 
 				// Adding "Edit page" icon:
-			if ($this->id)	{
-				$params='&edit[pages]['.$row['uid'].']=edit';
-				$temp='<a href="#" onclick="'.htmlspecialchars(t3lib_BEfunc::editOnClick($params,$this->backPath,-1)).'">'. // Korr: Graytree
-								'<img'.t3lib_iconWorks::skinImg($this->backPath,'gfx/edit2.gif','width="11" height="12"').' title="'.$LANG->getLL('editPage',1).'" alt="" />'.
-								'</a>';
-				$theCtrlPanel[] = $temp;
+			if ($this->id) {
+				$editIcon = t3lib_iconWorks::getSpriteIcon('actions-document-open', array('title' => $LANG->getLL('editPage', 1)));
+				$theCtrlPanel[] = '<a href="#" onclick="' . htmlspecialchars(t3lib_BEfunc::editOnClick('&edit[pages]['.$row['uid'].']=edit', $this->backPath, -1)) . '">' .
+					$editIcon . '</a>';
 			}
 
 				// Adding "New record" icon:
-			if (!$GLOBALS['SOBE']->modTSconfig['properties']['noCreateRecordsLink']) 	{ 
-				$theCtrlPanel[]='<a href="#" onclick="'.htmlspecialchars('return jumpExt(\'db_new.php?id='.$this->id.$this->defVals.'\');').'">'. // Korr: Graytree
-								'<img'.t3lib_iconWorks::skinImg('','gfx/new_el.gif','width="11" height="12"').' title="'.$LANG->getLL('newRecordGeneral',1).'" alt="" />'.
-								'</a>';
+			if (!$GLOBALS['SOBE']->modTSconfig['properties']['noCreateRecordsLink']) {
+				$newIcon = t3lib_iconWorks::getSpriteIcon('actions-document-new', array('title' => $LANG->getLL('newRecordGeneral', 1)));
+				$theCtrlPanel[] = '<a href="#" onclick="' . htmlspecialchars('return jumpExt(\'db_new.php?id=' . $this->id . $this->defVals . '\');') . '">' .
+					$newIcon . '</a>';
 			}
 
 				// Adding "Hide/Unhide" icon:
-			if ($this->id)	{
-				if ($row['hidden'])	{
-					$params='&data[pages]['.$row['uid'].'][hidden]=0';
-					$theCtrlPanel[]='<a href="#" onclick="'.htmlspecialchars('return jumpToUrl(\''.$GLOBALS['SOBE']->doc->issueCommand($params,-1).'\');').'">'.
-									'<img'.t3lib_iconWorks::skinImg($this->backPath,'gfx/button_unhide.gif','width="11" height="10"').' title="'.$LANG->getLL('unHidePage',1).'" alt="" />'.
-									'</a>';
-				} else {
-					$params='&data[pages]['.$row['uid'].'][hidden]=1';
-					$theCtrlPanel[]='<a href="#" onclick="'.htmlspecialchars('return jumpToUrl(\''.$GLOBALS['SOBE']->doc->issueCommand($params,-1).'\');').'">'.
-									'<img'.t3lib_iconWorks::skinImg($this->backPath,'gfx/button_hide.gif','width="11" height="10"').' title="'.$LANG->getLL('hidePage',1).'" alt="" />'.
-									'</a>';
+			if ($this->id) {
+				$params = '&data[pages]['.$row['uid'].'][hidden]=1';
+				$title = 'hidePage';
+				$iconClass = 'actions-edit-hide';
+
+				if ($row['hidden']) {
+					$params = '&data[pages]['.$row['uid'].'][hidden]=0';
+					$title = 'unHidePage';
+					$iconClass = 'actions-edit-unhide';
 				}
+
+				$hideIcon = t3lib_iconWorks::getSpriteIcon($iconClass, array('title' => $LANG->getLL($title, 1)));
+				$theCtrlPanel[] = '<a href="#" onclick="'.htmlspecialchars('return jumpToUrl(\'' . $GLOBALS['SOBE']->doc->issueCommand($params, -1) . '\');') . '">'.
+					$hideIcon . '</a>';
 			}
-
-
 		}
 
 			// "Paste into page" link:
-		if (($localCalcPerms&8) || ($localCalcPerms&16))	{
+		if (($localCalcPerms & 8) || ($localCalcPerms & 16)) {
 			$elFromTable = $this->clipObj->elFromTable('');
-			if (count($elFromTable))	{
-				$theCtrlPanel[]='<a href="'.htmlspecialchars($this->clipObj->pasteUrl('',$this->id)).'" onclick="'.htmlspecialchars('return '.$this->clipObj->confirmMsg('pages',$this->pageRow,'into',$elFromTable)).'">'.
-								'<img'.t3lib_iconWorks::skinImg('','gfx/clip_pasteafter.gif','width="12" height="12"').' title="'.$LANG->getLL('clip_paste',1).'" alt="" />'.
-								'</a>';
+			if (count($elFromTable)) {
+				$pasteIcon = t3lib_iconWorks::getSpriteIcon('actions-document-paste-into', array('title' => $LANG->getLL('clip_paste', 1)));
+				$theCtrlPanel[] = '<a href="' . htmlspecialchars($this->clipObj->pasteUrl('', $this->id)) . '" onclick="' . htmlspecialchars('return ' . $this->clipObj->confirmMsg('pages',$this->pageRow, 'into', $elFromTable)) . '">' .
+					$pasteIcon . '</a>';
 			}
 		}
 
 			// Finally, compile all elements of the control panel into table cells:
-		if (count($theCtrlPanel))	{
-			$theData['up'][]='
+		if (count($theCtrlPanel)) {
+			$theData['up'][] = '
 
 				<!--
 					Control panel for page
 				-->
-				<table border="0" cellpadding="0" cellspacing="0" class="bgColor4" id="typo3-dblist-ctrltop">
+				<table border="0" cellpadding="0" cellspacing="0" class="" id="typo3-dblist-ctrltop">
 					<tr>
-						<td>'.implode('</td>
-						<td>',$theCtrlPanel).'</td>
+						<td>' . implode('</td>
+						<td>', $theCtrlPanel) . '</td>
 					</tr>
 				</table>';
 		}
 
 
 			// Add "clear-cache" link:
-		$theData['up'][]='<a href="'.htmlspecialchars($this->listURL().'&clear_cache=1').'">'.
-						'<img'.t3lib_iconWorks::skinImg($this->backPath,'gfx/clear_cache.gif','width="14" height="14"').' title="'.$LANG->sL('LLL:EXT:lang/locallang_core.php:labels.clear_cache',1).'" alt="" />'.
-						'</a>';
+		$clearCacheIcon = t3lib_iconWorks::getSpriteIcon('actions-system-cache-clear', array('title' => $LANG->sL('LLL:EXT:lang/locallang_core.php:labels.clear_cache', 1)));
+		$theData['up'][] = '<a href="' . htmlspecialchars($this->listURL() . '&clear_cache=1') . '">' .
+			$clearCacheIcon . '</a>';
 
 			// Add "CSV" link, if a specific table is shown:
-		if ($this->table)	{
-			$theData['up'][]='<a href="'.htmlspecialchars($this->listURL().'&csv=1').'">'.
-							'<img'.t3lib_iconWorks::skinImg($this->backPath,'gfx/csv.gif','width="27" height="14"').' title="'.$LANG->sL('LLL:EXT:lang/locallang_core.php:labels.csv',1).'" alt="" />'.
-							'</a>';
+		if ($this->table) {
+			$csvIcon = t3lib_iconWorks::getSpriteIcon('actions-document-export-csv', array('title' => $LANG->sL('LLL:EXT:lang/locallang_core.php:labels.csv', 1)));
+			$theData['up'][] = '<a href="' . htmlspecialchars($this->listURL() . '&csv=1') . '">' . $csvIcon . '</a>';
 		}
 
 			// Add "Export" link, if a specific table is shown:
-		if ($this->table && t3lib_extMgm::isLoaded('impexp'))	{
-			$theData['up'][]='<a href="'.htmlspecialchars($this->backPath.t3lib_extMgm::extRelPath('impexp').'app/index.php?tx_impexp[action]=export&tx_impexp[list][]='.rawurlencode($this->table.':'.$this->id)).'">'.
-							'<img'.t3lib_iconWorks::skinImg($this->backPath,t3lib_extMgm::extRelPath('impexp').'export.gif',' width="18" height="16"').' title="'.$LANG->sL('LLL:EXT:lang/locallang_core.php:rm.export',1).'" alt="" />'.
-							'</a>';
+		if ($this->table && t3lib_extMgm::isLoaded('impexp')) {
+			$exportIcon = t3lib_iconWorks::getSpriteIcon('actions-document-export-t3d', array('title' => $LANG->sL('LLL:EXT:lang/locallang_core.php:rm.export', 1)));
+			$theData['up'][] = '<a href="' . htmlspecialchars($this->backPath.t3lib_extMgm::extRelPath('impexp') . 'app/index.php?tx_impexp[action]=export&tx_impexp[list][]=' . rawurlencode($this->table . ':' . $this->id)) . '">' .
+				$exportIcon . '</a>';
 		}
 
 			// Add "refresh" link:
-		$theData['up'][]='<a href="'.htmlspecialchars($this->listURL()).'">'.
-						'<img'.t3lib_iconWorks::skinImg($this->backPath,'gfx/refresh_n.gif','width="14" height="14"').' title="'.$LANG->sL('LLL:EXT:lang/locallang_core.php:labels.reload',1).'" alt="" />'.
-						'</a>';
+		$refreshIcon = t3lib_iconWorks::getSpriteIcon('actions-system-refresh', array('title' => $LANG->sL('LLL:EXT:lang/locallang_core.php:labels.reload', 1)));
+		$theData['up'][] = '<a href="'.  htmlspecialchars($this->listURL()) . '">' . $refreshIcon . '</a>';
 
 
 			// Add icon with clickmenu, etc:
-		if ($this->id)	{	// If there IS a real page...:
+		if ($this->id) {	// If there IS a real page...:
 
 				// Setting title of page + the "Go up" link:
-			$theData[$titleCol].='<br /><span title="'.htmlspecialchars($row['_thePathFull']).'">'.htmlspecialchars(t3lib_div::fixed_lgd_cs($row['_thePath'],-$this->fixedL)).'</span>';
+			$theData[$titleCol] .= '<br /><span title="'.htmlspecialchars($row['_thePathFull']).'">'.htmlspecialchars(t3lib_div::fixed_lgd_cs($row['_thePath'],-$this->fixedL)).'</span>';
 			$theData['up'][]='<a href="'.htmlspecialchars($this->listURL($row['pid'])).'">'.
 							'<img'.t3lib_iconWorks::skinImg($this->backPath,'gfx/i/pages_up.gif','width="18" height="16"').' title="'.$LANG->sL('LLL:EXT:lang/locallang_core.php:labels.upOneLevel',1).'" alt="" />'.
 							'</a>';
 
 				// Make Icon:
-			$theIcon = $this->clickMenuEnabled ? $GLOBALS['SOBE']->doc->wrapClickMenuOnIcon($iconImg,'pages',$this->id) : $iconImg;
+			$iconImg = t3lib_iconWorks::getSpriteIcon('tcarecords-pages-contains-commerce', array('title' => t3lib_BEfunc::getRecordIconAltText($row, 'pages')));
+			$pageIcon = $this->clickMenuEnabled ? $GLOBALS['SOBE']->doc->wrapClickMenuOnIcon($iconImg, 'pages', $this->id) : $iconImg;
 		} else {	// On root-level of page tree:
 
 				// Setting title of root (sitename):
-			$theData[$titleCol].='<br />'.htmlspecialchars(t3lib_div::fixed_lgd_cs($GLOBALS['TYPO3_CONF_VARS']['SYS']['sitename'],-$this->fixedL));
+			$theData[$titleCol] .= '<br />' . htmlspecialchars(t3lib_div::fixed_lgd_cs($GLOBALS['TYPO3_CONF_VARS']['SYS']['sitename'], -$this->fixedL));
 
 				// Make Icon:
-			$theIcon = '<img'.t3lib_iconWorks::skinImg($this->backPath,'gfx/i/_icon_website.gif','width="18" height="16"').' alt="" />';
+			$pageIcon = '<img'.t3lib_iconWorks::skinImg($this->backPath,'gfx/i/_icon_website.gif','width="18" height="16"').' alt="" />';
 		}
 
 			// If there is a returnUrl given, add a back-link:
-		if ($this->returnUrl)	{
-			$theData['up'][]='<a href="'.htmlspecialchars(t3lib_div::linkThisUrl($this->returnUrl,array('id'=>$this->id))).'" class="typo3-goBack">'.
-							'<img'.t3lib_iconWorks::skinImg($GLOBALS["BACK_PATH"],'gfx/goback.gif','width="14" height="14"').' title="'.$LANG->sL('LLL:EXT:lang/locallang_core.php:labels.goBack',1).'" alt="" />'.
-							'</a>';
+		if ($this->returnUrl) {
+			$pageUpIcon = t3lib_iconWorks::getSpriteIcon('actions-view-go-up', array('title' => $LANG->sL('LLL:EXT:lang/locallang_core.php:labels.goBack', 1)));
+			$theData['up'][] = '<a href="' . htmlspecialchars(t3lib_div::linkThisUrl($this->returnUrl, array('id' => $this->id))) . '" class="typo3-goBack">'.
+				$pageUpIcon . '</a>';
 		}
 
 			// Finally, the "up" pseudo field is compiled into a table - has been accumulated in an array:
 		$theData['up']='
 			<table border="0" cellpadding="0" cellspacing="0">
 				<tr>
-					<td>'.implode('</td>
-					<td>',$theData['up']).'</td>
+					<td>' . implode('</td>
+					<td>', $theData['up']) . '</td>
 				</tr>
 			</table>';
 
 			// ... and the element row is created:
-		$out.=$this->addelement(1,$theIcon,$theData,'',$this->leftMargin);
+		$out .= $this->addelement(1, $pageIcon, $theData, '', $this->leftMargin);
 
 			// ... and wrapped into a table and added to the internal ->HTMLcode variable:
 		$this->HTMLcode.='
-
 
 		<!--
 			Page header for db_list:
 		-->
 			<table border="0" cellpadding="0" cellspacing="0" id="typo3-dblist-top">
-				'.$out.'
+				' . $out . '
 			</table>';
 	}
 
@@ -237,7 +231,7 @@ class commerceRecordList extends localRecordList {
 	 */
 	function getTable($table,$id,$rowlist)	{ // Graytree
 		global $TCA;
-	
+
 		// Loading all TCA details for this table:
 		t3lib_div::loadTCA($table);
 
@@ -275,7 +269,7 @@ class commerceRecordList extends localRecordList {
 
 			// Creating the list of fields to include in the SQL query:
 		$selectFields = $this->fieldArray;
-		
+
 		$selectFields[] = 'uid';
 		$selectFields[] = 'pid';
 		if ($thumbsCol)	$selectFields[] = $thumbsCol;	// adding column for thumbnails
@@ -308,11 +302,11 @@ class commerceRecordList extends localRecordList {
 		$selectFields = array_unique($selectFields);		// Unique list!
 		$selectFields = array_intersect($selectFields,$this->makeFieldList($table,1));		// Making sure that the fields in the field-list ARE in the field-list from TCA!
 		$selFieldList = implode(',',$selectFields);		// implode it into a list of fields for the SQL-statement.
-		
+
 		// Graytree Start
 		$addWhere .= ' AND uid IN ('.$this->uid.')';
 		// Graytree Ende
-		
+
 		// Create the SQL query for selecting the elements in the listing:
 		$queryParts = $this->makeQueryArray($table, $id,$addWhere,$selFieldList);	// (API function from class.db_list.inc)
 		$this->setTotalItems($queryParts);		// Finding the total amount of records on the page (API function from class.db_list.inc)
@@ -353,7 +347,7 @@ class commerceRecordList extends localRecordList {
 
 				// CSH:
 			$theData[$titleCol].= t3lib_BEfunc::cshItem($table,'',$this->backPath,'',FALSE,'margin-bottom:0px; white-space: normal;');
-			
+
 			if ($LOISmode)	{
 				$out.='
 					<tr>
@@ -374,7 +368,7 @@ class commerceRecordList extends localRecordList {
 				$theUpIcon = ($table=='pages'&&$this->id&&isset($this->pageRow['pid'])) ? '<a href="'.htmlspecialchars($this->listURL($this->pageRow['pid'])).'"><img'.t3lib_iconWorks::skinImg('','gfx/i/pages_up.gif','width="18" height="16"').' title="'.$GLOBALS['LANG']->sL('LLL:EXT:lang/locallang_core.php:labels.upOneLevel',1).'" alt="" /></a>':'';
 				$out.=$this->addelement(1,$theUpIcon,$theData,' class="c-headLineTable"','');
 			}
-			
+
 			If (!$LOISmode)	{
 					// Fixing a order table for sortby tables
 				$this->currentTable = array();
@@ -409,32 +403,34 @@ class commerceRecordList extends localRecordList {
 
 				$iOut = '';
 				$cc = 0;
-				foreach($accRows as $row)	{
-						// Forward/Backwards navigation links:
-					list($flag,$code) = $this->fwd_rwd_nav($table);
-					$iOut.=$code;
 
-						// If render item, increment counter and call function
-					if ($flag)	{
+				foreach($accRows as $row)	{
+					// Render item row if counter < limit
+					if ($cc < $this->iLimit) {
 						$cc++;
-						$iOut.=$this->renderListRow($table,$row,$cc,$titleCol,$thumbsCol);
-						
+						$this->translations = FALSE;
+						$iOut.= $this->renderListRow($table,$row,$cc,$titleCol,$thumbsCol);
+
 							// If localization view is enabled it means that the selected records are either default or All language and here we will not select translations which point to the main record:
 						if ($this->localizationView && $l10nEnabled)	{
-
-								// Look for translations of this record:
-							$translations = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
-								$selFieldList,
-								$table,
-								'pid='.$row['pid'].
-									' AND '.$TCA[$table]['ctrl']['languageField'].'>0'.
-									' AND '.$TCA[$table]['ctrl']['transOrigPointerField'].'='.intval($row['uid']).
-									t3lib_BEfunc::deleteClause($table)
-							);
-
 								// For each available translation, render the record:
-							foreach($translations as $lRow)	{
-								$iOut.=$this->renderListRow($table,$lRow,$cc,$titleCol,$thumbsCol,18);
+							if (is_array($this->translations)) {
+								foreach ($this->translations as $lRow) {
+										// $lRow isn't always what we want - if record was moved we've to work with the placeholder records otherwise the list is messed up a bit
+									if ($row['_MOVE_PLH_uid'] && $row['_MOVE_PLH_pid']) {
+										$tmpRow = t3lib_BEfunc::getRecordRaw($table, 't3ver_move_id="'.intval($lRow['uid']) . '" AND pid="' . $row['_MOVE_PLH_pid'] . '" AND t3ver_wsid=' . $row['t3ver_wsid'] . t3lib_beFunc::deleteClause($table), $selFieldList);
+										$lRow = is_array($tmpRow)?$tmpRow:$lRow;
+									} else {
+										$tmpRow = t3lib_BEfunc::getRecordRaw($table, 'uid=' . $lRow['uid'] . t3lib_beFunc::deleteClause($table), $selFieldList);
+										$lRow = is_array($tmpRow)?$tmpRow:$lRow;
+									}
+										// In offline workspace, look for alternative record:
+									t3lib_BEfunc::workspaceOL($table, $lRow, $GLOBALS['BE_USER']->workspace, true);
+									if (is_array($lRow) && $GLOBALS['BE_USER']->checkLanguageAccess($lRow[$TCA[$table]['ctrl']['languageField']]))	{
+										$currentIdList[] = $lRow['uid'];
+										$iOut.=$this->renderListRow($table,$lRow,$cc,$titleCol,$thumbsCol,18);
+									}
+								}
 							}
 						}
 					}
@@ -468,7 +464,7 @@ class commerceRecordList extends localRecordList {
 
 			// Return content:
 		return $out;
-	}	
+	}
 
 
 	/**
@@ -630,7 +626,9 @@ class commerceRecordList extends localRecordList {
 		global $TCA, $LANG, $SOBE;
 
 			// Return blank, if disabled:
-		if ($this->dontShowClipControlPanels)	return '';
+		if ($this->dontShowClipControlPanels || !$GLOBALS['BE_USER']->checkLanguageAccess($row['sys_language_uid'])) {
+			return '';
+		}
 
 			// Initialize:
 		t3lib_div::loadTCA($table);
@@ -859,7 +857,7 @@ class commerceRecordList extends localRecordList {
 				// Adding the checkbox to the panel:
 			$cells[]='<input type="hidden" name="CBH['.$n.']" value="0" /><input type="checkbox" name="CBC['.$n.']" value="1" class="smallCheckboxes"'.$checked.' />';
 		}
-		
+
 			// Now, looking for selected elements from the current table:
 		$elFromTable = $this->clipObj->elFromTable($table);
 		if (count($elFromTable) && $TCA[$table]['ctrl']['sortby'])	{	// IF elements are found and they can be individually ordered, then add a "paste after" icon:
@@ -881,7 +879,6 @@ class commerceRecordList extends localRecordList {
 											<div class="typo3-clipCtrl">'.implode('',$cells).'</div>';
 	}
 
-    
 	/**
 	 * Creates the localization panel
 	 *
@@ -889,7 +886,9 @@ class commerceRecordList extends localRecordList {
 	 * @param array $row The record for which to make the localization panel.
 	 * @return array Array with key 0/1 with content for column 1 and 2
 	 */
-	public function makeLocalizationPanel($table, $row) {
+	function makeLocalizationPanel($table,$row)	{
+		global $TCA,$LANG;
+
 		$out = array(
 			0 => '',
 			1 => '',
@@ -899,18 +898,18 @@ class commerceRecordList extends localRecordList {
 		$this->translations = $translations['translations'];
 
 			// Language title and icon:
-		$out[0] = $this->languageFlag($row[$GLOBALS['TCA'][$table]['ctrl']['languageField']]);
+		$out[0] = $this->languageFlag($row[$TCA[$table]['ctrl']['languageField']]);
 
-		if (is_array($translations)) {
+		if (is_array($translations))	{
 
 				// Traverse page translations and add icon for each language that does NOT yet exist:
 			$lNew = '';
 			foreach ($this->pageOverlays as $lUid_OnPage => $lsysRec) {
 				if (!isset($translations['translations'][$lUid_OnPage]) && $GLOBALS['BE_USER']->checkLanguageAccess($lUid_OnPage)) {
-					$url = substr($this->listURL(), strlen($this->backPath));
+					$url = $this->listURL();
 					$href = $GLOBALS['SOBE']->doc->issueCommand(
 						'&cmd[' . $table . '][' . $row['uid'] . '][localize]=' . $lUid_OnPage,
-						$url . '&justLocalized=' . rawurlencode($table . ':' . $row['uid'] . ':' . $lUid_OnPage)
+						$url //. '&justLocalized=' . rawurlencode($table . ':' . $row['uid'] . ':' . $lUid_OnPage)
 					);
 					$language = t3lib_BEfunc::getRecord('sys_language', $lUid_OnPage, 'title');
 					if ($this->languageIconTitles[$lUid_OnPage]['flagIcon']) {
@@ -927,44 +926,26 @@ class commerceRecordList extends localRecordList {
 			if ($lNew) {
 				$out[1] .= $lNew;
 			}
-		} else if ($row['l18n_parent']) {
+		} elseif ($row['l18n_parent']) {
 			$out[0] = '&nbsp;&nbsp;&nbsp;&nbsp;' . $out[0];
 		}
 
-
 		return $out;
 	}
-
 
 	/**
 	 * Creates the URL to this script, including all relevant GPvars
 	 * Fixed GPvars are id, table, imagemode, returlUrl, search_field, search_levels and showLimit
 	 * The GPvars "sortField" and "sortRev" are also included UNLESS they are found in the $exclList variable.
 	 *
-	 * @param	string		Alternative id value. Enter blank string for the current id ($this->id)
-	 * @param	string		Tablename to display. Enter "-1" for the current table.
-	 * @param	string		Commalist of fields NOT to include ("sortField" or "sortRev")
+	 * @param	string		$altId Alternative id value. Enter blank string for the current id ($this->id)
+	 * @param	string		$table Tablename to display. Enter "-1" for the current table.
+	 * @param	string		$exclList Commalist of fields NOT to include ("sortField" or "sortRev")
 	 * @return	string		URL
 	 */
-	function listURL($altId='',$table=-1,$exclList='')	{
-		/*
-	
-		$rc = $this->script.
-			'?id='.(strcmp($altId,'')?$altId:$this->id).
-			'&table='.rawurlencode($table==-1?$this->table:$table).
-		// Graytree Start
-			$this->params.
-		// Graytree Ende
-			($this->thumbs?'&imagemode='.$this->thumbs:'').
-			($this->returnUrl?'&returnUrl='.rawurlencode($this->returnUrl):'').
-			($this->searchString?'&search_field='.rawurlencode($this->searchString):'').
-			($this->searchLevels?'&search_levels='.rawurlencode($this->searchLevels):'').
-			($this->showLimit?'&showLimit='.rawurlencode($this->showLimit):'').
-			((!$exclList || !t3lib_div::inList($exclList,'sortField')) && $this->sortField?'&sortField='.rawurlencode($this->sortField):'').
-			((!$exclList || !t3lib_div::inList($exclList,'sortRev')) && $this->sortRev?'&sortRev='.rawurlencode($this->sortRev):'')
-			;
-			*/
-		return t3lib_div::getIndpEnv('SCRIPT_NAME').'?'.t3lib_div::getIndpEnv('QUERY_STRING');
+	public function listURL($altId = '', $table = -1, $exclList = '') {
+		$listUrl = t3lib_div::getIndpEnv('SCRIPT_NAME') . '?' . t3lib_div::getIndpEnv('QUERY_STRING');
+		return $listUrl;
 	}
 
 	/**
@@ -1028,10 +1009,10 @@ class commerceRecordList extends localRecordList {
 
 		return $code;
 	}
-
-
 }
+
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_db_list_extra.inc']) {
  	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_db_list_extra.inc']);
 }
+
 ?>
