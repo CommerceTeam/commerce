@@ -56,7 +56,7 @@ class tx_commerce_db_category extends tx_commerce_db_alib {
 	/**
 	 * @var string Product sorting field
 	 */
-	protected $ProductOrderField = 'tx_commerce_products.sorting';
+    protected $ProductOrderField = 'tx_commerce_products.sorting';
 
     /**
      * @var integer Uid of this Category
@@ -66,6 +66,20 @@ class tx_commerce_db_category extends tx_commerce_db_alib {
      * @var integer Language UID
      */
     protected   $lang_uid;
+
+
+    /**
+      * @return int
+     */
+    public function getUid() {
+		return $this->uid;
+	}
+    /**
+     * @return int
+     */
+    public function getLangUid() {
+		return $this->lang_uid;
+	}
     /**
 	 * Gets the "master" category from this category
 	 *
