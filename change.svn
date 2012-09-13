@@ -9,6 +9,9 @@
 * Fixed Issue #37954, Thanks to Martin Bless
 * Set to Version 0.13.6
 
+07.09.2012 Benny Schimmer <benny.schimmer@typovision.de>
+* Fixed Issue #40737: Dynaflex dependency
+
 13.08.2012 Ingo Schmitt <is@marketing-factory.de>
 * Fixed Issue #39575, thanks to Sebastian Fischer
 * Set to Version 0.13.5
