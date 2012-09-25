@@ -2,7 +2,7 @@
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2005 - 2011 Ingo Schmitt <is@marketing-factory.de>
+ *  (c) 2005 - 2012 Ingo Schmitt <is@marketing-factory.de>
  *  All rights reserved
  *
  *  This script is part of the Typo3 project. The Typo3 project is
@@ -114,7 +114,7 @@ class tx_commerce_element_alib {
 	/**
 	 * @var fieldlist for inhertitation
 	 */
-	var $fieldlist=array('title','lang_uid','l18n_parent');
+	var $fieldlist=array('title' , 'lang_uid' , 'l18n_parent' , '_LOCALIZED_UID');
 	
 	/**
 	 * Changes hier must be made, if a new correewlation_type is invented
@@ -165,6 +165,12 @@ class tx_commerce_element_alib {
 	var $recordTranslated=false;
 
 
+    /**
+     *
+     * @var integer lokalized UID   the uid of the localized record
+     */
+    var $_LOCALIZED_UID;
+
 	/**
 	 * 
 	 * @return return language id
@@ -182,8 +188,15 @@ class tx_commerce_element_alib {
 	function getL18nParent(){
 		return $this->l18n_parent;
 	}
-	
-	
+
+    /**
+     * Returns the UID of the localized Record
+     * @return _LOCALIZED_UID
+     */
+
+    public function get_LOCALIZED_UID() {
+        return $this->_LOCALIZED_UID;
+    }
 	
 
 	/**
@@ -221,7 +234,9 @@ class tx_commerce_element_alib {
 		foreach ($this->fieldlist as $field){
 			$this->$field=$data[$field];	
 		}
-		
+        if ($data['_LOCALIZED_UID']) {
+            $this->_LOCALIZED_UID = $data['_LOCALIZED_UID'];
+        }
 		return $data;
 	}
 	
