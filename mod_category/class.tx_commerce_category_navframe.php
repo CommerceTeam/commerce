@@ -31,21 +31,21 @@ unset($MCONF);
 /**
  * @TODO: Find a better solution for the @ at this place, since some globals could not be defined
 */
-if (!(@is_numeric(TYPO3_REQUESTTYPE) || @is_numeric(TYPO3_REQUESTTYPE_AJAX))) {
+if (!(defined('TYPO3_REQUESTTYPE') || defined('TYPO3_REQUESTTYPE_AJAX'))) {
 	require_once('conf.php');
 	require_once($BACK_PATH.'init.php');
 	require_once(PATH_typo3.'template.php');
-	
+
 	$LANG->includeLLFile('EXT:commerce/mod_category/locallang.xml');
-	
+
 } else {
 	//In case of an AJAX Request the script including this script is ajax.php, from which the BACK PATH is ''
 	require_once('init.php');
 	require('template.php');
-}	
+}
 
 // Require ext update script.
-require_once(t3lib_extmgm::extPath('commerce').'class.ext_update.php'); 
+require_once(t3lib_extmgm::extPath('commerce').'class.ext_update.php');
 
 class tx_commerce_category_navframe {
 
@@ -56,7 +56,7 @@ class tx_commerce_category_navframe {
 
 		// Internal, static: _GP
 	var $currentSubScript;
-	
+
 	/**
 	 * Initializes the Tree
 	 */
@@ -64,18 +64,18 @@ class tx_commerce_category_navframe {
 		//Get the Category Tree
 		$this->categoryTree = t3lib_div::makeInstance('tx_commerce_categorytree');
 		$this->categoryTree->setBare(false);
-		
+
 		// Get SimpleMode.
 		$sm = (int)$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['extConf']['simpleMode'];
-		
+
 		// Assign config.
 		$this->categoryTree->setSimpleMode($sm);
-		
+
 		$this->categoryTree->init();
-		
-		
+
+
 	}
-	
+
 	/**
 	 * Initializes the Page
 	 */
@@ -88,7 +88,7 @@ class tx_commerce_category_navframe {
 		$this->doc->backPath = $this->BACK_PATH;
 		$this->doc->setModuleTemplate('../typo3conf/ext/commerce/mod_category/templates/alt_db_navframe.html'); ###MAKE THIS PATH BE CALCULATED###
 		$this->doc->docType  = 'xhtml_trans';
-		
+
 		$this->doc->JScode='';
 
 
@@ -124,7 +124,7 @@ class tx_commerce_category_navframe {
 				window.setTimeout("_refresh_nav();",0);
 			}
 		');
-		
+
 		$this->doc->loadJavascriptLib('contrib/prototype/prototype.js');
 		$this->doc->loadJavascriptLib('../typo3conf/ext/commerce/mod_access/tree.js'); ###MAKE PATH BE CALCULATED, NOT FIXED### ###WHAT TO DO WITH THOSE FILES? BETTER MAKE RES FOLDER###
 		$this->doc->JScode .= $this->doc->wrapScriptTags('Tree.ajaxID = "tx_commerce_category_navframe::ajaxExpandCollapse";');
@@ -158,10 +158,10 @@ class tx_commerce_category_navframe {
 
 		$this->doc->bodyTagId = 'typo3-pagetree';
 	}
-	
+
 	function main() {
 		global $LANG,$CLIENT;
-		
+
 		// Check if commerce needs to be updated.
 		if($this->isUpdateNecessary()) {
 			$tree = $LANG->getLL('ext.update');
@@ -169,11 +169,11 @@ class tx_commerce_category_navframe {
 			//Get the Browseable Tree
 			$tree = $this->categoryTree->getBrowseableTree();
 		}
-		
-		
+
+
 		// Outputting page tree:
 		$this->content .= '<div id="PageTreeDiv">'.$tree.'</div>';
-		
+
 		$markers = array(
 			'IMG_RESET'     => '',//'<img'.t3lib_iconWorks::skinImg($GLOBALS['BACK_PATH'], 'gfx/close_gray.gif', ' width="16" height="16"').' id="treeFilterReset" alt="Reset Filter" />',
 			'WORKSPACEINFO' => '',//$this->getWorkspaceInfo(),
@@ -184,7 +184,7 @@ class tx_commerce_category_navframe {
 		if (!$this->hasFilterBox) {
 			$subparts['###SECOND_ROW###'] = '';
 		}
-		
+
 		// Build the <body> for the module
 		$this->content = $this->doc->startPage('Commerce Category List');
 		$this->content.= $this->doc->moduleBody('', '', $markers, $subparts);
@@ -192,24 +192,24 @@ class tx_commerce_category_navframe {
 
 		//$this->content = $this->doc->insertStylesAndJS($this->content);
 	}
-	
+
 	function printContent() {
 		echo $this->content;
 	}
-	
+
 	/**
 	 * Checks if an update of the commerce extension is necessary
-	 * 
+	 *
 	 * @author	Erik Frister
-	 * 
+	 *
 	 * @return boolean
 	 */
 	protected function isUpdateNecessary() {
 		$updater = t3lib_div::makeInstance('ext_update');
-		
+
 		return $updater->access();
 	}
-	
+
 	/**
 	 * Makes the AJAX call to expand or collapse the categorytree.
 	 * Called by typo3/ajax.php
@@ -220,19 +220,19 @@ class tx_commerce_category_navframe {
 	 */
 	function ajaxExpandCollapse($params, &$ajaxObj) {
 		global $LANG;
-		
+
 		//Extract the ID and Bank
-		$id   = 0; 
+		$id   = 0;
 		$bank = 0;
-		
+
 		$PM = t3lib_div::_GP('PM');
 		// IE takes anchor as parameter
 		if(($PMpos = strpos($PM, '#')) !== false) { $PM = substr($PM, 0, $PMpos); }
 		$PM = explode('_', $PM);
-		
+
 		//Now we should have a PM Array looking like:
 		//0: treeName, 1: leafIndex, 2: Mount, 3: set/clear [4:,5:,.. further leafIndices], 5[+++]: Item UID
-		
+
 		if(is_array($PM) && count($PM) >= 4) {
 			$id 	= $PM[count($PM)-1]; //ID is always the last Item
 			$bank 	= $PM[2];
@@ -241,7 +241,7 @@ class tx_commerce_category_navframe {
 		//Load the tree
 		$this->init();
 		$tree = $this->categoryTree->getBrowseableAjaxTree($PM);
-		
+
 		//if (!$this->categoryTree->ajaxStatus) { ###CHECK THE AJAX ERROR###
 		//	$ajaxObj->setError($tree);
 		//} else	{
