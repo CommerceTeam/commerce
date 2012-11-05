@@ -41,9 +41,6 @@
  * @subpackage commerce
  */
 
-ini_set("display_errors", ON);
-error_reporting(E_WARNING);
-
 if (!defined('TYPO3_cliMode')) {
 	die('You cannot run this script directly!');
 }
