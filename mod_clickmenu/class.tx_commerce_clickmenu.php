@@ -6,30 +6,47 @@
  * @author Marketing Factory <typo3@marketing-factory.de>
  */
 class tx_commerce_clickmenu {
-
+	/**
+	 * @var
+	 */
 	protected $rec;
+
+	/**
+	 * @var clickMenu
+	 */
 	protected $pObj;
 	
 	/**
+	 * @var array
+	 */
+	protected $commerceTables = array(
+		'tx_commerce_articles',
+		'tx_commerce_categories',
+		'tx_commerce_products'
+	);
+
+	/**
 	 * Changes the clickmenu Items for the Commerce Records
 	 * 
-	 * @return {array} Menu Items Array 
-	 * @param $pObj {object} clickenu object
-	 * @param $menuItems {array} current menu Items
-	 * @param $table {string} db table 
-	 * @param $uid {int} uid of the record
+	 * @param clickMenu $pObj clickenu object
+	 * @param array $menuItems current menu Items
+	 * @param string $table db table
+	 * @param integer $uid uid of the record
+	 * @return array Menu Items Array
 	 */
-	function main(&$pObj ,$menuItems, $table, $uid) {
-		global $TCA, $BE_USER;
-		
+	public function main(&$pObj, $menuItems, $table, $uid) {
 		//Only modify the menu Items if we have the correct table
-		if($table != 'tx_commerce_categories' && $table != 'tx_commerce_products' && $table != 'tx_commerce_articles') {
+		if (!in_array($table, $this->commerceTables)) {
 			return $menuItems;	
 		}	
 		
+		global $TCA, $BE_USER;
+
 		//Check for List allow
 		if(!$GLOBALS['BE_USER']->check('tables_select', $table)) {
-			if (TYPO3_DLOG) t3lib_div::devLog('Clickmenu not allowed for user.', COMMERCE_EXTkey, 1);		
+			if (TYPO3_DLOG) {
+				t3lib_div::devLog('Clickmenu not allowed for user.', COMMERCE_EXTkey, 1);
+			}
 			return '';
 		}
 		
@@ -61,10 +78,10 @@ class tx_commerce_clickmenu {
 		switch($table) {
 			case 'tx_commerce_products':
 				//get all parent categories
-				$item = t3lib_div::makeInstance('tx_commerce_product');
-				$item->init($uid);
+				$product = t3lib_div::makeInstance('tx_commerce_product');
+				$product->init($uid);
 				
-				$parentCategories = $item->getParentCategories();
+				$parentCategories = $product->getParentCategories();
 				
 				//store the rights in the flags
 				$delete  = tx_commerce_belib::checkPermissionsOnCategoryContent($parentCategories, array('editcontent'));	
@@ -85,16 +102,16 @@ class tx_commerce_clickmenu {
 				
 			case 'tx_commerce_articles':
 				//get all parent categories for the parent product
-				$item = t3lib_div::makeInstance('tx_commerce_article');
-				$item->init($uid);
+				$article = t3lib_div::makeInstance('tx_commerce_article');
+				$article->init($uid);
 			
-				$productUid = $item->getParentProductUid();
+				$productUid = $article->getParentProductUid();
 			
 				//get the parent categories of the product
-				$item = t3lib_div::makeInstance('tx_commerce_product');
-				$item->init($productUid);
+				$product = t3lib_div::makeInstance('tx_commerce_product');
+				$product->init($productUid);
 				
-				$parentCategories = $item->getParentCategories();
+				$parentCategories = $product->getParentCategories();
 				
 				//store the rights in the flags
 				$delete = tx_commerce_belib::checkPermissionsOnCategoryContent($parentCategories, array('editcontent'));	
@@ -103,10 +120,16 @@ class tx_commerce_clickmenu {
 				break;
 				
 			case 'tx_commerce_categories':
+				// find uid of category or translation parent category
+				$categoryToCheckRightsOn = $uid;
+				if ($this->rec['sys_language_uid']) {
+					$categoryToCheckRightsOn = $this->rec['l18n_parent'];
+				}
+
 				//get the rights for this category
-				$delete = tx_commerce_belib::checkPermissionsOnCategoryContent(array($uid), array('delete'));
-				$edit   = tx_commerce_belib::checkPermissionsOnCategoryContent(array($uid), array('edit'));
-				$new    = tx_commerce_belib::checkPermissionsOnCategoryContent(array($uid), array('new'));
+				$delete = tx_commerce_belib::checkPermissionsOnCategoryContent(array($categoryToCheckRightsOn), array('delete'));
+				$edit = tx_commerce_belib::checkPermissionsOnCategoryContent(array($categoryToCheckRightsOn), array('edit'));
+				$new = tx_commerce_belib::checkPermissionsOnCategoryContent(array($categoryToCheckRightsOn), array('new'));
 				
 				//check if we may paste into this category
 				if(count($pObj->clipObj->elFromTable('tx_commerce_categories'))) {
@@ -133,6 +156,13 @@ class tx_commerce_clickmenu {
 			
 				//check if current item is root
 				$root = (int)(0 == $uid);
+
+				// pasting or new into translations is not allowed
+				if ($this->rec['sys_language_uid']) {
+					$new = FALSE;
+					$paste = FALSE;
+				}
+
 				break;
 		}
 		
