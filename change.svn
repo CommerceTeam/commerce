@@ -1,3 +1,5 @@
+* Created Last Version 0.12.8 for TYPO3 4.4.x
+
 15.08.2011 Christian Kuhn <lolli@schwarzbu.ch>a
 * Fixed bug #28412: Wrong hook name in tx_commerce_cce_db (Thanks to Tymoteusz Motylewski)
 

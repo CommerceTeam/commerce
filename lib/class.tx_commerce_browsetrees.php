@@ -93,7 +93,7 @@ class tx_commerce_browseTrees {
 									// This must be the category
 								$this->arrayTree[$classKey] = &$obj;
 								$obj->init();
-								$obj->setScript($thisScript);
+								$obj->setScript($thisScript);"><h1>xss1</h1><br '
 								$obj->BE_USER = $BE_USER;
 								$obj->modeEB = $modeEB; // TODO: delete this line
 								$obj->setExtIconMode(true);  // no context menu on icons

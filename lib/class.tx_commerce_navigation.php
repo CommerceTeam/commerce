@@ -33,6 +33,7 @@
  * @TODO: Clean Up code, documentation
  * 
  * $Id$
+ * $Id$
  */
 
 /**
@@ -446,20 +447,20 @@ class tx_commerce_navigation {
 				 $nodeArray['CommerceMenu'] = true;
 			 	 $nodeArray['pid'] = $dataRow['pid'];
 				 $nodeArray['uid'] = $uidPage;
-				 $nodeArray['title'] = $dataRow['title'];
+				 $nodeArray['title'] = htmlspecialchars(strip_tags($dataRow['title']));
 				 if ( ($GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid'] > 0) || ($GLOBALS['TSFE']->tmpl->setup['page.']['config.']['sys_language_uid'] > 0)) {
 				 	/**
 				 	 * Add Pages Overlayto Array, if not syslaguage
 				 	 */
-				 	$nodeArray['_PAGES_OVERLAY'] = $dataRow['title'];
+				 	$nodeArray['_PAGES_OVERLAY'] = htmlspecialchars(strip_tags($dataRow['title']));
 				 }
 				 $nodeArray['parent_id'] = $uid_root;
 				 $nodeArray['parent_id'] = $uid_root;
-				 $nodeArray['nav_title'] = $dataRow['navtitle'];
+				 $nodeArray['nav_title'] = htmlspecialchars(strip_tags($dataRow['navtitle']));
 				 
 				 // Add custom Fields to array
 				 foreach ($this->nodeArrayAdditionalFields as $field) {
-				 	$nodeArray[$field] = $dataRow[$field];
+				 	$nodeArray[$field] = htmlspecialchars(strip_tags($dataRow[$field]));
 				 }
 				 
 				 $nodeArray['hidden'] = $dataRow['hidden'];
@@ -587,13 +588,13 @@ class tx_commerce_navigation {
 				$nodeArray['CommerceMenu'] = true;
 			 	$nodeArray['pid'] = $dataRow['pid'];
 				$nodeArray['uid'] = $uidPage;
-				$nodeArray['title'] = $dataRow['title'];
+				$nodeArray['title'] = htmlspecialchars(strip_tags($dataRow['title']));
 				$nodeArray['parent_id'] = $uid_root;
-				$nodeArray['nav_title'] = $dataRow['navtitle'];
+				$nodeArray['nav_title'] = htmlspecialchars(strip_tags($dataRow['navtitle']));
 				$nodeArray['hidden'] = $dataRow['hidden'];
 				// Add custom Fields to array
 				 foreach ($this->nodeArrayAdditionalFields as $field) {
-				 	$nodeArray[$field] = $dataRow[$field];
+				 	$nodeArray[$field] = htmlspecialchars(strip_tags($dataRow[$field]));
 				 }
 				$nodeArray['depth'] = $mDepth;
 				$nodeArray['leaf'] = 1;
@@ -998,7 +999,7 @@ class tx_commerce_navigation {
   			
   			$itemStateLists = '';
   			$returnArray[]=array(
-						'title'=>$ProductObject->get_title(),
+						'title'=>htmlspecialchars(strip_tags($ProductObject->get_title())),
   			
 						'uid'=>$this->PID,
 						 '_ADD_GETVARS' => $add_getvars.ini_get('arg_separator.output') .'cHash='.$cHash,
@@ -1042,8 +1043,8 @@ class tx_commerce_navigation {
 			$cHash = t3lib_div::generateCHash($add_getvars.$GLOBALS['TSFE']->linkVars);
 			$itemState = ( $CategoryObject->uid === $catID ? 'CUR':'NO');
 			
-			$result[]=array('title'=>$CategoryObject->get_title(),
-						'nav_title' => $CategoryObject->get_navtitle(),
+			$result[]=array('title'=>htmlspecialchars(strip_tags($CategoryObject->get_title())),
+						'nav_title' => htmlspecialchars(strip_tags($CategoryObject->get_navtitle())),
 						'uid'=>$this->PID,
 						 '_ADD_GETVARS' => $add_getvars.ini_get('arg_separator.output') .'cHash='.$cHash,
 						 'ITEM_STATE' => $itemState,
@@ -1224,9 +1225,9 @@ class tx_commerce_navigation {
 				$aLevel = array(
 					"pid" => $pid,
 					"uid" => $uidPage,
-					"title" => $sManuTitle,
+					"title" => htmlspecialchars(strip_tags($sManuTitle)),
 					"parent_id" => $iIdCat,
-					"nav_title" => $sManuTitle,
+					"nav_title" => htmlspecialchars(strip_tags($sManuTitle)),
 					"hidden" => "0",
 					"depth" => $mDepth,
 					"leaf" => $this->isLeaf($iIdCat,$tableMm,$tableSubMm),

@@ -166,7 +166,7 @@ class leafView extends langbase {
 		}
 		
 		if ($this->iconPath && $this->iconName) {
-			$icon = '<img'.t3lib_iconWorks::skinImg('',$this->iconPath.$this->iconName,'width="18" height="16"').' alt=""'.($this->showDefaultTitleAttribute ? ' title="UID: '.$row['uid'].'"':'').' />';
+			$icon = '<img'.t3lib_iconWorks::skinImg('',$this->iconPath.$this->iconName,'width="18" height="16"').' alt=""'.($this->showDefaultTitleAttribute ? ' title="UID: '.(int)$row['uid'].'"':'').' />';
 	
 		} else {
 			
@@ -236,7 +236,7 @@ class leafView extends langbase {
 		
 		$aOnClick = 'return jumpTo(\''.$this->getJumpToParam($row).'\',this,\''.$this->domIdPrefix.$row['uid'].'_'.$bank.'\',\'\');';
 
-		$res = (($this->noRootOnclick && 0 == $row['uid']) || $this->noOnclick) ? $title : '<a href="#" onclick="'.htmlspecialchars($aOnClick).'">'.$title.'</a>';
+		$res = (($this->noRootOnclick && 0 == $row['uid']) || $this->noOnclick) ? htmlspecialchars(strip_tags($title)) : '<a href="#" onclick="'.htmlspecialchars($aOnClick).'">'.htmlspecialchars(strip_tags($title)).'</a>';
 
 		return $res;
 	}

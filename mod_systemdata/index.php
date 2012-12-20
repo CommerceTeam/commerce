@@ -199,38 +199,38 @@ class tx_commerce_systemdata extends t3lib_SCbase {
 	
 		$comPath = t3lib_extMgm::extRelPath('commerce');
 		
-		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'tx_commerce_attributes', 'pid=' .$this->attrUid .' AND hidden=0 AND deleted=0 and sys_language_uid =0', '', 'internal_title, title');
+		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'tx_commerce_attributes', 'pid=' .(int)$this->attrUid .' AND hidden=0 AND deleted=0 and sys_language_uid =0', '', 'internal_title, title');
 		$result = '<table>';
 		$result .= '<tr><td class="bgColor6" colspan="3"><strong>'.$LANG->getLL('title_attributes').'</strong></td><td class="bgColor6"><strong>'.$LANG->getLL('title_values').'</strong></td></tr>';
 		while ($attribute = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res))	{
 			$result .= '<tr>';
 			$result .= '<td class="bgColor4" align="center" valign="top"> '.t3lib_befunc::thumbCode($attribute,'tx_commerce_attributes','icon',$this->doc->backPath).'</td>';
 			if ($attribute['internal_title']) {
-				$result .= '<td valign="top" class="bgColor4"><strong>' .$attribute['internal_title'] .'</strong> ('.$attribute['title'].')';
+				$result .= '<td valign="top" class="bgColor4"><strong>' . htmlspecialchars($attribute['internal_title']) . '</strong> ('. htmlspecialchars($attribute['title']) .')';
 			}else{
-				$result .= '<td valign="top" class="bgColor4"><strong>' .$attribute['title'] .'</strong>';
+				$result .= '<td valign="top" class="bgColor4"><strong>' . htmlspecialchars($attribute['title']) . '</strong>';
 			}
 			
-			$catCount = $GLOBALS['TYPO3_DB']->exec_SELECTquery('COUNT(*) as catCount', 'tx_commerce_categories_attributes_mm', 'uid_foreign=' .$attribute['uid']);
+			$catCount = $GLOBALS['TYPO3_DB']->exec_SELECTquery('COUNT(*) as catCount', 'tx_commerce_categories_attributes_mm', 'uid_foreign=' .(int)$attribute['uid']);
 			$catCount = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($catCount);
 			$catCount = $catCount['catCount'];
 			
-			$proCount = $GLOBALS['TYPO3_DB']->exec_SELECTquery('COUNT(*) as proCount', 'tx_commerce_products_attributes_mm', 'uid_foreign=' .$attribute['uid']);
+			$proCount = $GLOBALS['TYPO3_DB']->exec_SELECTquery('COUNT(*) as proCount', 'tx_commerce_products_attributes_mm', 'uid_foreign=' .(int)$attribute['uid']);
 			$proCount = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($proCount);
 			$proCount = $proCount['proCount'];
 			
 			
 			// Select language versions
-			$resLocalVersion = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'tx_commerce_attributes', 'pid=' .$this->attrUid .' AND hidden=0 AND deleted=0 and sys_language_uid <>0 and l18n_parent ='.$attribute['uid'], '', 'sys_language_uid');
+			$resLocalVersion = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'tx_commerce_attributes', 'pid=' .(int)$this->attrUid .' AND hidden=0 AND deleted=0 and sys_language_uid <>0 and l18n_parent ='.(int)$attribute['uid'], '', 'sys_language_uid');
 			if ($GLOBALS['TYPO3_DB']->sql_num_rows($resLocalVersion)>0) {
 				$result .= '<table >';
 				while ($localAttributes =$GLOBALS['TYPO3_DB']->sql_fetch_assoc($resLocalVersion)) {
 					$result .= '<tr><td>&nbsp;';
 					$result .= '</td><td>';
 					if ($localAttributes['internal_title']) {
-						$result .= $localAttributes['internal_title'].' ('.$localAttributes['title'].')';
+						$result .= htmlspecialchars($localAttributes['internal_title']) . ' (' . htmlspecialchars($localAttributes['title']) .')';
 					}else{
-						$result .= $localAttributes['title'];
+						$result .= htmlspecialchars($localAttributes['title']);
 					}
 					$result .= '</td><td>';
 					$result .= $recordList->languageFlag($localAttributes['sys_language_uid']);
@@ -244,19 +244,19 @@ class tx_commerce_systemdata extends t3lib_SCbase {
 			$result .= ' <strong>' .$LANG->getLL('products') .'</strong>: ' .$proCount;
 			
 			$result .= '</td>';
-			$result .= '<td valign="top" class="bgColor5"><a href="#" onclick="document.location=\''.$this->doc->backPath.'alt_doc.php?returnUrl='.$comPath.'mod_systemdata/index.php&amp;edit[tx_commerce_attributes]['.$attribute['uid'].']=edit\'; return false;">';
+			$result .= '<td valign="top" class="bgColor5"><a href="#" onclick="document.location=\''.$this->doc->backPath.'alt_doc.php?returnUrl='.$comPath.'mod_systemdata/index.php&amp;edit[tx_commerce_attributes]['.(int)$attribute['uid'].']=edit\'; return false;">';
 			$result .= '<img src="'.$this->doc->backPath.'gfx/edit2.gif" border="0" /></a>';
-			$result .= '<a href="#" onclick="deleteRecord(\'tx_commerce_attributes\', ' .$attribute['uid'] .', \''.$comPath.'mod_systemdata/index.php\',\''.$LANG->JScharCode($LANG->getLL('deleteWarning')).'\');"><img src="'.$this->doc->backPath.'gfx/garbage.gif" border="0" /></a>';
+			$result .= '<a href="#" onclick="deleteRecord(\'tx_commerce_attributes\', ' .(int)$attribute['uid'] .', \''.$comPath.'mod_systemdata/index.php\',\''.$LANG->JScharCode($LANG->getLL('deleteWarning')).'\');"><img src="'.$this->doc->backPath.'gfx/garbage.gif" border="0" /></a>';
 			$result .= '</td>';
 			
 			$result .= '<td valign="top">';
 			
 			if ($attribute['has_valuelist'] == 1)	{
-				$valueRes = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'tx_commerce_attribute_values', 'attributes_uid='.$attribute['uid'].' AND hidden=0 AND deleted=0','','sorting');
+				$valueRes = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'tx_commerce_attribute_values', 'attributes_uid='.(int)$attribute['uid'].' AND hidden=0 AND deleted=0','','sorting');
 				if ($GLOBALS['TYPO3_DB']->sql_num_rows($valueRes) > 0)	{
 					$result .= '<table border="0" cellspacing="0" cellpadding="0">';
 					while ($value = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($valueRes))	{
-						$result .= '<tr><td>'.$value['value'].'</td></tr>';
+						$result .= '<tr><td>'.htmlspecialchars($value['value']).'</td></tr>';
 					}
 					$result .= '</table>';
 				} else {
@@ -292,23 +292,23 @@ class tx_commerce_systemdata extends t3lib_SCbase {
 		
 		$comPath = t3lib_extMgm::extRelPath('commerce');
 		
-		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', $table, 'pid=' .$this->modPid .' AND hidden=0 AND deleted=0', '', 'title');
+		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', $table, 'pid=' .(int)$this->modPid .' AND hidden=0 AND deleted=0', '', 'title');
 		$result = '<table>';
 		
 		$result .= '<tr><td></td>';
 		for ($i = 0; $i < count($fields); $i++) {			
 			$fieldname = $LANG->sL(t3lib_BEfunc::getItemLabel($table, $fields[$i]));
-			$result .= '<td class="bgColor6"><strong>'.$fieldname.'</strong></td>';
+			$result .= '<td class="bgColor6"><strong>'.htmlspecialchars($fieldname).'</strong></td>';
 		}
 		$result .= '</tr>';
 		
 		while ($res AND $manufacturer = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res))	{
-			$result .= '<tr><td valign="top" class="bgColor5"><a href="#" onclick="document.location=\''.$this->doc->backPath.'alt_doc.php?returnUrl='.$comPath.'mod_systemdata/index.php&amp;edit[tx_commerce_manufacturer]['.$manufacturer['uid'].']=edit\'; return false;">';
+			$result .= '<tr><td valign="top" class="bgColor5"><a href="#" onclick="document.location=\''.$this->doc->backPath.'alt_doc.php?returnUrl='.$comPath.'mod_systemdata/index.php&amp;edit[tx_commerce_manufacturer]['.(int)$manufacturer['uid'].']=edit\'; return false;">';
 			$result .= '<img src="'.$this->doc->backPath.'gfx/edit2.gif" border="0" /></a>';
-			$result .= '<a href="#" onclick="deleteRecord(\'tx_commerce_manufacturer\', ' .$manufacturer['uid'] .', \''.$comPath.'mod_systemdata/index.php\',\''.$LANG->JScharCode($LANG->getLL('deleteWarningManufacturer')).'\');"><img src="'.$this->doc->backPath.'gfx/garbage.gif" border="0" /></a>';
+			$result .= '<a href="#" onclick="deleteRecord(\'tx_commerce_manufacturer\', ' .(int)$manufacturer['uid'] .', \''.$comPath.'mod_systemdata/index.php\',\''.$LANG->JScharCode($LANG->getLL('deleteWarningManufacturer')).'\');"><img src="'.$this->doc->backPath.'gfx/garbage.gif" border="0" /></a>';
 			$result .= '</td>';
 			for ($i = 0; $i < count($fields); $i++) {
-				$result .= '<td valign="top" class="bgColor4"><strong>' .$manufacturer[$fields[$i]] .'</strong>';
+				$result .= '<td valign="top" class="bgColor4"><strong>' .htmlspecialchars($manufacturer[$fields[$i]]) .'</strong>';
 			}			
 			$result .= '</td></tr>';
 		}
@@ -336,24 +336,24 @@ class tx_commerce_systemdata extends t3lib_SCbase {
 		$fields = explode(',', $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['extConf']['coSuppliers']);
 		$table = 'tx_commerce_supplier';
 		
-		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', $table, 'pid=' .$this->modPid .' AND hidden=0 AND deleted=0', '', 'title');
+		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', $table, 'pid=' .(int)$this->modPid .' AND hidden=0 AND deleted=0', '', 'title');
 		
 		$result = '<table>';
 		$result .= '<tr><td></td>';
 		for ($i = 0; $i < count($fields); $i++) {			
 			$fieldname = $LANG->sL(t3lib_BEfunc::getItemLabel($table, $fields[$i]));
-			$result .= '<td class="bgColor6"><strong>'.$fieldname.'</strong></td>';
+			$result .= '<td class="bgColor6"><strong>' . htmlspecialchars($fieldname) . '</strong></td>';
 		}
 		$result .= '</tr>';
 		
 		while ($res AND $supplier = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res))	{
-			$result .= '<tr><td valign="top" class="bgColor5"><a href="#" onclick="document.location=\''.$this->doc->backPath.'alt_doc.php?returnUrl='.$comPath.'mod_systemdata/index.php&amp;edit[tx_commerce_supplier]['.$supplier['uid'].']=edit\'; return false;">';
+			$result .= '<tr><td valign="top" class="bgColor5"><a href="#" onclick="document.location=\''.$this->doc->backPath.'alt_doc.php?returnUrl='.$comPath.'mod_systemdata/index.php&amp;edit[tx_commerce_supplier]['. (int)$supplier['uid'].']=edit\'; return false;">';
 			$result .= '<img src="'.$this->doc->backPath.'gfx/edit2.gif" border="0" /></a>';
-			$result .= '<a href="#" onclick="deleteRecord(\'tx_commerce_supplier\', ' .$supplier['uid'] .', \''.$comPath.'mod_systemdata/index.php\',\''.$LANG->JScharCode($LANG->getLL('deleteWarningsupplier')).'\');"><img src="'.$this->doc->backPath.'gfx/garbage.gif" border="0" /></a>';
+			$result .= '<a href="#" onclick="deleteRecord(\'tx_commerce_supplier\', ' .(int)$supplier['uid'] .', \''.$comPath.'mod_systemdata/index.php\',\''.$LANG->JScharCode($LANG->getLL('deleteWarningsupplier')).'\');"><img src="'.$this->doc->backPath.'gfx/garbage.gif" border="0" /></a>';
 			$result .= '</td>';
 			
 			for ($i = 0; $i < count($fields); $i++) {
-				$result .= '<td valign="top" class="bgColor4"><strong>' .$supplier[$fields[$i]] .'</strong>';
+				$result .= '<td valign="top" class="bgColor4"><strong>' .htmlspecialchars($supplier[$fields[$i]]) .'</strong>';
 			}
 						
 			$result .= '</td></tr>';

@@ -60,7 +60,7 @@ class tx_commerce_leaf_categoryview extends leafView{
 		
 		$aOnClick = 'return link_folder(\''.$this->getJumpToParam($row).'\');';
 		$style = ($row['uid'] == $this->openCat && 0 != $this->openCat) ? 'style="color: red; font-weight: bold"' : '';
-		$res = (($this->noRootOnclick && 0 == $row['uid']) || $this->noOnclick) ? $title : '<a href="#" onclick="'.htmlspecialchars($aOnClick).'" '.$style.'>'.$title.'</a>';
+		$res = (($this->noRootOnclick && 0 == $row['uid']) || $this->noOnclick) ? htmlspecialchars(strip_tags($title)) : '<a href="#" onclick="'.htmlspecialchars($aOnClick).'" '.$style.'>'.$title.'</a>';
 
 		return $res;
 	}
