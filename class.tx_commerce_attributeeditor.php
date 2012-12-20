@@ -194,7 +194,7 @@ class tx_commerce_attributeEditor {
 				if (is_array($fieldConfig) && (count($fieldConfig) > 0)) $result[] = $fieldConfig;
 			}
 		}
-		
+
 		return $result;
 	}
 
@@ -225,13 +225,13 @@ class tx_commerce_attributeEditor {
 			$relationData = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($relRes);
 		}
 		
-		return $this->belib->getAttributeValue(
+		return htmlspecialchars(strip_tags($this->belib->getAttributeValue(
 			$PA['row']['uid'],
 			$aUid,
 			'tx_commerce_articles_article_attributes_mm',
 			$relationData,
 			$attributeData
-		);
+		)));
 	}
 	
 	

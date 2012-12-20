@@ -1,3 +1,7 @@
+ * 
+ * $Id$
+			$result[]=array('title'=>htmlspecialchars(strip_tags($CategoryObject->get_title())),
+						'nav_title' => htmlspecialchars(strip_tags($CategoryObject->get_navtitle())),
 <?php
 /***************************************************************
  *  Copyright notice
@@ -463,20 +467,20 @@ class tx_commerce_navigation {
 				 $nodeArray['CommerceMenu'] = true;
 			 	 $nodeArray['pid'] = $dataRow['pid'];
 				 $nodeArray['uid'] = $uidPage;
-				 $nodeArray['title'] = $dataRow['title'];
+				 $nodeArray['title'] = htmlspecialchars(strip_tags($dataRow['title']));
 				 if ($GLOBALS['TSFE']->sys_language_uid) {
 				 	/**
 				 	 * Add Pages Overlayto Array, if not syslaguage
 				 	 */
-				 	$nodeArray['_PAGES_OVERLAY'] = $dataRow['title'];
+				 	$nodeArray['_PAGES_OVERLAY'] = htmlspecialchars(strip_tags($dataRow['title']));
 				 }
 				 $nodeArray['parent_id'] = $uid_root;
 				 $nodeArray['parent_id'] = $uid_root;
-				 $nodeArray['nav_title'] = $dataRow['navtitle'];
+				 $nodeArray['nav_title'] = htmlspecialchars(strip_tags($dataRow['navtitle']));
 
 				 // Add custom Fields to array
 				 foreach ($this->nodeArrayAdditionalFields as $field) {
-				 	$nodeArray[$field] = $dataRow[$field];
+				 	$nodeArray[$field] = htmlspecialchars(strip_tags($dataRow[$field]));
 				 }
 
 				 $nodeArray['hidden'] = $dataRow['hidden'];
@@ -608,13 +612,13 @@ class tx_commerce_navigation {
 				$nodeArray['CommerceMenu'] = true;
 			 	$nodeArray['pid'] = $dataRow['pid'];
 				$nodeArray['uid'] = $uidPage;
-				$nodeArray['title'] = $dataRow['title'];
+				$nodeArray['title'] = htmlspecialchars(strip_tags($dataRow['title']));
 				$nodeArray['parent_id'] = $uid_root;
-				$nodeArray['nav_title'] = $dataRow['navtitle'];
+				$nodeArray['nav_title'] = htmlspecialchars(strip_tags($dataRow['navtitle']));
 				$nodeArray['hidden'] = $dataRow['hidden'];
 					// Add custom Fields to array
 				foreach ($this->nodeArrayAdditionalFields as $field) {
-				 	$nodeArray[$field] = $dataRow[$field];
+				 	$nodeArray[$field] = htmlspecialchars(strip_tags($dataRow[$field]));
 				}
 					// Add Pages Overlay to Array, if sys_language_uid ist set
 				if ($GLOBALS['TSFE']->sys_language_uid) {
@@ -1023,6 +1027,7 @@ class tx_commerce_navigation {
 
   			$itemStateLists = '';
   			$returnArray[]=array(
+						'title'=>htmlspecialchars(strip_tags($ProductObject->get_title())),
 				'title' => $ProductObject->get_title(),
 				'uid' => $this->PID,
 				'_ADD_GETVARS' => $add_getvars.ini_get('arg_separator.output') .'cHash='.$cHash,
@@ -1248,9 +1253,9 @@ class tx_commerce_navigation {
 				$aLevel = array(
 					"pid" => $pid,
 					"uid" => $uidPage,
-					"title" => $sManuTitle,
+					"title" => htmlspecialchars(strip_tags($sManuTitle)),
 					"parent_id" => $iIdCat,
-					"nav_title" => $sManuTitle,
+					"nav_title" => htmlspecialchars(strip_tags($sManuTitle)),
 					"hidden" => "0",
 					"depth" => $mDepth,
 					"leaf" => $this->isLeaf($iIdCat,$tableMm,$tableSubMm),

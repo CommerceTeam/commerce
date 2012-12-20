@@ -1,3 +1,5 @@
+ * 
+ * $Id$
 <?php
 /***************************************************************
  *  Copyright notice
@@ -1180,7 +1182,11 @@ class tx_commerce_pibase extends tslib_pibase {
 	*/
 
 	function renderValue($value, $TStype,$TSconf,$field='',$table = '',$uid = '') {
-		/**
+
+        // Clean Value to prevent XSS
+        $value = $this->cObj->removeBadHTML($value,$TSconf);
+
+        /**
 		  * If you add more TS Types using the imgPath, you should add these also to generateMarkerArray 
 		  */
         $output = '';
@@ -1275,10 +1281,14 @@ class tx_commerce_pibase extends tslib_pibase {
 					$value = number_format((float)$value,$TSconf['format.']['decimals'],$TSconf['format.']['dec_point'],$TSconf['format.']['thousands_sep']);
 				}
 			case 'STDWRAP' :
-				$output = $this->cObj->stdWrap($value, $TSconf);
+                if (is_array($TSconf['parseFunc.'])) {
+				    $output = $this->cObj->stdWrap($value, $TSconf);
+                }else{
+                    $output = $this->cObj->stdWrap(strip_tags($value),$TSconf);
+                }
 				break;
 			default :
-				$output = $value;
+				$output = htmlspecialchars(strip_tags($value));
 			break;
 		}
 

@@ -106,8 +106,8 @@ class tx_commerce_articleCreator {
 		for ($i = 0; $i < count($this->existingArticles); $i++)	{
 			$article = $this->existingArticles[$i];
 
-			$result .= '<tr><td style="border-top:1px black solid; border-right: 1px gray dotted"><strong>' .$article['title'] .'</strong>';
-			$result .= '<br />UID:' .$article['uid'] .'</td>';
+			$result .= '<tr><td style="border-top:1px black solid; border-right: 1px gray dotted"><strong>' .htmlspecialchars($article['title']) .'</strong>';
+			$result .= '<br />UID:' .(int)$article['uid'] .'</td>';
 
 			if (is_array($this->attributes['ct1']))	{
 				foreach ($this->attributes['ct1'] as $attribute)	{
@@ -121,29 +121,30 @@ class tx_commerce_articleCreator {
 						if ($attribute['attributeData']['has_valuelist'] == 1)	{
 							if ($attributeData['uid_valuelist'] == 0)	{
 									// if the attribute has no value, create a select box with valid values
-								$result .= '<td style="border-top:1px black solid; border-right: 1px gray dotted"><select name="updateData[' .$article['uid'] .'][' .$attribute['uid_foreign'] .']" />';
+								$result .= '<td style="border-top:1px black solid; border-right: 1px gray dotted"><select name="updateData[' .(int)$article['uid'] .'][' .(int)$attribute['uid_foreign'] .']" />';
 								$result .= '<option value="0" selected="selected"></option>';
 								foreach ($attribute['valueList'] as $attrValueUid => $attrValueData)	{
-									$result .= '<option value="' .$attrValueUid .'">' .$attrValueData['value'] .'</option>';
+									$result .= '<option value="' .(int)$attrValueUid .'">' .htmlspecialchars($attrValueData['value']) .'</option>';
 								}
 								$result .= '</select></td>';
 							} else {
-								$result .= '<td style="border-top:1px black solid; border-right: 1px gray dotted">' .$attribute['valueList'][$attributeData['uid_valuelist']]['value'] .'</td>';
+								$result .= '<td style="border-top:1px black solid; border-right: 1px gray dotted">' . htmlspecialchars(strip_tags($attribute['valueList'][$attributeData['uid_valuelist']]['value'])) .'</td>';
 							}
 						} elseif (!empty($attributeData['value_char'])) {
-							$result .= '<td style="border-top:1px black solid; border-right: 1px gray dotted">' .$attributeData['value_char'] .'</td>';
+							$result .= '<td style="border-top:1px black solid; border-right: 1px gray dotted">' . htmlspecialchars(strip_tags($attributeData['value_char'])) .'</td>';
 						} else {
-							$result .= '<td style="border-top:1px black solid; border-right: 1px gray dotted">' .$attributeData['default_value'] .'</td>';
+							$result .= '<td style="border-top:1px black solid; border-right: 1px gray dotted">' . htmlspecialchars(strip_tags($attributeData['default_value'])) .'</td>';
 						}
 					}
 				}
 			}
 
 				// the edit pencil (with jump back to this dataset)
-			$result .= '<td style="border-top:1px black solid"><a href="#" onclick="document.location=\'alt_doc.php?returnUrl=alt_doc.php?edit[tx_commerce_products][' .$this->uid .']=edit&amp;edit[tx_commerce_articles][' .$article['uid'] .']=edit\'; return false;">';
+			$result .= '<td style="border-top:1px black solid"><a href="#" onclick="document.location=\'alt_doc.php?returnUrl=alt_doc.php?edit[tx_commerce_products][' .(int)$this->uid .']=edit&amp;edit[tx_commerce_articles][' .(int)$article['uid'] .']=edit\'; return false;">';
 			$result .= '<img src="../typo3/gfx/edit2.gif" border="0" /></a></td>';
 
 				// add the hide button
+			$result .= '<td style="border-top:1px black solid"><a href="#" onclick="return jumpToUrl(\'tce_db.php?&amp;data[tx_commerce_articles][' .(int)$article['uid'] .'][hidden]=' .(!$article['hidden']) .'&amp;redirect=alt_doc.php?edit[tx_commerce_products][' .(int)$this->uid .']=edit\');">';
 			$result .= '<td style="border-top:1px black solid"><a href="#" onclick="return jumpToUrl(\'tce_db.php?&amp;data[tx_commerce_articles][' .$article['uid'] .'][hidden]=' .(!$article['hidden']) .'&amp;redirect=alt_doc.php?edit[tx_commerce_products][' .$this->uid .']=edit' . $formSecurityToken .'\');">';
 			$result .= '<img src="../typo3/gfx/button_' .(($article['hidden']) ? 'un' : '') .'hide.gif" border="0" /></a></td>';
 
@@ -151,11 +152,12 @@ class tx_commerce_articleCreator {
 				// UP
 			if (isset($this->existingArticles[($i -1)]))	{
 				if (isset($this->existingArticles[($i -2)]))	{
-					$moveItTo = '-' .$this->existingArticles[($i -2)]['uid'];
+					$moveItTo = '-' .(int)$this->existingArticles[($i -2)]['uid'];
 				} else {
-					$moveItTo = $article['pid'];
+					$moveItTo = (int)$article['pid'];
 				}
-				$params = 'cmd[tx_commerce_articles][' .$article['uid'] .'][move]=' .$moveItTo;
+				$params = 'cmd[tx_commerce_articles][' .(int)$article['uid'] .'][move]=' .$moveItTo;
+				$result .= '<td style="border-top:1px black solid"><a href="#" onClick="return jumpToUrl(\'tce_db.php?' .$params .'&redirect=alt_doc.php?edit[tx_commerce_products][' .(int)$this->uid .']=edit\');"><img src="../typo3/gfx/button_up.gif" width="11" height="10" border="0" align="top" /></a></td>';
 				$result .= '<td style="border-top:1px black solid"><a href="#" onClick="return jumpToUrl(\'tce_db.php?' .$params .$formSecurityToken .'&redirect=alt_doc.php?edit[tx_commerce_products][' .$this->uid .']=edit\');"><img src="../typo3/gfx/button_up.gif" width="11" height="10" border="0" align="top" /></a></td>';
 			} else {
 				$result .= '<td style="border-top:1px black solid"><img src="clear.gif" width="11" height="10" align="top"></td>';
@@ -163,14 +165,15 @@ class tx_commerce_articleCreator {
 
 				// DOWN
 			if (isset($this->existingArticles[($i +1)]))	{
-				$params = 'cmd[tx_commerce_articles][' .$article['uid'] .'][move]=-' .$this->existingArticles[($i +1)]['uid'];
+				$params = 'cmd[tx_commerce_articles][' .(int)$article['uid'] .'][move]=-' .(int)$this->existingArticles[($i +1)]['uid'];
+				$result .= '<td style="border-top:1px black solid"><a href="#" onClick="return jumpToUrl(\'tce_db.php?'.$params .'&redirect=alt_doc.php?edit[tx_commerce_products][' .(int)$this->uid .']=edit\');"><img src="../typo3/gfx/button_down.gif" width="11" height="10" border="0" align="top" /></a></td>';
 				$result .= '<td style="border-top:1px black solid"><a href="#" onClick="return jumpToUrl(\'tce_db.php?'.$params .$formSecurityToken .'&redirect=alt_doc.php?edit[tx_commerce_products][' .$this->uid .']=edit\');"><img src="../typo3/gfx/button_down.gif" width="11" height="10" border="0" align="top" /></a></td>';
 			} else {
 				$result .= '<td style="border-top:1px black solid"><img src="clear.gif" width="11" height="10" align="top"></td>';
 			}
 
 				// add the delete icon
-			$result .= '<td style="border-top:1px black solid"><a href="#" onclick="deleteRecord(\'tx_commerce_articles\', ' .$article['uid'] .', \'alt_doc.php?edit[tx_commerce_products][' .$this->uid .']=edit\');"><img src="../typo3/gfx/garbage.gif" border="0" /></a></td>';
+			$result .= '<td style="border-top:1px black solid"><a href="#" onclick="deleteRecord(\'tx_commerce_articles\', ' .(int)$article['uid'] .', \'alt_doc.php?edit[tx_commerce_products][' .(int)$this->uid .']=edit\');"><img src="../typo3/gfx/garbage.gif" border="0" /></a></td>';
 			$result .= '</tr>';
 
 			if ($article['uid'] > $lastUid) $lastUid = $article['uid'];
@@ -278,8 +281,8 @@ class tx_commerce_articleCreator {
 
 		if(is_array($this->attributes['ct1']))	{
 			foreach ($this->attributes['ct1'][$index]['valueList'] as $aValue)	{
-				$data['aUid'] = $this->attributes['ct1'][$index]['attributeData']['uid'];
-				$data['vUid'] = $aValue['uid'];
+				$data['aUid'] = (int)$this->attributes['ct1'][$index]['attributeData']['uid'];
+				$data['vUid'] = (int)$aValue['uid'];
 				$data['vLabel'] = $aValue['value'];
 				$newI = $index +1;
 				$other = $this->getValues($newI);
@@ -340,9 +343,9 @@ class tx_commerce_articleCreator {
 					$resultRows .= '<input type="checkbox" name="createList[' .$counter .']" id="createRow_' .$counter .'" />';
 					$resultRows .= '<input type="hidden" name="createData[' .$counter .']" value="' .htmlspecialchars($hashData) .'" /></td>';
 
-					$resultRows .= '<td style="' .$class .'">' .implode('</td><td style="' .$class .'">', $labelData) .'</td>';
+					$resultRows .= '<td style="' .$class .'">' .implode('</td><td style="' .$class .'">', tx_commerce_div::removeXSSStripTagsArray($labelData)) .'</td>';
 					if (count($extraRowData) > 0)	{
-						$resultRows .= '<td style="' .$class .'">' .implode('</td><td style="' .$class .'">', $extraRowData) .'</td>';
+						$resultRows .= '<td style="' .$class .'">' .implode('</td><td style="' .$class .'">', tx_commerce_div::removeXSSStripTagsArray($extraRowData)) .'</td>';
 					}
 					$resultRows .= '</tr>';
 				}
@@ -378,14 +381,14 @@ class tx_commerce_articleCreator {
         $result = '';
 		if ($addTR)	{ $result .= '<tr>'; }
 		
-		if ($acBefore != NULL) $result .= '<th>' .implode('</th><th>', $acBefore) .'</th>';
+		if ($acBefore != NULL) $result .= '<th>' .implode('</th><th>', tx_commerce_div::removeXSSStripTagsArray($acBefore)) .'</th>';
 		if (is_array($this->attributes['ct1']))	{
 			foreach ($this->attributes['ct1'] as $attribute)	{
-				$result .= '<th>' .$attribute['attributeData']['title'] .'</th>';
+				$result .= '<th>' .htmlspecialchars(strip_tags($attribute['attributeData']['title'])) .'</th>';
 				$colCount++;
 			}
 		}
-		if ($acAfter != NULL) $result .= '<th>' .implode('</th><th>', $acAfter) .'</th>';
+		if ($acAfter != NULL) $result .= '<th>' .implode('</th><th>', tx_commerce_div::removeXSSStripTagsArray($acAfter)) .'</th>';
 		
 		if ($addTR)	{ $result .= '</tr>'; }
 
@@ -458,7 +461,7 @@ class tx_commerce_articleCreator {
 	 * @param	string		$key: The key in the POST var array
 	 * @return	string	    Returns the product title + attribute titles for article title
 	 */
-	function createArticleTitleFromAttributes($PA, $key, $data) {
+	private function createArticleTitleFromAttributes($PA, $key, $data) {
 		$content = $PA['title'];
 		if(is_array($data) && count($data)) {
 			$selectedValues = array();
@@ -502,10 +505,10 @@ class tx_commerce_articleCreator {
 		$articleData = array(
 			'pid' => $this->pid,
 			'crdate' => time(),
-			'title' => $this->createArticleTitleFromAttributes($PA, $key, $data),
-			'uid_product' => $this->uid,
-			'sorting' => ($sorting['sorting'] *2),
-			'article_attributes' => count($this->attributes['rest']) +count($data),
+			'title' => strip_tags($this->createArticleTitleFromAttributes($PA, $key, $data)),
+			'uid_product' => (int)$this->uid,
+			'sorting' => (int)($sorting['sorting'] *2),
+			'article_attributes' => (int)count($this->attributes['rest']) +count($data),
 			'attribute_hash' => $hash,
 			'article_type_uid' => 1,
 			
@@ -678,7 +681,7 @@ class tx_commerce_articleCreator {
 	function createNewPriceCB($PA, $fObj) {
         $content = '';
 		$content .= '<div id="typo3-newRecordLink">';
-		$content .= '<input type="checkbox" name="data[tx_commerce_articles][' .$PA['row']['uid'] .'][create_new_price]" />';
+		$content .= '<input type="checkbox" name="data[tx_commerce_articles][' .(int)$PA['row']['uid'] .'][create_new_price]" />';
 		$content .= $GLOBALS['LANG']->sL('LLL:EXT:commerce/locallang_be.php:articles.add_article_price', 1);
 
 		$content .= '</div>';
@@ -689,7 +692,7 @@ class tx_commerce_articleCreator {
 	 */
 	function createNewScalePricesCount($PA, $fObj) {
 	
-		$content = '<input style="width: 77px;" class="formField1" maxlength="20" type="input" name="data[tx_commerce_articles][' .$PA['row']['uid'] .'][create_new_scale_prices_count]" />';
+		$content = '<input style="width: 77px;" class="formField1" maxlength="20" type="input" name="data[tx_commerce_articles][' .(int)$PA['row']['uid'] .'][create_new_scale_prices_count]" />';
 
 
 		return $content;
@@ -700,7 +703,7 @@ class tx_commerce_articleCreator {
 	function createNewScalePricesSteps($PA, $fObj) {
 
 
-		$content = '<input style="width: 77px;" class="formField1" maxlength="20"type="input" name="data[tx_commerce_articles][' .$PA['row']['uid'] .'][create_new_scale_prices_steps]" />';	
+		$content = '<input style="width: 77px;" class="formField1" maxlength="20"type="input" name="data[tx_commerce_articles][' .(int)$PA['row']['uid'] .'][create_new_scale_prices_steps]" />';
 
 
 		return $content;
@@ -710,7 +713,7 @@ class tx_commerce_articleCreator {
 	 */
 	function createNewScalePricesStartAmount($PA, $fObj) {
 	
-		$content = '<input style="width: 77px;" class="formField1" maxlength="20" type="input" name="data[tx_commerce_articles][' .$PA['row']['uid'] .'][create_new_scale_prices_startamount]" />';
+		$content = '<input style="width: 77px;" class="formField1" maxlength="20" type="input" name="data[tx_commerce_articles][' .(int)$PA['row']['uid'] .'][create_new_scale_prices_startamount]" />';
 
 
 		return $content;
@@ -731,7 +734,7 @@ class tx_commerce_articleCreator {
 		$pUid = $name[0];
 
 			// build the link code
-		$result = '<a href="#" onclick="deleteRecord(\'tx_commerce_article_prices\', ' .$pUid .', \'' .$returnUrl .'\');">';
+		$result = '<a href="#" onclick="deleteRecord(\'tx_commerce_article_prices\', ' .(int)$pUid .', \'' .$returnUrl .'\');">';
 		$result .= '<img src="../typo3/gfx/garbage.gif" border="0" />';
 		$result .=  $GLOBALS['LANG']->sL('LLL:EXT:commerce/locallang_be.php:articles.del_article_price', 1).'</a>';
 
@@ -743,7 +746,7 @@ class tx_commerce_articleCreator {
 	 */
 	function articleUid($PA, $fObj) {
         $content = '';
-		$content.='<input type="hidden" name="'.$PA['itemFormElName'].'" value="'.htmlspecialchars($PA['itemFormElValue']).'">';
+		$content = '<input type="hidden" name="'.$PA['itemFormElName'].'" value="'.htmlspecialchars($PA['itemFormElValue']).'">';
  		return $content;
 	}
 

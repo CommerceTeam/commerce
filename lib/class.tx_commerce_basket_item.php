@@ -1,3 +1,5 @@
+ * 
+ * $Id$
 <?php
 /***************************************************************
  *  Copyright notice
@@ -143,9 +145,19 @@ class tx_commerce_basket_item {
  	function init($uid,$quantity,$priceid,$lang_id=0){
  		
  		$uid = intval($uid);
-	    $lang_uid = intval($lang_uid);
+	    $lang_id = intval($lang_id);
 	    $priceid = intval($priceid);
-	    
+
+        if (is_numeric($quantity)) {
+            if (is_float($quantity)) {
+                $this->quantity = floatval($quantity);
+            }else {
+                $this->quantity = intval($quantity);
+            }
+        }else{
+            return false;
+        }
+
  		$this->quantity=$quantity;
  		$this->lang_id=$lang_id;
  		$this->article = t3lib_div::makeInstance('tx_commerce_article');
