@@ -161,7 +161,17 @@ class tx_commerce_basket_item{
  		$uid = intval($uid);
 	    $lang_uid = intval($lang_uid);
 	    $priceid = intval($priceid);
-	    
+
+        if (is_numeric($quantity)) {
+            if (is_float($quantity)) {
+                $this->quantity = floatval($quantity);
+            }else {
+                $this->quantity = intval($quantity);
+            }
+        }else{
+            return false;
+        }
+
  		$this->quantity=$quantity;
  		$this->lang_id=$lang_id;
  		$this->article = t3lib_div::makeInstance('tx_commerce_article');

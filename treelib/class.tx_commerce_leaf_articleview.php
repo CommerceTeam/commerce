@@ -35,7 +35,7 @@ class tx_commerce_leaf_articleview extends leafView {
 		
 		$aOnClick = 'return jumpTo(\''.$this->getJumpToParam($row).'\',this,\''.$this->domIdPrefix.$row['uid'].'_'.$bank.'\',\'alt_doc.php\');';
 		
-		$res = ($this->noOnclick) ? $title : '<a href="#" onclick="'.htmlspecialchars($aOnClick).'">'.$title.'</a>';
+		$res = ($this->noOnclick) ? $title : '<a href="#" onclick="'.htmlspecialchars($aOnClick).'">'.htmlspecialchars(strip_tags($title)).'</a>';
 		return $res;
 	}
 

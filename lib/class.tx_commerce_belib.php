@@ -421,7 +421,7 @@ class tx_commerce_belib {
 						$result[] = $value['value'];
 					}
 				}
-				return '<ul><li>' .implode('</li><li>', $result) .'</li></ul>';
+				return '<ul><li>' .implode('</li><li>', tx_commerce_div::removeXSSStripTagsArray($result)) .'</li></ul>';
 
 			} else {
 					// fetch data from attribute values table

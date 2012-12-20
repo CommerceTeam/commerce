@@ -36,7 +36,7 @@ class tx_commerce_leaf_productview extends leafView {
 		$aOnClick = 'return link_folder(\''.$this->getJumpToParam($row).'\');';
 		
 		$style = ($row['uid'] == $this->openProd) ? 'style="color: red; font-weight: bold"' : '';
-		$res = '<a href="#" onclick="'.htmlspecialchars($aOnClick).'" '.$style.'>'.$title.'</a>';
+		$res = '<a href="#" onclick="'.htmlspecialchars($aOnClick).'" '.$style.'>'.htmlspecialchars(strip_tags($title)).'</a>';
 
 		return $res;
 	}
