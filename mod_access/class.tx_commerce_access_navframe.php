@@ -30,7 +30,7 @@
  */
 unset($MCONF);
 
-if (!(@is_numeric(TYPO3_REQUESTTYPE) || @is_numeric(TYPO3_REQUESTTYPE_AJAX))) {
+if (!(defined('TYPO3_REQUESTTYPE') || defined('TYPO3_REQUESTTYPE_AJAX'))) {
         require_once('conf.php');
         require_once($BACK_PATH.'init.php');
         require_once(PATH_typo3.'template.php');
