@@ -72,7 +72,7 @@ class Tx_Commerce_SystemData extends t3lib_SCbase {
 	/**
 	 * @var integer
 	 */
-	public $attrUid;
+	public $attributePid;
 
 	/**
 	 * @var string
@@ -100,7 +100,7 @@ class Tx_Commerce_SystemData extends t3lib_SCbase {
 		$this->user = & $GLOBALS['BE_USER'];
 
 		$this->id = $this->modPid = reset(tx_commerce_folder_db::initFolders('Commerce', 'commerce'));
-		$this->attrUid = (int) reset(tx_commerce_folder_db::initFolders('Attributes', 'commerce', $this->modPid));
+		$this->attributePid = (int) reset(tx_commerce_folder_db::initFolders('Attributes', 'commerce', $this->modPid));
 
 		$this->perms_clause = $this->user->getPagePermsClause(1);
 		$this->pageRow = t3lib_BEfunc::readPageAccess($this->id, $this->perms_clause);
@@ -290,6 +290,7 @@ class Tx_Commerce_SystemData extends t3lib_SCbase {
 
 			case '1':
 			default:
+				$this->modPid = $this->attributePid;
 				$content = $this->getAttributeListing();
 				$this->content .= $this->doc->section('', $content, 0, 1);
 				break;
@@ -319,7 +320,7 @@ class Tx_Commerce_SystemData extends t3lib_SCbase {
 		return $this->database->exec_SELECTquery(
 			'*',
 			'tx_commerce_attributes',
-			'pid=' . (int) $this->attrUid . ' AND hidden=0 AND deleted=0 and sys_language_uid =0',
+			'pid=' . (int) $this->attributePid . ' AND hidden=0 AND deleted=0 and sys_language_uid =0',
 			'',
 			'internal_title, title'
 		);
@@ -333,7 +334,7 @@ class Tx_Commerce_SystemData extends t3lib_SCbase {
 		return $this->database->exec_SELECTquery(
 			'*',
 			'tx_commerce_attributes',
-			'pid=' . (int) $this->attrUid . ' AND hidden=0 AND deleted=0 and sys_language_uid <>0 and l18n_parent =' .
+			'pid=' . (int) $this->attributePid . ' AND hidden=0 AND deleted=0 and sys_language_uid <>0 and l18n_parent =' .
 				(int) $uid,
 			'',
 			'sys_language_uid'
