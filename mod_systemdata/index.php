@@ -1,358 +1,657 @@
 <?php
 /***************************************************************
- *  Copyright notice
+ * Copyright notice
  *
- *  (c) 2005 - 2011 Ingo Schmitt <is@marketing-factory.de>
- *  All rights reserved
+ * (c) 2005 - 2012 Ingo Schmitt <is@marketing-factory.de>
+ * (c) 2012 - 2013 Sebastian Fischer <typo3@marketing-factory.de>
+ * All rights reserved
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * This script is part of the TYPO3 project. The TYPO3 project is
+ * free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
+ * The GNU General Public License can be found at
+ * http://www.gnu.org/copyleft/gpl.html.
  *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * This script is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- *  This copyright notice MUST APPEAR in all copies of the script!
+ * This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+
+unset($MCONF);
+require_once('conf.php');
+require_once($BACK_PATH . 'init.php');
+require_once($BACK_PATH . 'template.php');
+
+$GLOBALS['LANG']->includeLLFile('EXT:commerce/mod_systemdata/locallang.xml');
+require_once(PATH_t3lib . 'class.t3lib_scbase.php');
+	// This checks permissions and exits if the users has no permission for entry.
+$GLOBALS['BE_USER']->modAccess($MCONF, 1);
 
 /**
  * Module 'Systemdata' for the 'commerce' extension.
  *
  * @author Thomas Hempel <thomas@work.de>
+ * @author Sebastian Fischer <typo3@marketing-factory.de> complete rewrite
+ * @package TYPO3
+ * @subpackage commerce
  */
+class Tx_Commerce_SystemData extends t3lib_SCbase {
+	/**
+	 * @var t3lib_db
+	 */
+	protected $database;
 
-unset($MCONF);
-require_once('conf.php');
-require_once($BACK_PATH.'init.php');
-require_once($BACK_PATH.'template.php');
-$LANG->includeLLFile("EXT:commerce/mod_systemdata/locallang.xml");
-$BE_USER->modAccess($MCONF,1);	// This checks permissions and exits if the users has no permission for entry.
+	/**
+	 * @var language
+	 */
+	protected $language;
 
-class tx_commerce_systemdata extends t3lib_SCbase {
-	var $pageinfo;
-	
+	/**
+	 * @var t3lib_beUserAuth
+	 */
+	protected $user;
+
+	/**
+	 * @var array
+	 */
+	public $pageRow;
+
 	/**
 	 * Containing the Root-Folder-Pid of Commerce
-	 * 
+	 *
 	 * @var integer
 	 */
-	var $modPid;
+	public $modPid;
 
 	/**
-	 *
+	 * @var integer
 	 */
-	function init()	{
-		global $BE_USER,$LANG,$BACK_PATH,$TCA_DESCR,$TCA,$CLIENT,$TYPO3_CONF_VARS;
+	public $attrUid;
 
+	/**
+	 * @var string
+	 */
+	protected $tableForNewLink;
+
+	/**
+	 * @var array
+	 */
+	public $markers = array();
+
+	/**
+	 * @var array
+	 */
+	protected $referenceCount = array();
+
+	/**
+	 * @return void
+	 */
+	public function init() {
 		parent::init();
-			tx_commerce_create_folder::init_folders();
-			list($modPid,$defaultFolder,$folderList) = tx_commerce_folder_db::initFolders('Commerce', 'commerce');
-			list($this->attrUid,$defaultFolder,$folderList) = tx_commerce_folder_db::initFolders('Attributes', 'commerce', $modPid);
-			$this->modPid = $modPid;
+
+		$this->database = & $GLOBALS['TYPO3_DB'];
+		$this->language = & $GLOBALS['LANG'];
+		$this->user = & $GLOBALS['BE_USER'];
+
+		$this->id = $this->modPid = reset(tx_commerce_folder_db::initFolders('Commerce', 'commerce'));
+		$this->attrUid = (int) reset(tx_commerce_folder_db::initFolders('Attributes', 'commerce', $this->modPid));
+
+		$this->perms_clause = $this->user->getPagePermsClause(1);
+		$this->pageRow = t3lib_BEfunc::readPageAccess($this->id, $this->perms_clause);
 	}
-	
+
 	/**
 	 * Adds items to the ->MOD_MENU array. Used for the function menu selector.
+	 *
+	 * @return void
 	 */
-	function menuConfig()	{
-		global $LANG;
+	public function menuConfig() {
 		$this->MOD_MENU = Array (
-			"function" => Array (
-				"1" => $LANG->getLL("title_attributes"),
-				"2" => $LANG->getLL("title_manufacturer"),
-				"3" => $LANG->getLL("title_supplier"),
+			'function' => Array (
+				'1' => 'attributes',
+				'2' => 'manufacturer',
+				'3' => 'supplier',
 			)
 		);
 		parent::menuConfig();
 	}
 
-		// If you chose "web" as main module, you will need to consider the $this->id parameter which will contain the uid-number of the page clicked in the page tree
 	/**
-	 * Main function of the module. Write the content to $this->content
+	 * @return void
 	 */
-	function main()	{
-		global $BE_USER,$LANG,$BACK_PATH,$TCA_DESCR,$TCA,$CLIENT,$TYPO3_CONF_VARS;
+	public function main() {
+		$this->doc = t3lib_div::makeInstance('template');
+		$this->doc->backPath = $GLOBALS['BACK_PATH'];
+		$this->doc->docType = 'xhtml_trans';
+		$this->doc->setModuleTemplate('../typo3conf/ext/commerce/mod_systemdata/templates/mod_systemdata.html');
 
-				// Draw the header.
-			$this->doc = t3lib_div::makeInstance("noDoc");
-			$this->doc->backPath = $BACK_PATH;
-			$this->doc->form='<form action="" method="POST">';
+		if (!$this->doc->moduleTemplate) {
+			t3lib_div::devLog('cannot set moduleTemplate', 'commerce', 2, array(
+				'backpath' => $this->doc->backPath,
+				'filename from TBE_STYLES' => $GLOBALS['TBE_STYLES']['htmlTemplates']['mod_systemdata.html'],
+				'full path' => $this->doc->backPath . $GLOBALS['TBE_STYLES']['htmlTemplates']['mod_systemdata.html']
+			));
+			$templateFile = t3lib_extMgm::siteRelPath('commerce') . 'mod_systemdata/templates/mod_systemdata.html';
+			$this->doc->moduleTemplate = @file_get_contents(PATH_site . $templateFile);
+		}
 
-			$this->doc->JScode = '
-				<script language="javascript" type="text/javascript">
-					script_ended = 0;
-					function jumpToUrl(URL)	{
-						document.location = URL;
+		$listUrl = t3lib_div::getIndpEnv('REQUEST_URI');
+
+			// Access check!
+			// The page will show only if there is a valid page and if user may access it
+		if ($this->id && (is_array($this->pageRow) ? 1 : 0)) {
+				// JavaScript
+			$this->doc->JScode = $this->doc->wrapScriptTags('
+				script_ended = 0;
+				function jumpToUrl(URL) {
+					document.location = URL;
+				}
+				function deleteRecord(table,id,url,warning) {
+					if (
+						confirm(eval(warning))
+					)	{
+						window.location.href = "' . $this->doc->backPath .
+							'tce_db.php?cmd["+table+"]["+id+"][delete]=1&redirect="+escape(url);
 					}
-					function deleteRecord(table,id,url,warning)	{	//
-						if (
-							confirm(eval(warning))
-						)	{
-							window.location.href = "'.$this->doc->backPath.'tce_db.php?cmd["+table+"]["+id+"][delete]=1&redirect="+escape(url);
-						}
-						return false;
-					}
-				</script>
-			';
-			$this->doc->postCode='
-				<script language="javascript" type="text/javascript">
-					script_ended = 1;
-					if (top.fsMod) top.fsMod.recentIds["web"] = '.intval($this->id).';
-				</script>
-			';
-			
-			$headerSection = '';
+					return false;
+				}
+				' . $this->doc->redirectUrls($listUrl) . '
+			');
 
-			$this->content.=$this->doc->startPage($LANG->getLL("title"));
-			$this->content.=$this->doc->header($LANG->getLL("title"));
-			$this->content.=$this->doc->spacer(5);
-			$this->content.=$this->doc->section("",$this->doc->funcMenu($headerSection,t3lib_BEfunc::getFuncMenu($this->id,"SET[function]",$this->MOD_SETTINGS["function"],$this->MOD_MENU["function"])));
-			
+			$this->doc->postCode = $this->doc->wrapScriptTags('
+				script_ended = 1;
+				if (top.fsMod) {
+					top.fsMod.recentIds["web"] = ' . intval($this->id) . ';
+				}
+			');
+
+			$this->doc->inDocStylesArray['mod_systemdata'] = '
+			';
+
 				// Render content:
 			$this->moduleContent();
+		} else {
+			$this->content = 'Access denied or commerce pages not created yet!';
+		}
 
-				// ShortCut
-			if ($BE_USER->mayMakeShortcut())	{
-				$this->content.=$this->doc->spacer(20).$this->doc->section("",$this->doc->makeShortcutIcon("id",implode(",",array_keys($this->MOD_MENU)),$this->MCONF["name"]));
-			}
+		$docHeaderButtons = $this->getHeaderButtons();
 
-			$this->content.=$this->doc->spacer(10);
+		$markers = array(
+			'CSH' => $docHeaderButtons['csh'],
+			'CONTENT' => $this->content
+		);
+		$markers['FUNC_MENU'] = $this->doc->funcMenu(
+			'',
+			t3lib_BEfunc::getFuncMenu(
+				$this->id,
+				'SET[function]',
+				$this->MOD_SETTINGS['function'],
+				$this->MOD_MENU['function']
+			)
+		);
+
+		// put it all together
+		$this->content = $this->doc->startPage($this->language->getLL('title'));
+		$this->content .= $this->doc->moduleBody($this->pageRow, $docHeaderButtons, $markers);
+		$this->content .= $this->doc->endPage();
+		$this->content = $this->doc->insertStylesAndJS($this->content);
+	}
+
+	/**
+	 * Create the panel of buttons for submitting the form or other operations.
+	 *
+	 * @return array all available buttons as an assoc. array
+	 */
+	public function getHeaderButtons() {
+		$buttons = array(
+			'csh' => '',
+				// group left 1
+			'level_up' => '',
+			'back' => '',
+				// group left 2
+			'new_record' => '',
+			'paste' => '',
+				// group left 3
+			'view' => '',
+			'edit' => '',
+			'move' => '',
+			'hide_unhide' => '',
+				// group left 4
+			'csv' => '',
+			'export' => '',
+				// group right 1
+			'cache' => '',
+			'reload' => '',
+			'shortcut' => '',
+		);
+
+			// CSH
+		if (!strlen($this->id)) {
+			$buttons['csh'] = t3lib_BEfunc::cshItem('_MOD_web_txcommerceM1', 'list_module_noId', $GLOBALS['BACK_PATH'], '', TRUE);
+		} elseif(!$this->id) {
+			$buttons['csh'] = t3lib_BEfunc::cshItem('_MOD_web_txcommerceM1', 'list_module_root', $GLOBALS['BACK_PATH'], '', TRUE);
+		} else {
+			$buttons['csh'] = t3lib_BEfunc::cshItem('_MOD_web_txcommerceM1', 'list_module', $GLOBALS['BACK_PATH'], '', TRUE);
+		}
+
+			// New
+		$newParams = '&edit[tx_commerce_' . $this->tableForNewLink . '][' . (int) $this->modPid . ']=new';
+		$buttons['new_record'] = '<a href="#" onclick="' .
+			htmlspecialchars(t3lib_BEfunc::editOnClick($newParams, $GLOBALS['BACK_PATH'], -1)) .
+			'" title="' . $this->language->getLL('create_' . $this->tableForNewLink) . '">' .
+			t3lib_iconWorks::getSpriteIcon('actions-document-new') .
+			'</a>';
+
+			// Reload
+		$buttons['reload'] = '<a href="' . htmlspecialchars(t3lib_div::linkThisScript()) . '">' .
+			t3lib_iconWorks::getSpriteIcon('actions-system-refresh') . '</a>';
+
+			// Shortcut
+		if ($this->user->mayMakeShortcut()) {
+			$buttons['shortcut'] = $this->doc->makeShortcutIcon(
+				'id, showThumbs, pointer, table, search_field, searchLevels, showLimit, sortField, sortRev',
+				implode(',', array_keys($this->MOD_MENU)), 'txcommerceM1_systemdata');
+		}
+
+		return $buttons;
 	}
 
 	/**
 	 * Prints out the module HTML
+	 *
+	 * @return void
 	 */
-	function printContent()	{
-		$this->content.=$this->doc->endPage();
+	public function printContent() {
 		echo $this->content;
 	}
 
 	/**
 	 * Generates the module content
+	 *
+	 * @return void
 	 */
-	function moduleContent()	{
-		 
-		switch((string)$this->MOD_SETTINGS["function"])	{
-				// attributes
-			
-			case 1:
-				$content = $this->getAttributeListing();
-				$this->content.=$this->doc->section('',$content,0,1);
-			break;
-			case 2:
+	protected function moduleContent() {
+		switch ((string) $this->MOD_SETTINGS['function']) {
+			case '2':
 				$content = $this->getManufacturerListing();
-				$this->content.=$this->doc->section('',$content,0,1);
-			break;
-			case 3:
+				$this->content .= $this->doc->section('', $content, 0, 1);
+				break;
+
+			case '3':
 				$content = $this->getSupplierListing();
-				$this->content.=$this->doc->section('',$content,0,1);
-			break;
+				$this->content .= $this->doc->section('', $content, 0, 1);
+				break;
+
+			case '1':
+			default:
+				$content = $this->getAttributeListing();
+				$this->content .= $this->doc->section('', $content, 0, 1);
+				break;
 		}
 	}
-	
-	function getAttributeListing()	{
-		global $LANG;
-		
+
+
+	/**
+	 * @return string
+	 */
+	protected function getAttributeListing() {
+		$headerRow = '<tr><td class="bgColor6" colspan="3"><strong>' . $this->language->getLL('title_attributes') .
+			'</strong></td><td class="bgColor6"><strong>' . $this->language->getLL('title_values') . '</strong></td></tr>';
+
+		$result = $this->fetchAttributes();
+		$attributeRows = $this->renderAttributeRows($result);
+
+		$this->tableForNewLink = 'attributes';
+
+		return '<table>' . $headerRow . $attributeRows . '</table>';
+	}
+
+	/**
+	 * @return resource
+	 */
+	protected function fetchAttributes() {
+		return $this->database->exec_SELECTquery(
+			'*',
+			'tx_commerce_attributes',
+			'pid=' . (int) $this->attrUid . ' AND hidden=0 AND deleted=0 and sys_language_uid =0',
+			'',
+			'internal_title, title'
+		);
+	}
+
+	/**
+	 * @param integer $uid
+	 * @return resource
+	 */
+	protected function fetchAttributeTranslation($uid) {
+		return $this->database->exec_SELECTquery(
+			'*',
+			'tx_commerce_attributes',
+			'pid=' . (int) $this->attrUid . ' AND hidden=0 AND deleted=0 and sys_language_uid <>0 and l18n_parent =' .
+				(int) $uid,
+			'',
+			'sys_language_uid'
+		);
+	}
+
+	/**
+	 * @param resource $result
+	 * @return string
+	 */
+	protected function renderAttributeRows($result) {
 		$recordList = t3lib_div::makeInstance('t3lib_recordList');
 		$recordList->backPath = $this->doc->backPath;
 		$recordList->initializeLanguages();
-	
-		$comPath = t3lib_extMgm::extRelPath('commerce');
-		
-		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'tx_commerce_attributes', 'pid=' .(int)$this->attrUid .' AND hidden=0 AND deleted=0 and sys_language_uid =0', '', 'internal_title, title');
-		$result = '<table>';
-		$result .= '<tr><td class="bgColor6" colspan="3"><strong>'.$LANG->getLL('title_attributes').'</strong></td><td class="bgColor6"><strong>'.$LANG->getLL('title_values').'</strong></td></tr>';
-		while ($attribute = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res))	{
-			$result .= '<tr>';
-			$result .= '<td class="bgColor4" align="center" valign="top"> '.t3lib_befunc::thumbCode($attribute,'tx_commerce_attributes','icon',$this->doc->backPath).'</td>';
+
+		$output = '';
+
+		$table = 'tx_commerce_attributes';
+		while ($attribute = $this->database->sql_fetch_assoc($result)) {
+			$refCountMsg = t3lib_BEfunc::referenceCount(
+				$table,
+				$attribute['uid'],
+				' ' . $this->language->sL(
+					'LLL:EXT:lang/locallang_core.xml:labels.referencesToRecord'
+				),
+				$this->getReferenceCount($table, $attribute['uid'])
+			);
+			$editParams = '&edit[' . $table . '][' . (int) $attribute['uid'] . ']=edit';
+			$deleteParams = '&cmd[' . $table . '][' . (int) $attribute['uid'] . '][delete]=1';
+
+			$output .= '<tr><td class="bgColor4" align="center" valign="top"> ' .
+				t3lib_befunc::thumbCode($attribute, 'tx_commerce_attributes', 'icon', $this->doc->backPath) . '</td>';
 			if ($attribute['internal_title']) {
-				$result .= '<td valign="top" class="bgColor4"><strong>' . htmlspecialchars($attribute['internal_title']) . '</strong> ('. htmlspecialchars($attribute['title']) .')';
-			}else{
-				$result .= '<td valign="top" class="bgColor4"><strong>' . htmlspecialchars($attribute['title']) . '</strong>';
+				$output .= '<td valign="top" class="bgColor4"><strong>' . htmlspecialchars($attribute['internal_title']) . '</strong> (' .
+					htmlspecialchars($attribute['title']) . ')';
+			} else {
+				$output .= '<td valign="top" class="bgColor4"><strong>' . htmlspecialchars($attribute['title']) . '</strong>';
 			}
-			
-			$catCount = $GLOBALS['TYPO3_DB']->exec_SELECTquery('COUNT(*) as catCount', 'tx_commerce_categories_attributes_mm', 'uid_foreign=' .(int)$attribute['uid']);
-			$catCount = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($catCount);
-			$catCount = $catCount['catCount'];
-			
-			$proCount = $GLOBALS['TYPO3_DB']->exec_SELECTquery('COUNT(*) as proCount', 'tx_commerce_products_attributes_mm', 'uid_foreign=' .(int)$attribute['uid']);
-			$proCount = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($proCount);
-			$proCount = $proCount['proCount'];
-			
-			
+
+			$catCount = $this->fetchRelationCount('tx_commerce_categories_attributes_mm', $attribute['uid']);
+			$proCount = $this->fetchRelationCount('tx_commerce_products_attributes_mm', $attribute['uid']);
+
 			// Select language versions
-			$resLocalVersion = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'tx_commerce_attributes', 'pid=' .(int)$this->attrUid .' AND hidden=0 AND deleted=0 and sys_language_uid <>0 and l18n_parent ='.(int)$attribute['uid'], '', 'sys_language_uid');
-			if ($GLOBALS['TYPO3_DB']->sql_num_rows($resLocalVersion)>0) {
-				$result .= '<table >';
-				while ($localAttributes =$GLOBALS['TYPO3_DB']->sql_fetch_assoc($resLocalVersion)) {
-					$result .= '<tr><td>&nbsp;';
-					$result .= '</td><td>';
+			$resLocalVersion = $this->fetchAttributeTranslation($attribute['uid']);
+			if ($this->database->sql_num_rows($resLocalVersion) > 0) {
+				$output .= '<table >';
+				while ($localAttributes = $this->database->sql_fetch_assoc($resLocalVersion)) {
+					$output .= '<tr><td>&nbsp;';
+					$output .= '</td><td>';
 					if ($localAttributes['internal_title']) {
-						$result .= htmlspecialchars($localAttributes['internal_title']) . ' (' . htmlspecialchars($localAttributes['title']) .')';
-					}else{
-						$result .= htmlspecialchars($localAttributes['title']);
+						$output .= htmlspecialchars($localAttributes['internal_title']) . ' (' . htmlspecialchars($localAttributes['title']) . ')';
+					} else {
+						$output .= htmlspecialchars($localAttributes['title']);
 					}
-					$result .= '</td><td>';
-					$result .= $recordList->languageFlag($localAttributes['sys_language_uid']);
-					$result .= '</td></tr>';
-					
+					$output .= '</td><td>';
+					$output .= $recordList->languageFlag($localAttributes['sys_language_uid']);
+					$output .= '</td></tr>';
+
 				}
-				$result .= '</table>';
-			}	
-			$result .= '<br />' .$LANG->getLL('usage');
-			$result .= ' <strong>' .$LANG->getLL('categories') .'</strong>: ' .$catCount;
-			$result .= ' <strong>' .$LANG->getLL('products') .'</strong>: ' .$proCount;
-			
-			$result .= '</td>';
-			$result .= '<td valign="top" class="bgColor5"><a href="#" onclick="document.location=\''.$this->doc->backPath.'alt_doc.php?returnUrl='.$comPath.'mod_systemdata/index.php&amp;edit[tx_commerce_attributes]['.(int)$attribute['uid'].']=edit\'; return false;">';
-			$result .= '<img src="'.$this->doc->backPath.'gfx/edit2.gif" border="0" /></a>';
-			$result .= '<a href="#" onclick="deleteRecord(\'tx_commerce_attributes\', ' .(int)$attribute['uid'] .', \''.$comPath.'mod_systemdata/index.php\',\''.$LANG->JScharCode($LANG->getLL('deleteWarning')).'\');"><img src="'.$this->doc->backPath.'gfx/garbage.gif" border="0" /></a>';
-			$result .= '</td>';
-			
-			$result .= '<td valign="top">';
-			
-			if ($attribute['has_valuelist'] == 1)	{
-				$valueRes = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'tx_commerce_attribute_values', 'attributes_uid='.(int)$attribute['uid'].' AND hidden=0 AND deleted=0','','sorting');
-				if ($GLOBALS['TYPO3_DB']->sql_num_rows($valueRes) > 0)	{
-					$result .= '<table border="0" cellspacing="0" cellpadding="0">';
-					while ($value = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($valueRes))	{
-						$result .= '<tr><td>'.htmlspecialchars($value['value']).'</td></tr>';
+				$output .= '</table>';
+			}
+
+			$output .= '<br />' . $this->language->getLL('usage');
+			$output .= ' <strong>' . $this->language->getLL('categories') . '</strong>: ' . $catCount;
+			$output .= ' <strong>' . $this->language->getLL('products') . '</strong>: ' . $proCount;
+			$output .= '</td>';
+
+			$output .= '<td><a href="#" onclick="' . htmlspecialchars(
+					t3lib_BEfunc::editOnClick($editParams, $this->doc->backPath, -1)
+				) . '" title="' . $this->language->getLL('edit', TRUE) . '">' .
+				t3lib_iconWorks::getSpriteIcon('actions-document-open') . '</a>';
+			$output .= '<a href="#" onclick="' . htmlspecialchars(
+					'if (confirm(' . $this->language->JScharCode(
+						$this->language->getLL('deleteWarningManufacturer') . ' "' . $attribute['title'] . '" ' . $refCountMsg
+					) . ')) {jumpToUrl(\'' . $this->doc->issueCommand($deleteParams, -1) . '\');} return false;'
+				) . '" title="' . $this->language->getLL('delete', TRUE) . '">' .
+				t3lib_iconWorks::getSpriteIcon('actions-edit-delete') . '</a>';
+
+			$output .= '</td><td valign="top">';
+
+			if ($attribute['has_valuelist'] == 1) {
+				$valueRes = $this->database->exec_SELECTquery(
+					'*',
+					'tx_commerce_attribute_values',
+					'attributes_uid=' . (int) $attribute['uid'] . ' AND hidden=0 AND deleted=0',
+					'',
+					'sorting'
+				);
+				if ($this->database->sql_num_rows($valueRes) > 0) {
+					$output .= '<table border="0" cellspacing="0" cellpadding="0">';
+					while ($value = $this->database->sql_fetch_assoc($valueRes)) {
+						$output .= '<tr><td>' . htmlspecialchars($value['value']) . '</td></tr>';
 					}
-					$result .= '</table>';
+					$output .= '</table>';
 				} else {
-					$result .= $LANG->getLL('no_values');
+					$output .= $this->language->getLL('no_values');
 				}
 			} else {
-				$result .= $LANG->getLL('no_valuelist');
+				$output .= $this->language->getLL('no_valuelist');
 			}
-			
-			$result .= '</td></tr>';
+
+			$output .= '</td></tr>';
 		}
-		
-			// create new attribute link
-			// typo3conf/ext/commerce/mod_systemdata/index.php
-		$result .= '<tr><td colspan="4">';
-		$result .= '<a href="#" onclick="document.location=\''.$this->doc->backPath.'alt_doc.php?returnUrl='.$comPath.'mod_systemdata/index.php&amp;edit[tx_commerce_attributes]['.$this->attrUid.']=new\'; return false;">'.$LANG->getLL('create_attribute').'</a>';
-		$result .= '</td></tr>';
-		
-		$result .= '</table>';
-		
-		return $result;
-		// debug($this->attrUid);
+
+		return $output;
 	}
-	
+
+
 	/**
 	 * generates a list of all saved Manufacturers
-	 */	
-	function getManufacturerListing()	{
-		global $LANG;
-		
-		$fields = explode(',', $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['extConf']['coSuppliers']);
-		$table = 'tx_commerce_manufacturer';
-		
-		$comPath = t3lib_extMgm::extRelPath('commerce');
-		
-		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', $table, 'pid=' .(int)$this->modPid .' AND hidden=0 AND deleted=0', '', 'title');
-		$result = '<table>';
-		
-		$result .= '<tr><td></td>';
-		for ($i = 0; $i < count($fields); $i++) {			
-			$fieldname = $LANG->sL(t3lib_BEfunc::getItemLabel($table, $fields[$i]));
-			$result .= '<td class="bgColor6"><strong>'.htmlspecialchars($fieldname).'</strong></td>';
+	 */
+	protected function getManufacturerListing() {
+		$fields = explode(',', $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['extConf']['coManufacturers']);
+
+		$headerRow = '<tr><td></td>';
+		foreach ($fields as $field) {
+			$headerRow .= '<td class="bgColor6"><strong>' .
+				$this->language->sL(t3lib_BEfunc::getItemLabel('tx_commerce_manufacturer', htmlspecialchars($field))) .
+				'</strong></td>';
 		}
-		$result .= '</tr>';
-		
-		while ($res AND $manufacturer = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res))	{
-			$result .= '<tr><td valign="top" class="bgColor5"><a href="#" onclick="document.location=\''.$this->doc->backPath.'alt_doc.php?returnUrl='.$comPath.'mod_systemdata/index.php&amp;edit[tx_commerce_manufacturer]['.(int)$manufacturer['uid'].']=edit\'; return false;">';
-			$result .= '<img src="'.$this->doc->backPath.'gfx/edit2.gif" border="0" /></a>';
-			$result .= '<a href="#" onclick="deleteRecord(\'tx_commerce_manufacturer\', ' .(int)$manufacturer['uid'] .', \''.$comPath.'mod_systemdata/index.php\',\''.$LANG->JScharCode($LANG->getLL('deleteWarningManufacturer')).'\');"><img src="'.$this->doc->backPath.'gfx/garbage.gif" border="0" /></a>';
-			$result .= '</td>';
-			for ($i = 0; $i < count($fields); $i++) {
-				$result .= '<td valign="top" class="bgColor4"><strong>' .htmlspecialchars($manufacturer[$fields[$i]]) .'</strong>';
-			}			
-			$result .= '</td></tr>';
-		}
-		
-			// create new attribute link
-			// typo3conf/ext/commerce/mod_systemdata/index.php
-		$result .= '<tr><td colspan="2">';
-		$result .= '<a href="#" onclick="document.location=\''.$this->doc->backPath.'alt_doc.php?returnUrl='.$comPath.'mod_systemdata/index.php&amp;edit[tx_commerce_manufacturer]['.$this->modPid.']=new\'; return false;">'.$LANG->getLL('create_manufacturer').'</a>';
-		$result .= '</td></tr>';
-		
-		$result .= '</table>';
-		
-		return $result;
-		// debug($this->attrUid);
+		$headerRow .= '</tr>';
+
+		$result = $this->fetchDataByTable('tx_commerce_manufacturer');
+		$manufacturerRows = $this->renderManufacturerRows($result, $fields);
+
+		$this->tableForNewLink = 'manufacturer';
+
+		return '<table>' . $headerRow . $manufacturerRows . '</table>';
 	}
-	
-	
+
+	/**
+	 * @param resource $result
+	 * @param array $fields
+	 * @return string
+	 */
+	protected function renderManufacturerRows($result, $fields) {
+		$output = '';
+
+		$table = 'tx_commerce_manufacturer';
+		while ($row = $this->database->sql_fetch_assoc($result)) {
+			$refCountMsg = t3lib_BEfunc::referenceCount(
+				$table,
+				$row['uid'],
+				' ' . $this->language->sL(
+					'LLL:EXT:lang/locallang_core.xml:labels.referencesToRecord'
+				),
+				$this->getReferenceCount($table, $row['uid'])
+			);
+			$editParams = '&edit[' . $table . '][' . (int) $row['uid'] . ']=edit';
+			$deleteParams = '&cmd[' . $table . '][' . (int) $row['uid'] . '][delete]=1';
+
+			$output .= '<tr><td><a href="#" onclick="' . htmlspecialchars(
+					t3lib_BEfunc::editOnClick($editParams, $this->doc->backPath, -1)
+				) . '" title="' . $this->language->getLL('edit', TRUE) . '">' .
+				t3lib_iconWorks::getSpriteIcon('actions-document-open') . '</a>';
+			$output .= '<a href="#" onclick="' . htmlspecialchars(
+					'if (confirm(' . $this->language->JScharCode(
+						$this->language->getLL('deleteWarningManufacturer') . ' "' . htmlspecialchars($row['title']) . '" ' . $refCountMsg
+					) . ')) {jumpToUrl(\'' . $this->doc->issueCommand($deleteParams, -1) . '\');} return false;'
+				) . '" title="' . $this->language->getLL('delete', TRUE) . '">' .
+				t3lib_iconWorks::getSpriteIcon('actions-edit-delete') . '</a>';
+			$output .= '</td>';
+
+			foreach ($fields as $field) {
+				$output .= '<td valign="top" class="bgColor4"><strong>' . htmlspecialchars($row[$field]) . '</strong>';
+			}
+
+			$output .= '</td></tr>';
+		}
+
+		return $output;
+	}
+
+
 	/**
 	 * generates a list of all saved Suppliers
-	 */	
-	function getSupplierListing()	{
-		global $LANG;
-		$comPath = t3lib_extMgm::extRelPath('commerce');
-		
+	 *
+	 * @return string
+	 */
+	protected function getSupplierListing() {
 		$fields = explode(',', $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['extConf']['coSuppliers']);
-		$table = 'tx_commerce_supplier';
-		
-		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', $table, 'pid=' .(int)$this->modPid .' AND hidden=0 AND deleted=0', '', 'title');
-		
-		$result = '<table>';
-		$result .= '<tr><td></td>';
-		for ($i = 0; $i < count($fields); $i++) {			
-			$fieldname = $LANG->sL(t3lib_BEfunc::getItemLabel($table, $fields[$i]));
-			$result .= '<td class="bgColor6"><strong>' . htmlspecialchars($fieldname) . '</strong></td>';
+
+		$headerRow = '<tr><td></td>';
+		foreach ($fields as $field) {
+			$headerRow .= '<td class="bgColor6"><strong>' .
+				$this->language->sL(t3lib_BEfunc::getItemLabel('tx_commerce_supplier', htmlspecialchars($field))) .
+				'</strong></td>';
 		}
-		$result .= '</tr>';
-		
-		while ($res AND $supplier = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res))	{
-			$result .= '<tr><td valign="top" class="bgColor5"><a href="#" onclick="document.location=\''.$this->doc->backPath.'alt_doc.php?returnUrl='.$comPath.'mod_systemdata/index.php&amp;edit[tx_commerce_supplier]['. (int)$supplier['uid'].']=edit\'; return false;">';
-			$result .= '<img src="'.$this->doc->backPath.'gfx/edit2.gif" border="0" /></a>';
-			$result .= '<a href="#" onclick="deleteRecord(\'tx_commerce_supplier\', ' .(int)$supplier['uid'] .', \''.$comPath.'mod_systemdata/index.php\',\''.$LANG->JScharCode($LANG->getLL('deleteWarningsupplier')).'\');"><img src="'.$this->doc->backPath.'gfx/garbage.gif" border="0" /></a>';
-			$result .= '</td>';
-			
-			for ($i = 0; $i < count($fields); $i++) {
-				$result .= '<td valign="top" class="bgColor4"><strong>' .htmlspecialchars($supplier[$fields[$i]]) .'</strong>';
-			}
-						
-			$result .= '</td></tr>';
-		}
-		
-			// create new attribute link
-			// typo3conf/ext/commerce/mod_systemdata/index.php
-		$result .= '<tr><td colspan="2">';
-		$result .= '<a href="#" onclick="document.location=\''.$this->doc->backPath.'alt_doc.php?returnUrl='.$comPath.'mod_systemdata/index.php&amp;edit[tx_commerce_supplier]['.$this->modPid.']=new\'; return false;">'.$LANG->getLL('create_supplier').'</a>';
-		$result .= '</td></tr>';
-		
-		$result .= '</table>';
-		
-		
-		return $result;
-		// debug($this->attrUid);
+		$headerRow .= '</tr>';
+
+		$result = $this->fetchDataByTable('tx_commerce_supplier');
+		$supplierRows = $this->renderSupplierRows($result, $fields);
+
+		$this->tableForNewLink = 'supplier';
+
+		return '<table>' . $headerRow . $supplierRows . '</table>';
 	}
-	
+
+	/**
+	 * @param resource $result
+	 * @param array $fields
+	 * @return string
+	 */
+	protected function renderSupplierRows($result, $fields) {
+		$output = '';
+
+		$table = 'tx_commerce_supplier';
+		while ($row = $this->database->sql_fetch_assoc($result)) {
+			$refCountMsg = t3lib_BEfunc::referenceCount(
+				$table,
+				$row['uid'],
+				' ' . $this->language->sL(
+					'LLL:EXT:lang/locallang_core.xml:labels.referencesToRecord'
+				),
+				$this->getReferenceCount($table, $row['uid'])
+			);
+			$editParams = '&edit[' . $table . '][' . (int) $row['uid'] . ']=edit';
+			$deleteParams = '&cmd[' . $table . '][' . (int) $row['uid'] . '][delete]=1';
+
+			$output .= '<tr><td><a href="#" onclick="' . htmlspecialchars(
+					t3lib_BEfunc::editOnClick($editParams, $this->doc->backPath, -1)
+				) . '" title="' . $this->language->getLL('edit', TRUE) . '">' .
+				t3lib_iconWorks::getSpriteIcon('actions-document-open') . '</a>';
+			$output .= '<a href="#" onclick="' . htmlspecialchars(
+					'if (confirm(' . $this->language->JScharCode(
+						$this->language->getLL('deleteWarningSupplier') . ' "' . htmlspecialchars($row['title']) . '" ' . $refCountMsg
+					) . ')) {jumpToUrl(\'' . $this->doc->issueCommand($deleteParams, -1) . '\');} return false;'
+				) . '" title="' . $this->language->getLL('delete', TRUE) . '">' .
+				t3lib_iconWorks::getSpriteIcon('actions-edit-delete') . '</a>';
+			$output .= '</td>';
+
+			foreach ($fields as $field) {
+				$output .= '<td valign="top" class="bgColor4"><strong>' . htmlspecialchars($row[$field]) . '</strong>';
+			}
+
+			$output .= '</td></tr>';
+		}
+
+		return $output;
+	}
+
+
+	/**
+	 * @param string $table
+	 * @return resource
+	 */
+	protected function fetchDataByTable($table) {
+		return $this->database->exec_SELECTquery(
+			'*',
+			$table,
+			'pid=' . (int) $this->modPid . ' AND hidden=0 AND deleted=0',
+			'',
+			'title'
+		);
+	}
+
+	/**
+	 * @param string $table
+	 * @param integer $uidForeign
+	 * @return integer
+	 */
+	protected function fetchRelationCount($table, $uidForeign) {
+		$result = $this->database->exec_SELECTquery('COUNT(*) as count', $table, 'uid_foreign=' . (int) $uidForeign);
+		$row = $this->database->sql_fetch_assoc($result);
+		return $row['count'];
+	}
+
+
+	/**
+	 * Gets the number of records referencing the record with the UID $uid in
+	 * the table $tableName.
+	 *
+	 * @param string $tableName
+	 *        table name of the referenced record, must not be empty
+	 * @param integer $uid
+	 *        UID of the referenced record, must be > 0
+	 *
+	 * @return integer the number of references to record $uid in table
+	 *                 $tableName, will be >= 0
+	 */
+	protected function getReferenceCount($tableName, $uid) {
+		if (!isset($this->referenceCount[$tableName][$uid])) {
+			$numberOfReferences = $this->database->exec_SELECTcountRows(
+				'*',
+				'sys_refindex',
+				'ref_table = ' . $this->database->fullQuoteStr(
+					$tableName, 'sys_refindex'
+				) .
+					' AND ref_uid = ' . (int) $uid .
+					' AND deleted = 0'
+			);
+
+			$this->referenceCount[$tableName][$uid] = $numberOfReferences;
+		}
+
+		return $this->referenceCount[$tableName][$uid];
+	}
 }
 
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/mod_systemdata/index.php'])	{
+
+
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/mod_systemdata/index.php']) {
 	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/mod_systemdata/index.php']);
 }
 
 
 
+if (!(TYPO3_REQUESTTYPE & TYPO3_REQUESTTYPE_AJAX)) {
+	/** @var $SOBE Tx_Commerce_SystemData */
+	$SOBE = t3lib_div::makeInstance('Tx_Commerce_SystemData');
+	$SOBE->init();
 
-// Make instance:
-$SOBE = t3lib_div::makeInstance('tx_commerce_systemdata');
-$SOBE->init();
+	foreach ($SOBE->include_once as $includeFile) {
+		include_once($includeFile);
+	}
 
-$SOBE->main();
-$SOBE->printContent();
+	$SOBE->main();
+	$SOBE->printContent();
+}
 
 ?>

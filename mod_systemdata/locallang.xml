@@ -12,8 +12,8 @@
 			<label index="title_attributes">Attributes</label>
 			<label index="desc_attributes">Create and edit the attributes which are used for defining articles from products.</label>
 			<label index="title_values">Values</label>
-			<label index="create_attribute">Create new attribute</label>
-			<label index="deleteWarning">Do you really want to delete this attribute?</label>
+			<label index="create_attributes">Create new attribute</label>
+			<label index="deleteWarningAttribute">Do you really want to delete this attribute?</label>
 			<label index="no_values">This attribute has no values</label>
 			<label index="no_valuelist">This attribute has no value list</label>
 			<label index="usage">Usage in</label>
