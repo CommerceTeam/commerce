@@ -1,7 +1,3 @@
- * 
- * $Id$
-			$result[]=array('title'=>htmlspecialchars(strip_tags($CategoryObject->get_title())),
-						'nav_title' => htmlspecialchars(strip_tags($CategoryObject->get_navtitle())),
 <?php
 /***************************************************************
  *  Copyright notice
