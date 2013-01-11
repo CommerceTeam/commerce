@@ -320,7 +320,7 @@ class Tx_Commerce_SystemData extends t3lib_SCbase {
 		return $this->database->exec_SELECTquery(
 			'*',
 			'tx_commerce_attributes',
-			'pid=' . (int) $this->attributePid . ' AND hidden=0 AND deleted=0 and sys_language_uid =0',
+			'pid=' . (int) $this->attributePid . ' AND hidden=0 AND deleted=0 and (sys_language_uid = 0 OR sys_language_uid = -1)',
 			'',
 			'internal_title, title'
 		);
