@@ -105,6 +105,9 @@ class leafSlave extends leaf {
 		
 		$out .= $this->view->PMicon($child, $isLast, $exp, $isBank, $hasChildren); //pm icon
 		
+		if ($this->selfClass === 'tx_commerce_leaf_product') {
+			$this->view->substituteRealValues();
+		}
 		$out .= $this->view->getIcon($child); //icon
 		$out .= $this->view->wrapTitle($child['title'], $child);	//title
 		
