@@ -105,7 +105,7 @@ class leafSlave extends leaf {
 		
 		$out .= $this->view->PMicon($child, $isLast, $exp, $isBank, $hasChildren); //pm icon
 		
-		if ($this->selfClass === 'tx_commerce_leaf_product') {
+		if (strpos(t3lib_div::getIndpEnv('REQUEST_URI'), 'class.tx_commerce_category_navframe.php') === FALSE) {
 			$this->view->substituteRealValues();
 		}
 		$out .= $this->view->getIcon($child); //icon
