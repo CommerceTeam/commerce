@@ -88,8 +88,8 @@ class ux_tx_version_cm1 extends tx_version_cm1 {
 					$productObj ->load_data();
 					$parentCateory = $productObj->getMasterparentCategory();
 					$getVars = ($fieldArray['sys_language_uid']>0?'&L='.$fieldArray['sys_language_uid']:'').
-							'&ADMCMD_vPrev&no_cache=1&tx_commerce[showUid]='.$row['t3ver_oid'].
-					 		'&tx_commerce[catUid]='.$parentCateory;
+							'&ADMCMD_vPrev&no_cache=1&tx_commerce_pi1[showUid]='.$row['t3ver_oid'].
+					 		'&tx_commerce_pi1[catUid]='.$parentCateory;
 					$adminLink.='<a href="#" onclick="'.htmlspecialchars(t3lib_BEfunc::viewOnClick($previewPageID,$this->doc->backPath,t3lib_BEfunc::BEgetRootLine($row['_REAL_PID']),'','',$getVars)).'">'.
 						'<img'.t3lib_iconWorks::skinImg($this->doc->backPath,'gfx/zoom.gif','width="12" height="12"').' title="" alt="" />'.
 						'</a>';

@@ -127,8 +127,8 @@ class tx_commerce_dmhooks {
 				if (isset($GLOBALS['_POST']['_savedokview_x'])  )	{
 					// if "savedokview" has been pressed and  the beUser works in the LIVE workspace open current record in single view
 					$pagesTSC = t3lib_BEfunc::getPagesTSconfig($GLOBALS['_POST']['popViewId']); // get page TSconfig
-					if ($pagesTSC['tx_commerce.']['singlePid']) {
-						$previewPageID = $pagesTSC['tx_commerce.']['singlePid'];
+					if ($pagesTSC['tx_commerce_pi1.']['singlePid']) {
+						$previewPageID = $pagesTSC['tx_commerce_pi1.']['singlePid'];
 					}else{
 						$previewPageID = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['extConf']['previewPageID'];
 					}
@@ -140,8 +140,8 @@ class tx_commerce_dmhooks {
 						$productObj ->load_data();
 						$parentCateory = $productObj->getMasterparentCategory();
 						$GLOBALS['_POST']['popViewId_addParams'] = ($fieldArray['sys_language_uid']>0?'&L='.$fieldArray['sys_language_uid']:'').
-						'&ADMCMD_vPrev&no_cache=1&tx_commerce[showUid]='.$id.
-						'&tx_commerce[catUid]='.$parentCateory;
+						'&ADMCMD_vPrev&no_cache=1&tx_commerce_pi1[showUid]='.$id.
+						'&tx_commerce_pi1[catUid]='.$parentCateory;
 						$GLOBALS['_POST']['popViewId'] = $previewPageID;
 					}
 					#debug(t3lib_div::_GP('popViewId_addParams'),__FUNCTION__);
