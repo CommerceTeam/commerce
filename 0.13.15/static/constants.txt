@@ -1,0 +1,115 @@
+plugin.tx_commerce_lib {
+
+	# cat=plugin.commerce: General/links/a2; type=int+; label= Address PID: The PID where the addresses are stored
+	addressPid = 0
+
+	# cat=plugin.commerce: General/links/a4; type=int+; label= USER PID: The PID where the new created user are stored
+	userPid = 0
+
+	# cat=plugin.commerce: General/links/a6; type=int+; label= Edit Address PID: The PID of the page where the addresses should be edited. Enter 0 if the addresses should be edited on the same page.
+	editAddressPid = 0
+
+	# cat=plugin.commerce: General/links/a8; type=int+; label= Basket PID: The PID of the basket
+	basketPid = 0
+
+	# cat=plugin.commerce: General/links/b2; type=int+; label= Empty basket PID: The PID of the content which is displayed if the basket is empty
+	emptyBasketPid = 0
+
+	# cat=plugin.commerce: General/links/b5; type=int+; label= Empty Checkout PID: The PID of the content which is displayed if no checkout is possible
+	emptyCheckoutPid = 0
+
+	# cat=plugin.commerce: General/links/b1; type=int+; label= Checkout PID: The PID of the checkout
+	checkoutPid = 0
+
+	# cat=plugin.commerce: General/links/b0; type=int+; label= Override PID: The PID of the ProductListing needed for navigation and products insert on normal pages
+	overridePid = 0
+
+	# cat=plugin.commerce: General/Others/a2; type=int+; label= Payment Article: The ID of the default Payment Article
+	paymentArticleId = 1
+	
+	# cat=plugin.commerce: General/Others/a4; type=int+; label= Payment Product: The ID of the payment Product
+	payProdId = 1
+
+	# cat=plugin.commerce: General/Others/a6; type=int+; label= Delivery Product: The ID of the Delivery Product
+	delProdId = 2
+
+	# cat=plugin.commerce: General/Others/a8; type=int+; label= Default Category: Default category for Frontendview
+	catUid = 2
+	
+	# cat=plugin.commerce: General/Others/a9; type=int+; label= USER Group ID: The UID of the usergroup for new user
+	userGroup = 1
+
+	# cat=plugin.commerce: General/Others/b5; type=string; label= Currency: The currency ISO code, be aware that you have to change the CurrencyID too!
+	currency = EUR
+	
+	# cat=plugin.commerce: General/Others/b5; type=string; label= Currency: The ID to the currency ISO code (see staticInfoTable), be aware that you have to change the Currency too!
+	currencyId = 49
+	
+	# cat=plugin.commerce: General/Others/b8; type=string; label= ArticleTypes: Regular article types for basket and checkoutlisting
+	regularArticleTypes = 1
+	
+	# cat=plugin.commerce: General/Others/b3; type=int+; label= AddRootlineInformationtoUrl: Adds some additional parameters to the URL, for faster Navigation rendering
+	useRootlineInformationToUrl = 0
+	
+	# cat=plugin.commerce: General/Others/b9; type=int+; label= DisplayErrors: Allow displaying errors in the frontend
+	showErrors = 1
+	
+	# cat=plugin.commerce: General/Others/b10; type=boolean; label=Display product direct: display product direct if only one product exist
+	displayProductIfOneProduct = 1	
+	
+	# cat=plugin.commerce: General/Basket/b6; type=boolean; label=Calculating Method for VAT: If you Calculate your prices from net please check
+	priceFromNet = 0
+	
+	# cat=plugin.commerce: General/StockHandling/b6; type=boolean; label=switch for Stockhandling: If you want stockhandling please check
+	useStockHandling = 0
+	
+	# cat=plugin.commerce: General/EmpytCategories/b6; type=boolean; label=Hide Categories if cateory and subcategories are empty
+	hideEmptyCategories = 0
+}
+
+plugin.tx_commerce_pi1 {
+	# cat=plugin.commerce: Display/file/1; type=file[html,htm,tmpl,txt]; label= Template File: HTML-template for display the products and categories
+	templateFile = EXT:commerce/pi1/category_product.tpl
+	
+	# cat=plugin.commerce: Display/other/5; type=string; label= Attribute Linebreak Chars: Chars which should be used if more than one line of attributes
+	attributeLinebreakChars = <br />
+}
+
+plugin.tx_commerce_pi2 {
+	# cat=plugin.commerce: Basket/file/1; type=file[html,htm,tmpl,txt]; label= Template File: HTML-template for display the shopping cart
+	templateFile = EXT:commerce/pi2/shoppingcart.tpl
+	
+}
+		
+plugin.tx_commerce_pi3 {
+	# cat=plugin.commerce: Checkout/others/1; type=boolean; label=switch to Html-Mail: If you want to send Html-Mail please check
+	useHtmlMail = 0	
+
+	# cat=plugin.commerce: Checkout/file/10; type=file[html,htm,tmpl,txt]; label= Template File: HTML-template for display the checkout
+	templateFile = EXT:commerce/pi3/template_checkout.tpl
+	
+	# cat=plugin.commerce: Checkout/file/15; type=file[html,htm,tmpl,txt]; label= Template File: HTML-template for the email that is send to the user after checking out
+	UserMailTemplateFile =  EXT:commerce/pi3/template_usermail.tpl
+	
+	# cat=plugin.commerce: Checkout/file/20; type=file[html,htm,tmpl,txt]; label= Template File: HTML-template for the email that is send to the administrator after checking out
+	AdminMailTemplateFile =  EXT:commerce/pi3/template_adminmail.tpl
+	
+	# cat=plugin.commerce: Checkout/file/25; type=file[html,htm,tmpl,txt]; label= Template File: HTML-template for the email that is send to the user after checking out in HTML Format
+	UserMailTemplateFileHtml =  EXT:commerce/pi3/template_usermail_html.tpl
+
+	# cat=plugin.commerce: Checkout/file/30; type=file[html,htm,tmpl,txt]; label= Template File: HTML-template for the email that is send to the administrator after checking out in HTML Format
+	AdminMailTemplateFileHtml =  EXT:commerce/pi3/template_adminmail_html.tpl	
+	
+}
+
+plugin.tx_commerce_pi4 {
+	# cat=plugin.commerce: Address Management/file/1; type=file[html,htm,tmpl,txt]; label= Template File: HTML-template for display the address manager
+	templateFile = EXT:commerce/pi4/template_addresses.tpl
+	
+	# cat=plugin.commerce: Address Management/other/20; type=int+; label= Min Addresscount: Defines how many addresses should assigned to a user as minimum. The user can't delete addresses anymore if he reaches this minimum
+	minAddressCount = 1 
+}
+
+plugin.tx_commerce_pi6 {
+	templateFile = EXT:commerce/pi6/invoice.tpl
+}
