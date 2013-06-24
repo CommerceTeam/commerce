@@ -135,17 +135,25 @@ class tx_commerce_dmhooks {
 						$previewPageID = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['extConf']['previewPageID'];
 					}
 					#debug($previewPageID,'$previewPageID',__LINE__,__FILE__);
-					if ($previewPageID > 0) {
-						// Get Parent CAT UID
-						$productObj = t3lib_div::makeInstance('tx_commerce_product');
-						$productObj -> init($id,sys_language_uid);
-						$productObj ->load_data();
-						$parentCateory = $productObj->getMasterparentCategory();
-						$GLOBALS['_POST']['popViewId_addParams'] = ($incomingFieldArray['sys_language_uid']>0?'&L='.$incomingFieldArray['sys_language_uid']:'').
-						'&ADMCMD_vPrev&no_cache=1&tx_commerce_pi1[showUid]='.$id.
-						'&tx_commerce_pi1[catUid]='.$parentCateory;
-						$GLOBALS['_POST']['popViewId'] = $previewPageID;
-					}
+                    if ($previewPageID > 0) {
+                        $productId = $id;
+                        if ($incomingFieldArray['sys_language_uid'] > 0) {
+                            $pRes = $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow('l18n_parent', 'tx_commerce_products', 'uid = ' .intval($id) . ' AND sys_language_uid = ' . $incomingFieldArray['sys_language_uid'] );
+                            if ($pRes['l18n_parent']) {
+                                $productId = (int)$pRes['l18n_parent'];
+                            };
+                        }
+                        // Get Parent CAT UID
+                        $productObj = t3lib_div::makeInstance('tx_commerce_product');
+                        $productObj -> init($productId,0);
+                        // Load default language, not translated to get category
+                        $productObj ->load_data();
+                        $parentCateory = $productObj->getMasterparentCategory();
+                        $GLOBALS['_POST']['popViewId_addParams'] = ($incomingFieldArray['sys_language_uid']>0?'&L='.$incomingFieldArray['sys_language_uid']:'').
+                            '&ADMCMD_vPrev&no_cache=1&tx_commerce_pi1[showUid]='.$productId.
+                            '&tx_commerce_pi1[catUid]='.$parentCateory;
+                        $GLOBALS['_POST']['popViewId'] = $previewPageID;
+                    }
 					#debug(t3lib_div::_GP('popViewId_addParams'),__FUNCTION__);
 
 				}
