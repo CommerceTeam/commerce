@@ -74,10 +74,10 @@ class tx_commerce_dmhooks {
 				(isset($incomingFieldArray['attributesedit']) ||
 				isset($incomingFieldArray['prices']) ||
 				isset($incomingFieldArray['create_new_price']))) ||
-			(($table == 'tx_commerce_products' || $table == 'tx_commerce_categories') &&
+			(( $table == 'tx_commerce_categories') &&
 				isset($incomingFieldArray['attributes']))
 				||
-			(($table == 'tx_commerce_orders' || $table == 'tx_commerce_order_articles') )
+			(($table == 'tx_commerce_products' ||$table == 'tx_commerce_orders' || $table == 'tx_commerce_order_articles') )
 		) ||
 				// don't try ro save anything, if the dataset was just created
 			strtolower(substr($id, 0, 3)) == 'new'
@@ -111,15 +111,17 @@ class tx_commerce_dmhooks {
 				$handleAttributes = true;
 				break;
 			case 'tx_commerce_products':
-				$this->catList = $this->belib->getUidListFromList(explode(',', $incomingFieldArray['categories']));
-				$handleAttributes = true;
+                if (isset($incomingFieldArray['attributes'])) {
+                    $this->catList = $this->belib->getUidListFromList(explode(',', $incomingFieldArray['categories']));
+                    $handleAttributes = true;
 
-				$articles = $this->belib->getArticlesOfProduct($id);
-				if (is_array($articles))	{
-					foreach ($articles as $article)	{
-						$this->belib->updateArticleHash($article['uid']);
-					}
-				}
+                    $articles = $this->belib->getArticlesOfProduct($id);
+                    if (is_array($articles))	{
+                        foreach ($articles as $article)	{
+                            $this->belib->updateArticleHash($article['uid']);
+                        }
+                    }
+                }
 
 
 				// direct preview
@@ -139,7 +141,7 @@ class tx_commerce_dmhooks {
 						$productObj -> init($id,sys_language_uid);
 						$productObj ->load_data();
 						$parentCateory = $productObj->getMasterparentCategory();
-						$GLOBALS['_POST']['popViewId_addParams'] = ($fieldArray['sys_language_uid']>0?'&L='.$fieldArray['sys_language_uid']:'').
+						$GLOBALS['_POST']['popViewId_addParams'] = ($incomingFieldArray['sys_language_uid']>0?'&L='.$incomingFieldArray['sys_language_uid']:'').
 						'&ADMCMD_vPrev&no_cache=1&tx_commerce_pi1[showUid]='.$id.
 						'&tx_commerce_pi1[catUid]='.$parentCateory;
 						$GLOBALS['_POST']['popViewId'] = $previewPageID;
