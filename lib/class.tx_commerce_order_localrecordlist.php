@@ -64,7 +64,7 @@ class tx_commerce_order_localRecordlist extends localRecordList {
 
  		if ($id>0){
  			$query_array=array(
- 			'SELECT' => 'DISTINCT tx_commerce_order_articles.order_id, delivery_table.order_id as order_number, tx_commerce_order_articles.article_type_uid, tx_commerce_order_articles.title as payment, delivery_table.title as delivery, tx_commerce_orders.uid,tx_commerce_orders.pid, tx_commerce_orders.crdate, tx_commerce_orders.tstamp, tx_commerce_orders.order_id, tx_commerce_orders.sum_price_gross, tt_address.tx_commerce_address_type_id, tt_address.company ,tt_address.name,tt_address.surname, tt_address.address, tt_address.zip, tt_address.city, tt_address.email,tt_address.phone as phone_1, tt_address.mobile as phone_2,tx_commerce_orders.cu_iso_3_uid, tx_commerce_orders.tstamp, tx_commerce_orders.uid as articles, tx_commerce_orders.comment, tx_commerce_orders.internalcomment, tx_commerce_orders.order_type_uid as order_type_uid_noName, static_currencies.cu_iso_3',
+ 			'SELECT' => 'DISTINCT tx_commerce_order_articles.order_id, delivery_table.order_id as order_number, tx_commerce_order_articles.article_type_uid, tx_commerce_order_articles.title as payment, delivery_table.title as delivery, tx_commerce_orders.uid,tx_commerce_orders.pid, tx_commerce_orders.crdate, tx_commerce_orders.tstamp, tx_commerce_orders.order_id, tx_commerce_orders.sum_price_gross, tt_address.tx_commerce_address_type_id, tt_address.company, tt_address.name, tt_address.first_name, tt_address.last_name, tt_address.country, tt_address.surname, tt_address.address, tt_address.zip, tt_address.city, tt_address.email,tt_address.phone as phone_1, tt_address.mobile as phone_2,tx_commerce_orders.cu_iso_3_uid, tx_commerce_orders.tstamp, tx_commerce_orders.uid as articles, tx_commerce_orders.comment, tx_commerce_orders.internalcomment, tx_commerce_orders.order_type_uid as order_type_uid_noName, static_currencies.cu_iso_3',
  			'FROM' =>'tx_commerce_orders,tt_address, tx_commerce_order_articles, tx_commerce_order_articles as delivery_table, static_currencies',
  			'WHERE' =>'static_currencies.uid = tx_commerce_orders.cu_iso_3_uid and delivery_table.order_id = tx_commerce_orders.order_id AND tx_commerce_order_articles.order_id = tx_commerce_orders.order_id AND tx_commerce_order_articles.article_type_uid = '.PAYMENTArticleType.' AND delivery_table.article_type_uid = '.DELIVERYArticleType.' AND tx_commerce_orders.deleted = 0 and tx_commerce_orders.cust_deliveryaddress = tt_address.uid AND tx_commerce_orders.pid='.$id.' '.$addWhere ,
  			'GROUPBY' => '',
@@ -95,7 +95,7 @@ class tx_commerce_order_localRecordlist extends localRecordList {
  			$list = implode(',',$list);
  			
  			$query_array=array(
- 			'SELECT' => 'DISTINCT tx_commerce_order_articles.order_id,delivery_table.order_id as order_number, tx_commerce_order_articles.article_type_uid, tx_commerce_order_articles.title as payment, delivery_table.title as delivery, tx_commerce_orders.uid,tx_commerce_orders.pid, tx_commerce_orders.crdate, tx_commerce_orders.tstamp, tx_commerce_orders.order_id, tx_commerce_orders.sum_price_gross, tt_address.tx_commerce_address_type_id, tt_address.company,tt_address.name,tt_address.surname, tt_address.address, tt_address.zip, tt_address.city, tt_address.email,tt_address.phone as phone_1, tt_address.mobile as phone_2,tx_commerce_orders.cu_iso_3_uid, tx_commerce_orders.tstamp, tx_commerce_orders.uid as articles, tx_commerce_orders.comment, tx_commerce_orders.internalcomment, tx_commerce_orders.order_type_uid as order_type_uid_noName, static_currencies.cu_iso_3',
+ 			'SELECT' => 'DISTINCT tx_commerce_order_articles.order_id,delivery_table.order_id as order_number, tx_commerce_order_articles.article_type_uid, tx_commerce_order_articles.title as payment, delivery_table.title as delivery, tx_commerce_orders.uid,tx_commerce_orders.pid, tx_commerce_orders.crdate, tx_commerce_orders.tstamp, tx_commerce_orders.order_id, tx_commerce_orders.sum_price_gross, tt_address.tx_commerce_address_type_id, tt_address.company,tt_address.name, tt_address.first_name, tt_address.last_name, tt_address.country, tt_address.surname, tt_address.address, tt_address.zip, tt_address.city, tt_address.email,tt_address.phone as phone_1, tt_address.mobile as phone_2,tx_commerce_orders.cu_iso_3_uid, tx_commerce_orders.tstamp, tx_commerce_orders.uid as articles, tx_commerce_orders.comment, tx_commerce_orders.internalcomment, tx_commerce_orders.order_type_uid as order_type_uid_noName, static_currencies.cu_iso_3',
  			'FROM' =>'tx_commerce_orders,tt_address, tx_commerce_order_articles, tx_commerce_order_articles as delivery_table, static_currencies',
  			'WHERE' =>'static_currencies.uid = tx_commerce_orders.cu_iso_3_uid and delivery_table.order_id = tx_commerce_orders.order_id AND tx_commerce_order_articles.order_id = tx_commerce_orders.order_id AND tx_commerce_order_articles.article_type_uid = '.PAYMENTArticleType.' AND delivery_table.article_type_uid = '.DELIVERYArticleType.' AND tx_commerce_orders.deleted = 0 and tx_commerce_orders.cust_deliveryaddress = tt_address.uid AND tx_commerce_orders.pid in ('.$list.') '.$addWhere ,
  			'GROUPBY' => '',
@@ -344,7 +344,6 @@ class tx_commerce_order_localRecordlist extends localRecordList {
 //				}
 
 					// Finally, render the list:		
-				
 					// Check for order_number and order_title view
 				if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['extConf']['showArticleNumber'] == 1 &&
 					$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['extConf']['showArticleTitle'] == 1) {
@@ -358,9 +357,8 @@ class tx_commerce_order_localRecordlist extends localRecordList {
 				}
 					//CSV Export
 				if ($this->csvOutput){
-					$this->myfields=array("order_id","crdate","tstamp","delivery","payment","numarticles","sum_price_gross",'cu_iso_3',"company","surname","name","address","zip","city","email","phone_1","phone_2", "comment", "internalcomment","articles");
-				}
-				
+					$this->myfields=explode(',',$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['extConf']['exportOrderFields']);                    
+				}				
 				$this->HTMLcode.=$this->getTable($tableName, $this->id,implode(',',$this->myfields));
 			}
 		}
@@ -466,19 +464,11 @@ class tx_commerce_order_localRecordlist extends localRecordList {
 			if ($fCol=='pid') {
 				$theData[$fCol]=$row[$fCol];
 			} elseif ($fCol=='sum_price_gross') {
-				if ($this->csvOutput) {
-					$row[$fCol]=$row[$fCol]/100;
-				}else {
-					$theData[$fCol]=tx_moneylib::format($row[$fCol],$row['cu_iso_3'],false);
-				}
+				$theData[$fCol]=tx_moneylib::format($row[$fCol],$row['cu_iso_3'],false);
 			} elseif ($fCol=='crdate') {
-				$theData[$fCol] = t3lib_BEfunc::date($row[$fCol]);
-			
-				$row[$fCol]=t3lib_BEfunc::date($row[$fCol]);
+				$theData[$fCol] = t3lib_BEfunc::date($row[$fCol]);			
 			}	elseif ($fCol=='tstamp') {
 				$theData[$fCol] = t3lib_BEfunc::date($row[$fCol]);
-			
-				$row[$fCol]=t3lib_BEfunc::date($row[$fCol]);
 			} elseif ($fCol=='articles') {
 				$articleNumber = array();
 				$articleName = array();
@@ -491,17 +481,13 @@ class tx_commerce_order_localRecordlist extends localRecordList {
 							
 				if ($this->csvOutput) {
 					$theData[$fCol] = implode(',',$articles);
-					$row[$fCol]  = implode(',',$articles);
 				}else{
 					$theData[$fCol] = '<input type="checkbox" name="orderUid[]" value="'.$row['uid'].'">';
 				}
 			}elseif ($fCol=='numarticles') { 
 				$res_articles=$GLOBALS['TYPO3_DB']->exec_SELECTquery('sum(amount) anzahl','tx_commerce_order_articles','order_uid = '.intval($row['uid']).' and article_type_uid ='.NORMALArticleType);
-				if (($lokalRow = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_articles))) {
-					
-					$theData[$fCol] = $lokalRow['anzahl'];
-					$row[$fCol]  = $lokalRow['anzahl'];
-					
+				if (($lokalRow = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_articles))) {					
+					$theData[$fCol] = $lokalRow['anzahl'];					
 				}	
 			}elseif ($fCol=='article_number') { 
 				$articleNumber = array();
@@ -557,23 +543,25 @@ class tx_commerce_order_localRecordlist extends localRecordList {
 		} else if($fCol=='order_id') {
 			$theData[$fCol] = $row[$fCol];
 		} else {
-				/**
-				 * Use own method, if typo3 4.0.0 is not installed
-				 */
-				if (substr(TYPO3_version, 0, 3) >= '4.0') {
-					$theData[$fCol] = $this->linkUrlMail(htmlspecialchars(t3lib_BEfunc::getProcessedValueExtra($table,$fCol,$row[$fCol],100,$row['uid'])),$row[$fCol]);					
-				} else {
-					$theData[$fCol] = $this->mylinkUrlMail(htmlspecialchars(t3lib_BEfunc::getProcessedValueExtra($table,$fCol,$row[$fCol],100,$row['uid'])),$row[$fCol]);
-					
-				}
+                if($this->csvOutput) {
+                    $theData[$fCol] = $row[$fCol];
+                }
+                else {
+                    /**
+                    * Use own method, if typo3 4.0.0 is not installed
+                    */                    
+                    if (substr(TYPO3_version, 0, 3) >= '4.0') {
+                        $theData[$fCol] = $this->linkUrlMail(htmlspecialchars(t3lib_BEfunc::getProcessedValueExtra($table,$fCol,$row[$fCol],100,$row['uid'])),$row[$fCol]);
+                    } else {
+                        $theData[$fCol] = $this->mylinkUrlMail(htmlspecialchars(t3lib_BEfunc::getProcessedValueExtra($table,$fCol,$row[$fCol],100,$row['uid'])),$row[$fCol]);
+                    }
+                }           
 			}
 		}
 
 			// Add row to CSV list:
-		if ($this->csvOutput) {
-			
-		
-				// Charset Conversion
+		if ($this->csvOutput) {					
+			// Charset Conversion
 			$csObj=t3lib_div::makeInstance('t3lib_cs');
 			$csObj->initCharset($GLOBALS['TYPO3_CONF_VARS']['BE']['forceCharset']);	
 			
@@ -582,11 +570,9 @@ class tx_commerce_order_localRecordlist extends localRecordList {
 			}
 			$csObj->initCharset($extConf['BECSVCharset']);
 			
-			$csObj->convArray($row,$GLOBALS['TYPO3_CONF_VARS']['BE']['forceCharset'],$extConf['BECSVCharset']);
+			$csObj->convArray($theData,$GLOBALS['TYPO3_CONF_VARS']['BE']['forceCharset'],$extConf['BECSVCharset']);
 			
-			#print_r($row);
-			#die();
-			$this->addToCSV($row,$table);	
+			$this->addToCSV($theData,$table);	
 		}
 
 			// Create element in table cells:
