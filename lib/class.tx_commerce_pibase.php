@@ -519,9 +519,8 @@ class tx_commerce_pibase extends tslib_pibase {
 				
 				$tmpCategory=$this->cObj->substituteSubpart($tmpCategory,'###CATEGORY_ITEM_DETAILLINK###',$link);
 
-				
-				if($this->conf['groupProductsByCategory'] && !$this->conf['hideProductsInList']){
 
+				if($this->conf['groupProductsByCategory'] && !$this->conf['hideProductsInList'] && !empty($this->category_products)) {
 					$categoryProducts = $oneCategory->getAllProducts();
 					if($this->conf['useStockHandling'] == 1) {
 			  			$categoryProducts = tx_commerce_div::removeNoStockProducts($categoryProducts,$this->conf['products.']['showWithNoStock']);
