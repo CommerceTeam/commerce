@@ -1,5 +1,6 @@
 22.11.2013 Torben Hansen <t.hansen@skyfillers.com>
-* Fixed issue #10934
+* Fixed issue #10934 - Performance issues, thanks to Thies Kracht
+* Fixed issue #40732 - prices get lost in BE, thanks to Georg Schönweger
 
 21.12.2012 Sebastian Fischer <sf@marketing-factory.de>
 * Merged complete rewrite of mod_systemdata

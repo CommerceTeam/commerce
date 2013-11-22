@@ -59,7 +59,7 @@ class tx_commerce_tcehooksHandler {
 			//Get the whole price, not only the tce-form fields
 			foreach($pObj->datamap['tx_commerce_articles'] as $v){
 				$uids = explode(',',$v['prices']);
-				if(in_array($id, $uids)) {
+				if(in_array($id, $uids) && ($incomingFieldArray['price_net'] || $incomingFieldArray['price_gross'])) {
 					$this->calculateTax($incomingFieldArray, doubleval($v['tax']));
 				}
 			}
