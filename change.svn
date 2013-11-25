@@ -1,3 +1,6 @@
+25.11.2013 Torben Hansen <t.hansen@skyfillers.com>
+* Fixed issue #53916 - Missing getter for sess_id in basket
+
 22.11.2013 Torben Hansen <t.hansen@skyfillers.com>
 * Fixed issue #10934 - Performance issues, thanks to Thies Kracht
 * Fixed issue #40732 - prices get lost in BE, thanks to Georg Schönweger
