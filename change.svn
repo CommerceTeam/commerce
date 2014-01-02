@@ -1,3 +1,6 @@
+02.01.2014 Torben Hansen <t.hansen@skyfillers.com>
+* Fixed issue #53922 - Hardcoded title length
+
 25.11.2013 Torben Hansen <t.hansen@skyfillers.com>
 * Fixed issue #53916 - Missing getter for sess_id in basket
 

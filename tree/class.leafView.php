@@ -231,8 +231,8 @@ class leafView extends langbase {
 		
 		$res = '';
 		
-		//Max. size for Title of 30
-		$title = ('' != $title) ? t3lib_div::fixed_lgd_cs($title, 30) : $this->getLL('leaf.noTitle');
+		//Max. size for Title of 255
+		$title = ('' != $title) ? t3lib_div::fixed_lgd_cs($title, 255) : $this->getLL('leaf.noTitle');
 		
 		$aOnClick = 'return jumpTo(\''.$this->getJumpToParam($row).'\',this,\''.$this->domIdPrefix.$row['uid'].'_'.$bank.'\',\'\');';
 
