@@ -785,18 +785,14 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist'][COMMERCE_
 t3lib_extMgm::addPlugin(Array('LLL:EXT:commerce/locallang_be.php:tt_content.list_type_pi6', COMMERCE_EXTKEY . '_pi6'), 'list_type');
 
 
-/*  WIZZICON */
+/*  WIZICON */
 if (TYPO3_MODE == 'BE') {
-	$TBE_MODULES_EXT['xMOD_db_new_content_el']['addElClasses']['tx_commerce_pi1_wizicon'] =
-		PATH_TXCOMMERCE . 'pi1/class.tx_commerce_pi1_wizicon.php';
-	$TBE_MODULES_EXT['xMOD_db_new_content_el']['addElClasses']['tx_commerce_pi2_wizicon'] =
-		PATH_TXCOMMERCE . 'pi2/class.tx_commerce_pi2_wizicon.php';
-	$TBE_MODULES_EXT['xMOD_db_new_content_el']['addElClasses']['tx_commerce_pi3_wizicon'] =
-		PATH_TXCOMMERCE . 'pi3/class.tx_commerce_pi3_wizicon.php';
-	$TBE_MODULES_EXT['xMOD_db_new_content_el']['addElClasses']['tx_commerce_pi4_wizicon'] =
-		PATH_TXCOMMERCE . 'pi4/class.tx_commerce_pi4_wizicon.php';
-	$TBE_MODULES_EXT['xMOD_db_new_content_el']['addElClasses']['tx_commerce_pi6_wizicon'] =
-		PATH_TXCOMMERCE . 'pi6/class.tx_commerce_pi6_wizicon.php';
+	/**
+	 * Default PageTS
+	 */
+	t3lib_extMgm::addPageTSConfig(
+		'<INCLUDE_TYPOSCRIPT: source="FILE:EXT:' . COMMERCE_EXTKEY . '/Configuration/PageTS/ModWizards.ts">'
+	);
 }
 
 ?>
