@@ -21,99 +21,96 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
-/**
- * COMMERCE order edit nav frame.
- * Part of the COMMERCE (Advanced Shopping System) extension.
- *
- * @author	Ingo Schmitt <is@marketing-factory.de>
- * @author	Kasper Skaarhoj <kasperYYYY@typo3.com>
- * @package TYPO3
- * @subpackage tx_commerce
- * @subpackage orders
- * @see alt_db_navframe.php
- *
- *
- */
-
 
 /**
  * Extension class for the t3lib_browsetree class, specially made for browsing pages in the Web module
- *
- * @author	Kasper Skaarhoj <kasperYYYY@typo3.com>
- * @package TYPO3
- * @subpackage core
- * @see class t3lib_browseTree
  */
 class localPageTree extends t3lib_browseTree {
+	/**
+	 * @var integer
+	 */
+	public $ext_showPageId;
 
-	var $ext_showPageId;
-	var $ext_IconMode;
+	/**
+	 * @var boolean
+	 */
+	public $ext_IconMode;
 
-
-	function init()
-	{
-
-		parent::init();
-		$this->treeName='orders';
-
-	}
 	/**
 	 * Calls init functions
 	 *
-	 * @return	void
+	 * @return self
 	 */
-	function localPageTree() {
+	public function __construct() {
 		$this->init();
+	}
+
+	/**
+	 * @return void
+	 */
+	public function init() {
+		parent::init();
+		$this->treeName = 'orders';
 	}
 
 	/**
 	 * Wrapping icon in browse tree
 	 *
-	 * @param	string		Icon IMG code
-	 * @param	array		Data row for element.
-	 * @return	string		Page icon
+	 * @param string $icon IMG code
+	 * @param array $row Data row for element.
+	 * @return string Page icon
 	 */
-	function wrapIcon($icon,&$row)	{
+	public function wrapIcon($icon, &$row) {
+		/** @var language $language */
+		$language = $GLOBALS['LANG'];
+
 			// If the record is locked, present a warning sign.
-		if ($lockInfo=t3lib_BEfunc::isRecordLocked('pages',$row['uid']))	{
-			$aOnClick = 'alert('.$GLOBALS['LANG']->JScharCode($lockInfo['msg']).');return false;';
-			$lockIcon='<a href="#" onclick="'.htmlspecialchars($aOnClick).'">'.
-				'<img'.t3lib_iconWorks::skinImg($this->backPath,'gfx/recordlock_warning3.gif','width="17" height="12"').' title="'.htmlspecialchars($lockInfo['msg']).'" alt="" />'.
+		if ($lockInfo = t3lib_BEfunc::isRecordLocked('pages', $row['uid'])) {
+			$aOnClick = 'alert(' . $language->JScharCode($lockInfo['msg']) . ');return false;';
+			$lockIcon = '<a href="#" onclick="' . htmlspecialchars($aOnClick) . '"><img' .
+				t3lib_iconWorks::skinImg($this->backPath, 'gfx/recordlock_warning3.gif', 'width="17" height="12"') .
+				' title="' . htmlspecialchars($lockInfo['msg']) . '" alt="" />' .
 				'</a>';
-		} else $lockIcon = '';
+		} else {
+			$lockIcon = '';
+		}
 
 			// Add title attribute to input icon tag
-		$thePageIcon = $this->addTagAttributes($icon, $this->titleAttrib.'="'.$this->getTitleAttrib($row).'"');
+		$thePageIcon = $this->addTagAttributes($icon, $this->titleAttrib . '="' . $this->getTitleAttrib($row) . '"');
 
 			// Wrap icon in click-menu link.
-		if (!$this->ext_IconMode)	{
-			$thePageIcon = $GLOBALS['TBE_TEMPLATE']->wrapClickMenuOnIcon($thePageIcon,'pages',$row['uid'],0,'&bank='.$this->bank);
-		} elseif (!strcmp($this->ext_IconMode,'titlelink'))	{
-			$aOnClick = 'return jumpTo(\''.$this->getJumpToParam($row).'\',this,\''.$this->treeName.'\');';
-			$thePageIcon='<a href="#" onclick="'.htmlspecialchars($aOnClick).'">'.$thePageIcon.'</a>';
+		if (!$this->ext_IconMode) {
+			/** @var template $tbeTemplate */
+			$tbeTemplate = $GLOBALS['TBE_TEMPLATE'];
+
+			$thePageIcon = $tbeTemplate->wrapClickMenuOnIcon($thePageIcon, 'pages', $row['uid'], 0, '&bank=' . $this->bank);
+		} elseif (!strcmp($this->ext_IconMode, 'titlelink')) {
+			$aOnClick = 'return jumpTo(\'' . $this->getJumpToParam($row) . '\',this,\'' . $this->treeName . '\');';
+			$thePageIcon = '<a href="#" onclick="' . htmlspecialchars($aOnClick) . '">' . $thePageIcon . '</a>';
 		}
 
 			// Add Page ID:
-		if ($this->ext_showPageId)	{
-			$pageIdStr = '['.$row['uid'].']&nbsp;';
+		if ($this->ext_showPageId) {
+			$pageIdStr = '[' . $row['uid'] . ']&nbsp;';
 		} else {
 			$pageIdStr = '';
 		}
 
-		return $thePageIcon.$lockIcon.$pageIdStr;
+		return $thePageIcon . $lockIcon . $pageIdStr;
 	}
 
 	/**
 	 * Adds a red "+" to the input string, $str, if the field "php_tree_stop" in the $row (pages) is set
 	 *
-	 * @param	string		Input string, like a page title for the tree
-	 * @param	array		record row with "php_tree_stop" field
-	 * @return	string		Modified string
+	 * @param string $str Input string, like a page title for the tree
+	 * @param array $row record row with "php_tree_stop" field
+	 * @return string Modified string
 	 * @access private
 	 */
-	function wrapStop($str,$row)	{
-		if ($row['php_tree_stop'])	{
-			$str.='<a href="'.htmlspecialchars(t3lib_div::linkThisScript(array('setTempDBmount' => $row['uid']))).'" class="typo3-red">+</a> ';
+	public function wrapStop($str, $row) {
+		if ($row['php_tree_stop']) {
+			$str .= '<a href="' . htmlspecialchars(t3lib_div::linkThisScript(array('setTempDBmount' => $row['uid']))) .
+				'" class="typo3-red">+</a> ';
 		}
 		return $str;
 	}

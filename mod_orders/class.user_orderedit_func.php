@@ -27,6 +27,36 @@
  */
 class user_orderedit_func {
 	/**
+	 * @var array
+	 */
+	protected $pageinfo;
+
+	/**
+	 * @var string
+	 */
+	protected $returnUrl;
+
+	/**
+	 * @var integer
+	 */
+	protected $userID;
+
+	/**
+	 * @var string
+	 */
+	protected $cmd;
+
+	/**
+	 * @var string
+	 */
+	protected $cmd_table;
+
+	/**
+	 * @var array
+	 */
+	protected $MOD_SETTINGS = array();
+
+	/**
 	 * Article order_id
 	 * Just a hidden field
 	 *
@@ -224,9 +254,8 @@ class user_orderedit_func {
 				/**
 				 * Trash icon
 				 */
-				$iOut .= '<td>';
-				$iOut .= '</td>';
-				$iOut .= '</tr>';
+				$iOut .= '<td></td>
+					</tr>';
 			}
 
 			$out .= $iOut;
@@ -475,10 +504,13 @@ class user_orderedit_func {
 	 * @return string
 	 */
 	public function fe_user_orders($PA) {
+		/** @var t3lib_beUserAuth $backendUser */
+		$backendUser = $GLOBALS['BE_USER'];
+
 		$dblist = t3lib_div::makeInstance('tx_commerce_order_localRecordlist');
 		$dblist->backPath = $GLOBALS['BACK_PATH'];
 		$dblist->script = 'index.php';
-		$dblist->calcPerms = $GLOBALS['BE_USER']->calcPerms($this->pageinfo);
+		$dblist->calcPerms = $backendUser->calcPerms($this->pageinfo);
 		$dblist->thumbs = $GLOBALS['BE_USER']->uc['thumbnailsByDefault'];
 		$dblist->returnUrl = $this->returnUrl;
 		$dblist->allFields = 1;

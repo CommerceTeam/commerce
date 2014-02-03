@@ -24,7 +24,9 @@
 
 unset($MCONF);
 require_once('conf.php');
+/** @noinspection PhpIncludeInspection */
 require_once($BACK_PATH . 'init.php');
+/** @noinspection PhpIncludeInspection */
 require_once($BACK_PATH . 'template.php');
 
 /**
@@ -77,9 +79,9 @@ class tx_commerce_order_navframe {
 
 	/**
 	 * Initialiation of the class
-	 * @TODO Check with User Permissions
-	 * @return	void
 	 *
+	 * @todo Check with User Permissions
+	 * @return void
 	 */
 	public function init() {
 		/** @var t3lib_beUserAuth $backendUser */
@@ -243,9 +245,7 @@ class tx_commerce_order_navframe {
 	}
 
 	/**********************************
-	 *
 	 * Temporary DB mounts
-	 *
 	 **********************************/
 
 	/**
