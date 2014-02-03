@@ -100,7 +100,7 @@ var Tree = {
 
 	// selects the activated item again, in case it collapsed and got expanded again
 	reSelectActiveItem: function() {
-		obj = $(top.fsMod.navFrameHighlightedID[this.frameSetModule]);
+		var obj = $(top.fsMod.navFrameHighlightedID[this.frameSetModule]);
 		if (obj) {
 			Element.addClassName(obj, this.highlightClass);
 			this.extractPageIdFromTreeItem(obj.id);
@@ -114,7 +114,7 @@ var Tree = {
 		this.extractPageIdFromTreeItem(highlightID);
 
 		// Remove all items that are already highlighted
-		obj = $(top.fsMod.navFrameHighlightedID[frameSetModule]);
+		var obj = $(top.fsMod.navFrameHighlightedID[frameSetModule]);
 		if (obj) {
 			var classes = $w(this.highlightClass);
 			for (var i = 0; i < classes.length; i++)
@@ -180,8 +180,9 @@ var DragDrop = {
 
 	cancelDragEvent: function(event) {
 		this.dragID = null;
-		if ($('dragIcon') && $('dragIcon').style.visibility == 'visible') {
-			$('dragIcon').style.visibility = 'hidden';
+		var $dragIcon = $('dragIcon');
+		if ($dragIcon && $dragIcon.style.visibility == 'visible') {
+			$dragIcon.style.visibility = 'hidden';
 		}
 
 		document.onmouseup = null;
@@ -192,9 +193,10 @@ var DragDrop = {
 		if (!event) {
 			event = window.event;
 		}
-		$('dragIcon').style.left = (Event.pointerX(event) + 5) + 'px';
-		$('dragIcon').style.top  = (Event.pointerY(event) - 5) + 'px';
-		$('dragIcon').style.visibility = 'visible';
+		var $dragIcon = $('dragIcon');
+		$dragIcon.style.left = (Event.pointerX(event) + 5) + 'px';
+		$dragIcon.style.top  = (Event.pointerY(event) - 5) + 'px';
+		$dragIcon.style.visibility = 'visible';
 		return false;
 	},
 

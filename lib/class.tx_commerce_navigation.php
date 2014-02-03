@@ -410,7 +410,7 @@ class tx_commerce_navigation {
 			$this->processArrayPostRender($this->mTree, $this->pathParents, $this->mDepth);
 		}
 
-		return  $this->mTree;
+		return $this->mTree;
 	}
 
 	/**

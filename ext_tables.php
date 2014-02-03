@@ -31,11 +31,11 @@ t3lib_div::loadTCA('tt_content');
 /* ################# PI1 (product listing) ##################### */
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist'][COMMERCE_EXTKEY . '_pi1'] = 'layout,select_key';
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][COMMERCE_EXTKEY . '_pi1'] = 'pi_flexform';
-
 t3lib_extMgm::addPlugin(Array('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:tt_content.list_type_pi1', COMMERCE_EXTKEY . '_pi1'), 'list_type');
 t3lib_extMgm::addPiFlexFormValue(COMMERCE_EXTKEY . '_pi1', 'FILE:EXT:commerce/Configuration/FlexForms/flexform_pi1.xml');
 
 /* ################# PI2 (basket) ##################### */
+$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist'][COMMERCE_EXTKEY . '_pi2'] = 'layout,select_key,pages';
 t3lib_extMgm::addPlugin(Array('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:tt_content.list_type_pi2', COMMERCE_EXTKEY . '_pi2'), 'list_type');
 
 /* ################# PI3 (checkout) ##################### */
@@ -46,7 +46,7 @@ t3lib_extMgm::addPlugin(Array('LLL:EXT:commerce/Resources/Private/Language/local
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist'][COMMERCE_EXTKEY . '_pi4'] = 'layout,select_key,pages';
 t3lib_extMgm::addPlugin(Array('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:tt_content.list_type_pi4', COMMERCE_EXTKEY . '_pi4'), 'list_type');
 
-/* ################ PI6 (invoice)############################*/
+/* ################ PI6 (invoice) ############################*/
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist'][COMMERCE_EXTKEY . '_pi6'] = 'layout,select_key,pages';
 t3lib_extMgm::addPlugin(Array('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:tt_content.list_type_pi6', COMMERCE_EXTKEY . '_pi6'), 'list_type');
 

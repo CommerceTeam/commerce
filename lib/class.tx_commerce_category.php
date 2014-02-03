@@ -208,16 +208,6 @@ class tx_commerce_category extends tx_commerce_element_alib {
 	}
 
 	/**
-	 * Constructor, basically calls init
-	 *
-	 * @deprecated since commerce 0.14.0, will be removed in commerce 0.15.0 - Use tx_commerce_category::__construct() instead
-	 */
-	public function tx_commerce_category() {
-		t3lib_div::logDeprecatedFunction();
-		call_user_func_array('__construct', $this, func_get_args());
-	}
-
-	/**
 	 * Init called by the constructor
 	 *
 	 * @param integer $uid Uid of category
