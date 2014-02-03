@@ -1212,9 +1212,9 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 		if ($this->conf['useStockHandling'] == 1 AND $this->conf['checkStock'] == 1) {
 			/** @var $basket tx_commerce_basket */
 			$basket = & $GLOBALS['TSFE']->fe_user->tx_commerce_basket;
-			if (is_array($basket->basket_items)) {
+			if (is_array($basket->getBasketItems())) {
 				/** @var $basketItem tx_commerce_basket_item */
-				foreach ($basket->basket_items as $artUid => $basketItem) {
+				foreach ($basket->getBasketItems() as $artUid => $basketItem) {
 					/** @var $article tx_commerce_article */
 					$article = $basketItem->article;
 					$this->debug($article, '$article', __FILE__ . ' ' . __LINE__);
@@ -1259,7 +1259,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 
 		foreach ($deliveryArticleArray as $oneDeliveryArticle) {
 			/** @var tx_commerce_basket_item $basketItem */
-			$basketItem = $basket->basket_items[$oneDeliveryArticle];
+			$basketItem = $basket->getBasketItem($oneDeliveryArticle);
 			$sumShippingNet += $basketItem->getPriceNet();
 			$sumShippingGross += $basketItem->getPriceGross();
 		}
@@ -1271,7 +1271,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 
 		foreach ($paymentArticleArray as $onePaymentArticle) {
 			/** @var tx_commerce_basket_item $basketItem */
-			$basketItem = $basket->basket_items[$onePaymentArticle];
+			$basketItem = $basket->getBasketItem($onePaymentArticle);
 			$sumPaymentNet += $basketItem->getPriceNet();
 			$sumPaymentGross += $basketItem->getPriceGross();
 		}
@@ -1556,7 +1556,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 			return $payment[0];
 		}
 
-		$paymenttitle = $basket->basket_items[$payment[0]]->article->classname;
+		$paymenttitle = $basket->getBasketItem($payment[0])->getArticle()->getClassname();
 
 		return strtolower($paymenttitle);
 	}

@@ -16,8 +16,8 @@ CREATE TABLE be_users (
 # Table structure for table 'fe_users'
 #
 CREATE TABLE fe_users (
-	tx_commerce_user_state_id blob NOT NULL
-	tx_commerce_tt_address_id blob NOT NULL
+	tx_commerce_user_state_id blob NOT NULL,
+	tx_commerce_tt_address_id blob NOT NULL,
 	first_name varchar(50) DEFAULT '' NOT NULL,
 	last_name varchar(50) DEFAULT '' NOT NULL,
 	static_info_country char(3) DEFAULT '' NOT NULL,
@@ -32,7 +32,7 @@ CREATE TABLE pages (
 	tx_graytree_foldername varchar(30) DEFAULT '' NOT NULL,
 
 	KEY tx_commerce_foldereditorder (tx_commerce_foldereditorder),
-	KEY tx_gray_folder (tx_graytree_foldername),
+	KEY tx_gray_folder (tx_graytree_foldername)
 );
 
 #
@@ -43,7 +43,7 @@ CREATE TABLE tt_address (
 	tx_commerce_default_values int(11) DEFAULT '0' NOT NULL,
 	tx_commerce_fe_user_id int(11) DEFAULT '0' NOT NULL,
 	tx_commerce_address_type_id int(11) DEFAULT '0' NOT NULL,
-	tx_commerce_is_main_address tinyint(4) DEFAULT '0' NOT NULL,
+	tx_commerce_is_main_address tinyint(4) DEFAULT '0' NOT NULL
 );
 
 #
@@ -212,8 +212,8 @@ CREATE TABLE tx_commerce_attributes (
 	internal_title varchar(160) DEFAULT '' NOT NULL,
 	unit varchar(80) DEFAULT '' NOT NULL,
 	valueformat varchar(80) DEFAULT '' NOT NULL,
-	valuelist varchar(255) DEFAULT '' NOT NULL
-	icon blob NOT NULL, 
+	valuelist varchar(255) DEFAULT '' NOT NULL,
+	icon blob NOT NULL,
 	iconmode tinyint(3) DEFAULT '0' NOT NULL,
 
 	PRIMARY KEY (uid),
@@ -229,7 +229,7 @@ CREATE TABLE tx_commerce_attribute_correlationtypes (
 	uid int(11) NOT NULL auto_increment,
 	title varchar(80) DEFAULT '' NOT NULL,
 
-	PRIMARY KEY (uid),
+	PRIMARY KEY (uid)
 );
 
 #
@@ -391,7 +391,7 @@ CREATE TABLE tx_commerce_manufacturer (
 	contactperson varchar(80) DEFAULT '' NOT NULL,
 	logo blob NOT NULL,
 
-	PRIMARY KEY (uid),
+	PRIMARY KEY (uid)
 );
 
 #
@@ -607,7 +607,7 @@ CREATE TABLE tx_commerce_products_categories_mm (
 
 #
 # Table structure for table 'tx_commerce_products_related_mm'
-# 
+#
 #
 CREATE TABLE tx_commerce_products_related_mm (
 	uid_local int(11) DEFAULT '0' NOT NULL,
@@ -669,7 +669,7 @@ CREATE TABLE tx_commerce_supplier (
 	contactperson varchar(80) DEFAULT '' NOT NULL,
 	logo blob NOT NULL,
 
-	PRIMARY KEY (uid),
+	PRIMARY KEY (uid)
 );
 
 #

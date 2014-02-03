@@ -143,7 +143,9 @@ class tx_commerce_treelib_link_categorytree extends browsetree {
 		$this->openProduct = $uid;
 
 			// set the open product for the view
-		$this->getLeaf(0)->getChildLeaf(0)->view->setOpenProduct($uid);
+		/** @var tx_commerce_treelib_link_leaf_productview $productView */
+		$productView = $this->getLeaf(0)->getChildLeaf(0)->view;
+		$productView->setOpenProduct($uid);
 	}
 
 	/**
@@ -156,7 +158,9 @@ class tx_commerce_treelib_link_categorytree extends browsetree {
 		$this->openCategory = $uid;
 
 			// set the open category for the view
-		$this->getLeaf(0)->view->setOpenCategory($uid);
+		/** @var tx_commerce_treelib_link_leaf_categoryview $categoryView */
+		$categoryView = $this->getLeaf(0)->view;
+		$categoryView->setOpenCategory($uid);
 	}
 
 	/**

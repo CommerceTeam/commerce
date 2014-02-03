@@ -26,3 +26,5 @@ $CCVSErrYearString   = 'CCVSErrYearString';
 $CCVSErrYearFormat   = 'CCVSErrYearFormat';
 $CCVSErrExpired      = 'CCVSErrExpired';
 $CCVSErrCheckNumber  = 'CCVSErrCheckNumber';
+
+?>

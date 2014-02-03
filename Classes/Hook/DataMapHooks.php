@@ -508,6 +508,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 			}
 		}
 
+		$updateArrays = array();
 			// update all articles of this product
 		if (! empty($fieldArray['attributesedit'])) {
 			if (!$ctList) {
@@ -940,7 +941,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 
 							// set the group id and permissions for a new record
 						if ('new' == $status) {
-							$fieldArray['perms_group']   = $groupRights;
+							$fieldArray['perms_group'] = $groupRights;
 							$fieldArray['perms_groupid'] = $groupId;
 						}
 					}

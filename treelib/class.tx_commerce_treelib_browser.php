@@ -1,34 +1,26 @@
 <?php
 /***************************************************************
-*  Copyright notice
-*
-*  (c) 2003-2006 Rene Fritz (r.fritz@colorcube.de)
-*  All rights reserved
-*
-*  This script is part of the TYPO3 project. The TYPO3 project is
-*  free software; you can redistribute it and/or modify
-*  it under the terms of the GNU General Public License as published by
-*  the Free Software Foundation; either version 2 of the License, or
-*  (at your option) any later version.
-*
-*  The GNU General Public License can be found at
-*  http://www.gnu.org/copyleft/gpl.html.
-*  A copy is found in the textfile GPL.txt and important notices to the license
-*  from the author is found in LICENSE.txt distributed with these scripts.
-*
-*
-*  This script is distributed in the hope that it will be useful,
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*  GNU General Public License for more details.
-*
-*  This copyright notice MUST APPEAR in all copies of the script!
-***************************************************************/
-/**
+ * Copyright notice
  *
- * @author	Rene Fritz <r.fritz@colorcube.de>
- * @package DAM-Treelib
- */
+ * (c) 2003-2006 Rene Fritz <r.fritz@colorcube.de>
+ * All rights reserved
+ *
+ * This script is part of the TYPO3 project. The TYPO3 project is
+ * free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * The GNU General Public License can be found at
+ * http://www.gnu.org/copyleft/gpl.html.
+ *
+ * This script is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * This copyright notice MUST APPEAR in all copies of the script!
+ ***************************************************************/
 
 /**
  * Base class for the (iframe) treeview in TCEforms elements
@@ -47,22 +39,49 @@
  * That means the script do not know anything about trees. It just set parameters and render the field with TCEforms.
  *
  * Might be possible with AJAX ...
- *
- * @author	Rene Fritz <r.fritz@colorcube.de>
- * @package DAM-Treelib
  */
-
 class tx_commerce_treelib_browser extends t3lib_SCbase {
+	/**
+	 * @var string
+	 */
+	protected $table;
 
+	/**
+	 * @var string
+	 */
+	protected $field;
+
+	/**
+	 * @var integer
+	 */
+	protected $uid;
+
+	/**
+	 * @var string
+	 */
+	protected $itemFormElName;
+
+	/**
+	 * @var string
+	 */
+	protected $flex_config;
+
+	/**
+	 * @var string
+	 */
+	protected $backPath;
+
+	/**
+	 * @var string
+	 */
+	protected $currentSubScript;
 
 	/**
 	 * Constructor function for script class.
 	 *
-	 * @return	void
+	 * @return void
 	 */
-	function init()	{
-		global $BACK_PATH;
-
+	public function init() {
 		parent::init();
 
 			// Setting GPvars:
@@ -74,9 +93,9 @@ class tx_commerce_treelib_browser extends t3lib_SCbase {
 		$seckey = t3lib_div::_GP('seckey');
 		$allowProducts = t3lib_div::_GP('allowProducts');
 
-
 			// since we are worried about someone forging parameters (XSS security hole) we will check with sent md5 hash:
-		if (!($seckey===t3lib_div::shortMD5($this->table.'|'.$this->field.'|'.$this->uid.'|'.$this->itemFormElName.'|'.$this->flex_config.'|'.$allowProducts.'|'.$GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey']))) {
+		if (!($seckey === t3lib_div::shortMD5($this->table . '|' . $this->field . '|' . $this->uid . '|' . $this->itemFormElName .
+				'|' . $this->flex_config . '|' . $allowProducts . '|' . $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey']))) {
 			die('access denied');
 		}
 
@@ -84,17 +103,16 @@ class tx_commerce_treelib_browser extends t3lib_SCbase {
 			$this->flex_config = unserialize(base64_decode($this->flex_config));
 		}
 
-		$this->backPath = $BACK_PATH;
+		$this->backPath = $GLOBALS['BACK_PATH'];
 
 			// Initialize template object
 		$this->doc = t3lib_div::makeInstance('template');
-		$this->doc->docType='xhtml_trans';
+		$this->doc->docType = 'xhtml_trans';
 		$this->doc->backPath = $this->backPath;
-
 
 			// from tx_dam_SCbase
 		$this->doc->buttonColor = '#e3dfdb';
-		$this->doc->buttonColorHover = t3lib_div::modifyHTMLcolor($this->doc->buttonColor,-20,-20,-20);
+		$this->doc->buttonColorHover = t3lib_div::modifyHTMLcolor($this->doc->buttonColor, -20, -20, -20);
 
 			// in typo3/stylesheets.css css is defined with id instead of a class: TABLE#typo3-tree
 			// that's why we need TABLE.typo3-browsetree
@@ -111,12 +129,11 @@ class tx_commerce_treelib_browser extends t3lib_SCbase {
 			}
 			TABLE.typo3-browsetree TR TD.typo3-browsetree-control a {
 				padding: 0px 3px 0px 3px;
-				background-color: '.$this->doc->buttonColor.';
+				background-color: ' . $this->doc->buttonColor . ';
 			}
 			TABLE.typo3-browsetree TR TD.typo3-browsetree-control > a:hover {
-				background-color:'.$this->doc->buttonColorHover.';
+				background-color:' . $this->doc->buttonColorHover . ';
 			}';
-
 
 		$this->doc->inDocStylesArray['background-color'] = '
 			#ext-dam-mod-treebrowser-index-php { background-color:#fff; }
@@ -131,19 +148,19 @@ class tx_commerce_treelib_browser extends t3lib_SCbase {
 			$this->doc->JScode .= $this->doc->wrapScriptTags('Tree.ajaxID = "tx_commerce_category_navframe::ajaxExpandCollapse";');
 		}
 
-		// Setting JavaScript for menu
-		// in this context, the function jumpTo is different
-		// it adds the Category to the mountpoints
-		// DAM actually calls the function parent.setFormValueFromBrowseWin directly - we sneak around it ;)
-		###MAYBE WE SHOULD just use a different leaf_categoryview and give it a different JS function - DEPENDS how often a manipulation like this is needed###
+			// Setting JavaScript for menu
+			// in this context, the function jumpTo is different
+			// it adds the Category to the mountpoints
+			// DAM actually calls the function parent.setFormValueFromBrowseWin directly - we sneak around it ;)
+			// MAYBE WE SHOULD just use a different leaf_categoryview and give it a different JS function - DEPENDS how often a manipulation like this is needed###
 		$this->doc->JScode .= $this->doc->wrapScriptTags(
-			($this->currentSubScript?'top.currentSubScript=unescape("'.rawurlencode($this->currentSubScript).'");':'').'
+			($this->currentSubScript ? 'top.currentSubScript=unescape("' . rawurlencode($this->currentSubScript) . '");' : '') . '
 
 			function jumpTo(id,linkObj,highLightID,script)	{
 				var catUid = id.substr(id.lastIndexOf("=") + 1); //We can leave out the "="
 				var text   = (linkObj.firstChild) ? linkObj.firstChild.nodeValue : "Unknown";
 				//Params (field, value, caption)
-				parent.setFormValueFromBrowseWin("data['.$this->table.']['.$this->uid.']['.$this->field.']", catUid, text);
+				parent.setFormValueFromBrowseWin("data[' . $this->table . '][' . $this->uid . '][' . $this->field . ']", catUid, text);
 			}
 		');
 	}
@@ -151,11 +168,9 @@ class tx_commerce_treelib_browser extends t3lib_SCbase {
 	/**
 	 * Main function - generating the click menu in whatever form it has.
 	 *
-	 * @return	void
+	 * @return void
 	 */
-	function main() {
-		global $TCA;
-
+	public function main() {
 			// get the data of the field - the currently selected items
 		$row = $this->getRecordProcessed();
 
@@ -180,43 +195,42 @@ class tx_commerce_treelib_browser extends t3lib_SCbase {
 			);
 		} else {
 			$fakePA['fieldConf'] = array(
-				'label' => $form->sL($TCA[$this->table]['columns'][$this->field]['label']),
-				'config' => $TCA[$this->table]['columns'][$this->field]['config']
+				'label' => $form->sL($GLOBALS['TCA'][$this->table]['columns'][$this->field]['label']),
+				'config' => $GLOBALS['TCA'][$this->table]['columns'][$this->field]['config']
 			);
 		}
 
 		$fakePA['fieldConf']['config']['treeViewBrowseable'] = 'iframeContent';
-		$fakePA['fieldConf']['config']['noTableWrapping'] = true;
+		$fakePA['fieldConf']['config']['noTableWrapping'] = TRUE;
 		$fakePA['itemFormElName'] = $this->itemFormElName;
 		$fakePA['itemFormElName_file'] = $this->itemFormElName;
 
-		$this->content .= $form->getSingleField_SW($this->table,$this->field,$row,$fakePA);
+		$this->content .= $form->getSingleField_SW($this->table, $this->field, $row, $fakePA);
 	}
-
 
 	/**
 	 * End page and output content.
 	 *
-	 * @return	void
+	 * @return void
 	 */
-	function printContent()	{
-		$this->content.= $this->doc->endPage();
+	public function printContent() {
+		$this->content .= $this->doc->endPage();
 		$this->content = $this->doc->insertStylesAndJS($this->content);
 		echo $this->content;
 	}
-
 
 	/**
 	 * Fetch the record data and return processed data for TCEforms
 	 *
 	 * @return array Record
 	 */
-	function getRecordProcessed () {
+	protected function getRecordProcessed() {
 			// This will render MM relation fields in the correct way.
 			// Read the whole record, which is not needed, but there's no other way.
+		/** @var t3lib_transferData $trData */
 		$trData = t3lib_div::makeInstance('t3lib_transferData');
-		$trData->addRawData = true;
-		$trData->lockRecords = true;
+		$trData->addRawData = TRUE;
+		$trData->lockRecords = TRUE;
 		$trData->fetchRecord($this->table, $this->uid, '');
 		reset($trData->regTableItems_data);
 		$row = current($trData->regTableItems_data);

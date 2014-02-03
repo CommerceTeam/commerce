@@ -159,8 +159,8 @@ abstract class leaf extends langbase {
 	/**
 	 * Returns the childleaf at a given index
 	 *
-	 * @return {object} 	Childleaf
-	 * @param $index {int}	Index of the childleaf
+	 * @param integer $index Index of the childleaf
+	 * @return leafSlave Childleaf
 	 */
 	public function &getChildLeaf($index) {
 		if (!is_numeric($index)) {

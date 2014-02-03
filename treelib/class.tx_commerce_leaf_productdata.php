@@ -60,6 +60,9 @@ class tx_commerce_leaf_productdata extends leafSlaveData {
 	 * @return array
 	 */
 	public function getRecordsDbList($uid, $depth = 2) {
+		/** @var t3lib_beUserAuth $backendUser */
+		$backendUser = $GLOBALS['BE_USER'];
+
 		if (!is_numeric($uid) || !is_numeric($depth)) {
 			if (TYPO3_DLOG) {
 				t3lib_div::devLog('getRecordsDbList (productdata) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
@@ -67,10 +70,8 @@ class tx_commerce_leaf_productdata extends leafSlaveData {
 			return NULL;
 		}
 
-
-
 			// Check if User's Group may view the records
-		if (!$GLOBALS['BE_USER']->check('tables_select', $this->table)) {
+		if (!$backendUser->check('tables_select', $this->table)) {
 			if (TYPO3_DLOG) {
 				t3lib_div::devLog('getRecordsDbList (productdata): Usergroup is not allowed to view records.', COMMERCE_EXTKEY, 2);
 			}

@@ -31,13 +31,61 @@
  * @author Ingo Schmitt <is@marketing-factory.de>
  */
 class tx_commerce_pi6 extends tx_commerce_pibase {
+	/**
+	 * Same as class name
+	 *
+	 * @var string
+	 */
+	public $prefixId = 'tx_commerce_pi6';
 
-	public $prefixId = 'tx_commerce_pi6'; // Same as class name
-	public $scriptRelPath = 'pi6/class.tx_commerce_pi6.php'; // Path to this script relative to the extension dir.
-	public $extKey = 'commerce'; // The extension key.
+	/**
+	 * Path to this script relative to the extension dir.
+	 *
+	 * @var string
+	 */
+	public $scriptRelPath = 'pi6/class.tx_commerce_pi6.php';
 
+	/**
+	 * The extension key.
+	 *
+	 * @var string
+	 */
+	public $extKey = 'commerce';
+
+	/**
+	 * @var boolean
+	 */
 	public $pi_checkCHash = TRUE;
+
+	/**
+	 * @var string
+	 */
 	public $order_id;
+
+	/**
+	 * @var array
+	 */
+	protected $user;
+
+	/**
+	 * @var string
+	 */
+	protected $content;
+
+	/**
+	 * @var array
+	 */
+	protected $order;
+
+	/**
+	 * @var string
+	 */
+	protected $orderPayment;
+
+	/**
+	 * @var string
+	 */
+	protected $orderDelivery;
 
 	/**
 	 * Main Method
@@ -47,36 +95,42 @@ class tx_commerce_pi6 extends tx_commerce_pibase {
 	 * @return string Compiled content
 	 */
 	public function main($content, $conf) {
+		/** @var tslib_fe $frontend */
+		$frontend = $GLOBALS['TSFE'];
+		/** @var t3lib_beUserAuth $backendUser */
+		$backendUser = $GLOBALS['BE_USER'];
+
 		$this->conf = $conf;
 		$this->pi_setPiVarDefaults();
 		$this->pi_loadLL();
 
-		// Checking backend user login
+			// Checking backend user login
 		$this->invoiceBackendOnly($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['invoiceBackendOnly']);
 
-		// Check for the logged in USER
-		// It could be an FE USer, a BE User or an automated script
-		if ((empty($GLOBALS['TSFE']->fe_user->user)) && (!$GLOBALS['BE_USER']->user['uid']) && ($_SERVER["REMOTE_ADDR"] != $_SERVER["SERVER_ADDR"])) {
+			// Check for the logged in USER
+			// It could be an FE USer, a BE User or an automated script
+		if ((empty($frontend->fe_user->user)) && (!$backendUser->user['uid']) && ($_SERVER['REMOTE_ADDR'] != $_SERVER['SERVER_ADDR'])) {
 			return $this->pi_getLL('not_logged_in');
-		} elseif (($GLOBALS['TSFE']->fe_user->user) && (!$GLOBALS['BE_USER']->user['uid'])) {
+		} elseif ($frontend->fe_user->user && !$backendUser->user['uid']) {
 			$this->user = $GLOBALS['TSFE']->fe_user->user;
 		}
 
-		// If it's an automated process, no caching
-		if ($_SERVER["REMOTE_ADDR"] == $_SERVER["SERVER_ADDR"]) {
-			$GLOBALS['TSFE']->set_no_cache();
+			// If it's an automated process, no caching
+		if ($_SERVER['REMOTE_ADDR'] == $_SERVER['SERVER_ADDR']) {
+			$$frontend->set_no_cache();
 		}
 
-		// Lets make this multilingual, eh?
+			// Lets make this multilingual, eh?
 		$this->generateLanguageMarker();
 
-		// We may need to do some character conversion tricks
-		$convert = t3lib_div::makeInstance("t3lib_cs");
+			// We may need to do some character conversion tricks
+		/** @var t3lib_cs $convert */
+		$convert = t3lib_div::makeInstance('t3lib_cs');
 
-		// If there is no order id, this plugin serves no pupose
+			// If there is no order id, this plugin serves no pupose
 		$this->order_id = $this->piVars['order_id'];
 
-		// @TODO In case of a FE user this should not give a hint about what's wrong, but instead redirect the user
+			// @TODO In case of a FE user this should not give a hint about what's wrong, but instead redirect the user
 		if (empty($this->order_id)) {
 			return $this->pi_wrapInBaseClass($this->pi_getLL('error_orderid'));
 		}
@@ -84,18 +138,18 @@ class tx_commerce_pi6 extends tx_commerce_pibase {
 			return $this->error('init', __LINE__, 'Template File not defined in TS: ');
 		}
 
-		// Grab the template
-		$this->templateCode = $this->cObj->fileResource($this->conf["templateFile"]);
+			// Grab the template
+		$this->templateCode = $this->cObj->fileResource($this->conf['templateFile']);
 		if (empty($this->templateCode)) {
 			return $this->error('init', __LINE__, 'Template File not loaded, maybe it doesn\'t exist: ' . $this->conf['templateFile']);
 		}
 
-		// Get subparts
+			// Get subparts
 		$templateMarker = '###TEMPLATE###';
 		$this->template['invoice'] = $this->cObj->getSubpart($this->templateCode, $templateMarker);
 		$this->template['item'] = $this->cObj->getSubpart($this->template['invoice'], '###LISTING_ARTICLE###');
 
-		// Markers and content, ready to be populated
+			// Markers and content, ready to be populated
 		$markerArray = array();
 		$this->content = '';
 		$this->order = $this->getOrderData();
@@ -103,28 +157,29 @@ class tx_commerce_pi6 extends tx_commerce_pibase {
 			$this->orderPayment = $this->getOrderSystemArticles($this->order['uid'], '2', 'PAYMENT_');
 			$this->orderDelivery = $this->getOrderSystemArticles($this->order['uid'], '3', 'SHIPPING_');
 
-			$markerArray['###ORDER_TAX###'] = tx_moneylib::format($this->order['sum_price_gross'] - $this->order['sum_price_net'], $this->conf['currency'], (boolean)$this->conf['showCurrencySign']);
-			$markerArray['###ORDER_TOTAL###'] = tx_moneylib::format($this->order['sum_price_gross'], $this->conf['currency'], (boolean)$this->conf['showCurrencySign']);
-			$markerArray['###ORDER_NET_TOTAL###'] = tx_moneylib::format($this->order['sum_price_net'], $this->conf['currency'], (boolean)$this->conf['showCurrencySign']);
-			$markerArray['###ORDER_GROSS_TOTAL###'] = tx_moneylib::format($this->order['sum_price_gross'], $this->conf['currency'], (boolean)$this->conf['showCurrencySign']);
+			$markerArray['###ORDER_TAX###'] = tx_moneylib::format($this->order['sum_price_gross'] - $this->order['sum_price_net'], $this->conf['currency'], (boolean) $this->conf['showCurrencySign']);
+			$markerArray['###ORDER_TOTAL###'] = tx_moneylib::format($this->order['sum_price_gross'], $this->conf['currency'], (boolean) $this->conf['showCurrencySign']);
+			$markerArray['###ORDER_NET_TOTAL###'] = tx_moneylib::format($this->order['sum_price_net'], $this->conf['currency'], (boolean) $this->conf['showCurrencySign']);
+			$markerArray['###ORDER_GROSS_TOTAL###'] = tx_moneylib::format($this->order['sum_price_gross'], $this->conf['currency'], (boolean) $this->conf['showCurrencySign']);
 			$markerArray['###ORDER_ID###'] = $this->order['order_id'];
 			$markerArray['###ORDER_DATE###'] = strftime($this->conf['orderDateFormat'], $this->order['crdate']);
 
-			// Fill some of the content from typoscript settings, to ease the
+				// Fill some of the content from typoscript settings, to ease the
 			$markerArray['###INVOICE_HEADER###'] = $this->cObj->cObjGetSingle($this->conf['invoiceheader'], $this->conf['invoiceheader.']);
 			$markerArray['###INVOICE_SHOP_NAME###'] = $this->cObj->TEXT($this->conf['shopname.']);
 			$markerArray['###INVOICE_SHOP_ADDRESS###'] = $this->cObj->cObjGetSingle($this->conf['shopdetails'], $this->conf['shopdetails.']);
 			$markerArray['###INVOICE_INTRO_MESSAGE###'] = $this->cObj->TEXT($this->conf['intro.']);
 			$markerArray['###INVOICE_THANKYOU###'] = $this->cObj->TEXT($this->conf['thankyou.']);
 
-			// Hook to process new/changed marker
+				// Hook to process new/changed marker
 			$hookObjectsArr = array();
 			if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi6/class.tx_commerce_pi6.php']['invoice'])) {
-				foreach($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi6/class.tx_commerce_pi6.php']['invoice'] as $classRef) {
+				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi6/class.tx_commerce_pi6.php']['invoice'] as $classRef) {
 					$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
 				}
 			}
-			foreach($hookObjectsArr as $hookObj) {
+			$subpartArray = array();
+			foreach ($hookObjectsArr as $hookObj) {
 				if (method_exists($hookObj, 'additionalMarker')) {
 					$markerArray = $hookObj->additionalMarker($markerArray, $subpartArray, $this);
 				}
@@ -135,7 +190,7 @@ class tx_commerce_pi6 extends tx_commerce_pibase {
 			$subpartArray['###ADDRESS_DELIVERY_DATA###'] = $this->getAddressData($this->order['cust_deliveryaddress'], $this->conf['addressDelivery.'], 'ADDRESS_DELIVERY_');
 			$this->content = $this->substituteMarkerArrayNoCached($this->template['invoice'], array(), $subpartArray);
 
-			// Buid content from template + array
+				// Buid content from template + array
 			$this->content = $this->cObj->substituteSubpart($this->content, '###LISTING_PAYMENT_ROW###', $this->orderPayment);
 			$this->content = $this->cObj->substituteSubpart($this->content, '###LISTING_SHIPPING_ROW###', $this->orderDelivery);
 			$this->content = $this->substituteMarkerArrayNoCached($this->content, $markerArray, array(), array());
@@ -174,13 +229,16 @@ class tx_commerce_pi6 extends tx_commerce_pibase {
 	 * @return string HTML-Output rendert
 	 */
 	protected function getOrderArticles($orderUid, $TS = array(), $prefix) {
+		/** @var t3lib_db $database */
+		$database = $GLOBALS['TYPO3_DB'];
+
 		if (empty($TS)) {
 			$TS = $this->conf['OrderArticles.'];
 		}
 
 		$queryString = 'order_uid=' . intval($orderUid) . ' AND article_type_uid < 2 ';
-		$queryString .= $this->cObj->enableFields("tx_commerce_order_articles");
-		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+		$queryString .= $this->cObj->enableFields('tx_commerce_order_articles');
+		$res = $database->exec_SELECTquery(
 			'*',
 			'tx_commerce_order_articles',
 			$queryString,
@@ -189,21 +247,21 @@ class tx_commerce_pi6 extends tx_commerce_pibase {
 		);
 
 		$orderpos = 1;
-		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+		$out = '';
+		while ($row = $database->sql_fetch_assoc($res)) {
 			$markerArray = $this->generateMarkerArray($row, $TS, $prefix);
-			$markerArray['ARTICLE_PRICE'] = tx_moneylib::format($row['price_gross'], $this->conf['currency'], (boolean)$this->conf['showCurrencySign']);
-			$markerArray['ARTICLE_PRICE_GROSS'] = tx_moneylib::format($row['price_gross'], $this->conf['currency'], (boolean)$this->conf['showCurrencySign']);
-			$markerArray['ARTICLE_PRICE_NET'] = tx_moneylib::format($row['price_net'], $this->conf['currency'], (boolean)$this->conf['showCurrencySign']);
-			$markerArray['ARTICLE_TOTAL'] = tx_moneylib::format(($row['amount'] * $row['price_gross']), $this->conf['currency'], (boolean)$this->conf['showCurrencySign']);
-			$markerArray['ARTICLE_TOTAL_GROSS'] = tx_moneylib::format(($row['amount'] * $row['price_gross']), $this->conf['currency'], (boolean)$this->conf['showCurrencySign']);
-			$markerArray['ARTICLE_TOTAL_NET'] = tx_moneylib::format(($row['amount'] * $row['price_net']), $this->conf['currency'], (boolean)$this->conf['showCurrencySign']);
+			$markerArray['ARTICLE_PRICE'] = tx_moneylib::format($row['price_gross'], $this->conf['currency'], (boolean) $this->conf['showCurrencySign']);
+			$markerArray['ARTICLE_PRICE_GROSS'] = tx_moneylib::format($row['price_gross'], $this->conf['currency'], (boolean) $this->conf['showCurrencySign']);
+			$markerArray['ARTICLE_PRICE_NET'] = tx_moneylib::format($row['price_net'], $this->conf['currency'], (boolean) $this->conf['showCurrencySign']);
+			$markerArray['ARTICLE_TOTAL'] = tx_moneylib::format(($row['amount'] * $row['price_gross']), $this->conf['currency'], (boolean) $this->conf['showCurrencySign']);
+			$markerArray['ARTICLE_TOTAL_GROSS'] = tx_moneylib::format(($row['amount'] * $row['price_gross']), $this->conf['currency'], (boolean) $this->conf['showCurrencySign']);
+			$markerArray['ARTICLE_TOTAL_NET'] = tx_moneylib::format(($row['amount'] * $row['price_net']), $this->conf['currency'], (boolean) $this->conf['showCurrencySign']);
 			$markerArray['ARTICLE_POSITION'] = $orderpos++;
-			$out.= $this->cObj->substituteMarkerArray($this->template['item'], $markerArray, '###|###', 1);
+			$out .= $this->cObj->substituteMarkerArray($this->template['item'], $markerArray, '###|###', 1);
 		}
 
 		return $this->cObj->stdWrap($out, $TS);
 	}
-
 
 	/**
 	 * Render address data
@@ -214,19 +272,22 @@ class tx_commerce_pi6 extends tx_commerce_pibase {
 	 * @return string HTML-Output rendert
 	 */
 	protected function getAddressData($addressUid = 0, $TS = array(), $prefix) {
+		/** @var t3lib_db $database */
+		$database = $GLOBALS['TYPO3_DB'];
+
 		if (empty($TS)) {
 			$TS = $this->conf['address.'];
 		}
 
 		if ($this->user) {
-			$queryString = 'tt_address.tx_commerce_fe_user_id=' . intval($this->order['cust_fe_user']);
-			$queryString.= ' AND tt_address.tx_commerce_fe_user_id = fe_users.uid';
+			$queryString = 'tt_address.tx_commerce_fe_user_id=' . (int) $this->order['cust_fe_user'];
+			$queryString .= ' AND tt_address.tx_commerce_fe_user_id = fe_users.uid';
 			if ($addressUid) {
-				$queryString.= ' AND tt_address.uid = ' . intval($addressUid);
+				$queryString .= ' AND tt_address.uid = ' . (int) $addressUid;
 			} else {
-				$queryString.= ' AND tt_address.tx_commerce_address_type_id=1';
+				$queryString .= ' AND tt_address.tx_commerce_address_type_id=1';
 			}
-			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+			$res = $database->exec_SELECTquery(
 				'tt_address.* ',
 				'tt_address,fe_users',
 				$queryString,
@@ -237,11 +298,11 @@ class tx_commerce_pi6 extends tx_commerce_pibase {
 		} else {
 			$queryString = ' 1 = 1 ';
 			if ($addressUid) {
-				$queryString.= ' AND tt_address.uid = ' . $addressUid;
+				$queryString .= ' AND tt_address.uid = ' . $addressUid;
 			} else {
-				$queryString.= ' AND tt_address.tx_commerce_address_type_id=1';
+				$queryString .= ' AND tt_address.tx_commerce_address_type_id=1';
 			}
-			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+			$res = $database->exec_SELECTquery(
 				'tt_address.* ',
 				'tt_address',
 				$queryString,
@@ -250,7 +311,7 @@ class tx_commerce_pi6 extends tx_commerce_pibase {
 				'1'
 			);
 		}
-		$markerArray = $this->generateMarkerArray($GLOBALS['TYPO3_DB']->sql_fetch_assoc($res), $TS, $prefix);
+		$markerArray = $this->generateMarkerArray($database->sql_fetch_assoc($res), $TS, $prefix);
 		$template = $this->cObj->getSubpart($this->templateCode, '###' . $prefix . 'DATA###');
 		$content = $this->cObj->substituteMarkerArray($template, $markerArray, '###|###', 1);
 		$content = $this->cObj->substituteMarkerArray($content, $this->languageMarker);
@@ -258,19 +319,21 @@ class tx_commerce_pi6 extends tx_commerce_pibase {
 		return $this->cObj->stdWrap($content, $TS);
 	}
 
-
 	/**
 	 * Render Data for Orders
 	 *
 	 * @return array orderData
 	 */
-	function getOrderData() {
+	protected function getOrderData() {
+		/** @var t3lib_db $database */
+		$database = $GLOBALS['TYPO3_DB'];
+
 		$queryString = 'order_id="' . mysql_real_escape_string($this->order_id) . '"';
-		$queryString.= $this->cObj->enableFields("tx_commerce_orders");
+		$queryString .= $this->cObj->enableFields('tx_commerce_orders');
 		if ($this->user) {
-			$queryString.= ' AND cust_fe_user = ' . intval($this->user['uid']) . ' ';
+			$queryString .= ' AND cust_fe_user = ' . (int) $this->user['uid'];
 		}
-		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+		$res = $database->exec_SELECTquery(
 			'*',
 			'tx_commerce_orders',
 			$queryString,
@@ -278,11 +341,10 @@ class tx_commerce_pi6 extends tx_commerce_pibase {
 			'',
 			'1'
 		);
-		$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
+		$row = $database->sql_fetch_assoc($res);
 
 		return $row;
 	}
-
 
 	/**
 	 * Render marker array for System Articles
@@ -293,25 +355,28 @@ class tx_commerce_pi6 extends tx_commerce_pibase {
 	 * @return array System Articles
 	 */
 	protected function getOrderSystemArticles($orderUid, $articleType = 0, $prefix) {
+		/** @var t3lib_db $database */
+		$database = $GLOBALS['TYPO3_DB'];
+
 		$queryString = 'order_uid=' . $orderUid . ' ';
 		if ($articleType) {
 			$queryString .= ' AND article_type_uid = ' . $articleType . ' ';
 		}
 
-		$queryString .= $this->cObj->enableFields("tx_commerce_order_articles");
-		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+		$queryString .= $this->cObj->enableFields('tx_commerce_order_articles');
+		$res = $database->exec_SELECTquery(
 			'*',
 			'tx_commerce_order_articles',
 			$queryString
 		);
 		$content = '';
-		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+		while ($row = $database->sql_fetch_assoc($res)) {
 			$subpart = $this->cObj->getSubpart($this->templateCode, '###LISTING_' . $prefix . 'ROW###');
-			// @TODO: Use $markerArray = $this->generateMarkerArray($row,'',$prefix);
+				// @TODO: Use $markerArray = $this->generateMarkerArray($row,'',$prefix);
 			$markerArray['###' . $prefix . 'AMOUNT###'] = $row['amount'];
 			$markerArray['###' . $prefix . 'METHOD###'] = $row['title'];
 			$markerArray['###' . $prefix . 'COST###'] = tx_moneylib::format(($row['amount'] * $row['price_gross']), $this->conf['currency'], (boolean)$this->conf['showCurrencySign']);
-			$content.= $this->cObj->substituteMarkerArray($subpart, $markerArray);
+			$content .= $this->cObj->substituteMarkerArray($subpart, $markerArray);
 		}
 
 		return $content;
@@ -326,7 +391,6 @@ class tx_commerce_pi6 extends tx_commerce_pibase {
 	 * @return string|void
 	 */
 	public function makeArticleView($kind, $articles, $product) {
-
 	}
 }
 

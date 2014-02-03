@@ -507,7 +507,6 @@ class tx_commerce_feusers_localRecordlist extends localRecordList {
 			// Add title column
 		$this->fieldArray[] = $titleCol;
 
-
 		if ($this->localizationView && $l10nEnabled) {
 			$this->fieldArray[] = '_LOCALIZATION_';
 			$addWhere .= ' AND ' . $GLOBALS['TCA'][$table]['ctrl']['languageField'] . '<=0';
@@ -746,7 +745,6 @@ class tx_commerce_feusers_localRecordlist extends localRecordList {
 		return $out;
 	}
 }
-
 
 if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_feusers_localrecordlist.php']) {
 	/** @noinspection PhpIncludeInspection */

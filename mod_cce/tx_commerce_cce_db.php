@@ -131,6 +131,16 @@ class SC_tx_commerce_cce_db {
 	public $cce;
 
 	/**
+	 * @var array
+	 */
+	protected $MOD_SETTINGS;
+
+	/**
+	 * @var array
+	 */
+	protected $MOD_MENU;
+
+	/**
 	 * Initialization of the class
 	 *
 	 * @return	void

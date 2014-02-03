@@ -105,21 +105,20 @@ $GLOBALS['TCA']['tx_commerce_baskets'] = Array(
 			)
 		),
 		'finished_time' => Array(
-                        'exclude' => 1,
-                        'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_basket.finished_time',
+			'exclude' => 1,
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_basket.finished_time',
 			'config' => Array(
-			       'type' => 'input',
-	                       'eval' => 'date',
-	           )
-	   ),
-	   'readonly' => Array(
-	   				 'exclude' => 1,
-	   				 'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_basket.readonly',
+				'type' => 'input',
+				'eval' => 'date',
+			)
+		),
+		'readonly' => Array(
+			'exclude' => 1,
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_basket.readonly',
 			'config' => array(
-							'type' => 'check',
-					 )
-	   		),
-
+				'type' => 'check',
+			)
+		),
 	),
 	'types' => Array(
 		'0' => Array('showitem' => 'sid;;;;1-1-1, article_id,price_id, price_gross, price_net, quantity')

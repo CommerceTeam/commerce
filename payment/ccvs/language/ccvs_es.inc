@@ -2,7 +2,7 @@
 
 /**
  * Credit Card Validation Solution, PHP Edition,
- * Mensajes de error españoles de la lengua.
+ * Mensajes de error espaï¿½oles de la lengua.
  *
  * @package    CreditCardValidationSolution
  * @author     Daniel Convissor <danielc@analysisandsolutions.com>
@@ -12,17 +12,19 @@
  */
 
 /** */
-$CCVSErrNumberString = 'Número no es una secuencia';
-$CCVSErrVisa14       = 'Visa tiene generalmente 16 o 13 dígitos, pero usted introdujo 14';
-$CCVSErrUnknown      = 'Los primeros cuatro dígitos, %s, indican el tipo desconocido de la tarjeta';
-$CCVSErrAccepted     = 'Programador utilizó incorrectamente la discusión aceptada';
+$CCVSErrNumberString = 'Nï¿½mero no es una secuencia';
+$CCVSErrVisa14       = 'Visa tiene generalmente 16 o 13 dï¿½gitos, pero usted introdujo 14';
+$CCVSErrUnknown      = 'Los primeros cuatro dï¿½gitos, %s, indican el tipo desconocido de la tarjeta';
+$CCVSErrAccepted     = 'Programador utilizï¿½ incorrectamente la discusiï¿½n aceptada';
 $CCVSErrNoAccept     = 'No aceptamos tarjetas de %s';
-$CCVSErrShort        = 'Número está faltando %s dígito(s)';
-$CCVSErrLong         = 'Número tiene %s también muchos dígito(s)';
-$CCVSErrChecksum     = 'Número falló en la prueba de suma de comprobación';
+$CCVSErrShort        = 'Nï¿½mero estï¿½ faltando %s dï¿½gito(s)';
+$CCVSErrLong         = 'Nï¿½mero tiene %s tambiï¿½n muchos dï¿½gito(s)';
+$CCVSErrChecksum     = 'Nï¿½mero fallï¿½ en la prueba de suma de comprobaciï¿½n';
 $CCVSErrMonthString  = 'Mes no es una secuencia';
-$CCVSErrMonthFormat  = 'Mes tiene formato inválido';
-$CCVSErrYearString   = 'Año no es una secuencia';
-$CCVSErrYearFormat   = 'Año tiene formato inválido';
+$CCVSErrMonthFormat  = 'Mes tiene formato invï¿½lido';
+$CCVSErrYearString   = 'Aï¿½o no es una secuencia';
+$CCVSErrYearFormat   = 'Aï¿½o tiene formato invï¿½lido';
 $CCVSErrExpired      = 'Tarjeta ha expirado';
 $CCVSErrCheckNumber  = 'Length of controlnumber - %s - not ok';
+
+?>
