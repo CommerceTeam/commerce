@@ -38,7 +38,7 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 	 *
 	 * @var string
 	 */
-	public $scriptRelPath = 'pi1/class.tx_commerce_pi1.php';
+	public $scriptRelPath = '/Resources/Private/Language/locallang.xml';
 
 	/**
 	 * The extension key.
@@ -383,7 +383,9 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 			$this->content = $this->makeListView($this->cat);
 		}
 
-		return $this->conf['wrapInBaseClass'] ? $this->pi_wrapInBaseClass($this->content) : $this->content;
+		$content .= $this->content;
+
+		return $this->conf['wrapInBaseClass'] ? $this->pi_wrapInBaseClass($content) : $content;
 	}
 
 	/**

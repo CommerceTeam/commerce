@@ -43,7 +43,7 @@ class tx_commerce_pi6 extends tx_commerce_pibase {
 	 *
 	 * @var string
 	 */
-	public $scriptRelPath = 'pi6/class.tx_commerce_pi6.php';
+	public $scriptRelPath = '/Resources/Private/Language/locallang.xml';
 
 	/**
 	 * The extension key.
@@ -202,7 +202,9 @@ class tx_commerce_pi6 extends tx_commerce_pibase {
 			$this->content = $convert->specCharsToASCII('utf-8', $this->content);
 		}
 
-		return $this->pi_wrapInBaseClass($this->content);
+		$content .= $this->content;
+
+		return $this->pi_wrapInBaseClass($content);
 	}
 
 	/**

@@ -39,7 +39,7 @@ class tx_commerce_pi4 extends tx_commerce_pibase {
 	 *
 	 * @var string
 	 */
-	public $scriptRelPath = 'pi4/class.tx_commerce_pi4.php';
+	public $scriptRelPath = '/Resources/Private/Language/locallang.xml';
 
 	/**
 	 * The extension key.
