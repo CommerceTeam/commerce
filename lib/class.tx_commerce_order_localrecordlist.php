@@ -36,6 +36,16 @@ class tx_commerce_order_localRecordlist extends localRecordList {
 	public $alternateBgColors = 1;
 
 	/**
+	 * @var string
+	 */
+	public $additionalOutTop;
+
+	/**
+	 * @var integer
+	 */
+	public $onlyUser;
+
+	/**
 	 * @param string $table
 	 * @param integer $id
 	 * @param string $addWhere
@@ -283,7 +293,7 @@ class tx_commerce_order_localRecordlist extends localRecordList {
 			</table>';
 	}
 
- 	function generateList()	{
+	public function generateList() {
 		global $TCA;
 		t3lib_div::loadTCA("tx_commerce_orders");
 			// Traverse the TCA table array:
@@ -348,7 +358,6 @@ class tx_commerce_order_localRecordlist extends localRecordList {
 			}
 		}
 	}
-
 
 	/**
 	 * Wrapping input code in link to URL or email if $testString is either.
@@ -583,8 +592,6 @@ class tx_commerce_order_localRecordlist extends localRecordList {
 			// Finally, return table row element:
 		return $iOut;
 	}
-
-
 
 	/**
 	 * Rendering the header row for a table
