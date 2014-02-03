@@ -33,7 +33,7 @@ require('conf.php');
 require($BACK_PATH . 'init.php');
 require($BACK_PATH . 'template.php');
 
-$LANG->includeLLFile('EXT:commerce/mod_access/locallang_mod_access_perm.xml');
+$LANG->includeLLFile('EXT:commerce/Resources/Private/Language/locallang_mod_access.xml');
 	// This checks permissions and exits if the users has no permission for entry.
 $BE_USER->modAccess($MCONF, 1);
 t3lib_BEfunc::lockRecords();

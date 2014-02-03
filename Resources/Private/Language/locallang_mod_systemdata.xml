@@ -5,10 +5,14 @@
 		<description/>
 		<type>database</type>
 		<csh_table/>
-		<fileId>EXT:commerce/mod_systemdata/locallang.xml</fileId>
+		<fileId>EXT:commerce/Resources/Private/Language/locallang_mod_systemdata.xml</fileId>
 	</meta>
 	<data type="array">
 		<languageKey index="default" type="array">
+			<label index="mlang_tabs_tab">Systemdata</label>
+			<label index="mlang_labels_tabdescr">Browse, edit and delete systemdata</label>
+			<label index="mlang_labels_tablabel">Systemdata</label>
+
 			<label index="title">Systemdata</label>
 			<label index="title_attributes">Attributes</label>
 			<label index="desc_attributes">Create and edit the attributes which are used for defining articles from products.</label>

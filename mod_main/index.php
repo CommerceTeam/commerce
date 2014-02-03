@@ -21,17 +21,10 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
 /**
  * Module 'Main' for the 'commerce' extension.
  * only a dummy file
- *
- * @author	Franz Holzinger <franzholz@fholzinger.com>
- * 
- * $Id: index.php 147 2006-04-04 10:43:22Z thomas $
  */
-
-// Franz: Diese Datei hat keine Funktion, darf aber nicht gelöscht werden. 
-// Sonst funktioniert nämlich dieses Modul nicht mehr mit TYPO3.
-
 
 ?>

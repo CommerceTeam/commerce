@@ -5,10 +5,14 @@
 		<description/>
 		<type>database</type>
 		<csh_table/>
-		<fileId>EXT:commerce/mod_orders/locallang.xml</fileId>
+		<fileId>EXT:commerce/Resources/Private/Language/locallang_mod_orders.xml</fileId>
 	</meta>
 	<data type="array">
 		<languageKey index="default" type="array">
+			<label index="mlang_tabs_tab">Orders</label>
+			<label index="mlang_labels_tabdescr">Browse, edit and delete orders</label>
+			<label index="mlang_labels_tablabel">Orders</label>
+
 			<label index="title">Orders and customer data</label>
 			<label index="CustomerData">Customer data</label>
 			<label index="OrderData">Order data</label>

@@ -31,57 +31,170 @@
 
 unset($MCONF);
 require_once('conf.php');
-require_once($BACK_PATH.'init.php');
-require_once($BACK_PATH.'template.php');
+require_once($BACK_PATH . 'init.php');
+require_once($BACK_PATH . 'template.php');
 
-$LANG->includeLLFile("EXT:commerce/mod_orders/locallang.php");
-$BE_USER->modAccess($MCONF,1);	// This checks permissions and exits if the users has no permission for entry.
+$LANG->includeLLFile('EXT:commerce/Resources/Private/Language/locallang_mod_orders.xml');
+	// This checks permissions and exits if the users has no permission for entry.
+$BE_USER->modAccess($MCONF, 1);
 
 $LANG->includeLLFile('EXT:lang/locallang_mod_web_list.php');
 
 class tx_commerce_orders extends t3lib_SCbase {
-
-	var $id;					// Page Id for which to make the listing
-	var $pointer;				// Pointer - for browsing list of records.
-	var $imagemode;				// Thumbnails or not
-	var $table ='tx_commerce_orders';	// Which table to make extended listing for
-	var $table_user ='fe_users';	// Which table to make extended listing for
-
-	var $search_field;			// Search-fields
-	var $search_levels;			// Search-levels
-	var $showLimit;				// Show-limit
-	var $returnUrl;				// Return URL
-
-	var $clear_cache;			// Clear-cache flag - if set, clears page cache for current id.
-	var $cmd;					// Command: Eg. "delete" or "setCB" (for TCEmain / clipboard operations)
-	var $cmd_table;				// Table on which the cmd-action is performed.
-
-		// Internal, static:
-	var $perms_clause;			// Page select perms clause
-	var $modTSconfig;			// Module TSconfig
-	var $pageinfo;				// Current ids page record
-	var $doc;					// Document template object
-
-	var $MCONF=array();			// Module configuration
-	var $MOD_MENU=array();		// Menu configuration
-	var $MOD_SETTINGS=array();	// Module settings (session variable)
+	/**
+	 * Page Id for which to make the listing
+	 *
+	 * @var integer
+	 */
+	public $id;
 
 	/**
+	 * Pointer - for browsing list of records.
 	 *
+	 * @var integer
 	 */
-	function init() {
+	protected $pointer;
+
+	/**
+	 * Thumbnails or not
+	 *
+	 * @var boolean
+	 */
+	protected $imagemode;
+
+	/**
+	 * Which table to make extended listing for
+	 *
+	 * @var string
+	 */
+	protected $table = 'tx_commerce_orders';
+
+	/**
+	 * Which table to make extended listing for
+	 *
+	 * @var string
+	 */
+	protected $table_user = 'fe_users';
+
+	/**
+	 * Search-fields
+	 *
+	 * @var string
+	 */
+	protected $search_field;
+
+	/**
+	 * Search-levels
+	 *
+	 * @var integer
+	 */
+	protected $search_levels;
+
+	/**
+	 * Show-limit
+	 *
+	 * @var integer
+	 */
+	protected $showLimit;
+
+	/**
+	 * Return URL
+	 *
+	 * @var string
+	 */
+	protected $returnUrl;
+
+	/**
+	 * Clear-cache flag - if set, clears page cache for current id.
+	 *
+	 * @var
+	 */
+	protected $clear_cache;
+
+	/**
+	 * Command: Eg. "delete" or "setCB" (for TCEmain / clipboard operations)
+	 *
+	 * @var string
+	 */
+	protected $cmd;
+
+	/**
+	 * Table on which the cmd-action is performed.
+	 *
+	 * @var string
+	 */
+	protected $cmd_table;
+
+	/**
+	 * Page select perms clause
+	 *
+	 * @var integer
+	 */
+	public $perms_clause;
+
+	/**
+	 * Module TSconfig
+	 *
+	 * @var array
+	 */
+	public $modTSconfig;
+
+	/**
+	 * Current ids page record
+	 *
+	 * @var array
+	 */
+	protected $pageinfo;
+
+	/**
+	 * Document template object
+	 *
+	 * @var template
+	 */
+	public $doc;
+
+	/**
+	 * Module configuration
+	 *
+	 * @var array
+	 */
+	public $MCONF = array();
+
+	/**
+	 * Menu configuration
+	 *
+	 * @var array
+	 */
+	public $MOD_MENU = array();
+
+	/**
+	 * Module settings (session variable)
+	 *
+	 * @var array
+	 */
+	public $MOD_SETTINGS = array();
+
+	/**
+	 * @var integer
+	 */
+	protected $clickMenuEnabled = 0;
+
+	/**
+	 * @return void
+	 */
+	public function init() {
 		parent::init();
-		$this->table='tx_commerce_orders';
-		$this->clickMenuEnabled=1;
+		$this->table = 'tx_commerce_orders';
+		$this->clickMenuEnabled = 1;
 		tx_commerce_create_folder::init_folders();
 
-		$order_pid = array_unique(tx_commerce_folder_db::initFolders('Orders','Commerce',0,'Commerce'));
+		$order_pid = array_unique(tx_commerce_folder_db::initFolders('Orders', 'Commerce', 0, 'Commerce'));
 
 		/**
 		 * If we get an id via GP use this, else use the default id
 		 */
 		if (t3lib_div::_GP('id')) {
-			$this->id=t3lib_div::_GP('id');
+			$this->id = t3lib_div::_GP('id');
 		} else {
 			$this->id = $order_pid[0];
 		}

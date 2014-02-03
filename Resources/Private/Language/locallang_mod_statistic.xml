@@ -3,10 +3,19 @@
 <T3locallang>
 	<meta type="array">
 		<description/>
-		<type/>
+		<type>database</type>
 		<csh_table/>
-		<fileId>EXT:EXT:com_statistic/mod_statistic/locallang_weekday.xml</fileId>
+		<fileId>EXT:commerce/Resources/Private/Language/locallang_mod_statistic.xml</fileId>
 		<labelContext type="array">
+			<label index="mlang_tabs_tab"/>
+			<label index="mlang_labels_tabdescr"/>
+			<label index="mlang_labels_tablabel"/>
+
+			<label index="title"/>
+			<label index="statistics"/>
+			<label index="incremental_aggregation"/>
+			<label index="complete_aggregation"/>
+
 			<label index="monday"/>
 			<label index="tuesday"/>
 			<label index="wednesday"/>
@@ -18,6 +27,15 @@
 	</meta>
 	<data type="array">
 		<languageKey index="default" type="array">
+			<label index="mlang_tabs_tab">Statistics</label>
+			<label index="mlang_labels_tabdescr">Statistics for Commerce</label>
+			<label index="mlang_labels_tablabel">Stats</label>
+
+			<label index="title">Statistics</label>
+			<label index="statistics">Statistic</label>
+			<label index="incremental_aggregation">Incremental aggregation</label>
+			<label index="complete_aggregation">Full aggregation</label>
+
 			<label index="monday">Monday</label>
 			<label index="tuesday">Tuesday</label>
 			<label index="wednesday">Wednesday</label>

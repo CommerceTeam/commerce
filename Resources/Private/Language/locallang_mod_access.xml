@@ -2,11 +2,17 @@
 <!DOCTYPE T3locallang SYSTEM "http://dtd.evoweb.de/t3locallang.dtd">
 <T3locallang>
 	<meta type="array">
-		<description>Web&gt;Access Module labels (standard module labels plus for the Access module screens).</description>
-		<type>module</type>
+		<description/>
+		<type>database</type>
+		<csh_table/>
+		<fileId>EXT:commerce/Resources/Private/Language/locallang_mod_access.xml</fileId>
 	</meta>
 	<data type="array">
 		<languageKey index="default" type="array">
+			<label index="mlang_tabs_tab">Access</label>
+			<label index="mlang_labels_tabdescr">Category permissions</label>
+			<label index="mlang_labels_tablabel">Access</label>
+
 			<label index="permissions">Permissions</label>
 			<label index="ch_permissions">Change permissions</label>
 			<label index="Legend">Legend</label>

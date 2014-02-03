@@ -21,18 +21,10 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
 /**
  * nothing here
  * This is demanded from TYPO3 to be existant.
- *
- * @author	Franz Holzinger <kontakt@fholzinger.com>
- * @maintainer Franz Holzinger <kontakt@fholzinger.com>
- * @package TYPO3
- * @subpackage tx_commerce
- * 
- * $Id: class.tx_commerce_navframe.php 147 2006-04-04 10:43:22Z thomas $
  */
-
-
 
 ?>

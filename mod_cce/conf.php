@@ -3,6 +3,6 @@
 define('TYPO3_MOD_PATH', '../typo3conf/ext/commerce/mod_cce/');
 $BACK_PATH = '../../../../typo3/';
 
-$MLANG['default']['ll_ref'] = 'LLL:EXT:commerce/mod_cce/locallang_mod.php';
+$MLANG['default']['ll_ref'] = 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_cce.xml';
 
 ?>

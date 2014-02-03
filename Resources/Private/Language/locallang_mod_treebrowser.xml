@@ -5,13 +5,13 @@
 		<description/>
 		<type>database</type>
 		<csh_table/>
-		<fileId>EXT:commerce/mod_category/locallang_mod.xml</fileId>
+		<fileId>EXT:commerce/Resources/Private/Language/locallang_mod_treebrowser.xml</fileId>
 	</meta>
 	<data type="array">
 		<languageKey index="default" type="array">
-			<label index="mlang_tabs_tab">Access</label>
-			<label index="mlang_labels_tabdescr">Category permissions</label>
-			<label index="mlang_labels_tablabel">Access</label>
+			<label index="mlang_tabs_tab">TreeBrowser</label>
+			<label index="mlang_labels_tablabel">TreeBrowser</label>
+			<label index="mlang_labels_tabdescr">TreeBrowser module. This should be invisible.</label>
 		</languageKey>
 	</data>
 </T3locallang>

@@ -5,11 +5,13 @@
 		<description/>
 		<type>database</type>
 		<csh_table/>
-		<fileId>EXT:commerce/mod_main/locallang.xml</fileId>
+		<fileId>EXT:commerce/Resources/Private/Language/locallang_mod_main.xml</fileId>
 	</meta>
 	<data type="array">
 		<languageKey index="default" type="array">
-			<label index="title">Commerce</label>
+			<label index="mlang_tabs_tab">Commerce</label>
+			<label index="mlang_labels_tabdescr">Advanced Shopping System</label>
+			<label index="mlang_labels_tablabel">Tx Commerce</label>
 		</languageKey>
 	</data>
 </T3locallang>

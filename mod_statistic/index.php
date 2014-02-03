@@ -25,19 +25,16 @@
 
 unset($MCONF);
 require_once('conf.php');
-require_once($BACK_PATH.'init.php');
-require_once($BACK_PATH.'template.php');
-$LANG->includeLLFile("EXT:commerce/mod_statistic/locallang.php");
-$LANG->includeLLFile("EXT:commerce/mod_statistic/locallang_weekday.php");
-$BE_USER->modAccess($MCONF,1);	// This checks permissions and exits if the users has no permission for entry.
+require_once($BACK_PATH . 'init.php');
+require_once($BACK_PATH . 'template.php');
+$LANG->includeLLFile('EXT:commerce/Resources/Private/Language/locallang_mod_statistic.xml');
+	// This checks permissions and exits if the users has no permission for entry.
+$BE_USER->modAccess($MCONF, 1);
 
 $LANG->includeLLFile('EXT:lang/locallang_mod_web_list.php');
 
 /**
  * Module 'Statistics' for the 'commerce' extension.
- *
- * @author Joerg Sprung <typo3@marketing-factory.de>
- * @author Ingo Schmitt <is@marketing-factory.de>
  */
 class tx_commerce_statistic extends t3lib_SCbase {
 

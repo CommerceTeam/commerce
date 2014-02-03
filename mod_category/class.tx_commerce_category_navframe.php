@@ -33,19 +33,18 @@ unset($MCONF);
 */
 if (!(defined('TYPO3_REQUESTTYPE') || defined('TYPO3_REQUESTTYPE_AJAX'))) {
 	require_once('conf.php');
-	require_once($BACK_PATH.'init.php');
-	require_once(PATH_typo3.'template.php');
+	require_once($BACK_PATH . 'init.php');
+	require_once(PATH_typo3 . 'template.php');
 
-	$LANG->includeLLFile('EXT:commerce/mod_category/locallang.xml');
-
+	$LANG->includeLLFile('EXT:commerce/Resources/Private/Language/locallang_mod_category.xml');
 } else {
-	//In case of an AJAX Request the script including this script is ajax.php, from which the BACK PATH is ''
+		// In case of an AJAX Request the script including this script is ajax.php, from which the BACK PATH is ''
 	require_once('init.php');
 	require('template.php');
 }
 
 // Require ext update script.
-require_once(t3lib_extmgm::extPath('commerce').'class.ext_update.php');
+require_once(t3lib_extmgm::extPath('commerce') . 'class.ext_update.php');
 
 class tx_commerce_category_navframe {
 

@@ -5,13 +5,17 @@
 		<description/>
 		<type>database</type>
 		<csh_table/>
-		<fileId>EXT:commerce/mod_category/locallang_mod.xml</fileId>
+		<fileId>EXT:commerce/Resources/Private/Language/locallang_mod_category.xml</fileId>
 	</meta>
 	<data type="array">
 		<languageKey index="default" type="array">
 			<label index="mlang_tabs_tab">Category</label>
 			<label index="mlang_labels_tabdescr">Category of products</label>
 			<label index="mlang_labels_tablabel">Category</label>
+
+			<label index="category_title">Category</label>
+			<label index="product_title">Product</label>
+			<label index="ext.update">You need to "UPDATE!" the commerce extension. Please go to Extensions->Commerce. Then choose "UPDATE!" in the select-box.</label>
 		</languageKey>
 	</data>
 </T3locallang>

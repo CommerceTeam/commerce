@@ -24,21 +24,18 @@
 
 /**
  * Main script class for the tree edit navigation frame
- *
- * @author	Marketing Factory
- * @maintainer Erik Frister
  */
 unset($MCONF);
 
 if (!(defined('TYPO3_REQUESTTYPE') || defined('TYPO3_REQUESTTYPE_AJAX'))) {
-        require_once('conf.php');
-        require_once($BACK_PATH.'init.php');
-        require_once(PATH_typo3.'template.php');
-    } else {
-        //In case of an AJAX Request the script including this script is ajax.php, from which the BACK PATH is ''
-        require_once('init.php');
-        require('template.php');
-    }								
+	require_once('conf.php');
+	require_once($BACK_PATH . 'init.php');
+	require_once(PATH_typo3 . 'template.php');
+} else {
+		// In case of an AJAX Request the script including this script is ajax.php, from which the BACK PATH is ''
+	require_once('init.php');
+	require('template.php');
+}
 
 class tx_commerce_access_navframe {
 
@@ -49,7 +46,7 @@ class tx_commerce_access_navframe {
 
 		// Internal, static: _GP
 	var $currentSubScript;
-	
+
 	/**
 	 * Initializes the Tree
 	 */
@@ -58,7 +55,7 @@ class tx_commerce_access_navframe {
 		$this->categoryTree = t3lib_div::makeInstance('tx_commerce_categorytree');
 		$this->categoryTree->init();
 	}
-	
+
 	/**
 	 * Initializes the Page
 	 */
@@ -71,7 +68,7 @@ class tx_commerce_access_navframe {
 		$this->doc->backPath = $this->BACK_PATH;
 		$this->doc->setModuleTemplate('../typo3conf/ext/commerce/mod_access/templates/alt_db_navframe.html'); ###MAKE THIS PATH BE CALCULATED###
 		$this->doc->docType  = 'xhtml_trans';
-		
+
 		$this->doc->JScode='';
 
 
@@ -107,7 +104,7 @@ class tx_commerce_access_navframe {
 				window.setTimeout("_refresh_nav();",0);
 			}
 		');
-		
+
 		$this->doc->loadJavascriptLib('contrib/prototype/prototype.js');
 		$this->doc->loadJavascriptLib('../typo3conf/ext/commerce/mod_access/tree.js'); ###MAKE PATH BE CALCULATED, NOT FIXED###
 		// Adding javascript code for AJAX (prototype), drag&drop and the pagetree as well as the click menu code
@@ -140,16 +137,16 @@ class tx_commerce_access_navframe {
 
 		$this->doc->bodyTagId = 'typo3-pagetree';
 	}
-	
+
 	function main() {
 		global $LANG,$CLIENT;
-		
+
 		//Get the Browseable Tree
 		$tree = $this->categoryTree->getBrowseableTree();
-		
+
 		// Outputting page tree:
 		$this->content .= '<div id="PageTreeDiv">'.$tree.'</div>';
-		
+
 		$markers = array(
 			'IMG_RESET'     => '',//'<img'.t3lib_iconWorks::skinImg($GLOBALS['BACK_PATH'], 'gfx/close_gray.gif', ' width="16" height="16"').' id="treeFilterReset" alt="Reset Filter" />',
 			'WORKSPACEINFO' => '',//$this->getWorkspaceInfo(),
@@ -160,7 +157,7 @@ class tx_commerce_access_navframe {
 		if (!$this->hasFilterBox) {
 			$subparts['###SECOND_ROW###'] = '';
 		}
-		
+
 		// Build the <body> for the module
 		$this->content = $this->doc->startPage('Commerce Access List');
 		$this->content.= $this->doc->moduleBody('', '', $markers, $subparts);
@@ -168,11 +165,11 @@ class tx_commerce_access_navframe {
 
 		//$this->content = $this->doc->insertStylesAndJS($this->content);
 	}
-	
+
 	function printContent() {
 		echo $this->content;
 	}
-	
+
 	/**
 	 * Makes the AJAX call to expand or collapse the categorytree.
 	 * Called by typo3/ajax.php
@@ -183,29 +180,29 @@ class tx_commerce_access_navframe {
 	 */
 	function ajaxExpandCollapse($params, &$ajaxObj) {
 		global $LANG;
-		
+
 		//Extract the ID and Bank
 		$id   = 0;
 		$bank = 0;
-		
+
 		$PM = t3lib_div::_GP('PM');
 		// IE takes anchor as parameter
 		if(($PMpos = strpos($PM, '#')) !== false) { $PM = substr($PM, 0, $PMpos); }
 		$PM = explode('_', $PM);
-		
+
 		//Now we should have a PM Array looking like:
 		//0: treeName, 1: leafIndex, 2: Mount, 3: set/clear [4:,5:,.. further leafIndices], 5[+++]: Item UID
-		
+
 		if(is_array($PM) && count($PM) >= 4) {
 			$id 	= $PM[count($PM)-1]; //ID is always the last Item
 			$bank 	= $PM[2];
 		}
-		
-		
+
+
 		//Load the tree
 		$this->init();
 		$tree = $this->categoryTree->getBrowseableAjaxTree($PM);
-		
+
 		//if (!$this->categoryTree->ajaxStatus) { ###CHECK THE AJAX ERROR###
 		//	$ajaxObj->setError($tree);
 		//} else	{
@@ -215,12 +212,12 @@ class tx_commerce_access_navframe {
 
 }
 
-//XClass Statement
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/mod_access/class.tx_commerce_access_navframe.php'])	{
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/mod_access/class.tx_commerce_access_navframe.php']) {
+	/** @noinspection PhpIncludeInspection */
 	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/mod_access/class.tx_commerce_access_navframe.php']);
 }
 
-// Make instance if it is not an AJAX call
+	// Make instance if it is not an AJAX call
 if (!(TYPO3_REQUESTTYPE & TYPO3_REQUESTTYPE_AJAX)) {
 	$SOBE = t3lib_div::makeInstance('tx_commerce_access_navframe');
 	$SOBE->init();
@@ -228,4 +225,5 @@ if (!(TYPO3_REQUESTTYPE & TYPO3_REQUESTTYPE_AJAX)) {
 	$SOBE->main();
 	$SOBE->printContent();
 }
+
 ?>

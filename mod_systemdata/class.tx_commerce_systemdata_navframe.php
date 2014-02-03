@@ -28,7 +28,7 @@ require_once('conf.php');
 require_once($BACK_PATH . 'init.php');
 require_once($BACK_PATH . 'template.php');
 
-$GLOBALS['LANG']->includeLLFile('EXT:commerce/mod_systemdata/locallang.xml');
+$GLOBALS['LANG']->includeLLFile('EXT:commerce/Resources/Private/Language/locallang_mod_systemdata.xml');
 require_once(PATH_t3lib . 'class.t3lib_scbase.php');
 	// This checks permissions and exits if the users has no permission for entry.
 $GLOBALS['BE_USER']->modAccess($MCONF, 1);

@@ -31,7 +31,7 @@ require_once('conf.php');
 require_once($BACK_PATH . 'init.php');
 require_once($BACK_PATH . 'template.php');
 
-$LANG->includeLLFile('EXT:commerce/mod_cce/locallang_mod.xml');
+$LANG->includeLLFile('EXT:commerce/Resources/Private/Language/locallang_mod_cce.xml');
 
 class SC_tx_commerce_cce_db {
 		// Internal, static: GPvar
@@ -190,7 +190,11 @@ class SC_tx_commerce_cce_db {
 		$refInfo  = parse_url(t3lib_div::getIndpEnv('HTTP_REFERER'));
 		$httpHost = t3lib_div::getIndpEnv('TYPO3_HOST_ONLY');
 
-		if ($httpHost != $refInfo['host'] && $this->vC != $backendUser->veriCode() && !$GLOBALS['TYPO3_CONF_VARS']['SYS']['doNotCheckReferer']) {
+		if (
+			$httpHost != $refInfo['host']
+			&& $this->vC != $backendUser->veriCode()
+			&& !$GLOBALS['TYPO3_CONF_VARS']['SYS']['doNotCheckReferer']
+		) {
 			// $this->tce->log('',0,0,0,1,'Referer host "%s" and server host "%s" did not match and veriCode was not valid either!',1,array($refInfo['host'],$httpHost));
 			// @todo: log correctly
 		} else {
@@ -446,16 +450,15 @@ class SC_tx_commerce_cce_db {
 	 * @return void
 	 */
 	protected function commitCommand($uidClip, $uidTarget, $command) {
-		// First prepare user defined objects (if any) for hooks which extend this function:
+			// First prepare user defined objects (if any) for hooks which extend this function:
 		$hookObjectsArr = array();
 		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/mod_cce/class.tx_commerce_cce_db.php']['commitCommandClass'])) {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/mod_cce/class.tx_commerce_cce_db.php']['commitCommandClass'] as $classRef) {
 				$hookObjectsArr[] = t3lib_div::getUserObj($classRef);
 			}
 		}
-
-		//Hook: beforeCommit
-		foreach($hookObjectsArr as $hookObj)	{
+			// Hook: beforeCommit
+		foreach ($hookObjectsArr as $hookObj) {
 			if (method_exists($hookObj, 'beforeCommit')) {
 				$hookObj->beforeCommit($uidClip, $uidTarget, $command);
 			}
@@ -468,7 +471,7 @@ class SC_tx_commerce_cce_db {
 			break;
 
 			case 'pasteProduct':
-				Tx_Commerce_Utility_BackendUtility::copyProduct($uidClip, $uidTarget, false, $this->locales, $this->sorting);
+				Tx_Commerce_Utility_BackendUtility::copyProduct($uidClip, $uidTarget, FALSE, $this->locales, $this->sorting);
 			break;
 
 			case 'pasteCategory':
@@ -481,14 +484,14 @@ class SC_tx_commerce_cce_db {
 		}
 
 			// Hook: afterCommit
-		foreach($hookObjectsArr as $hookObj) {
+		foreach ($hookObjectsArr as $hookObj) {
 			if (method_exists($hookObj, 'afterCommit')) {
 				$hookObj->afterCommit($uidClip, $uidTarget, $command);
 			}
 		}
 
 			// Update page tree?
-		if ($this->uPT && (isset($this->data['pages'])||isset($this->cmd['pages']))) {
+		if ($this->uPT && (isset($this->data['pages']) || isset($this->cmd['pages']))) {
 			t3lib_BEfunc::setUpdateSignal('updatePageTree');
 		}
 	}
@@ -503,7 +506,7 @@ class SC_tx_commerce_cce_db {
 		if ($this->content != '') {
 			echo $this->content;
 		} elseif ($this->redirect) {
-			Header('Location: ' . t3lib_div::locationHeaderUrl($this->redirect));
+			header('Location: ' . t3lib_div::locationHeaderUrl($this->redirect));
 		}
 	}
 }
@@ -513,7 +516,7 @@ if (defined('TYPO3_MODE') && isset($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLA
 	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/mod_cce/tx_commerce_cce_db.php']);
 }
 
-// Make instance:
+	// Make instance:
 $SOBE = t3lib_div::makeInstance('SC_tx_commerce_cce_db');
 $SOBE->init();
 $SOBE->initClipboard();
