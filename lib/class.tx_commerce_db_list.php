@@ -275,6 +275,7 @@ class tx_commerce_db_list {
 	 */
 	public function clearCache() {
 		if ($this->clear_cache) {
+			/** @var t3lib_TCEmain $tce */
 			$tce = t3lib_div::makeInstance('t3lib_TCEmain');
 			$tce->stripslashes_values = 0;
 			$tce->start(array(), array());
@@ -311,6 +312,7 @@ class tx_commerce_db_list {
 		$access = is_array($this->pageinfo) ? 1 : 0;
 
 			// Initialize the dblist object:
+		/** @var commerceRecordList $dblist */
 		$dblist = t3lib_div::makeInstance('commerceRecordList');
 		$dblist->backPath = $GLOBALS['BACK_PATH'];
 		$dblist->calcPerms = $backendUser->calcPerms($this->pageinfo);

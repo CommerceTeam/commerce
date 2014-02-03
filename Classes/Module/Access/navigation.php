@@ -50,7 +50,7 @@ class Tx_Commerce_Module_Access_Navigation {
 	/**
 	 * @var string
 	 */
-	protected $BACK_PATH = '../../../../typo3/';
+	protected $BACK_PATH = '../../../../../../typo3/';
 
 	/**
 	 * @var template
@@ -132,7 +132,7 @@ class Tx_Commerce_Module_Access_Navigation {
 
 		$this->doc->loadJavascriptLib('contrib/prototype/prototype.js');
 			// @todo MAKE PATH BE CALCULATED, NOT FIXED
-		$this->doc->loadJavascriptLib('../' . PATH_TXCOMMERCE_REL . 'Resources/Public/Javascript/tree.js');
+		$this->doc->loadJavascriptLib(PATH_TXCOMMERCE_REL . 'Resources/Public/Javascript/mod_access_tree.js');
 			// Adding javascript code for AJAX (prototype), drag&drop and the pagetree as well as the click menu code
 		$this->doc->getContextMenuCode();
 

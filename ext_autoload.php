@@ -42,8 +42,9 @@ return array(
 	'tx_commerce_dao_feuserobserver' => $classPath . 'Dao/FeuserObserver.php',
 	'tx_commerce_dao_feuseraddressfieldmapper' => $classPath . 'Dao/FeuserAddressFieldmapper.php',
 
+	'tx_commerce_module_access_navigation' => $classPath . 'Module/Access/navigation.php',
 	'sc_mod_access_perm_ajax' => $classPath . 'Module/Access/class.sc_mod_access_perm_ajax.php',
-	'Tx_Commerce_Module_Category_Navigation' => $classPath . 'Module/Category/navigation.php',
+	'tx_commerce_module_category_navigation' => $classPath . 'Module/Category/navigation.php',
 	'tx_commerce_order_pagetree' => $classPath . 'Module/Orders/class.tx_commerce_order_pagetree.php',
 	'tx_commerce_statistic_pagetree' => $classPath . 'Module/Statistic/class.tx_commerce_statistic_pagetree.php',
 

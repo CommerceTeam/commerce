@@ -54,7 +54,7 @@ class Tx_Commerce_Controller_BasketController extends tx_commerce_pibase {
 	 *
 	 * @var string
 	 */
-	public $extKey = 'commerce';
+	public $extKey = COMMERCE_EXTKEY;
 
 	/**
 	 * @var string
