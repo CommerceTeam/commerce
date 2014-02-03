@@ -24,10 +24,6 @@
 
 /**
  * Misc COMMERCE functions
- *
- * @author Ingo Schmitt <is@marketing-factory.de>
- * @package TYPO3
- * @subpackage tx_commerce
  */
 class tx_commerce_div {
 	/**
@@ -165,8 +161,8 @@ class tx_commerce_div {
 		}
 
 		$hookObjectsArr = array();
-		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_div.php']['generateSessionKey']))	{
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_div.php']['generateSessionKey'] as $classRef)	{
+		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_div.php']['generateSessionKey'])) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_div.php']['generateSessionKey'] as $classRef) {
 				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
 			}
 		}
@@ -214,8 +210,8 @@ class tx_commerce_div {
 	*/
 	public static function sendMail($mailconf) {
 		$hookObjectsArr = array();
-		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_div.php']['sendMail']))	{
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_div.php']['sendMail'] as $classRef)	{
+		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_div.php']['sendMail'])) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_div.php']['sendMail'] as $classRef) {
 				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
 			}
 		}
@@ -229,18 +225,18 @@ class tx_commerce_div {
 			/**
 			 * this is the current hook
 			 */
-			if (method_exists($hookObj, 'preProcessMail'))	{
+			if (method_exists($hookObj, 'preProcessMail')) {
 				$hookObj->preProcessMail($mailconf, $additionalData);
- 			}
+			}
 		}
 
 		foreach ($hookObjectsArr as $hookObj) {
-			if (method_exists($hookObj, 'ownMailRendering'))	{
+			if (method_exists($hookObj, 'ownMailRendering')) {
 				return $hookObj->ownMailRendering($mailconf, $additionalData, $hookObjectsArr);
 			}
 		}
 
-		// validate e-mail addesses
+			// validate e-mail addesses
 		$mailconf['recipient'] = self::validEmailList($mailconf['recipient']);
 
 		if ($mailconf['recipient']) {
@@ -286,24 +282,15 @@ class tx_commerce_div {
 				// $htmlMail->organisation = $mailconf['formName'];
 			$message->setPriority((int) $mailconf['priority']);
 
-			// add Html content
+				// add Html content
 			if ($mailconf['html']['useHtml'] && trim($mailconf['html']['content'])) {
 				$message->addPart($mailconf['html']['content'], 'text/html');
-				/*
-				$htmlMail->theParts['html']['path'] = $mailconf['html']['path'];
-				$htmlMail->extractMediaLinks();
-				$htmlMail->extractHyperLinks();
-				$htmlMail->fetchHTMLMedia();
-				$htmlMail->substMediaNamesInHTML(0);
-				$htmlMail->substHREFsInHTML();
-				$htmlMail->setHTML($htmlMail->encodeMsg($htmlMail->theParts['html']['content']));
-				 */
 			}
 
 				// add plain text content
 			$message->addPart($mailconf['plain']['content']);
 
-			// add attachment
+				// add attachment
 			if (is_array($mailconf['attach'])) {
 				foreach ($mailconf['attach'] as $file) {
 					if ($file && file_exists($file)) {
@@ -313,7 +300,7 @@ class tx_commerce_div {
 			}
 
 			foreach ($hookObjectsArr as $hookObj) {
-				if (method_exists($hookObj, 'postProcessMail'))	{
+				if (method_exists($hookObj, 'postProcessMail')) {
 					$message = $hookObj->postProcessMail($message, $mailconf, $additionalData);
 				}
 			}
@@ -336,7 +323,7 @@ class tx_commerce_div {
 
 		$returnArray = array();
 		foreach ($dataArray as $data) {
-			if (t3lib_div::validEmail($data))	{
+			if (t3lib_div::validEmail($data)) {
 				$returnArray[] = $data;
 			}
 		}

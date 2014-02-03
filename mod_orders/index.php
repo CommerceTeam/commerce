@@ -37,10 +37,10 @@ require_once($BACK_PATH . 'init.php');
 require_once($BACK_PATH . 'template.php');
 
 $LANG->includeLLFile('EXT:commerce/Resources/Private/Language/locallang_mod_orders.xml');
+$LANG->includeLLFile('EXT:lang/locallang_mod_web_list.php');
+
 	// This checks permissions and exits if the users has no permission for entry.
 $BE_USER->modAccess($MCONF, 1);
-
-$LANG->includeLLFile('EXT:lang/locallang_mod_web_list.php');
 
 class tx_commerce_orders extends t3lib_SCbase {
 	/**

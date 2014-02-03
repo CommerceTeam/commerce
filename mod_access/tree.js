@@ -173,7 +173,7 @@ var DragDrop = {
 			var url = this.changeURL
 				    + '?dragDrop=' + this.table
 					+ '&srcId=' + this.dragID
-					+ '&dstId=' + dropID;
+					+ '&dstId=' + dropID
 					+ '&backPath=' + this.backPath;
 			showClickmenu_raw(url);
 		}
