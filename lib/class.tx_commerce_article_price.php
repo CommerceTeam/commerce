@@ -61,10 +61,10 @@ class tx_commerce_article_price extends tx_commerce_element_alib {
 	 * Usual init method
 	 *
 	 * @param integer $uid Uid of product
-	 * @param integer $lang_uid Uid of language, unused
+	 * @param integer $languageUid Uid of language, unused
 	 * @return boolean TRUE if $uid is > 0
 	 */
-	public function init($uid, $lang_uid = 0) {
+	public function init($uid, $languageUid = 0) {
 		$this->databaseClass = 'tx_commerce_db_price';
 
 		$this->fieldlist = array(
@@ -76,7 +76,7 @@ class tx_commerce_article_price extends tx_commerce_element_alib {
 		);
 
 		$initializationResult = FALSE;
-		$uid = intval($uid);
+		$uid = (int) $uid;
 		if ($uid > 0) {
 			$this->uid = $uid;
 
@@ -97,6 +97,7 @@ class tx_commerce_article_price extends tx_commerce_element_alib {
 
 			$initializationResult = TRUE;
 		}
+		$this->lang_uid = (int) $languageUid;
 
 		return $initializationResult;
 	}

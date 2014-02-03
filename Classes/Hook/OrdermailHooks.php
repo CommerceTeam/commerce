@@ -210,8 +210,7 @@ class Tx_Commerce_Hook_OrdermailHooks {
 				'recipient_copy' =>  $template['BCC'],
 				'fromEmail' => $senderemail,
 				'fromName' => $sendername,
-					// @todo fix this
-				'replyTo' => $this->conf['usermail.']['from'],
+				'replyTo' => $this->cObj->conf['usermail.']['from'],
 				'priority' => '3',
 				'callLocation' => 'processOrdermails'
 			);

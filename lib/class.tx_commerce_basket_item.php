@@ -680,7 +680,6 @@ class tx_commerce_basket_item {
 	 */
 	public function get_array_of_assoc_array($prefix = '') {
 		t3lib_div::logDeprecatedFunction();
-
 		return $this->getArrayOfAssocArray($prefix);
 	}
 

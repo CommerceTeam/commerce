@@ -610,7 +610,10 @@ class tx_commerce_article extends tx_commerce_element_alib {
 		$foreign_table = 'tx_commerce_attributes';
 		$select = 'DISTINCT ' . $foreign_table . '.uid, ' . $foreign_table . '.title';
 		$ignore = array('fe_group' => 1);
-		$whereClause = t3lib_pageSelect::enableFields('tx_commerce_attributes', '', $ignore);
+
+		/** @var t3lib_pageSelect $pageSelect */
+		$pageSelect = t3lib_div::makeInstance('t3lib_pageSelect');
+		$whereClause = $pageSelect->enableFields('tx_commerce_attributes', '', $ignore);
 
 		/** @var t3lib_db $database */
 		$database = $GLOBALS['TYPO3_DB'];

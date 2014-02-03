@@ -556,7 +556,8 @@ class commerceRecordList extends localRecordList {
 						$editIdList = "'+editList('" . $table . "','" . $editIdList . "')+'";
 						$params = '&edit[' . $table . '][' . $editIdList . ']=edit&disHelp=1';
 						$cells[] = '<a href="#" onclick="' . htmlspecialchars(t3lib_BEfunc::editOnClick($params, $this->backPath, -1)) . '">' .
-							'<img' . t3lib_iconWorks::skinImg('', 'gfx/edit2.gif', 'width="11" height="12"') . ' title="' . $language->getLL('clip_editMarked', 1) . '" alt="" /></a>';
+							'<img' . t3lib_iconWorks::skinImg('', 'gfx/edit2.gif', 'width="11" height="12"') .
+							' title="' . $language->getLL('clip_editMarked', 1) . '" alt="" /></a>';
 
 							// The "Delete marked" link:
 						$cells[] = $this->linkClipboardHeaderIcon('<img' . t3lib_iconWorks::skinImg('', 'gfx/garbage.gif', 'width="11" height="12"') .

@@ -30,11 +30,14 @@
  */
 unset($MCONF);
 require('conf.php');
+/** @noinspection PhpIncludeInspection */
 require($BACK_PATH . 'init.php');
+/** @noinspection PhpIncludeInspection */
 require($BACK_PATH . 'template.php');
 
 $LANG->includeLLFile('EXT:commerce/Resources/Private/Language/locallang_mod_access.xml');
 	// This checks permissions and exits if the users has no permission for entry.
+/** @noinspection PhpUndefinedVariableInspection */
 $BE_USER->modAccess($MCONF, 1);
 t3lib_BEfunc::lockRecords();
 
@@ -177,7 +180,7 @@ class SC_mod_access_perm_index {
 	/**
 	 * Initialization of the class
 	 *
-	 * @return	void
+	 * @return void
 	 */
 	public function init() {
 			// Setting GPvars:
@@ -213,7 +216,7 @@ class SC_mod_access_perm_index {
 	/**
 	 * Configuration of the menu and initialization of ->MOD_SETTINGS
 	 *
-	 * @return	void
+	 * @return void
 	 */
 	public function menuConfig() {
 		/** @var language $language */
@@ -317,9 +320,9 @@ class SC_mod_access_perm_index {
 				// If $this->edit then these functions are called in the end of the page...
 			if ($this->edit) {
 				$this->doc->postCode .= $this->doc->wrapScriptTags('
-					setCheck("check[perms_user]","data[tx_commerce_categories][' . $this->id . '][perms_user]");
-					setCheck("check[perms_group]","data[tx_commerce_categories][' . $this->id . '][perms_group]");
-					setCheck("check[perms_everybody]","data[tx_commerce_categories][' . $this->id . '][perms_everybody]");
+					setCheck("check[perms_user]", "data[tx_commerce_categories][' . $this->id . '][perms_user]");
+					setCheck("check[perms_group]", "data[tx_commerce_categories][' . $this->id . '][perms_group]");
+					setCheck("check[perms_everybody]", "data[tx_commerce_categories][' . $this->id . '][perms_everybody]");
 				');
 			}
 
@@ -684,7 +687,6 @@ class SC_mod_access_perm_index {
 					// Add simple join-images for categories that are deeper level than 1
 				if (1 < $records[$i]['depth']) {
 					$k = $records[$i]['depth'];
-					$n = count($depthStop);
 
 					for ($j = 1; $j < $k; $j ++) {
 						if (!array_key_exists($j, $depthStop) || $depthStop[$j] != 1) {

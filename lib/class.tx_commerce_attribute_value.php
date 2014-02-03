@@ -47,16 +47,16 @@ class tx_commerce_attribute_value extends tx_commerce_element_alib {
 	protected $value = '';
 
 	/**
-	 * @var show value
-	 * if thzis value should be shown in Fe output
-	 * @acces private
+	 * if this value should be shown in Fe output
+	 *
+	 * @var boolean show value
 	 */
 	protected $showvalue = 1;
 
 	/**
-	 * @var icon
 	 * Icon for this Value
-	 * @acces private
+	 *
+	 * @var string icon
 	 */
 	protected $icon = '';
 
@@ -112,7 +112,7 @@ class tx_commerce_attribute_value extends tx_commerce_element_alib {
 	 * @return string title
 	 */
 	public function getValue($checkvalue = FALSE) {
-		if (($checkvalue) && ($this->showicon)) {
+		if (($checkvalue) && ($this->showvalue)) {
 			return $this->value;
 		} elseif ($checkvalue == FALSE) {
 			return $this->value;
@@ -122,15 +122,19 @@ class tx_commerce_attribute_value extends tx_commerce_element_alib {
 	}
 
 	/**
-	 * @deprecated alias for getValue
+	 * @param boolean $checkvalue
+	 * @return string
+	 * @deprecated since 2011-05-12 this function will be removed in commerce 0.16.0, please use tx_commerce_attribute_value::getValue
 	 */
 	public function get_value($checkvalue) {
+		t3lib_div::logDeprecatedFunction();
 		return $this->getValue($checkvalue);
 	}
 
 	/**
-	 * Overwrite get_attributes as attribute_values cant hav attributes
-	 * @return false;
+	 * Overwrite get_attributes as attribute_values can't have attributes
+	 *
+	 * @return boolean FALSE
 	 */
 	public function get_attributes() {
 		return FALSE;
@@ -146,10 +150,20 @@ class tx_commerce_attribute_value extends tx_commerce_element_alib {
 	}
 
 	/**
+	 * @return boolean
+	 */
+	public function getShowvalue() {
+		return $this->showvalue;
+	}
+
+	/**
 	 * Gets the showicon value
+	 *
 	 * @return integer
+	 * @deprecated since 2011-05-12 this function will be removed in commerce 0.16.0, never was returning a value
 	 */
 	public function getshowicon() {
+		t3lib_div::logDeprecatedFunction();
 		return $this->showicon;
 	}
 }

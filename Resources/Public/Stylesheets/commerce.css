@@ -5,10 +5,7 @@
 /**************************
  * Listview for Category
  **************************/
-
 div.com-category {}
-
-div.com-category-title {}
 div.com-category-subtitle {}
 div.com-category-desc {}
 div.com-category-img {}
@@ -24,17 +21,17 @@ table.com-list {
 	margin-top: 5px;
 	width: 100%;
 }
-tr.com-list-header { }
 
+tr.com-list-header { }
 tr.com-list-header th {
 	padding: 5px;
 }
 
-tr.com-list-header-img { }
-tr.com-list-header-title { }
-tr.com-list-header-teaser { }
-tr.com-list-header-price { }
-tr.com-list-header-action { }
+th.com-list-header-img { }
+th.com-list-header-title { }
+th.com-list-header-teaser { }
+th.com-list-header-price { }
+th.com-list-header-action { }
 
 
 table.com-list td {
@@ -100,8 +97,6 @@ div.com-basket-sel-att { }
  * Basket
  **************************/
 
-tr.com-basket-header-list { }
-
 th.com-basket-header-art-nr { }
 th.com-basket-header-title { }
 th.com-basket-header-price-gross { }
@@ -143,14 +138,6 @@ tr.com-basket-odd { }
 	text-align: right;
 }
 
-.com-text-left {
-	text-align: left;
-}
-
-.com-text-bold {
-	font-weight: bold;
-}
-
 /**************************
  * Basket Quickview
  **************************/
@@ -163,8 +150,6 @@ a.com-basket-qv-chkout { }
 /**************************
  * Checkout
  **************************/
-
-dl.com-chkout-address-items { }
 
 div.com-chkout-address { }
 
@@ -190,8 +175,7 @@ div.com-chkout-address-fields dd {
 	text-align: left;
 }
 
-div.com-chkout-address-fields dd.com-chkout-address-radio,
-dd.com-chkout-address-item-select {
+div.com-chkout-address-fields dd.com-chkout-address-radio {
 	clear: left;
 	float: left;
 	width: 5%;
@@ -202,13 +186,6 @@ div.com-chkout-address-fields dt.com-chkout-address-radiolabel {
 	width: auto;
 }
 
-dt.com-chkout-address-item-data {
-	float: none;
-	width: auto;
-	margin-left: 5%;
-}
-
-div.com-chkout-address-new { clear: both; width: 100%; }
 p.com-chkout-address-fields-submit { clear: both; }
 
 tr.com-chkout-sum {}
@@ -370,8 +347,6 @@ div.com-basket-sel-att { }
 * Basket
 **************************/
 
-tr.com-basket-header-list { }
-
 th.com-basket-header-art-nr { }
 th.com-basket-header-title { }
 th.com-basket-header-price-gross { }
@@ -403,10 +378,6 @@ tr.com-basket-odd {
 	background-color: #f7f7f7;
 }
 
-
-tr.com-basket-noborder {
-}
-
 /**************************
  * Basket Quickview
  **************************/
@@ -421,10 +392,6 @@ a.com-basket-qv-chkout { }
  **************************/
 
 tr.com-chkout-sum { border-top: 3px double #444; }
-
-dl.com-chkout-address-items dt,
-dl.com-chkout-address-items dd { border-bottom: 3px double #444; }
-
 
 div.address-item-link {
 	padding: 3px 0;

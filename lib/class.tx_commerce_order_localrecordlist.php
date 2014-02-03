@@ -385,19 +385,18 @@ class tx_commerce_order_localRecordlist extends localRecordList {
 	/**
 	 * Rendering a single row for the list
 	 *
-	 * @param	string		Table name
-	 * @param	array		Current record
-	 * @param	integer		Counter, counting for each time an element is rendered (used for alternating colors)
-	 * @param	string		Table field (column) where header value is found
-	 * @param	string		Table field (column) where (possible) thumbnails can be found
-	 * @param	integer		Indent from left.
-	 * @return	string		Table row for the element
+	 * @param string $table Table name
+	 * @param array $row Current record
+	 * @param integer $cc Counter, counting for each time an element is rendered (used for alternating colors)
+	 * @param string $titleCol Table field (column) where header value is found
+	 * @param string $thumbsCol Table field (column) where (possible) thumbnails can be found
+	 * @param integer $indent Indent from left.
+	 * @return string Table row for the element
 	 * @access private
 	 * @see getTable()
 	 */
-	function renderListRow($table,$row,$cc,$titleCol,$thumbsCol,$indent=0)	{
+	public function renderListRow($table, $row, $cc, $titleCol, $thumbsCol, $indent = 0) {
 		$iOut = '';
-
 
 		if (substr(TYPO3_version, 0, 3)  >= '4.0') {
 			// In offline workspace, look for alternative record:
@@ -596,9 +595,9 @@ class tx_commerce_order_localRecordlist extends localRecordList {
 	/**
 	 * Rendering the header row for a table
 	 *
-	 * @param	string		Table name
-	 * @param	array		Array of the currectly displayed uids of the table
-	 * @return	string		Header table row
+	 * @param string $table Table name
+	 * @param array $currentIdList Array of the currectly displayed uids of the table
+	 * @return string Header table row
 	 * @access private
 	 * @see class.db_list_extra.php
 	 */
@@ -909,7 +908,7 @@ class tx_commerce_order_localRecordlist extends localRecordList {
 			$out.='
 					<tr>
 						<td class="c-headLineTable" style="width:95%;"></td>';
-			$colspan = (count ($this->myfields)+2);
+			$colspan = (count($this->myfields) + 2);
 			$out.='	<td class="c-headLineTable" style="width:95%;" colspan="'.$colspan .'" align="right">';
 
 			// Build the selector
@@ -917,7 +916,7 @@ class tx_commerce_order_localRecordlist extends localRecordList {
 			  * Query the table to build dropdown list
  		 	  */
 
-			$myPid = t3lib_div::_GP(id);
+			$myPid = t3lib_div::_GP('id');
 			if (!empty($myPid)) {
 
 				$resParentes = $GLOBALS['TYPO3_DB']->exec_SELECTquery('pid','pages','uid ='.$myPid.' '.t3lib_BEfunc::deleteClause($GLOBALS['TCA']['tx_commerce_orders']['columns']['newpid']['config']['foreign_table']));

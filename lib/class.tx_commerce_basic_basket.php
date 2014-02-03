@@ -39,9 +39,8 @@
 class tx_commerce_basic_basket {
 	/**
 	 * @var array Associative array for storing basket_items in the basket
-	 * @TODO: Make protected
 	 */
-	public $basket_items = array();
+	protected $basket_items = array();
 
 	/**
 	 * @var integer Net basket sum
@@ -86,7 +85,7 @@ class tx_commerce_basic_basket {
 	public function loadData() {
 			// Check if payment article is available and set default if not
 		if (count($this->get_articles_by_article_type_uid_asUidlist(PAYMENTARTICLETYPE)) < 1) {
-			$this->add_article($this->conf['defaultPaymentArticleId']);
+			$this->addArticle($this->conf['defaultPaymentArticleId']);
 		}
 	}
 
@@ -99,7 +98,7 @@ class tx_commerce_basic_basket {
 	 * @return boolean TRUE on successful change
 	 * @TODO Implement methiod is_in_basket
 	 */
-	public function add_article($articleUid, $quantity = 1, $priceid = '') {
+	public function addArticle($articleUid, $quantity = 1, $priceid = '') {
 		if ($articleUid && $this->isChangeable()) {
 			if (is_object($this->basket_items[$articleUid]) || ($quantity == 0)) {
 				$this->change_quantity($articleUid, $quantity);
@@ -234,6 +233,13 @@ class tx_commerce_basic_basket {
 	}
 
 	/**
+	 * @return array
+	 */
+	public function getBasketItems() {
+		return $this->basket_items;
+	}
+
+	/**
 	 * Get a specific item object from basket
 	 *
 	 * @param integer $itemUid The item uid to get
@@ -257,7 +263,7 @@ class tx_commerce_basic_basket {
 		if (is_object($this->basket_items[$articleUid])) {
 			/** @var tx_commerce_basket_item $basketItem */
 			$basketItem = $this->basket_items[$articleUid];
-			return $basketItem->get_quantity();
+			return $basketItem->getQuantity();
 		}
 		return 0;
 	}
@@ -327,7 +333,7 @@ class tx_commerce_basic_basket {
 			$netSumArray = array();
 
 			foreach ($this->basket_items as $oneItem) {
-				$netSumArray[(string) $oneItem->get_tax()] += $oneItem->getItemSumNet();
+				$netSumArray[(string) $oneItem->getTax()] += $oneItem->getItemSumNet();
 			}
 
 			foreach ($netSumArray as $taxrate => $rateNetSum) {
@@ -344,14 +350,6 @@ class tx_commerce_basic_basket {
 	}
 
 	/**
-	 * @deprecated since 2011-05-12 this function will be removed in commerce 0.16.0, please use getGrossSum instead
-	 */
-	public function get_gross_sum() {
-		t3lib_div::logDeprecatedFunction();
-		return $this->getGrossSum();
-	}
-
-	/**
 	 * Get basket net sum
 	 *
 	 * @return integer Basket net sum
@@ -363,7 +361,7 @@ class tx_commerce_basic_basket {
 		if ($this->pricefromnet == 0) {
 			$grossSumArray = array();
 			foreach ($this->basket_items as $oneItem) {
-				$grossSumArray[(string) $oneItem->get_tax()] += $oneItem->getItemSumGross();
+				$grossSumArray[(string) $oneItem->getTax()] += $oneItem->getItemSumGross();
 			}
 			foreach ($grossSumArray as $taxrate => $rateGrossSum) {
 				$lokal_sum += (int)round($rateGrossSum / (1 + (((float)$taxrate) / 100)));
@@ -376,6 +374,28 @@ class tx_commerce_basic_basket {
 		$this->basket_sum_net = $lokal_sum;
 
 		return $lokal_sum;
+	}
+
+	/**
+	 * @deprecated since 2011-05-12 this function will be removed in commerce 0.16.0, please use getGrossSum instead
+	 */
+	public function get_gross_sum() {
+		t3lib_div::logDeprecatedFunction();
+		return $this->getGrossSum();
+	}
+
+	/**
+	 * Add an article to the basket
+	 *
+	 * @param integer $articleUid Article uid
+	 * @param integer $quantity Quantity of this basket item
+	 * @param string $priceid
+	 * @return boolean TRUE on successful change
+	 * @deprecated since 2011-05-11 this function will be removed in commerce 0.16.0, please use tx_commerce_basic_basket::addArticle instead
+	 */
+	public function add_article($articleUid, $quantity = 1, $priceid = '') {
+		t3lib_div::logDeprecatedFunction();
+		return $this->addArticle($articleUid, $quantity, $priceid);
 	}
 
 	/**
@@ -406,7 +426,7 @@ class tx_commerce_basic_basket {
 
 		/** @var tx_commerce_basket_item $oneItem */
 		foreach ($this->basket_items as $oneuid => $oneItem) {
-			$result_array[$oneuid] = $oneItem->get_array_of_assoc_array($prefix);
+			$result_array[$oneuid] = $oneItem->getArrayOfAssocArray($prefix);
 		}
 
 		return $result_array;
@@ -492,7 +512,7 @@ class tx_commerce_basic_basket {
 			$grossSumArray = array();
 			foreach ($this->basket_items as $oneItem) {
 				if ($oneItem->getArticle()->getArticleTypeUid() == $articleTypeUid) {
-					$grossSumArray[(string) $oneItem->get_tax()] += $oneItem->getItemSumGross();
+					$grossSumArray[(string) $oneItem->getTax()] += $oneItem->getItemSumGross();
 				}
 			}
 			foreach ($grossSumArray as $taxrate => $rateGrossSum) {
@@ -501,7 +521,7 @@ class tx_commerce_basic_basket {
 		} else {
 			foreach ($this->basket_items as $oneItem) {
 				if ($oneItem->getArticle()->getArticleTypeUid() == $articleTypeUid) {
-					$sumNet += ($oneItem->get_quantity() * $oneItem->get_price_net());
+					$sumNet += ($oneItem->getQuantity() * $oneItem->getPriceNet());
 				}
 			}
 		}
@@ -528,7 +548,7 @@ class tx_commerce_basic_basket {
 			$netSumArray = array();
 			foreach ($this->basket_items as $oneItem) {
 				if ($oneItem->getArticle()->getArticleTypeUid() == $articleTypeUid) {
-					$netSumArray[(string) $oneItem->get_tax()] += $oneItem->getItemSumNet();
+					$netSumArray[(string) $oneItem->getTax()] += $oneItem->getItemSumNet();
 				}
 			}
 			foreach ($netSumArray as $taxrate => $rateGrossSum) {
@@ -537,7 +557,7 @@ class tx_commerce_basic_basket {
 		} else {
 			foreach ($this->basket_items as $oneItem) {
 				if ($oneItem->getArticle()->getArticleTypeUid() == $articleTypeUid) {
-					$sumGross += ($oneItem->get_quantity() * $oneItem->get_price_gross());
+					$sumGross += ($oneItem->getQuantity() * $oneItem->getPriceGross());
 				}
 			}
 		}
@@ -620,7 +640,7 @@ class tx_commerce_basic_basket {
 
 		/** @var tx_commerce_basket_item $oneItem */
 		foreach ($this->basket_items as $oneItem) {
-			$taxRate = $oneItem->get_tax();
+			$taxRate = $oneItem->getTax();
 			$taxRate = (string) $taxRate;
 
 			if ($this->pricefromnet == 1) {

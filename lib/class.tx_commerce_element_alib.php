@@ -32,29 +32,29 @@
  * @var integer
  * @see sql tx_commerce_attribute_correlationtypes
  */
-define ('ATTRIB_selector', 1);
 define ('ATTRIB_SELECTOR', 1);
+define ('ATTRIB_selector', ATTRIB_SELECTOR);
 
 /**
  * @var integer
  * @see sql tx_commerce_attribute_correlationtypes
  */
-define ('ATTRIB_shal', 2);
 define ('ATTRIB_SHAL', 2);
+define ('ATTRIB_shal', ATTRIB_SHAL);
 
 /**
  * @var integer
  * @see sql tx_commerce_attribute_correlationtypes
  */
-define ('ATTRIB_can', 3);
 define ('ATTRIB_CAN', 3);
+define ('ATTRIB_can', ATTRIB_CAN);
 
 /**
  * @var integer
  * @see sql tx_commerce_attribute_correlationtypes
  */
-define ('ATTRIB_product', 4);
 define ('ATTRIB_PRODUCT', 4);
+define ('ATTRIB_product', ATTRIB_PRODUCT);
 
 /**
  * Basic abtract Class for element

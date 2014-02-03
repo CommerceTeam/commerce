@@ -27,7 +27,11 @@
  * categories (Reverse data structure) and products
  */
 class tx_commerce_category extends tx_commerce_element_alib {
+	/**
+	 * @var string
+	 */
 	protected $databaseClass = 'tx_commerce_db_category';
+
 	/**
 	 * @var string Title
 	 */
