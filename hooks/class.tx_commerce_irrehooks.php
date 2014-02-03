@@ -12,9 +12,9 @@ class tx_commerce_irrehooks implements t3lib_tceformsInlineHook {
 	public function init(&$parentObject) {
 		$this->parentObject = $parentObject;
 	}
-	
+
 	function __construct() {
-		$this->extconf = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['extConf'];
+		$this->extconf = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf'];
 	}
 
 	/**
@@ -36,23 +36,23 @@ class tx_commerce_irrehooks implements t3lib_tceformsInlineHook {
 				'delete'	=> true,
 			);
 			return;
-		} 	
+		}
 
 		if($this->extconf['simpleMode']==1 && $foreignTable=='tx_commerce_articles') {
 			$enabledControls = array(
 				'hide'		=> true,
 			);
 			return;
-		} 
-		
-		
+		}
+
+
 		if($foreignTable=='tx_commerce_article_prices') {
 			$enabledControls = array(
 				'new'		=> true,
 				'sort'		=> true,
 				'hide'		=> true,
 				'delete'	=> true,
-			); 
+			);
 		}
 	}
 

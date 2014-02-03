@@ -1,33 +1,29 @@
 <?php
 /**
  * Created on 04.11.2008
- * 
  * Implements the dynafley configuration for the 'tx_commerce_articles' extension
  * 
  * @author Erik Frister <efrister@marketing-factory.de>
  */
 class tx_commerce_articles_dfconfig {
+	public $rowChecks = array();
 	
-	var $rowChecks = array (
-		// add your checks here
-	);
-	
-	var $DCA = array (
-		0 => array (
+	public $DCA = array(
+		0 => array(
 		'path' => 'tx_commerce_articles/columns/attributesedit/config/ds/default',
-		'modifications' => array (
-			array (
+			'modifications' => array(
+				array(
 				'method' => 'remove',
 				'inside' => 'ROOT/el',
 				'element' => 'dummy',
 			),
-			array (
+				array(
 				'method' => 'add',
 				'path' => 'ROOT/el',
 				'type' => 'fields',
 				'source' => 'db',
 				'source_type' => 'entry_count',
-				'source_config' => array (
+					'source_config' => array(
 					'table' => 'tx_commerce_articles_article_attributes_mm',
 					'select' => '*',
 					'where' => 'uid_local=###uid###',
@@ -37,102 +33,100 @@ class tx_commerce_articles_dfconfig {
 			),
 		),
 	),
-	/* This configuration is for the prices sheet. We have to give the user the
+		/**
+		 * This configuration is for the prices sheet. We have to give the user the
 	* possibility to add a free number of prices to all products. Each of that
 	* prices have it's own access fields, so the user can define different prices
 	* for various usergroups.
 		*/
-	1 => array (
+		1 => array(
 		'path' => 'tx_commerce_articles/columns/prices/config/ds/default',
-		'modifications' => array (
-			array (
+			'modifications' => array(
+				array(
 				'method' => 'remove',
 				'inside' => 'ROOT/el',
 				'element' => 'dummy',
 			),
 			
-			array (
+				array(
 				'method' => 'add',
 				'path' => 'ROOT/el',
 				'type' => 'fields',
 				'source' => 'db',
 				'source_type' => 'entry_count',
-				'source_config' => array (
+					'source_config' => array(
 					'table' => 'tx_commerce_article_prices',
 					'select' => 'uid',
 					'where' => 'uid_article=###uid### AND deleted=0',
 				),
-				'field_config' => array (
-					0 => array (
+					'field_config' => array(
+						0 => array(
 						'name' => 'caption_###uid###', 
 						'label' => '',
-						'config' => array (
+							'config' => array(
 							'type' => 'user', 
 							'userFunc' => 'tx_commerce_articleCreator->deletePriceButton',
 						),
 					),
-					1 => array (
+						1 => array(
 						'name' => 'price_gross_###uid###',
 						'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_articles.price_gross',
-						'config' => array (
+							'config' => array(
 							'type' => 'input',
 							'size' => '15',
 							'eval' => 'double2,nospace',
 						),
 					),
-					2 => array (
+						2 => array(
 						'name' => 'price_net_###uid###',
  						'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_articles.price_net',
-						'config' => Array (
+							'config' => Array(
 							'type' => 'input',
 							'size' => '15',
 							'eval' => 'double2,nospace',
 						),
 					),
-					3 => array (
+						3 => array(
 						'name' => 'hidden_###uid###',
  						'label' => 'LLL:EXT:lang/locallang_general.php:LGL.hidden',
-						'config' => Array (
+							'config' => Array(
 							'type' => 'check',
 							'default' => '0'
 						)
 					),
-					4 => array (
+						4 => array(
 						'name' => 'starttime_###uid###',
  						'label' => 'LLL:EXT:lang/locallang_general.php:LGL.starttime',
-						'config' => Array (
+							'config' => Array(
 							'type' => 'input',
 							'size' => '8',
 							'max' => '20',
 							'eval' => 'date',
 							'default' => '0',
-							// 'checkbox' => '0'
 						)
 					),
-					5 => array (
+						5 => array(
 						'name' => 'endtime_###uid###',
 						'label' => 'LLL:EXT:lang/locallang_general.php:LGL.endtime',
-						'config' => Array (
+							'config' => Array(
 							'type' => 'input',
 							'size' => '8',
 							'max' => '20',
 							'eval' => 'date',
-							// 'checkbox' => '0',
 							'default' => '0',
-							'range' => Array (
-								//'upper' => mktime(0,0,0,12,31,2020),
-								'lower' => '' // <-- gets filled dynamically by hook!
+								'range' => Array(
+									'lower' => ''
 							)
 						)
 					),
-					6 => array (
+						6 => array(
 						'name' => 'fe_group_###uid###',
  						'label' => 'LLL:EXT:lang/locallang_general.php:LGL.fe_group',
-						'config' => Array (
+							'config' => Array(
 							'type' => 'select',
 							'size' => 5,
 							'maxitems' => 50,
-							'items' => array (
+								'items' => array(
 								array('LLL:EXT:lang/locallang_general.xml:LGL.hide_at_login', -1),
 								array('LLL:EXT:lang/locallang_general.xml:LGL.any_login', -2),
 								array('LLL:EXT:lang/locallang_general.xml:LGL.usergroups', '--div--')
@@ -140,28 +134,21 @@ class tx_commerce_articles_dfconfig {
 							'exclusiveKeys' => '-1,-2',
 							'foreign_table' => 'fe_groups',
 							'foreign_table_where' => 'ORDER BY fe_groups.title',
-						
 						)
-						
-						
-			
-			
-					
-						
 					),
-					7 => array (
+						7 => array(
 						'name' => 'purchase_price_###uid###',
  						'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_articles.purchase_price',
-						'config' => Array (
+							'config' => Array(
 							'type' => 'input',
 							'size' => '15',
 							'eval' => 'double2,nospace',
 						),
 					),
-					8 => array (
+						8 => array(
 						'name' => 'price_scale_amount_start_###uid###',
  						'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_articles.price_scale_amount_start',
-						'config' => Array (
+							'config' => Array(
 								'type' => 'input',
 								'size' => '15',
 								'eval' => 'int,nospace,required',
@@ -169,10 +156,10 @@ class tx_commerce_articles_dfconfig {
 								'default' => 1,
 						),
 					),
-					9 => array (
+						9 => array(
 						'name' => 'price_scale_amount_end_###uid###',
  						'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_articles.price_scale_amount_end',
-						'config' => Array (
+							'config' => Array(
 								'type' => 'input',
 								'size' => '15',
 								'eval' => 'int,nospace,required',
@@ -182,7 +169,7 @@ class tx_commerce_articles_dfconfig {
 					),
 				),
 			),
-			array (
+				array(
 				'method' => 'add',
 				'path' => 'ROOT/el',
 				'type' => 'field',
@@ -192,9 +179,8 @@ class tx_commerce_articles_dfconfig {
 					'type' => 'user',
 					'userFunc' => 'tx_commerce_articleCreator->createNewPriceCB',
 				),
-				
 			),
-			array (
+				array(
 				'method' => 'add',
 				'path' => 'ROOT/el',
 				'type' => 'field',
@@ -205,7 +191,7 @@ class tx_commerce_articles_dfconfig {
 					'userFunc' => 'tx_commerce_articleCreator->createNewScalePricesStartAmount',
 				),
 			),				
-			array (
+				array(
 				'method' => 'add',
 				'path' => 'ROOT/el',
 				'type' => 'field',
@@ -216,7 +202,7 @@ class tx_commerce_articles_dfconfig {
 					'userFunc' => 'tx_commerce_articleCreator->createNewScalePricesCount',
 				),
 			),				
-			array (
+				array(
 				'method' => 'add',
 				'path' => 'ROOT/el',
 				'type' => 'field',
@@ -227,7 +213,7 @@ class tx_commerce_articles_dfconfig {
 					'userFunc' => 'tx_commerce_articleCreator->createNewScalePricesSteps',
 				),
 			),			
-			array (
+				array(
 				'method' => 'add',
 				'path' => 'ROOT/el',
 				'type' => 'field',
@@ -235,7 +221,7 @@ class tx_commerce_articles_dfconfig {
 				'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_articles.price_scale_fe_group',
 				'config' => array(
 							'type' => 'select',
-							'items' => Array (
+						'items' => Array(
 								Array('', 0),
 								Array('LLL:EXT:lang/locallang_general.php:LGL.hide_at_login', -1),
 								Array('LLL:EXT:lang/locallang_general.php:LGL.any_login', -2),
@@ -244,41 +230,38 @@ class tx_commerce_articles_dfconfig {
 							'foreign_table' => 'fe_groups'
 				),
 			),
-			
-			
 		),
-		
 	),
-	2 => array (
+		2 => array(
 		    'path' => 'tx_commerce_articles/types/0/showitem',
-		    'parseXML' => false,
-		    'modifications' => array (
-					      array (
+			'parseXML' => FALSE,
+			'modifications' => array(
+				array(
 						     'method' => 'add',
 						     'type' => 'append',
-						     'condition' => array (
+					'condition' => array(
 									   'source' => 'language',
 									   'if' => 'isEqual',
 									   'compareTo' => 'DEF',
 									   ),
-						     'config' => array (
+					'config' => array(
 									'text' => ',--div--;LLL:EXT:commerce/locallang_db.xml:tx_commerce_articles.prices,prices;;;;1-1-1',
 									),
 						     ),
 					      ),
 		    ),
-	3 => array (
+		3 => array(
 		'path' => 'tx_commerce_articles/types/0/showitem',
-		'parseXML' => false,
-		'modifications' => array (
-			array (
+			'parseXML' => FALSE,
+			'modifications' => array(
+				array(
 				'method' => 'add',
 				'type' => 'append',
-				'config' => array (
+					'config' => array(
 					'text' => ',--div--;LLL:EXT:commerce/locallang_db.xml:tx_commerce_articles.extras'
 				),
 			),
-			 array (
+				array(
 				 'method' => 'move',
 				 'type' => 'extraFields',
 				 'table' => 'tx_commerce_articles',
@@ -287,10 +270,9 @@ class tx_commerce_articles_dfconfig {
 	),
 	);
 
-	var $cleanUpField = 'attributesedit,prices';
+	public $cleanUpField = 'attributesedit,prices';
 	
-	var $hooks = array(
-		'EXT:commerce/dcafiles/class.tx_commerce_dcahooks.php:tx_commerce_dcahooks'
-	);
+	public $hooks = array('EXT:commerce/dcafiles/class.tx_commerce_dcahooks.php:tx_commerce_dcahooks');
 }
+
 ?>

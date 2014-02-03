@@ -26,9 +26,6 @@ unset($MCONF);
 require_once('conf.php');
 require_once($BACK_PATH.'init.php');
 require_once($BACK_PATH.'template.php');
-require_once(PATH_t3lib.'class.t3lib_browsetree.php');
-
-require_once (t3lib_extmgm::extPath('commerce').'mod_orders/class.tx_commerce_order_pagetree.php');
 
 /**
  * Main script class for the tree edit navigation frame
@@ -42,7 +39,7 @@ require_once (t3lib_extmgm::extPath('commerce').'mod_orders/class.tx_commerce_or
  */
 class tx_commerce_order_navframe {
 
-			// Internal:
+		// Internal:
 	var $content;
 	var $pagetree;
 	var $doc;
@@ -57,11 +54,11 @@ class tx_commerce_order_navframe {
 	 * Initialiation of the class
 	 * @TODO Check with User Permissions
 	 * @return	void
-	 * 
+	 *
 	 */
 	function init()	{
 		global $BE_USER,$BACK_PATH;
-		
+
 			// Setting GPvars:
 		$this->currentSubScript = t3lib_div::_GP('currentSubScript');
 		$this->cMR = t3lib_div::_GP('cMR');
@@ -74,7 +71,7 @@ class tx_commerce_order_navframe {
 		$this->pagetree = t3lib_div::makeInstance('localPageTree');
 		$this->pagetree->ext_IconMode = $BE_USER->getTSConfigVal('options.pageTree.disableIconLinkToContextmenu');
 		$this->pagetree->ext_showPageId = $BE_USER->getTSConfigVal('options.pageTree.showPageIdWithTitle');
-		$this->pagetree->thisScript = $BACK_PATH.PATH_txcommerce_rel.'mod_orders/class.tx_commerce_order_navframe.php';
+		$this->pagetree->thisScript = $BACK_PATH . PATH_TXCOMMERCE_REL . 'mod_orders/class.tx_commerce_order_navframe.php';
 		$this->pagetree->addField('alias');
 		$this->pagetree->addField('shortcut');
 		$this->pagetree->addField('shortcut_mode');
@@ -83,9 +80,8 @@ class tx_commerce_order_navframe {
 		$this->pagetree->addField('nav_hide');
 		$this->pagetree->addField('url');
 
-#		$this->settingTemporaryMountPoint(11);
 			// Temporary DB mounts:
-		$this->pagetree->MOUNTS=array_unique(tx_commerce_folder_db::initFolders('Orders','Commerce',0,'Commerce'));
+		$this->pagetree->MOUNTS = array_unique(tx_commerce_folder_db::initFolders('Orders', 'Commerce', 0, 'Commerce'));
 		$this->initializeTemporaryDBmount();
 
 			// Setting highlight mode:
@@ -130,10 +126,10 @@ class tx_commerce_order_navframe {
 		// Highlighting rows in the page tree:
 	function hilight_row(frameSetModule,highLightID) {	//
 
-		
+
 			// Remove old:
 		theObj = document.getElementById(top.fsMod.navFrameHighlightedID[frameSetModule]+"_0");
-		
+
 		if (theObj)	{
 			theObj.style.backgroundColor="";
 		}
@@ -141,10 +137,10 @@ class tx_commerce_order_navframe {
 			// Set new:
 		top.fsMod.navFrameHighlightedID[frameSetModule] = highLightID;
 		theObj = document.getElementById(highLightID+"_0");
-		
+
 		if (theObj)	{
 			theObj.style.backgroundColor="'.t3lib_div::modifyHTMLColorAll($this->doc->bgColor,-20).'";
-			
+
 		}
 	}
 
@@ -219,17 +215,6 @@ class tx_commerce_order_navframe {
 		echo $this->content;
 	}
 
-
-
-
-
-
-
-
-
-
-
-
 	/**********************************
 	 *
 	 * Temporary DB mounts
@@ -253,7 +238,7 @@ class tx_commerce_order_navframe {
 				$this->settingTemporaryMountPoint(0);
 			}
 		}
-		
+
 			// Getting temporary mount point ID:
 		$temporaryMountPoint = intval($BE_USER->getSessionData('pageTree_temporaryMountPoint_orders'));
 
@@ -270,25 +255,17 @@ class tx_commerce_order_navframe {
 			// Setting temporary mount point ID:
 		$BE_USER->setAndSaveSessionData('pageTree_temporaryMountPoint_orders',intval($pageId));
 	}
-	
-	
-
 }
 
-// Include extension?
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/mod_orders/class.tx_commerce_order_navframe.php'])	{
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/mod_orders/class.tx_commerce_order_navframe.php']) {
+	/** @noinspection PhpIncludeInspection */
 	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/mod_orders/class.tx_commerce_order_navframe.php']);
 }
 
-
-
-
-// Make instance:
-
+/** @var tx_commerce_order_navframe $SOBE */
 $SOBE = t3lib_div::makeInstance('tx_commerce_order_navframe');
 $SOBE->init();
 $SOBE->main();
 $SOBE->printContent();
-
 
 ?>

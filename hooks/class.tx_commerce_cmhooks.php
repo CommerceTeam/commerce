@@ -81,7 +81,7 @@ class tx_commerce_cmhooks {
 		if('tx_commerce_categories' == $table && ('delete' == $command)) {
 			$cat = t3lib_div::makeInstance('tx_commerce_category');
 			$cat->init($id);
-			$cat->load_data();
+			$cat->loadData();
 
 				// check if category is a translation and get l18n parent for access right handling
 			if ($cat->getField('l18n_parent') > 0) {
@@ -126,7 +126,7 @@ class tx_commerce_cmhooks {
 				$languageParentUid = $product->getL18nParent();
 				$l18nParent = t3lib_div::makeInstance('tx_commerce_product');
 				$l18nParent->init($languageParentUid);
-				$l18nParent->load_data();
+				$l18nParent->loadData();
 				$parentCategories = $l18nParent->getParentCategories();
 			}
 
@@ -303,7 +303,7 @@ class tx_commerce_cmhooks {
 
 							unset($locAttributeMM['attributeData']);
 							unset($locAttributeMM['has_valuelist']);
-							switch ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['extConf']['attributeLokalisationType']) {
+							switch ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['attributeLokalisationType']) {
 							 	case 0:
 							 		unset($locAttributeMM['default_value']);
 							 	break;

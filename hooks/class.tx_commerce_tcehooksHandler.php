@@ -32,18 +32,7 @@
 * The method processDatamap_afterDatabaseOperations() from this class is called by process_datamap() from class.t3lib_tcemain.php.
 *
 * This class handles backend updates
-*
-*
-* @access public
-* @package TYPO3
-* @subpackage commerce
-* @author Carsten Lausen <cl@e-netconsulting.de>
 */
-
-require_once(t3lib_extMgm::extPath('commerce').'dao/class.feusers_observer.php');
-require_once(t3lib_extMgm::extPath('commerce').'dao/class.address_observer.php');
-
-
 class tx_commerce_tcehooksHandler {
 
 	/**
@@ -63,22 +52,22 @@ class tx_commerce_tcehooksHandler {
 					$this->calculateTax($incomingFieldArray, doubleval($v['tax']));
 				}
 			}
-			
+
 			foreach($incomingFieldArray as $key => $value){
 				if ($key == 'price_net' || $key == 'price_gross' || $key == 'purchase_price')   {
 					if (is_numeric($value)){
 						//first convert the float value to a string - this is required because of a php "bug"
 						//details on http://forge.typo3.org/issues/show/2986
 						//and http://de.php.net/manual/en/function.intval.php
-						$incomingFieldArray[$key] = intval(strval($value *100));
+						$incomingFieldArray[$key] = intval(strval($value * 100));
 					}
 				}
 			}
 		}
 	}
-	
+
 	function calculateTax(&$fieldArray, $tax) {
-		$extConf = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['extConf'];
+		$extConf = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf'];
 		if($extConf['genprices']==0) {
 			return;
 		} else {
@@ -101,7 +90,7 @@ class tx_commerce_tcehooksHandler {
 	* @param array $fieldArray: reference to the incoming fields
 	* @param object $pObj: page Object reference
 	*/
-	
+
 	function processDatamap_postProcessFieldArray($status, $table, $id, &$fieldArray, &$pObj){
 		if($table=='tx_commerce_article_prices') {
 			// ugly hack since typo3 makes ugly checks
@@ -112,7 +101,7 @@ class tx_commerce_tcehooksHandler {
 			}
 		}
 	}
-	
+
 	/**
 	* processDatamap_afterDatabaseOperations()
 	* this function is called by the Hook in tce from class.t3lib_tcemain.php after processing insert & update database operations
@@ -137,15 +126,15 @@ class tx_commerce_tcehooksHandler {
 			//do something...
 			$this->notify_addressObserver($status, $table, $id, $fieldArray, $pObj);
 		}
-       
-        if ($table=='tx_commerce_articles' && $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['extConf']['simpleMode'] && ($articleId = $pObj->substNEWwithIDs[$id])) {
-           
+
+        if ($table=='tx_commerce_articles' && $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['simpleMode'] && ($articleId = $pObj->substNEWwithIDs[$id])) {
+
             /**
              * @author     Ingo Schmitt    <is@marketing-factory.de>
              */
             // Now check, if the parent Product is already lokalised, so creat Article in the lokalised version
             // Select from Database different localisations
-           
+
             $resOrigArticle=$GLOBALS['TYPO3_DB']->exec_SELECTquery('*','tx_commerce_articles','uid='.intval($articleId).' and deleted = 0');
             $origArticle=$GLOBALS['TYPO3_DB']->sql_fetch_assoc($resOrigArticle);
             $resLocalisedProducts=$GLOBALS['TYPO3_DB']->exec_SELECTquery('*','tx_commerce_products','l18n_parent='.intval($origArticle['uid_product']).' and deleted = 0');
@@ -158,7 +147,7 @@ class tx_commerce_tcehooksHandler {
                     $langIsoCode = t3lib_BEfunc::getRecord('sys_language', intval($destLanguage), 'static_lang_isocode');
                     $langIdent = t3lib_BEfunc::getRecord('static_languages', intval($langIsoCode['static_lang_isocode']), 'lg_typo3');
                     $langIdent = strtoupper($langIdent['lg_typo3']);
-   
+
                     // create article data array
                     $articleData = array(
                         'pid' => intval($fieldArray['pid']),
@@ -170,7 +159,7 @@ class tx_commerce_tcehooksHandler {
                         'sorting' => (intval($fieldArray['sorting']) *2),
                         'article_type_uid' => intval($fieldArray['article_type_uid']),
                     );
-                   
+
                         // create the article
                     $articleRes = $GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_commerce_articles', $articleData);
                 }
@@ -253,9 +242,11 @@ class tx_commerce_tcehooksHandler {
 	function checkAddressDelete($id) {
 		return address_observer::checkDelete($id);
 	}
-
 }
+
 if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/hooks/class.tx_commerce_tcehooksHandler.php']) {
+	/** @noinspection PhpIncludeInspection */
 	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/hooks/class.tx_commerce_tcehooksHandler.php']);
 }
+
 ?>

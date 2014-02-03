@@ -22,8 +22,6 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-require_once(t3lib_extmgm::extPath('commerce') .'payment/libs/class.tx_commerce_payment_wirecard_lib.php');
-
 /**
  * Wirecard payment provider implementation
  *
@@ -52,6 +50,11 @@ class tx_commerce_payment_provider_wirecard extends tx_commerce_payment_provider
 	 * @var string Payment type
 	 */
 	public $LOCAL_LANG = array();
+
+	/**
+	 * @var string
+	 */
+	public $paymentRefId;
 
 	/**
 	 * Returns an array containing some configuration for the fields the customer shall enter his data into.
@@ -106,9 +109,9 @@ class tx_commerce_payment_provider_wirecard extends tx_commerce_payment_provider
 	 * @param tx_commerce_basket $basket Basket object
 	 * @return boolean TRUE if everything was ok
 	 */
-	public function finishingFunction(array $config= array(), array $session = array(), tx_commerce_basket $basket = NULL) {
+	public function finishingFunction(array $config = array(), array $session = array(), tx_commerce_basket $basket = NULL) {
 			// Class definition is in payment/libs/class.tx_commerce_payment_wirecard_lib.php
-		$paymentLib = new payment();
+		$paymentLib = t3lib_div::makeInstance('payment');
 
 			// I think there is a new URL for testing with wirecard, so overwrite
 			// the old value. you can replace this with your own.
@@ -185,15 +188,18 @@ class tx_commerce_payment_provider_wirecard extends tx_commerce_payment_provider
 			// have no idea where it comes from, maybe it is given by wirecard?!)
 			// To update the order something like this should be sufficient:
 			// $this->paymentRefId should probably be set in finishingFunction()
-		$GLOBALS['TYPO3_DB']->exec_UPDATEquery(
-			'tx_commerce_orders','uid = '.$orderUid,
+		/** @var t3lib_db $database */
+		$database = $GLOBALS['TYPO3_DB'];
+		$database->exec_UPDATEquery(
+			'tx_commerce_orders', 'uid = ' . $orderUid,
 			array('payment_ref_id' => $this->paymentRefId)
 		);
 	}
 }
 
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']["ext/com_pay_wirecard/class.tx_commerce_payment_provider_wirecard.php"])	{
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']["ext/com_pay_wirecard/class.tx_commerce_payment_provider_wirecard.php"]);
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/com_pay_wirecard/class.tx_commerce_payment_provider_wirecard.php']) {
+	/** @noinspection PhpIncludeInspection */
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/com_pay_wirecard/class.tx_commerce_payment_provider_wirecard.php']);
 }
 
 ?>

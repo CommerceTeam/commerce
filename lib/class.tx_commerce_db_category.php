@@ -36,7 +36,7 @@ class tx_commerce_db_category extends tx_commerce_db_alib {
 	/**
 	 * @var string Database table concerning the data
 	 */
-	public $database_table = 'tx_commerce_categories';
+	public $databaseTable = 'tx_commerce_categories';
 
 	/**
 	 * @var string mm_table
@@ -56,31 +56,33 @@ class tx_commerce_db_category extends tx_commerce_db_alib {
 	/**
 	 * @var string Product sorting field
 	 */
-    protected $ProductOrderField = 'tx_commerce_products.sorting';
+	protected $ProductOrderField = 'tx_commerce_products.sorting';
 
-    /**
-     * @var integer Uid of this Category
-     */
-    protected   $uid;
-    /**
-     * @var integer Language UID
-     */
-    protected   $lang_uid;
+	/**
+	 * @var integer Uid of this Category
+	 */
+	protected $uid;
 
+	/**
+	 * @var integer Language UID
+	 */
+	protected $lang_uid;
 
-    /**
-      * @return int
-     */
-    public function getUid() {
+	/**
+	  * @return int
+	 */
+	public function getUid() {
 		return $this->uid;
 	}
-    /**
-     * @return int
-     */
-    public function getLangUid() {
+
+	/**
+	 * @return int
+	 */
+	public function getLangUid() {
 		return $this->lang_uid;
 	}
-    /**
+
+	/**
 	 * Gets the "master" category from this category
 	 *
 	 * @param integer $uid Category UID
@@ -109,7 +111,7 @@ class tx_commerce_db_category extends tx_commerce_db_alib {
 		if (t3lib_div::testInt($uid) && ($uid > 0)) {
 			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 				'perms_everybody, perms_user, perms_group, perms_userid, perms_groupid, editlock',
-				$this->database_table,
+				$this->databaseTable,
 				'uid = ' . $uid
 			);
 			return $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
@@ -130,15 +132,15 @@ class tx_commerce_db_category extends tx_commerce_db_alib {
 		}
 		$this->uid = $uid;
 		if (is_object($GLOBALS['TSFE']->sys_page)) {
-			$add_where = $GLOBALS['TSFE']->sys_page->enableFields($this->database_table, $GLOBALS['TSFE']->showHiddenRecords);
+			$add_where = $GLOBALS['TSFE']->sys_page->enableFields($this->databaseTable, $GLOBALS['TSFE']->showHiddenRecords);
 		} else {
 			$add_where = '';
 		}
 		$result = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
 			'uid_foreign',
-			$this->database_table,
+			$this->databaseTable,
 			$this->mm_database_table,
-			$this->database_table,
+			$this->databaseTable,
 			' AND ' . $this->mm_database_table . '.uid_local= ' . intval($uid) . ' ' . $add_where
 		);
 		if ($result) {
@@ -187,7 +189,7 @@ class tx_commerce_db_category extends tx_commerce_db_alib {
 	public function getChildCategories($uid) {
 		if(!is_numeric($uid)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('getChildCategories (db_category) gets passed invalid parameters.', COMMERCE_EXTkey, 3);
+				t3lib_div::devLog('getChildCategories (db_category) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
 			}
 			return array();
 		}
@@ -235,46 +237,46 @@ class tx_commerce_db_category extends tx_commerce_db_alib {
 			$localOrderField = $hookObj->categoryOrder($this->CategoryOrderField, $this);
 		}
 		if (is_object($GLOBALS['TSFE']->sys_page)) {
-			$add_where = $GLOBALS['TSFE']->sys_page->enableFields($this->database_table, $GLOBALS['TSFE']->showHiddenRecords);
+			$add_where = $GLOBALS['TSFE']->sys_page->enableFields($this->databaseTable, $GLOBALS['TSFE']->showHiddenRecords);
 		} else {
 			$add_where = '';
 		}
 		$result = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
 			'uid_local',
-			$this->database_table,
+			$this->databaseTable,
 			$this->mm_database_table,
-			$this->database_table,
-			' AND ' . $this->mm_database_table . '.uid_foreign= ' . intval($uid) . ' ' .$add_where,
+			$this->databaseTable,
+			' AND ' . $this->mm_database_table . '.uid_foreign= ' . intval($uid) . ' ' . $add_where,
 			'',
 			$localOrderField
 		);
 		if ($result) {
 			$data = array();
-            while ($return_data=$GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
-                /**
-                 *  @todo access_check for datasets
-                 */
-                if ($lang_uid == 0) {
-                    $data[] = (int) $return_data['uid_local'];
-                } else {
-                    //	 Check if a lokalised product is availiabe for this product
-                    /**
-                     * @TODO: Check if this is correct in Multi Tree Sites
-                     */
-                    $lresult=$GLOBALS['TYPO3_DB']->exec_SELECTquery(
-                        'uid',
-                        'tx_commerce_categories',
-                        'l18n_parent = '.intval($return_data['uid_local']) .
-                            ' AND sys_language_uid=' . $lang_uid .
-                            $GLOBALS['TSFE']->sys_page->enableFields('tx_commerce_categories', $GLOBALS['TSFE']->showHiddenRecords)
-                    );
+			while ($return_data = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
+				/**
+				 *  @todo access_check for datasets
+				 */
+				if ($lang_uid == 0) {
+					$data[] = (int) $return_data['uid_local'];
+				} else {
+					//	 Check if a lokalised product is availiabe for this product
+					/**
+					 * @TODO: Check if this is correct in Multi Tree Sites
+					 */
+					$lresult=$GLOBALS['TYPO3_DB']->exec_SELECTquery(
+						'uid',
+						'tx_commerce_categories',
+						'l18n_parent = '.intval($return_data['uid_local']) .
+							' AND sys_language_uid=' . $lang_uid .
+							$GLOBALS['TSFE']->sys_page->enableFields('tx_commerce_categories', $GLOBALS['TSFE']->showHiddenRecords)
+					);
 
-                    if ($GLOBALS['TYPO3_DB']->sql_num_rows( $lresult) == 1)	 {
-                        $data[] = (int)$return_data['uid_local'];
-                    }
-                }
-            }
-            if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_db_category.php']['categoryQueryPostHook']) {
+					if ($GLOBALS['TYPO3_DB']->sql_num_rows( $lresult) == 1)	 {
+						$data[] = (int)$return_data['uid_local'];
+					}
+				}
+			}
+			if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_db_category.php']['categoryQueryPostHook']) {
 				$hookObj = t3lib_div::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_db_category.php']['categoryQueryPostHook']);
 				if (is_object($hookObj) && method_exists($hookObj, 'categoryQueryPostHook')) {
 					$data = $hookObj->categoryQueryPostHook($data, $this);
@@ -373,6 +375,8 @@ class tx_commerce_db_category extends tx_commerce_db_alib {
 }
 
 if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_db_category.php']) {
+	/** @noinspection PhpIncludeInspection */
 	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_db_category.php']);
 }
+
 ?>

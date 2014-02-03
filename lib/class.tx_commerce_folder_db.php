@@ -10,7 +10,7 @@
  */
 class tx_commerce_folder_db {
 
-	
+
 /***************************************
 	 *
 	 *	 Commerce sysfolder
@@ -21,13 +21,13 @@ class tx_commerce_folder_db {
 	/**
 	 * Create your database table folder
 	 * overwrite this if wanted
-	 * 
+	 *
 	 * @param	[type]		$pid: ...
-	 * @return	void		
+	 * @return	void
 	 * @TODO	title aus extkey ziehen
 	 * @TODO	Sortierung
 	 */#
-	function createFolder($title = 'Commerce', $module = 'commerce', $pid=0) {		
+	function createFolder($title = 'Commerce', $module = 'commerce', $pid=0) {
 		$fields_values = array();
 		$fields_values['pid'] = $pid;
 		$fields_values['sorting'] = 10111; #TODO
@@ -46,10 +46,10 @@ class tx_commerce_folder_db {
 
 	/**
 	 * Find the extension folders
-	 * 
+	 *
 	 * @return	array		rows of found extension folders
 	 */#
-	function getFolders($module = 'commerce',$pid = 0,$title ='' ) {
+	public static function getFolders($module = 'commerce',$pid = 0,$title ='' ) {
 		$rows=array();
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid,pid,title', 'pages', 'doktype=254 and tx_graytree_foldername = \''.strtolower($title).'\' AND pid = '.(int)$pid.' AND module=\''.$module.'\' '.t3lib_BEfunc::deleteClause('pages'));
     		if ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res))	{
@@ -57,11 +57,11 @@ class tx_commerce_folder_db {
 		}
 		return $rows;
 	}
-	
-	
+
+
 	/**
 	 * Returns pidList of extension Folders
-	 * 
+	 *
 	 * @return	string		commalist of PIDs
 	 */
 	function getFolderPidList($module = 'commerce') {
@@ -71,40 +71,42 @@ class tx_commerce_folder_db {
 
 	/**
 	 * Find the extension folders or create one.
-	 * @param  (title) Folder Title as named in pages table
-	 * @param  (module) Extension Moduke
-	 * @param  (pid) Parent Page id 
-	 * @param  (parenTitle) Parent Folder Title
-	 * 
-	 * @return	array		
+	 *
+	 * @param string $title Folder Title as named in pages table
+	 * @param string $module Extension Moduke
+	 * @param integer $pid Parent Page id
+	 * @param string $parentTitle Parent Folder Title
+	 * @return	array
 	 */#
-	function initFolders($title = 'Commerce', $module = 'commerce',$pid=0,$parentTitle='')	{
+	public static function initFolders($title = 'Commerce', $module = 'commerce',$pid=0,$parentTitle='')	{
 		// creates a Commerce folder on the fly
 		// not really a clean way ...
-		
+
 		if($parentTitle){
 		    $pFolders = tx_commerce_folder_db::getFolders($module,$pid,$parentTitle);
 		    $pf = current($pFolders);
 		    $pid = $pf['uid'];
 		}
-	
+
 		$folders = tx_commerce_folder_db::getFolders($module,$pid,$title);
 		if (!count($folders)) {
 			tx_commerce_folder_db::createFolder($title, $module,$pid);
 			$folders = tx_commerce_folder_db::getFolders($module,$pid,$title);
-		
+
 		}
 		$cf = current($folders);
-				
-		return array ($cf['uid'],implode(',',array_keys($folders)));	
-	
-	}	
-	
-	
+
+		return array ($cf['uid'],implode(',',array_keys($folders)));
+
+	}
+
+
 
 }
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_folder_db.php']) {
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_folder_db.php']);
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_folder_db.php']) {
+	/** @noinspection PhpIncludeInspection */
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_folder_db.php']);
 }
+
 ?>

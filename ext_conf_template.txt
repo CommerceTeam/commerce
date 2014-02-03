@@ -61,9 +61,6 @@ BECSVCharset  = iso-8859-1
 # cat=basic/other/100; type=string; label=Field mapping feuser-tt_address: Specify list of feuser <-> address field mappings. Use this format: fe_usersfield,tt_addressfield;
 feuser_address_mapping = company,company;name,surname;title,title;address,address;zip,zip;city,city;country,country;telephone,phone;fax,fax;email,email;www,www;
 
-# cat=basic/other/100; type=string; label=Fields for orders csv export: Specify list of fields for csv export of orders
-exportOrderFields = order_id,crdate,tstamp,delivery,payment,numarticles,sum_price_gross,cu_iso_3,company,surname,name,address,zip,city,email,phone_1,phone_2,comment,internalcomment,articles
-
 # cat=basic/other/100; type=int; label=Attribute Lokalisation: Definition how attribute values should be translated -> 0 - Set to an empty value, 1 - copy value, 2 - prepend prefixLangTitle : [Translate to .$langRec['title'].:]
 attributeLokalisationType = 0
 
@@ -82,3 +79,5 @@ userSessionMd5Encrypt  = 1
 # cat=basic/other/100; type=boolean; label= Aggregation Allow: Allow Statistics Aggregation in BE if not using a cron
 allowAggregation  = 1
 
+# cat=basic/other/100; type=String; label=type of basket...: default/database -> normal storing / persistent -> Old not finished basket will be restored after login (alpha)
+basketType = database

@@ -22,8 +22,6 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-require_once (t3lib_extMgm::extPath('moneylib') . 'class.tx_moneylib.php');
-
 /**
  * Plugin 'commerce_invoice' for the 'commerce_invoice' extension.
  *
@@ -34,13 +32,12 @@ require_once (t3lib_extMgm::extPath('moneylib') . 'class.tx_moneylib.php');
  */
 class tx_commerce_pi6 extends tx_commerce_pibase {
 
-	var $prefixId = 'tx_commerce_pi6'; // Same as class name
-	var $scriptRelPath = 'pi6/class.tx_commerce_pi6.php'; // Path to this script relative to the extension dir.
-	var $extKey = 'commerce'; // The extension key.
+	public $prefixId = 'tx_commerce_pi6'; // Same as class name
+	public $scriptRelPath = 'pi6/class.tx_commerce_pi6.php'; // Path to this script relative to the extension dir.
+	public $extKey = 'commerce'; // The extension key.
 
-	var $pi_checkCHash = TRUE;
-	var $order_id;
-
+	public $pi_checkCHash = TRUE;
+	public $order_id;
 
 	/**
 	 * Main Method
@@ -55,7 +52,7 @@ class tx_commerce_pi6 extends tx_commerce_pibase {
 		$this->pi_loadLL();
 
 		// Checking backend user login
-		$this->invoiceBackendOnly($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['extConf']['invoiceBackendOnly']);
+		$this->invoiceBackendOnly($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['invoiceBackendOnly']);
 
 		// Check for the logged in USER
 		// It could be an FE USer, a BE User or an automated script
@@ -316,9 +313,23 @@ class tx_commerce_pi6 extends tx_commerce_pibase {
 
 		return $content;
 	}
+
+	/**
+	 * To satisfy abstract class
+	 *
+	 * @param string $kind
+	 * @param tx_commerce_article $articles
+	 * @param tx_commerce_product $product
+	 * @return string|void
+	 */
+	public function makeArticleView($kind, $articles, $product) {
+
+	}
 }
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/commerce/pi6/class.tx_commerce_pi6.php']) {
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/commerce/pi6/class.tx_commerce_pi6.php']);
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/pi6/class.tx_commerce_pi6.php']) {
+	/** @noinspection PhpIncludeInspection */
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/pi6/class.tx_commerce_pi6.php']);
 }
+
 ?>

@@ -62,11 +62,10 @@ class tx_commerce_article_price extends tx_commerce_element_alib {
 	 *
 	 * @param integer $uid Uid of product
 	 * @param integer $lang_uid Uid of language, unused
-	 * @return booloan TRUE if $uid is > 0
+	 * @return boolean TRUE if $uid is > 0
 	 */
 	public function init($uid, $lang_uid = 0) {
-
-		$this->database_class = 'tx_commerce_db_price';
+		$this->databaseClass = 'tx_commerce_db_price';
 
 		$this->fieldlist = array(
 			'price_net',
@@ -81,7 +80,7 @@ class tx_commerce_article_price extends tx_commerce_element_alib {
 		if ($uid > 0) {
 			$this->uid = $uid;
 
-			$this->conn_db = new $this->database_class;
+			$this->databaseConnection = t3lib_div::makeInstance($this->databaseClass);
 
 			$hookObjectsArr = array();
 			if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_article_price.php']['postinit'])) {
@@ -89,8 +88,9 @@ class tx_commerce_article_price extends tx_commerce_element_alib {
 					$hookObjectsArr[] = t3lib_div::getUserObj($classRef);
 				}
 			}
-			foreach($hookObjectsArr as $hookObj) {
+			foreach ($hookObjectsArr as $hookObj) {
 				if (method_exists($hookObj, 'postinit')) {
+					/** @noinspection PhpUndefinedMethodInspection */
 					$hookObj->postinit($this);
 				}
 			}
@@ -99,6 +99,20 @@ class tx_commerce_article_price extends tx_commerce_element_alib {
 		}
 
 		return $initializationResult;
+	}
+
+	/**
+	 * @param String $currency
+	 */
+	public function setCurrency($currency) {
+		$this->currency = $currency;
+	}
+
+	/**
+	 * @return String
+	 */
+	public function getCurrency() {
+		return $this->currency;
 	}
 
 	/**
@@ -113,13 +127,22 @@ class tx_commerce_article_price extends tx_commerce_element_alib {
 				$hookObjectsArr[] = t3lib_div::getUserObj($classRef);
 			}
 		}
-		foreach($hookObjectsArr as $hookObj) {
+		foreach ($hookObjectsArr as $hookObj) {
 			if (method_exists($hookObj, 'postpricenet')) {
+				/** @noinspection PhpUndefinedMethodInspection */
 				$hookObj->postpricenet($this);
 			}
 		}
 
 		return $this->price_net;
+	}
+
+	/**
+	 * @param integer $priceNet
+	 * @return void
+	 */
+	public function setPriceNet($priceNet) {
+		$this->price_net = (int) $priceNet;
 	}
 
 	/**
@@ -134,13 +157,22 @@ class tx_commerce_article_price extends tx_commerce_element_alib {
 				$hookObjectsArr[] = t3lib_div::getUserObj($classRef);
 			}
 		}
-		foreach($hookObjectsArr as $hookObj) {
+		foreach ($hookObjectsArr as $hookObj) {
 			if (method_exists($hookObj, 'postpricegross')) {
+				/** @noinspection PhpUndefinedMethodInspection */
 				$hookObj->postpricegross($this);
 			}
 		}
 
 		return $this->price_gross;
+	}
+
+	/**
+	 * @param integer $priceGross
+	 * @return void
+	 */
+	public function setPriceGross($priceGross) {
+		$this->price_gross = (int) $priceGross;
 	}
 
 	/**
@@ -164,39 +196,51 @@ class tx_commerce_article_price extends tx_commerce_element_alib {
 	/**
 	 * Returns TCA label, used in TCA only
 	 *
-	 * @TODO: Move this method somewhere, it does not belong here
-	 * @params array Record value
-	 * @params object Parent Object
+	 * @param array $params Record value
 	 * @return array New record values
 	 */
-	public function getTCARecordTitle($params, $pObj) {
+	public function getTCARecordTitle($params) {
+		/** @var language $language */
+		$language = & $GLOBALS['LANG'];
 		$params['title'] =
-			$GLOBALS['LANG']->sL(t3lib_befunc::getItemLabel('tx_commerce_article_prices', 'price_gross'), 1) . ': ' . tx_commerce_div::FormatPrice($params['row']['price_gross'] / 100) .
-			' ,' . $GLOBALS['LANG']->sL(t3lib_befunc::getItemLabel('tx_commerce_article_prices', 'price_net'), 1) . ': ' . tx_commerce_div::FormatPrice($params['row']['price_net']/100) .
-			' (' . $GLOBALS['LANG']->sL(t3lib_befunc::getItemLabel('tx_commerce_article_prices','price_scale_amount_start'),1) . ': ' . $params['row']['price_scale_amount_start'] .
-			'  ' . $GLOBALS['LANG']->sL(t3lib_befunc::getItemLabel('tx_commerce_article_prices', 'price_scale_amount_end'), 1) . ': ' . $params['row']['price_scale_amount_end'] . ') ' .
-			' ' . ($params['row']['fe_group'] ? ($GLOBALS['LANG']->sL(t3lib_befunc::getItemLabel('tx_commerce_article_prices', 'fe_group'), 1) . ' ' . t3lib_BEfunc::getProcessedValueExtra('tx_commerce_article_prices', 'fe_group', $params['row']['fe_group'], 100, $params['row']['uid'])) : '')
-		;
+			$language->sL(t3lib_befunc::getItemLabel('tx_commerce_article_prices', 'price_gross'), 1) . ': ' .
+				sprintf('%01.2f', $params['row']['price_gross'] / 100) .
+				' ,' . $language->sL(t3lib_befunc::getItemLabel('tx_commerce_article_prices', 'price_net'), 1) . ': ' .
+				sprintf('%01.2f', $params['row']['price_net'] / 100) .
+				' (' . $language->sL(t3lib_befunc::getItemLabel('tx_commerce_article_prices', 'price_scale_amount_start'), 1) . ': ' .
+				$params['row']['price_scale_amount_start'] .
+				' ' . $language->sL(t3lib_befunc::getItemLabel('tx_commerce_article_prices', 'price_scale_amount_end'), 1) . ': ' .
+				$params['row']['price_scale_amount_end'] . ') ' .
+				' ' . ($params['row']['fe_group'] ? ($language->sL(t3lib_befunc::getItemLabel('tx_commerce_article_prices', 'fe_group'), 1) . ' ' .
+				t3lib_BEfunc::getProcessedValueExtra('tx_commerce_article_prices', 'fe_group', $params['row']['fe_group'], 100, $params['row']['uid'])) : '');
 
 		return $params;
 	}
 
 	/**
-	 * @deprecated
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getPriceNet instead
+	 * @return integer
 	 */
 	public function get_price_net() {
+		t3lib_div::logDeprecatedFunction();
+
 		return $this->getPriceNet();
 	}
 
 	/**
-	 * @deprecated
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getPriceGross instead
+	 * @return integer
 	 */
 	public function get_price_gross() {
+		t3lib_div::logDeprecatedFunction();
+
 		return $this->getPriceGross();
 	}
 }
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_article_price.php']) {
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_article_price.php']);
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_article_price.php']) {
+	/** @noinspection PhpIncludeInspection */
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_article_price.php']);
 }
+
 ?>

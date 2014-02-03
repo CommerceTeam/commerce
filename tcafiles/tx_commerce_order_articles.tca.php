@@ -1,65 +1,60 @@
 <?php
 /***************************************************************
-*  Copyright notice
-*
-*  (c) 2005 - 2006 Ingo Schmitt <is@marketing-factory.de>
-*  All rights reserved
-*
-*  This script is part of the TYPO3 project. The TYPO3 project is
-*  free software; you can redistribute it and/or modify
-*  it under the terms of the GNU General Public License as published by
-*  the Free Software Foundation; either version 2 of the License, or
-*  (at your option) any later version.
-*
-*  The GNU General Public License can be found at
-*  http://www.gnu.org/copyleft/gpl.html.
-*
-*  This script is distributed in the hope that it will be useful,
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*  GNU General Public License for more details.
-*
-*  This copyright notice MUST APPEAR in all copies of the script!
-***************************************************************/
+ *  Copyright notice
+ *  (c) 2005 - 2006 Ingo Schmitt <is@marketing-factory.de>
+ *  All rights reserved
+ *  This script is part of the TYPO3 project. The TYPO3 project is
+ *  free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *  The GNU General Public License can be found at
+ *  http://www.gnu.org/copyleft/gpl.html.
+ *  This script is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *  This copyright notice MUST APPEAR in all copies of the script!
+ ***************************************************************/
 
 /**
  * Dynamic config file for tx_commerce_order_articles
  *
  * @package commerce
  * @author Ingo Schmitt <is@marketing-factory.de>
- * 
  * $Id: tx_commerce_order_articles.tca.php 147 2006-04-04 10:43:22Z thomas $
  */
- 
- 
- if(!defined('TYPO3_MODE')) die("Access denied.");
 
-$TCA['tx_commerce_order_articles'] = Array (
-	'ctrl' => $TCA['tx_commerce_order_articles']['ctrl'],
-	'interface' => Array (
+if (!defined('TYPO3_MODE')) {
+	die('Access denied.');
+}
+
+$GLOBALS['TCA']['tx_commerce_order_articles'] = Array(
+	'ctrl' => $GLOBALS['TCA']['tx_commerce_order_articles']['ctrl'],
+	'interface' => Array(
 		'showRecordFieldList' => 'amount,title,article_type_uid,article_uid,article_number,subtitle,price_net,price_gross,tax,order_uid',
-	
- 	),	
-	'feInterface' => $TCA['tx_commerce_order_articles']['feInterface'],
-	'columns' => Array (
-		'article_type_uid' => Array (
+ 	),
+	'feInterface' => $GLOBALS['TCA']['tx_commerce_order_articles']['feInterface'],
+	'columns' => Array(
+		'article_type_uid' => Array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_order_articles.article_type_uid',
-			
+			'config' => Array(
+				'type' => 'passthrough',
+			),
 		),
-		'order_uid' => Array (
+		'order_uid' => Array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_order_articles.order_uid',
-			'config' => Array (
+			'config' => Array(
 				'type' => 'select',
 				'foreign_table' => 'tx_commerce_orders',
-			
 			)
 		),
-		'article_uid' => Array (
+		'article_uid' => Array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_order_articles.article_uid',
-			'config' => Array (
+			'config' => Array(
 				'type' => 'group',
 				'internal_type' => 'db',
 				'allowed' => 'tx_commerce_articles',
@@ -68,67 +63,67 @@ $TCA['tx_commerce_order_articles'] = Array (
 				'maxitems' => 1,
 			)
 		),
-		'article_number' => Array (
+		'article_number' => Array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_order_articles.article_number',
-			'config' => Array (
+			'config' => Array(
 				'type' => 'input',
 				'size' => '40',
 				'max' => '80',
 				'eval' => 'required,trim',
 			)
 		),
-		'title' => Array (
+		'title' => Array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_order_articles.title',
-			'config' => Array (
+			'config' => Array(
 				'type' => 'input',
 				'size' => '40',
 				'max' => '255',
 				'eval' => 'required,trim',
 			)
 		),
-		'subtitle' => Array (
+		'subtitle' => Array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_order_articles.subtitle',
-			'config' => Array (
+			'config' => Array(
 				'type' => 'input',
 				'size' => '40',
 				'max' => '255',
 				'eval' => 'trim',
 			)
 		),
-		'price_net' => Array (
+		'price_net' => Array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_order_articles.price_net',
-			'config' => Array (
+			'config' => Array(
 				'type' => 'input',
 				'size' => '6',
 				'eval' => 'integer',
 			)
 		),
-		'price_gross' => Array (
+		'price_gross' => Array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_order_articles.price_gross',
-			'config' => Array (
+			'config' => Array(
 				'type' => 'input',
 				'size' => '6',
 				'eval' => 'integer',
 			)
 		),
-		'tax' => Array (
+		'tax' => Array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_order_articles.tax',
-			'config' => Array (
+			'config' => Array(
 				'type' => 'input',
 				'size' => '6',
 				'eval' => 'integer',
 			)
 		),
-		'amount' => Array (
+		'amount' => Array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_order_articles.amount',
-			'config' => Array (
+			'config' => Array(
 				'type' => 'input',
 				'size' => '2',
 				'eval' => 'required,num',
@@ -136,30 +131,22 @@ $TCA['tx_commerce_order_articles'] = Array (
 		),
 		/**
 		 * @TODO Declaration for iproc function for selecting right value
-		 * 
 		 */
-		'order_id' => Array (
+		'order_id' => Array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_order_articles.order_id',
-			'config' => Array (
+			'config' => Array(
 				'type' => 'user',
-				'userFunc' => 'user_orderedit_func->article_order_id',
-				
+				'userFunc' => 'EXT:commerce/mod_orders/class.user_orderedit_func.php:user_orderedit_func->article_order_id',
 			)
 		),
 	),
-	'types' => Array (
+	'types' => Array(
 		'0' => Array('showitem' => 'order_id;;;;1-1-1,article_type_uid , article_uid, article_number, title;;;;2-2-2, subtitle,  amount;;;;3-3-3, price_net, price_gross, tax')
 	),
-	'palettes' => Array (
+	'palettes' => Array(
 		'1' => Array('showitem' => '')
 	)
 );
-/**
- * Includion of Class for editing
- */
- if (TYPO3_MODE=='BE')
- {
- require_once(t3lib_extMgm::extPath(COMMERCE_EXTkey).'mod_orders/class.user_orderedit_func.php');
- }
+
 ?>

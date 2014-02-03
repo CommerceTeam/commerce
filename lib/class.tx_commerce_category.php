@@ -25,13 +25,9 @@
 /**
  * Main script class for the handling of categories. Categories contains
  * categories (Reverse data structure) and products
- *
- * @author Ingo Schmitt <is@marketing-factory.de>
- * @package TYPO3
- * @subpackage tx_commerce
  */
 class tx_commerce_category extends tx_commerce_element_alib {
-
+	protected $databaseClass = 'tx_commerce_db_category';
 	/**
 	 * @var string Title
 	 */
@@ -40,7 +36,7 @@ class tx_commerce_category extends tx_commerce_element_alib {
 	/**
 	 * @var string Subtitle
 	 */
-	protected $subtitle='';
+	protected $subtitle = '';
 
 	/**
 	 * @var string Description
@@ -53,7 +49,7 @@ class tx_commerce_category extends tx_commerce_element_alib {
 	protected $images = '';
 
 	/**
-	 * @var Image-Array for the category
+	 * @var array Image-Array for the category
 	 */
 	protected $images_array = array();
 
@@ -74,9 +70,8 @@ class tx_commerce_category extends tx_commerce_element_alib {
 
 	/**
 	 * @var integer UID of parent category
-	 * @TODO: Make protected if this variable is not used directly anymore
 	 */
-	public $parent_category_uid = 0;
+	protected $parent_category_uid = 0;
 
 	/**
 	 * @var object Parent category object
@@ -90,14 +85,13 @@ class tx_commerce_category extends tx_commerce_element_alib {
 
 	/**
 	 * @var array Array of tx_commerce_categories
-	 * @TODO: Make protected if this variable is not used directly anymore
 	 */
-	public $categories = array();
+	protected $categories = array();
 
 	/**
 	 * @var array Array of tx_commerce_products
 	 */
-	protected $products = array();
+	protected $products = NULL;
 
 	/**
 	 * @var string Teaser text
@@ -107,7 +101,7 @@ class tx_commerce_category extends tx_commerce_element_alib {
 	/**
 	 * @var string Images database field
 	 */
-	protected $teaserImages = '';
+	protected $teaserimages = '';
 
 	/**
 	 * @var array Images for the category
@@ -154,60 +148,128 @@ class tx_commerce_category extends tx_commerce_element_alib {
 	 */
 	public $editlock = 0;
 
-
 	/**
 	 * @var boolean Flag if permissions have been loaded
 	 */
 	public $permsLoaded = FALSE;
 
 	/**
+	 * @var array
+	 */
+	protected $categoryTSconfig = array();
+
+	/**
+	 * @var array
+	 */
+	protected $tsConfig = array();
+
+	/**
+	 * @var tx_commerce_db_category
+	 */
+	public $databaseConnection;
+
+	/**
+	 * @var array
+	 */
+	protected $fieldlist = array(
+		'uid',
+		'title',
+		'subtitle',
+		'description',
+		'teaser',
+		'teaserimages',
+		'navtitle',
+		'keywords',
+		'images',
+		'ts_config',
+		'l18n_parent'
+	);
+
+	/**
 	 * Constructor, basically calls init
 	 *
-	 * @param integer uid of category
-	 * @param integer language_uid , default 0
+	 * @return self
 	 */
-	public function tx_commerce_category() {
+	public function __construct() {
 		if ((func_num_args() > 0) && (func_num_args() <= 2)) {
 			$uid = func_get_arg(0);
-			if (func_num_args() == 2){
-				$lang_uid = func_get_arg(1);
+			if (func_num_args() > 1) {
+				$languageUid = func_get_arg(1);
 			} else {
-				$lang_uid = 0;
+				$languageUid = 0;
 			}
-			return $this->init($uid, $lang_uid);
+
+			$this->init($uid, $languageUid);
 		}
+	}
+
+	/**
+	 * Constructor, basically calls init
+	 *
+	 * @deprecated since commerce 0.14.0, will be removed in commerce 0.15.0 - Use tx_commerce_category::__construct() instead
+	 */
+	public function tx_commerce_category() {
+		t3lib_div::logDeprecatedFunction();
+		call_user_func_array('__construct', $this, func_get_args());
 	}
 
 	/**
 	 * Init called by the constructor
 	 *
 	 * @param integer $uid Uid of category
-	 * @param integer $lang_uid Language_uid , default 0
+	 * @param integer $languageUid Language_uid , default 0
 	 * @return boolean TRUE on success, FALSE if no $uid is submitted
 	 */
-	public function init($uid, $lang_uid = 0) {
+	public function init($uid, $languageUid = 0) {
 		$uid = intval($uid);
-		$lang_uid = intval($lang_uid);
-		$this->fieldlist = array('uid', 'title', 'subtitle', 'description', 'teaser', 'teaserimages', 'navtitle', 'keywords', 'images', 'ts_config', 'l18n_parent');
-		$this->database_class = 'tx_commerce_db_category';
+		$languageUid = intval($languageUid);
+
 		if ($uid > 0) {
 			$this->uid = $uid;
-			$this->lang_uid = $lang_uid;
-			$this->conn_db = new $this->database_class;
-			$hookObjectsArr = array();
-			if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_category.php']['postinit'])) {
+			$this->lang_uid = $languageUid;
+			$this->databaseConnection = t3lib_div::makeInstance($this->databaseClass);
+
+			if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_category.php']['postinit'])) {
 				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_category.php']['postinit'] as $classRef) {
-					$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+					$hookObj = & t3lib_div::getUserObj($classRef);
+					if (method_exists($hookObj, 'postinit')) {
+						$hookObj->postinit($this);
+					}
 				}
 			}
-			foreach($hookObjectsArr as $hookObj) {
-				if (method_exists($hookObj, 'postinit')) {
-					$hookObj->postinit($this);
-				}
-			}
+
 			return TRUE;
 		} else {
 			return FALSE;
+		}
+	}
+
+	/**
+	 * Constructor, basically calls init
+	 *
+	 * @deprecated since commerce 0.14.0, will be removed in commerce 0.15.0 - Use tx_commerce_category::loadData instead
+	 */
+	public function load_data() {
+		t3lib_div::logDeprecatedFunction();
+		call_user_func_array('loadData', $this, func_get_args());
+	}
+
+	/**
+	 * Loads the data
+	 *
+	 * @param boolean $translationMode Transaltionmode of the record, default FALSE to use the default way of translation
+	 * @return void
+	 */
+	public function loadData($translationMode = FALSE) {
+		if ($this->data_loaded == FALSE) {
+			parent::loadData($translationMode);
+			$this->images_array = t3lib_div::trimExplode(',', $this->images, TRUE);
+			$this->teaserImagesArray = t3lib_div::trimExplode(',', $this->teaserimages, TRUE);
+
+			$this->categories_uid = $this->databaseConnection->get_child_categories($this->uid, $this->lang_uid);
+			$this->parent_category_uid = intval($this->databaseConnection->get_parent_category($this->uid));
+			$this->products_uid = $this->databaseConnection->get_child_products($this->uid, $this->lang_uid);
+			$this->data_loaded = TRUE;
 		}
 	}
 
@@ -221,14 +283,15 @@ class tx_commerce_category extends tx_commerce_element_alib {
 	 * @return void
 	 */
 	public function load_perms() {
-		if(!$this->permsLoaded && $this->uid) {
+		if (!$this->permsLoaded && $this->uid) {
 			$this->permsLoaded = TRUE;
 
-			$this->perms_record = $this->conn_db->getPermissionsRecord($this->uid);
+			$this->perms_record = $this->databaseConnection->getPermissionsRecord($this->uid);
 
-			// if the record is´nt loaded, abort.
-			if(count($this->perms_record) <= 0) {
+				// if the record is´nt loaded, abort.
+			if (count($this->perms_record) <= 0) {
 				$this->perms_record = NULL;
+
 				return;
 			}
 
@@ -248,8 +311,11 @@ class tx_commerce_category extends tx_commerce_element_alib {
 	 * @return boolean TRUE if permission is set, FALSE if permission is not set
 	 */
 	public function isPSet($perm) {
-		if(!is_string($perm)) return FALSE;
+		if (!is_string($perm)) {
+			return FALSE;
+		}
 		$this->load_perms();
+
 		return tx_commerce_belib::isPSet($perm, $this->perms_record);
 	}
 
@@ -392,7 +458,7 @@ class tx_commerce_category extends tx_commerce_element_alib {
 	 *
 	 * @return integer Permissions for group
 	 */
-	public function getPermsGroup(){
+	public function getPermsGroup() {
 		return $this->perms_group;
 	}
 
@@ -423,6 +489,7 @@ class tx_commerce_category extends tx_commerce_element_alib {
 		if (count($this->categories_uid) > 0) {
 			return TRUE;
 		}
+
 		return FALSE;
 	}
 
@@ -435,24 +502,8 @@ class tx_commerce_category extends tx_commerce_element_alib {
 		if (count($this->products_uid) > 0) {
 			return TRUE;
 		}
-		return FALSE;
-	}
 
-	/**
-	 * Loads the data
-	 *
-	 * @param mixed $translationMode Transaltionmode of the record, default FALSE to use the default way of translation
-	 */
-	public function load_data($translationMode = FALSE) {
-		if ($this->data_loaded == FALSE) {
-			parent::load_data($translationMode);
-			$this->images_array = t3lib_div::trimExplode(',', $this->images);
-			$this->categories_uid = $this->conn_db->get_child_categories($this->uid, $this->lang_uid);
-			$this->parent_category_uid = intval($this->conn_db->get_parent_category($this->uid));
-			$this->products_uid = $this->conn_db->get_child_products($this->uid, $this->lang_uid);
-			$this->teaserImagesArray = t3lib_div::trimExplode(',', $this->teaserimages);
-			$this->data_loaded = TRUE;
-		}
+		return FALSE;
 	}
 
 	/**
@@ -461,7 +512,8 @@ class tx_commerce_category extends tx_commerce_element_alib {
 	 * @return array Categories
 	 */
 	public function get_l18n_categories() {
-		$uid_lang = $this->conn_db->get_l18n_categories($this->uid);
+		$uid_lang = $this->databaseConnection->get_l18n_categories($this->uid);
+
 		return $uid_lang;
 	}
 
@@ -471,10 +523,13 @@ class tx_commerce_category extends tx_commerce_element_alib {
 	 * @return array of categories as array of category objects
 	 */
 	public function get_child_categories() {
-		foreach ($this->categories_uid as $load_uid){
-			$this->categories[$load_uid] = t3lib_div::makeInstance('tx_commerce_category');
-			$this->categories[$load_uid]->init($load_uid, $this->lang_uid);
+		foreach ($this->categories_uid as $childCategoryUid) {
+			$childCategory = t3lib_div::makeInstance('tx_commerce_category');
+			$childCategory->init($childCategoryUid, $this->lang_uid);
+
+			$this->categories[$childCategoryUid] = $childCategory;
 		}
+
 		return $this->categories;
 	}
 
@@ -487,6 +542,7 @@ class tx_commerce_category extends tx_commerce_element_alib {
 		if (is_array($this->categories_uid)) {
 			return count($this->categories_uid);
 		}
+
 		return 0;
 	}
 
@@ -495,12 +551,17 @@ class tx_commerce_category extends tx_commerce_element_alib {
 	 *
 	 * @return array Array of products as array of products objects
 	 */
-
 	public function get_child_products() {
-		foreach ($this->products_uid as $load_uid) {
-			$this->products[$load_uid] = t3lib_div::makeInstance('tx_commerce_product');
-			$this->products[$load_uid]->init($load_uid, $this->lang_uid);
+		if ($this->products === NULL) {
+			foreach ($this->products_uid as $productUid) {
+				/** @var tx_commerce_product $childProduct */
+				$childProduct = t3lib_div::makeInstance('tx_commerce_product');
+				$childProduct->init($productUid, $this->lang_uid);
+
+				$this->products[$productUid] = $childProduct;
+			}
 		}
+
 		return $this->products;
 	}
 
@@ -525,14 +586,16 @@ class tx_commerce_category extends tx_commerce_element_alib {
 	/**
 	 * Loads the parent category in the parent-category variable
 	 *
-	 * @return mixed category object or FALSE if this category is already the topmost category
+	 * @return tx_commerce_category|FALSE category object or FALSE if this category is already the topmost category
 	 */
 	public function get_parent_category() {
 		if ($this->parent_category_uid > 0) {
 			$this->parent_category = t3lib_div::makeInstance('tx_commerce_category');
 			$this->parent_category->init($this->parent_category_uid, $this->lang_uid);
+
 			return $this->parent_category;
 		}
+
 		return FALSE;
 	}
 
@@ -542,13 +605,15 @@ class tx_commerce_category extends tx_commerce_element_alib {
 	 * @return array Array of category objects
 	 */
 	public function getParentCategories() {
-		$parents = $this->conn_db->get_parent_categories($this->uid);
+		$parents = $this->databaseConnection->get_parent_categories($this->uid);
 		$parentCats = array();
-		for($i=0, $l=count($parents); $i<$l; $i ++) {
-			$cat = t3lib_div::makeInstance('tx_commerce_category');
-			$cat->init($parents[$i]);
-			$parentCats[] = $cat;
+		for ($i = 0, $l = count($parents); $i < $l; $i++) {
+			/** @var tx_commerce_category $cat */
+			$category = t3lib_div::makeInstance('tx_commerce_category');
+			$category->init($parents[$i]);
+			$parentCats[] = $category;
 		}
+
 		return $parentCats;
 	}
 
@@ -560,17 +625,17 @@ class tx_commerce_category extends tx_commerce_element_alib {
 	 * @param string $op Operation of move (can be 'after' or 'into')
 	 * @return boolean TRUE if the move was successfull, FALSE if not
 	 */
-	public function move($uid, $op='after') {
-		if('into' == $op) {
-			//the $uid is a future parent
+	public function move($uid, $op = 'after') {
+		if ($op == 'into') {
+				// the $uid is a future parent
 			$parent_uid = $uid;
 		} else {
 			return FALSE;
 		}
 			// Update parent_category
-		$set = $this->conn_db->updateRecord($this->uid, array('parent_category' => $parent_uid));
+		$set = $this->databaseConnection->updateRecord($this->uid, array('parent_category' => $parent_uid));
 			// Only update relations if parent_category was successfully set
-		if($set) {
+		if ($set) {
 			$catList = array($parent_uid);
 			$catList = tx_commerce_belib::getUidListFromList($catList);
 			$catList = tx_commerce_belib::extractFieldArray($catList, 'uid_foreign', TRUE);
@@ -579,9 +644,9 @@ class tx_commerce_category extends tx_commerce_element_alib {
 		} else {
 			return FALSE;
 		}
+
 		return TRUE;
 	}
-
 
 	/**
 	 * Returns recursivly the category path as text
@@ -593,37 +658,40 @@ class tx_commerce_category extends tx_commerce_element_alib {
 	public function get_category_path($separator = ',') {
 		if ($this->parent_category_uid > 0) {
 			$parent = $this->get_parent_category();
-			$parent->load_data();
-			$result = $parent->get_category_path($separator) . $separator . $this->get_title();
-
+			$parent->loadData();
+			$result = $parent->get_category_path($separator) . $separator . $this->getTitle();
 		} else {
-			$result=$this->get_title();
+			$result = $this->getTitle();
 		}
+
 		return $result;
 	}
 
 	/**
 	 * Returns a list of all child categories from this category
 	 *
-	 * @param integer $depth Maximum depth for going recursive
+	 * @param boolean|integer $depth Maximum depth for going recursive
 	 * @return array List of category uids
 	 */
-	public function get_rec_child_categories_uidlist($depth = FALSE){
-		$return_list = array();
+	public function get_rec_child_categories_uidlist($depth = FALSE) {
 		if ($depth) {
-			$depth --;
+			$depth--;
 		}
-		$this->load_data();
+		$this->loadData();
 		$this->get_child_categories();
+
+		$returnList = array();
 		if (count($this->categories) > 0) {
 			if (($depth === FALSE) || ($depth > 0)) {
-				foreach ($this->categories as $c_uid => $one_category) {
-					$return_list = array_merge($return_list, $one_category->get_rec_child_categories_uidlist($depth));
+				/** @var tx_commerce_category $category */
+				foreach ($this->categories as $category) {
+					$returnList = array_merge($returnList, $category->get_rec_child_categories_uidlist($depth));
 				}
 			}
-			$return_list = array_merge($return_list, $this->categories_uid);
+			$returnList = array_merge($returnList, $this->categories_uid);
 		}
-		return $return_list;
+
+		return $returnList;
 	}
 
 	/**
@@ -640,33 +708,37 @@ class tx_commerce_category extends tx_commerce_element_alib {
 		if ($depth > 0) {
 			$childCategoriesList = $this->get_rec_child_categories_uidlist($depth);
 			foreach ($childCategoriesList as $oneCategoryUid) {
+				/** @var tx_commerce_category $category */
 				$category = t3lib_div::makeInstance('tx_commerce_category');
 				$category->init($oneCategoryUid, $this->lang_uid);
-				$category->load_data();
+				$category->loadData();
 				$return_list = array_merge($return_list, $category->getProductUids());
 			}
 		}
+
 		return array_unique($return_list);
 	}
 
 	/**
 	 * Returns if this category has products
+	 *
 	 * @return boolean TRUE, if this category has products, FALSE if not
 	 */
 	public function hasProducts() {
 		if (count($this->getProductUids()) > 0) {
 			return TRUE;
 		}
+
 		return FALSE;
 	}
 
 	/**
 	 * Returns TRUE if this category has active products or if sub categories have active products
 	 *
-	 * @param integer $depth maximum deepth for going recursive, if not set go for maximum
+	 * @param boolean|integer $depth maximum deepth for going recursive, if not set go for maximum
 	 * @return boolean Returns TRUE, if category/subcategories hav active products
 	 */
-	public function ProductsBelowCategory($depth = FALSE){
+	public function ProductsBelowCategory($depth = FALSE) {
 		if ($this->hasProducts()) {
 			return TRUE;
 		}
@@ -674,17 +746,19 @@ class tx_commerce_category extends tx_commerce_element_alib {
 			$depth = PHP_INT_MAX;
 		}
 		if ($depth > 0) {
-			$childCategoriesList=$this->get_rec_child_categories_uidlist($depth);
+			$childCategoriesList = $this->get_rec_child_categories_uidlist($depth);
 			foreach ($childCategoriesList as $oneCategoryUid) {
+				/** @var tx_commerce_category $category */
 				$category = t3lib_div::makeInstance('tx_commerce_category');
 				$category->init($oneCategoryUid, $this->lang_uid);
-				$category->load_data();
-				$returnValue = $category->ProductsBelowCategory($deepth);
+				$category->loadData();
+				$returnValue = $category->ProductsBelowCategory($depth);
 				if ($returnValue == TRUE) {
 					return TRUE;
 				}
 			}
 		}
+
 		return FALSE;
 	}
 
@@ -694,13 +768,14 @@ class tx_commerce_category extends tx_commerce_element_alib {
 	 * @return array List of category uids
 	 */
 	public function get_categorie_rootline_uidlist() {
-		$return_list = array();
-		$this->load_data();
-		if(($parentCategory = $this->get_parent_category())) {
-			$return_list = $parentCategory->get_categorie_rootline_uidlist();
+		$returnList = array();
+		$this->loadData();
+		if (($parentCategory = $this->get_parent_category())) {
+			$returnList = $parentCategory->get_categorie_rootline_uidlist();
 		}
-		$return_list = array_merge($return_list, array($this->uid));
-		return array_unique($return_list);
+		$returnList = array_merge($returnList, array($this->uid));
+
+		return array_unique($returnList);
 	}
 
 	/**
@@ -712,8 +787,9 @@ class tx_commerce_category extends tx_commerce_element_alib {
 		if (!empty($this->images_array[0])) {
 			return $this->images_array[0];
 		} else {
-			if(($parentCategory = $this->get_parent_category())) {
-				$parentCategory->load_Data();
+			if (($parentCategory = $this->get_parent_category())) {
+				$parentCategory->loadData();
+
 				return $parentCategory->getTeaserImage();
 			} else {
 				return FALSE;
@@ -729,13 +805,14 @@ class tx_commerce_category extends tx_commerce_element_alib {
 	 */
 	public function getCategoryTSconfig() {
 		if (!is_array($this->categoryTSconfig)) {
-			$TSdataArray[] = $this->ts_config;
-			$TSdataArray = t3lib_TSparser::checkIncludeLines_array($TSdataArray);
-			$categoryTS = implode(chr(10) . '[GLOBAL]' . chr(10), $TSdataArray);
+			$tSdataArray[] = $this->tsConfig;
+			$tSdataArray = t3lib_TSparser::checkIncludeLines_array($tSdataArray);
+			$categoryTS = implode(chr(10) . '[GLOBAL]' . chr(10), $tSdataArray);
 			$parseObj = t3lib_div::makeInstance('t3lib_TSparser');
 			$parseObj->parse($categoryTS);
 			$this->categoryTSconfig = $parseObj->setup;
 		}
+
 		return $this->categoryTSconfig;
 	}
 
@@ -761,6 +838,8 @@ class tx_commerce_category extends tx_commerce_element_alib {
 }
 
 if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_category.php']) {
+	/** @noinspection PhpIncludeInspection */
 	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_category.php']);
 }
+
 ?>

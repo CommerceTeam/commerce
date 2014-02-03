@@ -34,38 +34,36 @@
  * @subpackage tx_commerce
  */
 class tx_commerce_db_article extends tx_commerce_db_alib {
-
-	var $database_attribute_rel_table = 'tx_commerce_articles_article_attributes_mm';
-
- 	/**
-	 * Setting the Class Datebase Table
-	 * @access private
+	/**
+	 * @var string
 	 */
-	function tx_commerce_db_article() {
-		$this->database_table= 'tx_commerce_articles';	
-	 }
+	public $databaseTable = 'tx_commerce_articles';
 
 	/**
-	 * returns the paren Product uid
-	 * @param uid Article uid
-	 * @return product uid
-	 *
+	 * @var string
 	 */
-	function get_parent_product_uid($uid,$translationMode = false){
-	 	$data=parent::get_data($uid,$translationMode);
-	 	if ($data) {
-	 		//Backwards Compatibility
-	 		if ($data['uid_product']) {
-	 			return $data['uid_product'];
+	public $databaseAttributeRelationTable = 'tx_commerce_articles_article_attributes_mm';
+
+	/**
+	 * returns the parent Product uid
+	 * @param integer $uid Article uid
+	 * @param boolean $translationMode
+	 * @return integer product uid
+	 */
+	public function get_parent_product_uid($uid, $translationMode = FALSE) {
+		$data = parent::getData($uid, $translationMode);
+		$result = FALSE;
+
+		if ($data) {
+				// Backwards Compatibility
+			if ($data['uid_product']) {
+				$result = $data['uid_product'];
+			} elseif ($data['products_uid']) {
+				$result = $data['products_uid'];
 			}
-	 		if ($data['products_uid']) {
-	 			return $data['products_uid'];
-			}
-	 	}
-	 	else {
-	 		return false;	
-	 	}
-	 }
+		}
+		return $result;
+	}
 
 	/**
 	 * gets all prices form database related to this product
@@ -126,7 +124,7 @@ class tx_commerce_db_article extends tx_commerce_db_alib {
 	 * @param uid= Article uid
 	 * @return array of Price UID
 	 */
-	
+
 	function getPriceScales($uid,$count=1) {
 		$uid = intval($uid);
 		$count = intval($count);
@@ -156,33 +154,35 @@ class tx_commerce_db_article extends tx_commerce_db_alib {
 
 	/**
 	 * Returns an array of all prices
-	 * @param uid= Article uid
+	 * @param integer $uid Article uid
 	 * @return array of Price UID
 	 */
-	function getPrices($uid) {
+	public function getPrices($uid) {
 		$uid = intval($uid);
-		if ($uid>0) {
-			$price_uid_list=array();
+		if ($uid > 0) {
+			$price_uid_list = array();
+			$proofSQL = '';
 			if (is_object($GLOBALS['TSFE']->sys_page)) {
-					$proofSQL = $GLOBALS['TSFE']->sys_page->enableFields('tx_commerce_article_prices',$GLOBALS['TSFE']->showHiddenRecords);
+				$proofSQL = $GLOBALS['TSFE']->sys_page->enableFields('tx_commerce_article_prices', $GLOBALS['TSFE']->showHiddenRecords);
 			}
-			$result=$GLOBALS['TYPO3_DB']->exec_SELECTquery(
+
+			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 				'uid,price_scale_amount_start, price_scale_amount_end',
 				'tx_commerce_article_prices',
 				'uid_article = ' . $uid .  $proofSQL
 			);
-			if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)>0) {
-			 	while ($return_data=$GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
-					$price_uid_list[]=$return_data['uid'];
+			if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
+				while ($return_data = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
+					$price_uid_list[] = $return_data['uid'];
 				}
 				$GLOBALS['TYPO3_DB']->sql_free_result($result);
 				return $price_uid_list;
 			} else {
 				$this->error("exec_SELECTquery('uid','tx_commerce_article_prices',\"uid_article = $uid\"); returns no Result");
-				return false;
+				return FALSE;
 			}
 		} else {
-			return false;
+			return FALSE;
 		}
 	}
 
@@ -190,7 +190,7 @@ class tx_commerce_db_article extends tx_commerce_db_alib {
 	 * gets all attributes from this product
 	 * @param uid= Product uid
 	 * @see tx_commerce_db_alib.php
-	 * @return array of attribute UID 
+	 * @return array of attribute UID
 	 */
 	function get_attributes($uid) {
 		return parent::get_attributes($uid,'');
@@ -198,17 +198,17 @@ class tx_commerce_db_article extends tx_commerce_db_alib {
 
 	/**
 	 * Returns the attribute Value from the given Article attribute pair
-	 * @param uid Article UID
-	 * @param attribute_uid Attribute UID
-	 * @param valueListAsUid if true, returns not the value from the valuelist, instaed the uid
-	 * @return value
+	 * @param integer $uid Article UID
+	 * @param integer $attribute_uid Attribute UID
+	 * @param boolean $valueListAsUid if true, returns not the value from the valuelist, instaed the uid
+	 * @return string
 	 */
-	function getAttributeValue($uid, $attribute_uid,$valueListAsUid=false) {
+	public function getAttributeValue($uid, $attribute_uid,$valueListAsUid=false) {
 		$uid = intval($uid);
 		$attribute_uid = intval($attribute_uid);
 		if ($uid > 0) {
 				// First select attribute, to detecxt if is valuelist
-			if(is_object($GLOBALS['TSFE']->sys_page)){
+			if (is_object($GLOBALS['TSFE']->sys_page)) {
 				$proofSQL = $GLOBALS['TSFE']->sys_page->enableFields('tx_commerce_attributes',$GLOBALS['TSFE']->showHiddenRecords);
 			}
 			$result= $GLOBALS['TYPO3_DB']->exec_SELECTquery('DISTINCT uid,has_valuelist','tx_commerce_attributes',"uid = $attribute_uid " .  $proofSQL);
@@ -223,12 +223,12 @@ class tx_commerce_db_article extends tx_commerce_db_alib {
 							' AND uid_local = ' . $uid .
 							' AND uid_foreign = ' . $attribute_uid
 					);
-					if($GLOBALS['TYPO3_DB']->sql_num_rows($a_result)==1) {
-						$value_data=$GLOBALS['TYPO3_DB']->sql_fetch_assoc($a_result);
-						if ($valueListAsUid==true) {
-							return 	$value_data['uid'];
+					if ($GLOBALS['TYPO3_DB']->sql_num_rows($a_result) == 1) {
+						$value_data = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($a_result);
+						if ($valueListAsUid == TRUE) {
+							return $value_data['uid'];
 						} else {
-							return 	$value_data['value'];
+							return $value_data['value'];
 						}
 					}
 				} else {
@@ -255,6 +255,8 @@ class tx_commerce_db_article extends tx_commerce_db_alib {
 		} else {
 			$this->error('no Uid');
 		}
+
+		return '';
 	}
 
 	/**
@@ -279,7 +281,9 @@ class tx_commerce_db_article extends tx_commerce_db_alib {
 	}
 }
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_db_article.php']) {
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_db_article.php']) {
+	/** @noinspection PhpIncludeInspection */
 	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_db_article.php']);
 }
+
 ?>

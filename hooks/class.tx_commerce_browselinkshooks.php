@@ -42,50 +42,50 @@ class tx_commerce_browselinkshooks implements t3lib_browseLinksHook {
     protected $pObj;
     protected $treeObj;
     protected $script;
-    
+
     // Initialisation (additionalParameters est un tableau vide)
     function init ($parentObject, $additionalParameters) {
         $this->pObj = $parentObject;
     	if ($this->isRTE()) {
 				$this->pObj->anchorTypes[] = 'commerce_tab'; //for 4.3
-		}   
-		
+		}
+
 		// initialize the tree
 		$this->initTree();
-		
+
 		// add js
 		// has to be added as script tags to the body since parentObject is not passed by reference
 		$linkToTreeJs = '../../../'.t3lib_extMgm::extRelPath('commerce').'mod_access/tree.js'; //first we go from rhtml path to typo3 path
-		
+
 		$this->script  = '<script src="'.$linkToTreeJs.'" type="text/javascript"></script>';
 		$this->script .= t3lib_div::wrapJS('Tree.ajaxID = "tx_commerce_browselinkshooks::ajaxExpandCollapse";');
     }
-    
+
     function initTree() {
-    	// initialiize the tree     
+    	// initialiize the tree
 		$this->treeObj = t3lib_div::makeInstance('tx_commerce_treelib_link_categorytree');
 		$this->treeObj->init();
     }
-    
+
 
     function addAllowedItems ($currentlyAllowedItems) {
         $currentlyAllowedItems[] = 'commerce_tab';
-        
+
         return $currentlyAllowedItems;
     }
-    
-    
+
+
     function modifyMenuDefinition ($menuDefinition) {
         $key = 'commerce_tab';
         $menuDefinition[$key]['isActive'] = $this->pObj->act == $key;
         $menuDefinition[$key]['label'] = "Commerce";
         $menuDefinition[$key]['url'] = '#';
-        $menuDefinition[$key]['addParams'] = 'onclick="jumpToUrl(\'?act='.$key.'&editorNo='.$this->pObj->editorNo.'&contentTypo3Language='.$this->pObj->contentTypo3Language.'&contentTypo3Charset='.$this->pObj->contentTypo3Charset.'\');return false;"';                    
-            
-        
+        $menuDefinition[$key]['addParams'] = 'onclick="jumpToUrl(\'?act='.$key.'&editorNo='.$this->pObj->editorNo.'&contentTypo3Language='.$this->pObj->contentTypo3Language.'&contentTypo3Charset='.$this->pObj->contentTypo3Charset.'\');return false;"';
+
+
         return $menuDefinition;
     }
-    
+
     // Contenu du nouvel onglet
     function getTab($act) {
     	global $TCA,$BE_USER, $BACK_PATH;
@@ -94,12 +94,12 @@ class tx_commerce_browselinkshooks implements t3lib_browseLinksHook {
 			//strip http://commerce: in front of url
 			$url = $this->pObj->curUrlInfo['value'];
 			$url = substr($url, stripos($url, 'commerce:') + strlen('commerce:'));
-			
+
 			$product_uid 	= 0;
 			$cat_uid 		= 0;
-			
+
 			$linkHandlerData = t3lib_div::trimExplode('|',$url);
-	
+
 			foreach ($linkHandlerData as $linkData) {
 				$params = t3lib_div::trimExplode(':',$linkData);
 			if (isset($params[0])){
@@ -115,71 +115,71 @@ class tx_commerce_browselinkshooks implements t3lib_browseLinksHook {
 				} elseif ($params[2] == 'tx_commerce_categories') {
 					$cat_uid = (int)$params[3];
 				}
-			}			
-			}		
+			}
+			}
 			if ($product_uid > 0 && $cat_uid > 0){
 				//$this->pObj->expandPage = $cat_uid;
 			}
-			
+
 			if ($this->isRTE()) {
 					if (isset($this->pObj->classesAnchorJSOptions)) {
-					$this->pObj->classesAnchorJSOptions[$act]=@$this->pObj->classesAnchorJSOptions['page']; //works for 4.1.x patch, in 4.2 they make this property protected! -> to enable classselector in 4.2 easoiest is to path rte. 
-				}    
+					$this->pObj->classesAnchorJSOptions[$act]=@$this->pObj->classesAnchorJSOptions['page']; //works for 4.1.x patch, in 4.2 they make this property protected! -> to enable classselector in 4.2 easoiest is to path rte.
+				}
 			}
-			
+
 			// set product/category of current link for the tree to expand it there
 			if($product_uid > 0) {
 				$this->treeObj->setOpenProduct($product_uid);
 			}
-			
+
 			if($cat_uid > 0) {
 				$this->treeObj->setOpenCategory($cat_uid);
 			}
-			
+
 			// get the tree
 			$tree = $this->treeObj->getBrowseableTree();
-			
+
 			$cattable = '<h3 class="bgColor5">Category Tree:</h3><div id="PageTreeDiv">'.$tree.'</div>';
-			
+
 			$content = $this->script;
 			$content .= $cattable;
-			
-			
-			
-			
-			
+
+
+
+
+
 			if ($this->isRTE()) {
-				$content .= $this->pObj->addAttributesForm();	
-				
+				$content .= $this->pObj->addAttributesForm();
+
 			}
 			return $content;
 		}
     }
-    
-	
+
+
     function parseCurrentUrl ($href, $siteUrl, $info) {
-			//depending on link and setup the href string can contain complete absolute link			
+			//depending on link and setup the href string can contain complete absolute link
 			if (substr($href,0,7)=='http://') {
 				if ($_href=strstr($href,'?id=')) {
 					$href=substr($_href,4);
 				}
-				else {				
+				else {
 					$href=substr (strrchr ($href, "/"),1);
 				}
 			}
-				
+
 			if (strtolower(substr($href,0,20))=='commerce:tx_commerce') {
 					$parts=explode(":",$href);
-					
+
 					$info['act']='commerce_tab';
-					
-					
-			}			
-		 
+
+
+			}
+
         return $info;
     }
-    
-    
+
+
 	function isValid($type, &$pObj)	{
 		$isValid = false;
 
@@ -193,22 +193,22 @@ class tx_commerce_browselinkshooks implements t3lib_browseLinksHook {
 			// @todo: log a warning
 			#$valid = parent::isValid($type, $pObj);
 		}
-		
+
 		return $isValid;
-	}   
-	
+	}
+
 	/**
-	* returns additional addonparamaters - required to keep several informations for the RTE linkwizard
-	**/
+	 * returns additional addonparamaters - required to keep several informations for the RTE linkwizard
+	 */
 	function getaddPassOnParams() {
 		if (!$this->isRTE()) {
 						$P2=t3lib_div::_GP('P');
 						return t3lib_div::implodeArrayForUrl('P',$P2);
 		}
-	}	
+	}
 
 
-	
+
 	private function isRTE() {
 		if ($this->pObj->mode=='rte') {
 			return true;
@@ -216,9 +216,9 @@ class tx_commerce_browselinkshooks implements t3lib_browseLinksHook {
 		else {
 			return false;
 		}
-		
-	}	
-	
+
+	}
+
 	/**
 	 * Makes the AJAX call to expand or collapse the categorytree.
 	 * Called by typo3/ajax.php
@@ -229,19 +229,19 @@ class tx_commerce_browselinkshooks implements t3lib_browseLinksHook {
 	 */
 	function ajaxExpandCollapse($params, &$ajaxObj) {
 		global $LANG;
-		
+
 		//Extract the ID and Bank
-		$id   = 0; 
+		$id   = 0;
 		$bank = 0;
-		
+
 		$PM = t3lib_div::_GP('PM');
 		// IE takes anchor as parameter
 		if(($PMpos = strpos($PM, '#')) !== false) { $PM = substr($PM, 0, $PMpos); }
 		$PM = explode('_', $PM);
-		
+
 		//Now we should have a PM Array looking like:
 		//0: treeName, 1: leafIndex, 2: Mount, 3: set/clear [4:,5:,.. further leafIndices], 5[+++]: Item UID
-		
+
 		if(is_array($PM) && count($PM) >= 4) {
 			$id 	= $PM[count($PM)-1]; //ID is always the last Item
 			$bank 	= $PM[2];
@@ -250,7 +250,7 @@ class tx_commerce_browselinkshooks implements t3lib_browseLinksHook {
 		//Load the tree
 		$this->initTree();
 		$tree = $this->treeObj->getBrowseableAjaxTree($PM);
-		
+
 		//if (!$this->categoryTree->ajaxStatus) { ###CHECK THE AJAX ERROR###
 		//	$ajaxObj->setError($tree);
 		//} else	{
@@ -258,8 +258,10 @@ class tx_commerce_browselinkshooks implements t3lib_browseLinksHook {
 		//}
 	}
 }
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/commerce/hooks/class.tx_commerce_browselinkshooks.php'])	{
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/commerce/hooks/class.tx_commerce_browselinkshooks.php']);
+
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/hooks/class.tx_commerce_browselinkshooks.php']) {
+	/** @noinspection PhpIncludeInspection */
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/hooks/class.tx_commerce_browselinkshooks.php']);
 }
 
 ?>

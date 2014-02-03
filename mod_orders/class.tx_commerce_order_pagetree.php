@@ -28,11 +28,11 @@
  * @author	Ingo Schmitt <is@marketing-factory.de>
  * @author	Kasper Skaarhoj <kasperYYYY@typo3.com>
  * @package TYPO3
- * @subpackage tx_commerce  
+ * @subpackage tx_commerce
  * @subpackage orders
  * @see alt_db_navframe.php
- * 
- * 
+ *
+ *
  */
 
 
@@ -48,14 +48,14 @@ class localPageTree extends t3lib_browseTree {
 
 	var $ext_showPageId;
 	var $ext_IconMode;
-	
-	
+
+
 	function init()
 	{
-		
+
 		parent::init();
-		$this->treeName='orders';	
-		
+		$this->treeName='orders';
+
 	}
 	/**
 	 * Calls init functions
@@ -119,11 +119,9 @@ class localPageTree extends t3lib_browseTree {
 	}
 }
 
-
-
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/commerce/mod_orders/class.tx_commerce_order_pagetree.php']) {
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/commerce/mod_orders/class.tx_commerce_order_pagetree.php']);
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/mod_orders/class.tx_commerce_order_pagetree.php']) {
+	/** @noinspection PhpIncludeInspection */
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/mod_orders/class.tx_commerce_order_pagetree.php']);
 }
-
 
 ?>

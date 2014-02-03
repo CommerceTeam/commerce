@@ -3,9 +3,36 @@
 $extensionPath = t3lib_extMgm::extPath('commerce');
 
 return array(
+	'recordlist' => PATH_typo3 . 'class.db_list.inc',
+	'localrecordlist' => PATH_typo3 . 'class.db_list_extra.inc',
+
+	'tx_commerce_cli' => $extensionPath . 'cli/class.tx_commerce_cli.php',
+
+	'address_dao' => 'class.address_dao.php',
+	'address_dao_mapper' =>  'class.address_dao_mapper.php',
+	'address_dao_parser' => $extensionPath . 'dao/class.address_dao_parser.php',
+	'address_mapper' => $extensionPath . 'dao/class.address_mapper.php',
+	'address_object' => $extensionPath . 'dao/class.address_object.php',
+	'address_observer' => $extensionPath . 'dao/class.address_observer.php',
+	'address_parser' => $extensionPath . 'dao/class.address_parser.php',
+	'basic_dao' => $extensionPath . 'dao/class.basic_dao.php',
+	'basic_dao_mapper' => $extensionPath . 'dao/class.basic_dao_mapper.php',
+	'basic_dao_parser' => $extensionPath . 'dao/class.basic_dao_parser.php',
+	'basic_mapper' => $extensionPath . 'dao/class.basic_mapper.php',
+	'basic_object' => $extensionPath . 'dao/class.basic_object.php',
+	'basic_parser' => $extensionPath . 'dao/class.basic_parser.php',
+	'feuser_address_fieldmapper' => $extensionPath . 'dao/class.feuser_address_fieldmapper.php',
+	'feuser_dao' => $extensionPath . 'dao/class.feuser_dao.php',
+	'feuser_mapper' => $extensionPath . 'dao/class.feuser_mapper.php',
+	'feuser_object' => $extensionPath . 'dao/class.feuser_object.php',
+	'feuser_observer' => $extensionPath . 'dao/class.feuser_observer.php',
+	/** @deprecated since 0.14.0 will be removed in 0.16.0 use feuser_observer instead */
+	'feusers_observer' => $extensionPath . 'dao/class.feuser_observer.php',
+	'feuser_parser' => $extensionPath . 'dao/class.feuser_parser.php',
+
+
 	'tx_commerce_articlecreator' => $extensionPath . 'class.tx_commerce_articlecreator.php',
 	'tx_commerce_attributeeditor' => $extensionPath . 'class.tx_commerce_attributeeditor.php',
-
 	'tx_commerce_article' => $extensionPath . 'lib/class.tx_commerce_article.php',
 	'tx_commerce_article_price' => $extensionPath . 'lib/class.tx_commerce_article_price.php',
 	'tx_commerce_attribute' => $extensionPath . 'lib/class.tx_commerce_attribute.php',
@@ -22,12 +49,16 @@ return array(
 	'tx_commerce_db_attribute_value' => $extensionPath . 'lib/class.tx_commerce_db_attribute_value.php',
 	'tx_commerce_db_category' => $extensionPath . 'lib/class.tx_commerce_db_category.php',
 	'tx_commerce_db_list' => $extensionPath . 'lib/class.tx_commerce_db_list.php',
+	'commercerecordlist' => $extensionPath . 'lib/class.tx_commerce_db_list_extra.php',
 	'tx_commerce_db_product' => $extensionPath . 'lib/class.tx_commerce_db_product.php',
 	'tx_commerce_db_price' => $extensionPath . 'lib/class.tx_commerce_db_price.php',
 	'tx_commerce_div' => $extensionPath . 'lib/class.tx_commerce_div.php',
 	'tx_commerce_element_alib' => $extensionPath . 'lib/class.tx_commerce_element_alib.php',
 	'tx_commerce_folder_db' => $extensionPath . 'lib/class.tx_commerce_folder_db.php',
 	'tx_commerce_forms_select' => $extensionPath . 'lib/class.tx_commerce_forms_select.php',
+	'tx_commerce_navigation' => $extensionPath . 'lib/class.tx_commerce_navigation.php',
+	'user_tx_commerce_catmenu_pub' => $extensionPath . 'lib/class.user_tx_commerce_catmenu_pub.php',
+
 	'tx_commerce_feusers_localrecordlist' => $extensionPath . 'lib/class.tx_commerce_feusers_localrecordlist.php',
 	'tx_commerce_order_localrecordlist' => $extensionPath . 'lib/class.tx_commerce_order_localrecordlist.php',
 	'tx_commerce_pibase' => $extensionPath . 'lib/class.tx_commerce_pibase.php',
@@ -57,7 +88,8 @@ return array(
 	'tx_commerce_treelib_link_leaf_productview' => $extensionPath . 'treelib/link/class.tx_commerce_treelib_link_leaf_productview.php',
 	'tx_commerce_treelib_tceforms' => $extensionPath . 'treelib/class.tx_commerce_treelib_tceforms.php',
 
-
+	'payment' => $extensionPath . 'payment/libs/class.payment.php',
+	'wirecard' => $extensionPath . 'payment/libs/class.wirecard.php',
 	'tx_commerce_payment' => $extensionPath . 'payment/interfaces/interface.tx_commerce_payment.php',
 	'tx_commerce_payment_abstract' => $extensionPath . 'payment/class.tx_commerce_payment_abstract.php',
 	'tx_commerce_payment_cashondelivery' => $extensionPath . 'payment/class.tx_commerce_payment_cashondelivery.php',
@@ -69,11 +101,32 @@ return array(
 	'tx_commerce_payment_provider' => $extensionPath . 'payment/provider/interfaces/interface.tx_commerce_payment_provider.php',
 	'tx_commerce_payment_provider_abstract' => $extensionPath . 'payment/provider/class.tx_commerce_payment_provider_abstract.php',
 	'tx_commerce_payment_provider_wirecard' => $extensionPath . 'payment/provider/class.tx_commerce_payment_provider_wirecard.php',
+	'tx_commerce_payment_wirecard_lib' => $extensionPath . 'payment/libs/class.tx_commerce_payment_wirecard_lib.php',
 
-    'tx_commerce_payment_criterion' => $extensionPath . 'payment/criteria/interfaces/interface.tx_commerce_payment_criterion.php',
+	'creditcardvalidationsolution' => $extensionPath . 'payment/ccvs/class.tx_commerce_payment_ccvs.php',
+	'tx_commerce_payment_criterion' => $extensionPath . 'payment/criteria/interfaces/interface.tx_commerce_payment_criterion.php',
 	'tx_commerce_payment_criterion_abstract' => $extensionPath . 'payment/criteria/class.tx_commerce_payment_criterion_abstract.php',
+	'tx_commerce_payment_ccvs' => $extensionPath . 'payment/class.tx_commerce_payment_ccvs.php',
 
-	'tx_commerce_payment_ccvs' => $extensionPath . 'payment/ccvs/class.tx_commerce_payment_ccvs.php',
-    'feusers_observer' => $extensionPath . 'dao/class.feusers_observer.php'    
+	'feusers_observer' => $extensionPath . 'dao/class.feusers_observer.php',
+	'address_observer' => $extensionPath . 'dao/class.address_observer.php',
+
+	'langbase' => $extensionPath . 'tree/class.langbase.php',
+	'leaf' => $extensionPath . 'tree/class.leaf.php',
+	'mounts' => $extensionPath . 'tree/class.mounts.php',
+	'leafview' => $extensionPath . 'tree/class.leafView.php',
+	'leafdata' => $extensionPath . 'tree/class.leafData.php',
+	'leafslave' => $extensionPath . 'tree/class.leafSlave.php',
+	'leafmaster' => $extensionPath . 'tree/class.leafMaster.php',
+	'leafmasterdata' => $extensionPath . 'tree/class.leafMasterData.php',
+	'leafslavedata' => $extensionPath . 'tree/class.leafSlaveData.php',
+	'browsetree' => $extensionPath . 'tree/class.browsetree.php',
+
+	'localpagetree' => $extensionPath . 'mod_orders/class.tx_commerce_order_pagetree.php',
+	'user_orderedit_func' => $extensionPath . 'mod_orders/class.user_orderedit_func.php',
+
+	'tx_moneylib' => t3lib_extMgm::extPath('moneylib') . 'class.tx_moneylib.php',
+	'tx_staticinfotables_pi1' => t3lib_extMgm::extPath('static_info_tables') . 'pi1/class.tx_staticinfotables_pi1.php',
 );
+
 ?>

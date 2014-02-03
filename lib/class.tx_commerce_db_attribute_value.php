@@ -33,18 +33,15 @@
  * @subpackage tx_commerce
  */
 class tx_commerce_db_attribute_value extends tx_commerce_db_alib {
-
 	/**
-	 * Setting the class datebase table
-	 *
-	 * @access private
+	 * @var string
 	 */
-	function tx_commerce_db_attribute_value() {
-		$this->database_table = 'tx_commerce_attribute_values';
-	}
+	public $databaseTable = 'tx_commerce_attribute_values';
 }
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_db_attribute_value.php']) {
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_db_attribute_value.php']);
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_db_attribute_value.php']) {
+	/** @noinspection PhpIncludeInspection */
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_db_attribute_value.php']);
 }
+
 ?>

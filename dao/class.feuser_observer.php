@@ -38,13 +38,9 @@
 * @subpackage commerce
 * @author Carsten Lausen <cl@e-netconsulting.de>
 */
-
-require_once(t3lib_extMgm::extPath('commerce').'dao/class.address_object.php');
-require_once(t3lib_extMgm::extPath('commerce').'dao/class.feuser_object.php');
-
 class feusers_observer {
-
-	var $observable;  //Link to observable
+		// Link to observable
+	public $observable;
 
 	/**
 	 * Constructor
@@ -52,10 +48,10 @@ class feusers_observer {
 	 * Link observer and observable
 	 * Not needed for typo3 hook concept.
 	 *
-	 * @param obj &$observable: observed object
+	 * @param object &$observable: observed object
 	 */
-	function feuser_observer(&$observable) {
-		$this->observable =& $observable;
+	public function feuser_observer(&$observable) {
+		$this->observable = & $observable;
 		$observable->addObserver($this);
 	}
 
@@ -70,47 +66,51 @@ class feusers_observer {
 	 * @param string $id: database table
 	 * @param array $changedFieldArray: reference to the incoming fields
 	 */
-	function update($status, $id, &$changedFieldArray) {
-		//get complete feuser object
-		$feuser_dao = new feuser_dao($id);
+	public function update($status, $id, &$changedFieldArray) {
+		/** @var feuser_dao $feuserDao */
+		$feuserDao = t3lib_div::makeInstance('feuser_dao', $id);
 
-		//get main address id from feuser object
-		$top_id = $feuser_dao->get('tx_commerce_tt_address_id');
+			// get main address id from feuser object
+		$topId = $feuserDao->get('tx_commerce_tt_address_id');
 
-		if(empty($top_id)) {
-			//get new address object
-			$address_dao = new address_dao();
+		/** @var address_dao $addressDao */
+		if (empty($topId)) {
+				// get new address object
+			$addressDao = t3lib_div::makeInstance('address_dao');
 
-			//set feuser uid and main address flag
-			$address_dao->set('tx_commerce_fe_user_id',$feuser_dao->get('id'));
-			$address_dao->set('tx_commerce_is_main_address','1');
+				// set feuser uid and main address flag
+			$addressDao->set('tx_commerce_fe_user_id', $feuserDao->get('id'));
+			$addressDao->set('tx_commerce_is_main_address', '1');
 
-			//set address type if not yet defined
-			if(!$address_dao->issetProperty('tx_commerce_address_type_id')) {
-				$address_dao->set('tx_commerce_address_type_id',1);
+				// set address type if not yet defined
+			if (!$addressDao->issetProperty('tx_commerce_address_type_id')) {
+				$addressDao->set('tx_commerce_address_type_id', 1);
 			}
 		} else {
-				//get existing address object
-			$address_dao = new address_dao($top_id);
+				// get existing address object
+			$addressDao = t3lib_div::makeInstance('address_dao', $topId);
 		}
 
-		//apply changes to address object
-		$field_mapper = new feuser_address_fieldmapper;
-		$field_mapper->map_feuser_to_address($feuser_dao,$address_dao);
+			// apply changes to address object
+		/** @var feuser_address_fieldmapper $fieldMapper */
+		$fieldMapper = t3lib_div::makeInstance('feuser_address_fieldmapper');
+		$fieldMapper->map_feuser_to_address($feuserDao, $addressDao);
 
-		//save address object
-		$address_dao->save();
+			// save address object
+		$addressDao->save();
 
-		//update main address id
-		if ($top_id != $address_dao->get('id')) {
-			$feuser_dao->set('tx_commerce_tt_address_id',$address_dao->get('id'));
-			$feuser_dao->save();
+			// update main address id
+		if ($topId != $addressDao->get('id')) {
+			$feuserDao->set('tx_commerce_tt_address_id', $addressDao->get('id'));
+			$feuserDao->save();
 		}
 	}
 }
 
- // Include extension?
+class_alias('feuser_observer', 'feusers_observer');
+
 if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/dao/class.feusers_observer.php']) {
+	/** @noinspection PhpIncludeInspection */
 	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/dao/class.feusers_observer.php']);
 }
 

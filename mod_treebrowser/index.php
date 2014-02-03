@@ -25,38 +25,26 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-/**
- * @author Rene Fritz <r.fritz@colorcube.de>
- * @package DAM-Mod
- * @ignore
- */
-
 unset($MCONF);
 require ('conf.php');
-require ($BACK_PATH.'init.php');
-require ($BACK_PATH.'template.php');
+require ($BACK_PATH . 'init.php');
+require ($BACK_PATH . 'template.php');
 
 $LANG->includeLLFile('EXT:lang/locallang_misc.xml');
 
 /**
  * Script Class for the treeview in TCEforms elements
- *
- * @author	Rene Fritz <r.fritz@colorcube.de>
- * @package DAM-Mod
- * @ignore
  */
 class tx_commerce_treebrowser extends tx_commerce_treelib_browser {
 	// nothing to do here
 }
 
-
-// Include extension?
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/commerce/mod_treebrowser/index.php'])	{
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/commerce/mod_treebrowser/index.php']);
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/mod_treebrowser/index.php']) {
+	/** @noinspection PhpIncludeInspection */
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/mod_treebrowser/index.php']);
 }
 
-
-// Make instance:
+/** @var tx_commerce_treebrowser $SOBE */
 $SOBE = t3lib_div::makeInstance('tx_commerce_treebrowser');
 $SOBE->init();
 $SOBE->main();

@@ -23,8 +23,8 @@
  ***************************************************************/
 
 /**
- * Libary for Frontend-Rendering of attribute values. This class 
- * should be used for all Fronten-Rendering, no Database calls 
+ * Libary for Frontend-Rendering of attribute values. This class
+ * should be used for all Fronten-Rendering, no Database calls
  * to the commerce tables should be made directly
  * This Class is inhertited from tx_commerce_element_alib, all
  * basic Database calls are made from a separate Database Class
@@ -43,7 +43,7 @@ class tx_commerce_attribute_value extends tx_commerce_element_alib {
 		// Title of Attribute (private)
 	var $title='';
 
-		// The Value for 
+		// The Value for
 	var $value='';
 
 	/**
@@ -78,24 +78,25 @@ class tx_commerce_attribute_value extends tx_commerce_element_alib {
 	 * @param lang_uid integer language uid, default 0
 	 */
 
-	function init($uid,$lang_uid=0) {
+	public function init($uid, $lang_uid = 0) {
 		$uid = intval($uid);
 		$lang_uid = intval($lang_uid);
 		/*
 		 * Define variables
 		 */
-		$this->fieldlist=array('title','value','showvalue','icon','l18n_parent');
-		$this->database_class='tx_commerce_db_attribute_value';
-		$this->uid=$uid;
-		$this->lang_uid=$lang_uid;
-		$this->conn_db=new $this->database_class;
+		$this->fieldlist = array('title', 'value', 'showvalue', 'icon', 'l18n_parent');
+		$this->databaseClass = 'tx_commerce_db_attribute_value';
+		$this->uid = $uid;
+		$this->lang_uid = $lang_uid;
+		$this->databaseConnection = t3lib_div::makeInstance($this->databaseClass);
+
 		$hookObjectsArr = array();
 		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_attribute_value.php']['postinit'])) {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_attribute_value.php']['postinit'] as $classRef) {
 				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
 			}
 		}
-		foreach($hookObjectsArr as $hookObj) {
+		foreach ($hookObjectsArr as $hookObj) {
 			if (method_exists($hookObj, 'postinit')) {
 				$hookObj->postinit($this);
 			}
@@ -144,7 +145,7 @@ class tx_commerce_attribute_value extends tx_commerce_element_alib {
 	}
 
 	/**
-	 * Gets the showicon value 
+	 * Gets the showicon value
 	 * @retun integer
 	 */
 	function getshowicon() {
@@ -152,7 +153,9 @@ class tx_commerce_attribute_value extends tx_commerce_element_alib {
 	}
 }
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_attribute_value.php']) {
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_attribute_value.php']);
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_attribute_value.php']) {
+	/** @noinspection PhpIncludeInspection */
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_attribute_value.php']);
 }
+
 ?>

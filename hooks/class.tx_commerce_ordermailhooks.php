@@ -79,14 +79,14 @@ class tx_commerce_ordermailhooks {
 	 * @var Array
 	 */
 	var $extConf;
-	
+
 	/**
 	 * This is just a constructor to instanciate the backend library
 	 *
 	 * @author Joerg Sprung <jsp@marketing-factory.de>
 	 */
 	function tx_commerce_ordermailhooks() {
-		$this->extConf = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['extConf'];
+		$this->extConf = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf'];
 		$this->cObj = t3lib_div::makeInstance("tslib_cObj");
 		$this->csConvObj = t3lib_div::makeInstance("t3lib_cs");
 		$this->templatePath = PATH_site.'/uploads/tx_commerce/';
@@ -98,14 +98,14 @@ class tx_commerce_ordermailhooks {
 	/**
 	 * This method converts an sends mails.
 	 *
-	 * @param	array		$mailconf		
+	 * @param	array		$mailconf
 	 * @return	return		of t3lib_div::plainMailEncoded
 	 */
     function ordermoveSendMail($mailconf,&$orderdata,&$template) {
-    	
+
 		$parts = explode(chr(10),$mailconf['plain']['content'],2);		// First line is subject
 		$mailconf['alternateSubject']=trim($parts[0]); // add mail subject
-		$mailconf['plain']['content']=trim($parts[1]); // replace plaintext content	 
+		$mailconf['plain']['content']=trim($parts[1]); // replace plaintext content
 
 		/**
 		 * Convert Text to charset
@@ -114,7 +114,7 @@ class tx_commerce_ordermailhooks {
 		$this->csConvObj->initCharset('8bit');
 		$mailconf['plain']['content'] = $this->csConvObj->conv($mailconf['plain']['content'],'utf-8','utf-8');
 		$mailconf['alternateSubject']=$this->csConvObj->conv($mailconf['alternateSubject'],'utf-8','utf-8');
-	
+
 
 		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/hooks/class.tx_commerce_ordermailhooks.php']['ordermoveSendMail'])) {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/hooks/class.tx_commerce_ordermailhooks.php']['ordermoveSendMail'] as $classRef) {
@@ -131,7 +131,7 @@ class tx_commerce_ordermailhooks {
 
 		return tx_commerce_div::sendMail($mailconf, $this);
 	}
-	
+
 
 
 	/**
@@ -170,16 +170,16 @@ class tx_commerce_ordermailhooks {
 	 * @return	void
 	 */
 	function processOrdermails(&$orderdata,&$detaildata,$mailkind) {
-	
-	
+
+
 		#$this->customermailadress = '';
 		$templates = $this->generateTemplatearray($mailkind,$orderdata['pid'],$detaildata['order_sys_language_uid']);
 
 		foreach($templates as $template) {
-		
+
 			$this->templateCode = t3lib_div::getURL($this->templatePath . $template['mailtemplate']);
 			$this->templateCodeHtml = t3lib_div::getURL($this->templatePath . $template['htmltemplate']);
-			
+
 			$senderemail = $template['senderemail'] == '' ? $this->extConf['defEmailAddress'] : $template['senderemail'];
 			if($template['sendername'] == '') {
 				if($senderemail == $this->extConf['defEmailAddress']) {
@@ -211,23 +211,23 @@ class tx_commerce_ordermailhooks {
 					'encoding' => '8bit',
 					'attach' => '',
 					'alternateSubject' => 'TYPO3 :: commerce',
-					'recipient' => '', 
+					'recipient' => '',
 					'recipient_copy' =>  $template['BCC'],
-					'fromEmail' => $senderemail, 
+					'fromEmail' => $senderemail,
 					'fromName' => $sendername,
-					'replyTo' => $this->conf['usermail.']['from'], 
-					'priority' => '3', 
-					'callLocation' => 'processOrdermails' 
+					'replyTo' => $this->conf['usermail.']['from'],
+					'priority' => '3',
+					'callLocation' => 'processOrdermails'
 				);
-			
+
 			if ($template['otherreceiver'] != '') {
-				
+
 				$mailconf['recipient'] = $template['otherreceiver'];
 				$this->ordermoveSendMail($mailconf,$orderdata,$template);
-				
-				
+
+
 			} else {
-				
+
 				$mailconf['recipient'] = $this->customermailadress;
 				$this->ordermoveSendMail($mailconf,$orderdata,$template);
 			}
@@ -328,9 +328,9 @@ class tx_commerce_ordermailhooks {
 
 		}
 		$content = $this->cObj->substituteSubpart($content,'###BILLING_ADDRESS###',$billingAdress);
-		
+
 		$invoicelist='';
-		
+
 		$content = $this->cObj->substituteSubpart($content,'###INVOICE_VIEW###',$invoicelist);
 
 		/**

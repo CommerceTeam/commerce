@@ -36,20 +36,25 @@
 
 unset($MCONF);
 include ('conf.php');
-include ($BACK_PATH.'init.php');
-include ($BACK_PATH.'template.php');
+include ($BACK_PATH . 'init.php');
+include ($BACK_PATH . 'template.php');
 
 class localPageTree extends t3lib_browseTree {
+	/**
+	 * @var integer
+	 */
+	public $ext_showPageId;
 
-	var $ext_showPageId;
-	var $ext_IconMode;
-	
-	
+	/**
+	 * @var integer
+	 */
+	public $ext_IconMode;
+
 	function init()
 	{
 		parent::init();
-		$this->treeName='orders';	
-		
+		$this->treeName='orders';
+
 	}
 	/**
 	 * Calls init functions
@@ -119,10 +124,10 @@ class localPageTree extends t3lib_browseTree {
  * @author	Kasper Skaarhoj <kasperYYYY@typo3.com>
  * @author	Ingo Schmitt <is@marketing-factory.de>
  * @package TYPO3
- * @subpackage tx_commerce 
+ * @subpackage tx_commerce
  * @subpackage orders
  * @see altr_db_navframe.php
- * 
+ *
  */
 class tx_commerce_statistic_navframe {
 
@@ -141,11 +146,11 @@ class tx_commerce_statistic_navframe {
 	 * Initialiation of the class
 	 * @TODO Check with User Permissions
 	 * @return	void
-	 * 
+	 *
 	 */
 	function init()	{
 		global $BE_USER,$BACK_PATH;
-		
+
 			// Setting GPvars:
 		$this->currentSubScript = t3lib_div::_GP('currentSubScript');
 		$this->cMR = t3lib_div::_GP('cMR');
@@ -158,7 +163,7 @@ class tx_commerce_statistic_navframe {
 		$this->pagetree = t3lib_div::makeInstance('localPageTree');
 		$this->pagetree->ext_IconMode = $BE_USER->getTSConfigVal('options.pageTree.disableIconLinkToContextmenu');
 		$this->pagetree->ext_showPageId = $BE_USER->getTSConfigVal('options.pageTree.showPageIdWithTitle');
-		$this->pagetree->thisScript = $BACK_PATH.PATH_txcommerce_rel.'mod_statistic/class.tx_commerce_statistic_navframe.php';
+		$this->pagetree->thisScript = $BACK_PATH . PATH_TXCOMMERCE_REL . 'mod_statistic/class.tx_commerce_statistic_navframe.php';
 		$this->pagetree->addField('alias');
 		$this->pagetree->addField('shortcut');
 		$this->pagetree->addField('shortcut_mode');
@@ -167,7 +172,6 @@ class tx_commerce_statistic_navframe {
 		$this->pagetree->addField('nav_hide');
 		$this->pagetree->addField('url');
 
-#		$this->settingTemporaryMountPoint(11);
 			// Temporary DB mounts:
 		$this->pagetree->MOUNTS=array_unique(tx_commerce_folder_db::initFolders('Orders','Commerce',0,'Commerce'));
 		$this->initializeTemporaryDBmount();
@@ -333,7 +337,7 @@ class tx_commerce_statistic_navframe {
 				$this->settingTemporaryMountPoint(0);
 			}
 		}
-		
+
 			// Getting temporary mount point ID:
 		$temporaryMountPoint = intval($BE_USER->getSessionData('pageTree_temporaryMountPoint_orders'));
 
@@ -350,8 +354,8 @@ class tx_commerce_statistic_navframe {
 			// Setting temporary mount point ID:
 		$BE_USER->setAndSaveSessionData('pageTree_temporaryMountPoint_orders',intval($pageId));
 	}
-	
-	
+
+
 
 }
 
@@ -360,14 +364,10 @@ if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['
 	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/mod_statistic/class.tx_commerce_statistic_navframe.php']);
 }
 
-
-
-
 // Make instance:
 $SOBE = t3lib_div::makeInstance('tx_commerce_statistic_navframe');
 $SOBE->init();
 $SOBE->main();
 $SOBE->printContent();
-
 
 ?>

@@ -42,24 +42,40 @@
 class tx_commerce_basket extends tx_commerce_basic_basket {
 
 	/**
-	 * @var Stoarge-type for the data
+	 * @var string  Storage-type for the data
 	 */
-	protected $storage_type = 'database';
-
+	protected $storageType = 'database';
 
 	/**
-	 * @var Not session id, as session_id is PHP5 method
+	 * @var string  Not session id, as session_id is PHP5 method
 	 */
-	protected $sess_id = '';
+	protected $sessionId = '';
+
+	/**
+	 * @var array The unserialized commerce configuration from localconf.php
+	 */
+	protected $extensionConfigration = array();
+
+	/**
+	 * Constructor for a commerce basket. Loads configuration data
+	 */
+	public function __construct() {
+		$this->extensionConfigration = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['commerce']);
+		if ($this->extensionConfigration['basketType'] == 'persistent') {
+			$this->storageType = 'persistent';
+		}
+
+		$this->database = $GLOBALS['TYPO3_DB'];
+	}
 
 	/**
 	 * Set the session ID
 	 *
-	 * @param string Session ID
+	 * @param string $sessionId Session ID
 	 * @return void
 	 */
-	public function set_session_id($session_id) {
-		$this->sess_id = $session_id;
+	public function set_session_id($sessionId) {
+		$this->sessionId = $sessionId;
 	}
 
 	/**
@@ -76,8 +92,13 @@ class tx_commerce_basket extends tx_commerce_basic_basket {
 	 *
 	 * @return void
 	 */
-	function finishOrder() {
-		switch($this->storage_type) {
+	public function finishOrder() {
+		switch ($this->storageType) {
+			case 'persistent':
+				$GLOBALS['TSFE']->fe_user->setKey('ses', 'txCommercePersistantSessionId', '');
+				$GLOBALS['TSFE']->fe_user->storeSessionData();
+				$this->finishOrderInDatabase();
+			break;
 			case 'database':
 				$this->finishOrderInDatabase();
 			break;
@@ -86,34 +107,95 @@ class tx_commerce_basket extends tx_commerce_basic_basket {
 
 	/**
 	 * Loads basket data from session / database depending
-	 * on $this->storage_type
-	 * Only database storagi is implemented until now
+	 * on $this->storageType
+	 * Only database storage is implemented until now
+	 * cloud be used as per session or per user /presistent)
 	 *
 	 * @return void
 	 */
-	public function load_data() {
-		switch($this->storage_type){
+	public function loadData() {
+		switch ($this->storageType) {
+			case 'persistent':
+				$this->restoreBasket();
+			break;
 			case 'database':
 				$this->load_data_from_database();
 			break;
 		}
 			// Method of Parent: Load the payment articcle if availiable
-		parent::load_data();
+		parent::loadData();
 	}
 
 	/**
 	 * Store basket data in session / database depending
-	 * on $this->storage_type
-	 * Only database storagi is implemented until now
+	 * on $this->storageType
+	 * Only database storage is implemented until now
 	 *
 	 * @return void
 	 */
 	public function store_data() {
-		switch($this->storage_type) {
+		switch($this->storageType) {
+			case 'persistent':
 			case 'database':
 				$this->store_data_to_database();
 			break;
 		}
+	}
+
+	/**
+	 * Restores the Basket from the persistent storage
+	 */
+	private function restoreBasket() {
+		if ($GLOBALS['TSFE']->fe_user->user) {
+			$userSessionID = $GLOBALS['TSFE']->fe_user->getKey('user', 'txCommercePersistantSessionId');
+			if ($userSessionID && $userSessionID != $this->sessionId) {
+				$this->loadPersistantDataFromDatabase($userSessionID);
+				$this->load_data_from_database();
+				$GLOBALS['TSFE']->fe_user->setKey('user', 'txCommercePersistantSessionId', $this->sessionId);
+				$this->store_data_to_database();
+			} else {
+				$this->load_data_from_database();
+			}
+		} else {
+			$this->load_data_from_database();
+		}
+	}
+
+	/**
+	 * Loads the Basket Data from the database
+	 * @todo handling for special prices
+	 */
+	private function loadPersistantDataFromDatabase($sessionID) {
+		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*',
+			'tx_commerce_baskets',
+			'sid=\'' . $GLOBALS['TYPO3_DB']->quoteStr($sessionID, 'tx_commerce_baskets') . '\' and finished_time =0 and pid= ' .
+				$this->extensionConfigration['BasketStoragePid'],
+			'',
+			'pos'
+		);
+		if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
+			$hookObjectsArr = array();
+			if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_basket.php']['loadPersistantDataFromDatabase'])) {
+				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_basket.php']['loadPersistantDataFromDatabase'] as $classRef) {
+					$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+				}
+			}
+
+			while ($returnData = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
+				if ($returnData['quantity'] > 0 && $returnData['price_id'] > 0) {
+					$this->add_article($returnData['article_id'], $returnData['quantity']);
+					$this->crdate = $returnData['crdate'];
+					if (is_array($hookObjectsArr)) {
+						foreach ($hookObjectsArr as $hookObj) {
+							if (method_exists($hookObj, 'loadPersistantDataFromDatabase')) {
+								$hookObj->loadPersistantDataFromDatabase($returnData, $this);
+							}
+						}
+					}
+				}
+			}
+		}
+		$GLOBALS['TYPO3_DB']->sql_free_result($result);
 	}
 
 	/**
@@ -122,13 +204,13 @@ class tx_commerce_basket extends tx_commerce_basic_basket {
 	 * @return void
 	 */
 	protected function load_data_from_database() {
-		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['extConf']['BasketStoragePid'] > 0) {
+		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['BasketStoragePid'] > 0) {
 			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 				'*',
 				'tx_commerce_baskets',
-				"sid='" . $GLOBALS['TYPO3_DB']->quoteStr($this->sess_id, 'tx_commerce_baskets') . "'" .
-					" AND finished_time=0" .
-					" AND pid=" . $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['extConf']['BasketStoragePid'],
+				"sid='" . $GLOBALS['TYPO3_DB']->quoteStr($this->sessionId, 'tx_commerce_baskets') . "'" .
+					' AND finished_time = 0' .
+					' AND pid= ' . $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['BasketStoragePid'],
 				'',
 				'pos'
 			);
@@ -136,14 +218,15 @@ class tx_commerce_basket extends tx_commerce_basic_basket {
 			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 				'*',
 				'tx_commerce_baskets',
-				"sid='" . $GLOBALS['TYPO3_DB']->quoteStr($this->sess_id, 'tx_commerce_baskets') . "'" .
+				"sid='" . $GLOBALS['TYPO3_DB']->quoteStr($this->sessionId, 'tx_commerce_baskets') . "'" .
 					' AND finished_time=0 ',
 				'',
 				'pos'
 			);
 		}
 
-		if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)>0) {
+		if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
+			$hookObjectsArr = array();
 			if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_basket.php']['load_data_from_database'])) {
 				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_basket.php']['load_data_from_database'] as $classRef) {
 					$hookObjectsArr[] = t3lib_div::getUserObj($classRef);
@@ -151,14 +234,14 @@ class tx_commerce_basket extends tx_commerce_basic_basket {
 			}
 			$basketReadonly = FALSE;
 			while ($return_data = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
-				if (($return_data['quantity']>0) && ($return_data['price_id']>0)) {
+				if (($return_data['quantity'] > 0) && ($return_data['price_id'] > 0)) {
 					$this->add_article($return_data['article_id'], $return_data['quantity'], $return_data['price_id']);
 					$this->changePrices($return_data['article_id'], $return_data['price_gross'], $return_data['price_net']);
 					$this->crdate = $return_data['crdate'];
 					if (is_array($hookObjectsArr)) {
-						foreach($hookObjectsArr as $hookObj) {
+						foreach ($hookObjectsArr as $hookObj) {
 							if (method_exists($hookObj, 'load_data_from_database')) {
-								$hookObj->load_data_from_database($return_data,$this);
+								$hookObj->load_data_from_database($return_data, $this);
 							}
 						}
 					}
@@ -180,11 +263,11 @@ class tx_commerce_basket extends tx_commerce_basic_basket {
 	 * @return void
 	 */
 	protected function store_data_to_database() {
-		$result = $GLOBALS['TYPO3_DB']->exec_DELETEquery(
+		$GLOBALS['TYPO3_DB']->exec_DELETEquery(
 			'tx_commerce_baskets',
-			"sid='".$GLOBALS['TYPO3_DB']->quoteStr($this->sess_id,'tx_commerce_baskets')."'" .
-				' AND finished_time = 0'
+			'sid = \'' . $GLOBALS['TYPO3_DB']->quoteStr($this->sessionId, 'tx_commerce_baskets') . '\' AND finished_time = 0'
 		);
+		$hookObjectsArr = array();
 		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_basket.php']['store_data_to_database'])) {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_basket.php']['store_data_to_database'] as $classRef) {
 				$hookObjectsArr[] = t3lib_div::getUserObj($classRef);
@@ -196,41 +279,41 @@ class tx_commerce_basket extends tx_commerce_basic_basket {
 			// After getting the keys in a array, flip it to get the position of each basket item
 		$ar_basket_items_keys = array_flip($ar_basket_items_keys);
 
-		foreach ($this->basket_items as $oneuid  => $one_item) {
-			$insert_data['pid'] = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['extConf']['BasketStoragePid'];
-			$insert_data['pos'] = $ar_basket_items_keys[$oneuid];
-			$insert_data['sid'] = $this->sess_id;
-			$insert_data['article_id'] = $one_item->get_article_uid();
-			$insert_data['price_id'] = $one_item->get_price_uid();
-			$insert_data['price_net'] = $one_item->get_price_net();
-			$insert_data['price_gross'] = $one_item->get_price_gross();
-			$insert_data['quantity'] = $one_item->get_quantity();
-			$insert_data['readonly'] = $this->isReadOnly();
-			$insert_data['tstamp'] = $GLOBALS['EXEC_TIME'];
+		/** @var tx_commerce_basket_item $oneItem */
+		foreach ($this->basket_items as $oneuid  => $oneItem) {
+			$insertData = array();
+			$insertData['pid'] = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['BasketStoragePid'];
+			$insertData['pos'] = $ar_basket_items_keys[$oneuid];
+			$insertData['sid'] = $this->sessionId;
+			$insertData['article_id'] = $oneItem->get_article_uid();
+			$insertData['price_id'] = $oneItem->get_price_uid();
+			$insertData['price_net'] = $oneItem->get_price_net();
+			$insertData['price_gross'] = $oneItem->get_price_gross();
+			$insertData['quantity'] = $oneItem->get_quantity();
+			$insertData['readonly'] = $this->getIsReadOnly();
+			$insertData['tstamp'] = $GLOBALS['EXEC_TIME'];
 
-			if ($this->crdate >0 ) {
-				$insert_data['crdate'] = $this->crdate;
-			}else {
-				$insert_data['crdate'] = $insert_data['tstamp'];
+			if ($this->crdate > 0) {
+				$insertData['crdate'] = $this->crdate;
+			} else {
+				$insertData['crdate'] = $insertData['tstamp'];
 			}
 
 			if (is_array($hookObjectsArr)) {
-				foreach($hookObjectsArr as $hookObj) {
+				foreach ($hookObjectsArr as $hookObj) {
 					if (method_exists($hookObj, 'store_data_to_database')) {
-						$insert_data = $hookObj->store_data_to_database($one_item, $insert_data);
+						$insertData = $hookObj->store_data_to_database($oneItem, $insertData);
 					}
 				}
 			}
 
-			$GLOBALS['TYPO3_DB']->exec_INSERTquery(
-				'tx_commerce_baskets',
-				$insert_data
-			);
+			$GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_commerce_baskets', $insertData);
 		}
 
-		if (is_object($this->basket_items[$oneuid])) {
-			$this->basket_items[$oneuid]->calculate_net_sum();
-			$this->basket_items[$oneuid]->calculate_gross_sum();
+		$oneItem = $this->basket_items[$oneuid];
+		if (is_object($oneItem)) {
+			$oneItem->calculate_net_sum();
+			$oneItem->calculate_gross_sum();
 		}
 	}
 
@@ -243,14 +326,14 @@ class tx_commerce_basket extends tx_commerce_basic_basket {
 		$update_array['finished_time'] = $GLOBALS['EXEC_TIME'];
 		$GLOBALS['TYPO3_DB']->exec_UPDATEquery(
 			'tx_commerce_baskets',
-			"sid='" . $GLOBALS['TYPO3_DB']->quoteStr($this->sess_id,'tx_commerce_baskets') . "'" .
-				' AND finished_time = 0',
+			'sid=\'' . $GLOBALS['TYPO3_DB']->quoteStr($this->sessionId, 'tx_commerce_baskets') . '\' AND finished_time = 0',
 			$update_array
 		);
 	}
 }
 
 if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_basket.php']) {
+	/** @noinspection PhpIncludeInspection */
 	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_basket.php']);
 }
 

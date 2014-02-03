@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2006 Carsten Lausen 
+*  (c) 2006 Carsten Lausen
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -30,12 +30,12 @@
 * This class handles basic object persistence using the dao design pattern.
 * It defines parsing and database storage of an object.
 * It can create objects and object Lists.
-* 
+*
 * Extend this class to fit specific needs.
-* 
-* The class needs an object (to be stored). 
-* The class needs a mapper for database storage. 
-* The class needs a parser for object <-> model (transfer object) mapping. 
+*
+* The class needs an object (to be stored).
+* The class needs a mapper for database storage.
+* The class needs a parser for object <-> model (transfer object) mapping.
 *
 *
 * @access public
@@ -43,23 +43,15 @@
 * @subpackage commerce
 * @author Carsten Lausen <cl@e-netconsulting.de>
 */
-
-require_once(dirname(__FILE__).'/class.basic_object.php');
-require_once(dirname(__FILE__).'/class.basic_dao_parser.php');
-require_once(dirname(__FILE__).'/class.basic_dao_mapper.php');
- 
- 
 class basic_dao {
- 	
- 	var $obj;
- 	var $parser;
- 	var $mapper;
- 	
+	var $obj;
+	var $parser;
+	var $mapper;
 
 	function init() {
- 		$this->parser = new basic_dao_parser();
- 		$this->mapper = new basic_dao_mapper($this->parser);
- 		$this->obj = new basic_object;
+		$this->parser = t3lib_div::makeInstance('basic_dao_parser');
+		$this->mapper = t3lib_div::makeInstance('basic_dao_mapper', $this->parser);
+		$this->obj = t3lib_div::makeInstance('basic_object');
 	}
 
 
@@ -79,14 +71,14 @@ class basic_dao {
 	function &getObject() {
 		return $this->obj;
 	}
-	
+
 	function setObject(&$obj) {
 		$this->obj =& $obj;
 	}
 
 
 	//------------------ object getter / setter -------------------
-	
+
 
 	function getId() {
 		return $this->obj->getId();
@@ -97,7 +89,6 @@ class basic_dao {
 	}
 
 	function get($property) {
-		//if($property=='id') return null;
 		$arr = get_object_vars($this->obj);
 		if(method_exists($this->obj, 'get'.ucfirst($property))) {
 			$value= call_user_func(array(&$this->obj, 'get'.ucfirst($property)),null);
@@ -118,12 +109,12 @@ class basic_dao {
 			}
 		}
 	}
-	
+
 	function isEmpty($property) {
 		$arr = get_object_vars($this->obj);
 		return empty($arr[$property]);
 	}
-	
+
 	function issetProperty($property) {
 		$arr = get_object_vars($this->obj);
 		return isset($arr[$property]);
@@ -131,23 +122,24 @@ class basic_dao {
 
 
 	//------------------ database mapper access --------------------
- 	
+
  	function load() {
  		$this->mapper->load($this->obj);
  	}
- 	
+
  	function save() {
  		$this->mapper->save($this->obj);
  	}
- 	
+
  	function remove() {
  		$this->mapper->remove($this->obj);
  	}
 
 }
   // Include extension?
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/dao/class.basic_dao.php'])	{
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/dao/class.basic_dao.php']) {
+	/** @noinspection PhpIncludeInspection */
 	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/dao/class.basic_dao.php']);
 }
- 
+
 ?>

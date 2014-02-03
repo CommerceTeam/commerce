@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2006 Carsten Lausen 
+*  (c) 2006 Carsten Lausen
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -27,7 +27,7 @@
 
 /**
 * This is the basic object class.
-* Basic methods for object handling are in this class. 
+* Basic methods for object handling are in this class.
 * Extend this class to fit specific needs.
 *
 *
@@ -37,36 +37,35 @@
 * @author Carsten Lausen <cl@e-netconsulting.de>
 */
 class basic_object {
-	
-	var $id='';
+	public $id = '';
 
-	function setId($id) {
-		if(empty($this->id)) $this->id=$id;
-	}
-
-	function getId() {
-		return $this->id;
-	}
-
-	function issetId() {
-		if(empty($this->id)) return false;
-		return true;
-	}
-
-	function clear() {
-		$attribList = array_keys(get_class_vars(get_class($this)));
-		foreach ($attribList as $attrib) {
-			$this->$attrib=null;
+	public function setId($id) {
+		if (empty($this->id)) {
+			$this->id = $id;
 		}
 	}
 
-	function destroy() {
-		//unset($this);
-	#	$this= NULL;
+	public function getId() {
+		return $this->id;
+	}
+
+	public function issetId() {
+		return !empty($this->id);
+	}
+
+	public function clear() {
+		$attribList = array_keys(get_class_vars(get_class($this)));
+		foreach ($attribList as $attrib) {
+			$this->$attrib = NULL;
+		}
+	}
+
+	public function destroy() {
 	}
 }
- // Include extension?
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/dao/class.basic_object.php'])	{
+
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/dao/class.basic_object.php']) {
+	/** @noinspection PhpIncludeInspection */
 	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/dao/class.basic_object.php']);
 }
 

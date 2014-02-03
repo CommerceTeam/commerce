@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2006 Carsten Lausen 
+*  (c) 2006 Carsten Lausen
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -28,8 +28,8 @@
 /**
 * class address parser
 * This class is used by the mapper to parse objects to database model objects (transfer objects) and vice versa.
-* All knowledge about the database model is in this class. 
-* 
+* All knowledge about the database model is in this class.
+*
 *
 *
 * @access public
@@ -37,16 +37,12 @@
 * @subpackage commerce
 * @author Carsten Lausen <cl@e-netconsulting.de>
 */
-require_once(dirname(__FILE__).'/class.basic_parser.php');
-
- 
 class address_parser extends basic_parser {
- 
- 
 }
-// Include extension?
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/dao/class.address_parser.php'])	{
+
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/dao/class.address_parser.php']) {
+	/** @noinspection PhpIncludeInspection */
 	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/dao/class.address_parser.php']);
-} 
- 
+}
+
 ?>

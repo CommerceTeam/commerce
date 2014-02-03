@@ -1,24 +1,19 @@
 <?php
 /***************************************************************
  *  Copyright notice
- *
  *  (c) 2005 - 2010 Ingo Schmitt <is@marketing-factory.de>
  *  All rights reserved
- *
  *  This script is part of the TYPO3 project. The TYPO3 project is
  *  free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
  *  (at your option) any later version.
- *
  *  The GNU General Public License can be found at
  *  http://www.gnu.org/copyleft/gpl.html.
- *
  *  This script is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
- *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
@@ -29,60 +24,60 @@
  * @author Ingo Schmitt <is@marketing-factory.de>
  */
 
-if(!defined('TYPO3_MODE')) {
+if (!defined('TYPO3_MODE')) {
 	die('Access denied.');
 }
 
-$TCA['tx_commerce_products'] = Array (
-	'ctrl' => $TCA['tx_commerce_products']['ctrl'],
-	'interface' => Array (
+$GLOBALS['TCA']['tx_commerce_products'] = Array(
+	'ctrl' => $GLOBALS['TCA']['tx_commerce_products']['ctrl'],
+	'interface' => Array(
 		'showRecordFieldList' => 'sys_language_uid,l18n_parent,l18n_diffsource,hidden,starttime,endtime,fe_group,title,subtitle,navtitle,description,images,teaser,teaserimages,manufacturer_uid'
 	),
-	'feInterface' => $TCA['tx_commerce_products']['feInterface'],
-	'columns' => Array (
-		'sys_language_uid' => Array (
+	'feInterface' => $GLOBALS['TCA']['tx_commerce_products']['feInterface'],
+	'columns' => Array(
+		'sys_language_uid' => Array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:lang/locallang_general.php:LGL.language',
-			'config' => Array (
+			'config' => Array(
 				'type' => 'select',
 				'foreign_table' => 'sys_language',
 				'foreign_table_where' => 'ORDER BY sys_language.title',
 				'items' => Array(
-					Array('LLL:EXT:lang/locallang_general.php:LGL.allLanguages',-1),
-					Array('LLL:EXT:lang/locallang_general.php:LGL.default_value',0)
+					Array('LLL:EXT:lang/locallang_general.php:LGL.allLanguages', -1),
+					Array('LLL:EXT:lang/locallang_general.php:LGL.default_value', 0)
 				)
 			)
 		),
-		'l18n_parent' => Array (
+		'l18n_parent' => Array(
 			'displayCond' => 'FIELD:sys_language_uid:>:0',
 			'exclude' => 1,
 			'label' => 'LLL:EXT:lang/locallang_general.php:LGL.l18n_parent',
-			'config' => Array (
+			'config' => Array(
 				'type' => 'select',
-				'items' => Array (
+				'items' => Array(
 					Array('', 0),
 				),
 				'foreign_table' => 'tx_commerce_products',
 				'foreign_table_where' => 'AND tx_commerce_products.pid=###CURRENT_PID### AND tx_commerce_products.sys_language_uid IN (-1,0)',
 			)
 		),
-		'l18n_diffsource' => Array (
-			'config' => Array (
+		'l18n_diffsource' => Array(
+			'config' => Array(
 				'type' => 'passthrough'
 			)
 		),
-		'hidden' => Array (
+		'hidden' => Array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:lang/locallang_general.php:LGL.hidden',
-			'config' => Array (
+			'config' => Array(
 				'type' => 'check',
 				'default' => '0'
 			)
 		),
-		'starttime' => Array (
+		'starttime' => Array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:lang/locallang_general.php:LGL.starttime',
-			'config' => Array (
+			'config' => Array(
 				'type' => 'input',
 				'size' => '8',
 				'max' => '20',
@@ -91,30 +86,30 @@ $TCA['tx_commerce_products'] = Array (
 				'checkbox' => '0'
 			)
 		),
-		'endtime' => Array (
+		'endtime' => Array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:lang/locallang_general.php:LGL.endtime',
-			'config' => Array (
+			'config' => Array(
 				'type' => 'input',
 				'size' => '8',
 				'max' => '20',
 				'eval' => 'date',
 				'checkbox' => '0',
 				'default' => '0',
-				'range' => Array (
-					'upper' => mktime(0,0,0,12,31,2020),
-					'lower' => mktime(0,0,0,date('m')-1,date('d'),date('Y'))
+				'range' => Array(
+					'upper' => mktime(0, 0, 0, 12, 31, 2020),
+					'lower' => mktime(0, 0, 0, date('m') - 1, date('d'), date('Y'))
 				)
 			)
 		),
-		'fe_group' => Array (
+		'fe_group' => Array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:lang/locallang_general.php:LGL.fe_group',
-			'config' => Array (
+			'config' => Array(
 				'type' => 'select',
 				'size' => 5,
 				'maxitems' => 50,
-				'items' => array (
+				'items' => array(
 					array('LLL:EXT:lang/locallang_general.xml:LGL.hide_at_login', -1),
 					array('LLL:EXT:lang/locallang_general.xml:LGL.any_login', -2),
 					array('LLL:EXT:lang/locallang_general.xml:LGL.usergroups', '--div--')
@@ -122,52 +117,51 @@ $TCA['tx_commerce_products'] = Array (
 				'exclusiveKeys' => '-1,-2',
 				'foreign_table' => 'fe_groups',
 				'foreign_table_where' => 'ORDER BY fe_groups.title',
-			
 			)
 		),
-		'title' => Array (
+		'title' => Array(
 			'exclude' => 0,
 			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_products.title',
-			'config' => Array (
+			'config' => Array(
 				'type' => 'input',
 				'size' => '40',
 				'max' => '255',
 				'eval' => 'required,trim',
 			)
 		),
-		'subtitle' => Array (
+		'subtitle' => Array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_products.subtitle',
-			'config' => Array (
+			'config' => Array(
 				'type' => 'input',
 				'size' => '40',
 				'max' => '255',
 				'eval' => 'trim',
 			)
 		),
-		'navtitle' => Array (
+		'navtitle' => Array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_products.navtitle',
-			'config' => Array (
+			'config' => Array(
 				'type' => 'input',
 				'size' => '40',
 				'max' => '80',
 				'eval' => 'trim',
 			)
 		),
-		'keywords' => Array (
+		'keywords' => Array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_products.keywords',
-			'config' => Array (
+			'config' => Array(
 				'type' => 'text',
 				'cols' => '30',
 				'rows' => '5',
 			)
 		),
-		'description' => Array (
+		'description' => Array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_products.description',
-			'config' => Array (
+			'config' => Array(
 				'type' => 'text',
 				'cols' => '30',
 				'rows' => '5',
@@ -184,11 +178,11 @@ $TCA['tx_commerce_products'] = Array (
 				),
 			)
 		),
-		'images' => Array (
+		'images' => Array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_products.images',
 			'l10n_mode' => 'mergeIfNotBlank',
-			'config' => Array (
+			'config' => Array(
 				'type' => 'group',
 				'internal_type' => 'file',
 				'allowed' => $GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext'],
@@ -201,10 +195,10 @@ $TCA['tx_commerce_products'] = Array (
 				'autoSizeMax' => 40,
 			)
 		),
-		'teaser' => Array (
+		'teaser' => Array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_products.teaser',
-			'config' => Array (
+			'config' => Array(
 				'type' => 'text',
 				'cols' => '30',
 				'rows' => '5',
@@ -221,11 +215,11 @@ $TCA['tx_commerce_products'] = Array (
 				),
 			),
 		),
-		'teaserimages' => Array (
+		'teaserimages' => Array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_products.teaserimages',
 			'l10n_mode' => 'mergeIfNotBlank',
-			'config' => Array (
+			'config' => Array(
 				'type' => 'group',
 				'internal_type' => 'file',
 				'allowed' => $GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext'],
@@ -238,53 +232,42 @@ $TCA['tx_commerce_products'] = Array (
 				'autoSizeMax' => 40,
 			)
 		),
-		'categories' => Array (
+		'categories' => Array(
 			'exclude' => 0,
 			'l10n_mode' => 'exclude',
 			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_products.categories',
-			'config' => Array (
+			'config' => Array(
 				'type' => 'passthrough',
 				'form_type' => 'user',
 				// TYPO3 core will require_once the file automatically when needed
-				'userFunc' => 'EXT:'.COMMERCE_EXTkey.'/treelib/class.tx_commerce_tcefunc.php:&tx_commerce_tceFunc->getSingleField_selectCategories',
-			
-				'treeViewBrowseable' => true,
+				'userFunc' => 'EXT:' . COMMERCE_EXTKEY . '/treelib/class.tx_commerce_tcefunc.php:&tx_commerce_tceFunc->getSingleField_selectCategories',
+				'treeViewBrowseable' => TRUE,
 				'size' => 10,
 				'autoSizeMax' => 30,
 				'minitems' => 0,
 				'maxitems' => 20,
 				'eval' => 'required',
 		),
-		
-//			'config' => Array (
-//				'type' => 'group',
-//				'internal_type' => 'db',
-//				'allowed' => 'tx_commerce_categories',
-//				'size' => 5,
-//				'minitems' => 0,
-//				'maxitems' => 100,
-//			)
-			
 		),
-		
-		'manufacturer_uid' => Array (
+
+		'manufacturer_uid' => Array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_manufacturer.title',
 			'l10n_mode' => 'exclude',
-			'config' => Array (
+			'config' => Array(
 				'type' => 'select',
 				'foreign_table' => 'tx_commerce_manufacturer',
 				'foreign_table_where' => 'ORDER BY tx_commerce_manufacturer.title ASC',
 				'items' => Array(
-					Array('LLL:EXT:commerce/locallang_db.xml:tx_commerce_products.noManufacturer',0)
+					Array('LLL:EXT:commerce/locallang_db.xml:tx_commerce_products.noManufacturer', 0)
 				)
 			)
 		),
-		'relatedpage' => Array (
+		'relatedpage' => Array(
 			'exclude' => 1,
 			'l10n_mode' => 'exclude',
 			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_products.relatedpage',
-			'config' => Array (
+			'config' => Array(
 				'type' => 'group',
 				'internal_type' => 'db',
 				'allowed' => 'pages',
@@ -293,26 +276,26 @@ $TCA['tx_commerce_products'] = Array (
 				'maxitems' => 1,
 			),
 		),
-		"relatedproducts" => Array (		
-			"exclude" => 1,		
-			"label" => "LLL:EXT:commerce/locallang_db.xml:tx_commerce_products.relatedproducts",
-			"config" => Array (
-				"type" => "group",	
-				"internal_type" => "db",	
-				"allowed" => "tx_commerce_products",	
-				"size" => 10,	
-				"minitems" => 0,
-				"maxitems" => 20,	
-				"MM" => "tx_commerce_products_related_mm",
+		'relatedproducts' => Array(
+			'exclude' => 1,
+			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_products.relatedproducts',
+			'config' => Array(
+				'type' => 'group',
+				'internal_type' => 'db',
+				'allowed' => 'tx_commerce_products',
+				'size' => 10,
+				'minitems' => 0,
+				'maxitems' => 20,
+				'MM' => 'tx_commerce_products_related_mm',
+				'foreign_table' => 'tx_commerce_products',
 			)
 		),
-		'attributes' => Array (
+		'attributes' => Array(
 			'exclude' => 1,
-	#		'l10n_mode' => 'exclude',
 			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_products.attributes',
-			'config' => Array (
+			'config' => Array(
 				'type' => 'flex',
-				'ds' => Array (
+				'ds' => Array(
 					'default' => '
 						<T3DataStructure>
 							<meta>
@@ -326,14 +309,13 @@ $TCA['tx_commerce_products'] = Array (
 				),
 			),
 		),
-		'attributesedit' => Array (
+		'attributesedit' => Array(
 			'exclude' => 1,
-		#	'l10n_mode' => 'exclude',
 			'l10n_display' => 'hideDiff',
 			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_products.attributes',
-			'config' => Array (
+			'config' => Array(
 				'type' => 'flex',
-				'ds' => Array (
+				'ds' => Array(
 					'default' => '
 						<T3DataStructure>
 							<meta>
@@ -347,12 +329,12 @@ $TCA['tx_commerce_products'] = Array (
 				),
 			),
 		),
-		'articles' => array (
+		'articles' => array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_products.attributes',
-			'config' => array (
+			'config' => array(
 				'type' => 'flex',
-				'ds' => array (
+				'ds' => array(
 					'default' => '
 						<T3DataStructure>
 							<meta>
@@ -401,13 +383,13 @@ $TCA['tx_commerce_products'] = Array (
 				),
 			),
 		),
-	
-		'articleslok' => array (
+
+		'articleslok' => array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_products.attributes',
-			'config' => array (
+			'config' => array(
 				'type' => 'flex',
-				'ds' => array (
+				'ds' => array(
 					'default' => '
 						<T3DataStructure>
 							<meta>
@@ -439,30 +421,33 @@ $TCA['tx_commerce_products'] = Array (
 			),
 		),
 	),
-	'types' => Array (
-		'0' => Array('showitem' => '
+	'types' => Array(
+		'0' => Array(
+			'showitem' => '
 			sys_language_uid;;;;1-1-1, l18n_parent, l18n_diffsource, hidden;;1, title;;;;1-1-1, subtitle;;;;3-3-3,navtitle, description;;;richtext[cut|copy|paste|formatblock|textcolor|bold|italic|underline|left|center|right|orderedlist|unorderedlist|outdent|indent|link|table|image|line|chMode]:rte_transform[mode=ts_css|imgpath=uploads/tx_commerce/rte/], images, teaser;;;richtext[cut|copy|paste|formatblock|textcolor|bold|italic|underline|left|center|right|orderedlist|unorderedlist|outdent|indent|link|table|image|line|chMode]:rte_transform[mode=ts_css|imgpath=uploads/tx_commerce/rte/];3-3-3, teaserimages, categories;;;;4-4-4, manufacturer_uid;;;;2-2-2, relatedpage;;;;1-1-1, relatedproducts;;;;1-1-1'
 		)
 	),
-	'palettes' => Array (
+	'palettes' => Array(
 		'1' => Array('showitem' => 'starttime, endtime, fe_group')
 	)
 );
 
-// Only perform from TCA if the BE form is called the first time ('First time' also means
-// calling the editform of an product), no data has to be saved and extension dynaflex is
-// available (of course!)
+/**
+ * Only perform from TCA if the BE form is called the first time ('First time' also means
+ * calling the editform of an product), no data has to be saved and extension dynaflex is
+ * available (of course!)
+ */
 
-//Obsolete; @see dcafiles/class.tx_commerce_products_dfconfig.php
+/**
+ * @see dcafiles/class.tx_commerce_products_dfconfig.php
+ * @depricated
+ */
 $postEdit = t3lib_div::_GP('edit');
 $postData = t3lib_div::_GP('data');
-if (is_array($postEdit['tx_commerce_products']) &&
-		(($postData == NULL) || 
-		(t3lib_div::_GP('createArticles') == 'create')) && 
-	t3lib_extMgm::isLoaded('dynaflex')
-	) {
+if (is_array($postEdit['tx_commerce_products']) && (($postData == NULL) || (t3lib_div::_GP('createArticles') == 'create')) &&
+	t3lib_extMgm::isLoaded('dynaflex')) {
 	// Load the configuration from a file
-	require_once(t3lib_extMgm::extPath('commerce') .'ext_df_product_config.php');
+	require_once(t3lib_extMgm::extPath('commerce') . 'ext_df_product_config.php');
 	$uid = array_keys($postEdit['tx_commerce_products']);
 	if ($postEdit['tx_commerce_products'][$uid[0]] == 'new') {
 		$uid = 0;
@@ -472,26 +457,28 @@ if (is_array($postEdit['tx_commerce_products']) &&
 
 	$dynaFlexConf[0]['uid'] = $uid;
 	$dynaFlexConf[1]['uid'] = $uid;
-	
-	// And start the dynyflex processing
-	require_once(t3lib_extMgm::extPath('dynaflex') .'class.dynaflex.php');
-	$dynaflex = new dynaflex($TCA, $dynaFlexConf);
-	
-	// write back the modified TCA
-	$TCA = $dynaflex->getDynamicTCA();
+
+		// And start the dynyflex processing
+	require_once(t3lib_extMgm::extPath('dynaflex') . 'class.dynaflex.php');
+	$dynaflex = t3lib_div::makeInstance('dynaflex', $GLOBALS['TCA'], $dynaFlexConf);
+
+		// write back the modified TCA
+	$GLOBALS['TCA'] = $dynaflex->getDynamicTCA();
 }
-$simpleMode = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['extConf']['simpleMode'];
-if($simpleMode) {
-	$TCA['tx_commerce_products']['columns']['articles'] = array (
+
+$simpleMode = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['simpleMode'];
+if ($simpleMode) {
+	$GLOBALS['TCA']['tx_commerce_products']['columns']['articles'] = array(
 		'exclude' => 1,
 		'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_products.articles',
-		'config' => array (
+		'config' => array(
 			'type' => 'inline',
-			'foreign_table'=>'tx_commerce_articles',
-			'foreign_field'=>'uid_product',
-			'minitems'=>0,
+			'foreign_table' => 'tx_commerce_articles',
+			'foreign_field' => 'uid_product',
+			'minitems' => 0,
 		),
 	);
-	$TCA['tx_commerce_products']['types']['0']['showitem'] = str_replace('articleslok', 'articles', $TCA['tx_commerce_products']['types']['0']['showitem']);
+	$GLOBALS['TCA']['tx_commerce_products']['types']['0']['showitem'] = str_replace('articleslok', 'articles', $GLOBALS['TCA']['tx_commerce_products']['types']['0']['showitem']);
 }
+
 ?>

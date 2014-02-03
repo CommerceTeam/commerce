@@ -21,34 +21,36 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
 /**
  * This class extends the commerce module in the TYPO3 Backend to provide
  * convenient methods of editing of category permissions (including category ownership
  * (user and group)) via new TYPO3AJAX facility
- *
- * @author		Marketing Factory
- * @maintainer Erik Frister
  */
 class SC_mod_access_perm_ajax {
-
-	protected $conf = array();	// The local configuration array
-	protected $backPath = '../../../../typo3/';	// TYPO3 Back Path ###CALCULATE THIS###
-
-	/********************************************
+	/**
+	 * The local configuration array
 	 *
-	 * Init method for this class
+	 * @var array
+	 */
+	protected $conf = array();
+
+	/**
+	 * TYPO3 Back Path ###CALCULATE THIS###
 	 *
-	 ********************************************/
+	 * @var string
+	 */
+	protected $backPath = '../../../../typo3/';
 
 	/**
 	 * The constructor of this class
 	 *
-	 * @return	Void
+	 * @return self
 	 */
 	public function __construct() {
-
 			// Configuration, variable assignment
-		$this->conf['page']          = t3lib_div::_POST('page'); //Page is actually the current category UID
+			// Page is actually the current category UID
+		$this->conf['page']          = t3lib_div::_POST('page');
 		$this->conf['who']           = t3lib_div::_POST('who');
 		$this->conf['mode']          = t3lib_div::_POST('mode');
 		$this->conf['bits']          = intval(t3lib_div::_POST('bits'));
@@ -78,26 +80,21 @@ class SC_mod_access_perm_ajax {
 
 	}
 
-	/********************************************
-	 *
-	 * Main dispatcher method
-	 *
-	 ********************************************/
-
 	/**
 	 * The main dispatcher function. Collect data and prepare HTML output.
 	 *
-	 * @param	array		$params: array of parameters from the AJAX interface, currently unused
-	 * @param	TYPO3AJAX		$ajaxObj: object of type TYPO3AJAX
-	 * @return	Void
+	 * @param array $params: array of parameters from the AJAX interface, currently unused
+	 * @param TYPO3AJAX $ajaxObj: object of type TYPO3AJAX
+	 * @return Void
 	 */
-	public function dispatch($params = array(), TYPO3AJAX &$ajaxObj = null) {
+	public function dispatch($params = array(), TYPO3AJAX &$ajaxObj = NULL) {
 		$content = '';
 
 			// Basic test for required value
 		if ($this->conf['page'] > 0) {
 
 				// Init TCE for execution of update
+			/** @var t3lib_TCEmain $tce */
 			$tce = t3lib_div::makeInstance('t3lib_TCEmain');
 			$tce->stripslashes_values = 1;
 
@@ -112,23 +109,23 @@ class SC_mod_access_perm_ajax {
 					// Change the owner and return the new owner HTML snippet
 				case 'change_owner':
 					if (is_int($this->conf['new_owner_uid'])) {
-					
-						// Prepare data to change
+
+							// Prepare data to change
 						$data = array('perms_userid' => $this->conf['new_owner_uid']);
-						
-						//Initialize the TCE
+
+							// Initialize the TCE
 						$tce->start($data, array());
-						
-						// Execute TCE Update
-						//Check rights
-						$table 	= 'tx_commerce_categories';
-						$id 	= $this->conf['page'];
-						
-						if($tce->checkModifyAccessList($table) && $tce->checkRecordUpdateAccess($table,$id) && $tce->BE_USER->recordEditAccessInternals($table,$id)) {
-							$tce->updateDB($table,$id,$data);
-							$tce->placeholderShadowing($table,$id);
+
+							// Execute TCE Update
+							// Check rights
+						$table = 'tx_commerce_categories';
+						$id = $this->conf['page'];
+
+						if ($tce->checkModifyAccessList($table) && $tce->checkRecordUpdateAccess($table, $id) && $tce->BE_USER->recordEditAccessInternals($table, $id)) {
+							$tce->updateDB($table, $id, $data);
+							$tce->placeholderShadowing($table, $id);
 						}
-						
+
 						$content = $this->renderOwnername($this->conf['page'], $this->conf['new_owner_uid'], $this->conf['new_owner_username']);
 					} else {
 						$ajaxObj->setError('An error occured: No page owner uid specified.');
@@ -144,22 +141,22 @@ class SC_mod_access_perm_ajax {
 				case 'change_group':
 					if (is_int($this->conf['new_group_uid'])) {
 
-						// Prepare data to change
+							// Prepare data to change
 						$data = array('perms_groupid' => $this->conf['new_group_uid']);
-						
-						//Initialize the TCE
+
+							// Initialize the TCE
 						$tce->start($data, array());
-						
-						// Execute TCE Update
-						//Check rights
-						$table 	= 'tx_commerce_categories';
-						$id 	= $this->conf['page'];
-						
-						if($tce->checkModifyAccessList($table) && $tce->checkRecordUpdateAccess($table,$id) && $tce->BE_USER->recordEditAccessInternals($table,$id)) {
-							$tce->updateDB($table,$id,$data);
-							$tce->placeholderShadowing($table,$id);
+
+							// Execute TCE Update
+							// Check rights
+						$table = 'tx_commerce_categories';
+						$id = $this->conf['page'];
+
+						if ($tce->checkModifyAccessList($table) && $tce->checkRecordUpdateAccess($table, $id) && $tce->BE_USER->recordEditAccessInternals($table, $id)) {
+							$tce->updateDB($table, $id, $data);
+							$tce->placeholderShadowing($table, $id);
 						}
-						
+
 						$content = $this->renderGroupname($this->conf['page'], $this->conf['new_group_uid'], $this->conf['new_group_username']);
 					} else {
 						$ajaxObj->setError('An error occured: No page group uid specified.');
@@ -168,23 +165,23 @@ class SC_mod_access_perm_ajax {
 
 					// Change the group and return the new group HTML snippet
 				case 'toggle_edit_lock':
-					//Toggle
+						// Toggle
 					$this->conf['editLockState'] = ($this->conf['editLockState'] === 1 ? 0 : 1);
-					
-					// Prepare data to change
+
+						// Prepare data to change
 					$data = array('editlock' => $this->conf['editLockState']);
-					
-					//Initialize the TCE
+
+						// Initialize the TCE
 					$tce->start($data, array());
-					
-					// Execute TCE Update
-					//Check rights
-					$table 	= 'tx_commerce_categories';
-					$id 	= $this->conf['page'];
-					
-					if($tce->checkModifyAccessList($table) && $tce->checkRecordUpdateAccess($table,$id) && $tce->BE_USER->recordEditAccessInternals($table,$id)) {
-						$tce->updateDB($table,$id,$data);
-						$tce->placeholderShadowing($table,$id);
+
+						// Execute TCE Update
+						// Check rights
+					$table = 'tx_commerce_categories';
+					$id = $this->conf['page'];
+
+					if ($tce->checkModifyAccessList($table) && $tce->checkRecordUpdateAccess($table, $id) && $tce->BE_USER->recordEditAccessInternals($table, $id)) {
+						$tce->updateDB($table, $id, $data);
+						$tce->placeholderShadowing($table, $id);
 					}
 
 					$content = $this->renderToggleEditLock($this->conf['page'], $this->conf['editLockState']);
@@ -198,28 +195,28 @@ class SC_mod_access_perm_ajax {
 						$this->conf['permissions'] = intval($this->conf['permissions'] + $this->conf['bits']);
 					}
 
-					// Prepare data to change
-					$data = array('perms_'.$this->conf['who'] => $this->conf['permissions']);
-					
-					//Initialize the TCE
+						// Prepare data to change
+					$data = array('perms_' . $this->conf['who'] => $this->conf['permissions']);
+
+						// Initialize the TCE
 					$tce->start($data, array());
-					
-					// Execute TCE Update
-					//Check rights
-					$table 	= 'tx_commerce_categories';
-					$id 	= $this->conf['page'];
-					
-					if($tce->checkModifyAccessList($table) && $tce->checkRecordUpdateAccess($table,$id) && $tce->BE_USER->recordEditAccessInternals($table,$id)) {
-						$tce->updateDB($table,$id,$data);
-						$tce->placeholderShadowing($table,$id);
+
+						// Execute TCE Update
+						// Check rights
+					$table = 'tx_commerce_categories';
+					$id = $this->conf['page'];
+
+					if ($tce->checkModifyAccessList($table) && $tce->checkRecordUpdateAccess($table, $id) && $tce->BE_USER->recordEditAccessInternals($table, $id)) {
+						$tce->updateDB($table, $id, $data);
+						$tce->placeholderShadowing($table, $id);
 					}
-					
+
 					$content = $this->renderPermissions($this->conf['permissions'], $this->conf['page'], $this->conf['who']);
 			}
 		} else {
 			$ajaxObj->setError('This script cannot be called directly.');
 		}
-		$ajaxObj->addContent($this->conf['page'].'_'.$this->conf['who'], $content);
+		$ajaxObj->addContent($this->conf['page'] . '_' . $this->conf['who'], $content);
 	}
 
 	/********************************************
@@ -237,14 +234,15 @@ class SC_mod_access_perm_ajax {
 	 * @return	String		The html select element
 	 */
 	protected function renderUserSelector($page, $ownerUid, $username = '') {
-
 			// Get usernames
 		$beUsers = t3lib_BEfunc::getUserNames();
 
 			// Init groupArray
 		$groups = array();
 
-		if (!$GLOBALS['BE_USER']->isAdmin()) {
+		/** @var t3lib_beUserAuth $backendUser */
+		$backendUser = $GLOBALS['BE_USER'];
+		if (!$backendUser->isAdmin()) {
 			$beUsers = t3lib_BEfunc::blindUserNames($beUsers, $groups, 1);
 		}
 
@@ -254,33 +252,40 @@ class SC_mod_access_perm_ajax {
 			// Loop through the users
 		foreach ($beUsers as $uid => $row) {
 			$selected = ($uid == $ownerUid	? ' selected="selected"' : '');
-			$options .= '<option value="'.$uid.';'.htmlspecialchars($row['username']).'"'.$selected.'>'.htmlspecialchars($row['username']).'</option>';
+			$options .= '<option value="' . $uid . ';' . htmlspecialchars($row['username']) . '"' . $selected . '>' . htmlspecialchars($row['username']) . '</option>';
 		}
 
-		$elementId = 'o_'.$page;
-		$options = '<option value="0"></option>'.$options;
-		$selector = '<select name="new_page_owner" id="new_page_owner">'.$options.'</select>';
-		$saveButton = '<a onclick="WebPermissions.changeOwner('.$page.', '.$ownerUid.', \''.$elementId.'\');"><img'.t3lib_iconWorks::skinImg($this->backPath, 'gfx/savedok.gif', 'width="21" height="16"').' border="0" title="Change owner" align="top" alt="" /></a>';
-		$cancelButton = '<a onclick="WebPermissions.restoreOwner('.$page.', '.$ownerUid.', \''.($username == '' ? '<span class=not_set>[not set]</span>' : htmlspecialchars($username)).'\', \''.$elementId.'\');"><img'.t3lib_iconWorks::skinImg($this->backPath, 'gfx/closedok.gif', 'width="21" height="16"').' border="0" title="Cancel" align="top" alt="" /></a>';
-		$ret = $selector.$saveButton.$cancelButton;
+		$elementId = 'o_' . $page;
+		$options = '<option value="0"></option>' . $options;
+		$selector = '<select name="new_page_owner" id="new_page_owner">' . $options . '</select>';
+		$saveButton = '<a onclick="WebPermissions.changeOwner(' . $page . ', ' . $ownerUid . ', \'' . $elementId .
+			'\');"><img' . t3lib_iconWorks::skinImg($this->backPath, 'gfx/savedok.gif', 'width="21" height="16"') .
+			' border="0" title="Change owner" align="top" alt="" /></a>';
+		$cancelButton = '<a onclick="WebPermissions.restoreOwner(' . $page . ', ' . $ownerUid . ', \'' .
+			($username == '' ? '<span class=not_set>[not set]</span>' : htmlspecialchars($username)) . '\', \'' .
+			$elementId . '\');"><img' . t3lib_iconWorks::skinImg($this->backPath, 'gfx/closedok.gif', 'width="21" height="16"') .
+			' border="0" title="Cancel" align="top" alt="" /></a>';
+		$ret = $selector . $saveButton . $cancelButton;
 		return $ret;
 	}
 
 	/**
 	 * Generate the group selector element
 	 *
-	 * @param	Integer		$page: The page id to change the user for
-	 * @param	Integer		$groupUid: The page group uid
-	 * @param	String		$username: The username to display
-	 * @return	String		The html select element
+	 * @param integer $page : The page id to change the user for
+	 * @param integer $groupUid : The page group uid
+	 * @param string $groupname
+	 * @return String The html select element
 	 */
 	protected function renderGroupSelector($page, $groupUid, $groupname = '') {
-
 			// Get usernames
 		$beGroups = t3lib_BEfunc::getListGroupNames('title,uid');
 		$beGroupKeys = array_keys($beGroups);
 		$beGroupsO = $beGroups = t3lib_BEfunc::getGroupNames();
-		if (!$GLOBALS['BE_USER']->isAdmin()) {
+
+		/** @var t3lib_beUserAuth $backendUser */
+		$backendUser = $GLOBALS['BE_USER'];
+		if (!$backendUser->isAdmin()) {
 			$beGroups = t3lib_BEfunc::blindGroupNames($beGroupsO, $beGroupKeys, 1);
 		}
 
@@ -298,20 +303,25 @@ class SC_mod_access_perm_ajax {
 			} else {
 				$selected = '';
 			}
-			$options .= '<option value="'.$uid.';'.htmlspecialchars($row['title']).'"'.$selected.'>'.htmlspecialchars($row['title']).'</option>';
+			$options .= '<option value="' . $uid . ';' . htmlspecialchars($row['title']) . '"' . $selected . '>' . htmlspecialchars($row['title']) . '</option>';
 		}
 
 			// If the group was not set AND there is a group for the page
 		if (!$userset && $groupUid) {
-			$options = '<option value="'.$groupUid.'" selected="selected">'.htmlspecialchars($beGroupsO[$groupUid]['title']).'</option>'.$options;
+			$options = '<option value="' . $groupUid . '" selected="selected">' . htmlspecialchars($beGroupsO[$groupUid]['title']) . '</option>' . $options;
 		}
 
-		$elementId = 'g_'.$page;
-		$options = '<option value="0"></option>'.$options;
-		$selector = '<select name="new_page_group" id="new_page_group">'.$options.'</select>';
-		$saveButton = '<a onclick="WebPermissions.changeGroup('.$page.', '.$groupUid.', \''.$elementId.'\');"><img'.t3lib_iconWorks::skinImg($this->backPath, 'gfx/savedok.gif', 'width="21" height="16"').' border="0" title="Change group" align="top" alt="" /></a>';
-		$cancelButton = '<a onclick="WebPermissions.restoreGroup('.$page.', '.$groupUid.', \''.($groupname == '' ? '<span class=not_set>[not set]</span>' : htmlspecialchars($groupname)).'\', \''.$elementId.'\');"><img'.t3lib_iconWorks::skinImg($this->backPath, 'gfx/closedok.gif', 'width="21" height="16"').' border="0" title="Cancel" align="top" alt="" /></a>';
-		$ret = $selector.$saveButton.$cancelButton;
+		$elementId = 'g_' . $page;
+		$options = '<option value="0"></option>' . $options;
+		$selector = '<select name="new_page_group" id="new_page_group">' . $options . '</select>';
+		$saveButton = '<a onclick="WebPermissions.changeGroup(' . $page . ', ' . $groupUid . ', \'' . $elementId .
+			'\');"><img' . t3lib_iconWorks::skinImg($this->backPath, 'gfx/savedok.gif', 'width="21" height="16"') .
+			' border="0" title="Change group" align="top" alt="" /></a>';
+		$cancelButton = '<a onclick="WebPermissions.restoreGroup(' . $page . ', ' . $groupUid . ', \'' .
+			($groupname == '' ? '<span class=not_set>[not set]</span>' : htmlspecialchars($groupname)) . '\', \'' . $elementId .
+			'\');"><img' . t3lib_iconWorks::skinImg($this->backPath, 'gfx/closedok.gif', 'width="21" height="16"') .
+			' border="0" title="Cancel" align="top" alt="" /></a>';
+		$ret = $selector . $saveButton . $cancelButton;
 		return $ret;
 	}
 
@@ -325,8 +335,11 @@ class SC_mod_access_perm_ajax {
 	 * @return	String		The new group wrapped in HTML
 	 */
 	public function renderOwnername($page, $ownerUid, $username) {
-		$elementId = 'o_'.$page;
-		$ret = '<span id="'.$elementId.'"><a class="ug_selector" onclick="WebPermissions.showChangeOwnerSelector('.$page.', '.$ownerUid.', \''.$elementId.'\', \''.htmlspecialchars($username).'\');">'.($username == '' ? '<span class=not_set>[not set]</span>' : htmlspecialchars(t3lib_div::fixed_lgd_cs($username, 20))).'</a></span>';
+		$elementId = 'o_' . $page;
+		$ret = '<span id="' . $elementId . '"><a class="ug_selector" onclick="WebPermissions.showChangeOwnerSelector(' . $page .
+			', ' . $ownerUid . ', \'' . $elementId . '\', \'' . htmlspecialchars($username) . '\');">' .
+			($username == '' ? '<span class=not_set>[not set]</span>' : htmlspecialchars(t3lib_div::fixed_lgd_cs($username, 20))) .
+			'</a></span>';
 		return $ret;
 	}
 
@@ -340,8 +353,11 @@ class SC_mod_access_perm_ajax {
 	 * @return	String		The new group wrapped in HTML
 	 */
 	public function renderGroupname($page, $groupUid, $groupname) {
-		$elementId = 'g_'.$page;
-		$ret = '<span id="'.$elementId.'"><a class="ug_selector" onclick="WebPermissions.showChangeGroupSelector('.$page.', '.$groupUid.', \''.$elementId.'\', \''.htmlspecialchars($groupname).'\');">'.($groupname == '' ? '<span class=not_set>[not set]</span>' : htmlspecialchars(t3lib_div::fixed_lgd_cs($groupname, 20))).'</a></span>';
+		$elementId = 'g_' . $page;
+		$ret = '<span id="' . $elementId . '"><a class="ug_selector" onclick="WebPermissions.showChangeGroupSelector(' . $page .
+			', ' . $groupUid . ', \'' . $elementId . '\', \'' . htmlspecialchars($groupname) . '\');">' .
+			($groupname == '' ? '<span class=not_set>[not set]</span>' : htmlspecialchars(t3lib_div::fixed_lgd_cs($groupname, 20))) .
+			'</a></span>';
 		return $ret;
 	}
 
@@ -349,15 +365,17 @@ class SC_mod_access_perm_ajax {
 	/**
 	 * Print the string with the new edit lock state of a page record
 	 *
-	 * @param	Integer		$page: The TYPO3 page id
-	 * @param	String		$editlockstate: The state of the TYPO3 page (locked, unlocked)
-	 * @return	String		The new edit lock string wrapped in HTML
+	 * @param integer $page : The TYPO3 page id
+	 * @param string $editLockState : The state of the TYPO3 page (locked, unlocked)
+	 * @return string The new edit lock string wrapped in HTML
 	 */
 	protected function renderToggleEditLock($page, $editLockState) {
 		if ($editLockState === 1) {
-			$ret = '<a class="editlock" onclick="WebPermissions.toggleEditLock('.$page.', 1);"><img'.t3lib_iconWorks::skinImg($this->backPath,'gfx/recordlock_warning2.gif','width="22" height="16"').' title="The page and all content is locked for editing by all non-Admin users." alt="" /></a>';
+			$ret = '<a class="editlock" onclick="WebPermissions.toggleEditLock(' . $page . ', 1);"><img' .
+				t3lib_iconWorks::skinImg($this->backPath, 'gfx/recordlock_warning2.gif', 'width="22" height="16"') .
+				' title="The page and all content is locked for editing by all non-Admin users." alt="" /></a>';
 		} else {
-			$ret = '<a class="editlock" onclick="WebPermissions.toggleEditLock('.$page.', 0);" title="Enable the &raquo;Admin-only&laquo; edit lock for this page">[+]</a>';
+			$ret = '<a class="editlock" onclick="WebPermissions.toggleEditLock(' . $page . ', 0);" title="Enable the &raquo;Admin-only&laquo; edit lock for this page">[+]</a>';
 		}
 		return $ret;
 	}
@@ -366,30 +384,36 @@ class SC_mod_access_perm_ajax {
 	/**
 	 * Print a set of permissions. Also used in index.php
 	 *
-	 * @param	integer		Permission integer (bits)
-	 * @param	Integer		$page: The TYPO3 page id
-	 * @param	String		$who: The scope (user, group or everybody)
-	 * @return	string		HTML marked up x/* indications.
+	 * @param integer $int
+	 * @param integer $pageId
+	 * @param string $who : The scope (user, group or everybody)
+	 * @return string HTML marked up x/* indications.
 	 */
 	public function renderPermissions($int, $pageId = 0, $who = 'user') {
-		global $LANG;
+		/** @var language $language */
+		$language = $GLOBALS['LANG'];
 		$str = '';
 
-		$permissions = array(1,16,2,4,8);
+		$permissions = array(1, 16, 2, 4, 8);
 		foreach ($permissions as $permission) {
 			if ($int&$permission) {
-				$str .= '<span class="perm-allowed"><a title="'.$LANG->getLL($permission,1).'" class="perm-allowed" onclick="WebPermissions.setPermissions('.$pageId.', '.$permission.', \'delete\', \''.$who.'\', '.$int.');">*</a></span>';
+				$str .= '<span class="perm-allowed"><a title="' .
+					$language->getLL($permission, 1) . '" class="perm-allowed" onclick="WebPermissions.setPermissions(' . $pageId .
+					', ' . $permission . ', \'delete\', \'' . $who . '\', ' . $int . ');">*</a></span>';
 			} else {
-				$str .= '<span class="perm-denied"><a title="'.$LANG->getLL($permission,1).'" class="perm-denied" onclick="WebPermissions.setPermissions('.$pageId.', '.$permission.', \'add\', \''.$who.'\', '.$int.');">x</a></span>';
+				$str .= '<span class="perm-denied"><a title="' .
+					$language->getLL($permission, 1) . '" class="perm-denied" onclick="WebPermissions.setPermissions(' . $pageId .
+					', ' . $permission . ', \'add\', \'' . $who . '\', ' . $int . ');">x</a></span>';
 			}
 		}
-		return '<span id="'.$pageId.'_'.$who.'">'.$str.'</span>';
+
+		return '<span id="' . $pageId . '_' . $who . '">' . $str . '</span>';
 	}
-
 }
 
-//XClass Statement
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/commerce/mod_access/class.sc_mod_access_perm_ajax.php']) {
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/commerce/mod_access/class.sc_mod_access_perm_ajax.php']);
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/mod_access/class.sc_mod_access_perm_ajax.php']) {
+	/** @noinspection PhpIncludeInspection */
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/mod_access/class.sc_mod_access_perm_ajax.php']);
 }
+
 ?>

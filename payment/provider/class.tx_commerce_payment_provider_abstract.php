@@ -69,7 +69,7 @@ abstract class tx_commerce_payment_provider_abstract implements tx_commerce_paym
 	 */
 	protected function loadCriteria() {
 			// Get and instantiate registered criteria of this payment provider
-		$criteraConfigurations = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['SYSPRODUCTS']['PAYMENT']['types'][$this->paymentObject->getType()]['provider'][$this->type]['criteria'];
+		$criteraConfigurations = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['SYSPRODUCTS']['PAYMENT']['types'][$this->paymentObject->getType()]['provider'][$this->type]['criteria'];
 		if (is_array($criteraConfigurations)) {
 			foreach ($criteraConfigurations as $criterionConfiguration) {
 				if (!is_array($criterionConfiguration['options'])) {

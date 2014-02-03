@@ -35,113 +35,111 @@
  */
 class tx_commerce_basket_item {
 
- 	/**
- 	 * object Article_object
- 	 * @see tx_commerce_article
- 	 * @access public
- 	 */
- 	var $article='';
- 	
- 	/**
- 	 * Object tx_commerce_product 
- 	 * @see tx_commerce_product
- 	 * @access public
- 	 * 
- 	 */
- 	var $product='';
+	/**
+	 * object Article_object
+	 * @see tx_commerce_article
+	 * @access public
+	 */
+	public $article = '';
 
- 	/**
- 	 * Object tx_commerce_article_price
- 	 * @see tx_commerce_product
- 	 * @access private
- 	 * 
- 	 */
- 	var $price='';
- 	
- 	/**
- 	 * integer quantity for this article
- 	 * @access private
- 	 */
- 	var $quantity=0;
+	/**
+	 * Object tx_commerce_product
+	 * @see tx_commerce_product
+	 * @access public
+	 *
+	 */
+	public $product = '';
 
- 	/**
- 	 * integer priceid for this item
- 	 * @access private
- 	 */
- 	var $priceid='';
- 	
- 	/**
- 	 * item summe from net_price
- 	 * @acces private
- 	 */
- 	var $item_net_sum=0;
- 	
- 	/**
- 	 * item summe from gross_price
- 	 * @acces private
- 	 */
- 	var $item_gross_sum=0;
+	/**
+	 * Object tx_commerce_article_price
+	 * @see tx_commerce_product
+	 * @access private
+	 *
+	 */
+	protected $price = '';
+
+	/**
+	 * integer quantity for this article
+	 * @access private
+	 */
+	protected $quantity = 0;
+
+	/**
+	 * integer priceid for this item
+	 * @access private
+	 */
+	protected $priceid = '';
+
+	/**
+	 * item summe from net_price
+	 * @access private
+	 */
+	protected $item_net_sum = 0;
+
+	/**
+	 * item summe from gross_price
+	 * @access private
+	 */
+	protected $item_gross_sum = 0;
 
 	/**
 	 * calculated price from net price
 	 * @access private
 	 */
-    
-	var $pricefromnet = 0;
-	
-	
+	protected $pricefromnet = 0;
+
 	/**
 	 * Net Price for this item
-	 * @var price_net
-	 * @acces private 
+	 * @var integer
+	 * @access private
 	 */
-	 var $priceNet;
-	 
-	 /**
+	public $priceNet;
+
+	/**
 	 * Gross Price for this item
-	 * @var price_gross
-	 * @acces  private 
+	 * @var integer
+	 * @acces  private
 	 */
-	 var $priceGross;
-	 
-	 /**
-	  * Lang uid
-	  * @var lang_uid
-	  * @acces private
-	  */
-	var $lang_id=0; 	
- 	/**
- 	 * Call to $this->init
- 	 * @param uid  artcile UID
- 	 * @param quantity amount for this article
- 	 * @param lang_id Language ID
- 	 */
- 	
- 	function tx_commerce_basket_item()	{
-		if ((func_num_args()>=3) && (func_num_args()<=4)){
-			$uid = func_get_arg(0); 
+	public $priceGross;
+
+	/**
+	 * Lang uid
+	 * @var integer
+	 * @acces private
+	 */
+	public $lang_id = 0;
+
+	/**
+	 * Call to $this->init
+	 */
+	public function tx_commerce_basket_item() {
+		if ((func_num_args() >= 3) && (func_num_args() <= 4)) {
+			$uid = func_get_arg(0);
 			$quantity = func_get_arg(1);
 			$priceid = func_get_arg(2);
-			if (func_num_args()==4){
-				$lang_uid=func_get_arg(3);
-			}else
-			{
-				$lang_uid=0;
+
+			if (func_num_args() == 4) {
+				$lang_uid = func_get_arg(3);
+			} else {
+				$lang_uid = 0;
 			}
-			return $this->init($uid,$quantity,$priceid,$lang_uid);
+
+			$this->init($uid,$quantity,$priceid,$lang_uid);
 		}
-		
 	}
- 		
- 	/**
- 	 * Initialises the object,
- 	 * checks if given uid is valid and loads the the article an product data
- 	 * @param uid  artcile UID
- 	 * @param quantity amount for this article
- 	 * @param lang_id Language ID
- 	 */
+
+	/**
+	 * Initialises the object,
+	 * checks if given uid is valid and loads the the article an product data
+	 *
+	 * @param integer $uid artcile UID
+	 * @param integer $quantity amount for this article
+	 * @param integer $priceid id of the price to use
+	 * @param integer $lang_id Language ID
+	 * @return bool
+	 */
  	function init($uid,$quantity,$priceid,$lang_id=0){
- 		
+
  		$uid = intval($uid);
 	    $lang_id = intval($lang_id);
 	    $priceid = intval($priceid);
@@ -160,45 +158,45 @@ class tx_commerce_basket_item {
  		$this->lang_id=$lang_id;
  		$this->article = t3lib_div::makeInstance('tx_commerce_article');
  		$this->article->init($uid,$this->lang_id);
- 		
- 		
+
+
 		if($quantity < 1 ) return false;
-		
+
 		if (is_object($this->article)) {
-	 		
-	 			$this->article->load_data('basket');
-	 					
+
+	 			$this->article->loadData('basket');
+
 	 			$this->product=$this->article->get_parent_product();
-	 			$this->product->load_data('basket');
-	 			
-	 			
-	 			$this->priceid = $priceid; 
+	 			$this->product->loadData('basket');
+
+
+	 			$this->priceid = $priceid;
 	 			$this->price = t3lib_div::makeInstance('tx_commerce_article_price');
 				$this->price->init($priceid,$this->lang_id);
-				$this->price->load_data('basket');
+				$this->price->loadData('basket');
 				$this->priceNet=$this->price->getPriceNet();
 				$this->priceGross=$this->price->getPriceGross();
 				$this->recalculate_item_sums();
 	 			return true;
-	 			
-				
-	 		
+
+
+
 		}
- 		
- 		
+
+
 	 	/***
 	 	 * Article is not availiabe, so clear object
 	 	**/
  		$this->quantity=0;
  		$this->article='';
  		$this->product='';
- 		return false;	
- 		
+ 		return false;
+
  	}
- 	
- 	
- 	
- 	
+
+
+
+
  	/**
  	 * Change the basket item quantity
  	 * @param quanitity
@@ -206,32 +204,32 @@ class tx_commerce_basket_item {
  	 * @access public
  	 */
  	function change_quantity($quantity) 	{
- 		$this->quantity=$quantity;
- 		$this->priceid=$this->article->getActualPriceforScaleUid($quantity);
- 		
+ 		$this->quantity = $quantity;
+ 		$this->priceid = $this->article->getActualPriceforScaleUid($quantity);
+
  		$this->price = t3lib_div::makeInstance('tx_commerce_article_price');
  		$this->price->init($this->priceid,$this->lang_id);
-		$this->price->load_data();
+		$this->price->loadData();
  		$this->priceNet=$this->price->getPriceNet();
 		$this->priceGross=$this->price->getPriceGross();
 		$this->recalculate_item_sums();
  		return true;
  	}
- 	
+
  	/**
  	 * recalculates the itm sums
  	 * @param $useValues	boolean		Use the stored values instead of calculating gross or net price
  	 */
- 	
+
  	function recalculate_item_sums($useValues = false) 	{
  		$this->calculate_net_sum($useValues);
  		$this->calculate_gross_sum($useValues);
  	}
- 	
+
  	/**
  	 * Calculates the net_sum
  	 * @param $useValues	boolean		Use the stored values instead of calculating gross or net price
- 	 * @return integer net_sum 
+ 	 * @return integer net_sum
  	 * @todo add hook for this function
  	 */
  	function calculate_net_sum($useValues = false) 	{
@@ -240,15 +238,15 @@ class tx_commerce_basket_item {
  			$taxrate = $this->get_tax();
  			$this->item_net_sum = (int)round($this->item_gross_sum / (1 + ($taxrate / 100)));
  		} else {
- 			$this->item_net_sum = $this->get_price_net() * $this->quantity;	
+ 			$this->item_net_sum = $this->get_price_net() * $this->quantity;
  		}
  		return $this->item_net_sum;
  	}
- 	
+
  	/**
  	 * Calculates the gross_sum
  	 *  @param $useValues	boolean		Use the stored values instead of calculating gross or net price
- 	 * @return integer gross_sum 
+ 	 * @return integer gross_sum
  	 * @todo add hook for this function
  	 */
  	function calculate_gross_sum($useValues = false) 	{
@@ -265,22 +263,22 @@ class tx_commerce_basket_item {
  	 * gets the price_net from thhe article
  	 * @return price_net
  	 */
- 	
+
  	function get_price_net() 	{
  		return $this->priceNet;
  	}
- 	
+
  	/**
  	 * return the the gross price without the scale calculation
- 	 * 
+ 	 *
  	 */
- 	
+
  	function getNoScalePriceGross() {
  		return $this->article->get_price_gross();
  	}
  	/**
  	 * return the the net price without the scale calculation
- 	 * 
+ 	 *
  	 */
  	function getNoScalePriceNet() {
  		return $this->article->get_price_net();
@@ -292,7 +290,7 @@ class tx_commerce_basket_item {
  	function setTitle($title) 	{
  		$this->article->title=$title;
  		$this->product->title=$title;
- 		
+
  	}
  	/**
 	 * Gets the title
@@ -300,40 +298,40 @@ class tx_commerce_basket_item {
 	 * @return title of article (default) or product
 	 */
  	function getTitle($type='article') {
- 	
+
  		switch ($type) {
  			case 'product':
- 				return $this->product->get_title();	
+ 				return $this->product->get_title();
  				break;
- 			
+
  			case 'article':
  			default:
- 				return $this->article->get_title();	
+ 				return $this->article->get_title();
  				break;
- 				
+
  		}
- 		
+
  	}
- 	
+
  	/**
 	 * Gets the subtitle of the basket item
 	 * @param 	string 	type of subtitle, possible values arte article and product
 	 * @return Subtitle of article (default) or product
 	 */
- 	
+
  	function getSubtitle($type='article') {
  		switch ($type) {
  			case 'product':
- 				return $this->product->get_title();	
+ 				return $this->product->get_title();
  				break;
- 			
+
  			case 'article':
  			default:
- 				return $this->article->getSubtitle();	
+ 				return $this->article->getSubtitle();
  				break;
- 				
+
  		}
- 		
+
  	}
  	/**
 	 * Sets the net price
@@ -343,18 +341,18 @@ class tx_commerce_basket_item {
  		$this->priceNet=$value;
  		$this->calculate_net_sum();
  	}
- 	
- 	
+
+
  	/**
  	 * gets the price_gross from thhe article
  	 * @return  price_gross
  	 */
- 	
+
  	function get_price_gross() 	{
- 	
+
  		return $this->priceGross;
 	}
-	
+
 	/**
 	 * Sets pre gross price
 	 * @param new Price Value
@@ -367,7 +365,7 @@ class tx_commerce_basket_item {
  	 * gets the tax from the article
  	 * @return  percantage of tax
  	 */
- 	
+
  	function get_tax() 	{
  		if(is_object($this->article)) {
  			return $this->article->get_tax();
@@ -377,43 +375,53 @@ class tx_commerce_basket_item {
  	 * gets the quantity from thos item
  	 * @return  quantity
  	 */
- 	
+
  	function getQuantity() 	{
  		return $this->quantity;
  	}
- 	
+
  	/**
  	 * gets the uid from thhe article
  	 * @return  uid
  	 */
- 	
+
  	function get_price_uid()
  	{
  		return $this->priceid;
  	}
- 	
- 	
- 	
+
+
+
+	/**
+	 * retruns the item_sum_net
+	 *
+	 * @param boolean $recalculate if the sum should be recalculated, default false
+	 * @return integer item sum net
+	 */
+	public function getItemSumNet($recalculate = FALSE) {
+		if ($recalculate == TRUE) {
+			return $this->calculate_net_sum();
+		} else {
+			return 	$this->item_net_sum;
+		}
+	}
+
  	/**
  	 * retruns the item_sum_net
- 	 * @param recalculate if the sum should be recalculated, default false
- 	 * @return item sum net
+	 *
+ 	 * @param boolean $recalculate if the sum should be recalculated, default false
+ 	 * @return integer item sum net
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getItemSumNet instead
  	 */
- 	function get_item_sum_net($recalculate=false){
- 		if ($recalculate==true)
- 		{
- 			return $this->calculate_net_sum();
- 		}
- 		else
- 		{
- 			return 	$this->item_net_sum;
- 		}
+	public function get_item_sum_net($recalculate = FALSE) {
+		t3lib_div::logDeprecatedFunction();
+ 		return $this->getItemSumNet($recalculate);
  	}
 
 	/**
 	 * Return calculated item sum gross
 	 *
-	 * @param $recalculate True if sum should be recalculated
+	 * @param boolean $recalculate True if sum should be recalculated
 	 * @return integer Sum gross price
 	 */
 	public function getItemSumGross($recalculate = FALSE){
@@ -423,28 +431,42 @@ class tx_commerce_basket_item {
 			return $this->item_gross_sum;
 		}
 	}
+
 	/**
-	 * @deprecated since 2011-05-11
+	 * @param boolean $recalculate
+	 * @return integer
+	 * @deprecated since 2011-05-11 this function will be removed in commerce 0.16.0, please use getItemSumGross instead
 	 */
 	public function get_item_sum_gross($recalculate = FALSE) {
+		t3lib_div::logDeprecatedFunction();
 		return $this->getItemSumGross($recalculate);
 	}
 
- 	/**
- 	 * retruns the absolut TAX
- 	 * @param recalculate if the sum shoudl be recalculated, defaul false
- 	 * @return item sum gross
- 	 */
- 	function get_item_sum_tax($recalculate=false){
- 		
- 		return ($this->get_item_sum_gross($recalculate)-$this->get_item_sum_net($recalculate));
- 	}
- 	
- 	
- 	
+	/**
+	 * retruns the absolut TAX
+	 * @param boolean $recalculate if the sum shoudl be recalculated, defaul false
+	 * @return integer item sum gross
+	 */
+	public function getItemSumTax($recalculate = false) {
+		return ($this->getItemSumGross($recalculate)-$this->getItemSumNet($recalculate));
+	}
+
+	/**
+	 * retruns the absolut TAX
+	 * @param boolean $recalculate if the sum shoudl be recalculated, defaul false
+	 * @return integer item sum gross
+	 * @deprecated since 2011-05-11 this function will be removed in commerce 0.16.0, please use getItemSumTax instead
+	 */
+	public function get_item_sum_tax($recalculate = false) {
+		t3lib_div::logDeprecatedFunction();
+		return $this->getItemSumTax($recalculate);
+	}
+
+
+
  	/**
  	 * ----------------------------------------------------------------------
- 	 * Article Methods 
+ 	 * Article Methods
  	 * ----------------------------------------------------------------------
  	 */
  	/**
@@ -454,46 +476,46 @@ class tx_commerce_basket_item {
  	function getArticleTypeUid() {
  		return $this->article->getArticleTypeUid();
  	}
- 	
+
  	/**
  	 * return the Ordernumber of item
  	 * @return Oredernumber of Articles
- 	 * 
+ 	 *
  	 */
- 	
- 	
+
+
  	function getOrderNumber() {
  		return $this->article->getOrdernumber();
  	}
- 	
+
  	/**
  	 * return the Ordernumber of item
  	 * @return Oredernumber of Articles
- 	 * 
+ 	 *
  	 */
- 	
- 	
+
+
  	function getEanCode() {
  		return $this->article->getEanCode();
  	}
- 	
- 	
+
+
  	/**
  	 * gets the uid from the article
  	 * @return  uid
  	 */
- 	
+
  	function get_article_uid() 	{
  		return $this->article->get_uid();
  	}
- 	
+
  	/**
  	 * returns the ArticleAssocArray
  	 * @return array
- 	 */ 
- 	 
+ 	 */
+
  	function getArticleAssocArray($prefix) {
- 		return $this->article->return_assoc_array($prefix);	
+ 		return $this->article->return_assoc_array($prefix);
  	}
 
 	/**
@@ -501,7 +523,7 @@ class tx_commerce_basket_item {
 	 *
 	 * @return tx_commerce_article Article object
 	 */
-	public function getArticleObj() {
+	public function getArticle() {
  		return $this->article;
  	}
 
@@ -511,14 +533,14 @@ class tx_commerce_basket_item {
  	 * @return array
  	 * @see tx_commerce_article <- tx_commerce_element_alib
  	 */
- 	
- 	
+
+
  	function get_article_assoc_array($prefix='')
  	{
- 		return $this->article->return_assoc_array($prefix);	
- 		
+ 		return $this->article->return_assoc_array($prefix);
+
  	}
- 	
+
  	/**
  	 * ----------------------------------------------------------------------
  	 * Product Methods
@@ -538,148 +560,150 @@ class tx_commerce_basket_item {
  	 * gets the uid from the product
  	 * @return  uid
  	 */
- 	
+
  	function getProductUid() 	{
  		return $this->product->get_uid();
  	}
- 	
+
  	/**
  	 * gets the master parent category
  	 * @return  category
  	 * @see producz
  	 */
  	function getProductMasterparentCategorie() 	{
- 		return $this->product->getMasterparentCategorie();	
+ 		return $this->product->getMasterparentCategorie();
  	}
- 	
- 	
+
+
  	/**
  	 * returns the ArticleAssocArray
  	 * @return array
- 	 */ 
- 	 
+ 	 */
+
  	function getProductAssocArray($prefix) {
- 		return $this->product->return_assoc_array($prefix);	
+ 		return $this->product->return_assoc_array($prefix);
  	}
- 	
- 	
- 	
+
+
+
  	/**
  	 * gets the product_assoc_array
  	 * @param prefix Prefix for the keys or returnung array optional
  	 * @return array
  	 * @see tx_commerce_product <- tx_commerce_element_alib
  	 */
- 	
+
  	function get_product_assoc_array($prefix='')
  	{
- 		return $this->getProductAssocArray($prefix);	
+ 		return $this->getProductAssocArray($prefix);
  	}
- 	
- 	
- 	
- 	
+
+
+
+
  	/**
  	 * --------------------------------------------------------------------
  	 * Other methods, related to article and product
  	 * --------------------------------------------------------------------
  	 */
- 	
+
  	/**
  	 * gets an array of get_article_assoc_array and get_product_assoc_array
- 	 * 
+ 	 *
  	 * @param prefix Prefix for the keys or returnung array optional
  	 * @return array
- 	 * 
+ 	 *
  	 */
- 	
+
  	function get_array_of_assoc_array($prefix='')
  	{
  		return array (
 			'article' => $this->get_article_assoc_array($prefix),
- 			'product' => $this->get_product_assoc_array($prefix)		
+ 			'product' => $this->get_product_assoc_array($prefix)
  	    	);
- 		
+
  	}
- 	
+
  	/**
  	 * This Method Sets the Tax Calculation method (pricefromnet)
- 	 * 
+ 	 *
  	 * @param   boolean	Switch if calculationg from net or not
  	 * @return  void
  	 */
  	function setTaxCalculationMethod($priceFromNet) {
  	 	$this->pricefromnet = $priceFromNet;
  	}
- 	
+
  	/**
  	 * #######################################################################
  	 * Depricated methods !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
  	 */
- 	
- 	
+
+
  	/**
  	 * gets the article Type uid
  	 * @return integer article type uid
  	 * @depricated
  	 */
- 	
+
  	function get_article_article_type_uid()
  	{
  		return $this->getArticleTypeUid();
- 		
+
  	}
- 	
+
  	/**
  	 * gets the quantity from thos item
  	 * @return  quantity
  	 * @depricated
  	 */
- 	
+
  	function get_quantity()
  	{
  		return $this->getQuantity();
  	}
- 	
- 	/** 
-  	 * set a given field, only to use with custom field without own method 
-  	 * 
+
+ 	/**
+  	 * set a given field, only to use with custom field without own method
+  	 *
   	 * Warning: commerce provides getMethods for all default fields. For Compatibility
-  	 * reasons always use the built in Methods. Only use this method with you own added fields 
+  	 * reasons always use the built in Methods. Only use this method with you own added fields
   	 * @see add_fields_to_fieldlist
   	 * @see add_field_to_fieldlist
-  	 * 
+  	 *
   	 * @param string	$field: fieldname
   	 * @param mixed	$value: value
   	 * @return void
-  	 */	
-  	
+  	 */
+
   	function setField($field,$value){
 		$this->$field = $value;
 	}
 
-  	/** 
-  	 * get a given field value, only to use with custom field without own method 
-  	 * 
+  	/**
+  	 * get a given field value, only to use with custom field without own method
+  	 *
   	 * Warning: commerce provides getMethods for all default fields. For Compatibility
-  	 * reasons always use the built in Methods. Only use this method with you own added fields 
+  	 * reasons always use the built in Methods. Only use this method with you own added fields
   	 * @see add_fields_to_fieldlist
   	 * @see add_field_to_fieldlist
-  	 * 
+  	 *
   	 * @param string	$field: fieldname
   	 * @return mixed	value of the field
-  	 */	
+  	 */
 
 	function getField($field){
 		return $this->$field;
 	}
-  	
- 	
- 		
- 	
+
+
+
+
  }
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_basket_item.php']) {
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_basket_item.php']);
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_basket_item.php']) {
+	/** @noinspection PhpIncludeInspection */
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_basket_item.php']);
 }
+
 ?>

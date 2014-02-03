@@ -22,9 +22,6 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-	/** @define "t3lib_extMgm::extPath('static_info_tables')" "../../static_info_tables/" */
-require_once (t3lib_extMgm::extPath('static_info_tables') . 'pi1/class.tx_staticinfotables_pi1.php');
-
 /**
  * Plugin 'addresses' for the 'commerce' extension.
  * This class handles all the address stuff, like creating, editing and deleting.
@@ -34,21 +31,21 @@ require_once (t3lib_extMgm::extPath('static_info_tables') . 'pi1/class.tx_static
  * @author Thomas Hempel <thomas@work.de>
  */
 class tx_commerce_pi4 extends tx_commerce_pibase {
+	public $prefixId = 'tx_commerce_pi4'; // Same as class name
+	public $scriptRelPath = 'pi4/class.tx_commerce_pi4.php'; // Path to this script relative to the extension dir.
+	public $extKey = 'commerce'; // The extension key.
 
-	var $prefixId = 'tx_commerce_pi4'; // Same as class name
-	var $scriptRelPath = 'pi4/class.tx_commerce_pi4.php'; // Path to this script relative to the extension dir.
-	var $extKey = 'commerce'; // The extension key.
-	var $imgFolder = '';
-	var $user = NULL;
-	var $addresses = array();
+	public $imgFolder = '';
+	public $user = NULL;
+	public $addresses = array();
 
 	/**
 	 * @var array Holds form error messages
 	 */
 	protected $formError = array();
 
-	var $fieldList = array();
-	var $sysMessage = '';
+	public $fieldList = array();
+	public $sysMessage = '';
 
 	/**
 	 * @var string Template file content
@@ -58,7 +55,7 @@ class tx_commerce_pi4 extends tx_commerce_pibase {
 	/**
 	 * @var tx_staticinfotables_pi1 Instance of static info view helper
 	 */
-	var $staticInfo;
+	public $staticInfo;
 
 	/**
 	 * Main method. Starts the magic...
@@ -1119,6 +1116,8 @@ class tx_commerce_pi4 extends tx_commerce_pibase {
 }
 
 if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/pi4/class.tx_commerce_pi4.php']) {
+	/** @noinspection PhpIncludeInspection */
 	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/pi4/class.tx_commerce_pi4.php']);
 }
+
 ?>

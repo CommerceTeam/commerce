@@ -27,293 +27,281 @@
  * FE Rendering processes. This Class is mostly extended by distinct
  * Classes for spezified Objects
  *
- * Basic abtract Class for Database Query for 
+ * Basic abtract Class for Database Query for
  * tx_commerce_product
  * tx_commerce_article
  * tx_commerce_category
  * tx_commerce_attribute
  *
- * @author Ingo Schmitt <is@marketing-factory.de>
- * @package TYPO3
- * @subpackage tx_commerce
- * @subpackage tx_commerce_db_alib
  */
 class tx_commerce_db_alib {
-
- 	/**
- 	 * @var Database table concerning the data
- 	 * @access private
- 	 * @TODO Change in implementation with PHP5
- 	 */
- 	var $database_table= '';
- 	
- 	/**
- 	 * @var Order field for most select statments
- 	 * @access private
- 	 */
- 	var $orderField = ' sorting ';
- 	
- 	/**
- 	 * Stores the relation for the attributes to product,category, article
- 	 * @var Database attribute rel table
- 	 * @acces private
- 	 */
- 	 var $database_attribute_rel_table='';
-
- 	/**
- 	 * debugmode for errorHandling
- 	 * @var debugMode Boolean
- 	 * @acces private
- 	 */
- 	 var $debugMode = FALSE;
- 	 
- 	 /**
-	 * @Var Translation Mode for getRecordOverlay
-	 * @see class.t3lib_page.php
-	 * @acces private
+	/**
+	 * @var string Database table concerning the data
 	 */
-	
-	 var $translationMode='hideNonTranslated';
+	protected $databaseTable = '';
 
- 	/**
- 	 * 
- 	 * @param uid integer UID for Data
- 	 * @param lang_uid	Language Uid
- 	 * @param TranslatioMode Translation Mode for recordset
- 	 * @return array assoc Array with data
- 	 * 
- 	 * @todo implement access_check concering category tree
- 	 * 
- 	 
- 	 **/
- 	 
- 	
- 	function get_data($uid,$lang_uid=-1,$translationMode=false)
- 	{
- 		
- 		if ($translationMode == false){
- 			$translationMode = $this->translationMode;
- 		}
- 		$uid=intval($uid);
- 		$lang_uid=intval($lang_uid);
- 		if ($lang_uid==-1)
- 		{
- 			unset($lang_uid);	
- 		}
-		if(is_object($GLOBALS['TSFE']->sys_page)){
-		    $proofSQL = $GLOBALS['TSFE']->sys_page->enableFields($this->database_table,$GLOBALS['TSFE']->showHiddenRecords);
-		}
-		if ((($lang_uid ==0) || empty($lang_uid)) && ($GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']>0))
-		{
-			$lang_uid=$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid'];
-		}
-		
- 		$result=$GLOBALS['TYPO3_DB']->exec_SELECTquery('*',
- 			$this->database_table,
-			"uid = $uid " .$proofSQL
-			);
-			
-		 // Result should contain only one Dataset
- 		if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)==1)	{
- 			$return_data=$GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
- 			$GLOBALS['TYPO3_DB']->sql_free_result($result);
- 			
- 			//@since 8.10.2008: get workspace version if available
- 			if(!is_null($GLOBALS['TSFE']->sys_page)) {
- 				$GLOBALS['TSFE']->sys_page->versionOL($this->database_table, $return_data); 			
- 			}
-			
- 			if(!is_array($return_data)) {
- 				$this->error('There was an error overlaying the record with the version');
- 				return false;
- 			}
- 			
- 			if (($lang_uid>0) ) {
- 			/**
- 			 * Get Overlay, if availiabe
- 			 */	
- 				switch($translationMode) {
- 					case 'basket':
- 					// special Treatment for basket, so you could have a product not transleted inti a language
- 					// but the basket is in the not translated laguage
- 							$newData = $GLOBALS['TSFE']->sys_page->getRecordOverlay($this->database_table,$return_data,$lang_uid,$this->translationMode);	
- 							
- 							if (!empty($newData)) {
- 								$return_data = $newData;
- 							}
- 					break;
- 					default:
- 						$return_data=$GLOBALS['TSFE']->sys_page->getRecordOverlay($this->database_table,$return_data,$lang_uid,$this->translationMode);	
- 					break;
- 				
- 					
- 				}
- 				
- 				
- 			}
- 			
- 			return $return_data;
- 		}else{
- 			// error Handling
- 			$this->error("exec_SELECTquery('*',".$this->database_table.",\"uid = $uid\"); returns no or more than one Result");
- 			return false; 			
- 		}
- 	}
- 	
- 	/**
- 	 * checks if one given UID is availiabe
- 	 * @return boolean true id availiabe
- 	 * @todo implement access_check
- 	 */
- 	
- 	function isUid($uid){
-		if(!$uid){
-		    return false;
-		}
-		$uid=intval($uid);
-		$result=$GLOBALS['TYPO3_DB']->exec_SELECTquery('uid',
- 			$this->database_table,
-			"uid = $uid"
-			);
-			$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
-		if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)==1){
- 			return true;
- 		}else{
- 			return false;	
- 		}
-		
- 		
- 	}
- 	/**
- 	 * Checks in the Database if a UID is accessiblbe, 
- 	 * basically checks against the enableFields
- 	 * @param	$uid	Record Uid
- 	 * @return 	true	if is accessible
- 	 * 			false	if is not accessible
- 	 * @author	Ingo Schmitt	<is@marketing-factory.de>
- 	 */
- 	
- 	function isAccessible($uid) {
- 		$uid=intval($uid);
- 		if ($uid >0) {
- 			
- 			 if (is_object($GLOBALS['TSFE']->sys_page)){
-	 		 	$proofSQL = $GLOBALS['TSFE']->sys_page->enableFields($this->database_table,$GLOBALS['TSFE']->showHiddenRecords);
- 			 }
-	 		 $result=$GLOBALS['TYPO3_DB']->exec_SELECTquery('*',
-	 			$this->database_table,
-				"uid = $uid " .$proofSQL
-				);
-			
-			if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)==1) {
-				$GLOBALS['TYPO3_DB']->sql_free_result($result);
-				return true;
-			}
-			$GLOBALS['TYPO3_DB']->sql_free_result($result);
- 		}
-		return false;
- 	}
- 	
- 	/**
- 	 * Error Handling Funktion
- 	 * @param string Errortext
- 	 * @TODO Write to Devlog + Output
- 	 * 
- 	 */
- 	function error($err)
- 	{
- 		/**
- 		 * @TODO Devlog implementation
- 		 * @TODO PHP Error Implementation
- 		 * @TODO TYPO3db SQL Error implementation
- 		 */
- 		if($this->debugMode){
-			debug("Error:".$err);
- 		}			
- 		
- 	}
- 	
- 	/**
- 	 * gets all attributes from this product
- 	 * @param uid= Product uid
- 	 * @param attribute_corelation_type_list array of corelation_types, optional
-  	 * @return array of attribute UID 
- 	 */
- 	function getAttributes($uid,$attribute_corelation_type_list=''){
-		$uid=intval($uid);
- 		if ($this->database_attribute_rel_table==''){
- 			/**
- 			 * No table defined
- 			 * wrong call
- 			 * go away
- 			 */	
- 			 return false;
- 		}
- 		if (is_array($attribute_corelation_type_list)){
- 			$add_where=' AND '.$this->database_attribute_rel_table.'.uid_correlationtype in ('.implode(',',$attribute_corelation_type_list).')';	
- 			
- 		}
+	/**
+	 * @var string Order field for most select statments
+	 */
+	protected $orderField = ' sorting ';
 
- 		$result=$GLOBALS['TYPO3_DB']->exec_SELECT_mm_query('tx_commerce_attributes.uid',
- 								$this->database_table,
-								$this->database_attribute_rel_table,
-								'tx_commerce_attributes',
-								'AND '.$this->database_table.".uid = $uid".$add_where.' order by '.$this->database_attribute_rel_table.'.sorting'
-								);
-				
- 		if (($result) && ($GLOBALS['TYPO3_DB']->sql_num_rows($result)>0)){
- 			while ($return_data=$GLOBALS['TYPO3_DB']->sql_fetch_assoc($result))	{
- 				$attribute_uid_list[]=(int)$return_data['uid'];
- 			}
- 			$GLOBALS['TYPO3_DB']->sql_free_result($result);
- 			return $attribute_uid_list;
- 			
- 		}
- 		return false;
- 		
- 	}
- 	
+	/**
+	 * Stores the relation for the attributes to product,category, article
+	 * @var string Database attribute rel table
+	 */
+	protected $databaseAttributeRelationTable = '';
 
+	/**
+	 * debugmode for errorHandling
+	 * @var boolean debugMode Boolean
+	 */
+	protected $debugMode = FALSE;
 
+	/**
+	 * @var string Translation Mode for getRecordOverlay
+	 * @see class.t3lib_page.php
+	 */
+	protected $translationMode = 'hideNonTranslated';
 
- 	/**
- 	 * gets all attributes from this product
-	 * @deprecated
- 	 * @param uid= Product uid
- 	 * @param attribute_corelation_type_list array of corelation_types, optional
-  	 * @return array of attribute UID 
- 	 */
- 	
-	function get_attributes($uid,$attribute_corelation_type_list=''){
-	    
-		return $this->getAttributes($uid,$attribute_corelation_type_list);
+	/**
+	 * @var integer
+	 */
+	protected $uid;
+
+	/**
+	 * @var t3lib_db
+	 */
+	protected $database;
+
+	/**
+	 * @return self
+	 */
+	public function __construct() {
+		$this->database = $GLOBALS['TYPO3_DB'];
 	}
-	
+
+	/**
+	 * @param integer $uid UID for Data
+	 * @param integer $langUid Language Uid
+	 * @param boolean $translationMode Translation Mode for recordset
+	 * @return array assoc Array with data
+	 * @todo implement access_check concering category tree
+	 */
+	public function getData($uid, $langUid = -1, $translationMode = FALSE) {
+		if ($translationMode == FALSE) {
+			$translationMode = $this->translationMode;
+		}
+
+		$uid = intval($uid);
+		$langUid = intval($langUid);
+		if ($langUid == -1) {
+			$langUid = 0;
+		}
+
+		if ((($langUid == 0) || empty($langUid)) && ($GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid'] > 0)) {
+			$langUid = $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid'];
+		}
+
+		$proofSQL = '';
+		if (is_object($GLOBALS['TSFE']->sys_page)) {
+			$proofSQL = $GLOBALS['TSFE']->sys_page->enableFields($this->databaseTable, $GLOBALS['TSFE']->showHiddenRecords);
+		}
+
+		$result = $this->database->exec_SELECTquery(
+			'*',
+			$this->databaseTable,
+			'uid = ' . $uid . $proofSQL
+		);
+
+			// Result should contain only one Dataset
+		if ($this->database->sql_num_rows($result) == 1) {
+			$return_data = $this->database->sql_fetch_assoc($result);
+			$this->database->sql_free_result($result);
+
+				// @since 8.10.2008: get workspace version if available
+			if (!is_null($GLOBALS['TSFE']->sys_page)) {
+				$GLOBALS['TSFE']->sys_page->versionOL($this->databaseTable, $return_data);
+			}
+
+			if (!is_array($return_data)) {
+				$this->error('There was an error overlaying the record with the version');
+				return FALSE;
+			}
+
+			if (($langUid > 0)) {
+				/**
+				 * Get Overlay, if available
+				 */
+				switch($translationMode) {
+					case 'basket':
+							// special Treatment for basket, so you could have a product not transleted inti a language
+							// but the basket is in the not translated laguage
+						$newData = $GLOBALS['TSFE']->sys_page->getRecordOverlay($this->databaseTable, $return_data, $langUid, $this->translationMode);
+
+						if (!empty($newData)) {
+							$return_data = $newData;
+						}
+					break;
+					default:
+						$return_data = $GLOBALS['TSFE']->sys_page->getRecordOverlay($this->databaseTable, $return_data, $langUid, $this->translationMode);
+					break;
+				}
+			}
+
+			return $return_data;
+		} else {
+				// error Handling
+			$this->error('exec_SELECTquery(\'*\', ' . $this->databaseTable . ', "uid = ' . $uid . '"); returns no or more than one Result');
+			return FALSE;
+		}
+	}
+
+	/**
+	 * checks if one given UID is availiabe
+	 *
+	 * @param integer $uid
+	 * @return boolean true id availiabe
+	 * @todo implement access_check
+	 */
+	public function isUid($uid) {
+		if (!$uid) {
+			return FALSE;
+		}
+
+		$result = $this->database->exec_SELECTquery(
+			'uid',
+			$this->databaseTable,
+			'uid = ' . (int) $uid
+		);
+
+		return $this->database->sql_num_rows($result) == 1;
+	}
+
+	/**
+	 * Checks in the Database if a UID is accessiblbe,
+	 * basically checks against the enableFields
+	 *
+	 * @param integer $uid Record Uid
+	 * @return boolean	TRUE if is accessible
+	 * 					FALSE	if is not accessible
+	 */
+	public function isAccessible($uid) {
+		$return = FALSE;
+		$uid = intval($uid);
+		if ($uid > 0) {
+			$proofSQL = '';
+			if (is_object($GLOBALS['TSFE']->sys_page)) {
+				$proofSQL = $GLOBALS['TSFE']->sys_page->enableFields($this->databaseTable, $GLOBALS['TSFE']->showHiddenRecords);
+			}
+
+			$result = $this->database->exec_SELECTquery(
+				'*',
+				$this->databaseTable,
+				'uid = ' . $uid . $proofSQL
+			);
+
+			if ($this->database->sql_num_rows($result) == 1) {
+				$return = TRUE;
+			}
+
+			$this->database->sql_free_result($result);
+		}
+		return $return;
+	}
+
+	/**
+	 * Error Handling Funktion
+	 *
+	 * @param string $err Errortext
+	 */
+	public function error($err) {
+		if ($this->debugMode) {
+			debug('Error: ' . $err);
+		}
+	}
+
+	/**
+	 * gets all attributes from this product
+	 *
+	 * @param integer $uid Product uid
+	 * @param array $attribute_corelation_type_list list of corelation_types, optional
+	 * @return array of attribute UID
+	 */
+	public function getAttributes($uid, $attribute_corelation_type_list = NULL) {
+		$uid = intval($uid);
+		if ($this->databaseAttributeRelationTable == '') {
+			return FALSE;
+		}
+
+		$add_where = '';
+		if (is_array($attribute_corelation_type_list)) {
+			$add_where = ' AND ' . $this->databaseAttributeRelationTable . '.uid_correlationtype in (' .
+				implode(',', $attribute_corelation_type_list) . ')';
+		}
+
+		$result = $this->database->exec_SELECT_mm_query(
+			'tx_commerce_attributes.uid',
+			$this->databaseTable,
+			$this->databaseAttributeRelationTable,
+			'tx_commerce_attributes',
+			'AND ' . $this->databaseTable . '.uid = ' . $uid . $add_where . ' order by ' . $this->databaseAttributeRelationTable . '.sorting'
+		);
+
+		$attributeUidList = FALSE;
+		if (($result) && ($this->database->sql_num_rows($result) > 0)) {
+			$attributeUidList = array();
+			while ($return_data = $this->database->sql_fetch_assoc($result)) {
+				$attributeUidList[] = (int) $return_data['uid'];
+			}
+			$this->database->sql_free_result($result);
+		}
+		return $attributeUidList;
+	}
+
 	/**
 	 * Update record data
-	 * @return {boolean}
-	 * @param $uid {int}		uid of the item
-	 * @param $field {array}	Assoc. array with update fields
+	 *
+	 * @return boolean
+	 * @param integer $uid  uid of the item
+	 * @param array $fields Assoc. array with update fields
 	 */
- 	function updateRecord($uid, $fields) {
- 		if(!is_numeric($uid) || !is_array($fields)) {
-			if (TYPO3_DLOG) t3lib_div::devLog('updateRecord (db_alib) gets passed invalid parameters.', COMMERCE_EXTkey, 3);	
-			return false;	
+	public function updateRecord($uid, array $fields) {
+		if (!is_numeric($uid) || !is_array($fields)) {
+			if (TYPO3_DLOG) {
+				t3lib_div::devLog('updateRecord (db_alib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+			}
+			return FALSE;
 		}
-		
-		@$GLOBALS['TYPO3_DB']->exec_UPDATEquery($this->database_table, 'uid = '.$uid, $fields);	
-		
-		if($GLOBALS['TYPO3_DB']->sql_error()) {
-			if (TYPO3_DLOG) t3lib_div::devLog('updateRecord (db_alib): invalid sql.', COMMERCE_EXTkey, 3);	
-			return false;	
-		}
-		return true;
-	}
-  	
- 	
- }
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_db_alib.php']) {
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_db_alib.php']);
+		/** @var t3lib_db $database */
+		$database = $GLOBALS['TYPO3_DB'];
+		$database->exec_UPDATEquery($this->databaseTable, 'uid = ' . $uid, $fields);
+		if ($database->sql_error()) {
+			if (TYPO3_DLOG) {
+				t3lib_div::devLog('updateRecord (db_alib): invalid sql.', COMMERCE_EXTKEY, 3);
+			}
+			return FALSE;
+		}
+		return TRUE;
+	}
+
+
+	/**
+	 * gets all attributes from this product
+	 * @param integer $uid Product uid
+	 * @param array $attribute_corelation_type_list array of corelation_types, optional
+	 * @return array of attribute UID
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getAttributes instead
+	 */
+	public function get_attributes($uid, $attribute_corelation_type_list = NULL) {
+		t3lib_div::logDeprecatedFunction();
+		return $this->getAttributes($uid, $attribute_corelation_type_list);
+	}
 }
+
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_db_alib.php']) {
+	/** @noinspection PhpIncludeInspection */
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_db_alib.php']);
+}
+
 ?>

@@ -28,22 +28,26 @@
  * @author	Michiel Roos <typo3@meyson.nl>
  */
 class tx_commerce_pi6_wizicon {
-	function proc($wizardItems) {
-		global $LANG;
+	/**
+	 * @param array $wizardItems
+	 * @return array
+	 */
+	public function proc($wizardItems) {
+		/** @var language $language */
+		$language = $GLOBALS['LANG'];
 
 		$LL = $this->includeLocalLang();
 		$wizardItems['plugins_tx_commerce_pi6'] = array(
 			'icon' => t3lib_extMgm::extRelPath('commerce') . 'res/icons/ce_wiz.gif',
-			'title' => $LANG->getLLL('tt_content.list_type_pi6', $LL),
-			'description' => $LANG->getLLL('tt_content.list_type_pi6.wiz_description', $LL),
+			'title' => $language->getLLL('tt_content.list_type_pi6', $LL),
+			'description' => $language->getLLL('tt_content.list_type_pi6.wiz_description', $LL),
 			'params' => '&defVals[tt_content][CType]=list&defVals[tt_content][list_type]=commerce_pi6'
 		);
 
 		return $wizardItems;
 	}
 
-
-	function includeLocalLang() {
+	protected function includeLocalLang() {
 		$llFile = t3lib_extMgm::extPath('commerce') . 'locallang_be.xml';
 		$LOCAL_LANG = t3lib_div::readLLXMLfile($llFile, $GLOBALS['LANG']->lang);
 
@@ -51,7 +55,9 @@ class tx_commerce_pi6_wizicon {
 	}
 }
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/commerce/pi6/class.tx_commerce_pi6_wizicon.php']) {
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/commerce/pi6/class.tx_commerce_pi6_wizicon.php']);
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/pi6/class.tx_commerce_pi6_wizicon.php']) {
+	/** @noinspection PhpIncludeInspection */
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/pi6/class.tx_commerce_pi6_wizicon.php']);
 }
+
 ?>

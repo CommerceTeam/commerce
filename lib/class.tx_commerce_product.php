@@ -43,49 +43,60 @@ class tx_commerce_product extends tx_commerce_element_alib {
 	/**
 	 * Data Variables
 	 */
-	var $title = ''; // Title of the product e.g.productname (private)
-	var $pid = 0;
-	var $subtitle = ''; // Subtitle of the product (private)
-	var $description = ''; //  product description (private)
-	var $teaser = '';
-	var $images = ''; // images database field (private)
-	var $images_array = array(); // Images for the product (private)
-	var $teaserImages = ''; // images database field (private)
-	var $teaserImagesArray = array(); // Images for the product (private)
-	var $articles = array(); // array of tx_commcerc_article (private)
-	var $articles_uids = array(); // Array of tx_commerce_article_uid (private)
-	var $attributes = array();
-	var $attributes_uids = array();
-	var $relatedProducts = array();
-	var $relatedProduct_uids = array();
-	var $relatedProducts_loaded = FALSE;
+		// Title of the product e.g.productname (private)
+	public $title = '';
+	public $pid = 0;
+		// Subtitle of the product (private)
+	public $subtitle = '';
+		//  product description (private)
+	public $description = '';
+	public $teaser = '';
+	public $teaserimages;
+		// images database field (private)
+	public $images = '';
+		// Images for the product (private)
+	public $images_array = array();
+		// Images for the product (private)
+	public $teaserImagesArray = array();
+		// array of tx_commcerc_article (private)
+	public $articles = array();
+		// Array of tx_commerce_article_uid (private)
+	public $articles_uids = array();
+	public $attributes = array();
+	public $attributes_uids = array();
+	public $relatedpage = '';
+	public $relatedProducts = array();
+	public $relatedProduct_uids = array();
+	public $relatedProducts_loaded = FALSE;
+
+	/**
+	 * @var tx_commerce_db_product
+	 */
+	public $databaseConnection;
 
 	/**
 	 * @var int Maximum Articles to render for this product. Normally PHP_INT_MAX
 	 */
-	var $renderMaxArticles = PHP_INT_MAX;
+	public $renderMaxArticles = PHP_INT_MAX;
 
-	//Versioning
-	var $t3ver_oid = 0;
-	var $t3ver_id = 0;
-	var $t3ver_label = '';
-	var $t3ver_wsid = 0;
-	var $t3ver_state = 0;
-	var $t3ver_stage = 0;
-	var $t3ver_tstamp = 0;
+		// Versioning
+	public $t3ver_oid = 0;
+	public $t3ver_id = 0;
+	public $t3ver_label = '';
+	public $t3ver_wsid = 0;
+	public $t3ver_state = 0;
+	public $t3ver_stage = 0;
+	public $t3ver_tstamp = 0;
 
 	/**
-	 * @var boolean articles_loaded TRUE if artciles are loaded, so load articles can simply return with the values from the object
-	 * @acces private
+	 * @var boolean articlesLoaded TRUE if artciles are loaded, so load articles can simply return with the values from the object
 	 */
-	 
-	var $articles_loaded = FALSE;
-
+	protected $articlesLoaded = FALSE;
 
 	/**
 	 * Constructor, basically calls init
 	 */
-	function tx_commerce_product() {
+	public function __construct() {
 		if ((func_num_args() > 0) && (func_num_args() <= 2)) {
 			$uid = func_get_arg(0);
 			if (func_num_args() == 2) {
@@ -93,37 +104,37 @@ class tx_commerce_product extends tx_commerce_element_alib {
 			} else {
 				$lang_uid = 0;
 			}
-			return $this->init($uid, $lang_uid);
+			$this->init($uid, $lang_uid);
 		}
 	}
-
 
 	/**
 	 * Class initialization
 	 *
-	 * @param integer uid of product
-	 * @param integer language uid, default 0
+	 * @param integer $uid uid of product
+	 * @param integer $langUid language uid, default 0
 	 * @return boolean TRUE if initialization was successful
 	 */
-	function init($uid, $lang_uid = 0) {
+	public function init($uid, $langUid = 0) {
 		$uid = intval($uid);
-		$lang_uid = intval($lang_uid);
-		$this->database_class = 'tx_commerce_db_product';
+		$langUid = intval($langUid);
+		$this->databaseClass = 'tx_commerce_db_product';
 		$this->fieldlist = array('uid', 'title', 'pid', 'subtitle', 'description', 'teaser', 'images', 'teaserimages', 'relatedpage', 'l18n_parent', 'manufacturer_uid', 't3ver_oid', 't3ver_id', 't3ver_label', 't3ver_wsid', 't3ver_stage', 't3ver_state', 't3ver_tstamp');
 
 		if ($uid > 0) {
 			$this->uid = $uid;
-			$this->lang_uid = $lang_uid;
-			$this->conn_db = new $this->database_class;
+			$this->lang_uid = $langUid;
+			$this->databaseConnection = t3lib_div::makeInstance($this->databaseClass);
 
 			$hookObjectsArr = array();
 			if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_product.php']['postinit'])) {
-				foreach($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_product.php']['postinit'] as $classRef) {
+				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_product.php']['postinit'] as $classRef) {
 					$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
 				}
 			}
-			foreach($hookObjectsArr as $hookObj) {
+			foreach ($hookObjectsArr as $hookObj) {
 				if (method_exists($hookObj, 'postinit')) {
+					/** @noinspection PhpUndefinedMethodInspection *//** @noinspection PhpUndefinedMethodInspection */
 					$hookObj->postinit($this);
 				}
 			}
@@ -134,7 +145,6 @@ class tx_commerce_product extends tx_commerce_element_alib {
 		}
 	}
 
-
 	/*******************************************************************************************
 	 * Public Methods
 	 *******************************************************************************************/
@@ -144,11 +154,22 @@ class tx_commerce_product extends tx_commerce_element_alib {
 	 *
 	 * @return string Product title
 	 * @access public
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getTitle instead
 	 */
-	function get_title() {
-		return $this->title;
+	public function get_title() {
+		t3lib_div::logDeprecatedFunction();
+
+		return $this->getTitle();
 	}
 
+	/**
+	 * Return product title
+	 *
+	 * @return string
+	 */
+	public function getTitle() {
+		return $this->title;
+	}
 
 	/**
 	 * Return product pid
@@ -156,20 +177,18 @@ class tx_commerce_product extends tx_commerce_element_alib {
 	 * @return integer Product pid
 	 * @access public
 	 */
-	function get_pid() {
+	public function get_pid() {
 		return $this->pid;
 	}
-
 
 	/**
 	 * Returns the uid of the live version of this product
 	 *
 	 * @return integer UID of live version of this product
 	 */
-	function get_t3ver_oid() {
+	public function get_t3ver_oid() {
 		return $this->t3ver_oid;
 	}
-
 
 	/**
 	 * Returns the related page of the product
@@ -177,10 +196,9 @@ class tx_commerce_product extends tx_commerce_element_alib {
 	 * @return integer Related page
 	 * @access public
 	 */
-	function getRelatedPage() {
+	public function getRelatedPage() {
 		return $this->relatedpage;
 	}
-
 
 	/**
 	 * Return product subtitle
@@ -188,10 +206,9 @@ class tx_commerce_product extends tx_commerce_element_alib {
 	 * @return string Product subtitle
 	 * @access public
 	 */
-	function get_subtitle() {
+	public function get_subtitle() {
 		return $this->subtitle;
 	}
-
 
 	/**
 	 * Return Product description
@@ -199,10 +216,22 @@ class tx_commerce_product extends tx_commerce_element_alib {
 	 * @return string Product description
 	 * @access public
 	 */
-	function get_description() {
+	public function getDescription() {
 		return $this->description;
 	}
 
+	/**
+	 * Return Product description
+	 *
+	 * @return string Product description
+	 * @access public
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getDescription instead
+	 */
+	public function get_description() {
+		t3lib_div::logDeprecatedFunction();
+
+		return $this->getDescription();
+	}
 
 	/**
 	 * Returns the product teaser
@@ -210,10 +239,9 @@ class tx_commerce_product extends tx_commerce_element_alib {
 	 * @return string Product teaser
 	 * @access public
 	 */
-	function get_teaser() {
+	public function get_teaser() {
 		return $this->teaser;
 	}
-
 
 	/**
 	 * Returns an Array of Images
@@ -221,60 +249,69 @@ class tx_commerce_product extends tx_commerce_element_alib {
 	 * @return array Images of this product
 	 * @access public
 	 */
-	function getTeaserImages() {
+	public function getTeaserImages() {
 		return $this->teaserImagesArray;
 	}
-
 
 	/**
 	 * Get list of article uids
 	 *
 	 * @return array Article uids
 	 */
-	function getArticleUids() {
+	public function getArticleUids() {
 		return $this->articles_uids;
 	}
-
 
 	/**
 	 * Get list of article objects
 	 *
 	 * @return array Article objects
 	 */
-	function getArticleObjects() {
+	public function getArticleObjects() {
 		return $this->articles;
 	}
-
 
 	/**
 	 * Get number of articles of this product
 	 *
 	 * @return integer Number of articles
 	 */
-	function getNumberOfArticles() {
+	public function getNumberOfArticles() {
 		return count($this->articles);
 	}
 
+	/**
+	 * Load article list of this product and store in private class variable
+	 *
+	 * @return array Article uids
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use loadArticles instead
+	 */
+	public function load_articles() {
+		t3lib_div::logDeprecatedFunction();
+
+		return $this->loadArticles();
+	}
 
 	/**
 	 * Load article list of this product and store in private class variable
 	 *
 	 * @return array Article uids
 	 */
-	function load_articles() {
-		if ($this->articles_loaded == FALSE) {
+	public function loadArticles() {
+		if ($this->articlesLoaded == FALSE) {
 			$uidToLoadFrom = $this->uid;
 			if (($this->get_t3ver_oid() > 0) && ($this->get_t3ver_oid() <> $this->uid) && (is_Object($GLOBALS['TSFE']) && $GLOBALS['TSFE']->beUserLogin)) {
 				$uidToLoadFrom = $this->get_t3ver_oid();
 			}
-			if ($this->articles_uids = $this->conn_db->get_articles($uidToLoadFrom)) {
-				foreach($this->articles_uids as $article_uid) {
-					// initialise Array of articles
-					$this->articles[$article_uid] = t3lib_div::makeInstance('tx_commerce_article');
-					$this->articles[$article_uid]->init($article_uid, $this->lang_uid);
-					$this->articles[$article_uid]->load_data();
+			if ($this->articles_uids = $this->databaseConnection->get_articles($uidToLoadFrom)) {
+				foreach ($this->articles_uids as $article_uid) {
+					/** @var tx_commerce_article $article */
+					$article = t3lib_div::makeInstance('tx_commerce_article');
+					$article->init($article_uid, $this->lang_uid);
+					$article->loadData();
+					$this->articles[$article_uid] = $article;
 				}
-				$this->articles_loaded = TRUE;
+				$this->articlesLoaded = TRUE;
 				return $this->articles_uids;
 			} else {
 				return FALSE;
@@ -284,48 +321,48 @@ class tx_commerce_product extends tx_commerce_element_alib {
 		}
 	}
 
-
 	/**
 	 * Load data and divide comma sparated images in array
 	 * inherited from parent
 	 *
-	 * @param mixed Translation mode of the record, default FALSE to use the default way of translation
+	 * @param mixed $translationMode Translation mode of the record, default FALSE to use the default way of translation
+	 * @return tx_commerce_product
 	 */
-	function load_data($translationMode = FALSE) {
-		$return = parent::load_data($translationMode);
+	public function loadData($translationMode = FALSE) {
+		$return = parent::loadData($translationMode);
+
+		/** @noinspection PhpParamsInspection */
 		$this->images_array = t3lib_div::trimExplode(',', $this->images);
 		$this->teaserImagesArray = t3lib_div::trimExplode(',', $this->teaserimages);
 
 		return $return;
 	}
 
-
 	/**
 	 * Get category master parent category
 	 *
-	 * @return uid of category
+	 * @return array uid of category
 	 */
-	function getMasterparentCategory() {
-		return $this->conn_db->get_parent_categorie($this->uid);
+	public function getMasterparentCategory() {
+		return $this->databaseConnection->getParentCategories($this->uid);
 	}
-
 
 	/**
 	 * Get related products
 	 *
-	 * @TODO Check for stock/show_with_no_stock=1 ?
 	 * @return array Related product objecs
 	 */
-	function getRelatedProducts() {
+	public function getRelatedProducts() {
 		if (!$this->relatedProducts_loaded) {
-			$this->relatedProduct_uids = $this->conn_db->get_related_product_uids($this->uid);
+			$this->relatedProduct_uids = $this->databaseConnection->get_related_product_uids($this->uid);
 			if (count($this->relatedProduct_uids) > 0) {
 				foreach ($this->relatedProduct_uids as $productId => $categoryId) {
+					/** @var tx_commerce_product $product */
 					$product = t3lib_div::makeInstance('tx_commerce_product');
 					$product->init($productId, $this->lang_uid);
-					$product->load_data(); // TODO: is it our job to load here?
-					$product->load_articles();
-					// Check if the user is allowed to access the product and if the product has at least one article
+					$product->loadData();
+					$product->loadArticles();
+						// Check if the user is allowed to access the product and if the product has at least one article
 					if ($product->isAccessible() && $product->getNumberOfArticles() >= 1) {
 						$this->relatedProducts[] = $product;
 					}
@@ -333,94 +370,95 @@ class tx_commerce_product extends tx_commerce_element_alib {
 			}
 			$this->relatedProducts_loaded = TRUE;
 		}
-		
+
 		return $this->relatedProducts;
 	}
-
 
 	/**
 	 * Get all parent categories
 	 *
 	 * @return array Parent categories of product
 	 */
-	function getParentCategories() {
-		return $this->conn_db->getParentCategories($this->uid);
+	public function getParentCategories() {
+		return $this->databaseConnection->getParentCategories($this->uid);
 	}
-
 
 	/**
 	 * Get l18n overlays of this product
 	 *
 	 * @return array l18n overlay objects
 	 */
-	function get_l18n_products() {
-		$uid_lang = $this->conn_db->get_l18n_products($this->uid);
+	public function get_l18n_products() {
+		$uid_lang = $this->databaseConnection->get_l18n_products($this->uid);
 		return $uid_lang;
 	}
-
 
 	/**
 	 * Get list of articles of this product filtered by given attribute UID and attribute value
 	 *
-	 * @TODO Move DB connector to db_product
-	 * @TODO Create useful and understandable comments in english ...
-	 * @param array (
+	 * @param array $attribute_Array (
 	 * 			array('AttributeUid'=>$attributeUID, 'AttributeValue'=>$attributeValue),
 	 * 			array('AttributeUid'=>$attributeUID, 'AttributeValue'=>$attributeValue),
 	 * 		...
 	 * 		)
-	 * @param Proof if script is running without instance and so without a single product
+	 * @param boolean|integer $proofUid Proof if script is running without instance and so without a single product
 	 * @return array of article uids
 	 */
-	function get_Articles_by_AttributeArray($attribute_Array, $proofUid = 1) {
-		if ($proofUid) {
-			$whereUid = ' and tx_commerce_articles.uid_product = ' . intval($this->uid);
-		}
+	public function get_Articles_by_AttributeArray($attribute_Array, $proofUid = 1) {
+		$whereUid = $proofUid ? ' and tx_commerce_articles.uid_product = ' . intval($this->uid) : '';
 
 		$first = 1;
 
-		$addwhere = '';
 		if (is_array($attribute_Array)) {
-			foreach($attribute_Array as $uid_val_pair) {
-				// Initialize arrays to prevent warningn in array_intersect()
+			/** @var t3lib_db $database */
+			$database = & $GLOBALS['TYPO3_DB'];
+			$attribute_uid_list = array();
+			foreach ($attribute_Array as $uid_val_pair) {
+					// Initialize arrays to prevent warningn in array_intersect()
 				$next_array = array();
 
 				$addwheretmp = '';
 
 					// attribute char wird noch nicht verwendet, dafuer muss eine Pruefung auf die ID
 				if (is_string($uid_val_pair['AttributeValue'])) {
-					$addwheretmp.= " OR (tx_commerce_attributes.uid = " . intval($uid_val_pair['AttributeUid']) . " AND tx_commerce_articles_article_attributes_mm.value_char='" . $GLOBALS['TYPO3_DB']->quoteStr($uid_val_pair['AttributeValue'], 'tx_commerce_articles_article_attributes_mm') . "' )";
+					$addwheretmp .= ' OR (tx_commerce_attributes.uid = ' . intval($uid_val_pair['AttributeUid']) .
+						' AND tx_commerce_articles_article_attributes_mm.value_char="' .
+						$database->quoteStr($uid_val_pair['AttributeValue'], 'tx_commerce_articles_article_attributes_mm') .
+						'" )';
 				}
 
 					// Nach dem charwert immer ueberpruefen, solange value_char noch nicht drin ist.
 				if (is_float($uid_val_pair['AttributeValue']) || is_integer(intval($uid_val_pair['AttributeValue']))) {
-					$addwheretmp.= " OR (tx_commerce_attributes.uid = " . intval($uid_val_pair['AttributeUid']) . " AND tx_commerce_articles_article_attributes_mm.default_value in ('" . $GLOBALS['TYPO3_DB']->quoteStr($uid_val_pair['AttributeValue'], 'tx_commerce_articles_article_attributes_mm') . "' ) )";
+					$addwheretmp .= ' OR (tx_commerce_attributes.uid = ' . intval($uid_val_pair['AttributeUid']) .
+						' AND tx_commerce_articles_article_attributes_mm.default_value in ("' .
+						$database->quoteStr($uid_val_pair['AttributeValue'], 'tx_commerce_articles_article_attributes_mm') . '" ) )';
 				}
 
 				if (is_float($uid_val_pair['AttributeValue']) || is_integer(intval($uid_val_pair['AttributeValue']))) {
-					$addwheretmp.= " OR (tx_commerce_attributes.uid = " . intval($uid_val_pair['AttributeUid']) . " AND tx_commerce_articles_article_attributes_mm.uid_valuelist in ('" . $GLOBALS['TYPO3_DB']->quoteStr($uid_val_pair['AttributeValue'], 'tx_commerce_articles_article_attributes_mm') . "') )";
+					$addwheretmp .= ' OR (tx_commerce_attributes.uid = ' . intval($uid_val_pair['AttributeUid']) .
+						' AND tx_commerce_articles_article_attributes_mm.uid_valuelist in ("' .
+						$database->quoteStr($uid_val_pair['AttributeValue'], 'tx_commerce_articles_article_attributes_mm') . '") )';
 				}
 
 				$addwhere = ' AND (0 ' . $addwheretmp . ') ';
 
-				$result = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
+				$result = $database->exec_SELECT_mm_query(
 					'distinct tx_commerce_articles.uid',
 					'tx_commerce_articles',
 					'tx_commerce_articles_article_attributes_mm',
 					'tx_commerce_attributes',
-					$addwhere . " AND tx_commerce_articles.hidden = 0 and tx_commerce_articles.deleted = 0" . $whereUid
+					$addwhere . ' AND tx_commerce_articles.hidden = 0 and tx_commerce_articles.deleted = 0' . $whereUid
 				);
 
-				if (($result) && ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0)) {
-					while ($return_data = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
+				if (($result) && ($database->sql_num_rows($result) > 0)) {
+					while ($return_data = $database->sql_fetch_assoc($result)) {
 						$next_array[] = $return_data['uid'];
 					}
-					$GLOBALS['TYPO3_DB']->sql_free_result($result);
+					$database->sql_free_result($result);
 				}
 
-					// Es sollen nur Artikel zur?ckgeliefert werden, die in allen Array's vorkommen.
-					// Daher das Erste Array setzen und dann mit Array Intersect nur noch die ?bereinstimmungen
-					// behalten.
+					// Return only the first article that exists in all arrays
+					// that's why the first array get set and then array intersect checks the matching
 				if ($first) {
 					$attribute_uid_list = $next_array;
 					$first = 0;
@@ -432,37 +470,33 @@ class tx_commerce_product extends tx_commerce_element_alib {
 			if (count($attribute_uid_list) > 0) {
 				sort($attribute_uid_list);
 				return $attribute_uid_list;
-			} else {
-				return array();
-			}
 		}
 	}
 
+		return array();
+	}
 
 	/**
 	 * Get list of articles of this product filtered by given attribute UID and attribute value
 	 *
-	 * @TODO handling of valuelists
 	 * @see get_Articles_by_AttributeArray()
 	 * @param attribute_UID
 	 * @param attribute_value
 	 * @return array of article uids
 	 */
-	function get_Articles_by_Attribute($attributeUid, $attributeValue) {
+	public function get_Articles_by_Attribute($attributeUid, $attributeValue) {
 		return $this->get_Articles_by_AttributeArray(array(array('AttributeUid' => $attributeUid, 'AttributeValue' => $attributeValue)));
 	}
-
 
 	/**
 	 * Compare an array record by its sorting value
 	 *
-	 * @param array Left
-	 * @param array Right
+	 * @param array $array1 Left
+	 * @param array $array2 Right
 	 */
 	public static function compareBySorting($array1, $array2) {
 		return $array1['sorting'] - $array2['sorting'];
 	}
-
 
 	/**
 	 * Get attribute matrix of products and articles
@@ -470,12 +504,12 @@ class tx_commerce_product extends tx_commerce_element_alib {
 	 * This method gets the attributes of a product or an article and compiles them to an unified array of attributes
 	 * This method handles the different types of values of an attribute: character values, integer values and value lists
 	 *
-	 * @param mixed Array of restricted product articles (usually shall, must, ...), FALSE for all, FALSE for product attribute list
-	 * @param mixed Array of restricted attributes, FALSE for all
-	 * @param boolean TRUE if 'showvalue' field of value list table should be cared of
-	 * @param string Name of table with sorting field of table to order records
-	 * @param boolean TRUE if a fallback to default value should be done if a localization of an attribute value or value char is not available in localized row
-	 * @param string Name of parent table, either tx_commerce_articles or tx_commerce_products
+	 * @param mixed $articleList Array of restricted product articles (usually shall, must, ...), FALSE for all, FALSE for product attribute list
+	 * @param mixed $attributeListInclude Array of restricted attributes, FALSE for all
+	 * @param boolean $valueListShowValueInArticleProduct TRUE if 'showvalue' field of value list table should be cared of
+	 * @param string $sortingTable Name of table with sorting field of table to order records
+	 * @param boolean $localizationAttributeValuesFallbackToDefault TRUE if a fallback to default value should be done if a localization of an attribute value or value char is not available in localized row
+	 * @param string $parentTable Name of parent table, either tx_commerce_articles or tx_commerce_products
 	 * @return mixed Array if attributes where found, else FALSE
 	 */
 	public function getAttributeMatrix(
@@ -486,6 +520,8 @@ class tx_commerce_product extends tx_commerce_element_alib {
 			$localizationAttributeValuesFallbackToDefault = FALSE,
 			$parentTable = 'tx_commerce_articles'
 		) {
+		/** @var t3lib_db $database */
+		$database = & $GLOBALS['TYPO3_DB'];
 
 			// Early return if no product is given
 		if (!$this->uid > 0) {
@@ -501,7 +537,7 @@ class tx_commerce_product extends tx_commerce_element_alib {
 		}
 
 			// Execute main query
-		$attributeDataArrayRessource = $GLOBALS['TYPO3_DB']->sql_query(
+		$attributeDataArrayRessource = $database->sql_query(
 			$this->getAttributeMatrixQuery(
 				$parentTable,
 				$mmTable,
@@ -519,7 +555,7 @@ class tx_commerce_product extends tx_commerce_element_alib {
 		$attributeLanguageOverlayBlacklist = array();
 
 			// Compile target data array
-		while ($attributeDataRow = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($attributeDataArrayRessource)) {
+		while ($attributeDataRow = $database->sql_fetch_assoc($attributeDataArrayRessource)) {
 				// AttributeUid affected by this reord
 			$currentAttributeUid = $attributeDataRow['attributes_uid'];
 
@@ -538,10 +574,9 @@ class tx_commerce_product extends tx_commerce_element_alib {
 				$targetDataArray[$currentAttributeUid]['valueformat'] = $attributeDataRow['attributes_valueformat'];
 				$targetDataArray[$currentAttributeUid]['Internal_title'] = $attributeDataRow['attributes_internal_title'];
 				$targetDataArray[$currentAttributeUid]['icon'] = $attributeDataRow['attributes_icon'];
-				
+
 					// Fetch language overlay of attribute if given
 					// Overwrite title, unit and Internal_title (sic!) of attribute
-					// @TODO: This should be refactored to some language overlay method of an attribute object
 				if ($this->lang_uid > 0) {
 					$overwriteValues = array();
 					$overwriteValues['uid'] = $currentAttributeUid;
@@ -566,8 +601,8 @@ class tx_commerce_product extends tx_commerce_element_alib {
 						$attributeLanguageOverlayBlacklist[] = $currentAttributeUid;
 						continue;
 					}
-				} // End of language handling
-			} // End of if new attribute uid
+				}
+			}
 
 				// There is a nasty difference between article and product attributes regarding default_value field:
 				// For attributes: default_value must be an integer value and string values are stored in value_char
@@ -588,8 +623,7 @@ class tx_commerce_product extends tx_commerce_element_alib {
 					// Localization of value_char
 				if ($this->lang_uid > 0) {
 						// Get uid of localized article (lang_uid = selected lang and l18n_parent = current article)
-						// @TODO: Add a db key on l18n_parent + sys_language_uid, it probably makes sense for this type of query
-					$localizedArticleUid = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+					$localizedArticleUid = $database->exec_SELECTgetRows(
 						'uid',
 						$parentTable,
 						'l18n_parent=' . $attributeDataRow['parent_uid'] .
@@ -607,7 +641,7 @@ class tx_commerce_product extends tx_commerce_element_alib {
 							$selectFields[] = 'value_char';
 						}
 							// Fetch mm record with overlay values
-						$localizedArticleAttributeValues = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+						$localizedArticleAttributeValues = $database->exec_SELECTgetRows(
 							implode(', ', $selectFields),
 							$mmTable,
 							'uid_local=' . $localizedArticleUid .
@@ -616,13 +650,13 @@ class tx_commerce_product extends tx_commerce_element_alib {
 							// Use value_char if set, else check for default_value, else use non localized value if enabled fallback
 						if (strlen($localizedArticleAttributeValues[0]['value_char']) > 0) {
 							$targetDataArray[$currentAttributeUid]['values'][] = $localizedArticleAttributeValues[0]['value_char'];
-						} else if (strlen($localizedArticleAttributeValues[0]['default_value']) > 0) {
+						} elseif (strlen($localizedArticleAttributeValues[0]['default_value']) > 0) {
 							$targetDataArray[$currentAttributeUid]['values'][] = $localizedArticleAttributeValues[0]['default_value'];
-						} else if ($localizationAttributeValuesFallbackToDefault) {
+						} elseif ($localizationAttributeValuesFallbackToDefault) {
 							$targetDataArray[$currentAttributeUid]['values'][] = $attributeDataRow['value_char'];
 						}
-					} // End of localization handling
-				} else { // Not localized record
+					}
+				} else {
 						// Use value_char if set, else default_value
 					if (strlen($attributeDataRow['value_char']) > 0) {
 						$targetDataArray[$currentAttributeUid]['values'][] = $attributeDataRow['value_char'];
@@ -630,14 +664,14 @@ class tx_commerce_product extends tx_commerce_element_alib {
 						$targetDataArray[$currentAttributeUid]['values'][] = $attributeDataRow['default_value'];
 					}
 				}
-			} else if ($attributeDataRow['uid_valuelist']) {
+			} elseif ($attributeDataRow['uid_valuelist']) {
 					// Get value list rows
-				$valueListArrayRows = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+				$valueListArrayRows = $database->exec_SELECTgetRows(
 					'*',
 					'tx_commerce_attribute_values',
 					'uid IN (' . $attributeDataRow['uid_valuelist'] . ')'
 				);
-				foreach ($valueListArrayRows as $valueListArrayRowNumber => $valueListArrayRow) {
+				foreach ($valueListArrayRows as $valueListArrayRow) {
 						// Ignore row if this value list has already been calculated
 						// This might happen if method is called with multiple article uid's
 					if (count(array_intersect(array($valueListArrayRow['uid']), $targetDataArray[$currentAttributeUid]['valueuidlist'])) > 0) {
@@ -645,7 +679,6 @@ class tx_commerce_product extends tx_commerce_element_alib {
 					}
 
 						// Value lists must be localized. So overwrite current row with localization record
-						// @TODO: This doesn't seem to be very clever and is just a re-implementation of the original matrix method
 					if ($this->lang_uid > 0) {
 						$valueListArrayRow = $GLOBALS['TSFE']->sys_page->getRecordOverlay(
 							'tx_commerce_attribute_values',
@@ -655,24 +688,20 @@ class tx_commerce_product extends tx_commerce_element_alib {
 						);
 					}
 					if (!$valueListArrayRow) {
-							// @TODO: There is probably a bug with this: An attribute value should be
-							// unset if no value list had a language overlay
-							// This is a bug re-implementation from the original matrix method!
 						continue;
 					}
-					
+
 						// Add value list row to target array
 					if ($valueListShowValueInArticleProduct || $valueListArrayRow['showvalue'] == 1) {
 						$targetDataArray[$currentAttributeUid]['values'][] = $valueListArrayRow;
 						$targetDataArray[$currentAttributeUid]['valueuidlist'][] = $valueListArrayRow['uid'];
 					}
-				} // End of value list iteration
-			} // End of attribute value list handling
-
-		} // End of while fetch mm rows
+				}
+			}
+		}
 
 			// Free resources of main query
-		$GLOBALS['TYPO3_DB']->sql_free_result($attributeDataArrayRessource);
+		$database->sql_free_result($attributeDataArrayRessource);
 
 			// Return "I didn't found anything, so I'm not an array"
 			// This hack is a re-implementation of the original matrix behaviour
@@ -695,19 +724,18 @@ class tx_commerce_product extends tx_commerce_element_alib {
 		return $targetDataArray;
 	}
 
-
 	/**
 	 * Create query to get all attributes of articles or products
 	 * This is a join over three tables:
 	 * 		parent table, either tx_commerce_articles or tx_commerce_producs
-	 *		corresponding mm table
-	 *		tx_commerce_attributes
+	 * 		corresponding mm table
+	 * 		tx_commerce_attributes
 	 *
-	 * @param string Name of the parent table, either tx_commerce_articles or tx_commerce_products
-	 * @param string Name of the mm table, either tx_commerce_articles_article_attributes_mm or tx_commerce_products_attributes_mm
-	 * @param string Name of table with .sorting field to order records
-	 * @param mixed Array of some restricted articles of this product (shall, must, ...), FALSE for all articles of product, FALSE if $parentTable = tx_commerce_products
-	 * @param mixed Array of restricted attributes, FALSE for all attributes
+	 * @param string $parentTable Name of the parent table, either tx_commerce_articles or tx_commerce_products
+	 * @param string $mmTable Name of the mm table, either tx_commerce_articles_article_attributes_mm or tx_commerce_products_attributes_mm
+	 * @param string $sortingTable Name of table with .sorting field to order records
+	 * @param mixed $articleList Array of some restricted articles of this product (shall, must, ...), FALSE for all articles of product, FALSE if $parentTable = tx_commerce_products
+	 * @param mixed $attributeList Array of restricted attributes, FALSE for all attributes
 	 * @return string Query to be executed
 	 */
 	protected function getAttributeMatrixQuery(
@@ -718,6 +746,9 @@ class tx_commerce_product extends tx_commerce_element_alib {
 			$attributeList = FALSE
 		) {
 
+		/** @var t3lib_db $database */
+		$database = & $GLOBALS['TYPO3_DB'];
+
 		$selectFields = array();
 		$selectWhere = array();
 
@@ -725,7 +756,7 @@ class tx_commerce_product extends tx_commerce_element_alib {
 		if ($parentTable == 'tx_commerce_articles') {
 				// Load full article list of product if not given
 			if ($articleList === FALSE) {
-				$articleList = $this->load_articles();
+				$articleList = $this->loadArticles();
 			}
 				// Get article attributes of current product only
 			$selectWhere[] = $parentTable . '.uid_product = ' . $this->uid;
@@ -763,7 +794,7 @@ class tx_commerce_product extends tx_commerce_element_alib {
 		$selectWhere[] = 'tx_commerce_attributes.uid = ' . $mmTable . '.uid_foreign';
 
 			// Restrict attribute list if given
-		if (is_array($attributeList)) {
+		if (is_array($attributeList) && !empty($attributeList)) {
 			$selectWhere[] = 'tx_commerce_attributes.uid IN (' . implode(',', $attributeList) . ')';
 		}
 
@@ -781,7 +812,7 @@ class tx_commerce_product extends tx_commerce_element_alib {
 		$selectOrder = $sortingTable . '.sorting';
 
 			// Compile query
-		$attributeMmQuery = $GLOBALS['TYPO3_DB']->SELECTquery(
+		$attributeMmQuery = $database->SELECTquery(
 			'DISTINCT ' . implode(', ', $selectFields),
 			implode(', ', $selectFrom),
 			implode(' AND ', $selectWhere),
@@ -792,18 +823,21 @@ class tx_commerce_product extends tx_commerce_element_alib {
 		return($attributeMmQuery);
 	}
 
-
-
-
 	/**
 	 * Generates the matrix for attribute values for attribute select options in FE
 	 *
-	 * @param array of attribute->value pairs, used as default.
+	 * @param array $attributeValues of attribute->value pairs, used as default.
 	 * @return array Values
 	 */
-	function getSelectAttributeValueMatrix(&$attributeValues = array()) {
+	public function getSelectAttributeValueMatrix(&$attributeValues = array()) {
+		$values = array();
+		$levelAttributes = array();
+
+		/** @var t3lib_db $database */
+		$database = & $GLOBALS['TYPO3_DB'];
+
 		if ($this->uid > 0) {
-			$articleList = $this->load_articles();
+			$articleList = $this->loadArticles();
 
 			$addWhere = '';
 			if (is_array($articleList) && count($articleList) > 0) {
@@ -811,7 +845,7 @@ class tx_commerce_product extends tx_commerce_element_alib {
 				$addWhere = 'uid_local IN (' . $queryArticleList . ')';
 			}
 
-			$articleAttributes = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+			$articleAttributes = $database->exec_SELECTgetRows(
 				'uid_local,uid_foreign,uid_valuelist',
 				'tx_commerce_articles_article_attributes_mm',
 				$addWhere,
@@ -821,17 +855,15 @@ class tx_commerce_product extends tx_commerce_element_alib {
 
 			$levels = array();
 			$article = FALSE;
-			$values = array();
-			$levelAttributes = array();
 			$attributeValuesList = array();
 			$attributeValueSortIndex = array();
 
-			foreach($articleAttributes as $articleAttribute) {
+			foreach ($articleAttributes as $articleAttribute) {
 				$attributeValuesList[] = $articleAttribute['uid_valuelist'];
 				if ($article != $articleAttribute['uid_local']) {
 					$current = &$values;
 					if (count($levels)) {
-						foreach($levels as $level) {
+						foreach ($levels as $level) {
 							if (!isset($current[$level])) {
 								$current[$level] = array();
 							}
@@ -848,7 +880,7 @@ class tx_commerce_product extends tx_commerce_element_alib {
 
 			$current = &$values;
 			if (count($levels)) {
-				foreach($levels as $level) {
+				foreach ($levels as $level) {
 					if (!isset($current[$level])) {
 						$current[$level] = array();
 					}
@@ -860,42 +892,43 @@ class tx_commerce_product extends tx_commerce_element_alib {
 			if (count($attributeValuesList) > 0) {
 				$attributeValuesList = array_unique($attributeValuesList);
 				$attributeValuesList = implode($attributeValuesList, ',');
-				$attributeValueSortQuery = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+				$attributeValueSortQuery = $database->exec_SELECTquery(
 					'sorting,uid',
 					'tx_commerce_attribute_values',
 					'uid IN (' . $attributeValuesList . ')'
 				);
-				while ($attributeValueSort = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($attributeValueSortQuery)) {
+				while ($attributeValueSort = $database->sql_fetch_assoc($attributeValueSortQuery)) {
 					$attributeValueSortIndex[$attributeValueSort['uid']] = $attributeValueSort['sorting'];
 				}
 			}
-		} // End of if product uid
+		}
 
 		$selectMatrix = array();
 		$possible = $values;
 		$impossible = array();
 
-		foreach($levelAttributes as $kV) {
+		foreach ($levelAttributes as $kV) {
 			$tImpossible = array();
 			$tPossible = array();
 			$selected = $attributeValues[$kV];
 			if (!$selected) {
+				/** @var tx_commerce_attribute $attributeObj */
 				$attributeObj = t3lib_div::makeInstance('tx_commerce_attribute');
 				$attributeObj->init($kV, $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
-				$attributeObj->load_data();
+				$attributeObj->loadData();
 				$attributeValues[$kV] = $selected = $attributeObj->getFirstAttributeValueUid($possible);
 			}
 
-			foreach($impossible as $key => $val) {
+			foreach ($impossible as $key => $val) {
 				$selectMatrix[$kV][$key] = 'disabled';
-				foreach($val as $k => $v) {
+				foreach ($val as $k => $v) {
 					$tImpossible[$k] = $v;
 				}
 			}
 
-			foreach($possible as $key => $val) {
+			foreach ($possible as $key => $val) {
 				$selectMatrix[$kV][$key] = $selected == $key ? 'selected' : 'possible';
-				foreach($val as $k => $v) {
+				foreach ($val as $k => $v) {
 					if (!$selected || $key == $selected) {
 						$tPossible[$k] = $v;
 					} else {
@@ -911,37 +944,40 @@ class tx_commerce_product extends tx_commerce_element_alib {
 		return $selectMatrix;
 	}
 
-
 	/**
 	 * Generates a Matrix from these concerning articles for all attributes and the values therefor
 	 *
-	 * @TODO Split DB connects to db_class
-	 * @param mixed Uids of articles or FALSE
-	 * @param mixed Array of attribute uids to include or FALSE for all attributes
-	 * @param boolean Wether or net hidden values should be shown
-	 * @param string Default order by of attributes
+	 * @param mixed $articleList Uids of articles or FALSE
+	 * @param mixed $attribute_include Array of attribute uids to include or FALSE for all attributes
+	 * @param boolean $showHiddenValues Wether or net hidden values should be shown
+	 * @param string $sortingTable Default order by of attributes
+	 * @return boolean|array
 	 */
-	function get_selectattribute_matrix($articleList = FALSE, $attribute_include = FALSE, $showHiddenValues = TRUE, $sortingTable = 'tx_commerce_articles_article_attributes_mm') {
+	public function get_selectattribute_matrix($articleList = FALSE, $attribute_include = FALSE, $showHiddenValues = TRUE, $sortingTable = 'tx_commerce_articles_article_attributes_mm') {
 		$return_array = array();
 
 			// If no list is given, take complate arctile-list from product
 		if ($this->uid > 0) {
 			if ($articleList == FALSE) {
-				$articleList = $this->load_articles();
+				$articleList = $this->loadArticles();
 			}
 
+			$addwhere = '';
 			if (is_array($attribute_include)) {
 				if (!is_null($attribute_include[0])) {
-					$addwhere.= ' AND tx_commerce_attributes.uid in (' . implode(',', $attribute_include) . ')';
+					$addwhere .= ' AND tx_commerce_attributes.uid in (' . implode(',', $attribute_include) . ')';
 				}
 			}
 
+			$addwhere2 = '';
 			if (is_array($articleList) && count($articleList) > 0) {
 				$query_article_list = implode(',', $articleList);
 				$addwhere2 = ' AND tx_commerce_articles.uid in (' . $query_article_list . ')';
 			}
 
-			$result = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
+			/** @var t3lib_db $database */
+			$database = & $GLOBALS['TYPO3_DB'];
+			$result = $database->exec_SELECT_mm_query(
 				'distinct tx_commerce_attributes.uid,tx_commerce_attributes.sys_language_uid,tx_commerce_articles.uid as article ,tx_commerce_attributes.title, tx_commerce_attributes.unit, tx_commerce_attributes.valueformat, tx_commerce_attributes.internal_title,tx_commerce_attributes.icon,tx_commerce_attributes.iconmode, ' . $sortingTable . '.sorting',
 				'tx_commerce_articles',
 				'tx_commerce_articles_article_attributes_mm',
@@ -954,63 +990,64 @@ class tx_commerce_product extends tx_commerce_element_alib {
 
 			$addwhere = $addwhere2;
 
-			if (($result) && ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0)) {
-				while ($data = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
+			if (($result) && ($database->sql_num_rows($result) > 0)) {
+				while ($data = $database->sql_fetch_assoc($result)) {
 						// Language overlay
 					if ($this->lang_uid > 0) {
+						$proofSQL = '';
 						if (is_object($GLOBALS['TSFE']->sys_page)) {
 							$proofSQL = $GLOBALS['TSFE']->sys_page->enableFields('tx_commerce_attributes', $GLOBALS['TSFE']->showHiddenRecords);
 						}
-						$result2 = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+						$result2 = $database->exec_SELECTquery(
 							'*',
 							'tx_commerce_attributes',
 							'uid = ' . $data['uid'] . ' ' . $proofSQL
 						);
 
 							// Result should contain only one Dataset
-						if ($GLOBALS['TYPO3_DB']->sql_num_rows($result2) == 1) {
-							$return_data = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result2);
-							$GLOBALS['TYPO3_DB']->sql_free_result($result2);
+						if ($database->sql_num_rows($result2) == 1) {
+							$return_data = $database->sql_fetch_assoc($result2);
+							$database->sql_free_result($result2);
 							$return_data = $GLOBALS['TSFE']->sys_page->getRecordOverlay('tx_commerce_attributes', $return_data, $this->lang_uid, $this->translationMode);
+
 							if (!is_array($return_data)) {
 									// No Translation possible, so next interation
 								continue;
 							}
-						}
+
 						$data['title'] = $return_data['title'];
 						$data['unit'] = $return_data['unit'];
 						$data['internal_title'] = $return_data['internal_title'];
-					} // End of localization
+						}
+					}
 
 					$valueshown = FALSE;
 
 						// Only get select attributs, since we don't need any other in selectattribut Matrix and we need the arrayKeys in this case
-						// @since 13.12.2005 Get the lokalized values from tx_commerce_articles_article_attributes_mm
+						// @since 13.12.2005 Get the localized values from tx_commerce_articles_article_attributes_mm
 						// @author Ingo Schmitt <is@marketing-factory.de>
 					$valuelist = array();
-					$valueUidList = array();
 					$attribute_uid = $data['uid'];
-					$article = $data['article'];
 
-					$result_value = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
+					$result_value = $database->exec_SELECT_mm_query(
 						'distinct tx_commerce_articles_article_attributes_mm.uid_valuelist',
 						'tx_commerce_articles',
 						'tx_commerce_articles_article_attributes_mm',
 						'tx_commerce_attributes',
 						' AND tx_commerce_articles_article_attributes_mm.uid_valuelist>0 ' .
 							' AND tx_commerce_articles.uid_product = ' . $this->uid .
-							" AND tx_commerce_attributes.uid=$attribute_uid" .
+							' AND tx_commerce_attributes.uid=' . $attribute_uid .
 							$addwhere
 					);
-					if (($valueshown == FALSE) && ($result_value) && ($GLOBALS['TYPO3_DB']->sql_num_rows($result_value) > 0)) {
-						while ($value = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result_value)) {
+					if (($valueshown == FALSE) && ($result_value) && ($database->sql_num_rows($result_value) > 0)) {
+						while ($value = $database->sql_fetch_assoc($result_value)) {
 							if ($value['uid_valuelist'] > 0) {
-								$resvalue = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+								$resvalue = $database->exec_SELECTquery(
 									'*',
 									'tx_commerce_attribute_values',
 									'uid = ' . $value['uid_valuelist']
 								);
-								$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($resvalue);
+								$row = $database->sql_fetch_assoc($resvalue);
 								if ($this->lang_uid > 0) {
 									$row = $GLOBALS['TSFE']->sys_page->getRecordOverlay('tx_commerce_attribute_values', $row, $this->lang_uid, $this->translationMode);
 									if (!is_array($row)) {
@@ -1023,7 +1060,6 @@ class tx_commerce_product extends tx_commerce_element_alib {
 								}
 							}
 						}
-
 						usort($valuelist, array('tx_commerce_product', 'compareBySorting'));
 					}
 
@@ -1039,44 +1075,52 @@ class tx_commerce_product extends tx_commerce_element_alib {
 						);
 					}
 				}
-
 				return $return_array;
-			} // End of if query ressource
-
-		} // End of if product uid
+			}
+		}
 
 		return FALSE;
 	}
 
-
 	/**
-	 * @TODO: Clean up and comment
+	 * @param array|boolean $attributeArray
+	 * @return array|boolean
 	 */
-	function getRelevantArticles($attributeArray = FALSE) {
+	public function getRelevantArticles($attributeArray = FALSE) {
 			// First we need all possible Attribute id's (not attribute value id's)
-		foreach($this->attribute as $attribute) {
+		foreach ($this->attribute as $attribute) {
 			$att_is_in_array = FALSE;
-			foreach($attributeArray as $attribute_temp) {
-				if ($attribute_temp['AttributeUid'] == $attribute->uid) $att_is_in_array = TRUE;
+			foreach ($attributeArray as $attribute_temp) {
+				if ($attribute_temp['AttributeUid'] == $attribute->uid) {
+					$att_is_in_array = TRUE;
+				}
 			}
-			if (!$att_is_in_array) $attributeArray[] = array('AttributeUid' => $attribute->uid, 'AttributeValue' => NULL);
+			if (!$att_is_in_array) {
+				$attributeArray[] = array('AttributeUid' => $attribute->uid, 'AttributeValue' => NULL);
+			}
 		}
 
 		if ($this->uid > 0 && is_array($attributeArray) && count($attributeArray)) {
-			foreach($attributeArray as $key => $attr) {
+			$unionSelects = array();
+			foreach ($attributeArray as $attr) {
 				if ($attr['AttributeValue']) {
 					$unionSelects[] = 'SELECT uid_local AS article_id,uid_valuelist FROM tx_commerce_articles_article_attributes_mm,tx_commerce_articles WHERE uid_local = uid AND uid_valuelist = ' . intval($attr['AttributeValue']) . ' AND tx_commerce_articles.uid_product = ' . $this->uid . ' AND uid_foreign = ' . intval($attr['AttributeUid']) . $GLOBALS['TSFE']->sys_page->enableFields('tx_commerce_articles', $GLOBALS['TSFE']->showHiddenRecords);
 				} else {
 					$unionSelects[] = 'SELECT uid_local AS article_id,uid_valuelist FROM tx_commerce_articles_article_attributes_mm,tx_commerce_articles WHERE uid_local = uid AND tx_commerce_articles.uid_product = ' . $this->uid . ' AND uid_foreign = ' . intval($attr['AttributeUid']) . $GLOBALS['TSFE']->sys_page->enableFields('tx_commerce_articles', $GLOBALS['TSFE']->showHiddenRecords);
 				}
 			}
+			$sql = '';
 			if (is_array($unionSelects)) {
-				$sql = ' SELECT count(article_id) AS counter, article_id FROM ( ';
-				$sql.= implode(" \n UNION \n ", $unionSelects);
-				$sql.= ') AS data GROUP BY article_id having COUNT(article_id) >= ' . (count($unionSelects) - 1) . '';
+				$sql .= ' SELECT count(article_id) AS counter, article_id FROM ( ' . implode(" \n UNION \n ", $unionSelects);
+				$sql .= ') AS data GROUP BY article_id having COUNT(article_id) >= ' . (count($unionSelects) - 1) . '';
 			}
-			$res = $GLOBALS['TYPO3_DB']->sql_query($sql);
-			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+
+			/** @var t3lib_db $database */
+			$database = & $GLOBALS['TYPO3_DB'];
+
+			$res = $database->sql_query($sql);
+			$article_uid_list = array();
+			while ($row = $database->sql_fetch_assoc($res)) {
 				$article_uid_list[] = $row['article_id'];
 			}
 			return $article_uid_list;
@@ -1084,19 +1128,16 @@ class tx_commerce_product extends tx_commerce_element_alib {
 		return FALSE;
 	}
 
-
 	/**
 	 * Returns list of articles (from this product) filtered by price
 	 *
-	 * @todo Move DB connector to db_product
-	 * @author Franz Ripfel
-	 * @param long smallest unit (e.g. cents)
-	 * @param long biggest unit (e.g. cents)
-	 * @param boolean Normally we check for net price, switch to gross price
-	 * @param boolean If script is running without instance and so without a single product
+	 * @param integer $priceMin smallest unit (e.g. cents)
+	 * @param integer $priceMax biggest unit (e.g. cents)
+	 * @param boolean|integer $usePriceGrossInstead Normally we check for net price, switch to gross price
+	 * @param boolean|integer $proofUid If script is running without instance and so without a single product
 	 * @return array of article uids
 	 */
-	function getArticlesByPrice($priceMin = 0, $priceMax = 0, $usePriceGrossInstead = 0, $proofUid = 1) {
+	public function getArticlesByPrice($priceMin = 0, $priceMax = 0, $usePriceGrossInstead = 0, $proofUid = 1) {
 			// first get all real articles, then create objects and check prices
 			// do not get prices directly from DB because we need to take (price) hooks into account
 		$table = 'tx_commerce_articles';
@@ -1104,29 +1145,32 @@ class tx_commerce_product extends tx_commerce_element_alib {
 		if ($proofUid) {
 			$where .= ' and tx_commerce_articles.uid_product = ' . $this->uid;
 		}
-			//todo: put correct constant here
+
 		$where .= ' and article_type_uid=1';
-		$where .= $this->cObj->enableFields($table);
+		$where .= $GLOBALS['TSFE']->sys_page->enableFields($table, $GLOBALS['TSFE']->showHiddenRecords);
 		$groupBy = '';
 		$orderBy = 'sorting';
 		$limit = '';
 
-		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid', $table, $where, $groupBy, $orderBy, $limit);
+		/** @var t3lib_db $database */
+		$database = & $GLOBALS['TYPO3_DB'];
+
+		$res = $database->exec_SELECTquery('uid', $table, $where, $groupBy, $orderBy, $limit);
 		$rawArticleUidList = array();
-		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+		while ($row = $database->sql_fetch_assoc($res)) {
 			$rawArticleUidList[] = $row['uid'];
 		}
-		$GLOBALS['TYPO3_DB']->sql_free_result($res);
+		$database->sql_free_result($res);
 
 			// Run price test
 		$articleUidList = array();
-		foreach($rawArticleUidList as $rawArticleUid) {
+		foreach ($rawArticleUidList as $rawArticleUid) {
 			$tmpArticle = t3lib_div::makeInstance('tx_commerce_article');
 			$tmpArticle->init($rawArticleUid, $this->lang_uid);
-			$tmpArticle->load_data();
+			$tmpArticle->loadData();
 			$myPrice = $usePriceGrossInstead ? $tmpArticle->get_price_gross() : $tmpArticle->get_price_net();
 			if (($priceMin <= $myPrice) && ($myPrice <= $priceMax)) {
-				$articleUidList[] = $tmpArticle->get_uid();
+				$articleUidList[] = $tmpArticle->getUid();
 			}
 		}
 
@@ -1137,60 +1181,59 @@ class tx_commerce_product extends tx_commerce_element_alib {
 		}
 	}
 
-
 	/**
 	 * Evaluates the cheapest article for current product by gross price
 	 *
-	 * @author Franz Ripfel
-	 * @param boolean If true, Compare prices by net instead of gross
-	 * @return article id, FALSE if no article
+	 * @param integer $usePriceNet If true, Compare prices by net instead of gross
+	 * @return integer|boolean article id, FALSE if no article
 	 */
-	function GetCheapestArticle($usePriceNet = 0) {
-		$this->load_articles();
-		$priceArr = array();
-		if (!is_array($this->articles_uids)) {
+	public function GetCheapestArticle($usePriceNet = 0) {
+		$this->loadArticles();
+		if (!is_array($this->articles_uids) || !count($this->articles_uids)) {
 			return FALSE;
 		}
 
-		for ($j = 0;$j < count($this->articles_uids);$j++) {
-			if (is_object($this->articles[$this->articles_uids[$j]]) && ($this->articles[$this->articles_uids[$j]] instanceof tx_commerce_article)) {
-				$priceArr[$this->articles[$this->articles_uids[$j]]->get_uid() ] = ($usePriceNet) ? $this->articles[$this->articles_uids[$j]]->get_price_net() : $this->articles[$this->articles_uids[$j]]->get_price_gross();
+		$priceArr = array();
+		$articleCount = count($this->articles_uids);
+		for ($j = 0; $j < $articleCount; $j++) {
+			$article = & $this->articles[$this->articles_uids[$j]];
+			if (is_object($article) && ($article instanceof tx_commerce_article)) {
+				$priceArr[$article->getUid()] = ($usePriceNet) ? $article->get_price_net() : $article->get_price_gross();
 			}
 		}
 
 		asort($priceArr);
 		reset($priceArr);
-		foreach($priceArr as $key => $value) {
-			return $key;
-		}
-	}
 
+		return current(array_keys($priceArr));
+	}
 
 	/**
 	 * Get manufacturer UID of the product if set
 	 *
-	 * @author Joerg Sprung <jsp@marketing-factory.de>
 	 * @return integer UID of manufacturer
 	 */
-	function getManufacturerUid() {
+	public function getManufacturerUid() {
 		if (isset($this->manufacturer_uid)) {
 			return $this->manufacturer_uid;
 		}
 		return FALSE;
 	}
 
-
 	/**
 	 * Get manufacturer title
 	 *
 	 * @return string manufacturer title
 	 */
-	function getManufacturerTitle() {
+	public function getManufacturerTitle() {
+		$result = '';
+
 		if ($this->getManufacturerUid()) {
-			return $this->conn_db->getManufacturerTitle($this->getManufacturerUid());
-		}
+			$result = $this->databaseConnection->getManufacturerTitle($this->getManufacturerUid());
 	}
 
+		return $result;
+	}
 
 	/**
 	 * Returns TRUE if one Article of Product have more than
@@ -1198,26 +1241,27 @@ class tx_commerce_product extends tx_commerce_element_alib {
 	 *
 	 * @return boolean TRUE if one article of product has stock > 0
 	 */
-	function hasStock() {
-		$this->load_articles();
-		foreach($this->articles as $articleObj) {
-			if ($articleObj->getStock() > 0) {
-				return TRUE;
+	public function hasStock() {
+		$this->loadArticles();
+		$result = FALSE;
+		/** @var tx_commerce_article $article */
+		foreach ($this->articles as $article) {
+			if ($article->getStock() > 0) {
+				$result = TRUE;
 			}
 		}
-		return FALSE;
+		return $result;
 	}
-
 
 	/**
 	 * Carries out the move of the product to the new parent
 	 * Permissions are NOT checked, this MUST be done beforehanda
 	 *
-	 * @param integer uid of the move target
-	 * @param string Operation of move (can be 'after' or 'into'
+	 * @param integer $uid uid of the move target
+	 * @param string $op Operation of move (can be 'after' or 'into'
 	 * @return boolean True on success
 	 */
-	function move($uid, $op = 'after') {
+	public function move($uid, $op = 'after') {
 		if ('into' == $op) {
 				// Uid is a future parent
 			$parent_uid = $uid;
@@ -1226,7 +1270,7 @@ class tx_commerce_product extends tx_commerce_element_alib {
 		}
 
 			// Update parent_category
-		$set = $this->conn_db->updateRecord($this->uid, array('categories' => $parent_uid));
+		$set = $this->databaseConnection->updateRecord($this->uid, array('categories' => $parent_uid));
 
 			// Update relations only, if parent_category was successfully set
 		if ($set) {
@@ -1241,28 +1285,24 @@ class tx_commerce_product extends tx_commerce_element_alib {
 		return TRUE;
 	}
 
-
 	/**
 	 * Sets renderMaxArticles Value in the Object
 	 *
-	 * @param integer New Value
+	 * @param integer $count New Value
 	 * @return void
 	 */
-	function setRenderMaxArticles($count) {
+	public function setRenderMaxArticles($count) {
 		$this->renderMaxArticles = (int)$count;
 	}
-
 
 	/**
 	 * Get renderMaxArticles Value in the Object
 	 *
 	 * @return int RenderMaxArticles
 	 */
-	function getRenderMaxArticles() {
+	public function getRenderMaxArticles() {
 		return $this->renderMaxArticles;
 	}
-
-
 
 	/*******************************************************************************************
 	 * Deprecated methods
@@ -1272,124 +1312,120 @@ class tx_commerce_product extends tx_commerce_element_alib {
 	 * @see tx_comemrce_product::getARticleUids();
 	 * @deprecated Will be removed after 2011-02-27
 	 */
-	function getArticles() {
+	public function getArticles() {
 		return $this->getArticleUids();
 	}
-
-
-	/**
-	 * Returns an Array of Images
-	 *
-	 * @seet getImages()
-	 * @deprecated Will be removed after 2011-02-27
-	 */
-	function get_images() {
-		return $this->getImages();
-	}
-
 
 	/**
 	 * Returns an Array of Images
 	 *
 	 * @return array Images of this product
 	 * @access public
-	 * @deprecated Will be removed after 2011-02-27
 	 */
-	function getImages() {
+	public function getImages() {
 		return $this->images_array;
 	}
-
 
 	/**
 	 * Get category master parent category
 	 *
 	 * @deprecated Will be removed after 2011-02-27
 	 * @see getMasterparentCategory()
-	 * @return uid of master parent category
+	 * @return integer uid of master parent category
 	 */
-	function getMasterparentCategorie() {
+	public function getMasterparentCategorie() {
 		return $this->getMasterparentCategory();
 	}
-
 
 	/**
 	 * Gets the category master parent
 	 *
-	 * @see getMasterparentCategory()
-	 * @deprecated Will be removed after 2011-02-27
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getMasterparentCategory instead
 	 */
-	function get_masterparent_categorie() {
+	public function get_masterparent_categorie() {
+		t3lib_div::logDeprecatedFunction();
 		return $this->getMasterparentCategory();
 	}
-
 
 	/**
 	 * Get all parent categories
 	 * @return array Uids of categories
 	 *
-	 * @see getParentCategories()
-	 * @deprecated Will be removed after 2011-02-27, this method returns only one parent category
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getImages instead
 	 */
-	function get_parent_categories() {
-		return $this->conn_db->get_parent_categories($this->uid);
+	public function get_parent_categories() {
+		t3lib_div::logDeprecatedFunction();
+		return $this->getParentCategories();
 	}
 
+	/**
+	 * Returns an Array of Images
+	 *
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getImages instead
+	 */
+	public function get_images() {
+		t3lib_div::logDeprecatedFunction();
+		return $this->getImages();
+	}
 
 	/**
 	 * Sets a short description
 	 *
-	 * @deprecated Will be removed after 2011-02-27
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use typoscript instead
 	 */
-	function set_leng_description($leng = 150) {
+	public function set_leng_description($leng = 150) {
+		t3lib_div::logDeprecatedFunction();
 		$this->description = substr($this->description, 0, $leng) . '...';
 	}
 
-
 	/**
 	 * Returns the attribute matrix
 	 *
 	 * @see getAttributeMatrix()
-	 * @deprecated Will be removed after 2011-04-08
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getAttributeMatrix instead
 	 */
-	function get_attribute_matrix($articleList = FALSE, $attribute_include = FALSE, $showHiddenValues = TRUE, $sortingTable = 'tx_commerce_articles_article_attributes_mm', $fallbackToDefault = FALSE) {
+	public function get_attribute_matrix($articleList = FALSE, $attribute_include = FALSE, $showHiddenValues = TRUE, $sortingTable = 'tx_commerce_articles_article_attributes_mm', $fallbackToDefault = FALSE) {
+		t3lib_div::logDeprecatedFunction();
 		return $this->getAttributeMatrix($articleList, $attribute_include, $showHiddenValues, $sortingTable, $fallbackToDefault);
 	}
 
-
 	/**
 	 * Returns the attribute matrix
 	 *
 	 * @see getAttributeMatrix()
-	 * @deprecated Will be removed after 2011-02-27
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getAttributeMatrix instead
 	 */
-	function get_atrribute_matrix($articleList = FALSE, $attribute_include = FALSE, $showHiddenValues = TRUE, $sortingTable = 'tx_commerce_articles_article_attributes_mm') {
+	public function get_atrribute_matrix($articleList = FALSE, $attribute_include = FALSE, $showHiddenValues = TRUE, $sortingTable = 'tx_commerce_articles_article_attributes_mm') {
+		t3lib_div::logDeprecatedFunction();
 		return $this->getAttributeMatrix($articleList, $attribute_include, $showHiddenValues, $sortingTable);
 	}
 
-
 	/**
 	 * Returns the attribute matrix
 	 *
 	 * @see getAttributeMatrix()
-	 * @deprecated Will be removed after 2011-04-08
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getAttributeMatrix instead
 	 */
-	function get_product_attribute_matrix($attribute_include = FALSE, $showHiddenValues = TRUE, $sortingTable = 'tx_commerce_products_attributes_mm') {	
+	public function get_product_attribute_matrix($attribute_include = FALSE, $showHiddenValues = TRUE, $sortingTable = 'tx_commerce_products_attributes_mm') {
+		t3lib_div::logDeprecatedFunction();
 		return $this->getAttributeMatrix(FALSE, $attribute_include, $showHiddenValues, $sortingTable, FALSE, 'tx_commerce_products');
 	}
-
 
 	/**
 	 * Generates a Matrix fro these concerning products for all Attributes and the values therfor
 	 *
 	 * @see getAttributeMatrix()
-	 * @deprecated Will be removed after 2011-02-27
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getAttributeMatrix instead
 	 */
-	function get_product_atrribute_matrix($attribute_include = FALSE, $showHiddenValues = TRUE, $sortingTable = 'tx_commerce_products_attributes_mm') {
-		return $this->getAttributeMatrix(FALSE, $attribute_include,  $showHiddenValues, $sortingTable, FALSE, 'tx_commerce_products');
+	public function get_product_atrribute_matrix($attribute_include = FALSE, $showHiddenValues = TRUE, $sortingTable = 'tx_commerce_products_attributes_mm') {
+		t3lib_div::logDeprecatedFunction();
+		return $this->getAttributeMatrix(FALSE, $attribute_include, $showHiddenValues, $sortingTable, FALSE, 'tx_commerce_products');
 	}
 }
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_product.php']) {
-	include_once ($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_product.php']);
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_product.php']) {
+	/** @noinspection PhpIncludeInspection */
+	include_once ($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_product.php']);
 }
+
 ?>

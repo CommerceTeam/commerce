@@ -3,9 +3,9 @@ class tx_commerce_tceforms_hooks {
 	private $extconf;
 	private $lastMaxItems=FALSE;
 	private $next=FALSE;
-	
+
 	function __construct() {
-		$this->extconf = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['extConf'];
+		$this->extconf = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf'];
 	}
 
 	/**
@@ -22,36 +22,36 @@ class tx_commerce_tceforms_hooks {
 	 * @return void: Nothing
 	 */
 	function getSingleField_preProcess($table, $field, &$row, &$out, &$palette, &$extra, $pal, $pObj) {
-		
+
 		if($table=='tx_commerce_products' &&  $this->extconf['simpleMode']==1 && $row['uid']!=$this->extconf['paymentID'] && $row['uid']!=$this->extconf['deliveryID'] && $row['l18n_parent']!=$this->extconf['paymentID'] && $row['l18n_parent']!=$this->extconf['deliveryID']) {
 			$this->lastMaxItems = $GLOBALS['TCA']['tx_commerce_products']['columns']['articles']['config']['maxitems'];
 			$GLOBALS['TCA']['tx_commerce_products']['columns']['articles']['config']['maxitems']=1;
 		}elseif($table=='tx_commerce_products' &&  $this->extconf['simpleMode']==1  && ($row['uid']==$this->extconf['paymentID'] || $row['l18n_parent'] == $this->extconf['paymentID'] || $row['l18n_parent'] == $this->extconf['deliveryID'])) {
 			$articlesArray = explode(',',$row['articles']);
 			$this->lastMaxItems = $GLOBALS['TCA']['tx_commerce_products']['columns']['articles']['config']['maxitems'];
-			$GLOBALS['TCA']['tx_commerce_products']['columns']['articles']['config']['maxitems']=count($articlesArray);			
+			$GLOBALS['TCA']['tx_commerce_products']['columns']['articles']['config']['maxitems']=count($articlesArray);
 		}
 		if($table=='tx_commerce_article_prices') {
 			$row['price_gross']=$this->centurionDivision(intval($row['price_gross']));
 			$row['price_net']=$this->centurionDivision(intval($row['price_net']));
 			$row['purchase_price']=$this->centurionDivision(intval($row['purchase_price']));
-		} 
+		}
 	}
-	
+
 	/**
 	 * Converts a database price into a human readable one i.e. dividing it by 100 using . as a separator
 	 * @param int $price: The database price
 	 * @result string: The $price divided by 100
 	 */
 	private function centurionDivision($price) {
-	
+
 		$price = floatval($price);
 		$result = sprintf("%01.2f",($price/100));
 		return $result;
 	}
-	
+
 	/**
-	 * This hook gets called after a field in tceforms gets rendered. We use this to restore the old values after the hook above got called 
+	 * This hook gets called after a field in tceforms gets rendered. We use this to restore the old values after the hook above got called
 	 *
 	 * @param string $table: The name of the database table (just for calling compatibility)
 	 * @param string $field: The name of the field we work on in $table (just for calling compatibility)
@@ -76,7 +76,7 @@ class tx_commerce_tceforms_hooks {
 		}
 	}
 	/**
-	 * This function returns the html code for the scale price calculation 
+	 * This function returns the html code for the scale price calculation
 	 */
 	function getScaleAmount($uid) {
 		//Hier

@@ -74,10 +74,10 @@ class tx_commerce_dmhooks {
 				(isset($incomingFieldArray['attributesedit']) ||
 				isset($incomingFieldArray['prices']) ||
 				isset($incomingFieldArray['create_new_price']))) ||
-			(( $table == 'tx_commerce_categories') &&
+			(($table == 'tx_commerce_products' || $table == 'tx_commerce_categories') &&
 				isset($incomingFieldArray['attributes']))
 				||
-			(($table == 'tx_commerce_products' ||$table == 'tx_commerce_orders' || $table == 'tx_commerce_order_articles') )
+			(($table == 'tx_commerce_orders' || $table == 'tx_commerce_order_articles') )
 		) ||
 				// don't try ro save anything, if the dataset was just created
 			strtolower(substr($id, 0, 3)) == 'new'
@@ -111,7 +111,6 @@ class tx_commerce_dmhooks {
 				$handleAttributes = true;
 				break;
 			case 'tx_commerce_products':
-                if (isset($incomingFieldArray['attributes'])) {
                     $this->catList = $this->belib->getUidListFromList(explode(',', $incomingFieldArray['categories']));
                     $handleAttributes = true;
 
@@ -121,7 +120,6 @@ class tx_commerce_dmhooks {
                             $this->belib->updateArticleHash($article['uid']);
                         }
                     }
-                }
 
 
 				// direct preview
@@ -129,29 +127,21 @@ class tx_commerce_dmhooks {
 				if (isset($GLOBALS['_POST']['_savedokview_x'])  )	{
 					// if "savedokview" has been pressed and  the beUser works in the LIVE workspace open current record in single view
 					$pagesTSC = t3lib_BEfunc::getPagesTSconfig($GLOBALS['_POST']['popViewId']); // get page TSconfig
-					if ($pagesTSC['tx_commerce_pi1.']['singlePid']) {
-						$previewPageID = $pagesTSC['tx_commerce_pi1.']['singlePid'];
+					if ($pagesTSC['tx_commerce.']['singlePid']) {
+						$previewPageID = $pagesTSC['tx_commerce.']['singlePid'];
 					}else{
-						$previewPageID = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['extConf']['previewPageID'];
+						$previewPageID = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['previewPageID'];
 					}
 					#debug($previewPageID,'$previewPageID',__LINE__,__FILE__);
                     if ($previewPageID > 0) {
-                        $productId = $id;
-                        if ($incomingFieldArray['sys_language_uid'] > 0) {
-                            $pRes = $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow('l18n_parent', 'tx_commerce_products', 'uid = ' .intval($id) . ' AND sys_language_uid = ' . $incomingFieldArray['sys_language_uid'] );
-                            if ($pRes['l18n_parent']) {
-                                $productId = (int)$pRes['l18n_parent'];
-                            };
-                        }
                         // Get Parent CAT UID
                         $productObj = t3lib_div::makeInstance('tx_commerce_product');
-                        $productObj -> init($productId,0);
-                        // Load default language, not translated to get category
-                        $productObj ->load_data();
+						$productObj -> init($id,sys_language_uid);
+                        $productObj ->loadData();
                         $parentCateory = $productObj->getMasterparentCategory();
-                        $GLOBALS['_POST']['popViewId_addParams'] = ($incomingFieldArray['sys_language_uid']>0?'&L='.$incomingFieldArray['sys_language_uid']:'').
-                            '&ADMCMD_vPrev&no_cache=1&tx_commerce_pi1[showUid]='.$productId.
-                            '&tx_commerce_pi1[catUid]='.$parentCateory;
+						$GLOBALS['_POST']['popViewId_addParams'] = ($fieldArray['sys_language_uid']>0?'&L='.$fieldArray['sys_language_uid']:'').
+						'&ADMCMD_vPrev&no_cache=1&tx_commerce[showUid]='.$id.
+						'&tx_commerce[catUid]='.$parentCateory;
                         $GLOBALS['_POST']['popViewId'] = $previewPageID;
                     }
 					#debug(t3lib_div::_GP('popViewId_addParams'),__FUNCTION__);
@@ -394,7 +384,7 @@ class tx_commerce_dmhooks {
 		// We don't have to check for any parent categories, because the attributes from them should already be saved for this product.
 
 		// create an article and a new price for a new product
-		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['extConf']['simpleMode'] && $pUid != NULL)	{
+		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['simpleMode'] && $pUid != NULL)	{
 
 				// search for an article of this product
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'tx_commerce_articles', 'uid_product=' .intval($pUid), '', '', 1);
@@ -756,20 +746,20 @@ class tx_commerce_dmhooks {
 				if('new' != $status && !$GLOBALS['BE_USER']->uc['txcommerce_copyProcess']) {
 					$article = t3lib_div::makeInstance('tx_commerce_article');
 					$article->init($id);
-					$article->load_data();
+					$article->loadData();
  					$productUid = $article->getParentProductUid();
 
 						//get the parent categories of the product
 					$product = t3lib_div::makeInstance('tx_commerce_product');
 					$product->init($productUid);
-					$product->load_data();
+					$product->loadData();
 					$parentCategories = $product->get_parent_categories();
 
 					if (!current($parentCategories)) {
 						$languageParentUid = $product->getL18nParent();
 						$l18nParent = t3lib_div::makeInstance('tx_commerce_product');
 						$l18nParent->init($languageParentUid);
-						$l18nParent->load_data();
+						$l18nParent->loadData();
 						$parentCategories = $l18nParent->get_parent_categories();
 					}
 
@@ -803,7 +793,7 @@ class tx_commerce_dmhooks {
 						$checkId = $id;
 						$category = t3lib_div::makeInstance('tx_commerce_category');
  						$category->init($checkId);
- 						$category->load_data();
+ 						$category->loadData();
 
 							// Use the l18n parent as category for permission checks.
 						if ($l18nParent > 0 || $category->getField('l18n_parent') > 0) {
@@ -967,7 +957,7 @@ class tx_commerce_dmhooks {
 
 							$catDirect = t3lib_div::makeInstance('tx_commerce_category');
 							$catDirect->init($catUid);
-							$catDirect->load_data();
+							$catDirect->loadData();
 
 							$tmpCats 	= $catDirect->getParentCategories();
 							$tmpParents = null;
@@ -1091,7 +1081,7 @@ class tx_commerce_dmhooks {
 
 					$item = t3lib_div::makeInstance('tx_commerce_product');
 					$item->init($id);
-					$item->load_data();
+					$item->loadData();
 
 					if (isset($fieldArray['categories']))	{
 						$catList = $this->belib->getUidListFromList(explode(',', $fieldArray['categories']));
@@ -1174,7 +1164,7 @@ class tx_commerce_dmhooks {
 		}
 
 		$loadDynaFlex = true;
-		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['extConf']['simpleMode']){
+		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['simpleMode']){
 		    if(trim(strtolower((string)$table))== 'tx_commerce_articles'){
 				$loadDynaFlex = false;
 		    }
@@ -1187,11 +1177,11 @@ class tx_commerce_dmhooks {
 			$dynaFlexConf[1]['uid'] = $id;
 			require_once(t3lib_extMgm::extPath('dynaflex') .'class.dynaflex.php');
 
-			$dynaflex = new dynaflex($GLOBALS['TCA'], $dynaFlexConf);
+			$dynaflex = t3lib_div::makeInstance('dynaflex', $GLOBALS['TCA'], $dynaFlexConf);
 			$GLOBALS['TCA'] = $dynaflex->getDynamicTCA();
 			// change for simple mode
 			// override the dynaflex settings after the DynamicTCA
-        	if($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['extConf']['simpleMode'] && trim(strtolower((string)$table))== 'tx_commerce_products') {
+        	if($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['simpleMode'] && trim(strtolower((string)$table))== 'tx_commerce_products') {
                 $GLOBALS['TCA']['tx_commerce_products']['columns']['articles'] = array (
                         'exclude' => 1,
                         'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_products.articles',

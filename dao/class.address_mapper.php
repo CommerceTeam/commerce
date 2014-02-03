@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2006 Carsten Lausen 
+*  (c) 2006 Carsten Lausen
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -29,8 +29,8 @@
 * class address mapper
 * This class handles basic database storage by object mapping.
 * It defines how to insert, update, find and delete a transfer object in the database.
-* 
-* The class needs a parser for object <-> model (transfer object) mapping. 
+*
+* The class needs a parser for object <-> model (transfer object) mapping.
 *
 *
 * @access public
@@ -38,21 +38,18 @@
 * @subpackage commerce
 * @author Carsten Lausen <cl@e-netconsulting.de>
 */
-require_once(dirname(__FILE__).'/class.basic_mapper.php');
- 
-
 class address_mapper extends basic_mapper {
- 	
- 	function init() {
-	 	$this->dbTable = 'tt_address';	//dbtable for persistence
-	 	$this->createPid = 6;   //new record pid
- 	}
- 	
+	public function init() {
+			// dbtable for persistence
+		$this->dbTable = 'tt_address';
+			// new record pid
+		$this->createPid = 6;
+	}
 }
 
-// Include extension?
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/dao/class.address_mapper.php'])	{
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/dao/class.address_mapper.php']) {
+	/** @noinspection PhpIncludeInspection */
 	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/dao/class.address_mapper.php']);
 }
- 
+
 ?>

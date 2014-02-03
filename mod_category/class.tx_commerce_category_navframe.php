@@ -66,7 +66,7 @@ class tx_commerce_category_navframe {
 		$this->categoryTree->setBare(false);
 
 		// Get SimpleMode.
-		$sm = (int)$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['extConf']['simpleMode'];
+		$sm = (int)$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['simpleMode'];
 
 		// Assign config.
 		$this->categoryTree->setSimpleMode($sm);

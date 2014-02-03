@@ -28,7 +28,7 @@
  * Abstract libary for Basket Handling. This class should not be used directly,
  * instead use tx_commerce_basket.
  * Do not acces class variables directly, allways use the get and set methods,
- * variables will be changed in php5 to private 
+ * variables will be changed in php5 to private
  *
  * @author Ingo Schmitt <is@marketing-factory.de>
  * @package TYPO3
@@ -42,7 +42,7 @@ class tx_commerce_basic_basket {
 	 * @var array Associative array for storing basket_items in the basket
 	 * @TODO: Make protected
 	 */
-	public $basket_items = array();
+	protected $basket_items = array();
 
 	/**
 	 * @var integer Net basket sum
@@ -55,7 +55,7 @@ class tx_commerce_basic_basket {
 	protected $basket_sum_gross = 0;
 
 	/**
-	 * @var Calculated pric from net price
+	 * @var integer Calculated pric from net price
 	 */
 	protected $pricefromnet = 0;
 
@@ -75,13 +75,18 @@ class tx_commerce_basic_basket {
 	protected $readOnly = FALSE;
 
 	/**
+	 * @var array
+	 */
+	public $conf = array();
+
+	/**
 	 * Load basket data from session / database
 	 *
 	 * @return void
 	 */
-	public function load_data() {
+	public function loadData() {
 			// Check if payment article is available and set default if not
-		if (count($this->get_articles_by_article_type_uid_asUidlist(PAYMENTArticleType)) < 1) {
+		if (count($this->get_articles_by_article_type_uid_asUidlist(PAYMENTARTICLETYPE)) < 1) {
 			$this->add_article($this->conf['defaultPaymentArticleId']);
 		}
 	}
@@ -89,39 +94,46 @@ class tx_commerce_basic_basket {
 	/**
 	 * Add an article to the basket
 	 *
-	 * @param integer $article_uid Article uid
+	 * @param integer $articleUid Article uid
 	 * @param integer $quantity Quantity of this basket item
+	 * @param string $priceid
 	 * @return boolean TRUE on successful change
 	 * @TODO Implement methiod is_in_basket
 	 */
-	public function add_article($article_uid, $quantity = 1, $priceid = '') {
-		if ($article_uid && $this->isChangeable()) {
-			if (is_object($this->basket_items[$article_uid]) || ($quantity == 0)) {
-				$this->change_quantity($article_uid, $quantity);
+	public function add_article($articleUid, $quantity = 1, $priceid = '') {
+		if ($articleUid && $this->isChangeable()) {
+			if (is_object($this->basket_items[$articleUid]) || ($quantity == 0)) {
+				$this->change_quantity($articleUid, $quantity);
 			} else {
+				/** @var tx_commerce_article $article */
 				$article = t3lib_div::makeInstance('tx_commerce_article');
-				$article->init($article_uid, $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
-				$article->load_data('basket');
-				$priceids = $article->getPossiblePriceUids();
+				$article->init($articleUid, $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
+				$article->loadData('basket');
+
+				$priceids = $article->getPriceUids();
 				if (is_array($priceids)) {
 						// Check if the given price id is related to the article
 					if (!in_array($priceid, $priceids)) {
 						$priceid = '';
 					}
 				}
+
 				if ($priceid == '') {
 						// no priceid is given,. get the price from article_object
 					$priceid = $article->getActualPriceforScaleUid($quantity);
 					if (!$priceid) {
-						$priceid = $article->get_article_price_uid();
+						$priceid = $article->getPriceUid();
 					}
 				}
-				$this->basket_items[$article_uid] = t3lib_div::makeInstance('tx_commerce_basket_item');
-				if ($this->basket_items[$article_uid]->init($article_uid, $quantity, $priceid, $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid'])) {
-					$this->basket_items[$article_uid]->setTaxCalculationMethod($this->pricefromnet);
+
+				/** @var tx_commerce_basket_item $basketItem */
+				$basketItem = t3lib_div::makeInstance('tx_commerce_basket_item');
+				if ($basketItem->init($articleUid, $quantity, $priceid, $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid'])) {
+					$basketItem->setTaxCalculationMethod($this->pricefromnet);
 					$this->recalculate_sums();
 					$this->items++;
 				}
+				$this->basket_items[$articleUid] = $basketItem;
 			}
 			return TRUE;
 		}
@@ -130,16 +142,20 @@ class tx_commerce_basic_basket {
 
 	/**
 	 * Change the price_value of an article
-	 * @param integer $article_uid Arcicle uid
+	 *
+	 * @param integer $articleUid Arcicle uid
 	 * @param integer $new_price_gross New price gross
 	 * @param integer $new_price_net New price net
+	 * @return void
 	 */
-	public function changePrices($article_uid,$new_price_gross,$new_price_net) {
+	public function changePrices($articleUid, $new_price_gross, $new_price_net) {
 		if ($this->isChangeable()) {
-			if ((is_object($this->basket_items[$article_uid])) && (is_a($this->basket_items[$article_uid], 'tx_commerce_basket_item'))) {
-				$this->basket_items[$article_uid]->setPriceNet($new_price_net);
-				$this->basket_items[$article_uid]->setPriceGross($new_price_gross);
-				$this->basket_items[$article_uid]->recalculate_item_sums(true);
+			if ((is_object($this->basket_items[$articleUid])) && (is_a($this->basket_items[$articleUid], 'tx_commerce_basket_item'))) {
+				/** @var tx_commerce_basket_item $basketItem */
+				$basketItem = $this->basket_items[$articleUid];
+				$basketItem->setPriceNet($new_price_net);
+				$basketItem->setPriceGross($new_price_gross);
+				$basketItem->recalculate_item_sums(TRUE);
 			}
 		}
 	}
@@ -152,7 +168,9 @@ class tx_commerce_basic_basket {
 	 */
 	public function getPriceGross($articleUid) {
 		if (is_object($this->basket_items[$articleUid])) {
-			return $this->basket_items[$articleUid]->get_item_sum_gross();
+			/** @var tx_commerce_basket_item $basketItem */
+			$basketItem = $this->basket_items[$articleUid];
+			return $basketItem->getItemSumGross();
 		}
 		return FALSE;
 	}
@@ -165,20 +183,24 @@ class tx_commerce_basic_basket {
 	 */
 	public function getPriceNet($articleUid) {
 		if (is_object($this->basket_items[$articleUid])) {
-			return $this->basket_items[$articleUid]->get_item_sum_net();
+			/** @var tx_commerce_basket_item $basketItem */
+			$basketItem = $this->basket_items[$articleUid];
+			return $basketItem->getItemSumNet();
 		}
 		return FALSE;
 	}
 
 	/**
 	 * Change title of an article in basket
-	 * @param integer $article_uid Article uid
+	 * @param integer $articleUid Article uid
 	 * @param string $newtitle New article title
 	 */
-	public function changeTitle($article_uid,$newtitle) {
+	public function changeTitle($articleUid,$newtitle) {
 		if ($this->isChangeable()) {
-			if(is_object($this->basket_items[$article_uid])) {
-				$this->basket_items[$article_uid]->setTitle($newtitle);
+			if (is_object($this->basket_items[$articleUid])) {
+				/** @var tx_commerce_basket_item $basketItem */
+				$basketItem = $this->basket_items[$articleUid];
+				$basketItem->setTitle($newtitle);
 			}
 		}
 	}
@@ -186,41 +208,42 @@ class tx_commerce_basic_basket {
 	/**
 	 * Change quantity of an article in basket
 	 *
-	 * @param integer $article_uid Article uid
+	 * @param integer $articleUid Article uid
 	 * @param integer $quantity New quantity
 	 * @return mixed TRUE on success, FALSE if quantity can not be changed, and integer sometimes as well ...
 	 */
-	public function change_quantity($article_uid, $quantity = 1) {
+	public function change_quantity($articleUid, $quantity = 1) {
 		if ($this->isChangeable()) {
 			if ($quantity == 0) {
-				if (isset($this->basket_items[$article_uid])) {
-					$this->delete_article($article_uid);
+				if (isset($this->basket_items[$articleUid])) {
+					$this->delete_article($articleUid);
 				}
-				$items = $this->get_articles_by_article_type_uid_asUidlist(NORMALArticleType);
-				if(count($items) == 0) {
+				$items = $this->get_articles_by_article_type_uid_asUidlist(NORMALARTICLETYPE);
+				if (count($items) == 0) {
 					$this->delete_all_articles();
 				}
 				return TRUE;
 			}
 			$this->recalculate_sums();
-			return $this->basket_items[$article_uid]->change_quantity($quantity);
+
+			/** @var tx_commerce_basket_item $basketItem */
+			$basketItem = $this->basket_items[$articleUid];
+			return $basketItem->change_quantity($quantity);
 		} else {
-			return false;
+			return FALSE;
 		}
 	}
 
 	/**
 	 * Get a specific item object from basket
 	 *
-	 * @param  $itemUid The item uid to get
+	 * @param integer $itemUid The item uid to get
 	 * @return tx_commerce_basket_item Item object
+	 * @throws Exception
 	 */
 	public function getBasketItem($itemUid) {
 		if (!array_key_exists($itemUid, $this->basket_items)) {
-			throw new Exception(
-				'Item id does not exist in basket',
-				1305046736
-			);
+			throw new Exception('Item id does not exist in basket', 1305046736);
 		}
 		return $this->basket_items[$itemUid];
 	}
@@ -228,12 +251,14 @@ class tx_commerce_basic_basket {
 	/**
 	 * Return quantity of an article in basket
 	 *
-	 * @param integer $article_uid Uid of article
+	 * @param integer $articleUid Uid of article
 	 * @return integer Current quantity
 	 */
 	public function getQuantity($articleUid) {
-		if (is_object($this->basket_items[$articleUid])){
-			return $this->basket_items[$articleUid]->get_quantity();
+		if (is_object($this->basket_items[$articleUid])) {
+			/** @var tx_commerce_basket_item $basketItem */
+			$basketItem = $this->basket_items[$articleUid];
+			return $basketItem->get_quantity();
 		}
 		return 0;
 	}
@@ -246,10 +271,10 @@ class tx_commerce_basic_basket {
 	 */
 	public function delete_article($article_uid) {
 		if ($this->isChangeable()) {
-			if(!isset($this->basket_items[$article_uid])) {
+			if (!isset($this->basket_items[$article_uid])) {
 				return FALSE;
 			}
-			unset ($this->basket_items[$article_uid]);
+			unset($this->basket_items[$article_uid]);
 			$this->items--;
 			$this->recalculate_sums();
 			return TRUE;
@@ -263,7 +288,6 @@ class tx_commerce_basic_basket {
 	 */
 	public function delete_all_articles() {
 		if ($this->isChangeable()) {
-			unset($this->basket_items);
 			$this->basket_items = array();
 			$this->items = '0';
 			$this->recalculate_sums();
@@ -298,27 +322,33 @@ class tx_commerce_basic_basket {
 	 */
 	public function getGrossSum() {
 		$lokal_sum = 0;
+
+		/** @var tx_commerce_basket_item $oneItem */
 		if ($this->pricefromnet == 1) {
 			$netSumArray = array();
-			foreach ($this->basket_items as $one_item) {
-				$netSumArray[(string)$one_item->get_tax()] += $one_item->get_item_sum_net();
+
+			foreach ($this->basket_items as $oneItem) {
+				$netSumArray[(string) $oneItem->get_tax()] += $oneItem->getItemSumNet();
 			}
+
 			foreach ($netSumArray as $taxrate => $rateNetSum) {
-				$lokal_sum += (int)round($rateNetSum * (1 + (((float)$taxrate) / 100)));
+				$lokal_sum += (int) round($rateNetSum * (1 + (((float) $taxrate) / 100)));
 			}
 		} else {
-			foreach ($this->basket_items as $one_item) {
-				$lokal_sum += $one_item->get_item_sum_gross();
+			foreach ($this->basket_items as $oneItem) {
+				$lokal_sum += $oneItem->getItemSumGross();
 			}
 		}
 		$this->basket_sum_gross = $lokal_sum;
 
 		return $this->basket_sum_gross;
 	}
+
 	/**
-	 * @deprecated since 2011-05-12
+	 * @deprecated since 2011-05-12 this function will be removed in commerce 0.16.0, please use getGrossSum instead
 	 */
-	public function get_gross_sum($again = TRUE) {
+	public function get_gross_sum() {
+		t3lib_div::logDeprecatedFunction();
 		return $this->getGrossSum();
 	}
 
@@ -329,26 +359,31 @@ class tx_commerce_basic_basket {
 	 */
 	public function getNetSum() {
 		$lokal_sum = 0;
-		if($this->pricefromnet == 0) {
+
+		/** @var tx_commerce_basket_item $oneItem */
+		if ($this->pricefromnet == 0) {
 			$grossSumArray = array();
-			foreach ($this->basket_items as $one_item) {
-				$grossSumArray[(string)$one_item->get_tax()]+=$one_item->get_item_sum_gross();
+			foreach ($this->basket_items as $oneItem) {
+				$grossSumArray[(string) $oneItem->get_tax()] += $oneItem->getItemSumGross();
 			}
 			foreach ($grossSumArray as $taxrate => $rateGrossSum) {
 				$lokal_sum += (int)round($rateGrossSum / (1 + (((float)$taxrate) / 100)));
 			}
 		} else {
-			foreach ($this->basket_items as $one_item) {
-				$lokal_sum += $one_item->get_item_sum_net();
+			foreach ($this->basket_items as $oneItem) {
+				$lokal_sum += $oneItem->getItemSumNet();
 			}
 		}
 		$this->basket_sum_net = $lokal_sum;
+
 		return $lokal_sum;
 	}
+
 	/**
-	 * @deprecated since 2011-05-12
+	 * @deprecated since 2011-05-12 this function will be removed in commerce 0.16.0, please use getNetSum instead
 	 */
 	public function get_net_sum() {
+		t3lib_div::logDeprecatedFunction();
 		return $this->getNetSum();
 	}
 
@@ -369,26 +404,32 @@ class tx_commerce_basic_basket {
 	 */
 	public function get_assoc_arrays($prefix = '') {
 		$result_array = array();
-		foreach ($this->basket_items as $oneuid => $one_item) {
-			$result_array[$oneuid] = $one_item->get_array_of_assoc_array($prefix);
+
+		/** @var tx_commerce_basket_item $oneItem */
+		foreach ($this->basket_items as $oneuid => $oneItem) {
+			$result_array[$oneuid] = $oneItem->get_array_of_assoc_array($prefix);
 		}
+
 		return $result_array;
 	}
 
 	/**
 	 * Returns an array of articles to a corresponding article_type
 	 *
-	 * @param integer $article_type_uid Article type
+	 * @param integer $articleTypeUid Article type
 	 * @return array or article_ids
 	 */
-	public function get_articles_by_article_type_uid_asUidlist($article_type_uid) {
-		$result_array = array();
-		foreach ($this->basket_items as $oneuid => $one_item){
-			if ($one_item->article->article_type_uid == $article_type_uid) {
-				$result_array[] = $oneuid;
+	public function get_articles_by_article_type_uid_asUidlist($articleTypeUid) {
+		$result = array();
+
+		/** @var tx_commerce_basket_item $oneItem */
+		foreach ($this->basket_items as $oneuid => $oneItem) {
+			if ($oneItem->getArticle()->getArticleTypeUid() == $articleTypeUid) {
+				$result[] = $oneuid;
 			}
 		}
-		return $result_array;
+
+		return $result;
 	}
 
 	/**
@@ -396,34 +437,42 @@ class tx_commerce_basic_basket {
 	 * Useful for geting the delivery cost
 	 *
 	 * Example:
-	 * $basket->getArticleTypeSumNet(PAYMENTArticleType)
-	 * $basket->getArticleTypeSumNet(DELIVERYArticleType)
+	 * $basket->getArticleTypeSumNet(PAYMENTARTICLETYPE)
+	 * $basket->getArticleTypeSumNet(DELIVERYARTICLETYPE)
 	 *
+	 * @param integer $articleTypeUid
 	 * @return integer Count
 	 */
-	public function getArticleTypeCount($article_type_uid) {
-		$Count = 0;
-		foreach ($this->basket_items as $oneuid  => $one_item) {
-			if ($one_item->article->article_type_uid == $article_type_uid) {
-					$Count++;
+	public function getArticleTypeCount($articleTypeUid) {
+		$count = 0;
+
+		/** @var tx_commerce_basket_item $oneItem */
+		foreach ($this->basket_items as $oneItem) {
+			if ($oneItem->getArticle()->getArticleTypeUid() == $articleTypeUid) {
+				$count++;
 			}
 		}
-		return $Count;
+
+		return $count;
 	}
 
 	/**
 	 * Get count of all articles of a specific type
 	 *
-	 * @param array $articleType
+	 * @param array $articleTypes
+	 * @return integer
 	 */
-	public function getArticleTypeCountFromList($articleTypes){
-		$Count = 0;
-		foreach ($this->basket_items as $oneuid => $one_item) {
-			if (in_array($one_item->article->article_type_uid ,$articleTypes)) {
-				$Count++;
+	public function getArticleTypeCountFromList($articleTypes) {
+		$count = 0;
+
+		/** @var tx_commerce_basket_item $oneItem */
+		foreach ($this->basket_items as $oneItem) {
+			if (in_array($oneItem->getArticle()->getArticleTypeUid(), $articleTypes)) {
+				$count++;
 			}
 		}
-		return $Count;
+
+		return $count;
 	}
 
 	/**
@@ -431,29 +480,33 @@ class tx_commerce_basic_basket {
 	 * Useful to geting the delivery cost
 	 *
 	 * Example:
-	 * $basket->getArticleTypeSumNet(PAYMENTArticleType)
-	 * $basket->getArticleTypeSumNet(DELIVERYArticleType)
+	 * $basket->getArticleTypeSumNet(PAYMENTARTICLETYPE)
+	 * $basket->getArticleTypeSumNet(DELIVERYARTICLETYPE)
+	 * @param integer $articleTypeUid
 	 * @return integer Price
 	 */
-	public function getArticleTypeSumNet($article_type_uid) {
+	public function getArticleTypeSumNet($articleTypeUid) {
 		$sumNet = 0;
-		if($this->pricefromnet == 0) {
+
+		/** @var tx_commerce_basket_item $oneItem */
+		if ($this->pricefromnet == 0) {
 			$grossSumArray = array();
-			foreach ($this->basket_items as $oneuid => $one_item) {
-				if ($one_item->article->article_type_uid == $article_type_uid) {
-					$grossSumArray[(string)$one_item->get_tax()] += $one_item->get_item_sum_gross();
+			foreach ($this->basket_items as $oneItem) {
+				if ($oneItem->getArticle()->getArticleTypeUid() == $articleTypeUid) {
+					$grossSumArray[(string) $oneItem->get_tax()] += $oneItem->getItemSumGross();
 				}
 			}
 			foreach ($grossSumArray as $taxrate => $rateGrossSum) {
 				$sumNet += (int)round($rateGrossSum / (1 + (((float)$taxrate) / 100)));
 			}
 		} else {
-			foreach ($this->basket_items as $oneuid  => $one_item) {
-				if ($one_item->article->article_type_uid == $article_type_uid) {
-					$sumNet+=($one_item->get_quantity()*$one_item->get_price_net());
+			foreach ($this->basket_items as $oneItem) {
+				if ($oneItem->getArticle()->getArticleTypeUid() == $articleTypeUid) {
+					$sumNet += ($oneItem->get_quantity() * $oneItem->get_price_net());
 				}
 			}
 		}
+
 		return $sumNet;
 	}
 
@@ -462,27 +515,30 @@ class tx_commerce_basic_basket {
 	 * Useful for geting the delivery cost
 	 *
 	 * Example:
-	 * $basket->getArticleTypeSumGross(PAYMENTArticleType)
-	 * $basket->getArticleTypeSumGross(DELIVERYArticleType)
+	 * $basket->getArticleTypeSumGross(PAYMENTARTICLETYPE)
+	 * $basket->getArticleTypeSumGross(DELIVERYARTICLETYPE)
 	 *
-	 * @return sum as integer
+	 * @param integer $articleTypeUid
+	 * @return integer sum
 	 */
-	public function getArticleTypeSumGross($article_type_uid) {
+	public function getArticleTypeSumGross($articleTypeUid) {
 		$sumGross = 0;
-		if($this->pricefromnet == 1) {
+
+		/** @var tx_commerce_basket_item $oneItem */
+		if ($this->pricefromnet == 1) {
 			$netSumArray = array();
-			foreach ($this->basket_items as $oneuid  => $one_item) {
-				if ($one_item->article->article_type_uid == $article_type_uid) {
-					$netSumArray[(string)$one_item->get_tax()]+=$one_item->get_item_sum_net();
+			foreach ($this->basket_items as $oneItem) {
+				if ($oneItem->getArticle()->getArticleTypeUid() == $articleTypeUid) {
+					$netSumArray[(string) $oneItem->get_tax()] += $oneItem->getItemSumNet();
 				}
 			}
 			foreach ($netSumArray as $taxrate => $rateGrossSum) {
-				$sumGross += (int)round($rateGrossSum * (1 + (((float)$taxrate) / 100)));
+				$sumGross += (int)round($rateGrossSum * (1 + (((float) $taxrate) / 100)));
 			}
 		} else {
-			foreach ($this->basket_items as $oneuid  => $one_item)	{
-				if ($one_item->article->article_type_uid == $article_type_uid) {
-					$sumGross += ($one_item->get_quantity()*$one_item->get_price_gross());
+			foreach ($this->basket_items as $oneItem) {
+				if ($oneItem->getArticle()->getArticleTypeUid() == $articleTypeUid) {
+					$sumGross += ($oneItem->get_quantity() * $oneItem->get_price_gross());
 				}
 			}
 		}
@@ -493,38 +549,52 @@ class tx_commerce_basic_basket {
 	 * Get first title from of all articles concerning this type
 	 *
 	 * Eexample:
-	 * $basket->getFirstArticleTypeTitle(PAYMENTArticleType)
-	 * $basket->getFirstArticleTypeTitle(DELIVERYArticleType)
+	 * $basket->getFirstArticleTypeTitle(PAYMENTARTICLETYPE)
+	 * $basket->getFirstArticleTypeTitle(DELIVERYARTICLETYPE)
 	 *
+	 * @param integer $articleTypeUid
 	 * @return string Title
 	 */
-	public function getFirstArticleTypeTitle($article_type_uid) {
-		foreach ($this->basket_items as $oneuid => $one_item) {
-			if ($one_item->article->article_type_uid == $article_type_uid) {
-				if ($one_item->article->get_title()>'') {
-					return 	$one_item->article->get_title();
+	public function getFirstArticleTypeTitle($articleTypeUid) {
+		$result = '';
+
+		/** @var tx_commerce_basket_item $oneItem */
+		foreach ($this->basket_items as $oneItem) {
+			if ($oneItem->getArticle()->getArticleTypeUid() == $articleTypeUid) {
+				if ($oneItem->getArticle()->getTitle() > '') {
+					$result = $oneItem->getArticle()->getTitle();
+					break;
 				}
 			}
 		}
+
+		return $result;
 	}
 
 	/**
 	 * Returns the first Description from of all Articles concerning this type
 	 *
 	 * Example:
-	 * $basket->getFirstArticleTypeDescription(PAYMENTArticleType)
-	 * $basket->getFirstArticleTypeDescription(DELIVERYArticleType)
+	 * $basket->getFirstArticleTypeDescription(PAYMENTARTICLETYPE)
+	 * $basket->getFirstArticleTypeDescription(DELIVERYARTICLETYPE)
 	 *
-	 * @return text Description
+	 * @param string $article_type_uid
+	 * @return string Description
 	 */
-	public function getFirstArticleTypeDescription($article_type_uid){
-		foreach ($this->basket_items as $oneuid => $one_item) {
-			if ($one_item->article->article_type_uid == $article_type_uid) {
-				if ($one_item->article->get_description_extra() > '') {
-					return $one_item->article->get_description_extra();
+	public function getFirstArticleTypeDescription($article_type_uid) {
+		$result = '';
+
+		/** @var tx_commerce_basket_item $oneItem */
+		foreach ($this->basket_items as $oneItem) {
+			if ($oneItem->getArticle()->getArticleTypeUid() == $article_type_uid) {
+				if ($oneItem->getArticle()->getDescriptionExtra() > '') {
+					$result = $oneItem->getArticle()->getDescriptionExtra();
+					break;
 				}
 			}
 		}
+
+		return $result;
 	}
 
 	/**
@@ -548,24 +618,30 @@ class tx_commerce_basic_basket {
 	 */
 	public function getTaxRateSums() {
 		$taxes = array();
-		foreach ($this->basket_items as $oneuid  => $one_item) {
-			$taxRate = $one_item->get_tax();
-			$taxRate = (string)$taxRate;
-			if($this->pricefromnet == 1) {
-				$taxSum = ($one_item->get_item_sum_net() * (((float)$taxRate) /100));
+
+		/** @var tx_commerce_basket_item $oneItem */
+		foreach ($this->basket_items as $oneItem) {
+			$taxRate = $oneItem->get_tax();
+			$taxRate = (string) $taxRate;
+
+			if ($this->pricefromnet == 1) {
+				$taxSum = ($oneItem->getItemSumNet() * (((float) $taxRate) / 100));
 			} else {
-				$taxSum = ($one_item->get_item_sum_gross() * ((((float)$taxRate) / 100) / (1 + (((float)$taxRate) / 100))));
+				$taxSum = ($oneItem->getItemSumGross() * ((((float) $taxRate) / 100) / (1 + (((float)$taxRate) / 100))));
 			}
-			if(!isset($taxes[$taxRate]) AND $taxSum <= 0) {
+
+			if (!isset($taxes[$taxRate]) AND $taxSum <= 0) {
 				continue;
 			}
-			if(!isset($taxes[$taxRate])) {
+
+			if (!isset($taxes[$taxRate])) {
 				$taxes[$taxRate] = 0;
 			}
+
 			$taxes[$taxRate] += $taxSum;
 		}
 		foreach ($taxes as $taxRate => $taxSum) {
-			$taxes[$taxRate]= (int)round($taxSum);
+			$taxes[$taxRate] = (int) round($taxSum);
 		}
 		return $taxes;
 	}
@@ -577,9 +653,9 @@ class tx_commerce_basic_basket {
 	 */
 	public function hasArticles() {
 		if (count($this->basket_items) > 0) {
-			return true;
+			return TRUE;
 		} else {
-			return false;
+			return FALSE;
 		}
 	}
 
@@ -599,13 +675,15 @@ class tx_commerce_basic_basket {
 	/**
 	 * This Method Sets the Tax Calculation method (pricefromnet)
 	 *
-	 * @param boolean	Switch if calculationg from net or not
+	 * @param boolean $priceFromNet Switch if calculationg from net or not
 	 * @return void
 	 */
 	public function setTaxCalculationMethod($priceFromNet) {
 		$this->pricefromnet = $priceFromNet;
-		foreach ($this->basket_items as $one_item) {
-			$one_item->setTaxCalculationMethod($this->pricefromnet);
+
+		/** @var tx_commerce_basket_item $oneItem */
+		foreach ($this->basket_items as $oneItem) {
+			$oneItem->setTaxCalculationMethod($this->pricefromnet);
 		}
 	}
 
@@ -626,17 +704,18 @@ class tx_commerce_basic_basket {
 	public function getIsReadOnly() {
 		return $this->readOnly;
 	}
+
 	/**
 	 * @deprecated since 2011-05-09
 	 */
-	public function isReadOnly(){
+	public function isReadOnly() {
 		return $this->getIsReadOnly();
 	}
 
 	/**
 	 * Wether or not basket is locket
 	 *
-	 * @return booloan TRUE if locked
+	 * @return boolean TRUE if locked
 	 */
 	public function isChangeable() {
 		return !$this->readOnly;
@@ -652,7 +731,9 @@ class tx_commerce_basic_basket {
 	}
 }
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_basic_basket.php']) {
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_basic_basket.php']);
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_basic_basket.php']) {
+	/** @noinspection PhpIncludeInspection */
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_basic_basket.php']);
 }
+
 ?>

@@ -47,7 +47,7 @@ class feuser_address_fieldmapper {
  	var $address_field_arr;
 
  	function feuser_address_fieldmapper() {
-		$this->mapping = trim($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['extConf']['feuser_address_mapping'], ' ;');
+		$this->mapping = trim($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['feuser_address_mapping'], ' ;');
  	}
 
 	function get_address_fieldarray() {

@@ -35,18 +35,66 @@
  * @see tx_commerce_basic_basekt
  */
 class tx_commerce_pi2 extends tx_commerce_pibase {
+	/**
+	 * Same as class name
+	 *
+	 * @var string
+	 */
+	public $prefixId = 'tx_commerce_pi1';
 
-	var $prefixId = 'tx_commerce_pi1'; // Same as class name
-	var $scriptRelPath = 'pi2/class.tx_commerce_pi2.php'; // Path to this script relative to the extension dir.
-	var $extKey = 'commerce'; // The extension key.
-	var $imgFolder = 'uploads/tx_commerce/';
-	var $currency = 'EUR';
-	var $noStock = '';
+	/**
+	 * Path to this script relative to the extension dir.
+	 *
+	 * @var string
+	 */
+	public $scriptRelPath = 'pi2/class.tx_commerce_pi2.php';
+
+	/**
+	 * The extension key.
+	 *
+	 * @var string
+	 */
+	public $extKey = 'commerce';
+
+	/**
+	 * @var string
+	 */
+	public $imgFolder = 'uploads/tx_commerce/';
+
+	/**
+	 * @var string
+	 */
+	public $currency = 'EUR';
+
+	/**
+	 * @var string
+	 */
+	public $noStock = '';
+
+	/**
+	 * @var tx_commerce_product
+	 */
+	public $delProd;
+
+	/**
+	 * @var array
+	 */
+	public $basketDel;
+
+	/**
+	 * @var array
+	 */
+	public $basketPay;
+
+	/**
+	 * @var tx_commerce_product
+	 */
+	public $payProd;
 
 	/**
 	 * @var tx_commerce_basket Basket object
 	 */
-	protected $basket = null;
+	protected $basket = NULL;
 
 	/**
 	 * @var array Marker array
@@ -80,7 +128,7 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 
 		$this->basket = $GLOBALS['TSFE']->fe_user->tx_commerce_basket;
 		$this->basket->setTaxCalculationMethod($this->conf['priceFromNet']);
-		$this->basket->load_data();
+		$this->basket->loadData();
 
 		if ($this->conf['defaultCode']) {
 			$this->handle = strtoupper($this->conf['defaultCode']);
@@ -90,11 +138,11 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 		}
 
 		if (empty($this->conf['templateFile'])) {
-			return $this->error('init', __LINE__, 'Template File not defined in TS: ');
+			$this->error('init', __LINE__, 'Template File not defined in TS: ');
 		}
 		$this->templateCode = $this->cObj->fileResource($this->conf['templateFile']);
 		if (empty($this->templateCode)) {
-			return $this->error('init', __LINE__, "Template File not loaded, maybe it doesn't exist: " . $this->conf['templateFile']);
+			$this->error('init', __LINE__, "Template File not loaded, maybe it doesn't exist: " . $this->conf['templateFile']);
 		}
 
 		$this->handleBasket();
@@ -105,12 +153,11 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 		}
 	}
 
-
 	/**
 	 * Main function called by insert plugin
 	 *
-	 * @param string Content
-	 * @param string Configuration
+	 * @param string $content Content
+	 * @param array $conf Configuration
 	 * @return string HTML-Content
 	 */
 	public function main($content = '', array $conf = array()) {
@@ -127,7 +174,7 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 		foreach ($hookObjectsArr as $hookObj) {
 			if (method_exists($hookObj, 'postInit')) {
 				$result = $hookObj->postInit($this);
-				if ($result === false) {
+				if ($result === FALSE) {
 					return $this->pi_wrapInBaseClass($this->content);
 				}
 			}
@@ -140,7 +187,7 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 		}
 
 		if (($this->basket->getItemsCount() > 0) && ($this->basket->getArticleTypeCountFromList(explode(',', $this->conf['regularArticleTypes'])) > 0)) {
-			// Get template
+				// Get template
 			switch ($this->handle) {
 				case 'HANDLING':
 					$this->handleBasket();
@@ -165,10 +212,10 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 			$markerArray['###URL###'] = $this->pi_linkTP_keepPIvars_url(array(), 0, 1, $this->conf['basketPid']);
 			$markerArray['###URL_CHECKOUT###'] = $this->pi_linkTP_keepPIvars_url(array(), 0, 1, $this->conf['checkoutPid']);
 			$markerArray['###NO_STOCK MESSAGE###'] = $this->noStock;
-			
-			// Hook for additional markers in empty quick view basket template
+
+				// Hook for additional markers in empty quick view basket template
 			foreach ($hookObjectsArr as $hookObj) {
-				if(method_exists($hookObj, 'additionalMarker')) {
+				if (method_exists($hookObj, 'additionalMarker')) {
 					$markerArray = $hookObj->additionalMarker($markerArray, $this);
 				}
 			}
@@ -179,14 +226,13 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 		return $this->pi_wrapInBaseClass($this->content);
 	}
 
-
 	/**
 	 * Main method to handle the basket. Is called when data in the basket is changed
 	 * Changes the basket object and stores the data in the frontend user session
 	 *
 	 * @return void
 	 */
-	function handleBasket() {
+	public function handleBasket() {
 		if ($this->piVars['delBasket']) {
 			$this->basket->delete_all_articles();
 
@@ -197,7 +243,7 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 					$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
 				}
 			}
-			foreach($hookObjectsArr as $hookObj) {
+			foreach ($hookObjectsArr as $hookObj) {
 				if (method_exists($hookObj, 'postdelBasket')) {
 					$hookObj->postdelBasket($this->basket, $this);
 				}
@@ -247,10 +293,10 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 					/** @var $articleObj tx_commerce_article */
 					$articleObj = t3lib_div::makeInstance('tx_commerce_article');
 					$articleObj->init($k);
-					$articleObj->load_data('basket');
+					$articleObj->loadData('basket');
 
-					$productObj = $articleObj->get_parent_product();
-					$productObj->load_data('basket');
+					$productObj = $articleObj->getParentProduct();
+					$productObj->loadData('basket');
 
 					foreach ($hookObjectsArr as $hookObj) {
 						if (method_exists($hookObj, 'preartAddUidSingle')) {
@@ -261,7 +307,7 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 					if ($articleObj->isAccessible() && $productObj->isAccessible()) {
 							// Only if product and article are accessible
 						if ($this->conf['checkStock'] == 1) {
-							// Instance to calculate shipping costs
+								// Instance to calculate shipping costs
 							if ($articleObj->hasStock($v['count'])) {
 								if ((int)$v['price_id'] > 0) {
 									$this->basket->add_article($k, $v['count'], $v['price_id']);
@@ -272,7 +318,7 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 								$this->noStock = $this->pi_getLL('noStock');
 							}
 						} else {
-							// Add article by default
+								// Add article by default
 							if ((int)$v['price_id'] > 0) {
 								$this->basket->add_article($k, $v['count'], $v['price_id']);
 							} else {
@@ -288,33 +334,33 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 					}
 
 						// Check for basket price limit
-					if (intval($this->conf['priceLimitForBasket']) > 0 && $this->basket->get_gross_sum() > intval($this->conf['priceLimitForBasket'])) {
+					if (intval($this->conf['priceLimitForBasket']) > 0 && $this->basket->getGrossSum() > intval($this->conf['priceLimitForBasket'])) {
 						$this->basket->add_article($k, $oldCountValue);
 						$this->priceLimitForBasket = 1;
 					}
 				}
 			}
 
-			foreach($hookObjectsArr as $hookObj) {
+			foreach ($hookObjectsArr as $hookObj) {
 				if (method_exists($hookObj, 'postartAddUid')) {
 					$hookObj->postartAddUid($this->basket, $this);
 				}
 			}
-		} // End of if artAddUid
+		}
 
-		// Handle payment articles
+			// Handle payment articles
 		if ($this->piVars['payArt']) {
-			$basketPay = $this->basket->get_articles_by_article_type_uid_asuidlist(PAYMENTArticleType);
+			$basketPay = $this->basket->get_articles_by_article_type_uid_asuidlist(PAYMENTARTICLETYPE);
 
-			// Delete old payment article
-			foreach($basketPay as $actualPaymentArticle) {
+				// Delete old payment article
+			foreach ($basketPay as $actualPaymentArticle) {
 				$this->basket->delete_article($actualPaymentArticle);
 			}
 
-			// Add new article
+				// Add new article
 			if (is_array($this->piVars['payArt'])) {
-				foreach($this->piVars['payArt'] as $articleUid => $articleCount) {
-					// Set to integer to be sure it is integer
+				foreach ($this->piVars['payArt'] as $articleUid => $articleCount) {
+						// Set to integer to be sure it is integer
 					$articleUid = intval($articleUid);
 					$articleCount = intval($articleCount);
 					$this->basket->add_article($articleUid, $articleCount['count']);
@@ -323,32 +369,32 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 				$this->basket->add_article((int)$this->piVars['payArt']);
 			}
 
-			// Hook to process the basket after adding payment article
+				// Hook to process the basket after adding payment article
 			$hookObjectsArr = array();
 			if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['postpayArt'])) {
-				foreach($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['postpayArt'] as $classRef) {
+				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['postpayArt'] as $classRef) {
 					$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
 				}
 			}
-			foreach($hookObjectsArr as $hookObj) {
+			foreach ($hookObjectsArr as $hookObj) {
 				if (method_exists($hookObj, 'postpayArt')) {
 					$hookObj->postpayArt($this->basket, $this);
 				}
 			}
-		} // End of if payment article
+		}
 
-		// Handle delivery articles
+			// Handle delivery articles
 		if ($this->piVars['delArt']) {
-			$basketDel = $this->basket->get_articles_by_article_type_uid_asuidlist(DELIVERYArticleType);
+			$basketDel = $this->basket->get_articles_by_article_type_uid_asuidlist(DELIVERYARTICLETYPE);
 
-			// Delete old delivery article
-			foreach($basketDel as $actualDeliveryArticle) {
+				// Delete old delivery article
+			foreach ($basketDel as $actualDeliveryArticle) {
 				$this->basket->delete_article($actualDeliveryArticle);
 			}
 
-			// Add new article
+				// Add new article
 			if (is_array($this->piVars['delArt'])) {
-				foreach($this->piVars['delArt'] as $articleUid => $articleCount) {
+				foreach ($this->piVars['delArt'] as $articleUid => $articleCount) {
 					$articleUid = intval($articleUid);
 					$articleCount = intval($articleCount);
 					$this->basket->add_article($articleUid, $articleCount['count']);
@@ -357,23 +403,22 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 				$this->basket->add_article((int)$this->piVars['delArt']);
 			}
 
-			// Hook to process the basket after adding delivery article
+				// Hook to process the basket after adding delivery article
 			$hookObjectsArr = array();
 			if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['postdelArt'])) {
-				foreach($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['postdelArt'] as $classRef) {
+				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['postdelArt'] as $classRef) {
 					$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
 				}
 			}
-			foreach($hookObjectsArr as $hookObj) {
+			foreach ($hookObjectsArr as $hookObj) {
 				if (method_exists($hookObj, 'postdelArt')) {
 					$hookObj->postdelArt($this->basket, $this);
 				}
 			}
-		} // End of if delivery article
+		}
 
 		$this->basket->store_data();
 	}
-
 
 	/**
 	 * Returns a list of markers to generate a quick-view of the basket
@@ -382,31 +427,31 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 	 *
 	 * @return array Marker array for rendering
 	 */
-	function getQuickView() {
+	public function getQuickView() {
 		$articleTypes = explode(',', $this->conf['regularArticleTypes']);
 
 		$templateMarker = '###PRODUCT_BASKET_QUICKVIEW###';
 		$template = $this->cObj->getSubpart($this->templateCode, $templateMarker);
 
 		$basketArray = $this->languageMarker;
-		$basketArray['###PRICE_GROSS###'] = tx_moneylib::format($this->basket->get_gross_sum(), $this->currency);
-		$basketArray['###PRICE_NET###'] = tx_moneylib::format($this->basket->get_net_sum(), $this->currency);
+		$basketArray['###PRICE_GROSS###'] = tx_moneylib::format($this->basket->getGrossSum(), $this->currency);
+		$basketArray['###PRICE_NET###'] = tx_moneylib::format($this->basket->getNetSum(), $this->currency);
 
-		// @Deprecated ###ITEMS###
+			// @Deprecated ###ITEMS###
 		$basketArray['###ITEMS###'] = $this->basket->getArticleTypeCountFromList($articleTypes);
 
 		$basketArray['###BASKET_ITEMS###'] = $this->basket->getArticleTypeCountFromList($articleTypes);
 		$basketArray['###URL###'] = $this->pi_linkTP_keepPIvars_url(array(), TRUE, 1, $this->conf['basketPid']);
 		$basketArray['###URL_CHECKOUT###'] = $this->pi_linkTP_keepPIvars_url(array(), FALSE, 1, $this->conf['checkoutPid']);
 
-		// Hook for additional markers in quick view basket template
+			// Hook for additional markers in quick view basket template
 		$hookObjectsArr = array();
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['getQuickView'])) {
-			foreach($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['getQuickView'] as $classRef) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['getQuickView'] as $classRef) {
 				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
 			}
 		}
-		foreach($hookObjectsArr as $hookObj) {
+		foreach ($hookObjectsArr as $hookObj) {
 			if (method_exists($hookObj, 'additionalMarker')) {
 				$basketArray = $hookObj->additionalMarker($basketArray, $this);
 			}
@@ -416,18 +461,17 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 		return TRUE;
 	}
 
-
 	/**
 	 * Generates HTML-Code of the basket and stores content to $this->content
 	 *
 	 * @return void
 	 */
-	function generateBasket() {
+	public function generateBasket() {
 		$templateMarker = '###BASKET###';
 		$template = $this->cObj->getSubpart($this->templateCode, $templateMarker);
 
-		// Render locked information
-		if ($this->basket->isReadOnly()) {
+			// Render locked information
+		if ($this->basket->getIsReadOnly()) {
 			$basketSubpart = $this->cObj->getSubpart($template, 'BASKETLOCKED');
 			$template = $this->cObj->substituteSubpart($template, 'BASKETLOCKED', $basketSubpart);
 		} else {
@@ -437,11 +481,12 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 		$basketArray['###BASKET_PRODUCT_LIST###'] = $this->makeProductList();
 
 			// Generate basket hooks
+		$hookObject = NULL;
 		if (($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['generateBasket'])) {
 			$hookObject = t3lib_div::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['generateBasket']);
 		}
 
-		// No delivery article is present, so draw selector
+			// No delivery article is present, so draw selector
 		$contentDelivery = $this->cObj->getSubpart($this->templateCode, '###DELIVERYBOX###');
 
 		if (method_exists($hookObject, 'makeDelivery')) {
@@ -466,37 +511,37 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 		$taxRateTemplate = $this->cObj->getSubpart($template, '###TAX_RATE_SUMS###');
 		$taxRates = $this->basket->getTaxRateSums();
 		$taxRateRows = '';
-		foreach($taxRates as $taxRate => $taxRateSum) {
+		foreach ($taxRates as $taxRate => $taxRateSum) {
 			$taxRowArray = array();
 			$taxRowArray['###TAX_RATE###'] = $taxRate;
 			$taxRowArray['###TAX_RATE_SUM###'] = tx_moneylib::format($taxRateSum, $this->currency);
-			$taxRateRows.= $this->cObj->substituteMarkerArray($taxRateTemplate, $taxRowArray);
+			$taxRateRows .= $this->cObj->substituteMarkerArray($taxRateTemplate, $taxRowArray);
 		}
 
 		$template = $this->cObj->substituteSubpart($template, '###TAX_RATE_SUMS###', $taxRateRows);
 
-		$basketArray['###BASKET_NET_PRICE###'] = tx_moneylib::format($this->basket->get_net_sum(), $this->currency);
-		$basketArray['###BASKET_GROSS_PRICE###'] = tx_moneylib::format(intval($this->basket->get_gross_sum()), $this->currency);
-		$basketArray['###BASKET_TAX_PRICE###'] = tx_moneylib::format(intval($this->basket->get_gross_sum() - $this->basket->get_net_sum()), $this->currency);
-		$basketArray['###BASKET_VALUE_ADDED_TAX###'] = tx_moneylib::format(intval($this->basket->get_gross_sum()) - $this->basket->get_net_sum(), $this->currency);
+		$basketArray['###BASKET_NET_PRICE###'] = tx_moneylib::format($this->basket->getNetSum(), $this->currency);
+		$basketArray['###BASKET_GROSS_PRICE###'] = tx_moneylib::format(intval($this->basket->getGrossSum()), $this->currency);
+		$basketArray['###BASKET_TAX_PRICE###'] = tx_moneylib::format(intval($this->basket->getGrossSum() - $this->basket->getNetSum()), $this->currency);
+		$basketArray['###BASKET_VALUE_ADDED_TAX###'] = tx_moneylib::format(intval($this->basket->getGrossSum()) - $this->basket->getNetSum(), $this->currency);
 		$basketArray['###BASKET_ITEMS###'] = $this->basket->getItemsCount();
 		$basketArray['###DELBASKET###'] = $this->pi_linkTP_keepPIvars($this->pi_getLL('delete_basket', 'delete basket'), array('delBasket' => 1), 0, 1);
 		$basketArray['###BASKET_NEXTBUTTON###'] = $this->cObj->stdWrap($this->makeCheckOutLink(), $this->conf['nextbutton.']);
-		$basketArray['###BASKET_ARTICLES_NET_SUM###'] = tx_moneylib::format($this->basket->getArticleTypeSumNet(NORMALArticleType), $this->currency);
-		$basketArray['###BASKET_ARTICLES_GROSS_SUM###'] = tx_moneylib::format($this->basket->getArticleTypeSumGross(NORMALArticleType), $this->currency);
-		$basketArray['###BASKET_DELIVERY_NET_SUM###'] = tx_moneylib::format($this->basket->getArticleTypeSumNet(DELIVERYArticleType), $this->currency);
-		$basketArray['###BASKET_DELIVERY_GROSS_SUM###'] = tx_moneylib::format($this->basket->getArticleTypeSumGross(DELIVERYArticleType), $this->currency);
-		$basketArray['###BASKET_PAYMENT_NET_SUM###'] = tx_moneylib::format($this->basket->getArticleTypeSumNet(PAYMENTArticleType), $this->currency);
-		$basketArray['###BASKET_PAYMENT_GROSS_SUM###'] = tx_moneylib::format($this->basket->getArticleTypeSumGross(PAYMENTArticleType), $this->currency);
-		$basketArray['###BASKET_PAYMENT_ITEMS###'] = $this->basket->getArticleTypeCount(PAYMENTArticleType);
-		$basketArray['###BASKET_DELIVERY_ITEMS###'] = $this->basket->getArticleTypeCount(DELIVERYArticleType);
-		$basketArray['###BASKET_ARTICLES_ITEMS###'] = $this->basket->getArticleTypeCount(NORMALArticleType);
+		$basketArray['###BASKET_ARTICLES_NET_SUM###'] = tx_moneylib::format($this->basket->getArticleTypeSumNet(NORMALARTICLETYPE), $this->currency);
+		$basketArray['###BASKET_ARTICLES_GROSS_SUM###'] = tx_moneylib::format($this->basket->getArticleTypeSumGross(NORMALARTICLETYPE), $this->currency);
+		$basketArray['###BASKET_DELIVERY_NET_SUM###'] = tx_moneylib::format($this->basket->getArticleTypeSumNet(DELIVERYARTICLETYPE), $this->currency);
+		$basketArray['###BASKET_DELIVERY_GROSS_SUM###'] = tx_moneylib::format($this->basket->getArticleTypeSumGross(DELIVERYARTICLETYPE), $this->currency);
+		$basketArray['###BASKET_PAYMENT_NET_SUM###'] = tx_moneylib::format($this->basket->getArticleTypeSumNet(PAYMENTARTICLETYPE), $this->currency);
+		$basketArray['###BASKET_PAYMENT_GROSS_SUM###'] = tx_moneylib::format($this->basket->getArticleTypeSumGross(PAYMENTARTICLETYPE), $this->currency);
+		$basketArray['###BASKET_PAYMENT_ITEMS###'] = $this->basket->getArticleTypeCount(PAYMENTARTICLETYPE);
+		$basketArray['###BASKET_DELIVERY_ITEMS###'] = $this->basket->getArticleTypeCount(DELIVERYARTICLETYPE);
+		$basketArray['###BASKET_ARTICLES_ITEMS###'] = $this->basket->getArticleTypeCount(NORMALARTICLETYPE);
 		$basketArray['###BASKETURL###'] = $this->pi_linkTP_keepPIvars_url(array(), 0, 1, $this->conf['basketPid']);
 		$basketArray['###URL_CHECKOUT###'] = $this->pi_linkTP_keepPIvars_url(array(), 0, 1, $this->conf['checkoutPid']);
 		$basketArray['###NO_STOCK MESSAGE###'] = $this->noStock;
 		$basketArray['###BASKET_LASTPRODUCTURL###'] = $this->cObj->stdWrap($GLOBALS['TSFE']->fe_user->getKey('ses', 'tx_commerce_lastproducturl'), $this->conf['lastProduct']);
 
-		if($this->priceLimitForBasket == 1 && $this->conf['priceLimitForBasketMessage']) {
+		if ($this->priceLimitForBasket == 1 && $this->conf['priceLimitForBasketMessage']) {
 			$basketArray['###BASKET_PRICELIMIT###'] = $this->cObj->cObjGetSingle($this->conf['priceLimitForBasketMessage'], $this->conf['priceLimitForBasketMessage.']);
 		} else {
 			$basketArray['###BASKET_PRICELIMIT###'] = '';
@@ -506,11 +551,11 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 
 		$hookObjectsArr = array();
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['generateBasketMarker'])) {
-			foreach($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['generateBasketMarker'] as $classRef) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['generateBasketMarker'] as $classRef) {
 				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
 			}
 		}
-		foreach($hookObjectsArr as $hookObj) {
+		foreach ($hookObjectsArr as $hookObj) {
 			if (method_exists($hookObj, 'additionalMarker')) {
 				$basketArray = $hookObj->additionalMarker($basketArray, $this);
 			}
@@ -524,65 +569,66 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 		$this->content = $this->cObj->SubstituteMarkerArray($this->content, $markerArrayGlobal, '###|###');
 	}
 
-
 	/**
 	 * Generates the Markers for the delivery-selector
 	 *
 	 * @param array $basketArray Array of marker
 	 * @return array Array of marker
 	 */
-	function makeDelivery($basketArray) {
-		/** @var $delProd tx_commerce_product */
+	public function makeDelivery($basketArray) {
 		$this->delProd = t3lib_div::makeInstance('tx_commerce_product');
 		$this->delProd->init($this->conf['delProdId'], $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
-		$this->delProd->load_data();
-		$this->delProd->load_articles();
+		$this->delProd->loadData();
+		$this->delProd->loadArticles();
 
-		$this->basketDel = $this->basket->get_articles_by_article_type_uid_asuidlist(DELIVERYArticleType);
+		$this->basketDel = $this->basket->get_articles_by_article_type_uid_asuidlist(DELIVERYARTICLETYPE);
 
 		$select = '<select name="' . $this->prefixId . '[delArt]" onChange="this.form.submit();">';
 
+		$allowedArticles = array();
 		if ($this->conf['delivery.']['allowedArticles']) {
 			$allowedArticles = explode(',', $this->conf['delivery.']['allowedArticles']);
 		}
 
-		// Hook to define/overwrite individually, which delivery articles are allowed
+			// Hook to define/overwrite individually, which delivery articles are allowed
 		$hookObjectsArr = array();
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['deliveryArticles'])) {
-			foreach($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['deliveryArticles'] as $classRef) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['deliveryArticles'] as $classRef) {
 				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
 			}
 		}
-		foreach($hookObjectsArr as $hookObj) {
+		foreach ($hookObjectsArr as $hookObj) {
 			if (method_exists($hookObj, 'deliveryAllowedArticles')) {
 				$allowedArticles = $hookObj->deliveryAllowedArticles($this, $allowedArticles);
 			}
 		}
 
 		$first = FALSE;
+		$price_net = '';
+		$price_gross = '';
 		/** @var $articleObj tx_commerce_article */
-		foreach($this->delProd->articles as $articleUid => $articleObj) {
+		foreach ($this->delProd->articles as $articleUid => $articleObj) {
 			if ((!is_array($allowedArticles)) || in_array($articleUid, $allowedArticles)) {
-				$select.= '<option value="' . $articleUid . '"';
+				$select .= '<option value="' . $articleUid . '"';
 				if ($articleUid == $this->basketDel[0]) {
 					$first = 1;
-					$select.= ' selected="selected"';
-					$price_net = tx_moneylib::format($articleObj->get_price_net(), $this->currency);
-					$price_gross = tx_moneylib::format($articleObj->get_price_gross(), $this->currency);
+					$select .= ' selected="selected"';
+					$price_net = tx_moneylib::format($articleObj->getPriceNet(), $this->currency);
+					$price_gross = tx_moneylib::format($articleObj->getPriceGross(), $this->currency);
 				} elseif (!$first) {
-					$price_net = tx_moneylib::format($articleObj->get_price_net(), $this->currency);
-					$price_gross = tx_moneylib::format($articleObj->get_price_gross(), $this->currency);
+					$price_net = tx_moneylib::format($articleObj->getPriceNet(), $this->currency);
+					$price_gross = tx_moneylib::format($articleObj->getPriceGross(), $this->currency);
 					if (!is_array($this->basketDel) || count($this->basketDel) < 1) {
 						$this->basket->add_article($articleUid);
 						$this->basket->store_data();
 					}
 					$first = 1;
 				}
-				$select.= '>' . $articleObj->get_title() . '</option>';
+				$select .= '>' . $articleObj->getTitle() . '</option>';
 			}
 		}
 
-		$select.= '</select>';
+		$select .= '</select>';
 
 		$basketArray['###DELIVERY_SELECT_BOX###'] = $select;
 		$basketArray['###DELIVERY_PRICE_GROSS###'] = $price_gross;
@@ -591,48 +637,49 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 		return $basketArray;
 	}
 
-
 	/**
 	 * Generates payment drop down list for this shop
 	 *
 	 * @param array $basketArray Array of template marker
 	 * @return array Array of template marker
 	 */
-	function makePayment($basketArray) {
+	public function makePayment($basketArray) {
 		$this->payProd = t3lib_div::makeInstance('tx_commerce_product');
 		$this->payProd->init($this->conf['payProdId'], $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
-		$this->payProd->load_data();
-		$this->payProd->load_articles();
+		$this->payProd->loadData();
+		$this->payProd->loadArticles();
 
-		$this->basketPay = $this->basket->get_articles_by_article_type_uid_asuidlist(PAYMENTArticleType);
+		$this->basketPay = $this->basket->get_articles_by_article_type_uid_asuidlist(PAYMENTARTICLETYPE);
 
 		$select = '<select name="' . $this->prefixId . '[payArt]" onChange="this.form.submit();">';
-		$first = FALSE;
 
 		$addPleaseSelect = FALSE;
-		// Check if a Payment is selected if not, add standard payment
+		$addDefaultPaymentToBasket = FALSE;
+			// Check if a Payment is selected if not, add standard payment
 		if (count($this->basketPay) == 0) {
-			// Check if Payment selection is forced
-			if($this->conf['payment.']['forceSelection']) {
-				// Add Please Select Option
+				// Check if Payment selection is forced
+			if ($this->conf['payment.']['forceSelection']) {
+					// Add Please Select Option
 				$select .= '<option value="-1" selected="selected">' . $this->pi_getLL('lang_payment_force') . '</option>';
 				$addPleaseSelect = TRUE;
-			}
-			else {
-				// No payment article is in the basket, so add the first one
+			} else {
+					// No payment article is in the basket, so add the first one
 				$addDefaultPaymentToBasket = TRUE;
 			}
 		}
 
+		$allowedArticles = array();
 		if ($this->conf['payment.']['allowedArticles']) {
 			$allowedArticles = explode(',', $this->conf['payment.']['allowedArticles']);
 		}
 
 			// Check if payment articles are allowed
+		$newAllowedArticles = array();
+		/** @var tx_commerce_article $articleObj */
 		foreach ($this->payProd->articles as $articleUid => $articleObj) {
 			if ((!is_array($allowedArticles)) || in_array($articleUid, $allowedArticles)) {
-				$articleObj->load_data();
-				$paymentType = $articleObj->classname;
+				$articleObj->loadData();
+				$paymentType = $articleObj->getClassname();
 				$payment = $this->getPaymentObject($paymentType);
 				if (method_exists($payment, 'isAllowed')) {
 					if ($payment->isAllowed()) {
@@ -657,44 +704,50 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 		$allowedArticles = $newAllowedArticles;
 		unset ($newAllowedArticles);
 
-		// Hook to allow to define/overwrite individually, which payment articles are allowed
+			// Hook to allow to define/overwrite individually, which payment articles are allowed
 		$hookObjectsArr = array();
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['paymentArticles'])) {
-			foreach($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['paymentArticles'] as $classRef) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['paymentArticles'] as $classRef) {
 				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
 			}
 		}
-		foreach($hookObjectsArr as $hookObj) {
+		foreach ($hookObjectsArr as $hookObj) {
 			if (method_exists($hookObj, 'paymentAllowedArticles')) {
 				$allowedArticles = $hookObj->paymentAllowedArticles($this, $allowedArticles);
 			}
 		}
 
 		$first = FALSE;
+		$price_net = '';
+		$price_gross = '';
 		/** @var $articleObj tx_commerce_article */
-		foreach($this->payProd->articles as $articleUid => $articleObj) {
+		foreach ($this->payProd->articles as $articleUid => $articleObj) {
 			if ((!is_array($allowedArticles)) || in_array($articleUid, $allowedArticles)) {
-				$select.= '<option value="' . $articleUid . '"';
-				if (($articleUid == $this->basketPay[0]) || ($addDefaultPaymentToBasket && ($articleUid == $this->conf['defaultPaymentArticleId'])) && !$addPleaseSelect) {
+				$select .= '<option value="' . $articleUid . '"';
+				if (
+					($articleUid == $this->basketPay[0]) || ($addDefaultPaymentToBasket
+					&& ($articleUid == $this->conf['defaultPaymentArticleId']))
+					&& !$addPleaseSelect
+				) {
 					$addDefaultPaymentToBasket = FALSE;
 					$first = TRUE;
-					$select.= ' selected="selected"';
+					$select .= ' selected="selected"';
 					$this->basket->add_article($articleUid);
-					$price_net = tx_moneylib::format($articleObj->get_price_net(), $this->currency);
-					$price_gross = tx_moneylib::format($articleObj->get_price_gross(), $this->currency);
+					$price_net = tx_moneylib::format($articleObj->getPriceNet(), $this->currency);
+					$price_gross = tx_moneylib::format($articleObj->getPriceGross(), $this->currency);
 				} elseif (!$first) {
-					$price_net = tx_moneylib::format($articleObj->get_price_net(), $this->currency);
-					$price_gross = tx_moneylib::format($articleObj->get_price_gross(), $this->currency);
+					$price_net = tx_moneylib::format($articleObj->getPriceNet(), $this->currency);
+					$price_gross = tx_moneylib::format($articleObj->getPriceGross(), $this->currency);
 					$this->basket->delete_article($articleUid);
 				}
-				$select.= '>' . $articleObj->get_title() . '</option>';
+				$select .= '>' . $articleObj->getTitle() . '</option>';
 			}
 		}
 
-		$select.= '</select>';
+		$select .= '</select>';
 
-		// Set Prices to 0, if "please select " is shown
-		if($addPleaseSelect) {
+			// Set Prices to 0, if "please select " is shown
+		if ($addPleaseSelect) {
 			$price_gross = tx_moneylib::format(0, $this->currency);
 			$price_net = tx_moneylib::format(0, $this->currency);
 		}
@@ -708,56 +761,52 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 		return $basketArray;
 	}
 
-
 	/**
 	 * Returns a link to the checkout page
 	 *
 	 * @return string Link to checkout page
 	 */
-	function makeCheckOutLink() {
+	public function makeCheckOutLink() {
 		return $this->pi_linkToPage($this->pi_getLL('checkoutlink'), $this->conf['checkoutPid']);
 	}
 
-
-
 	/**
-	 * Generates the Basket Forms per line
-	 *
-	 * @param tx_commerce_article $art Article object
-	 * @param object $prod Product object
-	 * @return string HTML-Content
+	 * @param string $kind
+	 * @param tx_commerce_article $article
+	 * @param tx_commerce_product $product
+	 * @return string
 	 */
-	function makeArticleView(&$art, $prod = '') {
-		// Getting the select attributes for view
-		if (is_object($prod)) {
-			$attributeArray = $prod->get_Atrribute_Matrix(array($art->get_uid()), $this->select_attributes);
+	public function makeArticleView($kind, $article, $product) {
+			// Getting the select attributes for view
+		if (is_object($product)) {
+			$attributeArray = $product->getAttributeMatrix(array($article->getUid()), $this->select_attributes);
 
 			if (is_array($attributeArray)) {
 				$attCode = '';
 				$templateAttr = $this->cObj->getSubpart($this->templateCode, '###BASKET_SELECT_ATTRIBUTES###');
 
-				foreach($attributeArray as $attribute_uid => $myAttribute) {
+				foreach ($attributeArray as $attribute_uid => $myAttribute) {
 					/** @var $attributeObj tx_commerce_attribute */
 					$attributeObj = t3lib_div::makeInstance('tx_commerce_attribute');
 					$attributeObj->init($attribute_uid, $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
-					$attributeObj->load_data();
+					$attributeObj->loadData();
 
-					$markerArray["###SELECT_ATTRIBUTES_TITLE###"] = $myAttribute['title'];
+					$markerArray['###SELECT_ATTRIBUTES_TITLE###'] = $myAttribute['title'];
 					list($k, $v) = each($myAttribute['values']);
-					$markerArray["###SELECT_ATTRIBUTES_VALUE###"] = $v['value'];
-					$markerArray["###SELECT_ATTRIBUTES_UNIT###"] = $myAttribute['unit'];
+					$markerArray['###SELECT_ATTRIBUTES_VALUE###'] = $v['value'];
+					$markerArray['###SELECT_ATTRIBUTES_UNIT###'] = $myAttribute['unit'];
 
-					$attCode.= $this->substituteMarkerArrayNoCached($templateAttr, $markerArray, array());
+					$attCode .= $this->substituteMarkerArrayNoCached($templateAttr, $markerArray, array());
 				}
 			}
-		} // End of if is object $prod
+		}
 
-		$markerArray = $art->getMarkerArray($this->cObj, $this->conf['articleTS.'], 'article_');
+		$markerArray = $article->getMarkerArray($this->cObj, $this->conf['articleTS.'], 'article_');
 		$markerArray['###ARTICLE_SELECT_ATTRIBUTES###'] = $attCode;
-		$markerArray['###ARTICLE_UID###'] = $art->getUid();
-		$markerArray['###STARTFRM###'] = '<form name="basket_' . $art->uid . '" action="' . $this->pi_getPageLink($this->conf['basketPid']) . '" method="post">';
+		$markerArray['###ARTICLE_UID###'] = $article->getUid();
+		$markerArray['###STARTFRM###'] = '<form name="basket_' . $article->getUid() . '" action="' . $this->pi_getPageLink($this->conf['basketPid']) . '" method="post">';
 		$markerArray['###HIDDENFIELDS###'] = '<input type="hidden" name="' . $this->prefixId . '[catUid]" value="' . (int)$this->piVars['catUid'] . '" />';
-		$markerArray['###HIDDENFIELDS###'].= '<input type="hidden" name="' . $this->prefixId . '[artAddUid][' . $art->uid . '][price_id]" value="' . $this->basket->basket_items[$art->uid]->get_price_uid() . '" />';
+		$markerArray['###HIDDENFIELDS###'].= '<input type="hidden" name="' . $this->prefixId . '[artAddUid][' . $article->getUid() . '][price_id]" value="' . $this->basket->basket_items[$art->uid]->get_price_uid() . '" />';
 		$markerArray['###ARTICLE_HIDDENFIELDS###'] = '<input type="hidden" name="' . $this->prefixId . '[catUid]" value="' . (int)$this->piVars[catUid] . '" />';
 		$markerArray['###ARTICLE_HIDDENFIELDS###'].= '<input type="hidden" name="' . $this->prefixId . '[artAddUid][' . $art->uid . '][price_id]" value="' . $this->basket->basket_items[$art->uid]->get_price_uid() . '" />';
 		$markerArray['###QTY_INPUT_VALUE###'] = $this->basket->basket_items[$art->uid]->quantity;
@@ -920,7 +969,9 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 	}
 }
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/commerce/pi2/class.tx_commerce_pi2.php']) {
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/commerce/pi2/class.tx_commerce_pi2.php']);
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/pi2/class.tx_commerce_pi2.php']) {
+	/** @noinspection PhpIncludeInspection */
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/pi2/class.tx_commerce_pi2.php']);
 }
+
 ?>

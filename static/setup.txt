@@ -5,7 +5,7 @@ includeLibs.user_tx_commerce_catmenu_pub = EXT:commerce/lib/class.tx_commerce_na
  
 # Allow pi1 to become a USER_INT via GPVar
 [globalVar = GP:commerce_pi1_user_int = 1]
-	plugin.tx_commerce_pi1 = USER_INT
+plugin.tx_commerce_pi1 = USER_INT
 [global]
 
 page.includeCSS {
@@ -14,7 +14,6 @@ page.includeCSS {
 }
 
 lib.tx_commerce {
-			
 			// switch on StockHandling
 			useStockHandling = {$plugin.tx_commerce_lib.useStockHandling}
 			
@@ -22,20 +21,24 @@ lib.tx_commerce {
 			stdField.setContentToCurrent = 1
 			stdField.if.isTrue.current  = 1
 			stdField.wrap = |
+	stdField.removeBadHTML = 1
 	
 			stdFieldsGreater = stdWrap
 			stdFieldsGreater.setContentToCurrent = 1
 			stdFieldsGreater.if.isLessThan = 0
 			stdFieldsGreater.if.value.stdWrap.current = 1
+	stdFieldsGreater.removeBadHTML = 1
 			
 			stdField_RTE = stdWrap
 			stdField_RTE.setContentToCurrent = 1
 			stdField_RTE.if.isTrue.current  = 1
 			stdField_RTE.wrap = |
 			stdField_RTE.parseFunc < lib.parseFunc_RTE
+	stdField_RTE.removeBadHTML = 1
+
 			attributes {
 		      	stdWrap < lib.tx_commerce.stdField
-#		      	stdWrap.wrap = <table class="com-select-attributes" cellspacing="0" cellpadding="0" border="0"> | </table>
+		stdWrap.removeBadHTML = 0
 		    	defaultField < lib.tx_commerce.stdField
 		    	
 		    	iconMode = 0
@@ -43,9 +46,6 @@ lib.tx_commerce {
 		    	fields {
 		    	    // every colum in this table could be  wraped with the 
 		    	    // stdWrap, IMAGETEXT, IMAGE, GIFBUILDER
-		    		
-		    	    // depricated since 2005
-			    	// imageFolder = uploads/tx_commerce/
 		    		
 		  	 		title < lib.tx_commerce.stdField
 				
@@ -62,8 +62,10 @@ lib.tx_commerce {
 		  	 		}
 				}
 			}
+
 			article_prices {
 		          	stdWrap < lib.tx_commerce.stdField 
+		stdWrap.removeBadHTML = 0
 					defaultField < lib.tx_commerce.stdField
 					
 		    	    fields {
@@ -74,8 +76,10 @@ lib.tx_commerce {
 		    		    // feel free to add every other field from tx_commerce_article_prices  	
 		           	}
 			}
+
 			articles {
 		      	    stdWrap < lib.tx_commerce.stdField
+		stdWrap.removeBadHTML = 0
 		     		defaultField < lib.tx_commerce.stdField
 		    	    
 		    	    addToBasketLink = TypoLink
@@ -94,14 +98,11 @@ lib.tx_commerce {
 					   			}
 								file.maxW = 150
 						}
-						
-												
 				   }
 			}
 			
         
 		    products {
-			    
 			    // Activate Edit Panel
 			    // !!! EditIcons are not Edit Panel !
 			    // editPanel = 1 
@@ -110,22 +111,18 @@ lib.tx_commerce {
 			    // unset default new line to br, since we are using RTE rendering for TeaserFields
 			    nl2br = 0
 		      	stdWrap < lib.tx_commerce.stdField		      	
+		stdWrap.removeBadHTML = 0
 		      	
 		    	defaultField  < lib.tx_commerce.stdField
 		    	productAttributes < lib.tx_commerce.attributes
 		    	fields {
 		    	    // every colum in this table could be  wraped with the 
 		    	    // stdWrap, IMAGETEXT, IMAGE, GIFBUILDER
-		    	    // depricated since 2005
-			    	// imageFolder = uploads/tx_commerce/
 			    	
 			  	 	title  < lib.tx_commerce.stdField
-					title.typolink.setCommerceValues =1
+			title.typolink.setCommerceValues = 1
 					title.typolink.useCacheHash = 1
-					// Activate editIcons
-					// !!! EditIcons are not Edit Panel !
-					// title.editIcons = tx_commerce_products:title
-					// title.editIcons.allow = edit
+
 					subtitle < lib.tx_commerce.stdField 
 					navtitle < lib.tx_commerce.stdField 
 					description < lib.tx_commerce.stdField_RTE
@@ -156,18 +153,13 @@ lib.tx_commerce {
 					}
 				
 		    	}
-		    	#listView.products.maxArticles >
-				#maxArticles defines the amount of articles which will be shown per Product in the categories
-				# list view. If the max amount is reached the __MORETHANMAX subpart is rendered
-				# to have a replacement for the different articles
-				# Also speeds up the rendering of the cartegory view, since no articles and attributes are initialised
-		    	# @TODO: Pending documentation
 		    }
     		
     		topproducts < products
     		
 		    categories {
 		      	stdWrap < lib.tx_commerce.stdField
+		stdWrap.removeBadHTML = 0
 		    	defaultField < lib.tx_commerce.stdField
 		    	
 		    	fields {
@@ -187,9 +179,6 @@ lib.tx_commerce {
 						
 		    		// feel free to add every other field from tx_commerce_categories
 					
-					// depricated since 2005
-			    	// imageFolder = uploads/tx_commerce/
-					
 		    		images = IMAGE
 		    		images.wrap = <div class="com-category-img">|</div>
 			        images {
@@ -198,6 +187,7 @@ lib.tx_commerce {
 			            	}
 				    		file.maxW = 150
 					}
+
 					teaser < lib.tx_commerce.stdField_RTE
 			  	 	teaserimages =IMAGE
 			  	 	teaserimages {  
@@ -211,10 +201,10 @@ lib.tx_commerce {
     
     basket_items.default {
     	stdWrap < lib.tx_commerce.stdField
+		stdWrap.removeBadHTML = 0
     	defaultField < lib.tx_commerce.stdField
     	
     	fields { 
-    		
     		priceNet < lib.tx_commerce.stdField
     		priceGross < lib.tx_commerce.stdField
     		quanitity < lib.tx_commerce.stdField
@@ -226,9 +216,8 @@ lib.tx_commerce {
     		sumTax < lib.tx_commerce.stdField 		
     	
     	}
-    
-    
     }
+
     // basket_items.1 is used for the standard Basket Item (normal Article)
     // basket_items.2 is used for the paymet Articles
     // basket_items.3 is used for the delivery Article
@@ -241,6 +230,7 @@ lib.tx_commerce {
     
     baskets {
     	stdWrap < lib.tx_commerce.stdField
+		stdWrap.removeBadHTML = 0
     	defaultField < lib.tx_commerce.stdField
     	fields {
     		sid < lib.tx_commerce.stdField 	   	
@@ -256,16 +246,17 @@ lib.tx_commerce {
     
     tt_address {
     	stdWrap < lib.tx_commerce.stdField
+		stdWrap.removeBadHTML = 0
     	defaultField < lib.tx_commerce.stdField
     	
     	fields {
     		name < lib.tx_commerce.stdField
     		surename < lib.tx_commerce.stdField
     		// feel free to add every other field from tt_adress	
-    	
     	}
     }
 }
+
 // -----------------------------------------------------------------------
 // -----------------------------------------------------------------------
 plugin.tx_commerce_pi1 {
@@ -274,10 +265,13 @@ plugin.tx_commerce_pi1 {
     displayProductIfOneProduct = {$plugin.tx_commerce_lib.displayProductIfOneProduct}
     
       showErrors = {$plugin.tx_commerce_lib.showErrors}
+
     // ID wo das Basket als Template eingebunden ist.
     	basketPid = {$plugin.tx_commerce_lib.basketPid}
+
     // OverridePID for Detailview
 	overridePid = {$plugin.tx_commerce_lib.overridePid}
+
 	// currency used fro moneylib
 	currency = {$plugin.tx_commerce_lib.currency}
 	
@@ -301,16 +295,16 @@ plugin.tx_commerce_pi1 {
 	// stdWrap around the attributevalueset if more than one is selected
 	mutipleAttributeValueSetWrap < lib.tx_commerce.stdField
 	
-	
-	
         // Default maxRecords
 	maxRecords = 10
 	maxPages = 10
+
 	// Default inserting PageBrowser
 	showPageBrowser = 1
 	
-	// The main TemplateFile
+	wrapInBaseClass = 1
 	
+	// The main TemplateFile
 	templateFile = {$plugin.tx_commerce_pi1.templateFile}
 	
     // Change the templateMarker for product List to an iteration System
@@ -320,9 +314,6 @@ plugin.tx_commerce_pi1 {
     templateMarker.categoryProductList.1 = CATEGORY_ITEMS_LISTVIEW_3
     templateMarker.categoryProductListTop.0 = CATEGORY_ITEMS_LISTVIEW_1
     
-    // .
-    // .
-    // .
     // templateMarker.categoryProductList.0
 	// Number of Iterations in the Product List
 	// Number
@@ -357,11 +348,6 @@ plugin.tx_commerce_pi1 {
   		// make a selector Element or show all Artikels
   	}
 	 
-	// Depricated 
-	// image_product_list.file.maxW = 60
-	// image_product_single.file.maxW = 150
-	// image_article_list.file.maxW = 50
-	// image_article_single.file.maxW = 150
 	// show one or all Artikels
 	allArticles = 1
 	hideProductsInList = 0
@@ -421,8 +407,6 @@ plugin.tx_commerce_pi1 {
 		articles.nostock < lib.tx_commerce.articles
 	}
 	
-	
-	
 	listViewTop {
 		products < lib.tx_commerce.products
 		articles < lib.tx_commerce.articles
@@ -432,12 +416,9 @@ plugin.tx_commerce_pi1 {
 	}
 		
 	general_stdWrap { 
-	    brTag = <BR/> 
-    	#parseFunc < styles.content.parseFunc 
+		brTag = <br/>
     	parseFunc < tt_content.text.20.parseFunc
     }
-  	
-  	
   	
     categoryListView.categories < lib.tx_commerce.categories
     
@@ -503,10 +484,6 @@ plugin.tx_commerce_pi2 {
 	
 	 fields < lib.tx_commerce
 	
-	// deprecated
-	// image_product_list.file.maxW = 50
-	// image_product_single.file.maxW = 150
-		
     emptyContent = CONTENT
     emptyContent {
 	     table = tt_content
@@ -521,10 +498,10 @@ plugin.tx_commerce_pi2 {
   	// link around lang_basket_delete_item
   	deleteItem = typolink
   	
-  	
   	lastProduct < lib.tx_commerce.stdField
   	nextbutton < lib.tx_commerce.stdField
 }
+
 #
 # Commerce PlugIn 3 (Checkout)
 #
@@ -553,14 +530,14 @@ plugin.tx_commerce_pi3 {
 	// wrap around an active Step in the step bar
 	// active steps will be linked to the step
 	activeStep = stdWrap
-	activeStep.wrap =<b>|</b>
+	activeStep.wrap = <b>|</b>
 	activeStep.typolink.setCommerceValues =1
 	
 	actualStep = stdWrap
-	actualStep.wrap =<b>|</b>
+	actualStep.wrap = <b>|</b>
 	// wrap arount an incative step in the step bar
 	inactiveStep = stdWrap
-	inactiveStep.wrap =<i>|</i>
+	inactiveStep.wrap = <i>|</i>
 	// sets Usermail Charset and Encoding
 	usermail {
 		showCurrency = 0
@@ -657,6 +634,7 @@ plugin.tx_commerce_pi3 {
 		
 		mandatorySign = *
 		mandatorySignStdWrap < lib.tx_commerce.stdField
+		mandatorySignStdWrap.removeBadHTML = 0
 	}
 	
 	delivery < .billing
@@ -673,7 +651,6 @@ plugin.tx_commerce_pi3 {
 	// you can overwirte the default behavior by setting
 	// newOrderPid to your own PID
 	// newOrderPid = 120
-	
 	
     // ID of the default Usergroup
 	userGroup = {$plugin.tx_commerce_lib.userGroup}
@@ -698,6 +675,7 @@ plugin.tx_commerce_pi3 {
   cantMakeCheckout.nobilling < plugin.tx_commerce_pi3.cantMakeCheckout.noarticles
   cantMakeCheckout.nopayment < plugin.tx_commerce_pi3.cantMakeCheckout.noarticles
 }
+
 #
 # Commerce PlugIn 4 (Addresses)
 #
@@ -720,6 +698,7 @@ plugin.tx_commerce_pi4 {
 			editField = ###SINGLE_INPUT###
 		}
 	}
+
 	delivery < plugin.tx_commerce_pi3.delivery
 	delivery  {
 		subpartMarker {
@@ -768,6 +747,7 @@ plugin.tx_commerce_pi4 {
 	}
 	mandatorySign = *
 }
+
 #
 # Commerce PlugIn 6 (Invoice)
 #
@@ -801,6 +781,7 @@ plugin.tx_commerce_pi6 {
     
 	address {
       	stdWrap < lib.tx_commerce.stdField
+		stdWrap.removeBadHTML = 0
       	stdWrap.wrap = | 
     	defaultField < lib.tx_commerce.stdField
     	defaultField.wrap = |
@@ -813,7 +794,6 @@ plugin.tx_commerce_pi6 {
 			address.wrap = |<br/>
 			city < lib.tx_commerce.stdField
 			city.wrap = |<br/>
-			
  		}
 	}
  	addressDelivery < plugin.tx_commerce_pi6.address
@@ -823,16 +803,16 @@ plugin.tx_commerce_pi6 {
 	
 	OrderArticles {
       	stdWrap < lib.tx_commerce.stdField
+		stdWrap.removeBadHTML = 0
       	stdWrap.wrap = | 
     	defaultField < lib.tx_commerce.stdField		
     	
     	fields {
   	 		title.wrap = |
-			
  		}		
 	}
- 		    
 }
+
 #
 # Comerce Menue
 #
@@ -875,13 +855,17 @@ lib.tx_commerce.navigation {
        	2 = TMENU
        	3 = TMENU
     }
+
     1 = TMENU
     1.itemArrayProcFunc  = user_tx_commerce_catmenu_pub->clear
+
     2 = TMENU
     2.itemArrayProcFunc  = user_tx_commerce_catmenu_pub->clear
+
     3 = TMENU
     3.itemArrayProcFunc  = user_tx_commerce_catmenu_pub->clear
 }
+
 #
 # Commerce Rootline
 #
@@ -896,12 +880,10 @@ lib.tx_commerce.rootline {
        showProducts = 1
        // PID for displaying the products
        overridePid = {$plugin.tx_commerce_lib.overridePid}
-      
-     
     }
+
     1 = TMENU
     1.NO.linkWrap = |*|| > |*||
-  
 }
 
 # insert record support for products

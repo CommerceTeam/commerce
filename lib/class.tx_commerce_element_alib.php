@@ -1,487 +1,529 @@
 <?php
 /***************************************************************
- *  Copyright notice
+ * Copyright notice
  *
- *  (c) 2005 - 2012 Ingo Schmitt <is@marketing-factory.de>
- *  All rights reserved
+ * (c) 2005 - 2012 Ingo Schmitt <typo3@marketing-factory.de>
+ * (c) 2013 Sebastian Fischer <typo3@marketing-factory.de>
+ * All rights reserved
  *
- *  This script is part of the Typo3 project. The Typo3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * This script is part of the TYPO3 project. The TYPO3 project is
+ * free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
+ * The GNU General Public License can be found at
+ * http://www.gnu.org/copyleft/gpl.html.
  *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * This script is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- *  This copyright notice MUST APPEAR in all copies of the script!
+ * This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
 /**
- * Abstract Libary for rendering the forntend output of tx_commerce objects. 
- * Do not acces class variables directly, allways use the get and set methods,
- * variables will be changed in php5 to private, do not use this class 
- * directly, always use inherited classes.
- *
- * @author	Ingo Schmitt <is@marketing-factory.de>
- * @internal Maintainer Ingo Schmitt
- * @package TYPO3
- * @subpackage tx_commerce
- * @subpackage tx_commerce_element_alib
+ * Contstands definition for Attribute correlation_types
+ * Add new contants to array in alib class
  */
 
- /**
-  * @todo always instatiate comm_db
-  * 
-  */
-  
- /**
-  * Contstands definition for Attribute correlation_types
-  * Add new contants to array in alib class
-  */ 
- 
- /**
-  * @var ATTRIB_selector constant =1 
-  * @see sql tx_commerce_attribute_correlationtypes
-  */ 
- define ('ATTRIB_selector',1 );
-  /**
-  * @var ATTRIB_shal constant =2 
-  * @see sql tx_commerce_attribute_correlationtypes
-  */ 
- define ('ATTRIB_shal',2 );
-  /**
-  * @var ATTRIB_can constant =3 
-  * @see sql tx_commerce_attribute_correlationtypes
-  */ 
- define ('ATTRIB_can',3 );
- /**
-  * @var ATTRIB_product constant =4 
-  * @see sql tx_commerce_attribute_correlationtypes
-  */ 
- define ('ATTRIB_product',4 );
- /**
+/**
+ * @var integer
+ * @see sql tx_commerce_attribute_correlationtypes
+ */
+define ('ATTRIB_selector', 1);
+define ('ATTRIB_SELECTOR', 1);
+
+/**
+ * @var integer
+ * @see sql tx_commerce_attribute_correlationtypes
+ */
+define ('ATTRIB_shal', 2);
+define ('ATTRIB_SHAL', 2);
+
+/**
+ * @var integer
+ * @see sql tx_commerce_attribute_correlationtypes
+ */
+define ('ATTRIB_can', 3);
+define ('ATTRIB_CAN', 3);
+
+/**
+ * @var integer
+ * @see sql tx_commerce_attribute_correlationtypes
+ */
+define ('ATTRIB_product', 4);
+define ('ATTRIB_PRODUCT', 4);
+
+/**
  * Basic abtract Class for element
  * tx_commerce_product
  * tx_commerce_article
  * tx_commerce_category
  * tx_commerce_attribute
- * 
- * 
  *
- * @author		Ingo Schmitt <is@marketing-factory.de>
-
  * @package TYPO3
  * @subpackage tx_commerce
  * @subpackage tx_commerce_element_alib
  */
- 
- /**
-  *  @since 21.09.05
-  *  new add field_to_fieldlist
-  *  new add fields_to_fieldlist
-  * 
-  */
 class tx_commerce_element_alib {
+	/**
+	 * uid of element
+	 *
+	 * @var integer
+	 */
+	protected $uid;
 
 	/**
-  	 * @var integer uid of product
-  	 * @access private
-  	 */
-	var  $uid;	
-	
+	 * Language uid
+	 *
+	 * @var integer
+	 */
+	protected $lang_uid = 0;
 
 	/**
-	 * @var integer Language uid
+	 * Language uid
+	 *
+	 * @var integer
 	 */
-	var $lang_uid = 0;
+	protected $l18n_parent;
 
 	/**
-	 * @var integer language uid
+	 * Database class for inhertitation
+	 *
+	 * @var string
 	 */
-	var  $l18n_parent;
-	
+	protected $databaseClass = '';
+
 	/**
-	 * @var Database class for inhertitation
+	 * @var tx_commerce_db_alib
 	 */
-	var $database_class='';
-	
+	protected $databaseConnection;
+
 	/**
-	 * @var fieldlist for inhertitation
+	 * @var array fieldlist for inhertitation
 	 */
-	var $fieldlist=array('title' , 'lang_uid' , 'l18n_parent' , '_LOCALIZED_UID');
-	
+	protected $fieldlist = array(
+		'title',
+		'lang_uid',
+		'l18n_parent',
+		'_LOCALIZED_UID'
+	);
+
 	/**
 	 * Changes hier must be made, if a new correewlation_type is invented
+	 *
 	 * @var array of possible attribute correlation_types
 	 */
-	var $correlation_types=array(ATTRIB_selector,ATTRIB_shal,ATTRIB_can,ATTRIB_product );
-	
+	public $correlation_types = array(
+		ATTRIB_SELECTOR,
+		ATTRIB_SHAL,
+		ATTRIB_CAN,
+		ATTRIB_PRODUCT
+	);
+
 	/**
-	 * @var default_add_where for deleted hidden and more
+	 * @var string default_add_where for deleted hidden and more
 	 */
-	var $default_add_where= ' AND hidden = 0 AND deleted = 0';
-	
-	
+	protected $default_add_where = ' AND hidden = 0 AND deleted = 0';
+
 	/**
 	 * @var array of attribute UIDs
-	 * @acces private
 	 */
-	
-	var $attributes_uids = array();
-	
+	protected $attributes_uids = array();
+
 	/**
 	 * @var array of attributes
-	 * @access private
 	 */
-	 var $attribute = array();
+	protected $attribute = array();
+
 	/**
-	 * @var Database Object, should be instantiated with the constructer each
-	 * inherited class
-	 * @access private
-	 * 
-	 */
-	
-	var $conn_db = '';
-	
-	/**
-	 * @Var Translation Mode for getRecordOverlay
+	 * @var string Translation Mode for getRecordOverlay
 	 * @see class.t3lib_page.php
-	 * @acces private
 	 */
-	
-	var $translationMode='hideNonTranslated';
-
-	 /**
-	  * @return 	boolean	if a record is translaed
-	  * @acces private
-	  */
-	 
-	var $recordTranslated=false;
-
-
-    /**
-     *
-     * @var integer lokalized UID   the uid of the localized record
-     */
-    var $_LOCALIZED_UID;
+	protected $translationMode = 'hideNonTranslated';
 
 	/**
-	 * 
-	 * @return return language id
-	 * @access public
+	 * @return boolean if a record is translaed
 	 */
-	function get_lang(){
+	protected $recordTranslated = FALSE;
+
+	/**
+	 * @var integer lokalized UID   the uid of the localized record
+	 */
+	public $_LOCALIZED_UID;
+
+	/**
+	 * @var array
+	 */
+	protected $data = array();
+
+	/**
+	 * @return array
+	 */
+	public function getData() {
+		return $this->data;
+	}
+
+	/**
+	 * language id
+	 *
+	 * @return integer
+	 */
+	public function getLang() {
 		return $this->lang_uid;
 	}
-	
+
 	/**
-	 * 
-	 * @return return l18n_partent uid
+	 * @return integer l18n_partent uid
 	 * @access public
 	 */
-	function getL18nParent(){
+	public function getL18nParent() {
 		return $this->l18n_parent;
 	}
 
-    /**
-     * Returns the UID of the localized Record
-     * @return _LOCALIZED_UID
-     */
-
-    public function get_LOCALIZED_UID() {
-        return $this->_LOCALIZED_UID;
-    }
-	
+	/**
+	 * @return integer
+	 */
+	public function getLocalizedUid() {
+		return $this->_LOCALIZED_UID;
+	}
 
 	/**
 	 * Loads the Data from the database
-	 * via the named database class $database_class
-	 * 
-	 * @param $translationMode Transaltio Mode of the record, default false to use the default way of translation
+	 * via the named database class $databaseClass
+	 *
+	 * @param boolean $translationMode Transaltio Mode of the record, default false to use the default way of translation
+	 * @return array
 	 */
-	
-	function load_data($translationMode=false){	
+	public function loadData($translationMode = FALSE) {
 		if ($translationMode) {
 			$this->translationMode = $translationMode;
 		}
-		
-		if ($this->conn_db){
-			$data=$this->conn_db->get_data($this->uid,$this->lang_uid,$translationMode);	
-		}else{
-    			
-			$this->conn_db = new $this->database_class();
-			$data=$this->conn_db->get_data($this->uid,$this->lang_uid,$translationMode);
+
+		if (!$this->databaseConnection) {
+			$this->databaseConnection = t3lib_div::makeInstance($this->databaseClass);
 		}
-		if (!$data){
-			$this->recordTranslated=false;
-			return false;
-			
-		}else{
-			$this->recordTranslated=true;
+		$this->data = $data = $this->databaseConnection->getData($this->uid, $this->lang_uid, $translationMode);
+
+		if (!$data) {
+			$this->recordTranslated = FALSE;
+			return FALSE;
+		} else {
+			$this->recordTranslated = TRUE;
 		}
-	
-		// seems to be useless
-		#$this->recordTranslated=true;
-		
-		// Load data and walk true assoc field list
-	
-		foreach ($this->fieldlist as $field){
-			$this->$field=$data[$field];	
+
+		foreach ($this->fieldlist as $field) {
+			$this->$field = $data[$field];
 		}
-        if ($data['_LOCALIZED_UID']) {
-            $this->_LOCALIZED_UID = $data['_LOCALIZED_UID'];
-        }
+
+		if ($data['_LOCALIZED_UID']) {
+			$this->_LOCALIZED_UID = $data['_LOCALIZED_UID'];
+		}
+
 		return $data;
 	}
-	
+
 	/**
 	 * Returns true, if a translation for the initialised Laguage is availiable
 	 *
 	 * @return boolean
 	 */
-	function isTranslated(){
+	public function isTranslated() {
 		return $this->recordTranslated;
 	}
- 	
- 	/**
- 	 * Adds a field to the $fieldlist variable
+
+	/**
+	 * Adds a field to the $fieldlist variable
 	 * used for hooks to add own fields to the output
 	 * Basically it creates an array with the string as value
 	 * and calls $this->add_fields_to_fieldlist
-	 * @param $fieldname Database fieldname
- 	 */
- 	
- 	function add_field_to_fieldlist($fieldname){
- 		$this->add_fields_to_fieldlist(array(trim($fieldname)));
- 	}
- 	/**
- 	 * Adds a set of fields to the $fieldlist variable
+	 *
+	 * @param string $fieldname Database fieldname
+	 */
+	public function addFieldToFieldlist($fieldname) {
+		$this->addFieldsToFieldlist(array(trim($fieldname)));
+	}
+
+	/**
+	 * Adds a set of fields to the $fieldlist variable
 	 * used for hooks to add own fields to the output
-	 * @param $fieldlistr array of databse filednames
- 	 */
- 	
- 	function add_fields_to_fieldlist($fieldarray){
- 		$this->fieldlist = array_merge($this->fieldlist, (array)$fieldarray);
- 	}
- 	
+	 *
+	 * @param array $fieldarray array of databse filednames
+	 */
+	public function addFieldsToFieldlist($fieldarray) {
+		$this->fieldlist = array_merge($this->fieldlist, (array) $fieldarray);
+	}
+
 	/**
 	 * Get uid of item
-	 * 
+	 *
 	 * @return integer Uid
 	 */
 	public function getUid() {
-		return $this->uid;
+		return (int) $this->uid;
 	}
 
- 	/**
- 	 * @deprecated version - 08.11.2005 
- 	 * Returns  the data of this object als array
-  	 * @param prefix Prefix for the keys or returnung array optional
-  	 * @return array Assoc Arry of data
-  	 * @acces public
-  	 * @since 2005 11 08 depricated
-  	 * 
-  	 */
-  	function return_assoc_array($prefix=''){
-  		return $this->returnAssocArray($prefix);
-  	}
-  	
-  	/**
-  	 * Returns the data of this object als array
-  	 * @param prefix Prefix for the keys or returnung array optional
-  	 * @return array Assoc Arry of data
-  	 * @acces public
-  	 * @since 2005 11 08
-  	 * 
-  	 */
-  	function returnAssocArray($prefix=''){
-  		$data=array();
-  		foreach ($this->fieldlist as $field){
-				$data[$prefix.$field]=$this->$field;
+	/**
+	 * Returns the data of this object als array
+	 *
+	 * @param string $prefix Prefix for the keys or returnung array optional
+	 * @return array Assoc Arry of data
+	 */
+	public function returnAssocArray($prefix = '') {
+		$data = array();
+
+		foreach ($this->fieldlist as $field) {
+			$data[$prefix . $field] = $this->$field;
 		}
+
 		return $data;
-  	}
-	
-  	/**
-  	 * @since 2005 11 08
-  	 * depricated, use tx_commerce_pibase->renderrow in combinintion with
-  	 * $this->return_assoc_array
-  	 * 
-  	 *     Renders    values from fieldlist to markers
-  	 * 
-  	 * @param &$cobj refference to cobj class
-  	 * @param $conf configuration for this viewmode to render cObj
-  	 * @param prefix optinonal prefix for marker
-	 * @author Volker Graubaum <vg@e-netconsulting.de>
-  	 * @return html-code
-  	 * @todo fill in code
-  	 */
-  	
- 	function getMarkerArray(&$cobj,$conf,$prefix=''){
- 		$output='';
- 		$markContentArray=$this->return_assoc_array('');
- 		foreach ($markContentArray as $k => $v){
-			switch(strtoupper($conf[$k])) {
-				case 'IMGTEXT' :
-				case 'IMAGE' :
-						$i = 1;
-						$imgArray = explode(';',$v);
-						foreach($imgArray as $img){
-							$conf[$k.'.'][$i.'.'] = $conf[$k.'.']['defaultImgConf.'];
-							$conf[$k.'.'][$i.'.']['file'] = $conf['imageFolder'].$img;
-							$vr = $cobj->IMAGE($conf[$k.'.'][$i.'.']);
-
-						}
-				break;
-				case 'STDWRAP' :
-					    $vr = $cobj->stdWrap($v,$conf[$k.'.']);
-				break;
-				default : $vr = $v;
-				break;			
-			}
-			$markerArray['###'.strtoupper($prefix.$k).'###'] = $vr;
-		}
-		return $markerArray; 	
- 		
- 	}
- 	
-	/**
- 	 * Checks if the UID is valid and availiable in the database
- 	 * @return boolen true if uid is valid
- 	 * @todo revise access-check
- 	 */
- 	
- 	function isValidUid(){
- 		if ($this->conn_db){
- 			return $this->conn_db->isUid($this->uid);
- 		}else{
-			$this->conn_db = new $this->database_class();
- 			return $this->conn_db->isUid($this->uid);
- 		}
- 	}
-	
-
-	/**
- 	 * Checks if the UID is valid and availiable in the database
- 	 * @return boolen true if uid is valid
- 	 * @todo revise access-check
-	 * @deprecated
- 	 */
- 	
- 	function is_valid_uid()	{
- 		
- 		if ($this->conn_db)	{
- 			return $this->conn_db->isUid($this->uid);
- 		} else {
-			$this->conn_db = new $this->database_class();
- 			return $this->conn_db->isUid($this->uid);
- 		} 			
- 	}
-
- 	
- 	/**
- 	 * Checks in the Database if object is 
- 	 * basically checks against the enableFields
- 	 * @see: class.tx_commerce_db_alib.php->isAccessible(
-
- 	 * @return 	true	if is accessible
- 	 * 			false	if is not accessible
- 	 * @author	Ingo Schmitt	<is@marketing-factory.de>
- 	 */
- 	
- 	function isAccessible(){
- 		if ($this->conn_db){
- 			return $this->conn_db->isAccessible($this->uid);
- 		}
- 		else{
-			$this->conn_db = new $this->database_class();
- 			return $this->conn_db->isAccessible($this->uid);
- 		}
- 		
- 	}
- 	
- 	/**
- 	 * Sets the PageTitle titile from via the TSFE
- 	 * @param field (default title) for setting as title
- 	 * @author Volker Graubaum <vg@e-netconsulting.de>
- 	 */
-	
-	function setPageTitle($field='title'){
-	     
-	     $GLOBALS['TSFE']->page['title'] = $this->$field. ' : '.  $GLOBALS['TSFE']->page['title']; 
-             // set pagetitle for indexed search also
-	     $GLOBALS['TSFE']->indexedDocTitle = $this->$field. ' : '.  $GLOBALS['TSFE']->indexedDocTitle;
 	}
-	
- 	/** 
-  	 * 
-  	 * returns the possible attributes
-  	 * @param array of attribut_correlation_types
-  	 * @return array
-  	 */		
-  	function get_attributes($attribute_corelation_type_list=''){
-  		if ($this->attributes_uids=$this->conn_db->get_attributes($this->uid,$attribute_corelation_type_list)){
-  			foreach ($this->attributes_uids as $attribute_uid){
-  				// initialise Array of articles 
-  				$this->attribute[$attribute_uid] = t3lib_div::makeInstance('tx_commerce_attribute');
-  				$this->attribute[$attribute_uid]->init($attribute_uid,$this->lang_uid);
-  				$this->attribute[$attribute_uid]->load_data();
-  			}
-  			return $this->attributes_uids;
-  		}
-  	}
-  	
-  	/** 
-  	 * set a given field, only to use with custom field without own method 
-  	 * 
-  	 * Warning: commerce provides getMethods for all default fields. For Compatibility
-  	 * reasons always use the built in Methods. Only use this method with you own added fields 
-  	 * @see add_fields_to_fieldlist
-  	 * @see add_field_to_fieldlist
-  	 * 
-  	 * @param string	$field: fieldname
-  	 * @param mixed	$value: value
-  	 * @return void
-  	 */	
-  	
-  	function setField($field,$value){
+
+	/**
+	 * Checks if the UID is valid and availiable in the database
+	 *
+	 * @return boolean true if uid is valid
+	 */
+	public function isValidUid() {
+		if ($this->databaseConnection) {
+			return $this->databaseConnection->isUid($this->uid);
+		} else {
+			$this->databaseConnection = t3lib_div::makeInstance($this->databaseClass);
+
+			return $this->databaseConnection->isUid($this->uid);
+		}
+	}
+
+	/**
+	 * Checks in the Database if object is
+	 * basically checks against the enableFields
+	 *
+	 * @see: class.tx_commerce_db_alib.php->isAccessible(
+	 * @return boolean   TRUE    if is accessible
+	 *            FALSE    if is not accessible
+	 */
+	public function isAccessible() {
+		if ($this->databaseConnection) {
+			return $this->databaseConnection->isAccessible($this->uid);
+		} else {
+			$this->databaseConnection = t3lib_div::makeInstance($this->databaseClass);
+			return $this->databaseConnection->isAccessible($this->uid);
+		}
+	}
+
+	/**
+	 * Sets the PageTitle titile from via the TSFE
+	 *
+	 * @param string $field (default title) for setting as title
+	 */
+	public function setPageTitle($field = 'title') {
+		$GLOBALS['TSFE']->page['title'] = $this->$field . ' : ' . $GLOBALS['TSFE']->page['title'];
+			// set pagetitle for indexed search also
+		$GLOBALS['TSFE']->indexedDocTitle = $this->$field . ' : ' . $GLOBALS['TSFE']->indexedDocTitle;
+	}
+
+	/**
+	 * returns the possible attributes
+	 *
+	 * @param array $attribute_corelation_type_list array of attribut_correlation_types
+	 * @return array
+	 */
+	public function getAttributes($attribute_corelation_type_list = array()) {
+		$result = array();
+		if ($this->attributes_uids = $this->databaseConnection->getAttributes($this->uid, $attribute_corelation_type_list)) {
+			foreach ($this->attributes_uids as $attribute_uid) {
+				/** @var tx_commerce_attribute $attribute */
+				$attribute = t3lib_div::makeInstance('tx_commerce_attribute');
+				$attribute->init($attribute_uid, $this->lang_uid);
+				$attribute->loadData();
+				$this->attribute[$attribute_uid] = $attribute;
+			}
+			$result = $this->attributes_uids;
+		}
+		return $result;
+	}
+
+	/**
+	 * set a given field, only to use with custom field without own method
+	 * Warning: commerce provides getMethods for all default fields. For Compatibility
+	 * reasons always use the built in Methods. Only use this method with you own added fields
+	 *
+	 * @see add_fields_to_fieldlist
+	 * @see add_field_to_fieldlist
+	 * @param string	$field: fieldname
+	 * @param mixed	$value: value
+	 * @return void
+	 */
+	public function setField($field, $value) {
 		$this->$field = $value;
 	}
 
-  	/** 
-  	 * get a given field value, only to use with custom field without own method 
-  	 * 
-  	 * Warning: commerce provides getMethods for all default fields. For Compatibility
-  	 * reasons always use the built in Methods. Only use this method with you own added fields 
-  	 * @see add_fields_to_fieldlist
-  	 * @see add_field_to_fieldlist
-  	 * 
-  	 * @param string	$field: fieldname
-  	 * @return mixed	value of the field
-  	 */	
-
-	function getField($field){
+	/**
+	 * get a given field value, only to use with custom field without own method
+	 * Warning: commerce provides getMethods for all default fields. For Compatibility
+	 * reasons always use the built in Methods. Only use this method with you own added fields
+	 *
+	 * @see add_fields_to_fieldlist
+	 * @see add_field_to_fieldlist
+	 * @param string	$field: fieldname
+	 * @return mixed	value of the field
+	 */
+	public function getField($field) {
 		return $this->$field;
 	}
-  	
+
+
+	/**
+	 * Loads the Data from the database
+	 * via the named database class $databaseClass
+	 *
+	 * @param boolean $translationMode Transaltio Mode of the record, default false to use the default way of translation
+	 * @return array
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use loadData instead
+	 */
+	public function load_data($translationMode = FALSE) {
+		t3lib_div::logDeprecatedFunction();
+		return $this->loadData($translationMode);
+	}
+
 	/**
 	 * Get uid of object
-	 * 
+	 *
 	 * @return integer uid
-	 * @deprecated 
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getUid instead
 	 */
 	public function get_uid() {
+		t3lib_div::logDeprecatedFunction();
 		return $this->getUid();
 	}
- }
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_element_alib.php']) {
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_element_alib.php']);
+	/**
+	 * Returns the UID of the localized Record
+	 *
+	 * @return integer _LOCALIZED_UID
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getLocalizedUid instead
+	 */
+	public function get_LOCALIZED_UID() {
+		t3lib_div::logDeprecatedFunction();
+		return $this->getLocalizedUid();
+	}
+
+	/**
+	 * @return integer language id
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getLang instead
+	 */
+	public function get_lang() {
+		t3lib_div::logDeprecatedFunction();
+		return $this->getLang();
+	}
+
+	/**
+	 * @since 2005 11 08
+	 * depricated, use tx_commerce_pibase->renderrow in combinintion with
+	 * $this->return_assoc_array
+	 *     Renders    values from fieldlist to markers
+	 * @param tslib_cObj &$cobj refference to cobj class
+	 * @param array $conf configuration for this viewmode to render cObj
+	 * @param string $prefix optinonal prefix for marker
+	 * @return array
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use tx_commerce_pibase->renderrow in combination with $this->return_assoc_array instead
+	 */
+	public function getMarkerArray(&$cobj, $conf, $prefix = '') {
+		t3lib_div::logDeprecatedFunction();
+		$markContentArray = $this->returnAssocArray('');
+		$markerArray = array();
+		foreach ($markContentArray as $k => $v) {
+			$vr = '';
+			switch (strtoupper($conf[$k])) {
+				case 'IMGTEXT' :
+				case 'IMAGE' :
+						$i = 1;
+					$imgArray = explode(';', $v);
+					foreach ($imgArray as $img) {
+						$conf[$k . '.'][$i . '.'] = $conf[$k . '.']['defaultImgConf.'];
+						$conf[$k . '.'][$i . '.']['file'] = $conf['imageFolder'] . $img;
+						$vr = $cobj->IMAGE($conf[$k . '.'][$i . '.']);
+						}
+				break;
+				case 'STDWRAP' :
+					$vr = $cobj->stdWrap($v, $conf[$k . '.']);
+				break;
+				default :
+					$vr = $v;
+				break;
+			}
+			$markerArray['###' . strtoupper($prefix . $k) . '###'] = $vr;
+		}
+
+		return $markerArray;
+	}
+
+	/**
+	 * deprecated version - 08.11.2005
+	 * Returns  the data of this object als array
+	 * @param string $prefix for the keys or returnung array optional
+	 * @return array Assoc Arry of data
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use returnAssocArray instead
+	 */
+	public function return_assoc_array($prefix = '') {
+		t3lib_div::logDeprecatedFunction();
+		return $this->returnAssocArray($prefix);
+	}
+
+	/**
+	 * Adds a field to the $fieldlist variable
+	 * used for hooks to add own fields to the output
+	 * Basically it creates an array with the string as value
+	 * and calls $this->add_fields_to_fieldlist
+	 *
+	 * @param string $fieldname Database fieldname
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use addFieldToFieldlist instead
+	 */
+	public function add_field_to_fieldlist($fieldname) {
+		t3lib_div::logDeprecatedFunction();
+		$this->addFieldToFieldlist($fieldname);
+	}
+
+	/**
+	 * Adds a set of fields to the $fieldlist variable
+	 * used for hooks to add own fields to the output
+	 *
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use addFieldsToFieldlist instead
+	 */
+	public function add_fields_to_fieldlist($fieldarray) {
+		t3lib_div::logDeprecatedFunction();
+		$this->addFieldsToFieldlist($fieldarray);
+	}
+
+	/**
+	 * Checks if the UID is valid and availiable in the database
+	 *
+	 * @return boolean true if uid is valid
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use isValidUid instead
+	 */
+	public function is_valid_uid() {
+		t3lib_div::logDeprecatedFunction();
+		$this->isValidUid();
+	}
+
+	/**
+	 * returns the possible attributes
+	 *
+	 * @param array $attribute_corelation_type_list array of attribut_correlation_types
+	 * @return array
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getAttributes instead
+	 */
+	public function get_attributes($attribute_corelation_type_list = array()) {
+		t3lib_div::logDeprecatedFunction();
+		return $this->getAttributes($attribute_corelation_type_list);
+	}
 }
+
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_element_alib.php']) {
+	/** @noinspection PhpIncludeInspection */
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_element_alib.php']);
+}
+
 ?>

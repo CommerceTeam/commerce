@@ -881,14 +881,15 @@ class SC_mod_access_perm_index {
 	}
 }
 
-//XClass Statement
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/commerce/mod_access/index.php'])	{
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/commerce/mod_access/index.php']);
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/mod_access/index.php']) {
+	/** @noinspection PhpIncludeInspection */
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/mod_access/index.php']);
 }
 
-//Make instance:
+/** @var SC_mod_access_perm_index $SOBE */
 $SOBE = t3lib_div::makeInstance('SC_mod_access_perm_index');
 $SOBE->init();
 $SOBE->main();
 $SOBE->printContent();
+
 ?>

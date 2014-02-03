@@ -447,7 +447,7 @@ class Tx_Commerce_SystemData extends t3lib_SCbase {
 	 * generates a list of all saved Manufacturers
 	 */
 	protected function getManufacturerListing() {
-		$fields = explode(',', $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['extConf']['coManufacturers']);
+		$fields = explode(',', $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['coManufacturers']);
 
 		$headerRow = '<tr><td></td>';
 		foreach ($fields as $field) {
@@ -515,7 +515,7 @@ class Tx_Commerce_SystemData extends t3lib_SCbase {
 	 * @return string
 	 */
 	protected function getSupplierListing() {
-		$fields = explode(',', $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['extConf']['coSuppliers']);
+		$fields = explode(',', $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['coSuppliers']);
 
 		$headerRow = '<tr><td></td>';
 		foreach ($fields as $field) {

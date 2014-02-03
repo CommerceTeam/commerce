@@ -25,7 +25,7 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 /**
- * 
+ *
  * @author	Rene Fritz <r.fritz@colorcube.de>
  * @package DAM-Treelib
  */
@@ -61,8 +61,7 @@ class tx_commerce_treelib_browser extends t3lib_SCbase {
 	 * @return	void
 	 */
 	function init()	{
-		global $BE_USER, $BACK_PATH, $TYPO3_CONF_VARS;
-		
+		global $BACK_PATH;
 
 		parent::init();
 
@@ -70,11 +69,11 @@ class tx_commerce_treelib_browser extends t3lib_SCbase {
 		$this->table = t3lib_div::_GP('table');
 		$this->field = t3lib_div::_GP('field');
 		$this->uid = t3lib_div::_GP('uid');
-		$this->itemFormElName = t3lib_div::_GP('elname');		
+		$this->itemFormElName = t3lib_div::_GP('elname');
 		$this->flex_config = t3lib_div::_GP('config');
 		$seckey = t3lib_div::_GP('seckey');
 		$allowProducts = t3lib_div::_GP('allowProducts');
-		
+
 
 			// since we are worried about someone forging parameters (XSS security hole) we will check with sent md5 hash:
 		if (!($seckey===t3lib_div::shortMD5($this->table.'|'.$this->field.'|'.$this->uid.'|'.$this->itemFormElName.'|'.$this->flex_config.'|'.$allowProducts.'|'.$GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey']))) {
@@ -84,7 +83,7 @@ class tx_commerce_treelib_browser extends t3lib_SCbase {
 		if ($this->flex_config) {
 			$this->flex_config = unserialize(base64_decode($this->flex_config));
 		}
-		
+
 		$this->backPath = $BACK_PATH;
 
 			// Initialize template object
@@ -123,15 +122,15 @@ class tx_commerce_treelib_browser extends t3lib_SCbase {
 			#ext-dam-mod-treebrowser-index-php { background-color:#fff; }
 			#ext-treelib-browser { background-color:#fff; }
 		';
-		
+
 		$this->doc->loadJavascriptLib('contrib/prototype/prototype.js');
 		$this->doc->loadJavascriptLib('../typo3conf/ext/commerce/mod_access/tree.js'); ###MAKE PATH BE CALCULATED, NOT FIXED###
-		
+
 		// Check if we need to allow browsing of products.
 		if (1 == $allowProducts) {
 			$this->doc->JScode .= $this->doc->wrapScriptTags('Tree.ajaxID = "tx_commerce_category_navframe::ajaxExpandCollapse";');
 		}
-		
+
 		// Setting JavaScript for menu
 		// in this context, the function jumpTo is different
 		// it adds the Category to the mountpoints
@@ -154,8 +153,8 @@ class tx_commerce_treelib_browser extends t3lib_SCbase {
 	 *
 	 * @return	void
 	 */
-	function main()	{
-		global $TCA, $BACK_PATH, $TYPO3_CONF_VARS;
+	function main() {
+		global $TCA;
 
 			// get the data of the field - the currently selected items
 		$row = $this->getRecordProcessed();
@@ -169,29 +168,29 @@ class tx_commerce_treelib_browser extends t3lib_SCbase {
 			// modifying TCA to force the right rendering - not nice but works
 		t3lib_div::loadTCA($this->table);
 
-		$row['uid'] = $this->uid;	
-		
+		$row['uid'] = $this->uid;
+
 		$fakePA = array();
-		
+
 		if (is_array($this->flex_config)) {
 			$fakePA['fieldConf'] = array(
 				'label' => $form->sL($this->flex_config['label']),
-				'config' => $this->flex_config['config'],			
+				'config' => $this->flex_config['config'],
 				'defaultExtras' => $this->flex_config['defaultExtras']
-			);	
+			);
 		} else {
 			$fakePA['fieldConf'] = array(
 				'label' => $form->sL($TCA[$this->table]['columns'][$this->field]['label']),
 				'config' => $TCA[$this->table]['columns'][$this->field]['config']
 			);
 		}
-					
+
 		$fakePA['fieldConf']['config']['treeViewBrowseable'] = 'iframeContent';
-		$fakePA['fieldConf']['config']['noTableWrapping'] = true;			
+		$fakePA['fieldConf']['config']['noTableWrapping'] = true;
 		$fakePA['itemFormElName'] = $this->itemFormElName;
 		$fakePA['itemFormElName_file'] = $this->itemFormElName;
 
-		$this->content .= $form->getSingleField_SW($this->table,$this->field,$row,$fakePA);	
+		$this->content .= $form->getSingleField_SW($this->table,$this->field,$row,$fakePA);
 	}
 
 
@@ -213,8 +212,6 @@ class tx_commerce_treelib_browser extends t3lib_SCbase {
 	 * @return array Record
 	 */
 	function getRecordProcessed () {
-		global $TYPO3_CONF_VARS;
-
 			// This will render MM relation fields in the correct way.
 			// Read the whole record, which is not needed, but there's no other way.
 		$trData = t3lib_div::makeInstance('t3lib_transferData');
@@ -228,8 +225,9 @@ class tx_commerce_treelib_browser extends t3lib_SCbase {
 	}
 }
 
-//XClass Statement
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/commerce/treelib/class.tx_commerce_treelib_browser.php'])	{
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/commerce/treelib/class.tx_commerce_treelib_browser.php']);
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/treelib/class.tx_commerce_treelib_browser.php']) {
+	/** @noinspection PhpIncludeInspection */
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/treelib/class.tx_commerce_treelib_browser.php']);
 }
+
 ?>

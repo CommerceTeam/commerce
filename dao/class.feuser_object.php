@@ -36,94 +36,45 @@
 * @subpackage commerce
 * @author Carsten Lausen <cl@e-netconsulting.de>
 */
-
-require_once(dirname(__FILE__).'/class.basic_dao.php');
-require_once(dirname(__FILE__).'/class.feuser_address_fieldmapper.php');
-
 class feuser_object extends basic_object {
+	/**
+	 * @var integer
+	 */
+	public $tx_commerce_tt_address_id;
 
-	var $tx_commerce_tt_address_id;
+	/**
+	 * @var string
+	 */
+	protected $name;
 
-
-	function feuser_object() {
-		//add any mapped fields to object
-		$field_mapper = new feuser_address_fieldmapper;
+	public function feuser_object() {
+			// add any mapped fields to object
+		$field_mapper = t3lib_div::makeInstance('feuser_address_fieldmapper');
 		$field_arr = $field_mapper->get_feuser_fieldarray();
-		foreach($field_arr as $field) {
-			$this->$field=null;
+		foreach ($field_arr as $field) {
+			$this->$field = NULL;
 		}
 	}
 
-    function getName() {
+	public function getName() {
 		return $this->name;
 	}
 
-	function setName($name) {
+	public function setName($name) {
 		$this->name = $name;
 	}
 
-	function getTx_commerce_tt_address_id() {
+	public function getTx_commerce_tt_address_id() {
 		return $this->tx_commerce_tt_address_id;
 	}
 
-	function setTx_commerce_tt_address_id($value) {
+	public function setTx_commerce_tt_address_id($value) {
 		$this->tx_commerce_tt_address_id = $value;
 	}
-
 }
 
-//-------------------- database access ----------------------
-
-
-/**
-* feuser dao parser
-* This class is used by the dao for object/model parsing.
-* It extends the basic dao parser.
-*
-* @author Carsten Lausen <cl@e-netconsulting.de>
-*/
-class feuser_parser extends basic_dao_parser {
-
-
-}
-
-
-/**
-* feuser dao mapper
-* This class used by the dao for database storage.
-* It extends the basic dao mapper.
-*
-* @author Carsten Lausen <cl@e-netconsulting.de>
-*/
-class feuser_mapper extends basic_dao_mapper {
-
- 	function init() {
-	 	$this->dbTable = 'fe_users';	//dbtable for persistence
-	 	$this->createPid = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce']['create_feuser_pid'];   //new record pid
- 	}
-
-}
-
-
-/**
-* feuser dao
-* This class handles object persistence using the dao design pattern.
-* It extends the basic dao.
-*
-* @author Carsten Lausen <cl@e-netconsulting.de>
-*/
-class feuser_dao extends basic_dao {
-
- 	function init() {
- 		$this->parser = new feuser_parser();
- 		$this->mapper = new feuser_mapper($this->parser);
- 		$this->obj = new feuser_object;
- 	}
-
-}
-
- // Include extension?
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/dao/class.feuser_object.php'])	{
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/dao/class.feuser_object.php']) {
+	/** @noinspection PhpIncludeInspection */
 	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/dao/class.feuser_object.php']);
 }
 

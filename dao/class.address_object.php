@@ -36,79 +36,55 @@
 * @subpackage commerce
 * @author Carsten Lausen <cl@e-netconsulting.de>
 */
-
-require_once(dirname(__FILE__).'/class.basic_dao.php');
-require_once(dirname(__FILE__).'/class.feuser_address_fieldmapper.php');
-
 class address_object extends basic_object {
+	/**
+	 * @var
+	 */
+	public $tx_commerce_fe_user_id;
 
-	var $tx_commerce_fe_user_id;
-	var $tx_commerce_address_type_id;
-	var $tx_commerce_is_main_address;
+	/**
+	 * @var
+	 */
+	public $tx_commerce_address_type_id;
 
-	function address_object() {
-		//add mapped fields to object
-		$fieldmapper = new feuser_address_fieldmapper;
+	/**
+	 * @var
+	 */
+	public $tx_commerce_is_main_address;
+
+	/**
+	 * @var string
+	 */
+	protected $name;
+
+	public function __construct() {
+			// add mapped fields to object
+		$fieldmapper = t3lib_div::makeInstance('feuser_address_fieldmapper');
 		$field_arr = $fieldmapper->get_address_fieldarray();
-		foreach($field_arr as $field) {
-			$this->$field='';
+		foreach ($field_arr as $field) {
+			$this->$field = '';
 		}
 	}
 
-	function getName() {
+	/**
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use __construct instead
+	 */
+	public function address_object() {
+		t3lib_div::logDeprecatedFunction();
+		$this->__construct();
+	}
+
+	public function getName() {
 		return $this->name;
 	}
 
-	function setName($name) {
+	public function setName($name) {
 		$this->name = $name;
 	}
 }
 
-/**
- * address dao parser
- * This class is used by the dao for object/model parsing.
- * It extends the basic dao parser.
- *
- * @author Carsten Lausen <cl@e-netconsulting.de>
- */
-class address_dao_parser extends basic_dao_parser {
-}
-
-
-/**
- * address dao mapping
- * This class used by the dao for database storage.
- * It extends the basic dao mapper.
- *
- * @author Carsten Lausen <cl@e-netconsulting.de>
- */
-class address_dao_mapper extends basic_dao_mapper {
-
-	function init() {
-		$this->dbTable = 'tt_address';	//dbtable for persistence
-		$this->createPid = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['extConf']['create_address_pid'];   //new record pid
-	}
-}
-
-
-/**
- * address dao
- * This class handles object persistence using the dao design pattern.
- * It extends the basic dao object.
- *
- * @author Carsten Lausen <cl@e-netconsulting.de>
- */
-class address_dao extends basic_dao {
-
-	function init() {
-		$this->parser = new address_dao_parser();
-		$this->mapper = new address_dao_mapper($this->parser);
-		$this->obj = new address_object;
-	}
-}
-
-// Include extension?
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/dao/class.address_object.php'])	{
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/dao/class.address_object.php']) {
+	/** @noinspection PhpIncludeInspection */
 	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/dao/class.address_object.php']);
 }
 

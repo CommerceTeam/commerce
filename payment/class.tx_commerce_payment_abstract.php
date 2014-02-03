@@ -47,7 +47,7 @@ abstract class tx_commerce_payment_abstract implements tx_commerce_payment {
 	protected $type = '';
 
 	/**
-	 * @var tx_commerce_provider_abstract Payment proivder if configured for this payment
+	 * @var tx_commerce_payment_provider_abstract Payment proivder if configured for this payment
 	 */
 	protected $provider = NULL;
 
@@ -73,7 +73,7 @@ abstract class tx_commerce_payment_abstract implements tx_commerce_payment {
 		$this->pObj = $pObj;
 
 			// Create criterion objects if defined
-		$criteraConfigurations = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['SYSPRODUCTS']['PAYMENT']['types'][$this->type]['criteria'];
+		$criteraConfigurations = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['SYSPRODUCTS']['PAYMENT']['types'][$this->type]['criteria'];
 		if (is_array($criteraConfigurations)) {
 			foreach ($criteraConfigurations as $criterionConfiguration) {
 				if (!is_array($criterionConfiguration['options'])) {
@@ -142,7 +142,7 @@ abstract class tx_commerce_payment_abstract implements tx_commerce_payment {
 	 */
 	protected function findProvider() {
 			// Check if type has criteria, create all needed objects
-		$providerConfigurations = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['SYSPRODUCTS']['PAYMENT']['types'][$this->type]['provider'];
+		$providerConfigurations = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['SYSPRODUCTS']['PAYMENT']['types'][$this->type]['provider'];
 
 		if (is_array($providerConfigurations)) {
 			foreach ($providerConfigurations as $providerConfiguration) {

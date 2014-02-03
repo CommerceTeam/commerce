@@ -48,7 +48,7 @@ class tx_commerce_articlehooks {
 			$net_price=0;
 		}
 	}
-	
+
 	/**
 	 * Basic Method to calculate the delivereycost (gross)
 	 * Ment as Programming tutorial. Mostly you have to change or add some functionality
@@ -63,15 +63,15 @@ class tx_commerce_articlehooks {
 			$gross_price=0;
 		}
 	}
-	
+
 	/**
 	 * Loades the deliveryArticle
 	 * @return article object
-	 * 
+	 *
 	 */
 	 function getdeliveryarticle(&$article_obj)	{
-	 	$delivery_conf=($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['SYSPRODUCTS']['DELIVERY']['types']);
-		
+	 	$delivery_conf=($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['SYSPRODUCTS']['DELIVERY']['types']);
+
 		$classname=array_shift(array_keys($delivery_conf));
 		$result=$GLOBALS['TYPO3_DB']->exec_SELECTquery('uid',
  			'tx_commerce_articles',
@@ -81,29 +81,29 @@ class tx_commerce_articlehooks {
 			return false;
 		}
 		$return_data=$GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
-		
+
  		$GLOBALS['TYPO3_DB']->sql_free_result($result);
  		$article_uid=$return_data['uid'];
- 		
+
  		/**
  		 * Instantiate article class
  		 */
  		$article = t3lib_div::makeInstance('tx_commerce_article');
 		$article->init($article_uid,$article_obj->get_lang());
 		/**
-		 * Do not call load_data at this point, since load_data recalls this hook, so we have a
+		 * Do not call loadData at this point, since loadData recalls this hook, so we have a
 		 * non endingrecursion
 		 */
-		if(is_object($article)){ 	   
-			$article->load_prices();
+		if (is_object($article)) {
+			$article->loadPrices();
 		}
 		return $article;
 	}
 }
-  
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']["ext/commerce/hooks/class.tx_commerce_articlehooks.php"])	{
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']["ext/commerce/hooks/class.tx_commerce_articlehooks.php"]);
+
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/hooks/class.tx_commerce_articlehooks.php']) {
+	/** @noinspection PhpIncludeInspection */
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/hooks/class.tx_commerce_articlehooks.php']);
 }
- 
- 
- ?>
+
+?>

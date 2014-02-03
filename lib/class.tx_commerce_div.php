@@ -30,15 +30,13 @@
  * @subpackage tx_commerce
  */
 class tx_commerce_div {
-
 	/**
 	 * Removes XSS code and strips tags from an array recursivly
 	 * @Author Ingo Schmitt <is@marketing-factory.de>
-	 * @param  $input	Array of elements or other 
-	 * @return $array ist $array is an array, otherwhise false
+	 * @param  string $input Array of elements or other
+	 * @return boolean|array is an array, otherwhise false
 	 */
 	public static function removeXSSStripTagsArray($input) {
-		
 		/**
 		 * In Some cases this function is called with an empty variable, therfore
 		 * check the Value and the type
@@ -46,92 +44,78 @@ class tx_commerce_div {
 		if (!isset($input)) {
 			return NULL;
 		}
-		if (is_bool($input)){
+		if (is_bool($input)) {
 			return $input;
 		}
 		if (is_string($input)) {
-			return (string)t3lib_div::removeXSS(strip_tags($input));
+			return (string) t3lib_div::removeXSS(strip_tags($input));
 		}
-		if (is_array($input)){
+		if (is_array($input)) {
 			$returnValue = array();
-			foreach ($input as $key => $value){
-				if (is_array($value)){
-					$returnValue[$key] = tx_commerce_div::removeXSSStripTagsArray($value);
-				}else{
-					$returnValue[$key]= t3lib_div::removeXSS(strip_tags($value));
+			foreach ($input as $key => $value) {
+				if (is_array($value)) {
+					$returnValue[$key] = self::removeXSSStripTagsArray($value);
+				} else {
+					$returnValue[$key] = t3lib_div::removeXSS(strip_tags($value));
 				}
 			}
 			return $returnValue;
 		}
-		return false;
+		return FALSE;
 	}
 
-
-
-	
 	/**
 	 * Formates a price for the designated output
-	 * @author	Ingo Schmitt <is@marketing-factory.de>
-	 * @param 	float	price
+	 *
+	 * @param 	float	$price
 	 * @return	string	formated Price
-	 * @deprecated 
-	 * @todo configurable
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getAttributes instead
 	 */
-	
-	function formatPrice($price)
-	{
-		return sprintf("%01.2f", $price);
-		
+	public static function formatPrice($price) {
+		t3lib_div::logDeprecatedFunction();
+		return sprintf('%01.2f', $price);
 	}
-	
+
 	/**
 	 * This method initilize the basket for the fe_user from
-	 * Session. If the basket is already initialized nothing happend 
+	 * Session. If the basket is already initialized nothing happend
 	 * at this point.
-	 * 
+	 *
 	 * @return void
 	 */
-	function initializeFeUserBasket() {
-		
-		if(is_object($GLOBALS['TSFE']->fe_user->tx_commerce_basket)) {
-			return;
-		}
+	public static function initializeFeUserBasket() {
+		if (!is_object($GLOBALS['TSFE']->fe_user->tx_commerce_basket)) {
 		$BasketID = $GLOBALS['TSFE']->fe_user->getKey('ses', 'commerceBasketId');
-	
+
 		if (empty($BasketID)) {
-			$BasketID = md5($pObj->fe_user->id.':'.rand(0,PHP_INT_MAX));
+				$BasketID = md5($GLOBALS['TSFE']->fe_user->id . ':' . rand(0, PHP_INT_MAX));
 			$GLOBALS['TSFE']->fe_user->setKey('ses', 'commerceBasketId', $BasketID);
 		}
-		
-		
-		$GLOBALS['TSFE']->fe_user->tx_commerce_basket = t3lib_div::makeInstance('tx_commerce_basket');	
+
+		$GLOBALS['TSFE']->fe_user->tx_commerce_basket = t3lib_div::makeInstance('tx_commerce_basket');
 		$GLOBALS['TSFE']->fe_user->tx_commerce_basket->set_session_id($BasketID);
-		$GLOBALS['TSFE']->fe_user->tx_commerce_basket->load_data();
-		
-		
-		return;
+		$GLOBALS['TSFE']->fe_user->tx_commerce_basket->loadData();
 	}
-	
-	
+	}
+
 	/***
-	 * Remove Products from list wich have no articles wich are available
-	 * from Stockn
-	 * 
-	 * @param	$productUids = array()	Array	List of productUIDs to work onn
-	 * @param	$dontRemoveArticles = 1	integer	switch to show or not show articles
-	 * @return	Array	Cleaned up Productarrayt
-	 */	
-	function removeNoStockProducts($productUids = array(),$dontRemoveProducts = 1) {
-		if($dontRemoveProducts == 1) {
+	 * Remove Products from list wich have no articles wich are available from Stock
+	 *
+	 * @param array $productUids List of productUIDs to work onn
+	 * @param integer $dontRemoveProducts integer    switch to show or not show articles
+	 * @return array Cleaned up Productarrayt
+	 */
+	public static function removeNoStockProducts($productUids = array(),$dontRemoveProducts = 1) {
+		if ($dontRemoveProducts == 1) {
 			return $productUids;
 		}
 
 		foreach ( $productUids as $arrayKey => $productUid ) {
 			$productObj = t3lib_div::makeInstance('tx_commerce_product');
 			$productObj->init($productUid);
-			$productObj->load_data();
-			
-			if(!($productObj->hasStock())) {
+			$productObj->loadData();
+
+			if (!($productObj->hasStock())) {
 				unset($productUids[$arrayKey]);
 			}
 			$productObj = NULL;
@@ -139,23 +123,26 @@ class tx_commerce_div {
 
 		return $productUids;
 	}
-	
+
 	/***
 	 * Remove article from product for frontendviewing, if articles
 	 * with no stock should not shown
-	 * 
-	 * @param	$productObj	Object	ProductObject to work on
-	 * @param	$dontRemoveArticles = 1	integer	switch to show or not show articles
-	 * @return	Object	Cleaned up Productobjectt
+	 *
+	 * @param tx_commerce_product $productObj Object	ProductObject to work on
+	 * @param integer $dontRemoveArticles integer	switch to show or not show articles
+	 * @return tx_commerce_product Cleaned up Productobjectt
 	 */
-	function removeNoStockArticles( $productObj, $dontRemoveArticles = 1 ) {
-		if($dontRemoveArticles == 1) {
+	public static function removeNoStockArticles( $productObj, $dontRemoveArticles = 1 ) {
+		if ($dontRemoveArticles == 1) {
 			return $productObj;
 		}
+
 		$articleUids = $productObj->getArticleUids();
 		$articles = $productObj->getArticleObjects();
-		foreach ( $articleUids as $arrayKey => $articleUid ) {			
-			if($articles[$articleUid]->getStock() <= 0 ) {
+		foreach ($articleUids as $arrayKey => $articleUid) {
+			/** @var tx_commerce_article $article */
+			$article = $articles[$articleUid];
+			if ($article->getStock() <= 0) {
 				unset($productObj->articles_uids[$arrayKey]);
 				unset($productObj->articles[$articleUid]);
 			}
@@ -163,45 +150,43 @@ class tx_commerce_div {
 
 		return $productObj;
 	}
-	
+
 	/**
 	* Generates a session key for identifiing session contents and matching to user
-	* @param	String	Key
-	* @return	Encoded Key as mixture of key and FE-User Uid
-	* 
+	* @param string $key
+	* @return string Encoded Key as mixture of key and FE-User Uid
+	*
 	*/
 	public static function generateSessionKey($key) {
-		if (intval($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTkey]['extConf']['userSessionMd5Encrypt']) == 1) {
-			$sessionKey = md5($key.":".$GLOBALS['TSFE']->fe_user->user['uid']);
+		if (intval($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['userSessionMd5Encrypt']) == 1) {
+			$sessionKey = md5($key . ':' . $GLOBALS['TSFE']->fe_user->user['uid']);
 		} else {
-			$sessionKey = $key.":".$GLOBALS['TSFE']->fe_user->user['uid'];
+			$sessionKey = $key . ':' . $GLOBALS['TSFE']->fe_user->user['uid'];
 		}
-		
+
 		$hookObjectsArr = array();
 		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_div.php']['generateSessionKey']))	{
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_div.php']['generateSessionKey'] as $classRef)	{
 				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
 			}
 		}
-		foreach($hookObjectsArr as $hookObj) {
+
+		foreach ($hookObjectsArr as $hookObj) {
 			if (method_exists($hookObj, 'postGenerateSessionKey')) {
 				$sessionKey = $hookObj->postGenerateSessionKey($key);
 			}
 		}
-		
-		return $sessionKey;
-		
-	}
 
-	
+		return $sessionKey;
+	}
 
 	/**
 	* Invokes the HTML mailing class
 	*
 	* @author	Tom Rüther <tr@e-netconsulting.de>
 	* @since	29th June 2008
-	* @param	array  $mailconf configuration for the mailerengine 
-	* Example for $mailconf 
+	* @param	array  $mailconf configuration for the mailerengine
+	* Example for $mailconf
 	*
 	* $mailconf = array(
 	* 	'plain' => Array (
@@ -209,7 +194,7 @@ class tx_commerce_div {
 	* 				),
 	* 	'html' => Array (
 	* 		'content'=> '', 			// html content as string
-	* 		'path' => '', 
+	* 		'path' => '',
 	* 		'useHtml' => '' 			// is set mail is send as multipart
 	* 	),
 	* 	'defaultCharset' => 'utf-8',		// your chartset
@@ -225,95 +210,86 @@ class tx_commerce_div {
 	* 	'callLocation' => 'myFunction' 		// Where call the function it is nescesary when you will use hooks?
 	* );
 	*
-	* @return	void
+	* @return boolean
 	*/
-	function sendMail($mailconf) {
-	
+	public static function sendMail($mailconf) {
 		$hookObjectsArr = array();
 		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_div.php']['sendMail']))	{
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_div.php']['sendMail'] as $classRef)	{
 				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
 			}
 		}
-		
+
+		$additionalData = array();
 		if ($mailconf['additionalData']) {
 			$additionalData = $mailconf['additionalData'];
 		}
-		
 
-		foreach($hookObjectsArr as $hookObj)	{
-			/**
-			 * @depricated: This Hook is depricated
-			 */
-			if (method_exists($hookObj, 'preProcessHtmlMail'))	{
-				$htmlMail=$hookObj->preProcessHtmlMail($mailconf);
-			}
-			
+		foreach ($hookObjectsArr as $hookObj) {
 			/**
 			 * this is the current hook
 			 */
 			if (method_exists($hookObj, 'preProcessMail'))	{
-				$hookObj->preProcessMail($mailconf,$additionalData);
+				$hookObj->preProcessMail($mailconf, $additionalData);
  			}
-			
-			
 		}
-		
-		foreach($hookObjectsArr as $hookObj)	{
+
+		foreach ($hookObjectsArr as $hookObj) {
 			if (method_exists($hookObj, 'ownMailRendering'))	{
-				$this->hookObjectsArr = $hookObjectsArr;
-				return $hookObj->ownMailRendering($mailconf,$additionalData,$this);
+				return $hookObj->ownMailRendering($mailconf, $additionalData, $hookObjectsArr);
 			}
 		}
 
-		
-		
-		
 		// validate e-mail addesses
-		$mailconf['recipient'] = tx_commerce_div::validEmailList($mailconf['recipient']);
-	
+		$mailconf['recipient'] = self::validEmailList($mailconf['recipient']);
+
 		if ($mailconf['recipient']) {
 			$parts = preg_split('/<title>|<\/title>/i', $mailconf['html']['content'], 3);
-			
+
 			if (trim($parts[1])) {
 				$subject = strip_tags(trim($parts[1]));
-			}elseif( $mailconf['plain']['subject']){
+			} elseif ( $mailconf['plain']['subject']) {
 				$subject = $mailconf['plain']['subject'];
-			}else{
+			} else {
 				$subject = $mailconf['alternateSubject'];
 			}
-			$htmlMail = t3lib_div::makeInstance('t3lib_htmlmail');
-			$htmlMail->charset = $mailconf['defaultCharset'];
-			$htmlMail->start();
-			
-			if($mailconf['encoding'] =='base64') {
-				$htmlMail->useBase64();
-			} elseif($mailconf['encoding'] == '8bit') {
-				$htmlMail->use8Bit();
-			}
-			
-			$htmlMail->mailer = 'TYPO3 Mailer :: commerce';
-			$htmlMail->subject = $subject;
-			$htmlMail->from_email = tx_commerce_div::validEmailList($mailconf['fromEmail']);
-			$htmlMail->from_name = $mailconf['fromName'];
-			$htmlMail->from_name = implode(' ' , t3lib_div::trimExplode(',', $htmlMail->from_name));
-			$htmlMail->replyto_email = $mailconf['replyTo'] ? $mailconf['replyTo'] :$mailconf['fromEmail'];
-			$htmlMail->replyto_name = $mailconf['replyTo'] ? '' : $mailconf['fromName'];
-			$htmlMail->replyto_name = implode(' ' , t3lib_div::trimExplode(',', $htmlMail->replyto_name));
-			
-			if(isset($mailconf['recipient_copy']) && $mailconf['recipient_copy'] != '') {
-				#$mailconf['recipient_copy'] = tx_commerce_div::validEmailList($mailconf['recipient_copy']);
-				
-				if($mailconf['recipient_copy'] != '') $htmlMail->recipient_copy = $mailconf['recipient_copy'];
+
+			/** @var t3lib_mail_Message $message */
+			$message = t3lib_div::makeInstance('t3lib_mail_Message');
+			$message->setCharset($mailconf['defaultCharset']);
+
+			if ($mailconf['encoding'] == 'base64') {
+				$message->setEncoder(Swift_Encoding::getBase64Encoding());
+			} elseif ($mailconf['encoding'] == '8bit') {
+				$message->setEncoder(Swift_Encoding::get8BitEncoding());
 			}
 
-			$htmlMail->returnPath = $mailconf['fromEmail'];
-			$htmlMail->organisation = $mailconf['formName'];
-			$htmlMail->priority = $mailconf['priority'];
+				// $htmlMail->mailer = 'TYPO3 Mailer :: commerce';
+			$message->setSubject($subject);
+			$message->setTo($mailconf['recipient']);
+			$message->setFrom(
+				self::validEmailList($mailconf['fromEmail']),
+				implode(' ', t3lib_div::trimExplode(',', $mailconf['fromName']))
+			);
+			$message->setReplyTo(
+				$mailconf['replyTo'] ? $mailconf['replyTo'] :$mailconf['fromEmail'],
+				implode(' ', t3lib_div::trimExplode(',', $mailconf['replyTo'] ? '' : $mailconf['fromName']))
+			);
+
+			if (isset($mailconf['recipient_copy']) && $mailconf['recipient_copy'] != '') {
+				if ($mailconf['recipient_copy'] != '') {
+					$message->setCc($mailconf['recipient_copy']);
+				}
+			}
+
+			$message->setReturnPath($mailconf['fromEmail']);
+				// $htmlMail->organisation = $mailconf['formName'];
+			$message->setPriority((int) $mailconf['priority']);
 
 			// add Html content
 			if ($mailconf['html']['useHtml'] && trim($mailconf['html']['content'])) {
-				$htmlMail->theParts['html']['content'] = $mailconf['html']['content'];
+				$message->addPart($mailconf['html']['content'], 'text/html');
+				/*
 				$htmlMail->theParts['html']['path'] = $mailconf['html']['path'];
 				$htmlMail->extractMediaLinks();
 				$htmlMail->extractHyperLinks();
@@ -321,66 +297,62 @@ class tx_commerce_div {
 				$htmlMail->substMediaNamesInHTML(0);
 				$htmlMail->substHREFsInHTML();
 				$htmlMail->setHTML($htmlMail->encodeMsg($htmlMail->theParts['html']['content']));
+				 */
 			}
-			// add Plan-Text content 
-			$htmlMail->addPlain($htmlMail->encodeMsg($mailconf['plain']['content']));
-			
-			// add attachment 
+
+				// add plain text content
+			$message->addPart($mailconf['plain']['content']);
+
+			// add attachment
 			if (is_array($mailconf['attach'])) {
-				foreach($mailconf['attach'] as $file) {	
+				foreach ($mailconf['attach'] as $file) {
 					if ($file && file_exists($file)) {
-						$htmlMail->addAttachment($file);
+						$message->attach(Swift_Attachment::fromPath($file));
 					}
 				}
 			}
-			
-			// set Headerdata
-			$htmlMail->setHeaders();
-			$htmlMail->setContent();
-			$htmlMail->setRecipient($mailconf['recipient']);
-			
-			foreach($hookObjectsArr as $hookObj)	{
+
+			foreach ($hookObjectsArr as $hookObj) {
 				if (method_exists($hookObj, 'postProcessMail'))	{
-					$htmlMail=$hookObj->postProcessMail($htmlMail,$mailconf,$additionalData);
-					
+					$message = $hookObj->postProcessMail($message, $mailconf, $additionalData);
 				}
 			}
-			$htmlMail->sendtheMail();
-			
-			return true;
-		}		
-		return false;	
+
+			return $message->send();
+		}
+
+		return FALSE;
 	}
 
 	/**
 	* Helperfunction for email validation
 	*
 	* @author	Tom Rüther <tr@e-netconsulting.de>
-	* @since	29th June 2008
 	* @param	array	$list comma seperierte list of email addresses
-	*
 	* @return	string
 	*/
+	public static function validEmailList($list) {
+		$dataArray = t3lib_div::trimExplode(',', $list);
 
-	
-	function validEmailList($list) {
-	
-		$dataArray = t3lib_div::trimExplode(',',$list);
-			
+		$returnArray = array();
 		foreach ($dataArray as $data) {
 			if (t3lib_div::validEmail($data))	{
 				$returnArray[] = $data;
-			}					
+			}
 		}
-		if(is_array($returnArray)) $newList = implode(',',$returnArray);
-		
-		return $newList;
+
+		$newList = '';
+		if (is_array($returnArray)) {
+			$newList = implode(',', $returnArray);
 	}
 
-
+		return $newList;
+	}
 }
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_div.php']) {
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_div.php']);
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_div.php']) {
+	/** @noinspection PhpIncludeInspection */
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_div.php']);
 }
+
 ?>

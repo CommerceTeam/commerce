@@ -1,7 +1,7 @@
 <?php
 /**
  * Implements the Command-Wizard
- * 
+ *
  * @author 		Marketing Factory <typo3@marketing-factory.de>
  * @maintainer 	Erik Frister
  */
@@ -50,10 +50,10 @@ class tx_commerce_cmd_wizard {
 			// Setting GPvars:
 		$this->id 			= (0 != t3lib_div::_GP('id')) ? intval(t3lib_div::_GP('id')) : tx_commerce_belib::getProductFolderUid();	// The page id to operate from
 		$this->returnUrl 	= t3lib_div::_GP('returnUrl');
-		
+
 		$this->param 		= t3lib_div::_GP('edit');	// this to be accomplished from the caller: &edit['.$table.'][-'.$uid.']=new&
 		$this->defVals 		= t3lib_div::_GP('defVals');
-				
+
 			// Create instance of template class for output
 		$this->doc = t3lib_div::makeInstance('mediumDoc');
 		$this->doc->backPath = $BACK_PATH;
@@ -61,7 +61,7 @@ class tx_commerce_cmd_wizard {
 		$this->doc->JScode='';
 
 		$this->head = $LANG->getLL('newRecordGeneral',1);;
-		
+
 			// Creating content
 		$this->content='';
 		$this->content.=$this->doc->startPage($this->head);
@@ -142,7 +142,7 @@ class tx_commerce_cmd_wizard {
 		$this->code.='<img'.t3lib_iconWorks::skinImg($BACK_PATH,'gfx/ol/halfline.gif','width="18" height="8"').' alt="" /><br />';
 
 		// New tables INSIDE this category
-		foreach ($this->param as $table=>$param) { 				
+		foreach ($this->param as $table=>$param) {
 			if ($this->showNewRecLink($table)
 					&& $this->isTableAllowedForThisPage($this->pageinfo, $table)
 					&& $BE_USER->check('tables_modify',$table)
@@ -151,7 +151,7 @@ class tx_commerce_cmd_wizard {
 				$val = key($param);
 				$cmd = ($param[$val]);
 				switch ($cmd) {
-					case 'new': 		
+					case 'new':
 							// Create new link for record:
 						$rowContent = '<img'.t3lib_iconWorks::skinImg($BACK_PATH,'gfx/ol/join.gif','width="18" height="16"').' alt="" />'.
 								$this->linkWrap(
@@ -159,7 +159,7 @@ class tx_commerce_cmd_wizard {
 								$LANG->sL($TCA[$table]['ctrl']['title'],1)
 							,$table
 							,$this->id);
-						
+
 							// Compile table row:
 						$tRows[] = '
 				<tr>
@@ -168,7 +168,7 @@ class tx_commerce_cmd_wizard {
 				</tr>
 				';
 						break;
-						
+
 					default:
 						break;
 				}
@@ -193,7 +193,7 @@ class tx_commerce_cmd_wizard {
 
 			// Add CSH:
 		$this->code.= t3lib_BEfunc::cshItem('xMOD_csh_corebe', 'new_regular', $GLOBALS['BACK_PATH'],'<br/>');
-	}	
+	}
 
 	/**
 	 * Ending page output and echo'ing content to browser.
@@ -279,15 +279,15 @@ class tx_commerce_cmd_wizard {
 
 }
 
-
-//XClass Statement
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/commerce/mod_category/class.tx_commerce_cmd_wizard.php'])    {
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/commerce/mod_category/class.tx_commerce_cmd_wizard.php']);
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/mod_category/class.tx_commerce_cmd_wizard.php']) {
+	/** @noinspection PhpIncludeInspection */
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/mod_category/class.tx_commerce_cmd_wizard.php']);
 }
 
-// Make instance:
+/** @var tx_commerce_cmd_wizard $SOBE */
 $SOBE = t3lib_div::makeInstance('tx_commerce_cmd_wizard');
 $SOBE->init();
 $SOBE->main();
 $SOBE->printContent();
+
 ?>

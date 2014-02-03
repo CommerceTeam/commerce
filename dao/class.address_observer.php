@@ -38,13 +38,9 @@
 * @subpackage commerce
 * @author Carsten Lausen <cl@e-netconsulting.de>
 */
-
-require_once(t3lib_extMgm::extPath('commerce').'dao/class.address_object.php');
-require_once(t3lib_extMgm::extPath('commerce').'dao/class.feuser_object.php');
-
 class address_observer {
-
-	var $observable;  //Link to observable
+		// Link to observable
+	public $observable;
 
 	/**
 	 * Constructor
@@ -52,10 +48,10 @@ class address_observer {
 	 * Link observer and observable
 	 * Not needed for typo3 hook concept.
 	 *
-	 * @param obj &$observable: observed object
+	 * @param object &$observable: observed object
 	 */
-	function feuser_observer(&$observable) {
-		$this->observable =& $observable;
+	public function feuser_observer(&$observable) {
+		$this->observable = & $observable;
 		$observable->addObserver($this);
 	}
 
@@ -71,58 +67,55 @@ class address_observer {
 	 * @param string $id: database table
 	 * @param array $changedFieldArray: reference to the incoming fields
 	 */
-	function update($status, $id, &$changedFieldArray) {
-		//get complete address object
-		$address_dao = new address_dao($id);
+	public function update($status, $id, &$changedFieldArray) {
+			// get complete address object
+		$address_dao = t3lib_div::makeInstance('address_dao', $id);
 
-		//get feuser id
+			// get feuser id
 		$feuser_id = $address_dao->get('tx_commerce_fe_user_id');
 
-		if(!empty($feuser_id)) {
-			//get associated feuser object
-			$feuser_dao = new feuser_dao($feuser_id);
+		if (!empty($feuser_id)) {
+				// get associated feuser object
+			$feuser_dao = t3lib_div::makeInstance('feuser_dao', $feuser_id);
 
-			//update feuser object
-			$field_mapper = new feuser_address_fieldmapper;
-			$field_mapper->map_address_to_feuser($address_dao,$feuser_dao);
+				// update feuser object
+			$field_mapper = t3lib_div::makeInstance('feuser_address_fieldmapper');
+			$field_mapper->map_address_to_feuser($address_dao, $feuser_dao);
 
-			//set main address id in feuser
-			$feuser_dao->set('tx_commerce_tt_address_id',$id);
+				// set main address id in feuser
+			$feuser_dao->set('tx_commerce_tt_address_id', $id);
 			$feuser_dao->save();
 		}
 	}
 
+	public function checkDelete($id) {
 
-	function checkDelete($id) {
-
- 		$dbFields = 'uid';
- 		$dbTable = 'fe_users';
- 		$dbWhere = '(tx_commerce_tt_address_id="'.intval($id).'")';
- 		$dbWhere .= 'AND (deleted="0")';
+		$dbFields = 'uid';
+		$dbTable = 'fe_users';
+		$dbWhere = '(tx_commerce_tt_address_id="' . intval($id) . '")';
+		$dbWhere .= 'AND (deleted="0")';
 
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($dbFields, $dbTable, $dbWhere);
 
-        //check dependencies (selected rows)
-        if($GLOBALS["TYPO3_DB"]->sql_num_rows($res)>0) {
-        	//errormessage
-        	$msg='Main feuser address. You can not delete this address.';
-        } else {
-        	//no errormessage
-        	$msg=false;
-        }
+			// check dependencies (selected rows)
+		if ($GLOBALS['TYPO3_DB']->sql_num_rows($res) > 0) {
+				// errormessage
+			$msg = 'Main feuser address. You can not delete this address.';
+		} else {
+				// no errormessage
+			$msg = FALSE;
+		}
 
-		//free results
-		$GLOBALS["TYPO3_DB"]->sql_free_result($res);
+			// free results
+		$GLOBALS['TYPO3_DB']->sql_free_result($res);
 
-		//debug(array($id,$msg));
 		return $msg;
 	}
-
-
-
 }
-// Include extension?
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/dao/class.address_observer.php'])	{
+
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/dao/class.address_observer.php']) {
+	/** @noinspection PhpIncludeInspection */
 	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/dao/class.address_observer.php']);
 }
+
 ?>

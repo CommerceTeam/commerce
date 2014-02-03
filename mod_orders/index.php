@@ -46,7 +46,7 @@ class tx_commerce_orders extends t3lib_SCbase {
 	var $imagemode;				// Thumbnails or not
 	var $table ='tx_commerce_orders';	// Which table to make extended listing for
 	var $table_user ='fe_users';	// Which table to make extended listing for
-	
+
 	var $search_field;			// Search-fields
 	var $search_levels;			// Search-levels
 	var $showLimit;				// Show-limit
@@ -69,9 +69,7 @@ class tx_commerce_orders extends t3lib_SCbase {
 	/**
 	 *
 	 */
-	function init()	{
-		global $BE_USER,$LANG,$BACK_PATH,$TCA_DESCR,$TCA,$CLIENT,$TYPO3_CONF_VARS;
-
+	function init() {
 		parent::init();
 		$this->table='tx_commerce_orders';
 		$this->clickMenuEnabled=1;
@@ -107,7 +105,7 @@ class tx_commerce_orders extends t3lib_SCbase {
 			foreach ($orderuids as $oneUid) {
 				$tce = t3lib_div::makeInstance('t3lib_TCEmain');
 				$tce->stripslashes_values=0;
-				
+
 				$data['tx_commerce_orders'][$oneUid] = t3lib_befunc::getRecordRaw('tx_commerce_orders','uid = '.$oneUid,'cust_deliveryaddress,cust_fe_user,cust_invoice');
 				$data['tx_commerce_orders'][$oneUid]['newpid'] =$destPid;
 				$tce->start($data,array());
@@ -120,7 +118,7 @@ class tx_commerce_orders extends t3lib_SCbase {
 	 * Main function of the module. Write the content to $this->content
 	 */
 	function main()	{
-		global $BE_USER,$LANG,$BACK_PATH,$TCA_DESCR,$TCA,$CLIENT,$TYPO3_CONF_VARS;
+		global $BE_USER,$LANG,$BACK_PATH;
 
 		// Access check!
 		// The page will show only if there is a valid page and if this page may be viewed by the user
@@ -194,7 +192,6 @@ class tx_commerce_orders extends t3lib_SCbase {
 	 * Generates the module content
 	 */
 	function moduleContent() {
-		global $BE_USER,$LANG,$BACK_PATH,$TCA,$TYPO3_CONF_VARS,$id,$table;
 		$this->content = '';
 		$this->orderList($this->content);
 	}
@@ -204,9 +201,9 @@ class tx_commerce_orders extends t3lib_SCbase {
 	 * HTML Output will be put to $this->content;
 	 */
 	function orderList($content = '') {
-		global $BE_USER,$LANG,$BACK_PATH,$TCA,$TYPO3_CONF_VARS,$CLIENT;	
+		global $BE_USER,$BACK_PATH;
 		$this->table='tx_commerce_orders';
-		
+
 		$this->content=$content;
 			// Start document template object:
 		$this->doc = t3lib_div::makeInstance('template');
@@ -221,9 +218,9 @@ class tx_commerce_orders extends t3lib_SCbase {
 		$dblist = t3lib_div::makeInstance('tx_commerce_order_localRecordlist');
 		$dblist->additionalOutTop = $this->doc->section("",$this->doc->funcMenu($headerSection,t3lib_BEfunc::getFuncMenu($this->id,"SET[function]",$this->MOD_SETTINGS["function"],$this->MOD_MENU["function"])));
 		$dblist->backPath = $BACK_PATH;
-			
+
 		$dblist->script = 'index.php';
-            
+
 		$dblist->calcPerms = $BE_USER->calcPerms($this->pageinfo);
 		$dblist->thumbs = $BE_USER->uc['thumbnailsByDefault'];
 		$dblist->returnUrl=$this->returnUrl;
@@ -232,7 +229,7 @@ class tx_commerce_orders extends t3lib_SCbase {
 		if($this->userID){
 		    $dblist->onlyUser = $this->userID;
 		}
-		
+
 		$dblist->localizationView = $this->MOD_SETTINGS['localization'];
 		$dblist->showClipboard = 0;
 
@@ -302,7 +299,7 @@ class tx_commerce_orders extends t3lib_SCbase {
 		if ($access)	{
 				// Initialize the listing object, dblist, for rendering the list:
 			$this->pointer = t3lib_div::intInRange($this->pointer,0,PHP_INT_MAX);
-			
+
 			$dblist->start($this->id,$this->table,$this->pointer,$this->search_field,$this->search_levels,$this->showLimit);
 
 				// Render the page header:

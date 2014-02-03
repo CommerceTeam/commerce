@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <T3locallang>
 	<meta type="array">
-		<description></description>
+		<description/>
 		<type>database</type>
-		<csh_table></csh_table>
+		<csh_table/>
 		<fileId>EXT:commerce/locallang_cm.xml</fileId>
 	</meta>
 	<data type="array">
