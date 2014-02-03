@@ -118,12 +118,13 @@ abstract class tx_commerce_payment_abstract implements tx_commerce_payment {
 	 * @return boolean
 	 */
 	public function isAllowed() {
+		/** @var tx_commerce_payment_criterion_abstract $criterion */
 		foreach ($this->criteria as $criterion) {
 			if ($criterion->isAllowed() === FALSE) {
 				return FALSE;
 			}
 		}
-		return true;
+		return TRUE;
 	}
 
 	/**
@@ -138,6 +139,7 @@ abstract class tx_commerce_payment_abstract implements tx_commerce_payment {
 	/**
 	 * Find appropriate provider for this payment
 	 *
+	 * @throws Exception
 	 * @return void
 	 */
 	protected function findProvider() {
@@ -196,7 +198,7 @@ abstract class tx_commerce_payment_abstract implements tx_commerce_payment {
 	 */
 	public function proofData(array $formData = array()) {
 		$result = TRUE;
-		if($this->provider !== NULL) {
+		if ($this->provider !== NULL) {
 			$result = $this->provider->proofData($formData, $result);
 		}
 		return $result;
@@ -210,7 +212,7 @@ abstract class tx_commerce_payment_abstract implements tx_commerce_payment {
 	 * @param tx_commerce_basket $basket Basket object
 	 * @return bool True is finishing order is allowed
 	 */
-	public function finishingFunction(array $config= array(), array $session = array(), tx_commerce_basket $basket = NULL) {
+	public function finishingFunction(array $config = array(), array $session = array(), tx_commerce_basket $basket = NULL) {
 		$result = TRUE;
 		if ($this->provider !== NULL) {
 			$result = $this->provider->finishingFunction($config, $session, $basket);
@@ -252,14 +254,19 @@ abstract class tx_commerce_payment_abstract implements tx_commerce_payment {
 	 * @return string error message
 	 */
 	public function getLastError() {
+		$result = '';
+
 		if ($this->provider !== NULL) {
-			return $this->provider->getLastError();
+			$result = $this->provider->getLastError();
 		}
+
+		return $result;
 	}
 }
 
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']["ext/commerce/payment/class.tx_commerce_payment_abstract.php"])	{
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']["ext/commerce/payment/class.tx_commerce_payment_abstract.php"]);
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/payment/class.tx_commerce_payment_abstract.php']) {
+	/** @noinspection PhpIncludeInspection */
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/payment/class.tx_commerce_payment_abstract.php']);
 }
 
 ?>

@@ -37,12 +37,11 @@
  * @TODO: Implement basket as singleton
  */
 class tx_commerce_basic_basket {
-
 	/**
 	 * @var array Associative array for storing basket_items in the basket
 	 * @TODO: Make protected
 	 */
-	protected $basket_items = array();
+	public $basket_items = array();
 
 	/**
 	 * @var integer Net basket sum

@@ -68,9 +68,9 @@ class tx_commerce_article extends tx_commerce_element_alib {
 	/**
 	 * Images for the article
 	 *
-	 * @var array
+	 * @var string
 	 */
-	protected $images = array();
+	protected $images = '';
 
 	/**
 	 * Images for the article
@@ -842,7 +842,7 @@ class tx_commerce_article extends tx_commerce_element_alib {
 
 	/**
 	 * @return string title of article
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getTitle instead
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use tx_commerce_article::getTitle instead
 	 */
 	public function get_title() {
 		t3lib_div::logDeprecatedFunction();
@@ -851,7 +851,16 @@ class tx_commerce_article extends tx_commerce_element_alib {
 
 	/**
 	 * @return string title of article
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getClassname instead
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use tx_commerce_article::getSubtitle instead
+	 */
+	public function get_subtitle() {
+		t3lib_div::logDeprecatedFunction();
+		return $this->getSubtitle();
+	}
+
+	/**
+	 * @return string title of article
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use tx_commerce_article::getClassname instead
 	 */
 	public function get_classname() {
 		t3lib_div::logDeprecatedFunction();
@@ -860,7 +869,7 @@ class tx_commerce_article extends tx_commerce_element_alib {
 
 	/**
 	 * @return string title of article
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getClassname instead
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use tx_commerce_article::getDescriptionExtra instead
 	 */
 	public function get_description_extra() {
 		t3lib_div::logDeprecatedFunction();
@@ -868,8 +877,8 @@ class tx_commerce_article extends tx_commerce_element_alib {
 	}
 
 	/**
-	 * @return int valid priceid
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getPriceUid instead
+	 * @return integer valid priceid
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use tx_commerce_article::getPriceUid instead
 	 */
 	public function get_article_price_uid() {
 		t3lib_div::logDeprecatedFunction();
@@ -878,7 +887,7 @@ class tx_commerce_article extends tx_commerce_element_alib {
 
 	/**
 	 * @return double price_gross
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getPriceGross instead
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use tx_commerce_article::getPriceGross instead
 	 */
 	public function get_price_gross() {
 		t3lib_div::logDeprecatedFunction();
@@ -887,7 +896,7 @@ class tx_commerce_article extends tx_commerce_element_alib {
 
 	/**
 	 * @return double price_net
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getPriceNet instead
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use tx_commerce_article::getPriceNet instead
 	 */
 	public function get_price_net() {
 		t3lib_div::logDeprecatedFunction();
@@ -895,8 +904,8 @@ class tx_commerce_article extends tx_commerce_element_alib {
 	}
 
 	/**
-	 * @return int valid priceid
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getPriceUid instead
+	 * @return integer valid priceid
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use tx_commerce_article::getPriceUid instead
 	 */
 	public function getArticlePriceUid() {
 		t3lib_div::logDeprecatedFunction();
@@ -907,7 +916,7 @@ class tx_commerce_article extends tx_commerce_element_alib {
 	 * Get Article all possivle  prices as UDI Array
 	 *
 	 * @return array or priceUid
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getPriceUids instead
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use tx_commerce_article::getPriceUids instead
 	 */
 	public function getPossiblePriceUids() {
 		t3lib_div::logDeprecatedFunction();
@@ -916,7 +925,7 @@ class tx_commerce_article extends tx_commerce_element_alib {
 
 	/**
 	 * @return double tax
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getTax instead
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use tx_commerce_article::getTax instead
 	 */
 	public function get_tax() {
 		t3lib_div::logDeprecatedFunction();
@@ -925,7 +934,7 @@ class tx_commerce_article extends tx_commerce_element_alib {
 
 	/**
 	 * @return string ordernumber
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getOrdernumber instead
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use tx_commerce_article::getOrdernumber instead
 	 */
 	public function get_ordernumber() {
 		t3lib_div::logDeprecatedFunction();
@@ -937,7 +946,7 @@ class tx_commerce_article extends tx_commerce_element_alib {
 	 *
 	 * @see tx_commerce_product
 	 * @return tx_commerce_product Product object
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getParentProduct instead
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use tx_commerce_article::getParentProduct instead
 	 */
 	public function get_parent_product() {
 		t3lib_div::logDeprecatedFunction();
@@ -954,17 +963,26 @@ class tx_commerce_article extends tx_commerce_element_alib {
 	 * )
 	 *
 	 * @return array of arrays
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getArticleAttributes instead
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use tx_commerce_article::getArticleAttributes instead
 	 */
 	public function get_article_attributes() {
 		t3lib_div::logDeprecatedFunction();
-		$this->getArticleAttributes();
+		return $this->getArticleAttributes();
+	}
+
+	/**
+	 * @return integer article_type
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use tx_commerce_article::getArticleTypeUid instead
+	 */
+	public function get_article_type_uid() {
+		t3lib_div::logDeprecatedFunction();
+		return $this->getArticleTypeUid();
 	}
 
 	/**
 	 * Gets the price of this article and stores in private variable
 	 *
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use loadPrices instead
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use tx_commerce_article::loadPrices instead
 	 * @param boolean $translationMode
 	 * @return integer
 	 */

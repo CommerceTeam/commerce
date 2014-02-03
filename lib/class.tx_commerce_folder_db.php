@@ -40,7 +40,7 @@ class tx_commerce_folder_db {
 	public function getFolderPidList($module = 'commerce') {
 		t3lib_div::logDeprecatedFunction();
 
-		return implode(',',array_keys(tx_commerce_folder_db::getFolders($module)));
+		return implode(',', array_keys(self::getFolders($module)));
 	}
 
 	/**
