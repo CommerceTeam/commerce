@@ -195,7 +195,7 @@ if (empty($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce
 }
 
 if (empty($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Hook/DataMapHooks.php']['moveOrders'])) {
-	$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Hook/DataMapHooks.php']['moveOrders'][] = 'EXT:commerce/Classes/Hook/class.tx_commerce_ordermailhooks.php:tx_commerce_ordermailhooks';
+	$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Hook/DataMapHooks.php']['moveOrders'][] = 'EXT:commerce/Classes/Hook/OrdermailHooks.php:Tx_Commerce_Hook_OrdermailHooks';
 }
 
 
