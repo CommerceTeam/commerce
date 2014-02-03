@@ -2,7 +2,7 @@
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2005 - 2011 Franz Ripfel (fr@abezet.de)
+ *  (c) 2005 - 2011 Franz Ripfel <fr@abezet.de>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -24,11 +24,6 @@
 
 /**
  * Plugin 'commerce_invoice' for the 'commerce_invoice' extension.
- *
- * @author Sudara <williams@web-crossing.com>
- * @author Franz Ripfel <fr@abezet.de>
- * @author Tom Rüther <tr@e-netconsulting.de>
- * @author Ingo Schmitt <is@marketing-factory.de>
  */
 class tx_commerce_pi6 extends tx_commerce_pibase {
 	/**

@@ -144,11 +144,6 @@ t3lib_extMgm::addPItoST43(COMMERCE_EXTKEY, 'pi4/class.tx_commerce_pi4.php', '_pi
 t3lib_extMgm::addPItoST43(COMMERCE_EXTKEY, 'pi6/class.tx_commerce_pi6.php', '_pi6', 'list_type', 0);
 
 
-t3lib_extMgm::addTypoScript(COMMERCE_EXTKEY, 'editorcfg', '
-	tt_content.CSS_editor.ch.tx_commerce_pi6 = < plugin.tx_commerce_pi6.CSS_editor
-', 43);
-
-
 if (TYPO3_MODE == 'BE') {
 		// XCLASS for version preview
 		// This XCLASS will create a link to singlePID / previewPageID in version module for commerce products
@@ -164,9 +159,9 @@ if (TYPO3_MODE == 'BE') {
 
 	// Add linkhandler for "commerce"
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_content.php']['typolinkLinkHandler']['commerce'] = 'EXT:commerce/Classes/Hook/LinkhandlerHooks.php:&Tx_Commerce_Hook_LinkhandlerHooks';
-
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/class.browse_links.php']['browseLinksHook'][] = 'EXT:commerce/Classes/Hook/BrowselinksHooks.php:Tx_Commerce_Hook_BrowselinksHooks';
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/rtehtmlarea/mod3/class.tx_rtehtmlarea_browse_links.php']['browseLinksHook'][] = 'EXT:commerce/Classes/Hook/BrowselinksHooks.php:Tx_Commerce_Hook_BrowselinksHooks';
+
 	// Add ajax listener for tree in linkcommerce
 $GLOBALS['TYPO3_CONF_VARS']['BE']['AJAX']['tx_commerce_browselinkshooks::ajaxExpandCollapse'] = 'EXT:commerce/Classes/Hook/BrowselinksHooks.php:Tx_Commerce_Hook_BrowselinksHooks->ajaxExpandCollapse';
 

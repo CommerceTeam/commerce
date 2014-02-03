@@ -2,7 +2,7 @@
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2003-2011 Rene Fritz <r.fritz@colorcube.de>
+ *  (c) 2007 - 2012 Ingo Schmitt <typo3@marketing-factory.de>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -25,31 +25,40 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-unset($MCONF);
-require ('conf.php');
-/** @noinspection PhpIncludeInspection */
-require ($BACK_PATH . 'init.php');
-/** @noinspection PhpIncludeInspection */
-require ($BACK_PATH . 'template.php');
+class Tx_Commerce_Controller_CategoriesController extends tx_commerce_db_list {
+	/**
+	 * @var string
+	 */
+	public $extKey = COMMERCE_EXTKEY;
 
-$LANG->includeLLFile('EXT:lang/locallang_misc.xml');
+	/**
+	 * Initializing the module
+	 *
+	 * @return void
+	 */
+	public function init() {
+		tx_commerce_create_folder::init_folders();
+		$this->control = array (
+			'category' => array (
+				'dataClass' => 'tx_commerce_leaf_categorydata',
+				'parent' => 'parent_category'
+			),
+			'product' => array (
+				'dataClass' => 'tx_commerce_leaf_productdata',
+				'parent' => 'categories'
+			)
+		);
 
-/**
- * Script Class for the treeview in TCEforms elements
- */
-class tx_commerce_treebrowser extends tx_commerce_treelib_browser {
-	// nothing to do here
+		$this->scriptNewWizard = 'class.tx_commerce_cmd_wizard.php';
+		parent::init();
+	}
 }
 
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/mod_treebrowser/index.php']) {
-	/** @noinspection PhpIncludeInspection */
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/mod_treebrowser/index.php']);
-}
+class_alias('Tx_Commerce_Controller_CategoriesController', 'tx_commerce_categories');
 
-/** @var tx_commerce_treebrowser $SOBE */
-$SOBE = t3lib_div::makeInstance('tx_commerce_treebrowser');
-$SOBE->init();
-$SOBE->main();
-$SOBE->printContent();
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Controller/CategoriesController.php']) {
+		/** @noinspection PhpIncludeInspection */
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Controller/CategoriesController.php']);
+}
 
 ?>

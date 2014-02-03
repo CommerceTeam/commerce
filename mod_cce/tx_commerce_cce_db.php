@@ -147,17 +147,18 @@ class SC_tx_commerce_cce_db {
 	 */
 	public function init() {
 			// GPvars:
-		$this->BACK_PATH = $GLOBALS['BACK_PATH'];;
 		$this->redirect = t3lib_div::_GP('redirect');
 		$this->prErr = t3lib_div::_GP('prErr');
 		$this->CB = t3lib_div::_GP('CB');
 		$this->vC = t3lib_div::_GP('vC');
 		$this->uPT = t3lib_div::_GP('uPT');
-		$this->clipObj = NULL;
-		$this->content = '';
 		$this->sorting = t3lib_div::_GP('sorting');
 		$this->locales = t3lib_div::_GP('locale');
 		$this->cmd = t3lib_div::_GP('cmd');
+
+		$this->BACK_PATH = $GLOBALS['BACK_PATH'];
+		$this->clipObj = NULL;
+		$this->content = '';
 
 		$cbString = (isset($this->CB['overwrite'])) ?
 			'CB[overwrite]=' . rawurlencode($this->CB['overwrite']) . '&CB[pad]=' . $this->CB['pad'] :
@@ -165,11 +166,11 @@ class SC_tx_commerce_cce_db {
 
 			// Initializing document template object:
 		$this->doc = t3lib_div::makeInstance('template');
-		$this->doc->backPath = $GLOBALS['BACK_PATH'];
+		$this->doc->backPath = $this->BACK_PATH;
 		$this->doc->docType = 'xhtml_trans';
 		$this->doc->setModuleTemplate(PATH_TXCOMMERCE . 'Resources/Private/Backend/mod_cce.html');
 		$this->doc->loadJavascriptLib('contrib/prototype/prototype.js');
-		$this->doc->loadJavascriptLib('../typo3conf/ext/commerce/mod_cce/copyPaste.js');
+		$this->doc->loadJavascriptLib($this->BACK_PATH . PATH_TXCOMMERCE_REL . 'Resources/Public/Javascript/copyPaste.js');
 		$this->doc->form = '<form action="tx_commerce_cce_db.php?' . $cbString . '&vC=' . $this->vC . '&uPT=' . $this->uPT .
 			'&redirect=' . rawurlencode($this->redirect) . '&prErr=' . $this->prErr .
 			'&cmd=commit" method="post" name="localeform" id="localeform">';

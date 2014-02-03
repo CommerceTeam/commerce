@@ -4,6 +4,12 @@ $extensionPath = t3lib_extMgm::extPath('commerce');
 $classPath = $extensionPath . 'Classes/';
 
 return array(
+	'tx_commerce_controller_accesscontroller' => $classPath . 'Controller/AccessController.php',
+	'tx_commerce_controller_categoriescontroller' => $classPath . 'Controller/CategoriesController.php',
+	'tx_commerce_controller_orderscontroller' => $classPath . 'Controller/OrdersController.php',
+	'tx_commerce_controller_statisticcontroller' => $classPath . 'Controller/StatisticController.php',
+	'tx_commerce_controller_systemdatacontroller' => $classPath . 'Controller/SystemdataController.php',
+
 	'tx_commerce_dao_addressdao' => $classPath . 'Dao/AddressDao.php',
 	'tx_commerce_dao_addressdaomapper' => $classPath . 'Dao/AddressDaoMapper.php',
 	'tx_commerce_dao_addressdaoobject' => $classPath . 'Dao/AddressDaoObject.php',
@@ -24,7 +30,10 @@ return array(
 	'tx_commerce_task_statistictaskadditionalfieldprovider' => $classPath . 'Task/StatisticTaskAdditionalFieldProvider.php',
 
 	'tx_commerce_utility_articlecreatorutility' => $classPath . 'Utility/ArticleCreatorUtility.php',
+	'tx_commerce_utility_attributeeditorutility' => $classPath . 'Utility/AttributeEditorUtility.php',
 	'tx_commerce_utility_backendutility' => $classPath . 'Utility/BackendUtility.php',
+
+
 
 	'tx_commerce_article' => $extensionPath . 'lib/class.tx_commerce_article.php',
 	'tx_commerce_article_price' => $extensionPath . 'lib/class.tx_commerce_article_price.php',
