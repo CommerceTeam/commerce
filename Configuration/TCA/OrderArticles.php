@@ -33,19 +33,19 @@ $GLOBALS['TCA']['tx_commerce_order_articles'] = Array(
 	'ctrl' => $GLOBALS['TCA']['tx_commerce_order_articles']['ctrl'],
 	'interface' => Array(
 		'showRecordFieldList' => 'amount,title,article_type_uid,article_uid,article_number,subtitle,price_net,price_gross,tax,order_uid',
- 	),
+	),
 	'feInterface' => $GLOBALS['TCA']['tx_commerce_order_articles']['feInterface'],
 	'columns' => Array(
 		'article_type_uid' => Array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_order_articles.article_type_uid',
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_order_articles.article_type_uid',
 			'config' => Array(
 				'type' => 'passthrough',
 			),
 		),
 		'order_uid' => Array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_order_articles.order_uid',
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_order_articles.order_uid',
 			'config' => Array(
 				'type' => 'select',
 				'foreign_table' => 'tx_commerce_orders',
@@ -53,7 +53,7 @@ $GLOBALS['TCA']['tx_commerce_order_articles'] = Array(
 		),
 		'article_uid' => Array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_order_articles.article_uid',
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_order_articles.article_uid',
 			'config' => Array(
 				'type' => 'group',
 				'internal_type' => 'db',
@@ -65,7 +65,7 @@ $GLOBALS['TCA']['tx_commerce_order_articles'] = Array(
 		),
 		'article_number' => Array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_order_articles.article_number',
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_order_articles.article_number',
 			'config' => Array(
 				'type' => 'input',
 				'size' => '40',
@@ -75,7 +75,7 @@ $GLOBALS['TCA']['tx_commerce_order_articles'] = Array(
 		),
 		'title' => Array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_order_articles.title',
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_order_articles.title',
 			'config' => Array(
 				'type' => 'input',
 				'size' => '40',
@@ -85,7 +85,7 @@ $GLOBALS['TCA']['tx_commerce_order_articles'] = Array(
 		),
 		'subtitle' => Array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_order_articles.subtitle',
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_order_articles.subtitle',
 			'config' => Array(
 				'type' => 'input',
 				'size' => '40',
@@ -95,7 +95,7 @@ $GLOBALS['TCA']['tx_commerce_order_articles'] = Array(
 		),
 		'price_net' => Array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_order_articles.price_net',
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_order_articles.price_net',
 			'config' => Array(
 				'type' => 'input',
 				'size' => '6',
@@ -104,7 +104,7 @@ $GLOBALS['TCA']['tx_commerce_order_articles'] = Array(
 		),
 		'price_gross' => Array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_order_articles.price_gross',
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_order_articles.price_gross',
 			'config' => Array(
 				'type' => 'input',
 				'size' => '6',
@@ -113,7 +113,7 @@ $GLOBALS['TCA']['tx_commerce_order_articles'] = Array(
 		),
 		'tax' => Array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_order_articles.tax',
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_order_articles.tax',
 			'config' => Array(
 				'type' => 'input',
 				'size' => '6',
@@ -122,7 +122,7 @@ $GLOBALS['TCA']['tx_commerce_order_articles'] = Array(
 		),
 		'amount' => Array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_order_articles.amount',
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_order_articles.amount',
 			'config' => Array(
 				'type' => 'input',
 				'size' => '2',
@@ -134,7 +134,7 @@ $GLOBALS['TCA']['tx_commerce_order_articles'] = Array(
 		 */
 		'order_id' => Array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_order_articles.order_id',
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_order_articles.order_id',
 			'config' => Array(
 				'type' => 'user',
 				'userFunc' => 'EXT:commerce/mod_orders/class.user_orderedit_func.php:user_orderedit_func->article_order_id',

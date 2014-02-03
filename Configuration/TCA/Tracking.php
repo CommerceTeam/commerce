@@ -24,7 +24,7 @@
  * @author Thomas Hempel <thomas@work.de>
  * $Id: tx_commerce_tracking.tca.php 298 2006-07-25 05:28:35Z ingo $
  */
- 
+
 if (!defined('TYPO3_MODE')) {
 	die('Access denied.');
 }
@@ -69,7 +69,7 @@ $GLOBALS['TCA']['tx_commerce_trackingcodes'] = Array(
 		),
 		'title' => Array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_trackingcodes.title',
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_trackingcodes.title',
 			'config' => Array(
 				'type' => 'input',
 				'size' => '40',
@@ -79,7 +79,7 @@ $GLOBALS['TCA']['tx_commerce_trackingcodes'] = Array(
 		),
 		'description' => Array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_trackingcodes.description',
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_trackingcodes.description',
 			'config' => Array(
 				'type' => 'text',
 				'cols' => '30',
@@ -104,7 +104,7 @@ $GLOBALS['TCA']['tx_commerce_tracking'] = Array(
 	'columns' => Array(
 		'orders_uid' => Array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_tracking.orders_uid',
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_tracking.orders_uid',
 			'config' => Array(
 				'type' => 'group',
 				'internal_type' => 'db',
@@ -116,7 +116,7 @@ $GLOBALS['TCA']['tx_commerce_tracking'] = Array(
 		),
 		'trackingcodes_uid' => Array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_tracking.trackingcodes_uid',
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_tracking.trackingcodes_uid',
 			'config' => Array(
 				'type' => 'group',
 				'internal_type' => 'db',
@@ -128,7 +128,7 @@ $GLOBALS['TCA']['tx_commerce_tracking'] = Array(
 		),
 		'msg' => Array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_tracking.msg',
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_tracking.msg',
 			'config' => Array(
 				'type' => 'input',
 				'size' => '40',

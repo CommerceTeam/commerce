@@ -36,10 +36,10 @@ $GLOBALS['TCA']['tx_commerce_newclients'] = Array(
 	'feInterface' => $GLOBALS['TCA']['tx_commerce_newclients']['feInterface'],
 	'columns' => Array(
 		'year' => Array(
-			'exclude' => 1,		
-			'label' => 'LLL:EXT:commerce/locallang_db.php:tx_commerce_newclients.year',		
+			'exclude' => 1,
+			'label' => 'LLL:EXT:commerce/locallang_db.php:tx_commerce_newclients.year',
 			'config' => Array(
-				'type' => 'input',	
+				'type' => 'input',
 				'size' => '11',
 				'max' => '11',
 				'eval' => 'int',
@@ -47,10 +47,10 @@ $GLOBALS['TCA']['tx_commerce_newclients'] = Array(
 			)
 		),
 		'month' => Array(
-			'exclude' => 1,		
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_newclients.month',		
+			'exclude' => 1,
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_newclients.month',
 			'config' => Array(
-				'type' => 'input',	
+				'type' => 'input',
 				'size' => '11',
 				'max' => '11',
 				'eval' => 'int',
@@ -58,10 +58,10 @@ $GLOBALS['TCA']['tx_commerce_newclients'] = Array(
 			)
 		),
 		'day' => Array(
-			'exclude' => 1,		
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_newclients.day',		
+			'exclude' => 1,
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_newclients.day',
 			'config' => Array(
-				'type' => 'input',	
+				'type' => 'input',
 				'size' => '11',
 				'max' => '11',
 				'eval' => 'int',
@@ -69,10 +69,10 @@ $GLOBALS['TCA']['tx_commerce_newclients'] = Array(
 			)
 		),
 		'dow' => Array(
-			'exclude' => 1,		
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_newclients.dow',		
+			'exclude' => 1,
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_newclients.dow',
 			'config' => Array(
-				'type' => 'input',	
+				'type' => 'input',
 				'size' => '11',
 				'max' => '11',
 				'eval' => 'int',
@@ -80,10 +80,10 @@ $GLOBALS['TCA']['tx_commerce_newclients'] = Array(
 			)
 		),
 		'hour' => Array(
-			'exclude' => 1,		
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_newclients.hour',		
+			'exclude' => 1,
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_newclients.hour',
 			'config' => Array(
-				'type' => 'input',	
+				'type' => 'input',
 				'size' => '11',
 				'max' => '11',
 				'eval' => 'int',
@@ -91,10 +91,10 @@ $GLOBALS['TCA']['tx_commerce_newclients'] = Array(
 			)
 		),
 		'registration' => Array(
-			'exclude' => 1,		
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_newclients.registration',		
+			'exclude' => 1,
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_newclients.registration',
 			'config' => Array(
-				'type' => 'input',	
+				'type' => 'input',
 				'size' => '11',
 				'max' => '11',
 				'eval' => 'int',

@@ -24,7 +24,7 @@
  * @author Ingo Schmitt <is@marketing-factory.de>
  * $Id: tx_commerce_attribute_values.tca.php 346 2006-08-11 18:56:48Z ingo $
  */
- 
+
 if (!defined('TYPO3_MODE')) {
 	die('Access denied.');
 }
@@ -105,7 +105,7 @@ $GLOBALS['TCA']['tx_commerce_attribute_values'] = array(
 		),
 		'value' => array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_attribute_values.value',
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_attribute_values.value',
 			'config' => array(
 				'type' => 'input',
 				'size' => '40',
@@ -115,7 +115,7 @@ $GLOBALS['TCA']['tx_commerce_attribute_values'] = array(
 		),
 		'icon' => array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_attribute_values.icon',
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_attribute_values.icon',
 			'l10n_mode' => 'mergeIfNotBlank',
 			'config' => array(
 				'type' => 'group',
@@ -131,7 +131,7 @@ $GLOBALS['TCA']['tx_commerce_attribute_values'] = array(
 		),
 		'showvalue' => array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_attribute_values.showvalue',
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_attribute_values.showvalue',
 			'l10n_mode' => 'exclude',
 			'config' => array(
 				'type' => 'check',
@@ -140,7 +140,7 @@ $GLOBALS['TCA']['tx_commerce_attribute_values'] = array(
 		),
 		'attributes_uid' => array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_attribute_values.attributes_uid',
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_attribute_values.attributes_uid',
 			'l10n_mode' => 'exclude',
 			'config' => array(
 				'type' => 'select',

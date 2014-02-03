@@ -236,7 +236,7 @@ class tx_commerce_articleCreator {
 
 		$rowCount = $this->calculateRowCount();
 		if ($rowCount > 1000) {
-			return sprintf($fObj->sL('LLL:EXT:commerce/locallang_db.xml:tx_commerce_products.to_much_articles'), $rowCount);
+			return sprintf($fObj->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.to_much_articles'), $rowCount);
 		}
 
 			// create the headrow from the product attributes, select attributes without valuelist and normal select attributes
@@ -246,12 +246,12 @@ class tx_commerce_articleCreator {
 		$valueMatrix = $this->getValues();
 		$counter = 0;
 		$resultRows = '';
-		$resultRows .= $fObj->sL('LLL:EXT:commerce/locallang_db.xml:tx_commerce_products.create_warning');
+		$resultRows .= $fObj->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.create_warning');
 
 		$this->getRows($valueMatrix, $resultRows, $counter, $headRow);
 
 		$emptyRow = '<tr><td><input type="checkbox" name="createList[empty]" /></td>';
-		$emptyRow .= '<td colspan="' . ($colCount - 1) . '">' . $fObj->sL('LLL:EXT:commerce/locallang_db.xml:tx_commerce_products.empty_article') . '</td></tr>';
+		$emptyRow .= '<td colspan="' . ($colCount - 1) . '">' . $fObj->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.empty_article') . '</td></tr>';
 
 			// create a checkbox for selecting all articles
 		$selectJS = '<script language="JavaScript">
@@ -266,7 +266,7 @@ class tx_commerce_articleCreator {
 		$selectAllRow = '';
 		if (count($valueMatrix) > 0) {
 			$selectAllRow = '<tr><td><input type="checkbox" id="selectAllArticles" onclick="updateArticleList()" /></td>';
-			$selectAllRow .= '<td colspan="' . ($colCount - 1) . '">' . $fObj->sL('LLL:EXT:commerce/locallang_db.xml:tx_commerce_products.select_all_articles') . '</td></tr>';
+			$selectAllRow .= '<td colspan="' . ($colCount - 1) . '">' . $fObj->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.select_all_articles') . '</td></tr>';
 		}
 
 		$result = '<table border="0">' . $selectJS . $headRow . $emptyRow . $selectAllRow . $resultRows . '</table>';

@@ -80,7 +80,7 @@ $GLOBALS['TCA']['tx_commerce_article_types'] = Array(
 		),
 		'title' => Array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_article_types.title',
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_article_types.title',
 			'config' => Array(
 				'type' => 'input',
 				'size' => '30',
@@ -190,7 +190,7 @@ $GLOBALS['TCA']['tx_commerce_articles'] = Array(
 		),
 		'title' => Array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_articles.title',
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_articles.title',
 			'config' => Array(
 				'type' => 'input',
 				'size' => '40',
@@ -200,7 +200,7 @@ $GLOBALS['TCA']['tx_commerce_articles'] = Array(
 		),
 		'subtitle' => Array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_articles.subtitle',
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_articles.subtitle',
 			'config' => Array(
 				'type' => 'input',
 				'size' => '40',
@@ -210,7 +210,7 @@ $GLOBALS['TCA']['tx_commerce_articles'] = Array(
 		),
 		'navtitle' => Array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_products.navtitle',
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.navtitle',
 			'config' => Array(
 				'type' => 'input',
 				'size' => '40',
@@ -220,7 +220,7 @@ $GLOBALS['TCA']['tx_commerce_articles'] = Array(
 		),
 		'images' => Array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_articles.images',
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_articles.images',
 			'l10n_mode' => 'mergeIfNotBlank',
 			'config' => Array(
 				'type' => 'group',
@@ -237,7 +237,7 @@ $GLOBALS['TCA']['tx_commerce_articles'] = Array(
 		),
 		'ordernumber' => Array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_articles.ordernumber',
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_articles.ordernumber',
 			'l10n_mode' => 'exclude',
 			'config' => Array(
 				'type' => 'input',
@@ -248,7 +248,7 @@ $GLOBALS['TCA']['tx_commerce_articles'] = Array(
 		),
 		'eancode' => Array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_articles.eancode',
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_articles.eancode',
 			'l10n_mode' => 'exclude',
 			'config' => Array(
 				'type' => 'input',
@@ -259,7 +259,7 @@ $GLOBALS['TCA']['tx_commerce_articles'] = Array(
 		),
 		'description_extra' => Array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_articles.description_extra',
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_articles.description_extra',
 			'config' => Array(
 				'type' => 'text',
 				'cols' => '30',
@@ -279,7 +279,7 @@ $GLOBALS['TCA']['tx_commerce_articles'] = Array(
 		),
 		'plain_text' => Array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_articles.plain_text',
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_articles.plain_text',
 			'config' => Array(
 				'type' => 'text',
 				'cols' => '30',
@@ -288,7 +288,7 @@ $GLOBALS['TCA']['tx_commerce_articles'] = Array(
 		),
 		'prices' => array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_articles.prices',
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_articles.prices',
 			'l10n_mode' => 'exclude',
 			'config' => array(
 				'type' => 'inline',
@@ -302,7 +302,7 @@ $GLOBALS['TCA']['tx_commerce_articles'] = Array(
 		),
 		'tax' => Array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_articles.tax',
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_articles.tax',
 			'l10n_mode' => 'exclude',
 			'config' => Array(
 				'type' => 'input',
@@ -312,14 +312,14 @@ $GLOBALS['TCA']['tx_commerce_articles'] = Array(
 		),
 		'supplier_uid' => Array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_supplier.title',
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_supplier.title',
 			'l10n_mode' => 'exclude',
 			'config' => Array(
 				'type' => 'select',
 				'foreign_table' => 'tx_commerce_supplier',
 				'items' => Array(
 					Array(
-						'LLL:EXT:commerce/locallang_db.xml:tx_commerce_products.noManufacturer',
+						'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.noManufacturer',
 						0
 					)
 				)
@@ -327,7 +327,7 @@ $GLOBALS['TCA']['tx_commerce_articles'] = Array(
 		),
 		'article_type_uid' => Array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_articles.article_type_uid',
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_articles.article_type_uid',
 			'l10n_mode' => 'exclude',
 			'config' => Array(
 				'type' => 'select',
@@ -340,7 +340,7 @@ $GLOBALS['TCA']['tx_commerce_articles'] = Array(
 		),
 		'relatedpage' => Array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_articles.relatedpage',
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_articles.relatedpage',
 			'config' => Array(
 				'type' => 'group',
 				'internal_type' => 'db',
@@ -352,7 +352,7 @@ $GLOBALS['TCA']['tx_commerce_articles'] = Array(
 		),
 		'uid_product' => Array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_articles.products_uid',
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_articles.products_uid',
 			'l10n_mode' => 'exclude',
 			'config' => Array(
 				'type' => 'group',
@@ -364,7 +364,7 @@ $GLOBALS['TCA']['tx_commerce_articles'] = Array(
 			)
 		),
 		'attributesedit' => array(
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_products.edit_attributes',
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.edit_attributes',
 			'l10n_display' => 'hideDiff',
 			'config' => Array(
 				'type' => 'flex',
@@ -397,7 +397,7 @@ $GLOBALS['TCA']['tx_commerce_articles'] = Array(
 			'showitem' => '
 			hidden;;1, title;;;;2-2-2, subtitle;;;;3-3-3,ordernumber,eancode, description_extra;;;richtext[cut|copy|paste|formatblock|textcolor|bold|italic|underline|left|center|right|orderedlist|unorderedlist|outdent|indent|link|table|image|line|chMode]:rte_transform[mode=ts_css|imgpath=uploads/tx_commerce/rte/],images ,plain_text, tax, supplier_uid, article_type_uid, relatedpage;;;;1-1-1, products_uid, article_attributes,' . ($simpleMode ?
 				'' :
-				'--div--;LLL:EXT:commerce/locallang_db.xml:tx_commerce_products.edit_attributes,attributesedit;;;;1-1-1,') . '--div--;LLL:EXT:commerce/locallang_db.xml:tx_commerce_articles.prices,prices'
+				'--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.edit_attributes,attributesedit;;;;1-1-1,') . '--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_articles.prices,prices'
 			),
 	),
 	'palettes' => Array(
@@ -487,7 +487,7 @@ $GLOBALS['TCA']['tx_commerce_article_prices'] = Array(
 
 		'price_gross' => Array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_article_prices.price_gross',
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_article_prices.price_gross',
 			'config' => Array(
 				'type' => 'input',
 				'size' => '30',
@@ -496,7 +496,7 @@ $GLOBALS['TCA']['tx_commerce_article_prices'] = Array(
 		),
 		'price_net' => Array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_article_prices.price_net',
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_article_prices.price_net',
 			'config' => Array(
 				'type' => 'input',
 				'size' => '30',
@@ -506,7 +506,7 @@ $GLOBALS['TCA']['tx_commerce_article_prices'] = Array(
 
 		'purchase_price' => Array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_article_prices.purchase_price',
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_article_prices.purchase_price',
 			'config' => Array(
 				'type' => 'input',
 				'size' => '30',
@@ -515,7 +515,7 @@ $GLOBALS['TCA']['tx_commerce_article_prices'] = Array(
 		),
 		'price_scale_amount_start' => Array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_articles.price_scale_amount_start',
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_articles.price_scale_amount_start',
 			'config' => Array(
 				'type' => 'input',
 				'size' => '10',
@@ -526,7 +526,7 @@ $GLOBALS['TCA']['tx_commerce_article_prices'] = Array(
 		),
 		'price_scale_amount_end' => Array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_articles.price_scale_amount_end',
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_articles.price_scale_amount_end',
 			'config' => Array(
 				'type' => 'input',
 				'size' => '10',

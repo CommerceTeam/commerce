@@ -36,10 +36,10 @@ $GLOBALS['TCA']['tx_commerce_salesfigures'] = Array(
 	'feInterface' => $GLOBALS['TCA']['tx_commerce_salesfigures']['feInterface'],
 	'columns' => Array(
 		'year' => Array(
-			'exclude' => 1,		
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_salesfigures.year',		
+			'exclude' => 1,
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_salesfigures.year',
 			'config' => Array(
-				'type' => 'input',	
+				'type' => 'input',
 				'size' => '11',
 				'max' => '11',
 				'eval' => 'int',
@@ -47,10 +47,10 @@ $GLOBALS['TCA']['tx_commerce_salesfigures'] = Array(
 			)
 		),
 		'month' => Array(
-			'exclude' => 1,		
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_salesfigures.month',		
+			'exclude' => 1,
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_salesfigures.month',
 			'config' => Array(
-				'type' => 'input',	
+				'type' => 'input',
 				'size' => '11',
 				'max' => '11',
 				'eval' => 'int',
@@ -58,10 +58,10 @@ $GLOBALS['TCA']['tx_commerce_salesfigures'] = Array(
 			)
 		),
 		'day' => Array(
-			'exclude' => 1,		
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_salesfigures.day',		
+			'exclude' => 1,
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_salesfigures.day',
 			'config' => Array(
-				'type' => 'input',	
+				'type' => 'input',
 				'size' => '11',
 				'max' => '11',
 				'eval' => 'int',
@@ -69,10 +69,10 @@ $GLOBALS['TCA']['tx_commerce_salesfigures'] = Array(
 			)
 		),
 		'dow' => Array(
-			'exclude' => 1,		
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_salesfigures.dow',		
+			'exclude' => 1,
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_salesfigures.dow',
 			'config' => Array(
-				'type' => 'input',	
+				'type' => 'input',
 				'size' => '11',
 				'max' => '11',
 				'eval' => 'int',
@@ -80,10 +80,10 @@ $GLOBALS['TCA']['tx_commerce_salesfigures'] = Array(
 			)
 		),
 		'hour' => Array(
-			'exclude' => 1,		
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_salesfigures.hour',		
+			'exclude' => 1,
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_salesfigures.hour',
 			'config' => Array(
-				'type' => 'input',	
+				'type' => 'input',
 				'size' => '11',
 				'max' => '11',
 				'eval' => 'int',
@@ -91,10 +91,10 @@ $GLOBALS['TCA']['tx_commerce_salesfigures'] = Array(
 			)
 		),
 		'pricegross' => Array(
-			'exclude' => 1,		
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_salesfigures.pricegross',		
+			'exclude' => 1,
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_salesfigures.pricegross',
 			'config' => Array(
-				'type' => 'input',	
+				'type' => 'input',
 				'size' => '11',
 				'max' => '11',
 				'eval' => 'int',
@@ -102,10 +102,10 @@ $GLOBALS['TCA']['tx_commerce_salesfigures'] = Array(
 			)
 		),
 		'pricenet' => Array(
-			'exclude' => 1,		
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_salesfigures.pricenet',		
+			'exclude' => 1,
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_salesfigures.pricenet',
 			'config' => Array(
-				'type' => 'input',	
+				'type' => 'input',
 				'size' => '11',
 				'max' => '11',
 				'eval' => 'int',
@@ -113,10 +113,10 @@ $GLOBALS['TCA']['tx_commerce_salesfigures'] = Array(
 			)
 		),
 		'amount' => Array(
-			'exclude' => 1,		
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_salesfigures.amount',		
+			'exclude' => 1,
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_salesfigures.amount',
 			'config' => Array(
-				'type' => 'input',	
+				'type' => 'input',
 				'size' => '11',
 				'max' => '11',
 				'eval' => 'int',
@@ -124,10 +124,10 @@ $GLOBALS['TCA']['tx_commerce_salesfigures'] = Array(
 			)
 		),
 		'orders' => Array(
-			'exclude' => 1,		
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_salesfigures.orders',		
+			'exclude' => 1,
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_salesfigures.orders',
 			'config' => Array(
-				'type' => 'input',	
+				'type' => 'input',
 				'size' => '11',
 				'max' => '11',
 				'eval' => 'int',

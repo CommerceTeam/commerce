@@ -17,27 +17,27 @@
  ***************************************************************/
 
 /**
- * Dynamic config file for tx_commerce_supplier
+ * Dynamic config file for tx_commerce_manufacturer
  *
  * @package commerce
  * @author Joerg Sprung <jsp@marketing-factory.de>
  * $Id$
  */
- 
+
 if (!defined('TYPO3_MODE')) {
 	die('Access denied.');
 }
 
-$GLOBALS['TCA']['tx_commerce_supplier'] = Array(
-	'ctrl' => $GLOBALS['TCA']['tx_commerce_supplier']['ctrl'],
+$GLOBALS['TCA']['tx_commerce_manufacturer'] = Array(
+	'ctrl' => $GLOBALS['TCA']['tx_commerce_manufacturer']['ctrl'],
 	'interface' => Array(
 		'showRecordFieldList' => 'hidden, title, street, number, zip, city, country, phone, fax, email, internet, contactperson, logo'
 	),
-	'feInterface' => $GLOBALS['TCA']['tx_commerce_']['feInterface'],
+	'feInterface' => $GLOBALS['TCA']['tx_commerce_manufacturer']['feInterface'],
 	'columns' => Array(
 		'title' => Array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_supplier.title',
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_manufacturer.title',
 			'config' => Array(
 				'type' => 'input',
 				'size' => '40',
@@ -47,7 +47,7 @@ $GLOBALS['TCA']['tx_commerce_supplier'] = Array(
 		),
 		'street' => Array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_supplier.street',
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_manufacturer.street',
 			'config' => Array(
 				'type' => 'input',
 				'size' => '40',
@@ -57,7 +57,7 @@ $GLOBALS['TCA']['tx_commerce_supplier'] = Array(
 		),
 		'number' => Array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_supplier.number',
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_manufacturer.number',
 			'config' => Array(
 				'type' => 'input',
 				'size' => '40',
@@ -67,7 +67,7 @@ $GLOBALS['TCA']['tx_commerce_supplier'] = Array(
 		),
 		'zip' => Array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_supplier.zip',
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_manufacturer.zip',
 			'config' => Array(
 				'type' => 'input',
 				'size' => '40',
@@ -77,7 +77,7 @@ $GLOBALS['TCA']['tx_commerce_supplier'] = Array(
 		),
 		'city' => Array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_supplier.city',
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_manufacturer.city',
 			'config' => Array(
 				'type' => 'input',
 				'size' => '40',
@@ -87,18 +87,17 @@ $GLOBALS['TCA']['tx_commerce_supplier'] = Array(
 		),
 		'country' => Array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_supplier.country',
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_manufacturer.country',
 			'l10n_mode' => 'exclude',
 			'config' => Array(
 				'type' => 'select',
 				'foreign_table' => 'static_countries',
 				'foreign_table_where' => 'ORDER BY static_countries.cn_short_en',
-				
 			)
 		),
 		'phone' => Array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_supplier.phone',
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_manufacturer.phone',
 			'config' => Array(
 				'type' => 'input',
 				'size' => '40',
@@ -108,7 +107,7 @@ $GLOBALS['TCA']['tx_commerce_supplier'] = Array(
 		),
 		'fax' => Array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_supplier.fax',
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_manufacturer.fax',
 			'config' => Array(
 				'type' => 'input',
 				'size' => '40',
@@ -118,7 +117,7 @@ $GLOBALS['TCA']['tx_commerce_supplier'] = Array(
 		),
 		'email' => Array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_supplier.email',
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_manufacturer.email',
 			'config' => Array(
 				'type' => 'input',
 				'size' => '40',
@@ -128,7 +127,7 @@ $GLOBALS['TCA']['tx_commerce_supplier'] = Array(
 		),
 		'internet' => Array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_supplier.internet',
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_manufacturer.internet',
 			'config' => Array(
 				'type' => 'input',
 				'size' => '40',
@@ -138,7 +137,7 @@ $GLOBALS['TCA']['tx_commerce_supplier'] = Array(
 		),
 		'contactperson' => Array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_supplier.contactperson',
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_manufacturer.contactperson',
 			'config' => Array(
 				'type' => 'input',
 				'size' => '40',
@@ -148,7 +147,7 @@ $GLOBALS['TCA']['tx_commerce_supplier'] = Array(
 		),
 		'logo' => Array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_supplier.logo',
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_manufacturer.logo',
 			'l10n_mode' => 'mergeIfNotBlank',
 			'config' => Array(
 				'type' => 'group',
@@ -161,7 +160,7 @@ $GLOBALS['TCA']['tx_commerce_supplier'] = Array(
 				'maxitems' => 5,
 			)
 		),
-	),	
+	),
 	'types' => Array(
 		'0' => Array(
 			'showitem' => '

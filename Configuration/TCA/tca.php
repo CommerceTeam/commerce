@@ -2,7 +2,7 @@
 /**
  * $Id: tca.php 308 2006-07-26 22:23:51Z ingo $
  */
- 
+
 if (!defined('TYPO3_MODE')) {
 	die ('Access denied.');
 }
@@ -47,7 +47,7 @@ $GLOBALS['TCA']['tx_commerce_address_types'] = Array(
 		),
 		'title' => Array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_address_types.title',
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_address_types.title',
 			'config' => Array(
 				'type' => 'input',
 				'size' => '40',
@@ -57,7 +57,7 @@ $GLOBALS['TCA']['tx_commerce_address_types'] = Array(
 		),
 		'name' => Array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_address_types.name',
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_address_types.name',
 			'config' => Array(
 				'type' => 'input',
 				'size' => '40',
@@ -115,7 +115,7 @@ $GLOBALS['TCA']['tx_commerce_user_states'] = Array(
 		),
 		'title' => Array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_user_states.title',
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_user_states.title',
 			'config' => Array(
 				'type' => 'input',
 				'size' => '40',
@@ -125,7 +125,7 @@ $GLOBALS['TCA']['tx_commerce_user_states'] = Array(
 		),
 		'icon' => array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_user_states.icon',
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_user_states.icon',
 			'l10n_mode' => 'mergeIfNotBlank',
 			'config' => array(
 				'type' => 'group',

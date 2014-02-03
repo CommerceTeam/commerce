@@ -4,7 +4,7 @@
 		<description/>
 		<type>database</type>
 		<csh_table/>
-		<fileId>EXT:commerce/locallang_db.xml</fileId>
+		<fileId>EXT:commerce/Resources/Private/Language/locallang_db.xml</fileId>
 	</meta>
 	<data type="array">
 		<languageKey index="default" type="array">
@@ -79,9 +79,9 @@
 			<label index="tx_commerce_articles.price_scale_amount_start">Price scale amount start</label>
 			<label index="tx_commerce_articles.price_scale_amount_end">Price scale amount end</label>
 			<label index="tx_commerce_articles.price_scale_count">Price scale add prices</label>
-			<label index="tx_commerce_articles.price_scale_steps">Price scale steps</label>		
-			<label index="tx_commerce_articles.price_scale_startamount">Price scale startamount</label>			
-			<label index="tx_commerce_articles.price_scale_fe_group">Price scale access</label>				    
+			<label index="tx_commerce_articles.price_scale_steps">Price scale steps</label>
+			<label index="tx_commerce_articles.price_scale_startamount">Price scale startamount</label>
+			<label index="tx_commerce_articles.price_scale_fe_group">Price scale access</label>
 			<label index="tx_commerce_article_prices.purchase_price">Purchase price</label>
 			<label index="tx_commerce_baskets">Baskets</label>
 			<label index="tx_commerce_baskets.sid">Session id</label>

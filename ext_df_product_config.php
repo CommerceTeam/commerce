@@ -36,7 +36,7 @@ $dynaFlexConf = array(
 				'field_config' => array(
 					1 => array(
 						'name' => 'ct_###uid###',
-						'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce.ct_###title###',
+						'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce.ct_###title###',
 						'config' => array(
 							'type' => 'select',
 							'foreign_table' => 'tx_commerce_attributes',
@@ -79,7 +79,7 @@ $dynaFlexConf = array(
 				'field_config' => array(
 					1 => array(
 						'name' => 'ct_###uid###',
-						'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce.ct_###title###',
+						'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce.ct_###title###',
 						'config' => array(
 							'type' => 'select',
 							'foreign_table' => 'tx_commerce_attributes',
@@ -158,7 +158,7 @@ $dynaFlexConf = array(
 					'compareTo' => 'DEF',
 				),
 				'config' => array(
-					'text' => ',--div--;LLL:EXT:commerce/locallang_db.xml:tx_commerce_products.select_attributes,attributes;;;;1-1-1',
+					'text' => ',--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.select_attributes,attributes;;;;1-1-1',
 				),
 			),
 				// add "edit attributes" tab if minimum one attribute with correlationtype 4 exists for this product
@@ -182,7 +182,7 @@ $dynaFlexConf = array(
 					),
 				),
 				'config' => array(
-					'text' => ',--div--;LLL:EXT:commerce/locallang_db.xml:tx_commerce_products.edit_attributes,attributesedit;;;;1-1-1',
+					'text' => ',--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.edit_attributes,attributesedit;;;;1-1-1',
 				),
 			),
 				// add "localise attributes" tab if minimum one attribute with correlationtype 4 exists for this product
@@ -206,7 +206,7 @@ $dynaFlexConf = array(
 					),
 				),
 				'config' => array(
-					'text' => ',--div--;LLL:EXT:commerce/locallang_db.xml:tx_commerce_products.localedit_attributes,attributesedit;;;;1-1-1',
+					'text' => ',--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.localedit_attributes,attributesedit;;;;1-1-1',
 				),
 			),
 				// add "create articles" tab if minimum one attribute with correlationtype 1 exists for this product
@@ -221,7 +221,7 @@ $dynaFlexConf = array(
 					'compareTo' => 'DEF',
 				),
 				'config' => array(
-					'text' => ',--div--;LLL:EXT:commerce/locallang_db.xml:tx_commerce_products.create_articles,articles;;;;1-1-1',
+					'text' => ',--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.create_articles,articles;;;;1-1-1',
 				),
 			),
 				// add "Localisze Articel" tab if we are in a localised language
@@ -237,7 +237,7 @@ $dynaFlexConf = array(
 					'compareTo' => 0,
 				),
 				'config' => array(
-					'text' => ',--div--;LLL:EXT:commerce/locallang_db.xml:tx_commerce_products.lokalise_articles,articleslok;;;;1-1-1',
+					'text' => ',--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.lokalise_articles,articleslok;;;;1-1-1',
 				),
 			),
 				// add "Localize Articel" tab if we are in a localised language
@@ -253,7 +253,7 @@ $dynaFlexConf = array(
 					'compareTo' => 0,
 				),
 				'config' => array(
-					'text' => ',--div--;LLL:EXT:commerce/locallang_db.xml:tx_commerce_products.lokalise_articles,articles;;;;1-1-1',
+					'text' => ',--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.lokalise_articles,articles;;;;1-1-1',
 				),
 			),
 			array(
@@ -265,7 +265,7 @@ $dynaFlexConf = array(
 					'compareTo' => 'DEF',
 				),
 				'config' => array(
-					'text' => ',--div--;LLL:EXT:commerce/locallang_db.xml:tx_commerce_products.extras'
+					'text' => ',--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.extras'
 				),
 			),
 			array(

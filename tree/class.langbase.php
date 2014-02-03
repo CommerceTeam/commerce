@@ -3,7 +3,6 @@
  * Copyright notice
  *
  * (c) 2008 - 2012 Ingo Schmitt <typo3@marketing-factory.de>
- * (c) 2013 Sebastian Fischer <typo3@marketing-factory.de>
  * All rights reserved
  *
  * This script is part of the TYPO3 project. The TYPO3 project is
@@ -42,7 +41,7 @@ class langbase {
 	/**
 	 * @var string
 	 */
-	protected $llFile = 'EXT:commerce/locallang_treelib.xml';
+	protected $llFile = 'EXT:commerce/Resources/Private/Language/locallang_treelib.xml';
 
 	/**
 	 * Load the LocalLang features

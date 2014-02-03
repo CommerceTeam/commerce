@@ -4,7 +4,7 @@
 		<description/>
 		<type>database</type>
 		<csh_table/>
-		<fileId>EXT:commerce/mod_access/locallang_treelib.xml</fileId>
+		<fileId>EXT:commerce/Resources/Private/Language/locallang_treelib.xml</fileId>
 	</meta>
 	<data type="array">
 		<languageKey index="default" type="array">

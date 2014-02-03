@@ -1184,7 +1184,7 @@ class tx_commerce_dmhooks {
         	if($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['simpleMode'] && trim(strtolower((string)$table))== 'tx_commerce_products') {
                 $GLOBALS['TCA']['tx_commerce_products']['columns']['articles'] = array (
                         'exclude' => 1,
-                        'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_products.articles',
+                        'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.articles',
                         'config' => array (
                                 'type' => 'inline',
                                 'foreign_table'=>'tx_commerce_articles',

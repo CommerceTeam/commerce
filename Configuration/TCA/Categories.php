@@ -119,19 +119,19 @@ $GLOBALS['TCA']['tx_commerce_categories'] = Array(
 				'exclusiveKeys' => '-1,-2',
 				'foreign_table' => 'fe_groups',
 				'foreign_table_where' => 'ORDER BY fe_groups.title',
-			
+
 			)
 		),
 		'extendToSubpages' => Array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_categories.extendToSubpages',
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_categories.extendToSubpages',
 			'config' => Array(
 				'type' => 'check'
 			)
 		),
 		'title' => Array(
 			'exclude' => 0,
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_categories.title',
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_categories.title',
 			'config' => Array(
 				'type' => 'input',
 				'size' => '40',
@@ -141,7 +141,7 @@ $GLOBALS['TCA']['tx_commerce_categories'] = Array(
 		),
 		'subtitle' => Array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_categories.subtitle',
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_categories.subtitle',
 			'config' => Array(
 				'type' => 'input',
 				'size' => '40',
@@ -151,7 +151,7 @@ $GLOBALS['TCA']['tx_commerce_categories'] = Array(
 		),
 		'description' => Array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_categories.description',
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_categories.description',
 			'config' => Array(
 				'type' => 'text',
 				'cols' => '30',
@@ -171,7 +171,7 @@ $GLOBALS['TCA']['tx_commerce_categories'] = Array(
 		),
 		'images' => Array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_categories.images',
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_categories.images',
 			'l10n_mode' => 'mergeIfNotBlank',
 			'config' => Array(
 				'type' => 'group',
@@ -187,7 +187,7 @@ $GLOBALS['TCA']['tx_commerce_categories'] = Array(
 		),
 		'navtitle' => Array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_categories.navtitle',
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_categories.navtitle',
 			'config' => Array(
 				'type' => 'input',
 				'size' => '40',
@@ -197,7 +197,7 @@ $GLOBALS['TCA']['tx_commerce_categories'] = Array(
 		),
 		'keywords' => Array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_categories.keywords',
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_categories.keywords',
 			'config' => Array(
 				'type' => 'text',
 				'cols' => '30',
@@ -207,7 +207,7 @@ $GLOBALS['TCA']['tx_commerce_categories'] = Array(
 		'parent_category' => Array(
 			'exclude' => 0,
 			'l10n_mode' => 'exclude',
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_categories.parent_category',
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_categories.parent_category',
 			'config' => Array(
 				'type' => 'passthrough',
 				'form_type' => 'user',
@@ -219,11 +219,11 @@ $GLOBALS['TCA']['tx_commerce_categories'] = Array(
 				'maxitems' => 20,
 				'eval' => 'required',
 			),
-		), 
+		),
 		'ts_config' => Array(
 			'exclude' => 1,
 			'l10n_mode' => 'mergeIfNotBlank',
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_categories.ts_config',
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_categories.ts_config',
 			'config' => array(
 				'type' => 'text',
 				'cols' => '30',
@@ -233,7 +233,7 @@ $GLOBALS['TCA']['tx_commerce_categories'] = Array(
 		'attributes' => Array(
 			'exclude' => 1,
 			'l10n_mode' => 'exclude',
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_products.attributes',
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.attributes',
 			'config' => Array(
 				'type' => 'flex',
 				'ds' => Array(
@@ -252,7 +252,7 @@ $GLOBALS['TCA']['tx_commerce_categories'] = Array(
 		),
 		'teaser' => Array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_products.teaser',
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.teaser',
 			'config' => Array(
 				'type' => 'text',
 				'cols' => '30',
@@ -261,7 +261,7 @@ $GLOBALS['TCA']['tx_commerce_categories'] = Array(
 		),
 		'teaserimages' => Array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_products.teaserimages',
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.teaserimages',
 			'l10n_mode' => 'mergeIfNotBlank',
 			'config' => Array(
 				'type' => 'group',
@@ -280,7 +280,7 @@ $GLOBALS['TCA']['tx_commerce_categories'] = Array(
 		'0' => Array(
 			'showitem' => '
 			sys_language_uid;;;;1-1-1, l18n_parent, l18n_diffsource, hidden;;1, title;;;;2-2-2, subtitle;;;;3-3-3, description;;;richtext[paste|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|image]:rte_transform[mode=ts], images, teaser;;;;3-3-3, teaserimages, navtitle, keywords,parent_category;;;;1-1-1, relatedpage;;;;1-1-1, ts_config;;;;1-1-1,
-			--div--;LLL:EXT:commerce/locallang_db.xml:tx_commerce_categories.select_attributes,attributes;;;;1-1-1'
+			--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_categories.select_attributes,attributes;;;;1-1-1'
 		)
 	),
 	'palettes' => Array(

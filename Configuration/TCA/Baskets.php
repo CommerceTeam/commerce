@@ -24,7 +24,7 @@
  * @author Thomas Hempel <thomas@work.de>
  * $Id: tx_commerce_baskets.tca.php 298 2006-07-25 05:28:35Z ingo $
  */
- 
+
 if (!defined('TYPO3_MODE')) {
 	die('Access denied.');
 }
@@ -38,7 +38,7 @@ $GLOBALS['TCA']['tx_commerce_baskets'] = Array(
 	'columns' => Array(
 		'sid' => Array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_baskets.sid',
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_baskets.sid',
 			'config' => Array(
 				'type' => 'input',
 				'size' => '40',
@@ -48,7 +48,7 @@ $GLOBALS['TCA']['tx_commerce_baskets'] = Array(
 		),
 		'article_id' => Array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_baskets.article_id',
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_baskets.article_id',
 			'config' => Array(
 				'type' => 'group',
 				'internal_type' => 'db',
@@ -60,7 +60,7 @@ $GLOBALS['TCA']['tx_commerce_baskets'] = Array(
 		),
 		'price_id' => Array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_baskets.price_id',
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_baskets.price_id',
 			'config' => Array(
 				'type' => 'group',
 				'internal_type' => 'db',
@@ -72,7 +72,7 @@ $GLOBALS['TCA']['tx_commerce_baskets'] = Array(
 		),
 		'price_gross' => Array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_baskets.price_gross',
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_baskets.price_gross',
 			'config' => Array(
 				'type' => 'input',
 				'size' => '30',
@@ -81,7 +81,7 @@ $GLOBALS['TCA']['tx_commerce_baskets'] = Array(
 		),
 		'price_net' => Array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_baskets.price_net',
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_baskets.price_net',
 			'config' => Array(
 				'type' => 'input',
 				'size' => '30',
@@ -90,7 +90,7 @@ $GLOBALS['TCA']['tx_commerce_baskets'] = Array(
 		),
 		'quantity' => Array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_baskets.quantity',
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_baskets.quantity',
 			'config' => Array(
 				'type' => 'input',
 				'size' => '4',
@@ -106,7 +106,7 @@ $GLOBALS['TCA']['tx_commerce_baskets'] = Array(
 		),
 		'finished_time' => Array(
                         'exclude' => 1,
-                        'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_basket.finished_time',
+                        'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_basket.finished_time',
 			'config' => Array(
 			       'type' => 'input',
 	                       'eval' => 'date',
@@ -114,12 +114,12 @@ $GLOBALS['TCA']['tx_commerce_baskets'] = Array(
 	   ),
 	   'readonly' => Array(
 	   				 'exclude' => 1,
-	   				 'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_basket.readonly',
+	   				 'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_basket.readonly',
 			'config' => array(
 							'type' => 'check',
 					 )
 	   		),
-																					       
+
 	),
 	'types' => Array(
 		'0' => Array('showitem' => 'sid;;;;1-1-1, article_id,price_id, price_gross, price_net, quantity')

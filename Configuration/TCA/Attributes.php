@@ -24,7 +24,7 @@
  * @author Ingo Schmitt <is@marketing-factory.de>
  * $Id: tx_commerce_attributes.tca.php 346 2006-08-11 18:56:48Z ingo $
  */
- 
+
 if (!defined('TYPO3_MODE')) {
 	die('Access denied.');
 }
@@ -120,10 +120,10 @@ $GLOBALS['TCA']['tx_commerce_attributes'] = array(
 				'foreign_table_where' => 'ORDER BY fe_groups.title',
 			)
 		),
-		
+
 		'has_valuelist' => array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_attributes.has_valuelist',
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_attributes.has_valuelist',
 			'displayCond' => 'FIELD:sys_language_uid:=:0',
 			'config' => array(
 				'type' => 'check',
@@ -131,7 +131,7 @@ $GLOBALS['TCA']['tx_commerce_attributes'] = array(
 		),
 		'title' => array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_attributes.title',
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_attributes.title',
 			'config' => array(
 				'type' => 'input',
 				'size' => '40',
@@ -141,7 +141,7 @@ $GLOBALS['TCA']['tx_commerce_attributes'] = array(
 		),
 		'internal_title' => Array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_attributes.internal_title',
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_attributes.internal_title',
 			'config' => Array(
 				'type' => 'input',
 				'size' => '40',
@@ -151,7 +151,7 @@ $GLOBALS['TCA']['tx_commerce_attributes'] = array(
 		),
 		'unit' => array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_attributes.unit',
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_attributes.unit',
 			'config' => array(
 				'type' => 'input',
 				'size' => '40',
@@ -162,34 +162,34 @@ $GLOBALS['TCA']['tx_commerce_attributes'] = array(
 		'valueformat' => array(
 			'exclude' => 1,
 			'displayCond' => 'FIELD:has_valuelist:=:0',
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_attributes.valueformat',
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_attributes.valueformat',
 			'l10n_mode' => 'exclude',
 			'config' => array(
 				'type' => 'select',
 				'items' => array(
 					array('', ''),
-					array('LLL:EXT:commerce/locallang_db.xml:tx_commerce_attributes.valueformat.money  ', '%01.2f'),
-					array('LLL:EXT:commerce/locallang_db.xml:tx_commerce_attributes.valueformat.integer  ', '%d'),
-					array('LLL:EXT:commerce/locallang_db.xml:tx_commerce_attributes.valueformat.float  ', '%f'),
+					array('LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_attributes.valueformat.money  ', '%01.2f'),
+					array('LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_attributes.valueformat.integer  ', '%d'),
+					array('LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_attributes.valueformat.float  ', '%f'),
 				)
 			)
 		),
 		'valuelist' => array(
 			'exclude' => 1,
 			'displayCond' => 'FIELD:has_valuelist:=:1',
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_attributes.valuelist',
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_attributes.valuelist',
 			'config' => array(
 				'type' => 'inline',
 				'foreign_table' => 'tx_commerce_attribute_values',
 				'foreign_field' => 'attributes_uid',
 				'foreign_sortby' => 'sorting',
 				'foreign_label' => 'value',
-				
+
 				'appearance' => array(
 					'showSynchronizationLink' => 1,
 					'showAllLocalizationLink' => 1,
 					'showPossibleLocalizationRecords' => 1,
-					'showRemovedLocalizationRecords' => 1,		
+					'showRemovedLocalizationRecords' => 1,
 					'useSortable' => 1,
 				),
 				'behaviour' => array(
@@ -200,7 +200,7 @@ $GLOBALS['TCA']['tx_commerce_attributes'] = array(
 		'multiple' => array(
 			'exclude' => 1,
 			'displayCond' => 'FIELD:has_valuelist:=:1',
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_attributes.multiple',
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_attributes.multiple',
 			'l10n_mode' => 'exclude',
 			'config' => array(
 				'type' => 'check',
@@ -208,7 +208,7 @@ $GLOBALS['TCA']['tx_commerce_attributes'] = array(
 		),
 		'icon' => array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_attributes.icon',
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_attributes.icon',
 			'l10n_mode' => 'mergeIfNotBlank',
 			'config' => array(
 				'type' => 'group',
@@ -224,16 +224,16 @@ $GLOBALS['TCA']['tx_commerce_attributes'] = array(
 		),
 		'iconmode' => array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_attributes.iconMode',
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_attributes.iconMode',
 			'l10n_mode' => 'exclude',
-			'displayCond' => 'FIELD:has_valuelist:=:1',		
+			'displayCond' => 'FIELD:has_valuelist:=:1',
 			'config' => array(
 				'type' => 'check',
 			),
 		),
 		'parent' => array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_attributes.parent',
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_attributes.parent',
 			'l10n_mode' => 'exclude',
 			'config' => array(
 				'type' => 'select',
@@ -257,10 +257,10 @@ $GLOBALS['TCA']['tx_commerce_attributes'] = array(
 	),
 	'types' => array(
 		'0' => array(
-			'showitem' => '--div--;LLL:EXT:commerce/locallang_db.xml:tx_commerce_attributes.basis, sys_language_uid;;;;1-1-1,
+			'showitem' => '--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_attributes.basis, sys_language_uid;;;;1-1-1,
 				l18n_parent, l18n_diffsource, hidden;;1, parent, has_valuelist, multiple, valueformat, title;;;;2-2-2,
 				internal_title, unit, icon;;;;3-3-3;,iconmode,
-				--div--;LLL:EXT:commerce/locallang_db.xml:tx_commerce_attributes.valuelistlist, valuelist'
+				--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_attributes.valuelistlist, valuelist'
 		)
 	),
 	'palettes' => array(

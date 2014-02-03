@@ -118,36 +118,36 @@ t3lib_extMgm::addToInsertRecords('tx_commerce_categories');
 t3lib_extMgm::addToInsertRecords('tx_commerce_products');
 
 
-$tempColumns = Array (
-	'surname' => Array (
+$tempColumns = array(
+	'surname' => array(
 		'exclude' => 1,
-		'label' => 'LLL:EXT:commerce/locallang_db.xml:tt_address.surname',
-		'config' => Array (
+		'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tt_address.surname',
+		'config' => array(
 			'type' => 'input',
 			'size' => '40',
 			'max' => '50',
 		)
 	),
-	'tx_commerce_default_values' => Array (
+	'tx_commerce_default_values' => array(
 		'exclude' => 1,
-		'label' => 'LLL:EXT:commerce/locallang_db.xml:tt_address.tx_commerce_default_values',
-		'config' => Array (
+		'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tt_address.tx_commerce_default_values',
+		'config' => array(
 			'type' => 'input',
 			'size' => '4',
 			'max' => '4',
 			'eval' => 'int',
 			'checkbox' => '0',
-			'range' => Array (
+			'range' => array(
 				'upper' => '1000',
 				'lower' => '10'
 			),
 			'default' => 0
 		)
 	),
-	'tx_commerce_fe_user_id' => Array (
+	'tx_commerce_fe_user_id' => array(
 		'exclude' => 1,
-		'label' => 'LLL:EXT:commerce/locallang_db.xml:tt_address.tx_commerce_fe_user_id',
-		'config' => Array (
+		'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tt_address.tx_commerce_fe_user_id',
+		'config' => array(
 			'type' => 'group',
 			'internal_type' => 'db',
 			'allowed' => 'fe_users',
@@ -156,12 +156,12 @@ $tempColumns = Array (
 			'maxitems' => 1,
 		)
 	),
-	'tx_commerce_address_type_id' => Array (
+	'tx_commerce_address_type_id' => array(
 		'exclude' => 1,
-		'label' => 'LLL:EXT:commerce/locallang_db.xml:tt_address.tx_commerce_address_type_id',
-		'config' => Array (
+		'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tt_address.tx_commerce_address_type_id',
+		'config' => array(
 			'type' => 'select',
-			'item' => Array (
+			'item' => array(
 				Array('', 0),
 			),
 			'foreign_table' => 'tx_commerce_address_types',
@@ -171,10 +171,10 @@ $tempColumns = Array (
 			'maxitems' => 1,
 		)
 	),
-	'tx_commerce_is_main_address' => array (
+	'tx_commerce_is_main_address' => array(
 		'exclude' => 1,
-		'label' => 'LLL:EXT:commerce/locallang_db.xml:tt_address.tx_commerce_is_main_address',
-		'config' => array (
+		'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tt_address.tx_commerce_is_main_address',
+		'config' => array(
 			'type' => 'check',
 		),
 	),
@@ -203,13 +203,13 @@ t3lib_extMgm::addToAllTCAtypes('tt_address', 'tx_commerce_default_values;;;;1-1-
 
 
 
-$tempColumns = Array (
-	'tx_commerce_user_state_id' => Array (
+$tempColumns = array(
+	'tx_commerce_user_state_id' => array(
 		'exclude' => 1,
-		'label' => 'LLL:EXT:commerce/locallang_db.xml:fe_users.tx_commerce_user_state_id',
-		'config' => Array (
+		'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:fe_users.tx_commerce_user_state_id',
+		'config' => array(
 			'type' => 'select',
-			'item' => Array (
+			'item' => array(
 				Array('', 0),
 			),
 			'foreign_table' => 'tx_commerce_user_states',
@@ -218,10 +218,10 @@ $tempColumns = Array (
 			'maxitems' => 1,
 		)
 	),
-	'tx_commerce_tt_address_id' => Array (
+	'tx_commerce_tt_address_id' => array(
 		'exclude' => 1,
-		'label' => 'LLL:EXT:commerce/locallang_db.xml:fe_users.tx_commerce_tt_address_id',
-		'config' => Array (
+		'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:fe_users.tx_commerce_tt_address_id',
+		'config' => array(
 			'type' => 'select',
 			'foreign_table' => 'tt_address',
 			'foreign_table_where' => 'AND tt_address.tx_commerce_fe_user_id=###THIS_UID###' .
@@ -244,10 +244,10 @@ $tempColumns = Array (
 			)
 		)
 	),
-	'tx_commerce_orders' => Array (
+	'tx_commerce_orders' => array(
 		'exclude' => 1,
-		'label' => 'LLL:EXT:commerce/locallang_db.xml:fe_users.tx_commerce_feuser_orders',
-		'config' => Array (
+		'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:fe_users.tx_commerce_feuser_orders',
+		'config' => array(
 			'type' => 'user',
 			'userFunc' => 'EXT:commerce/mod_orders/class.user_orderedit_func.php:user_orderedit_func->fe_user_orders',
 		)
@@ -260,12 +260,12 @@ t3lib_extMgm::addToAllTCAtypes('fe_users', 'tx_commerce_tt_address_id,tx_commerc
 
 
 
-$tempColumns = Array (
-	'tx_commerce_foldereditorder' => Array (
+$tempColumns = array(
+	'tx_commerce_foldereditorder' => array(
 		'displayCond' => 'FIELD:tx_graytree_foldername:REQ:true',
 		'exclude' => 1,
-		'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_pages.tx_commerce_foldereditorder',
-		'config' => Array (
+		'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_pages.tx_commerce_foldereditorder',
+		'config' => array(
 			'type' => 'check',
 			'default' => '0'
 		)
@@ -280,7 +280,7 @@ t3lib_extMgm::addToAllTCAtypes('pages', 'tx_commerce_foldereditorder;;;;1-1-1');
 	// extend beusers/begroups for access control
 $tempColumns = array(
 	'tx_commerce_mountpoints' => array(
-		'label' => 'LLL:EXT:commerce/locallang_db.xml:label.tx_commerce_mountpoints',
+		'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:label.tx_commerce_mountpoints',
 		'config' => $GLOBALS['T3_VAR']['ext'][COMMERCE_EXTKEY]['TCA']['mountpoints_config'],
 	),
 );
@@ -295,9 +295,9 @@ t3lib_extMgm::addToAllTCAtypes('be_users', 'tx_commerce_mountpoints', '', 'after
 
 unset($tempColumns);
 
-$GLOBALS['TCA']['tx_commerce_products'] = Array (
-	'ctrl' => Array (
-		'title' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_products',
+$GLOBALS['TCA']['tx_commerce_products'] = array(
+	'ctrl' => array(
+		'title' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products',
 		'label' => 'title',
 		'tstamp' => 'tstamp',
 		'crdate' => 'crdate',
@@ -310,24 +310,24 @@ $GLOBALS['TCA']['tx_commerce_products'] = Array (
 		'versioningWS' => TRUE,
 		'delete' => 'deleted',
 		'thumbnail' => 'images',
-		'enablecolumns' => Array (
+		'enablecolumns' => array(
 			'disabled' => 'hidden',
 			'starttime' => 'starttime',
 			'endtime' => 'endtime',
 			'fe_group' => 'fe_group',
 		),
-		'dynamicConfigFile' => t3lib_extMgm::extPath(COMMERCE_EXTKEY) . 'tcafiles/tx_commerce_products.tca.php',
+		'dynamicConfigFile' => t3lib_extMgm::extPath(COMMERCE_EXTKEY) . 'Configuration/TCA/Products.php',
 		'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL . 'products.gif',
 		'dividers2tabs' => '1',
 	),
-	'feInterface' => Array (
+	'feInterface' => array(
 		'fe_admin_fieldList' => 'sys_language_uid, l18n_parent, l18n_diffsource, hidden, starttime, endtime, fe_group, title, subtitle, navtitle, description, images, teaser, teaserimages, categories, manufacturer_uid, attributes',
 	)
 );
 
-$GLOBALS['TCA']['tx_commerce_article_types'] = Array (
-	'ctrl' => Array (
-		'title' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_article_types',
+$GLOBALS['TCA']['tx_commerce_article_types'] = array(
+	'ctrl' => array(
+		'title' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_article_types',
 		'label' => 'title',
 		'tstamp' => 'tstamp',
 		'readOnly' => 1,
@@ -340,20 +340,20 @@ $GLOBALS['TCA']['tx_commerce_article_types'] = Array (
 		'transOrigDiffSourceField' => 'l18n_diffsource',
 		'default_sortby' => 'ORDER BY crdate',
 		'delete' => 'deleted',
-		'enablecolumns' => Array (
+		'enablecolumns' => array(
 			'disabled' => 'hidden',
 		),
-		'dynamicConfigFile' => PATH_TXCOMMERCE . 'tcafiles/tx_commerce_articles.tca.php',
+		'dynamicConfigFile' => PATH_TXCOMMERCE . 'Configuration/TCA/Articles.php',
 		'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL . 'icon_tx_commerce_article_types.gif',
 	),
-	'feInterface' => Array (
+	'feInterface' => array(
 		'fe_admin_fieldList' => 'sys_language_uid, l18n_parent, l18n_diffsource, hidden, title',
 	)
 );
 
-$GLOBALS['TCA']['tx_commerce_articles'] = Array (
-	'ctrl' => Array (
-		'title' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_articles',
+$GLOBALS['TCA']['tx_commerce_articles'] = array(
+	'ctrl' => array(
+		'title' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_articles',
 		'label' => 'title',
 		'tstamp' => 'tstamp',
 		'crdate' => 'crdate',
@@ -365,24 +365,24 @@ $GLOBALS['TCA']['tx_commerce_articles'] = Array (
 		'transOrigDiffSourceField' => 'l18n_diffsource',
 		'default_sortby' => 'ORDER BY sorting,crdate',
 		'delete' => 'deleted',
-		'enablecolumns' => Array (
+		'enablecolumns' => array(
 			'disabled' => 'hidden',
 			'starttime' => 'starttime',
 			'endtime' => 'endtime',
 			'fe_group' => 'fe_group',
 		),
-		'dynamicConfigFile' => PATH_TXCOMMERCE . 'tcafiles/tx_commerce_articles.tca.php',
+		'dynamicConfigFile' => PATH_TXCOMMERCE . 'Configuration/TCA/Articles.php',
 		'dividers2tabs' => '1',
 		'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL . 'article.gif',
 	),
-	'feInterface' => Array (
+	'feInterface' => array(
 		'fe_admin_fieldList' => 'sys_language_uid, l18n_parent, l18n_diffsource, hidden, starttime, endtime, fe_group, title, subtitle, navtitle, images, ordernumber, eancode, description_extra,plain_text, price_gross, price_net, purchase_price, tax, article_type_uid, products_uid, article_attributes',
 	)
 );
 
-$GLOBALS['TCA']['tx_commerce_article_prices'] = Array (
-	'ctrl' => Array (
-		'title' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_article_prices',
+$GLOBALS['TCA']['tx_commerce_article_prices'] = array(
+	'ctrl' => array(
+		'title' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_article_prices',
 		'label' => 'price_net',
 		'label_alt' => 'price_net,price_gross,purchase_price',
 		'label_alt_force' => 1,
@@ -393,40 +393,40 @@ $GLOBALS['TCA']['tx_commerce_article_prices'] = Array (
 		'versioning' => '1',
 		'default_sortby' => 'ORDER BY crdate',
 		'delete' => 'deleted',
-		'enablecolumns' => Array (
+		'enablecolumns' => array(
 			'disabled' => 'hidden',
 			'starttime' => 'starttime',
 			'endtime' => 'endtime',
 			'fe_group' => 'fe_group',
 		),
-		'dynamicConfigFile' => PATH_TXCOMMERCE . 'tcafiles/tx_commerce_articles.tca.php',
+		'dynamicConfigFile' => PATH_TXCOMMERCE . 'Configuration/TCA/Articles.php',
 		'dividers2tabs' => '1',
 		'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL . 'price.gif',
 	),
-	'feInterface' => Array (
+	'feInterface' => array(
 		'fe_admin_fieldList' => 'sys_language_uid, l18n_parent, l18n_diffsource, hidden, starttime, endtime, fe_group, price_gross, price_net, price_scale_amount, purchase_price',
 	)
 );
 
-$GLOBALS['TCA']['tx_commerce_baskets'] = Array (
-	'ctrl' => Array (
-		'title' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_baskets',
+$GLOBALS['TCA']['tx_commerce_baskets'] = array(
+	'ctrl' => array(
+		'title' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_baskets',
 		'label' => 'uid',
 		'tstamp' => 'tstamp',
 		'crdate' => 'crdate',
 		'cruser_id' => 'cruser_id',
 		'default_sortby' => 'ORDER BY crdate',
-		'dynamicConfigFile' => PATH_TXCOMMERCE . 'tcafiles/tx_commerce_baskets.tca.php',
+		'dynamicConfigFile' => PATH_TXCOMMERCE . 'Configuration/TCA/Baskets.php',
 		'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL . 'baskets.gif',
 	),
-	'feInterface' => Array (
+	'feInterface' => array(
 		'fe_admin_fieldList' => 'sid, finished_time, article_id,price_id, price_gross, price_net, quantity',
 	)
 );
 
-$GLOBALS['TCA']['tx_commerce_attributes'] = Array (
-	'ctrl' => Array (
-		'title' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_attributes',
+$GLOBALS['TCA']['tx_commerce_attributes'] = array(
+	'ctrl' => array(
+		'title' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_attributes',
 		'label' => 'internal_title',
 		'label_alt' => 'title',
 		'tstamp' => 'tstamp',
@@ -442,13 +442,13 @@ $GLOBALS['TCA']['tx_commerce_attributes'] = Array (
 		'transOrigDiffSourceField' => 'l18n_diffsource',
 		'default_sortby' => 'ORDER BY sorting,crdate',
 		'delete' => 'deleted',
-		'enablecolumns' => Array (
+		'enablecolumns' => array(
 			'disabled' => 'hidden',
 			'starttime' => 'starttime',
 			'endtime' => 'endtime',
 			'fe_group' => 'fe_group',
 		),
-		'dynamicConfigFile' => PATH_TXCOMMERCE . 'tcafiles/tx_commerce_attributes.tca.php',
+		'dynamicConfigFile' => PATH_TXCOMMERCE . 'Configuration/TCA/Attributes.php',
 		'typeicon_column' => 'has_valuelist',
 		'typeicons' => array(
 			'0' => PATH_TXCOMMERCE_ICON_TABLE_REL . 'attributes_free.gif',
@@ -456,14 +456,14 @@ $GLOBALS['TCA']['tx_commerce_attributes'] = Array (
 		),
 		'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL . 'attributes_free.gif',
 	),
-	'feInterface' => Array (
+	'feInterface' => array(
 		'fe_admin_fieldList' => 'sys_language_uid, l18n_parent, l18n_diffsource, hidden, starttime, endtime, fe_group, has_valuelist, title, internal_title, unit, valueformat, valuelist',
 	)
 );
 
-$GLOBALS['TCA']['tx_commerce_attribute_values'] = Array (
-	'ctrl' => Array (
-		'title' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_attribute_values',
+$GLOBALS['TCA']['tx_commerce_attribute_values'] = array(
+	'ctrl' => array(
+		'title' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_attribute_values',
 		'label' => 'value',
 		'label_alt' => 'attributes_uid',
 		'label_alt_force' => 1,
@@ -478,22 +478,22 @@ $GLOBALS['TCA']['tx_commerce_attribute_values'] = Array (
 		'transOrigDiffSourceField' => 'l18n_diffsource',
 		'default_sortby' => 'ORDER BY attributes_uid,value',
 		'delete' => 'deleted',
-		'enablecolumns' => Array (
+		'enablecolumns' => array(
 			'disabled' => 'hidden',
 			'starttime' => 'starttime',
 			'endtime' => 'endtime',
 		),
-		'dynamicConfigFile' => PATH_TXCOMMERCE . 'tcafiles/tx_commerce_attribute_values.tca.php',
+		'dynamicConfigFile' => PATH_TXCOMMERCE . 'Configuration/TCA/AttributeValues.php',
 		'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL . 'attribute_value.gif',
 	),
-	'feInterface' => Array (
+	'feInterface' => array(
 		'fe_admin_fieldList' => 'sys_language_uid, l18n_parent, l18n_diffsource, hidden, starttime, endtime, value, showvalue, attributes_uid',
 	)
 );
 
-$GLOBALS['TCA']['tx_commerce_categories'] = Array (
-	'ctrl' => Array (
-		'title' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_categories',
+$GLOBALS['TCA']['tx_commerce_categories'] = array(
+	'ctrl' => array(
+		'title' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_categories',
 		'label' => 'title',
 		'sortby' => 'sorting',
 		'tstamp' => 'tstamp',
@@ -504,24 +504,24 @@ $GLOBALS['TCA']['tx_commerce_categories'] = Array (
 		'transOrigPointerField' => 'l18n_parent',
 		'transOrigDiffSourceField' => 'l18n_diffsource',
 		'delete' => 'deleted',
-		'enablecolumns' => Array (
+		'enablecolumns' => array(
 			'disabled' => 'hidden',
 			'starttime' => 'starttime',
 			'endtime' => 'endtime',
 			'fe_group' => 'fe_group',
 		),
-		'dynamicConfigFile' => PATH_TXCOMMERCE . 'tcafiles/tx_commerce_categories.tca.php',
+		'dynamicConfigFile' => PATH_TXCOMMERCE . 'Configuration/TCA/Categories.php',
 		'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL . 'categories.gif',
 		'dividers2tabs' => '1',
 	),
-	'feInterface' => Array (
+	'feInterface' => array(
 		'fe_admin_fieldList' => 'sys_language_uid, l18n_parent, l18n_diffsource, hidden, starttime, endtime, fe_group, title, subtitle, description, images, navtitle, keywords, attributes, parent_category, teaser, teaserimages',
 	)
 );
 
-$GLOBALS['TCA']['tx_commerce_trackingcodes'] = Array (
-	'ctrl' => Array (
-		'title' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_trackingcodes',
+$GLOBALS['TCA']['tx_commerce_trackingcodes'] = array(
+	'ctrl' => array(
+		'title' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_trackingcodes',
 		'label' => 'description',
 		'tstamp' => 'tstamp',
 		'crdate' => 'crdate',
@@ -531,19 +531,19 @@ $GLOBALS['TCA']['tx_commerce_trackingcodes'] = Array (
 		'transOrigPointerField' => 'l18n_parent',
 		'transOrigDiffSourceField' => 'l18n_diffsource',
 		'default_sortby' => 'ORDER BY crdate',
-		'dynamicConfigFile' => PATH_TXCOMMERCE . 'tcafiles/tx_commerce_tracking.tca.php',
+		'dynamicConfigFile' => PATH_TXCOMMERCE . 'Configuration/TCA/Tracking.php',
 		'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL . 'tracking_codes.gif',
 	),
-	'feInterface' => Array (
+	'feInterface' => array(
 		'fe_admin_fieldList' => 'sys_language_uid, l18n_parent, l18n_diffsource, title, description',
 	)
 );
 
 
 
-$GLOBALS['TCA']['tx_commerce_order_types'] = Array (
-	'ctrl' => Array (
-		'title' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_order_types',
+$GLOBALS['TCA']['tx_commerce_order_types'] = array(
+	'ctrl' => array(
+		'title' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_order_types',
 		'label' => 'title',
 		'tstamp' => 'tstamp',
 		'crdate' => 'crdate',
@@ -553,34 +553,34 @@ $GLOBALS['TCA']['tx_commerce_order_types'] = Array (
 		'transOrigDiffSourceField' => 'l18n_diffsource',
 		'default_sortby' => 'ORDER BY crdate',
 		'delete' => 'deleted',
-		'dynamicConfigFile' => PATH_TXCOMMERCE . 'tcafiles/tx_commerce_orders.tca.php',
+		'dynamicConfigFile' => PATH_TXCOMMERCE . 'Configuration/TCA/Orders.php',
 		'iconfile' =>  PATH_TXCOMMERCE_ICON_TABLE_REL . 'order_types.gif',
 	),
-	'feInterface' => Array (
+	'feInterface' => array(
 		'fe_admin_fieldList' => 'sys_language_uid, l18n_parent, l18n_diffsource, title',
 	)
 );
 
-$GLOBALS['TCA']['tx_commerce_tracking'] = Array (
-	'ctrl' => Array (
-		'title' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_tracking',
+$GLOBALS['TCA']['tx_commerce_tracking'] = array(
+	'ctrl' => array(
+		'title' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_tracking',
 		'label' => 'uid',
 		'tstamp' => 'tstamp',
 		'crdate' => 'crdate',
 		'cruser_id' => 'cruser_id',
 		'versioning' => '1',
 		'default_sortby' => 'ORDER BY crdate',
-		'dynamicConfigFile' => PATH_TXCOMMERCE . 'tcafiles/tx_commerce_tracking.tca.php',
+		'dynamicConfigFile' => PATH_TXCOMMERCE . 'Configuration/TCA/Tracking.php',
 		'iconfile' =>  PATH_TXCOMMERCE_ICON_TABLE_REL . 'tracking.gif',
 	),
-	'feInterface' => Array (
+	'feInterface' => array(
 		'fe_admin_fieldList' => 'orders_uid, trackingcodes_uid, msg',
 	)
 );
 
-$GLOBALS['TCA']['tx_commerce_orders'] = Array (
-	'ctrl' => Array (
-		'title' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_orders',
+$GLOBALS['TCA']['tx_commerce_orders'] = array(
+	'ctrl' => array(
+		'title' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_orders',
 		'label' => 'order_id',
 		'tstamp' => 'tstamp',
 		'crdate' => 'crdate',
@@ -588,33 +588,33 @@ $GLOBALS['TCA']['tx_commerce_orders'] = Array (
 		'default_sortby' => 'ORDER BY crdate',
 		'delete' => 'deleted',
 		'dividers2tabs' => '1',
-		'dynamicConfigFile' => PATH_TXCOMMERCE . 'tcafiles/tx_commerce_orders.tca.php',
+		'dynamicConfigFile' => PATH_TXCOMMERCE . 'Configuration/TCA/Orders.php',
 		'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL . 'orders.gif',
 	),
-	'feInterface' => Array (
+	'feInterface' => array(
 		'fe_admin_fieldList' => 'cust_deliveryaddress, order_type_uid, order_id, cust_fe_user, cust_invoice, paymenttype, sum_price_net, sum_price_gross,pid,cu_iso_3_uid,order_sys_language_uid,pricefromnet',
 	)
 );
 
-$GLOBALS['TCA']['tx_commerce_order_articles'] = Array (
-	'ctrl' => Array (
-		'title' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_order_articles',
+$GLOBALS['TCA']['tx_commerce_order_articles'] = array(
+	'ctrl' => array(
+		'title' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_order_articles',
 		'label' => 'title',
 		'tstamp' => 'tstamp',
 		'crdate' => 'crdate',
 		'cruser_id' => 'cruser_id',
 		'default_sortby' => 'ORDER BY crdate',
-		'dynamicConfigFile' => PATH_TXCOMMERCE . 'tcafiles/tx_commerce_order_articles.tca.php',
+		'dynamicConfigFile' => PATH_TXCOMMERCE . 'Configuration/TCA/OrderArticles.php',
 		'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL . 'order_articles.gif',
 	),
-	'feInterface' => Array (
+	'feInterface' => array(
 		'fe_admin_fieldList' => 'article_type_uid, article_uid, article_number, title, subtitle, price_net, price_gross, tax, amount, order_id',
 	)
 );
 
-$GLOBALS['TCA']['tx_commerce_address_types'] = Array (
-	'ctrl' => Array (
-		'title' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_address_types',
+$GLOBALS['TCA']['tx_commerce_address_types'] = array(
+	'ctrl' => array(
+		'title' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_address_types',
 		'label' => 'title',
 		'readOnly' => 1,
 		'adminOnly' => 1,
@@ -627,14 +627,14 @@ $GLOBALS['TCA']['tx_commerce_address_types'] = Array (
 		'dynamicConfigFile' => PATH_TXCOMMERCE . 'tcafiles/tca.php',
 		'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL . 'address_types.gif',
 	),
-	'feInterface' => Array (
+	'feInterface' => array(
 		'fe_admin_fieldList' => 'sys_language_uid, l18n_parent, l18n_diffsource, title',
 	)
 );
 
-$GLOBALS['TCA']['tx_commerce_user_states'] = Array (
-	'ctrl' => Array (
-		'title' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_user_states',
+$GLOBALS['TCA']['tx_commerce_user_states'] = array(
+	'ctrl' => array(
+		'title' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_user_states',
 		'label' => 'title',
 		'tstamp' => 'tstamp',
 		'crdate' => 'crdate',
@@ -647,14 +647,14 @@ $GLOBALS['TCA']['tx_commerce_user_states'] = Array (
 		'dynamicConfigFile' => PATH_TXCOMMERCE . 'tcafiles/tca.php',
 		'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL . 'user_states.gif',
 	),
-	'feInterface' => Array (
+	'feInterface' => array(
 		'fe_admin_fieldList' => 'sys_language_uid, l18n_parent, l18n_diffsource, title',
 	)
 );
 
-$GLOBALS['TCA']['tx_commerce_moveordermails'] = Array (
-	'ctrl' => Array (
-		'title' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_moveordermails',
+$GLOBALS['TCA']['tx_commerce_moveordermails'] = array(
+	'ctrl' => array(
+		'title' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_moveordermails',
 		'label' => 'name',
 		'tstamp' => 'tstamp',
 		'crdate' => 'crdate',
@@ -663,23 +663,23 @@ $GLOBALS['TCA']['tx_commerce_moveordermails'] = Array (
 		'languageField' => 'sys_language_uid',
 		'transOrigPointerField' => 'l18n_parent',
 		'transOrigDiffSourceField' => 'l18n_diffsource',
-		'enablecolumns' => Array (
+		'enablecolumns' => array(
 			'disabled' => 'hidden',
 			'starttime' => 'starttime',
 			'endtime' => 'endtime',
 			'fe_group' => 'fe_group',
 		),
-		'dynamicConfigFile' => PATH_TXCOMMERCE . 'tcafiles/tx_commerce_moveordermails.tca.php',
+		'dynamicConfigFile' => PATH_TXCOMMERCE . 'Configuration/TCA/Moveordermails.php',
 		'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL . 'moveordermails.gif',
 	),
-	'feInterface' => Array (
+	'feInterface' => array(
 		'fe_admin_fieldList' => 'sys_language_uid, l18n_parent, l18n_diffsource, hidden, starttime, endtime, fe_group, name, mailkind, mailtemplate, htmltemplate, mailcharset, sendername, senderemail,otherreceiver,BCC',
 	)
 );
 
-$GLOBALS['TCA']['tx_commerce_salesfigures'] = Array (
-	'ctrl' => Array (
-		'title' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_salesfigures',
+$GLOBALS['TCA']['tx_commerce_salesfigures'] = array(
+	'ctrl' => array(
+		'title' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_salesfigures',
 		'label' => 'uid',
 		'tstamp' => 'tstamp',
 		'crdate' => 'crdate',
@@ -687,17 +687,17 @@ $GLOBALS['TCA']['tx_commerce_salesfigures'] = Array (
 		'default_sortby' => 'ORDER BY crdate',
 		'readOnly'	=> '1',
 		'adminOnly'	=> '1',
-		'dynamicConfigFile' => PATH_TXCOMMERCE . 'tcafiles/tx_commerce_salesfigures.tca.php',
+		'dynamicConfigFile' => PATH_TXCOMMERCE . 'Configuration/TCA/Salesfigures.php',
 		'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL . 'salesfigures.gif',
 	),
-	'feInterface' => Array (
+	'feInterface' => array(
 		'fe_admin_fieldList' => 'year, month, day, dow, hour, pricegross, pricenet, amount, orders',
 	)
 );
 
-$GLOBALS['TCA']['tx_commerce_newclients'] = Array (
-	'ctrl' => Array (
-		'title' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_newclients',
+$GLOBALS['TCA']['tx_commerce_newclients'] = array(
+	'ctrl' => array(
+		'title' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_newclients',
 		'label' => 'uid',
 		'tstamp' => 'tstamp',
 		'crdate' => 'crdate',
@@ -705,17 +705,17 @@ $GLOBALS['TCA']['tx_commerce_newclients'] = Array (
 		'default_sortby' => 'ORDER BY crdate',
 		'readOnly'	=> '1',
 		'adminOnly'	=> '1',
-		'dynamicConfigFile' => PATH_TXCOMMERCE . 'tcafiles/tx_commerce_newclients.tca.php',
+		'dynamicConfigFile' => PATH_TXCOMMERCE . 'Configuration/TCA/Newclients.php',
 		'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL . 'newclients.gif',
 	),
-	'feInterface' => Array (
+	'feInterface' => array(
 		'fe_admin_fieldList' => 'year, month, day, dow, hour, registration',
 	)
 );
 
-$GLOBALS['TCA']['tx_commerce_manufacturer'] = Array (
-	'ctrl' => Array (
-		'title' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_manufacturer',
+$GLOBALS['TCA']['tx_commerce_manufacturer'] = array(
+	'ctrl' => array(
+		'title' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_manufacturer',
 		'label' => 'title',
 		'tstamp' => 'tstamp',
 		'crdate' => 'crdate',
@@ -723,21 +723,21 @@ $GLOBALS['TCA']['tx_commerce_manufacturer'] = Array (
 		'versioning' => '1',
 		'default_sortby' => 'ORDER BY title,uid',
 		'delete' => 'deleted',
-		'enablecolumns' => Array (
+		'enablecolumns' => array(
 			'disabled' => 'hidden',
 		),
-		'dynamicConfigFile' => PATH_TXCOMMERCE . 'tcafiles/tx_commerce_manufacturer.tca.php',
+		'dynamicConfigFile' => PATH_TXCOMMERCE . 'Configuration/TCA/Manufacturer.php',
 		'dividers2tabs' => '1',
 		'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL . 'manufacturer.gif',
 	),
-	'feInterface' => Array (
+	'feInterface' => array(
 		'fe_admin_fieldList' => 'hidden, title, street, number, zip, city, country, phone, fax, email, internet, contactperson, logo',
 	)
 );
 
 $GLOBALS['TCA']['tx_commerce_supplier'] = Array(
-	'ctrl' => Array (
-		'title' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_supplier',
+	'ctrl' => array(
+		'title' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_supplier',
 		'label' => 'title',
 		'tstamp' => 'tstamp',
 		'crdate' => 'crdate',
@@ -745,14 +745,14 @@ $GLOBALS['TCA']['tx_commerce_supplier'] = Array(
 		'versioning' => '1',
 		'default_sortby' => 'ORDER BY title,uid',
 		'delete' => 'deleted',
-		'enablecolumns' => Array (
+		'enablecolumns' => array(
 			'disabled' => 'hidden',
 		),
-		'dynamicConfigFile' => PATH_TXCOMMERCE . 'tcafiles/tx_commerce_supplier.tca.php',
+		'dynamicConfigFile' => PATH_TXCOMMERCE . 'Configuration/TCA/Supplier.php',
 		'dividers2tabs' => '1',
 		'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL . 'supplier.gif',
 	),
-	'feInterface' => Array (
+	'feInterface' => array(
 		'fe_admin_fieldList' => 'hidden, title, street, number, zip, city, country, phone, fax, email, internet, contactperson, logo',
 	)
 );

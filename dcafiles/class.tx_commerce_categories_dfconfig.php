@@ -2,12 +2,12 @@
 /**
  * Created on 04.11.2008
  * Implements the dynafley configuration for the 'tx_commerce_categories' extension
- * 
+ *
  * @author Erik Frister <efrister@marketing-factory.de>
  */
 class tx_commerce_categories_dfconfig {
 	public $rowChecks = array();
-	
+
 	public $DCA = array(
 		0 => array(
 			'path' => 'tx_commerce_categories/columns/attributes/config/ds/default',
@@ -26,7 +26,7 @@ class tx_commerce_categories_dfconfig {
 					'field_config' => array(
 						1 => array(
 							'name' => 'ct_###uid###',
-							'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce.ct_###title###',
+							'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce.ct_###title###',
 							'config' => array(
 								'type' => 'select',
 								'foreign_table' => 'tx_commerce_attributes',
@@ -67,7 +67,7 @@ class tx_commerce_categories_dfconfig {
 					'field_config' => array(
 						1 => array(
 							'name' => 'ct_###uid###',
-							'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce.ct_###title###',
+							'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce.ct_###title###',
 							'config' => array(
 								'type' => 'select',
 								'foreign_table' => 'tx_commerce_attributes',
@@ -94,7 +94,7 @@ class tx_commerce_categories_dfconfig {
 	);
 
 	public $cleanUpField = 'attributes';
-	
+
 	public $hooks = array();
 }
 

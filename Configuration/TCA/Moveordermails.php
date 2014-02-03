@@ -2,11 +2,11 @@
 /**
  * $Id: tx_commerce_moveordermails.tca.php 459 2006-12-14 18:16:52Z ingo $
  */
- 
+
 if (!defined('TYPO3_MODE')) {
 	die('Access denied.');
 }
- 
+
 $GLOBALS['TCA']['tx_commerce_moveordermails'] = Array(
 	'ctrl' => $GLOBALS['TCA']['tx_commerce_moveordermails']['ctrl'],
 	'interface' => Array(
@@ -38,7 +38,7 @@ $GLOBALS['TCA']['tx_commerce_moveordermails'] = Array(
 				),
 				'foreign_table' => 'tx_commerce_moveordermails',
 				'foreign_table_where' => 'AND tx_commerce_moveordermails.pid=###CURRENT_PID### AND tx_commerce_moveordermails.sys_language_uid IN (-1,0)',
-				
+
 			)
 		),
 		'l18n_diffsource' => Array(
@@ -47,7 +47,7 @@ $GLOBALS['TCA']['tx_commerce_moveordermails'] = Array(
 			)
 		),
 		'hidden' => Array(
-            'exclude' => 1,    
+            'exclude' => 1,
             'label' => 'LLL:EXT:lang/locallang_general.php:LGL.hidden',
 			'config' => Array(
                 'type' => 'check',
@@ -55,7 +55,7 @@ $GLOBALS['TCA']['tx_commerce_moveordermails'] = Array(
             )
         ),
 		'starttime' => Array(
-            'exclude' => 1,    
+            'exclude' => 1,
             'label' => 'LLL:EXT:lang/locallang_general.php:LGL.starttime',
 			'config' => Array(
                 'type' => 'input',
@@ -67,7 +67,7 @@ $GLOBALS['TCA']['tx_commerce_moveordermails'] = Array(
             )
         ),
 		'endtime' => Array(
-            'exclude' => 1,    
+            'exclude' => 1,
             'label' => 'LLL:EXT:lang/locallang_general.php:LGL.endtime',
 			'config' => Array(
                 'type' => 'input',
@@ -97,104 +97,104 @@ $GLOBALS['TCA']['tx_commerce_moveordermails'] = Array(
 				'exclusiveKeys' => '-1,-2',
 				'foreign_table' => 'fe_groups',
 				'foreign_table_where' => 'ORDER BY fe_groups.title',
-			
+
 			)
 		),
 		'name' => Array(
-            'exclude' => 1,       
-            'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_moveordermails.name',        
+            'exclude' => 1,
+            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_moveordermails.name',
 			'config' => Array(
-                'type' => 'input',    
-                'size' => '30',    
+                'type' => 'input',
+                'size' => '30',
                 'eval' => 'required,trim',
             )
         ),
 		'mailkind' => Array(
-            'exclude' => 1,       
-            'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_moveordermails.mailkind',        
+            'exclude' => 1,
+            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_moveordermails.mailkind',
 			'config' => Array(
                 'type' => 'select',
 				'items' => Array(
-					Array('LLL:EXT:commerce/locallang_db.xml:tx_commerce_moveordermails.mailkind.I.0', 0),
-					Array('LLL:EXT:commerce/locallang_db.xml:tx_commerce_moveordermails.mailkind.I.1', 1),
+					Array('LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_moveordermails.mailkind.I.0', 0),
+					Array('LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_moveordermails.mailkind.I.1', 1),
                 ),
-                'size' => 1,    
+                'size' => 1,
                 'maxitems' => 1,
             )
         ),
 		'mailtemplate' => Array(
-            'exclude' => 1,       
-            'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_moveordermails.mailtemplate',        
+            'exclude' => 1,
+            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_moveordermails.mailtemplate',
 			'config' => Array(
                 'type' => 'group',
                 'internal_type' => 'file',
-                'allowed' => '',    
-                'disallowed' => 'php,php3',    
-                'max_size' => $GLOBALS['TYPO3_CONF_VARS']['GFX']['maxFileSize'],  
+                'allowed' => '',
+                'disallowed' => 'php,php3',
+                'max_size' => $GLOBALS['TYPO3_CONF_VARS']['GFX']['maxFileSize'],
                 'uploadfolder' => 'uploads/tx_commerce',
-                'size' => 3,    
+                'size' => 3,
                 'minitems' => 0,
                 'maxitems' => 1,
             )
         ),
 		'htmltemplate' => Array(
-            'exclude' => 1,       
-            'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_moveordermails.htmltemplate',        
+            'exclude' => 1,
+            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_moveordermails.htmltemplate',
 			'config' => Array(
                 'type' => 'group',
                 'internal_type' => 'file',
-                'allowed' => '',    
-                'disallowed' => 'php,php3',    
-                'max_size' => $GLOBALS['TYPO3_CONF_VARS']['GFX']['maxFileSize'],  
+                'allowed' => '',
+                'disallowed' => 'php,php3',
+                'max_size' => $GLOBALS['TYPO3_CONF_VARS']['GFX']['maxFileSize'],
                 'uploadfolder' => 'uploads/tx_commerce',
-                'size' => 3,    
+                'size' => 3,
                 'minitems' => 0,
                 'maxitems' => 1,
             )
         ),
 		'mailcharset' => Array(
-            'exclude' => 1,       
-            'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_moveordermails.mailcharset',        
+            'exclude' => 1,
+            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_moveordermails.mailcharset',
 			'config' => Array(
-                'type' => 'input',    
-                'size' => '30',    
+                'type' => 'input',
+                'size' => '30',
                 'eval' => 'required,trim',
                 'default' => 'utf-8',
             )
-        ),             
+        ),
 		'sendername' => Array(
-            'exclude' => 1,     
-            'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_moveordermails.sendername',        
+            'exclude' => 1,
+            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_moveordermails.sendername',
 			'config' => Array(
-                'type' => 'input',    
-                'size' => '48',    
+                'type' => 'input',
+                'size' => '48',
                 'eval' => 'trim',
             )
         ),
 		'senderemail' => Array(
-            'exclude' => 1,       
-            'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_moveordermails.senderemail',        
+            'exclude' => 1,
+            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_moveordermails.senderemail',
 			'config' => Array(
-                'type' => 'input',    
-                'size' => '48',    
+                'type' => 'input',
+                'size' => '48',
                 'eval' => 'trim',
             )
         ),
 		'otherreceiver' => Array(
-            'exclude' => 1,       
-            'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_moveordermails.otherreceiver',        
+            'exclude' => 1,
+            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_moveordermails.otherreceiver',
 			'config' => Array(
-                'type' => 'input',    
-                'size' => '48',    
+                'type' => 'input',
+                'size' => '48',
                 'eval' => 'trim',
             )
         ),
 		'BCC' => Array(
-            'exclude' => 1,       
-            'label' => 'LLL:EXT:commerce/locallang_db.xml:tx_commerce_moveordermails.BCC',        
+            'exclude' => 1,
+            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_moveordermails.BCC',
 			'config' => Array(
-                'type' => 'input',    
-                'size' => '48',    
+                'type' => 'input',
+                'size' => '48',
                 'eval' => 'trim',
             )
         ),
