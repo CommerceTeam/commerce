@@ -26,7 +26,7 @@
  * Plugin 'addresses' for the 'commerce' extension.
  * This class handles all the address stuff, like creating, editing and deleting.
  */
-class tx_commerce_pi4 extends tx_commerce_pibase {
+class Tx_Commerce_Controller_AddressesController extends tx_commerce_pibase {
 	/**
 	 * Same as class name
 	 *
@@ -1154,6 +1154,8 @@ class tx_commerce_pi4 extends tx_commerce_pibase {
 		$this->formError[$fieldName] = (string)$errorMsg;
 	}
 }
+
+class_alias('Tx_Commerce_Controller_AddressesController', 'tx_commerce_pi4');
 
 if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/pi4/class.tx_commerce_pi4.php']) {
 	/** @noinspection PhpIncludeInspection */

@@ -25,7 +25,7 @@
 /**
  * Plugin 'commerce_invoice' for the 'commerce_invoice' extension.
  */
-class tx_commerce_pi6 extends tx_commerce_pibase {
+class Tx_Commerce_Controller_InvoiceController extends tx_commerce_pibase {
 	/**
 	 * Same as class name
 	 *
@@ -390,6 +390,8 @@ class tx_commerce_pi6 extends tx_commerce_pibase {
 	public function makeArticleView($kind, $articles, $product) {
 	}
 }
+
+class_alias('Tx_Commerce_Controller_InvoiceController', 'tx_commerce_pi6');
 
 if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/pi6/class.tx_commerce_pi6.php']) {
 	/** @noinspection PhpIncludeInspection */

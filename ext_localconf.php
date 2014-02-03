@@ -137,11 +137,11 @@ $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['SYSPRODUCTS']['DELIVERY
 
 
 	// Add frontend plugins to content.default static template
-t3lib_extMgm::addPItoST43(COMMERCE_EXTKEY, 'pi1/class.tx_commerce_pi1.php', '_pi1', 'list_type', 1);
-t3lib_extMgm::addPItoST43(COMMERCE_EXTKEY, 'pi2/class.tx_commerce_pi2.php', '_pi2', 'list_type', 0);
-t3lib_extMgm::addPItoST43(COMMERCE_EXTKEY, 'pi3/class.tx_commerce_pi3.php', '_pi3', 'list_type', 0);
-t3lib_extMgm::addPItoST43(COMMERCE_EXTKEY, 'pi4/class.tx_commerce_pi4.php', '_pi4', 'list_type', 0);
-t3lib_extMgm::addPItoST43(COMMERCE_EXTKEY, 'pi6/class.tx_commerce_pi6.php', '_pi6', 'list_type', 0);
+t3lib_extMgm::addPItoST43(COMMERCE_EXTKEY, 'Classes/Controller/ListController.php', '_pi1', 'list_type', 1);
+t3lib_extMgm::addPItoST43(COMMERCE_EXTKEY, 'Classes/Controller/BasketController.php', '_pi2', 'list_type', 0);
+t3lib_extMgm::addPItoST43(COMMERCE_EXTKEY, 'Classes/Controller/CheckoutController.php', '_pi3', 'list_type', 0);
+t3lib_extMgm::addPItoST43(COMMERCE_EXTKEY, 'Classes/Controller/AddressesController.php', '_pi4', 'list_type', 0);
+t3lib_extMgm::addPItoST43(COMMERCE_EXTKEY, 'Classes/Controller/InvoiceController.php', '_pi6', 'list_type', 0);
 
 
 if (TYPO3_MODE == 'BE') {

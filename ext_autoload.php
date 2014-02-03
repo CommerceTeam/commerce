@@ -5,10 +5,26 @@ $classPath = $extensionPath . 'Classes/';
 
 return array(
 	'tx_commerce_controller_accesscontroller' => $classPath . 'Controller/AccessController.php',
+	'sc_mod_access_perm_index' => $classPath . 'Controller/AccessController.php',
 	'tx_commerce_controller_categoriescontroller' => $classPath . 'Controller/CategoriesController.php',
+	'tx_commerce_categories' => $classPath . 'Controller/CategoriesController.php',
 	'tx_commerce_controller_orderscontroller' => $classPath . 'Controller/OrdersController.php',
+	'tx_commerce_orders' => $classPath . 'Controller/OrdersController.php',
 	'tx_commerce_controller_statisticcontroller' => $classPath . 'Controller/StatisticController.php',
+	'tx_commerce_statistic' => $classPath . 'Controller/StatisticController.php',
 	'tx_commerce_controller_systemdatacontroller' => $classPath . 'Controller/SystemdataController.php',
+	'tx_commerce_systemdata' => $classPath . 'Controller/SystemdataController.php',
+
+	'tx_commerce_controller_addressescontroller' => $classPath . 'Controller/AddressesController.php',
+	'tx_commerce_pi4' => $classPath . 'Controller/AddressesController.php',
+	'tx_commerce_controller_basketcontroller' => $classPath . 'Controller/BasketController.php',
+	'tx_commerce_pi2' => $classPath . 'Controller/BasketController.php',
+	'tx_commerce_controller_checkoutcontroller' => $classPath . 'Controller/CheckoutController.php',
+	'tx_commerce_pi3' => $classPath . 'Controller/CheckoutController.php',
+	'tx_commerce_controller_invoicecontroller' => $classPath . 'Controller/InvoiceController.php',
+	'tx_commerce_pi6' => $classPath . 'Controller/InvoiceController.php',
+	'tx_commerce_controller_listcontroller' => $classPath . 'Controller/ListController.php',
+	'tx_commerce_pi1' => $classPath . 'Controller/ListController.php',
 
 	'tx_commerce_dao_addressdao' => $classPath . 'Dao/AddressDao.php',
 	'tx_commerce_dao_addressdaomapper' => $classPath . 'Dao/AddressDaoMapper.php',
@@ -70,12 +86,6 @@ return array(
 	'tx_commerce_pibase' => $extensionPath . 'lib/class.tx_commerce_pibase.php',
 	'tx_commerce_product' => $extensionPath . 'lib/class.tx_commerce_product.php',
 	'tx_commerce_statistics' => $extensionPath . 'lib/class.tx_commerce_statistics.php',
-
-	'tx_commerce_pi1' => $extensionPath . 'pi1/class.tx_commerce_pi1.php',
-	'tx_commerce_pi2' => $extensionPath . 'pi2/class.tx_commerce_pi2.php',
-	'tx_commerce_pi3' => $extensionPath . 'pi3/class.tx_commerce_pi3.php',
-	'tx_commerce_pi4' => $extensionPath . 'pi4/class.tx_commerce_pi4.php',
-	'tx_commerce_pi6' => $extensionPath . 'pi6/class.tx_commerce_pi6.php',
 
 	'tx_commerce_categorytree' => $extensionPath . 'treelib/class.tx_commerce_categorytree.php',
 	'tx_commerce_categorymounts' => $extensionPath . 'treelib/class.tx_commerce_categorymounts.php',

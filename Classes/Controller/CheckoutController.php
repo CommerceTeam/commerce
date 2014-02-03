@@ -30,7 +30,7 @@
  * provides several methods for displaying forms, checking data and
  * storing data.
  */
-class tx_commerce_pi3 extends tx_commerce_pibase {
+class Tx_Commerce_Controller_CheckoutController extends tx_commerce_pibase {
 	/**
 	 * Same as class name
 	 *
@@ -2695,6 +2695,8 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 		}
 	}
 }
+
+class_alias('Tx_Commerce_Controller_CheckoutController', 'tx_commerce_pi3');
 
 if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/pi3/class.tx_commerce_pi3.php']) {
 	/** @noinspection PhpIncludeInspection */
