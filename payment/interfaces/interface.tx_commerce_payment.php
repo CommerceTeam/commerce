@@ -36,10 +36,10 @@ interface tx_commerce_payment {
 	/**
 	 * Constructor gets parent object
 	 *
-	 * @param tx_commerce_pi3 $pObj
+	 * @param Tx_Commerce_Controller_CheckoutController $pObj
 	 * @return self
 	 */
-	public function __construct(tx_commerce_pi3 $pObj);
+	public function __construct(Tx_Commerce_Controller_CheckoutController $pObj);
 
 	/**
 	 * Get parent object

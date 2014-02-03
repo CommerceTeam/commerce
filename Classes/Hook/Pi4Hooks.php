@@ -36,7 +36,7 @@
 class Tx_Commerce_Hook_Pi4Hooks {
 	/**
 	* deleteAddress()
-	* this function is called by the Hook in tx_commerce_pi4 before processing delete address operations
+	* this function is called by the Hook in Tx_Commerce_Controller_AddressesController before processing delete address operations
 	* return false to permit delete operation
 	*
 	* @param integer $uid: reference to the incoming fields
@@ -49,7 +49,7 @@ class Tx_Commerce_Hook_Pi4Hooks {
 
 	/**
 	* beforeAddressSave()
-	* this function is called by the Hook in tx_commerce_pi4 before processing insert address operations
+	* this function is called by the Hook in Tx_Commerce_Controller_AddressesController before processing insert address operations
 	*
 	* @param array $fieldArray: reference to the incoming fields
 	* @param object $pObj: page Object reference
@@ -60,7 +60,7 @@ class Tx_Commerce_Hook_Pi4Hooks {
 
 	/**
 	 * afterAddressSave()
-	 * this function is called by the Hook in tx_commerce_pi4 after processing insert address operations
+	 * this function is called by the Hook in Tx_Commerce_Controller_AddressesController after processing insert address operations
 	 *
 	 * @param integer $uid
 	 * @param array $fieldArray: reference to the incoming fields
@@ -74,7 +74,7 @@ class Tx_Commerce_Hook_Pi4Hooks {
 
 	/**
 	 * beforeAddressEdit()
-	 * this function is called by the Hook in tx_commerce_pi4 before processing update address operations
+	 * this function is called by the Hook in Tx_Commerce_Controller_AddressesController before processing update address operations
 	 *
 	 * @param integer $uid
 	 * @param array $fieldArray: reference to the incoming fields
@@ -86,7 +86,7 @@ class Tx_Commerce_Hook_Pi4Hooks {
 
 	/**
 	 * afterAddressEdit()
-	 * this function is called by the Hook in tx_commerce_pi4 before processing update address operations
+	 * this function is called by the Hook in Tx_Commerce_Controller_AddressesController before processing update address operations
 	 *
 	 * @param integer $uid
 	 * @param array $fieldArray: reference to the incoming fields

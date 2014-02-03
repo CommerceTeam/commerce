@@ -92,7 +92,7 @@ class tx_commerce_payment_debit extends tx_commerce_payment_abstract {
 	 */
 	public function proofData(array $formData = array()) {
 			// If formData is empty we know that this is the very first
-			// call from tx_commerce_pi3->handlePayment and at this time
+			// call from Tx_Commerce_Controller_CheckoutController->handlePayment and at this time
 			// there can't be form data.
 		if (empty($formData)) {
 			return FALSE;

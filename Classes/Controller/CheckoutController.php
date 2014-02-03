@@ -503,8 +503,8 @@ class Tx_Commerce_Controller_CheckoutController extends tx_commerce_pibase {
 			$amConf['addressPid'] = $this->conf['addressPid'];
 
 				// Make an instance of pi4 (address management)
-			/** @var tx_commerce_pi4 $addressMgm */
-			$addressMgm = t3lib_div::makeInstance('tx_commerce_pi4');
+			/** @var Tx_Commerce_Controller_AddressesController $addressMgm */
+			$addressMgm = t3lib_div::makeInstance('Tx_Commerce_Controller_AddressesController');
 			$addressMgm->cObj = $this->cObj;
 			$addressMgm->templateCode = $this->templateCode;
 			$addressMgm->init($amConf, FALSE);
@@ -664,7 +664,7 @@ class Tx_Commerce_Controller_CheckoutController extends tx_commerce_pibase {
 			$amConf['addressPid'] = $this->conf['addressPid'];
 
 				// Make an instance of pi4 (address management)
-			$addressMgm = t3lib_div::makeInstance('tx_commerce_pi4');
+			$addressMgm = t3lib_div::makeInstance('Tx_Commerce_Controller_AddressesController');
 			$addressMgm->cObj = $this->cObj;
 			$addressMgm->templateCode = $this->templateCode;
 			$addressMgm->init($amConf, FALSE);
@@ -2045,8 +2045,8 @@ class Tx_Commerce_Controller_CheckoutController extends tx_commerce_pibase {
 			}
 
 			if ($userMail != '' && t3lib_div::validEmail($userMail)) {
-				/** @var $userMailObj tx_commerce_pi3 */
-				$userMailObj = t3lib_div::makeInstance('tx_commerce_pi3');
+				/** @var $userMailObj Tx_Commerce_Controller_CheckoutController */
+				$userMailObj = t3lib_div::makeInstance('Tx_Commerce_Controller_CheckoutController');
 				$userMailObj->conf = $this->conf;
 				$userMailObj->pi_setPiVarDefaults();
 				$userMailObj->cObj = $this->cObj;
@@ -2189,8 +2189,8 @@ class Tx_Commerce_Controller_CheckoutController extends tx_commerce_pibase {
 		}
 
 		if ($this->conf['adminmail.']['from'] || $userMail) {
-			/** @var $adminMailObj tx_commerce_pi3 */
-			$adminMailObj = t3lib_div::makeInstance('tx_commerce_pi3');
+			/** @var $adminMailObj Tx_Commerce_Controller_CheckoutController */
+			$adminMailObj = t3lib_div::makeInstance('Tx_Commerce_Controller_CheckoutController');
 			$adminMailObj->conf = $this->conf;
 			$adminMailObj->pi_setPiVarDefaults();
 			$adminMailObj->cObj = $this->cObj;
@@ -2698,9 +2698,9 @@ class Tx_Commerce_Controller_CheckoutController extends tx_commerce_pibase {
 
 class_alias('Tx_Commerce_Controller_CheckoutController', 'tx_commerce_pi3');
 
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/pi3/class.tx_commerce_pi3.php']) {
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Controller/CheckoutController.php']) {
 	/** @noinspection PhpIncludeInspection */
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/pi3/class.tx_commerce_pi3.php']);
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Controller/CheckoutController.php']);
 }
 
 ?>

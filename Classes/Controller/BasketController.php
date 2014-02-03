@@ -996,9 +996,9 @@ class Tx_Commerce_Controller_BasketController extends tx_commerce_pibase {
 
 class_alias('Tx_Commerce_Controller_BasketController', 'tx_commerce_pi2');
 
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/pi2/class.tx_commerce_pi2.php']) {
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Controller/BasketController.php']) {
 	/** @noinspection PhpIncludeInspection */
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/pi2/class.tx_commerce_pi2.php']);
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Controller/BasketController.php']);
 }
 
 ?>

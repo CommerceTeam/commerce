@@ -115,8 +115,8 @@ class Tx_Commerce_Controller_AddressesController extends tx_commerce_pibase {
 					$this->pi_getPageLink((int)$this->piVars['backpid'],
 					'',
 					array(
-						'tx_commerce_pi3[addressType]' => (int)$this->piVars['addressType'],
-						$this->prefixId . '[addressid]' => (int)$this->piVars['addressid'])
+						'tx_commerce_pi3[addressType]' => (int) $this->piVars['addressType'],
+						$this->prefixId . '[addressid]' => (int) $this->piVars['addressid'])
 					)
 				)
 			);
@@ -1157,9 +1157,9 @@ class Tx_Commerce_Controller_AddressesController extends tx_commerce_pibase {
 
 class_alias('Tx_Commerce_Controller_AddressesController', 'tx_commerce_pi4');
 
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/pi4/class.tx_commerce_pi4.php']) {
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Controller/AddressesController.php']) {
 	/** @noinspection PhpIncludeInspection */
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/pi4/class.tx_commerce_pi4.php']);
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Controller/AddressesController.php']);
 }
 
 ?>

@@ -37,7 +37,8 @@ abstract class tx_commerce_payment_abstract implements tx_commerce_payment {
 	public $errorMessages = array();
 
 	/**
-	 * @var tx_commerce_pi3 Reference to parent object, usually tx_commerce_pi2 or tx_commerce_pi3
+	 * @var Tx_Commerce_Controller_CheckoutController Reference to parent object, usually Tx_Commerce_Controller_BasketController
+	 * 		or Tx_Commerce_Controller_CheckoutController
 	 */
 	protected $pObj = NULL;
 
@@ -60,10 +61,10 @@ abstract class tx_commerce_payment_abstract implements tx_commerce_payment {
 	 * Default constructor
 	 *
 	 * @throws Exception If type was not set or criteria are not valid
-	 * @param tx_commerce_pi3 $pObj Parent object
+	 * @param Tx_Commerce_Controller_CheckoutController $pObj Parent object
 	 * @return self
 	 */
-	public function __construct(tx_commerce_pi3 $pObj) {
+	public function __construct(Tx_Commerce_Controller_CheckoutController $pObj) {
 		if (!strlen($this->type) > 0) {
 			throw new Exception(
 				'$type not set.',
@@ -97,7 +98,7 @@ abstract class tx_commerce_payment_abstract implements tx_commerce_payment {
 	/**
 	 * Get parent object
 	 *
-	 * @return tx_commerce_pi3 Parent object instance
+	 * @return Tx_Commerce_Controller_CheckoutController Parent object instance
 	 */
 	public function getPObj() {
 		return $this->pObj;

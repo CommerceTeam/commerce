@@ -842,9 +842,9 @@ class Tx_Commerce_Controller_ListController extends tx_commerce_pibase {
 
 class_alias('Tx_Commerce_Controller_ListController', 'tx_commerce_pi1');
 
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/pi1/class.tx_commerce_pi1.php']) {
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Controller/ListController.php']) {
 	/** @noinspection PhpIncludeInspection */
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/pi1/class.tx_commerce_pi1.php']);
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Controller/ListController.php']);
 }
 
 ?>
