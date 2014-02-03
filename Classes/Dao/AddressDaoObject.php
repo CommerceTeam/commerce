@@ -82,9 +82,9 @@ class Tx_Commerce_Dao_AddressDaoObject extends Tx_Commerce_Dao_BasicDaoObject {
 	}
 }
 
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Dao/class.address_object.php']) {
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Dao/AddressDaoObject.php']) {
 	/** @noinspection PhpIncludeInspection */
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Dao/class.address_object.php']);
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Dao/AddressDaoObject.php']);
 }
 
 ?>

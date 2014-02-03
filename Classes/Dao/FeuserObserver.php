@@ -100,9 +100,9 @@ class Tx_Commerce_Dao_FeuserObserver {
 	}
 }
 
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Dao/class.feusers_observer.php']) {
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Dao/FeuserObserver.php']) {
 	/** @noinspection PhpIncludeInspection */
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Dao/class.feusers_observer.php']);
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Dao/FeuserObserver.php']);
 }
 
 ?>

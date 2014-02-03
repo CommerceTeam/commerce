@@ -4,10 +4,16 @@
 		<description/>
 		<type>database</type>
 		<csh_table/>
-		<fileId>EXT:commerce/locallang_be.xml</fileId>
+		<fileId>EXT:commerce/Resources/Private/Language/locallang_be.xml</fileId>
 	</meta>
 	<data type="array">
 		<languageKey index="default" type="array">
+			<label index="tx_commerce_task_statistictask.name">Commerce Statistics</label>
+			<label index="tx_commerce_task_statistictask.description">Aggregate statistics</label>
+			<label index="tx_commerce_task_statistictask.selectAggregation">Select aggregation</label>
+			<label index="tx_commerce_task_statistictask.incrementalAggregation">Incremental aggregation</label>
+			<label index="tx_commerce_task_statistictask.completeAggregation">Complete aggregation</label>
+
 			<label index="order_view.order_status">Order status</label>
 			<label index="order_view.items.article_list">Article list</label>
 			<label index="order_view.items.print_invoice">Print Invoice</label>

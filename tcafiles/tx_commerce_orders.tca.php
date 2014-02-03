@@ -196,8 +196,8 @@ $GLOBALS['TCA']['tx_commerce_orders'] = Array(
 			'config' => array(
 				'type' => 'select',
 				'items' => Array(
-					Array('LLL:EXT:commerce/locallang_be.xml:no', 0),
-					Array('LLL:EXT:commerce/locallang_be.xml:yes', 1)
+					Array('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:no', 0),
+					Array('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:yes', 1)
 				)
 			),
 		),

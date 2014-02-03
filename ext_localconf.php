@@ -226,6 +226,15 @@ if (TYPO3_MODE == 'BE') {
 		PATH_TXCOMMERCE . 'Classes/Cli/Statistic.php',
 		'_CLI_commerce'
 	);
+
+		// Add statistic task
+	/** @noinspection PhpUndefinedVariableInspection */
+	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['Tx_Commerce_Task_StatisticTask'] = array(
+		'extension' => $_EXTKEY,
+		'title' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang_be.xml:tx_commerce_task_statistictask.name',
+		'description' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang_be.xml:tx_commerce_task_statistictask.description',
+		'additionalFields' => 'Tx_Commerce_Task_StatisticTaskAdditionalFieldProvider',
+	);
 }
 
 	// Register dynaflex dca files

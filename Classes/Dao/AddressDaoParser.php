@@ -30,9 +30,9 @@
 class Tx_Commerce_Dao_AddressDaoParser extends Tx_Commerce_Dao_BasicDaoParser {
 }
 
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Dao/AddressDaoParser.php']) {
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Dao/AddressDaoParser.php']) {
 	/** @noinspection PhpIncludeInspection */
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Dao/AddressDaoParser.php']);
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Dao/AddressDaoParser.php']);
 }
 
 ?>

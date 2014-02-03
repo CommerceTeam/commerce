@@ -44,9 +44,9 @@ class Tx_Commerce_Dao_AddressDaoMapper extends Tx_Commerce_Dao_BasicDaoMapper {
 	}
 }
 
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Dao/AddressDaoMapper.php']) {
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Dao/AddressDaoMapper.php']) {
 	/** @noinspection PhpIncludeInspection */
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Dao/AddressDaoMapper.php']);
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Dao/AddressDaoMapper.php']);
 }
 
 ?>

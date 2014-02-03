@@ -62,7 +62,7 @@ if (TYPO3_MODE == 'BE') {
 		$ICON_TYPES['commerce'] = '../typo3conf/ext/commerce/res/icons/table/commerce_folder.gif';
 	}
 
-	$TCA['pages']['columns']['module']['config']['items'][] = Array('LLL:EXT:commerce/locallang_be.xml:commerce', 'commerce');
+	$TCA['pages']['columns']['module']['config']['items'][] = Array('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:commerce', 'commerce');
 
 
 		// Add default User TS config
@@ -116,7 +116,6 @@ $GLOBALS['TBE_MODULES_EXT']['xMOD_alt_clickmenu']['extendCMclasses'][] = array(
 
 t3lib_extMgm::addToInsertRecords('tx_commerce_categories');
 t3lib_extMgm::addToInsertRecords('tx_commerce_products');
-
 
 
 $tempColumns = Array (

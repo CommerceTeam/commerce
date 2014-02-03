@@ -51,7 +51,7 @@ class tx_commerce_pi1_wizicon {
 	 * @return array
 	 */
 	protected function includeLocalLang() {
-		$llFile = t3lib_extMgm::extPath('commerce') . 'locallang_be.xml';
+		$llFile = t3lib_extMgm::extPath('commerce') . 'Resources/Private/Language/locallang_be.xml';
 		$LOCAL_LANG = t3lib_div::readLLXMLfile($llFile, $GLOBALS['LANG']->lang);
 
 		return $LOCAL_LANG;

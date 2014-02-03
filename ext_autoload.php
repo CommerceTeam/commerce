@@ -4,7 +4,8 @@ $extensionPath = t3lib_extMgm::extPath('commerce');
 $classPath = $extensionPath . 'Classes/';
 
 return array(
-	'tx_commerce_cli' => $extensionPath . 'cli/Statistic.php',
+	'tx_commerce_task_statistictask' => $classPath . 'Task/StatisticTask.php',
+	'tx_commerce_task_statistictaskadditionalfieldprovider' => $classPath . 'Task/StatisticTaskAdditionalFieldProvider.php',
 
 	'tx_commerce_dao_addressdao' => $classPath . 'Dao/AddressDao.php',
 	'tx_commerce_dao_addressdaomapper' => $classPath . 'Dao/AddressDaoMapper.php',
