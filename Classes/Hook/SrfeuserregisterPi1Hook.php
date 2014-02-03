@@ -32,7 +32,7 @@
  *
  * This class handles frontend feuser updates
  */
-class tx_srfeuserregister_commerce_hooksHandler {
+class Tx_Commerce_Hook_SrfeuserregisterPi1Hook {
 	/**
 	 * after save create
 	 *
@@ -60,9 +60,9 @@ class tx_srfeuserregister_commerce_hooksHandler {
 	}
 }
 
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Hook/class.tx_srfeuserregister_commerce_hooksHandler.php']) {
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Hook/SrfeuserregisterPi1Hook.php']) {
 	/** @noinspection PhpIncludeInspection */
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Hook/class.tx_srfeuserregister_commerce_hooksHandler.php']);
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Hook/SrfeuserregisterPi1Hook.php']);
 }
 
 ?>

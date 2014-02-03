@@ -33,7 +33,7 @@
 *
 * This class handles backend updates
 */
-class tx_commerce_pi4hooksHandler {
+class Tx_Commerce_Hook_Pi4Hooks {
 	/**
 	* deleteAddress()
 	* this function is called by the Hook in tx_commerce_pi4 before processing delete address operations
@@ -123,9 +123,9 @@ class tx_commerce_pi4hooksHandler {
 	}
 }
 
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Hook/class.tx_commerce_pi4hooksHandler.php']) {
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Hook/Pi4Hooks.php']) {
 	/** @noinspection PhpIncludeInspection */
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Hook/class.tx_commerce_pi4hooksHandler.php']);
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Hook/Pi4Hooks.php']);
 }
 
 ?>
