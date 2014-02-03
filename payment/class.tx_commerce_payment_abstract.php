@@ -37,7 +37,7 @@ abstract class tx_commerce_payment_abstract implements tx_commerce_payment {
 	public $errorMessages = array();
 
 	/**
-	 * @var tslib_pibase Reference to parent object, usually tx_commerce_pi2 or tx_commerce_pi3
+	 * @var tx_commerce_pi3 Reference to parent object, usually tx_commerce_pi2 or tx_commerce_pi3
 	 */
 	protected $pObj = NULL;
 
@@ -60,9 +60,10 @@ abstract class tx_commerce_payment_abstract implements tx_commerce_payment {
 	 * Default constructor
 	 *
 	 * @throws Exception If type was not set or criteria are not valid
-	 * @param tx_commerce_pibase $pObj Parent object
+	 * @param tx_commerce_pi3 $pObj Parent object
+	 * @return self
 	 */
-	public function __construct(tx_commerce_pibase $pObj) {
+	public function __construct(tx_commerce_pi3 $pObj) {
 		if (!strlen($this->type) > 0) {
 			throw new Exception(
 				'$type not set.',
@@ -96,11 +97,10 @@ abstract class tx_commerce_payment_abstract implements tx_commerce_payment {
 	/**
 	 * Get parent object
 	 *
-	 * @return tslib_pibase Parent object instance
+	 * @return tx_commerce_pi3 Parent object instance
 	 */
 	public function getPObj() {
-		$retPObj = &$this->pObj;
-		return $retPObj;
+		return $this->pObj;
 	}
 
 	/**
@@ -130,7 +130,7 @@ abstract class tx_commerce_payment_abstract implements tx_commerce_payment {
 	/**
 	 * Get payment provider
 	 *
-	 * @return object
+	 * @return tx_commerce_payment_provider
 	 */
 	public function getProvider() {
 		return $this->provider;
@@ -167,7 +167,7 @@ abstract class tx_commerce_payment_abstract implements tx_commerce_payment {
 	/**
 	 * Determine if additional data is needed
 	 *
-	 * @return bool True if additional data is needed
+	 * @return boolean True if additional data is needed
 	 */
 	public function needAdditionalData() {
 		$result = FALSE;
@@ -194,7 +194,7 @@ abstract class tx_commerce_payment_abstract implements tx_commerce_payment {
 	 * Check if provided data is ok
 	 *
 	 * @param array $formData Current form data
-	 * @return bool TRUE if data is ok
+	 * @return boolean TRUE if data is ok
 	 */
 	public function proofData(array $formData = array()) {
 		$result = TRUE;
@@ -210,7 +210,7 @@ abstract class tx_commerce_payment_abstract implements tx_commerce_payment {
 	 * @param array $config Current configuration
 	 * @param array $session Session data
 	 * @param tx_commerce_basket $basket Basket object
-	 * @return bool True is finishing order is allowed
+	 * @return boolean True is finishing order is allowed
 	 */
 	public function finishingFunction(array $config = array(), array $session = array(), tx_commerce_basket $basket = NULL) {
 		$result = TRUE;

@@ -27,12 +27,8 @@
 
 /**
  * Payment provider interface
- *
- * @package commerce
- * @author Christian Kuhn <lolli@schwarzbu.ch>
  */
 interface tx_commerce_payment_provider {
-
 	/**
 	 * Constructor gets parent object
 	 *
@@ -92,7 +88,7 @@ interface tx_commerce_payment_provider {
 	 * @param tx_commerce_basket $basket Basket object
 	 * @return bool True is finishing order is allowed
 	 */
-	public function finishingFunction(array $config= array(), array $session = array(), tx_commerce_basket $basket = NULL);
+	public function finishingFunction(array $config = array(), array $session = array(), tx_commerce_basket $basket = NULL);
 
 	/**
 	 * Method called in finishIt function
@@ -119,4 +115,5 @@ interface tx_commerce_payment_provider {
 	 */
 	public function getLastError();
 }
+
 ?>

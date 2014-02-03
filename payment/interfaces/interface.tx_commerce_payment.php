@@ -36,9 +36,10 @@ interface tx_commerce_payment {
 	/**
 	 * Constructor gets parent object
 	 *
-	 * @param tx_commerce_pibase $pObj
+	 * @param tx_commerce_pi3 $pObj
+	 * @return self
 	 */
-	public function __construct(tx_commerce_pibase $pObj);
+	public function __construct(tx_commerce_pi3 $pObj);
 
 	/**
 	 * Get parent object
@@ -71,7 +72,7 @@ interface tx_commerce_payment {
 	/**
 	 * Determine if additional data is needed
 	 *
-	 * @return bool True if additional data is needed
+	 * @return boolean True if additional data is needed
 	 */
 	public function needAdditionalData();
 
@@ -86,7 +87,7 @@ interface tx_commerce_payment {
 	 * Check if provided data is ok
 	 *
 	 * @param array $formData Current form data
-	 * @return bool TRUE if data is ok
+	 * @return boolean TRUE if data is ok
 	 */
 	public function proofData(array $formData = array());
 
@@ -96,9 +97,9 @@ interface tx_commerce_payment {
 	 * @param array $config Current configuration
 	 * @param array $session Session data
 	 * @param tx_commerce_basket $basket Basket object
-	 * @return bool TRUE if finishing order is allowed
+	 * @return boolean TRUE if finishing order is allowed
 	 */
-	public function finishingFunction(array $config= array(), array $session = array(), tx_commerce_basket $basket = NULL);
+	public function finishingFunction(array $config = array(), array $session = array(), tx_commerce_basket $basket = NULL);
 
 	/**
 	 * Method called in finishIt function
@@ -125,4 +126,5 @@ interface tx_commerce_payment {
 	 */
 	public function getLastError();
 }
+
 ?>

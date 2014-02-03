@@ -2,7 +2,7 @@
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2005 - 2011 Thomas Hempel (thomas@work.de)
+ *  (c) 2005 - 2011 Thomas Hempel <thomas@work.de>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -22,12 +22,8 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-/*
+/**
  * Credit card payment implementation
- *
- * @package commerce
- * @author Volker Graubaum <vg@e-netconsulting.de>
- * @author Thomas Hempel <thomas@work.de>
  */
 class tx_commerce_payment_creditcard extends tx_commerce_payment_abstract {
 
@@ -42,14 +38,24 @@ class tx_commerce_payment_creditcard extends tx_commerce_payment_abstract {
 	protected $type = 'creditcard';
 
 	/**
+	 * @var string
+	 */
+	protected $scriptRelPath;
+
+	/**
+	 * @var array
+	 */
+	protected $formError = array();
+
+	/**
 	 * Determine if additional data is needed
 	 *
-	 * @return bool True if additional data is needed
+	 * @return boolean True if additional data is needed
 	 */
 	public function needAdditionalData() {
-		$basePath = t3lib_extMgm::extPath($this->pObj->extKey) . dirname($this->scriptRelPath) . 'payment/locallang_creditcard.xml';
+		$basePath = PATH_TXCOMMERCE . 'Resources/Private/Language/locallang_creditcard.xml';
 
-		foreach($this->pObj->LOCAL_LANG as $llKey => $llData) {
+		foreach ($this->pObj->LOCAL_LANG as $llKey => $llData) {
 			$newLL = t3lib_div::readLLfile($basePath, $llKey);
 			$this->LOCAL_LANG[$llKey] = $newLL[$llKey];
 		}
@@ -70,7 +76,7 @@ class tx_commerce_payment_creditcard extends tx_commerce_payment_abstract {
 	 * Check if provided data is ok
 	 *
 	 * @param array $formData Current form data
-	 * @return bool TRUE if data is ok
+	 * @return boolean TRUE if data is ok
 	 */
 	public function proofData(array $formData = array()) {
 			/** @var $ccvs tx_commerce_payment_Ccvs */
@@ -81,12 +87,12 @@ class tx_commerce_payment_creditcard extends tx_commerce_payment_abstract {
 		$config['sourceFields.'] = $this->getAdditionalFieldsConfig($this->pObj);
 
 		foreach ($this->pObj->MYSESSION['payment'] as $name => $value) {
-			if ($config['sourceFields.'][$name .'.']['mandatory'] == 1 && strlen($value) == 0) {
+			if ($config['sourceFields.'][$name . '.']['mandatory'] == 1 && strlen($value) == 0) {
 				$this->formError[$name] = $this->pObj->pi_getLL('error_field_mandatory');
 				$result = FALSE;
 			}
 
-			$eval = explode(',', $config['sourceFields.'][$name .'.']['eval']);
+			$eval = explode(',', $config['sourceFields.'][$name . '.']['eval']);
 			foreach ($eval as $method) {
 				$method = explode('_', $method);
 				switch (strtolower($method[0])) {
@@ -95,46 +101,52 @@ class tx_commerce_payment_creditcard extends tx_commerce_payment_abstract {
 							$this->formError[$name] = $this->pObj->pi_getLL('error_field_email');
 							$result = FALSE;
 						}
-						break;
+					break;
+
 					case 'username':
-						if($GLOBALS['TSFE']->loginUser) {
+						if ($GLOBALS['TSFE']->loginUser) {
 							break;
 						}
 						if (!$this->pObj->checkUserName($value)) {
 							$this->formError[$name] = $this->pObj->pi_getLL('error_field_username');
 							$result = FALSE;
 						}
-						break;
+					break;
+
 					case 'string':
 						if (!is_string($value)) {
 							$this->formError[$name] = $this->pObj->pi_getLL('error_field_string');
 							$result = FALSE;
 						}
-						break;
+					break;
+
 					case 'int':
 						if (!is_integer($value)) {
 							$this->formError[$name] = $this->pObj->pi_getLL('error_field_int');
 							$result = FALSE;
 						}
-						break;
+					break;
+
 					case 'min':
 						if (strlen((string)$value) < intval($method[1])) {
 							$this->formError[$name] = $this->pObj->pi_getLL('error_field_min');
 							$result = FALSE;
 						}
-						break;
+					break;
+
 					case 'max':
 						if (strlen((string)$value) > intval($method[1])) {
 							$this->formError[$name] = $this->pObj->pi_getLL('error_field_max');
 							$result = FALSE;
 						}
-						break;
+					break;
+
 					case 'alpha':
 						if (preg_match('/[0-9]/', $value) === 1) {
 							$this->formError[$name] = $this->pObj->pi_getLL('error_field_alpha');
 							$result = FALSE;
 						}
-						break;
+					break;
 				}
 			}
 		}
@@ -149,7 +161,9 @@ class tx_commerce_payment_creditcard extends tx_commerce_payment_abstract {
 	}
 }
 
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']["ext/commerce/payment/class.tx_commerce_payment_creditcard.php"])	{
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']["ext/commerce/payment/class.tx_commerce_payment_creditcard.php"]);
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/payment/class.tx_commerce_payment_creditcard.php']) {
+	/** @noinspection PhpIncludeInspection */
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/payment/class.tx_commerce_payment_creditcard.php']);
 }
+
 ?>

@@ -27,12 +27,8 @@
 
 /**
  * Payment criterion interface
- *
- * @package commerce
- * @author Christian Kuhn <lolli@schwarzbu.ch>
  */
 interface tx_commerce_payment_criterion {
-
 	/**
 	 * Constructor
 	 *
@@ -48,4 +44,5 @@ interface tx_commerce_payment_criterion {
 	 */
 	public function isAllowed();
 }
+
 ?>

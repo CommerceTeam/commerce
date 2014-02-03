@@ -1,35 +1,32 @@
 <?php
 /***************************************************************
-*  Copyright notice
-*
-*  (c) 2006 - 2011 Ingo Schmitt <is@marketing-factory.de>
-*  All rights reserved
-*
-*  This script is part of the TYPO3 project. The TYPO3 project is
-*  free software; you can redistribute it and/or modify
-*  it under the terms of the GNU General Public License as published by
-*  the Free Software Foundation; either version 2 of the License, or
-*  (at your option) any later version.
-*
-*  The GNU General Public License can be found at
-*  http://www.gnu.org/copyleft/gpl.html.
-*
-*  This script is distributed in the hope that it will be useful,
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*  GNU General Public License for more details.
-*
-*  This copyright notice MUST APPEAR in all copies of the script!
-***************************************************************/
+ *  Copyright notice
+ *
+ *  (c) 2006 - 2011 Ingo Schmitt <is@marketing-factory.de>
+ *  All rights reserved
+ *
+ *  This script is part of the TYPO3 project. The TYPO3 project is
+ *  free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  The GNU General Public License can be found at
+ *  http://www.gnu.org/copyleft/gpl.html.
+ *
+ *  This script is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  This copyright notice MUST APPEAR in all copies of the script!
+ ***************************************************************/
+
 /**
  * Base configuration settings for commerce.
  * This file will be merged to typo3conf/temp_CACHED_hash_ext_localconf.php
  * together with all other ext_localconf.php files of other extensions.
  * The code in here will be executed very early on every frontend and backend access.
- *
- * @author Ingo Schmitt <is@marketing-factory.de>
- *
- * @TODO Check which parts could be moved to ext_tables.php to only include in BE processing
  */
 
 if (!defined('TYPO3_MODE')) {
@@ -37,52 +34,51 @@ if (!defined('TYPO3_MODE')) {
 }
 
 	// Definition of some helpfull constants
-if (!defined('COMMERCE_EXTkey')) {
-	/** @noinspection PhpUndefinedVariableInspection */
-	define('COMMERCE_EXTkey', $_EXTKEY);
-}
 if (!defined('COMMERCE_EXTKEY')) {
 	/** @noinspection PhpUndefinedVariableInspection */
 	define('COMMERCE_EXTKEY', $_EXTKEY);
 }
-
-if (!defined('PATH_txcommerce')) {
-	define('PATH_txcommerce', t3lib_extMgm::extPath(COMMERCE_EXTKEY));
+if (!defined('COMMERCE_EXTkey')) {
+	define('COMMERCE_EXTkey', COMMERCE_EXTKEY);
 }
+
 if (!defined('PATH_TXCOMMERCE')) {
 	define('PATH_TXCOMMERCE', t3lib_extMgm::extPath(COMMERCE_EXTKEY));
 }
-
-if (!defined('PATH_txcommerce_rel')) {
-	define('PATH_txcommerce_rel', t3lib_extMgm::extRelPath(COMMERCE_EXTKEY));
+if (!defined('PATH_txcommerce')) {
+	define('PATH_txcommerce', PATH_TXCOMMERCE);
 }
+
 if (!defined('PATH_TXCOMMERCE_REL')) {
 	define('PATH_TXCOMMERCE_REL', t3lib_extMgm::extRelPath(COMMERCE_EXTKEY));
 }
-
-if (!defined('PATH_txcommerce_icon_table_rel')) {
-	define('PATH_txcommerce_icon_table_rel', PATH_TXCOMMERCE_REL . 'res/icons/table/');
+if (!defined('PATH_txcommerce_rel')) {
+	define('PATH_txcommerce_rel', PATH_TXCOMMERCE_REL);
 }
+
 if (!defined('PATH_TXCOMMERCE_ICON_TABLE_REL')) {
 	define('PATH_TXCOMMERCE_ICON_TABLE_REL', PATH_TXCOMMERCE_REL . 'res/icons/table/');
 }
-
-if (!defined ('PATH_txcommerce_icon_tree_rel')) {
-	define('PATH_txcommerce_icon_tree_rel', PATH_TXCOMMERCE_REL . 'res/icons/table/');
+if (!defined('PATH_txcommerce_icon_table_rel')) {
+	define('PATH_txcommerce_icon_table_rel', PATH_TXCOMMERCE_ICON_TABLE_REL);
 }
+
 if (!defined ('PATH_TXCOMMERCE_ICON_TREE_REL')) {
 	define('PATH_TXCOMMERCE_ICON_TREE_REL', PATH_TXCOMMERCE_REL . 'res/icons/table/');
 }
+if (!defined ('PATH_txcommerce_icon_tree_rel')) {
+	define('PATH_txcommerce_icon_tree_rel', PATH_TXCOMMERCE_ICON_TREE_REL);
+}
 
 	// Define special article types
-define('NORMALArticleType', 1);
 define('NORMALARTICLETYPE', 1);
+define('NORMALArticleType', NORMALARTICLETYPE);
 
-define('PAYMENTArticleType', 2);
 define('PAYMENTARTICLETYPE', 2);
+define('PAYMENTArticleType', PAYMENTARTICLETYPE);
 
-define('DELIVERYArticleType', 3);
 define('DELIVERYARTICLETYPE', 3);
+define('DELIVERYArticleType', DELIVERYARTICLETYPE);
 
 
 	// Unserialize the plugin configuration so we can use it

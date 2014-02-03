@@ -68,6 +68,7 @@ abstract class tx_commerce_payment_provider_criterion_abstract implements tx_com
 }
 
 if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/payment/criteria/class.tx_commerce_payment_provider_criterion_abstract.php']) {
+	/** @noinspection PhpIncludeInspection */
 	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/payment/criteria/class.tx_commerce_payment_provider_criterion_abstract']);
 }
 

@@ -1,13 +1,52 @@
 <?php
+/***************************************************************
+ *  Copyright notice
+ *
+ *  (c) 2005 Marco Klawonn <info@webprog.de>
+ *  All rights reserved
+ *
+ *  This script is part of the TYPO3 project. The TYPO3 project is
+ *  free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  The GNU General Public License can be found at
+ *  http://www.gnu.org/copyleft/gpl.html.
+ *
+ *  This script is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  This copyright notice MUST APPEAR in all copies of the script!
+ ***************************************************************/
 
 /**
- * Class payment
- * Parentklasse einbinden
- * Diese Klasse ist die eigentliche Schnittstelle die benutzt werden soll
+ * klasse: payment
+ * Paymentklasse zum anbinden von Shops usw. an Zahlungssysteme
+ * Die Paymentklasse erbt hierbei von der eigentlichen Schnittstelle zum
+ * Paymentanbieter und wird via Vererbung mit den notwendigen Daten versorgt
+ * Die Grundfunktionen der Paymentklasse sind wietestgehen Statusmeldungen und
+ * Errohandling.
+ *
+ * getPaymetmethods        - Liste der Methoden und Typen die die Schnittstelle bietet
+ * getStatus                - allgemeine Daten der Klasse
+ * getError                - gab es Fehler wen ja welche meldung
+ * checkTransactiondata    - wurden alle daten komplett in der Klasse belegt?
+ * Elemente der Parentklasse die in payment definiert und ggf. vorbelegt werden
+ * setPaymentmethod        - ELV, Bank, KK (ggf Intern)
+ * setPaymenttype        - reserve, book  (ggf Intern)
+ * setData                - Speichert KK Nummer, Betrag, Name usw. (vielleicht splitte ich das noch
+ *                          auf z.B. setKKnumber usw)
+ * prepareMethod        - bereitet die Transaktion vor - erstellt die Parameterliste
+ *                      ggf. auch prepareMethod->KK oder ->ELV Muss ich nochmal dr�ber nachdenken ich
+ *                      denke aber das w�re kein schlechter weg, sonst als array �bergeben
+ * sendTransaction        - sendet zur Schnittstelle
+ * getErrorOfErrorcode    - Gibt den Fehlertext zur�ck
+ * getErrortype            - Warning, schwer, unbekannt, usw.
  */
 class payment extends wirecard {
-	public $referenzID;
-
 	/**
 	 * @var array
 	 */
@@ -20,157 +59,125 @@ class payment extends wirecard {
 
 	/**
 	 * Constructor
+	 *
+	 * @return self
 	 */
-	public function payment() {
-		$this->referenzID = $this->setReferenzID();
+	public function __construct() {
+		$this->setReferenzID();
 	}
 
 	/**
-	* function: getPaymetmethods
-	* liefert eine Liste von Zahlungsm�glichkeiten die von der Parentklasse zur
-	* Verf�gunggestellt werden
-	*
-	* @param
-	* @return array
-	* @since 0.1 - 2005/04/11
-	* @version 0.1
-	* @author Marco Klawonn <info@webprog.de>
-	*/
+	 * function: getPaymetmethods
+	 * delivers a list of payment types that are provided by the parent class
+	 *
+	 * @return array
+	 */
 	public function getPaymetmethods() {
-        return array();
-    }
-
-	/**
-	* function: getStatus
-	* liefert den Status der Klasse sowie grunddaten welche Schnittstelle benutzt wird
-	*
-	* @param
-	* @return array
-	* @since 0.1 - 2005/04/11
-	* @version 0.1
-	* @author Marco Klawonn <info@webprog.de>
-	*/
-	public function getStatus() {
-        return $this->status;
-    }
-
-	/**
-	* function: isError
-	* liefert 1 bei einem Fehler
-	*
-	* @param
-	* @return integer
-	* @since 0.1 - 2005/04/11
-	* @version 0.1
-	* @author Marco Klawonn <info@webprog.de>
-	*/
-	public function isError() {
-		if (is_array($this->error)) {
-			return 1;
-		} else {
-			return 0;
-    }
+		return array();
 	}
 
 	/**
-	* function: getError
-	* liefert den Errorcode der Paymentklasse
-	*
-	* @param
-	* @return integer
-	* @since 0.1 - 2005/04/11
-	* @version 0.1
-	* @author Marco Klawonn <info@webprog.de>
-	*/
+	 * function: getStatus
+	 * liefert den Status der Klasse sowie grunddaten welche Schnittstelle benutzt wird
+	 *
+	 * @return array
+	 */
+	public function getStatus() {
+		return $this->status;
+	}
+
+	/**
+	 * function: getError
+	 * liefert den Errorcode der Paymentklasse
+	 *
+	 * @return integer
+	 */
 	public function getError() {
-        return $this->error[$this->referenzID];
-    }
+		return $this->error[$this->referenzID];
+	}
 
 	/**
-	* function: setData
-	* Setzt die �bertragunsparameter
-	*
-	* @param
-	* @return bool
-	* @since 0.1 - 2005/04/11
-	* @version 0.1
-	* @author Marco Klawonn <info@webprog.de>
-	*/
+	 * function: setData
+	 * Setzt die �bertragunsparameter
+	 *
+	 * @param array $data
+	 * @return void
+	 */
 	public function setData($data) {
-		// Die Benutzerdaten in einem Assoziativen Array �bergeben
-		// folgende Benutzerdaten werdem vom System allgemein beachtet:
-		// - firstname
-		// - lastname
-		// - street
-		// - zip
-		// - city
-		// - country
-		// KK Spezifisch
+			// Die Benutzerdaten in einem Assoziativen Array �bergeben
+			// folgende Benutzerdaten werdem vom System allgemein beachtet:
+			// - firstname
+			// - lastname
+			// - street
+			// - zip
+			// - city
+			// - country
+			// KK Spezifisch
 		$this->userData = $data;
-    }
+	}
 
 	/**
-	* function: setPaymentData
-	* Setzt die �bertragunsparameter - Zahlungsdaten
-	*
-	* @param
-	* @return bool
-	* @since 0.1 - 2005/04/11
-	* @version 0.1
-	* @author Marco Klawonn <info@webprog.de>
-	*/
+	 * function: setPaymentData
+	 * Setzt die �bertragunsparameter - Zahlungsdaten
+	 *
+	 * @param array $data
+	 * @return void
+	 */
 	public function setPaymentData($data) {
-		// Die Benutzerdaten in einem Assoziativen Array �bergeben
-		// folgende Benutzerdaten werdem vom System allgemein beachtet:
-		// Betrifft Kreditkarten
-		// - kknumber
-		// - exp_month
-		// - exp_year
-		// - holder
-		// - city
-		// - country
+			// Die Benutzerdaten in einem Assoziativen Array �bergeben
+			// folgende Benutzerdaten werdem vom System allgemein beachtet:
+			// Betrifft Kreditkarten
+			// - kknumber
+			// - exp_month
+			// - exp_year
+			// - holder
+			// - city
+			// - country
 		$this->PaymentData = $data;
-    }
+	}
 
 	/**
 	* function: setTransactionData
 	* Setzt die Daten f�r eine bezahlung
 	*
-	* @param
-	* @return bool
-	* @since 0.1 - 2005/04/11
-	* @version 0.1
-	* @author Marco Klawonn <info@webprog.de>
+	* @param array $data
+	* @return void
 	*/
 	public function setTransactionData($data) {
-		// Die Benutzerdaten in einem Assoziativen Array �bergeben
-		// folgende Benutzerdaten werdem vom System allgemein beachtet:
-		// - amount
-		// - currency
-		$this->TransactionData = $data;
-    }
-
-	public function setPaymentmethod($method) {
-        $this->paymentmethod = $method;
-
-		return TRUE;
-    }
-
-	public function setPaymenttype($type) {
-        $this->paymenttype = $type;
-    }
+			// Die Benutzerdaten in einem Assoziativen Array �bergeben
+			// folgende Benutzerdaten werdem vom System allgemein beachtet:
+			// - amount
+			// - currency
+		$this->transactionData = $data;
+	}
 
 	/**
-	* Intern - function: setReferenzID
-	* Setzt eine referenz ID f�r die Tranksaktion
-	*
-	 * @param string $id
-	 * @return string
-	* @since 0.1 - 2005/04/13
-	*/
-	public function setReferenzID($id = '') {
-		$id = 'ref_' . time();
-			return $id;
+	 * @param string $method
+	 * @return void
+	 */
+	public function setPaymentmethod($method) {
+		$this->paymentmethod = $method;
+	}
+
+	/**
+	 * @param object $type
+	 */
+	public function setPaymenttype($type) {
+		$this->paymenttype = $type;
+	}
+
+	/**
+	 * Intern - function: setReferenzID
+	 * Setzt eine referenz ID f�r die Tranksaktion
+	 *
+	 * @param string $referenceId
+	 * @return void
+	 */
+	public function setReferenzID($referenceId = '') {
+		if ($referenceId == '') {
+			$referenceId = 'ref_' . time();
+		}
+		$this->referenzID = $referenceId;
 	}
 }
 
