@@ -23,8 +23,6 @@ return array(
 	'tx_commerce_dao_feuserobserver' => $classPath . 'Dao/FeuserObserver.php',
 	'tx_commerce_dao_feuseraddressfieldmapper' => $classPath . 'Dao/FeuserAddressFieldmapper.php',
 
-	'tx_commerce_articlecreator' => $extensionPath . 'class.tx_commerce_articlecreator.php',
-	'tx_commerce_attributeeditor' => $extensionPath . 'class.tx_commerce_attributeeditor.php',
 	'tx_commerce_article' => $extensionPath . 'lib/class.tx_commerce_article.php',
 	'tx_commerce_article_price' => $extensionPath . 'lib/class.tx_commerce_article_price.php',
 	'tx_commerce_attribute' => $extensionPath . 'lib/class.tx_commerce_attribute.php',

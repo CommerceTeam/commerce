@@ -1,11 +1,31 @@
 <?php
-/**
- * Created on 04.11.2008
- * Implements the dynafley configuration for the 'tx_commerce_categories' extension
+/***************************************************************
+ *  Copyright notice
  *
- * @author Erik Frister <efrister@marketing-factory.de>
+ *  (c) 2008 Erik Frister <efrister@marketing-factory.de>
+ *  All rights reserved
+ *
+ *  This script is part of the Typo3 project. The Typo3 project is
+ *  free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  The GNU General Public License can be found at
+ *  http://www.gnu.org/copyleft/gpl.html.
+ *
+ *  This script is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  This copyright notice MUST APPEAR in all copies of the script!
+ ***************************************************************/
+
+/**
+ * Implements the dynafley configuration for the 'tx_commerce_categories' extension
  */
-class tx_commerce_categories_dfconfig {
+class tx_commerce_configuration_dca_categories {
 	public $rowChecks = array();
 
 	public $DCA = array(
@@ -19,10 +39,10 @@ class tx_commerce_categories_dfconfig {
 					'source' => 'db',
 					'source_type' => 'entry_count',
 					'source_config' => array(
-						 'table' => 'tx_commerce_attribute_correlationtypes',
-						 'select' => '*',
-						 'where' => 'uid = 1',
-					 ),
+						'table' => 'tx_commerce_attribute_correlationtypes',
+						'select' => '*',
+						'where' => 'uid = 1',
+					),
 					'field_config' => array(
 						1 => array(
 							'name' => 'ct_###uid###',
@@ -60,10 +80,10 @@ class tx_commerce_categories_dfconfig {
 					'source' => 'db',
 					'source_type' => 'entry_count',
 					'source_config' => array(
-						 'table' => 'tx_commerce_attribute_correlationtypes',
-						 'select' => '*',
-						 'where' => 'uid != 1',
-					 ),
+						'table' => 'tx_commerce_attribute_correlationtypes',
+						'select' => '*',
+						'where' => 'uid != 1',
+					),
 					'field_config' => array(
 						1 => array(
 							'name' => 'ct_###uid###',

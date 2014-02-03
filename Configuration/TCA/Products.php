@@ -1,27 +1,29 @@
 <?php
 /***************************************************************
  *  Copyright notice
+ *
  *  (c) 2005 - 2010 Ingo Schmitt <is@marketing-factory.de>
  *  All rights reserved
- *  This script is part of the TYPO3 project. The TYPO3 project is
+ *
+ *  This script is part of the Typo3 project. The Typo3 project is
  *  free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
  *  (at your option) any later version.
+ *
  *  The GNU General Public License can be found at
  *  http://www.gnu.org/copyleft/gpl.html.
+ *
  *  This script is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
+ *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
 /**
  * Dynamic config file for tx_commerce_products
- *
- * @package commerce
- * @author Ingo Schmitt <is@marketing-factory.de>
  */
 
 if (!defined('TYPO3_MODE')) {
@@ -239,7 +241,7 @@ $GLOBALS['TCA']['tx_commerce_products'] = Array(
 			'config' => Array(
 				'type' => 'passthrough',
 				'form_type' => 'user',
-				// TYPO3 core will require_once the file automatically when needed
+					// TYPO3 core will require_once the file automatically when needed
 				'userFunc' => 'EXT:' . COMMERCE_EXTKEY . '/treelib/class.tx_commerce_tcefunc.php:&tx_commerce_tceFunc->getSingleField_selectCategories',
 				'treeViewBrowseable' => TRUE,
 				'size' => 10,
@@ -247,7 +249,7 @@ $GLOBALS['TCA']['tx_commerce_products'] = Array(
 				'minitems' => 0,
 				'maxitems' => 20,
 				'eval' => 'required',
-		),
+			),
 		),
 
 		'manufacturer_uid' => Array(
@@ -424,7 +426,10 @@ $GLOBALS['TCA']['tx_commerce_products'] = Array(
 	'types' => Array(
 		'0' => Array(
 			'showitem' => '
-			sys_language_uid;;;;1-1-1, l18n_parent, l18n_diffsource, hidden;;1, title;;;;1-1-1, subtitle;;;;3-3-3,navtitle, description;;;richtext[cut|copy|paste|formatblock|textcolor|bold|italic|underline|left|center|right|orderedlist|unorderedlist|outdent|indent|link|table|image|line|chMode]:rte_transform[mode=ts_css|imgpath=uploads/tx_commerce/rte/], images, teaser;;;richtext[cut|copy|paste|formatblock|textcolor|bold|italic|underline|left|center|right|orderedlist|unorderedlist|outdent|indent|link|table|image|line|chMode]:rte_transform[mode=ts_css|imgpath=uploads/tx_commerce/rte/];3-3-3, teaserimages, categories;;;;4-4-4, manufacturer_uid;;;;2-2-2, relatedpage;;;;1-1-1, relatedproducts;;;;1-1-1'
+				sys_language_uid;;;;1-1-1, l18n_parent, l18n_diffsource, hidden;;1, title;;;;1-1-1, subtitle;;;;3-3-3,navtitle,
+				description;;;richtext[cut|copy|paste|formatblock|textcolor|bold|italic|underline|left|center|right|orderedlist|unorderedlist|outdent|indent|link|table|image|line|chMode]:rte_transform[mode=ts_css|imgpath=uploads/tx_commerce/rte/],
+				images, teaser;;;richtext[cut|copy|paste|formatblock|textcolor|bold|italic|underline|left|center|right|orderedlist|unorderedlist|outdent|indent|link|table|image|line|chMode]:rte_transform[mode=ts_css|imgpath=uploads/tx_commerce/rte/];3-3-3,
+				teaserimages, categories;;;;4-4-4, manufacturer_uid;;;;2-2-2, relatedpage;;;;1-1-1, relatedproducts;;;;1-1-1'
 		)
 	),
 	'palettes' => Array(
@@ -438,16 +443,13 @@ $GLOBALS['TCA']['tx_commerce_products'] = Array(
  * available (of course!)
  */
 
-/**
- * @see dcafiles/class.tx_commerce_products_dfconfig.php
- * @depricated
- */
 $postEdit = t3lib_div::_GP('edit');
 $postData = t3lib_div::_GP('data');
 if (is_array($postEdit['tx_commerce_products']) && (($postData == NULL) || (t3lib_div::_GP('createArticles') == 'create')) &&
 	t3lib_extMgm::isLoaded('dynaflex')) {
-	// Load the configuration from a file
-	require_once(t3lib_extMgm::extPath('commerce') . 'ext_df_product_config.php');
+		// Load the configuration from a file
+	/** @noinspection PhpIncludeInspection */
+	require_once(t3lib_extMgm::extPath('commerce') . ' Configuration/DCA/Product.php');
 	$uid = array_keys($postEdit['tx_commerce_products']);
 	if ($postEdit['tx_commerce_products'][$uid[0]] == 'new') {
 		$uid = 0;
@@ -459,6 +461,7 @@ if (is_array($postEdit['tx_commerce_products']) && (($postData == NULL) || (t3li
 	$dynaFlexConf[1]['uid'] = $uid;
 
 		// And start the dynyflex processing
+	/** @noinspection PhpIncludeInspection */
 	require_once(t3lib_extMgm::extPath('dynaflex') . 'class.dynaflex.php');
 	$dynaflex = t3lib_div::makeInstance('dynaflex', $GLOBALS['TCA'], $dynaFlexConf);
 

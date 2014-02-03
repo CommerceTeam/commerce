@@ -1,7 +1,27 @@
 <?php
-/**
- * $Id: ext_df_product_config.php 445 2006-12-04 19:21:39Z ingo $
- */
+/***************************************************************
+ *  Copyright notice
+ *
+ *  (c) 2005 - 2006 Thomas Hempel <thomas@work.de>
+ *  All rights reserved
+ *
+ *  This script is part of the Typo3 project. The Typo3 project is
+ *  free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  The GNU General Public License can be found at
+ *  http://www.gnu.org/copyleft/gpl.html.
+ *
+ *  This script is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  This copyright notice MUST APPEAR in all copies of the script!
+ ***************************************************************/
+
 $simpleMode = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['simpleMode'];
 
 	// the dynamic Flexform for products
@@ -72,9 +92,7 @@ $dynaFlexConf = array(
 				'source_config' => array(
 					'table' => 'tx_commerce_attribute_correlationtypes',
 					'select' => '*',
-					'where' => ($simpleMode == 1) ?
-						'uid = 4' :
-						'uid != 1',
+					'where' => ($simpleMode == 1) ? 'uid = 4' : 'uid != 1',
 				),
 				'field_config' => array(
 					1 => array(

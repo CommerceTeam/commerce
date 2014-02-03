@@ -23,7 +23,7 @@ class tx_commerce_linkhandler {
 		$this->pObj = &$pObj;
 
 		$linkHandlerData = t3lib_div::trimExplode('|', $linkHandlerValue);
-		
+
 		$addparams = '';
 		foreach ($linkHandlerData as $linkData) {
 			$params = t3lib_div::trimExplode(':', $linkData);
@@ -40,21 +40,21 @@ class tx_commerce_linkhandler {
 				} elseif ($params[2] == 'tx_commerce_categories') {
 					$addparams .= '&tx_commerce_pi1[catUid]=' . (int) $params[3];
 				}
-			}			
+			}
 		}
- 
+
 		if (strlen($addparams) <= 0) {
 			return $linktxt;
-		}		
+		}
 
 		/** @var tslib_cObj $localcObj */
 		$localcObj = t3lib_div::makeInstance('tslib_cObj');
-		
+
 		$DisplayPID = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_commerce_pi1.']['overridePid'];
 		if (empty($DisplayPID)) {
 			$DisplayPID = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['previewPageID'];
 		}
-		
+
 			// remove the first param of '$link_param' (this is the page id wich is set by $DisplayPID)
 			// and add all params left (e.g. css class, target...) to the value of $lconf['paramter']
 		$link_param_array = explode(' ', $link_param);
@@ -68,21 +68,21 @@ class tx_commerce_linkhandler {
 		} else {
 			$link_param = $DisplayPID;
 		}
-		
+
 		$lconf = array (
 			'parameter' => $link_param,
 			'additionalParams' => $addparams,
 			'additionalParams.insertData' => 1,
 			'useCacheHash' => 1
 		);
-		
+
 		return $localcObj->typoLink($linktxt, $lconf);
 	}
 }
 
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/hooks/commerce/class.tx_commerce_linkhandler.php']) {
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/Classes/Hook/commerce/class.tx_commerce_linkhandler.php']) {
 	/** @noinspection PhpIncludeInspection */
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/hooks/commerce/class.tx_commerce_linkhandler.php']);
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/Classes/Hook/commerce/class.tx_commerce_linkhandler.php']);
 }
 
 ?>

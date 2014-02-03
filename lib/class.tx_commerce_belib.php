@@ -55,10 +55,13 @@ class tx_commerce_belib {
 	 * @return array
 	 */
 	public function getProductParentCategories($uid) {
-		$pCategories = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid_foreign', 'tx_commerce_products_categories_mm', 'uid_local=' . $uid);
+		/** @var t3lib_db $database */
+		$database = $GLOBALS['TYPO3_DB'];
+
+		$pCategories = $database->exec_SELECTquery('uid_foreign', 'tx_commerce_products_categories_mm', 'uid_local=' . $uid);
 
 		$result = array();
-		while ($cUid = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($pCategories))	{
+		while ($cUid = $database->sql_fetch_assoc($pCategories)) {
 			$result[] = $cUid['uid_foreign'];
 		}
 
@@ -98,7 +101,7 @@ class tx_commerce_belib {
 
 		$result = array();
 		while ($relData = $database->sql_fetch_assoc($res)) {
-			if ($addAttributeData)	{
+			if ($addAttributeData) {
 					// fetch the data from the attribute table
 				$aRes = $database->exec_SELECTquery(
 					'*',
@@ -108,7 +111,7 @@ class tx_commerce_belib {
 				);
 				$aData = $database->sql_fetch_assoc($aRes);
 				$relData['attributeData'] = $aData;
-				if ($aData['has_valuelist'] && $getValueListData)	{
+				if ($aData['has_valuelist'] && $getValueListData) {
 						// fetch values for this valuelist entry
 					$vlRes = $database->exec_SELECTquery(
 						'*',
@@ -133,8 +136,8 @@ class tx_commerce_belib {
 				continue;
 			}
 
-			if ($separateCT1)	{
-				if ($relData['uid_correlationtype'] == 1 && $relData['attributeData']['has_valuelist'] == 1)	{
+			if ($separateCT1) {
+				if ($relData['uid_correlationtype'] == 1 && $relData['attributeData']['has_valuelist'] == 1) {
 					$result['ct1'][] = $relData;
 				} else {
 					$result['rest'][] = $relData;
@@ -164,21 +167,24 @@ class tx_commerce_belib {
 			return;
 		}
 
+		/** @var t3lib_db $database */
+		$database = $GLOBALS['TYPO3_DB'];
+
 			// add the submitted uid to the list if it is bigger than 0 and not already in the list
-		if ($cUid > 0 && $cUid != $excludeUid)	{
+		if ($cUid > 0 && $cUid != $excludeUid) {
 			if (!in_array($cUid, $cUidList) && $cUid != $dontAdd) {
 				$cUidList[] = $cUid;
 			}
 
-			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+			$res = $database->exec_SELECTquery(
 				'uid_foreign',
 				'tx_commerce_categories_parent_category_mm',
 				'uid_local=' . intval($cUid),
 				'', 'uid_foreign'
 			);
 
-			while ($relData = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res))	{
-				if ($recursive)	{
+			while ($relData = $database->sql_fetch_assoc($res)) {
+				if ($recursive) {
 					$this->getParentCategories($relData['uid_foreign'], $cUidList, $cUid, $excludeUid);
 				} else {
 					$cUid = $relData['uid_foreign'];
@@ -205,13 +211,16 @@ class tx_commerce_belib {
 			return;
 		}
 
+		/** @var t3lib_db $database */
+		$database = $GLOBALS['TYPO3_DB'];
+
 			// add the submitted uid to the list if it is bigger than 0 and not already in the list
-		if ($cUid > 0 && $cUid != $excludeUid)	{
+		if ($cUid > 0 && $cUid != $excludeUid) {
 			if (!in_array($cUid, $cUidList) && $cUid != $dontAdd) {
 				$cUidList[] = $cUid;
 			}
 
-			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+			$res = $database->exec_SELECTquery(
 				'uid_local',
 				'tx_commerce_categories_parent_category_mm',
 				'uid_foreign=' . intval($cUid),
@@ -220,8 +229,8 @@ class tx_commerce_belib {
 			);
 
 			if ($res) {
-			while ($relData = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res))	{
-				if ($recursive)	{
+			while ($relData = $database->sql_fetch_assoc($res)) {
+				if ($recursive) {
 					$this->getChildCategories($relData['uid_local'], $cUidList, $cUid, $excludeUid);
 				} else {
 					$cUid = $relData['uid_local'];
@@ -244,7 +253,7 @@ class tx_commerce_belib {
 	 */
 	public function getParentCategoriesFromList(&$cUidList) {
 		if (is_array($cUidList)) {
-			foreach ($cUidList as $cUid)	{
+			foreach ($cUidList as $cUid) {
 				$this->getParentCategories($cUid, $cUidList);
 			}
 		}
@@ -260,24 +269,27 @@ class tx_commerce_belib {
 	 * @return	array An associative array with the data of the category
 	 */
 	public function getCategoryData($cUid, $select = '*', $groupBy = '', $orderBy = '') {
-		$data = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+		/** @var t3lib_db $database */
+		$database = $GLOBALS['TYPO3_DB'];
+
+		$result = $database->exec_SELECTquery(
 			$select,
 			'tx_commerce_categories',
 			'uid=' . intval($cUid),
 			$groupBy,
 			$orderBy
 		);
-		return $GLOBALS['TYPO3_DB']->sql_fetch_assoc($data);
+		return $database->sql_fetch_assoc($result);
 	}
 
 	/**
 	 * Returns all attributes for a list of categories.
 	 *
-	 * @param	array		$catList: A list of category UIDs
-	 * @param	integer		$ct: the correlationtype (can be null)
-	 * @param	string		$uidField: The name of the field in the excludeAttributes array that holds the uid of the attributes
-	 * @param	array		$excludeAttributes: Array with attributes (the method expects a field called uid_foreign)
-	 * @return	An array of attributes
+	 * @param array $catList: A list of category UIDs
+	 * @param integer $ct: the correlationtype (can be null)
+	 * @param string $uidField: The name of the field in the excludeAttributes array that holds the uid of the attributes
+	 * @param array $excludeAttributes: Array with attributes (the method expects a field called uid_foreign)
+	 * @return array of attributes
 	 */
 	public function getAttributesForCategoryList($catList, $ct = NULL, $uidField = 'uid', $excludeAttributes = array()) {
 		$result = array();
@@ -285,10 +297,10 @@ class tx_commerce_belib {
 			return $result;
 		}
 
-		    foreach ($catList as $catUid)	{
+		foreach ($catList as $catUid) {
 			$attributes = $this->getAttributesForCategory($catUid, $ct, $excludeAttributes, $uidField);
 			if (is_array($attributes)) {
-				foreach ($attributes as $attribute)	{
+				foreach ($attributes as $attribute) {
 					$result[] = $attribute;
 					$excludeAttributes[] = $attribute;
 				}
@@ -307,6 +319,9 @@ class tx_commerce_belib {
 	 * @return array of attributes
 	 */
 	public function getAttributesForCategory($cUid, $ct = NULL, $excludeAttributes = NULL, $uidField = 'uid') {
+		/** @var t3lib_db $database */
+		$database = $GLOBALS['TYPO3_DB'];
+
 			// build the basic query
 		$where = 'uid_local=' . $cUid;
 
@@ -316,7 +331,7 @@ class tx_commerce_belib {
 		}
 
 			// should we exclude some attributes
-		if (is_array($excludeAttributes) && count($excludeAttributes) > 0)	{
+		if (is_array($excludeAttributes) && count($excludeAttributes) > 0) {
 			$eAttributes = array();
 			foreach ($excludeAttributes as $eAttribute) {
 				$eAttributes[] = (int)$eAttribute['uid_foreign'];
@@ -325,7 +340,7 @@ class tx_commerce_belib {
 		}
 
 			// execute the query
-		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+		$res = $database->exec_SELECTquery(
 			'*',
 			'tx_commerce_categories_attributes_mm',
 			$where,
@@ -334,7 +349,7 @@ class tx_commerce_belib {
 
 			// build the result and return it...
 		$result = array();
-		while ($attribute = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res))	{
+		while ($attribute = $database->sql_fetch_assoc($res)) {
 			$result[] = $attribute;
 		}
 		return $result;
@@ -1074,8 +1089,8 @@ class tx_commerce_belib {
 	/**
 	 * Return all productes that are related to a category.
 	 *
-	 * @param	uid		$cUid: The UID of the category.
-	 * @return	An array with the entities of the found products
+	 * @param integer $cUid: The UID of the category.
+	 * @return array with the entities of the found products
 	 */
 	public function getProductsOfCategory($cUid) {
 		$result = array();
@@ -1091,9 +1106,9 @@ class tx_commerce_belib {
 	 * This wraper is needed because the fields have different names in different tables. I know that's stupid
 	 * but this is a fact... :-/
 	 *
-	 * @param	array		$attributeData: The data that should be stored
-	 * @param	mixed		$data: The value of the attribute
-	 * @param	integer		$productUid: The UID of the produt
+	 * @param array $attributeData: The data that should be stored
+	 * @param string|integer|boolean $data: The value of the attribute
+	 * @param integer $productUid: The UID of the produt
 	 * @return array with two arrays as elements
 	 */
 	public function getUpdateData($attributeData, $data, $productUid = 0) {
@@ -1104,11 +1119,11 @@ class tx_commerce_belib {
 		$updateArray2['value_char'] = '';
 		$updateArray2['uid_product'] = $productUid;
 
-		if ($attributeData['has_valuelist'] == 1)	{
+		if ($attributeData['has_valuelist'] == 1) {
 			$updateArray['uid_valuelist'] = $data;
 			$updateArray2['uid_valuelist'] = $data;
 		} else {
-			if (!$this->isNumber($data))	{
+			if (!$this->isNumber($data)) {
 				$updateArray['default_value'] = $data;
 				$updateArray2['default_value'] = $data;
 			} else {

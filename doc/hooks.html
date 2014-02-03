@@ -163,16 +163,16 @@ Some hook-methods can return data which is used by the calling function. Others 
 	<div class="functionindex">function processAddressfieldsMarkerArray</div>
 	<div class="functionindex">function processAddressMarker</div>
 	<div class="functionindex">function processAddressFormMarker</div>
-	
-	
+
+
 	<a href="#tx_commerce_categorytree">
 <div class="classindex">class tx_commerce_categorytree</div>
 </a>
-	
+
 	<div class="functionindex">function loadRecords</div>
 <a href="#tx_commerce_articlecreator">
-	
-	
+
+
 <div class="classindex">tx_commerce_articlecreator</div>
 </a>
 	<div class="functionindex">function createArticle</div>
@@ -333,7 +333,7 @@ Some hook-methods can return data which is used by the calling function. Others 
 	<a name="tx_commerce_dmhooks"/>
 		<div class="classname">class tx_commerce_dmhooks</div>
 			<div class="functionname">function moveOrders</div>
-				<div class="hookname">$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/hooks/class.tx_commerce_dmhooks.php']['moveOrders']</div>
+				<div class="hookname">$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Hook/class.tx_commerce_dmhooks.php']['moveOrders']</div>
 				<div class="description">
 					Call: moveOrders_preMoveOrder($order_row,$fieldArray) <br/>
 					Type: Multiple<br/>
@@ -343,7 +343,7 @@ Some hook-methods can return data which is used by the calling function. Others 
 					<b>pid and tstamp cannot be changed here as they are overwritten with the new values after the hook is called</b>
 					$fieldArray contains some additional data from the order (especially newpid which contains the pid that will be set as soon as the hook finishes)
 				</div>
-				<div class="hookname">$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/hooks/class.tx_commerce_dmhooks.php']['moveOrders']</div>
+				<div class="hookname">$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Hook/class.tx_commerce_dmhooks.php']['moveOrders']</div>
 				<div class="description">
 					Call: moveOrders_postMoveOrder($order_row,$fieldArray) <br/>
 					Type: Multiple<br/>
@@ -366,9 +366,9 @@ Some hook-methods can return data which is used by the calling function. Others 
 					<div class="description">Call: processDataRow($row,$tableName,$this)<br/>
 					Type: Multiple<br/>
 					posibilty to modify records used in navigation</div>
-					
-					
-					
+
+
+
 	<div class="filename">lib/class.tx_commerce_pibase.php</div>
 		<a name="tx_commerce_pibase"/>
 		<div class="classname">class tx_commerce_pibase</div>
@@ -403,8 +403,8 @@ Some hook-methods can return data which is used by the calling function. Others 
 					<div class="description">Call: loadAdditionalLocallang($this)<br/>
 					Type: Multiple<br/>
 					possibility to add your own locallang-files</div>
-					
-					
+
+
 			<div class="functionname">renderProduct</div>
 				<div class="hookname">GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['product']</div>
 					<div class="description">Call: additionalMarkerProduct($markerArray,$myProduct,$this)<br/>
@@ -657,7 +657,7 @@ Some hook-methods can return data which is used by the calling function. Others 
 					Type: Multiple<br/>
 					Result: void<br />
 					Change insert OrderData before they are inserted
-					</div>					
+					</div>
 					<div class="description">
 					Call: modifyOrderArticlePostSave($newUid, $oaData, $this)<br/>
 					Type: Multiple<br/>
@@ -870,19 +870,6 @@ Some hook-methods can return data which is used by the calling function. Others 
 					this hook can be used to manipulate markers from one address from the listing of addresses.
 					</div>
 
-	<div class="filename">class.tx_commerce_articlecreator.php</div>
-		<a name="tx_commerce_articlecreator"/>
-		<div class="classname">tx_commerce_articlecreator</div>
-			<div class="functionname">function createArticle</div>
-				<div class="hookname">$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/class.tx_commerce_articlecreator.php']['preinsert']</div>
-					<div class="description">
-					Call: preinsert($articleData)<br />
-					Type: Multiple<br />
-					Result: void<br />
-					This hook is called before a new article is added to the database.
-					</div>
-					
-					
 					<div class="filename">class.leadData.php</div>
 		<a name="leafData"/>
 		<div class="classname">leafData</div>

@@ -1,28 +1,30 @@
 <?php
 /***************************************************************
  *  Copyright notice
+ *
  *  (c) 2005 - 2011 Thomas Hempel <thomas@work.de>
  *  (c) 2006 - 2011 Ingo Schmitt <is@marketing-factory.de>
  *  All rights reserved
- *  This script is part of the TYPO3 project. The TYPO3 project is
+ *
+ *  This script is part of the Typo3 project. The Typo3 project is
  *  free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
  *  (at your option) any later version.
+ *
  *  The GNU General Public License can be found at
  *  http://www.gnu.org/copyleft/gpl.html.
+ *
  *  This script is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
+ *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
 /**
  * Dynamic config file for tx_commerce_articles
- *
- * @package commerce
- * @author Thomas Hempel <thomas@work.de>
  */
 
 if (!defined('TYPO3_MODE')) {
@@ -405,24 +407,6 @@ $GLOBALS['TCA']['tx_commerce_articles'] = Array(
 	)
 );
 
-/**
-  * @TODO Ingo Check if needed
- */
-$postEdit = t3lib_div::_GP('edit');
-$postData = t3lib_div::_GP('data');
-if (!$simpleMode && is_array($postEdit['tx_commerce_articles']) && $postData == NULL && t3lib_extMgm::isLoaded('dynaflex')) {
-		// Load the configuration from a file
-	require_once(t3lib_extMgm::extPath('commerce') . 'ext_df_article_config.php');
-	$dynaFlexConf['workingTable'] = 'tx_commerce_articles';
-
-		// And start the dynyflex processing
-	require_once(t3lib_extMgm::extPath('dynaflex') . 'class.dynaflex.php');
-	$dynaflex = t3lib_div::makeInstance('dynaflex', $GLOBALS['TCA'], $dynaFlexConf);
-		// write back the modified TCA
-	$GLOBALS['TCA'] = $dynaflex->getDynamicTCA();
-}
-
-
 $GLOBALS['TCA']['tx_commerce_article_prices'] = Array(
 	'ctrl' => $GLOBALS['TCA']['tx_commerce_article_prices']['ctrl'],
 	'interface' => Array(
@@ -554,25 +538,43 @@ $GLOBALS['TCA']['tx_commerce_article_prices'] = Array(
 	'palettes' => Array(
 		'1' => Array('showitem' => 'starttime, endtime, fe_group')
 	)
-
 );
+
+/**
+ * @TODO Ingo Check if needed
+ */
+$postEdit = t3lib_div::_GP('edit');
+$postData = t3lib_div::_GP('data');
+
+if (!$simpleMode && is_array($postEdit['tx_commerce_articles']) && $postData == NULL && t3lib_extMgm::isLoaded('dynaflex')) {
+		// Load the configuration from a file
+	/** @noinspection PhpIncludeInspection */
+	require_once(t3lib_extMgm::extPath('commerce') . 'Configuration/DCA/Articles.php');
+	$dynaFlexConf['workingTable'] = 'tx_commerce_articles';
+
+		// And start the dynyflex processing
+	/** @noinspection PhpIncludeInspection */
+	require_once(t3lib_extMgm::extPath('dynaflex') . 'class.dynaflex.php');
+	$dynaflex = t3lib_div::makeInstance('dynaflex', $GLOBALS['TCA'], $dynaFlexConf);
+		// write back the modified TCA
+	$GLOBALS['TCA'] = $dynaflex->getDynamicTCA();
+}
 
 /**
  * Only perform from TCA if the BE form is called the first time ('First time' also means
  * calling the editform of an product), no data has to be saved and extension dynaflex is
  * available (of course!)
  */
-$postEdit = t3lib_div::_GP('edit');
-$postData = t3lib_div::_GP('data');
 if (is_array($postEdit['tx_commerce_articles']) && $postData == NULL && t3lib_extMgm::isLoaded('dynaflex')) {
 		// Load the configuration from a file
-	require_once(t3lib_extMgm::extPath('commerce') . 'ext_df_article_config.php');
+	/** @noinspection PhpIncludeInspection */
+	require_once(t3lib_extMgm::extPath('commerce') . 'Configuration/DCA/Articles.php');
 	$dynaFlexConf['workingTable'] = 'tx_commerce_articles';
 
 		// And start the dynyflex processing
+	/** @noinspection PhpIncludeInspection */
 	require_once(t3lib_extMgm::extPath('dynaflex') . 'class.dynaflex.php');
 	$dynaflex = t3lib_div::makeInstance('dynaflex', $GLOBALS['TCA'], $dynaFlexConf);
-
 		// write back the modified TCA
 	$GLOBALS['TCA'] = $dynaflex->getDynamicTCA();
 }
