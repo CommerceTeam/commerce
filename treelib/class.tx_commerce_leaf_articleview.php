@@ -30,8 +30,8 @@ class tx_commerce_leaf_articleview extends leafView {
 		
 		$res = '';
 		
-		//Max. size for Title of 255
-		$title = ('' != trim($title)) ? t3lib_div::fixed_lgd_cs($title, 255) : $this->getLL('leaf.noTitle');
+		//Max. size for Title of 30
+		$title = ('' != trim($title)) ? t3lib_div::fixed_lgd_cs($title, 30) : $this->getLL('leaf.noTitle');
 		
 		$aOnClick = 'return jumpTo(\''.$this->getJumpToParam($row).'\',this,\''.$this->domIdPrefix.$row['uid'].'_'.$bank.'\',\'alt_doc.php\');';
 		

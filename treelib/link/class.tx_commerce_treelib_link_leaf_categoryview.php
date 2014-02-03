@@ -54,8 +54,8 @@ class tx_commerce_treelib_link_leaf_categoryview extends leafView{
 		
 		$res = '';
 		
-		//Max. size for Title of 255
-		$title = ('' != $title) ? t3lib_div::fixed_lgd_cs($title, 255) : $this->getLL('leaf.noTitle');
+		//Max. size for Title of 30
+		$title = ('' != $title) ? t3lib_div::fixed_lgd_cs($title, 30) : $this->getLL('leaf.noTitle');
 		
 		$aOnClick = 'return link_folder(\''.$this->getJumpToParam($row).'\');';
 		$style = ($row['uid'] == $this->openCat && 0 != $this->openCat) ? 'style="color: red; font-weight: bold"' : '';
