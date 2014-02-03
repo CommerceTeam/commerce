@@ -206,8 +206,8 @@ $GLOBALS['TYPO3_CONF_VARS']['BE']['AJAX']['tx_commerce_category_navframe::ajaxEx
 
 
 	// This line configures to process the code selectConf with the class "tx_commerce_hooks"
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] = 'EXT:commerce/Classes/Hook/class.tx_commerce_tcehooksHandler.php:tx_commerce_tcehooksHandler';
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass'][] = 'EXT:commerce/Classes/Hook/class.tx_commerce_tcehooksHandler.php:tx_commerce_tcehooksHandler';
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] = 'EXT:commerce/Classes/Hook/TcehooksHandlerHooks.php:Tx_Commerce_Hook_TcehooksHandlerHooks';
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass'][] = 'EXT:commerce/Classes/Hook/TcehooksHandlerHooks.php:Tx_Commerce_Hook_TcehooksHandlerHooks';
 
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tceforms_inline.php']['tceformsInlineHook'][] = 'EXT:commerce/Classes/Hook/IrreHooks.php:Tx_Commerce_Hook_IrreHooks';
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tceforms.php']['getSingleFieldClass'][] = 'EXT:commerce/Classes/Hook/TceFormsHooks.php:Tx_Commerce_Hook_TceFormsHooks';

@@ -673,8 +673,7 @@ class tx_commerce_article extends tx_commerce_element_alib {
 	 */
 	public function loadPrices($translationMode = FALSE) {
 		if ($this->prices_loaded == FALSE) {
-
-			$arrayOfPrices = $this->databaseConnection->get_prices($this->uid);
+			$arrayOfPrices = $this->databaseConnection->getPrices($this->uid);
 			$this->prices_uids = $arrayOfPrices;
 
 			if ($this->prices_uids) {
@@ -982,9 +981,9 @@ class tx_commerce_article extends tx_commerce_element_alib {
 	/**
 	 * Gets the price of this article and stores in private variable
 	 *
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use tx_commerce_article::loadPrices instead
 	 * @param boolean $translationMode
 	 * @return integer
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use tx_commerce_article::loadPrices instead
 	 */
 	public function load_prices($translationMode = FALSE) {
 		t3lib_div::logDeprecatedFunction();

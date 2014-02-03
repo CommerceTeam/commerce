@@ -364,7 +364,6 @@ class tx_commerce_basket_item {
 	 */
 	public function get_price_gross() {
 		t3lib_div::logDeprecatedFunction();
-
 		return $this->getPriceGross();
 	}
 
@@ -401,7 +400,6 @@ class tx_commerce_basket_item {
 	 */
 	public function get_tax() {
 		t3lib_div::logDeprecatedFunction();
-
 		return $this->getTax();
 	}
 
@@ -457,7 +455,6 @@ class tx_commerce_basket_item {
 	 */
 	public function get_item_sum_net($recalculate = FALSE) {
 		t3lib_div::logDeprecatedFunction();
-
 		return $this->getItemSumNet($recalculate);
 	}
 
@@ -644,7 +641,6 @@ class tx_commerce_basket_item {
 	 */
 	public function get_item_sum_tax($recalculate = FALSE) {
 		t3lib_div::logDeprecatedFunction();
-
 		return $this->getItemSumTax($recalculate);
 	}
 
