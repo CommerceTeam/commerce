@@ -33,7 +33,10 @@ class Tx_Commerce_Hook_DataMapHooks {
 	 */
 	protected $belib;
 
-	protected $catList = NULL;
+	/**
+	 * @var array
+	 */
+	protected $catList = array();
 
 	/**
 	 * This is just a constructor to instanciate the backend library
@@ -787,6 +790,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 				if (is_array($data)) {
 					$l18nParent = (isset($data['l18n_parent'])) ? $data['l18n_parent'] : 0;
 
+					$category = NULL;
 						// check if the user has the permission to edit this category; abort if he doesnt.
 					if ($status != 'new') {
 
@@ -1114,7 +1118,6 @@ class Tx_Commerce_Hook_DataMapHooks {
 						// check existing categories
 					if (!tx_commerce_belib::checkPermissionsOnCategoryContent($parentCategories, array('editcontent'))) {
 						$pObj->newlog('You dont have the permissions to create a new article.', 1);
-						$fieldArray = array();
 					} else {
 							// ini the article creator
 						$ac = t3lib_div::makeInstance('tx_commerce_articleCreator');
@@ -1129,11 +1132,13 @@ class Tx_Commerce_Hook_DataMapHooks {
 				}
 
 					// load dynaflex config
+				/** @noinspection PhpIncludeInspection */
 				require_once(t3lib_extMgm::extPath('commerce') . 'Configuration/DCA/Product.php');
 			break;
 
 			case 'tx_commerce_articles':
 					// articles always load dynaflex config
+				/** @noinspection PhpIncludeInspection */
 				require_once(t3lib_extMgm::extPath('commerce') . 'Configuration/DCA/Articles.php');
 				$dynaFlexConf['workingTable'] = 'tx_commerce_articles';
 			break;
@@ -1175,6 +1180,8 @@ class Tx_Commerce_Hook_DataMapHooks {
 		if ($loadDynaFlex && t3lib_extMgm::isLoaded('dynaflex') && !empty($dynaFlexConf) && (!isset($GLOBALS['BE_USER']->uc['txcommerce_copyProcess']) || !$GLOBALS['BE_USER']->uc['txcommerce_copyProcess'])) {
 			$dynaFlexConf[0]['uid'] = $id;
 			$dynaFlexConf[1]['uid'] = $id;
+
+			/** @noinspection PhpIncludeInspection */
 			require_once(t3lib_extMgm::extPath('dynaflex') . 'class.dynaflex.php');
 
 			$dynaflex = t3lib_div::makeInstance('dynaflex', $GLOBALS['TCA'], $dynaFlexConf);

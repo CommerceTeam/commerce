@@ -32,7 +32,7 @@ class tx_commerce_belib {
 	/**
 	 * This gets all categories for a product from the database (even those that are not direct).
 	 *
-	 * @param integer $pUid: The UID of the product
+	 * @param integer $pUid The UID of the product
 	 * @return array An array of UIDs of all categories for this product
 	 */
 	public function getCategoriesForProductFromDB($pUid) {
@@ -73,10 +73,10 @@ class tx_commerce_belib {
 	 * through pUid. It can also fetch information about the attribute and a list of attribute
 	 * values if the attribute has a valuelist.
 	 *
-	 * @param	integer		$pUid: The uid of the product
-	 * @param	boolean		$separateCT1: If this is true, all attributes with ct1 will be saved in a separated result section
-	 * @param	boolean		$addAttributeData: If true, all information about the attributes will be fetched from the database (default is false)
-	 * @param	boolean		$getValueListData: If this is true and additional data is fetched and an attribute has a valuelist, this gets the values for the list (default is false)
+	 * @param integer $pUid: The uid of the product
+	 * @param boolean $separateCT1: If this is true, all attributes with ct1 will be saved in a separated result section
+	 * @param boolean $addAttributeData: If true, all information about the attributes will be fetched from the database (default is false)
+	 * @param boolean $getValueListData: If this is true and additional data is fetched and an attribute has a valuelist, this gets the values for the list (default is false)
 	 * @return array of attributes
 	 */
 	public function getAttributesForProduct($pUid, $separateCT1 = FALSE, $addAttributeData = FALSE, $getValueListData = FALSE) {
@@ -91,7 +91,7 @@ class tx_commerce_belib {
 		$res = $database->exec_SELECTquery(
 			'distinct *',
 			'tx_commerce_products_attributes_mm',
-			'uid_local=' . intval($pUid),
+			'uid_local=' . (int) $pUid,
 			'',
 			'sorting, uid_foreign DESC, uid_correlationtype ASC'
 		);
@@ -106,8 +106,9 @@ class tx_commerce_belib {
 				$aRes = $database->exec_SELECTquery(
 					'*',
 					'tx_commerce_attributes',
-					'uid=' . intval($relData['uid_foreign']) . $this->enableFields('tx_commerce_attributes'),
-					'', 'uid'
+					'uid=' . (int) $relData['uid_foreign'] . $this->enableFields('tx_commerce_attributes'),
+					'',
+					'uid'
 				);
 				$aData = $database->sql_fetch_assoc($aRes);
 				$relData['attributeData'] = $aData;
@@ -116,8 +117,9 @@ class tx_commerce_belib {
 					$vlRes = $database->exec_SELECTquery(
 						'*',
 						'tx_commerce_attribute_values',
-						'attributes_uid=' . intval($aData['uid']) . $this->enableFields('tx_commerce_attribute_values'),
-						'', 'uid'
+						'attributes_uid=' . (int) $aData['uid'] . $this->enableFields('tx_commerce_attribute_values'),
+						'',
+						'uid'
 					);
 					$vlData = array();
 					while ($vlEntry = $database->sql_fetch_assoc($vlRes)) {
@@ -126,12 +128,10 @@ class tx_commerce_belib {
 
 					$relData['valueList'] = $vlData;
 				}
-				if ($aData['has_valuelist']) {
-					$relData['has_valuelist'] = '1';
-				} else {
-					$relData['has_valuelist'] = '0';
-				}
+
+				$relData['has_valuelist'] = $aData['has_valuelist'] ? '1' : '0';
 			}
+
 			if (empty($relData)) {
 				continue;
 			}
@@ -155,41 +155,40 @@ class tx_commerce_belib {
 	/**
 	 *  Fetch all parent categories for a given category.
 	 *
-	 * @param	integer		$cUid: The UID of the category that is the startingpoint
-	 * @param	array		$cUidList: A list of category UIDs. PASSED BY REFERENCE
-	 * @param	integer		$dontAdd: A single UID, if this is found in the parent results, it's not added to the list
-	 * @param	integer		$excludeUid: If the current cUid is like this UID the cUid is not processed at all
-	 * @param	boolean		$recursive: If true, this method calls itself for each category if finds
-	 * @return	void
+	 * @param integer $cUid: The UID of the category that is the startingpoint
+	 * @param array $cUidList: A list of category UIDs. PASSED BY REFERENCE
+	 * @param integer $dontAdd: A single UID, if this is found in the parent results, it's not added to the list
+	 * @param integer $excludeUid: If the current cUid is like this UID the cUid is not processed at all
+	 * @param boolean $recursive: If true, this method calls itself for each category if finds
+	 * @return void
 	 */
 	public function getParentCategories($cUid, &$cUidList, $dontAdd = 0, $excludeUid = 0, $recursive = TRUE) {
-		if (strlen((string)$cUid) == 0) {
-			return;
-		}
+		if (strlen((string) $cUid) > 0) {
+			/** @var t3lib_db $database */
+			$database = $GLOBALS['TYPO3_DB'];
 
-		/** @var t3lib_db $database */
-		$database = $GLOBALS['TYPO3_DB'];
+				// add the submitted uid to the list if it is bigger than 0 and not already in the list
+			if ($cUid > 0 && $cUid != $excludeUid) {
+				if (!in_array($cUid, $cUidList) && $cUid != $dontAdd) {
+					$cUidList[] = $cUid;
+				}
 
-			// add the submitted uid to the list if it is bigger than 0 and not already in the list
-		if ($cUid > 0 && $cUid != $excludeUid) {
-			if (!in_array($cUid, $cUidList) && $cUid != $dontAdd) {
-				$cUidList[] = $cUid;
-			}
+				$res = $database->exec_SELECTquery(
+					'uid_foreign',
+					'tx_commerce_categories_parent_category_mm',
+					'uid_local=' . (int) $cUid,
+					'',
+					'uid_foreign'
+				);
 
-			$res = $database->exec_SELECTquery(
-				'uid_foreign',
-				'tx_commerce_categories_parent_category_mm',
-				'uid_local=' . intval($cUid),
-				'', 'uid_foreign'
-			);
-
-			while ($relData = $database->sql_fetch_assoc($res)) {
-				if ($recursive) {
-					$this->getParentCategories($relData['uid_foreign'], $cUidList, $cUid, $excludeUid);
-				} else {
-					$cUid = $relData['uid_foreign'];
-					if (!in_array($cUid, $cUidList) && $cUid != $dontAdd) {
-						$cUidList[] = $cUid;
+				while ($relData = $database->sql_fetch_assoc($res)) {
+					if ($recursive) {
+						$this->getParentCategories($relData['uid_foreign'], $cUidList, $cUid, $excludeUid);
+					} else {
+						$cUid = $relData['uid_foreign'];
+						if (!in_array($cUid, $cUidList) && $cUid != $dontAdd) {
+							$cUidList[] = $cUid;
+						}
 					}
 				}
 			}
@@ -199,43 +198,41 @@ class tx_commerce_belib {
 	/**
 	 * Get all categories that have this one as parent.
 	 *
-	 * @param	integer		$cUid: The UID of the category that is the startingpoint
-	 * @param	array		$cUidList: A list of category UIDs. PASSED BY REFERENCE
-	 * @param	integer		$dontAdd: A single UID, if this is found in the parent results, it's not added to the list
-	 * @param	integer		$excludeUid: If the current cUid is like this UID the cUid is not processed at all
-	 * @param	boolean		$recursive: If true, this method calls itself for each category if finds
-	 * @return	void
+	 * @param integer $cUid: The UID of the category that is the startingpoint
+	 * @param array $cUidList: A list of category UIDs. PASSED BY REFERENCE
+	 * @param integer $dontAdd: A single UID, if this is found in the parent results, it's not added to the list
+	 * @param integer $excludeUid: If the current cUid is like this UID the cUid is not processed at all
+	 * @param boolean $recursive: If true, this method calls itself for each category if finds
+	 * @return void
 	 */
 	public function getChildCategories($cUid, &$cUidList, $dontAdd = 0, $excludeUid = 0, $recursive = TRUE) {
-		if (strlen((string) $cUid) == 0) {
-			return;
-		}
+		if (strlen((string) $cUid) > 0) {
+			/** @var t3lib_db $database */
+			$database = $GLOBALS['TYPO3_DB'];
 
-		/** @var t3lib_db $database */
-		$database = $GLOBALS['TYPO3_DB'];
+				// add the submitted uid to the list if it is bigger than 0 and not already in the list
+			if ($cUid > 0 && $cUid != $excludeUid) {
+				if (!in_array($cUid, $cUidList) && $cUid != $dontAdd) {
+					$cUidList[] = $cUid;
+				}
 
-			// add the submitted uid to the list if it is bigger than 0 and not already in the list
-		if ($cUid > 0 && $cUid != $excludeUid) {
-			if (!in_array($cUid, $cUidList) && $cUid != $dontAdd) {
-				$cUidList[] = $cUid;
-			}
+				$res = $database->exec_SELECTquery(
+					'uid_local',
+					'tx_commerce_categories_parent_category_mm',
+					'uid_foreign=' . (int) $cUid,
+					'',
+					'uid_local'
+				);
 
-			$res = $database->exec_SELECTquery(
-				'uid_local',
-				'tx_commerce_categories_parent_category_mm',
-				'uid_foreign=' . intval($cUid),
-				'',
-				'uid_local'
-			);
-
-			if ($res) {
-			while ($relData = $database->sql_fetch_assoc($res)) {
-				if ($recursive) {
-					$this->getChildCategories($relData['uid_local'], $cUidList, $cUid, $excludeUid);
-				} else {
-					$cUid = $relData['uid_local'];
-						if (!in_array($cUid, $cUidList) && $cUid != $dontAdd) {
-							$cUidList[] = $cUid;
+				if ($res) {
+					while ($relData = $database->sql_fetch_assoc($res)) {
+						if ($recursive) {
+							$this->getChildCategories($relData['uid_local'], $cUidList, $cUid, $excludeUid);
+						} else {
+							$cUid = $relData['uid_local'];
+							if (!in_array($cUid, $cUidList) && $cUid != $dontAdd) {
+								$cUidList[] = $cUid;
+							}
 						}
 					}
 				}
@@ -248,8 +245,8 @@ class tx_commerce_belib {
 	 * calls the "getParentCategories" method. That one will work recursive.
 	 * The result will be written into the argument cUidList.
 	 *
-	 * @param	array		$cUidList: The list of category UIDs PASSED BY REFERENCE
-	 * @return	void
+	 * @param array $cUidList: The list of category UIDs PASSED BY REFERENCE
+	 * @return void
 	 */
 	public function getParentCategoriesFromList(&$cUidList) {
 		if (is_array($cUidList)) {
@@ -262,11 +259,11 @@ class tx_commerce_belib {
 	/**
 	 * Returns an array with the data for a single category.
 	 *
-	 * @param	integer		$cUid: The UID of the category
-	 * @param	string		$select: The WHERE part of the query
-	 * @param	string		$groupBy: The GROUP BY part of the query
-	 * @param	string		$orderBy: The ORDER BY part of the query
-	 * @return	array An associative array with the data of the category
+	 * @param integer $cUid: The UID of the category
+	 * @param string $select: The WHERE part of the query
+	 * @param string $groupBy: The GROUP BY part of the query
+	 * @param string $orderBy: The ORDER BY part of the query
+	 * @return array An associative array with the data of the category
 	 */
 	public function getCategoryData($cUid, $select = '*', $groupBy = '', $orderBy = '') {
 		/** @var t3lib_db $database */
@@ -275,7 +272,7 @@ class tx_commerce_belib {
 		$result = $database->exec_SELECTquery(
 			$select,
 			'tx_commerce_categories',
-			'uid=' . intval($cUid),
+			'uid=' . (int) $cUid,
 			$groupBy,
 			$orderBy
 		);
@@ -306,35 +303,35 @@ class tx_commerce_belib {
 				}
 			}
 		}
+
 		return $result;
 	}
 
 	/**
 	 * This fetches all attributes that are assigned to a category.
 	 *
-	 * @param	integer		$cUid: the uid of the category
-	 * @param	integer		$ct: the correlationtype (can be null)
-	 * @param	array		$excludeAttributes: Array with attributes (the method expects a field called uid_foreign)
-	 * @param	string		$uidField: The name of the field in the excludeAttributes array that holds the uid of the attributes
+	 * @param integer $categoryUid: the uid of the category
+	 * @param integer $correlationtype: the correlationtype (can be null)
+	 * @param array $excludeAttributes: Array with attributes (the method expects a field called uid_foreign)
 	 * @return array of attributes
 	 */
-	public function getAttributesForCategory($cUid, $ct = NULL, $excludeAttributes = NULL, $uidField = 'uid') {
+	public function getAttributesForCategory($categoryUid, $correlationtype = NULL, $excludeAttributes = NULL) {
 		/** @var t3lib_db $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
 			// build the basic query
-		$where = 'uid_local=' . $cUid;
+		$where = 'uid_local=' . $categoryUid;
 
 			// select only for a special correlation type?
-		if ($ct != NULL) {
-			$where .= ' AND uid_correlationtype=' . intval($ct);
+		if ($correlationtype != NULL) {
+			$where .= ' AND uid_correlationtype=' . (int) $correlationtype;
 		}
 
 			// should we exclude some attributes
 		if (is_array($excludeAttributes) && count($excludeAttributes) > 0) {
 			$eAttributes = array();
 			foreach ($excludeAttributes as $eAttribute) {
-				$eAttributes[] = (int)$eAttribute['uid_foreign'];
+				$eAttributes[] = (int) $eAttribute['uid_foreign'];
 			}
 			$where .= ' AND uid_foreign NOT IN (' . implode(',', $eAttributes) . ')';
 		}
@@ -360,8 +357,8 @@ class tx_commerce_belib {
 	/**
 	 * Returns the title of an attribute.
 	 *
-	 * @param	integer		$aUid: The UID of the attribute
-	 * @return	string The title of the attribute as string
+	 * @param integer $aUid: The UID of the attribute
+	 * @return string The title of the attribute as string
 	 */
 	public function getAttributeTitle($aUid) {
 		$attribute = $this->getAttributeData($aUid, 'title');
@@ -371,14 +368,14 @@ class tx_commerce_belib {
 	/**
 	 * Returns a list of Titles for a list of attributes.
 	 *
-	 * @param	array		$attributeList: An array of attributes (complete datasets with at least one field that contains the UID of an attribute)
-	 * @param	string		$uidField: The name of the array key in the attributeList that contains the UID
+	 * @param array $attributeList: An array of attributes (complete datasets with at least one field that contains the UID of an attribute)
+	 * @param string $uidField: The name of the array key in the attributeList that contains the UID
 	 * @return array of attribute titles as strings
 	 */
 	public function getAttributeTitles($attributeList, $uidField = 'uid') {
 		$result = array();
-		if (is_array($attributeList) && count($attributeList) > 0)	{
-			foreach ($attributeList as $attribute)	{
+		if (is_array($attributeList) && count($attributeList) > 0) {
+			foreach ($attributeList as $attribute) {
 				$result[] = $this->getAttributeTitle($attribute[$uidField]);
 			}
 		}
@@ -393,8 +390,9 @@ class tx_commerce_belib {
 	 * @return array associative array with the attributeData
 	 */
 	public function getAttributeData($aUid, $select = '*') {
-		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($select, 'tx_commerce_attributes', 'uid=' . intval($aUid));
-		return $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
+		/** @var t3lib_db $database */
+		$database = $GLOBALS['TYPO3_DB'];
+		return $database->exec_SELECTgetSingleRow($select, 'tx_commerce_attributes', 'uid = ' . (int) $aUid);
 	}
 
 	/**
@@ -405,37 +403,39 @@ class tx_commerce_belib {
 	 * or you submit the data from the relation table and the data from the attribute table if this
 	 * data is already present.
 	 *
-	 * @param	integer		$pUid: The product UID
-	 * @param	integer		$aUid: The attribute UID
-	 * @param	string		$relationTable: The table where the relations between prodcts and attributes are stored
-	 * @param	array		$relationData: The relation dataset between the product and the attribute (default NULL)
-	 * @param	array		$attributeData: The meta data (has_valuelist, unit) for the attribute you want to get the value from (default NULL)
+	 * @param integer $pUid: The product UID
+	 * @param integer $aUid: The attribute UID
+	 * @param string $relationTable: The table where the relations between prodcts and attributes are stored
+	 * @param array $relationData: The relation dataset between the product and the attribute (default NULL)
+	 * @param array $attributeData: The meta data (has_valuelist, unit) for the attribute you want to get the value from (default NULL)
 	 * @return string The value of the attribute. It's maybe appended with the unit of the attribute
 	 */
 	public function getAttributeValue($pUid, $aUid, $relationTable, $relationData = NULL, $attributeData = NULL) {
 		/** @var t3lib_db $database */
-		$database = & $GLOBALS['TYPO3_DB'];
+		$database = $GLOBALS['TYPO3_DB'];
+
 		if ($relationData == NULL || $attributeData == NULL) {
 				// data from database if one of the arguments is NULL. This nesccessary
 				// to keep the data consistant
 			$relRes = $database->exec_SELECTquery(
 				'uid_valuelist,default_value,value_char',
 				$relationTable,
-				'uid_local=' . intval($pUid) . ' AND uid_foreign=' . intval($aUid)
+				'uid_local = ' . (int) $pUid . ' AND uid_foreign = ' . (int) $aUid
 			);
 			$relationData = $database->sql_fetch_assoc($relRes);
 
 			$attributeData = $this->getAttributeData($aUid, 'has_valuelist,unit');
 		}
-		if ($attributeData['has_valuelist'] == '1')	{
-			if ($attributeData['multiple'] == 1)	{
+
+		if ($attributeData['has_valuelist'] == '1') {
+			if ($attributeData['multiple'] == 1) {
 				$result = array();
-				if (is_array($relationData))	{
-					foreach ($relationData as $relation)	{
+				if (is_array($relationData)) {
+					foreach ($relationData as $relation) {
 						$valueRes = $database->exec_SELECTquery(
 							'value',
 							'tx_commerce_attribute_values',
-							'uid=' . intval($relation['uid_valuelist']) . $this->enableFields('tx_commerce_attribute_values')
+							'uid = ' . (int) $relation['uid_valuelist'] . $this->enableFields('tx_commerce_attribute_values')
 						);
 						$value = $database->sql_fetch_assoc($valueRes);
 						$result[] = $value['value'];
@@ -448,12 +448,12 @@ class tx_commerce_belib {
 				$valueRes = $database->exec_SELECTquery(
 					'value',
 					'tx_commerce_attribute_values',
-					'uid=' . intval($relationData['uid_valuelist']) . $this->enableFields('tx_commerce_attribute_values')
+					'uid = ' . (int) $relationData['uid_valuelist'] . $this->enableFields('tx_commerce_attribute_values')
 				);
 				$value = $database->sql_fetch_assoc($valueRes);
 				return $value['value'];
 			}
-		} elseif (!empty($relationData['value_char']))	{
+		} elseif (!empty($relationData['value_char'])) {
 				// the value is in field default_value
 			return $relationData['value_char'] . ' ' . $attributeData['unit'];
 		} else {
@@ -469,12 +469,14 @@ class tx_commerce_belib {
 	 * @return integer The correlationtype
 	 */
 	public function getCtForAttributeOfProduct($aUid, $pUid) {
-		$ctRes = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+		/** @var t3lib_db $database */
+		$database = $GLOBALS['TYPO3_DB'];
+		$ctRes = $database->exec_SELECTquery(
 			'uid_correlationtype',
 			'tx_commerce_products_attributes_mm',
-			'uid_local=' . intval($pUid) . ' AND uid_foreign=' . intval($aUid)
+			'uid_local = ' . (int) $pUid . ' AND uid_foreign = ' . (int) $aUid
 		);
-		$uidCT = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($ctRes);
+		$uidCT = $database->sql_fetch_assoc($ctRes);
 		return $uidCT['uid_correlationtype'];
 	}
 
@@ -484,15 +486,16 @@ class tx_commerce_belib {
 	/**
 	 * Return all articles that where created from a given product.
 	 *
-	 * @param	integer		$pUid: The UID of the product
+	 * @param integer $pUid: The UID of the product
 	 * @param string $additionalWhere
 	 * @param string $orderBy
 	 * @return array of article datasets as assoc array or false if nothing was found
-	 *
-	 * @since 20.12.2005 Check if article exists
 	 */
 	public function getArticlesOfProduct($pUid, $additionalWhere = '', $orderBy = '') {
-		$where = 'uid_product=' . intval($pUid);
+		/** @var t3lib_db $database */
+		$database = $GLOBALS['TYPO3_DB'];
+
+		$where = 'uid_product=' . (int) $pUid;
 
 		$where .= ' AND deleted=0';
 
@@ -500,10 +503,10 @@ class tx_commerce_belib {
 			$where .= ' AND ' . $additionalWhere;
 		}
 
-		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'tx_commerce_articles', $where, '', $orderBy);
-		if ($res && $GLOBALS['TYPO3_DB']->sql_num_rows($res) > 0)	{
+		$res = $database->exec_SELECTquery('*', 'tx_commerce_articles', $where, '', $orderBy);
+		if ($res && $database->sql_num_rows($res) > 0) {
 			$result = array();
-			while ($article = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res))	{
+			while ($article = $database->sql_fetch_assoc($res)) {
 				$result[] = $article;
 			}
 			return $result;
@@ -515,24 +518,25 @@ class tx_commerce_belib {
 	/**
 	 * Return all articles that where created from a given product.
 	 *
-	 * @param	integer		$pUid: The UID of the product
+	 * @param integer $pUid: The UID of the product
 	 * @param string $additionalWhere
 	 * @param string $orderBy
 	 * @return array of article UIDs, ready to implode for coma separed list
-	 *
-	 * @since 20.12.2005 Check if article exists
 	 */
 	public function getArticlesOfProductAsUidList($pUid, $additionalWhere = '', $orderBy = '') {
-		$where = 'uid_product=' . $pUid . ' AND deleted=0';
+		/** @var t3lib_db $database */
+		$database = $GLOBALS['TYPO3_DB'];
+
+		$where = 'uid_product = ' . (int) $pUid . ' AND deleted = 0';
 
 		if ($additionalWhere != '') {
 			$where .= ' AND ' . $additionalWhere;
 		}
 
-		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid', 'tx_commerce_articles', $where, '', $orderBy);
-		if ($res && $GLOBALS['TYPO3_DB']->sql_num_rows($res) > 0)	{
+		$res = $database->exec_SELECTquery('uid', 'tx_commerce_articles', $where, '', $orderBy);
+		if ($res && $database->sql_num_rows($res) > 0) {
 			$result = array();
-			while ($article = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res))	{
+			while ($article = $database->sql_fetch_assoc($res)) {
 				$result[] = $article['uid'];
 			}
 			return $result;
@@ -544,21 +548,24 @@ class tx_commerce_belib {
 	/**
 	 * Returns the product from which an article was created.
 	 *
-	 * @param	integer		$aUid: Article UID
-	 * @param	string		$getProductData: which fields should be returned of the product. This is a comma separated list (default *)
-	 * @return	integer the "getProductData" param is empty, this returnss the UID as integer, otherwise it returns an associative array of the dataset
+	 * @param integer $aUid: Article UID
+	 * @param string $getProductData: which fields should be returned of the product. This is a comma separated list (default *)
+	 * @return integer the "getProductData" param is empty, this returnss the UID as integer, otherwise it returns an associative array of the dataset
 	 */
 	public function getProductOfArticle($aUid, $getProductData = '*') {
-		$where = 'uid=' . intval($aUid) . ' AND deleted=0';
+		/** @var t3lib_db $database */
+		$database = $GLOBALS['TYPO3_DB'];
 
-		$proRes = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid_product', 'tx_commerce_articles', $where);
-		$proRes = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($proRes);
+		$where = 'uid=' . (int) $aUid . ' AND deleted=0';
 
-		if (strlen($getProductData) > 0)	{
-			$where = 'uid=' . intval($proRes['uid_product']);
-			$proRes = $GLOBALS['TYPO3_DB']->exec_SELECTquery($getProductData, 'tx_commerce_products', $where);
+		$proRes = $database->exec_SELECTquery('uid_product', 'tx_commerce_articles', $where);
+		$proRes = $database->sql_fetch_assoc($proRes);
 
-			$proRes = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($proRes);
+		if (strlen($getProductData) > 0) {
+			$where = 'uid = ' . (int) $proRes['uid_product'];
+			$proRes = $database->exec_SELECTquery($getProductData, 'tx_commerce_products', $where);
+
+			$proRes = $database->sql_fetch_assoc($proRes);
 			return $proRes;
 		} else {
 			return $proRes['uid_product'];
@@ -568,34 +575,34 @@ class tx_commerce_belib {
 	/**
 	 * Returns all attributes for an article
 	 *
-	 * @param	integer		$aUid: The article UID
-	 * @param	integer		$ct: The correlationtype
-	 * @param	array		$excludeAttributes: An array of relation datasets where the field "uid_foreign" is the UID of the attribute you don't want to get
-	 * @return	array of attributes
+	 * @param integer $aUid: The article UID
+	 * @param integer $ct: The correlationtype
+	 * @param array $excludeAttributes: An array of relation datasets where the field "uid_foreign" is the UID of the attribute you don't want to get
+	 * @return array of attributes
 	 */
 	public function getAttributesForArticle($aUid, $ct = NULL, $excludeAttributes = NULL) {
 			// build the basic query
 		$where = 'uid_local=' . $aUid;
 
-		if ($ct != NULL)	{
+		if ($ct != NULL) {
 			$pUid = $this->getProductOfArticle($aUid, 'uid');
 
 			$productAttributes = $this->getAttributesForProduct($pUid['uid']);
 			$ctAttributes = array();
-			if (is_array($productAttributes))	{
-				foreach ($productAttributes as $productAttribute)	{
-					if ($productAttribute['uid_correlationtype'] == $ct)	{
+			if (is_array($productAttributes)) {
+				foreach ($productAttributes as $productAttribute) {
+					if ($productAttribute['uid_correlationtype'] == $ct) {
 						$ctAttributes[] = $productAttribute['uid_foreign'];
 					}
 				}
-				if (count($ctAttributes) > 0)	{
+				if (count($ctAttributes) > 0) {
 					$where .= ' AND uid_foreign IN (' . implode(',', $ctAttributes) . ')';
 				}
 			}
 		}
 
 			// should we exclude some attributes
-		if (is_array($excludeAttributes) && count($excludeAttributes) > 0)	{
+		if (is_array($excludeAttributes) && count($excludeAttributes) > 0) {
 			$eAttributes = array();
 			foreach ($excludeAttributes as $eAttribute) {
 				$eAttributes[] = (int) $eAttribute['uid_foreign'];
@@ -603,39 +610,40 @@ class tx_commerce_belib {
 			$where .= ' AND uid_foreign NOT IN (' . implode(',', $eAttributes) . ')';
 		}
 
+		/** @var t3lib_db $database */
+		$database = $GLOBALS['TYPO3_DB'];
+
 			// execute the query
-		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+		$result = (array) $database->exec_SELECTgetRows(
 			'*',
 			'tx_commerce_articles_article_attributes_mm',
 			$where
 		);
 
-			// build the result and return it...
-		$result = array();
-		while ($attribute = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res))	{
-			$result[] = $attribute;
-		}
 		return $result;
 	}
 
 	/**
 	 * Returns the hash value for the ct1 select attributes for an article.
 	 *
-	 * @param	integer		$aUid: the uid of the article
-	 * @param	array		$fullAttributeList: The list of uids for the attributes that are assigned to the article
+	 * @param integer $aUid: the uid of the article
+	 * @param array $fullAttributeList: The list of uids for the attributes that are assigned to the article
 	 * @return string
 	 */
 	public function getArticleHash($aUid, $fullAttributeList) {
+		/** @var t3lib_db $database */
+		$database = $GLOBALS['TYPO3_DB'];
+
 		$hashData = array();
 
-		if (count($fullAttributeList) > 0)	{
-			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+		if (count($fullAttributeList) > 0) {
+			$res = $database->exec_SELECTquery(
 				'*',
 				'tx_commerce_articles_article_attributes_mm',
-				'uid_local=' . intval($aUid) . ' AND uid_foreign IN (' . implode(',', $fullAttributeList) . ')'
+				'uid_local=' . (int) $aUid . ' AND uid_foreign IN (' . implode(',', $fullAttributeList) . ')'
 			);
 
-			while ($attributeData = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res))	{
+			while ($attributeData = $database->sql_fetch_assoc($res)) {
 				$hashData[$attributeData['uid_foreign']] = $attributeData['uid_valuelist'];
 			}
 			asort($hashData);
@@ -649,15 +657,16 @@ class tx_commerce_belib {
 	/**
 	 * Updates an article and recalculates the hash value for the assigned attributes.
 	 *
-	 * @param	integer		$aUid: the uid of the article
-	 * @param	array		$fullAttributeList: The list of uids for the attributes that are assigned to the article
+	 * @param integer $aUid: the uid of the article
+	 * @param array $fullAttributeList: The list of uids for the attributes that are assigned to the article
+	 * @return void
 	 */
 	public function updateArticleHash($aUid, $fullAttributeList = NULL) {
-		if ($fullAttributeList == NULL)	{
+		if ($fullAttributeList == NULL) {
 			$fullAttributeList = array();
 			$articleAttributes = $this->getAttributesForArticle($aUid, 1);
-			if (count($articleAttributes) > 0)	{
-				foreach ($articleAttributes as $articleAttribute)	{
+			if (count($articleAttributes) > 0) {
+				foreach ($articleAttributes as $articleAttribute) {
 					$fullAttributeList[] = $articleAttribute['uid_foreign'];
 				}
 			}
@@ -665,21 +674,24 @@ class tx_commerce_belib {
 
 		$hash = $this->getArticleHash($aUid, $fullAttributeList);
 
+		/** @var t3lib_db $database */
+		$database = $GLOBALS['TYPO3_DB'];
+
 			// update the article
-		$GLOBALS['TYPO3_DB']->exec_UPDATEquery(
+		$database->exec_UPDATEquery(
 			'tx_commerce_articles',
 			'uid=' . $aUid,
 			array ('attribute_hash' => $hash)
 		);
 	}
 
-	/** DIV **/
+	/** Diverse **/
 
 	/**
 	 * proofs if there are non numeric chars in it
 	 *
-	 * @param	string		$data: string to check for a number
-	 * @return length of wrong chars
+	 * @param string $data: string to check for a number
+	 * @return integer length of wrong chars
 	 */
 	public function isNumber($data) {
 		$charArray = array(1, 2, 3, 4, 5, 6, 7, 8, 9, 0, '.');
@@ -690,25 +702,21 @@ class tx_commerce_belib {
 	 * This method returns the last part of a string.
 	 * It splits up the string at the underscores.
 	 * If the key doesn't contain any underscores, it returns
-	 * the intval of the key.
+	 * the integer of the key.
 	 *
-	 * @param	string		$key: The key string (e.g.: bla_fasel_12)
-	 * @param	array		$keyData: the result from the explode method (PASSED BY REFERENCE)
-	 * @return	Integer value of the last part from the key
-	 *
-	 * @since 13.12.2005 changed $keyData from refference to Array ingo schmitt <is@marketing-factory.de>
-	 * @since 03.01.2006 changed $keyData to refference from Array ingo schmitt <is@marketing-factory.de>
-	 *
+	 * @param string $key: The key string (e.g.: bla_fasel_12)
+	 * @param array $keyData: the result from the explode method (PASSED BY REFERENCE)
+	 * @return integer value of the last part from the key
 	 */
 	public static function getUidFromKey($key, &$keyData) {
 		$uid = 0;
 
 		if (strpos($key, '_') === FALSE) {
-			$uid = intval($key);
+			$uid = (int) $key;
 		} else {
 			$keyData = @explode('_', $key);
-			if (is_array($keyData))	{
-				$uid = intval($keyData[(count($keyData) - 1)]);
+			if (is_array($keyData)) {
+				$uid = (int) $keyData[(count($keyData) - 1)];
 			}
 		}
 
@@ -718,29 +726,31 @@ class tx_commerce_belib {
 	/**
 	 * Searches for a string in an array of arrays.
 	 *
-	 * @param	string		$needle: The string you want to check for
-	 * @param	array		$array: The array you want to search in
-	 * @param	string		$field: The fieldname of the inside arrays in the search array
+	 * @param string $needle: The string you want to check for
+	 * @param array $array: The array you want to search in
+	 * @param string $field: The fieldname of the inside arrays in the search array
 	 * @return boolean if the needle was found, otherwise false
 	 */
 	public function checkArray($needle, $array, $field) {
-		if (!is_array($array)) {
-			return FALSE;
-		}
-		foreach ($array as $entry)	{
-			if ($needle == $entry[$field]) {
-				return TRUE;
+		$result = FALSE;
+
+		if (is_array($array)) {
+			foreach ($array as $entry) {
+				if ($needle == $entry[$field]) {
+					$result = TRUE;
+				}
 			}
 		}
-		return FALSE;
+
+		return $result;
 	}
 
 	/**
 	 * Returns the "enable fields" for a sql query.
 	 *
-	 * @param	string		$table: The table for the query
-	 * @param	boolean		$getDeleted: Flag if deleted entries schould be returned
-	 * @return	A SQL-string with the enable fields
+	 * @param string $table: The table for the query
+	 * @param boolean $getDeleted: Flag if deleted entries schould be returned
+	 * @return string A SQL-string with the enable fields
 	 */
 	public function enableFields($table, $getDeleted = FALSE) {
 		$result = t3lib_befunc::BEenableFields($table);
@@ -755,18 +765,18 @@ class tx_commerce_belib {
 	 *
 	 * @see $this->getUidFromKey
 	 *
-	 * @param	array		$list: The list of strings
+	 * @param array $list: The list of strings
 	 * @return array with extracted UIDs
 	 */
 	public static function getUidListFromList($list) {
 		$result = array();
 		if (is_array($list)) {
-		    foreach ($list as $item)	{
+			foreach ($list as $item) {
 				$uid = self::getUidFromKey($item, $keyData);
 				if ($uid > 0) {
 					$result[] = $uid;
 				}
-		    }
+			}
 		}
 		return $result;
 	}
@@ -774,29 +784,32 @@ class tx_commerce_belib {
 	/**
 	 * Saves all relations between two tables. For example all relations between products and articles.
 	 *
-	 * @param	integer		$uid_local: The uid_local in the mm table
-	 * @param	array		$relationData: An array with the data that should be stored additionally in the relation table
-	 * @param	string		$relationTable: The table where the relations are stored
-	 * @param	boolean		$delete: Delete all old relations
-	 * @param	boolean		$withReference: If true, the field "is_reference" is inserted into the database
-	 * @return	void
+	 * @param integer $uid_local: The uid_local in the mm table
+	 * @param array $relationData: An array with the data that should be stored additionally in the relation table
+	 * @param string $relationTable: The table where the relations are stored
+	 * @param boolean $delete: Delete all old relations
+	 * @param boolean $withReference: If true, the field "is_reference" is inserted into the database
+	 * @return void
 	 */
 	public static function saveRelations($uid_local, $relationData, $relationTable, $delete = FALSE, $withReference = TRUE) {
 		$delWhere = array();
 		$counter = 1;
 
+		/** @var t3lib_db $database */
+		$database = $GLOBALS['TYPO3_DB'];
+
 		if (is_array($relationData)) {
-			foreach ($relationData as $relation)	{
-				$where = 'uid_local=' . intval($uid_local);
-				$dataArray = array ('uid_local' => $uid_local);
+			foreach ($relationData as $relation) {
+				$where = 'uid_local=' . (int) $uid_local;
+				$dataArray = array ('uid_local' => (int) $uid_local);
 
 				if (is_array($relation)) {
-					foreach ($relation as $key => $data)	{
+					foreach ($relation as $key => $data) {
 						$dataArray[$key] = $data;
 						$where .= ' AND ' . $key . '=\'' . $data . '\'';
 					}
 				}
-				if ($withReference && ($counter > 1))	{
+				if ($withReference && ($counter > 1)) {
 					$dataArray['is_reference'] = 1;
 					$where .= ' AND is_reference=1';
 				}
@@ -804,14 +817,13 @@ class tx_commerce_belib {
 				$dataArray['sorting'] = $counter;
 				$counter++;
 
-				$checkRes = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid_local', $relationTable, $where);
-				$exists = ($GLOBALS['TYPO3_DB']->sql_num_rows($checkRes) > 0);
+				$checkRes = $database->exec_SELECTquery('uid_local', $relationTable, $where);
+				$exists = $database->sql_num_rows($checkRes) > 0;
 
-				if (!$exists)	{
-				    $GLOBALS['TYPO3_DB']->exec_INSERTquery($relationTable, $dataArray);
+				if (!$exists) {
+					$database->exec_INSERTquery($relationTable, $dataArray);
 				} else {
-
-					$GLOBALS['TYPO3_DB']->exec_UPDATEquery($relationTable, $where, array('sorting' => $counter));
+					$database->exec_UPDATEquery($relationTable, $where, array('sorting' => $counter));
 				}
 
 				if (isset($relation['uid_foreign'])) {
@@ -821,17 +833,15 @@ class tx_commerce_belib {
 					}
 					$delWhere[] = $delClause;
 				}
-		    }
+			}
 		}
 
 		if ($delete && (count($delWhere) > 0)) {
 			$where = '';
-			if (count($delWhere) > 0)	{
+			if (count($delWhere) > 0) {
 				$where = ' AND NOT ((' . implode(') OR (', $delWhere) . '))';
 			}
-			$GLOBALS['TYPO3_DB']->exec_DELETEquery(
-				$relationTable,
-				'uid_local=' . $uid_local . $where
+			$database->exec_DELETEquery($relationTable, 'uid_local=' . $uid_local . $where
 			);
 		}
 	}
@@ -839,12 +849,15 @@ class tx_commerce_belib {
 	/**
 	 * Get all existing correlation types.
 	 *
-	 * @return	array with correlation type entities
+	 * @return array with correlation type entities
 	 */
 	public function getAllCorrelationTypes() {
-		$ctRes = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid', 'tx_commerce_attribute_correlationtypes', '1');
+		/** @var t3lib_db $database */
+		$database = $GLOBALS['TYPO3_DB'];
+
+		$ctRes = $database->exec_SELECTquery('uid', 'tx_commerce_attribute_correlationtypes', '1');
 		$result = array();
-		while ($ct = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($ctRes))	{
+		while ($ct = $database->sql_fetch_assoc($ctRes)) {
 			$result[] = $ct;
 		}
 		return $result;
@@ -859,17 +872,20 @@ class tx_commerce_belib {
 	 *
 	 * @see $this->updateXML
 	 *
-	 * @param	array		$articleRelations: The relation dataset for the article
-	 * @param	boolean		$add: If this is true, we fetch the existing data before. Otherwise we overwrite it
-	 * @param	integer		$articleUid: The UID of the article
-	 * @param	integer		$productUid: The UID of the product
-	 * @return	void
+	 * @param array $articleRelations: The relation dataset for the article
+	 * @param boolean $add: If this is true, we fetch the existing data before. Otherwise we overwrite it
+	 * @param integer $articleUid: The UID of the article
+	 * @param integer $productUid: The UID of the product
+	 * @return void
 	 */
 	public function updateArticleXML($articleRelations, $add = FALSE, $articleUid = NULL, $productUid = NULL) {
-	   $xmlData = array();
-	   if ($add && is_numeric($articleUid))	{
-			$xmlData = $GLOBALS['TYPO3_DB']->exec_SELECTquery('attributesedit', 'tx_commerce_articles', 'uid=' . intval($articleUid));
-			$xmlData = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($xmlData);
+		/** @var t3lib_db $database */
+		$database = $GLOBALS['TYPO3_DB'];
+
+		$xmlData = array();
+		if ($add && is_numeric($articleUid)) {
+			$result = $database->exec_SELECTquery('attributesedit', 'tx_commerce_articles', 'uid=' . (int) $articleUid);
+			$xmlData = $database->sql_fetch_assoc($result);
 			$xmlData = t3lib_div::xml2array($xmlData['attributesedit']);
 		}
 
@@ -877,33 +893,34 @@ class tx_commerce_belib {
 		/**
 		 * Build Relation Data
 		 */
+		$resRelationData = NULL;
 		if ($productUid) {
-			$resRelationData = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+			$resRelationData = $database->exec_SELECTquery(
 				'tx_commerce_articles_article_attributes_mm.*',
 				'tx_commerce_articles, tx_commerce_articles_article_attributes_mm',
-				' tx_commerce_articles.uid = tx_commerce_articles_article_attributes_mm.uid_local and tx_commerce_articles.uid_product = ' . intval($productUid)
+				' tx_commerce_articles.uid = tx_commerce_articles_article_attributes_mm.uid_local and tx_commerce_articles.uid_product = ' . (int) $productUid
 			);
 		}
 
 		if ($articleUid) {
-			$resRelationData = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+			$resRelationData = $database->exec_SELECTquery(
 				'tx_commerce_articles_article_attributes_mm.*',
 				'tx_commerce_articles, tx_commerce_articles_article_attributes_mm',
-				' tx_commerce_articles.uid = tx_commerce_articles_article_attributes_mm.uid_local and tx_commerce_articles.uid = ' . intval($articleUid)
+				' tx_commerce_articles.uid = tx_commerce_articles_article_attributes_mm.uid_local and tx_commerce_articles.uid = ' . (int) $articleUid
 			);
 		}
 
-		if ($GLOBALS['TYPO3_DB']->sql_num_rows($resRelationData) > 0) {
-			while ($relationRows = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($resRelationData)) {
+		if ($resRelationData !== NULL && $database->sql_num_rows($resRelationData) > 0) {
+			while ($relationRows = $database->sql_fetch_assoc($resRelationData)) {
 				$relationData[] = $relationRows;
 			}
 		}
 
-		if (is_array($relationData)) {
-		    foreach ($articleRelations as $articleRelation)	{
-				if ($articleRelation['uid_valuelist'] != 0)	{
+		if (count($relationData)) {
+			foreach ($articleRelations as $articleRelation) {
+				if ($articleRelation['uid_valuelist'] != 0) {
 					$value = $articleRelation['uid_valuelist'];
-				} elseif (!empty($articleRelation['value_char']))	{
+				} elseif (!empty($articleRelation['value_char'])) {
 					$value = $articleRelation['value_char'];
 				} else {
 					if ($articleRelation['default_value'] <> 0) {
@@ -914,19 +931,19 @@ class tx_commerce_belib {
 				}
 
 				$xmlData['data']['sDEF']['lDEF']['attribute_' . $articleRelation['uid_foreign']] = array('vDEF' => $value);
-		    }
+			}
 		}
 
 		$xmlData = t3lib_div::array2xml($xmlData, '', 0, 'T3FlexForms');
 
 		if ($articleUid) {
-			$GLOBALS['TYPO3_DB']->exec_UPDATEquery(
+			$database->exec_UPDATEquery(
 				'tx_commerce_articles',
 				'uid=' . $articleUid . ' AND deleted=0',
 				array('attributesedit' => $xmlData)
 			);
 		} elseif ($productUid) {
-			$GLOBALS['TYPO3_DB']->exec_UPDATEquery(
+			$database->exec_UPDATEquery(
 				'tx_commerce_articles',
 				'uid_product=' . $productUid . ' AND deleted=0',
 				array('attributesedit' => $xmlData)
@@ -939,24 +956,27 @@ class tx_commerce_belib {
 	 *
 	 * @see $this->updateArticleXML
 	 *
-	 * @param	string		$xmlField: The fieldname where the FlexForm values are stored
-	 * @param	string		$table: The table in which the FlexForm values are stored
-	 * @param	integer		$uid: The UID of the entity inside the table
-	 * @param	string		$type: The type of data we are handling (category, product)
-	 * @param	array		$ctList: A list of correlationtype UID we should handle
+	 * @param string $xmlField: The fieldname where the FlexForm values are stored
+	 * @param string $table: The table in which the FlexForm values are stored
+	 * @param integer $uid: The UID of the entity inside the table
+	 * @param string $type: The type of data we are handling (category, product)
+	 * @param array $ctList: A list of correlationtype UID we should handle
 	 * @param boolean $rebuild
-	 * @return	array		array($xmlField => $xmlData)
+	 * @return array array($xmlField => $xmlData)
 	 */
 	public function updateXML($xmlField, $table, $uid, $type, $ctList, $rebuild = FALSE) {
-		$xmlData = $GLOBALS['TYPO3_DB']->exec_SELECTquery($xmlField, $table, 'uid=' . intval($uid));
-		$xmlData = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($xmlData);
+		/** @var t3lib_db $database */
+		$database = $GLOBALS['TYPO3_DB'];
+
+		$xmlDataResult = $database->exec_SELECTquery($xmlField, $table, 'uid=' . (int) $uid);
+		$xmlData = $database->sql_fetch_assoc($xmlDataResult);
 		$xmlData = t3lib_div::xml2array($xmlData[$xmlField]);
 		if (!is_array($xmlData)) {
 			$xmlData = array();
 		}
 
 		$relList = NULL;
-		switch (strtolower($type))	{
+		switch (strtolower($type)) {
 			case 'category':
 				$relList = $this->getAttributesForCategory($uid);
 			break;
@@ -968,15 +988,15 @@ class tx_commerce_belib {
 		$cTypes = array();
 
 			// write the data
-		if (is_array($ctList))	{
-			foreach ($ctList as $ct)	{
+		if (is_array($ctList)) {
+			foreach ($ctList as $ct) {
 				$value = array();
 				if (is_array($relList)) {
-					foreach ($relList as $relation)	{
-						if ($relation['uid_correlationtype'] == (int)$ct['uid'])	{
-							// add ctype to checklist in case we need to rebuild
+					foreach ($relList as $relation) {
+						if ($relation['uid_correlationtype'] == (int) $ct['uid']) {
+								// add ctype to checklist in case we need to rebuild
 							if (!in_array($ct['uid'], $cTypes)) {
-								$cTypes[] = (int)$ct['uid'];
+								$cTypes[] = (int) $ct['uid'];
 							}
 
 							$value[] = $relation['uid_foreign'];
@@ -985,129 +1005,134 @@ class tx_commerce_belib {
 				}
 
 				if (count($value) > 0) {
-					$xmlData['data']['sDEF']['lDEF']['ct_' . (string)$ct['uid']] = array('vDEF' => (string)implode(',', $value));
+					$xmlData['data']['sDEF']['lDEF']['ct_' . (string) $ct['uid']] = array('vDEF' => (string) implode(',', $value));
 				}
 			}
 		}
 
-		// rebuild
+			// rebuild
 		if ($rebuild && 0 < count($cTypes) && is_array($ctList)) {
-			foreach ($ctList as $ct)	{
+			foreach ($ctList as $ct) {
 				if (!in_array($ct['uid'], $cTypes)) {
-					$xmlData['data']['sDEF']['lDEF']['ct_' . (string)$ct['uid']] = array('vDEF' => '');
+					$xmlData['data']['sDEF']['lDEF']['ct_' . (string) $ct['uid']] = array('vDEF' => '');
 				}
 			}
 		}
 
 			// build new XML
 		if (is_array($xmlData)) {
-			// Dump Quickfix
+				// Dump Quickfix
 			$xmlData = t3lib_div::array2xml($xmlData, '', 0, 'T3FlexForms');
 		} else {
 			$xmlData = '';
 		}
 
 			// update database entry
-		$GLOBALS['TYPO3_DB']->exec_UPDATEquery($table, 'uid=' . $uid, array($xmlField => $xmlData));
+		$database->exec_UPDATEquery($table, 'uid=' . $uid, array($xmlField => $xmlData));
 		return array($xmlField => $xmlData);
 	}
 
 	/**
 	 * Merges an attribute list from a flexform together into one array.
 	 *
-	 * @param	array		$ffData: The FlexForm data as array
-	 * @param	string		$prefix: The prefix that is used for the correlationtypes
-	 * @param	array		$ctList: The list of correlations that should be processed
-	 * @param	integer		$uid_local: The "uid_local" in the relation table
-	 * @param	array		$paList: The list of product attributes (PASSED BY REFERENCE)
-	 * @return	void
+	 * @param array $ffData: The FlexForm data as array
+	 * @param string $prefix: The prefix that is used for the correlationtypes
+	 * @param array $ctList: The list of correlations that should be processed
+	 * @param integer $uid_local: The "uid_local" in the relation table
+	 * @param array $paList: The list of product attributes (PASSED BY REFERENCE)
+	 * @return void
 	 */
 	public function mergeAttributeListFromFFData($ffData, $prefix, $ctList, $uid_local, &$paList) {
 		if (is_array($ctList)) {
-	    foreach ($ctList as $ctUid)	{
+			foreach ($ctList as $ctUid) {
 				$ffaList = explode(',', $ffData[$prefix . $ctUid['uid']]['vDEF']);
 				if (count($ffaList) == 1 && $ffaList[0] == '') {
 					continue;
 				}
-			foreach ($ffaList as $aUid)	{
-				if (!(
-					$this->checkArray($uid_local, $paList, 'uid_local') &&
-					$this->checkArray($aUid, $paList, 'uid_foreign') &&
-					$this->checkArray($ctUid['uid'], $paList, 'uid_correlationtype')
-				))	{
-						if ($aUid != '') {
-						$newRel = array(
-							'uid_local' => $uid_local,
-							'uid_foreign' => $aUid,
-							'uid_correlationtype' => $ctUid['uid']
-						);
 
-						$paList[] = $newRel;
+				foreach ($ffaList as $aUid) {
+					if (!(
+						$this->checkArray($uid_local, $paList, 'uid_local')
+						&& $this->checkArray($aUid, $paList, 'uid_foreign')
+						&& $this->checkArray($ctUid['uid'], $paList, 'uid_correlationtype')
+					)) {
+						if ($aUid != '') {
+							$newRel = array(
+								'uid_local' => $uid_local,
+								'uid_foreign' => $aUid,
+								'uid_correlationtype' => $ctUid['uid']
+							);
+
+							$paList[] = $newRel;
+						}
 					}
 				}
 			}
 		}
-	    }
 	}
 
 	/**
 	 * Extracts a fieldvalue from an associative array.
 	 *
-	 * @param	array		$array: The data array
-	 * @param	string		$field: The field that should be extracted
-	 * @param	boolean		$makeArray: If true the result is returned as an array of arrays
-	 * @param	array		$extraFields: Add some extra fields to the result
+	 * @param array $array: The data array
+	 * @param string $field: The field that should be extracted
+	 * @param boolean $makeArray: If true the result is returned as an array of arrays
+	 * @param array $extraFields: Add some extra fields to the result
 	 * @return array with fieldnames
 	 */
 	public static function extractFieldArray($array, $field, $makeArray = FALSE, $extraFields = array()) {
 		$result = array();
 		if (is_array($array)) {
-			foreach ($array as $data)	{
-			    if (!is_array($data) || (is_array($data) && !array_key_exists($field, $data)))	{
+			foreach ($array as $data) {
+				if (!is_array($data) || (is_array($data) && !array_key_exists($field, $data))) {
 					$item[$field] = $data;
-			    } else {
+				} else {
 					$item = $data;
-			    }
-			    if ($makeArray)	{
+				}
+				if ($makeArray) {
 					$newItem = array($field => $item[$field]);
 					if (count($extraFields)) {
 						foreach ($extraFields as $extraFieldName) {
 							$newItem[$extraFieldName] = $item[$extraFieldName];
 						}
 					}
-			    } else {
+				} else {
 					$newItem = $item[$field];
-			    }
+				}
 				if (!in_array($newItem, $result)) {
 					$result[] = $newItem;
 				}
 			}
-	    }
+		}
 		return $result;
 	}
 
 	/**
 	 * Return all productes that are related to a category.
 	 *
-	 * @param integer $cUid: The UID of the category.
+	 * @param integer $categoryUid: The UID of the category.
 	 * @return array with the entities of the found products
 	 */
-	public function getProductsOfCategory($cUid) {
-		$result = array();
-		$proRes = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'tx_commerce_products_categories_mm', 'uid_foreign=' . intval($cUid));
-		while ($proRel = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($proRes))	{
-			$result[] = $proRel;
-		}
+	public function getProductsOfCategory($categoryUid) {
+		/** @var t3lib_db $database */
+		$database = $GLOBALS['TYPO3_DB'];
+
+		$result = $database->exec_SELECTgetRows(
+			'*',
+			'tx_commerce_products_categories_mm',
+			'uid_foreign=' . (int) $categoryUid
+		);
+
 		return $result;
 	}
 
 	/**
-	 * Retruns and array for the UPDATEquery method. It fills different arrays with an attribute value.
+	 * Returns an array for the UPDATEquery method. It fills different arrays with an attribute value.
 	 * This wraper is needed because the fields have different names in different tables. I know that's stupid
 	 * but this is a fact... :-/
 	 *
 	 * @param array $attributeData: The data that should be stored
-	 * @param string|integer|boolean $data: The value of the attribute
+	 * @param string|integer $data: The value of the attribute
 	 * @param integer $productUid: The UID of the produt
 	 * @return array with two arrays as elements
 	 */
@@ -1140,14 +1165,14 @@ class tx_commerce_belib {
 	 *
 	 * @param string $flexValue String XML-Flex-Form
 	 * @param string $langIdent Language Ident
-	 * @return	string 		String	XML-Flex-Form
+	 * @return string XML-Flex-Form
 	 */
 	public function buildLocalisedAttributeValues($flexValue, $langIdent) {
 		$attrFFData = t3lib_div::xml2array($flexValue);
 
 		$result = '';
-		if (is_array($attrFFData))	{
-			// change the language
+		if (is_array($attrFFData)) {
+				// change the language
 			$attrFFData['data']['sDEF']['l' . $langIdent] = $attrFFData['data']['sDEF']['lDEF'];
 
 			/**
@@ -1159,20 +1184,22 @@ class tx_commerce_belib {
 			 * 2: prepend [Translate to .$langRec['title'].:]
 			 */
 			switch ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['attributeLokalisationType']) {
-			 	case 0:
-			 		unset($attrFFData['data']['sDEF']['lDEF']);
-			 	break;
-			 	case 1:
-			 	break;
-			 	case 2:
-			 		/**
-			 		 * Walk thru the array and prepend text
-			 		 */
+				case 0:
+					unset($attrFFData['data']['sDEF']['lDEF']);
+				break;
+
+				case 1:
+				break;
+
+				case 2:
+					/**
+					 * Walk thru the array and prepend text
+					 */
 					$prepend = '[Translate to ' . $langIdent . ':] ';
 					foreach ($attrFFData['data']['sDEF']['lDEF'] as  $attribKey => $attributes) {
 						$attrFFData['data']['sDEF']['lDEF'][$attribKey]['vDEF'] = $prepend . $attrFFData['data']['sDEF']['lDEF'][$attribKey]['vDEF'];
-			 		 }
-			 	break;
+					}
+				break;
 			}
 			$result = t3lib_div::array2xml($attrFFData, '', 0, 'T3FlexForms');
 		}
@@ -1183,174 +1210,214 @@ class tx_commerce_belib {
 	 * Removed with irre implementation. Stub left for api compatibility
 	 * save Price-Flexform with given Article-UID
 	 *
-	 * @author	Joerg Sprung <jsp@marketing-factory>
-	 * @param	integer	$priceUid		ID of Price-Dataset save as flexform
-	 * @param	integer	$articleUid		ID of article which the flexform is for
-	 * @param	array	$priceDataArray	Priceinformation for the article
-	 * @return	boolean	Status of method
-	 * @see tx_commerce_belib
+	 * @param integer $priceUid ID of Price-Dataset save as flexform
+	 * @param integer $articleUid ID of article which the flexform is for
+	 * @param array $priceDataArray Priceinformation for the article
+	 * @return boolean Status of method
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, this wont get replaced as it was removed from the api
 	 */
 	public function savePriceFlexformWithArticle($priceUid , $articleUid, $priceDataArray) {
-	}
-
-	public static function getOrderFolderSelector($pid,$levels,$aktLevel =0) {
-		$returnArray=array();
-		/*
-		 * Query the table to build dropdown list
- 		 */
- 		$prep='';
- 		for ($i=0;$i<$aktLevel;$i++) {
- 			$prep.='- ';
- 		}
- 		$result=$GLOBALS['TYPO3_DB']->exec_SELECTquery('*',$GLOBALS['TCA']['tx_commerce_orders']['columns']['newpid']['config']['foreign_table'],"pid = $pid" .t3lib_BEfunc::deleteClause($GLOBALS['TCA']['tx_commerce_orders']['columns']['newpid']['config']['foreign_table']),'','sorting' );
- 	#
- 		if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)>0) 		{
- 			while ($return_data=$GLOBALS['TYPO3_DB']->sql_fetch_assoc($result))		{
- 				$return_data['title'] = $prep.$return_data['title'];
-
- 				$returnArray[]=array($return_data['title'],$return_data['uid']);
- 				$tmparray = tx_commerce_belib::getOrderFolderSelector($return_data['uid'],$levels-1,$aktLevel+1);
- 				if (is_array($tmparray)) {
- 					$returnArray = array_merge($returnArray,$tmparray);
- 				}
- 			}
- 			$GLOBALS['TYPO3_DB']->sql_free_result($result);
-  		}
-  		if (count($returnArray)>0) {
-  			return $returnArray;
-  		}else {
-  			return false;
-  		}
+		t3lib_div::logDeprecatedFunction();
 	}
 
 	/**
-         * update Flexform XML from Database
-         *
-         * @author      Christian Sander <cs2@marketing-factory>
-         * @param       integer $articleUid             ID of article
-         * @return      boolean Status of method
-         * @see tx_commerce_belib
-         */
+	 * @param integer $pid
+	 * @param integer $levels
+	 * @param integer $aktLevel
+	 * @return array|boolean
+	 */
+	public static function getOrderFolderSelector($pid, $levels, $aktLevel = 0) {
+		$returnArray = array();
+		/**
+		 * Query the table to build dropdown list
+		 */
+		$prep = '';
+		for ($i = 0; $i < $aktLevel; $i++) {
+			$prep .= '- ';
+		}
+
+		/** @var t3lib_db $database */
+		$database = $GLOBALS['TYPO3_DB'];
+
+		$result = $database->exec_SELECTquery(
+			'*',
+			$GLOBALS['TCA']['tx_commerce_orders']['columns']['newpid']['config']['foreign_table'],
+			'pid = ' . $pid . t3lib_BEfunc::deleteClause($GLOBALS['TCA']['tx_commerce_orders']['columns']['newpid']['config']['foreign_table']),
+			'',
+			'sorting'
+		);
+		if ($database->sql_num_rows($result) > 0) {
+			while ($return_data = $database->sql_fetch_assoc($result)) {
+				$return_data['title'] = $prep . $return_data['title'];
+
+				$returnArray[] = array($return_data['title'], $return_data['uid']);
+				$tmparray = self::getOrderFolderSelector($return_data['uid'], $levels - 1, $aktLevel + 1);
+				if (is_array($tmparray)) {
+					$returnArray = array_merge($returnArray, $tmparray);
+				}
+			}
+			$database->sql_free_result($result);
+		}
+		if (count($returnArray) > 0) {
+			return $returnArray;
+		} else {
+			return FALSE;
+		}
+	}
+
+	/**
+	 * update Flexform XML from Database
+	 *
+	 * @param integer $articleUid ID of article
+	 * @return boolean Status of method
+	 */
 	public function updatePriceXMLFromDatabase( $articleUid) {
-            $res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-                    '*',
-                    'tx_commerce_article_prices',
-			'deleted=0 AND uid_article=' . intval($articleUid)
-            );
-            $data = array('data' => array('sDEF' => array('lDEF')));
-            while($priceDataArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)){
-                    $priceUid=$priceDataArray["uid"];
+		/** @var t3lib_db $database */
+		$database = $GLOBALS['TYPO3_DB'];
+
+		$res = $database->exec_SELECTquery(
+			'*',
+			'tx_commerce_article_prices',
+			'deleted=0 AND uid_article=' . (int) $articleUid
+		);
+
+		$data = array('data' => array('sDEF' => array('lDEF')));
+		while ($priceDataArray = $database->sql_fetch_assoc($res)) {
+			$priceUid = $priceDataArray['uid'];
+				// @todo replace with moneylib calls
 			$data['data']['sDEF']['lDEF']['price_net_' . $priceUid] = array('vDEF' => sprintf('%.2f', ($priceDataArray['price_net'] / 100)));
 			$data['data']['sDEF']['lDEF']['price_gross_' . $priceUid] = array('vDEF' => sprintf('%.2f', ($priceDataArray['price_gross'] / 100)));
+			$data['data']['sDEF']['lDEF']['purchase_price_' . $priceUid] = array('vDEF' => sprintf('%.2f', ($priceDataArray['purchase_price'] / 100)));
 			$data['data']['sDEF']['lDEF']['hidden_' . $priceUid] = array('vDEF' => $priceDataArray['hidden']);
 			$data['data']['sDEF']['lDEF']['starttime_' . $priceUid] = array('vDEF' => $priceDataArray['starttime']);
 			$data['data']['sDEF']['lDEF']['endtime_' . $priceUid] = array('vDEF' => $priceDataArray['endtime']);
 			$data['data']['sDEF']['lDEF']['fe_group_' . $priceUid] = array('vDEF' => $priceDataArray['fe_group']);
-			$data['data']['sDEF']['lDEF']['purchase_price_' . $priceUid] = array('vDEF' => sprintf('%.2f', ($priceDataArray['purchase_price'] / 100)));
 			$data['data']['sDEF']['lDEF']['price_scale_amount_start_' . $priceUid] = array('vDEF' => $priceDataArray['price_scale_amount_start']);
 			$data['data']['sDEF']['lDEF']['price_scale_amount_end_' . $priceUid] = array('vDEF' => $priceDataArray['price_scale_amount_end']);
-            }
+		}
 
-            $xml = t3lib_div::array2xml($data, '', 0, 'T3FlexForms');
+		$xml = t3lib_div::array2xml($data, '', 0, 'T3FlexForms');
 
-            $res = $GLOBALS['TYPO3_DB']->exec_UPDATEquery(
-                    'tx_commerce_articles',
+		$res = $database->exec_UPDATEquery(
+			'tx_commerce_articles',
 			'uid=' . $articleUid,
-                    array('prices' => $xml)
-            );
+			array('prices' => $xml)
+		);
 
-            return (bool)$res;
-    }
+		return (bool) $res;
+	}
 
 	/**
-     * This makes the Xml to draw the price form of an article
-     * Call this function if you have imported data to the database and havn't
-     * updated the Flexform
-     * @author Ricardo Mieres <ricardo.mieres@502.cl>
-     * @param	integer $article_uid
-     * @see updatePriceXMLFromDatabase
-     * @deprecated, see $this->updateXML
-     *
-     */
-    function fix_articles_price($article_uid=0){
-  		if($article_uid==0){
-  			return ;
-  		}
+	 * This makes the Xml to draw the price form of an article
+	 * Call this function if you have imported data to the database and havn't
+	 * updated the Flexform
+	 *
+	 * @param integer $article_uid
+	 * @return void
+	 * @see updatePriceXMLFromDatabase
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use tx_commerce_belib::updateXML
+	 */
+	public function fix_articles_price($article_uid = 0) {
+		t3lib_div::logDeprecatedFunction();
+		if ($article_uid > 0) {
+			self::updatePriceXMLFromDatabase($article_uid);
+		}
+	}
 
-		return updatePriceXMLFromDatabase($article_uid);
-    }
+	/**
+	 * This makes the Xml for the product Attributes
+	 * Call thos function if you have imported data to the database and havn't
+	 * updated the Flexform
+	 *
+	 * @param integer $product_uid
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use tx_commerce_belib::updateXML
+	 */
+	public function fix_product_atributte($product_uid = 0) {
+		t3lib_div::logDeprecatedFunction();
+		if ($product_uid > 0) {
+			/** @var t3lib_db $database */
+			$database = $GLOBALS['TYPO3_DB'];
 
-    /**
-     * This makes the Xml for the product Attributes
-     * Call thos function if you have imported data to the database and havn't
-     * updated the Flexform
-     * @author Ricardo Mieres <ricardo.mieres@502.cl>
-     * @param	integer $product_uid
-     * @deprecated, see $this->updateXML
-     */
+			$mm_table = 'tx_commerce_products_attributes_mm';
+			$where = 'uid_local= ' . (int) $product_uid;
+			$rs = $database->exec_SELECTquery(
+				'uid_correlationtype,uid_foreign',
+				$mm_table,
+				$where,
+				$groupBy = '',
+				$orderBy = '',
+				$limit = ''
+			);
+			$xmlArray = array();
+			while ($row = $database->sql_fetch_assoc($rs)) {
+				if (empty($xmlArray['data']['sDEF']['lDEF']['ct_' . $row['uid_correlationtype']]['vDEF'])) {
+					$xmlArray['data']['sDEF']['lDEF']['ct_' . $row['uid_correlationtype']]['vDEF'] = $row['uid_foreign'];
+				} else {
+					$xmlArray['data']['sDEF']['lDEF']['ct_' . $row['uid_correlationtype']]['vDEF'] .= ',' . $row['uid_foreign'];
+				}
+			}
+			$arrayToSave = array();
+			$xmlText = t3lib_div::array2xml_cs($xmlArray, 'T3FlexForms', $options = array(), $charset = '');
+			$arrayToSave['attributes'] = $xmlText;
 
-    function fix_product_atributte($product_uid=0){
-    	if($product_uid==0){
-  			return ;
-  		}
-  		$fieldSelected='*';
-  		$mm_table='tx_commerce_products_attributes_mm';
-  		$where='uid_local= '.intval($product_uid);
-    	$rs=$GLOBALS['TYPO3_DB']->exec_SELECTquery('uid_correlationtype,uid_foreign',$mm_table,$where,$groupBy='',$orderBy='',$limit='');
-    	#$GLOBALS['TYPO3_DB']->debug('exec_SELECTquery');
-		$xmlArray=array();
-		 while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($rs)){
-        			if(empty($xmlArray['data']['sDEF']['lDEF']['ct_'.$row['uid_correlationtype']]['vDEF']))
-        				$xmlArray['data']['sDEF']['lDEF']['ct_'.$row['uid_correlationtype']]['vDEF']=$row['uid_foreign'];
-        			else
-        				$xmlArray['data']['sDEF']['lDEF']['ct_'.$row['uid_correlationtype']]['vDEF'].=','.$row['uid_foreign'];
-		 }
-		$arrayToSave=array();
-		$xmlText=t3lib_div::array2xml_cs ($xmlArray, 'T3FlexForms', $options=array(), $charset='');
-		$arrayToSave['attributes']=$xmlText;
-
-		$rs=$GLOBALS['TYPO3_DB']->exec_UPDATEquery('tx_commerce_products','uid='.$product_uid,$arrayToSave,$no_quote_fields=false);
-	#	$GLOBALS['TYPO3_DB']->debug('exec_UPDATEquery');
-
-    }
+			$database->exec_UPDATEquery(
+				'tx_commerce_products',
+				'uid=' . $product_uid,
+				$arrayToSave,
+				$no_quote_fields = FALSE
+			);
+		}
+	}
 
 	/**
 	 * This function gives all attributes of one product to the other (only mm attributes, flexforms need to be handled separately [@see fix_product_atributte()])
 	 *
-	 * @return {boolean}		Success
-	 * @param {int} $pUidFrom	Product UID from which to take the Attributes
-	 * @param {int}	$pUidTo		Product UID to which we give the Attributes
-	 * @param {boolean} $copy	If set, the Attributes will only be copied - else cut (aka "swapped" in its true from)
+	 * @param integer $pUidFrom Product UID from which to take the Attributes
+	 * @param integer $pUidTo Product UID to which we give the Attributes
+	 * @param boolean $copy If set, the Attributes will only be copied - else cut (aka "swapped" in its true from)
+	 * @return boolean Success
 	 */
-	function swapProductAttributes($pUidFrom, $pUidTo, $copy = false) {
-
-		//verify params
-		if(!is_numeric($pUidFrom) || !is_numeric($pUidTo)) {
-			if (TYPO3_DLOG) t3lib_div::devLog('swapProductAttributes (tx_commerce_belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
-			return false;
+	public function swapProductAttributes($pUidFrom, $pUidTo, $copy = FALSE) {
+			// verify params
+		if (!is_numeric($pUidFrom) || !is_numeric($pUidTo)) {
+			if (TYPO3_DLOG) {
+				t3lib_div::devLog('swapProductAttributes (tx_commerce_belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+			}
+			return FALSE;
 		}
 
-		//check perms
-		if(!self::checkProductPerms($pUidFrom, ($copy) ? 'show' : 'editcontent')) return false;
-		if(!self::checkProductPerms($pUidTo, 'editcontent')) return false;
+			// check perms
+		if (!self::checkProductPerms($pUidFrom, ($copy) ? 'show' : 'editcontent')) {
+			return FALSE;
+		}
+		if (!self::checkProductPerms($pUidTo, 'editcontent')) {
+			return FALSE;
+		}
 
-		if(!$copy) {
-			//cut the attributes - or, update the mm table with the new uids of the product
-			$res = $GLOBALS['TYPO3_DB']->exec_UPDATEquery('tx_commerce_products_attributes_mm', 'uid_local='.$pUidFrom, array('uid_local' => $pUidTo));
+		/** @var t3lib_db $database */
+		$database = $GLOBALS['TYPO3_DB'];
 
-			$success = ('' == $GLOBALS['TYPO3_DB']->sql_error());
+		if (!$copy) {
+				// cut the attributes - or, update the mm table with the new uids of the product
+			$database->exec_UPDATEquery('tx_commerce_products_attributes_mm', 'uid_local = ' . (int) $pUidFrom, array('uid_local' => (int) $pUidTo));
+
+			$success = $database->sql_error() == '';
 		} else {
-			//copy the attributes - or, get all values from the original product relation and insert them with the new uid_local
-			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid_foreign, tablenames, sorting, uid_correlationtype, uid_valuelist, default_value', 'tx_commerce_products_attributes_mm', 'uid_local='.$pUidFrom);
+				// copy the attributes - or, get all values from the original product relation and insert them with the new uid_local
+			$res = $database->exec_SELECTquery(
+				'uid_foreign, tablenames, sorting, uid_correlationtype, uid_valuelist, default_value',
+				'tx_commerce_products_attributes_mm',
+				'uid_local = ' . $pUidFrom
+			);
 
-			while($row = $GLOBALS['TYPO3_DB']->sql_num_rows($res)) {
+			while ($row = $database->sql_num_rows($res)) {
 				$row['uid_local'] = $pUidTo;
 
-				//insert
-				$rs = $GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_commerce_products_attributes_mm', $row);
+					// insert
+				$database->exec_INSERTquery('tx_commerce_products_attributes_mm', $row);
 			}
 
-			$success = ('' == $GLOBALS['TYPO3_DB']->sql_error());
+			$success = $database->sql_error() == '';
 		}
 
 		return $success;
@@ -1359,39 +1426,48 @@ class tx_commerce_belib {
 	/**
 	 * This function gives all articles of one product to another
 	 *
-	 * @return {boolean} 		Success
-	 * @param {int} $pUidFrom	Product UID from which to take the Articles
-	 * @param {int}	$pUidTo		Product UID to which we give the Articles
-	 * @param {boolean} $copy	If set, the Articles will only be copied - else cut (aka "swapped" in its true from)
+	 * @param integer $pUidFrom Product UID from which to take the Articles
+	 * @param integer $pUidTo Product UID to which we give the Articles
+	 * @param boolean $copy If set, the Articles will only be copied - else cut (aka "swapped" in its true from)
+	 * @return boolean Success
 	 */
-	function swapProductArticles($pUidFrom, $pUidTo, $copy = false) {
-
-		//check params
-		if(!is_numeric($pUidFrom) || !is_numeric($pUidTo)) {
-			if (TYPO3_DLOG) t3lib_div::devLog('swapProductArticles (tx_commerce_belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
-			return false;
+	public function swapProductArticles($pUidFrom, $pUidTo, $copy = FALSE) {
+			// check params
+		if (!is_numeric($pUidFrom) || !is_numeric($pUidTo)) {
+			if (TYPO3_DLOG) {
+				t3lib_div::devLog('swapProductArticles (tx_commerce_belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+			}
+			return FALSE;
 		}
 
-		//check perms
-		if(!self::checkProductPerms($pUidFrom, ($copy) ? 'show' : 'editcontent')) return false;
-		if(!self::checkProductPerms($pUidTo, 'editcontent')) return false;
+			// check perms
+		if (!self::checkProductPerms($pUidFrom, ($copy) ? 'show' : 'editcontent')) {
+			return FALSE;
+		}
+		if (!self::checkProductPerms($pUidTo, 'editcontent')) {
+			return FALSE;
+		}
 
-		if(!$copy) {
-			//cut the articles - or, give all articles of the old product the product_uid of the new product
-			$res = $GLOBALS['TYPO3_DB']->exec_UPDATEquery('tx_commerce_articles', 'uid_product='.$pUidFrom, array('uid_product' => $pUidTo));
+		/** @var t3lib_db $database */
+		$database = $GLOBALS['TYPO3_DB'];
 
-			$success = ('' == $GLOBALS['TYPO3_DB']->sql_error());
+		if (!$copy) {
+				// cut the articles - or, give all articles of the old product the product_uid of the new product
+			$database->exec_UPDATEquery('tx_commerce_articles', 'uid_product = ' . $pUidFrom, array('uid_product' => $pUidTo));
+
+			$success = $database->sql_error() == '';
 		} else {
-			//copy the articles - or, read all article uids of the old product and invoke the copy command
-			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid', 'tx_commerce_articles', 'uid_product='.$pUidFrom);
+				// copy the articles - or, read all article uids of the old product and invoke the copy command
+			$res = $database->exec_SELECTquery('uid', 'tx_commerce_articles', 'uid_product = ' . $pUidFrom);
 
-			$success = true;
+			$success = TRUE;
 
-			while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
-				//copy
+			while ($row = $database->sql_fetch_assoc($res)) {
+					// copy
 				$success = self::copyArticle($row['uid'], $pUidTo);
-
-				if(!$success) return $success;
+				if (!$success) {
+					break;
+				}
 			}
 		}
 		return $success;
@@ -1399,91 +1475,98 @@ class tx_commerce_belib {
 
 	/**
 	 * Copies the specified Article to the new product
-	 * @return {int}			UID of the new article or false on error
-	 * @param $uid {int}		uid of existing article which is to be copied
-	 * @param $uid_product {int}uid of product that is new parent
-	 * @param $locale {array}	array with sys_langauges to copy along, none if null
+	 *
+	 * @param integer $uid uid of existing article which is to be copied
+	 * @param integer $uid_product uid of product that is new parent
+	 * @param array $locale array with sys_langauges to copy along, none if null
+	 * @return integer UID of the new article or false on error
 	 */
-	function copyArticle($uid, $uid_product, $locale = null) {
-		global $BE_USER;
+	public function copyArticle($uid, $uid_product, $locale = array()) {
+		/** @var t3lib_beUserAuth $backendUser */
+		$backendUser = $GLOBALS['BE_USER'];
+		/** @var t3lib_db $database */
+		$database = $GLOBALS['TYPO3_DB'];
 
-		//check params
-		if(!is_numeric($uid) || !is_numeric($uid_product)) {
-			if (TYPO3_DLOG) t3lib_div::devLog('copyArticle (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
-			return false;
+			// check params
+		if (!is_numeric($uid) || !is_numeric($uid_product)) {
+			if (TYPO3_DLOG) {
+				t3lib_div::devLog('copyArticle (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+			}
+			return FALSE;
 		}
 
-		//check show right for this article under all categories of the current parent product
+			// check show right for this article under all categories of the current parent product
 		$prod = self::getProductOfArticle($uid);
 
-		if(!self::checkProductPerms($prod['uid'], 'show')) {
-			return false;
+		if (!self::checkProductPerms($prod['uid'], 'show')) {
+			return FALSE;
 		}
 
-		//check editcontent right for this article under all categories of the new parent product
-		if(!self::checkProductPerms($uid_product, 'editcontent')) {
-			return false;
+			// check editcontent right for this article under all categories of the new parent product
+		if (!self::checkProductPerms($uid_product, 'editcontent')) {
+			return FALSE;
 		}
 
-		//get uid of the last article in the articles table
-		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid', 'tx_commerce_articles', 'deleted = 0', '', 'uid DESC', '0,1');
+			// get uid of the last article in the articles table
+		$res = $database->exec_SELECTquery('uid', 'tx_commerce_articles', 'deleted = 0', '', 'uid DESC', '0,1');
 
-		//if there are no articles at all, abort.
-		if(0 >= $GLOBALS['TYPO3_DB']->sql_num_rows($res)) {
-			return false;
+			// if there are no articles at all, abort.
+		if (0 >= $database->sql_num_rows($res)) {
+			return FALSE;
 		}
 
-		$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
+		$row = $database->sql_fetch_assoc($res);
+			// uid of the last article (after this article we will copy the new article
+		$uidLast = $row['uid'];
 
-		$uidLast = $row['uid'];	//uid of the last article (after this article we will copy the new article
-
-		//init tce
+			// init tce
 		$tce = t3lib_div::makeInstance('t3lib_TCEmain');
 		$tce->stripslashes_values = 0;
 
-		$TCAdefaultOverride = $GLOBALS['BE_USER']->getTSConfigProp('TCAdefaults');
-		if (is_array($TCAdefaultOverride))	{
+		$TCAdefaultOverride = $backendUser->getTSConfigProp('TCAdefaults');
+		if (is_array($TCAdefaultOverride)) {
 			$tce->setDefaultsFromUserTS($TCAdefaultOverride);
 		}
 
-		//start
+			// start
 		$tce->start(array(), array());
 
-		//invoke the copy manually so we can actually override the uid_product field
+			// invoke the copy manually so we can actually override the uid_product field
 		$overrideArray = array('uid_product' => $uid_product);
 
-		//Write to session that we copy
-		//this is used by the hook to the datamap class to figure out if it should call the dynaflex
-		//so far this is the best (though not very clean) way to solve the issue we get when saving an article
-		$BE_USER->uc['txcommerce_copyProcess'] = 1;
-		$BE_USER->writeUC();
+			// Write to session that we copy
+			// this is used by the hook to the datamap class to figure out if it should call the dynaflex
+			// so far this is the best (though not very clean) way to solve the issue we get when saving an article
+		$backendUser->uc['txcommerce_copyProcess'] = 1;
+		$backendUser->writeUC();
 
-		$newUid = $tce->copyRecord('tx_commerce_articles', $uid, -$uidLast, 1, $overrideArray);
+		$newUid = $tce->copyRecord('tx_commerce_articles', $uid, - $uidLast, 1, $overrideArray);
 
-		//We also overwrite because Attributes and Prices will not be saved when we copy
-		//this is because commerce hooks into _preProcessFieldArray when it wants to make the prices etc.
-		//which is too early when we copy because at this point the uid does not exist
-		//self::overwriteArticle($uid, $newUid, $locale); <-- REPLACED WITH OVERWRITE OF WHOLE PRODUCT BECAUSE THAT ACTUALLY WORKS
+			// We also overwrite because Attributes and Prices will not be saved when we copy
+			// this is because commerce hooks into _preProcessFieldArray when it wants to make the prices etc.
+			// which is too early when we copy because at this point the uid does not exist
+			// self::overwriteArticle($uid, $newUid, $locale); <-- REPLACED WITH OVERWRITE OF WHOLE PRODUCT BECAUSE THAT ACTUALLY WORKS
 
-		//copying done, clear session
-		$BE_USER->uc['txcommerce_copyProcess'] = 0;
-		$BE_USER->writeUC();
+			// copying done, clear session
+		$backendUser->uc['txcommerce_copyProcess'] = 0;
+		$backendUser->writeUC();
 
-		if(!is_numeric($newUid)) return false;
+		if (!is_numeric($newUid)) {
+			return FALSE;
+		}
 
-		// copy prices - not possible through datamap so we do it here
+			// copy prices - not possible through datamap so we do it here
 		self::copyPrices($uid, $newUid);
 
-		// copy attributes - creating attributes doesn't work with normal copy because only
-		// when a product is created in datamap, it creates the attributes for articles with hook
-		// But by the time we copy articles, product is already created and we have to copy the attributes manually
+			// copy attributes - creating attributes doesn't work with normal copy because only
+			// when a product is created in datamap, it creates the attributes for articles with hook
+			// But by the time we copy articles, product is already created and we have to copy the attributes manually
 		self::overwriteArticleAttributes($uid, $newUid);
 
-
-		//copy locales
-		if(is_array($locale) && 0 != count($locale)) {
-			foreach($locale as $loc) {
-				$success = self::copyLocale('tx_commerce_articles', $uid, $newUid, $loc);
+			// copy locales
+		if (count($locale)) {
+			foreach ($locale as $loc) {
+				self::copyLocale('tx_commerce_articles', $uid, $newUid, $loc);
 			}
 		}
 
@@ -1492,42 +1575,48 @@ class tx_commerce_belib {
 
 	/**
 	 * Copies the Prices of a Article
+	 *
+	 * @param integer $uidFrom
+	 * @param integer $uidTo
+	 * @return boolean
 	 */
-	function copyPrices($uidFrom, $uidTo) {
-		global $BE_USER;
+	public function copyPrices($uidFrom, $uidTo) {
+		/** @var t3lib_beUserAuth $backendUser */
+		$backendUser = $GLOBALS['BE_USER'];
+		/** @var t3lib_db $database */
+		$database = $GLOBALS['TYPO3_DB'];
 
-		// select all existing prices of the article
-		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid', 'tx_commerce_article_prices', 'deleted = 0 AND uid_article = '.$uidFrom, '');
+			// select all existing prices of the article
+		$res = $database->exec_SELECTquery('uid', 'tx_commerce_article_prices', 'deleted = 0 AND uid_article = ' . $uidFrom, '');
 
-		while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
-			// copy them to the new article
+		$newUid = 0;
+		while ($row = $database->sql_fetch_assoc($res)) {
+				// copy them to the new article
 			$tce = t3lib_div::makeInstance('t3lib_TCEmain');
 			$tce->stripslashes_values = 0;
 
-			$TCAdefaultOverride = $GLOBALS['BE_USER']->getTSConfigProp('TCAdefaults');
-			if (is_array($TCAdefaultOverride))	{
+			$TCAdefaultOverride = $backendUser->getTSConfigProp('TCAdefaults');
+			if (is_array($TCAdefaultOverride)) {
 				$tce->setDefaultsFromUserTS($TCAdefaultOverride);
 			}
 
-			//start
+				// start
 			$tce->start(array(), array());
 
-			//invoke the copy manually so we can actually override the uid_product field
+				// invoke the copy manually so we can actually override the uid_product field
 			$overrideArray = array('uid_article' => $uidTo);
 
-			$BE_USER->uc['txcommerce_copyProcess'] = 1;
-			$BE_USER->writeUC();
+			$backendUser->uc['txcommerce_copyProcess'] = 1;
+			$backendUser->writeUC();
 
-			$newUid = $tce->copyRecord('tx_commerce_article_prices', $row['uid'], -$row['uid'], 1, $overrideArray);
+			$newUid = $tce->copyRecord('tx_commerce_article_prices', $row['uid'], - $row['uid'], 1, $overrideArray);
 
-			//copying done, clear session
-			$BE_USER->uc['txcommerce_copyProcess'] = 0;
-			$BE_USER->writeUC();
-
+				// copying done, clear session
+			$backendUser->uc['txcommerce_copyProcess'] = 0;
+			$backendUser->writeUC();
 		}
 
-		if(!is_numeric($newUid)) return false;
-		return true;
+		return !is_numeric($newUid);
 	}
 
 	/**
@@ -1536,105 +1625,102 @@ class tx_commerce_belib {
 	 * To copy from locale to locale, just insert the uids of the localized
 	 * records; note that this function deletes the existing attributes
 	 *
-	 * @param $uidFrom	int	uid of the article we get the attributes from
-	 * @param $uidTo	int	uid of the article we want to copy the attributes to
-	 *
+	 * @param integer $uidFrom uid of the article we get the attributes from
+	 * @param integer $uidTo uid of the article we want to copy the attributes to
+	 * @param integer $loc
 	 * @return boolean	Success
 	 */
-	function overwriteArticleAttributes($uidFrom, $uidTo, $loc = 0) {
-
-		// delete existing attributes
+	public function overwriteArticleAttributes($uidFrom, $uidTo, $loc = 0) {
+		/** @var t3lib_db $database */
+		$database = $GLOBALS['TYPO3_DB'];
+			// delete existing attributes
 		$table = 'tx_commerce_articles_article_attributes_mm';
 
-		if($loc != 0) {
-			// we want to overwrite the attributes of the locale
-			// replace $uidFrom and $uidTo with their localized versions
-			$uids = $uidFrom.','.$uidTo;
-			$res  = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid, l18n_parent', 'tx_commerce_articles', 'sys_language_uid = '.$loc.' AND l18n_parent IN ('.$uids.')');
+		if ($loc != 0) {
+				// we want to overwrite the attributes of the locale
+				// replace $uidFrom and $uidTo with their localized versions
+			$uids = $uidFrom . ',' . $uidTo;
+			$res = $database->exec_SELECTquery(
+				'uid, l18n_parent',
+				'tx_commerce_articles',
+				'sys_language_uid = ' . $loc . ' AND l18n_parent IN (' . $uids . ')'
+			);
 			$newFrom = $uidFrom;
-			$newTo   = $uidTo;
+			$newTo = $uidTo;
 
-			// get uids
-			while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
-				if($row['l18n_parent'] == $uidFrom) {
+				// get uids
+			while ($row = $database->sql_fetch_assoc($res)) {
+				if ($row['l18n_parent'] == $uidFrom) {
 					$newFrom = $row['uid'];
-				} else if($row['l18n_parent'] == $uidTo) {
-					$newTo   = $row['uid'];
+				} elseif ($row['l18n_parent'] == $uidTo) {
+					$newTo = $row['uid'];
 				}
 			}
 
-			// abort if we didn't find the locale for any of the articles
-			if($newFrom == $uidFrom || $newTo == $uidTo) {
-				return false;
+				// abort if we didn't find the locale for any of the articles
+			if ($newFrom == $uidFrom || $newTo == $uidTo) {
+				return FALSE;
 			}
 
-			// replace uids
+				// replace uids
 			$uidFrom = $newFrom;
-			$uidTo   = $newTo;
+			$uidTo = $newTo;
 		}
 
-		$GLOBALS['TYPO3_DB']->exec_DELETEquery(
+		$database->exec_DELETEquery(
 			$table,
-			'uid_local='.$uidTo
+			'uid_local=' . $uidTo
 		);
 
-		// copy the attributes
-		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', $table, 'uid_local=' .$uidFrom .' AND uid_valuelist = 0');
+			// copy the attributes
+		$res = $database->exec_SELECTquery('*', $table, 'uid_local=' . $uidFrom . ' AND uid_valuelist = 0');
 
-		while ($origRelation = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res))	{
+		while ($origRelation = $database->sql_fetch_assoc($res)) {
 			$origRelation['uid_local'] = $uidTo;
-			$GLOBALS['TYPO3_DB']->exec_INSERTquery($table, $origRelation);
+			$database->exec_INSERTquery($table, $origRelation);
 		}
 
-		return true;
+		return TRUE;
 	}
 
 	/**
 	 * Copies the specified Product to the new category
 	 *
-	 * @return {int}				UID of the new product or false on error
-	 * @param $uid {int}			uid of existing product which is to be copied
-	 * @param $uid_product {int}	uid of category that is new parent
-	 * @param $ignoreWS {boolean} 	true if versioning should be disabled (be warned: use this only if you are 100% sure you know what you are doing)
-	 * @param $locale {array}		array of languages that should be copied, or null if none are specified
-	 * @param $sorting {int}		uid of the record behind which we insert this product, or 0 to just append
+	 * @param integer $uid uid of existing product which is to be copied
+	 * @param integer $uid_category
+	 * @param boolean $ignoreWS true if versioning should be disabled (be warned: use this only if you are 100% sure you know what you are doing)
+	 * @param array $locale array of languages that should be copied, or null if none are specified
+	 * @param integer $sorting uid of the record behind which we insert this product, or 0 to just append
+	 * @return integer UID of the new product or false on error
 	 */
-	function copyProduct($uid, $uid_category, $ignoreWS = false, $locale = null, $sorting = 0) {
+	public function copyProduct($uid, $uid_category, $ignoreWS = FALSE, $locale = NULL, $sorting = 0) {
 			// check params
-		if(!is_numeric($uid) || !is_numeric($uid_category) || !is_numeric($sorting)) {
-			if (TYPO3_DLOG) t3lib_div::devLog('copyProduct (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
-			return false;
+		if (!is_numeric($uid) || !is_numeric($uid_category) || !is_numeric($sorting)) {
+			if (TYPO3_DLOG) {
+				t3lib_div::devLog('copyProduct (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+			}
+			return FALSE;
 		}
 
-		//check if we may actually copy the product (no permission check, only check if we are not accidentally copying a placeholder or deleted product)
-		//also hidden products are not allowed to be copied
+			// check if we may actually copy the product (no permission check, only check if we are not accidentally copying a placeholder or deleted product)
+			// also hidden products are not allowed to be copied
 		$record = t3lib_BEfunc::getRecordWSOL('tx_commerce_products', $uid, '*', ' AND hidden = 0 AND t3ver_state = 0');
 
-		if(!$record) {
-			return false;
+		if (!$record) {
+			return FALSE;
 		}
 
-		//check if we are about to copy a version of a live product
-		/*if($record['t3ver_oid'] != 0) {
-			$uid 	= $record['t3ver_oid'];
-			$record = t3lib_BEfunc::getRecordWSOL('tx_commerce_products', $uid, '*', ' AND t3ver_state = 0');
-
-			if(!$record) {
-				return false;
-			}
-		}*/
-
-		//check if we have the permissions to copy (check category rights) - skip if we are copying locales
-		if(!self::checkProductPerms($uid, 'copy')) {
-			return false;
+			// check if we have the permissions to copy (check category rights) - skip if we are copying locales
+		if (!self::checkProductPerms($uid, 'copy')) {
+			return FALSE;
 		}
 
-		//check editcontent right for uid_category
-		if(!self::readCategoryAccess($uid_category, self::getCategoryPermsClause(self::getPermMask('editcontent')))) {
-			return false;
+			// check editcontent right for uid_category
+		if (!self::readCategoryAccess($uid_category, self::getCategoryPermsClause(self::getPermMask('editcontent')))) {
+			return FALSE;
 		}
 
-		// First prepare user defined objects (if any) for hooks which extend this function:
+			// First prepare user defined objects (if any) for hooks which extend this function:
 		$hookObjectsArr = array();
 		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_belib.php']['copyProductClass'])) {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_belib.php']['copyProductClass'] as $classRef) {
@@ -1642,222 +1728,253 @@ class tx_commerce_belib {
 			}
 		}
 
-		if(0 == $sorting) {
-			//get uid of the last product in the products table
-			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid', 'tx_commerce_products', 'deleted = 0 AND pid != -1', '', 'uid DESC', '0,1');
+		/** @var t3lib_beUserAuth $backendUser */
+		$backendUser = $GLOBALS['BE_USER'];
+		/** @var t3lib_db $database */
+		$database = $GLOBALS['TYPO3_DB'];
 
-			//if there are no products at all, abort.
-			if(0 >= $GLOBALS['TYPO3_DB']->sql_num_rows($res)) {
-				return false;
+		if (0 == $sorting) {
+				// get uid of the last product in the products table
+			$res = $database->exec_SELECTquery('uid', 'tx_commerce_products', 'deleted = 0 AND pid != -1', '', 'uid DESC', '0,1');
+
+				// if there are no products at all, abort.
+			if (0 >= $database->sql_num_rows($res)) {
+				return FALSE;
 			}
 
-			$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
-
-			$uidLast = -$row['uid'];	//uid of the last product (after this product we will copy the new product)
+			$row = $database->sql_fetch_assoc($res);
+				// uid of the last product (after this product we will copy the new product)
+			$uidLast = - $row['uid'];
 		} else {
-			//sorting position is specified
+				// sorting position is specified
 			$uidLast = (0 > $sorting) ? $sorting : self::getCopyPid('tx_commerce_products', $sorting);
 		}
 
-		//init tce
+			// init tce
 		$tce = t3lib_div::makeInstance('t3lib_TCEmain');
 		$tce->stripslashes_values = 0;
-		$tce->bypassWorkspaceRestrictions = $ignoreWS; //set workspace bypass if requested
+			// set workspace bypass if requested
+		$tce->bypassWorkspaceRestrictions = $ignoreWS;
 
-		$TCAdefaultOverride = $GLOBALS['BE_USER']->getTSConfigProp('TCAdefaults');
-		if (is_array($TCAdefaultOverride))	{
+		$TCAdefaultOverride = $backendUser->getTSConfigProp('TCAdefaults');
+		if (is_array($TCAdefaultOverride)) {
 			$tce->setDefaultsFromUserTS($TCAdefaultOverride);
 		}
 
-		//start
+			// start
 		$tce->start(array(), array());
 
-		//invoke the copy manually so we can actually override the categories field
+			// invoke the copy manually so we can actually override the categories field
 		$overrideArray = array('categories' => $uid_category);
 
-
-		//Hook: beforeCopy
-		foreach($hookObjectsArr as $hookObj)	{
-				if (method_exists($hookObj, 'beforeCopy')) {
-					$hookObj->beforeCopy($uid, $uidLast, $overrideArray);
+			// Hook: beforeCopy
+		foreach ($hookObjectsArr as $hookObj) {
+			if (method_exists($hookObj, 'beforeCopy')) {
+				$hookObj->beforeCopy($uid, $uidLast, $overrideArray);
 			}
 		}
 
 		$newUid = $tce->copyRecord('tx_commerce_products', $uid, $uidLast, 1, $overrideArray);
 
-		//Hook: afterCopy
-		foreach($hookObjectsArr as $hookObj)	{
-				if (method_exists($hookObj, 'afterCopy')) {
-					$hookObj->afterCopy($newUid, $uid, $$overrideArray);
+			// Hook: afterCopy
+		foreach ($hookObjectsArr as $hookObj) {
+			if (method_exists($hookObj, 'afterCopy')) {
+				$hookObj->afterCopy($newUid, $uid, $$overrideArray);
 			}
 		}
 
-		if(!is_numeric($newUid)) {
-			return false;
+		if (!is_numeric($newUid)) {
+			return FALSE;
 		}
 
-		//copy locales
-		if(is_array($locale) && 0 != count($locale)) {
-			foreach($locale as $loc) {
-				$success = self::copyLocale('tx_commerce_products', $uid, $newUid, $loc, $ignoreWS);
+			// copy locales
+		if (is_array($locale) && 0 != count($locale)) {
+			foreach ($locale as $loc) {
+				self::copyLocale('tx_commerce_products', $uid, $newUid, $loc, $ignoreWS);
 			}
 		}
 
-		//copy articles
+			// copy articles
 		$success = self::copyArticlesByProduct($newUid, $uid, $locale);
 
-		//Overwrite the Product we just created again - to fix that Attributes and Prices are not copied for Articles when they are only copied
-		//This should be TEMPORARY - find a clean way to fix that problem
-		//self::overwriteProduct($uid, $newUid, $locale); ###fixed###
-
-		if(!$success) return false;
-
-		return $newUid;
+			// Overwrite the Product we just created again - to fix that Attributes and Prices are not copied for Articles when they are only copied
+			// This should be TEMPORARY - find a clean way to fix that problem
+			// self::overwriteProduct($uid, $newUid, $locale); ###fixed###
+		return !$success ? $success : $newUid;
 
 	}
 
 	/**
 	 * Copies any locale of a commerce items
 	 *
-	 * @return {boolean}	  Success
-	 * @param $table {string} Name of the table in which the locale is
-	 * @param $uidCopied {int}uid of the record that is localized
-	 * @param $uidNew {int}	  uid of the record that was copied and now needs a locale
-	 * @param $loc {int} 	  id of the sys_language
+	 * @param string $table Name of the table in which the locale is
+	 * @param integer $uidCopied uid of the record that is localized
+	 * @param integer $uidNew uid of the record that was copied and now needs a locale
+	 * @param integer $loc id of the sys_language
+	 * @param boolean $ignoreWS
+	 * @return boolean Success
 	 */
-	function copyLocale($table, $uidCopied, $uidNew, $loc, $ignoreWS = false) {
-		global $BE_USER, $TCA;;
-
-		//check params
-		if(!is_string($table) || !is_numeric($uidCopied) || !is_numeric($uidNew) || !is_numeric($loc)) {
-			if (TYPO3_DLOG) t3lib_div::devLog('copyLocale (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
-			return false;
+	public function copyLocale($table, $uidCopied, $uidNew, $loc, $ignoreWS = FALSE) {
+			// check params
+		if (!is_string($table) || !is_numeric($uidCopied) || !is_numeric($uidNew) || !is_numeric($loc)) {
+			if (TYPO3_DLOG) {
+				t3lib_div::devLog('copyLocale (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+			}
+			return FALSE;
 		}
 
-		if ($TCA[$table] && $uidCopied)	{
+		/** @var t3lib_beUserAuth $backendUser */
+		$backendUser = $GLOBALS['BE_USER'];
+		/** @var t3lib_db $database */
+		$database = $GLOBALS['TYPO3_DB'];
+
+		if ($GLOBALS['TCA'][$table] && $uidCopied) {
 			t3lib_div::loadTCA($table);
 
-			//make data
-			$rec 				= t3lib_BEfunc::getRecordLocalization($table, $uidCopied, $loc);
+				// make data
+			$rec = t3lib_BEfunc::getRecordLocalization($table, $uidCopied, $loc);
 
-			//if the item is not localized, return
-			if(false == $rec) return true;
+				// if the item is not localized, return
+			if (FALSE == $rec) {
+				return TRUE;
+			}
 
-			//overwrite l18n parent
+				// overwrite l18n parent
 			$rec[0]['l18n_parent'] = $uidNew;
-			unset($rec[0]['uid']); //unset uid for cleanliness
+				// unset uid for cleanliness
+			unset($rec[0]['uid']);
 
-			//echo t3lib_div::debug($rec,__LINE__.__FILE__);
-
-			//unset all fields that are not supposed to be copied on localized versions
-			foreach($TCA[$table]['columns'] as $fN => $fCfg)	{
-				if (t3lib_div::inList('exclude,noCopy,mergeIfNotBlank',$fCfg['l10n_mode']) && $fN!=$TCA[$table]['ctrl']['languageField'] && $fN!=$TCA[$table]['ctrl']['transOrigPointerField']) {	 // Otherwise, do not copy field (unless it is the language field or pointer to the original language)
+				// unset all fields that are not supposed to be copied on localized versions
+			foreach ($GLOBALS['TCA'][$table]['columns'] as $fN => $fCfg) {
+					// Otherwise, do not copy field (unless it is the language field or pointer to the original language)
+				if (
+					t3lib_div::inList('exclude,noCopy,mergeIfNotBlank', $fCfg['l10n_mode'])
+					&& $fN != $GLOBALS['TCA'][$table]['ctrl']['languageField']
+					&& $fN != $GLOBALS['TCA'][$table]['ctrl']['transOrigPointerField']
+				) {
 					unset($rec[0][$fN]);
 				}
 			}
 
-			// if we localize an article, add the product uid of the $uidNew localized product
-			if('tx_commerce_articles' == $table) {
+				// if we localize an article, add the product uid of the $uidNew localized product
+			if ('tx_commerce_articles' == $table) {
 				$article = t3lib_div::makeInstance('tx_commerce_article');
 				$article->init($uidNew);
 				$productUid = $article->getParentProductUid();
 
-				// load uid of the localized product
-				$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid', 'tx_commerce_products', 'l18n_parent = '.$productUid.' AND sys_language_uid = '.$loc);
-				$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
+					// load uid of the localized product
+				$res = $database->exec_SELECTquery(
+					'uid',
+					'tx_commerce_products',
+					'l18n_parent = ' . $productUid . ' AND sys_language_uid = ' . $loc
+				);
+				$row = $database->sql_fetch_assoc($res);
 
 				$rec[0]['uid_product'] = $row['uid'];
 			}
 
 			$data = array();
 
-			$newUid 				= uniqid('NEW');
-			$data[$table][$newUid] 	= $rec[0];
+			$newUid = uniqid('NEW');
+			$data[$table][$newUid] = $rec[0];
 
-			//init tce
+				// init tce
 			$tce = t3lib_div::makeInstance('t3lib_TCEmain');
 			$tce->stripslashes_values = 0;
-			$tce->bypassWorkspaceRestrictions = $ignoreWS; //set workspace bypass if requested
+				// set workspace bypass if requested
+			$tce->bypassWorkspaceRestrictions = $ignoreWS;
 
-			$TCAdefaultOverride = $GLOBALS['BE_USER']->getTSConfigProp('TCAdefaults');
-			if (is_array($TCAdefaultOverride))	{
+			$TCAdefaultOverride = $backendUser->getTSConfigProp('TCAdefaults');
+			if (is_array($TCAdefaultOverride)) {
 				$tce->setDefaultsFromUserTS($TCAdefaultOverride);
 			}
 
-			//start
+				// start
 			$tce->start($data, array());
 
-			//Write to session that we copy
-			//this is used by the hook to the datamap class to figure out if it should call the dynaflex
-			//so far this is the best (though not very clean) way to solve the issue we get when saving an article
-			$BE_USER->uc['txcommerce_copyProcess'] = 1;
-			$BE_USER->writeUC();
+				// Write to session that we copy
+				// this is used by the hook to the datamap class to figure out if it should call the dynaflex
+				// so far this is the best (though not very clean) way to solve the issue we get when saving an article
+			$backendUser->uc['txcommerce_copyProcess'] = 1;
+			$backendUser->writeUC();
 
 			$tce->process_datamap();
 
-			//copying done, clear session
-			$BE_USER->uc['txcommerce_copyProcess'] = 0;
-			$BE_USER->writeUC();
+				// copying done, clear session
+			$backendUser->uc['txcommerce_copyProcess'] = 0;
+			$backendUser->writeUC();
 
-			//get real uid
+				// @todo $newUid or $uidNew thats the question
+				// get real uid
 			$newUid = $tce->substNEWwithIDs[$newUid];
 
-			// for articles we have to overwrite the attributes
-			if('tx_commerce_articles' == $table) {
+				// for articles we have to overwrite the attributes
+			if ('tx_commerce_articles' == $table) {
 				self::overwriteArticleAttributes($uidCopied, $uidNew, $loc);
 			}
 		}
-		return true;
+		return TRUE;
 	}
 
 	/**
 	 * Overwrites the localization of a record
 	 * if the record does not have the localization, it is copied to the record
 	 *
-	 * @return {boolean}			Success
-	 * @param $table {string}		Name of the table in which we overwrite records
-	 * @param $uidCopied {int}		uid of the record that is the overwriter
-	 * @param $uidOverwrite {int}	uid of the record that is to be overwritten
-	 * @param $loc {int}			uid of the syslang that is overwritten
+	 * @param string $table Name of the table in which we overwrite records
+	 * @param integer $uidCopied uid of the record that is the overwriter
+	 * @param integer $uidOverwrite uid of the record that is to be overwritten
+	 * @param integer $loc uid of the syslang that is overwritten
+	 * @return boolean Success
 	 */
-	function overwriteLocale($table, $uidCopied, $uidOverwrite, $loc) {
-		global $BE_USER, $TCA;;
+	public function overwriteLocale($table, $uidCopied, $uidOverwrite, $loc) {
+		/** @var t3lib_beUserAuth $backendUser */
+		$backendUser = $GLOBALS['BE_USER'];
 
-		//check params
-		if(!is_string($table) || !is_numeric($uidCopied) || !is_numeric($uidOverwrite) || !is_numeric($loc)) {
-			if (TYPO3_DLOG) t3lib_div::devLog('copyLocale (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
-			return false;
+			// check params
+		if (!is_string($table) || !is_numeric($uidCopied) || !is_numeric($uidOverwrite) || !is_numeric($loc)) {
+			if (TYPO3_DLOG) {
+				t3lib_div::devLog('copyLocale (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+			}
+			return FALSE;
 		}
 
-		//check if table is defined in the TCA
-		if ($TCA[$table] && $uidCopied)	{
+			// check if table is defined in the TCA
+		if ($GLOBALS['TCA'][$table] && $uidCopied) {
 			t3lib_div::loadTCA($table);
 
-			//make data
-			$recFrom			= t3lib_BEfunc::getRecordLocalization($table, $uidCopied, $loc);
-			$recTo				= t3lib_BEfunc::getRecordLocalization($table, $uidOverwrite, $loc);
+				// make data
+			$recFrom = t3lib_BEfunc::getRecordLocalization($table, $uidCopied, $loc);
+			$recTo = t3lib_BEfunc::getRecordLocalization($table, $uidOverwrite, $loc);
 
-			//if the item is not localized, return
-			if(false == $recFrom) return true;
+				// if the item is not localized, return
+			if (FALSE == $recFrom) {
+				return TRUE;
+			}
 
-			//if the overwritten record does not have the corresponding localization, just copy it
-			if(false == $recTo) {
+				// if the overwritten record does not have the corresponding localization, just copy it
+			if (FALSE == $recTo) {
 				return self::copyLocale($table, $uidCopied, $uidOverwrite, $loc);
 			}
 
-			//overwrite l18n parent
+				// overwrite l18n parent
 			$recFrom[0]['l18n_parent'] = $uidOverwrite;
-			unset($recFrom[0]['uid']); //unset uid for cleanliness
+				// unset uid for cleanliness
+			unset($recFrom[0]['uid']);
 
-			//unset all fields that are not supposed to be copied on localized versions
-			foreach($TCA[$table]['columns'] as $fN => $fCfg)	{
-				if (t3lib_div::inList('exclude,noCopy,mergeIfNotBlank',$fCfg['l10n_mode']) && $fN!=$TCA[$table]['ctrl']['languageField'] && $fN!=$TCA[$table]['ctrl']['transOrigPointerField']) {	 // Otherwise, do not copy field (unless it is the language field or pointer to the original language)
+				// unset all fields that are not supposed to be copied on localized versions
+			foreach ($GLOBALS['TCA'][$table]['columns'] as $fN => $fCfg) {
+					// Otherwise, do not copy field (unless it is the language field or pointer to the original language)
+				if (
+					t3lib_div::inList('exclude,noCopy,mergeIfNotBlank', $fCfg['l10n_mode'])
+					&& $fN != $GLOBALS['TCA'][$table]['ctrl']['languageField']
+					&& $fN != $GLOBALS['TCA'][$table]['ctrl']['transOrigPointerField']
+				) {
 					unset($recFrom[0][$fN]);
-				} else if (isset($fCfg['config']['type']) && 'flex' == $fCfg['config']['type'] && isset($recFrom[0][$fN])) {
-					if('' != $recFrom[0][$fN]) {
+				} elseif (isset($fCfg['config']['type']) && 'flex' == $fCfg['config']['type'] && isset($recFrom[0][$fN])) {
+					if ('' != $recFrom[0][$fN]) {
 						$recFrom[0][$fN] = t3lib_div::xml2array($recFrom[0][$fN]);
 
-						if('' == trim($recFrom[0][$fN])) {
+						if ('' == trim($recFrom[0][$fN])) {
 							unset($recFrom[0][$fN]);
 						}
 					} else {
@@ -1867,98 +1984,103 @@ class tx_commerce_belib {
 			}
 
 			$data = array();
-
 			$data[$table][$recTo[0]['uid']] = $recFrom[0];
 
-			//init tce
+				// init tce
 			$tce = t3lib_div::makeInstance('t3lib_TCEmain');
 			$tce->stripslashes_values = 0;
-			//$tce->bypassWorkspaceRestrictions = true;	//overwrites are immediate
 
-			$TCAdefaultOverride = $GLOBALS['BE_USER']->getTSConfigProp('TCAdefaults');
-			if (is_array($TCAdefaultOverride))	{
+			$TCAdefaultOverride = $backendUser->getTSConfigProp('TCAdefaults');
+			if (is_array($TCAdefaultOverride)) {
 				$tce->setDefaultsFromUserTS($TCAdefaultOverride);
 			}
 
-			//start
+				// start
 			$tce->start($data, array());
 
-			//Write to session that we copy
-			//this is used by the hook to the datamap class to figure out if it should call the dynaflex
-			//so far this is the best (though not very clean) way to solve the issue we get when saving an article
-			$BE_USER->uc['txcommerce_copyProcess'] = 1;
-			$BE_USER->writeUC();
+				// Write to session that we copy
+				// this is used by the hook to the datamap class to figure out if it should call the dynaflex
+				// so far this is the best (though not very clean) way to solve the issue we get when saving an article
+			$backendUser->uc['txcommerce_copyProcess'] = 1;
+			$backendUser->writeUC();
 
 			$tce->process_datamap();
 
-			//copying done, clear session
-			$BE_USER->uc['txcommerce_copyProcess'] = 0;
-			$BE_USER->writeUC();
+				// copying done, clear session
+			$backendUser->uc['txcommerce_copyProcess'] = 0;
+			$backendUser->writeUC();
 
-			// for articles we have to overwrite the attributes
-			if('tx_commerce_articles' == $table) {
+				// for articles we have to overwrite the attributes
+			if ('tx_commerce_articles' == $table) {
 				self::overwriteArticleAttributes($uidCopied, $uidOverwrite, $loc);
 			}
 		}
-		return true;
+		return TRUE;
 	}
 
 	/**
 	 * Deletes all localizations of a record
 	 * Note that no permission check is made whatsoever! Check perms if you implement this beforehand
 	 *
-	 * @return {boolean}		Success
-	 * @param $table {string}	Table name
-	 * @param $uid	{int}		uid of the record
+	 * @param string $table Table name
+	 * @param integer $uid uid of the record
+	 * @return boolean Success
 	 */
-	function deleteL18n($table, $uid) {
-		//check params
-		if(!is_string($table) || !is_numeric($uid)) {
-			if (TYPO3_DLOG) t3lib_div::devLog('deleteL18n (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
-			return false;
+	public function deleteL18n($table, $uid) {
+			// check params
+		if (!is_string($table) || !is_numeric($uid)) {
+			if (TYPO3_DLOG) {
+				t3lib_div::devLog('deleteL18n (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+			}
+			return FALSE;
 		}
 
-		//get all locales
-		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid', $table, 'l18n_parent = '.$uid);
+		/** @var t3lib_db $database */
+		$database = $GLOBALS['TYPO3_DB'];
 
-		//delete them
-		while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
-			$GLOBALS['TYPO3_DB']->exec_UPDATEquery($table, 'uid = '.$row['uid'], array('deleted' => 1));
+			// get all locales
+		$res = $database->exec_SELECTquery('uid', $table, 'l18n_parent = ' . (int) $uid);
+
+			// delete them
+		while ($row = $database->sql_fetch_assoc($res)) {
+			$database->exec_UPDATEquery($table, 'uid = ' . $row['uid'], array('deleted' => 1));
 		}
 
-		return true;
+		return TRUE;
 	}
 
 	/**
 	 * Copies the specified category into the new category
 	 * note: you may NOT copy the same category into itself
 	 *
-	 * @return {int}			UID of the new category or false on error
-	 * @param $uid {int}		uid of existing category which is to be copied
-	 * @param $parent_uid {int} uid of category that is new parent
-	 * @param $locales {array}	Array with all uids of languages that should as well be copied - if null, no languages shall be copied
-	 * @param $sorting {int}	uid of the record behind which we copy (like - 23), or 0 if none is given at it should just be appended
+	 * @param integer $uid uid of existing category which is to be copied
+	 * @param integer $parent_uid uid of category that is new parent
+	 * @param array $locale Array with all uids of languages that should as well be copied - if null, no languages shall be copied
+	 * @param integer $sorting uid of the record behind which we copy (like - 23), or 0 if none is given at it should just be appended
+	 * @return integer UID of the new category or false on error
 	 */
-	function copyCategory($uid, $parent_uid, $locale = null, $sorting = 0) {
+	public function copyCategory($uid, $parent_uid, $locale = NULL, $sorting = 0) {
 			// check params
-		if(!is_numeric($uid) || !is_numeric($parent_uid) || $uid == $parent_uid) {
-			if (TYPO3_DLOG) t3lib_div::devLog('copyCategory (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
-			return false;
+		if (!is_numeric($uid) || !is_numeric($parent_uid) || $uid == $parent_uid) {
+			if (TYPO3_DLOG) {
+				t3lib_div::devLog('copyCategory (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+			}
+			return FALSE;
 		}
 
-		//check if we have the right to copy this category
-		//show right
-		if(!self::readCategoryAccess($uid, self::getCategoryPermsClause(self::getPermMask('copy')))) {
-			return false;
+			// check if we have the right to copy this category
+			// show right
+		if (!self::readCategoryAccess($uid, self::getCategoryPermsClause(self::getPermMask('copy')))) {
+			return FALSE;
 		}
 
-		//check if we have the right to insert into the parent Category
-		//new right
-		if(!self::readCategoryAccess($parent_uid, self::getCategoryPermsClause(self::getPermMask('new')))) {
-			return false;
+			// check if we have the right to insert into the parent Category
+			// new right
+		if (!self::readCategoryAccess($parent_uid, self::getCategoryPermsClause(self::getPermMask('new')))) {
+			return FALSE;
 		}
 
-		// First prepare user defined objects (if any) for hooks which extend this function:
+			// First prepare user defined objects (if any) for hooks which extend this function:
 		$hookObjectsArr = array();
 		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_belib.php']['copyCategoryClass'])) {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_belib.php']['copyCategoryClass'] as $classRef) {
@@ -1966,104 +2088,116 @@ class tx_commerce_belib {
 			}
 		}
 
+		/** @var t3lib_db $database */
+		$database = $GLOBALS['TYPO3_DB'];
 
-		if(0 == $sorting) {
-			//get uid of the last category in the category table
-			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid', 'tx_commerce_categories', 'deleted = 0', '', 'uid DESC', '0,1');
+		if (0 == $sorting) {
+				// get uid of the last category in the category table
+			$res = $database->exec_SELECTquery('uid', 'tx_commerce_categories', 'deleted = 0', '', 'uid DESC', '0,1');
 
-			//if there are no categories at all, abort.
-			if(0 >= $GLOBALS['TYPO3_DB']->sql_num_rows($res)) {
-				return false;
+				// if there are no categories at all, abort.
+			if (0 >= $database->sql_num_rows($res)) {
+				return FALSE;
 			}
 
-			$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
+			$row = $database->sql_fetch_assoc($res);
 
-			$uidLast = -$row['uid'];	//uid of the last category (after this product we will copy the new category)
+				// uid of the last category (after this product we will copy the new category)
+			$uidLast = - $row['uid'];
 		} else {
-			//copy after the given sorting point
+				// copy after the given sorting point
 			$uidLast = (0 > $sorting) ? $sorting : self::getCopyPid('tx_commerce_categories', $sorting);
 		}
 
-		//init tce
+			// init tce
 		$tce = t3lib_div::makeInstance('t3lib_TCEmain');
 		$tce->stripslashes_values = 0;
 
-		$TCAdefaultOverride = $GLOBALS['BE_USER']->getTSConfigProp('TCAdefaults');
-		if (is_array($TCAdefaultOverride))	{
+		/** @var t3lib_beUserAuth $backendUser */
+		$backendUser = $GLOBALS['BE_USER'];
+
+		$TCAdefaultOverride = $backendUser->getTSConfigProp('TCAdefaults');
+		if (is_array($TCAdefaultOverride)) {
 			$tce->setDefaultsFromUserTS($TCAdefaultOverride);
 		}
 
-		//start
+			// start
 		$tce->start(array(), array());
 
-		//invoke the copy manually so we can actually override the categories field
+			// invoke the copy manually so we can actually override the categories field
 		$overrideArray = array(
 			'parent_category' => $parent_uid
 		);
 
-		//Hook: beforeCopy
-		foreach($hookObjectsArr as $hookObj)	{
-				if (method_exists($hookObj, 'beforeCopy')) {
-					$hookObj->beforeCopy($uid, $uidLast, $overrideArray);
+			// Hook: beforeCopy
+		foreach ($hookObjectsArr as $hookObj) {
+			if (method_exists($hookObj, 'beforeCopy')) {
+				$hookObj->beforeCopy($uid, $uidLast, $overrideArray);
 			}
 		}
 
 		$newUid = $tce->copyRecord('tx_commerce_categories', $uid, $uidLast, 1, $overrideArray);
 
-		//Hook: afterCopy
-		foreach($hookObjectsArr as $hookObj)	{
-				if (method_exists($hookObj, 'afterCopy')) {
-					$hookObj->afterCopy($newUid, $uid, $overrideArray);
+			// Hook: afterCopy
+		foreach ($hookObjectsArr as $hookObj) {
+			if (method_exists($hookObj, 'afterCopy')) {
+				$hookObj->afterCopy($newUid, $uid, $overrideArray);
 			}
 		}
 
-		if(!is_numeric($newUid)) return false;
+		if (!is_numeric($newUid)) {
+			return FALSE;
+		}
 
-		//chmod the new category since perms are not copied
+			// chmod the new category since perms are not copied
 		self::chmodCategoryByCategory($newUid, $uid);
 
-		//copy locale
-		if(is_array($locale) && 0 != count($locale)) {
-			foreach($locale as $loc) {
-				$success = self::copyLocale('tx_commerce_categories', $uid, $newUid, $loc);
+			// copy locale
+		if (is_array($locale) && 0 != count($locale)) {
+			foreach ($locale as $loc) {
+				self::copyLocale('tx_commerce_categories', $uid, $newUid, $loc);
 			}
 		}
 
-		//copy all child products
-		$success = self::copyProductsByCategory($newUid, $uid, $locale);
+			// copy all child products
+		self::copyProductsByCategory($newUid, $uid, $locale);
 
-		//if(!$success) return false; @comment : could be that one product wasn copied because of permissions restriction!
-
-		//copy all child categories
-		$success = self::copyCategoriesByCategory($newUid, $uid, $locale);
-
-		//if(!$success) return false; @could be that one category wasn't copied because of permissions restriction!
+			// copy all child categories
+		self::copyCategoriesByCategory($newUid, $uid, $locale);
 
 		return $newUid;
-
 	}
 
 	/**
 	 * Changes the permissions of a category and applies the permissions of another category
 	 * Note that this does ALSO change owner or group
 	 *
-	 * @return {boolean}	Success
-	 * @param $uidToChmod {int}	uid of the category to chmod
-	 * @param $uidFrom {int}	uid of the category from which we take the perms
+	 * @param integer $uidToChmod uid of the category to chmod
+	 * @param integer $uidFrom uid of the category from which we take the perms
+	 * @return boolean Success
 	 */
-	function chmodCategoryByCategory($uidToChmod, $uidFrom) {
-		//check params
-		if(!is_numeric($uidToChmod) || !is_numeric($uidFrom)) {
-			if (TYPO3_DLOG) t3lib_div::devLog('chmodCategoryByCategory (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
-			return false;
+	public function chmodCategoryByCategory($uidToChmod, $uidFrom) {
+			// check params
+		if (!is_numeric($uidToChmod) || !is_numeric($uidFrom)) {
+			if (TYPO3_DLOG) {
+				t3lib_div::devLog('chmodCategoryByCategory (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+			}
+			return FALSE;
 		}
 
-		//select current perms
-		$res  = $GLOBALS['TYPO3_DB']->exec_SELECTquery('perms_everybody, perms_group, perms_user, perms_groupid, perms_userid', 'tx_commerce_categories', 'uid = '.$uidFrom.' AND deleted = 0 AND '.self::getCategoryPermsClause(self::getPermMask('show')));
-		$res2 = false;
+		/** @var t3lib_db $database */
+		$database = $GLOBALS['TYPO3_DB'];
 
-		while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
-			//apply the permissions
+			// select current perms
+		$res  = $database->exec_SELECTquery(
+			'perms_everybody, perms_group, perms_user, perms_groupid, perms_userid',
+			'tx_commerce_categories',
+			'uid = ' . $uidFrom . ' AND deleted = 0 AND ' . self::getCategoryPermsClause(self::getPermMask('show'))
+		);
+		$res2 = FALSE;
+
+		while ($row = $database->sql_fetch_assoc($res)) {
+				// apply the permissions
 			$updateFields = array(
 				'perms_everybody' => $row['perms_everybody'],
 				'perms_group' => $row['perms_group'],
@@ -2072,31 +2206,38 @@ class tx_commerce_belib {
 				'perms_groupid' => $row['perms_groupid'],
 			);
 
-			$res2 = $GLOBALS['TYPO3_DB']->exec_UPDATEquery('tx_commerce_categories', 'uid='.$uidToChmod, $updateFields);
+			$res2 = $database->exec_UPDATEquery('tx_commerce_categories', 'uid = ' . $uidToChmod, $updateFields);
 		}
 
-		return (false !== $res2 && ('' == $GLOBALS['TYPO3_DB']->sql_error()));
+		return ($res2 !== FALSE && $database->sql_error() == '');
 	}
 
 	/**
 	 * Returns the pid new pid for the copied item - this is only used when inserting a record on front of another
 	 *
-	 * @param $table {string}	Table from which we want to read
-	 * @param $uid {int}		uid of the record that we want to move our element to - in front of it
+	 * @param string $table Table from which we want to read
+	 * @param integer $uid uid of the record that we want to move our element to - in front of it
+	 * @return integer
 	 */
-	function getCopyPid($table, $uid) {
-		$res  = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid', $table, 'sorting < (SELECT sorting FROM '.$table.' WHERE uid = '.$uid.') ORDER BY sorting DESC LIMIT 0,1');
+	public function getCopyPid($table, $uid) {
+		/** @var t3lib_db $database */
+		$database = $GLOBALS['TYPO3_DB'];
 
-		$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
+		$res  = $database->exec_SELECTquery(
+			'uid',
+			$table,
+			'sorting < (SELECT sorting FROM ' . $table . ' WHERE uid = ' . $uid . ') ORDER BY sorting DESC LIMIT 0,1'
+		);
 
-		$pid = 0;
+		$row = $database->sql_fetch_assoc($res);
 
-		if(null == $row) {
-			//the item we want to skip is the item with the lowest sorting - use pid of the 'Product' Folder
+		if ($row == NULL) {
+				// the item we want to skip is the item with the lowest sorting - use pid of the 'Product' Folder
 			$pid = self::getProductFolderUid();
 		} else {
-			$pid = -$row['uid'];
+			$pid = - $row['uid'];
 		}
+
 		return $pid;
 	}
 
@@ -2104,26 +2245,40 @@ class tx_commerce_belib {
 	 * Copies all Products under a category to a new category
 	 * Note that Products that are copied in this indirect way are not versioned
 	 *
-	 * @return {boolean}		Success
-	 * @param $catUidTo {int}	uid of the category to which the products should be copied
-	 * @param $catUidFrom {int}	uid of the category from which the products should come
-	 * @param $locale {array}	sys_langauges which are to be copied as well, null if none
+	 * @param integer $catUidTo uid of the category to which the products should be copied
+	 * @param integer $catUidFrom uid of the category from which the products should come
+	 * @param array $locale sys_langauges which are to be copied as well, null if none
+	 * @return boolean Success
 	 */
-	function copyProductsByCategory($catUidTo, $catUidFrom, $locale = null) {
-
-		//check params
-		if(!is_numeric($catUidTo) || !is_numeric($catUidFrom)) {
-			if (TYPO3_DLOG) t3lib_div::devLog('copyProductsByCategory (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
-			return false;
+	public function copyProductsByCategory($catUidTo, $catUidFrom, $locale = NULL) {
+			// check params
+		if (!is_numeric($catUidTo) || !is_numeric($catUidFrom)) {
+			if (TYPO3_DLOG) {
+				t3lib_div::devLog('copyProductsByCategory (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+			}
+			return FALSE;
 		}
 
-		$res = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query('uid_local', 'tx_commerce_products', 'tx_commerce_products_categories_mm', '',' AND deleted = 0 AND uid_foreign = '.$catUidFrom, 'tx_commerce_products.sorting ASC','', '');
+		/** @var t3lib_db $database */
+		$database = $GLOBALS['TYPO3_DB'];
 
-		$success = true;
+		$res = $database->exec_SELECT_mm_query(
+			'uid_local',
+			'tx_commerce_products',
+			'tx_commerce_products_categories_mm',
+			'',
+			' AND deleted = 0 AND uid_foreign = ' . (int) $catUidFrom,
+			'tx_commerce_products.sorting ASC',
+			'',
+			''
+		);
 
-		while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
-			$succ	 = self::copyProduct($row['uid_local'], $catUidTo, true, $locale);
-			$success = ($success) ? $succ : $success;	//keep false if one action was false
+		$success = TRUE;
+
+		while ($row = $database->sql_fetch_assoc($res)) {
+			$productCopied = self::copyProduct($row['uid_local'], $catUidTo, TRUE, $locale);
+				// keep false if one action was false
+			$success = ($success) ? $productCopied : $success;
 		}
 
 		return $success;
@@ -2132,25 +2287,38 @@ class tx_commerce_belib {
 	/**
 	 * Copies all Categories under a category to a new category
 	 *
-	 * @return {boolean}		Success
-	 * @param $catUidTo {int}	uid of the category to which the categories should be copied
-	 * @param $catUidFrom {int}	uid of the category from which the categories should come
-	 * @param $locale {array}	sys_langauges that should be copied as well
+	 * @param integer $catUidTo uid of the category to which the categories should be copied
+	 * @param integer $catUidFrom uid of the category from which the categories should come
+	 * @param array $locale sys_langauges that should be copied as well
+	 * @return boolean Success
 	 */
-	function copyCategoriesByCategory($catUidTo, $catUidFrom, $locale = null) {
-
-		//check params
-		if(!is_numeric($catUidTo) || !is_numeric($catUidFrom) || $catUidTo == $catUidFrom) {
-			if (TYPO3_DLOG) t3lib_div::devLog('copyCategoriesByCategory (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
-			return false;
+	public function copyCategoriesByCategory($catUidTo, $catUidFrom, $locale = NULL) {
+			// check params
+		if (!is_numeric($catUidTo) || !is_numeric($catUidFrom) || $catUidTo == $catUidFrom) {
+			if (TYPO3_DLOG) {
+				t3lib_div::devLog('copyCategoriesByCategory (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+			}
+			return FALSE;
 		}
 
-		$res = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query('uid_local', 'tx_commerce_categories', 'tx_commerce_categories_parent_category_mm', '',' AND deleted = 0 AND uid_foreign = '.$catUidFrom.' AND '.self::getCategoryPermsClause(1), 'tx_commerce_categories.sorting ASC','', '');
-		$success = true;
+		/** @var t3lib_db $database */
+		$database = $GLOBALS['TYPO3_DB'];
 
-		while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
-			$succ 	 = self::copyCategory($row['uid_local'], $catUidTo, $locale);
-			$success = ($success) ? $succ : $success;
+		$res = $database->exec_SELECT_mm_query(
+			'uid_local',
+			'tx_commerce_categories',
+			'tx_commerce_categories_parent_category_mm',
+			'',
+			' AND deleted = 0 AND uid_foreign = ' . $catUidFrom . ' AND ' . self::getCategoryPermsClause(1),
+			'tx_commerce_categories.sorting ASC',
+			'',
+			''
+		);
+		$success = TRUE;
+
+		while ($row = $database->sql_fetch_assoc($res)) {
+			$categoryCopied = self::copyCategory($row['uid_local'], $catUidTo, $locale);
+			$success = ($success) ? $categoryCopied : $success;
 		}
 
 		return $success;
@@ -2159,52 +2327,59 @@ class tx_commerce_belib {
 	/**
 	 * Copies all Articles from one Product to another
 	 *
-	 * @return {boolean}		Success
-	 * @param $prodUidTo {int}	uid of product from which we copy the articles
-	 * @param $prodUidFrom {int}uid of product to which we copy the articles
-	 * @param $locale {array}	array with sys_languages to copy along, null if none
+	 * @param integer $prodUidTo uid of product from which we copy the articles
+	 * @param integer $prodUidFrom uid of product to which we copy the articles
+	 * @param array $locale array with sys_languages to copy along, null if none
+	 * @return boolean Success
 	 */
-	function copyArticlesByProduct($prodUidTo, $prodUidFrom, $locale = null) {
-
-		//check params
-		if(!is_numeric($prodUidTo) || !is_numeric($prodUidFrom)) {
-			if (TYPO3_DLOG) t3lib_div::devLog('copyArticlesByProduct (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
-			return false;
+	public function copyArticlesByProduct($prodUidTo, $prodUidFrom, $locale = NULL) {
+			// check params
+		if (!is_numeric($prodUidTo) || !is_numeric($prodUidFrom)) {
+			if (TYPO3_DLOG) {
+				t3lib_div::devLog('copyArticlesByProduct (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+			}
+			return FALSE;
 		}
 
-		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid', 'tx_commerce_articles', 'deleted = 0 AND uid_product = '.$prodUidFrom);
-		$success = true;
+		/** @var t3lib_db $database */
+		$database = $GLOBALS['TYPO3_DB'];
 
-		while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
-			$succ 		= self::copyArticle($row['uid'], $prodUidTo, $locale);
-			$success 	= ($success) ? $succ : $success;
+		$res = $database->exec_SELECTquery('uid', 'tx_commerce_articles', 'deleted = 0 AND uid_product = ' . $prodUidFrom);
+		$success = TRUE;
+
+		while ($row = $database->sql_fetch_assoc($res)) {
+			$succ = self::copyArticle($row['uid'], $prodUidTo, $locale);
+			$success = ($success) ? $succ : $success;
 		}
 
 		return $success;
 	}
 
-    /**
+	/**
 	 * This makes the Xml for the category Attributes
 	 * Call this function if you have imported data to the database and haven't
-     * updated the Flexform
+	 * updated the Flexform
 	 *
-     * @param	integer $category_uid
+	 * @param integer $category_uid
 	 * @return void
 	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use updateXML instead
-     */
+	 */
 	public static function fix_category_atributte($category_uid = 0) {
 		t3lib_div::logDeprecatedFunction();
 
 		if ($category_uid == 0) {
 			return;
-  		}
+		}
+
+		/** @var t3lib_db $database */
+		$database = $GLOBALS['TYPO3_DB'];
 
 		$mm_table = 'tx_commerce_categories_attributes_mm';
-		$where = 'uid_local= ' . intval($category_uid);
-		$rs = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid_correlationtype,uid_foreign', $mm_table, $where, $groupBy = '', $orderBy = '', $limit = '');
+		$where = 'uid_local= ' . (int) $category_uid;
+		$rs = $database->exec_SELECTquery('uid_correlationtype,uid_foreign', $mm_table, $where, $groupBy = '', $orderBy = '', $limit = '');
 
 		$xmlArray = array();
-		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($rs)) {
+		while ($row = $database->sql_fetch_assoc($rs)) {
 			if (empty($xmlArray['data']['sDEF']['lDEF']['ct_' . $row['uid_correlationtype']]['vDEF'])) {
 				$xmlArray['data']['sDEF']['lDEF']['ct_' . $row['uid_correlationtype']]['vDEF'] = $row['uid_foreign'];
 			} else {
@@ -2215,39 +2390,44 @@ class tx_commerce_belib {
 		$xmlText = t3lib_div::array2xml_cs($xmlArray, 'T3FlexForms', $options = array(), $charset = '');
 		$arrayToSave['attributes'] = $xmlText;
 
-		$GLOBALS['TYPO3_DB']->exec_UPDATEquery('tx_commerce_categories', 'uid=' . $category_uid, $arrayToSave, $no_quote_fields = false);
-    }
+		$database->exec_UPDATEquery('tx_commerce_categories', 'uid=' . $category_uid, $arrayToSave);
+	}
 
-    /**
-	 * Returns a WHERE-clause for the tx_commerce_categories-table where user permissions according to input argument, $perms, is validated.
-	 * $perms is the "mask" used to select. Fx. if $perms is 1 then you'll get all categories that a user can actually see!
+	/**
+	 * Returns a WHERE-clause for the tx_commerce_categories-table where user permissions according to input argument,
+	 * $perms, is validated. $perms is the "mask" used to select. Fx. if $perms is 1 then you'll get all categories that a user
+	 * can actually see!
 	 * 	 	2^0 = show (1)
 	 * 		2^1 = edit (2)
 	 * 		2^2 = delete (4)
 	 * 		2^3 = new (8)
 	 * If the user is 'admin' " 1=1" is returned (no effect)
 	 * If the user is not set at all (->user is not an array), then " 1=0" is returned (will cause no selection results at all)
-	 * The 95% use of this function is "->getCategoryPermsClause(1)" which will return WHERE clauses for *selecting* categories in backend listings - in other words this will check read permissions.
+	 * The 95% use of this function is "->getCategoryPermsClause(1)" which will return WHERE clauses for *selecting*
+	 * categories in backend listings - in other words this will check read permissions.
 	 *
 	 * @param integer $perms Permission mask to use, see function description
-	 * @return	string		Part of where clause. Prefix " AND " to this.
+	 * @return string Part of where clause. Prefix " AND " to this.
 	 */
 	public static function getCategoryPermsClause($perms) {
-		if (is_array($GLOBALS['BE_USER']->user))	{
-			if ($GLOBALS['BE_USER']->isAdmin())	{
+		/** @var t3lib_beUserAuth $backendUser */
+		$backendUser = $GLOBALS['BE_USER'];
+
+		if (is_array($backendUser->user)) {
+			if ($backendUser->isAdmin()) {
 				return ' 1=1';
 			}
 
 				// Make sure it's integer.
-			$perms = intval($perms);
-			$str= ' ('.
+			$perms = (int) $perms;
+			$str = ' (' .
 					// Everybody
 				'(perms_everybody & ' . $perms . ' = ' . $perms . ')' .
 					// User
-				'OR(perms_userid = ' . $GLOBALS['BE_USER']->user['uid'] . ' AND perms_user & ' . $perms . ' = ' . $perms . ')';
-			if ($GLOBALS['BE_USER']->groupList)	{
+				'OR(perms_userid = ' . $backendUser->user['uid'] . ' AND perms_user & ' . $perms . ' = ' . $perms . ')';
+			if ($backendUser->groupList) {
 					// Group (if any is set)
-				$str .= 'OR(perms_groupid in (' . $GLOBALS['BE_USER']->groupList . ') AND perms_group & ' . $perms . ' = ' . $perms . ')';
+				$str .= 'OR(perms_groupid in (' . $backendUser->groupList . ') AND perms_group & ' . $perms . ' = ' . $perms . ')';
 			}
 			$str .= ')';
 
@@ -2269,8 +2449,11 @@ class tx_commerce_belib {
 			return FALSE;
 		}
 
+		/** @var t3lib_beUserAuth $backendUser */
+		$backendUser = $GLOBALS['BE_USER'];
+
 			// If User is admin, he may do anything
-		if ($GLOBALS['BE_USER']->isAdmin()) {
+		if ($backendUser->isAdmin()) {
 			return TRUE;
 		}
 
@@ -2292,36 +2475,41 @@ class tx_commerce_belib {
 		}
 
 			// Check if user is owner of category and the owner may do the current operation
-		if(isset($record['perms_userid']) && isset($record['perms_user']) &&
-				($record['perms_userid'] == $GLOBALS['BE_USER']->user['uid']) &&
-				(($record['perms_user'] & $mask) == $mask)) {
+		if (
+			isset($record['perms_userid']) && isset($record['perms_user'])
+			&& ($record['perms_userid'] == $backendUser->user['uid'])
+			&& (($record['perms_user'] & $mask) == $mask)
+		) {
 			return TRUE;
 		}
 
 			// Check if the Group has the right to do the current operation
 		if (isset($record['perms_groupid']) && isset($record['perms_group'])) {
-				$usergroups = explode(',', $GLOBALS['BE_USER']->groupList);
+			$usergroups = explode(',', $backendUser->groupList);
 
-				for ($i = 0, $l = count($usergroups); $i < $l; $i ++) {
-						// User is member of the Group of the category - check the rights
-					if ($record['perms_groupid'] == $usergroups[$i]) {
-						if (($record['perms_group'] & $mask) == $mask) {
-							return true;
-						}
+			for ($i = 0, $l = count($usergroups); $i < $l; $i ++) {
+					// User is member of the Group of the category - check the rights
+				if ($record['perms_groupid'] == $usergroups[$i]) {
+					if (($record['perms_group'] & $mask) == $mask) {
+						return TRUE;
 					}
 				}
+			}
 		}
 		return FALSE;
 	}
 
 	/**
 	 * Returns the int Permission Mask for the String-Representation of the Permission. Returns 0 if not found.
-	 * @return {int}
-	 * @param $perm {string}	String-Representation of the Permission
+	 *
+	 * @param string $perm String-Representation of the Permission
+	 * @return integer
 	 */
-	function getPermMask($perm) {
-		if(!is_string($perm)) {
-			if (TYPO3_DLOG) t3lib_div::devLog('getPermMask (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+	public function getPermMask($perm) {
+		if (!is_string($perm)) {
+			if (TYPO3_DLOG) {
+				t3lib_div::devLog('getPermMask (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+			}
 			return 0;
 		}
 
@@ -2331,16 +2519,25 @@ class tx_commerce_belib {
 			case 'read':
 			case 'show':
 			case 'copy':
-				$mask = 1; break;
+				$mask = 1;
+			break;
+
 			case 'edit':
 			case 'move':
-				$mask = 2; break;
+				$mask = 2;
+			break;
+
 			case 'delete':
-				$mask = 4; break;
+				$mask = 4;
+			break;
+
 			case 'new':
-				$mask = 8; break;
+				$mask = 8;
+			break;
+
 			case 'editcontent':
-				$mask = 16; break;
+				$mask = 16;
+			break;
 		}
 
 		return $mask;
@@ -2349,175 +2546,187 @@ class tx_commerce_belib {
 	/**
 	 * Checks the permissions for a product (by checking for the permission in all parent categories)
 	 *
-	 * @return {boolean}	Right exists or not
-	 * @param $uid {int}	Product UId
-	 * @param $perm {string}String-Rep of the Permission
+	 * @param integer $uid Product UId
+	 * @param string $perm String-Rep of the Permission
+	 * @return boolean Right exists or not
 	 */
-	function checkProductPerms($uid, $perm) {
-
-		//check params
-		if(!is_numeric($uid) || !is_string($perm)) {
-			if (TYPO3_DLOG) t3lib_div::devLog('checkProductPerms (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
-			return false;
+	public function checkProductPerms($uid, $perm) {
+			// check params
+		if (!is_numeric($uid) || !is_string($perm)) {
+			if (TYPO3_DLOG) {
+				t3lib_div::devLog('checkProductPerms (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+			}
+			return FALSE;
 		}
 
-		//get mask
+			// get mask
 		$mask = self::getPermMask($perm);
 
-		if(0 == $mask) {
-			if (TYPO3_DLOG) t3lib_div::devLog('checkProductPerms (belib) gets passed an invalid permission to check for.', COMMERCE_EXTKEY, 3);
-			return false;
+		if (0 == $mask) {
+			if (TYPO3_DLOG) {
+				t3lib_div::devLog('checkProductPerms (belib) gets passed an invalid permission to check for.', COMMERCE_EXTKEY, 3);
+			}
+			return FALSE;
 		}
 
-		//get parent categories
+			// get parent categories
 		$parents = self::getProductParentCategories($uid);
 
-		//check the permissions
-		if(0 < count($parents)) {
+			// check the permissions
+		if (0 < count($parents)) {
 			$l = count($parents);
 
-			for($i = 0; $i < $l; $i ++) {
-				if(!self::readCategoryAccess($parents[$i], self::getCategoryPermsClause($mask))) {
-					return false;
+			for ($i = 0; $i < $l; $i ++) {
+				if (!self::readCategoryAccess($parents[$i], self::getCategoryPermsClause($mask))) {
+					return FALSE;
 				}
 			}
-		} else return false;
+		} else {
+			return FALSE;
+		}
 
-		return true;
+		return TRUE;
 	}
 
 	/**
-	 * Returns a category record (of category with $id) with an extra field "_thePath" set to the record path IF the WHERE clause, $perms_clause, selects the record. Thus is works as an access check that returns a category record if access was granted, otherwise not.
+	 * Returns a category record (of category with $id) with an extra field "_thePath" set to the record path IF the WHERE clause,
+	 * $perms_clause, selects the record. Thus is works as an access check that returns a category record if access was granted, otherwise not.
 	 * If $id is zero a pseudo root-page with "_thePath" set is returned IF the current BE_USER is admin.
 	 * In any case ->isInWebMount must return true for the user (regardless of $perms_clause)
 	 * Usage: 21
 	 *
-	 * @param	integer		Category uid for which to check read-access
-	 * @param	string		$perms_clause is typically a value generated with SELF->getCategoryPermsClause(1);
-	 * @return	array		Returns category record if OK, otherwise false.
+	 * @param integer $id Category uid for which to check read-access
+	 * @param string $perms_clause $perms_clause is typically a value generated with SELF->getCategoryPermsClause(1);
+	 * @return array Returns category record if OK, otherwise false.
 	 */
-	function readCategoryAccess($id, $perms_clause) {
-		if ((string)$id!='') {
-			$id = intval($id);
+	public function readCategoryAccess($id, $perms_clause) {
+		if ((string) $id != '') {
+			$id = (int) $id;
 			if (!$id) {
-				if ($GLOBALS['BE_USER']->isAdmin()) {
+				/** @var t3lib_beUserAuth $backendUser */
+				$backendUser = $GLOBALS['BE_USER'];
+
+				if ($backendUser->isAdmin()) {
 					$path = '/';
 					$pageinfo['_thePath'] = $path;
 					return $pageinfo;
 				}
 			} else {
-
-				$pageinfo = t3lib_BEfunc::getRecord('tx_commerce_categories', $id, '*', ($perms_clause ? ' AND '.$perms_clause : ''));
-				if ($pageinfo['uid'] /*&& $GLOBALS['BE_USER']->isInWebMount($id, $perms_clause)*/) {
-					//t3lib_BEfunc::workspaceOL('pages', $pageinfo);
+				$pageinfo = t3lib_BEfunc::getRecord('tx_commerce_categories', $id, '*', ($perms_clause ? ' AND ' . $perms_clause : ''));
+				if ($pageinfo['uid']) {
 					if (is_array($pageinfo)) {
-						//t3lib_BEfunc::fixVersioningPid('pages', $pageinfo);
-						//list($pageinfo['_thePath'], $pageinfo['_thePathFull']) = t3lib_BEfunc::getRecordPath(intval($pageinfo['uid']), $perms_clause, 15, 1000);
 						return $pageinfo;
 					}
 				}
 			}
 		}
-		return false;
+		return FALSE;
 	}
 
 	/**
-	 * Checks whether the parent category of any content is given the right 'editcontent' for the specific user and returns true or false depending on the perms
-	 * @param {array} $categoryUids		uids of the categories
-	 * @param {array} $perms			string for permissions to check
-	 * @return {boolean}
+	 * Checks whether the parent category of any content is given the right 'editcontent' for the specific user and returns true
+	 * or false depending on the perms
+	 *
+	 * @param array $categoryUids uids of the categories
+	 * @param array $perms string for permissions to check
+	 * @return boolean
 	 */
 	public static function checkPermissionsOnCategoryContent($categoryUids, $perms) {
+		/** @var t3lib_beUserAuth $backendUser */
+		$backendUser = $GLOBALS['BE_USER'];
 
-		//admin is allowed to do anything
-		if($GLOBALS['BE_USER']->isAdmin()) {
-			return true;
+			// admin is allowed to do anything
+		if ($backendUser->isAdmin()) {
+			return TRUE;
 		}
 
 		$keys = array_keys($categoryUids);
-		$l 	  = count($keys);
+		$l = count($keys);
 
+		/** @var tx_commerce_categorymounts $mounts */
 		$mounts = t3lib_div::makeInstance('tx_commerce_categorymounts');
-		$mounts->init($GLOBALS['BE_USER']->user['uid']);
+		$mounts->init($backendUser->user['uid']);
 
-		for($i = 0; $i < $l; $i ++) {
-
+		for ($i = 0; $i < $l; $i ++) {
+			/** @var tx_commerce_category $category */
 			$category = t3lib_div::makeInstance('tx_commerce_category');
 			$category->init($categoryUids[$keys[$i]]);
-			/**
-			 * @TODO Check why not wiorking at kneipp
-			 * @NOTE: Whoever wrote this TODO, next time, specify what EXACTLY is not working
-			 * Can't reproduce. 20.11.2009, Erik Frister
-			 */
-			//check if the category is in the commerce mounts
-			if(!$mounts->isInCommerceMounts($category->getUid())) return false;
+				// check if the category is in the commerce mounts
+			if (!$mounts->isInCommerceMounts($category->getUid())) {
+				return FALSE;
+			}
 
-			//check perms
-			for($j = 0, $m = count($perms); $j < $m; $j ++) {
-				if(!$category->isPSet($perms[$j])) {
-
-					//return false if perms are not granted
-					return false;
+				// check perms
+			for ($j = 0, $m = count($perms); $j < $m; $j ++) {
+				if (!$category->isPSet($perms[$j])) {
+						// return false if perms are not granted
+					return FALSE;
 				}
 			}
 		}
-		return true;
+		return TRUE;
 	}
 
 	/**
 	 * Returns if typo3 is running under a AJAX request
-	 * @return {boolean}
+	 *
+	 * @return boolean
 	 */
-	function isAjaxRequest() {
-		return (bool)(TYPO3_REQUESTTYPE & TYPO3_REQUESTTYPE_AJAX);
+	public function isAjaxRequest() {
+		return (bool) (TYPO3_REQUESTTYPE & TYPO3_REQUESTTYPE_AJAX);
 	}
 
 	/**
 	 * Returns the UID of the Product Folder
-	 * @return {int}	UID
+	 *
+	 * @return integer UID
 	 */
-	function getProductFolderUid() {
-		list($modPid,$defaultFolder,$folderList)  = tx_commerce_folder_db::initFolders('Commerce', 'commerce');
-		list($prodPid,$defaultFolder,$folderList) = tx_commerce_folder_db::initFolders('Products', 'commerce',$modPid);
+	public function getProductFolderUid() {
+		list($modPid) = tx_commerce_folder_db::initFolders('Commerce', 'commerce');
+		list($prodPid) = tx_commerce_folder_db::initFolders('Products', 'commerce', $modPid);
 
 		return $prodPid;
 	}
 
 	/**
 	 * Overwrites a product record
-	 * @return
-	 * @param $uidFrom {int} UID of the product we want to copy
-	 * @param $uidTo {int} UID of the product we want to overwrite
+	 *
+	 * @param integer $uidFrom UID of the product we want to copy
+	 * @param integer $uidTo UID of the product we want to overwrite
+	 * @param array $locale
+	 * @return boolean
 	 */
-	function overwriteProduct($uidFrom, $uidTo, $locale = null) {
+	public function overwriteProduct($uidFrom, $uidTo, $locale = array()) {
 		$table = 'tx_commerce_products';
 
-		//check params
-		if(!is_numeric($uidFrom) || !is_numeric($uidTo) || $uidFrom == $uidTo) {
-			if (TYPO3_DLOG) t3lib_div::devLog('overwriteProduct (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
-			return false;
+			// check params
+		if (!is_numeric($uidFrom) || !is_numeric($uidTo) || $uidFrom == $uidTo) {
+			if (TYPO3_DLOG) {
+				t3lib_div::devLog('overwriteProduct (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+			}
+			return FALSE;
 		}
 
-		//check if we may actually copy the product (no permission check, only check if we are not accidentally copying a placeholder or shadow or deleted product)
+			// check if we may actually copy the product (no permission check, only check if we are not accidentally copying a placeholder or shadow or deleted product)
 		$recordFrom = t3lib_BEfunc::getRecordWSOL($table, $uidFrom, '*', ' AND pid != -1 AND t3ver_state != 1 AND deleted = 0');
 
-		if(!$recordFrom) {
-			return false;
+		if (!$recordFrom) {
+			return FALSE;
 		}
 
-		//check if we may actually overwrite the product (no permission check, only check if we are not accidentaly overwriting a placeholder or shadow or deleted product)
+			// check if we may actually overwrite the product (no permission check, only check if we are not accidentaly overwriting a placeholder or shadow or deleted product)
 		$recordTo = t3lib_BEfunc::getRecordWSOL($table, $uidTo, '*', ' AND pid != -1 AND t3ver_state != 1 AND deleted = 0');
 
-		if(!$recordTo) {
-			return false;
+		if (!$recordTo) {
+			return FALSE;
 		}
 
-		//check if we have the permissions to copy and overwrite (check category rights)
-		if(!self::checkProductPerms($uidFrom, 'copy') || !self::checkProductPerms($uidTo, 'editcontent')) {
-			return false;
+			// check if we have the permissions to copy and overwrite (check category rights)
+		if (!self::checkProductPerms($uidFrom, 'copy') || !self::checkProductPerms($uidTo, 'editcontent')) {
+			return FALSE;
 		}
 
-		// First prepare user defined objects (if any) for hooks which extend this function:
+			// First prepare user defined objects (if any) for hooks which extend this function:
 		$hookObjectsArr = array();
 		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_belib.php']['overwriteProductClass'])) {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_belib.php']['overwriteProductClass'] as $classRef) {
@@ -2527,104 +2736,111 @@ class tx_commerce_belib {
 
 		$data = self::getOverwriteData($table, $uidFrom, $uidTo);
 
-		//do not overwrite uid, parent_categories, and create_date
+			// do not overwrite uid, parent_categories, and create_date
 		unset($data[$table][$uidTo]['uid'],
-			  $data[$table][$uidTo]['categories'],
-			  $data[$table][$uidTo]['crdate'],
-			  $data[$table][$uidTo]['cruser_id']
+			$data[$table][$uidTo]['categories'],
+			$data[$table][$uidTo]['crdate'],
+			$data[$table][$uidTo]['cruser_id']
 		);
 
 		$datamap = $data;
 
-		//execute
+			// execute
 		$tce = t3lib_div::makeInstance('t3lib_TCEmain');
 		$tce->stripslashes_values = 0;
-		//$tce->bypassWorkspaceRestrictions = true;	//overwrites are immediate
 
-		$TCAdefaultOverride = $GLOBALS['BE_USER']->getTSConfigProp('TCAdefaults');
-		if (is_array($TCAdefaultOverride))	{
+		/** @var t3lib_beUserAuth $backendUser */
+		$backendUser = $GLOBALS['BE_USER'];
+
+		$TCAdefaultOverride = $backendUser->getTSConfigProp('TCAdefaults');
+		if (is_array($TCAdefaultOverride)) {
 			$tce->setDefaultsFromUserTS($TCAdefaultOverride);
 		}
 
-		//Hook: beforeOverwrite
-		foreach($hookObjectsArr as $hookObj)	{
-				if (method_exists($hookObj, 'beforeOverwrite')) {
-					$hookObj->beforeOverwrite($uidFrom, $uidTo, $datamap);
+			// Hook: beforeOverwrite
+		foreach ($hookObjectsArr as $hookObj) {
+			if (method_exists($hookObj, 'beforeOverwrite')) {
+				$hookObj->beforeOverwrite($uidFrom, $uidTo, $datamap);
 			}
 		}
 
 		$tce->start($datamap, array());
 		$tce->process_datamap();
 
-		//Hook: afterOverwrite
-		foreach($hookObjectsArr as $hookObj)	{
-				if (method_exists($hookObj, 'afterOverwrite')) {
-					$hookObj->beforeCopy($uidFrom, $uidTo, $datamap, $tce);
+			// Hook: afterOverwrite
+		foreach ($hookObjectsArr as $hookObj) {
+			if (method_exists($hookObj, 'beforeCopy')) {
+				$hookObj->beforeCopy($uidFrom, $uidTo, $datamap, $tce);
 			}
 		}
 
-		//overwrite locales
-		if(is_array($locale) && 0 != count($locale)) {
-			foreach($locale as $loc) {
-				$success = self::overwriteLocale($table, $uidFrom, $uidTo, $loc);
+			// overwrite locales
+		if (count($locale) > 0) {
+			foreach ($locale as $loc) {
+				self::overwriteLocale($table, $uidFrom, $uidTo, $loc);
 			}
 		}
 
-		//overwrite articles which are existing - do NOT delete articles that are not in the overwritten product but in the overwriting one
-		$articlesFrom= self::getArticlesOfProduct($uidFrom);
+			// overwrite articles which are existing - do NOT delete articles that are not in the overwritten product but in the overwriting one
+		$articlesFrom = self::getArticlesOfProduct($uidFrom);
 
-		if(false !== $articlesFrom && is_array($articlesFrom)) {
-			//the product has articles - check if they exist in the overwritten product
+		if (is_array($articlesFrom)) {
+				// the product has articles - check if they exist in the overwritten product
 			$articlesTo = self::getArticlesOfProduct($uidTo);
 
-			//simply copy if the overwritten product does not have articles
-			if(false === $articlesTo || !is_array($articlesTo)) {
+				// simply copy if the overwritten product does not have articles
+			if (FALSE === $articlesTo || !is_array($articlesTo)) {
 				self::copyArticlesByProduct($uidTo, $uidFrom, $locale);
 			} else {
-				//go through each article of the overwriting product and check if it exists in the overwritten product
-				$l 			= count($articlesFrom);
-				$m			= count($articlesTo);
+					// go through each article of the overwriting product and check if it exists in the overwritten product
+				$l = count($articlesFrom);
+				$m = count($articlesTo);
 
-				//walk the articles
-				for($i = 0; $i < $l; $i ++) {
-					$overwrite 	= false;
-					$uid 		= $articlesFrom[$i]['uid'];
+					// walk the articles
+				for ($i = 0; $i < $l; $i ++) {
+					$overwrite = FALSE;
+					$uid = $articlesFrom[$i]['uid'];
 
-					//check if we need to overwrite
-					for($j = 0; $j < $m; $j ++) {
-						if($articlesFrom[$i]['ordernumber'] == $articlesTo[$j]['ordernumber']) {
-							$overwrite = true;
+						// check if we need to overwrite
+					for ($j = 0; $j < $m; $j ++) {
+						if ($articlesFrom[$i]['ordernumber'] == $articlesTo[$j]['ordernumber']) {
+							$overwrite = TRUE;
 							break;
 						}
 					}
 
-					if(!$overwrite) {
-						//copy if we do not need to overwrite
+					if (!$overwrite) {
+							// copy if we do not need to overwrite
 						self::copyArticle($uid, $uidTo, $locale);
 					} else {
-						//overwrite if the article already exists
+							// overwrite if the article already exists
 						self::overwriteArticle($uid, $articlesTo[$j]['uid'], $locale);
 					}
 				}
 			}
 		}
+
+		return TRUE;
 	}
 
 	/**
 	 * Retrieves the data object to make an overwrite
 	 *
-	 * @param $table string	Tablename
-	 * @param $uid int	uid of the record we which to retrieve the data from
-	 * @param $destPid int uid of the record we want to overwrite
+	 * @param string $table Tablename
+	 * @param integer $uidFrom uid of the record we which to retrieve the data from
+	 * @param integer $destPid uid of the record we want to overwrite
+	 * @return array
 	 */
-	function getOverwriteData($table, $uidFrom, $destPid) {
-		global $TCA;
-
+	public function getOverwriteData($table, $uidFrom, $destPid) {
+		/** @var t3lib_TCEmain $tce */
 		$tce = t3lib_div::makeInstance('t3lib_TCEmain');
 		$tce->stripslashes_values = 0;
 
-		$TCAdefaultOverride = $GLOBALS['BE_USER']->getTSConfigProp('TCAdefaults');
-		if (is_array($TCAdefaultOverride))	{
+		/** @var t3lib_beUserAuth $backendUser */
+		$backendUser = $GLOBALS['BE_USER'];
+
+		$TCAdefaultOverride = $backendUser->getTSConfigProp('TCAdefaults');
+		if (is_array($TCAdefaultOverride)) {
 			$tce->setDefaultsFromUserTS($TCAdefaultOverride);
 		}
 
@@ -2632,90 +2848,104 @@ class tx_commerce_belib {
 
 		$first = 0;
 		$language = 0;
-		$uid = $origUid = intval($uidFrom);
+		$uid = $origUid = (int) $uidFrom;
 
-		// Only copy if the table is defined in TCA, a uid is given
-		if ($TCA[$table] && $uid)	{
+			// Only copy if the table is defined in TCA, a uid is given
+		if ($GLOBALS['TCA'][$table] && $uid) {
 			t3lib_div::loadTCA($table);
 
-			if (true)	{		// This checks if the record can be selected which is all that a copy action requires.
-				$data = Array();
+				// This checks if the record can be selected which is all that a copy action requires.
+			$data = Array();
 
-				$nonFields = array_unique(t3lib_div::trimExplode(',','uid,perms_userid,perms_groupid,perms_user,perms_group,perms_everybody,t3ver_oid,t3ver_wsid,t3ver_id,t3ver_label,t3ver_state,t3ver_swapmode,t3ver_count,t3ver_stage,t3ver_tstamp,'.$excludeFields,1));
+			$nonFields = array_unique(t3lib_div::trimExplode(
+				',',
+				'uid,perms_userid,perms_groupid,perms_user,perms_group,perms_everybody,t3ver_oid,t3ver_wsid,t3ver_id,t3ver_label,
+					t3ver_state,t3ver_swapmode,t3ver_count,t3ver_stage,t3ver_tstamp,',
+				1
+			));
 
-				// $row = $this->recordInfo($table,$uid,'*');
-				$row = t3lib_BEfunc::getRecordWSOL($table,$uid);	// So it copies (and localized) content from workspace...
-				if (is_array($row))	{
+				// So it copies (and localized) content from workspace...
+			$row = t3lib_BEfunc::getRecordWSOL($table, $uid);
+			if (is_array($row)) {
 
-						// Initializing:
-					$theNewID = $destPid;
-					$enableField = isset($TCA[$table]['ctrl']['enablecolumns']) ? $TCA[$table]['ctrl']['enablecolumns']['disabled'] : '';
-					$headerField = $TCA[$table]['ctrl']['label'];
+					// Initializing:
+				$theNewID = $destPid;
+				$enableField = isset($GLOBALS['TCA'][$table]['ctrl']['enablecolumns']) ?
+					$GLOBALS['TCA'][$table]['ctrl']['enablecolumns']['disabled'] :
+					'';
+				$headerField = $GLOBALS['TCA'][$table]['ctrl']['label'];
 
-						// Getting default data:
-					$defaultData = $tce->newFieldArray($table);
+					// Getting default data:
+				$defaultData = $tce->newFieldArray($table);
 
-						// Getting "copy-after" fields if applicable:
-					$copyAfterFields = array();
+					// Getting "copy-after" fields if applicable:
+				$copyAfterFields = array();
 
-						// Page TSconfig related:
-					$tscPID = t3lib_BEfunc::getTSconfig_pidValue($table, $uid, -$destPid);	// NOT using t3lib_BEfunc::getTSCpid() because we need the real pid - not the ID of a page, if the input is a page...
-					$TSConfig = $tce->getTCEMAIN_TSconfig($tscPID);
-					$tE = $tce->getTableEntries($table,$TSConfig);
+					// Page TSconfig related:
+					// NOT using t3lib_BEfunc::getTSCpid() because we need the real pid - not the ID of a page, if the input is a page...
+				$tscPID = t3lib_BEfunc::getTSconfig_pidValue($table, $uid, - $destPid);
+				$TSConfig = $tce->getTCEMAIN_TSconfig($tscPID);
+				$tE = $tce->getTableEntries($table, $TSConfig);
 
-						// Traverse ALL fields of the selected record:
-					foreach($row as $field => $value)	{
-						if (!in_array($field,$nonFields))	{
+					// Traverse ALL fields of the selected record:
+				foreach ($row as $field => $value) {
+					if (!in_array($field, $nonFields)) {
 
-								// Get TCA configuration for the field:
-							$conf = $TCA[$table]['columns'][$field]['config'];
+							// Get TCA configuration for the field:
+						$conf = $GLOBALS['TCA'][$table]['columns'][$field]['config'];
 
-								// Preparation/Processing of the value:
-							if ($field=='pid')	{	// "pid" is hardcoded of course:
-								$value = $destPid;
-							} elseif (isset($overrideValues[$field]))	{	// Override value...
-								$value = $overrideValues[$field];
-							} elseif (isset($copyAfterFields[$field]))	{	// Copy-after value if available:
-								$value = $copyAfterFields[$field];
-							} elseif ($TCA[$table]['ctrl']['setToDefaultOnCopy'] && t3lib_div::inList($TCA[$table]['ctrl']['setToDefaultOnCopy'],$field))	{	// Revert to default for some fields:
-								$value = $defaultData[$field];
-							} else {
-									// Hide at copy may override:
-								if ($first && $field==$enableField && $TCA[$table]['ctrl']['hideAtCopy'] && !$tce->neverHideAtCopy && !$tE['disableHideAtCopy'])	{
-									$value=1;
-								}
-									// Prepend label on copy:
-								if ($first && $field==$headerField && $TCA[$table]['ctrl']['prependAtCopy'] && !$tE['disablePrependAtCopy'])	{
-									$value = $tce->getCopyHeader($table,$this->resolvePid($table,$destPid),$field,$this->clearPrefixFromValue($table,$value),0);
-								}
-									// Processing based on the TCA config field type (files, references, flexforms...)
-								$value = $tce->copyRecord_procBasedOnFieldType($table, $uid, $field, $value, $row, $conf, $tscPID, $language);
+							// Preparation/Processing of the value:
+							// "pid" is hardcoded of course:
+						if ($field == 'pid') {
+							$value = $destPid;
+							// Override value...
+						} elseif (isset($overrideValues[$field])) {
+							$value = $overrideValues[$field];
+							// Copy-after value if available:
+						} elseif (isset($copyAfterFields[$field])) {
+							$value = $copyAfterFields[$field];
+							// Revert to default for some fields:
+						} elseif (
+							$GLOBALS['TCA'][$table]['ctrl']['setToDefaultOnCopy']
+							&& t3lib_div::inList($GLOBALS['TCA'][$table]['ctrl']['setToDefaultOnCopy'], $field)
+						) {
+							$value = $defaultData[$field];
+						} else {
+								// Hide at copy may override:
+							if (
+								$first
+								&& $field == $enableField
+								&& $GLOBALS['TCA'][$table]['ctrl']['hideAtCopy']
+								&& !$tce->neverHideAtCopy
+								&& !$tE['disableHideAtCopy']
+							) {
+								$value = 1;
 							}
-
-								// Add value to array.
-							$data[$table][$theNewID][$field] = $value;
+								// Prepend label on copy:
+							if ($first && $field == $headerField && $GLOBALS['TCA'][$table]['ctrl']['prependAtCopy'] && !$tE['disablePrependAtCopy']) {
+									// @todo this can't work resolvePid and clearPrefixFromValue are not implement in any file of commerce
+								$value = $tce->getCopyHeader($table, $this->resolvePid($table, $destPid), $field, $this->clearPrefixFromValue($table, $value), 0);
+							}
+								// Processing based on the TCA config field type (files, references, flexforms...)
+							$value = $tce->copyRecord_procBasedOnFieldType($table, $uid, $field, $value, $row, $conf, $tscPID, $language);
 						}
+
+							// Add value to array.
+						$data[$table][$theNewID][$field] = $value;
 					}
-
-						// Overriding values:
-					if ($TCA[$table]['ctrl']['editlock'])	{
-						$data[$table][$theNewID][$TCA[$table]['ctrl']['editlock']] = 0;
-					}
-
-						// Setting original UID:
-					if ($TCA[$table]['ctrl']['origUid'])	{
-						$data[$table][$theNewID][$TCA[$table]['ctrl']['origUid']] = $uid;
-					}
-
-
-						// Getting the new UID:
-					//$theNewSQLID = $copyTCE->substNEWwithIDs[$theNewID];
-					//if ($theNewSQLID)	{
-					//	$this->copyRecord_fixRTEmagicImages($table,t3lib_BEfunc::wsMapId($table,$theNewSQLID));
-					//}
-
-					return $data;
 				}
+
+					// Overriding values:
+				if ($GLOBALS['TCA'][$table]['ctrl']['editlock']) {
+					$data[$table][$theNewID][$GLOBALS['TCA'][$table]['ctrl']['editlock']] = 0;
+				}
+
+					// Setting original UID:
+				if ($GLOBALS['TCA'][$table]['ctrl']['origUid']) {
+					$data[$table][$theNewID][$GLOBALS['TCA'][$table]['ctrl']['origUid']] = $uid;
+				}
+
+				return $data;
 			}
 		}
 
@@ -2725,104 +2955,86 @@ class tx_commerce_belib {
 	/**
 	 * Overwrites the article
 	 *
-	 * @return {boolean}	Success
-	 * @param $uidFrom {int}	uid of article that provides the new data
-	 * @param $uidTo {int}		uid of article that is to be overwritten
-	 * @param $locale {array}	uids of sys_languages to overwrite
+	 * @param integer $uidFrom uid of article that provides the new data
+	 * @param integer $uidTo uid of article that is to be overwritten
+	 * @param array $locale uids of sys_languages to overwrite
+	 * @return boolean Success
 	 */
-	function overwriteArticle($uidFrom, $uidTo, $locale = null) {
-		global $BE_USER, $TCA;
+	public function overwriteArticle($uidFrom, $uidTo, $locale = NULL) {
 		$table = 'tx_commerce_articles';
 
-		//check params
-		if(!is_numeric($uidFrom) || !is_numeric($uidTo)) {
-			if (TYPO3_DLOG) t3lib_div::devLog('copyArticle (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
-			return false;
+			// check params
+		if (!is_numeric($uidFrom) || !is_numeric($uidTo)) {
+			if (TYPO3_DLOG) {
+				t3lib_div::devLog('copyArticle (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+			}
+			return FALSE;
 		}
 
-		//check show right for overwriting article
+			// check show right for overwriting article
 		$prodFrom = self::getProductOfArticle($uidFrom);
 
-		if(!self::checkProductPerms($prodFrom['uid'], 'show')) {
-			return false;
+		if (!self::checkProductPerms($prodFrom['uid'], 'show')) {
+			return FALSE;
 		}
 
-		//check editcontent right for overwritten article
+			// check editcontent right for overwritten article
 		$prodTo = self::getProductOfArticle($uidTo);
 
-		if(!self::checkProductPerms($prodTo['uid'], 'editcontent')) {
-			return false;
+		if (!self::checkProductPerms($prodTo['uid'], 'editcontent')) {
+			return FALSE;
 		}
 
-		//get the records
+			// get the records
 		$recordFrom = t3lib_BEfunc::getRecordWSOL($table, $uidFrom, '*');
-		$recordTo 	= t3lib_BEfunc::getRecordWSOL($table, $uidTo, '*');
+		$recordTo = t3lib_BEfunc::getRecordWSOL($table, $uidTo, '*');
 
-		if(!$recordFrom || !$recordTo) return false;
+		if (!$recordFrom || !$recordTo) {
+			return FALSE;
+		}
 
 		$data = self::getOverwriteData($table, $uidFrom, $uidTo);
 
-		#echo t3lib_div::debug($data,__LINE__.__FILE__);
-
 		unset($data[$table][$uidTo]['uid'],
-			  $data[$table][$uidTo]['cruser_id'],
-			  $data[$table][$uidTo]['crdate'],
-			  $data[$table][$uidTo]['uid_product']
+			$data[$table][$uidTo]['cruser_id'],
+			$data[$table][$uidTo]['crdate'],
+			$data[$table][$uidTo]['uid_product']
 		);
 
-		//correct flex values
-		/*if ($TCA[$table])	{
-			t3lib_div::loadTCA($table);
-
-			foreach($TCA[$table]['columns'] as $fN => $fCfg)	{
-				if (isset($fCfg['config']['type']) && 'flex' == $fCfg['config']['type'] && isset($recordFrom[$fN])) {
-					if('' != trim($recordFrom[$fN])) {
-						$recordFrom[$fN] = t3lib_div::xml2array($recordFrom[$fN]);
-
-						//unset if the flex is not complete
-						if('' == trim($recordFrom[$fN])) {
-							unset($recordFrom[$fN]);
-						}
-					} else {
-						unset($recordFrom[$fN]);
-					}
-				}
-			}
-		}*/
-
 		$datamap = $data;
-		//$datamap = array();
-		//$datamap[$table][$uidTo] = $recordFrom;
 
-		//execute
+			// execute
 		$tce = t3lib_div::makeInstance('t3lib_TCEmain');
 		$tce->stripslashes_values = 0;
 
-		$TCAdefaultOverride = $GLOBALS['BE_USER']->getTSConfigProp('TCAdefaults');
-		if (is_array($TCAdefaultOverride))	{
+		/** @var t3lib_beUserAuth $backendUser */
+		$backendUser = $GLOBALS['BE_USER'];
+
+		$TCAdefaultOverride = $backendUser->getTSConfigProp('TCAdefaults');
+		if (is_array($TCAdefaultOverride)) {
 			$tce->setDefaultsFromUserTS($TCAdefaultOverride);
 		}
 		$tce->start($datamap, array());
 
-		//Write to session that we copy
-		//this is used by the hook to the datamap class to figure out if it should call the dynaflex
-		//so far this is the best (though not very clean) way to solve the issue we get when saving an article
-		$BE_USER->uc['txcommerce_copyProcess'] = 1;
-		$BE_USER->writeUC();
+			// Write to session that we copy
+			// this is used by the hook to the datamap class to figure out if it should call the dynaflex
+			// so far this is the best (though not very clean) way to solve the issue we get when saving an article
+		$backendUser->uc['txcommerce_copyProcess'] = 1;
+		$backendUser->writeUC();
 
 		$tce->process_datamap();
 
-		//copying done, clear session
-		$BE_USER->uc['txcommerce_copyProcess'] = 0;
-		$BE_USER->writeUC();
+			// copying done, clear session
+		$backendUser->uc['txcommerce_copyProcess'] = 0;
+		$backendUser->writeUC();
 
-		//overwrite locales
-		if(is_array($locale) && 0 != count($locale)) {
-			foreach($locale as $loc) {
-				$success = self::overwriteLocale($table, $uidFrom, $uidTo, $loc);
+			// overwrite locales
+		if (is_array($locale) && 0 != count($locale)) {
+			foreach ($locale as $loc) {
+				self::overwriteLocale($table, $uidFrom, $uidTo, $loc);
 			}
 		}
-		return true;
+		return TRUE;
 	}
 }
 
