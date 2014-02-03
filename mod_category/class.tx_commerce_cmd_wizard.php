@@ -8,13 +8,12 @@
 
 unset($MCONF);
 require ('conf.php');
-require ($BACK_PATH.'init.php');
-require ($BACK_PATH.'template.php');
+require ($BACK_PATH . 'init.php');
+require ($BACK_PATH . 'template.php');
 
 $LANG->includeLLFile('EXT:lang/locallang_misc.xml');
 
 class tx_commerce_cmd_wizard {
-
 	var $pageinfo;
 	var $pidInfo;
 	var $newContentInto;
@@ -48,7 +47,7 @@ class tx_commerce_cmd_wizard {
 		$this->perms_clause = $BE_USER->getPagePermsClause(1);
 
 			// Setting GPvars:
-		$this->id 			= (0 != t3lib_div::_GP('id')) ? intval(t3lib_div::_GP('id')) : tx_commerce_belib::getProductFolderUid();	// The page id to operate from
+		$this->id 			= (0 != t3lib_div::_GP('id')) ? intval(t3lib_div::_GP('id')) : Tx_Commerce_Utility_BackendUtility::getProductFolderUid();	// The page id to operate from
 		$this->returnUrl 	= t3lib_div::_GP('returnUrl');
 
 		$this->param 		= t3lib_div::_GP('edit');	// this to be accomplished from the caller: &edit['.$table.'][-'.$uid.']=new&

@@ -28,7 +28,7 @@
  * And products can be assigned to several categories and a category can have a lot of parent
  * categories.
  */
-class tx_commerce_belib {
+class Tx_Commerce_Utility_BackendUtility {
 	/**
 	 * This gets all categories for a product from the database (even those that are not direct).
 	 *
@@ -523,7 +523,7 @@ class tx_commerce_belib {
 	 * @param string $orderBy
 	 * @return array of article UIDs, ready to implode for coma separed list
 	 */
-	public function getArticlesOfProductAsUidList($pUid, $additionalWhere = '', $orderBy = '') {
+	public static function getArticlesOfProductAsUidList($pUid, $additionalWhere = '', $orderBy = '') {
 		/** @var t3lib_db $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
@@ -708,7 +708,7 @@ class tx_commerce_belib {
 	 * @param array $keyData: the result from the explode method (PASSED BY REFERENCE)
 	 * @return integer value of the last part from the key
 	 */
-	public static function getUidFromKey($key, &$keyData) {
+	public function getUidFromKey($key, &$keyData) {
 		$uid = 0;
 
 		if (strpos($key, '_') === FALSE) {
@@ -841,8 +841,7 @@ class tx_commerce_belib {
 			if (count($delWhere) > 0) {
 				$where = ' AND NOT ((' . implode(') OR (', $delWhere) . '))';
 			}
-			$database->exec_DELETEquery($relationTable, 'uid_local=' . $uid_local . $where
-			);
+			$database->exec_DELETEquery($relationTable, 'uid_local=' . $uid_local . $where);
 		}
 	}
 
@@ -1214,7 +1213,7 @@ class tx_commerce_belib {
 	 * @param integer $articleUid ID of article which the flexform is for
 	 * @param array $priceDataArray Priceinformation for the article
 	 * @return boolean Status of method
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, this wont get replaced as it was removed from the api
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, this wont get replaced as it was empty before and will get removed from the api
 	 */
 	public function savePriceFlexformWithArticle($priceUid , $articleUid, $priceDataArray) {
 		t3lib_div::logDeprecatedFunction();
@@ -1315,7 +1314,7 @@ class tx_commerce_belib {
 	 * @param integer $article_uid
 	 * @return void
 	 * @see updatePriceXMLFromDatabase
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use tx_commerce_belib::updateXML
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use Tx_Commerce_Utility_BackendUtility::updateXML
 	 */
 	public function fix_articles_price($article_uid = 0) {
 		t3lib_div::logDeprecatedFunction();
@@ -1330,7 +1329,7 @@ class tx_commerce_belib {
 	 * updated the Flexform
 	 *
 	 * @param integer $product_uid
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use tx_commerce_belib::updateXML
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use Tx_Commerce_Utility_BackendUtility::updateXML
 	 */
 	public function fix_product_atributte($product_uid = 0) {
 		t3lib_div::logDeprecatedFunction();
@@ -1377,11 +1376,11 @@ class tx_commerce_belib {
 	 * @param boolean $copy If set, the Attributes will only be copied - else cut (aka "swapped" in its true from)
 	 * @return boolean Success
 	 */
-	public function swapProductAttributes($pUidFrom, $pUidTo, $copy = FALSE) {
+	public static function swapProductAttributes($pUidFrom, $pUidTo, $copy = FALSE) {
 			// verify params
 		if (!is_numeric($pUidFrom) || !is_numeric($pUidTo)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('swapProductAttributes (tx_commerce_belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				t3lib_div::devLog('swapProductAttributes (Tx_Commerce_Utility_BackendUtility) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
 			}
 			return FALSE;
 		}
@@ -1431,11 +1430,11 @@ class tx_commerce_belib {
 	 * @param boolean $copy If set, the Articles will only be copied - else cut (aka "swapped" in its true from)
 	 * @return boolean Success
 	 */
-	public function swapProductArticles($pUidFrom, $pUidTo, $copy = FALSE) {
+	public static function swapProductArticles($pUidFrom, $pUidTo, $copy = FALSE) {
 			// check params
 		if (!is_numeric($pUidFrom) || !is_numeric($pUidTo)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('swapProductArticles (tx_commerce_belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				t3lib_div::devLog('swapProductArticles (Tx_Commerce_Utility_BackendUtility) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
 			}
 			return FALSE;
 		}
@@ -1693,7 +1692,7 @@ class tx_commerce_belib {
 	 * @param integer $sorting uid of the record behind which we insert this product, or 0 to just append
 	 * @return integer UID of the new product or false on error
 	 */
-	public function copyProduct($uid, $uid_category, $ignoreWS = FALSE, $locale = NULL, $sorting = 0) {
+	public static function copyProduct($uid, $uid_category, $ignoreWS = FALSE, $locale = NULL, $sorting = 0) {
 			// check params
 		if (!is_numeric($uid) || !is_numeric($uid_category) || !is_numeric($sorting)) {
 			if (TYPO3_DLOG) {
@@ -2059,7 +2058,7 @@ class tx_commerce_belib {
 	 * @param integer $sorting uid of the record behind which we copy (like - 23), or 0 if none is given at it should just be appended
 	 * @return integer UID of the new category or false on error
 	 */
-	public function copyCategory($uid, $parent_uid, $locale = NULL, $sorting = 0) {
+	public static function copyCategory($uid, $parent_uid, $locale = NULL, $sorting = 0) {
 			// check params
 		if (!is_numeric($uid) || !is_numeric($parent_uid) || $uid == $parent_uid) {
 			if (TYPO3_DLOG) {
@@ -2364,7 +2363,7 @@ class tx_commerce_belib {
 	 * @return void
 	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use updateXML instead
 	 */
-	public static function fix_category_atributte($category_uid = 0) {
+	public function fix_category_atributte($category_uid = 0) {
 		t3lib_div::logDeprecatedFunction();
 
 		if ($category_uid == 0) {
@@ -2505,7 +2504,7 @@ class tx_commerce_belib {
 	 * @param string $perm String-Representation of the Permission
 	 * @return integer
 	 */
-	public function getPermMask($perm) {
+	public static function getPermMask($perm) {
 		if (!is_string($perm)) {
 			if (TYPO3_DLOG) {
 				t3lib_div::devLog('getPermMask (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
@@ -2599,7 +2598,7 @@ class tx_commerce_belib {
 	 * @param string $perms_clause $perms_clause is typically a value generated with SELF->getCategoryPermsClause(1);
 	 * @return array Returns category record if OK, otherwise false.
 	 */
-	public function readCategoryAccess($id, $perms_clause) {
+	public static function readCategoryAccess($id, $perms_clause) {
 		if ((string) $id != '') {
 			$id = (int) $id;
 			if (!$id) {
@@ -2681,7 +2680,7 @@ class tx_commerce_belib {
 	 *
 	 * @return integer UID
 	 */
-	public function getProductFolderUid() {
+	public static function getProductFolderUid() {
 		list($modPid) = tx_commerce_folder_db::initFolders('Commerce', 'commerce');
 		list($prodPid) = tx_commerce_folder_db::initFolders('Products', 'commerce', $modPid);
 
@@ -2696,7 +2695,7 @@ class tx_commerce_belib {
 	 * @param array $locale
 	 * @return boolean
 	 */
-	public function overwriteProduct($uidFrom, $uidTo, $locale = array()) {
+	public static function overwriteProduct($uidFrom, $uidTo, $locale = array()) {
 		$table = 'tx_commerce_products';
 
 			// check params
@@ -3038,9 +3037,9 @@ class tx_commerce_belib {
 	}
 }
 
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_belib.php']) {
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Utility/BackendUtility.php']) {
 	/** @noinspection PhpIncludeInspection */
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_belib.php']);
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Utility/BackendUtility.php']);
 }
 
 ?>

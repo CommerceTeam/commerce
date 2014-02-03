@@ -50,7 +50,8 @@ class Tx_Commerce_Hook_CommandMapHooks {
 		}
 
 		if ($table == 'tx_commerce_products' && $command == 'localize') {
-			$belib = t3lib_div::makeInstance('tx_commerce_belib');
+			/** @var Tx_Commerce_Utility_BackendUtility $belib */
+			$belib = t3lib_div::makeInstance('Tx_Commerce_Utility_BackendUtility');
 
 				// get all related articles
 			$articles = $belib->getArticlesOfProduct($id);
@@ -101,7 +102,7 @@ class Tx_Commerce_Hook_CommandMapHooks {
 			$parentCategories = $item->getParentCategories();
 
 				// check existing categories
-			if (!tx_commerce_belib::checkPermissionsOnCategoryContent($parentCategories, array('editcontent'))) {
+			if (!Tx_Commerce_Utility_BackendUtility::checkPermissionsOnCategoryContent($parentCategories, array('editcontent'))) {
 					// Log the error
 				$pObj->log($table, $id, 3, 0, 1, 'Attempt to ' . $command . ' record without ' . $command . '-permissions');
 					// Set id to 0 (reference!) to prevent delete of the record
@@ -125,7 +126,7 @@ class Tx_Commerce_Hook_CommandMapHooks {
 				$parentCategories = $l18nParent->getParentCategories();
 			}
 
-			if (!tx_commerce_belib::checkPermissionsOnCategoryContent($parentCategories, array('editcontent'))) {
+			if (!Tx_Commerce_Utility_BackendUtility::checkPermissionsOnCategoryContent($parentCategories, array('editcontent'))) {
 					// Log the error
 				$pObj->log($table, $id, 3, 0, 1, 'Attempt to ' . $command . ' record without ' . $command . '-permissions');
 					// Set id to 0 (reference!) to prevent delete of the record
@@ -162,7 +163,8 @@ class Tx_Commerce_Hook_CommandMapHooks {
 		 * @author	Thomas Hempel	<thomas@work.de>
 		 */
 		if ($table == 'tx_commerce_categories' && $command == 'delete') {
-			$belib = t3lib_div::makeInstance('tx_commerce_belib');
+			/** @var Tx_Commerce_Utility_BackendUtility $belib */
+			$belib = t3lib_div::makeInstance('Tx_Commerce_Utility_BackendUtility');
 			$deleteArray = array('deleted' => 1);
 			$childCategories = array();
 
@@ -205,9 +207,11 @@ class Tx_Commerce_Hook_CommandMapHooks {
 		 */
 		if ($table == 'tx_commerce_products' && $command == 'delete') {
 				// instanciate the backend library
-			$belib = t3lib_div::makeInstance('tx_commerce_belib');
+			/** @var Tx_Commerce_Utility_BackendUtility $belib */
+			$belib = t3lib_div::makeInstance('Tx_Commerce_Utility_BackendUtility');
 				// get all related articles
 			$articles = $belib->getArticlesOfProduct($id);
+
 			if (($articles != FALSE) && (is_array($articles))) {
 				/**
 				 * Only if there are articles, walk thru the array
@@ -231,7 +235,8 @@ class Tx_Commerce_Hook_CommandMapHooks {
 		 */
 		if ($table == 'tx_commerce_products' && $command == 'delete') {
 				// instanciate the backend library
-			$belib = t3lib_div::makeInstance('tx_commerce_belib');
+			/** @var Tx_Commerce_Utility_BackendUtility $belib */
+			$belib = t3lib_div::makeInstance('Tx_Commerce_Utility_BackendUtility');
 				// delete the localizations for products
 			$belib->deleteL18n($table, $id);
 		}
@@ -255,7 +260,8 @@ class Tx_Commerce_Hook_CommandMapHooks {
 			}
 
 				// instanciate the backend library
-			$belib = t3lib_div::makeInstance('tx_commerce_belib');
+			/** @var Tx_Commerce_Utility_BackendUtility $belib */
+			$belib = t3lib_div::makeInstance('Tx_Commerce_Utility_BackendUtility');
 
 				// get all related articles
 			$articles = $belib->getArticlesOfProduct($id);

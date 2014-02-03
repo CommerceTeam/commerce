@@ -632,7 +632,7 @@ class tx_commerce_product extends tx_commerce_element_alib {
 					);
 
 						// Fetch the article-attribute mm record with localized article uid and current attribute
-					$localizedArticleUid = (int)$localizedArticleUid[0]['uid'];
+					$localizedArticleUid = (int) $localizedArticleUid[0]['uid'];
 					if ($localizedArticleUid > 0) {
 						$selectFields = array();
 						$selectFields[] = 'default_value';
@@ -1198,7 +1198,7 @@ class tx_commerce_product extends tx_commerce_element_alib {
 		for ($j = 0; $j < $articleCount; $j++) {
 			$article = & $this->articles[$this->articles_uids[$j]];
 			if (is_object($article) && ($article instanceof tx_commerce_article)) {
-				$priceArr[$article->getUid()] = ($usePriceNet) ? $article->get_price_net() : $article->get_price_gross();
+				$priceArr[$article->getUid()] = ($usePriceNet) ? $article->getPriceNet() : $article->getPriceGross();
 			}
 		}
 
@@ -1275,9 +1275,9 @@ class tx_commerce_product extends tx_commerce_element_alib {
 			// Update relations only, if parent_category was successfully set
 		if ($set) {
 			$catList = array($parent_uid);
-			$catList = tx_commerce_belib::getUidListFromList($catList);
-			$catList = tx_commerce_belib::extractFieldArray($catList, 'uid_foreign', TRUE);
-			tx_commerce_belib::saveRelations($this->uid, $catList, 'tx_commerce_products_categories_mm', TRUE);
+			$catList = Tx_Commerce_Utility_BackendUtility::getUidListFromList($catList);
+			$catList = Tx_Commerce_Utility_BackendUtility::extractFieldArray($catList, 'uid_foreign', TRUE);
+			Tx_Commerce_Utility_BackendUtility::saveRelations($this->uid, $catList, 'tx_commerce_products_categories_mm', TRUE);
 		} else {
 			return FALSE;
 		}

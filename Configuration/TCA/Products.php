@@ -354,7 +354,7 @@ $GLOBALS['TCA']['tx_commerce_products'] = Array(
 												<TCEforms>
 													<config>
 														<type>user</type>
-														<userFunc>tx_commerce_articleCreator->existingArticles</userFunc>
+														<userFunc>Tx_Commerce_Utility_ArticleCreatorUtility->existingArticles</userFunc>
 													</config>
 												</TCEforms>
 											</existingArticles>
@@ -372,7 +372,7 @@ $GLOBALS['TCA']['tx_commerce_products'] = Array(
 												<TCEforms>
 													<config>
 														<type>user</type>
-														<userFunc>tx_commerce_articleCreator->producibleArticles</userFunc>
+														<userFunc>Tx_Commerce_Utility_ArticleCreatorUtility->producibleArticles</userFunc>
 													</config>
 												</TCEforms>
 											</producibleArticles>
@@ -409,7 +409,7 @@ $GLOBALS['TCA']['tx_commerce_products'] = Array(
 												<TCEforms>
 													<config>
 														<type>user</type>
-														<userFunc>tx_commerce_articleCreator->existingArticles</userFunc>
+														<userFunc>Tx_Commerce_Utility_ArticleCreatorUtility->existingArticles</userFunc>
 													</config>
 												</TCEforms>
 											</existingArticles>
@@ -449,7 +449,7 @@ if (is_array($postEdit['tx_commerce_products']) && (($postData == NULL) || (t3li
 	t3lib_extMgm::isLoaded('dynaflex')) {
 		// Load the configuration from a file
 	/** @noinspection PhpIncludeInspection */
-	require_once(t3lib_extMgm::extPath('commerce') . ' Configuration/DCA/Product.php');
+	require_once(t3lib_extMgm::extPath('commerce') . 'Configuration/DCA/Product.php');
 	$uid = array_keys($postEdit['tx_commerce_products']);
 	if ($postEdit['tx_commerce_products'][$uid[0]] == 'new') {
 		$uid = 0;

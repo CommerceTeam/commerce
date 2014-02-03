@@ -143,8 +143,8 @@ abstract class browsetree {
 	/**
 	 * Returns the leaf object at the given index
 	 *
-	 * @return integer
 	 * @param integer $index Leaf index
+	 * @return leafMaster
 	 */
 	public function getLeaf($index) {
 		if (!is_numeric($index) || !isset($this->leafs[$index])) {

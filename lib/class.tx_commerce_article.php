@@ -840,8 +840,6 @@ class tx_commerce_article extends tx_commerce_element_alib {
 		return TRUE;
 	}
 
-
-
 	/**
 	 * @return string title of article
 	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getTitle instead

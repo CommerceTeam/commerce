@@ -47,17 +47,24 @@ class user_orderedit_func {
 	 * @return string HTML-Content
 	 */
 	public function sum_price_gross_format($PA) {
-		$content = '<input type="text" disabled name="' . $PA['itemFormElName'] . '" value="' . tx_moneylib::format($PA['itemFormElValue'] / 100) . '">';
+		$content = '<input type="text" disabled name="' . $PA['itemFormElName'] . '" value="' .
+			tx_moneylib::format($PA['itemFormElValue'] / 100) . '">';
 		return $content;
 	}
 
 	/**
 	 * Oder Articles
 	 * Renders the List of aricles
+	 *
 	 * @param array $PA
 	 * @return string HTML-Content
 	 */
 	public function order_articles($PA) {
+		/** @var t3lib_db $database */
+		$database = $GLOBALS['TYPO3_DB'];
+		/** @var language $language */
+		$language = $GLOBALS['LANG'];
+
 		$content = '';
 		$foreign_table = 'tx_commerce_order_articles';
 		$table = 'tx_commerce_orders';
@@ -90,9 +97,9 @@ class user_orderedit_func {
 
 			// Check if Orders in this folder are editable
 		$orderEditable = FALSE;
-		$check_result = $GLOBALS['TYPO3_DB']->exec_SELECTquery( 'tx_commerce_foldereditorder', 'pages', 'uid = ' . $order_storage_pid);
-		if ($GLOBALS['TYPO3_DB']->sql_num_rows($check_result) == 1) {
-			if ($res_check = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($check_result)) {
+		$check_result = $database->exec_SELECTquery( 'tx_commerce_foldereditorder', 'pages', 'uid = ' . $order_storage_pid);
+		if ($database->sql_num_rows($check_result) == 1) {
+			if ($res_check = $database->sql_fetch_assoc($check_result)) {
 				if ($res_check['tx_commerce_foldereditorder'] == 1) {
 					$orderEditable = TRUE;
 				}
@@ -100,14 +107,14 @@ class user_orderedit_func {
 		}
 
 			// Create the SQL query for selecting the elements in the listing:
-		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+		$result = $database->exec_SELECTquery(
 			'*',
 			$foreign_table,
 			'pid = ' . $order_storage_pid . t3lib_BEfunc::deleteClause($foreign_table) .
-			' AND order_id=\'' . $GLOBALS['TYPO3_DB']->quoteStr($order_id, $foreign_table) . '\''
+			' AND order_id=\'' . $database->quoteStr($order_id, $foreign_table) . '\''
 		);
 
-		$dbCount = $GLOBALS['TYPO3_DB']->sql_num_rows($result);
+		$dbCount = $database->sql_num_rows($result);
 
 		$sum = array();
 		$out = '';
@@ -115,7 +122,7 @@ class user_orderedit_func {
 			/**
 			* Only if we have a result
 			*/
-			$theData[$titleCol] = '<span class="c-table">' . $GLOBALS['LANG']->sL('LLL:EXT:commerce/locallang_be.php:order_view.items.article_list', 1) .
+			$theData[$titleCol] = '<span class="c-table">' . $language->sL('LLL:EXT:commerce/locallang_be.php:order_view.items.article_list', 1) .
 				'</span> (' . $dbCount . ')';
 
 			$extConf = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf'];
@@ -123,7 +130,7 @@ class user_orderedit_func {
 			if ($extConf['invoicePageID'] > 0) {
 				$theData[$titleCol] .= ' <a href="../index.php?id=' . $extConf['invoicePageID'] . '&amp;tx_commerce_pi6[order_id]=' .
 					$order_id . '&amp;type=' . $extConf['invoicePageType'] . '" target="_blank">' .
-					$GLOBALS['LANG']->sL('LLL:EXT:commerce/locallang_be.php:order_view.items.print_invoice', 1) . ' *</a>';
+					$language->sL('LLL:EXT:commerce/locallang_be.php:order_view.items.print_invoice', 1) . ' *</a>';
 			}
 
 			$num_cols = count($field_rows);
@@ -137,19 +144,18 @@ class user_orderedit_func {
 			 */
 			foreach ($field_rows as $field) {
 				$out .= '<td class="c-headLineTable"><b>' .
-					$GLOBALS['LANG']->sL(t3lib_BEfunc::getItemLabel($foreign_table, $field)) .
+					$language->sL(t3lib_BEfunc::getItemLabel($foreign_table, $field)) .
 					'</b></td>';
 			}
 
-			$out .= '<td class="c-headLineTable"></td>';
-			$out .= '</tr>';
+			$out .= '<td class="c-headLineTable"></td></tr>';
 
 			/**
 			 * @TODO: Switch to moneylib to use formating
 			 */
 			$cc = 0;
 			$iOut = '';
-			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
+			while ($row = $database->sql_fetch_assoc($result)) {
 				$cc++;
 				$sum['amount'] += $row['amount'];
 
@@ -179,18 +185,18 @@ class user_orderedit_func {
 					switch ($field) {
 						case $titleCol:
 							$iOut .= '<td>';
-							if ( $orderEditable) {
+							if ($orderEditable) {
 								$params = '&edit[' . $foreign_table . '][' . $row['uid'] . ']=edit';
 								$wrap = array(
 									'<a href="#" onclick="' . htmlspecialchars(t3lib_BEfunc::editOnClick($params, $GLOBALS['BACK_PATH'])) . '">',
 									'</a>'
 								);
 							}
-							break;
+						break;
 
 						case 'amount':
 							$iOut .= '<td>';
-							if ( $orderEditable ) {
+							if ($orderEditable) {
 								$params = '&edit[' . $foreign_table . '][' . $row['uid'] . ']=edit&columnsOnly=amount';
 								$wrap = array(
 									'<b><a href="#" onclick="' . htmlspecialchars(t3lib_BEfunc::editOnClick($params, $GLOBALS['BACK_PATH'])) .
@@ -199,15 +205,16 @@ class user_orderedit_func {
 									'</a></b>'
 								);
 							}
-							break;
+						break;
 
 						case 'price_net':
 						case 'price_gross':
 							$iOut .= '<td style="text-align: right">';
-							break;
+						break;
 
 						default:
 							$iOut .= '<td>';
+						break;
 					}
 
 					$iOut .= implode(t3lib_BEfunc::getProcessedValue($foreign_table, $field, $row[$field], 100), $wrap);
@@ -235,10 +242,11 @@ class user_orderedit_func {
 					case 'price_net':
 					case 'price_gross':
 						$out .= '<td class="c-headLineTable" style="text-align: right"><b>';
-						break;
+					break;
 
 					default:
 						$out .= '<td class="c-headLineTable"><b>';
+					break;
 				}
 
 				if ($sum[$field] > 0) {
@@ -248,8 +256,7 @@ class user_orderedit_func {
 				$out .= '</b></td>';
 			}
 
-			$out .= '<td class="c-headLineTable"></td>';
-			$out .= '</tr>';
+			$out .= '<td class="c-headLineTable"></td></tr>';
 
 			/**
 			 * Always
@@ -257,7 +264,7 @@ class user_orderedit_func {
 			 * To Be shure everything is ok
 			 */
 			$values = array('sum_price_gross' => $sum['price_gross_value'] * 100, 'sum_price_net' => $sum['price_net_value'] * 100);
-			$GLOBALS['TYPO3_DB']->exec_UPDATEquery($table, 'order_id=\'' . $GLOBALS['TYPO3_DB']->quoteStr($order_id, $foreign_table) . '\'', $values);
+			$database->exec_UPDATEquery($table, 'order_id=\'' . $database->quoteStr($order_id, $foreign_table) . '\'', $values);
 		}
 
 		$out = '
@@ -275,6 +282,7 @@ class user_orderedit_func {
 	/**
 	 * Oder Status
 	 * Selects only the oder folders from the pages List
+	 *
 	 * @param array $data
 	 * @see tcafiles/tx_commerce_orders.tca.php
 	 */
@@ -290,7 +298,7 @@ class user_orderedit_func {
 		$data['items'] = array();
 
 			// Find the right pid for the Ordersfolder
-		list($orderPid, $defaultFolder, $folderList) = array_unique(tx_commerce_folder_db::initFolders('Orders', 'Commerce', 0, 'Commerce'));
+		list($orderPid) = array_unique(tx_commerce_folder_db::initFolders('Orders', 'Commerce', 0, 'Commerce'));
 
 		/**
 		 * Get the poages below $order_pid
@@ -312,16 +320,19 @@ class user_orderedit_func {
 		}
 
 		if (in_array($orderPid, $rootlinePIDs)) {
-			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('pid ', 'pages', 'uid = ' . $myPID . t3lib_BEfunc::deleteClause('pages'), '', 'sorting' );
-			if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
-				while ($return_data = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
+			/** @var t3lib_db $database */
+			$database = $GLOBALS['TYPO3_DB'];
+
+			$result = $database->exec_SELECTquery('pid ', 'pages', 'uid = ' . $myPID . t3lib_BEfunc::deleteClause('pages'), '', 'sorting' );
+			if ($database->sql_num_rows($result) > 0) {
+				while ($return_data = $database->sql_fetch_assoc($result)) {
 					$orderPid = $return_data['pid'];
 				}
-				$GLOBALS['TYPO3_DB']->sql_free_result($result);
+				$database->sql_free_result($result);
 			}
 		}
 
-		$data['items'] = tx_commerce_belib::getOrderFolderSelector(
+		$data['items'] = Tx_Commerce_Utility_BackendUtility::getOrderFolderSelector(
 			$orderPid,
 			$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['OrderFolderRecursiveLevel']
 		);
@@ -339,8 +350,7 @@ class user_orderedit_func {
 		/**
 		 * Normal
 		 */
-		$content = $this->address($PA, $fobj, 'tt_address', $PA['itemFormElValue']);
-		return $content;
+		return $this->address($PA, $fobj, 'tt_address', $PA['itemFormElValue']);
 	}
 
 	/**
@@ -356,8 +366,7 @@ class user_orderedit_func {
 		/**
 		 * Normal
 		 */
-		$content = $fObj->getSingleField_typeNone_render(array(), $PA['itemFormElValue']);
-		return $content;
+		return $fObj->getSingleField_typeNone_render(array(), $PA['itemFormElValue']);
 	}
 
 	/**
@@ -372,14 +381,14 @@ class user_orderedit_func {
 		/**
 		 * Normal
 		 */
-		$content = $this->address($PA, $fobj, 'tt_address', $PA['itemFormElValue']);
-		return $content;
+		return $this->address($PA, $fobj, 'tt_address', $PA['itemFormElValue']);
 	}
 
 	/**
-	 * Adresss
-	 * Renders the an Adress adresss block
-	 * @param $PA
+	 * Address
+	 * Renders an address block
+	 *
+	 * @param array $PA
 	 * @param t3lib_TCEforms $fobj
 	 * @param string $table
 	 * @param integer $uid Record UID
@@ -414,7 +423,6 @@ class user_orderedit_func {
 
 			/**
 			 * Better formating via template class
-			 * @todo locallang for 'blub'
 			 */
 			$content .= $doc->spacer(10);
 
@@ -428,32 +436,31 @@ class user_orderedit_func {
 			$content .= $doc->spacer(10);
 			$display_arr = array();
 
+			/** @var language $language */
+			$language = $GLOBALS['LANG'];
+
 			foreach ($data_row as $key => $value) {
 				/**
-				 * Walk thrue rowset,
+				 * Walk through rowset,
 				 * get TCA values
 				 * and LL Names
 				 */
-
-
 				if (t3lib_div::inList($GLOBALS['TCA'][$table]['interface']['showRecordFieldList'], $key)) {
 					/**
 					 * Get The label
 					 */
-					$local_row_name = $GLOBALS['LANG']->sL(t3lib_BEfunc::getItemLabel($table, $key));
+					$local_row_name = $language->sL(t3lib_BEfunc::getItemLabel($table, $key));
 					$display_arr[$key] = array($local_row_name, htmlspecialchars($value));
 				}
 			}
 
 			$tableLayout = array (
-				'table' =>  array('<table border="0" cellspacing="2" cellpadding="2">','</table>'),
+				'table' =>  array('<table>', '</table>'),
 				'defRowEven' => array (
-					'defCol' => array('<td valign="top" class="bgColor5">','</td>')
+					'defCol' => array('<td class="bgColor5">', '</td>')
 				),
-
 				'defRowOdd' => array (
-
-					'defCol' => array('<td valign="top" class="bgColor4">','</td>')
+					'defCol' => array('<td class="bgColor4">', '</td>')
 				)
 			);
 			$content .= $doc->table($display_arr, $tableLayout);

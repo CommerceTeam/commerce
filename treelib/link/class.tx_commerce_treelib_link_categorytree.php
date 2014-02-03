@@ -31,7 +31,7 @@ class tx_commerce_treelib_link_categorytree extends browsetree {
 
 		//Instantiate the categorydata, -view and set the permission mask (or the string rep.)
 		$categorydata = t3lib_div::makeInstance('tx_commerce_leaf_categorydata');
-		$categorydata->setPermsMask(tx_commerce_belib::getPermMask($this->minCategoryPerms));
+		$categorydata->setPermsMask(Tx_Commerce_Utility_BackendUtility::getPermMask($this->minCategoryPerms));
 		$categoryview = t3lib_div::makeInstance('tx_commerce_treelib_link_leaf_categoryview');
 		$categoryview->noRootOnclick(($this->minCategoryPerms == 'editcontent')); //disable the root onclick if the perms are set to editcontent - this way we cannot select the root as a parent for any content item
 

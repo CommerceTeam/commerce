@@ -7,46 +7,74 @@
  * @maintainer 	Erik Frister <typo3@marketing-factory.de>
  */
 
-	// Require ext update script.
+/** @noinspection PhpIncludeInspection */
 require_once(t3lib_extmgm::extPath('commerce') . 'class.ext_update.php');
 
 class tx_commerce_categorytree extends browsetree {
+	/**
+	 * Set the Tree Name
+	 *
+	 * @var string
+	 */
+	protected $treeName = 'txcommerceCategoryTree';
 
-		// Set the Tree Name
-	protected $treeName 		= 'txcommerceCategoryTree';
-	protected $bare				= true;							//Should the tree be only Categories? Or also Products and Articles?
+	/**
+	 * Should the tree be only Categories? Or also Products and Articles?
+	 *
+	 * @var boolean
+	 */
+	protected $bare = TRUE;
+
+	/**
+	 * @var string
+	 */
 	protected $minCategoryPerms = 'show';
-	protected $noClickList		= '';
-	protected $simpleMode  		= false;
-	protected $realValues 		= false;
+
+	/**
+	 * @var string
+	 */
+	protected $noClickList = '';
+
+	/**
+	 * @var boolean
+	 */
+	protected $simpleMode = FALSE;
+
+	/**
+	 * @var boolean
+	 */
+	protected $realValues = FALSE;
 
 	/**
 	 * Initializes the Categorytree
 	 *
-	 * @param {boolean} $onlyCategories - Flag if Categories should be the only leafs
-	 * @return {void}
+	 * @return void
 	 */
-	function init() {
-
-		//Call parent constructor
+	public function init() {
+			// Call parent constructor
 		parent::init();
 
-		//Create the category leaf
+			// Create the category leaf
+		/** @var tx_commerce_leaf_category $categoryLeaf */
 		$categoryLeaf = t3lib_div::makeInstance('tx_commerce_leaf_category');
 
-		//Instantiate the categorydata, -view and set the permission mask (or the string rep.)
+			// Instantiate the categorydata, -view and set the permission mask (or the string rep.)
+		/** @var tx_commerce_leaf_categorydata $categorydata */
 		$categorydata = t3lib_div::makeInstance('tx_commerce_leaf_categorydata');
-		$categorydata->setPermsMask(tx_commerce_belib::getPermMask($this->minCategoryPerms));
+		$categorydata->setPermsMask(Tx_Commerce_Utility_BackendUtility::getPermMask($this->minCategoryPerms));
+
+		/** @var tx_commerce_leaf_categoryview $categoryview */
 		$categoryview = t3lib_div::makeInstance('tx_commerce_leaf_categoryview');
-		$categoryview->noRootOnclick(($this->minCategoryPerms == 'editcontent')); //disable the root onclick if the perms are set to editcontent - this way we cannot select the root as a parent for any content item
+			// disable the root onclick if the perms are set to editcontent - this way we cannot select the root as a parent for any content item
+		$categoryview->noRootOnclick(($this->minCategoryPerms == 'editcontent'));
 
-		// Configure real values
-        if ($this->realValues) {
-            $categoryview->substituteRealValues();
-        }
+			// Configure real values
+		if ($this->realValues) {
+			$categoryview->substituteRealValues();
+		}
 
-		//Configure the noOnclick for the leaf
-		if(t3lib_div::inList($this->noClickList, 'tx_commerce_leaf_category')) {
+			// Configure the noOnclick for the leaf
+		if (t3lib_div::inList($this->noClickList, 'tx_commerce_leaf_category')) {
 			$categoryview->noOnclick();
 		}
 
@@ -54,33 +82,31 @@ class tx_commerce_categorytree extends browsetree {
 
 		$this->addLeaf($categoryLeaf);
 
-		//Add Product and Article Leafs if wanted - Productleaf will be added to Categoryleaf, and Articleleaf will be added to Productleaf
-		if(!$this->bare) {
-
+			// Add Product and Article Leafs if wanted - Productleaf will be added to Categoryleaf, and Articleleaf will be added to Productleaf
+		if (!$this->bare) {
 			$productleaf = t3lib_div::makeInstance('tx_commerce_leaf_product');
 			$articleleaf = t3lib_div::makeInstance('tx_commerce_leaf_article');
 
-
 			$productview = t3lib_div::makeInstance('tx_commerce_leaf_productview');
 
-			// Configure the noOnclick for the leaf
-			if(t3lib_div::inList($this->noClickList, 'tx_commerce_leaf_product')) {
+				// Configure the noOnclick for the leaf
+			if (t3lib_div::inList($this->noClickList, 'tx_commerce_leaf_product')) {
 				$productview->noOnclick();
 			}
 
-			// Configure real values
+				// Configure real values
 			if ($this->realValues) {
 				$productview->substituteRealValues();
 			}
 
 			$articleview = t3lib_div::makeInstance('tx_commerce_leaf_articleview');
 
-			// Configure the noOnclick for the leaf
-			if(t3lib_div::inList($this->noClickList, 'tx_commerce_leaf_article')) {
+				// Configure the noOnclick for the leaf
+			if (t3lib_div::inList($this->noClickList, 'tx_commerce_leaf_article')) {
 				$articleview->noOnclick();
 			}
 
-			// Configure real values
+				// Configure real values
 			if ($this->realValues) {
 				$articleview->substituteRealValues();
 			}
@@ -90,8 +116,8 @@ class tx_commerce_categorytree extends browsetree {
 
 			$categoryLeaf->addLeaf($productleaf);
 
-			// Do not show articles in simple mode.
-			if(!$this->simpleMode) {
+				// Do not show articles in simple mode.
+			if (!$this->simpleMode) {
 				$productleaf->addLeaf($articleleaf);
 			}
 		}
@@ -100,12 +126,13 @@ class tx_commerce_categorytree extends browsetree {
 	/**
 	 * Sets the minimum Permissions needed for the Category Leaf
 	 * Must be called BEFORE calling init
-	 * @return {void}
-	 * @param $perm {string}	String-Representation of the right. Can be 'show, new, delete, editcontent, cut, move, copy, edit'
+	 *
+	 * @param string $perm String-Representation of the right. Can be 'show, new, delete, editcontent, cut, move, copy, edit'
+	 * @return void
 	 */
-	function setMinCategoryPerms($perm) {
-		if(!$this->isInit) {
-			//store the string and let it be added once init is called
+	public function setMinCategoryPerms($perm) {
+		if (!$this->isInit) {
+				// store the string and let it be added once init is called
 			$this->minCategoryPerms = $perm;
 		}
 	}
@@ -113,8 +140,8 @@ class tx_commerce_categorytree extends browsetree {
 	/**
 	 * Sets the noclick list for the leafs
 	 *
-	 * @return {void}
-	 * @param $noClickList {string}	comma-separated list of leafs to disallow clicks for
+	 * @param string $noClickList comma-separated list of leafs to disallow clicks for
+	 * @return void
 	 */
 	public function disallowClick($noClickList = '') {
 		$this->noClickList = $noClickList;
@@ -122,13 +149,16 @@ class tx_commerce_categorytree extends browsetree {
 
 	/**
 	 * Sets the tree's Bare Mode - bare means only category leaf is added
-	 * @return {void}
-	 * @param $bare {boolean}[optional]	Flag
+	 *
+	 * @param boolean $bare Flag
+	 * @return void
 	 */
-	public function setBare($bare = true) {
-		if(!is_bool($bare)) {
-			//only issue warning but transform the value to bool anyways
-			if (TYPO3_DLOG) t3lib_div::devLog('Bare-Mode of the tree was set with a non-boolean flag!', COMMERCE_EXTKEY, 2);
+	public function setBare($bare = TRUE) {
+		if (!is_bool($bare)) {
+				// only issue warning but transform the value to bool anyways
+			if (TYPO3_DLOG) {
+				t3lib_div::devLog('Bare-Mode of the tree was set with a non-boolean flag!', COMMERCE_EXTKEY, 2);
+			}
 		}
 		$this->bare = $bare;
 	}
@@ -136,11 +166,11 @@ class tx_commerce_categorytree extends browsetree {
 	/**
 	 * Sets if we are running in simple mode.
 	 *
-	 * @param int $sm	SimpleMode?
+	 * @param integer $simpleMode SimpleMode?
 	 * @return void
 	 */
-	public function setSimpleMode($sm = 1) {
-		$this->simpleMode = $sm;
+	public function setSimpleMode($simpleMode = 1) {
+		$this->simpleMode = $simpleMode;
 	}
 
 	/**
@@ -150,33 +180,36 @@ class tx_commerce_categorytree extends browsetree {
 	 * @return void
 	 */
 	public function substituteRealValues() {
-		$this->realValues = true;
+		$this->realValues = TRUE;
 	}
 
 	/**
 	 * Returns the record of the category with the corresponding uid
 	 * Categories must have been loaded already - the DB is NOT queried
 	 *
-	 * @return {array}		record
-	 * @param $uid {int}	uid of the category
+	 * @param integer $uid uid of the category
+	 * @return array record
 	 */
 	public function getCategory($uid) {
-
-		//test parameters
-		if(!is_numeric($uid)) {
-			if (TYPO3_DLOG) t3lib_div::devLog('getCategory (categorytree) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+			// test parameters
+		if (!is_numeric($uid)) {
+			if (TYPO3_DLOG) {
+				t3lib_div::devLog('getCategory (categorytree) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+			}
 			return array();
 		}
 
 		$categoryLeaf = $this->getLeaf(0);
 
-		//check if there is a category leaf
-		if(is_null($categoryLeaf)) {
-			if (TYPO3_DLOG) t3lib_div::devLog('getCategory (categorytree) cannot find the category leaf.', COMMERCE_EXTKEY, 3);
+			// check if there is a category leaf
+		if (is_null($categoryLeaf)) {
+			if (TYPO3_DLOG) {
+				t3lib_div::devLog('getCategory (categorytree) cannot find the category leaf.', COMMERCE_EXTKEY, 3);
+			}
 			return array();
 		}
 
-		//return the record
+			// return the record
 		return $categoryLeaf->data->getChildByUid($uid);
 	}
 }

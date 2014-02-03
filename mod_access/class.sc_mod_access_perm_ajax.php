@@ -1,26 +1,26 @@
 <?php
 /***************************************************************
-*  Copyright notice
-*
-*  (c) 2007 - 2008 mehrwert (typo3@mehrwert.de)
-*  All rights reserved
-*
-*  This script is part of the TYPO3 project. The TYPO3 project is
-*  free software; you can redistribute it and/or modify
-*  it under the terms of the GNU General Public License as published by
-*  the Free Software Foundation; either version 2 of the License, or
-*  (at your option) any later version.
-*
-*  The GNU General Public License can be found at
-*  http://www.gnu.org/copyleft/gpl.html.
-*
-*  This script is distributed in the hope that it will be useful,
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*  GNU General Public License for more details.
-*
-*  This copyright notice MUST APPEAR in all copies of the script!
-***************************************************************/
+ *  Copyright notice
+ *
+ *  (c) 2007 - 2008 mehrwert <typo3@mehrwert.de>
+ *  All rights reserved
+ *
+ *  This script is part of the TYPO3 project. The TYPO3 project is
+ *  free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  The GNU General Public License can be found at
+ *  http://www.gnu.org/copyleft/gpl.html.
+ *
+ *  This script is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  This copyright notice MUST APPEAR in all copies of the script!
+ ***************************************************************/
 
 /**
  * This class extends the commerce module in the TYPO3 Backend to provide
@@ -325,7 +325,6 @@ class SC_mod_access_perm_ajax {
 		return $ret;
 	}
 
-
 	/**
 	 * Print the string with the new owner of a page record
 	 *
@@ -334,7 +333,7 @@ class SC_mod_access_perm_ajax {
 	 * @param	String		$username: The TYPO3 BE username (used to display in the element)
 	 * @return	String		The new group wrapped in HTML
 	 */
-	public function renderOwnername($page, $ownerUid, $username) {
+	public static function renderOwnername($page, $ownerUid, $username) {
 		$elementId = 'o_' . $page;
 		$ret = '<span id="' . $elementId . '"><a class="ug_selector" onclick="WebPermissions.showChangeOwnerSelector(' . $page .
 			', ' . $ownerUid . ', \'' . $elementId . '\', \'' . htmlspecialchars($username) . '\');">' .
@@ -342,7 +341,6 @@ class SC_mod_access_perm_ajax {
 			'</a></span>';
 		return $ret;
 	}
-
 
 	/**
 	 * Print the string with the new group of a page record
@@ -352,7 +350,7 @@ class SC_mod_access_perm_ajax {
 	 * @param	String		$groupname: The TYPO3 BE groupname (used to display in the element)
 	 * @return	String		The new group wrapped in HTML
 	 */
-	public function renderGroupname($page, $groupUid, $groupname) {
+	public static function renderGroupname($page, $groupUid, $groupname) {
 		$elementId = 'g_' . $page;
 		$ret = '<span id="' . $elementId . '"><a class="ug_selector" onclick="WebPermissions.showChangeGroupSelector(' . $page .
 			', ' . $groupUid . ', \'' . $elementId . '\', \'' . htmlspecialchars($groupname) . '\');">' .
@@ -360,7 +358,6 @@ class SC_mod_access_perm_ajax {
 			'</a></span>';
 		return $ret;
 	}
-
 
 	/**
 	 * Print the string with the new edit lock state of a page record
@@ -380,7 +377,6 @@ class SC_mod_access_perm_ajax {
 		return $ret;
 	}
 
-
 	/**
 	 * Print a set of permissions. Also used in index.php
 	 *
@@ -389,7 +385,7 @@ class SC_mod_access_perm_ajax {
 	 * @param string $who : The scope (user, group or everybody)
 	 * @return string HTML marked up x/* indications.
 	 */
-	public function renderPermissions($int, $pageId = 0, $who = 'user') {
+	public static function renderPermissions($int, $pageId = 0, $who = 'user') {
 		/** @var language $language */
 		$language = $GLOBALS['LANG'];
 		$str = '';

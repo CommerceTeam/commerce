@@ -29,7 +29,7 @@
  */
 class Tx_Commerce_Hook_DataMapHooks {
 	/**
-	 * @var tx_commerce_belib
+	 * @var Tx_Commerce_Utility_BackendUtility
 	 */
 	protected $belib;
 
@@ -44,7 +44,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 	 * @author Thomas Hempel <thomas@work.de>
 	 */
 	public function __construct() {
-		$this->belib = t3lib_div::makeInstance('tx_commerce_belib');
+		$this->belib = t3lib_div::makeInstance('Tx_Commerce_Utility_BackendUtility');
 	}
 
 	/**
@@ -711,7 +711,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 					$parentCategories = $item->getParentCategories();
 
 						// check existing categories
-					if (!tx_commerce_belib::checkPermissionsOnCategoryContent($parentCategories, array('editcontent'))) {
+					if (!Tx_Commerce_Utility_BackendUtility::checkPermissionsOnCategoryContent($parentCategories, array('editcontent'))) {
 						$pObj->newlog('You dont have the permissions to edit the product.', 1);
 						$fieldArray = array();
 					}
@@ -731,7 +731,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 				if (isset($data['categories'])) {
 					$newCats = $this->singleDiffAssoc(t3lib_div::trimExplode(',', t3lib_div::uniqueList($data['categories'])), $parentCategories);
 
-					if (!tx_commerce_belib::checkPermissionsOnCategoryContent($newCats, array('editcontent'))) {
+					if (!Tx_Commerce_Utility_BackendUtility::checkPermissionsOnCategoryContent($newCats, array('editcontent'))) {
 						$pObj->newlog('You do not have the permissions to add one or all categories you added.' . t3lib_div::uniqueList($data['categories']), 1);
 						$fieldArray = array();
 					}
@@ -772,7 +772,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 				}
 
 					// read new assigned product
-				if (!tx_commerce_belib::checkPermissionsOnCategoryContent($parentCategories, array('editcontent'))) {
+				if (!Tx_Commerce_Utility_BackendUtility::checkPermissionsOnCategoryContent($parentCategories, array('editcontent'))) {
 					$pObj->newlog('You dont have the permissions to edit the article.', 1);
 					$fieldArray = array();
 				}
@@ -1116,18 +1116,19 @@ class Tx_Commerce_Hook_DataMapHooks {
 					$parentCategories = $item->getParentCategories();
 
 						// check existing categories
-					if (!tx_commerce_belib::checkPermissionsOnCategoryContent($parentCategories, array('editcontent'))) {
+					if (!Tx_Commerce_Utility_BackendUtility::checkPermissionsOnCategoryContent($parentCategories, array('editcontent'))) {
 						$pObj->newlog('You dont have the permissions to create a new article.', 1);
 					} else {
 							// ini the article creator
-						$ac = t3lib_div::makeInstance('tx_commerce_articleCreator');
-						$ac->init($id, $this->belib->getProductFolderUid());
+						/** @var Tx_Commerce_Utility_ArticleCreatorUtility $ac */
+						$articleCreator = t3lib_div::makeInstance('Tx_Commerce_Utility_ArticleCreatorUtility');
+						$articleCreator->init($id, $this->belib->getProductFolderUid());
 
 							// create new articles
-						$ac->createArticles($pObj->datamap[$table][$id]);
+						$articleCreator->createArticles($pObj->datamap[$table][$id]);
 
 							// update articles if new attributes were added
-						$ac->updateArticles($pObj->datamap[$table][$id]);
+						$articleCreator->updateArticles($pObj->datamap[$table][$id]);
 					}
 				}
 
@@ -1157,6 +1158,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 				} else {
 					$uidArticle = $fieldArray['uid_article'];
 				}
+					// @todo what to do with this?
 				$this->belib->savePriceFlexformWithArticle($id, $uidArticle, $fieldArray);
 			break;
 		}
@@ -1176,7 +1178,6 @@ class Tx_Commerce_Hook_DataMapHooks {
 		}
 
 			// txcommerce_copyProcess: this is so that dynaflex is not called when we copy an article - otherwise we would get an error
-			// @see tx_commerce_belib::copyArticle
 		if ($loadDynaFlex && t3lib_extMgm::isLoaded('dynaflex') && !empty($dynaFlexConf) && (!isset($GLOBALS['BE_USER']->uc['txcommerce_copyProcess']) || !$GLOBALS['BE_USER']->uc['txcommerce_copyProcess'])) {
 			$dynaFlexConf[0]['uid'] = $id;
 			$dynaFlexConf[1]['uid'] = $id;

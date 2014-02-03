@@ -2,7 +2,6 @@
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 1999 - 2011 Kasper Skaarhoj (kasperYYYY@typo3.com)
  *  (c) 2005 - 2011 Daniel Schöttgen <ds@marketing-factory.de>
  *  (c) 2005 - 2011 Ingo Schmitt <is@marketing-factory.de>
  *  All rights reserved
@@ -29,271 +28,260 @@
 
 /**
  * Renders order list in the BE order module
- *
- * @author Kasper Skaarhoj <kasperYYYY@typo3.com>
- * @author Daniel Schöttgen <ds@marketing-factory.de>
- * @author Ingo Schmitt <is@marketing-factory.de>
- * @author Jörg Sprung <jsp@marketing-factory.de>
  */
-
 class tx_commerce_order_localRecordlist extends localRecordList {
+	/**
+	 * @var integer
+	 */
 	public $alternateBgColors = 1;
 
-	function makeQueryArray($table, $id, $addWhere="",$fieldList='*') {
- 		if ($this->sortField){
- 			$orderby=$this->sortField.' ';
- 			if ($this->sortRev==1)
- 			{
- 				$orderby.='DESC';
- 			}
- 		}
- 		else
- 		{
- 			$orderby='crdate DESC';
- 		}
+	/**
+	 * @param string $table
+	 * @param integer $id
+	 * @param string $addWhere
+	 * @param string $fieldList
+	 * @return array
+	 */
+	public function makeQueryArray($table, $id, $addWhere = '', $fieldList = '*') {
+		if ($this->sortField) {
+			$orderby = $this->sortField . ' ';
+			if ($this->sortRev == 1) {
+				$orderby .= 'DESC';
+			}
+		} else {
+			$orderby = 'crdate DESC';
+		}
 
 		$limit = '';
 		if ($this->iLimit) {
 			$limit = ($this->firstElementNumber ? intval($this->firstElementNumber) . ',' : '') . (intval($this->iLimit + 1));
 		}
 
- 		if ($id>0){
- 			$query_array=array(
- 			'SELECT' => 'DISTINCT tx_commerce_order_articles.order_id, delivery_table.order_id as order_number, tx_commerce_order_articles.article_type_uid, tx_commerce_order_articles.title as payment, delivery_table.title as delivery, tx_commerce_orders.uid,tx_commerce_orders.pid, tx_commerce_orders.crdate, tx_commerce_orders.tstamp, tx_commerce_orders.order_id, tx_commerce_orders.sum_price_gross, tt_address.tx_commerce_address_type_id, tt_address.company ,tt_address.name,tt_address.surname, tt_address.address, tt_address.zip, tt_address.city, tt_address.email,tt_address.phone as phone_1, tt_address.mobile as phone_2,tx_commerce_orders.cu_iso_3_uid, tx_commerce_orders.tstamp, tx_commerce_orders.uid as articles, tx_commerce_orders.comment, tx_commerce_orders.internalcomment, tx_commerce_orders.order_type_uid as order_type_uid_noName, static_currencies.cu_iso_3',
- 			'FROM' =>'tx_commerce_orders,tt_address, tx_commerce_order_articles, tx_commerce_order_articles as delivery_table, static_currencies',
- 			'WHERE' =>'static_currencies.uid = tx_commerce_orders.cu_iso_3_uid and delivery_table.order_id = tx_commerce_orders.order_id AND tx_commerce_order_articles.order_id = tx_commerce_orders.order_id AND tx_commerce_order_articles.article_type_uid = '.PAYMENTARTICLETYPE.' AND delivery_table.article_type_uid = '.DELIVERYARTICLETYPE.' AND tx_commerce_orders.deleted = 0 and tx_commerce_orders.cust_deliveryaddress = tt_address.uid AND tx_commerce_orders.pid='.$id.' '.$addWhere ,
- 			'GROUPBY' => '',
- 			'ORDERBY' => $orderby,
- 			'sorting' => '',
-			'LIMIT' => $limit,
-
-
- 			);
- 		}else{
+		if ($id > 0) {
+			$query_array = array(
+				'SELECT' => 'DISTINCT tx_commerce_order_articles.order_id, delivery_table.order_id as order_number, tx_commerce_order_articles.article_type_uid, tx_commerce_order_articles.title as payment, delivery_table.title as delivery, tx_commerce_orders.uid,tx_commerce_orders.pid, tx_commerce_orders.crdate, tx_commerce_orders.tstamp, tx_commerce_orders.order_id, tx_commerce_orders.sum_price_gross, tt_address.tx_commerce_address_type_id, tt_address.company ,tt_address.name,tt_address.surname, tt_address.address, tt_address.zip, tt_address.city, tt_address.email,tt_address.phone as phone_1, tt_address.mobile as phone_2,tx_commerce_orders.cu_iso_3_uid, tx_commerce_orders.tstamp, tx_commerce_orders.uid as articles, tx_commerce_orders.comment, tx_commerce_orders.internalcomment, tx_commerce_orders.order_type_uid as order_type_uid_noName, static_currencies.cu_iso_3',
+				'FROM' => 'tx_commerce_orders,tt_address, tx_commerce_order_articles, tx_commerce_order_articles as delivery_table, static_currencies',
+				'WHERE' => 'static_currencies.uid = tx_commerce_orders.cu_iso_3_uid and delivery_table.order_id = tx_commerce_orders.order_id AND tx_commerce_order_articles.order_id = tx_commerce_orders.order_id AND tx_commerce_order_articles.article_type_uid = ' . PAYMENTARTICLETYPE . ' AND delivery_table.article_type_uid = ' . DELIVERYARTICLETYPE . ' AND tx_commerce_orders.deleted = 0 and tx_commerce_orders.cust_deliveryaddress = tt_address.uid AND tx_commerce_orders.pid=' . $id . ' ' . $addWhere,
+				'GROUPBY' => '',
+				'ORDERBY' => $orderby,
+				'sorting' => '',
+				'LIMIT' => $limit,
+			);
+		} else {
 			tx_commerce_create_folder::init_folders();
 
 			/**
 			 * @TODO bitte aus der ext config nehmen, volker angefragt
 			 */
+				// Find the right pid for the Ordersfolder
+			list($orderPid) = array_unique(tx_commerce_folder_db::initFolders('Orders', 'Commerce', 0, 'Commerce'));
 
-			# Find the right pid for the Ordersfolder
+			$ret = Tx_Commerce_Utility_BackendUtility::getOrderFolderSelector($orderPid, PHP_INT_MAX);
 
-			list($orderPid,$defaultFolder,$folderList) = array_unique(tx_commerce_folder_db::initFolders('Orders','Commerce',0,'Commerce'));
+			$list = array();
+			foreach ($ret as $elements) {
+				$list[] = $elements[1];
+			}
+			$list = implode(',', $list);
 
- 			$ret = tx_commerce_belib::getOrderFolderSelector($orderPid, PHP_INT_MAX ) ;
-
- 			foreach ($ret as $elements) {
-
- 				$list[]=$elements[1];
-
- 			}
- 			$list = implode(',',$list);
-
- 			$query_array=array(
- 			'SELECT' => 'DISTINCT tx_commerce_order_articles.order_id,delivery_table.order_id as order_number, tx_commerce_order_articles.article_type_uid, tx_commerce_order_articles.title as payment, delivery_table.title as delivery, tx_commerce_orders.uid,tx_commerce_orders.pid, tx_commerce_orders.crdate, tx_commerce_orders.tstamp, tx_commerce_orders.order_id, tx_commerce_orders.sum_price_gross, tt_address.tx_commerce_address_type_id, tt_address.company,tt_address.name,tt_address.surname, tt_address.address, tt_address.zip, tt_address.city, tt_address.email,tt_address.phone as phone_1, tt_address.mobile as phone_2,tx_commerce_orders.cu_iso_3_uid, tx_commerce_orders.tstamp, tx_commerce_orders.uid as articles, tx_commerce_orders.comment, tx_commerce_orders.internalcomment, tx_commerce_orders.order_type_uid as order_type_uid_noName, static_currencies.cu_iso_3',
- 			'FROM' =>'tx_commerce_orders,tt_address, tx_commerce_order_articles, tx_commerce_order_articles as delivery_table, static_currencies',
- 			'WHERE' =>'static_currencies.uid = tx_commerce_orders.cu_iso_3_uid and delivery_table.order_id = tx_commerce_orders.order_id AND tx_commerce_order_articles.order_id = tx_commerce_orders.order_id AND tx_commerce_order_articles.article_type_uid = '.PAYMENTARTICLETYPE.' AND delivery_table.article_type_uid = '.DELIVERYARTICLETYPE.' AND tx_commerce_orders.deleted = 0 and tx_commerce_orders.cust_deliveryaddress = tt_address.uid AND tx_commerce_orders.pid in ('.$list.') '.$addWhere ,
- 			'GROUPBY' => '',
- 			'ORDERBY' => $orderby,
- 			'sorting' => '',
-			'LIMIT' => $limit,
+			$query_array = array(
+				'SELECT' => 'DISTINCT tx_commerce_order_articles.order_id,delivery_table.order_id as order_number, tx_commerce_order_articles.article_type_uid, tx_commerce_order_articles.title as payment, delivery_table.title as delivery, tx_commerce_orders.uid,tx_commerce_orders.pid, tx_commerce_orders.crdate, tx_commerce_orders.tstamp, tx_commerce_orders.order_id, tx_commerce_orders.sum_price_gross, tt_address.tx_commerce_address_type_id, tt_address.company,tt_address.name,tt_address.surname, tt_address.address, tt_address.zip, tt_address.city, tt_address.email,tt_address.phone as phone_1, tt_address.mobile as phone_2,tx_commerce_orders.cu_iso_3_uid, tx_commerce_orders.tstamp, tx_commerce_orders.uid as articles, tx_commerce_orders.comment, tx_commerce_orders.internalcomment, tx_commerce_orders.order_type_uid as order_type_uid_noName, static_currencies.cu_iso_3',
+				'FROM' => 'tx_commerce_orders,tt_address, tx_commerce_order_articles, tx_commerce_order_articles as delivery_table, static_currencies',
+				'WHERE' => 'static_currencies.uid = tx_commerce_orders.cu_iso_3_uid and delivery_table.order_id = tx_commerce_orders.order_id AND tx_commerce_order_articles.order_id = tx_commerce_orders.order_id AND tx_commerce_order_articles.article_type_uid = ' . PAYMENTARTICLETYPE . ' AND delivery_table.article_type_uid = ' . DELIVERYARTICLETYPE . ' AND tx_commerce_orders.deleted = 0 and tx_commerce_orders.cust_deliveryaddress = tt_address.uid AND tx_commerce_orders.pid in (' . $list . ') ' . $addWhere,
+				'GROUPBY' => '',
+				'ORDERBY' => $orderby,
+				'sorting' => '',
+				'LIMIT' => $limit,
 			);
- 		}
+		}
 
- 		// get Module TSConfig
- 		$temp = t3lib_BEfunc::getModTSconfig($id,'mod.commerce.orders');
- 		$moduleConfig = t3lib_BEfunc::implodeTSParams($temp['properties']);
- 		$delProdUid = $moduleConfig['delProdUid'];
- 		$payProdUid = $moduleConfig['payProdUid'];
- 		if (	$delProdUid > 0) {
- 			$delArticles = tx_commerce_belib::getArticlesOfProductAsUidList($delProdUid);
- 			$delArticlesList = implode(',',$delArticles);
+			// get Module TSConfig
+		$temp = t3lib_BEfunc::getModTSconfig($id, 'mod.commerce.orders');
+		$moduleConfig = t3lib_BEfunc::implodeTSParams($temp['properties']);
+		$delProdUid = $moduleConfig['delProdUid'];
+		$payProdUid = $moduleConfig['payProdUid'];
+		if ($delProdUid > 0) {
+			$delArticles = Tx_Commerce_Utility_BackendUtility::getArticlesOfProductAsUidList($delProdUid);
+			$delArticlesList = implode(',', $delArticles);
 
- 			if ($delArticlesList) {
-				$query_array['WHERE'] .= ' AND delivery_table.article_uid in ('.$delArticlesList.') ';
- 			}
+			if ($delArticlesList) {
+				$query_array['WHERE'] .= ' AND delivery_table.article_uid in (' . $delArticlesList . ') ';
+			}
+		}
 
- 		}
- 		if (	$payProdUid > 0) {
- 			$payArticles = tx_commerce_belib::getArticlesOfProductAsUidList($payProdUid);
- 			$payArticlesList = implode(',',$payArticles);
+		if ($payProdUid > 0) {
+			$payArticles = Tx_Commerce_Utility_BackendUtility::getArticlesOfProductAsUidList($payProdUid);
+			$payArticlesList = implode(',', $payArticles);
 
- 			if ($payArticlesList) {
-				$query_array['WHERE'] .= ' AND delivery_table.article_uid in ('.$payArticlesList.') ';
- 			}
+			if ($payArticlesList) {
+				$query_array['WHERE'] .= ' AND delivery_table.article_uid in (' . $payArticlesList . ') ';
+			}
+		}
 
- 		}
-
- 		$this->dontShowClipControlPanels = 1;
- 		return $query_array;
- 		#return parent::makeQueryArray($table, $id, $addWhere="",$fieldList='*');
- 	}
-
-
+		$this->dontShowClipControlPanels = 1;
+		return $query_array;
+	}
 
 	/**
 	 * Writes the top of the full listing
 	 *
-	 * @param	array		Current page record
-	 * @return	void		(Adds content to internal variable, $this->HTMLcode)
+	 * @param array $row Current page record
+	 * @return void (Adds content to internal variable, $this->HTMLcode)
 	 */
-	function writeTop($row)	{
-		global $LANG;
-		#echo t3lib_div::debug($GLOBALS['TYPO3_CONF_VARS']['BE']['forceCharset']);
+	public function writeTop($row) {
+		/** @var t3lib_beUserAuth $backendUser */
+		$backendUser = $GLOBALS['BE_USER'];
+		/** @var language $language */
+		$language = $GLOBALS['LANG'];
+
 			// Makes the code for the pageicon in the top
 		$this->pageRow = $row;
 		$this->counter++;
-		$alttext = t3lib_BEfunc::getRecordIconAltText($row,'pages');
+		$alttext = t3lib_BEfunc::getRecordIconAltText($row, 'pages');
+		$iconImg = t3lib_iconWorks::getIconImage('pages', $row, $this->backPath, 'class="absmiddle" title="' . htmlspecialchars($alttext) . '"');
 
-
-		$iconImg = t3lib_iconWorks::getIconImage('pages',$row,$this->backPath,'class="absmiddle" title="'.htmlspecialchars($alttext).'"');
-
-		$titleCol = 'test';	// pseudo title column name
-		$this->fieldArray = Array($titleCol,'up');		// Setting the fields to display in the list (this is of course "pseudo fields" since this is the top!)
-
+			// pseudo title column name
+		$titleCol = 'test';
+			// Setting the fields to display in the list (this is of course "pseudo fields" since this is the top!)
+		$this->fieldArray = Array($titleCol, 'up');
 
 			// Filling in the pseudo data array:
 		$theData = Array();
 		$theData[$titleCol] = $this->widthGif;
 
 			// Get users permissions for this row:
-		$localCalcPerms = $GLOBALS['BE_USER']->calcPerms($row);
+		$localCalcPerms = $backendUser->calcPerms($row);
 
-		$theData['up']=array();
+		$theData['up'] = array();
 
 			// Initialize control panel for currect page ($this->id):
 			// Some of the controls are added only if $this->id is set - since they make sense only on a real page, not root level.
-		$theCtrlPanel =array();
-
+		$theCtrlPanel = array();
 
 			// If edit permissions are set (see class.t3lib_userauthgroup.php)
-		if ($localCalcPerms&2)	{
-
+		if ($localCalcPerms & 2) {
 				// Adding "New record" icon:
-			if (!$GLOBALS['SOBE']->modTSconfig['properties']['noCreateRecordsLink']) 	{
-				$theCtrlPanel[]='<a href="#" onclick="'.htmlspecialchars('return jumpExt(\'db_new.php?id='.$this->id.'\');').'">'.
-								'<img'.t3lib_iconWorks::skinImg($this->backPath,'gfx/new_el.gif','width="11" height="12"').' title="'.$LANG->getLL('newRecordGeneral',1).'" alt="" />'.
-								'</a>';
+			if (!$GLOBALS['SOBE']->modTSconfig['properties']['noCreateRecordsLink']) {
+				$theCtrlPanel[] = '<a href="#" onclick="' . htmlspecialchars('return jumpExt(\'db_new.php?id=' . $this->id . '\');') . '"><img' .
+					t3lib_iconWorks::skinImg($this->backPath, 'gfx/new_el.gif', 'width="11" height="12"') . ' title="' .
+					$language->getLL('newRecordGeneral', 1) . '" alt="" />' .
+					'</a>';
 			}
 
 				// Adding "Hide/Unhide" icon:
-			if ($this->id)	{
-
-				//@TODO: cange the return path
-
-				if ($row['hidden'])	{
-					$params='&data[pages]['.$row['uid'].'][hidden]=0';
-					$theCtrlPanel[]='<a href="#" onclick="'.htmlspecialchars('return jumpToUrl(\''.$GLOBALS['SOBE']->doc->issueCommand($params,-1).'\');').'">'.
-									'<img'.t3lib_iconWorks::skinImg($this->backPath,'gfx/button_unhide.gif','width="11" height="10"').' title="'.$LANG->getLL('unHidePage',1).'" alt="" />'.
-									'</a>';
+			if ($this->id) {
+					// @TODO: change the return path
+				if ($row['hidden']) {
+					$params = '&data[pages][' . $row['uid'] . '][hidden]=0';
+					$theCtrlPanel[] = '<a href="#" onclick="' .
+						htmlspecialchars('return jumpToUrl(\'' . $GLOBALS['SOBE']->doc->issueCommand($params, -1) . '\');') . '"><img' .
+						t3lib_iconWorks::skinImg($this->backPath, 'gfx/button_unhide.gif', 'width="11" height="10"') .
+						' title="' . $language->getLL('unHidePage', 1) . '" alt="" /></a>';
 				} else {
-					$params='&data[pages]['.$row['uid'].'][hidden]=1';
-					$theCtrlPanel[]='<a href="#" onclick="'.htmlspecialchars('return jumpToUrl(\''.$GLOBALS['SOBE']->doc->issueCommand($params,-1).'\');').'">'.
-									'<img'.t3lib_iconWorks::skinImg($this->backPath,'gfx/button_hide.gif','width="11" height="10"').' title="'.$LANG->getLL('hidePage',1).'" alt="" />'.
-									'</a>';
+					$params = '&data[pages][' . $row['uid'] . '][hidden]=1';
+					$theCtrlPanel[] = '<a href="#" onclick="' .
+						htmlspecialchars('return jumpToUrl(\'' . $GLOBALS['SOBE']->doc->issueCommand($params, -1) . '\');') . '"><img' .
+						t3lib_iconWorks::skinImg($this->backPath, 'gfx/button_hide.gif', 'width="11" height="10"') .
+						' title="' . $language->getLL('hidePage', 1) . '" alt="" /></a>';
 				}
 			}
-
 		}
 
 			// "Paste into page" link:
-		if (($localCalcPerms&8) || ($localCalcPerms&16))	{
+		if (($localCalcPerms & 8) || ($localCalcPerms & 16)) {
 			$elFromTable = $this->clipObj->elFromTable('');
-			if (count($elFromTable))	{
-				$theCtrlPanel[]='<a href="'.htmlspecialchars($this->clipObj->pasteUrl('',$this->id)).'" onclick="'.htmlspecialchars('return '.$this->clipObj->confirmMsg('pages',$this->pageRow,'into',$elFromTable)).'">'.
-								'<img'.t3lib_iconWorks::skinImg($this->backPath,'gfx/clip_pasteafter.gif','width="12" height="12"').' title="'.$LANG->getLL('clip_paste',1).'" alt="" />'.
-								'</a>';
+			if (count($elFromTable)) {
+				$theCtrlPanel[] = '<a href="' .
+					htmlspecialchars($this->clipObj->pasteUrl('', $this->id)) . '" onclick="' .
+					htmlspecialchars('return ' . $this->clipObj->confirmMsg('pages', $this->pageRow, 'into', $elFromTable)) . '"><img' .
+					t3lib_iconWorks::skinImg($this->backPath, 'gfx/clip_pasteafter.gif', 'width="12" height="12"') .
+					' title="' . $language->getLL('clip_paste', 1) . '" alt="" /></a>';
 			}
 		}
 
 			// Finally, compile all elements of the control panel into table cells:
-		if (count($theCtrlPanel))	{
-			$theData['up'][]='
-
+		if (count($theCtrlPanel)) {
+			$theData['up'][] = '
 				<!--
 					Control panel for page
 				-->
 				<table border="0" cellpadding="0" cellspacing="0" class="bgColor4" id="typo3-dblist-ctrltop">
 					<tr>
-						<td>'.implode('</td>
-						<td>',$theCtrlPanel).'</td>
+						<td>' . implode('</td><td>', $theCtrlPanel) . '</td>
 					</tr>
 				</table>';
 		}
 
-
-		// Add "CSV" link, if a specific table is shown:
-		if ($this->table)	{
-			$theData['up'][]='<a href="'.htmlspecialchars($this->listURL().'&csv=1').'">'.
-							'<img'.t3lib_iconWorks::skinImg($this->backPath,'gfx/csv.gif','width="27" height="14"').' title="'.$LANG->sL('LLL:EXT:lang/locallang_core.php:labels.csv',1).'" alt="" />'.
-							'</a>';
+			// Add "CSV" link, if a specific table is shown:
+		if ($this->table) {
+			$theData['up'][] = '<a href="' . htmlspecialchars($this->listURL() . '&csv=1') . '">' .
+				'<img' . t3lib_iconWorks::skinImg($this->backPath, 'gfx/csv.gif', 'width="27" height="14"') .
+				' title="' . $language->sL('LLL:EXT:lang/locallang_core.php:labels.csv', 1) . '" alt="" /></a>';
 		}
 
 			// Add "Export" link, if a specific table is shown:
-		if ($this->table && t3lib_extMgm::isLoaded('impexp'))	{
-			$theData['up'][]='<a href="'.htmlspecialchars($this->backPath.t3lib_extMgm::extRelPath('impexp').'app/index.php?tx_impexp[action]=export&tx_impexp[list][]='.rawurlencode($this->table.':'.$this->id)).'">'.
-							'<img'.t3lib_iconWorks::skinImg($this->backPath,t3lib_extMgm::extRelPath('impexp').'export.gif',' width="18" height="16"').' title="'.$LANG->sL('LLL:EXT:lang/locallang_core.php:rm.export',1).'" alt="" />'.
-							'</a>';
+		if ($this->table && t3lib_extMgm::isLoaded('impexp')) {
+			$theData['up'][] = '<a href="' .
+				htmlspecialchars($this->backPath . t3lib_extMgm::extRelPath('impexp') . 'app/index.php?tx_impexp[action]=export&tx_impexp[list][]=' . rawurlencode($this->table . ':' . $this->id)) .
+				'"><img' . t3lib_iconWorks::skinImg($this->backPath, t3lib_extMgm::extRelPath('impexp') . 'export.gif', ' width="18" height="16"') .
+				' title="' . $language->sL('LLL:EXT:lang/locallang_core.php:rm.export', 1) . '" alt="" /></a>';
 		}
 
 			// Add "refresh" link:
-		$theData['up'][]='<a href="'.htmlspecialchars($this->listURL()).'">'.
-						'<img'.t3lib_iconWorks::skinImg($this->backPath,'gfx/refresh_n.gif','width="14" height="14"').' title="'.$LANG->sL('LLL:EXT:lang/locallang_core.php:labels.reload',1).'" alt="" />'.
-						'</a>';
-
+		$theData['up'][] = '<a href="' . htmlspecialchars($this->listURL()) . '"><img' .
+			t3lib_iconWorks::skinImg($this->backPath, 'gfx/refresh_n.gif', 'width="14" height="14"') . ' title="' . $language->sL('LLL:EXT:lang/locallang_core.php:labels.reload', 1) .
+			'" alt="" /></a>';
 
 			// Add icon with clickmenu, etc:
-		if ($this->id)	{	// If there IS a real page...:
-
+			// If there IS a real page...:
+		if ($this->id) {
 				// Setting title of page + the "Go up" link:
-			$theData[$titleCol].='<br /><span title="'.htmlspecialchars($row['_thePathFull']).'">'.htmlspecialchars(t3lib_div::fixed_lgd_cs($row['_thePath'],-$this->fixedL)).'</span>';
-			$theData['up'][]='<a href="'.htmlspecialchars($this->listURL($row['pid'])).'" onclick="setHighlight('.$row['pid'].')">'.
-							'<img'.t3lib_iconWorks::skinImg($this->backPath,'gfx/i/pages_up.gif','width="18" height="16"').' title="'.$LANG->sL('LLL:EXT:lang/locallang_core.php:labels.upOneLevel',1).'" alt="" />'.
-							'</a>';
+			$theData[$titleCol] .= '<br /><span title="' . htmlspecialchars($row['_thePathFull']) . '">' .
+				htmlspecialchars(t3lib_div::fixed_lgd_cs($row['_thePath'], - $this->fixedL)) . '</span>';
+			$theData['up'][] = '<a href="' . htmlspecialchars($this->listURL($row['pid'])) . '" onclick="setHighlight(' . $row['pid'] .
+				')"><img' . t3lib_iconWorks::skinImg($this->backPath, 'gfx/i/pages_up.gif', 'width="18" height="16"') .
+				' title="' . $language->sL('LLL:EXT:lang/locallang_core.php:labels.upOneLevel', 1) . '" alt="" /></a>';
 
 				// Make Icon:
-			$theIcon = $this->clickMenuEnabled ? $GLOBALS['SOBE']->doc->wrapClickMenuOnIcon($iconImg,'pages',$this->id) : $iconImg;
-		} else {	// On root-level of page tree:
-
+			$theIcon = $this->clickMenuEnabled ? $GLOBALS['SOBE']->doc->wrapClickMenuOnIcon($iconImg, 'pages', $this->id) : $iconImg;
+			// On root-level of page tree:
+		} else {
 				// Setting title of root (sitename):
-			$theData[$titleCol].='<br />'.htmlspecialchars(t3lib_div::fixed_lgd_cs($GLOBALS['TYPO3_CONF_VARS']['SYS']['sitename'],-$this->fixedL));
+			$theData[$titleCol] .= '<br />' . htmlspecialchars(t3lib_div::fixed_lgd_cs($GLOBALS['TYPO3_CONF_VARS']['SYS']['sitename'], - $this->fixedL));
 
 				// Make Icon:
-			$theIcon = '<img'.t3lib_iconWorks::skinImg($this->backPath,'gfx/i/_icon_website.gif','width="18" height="16"').' alt="" />';
+			$theIcon = '<img' . t3lib_iconWorks::skinImg($this->backPath, 'gfx/i/_icon_website.gif', 'width="18" height="16"') . ' alt="" />';
 		}
 
 			// If there is a returnUrl given, add a back-link:
-		if ($this->returnUrl)	{
-			$theData['up'][]='<a href="'.htmlspecialchars(t3lib_div::linkThisUrl($this->returnUrl,array('id'=>$this->id))).'" class="typo3-goBack">'.
-							'<img'.t3lib_iconWorks::skinImg($this->backPath,'gfx/goback.gif','width="14" height="14"').' title="'.$LANG->sL('LLL:EXT:lang/locallang_core.php:labels.goBack',1).'" alt="" />'.
-							'</a>';
+		if ($this->returnUrl) {
+			$theData['up'][] = '<a href="' . htmlspecialchars(t3lib_div::linkThisUrl($this->returnUrl, array('id' => $this->id))) .
+				'" class="typo3-goBack"><img' .
+				t3lib_iconWorks::skinImg($this->backPath, 'gfx/goback.gif', 'width="14" height="14"') . ' title="' .
+				$language->sL('LLL:EXT:lang/locallang_core.php:labels.goBack', 1) . '" alt="" /></a>';
 		}
 
-		$theData['up'][]= $this->additionalOutTop;
+		$theData['up'][] = $this->additionalOutTop;
 			// Finally, the "up" pseudo field is compiled into a table - has been accumulated in an array:
-		$theData['up']='
+		$theData['up'] = '
 			<table border="0" cellpadding="0" cellspacing="0">
 				<tr>
-					<td>'.implode('</td>
-					<td>',$theData['up']).'</td>
+					<td>' . implode('</td><td>', $theData['up']) . '</td>
 				</tr>
 			</table>';
 
 			// ... and the element row is created:
-		$out.=$this->addelement(1,$theIcon,$theData,'',$this->leftMargin);
+		$out = $this->addelement(1, $theIcon, $theData, '', $this->leftMargin);
 
 			// ... and wrapped into a table and added to the internal ->HTMLcode variable:
-		$this->HTMLcode.='
-
-
-		<!--
-			Page header for db_list:
-		-->
+		$this->HTMLcode .= '
+			<!--
+				Page header for db_list:
+			-->
 			<table border="0" cellpadding="0" cellspacing="0" id="typo3-dblist-top">
-				'.$out.'
+				' . $out . '
 			</table>';
 	}
-
 
  	function generateList()	{
 		global $TCA;
@@ -931,8 +919,8 @@ class tx_commerce_order_localRecordlist extends localRecordList {
 		 		/**
 		 		 * Get the poages below $order_pid
 		 		 */
-		 			list($orderPid,$defaultFolder,$folderList) = array_unique(tx_commerce_folder_db::initFolders('Orders','Commerce',0,'Commerce'));
-		 		 	$ret = tx_commerce_belib::getOrderFolderSelector($orderPid, $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['OrderFolderRecursiveLevel']);
+		 			list($orderPid) = array_unique(tx_commerce_folder_db::initFolders('Orders','Commerce',0,'Commerce'));
+		 		 	$ret = Tx_Commerce_Utility_BackendUtility::getOrderFolderSelector($orderPid, $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['OrderFolderRecursiveLevel']);
 		 		 	global $LANG;
 		 		 	$out.=$LANG->getLL("moveorderto");
 		 		 	$out.='<select name="modeDestUid" size="1">';

@@ -4,9 +4,6 @@ $extensionPath = t3lib_extMgm::extPath('commerce');
 $classPath = $extensionPath . 'Classes/';
 
 return array(
-	'tx_commerce_task_statistictask' => $classPath . 'Task/StatisticTask.php',
-	'tx_commerce_task_statistictaskadditionalfieldprovider' => $classPath . 'Task/StatisticTaskAdditionalFieldProvider.php',
-
 	'tx_commerce_dao_addressdao' => $classPath . 'Dao/AddressDao.php',
 	'tx_commerce_dao_addressdaomapper' => $classPath . 'Dao/AddressDaoMapper.php',
 	'tx_commerce_dao_addressdaoobject' => $classPath . 'Dao/AddressDaoObject.php',
@@ -23,6 +20,12 @@ return array(
 	'tx_commerce_dao_feuserobserver' => $classPath . 'Dao/FeuserObserver.php',
 	'tx_commerce_dao_feuseraddressfieldmapper' => $classPath . 'Dao/FeuserAddressFieldmapper.php',
 
+	'tx_commerce_task_statistictask' => $classPath . 'Task/StatisticTask.php',
+	'tx_commerce_task_statistictaskadditionalfieldprovider' => $classPath . 'Task/StatisticTaskAdditionalFieldProvider.php',
+
+	'tx_commerce_utility_articlecreatorutility' => $classPath . 'Utility/ArticleCreatorUtility.php',
+	'tx_commerce_utility_backendutility' => $classPath . 'Utility/BackendUtility.php',
+
 	'tx_commerce_article' => $extensionPath . 'lib/class.tx_commerce_article.php',
 	'tx_commerce_article_price' => $extensionPath . 'lib/class.tx_commerce_article_price.php',
 	'tx_commerce_attribute' => $extensionPath . 'lib/class.tx_commerce_attribute.php',
@@ -30,7 +33,6 @@ return array(
 	'tx_commerce_basic_basket' => $extensionPath . 'lib/class.tx_commerce_basic_basket.php',
 	'tx_commerce_basket' => $extensionPath . 'lib/class.tx_commerce_basket.php',
 	'tx_commerce_basket_item' => $extensionPath . 'lib/class.tx_commerce_basket_item.php',
-	'tx_commerce_belib' => $extensionPath . 'lib/class.tx_commerce_belib.php',
 	'tx_commerce_category' => $extensionPath . 'lib/class.tx_commerce_category.php',
 	'tx_commerce_create_folder' => $extensionPath . 'lib/class.tx_commerce_create_folder.php',
 	'tx_commerce_db_alib' => $extensionPath . 'lib/class.tx_commerce_db_alib.php',
@@ -54,6 +56,7 @@ return array(
 	'tx_commerce_pibase' => $extensionPath . 'lib/class.tx_commerce_pibase.php',
 	'tx_commerce_product' => $extensionPath . 'lib/class.tx_commerce_product.php',
 	'tx_commerce_statistics' => $extensionPath . 'lib/class.tx_commerce_statistics.php',
+	'sc_mod_access_perm_ajax' => $extensionPath . 'mod_access/class.sc_mod_access_perm_ajax.php',
 
 	'tx_commerce_pi1' => $extensionPath . 'pi1/class.tx_commerce_pi1.php',
 	'tx_commerce_pi2' => $extensionPath . 'pi2/class.tx_commerce_pi2.php',
@@ -115,9 +118,8 @@ return array(
 	'tx_moneylib' => t3lib_extMgm::extPath('moneylib') . 'class.tx_moneylib.php',
 	'tx_staticinfotables_pi1' => t3lib_extMgm::extPath('static_info_tables') . 'pi1/class.tx_staticinfotables_pi1.php',
 
-		// classes from outside of commerce
-	'recordlist' => PATH_typo3 . 'class.db_list.inc',
-	'localrecordlist' => PATH_typo3 . 'class.db_list_extra.inc',
+	'recordlist' => PATH_site . 'typo3/class.db_list.inc',
+	'localrecordlist' => PATH_site . 'typo3/class.db_list_extra.inc',
 );
 
 ?>

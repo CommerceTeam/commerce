@@ -525,7 +525,7 @@ $GLOBALS['TCA']['tx_commerce_article_prices'] = Array(
 			'label' => 'Article UID',
 			'config' => array(
 				'type' => 'user',
-				'userFunc' => 'tx_commerce_articleCreator->articleUid',
+				'userFunc' => 'Tx_Commerce_Utility_ArticleCreatorUtility->articleUid',
 			),
 		),
 	),

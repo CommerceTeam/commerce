@@ -316,7 +316,7 @@ class tx_commerce_category extends tx_commerce_element_alib {
 		}
 		$this->load_perms();
 
-		return tx_commerce_belib::isPSet($perm, $this->perms_record);
+		return Tx_Commerce_Utility_BackendUtility::isPSet($perm, $this->perms_record);
 	}
 
 	/**
@@ -637,10 +637,10 @@ class tx_commerce_category extends tx_commerce_element_alib {
 			// Only update relations if parent_category was successfully set
 		if ($set) {
 			$catList = array($parent_uid);
-			$catList = tx_commerce_belib::getUidListFromList($catList);
-			$catList = tx_commerce_belib::extractFieldArray($catList, 'uid_foreign', TRUE);
+			$catList = Tx_Commerce_Utility_BackendUtility::getUidListFromList($catList);
+			$catList = Tx_Commerce_Utility_BackendUtility::extractFieldArray($catList, 'uid_foreign', TRUE);
 
-			tx_commerce_belib::saveRelations($this->uid, $catList, 'tx_commerce_categories_parent_category_mm', TRUE);
+			Tx_Commerce_Utility_BackendUtility::saveRelations($this->uid, $catList, 'tx_commerce_categories_parent_category_mm', TRUE);
 		} else {
 			return FALSE;
 		}
