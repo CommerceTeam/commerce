@@ -39,14 +39,13 @@ class tx_commerce_pi4hooksHandler {
 	* this function is called by the Hook in tx_commerce_pi4 before processing delete address operations
 	* return false to permit delete operation
 	*
-	* @param array $fieldArray: reference to the incoming fields
+	* @param integer $uid: reference to the incoming fields
 	* @param object $pObj: page Object reference
 	* @return string error: do not delete message
 	*/
-	function deleteAddress($id, &$pObj) {
-		return $this->checkAddressDelete($id);
+	public function deleteAddress($uid, &$pObj) {
+		return $this->checkAddressDelete($uid);
 	}
-
 
 	/**
 	* beforeAddressSave()
@@ -56,78 +55,74 @@ class tx_commerce_pi4hooksHandler {
 	* @param object $pObj: page Object reference
 	* @return string error: do not delete message
 	*/
-	function beforeAddressSave(&$fieldArray, &$pObj) {
-
-	}
-
-
-	/**
-	* afterAddressSave()
-	* this function is called by the Hook in tx_commerce_pi4 after processing insert address operations
-	*
-	* @param array $fieldArray: reference to the incoming fields
-	* @param object $pObj: page Object reference
-	* @return string error: do not delete message
-	*/
-
-	function afterAddressSave($newUid,&$fieldArray, &$pObj) {
-		//notify address observer
-		$this->notify_addressObserver('new','tt_address',$uid,$fieldArray,$pObj);
-	}
-
-
-
-	/**
-	* beforeAddressEdit()
-	* this function is called by the Hook in tx_commerce_pi4 before processing update address operations
-	*
-	* @param array $fieldArray: reference to the incoming fields
-	* @param object $pObj: page Object reference
-	* @return string error: do not delete message
-	*/
-	function beforeAddressEdit($uid,&$fieldArray, &$pObj) {
-
+	public function beforeAddressSave(&$fieldArray, &$pObj) {
 	}
 
 	/**
-	* afterAddressEdit()
-	* this function is called by the Hook in tx_commerce_pi4 before processing update address operations
-	*
-	* @param array $fieldArray: reference to the incoming fields
-	* @param object $pObj: page Object reference
-	* @return string error: do not delete message
-	*/
-	function afterAddressEdit($uid,&$fieldArray, &$pObj) {
-		//notify address observer
-		$this->notify_addressObserver('update','tt_address',$uid,$fieldArray,$pObj);
-	}
-
-
-
-	// ------------------------------------------------------------------------------------------------------------
-
-
-	/**
-        * notify address observer
-	*
-	* check status and notify observer
-	*
-	* @param string $status: update or new
-	* @param string $table: database table
-	* @param string $id: database table
-	* @param array $fieldArray: reference to the incoming fields
-	* @param object $pObj: page Object reference
+	 * afterAddressSave()
+	 * this function is called by the Hook in tx_commerce_pi4 after processing insert address operations
+	 *
+	 * @param integer $uid
+	 * @param array $fieldArray: reference to the incoming fields
+	 * @param object $pObj: page Object reference
+	 * @return string error: do not delete message
 	 */
-	function notify_addressObserver($status, $table, $id, &$fieldArray, &$pObj) {
-		address_observer::update($status, $id, $fieldArray);
+	public function afterAddressSave($uid, &$fieldArray, &$pObj) {
+			// notify address observer
+		$this->notify_addressObserver('new', 'tt_address', $uid, $fieldArray, $pObj);
 	}
 
-	function checkAddressDelete($id) {
-		return address_observer::checkDelete($id);
+	/**
+	 * beforeAddressEdit()
+	 * this function is called by the Hook in tx_commerce_pi4 before processing update address operations
+	 *
+	 * @param integer $uid
+	 * @param array $fieldArray: reference to the incoming fields
+	 * @param object $pObj: page Object reference
+	 * @return string error: do not delete message
+	 */
+	public function beforeAddressEdit($uid, &$fieldArray, &$pObj) {
+	}
+
+	/**
+	 * afterAddressEdit()
+	 * this function is called by the Hook in tx_commerce_pi4 before processing update address operations
+	 *
+	 * @param integer $uid
+	 * @param array $fieldArray: reference to the incoming fields
+	 * @param object $pObj: page Object reference
+	 * @return string error: do not delete message
+	 */
+	public function afterAddressEdit($uid, &$fieldArray, &$pObj) {
+			// notify address observer
+		$this->notify_addressObserver('update', 'tt_address', $uid, $fieldArray, $pObj);
 	}
 
 
+	/**
+	 * notify address observer
+	 *
+	 * check status and notify observer
+	 *
+	 * @param string $status: update or new
+	 * @param string $table: database table
+	 * @param integer $uid: record id
+	 * @param array $fieldArray: reference to the incoming fields
+	 * @param object $pObj: page Object reference
+	 */
+	protected function notify_addressObserver($status, $table, $uid, &$fieldArray, &$pObj) {
+		Tx_Commerce_Dao_AddressObserver::update($status, $uid, $fieldArray);
+	}
+
+	/**
+	 * @param integer $uid
+	 * @return boolean|string
+	 */
+	protected function checkAddressDelete($uid) {
+		return Tx_Commerce_Dao_AddressObserver::checkDelete($uid);
+	}
 }
+
 if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/hooks/class.tx_commerce_pi4hooksHandler.php']) {
 	/** @noinspection PhpIncludeInspection */
 	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/hooks/class.tx_commerce_pi4hooksHandler.php']);

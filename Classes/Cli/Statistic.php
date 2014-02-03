@@ -1,25 +1,25 @@
 <?php
 /***************************************************************
- *  Copyright notice
+ * Copyright notice
  *
- *  (c) 2008 - 2011 Ingo Schmitt <is@marketing-factory.de>
- *  All rights reserved
+ * (c) 2008 - 2011 Ingo Schmitt <is@marketing-factory.de>
+ * All rights reserved
  *
- *  This script is part of the Typo3 project. The Typo3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * This script is part of the Typo3 project. The Typo3 project is
+ * free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
+ * The GNU General Public License can be found at
+ * http://www.gnu.org/copyleft/gpl.html.
  *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * This script is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- *  This copyright notice MUST APPEAR in all copies of the script!
+ * This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
 /**
@@ -35,7 +35,7 @@ if (!defined('TYPO3_cliMode')) {
 	die('You cannot run this script directly!');
 }
 
-class tx_commerce_cli extends t3lib_cli {
+class Tx_Commerce_Cli_Statistic extends t3lib_cli {
 	/**
 	 * @var t3lib_db
 	 */
@@ -56,7 +56,7 @@ class tx_commerce_cli extends t3lib_cli {
 		parent::t3lib_cli();
 
 			// Setting help texts:
-		$this->cli_help['name'] = 'class.tx_commerce_cli.php';
+		$this->cli_help['name'] = 'Statistic.php';
 		$this->cli_help['synopsis'] = '###OPTIONS###';
 		$this->cli_help['description'] = 'CLI Wrapper for commerce';
 		$this->cli_help['options'] = 'statistics [Tasktype] run Statistics Tasks, Task Types are [incrementalAggregation|completeAggregation], if no type is given, completeAggregation is calculated';
@@ -247,8 +247,8 @@ class tx_commerce_cli extends t3lib_cli {
 }
 
 	// Call the functionality
-/** @var tx_commerce_cli $cleanerObj */
-$cleanerObj = t3lib_div::makeInstance('tx_commerce_cli');
+/** @var Tx_Commerce_Cli_Statistic $cleanerObj */
+$cleanerObj = t3lib_div::makeInstance('Tx_Commerce_Cli_Statistic');
 $cleanerObj->init();
 $cleanerObj->cli_main($_SERVER['argv']);
 

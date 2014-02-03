@@ -1,35 +1,26 @@
 <?php
 
 $extensionPath = t3lib_extMgm::extPath('commerce');
+$classPath = $extensionPath . 'Classes/';
 
 return array(
-	'recordlist' => PATH_typo3 . 'class.db_list.inc',
-	'localrecordlist' => PATH_typo3 . 'class.db_list_extra.inc',
+	'tx_commerce_cli' => $extensionPath . 'cli/Statistic.php',
 
-	'tx_commerce_cli' => $extensionPath . 'cli/class.tx_commerce_cli.php',
-
-	'address_dao' => 'class.address_dao.php',
-	'address_dao_mapper' =>  'class.address_dao_mapper.php',
-	'address_dao_parser' => $extensionPath . 'dao/class.address_dao_parser.php',
-	'address_mapper' => $extensionPath . 'dao/class.address_mapper.php',
-	'address_object' => $extensionPath . 'dao/class.address_object.php',
-	'address_observer' => $extensionPath . 'dao/class.address_observer.php',
-	'address_parser' => $extensionPath . 'dao/class.address_parser.php',
-	'basic_dao' => $extensionPath . 'dao/class.basic_dao.php',
-	'basic_dao_mapper' => $extensionPath . 'dao/class.basic_dao_mapper.php',
-	'basic_dao_parser' => $extensionPath . 'dao/class.basic_dao_parser.php',
-	'basic_mapper' => $extensionPath . 'dao/class.basic_mapper.php',
-	'basic_object' => $extensionPath . 'dao/class.basic_object.php',
-	'basic_parser' => $extensionPath . 'dao/class.basic_parser.php',
-	'feuser_address_fieldmapper' => $extensionPath . 'dao/class.feuser_address_fieldmapper.php',
-	'feuser_dao' => $extensionPath . 'dao/class.feuser_dao.php',
-	'feuser_mapper' => $extensionPath . 'dao/class.feuser_mapper.php',
-	'feuser_object' => $extensionPath . 'dao/class.feuser_object.php',
-	'feuser_observer' => $extensionPath . 'dao/class.feuser_observer.php',
-	/** @deprecated since 0.14.0 will be removed in 0.16.0 use feuser_observer instead */
-	'feusers_observer' => $extensionPath . 'dao/class.feuser_observer.php',
-	'feuser_parser' => $extensionPath . 'dao/class.feuser_parser.php',
-
+	'tx_commerce_dao_addressdao' => $classPath . 'Dao/AddressDao.php',
+	'tx_commerce_dao_addressdaomapper' => $classPath . 'Dao/AddressDaoMapper.php',
+	'tx_commerce_dao_addressdaoobject' => $classPath . 'Dao/AddressDaoObject.php',
+	'tx_commerce_dao_addressdaoparser' => $classPath . 'Dao/AddressDaoParser.php',
+	'tx_commerce_dao_addressobserver' => $classPath . 'Dao/AddressObserver.php',
+	'tx_commerce_dao_basicdao' => $classPath . 'Dao/BasicDao.php',
+	'tx_commerce_dao_basicdaomapper' => $classPath . 'Dao/BasicDaoMapper.php',
+	'tx_commerce_dao_basicdaoobject' => $classPath . 'Dao/BasicDaoObject.php',
+	'tx_commerce_dao_basicdaoparser' => $classPath . 'Dao/BasicDaoParser.php',
+	'tx_commerce_dao_feuserdao' => $classPath . 'Dao/FeuserDao.php',
+	'tx_commerce_dao_feuserdaomapper' => $classPath . 'Dao/FeuserDaoMapper.php',
+	'tx_commerce_dao_feuserdaoobject' => $classPath . 'Dao/FeuserDaoObject.php',
+	'tx_commerce_dao_feuserdaoparser' => $classPath . 'Dao/FeuserDaoParser.php',
+	'tx_commerce_dao_feuserobserver' => $classPath . 'Dao/FeuserObserver.php',
+	'tx_commerce_dao_feuseraddressfieldmapper' => $classPath . 'Dao/FeuserAddressFieldmapper.php',
 
 	'tx_commerce_articlecreator' => $extensionPath . 'class.tx_commerce_articlecreator.php',
 	'tx_commerce_attributeeditor' => $extensionPath . 'class.tx_commerce_attributeeditor.php',
@@ -108,9 +99,6 @@ return array(
 	'tx_commerce_payment_criterion_abstract' => $extensionPath . 'payment/criteria/class.tx_commerce_payment_criterion_abstract.php',
 	'tx_commerce_payment_ccvs' => $extensionPath . 'payment/class.tx_commerce_payment_ccvs.php',
 
-	'feusers_observer' => $extensionPath . 'dao/class.feusers_observer.php',
-	'address_observer' => $extensionPath . 'dao/class.address_observer.php',
-
 	'langbase' => $extensionPath . 'tree/class.langbase.php',
 	'leaf' => $extensionPath . 'tree/class.leaf.php',
 	'mounts' => $extensionPath . 'tree/class.mounts.php',
@@ -127,6 +115,10 @@ return array(
 
 	'tx_moneylib' => t3lib_extMgm::extPath('moneylib') . 'class.tx_moneylib.php',
 	'tx_staticinfotables_pi1' => t3lib_extMgm::extPath('static_info_tables') . 'pi1/class.tx_staticinfotables_pi1.php',
+
+		// classes from outside of commerce
+	'recordlist' => PATH_typo3 . 'class.db_list.inc',
+	'localrecordlist' => PATH_typo3 . 'class.db_list_extra.inc',
 );
 
 ?>

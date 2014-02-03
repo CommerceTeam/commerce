@@ -223,7 +223,7 @@ $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi4/class.tx_commerce_pi4.php']
 if (TYPO3_MODE == 'BE') {
 		// Setting up scripts that can be run from the cli_dispatch.phpsh script
 	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['GLOBAL']['cliKeys'][COMMERCE_EXTKEY] = array(
-		'EXT:' . COMMERCE_EXTKEY . '/cli/class.tx_commerce_cli.php',
+		PATH_TXCOMMERCE . 'Classes/Cli/Statistic.php',
 		'_CLI_commerce'
 	);
 }

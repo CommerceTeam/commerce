@@ -25,64 +25,44 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-
-
 /**
-* class tx_srfeuserregister_hooksHandler for the extension takeaday feuser extension
-* The method registrationProcess_afterSaveCreate() from this class is called by save() from class.tx_srfeuserregister.php
-* The method registrationProcess_afterSaveEdit() from this class is called by save() from class.tx_srfeuserregister.php
-* 
-* This class handles frontend feuser updates 
-*
-*
-* @access public
-* @package TYPO3
-* @subpackage commerce
-* @author Carsten Lausen <cl@e-netconsulting.de>
-*/
-
-
-
+ * class tx_srfeuserregister_hooksHandler for the extension takeaday feuser extension
+ * The method registrationProcess_afterSaveCreate() from this class is called by save() from class.tx_srfeuserregister.php
+ * The method registrationProcess_afterSaveEdit() from this class is called by save() from class.tx_srfeuserregister.php
+ *
+ * This class handles frontend feuser updates
+ */
 class tx_srfeuserregister_commerce_hooksHandler {
-
-
 	/**
 	 * after save create
-	 * 
+	 *
 	 * sr_feuser_register registration process after saving new dataset
-	 * 
+	 *
 	 * @param array $currentArr: complete array of feuser fields
 	 * @param object $pObj: page Object
 	 */
-	function registrationProcess_afterSaveCreate($currentArr, &$pObj) {
-//		debug($currentArr,'$currentArr');
-//		debug($pObj,'$pObj');
-
-		//notify observer
-		feusers_observer::update('new', $currentArr['uid'], $currentArr);
+	public function registrationProcess_afterSaveCreate($currentArr, &$pObj) {
+			// notify observer
+		Tx_Commerce_Dao_FeuserObserver::update('new', $currentArr['uid'], $currentArr);
 	}
-
 
 	/**
 	 * after edit create
-	 * 
+	 *
 	 * sr_feuser_register registration process after saving edited dataset
-	 * 
+	 *
 	 * @param array $currentArr: complete array of feuser fields
 	 * @param object $pObj: page Object
 	 */
-	function registrationProcess_afterSaveEdit($currentArr, &$pObj) {
-//		debug($currentArr,'$currentArr');
-//		debug($pObj,'$pObj');
-
-		//notify observer
-		feusers_observer::update('update', $currentArr['uid'], $currentArr);
+	public function registrationProcess_afterSaveEdit($currentArr, &$pObj) {
+			// notify observer
+		Tx_Commerce_Dao_FeuserObserver::update('update', $currentArr['uid'], $currentArr);
 	}
-
 }
 
-if (defined("TYPO3_MODE") && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]["XCLASS"]["ext/commerce/hooks/class.tx_srfeuserregister_commerce_hooksHandler.php"]) {
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]["XCLASS"]["ext/commerce/hooks/class.tx_srfeuserregister_commerce_hooksHandler.php"]);
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/hooks/class.tx_srfeuserregister_commerce_hooksHandler.php']) {
+	/** @noinspection PhpIncludeInspection */
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/hooks/class.tx_srfeuserregister_commerce_hooksHandler.php']);
 }
 
 ?>

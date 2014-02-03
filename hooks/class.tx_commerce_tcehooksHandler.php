@@ -34,7 +34,6 @@
 * This class handles backend updates
 */
 class tx_commerce_tcehooksHandler {
-
 	/**
 	* At this place we process prices, before they are written to the database. We use this for tax calculation
 	*
@@ -167,7 +166,6 @@ class tx_commerce_tcehooksHandler {
         }
 	}
 
-
 	/**
 	* processCmdmap_preProcess()
 	* this function is called by the Hook in tce from class.t3lib_tcemain.php before processing commands
@@ -178,20 +176,15 @@ class tx_commerce_tcehooksHandler {
 	* @param array $value: reference to command parameter array
 	* @param object $pObj: page Object reference
 	*/
-	function processCmdmap_preProcess(&$command, $table, $id, &$value, &$pObj){
-		if (($table=='tt_address') AND ($command=='delete')) {
-			//do something...
-		    if($this->checkAddressDelete($id)){
-				//remove delete command
-				$command='';
-		    };
+	public function processCmdmap_preProcess(&$command, $table, $id, &$value, &$pObj){
+		if (($table == 'tt_address') AND ($command == 'delete')) {
+				// do something...
+			if ($this->checkAddressDelete($id)) {
+					// remove delete command
+				$command = '';
+			};
 		}
 	}
-
-
-
-
-	// ------------------------------------------------------------------------------------------------------------
 
 
 	/**
@@ -205,17 +198,15 @@ class tx_commerce_tcehooksHandler {
 	* @param array $fieldArray: reference to the incoming fields
 	* @param object $pObj: page Object reference
 	 */
-	function notify_feuserObserver($status, $table, $id, &$fieldArray, &$pObj) {
+	protected function notify_feuserObserver($status, $table, $id, &$fieldArray, &$pObj) {
+			// get id
+		if ($status == 'new') {
+			$id = $pObj->substNEWwithIDs[$id];
+		}
 
-
-		//get id
-		if($status=='new') $id = $pObj->substNEWwithIDs[$id];
-
-		//notify observer
-		feusers_observer::update($status, $id, $fieldArray);
-
+			// notify observer
+		Tx_Commerce_Dao_FeuserObserver::update($status, $id, $fieldArray);
 	}
-
 
 	/**
 	 * notify address observer
@@ -228,19 +219,20 @@ class tx_commerce_tcehooksHandler {
 	* @param array $fieldArray: reference to the incoming fields
 	* @param object $pObj: page Object reference
 	 */
-	function notify_addressObserver($status, $table, $id, &$fieldArray, &$pObj) {
-
-		//if address is updated
-		if($status=='update') {
-			//notify observer
-			address_observer::update($status, $id, $fieldArray);
+	protected function notify_addressObserver($status, $table, $id, &$fieldArray, &$pObj) {
+			// if address is updated
+		if ($status == 'update') {
+				// notify observer
+			Tx_Commerce_Dao_AddressObserver::update($status, $id, $fieldArray);
 		}
-
 	}
 
-
-	function checkAddressDelete($id) {
-		return address_observer::checkDelete($id);
+	/**
+	 * @param integer $id
+	 * @return boolean|string
+	 */
+	protected function checkAddressDelete($id) {
+		return Tx_Commerce_Dao_AddressObserver::checkDelete($id);
 	}
 }
 
