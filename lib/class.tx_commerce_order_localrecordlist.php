@@ -425,25 +425,25 @@ class tx_commerce_order_localRecordlist extends localRecordList {
 			// Icon for order comment and delivery address
 		if ($row['comment'] != '' && $row['internalcomment'] != ''){
 			if($row['tx_commerce_address_type_id'] == 2){
-				$iconImg = '<img'.t3lib_iconWorks::skinImg($this->backPath,t3lib_extMgm::extRelPath(COMMERCE_EXTKEY).'res/icons/table/orders_add_user_int.gif','title="'.htmlspecialchars($alttext).'"'.($indent ? ' style="margin-left: '.$indent.'px;"' : ''));
+				$iconImg = '<img'.t3lib_iconWorks::skinImg($this->backPath,t3lib_extMgm::extRelPath(COMMERCE_EXTKEY).'Resources/Public/Icons/Table/orders_add_user_int.gif','title="'.htmlspecialchars($alttext).'"'.($indent ? ' style="margin-left: '.$indent.'px;"' : ''));
 			}else{
-				$iconImg = '<img'.t3lib_iconWorks::skinImg($this->backPath,t3lib_extMgm::extRelPath(COMMERCE_EXTKEY).'res/icons/table/orders_user_int.gif','title="'.htmlspecialchars($alttext).'"'.($indent ? ' style="margin-left: '.$indent.'px;"' : ''));
+				$iconImg = '<img'.t3lib_iconWorks::skinImg($this->backPath,t3lib_extMgm::extRelPath(COMMERCE_EXTKEY).'Resources/Public/Icons/Table/orders_user_int.gif','title="'.htmlspecialchars($alttext).'"'.($indent ? ' style="margin-left: '.$indent.'px;"' : ''));
 			}
 		}else if($row['comment'] != ''){
 			if($row['tx_commerce_address_type_id'] == 2){
-				$iconImg = '<img'.t3lib_iconWorks::skinImg($this->backPath,t3lib_extMgm::extRelPath(COMMERCE_EXTKEY).'res/icons/table/orders_add_user.gif','title="'.htmlspecialchars($alttext).'"'.($indent ? ' style="margin-left: '.$indent.'px;"' : ''));
+				$iconImg = '<img'.t3lib_iconWorks::skinImg($this->backPath,t3lib_extMgm::extRelPath(COMMERCE_EXTKEY).'Resources/Public/Icons/Table/orders_add_user.gif','title="'.htmlspecialchars($alttext).'"'.($indent ? ' style="margin-left: '.$indent.'px;"' : ''));
 			}else{
-				$iconImg = '<img'.t3lib_iconWorks::skinImg($this->backPath,t3lib_extMgm::extRelPath(COMMERCE_EXTKEY).'res/icons/table/orders_user.gif','title="'.htmlspecialchars($alttext).'"'.($indent ? ' style="margin-left: '.$indent.'px;"' : ''));
+				$iconImg = '<img'.t3lib_iconWorks::skinImg($this->backPath,t3lib_extMgm::extRelPath(COMMERCE_EXTKEY).'Resources/Public/Icons/Table/orders_user.gif','title="'.htmlspecialchars($alttext).'"'.($indent ? ' style="margin-left: '.$indent.'px;"' : ''));
 			}
 		}else if($row['internalcomment'] != ''){
 			if($row['tx_commerce_address_type_id'] == 2){
-				$iconImg = '<img'.t3lib_iconWorks::skinImg($this->backPath,t3lib_extMgm::extRelPath(COMMERCE_EXTKEY).'res/icons/table/orders_add_int.gif','title="'.htmlspecialchars($alttext).'"'.($indent ? ' style="margin-left: '.$indent.'px;"' : ''));
+				$iconImg = '<img'.t3lib_iconWorks::skinImg($this->backPath,t3lib_extMgm::extRelPath(COMMERCE_EXTKEY).'Resources/Public/Icons/Table/orders_add_int.gif','title="'.htmlspecialchars($alttext).'"'.($indent ? ' style="margin-left: '.$indent.'px;"' : ''));
 			}else{
-				$iconImg = '<img'.t3lib_iconWorks::skinImg($this->backPath,t3lib_extMgm::extRelPath(COMMERCE_EXTKEY).'res/icons/table/orders_int.gif','title="'.htmlspecialchars($alttext).'"'.($indent ? ' style="margin-left: '.$indent.'px;"' : ''));
+				$iconImg = '<img'.t3lib_iconWorks::skinImg($this->backPath,t3lib_extMgm::extRelPath(COMMERCE_EXTKEY).'Resources/Public/Icons/Table/orders_int.gif','title="'.htmlspecialchars($alttext).'"'.($indent ? ' style="margin-left: '.$indent.'px;"' : ''));
 			}
 		}else{
 			if($row['tx_commerce_address_type_id'] == 2){
-				$iconImg = '<img'.t3lib_iconWorks::skinImg($this->backPath,t3lib_extMgm::extRelPath(COMMERCE_EXTKEY).'res/icons/table/orders_add.gif','title="'.htmlspecialchars($alttext).'"'.($indent ? ' style="margin-left: '.$indent.'px;"' : ''));
+				$iconImg = '<img'.t3lib_iconWorks::skinImg($this->backPath,t3lib_extMgm::extRelPath(COMMERCE_EXTKEY).'Resources/Public/Icons/Table/orders_add.gif','title="'.htmlspecialchars($alttext).'"'.($indent ? ' style="margin-left: '.$indent.'px;"' : ''));
 			}else{
 				$iconImg = t3lib_iconWorks::getIconImage($table,$row,$this->backPath,'title="'.htmlspecialchars($alttext).'"'.($indent ? ' style="margin-left: '.$indent.'px;"' : ''));
 			}

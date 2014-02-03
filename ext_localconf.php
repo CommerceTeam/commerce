@@ -57,14 +57,14 @@ if (!defined('PATH_txcommerce_rel')) {
 }
 
 if (!defined('PATH_TXCOMMERCE_ICON_TABLE_REL')) {
-	define('PATH_TXCOMMERCE_ICON_TABLE_REL', PATH_TXCOMMERCE_REL . 'res/icons/table/');
+	define('PATH_TXCOMMERCE_ICON_TABLE_REL', PATH_TXCOMMERCE_REL . 'Resources/Public/Icons/Table/');
 }
 if (!defined('PATH_txcommerce_icon_table_rel')) {
 	define('PATH_txcommerce_icon_table_rel', PATH_TXCOMMERCE_ICON_TABLE_REL);
 }
 
 if (!defined ('PATH_TXCOMMERCE_ICON_TREE_REL')) {
-	define('PATH_TXCOMMERCE_ICON_TREE_REL', PATH_TXCOMMERCE_REL . 'res/icons/table/');
+	define('PATH_TXCOMMERCE_ICON_TREE_REL', PATH_TXCOMMERCE_REL . 'Resources/Public/Icons/Table/');
 }
 if (!defined ('PATH_txcommerce_icon_tree_rel')) {
 	define('PATH_txcommerce_icon_tree_rel', PATH_TXCOMMERCE_ICON_TREE_REL);

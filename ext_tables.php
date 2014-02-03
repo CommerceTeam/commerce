@@ -53,9 +53,9 @@ if (TYPO3_MODE == 'BE') {
 
 		// commerce icon
 	if (t3lib_div::int_from_ver(TYPO3_version) >= 4004000) {
-		t3lib_SpriteManager::addTcaTypeIcon('pages', 'contains-commerce', '../typo3conf/ext/commerce/res/icons/table/commerce_folder.gif');
+		t3lib_SpriteManager::addTcaTypeIcon('pages', 'contains-commerce', '../typo3conf/ext/commerce/Resources/Public/Icons/Table/commerce_folder.gif');
 	} else {
-		$ICON_TYPES['commerce'] = '../typo3conf/ext/commerce/res/icons/table/commerce_folder.gif';
+		$ICON_TYPES['commerce'] = '../typo3conf/ext/commerce/Resources/Public/Icons/Table/commerce_folder.gif';
 	}
 
 	$TCA['pages']['columns']['module']['config']['items'][] = array(

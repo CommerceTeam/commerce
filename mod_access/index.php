@@ -89,7 +89,7 @@ class SC_mod_access_perm_index {
 	/**
 	 * @var string
 	 */
-	public $iconPath = '../typo3conf/ext/commerce/res/icons/table/';
+	public $iconPath = '../typo3conf/ext/commerce/Resources/Public/Icons/Table/';
 
 	/**
 	 * @var string

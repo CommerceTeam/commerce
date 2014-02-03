@@ -3,7 +3,7 @@
 
 <head>
 	<title>COMMERCE TEMPLATE FOR PI2</title>
-    <link href="../res/css/commerce.css" rel="stylesheet" type="text/css" />
+    <link href="../Resources/Public/Stylesheets/commerce.css" rel="stylesheet" type="text/css" />
 </head>
 
 <body>
@@ -105,7 +105,7 @@
 </form>
 <!--###BASKET### end-->
 
-		    
+
 <br />
 <br />
 <br />
@@ -179,7 +179,7 @@
 
 <!-- ###PRODUCT_BASKET_QUICKVIEW_EMPTY### begin -->
 	###EMPTY_BASKET###
-	<div class="com-basket-no-stock">###NO_STOCK MESSAGE###</div>				
+	<div class="com-basket-no-stock">###NO_STOCK MESSAGE###</div>
 <!-- ###PRODUCT_BASKET_QUICKVIEW_EMPTY### end -->
 
 <br />
@@ -189,7 +189,7 @@
 <br />
 <!-- ###PRODUCT_BASKET_EMPTY### begin -->
 	###EMPTY_BASKET###
-	<div class="com-basket-no-stock">###NO_STOCK MESSAGE###</div>				
+	<div class="com-basket-no-stock">###NO_STOCK MESSAGE###</div>
 <!-- ###PRODUCT_BASKET_EMPTY### end -->
 
 <br />
@@ -205,12 +205,12 @@
 		</td>
 		<td class="com-text-right">###BASKET_ITEM_PRICESUM_GROSS###</td>
 		<td>
-		<input type="image" src="typo3conf/ext/commerce/pi2/res/basket.gif"/>
+		<input type="image" src="typo3conf/ext/commerce/pi2/Resources/Public/Icons/basket.gif"/>
 		###DELIOTMFROMBASKETLINK###
 		</td>
-		
-<!-- ###PRODUCT_BASKET_FORM_SMALL### end -->	
+
+<!-- ###PRODUCT_BASKET_FORM_SMALL### end -->
 
 
 </body>
-</html>	
+</html>

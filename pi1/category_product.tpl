@@ -3,7 +3,7 @@
 
 <head>
 	<title>COMMERCE TEMPLATE FOR PI1</title>
-    <link href="../res/css/commerce.css" rel="stylesheet" type="text/css" />
+    <link href="../Resources/Public/Stylesheets/commerce.css" rel="stylesheet" type="text/css" />
 </head>
 
 <body>
@@ -13,9 +13,9 @@
 
 <!-- Documentation -->
 
-<!-- 
-Subparts ###ARTICLE_VIEW###  ###ARTICLE_VIEW_NOSTOCK### 
-These subparts are used to render the article into the templates, 
+<!--
+Subparts ###ARTICLE_VIEW###  ###ARTICLE_VIEW_NOSTOCK###
+These subparts are used to render the article into the templates,
 if an article has stock, ARTICLE_VIEW is used,
 if not ARTICLE_VIEW_NOSTOCK
 
@@ -28,24 +28,24 @@ Inside these subparts following markers are availiabe by default
 ###ARTICLE_SELECT_ATTRIBUTES###
 ###LINKTOPUTINBASKET###
 
-You cann add more Marken by generating these. Just add as prefix 
+You cann add more Marken by generating these. Just add as prefix
 ARTICLE_ and than the filedname in uppercase, like
 ###ARTICLE_TITLE###
 The layout of each field and wraps could be defined by TypoScript, in the fields setup
 
 Generating of forms
-If you want one form per articleview interation you can use 
+If you want one form per articleview interation you can use
 following marker to generate the form tags and hidden values
 
 <form name="###ARTICLE_FORMNAME###" action="###ARTICLE_FORMACTION###" method="post">
 ###ARTICLE_HIDDENCATUID###
 ###ARTICLE_HIDDENFIELDS###
 
-If you want one form per page you should only use the ###ARTICLE_HIDDENFIELDS### 
-inside the ARTICLE_VIEW subparts, since the hidden tag for the catuid will be rendered 
+If you want one form per page you should only use the ###ARTICLE_HIDDENFIELDS###
+inside the ARTICLE_VIEW subparts, since the hidden tag for the catuid will be rendered
 globally at the beginning of the form tag as marker ###GENERAL_HIDDENCATUID###
 
-STOCK and NOSTOCK SUBPARTS will be rendered into one subpart, so normally the _NOSTOCK part will be inserted into the normal part and 
+STOCK and NOSTOCK SUBPARTS will be rendered into one subpart, so normally the _NOSTOCK part will be inserted into the normal part and
 _NOSTOCK part will be deleted in the output
 
 -->
@@ -58,14 +58,14 @@ _NOSTOCK part will be deleted in the output
 		<!-- ###CATEGORY_LIST_ITEM### begin -->
 			###CATEGORY_ITEM_TITLE###
 			###CATEGORY_ITEM_TEASER###
-			###CATEGORY_ITEM_TEASERIMAGES###			
-			
+			###CATEGORY_ITEM_TEASERIMAGES###
+
 			<!--###CATEGORY_ITEM_DESCRIPTION### ###CATEGORY_ITEM_IMAGES###-->
 			###CATEGORY_ITEM_SUBTITLE###
-	
+
 			###CATEGORY_ITEM_PRODUCTLIST###
-			
-			
+
+
 		<!-- ###CATEGORY_LIST_ITEM### end -->
 	</div>
 <!-- ###CATEGORY_LIST### end -->
@@ -103,7 +103,7 @@ _NOSTOCK part will be deleted in the output
 	</tbody>
 </table>
 
-###CATEGORY_BROWSEBOX###	
+###CATEGORY_BROWSEBOX###
 <!-- ###CATEGORY_VIEW_DISPLAY### end -->
 
 
@@ -143,11 +143,11 @@ _NOSTOCK part will be deleted in the output
 	</td>
 
 	<td class="com-list-col-price">
-	###PRODUCT_CHEAPEST_PRICE_GROSS###			
+	###PRODUCT_CHEAPEST_PRICE_GROSS###
 	</td>
 	<td class="com-list-col-action">
 	<!-- ###PRODUCT_BASKET_FOR_LISTVIEW### -->
-		<!-- ###ARTICLE_VIEW### -->   
+		<!-- ###ARTICLE_VIEW### -->
 		<div class="com-list-action-entry">
 			###ARTICLE_EANCODE###
 			###ARTICLE_STOCK###
@@ -164,9 +164,9 @@ _NOSTOCK part will be deleted in the output
 			</form>
 		</div>
 		<!-- ###ARTICLE_VIEW### -->
-		
-		<!-- ###ARTICLE_VIEW_NOSTOCK### --> 
-		<div class="com-list-action-entry">    
+
+		<!-- ###ARTICLE_VIEW_NOSTOCK### -->
+		<div class="com-list-action-entry">
 			###ARTICLE_EANCODE###
 			###ARTICLE_STOCK###
             ###ARTICLE_ORDERNUMBER###
@@ -182,13 +182,13 @@ _NOSTOCK part will be deleted in the output
             </form>
         </div>
 		<!-- ###ARTICLE_VIEW_NOSTOCK### -->
-		
+
 		<!-- ###ARTICLE_VIEW_MORETHANMAX### -->
 		###LINKTOPRODUCT###
-		
+
 		<!-- ###ARTICLE_VIEW_MORETHANMAX### -->
-		
-	<!-- ###PRODUCT_BASKET_FOR_LISTVIEW### -->		
+
+	<!-- ###PRODUCT_BASKET_FOR_LISTVIEW### -->
 	</td>
 </tr>
 <!-- ###CATEGORY_ITEMS_LISTVIEW_2### end -->
@@ -214,11 +214,11 @@ _NOSTOCK part will be deleted in the output
 	</td>
 
 	<td class="com-list-col-price">
-	###PRODUCT_CHEAPEST_PRICE_GROSS###			
+	###PRODUCT_CHEAPEST_PRICE_GROSS###
 	</td>
 	<td class="com-list-col-action">
 	<!-- ###PRODUCT_BASKET_FOR_LISTVIEW### -->
-		<!-- ###ARTICLE_VIEW### -->   
+		<!-- ###ARTICLE_VIEW### -->
 		<div class="com-list-action-entry">
 			###ARTICLE_EANCODE###
 			###ARTICLE_STOCK###
@@ -235,9 +235,9 @@ _NOSTOCK part will be deleted in the output
 			</form>
 		</div>
 		<!-- ###ARTICLE_VIEW### -->
-		
-		<!-- ###ARTICLE_VIEW_NOSTOCK### --> 
-		<div class="com-list-action-entry">    
+
+		<!-- ###ARTICLE_VIEW_NOSTOCK### -->
+		<div class="com-list-action-entry">
 			###ARTICLE_EANCODE###
 			###ARTICLE_STOCK###
             ###ARTICLE_ORDERNUMBER###
@@ -253,14 +253,14 @@ _NOSTOCK part will be deleted in the output
             </form>
         </div>
 		<!-- ###ARTICLE_VIEW_NOSTOCK### -->
-		
+
 		<!-- ###ARTICLE_VIEW_MORETHANMAX### -->
 		###LINKTOPRODUCT###
-		
+
 		<!-- ###ARTICLE_VIEW_MORETHANMAX### -->
-		
-	<!-- ###PRODUCT_BASKET_FOR_LISTVIEW### -->	
-		
+
+	<!-- ###PRODUCT_BASKET_FOR_LISTVIEW### -->
+
 	</td>
 </tr>
 <!-- ###CATEGORY_ITEMS_LISTVIEW_2_NOSTOCK### end -->
@@ -287,17 +287,17 @@ _NOSTOCK part will be deleted in the output
 	</td>
 
 	<td class="com-list-col-price">
-	###PRODUCT_CHEAPEST_PRICE_GROSS###			
+	###PRODUCT_CHEAPEST_PRICE_GROSS###
 	</td>
 	<td class="com-list-col-action">
 	<!-- ###PRODUCT_BASKET_FOR_LISTVIEW### -->
-		<!-- ###ARTICLE_VIEW### -->   
+		<!-- ###ARTICLE_VIEW### -->
 		<div class="com-list-action-entry">
 			###ARTICLE_EANCODE###
 			###ARTICLE_STOCK###
             ###ARTICLE_ORDERNUMBER###
 			###ARTICLE_PRICE_GROSS###
-			###DELIVERY_PRICE_GROSS### 
+			###DELIVERY_PRICE_GROSS###
 			###ARTICLE_SELECT_ATTRIBUTES###
 			###LINKTOPUTINBASKET###
 			<form action="###GENERAL_FORM_ACTION###" method="post">
@@ -308,9 +308,9 @@ _NOSTOCK part will be deleted in the output
 			</form>
 		</div>
 		<!-- ###ARTICLE_VIEW### -->
-		
-		<!-- ###ARTICLE_VIEW_NOSTOCK### --> 
-		<div class="com-list-action-entry">    
+
+		<!-- ###ARTICLE_VIEW_NOSTOCK### -->
+		<div class="com-list-action-entry">
 			###ARTICLE_EANCODE###
 			###ARTICLE_STOCK###
             ###ARTICLE_ORDERNUMBER###
@@ -326,13 +326,13 @@ _NOSTOCK part will be deleted in the output
             </form>
         </div>
 		<!-- ###ARTICLE_VIEW_NOSTOCK### -->
-		
+
 		<!-- ###ARTICLE_VIEW_MORETHANMAX### -->
 		###LINKTOPRODUCT###
-		
+
 		<!-- ###ARTICLE_VIEW_MORETHANMAX### -->
-		
-	<!-- ###PRODUCT_BASKET_FOR_LISTVIEW### -->		
+
+	<!-- ###PRODUCT_BASKET_FOR_LISTVIEW### -->
 	</td>
 </tr>
 <!-- ###CATEGORY_ITEMS_LISTVIEW_3### end -->
@@ -358,11 +358,11 @@ _NOSTOCK part will be deleted in the output
 	</td>
 
 	<td class="com-list-col-price">
-	###PRODUCT_CHEAPEST_PRICE_GROSS###			
+	###PRODUCT_CHEAPEST_PRICE_GROSS###
 	</td>
 	<td class="com-list-col-action">
 	<!-- ###PRODUCT_BASKET_FOR_LISTVIEW### -->
-		<!-- ###ARTICLE_VIEW### -->   
+		<!-- ###ARTICLE_VIEW### -->
 		<div class="com-list-action-entry">
 			###ARTICLE_EANCODE###
 			###ARTICLE_STOCK###
@@ -379,9 +379,9 @@ _NOSTOCK part will be deleted in the output
 			</form>
 		</div>
 		<!-- ###ARTICLE_VIEW### -->
-		
-		<!-- ###ARTICLE_VIEW_NOSTOCK### --> 
-		<div class="com-list-action-entry">    
+
+		<!-- ###ARTICLE_VIEW_NOSTOCK### -->
+		<div class="com-list-action-entry">
 			###ARTICLE_EANCODE###
 			###ARTICLE_STOCK###
             ###ARTICLE_ORDERNUMBER###
@@ -397,7 +397,7 @@ _NOSTOCK part will be deleted in the output
             </form>
         </div>
 		<!-- ###ARTICLE_VIEW_NOSTOCK### -->
-	<!-- ###PRODUCT_BASKET_FOR_LISTVIEW### -->		
+	<!-- ###PRODUCT_BASKET_FOR_LISTVIEW### -->
 	</td>
 </tr>
 <!-- ###CATEGORY_ITEMS_LISTVIEW_3_NOSTOCK### end -->
@@ -418,7 +418,7 @@ _NOSTOCK part will be deleted in the output
 	###SUBPART_PRODUCT_ATTRIBUTES###
 
 
-	
+
 	<div class="com-single-aticle">
 	<!-- ###PRODUCT_BASKET_FOR_SINGLEVIEW### -->
 			<!-- ###ARTICLE_VIEW### -->
@@ -438,7 +438,7 @@ _NOSTOCK part will be deleted in the output
 				</form>
 			</div>
 			<!-- ###ARTICLE_VIEW### -->
-			
+
 			<!-- ###ARTICLE_VIEW_NOSTOCK### -->
 			<div class="com-single-action-entry">
 				###ARTICLE_EANCODE###
@@ -513,7 +513,7 @@ _NOSTOCK part will be deleted in the output
 				###ARTICLE_STOCK###
 	            ###ARTICLE_ORDERNUMBER###
 				###ARTICLE_PRICE_GROSS###
-				###DELIVERY_PRICE_GROSS### 
+				###DELIVERY_PRICE_GROSS###
 				###ARTICLE_SELECT_ATTRIBUTES###
 				###SUBPART_ARTICLE_ATTRIBUTES###
 				###LINKTOPUTINBASKET###
@@ -524,14 +524,14 @@ _NOSTOCK part will be deleted in the output
 				</form>
 			</div>
 			<!-- ###ARTICLE_VIEW### -->
-			
+
 			<!-- ###ARTICLE_VIEW_NOSTOCK### -->
 			<div class="com-single-action-entry">
 				###ARTICLE_EANCODE###
 				###ARTICLE_STOCK###
 	            ###ARTICLE_ORDERNUMBER###
 				###ARTICLE_PRICE_GROSS###
-				###DELIVERY_PRICE_GROSS### 
+				###DELIVERY_PRICE_GROSS###
 				###ARTICLE_SELECT_ATTRIBUTES###
 				###SUBPART_ARTICLE_ATTRIBUTES###
 				###LINKTOPUTINBASKET###
@@ -612,14 +612,14 @@ _NOSTOCK part will be deleted in the output
 <em></em>
 <br />
 <!-- ###SELECT_ATTRIBUTES### begin-->
-	<tr class="com-select-row-odd">	
+	<tr class="com-select-row-odd">
 		<td>###SELECT_ATTRIBUTES_ICON###	###SELECT_ATTRIBUTES_TITLE###</td>
 		<td>###SELECT_ATTRIBUTES_VALUE### ###SELECT_ATTRIBUTES_UNIT### </td>
 	</tr>
 <!-- ###SELECT_ATTRIBUTES### end -->
 
 <!-- ###SELECT_ATTRIBUTES###2 begin-->
-	<tr class="com-select-row-even">	
+	<tr class="com-select-row-even">
 		<td>###SELECT_ATTRIBUTES_ICON###	###SELECT_ATTRIBUTES_TITLE###</td>
 		<td>###SELECT_ATTRIBUTES_VALUE### ###SELECT_ATTRIBUTES_UNIT### </td>
 	</tr>
@@ -632,7 +632,7 @@ _NOSTOCK part will be deleted in the output
 <br />
 <!-- ###SELECTOR_ATTRIBUTES_RADIOBUTTON### begin-->
 <table class="com-select-attributes" cellspacing="0" cellpadding="0" border="0">
-	<tr class="com-select-row">	
+	<tr class="com-select-row">
 		<td>###SELECT_ATTRIBUTES_TITLE###:</td>
 		<td>
 		<!-- ###SELECTOR_ATTRIBUTES_RADIOBUTTON_ITEM### begin-->
@@ -644,7 +644,7 @@ _NOSTOCK part will be deleted in the output
 		###SELECT_ATTRIBUTES_UNIT###
 		</td>
 	</tr>
-</table>	
+</table>
 <!-- ###SELECTOR_ATTRIBUTES_RADIOBUTTON### end -->
 
 <br />
@@ -654,7 +654,7 @@ _NOSTOCK part will be deleted in the output
 <br />
 <!-- ###SELECTOR_ATTRIBUTES_DROPDOWN### begin-->
 <table class="com-select-attributes" cellspacing="0" cellpadding="0" border="0">
-	<tr class="com-select-row">	
+	<tr class="com-select-row">
 		<td>###SELECT_ATTRIBUTES_TITLE###</td>
 		<td>
 		<select onchange="###SELECT_ATTRIBUTES_ON_CHANGE###" name="###SELECT_ATTRIBUTES_HTML_ELEMENT_NAME###">
@@ -667,7 +667,7 @@ _NOSTOCK part will be deleted in the output
 		###SELECT_ATTRIBUTES_UNIT###
 		</td>
 	</tr>
-</table>	
+</table>
 <!-- ###SELECTOR_ATTRIBUTES_DROPDOWN### end -->
 
 <br />

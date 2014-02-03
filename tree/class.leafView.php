@@ -47,7 +47,7 @@ class leafView extends langbase {
 	 *
 	 * @var string
 	 */
-	protected $iconPath = '../typo3conf/ext/commerce/res/icons/table/';
+	protected $iconPath = '../typo3conf/ext/commerce/Resources/Public/Icons/Table/';
 
 	/**
 	 * @var string

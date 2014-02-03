@@ -38,7 +38,7 @@ class tx_commerce_pi1_wizicon {
 
 		$LL = $this->includeLocalLang();
 		$wizardItems['plugins_tx_commerce_pi1'] = array(
-			'icon' => t3lib_extMgm::extRelPath('commerce') . 'res/icons/ce_wiz.gif',
+			'icon' => t3lib_extMgm::extRelPath('commerce') . 'Resources/Public/Icons/ce_wiz.gif',
 			'title' => $language->getLLL('tt_content.list_type_pi1', $LL),
 			'description' => $language->getLLL('tt_content.list_type_pi1.wiz_description', $LL),
 			'params' => '&defVals[tt_content][CType]=list&defVals[tt_content][list_type]=commerce_pi1'

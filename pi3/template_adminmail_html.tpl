@@ -10,17 +10,17 @@
 		<td valign="top" align="center">
 <!-- center table  begin -->
 <table align="center" width="600" cellspacing="5" cellpadding="5" border="0">
-	<tr>	
+	<tr>
 		<td width="600" valign="top" align="left">
-			<img src="typo3conf/ext/commerce/res/logo/mail_logo.gif" width="200" height="77" alt="TYPO3 Commerce" />
+			<img src="typo3conf/ext/commerce/Resources/Public/Images/mail_logo.gif" width="200" height="77" alt="TYPO3 Commerce" />
 		</td>
-	</tr>	
+	</tr>
 </table>
-		
+
 <table align="center" width="600" cellspacing="5" cellpadding="5" border="0">
-	<tr>	
+	<tr>
 		<td width="600" valign="top">
-		<h1>Ordernumber ###ORDERID###</h1>	
+		<h1>Ordernumber ###ORDERID###</h1>
 		<p><strong>Commentary:</strong><br/> ###COMMENT###</p>
 		<!--###BASKET_VIEW### begin -->
 		<table cellspacing="5" cellpadding="5" border="0">
@@ -43,7 +43,7 @@
 				<td>###BASKET_ITEM_PRICESUM_GROSS###</td>
 		</tr>
 		<!--###LISTING_ARTICLE### end-->
-		
+
 		<!--###LISTING_BASKET_WEB### begin-->
 			<tr>
 				<td colspan="4">###SHIPPING_TITLE###</td>
@@ -74,7 +74,7 @@
 		<!--###LISTING_BASKET_WEB### end-->
 		</table>
 		<!--###BASKET_VIEW### end -->
-		
+
 		<table align="left" cellspacing="5" cellpadding="5" border="0">
 			<tr>
 				<td width="300">
@@ -85,7 +85,7 @@
 				###ADDRESS###<br>
 				###ZIP### ###CITY###<br>
 				###COUNTRY###<br>
-				<!--###BILLING_ADDRESS### end-->		
+				<!--###BILLING_ADDRESS### end-->
 				</td>
 				<td width="300" >
 				<strong>###LANG_DELIVERY_TITLE###</strong><br/>
@@ -95,12 +95,12 @@
 				###ADDRESS###<br/>
 				###ZIP### ###CITY###<br/>
 				###COUNTRY###<br/>
-				<!--###DELIVERY_ADDRESS### end--> 			
+				<!--###DELIVERY_ADDRESS### end-->
 				</td>
-			</tr>	
+			</tr>
 		</table>
-<!-- center table  end -->	
-		</td>	
+<!-- center table  end -->
+		</td>
 	</tr>
 </table>
 </body>
