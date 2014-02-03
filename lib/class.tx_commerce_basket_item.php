@@ -429,7 +429,7 @@ class tx_commerce_basket_item {
 	 */
 	public function get_price_uid() {
 		t3lib_div::logDeprecatedFunction();
-		return $this->priceid;
+		return $this->getPriceUid();
 	}
 
 	/**
@@ -479,7 +479,6 @@ class tx_commerce_basket_item {
 	 */
 	public function get_item_sum_gross($recalculate = FALSE) {
 		t3lib_div::logDeprecatedFunction();
-
 		return $this->getItemSumGross($recalculate);
 	}
 

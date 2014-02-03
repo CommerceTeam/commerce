@@ -24,19 +24,27 @@
 
 /**
  * Product list and single view
- *
- * @author Volker Graubaum <vg@e-netconsulting.de>
- * @author Franz Ripfel <fr@abezet.de>
- * @author Ingo Schmitt <is@marketing-factory.de>
  */
 class tx_commerce_pi1 extends tx_commerce_pibase {
-		// Same as class name
+	/**
+	 * Same as class name
+	 *
+	 * @var string
+	 */
 	public $prefixId = 'tx_commerce_pi1';
 
-		// Path to this script relative to the extension dir.
+	/**
+	 * Path to this script relative to the extension dir.
+	 *
+	 * @var string
+	 */
 	public $scriptRelPath = 'pi1/class.tx_commerce_pi1.php';
 
-		// The extension key.
+	/**
+	 * The extension key.
+	 *
+	 * @var string
+	 */
 	public $extKey = 'commerce';
 
 	/**
@@ -118,7 +126,7 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 	public function init($conf) {
 		parent::init($conf);
 
-		// Merge default vars, if other prefix_id
+			// Merge default vars, if other prefix_id
 		if ($this->prefixId <> 'tx_commerce_pi1') {
 			$tx_commerce_vars = t3lib_div::_GP('tx_commerce');
 			if (is_array($tx_commerce_vars)) {
@@ -131,7 +139,7 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 		}
 
 		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi1/class.tx_commerce_pi1.php']['init'])) {
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi1/class.tx_commerce_pi1.php']['init'] as $classRef)   {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi1/class.tx_commerce_pi1.php']['init'] as $classRef) {
 				$hookObj = &t3lib_div::getUserObj($classRef);
 				if (method_exists($hookObj, 'preInit')) {
 					$hookObj->preInit($this);
@@ -146,20 +154,22 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 		$this->conf['singleProduct'] = (int) $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'product_id', 's_product');
 
 		if ($this->conf['singleProduct'] > 0) {
-			// product UID was set by Plugin or TS
+				// product UID was set by Plugin or TS
 			$this->singleViewAsPlugin = TRUE;
 		}
 
-		// Unset variable, if smaller than 0, as -1 is returend when no product is selcted in form.
+			// Unset variable, if smaller than 0, as -1 is returend when no product is selcted in form.
 		if ($this->conf['singleProduct'] < 0) {
 			$this->conf['singleProduct'] = FALSE;
 		}
 
-		$this->piVars['showUid'] = intval($this->piVars['showUid'] ?  $this->piVars['showUid'] : ($this->conf['singleProduct'] ? $this->conf['singleProduct'] : ''));
+		$this->piVars['showUid'] = intval($this->piVars['showUid'] ?
+			$this->piVars['showUid'] :
+			($this->conf['singleProduct'] ? $this->conf['singleProduct'] : ''));
 		$this->handle = $this->piVars['showUid'] ? 'singleView' : 'listView';
 
-		// Define the currency
-		// Use of curency is depricated as it was only a typo :-)
+			// Define the currency
+			// Use of curency is depricated as it was only a typo :-)
 		if ($this->conf['curency'] > '') {
 			$this->currency = $this->conf['curency'];
 		}
@@ -170,7 +180,7 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 			$this->currency = 'EUR';
 		}
 
-		// Set some flexform values
+			// Set some flexform values
 		$this->master_cat = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'StartCategory', 's_product');
 		if (!$this->master_cat) {
 			$this->master_cat = $this->conf['catUid'];
@@ -224,7 +234,7 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 			$accessible = $tmpCategory->isAccessible();
 		}
 
-		// Validate given catUid, if it's given and accessible
+			// Validate given catUid, if it's given and accessible
 		if (!$this->piVars['catUid'] || !$accessible) {
 			$tmpCategory = t3lib_div::makeinstance('tx_commerce_category');
 			$this->cat = (int) $this->master_cat;
@@ -238,31 +248,33 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 		}
 		$this->category = $tmpCategory;
 
-
 		$categorySubproducts = $this->category->getProductUids();
+
+		/** @var tslib_fe $frontend */
+		$frontend = & $GLOBALS['TSFE'];
 
 		if ((!$this->conf['singleProduct']) && ((int)$this->piVars['showUid'] > 0) && (!$GLOBALS['TSFE']->beUserLogin)) {
 			if (is_array($categorySubproducts)) {
 				if (!in_array($this->piVars['showUid'], $categorySubproducts)) {
 					$categoryAllSubproducts = $this->category->getAllProducts(PHP_INT_MAX);
 					if (!in_array((int)$this->piVars['showUid'], $categoryAllSubproducts)) {
-						// The requested product is not beblow the selected category
-						// So exit with page not found
-						$GLOBALS['TSFE']->pageNotFoundAndExit($this->pi_getLL('error.productNotFound', 'Product not found', 1));
+							// The requested product is not beblow the selected category
+							// So exit with page not found
+						$frontend->pageNotFoundAndExit($this->pi_getLL('error.productNotFound', 'Product not found', 1));
 					}
 				}
 			} else {
 				$categoryAllSubproducts = $this->category->getAllProducts(PHP_INT_MAX);
 				if (!in_array($this->piVars['showUid'], $categoryAllSubproducts)) {
-					// The requested product is not beblow the selected category
-					// So exit with page not found
-					$GLOBALS['TSFE']->pageNotFoundAndExit($this->pi_getLL('error.productNotFound', 'Product not found', 1));
+						// The requested product is not beblow the selected category
+						// So exit with page not found
+					$frontend->pageNotFoundAndExit($this->pi_getLL('error.productNotFound', 'Product not found', 1));
 				}
 			}
 		}
 
 		if (($this->piVars['catUid']) && ($this->conf['checkCategoryTree'] == 1)) {
-			// Validate given CAT UID, if is below master_cat
+				// Validate given CAT UID, if is below master_cat
 			$this->masterCategoryObj = t3lib_div::makeinstance('tx_commerce_category');
 			$this->masterCategoryObj->init($this->master_cat, $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
 			$this->masterCategoryObj->loadData();
@@ -270,9 +282,7 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 			if (in_array($this->piVars['catUid'], $masterCategorySubCategories)) {
 				$this->cat = (int)$this->piVars['catUid'];
 			} else {
-				/** @var tslib_fe $frontend */
-				$frontend = & $GLOBALS['TSFE'];
-				// Wrong UID, so start with page not found
+					// Wrong UID, so start with page not found
 				$frontend->pageNotFoundAndExit($this->pi_getLL('error.categoryNotFound', 'Product not found', 1));
 			}
 		} elseif (!isset($this->piVars['catUid'])) {
@@ -280,7 +290,7 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 		}
 
 		if ($this->cat <> $this->category->getUid()) {
-			// Only, if the category has been changed
+				// Only, if the category has been changed
 			unset($this->category);
 			$this->category = t3lib_div::makeinstance('tx_commerce_category');
 			$this->category->init($this->cat, $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
@@ -290,7 +300,7 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 		$this->internal['results_at_a_time'] = $this->conf['maxRecords'];
 		$this->internal['maxPages'] = $this->conf['maxPages'];
 
-		// Going the long way ??? Just for list view
+			// Going the long way ??? Just for list view
 		$long = 1;
 		switch ($this->handle) {
 			case 'singleView':
@@ -349,7 +359,7 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 	 * @return string HTML-Content
 	 */
 	public function main($content, $conf) {
-		// If product or categorie is inserted by insert record use uid from insert record cObj
+			// If product or categorie is inserted by insert record use uid from insert record cObj
 		if (!empty($conf['insertRecord'])) {
 			if ($conf['insertRecord'] == 'products') {
 				$this->piVars['showUid'] = $this->cObj->data['uid'];
@@ -361,7 +371,7 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 
 		$this->init($conf);
 
-		// Get the template
+			// Get the template
 		$this->templateCode = $this->cObj->fileResource($this->conf['templateFile']);
 
 		$this->template = array();
@@ -386,9 +396,12 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 		$prodID = intval($prodID);
 
 		if ($prodID > 0) {
-			// Get not localized product
-			$mainProductRes = $GLOBALS['TYPO3_DB']->exec_SELECTquery('l18n_parent', 'tx_commerce_products', 'uid=' . $prodID);
-			if ($GLOBALS['TYPO3_DB']->sql_num_rows($mainProductRes) == 1 AND $row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($mainProductRes) AND $row['l18n_parent'] != 0) {
+			/** @var t3lib_db $database */
+			$database = $GLOBALS['TYPO3_DB'];
+
+				// Get not localized product
+			$mainProductRes = $database->exec_SELECTquery('l18n_parent', 'tx_commerce_products', 'uid=' . $prodID);
+			if ($database->sql_num_rows($mainProductRes) == 1 AND $row = $database->sql_fetch_assoc($mainProductRes) AND $row['l18n_parent'] != 0) {
 				$prodID = $row['l18n_parent'];
 			}
 
@@ -404,8 +417,8 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 				$this->product_array = $this->product->returnAssocArray();
 				$this->product->loadArticles();
 
-				// Check if the product was inserted as plugin on a page,
-				// or if it was rendered as a leaf from the category view
+					// Check if the product was inserted as plugin on a page,
+					// or if it was rendered as a leaf from the category view
 				if ($this->conf['singleView.']['renderProductNameAsPageTitle'] == 1) {
 					$this->product->setPageTitle();
 				} elseif (($this->conf['singleView.']['renderProductNameAsPageTitle'] == 2) && ($this->singleViewAsPlugin === FALSE)) {
@@ -414,11 +427,11 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 
 				$this->master_cat = $this->product->get_masterparent_categorie();
 
-				// Write the current page to the session to have a back to last product link
+					// Write the current page to the session to have a back to last product link
 				$GLOBALS['TSFE']->fe_user->setKey('ses', 'tx_commerce_lastproducturl', $this->pi_linkTP_keepPIvars_url());
 				return TRUE;
 			} else {
-				// If product ist not valid (url manipulation) go to listview
+					// If product ist not valid (url manipulation) go to listview
 				$this->handle = 'listView';
 			}
 		}
@@ -450,16 +463,16 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 		$relatedProductsParentSubpart = $this->cObj->getSubpart($template, '###' . strtoupper($this->conf['templateMarker.']['relatedProductList']) . '###');
 		$content = $this->renderProduct($prodObj, $template, $typoScript, $this->conf['templateMarker.']['basketSingleView.'], $this->conf['templateMarker.']['basketSingleViewMarker']);
 
-		// Get category data
-		$catObj->load_Data();
+			// Get category data
+		$catObj->loadData();
 
-		// Render it in the content
+			// Render it in the content
 		$category = $this->renderCategory($catObj, '###' . strtoupper($this->conf['templateMarker.']['categorySingleViewMarker']) . '###', $this->conf['singleView.']['products.']['categories.'], 'ITEM', $content);
 
-		// Substitude the subpart
+			// Substitude the subpart
 		$content = $this->cObj->substituteSubpart($content, '###' . strtoupper($this->conf['templateMarker.']['categorySingleViewMarker']) . '###', $category);
 
-		// Build the link to the category
+			// Build the link to the category
 		$linkContent = $this->cObj->getSubpart($content, '###CATEGORY_ITEM_DETAILLINK###');
 		if ($linkContent) {
 			$link = $this->pi_linkTP($linkContent, array('tx_commerce_pi1[catUid]' => $catObj->getUid()), TRUE);
@@ -468,7 +481,7 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 		}
 		$content = $this->cObj->substituteSubpart($content, '###CATEGORY_ITEM_DETAILLINK###', $link);
 
-		// Render related products
+			// Render related products
 		$relatedProducts = $prodObj->getRelatedProducts();
 		$relatedProductsSubpart = '';
 		$relatedProductsSubpartTemplateStock = $this->cObj->getSubpart($relatedProductsParentSubpart, '###' . strtoupper($this->conf['templateMarker.']['relatedProductSingle']) . '###');
@@ -481,19 +494,19 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 				$localTemplate = $relatedProductsSubpartTemplateStock;
 				$localTypoScript = $this->conf['singleView.']['products.']['relatedProducts.'];
 			}
-			// Related products don't have articles here, to save render time
+				// Related products don't have articles here, to save render time
 			$relatedProductsSubpart .= $this->renderProduct($relatedProduct, $localTemplate, $localTypoScript, '###no#artikel#subpart#here###');
 		}
 
-		// Additional headers for "related products" are overwritten by subparts
-		// So we will change this here. In thought of sorting, we can't split the entries.
+			// Additional headers for "related products" are overwritten by subparts
+			// So we will change this here. In thought of sorting, we can't split the entries.
 		if ($relatedProductsSubpart != '') {
-			// Set first subpart empty
+				// Set first subpart empty
 			$contentTmp = $this->cObj->substituteSubpart($content, '###' . strtoupper($this->conf['templateMarker.']['relatedProductSingle']) . '###', '');
-			// Fill the second with our data
+				// Fill the second with our data
 			$content = $this->cObj->substituteSubpart($contentTmp, '###' . strtoupper($this->conf['templateMarker.']['relatedProductSingle']) . '_NOSTOCK###', $relatedProductsSubpart);
 		} else {
-			// When we have no related products, then overwrite the header
+				// When we have no related products, then overwrite the header
 			$content = $this->cObj->substituteSubpart($content, '###' . strtoupper($this->conf['templateMarker.']['relatedProductList']) . '###', '');
 		}
 
@@ -559,7 +572,7 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 		$content = '';
 		$markerArray = array();
 		if ($prod->getRenderMaxArticles() > $prod->getNumberOfArticles()) {
-			// Only if the number of articles is smaller than defined
+				// Only if the number of articles is smaller than defined
 			$templateAttrSelectorDropdown = $this->cObj->getSubpart($this->templateCode, '###' . strtoupper($this->conf['templateMarker.']['productAttributesSelectorDropdown']) . '###');
 			$templateAttrSelectorDropdownItem = $this->cObj->getSubpart($templateAttrSelectorDropdown, '###' . strtoupper($this->conf['templateMarker.']['productAttributesSelectorDropdown']) . '_ITEM###');
 			$templateAttrSelectorRadiobutton = $this->cObj->getSubpart($this->templateCode, '###' . strtoupper($this->conf['templateMarker.']['productAttributesSelectorRadiobutton']) . '###');
@@ -588,8 +601,8 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 				$showHiddenValues = FALSE;
 			}
 
-			// Parse piVars for values and names of selected attributes
-			// define $arrAttSubmit for finding the right article later
+				// Parse piVars for values and names of selected attributes
+				// define $arrAttSubmit for finding the right article later
 			$arrAttSubmit = array();
 			foreach ($this->piVars as $key => $val) {
 				if (strstr($key, 'attsel_') && $val) {
@@ -663,9 +676,9 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 				$sortedAttributeArray = array();
 				$i = 0;
 				foreach ($arrAttSubmit as $attrUid => $attrValUid) {
-				    $sortedAttributeArray[$i]['AttributeUid'] = $attrUid;
-				    $sortedAttributeArray[$i]['AttributeValue'] = $attrValUid;
-				    $i++;
+					$sortedAttributeArray[$i]['AttributeUid'] = $attrUid;
+					$sortedAttributeArray[$i]['AttributeValue'] = $attrValUid;
+					$i++;
 				}
 
 				$artId = array_shift($prod->get_Articles_by_AttributeArray($sortedAttributeArray));
@@ -709,7 +722,7 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 							'_changed\').value = ' . $attrUid . ';document.getElementById(\'attList_' . $prod->getUid() . '\').submit();';
 						$markerArray['###SELECT_ATTRIBUTES_HTML_ELEMENT_KEY###'] = $this->prefixId . '_' . $attrUid;
 						$markerArray['###SELECT_ATTRIBUTES_HTML_ELEMENT_NAME###'] = $this->prefixId . '[attsel_' . $attrUid . ']';
-						// @deprecated set to '' for old installation, will be removed in the next release
+							// @deprecated set to '' for old installation, will be removed in the next release
 						$markerArray['###SELECT_ATTRIBUTES_ITEM_TEXT_ALL###'] = '';
 						$markerArray['###SELECT_ATTRIBUTES_UNIT###'] = $attributeObj->get_unit();
 
@@ -740,7 +753,7 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 								$markerArrayItem['###SELECT_ATTRIBUTES_VALUE_STATUS###'] = '';
 							}
 
-							// @deprecated, used for backwards compatibility
+								// @deprecated, used for backwards compatibility
 							$markerArrayItem['###SELECT_ATTRIBUTES_VALUE_SELECTED###'] = $markerArrayItem['###SELECT_ATTRIBUTES_VALUE_STATUS###'];
 							foreach ($hookObjectsArr as $hookObj) {
 								if (method_exists($hookObj, 'additionalAttributeMarker')) {
@@ -784,8 +797,8 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 				$content .= $this->cObj->substituteMarkerArray($template_att, $markerArray, '###|###', 1);
 			}
 		} else {
-			// Special Marker and rendering when more articles are existing than are allowed to render
-			// @see tx_commerce_products->getNumberOfArticles
+				// Special Marker and rendering when more articles are existing than are allowed to render
+				// @see tx_commerce_products->getNumberOfArticles
 			$localContent = $this->cObj->getSubpart($template, reset($templateMarkerMoreThanMax));
 
 			$cat = $this->cat;
@@ -826,6 +839,7 @@ class tx_commerce_pi1 extends tx_commerce_pibase {
 }
 
 if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/pi1/class.tx_commerce_pi1.php']) {
+	/** @noinspection PhpIncludeInspection */
 	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/pi1/class.tx_commerce_pi1.php']);
 }
 

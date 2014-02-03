@@ -420,7 +420,6 @@ class tx_commerce_element_alib {
 	}
 
 	/**
-	 * @since 2005 11 08
 	 * depricated, use tx_commerce_pibase->renderrow in combinintion with
 	 * $this->return_assoc_array
 	 *     Renders    values from fieldlist to markers
