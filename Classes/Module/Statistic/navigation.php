@@ -23,7 +23,7 @@
  ***************************************************************/
 
 unset($MCONF);
-include ('conf.php');
+include('conf.php');
 /** @noinspection PhpIncludeInspection */
 include ($BACK_PATH . 'init.php');
 /** @noinspection PhpIncludeInspection */
@@ -32,14 +32,14 @@ include ($BACK_PATH . 'template.php');
 /**
  * Main script class for the tree edit navigation frame
  */
-class tx_commerce_statistic_navframe {
+class Tx_Commerce_Module_Statistic_Navigation {
 	/**
 	 * @var string
 	 */
 	protected $content;
 
 	/**
-	 * @var localPageTree
+	 * @var tx_commerce_statistic_pagetree
 	 */
 	protected $pagetree;
 
@@ -96,10 +96,10 @@ class tx_commerce_statistic_navframe {
 		tx_commerce_create_folder::init_folders();
 
 			// Create page tree object:
-		$this->pagetree = t3lib_div::makeInstance('localPageTree');
+		$this->pagetree = t3lib_div::makeInstance('tx_commerce_statistic_pagetree');
 		$this->pagetree->ext_IconMode = $backendUser->getTSConfigVal('options.pageTree.disableIconLinkToContextmenu');
 		$this->pagetree->ext_showPageId = $backendUser->getTSConfigVal('options.pageTree.showPageIdWithTitle');
-		$this->pagetree->thisScript = $GLOBALS['BACK_PATH']  . PATH_TXCOMMERCE_REL . 'mod_statistic/class.tx_commerce_statistic_navframe.php';
+		$this->pagetree->thisScript = $GLOBALS['BACK_PATH']  . PATH_TXCOMMERCE_REL . 'Classes/Module/Statistic/navigation.php';
 		$this->pagetree->addField('alias');
 		$this->pagetree->addField('shortcut');
 		$this->pagetree->addField('shortcut_mode');
@@ -217,7 +217,7 @@ class tx_commerce_statistic_navframe {
 		$this->content .= '
 			<p class="c-refresh">
 				<a href="' . htmlspecialchars($refreshUrl) . '"><img' .
-				t3lib_iconWorks::skinImg('', 'gfx/refresh_n.gif', 'width="14" height="14"') .
+				t3lib_iconWorks::skinImg($GLOBALS['BACK_PATH'], 'gfx/refresh_n.gif', 'width="14" height="14"') .
 				' title="' . $language->sL('LLL:EXT:lang/locallang_core.php:labels.refresh', 1) . '" alt="" /></a><a href="' .
 				htmlspecialchars($refreshUrl) . '">' . $language->sL('LLL:EXT:lang/locallang_core.php:labels.refresh', 1) . '</a>
 			</p>
@@ -298,7 +298,8 @@ if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['
 }
 
 	// Make instance:
-$SOBE = t3lib_div::makeInstance('tx_commerce_statistic_navframe');
+/** @var Tx_Commerce_Module_Statistic_Navigation $SOBE */
+$SOBE = t3lib_div::makeInstance('Tx_Commerce_Module_Statistic_Navigation');
 $SOBE->init();
 $SOBE->main();
 $SOBE->printContent();

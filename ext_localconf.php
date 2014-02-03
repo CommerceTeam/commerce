@@ -203,9 +203,9 @@ $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi4/class.tx_commerce_pi4.php']
 
 
 	// Adding the AJAX listeners for Permission change/Browsing the Category tree
-$GLOBALS['TYPO3_CONF_VARS']['BE']['AJAX']['SC_mod_access_perm_ajax::dispatch'] = 'EXT:commerce/mod_access/class.sc_mod_access_perm_ajax.php:SC_mod_access_perm_ajax->dispatch';
-$GLOBALS['TYPO3_CONF_VARS']['BE']['AJAX']['tx_commerce_access_navframe::ajaxExpandCollapse'] = 'EXT:commerce/mod_access/class.tx_commerce_access_navframe.php:tx_commerce_access_navframe->ajaxExpandCollapse';
-$GLOBALS['TYPO3_CONF_VARS']['BE']['AJAX']['tx_commerce_category_navframe::ajaxExpandCollapse'] = 'EXT:commerce/mod_category/class.tx_commerce_category_navframe.php:tx_commerce_category_navframe->ajaxExpandCollapse';
+$GLOBALS['TYPO3_CONF_VARS']['BE']['AJAX']['SC_mod_access_perm_ajax::dispatch'] = 'EXT:commerce/Classes/Module/Access/class.sc_mod_access_perm_ajax.php:SC_mod_access_perm_ajax->dispatch';
+$GLOBALS['TYPO3_CONF_VARS']['BE']['AJAX']['tx_commerce_access_navframe::ajaxExpandCollapse'] = 'EXT:commerce/Classes/Module/Access/navigation.php:tx_commerce_access_navframe->ajaxExpandCollapse';
+$GLOBALS['TYPO3_CONF_VARS']['BE']['AJAX']['Tx_Commerce_Module_Category_Navigation::ajaxExpandCollapse'] = 'EXT:commerce/Classes/Module/Category/navigation.php:Tx_Commerce_Module_Category_Navigation->ajaxExpandCollapse';
 
 
 	// CLI Skript configration

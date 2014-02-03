@@ -1,38 +1,34 @@
 /***************************************************************
-*
-*  javascript functions regarding the category tree
-*  relies on the javascript library "prototype"
-*
-*
-*  Copyright notice
-*
-*  (c) 2006-2008	Benjamin Mack <www.xnos.org>
-*  All rights reserved
-*
-*  This script is part of the TYPO3 t3lib/ library provided by
-*  Kasper Skaarhoj <kasper@typo3.com> together with TYPO3
-*
-*  Released under GNU/GPL (see license file in tslib/)
-*
-*  This script is distributed in the hope that it will be useful,
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-*
-*  This copyright notice MUST APPEAR in all copies of this script
-*
-*  TYPO3 SVN ID: $Id: tree.js 2911 2008-01-15 22:49:57Z ingorenner $
-*
-***************************************************************/
-
-
+ *  Copyright notice
+ *
+ *  (c) 2006-2008 Benjamin Mack <www.xnos.org>
+ *  All rights reserved
+ *
+ *  This script is part of the Typo3 project. The Typo3 project is
+ *  free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  The GNU General Public License can be found at
+ *  http://www.gnu.org/copyleft/gpl.html.
+ *
+ *  This script is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  This copyright notice MUST APPEAR in all copies of the script!
+ ***************************************************************/
 
 /**
  *
  * @author	Benjamin Mack
  */
 var Tree = {
-	thisScript: '../../../../typo3/ajax.php',
-	ajaxID: 'tx_commerce_access_navframe::ajaxExpandCollapse',	// has to be either "SC_alt_db_navframe::expandCollapse" or "SC_alt_file_navframe::expandCollapse"
+	thisScript: '../../../../../../typo3/ajax.php',
+		// has to be either "SC_alt_db_navframe::expandCollapse" or "SC_alt_file_navframe::expandCollapse"
+	ajaxID: 'Tx_Commerce_Module_Category_Navigation::ajaxExpandCollapse',
 	frameSetModule: null,
 	activateDragDrop: false,
 	highlightClass: 'active',

@@ -38,7 +38,7 @@ $BE_USER->modAccess($MCONF, 1);
 /**
  * Main script class for the systemData navigation frame
  */
-class Tx_Commerce_SystemData_NavFrame extends t3lib_SCbase {
+class Tx_Commerce_Module_Systemdata_Navigation extends t3lib_SCbase {
 	/**
 	 * @var template
 	 */
@@ -128,16 +128,14 @@ class Tx_Commerce_SystemData_NavFrame extends t3lib_SCbase {
 	}
 }
 
-
 if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/mod_systemdata/class.tx_commerce_category_navframe.php']) {
 	/** @noinspection PhpIncludeInspection */
 	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/mod_systemdata/class.tx_commerce_category_navframe.php']);
 }
 
-
 if (!(TYPO3_REQUESTTYPE & TYPO3_REQUESTTYPE_AJAX)) {
-	/** @var $SOBE Tx_Commerce_SystemData_NavFrame */
-	$SOBE = t3lib_div::makeInstance('Tx_Commerce_SystemData_NavFrame');
+	/** @var $SOBE Tx_Commerce_Module_Systemdata_Navigation */
+	$SOBE = t3lib_div::makeInstance('Tx_Commerce_Module_Systemdata_Navigation');
 	$SOBE->init();
 	$SOBE->main();
 	$SOBE->printContent();

@@ -41,7 +41,7 @@ if (!(defined('TYPO3_REQUESTTYPE') || defined('TYPO3_REQUESTTYPE_AJAX'))) {
 	require('template.php');
 }
 
-class tx_commerce_access_navframe {
+class Tx_Commerce_Module_Access_Navigation {
 	/**
 	 * @var tx_commerce_categorytree
 	 */
@@ -205,7 +205,8 @@ if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['
 
 	// Make instance if it is not an AJAX call
 if (!(TYPO3_REQUESTTYPE & TYPO3_REQUESTTYPE_AJAX)) {
-	$SOBE = t3lib_div::makeInstance('tx_commerce_access_navframe');
+	/** @var Tx_Commerce_Module_Access_Navigation $SOBE */
+	$SOBE = t3lib_div::makeInstance('Tx_Commerce_Module_Access_Navigation');
 	$SOBE->init();
 	$SOBE->initPage();
 	$SOBE->main();

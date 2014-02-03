@@ -50,7 +50,7 @@ if (!(defined('TYPO3_REQUESTTYPE') || defined('TYPO3_REQUESTTYPE_AJAX'))) {
 /** @noinspection PhpIncludeInspection */
 require_once(t3lib_extmgm::extPath('commerce') . 'class.ext_update.php');
 
-class tx_commerce_category_navframe {
+class Tx_Commerce_Module_Category_Navigation {
 	/**
 	 * @var tx_commerce_categorytree
 	 */
@@ -59,7 +59,7 @@ class tx_commerce_category_navframe {
 	/**
 	 * @var string
 	 */
-	protected $BACK_PATH = '../../../../typo3/';
+	protected $BACK_PATH = '../../../../../../typo3/';
 
 	/**
 	 * @var template
@@ -146,8 +146,8 @@ class tx_commerce_category_navframe {
 		');
 
 		$this->doc->loadJavascriptLib('contrib/prototype/prototype.js');
-		$this->doc->loadJavascriptLib('../' . PATH_TXCOMMERCE_REL . 'Resources/Public/Javascript/tree.js');
-		$this->doc->JScode .= $this->doc->wrapScriptTags('Tree.ajaxID = "tx_commerce_category_navframe::ajaxExpandCollapse";');
+		$this->doc->loadJavascriptLib(PATH_TXCOMMERCE_REL . 'Resources/Public/Javascript/tree.js');
+		$this->doc->JScode .= $this->doc->wrapScriptTags('Tree.ajaxID = "Tx_Commerce_Module_Category_Navigation::ajaxExpandCollapse";');
 			// Adding javascript code for AJAX (prototype), drag&drop and the pagetree as well as the click menu code
 		$this->doc->getContextMenuCode();
 		$this->doc->bodyTagId = 'typo3-pagetree';
@@ -238,7 +238,8 @@ if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['
 
 	// Make instance if it is not an AJAX call
 if (!(TYPO3_REQUESTTYPE & TYPO3_REQUESTTYPE_AJAX)) {
-	$SOBE = t3lib_div::makeInstance('tx_commerce_category_navframe');
+	/** @var Tx_Commerce_Module_Category_Navigation $SOBE */
+	$SOBE = t3lib_div::makeInstance('Tx_Commerce_Module_Category_Navigation');
 	$SOBE->init();
 	$SOBE->initPage();
 	$SOBE->main();

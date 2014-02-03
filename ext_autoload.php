@@ -26,6 +26,11 @@ return array(
 	'tx_commerce_dao_feuserobserver' => $classPath . 'Dao/FeuserObserver.php',
 	'tx_commerce_dao_feuseraddressfieldmapper' => $classPath . 'Dao/FeuserAddressFieldmapper.php',
 
+	'sc_mod_access_perm_ajax' => $classPath . 'Module/Access/class.sc_mod_access_perm_ajax.php',
+	'Tx_Commerce_Module_Category_Navigation' => $classPath . 'Module/Category/navigation.php',
+	'tx_commerce_order_pagetree' => $classPath . 'Module/Orders/class.tx_commerce_order_pagetree.php',
+	'tx_commerce_statistic_pagetree' => $classPath . 'Module/Statistic/class.tx_commerce_statistic_pagetree.php',
+
 	'tx_commerce_task_statistictask' => $classPath . 'Task/StatisticTask.php',
 	'tx_commerce_task_statistictaskadditionalfieldprovider' => $classPath . 'Task/StatisticTaskAdditionalFieldProvider.php',
 
@@ -65,7 +70,6 @@ return array(
 	'tx_commerce_pibase' => $extensionPath . 'lib/class.tx_commerce_pibase.php',
 	'tx_commerce_product' => $extensionPath . 'lib/class.tx_commerce_product.php',
 	'tx_commerce_statistics' => $extensionPath . 'lib/class.tx_commerce_statistics.php',
-	'sc_mod_access_perm_ajax' => $extensionPath . 'mod_access/class.sc_mod_access_perm_ajax.php',
 
 	'tx_commerce_pi1' => $extensionPath . 'pi1/class.tx_commerce_pi1.php',
 	'tx_commerce_pi2' => $extensionPath . 'pi2/class.tx_commerce_pi2.php',
@@ -121,7 +125,6 @@ return array(
 	'leafslavedata' => $extensionPath . 'tree/class.leafSlaveData.php',
 	'browsetree' => $extensionPath . 'tree/class.browsetree.php',
 
-	'localpagetree' => $extensionPath . 'mod_orders/class.tx_commerce_order_pagetree.php',
 	'user_orderedit_func' => $extensionPath . 'mod_orders/class.user_orderedit_func.php',
 
 	'tx_moneylib' => t3lib_extMgm::extPath('moneylib') . 'class.tx_moneylib.php',

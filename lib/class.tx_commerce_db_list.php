@@ -445,7 +445,7 @@ class tx_commerce_db_list {
 						return false;
 					}
 					function jumpExt(URL, anchor) {
-						public anc = anchor?anchor:"";
+						var anc = anchor?anchor:"";
 						document.location = URL + (T3_THIS_LOCATION ? "&returnUrl=" + T3_THIS_LOCATION : "") + anc;
 						return false;
 					}

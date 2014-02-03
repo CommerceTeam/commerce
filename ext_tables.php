@@ -22,6 +22,7 @@ $GLOBALS['T3_VAR']['ext'][COMMERCE_EXTKEY]['TCA']['mountpoints_config'] = array(
 	'maxitems' => 20,
 );
 
+
 /**
  * Definition Plugins
  */
@@ -50,7 +51,6 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist'][COMMERCE_
 t3lib_extMgm::addPlugin(Array('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:tt_content.list_type_pi6', COMMERCE_EXTKEY . '_pi6'), 'list_type');
 
 
-
 if (TYPO3_MODE == 'BE') {
 	/**
 	 * WIZICON
@@ -75,17 +75,17 @@ if (TYPO3_MODE == 'BE') {
 	}
 
 		// add main module
-	t3lib_extMgm::addModule('txcommerceM1', '', '', PATH_TXCOMMERCE . 'mod_main/');
+	t3lib_extMgm::addModule('txcommerceM1', '', '', PATH_TXCOMMERCE . 'Classes/Module/Main/');
 		// add category module
-	t3lib_extMgm::addModule('txcommerceM1', 'category', '', PATH_TXCOMMERCE . 'mod_category/');
+	t3lib_extMgm::addModule('txcommerceM1', 'category', '', PATH_TXCOMMERCE . 'Classes/Module/Category/');
 		// Access Module
-	t3lib_extMgm::addModule('txcommerceM1', 'access', '', PATH_TXCOMMERCE . 'mod_access/');
+	t3lib_extMgm::addModule('txcommerceM1', 'access', '', PATH_TXCOMMERCE . 'Classes/Module/Access/');
 		// Orders module
-	t3lib_extMgm::addModule('txcommerceM1', 'orders', '', PATH_TXCOMMERCE . 'mod_orders/');
+	t3lib_extMgm::addModule('txcommerceM1', 'orders', '', PATH_TXCOMMERCE . 'Classes/Module/Orders/');
 		// Systemdata module
-	t3lib_extMgm::addModule('txcommerceM1', 'systemdata', '', PATH_TXCOMMERCE . 'mod_systemdata/');
+	t3lib_extMgm::addModule('txcommerceM1', 'systemdata', '', PATH_TXCOMMERCE . 'Classes/Module/Systemdata/');
 		// Statistic Module
-	t3lib_extMgm::addModule('txcommerceM1', 'statistic', '', PATH_TXCOMMERCE . 'mod_statistic/');
+	t3lib_extMgm::addModule('txcommerceM1', 'statistic', '', PATH_TXCOMMERCE . 'Classes/Module/Statistic/');
 
 		// commerce icon
 	if (t3lib_div::int_from_ver(TYPO3_version) >= 4004000) {
@@ -215,15 +215,15 @@ $tempColumns = array(
 	),
 );
 
-
 t3lib_div::loadTCA('tt_address');
+t3lib_extMgm::addTCAcolumns('tt_address', $tempColumns, 1);
+t3lib_extMgm::addToAllTCAtypes('tt_address', 'tx_commerce_default_values;;;;1-1-1,tx_commerce_fe_user_id, tx_commerce_address_type_id, surname,tx_commerce_is_main_address');
+
 /**
  * Put surename directly to name
  */
-
 $ttaddressparts = explode('name,', $GLOBALS['TCA']['tt_address']['interface']['showRecordFieldList']);
-$partnums = count($ttaddressparts);
-$countto = $partnums - 1;
+$countto = count($ttaddressparts) - 1;
 for ($i = 0; $i < $countto; ++$i) {
 	if (strlen($ttaddressparts[$i]) == 0 || substr($ttaddressparts[$i], -1, 1) == ',') {
 		$ttaddressparts[$i] = $ttaddressparts[$i] . 'name,surname,';
@@ -231,11 +231,7 @@ for ($i = 0; $i < $countto; ++$i) {
 		$ttaddressparts[$i] = $ttaddressparts[$i] . 'name,';
 	}
 }
-
 $GLOBALS['TCA']['tt_address']['interface']['showRecordFieldList'] = implode('', $ttaddressparts);
-t3lib_extMgm::addTCAcolumns('tt_address', $tempColumns, 1);
-t3lib_extMgm::addToAllTCAtypes('tt_address', 'tx_commerce_default_values;;;;1-1-1,tx_commerce_fe_user_id, tx_commerce_address_type_id, surname,tx_commerce_is_main_address');
-
 
 
 $tempColumns = array(
@@ -294,7 +290,6 @@ t3lib_extMgm::addTCAcolumns('fe_users', $tempColumns, 1);
 t3lib_extMgm::addToAllTCAtypes('fe_users', 'tx_commerce_tt_address_id,tx_commerce_user_state_id,tx_commerce_orders;;;;1-1-1');
 
 
-
 $tempColumns = array(
 	'tx_commerce_foldereditorder' => array(
 		'displayCond' => 'FIELD:tx_graytree_foldername:REQ:true',
@@ -329,6 +324,7 @@ t3lib_extMgm::addTCAcolumns('be_users', $tempColumns, 1);
 t3lib_extMgm::addToAllTCAtypes('be_users', 'tx_commerce_mountpoints', '', 'after:fileoper_perms');
 
 unset($tempColumns);
+
 
 $GLOBALS['TCA']['tx_commerce_products'] = array(
 	'ctrl' => array(
@@ -574,8 +570,6 @@ $GLOBALS['TCA']['tx_commerce_trackingcodes'] = array(
 	)
 );
 
-
-
 $GLOBALS['TCA']['tx_commerce_order_types'] = array(
 	'ctrl' => array(
 		'title' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_order_types',
@@ -720,8 +714,8 @@ $GLOBALS['TCA']['tx_commerce_salesfigures'] = array(
 		'crdate' => 'crdate',
 		'cruser_id' => 'cruser_id',
 		'default_sortby' => 'ORDER BY crdate',
-		'readOnly'	=> '1',
-		'adminOnly'	=> '1',
+		'readOnly' => '1',
+		'adminOnly' => '1',
 		'dynamicConfigFile' => PATH_TXCOMMERCE . 'Configuration/TCA/Salesfigures.php',
 		'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL . 'salesfigures.gif',
 	),
@@ -738,8 +732,8 @@ $GLOBALS['TCA']['tx_commerce_newclients'] = array(
 		'crdate' => 'crdate',
 		'cruser_id' => 'cruser_id',
 		'default_sortby' => 'ORDER BY crdate',
-		'readOnly'	=> '1',
-		'adminOnly'	=> '1',
+		'readOnly' => '1',
+		'adminOnly' => '1',
 		'dynamicConfigFile' => PATH_TXCOMMERCE . 'Configuration/TCA/Newclients.php',
 		'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL . 'newclients.gif',
 	),

@@ -5,7 +5,7 @@
  *  (c) 2011-2012 TYPO3 Commerce Team <team@typo3-commerce.org>
  *  All rights reserved
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
+ *  This script is part of the Typo3 project. The Typo3 project is
  *  free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
@@ -13,9 +13,6 @@
  *
  *  The GNU General Public License can be found at
  *  http://www.gnu.org/copyleft/gpl.html.
- *  A copy is found in the textfile GPL.txt and important notices to the license
- *  from the author is found in LICENSE.txt distributed with these scripts.
- *
  *
  *  This script is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -23,7 +20,7 @@
  *  GNU General Public License for more details.
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
- */
+ ***************************************************************/
 
 /**
  * Module: Permission setting

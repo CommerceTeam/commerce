@@ -32,7 +32,7 @@ require_once($BACK_PATH . 'template.php');
 /**
  * Main script class for the tree edit navigation frame
  */
-class tx_commerce_order_navframe {
+class Tx_Commerce_Module_Orders_Navigation {
 	/**
 	 * @var string
 	 */
@@ -96,10 +96,10 @@ class tx_commerce_order_navframe {
 		tx_commerce_create_folder::init_folders();
 
 			// Create page tree object:
-		$this->pagetree = t3lib_div::makeInstance('localPageTree');
+		$this->pagetree = t3lib_div::makeInstance('tx_commerce_order_pagetree');
 		$this->pagetree->ext_IconMode = $backendUser->getTSConfigVal('options.pageTree.disableIconLinkToContextmenu');
 		$this->pagetree->ext_showPageId = $backendUser->getTSConfigVal('options.pageTree.showPageIdWithTitle');
-		$this->pagetree->thisScript = $GLOBALS['BACK_PATH'] . PATH_TXCOMMERCE_REL . 'mod_orders/class.tx_commerce_order_navframe.php';
+		$this->pagetree->thisScript = $GLOBALS['BACK_PATH'] . PATH_TXCOMMERCE_REL . 'Classes/Module/Orders/navigation.php';
 		$this->pagetree->addField('alias');
 		$this->pagetree->addField('shortcut');
 		$this->pagetree->addField('shortcut_mode');
@@ -297,8 +297,8 @@ if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['
 	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/mod_orders/class.tx_commerce_order_navframe.php']);
 }
 
-/** @var tx_commerce_order_navframe $SOBE */
-$SOBE = t3lib_div::makeInstance('tx_commerce_order_navframe');
+/** @var Tx_Commerce_Module_Orders_Navigation $SOBE */
+$SOBE = t3lib_div::makeInstance('Tx_Commerce_Module_Orders_Navigation');
 $SOBE->init();
 $SOBE->main();
 $SOBE->printContent();

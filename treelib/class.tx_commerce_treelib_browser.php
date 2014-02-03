@@ -141,11 +141,11 @@ class tx_commerce_treelib_browser extends t3lib_SCbase {
 		';
 
 		$this->doc->loadJavascriptLib('contrib/prototype/prototype.js');
-		$this->doc->loadJavascriptLib('../' . PATH_TXCOMMERCE_REL . 'Resources/Public/Javascript/tree.js');
+		$this->doc->loadJavascriptLib('/' . PATH_TXCOMMERCE_REL . 'Resources/Public/Javascript/tree.js');
 
 			// Check if we need to allow browsing of products.
 		if (1 == $allowProducts) {
-			$this->doc->JScode .= $this->doc->wrapScriptTags('Tree.ajaxID = "tx_commerce_category_navframe::ajaxExpandCollapse";');
+			$this->doc->JScode .= $this->doc->wrapScriptTags('Tree.ajaxID = "Tx_Commerce_Module_Category_Navigation::ajaxExpandCollapse";');
 		}
 
 			// Setting JavaScript for menu
