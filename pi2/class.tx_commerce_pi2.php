@@ -274,7 +274,7 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 				$k = (int) $k;
 
 				/** @var tx_commerce_basket_item $basketItem */
-				$basketItem = $this->basket->basket_items[$k];
+				$basketItem = $this->basket->getBasketItem($k);
 
 					// Safe old quantity for price limit
 				if ($basketItem) {
@@ -318,9 +318,9 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 								// Instance to calculate shipping costs
 							if ($articleObj->hasStock($v['count'])) {
 								if ((int)$v['price_id'] > 0) {
-									$this->basket->add_article($k, $v['count'], $v['price_id']);
+									$this->basket->addArticle($k, $v['count'], $v['price_id']);
 								} else {
-									$this->basket->add_article($k, $v['count']);
+									$this->basket->addArticle($k, $v['count']);
 								}
 							} else {
 								$this->noStock = $this->pi_getLL('noStock');
@@ -328,9 +328,9 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 						} else {
 								// Add article by default
 							if ((int)$v['price_id'] > 0) {
-								$this->basket->add_article($k, $v['count'], $v['price_id']);
+								$this->basket->addArticle($k, $v['count'], $v['price_id']);
 							} else {
-								$this->basket->add_article($k, $v['count']);
+								$this->basket->addArticle($k, $v['count']);
 							}
 						}
 					}
@@ -343,7 +343,7 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 
 						// Check for basket price limit
 					if (intval($this->conf['priceLimitForBasket']) > 0 && $this->basket->getGrossSum() > intval($this->conf['priceLimitForBasket'])) {
-						$this->basket->add_article($k, $oldCountValue);
+						$this->basket->addArticle($k, $oldCountValue);
 						$this->priceLimitForBasket = 1;
 					}
 				}
@@ -371,10 +371,10 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 						// Set to integer to be sure it is integer
 					$articleUid = intval($articleUid);
 					$articleCount = intval($articleCount);
-					$this->basket->add_article($articleUid, $articleCount['count']);
+					$this->basket->addArticle($articleUid, $articleCount['count']);
 				}
 			} else {
-				$this->basket->add_article((int)$this->piVars['payArt']);
+				$this->basket->addArticle((int) $this->piVars['payArt']);
 			}
 
 				// Hook to process the basket after adding payment article
@@ -405,10 +405,10 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 				foreach ($this->piVars['delArt'] as $articleUid => $articleCount) {
 					$articleUid = intval($articleUid);
 					$articleCount = intval($articleCount);
-					$this->basket->add_article($articleUid, $articleCount['count']);
+					$this->basket->addArticle($articleUid, $articleCount['count']);
 				}
 			} else {
-				$this->basket->add_article((int)$this->piVars['delArt']);
+				$this->basket->addArticle((int) $this->piVars['delArt']);
 			}
 
 				// Hook to process the basket after adding delivery article
@@ -627,7 +627,7 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 					$price_net = tx_moneylib::format($articleObj->getPriceNet(), $this->currency);
 					$price_gross = tx_moneylib::format($articleObj->getPriceGross(), $this->currency);
 					if (!is_array($this->basketDel) || count($this->basketDel) < 1) {
-						$this->basket->add_article($articleUid);
+						$this->basket->addArticle($articleUid);
 						$this->basket->store_data();
 					}
 					$first = 1;
@@ -740,7 +740,7 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 					$addDefaultPaymentToBasket = FALSE;
 					$first = TRUE;
 					$select .= ' selected="selected"';
-					$this->basket->add_article($articleUid);
+					$this->basket->addArticle($articleUid);
 					$price_net = tx_moneylib::format($articleObj->getPriceNet(), $this->currency);
 					$price_gross = tx_moneylib::format($articleObj->getPriceGross(), $this->currency);
 				} elseif (!$first) {
@@ -809,7 +809,7 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 		}
 
 		/** @var tx_commerce_basket_item $basketItem */
-		$basketItem = $this->basket->basket_items[$article->getUid()];
+		$basketItem = $this->basket->getBasketItem($article->getUid());
 
 		$markerArray = $article->getMarkerArray($this->cObj, $this->conf['articleTS.'], 'article_');
 		$markerArray['###ARTICLE_SELECT_ATTRIBUTES###'] = $attCode;
@@ -908,7 +908,7 @@ class tx_commerce_pi2 extends tx_commerce_pibase {
 		while (list($k, $v) = each($list)) {
 				// Fill marker arrays with product/article values
 			/** @var $myItem tx_commerce_basket_item */
-			$myItem = $this->basket->basket_items[$v];
+			$myItem = $this->basket->getBasketItem($v);
 
 				// Check stock
 			$stockOK = FALSE;
