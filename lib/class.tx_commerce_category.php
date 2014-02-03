@@ -342,6 +342,15 @@ class tx_commerce_category extends tx_commerce_element_alib {
 	}
 
 	/**
+	 * Returns the category navigationtitle
+	 *
+	 * @return string Navigationtitle;
+	 */
+	public function getNavtitle() {
+		return $this->navtitle;
+	}
+
+	/**
 	 * Returns the subtitle of the category
 	 *
 	 * @return string Subtitle;
@@ -381,9 +390,11 @@ class tx_commerce_category extends tx_commerce_element_alib {
 	 * Returns the category navigationtitle
 	 *
 	 * @return string Navigationtitle;
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use tx_commerce_category::getNavtitle instead
 	 */
 	public function get_navtitle() {
-		return $this->navtitle;
+		t3lib_div::logDeprecatedFunction();
+		return $this->getNavtitle();
 	}
 
 	/**

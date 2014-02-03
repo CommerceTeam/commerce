@@ -46,6 +46,16 @@ class tx_commerce_order_localRecordlist extends localRecordList {
 	public $onlyUser;
 
 	/**
+	 * @var array
+	 */
+	protected $myfields = array();
+
+	/**
+	 * @var boolean
+	 */
+	protected $disableSingleTableView;
+
+	/**
 	 * @param string $table
 	 * @param integer $id
 	 * @param string $addWhere
@@ -81,7 +91,7 @@ class tx_commerce_order_localRecordlist extends localRecordList {
 			tx_commerce_create_folder::init_folders();
 
 			/**
-			 * @TODO bitte aus der ext config nehmen, volker angefragt
+			 * @todo bitte aus der ext config nehmen, volker angefragt
 			 */
 				// Find the right pid for the Ordersfolder
 			list($orderPid) = array_unique(tx_commerce_folder_db::initFolders('Orders', 'Commerce', 0, 'Commerce'));
@@ -180,7 +190,7 @@ class tx_commerce_order_localRecordlist extends localRecordList {
 
 				// Adding "Hide/Unhide" icon:
 			if ($this->id) {
-					// @TODO: change the return path
+					// @todo: change the return path
 				if ($row['hidden']) {
 					$params = '&data[pages][' . $row['uid'] . '][hidden]=0';
 					$theCtrlPanel[] = '<a href="#" onclick="' .
@@ -293,68 +303,65 @@ class tx_commerce_order_localRecordlist extends localRecordList {
 			</table>';
 	}
 
+	/**
+	 * @return void
+	 */
 	public function generateList() {
-		global $TCA;
-		t3lib_div::loadTCA("tx_commerce_orders");
+		/** @var t3lib_beUserAuth $backendUser */
+		$backendUser = $GLOBALS['BE_USER'];
+
+		t3lib_div::loadTCA('tx_commerce_orders');
+
 			// Traverse the TCA table array:
-
-		foreach ($TCA as  $tableName => $dummy ){
-
-
+		foreach ($GLOBALS['TCA'] as $tableName => $dummy) {
 				// Checking if the table should be rendered:
-			if ((!$this->table || $tableName==$this->table) && (!$this->tableList || t3lib_div::inList($this->tableList,$tableName)) && $GLOBALS['BE_USER']->check('tables_select',$tableName))	{		// Checks that we see only permitted/requested tables:
-
+				// Checks that we see only permitted/requested tables:
+			if (
+				(!$this->table || $tableName == $this->table)
+				&& (!$this->tableList || t3lib_div::inList($this->tableList, $tableName))
+				&& $backendUser->check('tables_select', $tableName)
+			) {
 					// Load full table definitions:
 				t3lib_div::loadTCA($tableName);
 
 					// iLimit is set depending on whether we're in single- or multi-table mode
-				if ($this->table)	{
-					$this->iLimit=(isset($TCA[$tableName]['interface']['maxSingleDBListItems'])?intval($TCA[$tableName]['interface']['maxSingleDBListItems']):$this->itemsLimitSingleTable);
+				if ($this->table) {
+					$this->iLimit = (isset($GLOBALS['TCA'][$tableName]['interface']['maxSingleDBListItems']) ?
+						(int) $GLOBALS['TCA'][$tableName]['interface']['maxSingleDBListItems'] :
+						$this->itemsLimitSingleTable);
 				} else {
-					$this->iLimit=(isset($TCA[$tableName]['interface']['maxDBListItems'])?intval($TCA[$tableName]['interface']['maxDBListItems']):$this->itemsLimitPerTable);
+					$this->iLimit = (isset($GLOBALS['TCA'][$tableName]['interface']['maxDBListItems']) ?
+						(int) $GLOBALS['TCA'][$tableName]['interface']['maxDBListItems'] :
+						$this->itemsLimitPerTable);
 				}
-				if ($this->showLimit)	$this->iLimit = $this->showLimit;
-				/**
-				 * @TODO Change this hard limit
-				 */
-					// Setting fields to select:
-//				if ($this->allFields)	{
-//					$fields = $this->makeFieldList($tableName);
-//
-//					$fields[]='_PATH_';
-//					$fields[]='_CONTROL_';
-//
-//					if (is_array($this->setFields[$tableName]))	{
-//
-//						$fields = array_intersect($fields,$this->setFields[$tableName]);
-//					} else {
-//
-//						//$fields = array();
-//					}
-//				} else {
-//
-//					$fields = array();
-//				}
-
+				if ($this->showLimit) {
+					$this->iLimit = $this->showLimit;
+				}
 					// Finally, render the list:
+
+				$this->myfields = array('order_type_uid_noName', 'order_id', 'tstamp', 'crdate', 'delivery', 'payment',
+					'numarticles', 'sum_price_gross', 'cu_iso_3', 'company', 'surname', 'name', 'address', 'zip', 'city',
+					'email', 'phone_1', 'phone_2', 'articles', 'order_number');
 
 					// Check for order_number and order_title view
 				if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['showArticleNumber'] == 1 &&
 					$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['showArticleTitle'] == 1) {
-					$this->myfields=array('order_type_uid_noName',"order_id","tstamp","crdate","delivery","payment","numarticles","sum_price_gross",'cu_iso_3',"company","surname","name","address","zip","city","email","phone_1","phone_2","articles", "order_number","article_number","article_name" );
-				} else if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['showArticleNumber'] == 1) {
-					$this->myfields=array('order_type_uid_noName',"order_id","tstamp","crdate","delivery","payment","numarticles","sum_price_gross",'cu_iso_3',"company","surname","name","address","zip","city","email","phone_1","phone_2","articles", "order_number","article_number");
-				} else if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['showArticleTitle'] == 1){
-					$this->myfields=array('order_type_uid_noName',"order_id","tstamp","crdate","delivery","payment","numarticles","sum_price_gross",'cu_iso_3',"company","surname","name","address","zip","city","email","phone_1","phone_2","articles", "order_number","article_name");
-				}else{
-					$this->myfields=array('order_type_uid_noName',"order_id","tstamp","crdate","delivery","payment","numarticles","sum_price_gross",'cu_iso_3',"company","surname","name","address","zip","city","email","phone_1","phone_2","articles", "order_number");
-				}
-					//CSV Export
-				if ($this->csvOutput){
-					$this->myfields=array("order_id","crdate","tstamp","delivery","payment","numarticles","sum_price_gross",'cu_iso_3',"company","surname","name","address","zip","city","email","phone_1","phone_2", "comment", "internalcomment","articles");
+					$this->myfields[] = 'article_number';
+					$this->myfields[] = 'article_name';
+				} elseif ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['showArticleNumber'] == 1) {
+					$this->myfields[] = 'article_number';
+				} elseif ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['showArticleTitle'] == 1) {
+					$this->myfields[] = 'article_name';
 				}
 
-				$this->HTMLcode.=$this->getTable($tableName, $this->id,implode(',',$this->myfields));
+					// CSV Export
+				if ($this->csvOutput) {
+					$this->myfields = array('order_id', 'crdate', 'tstamp', 'delivery', 'payment', 'numarticles', 'sum_price_gross',
+						'cu_iso_3', 'company', 'surname', 'name', 'address', 'zip', 'city', 'email', 'phone_1', 'phone_2', 'comment',
+						'internalcomment', 'articles');
+				}
+
+				$this->HTMLcode .= $this->getTable($tableName, $this->id, implode(',', $this->myfields));
 			}
 		}
 	}
@@ -396,196 +403,237 @@ class tx_commerce_order_localRecordlist extends localRecordList {
 	 * @see getTable()
 	 */
 	public function renderListRow($table, $row, $cc, $titleCol, $thumbsCol, $indent = 0) {
+		/** @var t3lib_db $database */
+		$database = $GLOBALS['TYPO3_DB'];
+
 		$iOut = '';
 
 		if (substr(TYPO3_version, 0, 3)  >= '4.0') {
-			// In offline workspace, look for alternative record:
+				// In offline workspace, look for alternative record:
 			t3lib_BEfunc::workspaceOL($table, $row, $GLOBALS['BE_USER']->workspace);
 		}
 			// Background color, if any:
-		$row_bgColor=
+		$row_bgColor =
 			$this->alternateBgColors ?
-			(($cc%2)?'' :' bgcolor="'.t3lib_div::modifyHTMLColor($GLOBALS['SOBE']->doc->bgColor4,+10,+10,+10).'"') :
+			(($cc % 2) ? '' : ' bgcolor="' . t3lib_div::modifyHTMLColor($GLOBALS['SOBE']->doc->bgColor4, 10, 10, 10) . '"') :
 			'';
 
 			// Overriding with versions background color if any:
-		$row_bgColor = $row['_CSSCLASS'] ? ' class="'.$row['_CSSCLASS'].'"' : $row_bgColor;
+		$row_bgColor = $row['_CSSCLASS'] ? ' class="' . $row['_CSSCLASS'] . '"' : $row_bgColor;
 
 			// Initialization
-		$alttext = t3lib_BEfunc::getRecordIconAltText($row,$table);
-		$recTitle = t3lib_BEfunc::getRecordTitle($table,$row);
+		$alttext = t3lib_BEfunc::getRecordIconAltText($row, $table);
 
 			// Incr. counter.
 		$this->counter++;
 
-			// The icon with link
-		$iconImg = t3lib_iconWorks::getIconImage($table,$row,$this->backPath,'title="'.htmlspecialchars($alttext).'"'.($indent ? ' style="margin-left: '.$indent.'px;"' : ''));
+		$indentStyle = ($indent ? ' style="margin-left: ' . $indent . 'px;"' : '');
+		$iconAttributes = 'title="' . htmlspecialchars($alttext) . '"' . $indentStyle;
 
 			// Icon for order comment and delivery address
-		if ($row['comment'] != '' && $row['internalcomment'] != ''){
-			if($row['tx_commerce_address_type_id'] == 2){
-				$iconImg = '<img'.t3lib_iconWorks::skinImg($this->backPath,t3lib_extMgm::extRelPath(COMMERCE_EXTKEY).'Resources/Public/Icons/Table/orders_add_user_int.gif','title="'.htmlspecialchars($alttext).'"'.($indent ? ' style="margin-left: '.$indent.'px;"' : ''));
-			}else{
-				$iconImg = '<img'.t3lib_iconWorks::skinImg($this->backPath,t3lib_extMgm::extRelPath(COMMERCE_EXTKEY).'Resources/Public/Icons/Table/orders_user_int.gif','title="'.htmlspecialchars($alttext).'"'.($indent ? ' style="margin-left: '.$indent.'px;"' : ''));
+		if ($row['comment'] != '' && $row['internalcomment'] != '') {
+			if ($row['tx_commerce_address_type_id'] == 2) {
+				$iconImg = '<img' . t3lib_iconWorks::skinImg(
+					$this->backPath,
+					PATH_TXCOMMERCE_REL . 'Resources/Public/Icons/Table/orders_add_user_int.gif',
+					$iconAttributes
+				);
+			} else {
+				$iconImg = '<img' . t3lib_iconWorks::skinImg(
+					$this->backPath,
+					PATH_TXCOMMERCE_REL . 'Resources/Public/Icons/Table/orders_user_int.gif',
+					$iconAttributes
+				);
 			}
-		}else if($row['comment'] != ''){
-			if($row['tx_commerce_address_type_id'] == 2){
-				$iconImg = '<img'.t3lib_iconWorks::skinImg($this->backPath,t3lib_extMgm::extRelPath(COMMERCE_EXTKEY).'Resources/Public/Icons/Table/orders_add_user.gif','title="'.htmlspecialchars($alttext).'"'.($indent ? ' style="margin-left: '.$indent.'px;"' : ''));
-			}else{
-				$iconImg = '<img'.t3lib_iconWorks::skinImg($this->backPath,t3lib_extMgm::extRelPath(COMMERCE_EXTKEY).'Resources/Public/Icons/Table/orders_user.gif','title="'.htmlspecialchars($alttext).'"'.($indent ? ' style="margin-left: '.$indent.'px;"' : ''));
+		} elseif ($row['comment'] != '') {
+			if ($row['tx_commerce_address_type_id'] == 2) {
+				$iconImg = '<img' . t3lib_iconWorks::skinImg(
+					$this->backPath,
+					PATH_TXCOMMERCE_REL . 'Resources/Public/Icons/Table/orders_add_user.gif',
+					$iconAttributes
+				);
+			} else {
+				$iconImg = '<img' . t3lib_iconWorks::skinImg(
+					$this->backPath,
+					PATH_TXCOMMERCE_REL . 'Resources/Public/Icons/Table/orders_user.gif',
+					$iconAttributes
+				);
 			}
-		}else if($row['internalcomment'] != ''){
-			if($row['tx_commerce_address_type_id'] == 2){
-				$iconImg = '<img'.t3lib_iconWorks::skinImg($this->backPath,t3lib_extMgm::extRelPath(COMMERCE_EXTKEY).'Resources/Public/Icons/Table/orders_add_int.gif','title="'.htmlspecialchars($alttext).'"'.($indent ? ' style="margin-left: '.$indent.'px;"' : ''));
-			}else{
-				$iconImg = '<img'.t3lib_iconWorks::skinImg($this->backPath,t3lib_extMgm::extRelPath(COMMERCE_EXTKEY).'Resources/Public/Icons/Table/orders_int.gif','title="'.htmlspecialchars($alttext).'"'.($indent ? ' style="margin-left: '.$indent.'px;"' : ''));
+		} elseif ($row['internalcomment'] != '') {
+			if ($row['tx_commerce_address_type_id'] == 2) {
+				$iconImg = '<img' . t3lib_iconWorks::skinImg(
+					$this->backPath,
+					PATH_TXCOMMERCE_REL . 'Resources/Public/Icons/Table/orders_add_int.gif',
+					$iconAttributes
+				);
+			} else {
+				$iconImg = '<img' . t3lib_iconWorks::skinImg(
+					$this->backPath,
+					PATH_TXCOMMERCE_REL . 'Resources/Public/Icons/Table/orders_int.gif',
+					$iconAttributes
+				);
 			}
-		}else{
-			if($row['tx_commerce_address_type_id'] == 2){
-				$iconImg = '<img'.t3lib_iconWorks::skinImg($this->backPath,t3lib_extMgm::extRelPath(COMMERCE_EXTKEY).'Resources/Public/Icons/Table/orders_add.gif','title="'.htmlspecialchars($alttext).'"'.($indent ? ' style="margin-left: '.$indent.'px;"' : ''));
-			}else{
-				$iconImg = t3lib_iconWorks::getIconImage($table,$row,$this->backPath,'title="'.htmlspecialchars($alttext).'"'.($indent ? ' style="margin-left: '.$indent.'px;"' : ''));
+		} else {
+			if ($row['tx_commerce_address_type_id'] == 2) {
+				$iconImg = '<img' . t3lib_iconWorks::skinImg(
+					$this->backPath,
+					PATH_TXCOMMERCE_REL . 'Resources/Public/Icons/Table/orders_add.gif',
+					$iconAttributes
+				);
+			} else {
+				$iconImg = t3lib_iconWorks::getIconImage($table, $row, $this->backPath, $iconAttributes);
 			}
 		}
 
-		$theIcon = $this->clickMenuEnabled ? $GLOBALS['SOBE']->doc->wrapClickMenuOnIcon($iconImg,$table,$row['uid']) : $iconImg;
+		$theIcon = $this->clickMenuEnabled ? $GLOBALS['SOBE']->doc->wrapClickMenuOnIcon($iconImg, $table, $row['uid']) : $iconImg;
 
 		$extConf = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf'];
 			// Preparing and getting the data-array
 		$theData = Array();
-		#debug($this->fieldArray);
-		foreach($this->fieldArray as $fCol)	{
-			if ($fCol=='pid') {
-				$theData[$fCol]=$row[$fCol];
-			} elseif ($fCol=='sum_price_gross') {
+
+		foreach ($this->fieldArray as $fCol) {
+			if ($fCol == 'pid') {
+				$theData[$fCol] = $row[$fCol];
+			} elseif ($fCol == 'sum_price_gross') {
 				if ($this->csvOutput) {
-					$row[$fCol]=$row[$fCol]/100;
-				}else {
-				$theData[$fCol]=tx_moneylib::format($row[$fCol],$row['cu_iso_3'],false);
+					$row[$fCol] = $row[$fCol] / 100;
+				} else {
+					$theData[$fCol] = tx_moneylib::format($row[$fCol], $row['cu_iso_3'], FALSE);
 				}
-			} elseif ($fCol=='crdate') {
+			} elseif ($fCol == 'crdate') {
 				$theData[$fCol] = t3lib_BEfunc::date($row[$fCol]);
 
-				$row[$fCol]=t3lib_BEfunc::date($row[$fCol]);
-			}	elseif ($fCol=='tstamp') {
+				$row[$fCol] = t3lib_BEfunc::date($row[$fCol]);
+			} elseif ($fCol == 'tstamp') {
 				$theData[$fCol] = t3lib_BEfunc::date($row[$fCol]);
-
-				$row[$fCol]=t3lib_BEfunc::date($row[$fCol]);
-			} elseif ($fCol=='articles') {
+				$row[$fCol] = t3lib_BEfunc::date($row[$fCol]);
+			} elseif ($fCol == 'articles') {
 				$articleNumber = array();
 				$articleName = array();
-				$res_articles=$GLOBALS['TYPO3_DB']->exec_SELECTquery('article_number,title,order_uid','tx_commerce_order_articles','order_uid = '.intval($row['uid']));
-				while (($lokalRow = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_articles))) {
-					$articles[]=$lokalRow['article_number'].':'.$lokalRow['title'];
+
+				$res_articles = $database->exec_SELECTquery(
+					'article_number, title, order_uid',
+					'tx_commerce_order_articles',
+					'order_uid = ' . (int) $row['uid']
+				);
+				$articles = array();
+				while (($lokalRow = $database->sql_fetch_assoc($res_articles))) {
+					$articles[] = $lokalRow['article_number'] . ':' . $lokalRow['title'];
 					$articleNumber[] = $lokalRow['article_number'];
 					$articleName[] = $lokalRow['title'];
 				}
 
 				if ($this->csvOutput) {
-					$theData[$fCol] = implode(',',$articles);
-					$row[$fCol]  = implode(',',$articles);
-				}else{
-					$theData[$fCol] = '<input type="checkbox" name="orderUid[]" value="'.$row['uid'].'">';
+					$theData[$fCol] = implode(',', $articles);
+					$row[$fCol]  = implode(',', $articles);
+				} else {
+					$theData[$fCol] = '<input type="checkbox" name="orderUid[]" value="' . $row['uid'] . '">';
 				}
-			}elseif ($fCol=='numarticles') {
-				$res_articles=$GLOBALS['TYPO3_DB']->exec_SELECTquery('sum(amount) anzahl','tx_commerce_order_articles','order_uid = '.intval($row['uid']).' and article_type_uid =' . NORMALARTICLETYPE);
-				if (($lokalRow = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_articles))) {
-
+			} elseif ($fCol == 'numarticles') {
+				$res_articles = $database->exec_SELECTquery(
+					'sum(amount) anzahl',
+					'tx_commerce_order_articles',
+					'order_uid = ' . (int) $row['uid'] . ' and article_type_uid =' . NORMALARTICLETYPE
+				);
+				if (($lokalRow = $database->sql_fetch_assoc($res_articles))) {
 					$theData[$fCol] = $lokalRow['anzahl'];
 					$row[$fCol]  = $lokalRow['anzahl'];
-
 				}
-			}elseif ($fCol=='article_number') {
+			} elseif ($fCol == 'article_number') {
 				$articleNumber = array();
 
-				$res_articles=$GLOBALS['TYPO3_DB']->exec_SELECTquery('article_number','tx_commerce_order_articles','order_uid = '.intval($row['uid']).' and article_type_uid =' . NORMALARTICLETYPE);
-				while (($lokalRow = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_articles))) {
+				$res_articles = $database->exec_SELECTquery(
+					'article_number',
+					'tx_commerce_order_articles',
+					'order_uid = ' . (int) $row['uid'] . ' and article_type_uid =' . NORMALARTICLETYPE
+				);
+				while (($lokalRow = $database->sql_fetch_assoc($res_articles))) {
 					$articleNumber[] = $lokalRow['article_number'];
 					/**
 					 * @TODO: implement default value, if number is not defined
-					 **/
+					 */
 				}
-				$theData[$fCol] = 		implode(',',$articleNumber);
-			}elseif ($fCol=='article_name') {
+				$theData[$fCol] = implode(',', $articleNumber);
+			} elseif ($fCol == 'article_name') {
 				$articleName = array();
 
-				$res_articles=$GLOBALS['TYPO3_DB']->exec_SELECTquery('title','tx_commerce_order_articles','order_uid = '.intval($row['uid']).' and article_type_uid =' . NORMALARTICLETYPE);
-				while (($lokalRow = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_articles))) {
+				$res_articles = $database->exec_SELECTquery(
+					'title',
+					'tx_commerce_order_articles',
+					'order_uid = ' . (int) $row['uid'] . ' and article_type_uid =' . NORMALARTICLETYPE
+				);
+				while (($lokalRow = $database->sql_fetch_assoc($res_articles))) {
 					$articleName[] = $lokalRow['title'];
 					/**
 					 * @TODO: implement default value, if title is not defined
-					 **/
+					 */
 				}
-				$theData[$fCol] = 		implode(',',$articleName);
-			}elseif ($fCol=='order_type_uid_noName') {
-
-				$res_type=$GLOBALS['TYPO3_DB']->exec_SELECTquery('*','tx_commerce_order_types','uid = '.intval($row['order_type_uid_noName']));
-				while (($localRow = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_type))) {
-
+				$theData[$fCol] = implode(',', $articleName);
+			} elseif ($fCol == 'order_type_uid_noName') {
+				$res_type = $database->exec_SELECTquery(
+					'*',
+					'tx_commerce_order_types',
+					'uid = ' . (int) $row['order_type_uid_noName']
+				);
+				while (($localRow = $database->sql_fetch_assoc($res_type))) {
 					if ($localRow['icon']) {
-						$filepath = '../'.$GLOBALS['TCA']['tx_commerce_order_types']['columns']['icon']['config']['uploadfolder'].'/'.$localRow['icon'];
+						$filepath = $this->backPath . $GLOBALS['TCA']['tx_commerce_order_types']['columns']['icon']['config']['uploadfolder'] . '/' . $localRow['icon'];
 
-						$theData[$fCol] = '<img'.t3lib_iconWorks::skinImg($this->backPath,$filepath,'title="'.htmlspecialchars($localRow['title']).'"'.($indent ? ' style="margin-left: '.$indent.'px;"' : ''));
-
-					}else{
+						$theData[$fCol] = '<img' . t3lib_iconWorks::skinImg(
+							$this->backPath,
+							$filepath,
+							'title="' . htmlspecialchars($localRow['title']) . '"' . $indentStyle
+						);
+					} else {
 						$theData[$fCol] = $localRow['title'];
 					}
-
 				}
-
-
-			}elseif ($fCol=='_PATH_') {
-				$theData[$fCol]=$this->recPath($row['pid']);
-			} elseif ($fCol=='_CONTROL_') {
-				$theData[$fCol]=$this->makeControl($table,$row);
-			} elseif ($fCol=='_CLIPBOARD_') {
-				$theData[$fCol]=$this->makeClip($table,$row);
-			} elseif ($fCol=='_LOCALIZATION_') {
-				list($lC1, $lC2) = $this->makeLocalizationPanel($table,$row);
+			} elseif ($fCol == '_PATH_') {
+				$theData[$fCol] = $this->recPath($row['pid']);
+			} elseif ($fCol == '_CONTROL_') {
+				$theData[$fCol] = $this->makeControl($table, $row);
+			} elseif ($fCol == '_CLIPBOARD_') {
+				$theData[$fCol] = $this->makeClip($table, $row);
+			} elseif ($fCol == '_LOCALIZATION_') {
+				list($lC1, $lC2) = $this->makeLocalizationPanel($table, $row);
 				$theData[$fCol] = $lC1;
-				$theData[$fCol.'b'] = $lC2;
-			} elseif ($fCol=='_LOCALIZATION_b') {
+				$theData[$fCol . 'b'] = $lC2;
+			} elseif ($fCol == '_LOCALIZATION_b') {
 				// Do nothing, has been done above.
-		} else if($fCol=='order_id') {
-			$theData[$fCol] = $row[$fCol];
-		} else {
-                    /**
-                    * Use own method, if typo3 4.0.0 is not installed
-                    */
-                    if (substr(TYPO3_version, 0, 3) >= '4.0') {
-                        $theData[$fCol] = $this->linkUrlMail(htmlspecialchars(t3lib_BEfunc::getProcessedValueExtra($table,$fCol,$row[$fCol],100,$row['uid'])),$row[$fCol]);
-                    } else {
-                        $theData[$fCol] = $this->mylinkUrlMail(htmlspecialchars(t3lib_BEfunc::getProcessedValueExtra($table,$fCol,$row[$fCol],100,$row['uid'])),$row[$fCol]);
-
-                }
+			} elseif ($fCol == 'order_id') {
+				$theData[$fCol] = $row[$fCol];
+			} else {
+				/**
+				 * Use own method, if typo3 4.0.0 is not installed
+				 */
+				if (substr(TYPO3_version, 0, 3) >= '4.0') {
+					$theData[$fCol] = $this->linkUrlMail(htmlspecialchars(t3lib_BEfunc::getProcessedValueExtra($table, $fCol, $row[$fCol], 100, $row['uid'])), $row[$fCol]);
+				} else {
+					$theData[$fCol] = $this->mylinkUrlMail(htmlspecialchars(t3lib_BEfunc::getProcessedValueExtra($table, $fCol, $row[$fCol], 100, $row['uid'])), $row[$fCol]);
+				}
 			}
 		}
 
 			// Add row to CSV list:
 		if ($this->csvOutput) {
-
-
-			// Charset Conversion
-			$csObj=t3lib_div::makeInstance('t3lib_cs');
+				// Charset Conversion
+			/** @var t3lib_cs $csObj */
+			$csObj = t3lib_div::makeInstance('t3lib_cs');
 			$csObj->initCharset($GLOBALS['TYPO3_CONF_VARS']['BE']['forceCharset']);
 
-			if (!$extConf['BECSVCharset']){
-				$extConf['BECSVCharset']='iso-8859-1';
+			if (!$extConf['BECSVCharset']) {
+				$extConf['BECSVCharset'] = 'iso-8859-1';
 			}
 			$csObj->initCharset($extConf['BECSVCharset']);
-
-			$csObj->convArray($row,$GLOBALS['TYPO3_CONF_VARS']['BE']['forceCharset'],$extConf['BECSVCharset']);
-
-			#print_r($row);
-			#die();
-			$this->addToCSV($row,$table);
+			$csObj->convArray($row, $GLOBALS['TYPO3_CONF_VARS']['BE']['forceCharset'], $extConf['BECSVCharset']);
+			$this->addToCSV($row, $table);
 		}
 
 			// Create element in table cells:
-		$iOut.=$this->addelement(1,$theIcon,$theData,$row_bgColor);
+		$iOut .= $this->addelement(1, $theIcon, $theData, $row_bgColor);
 			// Render thumbsnails if a thumbnail column exists and there is content in it:
-		if ($this->thumbs && trim($row[$thumbsCol]))	{
-			$iOut.=$this->addelement(4,'', Array($titleCol=>$this->thumbCode($row,$table,$thumbsCol)),$row_bgColor);
+		if ($this->thumbs && trim($row[$thumbsCol])) {
+			$iOut .= $this->addelement(4, '', array($titleCol => $this->thumbCode($row, $table, $thumbsCol)), $row_bgColor);
 		}
 
 			// Finally, return table row element:
@@ -599,111 +647,107 @@ class tx_commerce_order_localRecordlist extends localRecordList {
 	 * @param array $currentIdList Array of the currectly displayed uids of the table
 	 * @return string Header table row
 	 * @access private
-	 * @see class.db_list_extra.php
 	 */
-	function renderListHeader($table,$currentIdList)	{
-		global $TCA, $LANG;
+	public function renderListHeader($table, $currentIdList) {
+		/** @var language $language */
+		$language = $GLOBALS['LANG'];
 
 			// Init:
 		$theData = Array();
 
 			// Traverse the fields:
+		foreach ($this->fieldArray as $fCol) {
+			switch ((string) $fCol) {
+					// Regular fields header:
+				default:
+					$theData[$fCol] = '';
 
-
-		foreach($this->fieldArray as $fCol)	{
-
-				// Calculate users permissions to edit records in the table:
-			$permsEdit = $this->calcPerms & ($table=='pages'?2:16);
-
-			switch((string)$fCol)	{
-
-//
-				default:			// Regular fields header:
-					$theData[$fCol]='';
-					if ($this->table && is_array($currentIdList))	{
-
+					if ($this->table && is_array($currentIdList)) {
 							// If the numeric clipboard pads are selected, show duplicate sorting link:
 						if ($this->clipNumPane()) {
-							$theData[$fCol].='<a href="'.htmlspecialchars($this->listURL('',-1).'&duplicateField='.$fCol).'">'.
-											'<img'.t3lib_iconWorks::skinImg('','gfx/select_duplicates.gif','width="11" height="11"').' title="'.$LANG->getLL('clip_duplicates',1).'" alt="" />'.
-											'</a>';
+							$theData[$fCol] .= '<a href="' . htmlspecialchars($this->listURL('', -1) . '&duplicateField=' . $fCol) .
+								'"><img' . t3lib_iconWorks::skinImg('', 'gfx/select_duplicates.gif', 'width="11" height="11"') .
+								' title="' . $language->getLL('clip_duplicates', 1) . '" alt="" /></a>';
 						}
-
 					}
 
 					/**
 					 * Modified from this point to use relationla table queris
 					 */
-					$tables = array('tt_address','tx_commerce_orders');
+					$tables = array('tt_address', 'tx_commerce_orders');
 					$temp_data = '';
-					if ($LANG->getLL($fCol)) {
-						foreach ($tables as $work_table){
-							$temp_data = $this->addSortLink($LANG->getLL($fCol),$fCol,$table);
+					if ($language->getLL($fCol)) {
+						foreach ($tables as $table) {
+							$temp_data = $this->addSortLink($language->getLL($fCol), $fCol, $table);
 						}
-					}else{
-						foreach ($tables as $work_table){
-							if ($TCA[$work_table]['columns'][$fCol])
-							{
-								$temp_data=$this->addSortLink($LANG->sL(t3lib_BEfunc::getItemLabel($work_table,$fCol,'<i>[|]</i>')),$fCol,$table);
+					} else {
+						foreach ($tables as $work_table) {
+							if ($GLOBALS['TCA'][$work_table]['columns'][$fCol]) {
+								$temp_data = $this->addSortLink($language->sL(t3lib_BEfunc::getItemLabel($work_table, $fCol, '<i>[|]</i>')), $fCol, $table);
 							}
-
 						}
 					}
-					if ($temp_data)
-					{
-						// Only if we have a entry in locallang
-						$theData[$fCol]=$temp_data;
+					if ($temp_data) {
+							// Only if we have a entry in locallang
+						$theData[$fCol] = $temp_data;
+					} else {
+							// Handling for
+							// Elements in the special Locallang file inside of mod_orders
+						$theData[$fCol] = $this->addSortLink('<i>' . $fCol . '</i>', $fCol, $table);
 					}
-					else
-					{
-
-						// Handling for
-						// Elements in the special Locallang file inside of mod_orders
-
-						$theData[$fCol]=$this->addSortLink('<i>'.$fCol.'</i>',$fCol,$table);
-
-					}
-
 				break;
 			}
 		}
 
 			// Create and return header table row:
-		return $this->addelement(1,'',$theData,' class="c-headLine"','');
+		return $this->addelement(1, '', $theData, ' class="c-headLine"', '');
 	}
 
-	function getTable($table,$id,$rowlist)	{
-		global $TCA;
+	/**
+	 * @param string $table
+	 * @param integer $id
+	 * @param string $rowlist
+	 * @return string
+	 */
+	public function getTable($table, $id, $rowlist) {
+		/** @var t3lib_db $database */
+		$database = $GLOBALS['TYPO3_DB'];
+		/** @var language $language */
+		$language = $GLOBALS['LANG'];
+		/** @var t3lib_beUserAuth $backendUser */
+		$backendUser = $GLOBALS['BE_USER'];
 
 			// Loading all TCA details for this table:
 		t3lib_div::loadTCA('tx_commerce_order_types');
 			// Init
 		$addWhere = '';
-		$titleCol = $TCA[$table]['ctrl']['label'];
-		$thumbsCol = $TCA[$table]['ctrl']['thumbnail'];
-		$l10nEnabled = $TCA[$table]['ctrl']['languageField'] && $TCA[$table]['ctrl']['transOrigPointerField'] && !$TCA[$table]['ctrl']['transOrigPointerTable'];
+		$titleCol = $GLOBALS['TCA'][$table]['ctrl']['label'];
+		$thumbsCol = $GLOBALS['TCA'][$table]['ctrl']['thumbnail'];
+		$l10nEnabled = $GLOBALS['TCA'][$table]['ctrl']['languageField']
+			&& $GLOBALS['TCA'][$table]['ctrl']['transOrigPointerField']
+			&& !$GLOBALS['TCA'][$table]['ctrl']['transOrigPointerTable'];
 
 			// Cleaning rowlist for duplicates and place the $titleCol as the first column always!
-		$this->fieldArray=array();
-		$this->fieldArray[] = $titleCol;	// Add title column
+		$this->fieldArray = array();
+			// Add title column
+		$this->fieldArray[] = $titleCol;
 
-
-		if ($this->localizationView && $l10nEnabled)	{
+		if ($this->localizationView && $l10nEnabled) {
 			$this->fieldArray[] = '_LOCALIZATION_';
-			$addWhere.=' AND '.$TCA[$table]['ctrl']['languageField'].'<=0';
+			$addWhere .= ' AND ' . $GLOBALS['TCA'][$table]['ctrl']['languageField'] . '<=0';
 		}
-		if (!t3lib_div::inList($rowlist,'_CONTROL_'))	{
-			//$this->fieldArray[] = '_CONTROL_';
+		if (!t3lib_div::inList($rowlist, '_CONTROL_')) {
+			// $this->fieldArray[] = '_CONTROL_';
 		}
-		if ($this->showClipboard)	{
+		if ($this->showClipboard) {
 			$this->fieldArray[] = '_CLIPBOARD_';
 		}
-		if ($this->searchLevels)	{
-			$this->fieldArray[]='_PATH_';
+		if ($this->searchLevels) {
+			$this->fieldArray[] = '_PATH_';
 		}
 			// Cleaning up:
-		$this->fieldArray=array_unique(array_merge($this->fieldArray,t3lib_div::trimExplode(',',$rowlist,1)));
-		if ($this->noControlPanels)	{
+		$this->fieldArray = array_unique(array_merge($this->fieldArray, t3lib_div::trimExplode(',', $rowlist, 1)));
+		if ($this->noControlPanels) {
 			$tempArray = array_flip($this->fieldArray);
 			unset($tempArray['_CONTROL_']);
 			unset($tempArray['_CLIPBOARD_']);
@@ -714,170 +758,193 @@ class tx_commerce_order_localRecordlist extends localRecordList {
 		$selectFields = $this->fieldArray;
 		$selectFields[] = 'uid';
 		$selectFields[] = 'pid';
-		if ($thumbsCol)	$selectFields[] = $thumbsCol;	// adding column for thumbnails
-		if ($table=='pages')	{
-			if (t3lib_extMgm::isLoaded('cms'))	{
+			// adding column for thumbnails
+		if ($thumbsCol) {
+			$selectFields[] = $thumbsCol;
+		}
+		if ($table == 'pages') {
+			if (t3lib_extMgm::isLoaded('cms')) {
 				$selectFields[] = 'module';
 				$selectFields[] = 'extendToSubpages';
 			}
 			$selectFields[] = 'doktype';
 		}
-		if (is_array($TCA[$table]['ctrl']['enablecolumns']))	{
-			$selectFields = array_merge($selectFields,$TCA[$table]['ctrl']['enablecolumns']);
+		if (is_array($GLOBALS['TCA'][$table]['ctrl']['enablecolumns'])) {
+			$selectFields = array_merge($selectFields, $GLOBALS['TCA'][$table]['ctrl']['enablecolumns']);
 		}
-		if ($TCA[$table]['ctrl']['type'])	{
-			$selectFields[] = $TCA[$table]['ctrl']['type'];
+		if ($GLOBALS['TCA'][$table]['ctrl']['type']) {
+			$selectFields[] = $GLOBALS['TCA'][$table]['ctrl']['type'];
 		}
-		if($this->onlyUser){
-		    $addWhere .= ' AND cust_fe_user = \''.$this->onlyUser.'\' ';
+		if ($this->onlyUser) {
+			$addWhere .= ' AND cust_fe_user = \'' . $this->onlyUser . '\' ';
 		}
 
-		if ($TCA[$table]['ctrl']['typeicon_column'])	{
-			$selectFields[] = $TCA[$table]['ctrl']['typeicon_column'];
+		if ($GLOBALS['TCA'][$table]['ctrl']['typeicon_column']) {
+			$selectFields[] = $GLOBALS['TCA'][$table]['ctrl']['typeicon_column'];
 		}
-		if ($TCA[$table]['ctrl']['versioning'])	{
+		if ($GLOBALS['TCA'][$table]['ctrl']['versioning']) {
 			$selectFields[] = 't3ver_id';
 		}
-		if ($l10nEnabled)	{
-			$selectFields[] = $TCA[$table]['ctrl']['languageField'];
-			$selectFields[] = $TCA[$table]['ctrl']['transOrigPointerField'];
+		if ($l10nEnabled) {
+			$selectFields[] = $GLOBALS['TCA'][$table]['ctrl']['languageField'];
+			$selectFields[] = $GLOBALS['TCA'][$table]['ctrl']['transOrigPointerField'];
 		}
-		if ($TCA[$table]['ctrl']['label_alt'])	{
-			$selectFields = array_merge($selectFields,t3lib_div::trimExplode(',',$TCA[$table]['ctrl']['label_alt'],1));
+		if ($GLOBALS['TCA'][$table]['ctrl']['label_alt']) {
+			$selectFields = array_merge($selectFields, t3lib_div::trimExplode(',', $GLOBALS['TCA'][$table]['ctrl']['label_alt'], 1));
 		}
 
-		$selectFields = array_unique($selectFields);		// Unique list!
-		$selectFields = array_intersect($selectFields,$this->makeFieldList($table,1));		// Making sure that the fields in the field-list ARE in the field-list from TCA!
-		//print_r($selectFields);
-		$selFieldList = implode(',',$selectFields);		// implode it into a list of fields for the SQL-statement.
+			// Unique list!
+		$selectFields = array_unique($selectFields);
+			// Making sure that the fields in the field-list ARE in the field-list from TCA!
+		$selectFields = array_intersect($selectFields, $this->makeFieldList($table, 1));
+			// implode it into a list of fields for the SQL-statement.
+		$selFieldList = implode(',', $selectFields);
 
 			// Create the SQL query for selecting the elements in the listing:
-		$queryParts = $this->makeQueryArray($table, $id,$addWhere,$selFieldList);	// (API function from class.db_list.inc)
-		$this->setTotalItems($queryParts);		// Finding the total amount of records on the page (API function from class.db_list.inc)
-	#
+			// (API function from class.db_list.inc)
+		$queryParts = $this->makeQueryArray($table, $id, $addWhere, $selFieldList);
+			// Finding the total amount of records on the page (API function from class.db_list.inc)
+		$this->setTotalItems($queryParts);
+
 			// Init:
 		$dbCount = 0;
 		$out = '';
 
 			// If the count query returned any number of records, we perform the real query, selecting records.
-		if ($this->totalItems)	{
-			$result = $GLOBALS['TYPO3_DB']->exec_SELECT_queryArray($queryParts);
-			$dbCount = $GLOBALS['TYPO3_DB']->sql_num_rows($result);
+		$result = FALSE;
+		if ($this->totalItems) {
+			$result = $database->exec_SELECT_queryArray($queryParts);
+			$dbCount = $database->sql_num_rows($result);
 		}
 		$LOISmode = $this->listOnlyInSingleTableMode && !$this->table;
 
 			// If any records was selected, render the list:
-		if ($dbCount)	{
-
+		if ($dbCount) {
 				// Half line is drawn between tables:
-			if (!$LOISmode)	{
+			if (!$LOISmode) {
 				$theData = Array();
-				if (!$this->table && !$rowlist)	{
-		   			$theData[$titleCol] = '<img src="/typo3/clear.gif" width="'.($GLOBALS['SOBE']->MOD_SETTINGS['bigControlPanel']?'230':'350').'" height="1" alt="" />';
-					//if (in_array('_CONTROL_',$this->fieldArray))	$theData['_CONTROL_']='';
-					//if (in_array('_CLIPBOARD_',$this->fieldArray))	$theData['_CLIPBOARD_']='';
+				if (!$this->table && !$rowlist) {
+					$theData[$titleCol] = '<img src="/typo3/clear.gif" width="' .
+						($GLOBALS['SOBE']->MOD_SETTINGS['bigControlPanel'] ? '230' : '350') . '" height="1" alt="" />';
 				}
-				$out.=$this->addelement(0,'',$theData,'',$this->leftMargin);
+				$out .= $this->addelement(0, '', $theData, '', $this->leftMargin);
 			}
 
 				// Header line is drawn
 			$theData = Array();
-			if ($this->disableSingleTableView)	{
-				$theData[$titleCol] = '<span class="c-table">'.$GLOBALS['LANG']->sL($TCA[$table]['ctrl']['title'],1).'</span> ('.$this->totalItems.')';
+			if ($this->disableSingleTableView) {
+				$theData[$titleCol] = '<span class="c-table">' . $language->sL($GLOBALS['TCA'][$table]['ctrl']['title'], 1) .
+					'</span> (' . $this->totalItems . ')';
 			} else {
-				$theData[$titleCol] = $this->linkWrapTable($table,'<span class="c-table">'.$GLOBALS['LANG']->sL($TCA[$table]['ctrl']['title'],1).'</span> ('.$this->totalItems.') <img'.t3lib_iconWorks::skinImg($this->backPath,'gfx/'.($this->table?'minus':'plus').'bullet_list.gif','width="18" height="12"').' hspace="10" class="absmiddle" title="'.$GLOBALS['LANG']->getLL(!$this->table?'expandView':'contractView',1).'" alt="" />');
+				$theData[$titleCol] = $this->linkWrapTable(
+					$table,
+					'<span class="c-table">' . $language->sL($GLOBALS['TCA'][$table]['ctrl']['title'], 1) . '</span> (' .
+					$this->totalItems . ') <img' . t3lib_iconWorks::skinImg(
+						$this->backPath, 'gfx/' . ($this->table ? 'minus' : 'plus') . 'bullet_list.gif',
+						'width="18" height="12"'
+					) . ' hspace="10" class="absmiddle" title="' . $language->getLL(!$this->table ? 'expandView' : 'contractView', 1) . '" alt="" />'
+				);
 			}
 
 				// CSH:
-			$theData[$titleCol].= t3lib_BEfunc::cshItem($table,'',$this->backPath,'',FALSE,'margin-bottom:0px; white-space: normal;');
+			$theData[$titleCol] .= t3lib_BEfunc::cshItem($table, '', $this->backPath, '', FALSE, 'margin-bottom:0px; white-space: normal;');
 
-			if ($LOISmode)	{
-				$out.='
+			if ($LOISmode) {
+				$out .= '
 					<tr>
-						<td class="c-headLineTable" style="width:95%;"'.$theData[$titleCol].'</td>
+						<td class="c-headLineTable" style="width:95%;"' . $theData[$titleCol] . '</td>
 					</tr>';
 
-				if ($GLOBALS['BE_USER']->uc["edit_showFieldHelp"])	{
-					$GLOBALS['LANG']->loadSingleTableDescription($table);
-					if (isset($GLOBALS['TCA_DESCR'][$table]['columns']['']))	{
-						$onClick = 'vHWin=window.open(\'view_help.php?tfID='.$table.'.\',\'viewFieldHelp\',\'height=400,width=600,status=0,menubar=0,scrollbars=1\');vHWin.focus();return false;';
-						$out.='
+				if ($backendUser->uc['edit_showFieldHelp']) {
+					$language->loadSingleTableDescription($table);
+					if (isset($GLOBALS['TCA_DESCR'][$table]['columns'][''])) {
+						$out .= '
 					<tr>
-						<td class="c-tableDescription">'.t3lib_BEfunc::helpTextIcon($table,'',$this->backPath,TRUE).$GLOBALS['TCA_DESCR'][$table]['columns']['']['description'].'</td>
+						<td class="c-tableDescription">' . t3lib_BEfunc::helpTextIcon(
+							$table,
+							'',
+							$this->backPath,
+							TRUE
+						) . $GLOBALS['TCA_DESCR'][$table]['columns']['']['description'] . '</td>
 					</tr>';
 					}
 				}
 			} else {
-
-				$theUpIcon = ($table=='pages' && $this->id && isset($this->pageRow['pid'])) ? '<a href="'.htmlspecialchars($this->listURL($this->pageRow['pid'])).'"><img'.t3lib_iconWorks::skinImg($this->backPath,'gfx/i/pages_up.gif','width="18" height="16"').' title="'.$GLOBALS['LANG']->sL('LLL:EXT:lang/locallang_core.php:labels.upOneLevel',1).'" alt="" /></a>':'';
-				$out.=$this->addelement(1,$theUpIcon,$theData,' class="c-headLineTable"','');
+				$theUpIcon = ($table == 'pages' && $this->id && isset($this->pageRow['pid'])) ?
+					'<a href="' . htmlspecialchars($this->listURL($this->pageRow['pid'])) . '"><img' .
+						t3lib_iconWorks::skinImg($this->backPath, 'gfx/i/pages_up.gif', 'width="18" height="16"') .
+						' title="' . $language->sL('LLL:EXT:lang/locallang_core.php:labels.upOneLevel', 1) . '" alt="" /></a>' :
+					'';
+				$out .= $this->addelement(1, $theUpIcon, $theData, ' class="c-headLineTable"', '');
 			}
 
-
-			If (!$LOISmode)	{
+			$iOut = '';
+			if (!$LOISmode) {
 					// Fixing a order table for sortby tables
 				$this->currentTable = array();
 				$currentIdList = array();
-				$doSort = ($TCA[$table]['ctrl']['sortby'] && !$this->sortField);
+				$doSort = ($GLOBALS['TCA'][$table]['ctrl']['sortby'] && !$this->sortField);
 
 				$prevUid = 0;
 				$prevPrevUid = 0;
-				$accRows = array();	// Accumulate rows here
-				while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result))	{
+					// Accumulate rows here
+				$accRows = array();
+				while ($row = $database->sql_fetch_assoc($result)) {
 					$accRows[] = $row;
 					$currentIdList[] = $row['uid'];
-					if ($doSort)	{
-						if ($prevUid)	{
+					if ($doSort) {
+						if ($prevUid) {
 							$this->currentTable['prev'][$row['uid']] = $prevPrevUid;
-							$this->currentTable['next'][$prevUid] = '-'.$row['uid'];
+							$this->currentTable['next'][$prevUid] = '-' . $row['uid'];
 							$this->currentTable['prevUid'][$row['uid']] = $prevUid;
 						}
-						$prevPrevUid = isset($this->currentTable['prev'][$row['uid']]) ? -$prevUid : $row['pid'];
-						$prevUid=$row['uid'];
+						$prevPrevUid = isset($this->currentTable['prev'][$row['uid']]) ? - $prevUid : $row['pid'];
+						$prevUid = $row['uid'];
 					}
 				}
-				$GLOBALS['TYPO3_DB']->sql_free_result($result);
+				$database->sql_free_result($result);
 
 					// CSV initiated
-				if ($this->csvOutput) $this->initCSV();
+				if ($this->csvOutput) {
+					$this->initCSV();
+				}
 
 					// Render items:
-				$this->CBnames=array();
-				$this->duplicateStack=array();
-				$this->eCounter=$this->firstElementNumber;
+				$this->CBnames = array();
+				$this->duplicateStack = array();
+				$this->eCounter = $this->firstElementNumber;
 
 				$iOut = '';
 				$cc = 0;
-				foreach($accRows as $row)	{
-
+				foreach ($accRows as $row) {
 						// Forward/Backwards navigation links:
 					list($flag,$code) = $this->fwd_rwd_nav($table);
-					$iOut.=$code;
+					$iOut .= $code;
 
 						// If render item, increment counter and call function
-					if ($flag)	{
+					if ($flag) {
 						$cc++;
 						if (!$this->csvOutput) {
-							$params="&edit[".$table."][".$row['uid']."]=edit";
-							$row[$titleCol] = '<a href="#" onclick="' .htmlspecialchars(t3lib_BEfunc::editOnCLick($params,$GLOBALS['BACK_PATH'])).'">'.$row[$titleCol].'</a>';
+							$params = '&edit[' . $table . '][' . $row['uid'] . ']=edit';
+							$row[$titleCol] = '<a href="#" onclick="' . htmlspecialchars(t3lib_BEfunc::editOnCLick($params, $GLOBALS['BACK_PATH'])) .
+								'">' . $row[$titleCol] . '</a>';
 						}
-						$iOut.= $this->renderListRow($table,$row,$cc,$titleCol,$thumbsCol);
-							// If localization view is enabled it means that the selected records are either default or All language and here we will not select translations which point to the main record:
-						if ($this->localizationView && $l10nEnabled)	{
-
+						$iOut .= $this->renderListRow($table, $row, $cc, $titleCol, $thumbsCol);
+							// If localization view is enabled it means that the selected records are either default or All
+							// language and here we will not select translations which point to the main record:
+						if ($this->localizationView && $l10nEnabled) {
 								// Look for translations of this record:
-							$translations = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+							$translations = $database->exec_SELECTgetRows(
 								$selFieldList,
 								$table,
-								'pid='.$row['pid'].
-									' AND '.$TCA[$table]['ctrl']['languageField'].'>0'.
-									' AND '.$TCA[$table]['ctrl']['transOrigPointerField'].'='.intval($row['uid']).
+								'pid=' . $row['pid'] . ' AND ' . $GLOBALS['TCA'][$table]['ctrl']['languageField'] . ' > 0' .
+									' AND ' . $GLOBALS['TCA'][$table]['ctrl']['transOrigPointerField'] . '=' . (int) $row['uid'] .
 									t3lib_BEfunc::deleteClause($table)
 							);
 
 								// For each available translation, render the record:
-							foreach($translations as $lRow)	{
-								$iOut.=$this->renderListRow($table,$lRow,$cc,$titleCol,$thumbsCol,18);
+							foreach ($translations as $lRow) {
+								$iOut .= $this->renderListRow($table, $lRow, $cc, $titleCol, $thumbsCol, 18);
 							}
 						}
 					}
@@ -887,64 +954,63 @@ class tx_commerce_order_localRecordlist extends localRecordList {
 				}
 
 					// The header row for the table is now created:
-				$out.=$this->renderListHeader($table,$currentIdList);
+				$out .= $this->renderListHeader($table, $currentIdList);
 			}
 
 				// The list of records is added after the header:
-			$out.=$iOut;
+			$out .= $iOut;
 
 				// ... and it is all wrapped in a table:
-			$out='
-
-
-
-			<!--
-				DB listing of elements:	"'.htmlspecialchars($table).'"
-			-->
-
-						<table border="0" cellpadding="0" cellspacing="0" class="typo3-dblist'.($LOISmode?' typo3-dblist-overview':'').'">
-					'.$out.'
+			$out = '
+				<!--
+					DB listing of elements:	"' . htmlspecialchars($table) . '"
+				-->
+				<table border="0" cellpadding="0" cellspacing="0" class="typo3-dblist' . ($LOISmode ? ' typo3-dblist-overview' : '') . '">
+					' . $out . '
 				';
-			$out.='
+			$out .= '
 					<tr>
 						<td class="c-headLineTable" style="width:95%;"></td>';
 			$colspan = (count($this->myfields) + 2);
-			$out.='	<td class="c-headLineTable" style="width:95%;" colspan="'.$colspan .'" align="right">';
+			$out .= '	<td class="c-headLineTable" style="width:95%;" colspan="' . $colspan . '" align="right">';
 
-			// Build the selector
-			 /**
-			  * Query the table to build dropdown list
- 		 	  */
-
+				// Build the selector
+			/**
+			 * Query the table to build dropdown list
+			 */
 			$myPid = t3lib_div::_GP('id');
 			if (!empty($myPid)) {
+				$resParentes = $database->exec_SELECTquery(
+					'pid',
+					'pages',
+					'uid = ' . $myPid . ' ' .
+						t3lib_BEfunc::deleteClause($GLOBALS['TCA']['tx_commerce_orders']['columns']['newpid']['config']['foreign_table'])
+				);
+				if ($rowParentes = $database->sql_fetch_assoc($resParentes)) {
 
-				$resParentes = $GLOBALS['TYPO3_DB']->exec_SELECTquery('pid','pages','uid ='.$myPid.' '.t3lib_BEfunc::deleteClause($GLOBALS['TCA']['tx_commerce_orders']['columns']['newpid']['config']['foreign_table']));
-		 		if ($rowParentes = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($resParentes)) {
+				/**
+				 * Get the poages below $order_pid
+				 */
+				list($orderPid) = array_unique(tx_commerce_folder_db::initFolders('Orders', 'Commerce', 0, 'Commerce'));
+				$ret = Tx_Commerce_Utility_BackendUtility::getOrderFolderSelector($orderPid, $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['OrderFolderRecursiveLevel']);
+				$out .= $language->getLL('moveorderto');
+				$out .= '<select name="modeDestUid" size="1">
+					<option value="" selected="selected">--------------------</option>';
+				foreach ($ret as $displayArray) {
+					$out .= '<option value="' . $displayArray[1] . '">' . $displayArray[0] . '</option>';
+				}
 
-
-		 		/**
-		 		 * Get the poages below $order_pid
-		 		 */
-		 			list($orderPid) = array_unique(tx_commerce_folder_db::initFolders('Orders','Commerce',0,'Commerce'));
-		 		 	$ret = Tx_Commerce_Utility_BackendUtility::getOrderFolderSelector($orderPid, $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['OrderFolderRecursiveLevel']);
-		 		 	global $LANG;
-		 		 	$out.=$LANG->getLL("moveorderto");
-		 		 	$out.='<select name="modeDestUid" size="1">';
-		 		 	$out.="<option value='' selected='selected'>".'--------------------'."</option>";
-		 		 	foreach ($ret as $displayArray) {
-		 		 		$out.="<option value='".$displayArray[1]."'>".$displayArray[0]."</option>";
-		 		 	}
-
-		 		 	$out.='</select>';
-		 		 	$out.="<input type='submit' name='OK' value='ok'>";
-
-	 				#$out.= t3lib_div::debug($ret);
-		 		}}
-			$out.='</tr>';
-		$out.='</table>';
+				$out .= '</select>
+					<input type="submit" name="OK" value="ok">';
+			}
+		}
+		$out .= '</tr>';
+			$out .= '</table>';
 				// Output csv if...
-			if ($this->csvOutput)	$this->outputCSV($table);	// This ends the page with exit.
+				// This ends the page with exit.
+			if ($this->csvOutput) {
+				$this->outputCSV($table);
+			}
 		}
 
 			// Return content:
@@ -975,8 +1041,8 @@ class tx_commerce_order_localRecordlist extends localRecordList {
 			($this->searchLevels ? '&search_levels=' . rawurlencode($this->searchLevels) : '') .
 			($this->showLimit ? '&showLimit=' . rawurlencode($this->showLimit) : '') .
 			($this->firstElementNumber ? '&pointer=' . rawurlencode($this->firstElementNumber) : '') .
-			((!$exclList || !t3lib_div::inList($exclList,'sortField')) && $this->sortField ? '&sortField=' . rawurlencode($this->sortField) : '') .
-			((!$exclList || !t3lib_div::inList($exclList,'sortRev')) && $this->sortRev ? '&sortRev=' . rawurlencode($this->sortRev) : '');
+			(!$exclList || !t3lib_div::inList($exclList, 'sortField') && $this->sortField ? '&sortField=' . rawurlencode($this->sortField) : '') .
+			(!$exclList || !t3lib_div::inList($exclList, 'sortRev') && $this->sortRev ? '&sortRev=' . rawurlencode($this->sortRev) : '');
 	}
 }
 

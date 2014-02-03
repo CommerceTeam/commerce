@@ -35,9 +35,14 @@
  * @todo Have a central Method to build chash parameters
  */
 class tx_commerce_navigation {
-
+	/**
+	 * @var string
+	 */
 	public $prefixId = 'tx_commerce_pi1';
 
+	/**
+	 * @var array
+	 */
 	public $activeCats = array();
 
 	public $mConf;
@@ -50,12 +55,24 @@ class tx_commerce_navigation {
 
 	public $out;
 
+	/**
+	 * @var integer
+	 */
 	public $mDepth = 2;
 
+	/**
+	 * @var integer
+	 */
 	public $entryCat = 0;
 
+	/**
+	 * @var array
+	 */
 	public $listNodes = array();
 
+	/**
+	 * @var integer
+	 */
 	public $manufacturerIdentifier = PHP_INT_MAX;
 
 	/**
@@ -141,11 +158,36 @@ class tx_commerce_navigation {
 	public $ShowUid;
 
 	/**
+	 * @var array
+	 */
+	protected $nodeArrayAdditionalFields;
+
+	/**
+	 * @var array
+	 */
+	protected $pageRootline;
+
+	/**
+	 * @var integer
+	 */
+	protected $menuType;
+
+	/**
+	 * @var tx_commerce_category
+	 */
+	protected $catObj;
+
+	/**
+	 * @var tx_commerce_category
+	 */
+	protected $category;
+
+	/**
 	 * Init Method for initialising the navigation
 	 *
-	 * @param $content	string	$content passed to method
-	 * @param $conf	Array	TS Array
-	 * @return array	array for the menurendering of TYPO3
+	 * @param string $content $content passed to method
+	 * @param array $conf TS Array
+	 * @return array array for the menurendering of TYPO3
 	 */
 	public function init($content, $conf) {
 		$this->mConf = $this->processConf($conf);
@@ -221,8 +263,15 @@ class tx_commerce_navigation {
 		if ($GLOBALS['TSFE']->no_cache == 1) {
 				// Build directly and don't sore, if no_cache=1'
 			$this->mTree = $this->makeArrayPostRender(
-				$this->PID, 'tx_commerce_categories', 'tx_commerce_categories_parent_category_mm', 'tx_commerce_products',
-				'tx_commerce_products_categories_mm', $this->cat, 1, 0, $this->maxLevel
+				$this->PID,
+				'tx_commerce_categories',
+				'tx_commerce_categories_parent_category_mm',
+				'tx_commerce_products',
+				'tx_commerce_products_categories_mm',
+				$this->cat,
+				1,
+				0,
+				$this->maxLevel
 			);
 
 			/**
@@ -373,9 +422,7 @@ class tx_commerce_navigation {
 		if ($pathArray == NULL) {
 			return;
 		}
-		if ($pathArray[0] == $chosenCatUid) {
-			return;
-		} else {
+		if ($pathArray[0] != $chosenCatUid) {
 			array_shift($pathArray);
 			$this->fixPathParents($pathArray, $chosenCatUid);
 		}
@@ -389,7 +436,7 @@ class tx_commerce_navigation {
 			$catOptionsCount = count($this->mConf['groupOptions.']);
 			$chosenCatUid = array();
 			for ($i = 1; $i <= $catOptionsCount; $i++) {
-				$chosenGroups = explode(',', $this->mConf['groupOptions.'][$i . '.']['group']);
+				$chosenGroups = t3lib_div::trimExplode(',', $this->mConf['groupOptions.'][$i . '.']['group']);
 				if ($GLOBALS['TSFE']->fe_user->user['usergroup'] == '') {
 
 					return $this->mConf['category'];
@@ -466,13 +513,16 @@ class tx_commerce_navigation {
 	 * @param string $tableMm
 	 * @param string $tableSubMain
 	 * @param string $tableSubMm
-	 * @param array $uid_root
+	 * @param integer $uid_root
 	 * @param integer $mDepth
 	 * @param integer $path
 	 * @param integer $maxLevel
 	 * @return array TSConfig with ItemArrayProcFunc
 	 */
 	public function makeArrayPostRender($uidPage, $mainTable, $tableMm, $tableSubMain, $tableSubMm, $uid_root, $mDepth = 1, $path = 0, $maxLevel = PHP_INT_MAX) {
+		/** @var t3lib_db $database */
+		$database = $GLOBALS['TYPO3_DB'];
+
 		$treeList = array();
 
 		$maxLevel--;
@@ -480,8 +530,9 @@ class tx_commerce_navigation {
 			return array();
 		}
 
-		$addWhere = $tableMm . 'uid_foreign=' . $uid_root;
-		$sql = 'SELECT ' . $tableMm . '.* FROM ' . $tableMm . ',' . $mainTable . ' WHERE ' . $mainTable . '.deleted =0 and ' . $mainTable . '.uid = ' . $tableMm . '.uid_local and ' . $tableMm . '.uid_local<>"" AND ' . $tableMm . '.uid_foreign =' . $uid_root;
+		$sql = 'SELECT ' . $tableMm . '.* FROM ' . $tableMm . ',' . $mainTable . ' WHERE ' . $mainTable . '.deleted =0 and ' .
+			$mainTable . '.uid = ' . $tableMm . '.uid_local and ' . $tableMm . '.uid_local<>"" AND ' . $tableMm .
+			'.uid_foreign =' . $uid_root;
 
 		$sorting = ' order by ' . $mainTable . '.sorting ';
 
@@ -492,16 +543,16 @@ class tx_commerce_navigation {
 			$hookObj = & t3lib_div::getUserObj(
 				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_db_navigation.php']['sortingOrder']
 			);
-		}
-		if (method_exists($hookObj, 'sortingOrder')) {
-			$sorting = $hookObj->sortingOrder($sorting, $uid_root, $mainTable, $tableMm, $mDepth, $path, $this);
+			if (method_exists($hookObj, 'sortingOrder')) {
+				$sorting = $hookObj->sortingOrder($sorting, $uid_root, $mainTable, $tableMm, $mDepth, $path, $this);
+			}
 		}
 
 		$sql .= $sorting;
 
-		$res = $GLOBALS['TYPO3_DB']->sql_query($sql);
+		$res = $database->sql_query($sql);
 
-		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+		while ($row = $database->sql_fetch_assoc($res)) {
 			$nodeArray = array();
 			$dataRow = $this->getDataRow($row['uid_local'], $mainTable);
 
@@ -537,18 +588,17 @@ class tx_commerce_navigation {
 				} else {
 					$nodeArray['path'] = $dataRow['uid'];
 				}
+
 				$aCatToManu = explode(',', $this->mConf['displayManuForCat']);
 				if ($this->useRootlineInformationToUrl == 1) {
-					$nodeArray['_ADD_GETVARS'] .= ini_get(
-							'arg_separator.output'
-						) . $this->prefixId . '[mDepth]=' . $mDepth . ini_get(
-							'arg_separator.output'
-						) . $this->prefixId . '[path]=' . $nodeArray['path'];
+					$nodeArray['_ADD_GETVARS'] .= ini_get('arg_separator.output') . $this->prefixId . '[mDepth]=' . $mDepth .
+						ini_get('arg_separator.output') . $this->prefixId . '[path]=' . $nodeArray['path'];
 				}
+
 				if (in_array($row['uid_local'], $aCatToManu) || strtolower(trim($aCatToManu['0'])) == 'all') {
-						$nodeArray['--subLevel--'] = array();
+					$nodeArray['--subLevel--'] = array();
 					$this->arrayMerge(
-						$nodeArray['--subLevel--'], $this->GetManuAsCat(
+						$nodeArray['--subLevel--'], $this->getManuAsCat(
 							$dataRow['pid'], $uidPage, $mainTable, $tableMm, $tableSubMain, $tableSubMm, $row['uid_local'],
 							$mDepth + 1, $nodeArray['path']
 						)
@@ -556,7 +606,6 @@ class tx_commerce_navigation {
 				}
 
 				if (!$nodeArray['leaf']) {
-
 					if (!is_array($nodeArray['--subLevel--'])) {
 						$nodeArray['--subLevel--'] = array();
 					}
@@ -588,35 +637,26 @@ class tx_commerce_navigation {
 						$nodeArray['_SUB_MENU'] = $nodeArray['--subLevel--'];
 					}
 					if ($this->gpVars['basketHashValue']) {
-						$nodeArray['_ADD_GETVARS'] .= ini_get(
-								'arg_separator.output'
-							) . $this->prefixId . '[basketHashValue]=' . $this->gpVars['basketHashValue'];
+						$nodeArray['_ADD_GETVARS'] .= ini_get('arg_separator.output') . $this->prefixId . '[basketHashValue]=' .
+							$this->gpVars['basketHashValue'];
 					}
 					$cHash = t3lib_div::generateCHash($nodeArray['_ADD_GETVARS'] . $GLOBALS['TSFE']->linkVars);
 					$nodeArray['_ADD_GETVARS'] .= ini_get('arg_separator.output') . 'cHash=' . $cHash;
 					$nodeArray['ITEM_STATE'] = 'IFSUB';
 					$nodeArray['ITEM_STATES_LIST'] = 'IFSUB,NO';
 				} else {
-
 					if ($nodeArray['hasSubChild'] == 2) {
-						$nodeArray['_ADD_GETVARS'] .= ini_get(
-								'arg_separator.output'
-							) . $this->prefixId . '[showUid]=' . $dataRow['uid'];
-						$nodeArray['_ADD_GETVARS'] .= ini_get(
-								'arg_separator.output'
-							) . $this->prefixId . '[mDepth]=' . $mDepth . ini_get(
-								'arg_separator.output'
-							) . $this->prefixId . '[path]=' . $nodeArray['path'];
+						$nodeArray['_ADD_GETVARS'] .= ini_get('arg_separator.output') . $this->prefixId . '[showUid]=' . $dataRow['uid'];
+						$nodeArray['_ADD_GETVARS'] .= ini_get('arg_separator.output') . $this->prefixId . '[mDepth]=' . $mDepth .
+							ini_get('arg_separator.output') . $this->prefixId . '[path]=' . $nodeArray['path'];
 					}
 					if ($this->useRootlineInformationToUrl == 1) {
-						$nodeArray['_ADD_GETVARS'] .= ini_get(
-								'arg_separator.output'
-							) . $this->prefixId . '[mDepth]=' . $mDepth . ini_get(
-								'arg_separator.output'
-							) . $this->prefixId . '[path]=' . $nodeArray['path'];
+						$nodeArray['_ADD_GETVARS'] .= ini_get('arg_separator.output') . $this->prefixId . '[mDepth]=' . $mDepth .
+							ini_get('arg_separator.output') . $this->prefixId . '[path]=' . $nodeArray['path'];
 					}
 					if ($this->gpVars['basketHashValue']) {
-						$nodeArray['_ADD_GETVARS'] .= ini_get('arg_separator.output') . $this->prefixId . '[basketHashValue]=' . $this->gpVars['basketHashValue'];
+						$nodeArray['_ADD_GETVARS'] .= ini_get('arg_separator.output') . $this->prefixId . '[basketHashValue]=' .
+							$this->gpVars['basketHashValue'];
 					}
 					$cHash = t3lib_div::generateCHash($nodeArray['_ADD_GETVARS'] . $GLOBALS['TSFE']->linkVars);
 					$nodeArray['_ADD_GETVARS'] .= ini_get('arg_separator.output') . 'cHash=' . $cHash;
@@ -626,6 +666,7 @@ class tx_commerce_navigation {
 				$treeList[$row['uid_local']] = $nodeArray;
 			}
 		}
+
 		if ($treeList == NULL && $this->mConf['showProducts'] == 1) {
 			$treeList = $this->makeSubChildArrayPostRender(
 				$uidPage, $tableSubMain, $tableSubMm, $uid_root, $mDepth, $path, $maxLevel
@@ -638,25 +679,27 @@ class tx_commerce_navigation {
 	/**
 	 * Makes a set of  ItemMenu product list  of a category.
 	 *
-	 * @author Ricardo Mieres <ricardo.mieres@502.cl>
-	 * @param integer$uidPage
+	 * @param integer $uidPage
 	 * @param string $mainTable main table
 	 * @param string $tableMm
-	 * @param array $uid_root category Uid
-	 * @param integer $mDepth :
-	 * @param integer $path :
+	 * @param integer $uid_root category Uid
+	 * @param integer $mDepth
+	 * @param integer $path
 	 * @param boolean $manuuid
-	 * @param   integer $maxLevel   Maximum Level for Navigation
-	 * @internal param array $table_mm : mm table
-	 * @internal param int $Manufacturere Uid
-	 * @return	array	array to be processed by HMENU
+	 * @return array array to be processed by HMENU
 	 */
-	public function makeSubChildArrayPostRender($uidPage, $mainTable, $tableMm, $uid_root, $mDepth = 1, $path = 0, $manuuid = FALSE, $maxLevel) {
+	public function makeSubChildArrayPostRender($uidPage, $mainTable, $tableMm, $uid_root, $mDepth = 1, $path = 0, $manuuid = FALSE) {
+		/** @var t3lib_db $database */
+		$database = $GLOBALS['TYPO3_DB'];
+
 		$treeList = array();
+		$sql_manu = '';
 		if (is_numeric($manuuid)) {
 			$sql_manu = ' AND ' . $mainTable . '.manufacturer_uid = ' . (int) $manuuid . ' ';
 		}
-		$sql = 'SELECT ' . $tableMm . '.* FROM ' . $tableMm . ',' . $mainTable . ' WHERE ' . $mainTable . '.deleted =0 and ' . $mainTable . '.uid = ' . $tableMm . '.uid_local and ' . $tableMm . '.uid_local<>"" AND ' . $tableMm . '.uid_foreign =' . (int) $uid_root . ' ' . $sql_manu;
+		$sql = 'SELECT ' . $tableMm . '.* FROM ' . $tableMm . ',' . $mainTable . ' WHERE ' . $mainTable . '.deleted =0 and ' .
+			$mainTable . '.uid = ' . $tableMm . '.uid_local and ' . $tableMm . '.uid_local<>"" AND ' . $tableMm .
+			'.uid_foreign =' . (int) $uid_root . ' ' . $sql_manu;
 
 		$sorting = ' order by ' . $mainTable . '.sorting ';
 
@@ -667,15 +710,15 @@ class tx_commerce_navigation {
 			$hookObj = & t3lib_div::getUserObj(
 				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_db_navigation.php']['sortingOrder']
 			);
-		}
-		if (method_exists($hookObj, 'sortingOrder')) {
-			$sorting = $hookObj->sortingOrder($sorting, $uid_root, $mainTable, $tableMm, $mDepth, $path, $this);
+			if (method_exists($hookObj, 'sortingOrder')) {
+				$sorting = $hookObj->sortingOrder($sorting, $uid_root, $mainTable, $tableMm, $mDepth, $path, $this);
+			}
 		}
 
 		$sql .= $sorting;
 
-		$res = $GLOBALS['TYPO3_DB']->sql_query($sql);
-		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+		$res = $database->sql_query($sql);
+		while ($row = $database->sql_fetch_assoc($res)) {
 			$nodeArray = array();
 			$dataRow = $this->getDataRow($row['uid_local'], $mainTable);
 			if ($dataRow['deleted'] == '0') {
@@ -707,24 +750,17 @@ class tx_commerce_navigation {
 				if ($nodeArray['leaf'] == 1) {
 					$nodeArray['_ADD_GETVARS'] = ini_get('arg_separator.output') . $this->prefixId . '[catUid]=' . $uid_root;
 				} else {
-					$nodeArray['_ADD_GETVARS'] = ini_get(
-							'arg_separator.output'
-						) . $this->prefixId . '[catUid]=' . $row['uid_foreign'];
+					$nodeArray['_ADD_GETVARS'] = ini_get('arg_separator.output') . $this->prefixId . '[catUid]=' . $row['uid_foreign'];
 				}
 				$nodeArray['_ADD_GETVARS'] .= ini_get('arg_separator.output') . $this->prefixId . '[showUid]=' . $dataRow['uid'];
 
 				if ($this->useRootlineInformationToUrl == 1) {
-					$nodeArray['_ADD_GETVARS'] .= ini_get(
-							'arg_separator.output'
-						) . $this->prefixId . '[mDepth]=' . $mDepth . ini_get(
-							'arg_separator.output'
-						) . $this->prefixId . '[path]=' . $nodeArray['path'];
+					$nodeArray['_ADD_GETVARS'] .= ini_get('arg_separator.output') . $this->prefixId . '[mDepth]=' . $mDepth .
+						ini_get('arg_separator.output') . $this->prefixId . '[path]=' . $nodeArray['path'];
 				}
 
 				if ($this->gpVars['basketHashValue']) {
-					$nodeArray['_ADD_GETVARS'] .= ini_get(
-							'arg_separator.output'
-						) . $this->prefixId . '[basketHashValue]=' . $this->gpVars['basketHashValue'];
+					$nodeArray['_ADD_GETVARS'] .= ini_get('arg_separator.output') . $this->prefixId . '[basketHashValue]=' . $this->gpVars['basketHashValue'];
 				}
 
 				$cHash = t3lib_div::generateCHash($nodeArray['_ADD_GETVARS'] . $GLOBALS['TSFE']->linkVars);
@@ -749,16 +785,16 @@ class tx_commerce_navigation {
 	/**
 	 * Process the menuArray to set state for a selected item
 	 *
-	 * @author Ricardo Mieres <ricardo.mieres@502.cl>
 	 * @param array $treeArray
-	 * @param array 	$path: path of the itemMen
-	 * @param array 	$mDepth: depth of the itemMenu
+	 * @param array $path: path of the itemMen
+	 * @param integer $mDepth: depth of the itemMenu
+	 * @return void
 	 */
 	public function processArrayPostRender(&$treeArray, $path = array(), $mDepth) {
 		if ($this->gpVars['manufacturer']) {
 			foreach ($treeArray as $val) {
 				if ($val['parent_id'] == $this->choosenCat && $val['manu'] == $this->gpVars['manufacturer']) {
-					$path = explode(',', $val['path']);
+					$path = t3lib_div::trimExplode(',', $val['path']);
 				}
 			}
 		}
@@ -768,7 +804,9 @@ class tx_commerce_navigation {
 		if ($mDepth != 0) {
 			if ($mDepth == 1) {
 				/**
-				 * States: If you would like to preset an element to be recognized as a SPC, IFSUB, ACT, CUR or USR mode item, you can do so by specifying one of these values in the key “ITEM_STATE” of the page record. This setting will override the natural state-evaluation.
+				 * States: If you would like to preset an element to be recognized as a SPC, IFSUB, ACT, CUR or USR mode item,
+				 * you can do so by specifying one of these values in the key “ITEM_STATE” of the page record. This setting will
+				 * override the natural state-evaluation.
 				 *
 				 * @See: http://typo3.org/documentation/document-library/references/doc_core_tsref/4.1.0/view/8/11/#id4080403
 				 * So Only Implement ACT, CUR, IFSUB
@@ -825,8 +863,6 @@ class tx_commerce_navigation {
 				if (count($treeArray[$path[0]]['--subLevel--']) > 0) {
 					$treeArray[$path[0]]['_SUB_MENU'] = $treeArray[$path[0]]['--subLevel--'];
 				}
-
-				return;
 			} else {
 				if (is_array($path)) {
 					if (is_array($treeArray)) {
@@ -870,18 +906,20 @@ class tx_commerce_navigation {
 	/**
 	 * Gets the data to fill a node
 	 *
-	 * @author Ricardo Mieres <ricardo.mieres@502.cl>
-	 * @param int $uid
+	 * @param integer $uid
 	 * @param string $tableName
 	 * @return array
 	 */
 	public function getDataRow($uid, $tableName) {
+		/** @var t3lib_db $database */
+		$database = $GLOBALS['TYPO3_DB'];
+
 		if ($uid == '' or $tableName == '') {
 			return '';
 		}
 		$addWhere = $GLOBALS['TSFE']->sys_page->enableFields($tableName, $GLOBALS['TSFE']->showHiddenRecords);
 		$where = 'uid = ' . intval($uid);
-		$row = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+		$row = $database->exec_SELECTgetRows(
 			'*', $tableName, $where . $addWhere, $groupBy = '', $orderBy = '', '1', ''
 		);
 
@@ -893,7 +931,6 @@ class tx_commerce_navigation {
 			 */
 			$row[0] = $GLOBALS['TSFE']->sys_page->getRecordOverlay($tableName, $row[0], $langUid, $this->translationMode);
 		}
-
 
 		if ($this->mConf['hideEmptyCategories'] == 1 && $tableName == 'tx_commerce_categories' && is_array($row[0])) {
 				// Process Empty Categories
@@ -916,20 +953,22 @@ class tx_commerce_navigation {
 	/**
 	 * Determines if a item has no sub item
 	 *
-	 * @author    Ricardo Mieres <ricardo.mieres@502.cl>
-	 * @param int $uid
+	 * @param integer $uid
 	 * @param string $tableMm
 	 * @param string $subTableMM
-	 * @return int : 0|1|2
+	 * @return integer : 0|1|2
 	 */
 	public function isLeaf($uid, $tableMm, $subTableMM) {
 		if ($uid == '' or $tableMm == '') {
 			return 2;
 		}
+		/** @var t3lib_db $database */
+		$database = $GLOBALS['TYPO3_DB'];
+
 		$sql = $sql = 'SELECT * FROM `' . $tableMm . '` WHERE `uid_foreign` = ' . intval($uid) . ' LIMIT 1 ';
-		$res = $GLOBALS['TYPO3_DB']->sql_query($sql);
+		$res = $database->sql_query($sql);
 		$hasSubChild = $this->hasSubchild($uid, $subTableMM);
-		if (($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) or $hasSubChild == 1) {
+		if (($row = $database->sql_fetch_assoc($res)) or $hasSubChild == 1) {
 			return 0;
 		}
 
@@ -939,19 +978,21 @@ class tx_commerce_navigation {
 	/**
 	 * Determines if a item has sub items in another  tb table
 	 *
-	 * @author    Ricardo Mieres <ricardo.mieres@502.cl>
-	 * @param int $uid
+	 * @param integer $uid
 	 * @param string $tableMm
-	 * @return int : 0|1|2
+	 * @return integer : 0|1|2
 	 */
 	public function hasSubChild($uid, $tableMm) {
 		if ($uid == '' or $tableMm == '') {
 			return 2;
 		}
-		$sql = $sql = 'SELECT * FROM `' . $tableMm . '` WHERE `uid_foreign` = ' . intval($uid) . ' LIMIT 1 ';
+		/** @var t3lib_db $database */
+		$database = $GLOBALS['TYPO3_DB'];
 
-		$res = $GLOBALS['TYPO3_DB']->sql_query($sql);
-		if ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+		$sql = 'SELECT * FROM `' . $tableMm . '` WHERE `uid_foreign` = ' . intval($uid) . ' LIMIT 1 ';
+
+		$res = $database->sql_query($sql);
+		if ($row = $database->sql_fetch_assoc($res)) {
 			return 1;
 		}
 
@@ -965,7 +1006,7 @@ class tx_commerce_navigation {
 	 * @return	array	array of all active Categories
 	 */
 	public function getActiveCats() {
-		$active = array('0' => $this->catObj->uid);
+		$active = array('0' => $this->catObj->getUid());
 		$rootline = $this->catObj->get_categorie_rootline_uidlist();
 		foreach ($rootline as $cat) {
 			$active[] = $cat;
@@ -1016,7 +1057,7 @@ class tx_commerce_navigation {
 						$possibleItemStatesForItem = explode(',', $menuArr[$MIndex]['ITEM_STATES_LIST']);
 
 						ksort($this->MenueItemStates);
-						foreach ($this->MenueItemStates as $prio => $state) {
+						foreach ($this->MenueItemStates as $state) {
 							if (($availiableItemStates[$state] == 1) && (empty($menuArr[$MIndex]['ITEM_STATE']))) {
 								if (in_array($state, $possibleItemStatesForItem)) {
 									$menuArr[$MIndex]['ITEM_STATE'] = $state;
@@ -1038,18 +1079,13 @@ class tx_commerce_navigation {
 	/**
 	 * Method for gerenartin the rootlineMenue to use in TS
 	 *
-	 * @author Ingo Schmitt <is@marketing-factory.de>
 	 * @param string $content $content passed to method
 	 * @param array $conf TS Array
 	 * @return array array for the menurendering of TYPO3
 	 */
 	public function CommerceRootline($content, $conf) {
 		$this->mConf = $this->processConf($conf);
-		$this->PID = intval(
-			$this->mConf['overridePid'] ?
-				$this->mConf['overridePid'] :
-				$GLOBALS['TSFE']->id
-		);
+		$this->PID = (int) ($this->mConf['overridePid'] ? $this->mConf['overridePid'] : $GLOBALS['TSFE']->id);
 		$this->gpVars = t3lib_div::_GPmerged($this->prefixId);
 
 		tx_commerce_div::initializeFeUserBasket();
@@ -1062,7 +1098,6 @@ class tx_commerce_navigation {
 		}
 
 		$returnArray = array();
-
 		$returnArray = $this->getCategoryRootlineforTS($this->gpVars['catUid'], $returnArray);
 
 		/**
@@ -1077,19 +1112,16 @@ class tx_commerce_navigation {
 			$CategoryObject->init($this->gpVars['catUid'], $GLOBALS['TSFE']->sys_language_uid);
 			$CategoryObject->loadData();
 
-			$add_getvars = ini_get('arg_separator.output') . $this->prefixId . '[showUid]=' . $ProductObject->getUid() . ini_get(
-					'arg_separator.output'
-				) . $this->prefixId . '[catUid]=' . $CategoryObject->getUid();
+			$add_getvars = ini_get('arg_separator.output') . $this->prefixId . '[showUid]=' . $ProductObject->getUid() .
+				ini_get('arg_separator.output') . $this->prefixId . '[catUid]=' . $CategoryObject->getUid();
 			if (is_string($this->gpVars['basketHashValue'])) {
-				$add_getvars .= ini_get(
-						'arg_separator.output'
-					) . $this->prefixId . '[basketHashValue]=' . $this->gpVars['basketHashValue'];
+				$add_getvars .= ini_get('arg_separator.output') . $this->prefixId . '[basketHashValue]=' . $this->gpVars['basketHashValue'];
 			}
 			$cHash = t3lib_div::generateCHash($add_getvars . $GLOBALS['TSFE']->linkVars);
 
 			/**
-			 * 	Currentyl no Navtitle in tx_commerce_products
-			 * 			'nav_title' => $ProductObject->get_navtitle(),
+			 * Currentyl no Navtitle in tx_commerce_products
+			 * 'nav_title' => $ProductObject->get_navtitle(),
 			 */
 			if ($ProductObject->uid === $this->gpVars['showUid']) {
 				$itemState = 'CUR';
@@ -1116,42 +1148,38 @@ class tx_commerce_navigation {
 	 * Returns an array of array for the TS rootline
 	 * Recursive Call to buld rootline
 	 *
-	 * @author Ingo Schmitt <is@marketing-factory.de>
 	 * @param integer $catID
 	 * @param array $result
 	 * @return array
 	 */
 	public function getCategoryRootlineforTS($catID, $result = array()) {
 		if ($catID) {
-			$CategoryObject = t3lib_div::makeInstance('tx_commerce_category');
-			$CategoryObject->init($catID, $GLOBALS['TSFE']->sys_language_uid);
-			$CategoryObject->loadData();
-			if ($CategoryObject->parent_category_uid > 0) {
+			/** @var tx_commerce_category $categoryObject */
+			$categoryObject = t3lib_div::makeInstance('tx_commerce_category');
+			$categoryObject->init($catID, $GLOBALS['TSFE']->sys_language_uid);
+			$categoryObject->loadData();
 
-				if ($CategoryObject->parent_category_uid <> $this->category->getUid()) {
-					$result = $this->getCategoryRootlineforTS($CategoryObject->parent_category_uid, $result);
+			if (is_object($categoryObject->get_parent_category())) {
+				if ($categoryObject->get_parent_category()->getUid() <> $this->category->getUid()) {
+					$result = $this->getCategoryRootlineforTS($categoryObject->get_parent_category()->getUid(), $result);
 				}
 			}
 
-			$add_getvars = ini_get('arg_separator.output') . $this->prefixId . '[catUid]=' . $CategoryObject->getUid();
+			$add_getvars = ini_get('arg_separator.output') . $this->prefixId . '[catUid]=' . $categoryObject->getUid();
 
 			if (is_string($this->gpVars['basketHashValue'])) {
-				$add_getvars .= ini_get(
-						'arg_separator.output'
-					) . $this->prefixId . '[basketHashValue]=' . $this->gpVars['basketHashValue'];
+				$add_getvars .= ini_get('arg_separator.output') . $this->prefixId . '[basketHashValue]=' . $this->gpVars['basketHashValue'];
 			}
 			$cHash = t3lib_div::generateCHash($add_getvars . $GLOBALS['TSFE']->linkVars);
-			$itemState = ($CategoryObject->uid === $catID ?
-				'CUR' :
-				'NO');
+			$itemState = ($categoryObject->getUid() === $catID ? 'CUR' : 'NO');
 
 			$result[] = array(
-				'title' => $CategoryObject->get_title(),
-				'nav_title' => $CategoryObject->get_navtitle(),
+				'title' => $categoryObject->getTitle(),
+				'nav_title' => $categoryObject->getNavtitle(),
 				'uid' => $this->PID,
 				'_ADD_GETVARS' => $add_getvars . ini_get('arg_separator.output') . 'cHash=' . $cHash,
 				'ITEM_STATE' => $itemState,
-				'_PAGES_OVERLAY' => $CategoryObject->get_title(),
+				'_PAGES_OVERLAY' => $categoryObject->getTitle(),
 			);
 		}
 
@@ -1176,8 +1204,11 @@ class tx_commerce_navigation {
 			'tstamp' => time()
 		);
 
-		$GLOBALS['TYPO3_DB']->exec_DELETEquery('cache_hash', 'hash=' . $GLOBALS['TYPO3_DB']->fullQuoteStr($hash, 'cache_hash'));
-		$GLOBALS['TYPO3_DB']->exec_INSERTquery('cache_hash', $insertFields);
+		/** @var t3lib_db $database */
+		$database = $GLOBALS['TYPO3_DB'];
+
+		$database->exec_DELETEquery('cache_hash', 'hash=' . $database->fullQuoteStr($hash, 'cache_hash'));
+		$database->exec_INSERTquery('cache_hash', $insertFields);
 	}
 
 	/**
@@ -1190,15 +1221,19 @@ class tx_commerce_navigation {
 	 * @return string
 	 */
 	public function getHash($hash, $expTime = 0) {
+		/** @var t3lib_db $database */
+		$database = $GLOBALS['TYPO3_DB'];
+
 			// if expTime is not set, the hash will never expire
 		$expTime = intval($expTime);
+		$whereAdd = '';
 		if ($expTime) {
 			$whereAdd = ' AND tstamp > ' . (time() - $expTime);
 		}
-		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-			'content', 'cache_hash', 'hash=' . $GLOBALS['TYPO3_DB']->fullQuoteStr($hash, 'cache_hash') . $whereAdd
+		$res = $database->exec_SELECTquery(
+			'content', 'cache_hash', 'hash=' . $database->fullQuoteStr($hash, 'cache_hash') . $whereAdd
 		);
-		if ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+		if ($row = $database->sql_fetch_assoc($res)) {
 			return $row['content'];
 		}
 		return '';
@@ -1267,29 +1302,29 @@ class tx_commerce_navigation {
 	/**
 	 * Adds the manuafacturer To the categoiry, as simulated category
 	 *
-	 * @author	Luc Muller <l.mueller@ameos.com>
-	 * @param	integer	$pid	Page PID for the level
-	 * @param	integer	$uidPage	UidPage for the level
-	 * @param	string	$mainTable	Main Database Table
-	 * @param	string	$tableMm	RelationChip Table
+	 * @param integer $pid Page PID for the level
+	 * @param integer $uidPage UidPage for the level
+	 * @param string $mainTable Main Database Table
+	 * @param string $tableMm RelationChip Table
 	 * @param string $tableSubMain
-	 * @param	string	$tableSubMm	Sub Table Relationship
-	 * @param	integer	$iIdCat	Category ID
-	 * @param	integer	$mDepth Menue Deepth
-	 * @param	string	$path	Path for fast resolving
-	 * @return array|bool
-	 * @internal param string $tableSUbMain Sub Table below the original table
-	 * @see MakeArrayPostRender
+	 * @param string $tableSubMm Sub Table Relationship
+	 * @param integer $iIdCat Category ID
+	 * @param integer $mDepth Menue Deepth
+	 * @param string $path Path for fast resolving
+	 * @return array|boolean
 	 */
-	public function GetManuAsCat($pid, $uidPage, $mainTable, $tableMm, $tableSubMain, $tableSubMm, $iIdCat, $mDepth, $path) {
-		$rSql = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+	public function getManuAsCat($pid, $uidPage, $mainTable, $tableMm, $tableSubMain, $tableSubMm, $iIdCat, $mDepth, $path) {
+		/** @var t3lib_db $database */
+		$database = $GLOBALS['TYPO3_DB'];
+
+		$rSql = $database->exec_SELECTquery(
 			'*',
 			'tx_commerce_products_categories_mm',
 			'uid_foreign = ' . intval($iIdCat)
 			);
 
 		$aIdProducts = array();
-		while (($aFiche = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($rSql)) !== FALSE) {
+		while (($aFiche = $database->sql_fetch_assoc($rSql)) !== FALSE) {
 			$aIdProducts[] = $aFiche['uid_local'];
 		}
 
@@ -1299,13 +1334,13 @@ class tx_commerce_navigation {
 
 		$sIdProducts = implode(',', $aIdProducts);
 
-		$rSql = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+		$rSql = $database->exec_SELECTquery(
 			'uid,manufacturer_uid', 'tx_commerce_products', 'uid IN (' . $sIdProducts . ') AND deleted = 0 and hidden = 0'
 		);
 
 		$aOutPut = array();
 		$firstPath = $path;
-		while (($aFiche = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($rSql)) !== FALSE) {
+		while (($aFiche = $database->sql_fetch_assoc($rSql)) !== FALSE) {
 			if ($aFiche['manufacturer_uid'] != '0') {
 
 				/**
@@ -1380,7 +1415,6 @@ class tx_commerce_navigation {
 	/**
 	 * Sorts a list of menu items
 	 *
-	 * @author    Ricardo Mieres <ricardo.mieres@502.cl>
 	 * @param array $listNodes
 	 * @param string $sortType
 	 * @return boolean

@@ -224,7 +224,6 @@ class tx_commerce_article_price extends tx_commerce_element_alib {
 	 */
 	public function get_price_net() {
 		t3lib_div::logDeprecatedFunction();
-
 		return $this->getPriceNet();
 	}
 
@@ -234,7 +233,6 @@ class tx_commerce_article_price extends tx_commerce_element_alib {
 	 */
 	public function get_price_gross() {
 		t3lib_div::logDeprecatedFunction();
-
 		return $this->getPriceGross();
 	}
 }

@@ -841,7 +841,7 @@ abstract class tx_commerce_pibase extends tslib_pibase {
 			$articleLines = '';
 			$count = 0;
 			/** @var $itemObj tx_commerce_basket_item */
-			foreach ($basketObj->basket_items as $itemObj) {
+			foreach ($basketObj->getBasketItems() as $itemObj) {
 				$part = $count % $templateElements;
 				/**
 				 * Only if valid parameter
