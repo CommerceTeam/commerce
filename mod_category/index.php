@@ -40,7 +40,7 @@ class tx_commerce_categories extends tx_commerce_db_list {
 			),
 			'product' => array (
 				'dataClass' => 'tx_commerce_leaf_productdata',
-				'parent'   => 'categories'
+				'parent' => 'categories'
 			)
 		);
 

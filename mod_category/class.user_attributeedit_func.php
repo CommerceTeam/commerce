@@ -53,7 +53,6 @@ class user_attributeedit_func {
 		$doc->backPath = $GLOBALS['BACK_PATH'];
 		/**
 		 * Load the table TCA into local variable
-
 		 */
 		t3lib_div::loadTCA($foreign_table);
 
@@ -120,20 +119,16 @@ class user_attributeedit_func {
 				$iOut .= '<tr ' . $row_bgColor . '>';
 				foreach ($field_rows as $field) {
 					$iOut .= '<td>';
-					$wrap = array(
-						'',
-						''
-					);
+					$wrap = array('', '');
+
 					switch ($field) {
 						case $titleCol:
-
 							$params = '&edit[' . $foreign_table . '][' . $row['uid'] . ']=edit';
 							$wrap = array(
 								'<a href="#" onclick="' . htmlspecialchars(t3lib_BEfunc::editOnClick($params, $GLOBALS['BACK_PATH'])) . '">',
 								'</a>'
 							);
-
-							break;
+						break;
 					}
 					$iOut .= implode(t3lib_BEfunc::getProcessedValue($foreign_table, $field, $row[$field], 100), $wrap);
 					$iOut .= '</td>';

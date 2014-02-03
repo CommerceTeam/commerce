@@ -28,7 +28,9 @@
 
 unset($MCONF);
 require_once('conf.php');
+/** @noinspection PhpIncludeInspection */
 require_once($BACK_PATH . 'init.php');
+/** @noinspection PhpIncludeInspection */
 require_once($BACK_PATH . 'template.php');
 
 $LANG->includeLLFile('EXT:commerce/Resources/Private/Language/locallang_mod_cce.xml');
@@ -123,7 +125,7 @@ class SC_tx_commerce_cce_db {
 
 	/**
 	 * Commerce Core Engine
-	 *
+	 * @todo what is tx_commerce_cce ? cant find it
 	 * @var tx_commerce_cce
 	 */
 	public $cce;
@@ -187,7 +189,7 @@ class SC_tx_commerce_cce_db {
 		$backendUser = $GLOBALS['BE_USER'];
 
 			// Checking referer / executing
-		$refInfo  = parse_url(t3lib_div::getIndpEnv('HTTP_REFERER'));
+		$refInfo = parse_url(t3lib_div::getIndpEnv('HTTP_REFERER'));
 		$httpHost = t3lib_div::getIndpEnv('TYPO3_HOST_ONLY');
 
 		if (

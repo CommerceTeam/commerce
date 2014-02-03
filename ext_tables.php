@@ -1,12 +1,8 @@
 <?php
-/**
- * $Id: ext_tables.php 566 2007-03-02 15:57:16Z ingo $
- */
 
 if (!defined('TYPO3_MODE')) {
 	die('Access denied.');
 }
-
 
 t3lib_extMgm::addStaticFile(COMMERCE_EXTKEY, 'Configuration/TypoScript/', 'COMMERCE');
 
@@ -62,19 +58,22 @@ if (TYPO3_MODE == 'BE') {
 		$ICON_TYPES['commerce'] = '../typo3conf/ext/commerce/res/icons/table/commerce_folder.gif';
 	}
 
-	$TCA['pages']['columns']['module']['config']['items'][] = Array('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:commerce', 'commerce');
+	$TCA['pages']['columns']['module']['config']['items'][] = array(
+		'LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:commerce',
+		'commerce'
+	);
 
 
 		// Add default User TS config
 	t3lib_extMgm::addUserTSConfig('
 		options.saveDocNew {
-			tx_commerce_products=1
-			tx_commerce_article_types=1
-			tx_commerce_attributes=1
-			tx_commerce_attribute_values=1
-			tx_commerce_categories=1
-			tx_commerce_trackingcodes=1
-			tx_commerce_moveordermails=1
+			tx_commerce_products = 1
+			tx_commerce_article_types = 1
+			tx_commerce_attributes = 1
+			tx_commerce_attribute_values = 1
+			tx_commerce_categories = 1
+			tx_commerce_trackingcodes = 1
+			tx_commerce_moveordermails = 1
 		}
 	');
 

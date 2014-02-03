@@ -1,32 +1,32 @@
 <?php
 /***************************************************************
  *  Copyright notice
+ *
  *  (c) 2008 - 2011 Ingo Schmitt <is@marketing-factory.de>
  *  All rights reserved
- *  This script is part of the TYPO3 project. The TYPO3 project is
+ *
+ *  This script is part of the Typo3 project. The Typo3 project is
  *  free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
  *  (at your option) any later version.
+ *
  *  The GNU General Public License can be found at
  *  http://www.gnu.org/copyleft/gpl.html.
+ *
  *  This script is distributed in the hope that it will be useful,
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
+ *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
 /**
  * This class inculdes all methods for generating statistcs data,
  * used for the statistics module and for the cli script
- *
- * @package TYPO3
- * @subpackage commerce
- * @author Ingo Schmitt <is@marketing-factory,de>
  */
 class tx_commerce_statistics {
-
 	/**
 	 * List of exclude PIDs, PIDs whcih should not be used when calculation the statistics. This List should
 	 * be definable in Extension configuration
@@ -42,6 +42,10 @@ class tx_commerce_statistics {
 	 */
 	public $daysback = 10;
 
+	/**
+	 * @param string $excludePids
+	 * @return void
+	 */
 	public function init($excludePids) {
 		$this->excludePids = $excludePids;
 	}
@@ -64,6 +68,9 @@ class tx_commerce_statistics {
 	 * @return boolean result of aggregation
 	 */
 	public function doSalesAggregation($starttime, $endtime) {
+		/** @var t3lib_db $database */
+		$database = $GLOBALS['TYPO3_DB'];
+
 		$hour = date('H', $starttime);
 		$day = date('d', $starttime);
 		$month = date('m', $starttime);
@@ -73,34 +80,24 @@ class tx_commerce_statistics {
 		$oldtimeend = mktime($hour, 59, 59, $month, $day, $year);
 
 		while ($oldtimeend <= $endtime) {
-			$statquery = sprintf(
-				'
-					SELECT
-							sum(toa.amount),
-							sum(toa.amount * toa.price_gross),
-							count(distinct toa.order_id),
-							toa.pid,
-							sum(toa.amount * toa.price_net)
-					FROM
-							tx_commerce_order_articles toa,
-							tx_commerce_orders tco
-					WHERE
-							toa.article_type_uid <= 1
-					AND
-							toa.crdate >= %u
-					AND
-							toa.crdate <= %u
-					AND
-							toa.pid not in(%s)
-					AND
-							toa.order_id = tco.order_id
-					AND
-							tco.deleted = 0
-					GROUP BY
-							toa.pid', $oldtimestart, $oldtimeend, $this->excludePids
+			$statres = $database->exec_SELECTquery(
+				'sum(toa.amount),
+					sum(toa.amount * toa.price_gross),
+					count(distinct toa.order_id),
+					toa.pid,
+					sum(toa.amount * toa.price_net)',
+				'tx_commerce_order_articles toa,
+					tx_commerce_orders tco',
+				'toa.article_type_uid <= 1
+					AND toa.crdate >= ' . $oldtimestart . '
+					AND toa.crdate <= ' . $oldtimeend . '
+					AND toa.pid not in(' . $this->excludePids . ')
+					AND toa.order_id = tco.order_id
+					AND tco.deleted = 0',
+				'toa.pid'
 			);
-			$statres = $GLOBALS['TYPO3_DB']->sql_query($statquery);
-			while ($statrow = $GLOBALS['TYPO3_DB']->sql_fetch_row($statres)) {
+
+			while ($statrow = $database->sql_fetch_row($statres)) {
 				$insertStatArray = array(
 					'pid' => $statrow[3],
 					'year' => date('Y', $oldtimeend),
@@ -116,7 +113,7 @@ class tx_commerce_statistics {
 					'tstamp' => time()
 				);
 
-				$res = $GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_commerce_salesfigures', $insertStatArray);
+				$res = $database->exec_INSERTquery('tx_commerce_salesfigures', $insertStatArray);
 				if (!$res) {
 					$result = FALSE;
 				}
@@ -128,7 +125,6 @@ class tx_commerce_statistics {
 		return $result;
 	}
 
-
 	/**
 	 * Aggregate and Update the Salesfigures per Hour in the timespare from
 	 * $starttime to $enttime
@@ -139,6 +135,9 @@ class tx_commerce_statistics {
 	 * @return boolean result of aggregation
 	 */
 	public function doSalesUpdateAggregation($starttime, $endtime, $doOutput = TRUE) {
+		/** @var t3lib_db $database */
+		$database = $GLOBALS['TYPO3_DB'];
+
 		$hour = date('H', $starttime);
 		$day = date('d', $starttime);
 		$month = date('m', $starttime);
@@ -148,35 +147,23 @@ class tx_commerce_statistics {
 		$oldtimeend = mktime($hour, 59, 59, $month, $day, $year);
 
 		while ($oldtimeend <= $endtime) {
-			$statquery = sprintf(
-				'
-					SELECT
-							sum(toa.amount),
-							sum(toa.amount * toa.price_gross),
-							count(distinct toa.order_id),
-							toa.pid,
-							sum(toa.amount * toa.price_net)
-					FROM
-							tx_commerce_order_articles toa,
-							tx_commerce_orders tco
-					WHERE
-							toa.article_type_uid <= 1
-					AND
-							toa.crdate >= %u
-					AND
-							toa.crdate <= %u
-					AND
-							toa.pid not in(%s)
-					AND
-							toa.order_id = tco.order_id
-					AND
-							tco.deleted = 0
-					GROUP BY
-							toa.pid', $oldtimestart, $oldtimeend, $this->excludePids
+			$statres = $database->exec_SELECTquery(
+				'sum(toa.amount),
+					sum(toa.amount * toa.price_gross),
+					count(distinct toa.order_id),
+					toa.pid,
+					sum(toa.amount * toa.price_net)',
+				'tx_commerce_order_articles toa,
+					tx_commerce_orders tco',
+				'toa.article_type_uid <= 1
+					AND toa.crdate >= ' . $oldtimestart . '
+					AND toa.crdate <= ' . $oldtimeend . '
+					AND toa.pid not in(' . $this->excludePids . ')
+					AND toa.order_id = tco.order_id
+					AND tco.deleted = 0',
+				'toa.pid'
 			);
-
-			$statres = $GLOBALS['TYPO3_DB']->sql_query($statquery);
-			while ($statrow = $GLOBALS['TYPO3_DB']->sql_fetch_row($statres)) {
+			while ($statrow = $database->sql_fetch_row($statres)) {
 				$updateStatArray = array(
 					'pid' => $statrow[3],
 					'year' => date('Y', $oldtimeend),
@@ -193,10 +180,10 @@ class tx_commerce_statistics {
 				$whereClause = 'year = ' . date('Y', $oldtimeend) . ' AND month = ' . date(
 						'm', $oldtimeend
 					) . ' AND day = ' . date('d', $oldtimeend) . ' AND hour = ' . date('H', $oldtimeend);
-				$res = $GLOBALS['TYPO3_DB']->exec_UPDATEquery('tx_commerce_salesfigures', $whereClause, $updateStatArray);
+				$res = $database->exec_UPDATEquery('tx_commerce_salesfigures', $whereClause, $updateStatArray);
 
 				if (!$res) {
-					$result = FALSE;
+					$stats = FALSE;
 				}
 				if ($doOutput) {
 					print '.';
@@ -220,6 +207,9 @@ class tx_commerce_statistics {
 	 * @return boolean result of aggregation
 	 */
 	public function doClientAggregation($starttime, $endtime) {
+		/** @var t3lib_db $database */
+		$database = $GLOBALS['TYPO3_DB'];
+
 		$hour = date('H', $starttime);
 		$day = date('d', $starttime);
 		$month = date('m', $starttime);
@@ -229,22 +219,13 @@ class tx_commerce_statistics {
 		$oldtimeend = mktime($hour, 59, 59, $month, $day, $year);
 
 		while ($oldtimeend < $endtime) {
-			$statquery = sprintf(
-				'
-					SELECT
-							count(*),
-							pid
-					FROM
-							fe_users
-					WHERE
-							crdate >= %u
-					AND
-							crdate <= %u
-					GROUP BY
-							pid', $oldtimestart, $oldtimeend
+			$statres = $database->exec_SELECTquery(
+				'count(*), pid',
+				'fe_users',
+				'crdate >= ' . $oldtimestart . ' AND crdate <= ' . $oldtimeend,
+				'pid'
 			);
-			$statres = $GLOBALS['TYPO3_DB']->sql_query($statquery);
-			while ($statrow = $GLOBALS['TYPO3_DB']->sql_fetch_row($statres)) {
+			while ($statrow = $database->sql_fetch_row($statres)) {
 				$insertStatArray = array(
 					'pid' => $statrow[1],
 					'year' => date('Y', $oldtimeend),
@@ -257,7 +238,7 @@ class tx_commerce_statistics {
 					'tstamp' => time()
 				);
 
-				$GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_commerce_newclients', $insertStatArray);
+				$database->exec_INSERTquery('tx_commerce_newclients', $insertStatArray);
 			}
 			$oldtimestart = mktime(++$hour, 0, 0, $month, $day, $year);
 			$oldtimeend = mktime($hour, 59, 59, $month, $day, $year);

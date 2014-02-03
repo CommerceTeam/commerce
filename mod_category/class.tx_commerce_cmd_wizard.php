@@ -28,7 +28,9 @@
 
 unset($MCONF);
 require('conf.php');
+/** @noinspection PhpIncludeInspection */
 require($BACK_PATH . 'init.php');
+/** @noinspection PhpIncludeInspection */
 require($BACK_PATH . 'template.php');
 
 $LANG->includeLLFile('EXT:lang/locallang_misc.xml');
