@@ -25,7 +25,7 @@
 /**
  * Implements the hooks for versioning and swapping
  */
-class tx_commerce_versionhooks {
+class Tx_Commerce_Hook_VersionHooks {
 	/**
 	 * After versioning for tx_commerce_products, this also
 	 * 1) copies the Attributes (flex and mm)
@@ -51,9 +51,9 @@ class tx_commerce_versionhooks {
 	}
 }
 
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Hook/class.tx_commerce_versionhooks.php']) {
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Hook/VersionHooks.php']) {
 	/** @noinspection PhpIncludeInspection */
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Hook/class.tx_commerce_versionhooks.php']);
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Hook/VersionHooks.php']);
 }
 
 ?>
