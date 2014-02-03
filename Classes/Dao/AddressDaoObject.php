@@ -25,11 +25,6 @@
 /**
  * address object & Dao database access classes
  * These classes handle tt_address objects.
- *
- * @access public
- * @package TYPO3
- * @subpackage commerce
- * @author Carsten Lausen <cl@e-netconsulting.de>
  */
 class Tx_Commerce_Dao_AddressDaoObject extends Tx_Commerce_Dao_BasicDaoObject {
 	/**
