@@ -8,7 +8,7 @@ if (!defined('TYPO3_MODE')) {
 }
 
 
-t3lib_extMgm::addStaticFile(COMMERCE_EXTKEY, 'static/', 'COMMERCE');
+t3lib_extMgm::addStaticFile(COMMERCE_EXTKEY, 'Configuration/TypoScript/', 'COMMERCE');
 
 
 	// mountpoints field in be_groups, be_users

@@ -34,11 +34,10 @@
  * @subpackage tx_commerce
  */
 class tx_commerce_basket_item {
-
 	/**
-	 * object Article_object
-	 * @see tx_commerce_article
-	 * @access public
+	 * Article
+	 *
+	 * @var tx_commerce_article
 	 */
 	public $article = '';
 
@@ -361,24 +360,42 @@ class tx_commerce_basket_item {
  		$this->priceGross=$value;
  		$this->calculate_gross_sum();
  	}
- 	/**
- 	 * gets the tax from the article
- 	 * @return  percantage of tax
- 	 */
 
- 	function get_tax() 	{
- 		if(is_object($this->article)) {
- 			return $this->article->get_tax();
- 		}
- 	}
- 	/**
- 	 * gets the quantity from thos item
- 	 * @return  quantity
- 	 */
+	/**
+	 * gets the tax from the article
+	 *
+	 * @return float percantage of tax
+	 */
+	public function getTax() {
+		$result = 0;
 
- 	function getQuantity() 	{
- 		return $this->quantity;
- 	}
+		if (is_object($this->article)) {
+			$result = $this->article->getTax();
+		}
+
+		return $result;
+	}
+
+	/**
+	 * gets the tax from the article
+	 *
+	 * @return float percantage of tax
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use tx_commerce_basket_item::getTax instead
+	 */
+	public function get_tax() {
+		t3lib_div::logDeprecatedFunction();
+
+		return $this->getTax();
+	}
+
+	/**
+	 * gets the quantity from thos item
+	 *
+	 * @return integer quantity
+	 */
+	public function getQuantity() {
+		return $this->quantity;
+	}
 
  	/**
  	 * gets the uid from thhe article

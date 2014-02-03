@@ -490,6 +490,7 @@ class tx_commerce_pi3 extends tx_commerce_pibase {
 		// If a user is logged in, get the form from the address management
 		if ($GLOBALS['TSFE']->loginUser) {
 			// Make an instance of pi4 (address management)
+			/** @var tx_commerce_pi4 $addressMgm */
 			$addressMgm = t3lib_div::makeInstance('tx_commerce_pi4');
 			$addressMgm->cObj = $this->cObj;
 			$addressMgm->templateCode = $this->templateCode;

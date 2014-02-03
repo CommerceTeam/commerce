@@ -1225,29 +1225,30 @@ class tx_commerce_navigation {
 	}
    }
 
-   /**
-    * Generates the Rootline of a category to have the right parent elements
-    * if a category has more than one parentes
+	/**
+	 * Generates the Rootline of a category to have the right parent elements
+	 * if a category has more than one parentes
 	 *
-    * @param	array	$tree	Menuetree
-    * @param	integer	$choosencat	The actual category
-    * @param	integer	$expand	If the menue has to be expanded
-    * @return	array	Rootline as Array
-    * @since 28.04.2007
-    * @author luc muller <l.muller@ameos.com>
-    */
+	 * @param array $tree Menuetree
+	 * @param integer $choosencat The actual category
+	 * @param integer $expand If the menue has to be expanded
+	 * @return array Rootline as Array
+	 */
 	public function getRootLine(&$tree, $choosencat, $expand) {
+		$result = array();
+
 		foreach ($tree as $key => $val) {
 			if ($key == $choosencat) {
 				$path = $val['path'];
 				$aPath = explode(',', $path);
 				$aPath = array_reverse($aPath);
 
-				return $aPath;
+				$result = $aPath;
+				break;
 			} else {
 				if (is_array($val)) {
 					if (!$val['subChildTable']) {
-						return FALSE;
+						break;
 					}
 					if ($val['--subLevel--']) {
 						$path = $this->getRootLine($val['--subLevel--'], $choosencat, $expand);
@@ -1259,12 +1260,15 @@ class tx_commerce_navigation {
 								$aPath = array_reverse($aPath);
 							}
 
-							return $aPath;
+							$result = $aPath;
+							break;
 						}
 					}
 				}
 			}
 		}
+
+		return $result;
 	}
 
 	/**
