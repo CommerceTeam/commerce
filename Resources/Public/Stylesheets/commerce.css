@@ -190,7 +190,7 @@ p.com-chkout-address-fields-submit { clear: both; }
 
 tr.com-chkout-sum {}
 
-div.com-chkout-listing-billing-address
+div.com-chkout-listing-billing-address,
 div.com-chkout-listing-delivery-address {
 	clear: both;
 }
