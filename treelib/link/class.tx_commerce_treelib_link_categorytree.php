@@ -7,19 +7,33 @@
  * @maintainer 	Erik Frister <typo3@marketing-factory.de>
  */
 class tx_commerce_treelib_link_categorytree extends browsetree {
-
-	//Set the Tree Name
-	protected $treeName 		= 'txcommerceCategoryTree';
+	/**
+	 * Set the Tree Name
+	 *
+	 * @var string
+	 */
+	protected $treeName = 'txcommerceCategoryTree';
 	protected $minCategoryPerms = 'show';
-	protected $noClickList		= '';
-	protected $openProduct		= 0;	// the linked product
-	protected $openCategory  	= 0;	// the linked category
+	protected $noClickList = '';
+
+	/**
+	 * the linked product
+	 *
+	 * @var integer
+	 */
+	protected $openProduct = 0;
+
+	/**
+	 * the linked category
+	 *
+	 * @var integer
+	 */
+	protected $openCategory = 0;
 
 	/**
 	 * Initializes the Categorytree
 	 *
-	 * @param {boolean} $onlyCategories - Flag if Categories should be the only leafs
-	 * @return {void}
+	 * @return void
 	 */
 	function init() {
 
@@ -61,12 +75,13 @@ class tx_commerce_treelib_link_categorytree extends browsetree {
 	/**
 	 * Sets the minimum Permissions needed for the Category Leaf
 	 * Must be called BEFORE calling init
-	 * @return {void}
-	 * @param $perm {string}	String-Representation of the right. Can be 'show, new, delete, editcontent, cut, move, copy, edit'
+	 *
+	 * @param string $perm String-Representation of the right. Can be 'show, new, delete, editcontent, cut, move, copy, edit'
+	 * @return void
 	 */
 	function setMinCategoryPerms($perm) {
-		if(!$this->isInit) {
-			//store the string and let it be added once init is called
+		if (!$this->isInit) {
+				// store the string and let it be added once init is called
 			$this->minCategoryPerms = $perm;
 		}
 	}
@@ -74,8 +89,8 @@ class tx_commerce_treelib_link_categorytree extends browsetree {
 	/**
 	 * Sets the noclick list for the leafs
 	 *
-	 * @return {void}
-	 * @param $noClickList {string}	comma-separated list of leafs to disallow clicks for
+	 * @param string $noClickList comma-separated list of leafs to disallow clicks for
+	 * @return void
 	 */
 	public function disallowClick($noClickList = '') {
 		$this->noClickList = $noClickList;
@@ -111,26 +126,29 @@ class tx_commerce_treelib_link_categorytree extends browsetree {
 	 * Returns the record of the category with the corresponding uid
 	 * Categories must have been loaded already - the DB is NOT queried
 	 *
-	 * @return {array}		record
-	 * @param $uid {int}	uid of the category
+	 * @param integer $uid of the category
+	 * @return array record
 	 */
 	public function getCategory($uid) {
-
-		//test parameters
-		if(!is_numeric($uid)) {
-			if (TYPO3_DLOG) t3lib_div::devLog('getCategory (categorytree) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+			// test parameters
+		if (!is_numeric($uid)) {
+			if (TYPO3_DLOG) {
+				t3lib_div::devLog('getCategory (categorytree) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+			}
 			return array();
 		}
 
 		$categoryLeaf = $this->getLeaf(0);
 
-		//check if there is a category leaf
-		if(is_null($categoryLeaf)) {
-			if (TYPO3_DLOG) t3lib_div::devLog('getCategory (categorytree) cannot find the category leaf.', COMMERCE_EXTKEY, 3);
+			// check if there is a category leaf
+		if (is_null($categoryLeaf)) {
+			if (TYPO3_DLOG) {
+				t3lib_div::devLog('getCategory (categorytree) cannot find the category leaf.', COMMERCE_EXTKEY, 3);
+			}
 			return array();
 		}
 
-		//return the record
+			// return the record
 		return $categoryLeaf->data->getChildByUid($uid);
 	}
 
@@ -138,44 +156,49 @@ class tx_commerce_treelib_link_categorytree extends browsetree {
 	 * Will initialize the User Position
 	 * Saves it in the Session and gives the Position UIDs to the LeafData
 	 *
-	 * @return {void}
+	 * @return void
 	 */
 	protected function initializePositionSaving() {
-		// Get stored tree structure:
+			// Get stored tree structure:
 		$positions = unserialize($GLOBALS['BE_USER']->uc['browseTrees'][$this->treeName]);
 
-		//In case the array is not set, initialize it
-		if(!is_array($positions) || 0 >= count($positions) || key($positions[0][key($positions[0])]) !== 'items') {
-			$positions = array(); // reinitialize damaged array
+			// In case the array is not set, initialize it
+		if (!is_array($positions) || 0 >= count($positions) || key($positions[0][key($positions[0])]) !== 'items') {
+				// reinitialize damaged array
+			$positions = array();
 			$this->savePosition($positions);
-			if (TYPO3_DLOG) t3lib_div::devLog('Resetting the Positions of the Browsetree. Were damaged.', COMMERCE_EXTKEY, 2);
+			if (TYPO3_DLOG) {
+				t3lib_div::devLog('Resetting the Positions of the Browsetree. Were damaged.', COMMERCE_EXTKEY, 2);
+			}
 		}
 
 		$PM = t3lib_div::_GP('PM');
 		if(($PMpos = strpos($PM, '#')) !== false) { $PM = substr($PM, 0, $PMpos); } //IE takes # as anchor
 		$PM = explode('_',$PM);	//0: treeName, 1: leafIndex, 2: Mount, 3: set/clear [4:,5:,.. further leafIndices], 5[+++]: Item UID
 
-		//PM has to be at LEAST 5 Items (up to a (theoratically) unlimited count)
-		if (count($PM) >= 5 && $PM[0] == $this->treeName)	{
+			// PM has to be at LEAST 5 Items (up to a (theoratically) unlimited count)
+		if (count($PM) >= 5 && $PM[0] == $this->treeName) {
 
-				//Get the value - is always the last item
-				$value = explode('|', $PM[count($PM) - 1]); //so far this is 'current UID|Parent UID'
-				$value = $value[0];							//now it is 'current UID'
+				// Get the value - is always the last item
+				// so far this is 'current UID|Parent UID'
+			$value = explode('|', $PM[count($PM) - 1]);
+				// now it is 'current UID'
+			$value = $value[0];
 
-				//Prepare the Array
-				$c 		= count($PM);
-				$field  = &$positions[$PM[1]][$PM[2]]; //We get the Mount-Array of the corresponding leaf index
+				// Prepare the Array
+			$c = count($PM);
+				// We get the Mount-Array of the corresponding leaf index
+			$field = &$positions[$PM[1]][$PM[2]];
 
-				//Move the field forward if necessary
-				if($c > 5) {
+					// Move the field forward if necessary
+				if ($c > 5) {
 					$c -= 4;
-
-					//Walk the PM
+						// Walk the PM
 					$i = 4;
 
-					//Leave out last value of the $PM Array since that is the value and no longer a leaf Index
-					while($c > 1) {
-						//Mind that we increment $i on the fly on this line
+						// Leave out last value of the $PM Array since that is the value and no longer a leaf Index
+					while ($c > 1) {
+							// Mind that we increment $i on the fly on this line
 						$field = &$field[$PM[$i++]];
 						$c --;
 					}

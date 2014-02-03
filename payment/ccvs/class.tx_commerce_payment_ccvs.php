@@ -81,6 +81,11 @@ class CreditCardValidationSolution {
 	public $CCVSNumber = '';
 
 	/**
+	 * @var string
+	 */
+	public $CCVSCheckNumber = '';
+
+	/**
 	 * The first four digits of the card.
 	 * @var  string
 	 */
@@ -120,28 +125,22 @@ class CreditCardValidationSolution {
 	 */
 	public $CCVSError = '';
 
-
 	/**
 	 * Ensures credit card information is keyed in correctly.
-	 *
 	 * <p>Checks that the length is correct, the first four digits are
 	 * within accepted ranges, the number passes the Mod 10 / Luhn
 	 * checksum algorithm and that you accept the given type of card. It
 	 * also determines the card's type via the number's first four digits.</p>
-	 *
 	 * <p>The procedure has the option to check the card's expiration date.</p>
-	 *
 	 * <p>Error messages are internationalized through use of variables
 	 * defined by files in the <kbd>./language</kbd> subdirectory.  These
 	 * files are named after their ISO 639-1 two letter language code.
 	 * The language used depends on the code put in the
 	 * <var>$Language</var> parameter.</p>
-	 *
 	 * <p>Just to be clear, this process does not check with banks or
 	 * credit card companies to see if the card number given is actually
 	 * associated with a good account. It just checks to see if the
 	 * number matches the expected format.</p>
-	 *
 	 * <p>Warning: this function uses exact number ranges as part of
 	 * the validation process.  These ranges are current as of
 	 * 30 July 2002.  If presently undefined ranges come into use
@@ -150,16 +149,12 @@ class CreditCardValidationSolution {
 	 * indicate unknown card type."  If this happens while entering a
 	 * card and type you KNOW are valid, please contact us so we can
 	 * update the ranges.</p>
-	 *
 	 * <p>This function requires PHP to be at version 4.0 or above.</p>
-	 *
 	 * <p>Please make a donation to support our open source development.
 	 * Update notifications are sent to people who make donations that exceed
 	 * the small registration threshold.  See the link below.</p>
-	 *
 	 * <p>Credit Card Validation Solution is a trademark of The Analysis and
 	 * Solutions Company.</p>
-	 *
 	 * <p>Several people deserve praise for the Credit Card Validation
 	 * Solution. I learned of the Mod 10 Algorithm in some Perl code,
 	 * entitled "The Validator," available on Matt's Script Archive,
@@ -173,11 +168,11 @@ class CreditCardValidationSolution {
 	 * assisted. Neil Fraser helped a bit on the Perl version.  Steve
 	 * Horsley, Roedy Green and Jon Skeet provided tips on the Java Edition.</p>
 	 *
-	 * @param   string   $Number      the number of the credit card to
-	 *                                  validate.
-	 * @param   string   $Language    the ISO 639-1 two letter code of
+	 * @param string $Number the number of the credit card to validate.
+	 * @param string $CheckNumber
+	 * @param string $Language the ISO 639-1 two letter code of
 	 *                                  the language for error messages.
-	 * @param   array    $Accepted    credit card types you accept.  If
+	 * @param array|string $Accepted credit card types you accept.  If
 	 *                                  not used in function call, all
 	 *                                  known cards are accepted.  Set
 	 *                                  it before calling the function: <br /><kbd>
@@ -192,11 +187,11 @@ class CreditCardValidationSolution {
 	 *                                  <li> JCB                 </li>
 	 *                                  <li> MasterCard          </li>
 	 *                                  <li> Visa                </li></ul>
-	 * @param   string   $RequireExp  should the expiration date be
+	 * @param string $RequireExp should the expiration date be
 	 *                                  checked?  Y or N.
-	 * @param   integer  $Month       the card's expiration month
+	 * @param integer|string $Month the card's expiration month
 	 *                                  in M, 0M or MM foramt.
-	 * @param   integer  $Year        the card's expiration year in YYYY format.
+	 * @param integer|string $Year the card's expiration year in YYYY format.
 	 * @return  boolean  TRUE if everything is fine.  FALSE if problems.
 	 *
 	 * @version    $Name:  $
@@ -207,27 +202,25 @@ class CreditCardValidationSolution {
 	 * @link       http://www.AnalysisAndSolutions.com/donate/
 	 * @license    http://www.AnalysisAndSolutions.com/software/license.htm Simple Public License
 	 */
-	public function validateCreditCard($Number, $CheckNumber, $Language='en', $Accepted='', $RequireExp='N', $Month='', $Year='') {
-
-
-
-		$this->CCVSNumber      = '';
+	public function validateCreditCard($Number, $CheckNumber, $Language = 'en', $Accepted = '', $RequireExp = 'N', $Month = '', $Year = '') {
+		$this->CCVSNumber = '';
 		$this->CCVSCheckNumber = '';
-		$this->CCVSNumberLeft  = '';
+		$this->CCVSNumberLeft = '';
 		$this->CCVSNumberRight = '';
-		$this->CCVSType        = '';
-		$this->CCVSExpiration  = '';
-		$this->CCVSError       = '';
+		$this->CCVSType = '';
+		$this->CCVSExpiration = '';
+		$this->CCVSError = '';
 
 		/* Import the language preferences. */
+		$Path = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce']['SYSPRODUCTS']['PAYMENT']['types']['creditcard']['ccvs_language_files'];
 
-	$Path = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce']['SYSPRODUCTS']['PAYMENT']['types']['creditcard']['ccvs_language_files'];
-
-		if ( !file_exists("$Path/ccvs_$Language.inc") ) {
-			$this->CCVSError = "The $Language language file can't be found";
+		$languageFile = $Path . '/ccvs_' . $Language . '.inc';
+		if (!file_exists($languageFile)) {
+			$this->CCVSError = 'The ' . $Language . ' language file can\'t be found';
 			return FALSE;
 		}
-		include("$Path/ccvs_$Language.inc");
+		/** @noinspection PhpIncludeInspection */
+		include($languageFile);
 
 		/* Catch malformed input. */
 
@@ -247,8 +240,8 @@ class CreditCardValidationSolution {
 		$this->CCVSCheckNumber = trim($CheckNumber);
 		$this->CCVSNumberLeft  = substr($this->CCVSNumber, 0, 4);
 		$this->CCVSNumberRight = substr($this->CCVSNumber, -4);
-		$NumberLength          = strlen($this->CCVSNumber);
-		$DoChecksum            = 'Y';
+		$NumberLength = strlen($this->CCVSNumber);
+		$DoChecksum = 'Y';
 
 		/* Determine the card type and appropriate length. */
 
@@ -320,9 +313,7 @@ class CreditCardValidationSolution {
 			return FALSE;
 		}
 
-
 		/* Check acceptance. */
-
 		if ( !empty($Accepted) ) {
 			if ( !is_array($Accepted) ) {
 				$this->CCVSError = $CCVSErrAccepted;
@@ -334,9 +325,7 @@ class CreditCardValidationSolution {
 			}
 		}
 
-
 		/* Check length. */
-
 		if (!empty($this->CCVSType)) {
 
 			switch($this->CCVSType) {
@@ -345,27 +334,25 @@ class CreditCardValidationSolution {
 						$this->CCVSError = sprintf($CCVSErrCheckNumber, $this->CCVSCheckNumber);
 						return FALSE;
 					}
-					break;
+				break;
+
 				case 'MasterCard':
 					if (strlen($this->CCVSCheckNumber) != 3) {
 						$this->CCVSError = sprintf($CCVSErrCheckNumber, $this->CCVSCheckNumber);
 						return FALSE;
 					}
-					break;
+				break;
 
 				case 'Visa':
 					if (strlen($this->CCVSCheckNumber) != 3) {
 						$this->CCVSError = sprintf($CCVSErrCheckNumber, $this->CCVSCheckNumber);
 						return FALSE;
 					}
-					break;
-
+				break;
 			}
-	   }
-
+		}
 
 		/* Check CheckNumber. */
-
 		if ($NumberLength <> $ShouldLength) {
 			$Missing = $NumberLength - $ShouldLength;
 			if ($Missing < 0) {
@@ -377,9 +364,7 @@ class CreditCardValidationSolution {
 		}
 
 		/* Mod10 checksum process... */
-
 		if ($DoChecksum == 'Y') {
-
 			$Checksum = 0;
 
 			/*
@@ -387,7 +372,7 @@ class CreditCardValidationSolution {
 			 * or odd digits in odd length strings.
 			 */
 			for ($Location = 1 - ($NumberLength % 2); $Location < $NumberLength; $Location += 2) {
-				$Checksum += substr($this->CCVSNumber, $Location, 1);
+				$Checksum .= substr($this->CCVSNumber, $Location, 1);
 			}
 
 			/*
@@ -397,26 +382,21 @@ class CreditCardValidationSolution {
 			for ($Location = ($NumberLength % 2); $Location < $NumberLength; $Location += 2) {
 				$Digit = substr($this->CCVSNumber, $Location, 1) * 2;
 				if ($Digit < 10) {
-					$Checksum += $Digit;
+					$Checksum .= $Digit;
 				} else {
-					$Checksum += $Digit - 9;
+					$Checksum .= $Digit - 9;
 				}
 			}
 
 			/* Checksums not divisible by 10 are bad. */
-
 			if ($Checksum % 10 != 0) {
 				$this->CCVSError = $CCVSErrChecksum;
 				return FALSE;
 			}
-
 		}
 
-
 		/* Expiration date process... */
-
 		if ($RequireExp == 'Y') {
-
 			if ( empty($Month) || !is_string($Month) ) {
 				$this->CCVSError = $CCVSErrMonthString;
 				return FALSE;
@@ -437,7 +417,6 @@ class CreditCardValidationSolution {
 				return FALSE;
 			}
 
-
 			if ( $Year < date('Y') ) {
 				$this->CCVSError = $CCVSErrExpired;
 				return FALSE;
@@ -449,19 +428,18 @@ class CreditCardValidationSolution {
 			}
 
 			$this->CCVSExpiration = sprintf('%02d', $Month) . substr($Year, -2);
-
 		}
 
 		return TRUE;
-
 	}
 
-	function getCreditCardType() {
+	/**
+	 * @return string
+	 */
+	public function getCreditCardType() {
 		return $this->CCVSType;
 	}
 }
-
-
 
 if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/payment/ccvs/class.tx_commerce_payment_ccvs.php']) {
 	/** @noinspection PhpIncludeInspection */

@@ -55,7 +55,7 @@ abstract class tx_commerce_payment_provider_abstract implements tx_commerce_paym
 	 * Construct this payment provider
 	 *
 	 * @param tx_commerce_payment $paymentObject Parent payment object
-	 * @return void
+	 * @return self
 	 */
 	public function __construct(tx_commerce_payment $paymentObject) {
 		$this->paymentObject = $paymentObject;
@@ -65,6 +65,7 @@ abstract class tx_commerce_payment_provider_abstract implements tx_commerce_paym
 	/**
 	 * Load configured criteria
 	 *
+	 * @throws Exception
 	 * @return void
 	 */
 	protected function loadCriteria() {
@@ -113,6 +114,7 @@ abstract class tx_commerce_payment_provider_abstract implements tx_commerce_paym
 	 */
 	public function isAllowed() {
 		$result = TRUE;
+		/** @var tx_commerce_payment_criterion_abstract $criterion */
 		foreach ($this->criteria as $criterion) {
 			if ($criterion->isAllowed() === FALSE) {
 				$result = FALSE;
@@ -155,12 +157,12 @@ abstract class tx_commerce_payment_provider_abstract implements tx_commerce_paym
 	/**
 	 * Wether or not finishing an order is allowed
 	 *
-	 * @param  array $config Current configuration
-	 * @param  array $session Session data
-	 * @param  tx_commerce_basket $basket Basket object
-	 * @return bool TRUE if finishing order is allowed
+	 * @param array $config Current configuration
+	 * @param array $session Session data
+	 * @param tx_commerce_basket $basket Basket object
+	 * @return boolean TRUE if finishing order is allowed
 	 */
-	public function finishingFunction(array $config= array(), array $session = array(), tx_commerce_basket $basket = NULL) {
+	public function finishingFunction(array $config = array(), array $session = array(), tx_commerce_basket $basket = NULL) {
 		return TRUE;
 	}
 
@@ -192,14 +194,18 @@ abstract class tx_commerce_payment_provider_abstract implements tx_commerce_paym
 	 */
 	public function getLastError() {
 		$errorMessages = '';
-		foreach ($this->errorMessages as $field => $message) {
+
+		foreach ($this->errorMessages as $message) {
 			$errorMessages .= $message;
 		}
+
+		return $errorMessages;
 	}
 }
 
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']["ext/commerce/payment/provider/class.tx_commerce_payment_provider_abstract.php"])	{
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']["ext/commerce/payment/provider/class.tx_commerce_payment_provider_abstract.php"]);
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/payment/provider/class.tx_commerce_payment_provider_abstract.php']) {
+	/** @noinspection PhpIncludeInspection */
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/payment/provider/class.tx_commerce_payment_provider_abstract.php']);
 }
 
 ?>

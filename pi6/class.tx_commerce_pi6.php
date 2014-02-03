@@ -46,7 +46,7 @@ class tx_commerce_pi6 extends tx_commerce_pibase {
 	 * @param array $conf TS configuration for this plugin
 	 * @return string Compiled content
 	 */
-	function main($content, $conf) {
+	public function main($content, $conf) {
 		$this->conf = $conf;
 		$this->pi_setPiVarDefaults();
 		$this->pi_loadLL();
@@ -150,34 +150,36 @@ class tx_commerce_pi6 extends tx_commerce_pibase {
 		return $this->pi_wrapInBaseClass($this->content);
 	}
 
-
 	/**
 	 * Check Access
 	 *
-	 * @param string $enabled Optional, default FALSE
+	 * @param boolean|string $enabled Optional, default FALSE
+	 * @return void
 	 */
-	function invoiceBackendOnly($enabled = FALSE) {
-		if ($enabled && !$GLOBALS["BE_USER"]->user["uid"] && ($_SERVER["REMOTE_ADDR"] != $_SERVER["SERVER_ADDR"])) {
-			t3lib_BEfunc::typo3PrintError("Login-error", "No user logged in! Sorry, I can't proceed then!", 0);
+	protected function invoiceBackendOnly($enabled = FALSE) {
+		if ($enabled && !$GLOBALS['BE_USER']->user['uid'] && ($_SERVER['REMOTE_ADDR'] != $_SERVER['SERVER_ADDR'])) {
+			/** @var t3lib_message_ErrorPageMessage $messageObj */
+			$messageObj = t3lib_div::makeInstance('t3lib_message_ErrorPageMessage', 'Login-error', 'No user logged in! Sorry, I can\'t proceed then!');
+			$messageObj->output();
 			exit;
 		}
 	}
-
 
 	/**
 	 * Render ordered articles
 	 *
 	 * @param integer $orderUid OrderUID
 	 * @param array $TS Optional, default is FALSE, contains TS configuration
+	 * @param string $prefix
 	 * @return string HTML-Output rendert
 	 */
-	function getOrderArticles($orderUid, $TS = false, $prefix) {
-		if ($TS == false) {
+	protected function getOrderArticles($orderUid, $TS = array(), $prefix) {
+		if (empty($TS)) {
 			$TS = $this->conf['OrderArticles.'];
 		}
 
 		$queryString = 'order_uid=' . intval($orderUid) . ' AND article_type_uid < 2 ';
-		$queryString.= $this->cObj->enableFields("tx_commerce_order_articles");
+		$queryString .= $this->cObj->enableFields("tx_commerce_order_articles");
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			'*',
 			'tx_commerce_order_articles',
@@ -211,8 +213,8 @@ class tx_commerce_pi6 extends tx_commerce_pibase {
 	 * @param string $prefix
 	 * @return string HTML-Output rendert
 	 */
-	function getAddressData($addressUid = '', $TS = false, $prefix) {
-		if ($TS == false) {
+	protected function getAddressData($addressUid = 0, $TS = array(), $prefix) {
+		if (empty($TS)) {
 			$TS = $this->conf['address.'];
 		}
 
@@ -290,12 +292,13 @@ class tx_commerce_pi6 extends tx_commerce_pibase {
 	 * @param string $prefix
 	 * @return array System Articles
 	 */
-	function getOrderSystemArticles($orderUid, $articleType = '', $prefix) {
+	protected function getOrderSystemArticles($orderUid, $articleType = 0, $prefix) {
 		$queryString = 'order_uid=' . $orderUid . ' ';
 		if ($articleType) {
-			$queryString.= ' AND article_type_uid = ' . $articleType . ' ';
+			$queryString .= ' AND article_type_uid = ' . $articleType . ' ';
 		}
-		$queryString.= $this->cObj->enableFields("tx_commerce_order_articles");
+
+		$queryString .= $this->cObj->enableFields("tx_commerce_order_articles");
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			'*',
 			'tx_commerce_order_articles',

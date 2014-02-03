@@ -41,47 +41,49 @@
  */
 class tx_commerce_attribute_value extends tx_commerce_element_alib {
 		// Title of Attribute (private)
-	var $title='';
+	protected $title = '';
 
 		// The Value for
-	var $value='';
+	protected $value = '';
 
 	/**
 	 * @var show value
 	 * if thzis value should be shown in Fe output
 	 * @acces private
 	 */
-	var $showvalue=1;
+	protected $showvalue = 1;
 
 	/**
 	 * @var icon
 	 * Icon for this Value
 	 * @acces private
 	 */
-	var $icon='';
+	protected $icon = '';
 
 	/**
 	 * Constructor Class
 	 * If $uid is not given on construction you MUST call init manually
-	 * @param uid integer uid or attribute, default false
-	 * @param lang_uid integer language uid, default 0
+	 *
+	 * @param integer $uid or attribute, default false
+	 * @param integer $lang_uid language uid, default 0
 	 */
-	function tx_commerce_attribute_value($uid = FALSE, $lang_uid = 0) {
-		if ($uid !== FALSE) {
+	public function __construct($uid = 0, $lang_uid = 0) {
+		if ((int) $uid > 0) {
 			$this->init($uid, $lang_uid);
 		}
 	}
 
 	/**
 	 * Init Class
-	 * @param uid integer uid or attribute
-	 * @param lang_uid integer language uid, default 0
+	 *
+	 * @param integer $uid or attribute
+	 * @param integer $lang_uid language uid, default 0
+	 * @return void
 	 */
-
 	public function init($uid, $lang_uid = 0) {
 		$uid = intval($uid);
 		$lang_uid = intval($lang_uid);
-		/*
+		/**
 		 * Define variables
 		 */
 		$this->fieldlist = array('title', 'value', 'showvalue', 'icon', 'l18n_parent');
@@ -104,51 +106,50 @@ class tx_commerce_attribute_value extends tx_commerce_element_alib {
 	}
 
 	/**
-	 * @deprecated alias for getValue
+	 * gets the attribute title
 	 *
+	 * @param boolean $checkvalue optional check if value shoudl be show in FE
+	 * @return string title
 	 */
-	function get_value($checkvalue){
-		return $this->getValue($checkvalue);
+	public function getValue($checkvalue = FALSE) {
+		if (($checkvalue) && ($this->showicon)) {
+			return $this->value;
+		} elseif ($checkvalue == FALSE) {
+			return $this->value;
+		} else {
+			return FALSE;
+		}
 	}
 
 	/**
-	 * gets the attribute title
-	 * @param checkvalue optional check if value shoudl be show in FE
-	 * @return string title
-	 * @access public
-	 * @since 2010 02. 20
+	 * @deprecated alias for getValue
 	 */
-	function getValue($checkvalue=false) {
-		if (($checkvalue) && ($this->showicon)) {
-			return $this->value;
-		} elseif ($checkvalue==false) {
-			return $this->value;
-		} else {
-			return false;
-		}
+	public function get_value($checkvalue) {
+		return $this->getValue($checkvalue);
 	}
 
 	/**
 	 * Overwrite get_attributes as attribute_values cant hav attributes
 	 * @return false;
 	 */
-	function get_attributes() {
-		return false;
+	public function get_attributes() {
+		return FALSE;
 	}
 
 	/**
-	 * Gets thze icon for this value
-	 * @return icon
+	 * Gets the icon for this value
+	 *
+	 * @return string
 	 */
-	function getIcon() {
+	public function getIcon() {
 		return $this->icon;
 	}
 
 	/**
 	 * Gets the showicon value
-	 * @retun integer
+	 * @return integer
 	 */
-	function getshowicon() {
+	public function getshowicon() {
 		return $this->showicon;
 	}
 }

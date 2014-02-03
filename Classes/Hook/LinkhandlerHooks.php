@@ -1,14 +1,10 @@
 <?php
 
-if (!defined('TYPO3_MODE')) {
-	die('Access denied.');
-}
-
-class tx_commerce_linkhandler {
+class Tx_Commerce_Hook_LinkhandlerHooks {
 	/**
 	 * @var tslib_cObj
 	 */
-	public $pObj;
+	protected $pObj;
 
 	/**
 	 * @param string $linktxt
@@ -80,9 +76,9 @@ class tx_commerce_linkhandler {
 	}
 }
 
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/Classes/Hook/commerce/class.tx_commerce_linkhandler.php']) {
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Hook/LinkhandlerHooks.php']) {
 	/** @noinspection PhpIncludeInspection */
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/Classes/Hook/commerce/class.tx_commerce_linkhandler.php']);
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Hook/LinkhandlerHooks.php']);
 }
 
 ?>

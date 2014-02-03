@@ -1,62 +1,90 @@
 <?php
+/***************************************************************
+ *  Copyright notice
+ *
+ *  (c) 2008 Ingo Schmitt <is@marketing-factory.de>
+ *  All rights reserved
+ *
+ *  This script is part of the TYPO3 project. The TYPO3 project is
+ *  free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  The GNU General Public License can be found at
+ *  http://www.gnu.org/copyleft/gpl.html.
+ *  A copy is found in the textfile GPL.txt and important notices to the license
+ *  from the author is found in LICENSE.txt distributed with these scripts.
+ *
+ *
+ *  This script is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  This copyright notice MUST APPEAR in all copies of the script!
+ ***************************************************************/
+
 /**
  * Holds the TCE Functions
- *
- * @author 		Marketing Factory <typo3@marketing-factory.de>
- * @maintainer 	Erik Frister <typo3@marketing-factory.de>
  */
 class tx_commerce_tceFunc {
+	/**
+	 * @var t3lib_TCEforms
+	 */
+	protected $tceForms;
 
 	/**
 	 * This will render a selector box element for selecting elements of (category) trees.
 	 * Depending on the tree it display full trees or root elements only
 	 *
-	 * @param	array		$PA An array with additional configuration options.
-	 * @param	object		$fobj TCEForms object reference
-	 * @return	string		The HTML code for the TCEform field
+	 * @param array $PA An array with additional configuration options.
+	 * @param t3lib_TCEforms $fObj TCEForms object reference
+	 * @return string The HTML code for the TCEform field
 	 */
-	function getSingleField_selectCategories($PA, &$fObj) {
-		$this->tceforms = &$PA['pObj'];
+	public function getSingleField_selectCategories($PA, &$fObj) {
+		$this->tceForms = &$PA['pObj'];
 
-		$table 	= $PA['table'];
-		$field 	= $PA['field'];
-		$row 	= $PA['row'];
+		$table = $PA['table'];
+		$field = $PA['field'];
+		$row = $PA['row'];
 		$config = $PA['fieldConf']['config'];
 
 		$disabled = '';
-		if($this->tceforms->renderReadonly || $config['readOnly'])  {
+		if ($this->tceForms->renderReadonly || $config['readOnly']) {
 			$disabled = ' disabled="disabled"';
 		}
 
+			// @todo it seems TCE has a bug and do not work correctly with '1'
+		$config['maxitems'] = ($config['maxitems'] == 2) ? 1 : $config['maxitems'];
 
-		// TODO it seems TCE has a bug and do not work correctly with '1'
-		$config['maxitems'] = ($config['maxitems']==2) ? 1 : $config['maxitems'];
-
-		//read the permissions we are restricting the tree to, depending on the table
+			// read the permissions we are restricting the tree to, depending on the table
 		$perms = 'show';
 
 		switch($table) {
 			case 'tx_commerce_categories':
 				$perms = 'new';
-				break;
+			break;
 
 			case 'tx_commerce_products':
 				$perms = 'editcontent';
-				break;
+			break;
 
 			case 'tt_content':
 			case 'be_groups':
 			case 'be_users':
 				$perms = 'show';
-				break;
+			break;
 		}
 
 		$browseTrees = t3lib_div::makeInstance('tx_commerce_categorytree');
-		$browseTrees->noClickmenu();	//disabled clickmenu
-		$browseTrees->setMinCategoryPerms($perms); //set the minimum permissions
+			// disabled clickmenu
+		$browseTrees->noClickmenu();
+			// set the minimum permissions
+		$browseTrees->setMinCategoryPerms($perms);
 
-		if($config['allowProducts']) {
-			$browseTrees->setBare(false);
+		if ($config['allowProducts']) {
+			$browseTrees->setBare(FALSE);
 		}
 
 		if ($config['substituteRealValues']) {
@@ -73,12 +101,15 @@ class tx_commerce_tceFunc {
 
 		$renderBrowseTrees = t3lib_div::makeInstance('tx_commerce_treelib_tceforms');
 		$renderBrowseTrees->init ($PA, $fObj);
-		$renderBrowseTrees->setIFrameTreeBrowserScript($this->tceforms->backPath . PATH_TXCOMMERCE_REL . 'mod_treebrowser/index.php');
+		$renderBrowseTrees->setIFrameTreeBrowserScript($this->tceForms->backPath . PATH_TXCOMMERCE_REL . 'mod_treebrowser/index.php');
 
-		##WHEN ARE WE EVER ALREADY IN THE IFRAME? AND WHEN DO WE EVERY RENDER A DIV? RENDERING IN THE DIV WOULD BRAKE TREE FUNCTIONALITY BECAUSE JS WOULD NOT WORK ANYMORE###
+			// @todo WHEN ARE WE EVER ALREADY IN THE IFRAME?
+			// AND WHEN DO WE EVERY RENDER A DIV?
+			// RENDERING IN THE DIV WOULD BRAKE TREE FUNCTIONALITY BECAUSE JS WOULD NOT WORK ANYMORE
 			// Render the tree
 		$renderBrowseTrees->renderBrowsableMountTrees($browseTrees);
 
+		$thumbnails = '';
 		if (!$disabled) {
 			if ($renderBrowseTrees->isIFrameContentRendering()) {
 					// just the trees are needed - we're inside of an iframe!
@@ -93,130 +124,121 @@ class tx_commerce_tceFunc {
 					// The source of the iframe is dam/mod_treebrowser/index.php which will be called with the current _GET variables
 					// In the configuration of the TCA treeViewBrowseable is set to TRUE. The value 'iframeContent' for treeViewBrowseable will
 					// be set in dam/mod_treebrowser/index.php as internal configuration logic
-
 				$thumbnails = $renderBrowseTrees->renderIFrame();
-
 			} else {
 					// tree frame <div>
 				$thumbnails = $renderBrowseTrees->renderDivBox();
 			}
 		}
 
-		// get selected processed items - depending on the table we want to insert into (tx_commerce_products, tx_commerce_categories, be_users)
-		// if row['uid'] is defined and is an integer we do display an existing record
-		// otherwhise it's a new record, so get default values
+			// get selected processed items - depending on the table we want to insert into (tx_commerce_products, tx_commerce_categories, be_users)
+			// if row['uid'] is defined and is an integer we do display an existing record
+			// otherwhise it's a new record, so get default values
 		$itemArray = array();
 
-		if (intval($row['uid']) > 0){
-			// existing Record
+		if (intval($row['uid']) > 0) {
+				// existing Record
 			switch($table) {
 				case 'tx_commerce_categories':
 					$itemArray = $renderBrowseTrees->processItemArrayForBrowseableTreePCategory($browseTrees, $row['uid']);
-					break;
+				break;
 
 				case 'tx_commerce_products':
 					$itemArray = $renderBrowseTrees->processItemArrayForBrowseableTreeProduct($browseTrees, $row['uid']);
-					break;
+				break;
 
 				case 'be_users':
 					$itemArray = $renderBrowseTrees->processItemArrayForBrowseableTree($browseTrees, $row['uid']);
-					break;
+				break;
 
 				case 'be_groups':
 					$itemArray = $renderBrowseTrees->processItemArrayForBrowseableTreeGroups($browseTrees, $row['uid']);
-					break;
+				break;
 
 				case 'tt_content':
-					// Perform modification of the selected items array:
-					$itemArray = t3lib_div::trimExplode(',',$PA['itemFormElValue'],1);
+						// Perform modification of the selected items array:
+					$itemArray = t3lib_div::trimExplode(',', $PA['itemFormElValue'], 1);
 					$itemArray = $renderBrowseTrees->processItemArrayForBrowseableTreeCategory($browseTrees, $itemArray[0]);
-					break;
+				break;
+
 				default:
 					$itemArray = $renderBrowseTrees->processItemArrayForBrowseableTreeDefault($PA['itemFormElValue']);
-					break;
+				break;
 			}
-		}else{
-			// New record
-			$defVals= t3lib_div::_GP('defVals');
-			switch($table) {
-
+		} else {
+				// New record
+			$defVals = t3lib_div::_GP('defVals');
+			switch ($table) {
 				case 'tx_commerce_categories':
-						$cat = t3lib_div::makeInstance('tx_commerce_category');
-						$cat->init($defVals['tx_commerce_categories']['parent_category']);
-						$cat->loadData();
-						$itemArray = array($cat->getUid().'|'.$cat->get_title());
-					break;
+					$category = t3lib_div::makeInstance('tx_commerce_category');
+					$category->init($defVals['tx_commerce_categories']['parent_category']);
+					$category->loadData();
+					$itemArray = array($category->getUid() . '|' . $category->get_title());
+				break;
 
 				case 'tx_commerce_products':
-					$cat = t3lib_div::makeInstance('tx_commerce_category');
-					$cat->init($defVals['tx_commerce_products']['categories']);
-					$cat->loadData();
-					$itemArray = array($cat->getUid().'|'.$cat->get_title());
-
-					break;
-
-
+					$category = t3lib_div::makeInstance('tx_commerce_category');
+					$category->init($defVals['tx_commerce_products']['categories']);
+					$category->loadData();
+					$itemArray = array($category->getUid() . '|' . $category->get_title());
+				break;
 			}
 		}
 
-			//
 			// process selected values
-			//
-
 			// Creating the label for the "No Matching Value" entry.
-		$nMV_label = isset($PA['fieldTSConfig']['noMatchingValue_label']) ? $this->tceforms->sL($PA['fieldTSConfig']['noMatchingValue_label']) : '[ '.$this->tceforms->getLL('l_noMatchingValue').' ]';
+		$nMV_label = isset($PA['fieldTSConfig']['noMatchingValue_label']) ?
+			$this->tceForms->sL($PA['fieldTSConfig']['noMatchingValue_label']) :
+			'[ ' . $this->tceForms->getLL('l_noMatchingValue') . ' ]';
 		$nMV_label = @sprintf($nMV_label, $PA['itemFormElValue']);
 
 			// Possibly remove some items:
-		$removeItems = t3lib_div::trimExplode(',', $PA['fieldTSConfig']['removeItems'], true);
-		foreach($itemArray as $tk => $tv) {
+		$removeItems = t3lib_div::trimExplode(',', $PA['fieldTSConfig']['removeItems'], TRUE);
+		foreach ($itemArray as $tk => $tv) {
 			$tvP = explode('|', $tv, 2);
-			if (in_array($tvP[0], $removeItems) && !$PA['fieldTSConfig']['disableNoMatchingValueElement'])	{
+			if (in_array($tvP[0], $removeItems) && !$PA['fieldTSConfig']['disableNoMatchingValueElement']) {
 				$tvP[1] = rawurlencode($nMV_label);
 			} elseif (isset($PA['fieldTSConfig']['altLabels.'][$tvP[0]])) {
-				$tvP[1] = rawurlencode($this->tceforms->sL($PA['fieldTSConfig']['altLabels.'][$tvP[0]]));
+				$tvP[1] = rawurlencode($this->tceForms->sL($PA['fieldTSConfig']['altLabels.'][$tvP[0]]));
 			}
 			$itemArray[$tk] = implode('|', $tvP);
 		}
 
-		//
-		// Rendering and output
-		//
-
+			// Rendering and output
 		$minitems = t3lib_div::intInRange($config['minitems'], 0);
 		$maxitems = t3lib_div::intInRange($config['maxitems'], 0);
-		if (!$maxitems)	$maxitems = 100000;
+		if (!$maxitems) {
+			$maxitems = 100000;
+		}
 
-		$this->tceforms->requiredElements[$PA['itemFormElName']] = array($minitems, $maxitems, 'imgName' => $table.'_'.$row['uid'].'_'.$field);
-
-
+		$this->tceForms->requiredElements[$PA['itemFormElName']] = array($minitems, $maxitems, 'imgName' => $table . '_' . $row['uid'] . '_' . $field);
 
 		$item = '';
-		$item .= '<input type="hidden" name="'.$PA['itemFormElName'].'_mul" value="'.($config['multiple']?1:0).'"'.$disabled.' />';
+		$item .= '<input type="hidden" name="' . $PA['itemFormElName'] . '_mul" value="' . ($config['multiple'] ? 1 : 0) . '"' . $disabled . ' />';
 
 		$params = array(
 			'size' => $config['size'],
 			'autoSizeMax' => t3lib_div::intInRange($config['autoSizeMax'], 0),
 			'style' => ' style="width:200px;"',
-			'dontShowMoveIcons' => ($maxitems<=1),
+			'dontShowMoveIcons' => ($maxitems <= 1),
 			'maxitems' => $maxitems,
 			'info' => '',
 			'headers' => array(
-				'selector' => $this->tceforms->getLL('l_selected').':<br />',
-				'items' => ($disabled ? '': $this->tceforms->getLL('l_items').':<br />')
+				'selector' => $this->tceForms->getLL('l_selected') . ':<br />',
+				'items' => ($disabled ? '': $this->tceForms->getLL('l_items') . ':<br />')
 			),
-			'noBrowser' => true,
+			'noBrowser' => TRUE,
 			'readOnly' => $disabled,
 			'thumbnails' => $thumbnails
 		);
 
-		$item .= $this->tceforms->dbFileIcons($PA['itemFormElName'], $config['internal_type'], $config['allowed'], $itemArray, '', $params, $PA['onFocus']);
+		$item .= $this->tceForms->dbFileIcons($PA['itemFormElName'], $config['internal_type'], $config['allowed'], $itemArray, '', $params, $PA['onFocus']);
 
 			// Wizards:
 		if (!$disabled) {
-			$specConf = $this->tceforms->getSpecConfFromString($PA['extra'], $PA['fieldConf']['defaultExtras']);
-			$altItem = '<input type="hidden" name="'.$PA['itemFormElName'].'" value="'.htmlspecialchars($PA['itemFormElValue']).'" />';
-			$item = $this->tceforms->renderWizards(array($item, $altItem), $config['wizards'], $table, $row, $field, $PA, $PA['itemFormElName'], $specConf);
+			$specConf = $this->tceForms->getSpecConfFromString($PA['extra'], $PA['fieldConf']['defaultExtras']);
+			$altItem = '<input type="hidden" name="' . $PA['itemFormElName'] . '" value="' . htmlspecialchars($PA['itemFormElValue']) . '" />';
+			$item = $this->tceForms->renderWizards(array($item, $altItem), $config['wizards'], $table, $row, $field, $PA, $PA['itemFormElName'], $specConf);
 		}
 
 		return $item;

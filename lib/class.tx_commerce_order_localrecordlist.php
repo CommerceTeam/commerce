@@ -352,20 +352,21 @@ class tx_commerce_order_localRecordlist extends localRecordList {
 
 	/**
 	 * Wrapping input code in link to URL or email if $testString is either.
-	 * @see TYPO3 4.0.0, copied from there
-	 * @return	string		Link-Wrapped $code value, if $testString was URL or email.
+	 *
+	 * @param string $code
+	 * @param string $testString
+	 * @return string Link-Wrapped $code value, if $testString was URL or email.
 	 */
-	function mylinkUrlMail($code,$testString)	{
-
+	protected function mylinkUrlMail($code,$testString) {
 			// Check for URL:
 		$schema = parse_url($testString);
-		if ($schema['scheme'] && t3lib_div::inList('http,https,ftp',$schema['scheme']))	{
-			return '<a href="'.htmlspecialchars($testString).'" target="_blank">'.$code.'</a>';
+		if ($schema['scheme'] && t3lib_div::inList('http,https,ftp', $schema['scheme'])) {
+			return '<a href="' . htmlspecialchars($testString) . '" target="_blank">' . $code . '</a>';
 		}
 
 			// Check for email:
-		if (t3lib_div::validEmail($testString))	{
-			return '<a href="mailto:'.htmlspecialchars($testString).'" target="_blank">'.$code.'</a>';
+		if (t3lib_div::validEmail($testString)) {
+			return '<a href="mailto:' . htmlspecialchars($testString) . '" target="_blank">' . $code . '</a>';
 		}
 
 			// Return if nothing else...
@@ -944,33 +945,33 @@ class tx_commerce_order_localRecordlist extends localRecordList {
 		return $out;
 	}
 
-    /**
-     * @NOTE: Since Typo3 4.5 we can't use listURL from parent class ("class.db_list.inc" - class recordList) anymore. It would lead to wrong url linking to web_list.
-     * This is just a copy of function listURL from Typo3 4.2
-     *
-     * Creates the URL to this script, including all relevant GPvars
-     * Fixed GPvars are id, table, imagemode, returlUrl, search_field, search_levels and showLimit
-     * The GPvars "sortField" and "sortRev" are also included UNLESS they are found in the $exclList variable.
-     *
-     * @param   string      Alternative id value. Enter blank string for the current id ($this->id)
-     * @param   string      Tablename to display. Enter "-1" for the current table.
-     * @param   string      Commalist of fields NOT to include ("sortField" or "sortRev")
-     * @return  string      URL
-     */
-    function listURL($altId='',$table=-1,$exclList='')  {
-        return $this->script.
-            '?id='.(strcmp($altId,'')?$altId:$this->id).
-            '&table='.rawurlencode($table==-1?$this->table:$table).
-            ($this->thumbs?'&imagemode='.$this->thumbs:'').
-            ($this->returnUrl?'&returnUrl='.rawurlencode(t3lib_div::sanitizeLocalUrl($this->returnUrl)):'').
-            ($this->searchString?'&search_field='.rawurlencode($this->searchString):'').
-            ($this->searchLevels?'&search_levels='.rawurlencode($this->searchLevels):'').
-            ($this->showLimit?'&showLimit='.rawurlencode($this->showLimit):'').
-            ($this->firstElementNumber?'&pointer='.rawurlencode($this->firstElementNumber):'').
-            ((!$exclList || !t3lib_div::inList($exclList,'sortField')) && $this->sortField?'&sortField='.rawurlencode($this->sortField):'').
-            ((!$exclList || !t3lib_div::inList($exclList,'sortRev')) && $this->sortRev?'&sortRev='.rawurlencode($this->sortRev):'')
-            ;
-    }
+	/**
+	 * @todo fix that this can get removed
+	 * @NOTE: Since Typo3 4.5 we can't use listURL from parent class ("class.db_list.inc" - class recordList) anymore. It would lead to wrong url linking to web_list.
+	 * This is just a copy of function listURL from Typo3 4.2
+	 *
+	 * Creates the URL to this script, including all relevant GPvars
+	 * Fixed GPvars are id, table, imagemode, returlUrl, search_field, search_levels and showLimit
+	 * The GPvars "sortField" and "sortRev" are also included UNLESS they are found in the $exclList variable.
+	 *
+	 * @param string $altId Alternative id value. Enter blank string for the current id ($this->id)
+	 * @param string $table Tablename to display. Enter "-1" for the current table.
+	 * @param string $exclList Commalist of fields NOT to include ("sortField" or "sortRev")
+	 * @return string URL
+	 */
+	public function listURL($altId = '', $table = -1, $exclList = '') {
+		return $this->script .
+			'?id=' . (strcmp($altId, '') ? $altId : $this->id) .
+			'&table=' . rawurlencode($table == -1 ? $this->table : $table) .
+			($this->thumbs ? '&imagemode=' . $this->thumbs : '') .
+			($this->returnUrl ? '&returnUrl=' . rawurlencode(t3lib_div::sanitizeLocalUrl($this->returnUrl)) : '') .
+			($this->searchString ? '&search_field=' . rawurlencode($this->searchString) : '') .
+			($this->searchLevels ? '&search_levels=' . rawurlencode($this->searchLevels) : '') .
+			($this->showLimit ? '&showLimit=' . rawurlencode($this->showLimit) : '') .
+			($this->firstElementNumber ? '&pointer=' . rawurlencode($this->firstElementNumber) : '') .
+			((!$exclList || !t3lib_div::inList($exclList,'sortField')) && $this->sortField ? '&sortField=' . rawurlencode($this->sortField) : '') .
+			((!$exclList || !t3lib_div::inList($exclList,'sortRev')) && $this->sortRev ? '&sortRev=' . rawurlencode($this->sortRev) : '');
+	}
 }
 
 if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_order_localrecordlist.php']) {

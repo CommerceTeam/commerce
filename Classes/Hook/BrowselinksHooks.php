@@ -29,10 +29,6 @@
  * hook to adjust linkwizard (linkbrowser)
  */
 
-if (!defined ('TYPO3_MODE')) {
-	die ('Access denied.');
-}
-
 class Tx_Commerce_Hook_BrowselinksHooks implements t3lib_browseLinksHook {
 	/**
 	 * Sauvegarde locale du cObj parent

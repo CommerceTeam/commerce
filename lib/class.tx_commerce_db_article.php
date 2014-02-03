@@ -27,11 +27,6 @@
  * be made by this class. In most cases you should use the methodes
  * provided by tx_commerce_article to get informations for articles.
  * Inherited from tx_commerce_db_alib
- *
- * @author Ingo Schmitt <is@marketing-factory.de>
- * @internal Maintainer Ingo Schmitt
- * @package TYPO3
- * @subpackage tx_commerce
  */
 class tx_commerce_db_article extends tx_commerce_db_alib {
 	/**
@@ -46,6 +41,7 @@ class tx_commerce_db_article extends tx_commerce_db_alib {
 
 	/**
 	 * returns the parent Product uid
+	 *
 	 * @param integer $uid Article uid
 	 * @param boolean $translationMode
 	 * @return integer product uid
@@ -67,118 +63,113 @@ class tx_commerce_db_article extends tx_commerce_db_alib {
 
 	/**
 	 * gets all prices form database related to this product
-	 * @param uid= Article uid
-	 * @param count = Number of Articles for price_scale_amount, default 1
+	 *
+	 * @param integer $uid Article uid
+	 * @param integer $count = Number of Articles for price_scale_amount, default 1
+	 * @param string $orderField
 	 * @return array of Price UID
 	 */
-	function get_prices($uid,$count=1,$orderField = 'price_net') {
+	public function getPrices($uid, $count = 1, $orderField = 'price_net') {
 		$uid = intval($uid);
 		$count = intval($count);
 		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_article.php']['priceOrder']) {
 			$hookObj = &t3lib_div::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_article.php']['priceOrder']);
-		}
-		if (method_exists($hookObj, 'priceOrder')) {
-			$orderField = $hookObj->priceOrder($orderField);
+			if (method_exists($hookObj, 'priceOrder')) {
+				$orderField = $hookObj->priceOrder($orderField);
+			}
 		}
 
-		// hook to define any additional restrictions in where clause (Melanie Meyer, 2008-09-17)
+			// hook to define any additional restrictions in where clause (Melanie Meyer, 2008-09-17)
+		$additionalWhere = '';
 		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_article.php']['additionalPriceWhere']) {
 			$hookObj = &t3lib_div::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_article.php']['additionalPriceWhere']);
-		}
-		if (method_exists($hookObj, 'additionalPriceWhere')) {
-			$additionalWhere = $hookObj->additionalPriceWhere($this,$uid);
-		}
-		if ($uid>0) {
-			$price_uid_list=array();
-			if (is_object($GLOBALS['TSFE']->sys_page)) {
-				$proofSQL = $GLOBALS['TSFE']->sys_page->enableFields('tx_commerce_article_prices',$GLOBALS['TSFE']->showHiddenRecords);
+			if (method_exists($hookObj, 'additionalPriceWhere')) {
+				$additionalWhere = $hookObj->additionalPriceWhere($this, $uid);
 			}
-			$result=$GLOBALS['TYPO3_DB']->exec_SELECTquery(
+		}
+
+		if ($uid > 0) {
+			$price_uid_list = array();
+			$proofSql = '';
+			if (is_object($GLOBALS['TSFE']->sys_page)) {
+				$proofSql = $GLOBALS['TSFE']->sys_page->enableFields('tx_commerce_article_prices', $GLOBALS['TSFE']->showHiddenRecords);
+			}
+
+			/** @var t3lib_db $database */
+			$database = $GLOBALS['TYPO3_DB'];
+
+			$result = $database->exec_SELECTquery(
 				'uid,fe_group',
 				'tx_commerce_article_prices',
-				"uid_article = $uid and price_scale_amount_start <= $count and price_scale_amount_end >= $count" .  $proofSQL . $additionalWhere,
+				'uid_article = ' . $uid . ' AND price_scale_amount_start <= ' . $count . ' AND price_scale_amount_end >= ' . $count . $proofSql . $additionalWhere,
 				'',
 				$orderField
 			);
-			if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)>0) {
-				while ($return_data=$GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
-					// Some users of the prices depend on fe_group being 0 when no group is selected. See bug #8894
+			if ($database->sql_num_rows($result) > 0) {
+				while ($return_data = $database->sql_fetch_assoc($result)) {
+						// Some users of the prices depend on fe_group being 0 when no group is selected. See bug #8894
 					if ($return_data['fe_group'] == '') {
 						$return_data['fe_group'] = '0';
 					}
-					$price_uid_list[$return_data['fe_group']][]=$return_data['uid'];
+					$price_uid_list[$return_data['fe_group']][] = $return_data['uid'];
 				}
-				$GLOBALS['TYPO3_DB']->sql_free_result($result);
+				$database->sql_free_result($result);
 				return $price_uid_list;
-			}else{
-				 $this->error("exec_SELECTquery('uid','tx_commerce_article_prices',\"uid_article = $uid\"); returns no Result");
-				return false;
+			} else {
+				$this->error('exec_SELECTquery(\'uid\', \'tx_commerce_article_prices\', \'uid_article = \' . $uid); returns no Result');
+				return FALSE;
 			}
-		}else {
-			return false;
+		} else {
+			return FALSE;
 		}
+	}
+
+	/**
+	 * gets all prices form database related to this product
+	 *
+	 * @param integer $uid Article uid
+	 * @param integer $count = Number of Articles for price_scale_amount, default 1
+	 * @param string $orderField
+	 * @return array of Price UID
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use tx_commerce_db_article::getPrices instead
+	 */
+	public function get_prices($uid, $count = 1, $orderField = 'price_net') {
+		t3lib_div::logDeprecatedFunction();
+		return $this->getPrices($uid, $count, $orderField);
 	}
 
 	/**
 	 * Returns an array of all scale price amounts
-	 * @param uid= Article uid
+	 *
+	 * @param integer $uid Article uid
+	 * @param integer $count
 	 * @return array of Price UID
 	 */
-
-	function getPriceScales($uid,$count=1) {
+	public function getPriceScales($uid,$count = 1) {
 		$uid = intval($uid);
 		$count = intval($count);
-		if ($uid>0) {
-			$price_uid_list=array();
-			if (is_object($GLOBALS['TSFE']->sys_page)) {
-				$proofSQL = $GLOBALS['TSFE']->sys_page->enableFields('tx_commerce_article_prices',$GLOBALS['TSFE']->showHiddenRecords);
-			}
-			$result=$GLOBALS['TYPO3_DB']->exec_SELECTquery('uid,price_scale_amount_start, price_scale_amount_end',
-				'tx_commerce_article_prices',
-				"uid_article = $uid AND price_scale_amount_start >= $count " .  $proofSQL
-			);
-			if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)>0) {
-				while ($return_data=$GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
-					$price_uid_list[$return_data['price_scale_amount_start']][$return_data['price_scale_amount_end']]=$return_data['uid'];
-				}
-				$GLOBALS['TYPO3_DB']->sql_free_result($result);
-				return $price_uid_list;
-			} else {
-				$this->error("exec_SELECTquery('uid','tx_commerce_article_prices',\"uid_article = $uid\"); returns no Result");
-				return false;
-			}
-		}else {
-			return false;
-		}
-	}
-
-	/**
-	 * Returns an array of all prices
-	 * @param integer $uid Article uid
-	 * @return array of Price UID
-	 */
-	public function getPrices($uid) {
-		$uid = intval($uid);
 		if ($uid > 0) {
+			$proofSql = '';
 			$price_uid_list = array();
-			$proofSQL = '';
 			if (is_object($GLOBALS['TSFE']->sys_page)) {
-				$proofSQL = $GLOBALS['TSFE']->sys_page->enableFields('tx_commerce_article_prices', $GLOBALS['TSFE']->showHiddenRecords);
+				$proofSql = $GLOBALS['TSFE']->sys_page->enableFields('tx_commerce_article_prices', $GLOBALS['TSFE']->showHiddenRecords);
 			}
 
-			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-				'uid,price_scale_amount_start, price_scale_amount_end',
+			/** @var t3lib_db $database */
+			$database = $GLOBALS['TYPO3_DB'];
+
+			$result = $database->exec_SELECTquery('uid,price_scale_amount_start, price_scale_amount_end',
 				'tx_commerce_article_prices',
-				'uid_article = ' . $uid .  $proofSQL
+				'uid_article = ' . $uid  . ' AND price_scale_amount_start >= ' . $count . $proofSql
 			);
-			if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
-				while ($return_data = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
-					$price_uid_list[] = $return_data['uid'];
+			if ($database->sql_num_rows($result) > 0) {
+				while ($return_data = $database->sql_fetch_assoc($result)) {
+					$price_uid_list[$return_data['price_scale_amount_start']][$return_data['price_scale_amount_end']] = $return_data['uid'];
 				}
-				$GLOBALS['TYPO3_DB']->sql_free_result($result);
+				$database->sql_free_result($result);
 				return $price_uid_list;
 			} else {
-				$this->error("exec_SELECTquery('uid','tx_commerce_article_prices',\"uid_article = $uid\"); returns no Result");
+				$this->error('exec_SELECTquery(\'uid\', \'tx_commerce_article_prices\', \'uid_article = \' . $uid); returns no Result');
 				return FALSE;
 			}
 		} else {
@@ -188,43 +179,66 @@ class tx_commerce_db_article extends tx_commerce_db_alib {
 
 	/**
 	 * gets all attributes from this product
-	 * @param uid= Product uid
-	 * @see tx_commerce_db_alib.php
+	 *
+	 * @param integer $uid Product uid
 	 * @return array of attribute UID
 	 */
-	function get_attributes($uid) {
-		return parent::get_attributes($uid,'');
+	public function getAttributes($uid) {
+		return parent::getAttributes($uid, '');
+	}
+
+	/**
+	 * gets all attributes from this product
+	 *
+	 * @param integer $uid Product uid
+	 * @return array of attribute UID
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use tx_commerce_db_article::getAttributes instead
+	 */
+	public function get_attributes($uid) {
+		t3lib_div::logDeprecatedFunction();
+		return $this->getAttributes($uid);
 	}
 
 	/**
 	 * Returns the attribute Value from the given Article attribute pair
+	 *
 	 * @param integer $uid Article UID
-	 * @param integer $attribute_uid Attribute UID
+	 * @param integer $attributeUid Attribute UID
 	 * @param boolean $valueListAsUid if true, returns not the value from the valuelist, instaed the uid
 	 * @return string
 	 */
-	public function getAttributeValue($uid, $attribute_uid,$valueListAsUid=false) {
-		$uid = intval($uid);
-		$attribute_uid = intval($attribute_uid);
+	public function getAttributeValue($uid, $attributeUid, $valueListAsUid = FALSE) {
+		$uid = (int) $uid;
+		$attributeUid = (int) $attributeUid;
+
 		if ($uid > 0) {
 				// First select attribute, to detecxt if is valuelist
+			$proofSql = '';
 			if (is_object($GLOBALS['TSFE']->sys_page)) {
-				$proofSQL = $GLOBALS['TSFE']->sys_page->enableFields('tx_commerce_attributes',$GLOBALS['TSFE']->showHiddenRecords);
+				$proofSql = $GLOBALS['TSFE']->sys_page->enableFields('tx_commerce_attributes', $GLOBALS['TSFE']->showHiddenRecords);
 			}
-			$result= $GLOBALS['TYPO3_DB']->exec_SELECTquery('DISTINCT uid,has_valuelist','tx_commerce_attributes',"uid = $attribute_uid " .  $proofSQL);
-			if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)==1){
-				$return_data=$GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
-				if ($return_data['has_valuelist']==1) {
-					// Attribute has a valuelist, so do separate query
-					$a_result= $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+
+			/** @var t3lib_db $database */
+			$database = $GLOBALS['TYPO3_DB'];
+
+			$result = $database->exec_SELECTquery(
+				'DISTINCT uid,has_valuelist',
+				'tx_commerce_attributes',
+				'uid = ' . (int) $attributeUid . $proofSql
+			);
+			if ($database->sql_num_rows($result) == 1) {
+				$return_data = $database->sql_fetch_assoc($result);
+				if ($return_data['has_valuelist'] == 1) {
+						// Attribute has a valuelist, so do separate query
+					$a_result = $database->exec_SELECTquery(
 						'DISTINCT distinct tx_commerce_attribute_values.value,tx_commerce_attribute_values.uid',
 						'tx_commerce_articles_article_attributes_mm, tx_commerce_attribute_values',
 						'tx_commerce_articles_article_attributes_mm.uid_valuelist = tx_commerce_attribute_values.uid' .
 							' AND uid_local = ' . $uid .
-							' AND uid_foreign = ' . $attribute_uid
+							' AND uid_foreign = ' . $attributeUid
 					);
-					if ($GLOBALS['TYPO3_DB']->sql_num_rows($a_result) == 1) {
-						$value_data = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($a_result);
+					if ($database->sql_num_rows($a_result) == 1) {
+						$value_data = $database->sql_fetch_assoc($a_result);
 						if ($valueListAsUid == TRUE) {
 							return $value_data['uid'];
 						} else {
@@ -233,13 +247,13 @@ class tx_commerce_db_article extends tx_commerce_db_alib {
 					}
 				} else {
 						// attribute has no valuelist, so do normal query
-					$a_result= $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+					$a_result = $database->exec_SELECTquery(
 						'DISTINCT value_char,default_value',
 						'tx_commerce_articles_article_attributes_mm',
-						'uid_local = ' . $uid . ' AND uid_foreign = ' . $attribute_uid
+						'uid_local = ' . $uid . ' AND uid_foreign = ' . $attributeUid
 					);
-					if ($GLOBALS['TYPO3_DB']->sql_num_rows($a_result)==1) {
-						$value_data = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($a_result);
+					if ($database->sql_num_rows($a_result) == 1) {
+						$value_data = $database->sql_fetch_assoc($a_result);
 						if ($value_data['value_char']) {
 							return $value_data['value_char'];
 						} else {
@@ -261,23 +275,26 @@ class tx_commerce_db_article extends tx_commerce_db_alib {
 
 	/**
 	 * returns the supplier name to a given UID, selected from tx_commerce_supplier
-	 * @author	ingo Schmitt <is@marketing-factory.de>
-	 * @param	integer	supplierUid
-	 * @return 	string 	Supplier name
+	 *
+	 * @param integer $supplierUid
+	 * @return string Supplier name
 	 */
-	function getSupplierName($supplieruid){
-		if ($supplieruid > 0) {
-			$result= $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+	public function getSupplierName($supplierUid) {
+		/** @var t3lib_db $database */
+		$database = $GLOBALS['TYPO3_DB'];
+
+		if ($supplierUid > 0) {
+			$result = $database->exec_SELECTquery(
 				'title',
 				'tx_commerce_supplier',
-				'uid = '.intval($supplieruid)
+				'uid = ' . (int) $supplierUid
 			);
-			if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)==1) {
-				$return_data = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
+			if ($database->sql_num_rows($result) == 1) {
+				$return_data = $database->sql_fetch_assoc($result);
 				return $return_data['title'];
 			}
 		}
-		return false;
+		return FALSE;
 	}
 }
 

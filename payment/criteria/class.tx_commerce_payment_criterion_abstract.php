@@ -53,6 +53,7 @@ abstract class tx_commerce_payment_criterion_abstract implements tx_commerce_pay
 	 *
 	 * @param tx_commerce_payment $paymentObject Parent payment object
 	 * @param array $options Configuration array
+	 * @return self
 	 */
 	public function __construct(tx_commerce_payment $paymentObject, array $options = array()) {
 		$this->paymentObject = $paymentObject;
@@ -61,7 +62,8 @@ abstract class tx_commerce_payment_criterion_abstract implements tx_commerce_pay
 	}
 }
 
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/payment/criteria/class.tx_commerce_payment_criterion_abstract.php'])	{
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/payment/criteria/class.tx_commerce_payment_criterion_abstract.php']) {
+	/** @noinspection PhpIncludeInspection */
 	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/payment/criteria/class.tx_commerce_payment_criterion_abstract']);
 }
 
