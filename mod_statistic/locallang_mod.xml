@@ -1,14 +1,15 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE T3locallang SYSTEM "http://dtd.evoweb.de/t3locallang.dtd">
 <T3locallang>
 	<meta type="array">
-		<description></description>
-		<type></type>
-		<csh_table></csh_table>
+		<description/>
+		<type/>
+		<csh_table/>
 		<fileId>EXT:com_statistic/mod_statistic/locallang_mod.xml</fileId>
 		<labelContext type="array">
-			<label index="mlang_tabs_tab"></label>
-			<label index="mlang_labels_tabdescr"></label>
-			<label index="mlang_labels_tablabel"></label>
+			<label index="mlang_tabs_tab"/>
+			<label index="mlang_labels_tabdescr"/>
+			<label index="mlang_labels_tablabel"/>
 		</labelContext>
 	</meta>
 	<data type="array">

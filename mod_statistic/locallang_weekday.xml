@@ -1,18 +1,19 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE T3locallang SYSTEM "http://dtd.evoweb.de/t3locallang.dtd">
 <T3locallang>
 	<meta type="array">
-		<description></description>
-		<type></type>
-		<csh_table></csh_table>
+		<description/>
+		<type/>
+		<csh_table/>
 		<fileId>EXT:EXT:com_statistic/mod_statistic/locallang_weekday.xml</fileId>
 		<labelContext type="array">
-			<label index="monday"></label>
-			<label index="tuesday"></label>
-			<label index="wednesday"></label>
-			<label index="thursday"></label>
-			<label index="friday"></label>
-			<label index="saturday"></label>
-			<label index="sunday"></label>
+			<label index="monday"/>
+			<label index="tuesday"/>
+			<label index="wednesday"/>
+			<label index="thursday"/>
+			<label index="friday"/>
+			<label index="saturday"/>
+			<label index="sunday"/>
 		</labelContext>
 	</meta>
 	<data type="array">

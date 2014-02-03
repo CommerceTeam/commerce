@@ -1,9 +1,10 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE T3locallang SYSTEM "http://dtd.evoweb.de/t3locallang.dtd">
 <T3locallang>
 	<meta type="array">
-		<description></description>
-		<type></type>
-		<csh_table></csh_table>
+		<description/>
+		<type/>
+		<csh_table/>
 		<fileId>EXT:commerce/pi3/locallang.xml</fileId>
 	</meta>
 	<data type="array">
@@ -19,19 +20,19 @@
 			<label index="general_company">Company</label>
 			<label index="general_disclaimer">All data will treated confidentially.</label>
 			<label index="billing_title">Billing address</label>
-			<label index="billing_description"></label>
+			<label index="billing_description"/>
 			<label index="billing_deliveryaddress">Enter a delivery address</label>
 			<label index="billing_nodeliveryaddress">Billing address is the same as delivery address</label>
 			<label index="billing_submit">Continue</label>
 			<label index="delivery_title">Delivery address</label>
-			<label index="delivery_description"></label>
+			<label index="delivery_description"/>
 			<label index="delivery_submit">Continue</label>
 			<label index="payment_title">Payment</label>
-			<label index="payment_description"></label>
+			<label index="payment_description"/>
 			<label index="payment_submit">Next</label>
 			<label index="payment_disclaimer">After clicking you will be taken to the secure payment service.</label>
 			<label index="listing_title">Your basket</label>
-			<label index="listing_description"></label>
+			<label index="listing_description"/>
 			<label index="listing_submit">Continue</label>
 			<label index="termstext">Please confirm that you have read our terms and conditions</label>
 			<label index="comment">Your comment</label>
@@ -74,7 +75,7 @@
 			<label index="lang_delivery_title">Delivery address:</label>
 			<label index="lang_username">User:</label>
 			<label index="lang_password">password:</label>
-			<label index="lang_intro_newuser">Your user data for your next visit:</label>			
+			<label index="lang_intro_newuser">Your user data for your next visit:</label>
 			<label index="label_sum_article_net">Net product total</label>
 			<label index="label_sum_article_gross">Product total</label>
 			<label index="label_sum_shipping_net">Net deliver costs</label>
