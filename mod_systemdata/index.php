@@ -3,7 +3,6 @@
  * Copyright notice
  *
  * (c) 2005 - 2012 Ingo Schmitt <is@marketing-factory.de>
- * (c) 2012 - 2013 Sebastian Fischer <typo3@marketing-factory.de>
  * All rights reserved
  *
  * This script is part of the TYPO3 project. The TYPO3 project is
@@ -25,20 +24,17 @@
 
 unset($MCONF);
 require_once('conf.php');
+/** @noinspection PhpIncludeInspection */
 require_once($BACK_PATH . 'init.php');
+/** @noinspection PhpIncludeInspection */
 require_once($BACK_PATH . 'template.php');
 
-$GLOBALS['LANG']->includeLLFile('EXT:commerce/Resources/Private/Language/locallang_mod_systemdata.xml');
+$LANG->includeLLFile('EXT:commerce/Resources/Private/Language/locallang_mod_systemdata.xml');
 	// This checks permissions and exits if the users has no permission for entry.
-$GLOBALS['BE_USER']->modAccess($MCONF, 1);
+$BE_USER->modAccess($MCONF, 1);
 
 /**
  * Module 'Systemdata' for the 'commerce' extension.
- *
- * @author Thomas Hempel <thomas@work.de>
- * @author Sebastian Fischer <typo3@marketing-factory.de> complete rewrite
- * @package TYPO3
- * @subpackage commerce
  */
 class Tx_Commerce_SystemData extends t3lib_SCbase {
 	/**
@@ -128,7 +124,7 @@ class Tx_Commerce_SystemData extends t3lib_SCbase {
 		$this->doc = t3lib_div::makeInstance('template');
 		$this->doc->backPath = $GLOBALS['BACK_PATH'];
 		$this->doc->docType = 'xhtml_trans';
-		$this->doc->setModuleTemplate('../typo3conf/ext/commerce/mod_systemdata/templates/mod_systemdata.html');
+		$this->doc->setModuleTemplate(PATH_TXCOMMERCE_REL . 'mod_systemdata/templates/mod_systemdata.html');
 
 		if (!$this->doc->moduleTemplate) {
 			t3lib_div::devLog('cannot set moduleTemplate', 'commerce', 2, array(
@@ -136,8 +132,8 @@ class Tx_Commerce_SystemData extends t3lib_SCbase {
 				'filename from TBE_STYLES' => $GLOBALS['TBE_STYLES']['htmlTemplates']['mod_systemdata.html'],
 				'full path' => $this->doc->backPath . $GLOBALS['TBE_STYLES']['htmlTemplates']['mod_systemdata.html']
 			));
-			$templateFile = t3lib_extMgm::siteRelPath('commerce') . 'mod_systemdata/templates/mod_systemdata.html';
-			$this->doc->moduleTemplate = @file_get_contents(PATH_site . $templateFile);
+			$templateFile = PATH_TXCOMMERCE_REL . 'mod_systemdata/templates/mod_systemdata.html';
+			$this->doc->moduleTemplate = t3lib_div::getURL(PATH_site . $templateFile);
 		}
 
 		$listUrl = t3lib_div::getIndpEnv('REQUEST_URI');
@@ -195,7 +191,7 @@ class Tx_Commerce_SystemData extends t3lib_SCbase {
 			)
 		);
 
-		// put it all together
+			// put it all together
 		$this->content = $this->doc->startPage($this->language->getLL('title'));
 		$this->content .= $this->doc->moduleBody($this->pageRow, $docHeaderButtons, $markers);
 		$this->content .= $this->doc->endPage();
@@ -233,7 +229,7 @@ class Tx_Commerce_SystemData extends t3lib_SCbase {
 			// CSH
 		if (!strlen($this->id)) {
 			$buttons['csh'] = t3lib_BEfunc::cshItem('_MOD_web_txcommerceM1', 'list_module_noId', $GLOBALS['BACK_PATH'], '', TRUE);
-		} elseif(!$this->id) {
+		} elseif (!$this->id) {
 			$buttons['csh'] = t3lib_BEfunc::cshItem('_MOD_web_txcommerceM1', 'list_module_root', $GLOBALS['BACK_PATH'], '', TRUE);
 		} else {
 			$buttons['csh'] = t3lib_BEfunc::cshItem('_MOD_web_txcommerceM1', 'list_module', $GLOBALS['BACK_PATH'], '', TRUE);
@@ -280,22 +276,21 @@ class Tx_Commerce_SystemData extends t3lib_SCbase {
 			case '2':
 				$content = $this->getManufacturerListing();
 				$this->content .= $this->doc->section('', $content, 0, 1);
-				break;
+			break;
 
 			case '3':
 				$content = $this->getSupplierListing();
 				$this->content .= $this->doc->section('', $content, 0, 1);
-				break;
+			break;
 
 			case '1':
 			default:
 				$this->modPid = $this->attributePid;
 				$content = $this->getAttributeListing();
 				$this->content .= $this->doc->section('', $content, 0, 1);
-				break;
+			break;
 		}
 	}
-
 
 	/**
 	 * @return string
@@ -376,7 +371,7 @@ class Tx_Commerce_SystemData extends t3lib_SCbase {
 			$catCount = $this->fetchRelationCount('tx_commerce_categories_attributes_mm', $attribute['uid']);
 			$proCount = $this->fetchRelationCount('tx_commerce_products_attributes_mm', $attribute['uid']);
 
-			// Select language versions
+				// Select language versions
 			$resLocalVersion = $this->fetchAttributeTranslation($attribute['uid']);
 			if ($this->database->sql_num_rows($resLocalVersion) > 0) {
 				$output .= '<table >';
@@ -412,7 +407,7 @@ class Tx_Commerce_SystemData extends t3lib_SCbase {
 				) . '" title="' . $this->language->getLL('delete', TRUE) . '">' .
 				t3lib_iconWorks::getSpriteIcon('actions-edit-delete') . '</a>';
 
-			$output .= '</td><td valign="top">';
+			$output .= '</td><td>';
 
 			if ($attribute['has_valuelist'] == 1) {
 				$valueRes = $this->database->exec_SELECTquery(
@@ -423,7 +418,7 @@ class Tx_Commerce_SystemData extends t3lib_SCbase {
 					'sorting'
 				);
 				if ($this->database->sql_num_rows($valueRes) > 0) {
-					$output .= '<table border="0" cellspacing="0" cellpadding="0">';
+					$output .= '<table border="0">';
 					while ($value = $this->database->sql_fetch_assoc($valueRes)) {
 						$output .= '<tr><td>' . htmlspecialchars($value['value']) . '</td></tr>';
 					}
@@ -440,7 +435,6 @@ class Tx_Commerce_SystemData extends t3lib_SCbase {
 
 		return $output;
 	}
-
 
 	/**
 	 * generates a list of all saved Manufacturers
@@ -506,7 +500,6 @@ class Tx_Commerce_SystemData extends t3lib_SCbase {
 
 		return $output;
 	}
-
 
 	/**
 	 * generates a list of all saved Suppliers
@@ -575,7 +568,6 @@ class Tx_Commerce_SystemData extends t3lib_SCbase {
 		return $output;
 	}
 
-
 	/**
 	 * @param string $table
 	 * @return resource
@@ -600,7 +592,6 @@ class Tx_Commerce_SystemData extends t3lib_SCbase {
 		$row = $this->database->sql_fetch_assoc($result);
 		return $row['count'];
 	}
-
 
 	/**
 	 * Gets the number of records referencing the record with the UID $uid in
@@ -633,23 +624,15 @@ class Tx_Commerce_SystemData extends t3lib_SCbase {
 	}
 }
 
-
-
 if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/mod_systemdata/index.php']) {
+	/** @noinspection PhpIncludeInspection */
 	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/mod_systemdata/index.php']);
 }
-
-
 
 if (!(TYPO3_REQUESTTYPE & TYPO3_REQUESTTYPE_AJAX)) {
 	/** @var $SOBE Tx_Commerce_SystemData */
 	$SOBE = t3lib_div::makeInstance('Tx_Commerce_SystemData');
 	$SOBE->init();
-
-	foreach ($SOBE->include_once as $includeFile) {
-		include_once($includeFile);
-	}
-
 	$SOBE->main();
 	$SOBE->printContent();
 }
