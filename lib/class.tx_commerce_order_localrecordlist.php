@@ -774,7 +774,7 @@ class tx_commerce_order_localRecordlist extends localRecordList {
 			if (!$LOISmode)	{
 				$theData = Array();
 				if (!$this->table && !$rowlist)	{
-		   			$theData[$titleCol] = '<img src="clear.gif" width="'.($GLOBALS['SOBE']->MOD_SETTINGS['bigControlPanel']?'230':'350').'" height="1" alt="" />';
+		   			$theData[$titleCol] = '<img src="/typo3/clear.gif" width="'.($GLOBALS['SOBE']->MOD_SETTINGS['bigControlPanel']?'230':'350').'" height="1" alt="" />';
 					//if (in_array('_CONTROL_',$this->fieldArray))	$theData['_CONTROL_']='';
 					//if (in_array('_CLIPBOARD_',$this->fieldArray))	$theData['_CLIPBOARD_']='';
 				}

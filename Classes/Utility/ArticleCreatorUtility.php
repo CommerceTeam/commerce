@@ -202,7 +202,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 					$formSecurityToken . '&redirect=alt_doc.php?edit[tx_commerce_products][' . (int) $this->uid .
 					']=edit\');"><img src="../typo3/gfx/button_up.gif" width="11" height="10" border="0" align="top" /></a></td>';
 			} else {
-				$result .= '<td><img src="clear.gif" width="11" height="10"></td>';
+				$result .= '<td><img src="/typo3/clear.gif" width="11" height="10"></td>';
 			}
 
 				// DOWN
@@ -215,7 +215,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 					$formSecurityToken . '&redirect=alt_doc.php?edit[tx_commerce_products][' . $this->uid .
 					']=edit\');"><img src="../typo3/gfx/button_down.gif" width="11" height="10" border="0" align="top" /></a></td>';
 			} else {
-				$result .= '<td style="border-top:1px black solid"><img src="clear.gif" width="11" height="10"></td>';
+				$result .= '<td style="border-top: 1px black solid"><img src="/typo3/clear.gif" width="11" height="10"></td>';
 			}
 
 				// add the delete icon

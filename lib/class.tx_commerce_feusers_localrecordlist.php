@@ -548,7 +548,7 @@ class tx_commerce_feusers_localRecordlist extends localRecordList {
 			if (!$LOISmode) {
 				$theData = Array();
 				if (!$this->table && !$rowlist) {
-					$theData[$titleCol] = '<img src="clear.gif" width="' . ($GLOBALS['SOBE']->MOD_SETTINGS['bigControlPanel'] ? '230' : '350') . '" height="1" alt="" />';
+					$theData[$titleCol] = '<img src="/typo3/clear.gif" width="' . ($GLOBALS['SOBE']->MOD_SETTINGS['bigControlPanel'] ? '230' : '350') . '" height="1" alt="" />';
 				}
 				$out .= $this->addelement(0, '', $theData, '', $this->leftMargin);
 			}

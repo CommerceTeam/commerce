@@ -343,7 +343,7 @@ class commerceRecordList extends localRecordList {
 			if (!$LOISmode) {
 				$theData = Array();
 				if (!$this->table && !$rowList) {
-					$theData[$titleCol] = '<img src="clear.gif" width="' .
+					$theData[$titleCol] = '<img src="/typo3/clear.gif" width="' .
 						($GLOBALS['SOBE']->MOD_SETTINGS['bigControlPanel'] ? '230' : '350') . '" height="1" alt="" />';
 					if (in_array('_CONTROL_', $this->fieldArray)) {
 						$theData['_CONTROL_'] = '';
@@ -794,7 +794,7 @@ class commerceRecordList extends localRecordList {
 							t3lib_iconWorks::skinImg($this->backPath, 'gfx/button_up.gif', 'width="11" height="10"') .
 							' title="' . $language->getLL('moveUp', 1) . '" alt="" /></a>';
 					} else {
-						$cells[] = '<img src="clear.gif" ' . t3lib_iconWorks::skinImg($this->backPath, 'gfx/button_up.gif', 'width="11" height="10"', 2) . ' alt="" />';
+						$cells[] = '<img src="/typo3/clear.gif" ' . t3lib_iconWorks::skinImg($this->backPath, 'gfx/button_up.gif', 'width="11" height="10"', 2) . ' alt="" />';
 					}
 					if ($this->currentTable['next'][$row['uid']]) {
 						$params = '&cmd[' . $table . '][' . $row['uid'] . '][move]=' . $this->currentTable['next'][$row['uid']];
@@ -803,7 +803,7 @@ class commerceRecordList extends localRecordList {
 							t3lib_iconWorks::skinImg($this->backPath, 'gfx/button_down.gif', 'width="11" height="10"') .
 							' title="' . $language->getLL('moveDown', 1) . '" alt="" /></a>';
 					} else {
-						$cells[] = '<img src="clear.gif" ' . t3lib_iconWorks::skinImg($this->backPath, 'gfx/button_down.gif', 'width="11" height="10"', 2) . ' alt="" />';
+						$cells[] = '<img src="/typo3/clear.gif" ' . t3lib_iconWorks::skinImg($this->backPath, 'gfx/button_down.gif', 'width="11" height="10"', 2) . ' alt="" />';
 					}
 				}
 
@@ -864,10 +864,10 @@ class commerceRecordList extends localRecordList {
 								t3lib_iconWorks::skinImg($this->backPath, 'gfx/button_right.gif', 'width="11" height="10"') .
 								' title="' . $language->getLL('nextLevel', 1) . '" alt="" /></a>';
 						} else {
-							$cells[] = '<img src="clear.gif" ' . t3lib_iconWorks::skinImg($this->backPath, 'gfx/button_right.gif', 'width="11" height="10"', 2) . ' alt="" />';
+							$cells[] = '<img src="/typo3/clear.gif" ' . t3lib_iconWorks::skinImg($this->backPath, 'gfx/button_right.gif', 'width="11" height="10"', 2) . ' alt="" />';
 						}
 					} else {
-						$cells[] = '<img src="clear.gif" ' . t3lib_iconWorks::skinImg($this->backPath, 'gfx/button_right.gif', 'width="11" height="10"', 2) . ' alt="" />';
+						$cells[] = '<img src="/typo3/clear.gif" ' . t3lib_iconWorks::skinImg($this->backPath, 'gfx/button_right.gif', 'width="11" height="10"', 2) . ' alt="" />';
 					}
 				}
 			}
