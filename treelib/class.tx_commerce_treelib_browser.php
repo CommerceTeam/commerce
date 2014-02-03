@@ -124,9 +124,9 @@ class tx_commerce_treelib_browser extends t3lib_SCbase {
 		';
 
 		$this->doc->loadJavascriptLib('contrib/prototype/prototype.js');
-		$this->doc->loadJavascriptLib('../typo3conf/ext/commerce/mod_access/tree.js'); ###MAKE PATH BE CALCULATED, NOT FIXED###
+		$this->doc->loadJavascriptLib('../' . PATH_TXCOMMERCE_REL . 'Resources/Public/Javascript/tree.js');
 
-		// Check if we need to allow browsing of products.
+			// Check if we need to allow browsing of products.
 		if (1 == $allowProducts) {
 			$this->doc->JScode .= $this->doc->wrapScriptTags('Tree.ajaxID = "tx_commerce_category_navframe::ajaxExpandCollapse";');
 		}

@@ -66,7 +66,7 @@ class Tx_Commerce_Hook_BrowselinksHooks implements t3lib_browseLinksHook {
 			// add js
 			// has to be added as script tags to the body since parentObject is not passed by reference
 			// first we go from rhtml path to typo3 path
-		$linkToTreeJs = '../../../' . t3lib_extMgm::extRelPath('commerce') . 'mod_access/tree.js';
+		$linkToTreeJs = '../../../' . PATH_TXCOMMERCE_REL . 'Resources/Public/Javascript/tree.js';
 
 		$this->script = '<script src="' . $linkToTreeJs . '" type="text/javascript"></script>';
 		$this->script .= t3lib_div::wrapJS('Tree.ajaxID = "tx_commerce_browselinkshooks::ajaxExpandCollapse";');

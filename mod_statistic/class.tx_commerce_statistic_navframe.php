@@ -227,7 +227,7 @@ class tx_commerce_statistic_navframe {
 		$this->content .= t3lib_BEfunc::cshItem('xMOD_csh_corebe', 'pagetree', $GLOBALS['BACK_PATH']);
 
 			// Adding highlight - JavaScript
-		if ($this->doHighlight)	{
+		if ($this->doHighlight) {
 			$this->content .= $this->doc->wrapScriptTags('
 				hilight_row("", top.fsMod.navFrameHighlightedID["web"]);
 			');

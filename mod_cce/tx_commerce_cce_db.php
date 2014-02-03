@@ -157,7 +157,7 @@ class SC_tx_commerce_cce_db {
 		$this->doc = t3lib_div::makeInstance('template');
 		$this->doc->backPath = $GLOBALS['BACK_PATH'];
 		$this->doc->docType = 'xhtml_trans';
-		$this->doc->setModuleTemplate('../typo3conf/ext/commerce/mod_cce/templates/copy.html');
+		$this->doc->setModuleTemplate(PATH_TXCOMMERCE . 'Resources/Private/Backend/mod_cce.html');
 		$this->doc->loadJavascriptLib('contrib/prototype/prototype.js');
 		$this->doc->loadJavascriptLib('../typo3conf/ext/commerce/mod_cce/copyPaste.js');
 		$this->doc->form = '<form action="tx_commerce_cce_db.php?' . $cbString . '&vC=' . $this->vC . '&uPT=' . $this->uPT .
@@ -197,7 +197,7 @@ class SC_tx_commerce_cce_db {
 			&& $this->vC != $backendUser->veriCode()
 			&& !$GLOBALS['TYPO3_CONF_VARS']['SYS']['doNotCheckReferer']
 		) {
-			// $this->tce->log('',0,0,0,1,'Referer host "%s" and server host "%s" did not match and veriCode was not valid either!',1,array($refInfo['host'],$httpHost));
+			$this->tce->log('', 0, 0, 0, 1, 'Referer host "%s" and server host "%s" did not match and veriCode was not valid either!', 1, array($refInfo['host'], $httpHost));
 			// @todo: log correctly
 		} else {
 				// get current item in clipboard

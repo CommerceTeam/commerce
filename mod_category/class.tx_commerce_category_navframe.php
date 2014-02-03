@@ -109,7 +109,7 @@ class tx_commerce_category_navframe {
 		$this->doc = t3lib_div::makeInstance('template');
 		$this->doc->backPath = $this->BACK_PATH;
 			// MAKE THIS PATH BE CALCULATED
-		$this->doc->setModuleTemplate('../typo3conf/ext/commerce/mod_category/templates/alt_db_navframe.html');
+		$this->doc->setModuleTemplate(PATH_TXCOMMERCE . 'Resources/Private/Backend/mod_category_navframe.html');
 		$this->doc->docType  = 'xhtml_trans';
 		$this->doc->JScode = '';
 
@@ -146,8 +146,7 @@ class tx_commerce_category_navframe {
 		');
 
 		$this->doc->loadJavascriptLib('contrib/prototype/prototype.js');
-			// MAKE PATH BE CALCULATED, NOT FIXED### ###WHAT TO DO WITH THOSE FILES? BETTER MAKE RES FOLDER
-		$this->doc->loadJavascriptLib('../typo3conf/ext/commerce/mod_access/tree.js');
+		$this->doc->loadJavascriptLib('../' . PATH_TXCOMMERCE_REL . 'Resources/Public/Javascript/tree.js');
 		$this->doc->JScode .= $this->doc->wrapScriptTags('Tree.ajaxID = "tx_commerce_category_navframe::ajaxExpandCollapse";');
 			// Adding javascript code for AJAX (prototype), drag&drop and the pagetree as well as the click menu code
 		$this->doc->getContextMenuCode();

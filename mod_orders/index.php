@@ -40,6 +40,7 @@ $LANG->includeLLFile('EXT:commerce/Resources/Private/Language/locallang_mod_orde
 $LANG->includeLLFile('EXT:lang/locallang_mod_web_list.php');
 
 	// This checks permissions and exits if the users has no permission for entry.
+/** @noinspection PhpUndefinedVariableInspection */
 $BE_USER->modAccess($MCONF, 1);
 
 class tx_commerce_orders extends t3lib_SCbase {

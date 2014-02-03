@@ -202,11 +202,9 @@ class SC_mod_access_perm_index {
 		$this->doc = t3lib_div::makeInstance('template');
 		$this->doc->backPath = $GLOBALS['BACK_PATH'];
 		$this->doc->docType = 'xhtml_trans';
-			// @todo MAKE PATH BE CALCULATED, NOT FIXED
-		$this->doc->setModuleTemplate('../typo3conf/ext/commerce/mod_access/templates/perm.html');
+		$this->doc->setModuleTemplate(PATH_TXCOMMERCE . 'Resources/Private/Backend/mod_access.html');
 		$this->doc->form = '<form action="' . $this->doc->backPath . 'tce_db.php" method="post" name="tceAction">';
-			// @todo MAKE PATH BE CALCULATED, NOT FIXED
-		$this->doc->loadJavascriptLib('../typo3conf/ext/commerce/mod_access/perm.js');
+		$this->doc->loadJavascriptLib(PATH_TXCOMMERCE . 'Resources/Public/Javascript/mod_access.js');
 
 			// Set up menus:
 		$this->menuConfig();
@@ -814,7 +812,7 @@ class SC_mod_access_perm_index {
 
 		$code = '<table border="0" id="typo3-legendTable">
 			<tr>
-				<td valign="top"><img src="legend.gif" width="86" height="75" alt="" /></td>
+				<td valign="top"><img src="../Resources/Public/Images/legend.gif" width="86" height="75" alt="" /></td>
 				<td valign="top" nowrap="nowrap">' . $legendText . '</td>
 			</tr>
 		</table>';

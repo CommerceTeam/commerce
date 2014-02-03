@@ -274,7 +274,7 @@ class tx_commerce_treelib_tceforms {
 				setFormValueFromBrowseWin("' . $this->PA['itemFormElName'] . '", catUid, text);
 			}';
 		$divFrame .= '</script>';
-		$divFrame .= '<script src="' . $this->tceforms->backPath . '../typo3conf/ext/commerce/mod_access/tree.js" type=""></script>';
+		$divFrame .= '<script src="' . $this->tceforms->backPath . '../' . PATH_TXCOMMERCE_REL . 'Resources/Public/Javascript/tree.js" type=""></script>';
 
 		return $divFrame;
 	}
@@ -519,7 +519,6 @@ class tx_commerce_treelib_tceforms {
 
 		$mounts = t3lib_div::makeInstance('tx_commerce_categorymounts');
 		$mounts->init($GLOBALS['BE_USER']->user['uid']);
-
 
 			// Separate Key and Title with a |
 		$title = ($category->isPSet('show') && $mounts->isInCommerceMounts($category->getUid())) ?

@@ -32,6 +32,7 @@ require_once($BACK_PATH . 'template.php');
 $LANG->includeLLFile('EXT:commerce/Resources/Private/Language/locallang_mod_systemdata.xml');
 
 	// This checks permissions and exits if the users has no permission for entry.
+/** @noinspection PhpUndefinedVariableInspection */
 $BE_USER->modAccess($MCONF, 1);
 
 /**
@@ -63,7 +64,7 @@ class Tx_Commerce_SystemData_NavFrame extends t3lib_SCbase {
 	public function main() {
 		$this->doc = t3lib_div::makeInstance('template');
 		$this->doc->backPath = $GLOBALS['BACK_PATH'];
-		$this->doc->setModuleTemplate(PATH_TXCOMMERCE_REL . 'mod_systemdata/templates/mod_systemdata_navframe.html');
+		$this->doc->setModuleTemplate(PATH_TXCOMMERCE . 'Resources/Private/Backend/mod_systemdata_navframe.html');
 		$this->doc->docType = 'xhtml_trans';
 
 		if (!$this->doc->moduleTemplate) {

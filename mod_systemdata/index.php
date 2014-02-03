@@ -31,6 +31,7 @@ require_once($BACK_PATH . 'template.php');
 
 $LANG->includeLLFile('EXT:commerce/Resources/Private/Language/locallang_mod_systemdata.xml');
 	// This checks permissions and exits if the users has no permission for entry.
+/** @noinspection PhpUndefinedVariableInspection */
 $BE_USER->modAccess($MCONF, 1);
 
 /**
@@ -124,7 +125,7 @@ class Tx_Commerce_SystemData extends t3lib_SCbase {
 		$this->doc = t3lib_div::makeInstance('template');
 		$this->doc->backPath = $GLOBALS['BACK_PATH'];
 		$this->doc->docType = 'xhtml_trans';
-		$this->doc->setModuleTemplate(PATH_TXCOMMERCE_REL . 'mod_systemdata/templates/mod_systemdata.html');
+		$this->doc->setModuleTemplate(PATH_TXCOMMERCE . 'Resources/Private/Backend/mod_systemdata.html');
 
 		if (!$this->doc->moduleTemplate) {
 			t3lib_div::devLog('cannot set moduleTemplate', 'commerce', 2, array(
