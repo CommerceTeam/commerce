@@ -767,7 +767,7 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist'][COMMERCE_
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][COMMERCE_EXTKEY . '_pi1'] = 'pi_flexform';
 
 t3lib_extMgm::addPlugin(Array('LLL:EXT:commerce/locallang_be.php:tt_content.list_type_pi1', COMMERCE_EXTKEY . '_pi1'), 'list_type');
-t3lib_extMgm::addPiFlexFormValue(COMMERCE_EXTKEY . '_pi1', 'FILE:EXT:commerce/pi1/flexform_product.xml');
+t3lib_extMgm::addPiFlexFormValue(COMMERCE_EXTKEY . '_pi1', 'FILE:EXT:commerce/Configuration/FlexForms/flexform_pi1.xml');
 
 /* ################# PI2 (basket) ##################### */
 t3lib_extMgm::addPlugin(Array('LLL:EXT:commerce/locallang_be.php:tt_content.list_type_pi2', COMMERCE_EXTKEY . '_pi2'), 'list_type');

@@ -7,22 +7,22 @@
 		<s_product>
 			<ROOT>
 				<TCEforms>
-					<sheetTitle>LLL:EXT:commerce/pi1/locallang_tca.xml:tx_commerce.pi_flexform.sheet_product</sheetTitle>
+					<sheetTitle>LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:tx_commerce_pi1.pi_flexform.sheet_product</sheetTitle>
 				</TCEforms>
 				<type>array</type>
 				<el>
 					<type>
 						<TCEforms>
-							<label>LLL:EXT:commerce/pi1/locallang_tca.xml:tx_commerce.pi_flexform.type</label>
+							<label>LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:tx_commerce_pi1.pi_flexform.type</label>
 							<config>
 								<type>select</type>
 								<items>
 									<numIndex index="0" type="array">
-										<numIndex index="0">LLL:EXT:commerce/pi1/locallang_tca.xml:tx_commerce.pi_flexform.type.normal</numIndex>
+										<numIndex index="0">LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:tx_commerce_pi1.pi_flexform.type.normal</numIndex>
 										<numIndex index="1">normal</numIndex>
 									</numIndex>
 									<numIndex index="2" type="array">
-										<numIndex index="0">LLL:EXT:commerce/pi1/locallang_tca.xml:tx_commerce.pi_flexform.type.teaser</numIndex>
+										<numIndex index="0">LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:tx_commerce_pi1.pi_flexform.type.teaser</numIndex>
 										<numIndex index="1">teaser</numIndex>
 									</numIndex>
 								</items>
@@ -31,7 +31,7 @@
 					</type>
 					<numberOfTopproducts>
 						<TCEforms>
-							<label>LLL:EXT:commerce/pi1/locallang_tca.xml:tx_commerce.pi_flexform.numberOfTopproducts</label>
+							<label>LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:tx_commerce_pi1.pi_flexform.numberOfTopproducts</label>
 							<config>
 								<type>input</type>
 								<size>2</size>
@@ -40,7 +40,7 @@
 					</numberOfTopproducts>
 					<product_id>
 						<TCEforms>
-							<label>LLL:EXT:commerce/pi1/locallang_tca.xml:tx_commerce.pi_flexform.product_name</label>
+							<label>LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:tx_commerce_pi1.pi_flexform.product_name</label>
 
 							<config>
 								<type>select</type>
@@ -56,7 +56,7 @@
 					<StartCategory>
 						<TCEforms>
 							<exclude>1</exclude>
-							<label>LLL:EXT:commerce/pi1/locallang_tca.xml:tx_commerce.pi_flexform.category_selection</label>
+							<label>LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:tx_commerce_pi1.pi_flexform.category_selection</label>
 							<config>
 								<type>group</type>
 								<internal_type>passthrough</internal_type>
@@ -78,13 +78,13 @@
 		<s_template>
 			<ROOT>
 				<TCEforms>
-					<sheetTitle>LLL:EXT:commerce/pi1/locallang_tca.xml:tx_commerce.pi_flexform.sheet_template</sheetTitle>
+					<sheetTitle>LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:tx_commerce_pi1.pi_flexform.sheet_template</sheetTitle>
 				</TCEforms>
 				<type>array</type>
 				<el>
 					<template>
 						<TCEforms>
-							<label>LLL:EXT:commerce/pi1/locallang_tca.xml:tx_commerce.pi_flexform.template</label>
+							<label>LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:tx_commerce_pi1.pi_flexform.template</label>
 							<config>
 								<type>group</type>
 								<internal_type>file</internal_type>
@@ -99,7 +99,7 @@
 					</template>
 					<displayPID>
 						<TCEforms>
-							<label>LLL:EXT:commerce/pi1/locallang_tca.xml:tx_commerce.pi_flexform.displayPID</label>
+							<label>LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:tx_commerce_pi1.pi_flexform.displayPID</label>
 							<config>
 								<type>group</type>
 								<internal_type>db</internal_type>
@@ -112,7 +112,7 @@
 					</displayPID>
 					<basketPID>
 						<TCEforms>
-							<label>LLL:EXT:commerce/pi1/locallang_tca.xml:tx_commerce.pi_flexform.basketPID</label>
+							<label>LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:tx_commerce_pi1.pi_flexform.basketPID</label>
 							<config>
 								<type>group</type>
 								<internal_type>db</internal_type>
@@ -125,7 +125,7 @@
 					</basketPID>
 					<maxRecords>
 						<TCEforms>
-							<label>LLL:EXT:commerce/pi1/locallang_tca.xml:tx_commerce.pi_flexform.maxRecords</label>
+							<label>LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:tx_commerce_pi1.pi_flexform.maxRecords</label>
 							<config>
 								<type>input</type>
 								<size>2</size>
@@ -134,7 +134,7 @@
 					</maxRecords>
 					<maxPages>
 						<TCEforms>
-							<label>LLL:EXT:commerce/pi1/locallang_tca.xml:tx_commerce.pi_flexform.maxPages</label>
+							<label>LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:tx_commerce_pi1.pi_flexform.maxPages</label>
 							<config>
 								<type>input</type>
 								<size>2</size>
@@ -143,7 +143,7 @@
 					</maxPages>
 					<showPageBrowser>
 						<TCEforms>
-							<label>LLL:EXT:commerce/pi1/locallang_tca.xml:tx_commerce.pi_flexform.showPageBrowser</label>
+							<label>LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:tx_commerce_pi1.pi_flexform.showPageBrowser</label>
 							<config>
 								<type>check</type>
 							</config>
@@ -151,7 +151,7 @@
 					</showPageBrowser>
 					<dontLinkActivePage>
 						<TCEforms>
-							<label>LLL:EXT:commerce/pi1/locallang_tca.xml:tx_commerce.pi_flexform.dontLinkActivePage</label>
+							<label>LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:tx_commerce_pi1.pi_flexform.dontLinkActivePage</label>
 							<config>
 								<type>check</type>
 							</config>
@@ -159,7 +159,7 @@
 					</dontLinkActivePage>
 					<showFirstLast>
 						<TCEforms>
-							<label>LLL:EXT:commerce/pi1/locallang_tca.xml:tx_commerce.pi_flexform.showFirstLast</label>
+							<label>LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:tx_commerce_pi1.pi_flexform.showFirstLast</label>
 							<config>
 								<type>check</type>
 							</config>
@@ -167,7 +167,7 @@
 					</showFirstLast>
 					<showRange>
 						<TCEforms>
-							<label>LLL:EXT:commerce/pi1/locallang_tca.xml:tx_commerce.pi_flexform.showRange</label>
+							<label>LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:tx_commerce_pi1.pi_flexform.showRange</label>
 							<config>
 								<type>check</type>
 							</config>
@@ -175,7 +175,7 @@
 					</showRange>
 					<showItemCount>
 						<TCEforms>
-							<label>LLL:EXT:commerce/pi1/locallang_tca.xml:tx_commerce.pi_flexform.showItemCount</label>
+							<label>LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:tx_commerce_pi1.pi_flexform.showItemCount</label>
 							<config>
 								<type>check</type>
 							</config>
@@ -183,7 +183,7 @@
 					</showItemCount>
 					<hscText>
 						<TCEforms>
-							<label>LLL:EXT:commerce/pi1/locallang_tca.xml:tx_commerce.pi_flexform.hscText</label>
+							<label>LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:tx_commerce_pi1.pi_flexform.hscText</label>
 							<config>
 								<type>check</type>
 								<default>1</default>
