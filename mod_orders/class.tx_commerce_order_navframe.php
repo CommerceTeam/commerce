@@ -131,14 +131,14 @@ class tx_commerce_order_navframe {
 				var theUrl = top.TS.PATH_typo3 + top.currentSubScript + "?id=" + id;
 
 				if (top.condensedMode) {
-					top.content.document.location=theUrl;
+					top.content.document.location = theUrl;
 				} else {
-					parent.list_frame.document.location=theUrl;
+					parent.list_frame.document.location = theUrl;
 				}
 
 				' . ($this->doHighlight ? 'hilight_row("txcommerceM1",highLightID);' : '') . '
 
-				' . (!$GLOBALS['CLIENT']['FORMSTYLE'] ? '' : 'if (linkObj) {linkObj.blur();}') . '
+				' . (!$GLOBALS['CLIENT']['FORMSTYLE'] ? '' : 'if (linkObj) { linkObj.blur(); }') . '
 				return false;
 			}
 
@@ -169,7 +169,7 @@ class tx_commerce_order_navframe {
 				}
 			}
 
-			' . ($this->cMR ? "jumpTo(top.fsMod.recentIds['web'],'');" : '') . ';
+			' . ($this->cMR ? "jumpTo(top.fsMod.recentIds['web'], '');" : '') . ';
 		');
 
 			// Click menu code is added:
