@@ -64,7 +64,7 @@ class tx_commerce_category_navframe {
 	/**
 	 * @var template
 	 */
-	protected $doc;
+	public $doc;
 
 	/**
 	 * @var string

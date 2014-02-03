@@ -55,7 +55,7 @@ class tx_commerce_access_navframe {
 	/**
 	 * @var template
 	 */
-	protected $doc;
+	public $doc;
 
 	/**
 	 * @var string
