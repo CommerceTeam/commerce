@@ -417,7 +417,7 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 		$dblist->allowedNewTables = t3lib_div::trimExplode(',', $this->modTSconfig['properties']['allowedNewTables'], 1);
 		$dblist->newWizards = $this->modTSconfig['properties']['newWizards'] ? 1 : 0;
 
-		$newRecordLink = $newRecordIcon = '';
+		$newRecordIcon = '';
 			// Link for creating new records:
 		if (!$this->modTSconfig['properties']['noCreateRecordsLink']) {
 			$sumlink = $this->scriptNewWizard . '?id=' . (int) $this->id;
@@ -437,22 +437,10 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 				<!--
 					Link for creating a new record:
 				-->
-				<a href="' . htmlspecialchars($this->scriptNewWizard . '?id=' . $this->id . $sumlink .
+				<a href="' . htmlspecialchars($sumlink .
 					'&returnUrl=' . rawurlencode(t3lib_div::getIndpEnv('REQUEST_URI'))) . '">' .
 					t3lib_iconWorks::getSpriteIcon('actions-document-new', array('title' => $language->getLL('editPage', 1))) .
 				'</a>';
-
-			$newRecordLink = '
-				<!--
-					Link for creating a new record:
-				-->
-				<div id="typo3-newRecordLink">
-					<a href="' . htmlspecialchars($this->scriptNewWizard . '?id=' . $this->id . $sumlink .
-						'&returnUrl=' . rawurlencode(t3lib_div::getIndpEnv('REQUEST_URI'))) . '">' .
-						t3lib_iconWorks::getSpriteIcon('actions-document-new', array('title' => $language->getLL('editPage', 1))) .
-						$language->getLL('newRecordGeneral', 1) .
-					'</a>
-				</div>';
 		}
 
 		$dblist->newRecordIcon = $newRecordIcon;
@@ -652,43 +640,11 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 			// If a listing was produced, create the page footer with search form etc:
 		if ($listingProduced) {
 
-				// Adding checkbox options for extended listing and clipboard display:
-			$this->content .= '
-
-					<!--
-						Listing options for clipboard and thumbnails
-					-->
-					<div id="typo3-listOptions">
-						<form action="" method="post">';
-
-			$this->content .= t3lib_BEfunc::getFuncCheck(
-				$this->id,
-				'SET[bigControlPanel]',
-				$this->MOD_SETTINGS['bigControlPanel'],
-				$this->script,
-				$this->params
-			) . ' ' . $language->getLL('largeControl', 1) . '<br />';
-			$this->content .= t3lib_BEfunc::getFuncCheck(
-				$this->id,
-				'SET[localization]',
-				$this->MOD_SETTINGS['localization'],
-				$this->script,
-				$this->params
-			) . ' ' . $language->getLL('localization', 1) . '<br />';
-			$this->content .= '
-						</form>
-					</div>';
-			$this->content .= t3lib_BEfunc::cshItem('xMOD_csh_corebe', 'list_options', $GLOBALS['BACK_PATH']);
-
-			$this->content .= $newRecordLink;
-
 				// Search box:
 			$this->content .= $dblist->getSearchBox();
 
 				// Display sys-notes, if any are found:
 			$this->content .= $dblist->showSysNotesForPage();
-		} else {
-			$this->content .= $newRecordLink;
 		}
 	}
 

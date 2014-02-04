@@ -17,6 +17,8 @@ return array(
 	'tx_commerce_statistic' => $classPath . 'Controller/StatisticController.php',
 	'tx_commerce_controller_systemdatacontroller' => $classPath . 'Controller/SystemdataController.php',
 	'tx_commerce_systemdata' => $classPath . 'Controller/SystemdataController.php',
+	'tx_commerce_controller_wizardcontroller' => $classPath . 'Controller/WizardController.php',
+	'tx_commerce_cmd_wizard' => $classPath . 'Controller/WizardController.php',
 
 	/* frontend controller */
 	'tx_commerce_controller_basecontroller' => $classPath . 'Controller/BaseController.php',

@@ -108,9 +108,7 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 		if ($localCalcPerms & 2) {
 				// Adding "New record" icon:
 			if (!$GLOBALS['SOBE']->modTSconfig['properties']['noCreateRecordsLink']) {
-				$buttons['new_record'] = '<a href="#" onclick="' . htmlspecialchars('return jumpExt(\'db_new.php?id=' . $this->id . '\');') . '">' .
-					t3lib_iconWorks::getSpriteIcon('actions-document-new', array('title' => $language->getLL('newRecordGeneral', 1))) .
-					'</a>';
+				$buttons['new_record'] = $this->newRecordIcon;
 			}
 		}
 

@@ -41,7 +41,7 @@ $language = $GLOBALS['LANG'];
 $language->includeLLFile('EXT:lang/locallang_misc.xml');
 
 /** @var Tx_Commerce_Controller_WizardController $SOBE */
-$SOBE = t3lib_div::makeInstance('Tx_Commerce_Controller_CommandWizardController');
+$SOBE = t3lib_div::makeInstance('Tx_Commerce_Controller_WizardController');
 $SOBE->init();
 $SOBE->main();
 $SOBE->printContent();
