@@ -11,6 +11,8 @@ return array(
 	'tx_commerce_categories' => $classPath . 'Controller/CategoriesController.php',
 	'tx_commerce_controller_orderscontroller' => $classPath . 'Controller/OrdersController.php',
 	'tx_commerce_orders' => $classPath . 'Controller/OrdersController.php',
+	'tx_commerce_controller_permissionajaxcontroller' => $classPath . 'Controller/PermissionAjaxController.php',
+	'sc_mod_access_perm_ajax' => $classPath . 'Controller/PermissionAjaxController.php',
 	'tx_commerce_controller_statisticcontroller' => $classPath . 'Controller/StatisticController.php',
 	'tx_commerce_statistic' => $classPath . 'Controller/StatisticController.php',
 	'tx_commerce_controller_systemdatacontroller' => $classPath . 'Controller/SystemdataController.php',
@@ -71,10 +73,7 @@ return array(
 
 	/* module related classes */
 	'tx_commerce_module_access_navigation' => $classPath . 'Module/Access/navigation.php',
-	'sc_mod_access_perm_ajax' => $classPath . 'Module/Access/class.sc_mod_access_perm_ajax.php',
 	'tx_commerce_module_category_navigation' => $classPath . 'Module/Category/navigation.php',
-	'tx_commerce_order_pagetree' => $classPath . 'Module/Orders/class.tx_commerce_order_pagetree.php',
-	'tx_commerce_statistic_pagetree' => $classPath . 'Module/Statistic/class.tx_commerce_statistic_pagetree.php',
 
 	/* payment */
 	'tx_commerce_payment_abstract' => $classPath . 'Payment/class.tx_commerce_payment_abstract.php',
@@ -124,6 +123,10 @@ return array(
 	'tx_commerce_leaf_product' => $classPath . 'Tree/class.tx_commerce_leaf_product.php',
 	'tx_commerce_leaf_productdata' => $classPath . 'Tree/class.tx_commerce_leaf_productdata.php',
 	'tx_commerce_leaf_productview' => $classPath . 'Tree/class.tx_commerce_leaf_productview.php',
+	'tx_commerce_tree_ordertree' => $classPath . 'Tree/OrderTree.php',
+	'tx_commerce_order_pagetree' => $classPath . 'Tree/OrderTree.php',
+	'tx_commerce_tree_statistictree' => $classPath . 'Tree/StatisticTree.php',
+	'tx_commerce_statistic_pagetree' => $classPath . 'Tree/StatisticTree.php',
 	'tx_commerce_treelib_link_categorytree' => $classPath . 'Tree/Link/class.tx_commerce_treelib_link_categorytree.php',
 	'tx_commerce_treelib_link_leaf_categoryview' => $classPath . 'Tree/Link/class.tx_commerce_treelib_link_leaf_categoryview.php',
 	'tx_commerce_treelib_link_leaf_productview' => $classPath . 'Tree/Link/class.tx_commerce_treelib_link_leaf_productview.php',

@@ -27,7 +27,7 @@
  * convenient methods of editing of category permissions (including category ownership
  * (user and group)) via new TYPO3AJAX facility
  */
-class SC_mod_access_perm_ajax {
+class Tx_Commerce_Controller_PermissionAjaxController {
 	/**
 	 * The local configuration array
 	 *
@@ -405,9 +405,11 @@ class SC_mod_access_perm_ajax {
 	}
 }
 
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/mod_access/class.sc_mod_access_perm_ajax.php']) {
+class_alias('Tx_Commerce_Controller_PermissionAjaxController', 'SC_mod_access_perm_ajax');
+
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Controller/PermissionAjaxController.php']) {
 	/** @noinspection PhpIncludeInspection */
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/mod_access/class.sc_mod_access_perm_ajax.php']);
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Controller/PermissionAjaxController.php']);
 }
 
 ?>

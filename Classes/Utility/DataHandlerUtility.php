@@ -233,12 +233,12 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 					// overwrite a product
 				$command = 'overwrite';
 
-				$uidTarget = array_slice(explode('|', $this->CB['overwrite']), 1, 1);
+				$uidTarget = current(array_slice(explode('|', $this->CB['overwrite']), 1, 1));
 			} elseif (isset($this->CB['paste'])) {
 					// paste either a product into a category or a category into a category
 				$command = ($this->clipObj->getSelectedRecord('tx_commerce_categories', $uidClip) == NULL) ? 'pasteProduct' : 'pasteCategory';
 
-				$uidTarget = array_slice(explode('|', $this->CB['paste']), 1, 1);
+				$uidTarget = current(array_slice(explode('|', $this->CB['paste']), 1, 1));
 			}
 
 			if ($this->cmd == NULL) {

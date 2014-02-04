@@ -181,7 +181,7 @@ class Tx_Commerce_Controller_AccessController {
 		$this->doc->docType = 'xhtml_trans';
 		$this->doc->setModuleTemplate(PATH_TXCOMMERCE . 'Resources/Private/Backend/mod_access.html');
 		$this->doc->form = '<form action="' . $this->doc->backPath . 'tce_db.php" method="post" name="tceAction">';
-		$this->doc->loadJavascriptLib(PATH_TXCOMMERCE . 'Resources/Public/Javascript/mod_access.js');
+		$this->doc->loadJavascriptLib(PATH_TXCOMMERCE_REL . 'Resources/Public/Javascript/mod_access.js');
 
 			// Set up menus:
 		$this->menuConfig();
@@ -514,7 +514,7 @@ class Tx_Commerce_Controller_AccessController {
 			<input type="hidden" name="data[tx_commerce_categories][' . $this->id . '][perms_user]" value="' . $this->pageinfo['perms_user'] . '" />
 			<input type="hidden" name="data[tx_commerce_categories][' . $this->id . '][perms_group]" value="' . $this->pageinfo['perms_group'] . '" />
 			<input type="hidden" name="data[tx_commerce_categories][' . $this->id . '][perms_everybody]" value="' . $this->pageinfo['perms_everybody'] . '" />
-			' . $this->getRecursiveSelect($this->id, $this->perms_clause) . t3lib_TCEforms::getHiddenTokenField('tceAction') . '
+			' . $this->getRecursiveSelect($this->id) . t3lib_TCEforms::getHiddenTokenField('tceAction') . '
 			<input type="submit" name="submit" value="' . $language->getLL('Save', 1) . '" />' .
 			'<input type="submit" value="' . $language->getLL('Abort', 1) . '" onclick="' .
 				htmlspecialchars('jumpToUrl(\'index.php?id=' . $this->id . '\'); return false;') . '" />
@@ -592,17 +592,18 @@ class Tx_Commerce_Controller_AccessController {
 			// Make header of table:
 		$code = '';
 
+		$lineImg = t3lib_iconWorks::skinImg($this->BACK_PATH, 'gfx/line.gif', 'width="5" height="16"');
 		if ($this->MOD_SETTINGS['mode'] == 'perms') {
 			$code .= '
 				<tr>
 					<td class="bgColor2" colspan="2">&nbsp;</td>
-					<td class="bgColor2"><img' . t3lib_iconWorks::skinImg($this->BACK_PATH, 'gfx/line.gif', 'width="5" height="16"') . ' alt="" /></td>
+					<td class="bgColor2"><img' . $lineImg . ' alt="" /></td>
 					<td class="bgColor2" align="center"><b>' . $language->getLL('Owner', 1) . '</b></td>
-					<td class="bgColor2"><img' . t3lib_iconWorks::skinImg($this->BACK_PATH, 'gfx/line.gif', 'width="5" height="16"') . ' alt="" /></td>
+					<td class="bgColor2"><img' . $lineImg . ' alt="" /></td>
 					<td class="bgColor2" align="center"><b>' . $language->getLL('Group', 1) . '</b></td>
-					<td class="bgColor2"><img' . t3lib_iconWorks::skinImg($this->BACK_PATH, 'gfx/line.gif', 'width="5" height="16"') . ' alt="" /></td>
+					<td class="bgColor2"><img' . $lineImg . ' alt="" /></td>
 					<td class="bgColor2" align="center"><b>' . $language->getLL('Everybody', 1) . '</b></td>
-					<td class="bgColor2"><img' . t3lib_iconWorks::skinImg($this->BACK_PATH, 'gfx/line.gif', 'width="5" height="16"') . ' alt="" /></td>
+					<td class="bgColor2"><img' . $lineImg . ' alt="" /></td>
 					<td class="bgColor2" align="center"><b>' . $language->getLL('EditLock', 1) . '</b></td>
 				</tr>
 			';
@@ -610,10 +611,10 @@ class Tx_Commerce_Controller_AccessController {
 			$code .= '
 				<tr>
 					<td class="bgColor2" colspan="2">&nbsp;</td>
-					<td class="bgColor2"><img' . t3lib_iconWorks::skinImg($this->BACK_PATH, 'gfx/line.gif', 'width="5" height="16"') . ' alt="" /></td>
+					<td class="bgColor2"><img' . $lineImg . ' alt="" /></td>
 					<td class="bgColor2" align="center" nowrap="nowrap"><b>' . $language->getLL('User', 1) . ':</b> ' .
 					$backendUser->user['username'] . '</td>' . (!$backendUser->isAdmin() ? '<td class="bgColor2"><img' .
-					t3lib_iconWorks::skinImg($this->BACK_PATH, 'gfx/line.gif', 'width="5" height="16"') . ' alt="" /></td>
+					$lineImg . ' alt="" /></td>
 					<td class="bgColor2" align="center"><b>' . $language->getLL('EditLock', 1) . '</b></td>' : '') . '
 				</tr>';
 		}
@@ -643,12 +644,12 @@ class Tx_Commerce_Controller_AccessController {
 			$userName = $beUserArray[$row['perms_userid']] ?
 				$beUserArray[$row['perms_userid']]['username'] :
 				($row['perms_userid'] ? '<i>[' . $row['perms_userid'] . ']!</i>' : '');
-			$userName = SC_mod_access_perm_ajax::renderOwnername($pageId, $row['perms_userid'], htmlspecialchars(t3lib_div::fixed_lgd_cs($userName, 20)));
+			$userName = Tx_Commerce_Controller_PermissionAjaxController::renderOwnername($pageId, $row['perms_userid'], htmlspecialchars(t3lib_div::fixed_lgd_cs($userName, 20)));
 
 			$groupName = $beGroupArray[$row['perms_groupid']] ?
 				$beGroupArray[$row['perms_groupid']]['title']  :
 				($row['perms_groupid'] ? '<i>[' . $row['perms_groupid'] . ']!</i>' : '');
-			$groupName = SC_mod_access_perm_ajax::renderGroupname($pageId, $row['perms_groupid'], htmlspecialchars(t3lib_div::fixed_lgd_cs($groupName, 20)));
+			$groupName = Tx_Commerce_Controller_PermissionAjaxController::renderGroupname($pageId, $row['perms_groupid'], htmlspecialchars(t3lib_div::fixed_lgd_cs($groupName, 20)));
 
 				// Seeing if editing of permissions are allowed for that page:
 			$editPermsAllowed = ($row['perms_userid'] == $backendUser->user['uid'] || $backendUser->isAdmin());
@@ -711,18 +712,19 @@ class Tx_Commerce_Controller_AccessController {
 			}
 
 				// Rest of columns (depending on mode)
+			$lineImg = t3lib_iconWorks::skinImg($this->BACK_PATH, 'gfx/line.gif', 'width="5" height="16"');
 			if ($this->MOD_SETTINGS['mode'] == 'perms') {
 				$cells[] = '
-					<td' . $bgCol . '><img' . t3lib_iconWorks::skinImg($this->BACK_PATH, 'gfx/line.gif', 'width="5" height="16"') . ' alt="" /></td>
-					<td' . $bgCol . ' nowrap="nowrap">' . ($pageId ? SC_mod_access_perm_ajax::renderPermissions($row['perms_user'], $pageId, 'user') . ' ' . $userName : '') . '</td>
+					<td' . $bgCol . '><img' . $lineImg . ' alt="" /></td>
+					<td' . $bgCol . ' nowrap="nowrap">' . ($pageId ? Tx_Commerce_Controller_PermissionAjaxController::renderPermissions($row['perms_user'], $pageId, 'user') . ' ' . $userName : '') . '</td>
 
-					<td' . $bgCol . '><img' . t3lib_iconWorks::skinImg($this->BACK_PATH, 'gfx/line.gif', 'width="5" height="16"') . ' alt="" /></td>
-					<td' . $bgCol . ' nowrap="nowrap">' . ($pageId ? SC_mod_access_perm_ajax::renderPermissions($row['perms_group'], $pageId, 'group') . ' ' . $groupName : '') . '</td>
+					<td' . $bgCol . '><img' . $lineImg . ' alt="" /></td>
+					<td' . $bgCol . ' nowrap="nowrap">' . ($pageId ? Tx_Commerce_Controller_PermissionAjaxController::renderPermissions($row['perms_group'], $pageId, 'group') . ' ' . $groupName : '') . '</td>
 
-					<td' . $bgCol . '><img' . t3lib_iconWorks::skinImg($this->BACK_PATH, 'gfx/line.gif', 'width="5" height="16"') . ' alt="" /></td>
-					<td' . $bgCol . ' nowrap="nowrap">' . ($pageId ? ' ' . SC_mod_access_perm_ajax::renderPermissions($row['perms_everybody'], $pageId, 'everybody') : '') . '</td>
+					<td' . $bgCol . '><img' . $lineImg . ' alt="" /></td>
+					<td' . $bgCol . ' nowrap="nowrap">' . ($pageId ? ' ' . Tx_Commerce_Controller_PermissionAjaxController::renderPermissions($row['perms_everybody'], $pageId, 'everybody') : '') . '</td>
 
-					<td' . $bgCol . '><img' . t3lib_iconWorks::skinImg($this->BACK_PATH, 'gfx/line.gif', 'width="5" height="16"') . ' alt="" /></td>
+					<td' . $bgCol . '><img' . $lineImg . ' alt="" /></td>
 					<td' . $bgCol . ' nowrap="nowrap">' . (
 						$row['editlock'] ?
 						'<span id="el_' . $pageId . '" class="editlock"><a class="editlock" onclick="WebPermissions.toggleEditLock(\'' .
@@ -738,7 +740,7 @@ class Tx_Commerce_Controller_AccessController {
 					';
 			} else {
 				$cells[] = '
-					<td' . $bgCol . '><img' . t3lib_iconWorks::skinImg($this->BACK_PATH, 'gfx/line.gif', 'width="5" height="16"') . ' alt="" /></td>';
+					<td' . $bgCol . '><img' . $lineImg . ' alt="" /></td>';
 
 				$bgCol = ($backendUser->user['uid'] == $row['perms_userid'] ? ' class="bgColor-20"' : $lE_bgCol);
 
@@ -746,12 +748,12 @@ class Tx_Commerce_Controller_AccessController {
 				$cells[] = '
 					<td' . $bgCol . ' nowrap="nowrap" align="center">' . (
 						$pageId ?
-						$owner . SC_mod_access_perm_ajax::renderPermissions($backendUser->calcPerms($row), $pageId, 'user') :
+						$owner . Tx_Commerce_Controller_PermissionAjaxController::renderPermissions($backendUser->calcPerms($row), $pageId, 'user') :
 						''
 					) . '</td>
 					' . (!$backendUser->isAdmin() ?
 						'
-						<td' . $bgCol . '><img' . t3lib_iconWorks::skinImg($this->BACK_PATH, 'gfx/line.gif', 'width="5" height="16"') . ' alt="" /></td>
+						<td' . $bgCol . '><img' . $lineImg . ' alt="" /></td>
 						<td' . $bgCol . ' nowrap="nowrap">' . (
 							$row['editlock'] ?
 							'<img' . t3lib_iconWorks::skinImg($this->BACK_PATH, 'gfx/recordlock_warning2.gif', 'width="22" height="16"') .
@@ -791,11 +793,10 @@ class Tx_Commerce_Controller_AccessController {
 				<td valign="top"><img src="../../../Resources/Public/Images/legend.gif" width="86" height="75" alt="" /></td>
 				<td valign="top" nowrap="nowrap">' . $legendText . '</td>
 			</tr>
-		</table>';
-		$code .= '<div id="perm-legend">' . $language->getLL('def', 1);
-		$code .= '<br /><br /><span class="perm-allowed">*</span>: ' . $language->getLL('A_Granted', 1);
-		$code .= '<br /><span class="perm-denied">x</span>: ' . $language->getLL('A_Denied', 1);
-		$code .= '</div>';
+		</table>
+		<div id="perm-legend">' . $language->getLL('def', 1) .
+			'<br /><br /><span class="perm-allowed">*</span>: ' . $language->getLL('A_Granted', 1) .
+			'<br /><span class="perm-denied">x</span>: ' . $language->getLL('A_Denied', 1) . '</div>';
 
 			// Adding section with legend code:
 		$this->content .= $this->doc->spacer(20);
@@ -844,16 +845,16 @@ class Tx_Commerce_Controller_AccessController {
 	 * Finding tree and offer setting of values recursively.
 	 *
 	 * @param integer $id Page id.
-	 * @param string $perms_clause Select clause
 	 * @return string Select form element for recursive levels (if any levels are found)
 	 */
-	public function getRecursiveSelect($id, $perms_clause) {
+	public function getRecursiveSelect($id) {
 		/** @var t3lib_beUserAuth $backendUser */
 		$backendUser = $GLOBALS['BE_USER'];
 		/** @var language $language */
 		$language = $GLOBALS['LANG'];
 
 			// Initialize tree object:
+		/** @var tx_commerce_categorytree $tree */
 		$tree = t3lib_div::makeInstance('tx_commerce_categorytree');
 		$tree->setBare();
 		$tree->readRecursively($this->id, $this->getLevels);
@@ -867,7 +868,6 @@ class Tx_Commerce_Controller_AccessController {
 
 			// If there are a hierarchy of category ids, then...
 		if ($backendUser->user['uid'] && count($recsPerLevel)) {
-
 				// Init:
 			$label_recur = $language->getLL('recursive');
 			$label_levels = $language->getLL('levels');

@@ -39,7 +39,7 @@ class Tx_Commerce_Module_Orders_Navigation {
 	protected $content;
 
 	/**
-	 * @var localPageTree
+	 * @var Tx_Commerce_Tree_OrderTree
 	 */
 	protected $pagetree;
 
@@ -93,10 +93,10 @@ class Tx_Commerce_Module_Orders_Navigation {
 		$this->setTempDBmount = t3lib_div::_GP('setTempDBmount');
 
 			// Generate Folder if necessary
-		tx_commerce_create_folder::init_folders();
+		Tx_Commerce_Utility_FolderUtility::init_folders();
 
 			// Create page tree object:
-		$this->pagetree = t3lib_div::makeInstance('tx_commerce_order_pagetree');
+		$this->pagetree = t3lib_div::makeInstance('Tx_Commerce_Tree_OrderTree');
 		$this->pagetree->ext_IconMode = $backendUser->getTSConfigVal('options.pageTree.disableIconLinkToContextmenu');
 		$this->pagetree->ext_showPageId = $backendUser->getTSConfigVal('options.pageTree.showPageIdWithTitle');
 		$this->pagetree->thisScript = $GLOBALS['BACK_PATH'] . PATH_TXCOMMERCE_REL . 'Classes/Module/Orders/navigation.php';

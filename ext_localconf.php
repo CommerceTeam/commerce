@@ -203,7 +203,7 @@ $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi4/class.tx_commerce_pi4.php']
 
 
 	// Adding the AJAX listeners for Permission change/Browsing the Category tree
-$GLOBALS['TYPO3_CONF_VARS']['BE']['AJAX']['SC_mod_access_perm_ajax::dispatch'] = 'EXT:commerce/Classes/Module/Access/class.sc_mod_access_perm_ajax.php:SC_mod_access_perm_ajax->dispatch';
+$GLOBALS['TYPO3_CONF_VARS']['BE']['AJAX']['Tx_Commerce_Controller_PermissionAjaxController::dispatch'] = 'EXT:commerce/Classes/Controller/PermissionAjaxController.php:Tx_Commerce_Controller_PermissionAjaxController->dispatch';
 $GLOBALS['TYPO3_CONF_VARS']['BE']['AJAX']['Tx_Commerce_Module_Access_Navigation::ajaxExpandCollapse'] = 'EXT:commerce/Classes/Module/Access/navigation.php:Tx_Commerce_Module_Access_Navigation->ajaxExpandCollapse';
 $GLOBALS['TYPO3_CONF_VARS']['BE']['AJAX']['Tx_Commerce_Module_Category_Navigation::ajaxExpandCollapse'] = 'EXT:commerce/Classes/Module/Category/navigation.php:Tx_Commerce_Module_Category_Navigation->ajaxExpandCollapse';
 

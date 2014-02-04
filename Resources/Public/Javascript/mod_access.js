@@ -1,40 +1,33 @@
 /***************************************************************
-*
-*  Javascript functions regarding the permissions module
-*  Relies on the javascript library "prototype"
-*
-*  Copyright notice
-*
-*  (c) 2007-2008	Andreas Beutel <typo3@mehrwert.de>
-*  (c) 2007	Benjamin Mack <www.xnos.org>
-*  All rights reserved
-*
-*  This script is part of the TYPO3 project. The TYPO3 project is
-*  free software; you can redistribute it and/or modify
-*  it under the terms of the GNU General Public License as published by
-*  the Free Software Foundation; either version 2 of the License, or
-*  (at your option) any later version.
-*
-*  The GNU General Public License can be found at
-*  http://www.gnu.org/copyleft/gpl.html.
-*  A copy is found in the textfile GPL.txt and important notices to the license
-*  from the author is found in LICENSE.txt distributed with these scripts.
-*
-*
-*  This script is distributed in the hope that it will be useful,
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*  GNU General Public License for more details.
-*
-*  This copyright notice MUST APPEAR in all copies of the script!
-***************************************************************/
-/**
- * @author		Andreas Kundoch <typo3@mehrwert.de>
- * @author		Benjamin Mack <www.xnos.org>
- * @package		TYPO3
- * @subpackage	core
- * @version 	$Id: index.php 3074 2008-02-05 16:46:59Z patrickbroens $
- */
+ *
+ *  Javascript functions regarding the permissions module
+ *  Relies on the javascript library "prototype"
+ *
+ *  Copyright notice
+ *
+ *  (c) 2007-2008 Andreas Beutel <typo3@mehrwert.de>
+ *  (c) 2007 Benjamin Mack <www.xnos.org>
+ *  All rights reserved
+ *
+ *  This script is part of the TYPO3 project. The TYPO3 project is
+ *  free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  The GNU General Public License can be found at
+ *  http://www.gnu.org/copyleft/gpl.html.
+ *  A copy is found in the textfile GPL.txt and important notices to the license
+ *  from the author is found in LICENSE.txt distributed with these scripts.
+ *
+ *
+ *  This script is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  This copyright notice MUST APPEAR in all copies of the script!
+ ***************************************************************/
 
 // TYPO3 code extracted from index.php
 function checkChange(checknames, varname) {
@@ -62,8 +55,8 @@ function jumpToUrl(URL)	{ window.location.href = URL; }
 // Methods for AJAX permission manipulation
 var WebPermissions = {
 
-    thisScript: '../../../../typo3/ajax.php',
-	ajaxID: 'SC_mod_access_perm_ajax::dispatch',
+    thisScript: '../../../../../../typo3/ajax.php',
+	ajaxID: 'Tx_Commerce_Controller_PermissionAjaxController::dispatch',
 
 		// set the permission bits through an ajax call
 	setPermissions: function(page, bits, mode, who, permissions) {

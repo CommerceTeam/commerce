@@ -442,7 +442,7 @@ abstract class browsetree {
 			$leaf = $this->leafs[$i];
 
 			$leaf->sort($rootUid);
-			$sorted 	= $leaf->getSortedArray();
+			$sorted = $leaf->getSortedArray();
 			$sortedData = array_merge($sortedData, $sorted);
 		}
 
