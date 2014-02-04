@@ -702,15 +702,15 @@ class Tx_Commerce_Utility_BackendUtility {
 		$uid = 0;
 
 		if (strpos($key, '_') === FALSE) {
-			$uid = (int) $key;
+			$uid = $key;
 		} else {
 			$keyData = @explode('_', $key);
 			if (is_array($keyData)) {
-				$uid = (int) $keyData[(count($keyData) - 1)];
+				$uid = $keyData[(count($keyData) - 1)];
 			}
 		}
 
-		return $uid;
+		return (int) $uid;
 	}
 
 	/**

@@ -243,6 +243,10 @@ class Tx_Commerce_Hook_CommandMapHooks {
 			// @todo add copy for category
 		if ($command == 'delete') {
 			$this->deleteChildCategoriesProductsArticlesPricesOfCategory($categoryUid);
+		} elseif ($command == 'copy') {
+			// @todo copy category translations
+			// @todo copy childcategory recursiv
+			// @todo copy products
 		}
 	}
 
@@ -308,6 +312,8 @@ class Tx_Commerce_Hook_CommandMapHooks {
 
 			$this->changeCategoryOfCopiedProduct($newProductUid);
 			$this->copyArticlesFromProduct($productUid, $newProductUid);
+			// @todo copy attributes
+			// @todo copy translations
 		}
 	}
 
@@ -559,6 +565,7 @@ class Tx_Commerce_Hook_CommandMapHooks {
 
 			$database->exec_INSERTquery('tx_commerce_products', $product);
 			$newTranslationProductUid = $database->sql_insert_id();
+				// @todo copy resources
 
 			$this->copyArticlesFromProduct($oldTranslationProductUid, $newTranslationProductUid);
 		}
@@ -579,6 +586,9 @@ class Tx_Commerce_Hook_CommandMapHooks {
 			unset($article['uid']);
 			$article['uid_product'] = $newProductUid;
 			$database->exec_INSERTquery('tx_commerce_articles', $article);
+			// @todo copy resources
+			// @todo copy prices
+			// @todo copy attributes
 		}
 	}
 

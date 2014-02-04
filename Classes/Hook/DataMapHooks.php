@@ -63,7 +63,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 	 * @param t3lib_TCEmain $pObj: The instance of the BE Form
 	 * @return void
 	 */
-	public function processDatamap_preProcessFieldArray(&$incomingFieldArray, $table, $id, &$pObj) {
+	public function processDatamap_preProcessFieldArray(&$incomingFieldArray, $table, $id, $pObj) {
 			// check if we have to do something
 		if (!$this->isPreProcessAllowed($incomingFieldArray, $table, $id)) {
 			return;
@@ -109,6 +109,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 		return !strtolower(substr($id, 0, 3)) == 'new'
 			|| (
 				(
+						// articles may get preprocessed if the attributesedit, prices or create_new_price fields are set
 					$table == 'tx_commerce_articles'
 					&& (
 						isset($incomingFieldArray['attributesedit'])
@@ -117,9 +118,11 @@ class Tx_Commerce_Hook_DataMapHooks {
 					)
 				)
 				|| (
+						// categories or products may get preprocessed if attributes are set
 					($table == 'tx_commerce_products' || $table == 'tx_commerce_categories')
 					&& isset($incomingFieldArray['attributes'])
 				)
+					// orders and order articles may get preprocessed
 				|| ($table == 'tx_commerce_orders' || $table == 'tx_commerce_order_articles')
 			);
 	}
@@ -147,7 +150,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 	 * @return array
 	 */
 	protected function preProcessProduct($incomingFieldArray, $id) {
-		$this->catList = $this->belib->getUidListFromList(explode(',', $incomingFieldArray['categories']));
+		$this->catList = $this->belib->getUidListFromList(t3lib_div::trimExplode(',', $incomingFieldArray['categories']));
 
 		$articles = $this->belib->getArticlesOfProduct($id);
 		if (is_array($articles)) {
@@ -176,8 +179,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 				$parentCateory = $productObj->getMasterparentCategory();
 				$GLOBALS['_POST']['popViewId_addParams'] =
 					($incomingFieldArray['sys_language_uid'] > 0 ? '&L=' . $incomingFieldArray['sys_language_uid'] : '') .
-					'&ADMCMD_vPrev&no_cache=1&tx_commerce[showUid]=' . $id .
-					'&tx_commerce[catUid]=' . $parentCateory;
+					'&ADMCMD_vPrev&no_cache=1&tx_commerce[showUid]=' . $id . '&tx_commerce[catUid]=' . $parentCateory;
 				$GLOBALS['_POST']['popViewId'] = $previewPageID;
 			}
 		}
@@ -194,100 +196,34 @@ class Tx_Commerce_Hook_DataMapHooks {
 		/** @var t3lib_db $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
-			// update article attribute relations
-		if (isset($incomingFieldArray['attributesedit'])) {
-				// get the data from the flexForm
-			$attributes = $incomingFieldArray['attributesedit']['data']['sDEF']['lDEF'];
-
-			foreach ($attributes as $aKey => $aValue) {
-				$value = $aValue['vDEF'];
-				$aUid = $this->belib->getUidFromKey($aKey, $aValue);
-				$attributeData = $this->belib->getAttributeData($aUid, 'has_valuelist,multiple,sorting');
-
-				if ($attributeData['multiple'] == 1) {
-
-					$relations = explode(',', $value);
-					$database->exec_DELETEquery(
-						'tx_commerce_articles_article_attributes_mm',
-						'uid_local = ' . $id . ' AND uid_foreign = ' . $aUid
-					);
-					$relCount = 0;
-					foreach ($relations as $relation) {
-						if (empty($relation) || $attributeData == 0) {
-							continue;
-						}
-
-						$updateArrays = $this->belib->getUpdateData($attributeData, $relation);
-
-							// update article attribute relation
-						$database->exec_INSERTquery(
-							'tx_commerce_articles_article_attributes_mm',
-							array_merge(
-								array(
-									'uid_local' => $id,
-									'uid_foreign' => $aUid,
-									'sorting' => $attributeData['sorting']
-								),
-								$updateArrays[1]
-							)
-						);
-						$relCount++;
-					}
-						// insert at least one relation
-					if ($relCount == 0) {
-						$database->exec_INSERTquery(
-							'tx_commerce_articles_article_attributes_mm',
-							array(
-								'uid_local' => $id,
-								'uid_foreign' => $aUid,
-								'sorting' => $attributeData['sorting']
-							)
-						);
-					}
-				} else {
-					$updateArrays = $this->belib->getUpdateData($attributeData, $value);
-
-						// update article attribute relation
-					$database->exec_UPDATEquery(
-						'tx_commerce_articles_article_attributes_mm',
-						'uid_local = ' . $id . ' AND uid_foreign = ' . $aUid,
-						$updateArrays[1]
-					);
-				}
-					// recalculate hash for this article
-				$this->belib->updateArticleHash($id);
-			}
-		}
+		$this->updateArticleAttributeRelations($incomingFieldArray, $id);
 
 			// create a new price if the checkbox was toggled get pid of article
-		$create_new_scale_prices_count = is_numeric($incomingFieldArray['create_new_scale_prices_count']) ?
+		$pricesCount = is_numeric($incomingFieldArray['create_new_scale_prices_count']) ?
 			(int) $incomingFieldArray['create_new_scale_prices_count'] : 0;
-		$create_new_scale_prices_steps = is_numeric($incomingFieldArray['create_new_scale_prices_steps']) ?
+		$pricesSteps = is_numeric($incomingFieldArray['create_new_scale_prices_steps']) ?
 			(int) $incomingFieldArray['create_new_scale_prices_steps'] : 0;
-		$create_new_scale_prices_startamount = is_numeric($incomingFieldArray['create_new_scale_prices_startamount']) ?
+		$pricesStartamount = is_numeric($incomingFieldArray['create_new_scale_prices_startamount']) ?
 			(int) $incomingFieldArray['create_new_scale_prices_startamount'] : 0;
 
-		if ($create_new_scale_prices_count > 0 && $create_new_scale_prices_steps > 0 && $create_new_scale_prices_startamount > 0) {
+		if ($pricesCount > 0 && $pricesSteps > 0 && $pricesStartamount > 0) {
 				// somehow hook is used two times sometime. So switch off new creating.
 			$incomingFieldArray['create_new_scale_prices_count'] = 0;
 
 				// get pid
-			list($modPid) = Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Commerce', 'commerce');
-			list($prodPid) = Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Products', 'commerce', $modPid);
-
-			$aPid = $prodPid;
+			list($commercePid) = Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Commerce', 'commerce');
+			list($productPid) = Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Products', 'commerce', $commercePid);
 
 				// set some status vars
-			$time = time();
-			$myScaleAmountStart = $create_new_scale_prices_startamount;
-			$myScaleAmountEnd = $create_new_scale_prices_startamount + $create_new_scale_prices_steps - 1;
+			$myScaleAmountStart = $pricesStartamount;
+			$myScaleAmountEnd = $pricesStartamount + $pricesSteps - 1;
 
 				// create the different prices
-			for ($myScaleCounter = 1; $myScaleCounter <= $create_new_scale_prices_count; $myScaleCounter++) {
+			for ($myScaleCounter = 1; $myScaleCounter <= $pricesCount; $myScaleCounter++) {
 				$insertArr = array(
-					'pid' => $aPid,
-					'tstamp' => $time,
-					'crdate' => $time,
+					'pid' => $productPid,
+					'tstamp' => $GLOBALS['EXEC_TIME'],
+					'crdate' => $GLOBALS['EXEC_TIME'],
 					'uid_article' => $id,
 					'fe_group' => $incomingFieldArray['create_new_scale_prices_fe_group'],
 					'price_scale_amount_start' => $myScaleAmountStart,
@@ -298,8 +234,8 @@ class Tx_Commerce_Hook_DataMapHooks {
 
 					// @todo update articles XML
 
-				$myScaleAmountStart += $create_new_scale_prices_steps;
-				$myScaleAmountEnd += $create_new_scale_prices_steps;
+				$myScaleAmountStart += $pricesSteps;
+				$myScaleAmountEnd += $pricesSteps;
 			}
 		}
 
@@ -443,6 +379,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 
 			foreach ($correlationTypes as $key => $data) {
 				$keyData = array();
+					// @todo this cant work, we are checking on a new created empty array
 				if ($keyData[0] == 'ct') {
 						// get the attributes from the categories of this product
 					$localAttributes = explode(',', $data['vDEF']);
@@ -479,7 +416,6 @@ class Tx_Commerce_Hook_DataMapHooks {
 	 * @return void
 	 */
 	public function processDatamap_postProcessFieldArray($status, $table, $id, &$fieldArray, $pObj) {
-			// Permissions <- used for recursive assignment of the persmissions in Permissions[EDIT]
 		switch ($table) {
 			case 'tx_commerce_categories':
 				$this->postProcessCategory($status, $table, $id, $fieldArray, $pObj);
@@ -507,33 +443,37 @@ class Tx_Commerce_Hook_DataMapHooks {
 	 * @return array
 	 */
 	protected function postProcessCategory($status, $table, $id, &$fieldArray, $pObj) {
+		/** @var t3lib_beUserAuth $backendUser */
+		$backendUser = $GLOBALS['BE_USER'];
+
 			// Will be called for every Category that is in the datamap - so at this time we only need to worry about the current $id item
 		$data = $pObj->datamap[$table][$id];
 
 		if (is_array($data)) {
-			$l18nParent = (isset($data['l18n_parent'])) ? $data['l18n_parent'] : 0;
+			$l18nParent = (int) $data['l18n_parent'];
 
 			$category = NULL;
-				// check if the user has the permission to edit this category; abort if he doesnt.
+				// check if the user has the permission to edit this category
 			if ($status != 'new') {
-
 					// check if we have the right to edit and are in commerce mounts
 				$checkId = $id;
+
 				/** @var Tx_Commerce_Domain_Model_Category $category */
 				$category = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category');
 				$category->init($checkId);
 				$category->loadData();
 
 					// Use the l18n parent as category for permission checks.
-				if ($l18nParent > 0 || $category->getField('l18n_parent') > 0) {
-					$checkId = $category->getField('l18n_parent');
+				if ($l18nParent || $category->getField('l18n_parent') > 0) {
+					$checkId = $l18nParent ?: $category->getField('l18n_parent');
 					$category = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category');
 					$category->init($checkId);
 				}
 
+					// check if the category is in mount
 				/** @var Tx_Commerce_Tree_CategoryMounts $mounts */
 				$mounts = t3lib_div::makeInstance('Tx_Commerce_Tree_CategoryMounts');
-				$mounts->init($GLOBALS['BE_USER']->user['uid']);
+				$mounts->init($backendUser->user['uid']);
 
 					// check
 				if (!$category->isPSet('edit') || !$mounts->isInCommerceMounts($category->getUid())) {
@@ -544,26 +484,24 @@ class Tx_Commerce_Hook_DataMapHooks {
 			}
 
 				// add the perms back into the field_array
-			$keys = array_keys($data);
-
-			for ($i = 0, $l = count($keys); $i < $l; $i ++) {
-				switch($keys[$i]) {
+			foreach ($data as $field => $value) {
+				switch($field) {
 					case 'perms_userid':
 					case 'perms_groupid':
 					case 'perms_user':
 					case 'perms_group':
 					case 'perms_everybody':
 							// Overwrite only the perms fields
-						$fieldArray[$keys[$i]] = $data[$keys[$i]];
+						$fieldArray[$field] = $value;
 					break;
 				}
 			}
 
-				// chmod new categories for the user if the new category is not a localization
+				// add permissions for current user
 			if ($status == 'new') {
-				$fieldArray['perms_userid'] = $GLOBALS['BE_USER']->user['uid'];
+				$fieldArray['perms_userid'] = $backendUser->user['uid'];
 					// 31 grants every right
-				$fieldArray['perms_user']  = 31;
+				$fieldArray['perms_user'] = 31;
 			}
 
 				// break if the parent_categories didn't change
@@ -581,15 +519,15 @@ class Tx_Commerce_Hook_DataMapHooks {
 				$parentCategories = $category->getParentCategories();
 
 				/** @var Tx_Commerce_Domain_Model_Category $parent */
-				for ($i = 0, $l = count($parentCategories); $i < $l; $i ++) {
-					$parent = $parentCategories[$i];
+				foreach ($parentCategories as $parent) {
 					$existingParents[] = $parent->getUid();
 
 					/** @var Tx_Commerce_Tree_CategoryMounts $mounts */
 					$mounts = t3lib_div::makeInstance('Tx_Commerce_Tree_CategoryMounts');
-					$mounts->init($GLOBALS['BE_USER']->user['uid']);
+					$mounts->init($backendUser->user['uid']);
 
-						// Add parent to list if the user has no show right on it or it is not in the user's mountpoints
+						// if the user has no right to see one of the parent categories or its not in the mounts it would miss afterwards
+						// by this its readded to the parent_category field
 					if (!$parent->isPSet('read') || !$mounts->isInCommerceMounts($parent->getUid())) {
 						$fieldArray['parent_category'] .= ',' . $parent->getUid();
 					}
@@ -600,14 +538,14 @@ class Tx_Commerce_Hook_DataMapHooks {
 			$fieldArray['parent_category'] = t3lib_div::uniqueList($fieldArray['parent_category']);
 
 				// abort if the user didn't assign a category - rights need not be checked then
-			if ('' == $fieldArray['parent_category']) {
+			if ($fieldArray['parent_category'] == '') {
 				/** @var Tx_Commerce_Domain_Model_Category $root */
 				$root = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category');
 				$root->init(0);
 
 				/** @var Tx_Commerce_Tree_CategoryMounts $mounts */
 				$mounts = t3lib_div::makeInstance('Tx_Commerce_Tree_CategoryMounts');
-				$mounts->init($GLOBALS['BE_USER']->user['uid']);
+				$mounts->init($backendUser->user['uid']);
 
 				if ($mounts->isInCommerceMounts(0)) {
 						// assign the root as the parent category if it is empty
@@ -624,6 +562,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 			$newParents = array_diff(explode(',', $fieldArray['parent_category']), $existingParents);
 
 				// work with keys because array_diff does not start with key 0 but keeps the old keys - that means gaps could exist
+				// @todo what the fuck. SERIOUSLY why not use stuff live foreach and (int) instead of ($uid == '') ? 0 : $uid
 			$keys = array_keys($newParents);
 			$l = count($keys);
 
@@ -632,17 +571,15 @@ class Tx_Commerce_Hook_DataMapHooks {
 				$groupId = 0;
 
 				for ($i = 0; $i < $l; $i ++) {
-					$uid = $newParents[$keys[$i]];
-						// empty string replace with 0
-					$uid = ($uid == '') ? 0 : $uid;
+					$uid = (int) $newParents[$keys[$i]];
 
 					/** @var Tx_Commerce_Domain_Model_Category $cat */
-					$cat = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category');
-					$cat->init($uid);
+					$category = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category');
+					$category->init($uid);
 
 					/** @var Tx_Commerce_Tree_CategoryMounts $mounts */
 					$mounts = t3lib_div::makeInstance('Tx_Commerce_Tree_CategoryMounts');
-					$mounts->init($GLOBALS['BE_USER']->user['uid']);
+					$mounts->init($backendUser->user['uid']);
 
 						// abort if the parent category is not in the webmounts
 					if (!$mounts->isInCommerceMounts($uid)) {
@@ -651,42 +588,42 @@ class Tx_Commerce_Hook_DataMapHooks {
 					}
 
 						// skip the root for permission check - if it is in mounts, it is allowed
-					if (0 == $uid) {
+					if (!$uid) {
 						continue;
 					}
 
-					$cat->loadPermissions();
+					$category->loadPermissions();
 
 						// remove category from list if it is not permitted
-					if (!$cat->isPSet('new')) {
+					if (!$category->isPSet('new')) {
 						$fieldArray['parent_category'] = t3lib_div::rmFromList($uid, $fieldArray['parent_category']);
 					} else {
 							// conversion to int is important, otherwise the binary & will not work properly
-						$groupRights = (FALSE === $groupRights) ? (int) $cat->getPermsGroup() : ($groupRights & (int) $cat->getPermsGroup());
-						$groupId = $cat->getPermsGroupId();
+						$groupRights = ($groupRights === FALSE) ? (int) $category->getPermsGroup() : ($groupRights & (int) $category->getPermsGroup());
+						$groupId = $category->getPermsGroupId();
 					}
 				}
 
 					// set the group id and permissions for a new record
-				if ('new' == $status) {
+				if ($status == 'new') {
 					$fieldArray['perms_group'] = $groupRights;
 					$fieldArray['perms_groupid'] = $groupId;
 				}
 			}
 
 				// if there is no parent_category left from the ones the user wanted to add, abort and inform him.
-			if ('' == $fieldArray['parent_category'] && count($newParents)) {
+			if ($fieldArray['parent_category'] == '' && count($newParents)) {
 				$pObj->newlog('You dont have the permissions to use any of the parent categories you chose as a parent.', 1);
 				$fieldArray = array();
 			}
 
 				// make sure the category does not end up as its own parent - would lead to endless recursion.
-			if ('' != $fieldArray['parent_category'] && 'new' != $status) {
+			if ($fieldArray['parent_category'] != '' && $status == 'new') {
 				$catUids = t3lib_div::intExplode(',', $fieldArray['parent_category']);
 
 				foreach ($catUids as $catUid) {
 						// Skip root.
-					if (0 == $catUid) {
+					if (!$catUid) {
 						continue;
 					}
 
@@ -722,6 +659,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 						if (is_array($tmpParents) && 0 < count($tmpParents)) {
 							$tmpCats = array_merge($tmpCats, $tmpParents);
 						}
+
 						$i--;
 					}
 				}
@@ -740,6 +678,9 @@ class Tx_Commerce_Hook_DataMapHooks {
 	 * @return array
 	 */
 	protected function postProcessProduct($status, $table, $id, &$fieldArray, $pObj) {
+		/** @var t3lib_beUserAuth $backendUser */
+		$backendUser = $GLOBALS['BE_USER'];
+
 		$data = $pObj->datamap[$table][$id];
 
 			// Read the old parent categories
@@ -759,7 +700,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 				// new products have to have a category
 				// if a product is copied, we never check if it has categories - this is MANDATORY, otherwise localize will not work at all!!!
 				// remove this only if you decide to not define the l10n_mode of "categories"" (products)
-			if ('' == trim($fieldArray['categories']) && !isset($GLOBALS['BE_USER']->uc['txcommerce_copyProcess'])) {
+			if (!trim($fieldArray['categories']) && !isset($backendUser->uc['txcommerce_copyProcess'])) {
 				$pObj->newlog('You have to specify at least 1 parent category for the product.', 1);
 				$fieldArray = array();
 			}
@@ -794,31 +735,32 @@ class Tx_Commerce_Hook_DataMapHooks {
 	 * @return array
 	 */
 	protected function postProcessArticle($status, $id, &$fieldArray, $pObj) {
+		/** @var t3lib_beUserAuth $backendUser */
+		$backendUser = $GLOBALS['BE_USER'];
+
 		$parentCategories = array();
 
 			// Read the old parent product - skip this if we are copying or overwriting the article
-		if ('new' != $status && !$GLOBALS['BE_USER']->uc['txcommerce_copyProcess']) {
+		if ($status != 'new' && !$backendUser->uc['txcommerce_copyProcess']) {
 			/** @var Tx_Commerce_Domain_Model_Article $article */
 			$article = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Article');
 			$article->init($id);
 			$article->loadData();
-			$productUid = $article->getParentProductUid();
 
 				// get the parent categories of the product
 			/** @var Tx_Commerce_Domain_Model_Product $product */
 			$product = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product');
-			$product->init($productUid);
+			$product->init($article->getParentProductUid());
 			$product->loadData();
-			$parentCategories = $product->getParentCategories();
 
-			if (!current($parentCategories)) {
-				$languageParentUid = $product->getL18nParent();
-				/** @var Tx_Commerce_Domain_Model_Product $l18nParent */
-				$l18nParent = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product');
-				$l18nParent->init($languageParentUid);
-				$l18nParent->loadData();
-				$parentCategories = $l18nParent->getParentCategories();
+			if ($product->getL18nParent()) {
+				/** @var Tx_Commerce_Domain_Model_Product $product */
+				$product = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product');
+				$product->init($product->getL18nParent());
+				$product->loadData();
 			}
+
+			$parentCategories = $product->getParentCategories();
 		}
 
 			// read new assigned product
@@ -840,11 +782,11 @@ class Tx_Commerce_Hook_DataMapHooks {
 	 * is allready built and so the calls in the tca.php of commerce won't be executed between now and the point
 	 * where the backendform is rendered.
 	 *
-	 * @param string $status: ...
-	 * @param string $table: ...
-	 * @param integer $id: ...
-	 * @param array $fieldArray: ...
-	 * @param t3lib_TCEmain $pObj: ...
+	 * @param string $status
+	 * @param string $table
+	 * @param integer $id
+	 * @param array $fieldArray
+	 * @param t3lib_TCEmain $pObj
 	 * @return void
 	 */
 	public function processDatamap_afterDatabaseOperations($status, $table, $id, $fieldArray, $pObj) {
@@ -923,17 +865,17 @@ class Tx_Commerce_Hook_DataMapHooks {
 	protected function afterDatabaseProduct($status, $table, $id, $fieldArray, $pObj) {
 			// if fieldArray has been unset, do not save anything, but load dynaflex config
 		if (count($fieldArray)) {
-			/** @var Tx_Commerce_Domain_Model_Product $item */
-			$item = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product');
-			$item->init($id);
-			$item->loadData();
+			/** @var Tx_Commerce_Domain_Model_Product $product */
+			$product = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product');
+			$product->init($id);
+			$product->loadData();
 
 			if (isset($fieldArray['categories'])) {
 				$catList = $this->belib->getUidListFromList(explode(',', $fieldArray['categories']));
 				$catList = $this->belib->extractFieldArray($catList, 'uid_foreign', TRUE);
 
 					// get id of the live placeholder instead if such exists
-				$relId = ($status != 'new' && $item->getPid() == '-1') ? $item->getT3verOid() : $id;
+				$relId = ($status != 'new' && $product->getPid() == '-1') ? $product->getT3verOid() : $id;
 
 				$this->belib->saveRelations($relId, $catList, 'tx_commerce_products_categories_mm', TRUE, FALSE);
 			}
@@ -951,11 +893,11 @@ class Tx_Commerce_Hook_DataMapHooks {
 			// so we check if the product is already created and if we have edit rights on it
 		if (t3lib_div::testInt($id)) {
 				// check permissions
-			/** @var Tx_Commerce_Domain_Model_Product $item */
-			$item = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product');
-			$item->init($id);
+			/** @var Tx_Commerce_Domain_Model_Product $product */
+			$product = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product');
+			$product->init($id);
 
-			$parentCategories = $item->getParentCategories();
+			$parentCategories = $product->getParentCategories();
 
 				// check existing categories
 			if (!Tx_Commerce_Utility_BackendUtility::checkPermissionsOnCategoryContent($parentCategories, array('editcontent'))) {
@@ -974,7 +916,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 			}
 		}
 
-			// load dynaflex config
+			// load dynaflex config cant get autoloaded because they contain arrays
 		/** @noinspection PhpIncludeInspection */
 		require_once(t3lib_extMgm::extPath('commerce') . 'Configuration/DCA/Product.php');
 	}
@@ -1002,16 +944,12 @@ class Tx_Commerce_Hook_DataMapHooks {
 			/** @var t3lib_db $database */
 			$database = $GLOBALS['TYPO3_DB'];
 
-			$uidArticleRow = $database->exec_SELECTgetSingleRow(
-				'uid_article',
-				'tx_commerce_article_prices',
-				'uid=' . (int) $id
-			);
+			$uidArticleRow = $database->exec_SELECTgetSingleRow('uid_article', 'tx_commerce_article_prices', 'uid = ' . (int) $id);
 			$uidArticle = $uidArticleRow['uid_article'];
 		} else {
 			$uidArticle = $fieldArray['uid_article'];
 		}
-			// @todo what to do with this?
+			// @todo what to do with this? it was empty before refactoring
 		$this->belib->savePriceFlexformWithArticle($id, $uidArticle, $fieldArray);
 	}
 
@@ -1021,6 +959,9 @@ class Tx_Commerce_Hook_DataMapHooks {
 	 * @param array $dynaFlexConf
 	 */
 	protected function afterDatabaseHandleDynaflex($table, $id, $dynaFlexConf) {
+		/** @var t3lib_beUserAuth $backendUser */
+		$backendUser = $GLOBALS['BE_USER'];
+
 		$loadDynaFlex = TRUE;
 		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['simpleMode']) {
 			if ($table == 'tx_commerce_articles') {
@@ -1029,7 +970,10 @@ class Tx_Commerce_Hook_DataMapHooks {
 		}
 
 			// txcommerce_copyProcess: this is so that dynaflex is not called when we copy an article - otherwise we would get an error
-		if ($loadDynaFlex && t3lib_extMgm::isLoaded('dynaflex') && !empty($dynaFlexConf) && (!isset($GLOBALS['BE_USER']->uc['txcommerce_copyProcess']) || !$GLOBALS['BE_USER']->uc['txcommerce_copyProcess'])) {
+		if (
+			$loadDynaFlex && t3lib_extMgm::isLoaded('dynaflex') && !empty($dynaFlexConf)
+			&& (!isset($backendUser->uc['txcommerce_copyProcess']) || !$backendUser->uc['txcommerce_copyProcess'])
+		) {
 			$dynaFlexConf[0]['uid'] = $id;
 			$dynaFlexConf[1]['uid'] = $id;
 
@@ -1042,21 +986,94 @@ class Tx_Commerce_Hook_DataMapHooks {
 				// change for simple mode
 				// override the dynaflex settings after the DynamicTCA
 			if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['simpleMode'] && $table == 'tx_commerce_products') {
-				$GLOBALS['TCA']['tx_commerce_products']['columns']['articles'] = array (
-						'exclude' => 1,
-						'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.articles',
-						'config' => array (
-								'type' => 'inline',
-								'foreign_table' => 'tx_commerce_articles',
-								'foreign_field' => 'uid_product',
-								'minitems' => 0,
-						),
+				$GLOBALS['TCA']['tx_commerce_products']['columns']['articles'] = array(
+					'exclude' => 1,
+					'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.articles',
+					'config' => array(
+							'type' => 'inline',
+							'foreign_table' => 'tx_commerce_articles',
+							'foreign_field' => 'uid_product',
+							'minitems' => 0,
+					),
 				);
-				$GLOBALS['TCA']['tx_commerce_products']['types']['0']['showitem'] = str_replace('articleslok', 'articles', $GLOBALS['TCA']['tx_commerce_products']['types']['0']['showitem']);
+				$GLOBALS['TCA']['tx_commerce_products']['types']['0']['showitem'] =
+					str_replace('articleslok', 'articles', $GLOBALS['TCA']['tx_commerce_products']['types']['0']['showitem']);
 			}
 		}
 	}
 
+
+	/**
+	 * update article attribute relations
+	 *
+	 * @param array $incomingFieldArray
+	 * @param integer $id
+	 * @return void
+	 */
+	protected function updateArticleAttributeRelations($incomingFieldArray, $id) {
+		if (isset($incomingFieldArray['attributesedit'])) {
+			/** @var t3lib_db $database */
+			$database = $GLOBALS['TYPO3_DB'];
+
+				// get the data from the flexForm
+			$attributes = $incomingFieldArray['attributesedit']['data']['sDEF']['lDEF'];
+
+			foreach ($attributes as $aKey => $aValue) {
+				$value = $aValue['vDEF'];
+				$attributeId = $this->belib->getUidFromKey($aKey, $aValue);
+				$attributeData = $this->belib->getAttributeData($attributeId, 'has_valuelist,multiple,sorting');
+
+				if ($attributeData['multiple'] == 1) {
+						// remove relations before creating new relations this is needed because we dont know which attribute were removed
+					$database->exec_DELETEquery('tx_commerce_articles_article_attributes_mm', 'uid_local = ' . $id . ' AND uid_foreign = ' . $attributeId);
+
+					$relCount = 0;
+					$relations = t3lib_div::trimExplode(',', $value, TRUE);
+					foreach ($relations as $relation) {
+						$updateArrays = $this->belib->getUpdateData($attributeData, $relation);
+
+							// create relations for current saved attributes
+						$database->exec_INSERTquery(
+							'tx_commerce_articles_article_attributes_mm',
+							array_merge(
+								array(
+									'uid_local' => $id,
+									'uid_foreign' => $attributeId,
+									'sorting' => $attributeData['sorting']
+								),
+								$updateArrays[1]
+							)
+						);
+						$relCount++;
+					}
+
+						// insert at least one relation
+					if (!$relCount) {
+						$database->exec_INSERTquery(
+							'tx_commerce_articles_article_attributes_mm',
+							array(
+								'uid_local' => $id,
+								'uid_foreign' => $attributeId,
+								'sorting' => $attributeData['sorting']
+							)
+						);
+					}
+				} else {
+					$updateArrays = $this->belib->getUpdateData($attributeData, $value);
+
+						// update article attribute relation
+					$database->exec_UPDATEquery(
+						'tx_commerce_articles_article_attributes_mm',
+						'uid_local = ' . $id . ' AND uid_foreign = ' . $attributeId,
+						$updateArrays[1]
+					);
+				}
+
+					// recalculate hash for this article
+				$this->belib->updateArticleHash($id);
+			}
+		}
+	}
 
 	/**
 	 * @param integer $cUid
@@ -1070,27 +1087,27 @@ class Tx_Commerce_Hook_DataMapHooks {
 			// now we have to save all attribute relations for this category and all their child categories ...
 			// but only if the fieldArray has changed
 		if (isset($fieldArray['attributes']) || $saveAnyway) {
-				// first of all, get all parent categories ...
+				// get all parent categories ...
 			$catList = array();
 			$this->belib->getParentCategories($cUid, $catList, $cUid, 0, FALSE);
 
 				// get all correlation types
-			$ctList = $this->belib->getAllCorrelationTypes();
+			$correlationTypeList = $this->belib->getAllCorrelationTypes();
 
-				// ... and their attributes
+				// get their attributes
 			$paList = $this->belib->getAttributesForCategoryList($catList);
 
 				// Then extract all attributes from this category and merge it into the attribute list
 			if (!empty($fieldArray['attributes'])) {
-				$ffData = t3lib_div::xml2array($fieldArray['attributes']);
+				$ffData = (array) t3lib_div::xml2array($fieldArray['attributes']);
 			} else {
 				$ffData = array();
 			}
-
-			if (!is_array($ffData) || !is_array($ffData['data']) || !is_array($ffData['data']['sDEF'])) {
+			if (!is_array($ffData['data']) || !is_array($ffData['data']['sDEF'])) {
 				$ffData = array();
 			}
-			$this->belib->mergeAttributeListFromFFData($ffData['data']['sDEF']['lDEF'], 'ct_', $ctList, $cUid, $paList);
+
+			$this->belib->mergeAttributeListFromFFData($ffData['data']['sDEF']['lDEF'], 'ct_', $correlationTypeList, $cUid, $paList);
 
 				// get the list of uid_foreign and save relations for this category
 			$uidList = $this->belib->extractFieldArray($paList, 'uid_foreign', TRUE, array('uid_correlationtype'));
@@ -1098,7 +1115,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 
 				// update the XML structure if needed
 			if ($updateXML) {
-				$this->belib->updateXML('attributes', 'tx_commerce_categories', $cUid, 'category', $ctList);
+				$this->belib->updateXML('attributes', 'tx_commerce_categories', $cUid, 'category', $correlationTypeList);
 			}
 
 				// save all attributes of this category into all poroducts, that are related to it
@@ -1106,7 +1123,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 			if (count($products) > 0) {
 				foreach ($products as $product) {
 					$this->belib->saveRelations($product['uid_local'], $uidList, 'tx_commerce_products_attributes_mm', FALSE, FALSE);
-					$this->belib->updateXML('attributes', 'tx_commerce_products', $product['uid_local'], 'product', $ctList);
+					$this->belib->updateXML('attributes', 'tx_commerce_products', $product['uid_local'], 'product', $correlationTypeList);
 				}
 			}
 
@@ -1123,34 +1140,34 @@ class Tx_Commerce_Hook_DataMapHooks {
 	/**
 	 * Saves all relations between products and his attributes
 	 *
-	 * @param integer $pUid: The UID of the product
-	 * @param array $fieldArray:
+	 * @param integer $productId The UID of the product
+	 * @param array $fieldArray
 	 * @return void
 	 */
-	protected function saveProductRelations($pUid, $fieldArray = NULL) {
+	protected function saveProductRelations($productId, $fieldArray = NULL) {
+		$productId = (int) $productId;
 			// first step is to save all relations between this product and all attributes of this product.
 			// We don't have to check for any parent categories, because the attributes from them should already be saved for this product.
-
 		/** @var t3lib_db $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
 			// create an article and a new price for a new product
-		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['simpleMode'] && $pUid != NULL) {
+		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['simpleMode'] && $productId != NULL) {
 
 				// search for an article of this product
-			$res = $database->exec_SELECTquery('*', 'tx_commerce_articles', 'uid_product=' . (int) $pUid, '', '', 1);
+			$res = $database->exec_SELECTquery('*', 'tx_commerce_articles', 'uid_product = ' . $productId, '', '', 1);
 			if ($database->sql_num_rows($res) == 0) {
 					// create a new article if no one exists
-				$pRes = $database->exec_SELECTquery('title', 'tx_commerce_products', 'uid=' .  (int) $pUid, '', '', 1);
+				$pRes = $database->exec_SELECTquery('title', 'tx_commerce_products', 'uid = ' . $productId, '', '', 1);
 				$productData = $database->sql_fetch_assoc($pRes);
 
 				$aRes = $database->exec_INSERTquery(
 					'tx_commerce_articles',
 					array(
 						'pid' => $fieldArray['pid'],
-						'tstamp' => time(),
-						'crdate' => time(),
-						'uid_product' => $pUid,
+						'tstamp' => $GLOBALS['EXEC_TIME'],
+						'crdate' => $GLOBALS['EXEC_TIME'],
+						'uid_product' => $productId,
 						'article_type_uid' => 1,
 						'title' => $productData['title']
 					)
@@ -1162,39 +1179,40 @@ class Tx_Commerce_Hook_DataMapHooks {
 			}
 
 				// check if the article has already a price
-			$res = $database->exec_SELECTquery('*', 'tx_commerce_article_prices', 'uid_article=' . (int) $pUid, '', '', 1);
+			$res = $database->exec_SELECTquery('*', 'tx_commerce_article_prices', 'uid_article = ' . $productId, '', '', 1);
 			if ($database->sql_num_rows($res) == 0 && $aRes['sys_language_uid'] < 1) {
 					// create a new price if no one exists
-				$database->exec_INSERTquery('tx_commerce_article_prices', array('pid' => $fieldArray['pid'],'uid_article' => $aUid, 'tstamp' => time(),'crdate' => time()));
+				$database->exec_INSERTquery('tx_commerce_article_prices',
+					array('pid' => $fieldArray['pid'],'uid_article' => $aUid, 'tstamp' => $GLOBALS['EXEC_TIME'],'crdate' => $GLOBALS['EXEC_TIME'])
+				);
 			}
 		}
 
 		$delete = TRUE;
 		if (isset($fieldArray['categories'])) {
 			$catList = array();
-			$res = $database->exec_SELECTquery('uid_foreign', 'tx_commerce_products_categories_mm', 'uid_local=' . (int) $pUid);
+			$res = $database->exec_SELECTquery('uid_foreign', 'tx_commerce_products_categories_mm', 'uid_local = ' . $productId);
 			while ($sres = $database->sql_fetch_assoc($res)) {
 				$catList[] = $sres['uid_foreign'];
 			}
 			$paList = $this->belib->getAttributesForCategoryList($catList);
 			$uidList = $this->belib->extractFieldArray($paList, 'uid_foreign', TRUE, array('uid_correlationtype'));
 
-			$this->belib->saveRelations($pUid, $uidList, 'tx_commerce_products_attributes_mm', FALSE, FALSE);
-			$this->belib->updateXML('attributes', 'tx_commerce_products', $pUid, 'product', $catList);
+			$this->belib->saveRelations($productId, $uidList, 'tx_commerce_products_attributes_mm', FALSE, FALSE);
+			$this->belib->updateXML('attributes', 'tx_commerce_products', $productId, 'product', $catList);
 			$delete = FALSE;
 		}
 
-		$ctList = FALSE;
 		$articles = FALSE;
 		if (isset($fieldArray['attributes'])) {
 				// get all correlation types
-			$ctList = $this->belib->getAllCorrelationTypes();
+			$correlationTypeList = $this->belib->getAllCorrelationTypes();
 			$paList = array();
 
 				// extract all attributes from FlexForm
 			$ffData = t3lib_div::xml2array($fieldArray['attributes']);
 			if (is_array($ffData)) {
-				$this->belib->mergeAttributeListFromFFData($ffData['data']['sDEF']['lDEF'], 'ct_', $ctList, $pUid, $paList);
+				$this->belib->mergeAttributeListFromFFData($ffData['data']['sDEF']['lDEF'], 'ct_', $correlationTypeList, $productId, $paList);
 			}
 				// get the list of uid_foreign and save relations for this category
 			$uidList = $this->belib->extractFieldArray($paList, 'uid_foreign', TRUE, array('uid_correlationtype'));
@@ -1209,16 +1227,16 @@ class Tx_Commerce_Hook_DataMapHooks {
 				}
 			}
 
-			$this->belib->saveRelations($pUid, $uidList, 'tx_commerce_products_attributes_mm', $delete, FALSE);
+			$this->belib->saveRelations($productId, $uidList, 'tx_commerce_products_attributes_mm', $delete, FALSE);
 
 			/**
 			 * Rebuild the XML (last param set to true)
 			 * Fixes that l10n of products had invalid XML attributes
 			 */
-			$this->belib->updateXML('attributes', 'tx_commerce_products', $pUid, 'product', $ctList, TRUE);
+			$this->belib->updateXML('attributes', 'tx_commerce_products', $productId, 'product', $correlationTypeList, TRUE);
 
 				// update the XML for this product, we remove everything that is not set for current attributes
-			$pXML = $database->exec_SELECTquery('attributesedit', 'tx_commerce_products', 'uid = ' . (int) $pUid);
+			$pXML = $database->exec_SELECTquery('attributesedit', 'tx_commerce_products', 'uid = ' . $productId);
 			$pXML = $database->sql_fetch_assoc($pXML);
 
 			if (!empty($pXML['attributesedit'])) {
@@ -1226,6 +1244,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 
 				if (is_array($pXML['data']['sDEF']['lDEF'])) {
 					foreach ($pXML['data']['sDEF']['lDEF'] as $key => $item) {
+						$data = array();
 						$uid = $this->belib->getUIdFromKey($key, $data);
 						if (!in_array($uid, $ct4Attributes)) {
 							unset($pXML['data']['sDEF']['lDEF'][$key]);
@@ -1240,40 +1259,33 @@ class Tx_Commerce_Hook_DataMapHooks {
 			}
 
 				// now get all articles that where created from this product
-			$articles = $this->belib->getArticlesOfProduct($pUid);
+			$articles = $this->belib->getArticlesOfProduct($productId);
 
 				// build relation table
-			if (count($articles) > 0) {
+			if (is_array($articles) && count($articles)) {
 				$uidList = $this->belib->extractFieldArray($paList, 'uid_foreign', TRUE);
-				if (is_array($articles)) {
-					foreach ($articles as $article) {
-						$this->belib->saveRelations($article['uid'], $uidList, 'tx_commerce_articles_article_attributes_mm', TRUE, FALSE);
-					}
+				foreach ($articles as $article) {
+					$this->belib->saveRelations($article['uid'], $uidList, 'tx_commerce_articles_article_attributes_mm', TRUE, FALSE);
 				}
 			}
 		}
 
 		$updateArrays = array();
 			// update all articles of this product
-		if (! empty($fieldArray['attributesedit'])) {
-			if (!$ctList) {
-				$ctList = $this->belib->getAllCorrelationTypes();
-			}
-
-			$ffData = t3lib_div::xml2array($fieldArray['attributesedit']);
-			if (is_array($ffData) && is_array($ffData['data']) && is_array($ffData['data']['sDEF']['lDEF'])) {
-
+		if (!empty($fieldArray['attributesedit'])) {
+			$ffData = (array) t3lib_div::xml2array($fieldArray['attributesedit']);
+			if (is_array($ffData['data']) && is_array($ffData['data']['sDEF']['lDEF'])) {
 					// get articles if they are not already there
 				if (!$articles) {
-					$articles = $this->belib->getArticlesOfProduct($pUid);
+					$articles = $this->belib->getArticlesOfProduct($productId);
 				}
 
 					// update this product
 				$articleRelations = array();
 				$counter = 0;
-
 				foreach ($ffData['data']['sDEF']['lDEF'] as $ffDataItemKey => $ffDataItem) {
 					$counter++;
+
 					$attributeKey = $this->belib->getUidFromKey($ffDataItemKey, $keyData);
 					$attributeData = $this->belib->getAttributeData($attributeKey, 'has_valuelist,multiple');
 
@@ -1283,27 +1295,26 @@ class Tx_Commerce_Hook_DataMapHooks {
 							// first we delete all existing attributes
 						$database->exec_DELETEquery(
 							'tx_commerce_products_attributes_mm',
-							'uid_local = ' . $pUid . ' AND uid_foreign = ' . $attributeKey
+							'uid_local = ' . $productId . ' AND uid_foreign = ' . $attributeKey
 						);
 
 							// now explode the data
-						$attributeValues = explode(',', $ffDataItem['vDEF']);
-						$attributeCount = count($attributeValues);
+						$attributeValues = t3lib_div::trimExplode(',', $ffDataItem['vDEF'], TRUE);
 
 						foreach ($attributeValues as $attributeValue) {
 								// The first time an attribute value is selected, TYPO3 returns them INCLUDING an empty value!
 								// This would cause an unnecessary entry in the database, so we have to filter this here.
-							if ($attributeCount > 1 && empty($attributeValue)) {
+							if (empty($attributeValue)) {
 								continue;
 							}
 
-							$updateData = $this->belib->getUpdateData($attributeData, $attributeValue, $pUid);
+							$updateData = $this->belib->getUpdateData($attributeData, $attributeValue, $productId);
 							$database->exec_INSERTquery(
 								'tx_commerce_products_attributes_mm',
 								array_merge(
 									array (
-										'uid_local' => (int) $pUid,
-										'uid_foreign' => (int) $attributeKey,
+										'uid_local' => $productId,
+										'uid_foreign' => $attributeKey,
 										'uid_correlationtype' => 4,
 									),
 									$updateData[0]
@@ -1312,10 +1323,10 @@ class Tx_Commerce_Hook_DataMapHooks {
 						}
 					} else {
 							// update a simple valuelist and normal attributes as usual
-						$updateArrays = $this->belib->getUpdateData($attributeData, $ffDataItem['vDEF'], $pUid);
+						$updateArrays = $this->belib->getUpdateData($attributeData, $ffDataItem['vDEF'], $productId);
 						$database->exec_UPDATEquery(
 							'tx_commerce_products_attributes_mm',
-							'uid_local=' . $pUid . ' AND uid_foreign=' . $attributeKey,
+							'uid_local = ' . $productId . ' AND uid_foreign = ' . $attributeKey,
 							$updateArrays[0]
 						);
 					}
@@ -1332,23 +1343,24 @@ class Tx_Commerce_Hook_DataMapHooks {
 								);
 
 									// now explode the data
-								$attributeValues = explode(',', $ffDataItem['vDEF']);
+								$attributeValues = t3lib_div::trimExplode(',', $ffDataItem['vDEF'], TRUE);
 								$attributeCount = 0;
 								$attributeValue = '';
 								foreach ($attributeValues as $attributeValue) {
 									if (empty($attributeValue)) {
 										continue;
 									}
+
 									$attributeCount++;
 
-									$updateData = $this->belib->getUpdateData($attributeData, $attributeValue, $pUid);
+									$updateData = $this->belib->getUpdateData($attributeData, $attributeValue, $productId);
 									$database->exec_INSERTquery(
 										'tx_commerce_articles_article_attributes_mm',
 										array_merge(
 											array (
 												'uid_local' => $article['uid'],
 												'uid_foreign' => $attributeKey,
-												'uid_product' => $pUid,
+												'uid_product' => $productId,
 												'sorting' => $counter
 											),
 											$updateData[1]
@@ -1358,14 +1370,14 @@ class Tx_Commerce_Hook_DataMapHooks {
 
 									// create at least an empty relation if no attributes where set
 								if ($attributeCount == 0) {
-									$updateData = $this->belib->getUpdateData(array(), $attributeValue, $pUid);
+									$updateData = $this->belib->getUpdateData(array(), $attributeValue, $productId);
 									$database->exec_INSERTquery(
 										'tx_commerce_articles_article_attributes_mm',
 										array_merge(
 											array (
 												'uid_local' => $article['uid'],
 												'uid_foreign' => $attributeKey,
-												'uid_product' => $pUid,
+												'uid_product' => $productId,
 												'sorting' => $counter
 											),
 											$updateData[1]
@@ -1377,7 +1389,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 								$res = $database->exec_SELECTquery(
 									'uid_local, uid_foreign',
 									'tx_commerce_articles_article_attributes_mm',
-									'uid_local = ' . (int) $article['uid'] . ' AND uid_foreign = ' . (int) $attributeKey
+									'uid_local = ' . $article['uid'] . ' AND uid_foreign = ' . $attributeKey
 								);
 
 								if ($database->sql_num_rows($res) > 0) {
@@ -1391,7 +1403,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 										'tx_commerce_articles_article_attributes_mm',
 										array_merge ($updateArrays[1], array(
 											'uid_local' => $article['uid'],
-											'uid_product' => $pUid,
+											'uid_product' => $productId,
 											'uid_foreign' => $attributeKey,
 											'sorting' => $counter
 										))
@@ -1410,7 +1422,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 					}
 				}
 					// Finally update the Felxform for this Product
-				$this->belib->updateArticleXML($articleRelations, FALSE, NULL, $pUid);
+				$this->belib->updateArticleXML($articleRelations, FALSE, NULL, $productId);
 
 					// And add those datas from the database to the articles
 				if (is_array($articles) && count($articles) > 0) {
@@ -1422,8 +1434,9 @@ class Tx_Commerce_Hook_DataMapHooks {
 				}
 			}
 		}
-			// Check if we do have some localised products an call the method recursivly
-		$resLocalised = $database->exec_SELECTquery('uid', 'tx_commerce_products', 'deleted=0 and l18n_parent=' . (int) $pUid);
+
+			// Check if we do have some localized products an call the method recursivly
+		$resLocalised = $database->exec_SELECTquery('uid', 'tx_commerce_products', 'deleted = 0 and l18n_parent = ' . $productId);
 		while ($rowLocalised = $database->sql_fetch_assoc($resLocalised)) {
 			$this->saveProductRelations($rowLocalised['uid'], $fieldArray);
 		}
