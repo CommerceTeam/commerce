@@ -65,7 +65,19 @@ class Tx_Commerce_Domain_Repository_ProductRepository extends Tx_Commerce_Domain
 		if ($uid) {
 			$localOrderField = $this->orderField;
 			if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_product.php']['articleOrder']) {
+				t3lib_div::deprecationLog('
+					hook
+					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_product.php\'][\'articleOrder\']
+					is deprecated since commerce 0.14.0, it will be removed in commerce 0.16.0, please use instead
+					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Domain/Repository/ProductRepository.php\'][\'storeDataToDatabase\']
+				');
 				$hookObj = &t3lib_div::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_product.php']['articleOrder']);
+				if (method_exists($hookObj, 'articleOrder')) {
+					$localOrderField = $hookObj->articleOrder($this->orderField);
+				}
+			}
+			if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Repository/ProductRepository.php']['articleOrder']) {
+				$hookObj = &t3lib_div::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Repository/ProductRepository.php']['articleOrder']);
 				if (method_exists($hookObj, 'articleOrder')) {
 					$localOrderField = $hookObj->articleOrder($this->orderField);
 				}
@@ -78,18 +90,32 @@ class Tx_Commerce_Domain_Repository_ProductRepository extends Tx_Commerce_Domain
 			}
 			$additionalWhere = '';
 
-			/**
-			 * @deprecated
-			 */
 			if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_product.php']['aditionalWhere']) {
+				t3lib_div::deprecationLog('
+					hook
+					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_product.php\'][\'aditionalWhere\']
+					is deprecated since commerce 0.14.0, it will be removed in commerce 0.16.0, please use instead
+					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Domain/Repository/ProductRepository.php\'][\'additionalWhere\']
+				');
 				$hookObj = &t3lib_div::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_product.php']['aditionalWhere']);
 				if (method_exists($hookObj, 'aditionalWhere')) {
 					$additionalWhere = $hookObj->aditionalWhere($where);
 				}
 			}
-
 			if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_product.php']['additionalWhere']) {
+				t3lib_div::deprecationLog('
+					hook
+					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_product.php\'][\'additionalWhere\']
+					is deprecated since commerce 0.14.0, it will be removed in commerce 0.16.0, please use instead
+					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Domain/Repository/ProductRepository.php\'][\'additionalWhere\']
+				');
 				$hookObj = &t3lib_div::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_product.php']['additionalWhere']);
+				if (method_exists($hookObj, 'additionalWhere')) {
+					$additionalWhere = $hookObj->additionalWhere($where);
+				}
+			}
+			if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Repository/ProductRepository.php']['additionalWhere']) {
+				$hookObj = &t3lib_div::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Repository/ProductRepository.php']['additionalWhere']);
 				if (method_exists($hookObj, 'additionalWhere')) {
 					$additionalWhere = $hookObj->additionalWhere($where);
 				}

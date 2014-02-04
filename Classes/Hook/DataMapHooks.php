@@ -1250,6 +1250,17 @@ class Tx_Commerce_Hook_DataMapHooks {
 				// Move Order articles
 			$res_order_id = $database->exec_SELECTquery('order_id,pid,uid,order_sys_language_uid', $table, 'uid=' . (int) $id);
 			if (!$database->sql_error()) {
+				if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Hook/class.tx_commerce_dmhooks.php']['moveOrders'])) {
+					t3lib_div::deprecationLog('
+						hook
+						$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Hook/class.tx_commerce_dmhooks.php\'][\'moveOrders\']
+						is deprecated since commerce 0.14.0, it will be removed in commerce 0.16.0, please use instead
+						$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Hook/DataMapHooks.php\'][\'moveOrders\']
+					');
+					foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Hook/class.tx_commerce_dmhooks.php']['moveOrders'] as $classRef) {
+						$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+					}
+				}
 				if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Hook/DataMapHooks.php']['moveOrders'])) {
 					foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Hook/DataMapHooks.php']['moveOrders'] as $classRef) {
 						$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);

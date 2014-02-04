@@ -541,8 +541,22 @@ class Tx_Commerce_ViewHelpers_Navigation {
 		 * Add some hooks for custom sorting
 		 */
 		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_db_navigation.php']['sortingOrder']) {
+			t3lib_div::deprecationLog('
+				hook
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_db_navigation.php\'][\'sortingOrder\']
+				is deprecated since commerce 0.14.0, it will be removed in commerce 0.16.0, please use instead
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/ViewHelpers/Navigation.php\'][\'sortingOrder\']
+			');
 			$hookObj = & t3lib_div::getUserObj(
 				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_db_navigation.php']['sortingOrder']
+			);
+			if (method_exists($hookObj, 'sortingOrder')) {
+				$sorting = $hookObj->sortingOrder($sorting, $uid_root, $mainTable, $tableMm, $mDepth, $path, $this);
+			}
+		}
+		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/ViewHelpers/Navigation.php']['sortingOrder']) {
+			$hookObj = & t3lib_div::getUserObj(
+				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/ViewHelpers/Navigation.php']['sortingOrder']
 			);
 			if (method_exists($hookObj, 'sortingOrder')) {
 				$sorting = $hookObj->sortingOrder($sorting, $uid_root, $mainTable, $tableMm, $mDepth, $path, $this);
@@ -708,8 +722,22 @@ class Tx_Commerce_ViewHelpers_Navigation {
 		 * Add some hooks for custom sorting
 		 */
 		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_db_navigation.php']['sortingOrder']) {
+			t3lib_div::deprecationLog('
+				hook
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_db_navigation.php\'][\'sortingOrder\']
+				is deprecated since commerce 0.14.0, it will be removed in commerce 0.16.0, please use instead
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/ViewHelpers/Navigation.php\'][\'sortingOrder\']
+			');
 			$hookObj = & t3lib_div::getUserObj(
 				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_db_navigation.php']['sortingOrder']
+			);
+			if (method_exists($hookObj, 'sortingOrder')) {
+				$sorting = $hookObj->sortingOrder($sorting, $uid_root, $mainTable, $tableMm, $mDepth, $path, $this);
+			}
+		}
+		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/ViewHelpers/Navigation.php']['sortingOrder']) {
+			$hookObj = & t3lib_div::getUserObj(
+				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/ViewHelpers/Navigation.php']['sortingOrder']
 			);
 			if (method_exists($hookObj, 'sortingOrder')) {
 				$sorting = $hookObj->sortingOrder($sorting, $uid_root, $mainTable, $tableMm, $mDepth, $path, $this);

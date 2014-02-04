@@ -2656,7 +2656,18 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		$hookObjectsArr = array();
 
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi3/class.tx_commerce_pi3.php'][$type])) {
+			t3lib_div::deprecationLog('
+				hook
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/pi3/class.tx_commerce_pi3.php\'][\'' . $type . '\']
+				is deprecated since commerce 0.14.0, it will be removed in commerce 0.16.0, please use instead
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/CheckoutController.php\'][\'' . $type . '\']
+			');
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi3/class.tx_commerce_pi3.php'][$type] as $classRef) {
+				$hookObjectsArr[] = & t3lib_div::getUserObj($classRef);
+			}
+		}
+		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/CheckoutController.php'][$type])) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/CheckoutController.php'][$type] as $classRef) {
 				$hookObjectsArr[] = & t3lib_div::getUserObj($classRef);
 			}
 		}

@@ -173,12 +173,18 @@ class Tx_Commerce_Domain_Model_Basket extends Tx_Commerce_Domain_Model_BasicBask
 		if ($this->database->sql_num_rows($result)) {
 			$hookObjectsArr = array();
 			if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_basket.php']['load_data_from_database'])) {
+				t3lib_div::deprecationLog('
+					hook
+					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_basket.php\'][\'load_data_from_database\']
+					is deprecated since commerce 0.14.0, this hook will be removed in commerce 0.16.0, please use instead
+					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Domain/Model/Basket.php\'][\'loadDataFromDatabase\']
+				');
 				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_basket.php']['load_data_from_database'] as $classRef) {
 					$hookObjectsArr[] = t3lib_div::getUserObj($classRef);
 				}
 			}
-			if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_basket.php']['loadDataFromDatabase'])) {
-				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_basket.php']['loadDataFromDatabase'] as $classRef) {
+			if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Model/Basket.php']['loadDataFromDatabase'])) {
+				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Model/Basket.php']['loadDataFromDatabase'] as $classRef) {
 					$hookObjectsArr[] = t3lib_div::getUserObj($classRef);
 				}
 			}
@@ -191,11 +197,6 @@ class Tx_Commerce_Domain_Model_Basket extends Tx_Commerce_Domain_Model_BasicBask
 					if (is_array($hookObjectsArr)) {
 						foreach ($hookObjectsArr as $hookObj) {
 							if (method_exists($hookObj, 'load_data_from_database')) {
-								t3lib_div::deprecationLog('
-									$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_basket.php\'][\'load_data_from_database\']
-									deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use instead
-									$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_basket.php\'][\'loadDataFromDatabase\']
-								');
 								$hookObj->load_data_from_database($return_data, $this);
 							}
 							if (method_exists($hookObj, 'loadDataFromDatabase')) {
@@ -225,15 +226,15 @@ class Tx_Commerce_Domain_Model_Basket extends Tx_Commerce_Domain_Model_BasicBask
 	protected function loadPersistantDataFromDatabase($sessionID) {
 		$result = $this->database->exec_SELECTquery('*',
 			'tx_commerce_baskets',
-			'sid = \'' . $this->database->quoteStr($sessionID, 'tx_commerce_baskets') . '\' and finished_time =0 and pid= ' .
+			'sid = \'' . $this->database->quoteStr($sessionID, 'tx_commerce_baskets') . '\' AND finished_time = 0 AND pid= ' .
 				$this->extensionConfigration['BasketStoragePid'],
 			'',
 			'pos'
 		);
 		if ($this->database->sql_num_rows($result)) {
 			$hookObjectsArr = array();
-			if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_basket.php']['loadPersistantDataFromDatabase'])) {
-				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_basket.php']['loadPersistantDataFromDatabase'] as $classRef) {
+			if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Model/Basket.php']['loadPersistantDataFromDatabase'])) {
+				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Model/Basket.php']['loadPersistantDataFromDatabase'] as $classRef) {
 					$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
 				}
 			}
@@ -302,12 +303,18 @@ class Tx_Commerce_Domain_Model_Basket extends Tx_Commerce_Domain_Model_BasicBask
 		);
 		$hookObjectsArr = array();
 		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_basket.php']['store_data_to_database'])) {
+			t3lib_div::deprecationLog('
+				hook
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_basket.php\'][\'store_data_to_database\']
+				is deprecated since commerce 0.14.0, it will be removed in commerce 0.16.0, please use instead
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Domain/Model/Basket.php\'][\'storeDataToDatabase\']
+			');
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_basket.php']['store_data_to_database'] as $classRef) {
 				$hookObjectsArr[] = t3lib_div::getUserObj($classRef);
 			}
 		}
-		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_basket.php']['storeDataToDatabase'])) {
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_basket.php']['storeDataToDatabase'] as $classRef) {
+		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Model/Basket.php']['storeDataToDatabase'])) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Model/Basket.php']['storeDataToDatabase'] as $classRef) {
 				$hookObjectsArr[] = t3lib_div::getUserObj($classRef);
 			}
 		}
@@ -342,8 +349,9 @@ class Tx_Commerce_Domain_Model_Basket extends Tx_Commerce_Domain_Model_BasicBask
 				foreach ($hookObjectsArr as $hookObj) {
 					if (method_exists($hookObj, 'store_data_to_database')) {
 						t3lib_div::deprecationLog('
+							hook
 							$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_basket.php\'][\'store_data_to_database\']
-							deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use instead
+							is deprecated since commerce 0.14.0, this hook will be removed in commerce 0.16.0, please use instead
 							$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_basket.php\'][\'storeDataToDatabase\']
 						');
 						$insertData = $hookObj->store_data_to_database($oneItem, $insertData);

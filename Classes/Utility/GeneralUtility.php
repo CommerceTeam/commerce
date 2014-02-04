@@ -161,16 +161,26 @@ class Tx_Commerce_Utility_GeneralUtility {
 			$sessionKey = $key . ':' . $GLOBALS['TSFE']->fe_user->user['uid'];
 		}
 
-		$hookObjectsArr = array();
 		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_div.php']['generateSessionKey'])) {
+			t3lib_div::deprecationLog('
+				hook
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_div.php\'][\'generateSessionKey\']
+				is deprecated since commerce 0.14.0, it will be removed in commerce 0.16.0, please use instead
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Utility/GeneralUtility.php\'][\'generateSessionKey\']
+			');
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_div.php']['generateSessionKey'] as $classRef) {
-				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+				$hookObj = &t3lib_div::getUserObj($classRef);
+				if (method_exists($hookObj, 'postGenerateSessionKey')) {
+					$sessionKey = $hookObj->postGenerateSessionKey($key);
+				}
 			}
 		}
-
-		foreach ($hookObjectsArr as $hookObj) {
-			if (method_exists($hookObj, 'postGenerateSessionKey')) {
-				$sessionKey = $hookObj->postGenerateSessionKey($key);
+		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Utility/GeneralUtility.php']['generateSessionKey'])) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Utility/GeneralUtility.php']['generateSessionKey'] as $classRef) {
+				$hookObj = &t3lib_div::getUserObj($classRef);
+				if (method_exists($hookObj, 'postGenerateSessionKey')) {
+					$sessionKey = $hookObj->postGenerateSessionKey($key);
+				}
 			}
 		}
 
@@ -212,7 +222,18 @@ class Tx_Commerce_Utility_GeneralUtility {
 	public static function sendMail($mailconf) {
 		$hookObjectsArr = array();
 		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_div.php']['sendMail'])) {
+			t3lib_div::deprecationLog('
+				hook
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_div.php\'][\'sendMail\']
+				is deprecated since commerce 0.14.0, it will be removed in commerce 0.16.0, please use instead
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Utility/GeneralUtility.php\'][\'sendMail\']
+			');
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_div.php']['sendMail'] as $classRef) {
+				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+			}
+		}
+		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Utility/GeneralUtility.php']['sendMail'])) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Utility/GeneralUtility.php']['sendMail'] as $classRef) {
 				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
 			}
 		}

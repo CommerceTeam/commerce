@@ -479,16 +479,26 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 	 * @return array Records array
 	 */
 	public function loadRecords() {
-		$hookObjectsArr = array();
-
-		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/tree/class.leafData.php']['loadRecords'])) {
+		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/tree/class.leafData.php']['loadRecords'])) {
+			t3lib_div::deprecationLog('
+				hook
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/tree/class.leafData.php\'][\'loadRecords\']
+				is deprecated since commerce 0.14.0, it will be removed in commerce 0.16.0, please use instead
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Tree/Leaf/Data.php\'][\'loadRecords\']
+			');
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/tree/class.leafData.php']['loadRecords'] as $classRef) {
-				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+				$hookObj = &t3lib_div::getUserObj($classRef);
+				if (method_exists($hookObj, 'addExtendedFields')) {
+					$this->extendedFields .= $hookObj->addExtendedFields($this->itemTable, $this->extendedFields);
+				}
 			}
 		}
-		foreach ($hookObjectsArr as $hookObj) {
-			if (method_exists($hookObj, 'addExtendedFields')) {
-				$this->extendedFields .= $hookObj->addExtendedFields($this->itemTable, $this->extendedFields);
+		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Tree/Leaf/Data.php']['loadRecords'])) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Tree/Leaf/Data.php']['loadRecords'] as $classRef) {
+				$hookObj = &t3lib_div::getUserObj($classRef);
+				if (method_exists($hookObj, 'addExtendedFields')) {
+					$this->extendedFields .= $hookObj->addExtendedFields($this->itemTable, $this->extendedFields);
+				}
 			}
 		}
 

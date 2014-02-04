@@ -72,17 +72,41 @@ class Tx_Commerce_Domain_Repository_ArticleRepository extends Tx_Commerce_Domain
 	public function getPrices($uid, $count = 1, $orderField = 'price_net') {
 		$uid = (int) $uid;
 		$count = (int) $count;
+
 		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_article.php']['priceOrder']) {
+			t3lib_div::deprecationLog('
+				hook
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_article.php\'][\'priceOrder\']
+				is deprecated since commerce 0.14.0, it will be removed in commerce 0.16.0, please use instead
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Domain/Repository/ArticleRepository.php\'][\'priceOrder\']
+			');
 			$hookObj = &t3lib_div::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_article.php']['priceOrder']);
 			if (method_exists($hookObj, 'priceOrder')) {
 				$orderField = $hookObj->priceOrder($orderField);
 			}
 		}
+		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Repository/ArticleRepository.php']['priceOrder']) {
+			$hookObj = &t3lib_div::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Repository/ArticleRepository.php']['priceOrder']);
+			if (method_exists($hookObj, 'priceOrder')) {
+				$orderField = $hookObj->priceOrder($orderField);
+			}
+		}
 
-			// hook to define any additional restrictions in where clause (Melanie Meyer, 2008-09-17)
 		$additionalWhere = '';
 		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_article.php']['additionalPriceWhere']) {
+			t3lib_div::deprecationLog('
+				hook
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_article.php\'][\'additionalPriceWhere\']
+				is deprecated since commerce 0.14.0, it will be removed in commerce 0.16.0, please use instead
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Domain/Repository/ArticleRepository.php\'][\'additionalPriceWhere\']
+			');
 			$hookObj = &t3lib_div::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_article.php']['additionalPriceWhere']);
+			if (method_exists($hookObj, 'additionalPriceWhere')) {
+				$additionalWhere = $hookObj->additionalPriceWhere($this, $uid);
+			}
+		}
+		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Repository/ArticleRepository.php']['additionalPriceWhere']) {
+			$hookObj = &t3lib_div::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Repository/ArticleRepository.php']['additionalPriceWhere']);
 			if (method_exists($hookObj, 'additionalPriceWhere')) {
 				$additionalWhere = $hookObj->additionalPriceWhere($this, $uid);
 			}

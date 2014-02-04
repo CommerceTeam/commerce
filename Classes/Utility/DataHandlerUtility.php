@@ -39,6 +39,11 @@ require_once($BACK_PATH . 'template.php');
 $LANG->includeLLFile('EXT:commerce/Resources/Private/Language/locallang_mod_cce.xml');
 
 class Tx_Commerce_Utility_DataHandlerUtility {
+	/**
+	 * @var integer
+	 */
+	protected $id;
+
 		// Internal, static: GPvar
 	/**
 	 * Redirect URL. Script will redirect to this location after performing operations (unless errors has occured)
@@ -145,6 +150,7 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 	 */
 	public function init() {
 			// GPvars:
+		$this->id = (int) t3lib_div::_GP('id');
 		$this->redirect = t3lib_div::_GP('redirect');
 		$this->prErr = t3lib_div::_GP('prErr');
 		$this->CB = t3lib_div::_GP('CB');
@@ -272,7 +278,18 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 			// First prepare user defined objects (if any) for hooks which extend this function:
 		$hookObjectsArr = array();
 		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/mod_cce/class.tx_commerce_cce_db.php']['copyWizardClass'])) {
+			t3lib_div::deprecationLog('
+				hook
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/mod_cce/class.tx_commerce_cce_db.php\'][\'copyWizardClass\']
+				is deprecated since commerce 0.14.0, it will be removed in commerce 0.16.0, please use instead
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Utility/DataHandlerUtility.php\'][\'copyWizard\']
+			');
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/mod_cce/class.tx_commerce_cce_db.php']['copyWizardClass'] as $classRef) {
+				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+			}
+		}
+		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Utility/DataHandlerUtility.php']['copyWizard'])) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Utility/DataHandlerUtility.php']['copyWizard'] as $classRef) {
 				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
 			}
 		}
@@ -459,12 +476,21 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 
 		$this->content .= $str;
 
-		$markers['CSH'] = '';
-			// @todo that can not work
-		$markers['FUNC_MENU'] = t3lib_BEfunc::getFuncMenu($uidClip, 'SET[mode]', $this->MOD_SETTINGS['mode'], $this->MOD_MENU['mode']);
-		$markers['CONTENT'] = $this->content;
-		$markers['CATINFO'] = '';
-		$markers['CATPATH'] = '';
+		$markers = array(
+			'CSH' => '',
+			'CONTENT' => $this->content,
+			'CATINFO' => '',
+			'CATPATH' => '',
+		);
+		$markers['FUNC_MENU'] = $this->doc->funcMenu(
+			'',
+			t3lib_BEfunc::getFuncMenu(
+				$this->id,
+				'SET[mode]',
+				$this->MOD_SETTINGS['mode'],
+				$this->MOD_MENU['mode']
+			)
+		);
 
 		$this->content = $this->doc->startPage($language->getLL('Copy'));
 		$this->content .= $this->doc->moduleBody($this->pageinfo, array(), $markers);
@@ -483,7 +509,18 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 			// First prepare user defined objects (if any) for hooks which extend this function:
 		$hookObjectsArr = array();
 		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/mod_cce/class.tx_commerce_cce_db.php']['commitCommandClass'])) {
+			t3lib_div::deprecationLog('
+				hook
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/mod_cce/class.tx_commerce_cce_db.php\'][\'storeDataToDatabase\']
+				is deprecated since commerce 0.14.0, it will be removed in commerce 0.16.0, please use instead
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Utility/DataHandlerUtility.php\'][\'commitCommand\']
+			');
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/mod_cce/class.tx_commerce_cce_db.php']['commitCommandClass'] as $classRef) {
+				$hookObjectsArr[] = t3lib_div::getUserObj($classRef);
+			}
+		}
+		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Utility/DataHandlerUtility.php']['commitCommand'])) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Utility/DataHandlerUtility.php']['commitCommand'] as $classRef) {
 				$hookObjectsArr[] = t3lib_div::getUserObj($classRef);
 			}
 		}

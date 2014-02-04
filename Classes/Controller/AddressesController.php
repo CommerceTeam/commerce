@@ -249,7 +249,18 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 	public function getListing($addressType = 0, $createHiddenFields = FALSE, $hiddenFieldPrefix = '', $selectAddressId = FALSE) {
 		$hookObjectsArr = array();
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi4/class.tx_commerce_pi4.php']['getListing'])) {
+			t3lib_div::deprecationLog('
+				hook
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/pi4/class.tx_commerce_pi4.php\'][\'getListing\']
+				is deprecated since commerce 0.14.0, it will be removed in commerce 0.16.0, please use instead
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/AddressesController.php\'][\'getListing\']
+			');
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi4/class.tx_commerce_pi4.php']['getListing'] as $classRef) {
+				$hookObjectsArr[] = t3lib_div::getUserObj($classRef);
+			}
+		}
+		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/AddressesController.php']['getListing'])) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/AddressesController.php']['getListing'] as $classRef) {
 				$hookObjectsArr[] = t3lib_div::getUserObj($classRef);
 			}
 		}
@@ -476,7 +487,18 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 	protected function getAddressForm($action = 'new', $addressUid = NULL, $config) {
 		$hookObjectsArr = array();
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi4/class.tx_commerce_pi4.php']['getAddressFormItem'])) {
+			t3lib_div::deprecationLog('
+				hook
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/pi4/class.tx_commerce_pi4.php\'][\'getAddressFormItem\']
+				is deprecated since commerce 0.14.0, it will be removed in commerce 0.16.0, please use instead
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/AddressesController.php\'][\'getAddressFormItem\']
+			');
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi4/class.tx_commerce_pi4.php']['getAddressFormItem'] as $classRef) {
+				$hookObjectsArr[] = t3lib_div::getUserObj($classRef);
+			}
+		}
+		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/AddressesController.php']['getAddressFormItem'])) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/AddressesController.php']['getAddressFormItem'] as $classRef) {
 				$hookObjectsArr[] = t3lib_div::getUserObj($classRef);
 			}
 		}
@@ -665,16 +687,29 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 
 			// Hook to delete an address
 		$message = '';
-		$hookObjectsArr = array();
+
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi4/class.tx_commerce_pi4.php']['deleteAddress'])) {
+			t3lib_div::deprecationLog('
+				hook
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/pi4/class.tx_commerce_pi4.php\'][\'deleteAddress\']
+				is deprecated since commerce 0.14.0, it will be removed in commerce 0.16.0, please use instead
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/AddressesController.php\'][\'deleteAddress\']
+			');
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi4/class.tx_commerce_pi4.php']['deleteAddress'] as $classRef) {
-				$hookObjectsArr[] = t3lib_div::getUserObj($classRef);
+				$hookObj = t3lib_div::getUserObj($classRef);
+				if (method_exists($hookObj, 'deleteAddress')) {
+						/** @noinspection PhpUndefinedMethodInspection */
+					$message = $hookObj->deleteAddress((int)$this->piVars['addressid'], $this);
+				}
 			}
 		}
-		foreach ($hookObjectsArr as $hookObj) {
-			if (method_exists($hookObj, 'deleteAddress')) {
-					/** @noinspection PhpUndefinedMethodInspection */
-				$message = $hookObj->deleteAddress((int)$this->piVars['addressid'], $this);
+		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/AddressesController.php']['deleteAddress'])) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/AddressesController.php']['deleteAddress'] as $classRef) {
+				$hookObj = t3lib_div::getUserObj($classRef);
+				if (method_exists($hookObj, 'deleteAddress')) {
+						/** @noinspection PhpUndefinedMethodInspection */
+					$message = $hookObj->deleteAddress((int)$this->piVars['addressid'], $this);
+				}
 			}
 		}
 
@@ -870,7 +905,18 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 	protected function checkAddressForm() {
 		$hookObjectsArr = array();
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi4/class.tx_commerce_pi4.php']['checkAddressForm'])) {
+			t3lib_div::deprecationLog('
+				hook
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/pi4/class.tx_commerce_pi4.php\'][\'checkAddressForm\']
+				is deprecated since commerce 0.14.0, it will be removed in commerce 0.16.0, please use instead
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/AddressesController.php\'][\'checkAddressForm\']
+			');
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi4/class.tx_commerce_pi4.php']['checkAddressForm'] as $classRef) {
+				$hookObjectsArr[] = t3lib_div::getUserObj($classRef);
+			}
+		}
+		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/AddressesController.php']['checkAddressForm'])) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/AddressesController.php']['checkAddressForm'] as $classRef) {
 				$hookObjectsArr[] = t3lib_div::getUserObj($classRef);
 			}
 		}
@@ -995,7 +1041,18 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 			// Hook to process new/changed address
 		$hookObjectsArr = array();
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi4/class.tx_commerce_pi4.php']['saveAddress'])) {
+			t3lib_div::deprecationLog('
+				hook
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/pi4/class.tx_commerce_pi4.php\'][\'saveAddress\']
+				is deprecated since commerce 0.14.0, it will be removed in commerce 0.16.0, please use instead
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/AddressesController.php\'][\'saveAddress\']
+			');
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi4/class.tx_commerce_pi4.php']['saveAddress'] as $classRef) {
+				$hookObjectsArr[] = t3lib_div::getUserObj($classRef);
+			}
+		}
+		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/AddressesController.php']['saveAddress'])) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/AddressesController.php']['saveAddress'] as $classRef) {
 				$hookObjectsArr[] = t3lib_div::getUserObj($classRef);
 			}
 		}
@@ -1087,18 +1144,31 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 
 		$select .= ' AND deleted=0 AND pid=' . $this->conf['addressPid'];
 
-		/** * Hook for adding select statement
-		*/
-		$hookObjectsArr = array();
+		/**
+		 * Hook for adding select statement
+		 */
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi4/class.tx_commerce_pi4.php']['getAddresses'])) {
+			t3lib_div::deprecationLog('
+				hook
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/pi4/class.tx_commerce_pi4.php\'][\'getAddresses\']
+				is deprecated since commerce 0.14.0, it will be removed in commerce 0.16.0, please use instead
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/AddressesController.php\'][\'getAddresses\']
+			');
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi4/class.tx_commerce_pi4.php']['getAddresses'] as $classRef) {
-				$hookObjectsArr[] = t3lib_div::getUserObj($classRef);
+				$hookObj = t3lib_div::getUserObj($classRef);
+				if (method_exists($hookObj, 'editSelectStatement')) {
+						/** @noinspection PhpUndefinedMethodInspection */
+					$select = $hookObj->editSelectStatement($select, $userId, $addressType, $this);
+				}
 			}
 		}
-		foreach ($hookObjectsArr as $hookObj) {
-			if (method_exists($hookObj, 'editSelectStatement')) {
-					/** @noinspection PhpUndefinedMethodInspection */
-				$select = $hookObj->editSelectStatement($select, $userId, $addressType, $this);
+		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/AddressesController.php']['getAddresses'])) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/AddressesController.php']['getAddresses'] as $classRef) {
+				$hookObj = t3lib_div::getUserObj($classRef);
+				if (method_exists($hookObj, 'editSelectStatement')) {
+						/** @noinspection PhpUndefinedMethodInspection */
+					$select = $hookObj->editSelectStatement($select, $userId, $addressType, $this);
+				}
 			}
 		}
 

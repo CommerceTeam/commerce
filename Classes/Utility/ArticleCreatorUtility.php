@@ -592,15 +592,26 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 			}
 		}
 
-		$hookObjectsArr = array();
 		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/class.tx_commerce_articlecreator.php']['preinsert'])) {
+			t3lib_div::deprecationLog('
+				hook
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/class.tx_commerce_articlecreator.php\'][\'preinsert\']
+				is deprecated since commerce 0.14.0, it will be removed in commerce 0.16.0, please use instead
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_basket.php\'][\'createArticlePreInsert\']
+			');
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/class.tx_commerce_articlecreator.php']['preinsert'] as $classRef) {
-				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+				$hookObj = &t3lib_div::getUserObj($classRef);
+				if (method_exists($hookObj, 'preinsert')) {
+					$hookObj->preinsert($articleData);
+				}
 			}
 		}
-		foreach ($hookObjectsArr as $hookObj) {
-			if (method_exists($hookObj, 'preinsert')) {
-				$hookObj->preinsert($articleData);
+		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Utility/ArticleCreatorUtility.php']['createArticlePreInsert'])) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Utility/ArticleCreatorUtility.php']['createArticlePreInsert'] as $classRef) {
+				$hookObj = &t3lib_div::getUserObj($classRef);
+				if (method_exists($hookObj, 'preinsert')) {
+					$hookObj->preinsert($articleData);
+				}
 			}
 		}
 

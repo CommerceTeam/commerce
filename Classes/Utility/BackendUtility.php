@@ -1720,9 +1720,19 @@ class Tx_Commerce_Utility_BackendUtility {
 
 			// First prepare user defined objects (if any) for hooks which extend this function:
 		$hookObjectsArr = array();
-			// @todo change hookname and implement fallback
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_belib.php']['copyProductClass'])) {
+			t3lib_div::deprecationLog('
+				hook
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_belib.php\'][\'copyProductClass\']
+				is deprecated since commerce 0.14.0, it will be removed in commerce 0.16.0, please use instead
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Utility/BackendUtility.php\'][\'copyProduct\']
+			');
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_belib.php']['copyProductClass'] as $classRef) {
+				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+			}
+		}
+		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Utility/BackendUtility.php']['copyProduct'])) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Utility/BackendUtility.php']['copyProduct'] as $classRef) {
 				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
 			}
 		}
@@ -2085,9 +2095,19 @@ class Tx_Commerce_Utility_BackendUtility {
 
 			// First prepare user defined objects (if any) for hooks which extend this function:
 		$hookObjectsArr = array();
-			// @todo change hookname and implement fallback
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_belib.php']['copyCategoryClass'])) {
+			t3lib_div::deprecationLog('
+				hook
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_belib.php\'][\'copyCategoryClass\']
+				is deprecated since commerce 0.14.0, it will be removed in commerce 0.16.0, please use instead
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Utility/BackendUtility.php\'][\'copyCategory\']
+			');
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_belib.php']['copyCategoryClass'] as $classRef) {
+				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+			}
+		}
+		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Utility/BackendUtility.php']['copyCategory'])) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Utility/BackendUtility.php']['copyCategory'] as $classRef) {
 				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
 			}
 		}
@@ -2878,9 +2898,19 @@ class Tx_Commerce_Utility_BackendUtility {
 
 			// First prepare user defined objects (if any) for hooks which extend this function:
 		$hookObjectsArr = array();
-			// @todo change hookname and implement fallback
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_belib.php']['overwriteProductClass'])) {
+			t3lib_div::deprecationLog('
+				hook
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_belib.php\'][\'overwriteProductClass\']
+				is deprecated since commerce 0.14.0, it will be removed in commerce 0.16.0, please use instead
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Utility/BackendUtility.php\'][\'overwriteProduct\']
+			');
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_belib.php']['overwriteProductClass'] as $classRef) {
+				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+			}
+		}
+		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Utility/BackendUtility.php']['overwriteProduct'])) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Utility/BackendUtility.php']['overwriteProduct'] as $classRef) {
 				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
 			}
 		}

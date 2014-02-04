@@ -235,16 +235,27 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 		if ($this->uid > 0) {
 			$this->lang_uid = $lang_uid;
 			$this->databaseConnection = t3lib_div::makeInstance($this->databaseClass);
-			$hookObjectsArr = array();
 
 			if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_article.php']['postinit'])) {
+				t3lib_div::deprecationLog('
+					hook
+					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_article.php\'][\'postinit\']
+					is deprecated since commerce 0.14.0, it will be removed in commerce 0.16.0, please use instead
+					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Domain/Model/Article.php\'][\'postinit\']
+				');
 				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_article.php']['postinit'] as $classRef) {
-					$hookObjectsArr[] = & t3lib_div::getUserObj($classRef);
+					$hookObj = & t3lib_div::getUserObj($classRef);
+					if (method_exists($hookObj, 'postinit')) {
+						$hookObj->postinit($this);
+					}
 				}
 			}
-			foreach ($hookObjectsArr as $hookObj) {
-				if (method_exists($hookObj, 'postinit')) {
-					$hookObj->postinit($this);
+			if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Model/Article.php']['postinit'])) {
+				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Model/Article.php']['postinit'] as $classRef) {
+					$hookObj = & t3lib_div::getUserObj($classRef);
+					if (method_exists($hookObj, 'postinit')) {
+						$hookObj->postinit($this);
+					}
 				}
 			}
 
@@ -263,8 +274,19 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 	public function getActualPriceforScaleUid($count) {
 			// Hook for doing your own calculation
 		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_article.php']['getActualPriceforScaleUid']) {
+			t3lib_div::deprecationLog('
+				hook
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_article.php\'][\'getActualPriceforScaleUid\']
+				is deprecated since commerce 0.14.0, it will be removed in commerce 0.16.0, please use instead
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Domain/Model/Article.php\'][\'getActualPriceforScaleUid\']
+			');
 			$hookObject = & t3lib_div::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_article.php']['getActualPriceforScaleUid']);
-
+			if (is_object($hookObject) && (method_exists($hookObject, 'getActualPriceforScaleUid'))) {
+				return $hookObject->getActualPriceforScaleUid($count, $this);
+			}
+		}
+		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Model/Article.php']['getActualPriceforScaleUid']) {
+			$hookObject = & t3lib_div::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Model/Article.php']['getActualPriceforScaleUid']);
 			if (is_object($hookObject) && (method_exists($hookObject, 'getActualPriceforScaleUid'))) {
 				return $hookObject->getActualPriceforScaleUid($count, $this);
 			}
@@ -577,8 +599,19 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 		);
 
 		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_article.php']['specialPrice']) {
+			t3lib_div::deprecationLog('
+				hook
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_article.php\'][\'specialPrice\']
+				is deprecated since commerce 0.14.0, it will be removed in commerce 0.16.0, please use instead
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Domain/Model/Article.php\'][\'specialPrice\']
+			');
 			$hookObj = & t3lib_div::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_article.php']['specialPrice']);
-
+			if (method_exists($hookObj, 'specialPrice')) {
+				$hookObj->specialPrice($this->specialPrice, $this->prices_uids);
+			}
+		}
+		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Model/Article.php']['specialPrice']) {
+			$hookObj = & t3lib_div::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Model/Article.php']['specialPrice']);
 			if (method_exists($hookObj, 'specialPrice')) {
 				$hookObj->specialPrice($this->specialPrice, $this->prices_uids);
 			}
@@ -737,7 +770,24 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 		 * Just one Hook as there is no sence for more than one delievery cost claculation
 		 */
 		if (($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_article.php']['calculateDeliveryCost'])) {
+			t3lib_div::deprecationLog('
+				hook
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_article.php\'][\'calculateDeliveryCost\']
+				is deprecated since commerce 0.14.0, it will be removed in commerce 0.16.0, please use instead
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Domain/Model/Article.php\'][\'calculateDeliveryCost\']
+			');
 			$hookObject = t3lib_div::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_article.php']['calculateDeliveryCost']);
+
+			if (method_exists($hookObject, 'calculateDeliveryCostNet')) {
+				$hookObject->calculateDeliveryCostNet($this->deliveryCostNet, $this);
+			}
+
+			if (method_exists($hookObject, 'calculateDeliveryCostGross')) {
+				$hookObject->calculateDeliveryCostGross($this->deliveryCostGross, $this);
+			}
+		}
+		if (($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Model/Article.php']['calculateDeliveryCost'])) {
+			$hookObject = t3lib_div::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Model/Article.php']['calculateDeliveryCost']);
 
 			if (method_exists($hookObject, 'calculateDeliveryCostNet')) {
 				$hookObject->calculateDeliveryCostNet($this->deliveryCostNet, $this);

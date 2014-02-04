@@ -169,7 +169,18 @@ class Tx_Commerce_Controller_InvoiceController extends Tx_Commerce_Controller_Ba
 				// Hook to process new/changed marker
 			$hookObjectsArr = array();
 			if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi6/class.tx_commerce_pi6.php']['invoice'])) {
+				t3lib_div::deprecationLog('
+					hook
+					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/pi6/class.tx_commerce_pi6.php\'][\'invoice\']
+					is deprecated since commerce 0.14.0, it will be removed in commerce 0.16.0, please use instead
+					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/InvoiceController.php\'][\'invoice\']
+				');
 				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi6/class.tx_commerce_pi6.php']['invoice'] as $classRef) {
+					$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+				}
+			}
+			if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/InvoiceController.php']['invoice'])) {
+				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/InvoiceController.php']['invoice'] as $classRef) {
 					$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
 				}
 			}

@@ -166,7 +166,18 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 
 		$hookObjectsArr = array();
 		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['main'])) {
+			t3lib_div::deprecationLog('
+				hook
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/pi2/class.tx_commerce_pi2.php\'][\'main\']
+				is deprecated since commerce 0.14.0, it will be removed in commerce 0.16.0, please use instead
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/BasketController.php\'][\'main\']
+			');
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['main'] as $classRef) {
+				$hookObjectsArr[] = t3lib_div::getUserObj($classRef);
+			}
+		}
+		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BasketController.php']['main'])) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BasketController.php']['main'] as $classRef) {
 				$hookObjectsArr[] = t3lib_div::getUserObj($classRef);
 			}
 		}
@@ -236,22 +247,44 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 			$this->basket->deleteAllArticles();
 
 				// Hook to process basket after deleting all articles from basket
-			$hookObjectsArr = array();
 			if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['postdelBasket'])) {
+				t3lib_div::deprecationLog('
+					hook
+					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/pi2/class.tx_commerce_pi2.php\'][\'postdelBasket\']
+					is deprecated since commerce 0.14.0, it will be removed in commerce 0.16.0, please use instead
+					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/BasketController.php\'][\'addArticleUid\']
+				');
 				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['postdelBasket'] as $classRef) {
-					$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+					$hookObj = &t3lib_div::getUserObj($classRef);
+					if (method_exists($hookObj, 'postdelBasket')) {
+						$hookObj->postdelBasket($this->basket, $this);
+					}
 				}
 			}
-			foreach ($hookObjectsArr as $hookObj) {
-				if (method_exists($hookObj, 'postdelBasket')) {
-					$hookObj->postdelBasket($this->basket, $this);
+			if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BasketController.php']['postDeleteBasket'])) {
+				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BasketController.php']['postDeleteBasket'] as $classRef) {
+					$hookObj = &t3lib_div::getUserObj($classRef);
+					if (method_exists($hookObj, 'postdelBasket')) {
+						$hookObj->postdelBasket($this->basket, $this);
+					}
 				}
 			}
 		}
 
 		$hookObjectsArr = array();
 		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['artAddUid'])) {
+			t3lib_div::deprecationLog('
+				hook
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/pi2/class.tx_commerce_pi2.php\'][\'artAddUid\']
+				is deprecated since commerce 0.14.0, it will be removed in commerce 0.16.0, please use instead
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/BasketController.php\'][\'addArticleUid\']
+			');
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['artAddUid'] as $classRef) {
+				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+			}
+		}
+		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BasketController.php']['addArticleUid'])) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BasketController.php']['addArticleUid'] as $classRef) {
 				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
 			}
 		}
@@ -372,15 +405,26 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 			}
 
 				// Hook to process the basket after adding payment article
-			$hookObjectsArr = array();
 			if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['postpayArt'])) {
+				t3lib_div::deprecationLog('
+					hook
+					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/pi2/class.tx_commerce_pi2.php\'][\'postpayArt\']
+					is deprecated since commerce 0.14.0, it will be removed in commerce 0.16.0, please use instead
+					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/BasketController.php\'][\'postPaymentArticle\']
+				');
 				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['postpayArt'] as $classRef) {
-					$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+					$hookObj = &t3lib_div::getUserObj($classRef);
+					if (method_exists($hookObj, 'postpayArt')) {
+						$hookObj->postpayArt($this->basket, $this);
+					}
 				}
 			}
-			foreach ($hookObjectsArr as $hookObj) {
-				if (method_exists($hookObj, 'postpayArt')) {
-					$hookObj->postpayArt($this->basket, $this);
+			if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BasketController.php']['postPaymentArticle'])) {
+				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BasketController.php']['postPaymentArticle'] as $classRef) {
+					$hookObj = &t3lib_div::getUserObj($classRef);
+					if (method_exists($hookObj, 'postpayArt')) {
+						$hookObj->postpayArt($this->basket, $this);
+					}
 				}
 			}
 		}
@@ -406,15 +450,26 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 			}
 
 				// Hook to process the basket after adding delivery article
-			$hookObjectsArr = array();
 			if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['postdelArt'])) {
+				t3lib_div::deprecationLog('
+					hook
+					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/pi2/class.tx_commerce_pi2.php\'][\'postdelArt\']
+					is deprecated since commerce 0.14.0, it will be removed in commerce 0.16.0, please use instead
+					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/BasketController.php\'][\'postDeliveryArticle\']
+				');
 				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['postdelArt'] as $classRef) {
-					$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+					$hookObj = &t3lib_div::getUserObj($classRef);
+					if (method_exists($hookObj, 'postdelArt')) {
+						$hookObj->postdelArt($this->basket, $this);
+					}
 				}
 			}
-			foreach ($hookObjectsArr as $hookObj) {
-				if (method_exists($hookObj, 'postdelArt')) {
-					$hookObj->postdelArt($this->basket, $this);
+			if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BasketController.php']['postDeliveryArticle'])) {
+				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BasketController.php']['postDeliveryArticle'] as $classRef) {
+					$hookObj = &t3lib_div::getUserObj($classRef);
+					if (method_exists($hookObj, 'postdelArt')) {
+						$hookObj->postdelArt($this->basket, $this);
+					}
 				}
 			}
 		}
@@ -447,15 +502,26 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 		$basketArray['###URL_CHECKOUT###'] = $this->pi_linkTP_keepPIvars_url(array(), FALSE, 1, $this->conf['checkoutPid']);
 
 			// Hook for additional markers in quick view basket template
-		$hookObjectsArr = array();
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['getQuickView'])) {
+			t3lib_div::deprecationLog('
+				hook
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/pi2/class.tx_commerce_pi2.php\'][\'getQuickView\']
+				is deprecated since commerce 0.14.0, it will be removed in commerce 0.16.0, please use instead
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/BasketController.php\'][\'getQuickView\']
+			');
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['getQuickView'] as $classRef) {
-				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+				$hookObj = &t3lib_div::getUserObj($classRef);
+				if (method_exists($hookObj, 'additionalMarker')) {
+					$basketArray = $hookObj->additionalMarker($basketArray, $this);
+				}
 			}
 		}
-		foreach ($hookObjectsArr as $hookObj) {
-			if (method_exists($hookObj, 'additionalMarker')) {
-				$basketArray = $hookObj->additionalMarker($basketArray, $this);
+		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BasketController.php']['getQuickView'])) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BasketController.php']['getQuickView'] as $classRef) {
+				$hookObj = &t3lib_div::getUserObj($classRef);
+				if (method_exists($hookObj, 'additionalMarker')) {
+					$basketArray = $hookObj->additionalMarker($basketArray, $this);
+				}
 			}
 		}
 
@@ -485,7 +551,16 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 			// Generate basket hooks
 		$hookObject = NULL;
 		if (($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['generateBasket'])) {
+			t3lib_div::deprecationLog('
+				hook
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/pi2/class.tx_commerce_pi2.php\'][\'generateBasket\']
+				is deprecated since commerce 0.14.0, it will be removed in commerce 0.16.0, please use instead
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/BasketController.php\'][\'generateBasket\']
+			');
 			$hookObject = t3lib_div::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['generateBasket']);
+		}
+		if (($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BasketController.php']['generateBasket'])) {
+			$hookObject = t3lib_div::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BasketController.php']['generateBasket']);
 		}
 
 			// No delivery article is present, so draw selector
@@ -551,15 +626,26 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 
 		$basketArray = array_merge($basketArray, $this->languageMarker);
 
-		$hookObjectsArr = array();
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['generateBasketMarker'])) {
+			t3lib_div::deprecationLog('
+				hook
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/pi2/class.tx_commerce_pi2.php\'][\'generateBasketMarker\']
+				is deprecated since commerce 0.14.0, it will be removed in commerce 0.16.0, please use instead
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/BasketController.php\'][\'generateBasketMarker\']
+			');
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['generateBasketMarker'] as $classRef) {
-				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+				$hookObj = &t3lib_div::getUserObj($classRef);
+				if (method_exists($hookObj, 'additionalMarker')) {
+					$basketArray = $hookObj->additionalMarker($basketArray, $this);
+				}
 			}
 		}
-		foreach ($hookObjectsArr as $hookObj) {
-			if (method_exists($hookObj, 'additionalMarker')) {
-				$basketArray = $hookObj->additionalMarker($basketArray, $this);
+		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BasketController.php']['generateBasketMarker'])) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BasketController.php']['generateBasketMarker'] as $classRef) {
+				$hookObj = &t3lib_div::getUserObj($classRef);
+				if (method_exists($hookObj, 'additionalMarker')) {
+					$basketArray = $hookObj->additionalMarker($basketArray, $this);
+				}
 			}
 		}
 
@@ -593,15 +679,26 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 		}
 
 			// Hook to define/overwrite individually, which delivery articles are allowed
-		$hookObjectsArr = array();
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['deliveryArticles'])) {
+			t3lib_div::deprecationLog('
+				hook
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/pi2/class.tx_commerce_pi2.php\'][\'deliveryArticles\']
+				is deprecated since commerce 0.14.0, it will be removed in commerce 0.16.0, please use instead
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/BasketController.php\'][\'deliveryArticles\']
+			');
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['deliveryArticles'] as $classRef) {
-				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+				$hookObj = &t3lib_div::getUserObj($classRef);
+				if (method_exists($hookObj, 'deliveryAllowedArticles')) {
+					$allowedArticles = $hookObj->deliveryAllowedArticles($this, $allowedArticles);
+				}
 			}
 		}
-		foreach ($hookObjectsArr as $hookObj) {
-			if (method_exists($hookObj, 'deliveryAllowedArticles')) {
-				$allowedArticles = $hookObj->deliveryAllowedArticles($this, $allowedArticles);
+		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BasketController.php']['deliveryArticles'])) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BasketController.php']['deliveryArticles'] as $classRef) {
+				$hookObj = &t3lib_div::getUserObj($classRef);
+				if (method_exists($hookObj, 'deliveryAllowedArticles')) {
+					$allowedArticles = $hookObj->deliveryAllowedArticles($this, $allowedArticles);
+				}
 			}
 		}
 
@@ -707,15 +804,26 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 		unset ($newAllowedArticles);
 
 			// Hook to allow to define/overwrite individually, which payment articles are allowed
-		$hookObjectsArr = array();
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['paymentArticles'])) {
+			t3lib_div::deprecationLog('
+				hook
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/pi2/class.tx_commerce_pi2.php\'][\'paymentArticles\']
+				is deprecated since commerce 0.14.0, it will be removed in commerce 0.16.0, please use instead
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/BasketController.php\'][\'paymentArticles\']
+			');
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['paymentArticles'] as $classRef) {
-				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+				$hookObj = &t3lib_div::getUserObj($classRef);
+				if (method_exists($hookObj, 'paymentAllowedArticles')) {
+					$allowedArticles = $hookObj->paymentAllowedArticles($this, $allowedArticles);
+				}
 			}
 		}
-		foreach ($hookObjectsArr as $hookObj) {
-			if (method_exists($hookObj, 'paymentAllowedArticles')) {
-				$allowedArticles = $hookObj->paymentAllowedArticles($this, $allowedArticles);
+		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BasketController.php']['paymentArticles'])) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BasketController.php']['paymentArticles'] as $classRef) {
+				$hookObj = &t3lib_div::getUserObj($classRef);
+				if (method_exists($hookObj, 'paymentAllowedArticles')) {
+					$allowedArticles = $hookObj->paymentAllowedArticles($this, $allowedArticles);
+				}
 			}
 		}
 
@@ -847,15 +955,26 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 
 		$markerArray = array_merge($markerArray, $this->languageMarker);
 
-		$hookObjectsArr = array();
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['makeArticleView'])) {
+			t3lib_div::deprecationLog('
+				hook
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/pi2/class.tx_commerce_pi2.php\'][\'makeArticleView\']
+				is deprecated since commerce 0.14.0, it will be removed in commerce 0.16.0, please use instead
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/BasketController.php\'][\'makeArticleView\']
+			');
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['makeArticleView'] as $classRef) {
-				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+				$hookObj = t3lib_div::getUserObj($classRef);
+				if (method_exists($hookObj, 'additionalMarker')) {
+					$markerArray = $hookObj->additionalMarker($markerArray, $this, $article, $product);
+				}
 			}
 		}
-		foreach ($hookObjectsArr as $hookObj) {
-			if (method_exists($hookObj, 'additionalMarker')) {
-				$markerArray = $hookObj->additionalMarker($markerArray, $this, $article, $product);
+		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BasketController.php']['makeArticleView'])) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BasketController.php']['makeArticleView'] as $classRef) {
+				$hookObj = t3lib_div::getUserObj($classRef);
+				if (method_exists($hookObj, 'additionalMarker')) {
+					$markerArray = $hookObj->additionalMarker($markerArray, $this, $article, $product);
+				}
 			}
 		}
 
@@ -874,13 +993,34 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 
 		$hookObjectsArr = array();
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['makeProductList'])) {
+			t3lib_div::deprecationLog('
+				hook
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/pi2/class.tx_commerce_pi2.php\'][\'makeProductList\']
+				is deprecated since commerce 0.14.0, it will be removed in commerce 0.16.0, please use instead
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/BasketController.php\'][\'makeProductList\']
+			');
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['makeProductList'] as $classRef) {
 				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
 			}
 		}
+		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BasketController.php']['makeProductList'])) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BasketController.php']['makeProductList'] as $classRef) {
+				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+			}
+		}
+
 		$hookObject = NULL;
-		if (($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['alternativePrefixId'])) {
+		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['alternativePrefixId']) {
+			t3lib_div::deprecationLog('
+				hook
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/pi2/class.tx_commerce_pi2.php\'][\'alternativePrefixId\']
+				is deprecated since commerce 0.14.0, it will be removed in commerce 0.16.0, please use instead
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/BasketController.php\'][\'alternativePrefixId\']
+			');
 			$hookObject = &t3lib_div::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['alternativePrefixId']);
+		}
+		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BasketController.php']['alternativePrefixId']) {
+			$hookObject = &t3lib_div::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BasketController.php']['alternativePrefixId']);
 		}
 		if (method_exists($hookObject, 'SingeDisplayPrefixId')) {
 			$altPrefixSingle = $hookObject->SingeDisplayPrefixId();

@@ -190,8 +190,8 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['proc
 
 	// Adding some hooks for tx_commerce_article_processing
 	// As basic hook for calculation the delivery_costs
-if (empty($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_article.php']['calculateDeliveryCost'])) {
-	$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_article.php']['calculateDeliveryCost'] =
+if (empty($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Model/Article.php']['calculateDeliveryCost'])) {
+	$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Model/Article.php']['calculateDeliveryCost'] =
 		'EXT:commerce/Classes/Hook/ArticleHooks.php:Tx_Commerce_Hook_ArticleHooks';
 }
 
@@ -218,9 +218,9 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/class.db_list_extra.inc']['acti
 
 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['sr_feuser_register']['tx_srfeuserregister_pi1']['registrationProcess'][] =
 	'EXT:commerce/Classes/Hook/SrfeuserregisterPi1Hook.php:Tx_Commerce_Hook_SrfeuserregisterPi1Hook';
-$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi4/class.tx_commerce_pi4.php']['deleteAddress'][] =
+$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/AddressesController.php']['deleteAddress'][] =
 	'EXT:commerce/Classes/Hook/Pi4Hooks.php:Tx_Commerce_Hook_Pi4Hooks';
-$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi4/class.tx_commerce_pi4.php']['saveAddress'][] =
+$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/AddressesController.php']['saveAddress'][] =
 	'EXT:commerce/Classes/Hook/Pi4Hooks.php:Tx_Commerce_Hook_Pi4Hooks';
 
 
