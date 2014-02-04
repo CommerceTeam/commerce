@@ -326,36 +326,6 @@ t3lib_extMgm::addToAllTCAtypes('be_users', 'tx_commerce_mountpoints', '', 'after
 unset($tempColumns);
 
 
-$GLOBALS['TCA']['tx_commerce_products'] = array(
-	'ctrl' => array(
-		'title' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products',
-		'label' => 'title',
-		'tstamp' => 'tstamp',
-		'crdate' => 'crdate',
-		'sortby' => 'sorting',
-		'cruser_id' => 'cruser_id',
-		'versioning' => '1',
-		'languageField' => 'sys_language_uid',
-		'transOrigPointerField' => 'l18n_parent',
-		'transOrigDiffSourceField' => 'l18n_diffsource',
-		'versioningWS' => TRUE,
-		'delete' => 'deleted',
-		'thumbnail' => 'images',
-		'enablecolumns' => array(
-			'disabled' => 'hidden',
-			'starttime' => 'starttime',
-			'endtime' => 'endtime',
-			'fe_group' => 'fe_group',
-		),
-		'dynamicConfigFile' => t3lib_extMgm::extPath(COMMERCE_EXTKEY) . 'Configuration/TCA/Products.php',
-		'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL . 'products.gif',
-		'dividers2tabs' => '1',
-	),
-	'feInterface' => array(
-		'fe_admin_fieldList' => 'sys_language_uid, l18n_parent, l18n_diffsource, hidden, starttime, endtime, fe_group, title, subtitle, navtitle, description, images, teaser, teaserimages, categories, manufacturer_uid, attributes',
-	)
-);
-
 $GLOBALS['TCA']['tx_commerce_article_types'] = array(
 	'ctrl' => array(
 		'title' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_article_types',
@@ -439,22 +409,6 @@ $GLOBALS['TCA']['tx_commerce_article_prices'] = array(
 	)
 );
 
-$GLOBALS['TCA']['tx_commerce_baskets'] = array(
-	'ctrl' => array(
-		'title' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_baskets',
-		'label' => 'uid',
-		'tstamp' => 'tstamp',
-		'crdate' => 'crdate',
-		'cruser_id' => 'cruser_id',
-		'default_sortby' => 'ORDER BY crdate',
-		'dynamicConfigFile' => PATH_TXCOMMERCE . 'Configuration/TCA/Baskets.php',
-		'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL . 'baskets.gif',
-	),
-	'feInterface' => array(
-		'fe_admin_fieldList' => 'sid, finished_time, article_id,price_id, price_gross, price_net, quantity',
-	)
-);
-
 $GLOBALS['TCA']['tx_commerce_attributes'] = array(
 	'ctrl' => array(
 		'title' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_attributes',
@@ -522,6 +476,22 @@ $GLOBALS['TCA']['tx_commerce_attribute_values'] = array(
 	)
 );
 
+$GLOBALS['TCA']['tx_commerce_baskets'] = array(
+	'ctrl' => array(
+		'title' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_baskets',
+		'label' => 'uid',
+		'tstamp' => 'tstamp',
+		'crdate' => 'crdate',
+		'cruser_id' => 'cruser_id',
+		'default_sortby' => 'ORDER BY crdate',
+		'dynamicConfigFile' => PATH_TXCOMMERCE . 'Configuration/TCA/Baskets.php',
+		'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL . 'baskets.gif',
+	),
+	'feInterface' => array(
+		'fe_admin_fieldList' => 'sid, finished_time, article_id,price_id, price_gross, price_net, quantity',
+	)
+);
+
 $GLOBALS['TCA']['tx_commerce_categories'] = array(
 	'ctrl' => array(
 		'title' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_categories',
@@ -547,6 +517,36 @@ $GLOBALS['TCA']['tx_commerce_categories'] = array(
 	),
 	'feInterface' => array(
 		'fe_admin_fieldList' => 'sys_language_uid, l18n_parent, l18n_diffsource, hidden, starttime, endtime, fe_group, title, subtitle, description, images, navtitle, keywords, attributes, parent_category, teaser, teaserimages',
+	)
+);
+
+$GLOBALS['TCA']['tx_commerce_products'] = array(
+	'ctrl' => array(
+		'title' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products',
+		'label' => 'title',
+		'tstamp' => 'tstamp',
+		'crdate' => 'crdate',
+		'sortby' => 'sorting',
+		'cruser_id' => 'cruser_id',
+		'versioning' => '1',
+		'languageField' => 'sys_language_uid',
+		'transOrigPointerField' => 'l18n_parent',
+		'transOrigDiffSourceField' => 'l18n_diffsource',
+		'versioningWS' => TRUE,
+		'delete' => 'deleted',
+		'thumbnail' => 'images',
+		'enablecolumns' => array(
+			'disabled' => 'hidden',
+			'starttime' => 'starttime',
+			'endtime' => 'endtime',
+			'fe_group' => 'fe_group',
+		),
+		'dynamicConfigFile' => t3lib_extMgm::extPath(COMMERCE_EXTKEY) . 'Configuration/TCA/Products.php',
+		'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL . 'products.gif',
+		'dividers2tabs' => '1',
+	),
+	'feInterface' => array(
+		'fe_admin_fieldList' => 'sys_language_uid, l18n_parent, l18n_diffsource, hidden, starttime, endtime, fe_group, title, subtitle, navtitle, description, images, teaser, teaserimages, categories, manufacturer_uid, attributes',
 	)
 );
 
