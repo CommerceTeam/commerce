@@ -137,8 +137,8 @@ class Tx_Commerce_Tree_Leaf_Slave extends Tx_Commerce_Tree_Leaf_Leaf {
 		$cssClass = $cssExpanded . ' ' . $cssLast;
 
 			// start the element
-		$out .= '<li class="' . $cssClass . '">';
-$out .= '<div>';
+		$out .= '<li class="' . $cssClass . '">
+					<div>';
 
 			// a slave can never be a bank
 		$isBank = FALSE;
@@ -151,15 +151,14 @@ $out .= '<div>';
 		$out .= $this->view->getIcon($child);
 
 		if (
-			(strpos(t3lib_div::getIndpEnv('REQUEST_URI'), 'class.tx_commerce_category_navframe.php') === FALSE)
-			&& (strpos(t3lib_div::getIndpEnv('HTTP_REFERER'), 'class.tx_commerce_category_navframe.php') === FALSE)
+			(strpos(t3lib_div::getIndpEnv('REQUEST_URI'), '/navigation.php') === FALSE)
+			&& (strpos(t3lib_div::getIndpEnv('HTTP_REFERER'), '/navigation.php') === FALSE)
 		) {
 			$this->view->substituteRealValues();
 		}
 
 			// title
-		$out .= $this->view->wrapTitle($child['title'], $child);
-$out .= '</div>';
+		$out .= $this->view->wrapTitle($child['title'], $child) . '</div>';
 
 		/******************
 		 * Done printing

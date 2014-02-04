@@ -365,10 +365,7 @@ abstract class Tx_Commerce_Tree_Browsetree {
 	 * @return string HTML Code for Tree
 	 */
 	public function printTreeByMountpoints() {
-		$out = '';
-		$mount = NULL;
-
-		$out .= '<ul class="tree">';
+		$out = '<ul class="tree">';
 
 			// Get the Tree for each leaf
 		for ($i = 0; $i < $this->leafcount; $i ++) {
