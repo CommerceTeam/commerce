@@ -32,36 +32,12 @@
  * $this->MOD_SETTINGS['depth']: intval 1-3: decides the depth of the list
  * $this->MOD_SETTINGS['mode']: 'perms' / '': decides if we view a user-overview or the permissions.
  */
-class Tx_Commerce_Controller_AccessController {
+class Tx_Commerce_Controller_AccessController extends t3lib_SCbase {
 	/**
 	 * Number of levels to enable recursive settings for
 	 * @var integer
 	 */
 	public $getLevels = 10;
-
-	/**
-	 * Module config
-	 * Internal static
-	 * @var array
-	 */
-	protected $MCONF = array();
-
-	/**
-	 * Document Template Object
-	 * @var template
-	 */
-	public $doc;
-
-	/**
-	 * Content accumulation
-	 * @var string
-	 */
-	public $content;
-
-	/**
-	 * @var string
-	 */
-	public $BACK_PATH = '../../../../../../typo3/';
 
 	/**
 	 * @var string
@@ -72,24 +48,6 @@ class Tx_Commerce_Controller_AccessController {
 	 * @var string
 	 */
 	public $rootIconName = 'commerce_globus.gif';
-
-	/**
-	 * Module menu
-	 * @var array
-	 */
-	public $MOD_MENU = array();
-
-	/**
-	 * Module settings, cleansed.
-	 * @var array
-	 */
-	public $MOD_SETTINGS = array();
-
-	/**
-	 * Page select permissions
-	 * @var string
-	 */
-	public $perms_clause;
 
 	/**
 	 * Current page record
@@ -122,12 +80,6 @@ class Tx_Commerce_Controller_AccessController {
 	public $editingAllowed;
 
 	/**
-	 * Internal, static: GPvars: Category uid.
-	 * @var integer
-	 */
-	public $id;
-
-	/**
 	 * If set, editing of the category permissions will occur (showing the editing screen). Notice:
 	 * This value is evaluated against permissions and so it will change internally!
 	 * @var boolean
@@ -157,10 +109,12 @@ class Tx_Commerce_Controller_AccessController {
 	 * @return void
 	 */
 	public function init() {
+		parent::init();
+
 			// Setting GPvars:
 		$controlParams = t3lib_div::_GP('control');
 		if ($controlParams) {
-			$this->table = key ($controlParams);
+			$this->table = key($controlParams);
 			$this->id = $controlParams[$this->table]['uid'];
 		} else {
 			$this->id = intval(t3lib_div::_GP('id'));
@@ -170,9 +124,6 @@ class Tx_Commerce_Controller_AccessController {
 		$this->return_id = t3lib_div::_GP('return_id');
 		$this->lastEdited = t3lib_div::_GP('lastEdited');
 
-			// Module name;
-		$this->MCONF = $GLOBALS['MCONF'];
-
 		$this->perms_clause = Tx_Commerce_Utility_BackendUtility::getCategoryPermsClause(1);
 
 			// Initializing document template object:
@@ -180,6 +131,17 @@ class Tx_Commerce_Controller_AccessController {
 		$this->doc->backPath = $GLOBALS['BACK_PATH'];
 		$this->doc->docType = 'xhtml_trans';
 		$this->doc->setModuleTemplate(PATH_TXCOMMERCE . 'Resources/Private/Backend/mod_access.html');
+
+		if (!$this->doc->moduleTemplate) {
+			t3lib_div::devLog('cannot set moduleTemplate', 'commerce', 2, array(
+				'backpath' => $this->doc->backPath,
+				'filename from TBE_STYLES' => $GLOBALS['TBE_STYLES']['htmlTemplates']['mod_access.html'],
+				'full path' => $this->doc->backPath . $GLOBALS['TBE_STYLES']['htmlTemplates']['mod_access.html']
+			));
+			$templateFile = PATH_TXCOMMERCE_REL . 'Resources/Private/Backend/mod_access.html';
+			$this->doc->moduleTemplate = t3lib_div::getURL(PATH_site . $templateFile);
+		}
+
 		$this->doc->form = '<form action="' . $this->doc->backPath . 'tce_db.php" method="post" name="editform">';
 		$this->doc->loadJavascriptLib($this->doc->backPath . 'sysext/perm/mod1/perm.js');
 
@@ -188,9 +150,6 @@ class Tx_Commerce_Controller_AccessController {
 			WebPermissions.thisScript = "../../../../../../typo3/ajax.php";
 			WebPermissions.ajaxID = "Tx_Commerce_Controller_PermissionAjaxController::dispatch";
 		');
-
-			// Set up menus:
-		$this->menuConfig();
 	}
 
 	/**
@@ -226,52 +185,6 @@ class Tx_Commerce_Controller_AccessController {
 	}
 
 	/**
-	 * Returns the info for the Category Path
-	 *
-	 * @param array $row - Row
-	 * @return string
-	 */
-	public function categoryInfo(&$row) {
-			// Add icon with clickmenu, etc:
-			// If there IS a real page
-		if ($row['uid']) {
-			$alttext = t3lib_BEfunc::getRecordIconAltText($row, 'tx_commerce_categories');
-			$iconImg = t3lib_iconWorks::getIconImage(
-				'tx_commerce_categories',
-				$row,
-				$this->BACK_PATH,
-				'class="absmiddle" title="' . htmlspecialchars($alttext) . '"'
-			);
-			// On root-level of page tree
-		} else {
-				// Make Icon
-			$iconImg = '<img' . t3lib_iconWorks::skinImg($this->BACK_PATH, 'gfx/i/_icon_website.gif') . ' alt="root" />';
-		}
-
-			// Setting icon with clickmenu + uid
-		$pageInfo = $iconImg . '<em>[pid: ' . $row['uid'] . ']</em>';
-		return $pageInfo;
-	}
-
-	/**
-	 * Returns the Category Path info
-	 *
-	 * @param array $row Row
-	 * @return string
-	 */
-	public function categoryPath(&$row) {
-		/** @var language $language */
-		$language = $GLOBALS['LANG'];
-
-		$title = $row['title'];
-
-			// Setting the path of the page
-		$pagePath = $language->sL('LLL:EXT:lang/locallang_core.php:labels.path', 1) . ': <span class="typo3-docheader-pagePath">' .
-			htmlspecialchars(t3lib_div::fixed_lgd_cs($title, -50)) . '</span>';
-		return $pagePath;
-	}
-
-	/**
 	 * Main function, creating the content for the access editing forms/listings
 	 *
 	 * @return void
@@ -286,8 +199,6 @@ class Tx_Commerce_Controller_AccessController {
 			// The page will show only if there is a valid page and if this page may be viewed by the user
 		$this->pageinfo = Tx_Commerce_Utility_BackendUtility::readCategoryAccess($this->id, $this->perms_clause);
 		$access = is_array($this->pageinfo);
-
-		$this->content = $this->doc->startPage($language->getLL('permissions'));
 
 			// Checking access:
 		if (($this->id && $access) || ($backendUser->isAdmin() && !$this->id)) {
@@ -312,28 +223,36 @@ class Tx_Commerce_Controller_AccessController {
 			$this->content .= $this->doc->header($language->getLL('permissions') . ($this->edit ? ': ' . $language->getLL('Edit') : ''));
 			$this->content .= $this->doc->spacer(5);
 
-				// Main function, branching out:
-			if (!$this->edit) {
-				$this->notEdit();
-			} else {
-				$this->doEdit();
-			}
-
-			$docHeaderButtons = $this->getButtons();
-
-			$markers['CSH'] = $docHeaderButtons['csh'];
-			$markers['FUNC_MENU'] = t3lib_BEfunc::getFuncMenu($this->id, 'SET[mode]', $this->MOD_SETTINGS['mode'], $this->MOD_MENU['mode']);
-			$markers['CONTENT'] = $this->content;
-			$markers['CATINFO'] = $this->categoryInfo($this->pageinfo);
-			$markers['CATPATH'] = $this->categoryPath($this->pageinfo);
-
-				// Build the <body> for the module
-			$this->content .= $this->doc->moduleBody($this->pageinfo, $docHeaderButtons, $markers);
+				// Render content:
+			$this->moduleContent();
 		} else {
 				// If no access or if ID == zero
 			$this->content .= $this->doc->header($language->getLL('permissions'));
 		}
+
+		$docHeaderButtons = $this->getHeaderButtons();
+
+		$markers = array(
+			'CSH' => $docHeaderButtons['csh'],
+			'CONTENT' => $this->content,
+			'CATINFO' => $this->categoryInfo($this->pageinfo),
+			'CATPATH' => $this->categoryPath($this->pageinfo),
+		);
+		$markers['FUNC_MENU'] = $this->doc->funcMenu(
+			'',
+			t3lib_BEfunc::getFuncMenu(
+				$this->id,
+				'SET[mode]',
+				$this->MOD_SETTINGS['mode'],
+				$this->MOD_MENU['mode']
+			)
+		);
+
+			// put it all together
+		$this->content = $this->doc->startPage($language->getLL('permissions'));
+		$this->content .= $this->doc->moduleBody(array(), $docHeaderButtons, $markers);
 		$this->content .= $this->doc->endPage();
+		$this->content = $this->doc->insertStylesAndJS($this->content);
 	}
 
 	/**
@@ -346,11 +265,25 @@ class Tx_Commerce_Controller_AccessController {
 	}
 
 	/**
+	 * Generates the module content
+	 *
+	 * @return void
+	 */
+	protected function moduleContent() {
+			// Main function, branching out:
+		if (!$this->edit) {
+			$this->notEdit();
+		} else {
+			$this->doEdit();
+		}
+	}
+
+	/**
 	 * Create the panel of buttons for submitting the form or otherwise perform operations.
 	 *
 	 * @return array all available buttons as an assoc. array
 	 */
-	protected function getButtons() {
+	protected function getHeaderButtons() {
 		/** @var t3lib_beUserAuth $backendUser */
 		$backendUser = $GLOBALS['BE_USER'];
 		/** @var language $language */
@@ -358,10 +291,26 @@ class Tx_Commerce_Controller_AccessController {
 
 		$buttons = array(
 			'csh' => '',
+				// group left 1
+			'level_up' => '',
+			'back' => '',
+				// group left 2
+			'new_record' => '',
+			'paste' => '',
+				// group left 3
 			'view' => '',
-			'record_list' => '',
+			'edit' => '',
+			'move' => '',
+			'hide_unhide' => '',
+				// group left 4
+			'csv' => '',
+			'export' => '',
+				// group right 1
+			'cache' => '',
+			'reload' => '',
 			'shortcut' => '',
 		);
+
 			// CSH
 		$buttons['csh'] = t3lib_BEfunc::cshItem('_MOD_web_info', '', $GLOBALS['BACK_PATH'], '', TRUE);
 
@@ -383,6 +332,52 @@ class Tx_Commerce_Controller_AccessController {
 				$language->sL('LLL:EXT:lang/locallang_core.php:labels.showList', 1) . '" alt="" /></a>';
 		}
 		return $buttons;
+	}
+
+	/**
+	 * Returns the info for the Category Path
+	 *
+	 * @param array $row - Row
+	 * @return string
+	 */
+	public function categoryInfo(&$row) {
+			// Add icon with clickmenu, etc:
+			// If there IS a real page
+		if ($row['uid']) {
+			$alttext = t3lib_BEfunc::getRecordIconAltText($row, 'tx_commerce_categories');
+			$iconImg = t3lib_iconWorks::getIconImage(
+				'tx_commerce_categories',
+				$row,
+				$this->doc->backPath,
+				'class="absmiddle" title="' . htmlspecialchars($alttext) . '"'
+			);
+			// On root-level of page tree
+		} else {
+				// Make Icon
+			$iconImg = '<img' . t3lib_iconWorks::skinImg($this->doc->backPath, 'gfx/i/_icon_website.gif') . ' alt="root" />';
+		}
+
+			// Setting icon with clickmenu + uid
+		$pageInfo = $iconImg . '<em>[pid: ' . $row['uid'] . ']</em>';
+		return $pageInfo;
+	}
+
+	/**
+	 * Returns the Category Path info
+	 *
+	 * @param array $row Row
+	 * @return string
+	 */
+	public function categoryPath(&$row) {
+		/** @var language $language */
+		$language = $GLOBALS['LANG'];
+
+		$title = $row['title'];
+
+			// Setting the path of the page
+		$pagePath = $language->sL('LLL:EXT:lang/locallang_core.php:labels.path', 1) . ': <span class="typo3-docheader-pagePath">' .
+			htmlspecialchars(t3lib_div::fixed_lgd_cs($title, -50)) . '</span>';
+		return $pagePath;
 	}
 
 	/*****************************
@@ -600,7 +595,7 @@ class Tx_Commerce_Controller_AccessController {
 			// Make header of table:
 		$code = '';
 
-		$lineImg = t3lib_iconWorks::skinImg($this->BACK_PATH, 'gfx/line.gif', 'width="5" height="16"');
+		$lineImg = t3lib_iconWorks::skinImg($this->doc->backPath, 'gfx/line.gif', 'width="5" height="16"');
 		if ($this->MOD_SETTINGS['mode'] == 'perms') {
 			$code .= '
 				<tr>
@@ -628,8 +623,8 @@ class Tx_Commerce_Controller_AccessController {
 		}
 
 			// Creating category Icon
-		$icon = t3lib_iconWorks::getIconImage('tx_commerce_categories', $this->pageinfo, $this->BACK_PATH, 'align="top" class="c-recIcon"');
-		$rootIcon = '<img' . t3lib_iconWorks::skinImg($this->BACK_PATH . $this->iconPath, $this->rootIconName, 'width="18" height="16"') .
+		$icon = t3lib_iconWorks::getIconImage('tx_commerce_categories', $this->pageinfo, $this->doc->backPath, 'align="top" class="c-recIcon"');
+		$rootIcon = '<img' . t3lib_iconWorks::skinImg($this->doc->backPath . $this->iconPath, $this->rootIconName, 'width="18" height="16"') .
 			' title="Root" alt="" />';
 
 			// Traverse tree:
@@ -673,9 +668,9 @@ class Tx_Commerce_Controller_AccessController {
 
 					for ($j = 1; $j < $k; $j ++) {
 						if (!array_key_exists($j, $depthStop) || $depthStop[$j] != 1) {
-							$PMicon .= '<img' . t3lib_iconWorks::skinImg($this->BACK_PATH, 'gfx/ol/line.gif', 'width="18" height="16"') . ' alt="" />';
+							$PMicon .= '<img' . t3lib_iconWorks::skinImg($this->doc->backPath, 'gfx/ol/line.gif', 'width="18" height="16"') . ' alt="" />';
 						} elseif ($depthStop[$j] == 1) {
-							$PMicon .= '<img' . t3lib_iconWorks::skinImg($this->BACK_PATH, 'gfx/ol/blank.gif', 'width="18" height="16"') . ' alt="" />';
+							$PMicon .= '<img' . t3lib_iconWorks::skinImg($this->doc->backPath, 'gfx/ol/blank.gif', 'width="18" height="16"') . ' alt="" />';
 						}
 					}
 				}
@@ -696,7 +691,7 @@ class Tx_Commerce_Controller_AccessController {
 
 				$lastDepth = $records[$i]['depth'];
 
-				$PMicon .= '<img' . t3lib_iconWorks::skinImg($this->BACK_PATH, 'gfx/ol/join' . $bottom . '.gif', 'width="18" height="16"') . ' alt="" />';
+				$PMicon .= '<img' . t3lib_iconWorks::skinImg($this->doc->backPath, 'gfx/ol/join' . $bottom . '.gif', 'width="18" height="16"') . ' alt="" />';
 			}
 
 				// determine which icon to use
@@ -712,7 +707,7 @@ class Tx_Commerce_Controller_AccessController {
 					$pageId . '&return_id=' . $this->id . '&edit=1';
 				$cells[] = '
 					<td' . $bgCol . '><a href="' . htmlspecialchars($aHref) . '"><img' .
-					t3lib_iconWorks::skinImg($this->BACK_PATH, 'gfx/edit2.gif', 'width="11" height="12"') .
+					t3lib_iconWorks::skinImg($this->doc->backPath, 'gfx/edit2.gif', 'width="11" height="12"') .
 					' border="0" title="' . $language->getLL('ch_permissions', 1) . '" align="top" alt="" /></a></td>';
 			} else {
 				$cells[] = '
@@ -720,7 +715,7 @@ class Tx_Commerce_Controller_AccessController {
 			}
 
 				// Rest of columns (depending on mode)
-			$lineImg = t3lib_iconWorks::skinImg($this->BACK_PATH, 'gfx/line.gif', 'width="5" height="16"');
+			$lineImg = t3lib_iconWorks::skinImg($this->doc->backPath, 'gfx/line.gif', 'width="5" height="16"');
 			if ($this->MOD_SETTINGS['mode'] == 'perms') {
 				$cells[] = '
 					<td' . $bgCol . '><img' . $lineImg . ' alt="" /></td>
@@ -736,7 +731,7 @@ class Tx_Commerce_Controller_AccessController {
 					<td' . $bgCol . ' nowrap="nowrap">' . (
 						$row['editlock'] ?
 						'<span id="el_' . $pageId . '" class="editlock"><a class="editlock" onclick="WebPermissions.toggleEditLock(\'' .
-						$pageId . '\', \'1\');"><img' . t3lib_iconWorks::skinImg($this->BACK_PATH, 'gfx/recordlock_warning2.gif', 'width="22" height="16"') .
+						$pageId . '\', \'1\');"><img' . t3lib_iconWorks::skinImg($this->doc->backPath, 'gfx/recordlock_warning2.gif', 'width="22" height="16"') .
 						' title="' . $language->getLL('EditLock_descr', 1) . '" alt="Edit Lock" /></a></span>' :
 						(
 							$pageId === 0 ?
@@ -764,7 +759,7 @@ class Tx_Commerce_Controller_AccessController {
 						<td' . $bgCol . '><img' . $lineImg . ' alt="" /></td>
 						<td' . $bgCol . ' nowrap="nowrap">' . (
 							$row['editlock'] ?
-							'<img' . t3lib_iconWorks::skinImg($this->BACK_PATH, 'gfx/recordlock_warning2.gif', 'width="22" height="16"') .
+							'<img' . t3lib_iconWorks::skinImg($this->doc->backPath, 'gfx/recordlock_warning2.gif', 'width="22" height="16"') .
 							' title="' . $language->getLL('EditLock_descr', 1) . '" alt="" />' :
 							''
 						) . '</td>
