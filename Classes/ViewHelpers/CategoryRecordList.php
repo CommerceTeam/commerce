@@ -71,6 +71,11 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 	public $newRecordIcon = '';
 
 	/**
+	 * @var array
+	 */
+	public $pageinfo;
+
+	/**
 	 * Create the panel of buttons for submitting the form or otherwise perform operations.
 	 *
 	 * @param array $row
@@ -155,7 +160,7 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 		}
 
 			// Paste
-		if (($localCalcPerms & 8) || ($localCalcPerms & 16)) {
+		if (($localCalcPerms & 8 || $localCalcPerms & 16) && $this->parentUid) {
 			$elFromTable = $this->clipObj->elFromTable('');
 			if (count($elFromTable)) {
 				$buttons['paste'] = '<a href="' . htmlspecialchars($this->clipObj->pasteUrl('', $this->id)) . '" onclick="' .
@@ -378,7 +383,7 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 			if (!$listOnlyInSingleTableMode) {
 				$theData = array();
 				if (!$this->table && !$rowlist) {
-					$theData[$titleCol] = '<img src="' . $this->backPath . 'clear.gif" width="' .
+					$theData[$titleCol] = '<img src="/typo3/clear.gif" width="' .
 						($GLOBALS['SOBE']->MOD_SETTINGS['bigControlPanel'] ? '230' : '350') . '" height="1" alt="" />';
 					if (in_array('_CONTROL_', $this->fieldArray)) {
 						$theData['_CONTROL_'] = '';
@@ -677,7 +682,7 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 			<td nowrap="nowrap" class="col-icon">';
 
 			if (!$h) {
-				$out .= '<img src="' . $this->backPath . 'clear.gif" width="1" height="8" alt="" />';
+				$out .= '<img src="/typo3/clear.gif" width="1" height="8" alt="" />';
 			} else {
 				for ($a = 0; $a < $h; $a++) {
 					if (!$a) {
@@ -745,6 +750,232 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 
 			// Return row.
 		return $out;
+	}
+
+	/**
+	 * Rendering the header row for a table
+	 *
+	 * @param string $table Table name
+	 * @param array $currentIdList Array of the currently displayed uids of the table
+	 * @throws UnexpectedValueException
+	 * @return string Header table row
+	 */
+	public function renderListHeader($table, $currentIdList) {
+		/** @var language $language */
+		$language = & $GLOBALS['LANG'];
+
+			// Init:
+		$theData = Array();
+
+		$icon = '';
+			// Traverse the fields:
+		foreach ($this->fieldArray as $fCol) {
+				// Calculate users permissions to edit records in the table:
+			$permsEdit = $this->calcPerms & ($table == 'tx_commerce_categories' ? 2 : 16);
+
+			switch ((string) $fCol) {
+					// Path
+				case '_PATH_':
+					$theData[$fCol] = '<i>[' . $language->sL('LLL:EXT:lang/locallang_core.php:labels._PATH_', 1) . ']</i>';
+				break;
+
+					// References
+				case '_REF_':
+					$theData[$fCol] = '<i>[' . $language->sL('LLL:EXT:lang/locallang_mod_file_list.xml:c__REF_', 1) . ']</i>';
+				break;
+
+					// Path
+				case '_LOCALIZATION_':
+					$theData[$fCol] = '<i>[' . $language->sL('LLL:EXT:lang/locallang_core.php:labels._LOCALIZATION_', 1) . ']</i>';
+				break;
+
+					// Path
+				case '_LOCALIZATION_b':
+					$theData[$fCol] = $language->getLL('Localize', 1);
+				break;
+
+					// Clipboard:
+				case '_CLIPBOARD_':
+					$cells = array();
+
+						// If there are elements on the clipboard for this table, then display the "paste into" icon:
+					$elFromTable = $this->clipObj->elFromTable($table);
+					if (count($elFromTable)) {
+						$cells['pasteAfter'] = '<a href="' . htmlspecialchars($this->clipObj->pasteUrl($table, $this->id)) .
+							'" onclick="' . htmlspecialchars('return ' . $this->clipObj->confirmMsg('pages', $this->pageRow, 'into', $elFromTable)) .
+							'" title="' . $language->getLL('clip_paste', TRUE) . '">' .
+							t3lib_iconWorks::getSpriteIcon('actions-document-paste-after') . '</a>';
+					}
+
+						// If the numeric clipboard pads are enabled, display the control icons for that:
+					if ($this->clipObj->current != 'normal') {
+							// The "select" link:
+						$cells['copyMarked'] = $this->linkClipboardHeaderIcon(
+							t3lib_iconWorks::getSpriteIcon('actions-edit-copy', array('title' => $language->getLL('clip_selectMarked', TRUE))),
+							$table,
+							'setCB'
+						);
+
+							// The "edit marked" link:
+						$editIdList = implode(',', $currentIdList);
+						$editIdList = "'+editList('" . $table . "','" . $editIdList . "')+'";
+						$params = '&edit[' . $table . '][' . $editIdList . ']=edit&disHelp=1';
+						$cells['edit'] = '<a href="#" onclick="' . htmlspecialchars(t3lib_BEfunc::editOnClick($params, $this->backPath, -1)) .
+							'" title="' . $language->getLL('clip_editMarked', TRUE) . '">' .
+							t3lib_iconWorks::getSpriteIcon('actions-document-open') . '</a>';
+
+							// The "Delete marked" link:
+						$cells['delete'] = $this->linkClipboardHeaderIcon(
+							t3lib_iconWorks::getSpriteIcon('actions-edit-delete', array('title' => $language->getLL('clip_deleteMarked', TRUE))),
+							$table,
+							'delete',
+							sprintf($language->getLL('clip_deleteMarkedWarning'), $language->sL($GLOBALS['TCA'][$table]['ctrl']['title']))
+						);
+
+							// The "Select all" link:
+						$cells['markAll'] = '<a class="cbcCheckAll" rel="" href="#" onclick="' .
+							htmlspecialchars('checkOffCB(\'' . implode(',', $this->CBnames) . '\', this); return false;') .
+							'" title="' . $language->getLL('clip_markRecords', TRUE) . '">' .
+							t3lib_iconWorks::getSpriteIcon('actions-document-select') . '</a>';
+					} else {
+						$cells['empty'] = '';
+					}
+
+					/**
+					 * @hook renderListHeaderActions: Allows to change the clipboard icons of the Web>List table headers
+					 * @date 2007-11-20
+					 * @request Bernhard Kraft  <krafbt@kraftb.at>
+					 * @usage Above each listed table in Web>List a header row is shown. This hook allows to modify the icons responsible for the clipboard functions (shown above the clipboard checkboxes when a clipboard other than "Normal" is selected), or other "Action" functions which perform operations on the listed records.
+					 */
+					if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/class.db_list_extra.inc']['actions'])) {
+						foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/class.db_list_extra.inc']['actions'] as $classData) {
+							$hookObject = t3lib_div::getUserObj($classData);
+							if (!($hookObject instanceof localRecordList_actionsHook)) {
+								throw new UnexpectedValueException('$hookObject must implement interface localRecordList_actionsHook', 1195567850);
+							}
+							$cells = $hookObject->renderListHeaderActions($table, $currentIdList, $cells, $this);
+						}
+					}
+					$theData[$fCol] = implode('', $cells);
+				break;
+
+					// Control panel:
+				case '_CONTROL_':
+					if (!$GLOBALS['TCA'][$table]['ctrl']['readOnly']) {
+
+							// If new records can be created on this page, add links:
+						if ($this->calcPerms & ($table == 'pages' ?
+								8 :
+								16) && $this->showNewRecLink($table) && $this->parentUid
+						) {
+							if ($table == 'tt_content' && $this->newWizards) {
+									//  If mod.web_list.newContentWiz.overrideWithExtension is set, use that extension's create new content wizard instead:
+								$tmpTSc = t3lib_BEfunc::getModTSconfig($this->pageinfo['uid'], 'mod.web_list');
+								$tmpTSc = $tmpTSc['properties']['newContentWiz.']['overrideWithExtension'];
+								$newContentWizScriptPath = $this->backPath . t3lib_extMgm::isLoaded($tmpTSc) ?
+									(t3lib_extMgm::extRelPath($tmpTSc) . 'mod1/db_new_content_el.php') :
+									'sysext/cms/layout/db_new_content_el.php';
+
+								$icon = '<a href="#" onclick="' .
+									htmlspecialchars('return jumpExt(\'' . $newContentWizScriptPath . '?id=' . $this->id . '\');') .
+									'" title="' . $language->getLL('new', TRUE) . '">' . (
+										$table == 'pages' ?
+										t3lib_iconWorks::getSpriteIcon('actions-page-new') :
+										t3lib_iconWorks::getSpriteIcon('actions-document-new')
+									) . '</a>';
+							} elseif ($table == 'pages' && $this->newWizards) {
+								$icon = '<a href="' . htmlspecialchars($this->backPath . 'db_new.php?id=' . $this->id . '&pagesOnly=1&returnUrl=' . rawurlencode(t3lib_div::getIndpEnv('REQUEST_URI'))) .
+									'" title="' . $language->getLL('new', TRUE) . '">' . (
+										$table == 'pages' ?
+										t3lib_iconWorks::getSpriteIcon('actions-page-new') :
+										t3lib_iconWorks::getSpriteIcon('actions-document-new')
+									) . '</a>';
+							} else {
+								$params = '&edit[' . $table . '][' . $this->id . ']=new';
+								if ($table == 'pages_language_overlay') {
+									$params .= '&overrideVals[pages_language_overlay][doktype]=' . (int) $this->pageRow['doktype'];
+								}
+								$icon = '<a href="#" onclick="' . htmlspecialchars(t3lib_BEfunc::editOnClick($params, $this->backPath, -1)) .
+									'" title="' . $language->getLL('new', TRUE) . '">' . (
+										$table == 'pages' ?
+										t3lib_iconWorks::getSpriteIcon('actions-page-new') :
+										t3lib_iconWorks::getSpriteIcon('actions-document-new')
+									) . '</a>';
+							}
+						}
+
+							// If the table can be edited, add link for editing ALL SHOWN fields for all listed records:
+						if ($permsEdit && $this->table && is_array($currentIdList)) {
+							$editIdList = implode(',', $currentIdList);
+							if ($this->clipNumPane()) {
+								$editIdList = "'+editList('" . $table . "','" . $editIdList . "')+'";
+							}
+							$params = '&edit[' . $table . '][' . $editIdList . ']=edit&columnsOnly=' . implode(',', $this->fieldArray) . '&disHelp=1';
+							$icon .= '<a href="#" onclick="' . htmlspecialchars(t3lib_BEfunc::editOnClick($params, $this->backPath, -1)) .
+								'" title="' . $language->getLL('editShownColumns', TRUE) . '">' .
+								t3lib_iconWorks::getSpriteIcon('actions-document-open') . '</a>';
+						}
+
+							// add an empty entry, so column count fits again after moving this into $icon
+						$theData[$fCol] = '&nbsp;';
+					}
+				break;
+
+					// space column
+				case '_AFTERCONTROL_':
+					// space column
+				case '_AFTERREF_':
+					$theData[$fCol] = '&nbsp;';
+				break;
+
+					// Regular fields header:
+				default:
+					$theData[$fCol] = '';
+					if ($this->table && is_array($currentIdList)) {
+
+							// If the numeric clipboard pads are selected, show duplicate sorting link:
+						if ($this->clipNumPane()) {
+							$theData[$fCol] .= '<a href="' . htmlspecialchars($this->listURL('', -1) .
+								'&duplicateField=' . $fCol) . '" title="' . $language->getLL('clip_duplicates', TRUE) . '">' .
+								t3lib_iconWorks::getSpriteIcon('actions-document-duplicates-select') . '</a>';
+						}
+
+							// If the table can be edited, add link for editing THIS field for all listed records:
+						if (!$GLOBALS['TCA'][$table]['ctrl']['readOnly'] && $permsEdit && $GLOBALS['TCA'][$table]['columns'][$fCol]) {
+							$editIdList = implode(',', $currentIdList);
+							if ($this->clipNumPane()) {
+								$editIdList = "'+editList('" . $table . "','" . $editIdList . "')+'";
+							}
+							$params = '&edit[' . $table . '][' . $editIdList . ']=edit&columnsOnly=' . $fCol . '&disHelp=1';
+							$iTitle = sprintf($language->getLL('editThisColumn'), rtrim(trim($language->sL(t3lib_BEfunc::getItemLabel($table, $fCol))), ':'));
+							$theData[$fCol] .= '<a href="#" onclick="' . htmlspecialchars(t3lib_BEfunc::editOnClick($params, $this->backPath, -1)) .
+								'" title="' . htmlspecialchars($iTitle) . '">' .
+								t3lib_iconWorks::getSpriteIcon('actions-document-open') . '</a>';
+						}
+					}
+					$theData[$fCol] .= $this->addSortLink($language->sL(t3lib_BEfunc::getItemLabel($table, $fCol, '<i>[|]</i>')), $fCol, $table);
+				break;
+			}
+		}
+
+		/**
+		 * @hook renderListHeader: Allows to change the contents of columns/cells of the Web>List table headers
+		 * @date 2007-11-20
+		 * @request Bernhard Kraft <krafbt@kraftb.at>
+		 * @usage Above each listed table in Web>List a header row is shown. Containing the labels of all shown fields and additional icons to create new records for this table or perform special clipboard tasks like mark and copy all listed records to clipboard, etc.
+		 */
+		if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/class.db_list_extra.inc']['actions'])) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/class.db_list_extra.inc']['actions'] as $classData) {
+				$hookObject = t3lib_div::getUserObj($classData);
+				if (!($hookObject instanceof localRecordList_actionsHook)) {
+					throw new UnexpectedValueException('$hookObject must implement interface localRecordList_actionsHook', 1195567855);
+				}
+				$theData = $hookObject->renderListHeader($table, $currentIdList, $theData, $this);
+			}
+		}
+
+			// Create and return header table row:
+		return $this->addelement(1, $icon, $theData, ' class="c-headLine"', '');
 	}
 
 	/**
@@ -880,7 +1111,7 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 							// For pages, must have permission to create new pages here.
 						|| ($table == 'tx_commerce_categories' && ($this->calcPerms & 8))
 					) {
-						if ($this->showNewRecLink($table)) {
+						if ($this->showNewRecLink($table) && $this->parentUid) {
 							$params = '&edit[' . $table . '][' . ( - ($row['_MOVE_PLH'] ? $row['_MOVE_PLH_uid'] : $row['uid'])) . ']=new';
 							$cells['new'] = '<a href="#" onclick="' . htmlspecialchars(t3lib_BEfunc::editOnClick($params, $this->backPath, -1)) .
 								'" title="' . $language->getLL('new' . ($table == 'tx_commerce_categories' ? 'Category' : 'Record'), TRUE) . '">' .

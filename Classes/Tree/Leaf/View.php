@@ -163,7 +163,12 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 		if (empty($rootPathT3)) {
 			$rootPathT3 = '/';
 		}
-		$this->backPath = $rootPathT3 . TYPO3_mainDir;
+
+		if ($GLOBALS['BACK_PATH']) {
+			$this->backPath = $GLOBALS['BACK_PATH'];
+		} else {
+			$this->backPath = $rootPathT3 . TYPO3_mainDir;
+		}
 		$this->iconPath = $this->backPath . PATH_TXCOMMERCE_ICON_TREE_REL;
 	}
 
@@ -331,6 +336,7 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 		if (isset($GLOBALS['TBE_TEMPLATE']) && !$this->noClickmenu) {
 			/** @var template $template */
 			$template = $GLOBALS['TBE_TEMPLATE'];
+			$template->backPath = $this->backPath;
 			$icon = '<a href="#">' . $template->wrapClickMenuOnIcon($icon, $this->table, $row['uid'], 0, $addParams) . '</a>';
 		}
 		return $icon;

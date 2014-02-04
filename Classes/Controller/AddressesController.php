@@ -863,7 +863,7 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 				if ($row['value'] === $fieldConfig['default']) {
 					$result .= ' selected="selected"';
 				}
-				$result .= '>' . $row['label'] . '</option>' . "\n";
+				$result .= '>' . $row['label'] . '</option>' . LF;
 			}
 		}
 		$result .= '</select>';

@@ -1518,7 +1518,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 					if ($k == 'cc_number') {
 						$data['data'] = substr($data['data'], 0, -3) . 'XXX';
 					}
-					$result .= $data['data'] . "\n";
+					$result .= $data['data'] . LF;
 				}
 			}
 		}
@@ -1881,7 +1881,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 				if ($fieldValue === $key) {
 					$result .= ' selected="selected"';
 				}
-				$result .= '>' . $option . '</option>' . "\n";
+				$result .= '>' . $option . '</option>' . LF;
 			}
 		} else {
 				// Try to fetch data from database
@@ -1898,7 +1898,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 				if ($row['value'] === $fieldConfig['default']) {
 					$result .= ' selected="selected"';
 				}
-				$result .= '>' . $row['label'] . '</option>' . "\n";
+				$result .= '>' . $row['label'] . '</option>' . LF;
 			}
 		}
 		$result .= '</select>';

@@ -330,8 +330,8 @@ class Tx_Commerce_Tree_Leaf_Master extends Tx_Commerce_Tree_Leaf_Leaf {
 			$cssClass = $cssExpanded . ' ' . $cssLast;
 
 				// start the element
-			$out .= '<li class="' . $cssClass . '">';
-$out .= '<div>';
+			$out .= '<li class="' . $cssClass . '">
+				<div>';
 
 			$isBank = ($child['uid'] == $bank);
 
@@ -340,7 +340,8 @@ $out .= '<div>';
 
 			$out .= (0 == $child['uid']) ? $this->view->getRootIcon($child) : $this->view->getIcon($child);
 			$out .= $this->view->wrapTitle($child['title'], $child);
-$out .= '</div>';
+
+			$out .= '</div>';
 
 			/******************
 			 * Done printing

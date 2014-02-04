@@ -334,7 +334,7 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends localRecordList {
 			if (!$listOnlyInSingleTableMode) {
 				$theData = Array();
 				if (!$this->table && !$rowlist) {
-					$theData[$titleCol] = '<img src="' . $this->backPath . 'clear.gif" width="' . ($GLOBALS['SOBE']->MOD_SETTINGS['bigControlPanel'] ? '230' : '350') . '" height="1" alt="" />';
+					$theData[$titleCol] = '<img src="/typo3/clear.gif" width="' . ($GLOBALS['SOBE']->MOD_SETTINGS['bigControlPanel'] ? '230' : '350') . '" height="1" alt="" />';
 					if (in_array('_CONTROL_', $this->fieldArray)) {
 						$theData['_CONTROL_'] = '';
 					}
@@ -1038,7 +1038,7 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends localRecordList {
 			<td nowrap="nowrap" class="col-icon">';
 
 			if (!$h) {
-				$out .= '<img src="' . $this->backPath . 'clear.gif" width="1" height="8" alt="" />';
+				$out .= '<img src="/typo3/clear.gif" width="1" height="8" alt="" />';
 			} else {
 				for ($a = 0; $a < $h; $a++) {
 					if (!$a) {
