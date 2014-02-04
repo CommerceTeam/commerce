@@ -47,6 +47,11 @@ class Tx_Commerce_Tree_Leaf_Slave extends Tx_Commerce_Tree_Leaf_Leaf {
 	public $view;
 
 	/**
+	 * @var integer
+	 */
+	protected $pid;
+
+	/**
 	 * Sets the parent leaf of this leaf
 	 *
 	 * @param Tx_Commerce_Tree_Leaf_Leaf $parentLeaf that is the parent of this leaf
@@ -150,7 +155,7 @@ class Tx_Commerce_Tree_Leaf_Slave extends Tx_Commerce_Tree_Leaf_Leaf {
 		$out .= $this->view->PMicon($child, $isLast, $exp, $isBank, $hasChildren);
 
 			// icon
-		$out .= $this->view->getIcon($child);
+		$out .= $this->view->getIcon($child, $this->pid);
 
 		if (
 			(strpos(t3lib_div::getIndpEnv('REQUEST_URI'), '/navigation.php') === FALSE)
@@ -210,6 +215,7 @@ class Tx_Commerce_Tree_Leaf_Slave extends Tx_Commerce_Tree_Leaf_Leaf {
 		for ($i = 0; $i < $l; $i ++) {
 			$child = $children[$i];
 
+			$this->pid = $pid;
 			$out .= $this->printChildleafsByLoop($child['uid'], $bank, $pid);
 		}
 

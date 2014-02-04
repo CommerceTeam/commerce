@@ -274,9 +274,10 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 	 * If $this->iconPath and $this->iconName is set, try to get icon based on those values.
 	 *
 	 * @param array $row Item row.
+	 * @param integer $categoryUid
 	 * @return string Image tag.
 	 */
-	public function getIcon($row) {
+	public function getIcon($row, $categoryUid = 0) {
 		if (!is_array($row)) {
 			if (TYPO3_DLOG) {
 				t3lib_div::devLog('getIcon (Tx_Commerce_Tree_Leaf_View) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
@@ -291,7 +292,14 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 			$icon = t3lib_iconWorks::getIconImage($this->table, $row, $this->backPath, 'align="top" class="c-recIcon"');
 		}
 
-		return $this->wrapIcon($icon, $row);
+		$additionalParams = '';
+		if ($categoryUid) {
+			$additionalParams .= 'sourceCategory|' . $categoryUid . ',';
+			$additionalParams .= 'destinationCategory|' . $categoryUid . ',';
+		}
+		trim($additionalParams, ',');
+
+		return $this->wrapIcon($icon, $row, $additionalParams);
 	}
 
 	/**
@@ -319,11 +327,11 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 	 *
 	 * @param string $icon
 	 * @param array $row
-	 * @param string $addParams
+	 * @param string $additionalParams
 	 * @return string	HTML Code
 	 */
-	public function wrapIcon($icon, $row, $addParams = '') {
-		if (!is_array($row) || !is_string($addParams)) {
+	public function wrapIcon($icon, $row, $additionalParams = '') {
+		if (!is_array($row) || !is_string($additionalParams)) {
 			if (TYPO3_DLOG) {
 				t3lib_div::devLog('wrapIcon (Tx_Commerce_Tree_Leaf_View) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
 			}
@@ -337,7 +345,7 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 			/** @var template $template */
 			$template = $GLOBALS['TBE_TEMPLATE'];
 			$template->backPath = $this->backPath;
-			$icon = '<a href="#">' . $template->wrapClickMenuOnIcon($icon, $this->table, $row['uid'], 0, $addParams) . '</a>';
+			$icon = '<a href="#">' . $template->wrapClickMenuOnIcon($icon, $this->table, $row['uid'], 0, $additionalParams) . '</a>';
 		}
 		return $icon;
 	}

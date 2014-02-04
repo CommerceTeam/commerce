@@ -157,6 +157,13 @@ class Tx_Commerce_Tree_Leaf_Master extends Tx_Commerce_Tree_Leaf_Leaf {
 	}
 
 	/**
+	 * @return integer
+	 */
+	public function getUid() {
+		return $this->data->getUid();
+	}
+
+	/**
 	 * Sets the recursive depth of the tree
 	 *
 	 * @return void
@@ -335,10 +342,10 @@ class Tx_Commerce_Tree_Leaf_Master extends Tx_Commerce_Tree_Leaf_Leaf {
 
 			$isBank = ($child['uid'] == $bank);
 
-			$hasChildren 	= $this->hasChildren($child);
+			$hasChildren = $this->hasChildren($child);
 			$out .= $this->view->PMicon($child, $isLast, $exp, $isBank, $hasChildren);
 
-			$out .= (0 == $child['uid']) ? $this->view->getRootIcon($child) : $this->view->getIcon($child);
+			$out .= (0 == $child['uid']) ? $this->view->getRootIcon($child) : $this->view->getIcon($child, $child['uid']);
 			$out .= $this->view->wrapTitle($child['title'], $child);
 
 			$out .= '</div>';

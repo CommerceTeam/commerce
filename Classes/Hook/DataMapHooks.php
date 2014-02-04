@@ -1349,7 +1349,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 			$res_order_articles = $database->exec_SELECTquery(
 				'*',
 				'tx_commerce_order_articles',
-				"order_id='" . $database->quoteStr($order_id, 'tx_commerce_order_articles') . "'"
+				'order_id = ' . $database->fullQuoteStr($order_id, 'tx_commerce_order_articles')
 			);
 			if (!$database->sql_error()) {
 				while ($order_artikel_row = $database->sql_fetch_assoc($res_order_articles)) {

@@ -29,21 +29,21 @@
  * Extended Functionality for the Clickmenu when commerce-tables are hit
  * Basically does the same as the alt_clickmenu.php, only that for Categories the output needs to be overridden depending on the rights
  */
-class Tx_Commerce_Utility_ClickmenuUtility {
+class Tx_Commerce_Utility_ClickmenuUtility extends clickMenu {
 	/**
 	 * @var string
 	 */
-	protected $backPath = '../../../../../../typo3/';
+	public $backPath = '../../../../../../typo3/';
 
 	/**
 	 * @var array
 	 */
-	protected $rec;
+	public $rec;
 
 	/**
 	 * @var clickMenu
 	 */
-	protected $pObj;
+	protected $clickMenu;
 
 	/**
 	 * @var array
@@ -57,13 +57,13 @@ class Tx_Commerce_Utility_ClickmenuUtility {
 	/**
 	 * Changes the clickmenu Items for the Commerce Records
 	 *
-	 * @param clickMenu $pObj clickenu object
+	 * @param clickMenu $clickMenu clickenu object
 	 * @param array $menuItems current menu Items
 	 * @param string $table db table
 	 * @param integer $uid uid of the record
 	 * @return array Menu Items Array
 	 */
-	public function main(&$pObj, $menuItems, $table, $uid) {
+	public function main(&$clickMenu, $menuItems, $table, $uid) {
 			// Only modify the menu Items if we have the correct table
 		if (!in_array($table, $this->commerceTables)) {
 			return $menuItems;
@@ -81,28 +81,90 @@ class Tx_Commerce_Utility_ClickmenuUtility {
 		}
 
 			// Configure the parent clickmenu
-		$pObj->backPath = $this->backPath;
-			// do not allow the entry 'history' in the clickmenu
-		$pObj->disabledItems[]  = 'history';
+		$this->clickMenu = $clickMenu;
+		$this->clipObj = $this->clickMenu->clipObj;
+		$this->clickMenu->backPath = $this->backPath;
+			// @todo do not allow the entry 'history' in the clickmenu
+		$this->clickMenu->disabledItems[]  = '';
 
 			// Get record:
 		$this->rec = t3lib_BEfunc::getRecordWSOL($table, $uid);
-		$this->pObj = $pObj;
 
 			// Initialize the rights-variables
+		$root = 0;
+		$copyType = 'after';
 		$delete = FALSE;
 		$edit = FALSE;
 		$new = FALSE;
 		$editLock = FALSE;
-		$root = 0;
 		$DBmount = FALSE;
 		$copy = FALSE;
 		$paste = FALSE;
 		$version = FALSE;
 		$review = FALSE;
 
+			// used to hide cut,copy icons for l10n-records
+		$l10nOverlay = FALSE;
+			// should only be performed for overlay-records within the same table
+		if (t3lib_BEfunc::isTableLocalizable($table) && !isset($GLOBALS['TCA'][$table]['ctrl']['transOrigPointerTable'])) {
+			$l10nOverlay = intval($this->rec[$GLOBALS['TCA'][$table]['ctrl']['transOrigPointerField']]) != 0;
+		}
+
 			// get category uid depending on where the clickmenu is called
 		switch($table) {
+			case 'tx_commerce_categories':
+					// check if current item is root
+				$root = !strcmp($uid, '0') ? 1 : 0;
+
+					// find uid of category or translation parent category
+				$categoryToCheckRightsOn = $uid;
+				if ($this->rec['sys_language_uid']) {
+					$categoryToCheckRightsOn = $this->rec['l18n_parent'];
+				}
+
+					// get the rights for this category
+				$delete = Tx_Commerce_Utility_BackendUtility::checkPermissionsOnCategoryContent(array($categoryToCheckRightsOn), array('delete'));
+				$edit = Tx_Commerce_Utility_BackendUtility::checkPermissionsOnCategoryContent(array($categoryToCheckRightsOn), array('edit'));
+				$new = Tx_Commerce_Utility_BackendUtility::checkPermissionsOnCategoryContent(array($categoryToCheckRightsOn), array('new'));
+
+					// check if we may paste into this category
+				if (count($this->clickMenu->clipObj->elFromTable('tx_commerce_categories'))) {
+						// if category is in clipboard, check new-right
+					$paste = $new;
+
+						// make sure we dont offer pasting one category into itself. that would lead to endless recursion
+					$clipRecord = $this->clickMenu->clipObj->getSelectedRecord();
+					$paste = ($uid == $clipRecord['uid']) ? FALSE : $paste;
+
+				} elseif (count($this->clickMenu->clipObj->elFromTable('tx_commerce_products'))) {
+						// if product is in clipboard, check editcontent right
+					$paste = Tx_Commerce_Utility_BackendUtility::checkPermissionsOnCategoryContent(array($uid), array('editcontent'));
+				}
+
+				$editLock = ($backendUser->isAdmin()) ? FALSE : $this->rec['editlock'];
+
+					// check if the current item is a db mount
+				/** @var Tx_Commerce_Tree_CategoryMounts $mounts */
+				$mounts = t3lib_div::makeInstance('Tx_Commerce_Tree_CategoryMounts');
+				$mounts->init($backendUser->user['uid']);
+				$DBmount = (in_array($uid, $mounts->getMountData()));
+
+					// if the category has no parent categories treat as root
+				/** @var Tx_Commerce_Domain_Model_Category $category */
+				$category = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category');
+				$category->init($categoryToCheckRightsOn);
+				$DBmount = count($category->getParentCategories()) ? $DBmount : TRUE;
+
+				$copy = ($this->rec['sys_language_uid'] == 0);
+				$copyType = 'into';
+
+					// pasting or new into translations is not allowed
+				if ($this->rec['sys_language_uid']) {
+					$new = FALSE;
+					$paste = FALSE;
+				}
+			break;
+
 			case 'tx_commerce_products':
 					// get all parent categories
 				/** @var Tx_Commerce_Domain_Model_Product $product */
@@ -119,8 +181,8 @@ class Tx_Commerce_Utility_ClickmenuUtility {
 				$paste = (($this->rec['t3ver_state'] == 0) && $delete);
 
 					// make sure we do not allowed to overwrite a product with itself
-				if (count($this->pObj->clipObj->elFromTable('tx_commerce_products'))) {
-					$clipRecord = $this->pObj->clipObj->getSelectedRecord();
+				if (count($this->clickMenu->clipObj->elFromTable('tx_commerce_products'))) {
+					$clipRecord = $this->clickMenu->clipObj->getSelectedRecord();
 					$paste = ($uid == $clipRecord['uid']) ? FALSE : $paste;
 				}
 
@@ -148,52 +210,6 @@ class Tx_Commerce_Utility_ClickmenuUtility {
 				$edit = $delete;
 				$new = $delete;
 			break;
-
-			case 'tx_commerce_categories':
-					// find uid of category or translation parent category
-				$categoryToCheckRightsOn = $uid;
-				if ($this->rec['sys_language_uid']) {
-					$categoryToCheckRightsOn = $this->rec['l18n_parent'];
-				}
-
-					// get the rights for this category
-				$delete = Tx_Commerce_Utility_BackendUtility::checkPermissionsOnCategoryContent(array($categoryToCheckRightsOn), array('delete'));
-				$edit = Tx_Commerce_Utility_BackendUtility::checkPermissionsOnCategoryContent(array($categoryToCheckRightsOn), array('edit'));
-				$new = Tx_Commerce_Utility_BackendUtility::checkPermissionsOnCategoryContent(array($categoryToCheckRightsOn), array('new'));
-
-					// check if we may paste into this category
-				if (count($this->pObj->clipObj->elFromTable('tx_commerce_categories'))) {
-						// if category is in clipboard, check new-right
-					$paste = $new;
-
-						// make sure we dont offer pasting one category into itself. that would lead to endless recursion
-					$clipRecord = $this->pObj->clipObj->getSelectedRecord();
-					$paste = ($uid == $clipRecord['uid']) ? FALSE : $paste;
-
-				} elseif (count($this->pObj->clipObj->elFromTable('tx_commerce_products'))) {
-						// if product is in clipboard, check editcontent right
-					$paste = Tx_Commerce_Utility_BackendUtility::checkPermissionsOnCategoryContent(array($uid), array('editcontent'));
-				}
-
-				$editLock = ($backendUser->isAdmin()) ? FALSE : $this->rec['editlock'];
-
-					// check if the current item is a db mount
-				/** @var Tx_Commerce_Tree_CategoryMounts $mounts */
-				$mounts = t3lib_div::makeInstance('Tx_Commerce_Tree_CategoryMounts');
-				$mounts->init($backendUser->user['uid']);
-
-				$DBmount = (in_array($uid, $mounts->getMountData()));
-				$copy = ($this->rec['sys_language_uid'] == 0);
-
-					// check if current item is root
-				$root = (int)(0 == $uid);
-
-					// pasting or new into translations is not allowed
-				if ($this->rec['sys_language_uid']) {
-					$new = FALSE;
-					$paste = FALSE;
-				}
-			break;
 		}
 
 			// get the UID of the Products SysFolder
@@ -201,82 +217,177 @@ class Tx_Commerce_Utility_ClickmenuUtility {
 
 		$menuItems = array();
 
-			// If record found (or root), go ahead and fill the $menuItems array which will contain data for the elements to render.
-		if (is_array($this->rec) || $root) {
+			// If record found, go ahead and fill the $menuItems array which will contain data for the elements to render.
+		if (is_array($this->rec)) {
 				// Edit:
 			if (!$root && !$editLock && $edit) {
-				if (!in_array('edit', $pObj->disabledItems)) {
-					$menuItems['edit'] = $pObj->DB_edit($table, $uid);
+				if (!in_array('edit', $this->clickMenu->disabledItems)) {
+					$menuItems['edit'] = $this->DB_edit($table, $uid);
 				}
-				$pObj->editOK = 1;
+				$this->clickMenu->editOK = 1;
 			}
 
 				// New: fix: always give the UID of the products page to create any commerce object
-			if (!in_array('new', $pObj->disabledItems) && $new) {
-				$menuItems['new'] = $pObj->DB_new($table, $prodPid);
+			if (!in_array('new', $this->clickMenu->disabledItems) && $new) {
+				$menuItems['new'] = $this->DB_new($table, $prodPid);
 			}
 
 				// Info:
-			if (!in_array('info', $pObj->disabledItems) && !$root) {
-				$menuItems['info'] = $pObj->DB_info($table, $uid);
+			if (!in_array('info', $this->clickMenu->disabledItems) && !$root) {
+				$menuItems['info'] = $this->DB_info($table, $uid);
 			}
 
 			$menuItems['spacer1'] = 'spacer';
 
 				// Cut not included
 				// Copy:
-			if (!in_array('copy', $pObj->disabledItems) && $copy && !$root && !$DBmount) {
-				$menuItems['copy'] = $pObj->DB_copycut($table, $uid, 'copy');
+			if (!in_array('copy', $this->disabledItems) && !$root && !$DBmount && !$l10nOverlay && $copy) {
+				$menuItems['copy'] = $this->clickMenu->DB_copycut($table, $uid, 'copy');
+			}
+
+				// Cut:
+			if (!in_array('cut', $this->disabledItems) && !$root && !$DBmount && !$l10nOverlay && $copy) {
+				$menuItems['cut'] = $this->clickMenu->DB_copycut($table, $uid, 'cut');
 			}
 
 				// Paste
-			$elFromAllTables = count($this->pObj->clipObj->elFromTable(''));
-			$elInfo = array();
-			if (!in_array('paste', $pObj->disabledItems) && $elFromAllTables) {
-				$selItem = $this->pObj->clipObj->getSelectedRecord();
+			$elFromAllTables = count($this->clickMenu->clipObj->elFromTable(''));
+			if (!in_array('paste', $this->clickMenu->disabledItems) && $elFromAllTables) {
+				$selItem = $this->clickMenu->clipObj->getSelectedRecord();
 				$elInfo = array(
 					t3lib_div::fixed_lgd_cs($selItem['_RECORD_TITLE'], $backendUser->uc['titleLen']),
-					($root ? $GLOBALS['TYPO3_CONF_VARS']['SYS']['sitename'] : t3lib_div::fixed_lgd_cs(t3lib_BEfunc::getRecordTitle($table, $pObj->rec), $backendUser->uc['titleLen'])),
-					$this->pObj->clipObj->currentMode()
+					(
+						$root ?
+						$GLOBALS['TYPO3_CONF_VARS']['SYS']['sitename'] :
+						t3lib_div::fixed_lgd_cs(t3lib_BEfunc::getRecordTitle($table, $this->clickMenu->rec), $backendUser->uc['titleLen'])
+					),
+					$this->clickMenu->clipObj->currentMode()
 				);
 
-				$elFromTable = count($this->pObj->clipObj->elFromTable($table));
+				$elFromTable = count($this->clickMenu->clipObj->elFromTable($table));
 				if (!$root && !$DBmount && $elFromTable && $GLOBALS['TCA'][$table]['ctrl']['sortby'] && 'tx_commerce_categories' == $table && $paste) {
 						// paste into - for categories
-					$menuItems['pasteafter'] = $this->DB_paste($table, $uid, $elInfo);
+					$menuItems['pasteafter'] = $this->DB_paste($table, $uid, $copyType, $elInfo);
 				} elseif (!$root && $paste && !$DBmount && $elFromTable && $GLOBALS['TCA'][$table]['ctrl']['sortby'] && 'tx_commerce_products' == $table) {
 						// overwrite product with product
 					$menuItems['overwrite'] =  $this->DB_overwrite($table, $uid, $elInfo);
-				} elseif (!$root && $paste && !$DBmount && $GLOBALS['TCA'][$table]['ctrl']['sortby'] && 'tx_commerce_categories' == $table && count($this->pObj->clipObj->elFromTable('tx_commerce_products'))) {
+				} elseif (!$root && $paste && !$DBmount && $GLOBALS['TCA'][$table]['ctrl']['sortby'] && 'tx_commerce_categories' == $table && count($this->clickMenu->clipObj->elFromTable('tx_commerce_products'))) {
 						// paste product into category
-					$menuItems['pasteafter'] = $this->DB_paste($table, $uid, $elInfo);
+					$menuItems['pasteafter'] = $this->DB_paste($table, $uid, $copyType, $elInfo);
 				}
 			}
 
+			$menuItems['spacer3'] = 'spacer';
+
 				// versioning
-			if (!in_array('versioning', $pObj->disabledItems) && $version) {
+			$elInfo = array();
+			if (!in_array('versioning', $this->clickMenu->disabledItems) && $version) {
 				$menuItems['versioning'] = $this->DB_versioning($table, $uid, $elInfo);
 			}
 
 				// send to review
-			if (!in_array('review', $pObj->disabledItems) && $review) {
+			if (!in_array('review', $this->clickMenu->disabledItems) && $review) {
 				$menuItems['review'] = $this->DB_review($table, $uid, $elInfo);
 			}
 
 				// Delete:
 			$elInfo = array(t3lib_div::fixed_lgd_cs(t3lib_BEfunc::getRecordTitle($table, $this->rec), $backendUser->uc['titleLen']));
 
-			if (!$editLock && !in_array('delete', $pObj->disabledItems) && !$root && !$DBmount && $delete) {
+			if (!$editLock && !in_array('delete', $this->clickMenu->disabledItems) && !$root && !$DBmount && $delete) {
 				$menuItems['spacer2'] = 'spacer';
-				$menuItems['delete'] = $pObj->DB_delete($table, $uid, $elInfo);
+				$menuItems['delete'] = $this->clickMenu->DB_delete($table, $uid, $elInfo);
 			}
 
-			if (!in_array('history', $pObj->disabledItems)) {
-				$menuItems['history'] = $pObj->DB_history($table, $uid, $elInfo);
+			if (!in_array('history', $this->clickMenu->disabledItems)) {
+				$menuItems['history'] = $this->clickMenu->DB_history($table, $uid, $elInfo);
 			}
 		}
 
 		return $menuItems;
+	}
+
+	/**
+	 * Adding CM element for Clipboard "copy" and "cut"
+	 *
+	 * @param string $table Table name
+	 * @param integer $uid UID for the current record.
+	 * @param string $type Type: "copy" or "cut"
+	 * @return array Item array, element in $menuItems
+	 */
+	public function DB_copycut($table, $uid, $type) {
+		$isSel = FALSE;
+		if ($this->clipObj->current == 'normal') {
+			$isSel = $this->clipObj->isSelected($table, $uid);
+		}
+
+		$addParam = array();
+		if ($this->listFrame) {
+			$addParam['reloadListFrame'] = ($this->alwaysContentFrame ? 2 : 1);
+		}
+
+		return $this->linkItem(
+			$this->label($type),
+			$this->excludeIcon(t3lib_iconWorks::getSpriteIcon('actions-edit-' . $type . ($isSel === $type ? '-release' : ''))),
+			"top.loadTopMenu('" . $this->clickMenu->clipObj->selUrlDB($table, $uid, ($type == 'copy' ? 1: 0), ($isSel == $type), $addParam) . "');return false;"
+		);
+	}
+
+	/**
+	 * Adding CM element for Clipboard "paste into"/"paste after"
+	 * NOTICE: $table and $uid should follow the special syntax for paste, see clipboard-class :: pasteUrl();
+	 *
+	 * @param string $table Table name
+	 * @param integer $uid UID for the current record. NOTICE: Special syntax!
+	 * @param string $type Type: "into" or "after"
+	 * @param array $elInfo Contains instructions about whether to copy or cut an element.
+	 * @return array Item array, element in $menuItems
+	 */
+	public function DB_paste($table, $uid, $type, $elInfo) {
+		/** @var language $language */
+		$language = $GLOBALS['LANG'];
+		/** @var t3lib_beUserAuth $backendUser */
+		$backendUser = $GLOBALS['BE_USER'];
+
+		$loc = 'top.content.list_frame';
+		if ($backendUser->jsConfirmation(2)) {
+			$conf = $loc . ' && confirm(' . $language->JScharCode(sprintf(
+				$language->sL('LLL:EXT:lang/locallang_core.php:mess.' . ($elInfo[2] == 'copy' ? 'copy' : 'move') . '_' . $type),
+				$elInfo[0],
+				$elInfo[1]
+			)) . ')';
+		} else {
+			$conf = $loc;
+		}
+		$editOnClick = 'if(' . $conf . '){' . $loc . '.location.href=top.TS.PATH_typo3+\'' .
+			$this->clipObj->pasteUrl($table, $uid, 0) . '&redirect=\'+top.rawurlencode(' .
+			$this->frameLocation($loc . '.document') . '.pathname+' .
+			$this->frameLocation($loc . '.document') . '.search); hideCM();}';
+
+		return $this->linkItem(
+			$this->label('paste' . $type),
+			$this->excludeIcon(t3lib_iconWorks::getSpriteIcon('actions-document-paste-' . $type)),
+			$editOnClick . 'return false;'
+		);
+	}
+
+	/**
+	 * Adding CM element for History
+	 *
+	 * @param string $table Table name
+	 * @param integer $uid UID for the current record.
+	 * @return array Item array, element in $menuItems
+	 */
+	public function DB_history($table, $uid) {
+		/** @var language $language */
+		$language = $GLOBALS['LANG'];
+
+		$url = 'show_rechis.php?element=' . rawurlencode($table . ':' . $uid);
+		return $this->linkItem(
+			$language->makeEntities($language->getLL('CM_history')),
+			$this->excludeIcon(t3lib_iconWorks::getSpriteIcon('actions-document-history-open')),
+			$this->urlRefForCM($url, 'returnUrl'),
+			0
+		);
 	}
 
 	/**
@@ -287,13 +398,13 @@ class Tx_Commerce_Utility_ClickmenuUtility {
 	 * @param array $elInfo Object
 	 * @return string
 	 */
-	protected function DB_paste($table, $uid, $elInfo) {
+	public function _DB_paste($table, $uid, $elInfo) {
 		/** @var language $language */
 		$language = $GLOBALS['LANG'];
 		/** @var t3lib_beUserAuth $backendUser */
 		$backendUser = $GLOBALS['BE_USER'];
 
-		$loc = 'top.content' . ($this->pObj->listFrame && !$this->pObj->alwaysContentFrame ? '.list_frame' : '');
+		$loc = 'top.content' . ($this->clickMenu->listFrame && !$this->clickMenu->alwaysContentFrame ? '.list_frame' : '');
 
 		if ($backendUser->jsConfirmation(2)) {
 			$conf = $loc . ' && confirm(' . $language->JScharCode(
@@ -308,12 +419,13 @@ class Tx_Commerce_Utility_ClickmenuUtility {
 		}
 
 		$editOnClick = 'if(' . $conf . '){' . $loc . '.location.href=top.TS.PATH_typo3+\'' .
-			$this->pasteUrl($table, $uid, 0) . '&redirect=\'+top.rawurlencode(' . $this->pObj->frameLocation($loc . '.document') .
+			$this->pasteUrl($table, $uid, 0) . '&redirect=\'+top.rawurlencode(' .
+			$this->clickMenu->frameLocation($loc . '.document') .
 			'); hideCM();}';
 
-		return $this->pObj->linkItem(
+		return $this->clickMenu->linkItem(
 			$language->makeEntities($language->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_treelib.xml:clickmenu.paste', 1)),
-			$this->pObj->excludeIcon(t3lib_iconWorks::getSpriteIcon('actions-document-paste-into')),
+			$this->clickMenu->excludeIcon(t3lib_iconWorks::getSpriteIcon('actions-document-paste-into')),
 			$editOnClick . 'return false;'
 		);
 	}
@@ -332,7 +444,7 @@ class Tx_Commerce_Utility_ClickmenuUtility {
 		/** @var t3lib_beUserAuth $backendUser */
 		$backendUser = $GLOBALS['BE_USER'];
 
-		$loc = 'top.content' . ($this->pObj->listFrame && !$this->pObj->alwaysContentFrame ? '.list_frame' : '');
+		$loc = 'top.content' . ($this->clickMenu->listFrame && !$this->clickMenu->alwaysContentFrame ? '.list_frame' : '');
 
 		if ($backendUser->jsConfirmation(2)) {
 			$conf = $loc . ' && confirm(' . $language->JScharCode(
@@ -347,11 +459,11 @@ class Tx_Commerce_Utility_ClickmenuUtility {
 		}
 		$editOnClick = 'if(' . $conf . '){' . $loc . '.location.href=top.TS.PATH_typo3+\'' .
 			$this->overwriteUrl($table, $uid, 0) . '&redirect=\'+top.rawurlencode(' .
-			$this->pObj->frameLocation($loc . '.document') . '); hideCM();}';
+			$this->clickMenu->frameLocation($loc . '.document') . '); hideCM();}';
 
-		return $this->pObj->linkItem(
+		return $this->clickMenu->linkItem(
 			$language->makeEntities($language->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_treelib.xml:clickmenu.overwrite', 1)),
-			$this->pObj->excludeIcon(t3lib_iconWorks::getSpriteIcon('actions-document-paste-into')),
+			$this->clickMenu->excludeIcon(t3lib_iconWorks::getSpriteIcon('actions-document-paste-into')),
 			$editOnClick . 'return false;'
 		);
 	}
@@ -369,10 +481,10 @@ class Tx_Commerce_Utility_ClickmenuUtility {
 
 		$url = t3lib_extMgm::extRelPath('version') . 'cm1/index.php?table=' . rawurlencode($table) . '&uid=' . $uid;
 
-		return $this->pObj->linkItem(
+		return $this->clickMenu->linkItem(
 			$language->makeEntities($language->sL('LLL:EXT:version/locallang.xml:title', 1)),
-			$this->pObj->excludeIcon(t3lib_iconWorks::getSpriteIcon('status-version-no-version')),
-			$this->pObj->urlRefForCM($url),
+			$this->clickMenu->excludeIcon(t3lib_iconWorks::getSpriteIcon('status-version-no-version')),
+			$this->clickMenu->urlRefForCM($url),
 			1
 		);
 	}
@@ -388,13 +500,13 @@ class Tx_Commerce_Utility_ClickmenuUtility {
 		/** @var language $language */
 		$language = $GLOBALS['LANG'];
 
-		$url = t3lib_extMgm::extRelPath('version') . 'cm1/index.php?id=' . ($table == 'pages' ? $uid : $this->pObj->rec['pid']) .
+		$url = t3lib_extMgm::extRelPath('version') . 'cm1/index.php?id=' . ($table == 'pages' ? $uid : $this->clickMenu->rec['pid']) .
 			'&table=' . rawurlencode($table) . '&uid=' . $uid . '&sendToReview=1';
 
-		return $this->pObj->linkItem(
+		return $this->clickMenu->linkItem(
 			$language->makeEntities($language->sL('LLL:EXT:version/locallang.xml:title_review', 1)),
-			$this->pObj->excludeIcon(t3lib_iconWorks::getSpriteIcon('status-version-no-version')),
-			$this->pObj->urlRefForCM($url),
+			$this->clickMenu->excludeIcon(t3lib_iconWorks::getSpriteIcon('status-version-no-version')),
+			$this->clickMenu->urlRefForCM($url),
 			1
 		);
 	}
@@ -411,12 +523,12 @@ class Tx_Commerce_Utility_ClickmenuUtility {
 		/** @var t3lib_beUserAuth $backendUser */
 		$backendUser = $GLOBALS['BE_USER'];
 
-		$rU = $this->pObj->clipObj->backPath . PATH_TXCOMMERCE_REL . 'Classes/Utility/DataHandlerUtility.php?' .
+		$rU = $this->clickMenu->clipObj->backPath . PATH_TXCOMMERCE_REL . 'Classes/Utility/DataHandlerUtility.php?' .
 			($redirect ? 'redirect=' . rawurlencode(t3lib_div::linkThisScript(array('CB' => ''))) : '') .
 			'&vC=' . $backendUser->veriCode() .
 			'&prErr=1&uPT=1' .
 			'&CB[overwrite]=' . rawurlencode($table . '|' . $uid) .
-			'&CB[pad]=' . $this->pObj->clipObj->current .
+			'&CB[pad]=' . $this->clickMenu->clipObj->current .
 			t3lib_BEfunc::getUrlToken('tceAction');
 		return $rU;
 	}
@@ -434,12 +546,12 @@ class Tx_Commerce_Utility_ClickmenuUtility {
 		/** @var t3lib_beUserAuth $backendUser */
 		$backendUser = $GLOBALS['BE_USER'];
 
-		$rU = $this->pObj->clipObj->backPath . PATH_TXCOMMERCE_REL . 'Classes/Utility/DataHandlerUtility.php?' .
+		$rU = $this->clickMenu->clipObj->backPath . PATH_TXCOMMERCE_REL . 'Classes/Utility/DataHandlerUtility.php?' .
 			($setRedirect ? 'redirect=' . rawurlencode(t3lib_div::linkThisScript(array('CB' => ''))) : '') .
 			'&vC=' . $backendUser->veriCode() .
 			'&prErr=1&uPT=1' .
 			'&CB[paste]=' . rawurlencode($table . '|' . $uid) .
-			'&CB[pad]=' . $this->pObj->clipObj->current .
+			'&CB[pad]=' . $this->clickMenu->clipObj->current .
 			t3lib_BEfunc::getUrlToken('tceAction');
 		return $rU;
 	}

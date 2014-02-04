@@ -147,6 +147,13 @@ abstract class Tx_Commerce_Tree_Leaf_MasterData extends Tx_Commerce_Tree_Leaf_Da
 	}
 
 	/**
+	 * @return integer
+	 */
+	public function getUid() {
+		return $this->uid;
+	}
+
+	/**
 	 * Sets the depth of the recursion
 	 *
 	 * @return void

@@ -155,245 +155,314 @@ class Tx_Commerce_Hook_CommandMapHooks {
 	 * @return void
 	 */
 	public function processCmdmap_postProcess(&$command, $table, $id, $value, &$pObj) {
+			// update the page tree
+		t3lib_BEfunc::setUpdateSignal('updatePageTree');
+
+		if ($table == 'tx_commerce_categories' && $command == 'delete') {
+			$this->postProcessCategory($command, $id);
+		}
+
+		if ($table == 'tx_commerce_products' && in_array($command, array('copy', 'delete', 'localize'))) {
+			$this->postProcessProduct($command, $table, $id, $value, $pObj);
+		}
+	}
+
+	/**
+	 * @param string $command
+	 * @param integer $categoryUid
+	 * @return void
+	 */
+	protected function postProcessCategory($command, $categoryUid) {
+		if ($command == 'delete') {
+			$this->deleteProductsAndArticlesOfDeletedCategory($categoryUid);
+		}
+	}
+
+	/**
+	 * Delete all categories->products->articles if a category should be deleted.
+	 * This one does NOT delete any relations! This is not wanted because you might want to
+	 * restore deleted categories, products or articles.
+	 *
+	 * @param integer $categoryUid
+	 * @return void
+	 */
+	protected function deleteProductsAndArticlesOfDeletedCategory($categoryUid) {
+		/** @var t3lib_db $database */
+		$database = $GLOBALS['TYPO3_DB'];
+
+		/** @var Tx_Commerce_Utility_BackendUtility $belib */
+		$belib = t3lib_div::makeInstance('Tx_Commerce_Utility_BackendUtility');
+		$deleteArray = array('deleted' => 1);
+		$childCategories = array();
+
+		$belib->getChildCategories($categoryUid, $childCategories, 0, 0, TRUE);
+
+		if (is_array($childCategories) && count($childCategories) > 0) {
+			$categoryList = array();
+
+			foreach ($childCategories as $childCategoryUid) {
+				$categoryList[] = $childCategoryUid;
+				$products = $belib->getProductsOfCategory($childCategoryUid);
+				$productList = array();
+				if (is_array($products) && count($products) > 0) {
+					foreach ($products as $product) {
+						$articles = $belib->getArticlesOfProduct($product['uid_local']);
+						if (is_array($articles) && count($articles) > 0) {
+							$articleList = array();
+							foreach ($articles as $article) {
+								$articleList[] = $article['uid'];
+
+									// delete prices for article
+								$database->exec_UPDATEquery('tx_commerce_article_prices', 'uid_article=' . $article['uid'], $deleteArray);
+							}
+							$database->exec_UPDATEquery('tx_commerce_articles', 'uid IN (' . implode(',', $articleList) . ')', $deleteArray);
+						}
+						$productList[] = $product['uid_local'];
+					}
+					$database->exec_UPDATEquery('tx_commerce_products', 'uid IN (' . implode(',', $productList) . ')', $deleteArray);
+				}
+			}
+
+			$database->exec_UPDATEquery('tx_commerce_categories', 'uid IN (' . implode(',', $categoryList) . ')', $deleteArray);
+		}
+	}
+
+	/**
+	 * @param string $command
+	 * @param string $table: the table the data will be stored in
+	 * @param integer $productUid: The uid of the dataset we're working on
+	 * @param array $value: the array of fields that where changed in BE (passed by reference)
+	 * @param t3lib_TCEmain $pObj: The instance of the BE data handler
+	 * @return void
+	 */
+	protected function postProcessProduct(&$command, $table, $productUid, $value, &$pObj) {
+		if ($command == 'delete') {
+			$this->deleteArticlesOfDeletedProduct($productUid);
+			$this->deleteLocalizationsOfDeletedProduct($table, $productUid);
+		}
+
+		if ($command == 'localize') {
+			$this->translateArticlesOfProduct($command, $table, $productUid, $value, $pObj);
+		}
+	}
+
+	/**
+	 * If a product is deleted, delete all articles below and their locales.
+	 *
+	 * @param integer $productUid
+	 * @return void
+	 */
+	protected function deleteArticlesOfDeletedProduct($productUid) {
+		/** @var t3lib_db $database */
+		$database = $GLOBALS['TYPO3_DB'];
+
+			// instanciate the backend library
+		/** @var Tx_Commerce_Utility_BackendUtility $belib */
+		$belib = t3lib_div::makeInstance('Tx_Commerce_Utility_BackendUtility');
+			// get all related articles
+		$articles = $belib->getArticlesOfProduct($productUid);
+
+		if (($articles != FALSE) && (is_array($articles))) {
+			/**
+			 * Only if there are articles, walk thru the array
+			 * and delete articles from database
+			 * by setting deleted =1
+			 */
+			$update_array['deleted'] = 1;
+			foreach ($articles as $oneArticle) {
+
+				if ($oneArticle['uid'] > 0) {
+					$database->exec_UPDATEquery('tx_commerce_articles', 'uid = ' . $oneArticle['uid'], $update_array);
+					$belib->deleteL18n('tx_commerce_articles', $oneArticle['uid']);
+				}
+			}
+		}
+	}
+
+	/**
+	 * If a product is deleted, delete all localizations of it
+	 *
+	 * @param string $table
+	 * @param integer $productUid
+	 * @return void
+	 */
+	protected function deleteLocalizationsOfDeletedProduct($table, $productUid) {
+			// instanciate the backend library
+		/** @var Tx_Commerce_Utility_BackendUtility $belib */
+		$belib = t3lib_div::makeInstance('Tx_Commerce_Utility_BackendUtility');
+			// delete the localizations for products
+		$belib->deleteL18n($table, $productUid);
+	}
+
+	/**
+	 * localize all articles that are related to the current product
+	 * and localize all product attributes realted to this product from
+	 *
+	 * @param string $command
+	 * @param string $table: the table the data will be stored in
+	 * @param integer $productUid: The uid of the dataset we're working on
+	 * @param array $value: the array of fields that where changed in BE (passed by reference)
+	 * @param t3lib_TCEmain $pObj: The instance of the BE data handler
+	 * @return void
+	 */
+	protected function translateArticlesOfProduct(&$command, $table, $productUid, $value, &$pObj) {
 		/** @var t3lib_beUserAuth $backendUser */
 		$backendUser = $GLOBALS['BE_USER'];
 		/** @var t3lib_db $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
-			// update the page tree
-		t3lib_BEfunc::setUpdateSignal('updatePageTree');
+			// copying done, clear session
+		$backendUser->uc['txcommerce_copyProcess'] = 0;
+		$backendUser->writeUC();
 
-		/**
-		 * Delete all categories->products->articles if a category should be deleted.
-		 * This one does NOT delete any relations! This is not wanted because you might want to
-		 * restore deleted categories, products or articles.
-		 */
-		if ($table == 'tx_commerce_categories' && $command == 'delete') {
-			/** @var Tx_Commerce_Utility_BackendUtility $belib */
-			$belib = t3lib_div::makeInstance('Tx_Commerce_Utility_BackendUtility');
-			$deleteArray = array('deleted' => 1);
-			$childCategories = array();
+			// get the uid of the newly created product
+		$locPUid = $pObj->copyMappingArray[$table][$productUid];
 
-			$belib->getChildCategories($id, $childCategories, 0, 0, TRUE);
+		if (NULL == $locPUid) {
+			$command = '';
+			$this->error('LLL:EXT:commerce/locallang_be_errors.php:product.no_find_uid');
+		}
 
-			if (is_array($childCategories) && count($childCategories) > 0) {
-				$categoryList = array();
+			// instanciate the backend library
+		/** @var Tx_Commerce_Utility_BackendUtility $belib */
+		$belib = t3lib_div::makeInstance('Tx_Commerce_Utility_BackendUtility');
 
-				foreach ($childCategories as $categoryUid) {
-					$categoryList[] = $categoryUid;
-					$products = $belib->getProductsOfCategory($categoryUid);
-					$productList = array();
-					if (is_array($products) && count($products) > 0) {
-						foreach ($products as $product) {
-							$articles = $belib->getArticlesOfProduct($product['uid_local']);
-							if (is_array($articles) && count($articles) > 0) {
-								$articleList = array();
-								foreach ($articles as $article) {
-									$articleList[] = $article['uid'];
+			// get all related articles
+		$articles = $belib->getArticlesOfProduct($productUid);
+			// get all related attributes
+		$productAttributes = $belib->getAttributesForProduct($productUid, FALSE, TRUE);
+			// Check if Localised Product already has artiles
+		$locProductARticles	  = $belib->getArticlesOfProduct($locPUid);
+		$locProductAttributes = $belib->getAttributesForProduct($locPUid);
 
-										// delete prices for article
-									$database->exec_UPDATEquery('tx_commerce_article_prices', 'uid_article=' . $article['uid'], $deleteArray);
-								}
-								$database->exec_UPDATEquery('tx_commerce_articles', 'uid IN (' . implode(',', $articleList) . ')', $deleteArray);
-							}
-							$productList[] = $product['uid_local'];
+			// Check product has attrinutes and no Attributes are avaliable for localised version
+		if (is_array($productAttributes) && count($productAttributes) > 0 && $locProductAttributes  == FALSE) {
+				// als thrue
+			$langIsoCode = t3lib_BEfunc::getRecord('sys_language', (int) $value, 'static_lang_isocode');
+			$langIdent = t3lib_BEfunc::getRecord('static_languages', (int) $langIsoCode['static_lang_isocode'], 'lg_typo3');
+			$langIdent = strtoupper($langIdent['lg_typo3']);
+
+			if (is_array($productAttributes)) {
+				foreach ($productAttributes as $oneAttribute) {
+					if ($oneAttribute['uid_correlationtype'] == 4 && !$oneAttribute['has_valuelist'] == 1) {
+
+							// only if we have attributes type 4
+							// and no valuelist
+						/**
+						 * @TODO: Reference to Constants ?
+						 */
+						$locAttributeMM = $oneAttribute;
+						/**
+						 * Decide on what to to on lokalisation, how to act
+						 * @see ext_conf_template
+						 * attributeLokalisationType[0|1|2]
+						 * 0: set blank
+						 * 1: Copy
+						 * 2: prepend [Translate to .$langRec['title'].:]
+						 */
+
+						unset($locAttributeMM['attributeData']);
+						unset($locAttributeMM['has_valuelist']);
+						switch ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['attributeLokalisationType']) {
+							case 0:
+								unset($locAttributeMM['default_value']);
+							break;
+
+							case 1:
+							break;
+
+							case 2:
+								/**
+								 * Walk thru the array and prepend text
+								 */
+								$prepend = '[Translate to ' . $langIdent . ':] ';
+								$locAttributeMM['default_value'] = $prepend . $locAttributeMM['default_value'];
+							break;
+
 						}
-						$database->exec_UPDATEquery('tx_commerce_products', 'uid IN (' . implode(',', $productList) . ')', $deleteArray);
+						$locAttributeMM['uid_local'] = $locPUid;
+
+						$database->exec_INSERTquery('tx_commerce_products_attributes_mm', $locAttributeMM);
 					}
 				}
 
-				$database->exec_UPDATEquery('tx_commerce_categories', 'uid IN (' . implode(',', $categoryList) . ')', $deleteArray);
-			}
-		}
-
-		/**
-		 * If a product is deleted, delete all articles below and their locales.
-		 */
-		if ($table == 'tx_commerce_products' && $command == 'delete') {
-				// instanciate the backend library
-			/** @var Tx_Commerce_Utility_BackendUtility $belib */
-			$belib = t3lib_div::makeInstance('Tx_Commerce_Utility_BackendUtility');
-				// get all related articles
-			$articles = $belib->getArticlesOfProduct($id);
-
-			if (($articles != FALSE) && (is_array($articles))) {
 				/**
-				 * Only if there are articles, walk thru the array
-				 * and delete articles from database
-				 * by setting deleted =1
+				 * Update the flexform
 				 */
-				$update_array['deleted'] = 1;
-				foreach ($articles as $oneArticle) {
-
-					if ($oneArticle['uid'] > 0) {
-						$database->exec_UPDATEquery('tx_commerce_articles', 'uid = ' . $oneArticle['uid'], $update_array);
-						$belib->deleteL18n('tx_commerce_articles', $oneArticle['uid']);
-					}
+				$resProduct = $database->exec_SELECTquery('attributesedit,attributes', 'tx_commerce_products', 'uid =' . $productUid);
+				if ($rowProduct = $database->sql_fetch_assoc($resProduct)) {
+					$product['attributesedit'] = $belib->buildLocalisedAttributeValues($rowProduct['attributesedit'], $langIdent);
+					$database->exec_UPDATEquery('tx_commerce_products', 'uid = ' . $locPUid, $product);
 				}
 			}
 		}
 
-		/**
-		 * If a product is deleted, delete all localizations of it
-		 */
-		if ($table == 'tx_commerce_products' && $command == 'delete') {
-				// instanciate the backend library
-			/** @var Tx_Commerce_Utility_BackendUtility $belib */
-			$belib = t3lib_div::makeInstance('Tx_Commerce_Utility_BackendUtility');
-				// delete the localizations for products
-			$belib->deleteL18n($table, $id);
+			// Check if product has articles and localised product has no articles
+		if ($articles != FALSE && $locProductARticles == FALSE) {
+				// determine language identifier
+				// this is needed for updating the XML of the new created articles
+			$langIsoCode = t3lib_BEfunc::getRecord('sys_language', (int) $value, 'static_lang_isocode');
+			$langIdent = t3lib_BEfunc::getRecord('static_languages', (int) $langIsoCode['static_lang_isocode'], 'lg_typo3');
+			$langIdent = strtoupper($langIdent['lg_typo3']);
+			if (empty($langIdent)) {
+				$langIdent = 'DEF';
+			}
+
+				// process all existing articles and copy them
+			if (is_array($articles)) {
+				foreach ($articles as $origArticle) {
+						// make a localization version
+					$locArticle = $origArticle;
+						// unset some values
+					unset($locArticle['uid']);
+
+						// set new article values
+					$now = time();
+					$locArticle['tstamp'] = $now;
+					$locArticle['crdate'] = $now;
+					$locArticle['sys_language_uid'] = $value;
+					$locArticle['l18n_parent'] = $origArticle['uid'];
+					$locArticle['uid_product'] = $locPUid;
+
+						// get XML for attributes
+						// this has only to be changed if the language is something else than default.
+						// The possibility that something else happens is very small but anyhow... ;-)
+					if ($langIdent != 'DEF' && $origArticle['attributesedit']) {
+						$locArticle['attributesedit'] = $belib->buildLocalisedAttributeValues($origArticle['attributesedit'], $langIdent);
+					}
+
+						// create new article in DB
+					$database->exec_INSERTquery('tx_commerce_articles', $locArticle);
+
+						// get the uid of the localized article
+					$locAUid = $database->sql_insert_id();
+
+						// get all relations to attributes from the old article and copy them to new article
+					$res = $database->exec_SELECTquery(
+						'*',
+						'tx_commerce_articles_article_attributes_mm',
+						'uid_local = ' . (int) $origArticle['uid'] . ' AND uid_valuelist = 0'
+					);
+					while ($origRelation = $database->sql_fetch_assoc($res)) {
+						$origRelation['uid_local'] = $locAUid;
+						$database->exec_INSERTquery('tx_commerce_articles_article_attributes_mm', $origRelation);
+					}
+				}
+			}
+		} elseif ($locProductARticles == FALSE) {
+				// Error Output, no Articles
+			$command = '';
+			$this->error('LLL:EXT:commerce/locallang_be_errors.php:product.localization_without_article');
 		}
+	}
 
-		/**
-		 * localize all articles that are related to the current product
-		 *  and lokalise all product attributes realted to this product from
-		 */
-		if ($table == 'tx_commerce_products' && $command == 'localize') {
-
-				// copying done, clear session
-			$backendUser->uc['txcommerce_copyProcess'] = 0;
-			$backendUser->writeUC();
-
-				// get the uid of the newly created product
-			$locPUid = $pObj->copyMappingArray[$table][$id];
-
-			if (NULL == $locPUid) {
-				$command = '';
-				$this->error('LLL:EXT:commerce/locallang_be_errors.php:product.no_find_uid');
-			}
-
-				// instanciate the backend library
-			/** @var Tx_Commerce_Utility_BackendUtility $belib */
-			$belib = t3lib_div::makeInstance('Tx_Commerce_Utility_BackendUtility');
-
-				// get all related articles
-			$articles = $belib->getArticlesOfProduct($id);
-				// get all related attributes
-			$productAttributes = $belib->getAttributesForProduct($id, FALSE, TRUE);
-				// Check if Localised Product already has artiles
-			$locProductARticles	  = $belib->getArticlesOfProduct($locPUid);
-			$locProductAttributes = $belib->getAttributesForProduct($locPUid);
-
-				// Check product has attrinutes and no Attributes are avaliable for localised version
-			if (is_array($productAttributes) && count($productAttributes) > 0 && $locProductAttributes  == FALSE) {
-					// als thrue
-				$langIsoCode = t3lib_BEfunc::getRecord('sys_language', (int) $value, 'static_lang_isocode');
-				$langIdent = t3lib_BEfunc::getRecord('static_languages', (int) $langIsoCode['static_lang_isocode'], 'lg_typo3');
-				$langIdent = strtoupper($langIdent['lg_typo3']);
-
-				if (is_array($productAttributes)) {
-					foreach ($productAttributes as $oneAttribute) {
-						if ($oneAttribute['uid_correlationtype'] == 4 && !$oneAttribute['has_valuelist'] == 1) {
-
-								// only if we have attributes type 4
-								// and no valuelist
-							/**
-							 * @TODO: Reference to Constants ?
-							 */
-							$locAttributeMM = $oneAttribute;
-							/**
-							 * Decide on what to to on lokalisation, how to act
-							 * @see ext_conf_template
-							 * attributeLokalisationType[0|1|2]
-							 * 0: set blank
-							 * 1: Copy
-							 * 2: prepend [Translate to .$langRec['title'].:]
-							 */
-
-							unset($locAttributeMM['attributeData']);
-							unset($locAttributeMM['has_valuelist']);
-							switch ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['attributeLokalisationType']) {
-								case 0:
-									unset($locAttributeMM['default_value']);
-								break;
-
-								case 1:
-								break;
-
-								case 2:
-									/**
-									 * Walk thru the array and prepend text
-									 */
-									$prepend = '[Translate to ' . $langIdent . ':] ';
-									$locAttributeMM['default_value'] = $prepend . $locAttributeMM['default_value'];
-								break;
-
-							}
-							$locAttributeMM['uid_local'] = $locPUid;
-
-							$database->exec_INSERTquery('tx_commerce_products_attributes_mm', $locAttributeMM);
-						}
-					}
-					/**
-					 * Update the flexform
-					 */
-
-					$resProduct = $database->exec_SELECTquery('attributesedit,attributes', 'tx_commerce_products', 'uid =' . $id);
-					if ($rowProduct = $database->sql_fetch_assoc($resProduct)) {
-						$product['attributesedit'] = $belib->buildLocalisedAttributeValues($rowProduct['attributesedit'], $langIdent);
-						$database->exec_UPDATEquery('tx_commerce_products', 'uid = ' . $locPUid, $product);
-					}
-				}
-			}
-
-				// Check if product has articles and localised product has no articles
-			if ($articles != FALSE && $locProductARticles == FALSE) {
-					// determine language identifier
-					// this is needed for updating the XML of the new created articles
-				$langIsoCode = t3lib_BEfunc::getRecord('sys_language', (int) $value, 'static_lang_isocode');
-				$langIdent = t3lib_BEfunc::getRecord('static_languages', (int) $langIsoCode['static_lang_isocode'], 'lg_typo3');
-				$langIdent = strtoupper($langIdent['lg_typo3']);
-				if (empty($langIdent)) {
-					$langIdent = 'DEF';
-				}
-
-					// process all existing articles and copy them
-				if (is_array($articles)) {
-					foreach ($articles as $origArticle) {
-							// make a localization version
-						$locArticle = $origArticle;
-							// unset some values
-						unset($locArticle['uid']);
-
-							// set new article values
-						$now = time();
-						$locArticle['tstamp'] = $now;
-						$locArticle['crdate'] = $now;
-						$locArticle['sys_language_uid'] = $value;
-						$locArticle['l18n_parent'] = $origArticle['uid'];
-						$locArticle['uid_product'] = $locPUid;
-
-							// get XML for attributes
-							// this has only to be changed if the language is something else than default.
-							// The possibility that something else happens is very small but anyhow... ;-)
-						if ($langIdent != 'DEF' && $origArticle['attributesedit']) {
-							$locArticle['attributesedit'] = $belib->buildLocalisedAttributeValues($origArticle['attributesedit'], $langIdent);
-						}
-
-							// create new article in DB
-						$database->exec_INSERTquery('tx_commerce_articles', $locArticle);
-
-							// get the uid of the localized article
-						$locAUid = $database->sql_insert_id();
-
-							// get all relations to attributes from the old article and copy them to new article
-						$res = $database->exec_SELECTquery(
-							'*',
-							'tx_commerce_articles_article_attributes_mm',
-							'uid_local = ' . (int) $origArticle['uid'] . ' AND uid_valuelist = 0'
-						);
-						while ($origRelation = $database->sql_fetch_assoc($res)) {
-							$origRelation['uid_local'] = $locAUid;
-							$database->exec_INSERTquery('tx_commerce_articles_article_attributes_mm', $origRelation);
-						}
-					}
-				}
-			} elseif ($locProductARticles == FALSE) {
-					// Error Output, no Articles
-				$command = '';
-				$this->error('LLL:EXT:commerce/locallang_be_errors.php:product.localization_without_article');
-			}
-		}
+	/**
+	 * @param integer $productUid
+	 * @return void
+	 */
+	protected function changeCategoryOfCopiedProdct($productUid) {
+		/** @var t3lib_db $database */
+		$database = $GLOBALS['TYPO3_DB'];
 	}
 
 	/**

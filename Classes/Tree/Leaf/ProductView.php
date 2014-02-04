@@ -42,6 +42,34 @@ class Tx_Commerce_Tree_Leaf_ProductView extends Tx_Commerce_Tree_Leaf_View {
 	protected $domIdPrefix = 'txcommerceProduct';
 
 	/**
+	 * Wraps the Icon in a <span>
+	 *
+	 * @param string $icon
+	 * @param array $row
+	 * @param string $addParams
+	 * @return string	HTML Code
+	 */
+	public function wrapIcon($icon, $row, $addParams = '') {
+		if (!is_array($row) || !is_string($addParams)) {
+			if (TYPO3_DLOG) {
+				t3lib_div::devLog('wrapIcon (Tx_Commerce_Tree_Leaf_View) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+			}
+			return '';
+		}
+
+		$icon = $this->addTagAttributes($icon, ($this->titleAttrib ? $this->titleAttrib . '="' . $this->getTitleAttrib($row) . '"' : ''));
+
+			// Wrap the Context Menu on the Icon if it is allowed
+		if (isset($GLOBALS['TBE_TEMPLATE']) && !$this->noClickmenu) {
+			/** @var template $template */
+			$template = $GLOBALS['TBE_TEMPLATE'];
+			$template->backPath = $this->backPath;
+			$icon = '<a href="#">' . $template->wrapClickMenuOnIcon($icon, $this->table, $row['uid'], 0, $addParams) . '</a>';
+		}
+		return $icon;
+	}
+
+	/**
 	 * Wrapping $title in a-tags.
 	 *
 	 * @param string $title Title string
