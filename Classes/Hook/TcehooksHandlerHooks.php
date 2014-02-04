@@ -71,9 +71,9 @@ class Tx_Commerce_Hook_TcehooksHandlerHooks {
 	 * @param string $table: database table
 	 * @param string $id: database table
 	 * @param array $fieldArray: reference to the incoming fields
-	 * @param object $pObj: page Object reference
+	 * @return void
 	 */
-	public function processDatamap_postProcessFieldArray($status, $table, $id, &$fieldArray, &$pObj) {
+	public function processDatamap_postProcessFieldArray($status, $table, $id, &$fieldArray) {
 		if ($table == 'tx_commerce_article_prices') {
 				// ugly hack since typo3 makes ugly checks
 			foreach ($fieldArray as $key => $value) {
@@ -152,16 +152,15 @@ class Tx_Commerce_Hook_TcehooksHandlerHooks {
 	}
 
 	/**
-	* processCmdmap_preProcess()
-	* this function is called by the Hook in tce from class.t3lib_tcemain.php before processing commands
-	*
-	* @param string $command: reference to command: move,copy,version,delete or undelete
-	* @param string $table: database table
-	* @param string $id: database record uid
-	* @param array $value: reference to command parameter array
-	* @param object $pObj: page Object reference
-	*/
-	public function processCmdmap_preProcess(&$command, $table, $id, &$value, &$pObj) {
+	 * processCmdmap_preProcess()
+	 * this function is called by the Hook in tce from class.t3lib_tcemain.php before processing commands
+	 *
+	 * @param string $command: reference to command: move,copy,version,delete or undelete
+	 * @param string $table: database table
+	 * @param string $id: database record uid
+	 * @return void
+	 */
+	public function processCmdmap_preProcess(&$command, $table, $id) {
 		if (($table == 'tt_address') AND ($command == 'delete')) {
 			if ($this->checkAddressDelete($id)) {
 					// remove delete command
@@ -169,7 +168,6 @@ class Tx_Commerce_Hook_TcehooksHandlerHooks {
 			};
 		}
 	}
-
 
 	/**
 	 * @param array $fieldArray

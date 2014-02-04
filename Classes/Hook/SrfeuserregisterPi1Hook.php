@@ -39,9 +39,9 @@ class Tx_Commerce_Hook_SrfeuserregisterPi1Hook {
 	 * sr_feuser_register registration process after saving new dataset
 	 *
 	 * @param array $currentArr: complete array of feuser fields
-	 * @param object $pObj: page Object
+	 * @return void
 	 */
-	public function registrationProcess_afterSaveCreate($currentArr, &$pObj) {
+	public function registrationProcess_afterSaveCreate($currentArr) {
 			// notify observer
 		Tx_Commerce_Dao_FeuserObserver::update('new', $currentArr['uid'], $currentArr);
 	}
@@ -52,9 +52,9 @@ class Tx_Commerce_Hook_SrfeuserregisterPi1Hook {
 	 * sr_feuser_register registration process after saving edited dataset
 	 *
 	 * @param array $currentArr: complete array of feuser fields
-	 * @param object $pObj: page Object
+	 * @return void
 	 */
-	public function registrationProcess_afterSaveEdit($currentArr, &$pObj) {
+	public function registrationProcess_afterSaveEdit($currentArr) {
 			// notify observer
 		Tx_Commerce_Dao_FeuserObserver::update('update', $currentArr['uid'], $currentArr);
 	}

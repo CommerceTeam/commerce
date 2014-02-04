@@ -35,10 +35,9 @@ class Tx_Commerce_Hook_VersionHooks {
 	 * @param integer $id id of the LIVE Version to swap
 	 * @param integer $swapWith id of the Offline Version to swap with
 	 * @param integer $swapIntoWS If set, swaps online into workspace instead of publishing out of workspace.
-	 * @param t3lib_TCEmain $pObj TCEMain Class Reference
 	 * @return void
 	 */
-	public function processSwap_postProcessSwap($table, $id, $swapWith, $swapIntoWS, & $pObj) {
+	public function processSwap_postProcessSwap($table, $id, $swapWith, $swapIntoWS) {
 		if ('tx_commerce_products' == $table) {
 			$copy = !is_null($swapIntoWS);
 

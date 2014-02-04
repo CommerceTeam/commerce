@@ -26,14 +26,9 @@ class Tx_Commerce_Hook_TceFormsHooks {
 	 * @param string $table: The name of the database table (just for calling compatibility)
 	 * @param string $field: The name of the field we work on in $table (just for calling compatibility)
 	 * @param array $row: The values of all $fields in $table
-	 * @param string $out: Unknown, just for calling compatibility
-	 * @param string $palette: Unknown, just for calling compatibility
-	 * @param string $extra: Unknown, just for calling compatibility
-	 * @param string $pal: Unknown, just for calling compatibility
-	 * @param mixed $pObj: Unknown, just for calling compatibility
 	 * @return void
 	 */
-	public function getSingleField_preProcess($table, $field, &$row, &$out, &$palette, &$extra, $pal, $pObj) {
+	public function getSingleField_preProcess($table, $field, &$row) {
 		if (
 			$table == 'tx_commerce_products'
 			&& $this->extconf['simpleMode'] == 1

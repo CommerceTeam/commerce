@@ -56,9 +56,9 @@ class Tx_Commerce_Dao_AddressObserver {
 	 *
 	 * @param string $status : update or new
 	 * @param string $id : database table
-	 * @param array $changedFieldArray : reference to the incoming fields
+	 * @return void
 	 */
-	public static function update($status, $id, &$changedFieldArray) {
+	public static function update($status, $id) {
 			// get complete address object
 		/** @var Tx_Commerce_Dao_AddressDao $addressDao */
 		$addressDao = t3lib_div::makeInstance('Tx_Commerce_Dao_AddressDao', $id);

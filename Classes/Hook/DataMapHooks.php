@@ -1308,12 +1308,9 @@ class Tx_Commerce_Hook_DataMapHooks {
 	 * and so prevents vom chan ging the crdate by admin
 	 *
 	 * @param array $incomingFieldArray
-	 * @param string $table
-	 * @param integer $id
-	 * @param t3lib_TCEmain $pObj
 	 * @return void
 	 */
-	protected function doNotChangeCrdate(&$incomingFieldArray, $table, $id, &$pObj) {
+	protected function doNotChangeCrdate(&$incomingFieldArray) {
 		$incomingFieldArray['crdate'] = NULL;
 	}
 

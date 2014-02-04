@@ -31,10 +31,9 @@ class Tx_Commerce_ViewHelpers_AttributeEditFunc {
 	 * renders the valulist to a value
 	 *
 	 * @param array $PA
-	 * @param $fobj
 	 * @return string HTML-Content
 	 */
-	public function valuelist($PA, $fobj) {
+	public function valuelist($PA) {
 		/** @var t3lib_db $database */
 		$database = $GLOBALS['TYPO3_DB'];
 		/** @var language $language */

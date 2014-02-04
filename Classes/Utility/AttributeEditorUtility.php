@@ -212,11 +212,10 @@ class Tx_Commerce_Utility_AttributeEditorUtility {
 	/**
 	 * Simply returns the value of an attribute of an article.
 	 *
-	 * @param array $PA:
-	 * @param t3lib_TCEforms $fObj: The form object
+	 * @param array $PA
 	 * @return string
 	 */
-	public function displayAttributeValue($PA, $fObj) {
+	public function displayAttributeValue($PA) {
 		/** @var t3lib_db $database */
 		$database = $GLOBALS['TYPO3_DB'];
 

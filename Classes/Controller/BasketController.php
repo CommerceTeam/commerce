@@ -793,7 +793,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 					$attributeObj->loadData();
 
 					$markerArray['###SELECT_ATTRIBUTES_TITLE###'] = $myAttribute['title'];
-					list($k, $v) = each($myAttribute['values']);
+					$v = current(array_slice(each($myAttribute['values']), 1, 1));
 					$markerArray['###SELECT_ATTRIBUTES_VALUE###'] = $v['value'];
 					$markerArray['###SELECT_ATTRIBUTES_UNIT###'] = $myAttribute['unit'];
 
@@ -890,7 +890,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 
 		$list = array();
 		$articleTypes = explode(',', $this->conf['regularArticleTypes']);
-		while (list($k, $type) = each($articleTypes)) {
+		while ($type = current(array_slice(each($articleTypes), 1, 1))) {
 			$list = array_merge($list, $this->basket->get_articles_by_article_type_uid_asuidlist($type));
 		}
 
@@ -899,7 +899,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 		$templateMarker[] = '###' . strtoupper($this->conf['templateMarker.']['items_listview2']) . '###';
 
 		$changerowcount = 0;
-		while (list($k, $v) = each($list)) {
+		while ($v = current(array_slice(each($list), 1, 1))) {
 				// Fill marker arrays with product/article values
 			/** @var $myItem Tx_Commerce_Domain_Model_BasketItem */
 			$myItem = $this->basket->getBasketItem($v);

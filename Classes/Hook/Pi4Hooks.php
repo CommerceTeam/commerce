@@ -40,10 +40,9 @@ class Tx_Commerce_Hook_Pi4Hooks {
 	* return false to permit delete operation
 	*
 	* @param integer $uid: reference to the incoming fields
-	* @param object $pObj: page Object reference
 	* @return string error: do not delete message
 	*/
-	public function deleteAddress($uid, &$pObj) {
+	public function deleteAddress($uid) {
 		return $this->checkAddressDelete($uid);
 	}
 
@@ -108,9 +107,9 @@ class Tx_Commerce_Hook_Pi4Hooks {
 	 * @param string $table: database table
 	 * @param integer $uid: record id
 	 * @param array $fieldArray: reference to the incoming fields
-	 * @param object $pObj: page Object reference
+	 * @return void
 	 */
-	protected function notify_addressObserver($status, $table, $uid, &$fieldArray, &$pObj) {
+	protected function notify_addressObserver($status, $table, $uid, &$fieldArray) {
 		Tx_Commerce_Dao_AddressObserver::update($status, $uid, $fieldArray);
 	}
 

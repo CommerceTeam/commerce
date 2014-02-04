@@ -93,11 +93,10 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	/**
 	 * Get all articles that already exist. Add some buttons for editing.
 	 *
-	 * @param array $PA: ...
-	 * @param t3lib_TCEforms $fObj: ...
+	 * @param array $PA
 	 * @return string a HTML-table with the articles
 	 */
-	public function existingArticles($PA, $fObj) {
+	public function existingArticles($PA) {
 		/** @var t3lib_beUserAuth $backendUser */
 		$backendUser = $GLOBALS['BE_USER'];
 		/** @var t3lib_db $database */
@@ -357,7 +356,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 					$labelData = array();
 					$hashData = array();
 					reset($row);
-					while (list($rdIndex, $rd) = each($row)) {
+					while ($rd = current(array_slice(each($row), 1, 1))) {
 						$hashData[$rd['aUid']] = $rd['vUid'];
 						$labelData[] = $rd['vLabel'];
 					}
@@ -747,7 +746,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	 *
 	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, this wont get replaced as it was removed from the api
 	 */
-	public function createNewPriceCB($PA, $fObj) {
+	public function createNewPriceCB($PA) {
 		t3lib_div::logDeprecatedFunction();
 
 		/** @var language $language */
@@ -765,7 +764,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	 *
 	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, this wont get replaced as it was removed from the api
 	 */
-	public function createNewScalePricesCount($PA, $fObj) {
+	public function createNewScalePricesCount($PA) {
 		t3lib_div::logDeprecatedFunction();
 
 		return '<input style="width: 77px;" class="formField1" maxlength="20" type="input" name="data[tx_commerce_articles][' .
@@ -777,7 +776,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	 *
 	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, this wont get replaced as it was removed from the api
 	 */
-	public function createNewScalePricesSteps($PA, $fObj) {
+	public function createNewScalePricesSteps($PA) {
 		t3lib_div::logDeprecatedFunction();
 
 		return '<input style="width: 77px;" class="formField1" maxlength="20"type="input" name="data[tx_commerce_articles][' .
@@ -789,7 +788,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	 *
 	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, this wont get replaced as it was removed from the api
 	 */
-	public function createNewScalePricesStartAmount($PA, $fObj) {
+	public function createNewScalePricesStartAmount($PA) {
 		t3lib_div::logDeprecatedFunction();
 
 		return '<input style="width: 77px;" class="formField1" maxlength="20" type="input" name="data[tx_commerce_articles][' .
@@ -828,10 +827,9 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	 * Returns a hidden field with the name and value of the current form element
 	 *
 	 * @param array $PA
-	 * @param t3lib_TCEforms $fObj
 	 * @return string
 	 */
-	public function articleUid($PA, $fObj) {
+	public function articleUid($PA) {
 		return '<input type="hidden" name="' . $PA['itemFormElName'] . '" value="' . htmlspecialchars($PA['itemFormElValue']) . '">';
 	}
 }

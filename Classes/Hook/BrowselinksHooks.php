@@ -199,10 +199,9 @@ class Tx_Commerce_Hook_BrowselinksHooks implements t3lib_browseLinksHook {
 
 	/**
 	 * @param string $type
-	 * @param $pObj
 	 * @return boolean
 	 */
-	public function isValid($type, &$pObj) {
+	public function isValid($type) {
 		$isValid = FALSE;
 
 		if ($type === 'rte') {

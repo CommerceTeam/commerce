@@ -56,9 +56,9 @@ class Tx_Commerce_Dao_FeuserObserver {
 	 *
 	 * @param string $status : update or new
 	 * @param string $id : database table
-	 * @param array $changedFieldArray : reference to the incoming fields
+	 * @return void
 	 */
-	public static function update($status, $id, &$changedFieldArray) {
+	public static function update($status, $id) {
 		/** @var Tx_Commerce_Dao_AddressDao $addressDao */
 		/** @var Tx_Commerce_Dao_FeuserDao $feuserDao */
 		$feuserDao = t3lib_div::makeInstance('Tx_Commerce_Dao_FeuserDao', $id);

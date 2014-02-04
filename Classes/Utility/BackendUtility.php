@@ -1209,13 +1209,10 @@ class Tx_Commerce_Utility_BackendUtility {
 	 * Removed with irre implementation. Stub left for api compatibility
 	 * save Price-Flexform with given Article-UID
 	 *
-	 * @param integer $priceUid ID of Price-Dataset save as flexform
-	 * @param integer $articleUid ID of article which the flexform is for
-	 * @param array $priceDataArray Priceinformation for the article
 	 * @return boolean Status of method
 	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, this wont get replaced as it was empty before and will get removed from the api
 	 */
-	public function savePriceFlexformWithArticle($priceUid , $articleUid, $priceDataArray) {
+	public function savePriceFlexformWithArticle() {
 		t3lib_div::logDeprecatedFunction();
 	}
 

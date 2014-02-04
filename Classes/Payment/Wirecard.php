@@ -240,11 +240,11 @@ class Tx_Commerce_Payment_Wirecard {
 					// ERROR auswerten und in $this->error schreiben
 					// -----------------------------------------------------------
 				case 'ERROR':
-					while (list($k2, $v2) = each($v)) {
+					while ($v2 = current(array_slice(each($v), 1, 1))) {
 						if ($vals[$v2 + 1]['tag'] <> 'ERROR') {
 							$this->error[$this->referenzID][$vals[$v2 + 1]['tag']] = $vals[$v2 + 1]['value'];
+						}
 					}
-				}
 				break;
 			}
 		};
