@@ -28,7 +28,7 @@
  */
 class Tx_Commerce_Controller_StatisticController extends t3lib_SCbase {
 	/**
-	 * @var mediumDoc
+	 * @var template
 	 */
 	public $doc;
 
@@ -50,7 +50,7 @@ class Tx_Commerce_Controller_StatisticController extends t3lib_SCbase {
 	/**
 	 * @var array
 	 */
-	protected $order_pid;
+	protected $orderPageId;
 
 	/**
 	 * @var Tx_Commerce_Utility_StatisticsUtility
@@ -66,8 +66,7 @@ class Tx_Commerce_Controller_StatisticController extends t3lib_SCbase {
 
 		$this->excludePids = $this->extConf['excludeStatisticFolders'] != '' ? $this->extConf['excludeStatisticFolders'] : 0;
 
-		$order_pid = array_unique(Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Orders', 'Commerce', 0, 'Commerce'));
-		$this->order_pid = $order_pid[0];
+		$this->orderPageId = current(array_unique(Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Orders', 'Commerce', 0, 'Commerce')));
 
 		$this->statistics = t3lib_div::makeInstance('Tx_Commerce_Utility_StatisticsUtility');
 		$this->statistics->init($this->extConf['excludeStatisticFolders'] != '' ? $this->extConf['excludeStatisticFolders'] : 0);
@@ -78,8 +77,39 @@ class Tx_Commerce_Controller_StatisticController extends t3lib_SCbase {
 		if (t3lib_div::_GP('id')) {
 			$this->id = t3lib_div::_GP('id');
 		} else {
-			$this->id = $this->order_pid;
+			$this->id = $this->orderPageId;
 		}
+
+		$this->doc = t3lib_div::makeInstance('template');
+		$this->doc->backPath = $GLOBALS['BACK_PATH'];
+		$this->doc->docType = 'xhtml_trans';
+		$this->doc->setModuleTemplate(PATH_TXCOMMERCE . 'Resources/Private/Backend/mod_statistic.html');
+
+		if (!$this->doc->moduleTemplate) {
+			t3lib_div::devLog('cannot set moduleTemplate', 'commerce', 2, array(
+				'backpath' => $this->doc->backPath,
+				'filename from TBE_STYLES' => $GLOBALS['TBE_STYLES']['htmlTemplates']['mod_access.html'],
+				'full path' => $this->doc->backPath . $GLOBALS['TBE_STYLES']['htmlTemplates']['mod_access.html']
+			));
+			$templateFile = PATH_TXCOMMERCE_REL . 'Resources/Private/Backend/mod_access.html';
+			$this->doc->moduleTemplate = t3lib_div::getURL(PATH_site . $templateFile);
+		}
+
+		$this->doc->form = '<form action="" method="POST" name="editform">';
+
+			// JavaScript
+		$this->doc->JScode = $this->doc->wrapScriptTags('
+			script_ended = 0;
+			function jumpToUrl(URL) {
+				document.location = URL;
+			}
+		');
+		$this->doc->postCode = $this->doc->wrapScriptTags('
+			script_ended = 1;
+			if (top.fsMod) {
+				top.fsMod.recentIds["web"] = ' . (int) $this->id . ';
+			}
+		');
 	}
 
 	/**
@@ -124,67 +154,38 @@ class Tx_Commerce_Controller_StatisticController extends t3lib_SCbase {
 			// Access check!
 			// The page will show only if there is a valid page and if this page may be viewed by the user
 		$this->pageinfo = t3lib_BEfunc::readPageAccess($this->id, $this->perms_clause);
-		$access = is_array($this->pageinfo) ? 1 : 0;
+		$access = is_array($this->pageinfo);
 
-			// Draw the header.
-		$this->doc = t3lib_div::makeInstance('mediumDoc');
-		$this->doc->backPath = $GLOBALS['BACK_PATH'];
-
-		$this->content = $this->doc->startPage($language->getLL('title'));
-		$this->content .= $this->doc->header($language->getLL('title'));
-
+			// Checking access:
 		if (($this->id && $access) || $backendUser->isAdmin()) {
-			$this->doc->form = '<form action="" method="POST">';
-
-				// JavaScript
-			$this->doc->JScode .= $this->doc->wrapScriptTags('
-				script_ended = 0;
-				function jumpToUrl(URL) {
-					document.location = URL;
-				}
-			');
-			$this->doc->postCode = $this->doc->wrapScriptTags('
-				script_ended = 1;
-				if (top.fsMod) {
-					top.fsMod.recentIds["web"] = ' . (int) $this->id . ';
-				}
-			');
-
-			$headerSection = $this->doc->getHeader(
-				'pages',
-				$this->pageinfo,
-				$this->pageinfo['_thePath']) . '<br>' . $language->sL('LLL:EXT:lang/locallang_core.php:labels.path') . ': ' .
-					t3lib_div::fixed_lgd_cs($this->pageinfo['_thePath'],
-				-50
-			);
-
-			$this->content = $this->doc->startPage($language->getLL('statistic'));
-			$this->content .= $this->doc->spacer(5);
-			$this->content .= $this->doc->section(
-				'',
-				$this->doc->funcMenu(
-					$headerSection,
-					t3lib_BEfunc::getFuncMenu($this->id, 'SET[function]', $this->MOD_SETTINGS['function'], $this->MOD_MENU['function'])
-				)
-			);
-			$this->content .= $this->doc->divider(5);
-
 				// Render content:
 			$this->moduleContent();
-
-				// ShortCut
-			if ($backendUser->mayMakeShortcut()) {
-				$this->content .= $this->doc->spacer(20) . $this->doc->section(
-					'',
-					$this->doc->makeShortcutIcon('id', implode(',', array_keys($this->MOD_MENU)), $this->MCONF['name'])
-				);
-			}
 		} else {
 				// If no access or if ID == zero
-			$this->content .= $this->doc->spacer(5);
+			$this->content .= $this->doc->header($language->getLL('statistic'));
 		}
 
-		$this->content .= $this->doc->spacer(10);
+		$docHeaderButtons = $this->getHeaderButtons();
+
+		$markers = array(
+			'CSH' => $docHeaderButtons['csh'],
+			'CONTENT' => $this->content,
+		);
+		$markers['FUNC_MENU'] = $this->doc->funcMenu(
+			'',
+			t3lib_BEfunc::getFuncMenu(
+				$this->id,
+				'SET[function]',
+				$this->MOD_SETTINGS['function'],
+				$this->MOD_MENU['function']
+			)
+		);
+
+			// put it all together
+		$this->content = $this->doc->startPage($language->getLL('statistic'));
+		$this->content .= $this->doc->moduleBody(array(), $docHeaderButtons, $markers);
+		$this->content .= $this->doc->endPage();
+		$this->content = $this->doc->insertStylesAndJS($this->content);
 	}
 
 	/**
@@ -201,23 +202,75 @@ class Tx_Commerce_Controller_StatisticController extends t3lib_SCbase {
 	 * Generates the module content
 	 */
 	protected function moduleContent() {
+		switch((int) $this->MOD_SETTINGS['function']) {
+			case 1:
+				$this->content .= $this->showStatistics();
+			break;
+			case 2:
+				$this->content .= $this->incrementalAggregation();
+			break;
+			case 3:
+				$this->content .= $this->completeAggregation();
+			break;
+		}
+	}
+
+	/**
+	 * Create the panel of buttons for submitting the form or otherwise perform operations.
+	 *
+	 * @return array all available buttons as an assoc. array
+	 */
+	protected function getHeaderButtons() {
+		/** @var t3lib_beUserAuth $backendUser */
+		$backendUser = $GLOBALS['BE_USER'];
 		/** @var language $language */
 		$language = $GLOBALS['LANG'];
 
-		switch((string) $this->MOD_SETTINGS['function']) {
-			case 1:
-				$content = $this->showStatistics();
-				$this->content .= $this->doc->section($language->getLL('statistics') . ': ', $content, 0, 1);
-			break;
-			case 2:
-				$content = $this->incrementalAggregation();
-				$this->content .= $this->doc->section($language->getLL('incremental_aggregation') . ': ', $content, 0, 1);
-			break;
-			case 3:
-				$content = $this->completeAggregation();
-				$this->content .= $this->doc->section($language->getLL('complete_aggregation') . ': ', $content, 0, 1);
-			break;
+		$buttons = array(
+			'csh' => '',
+				// group left 1
+			'level_up' => '',
+			'back' => '',
+				// group left 2
+			'new_record' => '',
+			'paste' => '',
+				// group left 3
+			'view' => '',
+			'edit' => '',
+			'move' => '',
+			'hide_unhide' => '',
+				// group left 4
+			'csv' => '',
+			'export' => '',
+				// group right 1
+			'cache' => '',
+			'reload' => '',
+			'shortcut' => '',
+		);
+
+			// CSH
+		$buttons['csh'] = t3lib_BEfunc::cshItem('_MOD_commerce_statistic', '', $GLOBALS['BACK_PATH'], '', TRUE);
+
+			// Shortcut
+		if ($backendUser->mayMakeShortcut()) {
+			$buttons['shortcut'] = $this->doc->makeShortcutIcon(
+				'id, edit_record, pointer, new_unique_uid, search_field, search_levels, showLimit',
+				implode(',', array_keys($this->MOD_MENU)),
+				$this->MCONF['name']
+			);
 		}
+
+			// If access to Web>List for user, then link to that module.
+		if ($backendUser->check('modules', 'web_list')) {
+			$href = $GLOBALS['BACK_PATH'] . 'db_list.php?id=' . $this->pageinfo['uid'] . '&returnUrl=' .
+				rawurlencode(t3lib_div::getIndpEnv('REQUEST_URI'));
+			$buttons['record_list'] = '<a href="' . htmlspecialchars($href) . '">' .
+				t3lib_iconWorks::getSpriteIcon(
+					'apps-filetree-folder-list',
+					array('title' => $language->sL('LLL:EXT:lang/locallang_core.php:labels.showList', 1))
+				) . '</a>';
+		}
+		return $buttons;
 	}
 
 	/**
@@ -388,7 +441,7 @@ class Tx_Commerce_Controller_StatisticController extends t3lib_SCbase {
 		$database = $GLOBALS['TYPO3_DB'];
 
 		$whereClause = '';
-		if ($this->id != $this->order_pid) {
+		if ($this->id != $this->orderPageId) {
 			$whereClause = 'pid = ' . $this->id;
 		}
 		$weekdays = array(

@@ -342,7 +342,7 @@ class Tx_Commerce_Controller_AccessController extends t3lib_SCbase {
 	 * @param array $row - Row
 	 * @return string
 	 */
-	public function categoryInfo(&$row) {
+	public function categoryInfo($row) {
 			// Add icon with clickmenu, etc:
 			// If there IS a real page
 		if ($row['uid']) {
@@ -370,7 +370,7 @@ class Tx_Commerce_Controller_AccessController extends t3lib_SCbase {
 	 * @param array $row Row
 	 * @return string
 	 */
-	public function categoryPath(&$row) {
+	public function categoryPath($row) {
 		/** @var language $language */
 		$language = $GLOBALS['LANG'];
 

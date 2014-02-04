@@ -38,6 +38,7 @@ require_once($BACK_PATH . 'template.php');
 /** @var language $language */
 $language = $GLOBALS['LANG'];
 $language->includeLLFile('EXT:commerce/Resources/Private/Language/locallang_mod_access.xml');
+
 	// This checks permissions and exits if the users has no permission for entry.
 /** @noinspection PhpUndefinedVariableInspection */
 $BE_USER->modAccess($MCONF, 1);
