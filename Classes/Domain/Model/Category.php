@@ -95,7 +95,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	/**
 	 * @var array Array of tx_commerce_categories
 	 */
-	protected $categories = array();
+	protected $categories = NULL;
 
 	/**
 	 * @var array Array of tx_commerce_products
@@ -192,17 +192,12 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	/**
 	 * Constructor, basically calls init
 	 *
+	 * @param integer $uid
+	 * @param integer $languageUid
 	 * @return self
 	 */
-	public function __construct() {
-		if ((func_num_args() > 0) && (func_num_args() <= 2)) {
-			$uid = func_get_arg(0);
-			if (func_num_args() > 1) {
-				$languageUid = func_get_arg(1);
-			} else {
-				$languageUid = 0;
-			}
-
+	public function __construct($uid, $languageUid = 0) {
+		if ((int) $uid && (int) $languageUid) {
 			$this->init($uid, $languageUid);
 		}
 	}
@@ -239,96 +234,152 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	}
 
 	/**
-	 * Constructor, basically calls init
+	 * Returns recursivly the category path as text
+	 * path segments are glued with $separatora
 	 *
-	 * @deprecated since commerce 0.14.0, will be removed in commerce 0.15.0 - Use tx_commerce_category::loadData instead
+	 * @param string $separator default '-'
+	 * @return string Category path segment
 	 */
-	public function load_data() {
-		t3lib_div::logDeprecatedFunction();
-		call_user_func_array('loadData', $this, func_get_args());
-	}
-
-	/**
-	 * Loads the data
-	 *
-	 * @param boolean $translationMode Transaltionmode of the record, default FALSE to use the default way of translation
-	 * @return void
-	 */
-	public function loadData($translationMode = FALSE) {
-		if ($this->data_loaded == FALSE) {
-			parent::loadData($translationMode);
-			$this->images_array = t3lib_div::trimExplode(',', $this->images, TRUE);
-			$this->teaserImagesArray = t3lib_div::trimExplode(',', $this->teaserimages, TRUE);
-
-			$this->categories_uid = $this->databaseConnection->get_child_categories($this->uid, $this->lang_uid);
-			$this->parent_category_uid = $this->databaseConnection->get_parent_category($this->uid);
-			$this->products_uid = $this->databaseConnection->get_child_products($this->uid, $this->lang_uid);
-			$this->data_loaded = TRUE;
+	public function getCategoryPath($separator = ',') {
+		if ($this->parent_category_uid > 0) {
+			$parent = $this->getParentCategory();
+			$parent->loadData();
+			$result = $parent->getCategoryPath($separator) . $separator . $this->getTitle();
+		} else {
+			$result = $this->getTitle();
 		}
+
+		return $result;
 	}
 
 	/**
-	 * Public methods for data retrieval
+	 * Returns the child categories as an list of UIDs
+	 *
+	 * @return array Array of child category UIDs
 	 */
+	public function getCategoryUids() {
+		return $this->categories_uid;
+	}
 
 	/**
-	 * Loads the permissions
+	 * Loads the child categories in the categories array
 	 *
-	 * @return void
+	 * @return array of categories as array of category objects
 	 */
-	public function load_perms() {
-		if (!$this->permsLoaded && $this->uid) {
-			$this->permsLoaded = TRUE;
+	public function getChildCategories() {
+		if (is_null($this->categories)) {
+			$this->categories = array();
+			foreach ($this->categories_uid as $childCategoryUid) {
+				$childCategory = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category');
+				$childCategory->init($childCategoryUid, $this->lang_uid);
 
-			$this->perms_record = $this->databaseConnection->getPermissionsRecord($this->uid);
-
-				// if the record is´nt loaded, abort.
-			if (count($this->perms_record) <= 0) {
-				$this->perms_record = NULL;
-
-				return;
+				$this->categories[$childCategoryUid] = $childCategory;
 			}
-
-			$this->perms_userid = $this->perms_record['perms_userid'];
-			$this->perms_groupid = $this->perms_record['perms_groupid'];
-			$this->perms_user = $this->perms_record['perms_userid'];
-			$this->perms_group = $this->perms_record['perms_group'];
-			$this->perms_everybody = $this->perms_record['perms_everybody'];
-			$this->editlock = $this->perms_record['editlock'];
 		}
+
+		return $this->categories;
 	}
 
 	/**
-	 * Returns whether the permission is set and allowed for the current usera
+	 * Returns a list of all child categories from this category
 	 *
-	 * @param integer $perm Permission
-	 * @return boolean TRUE if permission is set, FALSE if permission is not set
+	 * @param boolean|integer $depth Maximum depth for going recursive
+	 * @return array List of category uids
 	 */
-	public function isPSet($perm) {
-		if (!is_string($perm)) {
-			return FALSE;
+	public function getChildCategoriesUidlist($depth = FALSE) {
+		if ($depth) {
+			$depth--;
 		}
-		$this->load_perms();
+		$this->loadData();
+		$this->getChildCategories();
 
-		return Tx_Commerce_Utility_BackendUtility::isPSet($perm, $this->perms_record);
+		$returnList = array();
+		if (count($this->categories) > 0) {
+			if (($depth === FALSE) || ($depth > 0)) {
+				/** @var Tx_Commerce_Domain_Model_Category $category */
+				foreach ($this->categories as $category) {
+					$returnList = array_merge($returnList, $category->getChildCategoriesUidlist($depth));
+				}
+			}
+			$returnList = array_merge($returnList, $this->categories_uid);
+		}
+
+		return $returnList;
 	}
 
 	/**
-	 * Returns the UID of the category
+	 * Returns the number of child categories
 	 *
-	 * @return integer UID of the category
+	 * @return integer Number of child categories
 	 */
-	public function getUid() {
-		return $this->uid;
+	public function getChildCategoriesCount() {
+		return is_array($this->categories_uid) ? count($this->categories_uid) : 0;
 	}
 
 	/**
-	 * Returns the title of the category
+	 * Loads the child products in the products array
 	 *
-	 * @return string Title
+	 * @return array Array of products as array of products objects
 	 */
-	public function getTitle() {
-		return $this->title;
+	public function getChildProducts() {
+		if ($this->products === NULL) {
+			foreach ($this->products_uid as $productUid) {
+				/** @var Tx_Commerce_Domain_Model_Product $childProduct */
+				$childProduct = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product');
+				$childProduct->init($productUid, $this->lang_uid);
+
+				$this->products[$productUid] = $childProduct;
+			}
+		}
+
+		return $this->products;
+	}
+
+	/**
+	 * Returns the category description
+	 *
+	 * @return string Description;
+	 */
+	public function getDescription() {
+		return $this->description;
+	}
+
+	/**
+	 * Returns the editlock flag
+	 *
+	 * @return integer Editlock-Flag
+	 */
+	public function getEditlock() {
+		return $this->editlock;
+	}
+
+	/**
+	 * Returns an array of categoryimages
+	 *
+	 * @return array Array of images;
+	 */
+	public function getImages() {
+		return $this->images_array;
+	}
+
+	/**
+	 * Returns the category keywords
+	 *
+	 * @return string Keywords;
+	 */
+	public function getKeywords() {
+		return $this->keywords;
+	}
+
+	/**
+	 * Returns an array with the different l18n for the category
+	 *
+	 * @return array Categories
+	 */
+	public function getL18nCategories() {
+		$uid_lang = $this->databaseConnection->get_l18n_categories($this->uid);
+
+		return $uid_lang;
 	}
 
 	/**
@@ -341,94 +392,53 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	}
 
 	/**
-	 * Returns the subtitle of the category
+	 * Loads the parent category in the parent-category variable
 	 *
-	 * @return string Subtitle;
+	 * @return Tx_Commerce_Domain_Model_Category|FALSE category object or FALSE if this category is already the topmost category
 	 */
-	public function get_subtitle() {
-		return $this->subtitle;
-	}
+	public function getParentCategory() {
+		if ($this->parent_category_uid > 0) {
+			$this->parent_category = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category');
+			$this->parent_category->init($this->parent_category_uid, $this->lang_uid);
 
-	/**
-	 * Returns the category teaser
-	 *
-	 * @return string Teaser;
-	 */
-	public function get_teaser() {
-		return $this->teaser;
-	}
-
-	/**
-	 * Returns an array of teaserimages
-	 *
-	 * @return array Teaserimages;
-	 */
-	public function getTeaserImages() {
-		return $this->teaserImagesArray;
-	}
-
-	/**
-	 * Returns the category description
-	 *
-	 * @return string Description;
-	 */
-	public function get_description() {
-		return $this->description;
-	}
-
-	/**
-	 * Returns the category navigationtitle
-	 *
-	 * @return string Navigationtitle;
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use tx_commerce_category::getNavtitle instead
-	 */
-	public function get_navtitle() {
-		t3lib_div::logDeprecatedFunction();
-		return $this->getNavtitle();
-	}
-
-	/**
-	 * Returns the category keywords
-	 *
-	 * @return string Keywords;
-	 */
-	public function get_keywords() {
-		return $this->keywords;
-	}
-
-	/**
-	 * Returns Subcategories from the existiog categories
-	 *
-	 * @return array Array of subcategories
-	 */
-	public function get_subcategories() {
-		if (count($this->categories) == 0) {
-			return $this->get_child_categories();
-		} else {
-			return $this->categories;
+			return $this->parent_category;
 		}
+
+		return FALSE;
 	}
 
 	/**
-	 * Returns childproducts from the existing categories
+	 * Returns an array of category objects (unloaded) that serve as the category's parent
 	 *
-	 * @return array Array og childproducts
+	 * @return array Array of category objects
 	 */
-	public function get_subproducts() {
-		if (count($this->products) == 0) {
-			return $this->get_child_products();
-		} else {
-			return $this->products;
+	public function getParentCategories() {
+		$parents = $this->databaseConnection->get_parent_categories($this->uid);
+		$parentCats = array();
+		for ($i = 0, $l = count($parents); $i < $l; $i++) {
+			/** @var Tx_Commerce_Domain_Model_Category $cat */
+			$category = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category');
+			$category->init($parents[$i]);
+			$parentCats[] = $category;
 		}
+
+		return $parentCats;
 	}
 
 	/**
-	 * Returns an array of categoryimages
+	 * Returns all category ID's above this uid
 	 *
-	 * @return array Array of images;
+	 * @return array List of category uids
 	 */
-	public function getImages() {
-		return $this->images_array;
+	public function getParentCategoriesUidlist() {
+		$returnList = array();
+		$this->loadData();
+		if (($parentCategory = $this->getParentCategory())) {
+			$returnList = $parentCategory->getParentCategoriesUidlist();
+		}
+		$returnList = array_merge($returnList, array($this->uid));
+
+		return array_unique($returnList);
 	}
 
 	/**
@@ -477,97 +487,28 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	}
 
 	/**
-	 * Returns the editlock flag
+	 * Returns a list of all products under this category
 	 *
-	 * @return integer Editlock-Flag
+	 * @param boolean|integer $depth Depth maximum depth for going recursive
+	 * @return array Array with list of product UIDs
 	 */
-	public function getEditlock() {
-		return $this->editlock;
-	}
-
-	/**
-	 * Returns if the actual category has subcategories
-	 *
-	 * @return boolean TRUE if the category has subcategories, FALSE if not
-	 */
-	public function has_subcategories() {
-		if (count($this->categories_uid) > 0) {
-			return TRUE;
+	public function getProducts($depth = FALSE) {
+		$return_list = $this->getProductUids();
+		if ($depth === FALSE) {
+			$depth = PHP_INT_MAX;
 		}
-
-		return FALSE;
-	}
-
-	/**
-	 * Returns if the actual category has subproducts
-	 *
-	 * @return boolean TRUE if the category has subproducts, FALSE if not
-	 */
-	public function has_subproducts() {
-		if (count($this->products_uid) > 0) {
-			return TRUE;
-		}
-
-		return FALSE;
-	}
-
-	/**
-	 * Returns an array with the different l18n for the category
-	 *
-	 * @return array Categories
-	 */
-	public function get_l18n_categories() {
-		$uid_lang = $this->databaseConnection->get_l18n_categories($this->uid);
-
-		return $uid_lang;
-	}
-
-	/**
-	 * Loads the child categories in the categories array
-	 *
-	 * @return array of categories as array of category objects
-	 */
-	public function get_child_categories() {
-		foreach ($this->categories_uid as $childCategoryUid) {
-			$childCategory = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category');
-			$childCategory->init($childCategoryUid, $this->lang_uid);
-
-			$this->categories[$childCategoryUid] = $childCategory;
-		}
-
-		return $this->categories;
-	}
-
-	/**
-	 * Returns the number of child categories
-	 *
-	 * @return integer Number of child categories
-	 */
-	public function numOfChildCategories() {
-		if (is_array($this->categories_uid)) {
-			return count($this->categories_uid);
-		}
-
-		return 0;
-	}
-
-	/**
-	 * Loads the child products in the products array
-	 *
-	 * @return array Array of products as array of products objects
-	 */
-	public function get_child_products() {
-		if ($this->products === NULL) {
-			foreach ($this->products_uid as $productUid) {
-				/** @var Tx_Commerce_Domain_Model_Product $childProduct */
-				$childProduct = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product');
-				$childProduct->init($productUid, $this->lang_uid);
-
-				$this->products[$productUid] = $childProduct;
+		if ($depth > 0) {
+			$childCategoriesList = $this->getChildCategoriesUidlist($depth);
+			foreach ($childCategoriesList as $oneCategoryUid) {
+				/** @var Tx_Commerce_Domain_Model_Category $category */
+				$category = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category');
+				$category->init($oneCategoryUid, $this->lang_uid);
+				$category->loadData();
+				$return_list = array_merge($return_list, $category->getProductUids());
 			}
 		}
 
-		return $this->products;
+		return array_unique($return_list);
 	}
 
 	/**
@@ -580,46 +521,198 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	}
 
 	/**
-	 * Returns the child categories as an list of UIDs
+	 * Returns the subtitle of the category
 	 *
-	 * @return array Array of child category UIDs
+	 * @return string Subtitle;
 	 */
-	public function getCategoryUids() {
-		return $this->categories_uid;
+	public function getSubtitle() {
+		return $this->subtitle;
 	}
 
 	/**
-	 * Loads the parent category in the parent-category variable
+	 * Returns the category teaser
 	 *
-	 * @return Tx_Commerce_Domain_Model_Category|FALSE category object or FALSE if this category is already the topmost category
+	 * @return string Teaser;
 	 */
-	public function get_parent_category() {
-		if ($this->parent_category_uid > 0) {
-			$this->parent_category = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category');
-			$this->parent_category->init($this->parent_category_uid, $this->lang_uid);
+	public function getTeaser() {
+		return $this->teaser;
+	}
 
-			return $this->parent_category;
+	/**
+	 * Returns the first image, if not availiabe, walk recursive up, to get the image
+	 *
+	 * @return mixed Image/FALSE, if no image found
+	 */
+	public function getTeaserImage() {
+		if (!empty($this->images_array[0])) {
+			return $this->images_array[0];
+		} else {
+			if (($parentCategory = $this->getParentCategory())) {
+				$parentCategory->loadData();
+
+				return $parentCategory->getTeaserImage();
+			} else {
+				return FALSE;
+			}
+		}
+	}
+
+	/**
+	 * Returns an array of teaserimages
+	 *
+	 * @return array Teaserimages;
+	 */
+	public function getTeaserImages() {
+		return $this->teaserImagesArray;
+	}
+
+	/**
+	 * Returns the title of the category
+	 *
+	 * @return string Title
+	 */
+	public function getTitle() {
+		return $this->title;
+	}
+
+	/**
+	 * Returns the category TSconfig array based on the currect->rootLine
+	 *
+	 * @todo Make recursiv category TS merging
+	 * @return array
+	 */
+	public function getTyposcritConfig() {
+		if (!is_array($this->categoryTSconfig)) {
+			$tSdataArray[] = $this->tsConfig;
+			$tSdataArray = t3lib_TSparser::checkIncludeLines_array($tSdataArray);
+			$categoryTS = implode(chr(10) . '[GLOBAL]' . chr(10), $tSdataArray);
+
+			/** @var t3lib_TSparser $parseObj */
+			$parseObj = t3lib_div::makeInstance('t3lib_TSparser');
+			$parseObj->parse($categoryTS);
+			$this->categoryTSconfig = $parseObj->setup;
+		}
+
+		return $this->categoryTSconfig;
+	}
+
+	/**
+	 * Returns the UID of the category
+	 *
+	 * @return integer UID of the category
+	 */
+	public function getUid() {
+		return $this->uid;
+	}
+
+
+	/**
+	 * Loads the data
+	 *
+	 * @param boolean $translationMode Transaltionmode of the record, default FALSE to use the default way of translation
+	 * @return void
+	 */
+	public function loadData($translationMode = FALSE) {
+		if ($this->data_loaded == FALSE) {
+			parent::loadData($translationMode);
+			$this->images_array = t3lib_div::trimExplode(',', $this->images, TRUE);
+			$this->teaserImagesArray = t3lib_div::trimExplode(',', $this->teaserimages, TRUE);
+
+			$this->categories_uid = $this->databaseConnection->get_child_categories($this->uid, $this->lang_uid);
+			$this->parent_category_uid = $this->databaseConnection->get_parent_category($this->uid);
+			$this->products_uid = $this->databaseConnection->get_child_products($this->uid, $this->lang_uid);
+			$this->data_loaded = TRUE;
+		}
+	}
+
+	/**
+	 * Loads the permissions
+	 *
+	 * @return void
+	 */
+	public function loadPermissions() {
+		if (!$this->permsLoaded && $this->uid) {
+			$this->permsLoaded = TRUE;
+
+			$this->perms_record = $this->databaseConnection->getPermissionsRecord($this->uid);
+
+				// if the record is´nt loaded, abort.
+			if (count($this->perms_record) <= 0) {
+				$this->perms_record = NULL;
+
+				return;
+			}
+
+			$this->perms_userid = $this->perms_record['perms_userid'];
+			$this->perms_groupid = $this->perms_record['perms_groupid'];
+			$this->perms_user = $this->perms_record['perms_userid'];
+			$this->perms_group = $this->perms_record['perms_group'];
+			$this->perms_everybody = $this->perms_record['perms_everybody'];
+			$this->editlock = $this->perms_record['editlock'];
+		}
+	}
+
+	/**
+	 * Returns whether the permission is set and allowed for the current usera
+	 *
+	 * @param integer $perm Permission
+	 * @return boolean TRUE if permission is set, FALSE if permission is not set
+	 */
+	public function isPSet($perm) {
+		if (!is_string($perm)) {
+			return FALSE;
+		}
+		$this->loadPermissions();
+
+		return Tx_Commerce_Utility_BackendUtility::isPSet($perm, $this->perms_record);
+	}
+
+	/**
+	 * Returns if the actual category has subcategories
+	 *
+	 * @return boolean TRUE if the category has subcategories, FALSE if not
+	 */
+	public function hasSubcategories() {
+		return count($this->categories_uid) > 0;
+	}
+
+	/**
+	 * Returns if this category has products
+	 *
+	 * @return boolean TRUE, if this category has products, FALSE if not
+	 */
+	public function hasProducts() {
+		return count($this->getProductUids()) > 0;
+	}
+
+	/**
+	 * Returns TRUE if this category has active products or if sub categories have active products
+	 *
+	 * @param boolean|integer $depth maximum deepth for going recursive, if not set go for maximum
+	 * @return boolean Returns TRUE, if category/subcategories hav active products
+	 */
+	public function hasProductsInSubCategories($depth = FALSE) {
+		if ($this->hasProducts()) {
+			return TRUE;
+		}
+		if ($depth === FALSE) {
+			$depth = PHP_INT_MAX;
+		}
+		if ($depth > 0) {
+			$childCategoriesList = $this->getChildCategoriesUidlist($depth);
+			foreach ($childCategoriesList as $oneCategoryUid) {
+				/** @var Tx_Commerce_Domain_Model_Category $category */
+				$category = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category');
+				$category->init($oneCategoryUid, $this->lang_uid);
+				$category->loadData();
+				$returnValue = $category->hasProductsInSubCategories($depth);
+				if ($returnValue == TRUE) {
+					return TRUE;
+				}
+			}
 		}
 
 		return FALSE;
-	}
-
-	/**
-	 * Returns an array of category objects (unloaded) that serve as the category's parent
-	 *
-	 * @return array Array of category objects
-	 */
-	public function getParentCategories() {
-		$parents = $this->databaseConnection->get_parent_categories($this->uid);
-		$parentCats = array();
-		for ($i = 0, $l = count($parents); $i < $l; $i++) {
-			/** @var Tx_Commerce_Domain_Model_Category $cat */
-			$category = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category');
-			$category->init($parents[$i]);
-			$parentCats[] = $category;
-		}
-
-		return $parentCats;
 	}
 
 	/**
@@ -653,88 +746,28 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 		return TRUE;
 	}
 
-	/**
-	 * Returns recursivly the category path as text
-	 * path segments are glued with $separatora
-	 *
-	 * @param string $separator default '-'
-	 * @return string Category path segment
-	 */
-	public function get_category_path($separator = ',') {
-		if ($this->parent_category_uid > 0) {
-			$parent = $this->get_parent_category();
-			$parent->loadData();
-			$result = $parent->get_category_path($separator) . $separator . $this->getTitle();
-		} else {
-			$result = $this->getTitle();
-		}
-
-		return $result;
-	}
 
 	/**
 	 * Returns a list of all child categories from this category
 	 *
 	 * @param boolean|integer $depth Maximum depth for going recursive
 	 * @return array List of category uids
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getChildCategoriesUidlist instead
 	 */
 	public function get_rec_child_categories_uidlist($depth = FALSE) {
-		if ($depth) {
-			$depth--;
-		}
-		$this->loadData();
-		$this->get_child_categories();
-
-		$returnList = array();
-		if (count($this->categories) > 0) {
-			if (($depth === FALSE) || ($depth > 0)) {
-				/** @var Tx_Commerce_Domain_Model_Category $category */
-				foreach ($this->categories as $category) {
-					$returnList = array_merge($returnList, $category->get_rec_child_categories_uidlist($depth));
-				}
-			}
-			$returnList = array_merge($returnList, $this->categories_uid);
-		}
-
-		return $returnList;
+		t3lib_div::logDeprecatedFunction();
+		return $this->getChildCategoriesUidlist($depth);
 	}
 
 	/**
-	 * Returns a list of all products under this category
+	 * Returns all category ID's above this uid
 	 *
-	 * @param bool|int $depth Depth maximum depth for going recursive
-	 * @return array Array with list of product UIDs
+	 * @return array List of category uids
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getParentCategoriesUidlist instead
 	 */
-	public function getAllProducts($depth = FALSE) {
-		$return_list = $this->getProductUids();
-		if ($depth === FALSE) {
-			$depth = PHP_INT_MAX;
-		}
-		if ($depth > 0) {
-			$childCategoriesList = $this->get_rec_child_categories_uidlist($depth);
-			foreach ($childCategoriesList as $oneCategoryUid) {
-				/** @var Tx_Commerce_Domain_Model_Category $category */
-				$category = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category');
-				$category->init($oneCategoryUid, $this->lang_uid);
-				$category->loadData();
-				$return_list = array_merge($return_list, $category->getProductUids());
-			}
-		}
-
-		return array_unique($return_list);
-	}
-
-	/**
-	 * Returns if this category has products
-	 *
-	 * @return boolean TRUE, if this category has products, FALSE if not
-	 */
-	public function hasProducts() {
-		if (count($this->getProductUids()) > 0) {
-			return TRUE;
-		}
-
-		return FALSE;
+	public function get_categorie_rootline_uidlist() {
+		t3lib_div::logDeprecatedFunction();
+		return $this->getParentCategoriesUidlist();
 	}
 
 	/**
@@ -742,105 +775,256 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	 *
 	 * @param boolean|integer $depth maximum deepth for going recursive, if not set go for maximum
 	 * @return boolean Returns TRUE, if category/subcategories hav active products
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use hasProductsInSubCategories instead
 	 */
 	public function ProductsBelowCategory($depth = FALSE) {
-		if ($this->hasProducts()) {
+		t3lib_div::logDeprecatedFunction();
+		return $this->hasProductsInSubCategories($depth);
+	}
+
+	/**
+	 * Returns an array with the different l18n for the category
+	 *
+	 * @return array Categories
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getTyposcritConfig instead
+	 */
+	public function get_l18n_categories() {
+		t3lib_div::logDeprecatedFunction();
+		return $this->getL18nCategories();
+	}
+
+	/**
+	 * Returns the category TSconfig array based on the currect->rootLine
+	 *
+	 * @return array
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getTyposcritConfig instead
+	 */
+	public function getCategoryTSconfig() {
+		t3lib_div::logDeprecatedFunction();
+		return $this->getTyposcritConfig();
+	}
+
+	/**
+	 * Returns the number of child categories
+	 *
+	 * @return integer Number of child categories
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getChildCategoriesCount instead
+	 */
+	public function numOfChildCategories() {
+		t3lib_div::logDeprecatedFunction();
+		return $this->getChildCategoriesCount();
+	}
+
+	/**
+	 * Returns childproducts from the existing categories
+	 *
+	 * @return array Array og childproducts
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getChildProducts instead
+	 */
+	public function get_subproducts() {
+		t3lib_div::logDeprecatedFunction();
+		if (count($this->products) == 0) {
+			return $this->getChildProducts();
+		} else {
+			return $this->products;
+		}
+	}
+
+	/**
+	 * Loads the child products in the products array
+	 *
+	 * @return array Array of products as array of products objects
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getChildProducts instead
+	 */
+	public function get_child_products() {
+		t3lib_div::logDeprecatedFunction();
+		return $this->getChildProducts();
+	}
+
+	/**
+	 * Returns if the actual category has subproducts
+	 *
+	 * @return boolean TRUE if the category has subproducts, FALSE if not
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use hasProducts instead
+	 */
+	public function has_subproducts() {
+		t3lib_div::logDeprecatedFunction();
+		if (count($this->products_uid) > 0) {
 			return TRUE;
-		}
-		if ($depth === FALSE) {
-			$depth = PHP_INT_MAX;
-		}
-		if ($depth > 0) {
-			$childCategoriesList = $this->get_rec_child_categories_uidlist($depth);
-			foreach ($childCategoriesList as $oneCategoryUid) {
-				/** @var Tx_Commerce_Domain_Model_Category $category */
-				$category = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category');
-				$category->init($oneCategoryUid, $this->lang_uid);
-				$category->loadData();
-				$returnValue = $category->ProductsBelowCategory($depth);
-				if ($returnValue == TRUE) {
-					return TRUE;
-				}
-			}
 		}
 
 		return FALSE;
 	}
 
 	/**
-	 * Returns all category ID's above this uid
+	 * Returns if the actual category has subcategories
 	 *
-	 * @return array List of category uids
+	 * @return boolean TRUE if the category has subcategories, FALSE if not
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use hasSubcategories instead
 	 */
-	public function get_categorie_rootline_uidlist() {
-		$returnList = array();
-		$this->loadData();
-		if (($parentCategory = $this->get_parent_category())) {
-			$returnList = $parentCategory->get_categorie_rootline_uidlist();
-		}
-		$returnList = array_merge($returnList, array($this->uid));
-
-		return array_unique($returnList);
+	public function has_subcategories() {
+		t3lib_div::logDeprecatedFunction();
+		return $this->hasSubcategories();
 	}
 
 	/**
-	 * Returns the first image, if not availiabe, walk recursive up, to get the image
+	 * Returns Subcategories from the existiog categories
 	 *
-	 * @return mixed Image/FALSE, if no image found
+	 * @return array Array of subcategories
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getChildCategories instead
 	 */
-	public function getTeaserImage() {
-		if (!empty($this->images_array[0])) {
-			return $this->images_array[0];
+	public function getSubcategories() {
+		t3lib_div::logDeprecatedFunction();
+		if (count($this->categories) == 0) {
+			return $this->getChildCategories();
 		} else {
-			if (($parentCategory = $this->get_parent_category())) {
-				$parentCategory->loadData();
-
-				return $parentCategory->getTeaserImage();
-			} else {
-				return FALSE;
-			}
+			return $this->categories;
 		}
 	}
 
 	/**
-	 * Returns the category TSconfig array based on the currect->rootLine
+	 * Loads the child categories in the categories array
 	 *
-	 * @todo Make recursiv category TS merging
-	 * @return array
+	 * @return array of categories as array of category objects
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getChildCategories instead
 	 */
-	public function getCategoryTSconfig() {
-		if (!is_array($this->categoryTSconfig)) {
-			$tSdataArray[] = $this->tsConfig;
-			$tSdataArray = t3lib_TSparser::checkIncludeLines_array($tSdataArray);
-			$categoryTS = implode(chr(10) . '[GLOBAL]' . chr(10), $tSdataArray);
+	public function get_child_categories() {
+		t3lib_div::logDeprecatedFunction();
+		return $this->getChildCategories();
+	}
 
-			/** @var t3lib_TSparser $parseObj */
-			$parseObj = t3lib_div::makeInstance('t3lib_TSparser');
-			$parseObj->parse($categoryTS);
-			$this->categoryTSconfig = $parseObj->setup;
-		}
+	/**
+	 * Returns recursivly the category path as text
+	 * path segments are glued with $separatora
+	 *
+	 * @param string $separator default '-'
+	 * @return string Category path segment
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getCategoryPath instead
+	 */
+	public function get_category_path($separator = ',') {
+		t3lib_div::logDeprecatedFunction();
+		return $this->getCategoryPath($separator);
+	}
 
-		return $this->categoryTSconfig;
+	/**
+	 * Returns the category keywords
+	 *
+	 * @return string Keywords;
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getKeywords instead
+	 */
+	public function get_keywords() {
+		t3lib_div::logDeprecatedFunction();
+		return $this->getKeywords();
+	}
+
+	/**
+	 * Loads the parent category in the parent-category variable
+	 *
+	 * @return Tx_Commerce_Domain_Model_Category|FALSE category object or FALSE if this category is already the topmost category
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getParentCategory instead
+	 */
+	public function get_parent_category() {
+		t3lib_div::logDeprecatedFunction();
+		return $this->getParentCategory();
+	}
+
+	/**
+	 * Returns a list of all products under this category
+	 *
+	 * @param bool|int $depth Depth maximum depth for going recursive
+	 * @return array Array with list of product UIDs
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getProducts instead
+	 */
+	public function getAllProducts($depth = FALSE) {
+		t3lib_div::logDeprecatedFunction();
+		return $this->getProducts($depth);
+	}
+
+	/**
+	 * Loads the permissions
+	 *
+	 * @return void
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getNavtitle instead
+	 */
+	public function load_perms() {
+		t3lib_div::logDeprecatedFunction();
+		$this->loadPermissions();
+	}
+
+	/**
+	 * Returns the category navigationtitle
+	 *
+	 * @return string Navigationtitle;
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getNavtitle instead
+	 */
+	public function get_navtitle() {
+		t3lib_div::logDeprecatedFunction();
+		return $this->getNavtitle();
+	}
+
+	/**
+	 * Returns the category description
+	 *
+	 * @return string Description;
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getDescription instead
+	 */
+	public function get_description() {
+		t3lib_div::logDeprecatedFunction();
+		return $this->getDescription();
 	}
 
 	/**
 	 * Returns an Array of Images
 	 *
-	 * @deprecated
 	 * @return array Array of images
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getImages instead
 	 */
 	public function get_images() {
+		t3lib_div::logDeprecatedFunction();
 		return $this->getImages();
+	}
+
+	/**
+	 * Returns the category teaser
+	 *
+	 * @return string Teaser;
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getTeaser instead
+	 */
+	public function get_teaser() {
+		t3lib_div::logDeprecatedFunction();
+		return $this->getTeaser();
+	}
+
+	/**
+	 * Returns the subtitle of the category
+	 *
+	 * @return string Subtitle;
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getSubtitle instead
+	 */
+	public function get_subtitle() {
+		t3lib_div::logDeprecatedFunction();
+		return $this->getSubtitle();
 	}
 
 	/**
 	 * Returns the category title
 	 *
-	 * @deprecated
 	 * @return string Returns the Category title
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getTitle instead
 	 */
 	public function get_title() {
-		return $this->title;
+		t3lib_div::logDeprecatedFunction();
+		return $this->getTitle();
+	}
+
+	/**
+	 * Constructor, basically calls init
+	 *
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use loadData instead
+	 */
+	public function load_data($translationMode = FALSE) {
+		t3lib_div::logDeprecatedFunction();
+		$this->loadData($translationMode = FALSE);
 	}
 }
 
