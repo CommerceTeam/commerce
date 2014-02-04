@@ -38,7 +38,23 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 	/**
 	 * @var integer
 	 */
-	public $parent_uid;
+	public $parentUid;
+
+	/**
+	 * @var array
+	 */
+	public $addWhere = array(
+		'tx_commerce_products' => ' AND uid_foreign = %d',
+		'tx_commerce_categories' => ' AND uid_foreign = %d',
+	);
+
+	/**
+	 * @var array
+	 */
+	public $joinTables = array(
+		'tx_commerce_products' => ' LEFT JOIN tx_commerce_products_categories_mm ON tx_commerce_products.uid = tx_commerce_products_categories_mm.uid_local',
+		'tx_commerce_categories' => ' LEFT JOIN tx_commerce_categories_parent_category_mm ON tx_commerce_categories.uid = tx_commerce_categories_parent_category_mm.uid_local',
+	);
 
 	/**
 	 * default values necessary for the flexform
@@ -217,6 +233,7 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 			$this->fieldArray[] = '_REF_';
 			$this->fieldArray[] = '_AFTERREF_';
 		}
+
 			// Path
 		if ($this->searchLevels) {
 			$this->fieldArray[] = '_PATH_';
@@ -287,9 +304,6 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 			// implode it into a list of fields for the SQL-statement.
 		$selFieldList = implode(',', $selectFields);
 		$this->selFieldList = $selFieldList;
-
-			// Add uid of category to only list elements which have the category that is selected in the tree
-		$addWhere .= ' AND uid IN (' . $this->uid . ')';
 
 		/**
 		 * @hook DB-List getTable
@@ -558,6 +572,80 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 	}
 
 	/**
+	 * Returns the SQL-query array to select the records from a table $table with pid = $id
+	 *
+	 * @param string $table Table name
+	 * @param integer $id Page id (NOT USED! $this->pidSelect is used instead)
+	 * @param string $addWhere Additional part for where clause
+	 * @param string $fieldList Field list to select, * for all (for "SELECT [fieldlist] FROM ...")
+	 * @return array Returns query array
+	 */
+	public function makeQueryArray($table, $id, $addWhere = '', $fieldList = '*') {
+		/** @var t3lib_db $database */
+		$database = $GLOBALS['TYPO3_DB'];
+
+		$hookObjectsArr = array();
+		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/class.db_list.inc']['makeQueryArray'])) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/class.db_list.inc']['makeQueryArray'] as $classRef) {
+				$hookObjectsArr[] = t3lib_div::getUserObj($classRef);
+			}
+		}
+
+			// Set ORDER BY:
+		$orderBy = $GLOBALS['TCA'][$table]['ctrl']['sortby'] ?
+			'ORDER BY ' . $table . '.' . $GLOBALS['TCA'][$table]['ctrl']['sortby'] :
+			$GLOBALS['TCA'][$table]['ctrl']['default_sortby'];
+		if ($this->sortField) {
+			if (in_array($this->sortField, $this->makeFieldList($table, 1))) {
+				$orderBy = 'ORDER BY ' . $table . '.' . $this->sortField;
+				if ($this->sortRev) {
+					$orderBy .= ' DESC';
+				}
+			}
+		}
+
+			// Set LIMIT:
+		$limit = $this->iLimit ? ($this->firstElementNumber ? $this->firstElementNumber . ',' : '') . ($this->iLimit + 1) : '';
+
+			// Filtering on displayable pages (permissions):
+		$pC = ($table == 'pages' && $this->perms_clause) ? ' AND ' . $this->perms_clause : '';
+
+			// Adding search constraints:
+		$search = $this->makeSearchString($table);
+
+			// Compiling query array:
+		$queryParts = array(
+			'SELECT' => $fieldList,
+			'FROM' => $table . $this->joinTables[$table],
+			'WHERE' => $this->pidSelect .
+						' ' . $pC .
+						t3lib_BEfunc::deleteClause($table) .
+						t3lib_BEfunc::versioningPlaceholderClause($table) .
+						' ' . $addWhere . sprintf($this->addWhere[$table], $this->parentUid) .
+						' ' . $search,
+			'GROUPBY' => '',
+			'ORDERBY' => $database->stripOrderBy($orderBy),
+			'LIMIT' => $limit
+		);
+
+			// Apply hook as requested in http://bugs.typo3.org/view.php?id=4361
+		foreach ($hookObjectsArr as $hookObj) {
+			if (method_exists($hookObj, 'makeQueryArray_post')) {
+				$_params = array(
+					'orderBy' => $orderBy,
+					'limit' => $limit,
+					'pC' => $pC,
+					'search' => $search,
+				);
+				$hookObj->makeQueryArray_post($queryParts, $this, $table, $id, $addWhere, $fieldList, $_params);
+			}
+		}
+
+			// Return query:
+		return $queryParts;
+	}
+
+	/**
 	 * Returns a table-row with the content from the fields in the input data array.
 	 * OBS: $this->fieldArray MUST be set! (represents the list of fields to display)
 	 *
@@ -650,169 +738,6 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 
 			// Return row.
 		return $out;
-	}
-
-	/**
-	 * Rendering the header row for a table
-	 *
-	 * @param string $table Table name
-	 * @param array $currentIdList Array of the currectly displayed uids of the table
-	 * @return string Header table row
-	 * @see getTable()
-	 */
-	public function _renderListHeader($table, $currentIdList) {
-		/** @var language $language */
-		$language = $GLOBALS['LANG'];
-
-			// Init:
-		$theData = Array();
-
-			// Traverse the fields:
-		foreach ($this->fieldArray as $fCol) {
-				// Calculate users permissions to edit records in the table:
-			$permsEdit = $this->calcPerms & ($table == 'tx_commerce_categories' ? 2 : 16);
-
-			switch ((string) $fCol) {
-				case '_PATH_':
-					$theData[$fCol] = '<i>[' . $language->sL('LLL:EXT:lang/locallang_core.php:labels._PATH_', 1) . ']</i>';
-				break;
-
-				case '_LOCALIZATION_':
-					$theData[$fCol] = '<i>[' . $language->sL('LLL:EXT:lang/locallang_core.php:labels._LOCALIZATION_', 1) . ']</i>';
-				break;
-
-				case '_LOCALIZATION_b':
-					$theData[$fCol] = $language->getLL('Localize', 1);
-				break;
-
-				case '_CLIPBOARD_':
-					$cells = array();
-
-						// If there are elements on the clipboard for this table, then display the "paste into" icon:
-					$elFromTable = $this->clipObj->elFromTable($table);
-					if (count($elFromTable)) {
-						$cells[] = '<a href="' . htmlspecialchars($this->clipObj->pasteUrl($table, $this->id)) . '" onclick="' .
-							htmlspecialchars('return ' . $this->clipObj->confirmMsg('tx_commerce_categories', $this->pageRow, 'into', $elFromTable)) . '">' .
-							t3lib_iconWorks::getSpriteIcon(
-								'actions-document-paste-into',
-								array('title' => $language->getLL('clip_paste', 1))
-							) . '</a>';
-					}
-
-						// If the numeric clipboard pads are enabled, display the control icons for that:
-					if ($this->clipObj->current != 'normal') {
-							// The "select" link:
-						$cells[] = $this->linkClipboardHeaderIcon(
-								t3lib_iconWorks::getSpriteIcon('actions-edit-copy', array('title' => $language->getLL('clip_selectMarked', 1))),
-								$table,
-								'setCB'
-							);
-
-							// The "edit marked" link:
-						$editIdList = implode(',', $currentIdList);
-						$editIdList = "'+editList('" . $table . "','" . $editIdList . "')+'";
-						$params = '&edit[' . $table . '][' . $editIdList . ']=edit&disHelp=1';
-						$cells[] = '<a href="#" onclick="' . htmlspecialchars(t3lib_BEfunc::editOnClick($params, $this->backPath, -1)) . '">' .
-							t3lib_iconWorks::getSpriteIcon('actions-document-open', array('title' => $language->getLL('clip_editMarked', 1))) . '</a>';
-
-							// The "Delete marked" link:
-						$cells[] = $this->linkClipboardHeaderIcon(
-							t3lib_iconWorks::getSpriteIcon('actions-edit-delete', array('title' => $language->getLL('clip_deleteMarked', 1))),
-							$table,
-							'delete',
-							sprintf($language->getLL('clip_deleteMarkedWarning'), $language->sL($GLOBALS['TCA'][$table]['ctrl']['title']))
-						);
-
-							// The "Select all" link:
-						$cells[] = '<a href="#" onclick="' . htmlspecialchars('checkOffCB(\'' . implode(',', $this->CBnames) . '\'); return false;') . '">' .
-							t3lib_iconWorks::getSpriteIcon(
-								'actions-document-open',
-								array('title' => $language->getLL('clip_markRecords', 1))
-							) . '</a>';
-					} else {
-						$cells[] = '';
-					}
-					$theData[$fCol] = implode('', $cells);
-				break;
-
-				case '_CONTROL_':
-					if (!$GLOBALS['TCA'][$table]['ctrl']['readOnly']) {
-							// If new records can be created on this page, add links:
-						if ($this->calcPerms & ($table == 'tx_commerce_categories' ? 8 : 16) && $this->showNewRecLink($table)) {
-							$icon = ($table == 'tx_commerce_categories' ? 'actions-page-new' : 'actions-document-new');
-							$title = $language->getLL('new', 1);
-							$sprite = t3lib_iconWorks::getSpriteIcon($icon, array('title' => $title));
-							if ($table == 'tx_commerce_products' && $this->newWizards) {
-									//  If mod.web_list.newContentWiz.overrideWithExtension is set, use that extension's create new content wizard instead:
-								$tmpTSc = t3lib_BEfunc::getModTSconfig($this->pageinfo['uid'], 'mod.web_list');
-								$tmpTSc = $tmpTSc['properties']['newContentWiz.']['overrideWithExtension'];
-								$newContentWizScriptPath = t3lib_extMgm::isLoaded($tmpTSc) ?
-									(t3lib_extMgm::extRelPath($tmpTSc) . 'mod1/db_new_content_el.php') :
-									'sysext/cms/layout/db_new_content_el.php';
-
-								$theData[$fCol] = '<a href="#" onclick="' .
-									htmlspecialchars('return jumpExt(\'' . $newContentWizScriptPath . '?id=' . $this->id . '\');') .
-									'">' . $sprite . '</a>';
-							} elseif ($table == 'tx_commerce_categories' && $this->newWizards) {
-								$theData[$fCol] = '<a href="' . htmlspecialchars('db_new.php?id=' . $this->id . '&pagesOnly=1returnUrl=' .
-									rawurlencode(t3lib_div::getIndpEnv('REQUEST_URI'))) . '">' . $sprite . '</a>';
-							} else {
-								$params = '&edit[' . $table . '][' . $this->id . ']=new' . $this->defVals;
-								$theData[$fCol] = '<a href="#" onclick="' .
-									htmlspecialchars(t3lib_BEfunc::editOnClick($params, $this->backPath, -1)) . '">' . $sprite . '</a>';
-							}
-						}
-
-							// If the table can be edited, add link for editing ALL SHOWN fields for all listed records:
-						if ($permsEdit && $this->table && is_array($currentIdList)) {
-							$editIdList = implode(',', $currentIdList);
-							if ($this->clipNumPane()) {
-								$editIdList = "'+editList('" . $table . "','" . $editIdList . "')+'";
-							}
-							$params = '&edit[' . $table . '][' . $editIdList . ']=edit&columnsOnly=' . implode(',', $this->fieldArray) . '&disHelp=1' . $this->defVals;
-							$temp = '<a href="#" onclick="' . htmlspecialchars(t3lib_BEfunc::editOnClick($params, $this->backPath, -1)) . '">' .
-								t3lib_iconWorks::getSpriteIcon(
-									'actions-document-open',
-									array('title' => $language->getLL('editShownColumns', 1))
-								) . '</a>';
-							$theData[$fCol] .= $temp;
-						}
-					}
-				break;
-
-				default:
-					$theData[$fCol] = '';
-					if ($this->table && is_array($currentIdList)) {
-
-							// If the numeric clipboard pads are selected, show duplicate sorting link:
-						if ($this->clipNumPane()) {
-							$theData[$fCol] .= '<a href="' . htmlspecialchars($this->listURL('', -1) . '&duplicateField=' . $fCol) . '">' .
-								t3lib_iconWorks::getSpriteIcon(
-									'actions-document-duplicates-select',
-									array('title' => $language->getLL('clip_duplicates', 1))
-								) . '</a>';
-						}
-
-							// If the table can be edited, add link for editing THIS field for all listed records:
-						if (!$GLOBALS['TCA'][$table]['ctrl']['readOnly'] && $permsEdit && $GLOBALS['TCA'][$table]['columns'][$fCol]) {
-							$editIdList = implode(',', $currentIdList);
-							if ($this->clipNumPane()) {
-								$editIdList = "'+editList('" . $table . "','" . $editIdList . "')+'";
-							}
-							$params = '&edit[' . $table . '][' . $editIdList . ']=edit&columnsOnly=' . $fCol . '&disHelp=1' . $this->defVals;
-							$iTitle = sprintf($language->getLL('editThisColumn'), rtrim(trim($language->sL(t3lib_BEfunc::getItemLabel($table, $fCol))), ':'));
-							$temp = '<a href="#" onclick="' . htmlspecialchars(t3lib_BEfunc::editOnClick($params, $this->backPath, -1)) . '">' .
-								t3lib_iconWorks::getSpriteIcon('actions-document-open', array('title' => htmlspecialchars($iTitle))) . '</a>';
-							$theData[$fCol] .= $temp;
-						}
-					}
-					$theData[$fCol] .= $this->addSortLink($language->sL(t3lib_BEfunc::getItemLabel($table, $fCol, '<i>[|]</i>')), $fCol, $table);
-					break;
-			}
-		}
-
-			// Create and return header table row:
-		return $this->addelement(1, '', $theData, ' class="c-headLine"', '');
 	}
 
 	/**

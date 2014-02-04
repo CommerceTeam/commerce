@@ -153,32 +153,26 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 	public $MOD_SETTINGS = array();
 
 	/**
+	 * Array, where files to include is accumulated in the init() function
+	 *
+	 * @var array
+	 */
+	public $include_once = array();
+
+	/**
 	 * Module output accumulation
 	 *
 	 * @var string
 	 */
 	public $content;
 
-	/**
-	 * Array of tree leaf names and leaf data classes
-	 *
-	 * @var array
-	 */
-	public $control;
-
-	/**
-	 * the script calling this class
-	 *
-	 * @var string
-	 */
-	public $script;
 
 	/**
 	 * the script for the wizard of the command 'new'
 	 *
 	 * @var string
 	 */
-	public $scriptNewWizard;
+	public $scriptNewWizard = 'wizard.php';
 
 	/**
 	 * the paramters for the script
@@ -208,22 +202,6 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 	 * @return void
 	 */
 	public function init() {
-		parent::init();
-
-		Tx_Commerce_Utility_FolderUtility::init_folders();
-		$this->control = array (
-			'category' => array (
-				'dataClass' => 'Tx_Commerce_Tree_Leaf_CategoryData',
-				'parent' => 'parent_category'
-			),
-			'product' => array (
-				'dataClass' => 'Tx_Commerce_Tree_Leaf_ProductData',
-				'parent' => 'categories'
-			)
-		);
-
-		$this->scriptNewWizard = 'wizard.php';
-
 		/** @var t3lib_beUserAuth $backendUser */
 		$backendUser = & $GLOBALS['BE_USER'];
 
@@ -234,6 +212,7 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 			// GPvars:
 		$this->id = (int) t3lib_div::_GP('id');
 		if (!$this->id) {
+			Tx_Commerce_Utility_FolderUtility::init_folders();
 			$this->id = current(array_unique(Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Products', 'Commerce', 0, 'Commerce')));
 		}
 
@@ -241,18 +220,10 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 		$this->pointer = t3lib_div::intInRange(t3lib_div::_GP('pointer'), 0, 100000);
 		$this->imagemode = t3lib_div::_GP('imagemode');
 		$this->table = t3lib_div::_GP('table');
-
-			// Get Tabpe and controlArray in a different way
-		$controlParams = t3lib_div::_GP('control');
-		if ($controlParams) {
-			$this->table = key($controlParams);
-			$this->controlArray = current($controlParams);
-		}
-
 		$this->search_field = t3lib_div::_GP('search_field');
 		$this->search_levels = t3lib_div::_GP('search_levels');
 		$this->showLimit = (int) t3lib_div::_GP('showLimit');
-		$this->returnUrl = t3lib_div::_GP('returnUrl');
+		$this->returnUrl = t3lib_div::sanitizeLocalUrl(t3lib_div::_GP('returnUrl'));
 
 		$this->clear_cache = (boolean) t3lib_div::_GP('clear_cache');
 		$this->cmd = t3lib_div::_GP('cmd');
@@ -261,11 +232,25 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 			// Initialize menu
 		$this->menuConfig();
 
-			// Current script name with parameters
-		$this->params = t3lib_div::getIndpEnv('QUERY_STRING');
-			// Current script name
-		$this->script = t3lib_div::getIndpEnv('TYPO3_REQUEST_SCRIPT');
+			// Inclusions?
+		if ($this->clear_cache || $this->cmd == 'delete') {
+			$this->include_once[] = PATH_t3lib . 'class.t3lib_tcemain.php';
+		}
 
+			// Get Tabpe and controlArray in a different way
+		$controlParams = t3lib_div::_GP('control');
+		if ($controlParams) {
+			//$this->table = key($controlParams);
+			$this->controlArray = current($controlParams);
+		}
+	}
+
+	/**
+	 * Initializes the Page
+	 *
+	 * @return void
+	 */
+	public function initPage() {
 			// Initializing document template object:
 		$this->doc = t3lib_div::makeInstance('template');
 		$this->doc->backPath = $GLOBALS['BACK_PATH'];
@@ -329,72 +314,51 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 		/** @var language $language */
 		$language = $GLOBALS['LANG'];
 
-			// Access check...
-			// The page will show only if there is a valid page and if this page may be viewed by the user
-		$this->pageinfo = Tx_Commerce_Utility_BackendUtility::readCategoryAccess($this->id, $this->perms_clause);
-		$access = is_array($this->pageinfo);
+			// default values for the new command
+		$parentUid = (int) $this->controlArray['uid'];
 
-			// Checking access:
-		if (($this->id && $access) || $backendUser->isAdmin()) {
-			if ($backendUser->isAdmin() && !$this->id) {
-				$this->pageinfo = array('title' => '[Category]', 'uid' => 0, 'pid' => 0);
+		$newRecordIcon = '';
+			// Link for creating new records:
+		if (!$this->modTSconfig['properties']['noCreateRecordsLink']) {
+			$controlls = array (
+				'category' => array (
+					'dataClass' => 'Tx_Commerce_Tree_Leaf_CategoryData',
+					'parent' => 'parent_category'
+				),
+				'product' => array (
+					'dataClass' => 'Tx_Commerce_Tree_Leaf_ProductData',
+					'parent' => 'categories'
+				)
+			);
+
+			$sumlink = $this->scriptNewWizard . '?id=' . (int) $this->id;
+			$defVals = '';
+			foreach ($controlls as $controldat) {
+				$treedb = t3lib_div::makeInstance($controldat['dataClass']);
+				$treedb->init();
+
+				if ($treedb->getTable()) {
+					$sumlink .= '&edit[' . $treedb->getTable() . '][-' . $parentUid . ']=new';
+					$tmpDefVals = '&defVals[' . $treedb->getTable() . '][' . $controldat['parent'] . ']=' . $parentUid;
+					$defVals .= $tmpDefVals;
+				}
 			}
+			$sumlink .= $defVals;
 
-				// Render content:
-			$this->moduleContent();
-		} else {
-				// If no access or if ID == zero
-			$this->content .= $this->doc->header($language->getLL('permissions'));
+			$newRecordIcon = '
+				<!--
+					Link for creating a new record:
+				-->
+				<a href="' . htmlspecialchars($sumlink .
+					'&returnUrl=' . rawurlencode(t3lib_div::getIndpEnv('REQUEST_URI'))) . '">' .
+					t3lib_iconWorks::getSpriteIcon('actions-document-new', array('title' => $language->getLL('editPage', 1))) .
+				'</a>';
 		}
 
-		$docHeaderButtons = $this->getHeaderButtons();
-
-		$markers = array(
-			'CSH' => $docHeaderButtons['csh'],
-			'CONTENT' => $this->content,
-			'CATINFO' => $this->categoryInfo($this->pageinfo),
-			'CATPATH' => $this->categoryPath($this->pageinfo),
-		);
-		$markers['FUNC_MENU'] = $this->doc->funcMenu(
-			'',
-			t3lib_BEfunc::getFuncMenu(
-				$this->id,
-				'SET[mode]',
-				$this->MOD_SETTINGS['mode'],
-				$this->MOD_MENU['mode']
-			)
-		);
-
-			// put it all together
-		$this->content = $this->doc->startPage($language->getLL('permissions'));
-		$this->content .= $this->doc->moduleBody(array(), $docHeaderButtons, $markers);
-		$this->content .= $this->doc->endPage();
-		$this->content = $this->doc->insertStylesAndJS($this->content);
-	}
-
-	/**
-	 * Outputting the accumulated content to screen
-	 *
-	 * @return void
-	 */
-	public function printContent() {
-		echo $this->content;
-	}
-
-	/**
-	 * Generates the module content
-	 *
-	 * @return void
-	 */
-	protected function _moduleContent() {
-		/** @var t3lib_beUserAuth $backendUser */
-		$backendUser = & $GLOBALS['BE_USER'];
-		/** @var language $language */
-		$language = & $GLOBALS['LANG'];
-
-			// default values for the new command
-		$defVals = '';
-		$parent_uid = (int) $this->controlArray['uid'];
+			// Access check...
+			// The page will show only if there is a valid page and if this page may be viewed by the user
+		$this->pageinfo = Tx_Commerce_Utility_BackendUtility::readCategoryAccess($parentUid, $this->perms_clause);
+		$access = is_array($this->pageinfo);
 
 			// Apply predefined values for hidden checkboxes
 			// Set predefined value for DisplayBigControlPanel:
@@ -442,34 +406,10 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 		$dblist->counter++;
 		$dblist->MOD_MENU = array('bigControlPanel' => '', 'clipBoard' => '', 'localization' => '');
 		$dblist->modTSconfig = $this->modTSconfig;
-
-		$newRecordIcon = '';
-			// Link for creating new records:
-		if (!$this->modTSconfig['properties']['noCreateRecordsLink']) {
-			$sumlink = $this->scriptNewWizard . '?id=' . (int) $this->id;
-			foreach ($this->control as $controldat) {
-				$treedb = t3lib_div::makeInstance($controldat['dataClass']);
-				$treedb->init();
-
-				if ($treedb->getTable()) {
-					$sumlink .= '&edit[' . $treedb->getTable() . '][-' . $parent_uid . ']=new';
-					$tmpDefVals = '&defVals[' . $treedb->getTable() . '][' . $controldat['parent'] . ']=' . $parent_uid;
-					$defVals .= $tmpDefVals;
-				}
-			}
-			$sumlink .= $defVals;
-
-			$newRecordIcon = '
-				<!--
-					Link for creating a new record:
-				-->
-				<a href="' . htmlspecialchars($sumlink .
-					'&returnUrl=' . rawurlencode(t3lib_div::getIndpEnv('REQUEST_URI'))) . '">' .
-					t3lib_iconWorks::getSpriteIcon('actions-document-new', array('title' => $language->getLL('editPage', 1))) .
-				'</a>';
-		}
-
 		$dblist->newRecordIcon = $newRecordIcon;
+
+		$dblist->tableList = 'tx_commerce_categories,tx_commerce_products';
+		$dblist->parentUid = $parentUid;
 
 			// Clipboard is initialized:
 			// Start clipboard
@@ -496,8 +436,6 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 			// Save the clipboard content
 		$dblist->clipObj->endClipboard();
 
-		$this->buttons = $dblist->getButtons($this->pageinfo);
-
 			// This flag will prevent the clipboard panel in being shown.
 			// It is set, if the clickmenu-layer is active AND the extended view is not enabled.
 		$dblist->dontShowClipControlPanels = $GLOBALS['CLIENT']['FORMSTYLE']
@@ -506,103 +444,105 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 			&& !$backendUser->uc['disableCMlayers']
 			&& !$this->modTSconfig['properties']['showClipControlPanelsDespiteOfCMlayers'];
 
-			// If there is access to the page, then render the list contents and set up the document template object:
-			// Deleting records...:
-			// Has not to do with the clipboard but is simply the delete action. The clipboard object is used to clean up the submitted entries to only the selected table.
-		if ($this->cmd == 'delete') {
-			$items = $dblist->clipObj->cleanUpCBC(t3lib_div::_POST('CBC'), $this->cmd_table, 1);
-			if (count($items)) {
-				$cmd = array();
-				foreach ($items as $iK => $value) {
-					$iKParts = explode('|', $iK);
-					$cmd[$iKParts[0]][$iKParts[1]]['delete'] = 1;
-				}
-				$tce = t3lib_div::makeInstance('t3lib_TCEmain');
-				$tce->stripslashes_values = 0;
-				$tce->start(array(), $cmd);
-				$tce->process_cmdmap();
-
-				if (isset($cmd['pages'])) {
-					t3lib_BEfunc::setUpdateSignal('updatePageTree');
-				}
-
-				$tce->printLogErrorMessages(t3lib_div::getIndpEnv('REQUEST_URI'));
-			}
-		}
-
-			// Initialize the listing object, dblist, for rendering the list:
-		$this->pointer = t3lib_div::intInRange($this->pointer, 0, 100000);
-		$dblist->start($this->id, $this->table, $this->pointer, $this->search_field, $this->search_levels, $this->showLimit);
-		$dblist->setDispFields();
-
-			// Render versioning selector:
-		if (t3lib_extMgm::isLoaded('version')) {
-			$dblist->HTMLcode .= $this->doc->getVersionSelector($this->id);
-		}
-
-			// Render the list of tables:
-		$dblist->generateList();
-
-			// Write the bottom of the page:
-		$dblist->writeBottom();
-		$listUrl = substr($dblist->listURL(), strlen($this->doc->backPath));
-			// Add JavaScript functions to the page:
-		$this->doc->JScode = $this->doc->wrapScriptTags('
-			function jumpToUrl(URL) { //
-				window.location.href = URL;
-				return false;
-			}
-			function jumpExt(URL,anchor) { //
-				var anc = anchor ? anchor : "";
-				window.location.href = URL + (T3_THIS_LOCATION ? "&returnUrl=" + T3_THIS_LOCATION : "") + anc;
-				return false;
-			}
-			function jumpSelf(URL) { //
-				window.location.href = URL + (T3_RETURN_URL ? "&returnUrl=" + T3_RETURN_URL : "");
-				return false;
-			}
-
-			function setHighlight(id) { //
-				top.fsMod.recentIds["web"] = id;
-				top.fsMod.navFrameHighlightedID["web"] = "pages" + id + "_" + top.fsMod.currentBank;	// For highlighting
-
-				if (top.content && top.content.nav_frame && top.content.nav_frame.refresh_nav) {
-					top.content.nav_frame.refresh_nav();
-				}
-			}
-			' . $this->doc->redirectUrls($listUrl) . '
-			' . $dblist->CBfunctions() . '
-			function editRecords(table,idList,addParams,CBflag)	{	//
-				window.location.href="' . $this->doc->backPath . 'alt_doc.php?returnUrl=' . rawurlencode(t3lib_div::getIndpEnv('REQUEST_URI')) .
-					'&edit["+table+"]["+idList+"]=edit"+addParams;
-			}
-			function editList(table,idList)	{	//
-				var list="";
-
-					// Checking how many is checked, how many is not
-				var pointer = 0;
-				var pos = idList.indexOf(",");
-				while (pos != -1) {
-					if (cbValue(table + "|" + idList.substr(pointer, pos - pointer))) {
-						list += idList.substr(pointer, pos - pointer) + ",";
+		if ($access) {
+				// Deleting records...:
+				// Has not to do with the clipboard but is simply the delete action. The clipboard object is used to clean up the submitted entries to only the selected table.
+			if ($this->cmd == 'delete') {
+				$items = $dblist->clipObj->cleanUpCBC(t3lib_div::_POST('CBC'), $this->cmd_table, 1);
+				if (count($items)) {
+					$cmd = array();
+					foreach ($items as $iK => $value) {
+						$iKParts = explode('|', $iK);
+						$cmd[$iKParts[0]][$iKParts[1]]['delete'] = 1;
 					}
-					pointer = pos + 1;
-					pos = idList.indexOf(",", pointer);
-				}
-				if (cbValue(table + "|" + idList.substr(pointer))) {
-					list += idList.substr(pointer) + ",";
-				}
+					$tce = t3lib_div::makeInstance('t3lib_TCEmain');
+					$tce->stripslashes_values = 0;
+					$tce->start(array(), $cmd);
+					$tce->process_cmdmap();
 
-				return list ? list : idList;
+					if (isset($cmd['pages'])) {
+						t3lib_BEfunc::setUpdateSignal('updatePageTree');
+					}
+
+					$tce->printLogErrorMessages(t3lib_div::getIndpEnv('REQUEST_URI'));
+				}
 			}
 
-			if (top.fsMod) {
-				top.fsMod.recentIds["web"] = ' . intval($this->id) . ';
-			}
-		');
+				// Initialize the listing object, dblist, for rendering the list:
+			$dblist->start($this->id, $this->table, $this->pointer, $this->search_field, $this->search_levels, $this->showLimit);
+			$dblist->setDispFields();
 
-			// Setting up the context sensitive menu:
-		$this->doc->getContextMenuCode();
+				// Render versioning selector:
+			if (t3lib_extMgm::isLoaded('version')) {
+				$dblist->HTMLcode .= $this->doc->getVersionSelector($this->id);
+			}
+
+			$dblist->parentUid = $parentUid;
+
+				// Render the list of tables:
+			$dblist->generateList();
+
+				// Write the bottom of the page:
+			$dblist->writeBottom();
+			$listUrl = substr($dblist->listURL(), strlen($GLOBALS['BACK_PATH']));
+				// Add JavaScript functions to the page:
+			$this->doc->JScode = $this->doc->wrapScriptTags('
+				function jumpToUrl(URL) {
+					window.location.href = URL;
+					return false;
+				}
+				function jumpExt(URL, anchor) {
+					var anc = anchor ? anchor : "";
+					window.location.href = URL + (T3_THIS_LOCATION ? "&returnUrl=" + T3_THIS_LOCATION : "") + anc;
+					return false;
+				}
+				function jumpSelf(URL) {
+					window.location.href = URL + (T3_RETURN_URL ? "&returnUrl=" + T3_RETURN_URL : "");
+					return false;
+				}
+
+				function setHighlight(id) {
+					top.fsMod.recentIds["web"] = id;
+					top.fsMod.navFrameHighlightedID["web"] = "pages" + id + "_" + top.fsMod.currentBank;	// For highlighting
+
+					if (top.content && top.content.nav_frame && top.content.nav_frame.refresh_nav) {
+						top.content.nav_frame.refresh_nav();
+					}
+				}
+				' . $this->doc->redirectUrls($listUrl) . '
+				' . $dblist->CBfunctions() . '
+				function editRecords(table, idList, addParams, CBflag) {
+					window.location.href = "' . $this->doc->backPath . 'alt_doc.php?returnUrl=' . rawurlencode(t3lib_div::getIndpEnv('REQUEST_URI')) .
+						'&edit[" + table + "][" + idList + "]=edit" + addParams;
+				}
+				function editList(table, idList) {
+					var list = "";
+
+						// Checking how many is checked, how many is not
+					var pointer = 0;
+					var pos = idList.indexOf(",");
+					while (pos != -1) {
+						if (cbValue(table + "|" + idList.substr(pointer, pos-pointer))) {
+							list += idList.substr(pointer, pos - pointer) + ",";
+						}
+						pointer = pos + 1;
+						pos = idList.indexOf(",", pointer);
+					}
+					if (cbValue(table + "|" + idList.substr(pointer))) {
+						list += idList.substr(pointer) + ",";
+					}
+
+					return list ? list : idList;
+				}
+
+				if (top.fsMod) {
+					top.fsMod.recentIds["web"] = ' . $this->id . ';
+				}
+			');
+
+				// Setting up the context sensitive menu:
+			$this->doc->getContextMenuCode();
+		}
 
 			// Begin to compile the whole page, starting out with page header:
 		$this->content .= '<form action="' . htmlspecialchars($dblist->listURL()) . '" method="post" name="dblistForm">';
@@ -703,295 +643,39 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 			$this->content .= $dblist->showSysNotesForPage();
 		}
 
-			// Setting up the buttons and markers for docheader
-		/*$docHeaderButtons = $dblist->getButtons($this->pageinfo);
+		$this->buttons = $dblist->getButtons($this->pageinfo);
+		$docHeaderButtons = $this->getHeaderButtons();
+
 		$markers = array(
 			'CSH' => $docHeaderButtons['csh'],
-			'CONTENT' => $this->body
+			'CONTENT' => $this->content,
+			'CATINFO' => $this->categoryInfo($this->pageinfo),
+			'CATPATH' => $this->categoryPath($this->pageinfo),
+		);
+		$markers['FUNC_MENU'] = $this->doc->funcMenu(
+			'',
+			t3lib_BEfunc::getFuncMenu(
+				$this->id,
+				'SET[mode]',
+				$this->MOD_SETTINGS['mode'],
+				$this->MOD_MENU['mode']
+			)
 		);
 
-			// Build the <body> for the module
-		$this->content = $this->doc->moduleBody($this->pageinfo, $docHeaderButtons, $markers);
-			// Renders the module page
-		$this->content = $this->doc->render(
-			'DB list',
-			$this->content
-		);*/
+			// put it all together
+		$this->content = $this->doc->startPage($language->getLL('permissions'));
+		$this->content .= $this->doc->moduleBody(array(), $docHeaderButtons, $markers);
+		$this->content .= $this->doc->endPage();
+		$this->content = $this->doc->insertStylesAndJS($this->content);
 	}
 
 	/**
-	 * Generates the module content
+	 * Outputting the accumulated content to screen
 	 *
 	 * @return void
 	 */
-	protected function moduleContent() {
-		/** @var t3lib_beUserAuth $backendUser */
-		$backendUser = & $GLOBALS['BE_USER'];
-		/** @var language $language */
-		$language = & $GLOBALS['LANG'];
-
-			// default values for the new command
-		$defVals = '';
-
-		$listingProduced = FALSE;
-		$formProduced = FALSE;
-		$linkparam = array();
-		$parent_uid = (int) $this->controlArray['uid'];
-
-			// Initialize the dblist object:
-		/** @var Tx_Commerce_ViewHelpers_CategoryRecordList $dblist */
-		$dblist = t3lib_div::makeInstance('Tx_Commerce_ViewHelpers_CategoryRecordList');
-		$dblist->backPath = $this->doc->backPath;
-		$dblist->script = t3lib_BEfunc::getModuleUrl('web_list', array(), '');
-		$dblist->calcPerms = $backendUser->calcPerms($this->pageinfo);
-		$dblist->thumbs = $backendUser->uc['thumbnailsByDefault'];
-		$dblist->returnUrl = $this->returnUrl;
-		$dblist->allFields = ($this->MOD_SETTINGS['bigControlPanel'] || $this->table) ? 1 : 0;
-		$dblist->localizationView = $this->MOD_SETTINGS['localization'];
-		$dblist->showClipboard = 1;
-		$dblist->disableSingleTableView = $this->modTSconfig['properties']['disableSingleTableView'];
-		$dblist->listOnlyInSingleTableMode = $this->modTSconfig['properties']['listOnlyInSingleTableView'];
-		$dblist->hideTables = $this->modTSconfig['properties']['hideTables'];
-		$dblist->tableTSconfigOverTCA = $this->modTSconfig['properties']['table.'];
-		$dblist->clickTitleMode = $this->modTSconfig['properties']['clickTitleMode'];
-		$dblist->alternateBgColors = $this->modTSconfig['properties']['alternateBgColors']?1:0;
-		$dblist->allowedNewTables = t3lib_div::trimExplode(',', $this->modTSconfig['properties']['allowedNewTables'], 1);
-		$dblist->deniedNewTables = t3lib_div::trimExplode(',', $this->modTSconfig['properties']['deniedNewTables'], 1);
-		$dblist->newWizards = $this->modTSconfig['properties']['newWizards'] ? 1 : 0;
-		$dblist->pageRow = $this->pageinfo;
-		$dblist->counter++;
-		$dblist->MOD_MENU = array('bigControlPanel' => '', 'clipBoard' => '', 'localization' => '');
-		$dblist->modTSconfig = $this->modTSconfig;
-
-		$newRecordIcon = '';
-			// Link for creating new records:
-		if (!$this->modTSconfig['properties']['noCreateRecordsLink']) {
-			$sumlink = $this->scriptNewWizard . '?id=' . (int) $this->id;
-			foreach ($this->control as $controldat) {
-				$treedb = t3lib_div::makeInstance($controldat['dataClass']);
-				$treedb->init();
-
-				if ($treedb->getTable()) {
-					$sumlink .= '&edit[' . $treedb->getTable() . '][-' . $parent_uid . ']=new';
-					$tmpDefVals = '&defVals[' . $treedb->getTable() . '][' . $controldat['parent'] . ']=' . $parent_uid;
-					$defVals .= $tmpDefVals;
-				}
-			}
-			$sumlink .= $defVals;
-
-			$newRecordIcon = '
-				<!--
-					Link for creating a new record:
-				-->
-				<a href="' . htmlspecialchars($sumlink .
-					'&returnUrl=' . rawurlencode(t3lib_div::getIndpEnv('REQUEST_URI'))) . '">' .
-					t3lib_iconWorks::getSpriteIcon('actions-document-new', array('title' => $language->getLL('editPage', 1))) .
-				'</a>';
-		}
-
-		$dblist->newRecordIcon = $newRecordIcon;
-
-			// Clipboard is initialized:
-			// Start clipboard
-		$dblist->clipObj = t3lib_div::makeInstance('t3lib_clipboard');
-			// Initialize - reads the clipboard content from the user session
-		$dblist->clipObj->initializeClipboard();
-
-			// Clipboard actions are handled:
-			// CB is the clipboard command array
-		$CB = t3lib_div::_GET('CB');
-		if ($this->cmd === 'setCB') {
-				// CBH is all the fields selected for the clipboard, CBC is the checkbox fields which were checked. By merging we get a full array of checked/unchecked elements
-				// This is set to the 'el' array of the CB after being parsed so only the table in question is registered.
-			$CB['el'] = $dblist->clipObj->cleanUpCBC(array_merge((array)t3lib_div::_POST('CBH'), (array)t3lib_div::_POST('CBC')), $this->cmd_table);
-		}
-
-			// If the clipboard is NOT shown, set the pad to 'normal'.
-		if (!$this->MOD_SETTINGS['clipBoard']) {
-			$CB['setP'] = 'normal';
-		}
-
-			// Execute commands.
-		$dblist->clipObj->setCmd($CB);
-			// Clean up pad
-		$dblist->clipObj->cleanCurrent();
-			// Save the clipboard content
-		$dblist->clipObj->endClipboard();
-
-		$this->buttons = $dblist->getButtons($this->pageinfo);
-
-			// This flag will prevent the clipboard panel in being shown.
-			// It is set, if the clickmenu-layer is active AND the extended view is not enabled.
-		$dblist->dontShowClipControlPanels = $GLOBALS['CLIENT']['FORMSTYLE'] && !$this->MOD_SETTINGS['bigControlPanel']
-			&& $dblist->clipObj->current == 'normal' && !$backendUser->uc['disableCMlayers']
-			&& !$this->modTSconfig['properties']['showClipControlPanelsDespiteOfCMlayers'];
-
-			// Add JavaScript functions to the page:
-		$this->doc->JScode = $this->doc->wrapScriptTags('
-			function jumpToUrl(URL) {
-				document.location = URL;
-				return false;
-			}
-			function jumpExt(URL, anchor) {
-				var anc = anchor?anchor:"";
-				document.location = URL + (T3_THIS_LOCATION ? "&returnUrl=" + T3_THIS_LOCATION : "") + anc;
-				return false;
-			}
-			function jumpSelf(URL) {
-				document.location = URL + (T3_RETURN_URL ? "&returnUrl=" + T3_RETURN_URL : "");
-				return false;
-			}
-			' . $this->doc->redirectUrls($dblist->listURL()) . '
-			' . $dblist->CBfunctions() . '
-
-			function editRecords(table,idList,addParams,CBflag) {
-				document.location="' . $this->doc->backPath . 'alt_doc.php?returnUrl=' . rawurlencode(t3lib_div::getIndpEnv('REQUEST_URI')) .
-					'&edit["+table+"]["+idList+"]=edit"+addParams;
-			}
-			function editList(table, idList) {
-				var list = "";
-					// Checking how many is checked, how many is not
-				var pointer = 0;
-				var pos = idList.indexOf(",");
-
-				while (pos != -1) {
-					if (cbValue(table + "|" + idList.substr(pointer, pos-pointer))) {
-						list += idList.substr(pointer, pos-pointer) + ",";
-					}
-					pointer = pos + 1;
-					pos = idList.indexOf(",", pointer);
-				}
-				if (cbValue(table + "|" + idList.substr(pointer))) {
-					list += idList.substr(pointer) + ",";
-				}
-
-				return list ? list : idList;
-			}
-
-			if (top.fsMod) {
-				top.fsMod.recentIds["web"] = ' . (int) $this->id . ';
-			}
-		');
-
-		foreach ($this->control as $controldat) {
-			$dblist->HTMLcode = '';
-			$treedb = t3lib_div::makeInstance($controldat['dataClass']);
-			$treedb->init();
-
-			$records = $treedb->getRecordsDbList($parent_uid);
-
-			$this->resCountAll = count($records['pid'][$parent_uid]);
-
-			if ($treedb->getTable()) {
-				$linkparam[] = '&edit[' . $treedb->getTable() . '][-' . $parent_uid . ']=new';
-				$tmpDefVals = '&defVals[' . $treedb->getTable() . '][' . $controldat['parent'] . ']=' . $parent_uid;
-				$defVals .= $tmpDefVals;
-			}
-
-				// If there is access to the page, then render the list contents and set up the document template object:
-			if ($this->resCountAll) {
-				$this->table = ($treedb->getTable() ? $treedb->getTable() : $this->table);
-				$dblist->allFields = ($this->MOD_SETTINGS['bigControlPanel'] || $this->table) ? 1 : 0;
-
-					// Deleting records...:
-					// Has not to do with the clipboard but is simply the delete action. The clipboard object is used to clean up the submitted entries to only the selected table.
-				if ($this->cmd == 'delete') {
-					$items = $dblist->clipObj->cleanUpCBC(t3lib_div::_POST('CBC'), $this->cmd_table, 1);
-					if (count($items)) {
-						$cmd = array();
-						reset($items);
-						while (list($iK) = each($items)) {
-							$iKParts = explode('|', $iK);
-							$cmd[$iKParts[0]][$iKParts[1]]['delete'] = 1;
-						}
-
-						/** @var t3lib_TCEmain $tce */
-						$tce = t3lib_div::makeInstance('t3lib_TCEmain');
-						$tce->stripslashes_values = 0;
-						$tce->start(array(), $cmd);
-						$tce->process_cmdmap();
-
-						if (isset($cmd['pages'])) {
-							t3lib_BEfunc::setUpdateSignal('updatePageTree');
-						}
-
-						$tce->printLogErrorMessages(t3lib_div::getIndpEnv('REQUEST_URI'));
-					}
-				}
-
-					// Get the list of uids
-				$uids = array();
-
-				for ($i = 0; $i < $this->resCountAll; $i++) {
-					$uids[] = $records['pid'][$parent_uid][$i]['uid'];
-				}
-
-				$dblist->uid = implode(',', $uids);
-					// uid of the parent category
-				$dblist->parent_uid = $parent_uid;
-
-				$dblist->start($this->id, $this->table, $this->pointer, $this->search_field, $this->search_levels, $this->showLimit);
-				$dblist->setDispFields();
-
-					// $defVal for Tableheader;
-				$dblist->defVals = $defVals;
-
-					// Render versioning selector:
-				$dblist->HTMLcode .= $this->doc->getVersionSelector($this->id);
-					// Render the list of tables:
-				$dblist->generateList();
-
-					// Write the bottom of the page:
-				$dblist->writeBottom();
-			}
-
-			if (!$formProduced) {
-				$formProduced = TRUE;
-
-					// Begin to compile the whole page, starting out with page header:
-				$this->doc->form .= '<form action="' . htmlspecialchars($dblist->listURL()) . '" method="post" name="dblistForm">';
-
-					// List Module CSH:
-				if (!strlen($this->id)) {
-					$this->content .= t3lib_BEfunc::cshItem('xMOD_csh_corebe', 'list_module_noId', $GLOBALS['BACK_PATH'], '<br/>|');
-				} elseif (!$this->id) {
-					$this->content .= t3lib_BEfunc::cshItem('xMOD_csh_corebe', 'list_module_root', $GLOBALS['BACK_PATH'], '<br/>|');
-				}
-			}
-			if ($dblist->HTMLcode) {
-				$listingProduced = TRUE;
-
-					// Add listing HTML code:
-				$this->content .= $dblist->HTMLcode;
-
-					// Making field select box (when extended view for a single table is enabled):
-				$this->content .= $dblist->fieldSelectBox($dblist->table);
-			}
-
-		}
-
-		if ($formProduced) {
-			$this->content .= '<input type="hidden" name="cmd_table" /><input type="hidden" name="cmd" /></form>';
-
-				// List Module CSH:
-			if ($this->id) {
-				$this->content .= t3lib_BEfunc::cshItem('xMOD_csh_corebe', 'list_module', $GLOBALS['BACK_PATH'], '<br/>|');
-			}
-		} else {
-				// This is always needed to get the correct page layout
-				// Begin to compile the whole page, starting out with page header:
-			$this->content = $this->doc->startPage('DB list');
-		}
-
-			// If a listing was produced, create the page footer with search form etc:
-		if ($listingProduced) {
-
-				// Search box:
-			$this->content .= $dblist->getSearchBox();
-
-				// Display sys-notes, if any are found:
-			$this->content .= $dblist->showSysNotesForPage();
-		}
+	public function printContent() {
+		echo $this->content;
 	}
 
 	/**
