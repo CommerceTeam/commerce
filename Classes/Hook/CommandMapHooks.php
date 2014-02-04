@@ -238,8 +238,6 @@ class Tx_Commerce_Hook_CommandMapHooks {
 	 */
 	protected function postProcessCategory($command, $categoryUid) {
 		if ($command == 'delete') {
-			t3lib_BEfunc::setUpdateSignal('updatePageTree');
-
 			$this->deleteChildCategoriesProductsArticlesPricesOfCategory($categoryUid);
 		} elseif ($command == 'copy') {
 			$newCategoryUid = $this->pObj->copyMappingArray['tx_commerce_categories'][$categoryUid];
