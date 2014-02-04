@@ -47,6 +47,17 @@ class Tx_Commerce_Domain_Model_AttributeValue extends Tx_Commerce_Domain_Model_A
 	public $databaseConnection;
 
 	/**
+	 * @var array
+	 */
+	protected $fieldlist = array(
+		'title',
+		'value',
+		'showvalue',
+		'icon',
+		'l18n_parent'
+	);
+
+	/**
 	 * Title of Attribute (private)
 	 *
 	 * @var string
@@ -75,15 +86,15 @@ class Tx_Commerce_Domain_Model_AttributeValue extends Tx_Commerce_Domain_Model_A
 	protected $icon = '';
 
 	/**
-	 * Constructor Class
-	 * If $uid is not given on construction you MUST call init manually
+	 * Constructor, basically calls init
 	 *
-	 * @param integer $uid or attribute, default false
-	 * @param integer $lang_uid language uid, default 0
+	 * @param integer $uid
+	 * @param integer $languageUid
+	 * @return self
 	 */
-	public function __construct($uid = 0, $lang_uid = 0) {
-		if ((int) $uid > 0) {
-			$this->init($uid, $lang_uid);
+	public function __construct($uid, $languageUid = 0) {
+		if ((int) $uid && (int) $languageUid) {
+			$this->init($uid, $languageUid);
 		}
 	}
 
@@ -95,14 +106,8 @@ class Tx_Commerce_Domain_Model_AttributeValue extends Tx_Commerce_Domain_Model_A
 	 * @return void
 	 */
 	public function init($uid, $lang_uid = 0) {
-		$uid = (int) $uid;
-		$lang_uid = (int) $lang_uid;
-		/**
-		 * Define variables
-		 */
-		$this->fieldlist = array('title', 'value', 'showvalue', 'icon', 'l18n_parent');
-		$this->uid = $uid;
-		$this->lang_uid = $lang_uid;
+		$this->uid = (int) $uid;
+		$this->lang_uid = (int) $lang_uid;
 		$this->databaseConnection = t3lib_div::makeInstance($this->databaseClass);
 
 		$hookObjectsArr = array();
@@ -119,37 +124,11 @@ class Tx_Commerce_Domain_Model_AttributeValue extends Tx_Commerce_Domain_Model_A
 	}
 
 	/**
-	 * gets the attribute title
-	 *
-	 * @param boolean $checkvalue optional check if value shoudl be show in FE
-	 * @return string title
-	 */
-	public function getValue($checkvalue = FALSE) {
-		if (($checkvalue) && ($this->showvalue)) {
-			return $this->value;
-		} elseif ($checkvalue == FALSE) {
-			return $this->value;
-		} else {
-			return FALSE;
-		}
-	}
-
-	/**
-	 * @param boolean $checkvalue
-	 * @return string
-	 * @deprecated since 2011-05-12 this function will be removed in commerce 0.16.0, please use tx_commerce_attribute_value::getValue
-	 */
-	public function get_value($checkvalue) {
-		t3lib_div::logDeprecatedFunction();
-		return $this->getValue($checkvalue);
-	}
-
-	/**
 	 * Overwrite get_attributes as attribute_values can't have attributes
 	 *
 	 * @return boolean FALSE
 	 */
-	public function get_attributes() {
+	public function getAttributes() {
 		return FALSE;
 	}
 
@@ -170,6 +149,23 @@ class Tx_Commerce_Domain_Model_AttributeValue extends Tx_Commerce_Domain_Model_A
 	}
 
 	/**
+	 * gets the attribute title
+	 *
+	 * @param boolean $checkvalue optional check if value shoudl be show in FE
+	 * @return string title
+	 */
+	public function getValue($checkvalue = FALSE) {
+		if (($checkvalue) && ($this->showvalue)) {
+			return $this->value;
+		} elseif ($checkvalue == FALSE) {
+			return $this->value;
+		} else {
+			return FALSE;
+		}
+	}
+
+
+	/**
 	 * Gets the showicon value
 	 *
 	 * @return integer
@@ -178,6 +174,27 @@ class Tx_Commerce_Domain_Model_AttributeValue extends Tx_Commerce_Domain_Model_A
 	public function getshowicon() {
 		t3lib_div::logDeprecatedFunction();
 		return $this->showicon;
+	}
+
+	/**
+	 * Overwrite get_attributes as attribute_values can't have attributes
+	 *
+	 * @return boolean FALSE
+	 * @deprecated since 2011-05-12 this function will be removed in commerce 0.16.0, please use getValue
+	 */
+	public function get_attributes() {
+		t3lib_div::logDeprecatedFunction();
+		return $this->getAttributes();
+	}
+
+	/**
+	 * @param boolean $checkvalue
+	 * @return string
+	 * @deprecated since 2011-05-12 this function will be removed in commerce 0.16.0, please use getValue
+	 */
+	public function get_value($checkvalue) {
+		t3lib_div::logDeprecatedFunction();
+		return $this->getValue($checkvalue);
 	}
 }
 
