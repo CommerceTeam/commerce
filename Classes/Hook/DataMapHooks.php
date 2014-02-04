@@ -1094,7 +1094,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 
 			case 'tx_commerce_products':
 					// if fieldArray has been unset, do not save anything, but load dynaflex config
-				if (0 < count($fieldArray)) {
+				if (count($fieldArray)) {
 					/** @var Tx_Commerce_Domain_Model_Product $item */
 					$item = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product');
 					$item->init($id);
@@ -1134,7 +1134,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 						$pObj->newlog('You dont have the permissions to create a new article.', 1);
 					} else {
 							// ini the article creator
-						/** @var Tx_Commerce_Utility_ArticleCreatorUtility $ac */
+						/** @var Tx_Commerce_Utility_ArticleCreatorUtility $articleCreator */
 						$articleCreator = t3lib_div::makeInstance('Tx_Commerce_Utility_ArticleCreatorUtility');
 						$articleCreator->init($id, $this->belib->getProductFolderUid());
 

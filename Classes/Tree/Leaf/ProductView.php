@@ -88,7 +88,7 @@ class Tx_Commerce_Tree_Leaf_ProductView extends Tx_Commerce_Tree_Leaf_View {
 			// Max. size for Title of 255
 		$title = ('' != trim($title)) ? t3lib_div::fixed_lgd_cs($title, 255) : $this->getLL('leaf.noTitle');
 
-		$aOnClick = 'return jumpTo(\'' . $this->getJumpToParam($row) . '\',this,\'' . $this->domIdPrefix . $row['uid'] . '_' . $bank . '\',\'alt_doc.php\');';
+		$aOnClick = 'if(top.content.list_frame){top.content.list_frame.location.href=top.TS.PATH_typo3+\'alt_doc.php?returnUrl=\'+top.rawurlencode(top.content.list_frame.document.location.pathname+top.content.list_frame.document.location.search)+\'&' . $this->getJumpToParam($row) . '\';}';
 
 		$res = '<a href="#" onclick="' . htmlspecialchars($aOnClick) . '">' . $title . '</a>';
 

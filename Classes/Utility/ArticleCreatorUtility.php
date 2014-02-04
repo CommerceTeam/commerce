@@ -274,13 +274,13 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 		$valueMatrix = $this->getValues();
 		$counter = 0;
 		$resultRows = '';
-		$resultRows .= $fObj->sL('LLL:EXT:commerce/locallang_db.xml:tx_commerce_products.create_warning');
+		$resultRows .= $fObj->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.create_warning');
 
 		$this->getRows($valueMatrix, $resultRows, $counter, $headRow);
 
 		$emptyRow = '<tr><td><input type="checkbox" name="createList[empty]" /></td>';
 		$emptyRow .= '<td colspan="' . ($colCount - 1) . '">' .
-			$fObj->sL('LLL:EXT:commerce/locallang_db.xml:tx_commerce_products.empty_article') . '</td></tr>';
+			$fObj->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.empty_article') . '</td></tr>';
 
 			// create a checkbox for selecting all articles
 		$selectJS = '<script language="JavaScript">
@@ -296,7 +296,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 		if (count($valueMatrix) > 0) {
 			$selectAllRow = '<tr><td><input type="checkbox" id="selectAllArticles" onclick="updateArticleList()" /></td>';
 			$selectAllRow .= '<td colspan="' . ($colCount - 1) . '">' .
-				$fObj->sL('LLL:EXT:commerce/locallang_db.xml:tx_commerce_products.select_all_articles') . '</td></tr>';
+				$fObj->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.select_all_articles') . '</td></tr>';
 		}
 
 		$result = '<table border="0">' . $selectJS . $headRow . $emptyRow . $selectAllRow . $resultRows . '</table>';
@@ -479,6 +479,8 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 			foreach (t3lib_div::_GP('createList') as $key => $switch) {
 				$this->createArticle($PA, $key);
 			}
+				// @todo why does this not work?
+			t3lib_BEfunc::setUpdateSignal('updatePageTree');
 		}
 	}
 
@@ -703,13 +705,13 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 		$resOricArticle = $database->exec_SELECTquery('*', 'tx_commerce_articles', 'uid=' . (int) $articleUid . ' and deleted = 0');
 		$origArticle = $database->sql_fetch_assoc($resOricArticle);
 
-		$resLocalisedProducts = $database->exec_SELECTquery('*', 'tx_commerce_products', 'l18n_parent=' . (int) $this->uid . ' and deleted = 0');
+		$resLocalizedProducts = $database->exec_SELECTquery('*', 'tx_commerce_products', 'l18n_parent=' . (int) $this->uid . ' and deleted = 0');
 
-		if (($resLocalisedProducts) && ($database->sql_num_rows($resLocalisedProducts) > 0)) {
+		if (($resLocalizedProducts) && ($database->sql_num_rows($resLocalizedProducts) > 0)) {
 				// Only if there are products
-			while ($localisedProducts = $database->sql_fetch_assoc($resLocalisedProducts)) {
+			while ($localizedProducts = $database->sql_fetch_assoc($resLocalizedProducts)) {
 					// walk thru and create articles
-				$destLanguage = $localisedProducts['sys_language_uid'];
+				$destLanguage = $localizedProducts['sys_language_uid'];
 					// get the highest sorting
 				$langIsoCode = t3lib_BEfunc::getRecord('sys_language', (int) $destLanguage, 'static_lang_isocode');
 				$langIdent = t3lib_BEfunc::getRecord('static_languages', (int) $langIsoCode['static_lang_isocode'], 'lg_typo3');
@@ -720,8 +722,8 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 					'pid' => $this->pid,
 					'crdate' => time(),
 					'title' => $PA['title'],
-					'uid_product' => $localisedProducts['uid'],
-					'sys_language_uid' => $localisedProducts['sys_language_uid'],
+					'uid_product' => $localizedProducts['uid'],
+					'sys_language_uid' => $localizedProducts['sys_language_uid'],
 					'l18n_parent' => $articleUid,
 					'sorting' => $sorting['sorting'] * 2,
 					'article_attributes' => count($this->attributes['rest']) + count($data),

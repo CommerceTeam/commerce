@@ -465,6 +465,7 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 
 				if (top.fsMod) {
 					top.fsMod.recentIds["web"] = ' . $this->id . ';
+					top.fsMod.recentIds["commerce"] = ' . $this->categoryUid . ';
 				}
 			');
 

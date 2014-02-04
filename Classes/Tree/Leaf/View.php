@@ -294,12 +294,11 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 
 		$additionalParams = '';
 		if ($categoryUid) {
-			$additionalParams .= 'sourceCategory|' . $categoryUid . ',';
-			$additionalParams .= 'destinationCategory|' . $categoryUid . ',';
+			$additionalParams .= '&category=' . $categoryUid;
 		}
 		trim($additionalParams, ',');
 
-		return $this->wrapIcon($icon, $row, $additionalParams);
+		return $this->wrapIcon($icon, $row, urlencode($additionalParams));
 	}
 
 	/**

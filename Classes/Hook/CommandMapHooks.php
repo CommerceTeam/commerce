@@ -158,6 +158,7 @@ class Tx_Commerce_Hook_CommandMapHooks {
 			// update the page tree
 		t3lib_BEfunc::setUpdateSignal('updatePageTree');
 
+			// @todo add copy for category
 		if ($table == 'tx_commerce_categories' && $command == 'delete') {
 			$this->postProcessCategory($command, $id);
 		}
