@@ -292,7 +292,7 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 				$product = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product');
 				$product->init($uidClip);
 				$product->loadData();
-				$prods = $product->get_l18n_products();
+				$prods = $product->getL18nProducts();
 
 				if (0 != count($prods)) {
 
@@ -369,7 +369,7 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 				$cat = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category');
 				$cat->init($uidClip);
 				$cat->loadData();
-				$cats = $cat->get_l18n_categories();
+				$cats = $cat->getL18nCategories();
 
 				if (0 != count($cats)) {
 					$str .= '<h1>' . $language->getLL('copy.head.l18n') . '</h1>

@@ -347,7 +347,7 @@ class Tx_Commerce_ViewHelpers_Navigation {
 				/**
 				 * if the methode getRootLine fail, we take the path direct from the DB.
 				 */
-				$tmpArray = $myCat->get_categorie_rootline_uidlist();
+				$tmpArray = $myCat->getParentCategoriesUidlist();
 				$this->fixPathParents($tmpArray, $this->cat);
 			} else {
 				$tmpArray = $aPath;
@@ -1008,7 +1008,7 @@ class Tx_Commerce_ViewHelpers_Navigation {
 	 */
 	public function getActiveCats() {
 		$active = array('0' => $this->catObj->getUid());
-		$rootline = $this->catObj->get_categorie_rootline_uidlist();
+		$rootline = $this->catObj->getParentCategoriesUidlist();
 		foreach ($rootline as $cat) {
 			$active[] = $cat;
 		}
@@ -1161,9 +1161,9 @@ class Tx_Commerce_ViewHelpers_Navigation {
 			$categoryObject->init($catID, $GLOBALS['TSFE']->sys_language_uid);
 			$categoryObject->loadData();
 
-			if (is_object($categoryObject->get_parent_category())) {
-				if ($categoryObject->get_parent_category()->getUid() <> $this->category->getUid()) {
-					$result = $this->getCategoryRootlineforTS($categoryObject->get_parent_category()->getUid(), $result);
+			if (is_object($categoryObject->getParentCategory())) {
+				if ($categoryObject->getParentCategory()->getUid() <> $this->category->getUid()) {
+					$result = $this->getCategoryRootlineforTS($categoryObject->getParentCategory()->getUid(), $result);
 				}
 			}
 

@@ -938,7 +938,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 								continue;
 							}
 
-							$cat->load_perms();
+							$cat->loadPermissions();
 
 								// remove category from list if it is not permitted
 							if (!$cat->isPSet('new')) {
@@ -1106,7 +1106,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 						$catList = $this->belib->extractFieldArray($catList, 'uid_foreign', TRUE);
 
 							// get id of the live placeholder instead if such exists
-						$relId = ('new' != $status && $item->get_pid() == '-1') ? $item->get_t3ver_oid() : $id;
+						$relId = ('new' != $status && $item->getPid() == '-1') ? $item->getT3verOid() : $id;
 
 						$this->belib->saveRelations($relId, $catList, 'tx_commerce_products_categories_mm', TRUE, FALSE);
 					}

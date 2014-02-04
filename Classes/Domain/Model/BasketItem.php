@@ -171,7 +171,7 @@ class Tx_Commerce_Domain_Model_BasketItem {
 			$this->priceNet = $this->price->getPriceNet();
 			$this->priceGross = $this->price->getPriceGross();
 
-			$this->recalculate_item_sums();
+			$this->recalculateItemSums();
 
 			return TRUE;
 		}

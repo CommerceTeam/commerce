@@ -329,7 +329,7 @@ class Tx_Commerce_Domain_Model_Basket extends Tx_Commerce_Domain_Model_BasicBask
 			$insertData['price_net'] = $oneItem->getPriceNet();
 			$insertData['price_gross'] = $oneItem->getPriceGross();
 			$insertData['quantity'] = $oneItem->getQuantity();
-			$insertData['readonly'] = $this->getIsReadOnly();
+			$insertData['readonly'] = $this->getReadOnly();
 			$insertData['tstamp'] = $GLOBALS['EXEC_TIME'];
 
 			if ($this->crdate > 0) {

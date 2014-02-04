@@ -182,7 +182,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 		if (($this->basket->getItemsCount() == 0) && ($this->basket->getArticleTypeCountFromList(explode(',', $this->conf['regularArticleTypes'])) == 0)) {
 				// If basket is empty, it should be rewritable, release locks, if there are any
 			$this->basket->releaseReadOnly();
-			$this->basket->store_data();
+			$this->basket->storeData();
 		}
 
 		if (($this->basket->getItemsCount() > 0) && ($this->basket->getArticleTypeCountFromList(explode(',', $this->conf['regularArticleTypes'])) > 0)) {
@@ -233,7 +233,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 	 */
 	public function handleBasket() {
 		if ($this->piVars['delBasket']) {
-			$this->basket->delete_all_articles();
+			$this->basket->deleteAllArticles();
 
 				// Hook to process basket after deleting all articles from basket
 			$hookObjectsArr = array();
@@ -283,7 +283,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 
 				if ((int)$v['count'] === 0) {
 					if ($this->basket->getQuantity($k) > 0) {
-						$this->basket->delete_article($k);
+						$this->basket->deleteArticle($k);
 					}
 
 					foreach ($hookObjectsArr as $hookObj) {
@@ -336,7 +336,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 					}
 
 						// Check for basket price limit
-					if ((int) $this->conf['priceLimitForBasket'] > 0 && $this->basket->getGrossSum() > (int) $this->conf['priceLimitForBasket']) {
+					if ((int) $this->conf['priceLimitForBasket'] > 0 && $this->basket->getSumGross() > (int) $this->conf['priceLimitForBasket']) {
 						$this->basket->addArticle($k, $oldCountValue);
 						$this->priceLimitForBasket = 1;
 					}
@@ -352,11 +352,11 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 
 			// Handle payment articles
 		if ($this->piVars['payArt']) {
-			$basketPay = $this->basket->get_articles_by_article_type_uid_asuidlist(PAYMENTARTICLETYPE);
+			$basketPay = $this->basket->getArticlesByArticleTypeUidAsUidlist(PAYMENTARTICLETYPE);
 
 				// Delete old payment article
 			foreach ($basketPay as $actualPaymentArticle) {
-				$this->basket->delete_article($actualPaymentArticle);
+				$this->basket->deleteArticle($actualPaymentArticle);
 			}
 
 				// Add new article
@@ -387,11 +387,11 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 
 			// Handle delivery articles
 		if ($this->piVars['delArt']) {
-			$basketDel = $this->basket->get_articles_by_article_type_uid_asuidlist(DELIVERYARTICLETYPE);
+			$basketDel = $this->basket->getArticlesByArticleTypeUidAsUidlist(DELIVERYARTICLETYPE);
 
 				// Delete old delivery article
 			foreach ($basketDel as $actualDeliveryArticle) {
-				$this->basket->delete_article($actualDeliveryArticle);
+				$this->basket->deleteArticle($actualDeliveryArticle);
 			}
 
 				// Add new article
@@ -419,7 +419,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 			}
 		}
 
-		$this->basket->store_data();
+		$this->basket->storeData();
 	}
 
 	/**
@@ -436,8 +436,8 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 		$template = $this->cObj->getSubpart($this->templateCode, $templateMarker);
 
 		$basketArray = $this->languageMarker;
-		$basketArray['###PRICE_GROSS###'] = tx_moneylib::format($this->basket->getGrossSum(), $this->currency);
-		$basketArray['###PRICE_NET###'] = tx_moneylib::format($this->basket->getNetSum(), $this->currency);
+		$basketArray['###PRICE_GROSS###'] = tx_moneylib::format($this->basket->getSumGross(), $this->currency);
+		$basketArray['###PRICE_NET###'] = tx_moneylib::format($this->basket->getSumNet(), $this->currency);
 
 			// @Deprecated ###ITEMS###
 		$basketArray['###ITEMS###'] = $this->basket->getArticleTypeCountFromList($articleTypes);
@@ -473,7 +473,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 		$template = $this->cObj->getSubpart($this->templateCode, $templateMarker);
 
 			// Render locked information
-		if ($this->basket->getIsReadOnly()) {
+		if ($this->basket->getReadOnly()) {
 			$basketSubpart = $this->cObj->getSubpart($template, 'BASKETLOCKED');
 			$template = $this->cObj->substituteSubpart($template, 'BASKETLOCKED', $basketSubpart);
 		} else {
@@ -522,10 +522,10 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 
 		$template = $this->cObj->substituteSubpart($template, '###TAX_RATE_SUMS###', $taxRateRows);
 
-		$basketArray['###BASKET_NET_PRICE###'] = tx_moneylib::format($this->basket->getNetSum(), $this->currency);
-		$basketArray['###BASKET_GROSS_PRICE###'] = tx_moneylib::format($this->basket->getGrossSum(), $this->currency);
-		$basketArray['###BASKET_TAX_PRICE###'] = tx_moneylib::format($this->basket->getGrossSum() - $this->basket->getNetSum(), $this->currency);
-		$basketArray['###BASKET_VALUE_ADDED_TAX###'] = tx_moneylib::format($this->basket->getGrossSum() - $this->basket->getNetSum(), $this->currency);
+		$basketArray['###BASKET_NET_PRICE###'] = tx_moneylib::format($this->basket->getSumNet(), $this->currency);
+		$basketArray['###BASKET_GROSS_PRICE###'] = tx_moneylib::format($this->basket->getSumGross(), $this->currency);
+		$basketArray['###BASKET_TAX_PRICE###'] = tx_moneylib::format($this->basket->getSumGross() - $this->basket->getSumNet(), $this->currency);
+		$basketArray['###BASKET_VALUE_ADDED_TAX###'] = tx_moneylib::format($this->basket->getSumGross() - $this->basket->getSumNet(), $this->currency);
 		$basketArray['###BASKET_ITEMS###'] = $this->basket->getItemsCount();
 		$basketArray['###DELBASKET###'] = $this->pi_linkTP_keepPIvars($this->pi_getLL('delete_basket', 'delete basket'), array('delBasket' => 1), 0, 1);
 		$basketArray['###BASKET_NEXTBUTTON###'] = $this->cObj->stdWrap($this->makeCheckOutLink(), $this->conf['nextbutton.']);
@@ -583,7 +583,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 		$this->delProd->loadData();
 		$this->delProd->loadArticles();
 
-		$this->basketDel = $this->basket->get_articles_by_article_type_uid_asuidlist(DELIVERYARTICLETYPE);
+		$this->basketDel = $this->basket->getArticlesByArticleTypeUidAsUidlist(DELIVERYARTICLETYPE);
 
 		$select = '<select name="' . $this->prefixId . '[delArt]" onChange="this.form.submit();">';
 
@@ -622,7 +622,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 					$price_gross = tx_moneylib::format($articleObj->getPriceGross(), $this->currency);
 					if (!is_array($this->basketDel) || count($this->basketDel) < 1) {
 						$this->basket->addArticle($articleUid);
-						$this->basket->store_data();
+						$this->basket->storeData();
 					}
 					$first = 1;
 				}
@@ -651,7 +651,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 		$this->payProd->loadData();
 		$this->payProd->loadArticles();
 
-		$this->basketPay = $this->basket->get_articles_by_article_type_uid_asuidlist(PAYMENTARTICLETYPE);
+		$this->basketPay = $this->basket->getArticlesByArticleTypeUidAsUidlist(PAYMENTARTICLETYPE);
 
 		$select = '<select name="' . $this->prefixId . '[payArt]" onChange="this.form.submit();">';
 
@@ -740,7 +740,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 				} elseif (!$first) {
 					$price_net = tx_moneylib::format($articleObj->getPriceNet(), $this->currency);
 					$price_gross = tx_moneylib::format($articleObj->getPriceGross(), $this->currency);
-					$this->basket->delete_article($articleUid);
+					$this->basket->deleteArticle($articleUid);
 				}
 				$select .= '>' . $articleObj->getTitle() . '</option>';
 			}
@@ -758,7 +758,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 		$basketArray['###PAYMENT_PRICE_GROSS###'] = $price_gross;
 		$basketArray['###PAYMENT_PRICE_NET###'] = $price_net;
 
-		$this->basket->store_data();
+		$this->basket->storeData();
 
 		return $basketArray;
 	}
@@ -891,7 +891,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 		$list = array();
 		$articleTypes = explode(',', $this->conf['regularArticleTypes']);
 		while ($type = current(array_slice(each($articleTypes), 1, 1))) {
-			$list = array_merge($list, $this->basket->get_articles_by_article_type_uid_asuidlist($type));
+			$list = array_merge($list, $this->basket->getArticlesByArticleTypeUidAsUidlist($type));
 		}
 
 			// ###########    product list    ######################
@@ -979,8 +979,8 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 				$content .= $this->substituteMarkerArrayNoCached($tempContent, $this->languageMarker, array(), $wrapMarkerArray);
 			} else {
 					// Remove article from basket
-				$this->basket->delete_article($myItem->article->getUid());
-				$this->basket->store_data();
+				$this->basket->deleteArticle($myItem->article->getUid());
+				$this->basket->storeData();
 			}
 		}
 

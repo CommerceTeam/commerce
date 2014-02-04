@@ -257,7 +257,7 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 		if ((!$this->conf['singleProduct']) && ((int)$this->piVars['showUid'] > 0) && (!$GLOBALS['TSFE']->beUserLogin)) {
 			if (is_array($categorySubproducts)) {
 				if (!in_array($this->piVars['showUid'], $categorySubproducts)) {
-					$categoryAllSubproducts = $this->category->getAllProducts(PHP_INT_MAX);
+					$categoryAllSubproducts = $this->category->getProducts(PHP_INT_MAX);
 					if (!in_array((int)$this->piVars['showUid'], $categoryAllSubproducts)) {
 							// The requested product is not beblow the selected category
 							// So exit with page not found
@@ -265,7 +265,7 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 					}
 				}
 			} else {
-				$categoryAllSubproducts = $this->category->getAllProducts(PHP_INT_MAX);
+				$categoryAllSubproducts = $this->category->getProducts(PHP_INT_MAX);
 				if (!in_array($this->piVars['showUid'], $categoryAllSubproducts)) {
 						// The requested product is not beblow the selected category
 						// So exit with page not found
@@ -316,20 +316,20 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 		if ($this->cat > 0) {
 			$this->category_array = $this->category->returnAssocArray();
 
-			$catConf = $this->category->getCategoryTSconfig();
+			$catConf = $this->category->getTyposcriptConfig();
 			if (is_array($catConf['catTS.'])) {
 				$this->conf = t3lib_div::array_merge_recursive_overrule($this->conf, $catConf['catTS.']);
 			}
 
 			if ($long) {
 				$this->category->setPageTitle();
-				$this->category->get_child_categories();
+				$this->category->getChildCategories();
 				if ($this->conf['groupProductsByCategory']) {
-					$this->category_products = $this->category->getAllProducts(0);
+					$this->category_products = $this->category->getProducts(0);
 				} elseif ($this->conf['showProductsRecLevel']) {
-					$this->category_products = $this->category->getAllProducts($this->conf['showProductsRecLevel']);
+					$this->category_products = $this->category->getProducts($this->conf['showProductsRecLevel']);
 				} else {
-					$this->category_products = $this->category->getAllProducts(0);
+					$this->category_products = $this->category->getProducts(0);
 				}
 				if ($this->conf['useStockHandling'] == 1) {
 					$this->category_products = Tx_Commerce_Utility_GeneralUtility::removeNoStockProducts($this->category_products, $this->conf['products.']['showWithNoStock']);
@@ -576,7 +576,7 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 
 		$content = '';
 		$markerArray = array();
-		if ($prod->getRenderMaxArticles() > $prod->getNumberOfArticles()) {
+		if ($prod->getRenderMaxArticles() > $prod->getArticlesCount()) {
 				// Only if the number of articles is smaller than defined
 			$templateAttrSelectorDropdown = $this->cObj->getSubpart($this->templateCode, '###' . strtoupper($this->conf['templateMarker.']['productAttributesSelectorDropdown']) . '###');
 			$templateAttrSelectorDropdownItem = $this->cObj->getSubpart($templateAttrSelectorDropdown, '###' . strtoupper($this->conf['templateMarker.']['productAttributesSelectorDropdown']) . '_ITEM###');
@@ -688,7 +688,7 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 					$i++;
 				}
 
-				$artId = array_shift($prod->get_Articles_by_AttributeArray($sortedAttributeArray));
+				$artId = array_shift($prod->getArticlesByAttributeArray($sortedAttributeArray));
 				$attCode = '';
 				if (is_array($attributeMatrix)) {
 					$getVarList = array('catUid','showUid','pointer');

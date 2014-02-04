@@ -581,7 +581,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	 * @todo Make recursiv category TS merging
 	 * @return array
 	 */
-	public function getTyposcritConfig() {
+	public function getTyposcriptConfig() {
 		if (!is_array($this->categoryTSconfig)) {
 			$tSdataArray[] = $this->tsConfig;
 			$tSdataArray = t3lib_TSparser::checkIncludeLines_array($tSdataArray);
@@ -801,7 +801,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	 */
 	public function getCategoryTSconfig() {
 		t3lib_div::logDeprecatedFunction();
-		return $this->getTyposcritConfig();
+		return $this->getTyposcriptConfig();
 	}
 
 	/**

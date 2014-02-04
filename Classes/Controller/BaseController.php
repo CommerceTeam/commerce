@@ -465,16 +465,16 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 
 		$this->template = $this->templateCode;
 
-		if ($this->category->has_subcategories()) {
+		if ($this->category->hasSubcategories()) {
 			/** @var $oneCategory Tx_Commerce_Domain_Model_Category */
-			foreach ($this->category->get_child_categories() as $oneCategory) {
+			foreach ($this->category->getChildCategories() as $oneCategory) {
 				$oneCategory->loadData();
 				$this->currentCategory = & $oneCategory;
 
 				if ($this->conf['hideEmptyCategories'] == 1) {
 						// First check TS setting (ceap)
 						// afterwards do the recursive call (expensive)
-					if (!$oneCategory->ProductsBelowCategory()) {
+					if (!$oneCategory->hasProductsInSubCategories()) {
 							// This category is empty, so
 							// skip this iteration and do next
 						continue;
@@ -507,7 +507,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 				$typoLinkConf['useCacheHash'] = 1;
 				$typoLinkConf['additionalParams'] = ini_get('arg_separator.output') . $this->prefixId . '[catUid]=' . $oneCategory->getUid();
 
-				$productArray = $oneCategory->getAllProducts();
+				$productArray = $oneCategory->getProducts();
 				if (1 == $this->conf['displayProductIfOneProduct'] && 1 == count($productArray)) {
 					$typoLinkConf['additionalParams'] .= ini_get('arg_separator.output') . $this->prefixId . '[showUid]=' . $productArray[0];
 				}
@@ -543,7 +543,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 				$tmpCategory = $this->cObj->substituteSubpart($tmpCategory, '###CATEGORY_ITEM_DETAILLINK###', $link);
 
 				if ($this->conf['groupProductsByCategory'] && !$this->conf['hideProductsInList'] && !empty($this->category_products)) {
-					$categoryProducts = $oneCategory->getAllProducts();
+					$categoryProducts = $oneCategory->getProducts();
 					if ($this->conf['useStockHandling'] == 1) {
 						$categoryProducts = Tx_Commerce_Utility_GeneralUtility::removeNoStockProducts($categoryProducts, $this->conf['products.']['showWithNoStock']);
 					}
@@ -660,7 +660,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 	 * @return string
 	 */
 	public function getPathCat($cat) {
-		$rootline = $cat->get_categorie_rootline_uidlist();
+		$rootline = $cat->getParentCategoriesUidlist();
 		array_pop($rootline);
 		$active = array_reverse($rootline);
 		$this->mDepth = 0;
@@ -905,8 +905,8 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 	public function makeBasketInformation($basketObj, $subpartMarker) {
 		$template = $this->cObj->getSubpart($this->templateCode, $subpartMarker);
 		$basketObj->recalculate_sums();
-		$markerArray['###SUM_NET###'] = tx_moneylib::format($basketObj->getNetSum(TRUE), $this->currency, $this->showCurrency);
-		$markerArray['###SUM_GROSS###'] = tx_moneylib::format($basketObj->getGrossSum(TRUE), $this->currency, $this->showCurrency);
+		$markerArray['###SUM_NET###'] = tx_moneylib::format($basketObj->getSumNet(TRUE), $this->currency, $this->showCurrency);
+		$markerArray['###SUM_GROSS###'] = tx_moneylib::format($basketObj->getSumGross(TRUE), $this->currency, $this->showCurrency);
 
 		$sumArticleNet = 0;
 		$sumArticleGross = 0;

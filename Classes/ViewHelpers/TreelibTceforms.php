@@ -564,8 +564,8 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 		$prod->loadData();
 
 			// read parent categories from the live product
-		if ($prod->get_t3ver_oid() != 0) {
-			$prod->init($prod->get_t3ver_oid());
+		if ($prod->getT3verOid() != 0) {
+			$prod->init($prod->getT3verOid());
 			$prod->loadData();
 		}
 

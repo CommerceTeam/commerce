@@ -235,7 +235,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			/** @var $basket Tx_Commerce_Domain_Model_Basket */
 			$basket = & $GLOBALS['TSFE']->fe_user->tx_commerce_basket;
 			$basket->setReadOnly();
-			$basket->store_data();
+			$basket->storeData();
 		}
 
 			// Store current step
@@ -1164,7 +1164,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		$basketId = md5($GLOBALS['TSFE']->fe_user->id . ':' . rand(0, PHP_INT_MAX));
 
 		$GLOBALS['TSFE']->fe_user->setKey('ses', 'commerceBasketId', $basketId);
-		$basket->set_session_id($basketId);
+		$basket->setSessionId($basketId);
 		$basket->loadData();
 
 		return $content;
@@ -1219,12 +1219,12 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 					$article = $basketItem->article;
 					$this->debug($article, '$article', __FILE__ . ' ' . __LINE__);
 					if (!$article->hasStock($basketItem->getQuantity())) {
-						$basket->change_quantity($artUid, 0);
+						$basket->changeQuantity($artUid, 0);
 						$result = FALSE;
 					}
 				}
 			}
-			$basket->store_data();
+			$basket->storeData();
 		}
 
 		return $result;
@@ -1248,11 +1248,11 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 
 		$template = $this->cObj->getSubpart($this->templateCode, '###LISTING_BASKET_' . strtoupper($type) . '###');
 
-		$sumNet = $basket->getNetSum();
-		$sumGross = $basket->getGrossSum();
+		$sumNet = $basket->getSumNet();
+		$sumGross = $basket->getSumGross();
 		$sumTax = $sumGross - $sumNet;
 
-		$deliveryArticleArray = $basket->get_articles_by_article_type_uid_asUidlist(DELIVERYARTICLETYPE);
+		$deliveryArticleArray = $basket->getArticlesByArticleTypeUidAsUidlist(DELIVERYARTICLETYPE);
 
 		$sumShippingNet = 0;
 		$sumShippingGross = 0;
@@ -1264,7 +1264,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			$sumShippingGross += $basketItem->getPriceGross();
 		}
 
-		$paymentArticleArray = $basket->get_articles_by_article_type_uid_asUidlist(PAYMENTARTICLETYPE);
+		$paymentArticleArray = $basket->getArticlesByArticleTypeUidAsUidlist(PAYMENTARTICLETYPE);
 
 		$sumPaymentNet = 0;
 		$sumPaymentGross = 0;
@@ -1550,7 +1550,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	public function getPaymentType($id = FALSE) {
 		/** @var $basket Tx_Commerce_Domain_Model_Basket */
 		$basket = & $GLOBALS['TSFE']->fe_user->tx_commerce_basket;
-		$payment = $basket->get_articles_by_article_type_uid_asuidlist(PAYMENTARTICLETYPE);
+		$payment = $basket->getArticlesByArticleTypeUidAsUidlist(PAYMENTARTICLETYPE);
 
 		if ($id) {
 			return $payment[0];
@@ -1999,7 +1999,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 
 			// Check if we have a payment article in the basket
 		if (in_array('nopayment', $checks)) {
-			$paymentArticles = $basket->get_articles_by_article_type_uid_asUidlist(PAYMENTARTICLETYPE);
+			$paymentArticles = $basket->getArticlesByArticleTypeUidAsUidlist(PAYMENTARTICLETYPE);
 			if (count($paymentArticles) <= 0) {
 				return 'nopayment';
 			}
