@@ -752,7 +752,6 @@ class Tx_Commerce_Controller_AccessController extends t3lib_SCbase {
 
 				$bgCol = ($backendUser->user['uid'] == $row['perms_userid'] ? ' class="bgColor-20"' : $lE_bgCol);
 
-					// @todo FIXME $owner undefined
 				$cells[] = '
 					<td' . $bgCol . ' nowrap="nowrap" align="center">' . (
 						$pageId ?
@@ -802,8 +801,9 @@ class Tx_Commerce_Controller_AccessController extends t3lib_SCbase {
 			</tr>
 		</table>
 		<div id="perm-legend">' . $language->getLL('def', 1) .
-			'<br /><br /><span class="perm-allowed">*</span>: ' . $language->getLL('A_Granted', 1) .
-			'<br /><span class="perm-denied">x</span>: ' . $language->getLL('A_Denied', 1) . '</div>';
+			'<br /><br />' . t3lib_iconWorks::getSpriteIcon('status-status-permission-granted') . ': ' . $language->getLL('A_Granted', 1) .
+			'<br />' . t3lib_iconWorks::getSpriteIcon('status-status-permission-denied') . ': ' . $language->getLL('A_Denied', 1) .
+			'</div>';
 
 			// Adding section with legend code:
 		$this->content .= $this->doc->spacer(20);
