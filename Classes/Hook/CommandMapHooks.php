@@ -213,10 +213,10 @@ class Tx_Commerce_Hook_CommandMapHooks {
 	 * Calculation of missing price
 	 *
 	 * @param string $command
-	 * @param string $table: the table the data will be stored in
-	 * @param integer $id: The uid of the dataset we're working on
-	 * @param array $value: the array of fields that where changed in BE (passed by reference)
-	 * @param t3lib_TCEmain $pObj: The instance of the BE data handler
+	 * @param string $table the table the data will be stored in
+	 * @param integer $id The uid of the dataset we're working on
+	 * @param integer $value
+	 * @param t3lib_TCEmain $pObj The instance of the BE data handler
 	 * @return void
 	 */
 	public function processCmdmap_postProcess(&$command, $table, $id, $value, &$pObj) {
@@ -294,20 +294,20 @@ class Tx_Commerce_Hook_CommandMapHooks {
 	/**
 	 * @param string $command
 	 * @param integer $productUid: The uid of the dataset we're working on
-	 * @param array $value: the array of fields that where changed in BE (passed by reference)
+	 * @param integer $value: the array of fields that where changed in BE (passed by reference)
 	 * @return void
 	 */
 	protected function postProcessProduct(&$command, $productUid, $value) {
 		if ($command == 'localize') {
-			$this->translateArticlesOfProduct($command, $productUid, $value);
+			$this->translateArticlesAndAttributesOfProduct($productUid, $value);
 		} elseif ($command == 'delete') {
-			$this->deleteArticlesPricesOfProduct($productUid);
+			$this->deleteArticlesAndPricesOfProduct($productUid);
 			$this->deleteProductTranslationsByProductList(array($productUid));
 		} elseif ($command == 'copy') {
 			$newProductUid = $this->pObj->copyMappingArray['tx_commerce_products'][$productUid];
 
 			$this->changeCategoryOfCopiedProduct($newProductUid);
-			$this->copyArticlesFromProduct($newProductUid);
+			$this->copyArticlesFromProduct($productUid, $newProductUid);
 		}
 	}
 
@@ -315,38 +315,37 @@ class Tx_Commerce_Hook_CommandMapHooks {
 	 * localize all articles that are related to the current product
 	 * and localize all product attributes realted to this product from
 	 *
-	 * @param string $command
 	 * @param integer $productUid The uid of the dataset we're working on
-	 * @param array $value the array of fields that where changed in BE (passed by reference)
+	 * @param integer $value
 	 * @return void
 	 */
-	protected function translateArticlesOfProduct(&$command, $productUid, $value) {
+	protected function translateArticlesAndAttributesOfProduct($productUid, $value) {
+			// get the uid of the newly created product
+		$localizedProductUid = $this->pObj->copyMappingArray['tx_commerce_products'][$productUid];
+		if ($localizedProductUid == NULL) {
+			$this->error('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:product.no_find_uid');
+		}
+
 		/** @var t3lib_beUserAuth $backendUser */
 		$backendUser = $GLOBALS['BE_USER'];
-		/** @var t3lib_db $database */
-		$database = $GLOBALS['TYPO3_DB'];
 
 			// copying done, clear session
 		$backendUser->uc['txcommerce_copyProcess'] = 0;
 		$backendUser->writeUC();
 
-			// get the uid of the newly created product
-		$localizedProductUid = $this->pObj->copyMappingArray['tx_commerce_products'][$productUid];
-			// check if localized Product already has articles
-		$localizedProductArticles = $this->belib->getArticlesOfProduct($localizedProductUid);
+		$this->translateAttributesOfProduct($productUid, $localizedProductUid, $value);
+		$this->translateArticlesOfProduct($productUid, $localizedProductUid, $value);
+	}
 
-		if ($localizedProductUid == NULL) {
-			$command = '';
-			$this->error('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:product.no_find_uid');
-		}
-		if (!count($localizedProductArticles)) {
-				// Error Output, no Articles
-			$command = '';
-			$this->error('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:product.localization_without_article');
-		}
-		if ($localizedProductUid == NULL || !count($localizedProductArticles)) {
-			return;
-		}
+	/**
+	 * @param integer $productUid
+	 * @param integer $localizedProductUid
+	 * @param integer $value
+	 * @return void
+	 */
+	protected function translateAttributesOfProduct($productUid, $localizedProductUid, $value) {
+		/** @var t3lib_db $database */
+		$database = $GLOBALS['TYPO3_DB'];
 
 			// get all related attributes
 		$productAttributes = $this->belib->getAttributesForProduct($productUid, FALSE, TRUE);
@@ -354,15 +353,14 @@ class Tx_Commerce_Hook_CommandMapHooks {
 		$localizedProductAttributes = $this->belib->getAttributesForProduct($localizedProductUid);
 
 			// Check product has attrinutes and no attributes are avaliable for localized version
-		if ($localizedProductAttributes == FALSE && is_array($productAttributes) && count($productAttributes) > 0) {
+		if ($localizedProductAttributes == FALSE && count($productAttributes)) {
 				// als thrue
 			$langIsoCode = t3lib_BEfunc::getRecord('sys_language', (int) $value, 'static_lang_isocode');
 			$langIdent = t3lib_BEfunc::getRecord('static_languages', (int) $langIsoCode['static_lang_isocode'], 'lg_typo3');
 			$langIdent = strtoupper($langIdent['lg_typo3']);
 
 			foreach ($productAttributes as $productAttribute) {
-					// only if we have attributes type 4
-					// and no valuelist
+					// only if we have attributes type 4 and no valuelist
 				if ($productAttribute['uid_correlationtype'] == 4 && !$productAttribute['has_valuelist'] == 1) {
 					$localizedProductAttribute = $productAttribute;
 
@@ -371,7 +369,7 @@ class Tx_Commerce_Hook_CommandMapHooks {
 
 					/**
 					 * Decide on what to to on lokalisation, how to act
-					 * @see ext_conf_template
+					 * @see ext_conf_templatetranslateAttributesOfProduct($productUid, $localizedProductUid, $value)
 					 * attributeLokalisationType[0|1|2]
 					 * 0: set blank
 					 * 1: Copy
@@ -421,6 +419,24 @@ class Tx_Commerce_Hook_CommandMapHooks {
 				$product['attributesedit'] = $this->belib->buildLocalisedAttributeValues($rowProduct['attributesedit'], $langIdent);
 				$database->exec_UPDATEquery('tx_commerce_products', 'uid = ' . $localizedProductUid, $product);
 			}
+		}
+	}
+
+	/**
+	 * @param integer $productUid
+	 * @param integer $localizedProductUid
+	 * @param integer $value
+	 * @return void
+	 */
+	protected function translateArticlesOfProduct($productUid, $localizedProductUid, $value) {
+		/** @var t3lib_db $database */
+		$database = $GLOBALS['TYPO3_DB'];
+
+			// check if localized Product already has articles
+		$localizedProductArticles = $this->belib->getArticlesOfProduct($localizedProductUid);
+		if (!count($localizedProductArticles)) {
+				// Error Output, no Articles
+			$this->error('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:product.localization_without_article');
 		}
 
 			// get all related articles
@@ -481,13 +497,14 @@ class Tx_Commerce_Hook_CommandMapHooks {
 		}
 	}
 
+
 	/**
 	 * If a product is deleted, delete all articles below and their locales.
 	 *
 	 * @param integer $productUid
 	 * @return void
 	 */
-	protected function deleteArticlesPricesOfProduct($productUid) {
+	protected function deleteArticlesAndPricesOfProduct($productUid) {
 		$articles = $this->belib->getArticlesOfProduct($productUid);
 		if (count($articles)) {
 			$articleList = array();
@@ -505,7 +522,6 @@ class Tx_Commerce_Hook_CommandMapHooks {
 	 * @return void
 	 */
 	protected function changeCategoryOfCopiedProduct($productUid) {
-			// @todo implement this
 		/** @var t3lib_db $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
@@ -526,18 +542,22 @@ class Tx_Commerce_Hook_CommandMapHooks {
 	}
 
 	/**
-	 * @param $productUid
+	 * @param integer $oldProductUid
+	 * @param integer $newProductUid
 	 * @return void
 	 */
-	protected function copyArticlesFromProduct($productUid) {
-
+	protected function copyArticlesFromProduct($oldProductUid, $newProductUid) {
+		/** @var Tx_Commerce_Domain_Model_Product $product */
+		$product = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product');
+		$product->init($oldProductUid);
+		$product->getArticleUids();
 	}
 
 
 	/**
 	 * flag categories as deleted for categoryList
 	 *
-	 * @param $categoryList
+	 * @param array $categoryList
 	 * @return void
 	 */
 	protected function deleteCategoriesByCategoryList($categoryList) {
@@ -555,7 +575,7 @@ class Tx_Commerce_Hook_CommandMapHooks {
 	/**
 	 * flag category translations as deleted for categoryList
 	 *
-	 * @param $categoryList
+	 * @param array $categoryList
 	 * @return void
 	 */
 	protected function deleteCategoryTranslationsByCategoryList($categoryList) {
@@ -573,7 +593,7 @@ class Tx_Commerce_Hook_CommandMapHooks {
 	/**
 	 * flag product as deleted for productList
 	 *
-	 * @param $productList
+	 * @param array $productList
 	 * @return void
 	 */
 	protected function deleteProductsByProductList($productList) {
@@ -591,7 +611,7 @@ class Tx_Commerce_Hook_CommandMapHooks {
 	/**
 	 * flag product translations as deleted for productList
 	 *
-	 * @param $productList
+	 * @param array $productList
 	 * @return void
 	 */
 	protected function deleteProductTranslationsByProductList($productList) {
@@ -609,7 +629,7 @@ class Tx_Commerce_Hook_CommandMapHooks {
 	/**
 	 * flag articles as deleted for articleList
 	 *
-	 * @param $articleList
+	 * @param array $articleList
 	 * @return void
 	 */
 	protected function deleteArticlesByArticleList($articleList) {
@@ -627,7 +647,7 @@ class Tx_Commerce_Hook_CommandMapHooks {
 	/**
 	 * flag prices as deleted for articleList
 	 *
-	 * @param $articleList
+	 * @param array $articleList
 	 * @return void
 	 */
 	protected function deletePricesByArticleList($articleList) {
@@ -657,7 +677,7 @@ class Tx_Commerce_Hook_CommandMapHooks {
 		$errorDocument = t3lib_div::makeInstance('template');
 		$errorDocument->backPath = '';
 
-		$content = $errorDocument->startPage('tx_commerce_chhooks error Output');
+		$content = $errorDocument->startPage('Tx_Commerce_Hook_CommandMapHooks error Output');
 		$content .= '
 			<br/>
 			<br/>

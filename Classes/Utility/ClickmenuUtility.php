@@ -195,25 +195,30 @@ class Tx_Commerce_Utility_ClickmenuUtility extends clickMenu {
 					$this->clipObj->currentMode()
 				);
 
-				$clipboardUid = $uid;
+				$pasteUid = $uid;
 				if ($this->additionalParameter['category']) {
-					$clipboardUid .= '|' . $this->additionalParameter['category'];
+					$pasteUid .= '|' . $this->additionalParameter['category'];
 				}
 
 				$elFromTable = count($this->clipObj->elFromTable($table));
 				if ($table == 'tx_commerce_products' && $rights['overwrite'] && $elFromTable) {
 						// overwrite product with product
-					$menuItems['overwrite'] = $this->DB_overwrite($table, $clipboardUid, $elInfo);
+					$menuItems['overwrite'] = $this->DB_overwrite($table, $pasteUid, $elInfo);
 				}
 
 				if ($table == 'tx_commerce_categories') {
+					$pasteIntoUid = $this->rec['pid'];
+					if ($this->additionalParameter['category']) {
+						$pasteIntoUid .= '|' . $this->additionalParameter['category'];
+					}
+
 					if ($elFromAllTables) {
-						$menuItems['pasteinto'] = $this->DB_paste('', $clipboardUid, 'into', $elInfo);
+						$menuItems['pasteinto'] = $this->DB_paste('', $pasteIntoUid, 'into', $elInfo);
 					}
 				}
 
 				if (!$rights['root'] && !$rights['DBmount'] && $elFromTable && $GLOBALS['TCA'][$table]['ctrl']['sortby']) {
-					$menuItems['pasteafter'] = $this->DB_paste($table, '- ' . $clipboardUid, 'after', $elInfo);
+					$menuItems['pasteafter'] = $this->DB_paste($table, '-' . $pasteUid, 'after', $elInfo);
 				}
 			}
 
