@@ -110,8 +110,11 @@ class Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper extends t3lib_SCbase
 		');
 
 		$this->doc->loadJavascriptLib('contrib/prototype/prototype.js');
-		$this->doc->loadJavascriptLib(PATH_TXCOMMERCE_REL . 'Resources/Public/Javascript/tree.js');
-		$this->doc->JScode .= $this->doc->wrapScriptTags('Tree.ajaxID = "Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper::ajaxExpandCollapse";');
+		$this->doc->loadJavascriptLib($this->doc->backPath . 'js/tree.js');
+		$this->doc->JScode .= $this->doc->wrapScriptTags('
+			Tree.thisScript = "../../../../../../typo3/ajax.php";
+			Tree.ajaxID = "Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper::ajaxExpandCollapse";
+		');
 			// Adding javascript code for AJAX (prototype), drag&drop and the pagetree as well as the click menu code
 		$this->doc->getContextMenuCode();
 

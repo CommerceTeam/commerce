@@ -134,6 +134,11 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 	public $controlArray;
 
 	/**
+	 * @var integer
+	 */
+	public $categoryUid = 0;
+
+	/**
 	 * @var array
 	 */
 	protected $buttons = array();
@@ -183,6 +188,7 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 		$controlParams = t3lib_div::_GP('control');
 		if ($controlParams) {
 			$this->controlArray = current($controlParams);
+			$this->categoryUid = (int) $this->controlArray['uid'];
 		}
 	}
 
@@ -201,8 +207,8 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 		if (!$this->doc->moduleTemplate) {
 			t3lib_div::devLog('cannot set moduleTemplate', 'commerce', 2, array(
 				'backpath' => $this->doc->backPath,
-				'filename from TBE_STYLES' => $GLOBALS['TBE_STYLES']['htmlTemplates']['mod_index.html'],
-				'full path' => $this->doc->backPath . $GLOBALS['TBE_STYLES']['htmlTemplates']['mod_index.html']
+				'filename from TBE_STYLES' => $GLOBALS['TBE_STYLES']['htmlTemplates']['mod_category_index.html'],
+				'full path' => $this->doc->backPath . $GLOBALS['TBE_STYLES']['htmlTemplates']['mod_category_index.html']
 			));
 			$templateFile = PATH_TXCOMMERCE_REL . 'Resources/Private/Backend/mod_category_index.html';
 			$this->doc->moduleTemplate = t3lib_div::getURL(PATH_site . $templateFile);
@@ -235,9 +241,6 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 		/** @var language $language */
 		$language = $GLOBALS['LANG'];
 
-			// default values for the new command
-		$parentUid = (int) $this->controlArray['uid'];
-
 		$newRecordIcon = '';
 			// Link for creating new records:
 		if (!$this->modTSconfig['properties']['noCreateRecordsLink']) {
@@ -259,8 +262,8 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 				$treedb->init();
 
 				if ($treedb->getTable()) {
-					$sumlink .= '&edit[' . $treedb->getTable() . '][-' . $parentUid . ']=new';
-					$tmpDefVals = '&defVals[' . $treedb->getTable() . '][' . $controldat['parent'] . ']=' . $parentUid;
+					$sumlink .= '&edit[' . $treedb->getTable() . '][-' . $this->categoryUid . ']=new';
+					$tmpDefVals = '&defVals[' . $treedb->getTable() . '][' . $controldat['parent'] . ']=' . $this->categoryUid;
 					$defVals .= $tmpDefVals;
 				}
 			}
@@ -278,8 +281,8 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 
 			// Access check...
 			// The page will show only if there is a valid page and if this page may be viewed by the user
-		if ($parentUid) {
-			$this->pageinfo = Tx_Commerce_Utility_BackendUtility::readCategoryAccess($parentUid, $this->perms_clause);
+		if ($this->categoryUid) {
+			$this->pageinfo = Tx_Commerce_Utility_BackendUtility::readCategoryAccess($this->categoryUid, $this->perms_clause);
 		} else {
 			$this->pageinfo = t3lib_BEfunc::readPageAccess($this->id, $this->perms_clause);
 		}
@@ -334,7 +337,7 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 		$dblist->newRecordIcon = $newRecordIcon;
 
 		$dblist->tableList = 'tx_commerce_categories,tx_commerce_products';
-		$dblist->parentUid = $parentUid;
+		$dblist->parentUid = $this->categoryUid;
 
 			// Clipboard is initialized:
 			// Start clipboard
@@ -402,7 +405,7 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 				$dblist->HTMLcode .= $this->doc->getVersionSelector($this->id);
 			}
 
-			$dblist->parentUid = $parentUid;
+			$dblist->parentUid = $this->categoryUid;
 
 				// Render the list of tables:
 			$dblist->generateList();
@@ -574,8 +577,8 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 		$markers = array(
 			'CSH' => $docHeaderButtons['csh'],
 			'CONTENT' => $this->content,
-			'CATINFO' => $parentUid ? $this->getCategoryInfo($this->pageinfo) : $this->getPageInfo($this->pageinfo),
-			'CATPATH' => $parentUid ? $this->getCategoryPath($this->pageinfo) : $this->getPagePath($this->pageinfo),
+			'CATINFO' => $this->categoryUid ? $this->getCategoryInfo($this->pageinfo) : $this->getPageInfo($this->pageinfo),
+			'CATPATH' => $this->categoryUid ? $this->getCategoryPath($this->pageinfo) : $this->getPagePath($this->pageinfo),
 		);
 		$markers['FUNC_MENU'] = $this->doc->funcMenu(
 			'',
@@ -650,12 +653,33 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 	protected function getCategoryPath($categoryRecord) {
 		/** @var language $language */
 		$language = $GLOBALS['LANG'];
+		/** @var t3lib_beUserAuth $backendUser */
+		$backendUser = $GLOBALS['BE_USER'];
 
-		$title = $categoryRecord['title'];
+			// Is this a real page
+		if (is_array($categoryRecord) && $categoryRecord['uid']) {
+			$title = substr($categoryRecord['_thePathFull'], 0, -1);
+				// remove current page title
+			$pos = strrpos($title, '/');
+			if ($pos !== FALSE) {
+				$title = substr($title, 0, $pos) . '/';
+			}
+		} else {
+			$title = '';
+		}
 
 			// Setting the path of the page
-		$pagePath = $language->sL('LLL:EXT:lang/locallang_core.php:labels.path', 1) . ': <span class="typo3-docheader-pagePath">' .
-			htmlspecialchars(t3lib_div::fixed_lgd_cs($title, -50)) . '</span>';
+		$pagePath = $language->sL('LLL:EXT:lang/locallang_core.php:labels.path', 1) . ': <span class="typo3-docheader-pagePath">';
+
+			// crop the title to title limit (or 50, if not defined)
+		$cropLength = (empty($backendUser->uc['titleLen'])) ? 50 : $backendUser->uc['titleLen'];
+		$croppedTitle = t3lib_div::fixed_lgd_cs($title, - $cropLength);
+		if ($croppedTitle !== $title) {
+			$pagePath .= '<abbr title="' . htmlspecialchars($title) . '">' . htmlspecialchars($croppedTitle) . '</abbr>';
+		} else {
+			$pagePath .= htmlspecialchars($title);
+		}
+		$pagePath .= '</span>';
 		return $pagePath;
 	}
 
@@ -666,24 +690,33 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 	 * @return string
 	 */
 	protected function getCategoryInfo($categoryRecord) {
+		/** @var t3lib_beUserAuth $backendUser */
+		$backendUser = $GLOBALS['BE_USER'];
+
 			// Add icon with clickmenu, etc:
 			// If there IS a real page
-		if ($categoryRecord['uid']) {
+		if (is_array($categoryRecord) && $categoryRecord['uid']) {
 			$alttext = t3lib_BEfunc::getRecordIconAltText($categoryRecord, 'tx_commerce_categories');
-			$iconImg = t3lib_iconWorks::getIconImage(
-				'tx_commerce_categories',
-				$categoryRecord,
-				$this->doc->backPath,
-				'class="absmiddle" title="' . htmlspecialchars($alttext) . '"'
-			);
-			// On root-level of page tree
+			$iconImg = t3lib_iconWorks::getSpriteIconForRecord('tx_commerce_categories', $categoryRecord, array('title' => $alttext));
+				// Make Icon:
+			$theIcon = $GLOBALS['SOBE']->doc->wrapClickMenuOnIcon($iconImg, 'tx_commerce_categories', $categoryRecord['uid']);
+			$uid = $categoryRecord['uid'];
+			$title = t3lib_BEfunc::getRecordTitle('tx_commerce_categories', $categoryRecord);
 		} else {
+				// On root-level of page tree
 				// Make Icon
-			$iconImg = t3lib_iconWorks::getSpriteIcon('apps-pagetree-root');
+			$iconImg = t3lib_iconWorks::getSpriteIcon('apps-pagetree-root', array('title' => htmlspecialchars($GLOBALS['TYPO3_CONF_VARS']['SYS']['sitename'])));
+			if ($backendUser->user['admin']) {
+				$theIcon = $GLOBALS['SOBE']->doc->wrapClickMenuOnIcon($iconImg, 'tx_commerce_categories', 0);
+			} else {
+				$theIcon = $iconImg;
+			}
+			$uid = '0';
+			$title = $GLOBALS['TYPO3_CONF_VARS']['SYS']['sitename'];
 		}
 
 			// Setting icon with clickmenu + uid
-		$pageInfo = $iconImg . '<em>[pid: ' . $categoryRecord['uid'] . ']</em>';
+		$pageInfo = $theIcon . '<strong>' . htmlspecialchars($title) . '&nbsp;[' . $uid . ']</strong>';
 		return $pageInfo;
 	}
 
@@ -696,6 +729,8 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 	protected function getPagePath($pageRecord) {
 		/** @var language $language */
 		$language = $GLOBALS['LANG'];
+		/** @var t3lib_beUserAuth $backendUser */
+		$backendUser = $GLOBALS['BE_USER'];
 
 			// Is this a real page
 		if (is_array($pageRecord) && $pageRecord['uid']) {
@@ -713,7 +748,7 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 		$pagePath = $language->sL('LLL:EXT:lang/locallang_core.php:labels.path', 1) . ': <span class="typo3-docheader-pagePath">';
 
 			// crop the title to title limit (or 50, if not defined)
-		$cropLength = (empty($GLOBALS['BE_USER']->uc['titleLen'])) ? 50 : $GLOBALS['BE_USER']->uc['titleLen'];
+		$cropLength = (empty($backendUser->uc['titleLen'])) ? 50 : $backendUser->uc['titleLen'];
 		$croppedTitle = t3lib_div::fixed_lgd_cs($title, - $cropLength);
 		if ($croppedTitle !== $title) {
 			$pagePath .= '<abbr title="' . htmlspecialchars($title) . '">' . htmlspecialchars($croppedTitle) . '</abbr>';

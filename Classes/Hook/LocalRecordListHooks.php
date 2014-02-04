@@ -1,5 +1,9 @@
 <?php
 
+	// require_once in 4.x needed because in ajax mod the class can't get autoloaded
+/** @noinspection PhpIncludeInspection */
+require_once(PATH_typo3 . 'interfaces/interface.localrecordlist_actionsHook.php');
+
 class Tx_Commerce_Hook_LocalRecordListHooks implements localRecordList_actionsHook {
 	/**
 	 * modifies Web>List clip icons (copy, cut, paste, etc.) of a displayed row

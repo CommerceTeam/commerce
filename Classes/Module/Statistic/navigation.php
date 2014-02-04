@@ -34,8 +34,8 @@ include ($BACK_PATH . 'init.php');
 include ($BACK_PATH . 'template.php');
 
 	// Make instance:
-/** @var Tx_Commerce_ViewHelpers_Navigation_StatisticViewHelper $SOBE */
-$SOBE = t3lib_div::makeInstance('Tx_Commerce_ViewHelpers_Navigation_StatisticViewHelper');
+/** @var Tx_Commerce_ViewHelpers_Navigation_OrdersViewHelper $SOBE */
+$SOBE = t3lib_div::makeInstance('Tx_Commerce_ViewHelpers_Navigation_OrdersViewHelper');
 $SOBE->init();
 $SOBE->initPage();
 $SOBE->main();

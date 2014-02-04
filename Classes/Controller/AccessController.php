@@ -56,24 +56,6 @@ class Tx_Commerce_Controller_AccessController extends t3lib_SCbase {
 	public $pageinfo;
 
 	/**
-	 *  Background color 1
-	 * @var string
-	 */
-	public $color;
-
-	/**
-	 * Background color 2
-	 * @var string
-	 */
-	public $color2;
-
-	/**
-	 * Background color 3
-	 * @var string
-	 */
-	public $color3;
-
-	/**
 	 * Set internally if the current user either OWNS the category OR is admin user!
 	 * @var boolean
 	 */
@@ -104,6 +86,16 @@ class Tx_Commerce_Controller_AccessController extends t3lib_SCbase {
 	protected $table;
 
 	/**
+	 * @var array
+	 */
+	protected $controlArray;
+
+	/**
+	 * @var integer
+	 */
+	public $categoryUid = 0;
+
+	/**
 	 * Initialization of the class
 	 *
 	 * @return void
@@ -111,13 +103,18 @@ class Tx_Commerce_Controller_AccessController extends t3lib_SCbase {
 	public function init() {
 		parent::init();
 
+			// GPvars:
+		$this->id = (int) t3lib_div::_GP('id');
+		if (!$this->id) {
+			Tx_Commerce_Utility_FolderUtility::init_folders();
+			$this->id = current(array_unique(Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Products', 'Commerce', 0, 'Commerce')));
+		}
+
 			// Setting GPvars:
 		$controlParams = t3lib_div::_GP('control');
 		if ($controlParams) {
-			$this->table = key($controlParams);
-			$this->id = $controlParams[$this->table]['uid'];
-		} else {
-			$this->id = (int) t3lib_div::_GP('id');
+			$this->controlArray = current($controlParams);
+			$this->categoryUid = (int) $this->controlArray['uid'];
 		}
 
 		$this->edit = t3lib_div::_GP('edit');
@@ -125,20 +122,27 @@ class Tx_Commerce_Controller_AccessController extends t3lib_SCbase {
 		$this->lastEdited = t3lib_div::_GP('lastEdited');
 
 		$this->perms_clause = Tx_Commerce_Utility_BackendUtility::getCategoryPermsClause(1);
+	}
 
+	/**
+	 * Initializes the Page
+	 *
+	 * @return void
+	 */
+	public function initPage() {
 			// Initializing document template object:
 		$this->doc = t3lib_div::makeInstance('template');
 		$this->doc->backPath = $GLOBALS['BACK_PATH'];
 		$this->doc->docType = 'xhtml_trans';
-		$this->doc->setModuleTemplate(PATH_TXCOMMERCE . 'Resources/Private/Backend/mod_index.html');
+		$this->doc->setModuleTemplate(PATH_TXCOMMERCE . 'Resources/Private/Backend/mod_category_index.html');
 
 		if (!$this->doc->moduleTemplate) {
 			t3lib_div::devLog('cannot set moduleTemplate', 'commerce', 2, array(
 				'backpath' => $this->doc->backPath,
-				'filename from TBE_STYLES' => $GLOBALS['TBE_STYLES']['htmlTemplates']['mod_index.html'],
-				'full path' => $this->doc->backPath . $GLOBALS['TBE_STYLES']['htmlTemplates']['mod_index.html']
+				'filename from TBE_STYLES' => $GLOBALS['TBE_STYLES']['htmlTemplates']['mod_category_index.html'],
+				'full path' => $this->doc->backPath . $GLOBALS['TBE_STYLES']['htmlTemplates']['mod_category_index.html']
 			));
-			$templateFile = PATH_TXCOMMERCE_REL . 'Resources/Private/Backend/mod_index.html';
+			$templateFile = PATH_TXCOMMERCE_REL . 'Resources/Private/Backend/mod_category_index.html';
 			$this->doc->moduleTemplate = t3lib_div::getURL(PATH_site . $templateFile);
 		}
 
@@ -197,15 +201,15 @@ class Tx_Commerce_Controller_AccessController extends t3lib_SCbase {
 
 			// Access check...
 			// The page will show only if there is a valid page and if this page may be viewed by the user
-		$this->pageinfo = Tx_Commerce_Utility_BackendUtility::readCategoryAccess($this->id, $this->perms_clause);
+		if ($this->categoryUid) {
+			$this->pageinfo = Tx_Commerce_Utility_BackendUtility::readCategoryAccess($this->categoryUid, $this->perms_clause);
+		} else {
+			$this->pageinfo = t3lib_BEfunc::readPageAccess($this->id, $this->perms_clause);
+		}
 		$access = is_array($this->pageinfo);
 
 			// Checking access:
-		if (($this->id && $access) || ($backendUser->isAdmin() && !$this->id)) {
-			if ($backendUser->isAdmin() && !$this->id) {
-				$this->pageinfo = array('title' => '[Category]', 'uid' => 0, 'pid' => 0);
-			}
-
+		if (($this->categoryUid && $access) || ($backendUser->isAdmin() && !$this->categoryUid)) {
 				// This decides if the editform (tceAction) can and will be drawn:
 			$this->editingAllowed = ($this->pageinfo['perms_userid'] == $backendUser->user['uid'] || $backendUser->isAdmin());
 			$this->edit = $this->edit && $this->editingAllowed;
@@ -213,9 +217,9 @@ class Tx_Commerce_Controller_AccessController extends t3lib_SCbase {
 				// If $this->edit then these functions are called in the end of the page...
 			if ($this->edit) {
 				$this->doc->postCode .= $this->doc->wrapScriptTags('
-					setCheck("check[perms_user]", "data[tx_commerce_categories][' . $this->id . '][perms_user]");
-					setCheck("check[perms_group]", "data[tx_commerce_categories][' . $this->id . '][perms_group]");
-					setCheck("check[perms_everybody]", "data[tx_commerce_categories][' . $this->id . '][perms_everybody]");
+					setCheck("check[perms_user]", "data[tx_commerce_categories][' . $this->categoryUid . '][perms_user]");
+					setCheck("check[perms_group]", "data[tx_commerce_categories][' . $this->categoryUid . '][perms_group]");
+					setCheck("check[perms_everybody]", "data[tx_commerce_categories][' . $this->categoryUid . '][perms_everybody]");
 				');
 			}
 
@@ -223,8 +227,12 @@ class Tx_Commerce_Controller_AccessController extends t3lib_SCbase {
 			$this->content .= $this->doc->header($language->getLL('permissions') . ($this->edit ? ': ' . $language->getLL('Edit') : ''));
 			$this->content .= $this->doc->spacer(5);
 
-				// Render content:
-			$this->moduleContent();
+				// Main function, branching out:
+			if (!$this->edit) {
+				$this->notEdit();
+			} else {
+				$this->doEdit();
+			}
 		} else {
 				// If no access or if ID == zero
 			$this->content .= $this->doc->header($language->getLL('permissions'));
@@ -235,8 +243,8 @@ class Tx_Commerce_Controller_AccessController extends t3lib_SCbase {
 		$markers = array(
 			'CSH' => $docHeaderButtons['csh'],
 			'CONTENT' => $this->content,
-			'PAGEINFO' => $this->categoryInfo($this->pageinfo),
-			'PAGEPATH' => $this->categoryPath($this->pageinfo),
+			'CATINFO' => $this->categoryUid ? $this->getCategoryInfo($this->pageinfo) : $this->getPageInfo($this->pageinfo),
+			'CATPATH' => $this->categoryUid ? $this->getCategoryPath($this->pageinfo) : $this->getPagePath($this->pageinfo),
 		);
 		$markers['FUNC_MENU'] = $this->doc->funcMenu(
 			'',
@@ -250,7 +258,7 @@ class Tx_Commerce_Controller_AccessController extends t3lib_SCbase {
 
 			// put it all together
 		$this->content = $this->doc->startPage($language->getLL('permissions'));
-		$this->content .= $this->doc->moduleBody(array(), $docHeaderButtons, $markers);
+		$this->content .= $this->doc->moduleBody($this->pageinfo, $docHeaderButtons, $markers);
 		$this->content .= $this->doc->endPage();
 		$this->content = $this->doc->insertStylesAndJS($this->content);
 	}
@@ -262,20 +270,6 @@ class Tx_Commerce_Controller_AccessController extends t3lib_SCbase {
 	 */
 	public function printContent() {
 		echo $this->content;
-	}
-
-	/**
-	 * Generates the module content
-	 *
-	 * @return void
-	 */
-	protected function moduleContent() {
-			// Main function, branching out:
-		if (!$this->edit) {
-			$this->notEdit();
-		} else {
-			$this->doEdit();
-		}
 	}
 
 	/**
@@ -337,49 +331,155 @@ class Tx_Commerce_Controller_AccessController extends t3lib_SCbase {
 	}
 
 	/**
-	 * Returns the info for the Category Path
+	 * Returns the Category Path info
 	 *
-	 * @param array $row - Row
+	 * @param array $categoryRecord Category row
 	 * @return string
 	 */
-	public function categoryInfo($row) {
+	protected function getCategoryPath($categoryRecord) {
+		/** @var language $language */
+		$language = $GLOBALS['LANG'];
+		/** @var t3lib_beUserAuth $backendUser */
+		$backendUser = $GLOBALS['BE_USER'];
+
+			// Is this a real page
+		if (is_array($categoryRecord) && $categoryRecord['uid']) {
+			$title = substr($categoryRecord['_thePathFull'], 0, -1);
+				// remove current page title
+			$pos = strrpos($title, '/');
+			if ($pos !== FALSE) {
+				$title = substr($title, 0, $pos) . '/';
+			}
+		} else {
+			$title = '';
+		}
+
+			// Setting the path of the page
+		$pagePath = $language->sL('LLL:EXT:lang/locallang_core.php:labels.path', 1) . ': <span class="typo3-docheader-pagePath">';
+
+			// crop the title to title limit (or 50, if not defined)
+		$cropLength = (empty($backendUser->uc['titleLen'])) ? 50 : $backendUser->uc['titleLen'];
+		$croppedTitle = t3lib_div::fixed_lgd_cs($title, - $cropLength);
+		if ($croppedTitle !== $title) {
+			$pagePath .= '<abbr title="' . htmlspecialchars($title) . '">' . htmlspecialchars($croppedTitle) . '</abbr>';
+		} else {
+			$pagePath .= htmlspecialchars($title);
+		}
+		$pagePath .= '</span>';
+		return $pagePath;
+	}
+
+	/**
+	 * Returns the info for the Category Path
+	 *
+	 * @param array $categoryRecord - Category record
+	 * @return string
+	 */
+	protected function getCategoryInfo($categoryRecord) {
+		/** @var t3lib_beUserAuth $backendUser */
+		$backendUser = $GLOBALS['BE_USER'];
+
 			// Add icon with clickmenu, etc:
 			// If there IS a real page
-		if ($row['uid']) {
-			$alttext = t3lib_BEfunc::getRecordIconAltText($row, 'tx_commerce_categories');
-			$iconImg = t3lib_iconWorks::getIconImage(
-				'tx_commerce_categories',
-				$row,
-				$this->doc->backPath,
-				'class="absmiddle" title="' . htmlspecialchars($alttext) . '"'
-			);
-			// On root-level of page tree
+		if (is_array($categoryRecord) && $categoryRecord['uid']) {
+			$alttext = t3lib_BEfunc::getRecordIconAltText($categoryRecord, 'tx_commerce_categories');
+			$iconImg = t3lib_iconWorks::getSpriteIconForRecord('tx_commerce_categories', $categoryRecord, array('title' => $alttext));
+				// Make Icon:
+			$theIcon = $GLOBALS['SOBE']->doc->wrapClickMenuOnIcon($iconImg, 'tx_commerce_categories', $categoryRecord['uid']);
+			$uid = $categoryRecord['uid'];
+			$title = t3lib_BEfunc::getRecordTitle('tx_commerce_categories', $categoryRecord);
 		} else {
+				// On root-level of page tree
 				// Make Icon
-			$iconImg = t3lib_iconWorks::getSpriteIcon('apps-pagetree-root');
+			$iconImg = t3lib_iconWorks::getSpriteIcon('apps-pagetree-root', array('title' => htmlspecialchars($GLOBALS['TYPO3_CONF_VARS']['SYS']['sitename'])));
+			if ($backendUser->user['admin']) {
+				$theIcon = $GLOBALS['SOBE']->doc->wrapClickMenuOnIcon($iconImg, 'tx_commerce_categories', 0);
+			} else {
+				$theIcon = $iconImg;
+			}
+			$uid = '0';
+			$title = $GLOBALS['TYPO3_CONF_VARS']['SYS']['sitename'];
 		}
 
 			// Setting icon with clickmenu + uid
-		$pageInfo = $iconImg . '<em>[pid: ' . $row['uid'] . ']</em>';
+		$pageInfo = $theIcon . '<strong>' . htmlspecialchars($title) . '&nbsp;[' . $uid . ']</strong>';
 		return $pageInfo;
 	}
 
 	/**
-	 * Returns the Category Path info
+	 * Generate the page path for docheader
 	 *
-	 * @param array $row Row
-	 * @return string
+	 * @param array $pageRecord Current page
+	 * @return string Page path
 	 */
-	public function categoryPath($row) {
+	protected function getPagePath($pageRecord) {
 		/** @var language $language */
 		$language = $GLOBALS['LANG'];
+		/** @var t3lib_beUserAuth $backendUser */
+		$backendUser = $GLOBALS['BE_USER'];
 
-		$title = $row['title'];
+			// Is this a real page
+		if (is_array($pageRecord) && $pageRecord['uid']) {
+			$title = substr($pageRecord['_thePathFull'], 0, -1);
+				// remove current page title
+			$pos = strrpos($title, '/');
+			if ($pos !== FALSE) {
+				$title = substr($title, 0, $pos) . '/';
+			}
+		} else {
+			$title = '';
+		}
 
 			// Setting the path of the page
-		$pagePath = $language->sL('LLL:EXT:lang/locallang_core.php:labels.path', 1) . ': <span class="typo3-docheader-pagePath">' .
-			htmlspecialchars(t3lib_div::fixed_lgd_cs($title, -50)) . '</span>';
+		$pagePath = $language->sL('LLL:EXT:lang/locallang_core.php:labels.path', 1) . ': <span class="typo3-docheader-pagePath">';
+
+			// crop the title to title limit (or 50, if not defined)
+		$cropLength = (empty($backendUser->uc['titleLen'])) ? 50 : $backendUser->uc['titleLen'];
+		$croppedTitle = t3lib_div::fixed_lgd_cs($title, - $cropLength);
+		if ($croppedTitle !== $title) {
+			$pagePath .= '<abbr title="' . htmlspecialchars($title) . '">' . htmlspecialchars($croppedTitle) . '</abbr>';
+		} else {
+			$pagePath .= htmlspecialchars($title);
+		}
+		$pagePath .= '</span>';
 		return $pagePath;
+	}
+
+	/**
+	 * Setting page icon with clickmenu + uid for docheader
+	 *
+	 * @param array $pageRecord Current page
+	 * @return string Page info
+	 */
+	protected function getPageInfo($pageRecord) {
+		/** @var t3lib_beUserAuth $backendUser */
+		$backendUser = $GLOBALS['BE_USER'];
+
+			// Add icon with clickmenu, etc:
+			// If there IS a real page
+		if (is_array($pageRecord) && $pageRecord['uid']) {
+			$alttext = t3lib_BEfunc::getRecordIconAltText($pageRecord, 'pages');
+			$iconImg = t3lib_iconWorks::getSpriteIconForRecord('pages', $pageRecord, array('title' => $alttext));
+				// Make Icon:
+			$theIcon = $GLOBALS['SOBE']->doc->wrapClickMenuOnIcon($iconImg, 'pages', $pageRecord['uid']);
+			$uid = $pageRecord['uid'];
+			$title = t3lib_BEfunc::getRecordTitle('pages', $pageRecord);
+		} else {
+				// On root-level of page tree
+				// Make Icon
+			$iconImg = t3lib_iconWorks::getSpriteIcon('apps-pagetree-root', array('title' => htmlspecialchars($GLOBALS['TYPO3_CONF_VARS']['SYS']['sitename'])));
+			if ($backendUser->user['admin']) {
+				$theIcon = $GLOBALS['SOBE']->doc->wrapClickMenuOnIcon($iconImg, 'pages', 0);
+			} else {
+				$theIcon = $iconImg;
+			}
+			$uid = '0';
+			$title = $GLOBALS['TYPO3_CONF_VARS']['SYS']['sitename'];
+		}
+
+			// Setting icon with clickmenu + uid
+		$pageInfo = $theIcon . '<strong>' . htmlspecialchars($title) . '&nbsp;[' . $uid . ']</strong>';
+		return $pageInfo;
 	}
 
 	/*****************************
@@ -439,7 +539,7 @@ class Tx_Commerce_Controller_AccessController extends t3lib_SCbase {
 		$options = '
 				<option value="0"></option>' . $options;
 		$selector = '
-			<select name="data[tx_commerce_categories][' . $this->id . '][perms_userid]">
+			<select name="data[tx_commerce_categories][' . $this->categoryUid . '][perms_userid]">
 				' . $options . '
 			</select>';
 
@@ -469,7 +569,7 @@ class Tx_Commerce_Controller_AccessController extends t3lib_SCbase {
 		$options = '
 				<option value="0"></option>' . $options;
 		$selector = '
-			<select name="data[tx_commerce_categories][' . $this->id . '][perms_groupid]">
+			<select name="data[tx_commerce_categories][' . $this->categoryUid . '][perms_groupid]">
 				' . $options . '
 			</select>';
 
@@ -514,16 +614,16 @@ class Tx_Commerce_Controller_AccessController extends t3lib_SCbase {
 			</table>
 			<br />
 
-			<input type="hidden" name="data[tx_commerce_categories][' . $this->id . '][perms_user]" value="' . $this->pageinfo['perms_user'] . '" />
-			<input type="hidden" name="data[tx_commerce_categories][' . $this->id . '][perms_group]" value="' . $this->pageinfo['perms_group'] . '" />
-			<input type="hidden" name="data[tx_commerce_categories][' . $this->id . '][perms_everybody]" value="' . $this->pageinfo['perms_everybody'] . '" />
-			' . $this->getRecursiveSelect($this->id) . t3lib_TCEforms::getHiddenTokenField('editform') . '
+			<input type="hidden" name="data[tx_commerce_categories][' . $this->categoryUid . '][perms_user]" value="' . $this->pageinfo['perms_user'] . '" />
+			<input type="hidden" name="data[tx_commerce_categories][' . $this->categoryUid . '][perms_group]" value="' . $this->pageinfo['perms_group'] . '" />
+			<input type="hidden" name="data[tx_commerce_categories][' . $this->categoryUid . '][perms_everybody]" value="' . $this->pageinfo['perms_everybody'] . '" />
+			' . $this->getRecursiveSelect($this->categoryUid) . t3lib_TCEforms::getHiddenTokenField('editform') . '
 			<input type="submit" name="submit" value="' . $language->getLL('Save', 1) . '" />' .
 			'<input type="submit" value="' . $language->getLL('Abort', 1) . '" onclick="' .
-				htmlspecialchars('jumpToUrl(\'index.php?id=' . $this->id . '\'); return false;') . '" />
+				htmlspecialchars('jumpToUrl(\'index.php?id=' . $this->categoryUid . '\'); return false;') . '" />
 			<input type="hidden" name="redirect" value="' .
 				htmlspecialchars(TYPO3_MOD_PATH . 'index.php?mode=' . $this->MOD_SETTINGS['mode'] . '&depth=' .
-				$this->MOD_SETTINGS['depth'] . '&id=' . (int) $this->return_id . '&lastEdited=' . $this->id) . '" />
+				$this->MOD_SETTINGS['depth'] . '&id=' . (int) $this->return_id . '&lastEdited=' . $this->categoryUid) . '" />
 		';
 
 			// Adding section with the permission setting matrix:
@@ -578,7 +678,7 @@ class Tx_Commerce_Controller_AccessController extends t3lib_SCbase {
 
 			// Selector for depth:
 		$code = $language->getLL('Depth') . ': ';
-		$code .= t3lib_BEfunc::getFuncMenu($this->id, 'SET[depth]', $this->MOD_SETTINGS['depth'], $this->MOD_MENU['depth']);
+		$code .= t3lib_BEfunc::getFuncMenu($this->categoryUid, 'SET[depth]', $this->MOD_SETTINGS['depth'], $this->MOD_MENU['depth']);
 		$this->content .= $this->doc->section('', $code);
 		$this->content .= $this->doc->spacer(5);
 
@@ -588,12 +688,12 @@ class Tx_Commerce_Controller_AccessController extends t3lib_SCbase {
 
 		$tree->setBare();
 		$tree->init();
-		$tree->readRecursively($this->id, $this->MOD_SETTINGS['depth']);
-			// Create the tree from $this->id:
+		$tree->readRecursively($this->categoryUid, $this->MOD_SETTINGS['depth']);
+			// Create the tree from $this->categoryUid:
 		$tree->getTree();
 
 			// Get the tree records
-		$records = $tree->getRecordsAsArray($this->id);
+		$records = $tree->getRecordsAsArray($this->categoryUid);
 
 			// Make header of table:
 		$code = '';
@@ -869,14 +969,14 @@ class Tx_Commerce_Controller_AccessController extends t3lib_SCbase {
 		/** @var Tx_Commerce_Tree_CategoryTree $tree */
 		$tree = t3lib_div::makeInstance('Tx_Commerce_Tree_CategoryTree');
 		$tree->setBare();
-		$tree->readRecursively($this->id, $this->getLevels);
+		$tree->readRecursively($this->categoryUid, $this->getLevels);
 		$tree->init();
 
-			// Create the tree from $this->id:
+			// Create the tree from $this->categoryUid:
 		$tree->getTree();
 
 			// Get the tree records
-		$recsPerLevel = $tree->getRecordsPerLevelArray($this->id);
+		$recsPerLevel = $tree->getRecordsPerLevelArray($this->categoryUid);
 
 			// If there are a hierarchy of category ids, then...
 		if ($backendUser->user['uid'] && count($recsPerLevel)) {

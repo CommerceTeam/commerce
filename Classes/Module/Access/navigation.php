@@ -43,8 +43,8 @@ if (!(defined('TYPO3_REQUESTTYPE') || defined('TYPO3_REQUESTTYPE_AJAX'))) {
 
 	// Make instance if it is not an AJAX call
 if (!(TYPO3_REQUESTTYPE & TYPO3_REQUESTTYPE_AJAX)) {
-	/** @var Tx_Commerce_ViewHelpers_Navigation_AccessViewHelper $SOBE */
-	$SOBE = t3lib_div::makeInstance('Tx_Commerce_ViewHelpers_Navigation_AccessViewHelper');
+	/** @var Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper $SOBE */
+	$SOBE = t3lib_div::makeInstance('Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper');
 	$SOBE->init();
 	$SOBE->initPage();
 	$SOBE->main();

@@ -1280,7 +1280,7 @@ class Tx_Commerce_Utility_BackendUtility {
 		$data = array('data' => array('sDEF' => array('lDEF')));
 		while ($priceDataArray = $database->sql_fetch_assoc($res)) {
 			$priceUid = $priceDataArray['uid'];
-				// @todo replace with moneylib calls
+
 			$data['data']['sDEF']['lDEF']['price_net_' . $priceUid] = array('vDEF' => sprintf('%.2f', ($priceDataArray['price_net'] / 100)));
 			$data['data']['sDEF']['lDEF']['price_gross_' . $priceUid] = array('vDEF' => sprintf('%.2f', ($priceDataArray['price_gross'] / 100)));
 			$data['data']['sDEF']['lDEF']['purchase_price_' . $priceUid] = array('vDEF' => sprintf('%.2f', ($priceDataArray['purchase_price'] / 100)));
@@ -2605,12 +2605,12 @@ class Tx_Commerce_Utility_BackendUtility {
 	 * @return array Returns category record if OK, otherwise false.
 	 */
 	public static function readCategoryAccess($id, $perms_clause) {
-		if ((string) $id != '') {
-			$id = (int) $id;
-			if (!$id) {
-				/** @var t3lib_beUserAuth $backendUser */
-				$backendUser = $GLOBALS['BE_USER'];
+		/** @var t3lib_beUserAuth $backendUser */
+		$backendUser = $GLOBALS['BE_USER'];
 
+		if ((string) $id != '') {
+			$id = intval($id);
+			if (!$id) {
 				if ($backendUser->isAdmin()) {
 					$path = '/';
 					$pageinfo['_thePath'] = $path;
@@ -2618,14 +2618,159 @@ class Tx_Commerce_Utility_BackendUtility {
 				}
 			} else {
 				$pageinfo = t3lib_BEfunc::getRecord('tx_commerce_categories', $id, '*', ($perms_clause ? ' AND ' . $perms_clause : ''));
-				if ($pageinfo['uid']) {
-					if (is_array($pageinfo)) {
-						return $pageinfo;
-					}
+				t3lib_BEfunc::workspaceOL('tx_commerce_categories', $pageinfo);
+				if (is_array($pageinfo)) {
+					t3lib_BEfunc::fixVersioningPid('tx_commerce_categories', $pageinfo);
+					list($pageinfo['_thePath'], $pageinfo['_thePathFull']) = self::getCategoryPath(intval($pageinfo['uid']), $perms_clause, 15, 1000);
+					return $pageinfo;
 				}
 			}
 		}
 		return FALSE;
+	}
+
+	/**
+	 * Returns the path (visually) of a page $uid, fx. "/First page/Second page/Another subpage"
+	 * Each part of the path will be limited to $titleLimit characters
+	 * Deleted pages are filtered out.
+	 * Usage: 15
+	 *
+	 * @param integer $uid Page uid for which to create record path
+	 * @param string $clause is additional where clauses, eg. "
+	 * @param integer $titleLimit Title limit
+	 * @param integer $fullTitleLimit Title limit of Full title (typ. set to 1000 or so)
+	 * @return mixed Path of record (string) OR array with short/long title if $fullTitleLimit is set.
+	 */
+	public static function getCategoryPath($uid, $clause, $titleLimit, $fullTitleLimit = 0) {
+		if (!$titleLimit) {
+			$titleLimit = 1000;
+		}
+
+		$output = $fullOutput = '/';
+
+		$clause = trim($clause);
+		if ($clause !== '' && substr($clause, 0, 3) !== 'AND') {
+			$clause = 'AND ' . $clause;
+		}
+		$data = self::BEgetRootLine($uid, $clause);
+
+		foreach ($data as $record) {
+			if ($record['uid'] === 0) {
+				continue;
+			}
+				// Branch points
+			if ($record['_ORIG_pid'] && $record['t3ver_swapmode'] > 0) {
+					// Adding visual token - Versioning Entry Point - that tells that THIS position was where the versionized branch got connected to the main tree. I will have to find a better name or something...
+				$output = ' [#VEP#]' . $output;
+			}
+			$output = '/' . t3lib_div::fixed_lgd_cs(strip_tags($record['title']), $titleLimit) . $output;
+			if ($fullTitleLimit) {
+				$fullOutput = '/' . t3lib_div::fixed_lgd_cs(strip_tags($record['title']), $fullTitleLimit) . $fullOutput;
+			}
+		}
+
+		if ($fullTitleLimit) {
+			return array($output, $fullOutput);
+		} else {
+			return $output;
+		}
+	}
+
+	/**
+	 * Returns what is called the 'RootLine'. That is an array with information about the page records from a page id ($uid) and back to the root.
+	 * By default deleted pages are filtered.
+	 * This RootLine will follow the tree all the way to the root. This is opposite to another kind of root line known from the frontend where the rootline stops when a root-template is found.
+	 * Usage: 1
+	 *
+	 * @param integer $uid Page id for which to create the root line.
+	 * @param string $clause can be used to select other criteria. It would typically be where-clauses that stops the process if we meet a page, the user has no reading access to.
+	 * @param boolean $workspaceOL If true, version overlay is applied. This must be requested specifically because it is usually only wanted when the rootline is used for visual output while for permission checking you want the raw thing!
+	 * @return array Root line array, all the way to the page tree root (or as far as $clause allows!)
+	 */
+	public static function BEgetRootLine($uid, $clause = '', $workspaceOL = FALSE) {
+		static $BEgetRootLine_cache = array();
+
+		$output = array();
+		$pid = $uid;
+		$ident = $pid . '-' . $clause . '-' . $workspaceOL;
+
+		if (is_array($BEgetRootLine_cache[$ident])) {
+			$output = $BEgetRootLine_cache[$ident];
+		} else {
+			$loopCheck = 100;
+			$theRowArray = array();
+			while ($uid != 0 && $loopCheck) {
+				$loopCheck--;
+				$row = self::getCategoryForRootline($uid, $clause, $workspaceOL);
+				if (is_array($row)) {
+					$uid = $row['pid'];
+					$theRowArray[] = $row;
+				} else {
+					break;
+				}
+			}
+			if ($uid == 0) {
+				$theRowArray[] = array('uid' => 0, 'title' => '');
+			}
+			$c = count($theRowArray);
+
+			foreach ($theRowArray as $val) {
+				$c--;
+				$output[$c] = array(
+					'uid' => $val['uid'],
+					'pid' => $val['pid'],
+					'title' => $val['title'],
+					'ts_config' => $val['ts_config'],
+					't3ver_oid' => $val['t3ver_oid'],
+				);
+				if (isset($val['_ORIG_pid'])) {
+					$output[$c]['_ORIG_pid'] = $val['_ORIG_pid'];
+				}
+			}
+			$BEgetRootLine_cache[$ident] = $output;
+		}
+		return $output;
+	}
+
+	/**
+	 * Gets the cached page record for the rootline
+	 *
+	 * @param integer $uid: Page id for which to create the root line.
+	 * @param string $clause: can be used to select other criteria. It would typically be where-clauses that stops the process if we meet a page, the user has no reading access to.
+	 * @param boolean $workspaceOL: If true, version overlay is applied. This must be requested specifically because it is usually only wanted when the rootline is used for visual output while for permission checking you want the raw thing!
+	 * @return array Cached page record for the rootline
+	 * @see BEgetRootLine
+	 */
+	protected static function getCategoryForRootline($uid, $clause, $workspaceOL) {
+		/** @var t3lib_db $database */
+		$database = $GLOBALS['TYPO3_DB'];
+
+		static $getPageForRootline_cache = array();
+		$ident = $uid . '-' . $clause . '-' . $workspaceOL;
+
+		if (is_array($getPageForRootline_cache[$ident])) {
+			$row = $getPageForRootline_cache[$ident];
+		} else {
+			$res = $database->exec_SELECTquery(
+				'mm.uid_foreign AS pid, uid, title, ts_config, t3ver_oid',
+				'tx_commerce_categories JOIN tx_commerce_categories_parent_category_mm AS mm ON tx_commerce_categories.uid = mm.uid_local',
+					// whereClauseMightContainGroupOrderBy
+				'uid = ' . intval($uid) . ' ' . t3lib_BEfunc::deleteClause('tx_commerce_categories') . ' ' . $clause
+			);
+
+			$row = $database->sql_fetch_assoc($res);
+			if ($row) {
+				if ($workspaceOL) {
+					t3lib_BEfunc::workspaceOL('tx_commerce_categories', $row);
+				}
+				if (is_array($row)) {
+					t3lib_BEfunc::fixVersioningPid('tx_commerce_categories', $row);
+					$getPageForRootline_cache[$ident] = $row;
+				}
+			}
+			$database->sql_free_result($res);
+		}
+		return $row;
 	}
 
 	/**

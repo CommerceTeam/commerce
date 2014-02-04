@@ -138,6 +138,7 @@ class Tx_Commerce_Tree_Leaf_Slave extends Tx_Commerce_Tree_Leaf_Leaf {
 
 			// start the element
 		$out .= '<li class="' . $cssClass . '">';
+$out .= '<div>';
 
 			// a slave can never be a bank
 		$isBank = FALSE;
@@ -158,6 +159,7 @@ class Tx_Commerce_Tree_Leaf_Slave extends Tx_Commerce_Tree_Leaf_Leaf {
 
 			// title
 		$out .= $this->view->wrapTitle($child['title'], $child);
+$out .= '</div>';
 
 		/******************
 		 * Done printing
