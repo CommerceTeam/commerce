@@ -50,7 +50,7 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends localRecordList {
 	 * @var array
 	 */
 	protected $additionalFieldArray = array(
-		'articles', 'order_id', 'crdate', 'delivery', 'payment', 'address', 'zip', 'city', 'email', 'phone_2', 'uid', 'pid');
+		'order_id', 'crdate', 'delivery', 'payment', 'address', 'zip', 'city', 'email', 'phone_2', 'uid', 'pid');
 
 	/**
 	 * @var boolean
