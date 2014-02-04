@@ -400,14 +400,14 @@ class Tx_Commerce_Controller_AccessController extends t3lib_SCbase {
 
 		if ($backendUser->workspace != 0) {
 				// Adding section with the permission setting matrix:
-			$this->content .= $this->doc->divider(5);
-			$this->content .= $this->doc->section(
+				/** @var t3lib_FlashMessage $lockedMessage */
+			$lockedMessage = t3lib_div::makeInstance(
+				't3lib_FlashMessage',
+				$language->getLL('WorkspaceWarningText'),
 				$language->getLL('WorkspaceWarning'),
-				'<div class="warningbox">' . $language->getLL('WorkspaceWarningText') . '</div>',
-				0,
-				1,
-				3
+				t3lib_FlashMessage::WARNING
 			);
+			t3lib_FlashMessageQueue::addMessage($lockedMessage);
 		}
 
 			// Get usernames and groupnames
@@ -602,26 +602,25 @@ class Tx_Commerce_Controller_AccessController extends t3lib_SCbase {
 		if ($this->MOD_SETTINGS['mode'] == 'perms') {
 			$code .= '
 				<tr>
-					<td class="bgColor2" colspan="2">&nbsp;</td>
-					<td class="bgColor2"><img' . $lineImg . ' alt="" /></td>
-					<td class="bgColor2" align="center"><b>' . $language->getLL('Owner', 1) . '</b></td>
-					<td class="bgColor2"><img' . $lineImg . ' alt="" /></td>
-					<td class="bgColor2" align="center"><b>' . $language->getLL('Group', 1) . '</b></td>
-					<td class="bgColor2"><img' . $lineImg . ' alt="" /></td>
-					<td class="bgColor2" align="center"><b>' . $language->getLL('Everybody', 1) . '</b></td>
-					<td class="bgColor2"><img' . $lineImg . ' alt="" /></td>
-					<td class="bgColor2" align="center"><b>' . $language->getLL('EditLock', 1) . '</b></td>
+					<td colspan="2">&nbsp;</td>
+					<td ><img' . $lineImg . ' alt="" /></td>
+					<td align="center"><b>' . $language->getLL('Owner', 1) . '</b></td>
+					<td><img' . $lineImg . ' alt="" /></td>
+					<td align="center"><b>' . $language->getLL('Group', 1) . '</b></td>
+					<td><img' . $lineImg . ' alt="" /></td>
+					<td align="center"><b>' . $language->getLL('Everybody', 1) . '</b></td>
+					<td><img' . $lineImg . ' alt="" /></td>
+					<td align="center"><b>' . $language->getLL('EditLock', 1) . '</b></td>
 				</tr>
 			';
 		} else {
 			$code .= '
-				<tr>
-					<td class="bgColor2" colspan="2">&nbsp;</td>
-					<td class="bgColor2"><img' . $lineImg . ' alt="" /></td>
-					<td class="bgColor2" align="center" nowrap="nowrap"><b>' . $language->getLL('User', 1) . ':</b> ' .
-					$backendUser->user['username'] . '</td>' . (!$backendUser->isAdmin() ? '<td class="bgColor2"><img' .
-					$lineImg . ' alt="" /></td>
-					<td class="bgColor2" align="center"><b>' . $language->getLL('EditLock', 1) . '</b></td>' : '') . '
+				<tr class="t3-row-header">
+					<td colspan="2">&nbsp;</td>
+					<td><img' . $lineImg . ' alt="" /></td>
+					<td align="center" nowrap="nowrap">' . $language->getLL('User', TRUE) . ': ' . htmlspecialchars($backendUser->user['username']) . '</td>
+					' . (!$backendUser->isAdmin() ? '<td><img' . $lineImg . ' alt="" /></td>
+					<td align="center">' . $language->getLL('EditLock', 1) . '</td>' : '') . '
 				</tr>';
 		}
 
@@ -649,24 +648,27 @@ class Tx_Commerce_Controller_AccessController extends t3lib_SCbase {
 				// User/Group names:
 			$userName = $beUserArray[$row['perms_userid']] ?
 				$beUserArray[$row['perms_userid']]['username'] :
-				($row['perms_userid'] ? '<i>[' . $row['perms_userid'] . ']!</i>' : '');
+				($row['perms_userid'] ? $row['perms_userid'] : '');
 			$userName = $permissionAjaxController->renderOwnername($pageId, $row['perms_userid'], htmlspecialchars(t3lib_div::fixed_lgd_cs($userName, 20)));
 
 			$groupName = $beGroupArray[$row['perms_groupid']] ?
 				$beGroupArray[$row['perms_groupid']]['title']  :
-				($row['perms_groupid'] ? '<i>[' . $row['perms_groupid'] . ']!</i>' : '');
-			$groupName = $permissionAjaxController->renderGroupname($pageId, $row['perms_groupid'], htmlspecialchars(t3lib_div::fixed_lgd_cs($groupName, 20)));
+				($row['perms_groupid'] ? $row['perms_groupid'] : '');
+			if ($row['perms_groupid'] && (!$beGroupArray[$row['perms_groupid']])) {
+				$groupName = $permissionAjaxController->renderGroupname($pageId, $row['perms_groupid'], htmlspecialchars(t3lib_div::fixed_lgd_cs($groupName, 20)), FALSE);
+			} else {
+				$groupName = $permissionAjaxController->renderGroupname($pageId, $row['perms_groupid'], htmlspecialchars(t3lib_div::fixed_lgd_cs($groupName, 20)));
+			}
 
 				// Seeing if editing of permissions are allowed for that page:
 			$editPermsAllowed = ($row['perms_userid'] == $backendUser->user['uid'] || $backendUser->isAdmin());
 
 				// First column:
-			$cellAttrib = '';
 			$PMicon = '';
 				// Add PM only if we are not looking at the root
-			if (0 < $records[$i]['depth']) {
+			if ($records[$i]['depth'] > 0) {
 					// Add simple join-images for categories that are deeper level than 1
-				if (1 < $records[$i]['depth']) {
+				if ($records[$i]['depth'] > 1) {
 					$k = $records[$i]['depth'];
 
 					for ($j = 1; $j < $k; $j ++) {
@@ -700,6 +702,7 @@ class Tx_Commerce_Controller_AccessController extends t3lib_SCbase {
 				// determine which icon to use
 			$rowIcon = $pageId ? $icon : $rootIcon;
 
+			$cellAttrib = ($row['_CSSCLASS'] ? ' class="' . $row['_CSSCLASS'] . '"' : '');
 			$cells[] = '
 				<td align="left" nowrap="nowrap"' . ($cellAttrib ? $cellAttrib : $bgCol) . '>' . $PMicon . $rowIcon .
 				htmlspecialchars(t3lib_div::fixed_lgd_cs($row['title'], $tLen)) . '&nbsp;</td>';
@@ -707,10 +710,10 @@ class Tx_Commerce_Controller_AccessController extends t3lib_SCbase {
 				// "Edit permissions" -icon
 			if ($editPermsAllowed && $pageId) {
 				$aHref = 'index.php?mode=' . $this->MOD_SETTINGS['mode'] . '&depth=' . $this->MOD_SETTINGS['depth'] . '&id=' .
-					$pageId . '&return_id=' . $this->id . '&edit=1';
+					($row['_ORIG_uid'] ? $row['_ORIG_uid'] : $pageId) . '&return_id=' . $this->id . '&edit=1';
 				$cells[] = '
-					<td' . $bgCol . '><a href="' . htmlspecialchars($aHref) . '">' .
-					t3lib_iconWorks::getSpriteIcon('actions-document-open', array('title' => $language->getLL('ch_permissions', 1))) .
+					<td' . $bgCol . '><a href="' . htmlspecialchars($aHref) . '" title="' . $language->getLL('ch_permissions', 1) . '">' .
+					t3lib_iconWorks::getSpriteIcon('actions-document-open') .
 					'</a></td>';
 			} else {
 				$cells[] = LF . '<td' . $bgCol . '></td>';
@@ -720,16 +723,16 @@ class Tx_Commerce_Controller_AccessController extends t3lib_SCbase {
 			$lineImg = t3lib_iconWorks::skinImg($this->doc->backPath, 'gfx/line.gif', 'width="5" height="16"');
 			if ($this->MOD_SETTINGS['mode'] == 'perms') {
 				$cells[] = '
-					<td' . $bgCol . '><img' . $lineImg . ' alt="" /></td>
+					<td' . $bgCol . ' class="center"><img' . $lineImg . ' alt="" /></td>
 					<td' . $bgCol . ' nowrap="nowrap">' . ($pageId ? $permissionAjaxController->renderPermissions($row['perms_user'], $pageId, 'user') . ' ' . $userName : '') . '</td>
 
-					<td' . $bgCol . '><img' . $lineImg . ' alt="" /></td>
+					<td' . $bgCol . ' class="center"><img' . $lineImg . ' alt="" /></td>
 					<td' . $bgCol . ' nowrap="nowrap">' . ($pageId ? $permissionAjaxController->renderPermissions($row['perms_group'], $pageId, 'group') . ' ' . $groupName : '') . '</td>
 
-					<td' . $bgCol . '><img' . $lineImg . ' alt="" /></td>
+					<td' . $bgCol . ' class="center"><img' . $lineImg . ' alt="" /></td>
 					<td' . $bgCol . ' nowrap="nowrap">' . ($pageId ? ' ' . $permissionAjaxController->renderPermissions($row['perms_everybody'], $pageId, 'everybody') : '') . '</td>
 
-					<td' . $bgCol . '><img' . $lineImg . ' alt="" /></td>
+					<td' . $bgCol . ' class="center"><img' . $lineImg . ' alt="" /></td>
 					<td' . $bgCol . ' nowrap="nowrap">' . (
 						$row['editlock'] ?
 						'<span id="el_' . $pageId . '" class="editlock"><a class="editlock" onclick="WebPermissions.toggleEditLock(\'' .
@@ -748,7 +751,7 @@ class Tx_Commerce_Controller_AccessController extends t3lib_SCbase {
 					';
 			} else {
 				$cells[] = '
-					<td' . $bgCol . '><img' . $lineImg . ' alt="" /></td>';
+					<td' . $bgCol . ' class="center"><img' . $lineImg . ' alt="" /></td>';
 
 				$bgCol = ($backendUser->user['uid'] == $row['perms_userid'] ? ' class="bgColor-20"' : $lE_bgCol);
 
@@ -772,6 +775,8 @@ class Tx_Commerce_Controller_AccessController extends t3lib_SCbase {
 						':
 						''
 					);
+
+				$bgCol = $lE_bgCol;
 			}
 
 				// Compile table row:

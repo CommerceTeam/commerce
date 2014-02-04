@@ -74,6 +74,15 @@ if (TYPO3_MODE == 'BE') {
 		$TBE_MODULES = $temp_TBE_MODULES;
 	}
 
+	if (t3lib_extMgm::isLoaded('t3skin')) {
+		$presetSkinImgs = is_array($GLOBALS['TBE_STYLES']['skinImg']) ? $GLOBALS['TBE_STYLES']['skinImg'] : array();
+
+		$GLOBALS['TBE_STYLES']['skinImg'] = array_merge($presetSkinImgs, array(
+			'MOD:txcommerceM1_access/../../../Resources/Public/Icons/mod_access.gif' =>
+				array(t3lib_extMgm::extRelPath('t3skin') . 'icons/module_web_perms.png', 'width="24" height="24"'),
+		));
+	}
+
 		// add main module
 	t3lib_extMgm::addModule('txcommerceM1', '', '', PATH_TXCOMMERCE . 'Classes/Module/Main/');
 		// add category module
@@ -132,7 +141,7 @@ if (TYPO3_MODE == 'BE') {
 	');
 }
 
-// @todo fix this
+	// @todo fix this
 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['leafClasses']['txcommerceCategoryTree'] =
 	'EXT:' . COMMERCE_EXTKEY . '/lib/class.tx_commerce_treecategory.php:&tx_commerce_treeCategory';
 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['leafClasses']['txcommerceCategory'] =

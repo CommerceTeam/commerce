@@ -240,7 +240,7 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 			// Get Tabpe and controlArray in a different way
 		$controlParams = t3lib_div::_GP('control');
 		if ($controlParams) {
-			//$this->table = key($controlParams);
+				// $this->table = key($controlParams);
 			$this->controlArray = current($controlParams);
 		}
 	}
