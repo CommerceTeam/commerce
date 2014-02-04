@@ -17,6 +17,7 @@
 			<label index="CustomerData">Customer data</label>
 			<label index="OrderData">Order data</label>
 			<label index="moveorderto">Move Order to:</label>
+			<label index="movedestination">Select destination</label>
 			<label index="order_type_uid_noName">Type</label>
 			<label index="delivery">delivery</label>
 			<label index="payment">payment</label>

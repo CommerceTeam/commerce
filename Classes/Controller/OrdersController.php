@@ -182,6 +182,11 @@ class Tx_Commerce_Controller_OrdersController extends t3lib_SCbase {
 	protected $buttons = array();
 
 	/**
+	 * @var integer
+	 */
+	protected $orderPid;
+
+	/**
 	 * @return void
 	 */
 	public function init() {
@@ -198,9 +203,8 @@ class Tx_Commerce_Controller_OrdersController extends t3lib_SCbase {
 		Tx_Commerce_Utility_FolderUtility::init_folders();
 
 			// Find the right pid for the Ordersfolder
-		$orderPid = current(array_unique(Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Orders', 'Commerce', 0, 'Commerce')));;
-
-		if ($this->id == $orderPid) {
+		$this->orderPid = current(array_unique(Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Orders', 'Commerce', 0, 'Commerce')));;
+		if ($this->id == $this->orderPid) {
 			$this->id = 0;
 		}
 
@@ -225,7 +229,7 @@ class Tx_Commerce_Controller_OrdersController extends t3lib_SCbase {
 			$this->include_once[] = PATH_t3lib . 'class.t3lib_tcemain.php';
 		}
 
-			// Get Tabpe and controlArray in a different way
+			// Get Table and controlArray in a different way
 		$controlParams = t3lib_div::_GP('control');
 		if ($controlParams) {
 				// $this->table = key($controlParams);
@@ -337,7 +341,7 @@ class Tx_Commerce_Controller_OrdersController extends t3lib_SCbase {
 		$dblist->returnUrl = $this->returnUrl;
 		$dblist->allFields = ($this->MOD_SETTINGS['bigControlPanel'] || $this->table) ? 1 : 0;
 		$dblist->localizationView = $this->MOD_SETTINGS['localization'];
-		$dblist->showClipboard = 0;
+		$dblist->showClipboard = 1;
 		$dblist->disableSingleTableView = $this->modTSconfig['properties']['disableSingleTableView'];
 		$dblist->listOnlyInSingleTableMode = $this->modTSconfig['properties']['listOnlyInSingleTableView'];
 		$dblist->hideTables = $this->modTSconfig['properties']['hideTables'];
@@ -353,6 +357,7 @@ class Tx_Commerce_Controller_OrdersController extends t3lib_SCbase {
 		$dblist->modTSconfig = $this->modTSconfig;
 
 		$dblist->tableList = 'tx_commerce_orders';
+		$dblist->orderPid = $this->orderPid;
 
 			// Clipboard is initialized:
 			// Start clipboard
