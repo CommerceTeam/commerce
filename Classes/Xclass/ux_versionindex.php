@@ -27,6 +27,13 @@
  */
 class ux_tx_version_cm1 extends tx_version_cm1 {
 	/**
+	 * document template object
+	 *
+	 * @var mediumDoc
+	 */
+	public $doc;
+
+	/**
 	 * Administrative links for a table / record
 	 *
 	 * @param string $table Table name

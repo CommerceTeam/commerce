@@ -338,7 +338,7 @@ class Tx_Commerce_ViewHelpers_Browselinks_CategoryTree extends Tx_Commerce_Tree_
 
 			// Set the Positions for each leaf
 		for ($i = 0; $i < $this->leafcount; $i ++) {
-			/** @var leaf $leaf */
+			/** @var Tx_Commerce_Tree_Leaf_Leaf $leaf */
 			$leaf = $this->leafs[$i];
 			$leaf->setDataPositions($positions);
 		}
