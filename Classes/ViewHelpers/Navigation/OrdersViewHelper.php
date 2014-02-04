@@ -126,10 +126,13 @@ class Tx_Commerce_ViewHelpers_Navigation_OrdersViewHelper extends t3lib_SCbase {
 		}
 
 			// Click menu code is added:
+		/*
+		No click menu needed here
 		$CMparts = $this->doc->getContextMenuCode();
 		$this->doc->bodyTagAdditions = $CMparts[1];
 		$this->doc->JScode .= $CMparts[0];
 		$this->doc->postCode .= $CMparts[2];
+		*/
 
 			// Setting JavaScript for menu.
 		$this->doc->JScode = $this->doc->wrapScriptTags(

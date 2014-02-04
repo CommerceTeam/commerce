@@ -91,10 +91,10 @@ if (TYPO3_MODE == 'BE') {
 	t3lib_extMgm::addModule('txcommerceM1', 'access', '', PATH_TXCOMMERCE . 'Classes/Module/Access/');
 		// Orders module
 	t3lib_extMgm::addModule('txcommerceM1', 'orders', '', PATH_TXCOMMERCE . 'Classes/Module/Orders/');
-		// Systemdata module
-	t3lib_extMgm::addModule('txcommerceM1', 'systemdata', '', PATH_TXCOMMERCE . 'Classes/Module/Systemdata/');
 		// Statistic Module
 	t3lib_extMgm::addModule('txcommerceM1', 'statistic', '', PATH_TXCOMMERCE . 'Classes/Module/Statistic/');
+		// Systemdata module
+	t3lib_extMgm::addModule('txcommerceM1', 'systemdata', '', PATH_TXCOMMERCE . 'Classes/Module/Systemdata/');
 
 		// commerce icon
 	if (t3lib_div::int_from_ver(TYPO3_version) >= 4004000) {
