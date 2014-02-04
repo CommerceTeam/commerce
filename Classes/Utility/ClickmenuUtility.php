@@ -417,4 +417,6 @@ class Tx_Commerce_Utility_ClickmenuUtility {
 	}
 }
 
+class_alias('Tx_Commerce_Utility_ClickmenuUtility', 'tx_commerce_clickmenu');
+
 ?>
