@@ -156,168 +156,6 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 	protected $data = array();
 
 	/**
-	 * @return array
-	 */
-	public function getData() {
-		return $this->data;
-	}
-
-	/**
-	 * language id
-	 *
-	 * @return integer
-	 */
-	public function getLang() {
-		return $this->lang_uid;
-	}
-
-	/**
-	 * @return integer l18n_partent uid
-	 * @access public
-	 */
-	public function getL18nParent() {
-		return $this->l18n_parent;
-	}
-
-	/**
-	 * @return integer
-	 */
-	public function getLocalizedUid() {
-		return $this->_LOCALIZED_UID;
-	}
-
-	/**
-	 * Loads the Data from the database
-	 * via the named database class $databaseClass
-	 *
-	 * @param boolean $translationMode Transaltio Mode of the record, default false to use the default way of translation
-	 * @return array
-	 */
-	public function loadData($translationMode = FALSE) {
-		if ($translationMode) {
-			$this->translationMode = $translationMode;
-		}
-
-		if (!$this->databaseConnection) {
-			$this->databaseConnection = t3lib_div::makeInstance($this->databaseClass);
-		}
-		$this->data = $this->databaseConnection->getData($this->uid, $this->lang_uid, $translationMode);
-
-		if (!$this->data) {
-			$this->recordTranslated = FALSE;
-			return FALSE;
-		} else {
-			$this->recordTranslated = TRUE;
-		}
-
-		foreach ($this->fieldlist as $field) {
-			$this->$field = $this->data[$field];
-		}
-
-		if ($this->data['_LOCALIZED_UID']) {
-			$this->_LOCALIZED_UID = $this->data['_LOCALIZED_UID'];
-		}
-
-		return $this->data;
-	}
-
-	/**
-	 * Returns true, if a translation for the initialised Laguage is availiable
-	 *
-	 * @return boolean
-	 */
-	public function isTranslated() {
-		return $this->recordTranslated;
-	}
-
-	/**
-	 * Adds a field to the $fieldlist variable
-	 * used for hooks to add own fields to the output
-	 * Basically it creates an array with the string as value
-	 * and calls $this->add_fields_to_fieldlist
-	 *
-	 * @param string $fieldname Database fieldname
-	 */
-	public function addFieldToFieldlist($fieldname) {
-		$this->addFieldsToFieldlist(array(trim($fieldname)));
-	}
-
-	/**
-	 * Adds a set of fields to the $fieldlist variable
-	 * used for hooks to add own fields to the output
-	 *
-	 * @param array $fieldarray array of databse filednames
-	 */
-	public function addFieldsToFieldlist($fieldarray) {
-		$this->fieldlist = array_merge($this->fieldlist, (array) $fieldarray);
-	}
-
-	/**
-	 * Get uid of item
-	 *
-	 * @return integer Uid
-	 */
-	public function getUid() {
-		return (int) $this->uid;
-	}
-
-	/**
-	 * Returns the data of this object als array
-	 *
-	 * @param string $prefix Prefix for the keys or returnung array optional
-	 * @return array Assoc Arry of data
-	 */
-	public function returnAssocArray($prefix = '') {
-		$data = array();
-
-		foreach ($this->fieldlist as $field) {
-			$data[$prefix . $field] = $this->$field;
-		}
-
-		return $data;
-	}
-
-	/**
-	 * Checks if the UID is valid and availiable in the database
-	 *
-	 * @return boolean true if uid is valid
-	 */
-	public function isValidUid() {
-		if (!$this->databaseConnection) {
-			$this->databaseConnection = t3lib_div::makeInstance($this->databaseClass);
-		}
-
-		return $this->databaseConnection->isUid($this->uid);
-	}
-
-	/**
-	 * Checks in the Database if object is
-	 * basically checks against the enableFields
-	 *
-	 * @see: class.tx_commerce_db_alib.php->isAccessible(
-	 * @return boolean   TRUE    if is accessible
-	 *            FALSE    if is not accessible
-	 */
-	public function isAccessible() {
-		if (!$this->databaseConnection) {
-			$this->databaseConnection = t3lib_div::makeInstance($this->databaseClass);
-		}
-
-		return $this->databaseConnection->isAccessible($this->uid);
-	}
-
-	/**
-	 * Sets the PageTitle titile from via the TSFE
-	 *
-	 * @param string $field (default title) for setting as title
-	 */
-	public function setPageTitle($field = 'title') {
-		$GLOBALS['TSFE']->page['title'] = $this->$field . ' : ' . $GLOBALS['TSFE']->page['title'];
-			// set pagetitle for indexed search also
-		$GLOBALS['TSFE']->indexedDocTitle = $this->$field . ' : ' . $GLOBALS['TSFE']->indexedDocTitle;
-	}
-
-	/**
 	 * returns the possible attributes
 	 *
 	 * @param array $attribute_corelation_type_list array of attribut_correlation_types
@@ -368,48 +206,168 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 	}
 
 	/**
+	 * @return array
+	 */
+	public function getData() {
+		return $this->data;
+	}
+
+	/**
+	 * language id
+	 *
+	 * @return integer
+	 */
+	public function getLang() {
+		return $this->lang_uid;
+	}
+
+	/**
+	 * @return integer l18n_partent uid
+	 * @access public
+	 */
+	public function getL18nParent() {
+		return $this->l18n_parent;
+	}
+
+	/**
+	 * @return integer
+	 */
+	public function getLocalizedUid() {
+		return $this->_LOCALIZED_UID;
+	}
+
+	/**
+	 * Get uid of item
+	 *
+	 * @return integer Uid
+	 */
+	public function getUid() {
+		return (int) $this->uid;
+	}
+
+
+	/**
 	 * Loads the Data from the database
 	 * via the named database class $databaseClass
 	 *
 	 * @param boolean $translationMode Transaltio Mode of the record, default false to use the default way of translation
 	 * @return array
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use loadData instead
 	 */
-	public function load_data($translationMode = FALSE) {
-		t3lib_div::logDeprecatedFunction();
-		return $this->loadData($translationMode);
+	public function loadData($translationMode = FALSE) {
+		if ($translationMode) {
+			$this->translationMode = $translationMode;
+		}
+
+		if (!$this->databaseConnection) {
+			$this->databaseConnection = t3lib_div::makeInstance($this->databaseClass);
+		}
+		$this->data = $this->databaseConnection->getData($this->uid, $this->lang_uid, $translationMode);
+
+		if (!$this->data) {
+			$this->recordTranslated = FALSE;
+			return FALSE;
+		} else {
+			$this->recordTranslated = TRUE;
+		}
+
+		foreach ($this->fieldlist as $field) {
+			$this->$field = $this->data[$field];
+		}
+
+		if ($this->data['_LOCALIZED_UID']) {
+			$this->_LOCALIZED_UID = $this->data['_LOCALIZED_UID'];
+		}
+
+		return $this->data;
 	}
 
 	/**
-	 * Get uid of object
+	 * Adds a field to the $fieldlist variable
+	 * used for hooks to add own fields to the output
+	 * Basically it creates an array with the string as value
+	 * and calls $this->add_fields_to_fieldlist
 	 *
-	 * @return integer uid
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getUid instead
+	 * @param string $fieldname Database fieldname
 	 */
-	public function get_uid() {
-		t3lib_div::logDeprecatedFunction();
-		return $this->getUid();
+	public function addFieldToFieldlist($fieldname) {
+		$this->addFieldsToFieldlist(array(trim($fieldname)));
 	}
 
 	/**
-	 * Returns the UID of the localized Record
+	 * Adds a set of fields to the $fieldlist variable
+	 * used for hooks to add own fields to the output
 	 *
-	 * @return integer _LOCALIZED_UID
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getLocalizedUid instead
+	 * @param array $fieldarray array of databse filednames
 	 */
-	public function get_LOCALIZED_UID() {
-		t3lib_div::logDeprecatedFunction();
-		return $this->getLocalizedUid();
+	public function addFieldsToFieldlist($fieldarray) {
+		$this->fieldlist = array_merge($this->fieldlist, (array) $fieldarray);
 	}
 
 	/**
-	 * @return integer language id
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getLang instead
+	 * Checks in the Database if object is
+	 * basically checks against the enableFields
+	 *
+	 * @see: class.tx_commerce_db_alib.php->isAccessible(
+	 * @return boolean   TRUE    if is accessible
+	 *            FALSE    if is not accessible
 	 */
-	public function get_lang() {
-		t3lib_div::logDeprecatedFunction();
-		return $this->getLang();
+	public function isAccessible() {
+		if (!$this->databaseConnection) {
+			$this->databaseConnection = t3lib_div::makeInstance($this->databaseClass);
+		}
+
+		return $this->databaseConnection->isAccessible($this->uid);
 	}
+
+	/**
+	 * Returns true, if a translation for the initialised Laguage is availiable
+	 *
+	 * @return boolean
+	 */
+	public function isTranslated() {
+		return $this->recordTranslated;
+	}
+
+	/**
+	 * Checks if the UID is valid and availiable in the database
+	 *
+	 * @return boolean true if uid is valid
+	 */
+	public function isValidUid() {
+		if (!$this->databaseConnection) {
+			$this->databaseConnection = t3lib_div::makeInstance($this->databaseClass);
+		}
+
+		return $this->databaseConnection->isUid($this->uid);
+	}
+
+	/**
+	 * Returns the data of this object als array
+	 *
+	 * @param string $prefix Prefix for the keys or returnung array optional
+	 * @return array Assoc Arry of data
+	 */
+	public function returnAssocArray($prefix = '') {
+		$data = array();
+
+		foreach ($this->fieldlist as $field) {
+			$data[$prefix . $field] = $this->$field;
+		}
+
+		return $data;
+	}
+
+	/**
+	 * Sets the PageTitle titile from via the TSFE
+	 *
+	 * @param string $field (default title) for setting as title
+	 */
+	public function setPageTitle($field = 'title') {
+		$GLOBALS['TSFE']->page['title'] = $this->$field . ' : ' . $GLOBALS['TSFE']->page['title'];
+			// set pagetitle for indexed search also
+		$GLOBALS['TSFE']->indexedDocTitle = $this->$field . ' : ' . $GLOBALS['TSFE']->indexedDocTitle;
+	}
+
 
 	/**
 	 * depricated, use tx_commerce_pibase->renderrow in combinintion with
@@ -449,6 +407,37 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 		}
 
 		return $markerArray;
+	}
+
+	/**
+	 * Get uid of object
+	 *
+	 * @return integer uid
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getUid instead
+	 */
+	public function get_uid() {
+		t3lib_div::logDeprecatedFunction();
+		return $this->getUid();
+	}
+
+	/**
+	 * Returns the UID of the localized Record
+	 *
+	 * @return integer _LOCALIZED_UID
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getLocalizedUid instead
+	 */
+	public function get_LOCALIZED_UID() {
+		t3lib_div::logDeprecatedFunction();
+		return $this->getLocalizedUid();
+	}
+
+	/**
+	 * @return integer language id
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getLang instead
+	 */
+	public function get_lang() {
+		t3lib_div::logDeprecatedFunction();
+		return $this->getLang();
 	}
 
 	/**
@@ -496,7 +485,7 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 	 */
 	public function is_valid_uid() {
 		t3lib_div::logDeprecatedFunction();
-		$this->isValidUid();
+		return $this->isValidUid();
 	}
 
 	/**
@@ -509,6 +498,19 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 	public function get_attributes($attribute_corelation_type_list = array()) {
 		t3lib_div::logDeprecatedFunction();
 		return $this->getAttributes($attribute_corelation_type_list);
+	}
+
+	/**
+	 * Loads the Data from the database
+	 * via the named database class $databaseClass
+	 *
+	 * @param boolean $translationMode Transaltio Mode of the record, default false to use the default way of translation
+	 * @return array
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use loadData instead
+	 */
+	public function load_data($translationMode = FALSE) {
+		t3lib_div::logDeprecatedFunction();
+		return $this->loadData($translationMode);
 	}
 }
 
