@@ -88,7 +88,7 @@ class tx_commerce_order_localRecordlist extends localRecordList {
 				'LIMIT' => $limit,
 			);
 		} else {
-			tx_commerce_create_folder::init_folders();
+			Tx_Commerce_Utility_FolderUtility::init_folders();
 
 			/**
 			 * @todo bitte aus der ext config nehmen, volker angefragt

@@ -23,10 +23,10 @@
  ***************************************************************/
 
 /**
- * This class inculdes all methods for generating statistcs data,
+ * This class inculdes all methods for generating statistics data,
  * used for the statistics module and for the cli script
  */
-class tx_commerce_statistics {
+class Tx_Commerce_Utility_StatisticsUtility {
 	/**
 	 * List of exclude PIDs, PIDs whcih should not be used when calculation the statistics. This List should
 	 * be definable in Extension configuration
@@ -267,6 +267,8 @@ class tx_commerce_statistics {
 		return (int) mktime(23, 59, 59, strftime('%m', $timestamp), strftime('%d', $timestamp), strftime('%Y', $timestamp));
 	}
 }
+
+class_alias('Tx_Commerce_Utility_StatisticsUtility', 'tx_commerce_statistics');
 
 if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_statistics.php']) {
 	/** @noinspection PhpIncludeInspection */

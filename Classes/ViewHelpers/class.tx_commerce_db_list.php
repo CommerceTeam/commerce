@@ -23,15 +23,14 @@
  * This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-/**
- * Used for rendering a list of records for a tree item
- * The original file (typo3/db_list.php) could not be used only because of the object intantiation at the bottom of the file.
- */
-
 /** @var language $language */
 $language = & $GLOBALS['LANG'];
 $language->includeLLFile('EXT:lang/locallang_mod_web_list.xml');
 
+/**
+ * Used for rendering a list of records for a tree item
+ * The original file (typo3/db_list.php) could not be used only because of the object intantiation at the bottom of the file.
+ */
 class tx_commerce_db_list {
 	/**
 	 * Treeitem Id for which to make the listing
