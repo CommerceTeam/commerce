@@ -1301,7 +1301,7 @@ class Tx_Commerce_Utility_BackendUtility {
 	 * @param integer $article_uid
 	 * @return void
 	 * @see updatePriceXMLFromDatabase
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use Tx_Commerce_Utility_BackendUtility::updateXML
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use Tx_Commerce_Utility_BackendUtility::updatePriceXMLFromDatabase
 	 */
 	public function fix_articles_price($article_uid = 0) {
 		t3lib_div::logDeprecatedFunction();
@@ -1732,12 +1732,12 @@ class Tx_Commerce_Utility_BackendUtility {
 		/** @var t3lib_db $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
-		if (0 == $sorting) {
+		if ($sorting == 0) {
 				// get uid of the last product in the products table
 			$res = $database->exec_SELECTquery('uid', 'tx_commerce_products', 'deleted = 0 AND pid != -1', '', 'uid DESC', '0,1');
 
 				// if there are no products at all, abort.
-			if (0 >= $database->sql_num_rows($res)) {
+			if (!$database->sql_num_rows($res)) {
 				return FALSE;
 			}
 

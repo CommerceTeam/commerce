@@ -148,7 +148,6 @@ class Tx_Commerce_Hook_CommandMapHooks {
 				// Write to session that we copy
 				// this is used by the hook to the datamap class to figure out if it should check if the categories-field is filled - since it is mergeIfNotBlank, it would always be empty
 				// so far this is the best (though not very clean) way to solve the issue we get when localizing a product
-				// @todo check if other solution is possible
 			$backendUser->uc['txcommerce_copyProcess'] = 1;
 			$backendUser->writeUC();
 		} elseif ($command == 'delete') {
@@ -233,67 +232,21 @@ class Tx_Commerce_Hook_CommandMapHooks {
 		}
 	}
 
-
 	/**
 	 * @param string $command
 	 * @param integer $categoryUid
 	 * @return void
 	 */
 	protected function postProcessCategory($command, $categoryUid) {
-			// @todo add copy for category
 		if ($command == 'delete') {
 			$this->deleteChildCategoriesProductsArticlesPricesOfCategory($categoryUid);
 		} elseif ($command == 'copy') {
-			// @todo copy category translations
-			// @todo copy childcategory recursiv
-			// @todo copy products
+			$newCategoryUid = $this->pObj->copyMappingArray['tx_commerce_categories'][$categoryUid];
+			$locale = $this->getLocale();
+
+			$this->belib->copyCategoriesByCategory($newCategoryUid, $categoryUid, $locale);
 		}
 	}
-
-	/**
-	 * Delete all categories->products->articles if a category should be deleted.
-	 * This one does NOT delete any relations! This is not wanted because you might want to
-	 * restore deleted categories, products or articles.
-	 *
-	 * @param integer $categoryUid
-	 * @return void
-	 */
-	protected function deleteChildCategoriesProductsArticlesPricesOfCategory($categoryUid) {
-			// we dont use Tx_Commerce_Domain_Model_Category::getChildCategoriesUidlist because of performance issues
-		$childCategories = array();
-		$this->belib->getChildCategories($categoryUid, $childCategories, 0, 0, TRUE);
-
-		if (count($childCategories)) {
-			foreach ($childCategories as $childCategoryUid) {
-				$products = $this->belib->getProductsOfCategory($childCategoryUid);
-
-				if (count($products)) {
-					$productList = array();
-					foreach ($products as $product) {
-						$productList[] = $product['uid_local'];
-
-						$articles = $this->belib->getArticlesOfProduct($product['uid_local']);
-						if (count($articles)) {
-							$articleList = array();
-							foreach ($articles as $article) {
-								$articleList[] = $article['uid'];
-							}
-
-							$this->deletePricesByArticleList($articleList);
-							$this->deleteArticlesByArticleList($articleList);
-						}
-					}
-
-					$this->deleteProductsByProductList($productList);
-					$this->deleteProductTranslationsByProductList($productList);
-				}
-			}
-
-			$this->deleteCategoriesByCategoryList($childCategories);
-			$this->deleteCategoryTranslationsByCategoryList($childCategories);
-		}
-	}
-
 
 	/**
 	 * @param string $command
@@ -311,11 +264,11 @@ class Tx_Commerce_Hook_CommandMapHooks {
 			$newProductUid = $this->pObj->copyMappingArray['tx_commerce_products'][$productUid];
 
 			$this->changeCategoryOfCopiedProduct($newProductUid);
-			$this->copyArticlesFromProduct($productUid, $newProductUid);
-			// @todo copy attributes
-			// @todo copy translations
+			$this->copyProductTanslations($productUid, $newProductUid);
+			$this->belib->copyArticlesByProduct($newProductUid, $productUid);
 		}
 	}
+
 
 	/**
 	 * localize all articles that are related to the current product
@@ -505,6 +458,134 @@ class Tx_Commerce_Hook_CommandMapHooks {
 
 
 	/**
+	 * @return array
+	 */
+	protected function getLocale() {
+		list($commercePid) = Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Commerce', 'commerce');
+		list($productPid) = Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Products', 'commerce', $commercePid);
+
+		/** @var t3lib_db $database */
+		$database = $GLOBALS['TYPO3_DB'];
+
+		$locale = array_keys((array) $database->exec_SELECTgetRows(
+			'sys_language_uid',
+			'pages_overlay',
+			'pid = ' . $productPid,
+			'',
+			'',
+			'',
+			'sys_language_uid'
+		));
+
+		return $locale;
+	}
+
+	/**
+	 * @param integer $productUid
+	 * @return void
+	 */
+	protected function changeCategoryOfCopiedProduct($productUid) {
+		$pasteData = t3lib_div::_GP('CB');
+
+		/** @var t3lib_clipboard $clipObj */
+		$clipObj = t3lib_div::makeInstance('t3lib_clipboard');
+		$clipObj->initializeClipboard();
+		$clipObj->setCurrentPad($pasteData['pad']);
+
+		$fromData = array_pop(t3lib_div::trimExplode('|', key($clipObj->clipData[$clipObj->current]['el']), TRUE));
+		$toData = array_pop(t3lib_div::trimExplode('|', $pasteData['paste'], TRUE));
+
+		if ($fromData && $toData) {
+			/** @var t3lib_db $database */
+			$database = $GLOBALS['TYPO3_DB'];
+
+			$database->exec_DELETEquery('tx_commerce_products_categories_mm', 'uid_local = ' . $productUid . ' AND uid_foreign = ' . $fromData);
+			$database->exec_INSERTquery('tx_commerce_products_categories_mm', array('uid_local' => $productUid, 'uid_foreign' => $toData));
+		}
+	}
+
+	/**
+	 * @param integer $oldProductUid
+	 * @param integer $newProductUid
+	 * @return void
+	 */
+	protected function copyProductTanslations($oldProductUid, $newProductUid) {
+		/** @var t3lib_db $database */
+		$database = $GLOBALS['TYPO3_DB'];
+		/** @var t3lib_beUserAuth $backendUser */
+		$backendUser = $GLOBALS['BE_USER'];
+
+		$products = $database->exec_SELECTgetRows('*', 'tx_commerce_products', 'l18n_parent = ' . $oldProductUid);
+
+		foreach ($products as $product) {
+			$oldTranslationProductUid = $product['uid'];
+
+			/** @var t3lib_TCEmain $tce */
+			$tce = t3lib_div::makeInstance('t3lib_TCEmain');
+			$tce->stripslashes_values = 0;
+
+			$TCAdefaultOverride = $backendUser->getTSConfigProp('TCAdefaults');
+			if (is_array($TCAdefaultOverride)) {
+				$tce->setDefaultsFromUserTS($TCAdefaultOverride);
+			}
+
+				// start
+			$tce->start(array(), array());
+
+			$overrideArray = array('l18n_parent' => $newProductUid);
+
+			$newTranslationProductUid = $tce->copyRecord('tx_commerce_products', $oldTranslationProductUid, $product['pid'], 1, $overrideArray);
+
+			$this->belib->copyArticlesByProduct($newTranslationProductUid, $oldTranslationProductUid);
+		}
+	}
+
+
+	/**
+	 * Delete all categories->products->articles if a category should be deleted.
+	 * This one does NOT delete any relations! This is not wanted because you might want to
+	 * restore deleted categories, products or articles.
+	 *
+	 * @param integer $categoryUid
+	 * @return void
+	 */
+	protected function deleteChildCategoriesProductsArticlesPricesOfCategory($categoryUid) {
+			// we dont use Tx_Commerce_Domain_Model_Category::getChildCategoriesUidlist because of performance issues
+		$childCategories = array();
+		$this->belib->getChildCategories($categoryUid, $childCategories, 0, 0, TRUE);
+
+		if (count($childCategories)) {
+			foreach ($childCategories as $childCategoryUid) {
+				$products = $this->belib->getProductsOfCategory($childCategoryUid);
+
+				if (count($products)) {
+					$productList = array();
+					foreach ($products as $product) {
+						$productList[] = $product['uid_local'];
+
+						$articles = $this->belib->getArticlesOfProduct($product['uid_local']);
+						if (count($articles)) {
+							$articleList = array();
+							foreach ($articles as $article) {
+								$articleList[] = $article['uid'];
+							}
+
+							$this->deletePricesByArticleList($articleList);
+							$this->deleteArticlesByArticleList($articleList);
+						}
+					}
+
+					$this->deleteProductsByProductList($productList);
+					$this->deleteProductTranslationsByProductList($productList);
+				}
+			}
+
+			$this->deleteCategoriesByCategoryList($childCategories);
+			$this->deleteCategoryTranslationsByCategoryList($childCategories);
+		}
+	}
+
+	/**
 	 * If a product is deleted, delete all articles below and their locales.
 	 *
 	 * @param integer $productUid
@@ -522,76 +603,6 @@ class Tx_Commerce_Hook_CommandMapHooks {
 			$this->deleteArticlesByArticleList($articleList);
 		}
 	}
-
-	/**
-	 * @param integer $productUid
-	 * @return void
-	 */
-	protected function changeCategoryOfCopiedProduct($productUid) {
-		/** @var t3lib_db $database */
-		$database = $GLOBALS['TYPO3_DB'];
-
-		$pasteData = t3lib_div::_GP('CB');
-
-		/** @var t3lib_clipboard $clipObj */
-		$clipObj = t3lib_div::makeInstance('t3lib_clipboard');
-		$clipObj->initializeClipboard();
-		$clipObj->setCurrentPad($pasteData['pad']);
-
-		$fromData = array_pop(t3lib_div::trimExplode('|', key($clipObj->clipData[$clipObj->current]['el']), TRUE));
-		$toData = array_pop(t3lib_div::trimExplode('|', $pasteData['paste'], TRUE));
-
-		if ($fromData && $toData) {
-			$database->exec_DELETEquery('tx_commerce_products_categories_mm', 'uid_local = ' . $productUid . ' AND uid_foreign = ' . $fromData);
-			$database->exec_INSERTquery('tx_commerce_products_categories_mm', array('uid_local' => $productUid, 'uid_foreign' => $toData));
-		}
-	}
-
-	/**
-	 * @param integer $oldProductUid
-	 * @param integer $newProductUid
-	 * @return void
-	 */
-	protected function copyProductTanslations($oldProductUid, $newProductUid) {
-		/** @var t3lib_db $database */
-		$database = $GLOBALS['TYPO3_DB'];
-
-		$products = $database->exec_SELECTgetRows('*', 'tx_commerce_products', 'l18n_parent = ' . $oldProductUid);
-
-		foreach ($products as $product) {
-			$oldTranslationProductUid = $product['uid'];
-			unset($product['uid']);
-			$product['l18n_parent'] = $newProductUid;
-
-			$database->exec_INSERTquery('tx_commerce_products', $product);
-			$newTranslationProductUid = $database->sql_insert_id();
-				// @todo copy resources
-
-			$this->copyArticlesFromProduct($oldTranslationProductUid, $newTranslationProductUid);
-		}
-	}
-
-	/**
-	 * @param integer $oldProductUid
-	 * @param integer $newProductUid
-	 * @return void
-	 */
-	protected function copyArticlesFromProduct($oldProductUid, $newProductUid) {
-		/** @var t3lib_db $database */
-		$database = $GLOBALS['TYPO3_DB'];
-
-		$articles = $this->belib->getArticlesOfProduct($oldProductUid);
-
-		foreach ($articles as $article) {
-			unset($article['uid']);
-			$article['uid_product'] = $newProductUid;
-			$database->exec_INSERTquery('tx_commerce_articles', $article);
-			// @todo copy resources
-			// @todo copy prices
-			// @todo copy attributes
-		}
-	}
-
 
 	/**
 	 * flag categories as deleted for categoryList
