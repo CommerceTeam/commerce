@@ -23,13 +23,10 @@
 ***************************************************************/
 
 /**
- * Implements the navframe for the categories
+ * Category module navigation frame
  */
 unset($MCONF);
 
-/**
- * @TODO: Find a better solution for the @ at this place, since some globals could not be defined
-*/
 if (!(defined('TYPO3_REQUESTTYPE') || defined('TYPO3_REQUESTTYPE_AJAX'))) {
 	require_once('conf.php');
 	/** @noinspection PhpIncludeInspection */

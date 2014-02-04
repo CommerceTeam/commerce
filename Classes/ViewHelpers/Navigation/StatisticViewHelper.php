@@ -245,7 +245,7 @@ class Tx_Commerce_ViewHelpers_Navigation_StatisticViewHelper extends t3lib_SCbas
 		$buttons['csh'] = str_replace(
 			'typo3-csh-inline',
 			'typo3-csh-inline show-right',
-			t3lib_BEfunc::cshItem('xMOD_csh_corebe', 'filetree', $this->doc->backPath)
+			t3lib_BEfunc::cshItem('xMOD_csh_commercebe', 'orderstree', $this->doc->backPath)
 		);
 
 		return $buttons;

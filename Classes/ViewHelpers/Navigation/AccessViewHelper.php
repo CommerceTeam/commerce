@@ -24,6 +24,11 @@
 
 class Tx_Commerce_ViewHelpers_Navigation_AccessViewHelper extends t3lib_SCbase {
 	/**
+	 * @var integer
+	 */
+	public $id;
+
+	/**
 	 * @var Tx_Commerce_Tree_CategoryTree
 	 */
 	protected $categoryTree;
@@ -178,7 +183,7 @@ class Tx_Commerce_ViewHelpers_Navigation_AccessViewHelper extends t3lib_SCbase {
 		$buttons['csh'] = str_replace(
 			'typo3-csh-inline',
 			'typo3-csh-inline show-right',
-			t3lib_BEfunc::cshItem('xMOD_csh_corebe', 'filetree', $this->doc->backPath)
+			t3lib_BEfunc::cshItem('xMOD_csh_commercebe', 'categorytree', $this->doc->backPath)
 		);
 
 		return $buttons;

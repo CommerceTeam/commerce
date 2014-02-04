@@ -23,7 +23,7 @@
  ***************************************************************/
 
 /**
- * Main script class for the tree edit navigation frame
+ * Access module navigation frame
  */
 unset($MCONF);
 

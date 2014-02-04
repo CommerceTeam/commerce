@@ -22,7 +22,11 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+/**
+ * Statistic module navigation frame
+ */
 unset($MCONF);
+
 include('conf.php');
 /** @noinspection PhpIncludeInspection */
 include ($BACK_PATH . 'init.php');

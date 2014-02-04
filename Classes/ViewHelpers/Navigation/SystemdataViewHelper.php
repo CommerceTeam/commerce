@@ -32,6 +32,11 @@ class Tx_Commerce_ViewHelpers_Navigation_SystemdataViewHelper extends t3lib_SCba
 	public $doc;
 
 	/**
+	 * @var integer
+	 */
+	public $id;
+
+	/**
 	 * @var language
 	 */
 	protected $language;
@@ -155,7 +160,7 @@ class Tx_Commerce_ViewHelpers_Navigation_SystemdataViewHelper extends t3lib_SCba
 		$buttons['csh'] = str_replace(
 			'typo3-csh-inline',
 			'typo3-csh-inline show-right',
-			t3lib_BEfunc::cshItem('xMOD_csh_corebe', 'filetree', $this->doc->backPath)
+			t3lib_BEfunc::cshItem('xMOD_csh_commercebe', 'systemdata', $this->doc->backPath)
 		);
 
 		return $buttons;

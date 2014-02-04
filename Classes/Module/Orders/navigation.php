@@ -22,7 +22,11 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+/**
+ * Orders module navigation frame
+ */
 unset($MCONF);
+
 require_once('conf.php');
 /** @noinspection PhpIncludeInspection */
 require_once($BACK_PATH . 'init.php');
