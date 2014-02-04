@@ -145,8 +145,8 @@ $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['leafClasses']['txcommer
 
 	// Add context menu for category trees in BE
 $GLOBALS['TBE_MODULES_EXT']['xMOD_alt_clickmenu']['extendCMclasses'][] = array(
-	'name' => 'tx_commerce_clickmenu',
-	'path' => PATH_TXCOMMERCE . 'mod_clickmenu/class.tx_commerce_clickmenu.php'
+	'name' => 'Tx_Commerce_Utility_ClickmenuUtility',
+	'path' => PATH_TXCOMMERCE . 'Classes/Utility/ClickmenuUtility.php'
 );
 
 t3lib_extMgm::addToInsertRecords('tx_commerce_categories');

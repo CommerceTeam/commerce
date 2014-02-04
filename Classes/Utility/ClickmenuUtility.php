@@ -3,7 +3,7 @@
  * Extended Functionality for the Clickmenu when commerce-tables are hit
  * Basically does the same as the alt_clickmenu.php, only that for Categories the output needs to be overridden depending on the rights
  */
-class tx_commerce_clickmenu {
+class Tx_Commerce_Utility_ClickmenuUtility {
 	/**
 	 * @var array
 	 */
