@@ -22,30 +22,6 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-/**
- * Implements the Command-Wizard
- */
-
-unset($MCONF);
-
-define('TYPO3_MOD_PATH', '../typo3conf/ext/commerce/Classes/Controller/');
-$BACK_PATH = '../../../../../typo3/';
-
-$MLANG['default']['tabs_images']['tab'] = '../../Resources/Public/Icons/mod_category.gif';
-$MLANG['default']['ll_ref'] = 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_category.xml';
-
-$MCONF['script'] = 'index.php';
-$MCONF['name'] = 'txcommerceM1_category';
-$MCONF['access'] = 'user,group';
-$MCONF['navFrameScript'] = 'navigation.php';
-
-/** @noinspection PhpIncludeInspection */
-require($BACK_PATH . 'init.php');
-/** @noinspection PhpIncludeInspection */
-require($BACK_PATH . 'template.php');
-
-$LANG->includeLLFile('EXT:lang/locallang_misc.xml');
-
 class Tx_Commerce_Controller_WizardController {
 	/**
 	 * @var array
@@ -409,11 +385,5 @@ if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['
 	/** @noinspection PhpIncludeInspection */
 	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Controller/WizardController.php']);
 }
-
-/** @var Tx_Commerce_Controller_WizardController $SOBE */
-$SOBE = t3lib_div::makeInstance('Tx_Commerce_Controller_CommandWizardController');
-$SOBE->init();
-$SOBE->main();
-$SOBE->printContent();
 
 ?>

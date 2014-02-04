@@ -2,8 +2,8 @@
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2004 - 2011 Joerg Sprung (typo3@marketing-factory.de)
- *  (c) 2008 - 2011 Ingo Schmitt (is@marketing-factory.de)
+ *  (c) 2004 - 2011 Joerg Sprung <typo3@marketing-factory.de>
+ *  (c) 2008 - 2011 Ingo Schmitt <typo3@marketing-factory.de>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -33,16 +33,15 @@ require_once($BACK_PATH . 'init.php');
 /** @noinspection PhpIncludeInspection */
 require_once($BACK_PATH . 'template.php');
 
+	// This checks permissions and exits if the users has no permission for entry.
+/** @noinspection PhpUndefinedVariableInspection */
+$BE_USER->modAccess($MCONF, 1);
+
 /** @var language $language */
 $language = $GLOBALS['LANG'];
 $language->includeLLFile('EXT:commerce/Resources/Private/Language/locallang_mod_statistic.xml');
 $language->includeLLFile('EXT:lang/locallang_mod_web_list.php');
 
-	// This checks permissions and exits if the users has no permission for entry.
-/** @noinspection PhpUndefinedVariableInspection */
-$BE_USER->modAccess($MCONF, 1);
-
-	// Make instance:
 /** @var Tx_Commerce_Controller_StatisticController $SOBE */
 $SOBE = t3lib_div::makeInstance('Tx_Commerce_Controller_StatisticController');
 $SOBE->init();

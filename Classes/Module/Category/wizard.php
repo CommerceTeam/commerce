@@ -2,7 +2,7 @@
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2005 - 2012 Ingo Schmitt <typo3@marketing-factory.de>
+ *  (c) 2011 Erik Frister <typo3@marketing-factory.de>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -23,7 +23,7 @@
  ***************************************************************/
 
 /**
- * Module 'Systemdata' for the 'commerce' extension.
+ * Implements the Command-Wizard
  */
 unset($MCONF);
 require_once('conf.php');
@@ -38,14 +38,12 @@ $BE_USER->modAccess($MCONF, 1);
 
 /** @var language $language */
 $language = $GLOBALS['LANG'];
-$language->includeLLFile('EXT:commerce/Resources/Private/Language/locallang_mod_systemdata.xml');
+$language->includeLLFile('EXT:lang/locallang_misc.xml');
 
-if (!(TYPO3_REQUESTTYPE & TYPO3_REQUESTTYPE_AJAX)) {
-	/** @var Tx_Commerce_Controller_SystemdataController $SOBE */
-	$SOBE = t3lib_div::makeInstance('Tx_Commerce_Controller_SystemdataController');
-	$SOBE->init();
-	$SOBE->main();
-	$SOBE->printContent();
-}
+/** @var Tx_Commerce_Controller_WizardController $SOBE */
+$SOBE = t3lib_div::makeInstance('Tx_Commerce_Controller_CommandWizardController');
+$SOBE->init();
+$SOBE->main();
+$SOBE->printContent();
 
 ?>

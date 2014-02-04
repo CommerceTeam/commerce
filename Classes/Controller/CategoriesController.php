@@ -222,7 +222,7 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 			)
 		);
 
-		$this->scriptNewWizard = '../../Controller/WizardController.php';
+		$this->scriptNewWizard = 'wizard.php';
 
 		/** @var t3lib_beUserAuth $backendUser */
 		$backendUser = & $GLOBALS['BE_USER'];

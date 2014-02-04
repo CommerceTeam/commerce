@@ -13,9 +13,6 @@
  *
  *  The GNU General Public License can be found at
  *  http://www.gnu.org/copyleft/gpl.html.
- *  A copy is found in the textfile GPL.txt and important notices to the license
- *  from the author is found in LICENSE.txt distributed with these scripts.
- *
  *
  *  This script is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -26,9 +23,7 @@
  ***************************************************************/
 
 /**
- * Module: Commerce > Category
- *
- * Listing database records from the tables configured in $TCA as they are related to the current category or root.
+ * Module 'Category' for the 'commerce' extension.
  */
 unset($MCONF);
 require_once('conf.php');
@@ -42,7 +37,6 @@ require_once($BACK_PATH . 'template.php');
 $BE_USER->modAccess($MCONF, 1);
 t3lib_BEfunc::lockRecords();
 
-	// Make instance:
 /** @var Tx_Commerce_Controller_CategoriesController $SOBE */
 $SOBE = t3lib_div::makeInstance('Tx_Commerce_Controller_CategoriesController');
 $SOBE->init();
