@@ -141,16 +141,6 @@ if (TYPO3_MODE == 'BE') {
 	');
 }
 
-	// @todo fix this
-$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['leafClasses']['txcommerceCategoryTree'] =
-	'EXT:' . COMMERCE_EXTKEY . '/lib/class.tx_commerce_treecategory.php:&tx_commerce_treeCategory';
-$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['leafClasses']['txcommerceCategory'] =
-	'EXT:' . COMMERCE_EXTKEY . '/lib/class.tx_commerce_leafcategoryview.php:&tx_commerce_leafCategoryView';
-$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['leafClasses']['txcommerceProduct'] =
-	'EXT:' . COMMERCE_EXTKEY . '/lib/class.tx_commerce_leafproductview.php:&tx_commerce_leafProductView';
-$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['leafClasses']['txcommerceAttribute'] =
-	'EXT:' . COMMERCE_EXTKEY . '/lib/class.tx_commerce_leafattributeview.php:&tx_commerce_leafAttributeView';
-
 
 	// Add context menu for category trees in BE
 $GLOBALS['TBE_MODULES_EXT']['xMOD_alt_clickmenu']['extendCMclasses'][] = array(
