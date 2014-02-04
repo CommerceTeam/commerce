@@ -66,17 +66,16 @@ class Tx_Commerce_Controller_StatisticController extends t3lib_SCbase {
 
 		$this->excludePids = $this->extConf['excludeStatisticFolders'] != '' ? $this->extConf['excludeStatisticFolders'] : 0;
 
-		$this->orderPageId = current(array_unique(Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Orders', 'Commerce', 0, 'Commerce')));
-
 		$this->statistics = t3lib_div::makeInstance('Tx_Commerce_Utility_StatisticsUtility');
 		$this->statistics->init($this->extConf['excludeStatisticFolders'] != '' ? $this->extConf['excludeStatisticFolders'] : 0);
-			// @todo Find a better solution for the first array element
+
+		$this->orderPageId = current(array_unique(Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Orders', 'Commerce', 0, 'Commerce')));
+
 		/**
 		 * If we get an id via GP use this, else use the default id
 		 */
-		if (t3lib_div::_GP('id')) {
-			$this->id = t3lib_div::_GP('id');
-		} else {
+		$this->id = (int) t3lib_div::_GP('id');
+		if (!$this->id) {
 			$this->id = $this->orderPageId;
 		}
 
@@ -88,10 +87,10 @@ class Tx_Commerce_Controller_StatisticController extends t3lib_SCbase {
 		if (!$this->doc->moduleTemplate) {
 			t3lib_div::devLog('cannot set moduleTemplate', 'commerce', 2, array(
 				'backpath' => $this->doc->backPath,
-				'filename from TBE_STYLES' => $GLOBALS['TBE_STYLES']['htmlTemplates']['mod_access.html'],
-				'full path' => $this->doc->backPath . $GLOBALS['TBE_STYLES']['htmlTemplates']['mod_access.html']
+				'filename from TBE_STYLES' => $GLOBALS['TBE_STYLES']['htmlTemplates']['mod_statistic.html'],
+				'full path' => $this->doc->backPath . $GLOBALS['TBE_STYLES']['htmlTemplates']['mod_statistic.html']
 			));
-			$templateFile = PATH_TXCOMMERCE_REL . 'Resources/Private/Backend/mod_access.html';
+			$templateFile = PATH_TXCOMMERCE_REL . 'Resources/Private/Backend/mod_statistic.html';
 			$this->doc->moduleTemplate = t3lib_div::getURL(PATH_site . $templateFile);
 		}
 
@@ -183,7 +182,7 @@ class Tx_Commerce_Controller_StatisticController extends t3lib_SCbase {
 
 			// put it all together
 		$this->content = $this->doc->startPage($language->getLL('statistic'));
-		$this->content .= $this->doc->moduleBody(array(), $docHeaderButtons, $markers);
+		$this->content .= $this->doc->moduleBody($this->pageinfo, $docHeaderButtons, $markers);
 		$this->content .= $this->doc->endPage();
 		$this->content = $this->doc->insertStylesAndJS($this->content);
 	}
