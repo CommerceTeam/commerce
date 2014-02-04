@@ -546,11 +546,40 @@ class Tx_Commerce_Hook_CommandMapHooks {
 	 * @param integer $newProductUid
 	 * @return void
 	 */
+	protected function copyProductTanslations($oldProductUid, $newProductUid) {
+		/** @var t3lib_db $database */
+		$database = $GLOBALS['TYPO3_DB'];
+
+		$products = $database->exec_SELECTgetRows('*', 'tx_commerce_products', 'l18n_parent = ' . $oldProductUid);
+
+		foreach ($products as $product) {
+			$oldTranslationProductUid = $product['uid'];
+			unset($product['uid']);
+			$product['l18n_parent'] = $newProductUid;
+
+			$database->exec_INSERTquery('tx_commerce_products', $product);
+			$newTranslationProductUid = $database->sql_insert_id();
+
+			$this->copyArticlesFromProduct($oldTranslationProductUid, $newTranslationProductUid);
+		}
+	}
+
+	/**
+	 * @param integer $oldProductUid
+	 * @param integer $newProductUid
+	 * @return void
+	 */
 	protected function copyArticlesFromProduct($oldProductUid, $newProductUid) {
-		/** @var Tx_Commerce_Domain_Model_Product $product */
-		$product = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product');
-		$product->init($oldProductUid);
-		$product->getArticleUids();
+		/** @var t3lib_db $database */
+		$database = $GLOBALS['TYPO3_DB'];
+
+		$articles = $this->belib->getArticlesOfProduct($oldProductUid);
+
+		foreach ($articles as $article) {
+			unset($article['uid']);
+			$article['uid_product'] = $newProductUid;
+			$database->exec_INSERTquery('tx_commerce_articles', $article);
+		}
 	}
 
 
