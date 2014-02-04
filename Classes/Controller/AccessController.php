@@ -130,15 +130,15 @@ class Tx_Commerce_Controller_AccessController extends t3lib_SCbase {
 		$this->doc = t3lib_div::makeInstance('template');
 		$this->doc->backPath = $GLOBALS['BACK_PATH'];
 		$this->doc->docType = 'xhtml_trans';
-		$this->doc->setModuleTemplate(PATH_TXCOMMERCE . 'Resources/Private/Backend/mod_access.html');
+		$this->doc->setModuleTemplate(PATH_TXCOMMERCE . 'Resources/Private/Backend/mod_index.html');
 
 		if (!$this->doc->moduleTemplate) {
 			t3lib_div::devLog('cannot set moduleTemplate', 'commerce', 2, array(
 				'backpath' => $this->doc->backPath,
-				'filename from TBE_STYLES' => $GLOBALS['TBE_STYLES']['htmlTemplates']['mod_access.html'],
-				'full path' => $this->doc->backPath . $GLOBALS['TBE_STYLES']['htmlTemplates']['mod_access.html']
+				'filename from TBE_STYLES' => $GLOBALS['TBE_STYLES']['htmlTemplates']['mod_index.html'],
+				'full path' => $this->doc->backPath . $GLOBALS['TBE_STYLES']['htmlTemplates']['mod_index.html']
 			));
-			$templateFile = PATH_TXCOMMERCE_REL . 'Resources/Private/Backend/mod_access.html';
+			$templateFile = PATH_TXCOMMERCE_REL . 'Resources/Private/Backend/mod_index.html';
 			$this->doc->moduleTemplate = t3lib_div::getURL(PATH_site . $templateFile);
 		}
 
@@ -235,8 +235,8 @@ class Tx_Commerce_Controller_AccessController extends t3lib_SCbase {
 		$markers = array(
 			'CSH' => $docHeaderButtons['csh'],
 			'CONTENT' => $this->content,
-			'CATINFO' => $this->categoryInfo($this->pageinfo),
-			'CATPATH' => $this->categoryPath($this->pageinfo),
+			'PAGEINFO' => $this->categoryInfo($this->pageinfo),
+			'PAGEPATH' => $this->categoryPath($this->pageinfo),
 		);
 		$markers['FUNC_MENU'] = $this->doc->funcMenu(
 			'',

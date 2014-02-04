@@ -127,7 +127,7 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 	/**
 	 * Document template object
 	 *
-	 * @public template
+	 * @var template
 	 */
 	public $doc;
 
@@ -237,7 +237,8 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 			$this->id = current(array_unique(Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Products', 'Commerce', 0, 'Commerce')));
 		}
 
-		$this->pointer = (int) t3lib_div::_GP('pointer');
+			// Initialize the listing object, dblist, for rendering the list:
+		$this->pointer = t3lib_div::intInRange(t3lib_div::_GP('pointer'), 0, 100000);
 		$this->imagemode = t3lib_div::_GP('imagemode');
 		$this->table = t3lib_div::_GP('table');
 
@@ -269,15 +270,15 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 		$this->doc = t3lib_div::makeInstance('template');
 		$this->doc->backPath = $GLOBALS['BACK_PATH'];
 		$this->doc->docType = 'xhtml_trans';
-		$this->doc->setModuleTemplate(PATH_TXCOMMERCE . 'Resources/Private/Backend/mod_access.html');
+		$this->doc->setModuleTemplate(PATH_TXCOMMERCE . 'Resources/Private/Backend/mod_index.html');
 
 		if (!$this->doc->moduleTemplate) {
 			t3lib_div::devLog('cannot set moduleTemplate', 'commerce', 2, array(
 				'backpath' => $this->doc->backPath,
-				'filename from TBE_STYLES' => $GLOBALS['TBE_STYLES']['htmlTemplates']['mod_access.html'],
-				'full path' => $this->doc->backPath . $GLOBALS['TBE_STYLES']['htmlTemplates']['mod_access.html']
+				'filename from TBE_STYLES' => $GLOBALS['TBE_STYLES']['htmlTemplates']['mod_index.html'],
+				'full path' => $this->doc->backPath . $GLOBALS['TBE_STYLES']['htmlTemplates']['mod_index.html']
 			));
-			$templateFile = PATH_TXCOMMERCE_REL . 'Resources/Private/Backend/mod_access.html';
+			$templateFile = PATH_TXCOMMERCE_REL . 'Resources/Private/Backend/mod_index.html';
 			$this->doc->moduleTemplate = t3lib_div::getURL(PATH_site . $templateFile);
 		}
 	}
@@ -583,9 +584,6 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 						$tce->printLogErrorMessages(t3lib_div::getIndpEnv('REQUEST_URI'));
 					}
 				}
-
-					// Initialize the listing object, dblist, for rendering the list:
-				$this->pointer = t3lib_div::intInRange($this->pointer, 0, 100000);
 
 					// Get the list of uids
 				$uids = array();
