@@ -25,7 +25,7 @@
 /**
  * Misc COMMERCE functions
  */
-class tx_commerce_div {
+class Tx_Commerce_Utility_GeneralUtility {
 	/**
 	 * Removes XSS code and strips tags from an array recursivly
 	 * @Author Ingo Schmitt <is@marketing-factory.de>
@@ -336,6 +336,8 @@ class tx_commerce_div {
 		return $newList;
 	}
 }
+
+class_alias('Tx_Commerce_Utility_GeneralUtility', 'tx_commerce_div');
 
 if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_div.php']) {
 	/** @noinspection PhpIncludeInspection */

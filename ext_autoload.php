@@ -65,6 +65,7 @@ return array(
 	'tx_commerce_db_attribute' => $classPath . 'Domain/Repository/class.tx_commerce_db_attribute.php',
 	'tx_commerce_db_attribute_value' => $classPath . 'Domain/Repository/class.tx_commerce_db_attribute_value.php',
 	'tx_commerce_db_category' => $classPath . 'Domain/Repository/class.tx_commerce_db_category.php',
+	'tx_commerce_folder_db' => $classPath . 'Domain/Repository/class.tx_commerce_folder_db.php',
 	'tx_commerce_db_price' => $classPath . 'Domain/Repository/class.tx_commerce_db_price.php',
 	'tx_commerce_db_product' => $classPath . 'Domain/Repository/class.tx_commerce_db_product.php',
 
@@ -117,19 +118,19 @@ return array(
 	'tx_commerce_utility_articlecreatorutility' => $classPath . 'Utility/ArticleCreatorUtility.php',
 	'tx_commerce_utility_attributeeditorutility' => $classPath . 'Utility/AttributeEditorUtility.php',
 	'tx_commerce_utility_backendutility' => $classPath . 'Utility/BackendUtility.php',
+	'tx_commerce_utility_generalutility' => $classPath . 'Utility/class.tx_commerce_div.php',
+	'tx_commerce_div' => $classPath . 'Utility/class.tx_commerce_div.php',
 	'tx_commerce_belib' => $classPath . 'Utility/BackendUtility.php',
 	'tx_commerce_utility_folderutility' => $classPath . 'Utility/FolderUtility.php',
 	'tx_commerce_create_folder' => $classPath . 'Utility/FolderUtility.php',
 	'tx_commerce_utility_tceformsutility' => $classPath . 'Utility/TceformsUtility.php',
 	'tx_commerce_forms_select' => $classPath . 'Utility/TceformsUtility.php',
-
+	'user_orderedit_func' => $classPath . 'Module/Orders/class.user_orderedit_func.php',
 
 	'tx_commerce_db_list' => $extensionPath . 'lib/class.tx_commerce_db_list.php',
 	'commercerecordlist' => $extensionPath . 'lib/class.tx_commerce_db_list_extra.php',
-	'tx_commerce_div' => $extensionPath . 'lib/class.tx_commerce_div.php',
-	'tx_commerce_folder_db' => $extensionPath . 'lib/class.tx_commerce_folder_db.php',
-	'tx_commerce_navigation' => $extensionPath . 'lib/class.tx_commerce_navigation.php',
 	'tx_commerce_feusers_localrecordlist' => $extensionPath . 'lib/class.tx_commerce_feusers_localrecordlist.php',
+	'tx_commerce_navigation' => $extensionPath . 'lib/class.tx_commerce_navigation.php',
 	'tx_commerce_order_localrecordlist' => $extensionPath . 'lib/class.tx_commerce_order_localrecordlist.php',
 	'tx_commerce_statistics' => $extensionPath . 'lib/class.tx_commerce_statistics.php',
 
@@ -149,8 +150,6 @@ return array(
 	'tx_commerce_treelib_link_leaf_categoryview' => $extensionPath . 'treelib/link/class.tx_commerce_treelib_link_leaf_categoryview.php',
 	'tx_commerce_treelib_link_leaf_productview' => $extensionPath . 'treelib/link/class.tx_commerce_treelib_link_leaf_productview.php',
 	'tx_commerce_treelib_tceforms' => $extensionPath . 'treelib/class.tx_commerce_treelib_tceforms.php',
-
-	'user_orderedit_func' => $extensionPath . 'mod_orders/class.user_orderedit_func.php',
 
 	'tx_moneylib' => t3lib_extMgm::extPath('moneylib') . 'class.tx_moneylib.php',
 	'tx_staticinfotables_pi1' => t3lib_extMgm::extPath('static_info_tables') . 'pi1/class.tx_staticinfotables_pi1.php',
