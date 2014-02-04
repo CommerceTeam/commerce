@@ -610,6 +610,8 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 			// Filtering on displayable pages (permissions):
 		$pC = ($table == 'pages' && $this->perms_clause) ? ' AND ' . $this->perms_clause : '';
 
+		$categoryWhere = sprintf($this->addWhere[$table], $this->parentUid);
+
 			// Adding search constraints:
 		$search = $this->makeSearchString($table);
 
@@ -621,7 +623,7 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 						' ' . $pC .
 						t3lib_BEfunc::deleteClause($table) .
 						t3lib_BEfunc::versioningPlaceholderClause($table) .
-						' ' . $addWhere . sprintf($this->addWhere[$table], $this->parentUid) .
+						' ' . $addWhere . $categoryWhere .
 						' ' . $search,
 			'GROUPBY' => '',
 			'ORDERBY' => $database->stripOrderBy($orderBy),

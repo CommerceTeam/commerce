@@ -155,8 +155,6 @@ if (TYPO3_MODE == 'BE') {
 		mod.txcommerceM1_category.enableClipBoard=selectable
 		mod.txcommerceM1_category.enableLocalizationView=selectable
 		mod.txcommerceM1_orders.enableDisplayBigControlPanel=selectable
-		mod.txcommerceM1_orders.enableClipBoard=selectable
-		mod.txcommerceM1_orders.enableLocalizationView=selectable
 	';
 }
 

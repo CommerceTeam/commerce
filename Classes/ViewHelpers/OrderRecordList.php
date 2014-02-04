@@ -83,15 +83,7 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends localRecordList {
 		}
 
 		if ($id > 0) {
-			$query_array = array(
-				'SELECT' => 'DISTINCT tx_commerce_order_articles.order_id, delivery_table.order_id as order_number, tx_commerce_order_articles.article_type_uid, tx_commerce_order_articles.title as payment, delivery_table.title as delivery, tx_commerce_orders.uid,tx_commerce_orders.pid, tx_commerce_orders.crdate, tx_commerce_orders.tstamp, tx_commerce_orders.order_id, tx_commerce_orders.sum_price_gross, tt_address.tx_commerce_address_type_id, tt_address.company ,tt_address.name,tt_address.surname, tt_address.address, tt_address.zip, tt_address.city, tt_address.email,tt_address.phone as phone_1, tt_address.mobile as phone_2,tx_commerce_orders.cu_iso_3_uid, tx_commerce_orders.tstamp, tx_commerce_orders.uid as articles, tx_commerce_orders.comment, tx_commerce_orders.internalcomment, tx_commerce_orders.order_type_uid as order_type_uid_noName, static_currencies.cu_iso_3',
-				'FROM' => 'tx_commerce_orders,tt_address, tx_commerce_order_articles, tx_commerce_order_articles as delivery_table, static_currencies',
-				'WHERE' => 'static_currencies.uid = tx_commerce_orders.cu_iso_3_uid and delivery_table.order_id = tx_commerce_orders.order_id AND tx_commerce_order_articles.order_id = tx_commerce_orders.order_id AND tx_commerce_order_articles.article_type_uid = ' . PAYMENTARTICLETYPE . ' AND delivery_table.article_type_uid = ' . DELIVERYARTICLETYPE . ' AND tx_commerce_orders.deleted = 0 and tx_commerce_orders.cust_deliveryaddress = tt_address.uid AND tx_commerce_orders.pid=' . $id . ' ' . $addWhere,
-				'GROUPBY' => '',
-				'ORDERBY' => $orderby,
-				'sorting' => '',
-				'LIMIT' => $limit,
-			);
+			$pidWhere = 'AND tx_commerce_orders.pid=' . $id;
 		} else {
 			Tx_Commerce_Utility_FolderUtility::init_folders();
 
@@ -99,7 +91,7 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends localRecordList {
 			 * @todo bitte aus der ext config nehmen, volker angefragt
 			 */
 				// Find the right pid for the Ordersfolder
-			list($orderPid) = array_unique(Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Orders', 'Commerce', 0, 'Commerce'));
+			$orderPid = current(array_unique(Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Orders', 'Commerce', 0, 'Commerce')));;
 
 			$ret = Tx_Commerce_Utility_BackendUtility::getOrderFolderSelector($orderPid, PHP_INT_MAX);
 
@@ -109,41 +101,66 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends localRecordList {
 			}
 			$list = implode(',', $list);
 
-			$query_array = array(
-				'SELECT' => 'DISTINCT tx_commerce_order_articles.order_id,delivery_table.order_id as order_number, tx_commerce_order_articles.article_type_uid, tx_commerce_order_articles.title as payment, delivery_table.title as delivery, tx_commerce_orders.uid,tx_commerce_orders.pid, tx_commerce_orders.crdate, tx_commerce_orders.tstamp, tx_commerce_orders.order_id, tx_commerce_orders.sum_price_gross, tt_address.tx_commerce_address_type_id, tt_address.company,tt_address.name,tt_address.surname, tt_address.address, tt_address.zip, tt_address.city, tt_address.email,tt_address.phone as phone_1, tt_address.mobile as phone_2,tx_commerce_orders.cu_iso_3_uid, tx_commerce_orders.tstamp, tx_commerce_orders.uid as articles, tx_commerce_orders.comment, tx_commerce_orders.internalcomment, tx_commerce_orders.order_type_uid as order_type_uid_noName, static_currencies.cu_iso_3',
-				'FROM' => 'tx_commerce_orders,tt_address, tx_commerce_order_articles, tx_commerce_order_articles as delivery_table, static_currencies',
-				'WHERE' => 'static_currencies.uid = tx_commerce_orders.cu_iso_3_uid and delivery_table.order_id = tx_commerce_orders.order_id AND tx_commerce_order_articles.order_id = tx_commerce_orders.order_id AND tx_commerce_order_articles.article_type_uid = ' . PAYMENTARTICLETYPE . ' AND delivery_table.article_type_uid = ' . DELIVERYARTICLETYPE . ' AND tx_commerce_orders.deleted = 0 and tx_commerce_orders.cust_deliveryaddress = tt_address.uid AND tx_commerce_orders.pid in (' . $list . ') ' . $addWhere,
-				'GROUPBY' => '',
-				'ORDERBY' => $orderby,
-				'sorting' => '',
-				'LIMIT' => $limit,
-			);
+			$pidWhere = 'AND tx_commerce_orders.pid in (' . $list . ') ';
 		}
+
+		$query_array = array(
+			'SELECT' => 'DISTINCT tx_commerce_order_articles.order_id, delivery_table.order_id AS order_number,
+				tx_commerce_order_articles.article_type_uid, tx_commerce_order_articles.title AS payment,
+				delivery_table.title AS delivery, tx_commerce_orders.uid, tx_commerce_orders.pid, tx_commerce_orders.crdate,
+				tx_commerce_orders.tstamp, tx_commerce_orders.order_id, tx_commerce_orders.sum_price_gross,
+				tt_address.tx_commerce_address_type_id, tt_address.company, tt_address.name, tt_address.surname,
+				tt_address.address, tt_address.zip, tt_address.city, tt_address.email, tt_address.phone AS phone_1,
+				tt_address.mobile AS phone_2, tx_commerce_orders.cu_iso_3_uid, tx_commerce_orders.tstamp,
+				tx_commerce_orders.uid AS articles, tx_commerce_orders.comment, tx_commerce_orders.internalcomment,
+				tx_commerce_orders.order_type_uid AS order_type_uid_noName, static_currencies.cu_iso_3',
+			'FROM' => 'tx_commerce_orders, tt_address, tx_commerce_order_articles, tx_commerce_order_articles AS delivery_table, static_currencies',
+			'WHERE' => 'static_currencies.uid = tx_commerce_orders.cu_iso_3_uid
+				AND delivery_table.order_id = tx_commerce_orders.order_id
+				AND tx_commerce_order_articles.order_id = tx_commerce_orders.order_id
+				AND tx_commerce_order_articles.article_type_uid = ' . PAYMENTARTICLETYPE . '
+				AND delivery_table.article_type_uid = ' . DELIVERYARTICLETYPE . '
+				AND tx_commerce_orders.deleted = 0
+				AND tx_commerce_orders.cust_deliveryaddress = tt_address.uid
+				' . $pidWhere . ' ' . $addWhere,
+			'GROUPBY' => '',
+			'ORDERBY' => $orderby,
+			'sorting' => '',
+			'LIMIT' => $limit,
+		);
 
 			// get Module TSConfig
-		$temp = t3lib_BEfunc::getModTSconfig($id, 'mod.commerce.orders');
-		$moduleConfig = t3lib_BEfunc::implodeTSParams($temp['properties']);
-		$delProdUid = $moduleConfig['delProdUid'];
-		$payProdUid = $moduleConfig['payProdUid'];
-		if ($delProdUid > 0) {
-			$delArticles = Tx_Commerce_Utility_BackendUtility::getArticlesOfProductAsUidList($delProdUid);
-			$delArticlesList = implode(',', $delArticles);
+		$moduleConfig = t3lib_BEfunc::getModTSconfig($id, 'mod.txcommerceM1_orders');
 
-			if ($delArticlesList) {
-				$query_array['WHERE'] .= ' AND delivery_table.article_uid in (' . $delArticlesList . ') ';
+		if ($moduleConfig['properties']['delProdUid']) {
+			t3lib_div::deprecationLog('mod.txcommerceM1_orders.delProdUid is deprecated since commerce 0.14.0, this setting will be removed in commerce 0.16.0, please use mod.txcommerceM1_orders.deliveryProductUid instead');
+		}
+		if ($moduleConfig['properties']['payProdUid']) {
+			t3lib_div::deprecationLog('mod.txcommerceM1_orders.payProdUid is deprecated since commerce 0.14.0, this setting will be removed in commerce 0.16.0, please use mod.txcommerceM1_orders.paymentProductUid instead');
+		}
+
+		$deliveryProductUid = $moduleConfig['properties']['delProdUid'] ?
+			$moduleConfig['properties']['delProdUid'] :
+			$moduleConfig['properties']['deliveryProductUid'] ? $moduleConfig['properties']['deliveryProductUid'] : 0;
+		if ($deliveryProductUid > 0) {
+			$deliveryArticles = Tx_Commerce_Utility_BackendUtility::getArticlesOfProductAsUidList($deliveryProductUid);
+
+			if (count($deliveryArticles)) {
+				$query_array['WHERE'] .= ' AND delivery_table.article_uid IN (' . implode(',', $deliveryArticles) . ') ';
 			}
 		}
 
-		if ($payProdUid > 0) {
-			$payArticles = Tx_Commerce_Utility_BackendUtility::getArticlesOfProductAsUidList($payProdUid);
-			$payArticlesList = implode(',', $payArticles);
+		$paymentProductUid = $moduleConfig['properties']['payProdUid'] ?
+			$moduleConfig['properties']['payProdUid'] :
+			$moduleConfig['properties']['paymentProductUid'] ? $moduleConfig['properties']['paymentProductUid'] : 0;
+		if ($paymentProductUid > 0) {
+			$paymentArticles = Tx_Commerce_Utility_BackendUtility::getArticlesOfProductAsUidList($paymentProductUid);
 
-			if ($payArticlesList) {
-				$query_array['WHERE'] .= ' AND delivery_table.article_uid in (' . $payArticlesList . ') ';
+			if (count($paymentArticles)) {
+				$query_array['WHERE'] .= ' AND delivery_table.article_uid IN (' . implode(',', $paymentArticles) . ') ';
 			}
 		}
 
-		$this->dontShowClipControlPanels = 1;
 		return $query_array;
 	}
 
@@ -285,13 +302,10 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends localRecordList {
 					'email', 'phone_1', 'phone_2', 'articles', 'order_number');
 
 					// Check for order_number and order_title view
-				if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['showArticleNumber'] == 1 &&
-					$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['showArticleTitle'] == 1) {
+				if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['showArticleNumber'] == 1) {
 					$this->myfields[] = 'article_number';
-					$this->myfields[] = 'article_name';
-				} elseif ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['showArticleNumber'] == 1) {
-					$this->myfields[] = 'article_number';
-				} elseif ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['showArticleTitle'] == 1) {
+				}
+				if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['showArticleTitle'] == 1) {
 					$this->myfields[] = 'article_name';
 				}
 

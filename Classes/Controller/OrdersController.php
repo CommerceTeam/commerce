@@ -194,10 +194,6 @@ class Tx_Commerce_Controller_OrdersController extends t3lib_SCbase {
 
 			// GPvars:
 		$this->id = (int) t3lib_div::_GP('id');
-		if (!$this->id) {
-			Tx_Commerce_Utility_FolderUtility::init_folders();
-			$this->id = current(array_unique(Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Orders', 'Commerce', 0, 'Commerce')));
-		}
 
 			// Initialize the listing object, dblist, for rendering the list:
 		$this->pointer = t3lib_div::intInRange(t3lib_div::_GP('pointer'), 0, 100000);
@@ -333,6 +329,7 @@ class Tx_Commerce_Controller_OrdersController extends t3lib_SCbase {
 		$dblist->allFields = ($this->MOD_SETTINGS['bigControlPanel'] || $this->table) ? 1 : 0;
 		$dblist->localizationView = $this->MOD_SETTINGS['localization'];
 		$dblist->showClipboard = 1;
+		// $this->dontShowClipControlPanels = 1;
 		$dblist->disableSingleTableView = $this->modTSconfig['properties']['disableSingleTableView'];
 		$dblist->listOnlyInSingleTableMode = $this->modTSconfig['properties']['listOnlyInSingleTableView'];
 		$dblist->hideTables = $this->modTSconfig['properties']['hideTables'];
@@ -346,6 +343,8 @@ class Tx_Commerce_Controller_OrdersController extends t3lib_SCbase {
 		$dblist->counter++;
 		$dblist->MOD_MENU = array('bigControlPanel' => '', 'clipBoard' => '', 'localization' => '');
 		$dblist->modTSconfig = $this->modTSconfig;
+
+		$dblist->tableList = 'tx_commerce_orders';
 
 			// Clipboard is initialized:
 			// Start clipboard
