@@ -23,20 +23,18 @@
  ***************************************************************/
 
 /**
- * Pre payment payment implementaton
+ * Cash on delivery payment implementation
  */
-class tx_commerce_payment_prepayment extends tx_commerce_payment_abstract {
+class Tx_Commerce_Payment_Cashondelivery extends Tx_Commerce_Payment_PaymentAbstract {
 	/**
-	 * Payment type
-	 *
-	 * @var string
+	 * @var string Payment type
 	 */
-	protected $type = 'prepayment';
+	protected $type = 'cashondelivery';
 }
 
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/payment/class.tx_commerce_payment_prepayment.php']) {
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Payment/Cashondelivery.php']) {
 	/** @noinspection PhpIncludeInspection */
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/payment/class.tx_commerce_payment_prepayment.php']);
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Payment/Cashondelivery.php']);
 }
 
 ?>

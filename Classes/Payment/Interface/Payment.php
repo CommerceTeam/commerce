@@ -31,7 +31,7 @@
  * @package commerce
  * @author Christian Kuhn <lolli@schwarzbu.ch>
  */
-interface tx_commerce_payment {
+interface Tx_Commerce_Payment_Interface_Payment {
 
 	/**
 	 * Constructor gets parent object
@@ -65,7 +65,7 @@ interface tx_commerce_payment {
 	/**
 	 * Get payment provider
 	 *
-	 * @return tx_commerce_payment_provider
+	 * @return Tx_Commerce_Payment_Interface_Provider
 	 */
 	public function getProvider();
 

@@ -96,26 +96,26 @@ $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['SYSPRODUCTS']['PAYMENT'
 	),
 	'types' => array(
 		'invoice' => array(
-			'class' => 'tx_commerce_payment_invoice',
+			'class' => 'Tx_Commerce_Payment_Invoice',
 			'type' => PAYMENTARTICLETYPE,
 		),
 		'prepayment' => array(
-			'class' => 'tx_commerce_payment_prepayment',
+			'class' => 'Tx_Commerce_Payment_Prepayment',
 			'type' => PAYMENTARTICLETYPE,
 		),
 		'cashondelivery' => array(
-			'class' => 'tx_commerce_payment_cashondelivery',
+			'class' => 'Tx_Commerce_Payment_Cashondelivery',
 			'type' => PAYMENTARTICLETYPE,
 		),
 		'creditcard' => array(
-			'class' => 'tx_commerce_payment_creditcard',
+			'class' => 'Tx_Commerce_Payment_Creditcard',
 			'type' => PAYMENTARTICLETYPE,
 				// Language file for external credit card check
 			'ccvs_language_files' => PATH_TXCOMMERCE . 'payment/ccvs/language',
 			'provider' => array(
 				'wirecard' => array(
 						// @TODO: Remove this implementation if it turns out that it does not work anymore
-					'class' => 'tx_commerce_payment_provider_wirecard',
+					'class' => 'Tx_Commerce_Payment_Provider_Wirecard',
 				),
 			),
 		),

@@ -2,7 +2,7 @@
 /***************************************************************
  *  Copyright notice
  *
- *  (c) Christian Kuhn <lolli@schwarzbu.ch>
+ *  (c) 2009 Volker Graubaum <vg@e-netconsulting.de>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -13,9 +13,6 @@
  *
  *  The GNU General Public License can be found at
  *  http://www.gnu.org/copyleft/gpl.html.
- *  A copy is found in the textfile GPL.txt and important notices to the license
- *  from the author is found in LICENSE.txt distributed with these scripts.
- *
  *
  *  This script is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -26,24 +23,18 @@
  ***************************************************************/
 
 /**
- * Payment provider criterion interface
+ * Invoice payment implementation
  */
-interface tx_commerce_payment_provider_criterion {
-
+class Tx_Commerce_Payment_Invoice extends Tx_Commerce_Payment_PaymentAbstract {
 	/**
-	 * Constructor
-	 *
-	 * @param tx_commerce_payment_provider $providerObject Parent payment object
-	 * @param array $options Configuration array
+	 * @var string Payment type
 	 */
-	public function __construct(tx_commerce_payment_provider $providerObject, array $options = array());
+	protected $type = 'invoice';
+}
 
-	/**
-	 * Return TRUE if this payment type is allowed.
-	 *
-	 * @return boolean
-	 */
-	public function isAllowed();
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Payment/Invoice.php']) {
+	/** @noinspection PhpIncludeInspection */
+	include_once ($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Payment/Invoice.php']);
 }
 
 ?>

@@ -217,7 +217,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 	 *
 	 * @throws Exception If payment object can not be created or is invalid
 	 * @param string $paymentType Payment type to get
-	 * @return tx_commerce_payment_abstract Current payment object
+	 * @return Tx_Commerce_Payment_PaymentAbstract Current payment object
 	 */
 	protected function getPaymentObject($paymentType = '') {
 		if (!is_string($paymentType)) {
@@ -240,8 +240,8 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 		}
 
 			$paymentObject = t3lib_div::makeInstance($config['class'], $this);
-		if (!$paymentObject instanceof tx_commerce_payment) {
-			throw new Exception($config['class'] . ' must implement tx_commerce_payment');
+		if (!$paymentObject instanceof Tx_Commerce_Payment_Interface_Payment) {
+			throw new Exception($config['class'] . ' must implement Tx_Commerce_Payment_Interface_Payment');
 		}
 
 		return $paymentObject;

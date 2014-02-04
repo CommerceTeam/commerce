@@ -39,7 +39,7 @@
  * @subpackage payment
  * @author Volker Graubaum <vg@e-netconsulting.de>
  */
-class tx_commerce_payment_provider_wirecard extends tx_commerce_payment_provider_abstract {
+class Tx_Commerce_Payment_Provider_Wirecard extends Tx_Commerce_Payment_Provider_ProviderAbstract {
 
 	/**
 	 * @var string Provider type
@@ -110,8 +110,8 @@ class tx_commerce_payment_provider_wirecard extends tx_commerce_payment_provider
 	 * @return boolean TRUE if everything was ok
 	 */
 	public function finishingFunction(array $config = array(), array $session = array(), Tx_Commerce_Domain_Model_Basket $basket = NULL) {
-		/** @var payment $paymentLib */
-		$paymentLib = t3lib_div::makeInstance('payment');
+		/** @var Tx_Commerce_Payment_Payment $paymentLib */
+		$paymentLib = t3lib_div::makeInstance('Tx_Commerce_Payment_Payment');
 
 			// I think there is a new URL for testing with wirecard, so overwrite
 			// the old value. you can replace this with your own.
@@ -171,9 +171,9 @@ class tx_commerce_payment_provider_wirecard extends tx_commerce_payment_provider
 	}
 }
 
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/com_pay_wirecard/class.tx_commerce_payment_provider_wirecard.php']) {
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Payment/Provider/Wirecard.php']) {
 	/** @noinspection PhpIncludeInspection */
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/com_pay_wirecard/class.tx_commerce_payment_provider_wirecard.php']);
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Payment/Provider/Wirecard.php']);
 }
 
 ?>

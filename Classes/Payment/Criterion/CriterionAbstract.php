@@ -25,7 +25,7 @@
 /**
  * Abstract payment criterion implementation
  */
-abstract class tx_commerce_payment_criterion_abstract implements tx_commerce_payment_criterion {
+abstract class Tx_Commerce_Payment_Criterion_CriterionAbstract implements Tx_Commerce_Payment_Interface_Criterion {
 
 	/**
 	 * @var Tx_Commerce_Controller_BaseController Parent commerce pibase object
@@ -33,7 +33,7 @@ abstract class tx_commerce_payment_criterion_abstract implements tx_commerce_pay
 	protected $pibaseObject = NULL;
 
 	/**
-	 * @var tx_commerce_payment Parent payment object
+	 * @var Tx_Commerce_Payment_Interface_Payment Parent payment object
 	 */
 	protected $paymentObject = NULL;
 
@@ -47,20 +47,22 @@ abstract class tx_commerce_payment_criterion_abstract implements tx_commerce_pay
 	/**
 	 * Constructor
 	 *
-	 * @param tx_commerce_payment $paymentObject Parent payment object
+	 * @param Tx_Commerce_Payment_Interface_Payment $paymentObject Parent payment object
 	 * @param array $options Configuration array
 	 * @return self
 	 */
-	public function __construct(tx_commerce_payment $paymentObject, array $options = array()) {
+	public function __construct(Tx_Commerce_Payment_Interface_Payment $paymentObject, array $options = array()) {
 		$this->paymentObject = $paymentObject;
 		$this->pibaseObject = $this->paymentObject->getPObj();
 		$this->options = $options;
 	}
 }
 
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/payment/criteria/class.tx_commerce_payment_criterion_abstract.php']) {
+class_alias('Tx_Commerce_Payment_Criterion_CriterionAbstract', 'tx_commerce_payment_criterion_abstract');
+
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Payment/Criterion/CriterionAbstract.php']) {
 	/** @noinspection PhpIncludeInspection */
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/payment/criteria/class.tx_commerce_payment_criterion_abstract']);
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Payment/Criterion/CriterionAbstract.php']);
 }
 
 ?>

@@ -25,7 +25,7 @@
 /**
  * Debit payment implementation
  */
-class tx_commerce_payment_debit extends tx_commerce_payment_abstract {
+class Tx_Commerce_Payment_Debit extends Tx_Commerce_Payment_PaymentAbstract {
 	/**
 	 * @var string Payment type
 	 */
@@ -141,9 +141,9 @@ class tx_commerce_payment_debit extends tx_commerce_payment_abstract {
 }
 
 
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/payment/class.tx_commerce_payment_debit.php']) {
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Payment/Debit.php']) {
 	/** @noinspection PhpIncludeInspection */
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/payment/class.tx_commerce_payment_debit.php']);
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Payment/Debit.php']);
 }
 
 ?>

@@ -29,8 +29,7 @@
  * @subpackage payment
  * @author Volker Graubaum <vg@e-netconsulting.de>
  */
-abstract class tx_commerce_payment_abstract implements tx_commerce_payment {
-
+abstract class Tx_Commerce_Payment_PaymentAbstract implements Tx_Commerce_Payment_Interface_Payment {
 	/**
 	 * @var array Error messages, keys are field names
 	 */
@@ -48,7 +47,7 @@ abstract class tx_commerce_payment_abstract implements tx_commerce_payment {
 	protected $type = '';
 
 	/**
-	 * @var tx_commerce_payment_provider_abstract Payment proivder if configured for this payment
+	 * @var Tx_Commerce_Payment_Provider_ProviderAbstract Payment proivder if configured for this payment
 	 */
 	protected $provider = NULL;
 
@@ -82,11 +81,11 @@ abstract class tx_commerce_payment_abstract implements tx_commerce_payment {
 					$criterionConfiguration['options'] = array();
 				}
 
-				/** @var tx_commerce_payment_criterion $criterion */
+				/** @var Tx_Commerce_Payment_Interface_Criterion $criterion */
 				$criterion = t3lib_div::makeInstance($criterionConfiguration['class'], $this, $criterionConfiguration['options']);
-				if (!($criterion instanceof tx_commerce_payment_criterion)) {
+				if (!($criterion instanceof Tx_Commerce_Payment_Interface_Criterion)) {
 					throw new Exception(
-						'Criterion ' . $criterionConfiguration['class'] . ' must implement interface tx_commerce_payment_criterion',
+						'Criterion ' . $criterionConfiguration['class'] . ' must implement interface Tx_Commerce_Payment_Interface_Criterion',
 						1306267908
 					);
 				}
@@ -121,7 +120,7 @@ abstract class tx_commerce_payment_abstract implements tx_commerce_payment {
 	 * @return boolean
 	 */
 	public function isAllowed() {
-		/** @var tx_commerce_payment_criterion_abstract $criterion */
+		/** @var Tx_Commerce_Payment_Criterion_CriterionAbstract $criterion */
 		foreach ($this->criteria as $criterion) {
 			if ($criterion->isAllowed() === FALSE) {
 				return FALSE;
@@ -133,7 +132,7 @@ abstract class tx_commerce_payment_abstract implements tx_commerce_payment {
 	/**
 	 * Get payment provider
 	 *
-	 * @return tx_commerce_payment_provider
+	 * @return Tx_Commerce_Payment_Interface_Provider
 	 */
 	public function getProvider() {
 		return $this->provider;
@@ -151,11 +150,11 @@ abstract class tx_commerce_payment_abstract implements tx_commerce_payment {
 
 		if (is_array($providerConfigurations)) {
 			foreach ($providerConfigurations as $providerConfiguration) {
-				/** @var tx_commerce_payment_provider $provider */
+				/** @var Tx_Commerce_Payment_Interface_Provider $provider */
 				$provider = t3lib_div::makeInstance($providerConfiguration['class'], $this);
-				if (!($provider instanceof tx_commerce_payment_provider)) {
+				if (!($provider instanceof Tx_Commerce_Payment_Interface_Provider)) {
 					throw new Exception(
-						'Provider ' . $providerConfiguration['class'] . ' must implement interface tx_commerce_payment_provider',
+						'Provider ' . $providerConfiguration['class'] . ' must implement interface Tx_Commerce_Payment_Interface_Provider',
 						1307705798
 					);
 				}
@@ -268,9 +267,11 @@ abstract class tx_commerce_payment_abstract implements tx_commerce_payment {
 	}
 }
 
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/payment/class.tx_commerce_payment_abstract.php']) {
+class_alias('Tx_Commerce_Payment_PaymentAbstract', 'tx_commerce_payment_abstract');
+
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Payment/PaymentAbstract.php']) {
 	/** @noinspection PhpIncludeInspection */
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/payment/class.tx_commerce_payment_abstract.php']);
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Payment/PaymentAbstract.php']);
 }
 
 ?>

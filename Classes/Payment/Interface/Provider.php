@@ -28,13 +28,13 @@
 /**
  * Payment provider interface
  */
-interface tx_commerce_payment_provider {
+interface Tx_Commerce_Payment_Interface_Provider {
 	/**
 	 * Constructor gets parent object
 	 *
-	 * @param tx_commerce_payment $paymentObject
+	 * @param Tx_Commerce_Payment_Interface_Payment $paymentObject
 	 */
-	public function __construct(tx_commerce_payment $paymentObject);
+	public function __construct(Tx_Commerce_Payment_Interface_Payment $paymentObject);
 
 	/**
 	 * Get parent object

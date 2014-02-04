@@ -25,7 +25,7 @@
 /**
  * Credit card payment implementation
  */
-class tx_commerce_payment_creditcard extends tx_commerce_payment_abstract {
+class Tx_Commerce_Payment_Creditcard extends Tx_Commerce_Payment_PaymentAbstract {
 
 	/**
 	 * @var array Locallang array, only needed if individual fields are defined
@@ -79,8 +79,8 @@ class tx_commerce_payment_creditcard extends tx_commerce_payment_abstract {
 	 * @return boolean TRUE if data is ok
 	 */
 	public function proofData(array $formData = array()) {
-		/** @var $ccvs tx_commerce_payment_Ccvs */
-		$ccvs = t3lib_div::makeInstance('tx_commerce_payment_Ccvs');
+		/** @var $ccvs Tx_Commerce_Payment_Ccvs */
+		$ccvs = t3lib_div::makeInstance('Tx_Commerce_Payment_Ccvs');
 		$result = $ccvs->validateCreditCard($formData['cc_number'], $formData['cc_checksum']);
 		$this->errorMessages[] = $ccvs->CCVSError;
 
@@ -161,9 +161,9 @@ class tx_commerce_payment_creditcard extends tx_commerce_payment_abstract {
 	}
 }
 
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/payment/class.tx_commerce_payment_creditcard.php']) {
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Payment/Creditcard.php']) {
 	/** @noinspection PhpIncludeInspection */
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/payment/class.tx_commerce_payment_creditcard.php']);
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Payment/Creditcard.php']);
 }
 
 ?>

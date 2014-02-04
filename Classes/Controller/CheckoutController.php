@@ -723,7 +723,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	/**
 	 * Handles all the stuff concerning the payment.
 	 *
-	 * @param tx_commerce_payment $paymentObj The payment object
+	 * @param Tx_Commerce_Payment_Interface_Payment $paymentObj The payment object
 	 * @return string Substituted template
 	 */
 	public function handlePayment($paymentObj = NULL) {
@@ -808,7 +808,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 
 			$formAction = $this->pi_getPageLink($GLOBALS['TSFE']->id);
 			if (method_exists($paymentObj, 'getProvider')) {
-				/** @var $paymentProvider tx_commerce_payment_provider_abstract */
+				/** @var $paymentProvider Tx_Commerce_Payment_Provider_ProviderAbstract */
 				$paymentProvider = $paymentObj->getProvider();
 				if (method_exists($paymentProvider, 'getAlternativFormAction')) {
 					$formAction = $paymentProvider->getAlternativFormAction($this);
@@ -938,7 +938,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	/**
 	 * Finishing Page from Checkout
 	 *
-	 * @param tx_commerce_payment|null $paymentObj The payment object
+	 * @param Tx_Commerce_Payment_Interface_Payment|null $paymentObj The payment object
 	 * @return string HTML-Content
 	 */
 	public function finishIt($paymentObj = NULL) {
@@ -960,7 +960,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			$paymentObj = t3lib_div::makeInstance($config['class']);
 		}
 
-		if ($paymentObj instanceof tx_commerce_payment) {
+		if ($paymentObj instanceof Tx_Commerce_Payment_Interface_Payment) {
 			$paymentDone = $paymentObj->checkExternalData($_REQUEST, $this->MYSESSION);
 		} else {
 			$paymentDone = FALSE;
@@ -1529,7 +1529,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	 * If there is no payment it throws an error
 	 *
 	 * @param string $paymentType
-	 * @return tx_commerce_payment
+	 * @return Tx_Commerce_Payment_Interface_Payment
 	 */
 	public function getPaymentObject($paymentType = '') {
 		if (empty($paymentType)) {

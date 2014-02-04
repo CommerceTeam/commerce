@@ -36,7 +36,7 @@
  * getErrorOfErrorcode    - Gibt den Fehlertext zur�ck
  * getErrortype            - Warning, schwer, unbekannt, usw.
  */
-class wirecard {
+class Tx_Commerce_Payment_Wirecard {
 	/**
 	 * Don't put this in a public readable place
 	 *
@@ -336,9 +336,11 @@ class wirecard {
 	}
 }
 
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/payment/libs/class.tx_commerce_payment_wirecard_lib.php']) {
+class_alias('Tx_Commerce_Payment_Wirecard', 'wirecard');
+
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Payment/Wirecard.php']) {
 	/** @noinspection PhpIncludeInspection */
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/payment/libs/class.tx_commerce_payment_wirecard_lib.php']);
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Payment/Wirecard.php']);
 }
 
 ?>

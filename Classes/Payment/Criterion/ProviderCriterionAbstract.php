@@ -29,20 +29,19 @@
  * @subpackage payment
  * @author Volker Graubaum <vg@e-netconsulting.de>
  */
-abstract class tx_commerce_payment_provider_criterion_abstract implements tx_commerce_payment_provider_criterion {
-
+abstract class Tx_Commerce_Payment_Criterion_ProviderCriterionAbstract implements Tx_Commerce_Payment_Interface_ProviderCriterion {
 	/**
 	 * @var Tx_Commerce_Controller_BaseController Parent commerce pibase object
 	 */
 	protected $pibaseObject = NULL;
 
 	/**
-	 * @var tx_commerce_payment Parent payment object
+	 * @var Tx_Commerce_Payment_Interface_Payment Parent payment object
 	 */
 	protected $paymentObject = NULL;
 
 	/**
-	 * @var tx_commerce_payment_provider Parent provider object
+	 * @var Tx_Commerce_Payment_Interface_Provider Parent provider object
 	 */
 	protected $providerObject = NULL;
 
@@ -56,10 +55,10 @@ abstract class tx_commerce_payment_provider_criterion_abstract implements tx_com
 	/**
 	 * Constructor
 	 *
-	 * @param tx_commerce_payment_provider $providerObject Parent payment object
+	 * @param Tx_Commerce_Payment_Interface_Provider $providerObject Parent payment object
 	 * @param array $options Configuration array
 	 */
-	public function __construct(tx_commerce_payment_provider $providerObject, array $options = array()) {
+	public function __construct(Tx_Commerce_Payment_Interface_Provider $providerObject, array $options = array()) {
 		$this->providerObject = $providerObject;
 		$this->paymentObject = $this->providerObject->getPaymentObject();
 		$this->pibaseObject = $this->paymentObject->getPObj();
@@ -67,9 +66,11 @@ abstract class tx_commerce_payment_provider_criterion_abstract implements tx_com
 	}
 }
 
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/payment/criteria/class.tx_commerce_payment_provider_criterion_abstract.php']) {
+class_alias('Tx_Commerce_Payment_Criterion_ProviderCriterionAbstract', 'tx_commerce_payment_provider_criterion_abstract');
+
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Payment/Criterion/ProviderCriterionAbstract.php']) {
 	/** @noinspection PhpIncludeInspection */
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/payment/criteria/class.tx_commerce_payment_provider_criterion_abstract']);
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Payment/Criterion/ProviderCriterionAbstract.php']);
 }
 
 ?>

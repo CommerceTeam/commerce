@@ -46,7 +46,7 @@
  * getErrorOfErrorcode    - Gibt den Fehlertext zur�ck
  * getErrortype            - Warning, schwer, unbekannt, usw.
  */
-class payment extends wirecard {
+class Tx_Commerce_Payment_Payment extends Tx_Commerce_Payment_Wirecard {
 	/**
 	 * @var array
 	 */
@@ -188,5 +188,7 @@ class payment extends wirecard {
 		$this->referenzID = $referenceId;
 	}
 }
+
+class_alias('Tx_Commerce_Payment_Payment', 'payment');
 
 ?>
