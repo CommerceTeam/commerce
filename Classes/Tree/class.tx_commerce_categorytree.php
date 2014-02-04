@@ -7,9 +7,6 @@
  * @maintainer 	Erik Frister <typo3@marketing-factory.de>
  */
 
-/** @noinspection PhpIncludeInspection */
-require_once(t3lib_extmgm::extPath('commerce') . 'class.ext_update.php');
-
 class tx_commerce_categorytree extends browsetree {
 	/**
 	 * Set the Tree Name

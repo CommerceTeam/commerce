@@ -156,6 +156,7 @@ return array(
 	'tx_commerce_statistics' => $classPath . 'Utility/StatisticsUtility.php',
 	'tx_commerce_utility_tceformsutility' => $classPath . 'Utility/TceformsUtility.php',
 	'tx_commerce_forms_select' => $classPath . 'Utility/TceformsUtility.php',
+	'tx_commerce_utility_updateutility' => $classPath . 'Utility/UpdateUtility.php',
 	'user_orderedit_func' => $classPath . 'Module/Orders/class.user_orderedit_func.php',
 
 	/* ViewHelpers */

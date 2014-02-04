@@ -35,7 +35,7 @@ if (!(defined('TYPO3_REQUESTTYPE') || defined('TYPO3_REQUESTTYPE_AJAX'))) {
 	/** @noinspection PhpIncludeInspection */
 	require_once($BACK_PATH . 'init.php');
 	/** @noinspection PhpIncludeInspection */
-	require_once(PATH_typo3 . 'template.php');
+	require_once($BACK_PATH . 'template.php');
 
 	$LANG->includeLLFile('EXT:commerce/Resources/Private/Language/locallang_mod_category.xml');
 } else {
@@ -45,10 +45,6 @@ if (!(defined('TYPO3_REQUESTTYPE') || defined('TYPO3_REQUESTTYPE_AJAX'))) {
 	/** @noinspection PhpIncludeInspection */
 	require('template.php');
 }
-
-	// Require ext update script.
-/** @noinspection PhpIncludeInspection */
-require_once(t3lib_extmgm::extPath('commerce') . 'class.ext_update.php');
 
 class Tx_Commerce_Module_Category_Navigation {
 	/**
@@ -201,8 +197,8 @@ class Tx_Commerce_Module_Category_Navigation {
 	 * @return boolean
 	 */
 	protected function isUpdateNecessary() {
-		/** @var ext_update $updater */
-		$updater = t3lib_div::makeInstance('ext_update');
+		/** @var Tx_Commerce_Utility_UpdateUtility $updater */
+		$updater = t3lib_div::makeInstance('Tx_Commerce_Utility_UpdateUtility');
 
 		return $updater->access();
 	}
