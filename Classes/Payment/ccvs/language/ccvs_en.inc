@@ -25,3 +25,5 @@ $CCVSErrMonthFormat  = 'Month has invalid format';
 $CCVSErrYearString   = 'Year isn\'t a string';
 $CCVSErrYearFormat   = 'Year has invalid format';
 $CCVSErrExpired      = 'Card has expired';
+
+?>

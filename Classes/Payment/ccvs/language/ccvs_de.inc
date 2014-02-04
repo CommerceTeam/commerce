@@ -26,3 +26,5 @@ $CCVSErrMonthFormat  = 'Monat hat ein unzul�ssiges Format';
 $CCVSErrYearString   = 'Jahr ist keine Zeichenkette';
 $CCVSErrYearFormat   = 'Jahr hat ein unzul�ssiges Format';
 $CCVSErrExpired      = 'Karte ist abgelaufen';
+
+?>

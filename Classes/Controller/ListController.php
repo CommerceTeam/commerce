@@ -25,7 +25,7 @@
 /**
  * Product list and single view
  */
-class Tx_Commerce_Controller_ListController extends tx_commerce_pibase {
+class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseController {
 	/**
 	 * Same as class name
 	 *
@@ -329,7 +329,7 @@ class Tx_Commerce_Controller_ListController extends tx_commerce_pibase {
 					$this->category_products = $this->category->getAllProducts(0);
 				}
 				if ($this->conf['useStockHandling'] == 1) {
-					$this->category_products = tx_commerce_div::removeNoStockProducts($this->category_products, $this->conf['products.']['showWithNoStock']);
+					$this->category_products = Tx_Commerce_Utility_GeneralUtility::removeNoStockProducts($this->category_products, $this->conf['products.']['showWithNoStock']);
 				}
 				$this->internal['res_count'] = count($this->category_products);
 			}

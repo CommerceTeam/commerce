@@ -30,7 +30,7 @@
  * provides several methods for displaying forms, checking data and
  * storing data.
  */
-class Tx_Commerce_Controller_CheckoutController extends tx_commerce_pibase {
+class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_BaseController {
 	/**
 	 * Same as class name
 	 *
@@ -219,7 +219,7 @@ class Tx_Commerce_Controller_CheckoutController extends tx_commerce_pibase {
 	 */
 	public function main($content, $conf) {
 		$this->debug(
-			$GLOBALS['TSFE']->fe_user->getKey('ses', tx_commerce_div::generateSessionKey('billing')),
+			$GLOBALS['TSFE']->fe_user->getKey('ses', Tx_Commerce_Utility_GeneralUtility::generateSessionKey('billing')),
 			'billingsession',
 			__FILE__ . ' ' . __LINE__
 		);
@@ -263,16 +263,16 @@ class Tx_Commerce_Controller_CheckoutController extends tx_commerce_pibase {
 		$feUser = & $GLOBALS['TSFE']->fe_user;
 			// Write the billing address into session, if it is present in the REQUEST
 		if (isset($this->piVars['billing'])) {
-			$this->piVars['billing'] = tx_commerce_div::removeXSSStripTagsArray($this->piVars['billing']);
-			$feUser->setKey('ses', tx_commerce_div::generateSessionKey('billing'), $this->piVars['billing']);
+			$this->piVars['billing'] = Tx_Commerce_Utility_GeneralUtility::removeXSSStripTagsArray($this->piVars['billing']);
+			$feUser->setKey('ses', Tx_Commerce_Utility_GeneralUtility::generateSessionKey('billing'), $this->piVars['billing']);
 		}
 		if (isset($this->piVars['delivery'])) {
-			$this->piVars['delivery'] = tx_commerce_div::removeXSSStripTagsArray($this->piVars['delivery']);
-			$feUser->setKey('ses', tx_commerce_div::generateSessionKey('delivery'), $this->piVars['delivery']);
+			$this->piVars['delivery'] = Tx_Commerce_Utility_GeneralUtility::removeXSSStripTagsArray($this->piVars['delivery']);
+			$feUser->setKey('ses', Tx_Commerce_Utility_GeneralUtility::generateSessionKey('delivery'), $this->piVars['delivery']);
 		}
 		if (isset($this->piVars['payment'])) {
-			$this->piVars['payment'] = tx_commerce_div::removeXSSStripTagsArray($this->piVars['payment']);
-			$feUser->setKey('ses', tx_commerce_div::generateSessionKey('payment'), $this->piVars['payment']);
+			$this->piVars['payment'] = Tx_Commerce_Utility_GeneralUtility::removeXSSStripTagsArray($this->piVars['payment']);
+			$feUser->setKey('ses', Tx_Commerce_Utility_GeneralUtility::generateSessionKey('payment'), $this->piVars['payment']);
 		}
 
 			// Fetch the address data from hidden fields if address_id is set.
@@ -287,26 +287,26 @@ class Tx_Commerce_Controller_CheckoutController extends tx_commerce_pibase {
 			$this->piVars[$this->piVars['address_uid']]['uid'] = intval($this->piVars['address_uid']);
 			$feUser->setKey(
 				'ses',
-				tx_commerce_div::generateSessionKey($this->piVars['check']),
+				Tx_Commerce_Utility_GeneralUtility::generateSessionKey($this->piVars['check']),
 				$this->piVars[intval($this->piVars['address_uid'])]
 			);
 		}
 
-		$this->MYSESSION['billing'] = tx_commerce_div::removeXSSStripTagsArray(
-			$feUser->getKey('ses', tx_commerce_div::generateSessionKey('billing'))
+		$this->MYSESSION['billing'] = Tx_Commerce_Utility_GeneralUtility::removeXSSStripTagsArray(
+			$feUser->getKey('ses', Tx_Commerce_Utility_GeneralUtility::generateSessionKey('billing'))
 		);
-		$this->MYSESSION['delivery'] = tx_commerce_div::removeXSSStripTagsArray(
-			$feUser->getKey('ses', tx_commerce_div::generateSessionKey('delivery'))
+		$this->MYSESSION['delivery'] = Tx_Commerce_Utility_GeneralUtility::removeXSSStripTagsArray(
+			$feUser->getKey('ses', Tx_Commerce_Utility_GeneralUtility::generateSessionKey('delivery'))
 		);
-		$this->MYSESSION['payment'] = tx_commerce_div::removeXSSStripTagsArray(
-			$feUser->getKey('ses', tx_commerce_div::generateSessionKey('payment'))
+		$this->MYSESSION['payment'] = Tx_Commerce_Utility_GeneralUtility::removeXSSStripTagsArray(
+			$feUser->getKey('ses', Tx_Commerce_Utility_GeneralUtility::generateSessionKey('payment'))
 		);
-		$this->MYSESSION['mails'] = $feUser->getKey('ses', tx_commerce_div::generateSessionKey('mails'));
+		$this->MYSESSION['mails'] = $feUser->getKey('ses', Tx_Commerce_Utility_GeneralUtility::generateSessionKey('mails'));
 
 		if (($this->piVars['check'] == 'billing') && ($this->piVars['step'] == 'payment')) {
 				// Remove reference to delivery address
 			$this->MYSESSION['delivery'] = FALSE;
-			$feUser->setKey('ses', tx_commerce_div::generateSessionKey('delivery'), FALSE);
+			$feUser->setKey('ses', Tx_Commerce_Utility_GeneralUtility::generateSessionKey('delivery'), FALSE);
 		}
 
 		$this->storeSessionData();
@@ -396,7 +396,7 @@ class Tx_Commerce_Controller_CheckoutController extends tx_commerce_pibase {
 			}
 		}
 
-		$feUser->setKey('ses', tx_commerce_div::generateSessionKey('currentStep'), $this->currentStep);
+		$feUser->setKey('ses', Tx_Commerce_Utility_GeneralUtility::generateSessionKey('currentStep'), $this->currentStep);
 
 		$content = $this->renderSteps($content);
 
@@ -1151,9 +1151,9 @@ class Tx_Commerce_Controller_CheckoutController extends tx_commerce_pibase {
 			// At last remove some things from the session
 			// Change from mySession to real session key
 		if ($this->clearSessionAfterCheckout == TRUE) {
-			$GLOBALS['TSFE']->fe_user->setKey('ses', tx_commerce_div::generateSessionKey('payment'), NULL);
-			$GLOBALS['TSFE']->fe_user->setKey('ses', tx_commerce_div::generateSessionKey('delivery'), NULL);
-			$GLOBALS['TSFE']->fe_user->setKey('ses', tx_commerce_div::generateSessionKey('billing'), NULL);
+			$GLOBALS['TSFE']->fe_user->setKey('ses', Tx_Commerce_Utility_GeneralUtility::generateSessionKey('payment'), NULL);
+			$GLOBALS['TSFE']->fe_user->setKey('ses', Tx_Commerce_Utility_GeneralUtility::generateSessionKey('delivery'), NULL);
+			$GLOBALS['TSFE']->fe_user->setKey('ses', Tx_Commerce_Utility_GeneralUtility::generateSessionKey('billing'), NULL);
 		}
 
 		$basket->finishOrder();
@@ -1632,7 +1632,7 @@ class Tx_Commerce_Controller_CheckoutController extends tx_commerce_pibase {
 			$fieldCode .= $this->cObj->substituteMarkerArray($fieldCodeTemplate, $fieldMarkerArray);
 		}
 
-		$GLOBALS['TSFE']->fe_user->setKey('ses', tx_commerce_div::generateSessionKey('mails'), $this->MYSESSION['mails']);
+		$GLOBALS['TSFE']->fe_user->setKey('ses', Tx_Commerce_Utility_GeneralUtility::generateSessionKey('mails'), $this->MYSESSION['mails']);
 
 		return $fieldCode;
 	}
@@ -2035,7 +2035,7 @@ class Tx_Commerce_Controller_CheckoutController extends tx_commerce_pibase {
 			return FALSE;
 		}
 
-		$userMail = tx_commerce_div::validEmailList($userMail);
+		$userMail = Tx_Commerce_Utility_GeneralUtility::validEmailList($userMail);
 
 		if ($userMail && !preg_match("/\r/i", $userMail) && !preg_match("/\n/i", $userMail)) {
 			foreach ($hookObjectsArr as $hookObj) {
@@ -2156,7 +2156,7 @@ class Tx_Commerce_Controller_CheckoutController extends tx_commerce_pibase {
 					'additionalData' => $this
 				);
 
-				tx_commerce_div::sendMail($mailconf);
+				Tx_Commerce_Utility_GeneralUtility::sendMail($mailconf);
 
 				return TRUE;
 			}
@@ -2308,7 +2308,7 @@ class Tx_Commerce_Controller_CheckoutController extends tx_commerce_pibase {
 				$mailconf['fromName'] = $this->conf['adminmail.']['from_name'];
 			}
 
-			tx_commerce_div::sendMail($mailconf);
+			Tx_Commerce_Utility_GeneralUtility::sendMail($mailconf);
 
 			return TRUE;
 		}

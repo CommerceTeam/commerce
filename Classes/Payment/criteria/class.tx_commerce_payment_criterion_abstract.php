@@ -28,7 +28,7 @@
 abstract class tx_commerce_payment_criterion_abstract implements tx_commerce_payment_criterion {
 
 	/**
-	 * @var tx_commerce_pibase Parent commerce pibase object
+	 * @var Tx_Commerce_Controller_BaseController Parent commerce pibase object
 	 */
 	protected $pibaseObject = NULL;
 

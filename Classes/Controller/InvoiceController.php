@@ -25,7 +25,7 @@
 /**
  * Plugin 'commerce_invoice' for the 'commerce_invoice' extension.
  */
-class Tx_Commerce_Controller_InvoiceController extends tx_commerce_pibase {
+class Tx_Commerce_Controller_InvoiceController extends Tx_Commerce_Controller_BaseController {
 	/**
 	 * Same as class name
 	 *

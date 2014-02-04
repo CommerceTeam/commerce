@@ -201,7 +201,7 @@ class tx_commerce_navigation {
 		$this->PID = $this->mConf['overridePid'] ? $this->mConf['overridePid'] : $GLOBALS['TSFE']->id;
 		$this->gpVars = t3lib_div::_GPmerged($this->prefixId);
 
-		tx_commerce_div::initializeFeUserBasket();
+		Tx_Commerce_Utility_GeneralUtility::initializeFeUserBasket();
 
 		$this->gpVars['basketHashValue'] =  $GLOBALS['TSFE']->fe_user->tx_commerce_basket->getBasketHashValue();
 		$this->pageRootline = $GLOBALS['TSFE']->rootLine;

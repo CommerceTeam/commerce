@@ -191,7 +191,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 		$this->pi_loadLL();
 		$this->pi_initPIflexForm();
 
-		tx_commerce_div::initializeFeUserBasket();
+		Tx_Commerce_Utility_GeneralUtility::initializeFeUserBasket();
 
 		$this->pid = $GLOBALS['TSFE']->id;
 		$this->basketHashValue = $GLOBALS['TSFE']->fe_user->tx_commerce_basket->getBasketHashValue();
@@ -545,7 +545,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 				if ($this->conf['groupProductsByCategory'] && !$this->conf['hideProductsInList'] && !empty($this->category_products)) {
 					$categoryProducts = $oneCategory->getAllProducts();
 					if ($this->conf['useStockHandling'] == 1) {
-						$categoryProducts = tx_commerce_div::removeNoStockProducts($categoryProducts, $this->conf['products.']['showWithNoStock']);
+						$categoryProducts = Tx_Commerce_Utility_GeneralUtility::removeNoStockProducts($categoryProducts, $this->conf['products.']['showWithNoStock']);
 					}
 					$categoryProducts = array_slice($categoryProducts, 0, $this->conf['numberProductsInSubCategory']);
 					$productList = $this->renderProductsForList(
@@ -1679,7 +1679,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 		$articleTemplate = $this->cObj->getSubpart($template, '###' . strtoupper($articleSubpart) . '###');
 
 		if ($this->conf['useStockHandling'] == 1) {
-			$myProduct = tx_commerce_div::removeNoStockArticles($myProduct, $this->conf['articles.']['showWithNoStock']);
+			$myProduct = Tx_Commerce_Utility_GeneralUtility::removeNoStockArticles($myProduct, $this->conf['articles.']['showWithNoStock']);
 		}
 
 			// Set RenderMaxArtickles to TS value

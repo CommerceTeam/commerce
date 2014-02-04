@@ -130,7 +130,7 @@ class Tx_Commerce_Hook_OrdermailHooks {
 			}
 		}
 
-		return tx_commerce_div::sendMail($mailconf, $this);
+		return Tx_Commerce_Utility_GeneralUtility::sendMail($mailconf, $this);
 	}
 
 	/**

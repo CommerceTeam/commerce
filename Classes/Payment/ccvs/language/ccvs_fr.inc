@@ -25,3 +25,5 @@ $CCVSErrMonthFormat  = 'Le mois n\'a pas un format admissible';
 $CCVSErrYearString   = 'Année n\'est pas une chaîne';
 $CCVSErrYearFormat   = 'L\'année n\'a pas un format admissible';
 $CCVSErrExpired      = 'La carte est expirée';
+
+?>

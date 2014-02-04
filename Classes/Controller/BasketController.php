@@ -34,7 +34,7 @@
  * @see tx_commerce_basket
  * @see tx_commerce_basic_basekt
  */
-class Tx_Commerce_Controller_BasketController extends tx_commerce_pibase {
+class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_BaseController {
 	/**
 	 * Same as class name
 	 *

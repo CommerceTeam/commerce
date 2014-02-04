@@ -26,7 +26,7 @@
  * Plugin 'addresses' for the 'commerce' extension.
  * This class handles all the address stuff, like creating, editing and deleting.
  */
-class Tx_Commerce_Controller_AddressesController extends tx_commerce_pibase {
+class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_BaseController {
 	/**
 	 * Same as class name
 	 *
@@ -314,7 +314,7 @@ class Tx_Commerce_Controller_AddressesController extends tx_commerce_pibase {
 			$linkMA = array();
 
 				// Fill marker array
-			$address = tx_commerce_div::removeXSSStripTagsArray($address);
+			$address = Tx_Commerce_Utility_GeneralUtility::removeXSSStripTagsArray($address);
 			foreach ($address as $key => $value) {
 				$valueHidden = '';
 				$upperKey = strtoupper($key);
@@ -502,7 +502,7 @@ class Tx_Commerce_Controller_AddressesController extends tx_commerce_pibase {
 		if ($this->formErrors()) {
 			$addressData = $this->piVars;
 		}
-		$addressData = tx_commerce_div::removeXSSStripTagsArray($addressData);
+		$addressData = Tx_Commerce_Utility_GeneralUtility::removeXSSStripTagsArray($addressData);
 		if ($addressData['tx_commerce_address_type_id'] == NULL) {
 			$addressData['tx_commerce_address_type_id'] = (int)$this->piVars['addressType'];
 		}
@@ -610,7 +610,7 @@ class Tx_Commerce_Controller_AddressesController extends tx_commerce_pibase {
 			'',
 			array(
 				'tx_commerce_pi3' => array(
-					'step' => $GLOBALS['TSFE']->fe_user->getKey('ses', tx_commerce_div::generateSessionKey('currentStep'))
+					'step' => $GLOBALS['TSFE']->fe_user->getKey('ses', Tx_Commerce_Utility_GeneralUtility::generateSessionKey('currentStep'))
 				)
 			)
 		);
@@ -1114,7 +1114,7 @@ class Tx_Commerce_Controller_AddressesController extends tx_commerce_pibase {
 
 		$result = array();
 		while ($address = $database->sql_fetch_assoc($res)) {
-			$result[$address['uid']] = tx_commerce_div::removeXSSStripTagsArray($address);
+			$result[$address['uid']] = Tx_Commerce_Utility_GeneralUtility::removeXSSStripTagsArray($address);
 		}
 
 		return $result;

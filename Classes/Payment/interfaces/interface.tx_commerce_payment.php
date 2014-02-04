@@ -44,7 +44,7 @@ interface tx_commerce_payment {
 	/**
 	 * Get parent object
 	 *
-	 * @return tx_commerce_pibase Parent object instance
+	 * @return Tx_Commerce_Controller_BaseController Parent object instance
 	 */
 	public function getPObj();
 
