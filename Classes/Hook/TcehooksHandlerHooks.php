@@ -45,7 +45,7 @@ class Tx_Commerce_Hook_TcehooksHandlerHooks {
 				// Get the whole price, not only the tce-form fields
 			foreach ($pObj->datamap['tx_commerce_articles'] as $v) {
 				$uids = explode(',', $v['prices']);
-				if (in_array($id, $uids)) {
+				if (in_array($id, $uids) && ($incomingFieldArray['price_net'] || $incomingFieldArray['price_gross'])) {
 					$this->calculateTax($incomingFieldArray, doubleval($v['tax']));
 				}
 			}
@@ -56,7 +56,7 @@ class Tx_Commerce_Hook_TcehooksHandlerHooks {
 							// first convert the float value to a string - this is required because of a php "bug"
 							// details on http://forge.typo3.org/issues/show/2986
 							// and http://de.php.net/manual/en/function.intval.php
-						$incomingFieldArray[$key] = intval(strval($value * 100));
+						$incomingFieldArray[$key] = (int) strval($value * 100);
 					}
 				}
 			}

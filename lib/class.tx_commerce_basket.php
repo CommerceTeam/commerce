@@ -69,6 +69,15 @@ class tx_commerce_basket extends tx_commerce_basic_basket {
 	}
 
 	/**
+	 * Returns the session ID
+	 *
+	 * @return string
+	 */
+	public function get_session_id() {
+		return $this->sessionId;
+	}
+
+	/**
 	 * Set the session ID
 	 *
 	 * @param string $sessionId Session ID
