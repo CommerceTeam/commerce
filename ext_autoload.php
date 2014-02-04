@@ -118,13 +118,14 @@ return array(
 	'tx_commerce_belib' => $classPath . 'Utility/BackendUtility.php',
 	'tx_commerce_utility_folderutility' => $classPath . 'Utility/FolderUtility.php',
 	'tx_commerce_create_folder' => $classPath . 'Utility/FolderUtility.php',
+	'tx_commerce_utility_tceformsutility' => $classPath . 'Utility/TceformsUtility.php',
+	'tx_commerce_forms_select' => $classPath . 'Utility/TceformsUtility.php',
 
 
 	'tx_commerce_db_list' => $extensionPath . 'lib/class.tx_commerce_db_list.php',
 	'commercerecordlist' => $extensionPath . 'lib/class.tx_commerce_db_list_extra.php',
 	'tx_commerce_div' => $extensionPath . 'lib/class.tx_commerce_div.php',
 	'tx_commerce_folder_db' => $extensionPath . 'lib/class.tx_commerce_folder_db.php',
-	'tx_commerce_forms_select' => $extensionPath . 'lib/class.tx_commerce_forms_select.php',
 	'tx_commerce_navigation' => $extensionPath . 'lib/class.tx_commerce_navigation.php',
 	'user_tx_commerce_catmenu_pub' => $extensionPath . 'lib/class.user_tx_commerce_catmenu_pub.php',
 	'tx_commerce_feusers_localrecordlist' => $extensionPath . 'lib/class.tx_commerce_feusers_localrecordlist.php',

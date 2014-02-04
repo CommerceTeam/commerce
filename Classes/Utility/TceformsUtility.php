@@ -24,11 +24,11 @@
 
 /**
  * ItemProc Methods for flexforms
- *
- * @package commerce
- * @author Ingo Schmitt <is@marketing-factory.de>
  */
-class tx_commerce_forms_select {
+class Tx_Commerce_Utility_TceformsUtility {
+	/**
+	 * @param array $data
+	 */
 	public function productsSelector(&$data) {
 		/** @var t3lib_db $database */
 		$database = $GLOBALS['TYPO3_DB'];
@@ -138,10 +138,11 @@ class tx_commerce_forms_select {
 	}
 }
 
+class_alias('Tx_Commerce_Utility_TceformsUtility', 'tx_commerce_forms_select');
 
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_forms_select.php']) {
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Utility/TceformsUtility.php']) {
 	/** @noinspection PhpIncludeInspection */
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_forms_select.php']);
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Utility/TceformsUtility.php']);
 }
 
 ?>
