@@ -137,7 +137,7 @@ $GLOBALS['TCA']['tx_commerce_order_articles'] = Array(
 			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_order_articles.order_id',
 			'config' => Array(
 				'type' => 'user',
-				'userFunc' => 'Tx_Commerce_ViewHelpers_OrderEditFunc->article_order_id',
+				'userFunc' => 'Tx_Commerce_ViewHelpers_OrderEditFunc->articleOrderId',
 			)
 		),
 	),

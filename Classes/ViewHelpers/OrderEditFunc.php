@@ -63,7 +63,7 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 	 * @param array $PA
 	 * @return string HTML-Content
 	 */
-	public function article_order_id($PA) {
+	public function articleOrderId($PA) {
 		$content = htmlspecialchars($PA['itemFormElValue']);
 		$content .= '<input type="hidden" name="' . $PA['itemFormElName'] . '" value="' . htmlspecialchars($PA['itemFormElValue']) . '">';
 		return $content;
@@ -76,7 +76,7 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 	 * @param array $PA
 	 * @return string HTML-Content
 	 */
-	public function sum_price_gross_format($PA) {
+	public function sumPriceGrossFormat($PA) {
 		$content = '<input type="text" disabled name="' . $PA['itemFormElName'] . '" value="' .
 			tx_moneylib::format($PA['itemFormElValue'] / 100) . '">';
 		return $content;
@@ -89,7 +89,7 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 	 * @param array $PA
 	 * @return string HTML-Content
 	 */
-	public function order_articles($PA) {
+	public function orderArticles($PA) {
 		/** @var t3lib_db $database */
 		$database = $GLOBALS['TYPO3_DB'];
 		/** @var language $language */
@@ -316,7 +316,7 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 	 * @param array $data
 	 * @see tcafiles/tx_commerce_orders.tca.php
 	 */
-	public function order_status(&$data) {
+	public function orderStatus(&$data) {
 		/**
 		 * Ggf folder anlegen, wenn Sie nicht da sind
 		 */
@@ -376,7 +376,7 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 	 * @param t3lib_TCEforms $fobj
 	 * @return string HTML-Content
 	 */
-	public function invoice_adress($PA, $fobj) {
+	public function invoiceAddress($PA, $fobj) {
 		/**
 		 * Normal
 		 */
@@ -407,7 +407,7 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 	 * @param t3lib_TCEforms $fobj
 	 * @return string HTML-Content
 	 */
-	public function delivery_adress($PA, $fobj) {
+	public function deliveryAddress($PA, $fobj) {
 		/**
 		 * Normal
 		 */
@@ -506,7 +506,7 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 	 * @param array $PA
 	 * @return string
 	 */
-	public function fe_user_orders($PA) {
+	public function feUserOrders($PA) {
 		/** @var t3lib_beUserAuth $backendUser */
 		$backendUser = $GLOBALS['BE_USER'];
 
@@ -541,17 +541,108 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 		return $dblist->HTMLcode;
 	}
 
+
+	/**
+	 * Article order_id
+	 * Just a hidden field
+	 *
+	 * @param array $PA
+	 * @return string HTML-Content
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use Tx_Commerce_ViewHelpers_OrderEditFunc::articleOrderId instead
+	 */
+	public function article_order_id($PA) {
+		t3lib_div::logDeprecatedFunction();
+		return $this->articleOrderId($PA);
+	}
+
+	/**
+	 * Article order_id
+	 * Just a hidden field
+	 *
+	 * @param array $PA
+	 * @return string HTML-Content
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use Tx_Commerce_ViewHelpers_OrderEditFunc::sumPriceGrossFormat instead
+	 */
+	public function sum_price_gross_format($PA) {
+		t3lib_div::logDeprecatedFunction();
+		return $this->sumPriceGrossFormat($PA);
+	}
+
+	/**
+	 * Oder Articles
+	 * Renders the List of aricles
+	 *
+	 * @param array $PA
+	 * @return string HTML-Content
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use Tx_Commerce_ViewHelpers_OrderEditFunc::orderArticles instead
+	 */
+	public function order_articles($PA) {
+		t3lib_div::logDeprecatedFunction();
+		return $this->orderArticles($PA);
+	}
+
+	/**
+	 * Oder Status
+	 * Selects only the oder folders from the pages List
+	 *
+	 * @param array $data
+	 * @see tcafiles/tx_commerce_orders.tca.php
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use Tx_Commerce_ViewHelpers_OrderEditFunc::orderStatus instead
+	 */
+	public function order_status(&$data) {
+		t3lib_div::logDeprecatedFunction();
+		$this->orderStatus($data);
+	}
+
+	/**
+	 * Invoice Adresss
+	 * Renders the invoice adresss
+	 *
+	 * @param array $PA
+	 * @param t3lib_TCEforms $fobj
+	 * @return string HTML-Content
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use Tx_Commerce_ViewHelpers_OrderEditFunc::invoiceAddress instead
+	 */
+	public function invoice_adress($PA, $fobj) {
+		t3lib_div::logDeprecatedFunction();
+		return $this->invoiceAddress($PA, $fobj);
+	}
+
+	/**
+	 * Invoice Adresss
+	 * Renders the invoice adresss
+	 *
+	 * @param array $PA
+	 * @param t3lib_TCEforms $fobj
+	 * @return string HTML-Content
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use Tx_Commerce_ViewHelpers_OrderEditFunc::deliveryAddress instead
+	 */
+	public function delivery_adress($PA, $fobj) {
+		t3lib_div::logDeprecatedFunction();
+		return $this->deliveryAddress($PA, $fobj);
+	}
+
 	/**
 	 * @param array $PA
 	 * @param t3lib_TCEforms $fobj
 	 * @param string $table
 	 * @param integer $uid
 	 * @return string
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getAttributes instead
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use Tx_Commerce_ViewHelpers_OrderEditFunc::getAttributes instead
 	 */
 	public function adress($PA, $fobj, $table, $uid) {
 		t3lib_div::logDeprecatedFunction();
 		return $this->address($PA, $fobj, $table, $uid);
+	}
+
+	/**
+	 * @param array $PA
+	 * @return string
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use Tx_Commerce_ViewHelpers_OrderEditFunc::feUserOrders instead
+	 */
+	public function fe_user_orders($PA) {
+		t3lib_div::logDeprecatedFunction();
+		return $this->feUserOrders($PA);
 	}
 }
 
