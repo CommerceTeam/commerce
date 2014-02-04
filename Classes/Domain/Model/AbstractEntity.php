@@ -62,12 +62,8 @@ define ('ATTRIB_product', ATTRIB_PRODUCT);
  * tx_commerce_article
  * tx_commerce_category
  * tx_commerce_attribute
- *
- * @package TYPO3
- * @subpackage tx_commerce
- * @subpackage tx_commerce_element_alib
  */
-class tx_commerce_element_alib {
+class Tx_Commerce_Domain_Model_AbstractEntity {
 	/**
 	 * uid of element
 	 *
@@ -205,9 +201,9 @@ class tx_commerce_element_alib {
 		if (!$this->databaseConnection) {
 			$this->databaseConnection = t3lib_div::makeInstance($this->databaseClass);
 		}
-		$this->data = $data = $this->databaseConnection->getData($this->uid, $this->lang_uid, $translationMode);
+		$this->data = $this->databaseConnection->getData($this->uid, $this->lang_uid, $translationMode);
 
-		if (!$data) {
+		if (!$this->data) {
 			$this->recordTranslated = FALSE;
 			return FALSE;
 		} else {
@@ -215,14 +211,14 @@ class tx_commerce_element_alib {
 		}
 
 		foreach ($this->fieldlist as $field) {
-			$this->$field = $data[$field];
+			$this->$field = $this->data[$field];
 		}
 
-		if ($data['_LOCALIZED_UID']) {
-			$this->_LOCALIZED_UID = $data['_LOCALIZED_UID'];
+		if ($this->data['_LOCALIZED_UID']) {
+			$this->_LOCALIZED_UID = $this->data['_LOCALIZED_UID'];
 		}
 
-		return $data;
+		return $this->data;
 	}
 
 	/**
@@ -287,13 +283,11 @@ class tx_commerce_element_alib {
 	 * @return boolean true if uid is valid
 	 */
 	public function isValidUid() {
-		if ($this->databaseConnection) {
-			return $this->databaseConnection->isUid($this->uid);
-		} else {
+		if (!$this->databaseConnection) {
 			$this->databaseConnection = t3lib_div::makeInstance($this->databaseClass);
-
-			return $this->databaseConnection->isUid($this->uid);
 		}
+
+		return $this->databaseConnection->isUid($this->uid);
 	}
 
 	/**
@@ -305,12 +299,11 @@ class tx_commerce_element_alib {
 	 *            FALSE    if is not accessible
 	 */
 	public function isAccessible() {
-		if ($this->databaseConnection) {
-			return $this->databaseConnection->isAccessible($this->uid);
-		} else {
+		if (!$this->databaseConnection) {
 			$this->databaseConnection = t3lib_div::makeInstance($this->databaseClass);
-			return $this->databaseConnection->isAccessible($this->uid);
 		}
+
+		return $this->databaseConnection->isAccessible($this->uid);
 	}
 
 	/**
@@ -334,8 +327,8 @@ class tx_commerce_element_alib {
 		$result = array();
 		if ($this->attributes_uids = $this->databaseConnection->getAttributes($this->uid, $attribute_corelation_type_list)) {
 			foreach ($this->attributes_uids as $attribute_uid) {
-				/** @var tx_commerce_attribute $attribute */
-				$attribute = t3lib_div::makeInstance('tx_commerce_attribute');
+				/** @var Tx_Commerce_Domain_Model_Attribute $attribute */
+				$attribute = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Attribute');
 				$attribute->init($attribute_uid, $this->lang_uid);
 				$attribute->loadData();
 				$this->attribute[$attribute_uid] = $attribute;
@@ -373,7 +366,6 @@ class tx_commerce_element_alib {
 	public function getField($field) {
 		return $this->$field;
 	}
-
 
 	/**
 	 * Loads the Data from the database
@@ -519,6 +511,8 @@ class tx_commerce_element_alib {
 		return $this->getAttributes($attribute_corelation_type_list);
 	}
 }
+
+class_alias('Tx_Commerce_Domain_Model_AbstractEntity', 'tx_commerce_element_alib');
 
 if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_element_alib.php']) {
 	/** @noinspection PhpIncludeInspection */

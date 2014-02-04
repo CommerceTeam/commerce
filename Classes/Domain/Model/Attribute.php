@@ -1,19 +1,24 @@
 <?php
 /***************************************************************
  *  Copyright notice
+ *
  *  (c) 2005 - 2011 Ingo Schmitt <is@marketing-factory.de>
  *  All rights reserved
+ *
  *  This script is part of the Typo3 project. The Typo3 project is
  *  free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
  *  (at your option) any later version.
+ *
  *  The GNU General Public License can be found at
  *  http://www.gnu.org/copyleft/gpl.html.
+ *
  *  This script is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
+ *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
@@ -27,13 +32,9 @@
  * basic Database calls are made from a separate Database Class
  * Do not acces class variables directly, allways use the get and set methods,
  * variables will be changed in php5 to private
- *
- * @author Ingo Schmitt <is@marketing-factory.de>
- * @package TYPO3
- * @subpackage tx_commerce
  * Basic class for handleing attributes
  */
-class tx_commerce_attribute extends tx_commerce_element_alib {
+class Tx_Commerce_Domain_Model_Attribute extends Tx_Commerce_Domain_Model_AbstractEntity {
 	/**
 	 * @var string
 	 */
@@ -92,7 +93,7 @@ class tx_commerce_attribute extends tx_commerce_element_alib {
 	protected $iconmode = 0;
 
 	/**
-	 * @var integer|tx_commerce_attribute
+	 * @var integer|Tx_Commerce_Domain_Model_Attribute
 	 */
 	protected $parent = 0;
 
@@ -160,11 +161,11 @@ class tx_commerce_attribute extends tx_commerce_element_alib {
 	 * @access public
 	 */
 	public function getAllValues($returnObjects = FALSE, $productObject = FALSE) {
+		/** @var $attributeValue Tx_Commerce_Domain_Model_AttributeValue */
 		if ($this->attributeValuesLoaded === FALSE) {
 			if ($this->attribute_value_uids = $this->databaseConnection->getAttributeValueUids($this->uid)) {
 				foreach ($this->attribute_value_uids as $value_uid) {
-					/** @var $attributValue tx_commerce_attribute_value */
-					$attributValue = t3lib_div::makeInstance('tx_commerce_attribute_value');
+					$attributValue = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_AttributeValue');
 					$attributValue->init($value_uid, $this->lang_uid);
 					$attributValue->loadData();
 
@@ -176,7 +177,6 @@ class tx_commerce_attribute extends tx_commerce_element_alib {
 
 		$attributeValues = $this->attribute_values;
 
-		/** @var $attributeValue tx_commerce_attribute_value */
 			// if productObject is a productObject we have to remove the attribute
 			// values wich are not possible at all for this product
 		if (is_object($productObject)) {
@@ -240,7 +240,7 @@ class tx_commerce_attribute extends tx_commerce_element_alib {
 			if (!$this->has_valuelist) {
 				$this->getAllValues();
 
-				/** @var $attributeValue tx_commerce_attribute_value */
+				/** @var $attributeValue Tx_Commerce_Domain_Model_AttributeValue */
 				$attributeValue = $this->attribute_values[$uid];
 				$result = $attributeValue->getValue();
 			}
@@ -276,11 +276,11 @@ class tx_commerce_attribute extends tx_commerce_element_alib {
 
 	/**
 	 * @param boolean|string $translationMode
-	 * @return integer|tx_commerce_attribute
+	 * @return integer|Tx_Commerce_Domain_Model_Attribute
 	 */
 	public function getParent($translationMode = FALSE) {
 		if (is_int($this->parent) && $this->parent > 0) {
-			/** @var $parent tx_commerce_attribute */
+			/** @var $parent Tx_Commerce_Domain_Model_Attribute */
 			$parent = t3lib_div::makeInstance(get_class($this));
 			$parent->init($this->parent, $this->lang_uid);
 			$parent->loadData($translationMode);
@@ -300,7 +300,7 @@ class tx_commerce_attribute extends tx_commerce_element_alib {
 			$childAttributeList = $this->databaseConnection->getChildAttributeUids($this->uid);
 
 			foreach ($childAttributeList as $childAttributeUid) {
-				/** @var $parent tx_commerce_attribute */
+				/** @var $parent Tx_Commerce_Domain_Model_Attribute */
 				$attribute = t3lib_div::makeInstance(get_class($this));
 				$attribute->init($childAttributeUid, $this->lang_uid);
 				$attribute->loadData($translationMode);
@@ -395,6 +395,8 @@ class tx_commerce_attribute extends tx_commerce_element_alib {
 		return $this->getUnit();
 	}
 }
+
+class_alias('Tx_Commerce_Domain_Model_Attribute', 'tx_commerce_attribute');
 
 if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_attribute.php']) {
 	/** @noinspection PhpIncludeInspection */

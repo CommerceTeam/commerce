@@ -24,13 +24,8 @@
 
 /**
  * Libary for frontend rendering of article prices.
- *
- * @author Volker Graubaum <vg@e-netconsulting.de>
- * @coauthor Ingo Schmitt <is@marketing-factory.de>
- * @package TYPO3
- * @subpackage tx_commerce
  */
-class tx_commerce_article_price extends tx_commerce_element_alib {
+class Tx_Commerce_Domain_Model_ArticlePrice extends Tx_Commerce_Domain_Model_AbstractEntity {
 
 	/**
 	 * @var String Currency for price
@@ -236,6 +231,8 @@ class tx_commerce_article_price extends tx_commerce_element_alib {
 		return $this->getPriceGross();
 	}
 }
+
+class_alias('Tx_Commerce_Domain_Model_ArticlePrice', 'tx_commerce_article_price');
 
 if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_article_price.php']) {
 	/** @noinspection PhpIncludeInspection */

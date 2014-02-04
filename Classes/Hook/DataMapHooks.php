@@ -145,7 +145,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 						$productObj->loadData();
 						$parentCateory = $productObj->getMasterparentCategory();
 						$GLOBALS['_POST']['popViewId_addParams'] =
-							($fieldArray['sys_language_uid'] > 0? '&L=' . $fieldArray['sys_language_uid'] : '') .
+							($incomingFieldArray['sys_language_uid'] > 0 ? '&L=' . $incomingFieldArray['sys_language_uid'] : '') .
 							'&ADMCMD_vPrev&no_cache=1&tx_commerce[showUid]=' . $id .
 							'&tx_commerce[catUid]=' . $parentCateory;
 						$GLOBALS['_POST']['popViewId'] = $previewPageID;
@@ -265,12 +265,12 @@ class Tx_Commerce_Hook_DataMapHooks {
 			break;
 
 			case 'tx_commerce_orders':
-				$this->doNotChangeCrdate($status, $table, $id, $incomingFieldArray, $pObj);
-				$this->moveOrders($status, $table, $id, $incomingFieldArray, $pObj);
+				$this->doNotChangeCrdate($incomingFieldArray, $table, $id, $pObj);
+				$this->moveOrders($incomingFieldArray, $table, $id, $pObj);
 			break;
 
 			case 'tx_commerce_order_articles':
-				$this->recalculateOrderSum($status, $table, $id, $incomingFieldArray, $pObj);
+				$this->recalculateOrderSum($incomingFieldArray, $table, $id, $pObj);
 			break;
 		}
 
@@ -435,7 +435,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 			$uidList = $this->belib->extractFieldArray($paList, 'uid_foreign', TRUE, array('uid_correlationtype'));
 
 			$this->belib->saveRelations($pUid, $uidList, 'tx_commerce_products_attributes_mm', FALSE, FALSE);
-			$this->belib->updateXML('attributes', 'tx_commerce_products', $pUid, 'product', $ctList);
+			$this->belib->updateXML('attributes', 'tx_commerce_products', $pUid, 'product', $catList);
 			$delete = FALSE;
 		}
 
@@ -1211,22 +1211,21 @@ class Tx_Commerce_Hook_DataMapHooks {
 	 * Change the PID from this order via the new field newpid
 	 * As TYPO3 don't allowes changing the PId directly
 	 *
-	 * @param string $status: ...
-	 * @param string $table: ...
-	 * @param integer $id: ...
-	 * @param array $fieldArray: ...
-	 * @param t3lib_TCEmain $th_obj: ...
-	 * @return	void
+	 * @param array $incomingFieldArray
+	 * @param string $table
+	 * @param integer $id
+	 * @param t3lib_TCEmain $pObj
+	 * @return void
 	 */
-	public function moveOrders($status, $table, $id, &$fieldArray, &$th_obj) {
+	public function moveOrders(&$incomingFieldArray, $table, $id, &$pObj) {
 			// Only if newpid in arrayKeys fieldlist
-		if (in_array('newpid', array_keys($fieldArray))) {
+		if (in_array('newpid', array_keys($incomingFieldArray))) {
 			/** @var t3lib_db $database */
 			$database = $GLOBALS['TYPO3_DB'];
 
 			$hookObjectsArr = array();
 				// Add firstly the pid filed
-			$fieldArray['pid'] = $fieldArray['newpid'];
+			$incomingFieldArray['pid'] = $incomingFieldArray['newpid'];
 
 			/**
 			 * @TODO: Should all relations to orders be moved oder should
@@ -1243,15 +1242,15 @@ class Tx_Commerce_Hook_DataMapHooks {
 				}
 				$order_row = $database->sql_fetch_assoc($res_order_id);
 
-				if ($order_row['pid'] <> $fieldArray['newpid']) {
+				if ($order_row['pid'] <> $incomingFieldArray['newpid']) {
 						// order_sys_language_uid is not always set in fieldArray so we overwrite it with our order data
-					if ($fieldArray['order_sys_language_uid'] === NULL) {
-						$fieldArray['order_sys_language_uid'] = $order_row['order_sys_language_uid'];
+					if ($incomingFieldArray['order_sys_language_uid'] === NULL) {
+						$incomingFieldArray['order_sys_language_uid'] = $order_row['order_sys_language_uid'];
 					}
 
 					foreach ($hookObjectsArr as $hookObj) {
 						if (method_exists($hookObj, 'moveOrders_preMoveOrder')) {
-							$hookObj->moveOrders_preMoveOrder($order_row, $fieldArray);
+							$hookObj->moveOrders_preMoveOrder($order_row, $incomingFieldArray);
 						}
 					}
 
@@ -1264,7 +1263,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 					if (!$database->sql_error()) {
 							// Run trough all articles from this order and move to it to other storage folder
 						while ($order_artikel_row = $database->sql_fetch_assoc($res_order_articles)) {
-							$order_artikel_row['pid'] = $fieldArray['newpid'];
+							$order_artikel_row['pid'] = $incomingFieldArray['newpid'];
 							$order_artikel_row['tstamp'] = time();
 							$database->exec_UPDATEquery(
 								'tx_commerce_order_articles',
@@ -1273,20 +1272,20 @@ class Tx_Commerce_Hook_DataMapHooks {
 							);
 						}
 					} else {
-						$th_obj->log($table, $id, 2, 0, 2, "SQL error: '%s' (%s)", 12, array($database->sql_error(), $table . ':' . $id));
+						$pObj->log($table, $id, 2, 0, 2, "SQL error: '%s' (%s)", 12, array($database->sql_error(), $table . ':' . $id));
 					}
-					$order_row['pid'] = $fieldArray['newpid'];
+					$order_row['pid'] = $incomingFieldArray['newpid'];
 					$order_row['tstamp'] = time();
 					$database->exec_UPDATEquery('tx_commerce_orders', 'uid=' . $order_row['uid'], $order_row);
 
 					foreach ($hookObjectsArr as $hookObj) {
 						if (method_exists($hookObj, 'moveOrders_postMoveOrder')) {
-							$hookObj->moveOrders_postMoveOrder($order_row, $fieldArray);
+							$hookObj->moveOrders_postMoveOrder($order_row, $incomingFieldArray);
 						}
 					}
 				}
 			} else {
-				$th_obj->log($table, $id, 2, 0, 2, "SQL error: '%s' (%s)", 12, array($database->sql_error(), $table . ':' . $id));
+				$pObj->log($table, $id, 2, 0, 2, "SQL error: '%s' (%s)", 12, array($database->sql_error(), $table . ':' . $id));
 			}
 		}
 	}
@@ -1296,29 +1295,27 @@ class Tx_Commerce_Hook_DataMapHooks {
 	 * Basically removes the crdate field
 	 * and so prevents vom chan ging the crdate by admin
 	 *
-	 * @param string $status: ...
-	 * @param string $table: ...
-	 * @param integer $id: ...
-	 * @param array $fieldArray: ...
-	 * @param t3lib_TCEmain $th_obj: ...
+	 * @param array $incomingFieldArray
+	 * @param string $table
+	 * @param integer $id
+	 * @param t3lib_TCEmain $pObj
 	 * @return void
 	 */
-	protected function doNotChangeCrdate($status, $table, $id, &$fieldArray, &$th_obj) {
-		$fieldArray['crdate'] = NULL;
+	protected function doNotChangeCrdate(&$incomingFieldArray, $table, $id, &$pObj) {
+		$incomingFieldArray['crdate'] = NULL;
 	}
 
 	/**
 	 * Process Data when saving Ordered_artciles
 	 * Recalculate Order sum
 	 *
-	 * @param string $status: ...
-	 * @param string $table: ...
-	 * @param integer $id: ...
-	 * @param array $fieldArray: ...
-	 * @param t3lib_TCEmain $th_obj: ...
+	 * @param array $incomingFieldArray
+	 * @param string $table
+	 * @param integer $id
+	 * @param t3lib_TCEmain $pObj
 	 * @return void
 	 */
-	protected function recalculateOrderSum($status, $table, $id, &$fieldArray, &$th_obj) {
+	protected function recalculateOrderSum(&$incomingFieldArray, $table, $id, &$pObj) {
 		/** @var t3lib_db $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
@@ -1342,7 +1339,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 					$sum['price_gross'] += $order_artikel_row['amount'] * $order_artikel_row['price_gross'];
 				}
 			} else {
-				$th_obj->log($table, $id, 2, 0, 2, "SQL error: '%s' (%s)", 12, array($database->sql_error(), $table . ':' . $id));
+				$pObj->log($table, $id, 2, 0, 2, "SQL error: '%s' (%s)", 12, array($database->sql_error(), $table . ':' . $id));
 			}
 			$values = array(
 				'sum_price_gross' => $sum['price_gross'],
@@ -1350,10 +1347,10 @@ class Tx_Commerce_Hook_DataMapHooks {
 			);
 			$database->exec_UPDATEquery($table, "order_id='" . $database->quoteStr($order_id, $foreign_table) . "'", $values);
 			if ($database->sql_error()) {
-				$th_obj->log($table, $id, 2, 0, 2, "SQL error: '%s' (%s)", 12, array($database->sql_error(), $table . ':' . $id));
+				$pObj->log($table, $id, 2, 0, 2, "SQL error: '%s' (%s)", 12, array($database->sql_error(), $table . ':' . $id));
 			}
 		} else {
-			$th_obj->log($table, $id, 2, 0, 2, "SQL error: '%s' (%s)", 12, array($database->sql_error(), $table . ':' . $id));
+			$pObj->log($table, $id, 2, 0, 2, "SQL error: '%s' (%s)", 12, array($database->sql_error(), $table . ':' . $id));
 		}
 	}
 }

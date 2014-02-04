@@ -26,7 +26,7 @@
  * Main script class for the handling of categories. Categories contains
  * categories (Reverse data structure) and products
  */
-class tx_commerce_category extends tx_commerce_element_alib {
+class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_AbstractEntity {
 	/**
 	 * @var string
 	 */
@@ -529,7 +529,7 @@ class tx_commerce_category extends tx_commerce_element_alib {
 	 */
 	public function get_child_categories() {
 		foreach ($this->categories_uid as $childCategoryUid) {
-			$childCategory = t3lib_div::makeInstance('tx_commerce_category');
+			$childCategory = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category');
 			$childCategory->init($childCategoryUid, $this->lang_uid);
 
 			$this->categories[$childCategoryUid] = $childCategory;
@@ -559,8 +559,8 @@ class tx_commerce_category extends tx_commerce_element_alib {
 	public function get_child_products() {
 		if ($this->products === NULL) {
 			foreach ($this->products_uid as $productUid) {
-				/** @var tx_commerce_product $childProduct */
-				$childProduct = t3lib_div::makeInstance('tx_commerce_product');
+				/** @var Tx_Commerce_Domain_Model_Product $childProduct */
+				$childProduct = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product');
 				$childProduct->init($productUid, $this->lang_uid);
 
 				$this->products[$productUid] = $childProduct;
@@ -591,11 +591,11 @@ class tx_commerce_category extends tx_commerce_element_alib {
 	/**
 	 * Loads the parent category in the parent-category variable
 	 *
-	 * @return tx_commerce_category|FALSE category object or FALSE if this category is already the topmost category
+	 * @return Tx_Commerce_Domain_Model_Category|FALSE category object or FALSE if this category is already the topmost category
 	 */
 	public function get_parent_category() {
 		if ($this->parent_category_uid > 0) {
-			$this->parent_category = t3lib_div::makeInstance('tx_commerce_category');
+			$this->parent_category = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category');
 			$this->parent_category->init($this->parent_category_uid, $this->lang_uid);
 
 			return $this->parent_category;
@@ -613,8 +613,8 @@ class tx_commerce_category extends tx_commerce_element_alib {
 		$parents = $this->databaseConnection->get_parent_categories($this->uid);
 		$parentCats = array();
 		for ($i = 0, $l = count($parents); $i < $l; $i++) {
-			/** @var tx_commerce_category $cat */
-			$category = t3lib_div::makeInstance('tx_commerce_category');
+			/** @var Tx_Commerce_Domain_Model_Category $cat */
+			$category = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category');
 			$category->init($parents[$i]);
 			$parentCats[] = $category;
 		}
@@ -688,7 +688,7 @@ class tx_commerce_category extends tx_commerce_element_alib {
 		$returnList = array();
 		if (count($this->categories) > 0) {
 			if (($depth === FALSE) || ($depth > 0)) {
-				/** @var tx_commerce_category $category */
+				/** @var Tx_Commerce_Domain_Model_Category $category */
 				foreach ($this->categories as $category) {
 					$returnList = array_merge($returnList, $category->get_rec_child_categories_uidlist($depth));
 				}
@@ -713,8 +713,8 @@ class tx_commerce_category extends tx_commerce_element_alib {
 		if ($depth > 0) {
 			$childCategoriesList = $this->get_rec_child_categories_uidlist($depth);
 			foreach ($childCategoriesList as $oneCategoryUid) {
-				/** @var tx_commerce_category $category */
-				$category = t3lib_div::makeInstance('tx_commerce_category');
+				/** @var Tx_Commerce_Domain_Model_Category $category */
+				$category = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category');
 				$category->init($oneCategoryUid, $this->lang_uid);
 				$category->loadData();
 				$return_list = array_merge($return_list, $category->getProductUids());
@@ -753,8 +753,8 @@ class tx_commerce_category extends tx_commerce_element_alib {
 		if ($depth > 0) {
 			$childCategoriesList = $this->get_rec_child_categories_uidlist($depth);
 			foreach ($childCategoriesList as $oneCategoryUid) {
-				/** @var tx_commerce_category $category */
-				$category = t3lib_div::makeInstance('tx_commerce_category');
+				/** @var Tx_Commerce_Domain_Model_Category $category */
+				$category = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category');
 				$category->init($oneCategoryUid, $this->lang_uid);
 				$category->loadData();
 				$returnValue = $category->ProductsBelowCategory($depth);
@@ -813,6 +813,8 @@ class tx_commerce_category extends tx_commerce_element_alib {
 			$tSdataArray[] = $this->tsConfig;
 			$tSdataArray = t3lib_TSparser::checkIncludeLines_array($tSdataArray);
 			$categoryTS = implode(chr(10) . '[GLOBAL]' . chr(10), $tSdataArray);
+
+			/** @var t3lib_TSparser $parseObj */
 			$parseObj = t3lib_div::makeInstance('t3lib_TSparser');
 			$parseObj->parse($categoryTS);
 			$this->categoryTSconfig = $parseObj->setup;
@@ -841,6 +843,8 @@ class tx_commerce_category extends tx_commerce_element_alib {
 		return $this->title;
 	}
 }
+
+class_alias('Tx_Commerce_Domain_Model_Category', 'tx_commerce_category');
 
 if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_category.php']) {
 	/** @noinspection PhpIncludeInspection */

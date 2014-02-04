@@ -34,12 +34,8 @@
  * variables will be changed in php5 to private
  *
  * Basic class for basket_handeling inhertited from tx_commerce_basic_basket
- *
- * @author Ingo Schmitt <is@marketing-factory.de>
- * @package TYPO3
- * @subpackage tx_commerce
  */
-class tx_commerce_basket extends tx_commerce_basic_basket {
+class Tx_Commerce_Domain_Model_Basket extends Tx_Commerce_Domain_Model_BasicBasket {
 
 	/**
 	 * @var string  Storage-type for the data
@@ -289,7 +285,7 @@ class tx_commerce_basket extends tx_commerce_basic_basket {
 		$ar_basket_items_keys = array_flip($ar_basket_items_keys);
 
 		$oneuid = 0;
-		/** @var tx_commerce_basket_item $oneItem */
+		/** @var Tx_Commerce_Domain_Model_BasketItem $oneItem */
 		foreach ($this->basket_items as $oneuid  => $oneItem) {
 			$insertData = array();
 			$insertData['pid'] = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['BasketStoragePid'];
@@ -347,6 +343,8 @@ class tx_commerce_basket extends tx_commerce_basic_basket {
 		);
 	}
 }
+
+class_alias('Tx_Commerce_Domain_Model_Basket', 'tx_commerce_basket');
 
 if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_basket.php']) {
 	/** @noinspection PhpIncludeInspection */

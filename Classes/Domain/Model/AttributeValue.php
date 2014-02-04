@@ -34,16 +34,20 @@
  *
  * Do not acces class variables directly, allways use the get and set methods,
  * variables will be changed in php5 to private
- *
- * @author Ingo Schmitt <is@marketing-factory.de>
- * @package TYPO3
- * @subpackage tx_commerce
  */
-class tx_commerce_attribute_value extends tx_commerce_element_alib {
-		// Title of Attribute (private)
+class Tx_Commerce_Domain_Model_AttributeValue extends Tx_Commerce_Domain_Model_AbstractEntity {
+	/**
+	 * Title of Attribute (private)
+	 *
+	 * @var string
+	 */
 	protected $title = '';
 
-		// The Value for
+	/**
+	 * The Value for
+	 *
+	 * @var string
+	 */
 	protected $value = '';
 
 	/**
@@ -167,6 +171,8 @@ class tx_commerce_attribute_value extends tx_commerce_element_alib {
 		return $this->showicon;
 	}
 }
+
+class_alias('Tx_Commerce_Domain_Model_AttributeValue', 'tx_commerce_attribute_value');
 
 if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_attribute_value.php']) {
 	/** @noinspection PhpIncludeInspection */

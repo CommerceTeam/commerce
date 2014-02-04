@@ -39,34 +39,109 @@
  * @package TYPO3
  * @subpackage tx_commerce
  */
-class tx_commerce_product extends tx_commerce_element_alib {
+class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_AbstractEntity {
 	/**
 	 * Data Variables
 	 */
-		// Title of the product e.g.productname (private)
-	public $title = '';
+	/**
+	 * Title of the product e.g.productname
+	 *
+	 * @var string
+	 */
+	protected $title = '';
+
+	/**
+	 * @var integer
+	 */
 	public $pid = 0;
-		// Subtitle of the product (private)
-	public $subtitle = '';
-		//  product description (private)
-	public $description = '';
+
+	/**
+	 * Subtitle of the product
+	 *
+	 * @var string
+	 */
+	protected $subtitle = '';
+
+	/**
+	 * product description
+	 *
+	 * @var string
+	 */
+	protected $description = '';
+
+	/**
+	 * @var string
+	 */
 	public $teaser = '';
-	public $teaserimages;
-		// images database field (private)
-	public $images = '';
-		// Images for the product (private)
-	public $images_array = array();
-		// Images for the product (private)
-	public $teaserImagesArray = array();
-		// array of tx_commcerc_article (private)
-	public $articles = array();
-		// Array of tx_commerce_article_uid (private)
-	public $articles_uids = array();
+
+	/**
+	 * @var string
+	 */
+	public $teaserimages = '';
+
+	/**
+	 * images database field
+	 *
+	 * @var string
+	 */
+	protected $images = '';
+
+	/**
+	 * Images for the product
+	 *
+	 * @var array
+	 */
+	protected $images_array = array();
+
+	/**
+	 * Images for the product
+	 *
+	 * @var array
+	 */
+	protected $teaserImagesArray = array();
+
+	/**
+	 * array of tx_commcerc_article
+	 *
+	 * @var array
+	 */
+	protected $articles = array();
+
+	/**
+	 * Array of tx_commerce_article_uid
+	 *
+	 * @var array
+	 */
+	protected $articles_uids = array();
+
+	/**
+	 * @var array
+	 */
 	public $attributes = array();
+
+	/**
+	 * @var array
+	 */
 	public $attributes_uids = array();
+
+	/**
+	 * @var string
+	 */
 	public $relatedpage = '';
+
+	/**
+	 * @var array
+	 */
 	public $relatedProducts = array();
+
+	/**
+	 * @var array
+	 */
 	public $relatedProduct_uids = array();
+
+	/**
+	 * @var boolean
+	 */
 	public $relatedProducts_loaded = FALSE;
 
 	/**
@@ -80,12 +155,39 @@ class tx_commerce_product extends tx_commerce_element_alib {
 	public $renderMaxArticles = PHP_INT_MAX;
 
 		// Versioning
+	/**
+	 * @var integer
+	 */
 	public $t3ver_oid = 0;
+
+	/**
+	 * @var integer
+	 */
 	public $t3ver_id = 0;
+
+	/**
+	 * @var string
+	 */
 	public $t3ver_label = '';
+
+	/**
+	 * @var integer
+	 */
 	public $t3ver_wsid = 0;
+
+	/**
+	 * @var integer
+	 */
 	public $t3ver_state = 0;
+
+	/**
+	 * @var integer
+	 */
 	public $t3ver_stage = 0;
+
+	/**
+	 * @var integer
+	 */
 	public $t3ver_tstamp = 0;
 
 	/**
@@ -305,8 +407,8 @@ class tx_commerce_product extends tx_commerce_element_alib {
 			}
 			if ($this->articles_uids = $this->databaseConnection->get_articles($uidToLoadFrom)) {
 				foreach ($this->articles_uids as $article_uid) {
-					/** @var tx_commerce_article $article */
-					$article = t3lib_div::makeInstance('tx_commerce_article');
+					/** @var Tx_Commerce_Domain_Model_Article $article */
+					$article = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Article');
 					$article->init($article_uid, $this->lang_uid);
 					$article->loadData();
 					$this->articles[$article_uid] = $article;
@@ -326,7 +428,7 @@ class tx_commerce_product extends tx_commerce_element_alib {
 	 * inherited from parent
 	 *
 	 * @param mixed $translationMode Translation mode of the record, default FALSE to use the default way of translation
-	 * @return tx_commerce_product
+	 * @return Tx_Commerce_Domain_Model_Product
 	 */
 	public function loadData($translationMode = FALSE) {
 		$return = parent::loadData($translationMode);
@@ -357,8 +459,8 @@ class tx_commerce_product extends tx_commerce_element_alib {
 			$this->relatedProduct_uids = $this->databaseConnection->get_related_product_uids($this->uid);
 			if (count($this->relatedProduct_uids) > 0) {
 				foreach ($this->relatedProduct_uids as $productId => $categoryId) {
-					/** @var tx_commerce_product $product */
-					$product = t3lib_div::makeInstance('tx_commerce_product');
+					/** @var Tx_Commerce_Domain_Model_Product $product */
+					$product = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product');
 					$product->init($productId, $this->lang_uid);
 					$product->loadData();
 					$product->loadArticles();
@@ -912,11 +1014,11 @@ class tx_commerce_product extends tx_commerce_element_alib {
 			$tPossible = array();
 			$selected = $attributeValues[$kV];
 			if (!$selected) {
-				/** @var tx_commerce_attribute $attributeObj */
-				$attributeObj = t3lib_div::makeInstance('tx_commerce_attribute');
-				$attributeObj->init($kV, $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
-				$attributeObj->loadData();
-				$attributeValues[$kV] = $selected = $attributeObj->getFirstAttributeValueUid($possible);
+				/** @var Tx_Commerce_Domain_Model_Attribute $attribute */
+				$attribute = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Attribute');
+				$attribute->init($kV, $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
+				$attribute->loadData();
+				$attributeValues[$kV] = $selected = $attribute->getFirstAttributeValueUid($possible);
 			}
 
 			foreach ($impossible as $key => $val) {
@@ -1165,12 +1267,13 @@ class tx_commerce_product extends tx_commerce_element_alib {
 			// Run price test
 		$articleUidList = array();
 		foreach ($rawArticleUidList as $rawArticleUid) {
-			$tmpArticle = t3lib_div::makeInstance('tx_commerce_article');
-			$tmpArticle->init($rawArticleUid, $this->lang_uid);
-			$tmpArticle->loadData();
-			$myPrice = $usePriceGrossInstead ? $tmpArticle->get_price_gross() : $tmpArticle->get_price_net();
+			/** @var Tx_Commerce_Domain_Model_Article $article */
+			$article = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Article');
+			$article->init($rawArticleUid, $this->lang_uid);
+			$article->loadData();
+			$myPrice = $usePriceGrossInstead ? $article->getPriceGross() : $article->getPriceNet();
 			if (($priceMin <= $myPrice) && ($myPrice <= $priceMax)) {
-				$articleUidList[] = $tmpArticle->getUid();
+				$articleUidList[] = $article->getUid();
 			}
 		}
 
@@ -1197,7 +1300,7 @@ class tx_commerce_product extends tx_commerce_element_alib {
 		$articleCount = count($this->articles_uids);
 		for ($j = 0; $j < $articleCount; $j++) {
 			$article = & $this->articles[$this->articles_uids[$j]];
-			if (is_object($article) && ($article instanceof tx_commerce_article)) {
+			if (is_object($article) && ($article instanceof Tx_Commerce_Domain_Model_Article)) {
 				$priceArr[$article->getUid()] = ($usePriceNet) ? $article->getPriceNet() : $article->getPriceGross();
 			}
 		}
@@ -1244,7 +1347,7 @@ class tx_commerce_product extends tx_commerce_element_alib {
 	public function hasStock() {
 		$this->loadArticles();
 		$result = FALSE;
-		/** @var tx_commerce_article $article */
+		/** @var Tx_Commerce_Domain_Model_Article $article */
 		foreach ($this->articles as $article) {
 			if ($article->getStock() > 0) {
 				$result = TRUE;
@@ -1422,6 +1525,8 @@ class tx_commerce_product extends tx_commerce_element_alib {
 		return $this->getAttributeMatrix(FALSE, $attribute_include, $showHiddenValues, $sortingTable, FALSE, 'tx_commerce_products');
 	}
 }
+
+class_alias('Tx_Commerce_Domain_Model_Product', 'tx_commerce_product');
 
 if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_product.php']) {
 	/** @noinspection PhpIncludeInspection */

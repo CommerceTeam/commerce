@@ -29,25 +29,25 @@
  * Do not acces class variables directly, allways use the get and set methods,
  * variables will be changed in php5 to private
  */
-class tx_commerce_basket_item {
+class Tx_Commerce_Domain_Model_BasketItem {
 	/**
 	 * Article
 	 *
-	 * @var tx_commerce_article
+	 * @var Tx_Commerce_Domain_Model_Article
 	 */
 	public $article;
 
 	/**
 	 * Product
 	 *
-	 * @var tx_commerce_product
+	 * @var Tx_Commerce_Domain_Model_Product
 	 */
 	public $product;
 
 	/**
 	 * Price
 	 *
-	 * @var tx_commerce_article_price
+	 * @var Tx_Commerce_Domain_Model_ArticlePrice
 	 */
 	protected $price;
 
@@ -153,7 +153,7 @@ class tx_commerce_basket_item {
 
 		$this->quantity = $quantity;
 		$this->lang_id = $lang_id;
-		$this->article = t3lib_div::makeInstance('tx_commerce_article');
+		$this->article = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Article');
 		$this->article->init($uid, $this->lang_id);
 
 		if ($quantity < 1) {
@@ -163,12 +163,12 @@ class tx_commerce_basket_item {
 		if (is_object($this->article)) {
 			$this->article->loadData('basket');
 
-			$this->product = $this->article->get_parent_product();
+			$this->product = $this->article->getParentProduct();
 			$this->product->loadData('basket');
 
 			$this->priceid = $priceid;
 
-			$this->price = t3lib_div::makeInstance('tx_commerce_article_price');
+			$this->price = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_ArticlePrice');
 			$this->price->init($priceid, $this->lang_id);
 			$this->price->loadData('basket');
 
@@ -201,7 +201,7 @@ class tx_commerce_basket_item {
 		$this->quantity = $quantity;
 		$this->priceid = $this->article->getActualPriceforScaleUid($quantity);
 
-		$this->price = t3lib_div::makeInstance('tx_commerce_article_price');
+		$this->price = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_ArticlePrice');
 		$this->price->init($this->priceid, $this->lang_id);
 		$this->price->loadData();
 		$this->priceNet = $this->price->getPriceNet();
@@ -547,7 +547,7 @@ class tx_commerce_basket_item {
 	/**
 	 * Get article object
 	 *
-	 * @return tx_commerce_article Article object
+	 * @return Tx_Commerce_Domain_Model_Article Article object
 	 */
 	public function getArticle() {
 		return $this->article;
@@ -562,7 +562,7 @@ class tx_commerce_basket_item {
 	/**
 	 * Get product object of item
 	 *
-	 * @return tx_commerce_product Product object
+	 * @return Tx_Commerce_Domain_Model_Product Product object
 	 */
 	public function getProduct() {
 		return $this->product;
@@ -734,6 +734,8 @@ class tx_commerce_basket_item {
 		return $this->$field;
 	}
 }
+
+class_alias('Tx_Commerce_Domain_Model_BasketItem', 'tx_commerce_basket_item');
 
 if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_basket_item.php']) {
 	/** @noinspection PhpIncludeInspection */

@@ -27,11 +27,8 @@
  * for frontend rendering. This class provides basic methodes for acessing
  * articles.
  * Inherited from tx_commerce_element_alib
- *
- * @package TYPO3
- * @subpackage tx_commerce
  */
-class tx_commerce_article extends tx_commerce_element_alib {
+class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_AbstractEntity {
 	/**
 	 * @var tx_commerce_db_article;
 	 */
@@ -152,7 +149,7 @@ class tx_commerce_article extends tx_commerce_element_alib {
 	/**
 	 * Price object
 	 *
-	 * @var tx_commerce_article_price
+	 * @var Tx_Commerce_Domain_Model_ArticlePrice
 	 */
 	protected $price;
 
@@ -312,7 +309,7 @@ class tx_commerce_article extends tx_commerce_element_alib {
 	 * @return double
 	 */
 	public function getPriceGross() {
-		if ($this->price instanceof tx_commerce_article_price) {
+		if ($this->price instanceof Tx_Commerce_Domain_Model_ArticlePrice) {
 			return $this->price->getPriceGross();
 		} else {
 			return 'no valid price';
@@ -325,7 +322,7 @@ class tx_commerce_article extends tx_commerce_element_alib {
 	 * @return double
 	 */
 	public function getPriceNet() {
-		if ($this->price instanceof tx_commerce_article_price) {
+		if ($this->price instanceof Tx_Commerce_Domain_Model_ArticlePrice) {
 			return $this->price->getPriceNet();
 		} else {
 			return 'no valid price';
@@ -362,7 +359,7 @@ class tx_commerce_article extends tx_commerce_element_alib {
 	/**
 	 * Get price object
 	 *
-	 * @return tx_commerce_article_price Price object
+	 * @return Tx_Commerce_Domain_Model_ArticlePrice Price object
 	 */
 	public function getPriceObj() {
 		return $this->price;
@@ -515,8 +512,8 @@ class tx_commerce_article extends tx_commerce_element_alib {
 		if (is_array($arrayOfPricesUids)) {
 			foreach ($arrayOfPricesUids as $startCount => $tmpArray) {
 				foreach ($tmpArray as $endCount => $pricdUid) {
-					/** @var tx_commerce_article_price $price */
-					$price = t3lib_div::makeInstance('tx_commerce_article_price');
+					/** @var Tx_Commerce_Domain_Model_ArticlePrice $price */
+					$price = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_ArticlePrice');
 					$price->init($pricdUid);
 					$price->loadData();
 
@@ -556,8 +553,7 @@ class tx_commerce_article extends tx_commerce_element_alib {
 	/**
 	 * returns the parent product as object
 	 *
-	 * @see tx_commerce_product
-	 * @return tx_commerce_product Product object
+	 * @return Tx_Commerce_Domain_Model_Product Product object
 	 */
 	public function getParentProduct() {
 		if ($this->uid_product) {
@@ -566,8 +562,8 @@ class tx_commerce_article extends tx_commerce_element_alib {
 			$products_uid = $this->databaseConnection->get_parent_product_uid($this->getUid());
 		}
 
-		/** @var $product tx_commerce_product */
-		$product = t3lib_div::makeInstance('tx_commerce_product');
+		/** @var $product Tx_Commerce_Domain_Model_Product */
+		$product = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product');
 		$product->init($products_uid);
 		return $product;
 	}
@@ -696,18 +692,18 @@ class tx_commerce_article extends tx_commerce_element_alib {
 						$i++;
 					}
 					if ($groups[$i]) {
-						$this->price = t3lib_div::makeInstance('tx_commerce_article_price');
+						$this->price = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_ArticlePrice');
 						$this->price->init($this->prices_uids[$groups[$i]][0]);
 						$this->price->loadData($translationMode);
 						$this->price_uid = $this->prices_uids[$groups[$i]][0];
 					} else {
 						if ($this->prices_uids['-2']) {
-							$this->price = t3lib_div::makeInstance('tx_commerce_article_price');
+							$this->price = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_ArticlePrice');
 							$this->price->init($this->prices_uids['-2'][0]);
 							$this->price->loadData($translationMode);
 							$this->price_uid = $this->prices_uids['-2'][0];
 						} else {
-							$this->price = t3lib_div::makeInstance('tx_commerce_article_price');
+							$this->price = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_ArticlePrice');
 							$this->price->init($this->prices_uids[0][0]);
 							if ($this->price) {
 								$this->price->loadData($translationMode);
@@ -720,12 +716,12 @@ class tx_commerce_article extends tx_commerce_element_alib {
 				} else {
 						// No special Handling if no special usergroup is logged in
 					if ($this->prices_uids['-1']) {
-						$this->price = t3lib_div::makeInstance('tx_commerce_article_price');
+						$this->price = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_ArticlePrice');
 						$this->price->init($this->prices_uids['-1'][0]);
 						$this->price->loadData($translationMode);
 						$this->price_uid = $this->prices_uids['-1'][0];
 					} else {
-						$this->price = t3lib_div::makeInstance('tx_commerce_article_price');
+						$this->price = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_ArticlePrice');
 						$this->price->init($this->prices_uids[0][0]);
 						if ($this->price) {
 							$this->price->loadData($translationMode);
@@ -947,7 +943,7 @@ class tx_commerce_article extends tx_commerce_element_alib {
 	 * returns the parent product as object
 	 *
 	 * @see tx_commerce_product
-	 * @return tx_commerce_product Product object
+	 * @return Tx_Commerce_Domain_Model_Product Product object
 	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use tx_commerce_article::getParentProduct instead
 	 */
 	public function get_parent_product() {
@@ -993,6 +989,8 @@ class tx_commerce_article extends tx_commerce_element_alib {
 		return $this->loadPrices($translationMode);
 	}
 }
+
+class_alias('Tx_Commerce_Domain_Model_Article', 'tx_commerce_article');
 
 if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_article.php']) {
 	/** @noinspection PhpIncludeInspection */
