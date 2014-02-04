@@ -46,7 +46,7 @@ if (!(defined('TYPO3_REQUESTTYPE') || defined('TYPO3_REQUESTTYPE_AJAX'))) {
 	require('template.php');
 }
 
-class Tx_Commerce_Module_Category_Navigation {
+class Tx_Commerce_Module_Category_Navigation extends t3lib_SCbase {
 	/**
 	 * @var tx_commerce_categorytree
 	 */
@@ -56,16 +56,6 @@ class Tx_Commerce_Module_Category_Navigation {
 	 * @var string
 	 */
 	protected $BACK_PATH = '../../../../../../typo3/';
-
-	/**
-	 * @var template
-	 */
-	public $doc;
-
-	/**
-	 * @var string
-	 */
-	protected $content;
 
 	/**
 	 * @var string
@@ -101,13 +91,20 @@ class Tx_Commerce_Module_Category_Navigation {
 	 * @return void
 	 */
 	public function initPage() {
-			// Create template object:
 		$this->doc = t3lib_div::makeInstance('template');
-		$this->doc->backPath = $this->BACK_PATH;
-			// MAKE THIS PATH BE CALCULATED
+		$this->doc->backPath = $GLOBALS['BACK_PATH'];
+		$this->doc->docType = 'xhtml_trans';
 		$this->doc->setModuleTemplate(PATH_TXCOMMERCE . 'Resources/Private/Backend/mod_category_navframe.html');
-		$this->doc->docType  = 'xhtml_trans';
-		$this->doc->JScode = '';
+
+		if (!$this->doc->moduleTemplate) {
+			t3lib_div::devLog('cannot set navframeTemplate', 'commerce', 2, array(
+				'backpath' => $this->doc->backPath,
+				'filename from TBE_STYLES' => $GLOBALS['TBE_STYLES']['htmlTemplates']['commerce/Resources/Private/Backend/mod_category_navframe.html'],
+				'full path' => $this->doc->backPath . $GLOBALS['TBE_STYLES']['htmlTemplates']['commerce/Resources/Private/Backend/mod_category_navframe.html']
+			));
+			$templateFile = PATH_TXCOMMERCE_REL . 'Resources/Private/Backend/mod_category_navframe.html';
+			$this->doc->moduleTemplate = t3lib_div::getURL(PATH_site . $templateFile);
+		}
 
 			// Setting JavaScript for menu.
 		$this->doc->JScode = $this->doc->wrapScriptTags(
@@ -146,6 +143,7 @@ class Tx_Commerce_Module_Category_Navigation {
 		$this->doc->JScode .= $this->doc->wrapScriptTags('Tree.ajaxID = "Tx_Commerce_Module_Category_Navigation::ajaxExpandCollapse";');
 			// Adding javascript code for AJAX (prototype), drag&drop and the pagetree as well as the click menu code
 		$this->doc->getContextMenuCode();
+
 		$this->doc->bodyTagId = 'typo3-pagetree';
 	}
 
@@ -164,13 +162,10 @@ class Tx_Commerce_Module_Category_Navigation {
 			$tree = $this->categoryTree->getBrowseableTree();
 		}
 
-			// Outputting page tree:
-		$this->content .= '<div id="PageTreeDiv">' . $tree . '</div>';
-
 		$markers = array(
 			'IMG_RESET' => '',
 			'WORKSPACEINFO' => '',
-			'CONTENT' => $this->content
+			'CONTENT' => $tree
 		);
 		$subparts = array();
 
@@ -179,7 +174,7 @@ class Tx_Commerce_Module_Category_Navigation {
 		}
 
 			// Build the <body> for the module
-		$this->content = $this->doc->startPage('Commerce Category List');
+		$this->content = $this->doc->startPage($language->sl('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:mod_category.navigation_title'));
 		$this->content .= $this->doc->moduleBody('', '', $markers, $subparts);
 		$this->content .= $this->doc->endPage();
 	}

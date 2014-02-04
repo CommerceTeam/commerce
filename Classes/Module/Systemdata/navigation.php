@@ -59,21 +59,23 @@ class Tx_Commerce_Module_Systemdata_Navigation extends t3lib_SCbase {
 	}
 
 	/**
+	 * Initializes the Page
+	 *
 	 * @return void
 	 */
-	public function main() {
+	public function initPage() {
 		$this->doc = t3lib_div::makeInstance('template');
 		$this->doc->backPath = $GLOBALS['BACK_PATH'];
-		$this->doc->setModuleTemplate(PATH_TXCOMMERCE . 'Resources/Private/Backend/mod_systemdata_navframe.html');
 		$this->doc->docType = 'xhtml_trans';
+		$this->doc->setModuleTemplate(PATH_TXCOMMERCE . 'Resources/Private/Backend/mod_systemdata_navframe.html');
 
 		if (!$this->doc->moduleTemplate) {
 			t3lib_div::devLog('cannot set navframeTemplate', 'commerce', 2, array(
 				'backpath' => $this->doc->backPath,
-				'filename from TBE_STYLES' => $GLOBALS['TBE_STYLES']['htmlTemplates']['mod_systemdata_navframe.html'],
-				'full path' => $this->doc->backPath . $GLOBALS['TBE_STYLES']['htmlTemplates']['mod_systemdata_navframe.html']
+				'filename from TBE_STYLES' => $GLOBALS['TBE_STYLES']['htmlTemplates']['commerce/Resources/Private/Backend/mod_systemdata_navframe.html'],
+				'full path' => $this->doc->backPath . $GLOBALS['TBE_STYLES']['htmlTemplates']['commerce/Resources/Private/Backend/mod_systemdata_navframe.html']
 			));
-			$templateFile = PATH_TXCOMMERCE_REL . 'mod_systemdata/templates/mod_systemdata_navframe.html';
+			$templateFile = PATH_TXCOMMERCE_REL . 'Resources/Private/Backend/mod_access_navframe.html';
 			$this->doc->moduleTemplate = t3lib_div::getURL(PATH_site . $templateFile);
 		}
 
@@ -100,6 +102,16 @@ class Tx_Commerce_Module_Systemdata_Navigation extends t3lib_SCbase {
 			}
 		');
 
+		$this->doc->bodyTagId = 'typo3-pagetree';
+	}
+
+	/**
+	 * @return void
+	 */
+	public function main() {
+		/** @var language $language */
+		$language = $GLOBALS['LANG'];
+
 		$markers = array(
 			'ATTRIBUTES_TITLE' => $this->language->getLL('title_attributes'),
 			'ATTRIBUTES_DESCRIPTION' => $this->language->getLL('desc_attributes'),
@@ -112,7 +124,7 @@ class Tx_Commerce_Module_Systemdata_Navigation extends t3lib_SCbase {
 		);
 
 			// put it all together
-		$this->content = $this->doc->startPage($this->language->getLL('title'));
+		$this->content = $this->doc->startPage($language->sl('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:mod_category.navigation_title'));
 		$this->content .= $this->doc->moduleBody(array(), array(), $markers);
 		$this->content .= $this->doc->endPage();
 		$this->content = $this->doc->insertStylesAndJS($this->content);
@@ -137,6 +149,7 @@ if (!(TYPO3_REQUESTTYPE & TYPO3_REQUESTTYPE_AJAX)) {
 	/** @var $SOBE Tx_Commerce_Module_Systemdata_Navigation */
 	$SOBE = t3lib_div::makeInstance('Tx_Commerce_Module_Systemdata_Navigation');
 	$SOBE->init();
+	$SOBE->initPage();
 	$SOBE->main();
 	$SOBE->printContent();
 }

@@ -9,6 +9,12 @@
 	</meta>
 	<data type="array">
 		<languageKey index="default" type="array">
+			<label index="mod_access.navigation_title">Access tree</label>
+			<label index="mod_category.navigation_title">Category tree</label>
+			<label index="mod_orders.navigation_title">Orders tree</label>
+			<label index="mod_statistic.navigation_title">Statistic tree</label>
+			<label index="mod_systemdata.navigation_title">Access tree</label>
+
 			<label index="tt_content.list_type_pi1">Commerce: Product Listing</label>
 			<label index="tt_content.list_type_pi2">Commerce: Basket</label>
 			<label index="tt_content.list_type_pi3">Commerce: Checkout</label>

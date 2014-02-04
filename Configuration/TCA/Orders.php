@@ -41,7 +41,7 @@ $GLOBALS['TCA']['tx_commerce_orders'] = Array(
 			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_orders.cust_deliveryaddress',
 			'config' => Array(
 				'type' => 'user',
-				'userFunc' => 'EXT:commerce/mod_orders/class.user_orderedit_func.php:user_orderedit_func->delivery_adress',
+				'userFunc' => 'user_orderedit_func->delivery_adress',
 			)
 		),
 		'order_type_uid' => Array(
@@ -81,7 +81,7 @@ $GLOBALS['TCA']['tx_commerce_orders'] = Array(
 			'config' => Array(
 				'type' => 'select',
 				'foreign_table' => 'pages',
-				'itemsProcFunc' => 'EXT:commerce/mod_orders/class.user_orderedit_func.php:user_orderedit_func->order_status',
+				'itemsProcFunc' => 'user_orderedit_func->order_status',
 			)
 		),
 		'cust_fe_user' => Array(
@@ -113,7 +113,7 @@ $GLOBALS['TCA']['tx_commerce_orders'] = Array(
 			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_orders.cust_invoice',
 			'config' => Array(
 				'type' => 'user',
-				'userFunc' => 'EXT:commerce/mod_orders/class.user_orderedit_func.php:user_orderedit_func->invoice_adress',
+				'userFunc' => 'user_orderedit_func->invoice_adress',
 			)
 		),
 		'paymenttype' => Array(
@@ -130,7 +130,7 @@ $GLOBALS['TCA']['tx_commerce_orders'] = Array(
 			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_orders.sum_price_net',
 			'config' => Array(
 				'type' => 'user',
-				'userFunc' => 'EXT:commerce/mod_orders/class.user_orderedit_func.php:user_orderedit_func->order_articles',
+				'userFunc' => 'user_orderedit_func->order_articles',
 			)
 		),
 		'sum_price_gross' => Array(
@@ -138,7 +138,7 @@ $GLOBALS['TCA']['tx_commerce_orders'] = Array(
 			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_orders.sum_price_gross',
 			'config' => Array(
 				'type' => 'user',
-				'userFunc' => 'EXT:commerce/mod_orders/class.user_orderedit_func.php:user_orderedit_func->sum_price_gross_format',
+				'userFunc' => 'user_orderedit_func->sum_price_gross_format',
 			)
 		),
 		'payment_ref_id' => array(

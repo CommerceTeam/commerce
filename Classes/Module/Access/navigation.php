@@ -41,7 +41,7 @@ if (!(defined('TYPO3_REQUESTTYPE') || defined('TYPO3_REQUESTTYPE_AJAX'))) {
 	require('template.php');
 }
 
-class Tx_Commerce_Module_Access_Navigation {
+class Tx_Commerce_Module_Access_Navigation extends t3lib_SCbase {
 	/**
 	 * @var tx_commerce_categorytree
 	 */
@@ -51,16 +51,6 @@ class Tx_Commerce_Module_Access_Navigation {
 	 * @var string
 	 */
 	protected $BACK_PATH = '../../../../../../typo3/';
-
-	/**
-	 * @var template
-	 */
-	public $doc;
-
-	/**
-	 * @var string
-	 */
-	protected $content;
 
 	/**
 	 * @var string
@@ -84,19 +74,28 @@ class Tx_Commerce_Module_Access_Navigation {
 			// Get the Category Tree without the Products and the Articles
 		$this->categoryTree = t3lib_div::makeInstance('tx_commerce_categorytree');
 		$this->categoryTree->init();
+
+		$this->id = reset(tx_commerce_folder_db::initFolders('Commerce', 'commerce'));
 	}
 
 	/**
 	 * Initializes the Page
 	 */
 	public function initPage() {
-			// Create template object:
 		$this->doc = t3lib_div::makeInstance('template');
-		$this->doc->backPath = $this->BACK_PATH;
-			// @todo MAKE THIS PATH BE CALCULATED
+		$this->doc->backPath = $GLOBALS['BACK_PATH'];
+		$this->doc->docType = 'xhtml_trans';
 		$this->doc->setModuleTemplate(PATH_TXCOMMERCE . 'Resources/Private/Backend/mod_access_navframe.html');
-		$this->doc->docType  = 'xhtml_trans';
-		$this->doc->JScode = '';
+
+		if (!$this->doc->moduleTemplate) {
+			t3lib_div::devLog('cannot set navframeTemplate', 'commerce', 2, array(
+				'backpath' => $this->doc->backPath,
+				'filename from TBE_STYLES' => $GLOBALS['TBE_STYLES']['htmlTemplates']['commerce/Resources/Private/Backend/mod_access_navframe.html'],
+				'full path' => $this->doc->backPath . $GLOBALS['TBE_STYLES']['htmlTemplates']['commerce/Resources/Private/Backend/mod_access_navframe.html']
+			));
+			$templateFile = PATH_TXCOMMERCE_REL . 'Resources/Private/Backend/mod_access_navframe.html';
+			$this->doc->moduleTemplate = t3lib_div::getURL(PATH_site . $templateFile);
+		}
 
 			// Setting JavaScript for menu.
 		$this->doc->JScode = $this->doc->wrapScriptTags(
@@ -130,6 +129,13 @@ class Tx_Commerce_Module_Access_Navigation {
 			}
 		');
 
+		$this->doc->postCode = $this->doc->wrapScriptTags('
+			script_ended = 1;
+			if (top.fsMod) {
+				top.fsMod.recentIds["web"] = ' . intval($this->id) . ';
+			}
+		');
+
 		$this->doc->loadJavascriptLib('contrib/prototype/prototype.js');
 			// @todo MAKE PATH BE CALCULATED, NOT FIXED
 		$this->doc->loadJavascriptLib(PATH_TXCOMMERCE_REL . 'Resources/Public/Javascript/mod_access_tree.js');
@@ -143,16 +149,16 @@ class Tx_Commerce_Module_Access_Navigation {
 	 * @return void
 	 */
 	public function main() {
+		/** @var language $language */
+		$language = $GLOBALS['LANG'];
+
 			// Get the Browseable Tree
 		$tree = $this->categoryTree->getBrowseableTree();
-
-			// Outputting page tree:
-		$this->content .= '<div id="PageTreeDiv">' . $tree . '</div>';
 
 		$markers = array(
 			'IMG_RESET' => '',
 			'WORKSPACEINFO' => '',
-			'CONTENT' => $this->content
+			'CONTENT' => $tree
 		);
 		$subparts = array();
 
@@ -161,8 +167,8 @@ class Tx_Commerce_Module_Access_Navigation {
 		}
 
 			// Build the <body> for the module
-		$this->content = $this->doc->startPage('Commerce Access List');
-		$this->content .= $this->doc->moduleBody('', '', $markers, $subparts);
+		$this->content = $this->doc->startPage($language->sl('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:mod_access.navigation_title'));
+		$this->content .= $this->doc->moduleBody('', '', $markers);
 		$this->content .= $this->doc->endPage();
 	}
 

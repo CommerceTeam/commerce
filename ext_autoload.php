@@ -157,7 +157,7 @@ return array(
 	'tx_commerce_utility_tceformsutility' => $classPath . 'Utility/TceformsUtility.php',
 	'tx_commerce_forms_select' => $classPath . 'Utility/TceformsUtility.php',
 	'tx_commerce_utility_updateutility' => $classPath . 'Utility/UpdateUtility.php',
-	'user_orderedit_func' => $classPath . 'Module/Orders/class.user_orderedit_func.php',
+
 
 	/* ViewHelpers */
 	'tx_commerce_db_list' => $classPath . 'ViewHelpers/class.tx_commerce_db_list.php',
@@ -168,6 +168,8 @@ return array(
 	'tx_commerce_tcefunc' => $classPath . 'ViewHelpers/class.tx_commerce_tcefunc.php',
 	'tx_commerce_treelib_browser' => $classPath . 'ViewHelpers/class.tx_commerce_treelib_browser.php',
 	'tx_commerce_treelib_tceforms' => $classPath . 'ViewHelpers/class.tx_commerce_treelib_tceforms.php',
+	'user_attributeedit_func' => $classPath . 'ViewHelpers/class.user_attributeedit_func.php',
+	'user_orderedit_func' => $classPath . 'ViewHelpers/class.user_orderedit_func.php',
 
 	'tx_moneylib' => t3lib_extMgm::extPath('moneylib') . 'class.tx_moneylib.php',
 	'tx_staticinfotables_pi1' => t3lib_extMgm::extPath('static_info_tables') . 'pi1/class.tx_staticinfotables_pi1.php',

@@ -32,21 +32,11 @@ require_once($BACK_PATH . 'template.php');
 /**
  * Main script class for the tree edit navigation frame
  */
-class Tx_Commerce_Module_Orders_Navigation {
-	/**
-	 * @var string
-	 */
-	protected $content;
-
+class Tx_Commerce_Module_Orders_Navigation extends t3lib_SCbase {
 	/**
 	 * @var Tx_Commerce_Tree_OrderTree
 	 */
 	protected $pagetree;
-
-	/**
-	 * @var template
-	 */
-	protected $doc;
 
 	/**
 	 * Temporary mount point (record), if any
@@ -114,13 +104,34 @@ class Tx_Commerce_Module_Orders_Navigation {
 
 			// Setting highlight mode:
 		$this->doHighlight = !$backendUser->getTSConfigVal('options.pageTree.disableTitleHighlight');
+	}
 
-			// Create template object:
+	/**
+	 * Initializes the Page
+	 *
+	 * @return void
+	 */
+	public function initPage() {
 		$this->doc = t3lib_div::makeInstance('template');
-		$this->doc->docType = 'xhtml_trans';
-
-			// Setting backPath
 		$this->doc->backPath = $GLOBALS['BACK_PATH'];
+		$this->doc->docType = 'xhtml_trans';
+		$this->doc->setModuleTemplate(PATH_TXCOMMERCE . 'Resources/Private/Backend/mod_order_navframe.html');
+
+		if (!$this->doc->moduleTemplate) {
+			t3lib_div::devLog('cannot set navframeTemplate', 'commerce', 2, array(
+				'backpath' => $this->doc->backPath,
+				'filename from TBE_STYLES' => $GLOBALS['TBE_STYLES']['htmlTemplates']['commerce/Resources/Private/Backend/mod_order_navframe.html'],
+				'full path' => $this->doc->backPath . $GLOBALS['TBE_STYLES']['htmlTemplates']['commerce/Resources/Private/Backend/mod_order_navframe.html']
+			));
+			$templateFile = PATH_TXCOMMERCE_REL . 'Resources/Private/Backend/mod_order_navframe.html';
+			$this->doc->moduleTemplate = t3lib_div::getURL(PATH_site . $templateFile);
+		}
+
+			// Click menu code is added:
+		$CMparts = $this->doc->getContextMenuCode();
+		$this->doc->bodyTagAdditions = $CMparts[1];
+		$this->doc->JScode .= $CMparts[0];
+		$this->doc->postCode .= $CMparts[2];
 
 			// Setting JavaScript for menu.
 		$this->doc->JScode = $this->doc->wrapScriptTags(
@@ -172,11 +183,7 @@ class Tx_Commerce_Module_Orders_Navigation {
 			' . ($this->cMR ? "jumpTo(top.fsMod.recentIds['web'], '');" : '') . ';
 		');
 
-			// Click menu code is added:
-		$CMparts = $this->doc->getContextMenuCode();
-		$this->doc->bodyTagAdditions = $CMparts[1];
-		$this->doc->JScode .= $CMparts[0];
-		$this->doc->postCode .= $CMparts[2];
+		$this->doc->bodyTagId = 'typo3-pagetree';
 	}
 
 	/**
@@ -191,47 +198,16 @@ class Tx_Commerce_Module_Orders_Navigation {
 			// Produce browse-tree:
 		$tree = $this->pagetree->getBrowsableTree();
 
-			// Start page:
-		$this->content = '';
-		$this->content .= $this->doc->startPage('Orders');
+		$markers = array(
+			'IMG_RESET' => '',
+			'WORKSPACEINFO' => '',
+			'CONTENT' => $tree
+		);
 
-			// Outputting Temporary DB mount notice:
-		if ($this->active_tempMountPoint) {
-			$this->content .= '
-				<div class="bgColor4 c-notice">
-					<img' . t3lib_iconWorks::skinImg($this->doc->backPath, 'gfx/icon_note.gif', 'width="18" height="16"') .
-					' align="top" alt="" /><a href="' . htmlspecialchars(t3lib_div::linkThisScript(array('setTempDBmount' => 0))) .
-					'">' . $language->sl('LLL:EXT:lang/locallang_core.php:labels.temporaryDBmount', 1) . '</a><br/>' .
-					$language->sl('LLL:EXT:lang/locallang_core.php:labels.path', 1) . ': <span title="' .
-					htmlspecialchars($this->active_tempMountPoint['_thePathFull']) . '">' .
-					htmlspecialchars(t3lib_div::fixed_lgd_cs($this->active_tempMountPoint['_thePath'], -50)) . '</span>
-				</div>
-			';
-		}
-
-			// Outputting page tree:
-		$this->content .= $tree;
-
-			// Outputting refresh-link
-		$refreshUrl = t3lib_div::getIndpEnv('REQUEST_URI');
-		$this->content .= '
-			<p class="c-refresh">
-				<a href="' . htmlspecialchars($refreshUrl) . '"><img' .
-				t3lib_iconWorks::skinImg($this->doc->backPath, 'gfx/refresh_n.gif', 'width="14" height="14"') .
-				' title="' . $language->sL('LLL:EXT:lang/locallang_core.php:labels.refresh', 1) . '" alt="" /></a><a href="' .
-				htmlspecialchars($refreshUrl) . '">' . $language->sL('LLL:EXT:lang/locallang_core.php:labels.refresh', 1) . '</a>
-			</p>
-			<br />';
-
-			// CSH icon:
-		$this->content .= t3lib_BEfunc::cshItem('xMOD_csh_corebe', 'pagetree', $GLOBALS['BACK_PATH']);
-
-			// Adding highlight - JavaScript
-		if ($this->doHighlight) {
-			$this->content .= $this->doc->wrapScriptTags('
-				hilight_row("", top.fsMod.navFrameHighlightedID["web"]);
-			');
-		}
+			// Build the <body> for the module
+		$this->content = $this->doc->startPage($language->sl('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:mod_orders.navigation_title'));
+		$this->content .= $this->doc->moduleBody('', '', $markers);
+		$this->content .= $this->doc->endPage();
 	}
 
 	/**
@@ -300,6 +276,7 @@ if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['
 /** @var Tx_Commerce_Module_Orders_Navigation $SOBE */
 $SOBE = t3lib_div::makeInstance('Tx_Commerce_Module_Orders_Navigation');
 $SOBE->init();
+$SOBE->initPage();
 $SOBE->main();
 $SOBE->printContent();
 

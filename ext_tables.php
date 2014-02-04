@@ -280,7 +280,7 @@ $tempColumns = array(
 		'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:fe_users.tx_commerce_feuser_orders',
 		'config' => array(
 			'type' => 'user',
-			'userFunc' => 'EXT:commerce/mod_orders/class.user_orderedit_func.php:user_orderedit_func->fe_user_orders',
+			'userFunc' => 'user_orderedit_func->fe_user_orders',
 		)
 	),
 );
