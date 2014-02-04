@@ -130,7 +130,7 @@ class Tx_Commerce_Payment_Provider_Wirecard extends Tx_Commerce_Payment_Provider
 		$actCurrency = $this->paymentObject->getPObj()->conf['currency'] != '' ?  $this->paymentObject->getPObj()->conf['currency'] : 'EUR';
 
 		$paymentLib->setTransactionData(array(
-			'amount' => $basket->getGrossSum(),
+			'amount' => $basket->getSumGross(),
 			'currency' => $actCurrency,
 		));
 

@@ -674,9 +674,6 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends localRecordList {
 			$this->fieldArray[] = '_LOCALIZATION_';
 			$addWhere .= ' AND ' . $GLOBALS['TCA'][$table]['ctrl']['languageField'] . '<=0';
 		}
-		if (!t3lib_div::inList($rowlist, '_CONTROL_')) {
-			// $this->fieldArray[] = '_CONTROL_';
-		}
 		if ($this->showClipboard) {
 			$this->fieldArray[] = '_CLIPBOARD_';
 		}

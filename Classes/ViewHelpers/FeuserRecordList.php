@@ -359,9 +359,7 @@ class Tx_Commerce_ViewHelpers_FeuserRecordList extends localRecordList {
 		}
 
 			// Overriding with versions background color if any:
-		$row_bgColor = $row['_CSSCLASS'] ?
-			' class="' . $row['_CSSCLASS'] . '"' :
-			$row_bgColor;
+		$row_bgColor = $row['_CSSCLASS'] ? ' class="' . $row['_CSSCLASS'] . '"' : $row_bgColor;
 
 			// Initialization
 		$alttext = t3lib_BEfunc::getRecordIconAltText($row, $table);
@@ -524,10 +522,6 @@ class Tx_Commerce_ViewHelpers_FeuserRecordList extends localRecordList {
 		if ($this->localizationView && $l10nEnabled) {
 			$this->fieldArray[] = '_LOCALIZATION_';
 			$addWhere .= ' AND ' . $GLOBALS['TCA'][$table]['ctrl']['languageField'] . '<=0';
-		}
-		if (!t3lib_div::inList($rowlist, '_CONTROL_')) {
-			// @todo what to do here?
-			// $this->fieldArray[] = '_CONTROL_';
 		}
 		if ($this->showClipboard) {
 			$this->fieldArray[] = '_CLIPBOARD_';
