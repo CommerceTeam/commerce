@@ -180,8 +180,14 @@ class Tx_Commerce_Controller_AccessController {
 		$this->doc->backPath = $GLOBALS['BACK_PATH'];
 		$this->doc->docType = 'xhtml_trans';
 		$this->doc->setModuleTemplate(PATH_TXCOMMERCE . 'Resources/Private/Backend/mod_access.html');
-		$this->doc->form = '<form action="' . $this->doc->backPath . 'tce_db.php" method="post" name="tceAction">';
-		$this->doc->loadJavascriptLib(PATH_TXCOMMERCE_REL . 'Resources/Public/Javascript/mod_access.js');
+		$this->doc->form = '<form action="' . $this->doc->backPath . 'tce_db.php" method="post" name="editform">';
+		$this->doc->loadJavascriptLib($this->doc->backPath . 'sysext/perm/mod1/perm.js');
+
+			// override attributes of WebPermissions found in sysext/perm/mod1/perm.js
+		$this->doc->JScode .= $this->doc->wrapScriptTags('
+			WebPermissions.thisScript = "../../../../../../typo3/ajax.php";
+			WebPermissions.ajaxID = "Tx_Commerce_Controller_PermissionAjaxController::dispatch";
+		');
 
 			// Set up menus:
 		$this->menuConfig();
@@ -514,7 +520,7 @@ class Tx_Commerce_Controller_AccessController {
 			<input type="hidden" name="data[tx_commerce_categories][' . $this->id . '][perms_user]" value="' . $this->pageinfo['perms_user'] . '" />
 			<input type="hidden" name="data[tx_commerce_categories][' . $this->id . '][perms_group]" value="' . $this->pageinfo['perms_group'] . '" />
 			<input type="hidden" name="data[tx_commerce_categories][' . $this->id . '][perms_everybody]" value="' . $this->pageinfo['perms_everybody'] . '" />
-			' . $this->getRecursiveSelect($this->id) . t3lib_TCEforms::getHiddenTokenField('tceAction') . '
+			' . $this->getRecursiveSelect($this->id) . t3lib_TCEforms::getHiddenTokenField('editform') . '
 			<input type="submit" name="submit" value="' . $language->getLL('Save', 1) . '" />' .
 			'<input type="submit" value="' . $language->getLL('Abort', 1) . '" onclick="' .
 				htmlspecialchars('jumpToUrl(\'index.php?id=' . $this->id . '\'); return false;') . '" />

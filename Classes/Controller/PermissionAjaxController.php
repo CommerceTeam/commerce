@@ -27,7 +27,7 @@
  * convenient methods of editing of category permissions (including category ownership
  * (user and group)) via new TYPO3AJAX facility
  */
-	// require_once in 4.x needed because in ajax mod the class is can't get autoloaded
+	// require_once in 4.x needed because in ajax mod the class can't get autoloaded
 require_once(PATH_typo3 . 'sysext/perm/mod1/class.sc_mod_web_perm_ajax.php');
 
 class Tx_Commerce_Controller_PermissionAjaxController extends SC_mod_web_perm_ajax {
