@@ -91,10 +91,6 @@ return array(
 	'tx_commerce_domain_repository_productrepository' => $classPath . 'Domain/Repository/ProductRepository.php',
 	'tx_commerce_db_product' => $classPath . 'Domain/Repository/ProductRepository.php',
 
-	/* module related classes */
-	'tx_commerce_module_access_navigation' => $classPath . 'Module/Access/navigation.php',
-	'tx_commerce_module_category_navigation' => $classPath . 'Module/Category/navigation.php',
-
 	/* payment */
 	'tx_commerce_payment_paymentabstract' => $classPath . 'Payment/PaymentAbstract.php',
 	'tx_commerce_payment_abstract' => $classPath . 'Payment/PaymentAbstract.php',
@@ -215,6 +211,11 @@ return array(
 	'tx_commerce_treelib_link_leaf_categoryview' => $classPath . 'ViewHelpers/Browselinks/CategoryView.php',
 	'tx_commerce_viewhelpers_browselinks_productview' => $classPath . 'ViewHelpers/Browselinks/ProductView.php',
 	'tx_commerce_treelib_link_leaf_productview' => $classPath . 'ViewHelpers/Browselinks/ProductView.php',
+	'tx_commerce_viewhelpers_navigation_accessviewhelper' => $classPath . 'ViewHelpers/Navigation/AccessViewHelper.php',
+	'tx_commerce_viewhelpers_navigation_categoryviewhelper' => $classPath . 'ViewHelpers/Navigation/CategoryViewHelper.php',
+	'tx_commerce_viewhelpers_navigation_ordersviewhelper' => $classPath . 'ViewHelpers/Navigation/OrdersViewHelper.php',
+	'tx_commerce_viewhelpers_navigation_statisticviewhelper' => $classPath . 'ViewHelpers/Navigation/StatisticViewHelper.php',
+	'tx_commerce_viewhelpers_navigation_systemdataviewhelper' => $classPath . 'ViewHelpers/Navigation/SystemdataViewHelper.php',
 
 	'tx_moneylib' => t3lib_extMgm::extPath('moneylib') . 'class.tx_moneylib.php',
 	'tx_staticinfotables_pi1' => t3lib_extMgm::extPath('static_info_tables') . 'pi1/class.tx_staticinfotables_pi1.php',

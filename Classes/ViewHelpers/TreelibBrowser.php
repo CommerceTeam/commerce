@@ -145,7 +145,7 @@ class Tx_Commerce_ViewHelpers_TreelibBrowser extends t3lib_SCbase {
 
 			// Check if we need to allow browsing of products.
 		if (1 == $allowProducts) {
-			$this->doc->JScode .= $this->doc->wrapScriptTags('Tree.ajaxID = "Tx_Commerce_Module_Category_Navigation::ajaxExpandCollapse";');
+			$this->doc->JScode .= $this->doc->wrapScriptTags('Tree.ajaxID = "Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper::ajaxExpandCollapse";');
 		}
 
 			// Setting JavaScript for menu

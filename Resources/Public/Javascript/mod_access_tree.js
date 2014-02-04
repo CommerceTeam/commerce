@@ -23,7 +23,7 @@
 var Tree = {
 	thisScript: '../../../../../../typo3/ajax.php',
 		// has to be either "SC_alt_db_navframe::expandCollapse" or "SC_alt_file_navframe::expandCollapse"
-	ajaxID: 'Tx_Commerce_Module_Access_Navigation::ajaxExpandCollapse',
+	ajaxID: 'Tx_Commerce_ViewHelpers_Navigation_AccessViewHelper::ajaxExpandCollapse',
 	frameSetModule: null,
 	activateDragDrop: false,
 	highlightClass: 'active',
