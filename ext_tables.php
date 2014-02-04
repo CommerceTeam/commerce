@@ -582,7 +582,7 @@ $GLOBALS['TCA']['tx_commerce_order_types'] = array(
 		'transOrigDiffSourceField' => 'l18n_diffsource',
 		'default_sortby' => 'ORDER BY crdate',
 		'delete' => 'deleted',
-		'dynamicConfigFile' => PATH_TXCOMMERCE . 'Configuration/TCA/Orders.php',
+		'dynamicConfigFile' => PATH_TXCOMMERCE . 'Configuration/TCA/OrderTypes.php',
 		'iconfile' =>  PATH_TXCOMMERCE_ICON_TABLE_REL . 'order_types.gif',
 	),
 	'feInterface' => array(

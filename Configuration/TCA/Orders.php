@@ -1,28 +1,32 @@
 <?php
 /***************************************************************
  *  Copyright notice
- *  (c) 2005 - 2008 Ingo Schmitt <is@marketing-factory.de>
+ *
+ *  (c) 2005 - 2008 Ingo Schmitt <typo3@marketing-factory.de>
  *  All rights reserved
+ *
  *  This script is part of the TYPO3 project. The TYPO3 project is
  *  free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
  *  (at your option) any later version.
+ *
  *  The GNU General Public License can be found at
  *  http://www.gnu.org/copyleft/gpl.html.
+ *  A copy is found in the textfile GPL.txt and important notices to the license
+ *  from the author is found in LICENSE.txt distributed with these scripts.
+ *
+ *
  *  This script is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
+ *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
 /**
  * Dynamic config file for tx_commerce_orders
- *
- * @package commerce
- * @author Ingo Schmitt <is@marketing-factory.de>
- * $Id: tx_commerce_orders.tca.php 532 2007-02-01 14:19:15Z ingo $
  */
 
 if (!defined('TYPO3_MODE')) {
@@ -69,7 +73,8 @@ $GLOBALS['TCA']['tx_commerce_orders'] = Array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_orders.crdate',
 			'config' => Array(
-				'type' => 'none',
+				'type' => 'input',
+				'readOnly' => TRUE,
 				'format' => 'date',
 				'eval' => 'date',
 			)
@@ -104,9 +109,9 @@ $GLOBALS['TCA']['tx_commerce_orders'] = Array(
 						'popup_onlyOpenIfSelected' => 1,
 						'icon' => 'edit2.gif',
 						'JSopenParams' => 'height=350,width=580,status=0,menubar=0,scrollbars=1',
+					),
 				),
 			),
-		),
 		),
 		'cust_invoice' => Array(
 			'exclude' => 1,
@@ -145,7 +150,8 @@ $GLOBALS['TCA']['tx_commerce_orders'] = Array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_orders.payment_ref_id',
 			'config' => array(
-				'type' => 'none',
+				'type' => 'input',
+				'readOnly' => TRUE,
 				'pass_content' => 1,
 			),
 		),
@@ -205,81 +211,17 @@ $GLOBALS['TCA']['tx_commerce_orders'] = Array(
 	),
 	'types' => array(
 		'0' => array(
-			'showitem' => '--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_orders.basis, order_id;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_orders.order_id;;;2-2-2, crdate;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_orders.crdate;;;, order_type_uid;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_orders.order_type_uid;;;2-2-2,  cu_iso_3_uid;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_orders.cu_iso_3_uid;;;, newpid;LLL:EXT:commerce/locallang_be.php:order_view.order_status;;;, paymenttype;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_orders.paymenttype;;;, payment_ref_id;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_orders.payment_ref_id;;,comment,internalcomment, order_sys_language_uid;LLL:EXT:lang/locallang_general.php:LGL.language;;;, pricefromnet;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_orders.pricefromnet;;;, --div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_orders.customer, cust_fe_user, cust_invoice, --div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_orders.cust_deliveryaddress, cust_deliveryaddress, --div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_orders.items, sum_price_net, sum_price_gross, articles'
+			'showitem' => '
+				--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_orders.basis,
+					order_id, crdate, order_type_uid, cu_iso_3_uid, newpid, paymenttype, payment_ref_id, comment, internalcomment,
+					order_sys_language_uid, pricefromnet,
+				--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_orders.customer,
+					cust_fe_user, cust_invoice,
+				--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_orders.cust_deliveryaddress,
+					cust_deliveryaddress,
+				--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_orders.items,
+					sum_price_net, sum_price_gross, articles'
 		)
-	),
-	'palettes' => array(
-		'1' => array('showitem' => '')
-	)
-);
-
-$GLOBALS['TCA']['tx_commerce_order_types'] = array(
-	'ctrl' => $GLOBALS['TCA']['tx_commerce_order_types']['ctrl'],
-	'interface' => array(
-		'showRecordFieldList' => 'sys_language_uid,l18n_parent,l18n_diffsource,title'
-	),
-	'feInterface' => $GLOBALS['TCA']['tx_commerce_order_types']['feInterface'],
-	'columns' => array(
-		'sys_language_uid' => array(
-			'exclude' => 1,
-			'label' => 'LLL:EXT:lang/locallang_general.php:LGL.language',
-			'config' => array(
-				'type' => 'select',
-				'foreign_table' => 'sys_language',
-				'foreign_table_where' => 'ORDER BY sys_language.title',
-				'items' => array(
-					array('LLL:EXT:lang/locallang_general.php:LGL.allLanguages', -1),
-					array('LLL:EXT:lang/locallang_general.php:LGL.default_value', 0)
-				)
-			)
-		),
-		'l18n_parent' => array(
-			'displayCond' => 'FIELD:sys_language_uid:>:0',
-			'exclude' => 1,
-			'label' => 'LLL:EXT:lang/locallang_general.php:LGL.l18n_parent',
-			'config' => array(
-				'type' => 'select',
-				'items' => array(
-					array('', 0),
-				),
-				'foreign_table' => 'tx_commerce_order_types',
-				'foreign_table_where' => 'AND tx_commerce_order_types.pid=###CURRENT_PID### AND tx_commerce_order_types.sys_language_uid IN (-1,0)',
-			)
-		),
-		'l18n_diffsource' => array(
-			'config' => array(
-				'type' => 'passthrough'
-			)
-		),
-		'title' => array(
-			'exclude' => 1,
-			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_order_types.title',
-			'config' => array(
-				'type' => 'input',
-				'size' => '40',
-				'max' => '80',
-				'eval' => 'required,trim',
-			)
-		),
-		'icon' => array(
-			'exclude' => 1,
-			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_order_types.icon',
-			'l10n_mode' => 'mergeIfNotBlank',
-			'config' => array(
-				'type' => 'group',
-				'internal_type' => 'file',
-				'allowed' => $GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext'],
-				'max_size' => $GLOBALS['TYPO3_CONF_VARS']['GFX']['maxFileSize'],
-				'uploadfolder' => 'uploads/tx_commerce',
-				'size' => 1,
-				'minitems' => 0,
-				'maxitems' => 1,
-				'show_thumbs' => 1,
-			),
-		),
-	),
-	'types' => array(
-		'0' => array('showitem' => 'sys_language_uid;;;;1-1-1, l18n_parent, l18n_diffsource, title;;;;2-2-2,icon')
 	),
 	'palettes' => array(
 		'1' => array('showitem' => '')

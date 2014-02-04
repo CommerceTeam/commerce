@@ -149,13 +149,6 @@ if (TYPO3_MODE == 'BE') {
 		// This XCLASS will create a link to singlePID / previewPageID in version module for commerce products
 	$GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/version/cm1/index.php'] =
 		PATH_TXCOMMERCE . 'Classes/Xclass/ux_versionindex.php';
-
-		// XCLASS for db list enable the search module to search in OrderIds
-		// Field tx_commerce_orders.order_id is of type none, but the BE list module doesn't search in those fields by default
-		// @see http://bugs.typo3.org/view.php?id=5676
-		// @see http://forge.typo3.org/issues/17329
-	$GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['typo3/class.db_list_extra.inc'] =
-		PATH_TXCOMMERCE . 'Classes/Xclass/ux_localrecordlist.php';
 }
 
 
