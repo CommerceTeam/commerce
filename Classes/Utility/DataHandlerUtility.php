@@ -128,8 +128,8 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 
 	/**
 	 * Commerce Core Engine
-	 * @todo what is tx_commerce_cce ? cant find it
-	 * @var tx_commerce_cce
+	 *
+	 * @var Tx_Commerce_Utility_DataHandlerUtility
 	 */
 	public $cce;
 
@@ -211,8 +211,15 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 			&& $this->vC != $backendUser->veriCode()
 			&& !$GLOBALS['TYPO3_CONF_VARS']['SYS']['doNotCheckReferer']
 		) {
-			$this->tce->log('', 0, 0, 0, 1, 'Referer host "%s" and server host "%s" did not match and veriCode was not valid either!', 1, array($refInfo['host'], $httpHost));
-			// @todo: log correctly
+				// writelog($type, $action, $error, $details_nr, $details, $data, $tablename, $recuid, $recpid)
+			$backendUser->writelog(
+				1,
+				2,
+				3,
+				0,
+				'Referer host "%s" and server host "%s" did not match and veriCode was not valid either!',
+				array($refInfo['host'], $httpHost)
+			);
 		} else {
 				// get current item in clipboard
 			$item = $this->clipObj->getSelectedRecord();
@@ -226,12 +233,12 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 					// overwrite a product
 				$command = 'overwrite';
 
-				list($table, $uidTarget) = explode('|', $this->CB['overwrite']);
+				$uidTarget = array_slice(explode('|', $this->CB['overwrite']), 1, 1);
 			} elseif (isset($this->CB['paste'])) {
 					// paste either a product into a category or a category into a category
 				$command = ($this->clipObj->getSelectedRecord('tx_commerce_categories', $uidClip) == NULL) ? 'pasteProduct' : 'pasteCategory';
 
-				list($table, $uidTarget) = explode('|', $this->CB['paste']);
+				$uidTarget = array_slice(explode('|', $this->CB['paste']), 1, 1);
 			}
 
 			if ($this->cmd == NULL) {

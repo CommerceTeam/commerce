@@ -5,6 +5,11 @@
  */
 class Tx_Commerce_Utility_ClickmenuUtility {
 	/**
+	 * @var string
+	 */
+	protected $backPath = '../../../../../../typo3/';
+
+	/**
 	 * @var array
 	 */
 	protected $rec;
@@ -50,7 +55,7 @@ class Tx_Commerce_Utility_ClickmenuUtility {
 		}
 
 			// Configure the parent clickmenu
-		$pObj->backPath = '../../../../../../typo3/';
+		$pObj->backPath = $this->backPath;
 			// do not allow the entry 'history' in the clickmenu
 		$pObj->disabledItems[]  = 'history';
 
