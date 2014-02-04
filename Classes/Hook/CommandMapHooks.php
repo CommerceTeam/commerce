@@ -58,6 +58,7 @@ class Tx_Commerce_Hook_CommandMapHooks {
 	 */
 	protected $pObj;
 
+
 	/**
 	 * This is just a constructor to instanciate the backend library
 	 */
@@ -73,12 +74,10 @@ class Tx_Commerce_Hook_CommandMapHooks {
 	 * @param string $command
 	 * @param string $table the table the data will be stored in
 	 * @param integer $id The uid of the dataset we're working on
-	 * @param array $value the array of fields that where changed in BE (passed by reference)
-	 * @param t3lib_TCEmain $pObj The instance of the BE data handler
 	 * @return void
 	 */
-	public function processCmdmap_preProcess(&$command, $table, &$id, $value, $pObj) {
-		$this->pObj = $pObj;
+	public function processCmdmap_preProcess(&$command, $table, &$id) {
+		$this->pObj = t3lib_div::makeInstance('t3lib_TCEmain');
 
 		switch ($table) {
 			case 'tx_commerce_categories':
