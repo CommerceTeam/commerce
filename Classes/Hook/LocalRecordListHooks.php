@@ -42,7 +42,10 @@ class Tx_Commerce_Hook_LocalRecordListHooks implements localRecordList_actionsHo
 	public function makeClip($table, $row, $cells, &$parentObject) {
 		$cells = array();
 
-		if ($parentObject->id && !$GLOBALS['TCA'][$table]['ctrl']['readOnly'] && $GLOBALS['SOBE']->MOD_SETTINGS['bigControlPanel']) {
+		if (
+			$parentObject->id && !$GLOBALS['TCA'][$table]['ctrl']['readOnly']
+			&& $GLOBALS['SOBE']->MOD_SETTINGS['bigControlPanel'] && $table == 'tx_commerce_orders'
+		) {
 			$cells['moveOrder'] = '<input type="checkbox" name="orderUid[]" value="' . $row['uid'] . '" class="smallCheckboxes">';
 		}
 
@@ -51,6 +54,7 @@ class Tx_Commerce_Hook_LocalRecordListHooks implements localRecordList_actionsHo
 
 	/**
 	 * modifies Web>List control icons of a displayed row
+	 * just to satisfy interface
 	 *
 	 * @param string $table the current database table
 	 * @param array $row the current record row
@@ -209,6 +213,7 @@ class Tx_Commerce_Hook_LocalRecordListHooks implements localRecordList_actionsHo
 
 	/**
 	 * modifies Web>List header row clipboard/action icons
+	 * just to satisfy interface
 	 *
 	 * @param string $table the current database table
 	 * @param array $currentIdList Array of the currently displayed uids of the table

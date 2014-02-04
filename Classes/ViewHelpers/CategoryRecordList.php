@@ -679,7 +679,7 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 			// Show icon and lines
 		if ($this->showIcon) {
 			$out .= '
-			<td nowrap="nowrap" class="col-icon">';
+			<td class="col-icon">';
 
 			if (!$h) {
 				$out .= '<img src="/typo3/clear.gif" width="1" height="8" alt="" />';
@@ -1061,7 +1061,6 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 
 				// If the table is NOT a read-only table, then show these links:
 			if (!$GLOBALS['TCA'][$table]['ctrl']['readOnly']) {
-
 					// "Revert" link (history/undo)
 				$cells['history'] = '<a href="#" onclick="' .
 					htmlspecialchars('return jumpExt(\'' . $this->backPath . 'show_rechis.php?element=' . rawurlencode($table . ':' . $row['uid']) . '\',\'#latest\');') .
@@ -1091,14 +1090,9 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 				if ($table == 'tx_commerce_categories' && $backendUser->check('modules', 'web_perm') && t3lib_extMgm::isLoaded('perm')) {
 					$cells['perms'] =
 						'<a href="' .
-							htmlspecialchars(
-								t3lib_extMgm::extRelPath('perm') . 'mod1/index.php' .
-								'?id=' . $row['uid'] . '&return_id=' . $row['uid'] . '&edit=1'
-							) .
+							htmlspecialchars(t3lib_extMgm::extRelPath('perm') . 'mod1/index.php?id=' . $row['uid'] . '&return_id=' . $row['uid'] . '&edit=1') .
 							'" title="' . $language->getLL('permissions', TRUE) .
-						'">' .
-							t3lib_iconWorks::getSpriteIcon('status-status-locked') .
-						'</a>';
+						'">' . t3lib_iconWorks::getSpriteIcon('status-status-locked') . '</a>';
 				} elseif (!$this->table && $backendUser->check('modules', 'web_perm')) {
 					$cells['perms'] = $this->spaceIcon;
 				}
@@ -1189,12 +1183,10 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 					$refCountMsg = t3lib_BEfunc::referenceCount(
 						$table,
 						$row['uid'],
-						' ' . $language->sL(
-							'LLL:EXT:lang/locallang_core.xml:labels.referencesToRecord'
-						),
+						' ' . $language->sL('LLL:EXT:lang/locallang_core.xml:labels.referencesToRecord'),
 						$this->getReferenceCount($table, $row['uid'])
-					) .
-						t3lib_BEfunc::translationCount($table, $row['uid'], ' ' . $language->sL('LLL:EXT:lang/locallang_core.xml:labels.translationsOfRecord'));
+					) . t3lib_BEfunc::translationCount($table, $row['uid'], ' ' . $language->sL('LLL:EXT:lang/locallang_core.xml:labels.translationsOfRecord'));
+
 					$cells['delete'] = '<a href="#" onclick="' .
 						htmlspecialchars('if (confirm(' . $language->JScharCode($language->getLL('deleteWarning') . ' "' . $title . '" ' . $refCountMsg) .
 							')) {jumpToUrl(\'' . $GLOBALS['SOBE']->doc->issueCommand($params, -1) . '\');} return false;') .
@@ -1212,9 +1204,7 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 						$params = '&cmd[' . $table . '][' . $row['uid'] . '][move]=' . - $this->id;
 						$cells['moveLeft'] = '<a href="#" onclick="' .
 							htmlspecialchars('return jumpToUrl(\'' . $GLOBALS['SOBE']->doc->issueCommand($params, -1) . '\');') .
-							'" title="' . $language->getLL('prevLevel', TRUE) . '">' .
-							t3lib_iconWorks::getSpriteIcon('actions-move-left') .
-							'</a>';
+							'" title="' . $language->getLL('prevLevel', TRUE) . '">' . t3lib_iconWorks::getSpriteIcon('actions-move-left') . '</a>';
 					}
 						// Down (Paste as subpage to the page right above)
 					if ($this->currentTable['prevUid'][$row['uid']]) {
@@ -1397,7 +1387,10 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 		/** @var t3lib_beUserAuth $backendUser */
 		$backendUser = $GLOBALS['BE_USER'];
 
-		$out = array(0 => '', 1 => '',);
+		$out = array(
+			0 => '',
+			1 => '',
+		);
 
 		$translations = $this->translateTools->translationInfo($table, $row['uid'], 0, $row, $this->selFieldList);
 		$this->translations = $translations['translations'];
@@ -1410,15 +1403,16 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 			$lNew = '';
 			foreach ($this->pageOverlays as $lUid_OnPage => $lsysRec) {
 				if (!isset($translations['translations'][$lUid_OnPage]) && $backendUser->checkLanguageAccess($lUid_OnPage)) {
-					$url = $this->listURL();
-					$href = $GLOBALS['SOBE']->doc->issueCommand('&cmd[' . $table . '][' . $row['uid'] . '][localize]=' . $lUid_OnPage, $url);
+					$params = '&cmd[' . $table . '][' . $row['uid'] . '][localize]=' . $lUid_OnPage;
 					$language = t3lib_BEfunc::getRecord('sys_language', $lUid_OnPage, 'title');
 					if ($this->languageIconTitles[$lUid_OnPage]['flagIcon']) {
-						$lC = t3lib_iconWorks::getSpriteIcon($this->languageIconTitles[$lUid_OnPage]['flagIcon']);
+						$lC = t3lib_iconWorks::getSpriteIcon($this->languageIconTitles[$lUid_OnPage]['flagIcon']);;
 					} else {
 						$lC = $this->languageIconTitles[$lUid_OnPage]['title'];
 					}
-					$lC = '<a href="' . htmlspecialchars($href) . '" title="' . htmlspecialchars($language['title']) . '">' . $lC . '</a> ';
+					$lC = '<a href="#" onclick="' .
+						htmlspecialchars('return jumpToUrl(\'' . $GLOBALS['SOBE']->doc->issueCommand($params, -1) . '\');') .
+						'" title="' . htmlspecialchars($language['title']) . '">' . $lC . '</a> ';
 
 					$lNew .= $lC;
 				}

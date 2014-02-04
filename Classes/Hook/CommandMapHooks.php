@@ -238,12 +238,15 @@ class Tx_Commerce_Hook_CommandMapHooks {
 	 */
 	protected function postProcessCategory($command, $categoryUid) {
 		if ($command == 'delete') {
+			t3lib_BEfunc::setUpdateSignal('updatePageTree');
+
 			$this->deleteChildCategoriesProductsArticlesPricesOfCategory($categoryUid);
 		} elseif ($command == 'copy') {
 			$newCategoryUid = $this->pObj->copyMappingArray['tx_commerce_categories'][$categoryUid];
 			$locale = $this->getLocale();
 
 			$this->belib->copyCategoriesByCategory($newCategoryUid, $categoryUid, $locale);
+			$this->belib->copyProductsByCategory($newCategoryUid, $categoryUid, $locale);
 		}
 	}
 
@@ -390,18 +393,17 @@ class Tx_Commerce_Hook_CommandMapHooks {
 		/** @var t3lib_db $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
-			// check if localized Product already has articles
+			// get articles of localized Product
 		$localizedProductArticles = $this->belib->getArticlesOfProduct($localizedProductUid);
-		if (!count($localizedProductArticles)) {
+			// get all related articles
+		$articles = $this->belib->getArticlesOfProduct($productUid);
+		if (!count($articles)) {
 				// Error Output, no Articles
 			$this->error('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:product.localization_without_article');
 		}
 
-			// get all related articles
-		$articles = $this->belib->getArticlesOfProduct($productUid);
-
 			// Check if product has articles and localized product has no articles
-		if ($articles != FALSE && $localizedProductArticles == FALSE) {
+		if (count($articles) && !count($localizedProductArticles)) {
 				// determine language identifier
 				// this is needed for updating the XML of the new created articles
 			$langIsoCode = t3lib_BEfunc::getRecord('sys_language', (int) $value, 'static_lang_isocode');
@@ -468,7 +470,7 @@ class Tx_Commerce_Hook_CommandMapHooks {
 
 		$locale = array_keys((array) $database->exec_SELECTgetRows(
 			'sys_language_uid',
-			'pages_overlay',
+			'pages_language_overlay',
 			'pid = ' . $productPid,
 			'',
 			'',
@@ -673,6 +675,17 @@ class Tx_Commerce_Hook_CommandMapHooks {
 		);
 
 		$database->exec_UPDATEquery('tx_commerce_products', 'l18n_parent IN (' . implode(',', $productList) . ')', $updateValues);
+
+		$translatedArticles = array();
+		foreach ($productList as $productId) {
+			$translatedArticles = array_merge($translatedArticles, $this->belib->getArticlesOfProductAsUidList($productId));
+		}
+		$translatedArticles = array_unique($translatedArticles);
+
+		if (count($translatedArticles)) {
+			$this->deletePricesByArticleList($translatedArticles);
+			$this->deleteArticlesByArticleList($translatedArticles);
+		}
 	}
 
 	/**
