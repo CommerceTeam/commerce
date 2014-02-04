@@ -320,8 +320,8 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 					// chose sorting position
 				if ($command != 'overwrite') {
 						// Initialize tree object:
-					/** @var tx_commerce_leaf_productdata $treedb */
-					$treedb = t3lib_div::makeInstance('tx_commerce_leaf_productdata');
+					/** @var Tx_Commerce_Tree_Leaf_ProductData $treedb */
+					$treedb = t3lib_div::makeInstance('Tx_Commerce_Tree_Leaf_ProductData');
 					$treedb->init();
 
 					$records = $treedb->getRecordsDbList($uidTarget);
@@ -394,7 +394,8 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 
 					// chose sorting position
 					// Initialize tree object:
-				$treedb = t3lib_div::makeInstance('tx_commerce_leaf_categorydata');
+				/** @var Tx_Commerce_Tree_Leaf_CategoryData $treedb */
+				$treedb = t3lib_div::makeInstance('Tx_Commerce_Tree_Leaf_CategoryData');
 				$treedb->init();
 
 				$records = $treedb->getRecordsDbList($uidTarget);

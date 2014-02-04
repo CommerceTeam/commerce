@@ -23,9 +23,9 @@
  ***************************************************************/
 
 /**
- * Implements the leafview for the Category
+ * Implements the Tx_Commerce_Tree_Leaf_View for the Category
  */
-class tx_commerce_leaf_categoryview extends leafView {
+class Tx_Commerce_Tree_Leaf_CategoryView extends Tx_Commerce_Tree_Leaf_View {
 	/**
 	 * DB Table ##isnt this read automatically?
 	 *
@@ -47,7 +47,7 @@ class tx_commerce_leaf_categoryview extends leafView {
 	public function getJumpToParam($row) {
 		if (!is_array($row)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('getJumpToParam (leafview) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				t3lib_div::devLog('getJumpToParam (Tx_Commerce_Tree_Leaf_View) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
 			}
 			return '';
 		}
@@ -65,9 +65,11 @@ class tx_commerce_leaf_categoryview extends leafView {
 	}
 }
 
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/treelib/class.tx_commerce_leaf_categoryview.php']) {
+class_alias('Tx_Commerce_Tree_Leaf_CategoryView', 'tx_commerce_leaf_categoryview');
+
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Tree/Leaf/CategoryView.php']) {
 	/** @noinspection PhpIncludeInspection */
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/treelib/class.tx_commerce_leaf_categoryview.php']);
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Tree/Leaf/CategoryView.php']);
 }
 
 ?>

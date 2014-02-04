@@ -2,7 +2,7 @@
 /**
  * Implements the data view for a master leaf
  */
-abstract class leafMasterData extends leafData {
+abstract class Tx_Commerce_Tree_Leaf_MasterData extends Tx_Commerce_Tree_Leaf_Data {
 	/**
 	 * Do we want to read the leafs by Mountpoints
 	 *
@@ -49,7 +49,7 @@ abstract class leafMasterData extends leafData {
 	public function initRecords($index, &$indices) {
 		if (!is_numeric($index) || !is_array($indices)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('initRecords (leafMasterData) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				t3lib_div::devLog('initRecords (Tx_Commerce_Tree_Leaf_MasterData) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
 			}
 			return;
 		}
@@ -64,7 +64,7 @@ abstract class leafMasterData extends leafData {
 		$backendUser = & $GLOBALS['BE_USER'];
 		if (!$backendUser->check('tables_select', $this->table)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('initRecords (leafMasterData): Usergroup is not allowed to view the records. ', COMMERCE_EXTKEY, 2);
+				t3lib_div::devLog('initRecords (Tx_Commerce_Tree_Leaf_MasterData): Usergroup is not allowed to view the records. ', COMMERCE_EXTKEY, 2);
 			}
 			$this->records = NULL;
 			return;
@@ -94,7 +94,7 @@ abstract class leafMasterData extends leafData {
 	public function setMounts($mountIds) {
 		if (!is_array($mountIds)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('setMounts (leafMasterData) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				t3lib_div::devLog('setMounts (Tx_Commerce_Tree_Leaf_MasterData) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
 			}
 			return;
 		}
@@ -112,7 +112,7 @@ abstract class leafMasterData extends leafData {
 	public function setUid($uid) {
 		if (!is_numeric($uid)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('setUid (leafMasterData) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				t3lib_div::devLog('setUid (Tx_Commerce_Tree_Leaf_MasterData) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
 			}
 			return;
 		}
@@ -129,7 +129,7 @@ abstract class leafMasterData extends leafData {
 	public function setDepth($depth) {
 		if (!is_numeric($depth)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('setDepth (leafMasterData) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				t3lib_div::devLog('setDepth (Tx_Commerce_Tree_Leaf_MasterData) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
 			}
 			return;
 		}
@@ -147,7 +147,7 @@ abstract class leafMasterData extends leafData {
 	protected function &getRecordsByMountpoints($index, &$indices) {
 		if (!is_numeric($index) || !is_array($indices) || !is_array($this->mountIds) || 0 == count($this->mountIds)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('getRecordsByMountpoints (leafMasterData) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				t3lib_div::devLog('getRecordsByMountpoints (Tx_Commerce_Tree_Leaf_MasterData) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
 			}
 			return NULL;
 		}
@@ -230,7 +230,7 @@ abstract class leafMasterData extends leafData {
 	protected function &getRecursiveUids($uid, $depth, &$array = NULL) {
 		if (!is_numeric($uid) || !is_numeric($depth)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('getRecursiveUids (leafMasterData) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				t3lib_div::devLog('getRecursiveUids (Tx_Commerce_Tree_Leaf_MasterData) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
 			}
 			return array();
 		}
@@ -296,5 +296,7 @@ abstract class leafMasterData extends leafData {
 		return $root;
 	}
 }
+
+class_alias('Tx_Commerce_Tree_Leaf_MasterData', 'leafMasterData');
 
 ?>

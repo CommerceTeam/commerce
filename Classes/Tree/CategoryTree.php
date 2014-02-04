@@ -7,7 +7,7 @@
  * @maintainer 	Erik Frister <typo3@marketing-factory.de>
  */
 
-class tx_commerce_categorytree extends browsetree {
+class Tx_Commerce_Tree_CategoryTree extends Tx_Commerce_Tree_Browsetree {
 	/**
 	 * Set the Tree Name
 	 *
@@ -52,16 +52,16 @@ class tx_commerce_categorytree extends browsetree {
 		parent::init();
 
 			// Create the category leaf
-		/** @var tx_commerce_leaf_category $categoryLeaf */
-		$categoryLeaf = t3lib_div::makeInstance('tx_commerce_leaf_category');
+		/** @var Tx_Commerce_Tree_Leaf_Category $categoryLeaf */
+		$categoryLeaf = t3lib_div::makeInstance('Tx_Commerce_Tree_Leaf_Category');
 
 			// Instantiate the categorydata, -view and set the permission mask (or the string rep.)
-		/** @var tx_commerce_leaf_categorydata $categorydata */
-		$categorydata = t3lib_div::makeInstance('tx_commerce_leaf_categorydata');
+		/** @var Tx_Commerce_Tree_Leaf_CategoryData $categorydata */
+		$categorydata = t3lib_div::makeInstance('Tx_Commerce_Tree_Leaf_CategoryData');
 		$categorydata->setPermsMask(Tx_Commerce_Utility_BackendUtility::getPermMask($this->minCategoryPerms));
 
-		/** @var tx_commerce_leaf_categoryview $categoryview */
-		$categoryview = t3lib_div::makeInstance('tx_commerce_leaf_categoryview');
+		/** @var Tx_Commerce_Tree_Leaf_CategoryView $categoryview */
+		$categoryview = t3lib_div::makeInstance('Tx_Commerce_Tree_Leaf_CategoryView');
 			// disable the root onclick if the perms are set to editcontent - this way we cannot select the root as a parent for any content item
 		$categoryview->noRootOnclick(($this->minCategoryPerms == 'editcontent'));
 
@@ -71,7 +71,7 @@ class tx_commerce_categorytree extends browsetree {
 		}
 
 			// Configure the noOnclick for the leaf
-		if (t3lib_div::inList($this->noClickList, 'tx_commerce_leaf_category')) {
+		if (t3lib_div::inList($this->noClickList, 'Tx_Commerce_Tree_Leaf_Category')) {
 			$categoryview->noOnclick();
 		}
 
@@ -81,16 +81,16 @@ class tx_commerce_categorytree extends browsetree {
 
 			// Add Product and Article Leafs if wanted - Productleaf will be added to Categoryleaf, and Articleleaf will be added to Productleaf
 		if (!$this->bare) {
-			/** @var tx_commerce_leaf_product $productleaf */
-			$productleaf = t3lib_div::makeInstance('tx_commerce_leaf_product');
-			/** @var tx_commerce_leaf_article $articleleaf */
-			$articleleaf = t3lib_div::makeInstance('tx_commerce_leaf_article');
+			/** @var Tx_Commerce_Tree_Leaf_Product $productleaf */
+			$productleaf = t3lib_div::makeInstance('Tx_Commerce_Tree_Leaf_Product');
+			/** @var Tx_Commerce_Tree_Leaf_Article $articleleaf */
+			$articleleaf = t3lib_div::makeInstance('Tx_Commerce_Tree_Leaf_Article');
 
-			/** @var tx_commerce_leaf_productview $productview */
-			$productview = t3lib_div::makeInstance('tx_commerce_leaf_productview');
+			/** @var Tx_Commerce_Tree_Leaf_ProductView $productview */
+			$productview = t3lib_div::makeInstance('Tx_Commerce_Tree_Leaf_ProductView');
 
 				// Configure the noOnclick for the leaf
-			if (t3lib_div::inList($this->noClickList, 'tx_commerce_leaf_product')) {
+			if (t3lib_div::inList($this->noClickList, 'Tx_Commerce_Tree_Leaf_Product')) {
 				$productview->noOnclick();
 			}
 
@@ -99,11 +99,11 @@ class tx_commerce_categorytree extends browsetree {
 				$productview->substituteRealValues();
 			}
 
-			/** @var tx_commerce_leaf_articleview $articleview */
-			$articleview = t3lib_div::makeInstance('tx_commerce_leaf_articleview');
+			/** @var Tx_Commerce_Tree_Leaf_ArticleView $articleview */
+			$articleview = t3lib_div::makeInstance('Tx_Commerce_Tree_Leaf_ArticleView');
 
 				// Configure the noOnclick for the leaf
-			if (t3lib_div::inList($this->noClickList, 'tx_commerce_leaf_article')) {
+			if (t3lib_div::inList($this->noClickList, 'Tx_Commerce_Tree_Leaf_Article')) {
 				$articleview->noOnclick();
 			}
 
@@ -112,11 +112,11 @@ class tx_commerce_categorytree extends browsetree {
 				$articleview->substituteRealValues();
 			}
 
-			/** @var tx_commerce_leaf_productdata $productData */
-			$productData = t3lib_div::makeInstance('tx_commerce_leaf_productdata');
+			/** @var Tx_Commerce_Tree_Leaf_ProductData $productData */
+			$productData = t3lib_div::makeInstance('Tx_Commerce_Tree_Leaf_ProductData');
 			$productleaf->initBasic($productview, $productData);
-			/** @var tx_commerce_leaf_articledata $articleData */
-			$articleData = t3lib_div::makeInstance('tx_commerce_leaf_articledata');
+			/** @var Tx_Commerce_Tree_Leaf_ArticleData $articleData */
+			$articleData = t3lib_div::makeInstance('Tx_Commerce_Tree_Leaf_ArticleData');
 			$articleleaf->initBasic($articleview, $articleData);
 
 			$categoryLeaf->addLeaf($productleaf);
@@ -219,9 +219,11 @@ class tx_commerce_categorytree extends browsetree {
 	}
 }
 
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/treelib/class.tx_commerce_categorytree.php']) {
+class_alias('Tx_Commerce_Tree_CategoryTree', 'tx_commerce_categorytree');
+
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Tree/CategoryTree.php']) {
 	/** @noinspection PhpIncludeInspection */
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/treelib/class.tx_commerce_categorytree.php']);
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Tree/CategoryTree.php']);
 }
 
 ?>

@@ -24,20 +24,20 @@
  ***************************************************************/
 
 /**
- * Implements an abstract leaf of the browseTree
+ * Implements an abstract leaf of the Tx_Commerce_Tree_Browsetree
  */
-abstract class leaf extends langbase {
+abstract class Tx_Commerce_Tree_Leaf_Leaf extends Tx_Commerce_Tree_Leaf_Base {
 	/**
 	 * LeafView Object of the Leaf
 	 *
-	 * @var leafView
+	 * @var Tx_Commerce_Tree_Leaf_View
 	 */
 	public $view;
 
 	/**
 	 * LeafData Object of the Leaf
 	 *
-	 * @var leafData
+	 * @var Tx_Commerce_Tree_Leaf_Data
 	 */
 	public $data;
 
@@ -83,8 +83,8 @@ abstract class leaf extends langbase {
 	/**
 	 * Sets the View and the Data of the Leaf
 	 *
-	 * @param leafView $view LeafView of the Leaf
-	 * @param leafData $data LeafData of the Leaf
+	 * @param Tx_Commerce_Tree_Leaf_View $view LeafView of the Leaf
+	 * @param Tx_Commerce_Tree_Leaf_Data $data LeafData of the Leaf
 	 * @return void
 	 */
 	public function initBasic(&$view, &$data) {
@@ -111,7 +111,7 @@ abstract class leaf extends langbase {
 	/**
 	 * Passes to the leafview if it should enable the clickmenu
 	 *
-	 * @param boolean $flag [optional]	Flag
+	 * @param boolean $flag Flag
 	 * @return void
 	 */
 	public function noClickmenu($flag = TRUE) {
@@ -121,10 +121,10 @@ abstract class leaf extends langbase {
 	/**
 	 * Adds a child leaf to the leaf
 	 *
-	 * @param leafSlave $leaf Slave Leaf-Object
+	 * @param Tx_Commerce_Tree_Leaf_Slave $leaf Slave Leaf-Object
 	 * @return boolean
 	 */
-	public function addLeaf(leafSlave &$leaf) {
+	public function addLeaf(Tx_Commerce_Tree_Leaf_Slave &$leaf) {
 		if (NULL == $leaf) {
 			if (TYPO3_DLOG) {
 				t3lib_div::devLog('addLeaf (leaf) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
@@ -160,7 +160,7 @@ abstract class leaf extends langbase {
 	 * Returns the childleaf at a given index
 	 *
 	 * @param integer $index Index of the childleaf
-	 * @return leafSlave Childleaf
+	 * @return Tx_Commerce_Tree_Leaf_Slave Childleaf
 	 */
 	public function &getChildLeaf($index) {
 		if (!is_numeric($index)) {
@@ -222,7 +222,7 @@ abstract class leaf extends langbase {
 			// Call 'init' for all child leafs - notice how the childleafs are NOT read by mounts
 		for ($i = 0; $i < $this->leafcount; $i ++) {
 				// For every childleaf, set its parent leaf to the current leaf
-			/** @var leafSlave $leaf */
+			/** @var Tx_Commerce_Tree_Leaf_Slave $leaf */
 			$leaf = & $this->leafs[$i];
 			$leaf->setParentLeaf($this);
 			$leaf->init($i, $parentIndices);
@@ -247,7 +247,7 @@ abstract class leaf extends langbase {
 
 			// "Recursive" Call
 		for ($i = 0; $i < $this->leafcount; $i ++) {
-			/** @var leaf $leaf */
+			/** @var Tx_Commerce_Tree_Leaf_Leaf $leaf */
 			$leaf = & $this->leafs[$i];
 			$leaf->setDataPositions($positions);
 		}
@@ -272,7 +272,7 @@ abstract class leaf extends langbase {
 
 			// Sort Leafs
 		for ($i = 0; $i < $this->leafcount; $i ++) {
-			/** @var leaf $leaf */
+			/** @var Tx_Commerce_Tree_Leaf_Leaf $leaf */
 			$leaf = & $this->leafs[$i];
 			$leaf->sort($rootUid);
 		}
@@ -288,7 +288,7 @@ abstract class leaf extends langbase {
 		$sortedData = $this->data->getSortedArray();
 
 		for ($i = 0; $i < $this->leafcount; $i ++) {
-			/** @var leaf $leaf */
+			/** @var Tx_Commerce_Tree_Leaf_Leaf $leaf */
 			$leaf = & $this->leafs[$i];
 			$sortedData = array_merge($sortedData, $leaf->getSortedArray());
 		}
@@ -364,7 +364,7 @@ abstract class leaf extends langbase {
 			// check if any leaf has a subitem for the current row
 		if ($this->leafcount > 0) {
 			for ($i = 0; $i < $this->leafcount; $i ++) {
-				/** @var leaf $leaf */
+				/** @var Tx_Commerce_Tree_Leaf_Leaf $leaf */
 				$leaf = & $this->leafs[$i];
 				$hasChildren = $leaf->hasSubitems($row);
 				if (TRUE == $hasChildren) {
@@ -394,5 +394,7 @@ abstract class leaf extends langbase {
 		return (0 < count($children));
 	}
 }
+
+class_alias('Tx_Commerce_Tree_Leaf_Leaf', 'leaf');
 
 ?>

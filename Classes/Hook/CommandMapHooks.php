@@ -86,7 +86,8 @@ class Tx_Commerce_Hook_CommandMapHooks {
 				$category->init($parentId);
 			}
 
-			$mounts = t3lib_div::makeInstance('tx_commerce_categorymounts');
+			/** @var Tx_Commerce_Tree_CategoryMounts $mounts */
+			$mounts = t3lib_div::makeInstance('Tx_Commerce_Tree_CategoryMounts');
 			$mounts->init($GLOBALS['BE_USER']->user['uid']);
 
 			if (!$category->isPSet($command) || !$mounts->isInCommerceMounts($category->getUid())) {

@@ -581,7 +581,8 @@ class Tx_Commerce_Controller_AccessController extends t3lib_SCbase {
 		$this->content .= $this->doc->spacer(5);
 
 			// Initialize tree object:
-		$tree = t3lib_div::makeInstance('tx_commerce_categorytree');
+		/** @var Tx_Commerce_Tree_CategoryTree $tree */
+		$tree = t3lib_div::makeInstance('Tx_Commerce_Tree_CategoryTree');
 
 		$tree->setBare();
 		$tree->init();
@@ -857,8 +858,8 @@ class Tx_Commerce_Controller_AccessController extends t3lib_SCbase {
 		$language = $GLOBALS['LANG'];
 
 			// Initialize tree object:
-		/** @var tx_commerce_categorytree $tree */
-		$tree = t3lib_div::makeInstance('tx_commerce_categorytree');
+		/** @var Tx_Commerce_Tree_CategoryTree $tree */
+		$tree = t3lib_div::makeInstance('Tx_Commerce_Tree_CategoryTree');
 		$tree->setBare();
 		$tree->readRecursively($this->id, $this->getLevels);
 		$tree->init();

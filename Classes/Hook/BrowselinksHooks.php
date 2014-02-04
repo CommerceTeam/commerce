@@ -38,7 +38,7 @@ class Tx_Commerce_Hook_BrowselinksHooks implements t3lib_browseLinksHook {
 	protected $pObj;
 
 	/**
-	 * @var tx_commerce_treelib_link_categorytree
+	 * @var Tx_Commerce_ViewHelpers_Browselinks_CategoryTree
 	 */
 	protected $treeObj;
 
@@ -77,7 +77,7 @@ class Tx_Commerce_Hook_BrowselinksHooks implements t3lib_browseLinksHook {
 	 */
 	protected function initTree() {
 			// initialiize the tree
-		$this->treeObj = t3lib_div::makeInstance('tx_commerce_treelib_link_categorytree');
+		$this->treeObj = t3lib_div::makeInstance('Tx_Commerce_ViewHelpers_Browselinks_CategoryTree');
 		$this->treeObj->init();
 	}
 

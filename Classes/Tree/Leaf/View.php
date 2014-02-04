@@ -26,7 +26,7 @@
 /**
  * Implements the view of the leaf
  */
-class leafView extends langbase {
+class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 	/**
 	 * @var boolean
 	 */
@@ -174,7 +174,7 @@ class leafView extends langbase {
 	public function setLeafIndex($index) {
 		if (!is_numeric($index)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('setLeafIndex (leafview) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				t3lib_div::devLog('setLeafIndex (Tx_Commerce_Tree_Leaf_View) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
 			}
 			return;
 		}
@@ -200,7 +200,7 @@ class leafView extends langbase {
 	public function setBank($bank) {
 		if (!is_numeric($bank)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('setBank (leafview) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				t3lib_div::devLog('setBank (Tx_Commerce_Tree_Leaf_View) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
 			}
 			return;
 		}
@@ -216,14 +216,14 @@ class leafView extends langbase {
 	public function setTreeName($name) {
 		if (!is_string($name)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('setTreeName (leafview) gets passed wrong-cast parameters. Should be string but is not.', COMMERCE_EXTKEY, 2);
+				t3lib_div::devLog('setTreeName (Tx_Commerce_Tree_Leaf_View) gets passed wrong-cast parameters. Should be string but is not.', COMMERCE_EXTKEY, 2);
 			}
 		}
 		$this->treeName = $name;
 	}
 
 	/**
-	 * Sets if the clickmenu should be enabled for this leafview
+	 * Sets if the clickmenu should be enabled for this Tx_Commerce_Tree_Leaf_View
 	 *
 	 * @return void
 	 * @param boolean $flag [optional]	Flag
@@ -233,7 +233,7 @@ class leafView extends langbase {
 	}
 
 	/**
-	 * Sets if the root onlick should be enabled for this leafview
+	 * Sets if the root onlick should be enabled for this Tx_Commerce_Tree_Leaf_View
 	 *
 	 * @return void
 	 * @param boolean $flag [optional]	Flag
@@ -272,7 +272,7 @@ class leafView extends langbase {
 	public function getIcon($row) {
 		if (!is_array($row)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('getIcon (leafview) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				t3lib_div::devLog('getIcon (Tx_Commerce_Tree_Leaf_View) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
 			}
 			return '';
 		}
@@ -302,7 +302,7 @@ class leafView extends langbase {
 	public function getRootIcon($row) {
 		if (!is_array($row)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('getRootIcon (leafview) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				t3lib_div::devLog('getRootIcon (Tx_Commerce_Tree_Leaf_View) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
 			}
 			return '';
 		}
@@ -323,7 +323,7 @@ class leafView extends langbase {
 	public function wrapIcon($icon, $row, $addParams = '') {
 		if (!is_array($row) || !is_string($addParams)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('wrapIcon (leafview) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				t3lib_div::devLog('wrapIcon (Tx_Commerce_Tree_Leaf_View) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
 			}
 			return '';
 		}
@@ -351,7 +351,7 @@ class leafView extends langbase {
 	public function wrapTitle($title, $row, $bank = 0) {
 		if (!is_array($row) || !is_numeric($bank)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('wrapTitle (leafview) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				t3lib_div::devLog('wrapTitle (Tx_Commerce_Tree_Leaf_View) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
 			}
 			return '';
 		}
@@ -377,7 +377,7 @@ class leafView extends langbase {
 	public function getJumpToParam($row) {
 		if (!is_array($row)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('getJumpToParam (leafview) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				t3lib_div::devLog('getJumpToParam (Tx_Commerce_Tree_Leaf_View) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
 			}
 			return '';
 		}
@@ -396,7 +396,7 @@ class leafView extends langbase {
 	public function addTagAttributes($icon, $attributes) {
 		if (!is_string($icon) || !is_string($attributes)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('addTagAttributes (leafview) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				t3lib_div::devLog('addTagAttributes (Tx_Commerce_Tree_Leaf_View) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
 			}
 			return '';
 		}
@@ -413,7 +413,7 @@ class leafView extends langbase {
 	public function getTitleAttrib($row) {
 		if (!is_array($row)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('getTitleAttrib (leafview) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				t3lib_div::devLog('getTitleAttrib (Tx_Commerce_Tree_Leaf_View) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
 			}
 			return '';
 		}
@@ -434,7 +434,7 @@ class leafView extends langbase {
 	public function PMicon(&$row, $isLast, $isExpanded, $isBank = FALSE, $hasChildren = FALSE) {
 		if (!is_array($row)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('PMicon (leafview) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				t3lib_div::devLog('PMicon (Tx_Commerce_Tree_Leaf_View) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
 			}
 			return '';
 		}
@@ -489,7 +489,7 @@ class leafView extends langbase {
 	protected function PMiconATagWrap($icon, $cmd, $isExpand = TRUE) {
 		if (!is_string($icon) || !is_string($cmd)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('PMiconATagWrap (leafview) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				t3lib_div::devLog('PMiconATagWrap (Tx_Commerce_Tree_Leaf_View) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
 			}
 			return '';
 		}
@@ -499,5 +499,7 @@ class leafView extends langbase {
 		return '<a class="pm" onclick="' . $js . '">' . $icon . '</a>';
 	}
 }
+
+class_alias('Tx_Commerce_Tree_Leaf_View', 'leafView');
 
 ?>

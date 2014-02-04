@@ -2,7 +2,7 @@
 /**
  * Implements the View for Articles
  */
-class tx_commerce_leaf_articleview extends leafView {
+class Tx_Commerce_Tree_Leaf_ArticleView extends Tx_Commerce_Tree_Leaf_View {
 	/**
 	 * DB Table
 	 *
@@ -74,9 +74,11 @@ class tx_commerce_leaf_articleview extends leafView {
 	}
 }
 
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/treelib/class.tx_commerce_leaf_articleview.php']) {
+class_alias('Tx_Commerce_Tree_Leaf_ArticleView', 'tx_commerce_leaf_articleview');
+
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Tree/Leaf/ArticleView.php']) {
 	/** @noinspection PhpIncludeInspection */
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/treelib/class.tx_commerce_leaf_articleview.php']);
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Tree/Leaf/ArticleView.php']);
 }
 
 ?>

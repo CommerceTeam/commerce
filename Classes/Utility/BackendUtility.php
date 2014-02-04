@@ -2648,8 +2648,8 @@ class Tx_Commerce_Utility_BackendUtility {
 		$keys = array_keys($categoryUids);
 		$l = count($keys);
 
-		/** @var tx_commerce_categorymounts $mounts */
-		$mounts = t3lib_div::makeInstance('tx_commerce_categorymounts');
+		/** @var Tx_Commerce_Tree_CategoryMounts $mounts */
+		$mounts = t3lib_div::makeInstance('Tx_Commerce_Tree_CategoryMounts');
 		$mounts->init($backendUser->user['uid']);
 
 		for ($i = 0; $i < $l; $i ++) {

@@ -24,36 +24,36 @@
  ***************************************************************/
 
 /**
- * Implements a slave leaf of the browsetree
+ * Implements a slave leaf of the Tx_Commerce_Tree_Browsetree
  */
-class leafSlave extends leaf {
+class Tx_Commerce_Tree_Leaf_Slave extends Tx_Commerce_Tree_Leaf_Leaf {
 	/**
 	 * If the leaf has a parent leaf, then it is stored in this variable
 	 *
-	 * @var leaf
+	 * @var Tx_Commerce_Tree_Leaf_Leaf
 	 */
 	protected $parentLeaf;
 
 	/**
-	 * @var tx_commerce_leaf_categorydata
+	 * @var Tx_Commerce_Tree_Leaf_CategoryData
 	 */
 	public $data;
 
 	/**
-	 * @var leafView
+	 * @var Tx_Commerce_Tree_Leaf_View
 	 */
 	public $view;
 
 	/**
 	 * Sets the parent leaf of this leaf
 	 *
-	 * @param leaf $parentLeaf that is the parent of this leaf
+	 * @param Tx_Commerce_Tree_Leaf_Leaf $parentLeaf that is the parent of this leaf
 	 * @return void
 	 */
-	public function setParentLeaf(leaf &$parentLeaf) {
+	public function setParentLeaf(Tx_Commerce_Tree_Leaf_Leaf &$parentLeaf) {
 		if (is_null($parentLeaf)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('setParentLeaf (leafSlave) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				t3lib_div::devLog('setParentLeaf (Tx_Commerce_Tree_Leaf_Slave) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
 			}
 			return;
 		}
@@ -71,12 +71,12 @@ class leafSlave extends leaf {
 	public function init($index, $parentIndices = array()) {
 		if (!is_numeric($index) || !is_array($parentIndices)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('init (leafSlave) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				t3lib_div::devLog('init (Tx_Commerce_Tree_Leaf_Slave) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
 			}
 			return;
 		}
 
-			// Initialize the LeafData
+			// Initialize the Tx_Commerce_Tree_Leaf_Data
 		$this->data->init();
 		$this->data->initRecords($index, $parentIndices, $this->parentLeaf->data);
 
@@ -96,7 +96,7 @@ class leafSlave extends leaf {
 			// Check for valid parameters
 		if (!is_numeric($startUid) || !is_numeric($bank)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('printChildleafsByLoop (leafSlave) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				t3lib_div::devLog('printChildleafsByLoop (Tx_Commerce_Tree_Leaf_Slave) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
 			}
 			return '';
 		}
@@ -118,7 +118,7 @@ class leafSlave extends leaf {
 			// Abort if the starting Category is not found
 		if (NULL == $child) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('printChildleafsByLoop (leafSlave) cannot find the starting category by its uid.', COMMERCE_EXTKEY, 3);
+				t3lib_div::devLog('printChildleafsByLoop (Tx_Commerce_Tree_Leaf_Slave) cannot find the starting category by its uid.', COMMERCE_EXTKEY, 3);
 			}
 			return '';
 		}
@@ -167,7 +167,7 @@ class leafSlave extends leaf {
 		if ($exp) {
 			$out .= '<ul>';
 			for ($i = 0; $i < $this->leafcount; $i ++) {
-				/** @var leafSlave $leaf */
+				/** @var Tx_Commerce_Tree_Leaf_Slave $leaf */
 				$leaf = & $this->leafs[$i];
 				$out .= $leaf->printChildleafsByParent($child['uid'], $bank, $this->treeName);
 			}
@@ -191,7 +191,7 @@ class leafSlave extends leaf {
 			// Check for valid parameters
 		if (!is_numeric($pid) || !is_numeric($bank)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('printChildleafsByParent (leafSlave) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				t3lib_div::devLog('printChildleafsByParent (Tx_Commerce_Tree_Leaf_Slave) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
 			}
 			return '';
 		}
@@ -212,11 +212,13 @@ class leafSlave extends leaf {
 
 			// DLOG
 		if (TYPO3_DLOG) {
-			t3lib_div::devLog('printChildleafsByParent (leafSlave) did ' . $l . ' loops!', COMMERCE_EXTKEY, 1);
+			t3lib_div::devLog('printChildleafsByParent (Tx_Commerce_Tree_Leaf_Slave) did ' . $l . ' loops!', COMMERCE_EXTKEY, 1);
 		}
 
 		return $out;
 	}
 }
+
+class_alias('Tx_Commerce_Tree_Leaf_Slave', 'leafSlave');
 
 ?>

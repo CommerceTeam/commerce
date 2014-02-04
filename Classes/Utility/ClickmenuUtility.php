@@ -152,8 +152,8 @@ class Tx_Commerce_Utility_ClickmenuUtility {
 				$editLock = ($backendUser->isAdmin()) ? FALSE : $this->rec['editlock'];
 
 					// check if the current item is a db mount
-				/** @var tx_commerce_categorymounts $mounts */
-				$mounts = t3lib_div::makeInstance('tx_commerce_categorymounts');
+				/** @var Tx_Commerce_Tree_CategoryMounts $mounts */
+				$mounts = t3lib_div::makeInstance('Tx_Commerce_Tree_CategoryMounts');
 				$mounts->init($backendUser->user['uid']);
 
 				$DBmount = (in_array($uid, $mounts->getMountData()));

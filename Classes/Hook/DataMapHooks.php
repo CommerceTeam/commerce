@@ -814,7 +814,8 @@ class Tx_Commerce_Hook_DataMapHooks {
 							$category->init($checkId);
 						}
 
-						$mounts = t3lib_div::makeInstance('tx_commerce_categorymounts');
+						/** @var Tx_Commerce_Tree_CategoryMounts $mounts */
+						$mounts = t3lib_div::makeInstance('Tx_Commerce_Tree_CategoryMounts');
 						$mounts->init($GLOBALS['BE_USER']->user['uid']);
 
 							// check
@@ -867,8 +868,8 @@ class Tx_Commerce_Hook_DataMapHooks {
 							$parent = $parentCategories[$i];
 							$existingParents[] = $parent->getUid();
 
-							/** @var tx_commerce_categorymounts $mounts */
-							$mounts = t3lib_div::makeInstance('tx_commerce_categorymounts');
+							/** @var Tx_Commerce_Tree_CategoryMounts $mounts */
+							$mounts = t3lib_div::makeInstance('Tx_Commerce_Tree_CategoryMounts');
 							$mounts->init($GLOBALS['BE_USER']->user['uid']);
 
 								// Add parent to list if the user has no show right on it or it is not in the user's mountpoints
@@ -887,7 +888,8 @@ class Tx_Commerce_Hook_DataMapHooks {
 						$root = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category');
 						$root->init(0);
 
-						$mounts = t3lib_div::makeInstance('tx_commerce_categorymounts');
+						/** @var Tx_Commerce_Tree_CategoryMounts $mounts */
+						$mounts = t3lib_div::makeInstance('Tx_Commerce_Tree_CategoryMounts');
 						$mounts->init($GLOBALS['BE_USER']->user['uid']);
 
 						if ($mounts->isInCommerceMounts(0)) {
@@ -921,7 +923,8 @@ class Tx_Commerce_Hook_DataMapHooks {
 							$cat = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category');
 							$cat->init($uid);
 
-							$mounts = t3lib_div::makeInstance('tx_commerce_categorymounts');
+							/** @var Tx_Commerce_Tree_CategoryMounts $mounts */
+							$mounts = t3lib_div::makeInstance('Tx_Commerce_Tree_CategoryMounts');
 							$mounts->init($GLOBALS['BE_USER']->user['uid']);
 
 								// abort if the parent category is not in the webmounts

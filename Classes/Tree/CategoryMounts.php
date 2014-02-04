@@ -2,7 +2,7 @@
 /**
  * Gives functionality for Categorymounts
  */
-class tx_commerce_categorymounts extends mounts {
+class Tx_Commerce_Tree_CategoryMounts extends Tx_Commerce_Tree_Leaf_Mounts {
 	/**
 	 * Overwrite necessary variable
 	 *
@@ -105,9 +105,11 @@ class tx_commerce_categorymounts extends mounts {
 	}
 }
 
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/treelib/class.tx_commerce_categorymounts.php']) {
+class_alias('Tx_Commerce_Tree_CategoryMounts', 'tx_commerce_categorymounts');
+
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Tree/CategoryMounts.php']) {
 	/** @noinspection PhpIncludeInspection */
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/treelib/class.tx_commerce_categorymounts.php']);
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Tree/CategoryMounts.php']);
 }
 
 ?>

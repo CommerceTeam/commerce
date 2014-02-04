@@ -77,8 +77,8 @@ class Tx_Commerce_ViewHelpers_TceFunc {
 			break;
 		}
 
-		/** @var tx_commerce_categorytree $browseTrees */
-		$browseTrees = t3lib_div::makeInstance('tx_commerce_categorytree');
+		/** @var Tx_Commerce_Tree_CategoryTree $browseTrees */
+		$browseTrees = t3lib_div::makeInstance('Tx_Commerce_Tree_CategoryTree');
 			// disabled clickmenu
 		$browseTrees->noClickmenu();
 			// set the minimum permissions
@@ -94,7 +94,7 @@ class Tx_Commerce_ViewHelpers_TceFunc {
 
 		/**
 		 * Disallows clicks on certain leafs
-		 * Values is a comma-separated list of leaf names (e.g. tx_commerce_leaf_category)
+		 * Values is a comma-separated list of leaf names (e.g. Tx_Commerce_Tree_Leaf_Category)
 		 */
 		$browseTrees->disallowClick($config['disallowClick']);
 

@@ -26,7 +26,7 @@
 /**
  * Implements a browseable AJAX tree
  */
-abstract class browsetree {
+abstract class Tx_Commerce_Tree_Browsetree {
 	/**
 	 * Name of the table
 	 *
@@ -93,7 +93,7 @@ abstract class browsetree {
 		$this->leafcount = 0;
 		$this->isInit = FALSE;
 		$this->noClickmenu = FALSE;
-		$this->renderBy = 'mounts';
+		$this->renderBy = 'Tx_Commerce_Tree_Leaf_Mounts';
 		$this->startingUid = 0;
 	}
 
@@ -117,7 +117,7 @@ abstract class browsetree {
 	public function noClickmenu($flag = TRUE) {
 		if (!is_bool($flag)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('noClickmenu (browsetree) gets a non-boolean parameter (expected boolean)!', COMMERCE_EXTKEY, 2);
+				t3lib_div::devLog('noClickmenu (Tx_Commerce_Tree_Browsetree) gets a non-boolean parameter (expected boolean)!', COMMERCE_EXTKEY, 2);
 			}
 		}
 		$this->noClickmenu = $flag;
@@ -126,10 +126,10 @@ abstract class browsetree {
 	/**
 	 * Adds a leaf to the Tree
 	 *
-	 * @param leafMaster $leaf - Treeleaf Object which holds the LeafData and the LeafView
+	 * @param Tx_Commerce_Tree_Leaf_Master $leaf - Treeleaf Object which holds the Tx_Commerce_Tree_Leaf_Data and the Tx_Commerce_Tree_Leaf_View
 	 * @return boolean
 	 */
-	public function addLeaf(leafMaster &$leaf) {
+	public function addLeaf(Tx_Commerce_Tree_Leaf_Master &$leaf) {
 			// pass tree vars to the new leaf
 		$leaf->setTreeName($this->treeName);
 		$leaf->noClickmenu($this->noClickmenu);
@@ -144,12 +144,12 @@ abstract class browsetree {
 	 * Returns the leaf object at the given index
 	 *
 	 * @param integer $index Leaf index
-	 * @return leafMaster
+	 * @return Tx_Commerce_Tree_Leaf_Master
 	 */
 	public function getLeaf($index) {
 		if (!is_numeric($index) || !isset($this->leafs[$index])) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('getLeaf (browsetree) has an invalid parameter.', COMMERCE_EXTKEY, 3);
+				t3lib_div::devLog('getLeaf (Tx_Commerce_Tree_Browsetree) has an invalid parameter.', COMMERCE_EXTKEY, 3);
 			}
 			return NULL;
 		}
@@ -168,14 +168,14 @@ abstract class browsetree {
 	}
 
 	/**
-	 * Sets the internal rendering method to 'mounts'
+	 * Sets the internal rendering method to 'Tx_Commerce_Tree_Leaf_Mounts'
 	 * Call BEFORE initializing
 	 *
 	 * @return void
 	 */
 	public function readByMounts() {
 			// set internal var
-		$this->renderBy = 'mounts';
+		$this->renderBy = 'Tx_Commerce_Tree_Leaf_Mounts';
 	}
 
 	/**
@@ -189,7 +189,7 @@ abstract class browsetree {
 	public function readRecursively($uid, $depth = 100) {
 		if (!is_numeric($uid)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('readRecursively (browsetree) has an invalid parameter.', COMMERCE_EXTKEY, 3);
+				t3lib_div::devLog('readRecursively (Tx_Commerce_Tree_Browsetree) has an invalid parameter.', COMMERCE_EXTKEY, 3);
 			}
 			return;
 		}
@@ -210,7 +210,7 @@ abstract class browsetree {
 		$return = '';
 
 		switch($this->renderBy) {
-			case 'mounts':
+			case 'Tx_Commerce_Tree_Leaf_Mounts':
 				$this->getTreeByMountpoints();
 				$return = $this->printTreeByMountpoints();
 				break;
@@ -270,7 +270,7 @@ abstract class browsetree {
 			// Go through the leafs and feed them the ids
 		$leafCount = count($this->leafs);
 		for ($i = 0; $i < $leafCount; $i ++) {
-			/** @var leafMaster $leaf */
+			/** @var Tx_Commerce_Tree_Leaf_Master $leaf */
 			$leaf = & $this->leafs[$i];
 			$leaf->byMounts();
 				// Pass $i as the leaf's index
@@ -290,7 +290,7 @@ abstract class browsetree {
 			// Go through the leafs and feed them the id
 		$leafCount = count($this->leafs);
 		for ($i = 0; $i < $leafCount; $i ++) {
-			/** @var leafMaster $leaf */
+			/** @var Tx_Commerce_Tree_Leaf_Master $leaf */
 			$leaf = & $this->leafs[$i];
 			$leaf->setUid($uid);
 			$leaf->setDepth($depth);
@@ -328,7 +328,7 @@ abstract class browsetree {
 		$out = '';
 
 			// Go to the correct leaf and print it
-		/** @var leafMaster $leaf */
+		/** @var Tx_Commerce_Tree_Leaf_Master $leaf */
 		$leaf = &$this->leafs[$indexFirst];
 
 			// i = 4 because if we have childleafs at all, this is where they will stand in PM Array
@@ -356,7 +356,7 @@ abstract class browsetree {
 	 * @param integer $uid UID of the Item that will be started with
 	 */
 	public function printTree($uid) {
-		die('The function printTree in tx_commerce_browsetree.php is not yet filled. Fill it if you are using it. Search for this text to find the code. ' . $uid);
+		die('The function printTree in Browsetree.php is not yet filled. Fill it if you are using it. Search for this text to find the code. ' . $uid);
 	}
 
 	/**
@@ -372,7 +372,7 @@ abstract class browsetree {
 
 			// Get the Tree for each leaf
 		for ($i = 0; $i < $this->leafcount; $i ++) {
-			/** @var leafMaster $leaf */
+			/** @var Tx_Commerce_Tree_Leaf_Master $leaf */
 			$leaf = & $this->leafs[$i];
 			$out .= $leaf->printLeafByMounts();
 		}
@@ -403,7 +403,7 @@ abstract class browsetree {
 
 			// Initialize the categories (and its leafs)
 		for ($i = 0; $i < $leafCount; $i ++) {
-			/** @var leafMaster $leaf */
+			/** @var Tx_Commerce_Tree_Leaf_Master $leaf */
 			$leaf = $this->leafs[$i];
 			if ($leaf->data->hasRecords()) {
 				$leaf->sort($rootUid);
@@ -438,7 +438,7 @@ abstract class browsetree {
 
 			// Sort and return the sorted array
 		for ($i = 0; $i < $leafCount; $i ++) {
-			/** @var leafMaster $leaf */
+			/** @var Tx_Commerce_Tree_Leaf_Master $leaf */
 			$leaf = $this->leafs[$i];
 
 			$leaf->sort($rootUid);
@@ -464,7 +464,7 @@ abstract class browsetree {
 
 	/**
 	 * Will initialize the User Position
-	 * Saves it in the Session and gives the Position UIDs to the LeafData
+	 * Saves it in the Session and gives the Position UIDs to the Tx_Commerce_Tree_Leaf_Data
 	 *
 	 * @return void
 	 */
@@ -531,7 +531,7 @@ abstract class browsetree {
 			// Set the Positions for each leaf
 		$leafCount = count($this->leafs);
 		for ($i = 0; $i < $leafCount; $i ++) {
-			/** @var leafMaster $leaf */
+			/** @var Tx_Commerce_Tree_Leaf_Master $leaf */
 			$leaf = & $this->leafs[$i];
 			$leaf->setDataPositions($positions);
 		}
@@ -559,5 +559,7 @@ abstract class browsetree {
 		$backendUser->writeUC();
 	}
 }
+
+class_alias('Tx_Commerce_Tree_Browsetree', 'browsetree');
 
 ?>

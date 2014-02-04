@@ -419,7 +419,8 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 	 * @param integer $userid User UID (this is not NECESSARILY the UID of the currently logged-in user
 	 */
 	public function processItemArrayForBrowseableTree(&$tree, $userid) {
-		$mounts = t3lib_div::makeInstance('tx_commerce_categorymounts');
+		/** @var Tx_Commerce_Tree_CategoryMounts $mounts */
+		$mounts = t3lib_div::makeInstance('Tx_Commerce_Tree_CategoryMounts');
 		$mounts->init($userid);
 
 		$preselected = $mounts->getMountDataLabeled();
@@ -446,7 +447,8 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 	 * @param integer $groupuid User UID (this is not NECESSARILY the UID of the currently logged-in user
 	 */
 	public function processItemArrayForBrowseableTreeGroups(&$tree, $groupuid) {
-		$mounts = t3lib_div::makeInstance('tx_commerce_categorymounts');
+		/** @var Tx_Commerce_Tree_CategoryMounts $mounts */
+		$mounts = t3lib_div::makeInstance('Tx_Commerce_Tree_CategoryMounts');
 		$mounts->initByGroup($groupuid);
 
 		$preselected = $mounts->getMountDataLabeled();
@@ -486,7 +488,8 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 
 		$this->itemArrayProcessed = array();
 
-		$mounts = t3lib_div::makeInstance('tx_commerce_categorymounts');
+		/** @var Tx_Commerce_Tree_CategoryMounts $mounts */
+		$mounts = t3lib_div::makeInstance('Tx_Commerce_Tree_CategoryMounts');
 		$mounts->init($GLOBALS['BE_USER']->user['uid']);
 
 		if (is_array($parent)) {
@@ -527,7 +530,8 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 
 		$this->itemArrayProcessed = array();
 
-		$mounts = t3lib_div::makeInstance('tx_commerce_categorymounts');
+		/** @var Tx_Commerce_Tree_CategoryMounts $mounts */
+		$mounts = t3lib_div::makeInstance('Tx_Commerce_Tree_CategoryMounts');
 		$mounts->init($GLOBALS['BE_USER']->user['uid']);
 
 			// Separate Key and Title with a |

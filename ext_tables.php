@@ -132,7 +132,7 @@ if (TYPO3_MODE == 'BE') {
 	');
 }
 
-
+// @todo fix this
 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['leafClasses']['txcommerceCategoryTree'] =
 	'EXT:' . COMMERCE_EXTKEY . '/lib/class.tx_commerce_treecategory.php:&tx_commerce_treeCategory';
 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['leafClasses']['txcommerceCategory'] =

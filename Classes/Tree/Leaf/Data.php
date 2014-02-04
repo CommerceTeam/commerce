@@ -26,7 +26,7 @@
 /**
  * Implements the data view of the leaf
  */
-class leafData extends langbase {
+class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 	/**
 	 * Complete Array of position IDs
 	 *
@@ -208,7 +208,7 @@ class leafData extends langbase {
 	public function isExpanded($uid) {
 		if (!is_numeric($uid)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('isExpanded (leafdata) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				t3lib_div::devLog('isExpanded (Tx_Commerce_Tree_Leaf_Data) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
 			}
 			return FALSE;
 		}
@@ -225,7 +225,7 @@ class leafData extends langbase {
 	public function setPositions(&$positionIds) {
 		if (!is_array($positionIds)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('setPositions (leafdata) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				t3lib_div::devLog('setPositions (Tx_Commerce_Tree_Leaf_Data) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
 			}
 			return;
 		}
@@ -259,7 +259,7 @@ class leafData extends langbase {
 			// if we didn't find mounts, exit
 		if ($l == 0) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('getPositionsByIndices (leafData) cannot proceed because it did not find mounts', COMMERCE_EXTKEY, 3);
+				t3lib_div::devLog('getPositionsByIndices (Tx_Commerce_Tree_Leaf_Data) cannot proceed because it did not find mounts', COMMERCE_EXTKEY, 3);
 			}
 			return array();
 		}
@@ -307,7 +307,7 @@ class leafData extends langbase {
 	public function setBank($bank) {
 		if (!is_numeric($bank)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('setBank (leafdata) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				t3lib_div::devLog('setBank (Tx_Commerce_Tree_Leaf_Data) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
 			}
 			return;
 		}
@@ -346,7 +346,7 @@ class leafData extends langbase {
 	}
 
 	/**
-	 * Returns whether this leafdata has been loaded
+	 * Returns whether this Tx_Commerce_Tree_Leaf_Data has been loaded
 	 *
 	 * @return boolean
 	 */
@@ -367,7 +367,7 @@ class leafData extends langbase {
 	public function sort($rootUid, $depth = 0, $last = FALSE, $crazyRecursionLimiter = 999) {
 		if (!is_numeric($rootUid) || !is_numeric($depth) || !is_numeric($crazyRecursionLimiter)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('sort (leafdata) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				t3lib_div::devLog('sort (Tx_Commerce_Tree_Leaf_Data) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
 			}
 			return;
 		}
@@ -439,7 +439,7 @@ class leafData extends langbase {
 	public function &getChildByUid($uid) {
 		if (!is_numeric($uid)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('getChildByUid (leafdata) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				t3lib_div::devLog('getChildByUid (Tx_Commerce_Tree_Leaf_Data) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
 			}
 			return NULL;
 		}
@@ -461,7 +461,7 @@ class leafData extends langbase {
 	public function &getChildrenByPid($pid) {
 		if (!is_numeric($pid)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('getChildrenByPid (leafdata) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				t3lib_div::devLog('getChildrenByPid (Tx_Commerce_Tree_Leaf_Data) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
 			}
 			return NULL;
 		}
@@ -523,7 +523,7 @@ class leafData extends langbase {
 
 		if ($database->sql_error()) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('loadRecords (leafdata) could not load records. Possible sql error. Empty rows returned.', COMMERCE_EXTKEY, 3);
+				t3lib_div::devLog('loadRecords (Tx_Commerce_Tree_Leaf_Data) could not load records. Possible sql error. Empty rows returned.', COMMERCE_EXTKEY, 3);
 			}
 			return array();
 		}
@@ -571,7 +571,7 @@ class leafData extends langbase {
 			// Check perms on Commerce folders.
 		if ($checkRightRow !== FALSE && !$this->checkAccess($this->itemTable, $checkRightRow)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('loadRecords (leafdata) could not load records because it doesnt have permissions on the commerce folder. Return empty array.', COMMERCE_EXTKEY, 3);
+				t3lib_div::devLog('loadRecords (Tx_Commerce_Tree_Leaf_Data) could not load records because it doesnt have permissions on the commerce folder. Return empty array.', COMMERCE_EXTKEY, 3);
 			}
 			return array();
 		}
@@ -637,5 +637,7 @@ class leafData extends langbase {
 		return $hasAccess ? TRUE : FALSE;
 	}
 }
+
+class_alias('Tx_Commerce_Tree_Leaf_Data', 'leafData');
 
 ?>

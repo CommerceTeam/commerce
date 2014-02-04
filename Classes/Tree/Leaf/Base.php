@@ -25,7 +25,7 @@
 /**
  * Implements the i18n base for the tree
  */
-class langbase {
+class Tx_Commerce_Tree_Leaf_Base {
 	/**
 	 * Holds a reference to the global $LANG object
 	 *
@@ -73,5 +73,7 @@ class langbase {
 		return $this->language->getLL($field);
 	}
 }
+
+class_alias('Tx_Commerce_Tree_Leaf_Base', 'langbase');
 
 ?>

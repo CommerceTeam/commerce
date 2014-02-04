@@ -40,11 +40,11 @@ class Tx_Commerce_Controller_CategoriesController extends Tx_Commerce_ViewHelper
 		Tx_Commerce_Utility_FolderUtility::init_folders();
 		$this->control = array (
 			'category' => array (
-				'dataClass' => 'tx_commerce_leaf_categorydata',
+				'dataClass' => 'Tx_Commerce_Tree_Leaf_CategoryData',
 				'parent' => 'parent_category'
 			),
 			'product' => array (
-				'dataClass' => 'tx_commerce_leaf_productdata',
+				'dataClass' => 'Tx_Commerce_Tree_Leaf_ProductData',
 				'parent' => 'categories'
 			)
 		);

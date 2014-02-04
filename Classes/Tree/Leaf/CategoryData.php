@@ -23,9 +23,9 @@
  ***************************************************************/
 
 /**
- * Implements the leafdata for the Category
+ * Implements the Tx_Commerce_Tree_Leaf_Data for the Category
  */
-class tx_commerce_leaf_categorydata extends leafMasterData {
+class Tx_Commerce_Tree_Leaf_CategoryData extends Tx_Commerce_Tree_Leaf_MasterData {
 	/**
 	 * Pointer to the internal Leafrow ###what is this for generally?###
 	 *
@@ -159,9 +159,11 @@ class tx_commerce_leaf_categorydata extends leafMasterData {
 	}
 }
 
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/treelib/class.tx_commerce_leaf_categorydata.php']) {
+class_alias('Tx_Commerce_Tree_Leaf_CategoryData', 'tx_commerce_leaf_categorydata');
+
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Tree/Leaf/CategoryData.php']) {
 	/** @noinspection PhpIncludeInspection */
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/treelib/class.tx_commerce_leaf_categorydata.php']);
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Tree/Leaf/CategoryData.php']);
 }
 
 ?>

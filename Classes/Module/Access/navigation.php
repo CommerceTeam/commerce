@@ -43,7 +43,7 @@ if (!(defined('TYPO3_REQUESTTYPE') || defined('TYPO3_REQUESTTYPE_AJAX'))) {
 
 class Tx_Commerce_Module_Access_Navigation extends t3lib_SCbase {
 	/**
-	 * @var tx_commerce_categorytree
+	 * @var Tx_Commerce_Tree_CategoryTree
 	 */
 	protected $categoryTree;
 
@@ -72,7 +72,7 @@ class Tx_Commerce_Module_Access_Navigation extends t3lib_SCbase {
 	 */
 	public function init() {
 			// Get the Category Tree without the Products and the Articles
-		$this->categoryTree = t3lib_div::makeInstance('tx_commerce_categorytree');
+		$this->categoryTree = t3lib_div::makeInstance('Tx_Commerce_Tree_CategoryTree');
 		$this->categoryTree->init();
 
 		$this->id = reset(Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Commerce', 'commerce'));

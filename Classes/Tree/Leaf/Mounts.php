@@ -24,9 +24,9 @@
  ***************************************************************/
 
 /**
- * Implements the mounts for leafMaster
+ * Implements the mounts for Tx_Commerce_Tree_Leaf_Master
  */
-class mounts extends langbase {
+class Tx_Commerce_Tree_Leaf_Mounts extends Tx_Commerce_Tree_Leaf_Base {
 	/**
 	 * Uid of the User
 	 *
@@ -115,7 +115,6 @@ class mounts extends langbase {
 		$this->group = 0;
 		$this->byGroup = FALSE;
 
-			// init langbase
 		parent::__construct();
 	}
 
@@ -130,7 +129,7 @@ class mounts extends langbase {
 			// Return if the UID is not numeric - could also be because we have a new user
 		if (!is_numeric($uid) || $this->field == NULL) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('init (mounts) gets passed invalid parameters. Script is aborted.', COMMERCE_EXTKEY, 2);
+				t3lib_div::devLog('init (Tx_Commerce_Tree_Leaf_Mounts) gets passed invalid parameters. Script is aborted.', COMMERCE_EXTKEY, 2);
 			}
 			return;
 		}
@@ -284,5 +283,7 @@ class mounts extends langbase {
 		$this->pointer = 0;
 	}
 }
+
+class_alias('Tx_Commerce_Tree_Leaf_Mounts', 'mounts');
 
 ?>

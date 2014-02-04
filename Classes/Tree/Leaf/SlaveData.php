@@ -26,7 +26,7 @@
 /**
  * Implements the data view for leaf slave
  */
-abstract class leafSlaveData extends leafData {
+abstract class Tx_Commerce_Tree_Leaf_SlaveData extends Tx_Commerce_Tree_Leaf_Data {
 
 	/**
 	 * Returns an array of Positions
@@ -47,7 +47,7 @@ abstract class leafSlaveData extends leafData {
 		$firstIndex = $indices[0];
 		if (!is_array($this->positionArray[$firstIndex])) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('getPositionsByIndices (leafSlaveData) does not find the first Index in the position array.', COMMERCE_EXTKEY, 2);
+				t3lib_div::devLog('getPositionsByIndices (Tx_Commerce_Tree_Leaf_SlaveData) does not find the first Index in the position array.', COMMERCE_EXTKEY, 2);
 			}
 			$this->positionUids = array();
 			return $this->positionUids;
@@ -64,13 +64,13 @@ abstract class leafSlaveData extends leafData {
 	 *
 	 * @param integer $index Leaf index
 	 * @param array $parentIndices Parent Indices
-	 * @param object $parentLeafData LeafData of the Parent Leaf
+	 * @param Tx_Commerce_Tree_Leaf_MasterData $parentLeafData LeafData of the Parent Leaf
 	 * @return void
 	 */
 	public function initRecords($index, $parentIndices, &$parentLeafData) {
 		if (!is_numeric($index) || !is_array($parentIndices) || is_null($parentLeafData)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('initRecords (leafSlaveData) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				t3lib_div::devLog('initRecords (Tx_Commerce_Tree_Leaf_SlaveData) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
 			}
 			return;
 		}
@@ -107,5 +107,7 @@ abstract class leafSlaveData extends leafData {
 		$this->records = $this->loadRecords();
 	}
 }
+
+class_alias('Tx_Commerce_Tree_Leaf_SlaveData', 'leafSlaveData');
 
 ?>

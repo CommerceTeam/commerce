@@ -48,7 +48,7 @@ if (!(defined('TYPO3_REQUESTTYPE') || defined('TYPO3_REQUESTTYPE_AJAX'))) {
 
 class Tx_Commerce_Module_Category_Navigation extends t3lib_SCbase {
 	/**
-	 * @var tx_commerce_categorytree
+	 * @var Tx_Commerce_Tree_CategoryTree
 	 */
 	protected $categoryTree;
 
@@ -79,7 +79,7 @@ class Tx_Commerce_Module_Category_Navigation extends t3lib_SCbase {
 	 */
 	public function init() {
 			// Get the Category Tree
-		$this->categoryTree = t3lib_div::makeInstance('tx_commerce_categorytree');
+		$this->categoryTree = t3lib_div::makeInstance('Tx_Commerce_Tree_CategoryTree');
 		$this->categoryTree->setBare(FALSE);
 		$this->categoryTree->setSimpleMode((int) $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['simpleMode']);
 		$this->categoryTree->init();

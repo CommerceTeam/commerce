@@ -2,7 +2,7 @@
 /**
  * Implements the Data for the Article Leaf
  */
-class tx_commerce_leaf_articledata extends leafSlaveData {
+class Tx_Commerce_Tree_Leaf_ArticleData extends Tx_Commerce_Tree_Leaf_SlaveData {
 	/**
 	 * Fields that should be read from the products
 	 *
@@ -62,9 +62,11 @@ class tx_commerce_leaf_articledata extends leafSlaveData {
 	}
 }
 
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/treelib/class.tx_commerce_leaf_articledata.php']) {
+class_alias('Tx_Commerce_Tree_Leaf_ArticleData', 'tx_commerce_leaf_articledata');
+
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Tree/Leaf/ArticleData.php']) {
 	/** @noinspection PhpIncludeInspection */
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/treelib/class.tx_commerce_leaf_articledata.php']);
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Tree/Leaf/ArticleData.php']);
 }
 
 ?>
