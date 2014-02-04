@@ -152,7 +152,7 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 			/**
 			* Only if we have a result
 			*/
-			$theData[$titleCol] = '<span class="c-table">' . $language->sL('LLL:EXT:commerce/locallang_be.php:order_view.items.article_list', 1) .
+			$theData[$titleCol] = '<span class="c-table">' . $language->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:order_view.items.article_list', 1) .
 				'</span> (' . $dbCount . ')';
 
 			$extConf = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf'];
@@ -160,7 +160,7 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 			if ($extConf['invoicePageID'] > 0) {
 				$theData[$titleCol] .= ' <a href="../index.php?id=' . $extConf['invoicePageID'] . '&amp;tx_commerce_pi6[order_id]=' .
 					$order_id . '&amp;type=' . $extConf['invoicePageType'] . '" target="_blank">' .
-					$language->sL('LLL:EXT:commerce/locallang_be.php:order_view.items.print_invoice', 1) . ' *</a>';
+					$language->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:order_view.items.print_invoice', 1) . ' *</a>';
 			}
 
 			$num_cols = count($field_rows);
@@ -501,10 +501,9 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 	}
 
 	/**
-	 * @param array $PA
 	 * @return string
 	 */
-	public function feUserOrders($PA) {
+	public function feUserOrders() {
 		/** @var t3lib_beUserAuth $backendUser */
 		$backendUser = $GLOBALS['BE_USER'];
 

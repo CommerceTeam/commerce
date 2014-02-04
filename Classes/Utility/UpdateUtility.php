@@ -75,7 +75,7 @@ class Tx_Commerce_Utility_UpdateUtility {
 		list($modPid) = Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Commerce', 'commerce');
 		list($prodPid) = Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Products', 'commerce', $modPid);
 		$resrights = $database->exec_SELECTquery(
-			'perms_userid, perms_groupid,perms_user,perms_group,perms_everybody',
+			'perms_userid, perms_groupid, perms_user, perms_group, perms_everybody',
 			'pages',
 			'uid = ' . $prodPid
 		);
@@ -84,7 +84,7 @@ class Tx_Commerce_Utility_UpdateUtility {
 		$result = $database->exec_SELECTquery(
 			'uid',
 			'tx_commerce_categories',
-			'perms_user=0 or perms_group=0 or perms_everybody = 0'
+			'perms_user = 0 OR perms_group = 0 OR perms_everybody = 0'
 		);
 		while ($row = $database->sql_fetch_assoc($result)) {
 			$database->exec_UPDATEquery('tx_commerce_categories', 'uid = ' . $row['uid'], $data);
@@ -106,7 +106,7 @@ class Tx_Commerce_Utility_UpdateUtility {
 		$result = $database->exec_SELECTquery(
 			'uid',
 			'tx_commerce_categories',
-			'sys_language_uid = 0 and l18n_parent = 0 and uid not in (select uid_local from tx_commerce_categories_parent_category_mm) and tx_commerce_categories.deleted = 0'
+			'sys_language_uid = 0 AND l18n_parent = 0 AND uid NOT IN (SELECT uid_local FROM tx_commerce_categories_parent_category_mm) AND tx_commerce_categories.deleted = 0'
 		);
 		while ($row = $database->sql_fetch_assoc($result)) {
 			$data = array(
@@ -134,10 +134,10 @@ class Tx_Commerce_Utility_UpdateUtility {
 		$result = $database->exec_SELECTquery(
 			'uid',
 			'tx_commerce_categories',
-			'uid not in (select uid_local from tx_commerce_categories_parent_category_mm) and tx_commerce_categories.deleted = 0 and sys_language_uid = 0 and  l18n_parent = 0 '
+			'uid NOT IN (SELECT uid_local FROM tx_commerce_categories_parent_category_mm) AND tx_commerce_categories.deleted = 0 AND sys_language_uid = 0 AND l18n_parent = 0'
 		);
 
-		if (($result) && ($database->sql_num_rows($result) > 0)) {
+		if ($result && ($database->sql_num_rows($result) > 0)) {
 			return TRUE;
 		}
 

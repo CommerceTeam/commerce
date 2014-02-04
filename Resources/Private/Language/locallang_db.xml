@@ -43,7 +43,7 @@
 			<label index="tx_commerce_products.from_cat">From category</label>
 			<label index="tx_commerce_products.existing_articles">Existing articles</label>
 			<label index="tx_commerce_products.producible_articles">Producible articles</label>
-			<label index="tx_commerce_products.to_much_articles">With this combination of attributes, the list of possible articles would be %d rows long. Please reduce the number of select attributes!</label>
+			<label index="tx_commerce_products.to_many_articles">With this combination of attributes, the list of possible articles would be %d rows long. Please reduce the number of select attributes!</label>
 			<label index="tx_commerce_products.create_warning">If you create articles, NO OTHER fields will be saved to products and articles!</label>
 			<label index="tx_commerce_products.empty_article">Create an empty article</label>
 			<label index="tx_commerce_products.select_all_articles">Select all articles</label>

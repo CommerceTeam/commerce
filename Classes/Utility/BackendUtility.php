@@ -84,7 +84,7 @@ class Tx_Commerce_Utility_BackendUtility {
 	 */
 	public function getAttributesForProduct($pUid, $separateCT1 = FALSE, $addAttributeData = FALSE, $getValueListData = FALSE) {
 		if (!$pUid) {
-			return FALSE;
+			return array();
 		}
 
 		/** @var t3lib_db $database */
@@ -98,9 +98,6 @@ class Tx_Commerce_Utility_BackendUtility {
 			'',
 			'sorting, uid_foreign DESC, uid_correlationtype ASC'
 		);
-		if ($database->sql_num_rows($res) == 0) {
-			return FALSE;
-		}
 
 		$result = array();
 		while ($relData = $database->sql_fetch_assoc($res)) {

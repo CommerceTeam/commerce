@@ -85,7 +85,7 @@ class Tx_Commerce_ViewHelpers_AttributeEditFunc {
 			/**
 			 * Only if we have a result
 			 */
-			$theData[$titleCol] = '<span class="c-table">' . $language->sL('LLL:EXT:commerce/locallang_be.php:attributeview.valuelist', 1) . '</span> (' . $dbCount . ')';
+			$theData[$titleCol] = '<span class="c-table">' . $language->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:attributeview.valuelist', 1) . '</span> (' . $dbCount . ')';
 			$num_cols = count($field_rows);
 			$out .= '
 					<tr>
@@ -176,7 +176,7 @@ class Tx_Commerce_ViewHelpers_AttributeEditFunc {
 		$params = '&edit[' . $foreign_table . '][' . $attributeStoragePid . ']=new&defVals[' . $foreign_table . '][attributes_uid]=' . urlencode($attributeUid);
 		$content .= '<div id="typo3-newRecordLink">';
 		$content .= '<a href="#" onclick="' . htmlspecialchars(t3lib_BEfunc::editOnClick($params, $GLOBALS['BACK_PATH'])) . '">';
-		$content .= $language->sL('LLL:EXT:commerce/locallang_be.php:attributeview.addvalue', 1);
+		$content .= $language->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:attributeview.addvalue', 1);
 		$content .= '</a>';
 		$content .= '</div>';
 

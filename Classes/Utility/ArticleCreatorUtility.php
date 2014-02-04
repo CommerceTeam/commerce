@@ -264,7 +264,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 
 		$rowCount = $this->calculateRowCount();
 		if ($rowCount > 1000) {
-			return sprintf($fObj->sL('LLL:EXT:commerce/locallang_db.xml:tx_commerce_products.to_much_articles'), $rowCount);
+			return sprintf($fObj->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.to_many_articles'), $rowCount);
 		}
 
 			// create the headrow from the product attributes, select attributes without valuelist and normal select attributes
@@ -769,7 +769,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 
 		$content = '<div id="typo3-newRecordLink">
 				<input type="checkbox" name="data[tx_commerce_articles][' . (int) $PA['row']['uid'] . '][create_new_price]" />' .
-				$language->sL('LLL:EXT:commerce/locallang_be.php:articles.add_article_price', 1) .
+				$language->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:articles.add_article_price', 1) .
 			'</div>';
 		return $content;
 	}
@@ -833,7 +833,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 			// build the link code
 		$result = '<a href="#" onclick="deleteRecord(\'tx_commerce_article_prices\', ' . (int) $pUid . ', \'' . $returnUrl . '\');">
 			<img src="../typo3/gfx/garbage.gif" border="0" />' .
-			$language->sL('LLL:EXT:commerce/locallang_be.php:articles.del_article_price', 1) . '</a>';
+			$language->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:articles.del_article_price', 1) . '</a>';
 
 		return $result;
 	}

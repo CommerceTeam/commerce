@@ -26,7 +26,7 @@
  ***************************************************************/
 
 /**
- * Script class for the graytree list view (old version - not used any more)
+ * Extension of localRecordList to render category and product lists
  */
 class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 	/**

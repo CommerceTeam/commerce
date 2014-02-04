@@ -105,8 +105,8 @@ class Tx_Commerce_Domain_Repository_FolderRepository {
 	 * @param string $module
 	 * @param integer $pid: ...
 	 * @return integer
-	 * @TODO title aus extkey ziehen
-	 * @TODO sorting
+	 * @todo title aus extkey ziehen
+	 * @todo sorting
 	 */
 	protected function createFolder($title = 'Commerce', $module = 'commerce', $pid = 0) {
 		$fields_values = array();

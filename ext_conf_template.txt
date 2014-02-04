@@ -49,7 +49,7 @@ coProducts = hidden[starttime|endtime|fe_group],title,subtitle[navtitle],descrip
 # cat=basic/other/100; type=String; label=fields for articles...: that should be displayed in simple mode
 coArticles = ordernumber,eancode,prices
 
-# cat=basic/other/100; type=String; label=fields for suppliers...: which fields are displayed in the backend 
+# cat=basic/other/100; type=String; label=fields for suppliers...: which fields are displayed in the backend
 coSuppliers = title
 
 # cat=basic/other/100; type=String; label=fields for manufacturers...: which fields are displayed in the backend
@@ -62,18 +62,18 @@ BECSVCharset  = iso-8859-1
 feuser_address_mapping = company,company;name,surname;title,title;address,address;zip,zip;city,city;country,country;telephone,phone;fax,fax;email,email;www,www;
 
 # cat=basic/other/100; type=int; label=Attribute Lokalisation: Definition how attribute values should be translated -> 0 - Set to an empty value, 1 - copy value, 2 - prepend prefixLangTitle : [Translate to .$langRec['title'].:]
-attributeLokalisationType = 0
+attributeLocalizationType = 0
 
-# cat=basic/other/150; type=boolean; label=Lock Basket: Locks the baskt during the checkout, no changes are possible in second window. 
+# cat=basic/other/150; type=boolean; label=Lock Basket: Locks the baskt during the checkout, no changes are possible in second window.
 lockBasket = 0
 
-# cat=basic/other/100; type=boolean; label= Show field article number in the BE of orders 
+# cat=basic/other/100; type=boolean; label= Show field article number in the BE of orders
 showArticleNumber  = 0
 
-# cat=basic/other/100; type=boolean; label= Show field article title in the BE of orders 
+# cat=basic/other/100; type=boolean; label= Show field article title in the BE of orders
 showArticleTitle  = 0
 
-# cat=basic/other/100; type=boolean; label= User Sessionkey md5 encrypt 
+# cat=basic/other/100; type=boolean; label= User Sessionkey md5 encrypt
 userSessionMd5Encrypt  = 1
 
 # cat=basic/other/100; type=boolean; label= Aggregation Allow: Allow Statistics Aggregation in BE if not using a cron
