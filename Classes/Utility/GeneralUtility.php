@@ -2,10 +2,10 @@
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2005 - 2011 Ingo Schmitt <is@marketing-factory.de>
+ *  (c) 2005-2011 Ingo Schmitt <is@marketing-factory.de>
  *  All rights reserved
  *
- *  This script is part of the Typo3 project. The Typo3 project is
+ *  This script is part of the TYPO3 project. The TYPO3 project is
  *  free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
@@ -13,6 +13,9 @@
  *
  *  The GNU General Public License can be found at
  *  http://www.gnu.org/copyleft/gpl.html.
+ *  A copy is found in the textfile GPL.txt and important notices to the license
+ *  from the author is found in LICENSE.txt distributed with these scripts.
+ *
  *
  *  This script is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -188,37 +191,34 @@ class Tx_Commerce_Utility_GeneralUtility {
 	}
 
 	/**
-	* Invokes the HTML mailing class
-	*
-	* @author	Tom Rüther <tr@e-netconsulting.de>
-	* @since	29th June 2008
-	* @param	array  $mailconf configuration for the mailerengine
-	* Example for $mailconf
-	*
-	* $mailconf = array(
-	* 	'plain' => Array (
-	* 				'content'=> '' 	// plain content as string
-	* 				),
-	* 	'html' => Array (
-	* 		'content'=> '', 			// html content as string
-	* 		'path' => '',
-	* 		'useHtml' => '' 			// is set mail is send as multipart
-	* 	),
-	* 	'defaultCharset' => 'utf-8',		// your chartset
-	* 	'encoding' => '8-bit',			// your encoding
-	* 	'attach' => Array (),			// your attachment as array
-	* 	'alternateSubject' => '',			// is subject empty will be ste alternateSubject
-	* 	'recipient' => '', 				// comma seperate list of recipient
-	* 	'recipient_copy' =>  '',			// bcc
-	* 	'fromEmail' => '', 				// fromMail
-	* 	'fromName' => '',				// fromName
-	* 	'replyTo' => '', 				// replyTo
-	* 	'priority' => '3', 				// priority of your Mail - 1 = highest, 5 = lowest, 3 = normal
-	* 	'callLocation' => 'myFunction' 		// Where call the function it is nescesary when you will use hooks?
-	* );
-	*
-	* @return boolean
-	*/
+	 * Invokes the HTML mailing class
+	 * Example for $mailconf
+	 *
+	 * $mailconf = array(
+	 * 	'plain' => Array (
+	 * 				'content'=> '' 	// plain content as string
+	 * 				),
+	 * 	'html' => Array (
+	 * 		'content'=> '', 			// html content as string
+	 * 		'path' => '',
+	 * 		'useHtml' => '' 			// is set mail is send as multipart
+	 * 	),
+	 * 	'defaultCharset' => 'utf-8',		// your chartset
+	 * 	'encoding' => '8-bit',			// your encoding
+	 * 	'attach' => Array (),			// your attachment as array
+	 * 	'alternateSubject' => '',			// is subject empty will be ste alternateSubject
+	 * 	'recipient' => '', 				// comma seperate list of recipient
+	 * 	'recipient_copy' =>  '',			// bcc
+	 * 	'fromEmail' => '', 				// fromMail
+	 * 	'fromName' => '',				// fromName
+	 * 	'replyTo' => '', 				// replyTo
+	 * 	'priority' => '3', 				// priority of your Mail - 1 = highest, 5 = lowest, 3 = normal
+	 * 	'callLocation' => 'myFunction' 		// Where call the function it is nescesary when you will use hooks?
+	 * );
+	 *
+	 * @param array $mailconf configuration for the mailerengine
+	 * @return boolean
+	 */
 	public static function sendMail($mailconf) {
 		$hookObjectsArr = array();
 		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_div.php']['sendMail'])) {
@@ -334,12 +334,11 @@ class Tx_Commerce_Utility_GeneralUtility {
 	}
 
 	/**
-	* Helperfunction for email validation
-	*
-	* @author	Tom Rüther <tr@e-netconsulting.de>
-	* @param	array	$list comma seperierte list of email addresses
-	* @return	string
-	*/
+	 * Helperfunction for email validation
+	 *
+	 * @param array $list comma seperierte list of email addresses
+	 * @return string
+	 */
 	public static function validEmailList($list) {
 		$dataArray = t3lib_div::trimExplode(',', $list);
 

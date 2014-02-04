@@ -19,10 +19,6 @@
 
 /**
  * Dynamic config file for tx_commerce_articles
- *
- * @package commerce
- * @author Thomas Hempel <thomas@work.de>
- * $Id: tx_commerce_tracking.tca.php 298 2006-07-25 05:28:35Z ingo $
  */
 
 if (!defined('TYPO3_MODE')) {

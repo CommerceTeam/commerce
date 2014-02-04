@@ -2,7 +2,7 @@
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2005 - 2011 Thomas Hempel <thomas@work.de>
+ *  (c) 2005-2012 Thomas Hempel <thomas@work.de>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -13,6 +13,9 @@
  *
  *  The GNU General Public License can be found at
  *  http://www.gnu.org/copyleft/gpl.html.
+ *  A copy is found in the textfile GPL.txt and important notices to the license
+ *  from the author is found in LICENSE.txt distributed with these scripts.
+ *
  *
  *  This script is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -112,8 +115,6 @@ class Tx_Commerce_Utility_AttributeEditorUtility {
 
 		/**
 		 * Get PID to select only the Attribute Values in the correct PID
-		 * @since 3rd January 2006
-		 * @author Ingo Schmitt <is@marketing-factory.de>
 		 */
 		Tx_Commerce_Utility_FolderUtility::init_folders();
 		$modPid = current(Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Commerce', 'commerce'));

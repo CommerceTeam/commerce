@@ -18,10 +18,6 @@
 
 /**
  * Dynamic config file for tx_commerce_salesfigures
- *
- * @package commerce
- * @author Joerg Sprung <jsp@marketing-factory.de>
- * $Id$
  */
 
 if (!defined('TYPO3_MODE')) {

@@ -20,9 +20,6 @@
 
 /**
  * Dynamic config file for tx_commerce_articles
- *
- * @package commerce
- * @author Thomas Hempel <thomas@work.de>
  */
 
 if (!defined('TYPO3_MODE')) {

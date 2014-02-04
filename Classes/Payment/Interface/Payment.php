@@ -2,7 +2,7 @@
 /***************************************************************
  *  Copyright notice
  *
- *  (c) Christian Kuhn <lolli@schwarzbu.ch>
+ *  (c) 2011 Christian Kuhn <lolli@schwarzbu.ch>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -27,9 +27,6 @@
 
 /**
  * Payment interface
- *
- * @package commerce
- * @author Christian Kuhn <lolli@schwarzbu.ch>
  */
 interface Tx_Commerce_Payment_Interface_Payment {
 

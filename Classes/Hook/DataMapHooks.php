@@ -2,8 +2,7 @@
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2005 - 2011 Thomas Hempel <thomas@work.de>
- *  (c) 2011 - 2012 Ingo Schmitt <is@marketing-factory.de>
+ *  (c) 2005-2013 Thomas Hempel <thomas@work.de>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -14,6 +13,9 @@
  *
  *  The GNU General Public License can be found at
  *  http://www.gnu.org/copyleft/gpl.html.
+ *  A copy is found in the textfile GPL.txt and important notices to the license
+ *  from the author is found in LICENSE.txt distributed with these scripts.
+ *
  *
  *  This script is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -40,8 +42,6 @@ class Tx_Commerce_Hook_DataMapHooks {
 
 	/**
 	 * This is just a constructor to instanciate the backend library
-	 *
-	 * @author Thomas Hempel <thomas@work.de>
 	 */
 	public function __construct() {
 		$this->belib = t3lib_div::makeInstance('Tx_Commerce_Utility_BackendUtility');
@@ -257,7 +257,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 
 						$database->exec_INSERTquery('tx_commerce_article_prices', $insertArr);
 
-							// TODO: update artciles XML
+							// @todo update articles XML
 
 						$myScaleAmountStart += $create_new_scale_prices_steps;
 						$myScaleAmountEnd += $create_new_scale_prices_steps;
@@ -787,7 +787,6 @@ class Tx_Commerce_Hook_DataMapHooks {
 			/**
 			 * Will overwrite the data because it has been removed - this is because typo3 only allows pages to have permissions so far
 			 * Will also make some checks to see if all permissions are available that are needed to proceed with the datamap
-			 * @author Erik Frister
 			 */
 			case 'tx_commerce_categories':
 					// Will be called for every Category that is in the datamap - so at this time we only need to worry about the current $id item

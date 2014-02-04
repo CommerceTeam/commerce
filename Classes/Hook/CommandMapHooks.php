@@ -2,7 +2,7 @@
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2005 - 2011 Franz Holzinger <kontakt@fholzinger.com>
+ *  (c) 2005-2011 Franz Holzinger <kontakt@fholzinger.com>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -13,6 +13,9 @@
  *
  *  The GNU General Public License can be found at
  *  http://www.gnu.org/copyleft/gpl.html.
+ *  A copy is found in the textfile GPL.txt and important notices to the license
+ *  from the author is found in LICENSE.txt distributed with these scripts.
+ *
  *
  *  This script is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -164,8 +167,6 @@ class Tx_Commerce_Hook_CommandMapHooks {
 		 * Delete all categories->products->articles if a category should be deleted.
 		 * This one does NOT delete any relations! This is not wanted because you might want to
 		 * restore deleted categories, products or articles.
-		 *
-		 * @author	Thomas Hempel	<thomas@work.de>
 		 */
 		if ($table == 'tx_commerce_categories' && $command == 'delete') {
 			/** @var Tx_Commerce_Utility_BackendUtility $belib */
@@ -207,8 +208,6 @@ class Tx_Commerce_Hook_CommandMapHooks {
 
 		/**
 		 * If a product is deleted, delete all articles below and their locales.
-		 * @author	Ingo Schmitt	<is@marketing-factory.de>
-		 *
 		 */
 		if ($table == 'tx_commerce_products' && $command == 'delete') {
 				// instanciate the backend library
@@ -236,7 +235,6 @@ class Tx_Commerce_Hook_CommandMapHooks {
 
 		/**
 		 * If a product is deleted, delete all localizations of it
-		 * @author Erik Frister
 		 */
 		if ($table == 'tx_commerce_products' && $command == 'delete') {
 				// instanciate the backend library

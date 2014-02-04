@@ -2,7 +2,7 @@
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2011 Volker Graubaum <vg@e-netconsulting.com>
+ *  (c) 2011-2012 Volker Graubaum <vg@e-netconsulting.com>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -13,6 +13,9 @@
  *
  *  The GNU General Public License can be found at
  *  http://www.gnu.org/copyleft/gpl.html.
+ *  A copy is found in the textfile GPL.txt and important notices to the license
+ *  from the author is found in LICENSE.txt distributed with these scripts.
+ *
  *
  *  This script is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -24,10 +27,6 @@
 
 /**
  * Abstract payment implementation
- *
- * @package commerce
- * @subpackage payment
- * @author Volker Graubaum <vg@e-netconsulting.de>
  */
 abstract class Tx_Commerce_Payment_PaymentAbstract implements Tx_Commerce_Payment_Interface_Payment {
 	/**

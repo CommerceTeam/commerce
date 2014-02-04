@@ -2,7 +2,7 @@
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2005 Marco Klawonn <info@webprog.de>
+ *  (c) 2005-2011 Marco Klawonn <info@webprog.de>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -13,6 +13,9 @@
  *
  *  The GNU General Public License can be found at
  *  http://www.gnu.org/copyleft/gpl.html.
+ *  A copy is found in the textfile GPL.txt and important notices to the license
+ *  from the author is found in LICENSE.txt distributed with these scripts.
+ *
  *
  *  This script is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -145,10 +148,7 @@ class Tx_Commerce_Payment_Wirecard {
 	* Sendet die Daten - bei Wirecard mit einem Post auf Curl SSL
 	* Das Ergebniss steht im result und muss in das Error/Status Array geschrieben werden.
 	*
-	* @return bool
-	* @since 0.1 - 2005/04/13
-	* @version 0.1
-	* @author Marco Klawonn <info@webprog.de>
+	* @return boolean
 	*/
 	public function sendTransaction() {
 		$header = array(

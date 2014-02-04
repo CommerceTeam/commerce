@@ -2,10 +2,10 @@
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2005 - 2012 Ingo Schmitt <is@marketing-factory.de>
+ *  (c) 2005-2012 Ingo Schmitt <is@marketing-factory.de>
  *  All rights reserved
  *
- *  This script is part of the Typo3 project. The Typo3 project is
+ *  This script is part of the TYPO3 project. The TYPO3 project is
  *  free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
@@ -13,6 +13,9 @@
  *
  *  The GNU General Public License can be found at
  *  http://www.gnu.org/copyleft/gpl.html.
+ *  A copy is found in the textfile GPL.txt and important notices to the license
+ *  from the author is found in LICENSE.txt distributed with these scripts.
+ *
  *
  *  This script is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -26,10 +29,6 @@
  * Database Class for tx_commerce_categories. All database calls should
  * be made by this class. In most cases you should use the methodes
  * provided by tx_commerce_category to get informations for articles.
- *
- * @author Ingo Schmitt <is@marketing-factory.de>
- * @package TYPO3
- * @subpackage tx_commerce
  */
 class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domain_Repository_Repository {
 	/**

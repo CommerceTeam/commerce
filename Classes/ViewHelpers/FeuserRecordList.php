@@ -2,8 +2,7 @@
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 1999 - 2011 Kasper Skaarhoj (kasperYYYY@typo3.com)
- *  (c) 2006 - 2011 Volker Graubaum <vg_typo3@e-netconsulting.de>
+ *  (c) 2006-2011 Volker Graubau <vg_typo3@e-netconsulting.de>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -28,9 +27,6 @@
 
 /**
  * Renders the Orderlist in the BE oredrmodule
- *
- * @author Kasper Skaarhoj <kasperYYYY@typo3.com>
- * @author Volker Graubaum <vg_typo3@e-netconsulting.de>
  */
 class Tx_Commerce_ViewHelpers_FeuserRecordList extends localRecordList {
 	/**

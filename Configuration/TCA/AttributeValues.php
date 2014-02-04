@@ -19,10 +19,6 @@
 
 /**
  * Dynamic config file for tx_commerce_attribute_values
- *
- * @package commerce
- * @author Ingo Schmitt <is@marketing-factory.de>
- * $Id: tx_commerce_attribute_values.tca.php 346 2006-08-11 18:56:48Z ingo $
  */
 
 if (!defined('TYPO3_MODE')) {

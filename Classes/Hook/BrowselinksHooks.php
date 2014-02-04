@@ -2,7 +2,7 @@
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2008 - 2011 Christian Ehret
+ *  (c) 2008-2011 Christian Ehret <chris@ehret.name>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -26,9 +26,8 @@
  ***************************************************************/
 
 /**
- * hook to adjust linkwizard (linkbrowser)
+ * Hook to adjust linkwizard (linkbrowser)
  */
-
 class Tx_Commerce_Hook_BrowselinksHooks implements t3lib_browseLinksHook {
 	/**
 	 * Sauvegarde locale du cObj parent

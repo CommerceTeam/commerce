@@ -19,10 +19,6 @@
 
 /**
  * Dynamic config file for tx_commerce_order_articles
- *
- * @package commerce
- * @author Ingo Schmitt <is@marketing-factory.de>
- * $Id: tx_commerce_order_articles.tca.php 147 2006-04-04 10:43:22Z thomas $
  */
 
 if (!defined('TYPO3_MODE')) {
