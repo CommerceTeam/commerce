@@ -37,6 +37,17 @@ class Tx_Commerce_Domain_Model_ArticlePrice extends Tx_Commerce_Domain_Model_Abs
 	public $databaseConnection;
 
 	/**
+	 * @var array
+	 */
+	protected $fieldlist = array(
+		'price_net',
+		'price_gross',
+		'fe_group',
+		'price_scale_amount_start',
+		'price_scale_amount_end'
+	);
+
+	/**
 	 * @var String Currency for price
 	 */
 	protected $currency = 'EUR';
@@ -69,19 +80,9 @@ class Tx_Commerce_Domain_Model_ArticlePrice extends Tx_Commerce_Domain_Model_Abs
 	 * @return boolean TRUE if $uid is > 0
 	 */
 	public function init($uid, $languageUid = 0) {
-		$this->fieldlist = array(
-			'price_net',
-			'price_gross',
-			'fe_group',
-			'price_scale_amount_start',
-			'price_scale_amount_end'
-		);
-
 		$initializationResult = FALSE;
-		$uid = (int) $uid;
-		if ($uid > 0) {
-			$this->uid = $uid;
-
+		$this->uid = (int) $uid;
+		if ($this->uid > 0) {
 			$this->databaseConnection = t3lib_div::makeInstance($this->databaseClass);
 
 			$hookObjectsArr = array();
@@ -119,6 +120,14 @@ class Tx_Commerce_Domain_Model_ArticlePrice extends Tx_Commerce_Domain_Model_Abs
 	}
 
 	/**
+	 * @param integer $priceNet
+	 * @return void
+	 */
+	public function setPriceNet($priceNet) {
+		$this->price_net = (int) $priceNet;
+	}
+
+	/**
 	 * Get net price
 	 *
 	 * @return integer Price net
@@ -141,11 +150,11 @@ class Tx_Commerce_Domain_Model_ArticlePrice extends Tx_Commerce_Domain_Model_Abs
 	}
 
 	/**
-	 * @param integer $priceNet
+	 * @param integer $priceGross
 	 * @return void
 	 */
-	public function setPriceNet($priceNet) {
-		$this->price_net = (int) $priceNet;
+	public function setPriceGross($priceGross) {
+		$this->price_gross = (int) $priceGross;
 	}
 
 	/**
@@ -168,14 +177,6 @@ class Tx_Commerce_Domain_Model_ArticlePrice extends Tx_Commerce_Domain_Model_Abs
 		}
 
 		return $this->price_gross;
-	}
-
-	/**
-	 * @param integer $priceGross
-	 * @return void
-	 */
-	public function setPriceGross($priceGross) {
-		$this->price_gross = (int) $priceGross;
 	}
 
 	/**
@@ -219,6 +220,7 @@ class Tx_Commerce_Domain_Model_ArticlePrice extends Tx_Commerce_Domain_Model_Abs
 
 		return $params;
 	}
+
 
 	/**
 	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getPriceNet instead

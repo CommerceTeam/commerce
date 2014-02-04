@@ -40,6 +40,27 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 	public $databaseConnection;
 
 	/**
+	 * @var array
+	 */
+	protected $fieldlist = array(
+		'uid',
+		'title',
+		'subtitle',
+		'description_extra',
+		'teaser',
+		'tax',
+		'ordernumber',
+		'eancode',
+		'uid_product',
+		'article_type_uid',
+		'images',
+		'classname',
+		'relatedpage',
+		'supplier_uid',
+		'plain_text'
+	);
+
+	/**
 	 * Title of the article, e.g. articlename
 	 *
 	 * @var string
@@ -184,7 +205,6 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 	 */
 	protected $classname;
 
-
 	/**
 	 * Constructor Method, calles init method
 	 */
@@ -209,28 +229,10 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 	 * @return boolean
 	 */
 	public function init($uid, $lang_uid = 0) {
-		$uid = (int) $uid;
+		$this->uid = (int) $uid;
 		$lang_uid = (int) $lang_uid;
-		$this->fieldlist = array(
-			'uid',
-			'title',
-			'subtitle',
-			'description_extra',
-			'teaser',
-			'tax',
-			'ordernumber',
-			'eancode',
-			'uid_product',
-			'article_type_uid',
-			'images',
-			'classname',
-			'relatedpage',
-			'supplier_uid',
-			'plain_text'
-		);
 
-		if ($uid > 0) {
-			$this->uid = $uid;
+		if ($this->uid > 0) {
 			$this->lang_uid = $lang_uid;
 			$this->databaseConnection = t3lib_div::makeInstance($this->databaseClass);
 			$hookObjectsArr = array();
@@ -250,217 +252,6 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 		} else {
 			return FALSE;
 		}
-	}
-
-	/**
-	 * Title
-	 *
-	 * @return string
-	 */
-	public function getTitle() {
-		return $this->title;
-	}
-
-	/**
-	 * Classname
-	 *
-	 * @return string
-	 */
-	public function getClassname() {
-		return $this->classname;
-	}
-
-	/**
-	 * Subtitle
-	 *
-	 * @return string
-	 */
-	public function getSubtitle() {
-		return $this->subtitle;
-	}
-
-	/**
-	 * Description extra
-	 *
-	 * @return string
-	 */
-	public function getDescriptionExtra() {
-		return $this->descriptionExtra;
-	}
-
-	/**
-	 * Get Article all possivle  prices as UDI Array
-	 *
-	 * @return array or priceUid
-	 */
-	public function getPriceUids() {
-		return $this->databaseConnection->getPrices($this->uid);
-	}
-
-	/**
-	 * Get Article price scales
-	 *
-	 * @param integer $startCount Count where to start with th listing of the sacles, default 1
-	 * @return array or priceUid grouped by the different scales
-	 */
-	public function getPriceScales($startCount = 1) {
-		return $this->databaseConnection->getPriceScales($this->uid, $startCount);
-	}
-
-	/**
-	 * price_gross
-	 *
-	 * @return double
-	 */
-	public function getPriceGross() {
-		if ($this->price instanceof Tx_Commerce_Domain_Model_ArticlePrice) {
-			return $this->price->getPriceGross();
-		} else {
-			return 'no valid price';
-		}
-	}
-
-	/**
-	 * price_net
-	 *
-	 * @return double
-	 */
-	public function getPriceNet() {
-		if ($this->price instanceof Tx_Commerce_Domain_Model_ArticlePrice) {
-			return $this->price->getPriceNet();
-		} else {
-			return 'no valid price';
-		}
-	}
-
-	/**
-	 * Returns the price Uid
-	 *
-	 * @return integer
-	 */
-	public function getPriceUid() {
-		return $this->price_uid;
-	}
-
-	/**
-	 * Delivery Cost for this article
-	 *
-	 * @return integer
-	 */
-	public function getDeliveryCostNet() {
-		return $this->deliveryCostNet;
-	}
-
-	/**
-	 * Delivery Cost for this article
-	 *
-	 * @return integer
-	 */
-	public function getDeliveryCostGross() {
-		return $this->deliveryCostGross;
-	}
-
-	/**
-	 * Get price object
-	 *
-	 * @return Tx_Commerce_Domain_Model_ArticlePrice Price object
-	 */
-	public function getPriceObj() {
-		return $this->price;
-	}
-
-	/**
-	 * @return double tax
-	 */
-	public function getTax() {
-		return doubleval($this->tax);
-	}
-
-	/**
-	 * Eancode
-	 *
-	 * @return string
-	 */
-	public function getEancode() {
-		return $this->eancode;
-	}
-
-	/**
-	 * @return string ordernumber
-	 */
-	public function getOrdernumber() {
-		return $this->ordernumber;
-	}
-
-	/**
-	 * Returns the related page for the product
-	 *
-	 * @return integer
-	 */
-	public function getRelatedpage() {
-		return $this->relatedpage;
-	}
-
-	/**
-	 * @return integer article_type
-	 */
-	public function getArticleTypeUid() {
-		return $this->article_type_uid;
-	}
-
-	/**
-	 * Returns an Array of Images
-	 *
-	 * @return array;
-	 */
-	public function getImages() {
-		return $this->images_array;
-	}
-
-	/**
-	 * Returns the Supplier UID of the Article if set
-	 *
-	 * @return integer UID of supplier
-	 */
-	public function getSupplierUid() {
-		return $this->supplier_uid;
-	}
-
-	/**
-	 * returns the Supplier Name of an Article, if set
-	 *
-	 * @return string Name of the supplier
-	 */
-	public function getSupplierName() {
-		if ($this->getSupplierUid()) {
-			return $this->databaseConnection->getSupplierName($this->getSupplierUid());
-		}
-
-		return '';
-	}
-
-	/**
-	 * Gets the Value from one distinct attribute of this article
-	 *
-	 * @param integer $attributeUid
-	 * @param boolean $valueListAsUid
-	 * @return string Value
-	 */
-	public function getAttributeValue($attributeUid, $valueListAsUid = FALSE) {
-		return $this->databaseConnection->getAttributeValue($this->uid, $attributeUid, $valueListAsUid);
-	}
-
-	/**
-	 * Loads the data and divides comma sparated images in array
-	 *
-	 * @param boolean $translationMode
-	 * @return void
-	 */
-	public function loadData($translationMode = FALSE) {
-		parent::loadData($translationMode);
-		$this->loadPrices($translationMode);
-		$this->images_array = t3lib_div::trimExplode(',', $this->images);
-		$this->calculateDeliveryCosts();
 	}
 
 	/**
@@ -502,95 +293,6 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 		}
 
 		return $this->getPriceUid();
-	}
-
-	/**
-	 * Get Article price scales
-	 *
-	 * @param integer $startCount Count where to start with teh listing of the sacles, default 1
-	 * @return array or prices grouped by the different scales
-	 */
-	public function getPriceScaleObjects($startCount = 1) {
-		$return = array();
-		$arrayOfPricesUids = $this->getPriceScales($startCount);
-		if (is_array($arrayOfPricesUids)) {
-			foreach ($arrayOfPricesUids as $startCount => $tmpArray) {
-				foreach ($tmpArray as $endCount => $pricdUid) {
-					/** @var Tx_Commerce_Domain_Model_ArticlePrice $price */
-					$price = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_ArticlePrice');
-					$price->init($pricdUid);
-					$price->loadData();
-
-					$return[$startCount][$endCount] = $price;
-				}
-			}
-
-			return $return;
-		} else {
-			return FALSE;
-		}
-	}
-
-	/**
-	 * Calculates the Net deliverycost for this article
-	 * Called by $this->loadData()
-	 *
-	 * @return void
-	 */
-	public function calculateDeliveryCosts() {
-		/**
-		 * Just one Hook as there is no sence for more than one delievery cost claculation
-		 */
-		if (($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_article.php']['calculateDeliveryCost'])) {
-			$hookObject = t3lib_div::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_article.php']['calculateDeliveryCost']);
-
-			if (method_exists($hookObject, 'calculateDeliveryCostNet')) {
-				$hookObject->calculateDeliveryCostNet($this->deliveryCostNet, $this);
-			}
-
-			if (method_exists($hookObject, 'calculateDeliveryCostGross')) {
-				$hookObject->calculateDeliveryCostGross($this->deliveryCostGross, $this);
-			}
-		}
-	}
-
-	/**
-	 * returns the parent product as object
-	 *
-	 * @return Tx_Commerce_Domain_Model_Product Product object
-	 */
-	public function getParentProduct() {
-		if ($this->uid_product) {
-			$products_uid = $this->uid_product;
-		} else {
-			$products_uid = $this->databaseConnection->get_parent_product_uid($this->getUid());
-		}
-
-		/** @var $product Tx_Commerce_Domain_Model_Product */
-		$product = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product');
-		$product->init($products_uid);
-		return $product;
-	}
-
-	/**
-	 * returns the parent Product Uid
-	 *
-	 * @see tx_commerce_product
-	 * @return integer uid of tx_commerce_products
-	 */
-	public function getParentProductUid() {
-		$result = FALSE;
-
-		if ($this->uid_product) {
-			$result = $this->uid_product;
-		} else {
-			$products_uid = $this->databaseConnection->get_parent_product_uid($this->uid);
-			if ($products_uid > 0) {
-				$result = $products_uid;
-			}
-		}
-
-		return $result;
 	}
 
 	/**
@@ -645,6 +347,223 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 	}
 
 	/**
+	 * @return integer article_type
+	 */
+	public function getArticleTypeUid() {
+		return $this->article_type_uid;
+	}
+
+	/**
+	 * Gets the Value from one distinct attribute of this article
+	 *
+	 * @param integer $attributeUid
+	 * @param boolean $valueListAsUid
+	 * @return string Value
+	 */
+	public function getAttributeValue($attributeUid, $valueListAsUid = FALSE) {
+		return $this->databaseConnection->getAttributeValue($this->uid, $attributeUid, $valueListAsUid);
+	}
+
+	/**
+	 * Classname
+	 *
+	 * @return string
+	 */
+	public function getClassname() {
+		return $this->classname;
+	}
+
+	/**
+	 * Delivery Cost for this article
+	 *
+	 * @return integer
+	 */
+	public function getDeliveryCostNet() {
+		return $this->deliveryCostNet;
+	}
+
+	/**
+	 * Delivery Cost for this article
+	 *
+	 * @return integer
+	 */
+	public function getDeliveryCostGross() {
+		return $this->deliveryCostGross;
+	}
+
+	/**
+	 * Description extra
+	 *
+	 * @return string
+	 */
+	public function getDescriptionExtra() {
+		return $this->descriptionExtra;
+	}
+
+	/**
+	 * Eancode
+	 *
+	 * @return string
+	 */
+	public function getEancode() {
+		return $this->eancode;
+	}
+
+	/**
+	 * Returns an Array of Images
+	 *
+	 * @return array;
+	 */
+	public function getImages() {
+		return $this->images_array;
+	}
+
+	/**
+	 * @return string ordernumber
+	 */
+	public function getOrdernumber() {
+		return $this->ordernumber;
+	}
+
+	/**
+	 * price_gross
+	 *
+	 * @return double
+	 */
+	public function getPriceGross() {
+		if ($this->price instanceof Tx_Commerce_Domain_Model_ArticlePrice) {
+			return $this->price->getPriceGross();
+		} else {
+			return 'no valid price';
+		}
+	}
+
+	/**
+	 * price_net
+	 *
+	 * @return double
+	 */
+	public function getPriceNet() {
+		if ($this->price instanceof Tx_Commerce_Domain_Model_ArticlePrice) {
+			return $this->price->getPriceNet();
+		} else {
+			return 'no valid price';
+		}
+	}
+
+	/**
+	 * Get price object
+	 *
+	 * @return Tx_Commerce_Domain_Model_ArticlePrice Price object
+	 */
+	public function getPriceObj() {
+		return $this->price;
+	}
+
+	/**
+	 * Get Article price scales
+	 *
+	 * @param integer $startCount Count where to start with teh listing of the sacles, default 1
+	 * @return array or prices grouped by the different scales
+	 */
+	public function getPriceScaleObjects($startCount = 1) {
+		$return = array();
+		$arrayOfPricesUids = $this->getPriceScales($startCount);
+		if (is_array($arrayOfPricesUids)) {
+			foreach ($arrayOfPricesUids as $startCount => $tmpArray) {
+				foreach ($tmpArray as $endCount => $pricdUid) {
+					/** @var Tx_Commerce_Domain_Model_ArticlePrice $price */
+					$price = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_ArticlePrice');
+					$price->init($pricdUid);
+					$price->loadData();
+
+					$return[$startCount][$endCount] = $price;
+				}
+			}
+
+			return $return;
+		} else {
+			return FALSE;
+		}
+	}
+
+	/**
+	 * Get Article price scales
+	 *
+	 * @param integer $startCount Count where to start with th listing of the sacles, default 1
+	 * @return array or priceUid grouped by the different scales
+	 */
+	public function getPriceScales($startCount = 1) {
+		return $this->databaseConnection->getPriceScales($this->uid, $startCount);
+	}
+
+	/**
+	 * Returns the price Uid
+	 *
+	 * @return integer
+	 */
+	public function getPriceUid() {
+		return $this->price_uid;
+	}
+
+	/**
+	 * Get Article all possivle  prices as UDI Array
+	 *
+	 * @return array or priceUid
+	 */
+	public function getPriceUids() {
+		return $this->databaseConnection->getPrices($this->uid);
+	}
+
+	/**
+	 * returns the parent product as object
+	 *
+	 * @return Tx_Commerce_Domain_Model_Product Product object
+	 */
+	public function getParentProduct() {
+		if ($this->uid_product) {
+			$products_uid = $this->uid_product;
+		} else {
+			$products_uid = $this->databaseConnection->get_parent_product_uid($this->getUid());
+		}
+
+		/** @var $product Tx_Commerce_Domain_Model_Product */
+		$product = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product');
+		$product->init($products_uid);
+		return $product;
+	}
+
+	/**
+	 * returns the parent Product Uid
+	 *
+	 * @see tx_commerce_product
+	 * @return integer uid of tx_commerce_products
+	 */
+	public function getParentProductUid() {
+		$result = FALSE;
+
+		if ($this->uid_product) {
+			$result = $this->uid_product;
+		} else {
+			$products_uid = $this->databaseConnection->get_parent_product_uid($this->uid);
+			if ($products_uid > 0) {
+				$result = $products_uid;
+			}
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Returns the related page for the product
+	 *
+	 * @return integer
+	 */
+	public function getRelatedpage() {
+		return $this->relatedpage;
+	}
+
+	/**
 	 * returns the default price Object, which doesn't have any start or stoptime
 	 *
 	 * @return integer price_uid
@@ -666,6 +585,67 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 		}
 
 		return $this->specialPrice;
+	}
+
+	/**
+	 * Subtitle
+	 *
+	 * @return string
+	 */
+	public function getSubtitle() {
+		return $this->subtitle;
+	}
+
+	/**
+	 * returns the Supplier Name of an Article, if set
+	 *
+	 * @return string Name of the supplier
+	 */
+	public function getSupplierName() {
+		if ($this->getSupplierUid()) {
+			return $this->databaseConnection->getSupplierName($this->getSupplierUid());
+		}
+
+		return '';
+	}
+
+	/**
+	 * Returns the Supplier UID of the Article if set
+	 *
+	 * @return integer UID of supplier
+	 */
+	public function getSupplierUid() {
+		return $this->supplier_uid;
+	}
+
+	/**
+	 * @return double tax
+	 */
+	public function getTax() {
+		return doubleval($this->tax);
+	}
+
+	/**
+	 * Title
+	 *
+	 * @return string
+	 */
+	public function getTitle() {
+		return $this->title;
+	}
+
+
+	/**
+	 * Loads the data and divides comma sparated images in array
+	 *
+	 * @param boolean $translationMode
+	 * @return void
+	 */
+	public function loadData($translationMode = FALSE) {
+		parent::loadData($translationMode);
+		$this->loadPrices($translationMode);
+		$this->images_array = t3lib_div::trimExplode(',', $this->images);
+		$this->calculateDeliveryCosts();
 	}
 
 	/**
@@ -747,16 +727,53 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 	}
 
 	/**
-	 * Returns the data of this object als array
+	 * Calculates the Net deliverycost for this article
+	 * Called by $this->loadData()
 	 *
-	 * @param string $prefix Prefix for the keys or returnung array optional
-	 * @return array Assoc Arry of data
+	 * @return void
 	 */
-	public function returnAssocArray($prefix = '') {
-		$data = parent::returnAssocArray($prefix);
-		$data[$prefix . 'stock'] = $this->getStock();
+	public function calculateDeliveryCosts() {
+		/**
+		 * Just one Hook as there is no sence for more than one delievery cost claculation
+		 */
+		if (($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_article.php']['calculateDeliveryCost'])) {
+			$hookObject = t3lib_div::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_article.php']['calculateDeliveryCost']);
 
-		return $data;
+			if (method_exists($hookObject, 'calculateDeliveryCostNet')) {
+				$hookObject->calculateDeliveryCostNet($this->deliveryCostNet, $this);
+			}
+
+			if (method_exists($hookObject, 'calculateDeliveryCostGross')) {
+				$hookObject->calculateDeliveryCostGross($this->deliveryCostGross, $this);
+			}
+		}
+	}
+
+	/**
+	 * Returns the number of articles in Stock with calling one or more Services.
+	 * if no Service is found or the hasStock Method is not implemented in Service,
+	 * it always returns one.
+	 *
+	 * @param array $serviceChain List of service keys which should be exluded in the search for a service. Array or comma list.
+	 * @param string $subType string  Sub type like file extensions or similar. Defined by the service.
+	 * @return integer amount of articles in stock
+	 */
+	public function getStock($subType = '', $serviceChain = array()) {
+		$counter = 0;
+		$articlesInStock = 0;
+
+		while (is_object($serviceObj = t3lib_div::makeInstanceService('stockHandling', $subType, $serviceChain))) {
+			$serviceChain .= ',' . $serviceObj->getServiceKey();
+			if (method_exists($serviceObj, 'getStock')) {
+				$articlesInStock += (int) $serviceObj->getStock($this);
+				$counter++;
+			}
+		}
+		if ($counter == 0) {
+			return 1;
+		}
+
+		return $articlesInStock;
 	}
 
 	/**
@@ -790,33 +807,6 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 	}
 
 	/**
-	 * Returns the number of articles in Stock with calling one or more Services.
-	 * if no Service is found or the hasStock Method is not implemented in Service,
-	 * it always returns one.
-	 *
-	 * @param array $serviceChain List of service keys which should be exluded in the search for a service. Array or comma list.
-	 * @param string $subType string  Sub type like file extensions or similar. Defined by the service.
-	 * @return integer amount of articles in stock
-	 */
-	public function getStock($subType = '', $serviceChain = array()) {
-		$counter = 0;
-		$articlesInStock = 0;
-
-		while (is_object($serviceObj = t3lib_div::makeInstanceService('stockHandling', $subType, $serviceChain))) {
-			$serviceChain .= ',' . $serviceObj->getServiceKey();
-			if (method_exists($serviceObj, 'getStock')) {
-				$articlesInStock += (int) $serviceObj->getStock($this);
-				$counter++;
-			}
-		}
-		if ($counter == 0) {
-			return 1;
-		}
-
-		return $articlesInStock;
-	}
-
-	/**
 	 * substract the wanted Articles from stock. If you have more than one stock which
 	 * is handled to more than one Service please implement the Service due to Reference
 	 * on $wantedArticles so you can reduce this amount steplike.
@@ -841,6 +831,20 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 
 		return TRUE;
 	}
+
+	/**
+	 * Returns the data of this object als array
+	 *
+	 * @param string $prefix Prefix for the keys or returnung array optional
+	 * @return array Assoc Arry of data
+	 */
+	public function returnAssocArray($prefix = '') {
+		$data = parent::returnAssocArray($prefix);
+		$data[$prefix . 'stock'] = $this->getStock();
+
+		return $data;
+	}
+
 
 	/**
 	 * @return string title of article
