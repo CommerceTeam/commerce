@@ -385,7 +385,7 @@ class Tx_Commerce_Utility_ClickmenuUtility {
 		/** @var t3lib_beUserAuth $backendUser */
 		$backendUser = $GLOBALS['BE_USER'];
 
-		$rU = $this->pObj->clipObj->backPath . '../typo3conf/ext/commerce/mod_cce/tx_commerce_cce_db.php?' .
+		$rU = $this->pObj->clipObj->backPath . PATH_TXCOMMERCE_REL . 'Classes/Utility/DataHandlerUtility.php?' .
 			($redirect ? 'redirect=' . rawurlencode(t3lib_div::linkThisScript(array('CB' => ''))) : '') .
 			'&vC=' . $backendUser->veriCode() .
 			'&prErr=1&uPT=1' .
@@ -407,7 +407,7 @@ class Tx_Commerce_Utility_ClickmenuUtility {
 		/** @var t3lib_beUserAuth $backendUser */
 		$backendUser = $GLOBALS['BE_USER'];
 
-		$rU = $this->pObj->clipObj->backPath . '../typo3conf/ext/commerce/mod_cce/tx_commerce_cce_db.php?' .
+		$rU = $this->pObj->clipObj->backPath . PATH_TXCOMMERCE_REL . 'Classes/Utility/DataHandlerUtility.php?' .
 			($redirect ? 'redirect=' . rawurlencode(t3lib_div::linkThisScript(array('CB' => ''))) : '') .
 			'&vC=' . $backendUser->veriCode() .
 			'&prErr=1&uPT=1' .

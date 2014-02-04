@@ -27,7 +27,10 @@
  */
 
 unset($MCONF);
-require_once('conf.php');
+define('TYPO3_MOD_PATH', '../typo3conf/ext/commerce/mod_cce/');
+$BACK_PATH = '../../../../typo3/';
+
+$MLANG['default']['ll_ref'] = 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_cce.xml';
 /** @noinspection PhpIncludeInspection */
 require_once($BACK_PATH . 'init.php');
 /** @noinspection PhpIncludeInspection */
@@ -35,7 +38,7 @@ require_once($BACK_PATH . 'template.php');
 
 $LANG->includeLLFile('EXT:commerce/Resources/Private/Language/locallang_mod_cce.xml');
 
-class SC_tx_commerce_cce_db {
+class Tx_Commerce_Utility_DataHandlerUtility {
 		// Internal, static: GPvar
 	/**
 	 * Redirect URL. Script will redirect to this location after performing operations (unless errors has occured)
@@ -171,7 +174,7 @@ class SC_tx_commerce_cce_db {
 		$this->doc->setModuleTemplate(PATH_TXCOMMERCE . 'Resources/Private/Backend/mod_cce.html');
 		$this->doc->loadJavascriptLib('contrib/prototype/prototype.js');
 		$this->doc->loadJavascriptLib($this->BACK_PATH . PATH_TXCOMMERCE_REL . 'Resources/Public/Javascript/copyPaste.js');
-		$this->doc->form = '<form action="tx_commerce_cce_db.php?' . $cbString . '&vC=' . $this->vC . '&uPT=' . $this->uPT .
+		$this->doc->form = '<form action="DataHandlerUtility.php?' . $cbString . '&vC=' . $this->vC . '&uPT=' . $this->uPT .
 			'&redirect=' . rawurlencode($this->redirect) . '&prErr=' . $this->prErr .
 			'&cmd=commit" method="post" name="localeform" id="localeform">';
 	}
@@ -523,6 +526,8 @@ class SC_tx_commerce_cce_db {
 		}
 	}
 }
+
+class_alias('Tx_Commerce_Utility_DataHandlerUtility', 'SC_tx_commerce_cce_db');
 
 if (defined('TYPO3_MODE') && isset($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/mod_cce/tx_commerce_cce_db.php'])) {
 	/** @noinspection PhpIncludeInspection */

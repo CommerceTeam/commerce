@@ -132,6 +132,8 @@ return array(
 	'tx_commerce_utility_articlecreatorutility' => $classPath . 'Utility/ArticleCreatorUtility.php',
 	'tx_commerce_utility_attributeeditorutility' => $classPath . 'Utility/AttributeEditorUtility.php',
 	'tx_commerce_utility_backendutility' => $classPath . 'Utility/BackendUtility.php',
+	'tx_commerce_utility_datahandlerutility' => $classPath . 'Utility/DataHandlerUtility.php',
+	'sc_tx_commerce_cce_db' => $classPath . 'Utility/DataHandlerUtility.php',
 	'tx_commerce_utility_generalutility' => $classPath . 'Utility/class.tx_commerce_div.php',
 	'tx_commerce_div' => $classPath . 'Utility/class.tx_commerce_div.php',
 	'tx_commerce_belib' => $classPath . 'Utility/BackendUtility.php',
@@ -149,7 +151,6 @@ return array(
 	'tx_commerce_feusers_localrecordlist' => $classPath . 'ViewHelpers/class.tx_commerce_feusers_localrecordlist.php',
 	'tx_commerce_navigation' => $classPath . 'ViewHelpers/class.tx_commerce_navigation.php',
 	'tx_commerce_order_localrecordlist' => $classPath . 'ViewHelpers/class.tx_commerce_order_localrecordlist.php',
-
 	'tx_commerce_tcefunc' => $classPath . 'ViewHelpers/class.tx_commerce_tcefunc.php',
 	'tx_commerce_treelib_browser' => $classPath . 'ViewHelpers/class.tx_commerce_treelib_browser.php',
 	'tx_commerce_treelib_tceforms' => $classPath . 'ViewHelpers/class.tx_commerce_treelib_tceforms.php',

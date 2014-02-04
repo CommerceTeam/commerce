@@ -5,7 +5,7 @@
 		<description/>
 		<type>database</type>
 		<csh_table/>
-		<fileId>EXT:commerce/Resources/Private/Language/locallang_mod_treebrowser.xml</fileId>
+		<fileId>EXT:commerce/Resources/Private/Language/locallang_iframetreebrowser.xml</fileId>
 	</meta>
 	<data type="array">
 		<languageKey index="default" type="array">

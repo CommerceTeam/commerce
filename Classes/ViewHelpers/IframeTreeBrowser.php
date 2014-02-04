@@ -26,28 +26,25 @@
  ***************************************************************/
 
 unset($MCONF);
-require ('conf.php');
+define('TYPO3_MOD_PATH', '../typo3conf/ext/commerce/Classes/ViewHelpers/');
+$BACK_PATH = '../../../../typo3/';
+
+$MLANG['default']['tabs_images']['tab'] = 'moduleicon.gif';
+$MLANG['default']['ll_ref'] = 'LLL:EXT:commerce/Resources/Private/Language/locallang_iframetreebrowser.xml';
+
+$MCONF['script'] = 'index.php';
+$MCONF['name'] = 'commerce_txcommerceTreeBrowser';
+$MCONF['access'] = '';
+
 /** @noinspection PhpIncludeInspection */
-require ($BACK_PATH . 'init.php');
+require($BACK_PATH . 'init.php');
 /** @noinspection PhpIncludeInspection */
-require ($BACK_PATH . 'template.php');
+require($BACK_PATH . 'template.php');
 
 $LANG->includeLLFile('EXT:lang/locallang_misc.xml');
 
-/**
- * Script Class for the treeview in TCEforms elements
- */
-class tx_commerce_treebrowser extends tx_commerce_treelib_browser {
-	// nothing to do here
-}
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/mod_treebrowser/index.php']) {
-	/** @noinspection PhpIncludeInspection */
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/mod_treebrowser/index.php']);
-}
-
-/** @var tx_commerce_treebrowser $SOBE */
-$SOBE = t3lib_div::makeInstance('tx_commerce_treebrowser');
+/** @var tx_commerce_treelib_browser $SOBE */
+$SOBE = t3lib_div::makeInstance('tx_commerce_treelib_browser');
 $SOBE->init();
 $SOBE->main();
 $SOBE->printContent();

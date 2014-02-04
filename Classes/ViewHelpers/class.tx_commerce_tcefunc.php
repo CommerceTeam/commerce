@@ -101,7 +101,7 @@ class tx_commerce_tceFunc {
 
 		$renderBrowseTrees = t3lib_div::makeInstance('tx_commerce_treelib_tceforms');
 		$renderBrowseTrees->init ($PA, $fObj);
-		$renderBrowseTrees->setIFrameTreeBrowserScript($this->tceForms->backPath . PATH_TXCOMMERCE_REL . 'mod_treebrowser/index.php');
+		$renderBrowseTrees->setIFrameTreeBrowserScript($this->tceForms->backPath . PATH_TXCOMMERCE_REL . 'Classes/ViewHelpers/IframeTreeBrowser.php');
 
 			// @todo WHEN ARE WE EVER ALREADY IN THE IFRAME?
 			// AND WHEN DO WE EVERY RENDER A DIV?
