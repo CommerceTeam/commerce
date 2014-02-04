@@ -46,7 +46,7 @@ require($BACK_PATH . 'template.php');
 
 $LANG->includeLLFile('EXT:lang/locallang_misc.xml');
 
-class Tx_Commerce_Controller_CommandWizardController {
+class Tx_Commerce_Controller_WizardController {
 	/**
 	 * @var array
 	 */
@@ -406,14 +406,14 @@ class Tx_Commerce_Controller_CommandWizardController {
 	}
 }
 
-class_alias('', 'tx_commerce_cmd_wizard');
+class_alias('Tx_Commerce_Controller_WizardController', 'tx_commerce_cmd_wizard');
 
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Controller/CommandWizardController.php']) {
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Controller/WizardController.php']) {
 	/** @noinspection PhpIncludeInspection */
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Controller/CommandWizardController.php']);
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Controller/WizardController.php']);
 }
 
-/** @var Tx_Commerce_Controller_CommandWizardController $SOBE */
+/** @var Tx_Commerce_Controller_WizardController $SOBE */
 $SOBE = t3lib_div::makeInstance('Tx_Commerce_Controller_CommandWizardController');
 $SOBE->init();
 $SOBE->main();

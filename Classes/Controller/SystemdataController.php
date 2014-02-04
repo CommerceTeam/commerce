@@ -83,8 +83,8 @@ class Tx_Commerce_Controller_SystemdataController extends t3lib_SCbase {
 		$this->language = & $GLOBALS['LANG'];
 		$this->user = & $GLOBALS['BE_USER'];
 
-		$this->id = $this->modPid = reset(tx_commerce_folder_db::initFolders('Commerce', 'commerce'));
-		$this->attributePid = (int) reset(tx_commerce_folder_db::initFolders('Attributes', 'commerce', $this->modPid));
+		$this->id = $this->modPid = (int) reset(Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Commerce', 'commerce'));
+		$this->attributePid = (int) reset(Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Attributes', 'commerce', $this->modPid));
 
 		$this->perms_clause = $this->user->getPagePermsClause(1);
 		$this->pageRow = t3lib_BEfunc::readPageAccess($this->id, $this->perms_clause);

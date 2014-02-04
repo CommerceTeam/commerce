@@ -26,11 +26,16 @@
  * Main script class for the handling of articles. Normaly used
  * for frontend rendering. This class provides basic methodes for acessing
  * articles.
- * Inherited from tx_commerce_element_alib
+ * Inherited from Tx_Commerce_Domain_Model_AbstractEntity
  */
 class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_AbstractEntity {
 	/**
-	 * @var tx_commerce_db_article;
+	 * @var string
+	 */
+	protected $databaseClass = 'Tx_Commerce_Domain_Repository_ArticleRepository';
+
+	/**
+	 * @var Tx_Commerce_Domain_Repository_ArticleRepository;
 	 */
 	public $databaseConnection;
 
@@ -206,7 +211,6 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 	public function init($uid, $lang_uid = 0) {
 		$uid = intval($uid);
 		$lang_uid = intval($lang_uid);
-		$this->databaseClass = 'tx_commerce_db_article';
 		$this->fieldlist = array(
 			'uid',
 			'title',
@@ -992,9 +996,9 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 
 class_alias('Tx_Commerce_Domain_Model_Article', 'tx_commerce_article');
 
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_article.php']) {
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Domain/Model/Article.php']) {
 	/** @noinspection PhpIncludeInspection */
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_article.php']);
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Domain/Model/Article.php']);
 }
 
 ?>

@@ -1068,9 +1068,9 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			$orderData['pid'] = $this->conf['newOrderPid'];
 		}
 		if (empty($orderData['pid']) || ($orderData['pid'] < 0)) {
-			$comPid = array_keys(tx_commerce_folder_db::getFolders('commerce', 0, 'COMMERCE'));
-			$ordPid = array_keys(tx_commerce_folder_db::getFolders('commerce', $comPid[0], 'Orders'));
-			$incPid = array_keys(tx_commerce_folder_db::getFolders('commerce', $ordPid[0], 'Incoming'));
+			$comPid = array_keys(Tx_Commerce_Domain_Repository_FolderRepository::getFolders('commerce', 0, 'COMMERCE'));
+			$ordPid = array_keys(Tx_Commerce_Domain_Repository_FolderRepository::getFolders('commerce', $comPid[0], 'Orders'));
+			$incPid = array_keys(Tx_Commerce_Domain_Repository_FolderRepository::getFolders('commerce', $ordPid[0], 'Incoming'));
 			$orderData['pid'] = $incPid[0];
 		}
 
@@ -1670,7 +1670,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 				$dataArray['pid'] = $this->conf['addressPid'];
 			} else {
 				$modPid = 0;
-				list($commercePid) = tx_commerce_folder_db::initFolders('Commerce', 'commerce', $modPid);
+				list($commercePid) = Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Commerce', 'commerce', $modPid);
 				$dataArray['pid'] = $commercePid;
 			}
 

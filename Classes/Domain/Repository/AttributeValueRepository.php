@@ -26,22 +26,20 @@
  * Database Class for tx_commerce_products. All database calle should
  * be made by this class. In most cases you should use the methodes
  * provided by tx_commerce_product to get informations for articles.
- * Inherited from tx_commerce_db_alib
- *
- * @author Ingo Schmitt <is@marketing-factory.de>
- * @package TYPO3
- * @subpackage tx_commerce
+ * Inherited from Tx_Commerce_Domain_Repository_Repository
  */
-class tx_commerce_db_attribute_value extends tx_commerce_db_alib {
+class Tx_Commerce_Domain_Repository_AttributeValueRepository extends Tx_Commerce_Domain_Repository_Repository {
 	/**
 	 * @var string
 	 */
 	public $databaseTable = 'tx_commerce_attribute_values';
 }
 
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_db_attribute_value.php']) {
+class_alias('Tx_Commerce_Domain_Repository_AttributeValueRepository', 'tx_commerce_db_attribute_value');
+
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Domain/Repository/AttributeValueRepository.php']) {
 	/** @noinspection PhpIncludeInspection */
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_db_attribute_value.php']);
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Domain/Repository/AttributeValueRepository.php']);
 }
 
 ?>

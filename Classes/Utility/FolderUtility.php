@@ -51,15 +51,15 @@ class Tx_Commerce_Utility_FolderUtility {
 		 * Folder Creation
 		 * @TODO Get list from Order folders from TS
 		 */
-		list($modPid) = tx_commerce_folder_db::initFolders('Commerce', 'commerce');
-		list($prodPid) = tx_commerce_folder_db::initFolders('Products', 'commerce', $modPid);
-		tx_commerce_folder_db::initFolders('Attributes', 'commerce', $modPid);
+		list($modPid) = Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Commerce', 'commerce');
+		list($prodPid) = Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Products', 'commerce', $modPid);
+		Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Attributes', 'commerce', $modPid);
 
-		list($orderPid) = tx_commerce_folder_db::initFolders('Orders', 'commerce', $modPid);
-		tx_commerce_folder_db::initFolders('Incoming', 'commerce', $orderPid);
-		tx_commerce_folder_db::initFolders('Working', 'commerce', $orderPid);
-		tx_commerce_folder_db::initFolders('Waiting', 'commerce', $orderPid);
-		tx_commerce_folder_db::initFolders('Delivered', 'commerce', $orderPid);
+		list($orderPid) = Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Orders', 'commerce', $modPid);
+		Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Incoming', 'commerce', $orderPid);
+		Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Working', 'commerce', $orderPid);
+		Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Waiting', 'commerce', $orderPid);
+		Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Delivered', 'commerce', $orderPid);
 
 			// @todo reduce hook gathering where not hook method is called
 		$hookObjectsArr = array();

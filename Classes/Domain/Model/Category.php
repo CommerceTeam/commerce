@@ -30,7 +30,12 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	/**
 	 * @var string
 	 */
-	protected $databaseClass = 'tx_commerce_db_category';
+	protected $databaseClass = 'Tx_Commerce_Domain_Repository_CategoryRepository';
+
+	/**
+	 * @var Tx_Commerce_Domain_Repository_CategoryRepository
+	 */
+	public $databaseConnection;
 
 	/**
 	 * @var string Title
@@ -166,11 +171,6 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	 * @var array
 	 */
 	protected $tsConfig = array();
-
-	/**
-	 * @var tx_commerce_db_category
-	 */
-	public $databaseConnection;
 
 	/**
 	 * @var array
@@ -846,9 +846,9 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 
 class_alias('Tx_Commerce_Domain_Model_Category', 'tx_commerce_category');
 
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_category.php']) {
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Domain/Model/Category.php']) {
 	/** @noinspection PhpIncludeInspection */
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_category.php']);
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Domain/Model/Category.php']);
 }
 
 ?>

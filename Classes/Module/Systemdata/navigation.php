@@ -55,7 +55,7 @@ class Tx_Commerce_Module_Systemdata_Navigation extends t3lib_SCbase {
 	public function init() {
 		$this->language = & $GLOBALS['LANG'];
 
-		$this->id = reset(tx_commerce_folder_db::initFolders('Commerce', 'commerce'));
+		$this->id = reset(Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Commerce', 'commerce'));
 	}
 
 	/**

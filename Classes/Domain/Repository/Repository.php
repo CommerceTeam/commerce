@@ -34,7 +34,7 @@
  * tx_commerce_attribute
  *
  */
-class tx_commerce_db_alib {
+class Tx_Commerce_Domain_Repository_Repository {
 	/**
 	 * @var string Database table concerning the data
 	 */
@@ -291,7 +291,7 @@ class tx_commerce_db_alib {
 	 * @param integer $uid Product uid
 	 * @param array $attribute_corelation_type_list array of corelation_types, optional
 	 * @return array of attribute UID
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use tx_commerce_db_alib::getAttributes instead
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use Tx_Commerce_Domain_Repository_Repository::getAttributes instead
 	 */
 	public function get_attributes($uid, $attribute_corelation_type_list = NULL) {
 		t3lib_div::logDeprecatedFunction();
@@ -299,9 +299,11 @@ class tx_commerce_db_alib {
 	}
 }
 
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_db_alib.php']) {
+class_alias('Tx_Commerce_Domain_Repository_Repository', 'tx_commerce_db_alib');
+
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Domain/Repository/Repository.php']) {
 	/** @noinspection PhpIncludeInspection */
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_db_alib.php']);
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Domain/Repository/Repository.php']);
 }
 
 ?>

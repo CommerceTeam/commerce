@@ -233,8 +233,8 @@ class Tx_Commerce_Hook_DataMapHooks {
 					$incomingFieldArray['create_new_scale_prices_count'] = 0;
 
 						// get pid
-					list($modPid) = tx_commerce_folder_db::initFolders('Commerce', 'commerce');
-					list($prodPid) = tx_commerce_folder_db::initFolders('Products', 'commerce', $modPid);
+					list($modPid) = Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Commerce', 'commerce');
+					list($prodPid) = Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Products', 'commerce', $modPid);
 
 					$aPid = $prodPid;
 

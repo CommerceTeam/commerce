@@ -26,9 +26,9 @@
  * Database Class for tx_commerce_articles. All database calle should
  * be made by this class. In most cases you should use the methodes
  * provided by tx_commerce_article to get informations for articles.
- * Inherited from tx_commerce_db_alib
+ * Inherited from Tx_Commerce_Domain_Repository_Repository
  */
-class tx_commerce_db_article extends tx_commerce_db_alib {
+class Tx_Commerce_Domain_Repository_ArticleRepository extends Tx_Commerce_Domain_Repository_Repository {
 	/**
 	 * @var string
 	 */
@@ -131,7 +131,7 @@ class tx_commerce_db_article extends tx_commerce_db_alib {
 	 * @param integer $count = Number of Articles for price_scale_amount, default 1
 	 * @param string $orderField
 	 * @return array of Price UID
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use tx_commerce_db_article::getPrices instead
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use Tx_Commerce_Domain_Repository_ArticleRepository::getPrices instead
 	 */
 	public function get_prices($uid, $count = 1, $orderField = 'price_net') {
 		t3lib_div::logDeprecatedFunction();
@@ -192,7 +192,7 @@ class tx_commerce_db_article extends tx_commerce_db_alib {
 	 *
 	 * @param integer $uid Product uid
 	 * @return array of attribute UID
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use tx_commerce_db_article::getAttributes instead
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use Tx_Commerce_Domain_Repository_ArticleRepository::getAttributes instead
 	 */
 	public function get_attributes($uid) {
 		t3lib_div::logDeprecatedFunction();
@@ -298,9 +298,11 @@ class tx_commerce_db_article extends tx_commerce_db_alib {
 	}
 }
 
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_db_article.php']) {
+class_alias('Tx_Commerce_Domain_Repository_ArticleRepository', 'tx_commerce_db_article');
+
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Domain/Repository/ArticleRepository.php']) {
 	/** @noinspection PhpIncludeInspection */
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_db_article.php']);
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Domain/Repository/ArticleRepository.php']);
 }
 
 ?>

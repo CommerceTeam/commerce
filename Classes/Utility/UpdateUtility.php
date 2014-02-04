@@ -68,8 +68,8 @@ class Tx_Commerce_Utility_UpdateUtility {
 		/**
 		 * Get data from folder
 		 */
-		list($modPid) = tx_commerce_folder_db::initFolders('Commerce', 'commerce');
-		list($prodPid) = tx_commerce_folder_db::initFolders('Products', 'commerce', $modPid);
+		list($modPid) = Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Commerce', 'commerce');
+		list($prodPid) = Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Products', 'commerce', $modPid);
 		$resrights = $database->exec_SELECTquery(
 			'perms_userid, perms_groupid,perms_user,perms_group,perms_everybody',
 			'pages',

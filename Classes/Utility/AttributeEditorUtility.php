@@ -124,9 +124,9 @@ class Tx_Commerce_Utility_AttributeEditorUtility {
 		 * @author Ingo Schmitt <is@marketing-factory.de>
 		 */
 		Tx_Commerce_Utility_FolderUtility::init_folders();
-		list($modPid) = tx_commerce_folder_db::initFolders('Commerce', 'commerce');
-		tx_commerce_folder_db::initFolders('Products', 'commerce', $modPid);
-		list($attrPid) = tx_commerce_folder_db::initFolders('Attributes', 'commerce', $modPid);
+		list($modPid) = Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Commerce', 'commerce');
+		Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Products', 'commerce', $modPid);
+		list($attrPid) = Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Attributes', 'commerce', $modPid);
 
 		if ($aData['has_valuelist'] == 1) {
 			$config['config'] = array (

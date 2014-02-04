@@ -90,10 +90,10 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 	 *
 	 * @var string
 	 */
-	protected $databaseClass = '';
+	protected $databaseClass = 'Tx_Commerce_Domain_Repository_Repository';
 
 	/**
-	 * @var tx_commerce_db_alib
+	 * @var Tx_Commerce_Domain_Repository_Repository
 	 */
 	protected $databaseConnection;
 
@@ -514,9 +514,9 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 
 class_alias('Tx_Commerce_Domain_Model_AbstractEntity', 'tx_commerce_element_alib');
 
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_element_alib.php']) {
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Domain/Model/AbstractEntity.php']) {
 	/** @noinspection PhpIncludeInspection */
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_element_alib.php']);
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Domain/Model/AbstractEntity.php']);
 }
 
 ?>

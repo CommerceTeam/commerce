@@ -31,7 +31,7 @@
  * @package TYPO3
  * @subpackage tx_commerce
  */
-class tx_commerce_db_category extends tx_commerce_db_alib {
+class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domain_Repository_Repository {
 	/**
 	 * @var string Database table concerning the data
 	 */
@@ -399,9 +399,11 @@ class tx_commerce_db_category extends tx_commerce_db_alib {
 	}
 }
 
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_db_category.php']) {
+class_alias('Tx_Commerce_Domain_Repository_CategoryRepository', 'tx_commerce_db_category');
+
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Domain/Repository/CategoryRepository.php']) {
 	/** @noinspection PhpIncludeInspection */
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_db_category.php']);
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Domain/Repository/CategoryRepository.php']);
 }
 
 ?>

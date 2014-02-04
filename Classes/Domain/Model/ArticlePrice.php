@@ -26,6 +26,15 @@
  * Libary for frontend rendering of article prices.
  */
 class Tx_Commerce_Domain_Model_ArticlePrice extends Tx_Commerce_Domain_Model_AbstractEntity {
+	/**
+	 * @var string
+	 */
+	protected $databaseClass = 'Tx_Commerce_Domain_Repository_ArticlePriceRepository';
+
+	/**
+	 * @var Tx_Commerce_Domain_Repository_ArticlePriceRepository
+	 */
+	public $databaseConnection;
 
 	/**
 	 * @var String Currency for price
@@ -60,8 +69,6 @@ class Tx_Commerce_Domain_Model_ArticlePrice extends Tx_Commerce_Domain_Model_Abs
 	 * @return boolean TRUE if $uid is > 0
 	 */
 	public function init($uid, $languageUid = 0) {
-		$this->databaseClass = 'tx_commerce_db_price';
-
 		$this->fieldlist = array(
 			'price_net',
 			'price_gross',
@@ -234,9 +241,9 @@ class Tx_Commerce_Domain_Model_ArticlePrice extends Tx_Commerce_Domain_Model_Abs
 
 class_alias('Tx_Commerce_Domain_Model_ArticlePrice', 'tx_commerce_article_price');
 
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_article_price.php']) {
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Domain/Model/ArticlePrice.php']) {
 	/** @noinspection PhpIncludeInspection */
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_article_price.php']);
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Domain/Model/ArticlePrice.php']);
 }
 
 ?>

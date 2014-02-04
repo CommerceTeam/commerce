@@ -94,7 +94,7 @@ class tx_commerce_order_localRecordlist extends localRecordList {
 			 * @todo bitte aus der ext config nehmen, volker angefragt
 			 */
 				// Find the right pid for the Ordersfolder
-			list($orderPid) = array_unique(tx_commerce_folder_db::initFolders('Orders', 'Commerce', 0, 'Commerce'));
+			list($orderPid) = array_unique(Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Orders', 'Commerce', 0, 'Commerce'));
 
 			$ret = Tx_Commerce_Utility_BackendUtility::getOrderFolderSelector($orderPid, PHP_INT_MAX);
 
@@ -991,7 +991,7 @@ class tx_commerce_order_localRecordlist extends localRecordList {
 				/**
 				 * Get the poages below $order_pid
 				 */
-				list($orderPid) = array_unique(tx_commerce_folder_db::initFolders('Orders', 'Commerce', 0, 'Commerce'));
+				list($orderPid) = array_unique(Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Orders', 'Commerce', 0, 'Commerce'));
 				$ret = Tx_Commerce_Utility_BackendUtility::getOrderFolderSelector($orderPid, $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['OrderFolderRecursiveLevel']);
 				$out .= $language->getLL('moveorderto');
 				$out .= '<select name="modeDestUid" size="1">

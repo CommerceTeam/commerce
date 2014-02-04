@@ -66,7 +66,7 @@ class Tx_Commerce_Controller_StatisticController extends t3lib_SCbase {
 
 		$this->excludePids = $this->extConf['excludeStatisticFolders'] != '' ? $this->extConf['excludeStatisticFolders'] : 0;
 
-		$order_pid = array_unique(tx_commerce_folder_db::initFolders('Orders', 'Commerce', 0, 'Commerce'));
+		$order_pid = array_unique(Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Orders', 'Commerce', 0, 'Commerce'));
 		$this->order_pid = $order_pid[0];
 
 		$this->statistics = t3lib_div::makeInstance('Tx_Commerce_Utility_StatisticsUtility');

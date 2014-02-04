@@ -28,7 +28,7 @@
  * Libary for Frontend-Rendering of attributes. This class
  * should be used for all Fronten-Rendering, no Database calls
  * to the commerce tables should be made directly
- * This Class is inhertited from tx_commerce_element_alib, all
+ * This Class is inhertited from Tx_Commerce_Domain_Model_AbstractEntity, all
  * basic Database calls are made from a separate Database Class
  * Do not acces class variables directly, allways use the get and set methods,
  * variables will be changed in php5 to private
@@ -38,10 +38,10 @@ class Tx_Commerce_Domain_Model_Attribute extends Tx_Commerce_Domain_Model_Abstra
 	/**
 	 * @var string
 	 */
-	protected $databaseClass = 'tx_commerce_db_attribute';
+	protected $databaseClass = 'Tx_Commerce_Domain_Repository_AttributeRepository';
 
 	/**
-	 * @var tx_commerce_db_attribute
+	 * @var Tx_Commerce_Domain_Repository_AttributeRepository
 	 */
 	public $databaseConnection;
 
@@ -398,9 +398,9 @@ class Tx_Commerce_Domain_Model_Attribute extends Tx_Commerce_Domain_Model_Abstra
 
 class_alias('Tx_Commerce_Domain_Model_Attribute', 'tx_commerce_attribute');
 
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_attribute.php']) {
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Domain/Model/Attribute.php']) {
 	/** @noinspection PhpIncludeInspection */
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_attribute.php']);
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Domain/Model/Attribute.php']);
 }
 
 ?>

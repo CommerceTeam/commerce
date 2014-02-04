@@ -26,7 +26,7 @@
  * Libary for Frontend-Rendering of attribute values. This class
  * should be used for all Fronten-Rendering, no Database calls
  * to the commerce tables should be made directly
- * This Class is inhertited from tx_commerce_element_alib, all
+ * This Class is inhertited from Tx_Commerce_Domain_Model_AbstractEntity, all
  * basic Database calls are made from a separate Database Class
  *
  * Main script class for the handling of attribute Values. An attribute_value
@@ -36,6 +36,16 @@
  * variables will be changed in php5 to private
  */
 class Tx_Commerce_Domain_Model_AttributeValue extends Tx_Commerce_Domain_Model_AbstractEntity {
+	/**
+	 * @var string
+	 */
+	protected $databaseClass = 'Tx_Commerce_Domain_Repository_AttributeValueRepository';
+
+	/**
+	 * @var Tx_Commerce_Domain_Repository_AttributeValueRepository
+	 */
+	public $databaseConnection;
+
 	/**
 	 * Title of Attribute (private)
 	 *
@@ -85,13 +95,12 @@ class Tx_Commerce_Domain_Model_AttributeValue extends Tx_Commerce_Domain_Model_A
 	 * @return void
 	 */
 	public function init($uid, $lang_uid = 0) {
-		$uid = intval($uid);
-		$lang_uid = intval($lang_uid);
+		$uid = (int) $uid;
+		$lang_uid = (int) $lang_uid;
 		/**
 		 * Define variables
 		 */
 		$this->fieldlist = array('title', 'value', 'showvalue', 'icon', 'l18n_parent');
-		$this->databaseClass = 'tx_commerce_db_attribute_value';
 		$this->uid = $uid;
 		$this->lang_uid = $lang_uid;
 		$this->databaseConnection = t3lib_div::makeInstance($this->databaseClass);
@@ -174,9 +183,9 @@ class Tx_Commerce_Domain_Model_AttributeValue extends Tx_Commerce_Domain_Model_A
 
 class_alias('Tx_Commerce_Domain_Model_AttributeValue', 'tx_commerce_attribute_value');
 
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_attribute_value.php']) {
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Domain/Model/AttributeValue.php']) {
 	/** @noinspection PhpIncludeInspection */
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_attribute_value.php']);
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Domain/Model/AttributeValue.php']);
 }
 
 ?>

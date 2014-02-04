@@ -329,7 +329,7 @@ class user_orderedit_func {
 		$data['items'] = array();
 
 			// Find the right pid for the Ordersfolder
-		list($orderPid) = array_unique(tx_commerce_folder_db::initFolders('Orders', 'Commerce', 0, 'Commerce'));
+		list($orderPid) = array_unique(Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Orders', 'Commerce', 0, 'Commerce'));
 
 		/**
 		 * Get the poages below $order_pid

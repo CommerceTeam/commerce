@@ -29,17 +29,23 @@
  * should be used for all Frontend renderings. No database calls
  * to the commerce tables should be made directly.
  *
- * This Class is inhertited from tx_commerce_element_alib, all
+ * This Class is inhertited from Tx_Commerce_Domain_Model_AbstractEntity, all
  * basic database calls are made from a separate database Class
  *
  * Do not acces class variables directly, allways use the get and set methods,
  * variables will be changed in php5 to private
- *
- * @author Ingo Schmitt <is@marketing-factory.de>
- * @package TYPO3
- * @subpackage tx_commerce
  */
 class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_AbstractEntity {
+	/**
+	 * @var string
+	 */
+	protected $databaseClass = 'Tx_Commerce_Domain_Repository_ProductRepository';
+
+	/**
+	 * @var Tx_Commerce_Domain_Repository_ProductRepository
+	 */
+	public $databaseConnection;
+
 	/**
 	 * Data Variables
 	 */
@@ -145,11 +151,6 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	public $relatedProducts_loaded = FALSE;
 
 	/**
-	 * @var tx_commerce_db_product
-	 */
-	public $databaseConnection;
-
-	/**
 	 * @var int Maximum Articles to render for this product. Normally PHP_INT_MAX
 	 */
 	public $renderMaxArticles = PHP_INT_MAX;
@@ -220,7 +221,6 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	public function init($uid, $langUid = 0) {
 		$uid = intval($uid);
 		$langUid = intval($langUid);
-		$this->databaseClass = 'tx_commerce_db_product';
 		$this->fieldlist = array('uid', 'title', 'pid', 'subtitle', 'description', 'teaser', 'images', 'teaserimages', 'relatedpage', 'l18n_parent', 'manufacturer_uid', 't3ver_oid', 't3ver_id', 't3ver_label', 't3ver_wsid', 't3ver_stage', 't3ver_state', 't3ver_tstamp');
 
 		if ($uid > 0) {
@@ -1565,9 +1565,9 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 
 class_alias('Tx_Commerce_Domain_Model_Product', 'tx_commerce_product');
 
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_product.php']) {
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Domain/Model/Product.php']) {
 	/** @noinspection PhpIncludeInspection */
-	include_once ($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_product.php']);
+	include_once ($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Domain/Model/Product.php']);
 }
 
 ?>

@@ -26,7 +26,7 @@
  * @package TYPO3
  * @subpackage tx_commerce
  */
-class tx_commerce_db_attribute extends tx_commerce_db_alib {
+class Tx_Commerce_Domain_Repository_AttributeRepository extends Tx_Commerce_Domain_Repository_Repository {
 	/**
 	 * @var string
 	 */
@@ -104,9 +104,11 @@ class tx_commerce_db_attribute extends tx_commerce_db_alib {
 	}
 }
 
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_db_attribute.php']) {
+class_alias('Tx_Commerce_Domain_Repository_AttributeRepository', 'tx_commerce_db_attribute');
+
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Domain/Repository/AttributeRepository.php']) {
 	/** @noinspection PhpIncludeInspection */
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_db_attribute.php']);
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Domain/Repository/AttributeRepository.php']);
 }
 
 ?>

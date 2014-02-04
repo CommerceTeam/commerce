@@ -26,13 +26,13 @@
  * Database Class for tx_commerce_article_prices. All database calle should
  * be made by this class. In most cases you should use the methodes
  * provided by tx_commerce_article_price to get informations for articles.
- * Inherited from tx_commerce_db_alib
+ * Inherited from Tx_Commerce_Domain_Repository_Repository
  *
  * Basic abtract Class for Database Query for
  * Database retrival class fro product
- * inherited from tx_commerce_db_alib
+ * inherited from Tx_Commerce_Domain_Repository_Repository
  */
-class tx_commerce_db_price extends tx_commerce_db_alib {
+class Tx_Commerce_Domain_Repository_ArticlePriceRepository extends Tx_Commerce_Domain_Repository_Repository {
 	/**
 	 * @var string table concerning the data
 	 */
@@ -73,9 +73,11 @@ class tx_commerce_db_price extends tx_commerce_db_alib {
 	}
 }
 
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_db_price.php']) {
+class_alias('Tx_Commerce_Domain_Repository_ArticlePriceRepository', 'tx_commerce_db_price');
+
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Domain/Repository/ArticlePriceRepository.php']) {
 	/** @noinspection PhpIncludeInspection */
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_db_price.php']);
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Domain/Repository/ArticlePriceRepository.php']);
 }
 
 ?>

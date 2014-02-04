@@ -75,7 +75,7 @@ class Tx_Commerce_Module_Access_Navigation extends t3lib_SCbase {
 		$this->categoryTree = t3lib_div::makeInstance('tx_commerce_categorytree');
 		$this->categoryTree->init();
 
-		$this->id = reset(tx_commerce_folder_db::initFolders('Commerce', 'commerce'));
+		$this->id = reset(Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Commerce', 'commerce'));
 	}
 
 	/**

@@ -185,7 +185,7 @@ class Tx_Commerce_Controller_OrdersController extends t3lib_SCbase {
 		$this->clickMenuEnabled = 1;
 		Tx_Commerce_Utility_FolderUtility::init_folders();
 
-		$order_pid = array_unique(tx_commerce_folder_db::initFolders('Orders', 'Commerce', 0, 'Commerce'));
+		$order_pid = array_unique(Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Orders', 'Commerce', 0, 'Commerce'));
 
 		/**
 		 * If we get an id via GP use this, else use the default id

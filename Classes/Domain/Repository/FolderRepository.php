@@ -25,11 +25,7 @@
 /**
  * Misc commerce db functions
  */
-class tx_commerce_folder_db {
-	/***************************************
-	 * Commerce sysfolder
-	 ***************************************/
-
+class Tx_Commerce_Domain_Repository_FolderRepository {
 	/**
 	 * Returns pidList of extension Folders
 	 *
@@ -132,9 +128,11 @@ class tx_commerce_folder_db {
 	}
 }
 
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_folder_db.php']) {
+class_alias('Tx_Commerce_Domain_Repository_FolderRepository', 'tx_commerce_folder_db');
+
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Domain/Repository/FolderRepository.php']) {
 	/** @noinspection PhpIncludeInspection */
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_folder_db.php']);
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Domain/Repository/FolderRepository.php']);
 }
 
 ?>

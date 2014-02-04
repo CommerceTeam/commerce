@@ -648,7 +648,7 @@ class Tx_Commerce_Domain_Model_BasketItem {
 	 *
 	 * @param string $prefix Prefix for the keys or returnung array optional
 	 * @return array
-	 * @see tx_commerce_article <- tx_commerce_element_alib
+	 * @see tx_commerce_article <- Tx_Commerce_Domain_Model_AbstractEntity
 	 * @deprecated since 2011-05-11 this function will be removed in commerce 0.16.0, please use tx_commerce_basket_item::getArticleAssocArray instead
 	 */
 	public function get_article_assoc_array($prefix = '') {
@@ -662,7 +662,7 @@ class Tx_Commerce_Domain_Model_BasketItem {
 	 *
 	 * @param string $prefix Prefix for the keys or returnung array optional
 	 * @return array
-	 * @see tx_commerce_product <- tx_commerce_element_alib
+	 * @see tx_commerce_product <- Tx_Commerce_Domain_Model_AbstractEntity
 	 * @deprecated since 2011-05-11 this function will be removed in commerce 0.16.0, please use tx_commerce_basket_item::getProductAssocArray instead
 	 */
 	public function get_product_assoc_array($prefix = '') {
@@ -737,9 +737,9 @@ class Tx_Commerce_Domain_Model_BasketItem {
 
 class_alias('Tx_Commerce_Domain_Model_BasketItem', 'tx_commerce_basket_item');
 
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_basket_item.php']) {
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Domain/Model/BasketItem.php']) {
 	/** @noinspection PhpIncludeInspection */
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_basket_item.php']);
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Domain/Model/BasketItem.php']);
 }
 
 ?>

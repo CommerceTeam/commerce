@@ -99,7 +99,7 @@ class Tx_Commerce_Module_Statistic_Navigation extends t3lib_SCbase {
 		$this->pagetree->addField('url');
 
 			// Temporary DB mounts:
-		$this->pagetree->MOUNTS = array_unique(tx_commerce_folder_db::initFolders('Orders', 'Commerce', 0, 'Commerce'));
+		$this->pagetree->MOUNTS = array_unique(Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Orders', 'Commerce', 0, 'Commerce'));
 		$this->initializeTemporaryDBmount();
 
 			// Setting highlight mode:
