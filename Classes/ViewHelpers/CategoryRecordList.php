@@ -284,7 +284,7 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 			if (!$LOISmode) {
 				$theData = Array();
 				if (!$this->table && !$rowList) {
-					$theData[$titleCol] = '<img src="/typo3/clear.gif" width="' .
+					$theData[$titleCol] = '<img src="' . $this->backPath . 'clear.gif" width="' .
 						($GLOBALS['SOBE']->MOD_SETTINGS['bigControlPanel'] ? '230' : '350') . '" height="1" alt="" />';
 					if (in_array('_CONTROL_', $this->fieldArray)) {
 						$theData['_CONTROL_'] = '';
@@ -443,12 +443,95 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 		return $out;
 	}
 
+	public function addElement($h, $icon, $data, $trParams = '', $lMargin = '', $altLine = '') {
+		$noWrap = ($this->no_noWrap) ? '' : ' nowrap="nowrap"';
+
+			// Start up:
+		$out = '
+		<!-- Element, begin: -->
+		<tr ' . $trParams . '>';
+			// Show icon and lines
+		if ($this->showIcon) {
+			$out .= '
+			<td nowrap="nowrap" class="col-icon">';
+
+			if (!$h) {
+				$out .= '<img src="' . $this->backPath . 'clear.gif" width="1" height="8" alt="" />';
+			} else {
+				for ($a = 0; $a < $h; $a++) {
+					if (!$a) {
+						if ($icon) {
+							$out .= $icon;
+						}
+					}
+				}
+			}
+			$out .= '</td>
+			';
+		}
+
+			// Init rendering.
+		$colsp = '';
+		$lastKey = '';
+		$c = 0;
+		$ccount = 0;
+
+			// Traverse field array which contains the data to present:
+		foreach ($this->fieldArray as $vKey) {
+			if (isset($data[$vKey])) {
+				if ($lastKey) {
+					$cssClass = $this->addElement_tdCssClass[$lastKey];
+					if ($this->oddColumnsCssClass && $ccount % 2 == 0) {
+						$cssClass = implode(' ', array($this->addElement_tdCssClass[$lastKey], $this->oddColumnsCssClass));
+					}
+
+					$out .= '
+						<td' .
+							$noWrap .
+							' class="' . $cssClass . '"' .
+							$colsp .
+							$this->addElement_tdParams[$lastKey] .
+							'>' . $data[$lastKey] . '</td>';
+				}
+				$lastKey = $vKey;
+				$c = 1;
+				$ccount++;
+			} else {
+				if (!$lastKey) {
+					$lastKey = $vKey;
+				}
+				$c++;
+			}
+			if ($c > 1) {
+				$colsp = ' colspan="' . $c . '"';
+			} else {
+				$colsp = '';
+			}
+		}
+		if ($lastKey) {
+			$cssClass = $this->addElement_tdCssClass[$lastKey];
+			if ($this->oddColumnsCssClass) {
+				$cssClass = implode(' ', array($this->addElement_tdCssClass[$lastKey], $this->oddColumnsCssClass));
+			}
+
+			$out .= '
+				<td' . $noWrap . ' class="' . $cssClass . '"' . $colsp . $this->addElement_tdParams[$lastKey] . '>' . $data[$lastKey] . '</td>';
+		}
+
+			// End row
+		$out .= '
+		</tr>';
+
+			// Return row.
+		return $out;
+	}
+
 	/**
 	 * Rendering the header row for a table
 	 *
 	 * @param string $table Table name
 	 * @param array $currentIdList Array of the currectly displayed uids of the table
-	 * @return string        Header table row
+	 * @return string Header table row
 	 * @see getTable()
 	 */
 	public function renderListHeader($table, $currentIdList) {
