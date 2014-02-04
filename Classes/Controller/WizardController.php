@@ -217,6 +217,16 @@ class Tx_Commerce_Controller_WizardController {
 				// Add all the content to an output section
 			$this->content .= $this->doc->section('', $this->code);
 		}
+		$this->content .= $this->doc->endPage();
+	}
+
+	/**
+	 * Ending page output and echo'ing content to browser.
+	 *
+	 * @return void
+	 */
+	public function printContent() {
+		echo $this->content;
 	}
 
 	/**
@@ -286,16 +296,6 @@ class Tx_Commerce_Controller_WizardController {
 
 			// Add CSH:
 		$this->code .= t3lib_BEfunc::cshItem('xMOD_csh_corebe', 'new_regular', $GLOBALS['BACK_PATH'], '<br/>');
-	}
-
-	/**
-	 * Ending page output and echo'ing content to browser.
-	 *
-	 * @return void
-	 */
-	public function printContent() {
-		$this->content .= $this->doc->endPage();
-		echo $this->content;
 	}
 
 	/**

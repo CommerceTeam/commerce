@@ -261,7 +261,7 @@ class Tx_Commerce_Controller_AccessController extends t3lib_SCbase {
 	 * @return void
 	 */
 	public function printContent() {
-		echo $this->doc->insertStylesAndJS($this->content);
+		echo $this->content;
 	}
 
 	/**

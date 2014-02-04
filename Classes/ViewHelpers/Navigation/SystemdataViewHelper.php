@@ -37,6 +37,11 @@ class Tx_Commerce_ViewHelpers_Navigation_SystemdataViewHelper extends t3lib_SCba
 	protected $language;
 
 	/**
+	 * @var boolean
+	 */
+	protected $hasFilterBox = FALSE;
+
+	/**
 	 * @return void
 	 */
 	public function init() {
@@ -96,8 +101,7 @@ class Tx_Commerce_ViewHelpers_Navigation_SystemdataViewHelper extends t3lib_SCba
 	 * @return void
 	 */
 	public function main() {
-		/** @var language $language */
-		$language = $GLOBALS['LANG'];
+		$docHeaderButtons = $this->getButtons();
 
 		$markers = array(
 			'ATTRIBUTES_TITLE' => $this->language->getLL('title_attributes'),
@@ -110,9 +114,14 @@ class Tx_Commerce_ViewHelpers_Navigation_SystemdataViewHelper extends t3lib_SCba
 			'SUPPLIER_DESCRIPTION' => $this->language->getLL('desc_supplier'),
 		);
 
+		$subparts = array();
+		if (!$this->hasFilterBox) {
+			$subparts['###SECOND_ROW###'] = '';
+		}
+
 			// put it all together
-		$this->content = $this->doc->startPage($language->sl('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:mod_category.navigation_title'));
-		$this->content .= $this->doc->moduleBody(array(), array(), $markers);
+		$this->content = $this->doc->startPage($this->language->sl('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:mod_category.navigation_title'));
+		$this->content .= $this->doc->moduleBody('', $docHeaderButtons, $markers, $subparts);
 		$this->content .= $this->doc->endPage();
 		$this->content = $this->doc->insertStylesAndJS($this->content);
 	}
@@ -124,6 +133,32 @@ class Tx_Commerce_ViewHelpers_Navigation_SystemdataViewHelper extends t3lib_SCba
 	 */
 	public function printContent() {
 		echo $this->content;
+	}
+
+	/**
+	 * Create the panel of buttons for submitting the form or otherwise perform operations.
+	 *
+	 * @return array all available buttons as an assoc. array
+	 */
+	protected function getButtons() {
+		$buttons = array(
+			'csh' => '',
+			'refresh' => '',
+		);
+
+			// Refresh
+		$buttons['refresh'] = '<a href="' . htmlspecialchars(t3lib_div::getIndpEnv('REQUEST_URI')) . '">' .
+				t3lib_iconWorks::getSpriteIcon('actions-system-refresh') .
+		'</a>';
+
+			// CSH
+		$buttons['csh'] = str_replace(
+			'typo3-csh-inline',
+			'typo3-csh-inline show-right',
+			t3lib_BEfunc::cshItem('xMOD_csh_corebe', 'filetree', $this->doc->backPath)
+		);
+
+		return $buttons;
 	}
 }
 

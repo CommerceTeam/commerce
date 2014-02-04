@@ -31,11 +31,6 @@ class Tx_Commerce_ViewHelpers_Navigation_AccessViewHelper extends t3lib_SCbase {
 	/**
 	 * @var string
 	 */
-	protected $BACK_PATH = '../../../../../../typo3/';
-
-	/**
-	 * @var string
-	 */
 	protected $currentSubScript;
 
 	/**
@@ -136,21 +131,24 @@ class Tx_Commerce_ViewHelpers_Navigation_AccessViewHelper extends t3lib_SCbase {
 			// Get the Browseable Tree
 		$tree = $this->categoryTree->getBrowseableTree();
 
+		$docHeaderButtons = $this->getButtons();
+
 		$markers = array(
 			'IMG_RESET' => '',
 			'WORKSPACEINFO' => '',
 			'CONTENT' => $tree
 		);
-		$subparts = array();
 
+		$subparts = array();
 		if (!$this->hasFilterBox) {
 			$subparts['###SECOND_ROW###'] = '';
 		}
 
 			// Build the <body> for the module
 		$this->content = $this->doc->startPage($language->sl('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:mod_access.navigation_title'));
-		$this->content .= $this->doc->moduleBody('', '', $markers);
+		$this->content .= $this->doc->moduleBody('', $docHeaderButtons, $markers, $subparts);
 		$this->content .= $this->doc->endPage();
+		$this->content = $this->doc->insertStylesAndJS($this->content);
 	}
 
 	/**
@@ -158,6 +156,32 @@ class Tx_Commerce_ViewHelpers_Navigation_AccessViewHelper extends t3lib_SCbase {
 	 */
 	public function printContent() {
 		echo $this->content;
+	}
+
+	/**
+	 * Create the panel of buttons for submitting the form or otherwise perform operations.
+	 *
+	 * @return array all available buttons as an assoc. array
+	 */
+	protected function getButtons() {
+		$buttons = array(
+			'csh' => '',
+			'refresh' => '',
+		);
+
+			// Refresh
+		$buttons['refresh'] = '<a href="' . htmlspecialchars(t3lib_div::getIndpEnv('REQUEST_URI')) . '">' .
+				t3lib_iconWorks::getSpriteIcon('actions-system-refresh') .
+		'</a>';
+
+			// CSH
+		$buttons['csh'] = str_replace(
+			'typo3-csh-inline',
+			'typo3-csh-inline show-right',
+			t3lib_BEfunc::cshItem('xMOD_csh_corebe', 'filetree', $this->doc->backPath)
+		);
+
+		return $buttons;
 	}
 
 	/**

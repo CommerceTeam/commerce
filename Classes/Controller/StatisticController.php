@@ -193,7 +193,6 @@ class Tx_Commerce_Controller_StatisticController extends t3lib_SCbase {
 	 * @return void
 	 */
 	public function printContent() {
-		$this->content .= $this->doc->endPage();
 		echo $this->content;
 	}
 
