@@ -337,6 +337,8 @@ class tx_commerce_db_list {
 
 				if ($treedb->getTable()) {
 					$sumlink .= '&edit[' . $treedb->getTable() . '][-' . $parent_uid . ']=new';
+					$tmpDefVals = '&defVals[' . $treedb->getTable() . '][' . $controldat['parent'] . ']=' . $parent_uid;
+					$defVals .= $tmpDefVals;
 				}
 			}
 			$sumlink .= $defVals;
@@ -463,7 +465,8 @@ class tx_commerce_db_list {
 
 					// $defVal for Tableheader;
 				$dblist->defVals = $defVals;
-				if (!$formProduced) {
+
+				if (!$listingProduced) {
 						// Render the page header:
 					$dblist->writeTop($this->pageinfo);
 				}
