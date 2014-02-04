@@ -330,7 +330,7 @@ class Tx_Commerce_ViewHelpers_DatabaseList {
 		$newRecordLink = $newRecordIcon = '';
 			// Link for creating new records:
 		if (!$this->modTSconfig['properties']['noCreateRecordsLink']) {
-			$sumlink = $this->scriptNewWizard . '?id=' . intval($this->id);
+			$sumlink = $this->scriptNewWizard . '?id=' . (int) $this->id;
 			foreach ($this->control as $controldat) {
 				$treedb = t3lib_div::makeInstance($controldat['dataClass']);
 				$treedb->init();
@@ -524,7 +524,7 @@ class Tx_Commerce_ViewHelpers_DatabaseList {
 						return list ? list : idList;
 					}
 
-					if (top.fsMod) top.fsMod.recentIds["web"] = ' . intval($this->id) . ';
+					if (top.fsMod) top.fsMod.recentIds["web"] = ' . (int) $this->id . ';
 				');
 
 					// Setting up the context sensitive menu:

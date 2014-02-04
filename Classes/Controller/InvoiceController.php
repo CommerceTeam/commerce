@@ -233,7 +233,7 @@ class Tx_Commerce_Controller_InvoiceController extends Tx_Commerce_Controller_Ba
 			$TS = $this->conf['OrderArticles.'];
 		}
 
-		$queryString = 'order_uid=' . intval($orderUid) . ' AND article_type_uid < 2 ';
+		$queryString = 'order_uid=' . (int) $orderUid . ' AND article_type_uid < 2 ';
 		$queryString .= $this->cObj->enableFields('tx_commerce_order_articles');
 		$res = $database->exec_SELECTquery(
 			'*',

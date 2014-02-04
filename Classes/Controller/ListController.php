@@ -163,9 +163,9 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 			$this->conf['singleProduct'] = FALSE;
 		}
 
-		$this->piVars['showUid'] = intval($this->piVars['showUid'] ?
+		$this->piVars['showUid'] = (int) $this->piVars['showUid'] ?
 			$this->piVars['showUid'] :
-			($this->conf['singleProduct'] ? $this->conf['singleProduct'] : ''));
+			($this->conf['singleProduct'] ? $this->conf['singleProduct'] : '');
 		$this->handle = $this->piVars['showUid'] ? 'singleView' : 'listView';
 
 			// Define the currency
@@ -398,14 +398,14 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 	 * @return boolean
 	 */
 	public function initSingleView($prodID) {
-		$prodID = intval($prodID);
+		$prodID = (int) $prodID;
 
 		if ($prodID > 0) {
 			/** @var t3lib_db $database */
 			$database = $GLOBALS['TYPO3_DB'];
 
 				// Get not localized product
-			$mainProductRes = $database->exec_SELECTquery('l18n_parent', 'tx_commerce_products', 'uid=' . $prodID);
+			$mainProductRes = $database->exec_SELECTquery('l18n_parent', 'tx_commerce_products', 'uid = ' . $prodID);
 			if ($database->sql_num_rows($mainProductRes) == 1 AND $row = $database->sql_fetch_assoc($mainProductRes) AND $row['l18n_parent'] != 0) {
 				$prodID = $row['l18n_parent'];
 			}
@@ -613,8 +613,8 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 				if (strstr($key, 'attsel_') && $val) {
 						// set only if it is the selected product - for listing mode
 					if ($this->piVars['changedProductUid'] == $prod->getUid() || $this->piVars['showUid'] == $prod->getUid()) {
-						$arrAttSubmit[intval(substr($key, 7))] = intval($val);
-						if ($this->piVars['attList_' . $prod->getUid() . '_changed'] == intval(substr($key, 7))) {
+						$arrAttSubmit[(int) substr($key, 7)] = (int) $val;
+						if ($this->piVars['attList_' . $prod->getUid() . '_changed'] == (int) substr($key, 7)) {
 							break;
 						}
 					}

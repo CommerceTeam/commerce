@@ -132,7 +132,7 @@ class Tx_Commerce_Module_Access_Navigation extends t3lib_SCbase {
 		$this->doc->postCode = $this->doc->wrapScriptTags('
 			script_ended = 1;
 			if (top.fsMod) {
-				top.fsMod.recentIds["web"] = ' . intval($this->id) . ';
+				top.fsMod.recentIds["web"] = ' . (int) $this->id . ';
 			}
 		');
 

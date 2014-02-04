@@ -151,12 +151,11 @@ class Tx_Commerce_Controller_SystemdataController extends t3lib_SCbase {
 			$this->doc->postCode = $this->doc->wrapScriptTags('
 				script_ended = 1;
 				if (top.fsMod) {
-					top.fsMod.recentIds["web"] = ' . intval($this->id) . ';
+					top.fsMod.recentIds["web"] = ' . (int) $this->id . ';
 				}
 			');
 
-			$this->doc->inDocStylesArray['mod_systemdata'] = '
-			';
+			$this->doc->inDocStylesArray['mod_systemdata'] = '';
 
 				// Render content:
 			$this->moduleContent();

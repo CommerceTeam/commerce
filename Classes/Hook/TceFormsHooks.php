@@ -54,9 +54,9 @@ class Tx_Commerce_Hook_TceFormsHooks {
 		}
 
 		if ($table == 'tx_commerce_article_prices') {
-			$row['price_gross'] = $this->centurionDivision(intval($row['price_gross']));
-			$row['price_net'] = $this->centurionDivision(intval($row['price_net']));
-			$row['purchase_price'] = $this->centurionDivision(intval($row['purchase_price']));
+			$row['price_gross'] = $this->centurionDivision((int) $row['price_gross']);
+			$row['price_net'] = $this->centurionDivision((int) $row['price_net']);
+			$row['purchase_price'] = $this->centurionDivision((int) $row['purchase_price']);
 		}
 	}
 

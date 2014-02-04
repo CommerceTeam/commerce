@@ -82,8 +82,8 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	 * @return void
 	 */
 	public function init($uid, $pid) {
-		$this->uid = intval($uid);
-		$this->pid = intval($pid);
+		$this->uid = (int) $uid;
+		$this->pid = (int) $pid;
 
 		if ($this->attributes == NULL) {
 			$this->attributes = $this->belib->getAttributesForProduct($this->uid, TRUE, TRUE, TRUE);
@@ -102,8 +102,8 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 		/** @var t3lib_db $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
-		$this->uid = intval($PA['row']['uid']);
-		$this->pid = intval($PA['row']['pid']);
+		$this->uid = (int) $PA['row']['uid'];
+		$this->pid = (int) $PA['row']['pid'];
 
 			// get all attributes for this product, if they where not fetched yet
 		if ($this->attributes == NULL) {
@@ -245,8 +245,8 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	 * @return string A HTML-table with checkboxes and all needed stuff
 	 */
 	public function producibleArticles($PA, $fObj) {
-		$this->uid = intval($PA['row']['uid']);
-		$this->pid = intval($PA['row']['pid']);
+		$this->uid = (int) $PA['row']['uid'];
+		$this->pid = (int) $PA['row']['pid'];
 
 			// get existing articles for this product, if they where not fetched yet
 		if ($this->existingArticles == NULL) {
@@ -697,8 +697,8 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 					// walk thru and create articles
 				$destLanguage = $localisedProducts['sys_language_uid'];
 					// get the highest sorting
-				$langIsoCode = t3lib_BEfunc::getRecord('sys_language', intval($destLanguage), 'static_lang_isocode');
-				$langIdent = t3lib_BEfunc::getRecord('static_languages', intval($langIsoCode['static_lang_isocode']), 'lg_typo3');
+				$langIsoCode = t3lib_BEfunc::getRecord('sys_language', (int) $destLanguage, 'static_lang_isocode');
+				$langIdent = t3lib_BEfunc::getRecord('static_languages', (int) $langIsoCode['static_lang_isocode'], 'lg_typo3');
 				$langIdent = strtoupper($langIdent['lg_typo3']);
 
 					// create article data array

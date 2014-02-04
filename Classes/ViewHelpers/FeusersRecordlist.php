@@ -223,7 +223,7 @@ class Tx_Commerce_ViewHelpers_FeusersRecordlist extends localRecordList {
 	 * @return array
 	 */
 	public function makeQueryArray($table, $id, $addWhere = '', $fieldList = '*') {
-		$id = intval($id);
+		$id = (int) $id;
 		if ($this->sortField) {
 			$orderby = $this->sortField . ' ';
 			if ($this->sortRev == 1) {
@@ -277,11 +277,11 @@ class Tx_Commerce_ViewHelpers_FeusersRecordlist extends localRecordList {
 					// iLimit is set depending on whether we're in single- or multi-table mode
 				if ($this->table) {
 					$this->iLimit = (isset($GLOBALS['TCA'][$tableName]['interface']['maxSingleDBListItems']) ?
-						intval($GLOBALS['TCA'][$tableName]['interface']['maxSingleDBListItems']) :
+						(int) $GLOBALS['TCA'][$tableName]['interface']['maxSingleDBListItems'] :
 						$this->itemsLimitSingleTable);
 				} else {
 					$this->iLimit = (isset($GLOBALS['TCA'][$tableName]['interface']['maxDBListItems']) ?
-						intval($GLOBALS['TCA'][$tableName]['interface']['maxDBListItems']) :
+						(int) $GLOBALS['TCA'][$tableName]['interface']['maxDBListItems'] :
 						$this->itemsLimitPerTable);
 				}
 				if ($this->showLimit) {
@@ -718,7 +718,7 @@ class Tx_Commerce_ViewHelpers_FeusersRecordlist extends localRecordList {
 								$selFieldList,
 								$table,
 								'pid=' . $row['pid'] . ' AND ' . $GLOBALS['TCA'][$table]['ctrl']['languageField'] . ' > 0 AND ' .
-									$GLOBALS['TCA'][$table]['ctrl']['transOrigPointerField'] . '=' . intval($row['uid']) .
+									$GLOBALS['TCA'][$table]['ctrl']['transOrigPointerField'] . '=' . (int) $row['uid'] .
 									t3lib_BEfunc::deleteClause($table)
 							);
 

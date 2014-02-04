@@ -91,16 +91,17 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 		/** @var t3lib_db $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
+		$result = 0;
 		if (t3lib_div::testInt($uid) && ($uid > 0)) {
 			$this->uid = $uid;
-			if ($result = $database->exec_SELECTquery('uid_foreign', $this->mm_database_table, 'uid_local = ' . intval($uid) . ' and is_reference=0')) {
+			if ($result = $database->exec_SELECTquery('uid_foreign', $this->mm_database_table, 'uid_local = ' . (int) $uid . ' and is_reference=0')) {
 				if ($return_data = $database->sql_fetch_assoc($result)) {
 					$database->sql_free_result($result);
-					return $return_data['uid_foreign'];
+					$result = $return_data['uid_foreign'];
 				}
 			}
 		}
-		return FALSE;
+		return $result;
 	}
 
 	/**
@@ -149,13 +150,13 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 			$this->databaseTable,
 			$this->mm_database_table,
 			$this->databaseTable,
-			' AND ' . $this->mm_database_table . '.uid_local= ' . intval($uid) . ' ' . $add_where
+			' AND ' . $this->mm_database_table . '.uid_local= ' . (int) $uid . ' ' . $add_where
 		);
 		if ($result) {
 			$data = array();
 			while ($return_data = $database->sql_fetch_assoc($result)) {
 					// @TODO access_check for data sets
-				$data[] = (int)$return_data['uid_foreign'];
+				$data[] = (int) $return_data['uid_foreign'];
 			}
 			$database->sql_free_result($result);
 			return $data;
@@ -265,7 +266,7 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 			$this->databaseTable,
 			$this->mm_database_table,
 			$this->databaseTable,
-			' AND ' . $this->mm_database_table . '.uid_foreign= ' . intval($uid) . ' ' . $add_where,
+			' AND ' . $this->mm_database_table . '.uid_foreign= ' . (int) $uid . ' ' . $add_where,
 			'',
 			$localOrderField
 		);
@@ -370,14 +371,15 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 			$data = array();
 			while (($return_data = $database->sql_fetch_assoc($result)) !== FALSE ) {
 				if ($lang_uid == 0) {
-					$data[] = (int)$return_data['uid'];
+					$data[] = (int) $return_data['uid'];
 				} else {
 						// Check if a locallized product is availabe
 						// @TODO: Check if this is correct in multi tree sites
 					$lresult = $database->exec_SELECTquery(
 						'uid',
 						'tx_commerce_products',
-						'l18n_parent = ' . intval($return_data['uid']) . ' AND sys_language_uid=' . $lang_uid . $GLOBALS['TSFE']->sys_page->enableFields('tx_commerce_products', $GLOBALS['TSFE']->showHiddenRecords)
+						'l18n_parent = ' . (int) $return_data['uid'] . ' AND sys_language_uid=' . $lang_uid .
+							$GLOBALS['TSFE']->sys_page->enableFields('tx_commerce_products', $GLOBALS['TSFE']->showHiddenRecords)
 					);
 					if ($database->sql_num_rows($lresult) == 1) {
 						$data[] = (int)$return_data['uid'];

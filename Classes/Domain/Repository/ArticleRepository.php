@@ -70,8 +70,8 @@ class Tx_Commerce_Domain_Repository_ArticleRepository extends Tx_Commerce_Domain
 	 * @return array of Price UID
 	 */
 	public function getPrices($uid, $count = 1, $orderField = 'price_net') {
-		$uid = intval($uid);
-		$count = intval($count);
+		$uid = (int) $uid;
+		$count = (int) $count;
 		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_article.php']['priceOrder']) {
 			$hookObj = &t3lib_div::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_article.php']['priceOrder']);
 			if (method_exists($hookObj, 'priceOrder')) {
@@ -146,8 +146,8 @@ class Tx_Commerce_Domain_Repository_ArticleRepository extends Tx_Commerce_Domain
 	 * @return array of Price UID
 	 */
 	public function getPriceScales($uid,$count = 1) {
-		$uid = intval($uid);
-		$count = intval($count);
+		$uid = (int) $uid;
+		$count = (int) $count;
 		if ($uid > 0) {
 			$proofSql = '';
 			$price_uid_list = array();

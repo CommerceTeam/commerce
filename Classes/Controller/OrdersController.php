@@ -199,7 +199,7 @@ class Tx_Commerce_Controller_OrdersController extends t3lib_SCbase {
 			// Initialize page browser
 		$this->pointer = 0;
 		if (t3lib_div::_GP('pointer')) {
-			$this->pointer = intval(t3lib_div::_GP('pointer'));
+			$this->pointer = (int) t3lib_div::_GP('pointer');
 		}
 	}
 
@@ -509,7 +509,7 @@ class Tx_Commerce_Controller_OrdersController extends t3lib_SCbase {
 				}
 
 				if (top.fsMod) {
-					top.fsMod.recentIds["web"] = ' . intval($this->id) . ';
+					top.fsMod.recentIds["web"] = ' . (int) $this->id . ';
 				}
 			');
 

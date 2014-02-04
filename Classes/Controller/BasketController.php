@@ -336,7 +336,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 					}
 
 						// Check for basket price limit
-					if (intval($this->conf['priceLimitForBasket']) > 0 && $this->basket->getGrossSum() > intval($this->conf['priceLimitForBasket'])) {
+					if ((int) $this->conf['priceLimitForBasket'] > 0 && $this->basket->getGrossSum() > (int) $this->conf['priceLimitForBasket']) {
 						$this->basket->addArticle($k, $oldCountValue);
 						$this->priceLimitForBasket = 1;
 					}
@@ -363,8 +363,8 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 			if (is_array($this->piVars['payArt'])) {
 				foreach ($this->piVars['payArt'] as $articleUid => $articleCount) {
 						// Set to integer to be sure it is integer
-					$articleUid = intval($articleUid);
-					$articleCount = intval($articleCount);
+					$articleUid = (int) $articleUid;
+					$articleCount = (int) $articleCount;
 					$this->basket->addArticle($articleUid, $articleCount['count']);
 				}
 			} else {
@@ -397,8 +397,8 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 				// Add new article
 			if (is_array($this->piVars['delArt'])) {
 				foreach ($this->piVars['delArt'] as $articleUid => $articleCount) {
-					$articleUid = intval($articleUid);
-					$articleCount = intval($articleCount);
+					$articleUid = (int) $articleUid;
+					$articleCount = (int) $articleCount;
 					$this->basket->addArticle($articleUid, $articleCount['count']);
 				}
 			} else {
@@ -523,9 +523,9 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 		$template = $this->cObj->substituteSubpart($template, '###TAX_RATE_SUMS###', $taxRateRows);
 
 		$basketArray['###BASKET_NET_PRICE###'] = tx_moneylib::format($this->basket->getNetSum(), $this->currency);
-		$basketArray['###BASKET_GROSS_PRICE###'] = tx_moneylib::format(intval($this->basket->getGrossSum()), $this->currency);
-		$basketArray['###BASKET_TAX_PRICE###'] = tx_moneylib::format(intval($this->basket->getGrossSum() - $this->basket->getNetSum()), $this->currency);
-		$basketArray['###BASKET_VALUE_ADDED_TAX###'] = tx_moneylib::format(intval($this->basket->getGrossSum()) - $this->basket->getNetSum(), $this->currency);
+		$basketArray['###BASKET_GROSS_PRICE###'] = tx_moneylib::format($this->basket->getGrossSum(), $this->currency);
+		$basketArray['###BASKET_TAX_PRICE###'] = tx_moneylib::format($this->basket->getGrossSum() - $this->basket->getNetSum(), $this->currency);
+		$basketArray['###BASKET_VALUE_ADDED_TAX###'] = tx_moneylib::format($this->basket->getGrossSum() - $this->basket->getNetSum(), $this->currency);
 		$basketArray['###BASKET_ITEMS###'] = $this->basket->getItemsCount();
 		$basketArray['###DELBASKET###'] = $this->pi_linkTP_keepPIvars($this->pi_getLL('delete_basket', 'delete basket'), array('delBasket' => 1), 0, 1);
 		$basketArray['###BASKET_NEXTBUTTON###'] = $this->cObj->stdWrap($this->makeCheckOutLink(), $this->conf['nextbutton.']);
@@ -945,7 +945,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 							'|',
 							$myItem->product->getUid(),
 							1,
-							array('catUid' => intval($myItem->product->getMasterparentCategory())), FALSE, $this->conf['listPid']
+							array('catUid' => (int) $myItem->product->getMasterparentCategory()), FALSE, $this->conf['listPid']
 						)
 					);
 

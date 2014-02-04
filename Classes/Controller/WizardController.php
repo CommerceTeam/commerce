@@ -161,9 +161,7 @@ class Tx_Commerce_Controller_WizardController {
 
 			// Setting GPvars:
 			// The page id to operate from
-		$this->id = (0 != t3lib_div::_GP('id')) ?
-			intval(t3lib_div::_GP('id')) :
-			Tx_Commerce_Utility_BackendUtility::getProductFolderUid();
+		$this->id = t3lib_div::_GP('id') ? (int) t3lib_div::_GP('id') : Tx_Commerce_Utility_BackendUtility::getProductFolderUid();
 		$this->returnUrl = t3lib_div::_GP('returnUrl');
 
 			// this to be accomplished from the caller: &edit['.$table.'][-'.$uid.']=new&
@@ -377,7 +375,7 @@ class Tx_Commerce_Controller_WizardController {
 				$result = FALSE;
 			} else {
 					// Checking doktype:
-				$doktype = intval($pid_row['doktype']);
+				$doktype = (int) $pid_row['doktype'];
 				if (!$allowedTableList = $GLOBALS['PAGES_TYPES'][$doktype]['allowedTables']) {
 					$allowedTableList = $GLOBALS['PAGES_TYPES']['default']['allowedTables'];
 				}

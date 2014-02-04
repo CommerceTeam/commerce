@@ -495,7 +495,7 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 		}
 
 			// activate dynamic ajax-based tree
-		$js = htmlspecialchars('Tree.load(\'' . $cmd . '\', ' . intval($isExpand) . ', this);');
+		$js = htmlspecialchars('Tree.load(\'' . $cmd . '\', ' . (int) $isExpand . ', this);');
 		return '<a class="pm" onclick="' . $js . '">' . $icon . '</a>';
 	}
 }

@@ -919,7 +919,7 @@ class Tx_Commerce_ViewHelpers_Navigation {
 			return '';
 		}
 		$addWhere = $GLOBALS['TSFE']->sys_page->enableFields($tableName, $GLOBALS['TSFE']->showHiddenRecords);
-		$where = 'uid = ' . intval($uid);
+		$where = 'uid = ' . (int) $uid;
 		$row = $database->exec_SELECTgetRows(
 			'*', $tableName, $where . $addWhere, $groupBy = '', $orderBy = '', '1', ''
 		);
@@ -966,7 +966,7 @@ class Tx_Commerce_ViewHelpers_Navigation {
 		/** @var t3lib_db $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
-		$sql = $sql = 'SELECT * FROM `' . $tableMm . '` WHERE `uid_foreign` = ' . intval($uid) . ' LIMIT 1 ';
+		$sql = $sql = 'SELECT * FROM `' . $tableMm . '` WHERE `uid_foreign` = ' . (int) $uid . ' LIMIT 1 ';
 		$res = $database->sql_query($sql);
 		$hasSubChild = $this->hasSubchild($uid, $subTableMM);
 		if (($row = $database->sql_fetch_assoc($res)) or $hasSubChild == 1) {
@@ -990,7 +990,7 @@ class Tx_Commerce_ViewHelpers_Navigation {
 		/** @var t3lib_db $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
-		$sql = 'SELECT * FROM `' . $tableMm . '` WHERE `uid_foreign` = ' . intval($uid) . ' LIMIT 1 ';
+		$sql = 'SELECT * FROM `' . $tableMm . '` WHERE `uid_foreign` = ' . (int) $uid . ' LIMIT 1';
 
 		$res = $database->sql_query($sql);
 		if ($row = $database->sql_fetch_assoc($res)) {
@@ -1227,7 +1227,7 @@ class Tx_Commerce_ViewHelpers_Navigation {
 		$database = $GLOBALS['TYPO3_DB'];
 
 			// if expTime is not set, the hash will never expire
-		$expTime = intval($expTime);
+		$expTime = (int) $expTime;
 		$whereAdd = '';
 		if ($expTime) {
 			$whereAdd = ' AND tstamp > ' . (time() - $expTime);
@@ -1322,7 +1322,7 @@ class Tx_Commerce_ViewHelpers_Navigation {
 		$rSql = $database->exec_SELECTquery(
 			'*',
 			'tx_commerce_products_categories_mm',
-			'uid_foreign = ' . intval($iIdCat)
+			'uid_foreign = ' . (int) $iIdCat
 			);
 
 		$aIdProducts = array();

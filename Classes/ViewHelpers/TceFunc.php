@@ -138,7 +138,7 @@ class Tx_Commerce_ViewHelpers_TceFunc {
 			// otherwhise it's a new record, so get default values
 		$itemArray = array();
 
-		if (intval($row['uid']) > 0) {
+		if ((int) $row['uid']) {
 				// existing Record
 			switch($table) {
 				case 'tx_commerce_categories':

@@ -284,11 +284,11 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			if (!$this->conf['randomUser'] && !t3lib_div::validEmail($this->piVars[$this->piVars['address_uid']]['email'])) {
 				$this->piVars[$this->piVars['address_uid']]['email'] = $GLOBALS['TSFE']->fe_user->user['email'];
 			}
-			$this->piVars[$this->piVars['address_uid']]['uid'] = intval($this->piVars['address_uid']);
+			$this->piVars[$this->piVars['address_uid']]['uid'] = (int) $this->piVars['address_uid'];
 			$feUser->setKey(
 				'ses',
 				Tx_Commerce_Utility_GeneralUtility::generateSessionKey($this->piVars['check']),
-				$this->piVars[intval($this->piVars['address_uid'])]
+				$this->piVars[(int) $this->piVars['address_uid']]
 			);
 		}
 
@@ -1288,14 +1288,14 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		$markerArray['###SUM_SHIPPING_NET###'] = tx_moneylib::format($sumShippingNet, $this->currency);
 		$markerArray['###SUM_SHIPPING_GROSS###'] = tx_moneylib::format($sumShippingGross, $this->currency);
 		$markerArray['###LABEL_SUM_NET###'] = $this->pi_getLL('listing_sum_net');
-		$markerArray['###SUM_NET###'] = tx_moneylib::format(($sumNet), $this->currency);
+		$markerArray['###SUM_NET###'] = tx_moneylib::format($sumNet, $this->currency);
 		$markerArray['###LABEL_SUM_TAX###'] = $this->pi_getLL('listing_tax');
-		$markerArray['###SUM_TAX###'] = tx_moneylib::format(intval($sumTax), $this->currency);
+		$markerArray['###SUM_TAX###'] = tx_moneylib::format($sumTax, $this->currency);
 
 		$markerArray['###LABEL_SUM_GROSS###'] = $this->pi_getLL('listing_sum_gross');
-		$markerArray['###SUM_GROSS###'] = tx_moneylib::format(intval($sumGross), $this->currency);
-		$markerArray['###SUM_PAYMENT_NET###'] = tx_moneylib::format(intval($sumPaymentNet), $this->currency);
-		$markerArray['###SUM_PAYMENT_GROSS###'] = tx_moneylib::format(intval($sumPaymentGross), $this->currency);
+		$markerArray['###SUM_GROSS###'] = tx_moneylib::format($sumGross, $this->currency);
+		$markerArray['###SUM_PAYMENT_NET###'] = tx_moneylib::format($sumPaymentNet, $this->currency);
+		$markerArray['###SUM_PAYMENT_GROSS###'] = tx_moneylib::format($sumPaymentGross, $this->currency);
 		$markerArray['###LABEL_SUM_PAYMENT_GROSS###'] = $this->pi_getLL('label_sum_payment_gross');
 		$markerArray['###LABEL_SUM_PAYMENT_NET###'] = $this->pi_getLL('label_sum_payment_net');
 		$markerArray['###PAYMENT_TITLE###'] = $paymentTitle;
@@ -1422,14 +1422,14 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 					break;
 
 					case 'min':
-						if (strlen((string) $value) < intval($method[1])) {
+						if (strlen((string) $value) < (int) $method[1]) {
 							$this->formError[$name] = $this->pi_getLL('error_field_min');
 							$returnVal = FALSE;
 						}
 					break;
 
 					case 'max':
-						if (strlen((string) $value) > intval($method[1])) {
+						if (strlen((string) $value) > (int) $method[1]) {
 							$this->formError[$name] = $this->pi_getLL('error_field_max');
 							$returnVal = FALSE;
 						}
@@ -2361,7 +2361,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			// Get addresses
 		$deliveryAdress = '';
 		if ($orderData['cust_deliveryaddress']) {
-			$res = $database->exec_SELECTquery('*', 'tt_address', 'uid=' . intval($orderData['cust_deliveryaddress']));
+			$res = $database->exec_SELECTquery('*', 'tt_address', 'uid = ' . (int) $orderData['cust_deliveryaddress']);
 			if ($data = $database->sql_fetch_assoc($res)) {
 				$data = $this->parseRawData($data, $this->conf['delivery.']['sourceFields.']);
 				$deliveryAdress = $this->makeAdressView($data, '###DELIVERY_ADDRESS###');
@@ -2372,7 +2372,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 
 		$billingAdress = '';
 		if ($orderData['cust_invoice']) {
-			$res = $database->exec_SELECTquery('*', 'tt_address', 'uid=' . intval($orderData['cust_invoice']));
+			$res = $database->exec_SELECTquery('*', 'tt_address', 'uid = ' . (int) $orderData['cust_invoice']);
 			if ($data = $database->sql_fetch_assoc($res)) {
 				$data = $this->parseRawData($data, $this->conf['billing.']['sourceFields.']);
 				$billingAdress = $this->makeAdressView($data, '###BILLING_ADDRESS###');

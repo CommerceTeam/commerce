@@ -83,7 +83,7 @@ class Tx_Commerce_Domain_Repository_AttributeRepository extends Tx_Commerce_Doma
 	public function getChildAttributeUids($uid) {
 		$childAttributeList = array();
 
-		if (intval($uid) > 0) {
+		if ((int) $uid) {
 			$result = $this->database->exec_SELECTquery(
 				'uid',
 				$this->databaseTable,

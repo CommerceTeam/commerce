@@ -1012,7 +1012,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 		$markerArray['###BASKET_ITEM_ORDERNUMBER###'] = $basketItemObj->getOrderNumber();
 
 		$markerArray['###BASKET_ITEM_TAX_PERCENT###'] = $basketItemObj->getTax();
-		$markerArray['###BASKET_ITEM_TAX_VALUE###'] = tx_moneylib::format(intval($basketItemObj->getItemSumTax()), $this->currency, $this->showCurrency);
+		$markerArray['###BASKET_ITEM_TAX_VALUE###'] = tx_moneylib::format((int) $basketItemObj->getItemSumTax(), $this->currency, $this->showCurrency);
 		$markerArray['###BASKET_ITEM_COUNT###'] = $basketItemObj->getQuantity();
 		$markerArray['###PRODUCT_LINK_DETAIL###'] = $this->pi_linkTP_keepPIvars(
 			$this->pi_getLL('detaillink', 'details'),
@@ -1182,7 +1182,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 				$res = $database->exec_SELECTquery(
 					'distinct(' . $foreign . ')',
 					$TSconf['tableMM'],
-					$local . ' = ' . intval($uid) . '  ' . $TSconf['table.']['addWhere'],
+					$local . ' = ' . (int) $uid . '  ' . $TSconf['table.']['addWhere'],
 					'',
 					'sorting'
 				);
@@ -1904,7 +1904,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 			if (!is_array($valueArr[$keyN])) {
 				$content .= $valueArr[$keyN];
 			} else {
-				$content .= $valueArr[$keyN][(intval($wSCA_reg[$keyN]) % 2)];
+				$content .= $valueArr[$keyN][((int) $wSCA_reg[$keyN] % 2)];
 				$wSCA_reg[$keyN]++;
 			}
 		}

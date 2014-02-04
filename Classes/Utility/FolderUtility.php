@@ -91,7 +91,7 @@ class Tx_Commerce_Utility_FolderUtility {
 				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
 			}
 		}
-		if (!$res || intval($catUid) == 0) {
+		if (!$res || (int) $catUid == 0) {
 			$catArray = $addArray;
 			$catArray['title'] = 'SYSTEM';
 			$catArray['uname'] = 'SYSTEM';
@@ -187,7 +187,7 @@ class Tx_Commerce_Utility_FolderUtility {
 		$res = $database->exec_SELECTquery(
 			'uid_local',
 			'tx_commerce_products_categories_mm',
-			'uid_foreign=' . intval($cUid)
+			'uid_foreign=' . (int) $cUid
 		);
 		$pList = array();
 		while ($pUid = $database->sql_fetch_assoc($res)) {

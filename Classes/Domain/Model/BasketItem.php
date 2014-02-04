@@ -137,15 +137,15 @@ class Tx_Commerce_Domain_Model_BasketItem {
 	 * @return bool
 	 */
 	public function init($uid, $quantity, $priceid, $lang_id = 0) {
-		$uid = intval($uid);
-		$lang_id = intval($lang_id);
-		$priceid = intval($priceid);
+		$uid = (int) $uid;
+		$lang_id = (int) $lang_id;
+		$priceid = (int) $priceid;
 
 		if (is_numeric($quantity)) {
 			if (is_float($quantity)) {
 				$this->quantity = floatval($quantity);
 			} else {
-				$this->quantity = intval($quantity);
+				$this->quantity = (int) $quantity;
 			}
 		} else {
 			return FALSE;
@@ -328,7 +328,7 @@ class Tx_Commerce_Domain_Model_BasketItem {
 	public function getSubtitle($type = 'article') {
 		switch ($type) {
 			case 'product':
-				return $this->product->get_subtitle();
+				return $this->product->getSubtitle();
 
 			case 'article':
 			default:

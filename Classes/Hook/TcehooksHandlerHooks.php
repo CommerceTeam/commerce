@@ -55,7 +55,6 @@ class Tx_Commerce_Hook_TcehooksHandlerHooks {
 					if (is_numeric($value)) {
 							// first convert the float value to a string - this is required because of a php "bug"
 							// details on http://forge.typo3.org/issues/show/2986
-							// and http://de.php.net/manual/en/function.intval.php
 						$incomingFieldArray[$key] = (int) strval($value * 100);
 					}
 				}
@@ -78,7 +77,7 @@ class Tx_Commerce_Hook_TcehooksHandlerHooks {
 				// ugly hack since typo3 makes ugly checks
 			foreach ($fieldArray as $key => $value) {
 				if ($key == 'price_net' || $key == 'price_gross' || $key == 'purchase_price') {
-					$fieldArray[$key] = intval($value);
+					$fieldArray[$key] = (int) $value;
 				}
 			}
 		}

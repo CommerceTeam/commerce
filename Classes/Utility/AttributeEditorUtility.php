@@ -142,7 +142,7 @@ class Tx_Commerce_Utility_AttributeEditorUtility {
 				),
 			);
 
-			if (intval($aData['multiple']) == 1) {
+			if ((int) $aData['multiple'] == 1) {
 					// create a selectbox for multiple selection
 				$config['config']['multiple'] = 1;
 				$config['config']['size'] = 5;

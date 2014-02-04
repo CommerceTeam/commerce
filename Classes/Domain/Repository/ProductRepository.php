@@ -34,9 +34,24 @@ class Tx_Commerce_Domain_Repository_ProductRepository extends Tx_Commerce_Domain
 	 */
 	public $databaseTable = 'tx_commerce_products';
 
+	/**
+	 * @var string
+	 */
 	public $database_attribute_rel_table = 'tx_commerce_products_attributes_mm';
+
+	/**
+	 * @var string
+	 */
 	public $database_category_rel_table = 'tx_commerce_products_categories_mm';
+
+	/**
+	 * @var string
+	 */
 	public $database_products_related_table = 'tx_commerce_products_related_mm';
+
+	/**
+	 * @var string
+	 */
 	public $orderField = 'sorting';
 
 	/**
@@ -45,7 +60,7 @@ class Tx_Commerce_Domain_Repository_ProductRepository extends Tx_Commerce_Domain
 	 * @return array of Article UID
 	 */
 	public function get_articles($uid) {
-		$uid = intval($uid);
+		$uid = (int) $uid;
 		$article_uid_list = array();
 		if ($uid) {
 			$localOrderField = $this->orderField;
@@ -103,7 +118,7 @@ class Tx_Commerce_Domain_Repository_ProductRepository extends Tx_Commerce_Domain
 	 * @return array of Article UID
 	 */
 	public function get_attributes($uid, $correlationtypes) {
-		$uid = intval($uid);
+		$uid = (int) $uid;
 		if ($uid > 0) {
 				// here some strang changes,
 				// change uid_product to uid_local since product_attributes table doesn't have a uid_product, but's it's running
@@ -141,12 +156,13 @@ class Tx_Commerce_Domain_Repository_ProductRepository extends Tx_Commerce_Domain
 	 * @TODO:we dont really need to extract category uids
 	 */
 	public function get_related_product_uids($uid) {
-		$uid = intval($uid);
+		$uid = (int) $uid;
 		$res = $this->database->exec_SELECTquery(
 			'R.uid_foreign as rID,C.uid_foreign as cID',
 			$this->database_products_related_table . ' R,' . $this->database_category_rel_table . ' as C',
-			'R.uid_foreign = C.uid_local AND R.uid_local=' . intval($uid),
-			'rID');
+			'R.uid_foreign = C.uid_local AND R.uid_local=' . (int) $uid,
+			'rID'
+		);
 		$relatedProducts = array();
 		while ($data = $this->database->sql_fetch_assoc($res)) {
 			$relatedProducts[$data['rID']] = $data['cID'];
@@ -164,7 +180,7 @@ class Tx_Commerce_Domain_Repository_ProductRepository extends Tx_Commerce_Domain
 	 */
 	public function get_parent_category($uid) {
 		t3lib_div::logDeprecatedFunction();
-		$uid = intval($uid);
+		$uid = (int) $uid;
 		if ($uid) {
 			if (is_object($GLOBALS['TSFE']) && is_object($GLOBALS['TSFE']->sys_page)) {
 				$addWhere = $GLOBALS['TSFE']->sys_page->enableFields($this->databaseTable, $GLOBALS['TSFE']->showHiddenRecords);
@@ -299,8 +315,8 @@ class Tx_Commerce_Domain_Repository_ProductRepository extends Tx_Commerce_Domain
 		$rSql = $this->database->exec_SELECTquery(
 			'*',
 			'tx_commerce_manufacturer',
-			'uid = ' . intval($ManufacturerUid)
-			);
+			'uid = ' . (int) $ManufacturerUid
+		);
 
 		$sTitle = '';
 		while (($aFiche = $this->database->sql_fetch_assoc($rSql)) !== FALSE) {

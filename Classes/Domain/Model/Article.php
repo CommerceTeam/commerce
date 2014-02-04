@@ -209,8 +209,8 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 	 * @return boolean
 	 */
 	public function init($uid, $lang_uid = 0) {
-		$uid = intval($uid);
-		$lang_uid = intval($lang_uid);
+		$uid = (int) $uid;
+		$lang_uid = (int) $lang_uid;
 		$this->fieldlist = array(
 			'uid',
 			'title',

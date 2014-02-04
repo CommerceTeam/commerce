@@ -485,8 +485,8 @@ class Tx_Commerce_ViewHelpers_DatabaseListExtra extends localRecordList {
 									if ($row['_MOVE_PLH_uid'] && $row['_MOVE_PLH_pid']) {
 										$tmpRow = t3lib_BEfunc::getRecordRaw(
 											$table,
-											't3ver_move_id="' . intval($lRow['uid']) . '" AND pid="' . $row['_MOVE_PLH_pid'] .
-												'" AND t3ver_wsid=' . $row['t3ver_wsid'] . t3lib_beFunc::deleteClause($table),
+											't3ver_move_id=' . (int) $lRow['uid'] . ' AND pid=' . (int) $row['_MOVE_PLH_pid'] .
+												' AND t3ver_wsid=' . (int) $row['t3ver_wsid'] . t3lib_beFunc::deleteClause($table),
 											$selFieldList
 										);
 										$lRow = is_array($tmpRow) ? $tmpRow : $lRow;

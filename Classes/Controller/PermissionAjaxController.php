@@ -110,9 +110,9 @@ class Tx_Commerce_Controller_PermissionAjaxController extends SC_mod_web_perm_aj
 					// The script defaults to change permissions
 				default:
 					if ($this->conf['mode'] == 'delete') {
-						$this->conf['permissions'] = intval($this->conf['permissions'] - $this->conf['bits']);
+						$this->conf['permissions'] = (int) ($this->conf['permissions'] - $this->conf['bits']);
 					} else {
-						$this->conf['permissions'] = intval($this->conf['permissions'] + $this->conf['bits']);
+						$this->conf['permissions'] = (int) ($this->conf['permissions'] + $this->conf['bits']);
 					}
 
 						// Prepare data to change

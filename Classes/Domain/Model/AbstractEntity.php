@@ -69,7 +69,7 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 	 *
 	 * @var integer
 	 */
-	protected $uid;
+	protected $uid = 0;
 
 	/**
 	 * Language uid

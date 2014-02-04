@@ -74,7 +74,7 @@ class Tx_Commerce_ViewHelpers_OrderRecordlist extends localRecordList {
 
 		$limit = '';
 		if ($this->iLimit) {
-			$limit = ($this->firstElementNumber ? intval($this->firstElementNumber) . ',' : '') . (intval($this->iLimit + 1));
+			$limit = ($this->firstElementNumber ? (int) $this->firstElementNumber . ',' : '') . ($this->iLimit + 1);
 		}
 
 		if ($id > 0) {

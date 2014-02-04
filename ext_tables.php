@@ -257,7 +257,7 @@ $tempColumns = array(
 			'foreign_table' => 'tt_address',
 			'foreign_table_where' => 'AND tt_address.tx_commerce_fe_user_id=###THIS_UID###' .
 			' AND tt_address.tx_commerce_fe_user_id!=0 AND tt_address.pid = ' .
-				intval($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce']['extConf']['create_address_pid']),
+				(int) $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce']['extConf']['create_address_pid'],
 			'minitems' => 0,
 			'maxitems' => 1,
 			'wizards' => Array(

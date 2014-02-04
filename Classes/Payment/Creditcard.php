@@ -128,14 +128,14 @@ class Tx_Commerce_Payment_Creditcard extends Tx_Commerce_Payment_PaymentAbstract
 					break;
 
 					case 'min':
-						if (strlen((string)$value) < intval($method[1])) {
+						if (strlen((string)$value) < (int) $method[1]) {
 							$this->formError[$name] = $this->pObj->pi_getLL('error_field_min');
 							$result = FALSE;
 						}
 					break;
 
 					case 'max':
-						if (strlen((string)$value) > intval($method[1])) {
+						if (strlen((string)$value) > (int) $method[1]) {
 							$this->formError[$name] = $this->pObj->pi_getLL('error_field_max');
 							$result = FALSE;
 						}

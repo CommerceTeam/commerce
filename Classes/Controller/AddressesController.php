@@ -126,15 +126,15 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 			case 'new':
 				if ($formValid) {
 					$this->sysMessage = $this->pi_getLL('message_address_new');
-					$this->saveAddressData(TRUE, intval($this->piVars['addressType']));
+					$this->saveAddressData(TRUE, (int) $this->piVars['addressType']);
 					$content .= $this->getListing();
 					break;
 				}
-				$content .= $this->getAddressForm('new', intval($this->piVars['addressid']), $this->conf);
+				$content .= $this->getAddressForm('new', (int) $this->piVars['addressid'], $this->conf);
 			break;
 
 			case 'delete':
-				$addresses = $this->getAddresses(intval($this->user['uid']), intval($this->addresses[$this->piVars['addressid']]['tx_commerce_address_type_id']));
+				$addresses = $this->getAddresses((int) $this->user['uid'], (int) $this->addresses[$this->piVars['addressid']]['tx_commerce_address_type_id']);
 				if (count($addresses) <= $this->conf['minAddressCount']) {
 					$this->sysMessage = $this->pi_getLL('message_cant_delete');
 					$content .= $this->getListing();
@@ -154,13 +154,13 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 					$content .= $this->getListing();
 					break;
 				}
-				$content .= $this->getAddressForm('edit', intval($this->piVars['addressid']), $this->conf);
+				$content .= $this->getAddressForm('edit', (int) $this->piVars['addressid'], $this->conf);
 			break;
 
 			case 'listing':
 			default:
 				if ($formValid) {
-					$this->saveAddressData(FALSE, intval($this->piVars['addressType']));
+					$this->saveAddressData(FALSE, (int) $this->piVars['addressType']);
 				}
 				$content .= $this->getListing();
 			break;
@@ -186,7 +186,7 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 
 		$addressType = 1;
 		if (!empty($this->piVars['addressType'])) {
-			$addressType = intval($this->piVars['addressType']);
+			$addressType = (int) $this->piVars['addressType'];
 		}
 
 		switch ($addressType) {
@@ -221,7 +221,7 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 
 			// Get addresses of this user
 		if ($getAddresses) {
-			$this->addresses = $this->getAddresses(intval($this->user['uid']));
+			$this->addresses = $this->getAddresses((int) $this->user['uid']);
 		}
 	}
 
@@ -483,7 +483,7 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 
 		$addressType = 1;
 		if (!empty($this->piVars['addressType'])) {
-			$addressType = intval($this->piVars['addressType']);
+			$addressType = (int) $this->piVars['addressType'];
 		}
 
 		switch ($addressType) {
@@ -659,7 +659,7 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 	 * @return boolean
 	 */
 	protected function deleteAddress() {
-		if (!in_array(intval($this->piVars['addressid']), array_keys($this->addresses))) {
+		if (!in_array((int) $this->piVars['addressid'], array_keys($this->addresses))) {
 			return TRUE;
 		}
 
@@ -685,7 +685,7 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 
 		/** @var t3lib_db $database */
 		$database = $GLOBALS['TYPO3_DB'];
-		$database->exec_UPDATEquery('tt_address', 'uid=' . intval($this->piVars['addressid']), array('deleted' => 1));
+		$database->exec_UPDATEquery('tt_address', 'uid = ' . (int) $this->piVars['addressid'], array('deleted' => 1));
 
 		unset($this->addresses[(int) $this->piVars['addressid']]);
 		unset($this->piVars['confirmed']);
@@ -914,14 +914,14 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 					break;
 
 					case 'min':
-						if (strlen((string)$value) < intval($method[1])) {
+						if (strlen((string)$value) < (int) $method[1]) {
 							$this->setFormError($name, sprintf($this->pi_getLL('error_field_min'), $method[1]));
 							$result = FALSE;
 						}
 					break;
 
 					case 'max':
-						if (strlen((string)$value) > intval($method[1])) {
+						if (strlen((string)$value) > (int) $method[1]) {
 							$this->setFormError($name, sprintf($this->pi_getLL('error_field_max'), $method[1]));
 							$result = FALSE;
 						}
@@ -1022,7 +1022,7 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 				}
 			}
 
-			$this->addresses = $this->getAddresses(intval($this->user['uid']));
+			$this->addresses = $this->getAddresses((int) $this->user['uid']);
 		} else {
 			foreach ($hookObjectsArr as $hookObj) {
 				if (method_exists($hookObj, 'beforeAddressEdit')) {
@@ -1031,7 +1031,7 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 				}
 			}
 
-			$sWhere = 'uid=' . intval($this->piVars['addressid']) . ' AND  tx_commerce_fe_user_id = ' .
+			$sWhere = 'uid = ' . (int) $this->piVars['addressid'] . ' AND tx_commerce_fe_user_id = ' .
 				$GLOBALS['TSFE']->fe_user->user['uid'];
 
 			$database->exec_UPDATEquery('tt_address', $sWhere, $newData);
@@ -1074,7 +1074,7 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 	 * @return array Keys with UIDs and values with complete addresses data
 	 */
 	public function getAddresses($userId, $addressType = 0) {
-		$select = 'tx_commerce_fe_user_id=' . intval($userId) . t3lib_Befunc::BEenableFields('tt_address');
+		$select = 'tx_commerce_fe_user_id = ' . (int) $userId . t3lib_Befunc::BEenableFields('tt_address');
 
 		if ($addressType > 0) {
 			$select .= ' AND tx_commerce_address_type_id=' . (int) $addressType;

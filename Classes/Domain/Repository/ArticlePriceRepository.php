@@ -45,7 +45,7 @@ class Tx_Commerce_Domain_Repository_ArticlePriceRepository extends Tx_Commerce_D
 	 * Special Implementation for prices, as they don't have a localisation'
 	 */
 	public function getData($uid) {
-		$uid = intval($uid);
+		$uid = (int) $uid;
 		$proofSQL = '';
 		/** @var t3lib_db $database */
 		$database = $GLOBALS['TYPO3_DB'];

@@ -155,7 +155,7 @@ class Tx_Commerce_Utility_GeneralUtility {
 	*
 	*/
 	public static function generateSessionKey($key) {
-		if (intval($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['userSessionMd5Encrypt']) == 1) {
+		if ((int) $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['userSessionMd5Encrypt'] == 1) {
 			$sessionKey = md5($key . ':' . $GLOBALS['TSFE']->fe_user->user['uid']);
 		} else {
 			$sessionKey = $key . ':' . $GLOBALS['TSFE']->fe_user->user['uid'];

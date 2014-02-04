@@ -222,11 +222,11 @@ class Tx_Commerce_Hook_DataMapHooks {
 
 					// create a new price if the checkbox was toggled get pid of article
 				$create_new_scale_prices_count = is_numeric($incomingFieldArray['create_new_scale_prices_count']) ?
-					intval($incomingFieldArray['create_new_scale_prices_count']) : 0;
+					(int) $incomingFieldArray['create_new_scale_prices_count'] : 0;
 				$create_new_scale_prices_steps = is_numeric($incomingFieldArray['create_new_scale_prices_steps']) ?
-					intval($incomingFieldArray['create_new_scale_prices_steps']) : 0;
+					(int) $incomingFieldArray['create_new_scale_prices_steps'] : 0;
 				$create_new_scale_prices_startamount = is_numeric($incomingFieldArray['create_new_scale_prices_startamount']) ?
-					intval($incomingFieldArray['create_new_scale_prices_startamount']) : 0;
+					(int) $incomingFieldArray['create_new_scale_prices_startamount'] : 0;
 
 				if ($create_new_scale_prices_count > 0 && $create_new_scale_prices_steps > 0 && $create_new_scale_prices_startamount > 0) {
 						// somehow hook is used two times sometime. So switch off new creating.
@@ -558,8 +558,8 @@ class Tx_Commerce_Hook_DataMapHooks {
 								'tx_commerce_products_attributes_mm',
 								array_merge(
 									array (
-										'uid_local' => intval($pUid),
-										'uid_foreign' => intval($attributeKey),
+										'uid_local' => (int) $pUid,
+										'uid_foreign' => (int) $attributeKey,
 										'uid_correlationtype' => 4,
 									),
 									$updateData[0]
@@ -633,7 +633,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 								$res = $database->exec_SELECTquery(
 									'uid_local, uid_foreign',
 									'tx_commerce_articles_article_attributes_mm',
-									'uid_local = ' . intval($article['uid']) . ' AND uid_foreign = ' . intval($attributeKey)
+									'uid_local = ' . (int) $article['uid'] . ' AND uid_foreign = ' . (int) $attributeKey
 								);
 
 								if ($database->sql_num_rows($res) > 0) {

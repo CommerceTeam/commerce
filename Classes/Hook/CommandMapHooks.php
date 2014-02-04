@@ -279,8 +279,8 @@ class Tx_Commerce_Hook_CommandMapHooks {
 				// Check product has attrinutes and no Attributes are avaliable for localised version
 			if (is_array($productAttributes) && count($productAttributes) > 0 && $locProductAttributes  == FALSE) {
 					// als thrue
-				$langIsoCode = t3lib_BEfunc::getRecord('sys_language', intval($value), 'static_lang_isocode');
-				$langIdent = t3lib_BEfunc::getRecord('static_languages', intval($langIsoCode['static_lang_isocode']), 'lg_typo3');
+				$langIsoCode = t3lib_BEfunc::getRecord('sys_language', (int) $value, 'static_lang_isocode');
+				$langIdent = t3lib_BEfunc::getRecord('static_languages', (int) $langIsoCode['static_lang_isocode'], 'lg_typo3');
 				$langIdent = strtoupper($langIdent['lg_typo3']);
 
 				if (is_array($productAttributes)) {
@@ -342,8 +342,8 @@ class Tx_Commerce_Hook_CommandMapHooks {
 			if ($articles != FALSE && $locProductARticles == FALSE) {
 					// determine language identifier
 					// this is needed for updating the XML of the new created articles
-				$langIsoCode = t3lib_BEfunc::getRecord('sys_language', intval($value), 'static_lang_isocode');
-				$langIdent = t3lib_BEfunc::getRecord('static_languages', intval($langIsoCode['static_lang_isocode']), 'lg_typo3');
+				$langIsoCode = t3lib_BEfunc::getRecord('sys_language', (int) $value, 'static_lang_isocode');
+				$langIdent = t3lib_BEfunc::getRecord('static_languages', (int) $langIsoCode['static_lang_isocode'], 'lg_typo3');
 				$langIdent = strtoupper($langIdent['lg_typo3']);
 				if (empty($langIdent)) {
 					$langIdent = 'DEF';
@@ -382,7 +382,7 @@ class Tx_Commerce_Hook_CommandMapHooks {
 						$res = $database->exec_SELECTquery(
 							'*',
 							'tx_commerce_articles_article_attributes_mm',
-							'uid_local = ' . intval($origArticle['uid']) . ' AND uid_valuelist = 0'
+							'uid_local = ' . (int) $origArticle['uid'] . ' AND uid_valuelist = 0'
 						);
 						while ($origRelation = $database->sql_fetch_assoc($res)) {
 							$origRelation['uid_local'] = $locAUid;

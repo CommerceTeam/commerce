@@ -29,7 +29,7 @@
  * This module lets you view and change permissions for pages.
  *
  * Variables:
- * $this->MOD_SETTINGS['depth']: intval 1-3: decides the depth of the list
+ * $this->MOD_SETTINGS['depth']: integer 1-3: decides the depth of the list
  * $this->MOD_SETTINGS['mode']: 'perms' / '': decides if we view a user-overview or the permissions.
  */
 class Tx_Commerce_Controller_AccessController extends t3lib_SCbase {
@@ -117,7 +117,7 @@ class Tx_Commerce_Controller_AccessController extends t3lib_SCbase {
 			$this->table = key($controlParams);
 			$this->id = $controlParams[$this->table]['uid'];
 		} else {
-			$this->id = intval(t3lib_div::_GP('id'));
+			$this->id = (int) t3lib_div::_GP('id');
 		}
 
 		$this->edit = t3lib_div::_GP('edit');

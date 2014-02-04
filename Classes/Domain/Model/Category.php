@@ -215,8 +215,8 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	 * @return boolean TRUE on success, FALSE if no $uid is submitted
 	 */
 	public function init($uid, $languageUid = 0) {
-		$uid = intval($uid);
-		$languageUid = intval($languageUid);
+		$uid = (int) $uid;
+		$languageUid = (int) $languageUid;
 
 		if ($uid > 0) {
 			$this->uid = $uid;
@@ -261,7 +261,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 			$this->teaserImagesArray = t3lib_div::trimExplode(',', $this->teaserimages, TRUE);
 
 			$this->categories_uid = $this->databaseConnection->get_child_categories($this->uid, $this->lang_uid);
-			$this->parent_category_uid = intval($this->databaseConnection->get_parent_category($this->uid));
+			$this->parent_category_uid = $this->databaseConnection->get_parent_category($this->uid);
 			$this->products_uid = $this->databaseConnection->get_child_products($this->uid, $this->lang_uid);
 			$this->data_loaded = TRUE;
 		}

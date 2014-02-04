@@ -92,8 +92,8 @@ class Tx_Commerce_Domain_Repository_Repository {
 			$translationMode = $this->translationMode;
 		}
 
-		$uid = intval($uid);
-		$langUid = intval($langUid);
+		$uid = (int) $uid;
+		$langUid = (int) $langUid;
 		if ($langUid == -1) {
 			$langUid = 0;
 		}
@@ -187,7 +187,7 @@ class Tx_Commerce_Domain_Repository_Repository {
 	 */
 	public function isAccessible($uid) {
 		$return = FALSE;
-		$uid = intval($uid);
+		$uid = (int) $uid;
 		if ($uid > 0) {
 			$proofSQL = '';
 			if (is_object($GLOBALS['TSFE']->sys_page)) {
@@ -228,7 +228,7 @@ class Tx_Commerce_Domain_Repository_Repository {
 	 * @return array of attribute UID
 	 */
 	public function getAttributes($uid, $attribute_corelation_type_list = NULL) {
-		$uid = intval($uid);
+		$uid = (int) $uid;
 		if ($this->databaseAttributeRelationTable == '') {
 			return FALSE;
 		}
