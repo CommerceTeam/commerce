@@ -777,10 +777,7 @@ class Tx_Commerce_Controller_AccessController extends t3lib_SCbase {
 			}
 
 				// Compile table row:
-			$code .= '
-				<tr>
-					' . implode(LF, $cells) . '
-				</tr>';
+			$code .= '<tr>' . implode(LF, $cells) . '</tr>';
 		}
 
 			// Wrap rows in table tags:
@@ -801,7 +798,7 @@ class Tx_Commerce_Controller_AccessController extends t3lib_SCbase {
 
 		$code = '<table border="0" id="typo3-legendTable">
 			<tr>
-				<td valign="top"><img src="../../../Resources/Public/Images/legend.gif" width="86" height="75" alt="" /></td>
+				<td valign="top"><img src="' . $this->doc->backPath . 'gfx/legend.gif" width="86" height="75" alt="" /></td>
 				<td valign="top" nowrap="nowrap">' . $legendText . '</td>
 			</tr>
 		</table>
