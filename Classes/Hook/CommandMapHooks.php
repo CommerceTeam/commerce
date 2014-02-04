@@ -47,6 +47,7 @@ class Tx_Commerce_Hook_CommandMapHooks {
 	 */
 	const ATTRIBUTE_LOCALIZATION_TITLE_PREPENDED = 2;
 
+
 	/**
 	 * @var Tx_Commerce_Utility_BackendUtility
 	 */
@@ -70,13 +71,13 @@ class Tx_Commerce_Hook_CommandMapHooks {
 	 * Do Nothing if the command is lokalize an table is article
 	 *
 	 * @param string $command
-	 * @param string $table: the table the data will be stored in
-	 * @param integer $id: The uid of the dataset we're working on
-	 * @param array $values: the array of fields that where changed in BE (passed by reference)
-	 * @param t3lib_TCEmain $pObj: The instance of the BE data handler
+	 * @param string $table the table the data will be stored in
+	 * @param integer $id The uid of the dataset we're working on
+	 * @param array $value the array of fields that where changed in BE (passed by reference)
+	 * @param t3lib_TCEmain $pObj The instance of the BE data handler
 	 * @return void
 	 */
-	public function processCmdmap_preProcess(&$command, $table, &$id, $values, $pObj) {
+	public function processCmdmap_preProcess(&$command, $table, &$id, $value, $pObj) {
 		$this->pObj = $pObj;
 
 		switch ($table) {
@@ -221,9 +222,6 @@ class Tx_Commerce_Hook_CommandMapHooks {
 	public function processCmdmap_postProcess(&$command, $table, $id, $value, &$pObj) {
 		$this->pObj = $pObj;
 
-			// update the page tree
-		t3lib_BEfunc::setUpdateSignal('updateFolderTree');
-
 		switch ($table) {
 			case 'tx_commerce_categories':
 				$this->postProcessCategory($command, $id);
@@ -235,6 +233,7 @@ class Tx_Commerce_Hook_CommandMapHooks {
 		}
 	}
 
+
 	/**
 	 * @param string $command
 	 * @param integer $categoryUid
@@ -243,7 +242,7 @@ class Tx_Commerce_Hook_CommandMapHooks {
 	protected function postProcessCategory($command, $categoryUid) {
 			// @todo add copy for category
 		if ($command == 'delete') {
-			$this->deleteProductsAndArticlesOfDeletedCategory($categoryUid);
+			$this->deleteChildCategoriesProductsArticlesPricesOfCategory($categoryUid);
 		}
 	}
 
@@ -255,44 +254,42 @@ class Tx_Commerce_Hook_CommandMapHooks {
 	 * @param integer $categoryUid
 	 * @return void
 	 */
-	protected function deleteProductsAndArticlesOfDeletedCategory($categoryUid) {
-		/** @var t3lib_db $database */
-		$database = $GLOBALS['TYPO3_DB'];
-
-		$deleteArray = array('deleted' => 1);
+	protected function deleteChildCategoriesProductsArticlesPricesOfCategory($categoryUid) {
+			// we dont use Tx_Commerce_Domain_Model_Category::getChildCategoriesUidlist because of performance issues
 		$childCategories = array();
-
 		$this->belib->getChildCategories($categoryUid, $childCategories, 0, 0, TRUE);
 
-		if (is_array($childCategories) && count($childCategories) > 0) {
-			$categoryList = array();
-
+		if (count($childCategories)) {
 			foreach ($childCategories as $childCategoryUid) {
-				$categoryList[] = $childCategoryUid;
 				$products = $this->belib->getProductsOfCategory($childCategoryUid);
-				$productList = array();
-				if (is_array($products) && count($products) > 0) {
+
+				if (count($products)) {
+					$productList = array();
 					foreach ($products as $product) {
+						$productList[] = $product['uid_local'];
+
 						$articles = $this->belib->getArticlesOfProduct($product['uid_local']);
-						if (is_array($articles) && count($articles) > 0) {
+						if (count($articles)) {
 							$articleList = array();
 							foreach ($articles as $article) {
 								$articleList[] = $article['uid'];
-
-									// delete prices for article
-								$database->exec_UPDATEquery('tx_commerce_article_prices', 'uid_article=' . $article['uid'], $deleteArray);
 							}
-							$database->exec_UPDATEquery('tx_commerce_articles', 'uid IN (' . implode(',', $articleList) . ')', $deleteArray);
+
+							$this->deletePricesByArticleList($articleList);
+							$this->deleteArticlesByArticleList($articleList);
 						}
-						$productList[] = $product['uid_local'];
 					}
-					$database->exec_UPDATEquery('tx_commerce_products', 'uid IN (' . implode(',', $productList) . ')', $deleteArray);
+
+					$this->deleteProductsByProductList($productList);
+					$this->deleteProductTranslationsByProductList($productList);
 				}
 			}
 
-			$database->exec_UPDATEquery('tx_commerce_categories', 'uid IN (' . implode(',', $categoryList) . ')', $deleteArray);
+			$this->deleteCategoriesByCategoryList($childCategories);
+			$this->deleteCategoryTranslationsByCategoryList($childCategories);
 		}
 	}
+
 
 	/**
 	 * @param string $command
@@ -302,53 +299,16 @@ class Tx_Commerce_Hook_CommandMapHooks {
 	 */
 	protected function postProcessProduct(&$command, $productUid, $value) {
 		if ($command == 'localize') {
-			$this->translateArticlesOfProduct($command, 'tx_commerce_products', $productUid, $value, $this->pObj);
+			$this->translateArticlesOfProduct($command, $productUid, $value);
 		} elseif ($command == 'delete') {
-			$this->deleteArticlesOfDeletedProduct($productUid);
-			$this->deleteLocalizationsOfDeletedProduct('tx_commerce_products', $productUid);
+			$this->deleteArticlesPricesOfProduct($productUid);
+			$this->deleteProductTranslationsByProductList(array($productUid));
+		} elseif ($command == 'copy') {
+			$newProductUid = $this->pObj->copyMappingArray['tx_commerce_products'][$productUid];
+
+			$this->changeCategoryOfCopiedProduct($newProductUid);
+			$this->copyArticlesFromProduct($newProductUid);
 		}
-	}
-
-	/**
-	 * If a product is deleted, delete all articles below and their locales.
-	 *
-	 * @param integer $productUid
-	 * @return void
-	 */
-	protected function deleteArticlesOfDeletedProduct($productUid) {
-		/** @var t3lib_db $database */
-		$database = $GLOBALS['TYPO3_DB'];
-
-			// get all related articles
-		$articles = $this->belib->getArticlesOfProduct($productUid);
-
-		if (($articles != FALSE) && (is_array($articles))) {
-			/**
-			 * Only if there are articles, walk thru the array
-			 * and delete articles from database
-			 * by setting deleted =1
-			 */
-			$update_array['deleted'] = 1;
-			foreach ($articles as $oneArticle) {
-
-				if ($oneArticle['uid'] > 0) {
-					$database->exec_UPDATEquery('tx_commerce_articles', 'uid = ' . $oneArticle['uid'], $update_array);
-					$this->belib->deleteL18n('tx_commerce_articles', $oneArticle['uid']);
-				}
-			}
-		}
-	}
-
-	/**
-	 * If a product is deleted, delete all localizations of it
-	 *
-	 * @param string $table
-	 * @param integer $productUid
-	 * @return void
-	 */
-	protected function deleteLocalizationsOfDeletedProduct($table, $productUid) {
-			// delete the localizations for products
-		$this->belib->deleteL18n($table, $productUid);
 	}
 
 	/**
@@ -356,13 +316,11 @@ class Tx_Commerce_Hook_CommandMapHooks {
 	 * and localize all product attributes realted to this product from
 	 *
 	 * @param string $command
-	 * @param string $table: the table the data will be stored in
-	 * @param integer $productUid: The uid of the dataset we're working on
-	 * @param array $value: the array of fields that where changed in BE (passed by reference)
-	 * @param t3lib_TCEmain $pObj: The instance of the BE data handler
+	 * @param integer $productUid The uid of the dataset we're working on
+	 * @param array $value the array of fields that where changed in BE (passed by reference)
 	 * @return void
 	 */
-	protected function translateArticlesOfProduct(&$command, $table, $productUid, $value, &$pObj) {
+	protected function translateArticlesOfProduct(&$command, $productUid, $value) {
 		/** @var t3lib_beUserAuth $backendUser */
 		$backendUser = $GLOBALS['BE_USER'];
 		/** @var t3lib_db $database */
@@ -373,20 +331,30 @@ class Tx_Commerce_Hook_CommandMapHooks {
 		$backendUser->writeUC();
 
 			// get the uid of the newly created product
-		$localizedProductUid = $pObj->copyMappingArray[$table][$productUid];
+		$localizedProductUid = $this->pObj->copyMappingArray['tx_commerce_products'][$productUid];
+			// check if localized Product already has articles
+		$localizedProductArticles = $this->belib->getArticlesOfProduct($localizedProductUid);
 
 		if ($localizedProductUid == NULL) {
 			$command = '';
 			$this->error('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:product.no_find_uid');
 		}
+		if (!count($localizedProductArticles)) {
+				// Error Output, no Articles
+			$command = '';
+			$this->error('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:product.localization_without_article');
+		}
+		if ($localizedProductUid == NULL || !count($localizedProductArticles)) {
+			return;
+		}
 
 			// get all related attributes
 		$productAttributes = $this->belib->getAttributesForProduct($productUid, FALSE, TRUE);
 			// check if localized product has attributes
-		$locProductAttributes = $this->belib->getAttributesForProduct($localizedProductUid);
+		$localizedProductAttributes = $this->belib->getAttributesForProduct($localizedProductUid);
 
 			// Check product has attrinutes and no attributes are avaliable for localized version
-		if ($locProductAttributes == FALSE && is_array($productAttributes) && count($productAttributes) > 0) {
+		if ($localizedProductAttributes == FALSE && is_array($productAttributes) && count($productAttributes) > 0) {
 				// als thrue
 			$langIsoCode = t3lib_BEfunc::getRecord('sys_language', (int) $value, 'static_lang_isocode');
 			$langIdent = t3lib_BEfunc::getRecord('static_languages', (int) $langIsoCode['static_lang_isocode'], 'lg_typo3');
@@ -457,11 +425,9 @@ class Tx_Commerce_Hook_CommandMapHooks {
 
 			// get all related articles
 		$articles = $this->belib->getArticlesOfProduct($productUid);
-			// check if localized Product already has articles
-		$locProductArticles = $this->belib->getArticlesOfProduct($localizedProductUid);
 
 			// Check if product has articles and localized product has no articles
-		if ($articles != FALSE && $locProductArticles == FALSE) {
+		if ($articles != FALSE && $localizedProductArticles == FALSE) {
 				// determine language identifier
 				// this is needed for updating the XML of the new created articles
 			$langIsoCode = t3lib_BEfunc::getRecord('sys_language', (int) $value, 'static_lang_isocode');
@@ -512,10 +478,25 @@ class Tx_Commerce_Hook_CommandMapHooks {
 					}
 				}
 			}
-		} elseif ($locProductArticles == FALSE) {
-				// Error Output, no Articles
-			$command = '';
-			$this->error('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:product.localization_without_article');
+		}
+	}
+
+	/**
+	 * If a product is deleted, delete all articles below and their locales.
+	 *
+	 * @param integer $productUid
+	 * @return void
+	 */
+	protected function deleteArticlesPricesOfProduct($productUid) {
+		$articles = $this->belib->getArticlesOfProduct($productUid);
+		if (count($articles)) {
+			$articleList = array();
+			foreach ($articles as $article) {
+				$articleList[] = $article['uid'];
+			}
+
+			$this->deletePricesByArticleList($articleList);
+			$this->deleteArticlesByArticleList($articleList);
 		}
 	}
 
@@ -523,11 +504,144 @@ class Tx_Commerce_Hook_CommandMapHooks {
 	 * @param integer $productUid
 	 * @return void
 	 */
-	protected function changeCategoryOfCopiedProdct($productUid) {
+	protected function changeCategoryOfCopiedProduct($productUid) {
 			// @todo implement this
 		/** @var t3lib_db $database */
 		$database = $GLOBALS['TYPO3_DB'];
+
+		$pasteData = t3lib_div::_GP('CB');
+
+		/** @var t3lib_clipboard $clipObj */
+		$clipObj = t3lib_div::makeInstance('t3lib_clipboard');
+		$clipObj->initializeClipboard();
+		$clipObj->setCurrentPad($pasteData['pad']);
+
+		$fromData = array_pop(t3lib_div::trimExplode('|', key($clipObj->clipData[$clipObj->current]['el']), TRUE));
+		$toData = array_pop(t3lib_div::trimExplode('|', $pasteData['paste'], TRUE));
+
+		if ($fromData && $toData) {
+			$database->exec_DELETEquery('tx_commerce_products_categories_mm', 'uid_local = ' . $productUid . ' AND uid_foreign = ' . $fromData);
+			$database->exec_INSERTquery('tx_commerce_products_categories_mm', array('uid_local' => $productUid, 'uid_foreign' => $toData));
+		}
 	}
+
+	/**
+	 * @param $productUid
+	 * @return void
+	 */
+	protected function copyArticlesFromProduct($productUid) {
+
+	}
+
+
+	/**
+	 * flag categories as deleted for categoryList
+	 *
+	 * @param $categoryList
+	 * @return void
+	 */
+	protected function deleteCategoriesByCategoryList($categoryList) {
+		/** @var t3lib_db $database */
+		$database = $GLOBALS['TYPO3_DB'];
+
+		$updateValues = array(
+			'tstamp' => $GLOBALS['EXEC_TIME'],
+			'deleted' => 1
+		);
+
+		$database->exec_UPDATEquery('tx_commerce_categories', 'uid IN (' . implode(',', $categoryList) . ')', $updateValues);
+	}
+
+	/**
+	 * flag category translations as deleted for categoryList
+	 *
+	 * @param $categoryList
+	 * @return void
+	 */
+	protected function deleteCategoryTranslationsByCategoryList($categoryList) {
+		/** @var t3lib_db $database */
+		$database = $GLOBALS['TYPO3_DB'];
+
+		$updateValues = array(
+			'tstamp' => $GLOBALS['EXEC_TIME'],
+			'deleted' => 1
+		);
+
+		$database->exec_UPDATEquery('tx_commerce_categories', 'l18n_parent IN (' . implode(',', $categoryList) . ')', $updateValues);
+	}
+
+	/**
+	 * flag product as deleted for productList
+	 *
+	 * @param $productList
+	 * @return void
+	 */
+	protected function deleteProductsByProductList($productList) {
+		/** @var t3lib_db $database */
+		$database = $GLOBALS['TYPO3_DB'];
+
+		$updateValues = array(
+			'tstamp' => $GLOBALS['EXEC_TIME'],
+			'deleted' => 1
+		);
+
+		$database->exec_UPDATEquery('tx_commerce_products', 'uid IN (' . implode(',', $productList) . ')', $updateValues);
+	}
+
+	/**
+	 * flag product translations as deleted for productList
+	 *
+	 * @param $productList
+	 * @return void
+	 */
+	protected function deleteProductTranslationsByProductList($productList) {
+		/** @var t3lib_db $database */
+		$database = $GLOBALS['TYPO3_DB'];
+
+		$updateValues = array(
+			'tstamp' => $GLOBALS['EXEC_TIME'],
+			'deleted' => 1
+		);
+
+		$database->exec_UPDATEquery('tx_commerce_products', 'l18n_parent IN (' . implode(',', $productList) . ')', $updateValues);
+	}
+
+	/**
+	 * flag articles as deleted for articleList
+	 *
+	 * @param $articleList
+	 * @return void
+	 */
+	protected function deleteArticlesByArticleList($articleList) {
+		/** @var t3lib_db $database */
+		$database = $GLOBALS['TYPO3_DB'];
+
+		$updateValues = array(
+			'tstamp' => $GLOBALS['EXEC_TIME'],
+			'deleted' => 1
+		);
+
+		$database->exec_UPDATEquery('tx_commerce_articles', 'uid IN (' . implode(',', $articleList) . ')', $updateValues);
+	}
+
+	/**
+	 * flag prices as deleted for articleList
+	 *
+	 * @param $articleList
+	 * @return void
+	 */
+	protected function deletePricesByArticleList($articleList) {
+		/** @var t3lib_db $database */
+		$database = $GLOBALS['TYPO3_DB'];
+
+		$updateValues = array(
+			'tstamp' => $GLOBALS['EXEC_TIME'],
+			'deleted' => 1
+		);
+
+		$database->exec_UPDATEquery('tx_commerce_article_prices', 'uid IN (' . implode(',', $articleList) . ')', $updateValues);
+	}
+
 
 	/**
 	 * Prints out the error

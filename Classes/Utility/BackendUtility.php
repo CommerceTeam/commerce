@@ -199,40 +199,39 @@ class Tx_Commerce_Utility_BackendUtility {
 	 * Get all categories that have this one as parent.
 	 *
 	 * @param integer $cUid: The UID of the category that is the startingpoint
-	 * @param array $cUidList: A list of category UIDs. PASSED BY REFERENCE
+	 * @param array $categoryUidList: A list of category uids. PASSED BY REFERENCE because this way the recursion is easier
 	 * @param integer $dontAdd: A single UID, if this is found in the parent results, it's not added to the list
 	 * @param integer $excludeUid: If the current cUid is like this UID the cUid is not processed at all
 	 * @param boolean $recursive: If true, this method calls itself for each category if finds
 	 * @return void
 	 */
-	public function getChildCategories($cUid, &$cUidList, $dontAdd = 0, $excludeUid = 0, $recursive = TRUE) {
-		if (strlen((string) $cUid) > 0) {
+	public function getChildCategories($cUid, &$categoryUidList, $dontAdd = 0, $excludeUid = 0, $recursive = TRUE) {
+			// @todo make $categoryUidList not a reference
+			// add the submitted uid to the list if it is bigger than 0 and not already in the list
+		if ((int) $cUid > 0 && $cUid != $excludeUid) {
 			/** @var t3lib_db $database */
 			$database = $GLOBALS['TYPO3_DB'];
 
-				// add the submitted uid to the list if it is bigger than 0 and not already in the list
-			if ($cUid > 0 && $cUid != $excludeUid) {
-				if (!in_array($cUid, $cUidList) && $cUid != $dontAdd) {
-					$cUidList[] = $cUid;
-				}
+			if (!in_array($cUid, $categoryUidList) && $cUid != $dontAdd) {
+				$categoryUidList[] = $cUid;
+			}
 
-				$res = $database->exec_SELECTquery(
-					'uid_local',
-					'tx_commerce_categories_parent_category_mm',
-					'uid_foreign=' . (int) $cUid,
-					'',
-					'uid_local'
-				);
+			$res = $database->exec_SELECTquery(
+				'uid_local',
+				'tx_commerce_categories_parent_category_mm',
+				'uid_foreign=' . (int) $cUid,
+				'',
+				'uid_local'
+			);
 
-				if ($res) {
-					while ($relData = $database->sql_fetch_assoc($res)) {
-						if ($recursive) {
-							$this->getChildCategories($relData['uid_local'], $cUidList, $cUid, $excludeUid);
-						} else {
-							$cUid = $relData['uid_local'];
-							if (!in_array($cUid, $cUidList) && $cUid != $dontAdd) {
-								$cUidList[] = $cUid;
-							}
+			if ($res) {
+				while ($relData = $database->sql_fetch_assoc($res)) {
+					if ($recursive) {
+						$this->getChildCategories($relData['uid_local'], $categoryUidList, $cUid, $excludeUid);
+					} else {
+						$cUid = $relData['uid_local'];
+						if (!in_array($cUid, $categoryUidList) && $cUid != $dontAdd) {
+							$categoryUidList[] = $cUid;
 						}
 					}
 				}
@@ -495,24 +494,15 @@ class Tx_Commerce_Utility_BackendUtility {
 		/** @var t3lib_db $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
-		$where = 'uid_product=' . (int) $pUid;
+		$result = (array) $database->exec_SELECTgetRows(
+			'*',
+			'tx_commerce_articles',
+			'uid_product = ' . (int) $pUid . ' AND deleted = 0' . ($additionalWhere ? ' AND ' : '') . $additionalWhere,
+			'',
+			$orderBy
+		);
 
-		$where .= ' AND deleted=0';
-
-		if ($additionalWhere != '') {
-			$where .= ' AND ' . $additionalWhere;
-		}
-
-		$res = $database->exec_SELECTquery('*', 'tx_commerce_articles', $where, '', $orderBy);
-		if ($res && $database->sql_num_rows($res) > 0) {
-			$result = array();
-			while ($article = $database->sql_fetch_assoc($res)) {
-				$result[] = $article;
-			}
-			return $result;
-		} else {
-			return FALSE;
-		}
+		return $result;
 	}
 
 	/**
@@ -1116,10 +1106,10 @@ class Tx_Commerce_Utility_BackendUtility {
 		/** @var t3lib_db $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
-		$result = $database->exec_SELECTgetRows(
+		$result = (array) $database->exec_SELECTgetRows(
 			'*',
 			'tx_commerce_products_categories_mm',
-			'uid_foreign=' . (int) $categoryUid
+			'uid_foreign = ' . (int) $categoryUid
 		);
 
 		return $result;

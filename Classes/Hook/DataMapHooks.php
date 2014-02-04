@@ -696,7 +696,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 	 * @return void
 	 */
 	public function processDatamap_postProcessFieldArray($status, $table, $id, &$fieldArray, &$pObj) {
-		switch (strtolower((string)$table)) {
+		switch ($table) {
 				// Permissions <- used for recursive assignment of the persmissions in Permissions[EDIT]
 
 			/**
@@ -1015,26 +1015,30 @@ class Tx_Commerce_Hook_DataMapHooks {
 
 	/**
 	 * This Function is simlar to array_diff but looks for array sorting too.
-	 * @param array $a1
-	 * @param array $a2
-	 * @return array $result different fields between a1 & a2
+	 * @param array $array1
+	 * @param array $array2
+	 * @return array $result different fields between array1 & array2
 	 */
-	protected function singleDiffAssoc(&$a1, &$a2) {
+	protected function singleDiffAssoc(&$array1, &$array2) {
 		$result = array();
 
-		foreach ($a1 as $k => $pl) {
-			if (! isset($a2[$k]) || $a2[$k] != $pl) {
-				$result[$k] = $pl;
+			// check for each value if in array2 the index is not set or the value is not equal
+		foreach ($array1 as $index => $value) {
+			if (!isset($array2[$index]) || $array2[$index] != $value) {
+				$result[$index] = $value;
 			}
 		}
 
-		foreach ($a2 as $k => $pl) {
-			if ( (! isset($a1[$k]) || $a1[$k] != $pl ) && ! isset($r[$k]) ) {
-				$result[$k] = $pl;
+			// check for each value if in array1 the index is not set or the value is not equal and in result the index is not set
+		foreach ($array2 as $index => $value) {
+			if ((!isset($array1[$index]) || $array1[$index] != $value) && !isset($result[$index])) {
+				$result[$index] = $value;
 			}
 		}
+
 		return $result;
 	}
+
 
 	/**
 	 * When all operations in the database where made from TYPO3 side, we have to make some special
