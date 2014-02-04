@@ -17,6 +17,8 @@ return array(
 	'tx_commerce_systemdata' => $classPath . 'Controller/SystemdataController.php',
 
 	/* frontend controller */
+	'tx_commerce_controller_basecontroller' => $classPath . 'Controller/BaseController.php',
+	'tx_commerce_pibase' => $classPath . 'Controller/BaseController.php',
 	'tx_commerce_controller_addressescontroller' => $classPath . 'Controller/AddressesController.php',
 	'tx_commerce_pi4' => $classPath . 'Controller/AddressesController.php',
 	'tx_commerce_controller_basketcontroller' => $classPath . 'Controller/BasketController.php',
@@ -130,7 +132,6 @@ return array(
 	'user_tx_commerce_catmenu_pub' => $extensionPath . 'lib/class.user_tx_commerce_catmenu_pub.php',
 	'tx_commerce_feusers_localrecordlist' => $extensionPath . 'lib/class.tx_commerce_feusers_localrecordlist.php',
 	'tx_commerce_order_localrecordlist' => $extensionPath . 'lib/class.tx_commerce_order_localrecordlist.php',
-	'tx_commerce_pibase' => $extensionPath . 'lib/class.tx_commerce_pibase.php',
 	'tx_commerce_statistics' => $extensionPath . 'lib/class.tx_commerce_statistics.php',
 
 	'tx_commerce_categorytree' => $extensionPath . 'treelib/class.tx_commerce_categorytree.php',
