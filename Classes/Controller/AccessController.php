@@ -707,9 +707,9 @@ class Tx_Commerce_Controller_AccessController extends t3lib_SCbase {
 				$aHref = 'index.php?mode=' . $this->MOD_SETTINGS['mode'] . '&depth=' . $this->MOD_SETTINGS['depth'] . '&id=' .
 					$pageId . '&return_id=' . $this->id . '&edit=1';
 				$cells[] = '
-					<td' . $bgCol . '><a href="' . htmlspecialchars($aHref) . '"><img' .
-					t3lib_iconWorks::skinImg($this->doc->backPath, 'gfx/edit2.gif', 'width="11" height="12"') .
-					' border="0" title="' . $language->getLL('ch_permissions', 1) . '" align="top" alt="" /></a></td>';
+					<td' . $bgCol . '><a href="' . htmlspecialchars($aHref) . '">' .
+					t3lib_iconWorks::getSpriteIcon('actions-document-open', array('title' => $language->getLL('ch_permissions', 1))) .
+					'</a></td>';
 			} else {
 				$cells[] = '
 					<td' . $bgCol . '></td>';

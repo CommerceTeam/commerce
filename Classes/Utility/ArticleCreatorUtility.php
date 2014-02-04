@@ -177,7 +177,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 				// the edit pencil (with jump back to this dataset)
 			$result .= '<td style="border-top:1px black solid"><a href="#" onclick="document.location=\'alt_doc.php?returnUrl=alt_doc.php?edit[tx_commerce_products][' .
 				(int) $this->uid . ']=edit&amp;edit[tx_commerce_articles][' . (int) $article['uid'] . ']=edit\'; return false;">';
-			$result .= '<img src="/typo3/gfx/edit2.gif" border="0" /></a></td>';
+			$result .= t3lib_iconWorks::getSpriteIcon('actions-document-open') . '</a></td>';
 
 				// add the hide button
 			$result .= '<td style="border-top:1px black solid"><a href="#" onclick="return jumpToUrl(\'tce_db.php?&amp;data[tx_commerce_articles][' .
@@ -483,10 +483,9 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	 * This adds new attributes to all existing articles that where added to the parent
 	 * product or categories.
 	 *
-	 * @param array $PA: ...
 	 * @return void
 	 */
-	public function updateArticles($PA) {
+	public function updateArticles() {
 		$fullAttributeList = array();
 
 		if (!is_array($this->attributes['ct1'])) {

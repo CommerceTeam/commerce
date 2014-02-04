@@ -194,15 +194,15 @@ class Tx_Commerce_ViewHelpers_OrderRecordlist extends localRecordList {
 				if ($row['hidden']) {
 					$params = '&data[pages][' . $row['uid'] . '][hidden]=0';
 					$theCtrlPanel[] = '<a href="#" onclick="' .
-						htmlspecialchars('return jumpToUrl(\'' . $GLOBALS['SOBE']->doc->issueCommand($params, -1) . '\');') . '"><img' .
-						t3lib_iconWorks::skinImg($this->backPath, 'gfx/button_unhide.gif', 'width="11" height="10"') .
-						' title="' . $language->getLL('unHidePage', 1) . '" alt="" /></a>';
+						htmlspecialchars('return jumpToUrl(\'' . $GLOBALS['SOBE']->doc->issueCommand($params, -1) . '\');') . '">' .
+						t3lib_iconWorks::getSpriteIcon('actions-edit-unhide', array('title' => $language->getLL('unHidePage', 1))) .
+						'</a>';
 				} else {
 					$params = '&data[pages][' . $row['uid'] . '][hidden]=1';
 					$theCtrlPanel[] = '<a href="#" onclick="' .
-						htmlspecialchars('return jumpToUrl(\'' . $GLOBALS['SOBE']->doc->issueCommand($params, -1) . '\');') . '"><img' .
-						t3lib_iconWorks::skinImg($this->backPath, 'gfx/button_hide.gif', 'width="11" height="10"') .
-						' title="' . $language->getLL('hidePage', 1) . '" alt="" /></a>';
+						htmlspecialchars('return jumpToUrl(\'' . $GLOBALS['SOBE']->doc->issueCommand($params, -1) . '\');') . '">' .
+						t3lib_iconWorks::getSpriteIcon('actions-edit-hide', array('title' => $language->getLL('hidePage', 1))) .
+						'</a>';
 				}
 			}
 		}
@@ -213,9 +213,9 @@ class Tx_Commerce_ViewHelpers_OrderRecordlist extends localRecordList {
 			if (count($elFromTable)) {
 				$theCtrlPanel[] = '<a href="' .
 					htmlspecialchars($this->clipObj->pasteUrl('', $this->id)) . '" onclick="' .
-					htmlspecialchars('return ' . $this->clipObj->confirmMsg('pages', $this->pageRow, 'into', $elFromTable)) . '"><img' .
-					t3lib_iconWorks::skinImg($this->backPath, 'gfx/clip_pasteafter.gif', 'width="12" height="12"') .
-					' title="' . $language->getLL('clip_paste', 1) . '" alt="" /></a>';
+					htmlspecialchars('return ' . $this->clipObj->confirmMsg('pages', $this->pageRow, 'into', $elFromTable)) . '">' .
+					t3lib_iconWorks::getSpriteIcon('actions-document-paste-after', array('title' => $language->getLL('clip_paste', 1))) .
+					'</a>';
 			}
 		}
 

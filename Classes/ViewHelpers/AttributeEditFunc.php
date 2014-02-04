@@ -135,9 +135,8 @@ class Tx_Commerce_ViewHelpers_AttributeEditFunc {
 				$onClick = 'deleteRecord(\'' . $foreign_table . '\', ' . $row['uid'] . ', \'alt_doc.php?edit[tx_commerce_attributes][' . $attributeUid . ']=edit\');';
 
 				$iOut .= '<td>&nbsp;';
-				$iOut .= '<a href="#" onclick="' . $onClick . '"><img' .
-					t3lib_iconWorks::skinImg($GLOBALS['BACK_PATH'], 'gfx/delete_record.gif', 'width="11" height="12"') .
-					' title="Delete" border="0" alt="" /></a></td>';
+				$iOut .= '<a href="#" onclick="' . $onClick . '">' .
+					t3lib_iconWorks::getSpriteIcon('actions-edit-delete') . '</a></td>';
 				$iOut .= '</tr>';
 			}
 

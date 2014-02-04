@@ -570,12 +570,11 @@ class Tx_Commerce_ViewHelpers_DatabaseListExtra extends localRecordList {
 						$editIdList = "'+editList('" . $table . "','" . $editIdList . "')+'";
 						$params = '&edit[' . $table . '][' . $editIdList . ']=edit&disHelp=1';
 						$cells[] = '<a href="#" onclick="' . htmlspecialchars(t3lib_BEfunc::editOnClick($params, $this->backPath, -1)) . '">' .
-							'<img' . t3lib_iconWorks::skinImg('', 'gfx/edit2.gif', 'width="11" height="12"') .
-							' title="' . $language->getLL('clip_editMarked', 1) . '" alt="" /></a>';
+							t3lib_iconWorks::getSpriteIcon('actions-document-open', array('title' => $language->getLL('clip_editMarked', 1))) . '</a>';
 
 							// The "Delete marked" link:
-						$cells[] = $this->linkClipboardHeaderIcon('<img' . t3lib_iconWorks::skinImg('', 'gfx/garbage.gif', 'width="11" height="12"') .
-							' title="' . $language->getLL('clip_deleteMarked', 1) . '" alt="" />',
+						$cells[] = $this->linkClipboardHeaderIcon(
+							t3lib_iconWorks::getSpriteIcon('actions-edit-delete', array('title' => $language->getLL('clip_deleteMarked', 1))),
 							$table,
 							'delete',
 							sprintf($language->getLL('clip_deleteMarkedWarning'), $language->sL($GLOBALS['TCA'][$table]['ctrl']['title']))
@@ -669,7 +668,7 @@ class Tx_Commerce_ViewHelpers_DatabaseListExtra extends localRecordList {
 							$params = '&edit[' . $table . '][' . $editIdList . ']=edit&columnsOnly=' . $fCol . '&disHelp=1' . $this->defVals;
 							$iTitle = sprintf($language->getLL('editThisColumn'), rtrim(trim($language->sL(t3lib_BEfunc::getItemLabel($table, $fCol))), ':'));
 							$temp = '<a href="#" onclick="' . htmlspecialchars(t3lib_BEfunc::editOnClick($params, $this->backPath, -1)) . '">' .
-								'<img' . t3lib_iconWorks::skinImg($this->backPath, 'gfx/edit2.gif', 'width="11" height="12"') . ' title="' . htmlspecialchars($iTitle) . '" alt="" /></a>';
+								t3lib_iconWorks::getSpriteIcon('actions-document-open', array('title' => htmlspecialchars($iTitle))) . '</a>';
 							$theData[$fCol] .= $temp;
 						}
 					}
@@ -725,9 +724,10 @@ class Tx_Commerce_ViewHelpers_DatabaseListExtra extends localRecordList {
 		if ($permsEdit) {
 			$params = '&edit[' . $table . '][' . $row['uid'] . ']=edit' . $this->defVals;
 			$temp = '<a href="#" onclick="' . htmlspecialchars(t3lib_BEfunc::editOnClick($params, $this->backPath, -1)) . '">' .
-				'<img' . t3lib_iconWorks::skinImg($this->backPath, 'gfx/edit2' .
-				(!$GLOBALS['TCA'][$table]['ctrl']['readOnly'] ? '' : '_d') . '.gif', 'width="11" height="12"') .
-				' title="' . $language->getLL('edit', 1) . '" alt="" /></a>';
+				t3lib_iconWorks::getSpriteIcon(
+					'actions-document-open' . ($GLOBALS['TCA'][$table]['ctrl']['readOnly'] ? '-read-only' : ''),
+					array('title' => $language->getLL('edit', 1))
+				) . '</a>';
 			$cells[] = $temp;
 		}
 
