@@ -335,7 +335,7 @@ class Tx_Commerce_Controller_OrdersController extends t3lib_SCbase {
 		/** @var $dblist Tx_Commerce_ViewHelpers_OrderRecordList */
 		$dblist = t3lib_div::makeInstance('Tx_Commerce_ViewHelpers_OrderRecordList');
 		$dblist->backPath = $this->doc->backPath;
-		$dblist->script = t3lib_BEfunc::getModuleUrl('web_list', array(), '');
+		$dblist->script = 'index.php';
 		$dblist->calcPerms = $backendUser->calcPerms($this->pageinfo);
 		$dblist->thumbs = $backendUser->uc['thumbnailsByDefault'];
 		$dblist->returnUrl = $this->returnUrl;
