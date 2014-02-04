@@ -241,7 +241,7 @@ class Tx_Commerce_Controller_WizardController {
 		$language = $GLOBALS['LANG'];
 
 			// Slight spacer from header:
-		$this->code .= '<img' . t3lib_iconWorks::skinImg($GLOBALS['BACK_PATH'], 'gfx/ol/halfline.gif', 'width="18" height="8"') . ' alt="" /><br />';
+		$this->code .= '<img' . t3lib_iconWorks::skinImg($this->doc->backPath, 'gfx/ol/halfline.gif', 'width="18" height="8"') . ' alt="" /><br />';
 
 			// New tables INSIDE this category
 		foreach ($this->param as $table => $param) {
@@ -256,7 +256,7 @@ class Tx_Commerce_Controller_WizardController {
 				switch ($cmd) {
 					case 'new':
 							// Create new link for record:
-						$rowContent = '<img' . t3lib_iconWorks::skinImg($GLOBALS['BACK_PATH'], 'gfx/ol/join.gif', 'width="18" height="16"') . ' alt="" />' .
+						$rowContent = '<img' . t3lib_iconWorks::skinImg($this->doc->backPath, 'gfx/ol/join.gif', 'width="18" height="16"') . ' alt="" />' .
 							$this->linkWrap(
 								t3lib_iconWorks::getSpriteIconForRecord($table, array()) .
 									$language->sL($GLOBALS['TCA'][$table]['ctrl']['title'], 1),
@@ -282,7 +282,7 @@ class Tx_Commerce_Controller_WizardController {
 			// Compile table row:
 		$tRows[] = '
 			<tr>
-				<td><img' . t3lib_iconWorks::skinImg($GLOBALS['BACK_PATH'], 'gfx/ol/stopper.gif', 'width="18" height="16"') . ' alt="" /></td>
+				<td><img' . t3lib_iconWorks::skinImg($this->doc->backPath, 'gfx/ol/stopper.gif', 'width="18" height="16"') . ' alt="" /></td>
 				<td></td>
 			</tr>
 		';

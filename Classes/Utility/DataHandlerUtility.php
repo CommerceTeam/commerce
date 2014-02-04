@@ -69,7 +69,7 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 	protected $vC;
 
 	/**
-	 * Boolean. Update Page Tree Trigger. If set and the manipulated records are pages then the update page tree signal will be set.
+	 * Boolean. Update Page Tree Trigger. If set and the manipulated records are tx_commerce_categories then the update page tree signal will be set.
 	 *
 	 * @var boolean
 	 */
@@ -86,11 +86,6 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 	 * @var t3lib_clipboard
 	 */
 	public $clipObj;
-
-	/**
-	 * @var string
-	 */
-	public $BACK_PATH;
 
 	/**
 	 * @var string
@@ -158,8 +153,6 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 		$this->sorting = t3lib_div::_GP('sorting');
 		$this->locales = t3lib_div::_GP('locale');
 		$this->cmd = t3lib_div::_GP('cmd');
-
-		$this->BACK_PATH = $GLOBALS['BACK_PATH'];
 		$this->clipObj = NULL;
 		$this->content = '';
 
@@ -169,11 +162,11 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 
 			// Initializing document template object:
 		$this->doc = t3lib_div::makeInstance('template');
-		$this->doc->backPath = $this->BACK_PATH;
+		$this->doc->backPath = $GLOBALS['BACK_PATH'];
 		$this->doc->docType = 'xhtml_trans';
 		$this->doc->setModuleTemplate(PATH_TXCOMMERCE . 'Resources/Private/Backend/mod_index.html');
 		$this->doc->loadJavascriptLib('contrib/prototype/prototype.js');
-		$this->doc->loadJavascriptLib($this->BACK_PATH . PATH_TXCOMMERCE_REL . 'Resources/Public/Javascript/copyPaste.js');
+		$this->doc->loadJavascriptLib($this->doc->backPath . PATH_TXCOMMERCE_REL . 'Resources/Public/Javascript/copyPaste.js');
 		$this->doc->form = '<form action="DataHandlerUtility.php?' . $cbString . '&vC=' . $this->vC . '&uPT=' . $this->uPT .
 			'&redirect=' . rawurlencode($this->redirect) . '&prErr=' . $this->prErr .
 			'&cmd=commit" method="post" name="localeform" id="localeform">';
@@ -306,7 +299,7 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 					for ($i = 0; $i < $l; $i ++) {
 						$tmpProd = $prods[$i];
 
-						$flag = ($tmpProd['flag'] != '') ?  '<img src="' . $this->BACK_PATH . 'gfx/flags/' . $tmpProd['flag'] . '" alt="Flag" />' : '';
+						$flag = ($tmpProd['flag'] != '') ?  '<img src="' . $this->doc->backPath . 'gfx/flags/' . $tmpProd['flag'] . '" alt="Flag" />' : '';
 
 						$str .= '<li><input type="checkbox" name="locale[]" id="loc_' . $tmpProd['uid'] . '" value="' .
 							$tmpProd['sys_language'] . '" /><label for="loc_' . $tmpProd['uid'] . '">' . $flag .
@@ -343,9 +336,14 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 					$str .= '<input type="submit" value="' . $language->getLL('copy.submit') . '" />';
 				} elseif (0 < $l) {
 						// at least 1 item - offer choice
-					$icon = '<img' . t3lib_iconWorks::skinImg($this->BACK_PATH, 'gfx/newrecord_marker_d.gif', 'width="281" height="8"') .
+					$icon = '<img' . t3lib_iconWorks::skinImg($this->doc->backPath, 'gfx/newrecord_marker_d.gif', 'width="281" height="8"') .
 						' alt="" title="Insert the category" />';
-					$prodIcon = t3lib_iconWorks::getIconImage('tx_commerce_products', array('uid' => $uidTarget), $this->BACK_PATH, 'align="top" class="c-recIcon"');
+					$prodIcon = t3lib_iconWorks::getIconImage(
+						'tx_commerce_products',
+						array('uid' => $uidTarget),
+						$this->doc->backPath,
+						'align="top" class="c-recIcon"'
+					);
 					$str .= '<h1>' . $language->getLL('copy.position') . '</h1>';
 
 					$str .= '<span class="nobr"><a href="javascript:void(0)" onclick="submitForm(' .
@@ -382,7 +380,7 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 					for ($i = 0; $i < $l; $i ++) {
 						$tmpCat = $cats[$i];
 
-						$flag = ($tmpCat['flag'] != '') ?  '<img src="' . $this->BACK_PATH . 'gfx/flags/' . $tmpCat['flag'] . '" alt="Flag" />' : '';
+						$flag = ($tmpCat['flag'] != '') ?  '<img src="' . $this->doc->backPath . 'gfx/flags/' . $tmpCat['flag'] . '" alt="Flag" />' : '';
 
 						$str .= '<li><input type="checkbox" name="locale[]" id="loc_' . $tmpCat['uid'] . '" value="' .
 							$tmpCat['sys_language'] . '" /><label for="loc_' . $tmpCat['uid'] . '">' . $flag .
@@ -416,9 +414,14 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 					$str .= '<input type="submit" value="' . $language->getLL('copy.submit') . '" />';
 				} elseif (0 < $l) {
 						// at least 1 item - offer choice
-					$icon = '<img' . t3lib_iconWorks::skinImg($this->BACK_PATH, 'gfx/newrecord_marker_d.gif', 'width="281" height="8"') .
+					$icon = '<img' . t3lib_iconWorks::skinImg($this->doc->backPath, 'gfx/newrecord_marker_d.gif', 'width="281" height="8"') .
 						' alt="" title="Insert the category" />';
-					$catIcon = t3lib_iconWorks::getIconImage('tx_commerce_categories', array('uid' => $uidTarget), $this->BACK_PATH, 'align="top" class="c-recIcon"');
+					$catIcon = t3lib_iconWorks::getIconImage(
+						'tx_commerce_categories',
+						array('uid' => $uidTarget),
+						$this->doc->backPath,
+						'align="top" class="c-recIcon"'
+					);
 					$str .= '<h1>' . $language->getLL('copy.position') . '</h1>';
 
 					$str .= '<span class="nobr"><a href="javascript:void(0)" onclick="submitForm(' .
@@ -518,7 +521,11 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 		}
 
 			// Update page tree?
-		if ($this->uPT && (isset($this->data['pages']) || isset($this->cmd['pages']))) {
+		if (
+			$this->uPT
+			&& (isset($this->data['tx_commerce_categories']) || isset($this->cmd['tx_commerce_categories']))
+			&& (isset($this->data['tx_commerce_products']) || isset($this->cmd['tx_commerce_products']))
+		) {
 			t3lib_BEfunc::setUpdateSignal('updatePageTree');
 		}
 	}

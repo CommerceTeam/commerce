@@ -375,10 +375,348 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 	/**
 	 * Outputting the accumulated content to screen
 	 *
-	 * @return	void
+	 * @return void
 	 */
 	public function printContent() {
 		echo $this->content;
+	}
+
+	/**
+	 * Generates the module content
+	 *
+	 * @return void
+	 */
+	protected function _moduleContent() {
+		/** @var t3lib_beUserAuth $backendUser */
+		$backendUser = & $GLOBALS['BE_USER'];
+		/** @var language $language */
+		$language = & $GLOBALS['LANG'];
+
+			// default values for the new command
+		$defVals = '';
+		$parent_uid = (int) $this->controlArray['uid'];
+
+			// Apply predefined values for hidden checkboxes
+			// Set predefined value for DisplayBigControlPanel:
+		if ($this->modTSconfig['properties']['enableDisplayBigControlPanel'] === 'activated') {
+			$this->MOD_SETTINGS['bigControlPanel'] = TRUE;
+		} elseif ($this->modTSconfig['properties']['enableDisplayBigControlPanel'] === 'deactivated') {
+			$this->MOD_SETTINGS['bigControlPanel'] = FALSE;
+		}
+
+			// Set predefined value for Clipboard:
+		if ($this->modTSconfig['properties']['enableClipBoard'] === 'activated') {
+			$this->MOD_SETTINGS['clipBoard'] = TRUE;
+		} elseif ($this->modTSconfig['properties']['enableClipBoard'] === 'deactivated') {
+			$this->MOD_SETTINGS['clipBoard'] = FALSE;
+		}
+
+			// Set predefined value for LocalizationView:
+		if ($this->modTSconfig['properties']['enableLocalizationView'] === 'activated') {
+			$this->MOD_SETTINGS['localization'] = TRUE;
+		} elseif ($this->modTSconfig['properties']['enableLocalizationView'] === 'deactivated') {
+			$this->MOD_SETTINGS['localization'] = FALSE;
+		}
+
+			// Initialize the dblist object:
+		/** @var $dblist Tx_Commerce_ViewHelpers_CategoryRecordList */
+		$dblist = t3lib_div::makeInstance('Tx_Commerce_ViewHelpers_CategoryRecordList');
+		$dblist->backPath = $this->doc->backPath;
+		$dblist->script = t3lib_BEfunc::getModuleUrl('web_list', array(), '');
+		$dblist->calcPerms = $backendUser->calcPerms($this->pageinfo);
+		$dblist->thumbs = $backendUser->uc['thumbnailsByDefault'];
+		$dblist->returnUrl = $this->returnUrl;
+		$dblist->allFields = ($this->MOD_SETTINGS['bigControlPanel'] || $this->table) ? 1 : 0;
+		$dblist->localizationView = $this->MOD_SETTINGS['localization'];
+		$dblist->showClipboard = 1;
+		$dblist->disableSingleTableView = $this->modTSconfig['properties']['disableSingleTableView'];
+		$dblist->listOnlyInSingleTableMode = $this->modTSconfig['properties']['listOnlyInSingleTableView'];
+		$dblist->hideTables = $this->modTSconfig['properties']['hideTables'];
+		$dblist->tableTSconfigOverTCA = $this->modTSconfig['properties']['table.'];
+		$dblist->clickTitleMode = $this->modTSconfig['properties']['clickTitleMode'];
+		$dblist->alternateBgColors = $this->modTSconfig['properties']['alternateBgColors']?1:0;
+		$dblist->allowedNewTables = t3lib_div::trimExplode(',', $this->modTSconfig['properties']['allowedNewTables'], 1);
+		$dblist->deniedNewTables = t3lib_div::trimExplode(',', $this->modTSconfig['properties']['deniedNewTables'], 1);
+		$dblist->newWizards = $this->modTSconfig['properties']['newWizards'] ? 1 : 0;
+		$dblist->pageRow = $this->pageinfo;
+		$dblist->counter++;
+		$dblist->MOD_MENU = array('bigControlPanel' => '', 'clipBoard' => '', 'localization' => '');
+		$dblist->modTSconfig = $this->modTSconfig;
+
+		$newRecordIcon = '';
+			// Link for creating new records:
+		if (!$this->modTSconfig['properties']['noCreateRecordsLink']) {
+			$sumlink = $this->scriptNewWizard . '?id=' . (int) $this->id;
+			foreach ($this->control as $controldat) {
+				$treedb = t3lib_div::makeInstance($controldat['dataClass']);
+				$treedb->init();
+
+				if ($treedb->getTable()) {
+					$sumlink .= '&edit[' . $treedb->getTable() . '][-' . $parent_uid . ']=new';
+					$tmpDefVals = '&defVals[' . $treedb->getTable() . '][' . $controldat['parent'] . ']=' . $parent_uid;
+					$defVals .= $tmpDefVals;
+				}
+			}
+			$sumlink .= $defVals;
+
+			$newRecordIcon = '
+				<!--
+					Link for creating a new record:
+				-->
+				<a href="' . htmlspecialchars($sumlink .
+					'&returnUrl=' . rawurlencode(t3lib_div::getIndpEnv('REQUEST_URI'))) . '">' .
+					t3lib_iconWorks::getSpriteIcon('actions-document-new', array('title' => $language->getLL('editPage', 1))) .
+				'</a>';
+		}
+
+		$dblist->newRecordIcon = $newRecordIcon;
+
+			// Clipboard is initialized:
+			// Start clipboard
+		$dblist->clipObj = t3lib_div::makeInstance('t3lib_clipboard');
+			// Initialize - reads the clipboard content from the user session
+		$dblist->clipObj->initializeClipboard();
+
+			// Clipboard actions are handled:
+			// CB is the clipboard command array
+		$CB = t3lib_div::_GET('CB');
+		if ($this->cmd == 'setCB') {
+				// CBH is all the fields selected for the clipboard, CBC is the checkbox fields which were checked. By merging we get a full array of checked/unchecked elements
+				// This is set to the 'el' array of the CB after being parsed so only the table in question is registered.
+			$CB['el'] = $dblist->clipObj->cleanUpCBC(array_merge((array) t3lib_div::_POST('CBH'), (array) t3lib_div::_POST('CBC')), $this->cmd_table);
+		}
+		if (!$this->MOD_SETTINGS['clipBoard']) {
+				// If the clipboard is NOT shown, set the pad to 'normal'.
+			$CB['setP'] = 'normal';
+		}
+			// Execute commands.
+		$dblist->clipObj->setCmd($CB);
+			// Clean up pad
+		$dblist->clipObj->cleanCurrent();
+			// Save the clipboard content
+		$dblist->clipObj->endClipboard();
+
+		$this->buttons = $dblist->getButtons($this->pageinfo);
+
+			// This flag will prevent the clipboard panel in being shown.
+			// It is set, if the clickmenu-layer is active AND the extended view is not enabled.
+		$dblist->dontShowClipControlPanels = $GLOBALS['CLIENT']['FORMSTYLE']
+			&& !$this->MOD_SETTINGS['bigControlPanel']
+			&& $dblist->clipObj->current == 'normal'
+			&& !$backendUser->uc['disableCMlayers']
+			&& !$this->modTSconfig['properties']['showClipControlPanelsDespiteOfCMlayers'];
+
+			// If there is access to the page, then render the list contents and set up the document template object:
+			// Deleting records...:
+			// Has not to do with the clipboard but is simply the delete action. The clipboard object is used to clean up the submitted entries to only the selected table.
+		if ($this->cmd == 'delete') {
+			$items = $dblist->clipObj->cleanUpCBC(t3lib_div::_POST('CBC'), $this->cmd_table, 1);
+			if (count($items)) {
+				$cmd = array();
+				foreach ($items as $iK => $value) {
+					$iKParts = explode('|', $iK);
+					$cmd[$iKParts[0]][$iKParts[1]]['delete'] = 1;
+				}
+				$tce = t3lib_div::makeInstance('t3lib_TCEmain');
+				$tce->stripslashes_values = 0;
+				$tce->start(array(), $cmd);
+				$tce->process_cmdmap();
+
+				if (isset($cmd['pages'])) {
+					t3lib_BEfunc::setUpdateSignal('updatePageTree');
+				}
+
+				$tce->printLogErrorMessages(t3lib_div::getIndpEnv('REQUEST_URI'));
+			}
+		}
+
+			// Initialize the listing object, dblist, for rendering the list:
+		$this->pointer = t3lib_div::intInRange($this->pointer, 0, 100000);
+		$dblist->start($this->id, $this->table, $this->pointer, $this->search_field, $this->search_levels, $this->showLimit);
+		$dblist->setDispFields();
+
+			// Render versioning selector:
+		if (t3lib_extMgm::isLoaded('version')) {
+			$dblist->HTMLcode .= $this->doc->getVersionSelector($this->id);
+		}
+
+			// Render the list of tables:
+		$dblist->generateList();
+
+			// Write the bottom of the page:
+		$dblist->writeBottom();
+		$listUrl = substr($dblist->listURL(), strlen($this->doc->backPath));
+			// Add JavaScript functions to the page:
+		$this->doc->JScode = $this->doc->wrapScriptTags('
+			function jumpToUrl(URL) { //
+				window.location.href = URL;
+				return false;
+			}
+			function jumpExt(URL,anchor) { //
+				var anc = anchor ? anchor : "";
+				window.location.href = URL + (T3_THIS_LOCATION ? "&returnUrl=" + T3_THIS_LOCATION : "") + anc;
+				return false;
+			}
+			function jumpSelf(URL) { //
+				window.location.href = URL + (T3_RETURN_URL ? "&returnUrl=" + T3_RETURN_URL : "");
+				return false;
+			}
+
+			function setHighlight(id) { //
+				top.fsMod.recentIds["web"] = id;
+				top.fsMod.navFrameHighlightedID["web"] = "pages" + id + "_" + top.fsMod.currentBank;	// For highlighting
+
+				if (top.content && top.content.nav_frame && top.content.nav_frame.refresh_nav) {
+					top.content.nav_frame.refresh_nav();
+				}
+			}
+			' . $this->doc->redirectUrls($listUrl) . '
+			' . $dblist->CBfunctions() . '
+			function editRecords(table,idList,addParams,CBflag)	{	//
+				window.location.href="' . $this->doc->backPath . 'alt_doc.php?returnUrl=' . rawurlencode(t3lib_div::getIndpEnv('REQUEST_URI')) .
+					'&edit["+table+"]["+idList+"]=edit"+addParams;
+			}
+			function editList(table,idList)	{	//
+				var list="";
+
+					// Checking how many is checked, how many is not
+				var pointer = 0;
+				var pos = idList.indexOf(",");
+				while (pos != -1) {
+					if (cbValue(table + "|" + idList.substr(pointer, pos - pointer))) {
+						list += idList.substr(pointer, pos - pointer) + ",";
+					}
+					pointer = pos + 1;
+					pos = idList.indexOf(",", pointer);
+				}
+				if (cbValue(table + "|" + idList.substr(pointer))) {
+					list += idList.substr(pointer) + ",";
+				}
+
+				return list ? list : idList;
+			}
+
+			if (top.fsMod) {
+				top.fsMod.recentIds["web"] = ' . intval($this->id) . ';
+			}
+		');
+
+			// Setting up the context sensitive menu:
+		$this->doc->getContextMenuCode();
+
+			// Begin to compile the whole page, starting out with page header:
+		$this->content .= '<form action="' . htmlspecialchars($dblist->listURL()) . '" method="post" name="dblistForm">';
+		$this->content .= $dblist->HTMLcode;
+		$this->content .= '<input type="hidden" name="cmd_table" /><input type="hidden" name="cmd" /></form>';
+
+			// If a listing was produced, create the page footer with search form etc:
+		if ($dblist->HTMLcode) {
+
+				// Making field select box (when extended view for a single table is enabled):
+			if ($dblist->table) {
+				$this->content .= $dblist->fieldSelectBox($dblist->table);
+			}
+
+				// Adding checkbox options for extended listing and clipboard display:
+			$this->content .= '
+
+					<!--
+						Listing options for extended view, clipboard and localization view
+					-->
+					<div id="typo3-listOptions">
+						<form action="" method="post">';
+
+				// Add "display bigControlPanel" checkbox:
+			if ($this->modTSconfig['properties']['enableDisplayBigControlPanel'] === 'selectable') {
+				$this->content .= t3lib_BEfunc::getFuncCheck(
+					$this->id,
+					'SET[bigControlPanel]',
+					$this->MOD_SETTINGS['bigControlPanel'],
+					'',
+					($this->table ? '&table=' . $this->table : ''),
+					'id="checkLargeControl"'
+				);
+				$this->content .= '<label for="checkLargeControl">' .
+					t3lib_BEfunc::wrapInHelp(
+						'xMOD_csh_corebe',
+						'list_options',
+						$language->getLL('largeControl', TRUE)
+					) . '</label><br />';
+			}
+
+				// Add "clipboard" checkbox:
+			if ($this->modTSconfig['properties']['enableClipBoard'] === 'selectable') {
+				if ($dblist->showClipboard) {
+					$this->content .= t3lib_BEfunc::getFuncCheck(
+						$this->id,
+						'SET[clipBoard]',
+						$this->MOD_SETTINGS['clipBoard'],
+						'',
+						($this->table ? '&table=' . $this->table : ''),
+						'id="checkShowClipBoard"'
+					);
+					$this->content .= '<label for="checkShowClipBoard">' .
+						t3lib_BEfunc::wrapInHelp(
+							'xMOD_csh_corebe',
+							'list_options',
+							$language->getLL('showClipBoard', TRUE)
+						) . '</label><br />';
+				}
+			}
+
+				// Add "localization view" checkbox:
+			if ($this->modTSconfig['properties']['enableLocalizationView'] === 'selectable') {
+				$this->content .= t3lib_BEfunc::getFuncCheck(
+					$this->id,
+					'SET[localization]',
+					$this->MOD_SETTINGS['localization'],
+					'',
+					($this->table ? '&table=' . $this->table : ''),
+					'id="checkLocalization"'
+				);
+				$this->content .= '<label for="checkLocalization">' .
+					t3lib_BEfunc::wrapInHelp(
+						'xMOD_csh_corebe',
+						'list_options',
+						$language->getLL('localization', TRUE)
+					) . '</label><br />';
+			}
+
+			$this->content .= '
+						</form>
+					</div>';
+
+				// Printing clipboard if enabled:
+			if ($this->MOD_SETTINGS['clipBoard'] && $dblist->showClipboard) {
+				$this->content .= $dblist->clipObj->printClipboard();
+			}
+
+				// Search box:
+			$sectionTitle = t3lib_BEfunc::wrapInHelp('xMOD_csh_corebe', 'list_searchbox', $language->sL('LLL:EXT:lang/locallang_core.php:labels.search', TRUE));
+			$this->content .= $this->doc->section(
+				$sectionTitle,
+				$dblist->getSearchBox(),
+				FALSE, TRUE, FALSE, TRUE
+			);
+
+				// Display sys-notes, if any are found:
+			$this->content .= $dblist->showSysNotesForPage();
+		}
+
+			// Setting up the buttons and markers for docheader
+		/*$docHeaderButtons = $dblist->getButtons($this->pageinfo);
+		$markers = array(
+			'CSH' => $docHeaderButtons['csh'],
+			'CONTENT' => $this->body
+		);
+
+			// Build the <body> for the module
+		$this->content = $this->doc->moduleBody($this->pageinfo, $docHeaderButtons, $markers);
+			// Renders the module page
+		$this->content = $this->doc->render(
+			'DB list',
+			$this->content
+		);*/
 	}
 
 	/**
@@ -403,7 +741,8 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 			// Initialize the dblist object:
 		/** @var Tx_Commerce_ViewHelpers_CategoryRecordList $dblist */
 		$dblist = t3lib_div::makeInstance('Tx_Commerce_ViewHelpers_CategoryRecordList');
-		$dblist->backPath = $GLOBALS['BACK_PATH'];
+		$dblist->backPath = $this->doc->backPath;
+		$dblist->script = t3lib_BEfunc::getModuleUrl('web_list', array(), '');
 		$dblist->calcPerms = $backendUser->calcPerms($this->pageinfo);
 		$dblist->thumbs = $backendUser->uc['thumbnailsByDefault'];
 		$dblist->returnUrl = $this->returnUrl;
@@ -412,10 +751,17 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 		$dblist->showClipboard = 1;
 		$dblist->disableSingleTableView = $this->modTSconfig['properties']['disableSingleTableView'];
 		$dblist->listOnlyInSingleTableMode = $this->modTSconfig['properties']['listOnlyInSingleTableView'];
+		$dblist->hideTables = $this->modTSconfig['properties']['hideTables'];
+		$dblist->tableTSconfigOverTCA = $this->modTSconfig['properties']['table.'];
 		$dblist->clickTitleMode = $this->modTSconfig['properties']['clickTitleMode'];
-		$dblist->alternateBgColors = $this->modTSconfig['properties']['alternateBgColors'] ? 1 : 0;
+		$dblist->alternateBgColors = $this->modTSconfig['properties']['alternateBgColors']?1:0;
 		$dblist->allowedNewTables = t3lib_div::trimExplode(',', $this->modTSconfig['properties']['allowedNewTables'], 1);
+		$dblist->deniedNewTables = t3lib_div::trimExplode(',', $this->modTSconfig['properties']['deniedNewTables'], 1);
 		$dblist->newWizards = $this->modTSconfig['properties']['newWizards'] ? 1 : 0;
+		$dblist->pageRow = $this->pageinfo;
+		$dblist->counter++;
+		$dblist->MOD_MENU = array('bigControlPanel' => '', 'clipBoard' => '', 'localization' => '');
+		$dblist->modTSconfig = $this->modTSconfig;
 
 		$newRecordIcon = '';
 			// Link for creating new records:
@@ -472,7 +818,7 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 			// Save the clipboard content
 		$dblist->clipObj->endClipboard();
 
-		$this->buttons = $dblist->getHeaderButtons($this->pageinfo);
+		$this->buttons = $dblist->getButtons($this->pageinfo);
 
 			// This flag will prevent the clipboard panel in being shown.
 			// It is set, if the clickmenu-layer is active AND the extended view is not enabled.

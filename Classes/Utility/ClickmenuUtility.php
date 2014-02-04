@@ -345,13 +345,7 @@ class Tx_Commerce_Utility_ClickmenuUtility {
 
 		return $this->pObj->linkItem(
 			$language->makeEntities($language->sL('LLL:EXT:version/locallang.xml:title', 1)),
-			$this->pObj->excludeIcon(
-				'<img' . t3lib_iconWorks::skinImg(
-					$this->pObj->PH_backPath,
-					t3lib_extMgm::extRelPath('version') . 'cm1/cm_icon.gif',
-					'width="15" height="12"'
-				) . ' alt="" />'
-			),
+			$this->pObj->excludeIcon(t3lib_iconWorks::getSpriteIcon('status-version-no-version')),
 			$this->pObj->urlRefForCM($url),
 			1
 		);
@@ -373,13 +367,7 @@ class Tx_Commerce_Utility_ClickmenuUtility {
 
 		return $this->pObj->linkItem(
 			$language->makeEntities($language->sL('LLL:EXT:version/locallang.xml:title_review', 1)),
-			$this->pObj->excludeIcon(
-				'<img' . t3lib_iconWorks::skinImg(
-					$this->pObj->PH_backPath,
-					t3lib_extMgm::extRelPath('version') . 'cm1/cm_icon.gif',
-					'width="15" height="12"'
-				) . ' alt="" />'
-			),
+			$this->pObj->excludeIcon(t3lib_iconWorks::getSpriteIcon('status-version-no-version')),
 			$this->pObj->urlRefForCM($url),
 			1
 		);

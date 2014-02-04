@@ -59,7 +59,7 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 	 *
 	 * @var string
 	 */
-	protected $BACK_PATH = '../../../../typo3/';
+	protected $backPath = '../../../../typo3/';
 
 	/**
 	 * Prefix for DOM Id
@@ -145,7 +145,7 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 	public $showDefaultTitleAttribute;
 
 	/**
-	 * Initialises the variables iconPath and BACK_PATH
+	 * Initialises the variables iconPath and backPath
 	 *
 	 * @return self
 	 */
@@ -161,8 +161,8 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 		if (empty($rootPathT3)) {
 			$rootPathT3 = '/';
 		}
-		$this->BACK_PATH = $rootPathT3 . TYPO3_mainDir;
-		$this->iconPath = $this->BACK_PATH . PATH_TXCOMMERCE_ICON_TREE_REL;
+		$this->backPath = $rootPathT3 . TYPO3_mainDir;
+		$this->iconPath = $this->backPath . PATH_TXCOMMERCE_ICON_TREE_REL;
 	}
 
 	/**
@@ -278,15 +278,10 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 		}
 
 		if ($this->iconPath && $this->iconName) {
-			$icon = '<img' . t3lib_iconWorks::skinImg(
-					'',
-					$this->iconPath . $this->iconName,
-					'width="18" height="16"'
-				) . ' alt=""' . ($this->showDefaultTitleAttribute ? ' title="UID: ' . (int) $row['uid'] . '"' : '') . ' />';
-
+			$icon = '<img' . t3lib_iconWorks::skinImg('', $this->iconPath . $this->iconName, 'width="18" height="16"') .
+				' alt=""' . ($this->showDefaultTitleAttribute ? ' title="UID: ' . (int) $row['uid'] . '"' : '') . ' />';
 		} else {
-
-			$icon = t3lib_iconWorks::getIconImage($this->table, $row, $this->BACK_PATH, 'align="top" class="c-recIcon"');
+			$icon = t3lib_iconWorks::getIconImage($this->table, $row, $this->backPath, 'align="top" class="c-recIcon"');
 		}
 
 		return $this->wrapIcon($icon, $row);
@@ -439,11 +434,11 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 			return '';
 		}
 
-		$PM   = $hasChildren ? ($isExpanded ? 'minus' : 'plus') : 'join';
-		$BTM  = ($isLast) ? 'bottom' : '';
+		$PM = $hasChildren ? ($isExpanded ? 'minus' : 'plus') : 'join';
+		$BTM = ($isLast) ? 'bottom' : '';
 			// If the current row is a bank, display only the plus/minus
 		$BTM  = ($isBank) ? '' : $BTM;
-		$icon = '<img' . t3lib_iconWorks::skinImg($this->BACK_PATH, 'gfx/ol/' . $PM . $BTM . '.gif', 'width="18" height="16"') . ' alt="" />';
+		$icon = '<img' . t3lib_iconWorks::skinImg($this->backPath, 'gfx/ol/' . $PM . $BTM . '.gif', 'width="18" height="16"') . ' alt="" />';
 
 		if ($hasChildren) {
 				// Calculate the command

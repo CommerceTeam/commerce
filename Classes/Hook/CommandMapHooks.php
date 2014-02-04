@@ -421,7 +421,7 @@ class Tx_Commerce_Hook_CommandMapHooks {
 					<td colspan="2" align="center"><strong>' . $language->sL('LLL:EXT:commerce/locallang_be_errors.php:error', 1) . '</strong></td>
 				</tr>
 				<tr class="bgColor4">
-					<td valign="top"><img' . t3lib_iconWorks::skinImg('', 'gfx/icon_fatalerror.gif', 'width="18" height="16"') . ' alt="" /></td>
+					<td valign="top">' . t3lib_iconWorks::getSpriteIcon('status-dialog-error') . '</td>
 					<td>' . $language->sL($error, 0) . '</td>
 				</tr>
 				<tr>
