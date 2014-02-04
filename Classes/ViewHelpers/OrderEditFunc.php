@@ -37,11 +37,6 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 	protected $returnUrl;
 
 	/**
-	 * @var integer
-	 */
-	protected $userID;
-
-	/**
 	 * @var string
 	 */
 	protected $cmd;
@@ -521,10 +516,6 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 		$dblist->localizationView = $this->MOD_SETTINGS['localization'];
 		$dblist->showClipboard = 0;
 
-		if ($this->userID) {
-			$dblist->onlyUser = $this->userID;
-		}
-
 			// CB is the clipboard command array
 		$CB = t3lib_div::_GET('CB');
 		if ($this->cmd == 'setCB') {
@@ -532,7 +523,6 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 				// This is set to the 'el' array of the CB after being parsed so only the table in question is registered.
 			$CB['el'] = $dblist->clipObj->cleanUpCBC(array_merge(t3lib_div::_POST('CBH'), t3lib_div::_POST('CBC')), $this->cmd_table);
 		}
-		$dblist->onlyUser = $PA['row']['uid'];
 		$dblist->start(NULL, 'tx_commerce_orders', 0);
 
 		$dblist->generateList();
