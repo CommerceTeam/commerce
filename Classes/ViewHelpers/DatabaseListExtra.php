@@ -27,7 +27,7 @@
 /**
  * Script class for the graytree list view (old version - not used any more)
  */
-class commerceRecordList extends localRecordList {
+class Tx_Commerce_ViewHelpers_DatabaseListExtra extends localRecordList {
 	/**
 	 * uid - unique recore ids
 	 *
@@ -1112,9 +1112,11 @@ class commerceRecordList extends localRecordList {
 	}
 }
 
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_db_list_extra.php']) {
+class_alias('Tx_Commerce_ViewHelpers_DatabaseListExtra', 'commerceRecordList');
+
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/ViewHelpers/DatabaseListExtra.php']) {
 	/** @noinspection PhpIncludeInspection */
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_db_list_extra.php']);
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/ViewHelpers/DatabaseListExtra.php']);
 }
 
 ?>

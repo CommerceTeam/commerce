@@ -25,7 +25,7 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-class Tx_Commerce_Controller_CategoriesController extends tx_commerce_db_list {
+class Tx_Commerce_Controller_CategoriesController extends Tx_Commerce_ViewHelpers_DatabaseList {
 	/**
 	 * @var string
 	 */

@@ -31,7 +31,7 @@
  * In beforehand the TCA config value of treeViewBrowseable will be set to 'iframeContent' to force the right rendering.
  * That means the script do not know anything about trees. It just set parameters and render the field with TCEforms.
  */
-class tx_commerce_treelib_tceforms {
+class Tx_Commerce_ViewHelpers_TreelibTceforms {
 	/**
 	 * count rendered tree items - just for frame height calculation
 	 *
@@ -90,16 +90,34 @@ class tx_commerce_treelib_tceforms {
 	 */
 	protected $jsParent = '';
 
+	/**
+	 * @var t3lib_TCEforms
+	 */
 	public $tceforms;
 
+	/**
+	 * @var array
+	 */
 	public $PA;
 
+	/**
+	 * @var string
+	 */
 	public $table;
 
+	/**
+	 * @var string
+	 */
 	public $field;
 
+	/**
+	 * @var array
+	 */
 	public $row;
 
+	/**
+	 * @var array
+	 */
 	public $config;
 
 	/**
@@ -219,7 +237,6 @@ class tx_commerce_treelib_tceforms {
 		return $this->treeContent;
 	}
 
-
 	/**********************************************************
 	 * Rendering
 	 ************************************************************/
@@ -297,7 +314,7 @@ class tx_commerce_treelib_tceforms {
 	 */
 	public function renderIFrame($width = NULL, $height = NULL) {
 		if (!$this->treeBrowserScript) {
-			die ('tx_commerce_treelib_tceforms: treeBrowserScript is not set!');
+			die ('Tx_Commerce_ViewHelpers_TreelibTceforms: treeBrowserScript is not set!');
 		}
 
 		if ($width == NULL) {
@@ -318,7 +335,6 @@ class tx_commerce_treelib_tceforms {
 
 		return $iFrame;
 	}
-
 
 	/**
 	 * Returns GET parameter string to be passed to the tree browser script.
@@ -648,9 +664,11 @@ class tx_commerce_treelib_tceforms {
 	}
 }
 
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/treelib/class.tx_commerce_treelib_tceforms.php']) {
+class_alias('Tx_Commerce_ViewHelpers_TreelibTceforms', 'tx_commerce_treelib_tceforms');
+
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/ViewHelpers/TreelibTceforms.php']) {
 	/** @noinspection PhpIncludeInspection */
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/treelib/class.tx_commerce_treelib_tceforms.php']);
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/ViewHelpers/TreelibTceforms.php']);
 }
 
 ?>

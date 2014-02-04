@@ -242,7 +242,7 @@ $GLOBALS['TCA']['tx_commerce_products'] = Array(
 				'type' => 'passthrough',
 				'form_type' => 'user',
 					// TYPO3 core will require_once the file automatically when needed
-				'userFunc' => 'tx_commerce_tceFunc->getSingleField_selectCategories',
+				'userFunc' => 'Tx_Commerce_ViewHelpers_TceFunc->getSingleField_selectCategories',
 				'treeViewBrowseable' => TRUE,
 				'size' => 10,
 				'autoSizeMax' => 30,

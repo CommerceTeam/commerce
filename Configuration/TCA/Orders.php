@@ -41,7 +41,7 @@ $GLOBALS['TCA']['tx_commerce_orders'] = Array(
 			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_orders.cust_deliveryaddress',
 			'config' => Array(
 				'type' => 'user',
-				'userFunc' => 'user_orderedit_func->delivery_adress',
+				'userFunc' => 'Tx_Commerce_ViewHelpers_OrderEditFunc->delivery_adress',
 			)
 		),
 		'order_type_uid' => Array(
@@ -81,7 +81,7 @@ $GLOBALS['TCA']['tx_commerce_orders'] = Array(
 			'config' => Array(
 				'type' => 'select',
 				'foreign_table' => 'pages',
-				'itemsProcFunc' => 'user_orderedit_func->order_status',
+				'itemsProcFunc' => 'Tx_Commerce_ViewHelpers_OrderEditFunc->order_status',
 			)
 		),
 		'cust_fe_user' => Array(
@@ -113,7 +113,7 @@ $GLOBALS['TCA']['tx_commerce_orders'] = Array(
 			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_orders.cust_invoice',
 			'config' => Array(
 				'type' => 'user',
-				'userFunc' => 'user_orderedit_func->invoice_adress',
+				'userFunc' => 'Tx_Commerce_ViewHelpers_OrderEditFunc->invoice_adress',
 			)
 		),
 		'paymenttype' => Array(
@@ -130,7 +130,7 @@ $GLOBALS['TCA']['tx_commerce_orders'] = Array(
 			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_orders.sum_price_net',
 			'config' => Array(
 				'type' => 'user',
-				'userFunc' => 'user_orderedit_func->order_articles',
+				'userFunc' => 'Tx_Commerce_ViewHelpers_OrderEditFunc->order_articles',
 			)
 		),
 		'sum_price_gross' => Array(
@@ -138,7 +138,7 @@ $GLOBALS['TCA']['tx_commerce_orders'] = Array(
 			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_orders.sum_price_gross',
 			'config' => Array(
 				'type' => 'user',
-				'userFunc' => 'user_orderedit_func->sum_price_gross_format',
+				'userFunc' => 'Tx_Commerce_ViewHelpers_OrderEditFunc->sum_price_gross_format',
 			)
 		),
 		'payment_ref_id' => array(

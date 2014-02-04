@@ -34,7 +34,7 @@
  * @todo Buld Method to build UP Add Get Vars parameter to
  * @todo Have a central Method to build chash parameters
  */
-class tx_commerce_navigation {
+class Tx_Commerce_ViewHelpers_Navigation {
 	/**
 	 * @var string
 	 */
@@ -497,7 +497,7 @@ class tx_commerce_navigation {
 		$i = 1;
 		foreach ($conf as $k) {
 			if ($k == $i . '.') {
-				$conf[$i . '.']['itemArrayProcFunc'] = 'tx_commerce_navigation->clear';
+				$conf[$i . '.']['itemArrayProcFunc'] = 'Tx_Commerce_ViewHelpers_Navigation->clear';
 				$i++;
 			}
 		}
@@ -1434,9 +1434,11 @@ class tx_commerce_navigation {
 	}
 }
 
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_navigation.php']) {
+class_alias('Tx_Commerce_ViewHelpers_Navigation', 'tx_commerce_navigation');
+
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/ViewHelpers/Navigation.php']) {
 	/** @noinspection PhpIncludeInspection */
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_navigation.php']);
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/ViewHelpers/Navigation.php']);
 }
 
 ?>

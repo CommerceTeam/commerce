@@ -1,7 +1,7 @@
 // gerneral TS skript definition
 // could be overwritten by local definition in pi1 - pin
 
-includeLibs.tx_commerce_navigation = EXT:commerce/lib/class.tx_commerce_navigation.php
+includeLibs.tx_commerce_navigation = EXT:commerce/Classes/ViewHelpers/Navigation.php
 
 # Allow pi1 to become a USER_INT via GPVar
 [globalVar = GP:commerce_pi1_user_int = 1]
@@ -815,7 +815,7 @@ plugin.tx_commerce_pi6 {
 lib.tx_commerce.navigation  = HMENU
 lib.tx_commerce.navigation {
 	special = userfunction
-	special.userFunc = tx_commerce_navigation->init
+	special.userFunc = Tx_Commerce_ViewHelpers_Navigation->init
 	special {
 		// Kategorie fuerr Startebene
 		category = {$plugin.tx_commerce_lib.catUid}
@@ -853,13 +853,13 @@ lib.tx_commerce.navigation {
 	}
 
 	1 = TMENU
-	1.itemArrayProcFunc  = tx_commerce_navigation->clear
+	1.itemArrayProcFunc = Tx_Commerce_ViewHelpers_Navigation->clear
 
 	2 = TMENU
-	2.itemArrayProcFunc  = tx_commerce_navigation->clear
+	2.itemArrayProcFunc = Tx_Commerce_ViewHelpers_Navigation->clear
 
 	3 = TMENU
-	3.itemArrayProcFunc  = tx_commerce_navigation->clear
+	3.itemArrayProcFunc = Tx_Commerce_ViewHelpers_Navigation->clear
 }
 
 #
@@ -868,7 +868,7 @@ lib.tx_commerce.navigation {
 lib.tx_commerce.rootline  = HMENU
 lib.tx_commerce.rootline {
 	special = userfunction
-	special.userFunc =  tx_commerce_navigation->CommerceRootline
+	special.userFunc = Tx_Commerce_ViewHelpers_Navigation->CommerceRootline
 	special {
 		// Root category for the display
 		category = {$plugin.tx_commerce_lib.catUid}

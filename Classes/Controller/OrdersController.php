@@ -353,8 +353,8 @@ class Tx_Commerce_Controller_OrdersController extends t3lib_SCbase {
 		$access = is_array($this->pageinfo) ? 1 : 0;
 
 			// Initialize the dblist object:
-		/** @var tx_commerce_order_localRecordlist $dblist */
-		$dblist = t3lib_div::makeInstance('tx_commerce_order_localRecordlist');
+		/** @var Tx_Commerce_ViewHelpers_OrderRecordlist $dblist */
+		$dblist = t3lib_div::makeInstance('Tx_Commerce_ViewHelpers_OrderRecordlist');
 			// @todo what the heck
 		$dblist->additionalOutTop = $this->doc->section(
 				'',

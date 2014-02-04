@@ -28,7 +28,7 @@
 /**
  * Holds the TCE Functions
  */
-class tx_commerce_tceFunc {
+class Tx_Commerce_ViewHelpers_TceFunc {
 	/**
 	 * @var t3lib_TCEforms
 	 */
@@ -100,8 +100,8 @@ class tx_commerce_tceFunc {
 
 		$browseTrees->init();
 
-		/** @var tx_commerce_treelib_tceforms $renderBrowseTrees */
-		$renderBrowseTrees = t3lib_div::makeInstance('tx_commerce_treelib_tceforms');
+		/** @var Tx_Commerce_ViewHelpers_TreelibTceforms $renderBrowseTrees */
+		$renderBrowseTrees = t3lib_div::makeInstance('Tx_Commerce_ViewHelpers_TreelibTceforms');
 		$renderBrowseTrees->init ($PA, $fObj);
 		$renderBrowseTrees->setIFrameTreeBrowserScript($this->tceForms->backPath . PATH_TXCOMMERCE_REL . 'Classes/ViewHelpers/IframeTreeBrowser.php');
 
@@ -249,9 +249,11 @@ class tx_commerce_tceFunc {
 	}
 }
 
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/treelib/class.tx_commerce_tcefunc.php']) {
+class_alias('Tx_Commerce_ViewHelpers_TceFunc', 'tx_commerce_tceFunc');
+
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/ViewHelpers/TceFunc.php']) {
 	/** @noinspection PhpIncludeInspection */
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/treelib/class.tx_commerce_tcefunc.php']);
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/ViewHelpers/TceFunc.php']);
 }
 
 ?>

@@ -43,8 +43,8 @@ require($BACK_PATH . 'template.php');
 
 $LANG->includeLLFile('EXT:lang/locallang_misc.xml');
 
-/** @var tx_commerce_treelib_browser $SOBE */
-$SOBE = t3lib_div::makeInstance('tx_commerce_treelib_browser');
+/** @var Tx_Commerce_ViewHelpers_TreelibBrowser $SOBE */
+$SOBE = t3lib_div::makeInstance('Tx_Commerce_ViewHelpers_TreelibBrowser');
 $SOBE->init();
 $SOBE->main();
 $SOBE->printContent();

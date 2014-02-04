@@ -25,7 +25,7 @@
 /**
  * User Class for displaying Orders
  */
-class user_orderedit_func {
+class Tx_Commerce_ViewHelpers_OrderEditFunc {
 	/**
 	 * @var array
 	 */
@@ -511,8 +511,8 @@ class user_orderedit_func {
 		/** @var t3lib_beUserAuth $backendUser */
 		$backendUser = $GLOBALS['BE_USER'];
 
-		/** @var tx_commerce_order_localRecordlist $dblist */
-		$dblist = t3lib_div::makeInstance('tx_commerce_order_localRecordlist');
+		/** @var Tx_Commerce_ViewHelpers_OrderRecordlist $dblist */
+		$dblist = t3lib_div::makeInstance('Tx_Commerce_ViewHelpers_OrderRecordlist');
 		$dblist->backPath = $GLOBALS['BACK_PATH'];
 		$dblist->script = 'index.php';
 		$dblist->calcPerms = $backendUser->calcPerms($this->pageinfo);
@@ -556,9 +556,11 @@ class user_orderedit_func {
 	}
 }
 
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/ViewHelpers/class.user_orderedit_func.php']) {
+class_alias('Tx_Commerce_ViewHelpers_OrderEditFunc', 'user_orderedit_func');
+
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/ViewHelpers/OrderEditFunc.php']) {
 	/** @noinspection PhpIncludeInspection */
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/ViewHelpers/class.user_orderedit_func.php']);
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/ViewHelpers/OrderEditFunc.php']);
 }
 
 ?>

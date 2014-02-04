@@ -40,7 +40,7 @@
  *
  * Might be possible with AJAX ...
  */
-class tx_commerce_treelib_browser extends t3lib_SCbase {
+class Tx_Commerce_ViewHelpers_TreelibBrowser extends t3lib_SCbase {
 	/**
 	 * @var string
 	 */
@@ -240,9 +240,11 @@ class tx_commerce_treelib_browser extends t3lib_SCbase {
 	}
 }
 
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/treelib/class.tx_commerce_treelib_browser.php']) {
+class_alias('Tx_Commerce_ViewHelpers_TreelibBrowser', 'tx_commerce_treelib_browser');
+
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/ViewHelpers/TreelibBrowser.php']) {
 	/** @noinspection PhpIncludeInspection */
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/treelib/class.tx_commerce_treelib_browser.php']);
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/ViewHelpers/TreelibBrowser.php']);
 }
 
 ?>

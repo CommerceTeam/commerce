@@ -32,7 +32,7 @@
  * @author Kasper Skaarhoj <kasperYYYY@typo3.com>
  * @author Volker Graubaum <vg_typo3@e-netconsulting.de>
  */
-class tx_commerce_feusers_localRecordlist extends localRecordList {
+class Tx_Commerce_ViewHelpers_FeusersRecordlist extends localRecordList {
 	/**
 	 * @var boolean
 	 */
@@ -747,9 +747,11 @@ class tx_commerce_feusers_localRecordlist extends localRecordList {
 	}
 }
 
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_feusers_localrecordlist.php']) {
+class_alias('Tx_Commerce_ViewHelpers_FeusersRecordlist', 'tx_commerce_feusers_localRecordlist');
+
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/ViewHelpers/FeusersRecordlist.php']) {
 	/** @noinspection PhpIncludeInspection */
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_feusers_localrecordlist.php']);
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/ViewHelpers/FeusersRecordlist.php']);
 }
 
 ?>

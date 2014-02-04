@@ -14,7 +14,7 @@ $GLOBALS['T3_VAR']['ext'][COMMERCE_EXTKEY]['TCA']['mountpoints_config'] = array(
 		// see: tx_dam_treelib_tceforms::getMountsForTree()
 	'type' => 'passthrough',
 	'form_type' => 'user',
-	'userFunc' => 'tx_commerce_tceFunc->getSingleField_selectCategories',
+	'userFunc' => 'Tx_Commerce_ViewHelpers_TceFunc->getSingleField_selectCategories',
 	'treeViewBrowseable' => TRUE,
 	'size' => 10,
 	'autoSizeMax' => 30,
@@ -280,7 +280,7 @@ $tempColumns = array(
 		'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:fe_users.tx_commerce_feuser_orders',
 		'config' => array(
 			'type' => 'user',
-			'userFunc' => 'user_orderedit_func->fe_user_orders',
+			'userFunc' => 'Tx_Commerce_ViewHelpers_OrderEditFunc->fe_user_orders',
 		)
 	),
 );

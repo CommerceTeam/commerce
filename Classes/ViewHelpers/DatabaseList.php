@@ -31,7 +31,7 @@ $language->includeLLFile('EXT:lang/locallang_mod_web_list.xml');
  * Used for rendering a list of records for a tree item
  * The original file (typo3/db_list.php) could not be used only because of the object intantiation at the bottom of the file.
  */
-class tx_commerce_db_list {
+class Tx_Commerce_ViewHelpers_DatabaseList {
 	/**
 	 * Treeitem Id for which to make the listing
 	 *
@@ -311,8 +311,8 @@ class tx_commerce_db_list {
 		$access = is_array($this->pageinfo) ? 1 : 0;
 
 			// Initialize the dblist object:
-		/** @var commerceRecordList $dblist */
-		$dblist = t3lib_div::makeInstance('commerceRecordList');
+		/** @var Tx_Commerce_ViewHelpers_DatabaseListExtra $dblist */
+		$dblist = t3lib_div::makeInstance('Tx_Commerce_ViewHelpers_DatabaseListExtra');
 		$dblist->backPath = $GLOBALS['BACK_PATH'];
 		$dblist->calcPerms = $backendUser->calcPerms($this->pageinfo);
 		$dblist->thumbs = $backendUser->uc['thumbnailsByDefault'];
@@ -638,10 +638,12 @@ class tx_commerce_db_list {
 	}
 }
 
+class_alias('Tx_Commerce_ViewHelpers_DatabaseList', 'tx_commerce_db_list');
+
 	// XClass Statement
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_db_list.php']) {
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/ViewHelpers/DatabaseList.php']) {
 	/** @noinspection PhpIncludeInspection */
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_db_list.php']);
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/ViewHelpers/DatabaseList.php']);
 }
 
 ?>
