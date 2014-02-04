@@ -83,52 +83,19 @@ class Tx_Commerce_Hook_DataMapHooks {
 			break;
 
 			case 'tx_commerce_articles':
-				$this->preProcessArticle($id);
+				$incomingFieldArray = $this->preProcessArticle($incomingFieldArray, $id);
 			break;
 
 			case 'tx_commerce_orders':
-				$incomingFieldArray = $this->doNotChangeCrdate($incomingFieldArray);
-				$incomingFieldArray = $this->moveOrders($incomingFieldArray, $table, $id, $pObj);
+				$incomingFieldArray = $this->preProcessOrder($incomingFieldArray, $table, $id, $pObj);
 			break;
 
 			case 'tx_commerce_order_articles':
-				$this->recalculateOrderSum($table, $id, $pObj);
+				$this->preProcessOrderArticle($table, $id, $pObj);
 			break;
 		}
 
-			// @todo what the heck?
-			// Check attributes only for products and categories
-		if ($handleAttributes) {
-				// get all parent categories, excluding this
-			$this->belib->getParentCategoriesFromList($this->catList);
-
-				// get all correlation types from flexform thats was created by dynaflex!
-			$correlationTypes = $incomingFieldArray['attributes']['data']['sDEF']['lDEF'];
-
-			$usedAttributes = array();
-
-			foreach ($correlationTypes as $key => $data) {
-				$keyData = array();
-				if ($keyData[0] == 'ct') {
-						// get the attributes from the categories of this product
-					$localAttributes = explode(',', $data['vDEF']);
-					if (is_array($localAttributes)) {
-						$validAttributes = array();
-						foreach ($localAttributes as $localAttribute) {
-							if ($localAttribute == '') {
-								continue;
-							}
-							$attributeUid = $this->belib->getUidFromKey($localAttribute, $keyData);
-							if (!$this->belib->checkArray($attributeUid, $usedAttributes, 'uid_foreign')) {
-								$validAttributes[] = $localAttribute;
-								$usedAttributes[] = array('uid_foreign' => $attributeUid);
-							}
-						}
-						$incomingFieldArray['attributes']['data']['sDEF']['lDEF'][$key]['vDEF'] = implode(',', $validAttributes);
-					}
-				}
-			}
-		}
+		$incomingFieldArray = $this->preProcessAttributes($incomingFieldArray, $handleAttributes);
 	}
 
 	/**
@@ -219,10 +186,11 @@ class Tx_Commerce_Hook_DataMapHooks {
 	}
 
 	/**
+	 * @param array $incomingFieldArray
 	 * @param integer $id
-	 * @return void
+	 * @return array
 	 */
-	protected function preProcessArticle($id) {
+	protected function preProcessArticle($incomingFieldArray, $id) {
 		/** @var t3lib_db $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
@@ -334,6 +302,169 @@ class Tx_Commerce_Hook_DataMapHooks {
 				$myScaleAmountEnd += $create_new_scale_prices_steps;
 			}
 		}
+
+		return $incomingFieldArray;
+	}
+
+	/**
+	 * Process Data when saving Order
+	 * Change the PID from this order via the new field newpid
+	 * As TYPO3 don't allowes changing the PId directly
+	 *
+	 * @param array $incomingFieldArray
+	 * @param string $table
+	 * @param integer $id
+	 * @param t3lib_TCEmain $pObj
+	 * @return array
+	 */
+	protected function preProcessOrder($incomingFieldArray, $table, $id, &$pObj) {
+		$incomingFieldArray['crdate'] = NULL;
+
+		if (isset($incomingFieldArray['newpid'])) {
+			$hookObjectsArr = $this->getMoveOrderHooks();
+
+			/** @var t3lib_db $database */
+			$database = $GLOBALS['TYPO3_DB'];
+
+				// Add first the pid filled
+			$incomingFieldArray['pid'] = $incomingFieldArray['newpid'];
+
+				// Move Order articles
+			$orders = $database->exec_SELECTquery('order_id, pid, uid, order_sys_language_uid', $table, 'uid = ' . (int) $id);
+			if (!$database->sql_error()) {
+				$order = $database->sql_fetch_assoc($orders);
+
+				if ($order['pid'] != $incomingFieldArray['newpid']) {
+						// order_sys_language_uid is not always set in fieldArray so we overwrite it with our order data
+					if ($incomingFieldArray['order_sys_language_uid'] === NULL) {
+						$incomingFieldArray['order_sys_language_uid'] = $order['order_sys_language_uid'];
+					}
+
+					foreach ($hookObjectsArr as $hookObj) {
+						if (method_exists($hookObj, 'moveOrders_preMoveOrder')) {
+							$hookObj->moveOrders_preMoveOrder($order, $incomingFieldArray);
+						}
+					}
+
+					$orderId = $order['order_id'];
+					$res_order_articles = $database->exec_SELECTquery(
+						'*',
+						'tx_commerce_order_articles',
+						'order_id = ' . $database->fullQuoteStr($orderId, 'tx_commerce_order_articles')
+					);
+					if (!$database->sql_error()) {
+							// Run trough all articles from this order and move to it to other storage folder
+						while ($order_artikel_row = $database->sql_fetch_assoc($res_order_articles)) {
+							$order_artikel_row['pid'] = $incomingFieldArray['newpid'];
+							$order_artikel_row['tstamp'] = time();
+							$database->exec_UPDATEquery(
+								'tx_commerce_order_articles',
+								'uid=' . $order_artikel_row['uid'],
+								$order_artikel_row
+							);
+						}
+					} else {
+						$pObj->log($table, $id, 2, 0, 2, 'SQL error: \'%s\' (%s)', 12, array($database->sql_error(), $table . ':' . $id));
+					}
+					$order['pid'] = $incomingFieldArray['newpid'];
+					$order['tstamp'] = time();
+					$database->exec_UPDATEquery('tx_commerce_orders', 'uid=' . $order['uid'], $order);
+
+					foreach ($hookObjectsArr as $hookObj) {
+						if (method_exists($hookObj, 'moveOrders_postMoveOrder')) {
+							$hookObj->moveOrders_postMoveOrder($order, $incomingFieldArray);
+						}
+					}
+				}
+			} else {
+				$pObj->log($table, $id, 2, 0, 2, 'SQL error: \'%s\' (%s)', 12, array($database->sql_error(), $table . ':' . $id));
+			}
+		}
+
+		return $incomingFieldArray;
+	}
+
+	/**
+	 * Process Data when saving ordered articles
+	 * Recalculate Order sum
+	 *
+	 * @param string $table
+	 * @param integer $id
+	 * @param t3lib_TCEmain $pObj
+	 * @return void
+	 */
+	protected function preProcessOrderArticle($table, $id, $pObj) {
+		/** @var t3lib_db $database */
+		$database = $GLOBALS['TYPO3_DB'];
+
+		$orderIdResult = $database->exec_SELECTquery('order_id', $table, 'uid = ' . (int) $id);
+		if (!$database->sql_error()) {
+			list($orderId) = $database->sql_fetch_row($orderIdResult);
+			$sum = array('sum_price_gross' => 0, 'sum_price_net' => 0);
+
+			$orderArticles = $database->exec_SELECTquery('*', $table, 'order_id = ' . $database->fullQuoteStr($orderId, $table));
+			if (!$database->sql_error()) {
+				while ($orderArticle = $database->sql_fetch_assoc($orderArticles)) {
+					/**
+					 * Calculate Sums
+					 */
+					$sum['sum_price_gross'] += $orderArticle['amount'] * $orderArticle['price_net'];
+					$sum['sum_price_net'] += $orderArticle['amount'] * $orderArticle['price_gross'];
+				}
+			} else {
+				$pObj->log($table, $id, 2, 0, 2, 'SQL error: \'%s\' (%s)', 12, array($database->sql_error(), $table . ':' . $id));
+			}
+
+			$database->exec_UPDATEquery($table, 'order_id = ' . $database->fullQuoteStr($orderId, 'tx_commerce_orders'), $sum);
+			if ($database->sql_error()) {
+				$pObj->log($table, $id, 2, 0, 2, 'SQL error: \'%s\' (%s)', 12, array($database->sql_error(), $table . ':' . $id));
+			}
+		} else {
+			$pObj->log($table, $id, 2, 0, 2, 'SQL error: \'%s\' (%s)', 12, array($database->sql_error(), $table . ':' . $id));
+		}
+	}
+
+	/**
+	 * Check attributes of products and categories
+	 *
+	 * @param $incomingFieldArray
+	 * @param $handleAttributes
+	 * @return mixed
+	 */
+	protected function preProcessAttributes($incomingFieldArray, $handleAttributes) {
+		if ($handleAttributes) {
+				// get all parent categories, excluding this
+			$this->belib->getParentCategoriesFromList($this->catList);
+
+				// get all correlation types from flexform thats was created by dynaflex!
+			$correlationTypes = $incomingFieldArray['attributes']['data']['sDEF']['lDEF'];
+
+			$usedAttributes = array();
+
+			foreach ($correlationTypes as $key => $data) {
+				$keyData = array();
+				if ($keyData[0] == 'ct') {
+						// get the attributes from the categories of this product
+					$localAttributes = explode(',', $data['vDEF']);
+					if (is_array($localAttributes)) {
+						$validAttributes = array();
+						foreach ($localAttributes as $localAttribute) {
+							if ($localAttribute == '') {
+								continue;
+							}
+							$attributeUid = $this->belib->getUidFromKey($localAttribute, $keyData);
+							if (!$this->belib->checkArray($attributeUid, $usedAttributes, 'uid_foreign')) {
+								$validAttributes[] = $localAttribute;
+								$usedAttributes[] = array('uid_foreign' => $attributeUid);
+							}
+						}
+						$incomingFieldArray['attributes']['data']['sDEF']['lDEF'][$key]['vDEF'] = implode(',', $validAttributes);
+					}
+				}
+			}
+		}
+
+		return $incomingFieldArray;
 	}
 
 
@@ -347,321 +478,353 @@ class Tx_Commerce_Hook_DataMapHooks {
 	 * @param t3lib_TCEmain $pObj Reference to the BE Form Object of the caller
 	 * @return void
 	 */
-	public function processDatamap_postProcessFieldArray($status, $table, $id, &$fieldArray, &$pObj) {
+	public function processDatamap_postProcessFieldArray($status, $table, $id, &$fieldArray, $pObj) {
+			// Permissions <- used for recursive assignment of the persmissions in Permissions[EDIT]
 		switch ($table) {
-				// Permissions <- used for recursive assignment of the persmissions in Permissions[EDIT]
-
-			/**
-			 * Checks if the permissions we need to process the datamap are still in place
-			 */
-			case 'tx_commerce_products':
-				$data = $pObj->datamap[$table][$id];
-
-					// Read the old parent categories
-				if ($status != 'new') {
-					/** @var Tx_Commerce_Domain_Model_Product $item */
-					$item = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product');
-					$item->init($id);
-
-					$parentCategories = $item->getParentCategories();
-
-						// check existing categories
-					if (!Tx_Commerce_Utility_BackendUtility::checkPermissionsOnCategoryContent($parentCategories, array('editcontent'))) {
-						$pObj->newlog('You dont have the permissions to edit the product.', 1);
-						$fieldArray = array();
-					}
-				} else {
-						// new products have to have a category
-						// if a product is copied, we never check if it has categories - this is MANDATORY, otherwise localize will not work at all!!!
-						// remove this only if you decide to not define the l10n_mode of "categories"" (products)
-					if ('' == trim($fieldArray['categories']) && !isset($GLOBALS['BE_USER']->uc['txcommerce_copyProcess'])) {
-						$pObj->newlog('You have to specify at least 1 parent category for the product.', 1);
-						$fieldArray = array();
-					}
-
-					$parentCategories = array();
-				}
-
-					// check new categories
-				if (isset($data['categories'])) {
-					$newCats = $this->singleDiffAssoc(t3lib_div::trimExplode(',', t3lib_div::uniqueList($data['categories'])), $parentCategories);
-
-					if (!Tx_Commerce_Utility_BackendUtility::checkPermissionsOnCategoryContent($newCats, array('editcontent'))) {
-						$pObj->newlog('You do not have the permissions to add one or all categories you added.' . t3lib_div::uniqueList($data['categories']), 1);
-						$fieldArray = array();
-					}
-				}
-
-				if (isset($fieldArray['categories'])) {
-					$fieldArray['categories'] = t3lib_div::uniqueList($fieldArray['categories']);
-				}
+			case 'tx_commerce_categories':
+				$this->postProcessCategory($status, $table, $id, $fieldArray, $pObj);
 			break;
 
-			/**
-			 * Checks if the permissions we need to process the datamap are still in place
-			 */
+			case 'tx_commerce_products':
+				$this->postProcessProduct($status, $table, $id, $fieldArray, $pObj);
+			break;
+
 			case 'tx_commerce_articles':
-				$parentCategories = array();
+				$this->postProcessArticle($status, $id, $fieldArray, $pObj);
+			break;
+		}
+	}
 
-					// Read the old parent product - skip this if we are copying or overwriting the article
-				if ('new' != $status && !$GLOBALS['BE_USER']->uc['txcommerce_copyProcess']) {
-					/** @var Tx_Commerce_Domain_Model_Article $article */
-					$article = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Article');
-					$article->init($id);
-					$article->loadData();
-					$productUid = $article->getParentProductUid();
+	/**
+	 * Will overwrite the data because it has been removed - this is because typo3 only allows pages to have permissions so far
+	 * Will also make some checks to see if all permissions are available that are needed to proceed with the datamap
+	 *
+	 * @param string $status
+	 * @param string $table
+	 * @param integer|string $id
+	 * @param array $fieldArray
+	 * @param t3lib_TCEmain $pObj
+	 * @return array
+	 */
+	protected function postProcessCategory($status, $table, $id, &$fieldArray, $pObj) {
+			// Will be called for every Category that is in the datamap - so at this time we only need to worry about the current $id item
+		$data = $pObj->datamap[$table][$id];
 
-						// get the parent categories of the product
-					/** @var Tx_Commerce_Domain_Model_Product $product */
-					$product = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product');
-					$product->init($productUid);
-					$product->loadData();
-					$parentCategories = $product->getParentCategories();
+		if (is_array($data)) {
+			$l18nParent = (isset($data['l18n_parent'])) ? $data['l18n_parent'] : 0;
 
-					if (!current($parentCategories)) {
-						$languageParentUid = $product->getL18nParent();
-						/** @var Tx_Commerce_Domain_Model_Product $l18nParent */
-						$l18nParent = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product');
-						$l18nParent->init($languageParentUid);
-						$l18nParent->loadData();
-						$parentCategories = $l18nParent->getParentCategories();
-					}
+			$category = NULL;
+				// check if the user has the permission to edit this category; abort if he doesnt.
+			if ($status != 'new') {
 
+					// check if we have the right to edit and are in commerce mounts
+				$checkId = $id;
+				/** @var Tx_Commerce_Domain_Model_Category $category */
+				$category = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category');
+				$category->init($checkId);
+				$category->loadData();
+
+					// Use the l18n parent as category for permission checks.
+				if ($l18nParent > 0 || $category->getField('l18n_parent') > 0) {
+					$checkId = $category->getField('l18n_parent');
+					$category = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category');
+					$category->init($checkId);
 				}
 
-					// read new assigned product
-				if (!Tx_Commerce_Utility_BackendUtility::checkPermissionsOnCategoryContent($parentCategories, array('editcontent'))) {
-					$pObj->newlog('You dont have the permissions to edit the article.', 1);
+				/** @var Tx_Commerce_Tree_CategoryMounts $mounts */
+				$mounts = t3lib_div::makeInstance('Tx_Commerce_Tree_CategoryMounts');
+				$mounts->init($GLOBALS['BE_USER']->user['uid']);
+
+					// check
+				if (!$category->isPSet('edit') || !$mounts->isInCommerceMounts($category->getUid())) {
+					$pObj->newlog('You dont have the permissions to edit this category.', 1);
+					$fieldArray = array();
+					return;
+				}
+			}
+
+				// add the perms back into the field_array
+			$keys = array_keys($data);
+
+			for ($i = 0, $l = count($keys); $i < $l; $i ++) {
+				switch($keys[$i]) {
+					case 'perms_userid':
+					case 'perms_groupid':
+					case 'perms_user':
+					case 'perms_group':
+					case 'perms_everybody':
+							// Overwrite only the perms fields
+						$fieldArray[$keys[$i]] = $data[$keys[$i]];
+					break;
+				}
+			}
+
+				// chmod new categories for the user if the new category is not a localization
+			if ($status == 'new') {
+				$fieldArray['perms_userid'] = $GLOBALS['BE_USER']->user['uid'];
+					// 31 grants every right
+				$fieldArray['perms_user']  = 31;
+			}
+
+				// break if the parent_categories didn't change
+			if (!isset($fieldArray['parent_category'])) {
+				return;
+			}
+
+				// check if we are allowed to create new categories under the newly assigned categories
+				// check if we are allowed to remove this category from the parent categories it was in before
+			$existingParents = array();
+
+			if ($status != 'new') {
+					// if category is existing, check if it has parent categories that were deleted by a user who is not authorized to do so
+					// if that is the case, add those categories back in
+				$parentCategories = $category->getParentCategories();
+
+				/** @var Tx_Commerce_Domain_Model_Category $parent */
+				for ($i = 0, $l = count($parentCategories); $i < $l; $i ++) {
+					$parent = $parentCategories[$i];
+					$existingParents[] = $parent->getUid();
+
+					/** @var Tx_Commerce_Tree_CategoryMounts $mounts */
+					$mounts = t3lib_div::makeInstance('Tx_Commerce_Tree_CategoryMounts');
+					$mounts->init($GLOBALS['BE_USER']->user['uid']);
+
+						// Add parent to list if the user has no show right on it or it is not in the user's mountpoints
+					if (!$parent->isPSet('read') || !$mounts->isInCommerceMounts($parent->getUid())) {
+						$fieldArray['parent_category'] .= ',' . $parent->getUid();
+					}
+				}
+			}
+
+				// Unique the list
+			$fieldArray['parent_category'] = t3lib_div::uniqueList($fieldArray['parent_category']);
+
+				// abort if the user didn't assign a category - rights need not be checked then
+			if ('' == $fieldArray['parent_category']) {
+				/** @var Tx_Commerce_Domain_Model_Category $root */
+				$root = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category');
+				$root->init(0);
+
+				/** @var Tx_Commerce_Tree_CategoryMounts $mounts */
+				$mounts = t3lib_div::makeInstance('Tx_Commerce_Tree_CategoryMounts');
+				$mounts->init($GLOBALS['BE_USER']->user['uid']);
+
+				if ($mounts->isInCommerceMounts(0)) {
+						// assign the root as the parent category if it is empty
+					$fieldArray['parent_category'] = 0;
+				} else {
+					$pObj->newlog('You have to assign a category as a parent category.', 1);
 					$fieldArray = array();
 				}
-			break;
+				return;
+			}
 
-			/**
-			 * Will overwrite the data because it has been removed - this is because typo3 only allows pages to have permissions so far
-			 * Will also make some checks to see if all permissions are available that are needed to proceed with the datamap
-			 */
-			case 'tx_commerce_categories':
-					// Will be called for every Category that is in the datamap - so at this time we only need to worry about the current $id item
-				$data = $pObj->datamap[$table][$id];
+				// Check if any parent_category has been set that is not allowed because no child-records are to be set beneath it
+				// Only on parents that were newly added
+			$newParents = array_diff(explode(',', $fieldArray['parent_category']), $existingParents);
 
-				if (is_array($data)) {
-					$l18nParent = (isset($data['l18n_parent'])) ? $data['l18n_parent'] : 0;
+				// work with keys because array_diff does not start with key 0 but keeps the old keys - that means gaps could exist
+			$keys = array_keys($newParents);
+			$l = count($keys);
 
-					$category = NULL;
-						// check if the user has the permission to edit this category; abort if he doesnt.
-					if ($status != 'new') {
+			if ($l) {
+				$groupRights = FALSE;
+				$groupId = 0;
 
-							// check if we have the right to edit and are in commerce mounts
-						$checkId = $id;
-						/** @var Tx_Commerce_Domain_Model_Category $category */
-						$category = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category');
-						$category->init($checkId);
-						$category->loadData();
+				for ($i = 0; $i < $l; $i ++) {
+					$uid = $newParents[$keys[$i]];
+						// empty string replace with 0
+					$uid = ($uid == '') ? 0 : $uid;
 
-							// Use the l18n parent as category for permission checks.
-						if ($l18nParent > 0 || $category->getField('l18n_parent') > 0) {
-							$checkId = $category->getField('l18n_parent');
-							$category = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category');
-							$category->init($checkId);
-						}
+					/** @var Tx_Commerce_Domain_Model_Category $cat */
+					$cat = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category');
+					$cat->init($uid);
 
-						/** @var Tx_Commerce_Tree_CategoryMounts $mounts */
-						$mounts = t3lib_div::makeInstance('Tx_Commerce_Tree_CategoryMounts');
-						$mounts->init($GLOBALS['BE_USER']->user['uid']);
+					/** @var Tx_Commerce_Tree_CategoryMounts $mounts */
+					$mounts = t3lib_div::makeInstance('Tx_Commerce_Tree_CategoryMounts');
+					$mounts->init($GLOBALS['BE_USER']->user['uid']);
 
-							// check
-						if (!$category->isPSet('edit') || !$mounts->isInCommerceMounts($category->getUid())) {
-							$pObj->newlog('You dont have the permissions to edit this category.', 1);
-							$fieldArray = array();
-							break;
-						}
-					}
-
-						// add the perms back into the field_array
-					$keys = array_keys($data);
-
-					for ($i = 0, $l = count($keys); $i < $l; $i ++) {
-						switch($keys[$i]) {
-							case 'perms_userid':
-							case 'perms_groupid':
-							case 'perms_user':
-							case 'perms_group':
-							case 'perms_everybody':
-									// Overwrite only the perms fields
-								$fieldArray[$keys[$i]] = $data[$keys[$i]];
-							break;
-						}
-					}
-
-						// chmod new categories for the user if the new category is not a localization
-					if ($status == 'new') {
-						$fieldArray['perms_userid'] = $GLOBALS['BE_USER']->user['uid'];
-							// 31 grants every right
-						$fieldArray['perms_user']  = 31;
-					}
-
-						// break if the parent_categories didn't change
-					if (!isset($fieldArray['parent_category'])) {
+						// abort if the parent category is not in the webmounts
+					if (!$mounts->isInCommerceMounts($uid)) {
+						$fieldArray['parent_category'] = '';
 						break;
 					}
 
-						// check if we are allowed to create new categories under the newly assigned categories
-						// check if we are allowed to remove this category from the parent categories it was in before
-					$existingParents = array();
-
-					if ($status != 'new') {
-							// if category is existing, check if it has parent categories that were deleted by a user who is not authorized to do so
-							// if that is the case, add those categories back in
-						$parentCategories = $category->getParentCategories();
-
-						/** @var Tx_Commerce_Domain_Model_Category $parent */
-						for ($i = 0, $l = count($parentCategories); $i < $l; $i ++) {
-							$parent = $parentCategories[$i];
-							$existingParents[] = $parent->getUid();
-
-							/** @var Tx_Commerce_Tree_CategoryMounts $mounts */
-							$mounts = t3lib_div::makeInstance('Tx_Commerce_Tree_CategoryMounts');
-							$mounts->init($GLOBALS['BE_USER']->user['uid']);
-
-								// Add parent to list if the user has no show right on it or it is not in the user's mountpoints
-							if (!$parent->isPSet('read') || !$mounts->isInCommerceMounts($parent->getUid())) {
-								$fieldArray['parent_category'] .= ',' . $parent->getUid();
-							}
-						}
+						// skip the root for permission check - if it is in mounts, it is allowed
+					if (0 == $uid) {
+						continue;
 					}
 
-						// Unique the list
-					$fieldArray['parent_category'] = t3lib_div::uniqueList($fieldArray['parent_category']);
+					$cat->loadPermissions();
 
-						// abort if the user didn't assign a category - rights need not be checked then
-					if ('' == $fieldArray['parent_category']) {
-						/** @var Tx_Commerce_Domain_Model_Category $root */
-						$root = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category');
-						$root->init(0);
+						// remove category from list if it is not permitted
+					if (!$cat->isPSet('new')) {
+						$fieldArray['parent_category'] = t3lib_div::rmFromList($uid, $fieldArray['parent_category']);
+					} else {
+							// conversion to int is important, otherwise the binary & will not work properly
+						$groupRights = (FALSE === $groupRights) ? (int) $cat->getPermsGroup() : ($groupRights & (int) $cat->getPermsGroup());
+						$groupId = $cat->getPermsGroupId();
+					}
+				}
 
-						/** @var Tx_Commerce_Tree_CategoryMounts $mounts */
-						$mounts = t3lib_div::makeInstance('Tx_Commerce_Tree_CategoryMounts');
-						$mounts->init($GLOBALS['BE_USER']->user['uid']);
+					// set the group id and permissions for a new record
+				if ('new' == $status) {
+					$fieldArray['perms_group'] = $groupRights;
+					$fieldArray['perms_groupid'] = $groupId;
+				}
+			}
 
-						if ($mounts->isInCommerceMounts(0)) {
-								// assign the root as the parent category if it is empty
-							$fieldArray['parent_category'] = 0;
-						} else {
-							$pObj->newlog('You have to assign a category as a parent category.', 1);
-							$fieldArray = array();
-						}
-						break;
+				// if there is no parent_category left from the ones the user wanted to add, abort and inform him.
+			if ('' == $fieldArray['parent_category'] && count($newParents)) {
+				$pObj->newlog('You dont have the permissions to use any of the parent categories you chose as a parent.', 1);
+				$fieldArray = array();
+			}
+
+				// make sure the category does not end up as its own parent - would lead to endless recursion.
+			if ('' != $fieldArray['parent_category'] && 'new' != $status) {
+				$catUids = t3lib_div::intExplode(',', $fieldArray['parent_category']);
+
+				foreach ($catUids as $catUid) {
+						// Skip root.
+					if (0 == $catUid) {
+						continue;
 					}
 
-						// Check if any parent_category has been set that is not allowed because no child-records are to be set beneath it
-						// Only on parents that were newly added
-					$newParents = array_diff(explode(',', $fieldArray['parent_category']), $existingParents);
-
-						// work with keys because array_diff does not start with key 0 but keeps the old keys - that means gaps could exist
-					$keys = array_keys($newParents);
-					$l = count($keys);
-
-					if (0 < $l) {
-						$groupRights = FALSE;
-						$groupId	 = 0;
-
-						for ($i = 0; $i < $l; $i ++) {
-							$uid = $newParents[$keys[$i]];
-								// empty string replace with 0
-							$uid = ('' == $uid) ? 0 : $uid;
-
-							/** @var Tx_Commerce_Domain_Model_Category $cat */
-							$cat = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category');
-							$cat->init($uid);
-
-							/** @var Tx_Commerce_Tree_CategoryMounts $mounts */
-							$mounts = t3lib_div::makeInstance('Tx_Commerce_Tree_CategoryMounts');
-							$mounts->init($GLOBALS['BE_USER']->user['uid']);
-
-								// abort if the parent category is not in the webmounts
-							if (!$mounts->isInCommerceMounts($uid)) {
-								$fieldArray['parent_category'] = '';
-								break;
-							}
-
-								// skip the root for permission check - if it is in mounts, it is allowed
-							if (0 == $uid) {
-								continue;
-							}
-
-							$cat->loadPermissions();
-
-								// remove category from list if it is not permitted
-							if (!$cat->isPSet('new')) {
-								$fieldArray['parent_category'] = t3lib_div::rmFromList($uid, $fieldArray['parent_category']);
-							} else {
-									// conversion to int is important, otherwise the binary & will not work properly
-								$groupRights = (FALSE === $groupRights) ? (int) $cat->getPermsGroup() : ($groupRights & (int) $cat->getPermsGroup());
-								$groupId = $cat->getPermsGroupId();
-							}
-						}
-
-							// set the group id and permissions for a new record
-						if ('new' == $status) {
-							$fieldArray['perms_group'] = $groupRights;
-							$fieldArray['perms_groupid'] = $groupId;
-						}
-					}
-
-						// if there is no parent_category left from the ones the user wanted to add, abort and inform him.
-					if ('' == $fieldArray['parent_category'] && count($newParents) > 0) {
-						$pObj->newlog('You dont have the permissions to use any of the parent categories you chose as a parent.', 1);
+						// Make sure we did not assign self as parent category
+					if ($catUid == $id) {
+						$pObj->newlog('You cannot select this category itself as a parent category.', 1);
 						$fieldArray = array();
 					}
 
-						// make sure the category does not end up as its own parent - would lead to endless recursion.
-					if ('' != $fieldArray['parent_category'] && 'new' != $status) {
-						$catUids = t3lib_div::intExplode(',', $fieldArray['parent_category']);
+					/** @var Tx_Commerce_Domain_Model_Category $catDirect */
+					$catDirect = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category');
+					$catDirect->init($catUid);
+					$catDirect->loadData();
 
-						foreach ($catUids as $catUid) {
-								// Skip root.
-							if (0 == $catUid) {
-								continue;
-							}
+					$tmpCats = $catDirect->getParentCategories();
+					$tmpParents = NULL;
+					$i = 1000;
 
-								// Make sure we did not assign self as parent category
-							if ($catUid == $id) {
-								$pObj->newlog('You cannot select this category itself as a parent category.', 1);
-								$fieldArray = array();
-							}
-
-							/** @var Tx_Commerce_Domain_Model_Category $catDirect */
-							$catDirect = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category');
-							$catDirect->init($catUid);
-							$catDirect->loadData();
-
-							$tmpCats = $catDirect->getParentCategories();
-							$tmpParents = NULL;
-							$i = 1000;
-
-							while (!is_null($cat = @array_pop($tmpCats))) {
-									// Prevent endless recursion
-								if ($i < 0) {
-									$pObj->newlog('Endless recursion occured while processing your request. Notify your admin if this error persists.', 1);
-									$fieldArray = array();
-								}
-
-								if ($cat->getUid() == $id) {
-									$pObj->newlog('You cannot select a child category or self as a parent category. Selected Category in question: ' . $catDirect->getTitle(), 1);
-									$fieldArray = array();
-								}
-
-								$tmpParents = $cat->getParentCategories();
-
-								if (is_array($tmpParents) && 0 < count($tmpParents)) {
-									$tmpCats = array_merge($tmpCats, $tmpParents);
-								}
-								$i --;
-							}
+					while (!is_null($cat = @array_pop($tmpCats))) {
+							// Prevent endless recursion
+						if ($i < 0) {
+							$pObj->newlog('Endless recursion occured while processing your request. Notify your admin if this error persists.', 1);
+							$fieldArray = array();
 						}
+
+						if ($cat->getUid() == $id) {
+							$pObj->newlog('You cannot select a child category or self as a parent category. Selected Category in question: ' . $catDirect->getTitle(), 1);
+							$fieldArray = array();
+						}
+
+						$tmpParents = $cat->getParentCategories();
+
+						if (is_array($tmpParents) && 0 < count($tmpParents)) {
+							$tmpCats = array_merge($tmpCats, $tmpParents);
+						}
+						$i--;
 					}
 				}
-			break;
+			}
+		}
+	}
+
+	/**
+	 * Checks if the permissions we need to process the datamap are still in place
+	 *
+	 * @param string $status
+	 * @param string $table
+	 * @param integer|string $id
+	 * @param array $fieldArray
+	 * @param t3lib_TCEmain $pObj
+	 * @return array
+	 */
+	protected function postProcessProduct($status, $table, $id, &$fieldArray, $pObj) {
+		$data = $pObj->datamap[$table][$id];
+
+			// Read the old parent categories
+		if ($status != 'new') {
+			/** @var Tx_Commerce_Domain_Model_Product $item */
+			$item = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product');
+			$item->init($id);
+
+			$parentCategories = $item->getParentCategories();
+
+				// check existing categories
+			if (!Tx_Commerce_Utility_BackendUtility::checkPermissionsOnCategoryContent($parentCategories, array('editcontent'))) {
+				$pObj->newlog('You dont have the permissions to edit the product.', 1);
+				$fieldArray = array();
+			}
+		} else {
+				// new products have to have a category
+				// if a product is copied, we never check if it has categories - this is MANDATORY, otherwise localize will not work at all!!!
+				// remove this only if you decide to not define the l10n_mode of "categories"" (products)
+			if ('' == trim($fieldArray['categories']) && !isset($GLOBALS['BE_USER']->uc['txcommerce_copyProcess'])) {
+				$pObj->newlog('You have to specify at least 1 parent category for the product.', 1);
+				$fieldArray = array();
+			}
+
+			$parentCategories = array();
+		}
+
+			// check new categories
+		if (isset($data['categories'])) {
+			$newCats = $this->singleDiffAssoc(t3lib_div::trimExplode(',', t3lib_div::uniqueList($data['categories'])), $parentCategories);
+
+			if (!Tx_Commerce_Utility_BackendUtility::checkPermissionsOnCategoryContent($newCats, array('editcontent'))) {
+				$pObj->newlog('You do not have the permissions to add one or all categories you added.' . t3lib_div::uniqueList($data['categories']), 1);
+				$fieldArray = array();
+			}
+		}
+
+		if (isset($fieldArray['categories'])) {
+			$fieldArray['categories'] = t3lib_div::uniqueList($fieldArray['categories']);
+		}
+
+		return $data;
+	}
+
+	/**
+	 * Checks if the permissions we need to process the datamap are still in place
+	 *
+	 * @param string $status
+	 * @param integer|string $id
+	 * @param array $fieldArray
+	 * @param t3lib_TCEmain $pObj
+	 * @return array
+	 */
+	protected function postProcessArticle($status, $id, &$fieldArray, $pObj) {
+		$parentCategories = array();
+
+			// Read the old parent product - skip this if we are copying or overwriting the article
+		if ('new' != $status && !$GLOBALS['BE_USER']->uc['txcommerce_copyProcess']) {
+			/** @var Tx_Commerce_Domain_Model_Article $article */
+			$article = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Article');
+			$article->init($id);
+			$article->loadData();
+			$productUid = $article->getParentProductUid();
+
+				// get the parent categories of the product
+			/** @var Tx_Commerce_Domain_Model_Product $product */
+			$product = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product');
+			$product->init($productUid);
+			$product->loadData();
+			$parentCategories = $product->getParentCategories();
+
+			if (!current($parentCategories)) {
+				$languageParentUid = $product->getL18nParent();
+				/** @var Tx_Commerce_Domain_Model_Product $l18nParent */
+				$l18nParent = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product');
+				$l18nParent->init($languageParentUid);
+				$l18nParent->loadData();
+				$parentCategories = $l18nParent->getParentCategories();
+			}
+		}
+
+			// read new assigned product
+		if (!Tx_Commerce_Utility_BackendUtility::checkPermissionsOnCategoryContent($parentCategories, array('editcontent'))) {
+			$pObj->newlog('You dont have the permissions to edit the article.', 1);
+			$fieldArray = array();
 		}
 	}
 
@@ -686,7 +849,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 	 */
 	public function processDatamap_afterDatabaseOperations($status, $table, $id, $fieldArray, $pObj) {
 			// get the UID of the created record if it was just created
-		if ('new' == $status && count($fieldArray)) {
+		if ($status == 'new' && count($fieldArray)) {
 			$id = $pObj->substNEWwithIDs[$id];
 		}
 
@@ -706,7 +869,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 			break;
 
 			case 'tx_commerce_article_prices':
-				$this->afterDatabasePrices($fieldArray, $id);
+				$this->afterDatabasePrice($fieldArray, $id);
 			break;
 		}
 
@@ -834,7 +997,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 	 * @param array $fieldArray
 	 * @param integer $id
 	 */
-	protected function afterDatabasePrices($fieldArray, $id) {
+	protected function afterDatabasePrice($fieldArray, $id) {
 		if (!isset($fieldArray['uid_article'])) {
 			/** @var t3lib_db $database */
 			$database = $GLOBALS['TYPO3_DB'];
@@ -896,11 +1059,11 @@ class Tx_Commerce_Hook_DataMapHooks {
 
 
 	/**
-	 * @param integer $cUid: ...
-	 * @param array $fieldArray: ...
-	 * @param boolean $saveAnyway: ...
-	 * @param boolean $delete: ...
-	 * @param boolean $updateXML: ...
+	 * @param integer $cUid
+	 * @param array $fieldArray
+	 * @param boolean $saveAnyway
+	 * @param boolean $delete
+	 * @param boolean $updateXML
 	 * @return void
 	 */
 	protected function saveCategoryRelations($cUid, $fieldArray = NULL, $saveAnyway = FALSE, $delete = TRUE, $updateXML = TRUE) {
@@ -1293,82 +1456,6 @@ class Tx_Commerce_Hook_DataMapHooks {
 	}
 
 	/**
-	 * Process Data when saving Order
-	 * Change the PID from this order via the new field newpid
-	 * As TYPO3 don't allowes changing the PId directly
-	 *
-	 * @param array $incomingFieldArray
-	 * @param string $table
-	 * @param integer $id
-	 * @param t3lib_TCEmain $pObj
-	 * @return array
-	 */
-	protected function moveOrders($incomingFieldArray, $table, $id, &$pObj) {
-		if (isset($incomingFieldArray['newpid'])) {
-			$hookObjectsArr = $this->getMoveOrderHooks();
-
-			/** @var t3lib_db $database */
-			$database = $GLOBALS['TYPO3_DB'];
-
-				// Add first the pid filled
-			$incomingFieldArray['pid'] = $incomingFieldArray['newpid'];
-
-				// Move Order articles
-			$orders = $database->exec_SELECTquery('order_id, pid, uid, order_sys_language_uid', $table, 'uid = ' . (int) $id);
-			if (!$database->sql_error()) {
-				$order = $database->sql_fetch_assoc($orders);
-
-				if ($order['pid'] != $incomingFieldArray['newpid']) {
-						// order_sys_language_uid is not always set in fieldArray so we overwrite it with our order data
-					if ($incomingFieldArray['order_sys_language_uid'] === NULL) {
-						$incomingFieldArray['order_sys_language_uid'] = $order['order_sys_language_uid'];
-					}
-
-					foreach ($hookObjectsArr as $hookObj) {
-						if (method_exists($hookObj, 'moveOrders_preMoveOrder')) {
-							$hookObj->moveOrders_preMoveOrder($order, $incomingFieldArray);
-						}
-					}
-
-					$orderId = $order['order_id'];
-					$res_order_articles = $database->exec_SELECTquery(
-						'*',
-						'tx_commerce_order_articles',
-						'order_id = ' . $database->fullQuoteStr($orderId, 'tx_commerce_order_articles')
-					);
-					if (!$database->sql_error()) {
-							// Run trough all articles from this order and move to it to other storage folder
-						while ($order_artikel_row = $database->sql_fetch_assoc($res_order_articles)) {
-							$order_artikel_row['pid'] = $incomingFieldArray['newpid'];
-							$order_artikel_row['tstamp'] = time();
-							$database->exec_UPDATEquery(
-								'tx_commerce_order_articles',
-								'uid=' . $order_artikel_row['uid'],
-								$order_artikel_row
-							);
-						}
-					} else {
-						$pObj->log($table, $id, 2, 0, 2, 'SQL error: \'%s\' (%s)', 12, array($database->sql_error(), $table . ':' . $id));
-					}
-					$order['pid'] = $incomingFieldArray['newpid'];
-					$order['tstamp'] = time();
-					$database->exec_UPDATEquery('tx_commerce_orders', 'uid=' . $order['uid'], $order);
-
-					foreach ($hookObjectsArr as $hookObj) {
-						if (method_exists($hookObj, 'moveOrders_postMoveOrder')) {
-							$hookObj->moveOrders_postMoveOrder($order, $incomingFieldArray);
-						}
-					}
-				}
-			} else {
-				$pObj->log($table, $id, 2, 0, 2, 'SQL error: \'%s\' (%s)', 12, array($database->sql_error(), $table . ':' . $id));
-			}
-		}
-
-		return $incomingFieldArray;
-	}
-
-	/**
 	 * @return array
 	 */
 	protected function getMoveOrderHooks() {
@@ -1393,60 +1480,6 @@ class Tx_Commerce_Hook_DataMapHooks {
 		}
 
 		return $hookObjectsArr;
-	}
-
-	/**
-	 * Process Data when saving Order
-	 * Basically removes the crdate field
-	 * and so prevents vom chan ging the crdate by admin
-	 *
-	 * @param array $incomingFieldArray
-	 * @return array
-	 */
-	protected function doNotChangeCrdate($incomingFieldArray) {
-		$incomingFieldArray['crdate'] = NULL;
-
-		return $incomingFieldArray;
-	}
-
-	/**
-	 * Process Data when saving ordered articles
-	 * Recalculate Order sum
-	 *
-	 * @param string $table
-	 * @param integer $id
-	 * @param t3lib_TCEmain $pObj
-	 * @return void
-	 */
-	protected function recalculateOrderSum($table, $id, $pObj) {
-		/** @var t3lib_db $database */
-		$database = $GLOBALS['TYPO3_DB'];
-
-		$orderIdResult = $database->exec_SELECTquery('order_id', $table, 'uid = ' . (int) $id);
-		if (!$database->sql_error()) {
-			list($orderId) = $database->sql_fetch_row($orderIdResult);
-			$sum = array('sum_price_gross' => 0, 'sum_price_net' => 0);
-
-			$orderArticles = $database->exec_SELECTquery('*', $table, 'order_id = ' . $database->fullQuoteStr($orderId, $table));
-			if (!$database->sql_error()) {
-				while ($orderArticle = $database->sql_fetch_assoc($orderArticles)) {
-					/**
-					 * Calculate Sums
-					 */
-					$sum['sum_price_gross'] += $orderArticle['amount'] * $orderArticle['price_net'];
-					$sum['sum_price_net'] += $orderArticle['amount'] * $orderArticle['price_gross'];
-				}
-			} else {
-				$pObj->log($table, $id, 2, 0, 2, 'SQL error: \'%s\' (%s)', 12, array($database->sql_error(), $table . ':' . $id));
-			}
-
-			$database->exec_UPDATEquery($table, 'order_id = ' . $database->fullQuoteStr($orderId, 'tx_commerce_orders'), $sum);
-			if ($database->sql_error()) {
-				$pObj->log($table, $id, 2, 0, 2, 'SQL error: \'%s\' (%s)', 12, array($database->sql_error(), $table . ':' . $id));
-			}
-		} else {
-			$pObj->log($table, $id, 2, 0, 2, 'SQL error: \'%s\' (%s)', 12, array($database->sql_error(), $table . ':' . $id));
-		}
 	}
 }
 
