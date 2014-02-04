@@ -14,7 +14,7 @@ $GLOBALS['T3_VAR']['ext'][COMMERCE_EXTKEY]['TCA']['mountpoints_config'] = array(
 		// see: tx_dam_treelib_tceforms::getMountsForTree()
 	'type' => 'passthrough',
 	'form_type' => 'user',
-	'userFunc' => 'EXT:commerce/treelib/class.tx_commerce_tcefunc.php:&tx_commerce_tceFunc->getSingleField_selectCategories',
+	'userFunc' => 'tx_commerce_tceFunc->getSingleField_selectCategories',
 	'treeViewBrowseable' => TRUE,
 	'size' => 10,
 	'autoSizeMax' => 30,

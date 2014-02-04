@@ -555,6 +555,8 @@ class Tx_Commerce_Controller_AccessController {
 		$backendUser = $GLOBALS['BE_USER'];
 		/** @var language $language */
 		$language = $GLOBALS['LANG'];
+		/** @var Tx_Commerce_Controller_PermissionAjaxController $permissionAjaxController */
+		$permissionAjaxController = t3lib_div::makeInstance('Tx_Commerce_Controller_PermissionAjaxController');
 
 			// Get usernames and groupnames: The arrays we get in return contains only 1) users which are members of the groups
 			// of the current user, 2) groups that the current user is member of
@@ -644,12 +646,12 @@ class Tx_Commerce_Controller_AccessController {
 			$userName = $beUserArray[$row['perms_userid']] ?
 				$beUserArray[$row['perms_userid']]['username'] :
 				($row['perms_userid'] ? '<i>[' . $row['perms_userid'] . ']!</i>' : '');
-			$userName = Tx_Commerce_Controller_PermissionAjaxController::renderOwnername($pageId, $row['perms_userid'], htmlspecialchars(t3lib_div::fixed_lgd_cs($userName, 20)));
+			$userName = $permissionAjaxController->renderOwnername($pageId, $row['perms_userid'], htmlspecialchars(t3lib_div::fixed_lgd_cs($userName, 20)));
 
 			$groupName = $beGroupArray[$row['perms_groupid']] ?
 				$beGroupArray[$row['perms_groupid']]['title']  :
 				($row['perms_groupid'] ? '<i>[' . $row['perms_groupid'] . ']!</i>' : '');
-			$groupName = Tx_Commerce_Controller_PermissionAjaxController::renderGroupname($pageId, $row['perms_groupid'], htmlspecialchars(t3lib_div::fixed_lgd_cs($groupName, 20)));
+			$groupName = $permissionAjaxController->renderGroupname($pageId, $row['perms_groupid'], htmlspecialchars(t3lib_div::fixed_lgd_cs($groupName, 20)));
 
 				// Seeing if editing of permissions are allowed for that page:
 			$editPermsAllowed = ($row['perms_userid'] == $backendUser->user['uid'] || $backendUser->isAdmin());
@@ -716,13 +718,13 @@ class Tx_Commerce_Controller_AccessController {
 			if ($this->MOD_SETTINGS['mode'] == 'perms') {
 				$cells[] = '
 					<td' . $bgCol . '><img' . $lineImg . ' alt="" /></td>
-					<td' . $bgCol . ' nowrap="nowrap">' . ($pageId ? Tx_Commerce_Controller_PermissionAjaxController::renderPermissions($row['perms_user'], $pageId, 'user') . ' ' . $userName : '') . '</td>
+					<td' . $bgCol . ' nowrap="nowrap">' . ($pageId ? $permissionAjaxController->renderPermissions($row['perms_user'], $pageId, 'user') . ' ' . $userName : '') . '</td>
 
 					<td' . $bgCol . '><img' . $lineImg . ' alt="" /></td>
-					<td' . $bgCol . ' nowrap="nowrap">' . ($pageId ? Tx_Commerce_Controller_PermissionAjaxController::renderPermissions($row['perms_group'], $pageId, 'group') . ' ' . $groupName : '') . '</td>
+					<td' . $bgCol . ' nowrap="nowrap">' . ($pageId ? $permissionAjaxController->renderPermissions($row['perms_group'], $pageId, 'group') . ' ' . $groupName : '') . '</td>
 
 					<td' . $bgCol . '><img' . $lineImg . ' alt="" /></td>
-					<td' . $bgCol . ' nowrap="nowrap">' . ($pageId ? ' ' . Tx_Commerce_Controller_PermissionAjaxController::renderPermissions($row['perms_everybody'], $pageId, 'everybody') : '') . '</td>
+					<td' . $bgCol . ' nowrap="nowrap">' . ($pageId ? ' ' . $permissionAjaxController->renderPermissions($row['perms_everybody'], $pageId, 'everybody') : '') . '</td>
 
 					<td' . $bgCol . '><img' . $lineImg . ' alt="" /></td>
 					<td' . $bgCol . ' nowrap="nowrap">' . (
@@ -748,7 +750,7 @@ class Tx_Commerce_Controller_AccessController {
 				$cells[] = '
 					<td' . $bgCol . ' nowrap="nowrap" align="center">' . (
 						$pageId ?
-						$owner . Tx_Commerce_Controller_PermissionAjaxController::renderPermissions($backendUser->calcPerms($row), $pageId, 'user') :
+						$permissionAjaxController->renderPermissions($backendUser->calcPerms($row), $pageId, 'user') :
 						''
 					) . '</td>
 					' . (!$backendUser->isAdmin() ?

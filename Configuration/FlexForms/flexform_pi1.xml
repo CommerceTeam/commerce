@@ -60,7 +60,7 @@
 								<internal_type>passthrough</internal_type>
 								<allowed>tx_commerce_categories</allowed>
 								<form_type>user</form_type>
-								<userFunc>EXT:commerce/treelib/class.tx_commerce_tcefunc.php:tx_commerce_tceFunc->getSingleField_selectCategories</userFunc>
+								<userFunc>tx_commerce_tceFunc->getSingleField_selectCategories</userFunc>
 								<treeView>1</treeView>
 								<treeClass>tx_commerce_tceFunc_categoryTree</treeClass>
 								<size>7</size>

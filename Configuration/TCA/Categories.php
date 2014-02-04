@@ -68,6 +68,18 @@ $GLOBALS['TCA']['tx_commerce_categories'] = Array(
 				'type' => 'passthrough'
 			)
 		),
+		'editlock' => array(
+			'exclude' => 1,
+			'label' => 'LLL:EXT:lang/locallang_tca.php:editlock',
+			'config' => array(
+				'type' => 'check',
+				'items' => array(
+					'1' => array(
+						'0' => 'LLL:EXT:lang/locallang_core.xml:labels.enabled',
+					),
+				),
+			),
+		),
 		'hidden' => Array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:lang/locallang_general.php:LGL.hidden',
@@ -211,7 +223,7 @@ $GLOBALS['TCA']['tx_commerce_categories'] = Array(
 			'config' => Array(
 				'type' => 'passthrough',
 				'form_type' => 'user',
-				'userFunc' => 'EXT:commerce/treelib/class.tx_commerce_tcefunc.php:&tx_commerce_tceFunc->getSingleField_selectCategories',
+				'userFunc' => 'tx_commerce_tceFunc->getSingleField_selectCategories',
 				'treeViewBrowseable' => TRUE,
 				'size' => 10,
 				'autoSizeMax' => 30,
