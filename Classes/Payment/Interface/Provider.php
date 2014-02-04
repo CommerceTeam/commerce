@@ -39,7 +39,7 @@ interface Tx_Commerce_Payment_Interface_Provider {
 	/**
 	 * Get parent object
 	 *
-	 * @return Tx_Commerce_Controller_BaseController Parent object instance
+	 * @return Tx_Commerce_Payment_Interface_Payment Parent object instance
 	 */
 	public function getPaymentObject();
 

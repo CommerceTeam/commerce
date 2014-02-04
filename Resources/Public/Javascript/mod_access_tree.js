@@ -1,38 +1,29 @@
 /***************************************************************
-*
-*  javascript functions regarding the category tree
-*  relies on the javascript library "prototype"
-*
-*
-*  Copyright notice
-*
-*  (c) 2006-2008	Benjamin Mack <www.xnos.org>
-*  All rights reserved
-*
-*  This script is part of the TYPO3 t3lib/ library provided by
-*  Kasper Skaarhoj <kasper@typo3.com> together with TYPO3
-*
-*  Released under GNU/GPL (see license file in tslib/)
-*
-*  This script is distributed in the hope that it will be useful,
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-*
-*  This copyright notice MUST APPEAR in all copies of this script
-*
-*  TYPO3 SVN ID: $Id: tree.js 2911 2008-01-15 22:49:57Z ingorenner $
-*
-***************************************************************/
-
-
-
-/**
  *
- * @author	Benjamin Mack
- */
+ *  javascript functions regarding the category tree
+ *  relies on the javascript library "prototype"
+ *  Copyright notice
+ *
+ *  (c) 2006-2008 Benjamin Mack <www.xnos.org>
+ *  All rights reserved
+ *
+ *  This script is part of the TYPO3 t3lib/ library provided by
+ *  Kasper Skaarhoj <kasper@typo3.com> together with TYPO3
+ *
+ *  Released under GNU/GPL (see license file in tslib/)
+ *
+ *  This script is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ *  This copyright notice MUST APPEAR in all copies of this script
+ *
+ ***************************************************************/
+
 var Tree = {
 	thisScript: '../../../../../../typo3/ajax.php',
-	ajaxID: 'Tx_Commerce_Module_Access_Navigation::ajaxExpandCollapse',	// has to be either "SC_alt_db_navframe::expandCollapse" or "SC_alt_file_navframe::expandCollapse"
+		// has to be either "SC_alt_db_navframe::expandCollapse" or "SC_alt_file_navframe::expandCollapse"
+	ajaxID: 'Tx_Commerce_Module_Access_Navigation::ajaxExpandCollapse',
 	frameSetModule: null,
 	activateDragDrop: false,
 	highlightClass: 'active',
@@ -104,7 +95,7 @@ var Tree = {
 
 	// selects the activated item again, in case it collapsed and got expanded again
 	reSelectActiveItem: function() {
-		obj = $(top.fsMod.navFrameHighlightedID[this.frameSetModule]);
+		var obj = $(top.fsMod.navFrameHighlightedID[this.frameSetModule]);
 		if (obj) {
 			Element.addClassName(obj, this.highlightClass);
 			this.extractPageIdFromTreeItem(obj.id);
@@ -118,7 +109,7 @@ var Tree = {
 		this.extractPageIdFromTreeItem(highlightID);
 
 		// Remove all items that are already highlighted
-		obj = $(top.fsMod.navFrameHighlightedID[frameSetModule]);
+		var obj = $(top.fsMod.navFrameHighlightedID[frameSetModule]);
 		if (obj) {
 			var classes = $w(this.highlightClass);
 			for (var i = 0; i < classes.length; i++)
@@ -159,10 +150,9 @@ var DragDrop = {
 		if (!elementID) elementID = this.dragID;
 		if (!$('dragIcon')) this.addDragIcon();
 
-		$('dragIcon').innerHTML = $('dragIconID_'+elementID).innerHTML
-								+ $('dragTitleID_'+elementID).firstChild.innerHTML;
+		$('dragIcon').innerHTML = $('dragIconID_'+elementID).innerHTML + $('dragTitleID_'+elementID).firstChild.innerHTML;
 
-		document.onmouseup   = function(event) { DragDrop.cancelDragEvent(event); };
+		document.onmouseup = function(event) { DragDrop.cancelDragEvent(event); };
 		document.onmousemove = function(event) { DragDrop.mouseMoveEvent(event); };
 		return false;
 	},
@@ -171,10 +161,10 @@ var DragDrop = {
 		var dropID = this.getIdFromEvent(event);
 		if ((this.dragID) && (this.dragID != dropID)) {
 			var url = this.changeURL
-				    + '?dragDrop=' + this.table
-					+ '&srcId=' + this.dragID
-					+ '&dstId=' + dropID;
-					+ '&backPath=' + this.backPath;
+				+ '?dragDrop=' + this.table
+				+ '&srcId=' + this.dragID
+				+ '&dstId=' + dropID
+				+ '&backPath=' + this.backPath;
 			showClickmenu_raw(url);
 		}
 		this.cancelDragEvent();
@@ -285,7 +275,7 @@ var PageTreeFilter = Class.create({
 
 // Call this function, refresh_nav(), from another script in the backend if you want
 // to refresh the navigation frame (eg. after having changed a page title or moved pages etc.)
-//		See t3lib_BEfunc::getSetUpdateSignal()
+// See t3lib_BEfunc::getSetUpdateSignal()
 // please use the function in the "Tree" object for future implementations
 function refresh_nav() {
 	window.setTimeout('Tree.refresh();',0);

@@ -338,7 +338,9 @@ class tx_commerce_treelib_link_categorytree extends browsetree {
 
 			// Set the Positions for each leaf
 		for ($i = 0; $i < $this->leafcount; $i ++) {
-			$this->leafs[$i]->setDataPositions($positions);
+			/** @var leaf $leaf */
+			$leaf = $this->leafs[$i];
+			$leaf->setDataPositions($positions);
 		}
 	}
 }
