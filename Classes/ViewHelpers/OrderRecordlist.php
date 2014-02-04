@@ -143,66 +143,49 @@ class Tx_Commerce_ViewHelpers_OrderRecordlist extends localRecordList {
 	}
 
 	/**
-	 * Writes the top of the full listing
+	 * Create the panel of buttons for submitting the form or otherwise perform operations.
 	 *
-	 * @param array $row Current page record
-	 * @return void (Adds content to internal variable, $this->HTMLcode)
+	 * @param array $row
+	 * @return array all available buttons as an assoc. array
 	 */
-	public function writeTop($row) {
+	public function getHeaderButtons($row) {
 		/** @var t3lib_beUserAuth $backendUser */
 		$backendUser = $GLOBALS['BE_USER'];
 		/** @var language $language */
 		$language = $GLOBALS['LANG'];
 
-			// Makes the code for the pageicon in the top
-		$this->pageRow = $row;
-		$this->counter++;
-		$alttext = t3lib_BEfunc::getRecordIconAltText($row, 'pages');
-		$iconImg = t3lib_iconWorks::getIconImage('pages', $row, $this->backPath, 'class="absmiddle" title="' . htmlspecialchars($alttext) . '"');
-
-			// pseudo title column name
-		$titleCol = 'test';
-			// Setting the fields to display in the list (this is of course "pseudo fields" since this is the top!)
-		$this->fieldArray = Array($titleCol, 'up');
-
-			// Filling in the pseudo data array:
-		$theData = Array();
-		$theData[$titleCol] = $this->widthGif;
+		$buttons = array(
+			'csh' => '',
+				// group left 1
+			'level_up' => '',
+			'back' => '',
+				// group left 2
+			'new_record' => '',
+			'paste' => '',
+				// group left 3
+			'view' => '',
+			'edit' => '',
+			'move' => '',
+			'hide_unhide' => '',
+				// group left 4
+			'csv' => '',
+			'export' => '',
+				// group right 1
+			'cache' => '',
+			'reload' => '',
+			'shortcut' => '',
+		);
 
 			// Get users permissions for this row:
 		$localCalcPerms = $backendUser->calcPerms($row);
-
-		$theData['up'] = array();
-
-			// Initialize control panel for currect page ($this->id):
-			// Some of the controls are added only if $this->id is set - since they make sense only on a real page, not root level.
-		$theCtrlPanel = array();
 
 			// If edit permissions are set (see class.t3lib_userauthgroup.php)
 		if ($localCalcPerms & 2) {
 				// Adding "New record" icon:
 			if (!$GLOBALS['SOBE']->modTSconfig['properties']['noCreateRecordsLink']) {
-				$theCtrlPanel[] = '<a href="#" onclick="' . htmlspecialchars('return jumpExt(\'db_new.php?id=' . $this->id . '\');') . '">' .
+				$buttons['new_record'] = '<a href="#" onclick="' . htmlspecialchars('return jumpExt(\'db_new.php?id=' . $this->id . '\');') . '">' .
 					t3lib_iconWorks::getSpriteIcon('actions-document-new', array('title' => $language->getLL('newRecordGeneral', 1))) .
 					'</a>';
-			}
-
-				// Adding "Hide/Unhide" icon:
-			if ($this->id) {
-					// @todo: change the return path
-				if ($row['hidden']) {
-					$params = '&data[pages][' . $row['uid'] . '][hidden]=0';
-					$theCtrlPanel[] = '<a href="#" onclick="' .
-						htmlspecialchars('return jumpToUrl(\'' . $GLOBALS['SOBE']->doc->issueCommand($params, -1) . '\');') . '">' .
-						t3lib_iconWorks::getSpriteIcon('actions-edit-unhide', array('title' => $language->getLL('unHidePage', 1))) .
-						'</a>';
-				} else {
-					$params = '&data[pages][' . $row['uid'] . '][hidden]=1';
-					$theCtrlPanel[] = '<a href="#" onclick="' .
-						htmlspecialchars('return jumpToUrl(\'' . $GLOBALS['SOBE']->doc->issueCommand($params, -1) . '\');') . '">' .
-						t3lib_iconWorks::getSpriteIcon('actions-edit-hide', array('title' => $language->getLL('hidePage', 1))) .
-						'</a>';
-				}
 			}
 		}
 
@@ -210,7 +193,7 @@ class Tx_Commerce_ViewHelpers_OrderRecordlist extends localRecordList {
 		if (($localCalcPerms & 8) || ($localCalcPerms & 16)) {
 			$elFromTable = $this->clipObj->elFromTable('');
 			if (count($elFromTable)) {
-				$theCtrlPanel[] = '<a href="' . htmlspecialchars($this->clipObj->pasteUrl('', $this->id)) . '" onclick="' .
+				$buttons['paste'] = '<a href="' . htmlspecialchars($this->clipObj->pasteUrl('', $this->id)) . '" onclick="' .
 					htmlspecialchars('return ' . $this->clipObj->confirmMsg('pages', $this->pageRow, 'into', $elFromTable)) . '">' .
 					t3lib_iconWorks::getSpriteIcon(
 						'actions-document-paste-into',
@@ -219,22 +202,19 @@ class Tx_Commerce_ViewHelpers_OrderRecordlist extends localRecordList {
 			}
 		}
 
-			// Finally, compile all elements of the control panel into table cells:
-		if (count($theCtrlPanel)) {
-			$theData['up'][] = '
-				<!--
-					Control panel for page
-				-->
-				<table border="0" cellpadding="0" cellspacing="0" class="bgColor4" id="typo3-dblist-ctrltop">
-					<tr>
-						<td>' . implode('</td><td>', $theCtrlPanel) . '</td>
-					</tr>
-				</table>';
+		if ($this->id) {
+				// Setting title of page + the "Go up" link:
+			$buttons['level_up'] = '<a href="' . htmlspecialchars($this->listURL($row['pid'])) . '" onclick="setHighlight(' . $row['pid'] . ')">' .
+				t3lib_iconWorks::getSpriteIcon(
+					'actions-view-go-up',
+					array('title' => $language->sL('LLL:EXT:lang/locallang_core.php:labels.upOneLevel', 1))
+				) .
+				'</a>';
 		}
 
 			// Add "CSV" link, if a specific table is shown:
 		if ($this->table) {
-			$theData['up'][] = '<a href="' . htmlspecialchars($this->listURL() . '&csv=1') . '">' .
+			$buttons['csv'] = '<a href="' . htmlspecialchars($this->listURL() . '&csv=1') . '">' .
 				t3lib_iconWorks::getSpriteIcon(
 					'mimetypes-text-csv',
 					array('title' => $language->sL('LLL:EXT:lang/locallang_core.php:labels.csv', 1))
@@ -243,7 +223,7 @@ class Tx_Commerce_ViewHelpers_OrderRecordlist extends localRecordList {
 
 			// Add "Export" link, if a specific table is shown:
 		if ($this->table && t3lib_extMgm::isLoaded('impexp')) {
-			$theData['up'][] = '<a href="' . htmlspecialchars($this->backPath . t3lib_extMgm::extRelPath('impexp') .
+			$buttons['export'] = '<a href="' . htmlspecialchars($this->backPath . t3lib_extMgm::extRelPath('impexp') .
 				'app/index.php?tx_impexp[action]=export&tx_impexp[list][]=' . rawurlencode($this->table . ':' . $this->id)) . '">' .
 				t3lib_iconWorks::getSpriteIcon(
 					'actions-document-export-t3d',
@@ -252,64 +232,11 @@ class Tx_Commerce_ViewHelpers_OrderRecordlist extends localRecordList {
 		}
 
 			// Add "refresh" link:
-		$theData['up'][] = '<a href="' . htmlspecialchars($this->listURL()) . '">' .
+		$buttons['reload'] = '<a href="' . htmlspecialchars($this->listURL()) . '">' .
 			t3lib_iconWorks::getSpriteIcon('actions-system-refresh', array('title' => $language->sL('LLL:EXT:lang/locallang_core.php:labels.reload', 1))) .
 			'</a>';
 
-			// Add icon with clickmenu, etc:
-			// If there IS a real page...:
-		if ($this->id) {
-				// Setting title of page + the "Go up" link:
-			$theData[$titleCol] .= '<br /><span title="' . htmlspecialchars($row['_thePathFull']) . '">' .
-				htmlspecialchars(t3lib_div::fixed_lgd_cs($row['_thePath'], - $this->fixedL)) . '</span>';
-			$theData['up'][] = '<a href="' . htmlspecialchars($this->listURL($row['pid'])) . '" onclick="setHighlight(' . $row['pid'] . ')">' .
-				t3lib_iconWorks::getSpriteIcon(
-					'actions-view-go-up',
-					array('title' => $language->sL('LLL:EXT:lang/locallang_core.php:labels.upOneLevel', 1))
-				) .
-				'</a>';
-
-				// Make Icon:
-			$theIcon = $this->clickMenuEnabled ? $GLOBALS['SOBE']->doc->wrapClickMenuOnIcon($iconImg, 'pages', $this->id) : $iconImg;
-			// On root-level of page tree:
-		} else {
-				// Setting title of root (sitename):
-			$theData[$titleCol] .= '<br />' . htmlspecialchars(t3lib_div::fixed_lgd_cs($GLOBALS['TYPO3_CONF_VARS']['SYS']['sitename'], - $this->fixedL));
-
-				// Make Icon:
-			$theIcon = t3lib_iconWorks::getSpriteIcon('apps-pagetree-root');
-		}
-
-			// If there is a returnUrl given, add a back-link:
-		if ($this->returnUrl) {
-			$theData['up'][] = '<a href="' . htmlspecialchars(t3lib_div::linkThisUrl($this->returnUrl, array('id' => $this->id))) .
-				'" class="typo3-goBack">'  .
-				t3lib_iconWorks::getSpriteIcon(
-					'actions-view-go-back',
-					array('title' => $language->sL('LLL:EXT:lang/locallang_core.php:labels.goBack', 1))
-				) . '</a>';
-		}
-
-		$theData['up'][] = $this->additionalOutTop;
-			// Finally, the "up" pseudo field is compiled into a table - has been accumulated in an array:
-		$theData['up'] = '
-			<table border="0" cellpadding="0" cellspacing="0">
-				<tr>
-					<td>' . implode('</td><td>', $theData['up']) . '</td>
-				</tr>
-			</table>';
-
-			// ... and the element row is created:
-		$out = $this->addelement(1, $theIcon, $theData, '', $this->leftMargin);
-
-			// ... and wrapped into a table and added to the internal ->HTMLcode variable:
-		$this->HTMLcode .= '
-			<!--
-				Page header for db_list:
-			-->
-			<table border="0" cellpadding="0" cellspacing="0" id="typo3-dblist-top">
-				' . $out . '
-			</table>';
+		return $buttons;
 	}
 
 	/**
@@ -382,7 +309,7 @@ class Tx_Commerce_ViewHelpers_OrderRecordlist extends localRecordList {
 	 * @param string $testString
 	 * @return string Link-Wrapped $code value, if $testString was URL or email.
 	 */
-	protected function mylinkUrlMail($code,$testString) {
+	protected function myLinkUrlMail($code,$testString) {
 			// Check for URL:
 		$schema = parse_url($testString);
 		if ($schema['scheme'] && t3lib_div::inList('http,https,ftp', $schema['scheme'])) {
@@ -618,7 +545,7 @@ class Tx_Commerce_ViewHelpers_OrderRecordlist extends localRecordList {
 				if (substr(TYPO3_version, 0, 3) >= '4.0') {
 					$theData[$fCol] = $this->linkUrlMail(htmlspecialchars(t3lib_BEfunc::getProcessedValueExtra($table, $fCol, $row[$fCol], 100, $row['uid'])), $row[$fCol]);
 				} else {
-					$theData[$fCol] = $this->mylinkUrlMail(htmlspecialchars(t3lib_BEfunc::getProcessedValueExtra($table, $fCol, $row[$fCol], 100, $row['uid'])), $row[$fCol]);
+					$theData[$fCol] = $this->myLinkUrlMail(htmlspecialchars(t3lib_BEfunc::getProcessedValueExtra($table, $fCol, $row[$fCol], 100, $row['uid'])), $row[$fCol]);
 				}
 			}
 		}

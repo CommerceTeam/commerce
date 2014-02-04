@@ -307,7 +307,7 @@ class Tx_Commerce_ViewHelpers_FeusersRecordlist extends localRecordList {
 	 * @param string $testString
 	 * @return string Link-Wrapped $code value, if $testString was URL or email.
 	 */
-	protected function mylinkUrlMail($code, $testString) {
+	protected function myLinkUrlMail($code, $testString) {
 			// Check for URL:
 		$schema = parse_url($testString);
 		if ($schema['scheme'] && t3lib_div::inList('http,https,ftp', $schema['scheme'])) {
@@ -407,7 +407,7 @@ class Tx_Commerce_ViewHelpers_FeusersRecordlist extends localRecordList {
 				if (substr(TYPO3_version, 0, 3) >= '4.0') {
 					$theData[$fCol] = $this->linkUrlMail(htmlspecialchars(t3lib_BEfunc::getProcessedValueExtra($table, $fCol, $row[$fCol], 100, $row['uid'])), $row[$fCol]);
 				} else {
-					$theData[$fCol] = $this->mylinkUrlMail(htmlspecialchars(t3lib_BEfunc::getProcessedValueExtra($table, $fCol, $row[$fCol], 100, $row['uid'])), $row[$fCol]);
+					$theData[$fCol] = $this->myLinkUrlMail(htmlspecialchars(t3lib_BEfunc::getProcessedValueExtra($table, $fCol, $row[$fCol], 100, $row['uid'])), $row[$fCol]);
 				}
 			}
 		}

@@ -35,7 +35,7 @@ class Tx_Commerce_Controller_OrdersController extends t3lib_SCbase {
 	 *
 	 * @var integer
 	 */
-	protected $pointer;
+	protected $pointer = 0;
 
 	/**
 	 * Thumbnails or not
@@ -157,6 +157,11 @@ class Tx_Commerce_Controller_OrdersController extends t3lib_SCbase {
 	public $MOD_SETTINGS = array();
 
 	/**
+	 * @var array
+	 */
+	protected $buttons = array();
+
+	/**
 	 * @var integer
 	 */
 	protected $clickMenuEnabled = 0;
@@ -185,22 +190,131 @@ class Tx_Commerce_Controller_OrdersController extends t3lib_SCbase {
 		$this->clickMenuEnabled = 1;
 		Tx_Commerce_Utility_FolderUtility::init_folders();
 
-		$order_pid = array_unique(Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Orders', 'Commerce', 0, 'Commerce'));
-
 		/**
 		 * If we get an id via GP use this, else use the default id
 		 */
-		if (t3lib_div::_GP('id')) {
-			$this->id = t3lib_div::_GP('id');
-		} else {
-			$this->id = $order_pid[0];
+		$this->id = t3lib_div::_GP('id');
+		if (!$this->id) {
+			$this->id = current(array_unique(Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Orders', 'Commerce', 0, 'Commerce')));
 		}
 
-			// Initialize page browser
-		$this->pointer = 0;
+			// Initialize the listing object, dblist, for rendering the list:
 		if (t3lib_div::_GP('pointer')) {
-			$this->pointer = (int) t3lib_div::_GP('pointer');
+			$this->pointer = t3lib_div::intInRange(t3lib_div::_GP('pointer'), 0, PHP_INT_MAX);
 		}
+
+		$this->doc = t3lib_div::makeInstance('template');
+		$this->doc->backPath = $GLOBALS['BACK_PATH'];
+		$this->doc->docType = 'xhtml_trans';
+		$this->doc->setModuleTemplate(PATH_TXCOMMERCE . 'Resources/Private/Backend/mod_orders.html');
+
+		if (!$this->doc->moduleTemplate) {
+			t3lib_div::devLog('cannot set navframeTemplate', 'commerce', 2, array(
+				'backpath' => $this->doc->backPath,
+				'filename from TBE_STYLES' => $GLOBALS['TBE_STYLES']['htmlTemplates']['commerce/Resources/Private/Backend/mod_orders.html'],
+				'full path' => $this->doc->backPath . $GLOBALS['TBE_STYLES']['htmlTemplates']['commerce/Resources/Private/Backend/mod_orders.html']
+			));
+			$templateFile = PATH_TXCOMMERCE_REL . 'Resources/Private/Backend/mod_order_navframe.html';
+			$this->doc->moduleTemplate = t3lib_div::getURL(PATH_site . $templateFile);
+		}
+
+		$this->doc->form = '<form action="" method="POST">';
+	}
+
+	/**
+	 * Main function of the module. Write the content to $this->content
+	 */
+	public function main() {
+		/** @var t3lib_beUserAuth $backendUser */
+		$backendUser = $GLOBALS['BE_USER'];
+		/** @var language $language */
+		$language = $GLOBALS['LANG'];
+
+			// Access check!
+			// The page will show only if there is a valid page and if this page may be viewed by the user
+		$this->pageinfo = t3lib_BEfunc::readPageAccess($this->id, $this->perms_clause);
+		$access = is_array($this->pageinfo);
+
+		if (($this->id && $access) || $backendUser->isAdmin()) {
+				// Fist check if we should move some orders
+			$this->doaction();
+
+				// Render content:
+			$this->moduleContent();
+		} else {
+				// If no access or if ID == zero
+			$this->content .= $this->doc->header($language->getLL('orders'));
+		}
+
+		$docHeaderButtons = $this->getHeaderButtons();
+
+		$markers = array(
+			'CSH' => $docHeaderButtons['csh'],
+			'CONTENT' => $this->content,
+		);
+
+			// put it all together
+		$this->content = $this->doc->startPage($language->getLL('orders'));
+		$this->content .= $this->doc->moduleBody($this->pageinfo, $docHeaderButtons, $markers);
+		$this->content .= $this->doc->endPage();
+		$this->content = $this->doc->insertStylesAndJS($this->content);
+	}
+
+	/**
+	 * Prints out the module HTML
+	 *
+	 * @return void
+	 */
+	public function printContent() {
+		$this->content .= $this->doc->endPage();
+		echo $this->content;
+	}
+
+	/**
+	 * Generates the module content
+	 *
+	 * @return void
+	 */
+	public function moduleContent() {
+		$this->orderList();
+	}
+
+	/**
+	 * Create the panel of buttons for submitting the form or otherwise perform operations.
+	 *
+	 * @return array all available buttons as an assoc. array
+	 */
+	protected function getHeaderButtons() {
+		/** @var t3lib_beUserAuth $backendUser */
+		$backendUser = $GLOBALS['BE_USER'];
+		/** @var language $language */
+		$language = $GLOBALS['LANG'];
+
+		$buttons = $this->buttons;
+
+			// CSH
+		$buttons['csh'] = t3lib_BEfunc::cshItem('_MOD_commerce_statistic', '', $GLOBALS['BACK_PATH'], '', TRUE);
+
+			// Shortcut
+		if ($backendUser->mayMakeShortcut()) {
+			$buttons['shortcut'] = $this->doc->makeShortcutIcon(
+				'id, edit_record, pointer, new_unique_uid, search_field, search_levels, showLimit',
+				implode(',', array_keys($this->MOD_MENU)),
+				$this->MCONF['name']
+			);
+		}
+
+			// If access to Web>List for user, then link to that module.
+		if ($backendUser->check('modules', 'web_list')) {
+			$href = $GLOBALS['BACK_PATH'] . 'db_list.php?id=' . $this->pageinfo['uid'] . '&returnUrl=' .
+				rawurlencode(t3lib_div::getIndpEnv('REQUEST_URI'));
+			$buttons['record_list'] = '<a href="' . htmlspecialchars($href) . '">' .
+				t3lib_iconWorks::getSpriteIcon(
+					'apps-filetree-folder-list',
+					array('title' => $language->sL('LLL:EXT:lang/locallang_core.php:labels.showList', 1))
+				) . '</a>';
+		}
+		return $buttons;
 	}
 
 	/**
@@ -229,144 +343,23 @@ class Tx_Commerce_Controller_OrdersController extends t3lib_SCbase {
 	}
 
 	/**
-	 * Main function of the module. Write the content to $this->content
-	 */
-	public function main() {
-		/** @var t3lib_beUserAuth $backendUser */
-		$backendUser = $GLOBALS['BE_USER'];
-		/** @var language $language */
-		$language = $GLOBALS['LANG'];
-
-			// Access check!
-			// The page will show only if there is a valid page and if this page may be viewed by the user
-		$this->pageinfo = t3lib_BEfunc::readPageAccess($this->id, $this->perms_clause);
-		$access = is_array($this->pageinfo) ? 1 : 0;
-
-		if (($this->id && $access) || ($backendUser->user['admin'] && !$this->id)) {
-
-				// Fist check if we should move some orders
-			$this->doaction();
-
-				// Draw the header.
-			$this->doc = t3lib_div::makeInstance('mediumDoc');
-			$this->doc->backPath = $GLOBALS['BACK_PATH'];
-			$this->doc->form = '<form action="" method="POST">';
-
-				// JavaScript
-			$this->doc->JScode = $this->doc->wrapScriptTags('
-				script_ended = 0;
-				function jumpToUrl(URL) {
-					document.location = URL;
-				}
-			');
-			$this->doc->postCode = $this->doc->wrapScriptTags('
-				script_ended = 1;
-				if (top.fsMod) {
-					top.fsMod.recentIds["web"] = ' . (int) $this->id . ';
-				}
-			');
-
-			$headerSection = $this->doc->getHeader(
-					'pages',
-					$this->pageinfo,
-					$this->pageinfo['_thePath']
-				) . '<br/>' . $language->sL('LLL:EXT:lang/locallang_core.php:labels.path') . ': ' .
-				t3lib_div::fixed_lgd_cs($this->pageinfo['_thePath'], -50);
-
-			$this->content .= $this->doc->startPage($language->getLL('title'));
-			$this->content .= $this->doc->header($language->getLL('title'));
-			$this->content .= $this->doc->spacer(5);
-			$this->content .= $this->doc->section(
-					'',
-					$this->doc->funcMenu(
-						$headerSection,
-						t3lib_BEfunc::getFuncMenu($this->id, 'SET[function]', $this->MOD_SETTINGS['function'], $this->MOD_MENU['function'])
-					)
-				);
-			$this->content .= $this->doc->divider(5);
-
-				// Render content:
-			$this->moduleContent();
-
-				// ShortCut
-			if ($backendUser->mayMakeShortcut()) {
-				$this->content .= $this->doc->spacer(20) . $this->doc->section(
-						'',
-						$this->doc->makeShortcutIcon('id', implode(',', array_keys($this->MOD_MENU)), $this->MCONF['name'])
-					);
-			}
-
-			$this->content .= $this->doc->spacer(10);
-		} else {
-				// If no access or if ID == zero
-			$this->doc = t3lib_div::makeInstance('mediumDoc');
-			$this->doc->backPath = $GLOBALS['BACK_PATH'];
-
-			$this->content .= $this->doc->startPage($language->getLL('title'));
-			$this->content .= $this->doc->header($language->getLL('title'));
-			$this->content .= $this->doc->spacer(5);
-			$this->content .= $this->doc->spacer(10);
-		}
-	}
-
-	/**
-	 * Prints out the module HTML
-	 *
-	 * @return void
-	 */
-	public function printContent() {
-		$this->content .= $this->doc->endPage();
-		echo $this->content;
-	}
-
-	/**
-	 * Generates the module content
-	 *
-	 * @return void
-	 */
-	public function moduleContent() {
-		$this->content = '';
-		$this->orderList($this->content);
-	}
-
-	/**
 	 * generates the orderlist for the module orders
 	 * HTML Output will be put to $this->content;
 	 *
-	 * @param string $content
 	 * @return void
 	 */
-	protected function orderList($content = '') {
+	protected function orderList() {
 		/** @var t3lib_beUserAuth $backendUser */
 		$backendUser = $GLOBALS['BE_USER'];
 
-		$this->table = 'tx_commerce_orders';
-		$this->content = $content;
-
 			// Start document template object:
-		$this->doc = t3lib_div::makeInstance('template');
-		$this->doc->backPath = $GLOBALS['BACK_PATH'];
-		$this->doc->docType = 'xhtml_trans';
 		$this->dontShowClipControlPanels = 1;
-			// Loading current page record and checking access:
-		$this->pageinfo = t3lib_BEfunc::readPageAccess($this->id, $this->perms_clause);
-		$access = is_array($this->pageinfo) ? 1 : 0;
 
 			// Initialize the dblist object:
 		/** @var Tx_Commerce_ViewHelpers_OrderRecordlist $dblist */
 		$dblist = t3lib_div::makeInstance('Tx_Commerce_ViewHelpers_OrderRecordlist');
-			// @todo what the heck
-		$dblist->additionalOutTop = $this->doc->section(
-				'',
-				$this->doc->funcMenu(
-					$headerSection,
-					t3lib_BEfunc::getFuncMenu($this->id, 'SET[function]', $this->MOD_SETTINGS['function'], $this->MOD_MENU['function'])
-				)
-			);
 		$dblist->backPath = $GLOBALS['BACK_PATH'];
-
 		$dblist->script = 'index.php';
-
 		$dblist->calcPerms = $backendUser->calcPerms($this->pageinfo);
 		$dblist->thumbs = $backendUser->uc['thumbnailsByDefault'];
 		$dblist->returnUrl = $this->returnUrl;
@@ -389,7 +382,8 @@ class Tx_Commerce_Controller_OrdersController extends t3lib_SCbase {
 			// CB is the clipboard command array
 		$CB = t3lib_div::_GET('CB');
 		if ($this->cmd == 'setCB') {
-				// CBH is all the fields selected for the clipboard, CBC is the checkbox fields which were checked. By merging we get a full array of checked/unchecked elements
+				// CBH is all the fields selected for the clipboard, CBC is the checkbox fields which were checked. By merging we
+				// get a full array of checked/unchecked elements
 				// This is set to the 'el' array of the CB after being parsed so only the table in question is registered.
 			$CB['el'] = $dblist->clipObj->cleanUpCBC(array_merge(t3lib_div::_POST('CBH'), t3lib_div::_POST('CBC')), $this->cmd_table);
 		}
@@ -411,11 +405,11 @@ class Tx_Commerce_Controller_OrdersController extends t3lib_SCbase {
 			' . $this->doc->redirectUrls($dblist->listURL()) . '
 			' . $dblist->CBfunctions() . '
 			function editRecords(table, idList, addParams, CBflag) {
-				document.location="' . $GLOBALS['BACK_PATH'] . 'alt_doc.php?returnUrl=' .
+				document.location="' . $this->doc->backPath . 'alt_doc.php?returnUrl=' .
 					rawurlencode(t3lib_div::getIndpEnv('REQUEST_URI')) .
 					'&edit[" + table + "][" + idList + "]=edit" + addParams;
 			}
-			function editList(table,idList) {
+			function editList(table, idList) {
 				var list = "";
 
 					// Checking how many is checked, how many is not
@@ -440,96 +434,22 @@ class Tx_Commerce_Controller_OrdersController extends t3lib_SCbase {
 			}
 		');
 
-			// Setting up the context sensitive menu:
-		$CMparts = $this->doc->getContextMenuCode();
-		$this->doc->bodyTagAdditions = $CMparts[1];
-		$this->doc->JScode .= $CMparts[0];
-		$this->doc->postCode .= $CMparts[2];
+		$dblist->start($this->id, $this->table, $this->pointer, $this->search_field, $this->search_levels, $this->showLimit);
 
-			// If there is access to the page, then render the list contents and set up the document template object:
-		if ($access) {
-				// Initialize the listing object, dblist, for rendering the list:
-			$this->pointer = t3lib_div::intInRange($this->pointer, 0, PHP_INT_MAX);
+		$this->buttons = $dblist->getHeaderButtons($this->pageinfo);
 
-			$dblist->start($this->id, $this->table, $this->pointer, $this->search_field, $this->search_levels, $this->showLimit);
+			// Render versioning selector:
+		$dblist->HTMLcode .= $this->doc->getVersionSelector($this->id);
 
-				// Render the page header:
-			if (!$this->noTopView) {
-				$dblist->writeTop($this->pageinfo);
-			}
-				// Render versioning selector:
-			$dblist->HTMLcode .= $this->doc->getVersionSelector($this->id);
+			// Render the list of tables:
+		$dblist->generateList($this->id, $this->table);
 
-				// Render the list of tables:
-			$dblist->generateList($this->id, $this->table);
-
-				// Write the bottom of the page:
-			$dblist->writeBottom();
-
-				// Add JavaScript functions to the page:
-			$this->doc->JScode = $this->doc->wrapScriptTags('
-				function jumpToUrl(URL) {
-					document.location = URL;
-					return false;
-				}
-				function jumpExt(URL,anchor) {
-					var anc = anchor ? anchor : "";
-					document.location = URL + (T3_THIS_LOCATION ? "&returnUrl=" + T3_THIS_LOCATION : "") + anc;
-					return false;
-				}
-				function jumpSelf(URL) {
-					document.location = URL + (T3_RETURN_URL ? "&returnUrl=" + T3_RETURN_URL : "");
-					return false;
-				}
-				' . $this->doc->redirectUrls($dblist->listURL()) . '
-				' . $dblist->CBfunctions() . '
-				function editRecords(table, idList, addParams, CBflag) {
-					document.location="' . $GLOBALS['BACK_PATH'] . 'alt_doc.php?returnUrl=' .
-						rawurlencode(t3lib_div::getIndpEnv('REQUEST_URI')) .
-						'&edit[" + table + "][" + idList + "]=edit" + addParams;
-				}
-				function editList(table,idList) {
-					var list = "";
-
-						// Checking how many is checked, how many is not
-					var pointer = 0;
-					var pos = idList.indexOf(",");
-					while (pos!=-1) {
-						if (cbValue(table + "|" + idList.substr(pointer, pos-pointer))) {
-							list += idList.substr(pointer, pos-pointer) + ",";
-						}
-						pointer = pos + 1;
-						pos = idList.indexOf(",", pointer);
-					}
-					if (cbValue(table + "|" + idList.substr(pointer))) {
-						list += idList.substr(pointer) + ",";
-					}
-
-					return list ? list : idList;
-				}
-
-				if (top.fsMod) {
-					top.fsMod.recentIds["web"] = ' . (int) $this->id . ';
-				}
-			');
-
-				// Setting up the context sensitive menu:
-			$this->doc->bodyTagAdditions = $CMparts[1];
-			$this->doc->JScode .= $CMparts[0];
-			$this->doc->postCode .= $CMparts[2];
-		}
+			// Write the bottom of the page:
+		$dblist->writeBottom();
 
 			// Begin to compile the whole page, starting out with page header:
 		$this->content .= $this->doc->startPage('DB list');
-		$dblist->additionalOutTop .= $this->doc->section(
-				'',
-				$this->doc->funcMenu(
-					$headerSection,
-					t3lib_BEfunc::getFuncMenu($this->id, 'SET[function]', $this->MOD_SETTINGS['function'], $this->MOD_MENU['function'])
-				)
-			);
-
-		$this->content .= '<form action="' . htmlspecialchars($dblist->listURL()) . '" method="post" name="dblistForm">';
+		$this->doc->form = '<form action="' . htmlspecialchars($dblist->listURL()) . '" method="post" name="dblistForm">';
 
 			// List Module CSH:
 		if (!strlen($this->id)) {

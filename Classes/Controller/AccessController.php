@@ -698,7 +698,7 @@ class Tx_Commerce_Controller_AccessController extends t3lib_SCbase {
 			}
 
 				// determine which icon to use
-			$rowIcon = (0 == $pageId) ? $rootIcon : $icon;
+			$rowIcon = $pageId ? $icon : $rootIcon;
 
 			$cells[] = '
 				<td align="left" nowrap="nowrap"' . ($cellAttrib ? $cellAttrib : $bgCol) . '>' . $PMicon . $rowIcon .
@@ -713,8 +713,7 @@ class Tx_Commerce_Controller_AccessController extends t3lib_SCbase {
 					t3lib_iconWorks::getSpriteIcon('actions-document-open', array('title' => $language->getLL('ch_permissions', 1))) .
 					'</a></td>';
 			} else {
-				$cells[] = '
-					<td' . $bgCol . '></td>';
+				$cells[] = LF . '<td' . $bgCol . '></td>';
 			}
 
 				// Rest of columns (depending on mode)
