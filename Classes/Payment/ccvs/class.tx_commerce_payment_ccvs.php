@@ -40,7 +40,7 @@
  * @package    CreditCardValidationSolution
  * @author     Daniel Convissor <danielc@analysisandsolutions.com>
  * @copyright  The Analysis and Solutions Company, 2002-2006
- * @version    $Name: rel-5-14 $ $Id$
+ * @version    $Name: rel-5-14 $ $Id: ccvs.inc,v 1.25 2009-02-06 04:41:22 danielc Exp $
  * @link       http://www.analysisandsolutions.com/software/ccvs/ccvs.htm
  */
 

@@ -40,7 +40,7 @@
  * @package TYPO3
  * @subpackage tx_commerce
  */
-class tx_commerce_create_folder {
+class Tx_Commerce_Utility_FolderUtility {
 	/**
 	 * Initializes the folders for tx_commerce
 	 *
@@ -250,6 +250,8 @@ class tx_commerce_create_folder {
 		return $aUid;
 	}
 }
+
+class_alias('Tx_Commerce_Utility_FolderUtility', 'tx_commerce_create_folder');
 
 if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_create_folder.php']) {
 	/** @noinspection PhpIncludeInspection */
