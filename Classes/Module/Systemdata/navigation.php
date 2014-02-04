@@ -36,8 +36,10 @@ require_once($BACK_PATH . 'template.php');
 $LANG->includeLLFile('EXT:commerce/Resources/Private/Language/locallang_mod_systemdata.xml');
 
 	// This checks permissions and exits if the users has no permission for entry.
+/** @var t3lib_beUserAuth $backendUser */
+$backendUser = $GLOBALS['BE_USER'];
 /** @noinspection PhpUndefinedVariableInspection */
-$BE_USER->modAccess($MCONF, 1);
+$backendUser->modAccess($MCONF, 1);
 
 if (!(TYPO3_REQUESTTYPE & TYPO3_REQUESTTYPE_AJAX)) {
 	/** @var $SOBE Tx_Commerce_ViewHelpers_Navigation_SystemdataViewHelper */

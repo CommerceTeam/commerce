@@ -175,21 +175,9 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 	public $scriptNewWizard = 'wizard.php';
 
 	/**
-	 * the paramters for the script
-	 *
-	 * @var string
-	 */
-	public $params;
-
-	/**
 	 * @var array
 	 */
 	public $controlArray;
-
-	/**
-	 * @var integer
-	 */
-	public $resCountAll;
 
 	/**
 	 * @var array
@@ -271,7 +259,7 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 	/**
 	 * Initialize function menu array
 	 *
-	 * @return	void
+	 * @return void
 	 */
 	public function menuConfig() {
 			// MENU-ITEMS:
@@ -692,7 +680,7 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 		$buttons = $this->buttons;
 
 			// CSH
-		$buttons['csh'] = t3lib_BEfunc::cshItem('_MOD_commerce_statistic', '', $GLOBALS['BACK_PATH'], '', TRUE);
+		$buttons['csh'] = t3lib_BEfunc::cshItem('_MOD_commerce_categories', '', $GLOBALS['BACK_PATH'], '', TRUE);
 
 			// Shortcut
 		if ($backendUser->mayMakeShortcut()) {

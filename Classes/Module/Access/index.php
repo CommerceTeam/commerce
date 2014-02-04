@@ -33,8 +33,10 @@ require_once($BACK_PATH . 'init.php');
 require_once($BACK_PATH . 'template.php');
 
 	// This checks permissions and exits if the users has no permission for entry.
+/** @var t3lib_beUserAuth $backendUser */
+$backendUser = $GLOBALS['BE_USER'];
 /** @noinspection PhpUndefinedVariableInspection */
-$BE_USER->modAccess($MCONF, 1);
+$backendUser->modAccess($MCONF, 1);
 t3lib_BEfunc::lockRecords();
 
 /** @var language $language */

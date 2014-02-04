@@ -53,7 +53,12 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends localRecordList {
 	/**
 	 * @var boolean
 	 */
-	protected $disableSingleTableView;
+	public $disableSingleTableView;
+
+	/**
+	 * @var array
+	 */
+	public $MOD_MENU = array();
 
 	/**
 	 * @param string $table

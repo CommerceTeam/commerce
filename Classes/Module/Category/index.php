@@ -33,9 +33,15 @@ require_once($BACK_PATH . 'init.php');
 require_once($BACK_PATH . 'template.php');
 
 	// This checks permissions and exits if the users has no permission for entry.
+/** @var t3lib_beUserAuth $backendUser */
+$backendUser = $GLOBALS['BE_USER'];
 /** @noinspection PhpUndefinedVariableInspection */
-$BE_USER->modAccess($MCONF, 1);
+$backendUser->modAccess($MCONF, 1);
 t3lib_BEfunc::lockRecords();
+
+/** @var language $language */
+$language = $GLOBALS['LANG'];
+$language->includeLLFile('EXT:lang/locallang_mod_web_list.xml');
 
 /** @var Tx_Commerce_Controller_CategoriesController $SOBE */
 $SOBE = t3lib_div::makeInstance('Tx_Commerce_Controller_CategoriesController');
@@ -44,7 +50,7 @@ $SOBE->initPage();
 
 	// Include files?
 foreach ($SOBE->include_once as $INC_FILE) {
-	/** @noinspection PhpUndefinedVariableInspection */
+	/** @noinspection PhpIncludeInspection */
 	include_once($INC_FILE);
 }
 

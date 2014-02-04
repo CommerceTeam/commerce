@@ -149,6 +149,15 @@ if (TYPO3_MODE == 'BE') {
 		// This XCLASS will create a link to singlePID / previewPageID in version module for commerce products
 	$GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/version/cm1/index.php'] =
 		PATH_TXCOMMERCE . 'Classes/Xclass/ux_versionindex.php';
+
+	$GLOBALS['TYPO3_CONF_VARS']['BE']['defaultPageTSconfig'] .= '
+		mod.txcommerceM1_category.enableDisplayBigControlPanel=selectable
+		mod.txcommerceM1_category.enableClipBoard=selectable
+		mod.txcommerceM1_category.enableLocalizationView=selectable
+		mod.txcommerceM1_orders.enableDisplayBigControlPanel=selectable
+		mod.txcommerceM1_orders.enableClipBoard=selectable
+		mod.txcommerceM1_orders.enableLocalizationView=selectable
+	';
 }
 
 
