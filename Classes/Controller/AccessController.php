@@ -287,6 +287,8 @@ class Tx_Commerce_Controller_AccessController {
 		$this->pageinfo = Tx_Commerce_Utility_BackendUtility::readCategoryAccess($this->id, $this->perms_clause);
 		$access = is_array($this->pageinfo);
 
+		$this->content = $this->doc->startPage($language->getLL('permissions'));
+
 			// Checking access:
 		if (($this->id && $access) || ($backendUser->isAdmin() && !$this->id)) {
 			if ($backendUser->isAdmin() && !$this->id) {
@@ -326,11 +328,9 @@ class Tx_Commerce_Controller_AccessController {
 			$markers['CATPATH'] = $this->categoryPath($this->pageinfo);
 
 				// Build the <body> for the module
-			$this->content = $this->doc->startPage($language->getLL('permissions'));
 			$this->content .= $this->doc->moduleBody($this->pageinfo, $docHeaderButtons, $markers);
 		} else {
 				// If no access or if ID == zero
-			$this->content .= $this->doc->startPage($language->getLL('permissions'));
 			$this->content .= $this->doc->header($language->getLL('permissions'));
 		}
 		$this->content .= $this->doc->endPage();

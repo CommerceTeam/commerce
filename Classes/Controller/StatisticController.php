@@ -48,7 +48,7 @@ class Tx_Commerce_Controller_StatisticController extends t3lib_SCbase {
 	protected $order_pid;
 
 	/**
-	 * @var tx_commerce_statistics
+	 * @var Tx_Commerce_Utility_StatisticsUtility
 	 */
 	protected $statistics;
 
@@ -66,14 +66,14 @@ class Tx_Commerce_Controller_StatisticController extends t3lib_SCbase {
 
 		$this->statistics = t3lib_div::makeInstance('tx_commerce_statistics');
 		$this->statistics->init($this->extConf['excludeStatisticFolders'] != '' ? $this->extConf['excludeStatisticFolders'] : 0);
-			// @todo Find a better solution for the fist array element
+			// @todo Find a better solution for the first array element
 		/**
 		 * If we get an id via GP use this, else use the default id
 		 */
 		if (t3lib_div::_GP('id')) {
 			$this->id = t3lib_div::_GP('id');
 		} else {
-			$this->id = $order_pid[0];
+			$this->id = $this->order_pid;
 		}
 	}
 
@@ -125,27 +125,25 @@ class Tx_Commerce_Controller_StatisticController extends t3lib_SCbase {
 		$this->doc = t3lib_div::makeInstance('mediumDoc');
 		$this->doc->backPath = $GLOBALS['BACK_PATH'];
 
-		$this->content .= $this->doc->startPage($language->getLL('title'));
+		$this->content = $this->doc->startPage($language->getLL('title'));
 		$this->content .= $this->doc->header($language->getLL('title'));
 
-		if (($this->id && $access) || ($backendUser->user['admin'] && !$this->id)) {
+		if (($this->id && $access) || $backendUser->isAdmin()) {
 			$this->doc->form = '<form action="" method="POST">';
 
 				// JavaScript
-			$this->doc->JScode = '
-				<script language="javascript" type="text/javascript">
-					script_ended = 0;
-					function jumpToUrl(URL) {
-						document.location = URL;
-					}
-				</script>
-			';
-			$this->doc->postCode = '
-				<script language="javascript" type="text/javascript">
-					script_ended = 1;
-					if (top.fsMod) top.fsMod.recentIds["web"] = ' . intval($this->id) . ';
-				</script>
-			';
+			$this->doc->JScode .= $this->doc->wrapScriptTags('
+				script_ended = 0;
+				function jumpToUrl(URL) {
+					document.location = URL;
+				}
+			');
+			$this->doc->postCode = $this->doc->wrapScriptTags('
+				script_ended = 1;
+				if (top.fsMod) {
+					top.fsMod.recentIds["web"] = ' . (int) $this->id . ';
+				}
+			');
 
 			$headerSection = $this->doc->getHeader(
 				'pages',
@@ -155,6 +153,7 @@ class Tx_Commerce_Controller_StatisticController extends t3lib_SCbase {
 				-50
 			);
 
+			$this->content = $this->doc->startPage($language->getLL('statistic'));
 			$this->content .= $this->doc->spacer(5);
 			$this->content .= $this->doc->section(
 				'',
@@ -175,13 +174,12 @@ class Tx_Commerce_Controller_StatisticController extends t3lib_SCbase {
 					$this->doc->makeShortcutIcon('id', implode(',', array_keys($this->MOD_MENU)), $this->MCONF['name'])
 				);
 			}
-
-			$this->content .= $this->doc->spacer(10);
 		} else {
 				// If no access or if ID == zero
 			$this->content .= $this->doc->spacer(5);
-			$this->content .= $this->doc->spacer(10);
 		}
+
+		$this->content .= $this->doc->spacer(10);
 	}
 
 	/**
@@ -296,7 +294,6 @@ class Tx_Commerce_Controller_StatisticController extends t3lib_SCbase {
 			) {
 				$lastAggregationTimeValue = $lastAggregationTimerow[0];
 			}
-			$lastAggretagionTimeValue = $this->statistics->firstSecondOfDay($lastAggregationTimeValue);
 
 			$endselect = 'SELECT max(crdate) FROM tx_commerce_order_articles';
 			$endres = $database->sql_query($endselect);
@@ -351,8 +348,6 @@ class Tx_Commerce_Controller_StatisticController extends t3lib_SCbase {
 			}
 			if ($lastAggregationTimeValue <= $endtime2 AND $endtime2 != NULL AND $lastAggregationTimeValue != NULL) {
 				$endtime =  $endtime2 > mktime(0, 0, 0) ? mktime(0, 0, 0) : strtotime('+1 hour', $endtime2);
-
-				$startres = $database->sql_query('SELECT min(crdate) FROM fe_users WHERE crdate > 0 AND deleted = 0');
 
 				$starttime = strtotime('0', $lastAggregationTimeValue);
 				if (empty($starttime)) {

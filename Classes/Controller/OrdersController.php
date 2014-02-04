@@ -253,22 +253,18 @@ class Tx_Commerce_Controller_OrdersController extends t3lib_SCbase {
 			$this->doc->form = '<form action="" method="POST">';
 
 				// JavaScript
-			$this->doc->JScode = '
-				<script language="javascript" type="text/javascript">
-					script_ended = 0;
-					function jumpToUrl(URL) {
-						document.location = URL;
-					}
-				</script>
-			';
-			$this->doc->postCode = '
-				<script language="javascript" type="text/javascript">
-					script_ended = 1;
-					if (top.fsMod) {
-						top.fsMod.recentIds["web"] = ' . (int) $this->id . ';
-					}
-				</script>
-			';
+			$this->doc->JScode = $this->doc->wrapScriptTags('
+				script_ended = 0;
+				function jumpToUrl(URL) {
+					document.location = URL;
+				}
+			');
+			$this->doc->postCode = $this->doc->wrapScriptTags('
+				script_ended = 1;
+				if (top.fsMod) {
+					top.fsMod.recentIds["web"] = ' . (int) $this->id . ';
+				}
+			');
 
 			$headerSection = $this->doc->getHeader(
 					'pages',
