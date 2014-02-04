@@ -75,7 +75,7 @@ class Tx_Commerce_Module_Systemdata_Navigation extends t3lib_SCbase {
 				'filename from TBE_STYLES' => $GLOBALS['TBE_STYLES']['htmlTemplates']['commerce/Resources/Private/Backend/mod_systemdata_navframe.html'],
 				'full path' => $this->doc->backPath . $GLOBALS['TBE_STYLES']['htmlTemplates']['commerce/Resources/Private/Backend/mod_systemdata_navframe.html']
 			));
-			$templateFile = PATH_TXCOMMERCE_REL . 'Resources/Private/Backend/mod_access_navframe.html';
+			$templateFile = PATH_TXCOMMERCE_REL . 'Resources/Private/Backend/mod_navigation.html';
 			$this->doc->moduleTemplate = t3lib_div::getURL(PATH_site . $templateFile);
 		}
 
