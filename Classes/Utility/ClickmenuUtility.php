@@ -390,7 +390,8 @@ class Tx_Commerce_Utility_ClickmenuUtility {
 			'&vC=' . $backendUser->veriCode() .
 			'&prErr=1&uPT=1' .
 			'&CB[overwrite]=' . rawurlencode($table . '|' . $uid) .
-			'&CB[pad]=' . $this->pObj->current;
+			'&CB[pad]=' . $this->pObj->clipObj->current .
+			t3lib_BEfunc::getUrlToken('tceAction');
 		return $rU;
 	}
 
@@ -400,19 +401,20 @@ class Tx_Commerce_Utility_ClickmenuUtility {
 	 *
 	 * @param string $table Tablename
 	 * @param integer $uid uid that should be paste into
-	 * @param integer $redirect If set, then the redirect URL will point back to the current script, but with CB reset.
+	 * @param integer $setRedirect If set, then the redirect URL will point back to the current script, but with CB reset.
 	 * @return string
 	 */
-	protected function pasteUrl($table, $uid, $redirect = 1) {
+	protected function pasteUrl($table, $uid, $setRedirect = 1) {
 		/** @var t3lib_beUserAuth $backendUser */
 		$backendUser = $GLOBALS['BE_USER'];
 
 		$rU = $this->pObj->clipObj->backPath . PATH_TXCOMMERCE_REL . 'Classes/Utility/DataHandlerUtility.php?' .
-			($redirect ? 'redirect=' . rawurlencode(t3lib_div::linkThisScript(array('CB' => ''))) : '') .
+			($setRedirect ? 'redirect=' . rawurlencode(t3lib_div::linkThisScript(array('CB' => ''))) : '') .
 			'&vC=' . $backendUser->veriCode() .
 			'&prErr=1&uPT=1' .
 			'&CB[paste]=' . rawurlencode($table . '|' . $uid) .
-			'&CB[pad]=' . $this->pObj->current;
+			'&CB[pad]=' . $this->pObj->clipObj->current .
+			t3lib_BEfunc::getUrlToken('tceAction');
 		return $rU;
 	}
 }
