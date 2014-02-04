@@ -327,9 +327,11 @@ class Tx_Commerce_Controller_AccessController extends t3lib_SCbase {
 		if ($backendUser->check('modules', 'web_list')) {
 			$href = $GLOBALS['BACK_PATH'] . 'db_list.php?id=' . $this->pageinfo['uid'] . '&returnUrl=' .
 				rawurlencode(t3lib_div::getIndpEnv('REQUEST_URI'));
-			$buttons['record_list'] = '<a href="' . htmlspecialchars($href) . '"><img' .
-				t3lib_iconWorks::skinImg($GLOBALS['BACK_PATH'], 'gfx/list.gif') . ' title="' .
-				$language->sL('LLL:EXT:lang/locallang_core.php:labels.showList', 1) . '" alt="" /></a>';
+			$buttons['record_list'] = '<a href="' . htmlspecialchars($href) . '">' .
+				t3lib_iconWorks::getSpriteIcon(
+					'apps-filetree-folder-list',
+					array('title' => $language->sL('LLL:EXT:lang/locallang_core.php:labels.showList', 1))
+				) . '</a>';
 		}
 		return $buttons;
 	}
@@ -354,7 +356,7 @@ class Tx_Commerce_Controller_AccessController extends t3lib_SCbase {
 			// On root-level of page tree
 		} else {
 				// Make Icon
-			$iconImg = '<img' . t3lib_iconWorks::skinImg($this->doc->backPath, 'gfx/i/_icon_website.gif') . ' alt="root" />';
+			$iconImg = t3lib_iconWorks::getSpriteIcon('apps-pagetree-root');
 		}
 
 			// Setting icon with clickmenu + uid
@@ -732,8 +734,11 @@ class Tx_Commerce_Controller_AccessController extends t3lib_SCbase {
 					<td' . $bgCol . ' nowrap="nowrap">' . (
 						$row['editlock'] ?
 						'<span id="el_' . $pageId . '" class="editlock"><a class="editlock" onclick="WebPermissions.toggleEditLock(\'' .
-						$pageId . '\', \'1\');"><img' . t3lib_iconWorks::skinImg($this->doc->backPath, 'gfx/recordlock_warning2.gif', 'width="22" height="16"') .
-						' title="' . $language->getLL('EditLock_descr', 1) . '" alt="Edit Lock" /></a></span>' :
+							$pageId . '\', \'1\');">' . t3lib_iconWorks::getSpriteIcon(
+								'status-warning-lock',
+								array('title' => $language->getLL('EditLock_descr', 1))
+							) .
+							'</a></span>' :
 						(
 							$pageId === 0 ?
 							'' :
@@ -760,8 +765,10 @@ class Tx_Commerce_Controller_AccessController extends t3lib_SCbase {
 						<td' . $bgCol . '><img' . $lineImg . ' alt="" /></td>
 						<td' . $bgCol . ' nowrap="nowrap">' . (
 							$row['editlock'] ?
-							'<img' . t3lib_iconWorks::skinImg($this->doc->backPath, 'gfx/recordlock_warning2.gif', 'width="22" height="16"') .
-							' title="' . $language->getLL('EditLock_descr', 1) . '" alt="" />' :
+							t3lib_iconWorks::getSpriteIcon(
+								'status-warning-lock',
+								array('title' => $language->getLL('EditLock_descr', 1))
+							) :
 							''
 						) . '</td>
 						':

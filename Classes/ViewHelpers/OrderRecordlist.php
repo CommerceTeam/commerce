@@ -182,9 +182,8 @@ class Tx_Commerce_ViewHelpers_OrderRecordlist extends localRecordList {
 		if ($localCalcPerms & 2) {
 				// Adding "New record" icon:
 			if (!$GLOBALS['SOBE']->modTSconfig['properties']['noCreateRecordsLink']) {
-				$theCtrlPanel[] = '<a href="#" onclick="' . htmlspecialchars('return jumpExt(\'db_new.php?id=' . $this->id . '\');') . '"><img' .
-					t3lib_iconWorks::skinImg($this->backPath, 'gfx/new_el.gif', 'width="11" height="12"') . ' title="' .
-					$language->getLL('newRecordGeneral', 1) . '" alt="" />' .
+				$theCtrlPanel[] = '<a href="#" onclick="' . htmlspecialchars('return jumpExt(\'db_new.php?id=' . $this->id . '\');') . '">' .
+					t3lib_iconWorks::getSpriteIcon('actions-document-new', array('title' => $language->getLL('newRecordGeneral', 1))) .
 					'</a>';
 			}
 
@@ -211,11 +210,12 @@ class Tx_Commerce_ViewHelpers_OrderRecordlist extends localRecordList {
 		if (($localCalcPerms & 8) || ($localCalcPerms & 16)) {
 			$elFromTable = $this->clipObj->elFromTable('');
 			if (count($elFromTable)) {
-				$theCtrlPanel[] = '<a href="' .
-					htmlspecialchars($this->clipObj->pasteUrl('', $this->id)) . '" onclick="' .
+				$theCtrlPanel[] = '<a href="' . htmlspecialchars($this->clipObj->pasteUrl('', $this->id)) . '" onclick="' .
 					htmlspecialchars('return ' . $this->clipObj->confirmMsg('pages', $this->pageRow, 'into', $elFromTable)) . '">' .
-					t3lib_iconWorks::getSpriteIcon('actions-document-paste-after', array('title' => $language->getLL('clip_paste', 1))) .
-					'</a>';
+					t3lib_iconWorks::getSpriteIcon(
+						'actions-document-paste-into',
+						array('title' => $language->getLL('clip_paste', 1))
+					) . '</a>';
 			}
 		}
 
@@ -235,22 +235,26 @@ class Tx_Commerce_ViewHelpers_OrderRecordlist extends localRecordList {
 			// Add "CSV" link, if a specific table is shown:
 		if ($this->table) {
 			$theData['up'][] = '<a href="' . htmlspecialchars($this->listURL() . '&csv=1') . '">' .
-				'<img' . t3lib_iconWorks::skinImg($this->backPath, 'gfx/csv.gif', 'width="27" height="14"') .
-				' title="' . $language->sL('LLL:EXT:lang/locallang_core.php:labels.csv', 1) . '" alt="" /></a>';
+				t3lib_iconWorks::getSpriteIcon(
+					'mimetypes-text-csv',
+					array('title' => $language->sL('LLL:EXT:lang/locallang_core.php:labels.csv', 1))
+				) . '</a>';
 		}
 
 			// Add "Export" link, if a specific table is shown:
 		if ($this->table && t3lib_extMgm::isLoaded('impexp')) {
-			$theData['up'][] = '<a href="' .
-				htmlspecialchars($this->backPath . t3lib_extMgm::extRelPath('impexp') . 'app/index.php?tx_impexp[action]=export&tx_impexp[list][]=' . rawurlencode($this->table . ':' . $this->id)) .
-				'"><img' . t3lib_iconWorks::skinImg($this->backPath, t3lib_extMgm::extRelPath('impexp') . 'export.gif', ' width="18" height="16"') .
-				' title="' . $language->sL('LLL:EXT:lang/locallang_core.php:rm.export', 1) . '" alt="" /></a>';
+			$theData['up'][] = '<a href="' . htmlspecialchars($this->backPath . t3lib_extMgm::extRelPath('impexp') .
+				'app/index.php?tx_impexp[action]=export&tx_impexp[list][]=' . rawurlencode($this->table . ':' . $this->id)) . '">' .
+				t3lib_iconWorks::getSpriteIcon(
+					'actions-document-export-t3d',
+					array('title' => $language->sL('LLL:EXT:lang/locallang_core.php:rm.export', 1))
+				) . '</a>';
 		}
 
 			// Add "refresh" link:
-		$theData['up'][] = '<a href="' . htmlspecialchars($this->listURL()) . '"><img' .
-			t3lib_iconWorks::skinImg($this->backPath, 'gfx/refresh_n.gif', 'width="14" height="14"') . ' title="' . $language->sL('LLL:EXT:lang/locallang_core.php:labels.reload', 1) .
-			'" alt="" /></a>';
+		$theData['up'][] = '<a href="' . htmlspecialchars($this->listURL()) . '">' .
+			t3lib_iconWorks::getSpriteIcon('actions-system-refresh', array('title' => $language->sL('LLL:EXT:lang/locallang_core.php:labels.reload', 1))) .
+			'</a>';
 
 			// Add icon with clickmenu, etc:
 			// If there IS a real page...:
@@ -258,9 +262,12 @@ class Tx_Commerce_ViewHelpers_OrderRecordlist extends localRecordList {
 				// Setting title of page + the "Go up" link:
 			$theData[$titleCol] .= '<br /><span title="' . htmlspecialchars($row['_thePathFull']) . '">' .
 				htmlspecialchars(t3lib_div::fixed_lgd_cs($row['_thePath'], - $this->fixedL)) . '</span>';
-			$theData['up'][] = '<a href="' . htmlspecialchars($this->listURL($row['pid'])) . '" onclick="setHighlight(' . $row['pid'] .
-				')"><img' . t3lib_iconWorks::skinImg($this->backPath, 'gfx/i/pages_up.gif', 'width="18" height="16"') .
-				' title="' . $language->sL('LLL:EXT:lang/locallang_core.php:labels.upOneLevel', 1) . '" alt="" /></a>';
+			$theData['up'][] = '<a href="' . htmlspecialchars($this->listURL($row['pid'])) . '" onclick="setHighlight(' . $row['pid'] . ')">' .
+				t3lib_iconWorks::getSpriteIcon(
+					'actions-view-go-up',
+					array('title' => $language->sL('LLL:EXT:lang/locallang_core.php:labels.upOneLevel', 1))
+				) .
+				'</a>';
 
 				// Make Icon:
 			$theIcon = $this->clickMenuEnabled ? $GLOBALS['SOBE']->doc->wrapClickMenuOnIcon($iconImg, 'pages', $this->id) : $iconImg;
@@ -270,15 +277,17 @@ class Tx_Commerce_ViewHelpers_OrderRecordlist extends localRecordList {
 			$theData[$titleCol] .= '<br />' . htmlspecialchars(t3lib_div::fixed_lgd_cs($GLOBALS['TYPO3_CONF_VARS']['SYS']['sitename'], - $this->fixedL));
 
 				// Make Icon:
-			$theIcon = '<img' . t3lib_iconWorks::skinImg($this->backPath, 'gfx/i/_icon_website.gif', 'width="18" height="16"') . ' alt="" />';
+			$theIcon = t3lib_iconWorks::getSpriteIcon('apps-pagetree-root');
 		}
 
 			// If there is a returnUrl given, add a back-link:
 		if ($this->returnUrl) {
 			$theData['up'][] = '<a href="' . htmlspecialchars(t3lib_div::linkThisUrl($this->returnUrl, array('id' => $this->id))) .
-				'" class="typo3-goBack"><img' .
-				t3lib_iconWorks::skinImg($this->backPath, 'gfx/goback.gif', 'width="14" height="14"') . ' title="' .
-				$language->sL('LLL:EXT:lang/locallang_core.php:labels.goBack', 1) . '" alt="" /></a>';
+				'" class="typo3-goBack">'  .
+				t3lib_iconWorks::getSpriteIcon(
+					'actions-view-go-back',
+					array('title' => $language->sL('LLL:EXT:lang/locallang_core.php:labels.goBack', 1))
+				) . '</a>';
 		}
 
 		$theData['up'][] = $this->additionalOutTop;
@@ -665,9 +674,11 @@ class Tx_Commerce_ViewHelpers_OrderRecordlist extends localRecordList {
 					if ($this->table && is_array($currentIdList)) {
 							// If the numeric clipboard pads are selected, show duplicate sorting link:
 						if ($this->clipNumPane()) {
-							$theData[$fCol] .= '<a href="' . htmlspecialchars($this->listURL('', -1) . '&duplicateField=' . $fCol) .
-								'"><img' . t3lib_iconWorks::skinImg('', 'gfx/select_duplicates.gif', 'width="11" height="11"') .
-								' title="' . $language->getLL('clip_duplicates', 1) . '" alt="" /></a>';
+							$theData[$fCol] .= '<a href="' . htmlspecialchars($this->listURL('', -1) . '&duplicateField=' . $fCol) . '">' .
+								t3lib_iconWorks::getSpriteIcon(
+									'actions-document-duplicates-select',
+									array('title' => $language->getLL('clip_duplicates', 1))
+								) . '</a>';
 						}
 					}
 
@@ -836,13 +847,12 @@ class Tx_Commerce_ViewHelpers_OrderRecordlist extends localRecordList {
 				$theData[$titleCol] = '<span class="c-table">' . $language->sL($GLOBALS['TCA'][$table]['ctrl']['title'], 1) .
 					'</span> (' . $this->totalItems . ')';
 			} else {
+				$title = $language->getLL(!$this->table ? 'expandView' : 'contractView', 1);
+				$icon = t3lib_iconWorks::getSpriteIcon('actions-view-table-' . ($this->table ? 'collapse' : 'expand'), array('title' => $title));
 				$theData[$titleCol] = $this->linkWrapTable(
 					$table,
 					'<span class="c-table">' . $language->sL($GLOBALS['TCA'][$table]['ctrl']['title'], 1) . '</span> (' .
-					$this->totalItems . ') <img' . t3lib_iconWorks::skinImg(
-						$this->backPath, 'gfx/' . ($this->table ? 'minus' : 'plus') . 'bullet_list.gif',
-						'width="18" height="12"'
-					) . ' hspace="10" class="absmiddle" title="' . $language->getLL(!$this->table ? 'expandView' : 'contractView', 1) . '" alt="" />'
+					$this->totalItems . ') ' . $icon
 				);
 			}
 
@@ -871,9 +881,11 @@ class Tx_Commerce_ViewHelpers_OrderRecordlist extends localRecordList {
 				}
 			} else {
 				$theUpIcon = ($table == 'pages' && $this->id && isset($this->pageRow['pid'])) ?
-					'<a href="' . htmlspecialchars($this->listURL($this->pageRow['pid'])) . '"><img' .
-						t3lib_iconWorks::skinImg($this->backPath, 'gfx/i/pages_up.gif', 'width="18" height="16"') .
-						' title="' . $language->sL('LLL:EXT:lang/locallang_core.php:labels.upOneLevel', 1) . '" alt="" /></a>' :
+					'<a href="' . htmlspecialchars($this->listURL($this->pageRow['pid'])) . '">' .
+						t3lib_iconWorks::getSpriteIcon(
+							'actions-view-go-up',
+							array('title' => $language->sL('LLL:EXT:lang/locallang_core.php:labels.upOneLevel', 1))
+						) . '</a>' :
 					'';
 				$out .= $this->addelement(1, $theUpIcon, $theData, ' class="c-headLineTable"', '');
 			}

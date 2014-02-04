@@ -42,9 +42,12 @@ class Tx_Commerce_Tree_StatisticTree extends t3lib_browseTree {
 			// If the record is locked, present a warning sign.
 		if ($lockInfo = t3lib_BEfunc::isRecordLocked('pages', $row['uid'])) {
 			$aOnClick = 'alert(' . $language->JScharCode($lockInfo['msg']) . ');return false;';
-			$lockIcon = '<a href="#" onclick="' . htmlspecialchars($aOnClick) . '"><img' .
-				t3lib_iconWorks::skinImg('', 'gfx/recordlock_warning3.gif', 'width="17" height="12"') .
-				' title="' . htmlspecialchars($lockInfo['msg']) . '" alt="" /></a>';
+			$lockIcon = '<a href="#" onclick="' . htmlspecialchars($aOnClick) . '">' .
+				t3lib_iconWorks::getSpriteIcon(
+					'status-warning-in-use',
+					array('title' => htmlspecialchars($lockInfo['msg']))
+				) .
+				'</a>';
 		} else {
 			$lockIcon = '';
 		}

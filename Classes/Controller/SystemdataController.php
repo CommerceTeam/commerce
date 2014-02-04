@@ -385,16 +385,14 @@ class Tx_Commerce_Controller_SystemdataController extends t3lib_SCbase {
 			$output .= ' <strong>' . $this->language->getLL('products') . '</strong>: ' . $proCount;
 			$output .= '</td>';
 
-			$output .= '<td><a href="#" onclick="' . htmlspecialchars(
-					t3lib_BEfunc::editOnClick($editParams, $this->doc->backPath, -1)
-				) . '" title="' . $this->language->getLL('edit', TRUE) . '">' .
-				t3lib_iconWorks::getSpriteIcon('actions-document-open') . '</a>';
+			$output .= '<td><a href="#" onclick="' . htmlspecialchars(t3lib_BEfunc::editOnClick($editParams, $this->doc->backPath, -1)) . '">' .
+				t3lib_iconWorks::getSpriteIcon('actions-document-open', array('title' => $this->language->getLL('edit', TRUE))) . '</a>';
 			$output .= '<a href="#" onclick="' . htmlspecialchars(
 					'if (confirm(' . $this->language->JScharCode(
 						$this->language->getLL('deleteWarningManufacturer') . ' "' . $attribute['title'] . '" ' . $refCountMsg
 					) . ')) {jumpToUrl(\'' . $this->doc->issueCommand($deleteParams, -1) . '\');} return false;'
-				) . '" title="' . $this->language->getLL('delete', TRUE) . '">' .
-				t3lib_iconWorks::getSpriteIcon('actions-edit-delete') . '</a>';
+				) . '">' .
+				t3lib_iconWorks::getSpriteIcon('actions-edit-delete', array('title' => $this->language->getLL('delete', TRUE))) . '</a>';
 
 			$output .= '</td><td>';
 
@@ -468,16 +466,14 @@ class Tx_Commerce_Controller_SystemdataController extends t3lib_SCbase {
 			$editParams = '&edit[' . $table . '][' . (int) $row['uid'] . ']=edit';
 			$deleteParams = '&cmd[' . $table . '][' . (int) $row['uid'] . '][delete]=1';
 
-			$output .= '<tr><td><a href="#" onclick="' . htmlspecialchars(
-					t3lib_BEfunc::editOnClick($editParams, $this->doc->backPath, -1)
-				) . '" title="' . $this->language->getLL('edit', TRUE) . '">' .
-				t3lib_iconWorks::getSpriteIcon('actions-document-open') . '</a>';
+			$output .= '<tr><td><a href="#" onclick="' . htmlspecialchars(t3lib_BEfunc::editOnClick($editParams, $this->doc->backPath, -1)) . '">' .
+				t3lib_iconWorks::getSpriteIcon('actions-document-open', array('title' => $this->language->getLL('edit', TRUE))) . '</a>';
 			$output .= '<a href="#" onclick="' . htmlspecialchars(
 					'if (confirm(' . $this->language->JScharCode(
 						$this->language->getLL('deleteWarningManufacturer') . ' "' . htmlspecialchars($row['title']) . '" ' . $refCountMsg
 					) . ')) {jumpToUrl(\'' . $this->doc->issueCommand($deleteParams, -1) . '\');} return false;'
-				) . '" title="' . $this->language->getLL('delete', TRUE) . '">' .
-				t3lib_iconWorks::getSpriteIcon('actions-edit-delete') . '</a>';
+				) . '">' .
+				t3lib_iconWorks::getSpriteIcon('actions-edit-delete', array('title' => $this->language->getLL('delete', TRUE))) . '</a>';
 			$output .= '</td>';
 
 			foreach ($fields as $field) {
@@ -535,16 +531,14 @@ class Tx_Commerce_Controller_SystemdataController extends t3lib_SCbase {
 			$editParams = '&edit[' . $table . '][' . (int) $row['uid'] . ']=edit';
 			$deleteParams = '&cmd[' . $table . '][' . (int) $row['uid'] . '][delete]=1';
 
-			$output .= '<tr><td><a href="#" onclick="' . htmlspecialchars(
-					t3lib_BEfunc::editOnClick($editParams, $this->doc->backPath, -1)
-				) . '" title="' . $this->language->getLL('edit', TRUE) . '">' .
-				t3lib_iconWorks::getSpriteIcon('actions-document-open') . '</a>';
+			$output .= '<tr><td><a href="#" onclick="' . htmlspecialchars(t3lib_BEfunc::editOnClick($editParams, $this->doc->backPath, -1)) . '">' .
+				t3lib_iconWorks::getSpriteIcon('actions-document-open', array('title' => $this->language->getLL('edit', TRUE))) . '</a>';
 			$output .= '<a href="#" onclick="' . htmlspecialchars(
 					'if (confirm(' . $this->language->JScharCode(
 						$this->language->getLL('deleteWarningSupplier') . ' "' . htmlspecialchars($row['title']) . '" ' . $refCountMsg
 					) . ')) {jumpToUrl(\'' . $this->doc->issueCommand($deleteParams, -1) . '\');} return false;'
-				) . '" title="' . $this->language->getLL('delete', TRUE) . '">' .
-				t3lib_iconWorks::getSpriteIcon('actions-edit-delete') . '</a>';
+				) . '">' .
+				t3lib_iconWorks::getSpriteIcon('actions-edit-delete', array('title' => $this->language->getLL('delete', TRUE))) . '</a>';
 			$output .= '</td>';
 
 			foreach ($fields as $field) {

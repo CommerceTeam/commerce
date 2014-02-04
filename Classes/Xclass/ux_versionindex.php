@@ -49,15 +49,13 @@ class ux_tx_version_cm1 extends tx_version_cm1 {
 
 				// Edit link:
 			$adminLink = '<a href="#" onclick="' .
-				htmlspecialchars(t3lib_BEfunc::editOnClick('&edit[' . $table . '][' . $row['uid'] . ']=edit', $this->doc->backPath)) .
-				'" title="' . $language->sL('LLL:EXT:lang/locallang_core.xml:cm.edit', TRUE) . '">' .
-				t3lib_iconWorks::getSpriteIcon('actions-document-open') . '</a>';
+				htmlspecialchars(t3lib_BEfunc::editOnClick('&edit[' . $table . '][' . $row['uid'] . ']=edit', $this->doc->backPath)) . '">' .
+				t3lib_iconWorks::getSpriteIcon('actions-document-open', array('title' => $language->sL('LLL:EXT:lang/locallang_core.xml:cm.edit', TRUE))) . '</a>';
 
 				// Delete link:
 			$adminLink .= '<a href="' .
-				htmlspecialchars($this->doc->issueCommand('&cmd[' . $table . '][' . $row['uid'] . '][delete]=1')) .
-				'" title="' . $language->sL('LLL:EXT:lang/locallang_core.php:cm.delete', TRUE) . '">' .
-				t3lib_iconWorks::getSpriteIcon('actions-edit-delete') . '</a>';
+				htmlspecialchars($this->doc->issueCommand('&cmd[' . $table . '][' . $row['uid'] . '][delete]=1')) . '">' .
+				t3lib_iconWorks::getSpriteIcon('actions-edit-delete', array('title' => $language->sL('LLL:EXT:lang/locallang_core.php:cm.delete', TRUE))) . '</a>';
 
 			if ($row['pid'] == -1) {
 					// get page TSconfig

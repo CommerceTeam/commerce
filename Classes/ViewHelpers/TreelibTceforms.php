@@ -501,7 +501,7 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 					// Separate Key and Title with a |
 				$title = ($parentObject->isPSet('show') && $mounts->isInCommerceMounts($parentObject->getUid())) ?
 					$parentObject->getTitle() :
-					$this->language->sL('LLL:EXT:commerce/locallang_treelib.php:leaf.restrictedAccess', 1);
+					$this->language->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_treelib.xml:leaf.restrictedAccess', 1);
 				$this->itemArrayProcessed[] = $parentObject->getUid() . '|' . $title;
 			}
 		}
@@ -537,7 +537,7 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 			// Separate Key and Title with a |
 		$title = ($category->isPSet('show') && $mounts->isInCommerceMounts($category->getUid())) ?
 			$category->getTitle() :
-			$this->language->sL('LLL:EXT:commerce/locallang_treelib.php:leaf.restrictedAccess', 1);
+			$this->language->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_treelib.xml:leaf.restrictedAccess', 1);
 		$this->itemArrayProcessed = array($category->getUid() . '|' . $title);
 
 		return $this->itemArrayProcessed;
@@ -583,7 +583,7 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 
 			$title = ($cat->isPSet('show')) ?
 				$cat->getTitle() :
-				$this->language->sL('LLL:EXT:commerce/locallang_treelib.php:leaf.restrictedAccess', 1);
+				$this->language->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_treelib.xml:leaf.restrictedAccess', 1);
 				// Separate Key and Title with a |
 			$itemArray[] = $cat->getUid() . '|' . $title;
 		}

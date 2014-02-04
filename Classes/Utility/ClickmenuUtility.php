@@ -272,7 +272,7 @@ class Tx_Commerce_Utility_ClickmenuUtility {
 		if ($backendUser->jsConfirmation(2)) {
 			$conf = $loc . ' && confirm(' . $language->JScharCode(
 				sprintf(
-					$language->sL('LLL:EXT:commerce/locallang_treelib.php:clickmenu.pasteConfirm'),
+					$language->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_treelib.xml:clickmenu.pasteConfirm'),
 					$elInfo[0],
 					$elInfo[1]
 				)
@@ -286,8 +286,8 @@ class Tx_Commerce_Utility_ClickmenuUtility {
 			'); hideCM();}';
 
 		return $this->pObj->linkItem(
-			$language->makeEntities($language->sL('LLL:EXT:commerce/locallang_treelib.php:clickmenu.paste', 1)),
-			$this->pObj->excludeIcon('<img' . t3lib_iconWorks::skinImg($this->pObj->PH_backPath, 'gfx/clip_pasteinto.gif', 'width="12" height="12"') . ' alt="" />'),
+			$language->makeEntities($language->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_treelib.xml:clickmenu.paste', 1)),
+			$this->pObj->excludeIcon(t3lib_iconWorks::getSpriteIcon('actions-document-paste-into')),
 			$editOnClick . 'return false;'
 		);
 	}
@@ -311,7 +311,7 @@ class Tx_Commerce_Utility_ClickmenuUtility {
 		if ($backendUser->jsConfirmation(2)) {
 			$conf = $loc . ' && confirm(' . $language->JScharCode(
 				sprintf(
-					$language->sL('LLL:EXT:commerce/locallang_treelib.php:clickmenu.overwriteConfirm'),
+					$language->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_treelib.xml:clickmenu.overwriteConfirm'),
 					$elInfo[0],
 					$elInfo[1]
 				)
@@ -324,8 +324,8 @@ class Tx_Commerce_Utility_ClickmenuUtility {
 			$this->pObj->frameLocation($loc . '.document') . '); hideCM();}';
 
 		return $this->pObj->linkItem(
-			$language->makeEntities($language->sL('LLL:EXT:commerce/locallang_treelib.php:clickmenu.overwrite', 1)),
-			$this->pObj->excludeIcon('<img' . t3lib_iconWorks::skinImg($this->pObj->PH_backPath, 'gfx/clip_pasteinto.gif', 'width="12" height="12"') . ' alt="" />'),
+			$language->makeEntities($language->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_treelib.xml:clickmenu.overwrite', 1)),
+			$this->pObj->excludeIcon(t3lib_iconWorks::getSpriteIcon('actions-document-paste-into')),
 			$editOnClick . 'return false;'
 		);
 	}

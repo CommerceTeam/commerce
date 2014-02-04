@@ -231,9 +231,8 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 							if ($orderEditable) {
 								$params = '&edit[' . $foreign_table . '][' . $row['uid'] . ']=edit&columnsOnly=amount';
 								$wrap = array(
-									'<b><a href="#" onclick="' . htmlspecialchars(t3lib_BEfunc::editOnClick($params, $GLOBALS['BACK_PATH'])) .
-										'"><img' . t3lib_iconWorks::skinImg($GLOBALS['BACK_PATH'], 'gfx/edit2.gif', 'width="11" height="12"') .
-										' title="Edit me" border="0" alt="" />',
+									'<b><a href="#" onclick="' . htmlspecialchars(t3lib_BEfunc::editOnClick($params, $GLOBALS['BACK_PATH'])) . '">' .
+									t3lib_iconWorks::getSpriteIcon('actions-document-open'),
 									'</a></b>'
 								);
 							}

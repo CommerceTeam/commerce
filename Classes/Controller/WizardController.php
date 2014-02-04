@@ -237,8 +237,7 @@ class Tx_Commerce_Controller_WizardController {
 			if ($this->R_URI) {
 				$this->code .= '<br />
 					<a href="' . htmlspecialchars($this->R_URI) . '" class="typo3-goBack">' .
-						'<img' . t3lib_iconWorks::skinImg($this->doc->backPath, 'gfx/goback.gif', 'width="14" height="14"') . ' alt="" />' .
-						$language->getLL('goBack', 1) .
+						t3lib_iconWorks::getSpriteIcon('actions-view-go-back', array('title' => $language->getLL('goBack', 1))) .
 					'</a>';
 			}
 				// Add all the content to an output section
@@ -275,7 +274,7 @@ class Tx_Commerce_Controller_WizardController {
 							// Create new link for record:
 						$rowContent = '<img' . t3lib_iconWorks::skinImg($GLOBALS['BACK_PATH'], 'gfx/ol/join.gif', 'width="18" height="16"') . ' alt="" />' .
 							$this->linkWrap(
-								t3lib_iconWorks::getIconImage($table, array(), $GLOBALS['BACK_PATH'], '') .
+								t3lib_iconWorks::getSpriteIconForRecord($table, array()) .
 									$language->sL($GLOBALS['TCA'][$table]['ctrl']['title'], 1),
 								$table,
 								$this->id
