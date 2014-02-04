@@ -86,6 +86,11 @@ class Tx_Commerce_Domain_Model_AttributeValue extends Tx_Commerce_Domain_Model_A
 	protected $icon = '';
 
 	/**
+	 * @var string
+	 */
+	protected $showicon;
+
+	/**
 	 * Constructor, basically calls init
 	 *
 	 * @param integer $uid
@@ -181,6 +186,7 @@ class Tx_Commerce_Domain_Model_AttributeValue extends Tx_Commerce_Domain_Model_A
 	 *
 	 * @return integer
 	 * @deprecated since 2011-05-12 this function will be removed in commerce 0.16.0, never was returning a value
+	 * remove $this->showicon with this method
 	 */
 	public function getshowicon() {
 		t3lib_div::logDeprecatedFunction();

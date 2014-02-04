@@ -29,13 +29,6 @@
  */
 class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 	/**
-	 * uid - unique recore ids
-	 *
-	 * @var integer
-	 */
-	public $uid;
-
-	/**
 	 * @var integer
 	 */
 	public $parentUid;
@@ -57,13 +50,6 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 	);
 
 	/**
-	 * default values necessary for the flexform
-	 *
-	 * @var string
-	 */
-	public $defVals;
-
-	/**
 	 * @var boolean
 	 */
 	public $disableSingleTableView;
@@ -74,14 +60,14 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 	public $translateTools;
 
 	/**
+	 * @var array
+	 */
+	public $MOD_MENU;
+
+	/**
 	 * @var string
 	 */
 	public $newRecordIcon = '';
-
-	/**
-	 * @var array
-	 */
-	public $MOD_MENU = array();
 
 	/**
 	 * Create the panel of buttons for submitting the form or otherwise perform operations.
@@ -120,54 +106,77 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 			// Get users permissions for this row:
 		$localCalcPerms = $backendUser->calcPerms($row);
 
-			// If edit permissions are set (see class.t3lib_userauthgroup.php)
-		if ($localCalcPerms & 2) {
-				// Adding "New record" icon:
-			if (!$GLOBALS['SOBE']->modTSconfig['properties']['noCreateRecordsLink']) {
-				$buttons['new_record'] = $this->newRecordIcon;
+			// CSH
+		if (!strlen($this->id)) {
+			$buttons['csh'] = t3lib_BEfunc::cshItem('xMOD_csh_comerce', 'list_module_noId', $this->backPath, '', TRUE);
+		} elseif (!$this->id) {
+			$buttons['csh'] = t3lib_BEfunc::cshItem('xMOD_csh_comerce', 'list_module_root', $this->backPath, '', TRUE);
+		} else {
+			$buttons['csh'] = t3lib_BEfunc::cshItem('xMOD_csh_comerce', 'list_module', $this->backPath, '', TRUE);
+		}
+
+		if (isset($this->id)) {
+				// If edit permissions are set (see class.t3lib_userauthgroup.php)
+			if ($localCalcPerms & 2 && !empty($this->parentUid)) {
+					// Adding "New record" icon:
+				if (!$GLOBALS['SOBE']->modTSconfig['properties']['noCreateRecordsLink']) {
+					$buttons['new_record'] = $this->newRecordIcon;
+				}
+					// Edit
+				$params = '&edit[tx_commerce_categories][' . $this->pageRow['uid'] . ']=edit';
+				$buttons['edit'] = '<a href="#" onclick="' .
+					htmlspecialchars(t3lib_BEfunc::editOnClick($params, $this->backPath, -1)) . '" title="' .
+					$language->getLL('editCategory', TRUE) . '">' . t3lib_iconWorks::getSpriteIcon('actions-page-open') . '</a>';
+
+					// Unhide
+				if ($this->pageRow['hidden']) {
+					$params = '&data[tx_commerce_categories][' . $this->pageRow['uid'] . '][hidden]=0';
+					$buttons['hide_unhide'] = '<a href="#" onclick="' .
+						htmlspecialchars('return jumpToUrl(\'' . $GLOBALS['SOBE']->doc->issueCommand($params, -1) . '\');') . '" title="' .
+						$language->getLL('unHideCategory', TRUE) . '">' . t3lib_iconWorks::getSpriteIcon('actions-edit-unhide') . '</a>';
+					// Hide
+				} else {
+					$params = '&data[tx_commerce_categories][' . $this->pageRow['uid'] . '][hidden]=1';
+					$buttons['hide_unhide'] = '<a href="#" onclick="' .
+						htmlspecialchars('return jumpToUrl(\'' . $GLOBALS['SOBE']->doc->issueCommand($params, -1) . '\');') . '" title="' .
+						$language->getLL('hideCategory', TRUE) . '">' . t3lib_iconWorks::getSpriteIcon('actions-edit-hide') . '</a>';
+				}
+
+					// Setting title of page + the "Go up" link:
+				$temp = $this->parentUid;
+				$this->parentUid = $this->pageRow['pid'];
+				$buttons['level_up'] = '<a href="' . htmlspecialchars($this->listURL($this->id)) .
+					'" onclick="setHighlight(' . $this->pageRow['pid'] . ')" title="' .
+					$language->sL('LLL:EXT:lang/locallang_core.php:labels.upOneLevel', TRUE) . '">' .
+					t3lib_iconWorks::getSpriteIcon('actions-view-go-up') . '</a>';
+				$this->parentUid = $temp;
 			}
 		}
 
-			// "Paste into page" link:
+			// Paste
 		if (($localCalcPerms & 8) || ($localCalcPerms & 16)) {
 			$elFromTable = $this->clipObj->elFromTable('');
 			if (count($elFromTable)) {
 				$buttons['paste'] = '<a href="' . htmlspecialchars($this->clipObj->pasteUrl('', $this->id)) . '" onclick="' .
-					htmlspecialchars('return ' . $this->clipObj->confirmMsg('tx_commerce_categories', $this->pageRow, 'into', $elFromTable)) . '">' .
-					t3lib_iconWorks::getSpriteIcon(
-						'actions-document-paste-into',
-						array('title' => $language->getLL('clip_paste', 1))
-					) . '</a>';
+					htmlspecialchars('return ' . $this->clipObj->confirmMsg('tx_commerce_categories', $this->pageRow, 'into', $elFromTable)) .
+					'" title="' . $language->getLL('clip_paste', TRUE) . '">' .
+					t3lib_iconWorks::getSpriteIcon('actions-document-paste-into') . '</a>';
 			}
 		}
 
-		if ($this->id) {
-				// Setting title of page + the "Go up" link:
-			$buttons['level_up'] = '<a href="' . htmlspecialchars($this->listURL($row['pid'])) . '" onclick="setHighlight(' . $row['pid'] . ')">' .
-				t3lib_iconWorks::getSpriteIcon(
-					'actions-view-go-up',
-					array('title' => $language->sL('LLL:EXT:lang/locallang_core.php:labels.upOneLevel', 1))
-				) .
-				'</a>';
-		}
-
-			// Add "CSV" link, if a specific table is shown:
 		if ($this->table) {
-			$buttons['csv'] = '<a href="' . htmlspecialchars($this->listURL() . '&csv=1') . '">' .
-				t3lib_iconWorks::getSpriteIcon(
-					'mimetypes-text-csv',
-					array('title' => $language->sL('LLL:EXT:lang/locallang_core.php:labels.csv', 1))
-				) . '</a>';
-		}
+				// CSV
+			$buttons['csv'] = '<a href="' . htmlspecialchars($this->listURL() . '&csv=1') . '" title="' .
+				$language->sL('LLL:EXT:lang/locallang_core.php:labels.csv', 1) . '">' .
+				t3lib_iconWorks::getSpriteIcon('mimetypes-text-csv') . '</a>';
 
-			// Add "Export" link, if a specific table is shown:
-		if ($this->table && t3lib_extMgm::isLoaded('impexp')) {
-			$buttons['export'] = '<a href="' . htmlspecialchars($this->backPath . t3lib_extMgm::extRelPath('impexp') .
-				'app/index.php?tx_impexp[action]=export&tx_impexp[list][]=' . rawurlencode($this->table . ':' . $this->id)) . '">' .
-				t3lib_iconWorks::getSpriteIcon(
-					'actions-document-export-t3d',
-					array('title' => $language->sL('LLL:EXT:lang/locallang_core.php:rm.export', 1))
-				) . '</a>';
+				// Export
+			if (t3lib_extMgm::isLoaded('impexp')) {
+				$url = $this->backPath . t3lib_extMgm::extRelPath('impexp') . 'app/index.php?tx_impexp[action]=export';
+				$buttons['export'] = '<a href="' . htmlspecialchars($url . '&tx_impexp[list][]=' . rawurlencode($this->table . ':' . $this->id)) .
+					'" title="' . $language->sL('LLL:EXT:lang/locallang_core.php:rm.export', TRUE) . '">' .
+					t3lib_iconWorks::getSpriteIcon('actions-document-export-t3d') . '</a>';
+			}
 		}
 
 			// Add "refresh" link:
@@ -497,7 +506,7 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 									if ($row['_MOVE_PLH_uid'] && $row['_MOVE_PLH_pid']) {
 										$tmpRow = t3lib_BEfunc::getRecordRaw(
 											$table,
-											't3ver_move_id="' . intval($lRow['uid']) . '" AND pid="' . $row['_MOVE_PLH_pid'] .
+											't3ver_move_id="' . (int) $lRow['uid'] . '" AND pid="' . $row['_MOVE_PLH_pid'] .
 												'" AND t3ver_wsid=' . $row['t3ver_wsid'] . t3lib_beFunc::deleteClause($table),
 											$selFieldList
 										);

@@ -70,28 +70,20 @@ class Tx_Commerce_Utility_AttributeEditorUtility {
 		/**
 		 * Try to detect article UID since there is currently no way to get the data from the method
 		 * and get language_uid from article
-		 * @author ingo schmitt <is@marketing-factory.de>
 		 */
-
 		$sys_language_uid = 0;
 		$getPostedit = t3lib_div::_GPmerged('edit');
 		if (is_array($getPostedit['tx_commerce_articles'])) {
 			$articleUid = array_keys($getPostedit['tx_commerce_articles']);
 			if ($articleUid[0] > 0) {
 				$lok_data = t3lib_BEfunc::getRecord('tx_commerce_articles', $articleUid[0], 'sys_language_uid');
-				$sys_language_uid = $lok_data['sys_language_uid'];
-			}
-			if (empty($sys_language_uid)) {
-				$sys_language_uid = 0;
+				$sys_language_uid = (int) $lok_data['sys_language_uid'];
 			}
 		} elseif (is_array($getPostedit['tx_commerce_products'])) {
 			$articleUid = array_keys($getPostedit['tx_commerce_products']);
 			if ($articleUid[0] > 0) {
 				$lok_data = t3lib_BEfunc::getRecord('tx_commerce_products', $articleUid[0], 'sys_language_uid');
-				$sys_language_uid = $lok_data['sys_language_uid'];
-			}
-			if (empty($sys_language_uid)) {
-				$sys_language_uid = 0;
+				$sys_language_uid = (int) $lok_data['sys_language_uid'];
 			}
 		}
 
@@ -103,7 +95,7 @@ class Tx_Commerce_Utility_AttributeEditorUtility {
 		 * Try to get language label
 		 */
 		if ($sys_language_uid > 0) {
-			$lok_data = t3lib_BEfunc::getRecordRaw(
+			$translation = t3lib_BEfunc::getRecordRaw(
 				'tx_commerce_attributes',
 				'sys_language_uid=' . $sys_language_uid . ' AND l18n_parent=' . $aData['uid'],
 				'*'
@@ -124,12 +116,12 @@ class Tx_Commerce_Utility_AttributeEditorUtility {
 		 * @author Ingo Schmitt <is@marketing-factory.de>
 		 */
 		Tx_Commerce_Utility_FolderUtility::init_folders();
-		list($modPid) = Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Commerce', 'commerce');
+		$modPid = current(Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Commerce', 'commerce'));
 		Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Products', 'commerce', $modPid);
-		list($attrPid) = Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Attributes', 'commerce', $modPid);
+		$attrPid = current(Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Attributes', 'commerce', $modPid));
 
 		if ($aData['has_valuelist'] == 1) {
-			$config['config'] = array (
+			$config['config'] = array(
 				'type' => 'select',
 				'foreign_table' => 'tx_commerce_attribute_values',
 				'foreign_table_where' => 'AND attributes_uid=' . (int) $aData['uid'] . ' and tx_commerce_attribute_values.pid=' .
@@ -137,7 +129,7 @@ class Tx_Commerce_Utility_AttributeEditorUtility {
 				'size' => 1,
 				'minitems' => 0,
 				'maxitems' => 1,
-				'items' => array (
+				'items' => array(
 					array('', 0)
 				),
 			);
@@ -247,6 +239,8 @@ class Tx_Commerce_Utility_AttributeEditorUtility {
 		)));
 	}
 }
+
+class_alias('Tx_Commerce_Utility_AttributeEditorUtility', 'tx_commerce_attributeEditor');
 
 if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/class.tx_commerce_attributeeditor.php']) {
 	/** @noinspection PhpIncludeInspection */

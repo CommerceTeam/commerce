@@ -412,7 +412,7 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 
 				// Write the bottom of the page:
 			$dblist->writeBottom();
-			$listUrl = substr($dblist->listURL(), strlen($GLOBALS['BACK_PATH']));
+			$listUrl = TYPO3_MOD_PATH . $dblist->listURL();
 				// Add JavaScript functions to the page:
 			$this->doc->JScode = $this->doc->wrapScriptTags('
 				function jumpToUrl(URL) {

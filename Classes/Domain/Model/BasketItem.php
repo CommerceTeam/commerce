@@ -105,7 +105,7 @@ class Tx_Commerce_Domain_Model_BasketItem {
 	 *
 	 * @var integer
 	 */
-	protected $lang_id = 0;
+	protected $lang_uid = 0;
 
 	/**
 	 * Constructor, basically calls init
@@ -129,12 +129,12 @@ class Tx_Commerce_Domain_Model_BasketItem {
 	 * @param integer $uid artcile UID
 	 * @param integer $quantity amount for this article
 	 * @param integer $priceid id of the price to use
-	 * @param integer $lang_id Language ID
+	 * @param integer $langUid Language ID
 	 * @return bool
 	 */
-	public function init($uid, $quantity, $priceid, $lang_id = 0) {
+	public function init($uid, $quantity, $priceid, $langUid = 0) {
 		$uid = (int) $uid;
-		$lang_id = (int) $lang_id;
+		$langUid = (int) $langUid;
 		$priceid = (int) $priceid;
 
 		if (is_numeric($quantity)) {
@@ -148,28 +148,34 @@ class Tx_Commerce_Domain_Model_BasketItem {
 		}
 
 		$this->quantity = $quantity;
-		$this->lang_id = $lang_id;
-		$this->article = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Article');
-		$this->article->init($uid, $this->lang_id);
+		$this->lang_uid = $langUid;
 
 		if ($quantity < 1) {
 			return FALSE;
 		}
 
-		if (is_object($this->article)) {
-			$this->article->loadData('basket');
+		/** @var Tx_Commerce_Domain_Model_Article $article */
+		$article = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Article');
+		$article->init($uid, $this->lang_uid);
 
-			$this->product = $this->article->getParentProduct();
-			$this->product->loadData('basket');
+		if (is_object($article)) {
+			$article->loadData('basket');
+			$this->article = $article;
+
+			/** @var Tx_Commerce_Domain_Model_Product $product */
+			$product = $article->getParentProduct();
+			$product->loadData('basket');
+			$this->product = $product;
 
 			$this->priceid = $priceid;
 
-			$this->price = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_ArticlePrice');
-			$this->price->init($priceid, $this->lang_id);
-			$this->price->loadData('basket');
+			$price = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_ArticlePrice');
+			$price->init($priceid, $this->lang_uid);
+			$price->loadData('basket');
+			$this->price = $price;
 
-			$this->priceNet = $this->price->getPriceNet();
-			$this->priceGross = $this->price->getPriceGross();
+			$this->priceNet = $price->getPriceNet();
+			$this->priceGross = $price->getPriceGross();
 
 			$this->recalculateItemSums();
 
@@ -180,8 +186,8 @@ class Tx_Commerce_Domain_Model_BasketItem {
 		 * Article is not availiabe, so clear object
 		 */
 		$this->quantity = 0;
-		$this->article = '';
-		$this->product = '';
+		$this->article = NULL;
+		$this->product = NULL;
 
 		return FALSE;
 	}
@@ -512,7 +518,7 @@ class Tx_Commerce_Domain_Model_BasketItem {
 		$this->priceid = $this->article->getActualPriceforScaleUid($quantity);
 
 		$this->price = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_ArticlePrice');
-		$this->price->init($this->priceid, $this->lang_id);
+		$this->price->init($this->priceid, $this->lang_uid);
 		$this->price->loadData();
 		$this->priceNet = $this->price->getPriceNet();
 		$this->priceGross = $this->price->getPriceGross();

@@ -459,7 +459,7 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends localRecordList {
 								foreach ($this->translations as $lRow) {
 										// $lRow isn't always what we want - if record was moved we've to work with the placeholder records otherwise the list is messed up a bit
 									if ($row['_MOVE_PLH_uid'] && $row['_MOVE_PLH_pid']) {
-										$tmpRow = t3lib_BEfunc::getRecordRaw($table, 't3ver_move_id="' . intval($lRow['uid']) . '" AND pid="' . $row['_MOVE_PLH_pid'] . '" AND t3ver_wsid=' . $row['t3ver_wsid'] . t3lib_beFunc::deleteClause($table), $selFieldList);
+										$tmpRow = t3lib_BEfunc::getRecordRaw($table, 't3ver_move_id="' . (int) $lRow['uid'] . '" AND pid="' . (int) $row['_MOVE_PLH_pid'] . '" AND t3ver_wsid=' . $row['t3ver_wsid'] . t3lib_beFunc::deleteClause($table), $selFieldList);
 										$lRow = is_array($tmpRow)?$tmpRow:$lRow;
 									}
 										// In offline workspace, look for alternative record:
@@ -716,7 +716,8 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends localRecordList {
 				$theData[$fCol] = $lC1;
 				$theData[$fCol . 'b'] = $lC2;
 			} elseif ($fCol == '_LOCALIZATION_b') {
-				// Do nothing, has been done above.
+					// Do nothing, has been done above.
+				$theData[$fCol] .= '';
 			} elseif ($fCol == 'order_id') {
 				$theData[$fCol] = $row[$fCol];
 			} else {

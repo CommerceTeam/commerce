@@ -396,8 +396,8 @@ class Tx_Commerce_ViewHelpers_FeuserRecordList extends localRecordList {
 				$theData[$fCol] = $lC1;
 				$theData[$fCol . 'b'] = $lC2;
 			} elseif ($fCol == '_LOCALIZATION_b') {
-				// @todo what to do her?
-				// Do nothing, has been done above.
+					// Do nothing, has been done above.
+				$theData[$fCol] .= '';
 			} else {
 				/**
 				 * Use own method, if typo3 4.0.0 is not installed

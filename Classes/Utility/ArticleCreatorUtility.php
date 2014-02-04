@@ -22,6 +22,7 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+/** @noinspection PhpIncludeInspection */
 require_once(PATH_TXCOMMERCE . 'Classes/Utility/GeneralUtility.php');
 
 /**
@@ -522,11 +523,10 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	 * Creates article title out of attributes
 	 *
 	 * @param array $PA: ...
-	 * @param string $key: The key in the POST var array
 	 * @param array $data
 	 * @return string Returns the product title + attribute titles for article title
 	 */
-	protected function createArticleTitleFromAttributes($PA, $key, $data) {
+	protected function createArticleTitleFromAttributes($PA, $data) {
 		$content = $PA['title'];
 		if (is_array($data) && count($data)) {
 			$selectedValues = array();
@@ -575,7 +575,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 		$articleData = array(
 			'pid' => $this->pid,
 			'crdate' => time(),
-			'title' => strip_tags($this->createArticleTitleFromAttributes($PA, $key, $data)),
+			'title' => strip_tags($this->createArticleTitleFromAttributes($PA, $data)),
 			'uid_product' => (int) $this->uid,
 			'sorting' => $sorting['sorting'] * 2,
 			'article_attributes' => count($this->attributes['rest']) + count($data),

@@ -474,7 +474,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 			$this->belib->updateXML('attributes', 'tx_commerce_products', $pUid, 'product', $ctList, TRUE);
 
 				// update the XML for this product, we remove everything that is not set for current attributes
-			$pXML = $database->exec_SELECTquery('attributesedit', 'tx_commerce_products', 'uid=' . (int) $pUid);
+			$pXML = $database->exec_SELECTquery('attributesedit', 'tx_commerce_products', 'uid = ' . (int) $pUid);
 			$pXML = $database->sql_fetch_assoc($pXML);
 
 			if (!empty($pXML['attributesedit'])) {

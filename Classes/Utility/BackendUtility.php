@@ -1916,13 +1916,12 @@ class Tx_Commerce_Utility_BackendUtility {
 			$backendUser->uc['txcommerce_copyProcess'] = 0;
 			$backendUser->writeUC();
 
-				// @todo $newUid or $uidNew thats the question
 				// get real uid
 			$newUid = $tce->substNEWwithIDs[$newUid];
 
 				// for articles we have to overwrite the attributes
 			if ('tx_commerce_articles' == $table) {
-				self::overwriteArticleAttributes($uidCopied, $uidNew, $loc);
+				self::overwriteArticleAttributes($uidCopied, $newUid, $loc);
 			}
 		}
 		return TRUE;
@@ -2629,7 +2628,7 @@ class Tx_Commerce_Utility_BackendUtility {
 		$backendUser = $GLOBALS['BE_USER'];
 
 		if ((string) $id != '') {
-			$id = intval($id);
+			$id = (int) $id;
 			if (!$id) {
 				if ($backendUser->isAdmin()) {
 					$path = '/';
@@ -2637,11 +2636,12 @@ class Tx_Commerce_Utility_BackendUtility {
 					return $pageinfo;
 				}
 			} else {
-				$pageinfo = t3lib_BEfunc::getRecord('tx_commerce_categories', $id, '*', ($perms_clause ? ' AND ' . $perms_clause : ''));
+					// $pageinfo = t3lib_BEfunc::getRecord('tx_commerce_categories', $id, '*', ($perms_clause ? ' AND ' . $perms_clause : ''));
+				$pageinfo = self::getCategoryForRootline($id, ($perms_clause ? ' AND ' . $perms_clause : ''), FALSE);
 				t3lib_BEfunc::workspaceOL('tx_commerce_categories', $pageinfo);
 				if (is_array($pageinfo)) {
 					t3lib_BEfunc::fixVersioningPid('tx_commerce_categories', $pageinfo);
-					list($pageinfo['_thePath'], $pageinfo['_thePathFull']) = self::getCategoryPath(intval($pageinfo['uid']), $perms_clause, 15, 1000);
+					list($pageinfo['_thePath'], $pageinfo['_thePathFull']) = self::getCategoryPath((int) $pageinfo['uid'], $perms_clause, 15, 1000);
 					return $pageinfo;
 				}
 			}
@@ -2772,10 +2772,10 @@ class Tx_Commerce_Utility_BackendUtility {
 			$row = $getPageForRootline_cache[$ident];
 		} else {
 			$res = $database->exec_SELECTquery(
-				'mm.uid_foreign AS pid, uid, title, ts_config, t3ver_oid',
+				'mm.uid_foreign AS pid, uid, hidden, title, ts_config, t3ver_oid',
 				'tx_commerce_categories JOIN tx_commerce_categories_parent_category_mm AS mm ON tx_commerce_categories.uid = mm.uid_local',
 					// whereClauseMightContainGroupOrderBy
-				'uid = ' . intval($uid) . ' ' . t3lib_BEfunc::deleteClause('tx_commerce_categories') . ' ' . $clause
+				'uid = ' . (int) $uid . ' ' . t3lib_BEfunc::deleteClause('tx_commerce_categories') . ' ' . $clause
 			);
 
 			$row = $database->sql_fetch_assoc($res);
