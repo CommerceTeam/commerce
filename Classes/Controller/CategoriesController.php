@@ -50,6 +50,7 @@ class Tx_Commerce_Controller_CategoriesController extends tx_commerce_db_list {
 		);
 
 		$this->scriptNewWizard = 'class.tx_commerce_cmd_wizard.php';
+		$this->scriptNewWizard = '../../Controller/CommandWizardController.php';
 		parent::init();
 	}
 }

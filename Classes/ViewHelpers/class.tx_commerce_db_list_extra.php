@@ -63,6 +63,11 @@ class commerceRecordList extends localRecordList {
 	public $translateTools;
 
 	/**
+	 * @var string
+	 */
+	public $newRecordIcon = '';
+
+	/**
 	 * Writes the top of the full listing
 	 *
 	 * @param array $row Current page record
@@ -111,8 +116,12 @@ class commerceRecordList extends localRecordList {
 
 				// Adding "New record" icon:
 			if (!$GLOBALS['SOBE']->modTSconfig['properties']['noCreateRecordsLink']) {
-				$newIcon = t3lib_iconWorks::getSpriteIcon('actions-document-new', array('title' => $language->getLL('newRecordGeneral', 1)));
-				$theCtrlPanel[] = '<a href="#" onclick="' . htmlspecialchars('return jumpExt(\'db_new.php?id=' . $this->id . $this->defVals . '\');') . '">' . $newIcon . '</a>';
+				if ($this->newRecordIcon != '') {
+					$theCtrlPanel[] = $this->newRecordIcon;
+				} else {
+					$newIcon = t3lib_iconWorks::getSpriteIcon('actions-document-new', array('title' => $language->getLL('newRecordGeneral', 1)));
+					$theCtrlPanel[] = '<a href="#" onclick="' . htmlspecialchars('return jumpExt(\'db_new.php?id=' . $this->id . $this->defVals . '\');') . '">' . $newIcon . '</a>';
+				}
 			}
 
 				// Adding "Hide/Unhide" icon:

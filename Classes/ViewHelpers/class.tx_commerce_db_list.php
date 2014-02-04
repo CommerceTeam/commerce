@@ -323,9 +323,47 @@ class tx_commerce_db_list {
 		$dblist->disableSingleTableView = $this->modTSconfig['properties']['disableSingleTableView'];
 		$dblist->listOnlyInSingleTableMode = $this->modTSconfig['properties']['listOnlyInSingleTableView'];
 		$dblist->clickTitleMode = $this->modTSconfig['properties']['clickTitleMode'];
-		$dblist->alternateBgColors = $this->modTSconfig['properties']['alternateBgColors']?1:0;
+		$dblist->alternateBgColors = $this->modTSconfig['properties']['alternateBgColors'] ? 1 : 0;
 		$dblist->allowedNewTables = t3lib_div::trimExplode(',', $this->modTSconfig['properties']['allowedNewTables'], 1);
-		$dblist->newWizards = $this->modTSconfig['properties']['newWizards']?1:0;
+		$dblist->newWizards = $this->modTSconfig['properties']['newWizards'] ? 1 : 0;
+
+		$newRecordLink = $newRecordIcon = '';
+			// Link for creating new records:
+		if (!$this->modTSconfig['properties']['noCreateRecordsLink']) {
+			$sumlink = $this->scriptNewWizard . '?id=' . intval($this->id);
+			foreach ($this->control as $controldat) {
+				$treedb = t3lib_div::makeInstance($controldat['dataClass']);
+				$treedb->init();
+
+				if ($treedb->getTable()) {
+					$sumlink .= '&edit[' . $treedb->getTable() . '][-' . $parent_uid . ']=new';
+				}
+			}
+			$sumlink .= $defVals;
+
+			$newRecordIcon = '
+				<!--
+					Link for creating a new record:
+				-->
+				<a href="' . htmlspecialchars($this->scriptNewWizard . '?id=' . $this->id . $sumlink .
+					'&returnUrl=' . rawurlencode(t3lib_div::getIndpEnv('REQUEST_URI'))) . '">' .
+					t3lib_iconWorks::getSpriteIcon('actions-document-new', array('title' => $language->getLL('editPage', 1))) .
+				'</a>';
+
+			$newRecordLink = '
+				<!--
+					Link for creating a new record:
+				-->
+				<div id="typo3-newRecordLink">
+					<a href="' . htmlspecialchars($this->scriptNewWizard . '?id=' . $this->id . $sumlink .
+						'&returnUrl=' . rawurlencode(t3lib_div::getIndpEnv('REQUEST_URI'))) . '">' .
+						t3lib_iconWorks::getSpriteIcon('actions-document-new', array('title' => $language->getLL('editPage', 1))) .
+						$language->getLL('newRecordGeneral', 1) .
+					'</a>
+				</div>';
+		}
+
+		$dblist->newRecordIcon = $newRecordIcon;
 
 			// Clipboard is initialized:
 			// Start clipboard
@@ -563,27 +601,7 @@ class tx_commerce_db_list {
 					</div>';
 			$this->content .= t3lib_BEfunc::cshItem('xMOD_csh_corebe', 'list_options', $GLOBALS['BACK_PATH']);
 
-				// Link for creating new records:
-			if (!$this->modTSconfig['properties']['noCreateRecordsLink']) {
-				$sumlink = $this->scriptNewWizard . '?id=' . intval($this->id);
-				foreach ($linkparam as $v) {
-					$sumlink .= $v;
-				}
-				$sumlink .= $defVals;
-
-				$linkNewRecord = '
-					<!--
-						Link for creating a new record:
-					-->
-					<div id="typo3-newRecordLink">
-					<a href="' . htmlspecialchars($this->scriptNewWizard . '?id=' . $this->id . $sumlink . '&returnUrl=' .
-							rawurlencode(t3lib_div::getIndpEnv('REQUEST_URI'))) . '">' .
-						'<img' . t3lib_iconWorks::skinImg($this->doc->backPath, 'gfx/new_el.gif', 'width="11" height="12"') . ' alt="" />' .
-							$language->getLL('newRecordGeneral', 1) .
-						'</a>
-					</div>';
-				$this->content .= $linkNewRecord;
-			}
+			$this->content .= $newRecordLink;
 
 				// Search box:
 			$this->content .= $dblist->getSearchBox();
@@ -600,24 +618,7 @@ class tx_commerce_db_list {
 				);
 			}
 		} else {
-			$sumlink = $this->scriptNewWizard . '?id=' . intval($this->id);
-			foreach ($linkparam as $v) {
-				$sumlink .= $v;
-			}
-			$sumlink .= $defVals;
-
-			$linkNewRecord = '
-					<!--
-						Link for creating a new record:
-					-->
-					<div id="typo3-newRecordLink">
-					<a href="' . htmlspecialchars($this->scriptNewWizard . '?id=' . $this->id . $sumlink . '&returnUrl=' .
-							rawurlencode(t3lib_div::getIndpEnv('REQUEST_URI'))) . '">' .
-						'<img' . t3lib_iconWorks::skinImg($this->doc->backPath, 'gfx/new_el.gif', 'width="11" height="12"') . ' alt="" />' .
-							$language->getLL('newRecordGeneral', 1) .
-						'</a>
-					</div>';
-			$this->content .= $linkNewRecord;
+			$this->content .= $newRecordLink;
 		}
 
 			// Finally, close off the page:

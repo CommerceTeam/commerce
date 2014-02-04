@@ -22,6 +22,8 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+require_once(PATH_TXCOMMERCE . 'Classes/Utility/GeneralUtility.php');
+
 /**
  * This class provides several methods for creating articles from within a product. It provides
  * the user fields and creates the entries in the database.

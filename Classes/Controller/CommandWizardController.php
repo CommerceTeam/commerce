@@ -27,15 +27,26 @@
  */
 
 unset($MCONF);
-require('conf.php');
+
+define('TYPO3_MOD_PATH', '../typo3conf/ext/commerce/Classes/Controller/');
+$BACK_PATH = '../../../../../typo3/';
+
+$MLANG['default']['tabs_images']['tab'] = '../../Resources/Public/Icons/mod_category.gif';
+$MLANG['default']['ll_ref'] = 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_category.xml';
+
+$MCONF['script'] = 'index.php';
+$MCONF['name'] = 'txcommerceM1_category';
+$MCONF['access'] = 'user,group';
+$MCONF['navFrameScript'] = 'navigation.php';
+
 /** @noinspection PhpIncludeInspection */
-require(PATH_typo3 . 'init.php');
+require($BACK_PATH . 'init.php');
 /** @noinspection PhpIncludeInspection */
-require(PATH_typo3 . 'template.php');
+require($BACK_PATH . 'template.php');
 
 $LANG->includeLLFile('EXT:lang/locallang_misc.xml');
 
-class tx_commerce_cmd_wizard {
+class Tx_Commerce_Controller_CommandWizardController {
 	/**
 	 * @var array
 	 */
@@ -395,13 +406,15 @@ class tx_commerce_cmd_wizard {
 	}
 }
 
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/mod_category/class.tx_commerce_cmd_wizard.php']) {
+class_alias('', 'tx_commerce_cmd_wizard');
+
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Controller/CommandWizardController.php']) {
 	/** @noinspection PhpIncludeInspection */
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/mod_category/class.tx_commerce_cmd_wizard.php']);
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Controller/CommandWizardController.php']);
 }
 
-/** @var tx_commerce_cmd_wizard $SOBE */
-$SOBE = t3lib_div::makeInstance('tx_commerce_cmd_wizard');
+/** @var Tx_Commerce_Controller_CommandWizardController $SOBE */
+$SOBE = t3lib_div::makeInstance('Tx_Commerce_Controller_CommandWizardController');
 $SOBE->init();
 $SOBE->main();
 $SOBE->printContent();
