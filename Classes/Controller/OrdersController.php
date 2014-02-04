@@ -183,7 +183,7 @@ class Tx_Commerce_Controller_OrdersController extends t3lib_SCbase {
 		parent::init();
 		$this->table = 'tx_commerce_orders';
 		$this->clickMenuEnabled = 1;
-		tx_commerce_create_folder::init_folders();
+		Tx_Commerce_Utility_FolderUtility::init_folders();
 
 		$order_pid = array_unique(tx_commerce_folder_db::initFolders('Orders', 'Commerce', 0, 'Commerce'));
 

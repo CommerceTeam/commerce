@@ -132,14 +132,6 @@ class Tx_Commerce_Hook_TcehooksHandlerHooks {
 			if (($resLocalisedProducts) && $database->sql_num_rows($resLocalisedProducts) > 0) {
 					// Only if there are products
 				while ($localisedProducts = $database->sql_fetch_assoc($resLocalisedProducts)) {
-						// @todo are the next lines obsolete?
-						// walk thru and create articles
-					$destLanguage = $localisedProducts['sys_language_uid'];
-						// get the highest sorting
-					$langIsoCode = t3lib_BEfunc::getRecord('sys_language', intval($destLanguage), 'static_lang_isocode');
-					$langIdent = t3lib_BEfunc::getRecord('static_languages', intval($langIsoCode['static_lang_isocode']), 'lg_typo3');
-					$langIdent = strtoupper($langIdent['lg_typo3']);
-
 						// create article data array
 					$articleData = array(
 						'pid' => (int) $fieldArray['pid'],

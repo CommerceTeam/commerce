@@ -39,7 +39,7 @@ class Tx_Commerce_Task_StatisticTask extends tx_scheduler_Task {
 	protected $database;
 
 	/**
-	 * @var tx_commerce_statistics
+	 * @var Tx_Commerce_Utility_StatisticsUtility
 	 */
 	protected $statistics;
 
@@ -56,7 +56,7 @@ class Tx_Commerce_Task_StatisticTask extends tx_scheduler_Task {
 
 		$this->database = $GLOBALS['TYPO3_DB'];
 
-		$this->statistics = t3lib_div::makeInstance('tx_commerce_statistics');
+		$this->statistics = t3lib_div::makeInstance('Tx_Commerce_Utility_StatisticsUtility');
 		$this->statistics->init(
 			$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['excludeStatisticFolders'] != '' ?
 				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['excludeStatisticFolders'] :

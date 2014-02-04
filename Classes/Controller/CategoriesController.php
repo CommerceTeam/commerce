@@ -37,7 +37,7 @@ class Tx_Commerce_Controller_CategoriesController extends tx_commerce_db_list {
 	 * @return void
 	 */
 	public function init() {
-		tx_commerce_create_folder::init_folders();
+		Tx_Commerce_Utility_FolderUtility::init_folders();
 		$this->control = array (
 			'category' => array (
 				'dataClass' => 'tx_commerce_leaf_categorydata',

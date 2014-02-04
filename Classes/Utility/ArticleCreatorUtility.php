@@ -383,10 +383,10 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 					$resultRows .= '<input type="hidden" name="createData[' . $counter . ']" value="' . htmlspecialchars($hashData) . '" /></td>';
 
 					$resultRows .= '<td style="' . $class . '">' .
-						implode('</td><td style="' . $class . '">', tx_commerce_div::removeXSSStripTagsArray($labelData)) . '</td>';
+						implode('</td><td style="' . $class . '">', Tx_Commerce_Utility_GeneralUtility::removeXSSStripTagsArray($labelData)) . '</td>';
 					if (count($extraRowData) > 0) {
 						$resultRows .= '<td style="' . $class . '">' .
-							implode('</td><td style="' . $class . '">', tx_commerce_div::removeXSSStripTagsArray($extraRowData)) . '</td>';
+							implode('</td><td style="' . $class . '">', Tx_Commerce_Utility_GeneralUtility::removeXSSStripTagsArray($extraRowData)) . '</td>';
 					}
 					$resultRows .= '</tr>';
 				}
@@ -427,7 +427,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 		}
 
 		if ($acBefore != NULL) {
-			$result .= '<th>' . implode('</th><th>', tx_commerce_div::removeXSSStripTagsArray($acBefore)) . '</th>';
+			$result .= '<th>' . implode('</th><th>', Tx_Commerce_Utility_GeneralUtility::removeXSSStripTagsArray($acBefore)) . '</th>';
 		}
 
 		if (is_array($this->attributes['ct1'])) {
@@ -438,7 +438,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 		}
 
 		if ($acAfter != NULL) {
-			$result .= '<th>' . implode('</th><th>', tx_commerce_div::removeXSSStripTagsArray($acAfter)) . '</th>';
+			$result .= '<th>' . implode('</th><th>', Tx_Commerce_Utility_GeneralUtility::removeXSSStripTagsArray($acAfter)) . '</th>';
 		}
 
 		if ($addTR) {

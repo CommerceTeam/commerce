@@ -441,7 +441,7 @@ class Tx_Commerce_Utility_BackendUtility {
 						$result[] = $value['value'];
 					}
 				}
-				return '<ul><li>' . implode('</li><li>', tx_commerce_div::removeXSSStripTagsArray($result)) . '</li></ul>';
+				return '<ul><li>' . implode('</li><li>', Tx_Commerce_Utility_GeneralUtility::removeXSSStripTagsArray($result)) . '</li></ul>';
 
 			} else {
 					// fetch data from attribute values table

@@ -123,7 +123,7 @@ class Tx_Commerce_Utility_AttributeEditorUtility {
 		 * @since 3rd January 2006
 		 * @author Ingo Schmitt <is@marketing-factory.de>
 		 */
-		tx_commerce_create_folder::init_folders();
+		Tx_Commerce_Utility_FolderUtility::init_folders();
 		list($modPid) = tx_commerce_folder_db::initFolders('Commerce', 'commerce');
 		tx_commerce_folder_db::initFolders('Products', 'commerce', $modPid);
 		list($attrPid) = tx_commerce_folder_db::initFolders('Attributes', 'commerce', $modPid);

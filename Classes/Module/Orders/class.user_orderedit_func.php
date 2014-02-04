@@ -319,7 +319,7 @@ class user_orderedit_func {
 		/**
 		 * Ggf folder anlegen, wenn Sie nicht da sind
 		 */
-		tx_commerce_create_folder::init_folders();
+		Tx_Commerce_Utility_FolderUtility::init_folders();
 
 		/**
 		 * create a new data item array
