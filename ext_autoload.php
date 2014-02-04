@@ -189,15 +189,13 @@ return array(
 	'tx_commerce_utility_updateutility' => $classPath . 'Utility/UpdateUtility.php',
 
 	/* ViewHelpers */
-	'tx_commerce_viewhelpers_databaselist' => $classPath . 'ViewHelpers/DatabaseList.php',
-	'tx_commerce_db_list' => $classPath . 'ViewHelpers/DatabaseList.php',
-	'tx_commerce_viewhelpers_databaselistextra' => $classPath . 'ViewHelpers/DatabaseListExtra.php',
+	'tx_commerce_viewhelpers_categoryrecordlist' => $classPath . 'ViewHelpers/CategoryRecordList.php',
 	'commercerecordlist' => $classPath . 'ViewHelpers/DatabaseListExtra.php',
-	'tx_commerce_viewhelpers_feusersrecordlist' => $classPath . 'ViewHelpers/FeusersRecordlist.php',
+	'tx_commerce_viewhelpers_feuserrecordlist' => $classPath . 'ViewHelpers/FeuserRecordList.php',
 	'tx_commerce_feusers_localrecordlist' => $classPath . 'ViewHelpers/FeusersRecordlist.php',
 	'tx_commerce_viewhelpers_navigation' => $classPath . 'ViewHelpers/Navigation.php',
 	'tx_commerce_navigation' => $classPath . 'ViewHelpers/Navigation.php',
-	'tx_commerce_viewhelpers_orderrecordlist' => $classPath . 'ViewHelpers/OrderRecordlist.php',
+	'tx_commerce_viewhelpers_orderrecordlist' => $classPath . 'ViewHelpers/OrderRecordList.php',
 	'tx_commerce_order_localrecordlist' => $classPath . 'ViewHelpers/OrderRecordlist.php',
 	'tx_commerce_viewhelpers_tcefunc' => $classPath . 'ViewHelpers/TceFunc.php',
 	'tx_commerce_tcefunc' => $classPath . 'ViewHelpers/TceFunc.php',

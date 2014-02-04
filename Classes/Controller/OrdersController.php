@@ -356,8 +356,8 @@ class Tx_Commerce_Controller_OrdersController extends t3lib_SCbase {
 		$this->dontShowClipControlPanels = 1;
 
 			// Initialize the dblist object:
-		/** @var Tx_Commerce_ViewHelpers_OrderRecordlist $dblist */
-		$dblist = t3lib_div::makeInstance('Tx_Commerce_ViewHelpers_OrderRecordlist');
+		/** @var Tx_Commerce_ViewHelpers_OrderRecordList $dblist */
+		$dblist = t3lib_div::makeInstance('Tx_Commerce_ViewHelpers_OrderRecordList');
 		$dblist->backPath = $GLOBALS['BACK_PATH'];
 		$dblist->script = 'index.php';
 		$dblist->calcPerms = $backendUser->calcPerms($this->pageinfo);

@@ -29,7 +29,7 @@
 /**
  * Renders order list in the BE order module
  */
-class Tx_Commerce_ViewHelpers_OrderRecordlist extends localRecordList {
+class Tx_Commerce_ViewHelpers_OrderRecordList extends localRecordList {
 	/**
 	 * @var integer
 	 */
@@ -985,7 +985,7 @@ class Tx_Commerce_ViewHelpers_OrderRecordlist extends localRecordList {
 	}
 }
 
-class_alias('Tx_Commerce_ViewHelpers_OrderRecordlist', 'tx_commerce_order_localRecordlist');
+class_alias('Tx_Commerce_ViewHelpers_OrderRecordList', 'tx_commerce_order_localRecordlist');
 
 if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/ViewHelpers/OrderRecordlist.php']) {
 	/** @noinspection PhpIncludeInspection */
