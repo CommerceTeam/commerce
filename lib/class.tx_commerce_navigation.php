@@ -496,7 +496,7 @@ class tx_commerce_navigation {
 		$i = 1;
 		foreach ($conf as $k) {
 			if ($k == $i . '.') {
-				$conf[$i . '.']['itemArrayProcFunc'] = 'user_tx_commerce_catmenu_pub->clear';
+				$conf[$i . '.']['itemArrayProcFunc'] = 'tx_commerce_navigation->clear';
 				$i++;
 			}
 		}

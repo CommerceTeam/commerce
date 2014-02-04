@@ -129,7 +129,6 @@ return array(
 	'tx_commerce_div' => $extensionPath . 'lib/class.tx_commerce_div.php',
 	'tx_commerce_folder_db' => $extensionPath . 'lib/class.tx_commerce_folder_db.php',
 	'tx_commerce_navigation' => $extensionPath . 'lib/class.tx_commerce_navigation.php',
-	'user_tx_commerce_catmenu_pub' => $extensionPath . 'lib/class.user_tx_commerce_catmenu_pub.php',
 	'tx_commerce_feusers_localrecordlist' => $extensionPath . 'lib/class.tx_commerce_feusers_localrecordlist.php',
 	'tx_commerce_order_localrecordlist' => $extensionPath . 'lib/class.tx_commerce_order_localrecordlist.php',
 	'tx_commerce_statistics' => $extensionPath . 'lib/class.tx_commerce_statistics.php',
