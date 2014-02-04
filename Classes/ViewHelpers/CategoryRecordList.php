@@ -69,11 +69,6 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 	public $disableSingleTableView;
 
 	/**
-	 * @var array
-	 */
-	public $pageinfo = array();
-
-	/**
 	 * @var t3lib_transl8tools
 	 */
 	public $translateTools;
@@ -1199,6 +1194,10 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 	}
 
 	/**
+	 * As we can't use t3lib_BEfunc::getModuleUrl this method needs to be overridden to set the url to $this->script
+	 *
+	 * @NOTE: Since Typo3 4.5 we can't use listURL from parent class we need to link to $this->script instead of web_list
+	 *
 	 * Creates the URL to this script, including all relevant GPvars
 	 * Fixed GPvars are id, table, imagemode, returlUrl, search_field, search_levels and showLimit
 	 * The GPvars "sortField" and "sortRev" are also included UNLESS they are found in the $exclList variable.
@@ -1206,12 +1205,49 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 	 * @param string $altId Alternative id value. Enter blank string for the current id ($this->id)
 	 * @param string $table Tablename to display. Enter "-1" for the current table.
 	 * @param string $exclList Commalist of fields NOT to include ("sortField" or "sortRev")
-	 * @return string        URL
+	 * @return string URL
 	 */
 	public function listURL($altId = '', $table = -1, $exclList = '') {
-		$listUrl = t3lib_div::getIndpEnv('SCRIPT_NAME') . '?' . t3lib_div::getIndpEnv('QUERY_STRING');
+		$urlParameters = array();
+		if (strcmp($altId, '')) {
+			$urlParameters['id'] = $altId;
+		} else {
+			$urlParameters['id'] = $this->id;
+		}
+		if ($this->parentUid) {
+			$urlParameters['control']['tx_commerce_categories']['uid'] = $this->parentUid;
+		}
+		if ($table === -1) {
+			$urlParameters['table'] = $this->table;
+		} else {
+			$urlParameters['table'] = $table;
+		}
+		if ($this->thumbs) {
+			$urlParameters['imagemode'] = $this->thumbs;
+		}
+		if ($this->returnUrl) {
+			$urlParameters['returnUrl'] = $this->returnUrl;
+		}
+		if ($this->searchString) {
+			$urlParameters['search_field'] = $this->searchString;
+		}
+		if ($this->searchLevels) {
+			$urlParameters['search_levels'] = $this->searchLevels;
+		}
+		if ($this->showLimit) {
+			$urlParameters['showLimit'] = $this->showLimit;
+		}
+		if ((!$exclList || !t3lib_div::inList($exclList, 'firstElementNumber')) && $this->firstElementNumber) {
+			$urlParameters['pointer'] = $this->firstElementNumber;
+		}
+		if ((!$exclList || !t3lib_div::inList($exclList, 'sortField')) && $this->sortField) {
+			$urlParameters['sortField'] = $this->sortField;
+		}
+		if ((!$exclList || !t3lib_div::inList($exclList, 'sortRev')) && $this->sortRev) {
+			$urlParameters['sortRev'] = $this->sortRev;
+		}
 
-		return $listUrl;
+		return $this->script . '?' . t3lib_div::implodeArrayForUrl('', $urlParameters, '', TRUE);
 	}
 
 	/**

@@ -2,6 +2,7 @@
 
 $extensionPath = t3lib_extMgm::extPath('commerce');
 $classPath = $extensionPath . 'Classes/';
+$typePath = PATH_typo3;
 
 return array(
 	/* backend controller */
@@ -220,9 +221,10 @@ return array(
 	'tx_moneylib' => t3lib_extMgm::extPath('moneylib') . 'class.tx_moneylib.php',
 	'tx_staticinfotables_pi1' => t3lib_extMgm::extPath('static_info_tables') . 'pi1/class.tx_staticinfotables_pi1.php',
 
-	'recordlist' => PATH_typo3 . 'class.db_list.inc',
-	'localrecordlist' => PATH_typo3 . 'class.db_list_extra.inc',
-	'sc_mod_web_perm_ajax' => PATH_typo3 . 'sysext/perm/mod1/class.sc_mod_web_perm_ajax.php',
+	'recordlist' => $typePath . 'class.db_list.inc',
+	'localrecordlist' => $typePath . 'class.db_list_extra.inc',
+	'sc_mod_web_perm_ajax' => $typePath . 'sysext/perm/mod1/class.sc_mod_web_perm_ajax.php',
+	'localrecordlist_actionshook' => $typePath . 'interfaces/interface.localrecordlist_actionsHook.php',
 );
 
 ?>

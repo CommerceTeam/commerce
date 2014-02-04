@@ -27,13 +27,6 @@
 
 class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 	/**
-	 * Treeitem Id for which to make the listing
-	 *
-	 * @public integer
-	 */
-	public $id;
-
-	/**
 	 * Pointer - for browsing list of records.
 	 *
 	 * @public integer
@@ -104,20 +97,6 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 	public $cmd_table;
 
 	/**
-	 * Page select perms clause
-	 *
-	 * @var string
-	 */
-	public $perms_clause;
-
-	/**
-	 * Module TSconfig
-	 *
-	 * @var array
-	 */
-	public $modTSconfig;
-
-	/**
 	 * Current ids page record
 	 *
 	 * @var array
@@ -132,39 +111,14 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 	public $doc;
 
 	/**
-	 * Module configuration
-	 *
 	 * @var array
 	 */
-	public $MCONF = array();
-
-	/**
-	 * Menu configuration
-	 *
-	 * @var array
-	 */
-	public $MOD_MENU = array();
-
-	/**
-	 * Module settings (session variable)
-	 *
-	 * @var array
-	 */
-	public $MOD_SETTINGS = array();
-
-	/**
-	 * Array, where files to include is accumulated in the init() function
-	 *
-	 * @var array
-	 */
-	public $include_once = array();
-
-	/**
-	 * Module output accumulation
-	 *
-	 * @var string
-	 */
-	public $content;
+	public $MOD_MENU = array(
+		'function' => array(),
+		'bigControlPanel' => '',
+		'clipBoard' => '',
+		'localization' => ''
+	);
 
 
 	/**
@@ -228,7 +182,6 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 			// Get Tabpe and controlArray in a different way
 		$controlParams = t3lib_div::_GP('control');
 		if ($controlParams) {
-				// $this->table = key($controlParams);
 			$this->controlArray = current($controlParams);
 		}
 	}
@@ -243,7 +196,7 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 		$this->doc = t3lib_div::makeInstance('template');
 		$this->doc->backPath = $GLOBALS['BACK_PATH'];
 		$this->doc->docType = 'xhtml_trans';
-		$this->doc->setModuleTemplate(PATH_TXCOMMERCE . 'Resources/Private/Backend/mod_index.html');
+		$this->doc->setModuleTemplate(PATH_TXCOMMERCE . 'Resources/Private/Backend/mod_category_index.html');
 
 		if (!$this->doc->moduleTemplate) {
 			t3lib_div::devLog('cannot set moduleTemplate', 'commerce', 2, array(
@@ -251,29 +204,9 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 				'filename from TBE_STYLES' => $GLOBALS['TBE_STYLES']['htmlTemplates']['mod_index.html'],
 				'full path' => $this->doc->backPath . $GLOBALS['TBE_STYLES']['htmlTemplates']['mod_index.html']
 			));
-			$templateFile = PATH_TXCOMMERCE_REL . 'Resources/Private/Backend/mod_index.html';
+			$templateFile = PATH_TXCOMMERCE_REL . 'Resources/Private/Backend/mod_category_index.html';
 			$this->doc->moduleTemplate = t3lib_div::getURL(PATH_site . $templateFile);
 		}
-	}
-
-	/**
-	 * Initialize function menu array
-	 *
-	 * @return void
-	 */
-	public function menuConfig() {
-			// MENU-ITEMS:
-		$this->MOD_MENU = array(
-			'bigControlPanel' => '',
-			'clipBoard' => '',
-			'localization' => ''
-		);
-
-			// Loading module configuration:
-		$this->modTSconfig = t3lib_BEfunc::getModTSconfig($this->id, 'mod.' . $this->MCONF['name']);
-
-			// Clean up settings:
-		$this->MOD_SETTINGS = t3lib_BEfunc::getModuleData($this->MOD_MENU, t3lib_div::_GP('SET'), $this->MCONF['name']);
 	}
 
 	/**
@@ -345,7 +278,11 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 
 			// Access check...
 			// The page will show only if there is a valid page and if this page may be viewed by the user
-		$this->pageinfo = Tx_Commerce_Utility_BackendUtility::readCategoryAccess($parentUid, $this->perms_clause);
+		if ($parentUid) {
+			$this->pageinfo = Tx_Commerce_Utility_BackendUtility::readCategoryAccess($parentUid, $this->perms_clause);
+		} else {
+			$this->pageinfo = t3lib_BEfunc::readPageAccess($this->id, $this->perms_clause);
+		}
 		$access = is_array($this->pageinfo);
 
 			// Apply predefined values for hidden checkboxes
@@ -374,7 +311,7 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 		/** @var $dblist Tx_Commerce_ViewHelpers_CategoryRecordList */
 		$dblist = t3lib_div::makeInstance('Tx_Commerce_ViewHelpers_CategoryRecordList');
 		$dblist->backPath = $this->doc->backPath;
-		$dblist->script = t3lib_BEfunc::getModuleUrl('web_list', array(), '');
+		$dblist->script = 'index.php';
 		$dblist->calcPerms = $backendUser->calcPerms($this->pageinfo);
 		$dblist->thumbs = $backendUser->uc['thumbnailsByDefault'];
 		$dblist->returnUrl = $this->returnUrl;
@@ -637,8 +574,8 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 		$markers = array(
 			'CSH' => $docHeaderButtons['csh'],
 			'CONTENT' => $this->content,
-			'CATINFO' => $this->categoryInfo($this->pageinfo),
-			'CATPATH' => $this->categoryPath($this->pageinfo),
+			'CATINFO' => $parentUid ? $this->getCategoryInfo($this->pageinfo) : $this->getPageInfo($this->pageinfo),
+			'CATPATH' => $parentUid ? $this->getCategoryPath($this->pageinfo) : $this->getPagePath($this->pageinfo),
 		);
 		$markers['FUNC_MENU'] = $this->doc->funcMenu(
 			'',
@@ -652,7 +589,7 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 
 			// put it all together
 		$this->content = $this->doc->startPage($language->getLL('permissions'));
-		$this->content .= $this->doc->moduleBody(array(), $docHeaderButtons, $markers);
+		$this->content .= $this->doc->moduleBody($this->pageinfo, $docHeaderButtons, $markers);
 		$this->content .= $this->doc->endPage();
 		$this->content = $this->doc->insertStylesAndJS($this->content);
 	}
@@ -705,19 +642,37 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 	}
 
 	/**
-	 * Returns the info for the Category Path
+	 * Returns the Category Path info
 	 *
-	 * @param array $row - Row
+	 * @param array $categoryRecord Category row
 	 * @return string
 	 */
-	public function categoryInfo($row) {
+	protected function getCategoryPath($categoryRecord) {
+		/** @var language $language */
+		$language = $GLOBALS['LANG'];
+
+		$title = $categoryRecord['title'];
+
+			// Setting the path of the page
+		$pagePath = $language->sL('LLL:EXT:lang/locallang_core.php:labels.path', 1) . ': <span class="typo3-docheader-pagePath">' .
+			htmlspecialchars(t3lib_div::fixed_lgd_cs($title, -50)) . '</span>';
+		return $pagePath;
+	}
+
+	/**
+	 * Returns the info for the Category Path
+	 *
+	 * @param array $categoryRecord - Category record
+	 * @return string
+	 */
+	protected function getCategoryInfo($categoryRecord) {
 			// Add icon with clickmenu, etc:
 			// If there IS a real page
-		if ($row['uid']) {
-			$alttext = t3lib_BEfunc::getRecordIconAltText($row, 'tx_commerce_categories');
+		if ($categoryRecord['uid']) {
+			$alttext = t3lib_BEfunc::getRecordIconAltText($categoryRecord, 'tx_commerce_categories');
 			$iconImg = t3lib_iconWorks::getIconImage(
 				'tx_commerce_categories',
-				$row,
+				$categoryRecord,
 				$this->doc->backPath,
 				'class="absmiddle" title="' . htmlspecialchars($alttext) . '"'
 			);
@@ -728,26 +683,82 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 		}
 
 			// Setting icon with clickmenu + uid
-		$pageInfo = $iconImg . '<em>[pid: ' . $row['uid'] . ']</em>';
+		$pageInfo = $iconImg . '<em>[pid: ' . $categoryRecord['uid'] . ']</em>';
 		return $pageInfo;
 	}
 
 	/**
-	 * Returns the Category Path info
+	 * Generate the page path for docheader
 	 *
-	 * @param array $row Row
-	 * @return string
+	 * @param array $pageRecord Current page
+	 * @return string Page path
 	 */
-	public function categoryPath($row) {
+	protected function getPagePath($pageRecord) {
 		/** @var language $language */
 		$language = $GLOBALS['LANG'];
 
-		$title = $row['title'];
+			// Is this a real page
+		if (is_array($pageRecord) && $pageRecord['uid']) {
+			$title = substr($pageRecord['_thePathFull'], 0, -1);
+				// remove current page title
+			$pos = strrpos($title, '/');
+			if ($pos !== FALSE) {
+				$title = substr($title, 0, $pos) . '/';
+			}
+		} else {
+			$title = '';
+		}
 
 			// Setting the path of the page
-		$pagePath = $language->sL('LLL:EXT:lang/locallang_core.php:labels.path', 1) . ': <span class="typo3-docheader-pagePath">' .
-			htmlspecialchars(t3lib_div::fixed_lgd_cs($title, -50)) . '</span>';
+		$pagePath = $language->sL('LLL:EXT:lang/locallang_core.php:labels.path', 1) . ': <span class="typo3-docheader-pagePath">';
+
+			// crop the title to title limit (or 50, if not defined)
+		$cropLength = (empty($GLOBALS['BE_USER']->uc['titleLen'])) ? 50 : $GLOBALS['BE_USER']->uc['titleLen'];
+		$croppedTitle = t3lib_div::fixed_lgd_cs($title, - $cropLength);
+		if ($croppedTitle !== $title) {
+			$pagePath .= '<abbr title="' . htmlspecialchars($title) . '">' . htmlspecialchars($croppedTitle) . '</abbr>';
+		} else {
+			$pagePath .= htmlspecialchars($title);
+		}
+		$pagePath .= '</span>';
 		return $pagePath;
+	}
+
+	/**
+	 * Setting page icon with clickmenu + uid for docheader
+	 *
+	 * @param array $pageRecord Current page
+	 * @return string Page info
+	 */
+	protected function getPageInfo($pageRecord) {
+		/** @var t3lib_beUserAuth $backendUser */
+		$backendUser = $GLOBALS['BE_USER'];
+
+			// Add icon with clickmenu, etc:
+			// If there IS a real page
+		if (is_array($pageRecord) && $pageRecord['uid']) {
+			$alttext = t3lib_BEfunc::getRecordIconAltText($pageRecord, 'pages');
+			$iconImg = t3lib_iconWorks::getSpriteIconForRecord('pages', $pageRecord, array('title' => $alttext));
+				// Make Icon:
+			$theIcon = $GLOBALS['SOBE']->doc->wrapClickMenuOnIcon($iconImg, 'pages', $pageRecord['uid']);
+			$uid = $pageRecord['uid'];
+			$title = t3lib_BEfunc::getRecordTitle('pages', $pageRecord);
+		} else {
+				// On root-level of page tree
+				// Make Icon
+			$iconImg = t3lib_iconWorks::getSpriteIcon('apps-pagetree-root', array('title' => htmlspecialchars($GLOBALS['TYPO3_CONF_VARS']['SYS']['sitename'])));
+			if ($backendUser->user['admin']) {
+				$theIcon = $GLOBALS['SOBE']->doc->wrapClickMenuOnIcon($iconImg, 'pages', 0);
+			} else {
+				$theIcon = $iconImg;
+			}
+			$uid = '0';
+			$title = $GLOBALS['TYPO3_CONF_VARS']['SYS']['sitename'];
+		}
+
+			// Setting icon with clickmenu + uid
+		$pageInfo = $theIcon . '<strong>' . htmlspecialchars($title) . '&nbsp;[' . $uid . ']</strong>';
+		return $pageInfo;
 	}
 }
 

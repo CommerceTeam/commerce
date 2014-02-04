@@ -24,13 +24,6 @@
 
 class Tx_Commerce_Controller_OrdersController extends t3lib_SCbase {
 	/**
-	 * Treeitem Id for which to make the listing
-	 *
-	 * @public integer
-	 */
-	public $id;
-
-	/**
 	 * Pointer - for browsing list of records.
 	 *
 	 * @public integer
@@ -101,20 +94,6 @@ class Tx_Commerce_Controller_OrdersController extends t3lib_SCbase {
 	public $cmd_table;
 
 	/**
-	 * Page select perms clause
-	 *
-	 * @var string
-	 */
-	public $perms_clause;
-
-	/**
-	 * Module TSconfig
-	 *
-	 * @var array
-	 */
-	public $modTSconfig;
-
-	/**
 	 * Current ids page record
 	 *
 	 * @var array
@@ -129,39 +108,14 @@ class Tx_Commerce_Controller_OrdersController extends t3lib_SCbase {
 	public $doc;
 
 	/**
-	 * Module configuration
-	 *
 	 * @var array
 	 */
-	public $MCONF = array();
-
-	/**
-	 * Menu configuration
-	 *
-	 * @var array
-	 */
-	public $MOD_MENU = array();
-
-	/**
-	 * Module settings (session variable)
-	 *
-	 * @var array
-	 */
-	public $MOD_SETTINGS = array();
-
-	/**
-	 * Array, where files to include is accumulated in the init() function
-	 *
-	 * @var array
-	 */
-	public $include_once = array();
-
-	/**
-	 * Module output accumulation
-	 *
-	 * @var string
-	 */
-	public $content;
+	public $MOD_MENU = array(
+		'function' => array(),
+		'bigControlPanel' => '',
+		'clipBoard' => '',
+		'localization' => ''
+	);
 
 
 	/**
@@ -169,7 +123,7 @@ class Tx_Commerce_Controller_OrdersController extends t3lib_SCbase {
 	 *
 	 * @var string
 	 */
-		// public $scriptNewWizard = 'wizard.php';
+	public $scriptNewWizard = 'wizard.php';
 
 	/**
 	 * @var array
@@ -262,26 +216,6 @@ class Tx_Commerce_Controller_OrdersController extends t3lib_SCbase {
 	}
 
 	/**
-	 * Initialize function menu array
-	 *
-	 * @return void
-	 */
-	public function menuConfig() {
-			// MENU-ITEMS:
-		$this->MOD_MENU = array(
-			'bigControlPanel' => '',
-			'clipBoard' => '',
-			'localization' => ''
-		);
-
-			// Loading module configuration:
-		$this->modTSconfig = t3lib_BEfunc::getModTSconfig($this->id, 'mod.' . $this->MCONF['name']);
-
-			// Clean up settings:
-		$this->MOD_SETTINGS = t3lib_BEfunc::getModuleData($this->MOD_MENU, t3lib_div::_GP('SET'), $this->MCONF['name']);
-	}
-
-	/**
 	 * Clears page cache for the current id, $this->id
 	 *
 	 * @return void
@@ -306,7 +240,7 @@ class Tx_Commerce_Controller_OrdersController extends t3lib_SCbase {
 		$language = $GLOBALS['LANG'];
 
 			// Loading current page record and checking access:
-		$this->pageinfo = t3lib_BEfunc::readPageAccess($this->id, $this->perms_clause);
+		$this->pageinfo = t3lib_BEfunc::readPageAccess($this->id ? $this->id : $this->orderPid, $this->perms_clause);
 		$access = is_array($this->pageinfo) ? 1 : 0;
 
 			// Apply predefined values for hidden checkboxes
