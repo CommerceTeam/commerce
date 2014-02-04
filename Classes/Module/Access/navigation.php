@@ -32,7 +32,7 @@ if (!(defined('TYPO3_REQUESTTYPE') || defined('TYPO3_REQUESTTYPE_AJAX'))) {
 	/** @noinspection PhpIncludeInspection */
 	require_once($BACK_PATH . 'init.php');
 	/** @noinspection PhpIncludeInspection */
-	require_once(PATH_typo3 . 'template.php');
+	require_once($BACK_PATH . 'template.php');
 } else {
 		// In case of an AJAX Request the script including this script is ajax.php, from which the BACK PATH is ''
 	/** @noinspection PhpIncludeInspection */

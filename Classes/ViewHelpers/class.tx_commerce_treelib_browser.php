@@ -176,6 +176,7 @@ class tx_commerce_treelib_browser extends t3lib_SCbase {
 
 		$this->content .= $this->doc->startPage('Treeview Browser');
 
+		/** @var t3lib_tceforms $form */
 		$form = t3lib_div::makeInstance('t3lib_tceforms');
 		$form->initDefaultBEmode();
 		$form->backPath = $this->backPath;

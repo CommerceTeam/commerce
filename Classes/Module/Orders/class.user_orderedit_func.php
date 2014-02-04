@@ -98,6 +98,8 @@ class user_orderedit_func {
 		$content = '';
 		$foreign_table = 'tx_commerce_order_articles';
 		$table = 'tx_commerce_orders';
+
+		/** @var smallDoc $doc */
 		$doc = t3lib_div::makeInstance('smallDoc');
 		$doc->backPath = $GLOBALS['BACK_PATH'];
 
@@ -428,6 +430,8 @@ class user_orderedit_func {
 		 * instatiate Template Class
 		 * as this class is included via alt_doc we don't have to require template.php
 		 * in fact an require would cause an error
+		 *
+		 * @var smallDoc $doc
 		 */
 		$doc = t3lib_div::makeInstance('smallDoc');
 		$doc->backPath = $GLOBALS['BACK_PATH'];
@@ -507,6 +511,7 @@ class user_orderedit_func {
 		/** @var t3lib_beUserAuth $backendUser */
 		$backendUser = $GLOBALS['BE_USER'];
 
+		/** @var tx_commerce_order_localRecordlist $dblist */
 		$dblist = t3lib_div::makeInstance('tx_commerce_order_localRecordlist');
 		$dblist->backPath = $GLOBALS['BACK_PATH'];
 		$dblist->script = 'index.php';

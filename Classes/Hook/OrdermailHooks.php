@@ -150,6 +150,8 @@ class Tx_Commerce_Hook_OrdermailHooks {
 		$fields = t3lib_BEfunc::BEenableFields($this->tablename);
 		$fields = 'sys_language_uid=0 AND pid = ' . $pid . ' AND mailkind = ' . $mailkind . $fields;
 		$res_templates = $database->exec_SELECTquery('*', $this->tablename, $fields);
+
+		/** @var t3lib_pageSelect $t3libPage */
 		$t3libPage = t3lib_div::makeInstance('t3lib_pageSelect');
 
 		if ($res_templates) {

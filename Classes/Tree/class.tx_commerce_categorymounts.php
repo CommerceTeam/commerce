@@ -31,7 +31,8 @@ class tx_commerce_categorymounts extends mounts {
 				$tupels[] = ($backendUser->isAdmin()) ? array($id, $this->getLL('leaf.category.root')) : array($id, $this->getLL('leaf.restrictedAccess'));
 			} else {
 					// Get the title
-				$cat = t3lib_div::makeInstance('tx_commerce_category');
+				/** @var Tx_Commerce_Domain_Model_Category $cat */
+				$cat = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category');
 				$cat->init($id);
 				$cat->loadData();
 
@@ -69,7 +70,8 @@ class tx_commerce_categorymounts extends mounts {
 		}
 
 			// load the category and go up the tree until we either reach a mount or we reach root
-		$cat = t3lib_div::makeInstance('tx_commerce_category');
+		/** @var Tx_Commerce_Domain_Model_Category $cat */
+		$cat = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category');
 		$cat->init($categoryUid);
 		$cat->loadData();
 

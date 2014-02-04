@@ -29,9 +29,9 @@
 unset($MCONF);
 require('conf.php');
 /** @noinspection PhpIncludeInspection */
-require($BACK_PATH . 'init.php');
+require(PATH_typo3 . 'init.php');
 /** @noinspection PhpIncludeInspection */
-require($BACK_PATH . 'template.php');
+require(PATH_typo3 . 'template.php');
 
 $LANG->includeLLFile('EXT:lang/locallang_misc.xml');
 
@@ -106,7 +106,7 @@ class tx_commerce_cmd_wizard {
 	protected $perms_clause;
 
 	/**
-	 * @var template
+	 * @var mediumDoc
 	 */
 	protected $doc;
 

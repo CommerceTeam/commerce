@@ -63,7 +63,7 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 	public $singleViewAsPlugin = FALSE;
 
 	/**
-	 * @var tx_commerce_category
+	 * @var Tx_Commerce_Domain_Model_Category
 	 */
 	public $category;
 
@@ -73,7 +73,7 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 	public $master_cat;
 
 	/**
-	 * @var tx_commerce_category
+	 * @var Tx_Commerce_Domain_Model_Category
 	 */
 	public $masterCategoryObj;
 
@@ -108,7 +108,7 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 	public $content = '';
 
 	/**
-	 * @var tx_commerce_product
+	 * @var Tx_Commerce_Domain_Model_Product
 	 */
 	public $product;
 
@@ -226,9 +226,10 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 		}
 
 		$accessible = FALSE;
+		/** @var Tx_Commerce_Domain_Model_Category $tmpCategory */
 		$tmpCategory = NULL;
 		if ($this->piVars['catUid']) {
-			$tmpCategory = t3lib_div::makeinstance('tx_commerce_category');
+			$tmpCategory = t3lib_div::makeinstance('Tx_Commerce_Domain_Model_Category');
 			$this->cat = (int) $this->piVars['catUid'];
 			$tmpCategory->init($this->cat, $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
 			$accessible = $tmpCategory->isAccessible();
@@ -236,7 +237,7 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 
 			// Validate given catUid, if it's given and accessible
 		if (!$this->piVars['catUid'] || !$accessible) {
-			$tmpCategory = t3lib_div::makeinstance('tx_commerce_category');
+			$tmpCategory = t3lib_div::makeinstance('Tx_Commerce_Domain_Model_Category');
 			$this->cat = (int) $this->master_cat;
 			$tmpCategory->init($this->cat, $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
 		}
@@ -275,7 +276,8 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 
 		if (($this->piVars['catUid']) && ($this->conf['checkCategoryTree'] == 1)) {
 				// Validate given CAT UID, if is below master_cat
-			$this->masterCategoryObj = t3lib_div::makeinstance('tx_commerce_category');
+			/** @var Tx_Commerce_Domain_Model_Category masterCategoryObj */
+			$this->masterCategoryObj = t3lib_div::makeinstance('Tx_Commerce_Domain_Model_Category');
 			$this->masterCategoryObj->init($this->master_cat, $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
 			$this->masterCategoryObj->loadData();
 			$masterCategorySubCategories = $this->masterCategoryObj->get_rec_child_categories_uidlist();
@@ -292,7 +294,8 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 		if ($this->cat <> $this->category->getUid()) {
 				// Only, if the category has been changed
 			unset($this->category);
-			$this->category = t3lib_div::makeinstance('tx_commerce_category');
+			/** @var Tx_Commerce_Domain_Model_Category category */
+			$this->category = t3lib_div::makeinstance('Tx_Commerce_Domain_Model_Category');
 			$this->category->init($this->cat, $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
 			$this->category->loadData();
 		}
@@ -311,7 +314,7 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 		}
 
 		if ($this->cat > 0) {
-			$this->category_array = $this->category->return_assoc_array();
+			$this->category_array = $this->category->returnAssocArray();
 
 			$catConf = $this->category->getCategoryTSconfig();
 			if (is_array($catConf['catTS.'])) {
@@ -407,7 +410,7 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 				$prodID = $row['l18n_parent'];
 			}
 
-			$this->product = t3lib_div::makeInstance('tx_commerce_product');
+			$this->product = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product');
 			$this->product->init($prodID, $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
 			$this->product->loadData();
 
@@ -443,8 +446,8 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 	/**
 	 * Render the single view for the current products
 	 *
-	 * @param tx_commerce_product $prodObj Product object
-	 * @param tx_commerce_category $catObj Category object
+	 * @param Tx_Commerce_Domain_Model_Product $prodObj Product object
+	 * @param Tx_Commerce_Domain_Model_Category $catObj Category object
 	 * @param string $subpartName A name of a subpart
 	 * @param string $subpartNameNostock A name of a subpart for showing id product with no stock
 	 * @return string The content for a single product
@@ -535,7 +538,7 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 	 *
 	 * @param string $viewKind Kind of view for choosing the right template
 	 * @param array $conf TSconfig for handling the articles
-	 * @param tx_commerce_product $prod The parent product for returning articles
+	 * @param Tx_Commerce_Domain_Model_Product $prod The parent product for returning articles
 	 * @param array|string $templateMarkerArray Current template marker array
 	 * @param string $template Template text
 	 * @return string the content for a single product
@@ -548,7 +551,7 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 			}
 		}
 
-		$count = is_array($prod->articles_uids) ? count($prod->articles_uids) : FALSE;
+		$count = is_array($prod->getArticleUids()) ? count($prod->getArticleUids()) : FALSE;
 
 			// do nothing if no articles, BE-user-error, should not happen
 		if (strlen($template) < 1) {
@@ -625,18 +628,19 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 
 			if ($this->conf['allArticles'] || $count == 1) {
 				for ($i = 0; $i < $count; $i ++) {
-					$attributeArray = $prod->getAttributeMatrix(array($prod->articles_uids[$i]), $this->select_attributes, $showHiddenValues);
+					$attributeArray = $prod->getAttributeMatrix(array($prod->getArticleUid($i)), $this->select_attributes, $showHiddenValues);
 
 						$attCode = '';
 					if (is_array($attributeArray)) {
 						$ct = 0;
 						foreach ($attributeArray as $attribute_uid => $myAttribute) {
-							$attributeObj = t3lib_div::makeInstance('tx_commerce_attribute');
+							/** @var Tx_Commerce_Domain_Model_Attribute $attributeObj */
+							$attributeObj = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Attribute');
 							$attributeObj->init($attribute_uid, $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
 							$attributeObj->loadData();
 							$markerArray['###SELECT_ATTRIBUTES_TITLE###'] = $myAttribute['title'];
 							$markerArray['###SELECT_ATTRIBUTES_ICON###'] = $myAttribute['icon'];
-							list($k, $v) = each($myAttribute['values']);
+							$v = current(array_splice(each($myAttribute['values']), 1, 1));
 							if (is_array($v) && isset($v['value']) && $v['value'] != '') {
 								$v = $v['value'];
 							}
@@ -647,9 +651,10 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 							$ct ++;
 						}
 					}
-					$markerArray = (array) $this->getArticleMarker($prod->articles[$prod->articles_uids[$i]]);
+
+					$markerArray = (array) $this->getArticleMarker($prod->getArticle($prod->getArticleUid($i)));
 					$markerArray['SUBPART_ARTICLE_ATTRIBUTES'] = $this->cObj->stdWrap(
-						$this->makeArticleAttributList($prod, array($prod->articles_uids[$i])),
+						$this->makeArticleAttributList($prod, array($prod->getArticleUid($i))),
 						$this->conf['singleView.']['articleAttributesList.']
 					);
 					$markerArray['ARTICLE_SELECT_ATTRIBUTES'] = $this->cObj->stdWrap(
@@ -659,12 +664,12 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 
 					foreach ($hookObjectsArr as $hookObj) {
 						if (method_exists($hookObj, 'additionalMarker')) {
-							$markerArray = (array) $hookObj->additionalMarker($markerArray, $this, $prod->articles[$prod->articles_uids[$i]]);
+							$markerArray = (array) $hookObj->additionalMarker($markerArray, $this, $prod->getArticle($prod->getArticleUid($i)));
 						}
 					}
 					$template_att = $this->cObj->getSubpart($template, $templateMarker[($i % $templateCount)]);
-					/** @var tx_commerce_article $article */
-					$article = $prod->articles[$prod->articles_uids[$i]];
+					/** @var Tx_Commerce_Domain_Model_Article $article */
+					$article = $prod->$prod->getArticle($prod->getArticleUid($i));
 					if ($this->conf['useStockHandling'] == 1 and $article->getStock() <= 0) {
 						$tempTemplate = $this->cObj->getSubpart($template, $templateMarkerNostock[($i % $templateCount)]);
 						if ($tempTemplate != '') {
@@ -701,7 +706,8 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 						'<input type="hidden" name="tx_commerce_pi1[catUid]" value="' . $this->piVars['catUid'] . '" />';
 					$markerArray = array();
 					foreach ($attributeMatrix as $attrUid => $values) {
-						$attributeObj = t3lib_div::makeInstance('tx_commerce_attribute');
+						/** @var Tx_Commerce_Domain_Model_Attribute $attributeObj */
+						$attributeObj = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Attribute');
 						$attributeObj->init($attrUid, $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
 						$attributeObj->loadData();
 							// disable the icon mode by default
@@ -719,19 +725,19 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 							$templateAttrSelectorItem = $templateAttrSelectorDropdownItem;
 						}
 
-						$markerArray['###SELECT_ATTRIBUTES_TITLE###'] = $attributeObj->get_title();
+						$markerArray['###SELECT_ATTRIBUTES_TITLE###'] = $attributeObj->getTitle();
 						$markerArray['###SELECT_ATTRIBUTES_ON_CHANGE###'] = 'document.getElementById(\'attList_' . $prod->getUid() .
 							'_changed\').value = ' . $attrUid . ';document.getElementById(\'attList_' . $prod->getUid() . '\').submit();';
 						$markerArray['###SELECT_ATTRIBUTES_HTML_ELEMENT_KEY###'] = $this->prefixId . '_' . $attrUid;
 						$markerArray['###SELECT_ATTRIBUTES_HTML_ELEMENT_NAME###'] = $this->prefixId . '[attsel_' . $attrUid . ']';
 							// @deprecated set to '' for old installation, will be removed in the next release
 						$markerArray['###SELECT_ATTRIBUTES_ITEM_TEXT_ALL###'] = '';
-						$markerArray['###SELECT_ATTRIBUTES_UNIT###'] = $attributeObj->get_unit();
+						$markerArray['###SELECT_ATTRIBUTES_UNIT###'] = $attributeObj->getUnit();
 
 						$itemsContent = '';
 						$i = 1;
-						$attributeValues = $attributeObj->get_all_values(TRUE, $prod);
-						/** @var tx_commerce_attribute_value $val */
+						$attributeValues = $attributeObj->getAllValues(TRUE, $prod);
+						/** @var Tx_Commerce_Domain_Model_AttributeValue $val */
 						foreach ($attributeValues as $val) {
 							$markerArrayItem = $markerArray;
 							$markerArrayItem['###SELECT_ATTRIBUTES_VALUE_VALUE###'] = $val->getUid();
@@ -776,19 +782,19 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 					$attCode .= '</form>';
 				}
 
-				$markerArray = (array) $this->getArticleMarker($prod->articles[$artId]);
+				$markerArray = (array) $this->getArticleMarker($prod->getArticle($artId));
 				$markerArray['SUBPART_ARTICLE_ATTRIBUTES'] = $this->makeArticleAttributList($prod, array($artId));
 				$markerArray['ARTICLE_SELECT_ATTRIBUTES'] = $attCode;
 
 				foreach ($hookObjectsArr as $hookObj) {
 					if (method_exists($hookObj, 'additionalMarker')) {
-						$markerArray = (array) $hookObj->additionalMarker($markerArray, $this, $prod->articles[$artId]);
+						$markerArray = (array) $hookObj->additionalMarker($markerArray, $this, $prod->getArticle($artId));
 					}
 				}
 
 				$template_att = $this->cObj->getSubpart($template, $templateMarker[0]);
-				/** @var tx_commerce_article $article */
-				$article = $prod->articles[$artId];
+				/** @var Tx_Commerce_Domain_Model_Article $article */
+				$article = $prod->getArticle($artId);
 				if ($this->conf['useStockHandling'] == 1 and $article->getStock() <= 0) {
 					$tempTemplate = $this->cObj->getSubpart($template, $templateMarkerNostock[0]);
 					if ($tempTemplate != '') {

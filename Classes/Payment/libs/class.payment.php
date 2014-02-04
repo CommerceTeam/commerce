@@ -23,7 +23,7 @@
  ***************************************************************/
 
 /**
- * klasse: payment
+ * class: payment
  * Paymentklasse zum anbinden von Shops usw. an Zahlungssysteme
  * Die Paymentklasse erbt hierbei von der eigentlichen Schnittstelle zum
  * Paymentanbieter und wird via Vererbung mit den notwendigen Daten versorgt
@@ -97,6 +97,14 @@ class payment extends wirecard {
 	}
 
 	/**
+	 * @param string $url
+	 * @return void
+	 */
+	public function setUrl($url) {
+		$this->url = $url;
+	}
+
+	/**
 	 * function: setData
 	 * Setzt die �bertragunsparameter
 	 *
@@ -118,7 +126,7 @@ class payment extends wirecard {
 
 	/**
 	 * function: setPaymentData
-	 * Setzt die �bertragunsparameter - Zahlungsdaten
+	 * Set payment data for transfer
 	 *
 	 * @param array $data
 	 * @return void
@@ -133,12 +141,12 @@ class payment extends wirecard {
 			// - holder
 			// - city
 			// - country
-		$this->PaymentData = $data;
+		$this->paymentData = $data;
 	}
 
 	/**
 	* function: setTransactionData
-	* Setzt die Daten f�r eine bezahlung
+	* set the data for payment
 	*
 	* @param array $data
 	* @return void

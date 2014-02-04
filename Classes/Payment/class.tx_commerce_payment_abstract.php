@@ -81,6 +81,8 @@ abstract class tx_commerce_payment_abstract implements tx_commerce_payment {
 				if (!is_array($criterionConfiguration['options'])) {
 					$criterionConfiguration['options'] = array();
 				}
+
+				/** @var tx_commerce_payment_criterion $criterion */
 				$criterion = t3lib_div::makeInstance($criterionConfiguration['class'], $this, $criterionConfiguration['options']);
 				if (!($criterion instanceof tx_commerce_payment_criterion)) {
 					throw new Exception(
@@ -149,6 +151,7 @@ abstract class tx_commerce_payment_abstract implements tx_commerce_payment {
 
 		if (is_array($providerConfigurations)) {
 			foreach ($providerConfigurations as $providerConfiguration) {
+				/** @var tx_commerce_payment_provider $provider */
 				$provider = t3lib_div::makeInstance($providerConfiguration['class'], $this);
 				if (!($provider instanceof tx_commerce_payment_provider)) {
 					throw new Exception(
@@ -210,10 +213,10 @@ abstract class tx_commerce_payment_abstract implements tx_commerce_payment {
 	 *
 	 * @param array $config Current configuration
 	 * @param array $session Session data
-	 * @param tx_commerce_basket $basket Basket object
+	 * @param Tx_Commerce_Domain_Model_Basket $basket Basket object
 	 * @return boolean True is finishing order is allowed
 	 */
-	public function finishingFunction(array $config = array(), array $session = array(), tx_commerce_basket $basket = NULL) {
+	public function finishingFunction(array $config = array(), array $session = array(), Tx_Commerce_Domain_Model_Basket $basket = NULL) {
 		$result = TRUE;
 		if ($this->provider !== NULL) {
 			$result = $this->provider->finishingFunction($config, $session, $basket);

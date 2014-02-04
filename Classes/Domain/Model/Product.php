@@ -365,6 +365,26 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	}
 
 	/**
+	 * Get list of article uids
+	 *
+	 * @param integer $index
+	 * @return integer Article uid
+	 */
+	public function getArticleUid($index) {
+		return $this->articles_uids[$index];
+	}
+
+	/**
+	 * Get list of article uids
+	 *
+	 * @param integer $uid
+	 * @return Tx_Commerce_Domain_Model_Article Article uids
+	 */
+	public function getArticle($uid) {
+		return $this->articles[$uid];
+	}
+
+	/**
 	 * Get list of article objects
 	 *
 	 * @return array Article objects
@@ -374,24 +394,29 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	}
 
 	/**
+	 * @param integer $index
+	 * @return void
+	 */
+	public function removeArticleUid($index) {
+		unset($this->articles_uids[$index]);
+	}
+
+	/**
+	 * @param integer $uid
+	 * @return void
+	 */
+	public function removeArticle($uid) {
+		unset($this->articles[$uid]);
+	}
+
+
+	/**
 	 * Get number of articles of this product
 	 *
 	 * @return integer Number of articles
 	 */
 	public function getNumberOfArticles() {
 		return count($this->articles);
-	}
-
-	/**
-	 * Load article list of this product and store in private class variable
-	 *
-	 * @return array Article uids
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use loadArticles instead
-	 */
-	public function load_articles() {
-		t3lib_div::logDeprecatedFunction();
-
-		return $this->loadArticles();
 	}
 
 	/**
@@ -1412,14 +1437,6 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	 *******************************************************************************************/
 
 	/**
-	 * @see tx_comemrce_product::getARticleUids();
-	 * @deprecated Will be removed after 2011-02-27
-	 */
-	public function getArticles() {
-		return $this->getArticleUids();
-	}
-
-	/**
 	 * Returns an Array of Images
 	 *
 	 * @return array Images of this product
@@ -1507,7 +1524,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	 * Returns the attribute matrix
 	 *
 	 * @see getAttributeMatrix()
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getAttributeMatrix instead
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use Tx_Commerce_Domain_Model_Product::getAttributeMatrix instead
 	 */
 	public function get_product_attribute_matrix($attribute_include = FALSE, $showHiddenValues = TRUE, $sortingTable = 'tx_commerce_products_attributes_mm') {
 		t3lib_div::logDeprecatedFunction();
@@ -1518,11 +1535,31 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	 * Generates a Matrix fro these concerning products for all Attributes and the values therfor
 	 *
 	 * @see getAttributeMatrix()
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getAttributeMatrix instead
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use Tx_Commerce_Domain_Model_Product::getAttributeMatrix instead
 	 */
 	public function get_product_atrribute_matrix($attribute_include = FALSE, $showHiddenValues = TRUE, $sortingTable = 'tx_commerce_products_attributes_mm') {
 		t3lib_div::logDeprecatedFunction();
 		return $this->getAttributeMatrix(FALSE, $attribute_include, $showHiddenValues, $sortingTable, FALSE, 'tx_commerce_products');
+	}
+
+	/**
+	 * @see tx_comemrce_product::getARticleUids();
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use Tx_Commerce_Domain_Model_Product::getArticleUids instead
+	 */
+	public function getArticles() {
+		t3lib_div::logDeprecatedFunction();
+		return $this->getArticleUids();
+	}
+
+	/**
+	 * Load article list of this product and store in private class variable
+	 *
+	 * @return array Article uids
+	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use Tx_Commerce_Domain_Model_Product::loadArticles instead
+	 */
+	public function load_articles() {
+		t3lib_div::logDeprecatedFunction();
+		return $this->loadArticles();
 	}
 }
 

@@ -28,6 +28,11 @@
  */
 class Tx_Commerce_Controller_StatisticController extends t3lib_SCbase {
 	/**
+	 * @var mediumDoc
+	 */
+	public $doc;
+
+	/**
 	 * @var array
 	 */
 	protected $extConf;
@@ -64,7 +69,7 @@ class Tx_Commerce_Controller_StatisticController extends t3lib_SCbase {
 		$order_pid = array_unique(tx_commerce_folder_db::initFolders('Orders', 'Commerce', 0, 'Commerce'));
 		$this->order_pid = $order_pid[0];
 
-		$this->statistics = t3lib_div::makeInstance('tx_commerce_statistics');
+		$this->statistics = t3lib_div::makeInstance('Tx_Commerce_Utility_StatisticsUtility');
 		$this->statistics->init($this->extConf['excludeStatisticFolders'] != '' ? $this->extConf['excludeStatisticFolders'] : 0);
 			// @todo Find a better solution for the first array element
 		/**

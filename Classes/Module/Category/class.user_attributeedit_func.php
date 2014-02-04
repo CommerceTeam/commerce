@@ -25,12 +25,6 @@
 /**
  * User Class for displaying Orders
  */
-
-/** @noinspection PhpIncludeInspection */
-require_once(PATH_typo3 . 'class.db_list.inc');
-/** @noinspection PhpIncludeInspection */
-require_once(PATH_typo3 . 'class.db_list_extra.inc');
-
 class user_attributeedit_func {
 	/**
 	 * valuelist
@@ -49,8 +43,11 @@ class user_attributeedit_func {
 		$content = '';
 		$foreign_table = 'tx_commerce_attribute_values';
 		$table = 'tx_commerce_attributes';
+
+		/** @var smallDoc $doc */
 		$doc = t3lib_div::makeInstance('smallDoc');
 		$doc->backPath = $GLOBALS['BACK_PATH'];
+
 		/**
 		 * Load the table TCA into local variable
 		 */
@@ -114,7 +111,7 @@ class user_attributeedit_func {
 				/**
 				 * Not very noice to render html_code directly
 				 *
-				 * @todo chan ge rendering html code here
+				 * @todo change rendering html code here
 				 * */
 				$iOut .= '<tr ' . $row_bgColor . '>';
 				foreach ($field_rows as $field) {

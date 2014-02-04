@@ -79,7 +79,7 @@ class tx_commerce_payment_creditcard extends tx_commerce_payment_abstract {
 	 * @return boolean TRUE if data is ok
 	 */
 	public function proofData(array $formData = array()) {
-			/** @var $ccvs tx_commerce_payment_Ccvs */
+		/** @var $ccvs tx_commerce_payment_Ccvs */
 		$ccvs = t3lib_div::makeInstance('tx_commerce_payment_Ccvs');
 		$result = $ccvs->validateCreditCard($formData['cc_number'], $formData['cc_checksum']);
 		$this->errorMessages[] = $ccvs->CCVSError;

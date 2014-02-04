@@ -270,6 +270,7 @@ class tx_commerce_treelib_link_categorytree extends browsetree {
 				$positions[0] = array();
 			}
 
+			/** @var tx_commerce_categorymounts $mounts */
 			$mounts = t3lib_div::makeInstance('tx_commerce_categorymounts');
 			$mounts->init($GLOBALS['BE_USER']->user['uid']);
 
@@ -279,7 +280,8 @@ class tx_commerce_treelib_link_categorytree extends browsetree {
 
 					// get the category parents so we can open them as well
 					// load the category and go up the tree until we either reach a mount or we reach root
-				$cat = t3lib_div::makeInstance('tx_commerce_category');
+				/** @var Tx_Commerce_Domain_Model_Category $cat */
+				$cat = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category');
 				$cat->init($this->openCategory);
 				$cat->loadData();
 

@@ -77,6 +77,7 @@ class tx_commerce_tceFunc {
 			break;
 		}
 
+		/** @var tx_commerce_categorytree $browseTrees */
 		$browseTrees = t3lib_div::makeInstance('tx_commerce_categorytree');
 			// disabled clickmenu
 		$browseTrees->noClickmenu();
@@ -99,6 +100,7 @@ class tx_commerce_tceFunc {
 
 		$browseTrees->init();
 
+		/** @var tx_commerce_treelib_tceforms $renderBrowseTrees */
 		$renderBrowseTrees = t3lib_div::makeInstance('tx_commerce_treelib_tceforms');
 		$renderBrowseTrees->init ($PA, $fObj);
 		$renderBrowseTrees->setIFrameTreeBrowserScript($this->tceForms->backPath . PATH_TXCOMMERCE_REL . 'Classes/ViewHelpers/IframeTreeBrowser.php');
@@ -170,17 +172,19 @@ class tx_commerce_tceFunc {
 			$defVals = t3lib_div::_GP('defVals');
 			switch ($table) {
 				case 'tx_commerce_categories':
-					$category = t3lib_div::makeInstance('tx_commerce_category');
+					/** @var Tx_Commerce_Domain_Model_Category $category */
+					$category = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category');
 					$category->init($defVals['tx_commerce_categories']['parent_category']);
 					$category->loadData();
-					$itemArray = array($category->getUid() . '|' . $category->get_title());
+					$itemArray = array($category->getUid() . '|' . $category->getTitle());
 				break;
 
 				case 'tx_commerce_products':
-					$category = t3lib_div::makeInstance('tx_commerce_category');
+					/** @var Tx_Commerce_Domain_Model_Category $category */
+					$category = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category');
 					$category->init($defVals['tx_commerce_products']['categories']);
 					$category->loadData();
-					$itemArray = array($category->getUid() . '|' . $category->get_title());
+					$itemArray = array($category->getUid() . '|' . $category->getTitle());
 				break;
 			}
 		}

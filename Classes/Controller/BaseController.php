@@ -95,7 +95,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 	public $cat;
 
 	/**
-	 * @var tx_commerce_category
+	 * @var Tx_Commerce_Domain_Model_Category
 	 */
 	public $category;
 
@@ -107,7 +107,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 	/**
 	 * If rendering a category list this is the current
 	 *
-	 * @var tx_commerce_category
+	 * @var Tx_Commerce_Domain_Model_Category
 	 */
 	public $currentCategory;
 
@@ -117,7 +117,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 	public $top_products;
 
 	/**
-	 * @var tx_commerce_product
+	 * @var Tx_Commerce_Domain_Model_Product
 	 */
 	public $product;
 
@@ -194,7 +194,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 		Tx_Commerce_Utility_GeneralUtility::initializeFeUserBasket();
 
 		$this->pid = $GLOBALS['TSFE']->id;
-		$this->basketHashValue = $GLOBALS['TSFE']->fe_user->tx_commerce_basket->getBasketHashValue();
+		$this->basketHashValue = $GLOBALS['TSFE']->fe_user->Tx_Commerce_Domain_Model_Basket->getBasketHashValue();
 		$this->piVars['basketHashValue'] = $this->basketHashValue;
 		$this->imgFolder = 'uploads/tx_commerce/';
 		$this->addAdditionalLocallang();
@@ -296,7 +296,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 	 * define a number of templates for interations.
 	 * when defining 2 templates you have an odd / even layout
 	 *
-	 * @param tx_commerce_product $prodObj Product Object
+	 * @param Tx_Commerce_Domain_Model_Product $prodObj Product Object
 	 * @param array $subpartNameArray [optional]
 	 * @param boolean|array $TS [optional]
 	 * @return string HTML-Output rendert
@@ -326,9 +326,9 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 			FALSE,
 			$this->product_attributes,
 			$showHiddenValues,
-			'tx_commerce_products_attributes_mm',
+			'Tx_Commerce_Domain_Model_Products_attributes_mm',
 			FALSE,
-			'tx_commerce_products'
+			'Tx_Commerce_Domain_Model_Products'
 		);
 
 		$i = 0;
@@ -367,10 +367,10 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 	 * define a number of templates for interations.
 	 * when defining 2 templates you have an odd / even layout
 	 *
-	 * @param tx_commerce_product $prodObj for the current product, the attributes are taken from
+	 * @param Tx_Commerce_Domain_Model_Product $prodObj for the current product, the attributes are taken from
 	 * @param array $articleId with articleIds for filtering attributss
 	 * @param array $subpartNameArray array of suppart Names
-	 * @return	string	Stringoutput for attributes
+	 * @return string Stringoutput for attributes
 	 */
 	public function renderArticleAttributeList(&$prodObj, $articleId = array(), $subpartNameArray = array()) {
 		$templateArray = array();
@@ -466,7 +466,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 		$this->template = $this->templateCode;
 
 		if ($this->category->has_subcategories()) {
-			/** @var $oneCategory tx_commerce_category */
+			/** @var $oneCategory Tx_Commerce_Domain_Model_Category */
 			foreach ($this->category->get_child_categories() as $oneCategory) {
 				$oneCategory->loadData();
 				$this->currentCategory = & $oneCategory;
@@ -656,7 +656,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 	}
 
 	/**
-	 * @param tx_commerce_category $cat
+	 * @param Tx_Commerce_Domain_Model_Category $cat
 	 * @return string
 	 */
 	public function getPathCat($cat) {
@@ -680,7 +680,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 	 * Renders the Article Marker and all additional informations needed for a basket form
 	 * This Method will not replace the Subpart, you have to replace your subpart in your template by you own
 	 *
-	 * @param tx_commerce_article $article Article Object the marker based on
+	 * @param Tx_Commerce_Domain_Model_Article $article Article Object the marker based on
 	 * @param boolean $priceid if set tu true (default) the price-id will berendered into the hiddenfields, otherwhise not
 	 * @return array $markerArray with all marker needed for the article and the basket form
 	 */
@@ -798,7 +798,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 	 * Renders the given Basket to the Template
 	 * This Method will not replace the Subpart, you have to replace your subpart in your template by you own
 	 *
-	 * @param tx_commerce_basket $basketObj
+	 * @param Tx_Commerce_Domain_Model_Basket $basketObj
 	 * @param array $subpartMarker Subpart Template Subpart
 	 * @param array|boolean $articletypes array of articletypes
 	 * @param string $lineTemplate
@@ -840,7 +840,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 			 */
 			$articleLines = '';
 			$count = 0;
-			/** @var $itemObj tx_commerce_basket_item */
+			/** @var $itemObj Tx_Commerce_Domain_Model_BasketItem */
 			foreach ($basketObj->getBasketItems() as $itemObj) {
 				$part = $count % $templateElements;
 				/**
@@ -887,7 +887,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 	 * This Method will not replace the Subpart, you have to replace your subpart in your template
 	 * by you own
 	 *
-	 * @param tx_commerce_basket $basketObj
+	 * @param Tx_Commerce_Domain_Model_Basket $basketObj
 	 * @param array $subpartMarker Subpart Template Subpart
 	 * @return string $content HTML-Ccontent from the given Subpart
 	 * @abstract
@@ -983,7 +983,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 	 * This Method will not replace the Subpart, you have to replace your subpart in your template
 	 * by you own
 	 *
-	 * @param tx_commerce_basket_item $basketItemObj Basket Object
+	 * @param Tx_Commerce_Domain_Model_BasketItem $basketItemObj Basket Object
 	 * @param array $subpartMarker Subpart Template Subpart
 	 * @return string $content HTML-Ccontent from the given Subpart
 	 * @abstract
@@ -1282,7 +1282,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 	/**
 	 * Reders a category as output
 	 *
-	 * @param tx_commerce_category $category tx_commerce_category object
+	 * @param Tx_Commerce_Domain_Model_Category $category Tx_Commerce_Domain_Model_Category object
 	 * @param string $subpartName template-subpart-name
 	 * @param array $TS TypoScript array for rendering
 	 * @param string $prefix Prefix for Marker, optional#
@@ -1438,7 +1438,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 	 * calls renderProductAtrributeList with parametres from $this
 	 *
 	 * @see renderProductAttributeList
-	 * @param tx_commerce_product $myProduct
+	 * @param Tx_Commerce_Domain_Model_Product $myProduct
 	 * @return string Stringoutput for attributes
 	 * @depricated since commerce 0.14.0, this function will be removed in commerce 0.16.0, this method gets removed from the api
 	 */
@@ -1454,7 +1454,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 	 * Make the HTML output with list of attribute from a given product, reduced for some articles
 	 * if article ids are givens
 	 *
-	 * @param tx_commerce_product $prodObj : Object for the current product, the attributes are taken from
+	 * @param Tx_Commerce_Domain_Model_Product $prodObj : Object for the current product, the attributes are taken from
 	 * @param array $articleId array with articleIds for filtering attributss
 	 * @return string|boolean Stringoutput for attributes
 	 * @depricated since commerce 0.14.0, this function will be removed in commerce 0.16.0, this method gets removed from the api
@@ -1510,9 +1510,9 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 		}
 
 		$amount = 0;
-		if (is_object($GLOBALS['TSFE']->fe_user->tx_commerce_basket->basket_items[$articleId])) {
-			/** @var  $basketItem tx_commerce_basket_item */
-			$basketItem = & $GLOBALS['TSFE']->fe_user->tx_commerce_basket->basket_items[$articleId];
+		if (is_object($GLOBALS['TSFE']->fe_user->Tx_Commerce_Domain_Model_Basket->basket_items[$articleId])) {
+			/** @var  $basketItem Tx_Commerce_Domain_Model_BasketItem */
+			$basketItem = & $GLOBALS['TSFE']->fe_user->Tx_Commerce_Domain_Model_Basket->basket_items[$articleId];
 			$amount = $basketItem->getQuantity();
 		} else {
 			if ($TSconf == FALSE) {
@@ -1557,8 +1557,8 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 				}
 				$template = $this->cObj->getSubpart($this->templateCode, '###' . $templateMarker[$iterationCount] . '###');
 
-				/** @var tx_commerce_product $myProduct */
-				$myProduct = t3lib_div::makeInstance('tx_commerce_product');
+				/** @var Tx_Commerce_Domain_Model_Product $myProduct */
+				$myProduct = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product');
 				$myProduct->init($myProductId, $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
 				$myProduct->loadData();
 				$myProduct->loadArticles();
@@ -1587,7 +1587,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 	/**
 	 * This method renders a product to a template
 	 *
-	 * @param tx_commerce_product $myProduct
+	 * @param Tx_Commerce_Domain_Model_Product $myProduct
 	 * @param string $template TYPO3 Template
 	 * @param array $TS
 	 * @param array $articleMarker Marker for the article description to be filled up with makeArticleView
@@ -1595,7 +1595,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 	 * @return string rendered HTML
 	 */
 	public function renderProduct($myProduct, $template, $TS, $articleMarker, $articleSubpart = '') {
-		if (!($myProduct instanceof tx_commerce_product)) {
+		if (!($myProduct instanceof Tx_Commerce_Domain_Model_Product)) {
 			return FALSE;
 		}
 		if (empty($articleMarker)) {
@@ -1641,7 +1641,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 
 		$lokalTS = $this->addTypoLinkToTS($lokalTS, $typoLinkConf);
 
-		$markerArray = $this->generateMarkerArray($data, $lokalTS, '', 'tx_commerce_products');
+		$markerArray = $this->generateMarkerArray($data, $lokalTS, '', 'Tx_Commerce_Domain_Model_Products');
 		$markerArrayUp = array();
 		foreach ($markerArray as $k => $v) {
 			$markerArrayUp[strtoupper($k)] = $v;
@@ -1697,8 +1697,8 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 		 * Get The Checapest Price
 		 */
 		$cheapestArticleUid = $myProduct->getCheapestArticle();
-		/** @var tx_commerce_article $cheapestArticle */
-		$cheapestArticle = t3lib_div::makeInstance('tx_commerce_article');
+		/** @var Tx_Commerce_Domain_Model_Article $cheapestArticle */
+		$cheapestArticle = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Article');
 		$cheapestArticle->init($cheapestArticleUid);
 		$cheapestArticle->loadData();
 		$cheapestArticle->loadPrices();
@@ -1706,8 +1706,8 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 		$markerArray['###PRODUCT_CHEAPEST_PRICE_GROSS###'] = tx_moneylib::format($cheapestArticle->getPriceGross(), $this->currency);
 
 		$cheapestArticleUid = $myProduct->getCheapestArticle(1);
-		/** @var tx_commerce_article $cheapestArticle */
-		$cheapestArticle = t3lib_div::makeInstance('tx_commerce_article');
+		/** @var Tx_Commerce_Domain_Model_Article $cheapestArticle */
+		$cheapestArticle = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Article');
 		$cheapestArticle->init($cheapestArticleUid);
 		$cheapestArticle->loadData();
 		$cheapestArticle->loadPrices();
@@ -1729,7 +1729,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 
 		$content = $this->substituteMarkerArrayNoCached($template, $markerArray, $subpartArray, $wrapMarkerArray);
 		if ($TS['editPanel'] == 1) {
-			$content = $this->cObj->editPanel($content, $TS['editPanel.'], 'tx_commerce_products:' . $myProduct->getUid());
+			$content = $this->cObj->editPanel($content, $TS['editPanel.'], 'Tx_Commerce_Domain_Model_Products:' . $myProduct->getUid());
 		}
 
 		foreach ($hookObjectsArr as $hookObj) {
@@ -1772,8 +1772,8 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 
 	/**
 	 * @param string $kind
-	 * @param tx_commerce_article $articles
-	 * @param tx_commerce_product $product
+	 * @param Tx_Commerce_Domain_Model_Article $articles
+	 * @param Tx_Commerce_Domain_Model_Product $product
 	 * @return string
 	 */
 	public function makeArticleView($kind, $articles, $product) {
@@ -1790,8 +1790,8 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 	}
 
 	/**
-	 * @param tx_commerce_product $prodObj
-	 * @param tx_commerce_category $catObj
+	 * @param Tx_Commerce_Domain_Model_Product $prodObj
+	 * @param Tx_Commerce_Domain_Model_Category $catObj
 	 * @param string $subpartName
 	 * @param string $subpartNameNostock
 	 * @return string

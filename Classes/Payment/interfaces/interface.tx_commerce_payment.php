@@ -96,10 +96,10 @@ interface tx_commerce_payment {
 	 *
 	 * @param array $config Current configuration
 	 * @param array $session Session data
-	 * @param tx_commerce_basket $basket Basket object
+	 * @param Tx_Commerce_Domain_Model_Basket $basket Basket object
 	 * @return boolean TRUE if finishing order is allowed
 	 */
-	public function finishingFunction(array $config = array(), array $session = array(), tx_commerce_basket $basket = NULL);
+	public function finishingFunction(array $config = array(), array $session = array(), Tx_Commerce_Domain_Model_Basket $basket = NULL);
 
 	/**
 	 * Method called in finishIt function

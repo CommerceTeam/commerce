@@ -58,7 +58,7 @@ class mounts extends langbase {
 	/**
 	 * User for this mount
 	 *
-	 * @var object
+	 * @var t3lib_beUserAuth
 	 */
 	protected $user;
 

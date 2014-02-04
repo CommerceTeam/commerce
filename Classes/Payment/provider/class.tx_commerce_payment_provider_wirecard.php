@@ -106,59 +106,34 @@ class tx_commerce_payment_provider_wirecard extends tx_commerce_payment_provider
 	 *
 	 * @param array $config Configuration from TYPO3_CONF_VARS
 	 * @param array $session Current session data
-	 * @param tx_commerce_basket $basket Basket object
+	 * @param Tx_Commerce_Domain_Model_Basket $basket Basket object
 	 * @return boolean TRUE if everything was ok
 	 */
-	public function finishingFunction(array $config = array(), array $session = array(), tx_commerce_basket $basket = NULL) {
+	public function finishingFunction(array $config = array(), array $session = array(), Tx_Commerce_Domain_Model_Basket $basket = NULL) {
 			// Class definition is in payment/libs/class.tx_commerce_payment_wirecard_lib.php
+		/** @var payment $paymentLib */
 		$paymentLib = t3lib_div::makeInstance('payment');
 
 			// I think there is a new URL for testing with wirecard, so overwrite
 			// the old value. you can replace this with your own.
-		$paymentLib->url = 'https://c3-test.wirecard.com';
-
-		/*
-		user data can be found in
-			$_SESSION['billing']
-			$_SESSION['delivery']
-			$GLOBALS['TSFE']->fe_user->user
-
-		$paymentLib->userData = array(
-			'firstname' =>
-		);
-
-		$paymentLib->userData(
-			array(
-				"firstname" => $formData['firstname'],
-				"lastname"  => $formData['lastname'],
-				"street"	=> $formData['strees'],
-				"zip"		=> $formData['zip'],
-				"city"		=> $formData['city'],
-				"telephone" => $formData['telephone'],
-				"country"	=> $formData['contry'],
-				"email"		=> $formData['email'],
-				"userid"	=> $formData['userid']
-			)
-		);
-		*/
-
+		$paymentLib->setUrl('https://c3-test.wirecard.com');
 		$paymentLib->paymentmethod = 'creditcard';
 		$paymentLib->paymenttype = 'cc';
 
-		$paymentLib->PaymentData = array(
+		$paymentLib->setPaymentData(array(
 			'kk_number' => $session['payment']['cc_number'],
 			'exp_month' => $session['payment']['cc_expirationMonth'],
 			'exp_year' => $session['payment']['cc_expirationYear'],
 			'holder' => $session['payment']['cc_holder'],
 			'cvc' => $session['payment']['cc_checksum']
-		);
+		));
 
 		$actCurrency = $this->paymentObject->getPObj()->conf['currency'] != '' ?  $this->paymentObject->getPObj()->conf['currency'] : 'EUR';
 
-		$paymentLib->TransactionData = array(
+		$paymentLib->setTransactionData(array(
 			'amount' => $basket->getGrossSum(),
 			'currency' => $actCurrency,
-		);
+		));
 
 		$paymentLib->sendData = $paymentLib->getwirecardXML();
 

@@ -79,7 +79,8 @@ class Tx_Commerce_Utility_ClickmenuUtility {
 		switch($table) {
 			case 'tx_commerce_products':
 					// get all parent categories
-				$product = t3lib_div::makeInstance('tx_commerce_product');
+				/** @var Tx_Commerce_Domain_Model_Product $product */
+				$product = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product');
 				$product->init($uid);
 
 				$parentCategories = $product->getParentCategories();
@@ -103,13 +104,15 @@ class Tx_Commerce_Utility_ClickmenuUtility {
 
 			case 'tx_commerce_articles':
 					// get all parent categories for the parent product
-				$article = t3lib_div::makeInstance('tx_commerce_article');
+				/** @var Tx_Commerce_Domain_Model_Article $article */
+				$article = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Article');
 				$article->init($uid);
 
 				$productUid = $article->getParentProductUid();
 
 					// get the parent categories of the product
-				$product = t3lib_div::makeInstance('tx_commerce_product');
+				/** @var Tx_Commerce_Domain_Model_Product $product */
+				$product = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product');
 				$product->init($productUid);
 
 				$parentCategories = $product->getParentCategories();
@@ -149,6 +152,7 @@ class Tx_Commerce_Utility_ClickmenuUtility {
 				$editLock = ($backendUser->isAdmin()) ? FALSE : $this->rec['editlock'];
 
 					// check if the current item is a db mount
+				/** @var tx_commerce_categorymounts $mounts */
 				$mounts = t3lib_div::makeInstance('tx_commerce_categorymounts');
 				$mounts->init($backendUser->user['uid']);
 

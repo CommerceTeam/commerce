@@ -88,7 +88,7 @@ class Tx_Commerce_Utility_GeneralUtility {
 			$GLOBALS['TSFE']->fe_user->setKey('ses', 'commerceBasketId', $BasketID);
 		}
 
-		$GLOBALS['TSFE']->fe_user->tx_commerce_basket = t3lib_div::makeInstance('tx_commerce_basket');
+		$GLOBALS['TSFE']->fe_user->tx_commerce_basket = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Basket');
 		$GLOBALS['TSFE']->fe_user->tx_commerce_basket->set_session_id($BasketID);
 		$GLOBALS['TSFE']->fe_user->tx_commerce_basket->loadData();
 	}
@@ -107,7 +107,8 @@ class Tx_Commerce_Utility_GeneralUtility {
 		}
 
 		foreach ( $productUids as $arrayKey => $productUid ) {
-			$productObj = t3lib_div::makeInstance('tx_commerce_product');
+			/** @var Tx_Commerce_Domain_Model_Product $productObj */
+			$productObj = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product');
 			$productObj->init($productUid);
 			$productObj->loadData();
 
@@ -124,9 +125,9 @@ class Tx_Commerce_Utility_GeneralUtility {
 	 * Remove article from product for frontendviewing, if articles
 	 * with no stock should not shown
 	 *
-	 * @param tx_commerce_product $productObj Object	ProductObject to work on
-	 * @param integer $dontRemoveArticles integer	switch to show or not show articles
-	 * @return tx_commerce_product Cleaned up Productobjectt
+	 * @param Tx_Commerce_Domain_Model_Product $productObj ProductObject to work on
+	 * @param integer $dontRemoveArticles switch to show or not show articles
+	 * @return Tx_Commerce_Domain_Model_Product Cleaned up Productobjectt
 	 */
 	public static function removeNoStockArticles( $productObj, $dontRemoveArticles = 1 ) {
 		if ($dontRemoveArticles == 1) {
@@ -136,11 +137,11 @@ class Tx_Commerce_Utility_GeneralUtility {
 		$articleUids = $productObj->getArticleUids();
 		$articles = $productObj->getArticleObjects();
 		foreach ($articleUids as $arrayKey => $articleUid) {
-			/** @var tx_commerce_article $article */
+			/** @var Tx_Commerce_Domain_Model_Article $article */
 			$article = $articles[$articleUid];
 			if ($article->getStock() <= 0) {
-				unset($productObj->articles_uids[$arrayKey]);
-				unset($productObj->articles[$articleUid]);
+				$productObj->removeArticleUid($arrayKey);
+				$productObj->removeArticle($articleUid);
 			}
 		}
 

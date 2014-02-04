@@ -185,7 +185,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		$this->extConf = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf'];
 		$this->imgFolder = 'uploads/tx_commerce/';
 
-		/** @var $basket tx_commerce_basket */
+		/** @var $basket Tx_Commerce_Domain_Model_Basket */
 		$basket = & $GLOBALS['TSFE']->fe_user->tx_commerce_basket;
 		$basket->setTaxCalculationMethod($this->conf['priceFromNet']);
 
@@ -232,7 +232,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 
 			// Set basket to readonly, if set in extension configuration
 		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['lockBasket'] == 1) {
-			/** @var $basket tx_commerce_basket */
+			/** @var $basket Tx_Commerce_Domain_Model_Basket */
 			$basket = & $GLOBALS['TSFE']->fe_user->tx_commerce_basket;
 			$basket->setReadOnly();
 			$basket->store_data();
@@ -858,7 +858,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			$template = $this->cObj->getSubpart($this->templateCode, '###LISTING###');
 		}
 
-		/** @var $basket tx_commerce_basket */
+		/** @var $basket Tx_Commerce_Domain_Model_Basket */
 		$basket = & $GLOBALS['TSFE']->fe_user->tx_commerce_basket;
 		$this->debug($basket, '$basket', __FILE__ . ' ' . __LINE__);
 
@@ -991,7 +991,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		$hookObjectsArr = $this->getHookObjectArray('finishIt');
 
 			// Handle orders
-		/** @var $basket tx_commerce_basket */
+		/** @var $basket Tx_Commerce_Domain_Model_Basket */
 		$basket = & $GLOBALS['TSFE']->fe_user->tx_commerce_basket;
 
 		foreach ($hookObjectsArr as $hookObj) {
@@ -1157,7 +1157,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		}
 
 		$basket->finishOrder();
-		$GLOBALS['TSFE']->fe_user->tx_commerce_basket = t3lib_div::makeInstance('tx_commerce_basket');
+		$GLOBALS['TSFE']->fe_user->tx_commerce_basket = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Basket');
 		$basket = & $GLOBALS['TSFE']->fe_user->tx_commerce_basket;
 
 			// Generate new Basket-ID
@@ -1210,12 +1210,12 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		$result = TRUE;
 
 		if ($this->conf['useStockHandling'] == 1 AND $this->conf['checkStock'] == 1) {
-			/** @var $basket tx_commerce_basket */
+			/** @var $basket Tx_Commerce_Domain_Model_Basket */
 			$basket = & $GLOBALS['TSFE']->fe_user->tx_commerce_basket;
 			if (is_array($basket->getBasketItems())) {
-				/** @var $basketItem tx_commerce_basket_item */
+				/** @var $basketItem Tx_Commerce_Domain_Model_BasketItem */
 				foreach ($basket->getBasketItems() as $artUid => $basketItem) {
-					/** @var $article tx_commerce_article */
+					/** @var $article Tx_Commerce_Domain_Model_Article */
 					$article = $basketItem->article;
 					$this->debug($article, '$article', __FILE__ . ' ' . __LINE__);
 					if (!$article->hasStock($basketItem->getQuantity())) {
@@ -1243,7 +1243,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	 * @return string Basket sum
 	 */
 	public function getBasketSum($type = 'WEB') {
-		/** @var $basket tx_commerce_basket */
+		/** @var $basket Tx_Commerce_Domain_Model_Basket */
 		$basket = & $GLOBALS['TSFE']->fe_user->tx_commerce_basket;
 
 		$template = $this->cObj->getSubpart($this->templateCode, '###LISTING_BASKET_' . strtoupper($type) . '###');
@@ -1258,7 +1258,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		$sumShippingGross = 0;
 
 		foreach ($deliveryArticleArray as $oneDeliveryArticle) {
-			/** @var tx_commerce_basket_item $basketItem */
+			/** @var Tx_Commerce_Domain_Model_BasketItem $basketItem */
 			$basketItem = $basket->getBasketItem($oneDeliveryArticle);
 			$sumShippingNet += $basketItem->getPriceNet();
 			$sumShippingGross += $basketItem->getPriceGross();
@@ -1270,7 +1270,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		$sumPaymentGross = 0;
 
 		foreach ($paymentArticleArray as $onePaymentArticle) {
-			/** @var tx_commerce_basket_item $basketItem */
+			/** @var Tx_Commerce_Domain_Model_BasketItem $basketItem */
 			$basketItem = $basket->getBasketItem($onePaymentArticle);
 			$sumPaymentNet += $basketItem->getPriceNet();
 			$sumPaymentGross += $basketItem->getPriceGross();
@@ -1548,7 +1548,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	 * 		if not $id is set, otherwise returns the id of the paymentarticle
 	 */
 	public function getPaymentType($id = FALSE) {
-		/** @var $basket tx_commerce_basket */
+		/** @var $basket Tx_Commerce_Domain_Model_Basket */
 		$basket = & $GLOBALS['TSFE']->fe_user->tx_commerce_basket;
 		$payment = $basket->get_articles_by_article_type_uid_asuidlist(PAYMENTARTICLETYPE);
 
@@ -1989,7 +1989,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			return $myCheck;
 		}
 
-		/** @var $basket tx_commerce_basket */
+		/** @var $basket Tx_Commerce_Domain_Model_Basket */
 		$basket = & $GLOBALS['TSFE']->fe_user->tx_commerce_basket;
 
 			// Check if basket is empty
@@ -2067,7 +2067,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 				$userMarker = array();
 				$mailcontent = $userMailObj->generateMail($orderUid, $orderData, $userMarker);
 
-				/** @var $basket tx_commerce_basket */
+				/** @var $basket Tx_Commerce_Domain_Model_Basket */
 				$basket = & $GLOBALS['TSFE']->fe_user->tx_commerce_basket;
 				foreach ($hookObjectsArr as $hookObj) {
 					if (method_exists($hookObj, 'PostGenerateMail')) {
@@ -2210,7 +2210,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 
 			$mailcontent = $adminMailObj->generateMail($orderUid, $orderData);
 
-			/** @var $basket tx_commerce_basket */
+			/** @var $basket Tx_Commerce_Domain_Model_Basket */
 			$basket = & $GLOBALS['TSFE']->fe_user->tx_commerce_basket;
 			foreach ($hookObjectsArr as $hookObj) {
 				if (method_exists($hookObj, 'PostGenerateMail')) {
@@ -2545,9 +2545,9 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 
 			// Save order articles
 		if (is_array($basket->basket_items)) {
-			/** @var $basketItem tx_commerce_basket_item */
+			/** @var $basketItem Tx_Commerce_Domain_Model_BasketItem */
 			foreach ($basket->basket_items as $artUid => $basketItem) {
-				/** @var $article tx_commerce_article */
+				/** @var $article Tx_Commerce_Domain_Model_Article */
 				$article = $basketItem->article;
 
 				$this->debug($article, '$article', __FILE__ . ' ' . __LINE__);

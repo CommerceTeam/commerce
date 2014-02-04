@@ -555,6 +555,7 @@ if (!$simpleMode && is_array($postEdit['tx_commerce_articles']) && $postData == 
 		// And start the dynyflex processing
 	/** @noinspection PhpIncludeInspection */
 	require_once(t3lib_extMgm::extPath('dynaflex') . 'class.dynaflex.php');
+	/** @var dynaflex $dynaflex */
 	$dynaflex = t3lib_div::makeInstance('dynaflex', $GLOBALS['TCA'], $dynaFlexConf);
 		// write back the modified TCA
 	$GLOBALS['TCA'] = $dynaflex->getDynamicTCA();
@@ -574,6 +575,7 @@ if (is_array($postEdit['tx_commerce_articles']) && $postData == NULL && t3lib_ex
 		// And start the dynyflex processing
 	/** @noinspection PhpIncludeInspection */
 	require_once(t3lib_extMgm::extPath('dynaflex') . 'class.dynaflex.php');
+	/** @var dynaflex $dynaflex */
 	$dynaflex = t3lib_div::makeInstance('dynaflex', $GLOBALS['TCA'], $dynaFlexConf);
 		// write back the modified TCA
 	$GLOBALS['TCA'] = $dynaflex->getDynamicTCA();

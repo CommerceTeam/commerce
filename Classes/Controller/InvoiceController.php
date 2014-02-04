@@ -383,8 +383,8 @@ class Tx_Commerce_Controller_InvoiceController extends Tx_Commerce_Controller_Ba
 	 * To satisfy abstract class
 	 *
 	 * @param string $kind
-	 * @param tx_commerce_article $articles
-	 * @param tx_commerce_product $product
+	 * @param Tx_Commerce_Domain_Model_Article $articles
+	 * @param Tx_Commerce_Domain_Model_Product $product
 	 * @return string|void
 	 */
 	public function makeArticleView($kind, $articles, $product) {

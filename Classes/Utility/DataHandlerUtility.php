@@ -186,6 +186,7 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 	 */
 	public function initClipboard() {
 		if (is_array($this->CB)) {
+			/** @var t3lib_clipboard $clipObj */
 			$clipObj = t3lib_div::makeInstance('t3lib_clipboard');
 			$clipObj->initializeClipboard();
 			$clipObj->setCurrentPad($this->CB['pad']);
@@ -287,7 +288,8 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 			case 'overwrite':
 			case 'pasteProduct':
 					// chose local to copy from product
-				$product = t3lib_div::makeInstance('tx_commerce_product');
+				/** @var Tx_Commerce_Domain_Model_Product $product */
+				$product = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product');
 				$product->init($uidClip);
 				$product->loadData();
 				$prods = $product->get_l18n_products();
@@ -295,7 +297,7 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 				if (0 != count($prods)) {
 
 					$str .= '<h1>' . $language->getLL('copy.head.l18n') . '</h1>
-						<h2>' . $language->getLL('copy.product') . ': ' . $product->get_title() . '</h2>
+						<h2>' . $language->getLL('copy.product') . ': ' . $product->getTitle() . '</h2>
 						<ul>';
 
 						// walk the l18n and get the selector box
@@ -363,7 +365,8 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 
 			case 'pasteCategory':
 					// chose locale to copy from category
-				$cat = t3lib_div::makeInstance('tx_commerce_category');
+				/** @var Tx_Commerce_Domain_Model_Category $cat */
+				$cat = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category');
 				$cat->init($uidClip);
 				$cat->loadData();
 				$cats = $cat->get_l18n_categories();

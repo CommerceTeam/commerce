@@ -463,8 +463,8 @@ if (is_array($postEdit['tx_commerce_products']) && (($postData == NULL) || (t3li
 		// And start the dynyflex processing
 	/** @noinspection PhpIncludeInspection */
 	require_once(t3lib_extMgm::extPath('dynaflex') . 'class.dynaflex.php');
+	/** @var dynaflex $dynaflex */
 	$dynaflex = t3lib_div::makeInstance('dynaflex', $GLOBALS['TCA'], $dynaFlexConf);
-
 		// write back the modified TCA
 	$GLOBALS['TCA'] = $dynaflex->getDynamicTCA();
 }

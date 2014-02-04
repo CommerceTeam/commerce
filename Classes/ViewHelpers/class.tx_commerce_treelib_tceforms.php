@@ -140,7 +140,6 @@ class tx_commerce_treelib_tceforms {
 		$this->setIFrameContentRendering($this->config['treeViewBrowseable'] === 'iframeContent');
 	}
 
-
 	/**
 	 * Enable the iframe content rendering mode
 	 *
@@ -156,7 +155,6 @@ class tx_commerce_treelib_tceforms {
 		}
 	}
 
-
 	/**
 	 * Returns true if iframe content rendering mode is enabled
 	 *
@@ -166,7 +164,6 @@ class tx_commerce_treelib_tceforms {
 		return $this->iframeContentRendering;
 	}
 
-
 	/**
 	 * Returns true if iframe content rendering mode is enabled
 	 *
@@ -175,7 +172,6 @@ class tx_commerce_treelib_tceforms {
 	public function isIFrameRendering() {
 		return ($this->config['treeViewBrowseable'] && !$this->iframeContentRendering);
 	}
-
 
 	/**
 	 * Set the selected items
@@ -187,7 +183,6 @@ class tx_commerce_treelib_tceforms {
 		$this->itemArray = $itemArray;
 	}
 
-
 	/**
 	 * Return the processed aray of selected items
 	 *
@@ -197,7 +192,6 @@ class tx_commerce_treelib_tceforms {
 		return $this->itemArrayProcessed;
 	}
 
-
 	/**
 	 * Return the count value of selectable items
 	 *
@@ -206,7 +200,6 @@ class tx_commerce_treelib_tceforms {
 	public function getItemCountSelectable() {
 		return $this->treeItemC;
 	}
-
 
 	/**
 	 * Return the count value of rendered trees
@@ -469,7 +462,8 @@ class tx_commerce_treelib_tceforms {
 		}
 
 			// Get the parent Categories for the cat uid
-		$cat = t3lib_div::makeInstance('tx_commerce_category');
+		/** @var Tx_Commerce_Domain_Model_Category $cat */
+		$cat = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category');
 		$cat->init($catUid);
 		$cat->loadData();
 		$parent = $cat->getParentCategories();
@@ -481,7 +475,7 @@ class tx_commerce_treelib_tceforms {
 
 		if (is_array($parent)) {
 			for ($i = 0, $l = count($parent); $i < $l; $i++) {
-				/** @var tx_commerce_category $parentObject */
+				/** @var Tx_Commerce_Domain_Model_Category $parentObject */
 				$parentObject = & $parent[$i];
 				$parentObject->loadData();
 
@@ -510,8 +504,8 @@ class tx_commerce_treelib_tceforms {
 			return array();
 		}
 
-		/** @var tx_commerce_category $category */
-		$category = t3lib_div::makeInstance('tx_commerce_category');
+		/** @var Tx_Commerce_Domain_Model_Category $category */
+		$category = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category');
 		$category->init($catUid);
 		$category->loadData();
 
@@ -544,7 +538,8 @@ class tx_commerce_treelib_tceforms {
 		}
 
 			// Get the parent Categories for the cat uid
-		$prod = t3lib_div::makeInstance('tx_commerce_product');
+		/** @var Tx_Commerce_Domain_Model_Product $prod */
+		$prod = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product');
 		$prod->init($uid);
 		$prod->loadData();
 
@@ -561,7 +556,8 @@ class tx_commerce_treelib_tceforms {
 		$itemArray = array();
 
 		for ($i = 0, $l = count($parent); $i < $l; $i++) {
-			$cat = t3lib_div::makeInstance('tx_commerce_category');
+			/** @var Tx_Commerce_Domain_Model_Category $cat */
+			$cat = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category');
 			$cat->init($parent[$i]);
 			$cat->loadData();
 
@@ -598,22 +594,22 @@ class tx_commerce_treelib_tceforms {
 
 				// Product
 			if ('tx_commerce_products' == $table) {
-				/** @var tx_commerce_product $prod */
-				$prod = t3lib_div::makeInstance('tx_commerce_product');
+				/** @var Tx_Commerce_Domain_Model_Product $prod */
+				$prod = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product');
 				$prod->init($uid);
 				$prod->loadData();
 
 				$itemArray[] = $value . '|' . $prod->getTitle();
 			} elseif ('tx_commerce_articles' == $table) {
-				/** @var tx_commerce_article $article */
-				$article = t3lib_div::makeInstance('tx_commerce_article');
+				/** @var Tx_Commerce_Domain_Model_Article $article */
+				$article = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Article');
 				$article->init($uid);
 				$article->loadData();
 
 				$itemArray[] = $value . '|' . $article->getTitle();
 			} elseif ('tx_commerce_categories' == $table) {
-				/** @var tx_commerce_category $category */
-				$category = t3lib_div::makeInstance('tx_commerce_category');
+				/** @var Tx_Commerce_Domain_Model_Category $category */
+				$category = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category');
 				$category->init($uid);
 				$category->loadData();
 

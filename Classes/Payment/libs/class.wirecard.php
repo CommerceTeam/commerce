@@ -23,7 +23,7 @@
  ***************************************************************/
 
 /**
- * klasse: payment_wirdecard
+ * class: payment_wirdecard
  * Schnittstelle zu wirecard
  * setPaymentmethod        - ELV, Bank, KK (ggf Intern)
  * setPaymenttype        - reserve, book  (ggf Intern)
@@ -93,7 +93,7 @@ class wirecard {
 	/**
 	 * @var array
 	 */
-	public $PaymentData = array();
+	public $paymentData = array();
 
 	/**
 	 * @var array
@@ -313,11 +313,11 @@ class wirecard {
 		if ($this->paymenttype == 'cc') {
 			$xml = '
 			<CREDIT_CARD_DATA>
-				<CreditCardNumber>' . $this->PaymentData['kk_number'] . '</CreditCardNumber>
-				<CVC2>' . $this->PaymentData['cvc'] . '</CVC2>
-				<ExpirationYear>' . $this->PaymentData['exp_year'] . '</ExpirationYear>
-				<ExpirationMonth>' . $this->PaymentData['exp_month'] . '</ExpirationMonth>
-				<CardHolderName>' . $this->PaymentData['holder'] . '</CardHolderName>
+				<CreditCardNumber>' . $this->paymentData['kk_number'] . '</CreditCardNumber>
+				<CVC2>' . $this->paymentData['cvc'] . '</CVC2>
+				<ExpirationYear>' . $this->paymentData['exp_year'] . '</ExpirationYear>
+				<ExpirationMonth>' . $this->paymentData['exp_month'] . '</ExpirationMonth>
+				<CardHolderName>' . $this->paymentData['holder'] . '</CardHolderName>
 			</CREDIT_CARD_DATA>';
 		};
 

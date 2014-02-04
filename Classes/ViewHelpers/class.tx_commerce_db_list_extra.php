@@ -36,6 +36,11 @@ class commerceRecordList extends localRecordList {
 	public $uid;
 
 	/**
+	 * @var integer
+	 */
+	public $parent_uid;
+
+	/**
 	 * default values necessary for the flexform
 	 *
 	 * @var string

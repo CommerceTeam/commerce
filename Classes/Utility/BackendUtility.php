@@ -1519,6 +1519,7 @@ class Tx_Commerce_Utility_BackendUtility {
 		$uidLast = $row['uid'];
 
 			// init tce
+		/** @var t3lib_TCEmain $tce */
 		$tce = t3lib_div::makeInstance('t3lib_TCEmain');
 		$tce->stripslashes_values = 0;
 
@@ -1591,6 +1592,7 @@ class Tx_Commerce_Utility_BackendUtility {
 		$newUid = 0;
 		while ($row = $database->sql_fetch_assoc($res)) {
 				// copy them to the new article
+			/** @var t3lib_TCEmain $tce */
 			$tce = t3lib_div::makeInstance('t3lib_TCEmain');
 			$tce->stripslashes_values = 0;
 
@@ -1751,6 +1753,7 @@ class Tx_Commerce_Utility_BackendUtility {
 		}
 
 			// init tce
+		/** @var t3lib_TCEmain $tce */
 		$tce = t3lib_div::makeInstance('t3lib_TCEmain');
 		$tce->stripslashes_values = 0;
 			// set workspace bypass if requested
@@ -1858,7 +1861,8 @@ class Tx_Commerce_Utility_BackendUtility {
 
 				// if we localize an article, add the product uid of the $uidNew localized product
 			if ('tx_commerce_articles' == $table) {
-				$article = t3lib_div::makeInstance('tx_commerce_article');
+				/** @var Tx_Commerce_Domain_Model_Article $article */
+				$article = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Article');
 				$article->init($uidNew);
 				$productUid = $article->getParentProductUid();
 
@@ -1879,6 +1883,7 @@ class Tx_Commerce_Utility_BackendUtility {
 			$data[$table][$newUid] = $rec[0];
 
 				// init tce
+			/** @var t3lib_TCEmain $tce */
 			$tce = t3lib_div::makeInstance('t3lib_TCEmain');
 			$tce->stripslashes_values = 0;
 				// set workspace bypass if requested
@@ -1987,6 +1992,7 @@ class Tx_Commerce_Utility_BackendUtility {
 			$data[$table][$recTo[0]['uid']] = $recFrom[0];
 
 				// init tce
+			/** @var t3lib_TCEmain $tce */
 			$tce = t3lib_div::makeInstance('t3lib_TCEmain');
 			$tce->stripslashes_values = 0;
 
@@ -2111,6 +2117,7 @@ class Tx_Commerce_Utility_BackendUtility {
 		}
 
 			// init tce
+		/** @var t3lib_TCEmain $tce */
 		$tce = t3lib_div::makeInstance('t3lib_TCEmain');
 		$tce->stripslashes_values = 0;
 
@@ -2649,8 +2656,8 @@ class Tx_Commerce_Utility_BackendUtility {
 		$mounts->init($backendUser->user['uid']);
 
 		for ($i = 0; $i < $l; $i ++) {
-			/** @var tx_commerce_category $category */
-			$category = t3lib_div::makeInstance('tx_commerce_category');
+			/** @var Tx_Commerce_Domain_Model_Category $category */
+			$category = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category');
 			$category->init($categoryUids[$keys[$i]]);
 				// check if the category is in the commerce mounts
 			if (!$mounts->isInCommerceMounts($category->getUid())) {
@@ -2748,6 +2755,7 @@ class Tx_Commerce_Utility_BackendUtility {
 		$datamap = $data;
 
 			// execute
+		/** @var t3lib_TCEmain $tce */
 		$tce = t3lib_div::makeInstance('t3lib_TCEmain');
 		$tce->stripslashes_values = 0;
 
@@ -3006,6 +3014,7 @@ class Tx_Commerce_Utility_BackendUtility {
 		$datamap = $data;
 
 			// execute
+		/** @var t3lib_TCEmain $tce */
 		$tce = t3lib_div::makeInstance('t3lib_TCEmain');
 		$tce->stripslashes_values = 0;
 

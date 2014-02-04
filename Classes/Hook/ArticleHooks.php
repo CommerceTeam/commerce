@@ -33,8 +33,9 @@ class Tx_Commerce_Hook_ArticleHooks {
 	 * Basic Method to calculate the delivereycost (net)
 	 * Ment as Programming tutorial. Mostly you have to change or add some functionality
 	 *
-	 * @param tx_commerce_article_price $netPrice
-	 * @param tx_commerce_article $article article_object (reference)
+	 * @param integer $netPrice
+	 * @param Tx_Commerce_Domain_Model_Article $article (reference)
+	 * @return void
 	 */
 	public function calculateDeliveryCostNet(&$netPrice, &$article) {
 		$deliveryArticle = $this->getDeliveryArticle($article);
@@ -48,23 +49,24 @@ class Tx_Commerce_Hook_ArticleHooks {
 	/**
 	 * Basic Method to calculate the delivereycost (gross)
 	 * Ment as Programming tutorial. Mostly you have to change or add some functionality
-	 * @param price_object
-	 * @param article_object (reference)
+	 * @param integer $grossPrice
+	 * @param Tx_Commerce_Domain_Model_Article $article (reference)
+	 * @return void
 	 */
-	public function calculateDeliveryCostGross(&$gross_price, &$article_obj) {
-		$deliveryArticle = $this->getDeliveryArticle($article_obj);
+	public function calculateDeliveryCostGross(&$grossPrice, &$article) {
+		$deliveryArticle = $this->getDeliveryArticle($article);
 		if ($deliveryArticle) {
-			$gross_price = $deliveryArticle->getPriceGross();
+			$grossPrice = $deliveryArticle->getPriceGross();
 		} else {
-			$gross_price = 0;
+			$grossPrice = 0;
 		}
 	}
 
 	/**
 	 * Load the deliveryArticle
 	 *
-	 * @param tx_commerce_article $article
-	 * @return tx_commerce_article object
+	 * @param Tx_Commerce_Domain_Model_Article $article
+	 * @return Tx_Commerce_Domain_Model_Article $result
 	 */
 	protected function getDeliveryArticle(&$article) {
 		$delivery_conf = ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['SYSPRODUCTS']['DELIVERY']['types']);
@@ -85,9 +87,10 @@ class Tx_Commerce_Hook_ArticleHooks {
 
 			/**
 			 * Instantiate article class
-			 * @var tx_commerce_article $deliveryArticle
+			 *
+			 * @var Tx_Commerce_Domain_Model_Article $deliveryArticle
 			 */
-			$deliveryArticle = t3lib_div::makeInstance('tx_commerce_article');
+			$deliveryArticle = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Article');
 			$deliveryArticle->init($deliveryArticleUid, $article->getLang());
 
 			/**

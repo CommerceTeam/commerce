@@ -404,6 +404,7 @@ class tx_commerce_feusers_localRecordlist extends localRecordList {
 			// Add row to CSV list:
 		if ($this->csvOutput) {
 				// Charset Conversion
+			/** @var t3lib_cs $csObj */
 			$csObj = t3lib_div::makeInstance('t3lib_cs');
 			$csObj->initCharset($GLOBALS['TYPO3_CONF_VARS']['BE']['forceCharset']);
 

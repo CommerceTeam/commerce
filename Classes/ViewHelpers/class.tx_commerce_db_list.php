@@ -391,6 +391,8 @@ class tx_commerce_db_list {
 							$iKParts = explode('|', $iK);
 							$cmd[$iKParts[0]][$iKParts[1]]['delete'] = 1;
 						}
+
+						/** @var t3lib_TCEmain $tce */
 						$tce = t3lib_div::makeInstance('t3lib_TCEmain');
 						$tce->stripslashes_values = 0;
 						$tce->start(array(), $cmd);

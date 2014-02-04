@@ -72,8 +72,8 @@ class Tx_Commerce_Hook_CommandMapHooks {
 
 			// Check if user really is allowed to delete - may not be the case
 		if ('tx_commerce_categories' == $table && 'delete' == $command) {
-			/** @var tx_commerce_category $category */
-			$category = t3lib_div::makeInstance('tx_commerce_category');
+			/** @var Tx_Commerce_Domain_Model_Category $category */
+			$category = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category');
 			$category->init($id);
 			$category->loadData();
 
@@ -81,7 +81,8 @@ class Tx_Commerce_Hook_CommandMapHooks {
 			if ($category->getField('l18n_parent') > 0) {
 				$parentId = $category->getField('l18n_parenti');
 
-				$category = t3lib_div::makeInstance('tx_commerce_category');
+				/** @var Tx_Commerce_Domain_Model_Category $category */
+				$category = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category');
 				$category->init($parentId);
 			}
 
@@ -96,7 +97,8 @@ class Tx_Commerce_Hook_CommandMapHooks {
 			}
 		} elseif ('tx_commerce_products' == $table && 'delete' == $command) {
 				// Read the parent categories
-			$item = t3lib_div::makeInstance('tx_commerce_product');
+			/** @var Tx_Commerce_Domain_Model_Product $item */
+			$item = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product');
 			$item->init($id);
 
 			$parentCategories = $item->getParentCategories();
@@ -110,17 +112,19 @@ class Tx_Commerce_Hook_CommandMapHooks {
 			}
 		} elseif ('tx_commerce_articles' == $table && 'delete' == $command) {
 				// Read the parent product
-			/** @var tx_commerce_article $article */
-			$article = t3lib_div::makeInstance('tx_commerce_article');
+			/** @var Tx_Commerce_Domain_Model_Article $article */
+			$article = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Article');
 			$article->init($id);
 
+			/** @var Tx_Commerce_Domain_Model_Product $product */
 			$product = $article->getParentProduct();
 
 			$parentCategories = $product->getParentCategories();
 
 			if (!current($parentCategories)) {
 				$languageParentUid = $product->getL18nParent();
-				$l18nParent = t3lib_div::makeInstance('tx_commerce_product');
+				/** @var Tx_Commerce_Domain_Model_Product $l18nParent */
+				$l18nParent = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product');
 				$l18nParent->init($languageParentUid);
 				$l18nParent->loadData();
 				$parentCategories = $l18nParent->getParentCategories();
