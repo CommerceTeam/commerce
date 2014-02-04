@@ -110,7 +110,6 @@ class tx_commerce_payment_provider_wirecard extends tx_commerce_payment_provider
 	 * @return boolean TRUE if everything was ok
 	 */
 	public function finishingFunction(array $config = array(), array $session = array(), Tx_Commerce_Domain_Model_Basket $basket = NULL) {
-			// Class definition is in payment/libs/class.tx_commerce_payment_wirecard_lib.php
 		/** @var payment $paymentLib */
 		$paymentLib = t3lib_div::makeInstance('payment');
 
