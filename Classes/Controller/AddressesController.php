@@ -45,18 +45,6 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 	public $scriptRelPath = '/Resources/Private/Language/locallang.xml';
 
 	/**
-	 * The extension key.
-	 *
-	 * @var string
-	 */
-	public $extKey = COMMERCE_EXTKEY;
-
-	/**
-	 * @var string
-	 */
-	public $imgFolder = '';
-
-	/**
 	 * @var null
 	 */
 	public $user = NULL;
@@ -80,11 +68,6 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 	 * @var string
 	 */
 	public $sysMessage = '';
-
-	/**
-	 * @var string Template file content
-	 */
-	public $templateCode = '';
 
 	/**
 	 * @var tx_staticinfotables_pi1 Instance of static info view helper

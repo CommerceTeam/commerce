@@ -47,23 +47,6 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 	public $scriptRelPath = '/Resources/Private/Language/locallang.xml';
 
 	/**
-	 * The extension key.
-	 *
-	 * @var string
-	 */
-	public $extKey = COMMERCE_EXTKEY;
-
-	/**
-	 * @var string
-	 */
-	public $imgFolder = 'uploads/tx_commerce/';
-
-	/**
-	 * @var string
-	 */
-	public $currency = 'EUR';
-
-	/**
 	 * @var string
 	 */
 	public $noStock = '';
@@ -97,11 +80,6 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 	 * @var array Marker array
 	 */
 	protected $markerArray = array();
-
-	/**
-	 * @var string Template file content
-	 */
-	protected $templateCode = '';
 
 	/**
 	 * @var string Compiled content

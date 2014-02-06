@@ -49,23 +49,6 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	public $scriptRelPath = '/Resources/Private/Language/locallang.xml';
 
 	/**
-	 * The extension key.
-	 *
-	 * @var string
-	 */
-	public $extKey = COMMERCE_EXTKEY;
-
-	/**
-	 * @var string
-	 */
-	public $imgFolder = '';
-
-	/**
-	 * @var string
-	 */
-	public $templateCode = '';
-
-	/**
 	 * @var array
 	 */
 	public $dbFieldData = array();
@@ -86,11 +69,6 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	 * @var string
 	 */
 	public $currentStep = '';
-
-	/**
-	 * @var string
-	 */
-	public $currency = '';
 
 	/**
 	 * If set to TRUE some debug message will be printed.

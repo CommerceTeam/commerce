@@ -44,18 +44,6 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 	public $scriptRelPath = '/Resources/Private/Language/locallang.xml';
 
 	/**
-	 * The extension key.
-	 *
-	 * @var string
-	 */
-	public $extKey = COMMERCE_EXTKEY;
-
-	/**
-	 * @var string
-	 */
-	public $currency = 'EUR';
-
-	/**
 	 * @var boolean
 	 */
 	public $pi_checkCHash = TRUE;
@@ -89,16 +77,6 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 	 * @var string
 	 */
 	public $templateFolder = '';
-
-	/**
-	 * @var string
-	 */
-	public $templateCode = '';
-
-	/**
-	 * @var string
-	 */
-	public $template = '';
 
 	/**
 	 * @var array

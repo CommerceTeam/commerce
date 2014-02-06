@@ -31,7 +31,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 	 *
 	 * @var string
 	 */
-	public $extKey = 'commerce';
+	public $extKey = COMMERCE_EXTKEY;
 
 	/**
 	 * @var string
