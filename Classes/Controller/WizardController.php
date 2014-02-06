@@ -98,7 +98,7 @@ class Tx_Commerce_Controller_WizardController {
 	/**
 	 * @var mediumDoc
 	 */
-	protected $doc;
+	public $doc;
 
 	/**
 	 * Accumulated HTML output
