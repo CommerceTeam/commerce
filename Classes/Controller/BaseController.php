@@ -340,9 +340,9 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 			FALSE,
 			$this->product_attributes,
 			$showHiddenValues,
-			'Tx_Commerce_Domain_Model_Products_attributes_mm',
+			'tx_commerce_products_attributes_mm',
 			FALSE,
-			'Tx_Commerce_Domain_Model_Products'
+			'tx_commerce_products'
 		);
 
 		$i = 0;
@@ -1611,9 +1611,9 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 		}
 
 		$amount = 0;
-		if (is_object($GLOBALS['TSFE']->fe_user->tx_commerce_basket->basket_items[$articleId])) {
+		if (is_object($GLOBALS['TSFE']->fe_user->tx_commerce_basket->getBasketItem($articleId))) {
 			/** @var  $basketItem Tx_Commerce_Domain_Model_BasketItem */
-			$basketItem = & $GLOBALS['TSFE']->fe_user->tx_commerce_basket->basket_items[$articleId];
+			$basketItem = & $GLOBALS['TSFE']->fe_user->tx_commerce_basket->getBasketItem($articleId);
 			$amount = $basketItem->getQuantity();
 		} else {
 			if ($TSconf == FALSE) {
