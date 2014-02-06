@@ -399,7 +399,7 @@ $GLOBALS['TCA']['tx_commerce_article_prices'] = array(
 			'endtime' => 'endtime',
 			'fe_group' => 'fe_group',
 		),
-		'dynamicConfigFile' => PATH_TXCOMMERCE . 'Configuration/TCA/Articles.php',
+		'dynamicConfigFile' => PATH_TXCOMMERCE . 'Configuration/TCA/ArticlePrices.php',
 		'dividers2tabs' => '1',
 		'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL . 'price.gif',
 	),
