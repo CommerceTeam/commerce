@@ -252,7 +252,7 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 		if ((!$this->conf['singleProduct']) && ((int)$this->piVars['showUid'] > 0) && (!$GLOBALS['TSFE']->beUserLogin)) {
 			if (is_array($categorySubproducts)) {
 				if (!in_array($this->piVars['showUid'], $categorySubproducts)) {
-					$categoryAllSubproducts = $this->category->getProducts(PHP_INT_MAX);
+					$categoryAllSubproducts = $this->category->getProducts();
 					if (!in_array((int)$this->piVars['showUid'], $categoryAllSubproducts)) {
 							// The requested product is not beblow the selected category
 							// So exit with page not found
@@ -260,7 +260,7 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 					}
 				}
 			} else {
-				$categoryAllSubproducts = $this->category->getProducts(PHP_INT_MAX);
+				$categoryAllSubproducts = $this->category->getProducts();
 				if (!in_array($this->piVars['showUid'], $categoryAllSubproducts)) {
 						// The requested product is not beblow the selected category
 						// So exit with page not found
