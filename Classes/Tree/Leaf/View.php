@@ -144,7 +144,7 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 	/**
 	 * @var boolean
 	 */
-	public $showDefaultTitleAttribute;
+	public $showDefaultTitleAttribute = FALSE;
 
 	/**
 	 * Initialises the variables iconPath and backPath
@@ -278,18 +278,14 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 	 * @return string Image tag.
 	 */
 	public function getIcon($row, $categoryUid = 0) {
-		if (!is_array($row)) {
-			if (TYPO3_DLOG) {
-				t3lib_div::devLog('getIcon (Tx_Commerce_Tree_Leaf_View) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
-			}
-			return '';
-		}
-
 		if ($this->iconPath && $this->iconName) {
-			$icon = '<img' . t3lib_iconWorks::skinImg('', $this->iconPath . $this->iconName, 'width="18" height="16"') .
-				' alt=""' . ($this->showDefaultTitleAttribute ? ' title="UID: ' . (int) $row['uid'] . '"' : '') . ' />';
+			$icon = '<img' . t3lib_iconWorks::skinImg('', $this->iconPath . $this->iconName, 'width="18" height="16"') . ' alt=""' .
+				($this->showDefaultTitleAttribute ? ' title="UID: ' . $row['uid'] . '"' : '') . ' />';
 		} else {
-			$icon = t3lib_iconWorks::getIconImage($this->table, $row, $this->backPath, 'align="top" class="c-recIcon"');
+			$icon = t3lib_iconWorks::getSpriteIconForRecord($this->table, $row, array(
+				'title' => ($this->showDefaultTitleAttribute ? 'UID: ' . $row['uid'] : $this->getTitleAttrib($row)),
+				'class' => 'c-recIcon'
+			));
 		}
 
 		$additionalParams = '';
@@ -327,7 +323,7 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 	 * @param string $icon
 	 * @param array $row
 	 * @param string $additionalParams
-	 * @return string	HTML Code
+	 * @return string HTML Code
 	 */
 	public function wrapIcon($icon, $row, $additionalParams = '') {
 		if (!is_array($row) || !is_string($additionalParams)) {
@@ -337,14 +333,12 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 			return '';
 		}
 
-		$icon = $this->addTagAttributes($icon, ($this->titleAttrib ? $this->titleAttrib . '="' . $this->getTitleAttrib($row) . '"' : ''));
-
 			// Wrap the Context Menu on the Icon if it is allowed
 		if (isset($GLOBALS['TBE_TEMPLATE']) && !$this->noClickmenu) {
 			/** @var template $template */
 			$template = $GLOBALS['TBE_TEMPLATE'];
 			$template->backPath = $this->backPath;
-			$icon = '<a href="#">' . $template->wrapClickMenuOnIcon($icon, $this->table, $row['uid'], 0, $additionalParams) . '</a>';
+			$icon = $template->wrapClickMenuOnIcon($icon, $this->table, $row['uid'], 0, $additionalParams);
 		}
 		return $icon;
 	}
@@ -379,6 +373,17 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 	}
 
 	/**
+	 * Returns the value for the image "title" attribute
+	 *
+	 * @param array $row The input row array (where the key "title" is used for the title)
+	 * @return string The attribute value (is htmlspecialchared() already)
+	 * @see wrapIcon()
+	 */
+	public function getTitleAttrib($row) {
+		return htmlspecialchars('[' . $row['uid'] . '] ' . $row['title']);
+	}
+
+	/**
 	 * returns the link from the tree used to jump to a destination
 	 *
 	 * @param array $row - Array with the ID Information
@@ -394,40 +399,6 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 
 		$res = 'id=' . $row['uid'];
 		return $res;
-	}
-
-	/**
-	 * Adds attributes to image tag.
-	 *
-	 * @param string $icon image tag
-	 * @param string $attributes Attributes to add, eg. ' border="0"'
-	 * @return string Image tag, modified with $attr attributes added.
-	 */
-	public function addTagAttributes($icon, $attributes) {
-		if (!is_string($icon) || !is_string($attributes)) {
-			if (TYPO3_DLOG) {
-				t3lib_div::devLog('addTagAttributes (Tx_Commerce_Tree_Leaf_View) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
-			}
-			return '';
-		}
-		return str_replace(' />', '', $icon) . ' ' . $attributes . ' />';
-	}
-
-	/**
-	 * Returns the value for the image "title" attribute
-	 *
-	 * @param array $row The input row array (where the key "title" is used for the title)
-	 * @return string The attribute value (is htmlspecialchared() already)
-	 * @see wrapIcon()
-	 */
-	public function getTitleAttrib($row) {
-		if (!is_array($row)) {
-			if (TYPO3_DLOG) {
-				t3lib_div::devLog('getTitleAttrib (Tx_Commerce_Tree_Leaf_View) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
-			}
-			return '';
-		}
-		return 'id=' . $row['uid'];
 	}
 
 	/**
