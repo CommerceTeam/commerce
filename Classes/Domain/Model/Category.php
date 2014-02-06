@@ -86,9 +86,9 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	protected $parent_category_uid = 0;
 
 	/**
-	 * @var object Parent category object
+	 * @var Tx_Commerce_Domain_Model_Category Parent category object
 	 */
-	protected $parent_category = '';
+	protected $parent_category = FALSE;
 
 	/**
 	 * @var array Array of tx_commerce_product_uid
@@ -287,6 +287,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 		if (is_null($this->categories)) {
 			$this->categories = array();
 			foreach ($this->categories_uid as $childCategoryUid) {
+				/** @var Tx_Commerce_Domain_Model_Category $childCategory */
 				$childCategory = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category');
 				$childCategory->init($childCategoryUid, $this->lang_uid);
 
@@ -394,9 +395,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	 * @return array Categories
 	 */
 	public function getL18nCategories() {
-		$uid_lang = $this->databaseConnection->get_l18n_categories($this->uid);
-
-		return $uid_lang;
+		return $this->databaseConnection->get_l18n_categories($this->uid);
 	}
 
 	/**
@@ -414,14 +413,12 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	 * @return Tx_Commerce_Domain_Model_Category|FALSE category object or FALSE if this category is already the topmost category
 	 */
 	public function getParentCategory() {
-		if ($this->parent_category_uid > 0) {
+		if ($this->parent_category_uid && !$this->parent_category) {
 			$this->parent_category = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category');
 			$this->parent_category->init($this->parent_category_uid, $this->lang_uid);
-
-			return $this->parent_category;
 		}
 
-		return FALSE;
+		return $this->parent_category;
 	}
 
 	/**
@@ -433,7 +430,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 		$parents = $this->databaseConnection->get_parent_categories($this->uid);
 		$parentCats = array();
 		for ($i = 0, $l = count($parents); $i < $l; $i++) {
-			/** @var Tx_Commerce_Domain_Model_Category $cat */
+			/** @var Tx_Commerce_Domain_Model_Category $category */
 			$category = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category');
 			$category->init($parents[$i]);
 			$parentCats[] = $category;

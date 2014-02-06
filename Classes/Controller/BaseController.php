@@ -511,7 +511,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 				/**
 				 *  Build TS for Linking the Catergory Images
 				 */
-				$lokalTS = $this->conf['categoryListView.']['categories.'];
+				$localTS = $this->conf['categoryListView.']['categories.'];
 
 				if ($this->conf['overridePid']) {
 					$typoLinkConf['parameter'] = $this->conf['overridePid'];
@@ -535,12 +535,12 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 					$typoLinkConf['additionalParams'] .= ini_get('arg_separator.output') . $this->prefixId . '[basketHashValue]=' . $this->basketHashValue;
 				}
 
-				$lokalTS['fields.']['images.']['stdWrap.']['typolink.'] = $typoLinkConf;
-				$lokalTS['fields.']['teaserimages.']['stdWrap.']['typolink.'] = $typoLinkConf;
+				$localTS['fields.']['images.']['stdWrap.']['typolink.'] = $typoLinkConf;
+				$localTS['fields.']['teaserimages.']['stdWrap.']['typolink.'] = $typoLinkConf;
 
-				$lokalTS = $this->addTypoLinkToTS($lokalTS, $typoLinkConf);
+				$localTS = $this->addTypoLinkToTS($localTS, $typoLinkConf);
 
-				$tmpCategory = $this->renderCategory($oneCategory, '###CATEGORY_LIST_ITEM###', $lokalTS, 'ITEM');
+				$tmpCategory = $this->renderCategory($oneCategory, '###CATEGORY_LIST_ITEM###', $localTS, 'ITEM');
 
 				/**
 				 * Build the link
@@ -1746,7 +1746,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 		/**
 		 *  Build TS for Linking the Catergory Images
 		 */
-		$lokalTS = $TS;
+		$localTS = $TS;
 
 		/**
 		 * Generate TypoLink Configuration and ad to fields by addTypoLinkToTs
@@ -1764,9 +1764,9 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 			$typoLinkConf['additionalParams'] .= ini_get('arg_separator.output') . $this->prefixId . '[basketHashValue]=' . $this->basketHashValue;
 		}
 
-		$lokalTS = $this->addTypoLinkToTS($lokalTS, $typoLinkConf);
+		$localTS = $this->addTypoLinkToTS($localTS, $typoLinkConf);
 
-		$markerArray = $this->generateMarkerArray($data, $lokalTS, '', 'Tx_Commerce_Domain_Model_Products');
+		$markerArray = $this->generateMarkerArray($data, $localTS, '', 'Tx_Commerce_Domain_Model_Products');
 		$markerArrayUp = array();
 		foreach ($markerArray as $k => $v) {
 			$markerArrayUp[strtoupper($k)] = $v;
@@ -1808,8 +1808,8 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 		}
 
 			// Set RenderMaxArtickles to TS value
-		if ((!empty($lokalTS['maxArticles'])) && ((int) $lokalTS['maxArticles'] > 0)) {
-			$myProduct->setRenderMaxArticles((int) $lokalTS['maxArticles']);
+		if ((!empty($localTS['maxArticles'])) && ((int) $localTS['maxArticles'] > 0)) {
+			$myProduct->setRenderMaxArticles((int) $localTS['maxArticles']);
 		}
 
 		if ($this->conf['disableArticleViewForProductlist'] == 1 && !$this->piVars['showUid'] || $this->conf['disableArticleView'] == 1) {
