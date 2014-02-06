@@ -197,7 +197,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 		Tx_Commerce_Utility_GeneralUtility::initializeFeUserBasket();
 
 		$this->pid = $GLOBALS['TSFE']->id;
-		$this->basketHashValue = $GLOBALS['TSFE']->fe_user->Tx_Commerce_Domain_Model_Basket->getBasketHashValue();
+		$this->basketHashValue = $GLOBALS['TSFE']->fe_user->tx_commerce_basket->getBasketHashValue();
 		$this->piVars['basketHashValue'] = $this->basketHashValue;
 		$this->imgFolder = 'uploads/tx_commerce/';
 		$this->addAdditionalLocallang();
@@ -1611,9 +1611,9 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 		}
 
 		$amount = 0;
-		if (is_object($GLOBALS['TSFE']->fe_user->Tx_Commerce_Domain_Model_Basket->basket_items[$articleId])) {
+		if (is_object($GLOBALS['TSFE']->fe_user->tx_commerce_basket->basket_items[$articleId])) {
 			/** @var  $basketItem Tx_Commerce_Domain_Model_BasketItem */
-			$basketItem = & $GLOBALS['TSFE']->fe_user->Tx_Commerce_Domain_Model_Basket->basket_items[$articleId];
+			$basketItem = & $GLOBALS['TSFE']->fe_user->tx_commerce_basket->basket_items[$articleId];
 			$amount = $basketItem->getQuantity();
 		} else {
 			if ($TSconf == FALSE) {

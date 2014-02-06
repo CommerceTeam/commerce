@@ -128,7 +128,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 	protected function init(array $conf = array()) {
 		parent::init($conf);
 
-		$this->basket = $GLOBALS['TSFE']->fe_user->Tx_Commerce_Domain_Model_Basket;
+		$this->basket = $GLOBALS['TSFE']->fe_user->tx_commerce_basket;
 		$this->basket->setTaxCalculationMethod($this->conf['priceFromNet']);
 		$this->basket->loadData();
 
