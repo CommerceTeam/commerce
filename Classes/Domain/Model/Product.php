@@ -233,7 +233,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	 * @return self
 	 */
 	public function __construct($uid, $languageUid = 0) {
-		if ((int) $uid && (int) $languageUid) {
+		if ((int) $uid) {
 			$this->init($uid, $languageUid);
 		}
 	}

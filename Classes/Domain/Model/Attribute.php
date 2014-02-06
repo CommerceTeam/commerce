@@ -109,10 +109,13 @@ class Tx_Commerce_Domain_Model_Attribute extends Tx_Commerce_Domain_Model_Abstra
 	 * Constructor class, basically calls init
 	 *
 	 * @param integer $uid
-	 * @param integer $langUid
+	 * @param integer $languageUid
+	 * @return self
 	 */
-	public function __construct($uid = 0, $langUid = 0) {
-		$this->init($uid, $langUid);
+	public function __construct($uid, $languageUid = 0) {
+		if ((int) $uid) {
+			$this->init($uid, $languageUid);
+		}
 	}
 
 	/** Constructor class, basically calls init

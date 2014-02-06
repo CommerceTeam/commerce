@@ -211,16 +211,9 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 	/**
 	 * Constructor Method, calles init method
 	 */
-	public function __construct() {
-		if ((func_num_args() > 0) && (func_num_args() <= 2)) {
-			$uid = func_get_arg(0);
-			if (func_num_args() > 1) {
-				$lang_uid = func_get_arg(1);
-			} else {
-				$lang_uid = 0;
-			}
-
-			$this->init($uid, $lang_uid);
+	public function __construct($uid, $languageUid = 0) {
+		if ((int) $uid) {
+			$this->init($uid, $languageUid);
 		}
 	}
 

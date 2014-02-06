@@ -200,7 +200,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	 * @return self
 	 */
 	public function __construct($uid, $languageUid = 0) {
-		if ((int) $uid && (int) $languageUid) {
+		if ((int) $uid) {
 			$this->init($uid, $languageUid);
 		}
 	}
@@ -696,7 +696,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	 * @return boolean TRUE, if this category has products, FALSE if not
 	 */
 	public function hasProducts() {
-		return count($this->getProductUids()) > 0;
+		return count($this->getProductUids());
 	}
 
 	/**

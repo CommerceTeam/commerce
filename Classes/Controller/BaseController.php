@@ -556,7 +556,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 
 				$tmpCategory = $this->cObj->substituteSubpart($tmpCategory, '###CATEGORY_ITEM_DETAILLINK###', $link);
 
-				if ($this->conf['groupProductsByCategory'] && !$this->conf['hideProductsInList'] && !empty($this->category_products)) {
+				if ($this->conf['groupProductsByCategory'] && !$this->conf['hideProductsInList']) {
 					$categoryProducts = $oneCategory->getProducts();
 					if ($this->conf['useStockHandling'] == 1) {
 						$categoryProducts = Tx_Commerce_Utility_GeneralUtility::removeNoStockProducts($categoryProducts, $this->conf['products.']['showWithNoStock']);
@@ -1375,7 +1375,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 	/**
 	 * Reders an element as output
 	 *
-	 * @param object $element tx_commerce_* object
+	 * @param Tx_Commerce_Domain_Model_Category|Tx_Commerce_Domain_Model_Product|Tx_Commerce_Domain_Model_Article $element tx_commerce_* object
 	 * @param string $subpartName template-subpart-name
 	 * @param array $TS TypoScript array for rendering
 	 * @param string $prefix Prefix for Marker, optional#
@@ -1396,11 +1396,10 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 
 		$output = $this->cObj->getSubpart($template, $subpartName);
 		if (empty($output)) {
-
 			return $this->error('renderElement', __LINE__, 'class.tx_commerce_pibase::renderElement: Subpart:' . $subpartName . ' not found in HTML-Code', $template);
 		}
 
-		$data = $element->return_assoc_array();
+		$data = $element->returnAssocArray();
 
 		$markerArray = $this->generateMarkerArray($data, $TS);
 

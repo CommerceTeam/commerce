@@ -120,7 +120,7 @@ class Tx_Commerce_Domain_Model_BasketItem {
 	 * @return self
 	 */
 	public function __construct($uid, $quantity, $priceid, $languageUid = 0) {
-		if ($uid && $quantity && $priceid) {
+		if ((int) $uid && $quantity && $priceid) {
 			$this->init($uid, $quantity, $priceid, $languageUid);
 		}
 	}
