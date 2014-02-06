@@ -48,14 +48,29 @@ class Tx_Commerce_ViewHelpers_Navigation {
 	 */
 	public $activeCats = array();
 
+	/**
+	 * @var array
+	 */
 	public $mConf;
 
+	/**
+	 * @var integer
+	 */
 	public $cat;
 
+	/**
+	 * @var
+	 */
 	public $tree;
 
+	/**
+	 * @var
+	 */
 	public $mTree;
 
+	/**
+	 * @var string
+	 */
 	public $out;
 
 	/**

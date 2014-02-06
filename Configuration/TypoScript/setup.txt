@@ -354,6 +354,7 @@ plugin.tx_commerce_pi1 {
 	// show one or all Artikels
 	allArticles = 1
 	hideProductsInList = 0
+	hideProductsInSubcategories = 0
 	displayTopProducts = 1
 	topProductTSMarker = Top
 	catUid = {$plugin.tx_commerce_lib.catUid}

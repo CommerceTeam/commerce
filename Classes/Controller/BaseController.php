@@ -556,7 +556,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 
 				$tmpCategory = $this->cObj->substituteSubpart($tmpCategory, '###CATEGORY_ITEM_DETAILLINK###', $link);
 
-				if ($this->conf['groupProductsByCategory'] && !$this->conf['hideProductsInList']) {
+				if ($this->conf['groupProductsByCategory'] && !$this->conf['hideProductsInList'] && !$this->conf['hideProductsInSubcategories']) {
 					$categoryProducts = $oneCategory->getProducts();
 					if ($this->conf['useStockHandling'] == 1) {
 						$categoryProducts = Tx_Commerce_Utility_GeneralUtility::removeNoStockProducts($categoryProducts, $this->conf['products.']['showWithNoStock']);
