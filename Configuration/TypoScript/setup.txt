@@ -1,3 +1,9 @@
+plugin.tx_commerce_pi1.userFunc = Tx_Commerce_Controller_ListController->main
+plugin.tx_commerce_pi2.userFunc = Tx_Commerce_Controller_BasketController->main
+plugin.tx_commerce_pi3.userFunc = Tx_Commerce_Controller_CheckoutController->main
+plugin.tx_commerce_pi4.userFunc = Tx_Commerce_Controller_AddressesController->main
+plugin.tx_commerce_pi6.userFunc = Tx_Commerce_Controller_InvoiceController->main
+
 // gerneral TS skript definition
 // could be overwritten by local definition in pi1 - pin
 
