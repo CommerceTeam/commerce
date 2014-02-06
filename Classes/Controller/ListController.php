@@ -720,7 +720,7 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 					}
 					$template_att = $this->cObj->getSubpart($template, $templateMarker[($i % $templateCount)]);
 					/** @var Tx_Commerce_Domain_Model_Article $article */
-					$article = $prod->$prod->getArticle($prod->getArticleUid($i));
+					$article = $prod->getArticle($prod->getArticleUid($i));
 					if ($this->conf['useStockHandling'] == 1 and $article->getStock() <= 0) {
 						$tempTemplate = $this->cObj->getSubpart($template, $templateMarkerNostock[($i % $templateCount)]);
 						if ($tempTemplate != '') {
