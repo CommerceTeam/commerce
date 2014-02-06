@@ -254,9 +254,6 @@ class Tx_Commerce_Domain_Model_BasicBasket {
 	 * @throws Exception
 	 */
 	public function getBasketItem($itemUid) {
-		if (!array_key_exists($itemUid, $this->basket_items)) {
-			throw new Exception('Item id does not exist in basket', 1305046736);
-		}
 		return $this->basket_items[$itemUid];
 	}
 
