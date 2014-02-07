@@ -34,6 +34,13 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 	public $extKey = COMMERCE_EXTKEY;
 
 	/**
+	 * Path to this script relative to the extension dir.
+	 *
+	 * @var string
+	 */
+	public $scriptRelPath = 'Resources/Private/Language/locallang.xml';
+
+	/**
 	 * @var string
 	 */
 	public $imgFolder = '';

@@ -40,13 +40,6 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 	public $prefixId = 'tx_commerce_pi1';
 
 	/**
-	 * Path to this script relative to the extension dir.
-	 *
-	 * @var string
-	 */
-	public $scriptRelPath = '/Resources/Private/Language/locallang.xml';
-
-	/**
 	 * @var string
 	 */
 	public $noStock = '';
@@ -636,7 +629,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 		$markerArrayGlobal = array();
 		$markerArrayGlobal = $this->addFormMarker($markerArrayGlobal);
 
-		$this->content = $this->cObj->SubstituteMarkerArray($this->content, $markerArrayGlobal, '###|###');
+		$this->content = $this->cObj->substituteMarkerArray($this->content, $markerArrayGlobal, '###|###');
 	}
 
 	/**

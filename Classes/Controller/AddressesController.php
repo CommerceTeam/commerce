@@ -38,13 +38,6 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 	public $prefixId = 'tx_commerce_pi4';
 
 	/**
-	 * Path to this script relative to the extension dir.
-	 *
-	 * @var string
-	 */
-	public $scriptRelPath = '/Resources/Private/Language/locallang.xml';
-
-	/**
 	 * @var null
 	 */
 	public $user = NULL;

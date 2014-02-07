@@ -37,13 +37,6 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 	public $prefixId = 'tx_commerce_pi1';
 
 	/**
-	 * Path to this script relative to the extension dir.
-	 *
-	 * @var string
-	 */
-	public $scriptRelPath = '/Resources/Private/Language/locallang.xml';
-
-	/**
 	 * @var boolean
 	 */
 	public $pi_checkCHash = TRUE;

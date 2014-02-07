@@ -42,13 +42,6 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	public $prefixId = 'tx_commerce_pi3';
 
 	/**
-	 * Path to this script relative to the extension dir.
-	 *
-	 * @var string
-	 */
-	public $scriptRelPath = '/Resources/Private/Language/locallang.xml';
-
-	/**
 	 * @var array
 	 */
 	public $dbFieldData = array();

@@ -37,13 +37,6 @@ class Tx_Commerce_Controller_InvoiceController extends Tx_Commerce_Controller_Ba
 	public $prefixId = 'tx_commerce_pi6';
 
 	/**
-	 * Path to this script relative to the extension dir.
-	 *
-	 * @var string
-	 */
-	public $scriptRelPath = '/Resources/Private/Language/locallang.xml';
-
-	/**
 	 * The extension key.
 	 *
 	 * @var string
