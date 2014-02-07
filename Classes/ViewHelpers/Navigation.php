@@ -562,7 +562,7 @@ class Tx_Commerce_ViewHelpers_Navigation {
 			t3lib_div::deprecationLog('
 				hook
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_db_navigation.php\'][\'sortingOrder\']
-				is deprecated since commerce 0.14.0, it will be removed in commerce 0.16.0, please use instead
+				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/ViewHelpers/Navigation.php\'][\'sortingOrder\']
 			');
 			$hookObj = & t3lib_div::getUserObj(
@@ -743,7 +743,7 @@ class Tx_Commerce_ViewHelpers_Navigation {
 			t3lib_div::deprecationLog('
 				hook
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_db_navigation.php\'][\'sortingOrder\']
-				is deprecated since commerce 0.14.0, it will be removed in commerce 0.16.0, please use instead
+				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/ViewHelpers/Navigation.php\'][\'sortingOrder\']
 			');
 			$hookObj = & t3lib_div::getUserObj(

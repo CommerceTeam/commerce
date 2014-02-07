@@ -339,7 +339,7 @@ class Tx_Commerce_Hook_CommandMapHooks {
 						t3lib_div::deprecationLog('
 							extension configuration parameter
 							attributeLokalisationType
-							is deprecated since commerce 0.14.0, it will be removed in commerce 0.16.0, please use instead
+							is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
 							attributeLocalizationType
 						');
 

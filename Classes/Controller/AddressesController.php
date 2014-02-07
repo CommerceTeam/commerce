@@ -238,7 +238,7 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 			t3lib_div::deprecationLog('
 				hook
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/pi4/class.tx_commerce_pi4.php\'][\'getListing\']
-				is deprecated since commerce 0.14.0, it will be removed in commerce 0.16.0, please use instead
+				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/AddressesController.php\'][\'getListing\']
 			');
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi4/class.tx_commerce_pi4.php']['getListing'] as $classRef) {
@@ -476,7 +476,7 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 			t3lib_div::deprecationLog('
 				hook
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/pi4/class.tx_commerce_pi4.php\'][\'getAddressFormItem\']
-				is deprecated since commerce 0.14.0, it will be removed in commerce 0.16.0, please use instead
+				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/AddressesController.php\'][\'getAddressFormItem\']
 			');
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi4/class.tx_commerce_pi4.php']['getAddressFormItem'] as $classRef) {
@@ -678,7 +678,7 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 			t3lib_div::deprecationLog('
 				hook
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/pi4/class.tx_commerce_pi4.php\'][\'deleteAddress\']
-				is deprecated since commerce 0.14.0, it will be removed in commerce 0.16.0, please use instead
+				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/AddressesController.php\'][\'deleteAddress\']
 			');
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi4/class.tx_commerce_pi4.php']['deleteAddress'] as $classRef) {
@@ -894,7 +894,7 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 			t3lib_div::deprecationLog('
 				hook
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/pi4/class.tx_commerce_pi4.php\'][\'checkAddressForm\']
-				is deprecated since commerce 0.14.0, it will be removed in commerce 0.16.0, please use instead
+				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/AddressesController.php\'][\'checkAddressForm\']
 			');
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi4/class.tx_commerce_pi4.php']['checkAddressForm'] as $classRef) {
@@ -1030,7 +1030,7 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 			t3lib_div::deprecationLog('
 				hook
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/pi4/class.tx_commerce_pi4.php\'][\'saveAddress\']
-				is deprecated since commerce 0.14.0, it will be removed in commerce 0.16.0, please use instead
+				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/AddressesController.php\'][\'saveAddress\']
 			');
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi4/class.tx_commerce_pi4.php']['saveAddress'] as $classRef) {
@@ -1137,7 +1137,7 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 			t3lib_div::deprecationLog('
 				hook
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/pi4/class.tx_commerce_pi4.php\'][\'getAddresses\']
-				is deprecated since commerce 0.14.0, it will be removed in commerce 0.16.0, please use instead
+				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/AddressesController.php\'][\'getAddresses\']
 			');
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi4/class.tx_commerce_pi4.php']['getAddresses'] as $classRef) {

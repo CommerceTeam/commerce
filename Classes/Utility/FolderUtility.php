@@ -62,7 +62,7 @@ class Tx_Commerce_Utility_FolderUtility {
 			t3lib_div::deprecationLog('
 				hook
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/class.tx_commerce_create_folder.php\'][\'postcreatefolder\']
-				is deprecated since commerce 0.14.0, it will be removed in commerce 0.16.0 as no method was used
+				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0 as no method was used
 			');
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/class.tx_commerce_create_folder.php']['postcreatefolder'] as $classRef) {
 				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
@@ -90,7 +90,7 @@ class Tx_Commerce_Utility_FolderUtility {
 			t3lib_div::deprecationLog('
 				hook
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/class.tx_commerce_create_folder.php\'][\'precreatesyscategory\']
-				is deprecated since commerce 0.14.0, it will be removed in commerce 0.16.0 as no method was used
+				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0 as no method was used
 			');
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/class.tx_commerce_create_folder.php']['precreatesyscategory'] as $classRef) {
 				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
@@ -108,7 +108,7 @@ class Tx_Commerce_Utility_FolderUtility {
 			t3lib_div::deprecationLog('
 				hook
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/class.tx_commerce_create_folder.php\'][\'postcreatesyscategory\']
-				is deprecated since commerce 0.14.0, it will be removed in commerce 0.16.0 as no method was used
+				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0 as no method was used
 			');
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/class.tx_commerce_create_folder.php']['postcreatesyscategory'] as $classRef) {
 				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
@@ -124,7 +124,7 @@ class Tx_Commerce_Utility_FolderUtility {
 			t3lib_div::deprecationLog('
 				hook
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/class.tx_commerce_create_folder.php\'][\'postcreatediliveryarticles\']
-				is deprecated since commerce 0.14.0, it will be removed in commerce 0.16.0 as no method was used
+				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0 as no method was used
 			');
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/class.tx_commerce_create_folder.php']['postcreatediliveryarticles'] as $classRef) {
 				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
