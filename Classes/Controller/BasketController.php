@@ -895,7 +895,15 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 		/** @var Tx_Commerce_Domain_Model_BasketItem $basketItem */
 		$basketItem = $this->basket->getBasketItem($article->getUid());
 
-		$markerArray = $article->getMarkerArray($this->cObj, $this->conf['articleTS.'], 'article_');
+		$tmpArray = $this->generateMarkerArray($article->returnAssocArray('article_'), $this->conf['articleTS.']);
+		$markerArray = array();
+		foreach ($tmpArray as $key => $value) {
+			if (strpos($key, '#') === FALSE) {
+				$markerArray['###' . $key . '###'] = $value;
+			}
+		}
+		unset($tmpArray);
+
 		$markerArray['###ARTICLE_SELECT_ATTRIBUTES###'] = $attCode;
 		$markerArray['###ARTICLE_UID###'] = $article->getUid();
 		$markerArray['###STARTFRM###'] = '<form name="basket_' . $article->getUid() . '" action="' .

@@ -372,9 +372,8 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 
 
 	/**
-	 * depricated, use tx_commerce_pibase->renderrow in combinintion with
-	 * $this->return_assoc_array
-	 *     Renders    values from fieldlist to markers
+	 * Renders values from fieldlist to markers
+	 *
 	 * @param tslib_cObj &$cobj refference to cobj class
 	 * @param array $conf configuration for this viewmode to render cObj
 	 * @param string $prefix optinonal prefix for marker

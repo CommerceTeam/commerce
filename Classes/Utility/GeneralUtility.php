@@ -92,7 +92,7 @@ class Tx_Commerce_Utility_GeneralUtility {
 			}
 
 			$GLOBALS['TSFE']->fe_user->tx_commerce_basket = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Basket');
-			$GLOBALS['TSFE']->fe_user->tx_commerce_basket->set_session_id($BasketID);
+			$GLOBALS['TSFE']->fe_user->tx_commerce_basket->setSessionId($BasketID);
 			$GLOBALS['TSFE']->fe_user->tx_commerce_basket->loadData();
 		}
 	}
