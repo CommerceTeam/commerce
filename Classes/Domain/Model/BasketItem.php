@@ -172,6 +172,7 @@ class Tx_Commerce_Domain_Model_BasketItem {
 
 			$this->priceid = $priceid;
 
+			/** @var Tx_Commerce_Domain_Model_ArticlePrice $price */
 			$price = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_ArticlePrice');
 			$price->init($priceid, $this->lang_uid);
 			$price->loadData('basket');
@@ -585,7 +586,7 @@ class Tx_Commerce_Domain_Model_BasketItem {
 	 *
 	 * @param $useValues boolean Use the stored values instead of calculating gross or net price
 	 * @return void
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use recalculateItemSums instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use recalculateItemSums instead
 	 */
 	public function recalculate_item_sums($useValues = FALSE) {
 		t3lib_div::logDeprecatedFunction();
@@ -597,7 +598,7 @@ class Tx_Commerce_Domain_Model_BasketItem {
 	 *
 	 * @param $useValues boolean Use the stored values instead of calculating gross or net price
 	 * @return integer gross_sum
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use calculateGrossSum instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use calculateGrossSum instead
 	 */
 	public function calculate_gross_sum($useValues = FALSE) {
 		t3lib_div::logDeprecatedFunction();
@@ -609,7 +610,7 @@ class Tx_Commerce_Domain_Model_BasketItem {
 	 *
 	 * @param $useValues boolean Use the stored values instead of calculating gross or net price
 	 * @return integer net_sum
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use calculateNetSum instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use calculateNetSum instead
 	 */
 	public function calculate_net_sum($useValues = FALSE) {
 		t3lib_div::logDeprecatedFunction();
@@ -621,7 +622,7 @@ class Tx_Commerce_Domain_Model_BasketItem {
 	 *
 	 * @param quanitity
 	 * @return true
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use changeQuantity instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use changeQuantity instead
 	 */
 	public function change_quantity($quantity) {
 		t3lib_div::logDeprecatedFunction();
@@ -632,7 +633,7 @@ class Tx_Commerce_Domain_Model_BasketItem {
 	 * gets the uid from the article
 	 *
 	 * @return integer uid
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getArticleUid instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getArticleUid instead
 	 */
 	public function get_article_uid() {
 		t3lib_div::logDeprecatedFunction();
@@ -643,7 +644,7 @@ class Tx_Commerce_Domain_Model_BasketItem {
 	 * gets the tax from the article
 	 *
 	 * @return float percantage of tax
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getTax instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getTax instead
 	 */
 	public function get_tax() {
 		t3lib_div::logDeprecatedFunction();
@@ -654,7 +655,7 @@ class Tx_Commerce_Domain_Model_BasketItem {
 	 * gets the price_gross from thhe article
 	 *
 	 * @return integer
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getPriceGross instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getPriceGross instead
 	 */
 	public function get_price_gross() {
 		t3lib_div::logDeprecatedFunction();
@@ -665,7 +666,7 @@ class Tx_Commerce_Domain_Model_BasketItem {
 	 * gets the uid from thhe article
 	 *
 	 * @return integer uid
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getPriceUid instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getPriceUid instead
 	 */
 	public function get_price_uid() {
 		t3lib_div::logDeprecatedFunction();
@@ -677,7 +678,7 @@ class Tx_Commerce_Domain_Model_BasketItem {
 	 *
 	 * @param boolean $recalculate if the sum should be recalculated, default false
 	 * @return integer item sum net
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getItemSumNet instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getItemSumNet instead
 	 */
 	public function get_item_sum_net($recalculate = FALSE) {
 		t3lib_div::logDeprecatedFunction();
@@ -687,7 +688,7 @@ class Tx_Commerce_Domain_Model_BasketItem {
 	/**
 	 * @param boolean $recalculate
 	 * @return integer
-	 * @deprecated since 2011-05-11 this function will be removed in commerce 0.16.0, please use getItemSumGross instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getItemSumGross instead
 	 */
 	public function get_item_sum_gross($recalculate = FALSE) {
 		t3lib_div::logDeprecatedFunction();
@@ -699,7 +700,7 @@ class Tx_Commerce_Domain_Model_BasketItem {
 	 *
 	 * @param boolean $recalculate if the sum shoudl be recalculated, defaul false
 	 * @return integer item sum gross
-	 * @deprecated since 2011-05-11 this function will be removed in commerce 0.16.0, please use getItemSumTax instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getItemSumTax instead
 	 */
 	public function get_item_sum_tax($recalculate = FALSE) {
 		t3lib_div::logDeprecatedFunction();
@@ -712,7 +713,7 @@ class Tx_Commerce_Domain_Model_BasketItem {
 	 * @param string $prefix Prefix for the keys or returnung array optional
 	 * @return array
 	 * @see tx_commerce_article <- Tx_Commerce_Domain_Model_AbstractEntity
-	 * @deprecated since 2011-05-11 this function will be removed in commerce 0.16.0, please use getArticleAssocArray instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getArticleAssocArray instead
 	 */
 	public function get_article_assoc_array($prefix = '') {
 		t3lib_div::logDeprecatedFunction();
@@ -725,7 +726,7 @@ class Tx_Commerce_Domain_Model_BasketItem {
 	 * @param string $prefix Prefix for the keys or returnung array optional
 	 * @return array
 	 * @see tx_commerce_product <- Tx_Commerce_Domain_Model_AbstractEntity
-	 * @deprecated since 2011-05-11 this function will be removed in commerce 0.16.0, please use getProductAssocArray instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getProductAssocArray instead
 	 */
 	public function get_product_assoc_array($prefix = '') {
 		t3lib_div::logDeprecatedFunction();
@@ -737,7 +738,7 @@ class Tx_Commerce_Domain_Model_BasketItem {
 	 *
 	 * @param string $prefix Prefix for the keys or returnung array optional
 	 * @return array
-	 * @deprecated since 2011-05-11 this function will be removed in commerce 0.16.0, please use getArrayOfAssocArray instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getArrayOfAssocArray instead
 	 */
 	public function get_array_of_assoc_array($prefix = '') {
 		t3lib_div::logDeprecatedFunction();
@@ -746,7 +747,7 @@ class Tx_Commerce_Domain_Model_BasketItem {
 
 	/**
 	 * @return integer
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getPriceNet instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getPriceNet instead
 	 */
 	public function get_price_net() {
 		t3lib_div::logDeprecatedFunction();
@@ -757,7 +758,7 @@ class Tx_Commerce_Domain_Model_BasketItem {
 	 * gets the article Type uid
 	 *
 	 * @return integer article type uid
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getArticleTypeUid instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getArticleTypeUid instead
 	 */
 	public function get_article_article_type_uid() {
 		t3lib_div::logDeprecatedFunction();
@@ -768,7 +769,7 @@ class Tx_Commerce_Domain_Model_BasketItem {
 	 * gets the quantity from thos item
 	 *
 	 * @return integer
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getQuantity instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getQuantity instead
 	 */
 	public function get_quantity() {
 		t3lib_div::logDeprecatedFunction();

@@ -969,10 +969,10 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends localRecordList {
 		$moduleConfig = t3lib_BEfunc::getModTSconfig($id, 'mod.txcommerceM1_orders');
 
 		if ($moduleConfig['properties']['delProdUid']) {
-			t3lib_div::deprecationLog('mod.txcommerceM1_orders.delProdUid is deprecated since commerce 0.14.0, this setting will be removed in commerce 0.16.0, please use mod.txcommerceM1_orders.deliveryProductUid instead');
+			t3lib_div::deprecationLog('mod.txcommerceM1_orders.delProdUid is deprecated since commerce 1.0.0, this setting will be removed in commerce 1.4.0, please use mod.txcommerceM1_orders.deliveryProductUid instead');
 		}
 		if ($moduleConfig['properties']['payProdUid']) {
-			t3lib_div::deprecationLog('mod.txcommerceM1_orders.payProdUid is deprecated since commerce 0.14.0, this setting will be removed in commerce 0.16.0, please use mod.txcommerceM1_orders.paymentProductUid instead');
+			t3lib_div::deprecationLog('mod.txcommerceM1_orders.payProdUid is deprecated since commerce 1.0.0, this setting will be removed in commerce 1.4.0, please use mod.txcommerceM1_orders.paymentProductUid instead');
 		}
 
 		$deliveryProductUid = $moduleConfig['properties']['delProdUid'] ?

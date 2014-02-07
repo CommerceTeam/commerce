@@ -188,7 +188,7 @@ class Tx_Commerce_Domain_Model_AttributeValue extends Tx_Commerce_Domain_Model_A
 	 * Gets the showicon value
 	 *
 	 * @return integer
-	 * @deprecated since 2011-05-12 this function will be removed in commerce 0.16.0, never was returning a value
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, never was returning a value
 	 * remove $this->showicon with this method
 	 */
 	public function getshowicon() {
@@ -200,7 +200,7 @@ class Tx_Commerce_Domain_Model_AttributeValue extends Tx_Commerce_Domain_Model_A
 	 * Overwrite get_attributes as attribute_values can't have attributes
 	 *
 	 * @return boolean FALSE
-	 * @deprecated since 2011-05-12 this function will be removed in commerce 0.16.0, please use getValue
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getValue
 	 */
 	public function get_attributes() {
 		t3lib_div::logDeprecatedFunction();
@@ -210,7 +210,7 @@ class Tx_Commerce_Domain_Model_AttributeValue extends Tx_Commerce_Domain_Model_A
 	/**
 	 * @param boolean $checkvalue
 	 * @return string
-	 * @deprecated since 2011-05-12 this function will be removed in commerce 0.16.0, please use getValue
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getValue
 	 */
 	public function get_value($checkvalue) {
 		t3lib_div::logDeprecatedFunction();

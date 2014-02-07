@@ -1200,7 +1200,7 @@ class Tx_Commerce_Utility_BackendUtility {
 	 * save Price-Flexform with given Article-UID
 	 *
 	 * @return boolean Status of method
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, this wont get replaced as it was empty before and will get removed from the api
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, this wont get replaced as it was empty before and will get removed from the api
 	 */
 	public function savePriceFlexformWithArticle() {
 		t3lib_div::logDeprecatedFunction();
@@ -1301,7 +1301,7 @@ class Tx_Commerce_Utility_BackendUtility {
 	 * @param integer $article_uid
 	 * @return void
 	 * @see updatePriceXMLFromDatabase
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use Tx_Commerce_Utility_BackendUtility::updatePriceXMLFromDatabase
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use Tx_Commerce_Utility_BackendUtility::updatePriceXMLFromDatabase
 	 */
 	public function fix_articles_price($article_uid = 0) {
 		t3lib_div::logDeprecatedFunction();
@@ -1316,7 +1316,7 @@ class Tx_Commerce_Utility_BackendUtility {
 	 * updated the Flexform
 	 *
 	 * @param integer $product_uid
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use Tx_Commerce_Utility_BackendUtility::updateXML
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use Tx_Commerce_Utility_BackendUtility::updateXML
 	 */
 	public function fix_product_atributte($product_uid = 0) {
 		t3lib_div::logDeprecatedFunction();
@@ -2376,7 +2376,7 @@ class Tx_Commerce_Utility_BackendUtility {
 	 *
 	 * @param integer $category_uid
 	 * @return void
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use updateXML instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use updateXML instead
 	 */
 	public function fix_category_atributte($category_uid = 0) {
 		t3lib_div::logDeprecatedFunction();

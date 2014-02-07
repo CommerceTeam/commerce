@@ -421,10 +421,10 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 			$this->product->loadData();
 
 			if ($this->product->isAccessible()) {
-				$this->select_attributes = $this->product->get_attributes(array(ATTRIB_SELECTOR));
-				$this->product_attributes = $this->product->get_attributes(array(ATTRIB_PRODUCT));
-				$this->can_attributes = $this->product->get_attributes(array(ATTRIB_CAN));
-				$this->shall_attributes = $this->product->get_attributes(array(ATTRIB_SHAL));
+				$this->select_attributes = $this->product->getAttributes(array(ATTRIB_SELECTOR));
+				$this->product_attributes = $this->product->getAttributes(array(ATTRIB_PRODUCT));
+				$this->can_attributes = $this->product->getAttributes(array(ATTRIB_CAN));
+				$this->shall_attributes = $this->product->getAttributes(array(ATTRIB_SHAL));
 				$this->product_array = $this->product->returnAssocArray();
 				$this->product->loadArticles();
 
@@ -436,7 +436,7 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 					$this->product->setPageTitle();
 				}
 
-				$this->master_cat = $this->product->get_masterparent_categorie();
+				$this->master_cat = $this->product->getMasterparentCategory();
 
 					// Write the current page to the session to have a back to last product link
 				$GLOBALS['TSFE']->fe_user->setKey('ses', 'tx_commerce_lastproducturl', $this->pi_linkTP_keepPIvars_url());
@@ -759,7 +759,10 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 							'_changed\').value = ' . $attrUid . ';document.getElementById(\'attList_' . $prod->getUid() . '\').submit();';
 						$markerArray['###SELECT_ATTRIBUTES_HTML_ELEMENT_KEY###'] = $this->prefixId . '_' . $attrUid;
 						$markerArray['###SELECT_ATTRIBUTES_HTML_ELEMENT_NAME###'] = $this->prefixId . '[attsel_' . $attrUid . ']';
-							// @deprecated set to '' for old installation, will be removed in the next release
+
+						if (strpos($templateAttrSelector, '###SELECT_ATTRIBUTES_ITEM_TEXT_ALL###') !== FALSE) {
+							t3lib_div::deprecationLog('marker ###SELECT_ATTRIBUTES_ITEM_TEXT_ALL### is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0');
+						}
 						$markerArray['###SELECT_ATTRIBUTES_ITEM_TEXT_ALL###'] = '';
 						$markerArray['###SELECT_ATTRIBUTES_UNIT###'] = $attributeObj->getUnit();
 
@@ -790,7 +793,9 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 								$markerArrayItem['###SELECT_ATTRIBUTES_VALUE_STATUS###'] = '';
 							}
 
-								// @deprecated, used for backwards compatibility
+							if (strpos($templateAttrSelector, '###SELECT_ATTRIBUTES_ITEM_TEXT_ALL###') !== FALSE) {
+								t3lib_div::deprecationLog('marker ###SELECT_ATTRIBUTES_VALUE_SELECTED### is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use ###SELECT_ATTRIBUTES_VALUE_STATUS### instead');
+							}
 							$markerArrayItem['###SELECT_ATTRIBUTES_VALUE_SELECTED###'] = $markerArrayItem['###SELECT_ATTRIBUTES_VALUE_STATUS###'];
 							foreach ($hookObjectsArr as $hookObj) {
 								if (method_exists($hookObj, 'additionalAttributeMarker')) {

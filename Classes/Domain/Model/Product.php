@@ -1391,7 +1391,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	/**
 	 * @param array|boolean $attributeArray
 	 * @return array|boolean
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, is not used in commerce
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, is not used in commerce
 	 */
 	public function getRelevantArticles($attributeArray = FALSE) {
 		t3lib_div::logDeprecatedFunction();
@@ -1444,7 +1444,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	 * @param boolean $showHiddenValues Wether or net hidden values should be shown
 	 * @param string $sortingTable Default order by of attributes
 	 * @return boolean|array
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getSelectAttributeMatrix instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getSelectAttributeMatrix instead
 	 */
 	public function get_selectattribute_matrix($articleList = FALSE, $attribute_include = FALSE, $showHiddenValues = TRUE, $sortingTable = 'tx_commerce_articles_article_attributes_mm') {
 		t3lib_div::logDeprecatedFunction();
@@ -1457,7 +1457,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	 * @param attribute_UID
 	 * @param attribute_value
 	 * @return array of article uids
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getArticlesByAttribute instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getArticlesByAttribute instead
 	 */
 	public function get_Articles_by_Attribute($attributeUid, $attributeValue) {
 		t3lib_div::logDeprecatedFunction();
@@ -1474,7 +1474,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	 * 		)
 	 * @param boolean|integer $proofUid Proof if script is running without instance and so without a single product
 	 * @return array of article uids
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getArticlesByAttributeArray instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getArticlesByAttributeArray instead
 	 */
 	public function get_Articles_by_AttributeArray($attribute_Array, $proofUid = 1) {
 		t3lib_div::logDeprecatedFunction();
@@ -1486,7 +1486,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	 *
 	 * @param array $array1 Left
 	 * @param array $array2 Right
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, is not used in commerce
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, is not used in commerce
 	 */
 	public static function compareBySorting($array1, $array2) {
 		t3lib_div::logDeprecatedFunction();
@@ -1497,7 +1497,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	 * Get l18n overlays of this product
 	 *
 	 * @return array l18n overlay objects
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getL18nProducts instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getL18nProducts instead
 	 */
 	public function get_l18n_products() {
 		t3lib_div::logDeprecatedFunction();
@@ -1508,7 +1508,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	 * Get number of articles of this product
 	 *
 	 * @return integer Number of articles
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getArticlesCount instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getArticlesCount instead
 	 */
 	public function getNumberOfArticles() {
 		t3lib_div::logDeprecatedFunction();
@@ -1519,7 +1519,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	 * Returns the product teaser
 	 *
 	 * @return string Product teaser
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getTeaser instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getTeaser instead
 	 */
 	public function get_teaser() {
 		t3lib_div::logDeprecatedFunction();
@@ -1530,7 +1530,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	 * Return Product description
 	 *
 	 * @return string Product description
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getDescription instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getDescription instead
 	 */
 	public function get_description() {
 		t3lib_div::logDeprecatedFunction();
@@ -1541,7 +1541,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	 * Return product subtitle
 	 *
 	 * @return string Product subtitle
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getSubtitle instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getSubtitle instead
 	 */
 	public function get_subtitle() {
 		t3lib_div::logDeprecatedFunction();
@@ -1552,7 +1552,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	 * Returns the uid of the live version of this product
 	 *
 	 * @return integer UID of live version of this product
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getT3verOid instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getT3verOid instead
 	 */
 	public function get_t3ver_oid() {
 		t3lib_div::logDeprecatedFunction();
@@ -1563,7 +1563,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	 * Return product pid
 	 *
 	 * @return integer Product pid
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getPid instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getPid instead
 	 */
 	public function get_pid() {
 		t3lib_div::logDeprecatedFunction();
@@ -1574,7 +1574,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	 * Get category master parent category
 	 *
 	 * @return integer uid of master parent category
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getMasterparentCategory instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getMasterparentCategory instead
 	 */
 	public function getMasterparentCategorie() {
 		t3lib_div::logDeprecatedFunction();
@@ -1586,7 +1586,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	 *
 	 * @return string Product title
 	 * @access public
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getTitle instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getTitle instead
 	 */
 	public function get_title() {
 		t3lib_div::logDeprecatedFunction();
@@ -1596,7 +1596,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	/**
 	 * Gets the category master parent
 	 *
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getMasterparentCategory instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getMasterparentCategory instead
 	 */
 	public function get_masterparent_categorie() {
 		t3lib_div::logDeprecatedFunction();
@@ -1607,7 +1607,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	 * Get all parent categories
 	 * @return array Uids of categories
 	 *
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getImages instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getImages instead
 	 */
 	public function get_parent_categories() {
 		t3lib_div::logDeprecatedFunction();
@@ -1617,7 +1617,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	/**
 	 * Returns an Array of Images
 	 *
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getImages instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getImages instead
 	 */
 	public function get_images() {
 		t3lib_div::logDeprecatedFunction();
@@ -1627,7 +1627,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	/**
 	 * Sets a short description
 	 *
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use typoscript instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use typoscript instead
 	 */
 	public function set_leng_description($leng = 150) {
 		t3lib_div::logDeprecatedFunction();
@@ -1638,7 +1638,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	 * Returns the attribute matrix
 	 *
 	 * @see getAttributeMatrix()
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getAttributeMatrix instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getAttributeMatrix instead
 	 */
 	public function get_attribute_matrix($articleList = FALSE, $attribute_include = FALSE, $showHiddenValues = TRUE, $sortingTable = 'tx_commerce_articles_article_attributes_mm', $fallbackToDefault = FALSE) {
 		t3lib_div::logDeprecatedFunction();
@@ -1649,7 +1649,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	 * Returns the attribute matrix
 	 *
 	 * @see getAttributeMatrix()
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getAttributeMatrix instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getAttributeMatrix instead
 	 */
 	public function get_atrribute_matrix($articleList = FALSE, $attribute_include = FALSE, $showHiddenValues = TRUE, $sortingTable = 'tx_commerce_articles_article_attributes_mm') {
 		t3lib_div::logDeprecatedFunction();
@@ -1660,7 +1660,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	 * Returns the attribute matrix
 	 *
 	 * @see getAttributeMatrix()
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getAttributeMatrix instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getAttributeMatrix instead
 	 */
 	public function get_product_attribute_matrix($attribute_include = FALSE, $showHiddenValues = TRUE, $sortingTable = 'tx_commerce_products_attributes_mm') {
 		t3lib_div::logDeprecatedFunction();
@@ -1671,7 +1671,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	 * Generates a Matrix fro these concerning products for all Attributes and the values therfor
 	 *
 	 * @see getAttributeMatrix()
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getAttributeMatrix instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getAttributeMatrix instead
 	 */
 	public function get_product_atrribute_matrix($attribute_include = FALSE, $showHiddenValues = TRUE, $sortingTable = 'tx_commerce_products_attributes_mm') {
 		t3lib_div::logDeprecatedFunction();
@@ -1680,7 +1680,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 
 	/**
 	 * @see tx_comemrce_product::getARticleUids();
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getArticleUids instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getArticleUids instead
 	 */
 	public function getArticles() {
 		t3lib_div::logDeprecatedFunction();
@@ -1691,7 +1691,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	 * Load article list of this product and store in private class variable
 	 *
 	 * @return array Article uids
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use loadArticles instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use loadArticles instead
 	 */
 	public function load_articles() {
 		t3lib_div::logDeprecatedFunction();

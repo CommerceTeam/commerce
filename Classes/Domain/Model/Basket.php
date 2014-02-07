@@ -179,7 +179,7 @@ class Tx_Commerce_Domain_Model_Basket extends Tx_Commerce_Domain_Model_BasicBask
 				t3lib_div::deprecationLog('
 					hook
 					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_basket.php\'][\'load_data_from_database\']
-					is deprecated since commerce 0.14.0, this hook will be removed in commerce 0.16.0, please use instead
+					is deprecated since commerce 1.0.0, this hook will be removed in commerce 1.4.0, please use instead
 					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Domain/Model/Basket.php\'][\'loadDataFromDatabase\']
 				');
 				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_basket.php']['load_data_from_database'] as $classRef) {
@@ -309,7 +309,7 @@ class Tx_Commerce_Domain_Model_Basket extends Tx_Commerce_Domain_Model_BasicBask
 			t3lib_div::deprecationLog('
 				hook
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_basket.php\'][\'store_data_to_database\']
-				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
+				is deprecated since commerce 1.0.0, this hook will be removed in commerce 1.4.0, please use instead
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Domain/Model/Basket.php\'][\'storeDataToDatabase\']
 			');
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_basket.php']['store_data_to_database'] as $classRef) {
@@ -354,7 +354,7 @@ class Tx_Commerce_Domain_Model_Basket extends Tx_Commerce_Domain_Model_BasicBask
 						t3lib_div::deprecationLog('
 							hook
 							$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_basket.php\'][\'store_data_to_database\']
-							is deprecated since commerce 0.14.0, this hook will be removed in commerce 0.16.0, please use instead
+							is deprecated since commerce 1.0.0, this hook will be removed in commerce 1.4.0, please use instead
 							$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_basket.php\'][\'storeDataToDatabase\']
 						');
 						$insertData = $hookObj->store_data_to_database($oneItem, $insertData);
@@ -380,7 +380,7 @@ class Tx_Commerce_Domain_Model_Basket extends Tx_Commerce_Domain_Model_BasicBask
 	 * Loads basket data from database
 	 *
 	 * @return void
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use loadDataFromDatabase instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use loadDataFromDatabase instead
 	 */
 	protected function load_data_from_database() {
 		t3lib_div::logDeprecatedFunction();
@@ -391,7 +391,7 @@ class Tx_Commerce_Domain_Model_Basket extends Tx_Commerce_Domain_Model_BasicBask
 	 * Store basket data to database
 	 *
 	 * @return void
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use storeDataToDatabase instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use storeDataToDatabase instead
 	 */
 	protected function store_data_to_database() {
 		t3lib_div::logDeprecatedFunction();
@@ -404,7 +404,7 @@ class Tx_Commerce_Domain_Model_Basket extends Tx_Commerce_Domain_Model_BasicBask
 	 * Only database storage is implemented until now
 	 *
 	 * @return void
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use storeData instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use storeData instead
 	 */
 	public function store_data() {
 		t3lib_div::logDeprecatedFunction();
@@ -416,7 +416,7 @@ class Tx_Commerce_Domain_Model_Basket extends Tx_Commerce_Domain_Model_BasicBask
 	 *
 	 * @param string $sessionId Session ID
 	 * @return void
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use setSessionId instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use setSessionId instead
 	 */
 	public function set_session_id($sessionId) {
 		t3lib_div::logDeprecatedFunction();
@@ -427,7 +427,7 @@ class Tx_Commerce_Domain_Model_Basket extends Tx_Commerce_Domain_Model_BasicBask
 	 * Returns the session ID
 	 *
 	 * @return string
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getSessionId instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getSessionId instead
 	 */
 	public function get_session_id() {
 		t3lib_div::logDeprecatedFunction();

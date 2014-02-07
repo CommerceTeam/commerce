@@ -753,25 +753,22 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 		$typoLinkConf['additionalParams'] .= ini_get('arg_separator.output') . $this->prefixId . '[catUid]=' . $this->cat;
 
 		if ($priceid == TRUE) {
-			$markerArray['ARTICLE_HIDDENFIELDS'] .= '<input type="hidden" name="' . $this->prefixId . '[artAddUid][' .
-				$article->getUid() . '][price_id]" value="' . $article->getPriceUid() . '" />';
-			$markerArray['HIDDENFIELDS'] .= '<input type="hidden" name="' . $this->prefixId . '[artAddUid][' .
-				$article->getUid() . '][price_id]" value="' . $article->getPriceUid() . '" />';
-			$typoLinkConf['additionalParams'] .= ini_get(
-				'arg_separator.output'
-			) . $this->prefixId . '[artAddUid][' . $article->getUid() . '][price_id]=' . $article->getPriceUid();
+			$markerArray['ARTICLE_HIDDENFIELDS'] .= '<input type="hidden" name="' . $this->prefixId .
+				'[artAddUid][' . $article->getUid() . '][price_id]" value="' . $article->getPriceUid() . '" />';
+			$markerArray['HIDDENFIELDS'] .= '<input type="hidden" name="' . $this->prefixId .
+				'[artAddUid][' . $article->getUid() . '][price_id]" value="' . $article->getPriceUid() . '" />';
+			$typoLinkConf['additionalParams'] .= ini_get('arg_separator.output') . $this->prefixId .
+				'[artAddUid][' . $article->getUid() . '][price_id]=' . $article->getPriceUid();
 		} else {
-			$markerArray['HIDDENFIELDS'] .= '<input type="hidden" name="' . $this->prefixId . '[artAddUid][' .
-				$article->getUid() . '][price_id]" value="" />';
-			$markerArray['ARTICLE_HIDDENFIELDS'] .= '<input type="hidden" name="' . $this->prefixId . '[artAddUid][' .
-				$article->getUid() . '][price_id]" value="" />';
-			$typoLinkConf['additionalParams'] .= ini_get(
-				'arg_separator.output'
-			) . $this->prefixId . '[artAddUid][' . $article->getUid() . '][price_id]=';
+			$markerArray['HIDDENFIELDS'] .= '<input type="hidden" name="' . $this->prefixId .
+				'[artAddUid][' . $article->getUid() . '][price_id]" value="" />';
+			$markerArray['ARTICLE_HIDDENFIELDS'] .= '<input type="hidden" name="' . $this->prefixId .
+				'[artAddUid][' . $article->getUid() . '][price_id]" value="" />';
+			$typoLinkConf['additionalParams'] .= ini_get('arg_separator.output') . $this->prefixId .
+				'[artAddUid][' . $article->getUid() . '][price_id]=';
 		}
-		$typoLinkConf['additionalParams'] .= ini_get(
-			'arg_separator.output'
-		) . $this->prefixId . '[artAddUid][' . $article->getUid() . '][count]=1';
+		$typoLinkConf['additionalParams'] .= ini_get('arg_separator.output') . $this->prefixId .
+			'[artAddUid][' . $article->getUid() . '][count]=1';
 
 		$markerArray['LINKTOPUTINBASKET'] = $this->cObj->typoLink($this->pi_getLL('lang_addtobasketlink'), $typoLinkConf);
 
@@ -867,19 +864,18 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 		}
 
 		$templateElements = count($lineTemplate);
-		if ($templateElements > 0) {
+		if ($templateElements) {
 			/**
 			 * Get All Articles in this basket and genarte HTMl-Content per row
 			 */
 			$articleLines = '';
 			$count = 0;
+
 			/** @var $itemObj Tx_Commerce_Domain_Model_BasketItem */
 			foreach ($basketObj->getBasketItems() as $itemObj) {
 				$part = $count % $templateElements;
-				/**
-				 * Only if valid parameter
-				 */
-				if (($articletypes) && (is_array($articletypes)) && (count($articletypes) > 0)) {
+
+				if (is_array($articletypes) && count($articletypes)) {
 					if (in_array($itemObj->getArticleTypeUid(), $articletypes)) {
 						$articleLines .= $this->makeLineView($itemObj, $lineTemplate[$part]);
 					}
@@ -1540,7 +1536,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 	 * @see renderProductAttributeList
 	 * @param Tx_Commerce_Domain_Model_Product $myProduct
 	 * @return string Stringoutput for attributes
-	 * @depricated since commerce 0.14.0, this function will be removed in commerce 0.16.0, this method gets removed from the api
+	 * @depricated since commerce 1.0.0, this function will be removed in commerce 1.4.0, this method gets removed from the api
 	 */
 	public function makeproductAttributList($myProduct) {
 		t3lib_div::logDeprecatedFunction();
@@ -1557,7 +1553,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 	 * @param Tx_Commerce_Domain_Model_Product $prodObj : Object for the current product, the attributes are taken from
 	 * @param array $articleId array with articleIds for filtering attributss
 	 * @return string|boolean Stringoutput for attributes
-	 * @depricated since commerce 0.14.0, this function will be removed in commerce 0.16.0, this method gets removed from the api
+	 * @depricated since commerce 1.0.0, this function will be removed in commerce 1.4.0, this method gets removed from the api
 	 */
 	public function makeArticleAttributList(&$prodObj, $articleId = array()) {
 		t3lib_div::logDeprecatedFunction();
@@ -1579,7 +1575,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 	 * Makes the single view for the current products
 	 *
 	 * @return string the content for a single product
-	 * @depricated since commerce 0.14.0, this function will be removed in commerce 0.16.0, this method gets removed from the api
+	 * @depricated since commerce 1.0.0, this function will be removed in commerce 1.4.0, this method gets removed from the api
 	 */
 	public function makeSingleView() {
 		t3lib_div::logDeprecatedFunction();
@@ -1928,7 +1924,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 	 *
 	 * @param string $table The table to use
 	 * @return array The TCA
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, no replacement planed. this method is not used in pibase context
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, no replacement planed. this method is not used in pibase context
 	 */
 	public function makeControl($table = '') {
 		t3lib_div::logDeprecatedFunction();

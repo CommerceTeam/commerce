@@ -158,7 +158,7 @@ class Tx_Commerce_Domain_Repository_ArticleRepository extends Tx_Commerce_Domain
 	 * @param integer $count = Number of Articles for price_scale_amount, default 1
 	 * @param string $orderField
 	 * @return array of Price UID
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use Tx_Commerce_Domain_Repository_ArticleRepository::getPrices instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use Tx_Commerce_Domain_Repository_ArticleRepository::getPrices instead
 	 */
 	public function get_prices($uid, $count = 1, $orderField = 'price_net') {
 		t3lib_div::logDeprecatedFunction();
@@ -219,7 +219,7 @@ class Tx_Commerce_Domain_Repository_ArticleRepository extends Tx_Commerce_Domain
 	 *
 	 * @param integer $uid Product uid
 	 * @return array of attribute UID
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use Tx_Commerce_Domain_Repository_ArticleRepository::getAttributes instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use Tx_Commerce_Domain_Repository_ArticleRepository::getAttributes instead
 	 */
 	public function get_attributes($uid) {
 		t3lib_div::logDeprecatedFunction();

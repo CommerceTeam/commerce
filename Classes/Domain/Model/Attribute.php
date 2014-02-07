@@ -182,6 +182,7 @@ class Tx_Commerce_Domain_Model_Attribute extends Tx_Commerce_Domain_Model_Abstra
 		if ($this->attributeValuesLoaded === FALSE) {
 			if ($this->attribute_value_uids = $this->databaseConnection->getAttributeValueUids($this->uid)) {
 				foreach ($this->attribute_value_uids as $value_uid) {
+					/** @var Tx_Commerce_Domain_Model_AttributeValue $attributValue */
 					$attributValue = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_AttributeValue');
 					$attributValue->init($value_uid, $this->lang_uid);
 					$attributValue->loadData();
@@ -357,7 +358,7 @@ class Tx_Commerce_Domain_Model_Attribute extends Tx_Commerce_Domain_Model_Abstra
 	 * @param boolean|object $returnObjects
 	 * @param boolean|object $productObject
 	 * @return array
-	 * @deprecated since commerce 0.14.0, will be removed in commerce 0.15.0 - Use tx_commerce_attribute::getAllValues() instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0 - Use tx_commerce_attribute::getAllValues() instead
 	 */
 	public function get_all_values($returnObjects = FALSE, $productObject = FALSE) {
 		t3lib_div::logDeprecatedFunction();
@@ -366,7 +367,7 @@ class Tx_Commerce_Domain_Model_Attribute extends Tx_Commerce_Domain_Model_Abstra
 
 	/**
 	 * @return array
-	 * @deprecated since commerce 0.14.0, will be removed in commerce 0.15.0 - Use tx_commerce_attribute::getValues() instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0 - Use tx_commerce_attribute::getValues() instead
 	 */
 	public function get_values() {
 		t3lib_div::logDeprecatedFunction();
@@ -376,7 +377,7 @@ class Tx_Commerce_Domain_Model_Attribute extends Tx_Commerce_Domain_Model_Abstra
 	/**
 	 * @param integer $uid
 	 * @return boolean|string
-	 * @deprecated since commerce 0.14.0, will be removed in commerce 0.15.0 - Use tx_commerce_attribute::getValue() instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0 - Use tx_commerce_attribute::getValue() instead
 	 */
 	public function get_value($uid) {
 		t3lib_div::logDeprecatedFunction();
@@ -385,7 +386,7 @@ class Tx_Commerce_Domain_Model_Attribute extends Tx_Commerce_Domain_Model_Abstra
 
 	/**
 	 * @return string title
-	 * @deprecated since commerce 0.14.0, will be removed in commerce 0.15.0 - Use tx_commerce_attribute::getTitle() instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0 - Use tx_commerce_attribute::getTitle() instead
 	 */
 	public function get_title() {
 		t3lib_div::logDeprecatedFunction();
@@ -396,7 +397,7 @@ class Tx_Commerce_Domain_Model_Attribute extends Tx_Commerce_Domain_Model_Abstra
 	 * Overwrite get_attributes as attributes cant hav attributes
 	 *
 	 * @return boolean
-	 * @deprecated since commerce 0.14.0, will be removed in commerce 0.15.0 - Use tx_commerce_attribute::getAttributes() instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0 - Use tx_commerce_attribute::getAttributes() instead
 	 */
 	public function get_attributes() {
 		t3lib_div::logDeprecatedFunction();
@@ -405,7 +406,7 @@ class Tx_Commerce_Domain_Model_Attribute extends Tx_Commerce_Domain_Model_Abstra
 
 	/**
 	 * @return string unit
-	 * @deprecated since commerce 0.14.0, will be removed in commerce 0.15.0 - Use tx_commerce_attribute::getUnit() instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0 - Use tx_commerce_attribute::getUnit() instead
 	 */
 	public function get_unit() {
 		t3lib_div::logDeprecatedFunction();

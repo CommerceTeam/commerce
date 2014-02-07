@@ -759,7 +759,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	 * Creates a checkbox that has to be toggled for creating a new price for an article.
 	 * The handling for creating the new price is inside the tcehooks
 	 *
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, this wont get replaced as it was removed from the api
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, this wont get replaced as it was removed from the api
 	 */
 	public function createNewPriceCB($PA) {
 		t3lib_div::logDeprecatedFunction();
@@ -777,7 +777,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	/**
 	 * Creates ...
 	 *
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, this wont get replaced as it was removed from the api
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, this wont get replaced as it was removed from the api
 	 */
 	public function createNewScalePricesCount($PA) {
 		t3lib_div::logDeprecatedFunction();
@@ -789,7 +789,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	/**
 	 * Creates ...
 	 *
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, this wont get replaced as it was removed from the api
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, this wont get replaced as it was removed from the api
 	 */
 	public function createNewScalePricesSteps($PA) {
 		t3lib_div::logDeprecatedFunction();
@@ -801,7 +801,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	/**
 	 * Creates ...
 	 *
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, this wont get replaced as it was removed from the api
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, this wont get replaced as it was removed from the api
 	 */
 	public function createNewScalePricesStartAmount($PA) {
 		t3lib_div::logDeprecatedFunction();
@@ -813,7 +813,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	/**
 	 * Creates a delete button that is assigned to a price. If the button is pressed the price will be deleted from the article
 	 *
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, this wont get replaced as it was removed from the api
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, this wont get replaced as it was removed from the api
 	 */
 	public function deletePriceButton($PA, $fObj) {
 		t3lib_div::logDeprecatedFunction();

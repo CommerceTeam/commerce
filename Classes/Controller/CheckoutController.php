@@ -644,6 +644,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			$amConf['addressPid'] = $this->conf['addressPid'];
 
 				// Make an instance of pi4 (address management)
+			/** @var Tx_Commerce_Controller_AddressesController $addressMgm */
 			$addressMgm = t3lib_div::makeInstance('Tx_Commerce_Controller_AddressesController');
 			$addressMgm->cObj = $this->cObj;
 			$addressMgm->templateCode = $this->templateCode;
@@ -1337,10 +1338,14 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		$config = $this->conf[$typeLower . '.'];
 		$returnVal = TRUE;
 
-			// @deprecated since 0.13.14 will be removed in 0.14.0 Use
-			// ...['commerce/pi3/class.tx_commerce_pi3.php']['beforeValidateAddress']
+		t3lib_div::deprecationLog('
+			hook
+			$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/pi3/class.tx_commerce_pi3.php\'][\'bevorValidateAddress\']
+			is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
+			$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/CheckoutController.php\'][\'beforeValidateAddress\']
+		');
 		$hookObjectsArr = $this->getHookObjectArray('bevorValidateAddress');
-			// @todo remove merge after deprecated hook is removed
+			// @todo remove merge after above hook is removed
 		$hookObjectsArr = array_merge($hookObjectsArr, $this->getHookObjectArray('beforeValidateAddress'));
 
 		$this->debug($config, 'TS Config', __FILE__ . ' ' . __LINE__);

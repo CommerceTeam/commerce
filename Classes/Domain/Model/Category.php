@@ -766,7 +766,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	 *
 	 * @param boolean|integer $depth Maximum depth for going recursive
 	 * @return array List of category uids
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getChildCategoriesUidlist instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getChildCategoriesUidlist instead
 	 */
 	public function get_rec_child_categories_uidlist($depth = FALSE) {
 		t3lib_div::logDeprecatedFunction();
@@ -777,7 +777,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	 * Returns all category ID's above this uid
 	 *
 	 * @return array List of category uids
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getParentCategoriesUidlist instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getParentCategoriesUidlist instead
 	 */
 	public function get_categorie_rootline_uidlist() {
 		t3lib_div::logDeprecatedFunction();
@@ -789,7 +789,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	 *
 	 * @param boolean|integer $depth maximum deepth for going recursive, if not set go for maximum
 	 * @return boolean Returns TRUE, if category/subcategories hav active products
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use hasProductsInSubCategories instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use hasProductsInSubCategories instead
 	 */
 	public function ProductsBelowCategory($depth = FALSE) {
 		t3lib_div::logDeprecatedFunction();
@@ -800,7 +800,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	 * Returns an array with the different l18n for the category
 	 *
 	 * @return array Categories
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getTyposcritConfig instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getTyposcritConfig instead
 	 */
 	public function get_l18n_categories() {
 		t3lib_div::logDeprecatedFunction();
@@ -811,7 +811,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	 * Returns the category TSconfig array based on the currect->rootLine
 	 *
 	 * @return array
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getTyposcritConfig instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getTyposcritConfig instead
 	 */
 	public function getCategoryTSconfig() {
 		t3lib_div::logDeprecatedFunction();
@@ -822,7 +822,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	 * Returns the number of child categories
 	 *
 	 * @return integer Number of child categories
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getChildCategoriesCount instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getChildCategoriesCount instead
 	 */
 	public function numOfChildCategories() {
 		t3lib_div::logDeprecatedFunction();
@@ -833,7 +833,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	 * Returns childproducts from the existing categories
 	 *
 	 * @return array Array og childproducts
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getChildProducts instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getChildProducts instead
 	 */
 	public function get_subproducts() {
 		t3lib_div::logDeprecatedFunction();
@@ -848,7 +848,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	 * Loads the child products in the products array
 	 *
 	 * @return array Array of products as array of products objects
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getChildProducts instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getChildProducts instead
 	 */
 	public function get_child_products() {
 		t3lib_div::logDeprecatedFunction();
@@ -859,7 +859,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	 * Returns if the actual category has subproducts
 	 *
 	 * @return boolean TRUE if the category has subproducts, FALSE if not
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use hasProducts instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use hasProducts instead
 	 */
 	public function has_subproducts() {
 		t3lib_div::logDeprecatedFunction();
@@ -874,7 +874,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	 * Returns if the actual category has subcategories
 	 *
 	 * @return boolean TRUE if the category has subcategories, FALSE if not
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use hasSubcategories instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use hasSubcategories instead
 	 */
 	public function has_subcategories() {
 		t3lib_div::logDeprecatedFunction();
@@ -885,7 +885,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	 * Returns Subcategories from the existiog categories
 	 *
 	 * @return array Array of subcategories
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getChildCategories instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getChildCategories instead
 	 */
 	public function getSubcategories() {
 		t3lib_div::logDeprecatedFunction();
@@ -900,7 +900,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	 * Loads the child categories in the categories array
 	 *
 	 * @return array of categories as array of category objects
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getChildCategories instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getChildCategories instead
 	 */
 	public function get_child_categories() {
 		t3lib_div::logDeprecatedFunction();
@@ -913,7 +913,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	 *
 	 * @param string $separator default '-'
 	 * @return string Category path segment
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getCategoryPath instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getCategoryPath instead
 	 */
 	public function get_category_path($separator = ',') {
 		t3lib_div::logDeprecatedFunction();
@@ -924,7 +924,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	 * Returns the category keywords
 	 *
 	 * @return string Keywords;
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getKeywords instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getKeywords instead
 	 */
 	public function get_keywords() {
 		t3lib_div::logDeprecatedFunction();
@@ -935,7 +935,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	 * Loads the parent category in the parent-category variable
 	 *
 	 * @return Tx_Commerce_Domain_Model_Category|FALSE category object or FALSE if this category is already the topmost category
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getParentCategory instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getParentCategory instead
 	 */
 	public function get_parent_category() {
 		t3lib_div::logDeprecatedFunction();
@@ -947,7 +947,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	 *
 	 * @param bool|int $depth Depth maximum depth for going recursive
 	 * @return array Array with list of product UIDs
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getProducts instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getProducts instead
 	 */
 	public function getAllProducts($depth = FALSE) {
 		t3lib_div::logDeprecatedFunction();
@@ -958,7 +958,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	 * Loads the permissions
 	 *
 	 * @return void
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getNavtitle instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getNavtitle instead
 	 */
 	public function load_perms() {
 		t3lib_div::logDeprecatedFunction();
@@ -969,7 +969,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	 * Returns the category navigationtitle
 	 *
 	 * @return string Navigationtitle;
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getNavtitle instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getNavtitle instead
 	 */
 	public function get_navtitle() {
 		t3lib_div::logDeprecatedFunction();
@@ -980,7 +980,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	 * Returns the category description
 	 *
 	 * @return string Description;
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getDescription instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getDescription instead
 	 */
 	public function get_description() {
 		t3lib_div::logDeprecatedFunction();
@@ -991,7 +991,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	 * Returns an Array of Images
 	 *
 	 * @return array Array of images
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getImages instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getImages instead
 	 */
 	public function get_images() {
 		t3lib_div::logDeprecatedFunction();
@@ -1002,7 +1002,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	 * Returns the category teaser
 	 *
 	 * @return string Teaser;
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getTeaser instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getTeaser instead
 	 */
 	public function get_teaser() {
 		t3lib_div::logDeprecatedFunction();
@@ -1013,7 +1013,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	 * Returns the subtitle of the category
 	 *
 	 * @return string Subtitle;
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getSubtitle instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getSubtitle instead
 	 */
 	public function get_subtitle() {
 		t3lib_div::logDeprecatedFunction();
@@ -1024,7 +1024,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	 * Returns the category title
 	 *
 	 * @return string Returns the Category title
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getTitle instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getTitle instead
 	 */
 	public function get_title() {
 		t3lib_div::logDeprecatedFunction();
@@ -1034,7 +1034,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	/**
 	 * Constructor, basically calls init
 	 *
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use loadData instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use loadData instead
 	 */
 	public function load_data($translationMode = FALSE) {
 		t3lib_div::logDeprecatedFunction();

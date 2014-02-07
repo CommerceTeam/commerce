@@ -705,22 +705,25 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 						$i++;
 					}
 					if ($groups[$i]) {
-						$this->price = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_ArticlePrice');
-						$this->price->init($this->prices_uids[$groups[$i]][0]);
-						$this->price->loadData($translationMode);
 						$this->price_uid = $this->prices_uids[$groups[$i]][0];
+
+						$this->price = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_ArticlePrice');
+						$this->price->init($this->price_uid);
+						$this->price->loadData($translationMode);
 					} else {
 						if ($this->prices_uids['-2']) {
-							$this->price = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_ArticlePrice');
-							$this->price->init($this->prices_uids['-2'][0]);
-							$this->price->loadData($translationMode);
 							$this->price_uid = $this->prices_uids['-2'][0];
-						} else {
+
 							$this->price = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_ArticlePrice');
-							$this->price->init($this->prices_uids[0][0]);
+							$this->price->init($this->price_uid);
+							$this->price->loadData($translationMode);
+						} else {
+							$this->price_uid = $this->prices_uids[0][0];
+
+							$this->price = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_ArticlePrice');
+							$this->price->init($this->price_uid);
 							if ($this->price) {
 								$this->price->loadData($translationMode);
-								$this->price_uid = $this->prices_uids['0'][0];
 							} else {
 								return FALSE;
 							}
@@ -729,16 +732,18 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 				} else {
 						// No special Handling if no special usergroup is logged in
 					if ($this->prices_uids['-1']) {
-						$this->price = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_ArticlePrice');
-						$this->price->init($this->prices_uids['-1'][0]);
-						$this->price->loadData($translationMode);
 						$this->price_uid = $this->prices_uids['-1'][0];
-					} else {
+
 						$this->price = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_ArticlePrice');
-						$this->price->init($this->prices_uids[0][0]);
+						$this->price->init($this->price_uid);
+						$this->price->loadData($translationMode);
+					} else {
+						$this->price_uid = $this->prices_uids[0][0];
+
+						$this->price = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_ArticlePrice');
+						$this->price->init($this->price_uid);
 						if ($this->price) {
 							$this->price->loadData($translationMode);
-							$this->price_uid = $this->prices_uids['0'][0];
 						} else {
 							return FALSE;
 						}
@@ -894,7 +899,7 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 
 	/**
 	 * @return string title of article
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use tx_commerce_article::getTitle instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use tx_commerce_article::getTitle instead
 	 */
 	public function get_title() {
 		t3lib_div::logDeprecatedFunction();
@@ -903,7 +908,7 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 
 	/**
 	 * @return string title of article
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use tx_commerce_article::getSubtitle instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use tx_commerce_article::getSubtitle instead
 	 */
 	public function get_subtitle() {
 		t3lib_div::logDeprecatedFunction();
@@ -912,7 +917,7 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 
 	/**
 	 * @return string title of article
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use tx_commerce_article::getClassname instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use tx_commerce_article::getClassname instead
 	 */
 	public function get_classname() {
 		t3lib_div::logDeprecatedFunction();
@@ -921,7 +926,7 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 
 	/**
 	 * @return string title of article
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use tx_commerce_article::getDescriptionExtra instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use tx_commerce_article::getDescriptionExtra instead
 	 */
 	public function get_description_extra() {
 		t3lib_div::logDeprecatedFunction();
@@ -930,7 +935,7 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 
 	/**
 	 * @return integer valid priceid
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use tx_commerce_article::getPriceUid instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use tx_commerce_article::getPriceUid instead
 	 */
 	public function get_article_price_uid() {
 		t3lib_div::logDeprecatedFunction();
@@ -939,7 +944,7 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 
 	/**
 	 * @return double price_gross
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use tx_commerce_article::getPriceGross instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use tx_commerce_article::getPriceGross instead
 	 */
 	public function get_price_gross() {
 		t3lib_div::logDeprecatedFunction();
@@ -948,7 +953,7 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 
 	/**
 	 * @return double price_net
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use tx_commerce_article::getPriceNet instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use tx_commerce_article::getPriceNet instead
 	 */
 	public function get_price_net() {
 		t3lib_div::logDeprecatedFunction();
@@ -957,7 +962,7 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 
 	/**
 	 * @return integer valid priceid
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use tx_commerce_article::getPriceUid instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use tx_commerce_article::getPriceUid instead
 	 */
 	public function getArticlePriceUid() {
 		t3lib_div::logDeprecatedFunction();
@@ -968,7 +973,7 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 	 * Get Article all possivle  prices as UDI Array
 	 *
 	 * @return array or priceUid
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use tx_commerce_article::getPriceUids instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use tx_commerce_article::getPriceUids instead
 	 */
 	public function getPossiblePriceUids() {
 		t3lib_div::logDeprecatedFunction();
@@ -977,7 +982,7 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 
 	/**
 	 * @return double tax
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use tx_commerce_article::getTax instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use tx_commerce_article::getTax instead
 	 */
 	public function get_tax() {
 		t3lib_div::logDeprecatedFunction();
@@ -986,7 +991,7 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 
 	/**
 	 * @return string ordernumber
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use tx_commerce_article::getOrdernumber instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use tx_commerce_article::getOrdernumber instead
 	 */
 	public function get_ordernumber() {
 		t3lib_div::logDeprecatedFunction();
@@ -998,7 +1003,7 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 	 *
 	 * @see tx_commerce_product
 	 * @return Tx_Commerce_Domain_Model_Product Product object
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use tx_commerce_article::getParentProduct instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use tx_commerce_article::getParentProduct instead
 	 */
 	public function get_parent_product() {
 		t3lib_div::logDeprecatedFunction();
@@ -1015,7 +1020,7 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 	 * )
 	 *
 	 * @return array of arrays
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use tx_commerce_article::getArticleAttributes instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use tx_commerce_article::getArticleAttributes instead
 	 */
 	public function get_article_attributes() {
 		t3lib_div::logDeprecatedFunction();
@@ -1024,7 +1029,7 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 
 	/**
 	 * @return integer article_type
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use tx_commerce_article::getArticleTypeUid instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use tx_commerce_article::getArticleTypeUid instead
 	 */
 	public function get_article_type_uid() {
 		t3lib_div::logDeprecatedFunction();
@@ -1036,7 +1041,7 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 	 *
 	 * @param boolean $translationMode
 	 * @return integer
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use tx_commerce_article::loadPrices instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use tx_commerce_article::loadPrices instead
 	 */
 	public function load_prices($translationMode = FALSE) {
 		t3lib_div::logDeprecatedFunction();

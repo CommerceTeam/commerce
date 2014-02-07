@@ -712,7 +712,7 @@ class Tx_Commerce_Domain_Model_BasicBasket {
 	/**
 	 * Clear basket
 	 * @return boolean TRUE on success
-	 * @deprecated since 2011-05-11 this function will be removed in commerce 0.16.0, please use deleteAllArticles instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use deleteAllArticles instead
 	 */
 	public function delete_all_articles() {
 		t3lib_div::logDeprecatedFunction();
@@ -724,7 +724,7 @@ class Tx_Commerce_Domain_Model_BasicBasket {
 	 *
 	 * @param integer $article_uid Article uid
 	 * @return boolean TRUE on success
-	 * @deprecated since 2011-05-11 this function will be removed in commerce 0.16.0, please use deleteArticle instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use deleteArticle instead
 	 */
 	public function delete_article($article_uid) {
 		t3lib_div::logDeprecatedFunction();
@@ -737,7 +737,7 @@ class Tx_Commerce_Domain_Model_BasicBasket {
 	 * @param integer $articleUid Article uid
 	 * @param integer $quantity New quantity
 	 * @return mixed TRUE on success, FALSE if quantity can not be changed, and integer sometimes as well ...
-	 * @deprecated since 2011-05-11 this function will be removed in commerce 0.16.0, please use changeQuantity instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use changeQuantity instead
 	 */
 	public function change_quantity($articleUid, $quantity = 1) {
 		t3lib_div::logDeprecatedFunction();
@@ -749,7 +749,7 @@ class Tx_Commerce_Domain_Model_BasicBasket {
 	 *
 	 * @param integer $articleTypeUid Article type
 	 * @return array or article_ids
-	 * @deprecated since 2011-05-11 this function will be removed in commerce 0.16.0, please use getArticlesByArticleTypeUidAsUidlist instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getArticlesByArticleTypeUidAsUidlist instead
 	 */
 	public function get_articles_by_article_type_uid_asUidlist($articleTypeUid) {
 		t3lib_div::logDeprecatedFunction();
@@ -770,7 +770,7 @@ class Tx_Commerce_Domain_Model_BasicBasket {
 	 *
 	 * @param string $prefix Prefix for the keys
 	 * @return array or arrays
-	 * @deprecated since 2011-05-11 this function will be removed in commerce 0.16.0, please use getAssocArrays instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getAssocArrays instead
 	 */
 	public function get_assoc_arrays($prefix = '') {
 		t3lib_div::logDeprecatedFunction();
@@ -784,7 +784,7 @@ class Tx_Commerce_Domain_Model_BasicBasket {
 	 * @param integer $quantity Quantity of this basket item
 	 * @param string $priceid
 	 * @return boolean TRUE on successful change
-	 * @deprecated since 2011-05-11 this function will be removed in commerce 0.16.0, please use addArticle instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use addArticle instead
 	 */
 	public function add_article($articleUid, $quantity = 1, $priceid = '') {
 		t3lib_div::logDeprecatedFunction();
@@ -793,7 +793,7 @@ class Tx_Commerce_Domain_Model_BasicBasket {
 
 	/**
 	 * @return boolean
-	 * @deprecated since 2011-05-12 this function will be removed in commerce 0.16.0, please use getReadOnly instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getReadOnly instead
 	 */
 	public function isReadOnly() {
 		t3lib_div::logDeprecatedFunction();
@@ -804,7 +804,7 @@ class Tx_Commerce_Domain_Model_BasicBasket {
 	 * Get read only state
 	 *
 	 * @return boolean TRUE if read only
-	 * @deprecated since 2011-05-12 this function will be removed in commerce 0.16.0, please use getReadOnly instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getReadOnly instead
 	 */
 	public function getIsReadOnly() {
 		t3lib_div::logDeprecatedFunction();
@@ -812,7 +812,7 @@ class Tx_Commerce_Domain_Model_BasicBasket {
 	}
 
 	/**
-	 * @deprecated since 2011-05-12 this function will be removed in commerce 0.16.0, please use getSumGross instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getSumGross instead
 	 */
 	public function get_gross_sum() {
 		t3lib_div::logDeprecatedFunction();
@@ -820,7 +820,7 @@ class Tx_Commerce_Domain_Model_BasicBasket {
 	}
 
 	/**
-	 * @deprecated since 2011-05-12 this function will be removed in commerce 0.16.0, please use getSumNet instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getSumNet instead
 	 */
 	public function get_net_sum() {
 		t3lib_div::logDeprecatedFunction();

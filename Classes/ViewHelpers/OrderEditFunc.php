@@ -76,7 +76,7 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 	 */
 	public function sumPriceGrossFormat($PA) {
 		$content = '<input type="text" disabled name="' . $PA['itemFormElName'] . '" value="' .
-			tx_moneylib::format($PA['itemFormElValue'] / 100) . '">';
+			tx_moneylib::format($PA['itemFormElValue'] / 100, '') . '">';
 		return $content;
 	}
 
@@ -191,17 +191,17 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 
 				if ($PA['row']['pricefromnet'] == 1) {
 					$row['price_net'] = $row['price_net'] * $row['amount'];
-					$row['price_gross'] = $row['price_net'] * (1 + (((float)$row['tax']) / 100));
+					$row['price_gross'] = $row['price_net'] * (1 + (((float) $row['tax']) / 100));
 				} else {
 					$row['price_gross'] = $row['price_gross'] * $row['amount'];
-					$row['price_net'] = $row['price_gross'] / (1 + (((float)$row['tax']) / 100));
+					$row['price_net'] = $row['price_gross'] / (1 + (((float) $row['tax']) / 100));
 				}
 
 				$sum['price_net_value'] += $row['price_net'] / 100;
 				$sum['price_gross_value'] += $row['price_gross'] / 100;
 
-				$row['price_net'] = tx_moneylib::format($row['price_net'] / 100);
-				$row['price_gross'] = tx_moneylib::format($row['price_gross'] / 100);
+				$row['price_net'] = tx_moneylib::format($row['price_net'] / 100, '');
+				$row['price_gross'] = tx_moneylib::format($row['price_gross'] / 100, '');
 
 				$row_bgColor = (($cc % 2) ? '' : ' bgcolor="'  . t3lib_div::modifyHTMLColor($GLOBALS['SOBE']->doc->bgColor4, + 10, + 10, + 10) . '"');
 
@@ -262,8 +262,8 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 			 * Cerate the summ row
 			 */
 			$out .= '<tr>';
-			$sum['price_net'] = tx_moneylib::format($sum['price_net_value']);
-			$sum['price_gross'] = tx_moneylib::format($sum['price_gross_value']);
+			$sum['price_net'] = tx_moneylib::format($sum['price_net_value'], '');
+			$sum['price_gross'] = tx_moneylib::format($sum['price_gross_value'], '');
 
 			foreach ($field_rows as $field) {
 				switch ($field) {
@@ -540,7 +540,7 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 	 *
 	 * @param array $PA
 	 * @return string HTML-Content
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use Tx_Commerce_ViewHelpers_OrderEditFunc::articleOrderId instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use Tx_Commerce_ViewHelpers_OrderEditFunc::articleOrderId instead
 	 */
 	public function article_order_id($PA) {
 		t3lib_div::logDeprecatedFunction();
@@ -553,7 +553,7 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 	 *
 	 * @param array $PA
 	 * @return string HTML-Content
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use Tx_Commerce_ViewHelpers_OrderEditFunc::sumPriceGrossFormat instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use Tx_Commerce_ViewHelpers_OrderEditFunc::sumPriceGrossFormat instead
 	 */
 	public function sum_price_gross_format($PA) {
 		t3lib_div::logDeprecatedFunction();
@@ -566,7 +566,7 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 	 *
 	 * @param array $PA
 	 * @return string HTML-Content
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use Tx_Commerce_ViewHelpers_OrderEditFunc::orderArticles instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use Tx_Commerce_ViewHelpers_OrderEditFunc::orderArticles instead
 	 */
 	public function order_articles($PA) {
 		t3lib_div::logDeprecatedFunction();
@@ -579,7 +579,7 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 	 *
 	 * @param array $data
 	 * @see tcafiles/tx_commerce_orders.tca.php
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use Tx_Commerce_ViewHelpers_OrderEditFunc::orderStatus instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use Tx_Commerce_ViewHelpers_OrderEditFunc::orderStatus instead
 	 */
 	public function order_status(&$data) {
 		t3lib_div::logDeprecatedFunction();
@@ -593,7 +593,7 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 	 * @param array $PA
 	 * @param t3lib_TCEforms $fobj
 	 * @return string HTML-Content
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use Tx_Commerce_ViewHelpers_OrderEditFunc::invoiceAddress instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use Tx_Commerce_ViewHelpers_OrderEditFunc::invoiceAddress instead
 	 */
 	public function invoice_adress($PA, $fobj) {
 		t3lib_div::logDeprecatedFunction();
@@ -607,7 +607,7 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 	 * @param array $PA
 	 * @param t3lib_TCEforms $fobj
 	 * @return string HTML-Content
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use Tx_Commerce_ViewHelpers_OrderEditFunc::deliveryAddress instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use Tx_Commerce_ViewHelpers_OrderEditFunc::deliveryAddress instead
 	 */
 	public function delivery_adress($PA, $fobj) {
 		t3lib_div::logDeprecatedFunction();
@@ -620,7 +620,7 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 	 * @param string $table
 	 * @param integer $uid
 	 * @return string
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use Tx_Commerce_ViewHelpers_OrderEditFunc::getAttributes instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use Tx_Commerce_ViewHelpers_OrderEditFunc::getAttributes instead
 	 */
 	public function adress($PA, $fobj, $table, $uid) {
 		t3lib_div::logDeprecatedFunction();
@@ -630,7 +630,7 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 	/**
 	 * @param array $PA
 	 * @return string
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use Tx_Commerce_ViewHelpers_OrderEditFunc::feUserOrders instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use Tx_Commerce_ViewHelpers_OrderEditFunc::feUserOrders instead
 	 */
 	public function fe_user_orders($PA) {
 		t3lib_div::logDeprecatedFunction();

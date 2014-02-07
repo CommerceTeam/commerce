@@ -262,7 +262,7 @@ class Tx_Commerce_Domain_Model_ArticlePrice extends Tx_Commerce_Domain_Model_Abs
 
 
 	/**
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getPriceNet instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getPriceNet instead
 	 * @return integer
 	 */
 	public function get_price_net() {
@@ -271,7 +271,7 @@ class Tx_Commerce_Domain_Model_ArticlePrice extends Tx_Commerce_Domain_Model_Abs
 	}
 
 	/**
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getPriceGross instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getPriceGross instead
 	 * @return integer
 	 */
 	public function get_price_gross() {

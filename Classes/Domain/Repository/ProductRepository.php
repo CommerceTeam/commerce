@@ -205,7 +205,7 @@ class Tx_Commerce_Domain_Repository_ProductRepository extends Tx_Commerce_Domain
 	 * @return integer Categorie UID
 	 * @TODO Change to correct handling way concering databas model, currently wrongly interperted
 	 * @TODO change to mm db class function
-	 * @deprecated use getParentCategories instead; note that getParentCategories will return an array
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getParentCategories instead; note that getParentCategories will return an array
 	 */
 	public function get_parent_category($uid) {
 		t3lib_div::logDeprecatedFunction();
@@ -241,7 +241,7 @@ class Tx_Commerce_Domain_Repository_ProductRepository extends Tx_Commerce_Domain
 	 * Gets the "master" category from this product
 	 * @param uid = Product UID
 	 * @return integer Categorie UID
-	 * @deprecated use getParentCategories instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getParentCategories instead
 	 * @see get_parent_categorie
 	 */
 	public function get_parent_categorie($uid) {
@@ -254,9 +254,9 @@ class Tx_Commerce_Domain_Repository_ProductRepository extends Tx_Commerce_Domain
 	 * Gets the "master" category from this product
 	 * @param uid = Product UID
 	 * @return array of parent categories
-	 * @TODO Change to correct handling way concering databas model, currently wrongly interperted
+	 * @TODO Change to correct handling way concerning database model, currently wrongly interperted
 	 * @TODO currently only call to get_parent_category
-	 * @deprecated use getParentCategories instead
+	 * @deprecated sinde commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getParentCategories instead
 	 */
 	public function get_parent_categories($uid) {
 		t3lib_div::logDeprecatedFunction();

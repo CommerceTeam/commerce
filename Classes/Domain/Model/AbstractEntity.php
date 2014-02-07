@@ -379,7 +379,7 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 	 * @param array $conf configuration for this viewmode to render cObj
 	 * @param string $prefix optinonal prefix for marker
 	 * @return array
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use tx_commerce_pibase->renderrow in combination with $this->return_assoc_array instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use tx_commerce_pibase->renderrow in combination with $this->return_assoc_array instead
 	 */
 	public function getMarkerArray(&$cobj, $conf, $prefix = '') {
 		t3lib_div::logDeprecatedFunction();
@@ -415,7 +415,7 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 	 * Get uid of object
 	 *
 	 * @return integer uid
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getUid instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getUid instead
 	 */
 	public function get_uid() {
 		t3lib_div::logDeprecatedFunction();
@@ -426,7 +426,7 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 	 * Returns the UID of the localized Record
 	 *
 	 * @return integer _LOCALIZED_UID
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getLocalizedUid instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getLocalizedUid instead
 	 */
 	public function get_LOCALIZED_UID() {
 		t3lib_div::logDeprecatedFunction();
@@ -435,7 +435,7 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 
 	/**
 	 * @return integer language id
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getLang instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getLang instead
 	 */
 	public function get_lang() {
 		t3lib_div::logDeprecatedFunction();
@@ -443,11 +443,11 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 	}
 
 	/**
-	 * deprecated version - 08.11.2005
 	 * Returns  the data of this object als array
+	 *
 	 * @param string $prefix for the keys or returnung array optional
 	 * @return array Assoc Arry of data
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use returnAssocArray instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use returnAssocArray instead
 	 */
 	public function return_assoc_array($prefix = '') {
 		t3lib_div::logDeprecatedFunction();
@@ -461,7 +461,7 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 	 * and calls $this->add_fields_to_fieldlist
 	 *
 	 * @param string $fieldname Database fieldname
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use addFieldToFieldlist instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use addFieldToFieldlist instead
 	 */
 	public function add_field_to_fieldlist($fieldname) {
 		t3lib_div::logDeprecatedFunction();
@@ -472,7 +472,7 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 	 * Adds a set of fields to the $fieldlist variable
 	 * used for hooks to add own fields to the output
 	 *
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use addFieldsToFieldlist instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use addFieldsToFieldlist instead
 	 */
 	public function add_fields_to_fieldlist($fieldarray) {
 		t3lib_div::logDeprecatedFunction();
@@ -483,7 +483,7 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 	 * Checks if the UID is valid and availiable in the database
 	 *
 	 * @return boolean true if uid is valid
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use isValidUid instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use isValidUid instead
 	 */
 	public function is_valid_uid() {
 		t3lib_div::logDeprecatedFunction();
@@ -495,7 +495,7 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 	 *
 	 * @param array $attribute_corelation_type_list array of attribut_correlation_types
 	 * @return array
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getAttributes instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getAttributes instead
 	 */
 	public function get_attributes($attribute_corelation_type_list = array()) {
 		t3lib_div::logDeprecatedFunction();
@@ -508,7 +508,7 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 	 *
 	 * @param boolean $translationMode Transaltio Mode of the record, default false to use the default way of translation
 	 * @return array
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use loadData instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use loadData instead
 	 */
 	public function load_data($translationMode = FALSE) {
 		t3lib_div::logDeprecatedFunction();

@@ -68,7 +68,7 @@ class Tx_Commerce_Utility_GeneralUtility {
 	 *
 	 * @param 	float	$price
 	 * @return	string	formated Price
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use getAttributes instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getAttributes instead
 	 */
 	public static function formatPrice($price) {
 		t3lib_div::logDeprecatedFunction();

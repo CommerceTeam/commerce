@@ -228,7 +228,7 @@ class Tx_Commerce_Hook_TcehooksHandlerHooks {
 	 * @param string $id: database table
 	 * @param array $fieldArray: reference to the incoming fields
 	 * @param object $pObj: page Object reference
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use Tx_Commerce_Hook_TcehooksHandlerHooks::notifyFeuserObserver instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use Tx_Commerce_Hook_TcehooksHandlerHooks::notifyFeuserObserver instead
 	 */
 	protected function notify_feuserObserver($status, $table, $id, &$fieldArray, &$pObj) {
 		t3lib_div::logDeprecatedFunction();
@@ -262,7 +262,7 @@ class Tx_Commerce_Hook_TcehooksHandlerHooks {
 	 * @param string $id: database table
 	 * @param array $fieldArray: reference to the incoming fields
 	 * @param object $pObj: page Object reference
-	 * @deprecated since commerce 0.14.0, this function will be removed in commerce 0.16.0, please use Tx_Commerce_Hook_TcehooksHandlerHooks::notifyAddressObserver instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use Tx_Commerce_Hook_TcehooksHandlerHooks::notifyAddressObserver instead
 	 */
 	protected function notify_addressObserver($status, $table, $id, &$fieldArray, &$pObj) {
 		t3lib_div::logDeprecatedFunction();
