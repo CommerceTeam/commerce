@@ -134,7 +134,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	protected $teaserImagesArray = array();
 
 	/**
-	 * array of tx_commcerc_article
+	 * array of Tx_Commerce_Domain_Model_Article
 	 *
 	 * @var array
 	 */

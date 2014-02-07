@@ -412,7 +412,7 @@ $GLOBALS['TCA']['tx_commerce_articles'] = Array(
 
 
 /**
- * @TODO Ingo Check if needed
+ * @todo Ingo Check if needed
  */
 $postEdit = t3lib_div::_GP('edit');
 $postData = t3lib_div::_GP('data');

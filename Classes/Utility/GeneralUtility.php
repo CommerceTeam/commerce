@@ -84,17 +84,17 @@ class Tx_Commerce_Utility_GeneralUtility {
 	 */
 	public static function initializeFeUserBasket() {
 		if (!is_object($GLOBALS['TSFE']->fe_user->tx_commerce_basket)) {
-		$BasketID = $GLOBALS['TSFE']->fe_user->getKey('ses', 'commerceBasketId');
+			$BasketID = $GLOBALS['TSFE']->fe_user->getKey('ses', 'commerceBasketId');
 
-		if (empty($BasketID)) {
-				$BasketID = md5($GLOBALS['TSFE']->fe_user->id . ':' . rand(0, PHP_INT_MAX));
-			$GLOBALS['TSFE']->fe_user->setKey('ses', 'commerceBasketId', $BasketID);
+			if (empty($BasketID)) {
+					$BasketID = md5($GLOBALS['TSFE']->fe_user->id . ':' . rand(0, PHP_INT_MAX));
+				$GLOBALS['TSFE']->fe_user->setKey('ses', 'commerceBasketId', $BasketID);
+			}
+
+			$GLOBALS['TSFE']->fe_user->tx_commerce_basket = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Basket');
+			$GLOBALS['TSFE']->fe_user->tx_commerce_basket->set_session_id($BasketID);
+			$GLOBALS['TSFE']->fe_user->tx_commerce_basket->loadData();
 		}
-
-		$GLOBALS['TSFE']->fe_user->tx_commerce_basket = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Basket');
-		$GLOBALS['TSFE']->fe_user->tx_commerce_basket->set_session_id($BasketID);
-		$GLOBALS['TSFE']->fe_user->tx_commerce_basket->loadData();
-	}
 	}
 
 	/***

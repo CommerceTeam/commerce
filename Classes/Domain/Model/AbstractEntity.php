@@ -379,7 +379,7 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 	 * @param array $conf configuration for this viewmode to render cObj
 	 * @param string $prefix optinonal prefix for marker
 	 * @return array
-	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use tx_commerce_pibase->renderrow in combination with $this->return_assoc_array instead
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use tx_commerce_pibase->renderElement in combination with $this->returnAssocArray instead
 	 */
 	public function getMarkerArray(&$cobj, $conf, $prefix = '') {
 		t3lib_div::logDeprecatedFunction();

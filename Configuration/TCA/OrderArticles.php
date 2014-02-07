@@ -126,7 +126,7 @@ $GLOBALS['TCA']['tx_commerce_order_articles'] = Array(
 			)
 		),
 		/**
-		 * @TODO Declaration for iproc function for selecting right value
+		 * @todo Declaration for iproc function for selecting right value
 		 */
 		'order_id' => Array(
 			'exclude' => 1,

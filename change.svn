@@ -254,10 +254,10 @@
 * Fixed Bug #8605. Thanks to internezzo AG
 
 01.07.2010 Ingo Schmitt <is@marketing-factory.de>
-* Fixed Todo #8557
+* Fixed Issue #8557
 
 28.06.2010 Ingo schmitt <is@marketing-factory.de>
-* Fixed Todo #7874
+* Fixed Issue #7874
 
 07.06.2010 Sascha Egerer <seg@softvision.de>
 * Bug #7809: missing parameter in exec_SELECTquery
@@ -356,7 +356,7 @@
 * Fixed some typos
 * Fixed Bug #6107
 * Fixed Bug #6415
-* Fixed todo #6328
+* Fixed Issue #6328
 * Fixed Bug #6050
 * Fixed Bug #5679, thanks to Klaus Gössl
 

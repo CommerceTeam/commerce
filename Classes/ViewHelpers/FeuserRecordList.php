@@ -85,7 +85,7 @@ class Tx_Commerce_ViewHelpers_FeuserRecordList extends localRecordList {
 
 				// Adding "Hide/Unhide" icon:
 			if ($this->id) {
-					// @TODO: change the return path
+					// @todo: change the return path
 				if ($row['hidden']) {
 					$params = '&data[pages][' . $row['uid'] . '][hidden]=0';
 					$theCtrlPanel[] = '<a href="#" onclick="' .
@@ -256,7 +256,7 @@ class Tx_Commerce_ViewHelpers_FeuserRecordList extends localRecordList {
 		reset($GLOBALS['TCA']);
 
 		/**
-		 * @TODO auf eine tabelle beschränken, keine while liste mehr
+		 * @todo auf eine tabelle beschränken, keine while liste mehr
 		 */
 		foreach ($GLOBALS['TCA'] as $tableName) {
 				// Checking if the table should be rendered:

@@ -122,7 +122,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 		}
 		$this->templateCode = $this->cObj->fileResource($this->conf['templateFile']);
 		if (empty($this->templateCode)) {
-			$this->error('init', __LINE__, "Template File not loaded, maybe it doesn't exist: " . $this->conf['templateFile']);
+			$this->error('init', __LINE__, 'Template File not loaded, maybe it doesn\'t exist: ' . $this->conf['templateFile']);
 		}
 
 		$this->handleBasket();
@@ -141,12 +141,10 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 	 * @return string HTML-Content
 	 */
 	public function main($content = '', array $conf = array()) {
-		$this->content = $content;
-
 		$this->init($conf);
 
 		$hookObjectsArr = array();
-		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['main'])) {
+		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['main'])) {
 			t3lib_div::deprecationLog('
 				hook
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/pi2/class.tx_commerce_pi2.php\'][\'main\']
@@ -157,7 +155,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 				$hookObjectsArr[] = t3lib_div::getUserObj($classRef);
 			}
 		}
-		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BasketController.php']['main'])) {
+		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BasketController.php']['main'])) {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BasketController.php']['main'] as $classRef) {
 				$hookObjectsArr[] = t3lib_div::getUserObj($classRef);
 			}
@@ -177,17 +175,20 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 			$this->basket->storeData();
 		}
 
-		if (($this->basket->getItemsCount() > 0) && ($this->basket->getArticleTypeCountFromList(explode(',', $this->conf['regularArticleTypes'])) > 0)) {
+		if ($this->basket->getItemsCount() && ($this->basket->getArticleTypeCountFromList(explode(',', $this->conf['regularArticleTypes'])) > 0)) {
 				// Get template
 			switch ($this->handle) {
 				case 'HANDLING':
 					$this->handleBasket();
 				break;
+
 				case 'QUICKVIEW':
 					$this->getQuickView();
 				break;
+
 				default:
 					$this->generateBasket();
+				break;
 			}
 		} else {
 			if ($this->handle == 'QUICKVIEW') {
@@ -214,7 +215,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 			$this->content = $this->substituteMarkerArrayNoCached($template, $markerArray);
 		}
 
-		return $this->pi_wrapInBaseClass($this->content);
+		return $this->pi_wrapInBaseClass($content . $this->content);
 	}
 
 	/**
@@ -687,7 +688,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 		$price_net = '';
 		$price_gross = '';
 		/** @var $articleObj Tx_Commerce_Domain_Model_Article */
-		foreach ($this->delProd->articles as $articleUid => $articleObj) {
+		foreach ($this->delProd->getArticleObjects() as $articleUid => $articleObj) {
 			if ((!is_array($allowedArticles)) || in_array($articleUid, $allowedArticles)) {
 				$select .= '<option value="' . $articleUid . '"';
 				if ($articleUid == $this->basketDel[0]) {
@@ -756,7 +757,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 			// Check if payment articles are allowed
 		$newAllowedArticles = array();
 		/** @var Tx_Commerce_Domain_Model_Article $articleObj */
-		foreach ($this->payProd->articles as $articleUid => $articleObj) {
+		foreach ($this->payProd->getArticleObjects() as $articleUid => $articleObj) {
 			if ((!is_array($allowedArticles)) || in_array($articleUid, $allowedArticles)) {
 				$articleObj->loadData();
 				$paymentType = $articleObj->getClassname();
@@ -812,7 +813,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 		$price_net = '';
 		$price_gross = '';
 		/** @var $articleObj Tx_Commerce_Domain_Model_Article */
-		foreach ($this->payProd->articles as $articleUid => $articleObj) {
+		foreach ($this->payProd->getArticleObjects() as $articleUid => $articleObj) {
 			if ((!is_array($allowedArticles)) || in_array($articleUid, $allowedArticles)) {
 				$select .= '<option value="' . $articleUid . '"';
 				if (

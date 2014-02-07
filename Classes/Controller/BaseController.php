@@ -1399,28 +1399,27 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 
 		$markerArray = $this->generateMarkerArray($data, $TS);
 
+		$hookObjectsArr = array();
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['generalElement'])) {
 			t3lib_div::deprecationLog('
 				hook
-				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_pibase.php\'][\'formatAttributeValue\']
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_pibase.php\'][\'generalElement\']
 				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
-				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/BaseController.php\'][\'formatAttributeValue\']
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/BaseController.php\'][\'generalElement\']
 			');
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['generalElement'] as $classRef) {
-				$hookObj = & t3lib_div::getUserObj($classRef);
-				if (method_exists($hookObj, 'additionalMarkerElement')) {
-					/** @noinspection PhpUndefinedMethodInspection */
-					$markerArray = $hookObj->additionalMarkerElement($markerArray, $element, $this);
-				}
+				$hookObjectsArr[] = & t3lib_div::getUserObj($classRef);
 			}
 		}
-		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BaseController.php']['formatAttributeValue'])) {
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BaseController.php']['formatAttributeValue'] as $classRef) {
-				$hookObj = & t3lib_div::getUserObj($classRef);
-				if (method_exists($hookObj, 'additionalMarkerElement')) {
-					/** @noinspection PhpUndefinedMethodInspection */
-					$markerArray = $hookObj->additionalMarkerElement($markerArray, $element, $this);
-				}
+		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BaseController.php']['renderElement'])) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BaseController.php']['renderElement'] as $classRef) {
+				$hookObjectsArr[] = & t3lib_div::getUserObj($classRef);
+			}
+		}
+		foreach ($hookObjectsArr as $hookObj) {
+			if (method_exists($hookObj, 'additionalMarkerElement')) {
+				/** @noinspection PhpUndefinedMethodInspection */
+				$markerArray = $hookObj->additionalMarkerElement($markerArray, $element, $this);
 			}
 		}
 
@@ -1870,21 +1869,21 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 	 * @return array Marker Array with the new marker
 	 */
 	public function addFormMarker($markerArray, $wrap = FALSE) {
-		$NewmarkerArray['GENERAL_FORM_ACTION'] = $this->pi_getPageLink($this->conf['basketPid']);
+		$newMarkerArray['GENERAL_FORM_ACTION'] = $this->pi_getPageLink($this->conf['basketPid']);
 		if (!empty($this->conf['basketPid.'])) {
 			$basketConf = $this->conf['basketPid.'];
 			$basketConf['returnLast'] = 'url';
-			$NewmarkerArray['GENERAL_FORM_ACTION'] = $this->cObj->typoLink('', $basketConf);
+			$newMarkerArray['GENERAL_FORM_ACTION'] = $this->cObj->typoLink('', $basketConf);
 		}
 		if (is_integer($this->cat)) {
-			$NewmarkerArray['GENERAL_HIDDENCATUID'] = '<input type="hidden" name="' . $this->prefixId . '[catUid]" value="' . $this->cat . '" />';
+			$newMarkerArray['GENERAL_HIDDENCATUID'] = '<input type="hidden" name="' . $this->prefixId . '[catUid]" value="' . $this->cat . '" />';
 		}
 		if ($wrap) {
-			foreach ($NewmarkerArray as $key => $value) {
+			foreach ($newMarkerArray as $key => $value) {
 				$markerArray[$this->cObj->wrap($key, $wrap)] = $value;
 			}
 		} else {
-			$markerArray = array_merge($markerArray, $NewmarkerArray);
+			$markerArray = array_merge($markerArray, $newMarkerArray);
 		}
 
 		return $markerArray;
