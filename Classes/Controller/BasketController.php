@@ -85,11 +85,6 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 	protected $priceLimitForBasket = 0;
 
 	/**
-	 * @var array
-	 */
-	protected $articleMarkerArr = array();
-
-	/**
 	 * Standard Init Method for all
 	 * pi plugins of tx_commerce
 	 *
@@ -455,7 +450,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 	/**
 	 * Returns a list of markers to generate a quick-view of the basket
 	 *
-	 * @todo Complete coding
+	 * @todo: implement getQuickView
 	 *
 	 * @return array Marker array for rendering
 	 */
@@ -510,8 +505,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 	 * @return void
 	 */
 	public function generateBasket() {
-		$templateMarker = '###BASKET###';
-		$template = $this->cObj->getSubpart($this->templateCode, $templateMarker);
+		$template = $this->cObj->getSubpart($this->templateCode, '###BASKET###');
 
 			// Render locked information
 		if ($this->basket->getReadOnly()) {
@@ -626,8 +620,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 
 		$this->content = $this->substituteMarkerArrayNoCached($template, $basketArray);
 
-		$markerArrayGlobal = array();
-		$markerArrayGlobal = $this->addFormMarker($markerArrayGlobal);
+		$markerArrayGlobal = $this->addFormMarker(array());
 
 		$this->content = $this->cObj->substituteMarkerArray($this->content, $markerArrayGlobal, '###|###');
 	}
@@ -864,7 +857,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 			// Getting the select attributes for view
 		$attCode = '';
 		if (is_object($product)) {
-			$attributeArray = $product->getAttributeMatrix(array($article->getUid()), $this->select_attributes);
+			$attributeArray = $product->getAttributeMatrix(array($article->getUid()), $this->selectAttributes);
 
 			if (is_array($attributeArray)) {
 				$templateAttr = $this->cObj->getSubpart($this->templateCode, '###BASKET_SELECT_ATTRIBUTES###');
@@ -888,7 +881,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 		/** @var Tx_Commerce_Domain_Model_BasketItem $basketItem */
 		$basketItem = $this->basket->getBasketItem($article->getUid());
 
-		$tmpArray = $this->generateMarkerArray($article->returnAssocArray('article_'), $this->conf['articleTS.']);
+		$tmpArray = $this->generateMarkerArray($article->returnAssocArray(), $this->conf['articleTS.'], 'article_', 'tx_commerce_articles');
 		$markerArray = array();
 		foreach ($tmpArray as $key => $value) {
 			if (strpos($key, '#') === FALSE) {
@@ -901,14 +894,14 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 		$markerArray['###ARTICLE_UID###'] = $article->getUid();
 		$markerArray['###STARTFRM###'] = '<form name="basket_' . $article->getUid() . '" action="' .
 			$this->pi_getPageLink($this->conf['basketPid']) . '" method="post">';
-		$markerArray['###HIDDENFIELDS###'] = '<input type="hidden" name="' . $this->prefixId . '[catUid]" value="' .
-			(int) $this->piVars['catUid'] . '" />';
-		$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="' . $this->prefixId . '[artAddUid][' .
-			$article->getUid() . '][price_id]" value="' . $basketItem->getPriceUid() . '" />';
-		$markerArray['###ARTICLE_HIDDENFIELDS###'] = '<input type="hidden" name="' . $this->prefixId . '[catUid]" value="' .
-			(int) $this->piVars['catUid'] . '" />';
-		$markerArray['###ARTICLE_HIDDENFIELDS###'] .= '<input type="hidden" name="' . $this->prefixId . '[artAddUid][' .
-			$article->getUid() . '][price_id]" value="' . $basketItem->getPriceUid() . '" />';
+		$markerArray['###HIDDENFIELDS###'] = '<input type="hidden" name="' . $this->prefixId .
+			'[catUid]" value="' . (int) $this->piVars['catUid'] . '" />';
+		$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="' . $this->prefixId .
+			'[artAddUid][' . $article->getUid() . '][price_id]" value="' . $basketItem->getPriceUid() . '" />';
+		$markerArray['###ARTICLE_HIDDENFIELDS###'] = '<input type="hidden" name="' . $this->prefixId .
+			'[catUid]" value="' . (int) $this->piVars['catUid'] . '" />';
+		$markerArray['###ARTICLE_HIDDENFIELDS###'] .= '<input type="hidden" name="' . $this->prefixId .
+			'[artAddUid][' . $article->getUid() . '][price_id]" value="' . $basketItem->getPriceUid() . '" />';
 		$markerArray['###QTY_INPUT_VALUE###'] = $basketItem->getQuantity();
 		$markerArray['###QTY_INPUT_NAME###'] = $this->prefixId . '[artAddUid][' . $article->getUid() . '][count]';
 		$markerArray['###BASKET_ITEM_PRICENET###'] = tx_moneylib::format($basketItem->getPriceNet(), $this->currency);
@@ -927,10 +920,11 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 		}
 		$typoLinkConf['parameter'] = $this->conf['basketPid'];
 		$typoLinkConf['useCacheHash'] = 1;
-		$typoLinkConf['additionalParams'] .= ini_get('arg_separator.output') . $this->prefixId . '[catUid]=' . (int) $this->piVars['catUid'];
-		$typoLinkConf['additionalParams'] .= ini_get('arg_separator.output') . $this->prefixId . '[artAddUid][' .
-			$article->getUid() . '][price_id]=' . $basketItem->getPriceUid();
-		$typoLinkConf['additionalParams'] .= ini_get('arg_separator.output') . $this->prefixId . '[artAddUid][' . $article->getUid() . '][count]=0';
+		$typoLinkConf['additionalParams'] .= $this->argSeparator . $this->prefixId . '[catUid]=' . (int) $this->piVars['catUid'];
+		$typoLinkConf['additionalParams'] .= $this->argSeparator . $this->prefixId .
+			'[artAddUid][' . $article->getUid() . '][price_id]=' . $basketItem->getPriceUid();
+		$typoLinkConf['additionalParams'] .= $this->argSeparator . $this->prefixId .
+			'[artAddUid][' . $article->getUid() . '][count]=0';
 		$markerArray['###DELIOTMFROMBASKETLINK###'] = $this->cObj->typoLink($this->pi_getLL('lang_basket_delete_item'), $typoLinkConf);
 
 		$templateMarker = '###PRODUCT_BASKET_FORM_SMALL###';
@@ -1022,42 +1016,39 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 		$templateMarker[] = '###' . strtoupper($this->conf['templateMarker.']['items_listview2']) . '###';
 
 		$changerowcount = 0;
-		while ($v = current(array_slice(each($list), 1, 1))) {
+		while ($basketItemId = current(array_slice(each($list), 1, 1))) {
 				// Fill marker arrays with product/article values
-			/** @var $myItem Tx_Commerce_Domain_Model_BasketItem */
-			$myItem = $this->basket->getBasketItem($v);
+			/** @var $basketItem Tx_Commerce_Domain_Model_BasketItem */
+			$basketItem = $this->basket->getBasketItem($basketItemId);
 
 				// Check stock
-			$stockOK = FALSE;
+			$stockOK = TRUE;
 			if ($this->conf['checkStock'] == 1) {
-				if ($myItem->article->hasStock($myItem->getQuantity())) {
-					$stockOK = TRUE;
+				if (!$basketItem->article->hasStock($basketItem->getQuantity())) {
+					$stockOK = FALSE;
 				}
-			} else {
-				$stockOK = TRUE;
 			}
 
 				// Check accessible
-			if ($myItem->product->isAccessible() && $myItem->article->isAccessible()) {
-				$access = TRUE;
-			} else {
-				$access = FALSE;
-			}
+			$access = ($basketItem->getProduct()->isAccessible() && $basketItem->getArticle()->isAccessible());
 
 				// Only if Stock is ok and Access is ok (could have been changed since the article was put into the basket
-			if (($stockOK == TRUE) && ($access == TRUE)) {
+			if ($stockOK && $access) {
 				$safePrefix = $this->prefixId;
 
 				$typoLinkConf = array();
 				$typoLinkConf['parameter'] = $this->conf['listPid'];
 				$typoLinkConf['useCacheHash'] = 1;
-				$typoLinkConf['additionalParams'] .= ini_get('arg_separator.output') . $this->prefixId . '[catUid]=' . $myItem->product->getMasterparentCategory();
-				$typoLinkConf['additionalParams'] .= ini_get('arg_separator.output') . $this->prefixId . '[showUid]=' . $myItem->product->getUid();
+				$typoLinkConf['additionalParams'] .= $this->argSeparator . $this->prefixId . '[catUid]=' . $basketItem->getProduct()->getMasterparentCategory();
+				$typoLinkConf['additionalParams'] .= $this->argSeparator . $this->prefixId . '[showUid]=' . $basketItem->getProduct()->getUid();
+
 				if ($this->basketHashValue) {
-					$typoLinkConf['additionalParams'] .= ini_get('arg_separator.output') . $this->prefixId . '[basketHashValue]=' . $this->basketHashValue;
+					$typoLinkConf['additionalParams'] .= $this->argSeparator . $this->prefixId . '[basketHashValue]=' . $this->basketHashValue;
 				}
+
+					// @todo change link building everywhere in commerce
 				$lokalTSproduct = $this->addTypoLinkToTS($this->conf['fields.']['products.'], $typoLinkConf);
-				$lokalTSArtikle = $this->addTypoLinkToTS($this->conf['fields.']['articles.'], $typoLinkConf);
+				$lokalTSArticle = $this->addTypoLinkToTS($this->conf['fields.']['articles.'], $typoLinkConf);
 
 				$this->prefixId = $altPrefixSingle;
 
@@ -1065,36 +1056,34 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 					explode(
 						'|',
 						$this->pi_list_linkSingle(
-							'|',
-							$myItem->product->getUid(),
-							1,
-							array('catUid' => (int) $myItem->product->getMasterparentCategory()), FALSE, $this->conf['listPid']
+							'|', $basketItem->getProduct()->getUid(), 1,
+							array('catUid' => (int) $basketItem->getProduct()->getMasterparentCategory()), FALSE, $this->conf['listPid']
 						)
 					);
 
 				$this->prefixId = $safePrefix;
 
-				$markerArray = $this->generateMarkerArray($myItem->getProductAssocArray(''), $lokalTSproduct, 'product_');
-				$this->articleMarkerArr = $this->generateMarkerArray($myItem->getArticleAssocArray(''), $lokalTSArtikle, 'article_');
-				$this->select_attributes = $myItem->product->getAttributes(array(ATTRIB_SELECTOR));
-				$markerArray['PRODUCT_BASKET_FOR_LISTVIEW'] = $this->makeArticleView($myItem->article, $myItem->product);
-				$templateselector = $changerowcount % 2;
+				$productMarkerArray = $this->generateMarkerArray($basketItem->getProductAssocArray(''), $lokalTSproduct, 'product_', 'tx_commerce_products');
+				$articleMarkerArray = $this->generateMarkerArray($basketItem->getArticleAssocArray(''), $lokalTSArticle, 'article_', 'tx_commerce_articles');
+				$this->selectAttributes = $basketItem->getProduct()->getAttributes(array(ATTRIB_SELECTOR));
+				$productMarkerArray['PRODUCT_BASKET_FOR_LISTVIEW'] = $this->makeArticleView($basketItem->getArticle(), $basketItem->getProduct());
+				$templateSelector = $changerowcount % 2;
 
 				foreach ($hookObjectsArr as $hookObj) {
 					if (method_exists($hookObj, 'changeProductTemplate')) {
-						$templateMarker =  $hookObj->changeProductTemplate($templateMarker, $myItem, $this);
+						$templateMarker = $hookObj->changeProductTemplate($templateMarker, $basketItem, $this);
 					}
 				}
 
-				$template = $this->cObj->getSubpart($this->templateCode, $templateMarker[$templateselector]);
+				$template = $this->cObj->getSubpart($this->templateCode, $templateMarker[$templateSelector]);
 				$changerowcount++;
 
 				$template = $this->cObj->substituteSubpart($template, '###PRODUCT_BASKET_FORM_SMALL###', '');
-				$markerArray = array_merge($markerArray, $this->articleMarkerArr);
+				$markerArray = array_merge($productMarkerArray, $articleMarkerArray);
 
 				foreach ($hookObjectsArr as $hookObj) {
 					if (method_exists($hookObj, 'additionalMarkerProductList')) {
-						$markerArray = $hookObj->additionalMarkerProductList($markerArray, $myItem, $this);
+						$markerArray = $hookObj->additionalMarkerProductList($markerArray, $basketItem, $this);
 					}
 				}
 
@@ -1102,7 +1091,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 				$content .= $this->substituteMarkerArrayNoCached($tempContent, $this->languageMarker, array(), $wrapMarkerArray);
 			} else {
 					// Remove article from basket
-				$this->basket->deleteArticle($myItem->article->getUid());
+				$this->basket->deleteArticle($basketItem->getArticle()->getUid());
 				$this->basket->storeData();
 			}
 		}

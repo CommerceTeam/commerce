@@ -253,7 +253,7 @@ class Tx_Commerce_Controller_InvoiceController extends Tx_Commerce_Controller_Ba
 		$orderpos = 1;
 		$out = '';
 		while ($row = $database->sql_fetch_assoc($res)) {
-			$markerArray = $this->generateMarkerArray($row, $TS, $prefix);
+			$markerArray = $this->generateMarkerArray($row, $TS, $prefix, 'tx_commerce_order_articles');
 			$markerArray['ARTICLE_PRICE'] = tx_moneylib::format($row['price_gross'], $this->conf['currency'], (boolean) $this->conf['showCurrencySign']);
 			$markerArray['ARTICLE_PRICE_GROSS'] = tx_moneylib::format($row['price_gross'], $this->conf['currency'], (boolean) $this->conf['showCurrencySign']);
 			$markerArray['ARTICLE_PRICE_NET'] = tx_moneylib::format($row['price_net'], $this->conf['currency'], (boolean) $this->conf['showCurrencySign']);
@@ -315,7 +315,7 @@ class Tx_Commerce_Controller_InvoiceController extends Tx_Commerce_Controller_Ba
 				'1'
 			);
 		}
-		$markerArray = $this->generateMarkerArray($database->sql_fetch_assoc($res), $TS, $prefix);
+		$markerArray = $this->generateMarkerArray($database->sql_fetch_assoc($res), $TS, $prefix, 'tt_address');
 		$template = $this->cObj->getSubpart($this->templateCode, '###' . $prefix . 'DATA###');
 		$content = $this->cObj->substituteMarkerArray($template, $markerArray, '###|###', 1);
 		$content = $this->cObj->substituteMarkerArray($content, $this->languageMarker);

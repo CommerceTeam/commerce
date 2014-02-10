@@ -164,7 +164,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 	/**
 	 * @var array
 	 */
-	public $select_attributes = array();
+	public $selectAttributes = array();
 
 	/**
 	 * @var integer
@@ -180,6 +180,13 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 	 * @var string
 	 */
 	public $table;
+
+	/**
+	 * URL argument separator
+	 *
+	 * @var string
+	 */
+	protected $argSeparator = '&';
 
 	/**
 	 * @param array $conf
@@ -207,6 +214,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 		$this->basketHashValue = $GLOBALS['TSFE']->fe_user->tx_commerce_basket->getBasketHashValue();
 		$this->piVars['basketHashValue'] = $this->basketHashValue;
 		$this->imgFolder = 'uploads/tx_commerce/';
+		$this->argSeparator = ini_get('arg_separator.output');
 		$this->addAdditionalLocallang();
 
 		$this->generateLanguageMarker();
@@ -370,7 +378,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 					'icon' => $matrix[$myAttributeUid]['icon'],
 				);
 
-				$markerArray = $this->generateMarkerArray($datas, $TS, $prefix = 'PRODUCT_ATTRIBUTES_');
+				$markerArray = $this->generateMarkerArray($datas, $TS, $prefix = 'PRODUCT_ATTRIBUTES_', 'tx_commerce_attributes');
 				$marker['PRODUCT_ATTRIBUTES_TITLE'] = $matrix[$myAttributeUid]['title'];
 				$product_attributes = $this->cObj->substituteMarkerArray($templateArray[$i], $markerArray, '###|###', 1);
 				$product_attributes_string .= $this->cObj->substituteMarkerArray($product_attributes, $marker, '###|###', 1);
@@ -526,20 +534,20 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 					$typoLinkConf['parameter'] = $this->pid;
 				}
 				$typoLinkConf['useCacheHash'] = 1;
-				$typoLinkConf['additionalParams'] = ini_get('arg_separator.output') . $this->prefixId . '[catUid]=' . $oneCategory->getUid();
+				$typoLinkConf['additionalParams'] = $this->argSeparator . $this->prefixId . '[catUid]=' . $oneCategory->getUid();
 
 				$productArray = $oneCategory->getProducts();
 				if (1 == $this->conf['displayProductIfOneProduct'] && 1 == count($productArray)) {
-					$typoLinkConf['additionalParams'] .= ini_get('arg_separator.output') . $this->prefixId . '[showUid]=' . $productArray[0];
+					$typoLinkConf['additionalParams'] .= $this->argSeparator . $this->prefixId . '[showUid]=' . $productArray[0];
 				}
 
 				if ($this->useRootlineInformationToUrl == 1) {
-					$typoLinkConf['additionalParams'] .= ini_get('arg_separator.output') . $this->prefixId . '[path]=' . $this->getPathCat($oneCategory);
-					$typoLinkConf['additionalParams'] .= ini_get('arg_separator.output') . $this->prefixId . '[mDepth]=' . $this->mDepth;
+					$typoLinkConf['additionalParams'] .= $this->argSeparator . $this->prefixId . '[path]=' . $this->getPathCat($oneCategory);
+					$typoLinkConf['additionalParams'] .= $this->argSeparator . $this->prefixId . '[mDepth]=' . $this->mDepth;
 				}
 
 				if ($this->basketHashValue) {
-					$typoLinkConf['additionalParams'] .= ini_get('arg_separator.output') . $this->prefixId . '[basketHashValue]=' . $this->basketHashValue;
+					$typoLinkConf['additionalParams'] .= $this->argSeparator . $this->prefixId . '[basketHashValue]=' . $this->basketHashValue;
 				}
 
 				$localTS['fields.']['images.']['stdWrap.']['typolink.'] = $typoLinkConf;
@@ -757,24 +765,24 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 
 		$typoLinkConf['parameter'] = $this->conf['basketPid'];
 		$typoLinkConf['useCacheHash'] = 1;
-		$typoLinkConf['additionalParams'] .= ini_get('arg_separator.output') . $this->prefixId . '[catUid]=' . $this->cat;
+		$typoLinkConf['additionalParams'] .= $this->argSeparator . $this->prefixId . '[catUid]=' . $this->cat;
 
 		if ($priceid == TRUE) {
 			$markerArray['ARTICLE_HIDDENFIELDS'] .= '<input type="hidden" name="' . $this->prefixId .
 				'[artAddUid][' . $article->getUid() . '][price_id]" value="' . $article->getPriceUid() . '" />';
 			$markerArray['HIDDENFIELDS'] .= '<input type="hidden" name="' . $this->prefixId .
 				'[artAddUid][' . $article->getUid() . '][price_id]" value="' . $article->getPriceUid() . '" />';
-			$typoLinkConf['additionalParams'] .= ini_get('arg_separator.output') . $this->prefixId .
+			$typoLinkConf['additionalParams'] .= $this->argSeparator . $this->prefixId .
 				'[artAddUid][' . $article->getUid() . '][price_id]=' . $article->getPriceUid();
 		} else {
 			$markerArray['HIDDENFIELDS'] .= '<input type="hidden" name="' . $this->prefixId .
 				'[artAddUid][' . $article->getUid() . '][price_id]" value="" />';
 			$markerArray['ARTICLE_HIDDENFIELDS'] .= '<input type="hidden" name="' . $this->prefixId .
 				'[artAddUid][' . $article->getUid() . '][price_id]" value="" />';
-			$typoLinkConf['additionalParams'] .= ini_get('arg_separator.output') . $this->prefixId .
+			$typoLinkConf['additionalParams'] .= $this->argSeparator . $this->prefixId .
 				'[artAddUid][' . $article->getUid() . '][price_id]=';
 		}
-		$typoLinkConf['additionalParams'] .= ini_get('arg_separator.output') . $this->prefixId .
+		$typoLinkConf['additionalParams'] .= $this->argSeparator . $this->prefixId .
 			'[artAddUid][' . $article->getUid() . '][count]=1';
 
 		$markerArray['LINKTOPUTINBASKET'] = $this->cObj->typoLink($this->pi_getLL('lang_addtobasketlink'), $typoLinkConf);
@@ -1172,6 +1180,9 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 		}
 		$markerArray = array();
 		if (is_array($data)) {
+			$dataBackup = $this->cObj->data;
+			$this->cObj->start($data, $table);
+
 			foreach ($data as $fieldName => $columnValue) {
 					// get TS config
 				$type = $TS['fields.'][$fieldName];
@@ -1195,6 +1206,8 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 
 				$markerArray[strtoupper($prefix . $fieldName)] = $this->renderValue($columnValue, $type, $config, $fieldName, $table, $data['uid']);
 			}
+
+			$this->cObj->data = $dataBackup;
 		}
 
 		return $markerArray;
@@ -1388,7 +1401,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 	 */
 	public function renderElement($element, $subpartName, $TS, $prefix = '', $markerWrap = '###', $template = '') {
 		if (empty($subpartName)) {
-			return $this->error('renderElement', __LINE__, 'No supart defined for class.tx_commerce_pibase::renderElement ');
+			return $this->error('renderElement', __LINE__, 'No supart defined for class.Tx_Commerce_Controller_BaseController::renderElement');
 		}
 		if (strlen($template) < 1) {
 			$template = $this->template;
@@ -1612,9 +1625,9 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 		}
 
 		$amount = 0;
-		if (is_object($GLOBALS['TSFE']->fe_user->tx_commerce_basket->getBasketItem($articleId))) {
-			/** @var  $basketItem Tx_Commerce_Domain_Model_BasketItem */
-			$basketItem = & $GLOBALS['TSFE']->fe_user->tx_commerce_basket->getBasketItem($articleId);
+		/** @var Tx_Commerce_Domain_Model_BasketItem $basketItem */
+		$basketItem = $GLOBALS['TSFE']->fe_user->tx_commerce_basket->getBasketItem($articleId);
+		if (is_object($basketItem)) {
 			$amount = $basketItem->getQuantity();
 		} else {
 			if ($TSconf == FALSE) {
@@ -1758,11 +1771,11 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 			$typoLinkConf['parameter'] = $this->pid;
 		}
 		$typoLinkConf['useCacheHash'] = 1;
-		$typoLinkConf['additionalParams'] = ini_get('arg_separator.output') . $this->prefixId . '[showUid]=' . $myProduct->getUid();
-		$typoLinkConf['additionalParams'] .= ini_get('arg_separator.output') . $this->prefixId . '[catUid]=' . $cat;
+		$typoLinkConf['additionalParams'] = $this->argSeparator . $this->prefixId . '[showUid]=' . $myProduct->getUid();
+		$typoLinkConf['additionalParams'] .= $this->argSeparator . $this->prefixId . '[catUid]=' . $cat;
 
 		if ($this->basketHashValue) {
-			$typoLinkConf['additionalParams'] .= ini_get('arg_separator.output') . $this->prefixId . '[basketHashValue]=' . $this->basketHashValue;
+			$typoLinkConf['additionalParams'] .= $this->argSeparator . $this->prefixId . '[basketHashValue]=' . $this->basketHashValue;
 		}
 
 		$localTS = $this->addTypoLinkToTS($localTS, $typoLinkConf);
@@ -1775,7 +1788,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 		$markerArray = $this->cObj->fillInMarkerArray(array(), $markerArrayUp, implode(',', array_keys($markerArrayUp)), FALSE, 'PRODUCT_');
 
 		$this->can_attributes = $myProduct->getAttributes(array(ATTRIB_CAN));
-		$this->select_attributes = $myProduct->getAttributes(array(ATTRIB_SELECTOR));
+		$this->selectAttributes = $myProduct->getAttributes(array(ATTRIB_SELECTOR));
 		$this->shall_attributes = $myProduct->getAttributes(array(ATTRIB_SHAL));
 
 		$ProductAttributesSubpartArray = array();
@@ -1960,11 +1973,12 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 	 * $markContentArray is a regular marker-array where the 'keys' are substituted in $content with their values
 	 * $subpartContentArray works exactly like markContentArray only is whole subparts substituted and not only a single marker.
 	 * $wrappedSubpartContentArray is an array of arrays with 0/1 keys where the subparts pointed to by the main key is wrapped with the 0/1 value alternating.
+	 *
 	 * @param string $content The content stream, typically HTML template content.
 	 * @param array $markContentArray Regular marker-array where the 'keys' are substituted in $content with their values
 	 * @param array $subpartContentArray Exactly like markContentArray only is whole subparts substituted and not only a single marker.
 	 * @param array $wrappedSubpartContentArray An array of arrays with 0/1 keys where the subparts pointed to by the main key is wrapped with the 0/1 value alternating.
-	 * @return    string        The output content stream
+	 * @return string The output content stream
 	 */
 	public function substituteMarkerArrayNoCached($content, $markContentArray = array(), $subpartContentArray = array(), $wrappedSubpartContentArray = array()) {
 		/** @var t3lib_timeTrack $timeTrack */
@@ -2002,10 +2016,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 
 			// Finding subparts and wrapping them with markers
 		foreach ($wPkeys as $wPK) {
-			$content = $this->cObj->substituteSubpart($content, $wPK, array(
-				$wPK,
-				$wPK
-			));
+			$content = $this->cObj->substituteSubpart($content, $wPK, array($wPK, $wPK));
 		}
 
 			// traverse keys and quote them for reg ex.
@@ -2037,7 +2048,6 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 		$content .= $storeArr['c'][count($storeArr['k'])];
 
 		$timeTrack->pull();
-
 		return $content;
 	}
 

@@ -404,7 +404,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			$localTs = $this->conf['activeStep.'];
 			if ($localTs['typolink.']['setCommerceValues'] == 1) {
 				$localTs['typolink.']['parameter'] = $this->conf['basketPid'];
-				$localTs['typolink.']['additionalParams'] = ini_get('arg_separator.output') . $this->prefixId .
+				$localTs['typolink.']['additionalParams'] = $this->argSeparator . $this->prefixId .
 					'[step]=' . $this->CheckOutsteps[$i];
 			}
 			$label = sprintf($this->pi_getLL('label_step_' . $this->CheckOutsteps[$i]), $i + 1);

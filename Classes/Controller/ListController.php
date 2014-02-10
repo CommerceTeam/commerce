@@ -414,7 +414,7 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 			$this->product->loadData();
 
 			if ($this->product->isAccessible()) {
-				$this->select_attributes = $this->product->getAttributes(array(ATTRIB_SELECTOR));
+				$this->selectAttributes = $this->product->getAttributes(array(ATTRIB_SELECTOR));
 				$this->product_attributes = $this->product->getAttributes(array(ATTRIB_PRODUCT));
 				$this->can_attributes = $this->product->getAttributes(array(ATTRIB_CAN));
 				$this->shall_attributes = $this->product->getAttributes(array(ATTRIB_SHAL));
@@ -650,7 +650,7 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 
 			if ($this->conf['allArticles'] || $count == 1) {
 				for ($i = 0; $i < $count; $i ++) {
-					$attributeArray = $prod->getAttributeMatrix(array($prod->getArticleUid($i)), $this->select_attributes, $showHiddenValues);
+					$attributeArray = $prod->getAttributeMatrix(array($prod->getArticleUid($i)), $this->selectAttributes, $showHiddenValues);
 
 						$attCode = '';
 					if (is_array($attributeArray)) {
@@ -851,11 +851,11 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 				$typoLinkConf['parameter'] = $this->pid;
 			}
 			$typoLinkConf['useCacheHash'] = 1;
-			$typoLinkConf['additionalParams'] = ini_get('arg_separator.output') . $this->prefixId . '[showUid]=' . $prod->getUid();
-			$typoLinkConf['additionalParams'] .= ini_get('arg_separator.output') . $this->prefixId . '[catUid]=' . $cat;
+			$typoLinkConf['additionalParams'] = $this->argSeparator . $this->prefixId . '[showUid]=' . $prod->getUid();
+			$typoLinkConf['additionalParams'] .= $this->argSeparator . $this->prefixId . '[catUid]=' . $cat;
 
 			if ($this->basketHashValue) {
-				$typoLinkConf['additionalParams'] .= ini_get('arg_separator.output') . $this->prefixId . '[basketHashValue]=' . $this->basketHashValue;
+				$typoLinkConf['additionalParams'] .= $this->argSeparator . $this->prefixId . '[basketHashValue]=' . $this->basketHashValue;
 			}
 			$markerArray['LINKTOPRODUCT'] = $this->cObj->typoLink($this->pi_getLL('lang_toproduct'), $typoLinkConf);
 			$content = $this->cObj->substituteMarkerArray($localContent, $markerArray, '###|###', 1);
