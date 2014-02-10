@@ -921,7 +921,7 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends localRecordList {
 		if ($id > 0) {
 			$pidWhere = ' AND tx_commerce_orders.pid=' . $id;
 		} else {
-			Tx_Commerce_Utility_FolderUtility::init_folders();
+			Tx_Commerce_Utility_FolderUtility::initFolders();
 
 				// Find the right pid for the Ordersfolder
 			$orderPid = current(array_unique(Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Orders', 'Commerce', 0, 'Commerce')));;

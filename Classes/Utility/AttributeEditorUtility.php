@@ -116,7 +116,7 @@ class Tx_Commerce_Utility_AttributeEditorUtility {
 		/**
 		 * Get PID to select only the Attribute Values in the correct PID
 		 */
-		Tx_Commerce_Utility_FolderUtility::init_folders();
+		Tx_Commerce_Utility_FolderUtility::initFolders();
 		$modPid = current(Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Commerce', 'commerce'));
 		Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Products', 'commerce', $modPid);
 		$attrPid = current(Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Attributes', 'commerce', $modPid));

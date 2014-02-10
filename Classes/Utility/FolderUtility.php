@@ -34,7 +34,7 @@
  * tx_commerce_create_folder::methodname
  *
  * Creation of tx_commerce_basic folders
- * call: tx_commerce_create_folder::init_folders()
+ * call: tx_commerce_create_folder::initFolders()
  */
 class Tx_Commerce_Utility_FolderUtility {
 	/**
@@ -42,7 +42,7 @@ class Tx_Commerce_Utility_FolderUtility {
 	 *
 	 * @return void
 	 */
-	public static function init_folders() {
+	public static function initFolders() {
 		/**
 		 * Folder Creation
 		 * @TODO Get list from Order folders from TS
@@ -263,6 +263,17 @@ class Tx_Commerce_Utility_FolderUtility {
 		$database->exec_INSERTquery('tx_commerce_article_prices', $pArray);
 
 		return $aUid;
+	}
+
+	/**
+	 * Initializes the folders for tx_commerce
+	 *
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use init_folders instead
+	 * @return void
+	 */
+	public static function init_folders() {
+		t3lib_div::logDeprecatedFunction();
+		self::initFolders();
 	}
 }
 

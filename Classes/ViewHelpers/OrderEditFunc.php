@@ -318,7 +318,7 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 		/**
 		 * Ggf folder anlegen, wenn Sie nicht da sind
 		 */
-		Tx_Commerce_Utility_FolderUtility::init_folders();
+		Tx_Commerce_Utility_FolderUtility::initFolders();
 
 		/**
 		 * create a new data item array

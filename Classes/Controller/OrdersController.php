@@ -157,7 +157,7 @@ class Tx_Commerce_Controller_OrdersController extends t3lib_SCbase {
 			// GPvars:
 		$this->id = (int) t3lib_div::_GP('id');
 
-		Tx_Commerce_Utility_FolderUtility::init_folders();
+		Tx_Commerce_Utility_FolderUtility::initFolders();
 
 			// Find the right pid for the Ordersfolder
 		$this->orderPid = current(array_unique(Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Orders', 'Commerce', 0, 'Commerce')));;

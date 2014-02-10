@@ -109,7 +109,7 @@ class Tx_Commerce_Controller_AccessController extends t3lib_SCbase {
 			// GPvars:
 		$this->id = (int) t3lib_div::_GP('id');
 		if (!$this->id) {
-			Tx_Commerce_Utility_FolderUtility::init_folders();
+			Tx_Commerce_Utility_FolderUtility::initFolders();
 			$this->id = current(array_unique(Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Products', 'Commerce', 0, 'Commerce')));
 		}
 

@@ -1046,7 +1046,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 					$typoLinkConf['additionalParams'] .= $this->argSeparator . $this->prefixId . '[basketHashValue]=' . $this->basketHashValue;
 				}
 
-					// @todo change link building everywhere in commerce
+					// @todo change link building to pure TypoScript everywhere in commerce, cObj->data usage required
 				$lokalTSproduct = $this->addTypoLinkToTS($this->conf['fields.']['products.'], $typoLinkConf);
 				$lokalTSArticle = $this->addTypoLinkToTS($this->conf['fields.']['articles.'], $typoLinkConf);
 

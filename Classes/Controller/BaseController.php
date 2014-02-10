@@ -1293,9 +1293,11 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 			case 'IMAGE':
 				if (is_string($value) && !empty($value)) {
 					foreach (explode(',', $value) as $oneValue) {
-						$this->cObj->setCurrentVal($TSconf['imgPath'] . $oneValue);
-						if ($TSconf['file'] <> 'GIFBUILDER') {
-							$TSconf['file'] = $TSconf['imgPath'] . $oneValue;
+						if (!is_numeric($value)) {
+							$this->cObj->setCurrentVal($TSconf['imgPath'] . $oneValue);
+							if ($TSconf['file'] <> 'GIFBUILDER') {
+								$TSconf['file'] = $TSconf['imgPath'] . $oneValue;
+							}
 						}
 						$output .= $this->cObj->IMAGE($TSconf);
 					}

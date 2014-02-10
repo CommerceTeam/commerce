@@ -84,7 +84,7 @@ class Tx_Commerce_ViewHelpers_Navigation_OrdersViewHelper extends t3lib_SCbase {
 		$this->setTempDBmount = t3lib_div::_GP('setTempDBmount');
 
 			// Generate Folder if necessary
-		Tx_Commerce_Utility_FolderUtility::init_folders();
+		Tx_Commerce_Utility_FolderUtility::initFolders();
 
 			// Create page tree object:
 		$this->pagetree = t3lib_div::makeInstance('Tx_Commerce_Tree_OrderTree');
