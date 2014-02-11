@@ -233,56 +233,8 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			}
 		}
 
-		/** @var $feUser tslib_feUserAuth */
-		$feUser = & $GLOBALS['TSFE']->fe_user;
-			// Write the billing address into session, if it is present in the REQUEST
-		if (isset($this->piVars['billing'])) {
-			$this->piVars['billing'] = Tx_Commerce_Utility_GeneralUtility::removeXSSStripTagsArray($this->piVars['billing']);
-			$feUser->setKey('ses', Tx_Commerce_Utility_GeneralUtility::generateSessionKey('billing'), $this->piVars['billing']);
-		}
-		if (isset($this->piVars['delivery'])) {
-			$this->piVars['delivery'] = Tx_Commerce_Utility_GeneralUtility::removeXSSStripTagsArray($this->piVars['delivery']);
-			$feUser->setKey('ses', Tx_Commerce_Utility_GeneralUtility::generateSessionKey('delivery'), $this->piVars['delivery']);
-		}
-		if (isset($this->piVars['payment'])) {
-			$this->piVars['payment'] = Tx_Commerce_Utility_GeneralUtility::removeXSSStripTagsArray($this->piVars['payment']);
-			$feUser->setKey('ses', Tx_Commerce_Utility_GeneralUtility::generateSessionKey('payment'), $this->piVars['payment']);
-		}
-
-			// Fetch the address data from hidden fields if address_id is set.
-			// This means that the address was selected from list with radio buttons.
-		if (isset($this->piVars['address_uid'])) {
-				// Override missing or incorrect email with username if username is email,
-				// because we need to be sure to have at least one correct mail address
-				// This way email is not necessarily mandatory for billing/delivery address
-			if (!$this->conf['randomUser'] && !t3lib_div::validEmail($this->piVars[$this->piVars['address_uid']]['email'])) {
-				$this->piVars[$this->piVars['address_uid']]['email'] = $GLOBALS['TSFE']->fe_user->user['email'];
-			}
-			$this->piVars[$this->piVars['address_uid']]['uid'] = (int) $this->piVars['address_uid'];
-			$feUser->setKey(
-				'ses',
-				Tx_Commerce_Utility_GeneralUtility::generateSessionKey($this->piVars['check']),
-				$this->piVars[(int) $this->piVars['address_uid']]
-			);
-		}
-
-		$this->sessionData['billing'] = Tx_Commerce_Utility_GeneralUtility::removeXSSStripTagsArray(
-			$feUser->getKey('ses', Tx_Commerce_Utility_GeneralUtility::generateSessionKey('billing'))
-		);
-		$this->sessionData['delivery'] = Tx_Commerce_Utility_GeneralUtility::removeXSSStripTagsArray(
-			$feUser->getKey('ses', Tx_Commerce_Utility_GeneralUtility::generateSessionKey('delivery'))
-		);
-		$this->sessionData['payment'] = Tx_Commerce_Utility_GeneralUtility::removeXSSStripTagsArray(
-			$feUser->getKey('ses', Tx_Commerce_Utility_GeneralUtility::generateSessionKey('payment'))
-		);
-		$this->sessionData['mails'] = $feUser->getKey('ses', Tx_Commerce_Utility_GeneralUtility::generateSessionKey('mails'));
-
-		if (($this->piVars['check'] == 'billing') && ($this->piVars['step'] == 'payment')) {
-				// Remove reference to delivery address
-			$this->sessionData['delivery'] = FALSE;
-			$feUser->setKey('ses', Tx_Commerce_Utility_GeneralUtility::generateSessionKey('delivery'), FALSE);
-		}
-
+		$this->storeRequestDataIntoSession();
+		$this->fetchSessionDataIntoSessionAttribute();
 		$this->storeSessionData();
 
 		$canMakeCheckout = $this->canMakeCheckout();
@@ -369,6 +321,8 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			}
 		}
 
+		/** @var $feUser tslib_feUserAuth */
+		$feUser = & $GLOBALS['TSFE']->fe_user;
 		$feUser->setKey('ses', Tx_Commerce_Utility_GeneralUtility::generateSessionKey('currentStep'), $this->currentStep);
 
 		$content = $this->renderSteps($content);
@@ -381,6 +335,100 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 
 		return $this->pi_WrapInBaseClass($content);
 	}
+
+	/**
+	 * @return void
+	 */
+	protected function storeRequestDataIntoSession() {
+		/** @var $feUser tslib_feUserAuth */
+		$feUser = & $GLOBALS['TSFE']->fe_user;
+			// Write the billing address into session, if it is present in the REQUEST
+		if (isset($this->piVars['billing'])) {
+			$this->piVars['billing'] = Tx_Commerce_Utility_GeneralUtility::removeXSSStripTagsArray($this->piVars['billing']);
+			$feUser->setKey('ses', Tx_Commerce_Utility_GeneralUtility::generateSessionKey('billing'), $this->piVars['billing']);
+		}
+		if (isset($this->piVars['delivery'])) {
+			$this->piVars['delivery'] = Tx_Commerce_Utility_GeneralUtility::removeXSSStripTagsArray($this->piVars['delivery']);
+			$feUser->setKey('ses', Tx_Commerce_Utility_GeneralUtility::generateSessionKey('delivery'), $this->piVars['delivery']);
+		}
+		if (isset($this->piVars['payment'])) {
+			$this->piVars['payment'] = Tx_Commerce_Utility_GeneralUtility::removeXSSStripTagsArray($this->piVars['payment']);
+			$feUser->setKey('ses', Tx_Commerce_Utility_GeneralUtility::generateSessionKey('payment'), $this->piVars['payment']);
+		}
+
+			// Fetch the address data from hidden fields if address_id is set.
+			// This means that the address was selected from list with radio buttons.
+		if (isset($this->piVars['address_uid'])) {
+				// Override missing or incorrect email with username if username is email,
+				// because we need to be sure to have at least one correct mail address
+				// This way email is not necessarily mandatory for billing/delivery address
+			if (!$this->conf['randomUser'] && !t3lib_div::validEmail($this->piVars[$this->piVars['address_uid']]['email'])) {
+				$this->piVars[$this->piVars['address_uid']]['email'] = $GLOBALS['TSFE']->fe_user->user['email'];
+			}
+			$this->piVars[$this->piVars['address_uid']]['uid'] = (int) $this->piVars['address_uid'];
+			$feUser->setKey(
+				'ses',
+				Tx_Commerce_Utility_GeneralUtility::generateSessionKey($this->piVars['check']),
+				$this->piVars[(int) $this->piVars['address_uid']]
+			);
+		}
+	}
+
+	/**
+	 * @return void
+	 */
+	protected function fetchSessionDataIntoSessionAttribute() {
+		/** @var $feUser tslib_feUserAuth */
+		$feUser = & $GLOBALS['TSFE']->fe_user;
+		$this->sessionData['billing'] = Tx_Commerce_Utility_GeneralUtility::removeXSSStripTagsArray(
+			$feUser->getKey('ses', Tx_Commerce_Utility_GeneralUtility::generateSessionKey('billing'))
+		);
+		$this->sessionData['delivery'] = Tx_Commerce_Utility_GeneralUtility::removeXSSStripTagsArray(
+			$feUser->getKey('ses', Tx_Commerce_Utility_GeneralUtility::generateSessionKey('delivery'))
+		);
+		$this->sessionData['payment'] = Tx_Commerce_Utility_GeneralUtility::removeXSSStripTagsArray(
+			$feUser->getKey('ses', Tx_Commerce_Utility_GeneralUtility::generateSessionKey('payment'))
+		);
+		$this->sessionData['mails'] = $feUser->getKey('ses', Tx_Commerce_Utility_GeneralUtility::generateSessionKey('mails'));
+
+		if (($this->piVars['check'] == 'billing') && ($this->piVars['step'] == 'payment')) {
+				// Remove reference to delivery address
+			$this->sessionData['delivery'] = FALSE;
+			$feUser->setKey('ses', Tx_Commerce_Utility_GeneralUtility::generateSessionKey('delivery'), FALSE);
+		}
+	}
+
+	/**
+	 * @return void
+	 */
+	public function storeSessionData() {
+		/** @var t3lib_db $database */
+		$database = $GLOBALS['TYPO3_DB'];
+
+		/** @var $feUser tslib_feUserAuth */
+		$feUser = & $GLOBALS['TSFE']->fe_user;
+			// Saves UC and SesData if changed.
+		if ($feUser->userData_change) {
+			$feUser->writeUC('');
+		}
+
+		if ($feUser->sesData_change && $feUser->id) {
+			if (empty($feUser->sesData)) {
+					// Remove session-data
+				$feUser->removeSessionData();
+			} else {
+					// Write new session-data
+				$insertFields = array(
+					'hash' => $GLOBALS['TSFE']->fe_user->id,
+					'content' => serialize($feUser->sesData),
+					'tstamp' => $GLOBALS['EXEC_TIME'],
+				);
+				$feUser->removeSessionData();
+				$database->exec_INSERTquery('fe_session_data', $insertFields);
+			}
+		}
+	}
+
 
 	/**
 	 * This method renders the step layout into the checkout process
@@ -1928,7 +1976,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	}
 
 	/**
-	 * Returns wether a checkout is allowed or not.
+	 * Returns whether a checkout is allowed or not.
 	 * It can return different types of results. Possible keywords are:
 	 * - noarticles => User has not articles in basket
 	 * - nopayment => User has no payment type selected
@@ -1955,8 +2003,8 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		foreach ($hookObjectsArr as $hookObj) {
 			if (method_exists($hookObj, 'canMakeCheckoutOwnAdvancedTests')) {
 				$params = array(
-					'checks' => $checks,
-					'myCheck' => $myCheck
+					'checks' => &$checks,
+					'myCheck' => &$myCheck
 				);
 				$hookObj->canMakeCheckoutOwnAdvancedTests($params, $this);
 			}
@@ -2651,37 +2699,6 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		}
 
 		return $hookObjectsArr;
-	}
-
-	/**
-	 * @return void
-	 */
-	public function storeSessionData() {
-		/** @var t3lib_db $database */
-		$database = $GLOBALS['TYPO3_DB'];
-
-		/** @var $feUser tslib_feUserAuth */
-		$feUser = & $GLOBALS['TSFE']->fe_user;
-			// Saves UC and SesData if changed.
-		if ($feUser->userData_change) {
-			$feUser->writeUC('');
-		}
-
-		if ($feUser->sesData_change && $feUser->id) {
-			if (empty($feUser->sesData)) {
-					// Remove session-data
-				$feUser->removeSessionData();
-			} else {
-					// Write new session-data
-				$insertFields = array(
-					'hash' => $GLOBALS['TSFE']->fe_user->id,
-					'content' => serialize($feUser->sesData),
-					'tstamp' => $GLOBALS['EXEC_TIME'],
-				);
-				$feUser->removeSessionData();
-				$database->exec_INSERTquery('fe_session_data', $insertFields);
-			}
-		}
 	}
 }
 
