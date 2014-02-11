@@ -2024,7 +2024,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		}
 
 			// Check if we have a payment article in the basket
-		if (in_array('nopayment', $checks)) {
+		if (in_array('nopayment', $checks) && $this->currentStep == 'finish') {
 			$paymentArticles = $basket->getArticlesByArticleTypeUidAsUidlist(PAYMENTARTICLETYPE);
 			if (count($paymentArticles) <= 0) {
 				return 'nopayment';

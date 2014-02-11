@@ -450,6 +450,9 @@ plugin.tx_commerce_pi1 {
 
 
 
+#
+# Commerce PlugIn 2 (Basket)
+#
 plugin.tx_commerce_pi2 {
 	priceFromNet = {$plugin.tx_commerce_lib.priceFromNet}
 
@@ -511,6 +514,8 @@ plugin.tx_commerce_pi2 {
 	lastProduct < lib.tx_commerce.stdField
 	nextbutton < lib.tx_commerce.stdField
 }
+
+
 
 #
 # Commerce PlugIn 3 (Checkout)
@@ -671,20 +676,22 @@ plugin.tx_commerce_pi3 {
 
 	paymentIsDeliveryAdressDefault = 1
 	deliveryAdressIsSeparateDefault = 0
+
 	cantMakeCheckout.noarticles = CONTENT
 	cantMakeCheckout.noarticles {
 		table = tt_content
 		select {
-			#will be given within php-code
+			# will be given within php-code
 			pidInList = {$plugin.tx_commerce_lib.emptyCheckoutPid}
 			orderBy = sorting
 			languageField = sys_language_uid
 		}
 	}
-
 	cantMakeCheckout.nobilling < plugin.tx_commerce_pi3.cantMakeCheckout.noarticles
 	cantMakeCheckout.nopayment < plugin.tx_commerce_pi3.cantMakeCheckout.noarticles
 }
+
+
 
 #
 # Commerce PlugIn 4 (Addresses)
@@ -758,6 +765,8 @@ plugin.tx_commerce_pi4 {
 	mandatorySign = *
 }
 
+
+
 #
 # Commerce PlugIn 6 (Invoice)
 #
@@ -823,6 +832,8 @@ plugin.tx_commerce_pi6 {
 	}
 }
 
+
+
 #
 # Comerce Menue
 #
@@ -876,6 +887,8 @@ lib.tx_commerce.navigation {
 	3.itemArrayProcFunc = Tx_Commerce_ViewHelpers_Navigation->clear
 }
 
+
+
 #
 # Commerce Rootline
 #
@@ -895,6 +908,8 @@ lib.tx_commerce.rootline {
 	1 = TMENU
 	1.NO.linkWrap = |*|| > |*||
 }
+
+
 
 # insert record support for products
 tt_content.shortcut.20.0.tables := addToList(tx_commerce_products)
