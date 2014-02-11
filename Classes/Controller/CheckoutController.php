@@ -264,6 +264,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			$this->currentStep = 'billing';
 		}
 
+		$content = FALSE;
 		while ($content === FALSE && $finiteloop < 10) {
 			switch ($this->currentStep) {
 				case 'delivery':
