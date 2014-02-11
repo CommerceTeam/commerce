@@ -94,9 +94,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 	protected function init(array $conf = array()) {
 		parent::init($conf);
 
-		$this->basket = $GLOBALS['TSFE']->fe_user->tx_commerce_basket;
-		$this->basket->setTaxCalculationMethod($this->conf['priceFromNet']);
-		$this->basket->loadData();
+		$this->initBasket();
 
 		if ($this->conf['defaultCode']) {
 			$this->handle = strtoupper($this->conf['defaultCode']);
@@ -119,6 +117,15 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 		if (strlen($this->conf['currency']) > 0) {
 			$this->currency = $this->conf['currency'];
 		}
+	}
+
+	/**
+	 * @return void
+	 */
+	public function initBasket() {
+		$this->basket = $GLOBALS['TSFE']->fe_user->tx_commerce_basket;
+		$this->basket->setTaxCalculationMethod($this->conf['priceFromNet']);
+		$this->basket->loadData();
 	}
 
 	/**
@@ -301,7 +308,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 					$v['count'] = 1;
 				}
 
-				if ((int)$v['count'] === 0) {
+				if ((int) $v['count'] === 0) {
 					if ($this->basket->getQuantity($k) > 0) {
 						$this->basket->deleteArticle($k);
 					}
