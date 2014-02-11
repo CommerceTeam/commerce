@@ -213,6 +213,18 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 	 * @return void
 	 */
 	public function handleBasket() {
+		$this->handleDeleteBasket();
+		$this->handleAddArticle();
+		$this->handlePaymentArticle();
+		$this->handleDeliveryArticle();
+
+		$this->basket->storeData();
+	}
+
+	/**
+	 * @return void
+	 */
+	public function handleDeleteBasket() {
 		if ($this->piVars['delBasket']) {
 			$this->basket->deleteAllArticles();
 
@@ -240,7 +252,12 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 				}
 			}
 		}
+	}
 
+	/**
+	 * @return void
+	 */
+	public function handleAddArticle() {
 		$hookObjectsArr = array();
 		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['artAddUid'])) {
 			t3lib_div::deprecationLog('
@@ -352,8 +369,14 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 				}
 			}
 		}
+	}
 
-			// Handle payment articles
+	/**
+	 * Handle payment articles
+	 *
+	 * @return void
+	 */
+	public function handlePaymentArticle() {
 		if ($this->piVars['payArt']) {
 			$basketPay = $this->basket->getArticlesByArticleTypeUidAsUidlist(PAYMENTARTICLETYPE);
 
@@ -398,8 +421,14 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 				}
 			}
 		}
+	}
 
-			// Handle delivery articles
+	/**
+	 * Handle delivery articles
+	 *
+	 * @return void
+	 */
+	public function handleDeliveryArticle() {
 		if ($this->piVars['delArt']) {
 			$basketDel = $this->basket->getArticlesByArticleTypeUidAsUidlist(DELIVERYARTICLETYPE);
 
@@ -443,8 +472,6 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 				}
 			}
 		}
-
-		$this->basket->storeData();
 	}
 
 	/**
