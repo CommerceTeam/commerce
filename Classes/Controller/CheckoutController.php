@@ -146,18 +146,12 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	public function init($conf) {
 		parent::init($conf);
 
-		$this->conf = $conf;
-
-		$this->pi_setPiVarDefaults();
-		$this->pi_loadLL();
-
 		$this->conf['basketPid'] = $GLOBALS['TSFE']->id;
 
 		$this->staticInfo = t3lib_div::makeInstance('tx_staticinfotables_pi1');
 		$this->staticInfo->init();
 
 		$this->extConf = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf'];
-		$this->imgFolder = 'uploads/tx_commerce/';
 
 		/** @var $basket Tx_Commerce_Domain_Model_Basket */
 		$basket = & $GLOBALS['TSFE']->fe_user->tx_commerce_basket;
@@ -165,9 +159,6 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 
 		if ($this->conf['currency'] <> '') {
 			$this->currency = $this->conf['currency'];
-		}
-		if (empty($this->currency)) {
-			$this->currency = 'EUR';
 		}
 
 		$this->checkoutSteps[0] = 'billing';
@@ -259,12 +250,12 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			// The purpose of the while loop is simply to be able to define any
 			// step as the step after payment. This counter breaks the loop after 10
 			// rounds to prevent infinite loops with poorly setup shops
-		$finiteloop = 0;
 		if (!$this->validateAddress('billing')) {
 			$this->currentStep = 'billing';
 		}
 
 		$content = FALSE;
+		$finiteloop = 0;
 		while ($content === FALSE && $finiteloop < 10) {
 			switch ($this->currentStep) {
 				case 'delivery':
@@ -299,8 +290,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 				default:
 					foreach ($hookObjectsArr as $hookObj) {
 						if (method_exists($hookObj, $this->currentStep)) {
-							$method = $this->currentStep;
-							$content = $hookObj->$method($this);
+							$content = $hookObj->{$this->currentStep}($this);
 						}
 					}
 					if (!$content) {
@@ -392,7 +382,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		);
 		$this->sessionData['mails'] = $feUser->getKey('ses', Tx_Commerce_Utility_GeneralUtility::generateSessionKey('mails'));
 
-		if (($this->piVars['check'] == 'billing') && ($this->piVars['step'] == 'payment')) {
+		if ($this->piVars['check'] == 'billing' && $this->piVars['step'] == 'payment') {
 				// Remove reference to delivery address
 			$this->sessionData['delivery'] = FALSE;
 			$feUser->setKey('ses', Tx_Commerce_Utility_GeneralUtility::generateSessionKey('delivery'), FALSE);

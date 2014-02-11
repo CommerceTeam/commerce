@@ -135,7 +135,6 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 			}
 		}
 
-		$this->imgFolder = 'uploads/tx_commerce/';
 		$this->templateFolder = 'uploads/tx_commerce/';
 		$this->pi_USER_INT_obj = 0;
 

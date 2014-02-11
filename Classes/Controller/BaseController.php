@@ -43,7 +43,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 	/**
 	 * @var string
 	 */
-	public $imgFolder = '';
+	public $imgFolder = 'uploads/tx_commerce/';
 
 	/**
 	 * extension to moneylib, if currency should be put out
@@ -213,7 +213,6 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 		$this->pid = $GLOBALS['TSFE']->id;
 		$this->basketHashValue = $GLOBALS['TSFE']->fe_user->tx_commerce_basket->getBasketHashValue();
 		$this->piVars['basketHashValue'] = $this->basketHashValue;
-		$this->imgFolder = 'uploads/tx_commerce/';
 		$this->argSeparator = ini_get('arg_separator.output');
 		$this->addAdditionalLocallang();
 
