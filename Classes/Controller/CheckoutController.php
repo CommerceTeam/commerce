@@ -96,7 +96,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	 *
 	 * @var array
 	 */
-	public $CheckOutsteps = array();
+	public $checkoutSteps = array();
 
 	/**
 	 * Array of the extConf
@@ -115,7 +115,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	/**
 	 * @var array
 	 */
-	public $MYSESSION = array();
+	public $sessionData = array();
 
 	/**
 	 * @var integer
@@ -170,16 +170,16 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			$this->currency = 'EUR';
 		}
 
-		$this->CheckOutsteps[0] = 'billing';
-		$this->CheckOutsteps[1] = 'delivery';
-		$this->CheckOutsteps[2] = 'payment';
-		$this->CheckOutsteps[3] = 'listing';
-		$this->CheckOutsteps[4] = 'finish';
+		$this->checkoutSteps[0] = 'billing';
+		$this->checkoutSteps[1] = 'delivery';
+		$this->checkoutSteps[2] = 'payment';
+		$this->checkoutSteps[3] = 'listing';
+		$this->checkoutSteps[4] = 'finish';
 
 		$hookObjectsArr = $this->getHookObjectArray('init');
 		foreach ($hookObjectsArr as $hookObj) {
 			if (method_exists($hookObj, 'CheckoutSteps')) {
-				$hookObj->CheckoutSteps($this->CheckOutsteps, $this);
+				$hookObj->CheckoutSteps($this->checkoutSteps, $this);
 			}
 		}
 	}
@@ -266,20 +266,20 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			);
 		}
 
-		$this->MYSESSION['billing'] = Tx_Commerce_Utility_GeneralUtility::removeXSSStripTagsArray(
+		$this->sessionData['billing'] = Tx_Commerce_Utility_GeneralUtility::removeXSSStripTagsArray(
 			$feUser->getKey('ses', Tx_Commerce_Utility_GeneralUtility::generateSessionKey('billing'))
 		);
-		$this->MYSESSION['delivery'] = Tx_Commerce_Utility_GeneralUtility::removeXSSStripTagsArray(
+		$this->sessionData['delivery'] = Tx_Commerce_Utility_GeneralUtility::removeXSSStripTagsArray(
 			$feUser->getKey('ses', Tx_Commerce_Utility_GeneralUtility::generateSessionKey('delivery'))
 		);
-		$this->MYSESSION['payment'] = Tx_Commerce_Utility_GeneralUtility::removeXSSStripTagsArray(
+		$this->sessionData['payment'] = Tx_Commerce_Utility_GeneralUtility::removeXSSStripTagsArray(
 			$feUser->getKey('ses', Tx_Commerce_Utility_GeneralUtility::generateSessionKey('payment'))
 		);
-		$this->MYSESSION['mails'] = $feUser->getKey('ses', Tx_Commerce_Utility_GeneralUtility::generateSessionKey('mails'));
+		$this->sessionData['mails'] = $feUser->getKey('ses', Tx_Commerce_Utility_GeneralUtility::generateSessionKey('mails'));
 
 		if (($this->piVars['check'] == 'billing') && ($this->piVars['step'] == 'payment')) {
 				// Remove reference to delivery address
-			$this->MYSESSION['delivery'] = FALSE;
+			$this->sessionData['delivery'] = FALSE;
 			$feUser->setKey('ses', Tx_Commerce_Utility_GeneralUtility::generateSessionKey('delivery'), FALSE);
 		}
 
@@ -395,7 +395,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		$actualTemplate = $this->cObj->getSubpart($myTemplate, '###CHECKOUT_ONE_STEP_ACTUAL###');
 		$inactiveTemplate = $this->cObj->getSubpart($myTemplate, '###CHECKOUT_ONE_STEP_INACTIVE###');
 
-		$stepsToNumbers = array_flip($this->CheckOutsteps);
+		$stepsToNumbers = array_flip($this->checkoutSteps);
 		$currentStepNumber = $stepsToNumbers[$this->currentStep];
 
 		$activeContent = '';
@@ -405,20 +405,20 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			if ($localTs['typolink.']['setCommerceValues'] == 1) {
 				$localTs['typolink.']['parameter'] = $this->conf['basketPid'];
 				$localTs['typolink.']['additionalParams'] = $this->argSeparator . $this->prefixId .
-					'[step]=' . $this->CheckOutsteps[$i];
+					'[step]=' . $this->checkoutSteps[$i];
 			}
-			$label = sprintf($this->pi_getLL('label_step_' . $this->CheckOutsteps[$i]), $i + 1);
+			$label = sprintf($this->pi_getLL('label_step_' . $this->checkoutSteps[$i]), $i + 1);
 			$lokContent = $this->cObj->stdWrap($label, $localTs);
 			$activeContent .= $this->cObj->substituteMarker($activeTemplate, '###LINKTOSTEP###', $lokContent);
 		}
 
-		$label = sprintf($this->pi_getLL('label_step_' . $this->CheckOutsteps[$i]), $i + 1);
+		$label = sprintf($this->pi_getLL('label_step_' . $this->checkoutSteps[$i]), $i + 1);
 		$lokContent = $this->cObj->stdWrap($label, $this->conf['actualStep.']);
 		$actualContent = $this->cObj->substituteMarker($actualTemplate, '###STEPNAME###', $lokContent);
 
-		$stepCount = count($this->CheckOutsteps);
+		$stepCount = count($this->checkoutSteps);
 		for ($i = ($currentStepNumber + 1); $i < $stepCount; $i++) {
-			$label = sprintf($this->pi_getLL('label_step_' . $this->CheckOutsteps[$i]), $i + 1);
+			$label = sprintf($this->pi_getLL('label_step_' . $this->checkoutSteps[$i]), $i + 1);
 			$lokContent = $this->cObj->stdWrap($label, $this->conf['inactiveStep.']);
 			$inactiveContent .= $this->cObj->substituteMarker($inactiveTemplate, '###STEPNAME###', $lokContent);
 		}
@@ -440,7 +440,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	 * @return string $content
 	 */
 	public function getBillingAddress($withTitle = 1) {
-		$this->debug($this->MYSESSION, 'MYSESSION', __FILE__ . ' ' . __LINE__);
+		$this->debug($this->sessionData, 'sessionData', __FILE__ . ' ' . __LINE__);
 		if ($this->conf['billing.']['subpartMarker.']['containerWrap']) {
 			$template = $this->cObj->getSubpart(
 				$this->templateCode,
@@ -517,8 +517,8 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			$paymentChecked = '  ';
 		}
 
-		$this->debug($this->MYSESSION, 'MYSESSION', __FILE__ . ' ' . __LINE__);
-		if (is_array($this->MYSESSION['delivery']) && count($this->MYSESSION['delivery']) > 0) {
+		$this->debug($this->sessionData, 'sessionData', __FILE__ . ' ' . __LINE__);
+		if (is_array($this->sessionData['delivery']) && count($this->sessionData['delivery']) > 0) {
 			$deliveryChecked = ' checked="checked" ';
 			$paymentChecked = '  ';
 		}
@@ -605,7 +605,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			$template = $this->cObj->getSubpart($this->templateCode, '###ADDRESS_CONTAINER###');
 		}
 
-		$this->debug($this->MYSESSION, 'MYSESSION', __FILE__ . ' ' . __LINE__);
+		$this->debug($this->sessionData, 'sessionData', __FILE__ . ' ' . __LINE__);
 
 			// Fill standard markers
 		$markerArray['###ADDRESS_TITLE###'] = $this->pi_getLL('delivery_title');
@@ -647,7 +647,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			);
 			$addressMgm->piVars['backpid'] = $GLOBALS['TSFE']->id;
 			$markerArray['###ADDRESS_FORM_INPUTFIELDS###'] = $addressMgm->getListing(
-				$this->conf['delivery.']['addressType'], TRUE, $this->prefixId, $this->MYSESSION['delivery']['uid']
+				$this->conf['delivery.']['addressType'], TRUE, $this->prefixId, $this->sessionData['delivery']['uid']
 			);
 
 			$this->debug($markerArray['###ADDRESS_FORM_INPUTFIELDS###'], 'result of getListing', __FILE__ . ' ' . __LINE__);
@@ -765,8 +765,8 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		if (
 			$paymentObj->needAdditionalData($this)
 			&& (
-				(isset($this->MYSESSION['payment']) && !$paymentObj->proofData($this->MYSESSION['payment']))
-				|| (!isset($this->MYSESSION['payment']) || $paymentObj->getLastError())
+				(isset($this->sessionData['payment']) && !$paymentObj->proofData($this->sessionData['payment']))
+				|| (!isset($this->sessionData['payment']) || $paymentObj->getLastError())
 			)
 		) {
 				// Merge local lang array with language information of payment object
@@ -935,7 +935,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		}
 
 		if ($paymentObj instanceof Tx_Commerce_Payment_Interface_Payment) {
-			$paymentDone = $paymentObj->checkExternalData($_REQUEST, $this->MYSESSION);
+			$paymentDone = $paymentObj->checkExternalData($_REQUEST, $this->sessionData);
 		} else {
 			$paymentDone = FALSE;
 		}
@@ -987,11 +987,11 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		$paymentObj->parentObj = $this;
 
 		if (method_exists($paymentObj, 'hasSpecialFinishingForm') && $paymentObj->hasSpecialFinishingForm($_REQUEST)) {
-			$content = $paymentObj->getSpecialFinishingForm($config, $this->MYSESSION, $basket);
+			$content = $paymentObj->getSpecialFinishingForm($config, $this->sessionData, $basket);
 
 			return $content;
 		} else {
-			if (!$paymentObj->finishingFunction($config, $this->MYSESSION, $basket)) {
+			if (!$paymentObj->finishingFunction($config, $this->sessionData, $basket)) {
 				$content = $this->handlePayment($paymentObj);
 
 				return $content;
@@ -1294,9 +1294,9 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	public function getAddress($addressType) {
 		$typeLower = strtolower($addressType);
 
-		$data = $this->parseRawData($this->MYSESSION[$typeLower], $this->conf[$typeLower . '.']['sourceFields.']);
+		$data = $this->parseRawData($this->sessionData[$typeLower], $this->conf[$typeLower . '.']['sourceFields.']);
 
-		if (is_array($this->MYSESSION[$typeLower]) && (count($this->MYSESSION[$typeLower]) > 0) && is_array($data)) {
+		if (is_array($this->sessionData[$typeLower]) && (count($this->sessionData[$typeLower]) > 0) && is_array($data)) {
 			$addressArray = array();
 
 			$addressArray['###HEADER###'] = $this->pi_getLL($addressType . '_title');
@@ -1351,13 +1351,13 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 
 			// If the address doesn't exsist in the session it's valid.
 			// For the case that no delivery address was set
-		$isArray = is_array($this->MYSESSION[$typeLower]);
+		$isArray = is_array($this->sessionData[$typeLower]);
 
 		if (!$isArray) {
 			return $typeLower == 'delivery';
 		}
 
-		foreach ($this->MYSESSION[$typeLower] as $name => $value) {
+		foreach ($this->sessionData[$typeLower] as $name => $value) {
 			if ($config['sourceFields.'][$name . '.']['mandatory'] == 1 && strlen($value) == 0) {
 				$this->formError[$name] = $this->pi_getLL('error_field_mandatory');
 				$returnVal = FALSE;
@@ -1487,8 +1487,8 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	public function getPaymentData() {
 		$result = '';
 
-		if (is_array($this->MYSESSION['mails']['payment'])) {
-			foreach ($this->MYSESSION['mails']['payment'] as $k => $data) {
+		if (is_array($this->sessionData['mails']['payment'])) {
+			foreach ($this->sessionData['mails']['payment'] as $k => $data) {
 				if ($k <> 'cc_checksum') {
 					$result .= $data['label'] . ' : ';
 					if ($k == 'cc_number') {
@@ -1559,7 +1559,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			$fieldList = array_keys($config['sourceFields.']);
 		}
 
-		$this->dbFieldData = $this->MYSESSION[$step];
+		$this->dbFieldData = $this->sessionData[$step];
 
 		$fieldTemplate = $this->cObj->getSubpart($this->templateCode, '###SINGLE_INPUT###');
 		$fieldTemplateCheckbox = $this->cObj->getSubpart($this->templateCode, '###SINGLE_CHECKBOX###');
@@ -1585,15 +1585,15 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			$fieldMarkerArray['###FIELD_INPUT###'] = $this->getInputField(
 				$fieldName,
 				$config['sourceFields.'][$arrayName],
-				t3lib_div::removeXSS(strip_tags($this->MYSESSION[$step][$fieldName])),
+				t3lib_div::removeXSS(strip_tags($this->sessionData[$step][$fieldName])),
 				$step
 			);
 			$fieldMarkerArray['###FIELD_NAME###'] = $this->prefixId . '[' . $step . '][' . $fieldName . ']';
 			$fieldMarkerArray['###FIELD_INPUTID###'] = $step . '-' . $fieldName;
 
 				// Save some data for mails
-			$this->MYSESSION['mails'][$step][$fieldName] = array(
-				'data' => $this->MYSESSION[$step][$fieldName],
+			$this->sessionData['mails'][$step][$fieldName] = array(
+				'data' => $this->sessionData[$step][$fieldName],
 				'label' => $fieldLabel
 			);
 			if ($config['sourceFields.'][$arrayName]['type'] == 'check') {
@@ -1610,7 +1610,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			$fieldCode .= $this->cObj->substituteMarkerArray($fieldCodeTemplate, $fieldMarkerArray);
 		}
 
-		$GLOBALS['TSFE']->fe_user->setKey('ses', Tx_Commerce_Utility_GeneralUtility::generateSessionKey('mails'), $this->MYSESSION['mails']);
+		$GLOBALS['TSFE']->fe_user->setKey('ses', Tx_Commerce_Utility_GeneralUtility::generateSessionKey('mails'), $this->sessionData['mails']);
 
 		return $fieldCode;
 	}
@@ -1625,7 +1625,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		/** @var t3lib_db $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
-		if (!is_array($this->MYSESSION[$type])) {
+		if (!is_array($this->sessionData[$type])) {
 			return 0;
 		}
 
@@ -1634,14 +1634,14 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		$fieldList = $this->parseFieldList($config['sourceFields.']);
 		if (is_array($fieldList)) {
 			foreach ($fieldList as $fieldName) {
-				$dataArray[$fieldName] = $this->MYSESSION[$type][$fieldName];
+				$dataArray[$fieldName] = $this->sessionData[$type][$fieldName];
 			}
 		}
 
 			// Check if a uid is set, so address handling can be used.
 			// Only possible if user is logged in
-		if ($this->MYSESSION[$type]['uid'] && $GLOBALS['TSFE']->loginUser) {
-			$uid = $this->MYSESSION[$type]['uid'];
+		if ($this->sessionData[$type]['uid'] && $GLOBALS['TSFE']->loginUser) {
+			$uid = $this->sessionData[$type]['uid'];
 		} else {
 				// Create
 			if (isset($this->conf['addressPid'])) {
@@ -1667,16 +1667,16 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 					$feuData['usergroup'] = $this->conf['userGroup'];
 					$feuData['tstamp'] = time();
 					if ($this->conf['randomUser']) {
-						$feuData['username'] = substr($this->MYSESSION['billing']['name'], 0, 2) .
-							substr($this->MYSESSION['billing']['surname'], 0, 4) . substr(uniqid(rand()), 0, 4);
+						$feuData['username'] = substr($this->sessionData['billing']['name'], 0, 2) .
+							substr($this->sessionData['billing']['surname'], 0, 4) . substr(uniqid(rand()), 0, 4);
 					} else {
-						$feuData['username'] = $this->MYSESSION['billing']['email'];
+						$feuData['username'] = $this->sessionData['billing']['email'];
 					}
 					$feuData['password'] = substr(uniqid(rand()), 0, 6);
-					$feuData['email'] = $this->MYSESSION['billing']['email'];
-					$feuData['name'] = $this->MYSESSION['billing']['name'] . ' ' . $this->MYSESSION['billing']['surname'];
-					$feuData['first_name'] = $this->MYSESSION['billing']['name'];
-					$feuData['last_name'] = $this->MYSESSION['billing']['surname'];
+					$feuData['email'] = $this->sessionData['billing']['email'];
+					$feuData['name'] = $this->sessionData['billing']['name'] . ' ' . $this->sessionData['billing']['surname'];
+					$feuData['first_name'] = $this->sessionData['billing']['name'];
+					$feuData['last_name'] = $this->sessionData['billing']['surname'];
 
 					$hookObjectsArr = $this->getHookObjectArray('handleAddress');
 					foreach ($hookObjectsArr as $hookObj) {
@@ -1985,7 +1985,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 
 			// Check if we have a delivery address, some payment infos
 			// and if we are in the finishing step
-		if (in_array('nobilling', $checks) && $this->currentStep == 'finish' && !isset($this->MYSESSION['billing'])) {
+		if (in_array('nobilling', $checks) && $this->currentStep == 'finish' && !isset($this->sessionData['billing'])) {
 			return 'nobilling';
 		}
 
@@ -2004,9 +2004,9 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	public function sendUserMail($orderUid, $orderData) {
 		$hookObjectsArr = $this->getHookObjectArray('sendUserMail');
 
-		if (strlen($this->MYSESSION['billing']['email'])) {
+		if (strlen($this->sessionData['billing']['email'])) {
 				// If user has email in the formular, use this
-			$userMail = $this->MYSESSION['billing']['email'];
+			$userMail = $this->sessionData['billing']['email'];
 		} elseif (is_array($GLOBALS['TSFE']->fe_user->user) && strlen($GLOBALS['TSFE']->fe_user->user['email'])) {
 			$userMail = $GLOBALS['TSFE']->fe_user->user['email'];
 		} else {
@@ -2157,13 +2157,13 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		if (is_array($GLOBALS['TSFE']->fe_user->user && strlen($GLOBALS['TSFE']->fe_user->user['email']))) {
 			$userMail = $GLOBALS['TSFE']->fe_user->user['email'];
 		} else {
-			$userMail = $this->MYSESSION['billing']['email'];
+			$userMail = $this->sessionData['billing']['email'];
 		}
 
 		if (is_array($GLOBALS['TSFE']->fe_user->user && strlen($GLOBALS['TSFE']->fe_user->user['email']))) {
 			$userName = $GLOBALS['TSFE']->fe_user->user['name'] . ' ' . $GLOBALS['TSFE']->fe_user->user['surname'];
 		} else {
-			$userName = $this->MYSESSION['billing']['name'] . ' ' . $this->MYSESSION['billing']['surname'];
+			$userName = $this->sessionData['billing']['name'] . ' ' . $this->sessionData['billing']['surname'];
 		}
 
 		if ($this->conf['adminmail.']['from'] || $userMail) {
@@ -2512,7 +2512,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		$orderUid = $this->orderUid;
 
 			// Call update method from the payment class
-		$paymentObj->updateOrder($orderUid, $this->MYSESSION);
+		$paymentObj->updateOrder($orderUid, $this->sessionData);
 
 			// Insert order
 		foreach ($hookObjectsArr as $hookObj) {
@@ -2601,9 +2601,9 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	 * @return string
 	 */
 	public function getStepAfter($step) {
-		$rev = array_flip($this->CheckOutsteps);
+		$rev = array_flip($this->checkoutSteps);
 
-		$nextStep = $this->CheckOutsteps[++$rev[$step]];
+		$nextStep = $this->checkoutSteps[++$rev[$step]];
 
 		if (empty($nextStep)) {
 			$result = $step;
