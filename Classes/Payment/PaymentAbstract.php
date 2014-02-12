@@ -59,10 +59,10 @@ abstract class Tx_Commerce_Payment_PaymentAbstract implements Tx_Commerce_Paymen
 	 * Default constructor
 	 *
 	 * @throws Exception If type was not set or criteria are not valid
-	 * @param Tx_Commerce_Controller_CheckoutController $pObj Parent object
+	 * @param Tx_Commerce_Controller_BaseController|Tx_Commerce_Controller_CheckoutController|Tx_Commerce_Controller_BasketController $pObj Parent object
 	 * @return self
 	 */
-	public function __construct(Tx_Commerce_Controller_CheckoutController $pObj) {
+	public function __construct(Tx_Commerce_Controller_BaseController $pObj) {
 		if (!strlen($this->type) > 0) {
 			throw new Exception(
 				'$type not set.',
