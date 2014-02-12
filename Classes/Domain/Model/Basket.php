@@ -153,25 +153,19 @@ class Tx_Commerce_Domain_Model_Basket extends Tx_Commerce_Domain_Model_BasicBask
 	 * @return void
 	 */
 	protected function loadDataFromDatabase() {
+		$where = '';
 		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['BasketStoragePid'] > 0) {
-			$result = $this->database->exec_SELECTquery(
-				'*',
-				'tx_commerce_baskets',
-				'sid = ' . $this->database->fullQuoteStr($this->sessionId, 'tx_commerce_baskets') .
-					' AND finished_time = 0' .
-					' AND pid = ' . $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['BasketStoragePid'],
-				'',
-				'pos'
-			);
-		} else {
-			$result = $this->database->exec_SELECTquery(
-				'*',
-				'tx_commerce_baskets',
-				'sid = ' . $this->database->fullQuoteStr($this->sessionId, 'tx_commerce_baskets') . ' AND finished_time=0 ',
-				'',
-				'pos'
-			);
+			$where .= ' AND pid = ' . $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['BasketStoragePid'];
 		}
+
+		$result = $this->database->exec_SELECTquery(
+			'*',
+			'tx_commerce_baskets',
+			'sid = ' . $this->database->fullQuoteStr($this->sessionId, 'tx_commerce_baskets') .
+				' AND finished_time = 0' . $where,
+			'',
+			'pos'
+		);
 
 		if ($this->database->sql_num_rows($result)) {
 			$hookObjectsArr = array();
@@ -191,6 +185,7 @@ class Tx_Commerce_Domain_Model_Basket extends Tx_Commerce_Domain_Model_BasicBask
 					$hookObjectsArr[] = t3lib_div::getUserObj($classRef);
 				}
 			}
+
 			$basketReadonly = FALSE;
 			while ($return_data = $this->database->sql_fetch_assoc($result)) {
 				if (($return_data['quantity'] > 0) && ($return_data['price_id'] > 0)) {
@@ -200,6 +195,10 @@ class Tx_Commerce_Domain_Model_Basket extends Tx_Commerce_Domain_Model_BasicBask
 					if (is_array($hookObjectsArr)) {
 						foreach ($hookObjectsArr as $hookObj) {
 							if (method_exists($hookObj, 'load_data_from_database')) {
+								t3lib_div::deprecationLog('
+									hook method load_data_from_database
+									is deprecated since commerce 1.0.0, this hook will be removed in commerce 1.4.0, please use loadDataFromDatabase instead
+								');
 								$hookObj->load_data_from_database($return_data, $this);
 							}
 							if (method_exists($hookObj, 'loadDataFromDatabase')) {
@@ -286,7 +285,7 @@ class Tx_Commerce_Domain_Model_Basket extends Tx_Commerce_Domain_Model_BasicBask
 	 * @return void
 	 */
 	public function storeData() {
-		switch($this->storageType) {
+		switch ($this->storageType) {
 			case 'persistent':
 			case 'database':
 				$this->storeDataToDatabase();

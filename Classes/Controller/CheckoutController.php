@@ -332,7 +332,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	 */
 	protected function storeRequestDataIntoSession() {
 		/** @var $feUser tslib_feUserAuth */
-		$feUser = & $GLOBALS['TSFE']->fe_user;
+		$feUser = $GLOBALS['TSFE']->fe_user;
 			// Write the billing address into session, if it is present in the REQUEST
 		if (isset($this->piVars['billing'])) {
 			$this->piVars['billing'] = Tx_Commerce_Utility_GeneralUtility::removeXSSStripTagsArray($this->piVars['billing']);
