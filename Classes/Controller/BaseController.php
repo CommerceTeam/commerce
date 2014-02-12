@@ -244,7 +244,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 			);
 		}
 		if (strlen($paymentType) < 1) {
-			throw new Exception($paymentType . ' not given.', 1307015821);
+			throw new Exception('Empty payment type given.', 1307015821);
 		}
 
 		$config = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['SYSPRODUCTS']['PAYMENT']['types'][$paymentType];

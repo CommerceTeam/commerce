@@ -47,22 +47,22 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 	/**
 	 * @var Tx_Commerce_Domain_Model_Product
 	 */
-	public $delProd;
+	public $deliveryProduct;
 
 	/**
 	 * @var array
 	 */
-	public $basketDel;
-
-	/**
-	 * @var array
-	 */
-	public $basketPay;
+	public $basketDeliveryArticles;
 
 	/**
 	 * @var Tx_Commerce_Domain_Model_Product
 	 */
-	public $payProd;
+	public $paymentProduct;
+
+	/**
+	 * @var array
+	 */
+	public $basketPaymentArticles;
 
 	/**
 	 * @var Tx_Commerce_Domain_Model_Basket Basket object
@@ -437,11 +437,11 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 	 */
 	public function handleDeliveryArticle() {
 		if ($this->piVars['delArt']) {
-			$basketDel = $this->basket->getArticlesByArticleTypeUidAsUidlist(DELIVERYARTICLETYPE);
+			$basketDeliveryArticles = $this->basket->getArticlesByArticleTypeUidAsUidlist(DELIVERYARTICLETYPE);
 
 				// Delete old delivery article
-			foreach ($basketDel as $actualDeliveryArticle) {
-				$this->basket->deleteArticle($actualDeliveryArticle);
+			foreach ($basketDeliveryArticles as $singleDeliveryArticle) {
+				$this->basket->deleteArticle($singleDeliveryArticle);
 			}
 
 				// Add new article
@@ -666,14 +666,12 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 	 * @return array Array of marker
 	 */
 	public function makeDelivery($basketArray) {
-		$this->delProd = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product');
-		$this->delProd->init($this->conf['delProdId'], $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
-		$this->delProd->loadData();
-		$this->delProd->loadArticles();
+		$this->deliveryProduct = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product');
+		$this->deliveryProduct->init($this->conf['delProdId'], $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
+		$this->deliveryProduct->loadData();
+		$this->deliveryProduct->loadArticles();
 
-		$this->basketDel = $this->basket->getArticlesByArticleTypeUidAsUidlist(DELIVERYARTICLETYPE);
-
-		$select = '<select name="' . $this->prefixId . '[delArt]" onChange="this.form.submit();">';
+		$this->basketDeliveryArticles = $this->basket->getArticlesByArticleTypeUidAsUidlist(DELIVERYARTICLETYPE);
 
 		$allowedArticles = array();
 		if ($this->conf['delivery.']['allowedArticles']) {
@@ -704,14 +702,16 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 			}
 		}
 
+		$select = '<select name="' . $this->prefixId . '[delArt]" onChange="this.form.submit();">';
+
 		$first = FALSE;
 		$price_net = '';
 		$price_gross = '';
 		/** @var $articleObj Tx_Commerce_Domain_Model_Article */
-		foreach ($this->delProd->getArticleObjects() as $articleUid => $articleObj) {
-			if ((!is_array($allowedArticles)) || in_array($articleUid, $allowedArticles)) {
+		foreach ($this->deliveryProduct->getArticleObjects() as $articleUid => $articleObj) {
+			if (!count($allowedArticles) || in_array($articleUid, $allowedArticles)) {
 				$select .= '<option value="' . $articleUid . '"';
-				if ($articleUid == $this->basketDel[0]) {
+				if ($articleUid == $this->basketDeliveryArticles[0]) {
 					$first = 1;
 					$select .= ' selected="selected"';
 					$price_net = tx_moneylib::format($articleObj->getPriceNet(), $this->currency);
@@ -719,11 +719,11 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 				} elseif (!$first) {
 					$price_net = tx_moneylib::format($articleObj->getPriceNet(), $this->currency);
 					$price_gross = tx_moneylib::format($articleObj->getPriceGross(), $this->currency);
-					if (!is_array($this->basketDel) || count($this->basketDel) < 1) {
+					if (!is_array($this->basketDeliveryArticles) || count($this->basketDeliveryArticles) < 1) {
 						$this->basket->addArticle($articleUid);
 						$this->basket->storeData();
 					}
-					$first = 1;
+					$first = TRUE;
 				}
 				$select .= '>' . $articleObj->getTitle() . '</option>';
 			}
@@ -745,19 +745,19 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 	 * @return array Array of template marker
 	 */
 	public function makePayment($basketArray) {
-		$this->payProd = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product');
-		$this->payProd->init($this->conf['payProdId'], $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
-		$this->payProd->loadData();
-		$this->payProd->loadArticles();
+		$this->paymentProduct = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product');
+		$this->paymentProduct->init($this->conf['payProdId'], $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
+		$this->paymentProduct->loadData();
+		$this->paymentProduct->loadArticles();
 
-		$this->basketPay = $this->basket->getArticlesByArticleTypeUidAsUidlist(PAYMENTARTICLETYPE);
+		$this->basketPaymentArticles = $this->basket->getArticlesByArticleTypeUidAsUidlist(PAYMENTARTICLETYPE);
 
 		$select = '<select name="' . $this->prefixId . '[payArt]" onChange="this.form.submit();">';
 
 		$addPleaseSelect = FALSE;
 		$addDefaultPaymentToBasket = FALSE;
 			// Check if a Payment is selected if not, add standard payment
-		if (count($this->basketPay) == 0) {
+		if (count($this->basketPaymentArticles) == 0) {
 				// Check if Payment selection is forced
 			if ($this->conf['payment.']['forceSelection']) {
 					// Add Please Select Option
@@ -777,23 +777,16 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 			// Check if payment articles are allowed
 		$newAllowedArticles = array();
 		/** @var Tx_Commerce_Domain_Model_Article $articleObj */
-		foreach ($this->payProd->getArticleObjects() as $articleUid => $articleObj) {
-			if ((!is_array($allowedArticles)) || in_array($articleUid, $allowedArticles)) {
+		foreach ($this->paymentProduct->getArticleObjects() as $articleUid => $articleObj) {
+			if (!count($allowedArticles) || in_array($articleUid, $allowedArticles)) {
 				$articleObj->loadData();
-				$paymentType = $articleObj->getClassname();
-				$payment = $this->getPaymentObject($paymentType);
-				if (method_exists($payment, 'isAllowed')) {
-					if ($payment->isAllowed()) {
-						$newAllowedArticles[] = $articleUid;
-					}
-				} else {
-						// This code is kept for backwards compatibility with
-						// 'old' payment that had no 'isAllowed' handling.
-						// @todo: Remove
+				$payment = $this->getPaymentObject($articleObj->getClassname());
+				if ($payment->isAllowed()) {
 					$newAllowedArticles[] = $articleUid;
 				}
 			}
 		}
+
 			// If default Paymentarticle is, for example, credit card
 			// but when we have an article in the basket with the only possible
 			// payment method like debit, this ensures that there is still the correct
@@ -833,11 +826,11 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 		$price_net = '';
 		$price_gross = '';
 		/** @var $articleObj Tx_Commerce_Domain_Model_Article */
-		foreach ($this->payProd->getArticleObjects() as $articleUid => $articleObj) {
-			if ((!is_array($allowedArticles)) || in_array($articleUid, $allowedArticles)) {
+		foreach ($this->paymentProduct->getArticleObjects() as $articleUid => $articleObj) {
+			if (!count($allowedArticles) || in_array($articleUid, $allowedArticles)) {
 				$select .= '<option value="' . $articleUid . '"';
 				if (
-					($articleUid == $this->basketPay[0]) || ($addDefaultPaymentToBasket
+					($articleUid == $this->basketPaymentArticles[0]) || ($addDefaultPaymentToBasket
 					&& ($articleUid == $this->conf['defaultPaymentArticleId']))
 					&& !$addPleaseSelect
 				) {

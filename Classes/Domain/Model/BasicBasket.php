@@ -198,9 +198,9 @@ class Tx_Commerce_Domain_Model_BasicBasket {
 		$result = array();
 
 		/** @var Tx_Commerce_Domain_Model_BasketItem $oneItem */
-		foreach ($this->basket_items as $oneuid => $oneItem) {
+		foreach ($this->basket_items as $uid => $oneItem) {
 			if ($oneItem->getArticle()->getArticleTypeUid() == $articleTypeUid) {
-				$result[] = $oneuid;
+				$result[] = $uid;
 			}
 		}
 
