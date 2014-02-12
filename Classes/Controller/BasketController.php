@@ -129,6 +129,13 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 	}
 
 	/**
+	 * @return Tx_Commerce_Domain_Model_Basket
+	 */
+	public function getBasket() {
+		return $this->basket;
+	}
+
+	/**
 	 * Main function called by insert plugin
 	 *
 	 * @param string $content Content
@@ -618,7 +625,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 		$basketArray['###BASKET_ARTICLES_ITEMS###'] = $this->basket->getArticleTypeCount(NORMALARTICLETYPE);
 		$basketArray['###BASKETURL###'] = $this->pi_linkTP_keepPIvars_url(array(), 0, 1, $this->conf['basketPid']);
 		$basketArray['###URL_CHECKOUT###'] = $this->pi_linkTP_keepPIvars_url(array(), 0, 1, $this->conf['checkoutPid']);
-		$basketArray['###NO_STOCK MESSAGE###'] = $this->noStock;
+		$basketArray['###NO_STOCK_MESSAGE###'] = $this->noStock;
 		$basketArray['###BASKET_LASTPRODUCTURL###'] = $this->cObj->stdWrap($GLOBALS['TSFE']->fe_user->getKey('ses', 'tx_commerce_lastproducturl'), $this->conf['lastProduct']);
 
 		if ($this->priceLimitForBasket == 1 && $this->conf['priceLimitForBasketMessage']) {
