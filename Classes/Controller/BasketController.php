@@ -573,7 +573,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 			$contentDelivery = $hookObject->makeDelivery($this, $this->basket, $contentDelivery);
 			$template = $this->cObj->substituteSubpart($template, '###DELIVERYBOX###', $contentDelivery);
 		} else {
-			$deliveryArray = $this->makeDelivery(array());
+			$deliveryArray = $this->makeDelivery();
 			$contentDelivery = $this->substituteMarkerArrayNoCached($contentDelivery, $deliveryArray);
 			$template = $this->cObj->substituteSubpart($template, '###DELIVERYBOX###', $contentDelivery);
 		}
@@ -583,7 +583,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 			$contentPayment = $hookObject->makePayment($this, $this->basket, $contentPayment);
 			$template = $this->cObj->substituteSubpart($template, '###PAYMENTBOX###', $contentPayment);
 		} else {
-			$paymentArray = $this->makePayment(array());
+			$paymentArray = $this->makePayment();
 			$contentPayment = $this->substituteMarkerArrayNoCached($contentPayment, $paymentArray);
 			$template = $this->cObj->substituteSubpart($template, '###PAYMENTBOX###', $contentPayment);
 		}
@@ -665,7 +665,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 	 * @param array $basketArray Array of marker
 	 * @return array Array of marker
 	 */
-	public function makeDelivery($basketArray) {
+	public function makeDelivery($basketArray = array()) {
 		$this->deliveryProduct = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product');
 		$this->deliveryProduct->init($this->conf['delProdId'], $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
 		$this->deliveryProduct->loadData();
@@ -744,7 +744,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 	 * @param array $basketArray Array of template marker
 	 * @return array Array of template marker
 	 */
-	public function makePayment($basketArray) {
+	public function makePayment($basketArray = array()) {
 		$this->paymentProduct = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product');
 		$this->paymentProduct->init($this->conf['payProdId'], $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
 		$this->paymentProduct->loadData();
