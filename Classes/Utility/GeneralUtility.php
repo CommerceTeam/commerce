@@ -356,6 +356,15 @@ class Tx_Commerce_Utility_GeneralUtility {
 
 		return $newList;
 	}
+
+	/**
+	 * @param string $value
+	 * @return string
+	 */
+	public static function sanitizeAlphaNum($value) {
+		preg_match('@[ a-z0-9].*@i', $value, $matches);
+		return $matches[0];
+	}
 }
 
 class_alias('Tx_Commerce_Utility_GeneralUtility', 'tx_commerce_div');
