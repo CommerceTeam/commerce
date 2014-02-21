@@ -1711,7 +1711,18 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 					} else {
 						$feuData['username'] = $this->sessionData['billing']['email'];
 					}
-					$feuData['password'] = substr(uniqid(rand()), 0, 6);
+
+						// uses either the typed in password (if configured) or a random password - default is random
+					if (
+						isset($config['dontUseRandomPassword'])
+						&& $config['dontUseRandomPassword']
+						&& isset($this->sessionData['billing']['password'])
+					) {
+						$feuData['password'] = $this->sessionData['billing']['password'];
+					} else {
+						$feuData['password'] = substr(uniqid(rand()), 0, 6);
+					}
+
 					$feuData['email'] = $this->sessionData['billing']['email'];
 					$feuData['name'] = $this->sessionData['billing']['name'] . ' ' . $this->sessionData['billing']['surname'];
 					$feuData['first_name'] = $this->sessionData['billing']['name'];
@@ -1741,6 +1752,14 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			}
 
 			$dataArray[$config['sourceLimiter.']['field']] = $config['sourceLimiter.']['value'];
+
+				// unsets the fields that are not present in tt_adress before inserting them
+			if (isset($config['tt_adressExcludeFields']) && $config['tt_adressExcludeFields'] != '') {
+				$tt_adressExcludeFields = t3lib_div::trimExplode(',', $config['tt_adressExcludeFields']);
+				foreach ($tt_adressExcludeFields as $excludeField) {
+					unset($dataArray[$excludeField]);
+				}
+			}
 
 				// First address should be main address by default
 			$dataArray['tx_commerce_is_main_address'] = 1;
