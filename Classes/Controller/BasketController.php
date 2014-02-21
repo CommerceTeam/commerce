@@ -1069,7 +1069,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 				// Only if Stock is ok and Access is ok (could have been changed since the article was put into the basket
 			if ($stockOK && $access) {
 				$safePrefix = $this->prefixId;
-$masterCategory = $basketItem->getProduct()->getMasterparentCategory();
+
 				$typoLinkConf = array();
 				$typoLinkConf['parameter'] = $this->conf['listPid'];
 				$typoLinkConf['useCacheHash'] = 1;
