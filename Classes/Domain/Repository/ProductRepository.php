@@ -205,49 +205,22 @@ class Tx_Commerce_Domain_Repository_ProductRepository extends Tx_Commerce_Domain
 	 * @return integer Categorie UID
 	 * @TODO Change to correct handling way concering databas model, currently wrongly interperted
 	 * @TODO change to mm db class function
-	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getParentCategories instead; note that getParentCategories will return an array
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getMasterParentCategory instead
 	 */
 	public function get_parent_category($uid) {
 		t3lib_div::logDeprecatedFunction();
-		$uid = (int) $uid;
-		if ($uid) {
-			if (is_object($GLOBALS['TSFE']) && is_object($GLOBALS['TSFE']->sys_page)) {
-				$addWhere = $GLOBALS['TSFE']->sys_page->enableFields($this->databaseTable, $GLOBALS['TSFE']->showHiddenRecords);
-			} else {
-				$addWhere = '';
-			}
-
-			if ($result = $this->database->exec_SELECTquery('categories', $this->databaseTable, 'uid = ' . $uid . $addWhere)) {
-				if ($return_data = $this->database->sql_fetch_assoc($result)) {
-					$this->database->sql_free_result($result);
-					if ($return_data['categories']) {
-						if (strpos($return_data['categories'], ',') > 0) {
-							$rdataArr = explode(',', $return_data['categories']);
-							$rdata = $rdataArr[0];
-						} else {
-							$rdata = $return_data['categories'];
-						}
-						return $rdata;
-					}
-				}
-			}
-
-			$this->error('exec_SELECTquery("categories", ' . $this->databaseTable . ', "uid = $uid"); returns no Result');
-		}
-		return FALSE;
+		return $this->getMasterParentCategory($uid);
 	}
 
 	/**
 	 * Gets the "master" category from this product
-	 * @param uid = Product UID
+	 * @param int $uid = Product UID
 	 * @return integer Categorie UID
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getParentCategories instead
-	 * @see get_parent_categorie
 	 */
 	public function get_parent_categorie($uid) {
 		t3lib_div::logDeprecatedFunction();
-
-		return $this->getParentCategories($uid);
+		return $this->getMasterParentCategory($uid);
 	}
 
 	/**
@@ -290,6 +263,14 @@ class Tx_Commerce_Domain_Repository_ProductRepository extends Tx_Commerce_Domain
 		}
 
 		return $uids;
+	}
+
+	/**
+	 * @param int $uid
+	 * @return int
+	 */
+	public function getMasterParentCategory($uid) {
+		return reset($this->getParentCategories($uid));
 	}
 
 	/**

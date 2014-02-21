@@ -894,7 +894,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	 * @return array uid of category
 	 */
 	public function getMasterparentCategory() {
-		return $this->databaseConnection->getParentCategories($this->uid);
+		return $this->databaseConnection->getMasterParentCategory($this->uid);
 	}
 
 	/**
