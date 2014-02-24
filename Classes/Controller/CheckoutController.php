@@ -510,30 +510,28 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 
 			// If a user is logged in, get the form from the address management
 		if ($GLOBALS['TSFE']->loginUser) {
-			$amConf = $this->conf;
-			$amConf['formFields.'] = $this->conf['billing.']['sourceFields.'];
-			$amConf['addressPid'] = $this->conf['addressPid'];
+			$addressManagerConf = $this->conf;
+			$addressManagerConf['formFields.'] = $this->conf['billing.']['sourceFields.'];
+			$addressManagerConf['addressPid'] = $this->conf['addressPid'];
 
 				// Make an instance of pi4 (address management)
 			/** @var Tx_Commerce_Controller_AddressesController $addressMgm */
 			$addressMgm = t3lib_div::makeInstance('Tx_Commerce_Controller_AddressesController');
 			$addressMgm->cObj = $this->cObj;
 			$addressMgm->templateCode = $this->templateCode;
-			$addressMgm->init($amConf, FALSE);
+			$addressMgm->init($addressManagerConf, FALSE);
 			$addressMgm->addresses = $addressMgm->getAddresses(
 				$GLOBALS['TSFE']->fe_user->user['uid'],
 				$this->conf['billing.']['addressType']
 			);
 			$addressMgm->piVars['backpid'] = $GLOBALS['TSFE']->id;
 
-			$markerArray['###ADDRESS_FORM_INPUTFIELDS###'] = $addressMgm->getListing(
-				$this->conf['billing.']['addressType'], TRUE, $this->prefixId
-			);
-			$billingForm .= $markerArray['###ADDRESS_FORM_INPUTFIELDS###'];
+			$markerArray['###ADDRESS_FORM_INPUTFIELDS###'] = $addressMgm->getListing($this->conf['billing.']['addressType'], TRUE, $this->prefixId);
 		} else {
 			$markerArray['###ADDRESS_FORM_INPUTFIELDS###'] = $this->getInputForm($this->conf['billing.'], 'billing');
-			$billingForm .= $markerArray['###ADDRESS_FORM_INPUTFIELDS###'];
 		}
+
+		$billingForm .= $markerArray['###ADDRESS_FORM_INPUTFIELDS###'];
 
 			// Marker for the delivery address chooser
 		$stepNodelivery = $this->getStepAfter('delivery');
@@ -1815,9 +1813,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			break;
 
 			case 'static_info_tables':
-				$selected = $fieldValue != '' ?
-					$fieldValue :
-					$fieldConfig['default'];
+				$selected = $fieldValue != '' ? $fieldValue : $fieldConfig['default'];
 
 				$result = $this->staticInfo->buildStaticInfoSelector(
 					$fieldConfig['field'],
@@ -1831,6 +1827,23 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 					$fieldConfig['select'],
 					$GLOBALS['TSFE']->tmpl->setup['config.']['language']
 				);
+			break;
+
+			case 'static_info_country':
+				$countries = $this->staticInfo->initCountries(
+					$fieldConfig['country_association'],
+					$GLOBALS['TSFE']->tmpl->setup['config.']['language'],
+					1,
+					$fieldConfig['select']
+				);
+				asort($countries, SORT_LOCALE_STRING);
+
+				$selected = $fieldValue != '' ? $fieldValue : $fieldConfig['default'];
+
+				$result = '<select id="' . $step . '-' . $fieldName . '"' . $this->prefixId . '[' . $step . '][' . $fieldName . ']' .
+					'class="' . $fieldConfig['cssClass'] . '">' . LF;
+				$result .= $this->staticInfo->optionsConstructor($countries, array($selected), $outSelectedArray);
+				$result .= '</select>' . LF;
 			break;
 
 			case 'check':

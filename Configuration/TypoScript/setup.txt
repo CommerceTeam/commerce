@@ -624,6 +624,7 @@ plugin.tx_commerce_pi3 {
 			field = tx_commerce_address_type_id
 			value = 1
 		}
+
 		sourceFields {
 			name.mandatory = 1
 			surname.mandatory = 1
@@ -632,8 +633,9 @@ plugin.tx_commerce_pi3 {
 			zip.mandatory = 1
 			city.mandatory = 1
 			country {
-				type = static_info_tables
-				field = COUNTRIES
+				type = static_info_country
+				# [ALL, UN, EU]
+				country_association = ALL
 				select = 1
 				default = DEU
 				mandatory = 1
@@ -644,7 +646,6 @@ plugin.tx_commerce_pi3 {
 				eval = email,username
 			}
 			phone.mandatory = 0
-
 		}
 
 		mandatorySign = *
