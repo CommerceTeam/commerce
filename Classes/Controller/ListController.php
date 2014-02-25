@@ -47,11 +47,6 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 	public $singleViewAsPlugin = FALSE;
 
 	/**
-	 * @var Tx_Commerce_Domain_Model_Category
-	 */
-	public $category;
-
-	/**
 	 * @var integer
 	 */
 	public $master_cat;
@@ -80,11 +75,6 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 	 * @var string
 	 */
 	public $content = '';
-
-	/**
-	 * @var Tx_Commerce_Domain_Model_Product
-	 */
-	public $product;
 
 	/**
 	 * @var array
