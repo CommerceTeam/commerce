@@ -109,6 +109,8 @@ class Tx_Commerce_Tree_Leaf_Mounts extends Tx_Commerce_Tree_Leaf_Base {
 	 * @return self
 	 */
 	public function __construct() {
+		parent::__construct();
+
 		$this->user_uid  = 0;
 		$this->mountlist = '';
 		$this->mountdata = array();
@@ -116,8 +118,6 @@ class Tx_Commerce_Tree_Leaf_Mounts extends Tx_Commerce_Tree_Leaf_Base {
 		$this->user = t3lib_div::makeInstance('t3lib_beUserAuth');
 		$this->group = 0;
 		$this->byGroup = FALSE;
-
-		parent::__construct();
 	}
 
 	/**

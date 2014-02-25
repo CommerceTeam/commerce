@@ -152,6 +152,8 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 	 * @return self
 	 */
 	public function __construct() {
+		parent::__construct();
+
 		if (t3lib_div::int_from_ver(TYPO3_version) >= '4002007') {
 			$rootPathT3 = t3lib_div::getIndpEnv('TYPO3_SITE_PATH');
 		} else {
