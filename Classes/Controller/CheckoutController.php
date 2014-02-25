@@ -613,6 +613,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	/**
 	 * Creates a form for collection the delivery address data.
 	 *
+	 * @param int $withTitle
 	 * @return string $content
 	 */
 	public function getDeliveryAddress($withTitle = 1) {
