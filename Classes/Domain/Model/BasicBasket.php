@@ -322,7 +322,7 @@ class Tx_Commerce_Domain_Model_BasicBasket {
 	 * @return integer Number of items
 	 */
 	public function getItemsCount() {
-		return $this->items;
+		return count($this->basket_items);
 	}
 
 	/**
@@ -546,7 +546,6 @@ class Tx_Commerce_Domain_Model_BasicBasket {
 				if ($basketItem->init($articleUid, $quantity, $priceid, $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid'])) {
 					$basketItem->setTaxCalculationMethod($this->pricefromnet);
 					$this->recalculate_sums();
-					$this->items++;
 				}
 				$this->basket_items[$articleUid] = $basketItem;
 			}
@@ -631,7 +630,6 @@ class Tx_Commerce_Domain_Model_BasicBasket {
 				return FALSE;
 			}
 			unset($this->basket_items[$article_uid]);
-			$this->items--;
 			$this->recalculate_sums();
 			return TRUE;
 		}
@@ -645,7 +643,6 @@ class Tx_Commerce_Domain_Model_BasicBasket {
 	public function deleteAllArticles() {
 		if ($this->isChangeable()) {
 			$this->basket_items = array();
-			$this->items = '0';
 			$this->recalculate_sums();
 			return TRUE;
 		}

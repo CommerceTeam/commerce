@@ -171,7 +171,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 			}
 		}
 
-		if (($this->basket->getItemsCount() == 0) && ($this->basket->getArticleTypeCountFromList(explode(',', $this->conf['regularArticleTypes'])) == 0)) {
+		if (!$this->basket->getItemsCount() && ($this->basket->getArticleTypeCountFromList(explode(',', $this->conf['regularArticleTypes'])) == 0)) {
 				// If basket is empty, it should be rewritable, release locks, if there are any
 			$this->basket->releaseReadOnly();
 			$this->basket->storeData();
