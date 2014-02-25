@@ -379,7 +379,12 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 		$this->markerArray = array();
 
 		if ($this->handle == 'singleView') {
-			$this->content = $this->makeSingleView();
+			$subpartName = '###' . strtoupper($this->conf['templateMarker.']['productView']) . '###';
+			$subpartNameNostock = '###' . strtoupper($this->conf['templateMarker.']['productView']) . '_NOSTOCK###';
+			$this->content = $this->renderSingleView($this->product, $this->category, $subpartName, $subpartNameNostock);
+			$this->content = $this->cObj->substituteMarkerArray($content, $this->languageMarker);
+			$this->content = $this->cObj->substituteMarkerArray($this->content, $this->addFormMarker(array()), '###|###', 1);
+			$GLOBALS['TSFE']->fe_user->setKey('ses', 'tx_commerce_lastproducturl', $this->pi_linkTP_keepPIvars_url());
 		} elseif ($this->handle == 'listView') {
 			$this->content = $this->makeListView($this->cat);
 		}
