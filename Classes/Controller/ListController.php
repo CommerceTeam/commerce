@@ -451,6 +451,11 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 	 * @return string The content for a single product
 	 */
 	public function renderSingleView($prodObj, $catObj, $subpartName, $subpartNameNostock) {
+		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/ListController.php']['preRenderSingleView'])) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/ListController.php']['preRenderSingleView'] as $classRef) {
+				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+			}
+		}
 		$template = $this->cObj->getSubpart($this->templateCode, $subpartName);
 
 		if ($this->conf['useStockHandling'] == 1 AND $prodObj->hasStock() === FALSE) {
