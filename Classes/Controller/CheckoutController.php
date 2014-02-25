@@ -598,7 +598,10 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		}
 
 		$markerArray['###ADDRESS_FORM_SUBMIT###'] = '<input type="submit" value="' . $this->pi_getLL('billing_submit') . '" />';
-		$markerArray['###ADDRESS_DISCLAIMER###'] = $this->pi_getLL('general_disclaimer');
+		$markerArray['###ADDRESS_DISCLAIMER###'] = sprintf(
+			$this->pi_getLL('general_disclaimer'),
+			$this->cObj->typoLink($this->pi_getLL('privacy_agreement'), $this->conf['privacyAgreementUrl.'])
+		);
 
 			// @Deprecated marker, use marker above instead (see example Template)
 		$markerArray['###ADDRESS_FORM_FIELDS###'] = $billingForm;

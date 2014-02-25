@@ -47,11 +47,14 @@
 			<label index="general_phone">Phone</label>
 			<label index="general_country">Country</label>
 			<label index="general_company">Company</label>
-			<label index="general_disclaimer">All data will treated confidentially.</label>
 			<label index="billing_title">Billing address</label>
 			<label index="billing_deliveryaddress">Enter a delivery address</label>
 			<label index="billing_nodeliveryaddress">Billing address is the same as delivery address</label>
 			<label index="billing_submit">Continue</label>
+
+			<label index="general_disclaimer">All data will treated confidentially.</label>
+			<label index="privacy_agreement">Privacy agreement</label>
+
 			<label index="delivery_title">Delivery address</label>
 			<label index="delivery_submit">Continue</label>
 			<label index="payment_title">Payment</label>

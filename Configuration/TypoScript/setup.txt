@@ -539,6 +539,8 @@ plugin.tx_commerce_pi3 {
 
 	# some settings for addresses
 	addressMgmPid =  {$plugin.tx_commerce_lib.editAddressPid}
+	# some settings for addresses
+	privacyAgreementUrl.parameter = {$plugin.tx_commerce_lib.privacyAgreementPid}
 	# Types for regular ArticleTypes
 	regularArticleTypes = {$plugin.tx_commerce_lib.regularArticleTypes}
 
