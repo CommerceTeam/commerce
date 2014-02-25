@@ -514,7 +514,6 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			$addressManagerConf['formFields.'] = $this->conf['billing.']['sourceFields.'];
 			$addressManagerConf['addressPid'] = $this->conf['addressPid'];
 
-				// Make an instance of pi4 (address management)
 			/** @var Tx_Commerce_Controller_AddressesController $addressMgm */
 			$addressMgm = t3lib_div::makeInstance('Tx_Commerce_Controller_AddressesController');
 			$addressMgm->cObj = $this->cObj;
@@ -526,7 +525,8 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			);
 			$addressMgm->piVars['backpid'] = $GLOBALS['TSFE']->id;
 
-			$markerArray['###ADDRESS_FORM_INPUTFIELDS###'] = $addressMgm->getListing($this->conf['billing.']['addressType'], TRUE, $this->prefixId);
+			$markerArray['###ADDRESS_FORM_INPUTFIELDS###'] = $addressMgm->getListing(
+				$this->conf['billing.']['addressType'], TRUE, $this->prefixId, $this->sessionData['billing']['uid']);
 		} else {
 			$markerArray['###ADDRESS_FORM_INPUTFIELDS###'] = $this->getInputForm($this->conf['billing.'], 'billing');
 		}
@@ -560,32 +560,26 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			$paymentChecked = '  ';
 		}
 
-		$markerArray['###ADDRESS_RADIOFORM_DELIVERY###'] = '<input type="radio" id="delivery" name="' .
-			$this->prefixId . '[step]" value="delivery" ' . $deliveryChecked . '/>';
-		$markerArray['###ADDRESS_RADIOFORM_NODELIVERY###'] = '<input type="radio" id="nodelivery"  name="' .
-			$this->prefixId . '[step]" value="' . $stepNodelivery . '" ' . $paymentChecked . '/>';
-		$markerArray['###ADDRESS_LABEL_DELIVERY###'] = '<label for="delivery">' .
-			$this->pi_getLL('billing_deliveryaddress') . '</label>';
-		$markerArray['###ADDRESS_LABEL_NODELIVERY###'] = '<label for="nodelivery">' .
-			$this->pi_getLL('billing_nodeliveryaddress') . '</label>';
-
-			// stdWrap for the delivery address chooser marker
 		$markerArray['###ADDRESS_RADIOFORM_DELIVERY###'] = $this->cObj->stdWrap(
-			$markerArray['###ADDRESS_RADIOFORM_DELIVERY###'],
+			'<input type="radio" id="delivery" name="' . $this->prefixId . '[step]" value="delivery" ' . $deliveryChecked . '/>',
 			$this->conf['billing.']['deliveryAddress.']['delivery_radio.']
 		);
 		$markerArray['###ADDRESS_RADIOFORM_NODELIVERY###'] = $this->cObj->stdWrap(
-			$markerArray['###ADDRESS_RADIOFORM_NODELIVERY###'],
+			'<input type="radio" id="nodelivery"  name="' . $this->prefixId . '[step]" value="' . $stepNodelivery . '" ' . $paymentChecked . '/>',
 			$this->conf['billing.']['deliveryAddress.']['nodelivery_radio.']
 		);
 		$markerArray['###ADDRESS_LABEL_DELIVERY###'] = $this->cObj->stdWrap(
-			$markerArray['###ADDRESS_LABEL_DELIVERY###'],
+			'<label for="delivery">' . $this->pi_getLL('billing_deliveryaddress') . '</label>',
 			$this->conf['billing.']['deliveryAddress.']['delivery_label.']
 		);
 		$markerArray['###ADDRESS_LABEL_NODELIVERY###'] = $this->cObj->stdWrap(
-			$markerArray['###ADDRESS_LABEL_NODELIVERY###'],
+			'<label for="nodelivery">' . $this->pi_getLL('billing_nodeliveryaddress') . '</label>',
 			$this->conf['billing.']['deliveryAddress.']['nodelivery_label.']
 		);
+
+			// @Deprecated marker, use marker above instead (see example Template)
+		$markerArray['###ADDRESS_FORM_FIELDS###'] = $billingForm;
+		$markerArray['###ADDRESS_FORM_SUBMIT###'] = '<input type="submit" value="' . $this->pi_getLL('billing_submit') . '" />';
 
 			// We are thrown back because address data is not valid
 		if (($this->currentStep == 'billing' || $this->currentStep == 'delivery') && !$this->validateAddress('billing')) {
@@ -597,19 +591,10 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			$markerArray['###ADDRESS_MANDATORY_MESSAGE###'] = '';
 		}
 
-		$markerArray['###ADDRESS_FORM_SUBMIT###'] = '<input type="submit" value="' . $this->pi_getLL('billing_submit') . '" />';
 		$markerArray['###ADDRESS_DISCLAIMER###'] = sprintf(
 			$this->pi_getLL('general_disclaimer'),
 			$this->cObj->typoLink($this->pi_getLL('privacy_agreement'), $this->conf['privacyAgreementUrl.'])
 		);
-
-			// @Deprecated marker, use marker above instead (see example Template)
-		$markerArray['###ADDRESS_FORM_FIELDS###'] = $billingForm;
-		$markerArray['###ADDRESS_RADIO_DELIVERY###'] = '<input type="radio" id="delivery" name="' .
-			$this->prefixId . '[step]" value="delivery" ' . $deliveryChecked . '/>' . $this->pi_getLL('billing_deliveryaddress');
-		$markerArray['###ADDRESS_RADIO_NODELIVERY###'] = '<input type="radio" id="payment"  name="' .
-			$this->prefixId . '[step]" value="' . $stepNodelivery . '" ' . $paymentChecked . '/>' .
-			$this->pi_getLL('billing_nodeliveryaddress');
 
 		$markerArray = $this->addFormMarker($markerArray, '###|###');
 
@@ -630,7 +615,9 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	 *
 	 * @return string $content
 	 */
-	public function getDeliveryAddress() {
+	public function getDeliveryAddress($withTitle = 1) {
+		$this->debug($this->sessionData, 'sessionData', __FILE__ . ' ' . __LINE__);
+
 		if (!$this->validateAddress('billing')) {
 			return $this->getBillingAddress();
 		}
@@ -645,17 +632,18 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			$template = $this->cObj->getSubpart($this->templateCode, '###ADDRESS_CONTAINER###');
 		}
 
-		$this->debug($this->sessionData, 'sessionData', __FILE__ . ' ' . __LINE__);
-
-			// Fill standard markers
-		$markerArray['###ADDRESS_TITLE###'] = $this->pi_getLL('delivery_title');
-		$markerArray['###ADDRESS_DESCRIPTION###'] = $this->pi_getLL('delivery_description');
+		$markerArray['###ADDRESS_TITLE###'] = '';
+		$markerArray['###ADDRESS_DESCRIPTION###'] = '';
+		if ($withTitle == 1) {
+				// Fill standard markers
+			$markerArray['###ADDRESS_TITLE###'] = $this->pi_getLL('delivery_title');
+			$markerArray['###ADDRESS_DESCRIPTION###'] = $this->pi_getLL('delivery_description');
+		}
 
 			// Get form
 			// @Depricated Marker
 		$markerArray['###ADDRESS_FORM_TAG###'] = '<form name="addressForm" action="' .
-			$this->pi_getPageLink($GLOBALS['TSFE']->id) . '" method="post" ' .
-			$this->conf[$this->step . '.']['formParams'] . '>';
+			$this->pi_getPageLink($GLOBALS['TSFE']->id) . '" method="post" ' . $this->conf[$this->step . '.']['formParams'] . '>';
 
 		$nextstep = $this->getStepAfter('delivery');
 
@@ -672,30 +660,29 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 
 			// If a user is logged in, get form from the address management
 		if ($GLOBALS['TSFE']->loginUser) {
-			$amConf = $this->conf;
-			$amConf['formFields.'] = $this->conf['delivery.']['sourceFields.'];
-			$amConf['addressPid'] = $this->conf['addressPid'];
+			$addressManagerConf = $this->conf;
+			$addressManagerConf['formFields.'] = $this->conf['delivery.']['sourceFields.'];
+			$addressManagerConf['addressPid'] = $this->conf['addressPid'];
 
-				// Make an instance of pi4 (address management)
 			/** @var Tx_Commerce_Controller_AddressesController $addressMgm */
 			$addressMgm = t3lib_div::makeInstance('Tx_Commerce_Controller_AddressesController');
 			$addressMgm->cObj = $this->cObj;
 			$addressMgm->templateCode = $this->templateCode;
-			$addressMgm->init($amConf, FALSE);
+			$addressMgm->init($addressManagerConf, FALSE);
 			$addressMgm->addresses = $addressMgm->getAddresses(
-				$GLOBALS['TSFE']->fe_user->user['uid'], $this->conf['delivery.']['addressType']
+				$GLOBALS['TSFE']->fe_user->user['uid'],
+				$this->conf['delivery.']['addressType']
 			);
 			$addressMgm->piVars['backpid'] = $GLOBALS['TSFE']->id;
+
 			$markerArray['###ADDRESS_FORM_INPUTFIELDS###'] = $addressMgm->getListing(
 				$this->conf['delivery.']['addressType'], TRUE, $this->prefixId, $this->sessionData['delivery']['uid']
 			);
-
-			$this->debug($markerArray['###ADDRESS_FORM_INPUTFIELDS###'], 'result of getListing', __FILE__ . ' ' . __LINE__);
-			$deliveryForm .= $markerArray['###ADDRESS_FORM_INPUTFIELDS###'];
 		} else {
 			$markerArray['###ADDRESS_FORM_INPUTFIELDS###'] = $this->getInputForm($this->conf['delivery.'], 'delivery');
-			$deliveryForm .= $markerArray['###ADDRESS_FORM_INPUTFIELDS###'];
 		}
+
+		$deliveryForm .= $markerArray['###ADDRESS_FORM_INPUTFIELDS###'];
 
 		$markerArray['###ADDRESS_RADIOFORM_DELIVERY###'] = '';
 		$markerArray['###ADDRESS_RADIOFORM_NODELIVERY###'] = '';
@@ -708,17 +695,18 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 
 			// We are thrown back because address data is not valid
 		if ($this->currentStep == 'payment' && !$this->validateAddress('delivery')) {
-			$markerArray['###ADDRESS_MANDATORY_MESSAGE###'] = $this->pi_getLL('label_loginUser_mandatory_message', 'data incorrect');
+			$markerArray['###ADDRESS_MANDATORY_MESSAGE###'] = $this->cObj->stdWrap(
+				$this->pi_getLL('label_loginUser_mandatory_message', 'data incorrect'),
+				$this->conf['delivery.']['errorWrap.']
+			);
 		} else {
 			$markerArray['###ADDRESS_MANDATORY_MESSAGE###'] = '';
 		}
-		$markerArray['###ADDRESS_DISCLAIMER###'] = $this->pi_getLL('general_disclaimer');
 
-			// @Deprecated Marker, use ###ADDRESS_FORM_INPUTFIELDS### and
-			//  ###ADDRESS_FORM_TAG### instead
-		$markerArray['###ADDRESS_FORM_FIELDS###'] = $deliveryForm;
-		$markerArray['###ADDRESS_RADIO_DELIVERY###'] = '';
-		$markerArray['###ADDRESS_RADIO_NODELIVERY###'] = '';
+		$markerArray['###ADDRESS_DISCLAIMER###'] = sprintf(
+			$this->pi_getLL('general_disclaimer'),
+			$this->cObj->typoLink($this->pi_getLL('privacy_agreement'), $this->conf['privacyAgreementUrl.'])
+		);
 
 		$markerArray = $this->addFormMarker($markerArray, '###|###');
 
