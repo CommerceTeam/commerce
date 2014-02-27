@@ -12,6 +12,9 @@ plugin.tx_commerce_lib {
 	# cat=plugin.commerce: General/links/a6; type=int+; label= Privacy agreement PID: The PID of the page where the privacy agreement should be shown.
 	privacyAgreementPid = 0
 
+	# cat=plugin.commerce: General/links/a6; type=int+; label= Terms and conditions PID: The PID of the page where the terms and conditions should be shown.
+	termsAndConditionsUrl = 0
+
 	# cat=plugin.commerce: General/links/a8; type=int+; label= Basket PID: The PID of the basket
 	basketPid = 0
 

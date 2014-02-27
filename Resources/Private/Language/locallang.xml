@@ -62,7 +62,8 @@
 			<label index="payment_disclaimer">After clicking you will be taken to the secure payment service.</label>
 			<label index="listing_title">Your basket</label>
 			<label index="listing_submit">Continue</label>
-			<label index="termstext">Please confirm that you have read our terms and conditions</label>
+			<label index="termstext">Please confirm that you have read our %1$s</label>
+			<label index="termstext_tca">terms and conditions</label>
 			<label index="comment">Your comment</label>
 			<label index="finish_message_good">The transaction was completed successfully</label>
 			<label index="finish_message_bad">The transaction failed. You may choose to try again.</label>

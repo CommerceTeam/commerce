@@ -910,14 +910,11 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 
 		$comment = isset($this->piVars['comment']) ? t3lib_div::removeXSS(strip_tags($this->piVars['comment'])) : '';
 
-			// @obsolete Use label and form field
-		$markerArray['###LISTING_TERMS_ACCEPT###'] = $this->pi_getLL('termstext') . '<input type="checkbox" name="' .
-			$this->prefixId . '[terms]" value="termschecked" ' . $termsChecked . ' />';
-		$markerArray['###LISTING_COMMENT###'] = $this->pi_getLL('comment') . '<br/><textarea name="' .
-			$this->prefixId . '[comment]" rows="4" cols="40">' . $comment . '</textarea>';
-
 			// Use new version with label and field
-		$markerArray['###LISTING_TERMS_ACCEPT_LABEL###'] = $this->pi_getLL('termstext');
+		$markerArray['###LISTING_TERMS_ACCEPT_LABEL###'] = sprintf(
+			$this->pi_getLL('termstext'),
+			$this->cObj->typoLink($this->pi_getLL('termstext_tca'), $this->conf['termsAndConditionsUrl.'])
+		);
 		$markerArray['###LISTING_COMMENT_LABEL###'] = $this->pi_getLL('comment');
 		$markerArray['###LISTING_TERMS_ACCEPT_FIELD###'] = '<input type="checkbox" name="' .
 			$this->prefixId . '[terms]" value="termschecked" ' . $termsChecked . ' />';
