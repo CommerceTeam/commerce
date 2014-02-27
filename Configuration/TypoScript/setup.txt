@@ -638,6 +638,9 @@ plugin.tx_commerce_pi3 {
 			city.mandatory = 1
 			country {
 				type = static_info_country
+				table = static_countries
+				label = cn_short_en
+				value = cn_iso_3
 				# [ALL, UN, EU]
 				country_association = ALL
 				select = 1

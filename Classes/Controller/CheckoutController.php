@@ -2460,7 +2460,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 
 			$fieldConfig = $typoScript[$key . '.'];
 				// Get the value from database if the field is a select box
-			if ($fieldConfig['type'] == 'select' && strlen($fieldConfig['table'])) {
+			if (in_array($fieldConfig['type'], array('select', 'static_info_country')) && strlen($fieldConfig['table'])) {
 				$table = $fieldConfig['table'];
 				$select = $fieldConfig['value'] . '=\'' . $value . '\'' . $this->cObj->enableFields($fieldConfig['table']);
 				$fields = $fieldConfig['label'] . ' AS label,';
