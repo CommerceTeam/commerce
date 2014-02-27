@@ -1129,7 +1129,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 
 		$content = $this->cObj->substituteSubpart($content, '###BILLING_ADDRESS###', $billingAddress);
 
-		$markerArray = $this->FinishItRenderGoodBadMarker($markerArray);
+		$markerArray = $this->finishItRenderGoodBadMarker($markerArray);
 
 		foreach ($hookObjectsArr as $hookObj) {
 			if (method_exists($hookObj, 'ProcessMarker')) {
@@ -1179,7 +1179,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	 * @param array $markerArray
 	 * @return array $markerArray
 	 */
-	public function FinishItRenderGoodBadMarker($markerArray) {
+	public function finishItRenderGoodBadMarker($markerArray) {
 		if ($this->finishItOK == TRUE) {
 			$markerArray['###FINISH_MESSAGE_GOOD###'] = $this->pi_getLL('finish_message_good');
 			$markerArray['###FINISH_MESSAGE_BAD###'] = '';
@@ -1829,7 +1829,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 
 				$selected = $fieldValue != '' ? $fieldValue : $fieldConfig['default'];
 
-				$result = '<select id="' . $step . '-' . $fieldName . '"' . $this->prefixId . '[' . $step . '][' . $fieldName . ']' .
+				$result = '<select id="' . $step . '-' . $fieldName . '" name="' . $this->prefixId . '[' . $step . '][' . $fieldName . ']" ' .
 					'class="' . $fieldConfig['cssClass'] . '">' . LF;
 				$result .= $this->staticInfo->optionsConstructor($countries, array($selected), $outSelectedArray);
 				$result .= '</select>' . LF;
