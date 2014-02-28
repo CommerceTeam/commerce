@@ -2462,7 +2462,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 				// Get the value from database if the field is a select box
 			if (in_array($fieldConfig['type'], array('select', 'static_info_country')) && strlen($fieldConfig['table'])) {
 				$table = $fieldConfig['table'];
-				$select = $fieldConfig['value'] . '=\'' . $value . '\'' . $this->cObj->enableFields($fieldConfig['table']);
+				$select = $fieldConfig['value'] . ' = ' . $database->fullQuoteStr($value, $table) . $this->cObj->enableFields($table);
 				$fields = $fieldConfig['label'] . ' AS label,';
 				$fields .= $fieldConfig['value'] . ' AS value';
 				$res = $database->exec_SELECTquery($fields, $table, $select);
@@ -2474,8 +2474,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			} elseif ($fieldConfig['type'] == 'select') {
 				throw new Exception('Neither table nor value-list defined for select field ' . $key, 1304333953);
 			}
-			if ($typoScript[$key . '.']['type'] == 'static_info_tables') {
-				$fieldConfig = $typoScript[$key . '.'];
+			if ($fieldConfig['type'] == 'static_info_tables') {
 				$field = $fieldConfig['field'];
 				$valueHidden = $this->staticInfo->getStaticInfoName($field, $value);
 				$newdata[$key] = $valueHidden;

@@ -815,7 +815,9 @@ class Tx_Commerce_Hook_DataMapHooks {
 			break;
 		}
 
-		t3lib_BEfunc::setUpdateSignal('updatePageTree');
+		if (TYPO3_MODE == 'BE') {
+			t3lib_BEfunc::setUpdateSignal('updatePageTree');
+		}
 
 		$this->afterDatabaseHandleDynaflex($table, $id, $dynaFlexConf);
 	}
