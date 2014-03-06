@@ -2490,7 +2490,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	 *
 	 * @param int $orderId Uid of the order
 	 * @param int $pid Uid of the folder to save the order in
-	 * @param object $basket Basket object of the user
+	 * @param Tx_Commerce_Domain_Model_Basket $basket Basket object of the user
 	 * @param object $paymentObj Payment Object
 	 * @param boolean $doHook Flag if the hooks should be executed
 	 * @param boolean $doStock Flag if stockreduce should be executed
@@ -2524,8 +2524,8 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		$orderData['cust_deliveryaddress'] = ((isset($uids['delivery'])) ? $uids['delivery'] : $uids['billing']);
 		$orderData['cust_invoice'] = $uids['billing'];
 		$orderData['paymenttype'] = $this->getPaymentType(TRUE);
-		$orderData['sum_price_net'] = $basket->get_net_sum();
-		$orderData['sum_price_gross'] = $basket->get_gross_sum();
+		$orderData['sum_price_net'] = $basket->getSumNet();
+		$orderData['sum_price_gross'] = $basket->getSumGross();
 		$orderData['order_sys_language_uid'] = $GLOBALS['TSFE']->config['config']['sys_language_uid'];
 		$orderData['pid'] = $pid;
 		$orderData['order_id'] = $orderId;
@@ -2581,9 +2581,9 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		}
 
 			// Save order articles
-		if (is_array($basket->basket_items)) {
+		if (is_array($basket->getBasketItems())) {
 			/** @var $basketItem Tx_Commerce_Domain_Model_BasketItem */
-			foreach ($basket->basket_items as $artUid => $basketItem) {
+			foreach ($basket->getBasketItems() as $artUid => $basketItem) {
 				/** @var $article Tx_Commerce_Domain_Model_Article */
 				$article = $basketItem->article;
 
@@ -2613,11 +2613,15 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 						$hookObj->modifyOrderArticlePreSave($newUid, $orderArticleData, $this);
 					}
 				}
+
 				if (($this->conf['useStockHandling'] == 1) && ($doStock == TRUE)) {
 					$article->reduceStock($basketItem->getQuantity());
 				}
 
-				$newUid = uniqid('NEW');
+				if (!$newUid) {
+					$newUid = uniqid('NEW');
+				}
+
 				$data = array();
 				$data['tx_commerce_order_articles'][$newUid] = $orderArticleData;
 				$tce->start($data, array(), $backendUser);
