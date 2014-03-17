@@ -653,11 +653,26 @@ plugin.tx_commerce_pi3 {
 				eval = email,username
 			}
 			phone.mandatory = 0
+
+			password {
+				type = password
+				mandatory = 0
+			}
+			passwordRetype {
+				type = password
+				mandatory = 0
+			}
 		}
 
 		mandatorySign = *
 		mandatorySignStdWrap < lib.tx_commerce.stdField
 		mandatorySignStdWrap.removeBadHTML = 0
+
+			# the password is taken from session instead to generate a random one
+		dontUseRandomPassword = 1
+
+			# this list is excluded from fieldlist before data is written to tt_address
+		tt_adressExcludeFields = password,passwordRetype,emailRetype
 	}
 
 	delivery < .billing
