@@ -40,8 +40,6 @@ class Tx_Commerce_Hook_LocalRecordListHooks implements localRecordList_actionsHo
 	 * @return array the modified clip-icons
 	 */
 	public function makeClip($table, $row, $cells, &$parentObject) {
-		$cells = array();
-
 		if (
 			$parentObject->id && !$GLOBALS['TCA'][$table]['ctrl']['readOnly']
 			&& $GLOBALS['SOBE']->MOD_SETTINGS['bigControlPanel'] && $table == 'tx_commerce_orders'
