@@ -538,7 +538,7 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 			}
 		}
 
-		$content = $this->substituteMarkerArrayNoCached($content, $markerArray, array(), array());
+		$content = $this->cObj->substituteMarkerArray($content, $markerArray);
 		return $content;
 	}
 
@@ -668,7 +668,7 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 							$markerArray['###SELECT_ATTRIBUTES_VALUE###'] = $v;
 							$markerArray['###SELECT_ATTRIBUTES_UNIT###'] = $myAttribute['unit'];
 							$numTemplate = $ct % $countTemplateInterations;
-							$attCode .= $this->substituteMarkerArrayNoCached($templateAttr[$numTemplate], $markerArray, array());
+							$attCode .= $this->cObj->substituteMarkerArray($templateAttr[$numTemplate], $markerArray);
 							$ct ++;
 						}
 					}

@@ -214,8 +214,9 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 				}
 			}
 
-			$this->content = $this->substituteMarkerArrayNoCached($template, $markerArray);
+			$this->content = $this->cObj->substituteMarkerArray($template, $markerArray);
 		}
+		$content = $this->cObj->substituteMarkerArray($content, $this->languageMarker);
 
 		return $this->pi_wrapInBaseClass($content . $this->content);
 	}
@@ -536,7 +537,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 			}
 		}
 
-		$this->content = $this->substituteMarkerArrayNoCached($template, $basketArray);
+		$this->content = $this->cObj->substituteMarkerArray($template, $basketArray);
 		return TRUE;
 	}
 
@@ -581,7 +582,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 			$template = $this->cObj->substituteSubpart($template, '###DELIVERYBOX###', $contentDelivery);
 		} else {
 			$deliveryArray = $this->makeDelivery();
-			$contentDelivery = $this->substituteMarkerArrayNoCached($contentDelivery, $deliveryArray);
+			$contentDelivery = $this->cObj->substituteMarkerArray($contentDelivery, $deliveryArray);
 			$template = $this->cObj->substituteSubpart($template, '###DELIVERYBOX###', $contentDelivery);
 		}
 
@@ -591,7 +592,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 			$template = $this->cObj->substituteSubpart($template, '###PAYMENTBOX###', $contentPayment);
 		} else {
 			$paymentArray = $this->makePayment();
-			$contentPayment = $this->substituteMarkerArrayNoCached($contentPayment, $paymentArray);
+			$contentPayment = $this->cObj->substituteMarkerArray($contentPayment, $paymentArray);
 			$template = $this->cObj->substituteSubpart($template, '###PAYMENTBOX###', $contentPayment);
 		}
 
@@ -659,7 +660,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 			}
 		}
 
-		$this->content = $this->substituteMarkerArrayNoCached($template, $basketArray);
+		$this->content = $this->cObj->substituteMarkerArray($template, $basketArray);
 
 		$markerArrayGlobal = $this->addFormMarker(array());
 
@@ -907,7 +908,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 					$markerArray['###SELECT_ATTRIBUTES_VALUE###'] = $v['value'];
 					$markerArray['###SELECT_ATTRIBUTES_UNIT###'] = $myAttribute['unit'];
 
-					$attCode .= $this->substituteMarkerArrayNoCached($templateAttr, $markerArray, array());
+					$attCode .= $this->cObj->substituteMarkerArray($templateAttr, $markerArray);
 				}
 			}
 		}
@@ -989,7 +990,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 			}
 		}
 
-		$content = $this->substituteMarkerArrayNoCached($template, $markerArray);
+		$content = $this->cObj->substituteMarkerArray($template, $markerArray);
 
 		return $content;
 	}

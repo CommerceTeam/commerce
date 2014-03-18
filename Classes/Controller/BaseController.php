@@ -1043,7 +1043,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 			}
 		}
 
-		$content = $this->substituteMarkerArrayNoCached($template, $markerArray);
+		$content = $this->cObj->substituteMarkerArray($template, $markerArray);
 		$content = $this->cObj->substituteMarkerArray($content, $this->languageMarker);
 
 		return $content;
@@ -1121,7 +1121,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 			}
 		}
 
-		$content = $this->substituteMarkerArrayNoCached($template, $markerArray);
+		$content = $this->cObj->substituteMarkerArray($template, $markerArray);
 
 		/**
 		 * Basket Artikcel Lementes
@@ -1970,7 +1970,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 
 	/**
 	 * Multi substitution function
-	 * Copy from tslib_content -> substituteMarkerArrayNoCached, but without caching
+	 * Copy from tslib_content -> substituteMarkerArrayCached, but without caching
 	 *
 	 * @see tslib_content: substituteMarkerArrayCached
 	 * This function should be a one-stop substitution function for working with HTML-template.

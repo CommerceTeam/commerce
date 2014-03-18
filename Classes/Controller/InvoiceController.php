@@ -195,8 +195,8 @@ class Tx_Commerce_Controller_InvoiceController extends Tx_Commerce_Controller_Ba
 				// Buid content from template + array
 			$this->content = $this->cObj->substituteSubpart($this->content, '###LISTING_PAYMENT_ROW###', $this->orderPayment);
 			$this->content = $this->cObj->substituteSubpart($this->content, '###LISTING_SHIPPING_ROW###', $this->orderDelivery);
-			$this->content = $this->substituteMarkerArrayNoCached($this->content, $markerArray, array(), array());
-			$this->content = $this->substituteMarkerArrayNoCached($this->content, $this->languageMarker, array());
+			$this->content = $this->cObj->substituteMarkerArray($this->content, $markerArray);
+			$this->content = $this->cObj->substituteMarkerArray($this->content, $this->languageMarker);
 		} else {
 			$this->content = $this->pi_getLL('error_nodata');
 		}
