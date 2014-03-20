@@ -27,13 +27,16 @@
 
 /**
  * This class extends the commerce module in the TYPO3 Backend to provide
- * convenient methods of editing of category permissions (including category ownership
- * (user and group)) via new TYPO3AJAX facility
+ * convenient methods of editing of category permissions
+ * (including category ownership (user and group)) via new TYPO3AJAX facility
  */
 	// require_once in 4.x needed because in ajax mod the class can't get autoloaded
 /** @noinspection PhpIncludeInspection */
 require_once(PATH_typo3 . 'sysext/perm/mod1/class.sc_mod_web_perm_ajax.php');
 
+/**
+ * Class Tx_Commerce_Controller_PermissionAjaxController
+ */
 class Tx_Commerce_Controller_PermissionAjaxController extends SC_mod_web_perm_ajax {
 	/**
 	 * The main dispatcher function. Collect data and prepare HTML output.
