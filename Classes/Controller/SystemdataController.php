@@ -77,6 +77,8 @@ class Tx_Commerce_Controller_SystemdataController extends t3lib_SCbase {
 	protected $referenceCount = array();
 
 	/**
+	 * Initialization
+	 *
 	 * @return void
 	 */
 	public function init() {
@@ -125,6 +127,8 @@ class Tx_Commerce_Controller_SystemdataController extends t3lib_SCbase {
 	}
 
 	/**
+	 * Main method
+	 *
 	 * @return void
 	 */
 	public function main() {
@@ -263,27 +267,28 @@ class Tx_Commerce_Controller_SystemdataController extends t3lib_SCbase {
 	 * @return void
 	 */
 	protected function moduleContent() {
-		switch ((string) $this->MOD_SETTINGS['function']) {
+		switch ((string)$this->MOD_SETTINGS['function']) {
 			case '2':
 				$content = $this->getManufacturerListing();
 				$this->content .= $this->doc->section('', $content, 0, 1);
-			break;
+				break;
 
 			case '3':
 				$content = $this->getSupplierListing();
 				$this->content .= $this->doc->section('', $content, 0, 1);
-			break;
+				break;
 
 			case '1':
 			default:
 				$this->modPid = $this->attributePid;
 				$content = $this->getAttributeListing();
 				$this->content .= $this->doc->section('', $content, 0, 1);
-			break;
 		}
 	}
 
 	/**
+	 * Render attribute listing
+	 *
 	 * @return string
 	 */
 	protected function getAttributeListing() {
@@ -299,6 +304,8 @@ class Tx_Commerce_Controller_SystemdataController extends t3lib_SCbase {
 	}
 
 	/**
+	 * Fetch attributes from db
+	 *
 	 * @return resource
 	 */
 	protected function fetchAttributes() {
@@ -312,6 +319,8 @@ class Tx_Commerce_Controller_SystemdataController extends t3lib_SCbase {
 	}
 
 	/**
+	 * Fetch attribute translation
+	 *
 	 * @param integer $uid
 	 * @return resource
 	 */
@@ -327,10 +336,13 @@ class Tx_Commerce_Controller_SystemdataController extends t3lib_SCbase {
 	}
 
 	/**
+	 * Render attribute rows
+	 *
 	 * @param resource $result
 	 * @return string
 	 */
 	protected function renderAttributeRows($result) {
+		/** @var t3lib_recordList $recordList */
 		$recordList = t3lib_div::makeInstance('t3lib_recordList');
 		$recordList->backPath = $this->doc->backPath;
 		$recordList->initializeLanguages();
@@ -338,7 +350,7 @@ class Tx_Commerce_Controller_SystemdataController extends t3lib_SCbase {
 		$output = '';
 
 		$table = 'tx_commerce_attributes';
-		while ($attribute = $this->database->sql_fetch_assoc($result)) {
+		while (($attribute = $this->database->sql_fetch_assoc($result))) {
 			$refCountMsg = t3lib_BEfunc::referenceCount(
 				$table,
 				$attribute['uid'],
@@ -366,7 +378,7 @@ class Tx_Commerce_Controller_SystemdataController extends t3lib_SCbase {
 			$resLocalVersion = $this->fetchAttributeTranslation($attribute['uid']);
 			if ($this->database->sql_num_rows($resLocalVersion) > 0) {
 				$output .= '<table >';
-				while ($localAttributes = $this->database->sql_fetch_assoc($resLocalVersion)) {
+				while (($localAttributes = $this->database->sql_fetch_assoc($resLocalVersion))) {
 					$output .= '<tr><td>&nbsp;';
 					$output .= '</td><td>';
 					if ($localAttributes['internal_title']) {
@@ -408,7 +420,7 @@ class Tx_Commerce_Controller_SystemdataController extends t3lib_SCbase {
 				);
 				if ($this->database->sql_num_rows($valueRes) > 0) {
 					$output .= '<table border="0">';
-					while ($value = $this->database->sql_fetch_assoc($valueRes)) {
+					while (($value = $this->database->sql_fetch_assoc($valueRes))) {
 						$output .= '<tr><td>' . htmlspecialchars($value['value']) . '</td></tr>';
 					}
 					$output .= '</table>';
@@ -427,6 +439,8 @@ class Tx_Commerce_Controller_SystemdataController extends t3lib_SCbase {
 
 	/**
 	 * generates a list of all saved Manufacturers
+	 *
+	 * @return string
 	 */
 	protected function getManufacturerListing() {
 		$fields = explode(',', $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['coManufacturers']);
@@ -448,6 +462,8 @@ class Tx_Commerce_Controller_SystemdataController extends t3lib_SCbase {
 	}
 
 	/**
+	 * Render manufacturer row
+	 *
 	 * @param resource $result
 	 * @param array $fields
 	 * @return string
@@ -456,7 +472,7 @@ class Tx_Commerce_Controller_SystemdataController extends t3lib_SCbase {
 		$output = '';
 
 		$table = 'tx_commerce_manufacturer';
-		while ($row = $this->database->sql_fetch_assoc($result)) {
+		while (($row = $this->database->sql_fetch_assoc($result))) {
 			$refCountMsg = t3lib_BEfunc::referenceCount(
 				$table,
 				$row['uid'],
@@ -513,6 +529,8 @@ class Tx_Commerce_Controller_SystemdataController extends t3lib_SCbase {
 	}
 
 	/**
+	 * Render supplier row
+	 *
 	 * @param resource $result
 	 * @param array $fields
 	 * @return string
@@ -521,7 +539,7 @@ class Tx_Commerce_Controller_SystemdataController extends t3lib_SCbase {
 		$output = '';
 
 		$table = 'tx_commerce_supplier';
-		while ($row = $this->database->sql_fetch_assoc($result)) {
+		while (($row = $this->database->sql_fetch_assoc($result))) {
 			$refCountMsg = t3lib_BEfunc::referenceCount(
 				$table,
 				$row['uid'],
@@ -554,6 +572,8 @@ class Tx_Commerce_Controller_SystemdataController extends t3lib_SCbase {
 	}
 
 	/**
+	 * Fetch data for table
+	 *
 	 * @param string $table
 	 * @return resource
 	 */
@@ -568,6 +588,8 @@ class Tx_Commerce_Controller_SystemdataController extends t3lib_SCbase {
 	}
 
 	/**
+	 * Fetch the relation count
+	 *
 	 * @param string $table
 	 * @param integer $uidForeign
 	 * @return integer
@@ -582,11 +604,8 @@ class Tx_Commerce_Controller_SystemdataController extends t3lib_SCbase {
 	 * Gets the number of records referencing the record with the UID $uid in
 	 * the table $tableName.
 	 *
-	 * @param string $tableName
-	 *        table name of the referenced record, must not be empty
-	 * @param integer $uid
-	 *        UID of the referenced record, must be > 0
-	 *
+	 * @param string $tableName table name of the referenced record
+	 * @param int $uid UID of the referenced record, must be > 0
 	 * @return integer the number of references to record $uid in table
 	 *                 $tableName, will be >= 0
 	 */
