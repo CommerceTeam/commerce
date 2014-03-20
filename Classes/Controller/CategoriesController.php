@@ -341,7 +341,9 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 
 			// Clipboard is initialized:
 			// Start clipboard
-		$dblist->clipObj = t3lib_div::makeInstance('t3lib_clipboard');
+		/** @var t3lib_clipboard $clipObj */
+		$clipObj = t3lib_div::makeInstance('t3lib_clipboard');
+		$dblist->clipObj = $clipObj;
 			// Initialize - reads the clipboard content from the user session
 		$dblist->clipObj->initializeClipboard();
 
@@ -383,6 +385,7 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 						$iKParts = explode('|', $iK);
 						$cmd[$iKParts[0]][$iKParts[1]]['delete'] = 1;
 					}
+					/** @var t3lib_TCEmain $tce */
 					$tce = t3lib_div::makeInstance('t3lib_TCEmain');
 					$tce->stripslashes_values = 0;
 					$tce->start(array(), $cmd);
