@@ -39,6 +39,8 @@ class Tx_Commerce_Dao_AddressDaoMapper extends Tx_Commerce_Dao_BasicDaoMapper {
 	protected $dbTable = 'tt_address';
 
 	/**
+	 * Initialization
+	 *
 	 * @return void
 	 */
 	protected function init() {

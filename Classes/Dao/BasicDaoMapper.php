@@ -28,10 +28,13 @@
 /**
  * class basic Dao mapper
  * This class used by the Dao for database storage.
- * It defines how to insert, update, find and delete a transfer object in the database.
+ * It defines how to insert, update, find and delete a transfer object in
+ * the database.
  * Extend this class to fit specific needs.
- * This class has no knowledge about the internal design of the model transfer object.
- * Object <-> model (transfer object) mapping and all model design is done by the parser.
+ * This class has no knowledge about the internal design of the model transfer
+ * object.
+ * Object <-> model (transfer object) mapping and all model design is done by
+ * the parser.
  * The class needs a parser for object <-> model (transfer object) mapping.
  */
 class Tx_Commerce_Dao_BasicDaoMapper {
@@ -63,7 +66,9 @@ class Tx_Commerce_Dao_BasicDaoMapper {
 	protected $error = array();
 
 	/**
-	 * @param Tx_Commerce_Dao_BasicDaoParser $parser
+	 * Constructor
+	 *
+	 * @param Tx_Commerce_Dao_BasicDaoParser &$parser
 	 * @param integer $createPid
 	 * @param string $dbTable
 	 * @return self
@@ -80,6 +85,8 @@ class Tx_Commerce_Dao_BasicDaoMapper {
 	}
 
 	/**
+	 * Initialization
+	 *
 	 * @return void
 	 */
 	protected function init() {
@@ -87,7 +94,9 @@ class Tx_Commerce_Dao_BasicDaoMapper {
 	}
 
 	/**
-	 * @param Tx_Commerce_Dao_BasicDaoObject $object
+	 * Load object
+	 *
+	 * @param Tx_Commerce_Dao_BasicDaoObject &$object
 	 * @return void
 	 */
 	public function load(&$object) {
@@ -97,7 +106,9 @@ class Tx_Commerce_Dao_BasicDaoMapper {
 	}
 
 	/**
-	 * @param Tx_Commerce_Dao_BasicDaoObject $object
+	 * Save object
+	 *
+	 * @param Tx_Commerce_Dao_BasicDaoObject &$object
 	 * @return void
 	 */
 	public function save(&$object) {
@@ -109,7 +120,9 @@ class Tx_Commerce_Dao_BasicDaoMapper {
 	}
 
 	/**
-	 * @param Tx_Commerce_Dao_BasicDaoObject $object
+	 * Remove object
+	 *
+	 * @param Tx_Commerce_Dao_BasicDaoObject &$object
 	 * @return void
 	 */
 	public function remove(&$object) {
@@ -119,7 +132,9 @@ class Tx_Commerce_Dao_BasicDaoMapper {
 	}
 
 	/**
-	 * @param Tx_Commerce_Dao_BasicDaoObject $object
+	 * Db add object
+	 *
+	 * @param Tx_Commerce_Dao_BasicDaoObject &$object
 	 * @return void
 	 */
 	protected function dbInsert(&$object) {
@@ -147,8 +162,10 @@ class Tx_Commerce_Dao_BasicDaoMapper {
 	}
 
 	/**
+	 * Db update object
+	 *
 	 * @param integer $uid
-	 * @param Tx_Commerce_Dao_BasicDaoObject $object
+	 * @param Tx_Commerce_Dao_BasicDaoObject &$object
 	 * @return void
 	 */
 	protected function dbUpdate($uid, &$object) {
@@ -171,8 +188,10 @@ class Tx_Commerce_Dao_BasicDaoMapper {
 	}
 
 	/**
+	 * Db delete object
+	 *
 	 * @param integer $uid
-	 * @param Tx_Commerce_Dao_BasicDaoObject $object
+	 * @param Tx_Commerce_Dao_BasicDaoObject &$object
 	 * @return void
 	 */
 	protected function dbDelete($uid, &$object) {
@@ -196,8 +215,10 @@ class Tx_Commerce_Dao_BasicDaoMapper {
 	}
 
 	/**
+	 * DB select object by id
+	 *
 	 * @param integer $uid
-	 * @param Tx_Commerce_Dao_BasicDaoObject $object
+	 * @param Tx_Commerce_Dao_BasicDaoObject &$object
 	 * @return void
 	 */
 	protected function dbSelectById($uid, &$object) {
@@ -224,35 +245,31 @@ class Tx_Commerce_Dao_BasicDaoMapper {
 	}
 
 	/**
+	 * Add error message
+	 *
 	 * @param array $error
 	 * @return void
 	 */
 	protected function addError($error) {
 		$this->error[] = $error;
-		debug($error, 'error');
-		debug($this);
 	}
 
 	/**
+	 * Check if error was raised
+	 *
 	 * @return boolean
 	 */
 	protected function isError() {
-		if (empty($this->error)) {
-			return FALSE;
-		} else {
-			return TRUE;
-		}
+		return !empty($this->error);
 	}
 
 	/**
+	 * Get error
+	 *
 	 * @return array|boolean
 	 */
 	protected function getError() {
-		if (empty($this->error)) {
-			return FALSE;
-		} else {
-			return $this->error;
-		}
+		return $this->error ?: FALSE;
 	}
 }
 

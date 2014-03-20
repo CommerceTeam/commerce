@@ -27,18 +27,23 @@
 
 /**
  * class basic Dao parser
- * This class is used by the Dao to parse objects to database model objects (transfer objects) and vice versa.
+ * This class is used by the Dao to parse objects to database model objects
+ * (transfer objects) and vice versa.
  * All knowledge about the database model is in this class.
  * Extend this class to fit specific needs.
  */
 class Tx_Commerce_Dao_BasicDaoParser {
 	/**
+	 * Constructor
+	 *
 	 * @return self
 	 */
 	public function __construct() {
 	}
 
 	/**
+	 * Parse object to model
+	 *
 	 * @param Tx_Commerce_Dao_BasicDaoObject $object
 	 * @return array
 	 */
@@ -62,8 +67,10 @@ class Tx_Commerce_Dao_BasicDaoParser {
 	}
 
 	/**
+	 * Parse model to object
+	 *
 	 * @param array $model
-	 * @param Tx_Commerce_Dao_BasicDaoObject $object
+	 * @param Tx_Commerce_Dao_BasicDaoObject &$object
 	 * @return void
 	 */
 	public function parseModelToObject($model, &$object) {
@@ -83,7 +90,9 @@ class Tx_Commerce_Dao_BasicDaoParser {
 	}
 
 	/**
-	 * @param array $model
+	 * Setter
+	 *
+	 * @param array &$model
 	 * @param integer $pid
 	 * @return void
 	 */

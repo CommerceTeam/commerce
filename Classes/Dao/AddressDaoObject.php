@@ -51,6 +51,8 @@ class Tx_Commerce_Dao_AddressDaoObject extends Tx_Commerce_Dao_BasicDaoObject {
 	protected $name;
 
 	/**
+	 * Constructor
+	 *
 	 * @return self
 	 */
 	public function __construct() {
@@ -65,6 +67,8 @@ class Tx_Commerce_Dao_AddressDaoObject extends Tx_Commerce_Dao_BasicDaoObject {
 	}
 
 	/**
+	 * Getter
+	 *
 	 * @return string
 	 */
 	public function getName() {
@@ -72,7 +76,9 @@ class Tx_Commerce_Dao_AddressDaoObject extends Tx_Commerce_Dao_BasicDaoObject {
 	}
 
 	/**
-	 * @param $name
+	 * Setter
+	 *
+	 * @param string $name
 	 * @return void
 	 */
 	public function setName($name) {

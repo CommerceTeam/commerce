@@ -52,6 +52,8 @@ class Tx_Commerce_Dao_BasicDao {
 	protected $mapper;
 
 	/**
+	 * Constructor
+	 *
 	 * @param integer $id
 	 * @return self
 	 */
@@ -64,6 +66,8 @@ class Tx_Commerce_Dao_BasicDao {
 	}
 
 	/**
+	 * Initialization
+	 *
 	 * @return void
 	 */
 	protected function init() {
@@ -73,6 +77,8 @@ class Tx_Commerce_Dao_BasicDao {
 	}
 
 	/**
+	 * Getter
+	 *
 	 * @return Tx_Commerce_Dao_BasicDaoObject
 	 */
 	public function &getObject() {
@@ -80,7 +86,9 @@ class Tx_Commerce_Dao_BasicDao {
 	}
 
 	/**
-	 * @param Tx_Commerce_Dao_BasicDaoObject $object
+	 * Setter
+	 *
+	 * @param Tx_Commerce_Dao_BasicDaoObject &$object
 	 * @return void
 	 */
 	public function setObject(&$object) {
@@ -88,6 +96,8 @@ class Tx_Commerce_Dao_BasicDao {
 	}
 
 	/**
+	 * Getter
+	 *
 	 * @return integer
 	 */
 	public function getId() {
@@ -95,6 +105,8 @@ class Tx_Commerce_Dao_BasicDao {
 	}
 
 	/**
+	 * Setter
+	 *
 	 * @param integer $value
 	 * @return void
 	 */
@@ -103,6 +115,8 @@ class Tx_Commerce_Dao_BasicDao {
 	}
 
 	/**
+	 * Getter
+	 *
 	 * @param string $propertyName
 	 * @return mixed
 	 */
@@ -118,6 +132,8 @@ class Tx_Commerce_Dao_BasicDao {
 	}
 
 	/**
+	 * Setter
+	 *
 	 * @param string $propertyName
 	 * @param mixed $value
 	 * @return void
@@ -134,6 +150,8 @@ class Tx_Commerce_Dao_BasicDao {
 	}
 
 	/**
+	 * Check if property is empty
+	 *
 	 * @param string $propertyName
 	 * @return boolean
 	 */
@@ -144,6 +162,8 @@ class Tx_Commerce_Dao_BasicDao {
 	}
 
 	/**
+	 * Check if property exists
+	 *
 	 * @param string $propertyName
 	 * @return boolean
 	 */
@@ -154,6 +174,8 @@ class Tx_Commerce_Dao_BasicDao {
 	}
 
 	/**
+	 * Load object
+	 *
 	 * @return void
 	 */
 	public function load() {
@@ -161,6 +183,8 @@ class Tx_Commerce_Dao_BasicDao {
 	}
 
 	/**
+	 * Save object
+	 *
 	 * @return void
 	 */
 	public function save() {
@@ -168,6 +192,8 @@ class Tx_Commerce_Dao_BasicDao {
 	}
 
 	/**
+	 * Remove object
+	 *
 	 * @return void
 	 */
 	public function remove() {

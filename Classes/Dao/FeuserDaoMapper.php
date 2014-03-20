@@ -39,6 +39,8 @@ class Tx_Commerce_Dao_FeuserDaoMapper extends Tx_Commerce_Dao_BasicDaoMapper {
 	protected $dbTable = 'fe_users';
 
 	/**
+	 * Initialization
+	 *
 	 * @return void
 	 */
 	public function init() {

@@ -28,7 +28,8 @@
 /**
  * class feuser address mapper
  * This class handles basic database storage by object mapping.
- * It defines how to insert, update, find and delete a transfer object in the database.
+ * It defines how to insert, update, find and delete a transfer object in
+ * the database.
  * The class needs a parser for object <-> model (transfer object) mapping.
  */
 class Tx_Commerce_Dao_FeuserAddressFieldmapper {
@@ -48,6 +49,8 @@ class Tx_Commerce_Dao_FeuserAddressFieldmapper {
 	protected $addressFields = array();
 
 	/**
+	 * Constructor
+	 *
 	 * @return self
 	 */
 	public function __construct() {
@@ -55,6 +58,8 @@ class Tx_Commerce_Dao_FeuserAddressFieldmapper {
 	}
 
 	/**
+	 * Getter
+	 *
 	 * @return array
 	 */
 	public function getAddressFields() {
@@ -66,6 +71,8 @@ class Tx_Commerce_Dao_FeuserAddressFieldmapper {
 	}
 
 	/**
+	 * Getter
+	 *
 	 * @return array
 	 */
 	public function getFeuserFields() {
@@ -77,8 +84,10 @@ class Tx_Commerce_Dao_FeuserAddressFieldmapper {
 	}
 
 	/**
-	 * @param Tx_Commerce_Dao_FeuserDao $feuser
-	 * @param Tx_Commerce_Dao_AddressDao $address
+	 * Map feuser to address
+	 *
+	 * @param Tx_Commerce_Dao_FeuserDao &$feuser
+	 * @param Tx_Commerce_Dao_AddressDao &$address
 	 * @return void
 	 */
 	public function mapFeuserToAddress(&$feuser, &$address) {
@@ -91,8 +100,10 @@ class Tx_Commerce_Dao_FeuserAddressFieldmapper {
 	}
 
 	/**
-	 * @param Tx_Commerce_Dao_AddressDao $address
-	 * @param Tx_Commerce_Dao_FeuserDao $feuser
+	 * Map address to feuser
+	 *
+	 * @param Tx_Commerce_Dao_AddressDao &$address
+	 * @param Tx_Commerce_Dao_FeuserDao &$feuser
 	 * @return void
 	 */
 	public function mapAddressToFeuser(&$address, &$feuser) {
@@ -105,6 +116,8 @@ class Tx_Commerce_Dao_FeuserAddressFieldmapper {
 	}
 
 	/**
+	 * Explode mapping
+	 *
 	 * @return void
 	 */
 	protected function explodeMapping() {

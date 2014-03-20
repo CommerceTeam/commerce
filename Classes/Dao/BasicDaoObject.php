@@ -37,6 +37,8 @@ class Tx_Commerce_Dao_BasicDaoObject {
 	protected $id = 0;
 
 	/**
+	 * Setter
+	 *
 	 * @param integer $id
 	 * @return void
 	 */
@@ -47,6 +49,8 @@ class Tx_Commerce_Dao_BasicDaoObject {
 	}
 
 	/**
+	 * Getter
+	 *
 	 * @return integer
 	 */
 	public function getId() {
@@ -54,6 +58,8 @@ class Tx_Commerce_Dao_BasicDaoObject {
 	}
 
 	/**
+	 * Check if id is set
+	 *
 	 * @return boolean
 	 */
 	public function issetId() {
@@ -61,6 +67,8 @@ class Tx_Commerce_Dao_BasicDaoObject {
 	}
 
 	/**
+	 * Clear values
+	 *
 	 * @return void
 	 */
 	public function clear() {
@@ -71,6 +79,8 @@ class Tx_Commerce_Dao_BasicDaoObject {
 	}
 
 	/**
+	 * Destructor
+	 *
 	 * @return void
 	 */
 	public function destroy() {

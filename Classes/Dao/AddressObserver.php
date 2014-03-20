@@ -28,7 +28,8 @@
 /**
  * class Tx_Commerce_Dao_AddressObserver for the takeaday feuser extension
  * The class satisfies the observer design pattern.
- * The method update() from this class is called as static by "hooksHandler" classes
+ * The method update() from this class is called as static by "hooksHandler"
+ * classes
  * This class handles tt_address updates
  */
 class Tx_Commerce_Dao_AddressObserver {
@@ -45,6 +46,7 @@ class Tx_Commerce_Dao_AddressObserver {
 	 * Not needed for typo3 hook concept.
 	 *
 	 * @param object &$observable : observed object
+	 * @return self
 	 */
 	public function __construct(&$observable) {
 		$this->observable = $observable;
@@ -86,14 +88,15 @@ class Tx_Commerce_Dao_AddressObserver {
 	}
 
 	/**
+	 * Check if address may get deleted
+	 *
 	 * @param integer $id
 	 * @return boolean|string
 	 */
 	public static function checkDelete($id) {
 		$dbFields = 'uid';
 		$dbTable = 'fe_users';
-		$dbWhere = '(tx_commerce_tt_address_id="' . (int) $id . '")';
-		$dbWhere .= 'AND (deleted="0")';
+		$dbWhere = '(tx_commerce_tt_address_id="' . (int) $id . '") AND (deleted="0")';
 
 		/** @var t3lib_db $database */
 		$database = $GLOBALS['TYPO3_DB'];

@@ -32,6 +32,8 @@
  */
 class Tx_Commerce_Dao_AddressDao extends Tx_Commerce_Dao_BasicDao {
 	/**
+	 * Initialization
+	 *
 	 * @return void
 	 */
 	protected function init() {

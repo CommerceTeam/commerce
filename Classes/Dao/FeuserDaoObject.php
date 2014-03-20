@@ -41,6 +41,8 @@ class Tx_Commerce_Dao_FeuserDaoObject extends Tx_Commerce_Dao_BasicDaoObject {
 	protected $name;
 
 	/**
+	 * Constructor
+	 *
 	 * @return self
 	 */
 	public function __construct() {
@@ -55,6 +57,8 @@ class Tx_Commerce_Dao_FeuserDaoObject extends Tx_Commerce_Dao_BasicDaoObject {
 	}
 
 	/**
+	 * Getter
+	 *
 	 * @return string
 	 */
 	public function getName() {
@@ -62,6 +66,8 @@ class Tx_Commerce_Dao_FeuserDaoObject extends Tx_Commerce_Dao_BasicDaoObject {
 	}
 
 	/**
+	 * Setter
+	 *
 	 * @param string $name
 	 * @return void
 	 */
@@ -70,6 +76,8 @@ class Tx_Commerce_Dao_FeuserDaoObject extends Tx_Commerce_Dao_BasicDaoObject {
 	}
 
 	/**
+	 * Getter
+	 *
 	 * @return integer
 	 */
 	public function getTx_commerce_tt_address_id() {
@@ -77,6 +85,8 @@ class Tx_Commerce_Dao_FeuserDaoObject extends Tx_Commerce_Dao_BasicDaoObject {
 	}
 
 	/**
+	 * Setter
+	 *
 	 * @param integer $value
 	 * @return void
 	 */

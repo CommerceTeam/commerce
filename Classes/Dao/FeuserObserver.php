@@ -28,7 +28,8 @@
 /**
  * class Tx_Commerce_Dao_FeuserObserver for the takeaday feuser extension
  * The class satisfies the observer design pattern.
- * The method update() from this class is called as static by "hooksHandler" classes
+ * The method update() from this class is called as static by "hooksHandler"
+ * classes
  * This class handles feuser updates
  */
 class Tx_Commerce_Dao_FeuserObserver {
@@ -45,6 +46,7 @@ class Tx_Commerce_Dao_FeuserObserver {
 	 * Not needed for typo3 hook concept.
 	 *
 	 * @param object &$observable : observed object
+	 * @return self
 	 */
 	public function __construct(&$observable) {
 		$this->observable = & $observable;

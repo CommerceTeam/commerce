@@ -32,6 +32,8 @@
  */
 class Tx_Commerce_Dao_FeuserDao extends Tx_Commerce_Dao_BasicDao {
 	/**
+	 * Initialization
+	 *
 	 * @return void
 	 */
 	protected function init() {
