@@ -41,8 +41,8 @@ class Tx_Commerce_Controller_PermissionAjaxController extends SC_mod_web_perm_aj
 	/**
 	 * The main dispatcher function. Collect data and prepare HTML output.
 	 *
-	 * @param array $params: array of parameters from the AJAX interface, currently unused
-	 * @param TYPO3AJAX $ajaxObj: object of type TYPO3AJAX
+	 * @param array $params array of parameters from the AJAX interface
+	 * @param TYPO3AJAX &$ajaxObj object of type TYPO3AJAX
 	 * @return Void
 	 */
 	public function dispatch($params = array(), TYPO3AJAX &$ajaxObj = NULL) {
@@ -62,7 +62,7 @@ class Tx_Commerce_Controller_PermissionAjaxController extends SC_mod_web_perm_aj
 					// Return the select to change the owner (BE user) of the page
 				case 'show_change_owner_selector':
 					$content = $this->renderUserSelector($this->conf['page'], $this->conf['ownerUid'], $this->conf['username']);
-				break;
+					break;
 
 					// Change the owner and return the new owner HTML snippet
 				case 'change_owner':
@@ -78,12 +78,12 @@ class Tx_Commerce_Controller_PermissionAjaxController extends SC_mod_web_perm_aj
 					} else {
 						$ajaxObj->setError('An error occured: No page owner uid specified.');
 					}
-				break;
+					break;
 
 					// Return the select to change the group (BE group) of the page
 				case 'show_change_group_selector':
 					$content = $this->renderGroupSelector($this->conf['page'], $this->conf['groupUid'], $this->conf['groupname']);
-				break;
+					break;
 
 					// Change the group and return the new group HTML snippet
 				case 'change_group':
@@ -100,10 +100,10 @@ class Tx_Commerce_Controller_PermissionAjaxController extends SC_mod_web_perm_aj
 					} else {
 						$ajaxObj->setError('An error occured: No page group uid specified.');
 					}
-				break;
+					break;
 
 				case 'toggle_edit_lock':
-						// Prepare data to change
+					// Prepare data to change
 					$data = array();
 					$data['tx_commerce_categories'][$this->conf['page']]['editlock'] = ($this->conf['editLockState'] === 1 ? 0 : 1);
 
@@ -112,7 +112,7 @@ class Tx_Commerce_Controller_PermissionAjaxController extends SC_mod_web_perm_aj
 					$tce->process_datamap();
 
 					$content = $this->renderToggleEditLock($this->conf['page'], $data['tx_commerce_categories'][$this->conf['page']]['editlock']);
-				break;
+					break;
 
 					// The script defaults to change permissions
 				default:
