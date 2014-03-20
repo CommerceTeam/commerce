@@ -128,6 +128,10 @@ class Tx_Commerce_Utility_UpdateUtility {
 	 * @return boolean True if update should be perfomed
 	 */
 	public function access() {
+		if (!t3lib_extMgm::isLoaded('commerce')) {
+			return FALSE;
+		}
+
 		/** @var t3lib_db $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
