@@ -207,9 +207,11 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 
 			$markerArray = $this->languageMarker;
 			$markerArray['###EMPTY_BASKET###'] = $this->cObj->cObjGetSingle($this->conf['emptyContent'], $this->conf['emptyContent.']);
-			$markerArray['###URL###'] = $this->pi_linkTP_keepPIvars_url(array(), 0, 0, $this->conf['basketPid']);
-			$markerArray['###URL_CHECKOUT###'] = $this->pi_linkTP_keepPIvars_url(array(), 0, 0, $this->conf['checkoutPid']);
 			$markerArray['###NO_STOCK MESSAGE###'] = $this->noStock;
+			$this->pi_linkTP('', array(), 0, $this->conf['basketPid']);
+			$basketArray['###BASKETURL###'] = $this->cObj->lastTypoLinkUrl;
+			$this->pi_linkTP('', array(), 0, $this->conf['checkoutPid']);
+			$basketArray['###URL_CHECKOUT###'] = $this->cObj->lastTypoLinkUrl;
 
 				// Hook for additional markers in empty quick view basket template
 			foreach ($hookObjectsArr as $hookObj) {
@@ -514,8 +516,10 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 		$basketArray['###ITEMS###'] = $this->basket->getArticleTypeCountFromList($articleTypes);
 
 		$basketArray['###BASKET_ITEMS###'] = $this->basket->getArticleTypeCountFromList($articleTypes);
-		$basketArray['###URL###'] = $this->pi_linkTP_keepPIvars_url(array(), 0, 0, $this->conf['basketPid']);
-		$basketArray['###URL_CHECKOUT###'] = $this->pi_linkTP_keepPIvars_url(array(), 0, 0, $this->conf['checkoutPid']);
+		$this->pi_linkTP('', array(), 0, $this->conf['basketPid']);
+		$basketArray['###BASKETURL###'] = $this->cObj->lastTypoLinkUrl;
+		$this->pi_linkTP('', array(), 0, $this->conf['checkoutPid']);
+		$basketArray['###URL_CHECKOUT###'] = $this->cObj->lastTypoLinkUrl;
 
 			// Hook for additional markers in quick view basket template
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['getQuickView'])) {
@@ -628,8 +632,10 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 		$basketArray['###BASKET_PAYMENT_ITEMS###'] = $this->basket->getArticleTypeCount(PAYMENTARTICLETYPE);
 		$basketArray['###BASKET_DELIVERY_ITEMS###'] = $this->basket->getArticleTypeCount(DELIVERYARTICLETYPE);
 		$basketArray['###BASKET_ARTICLES_ITEMS###'] = $this->basket->getArticleTypeCount(NORMALARTICLETYPE);
-		$basketArray['###BASKETURL###'] = $this->pi_linkTP_keepPIvars_url(array(), 0, 0, $this->conf['basketPid']);
-		$basketArray['###URL_CHECKOUT###'] = $this->pi_linkTP_keepPIvars_url(array(), 0, 0, $this->conf['checkoutPid']);
+		$this->pi_linkTP('', array(), 0, $this->conf['basketPid']);
+		$basketArray['###BASKETURL###'] = $this->cObj->lastTypoLinkUrl;
+		$this->pi_linkTP('', array(), 0, $this->conf['checkoutPid']);
+		$basketArray['###URL_CHECKOUT###'] = $this->cObj->lastTypoLinkUrl;
 		$basketArray['###NO_STOCK_MESSAGE###'] = $this->noStock;
 		$basketArray['###BASKET_LASTPRODUCTURL###'] = $this->cObj->stdWrap($GLOBALS['TSFE']->fe_user->getKey('ses', 'tx_commerce_lastproducturl'), $this->conf['lastProduct']);
 
