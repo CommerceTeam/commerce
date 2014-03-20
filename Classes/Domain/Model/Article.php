@@ -210,6 +210,10 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 
 	/**
 	 * Constructor Method, calles init method
+	 *
+	 * @param int $uid
+	 * @param int $languageUid
+	 * @return self
 	 */
 	public function __construct($uid, $languageUid = 0) {
 		if ((int) $uid) {
@@ -220,16 +224,17 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 	/**
 	 * Init Method, called by constructor
 	 *
-	 * @param integer $uid uid of article
-	 * @param integer $lang_uid language uid, default 0
+	 * @param int $uid uid of article
+	 * @param int $languageUid language uid, default 0
 	 * @return boolean
 	 */
-	public function init($uid, $lang_uid = 0) {
+	public function init($uid, $languageUid = 0) {
 		$this->uid = (int) $uid;
-		$lang_uid = (int) $lang_uid;
+		$languageUid = (int) $languageUid;
 
+		$return = FALSE;
 		if ($this->uid > 0) {
-			$this->lang_uid = $lang_uid;
+			$this->lang_uid = $languageUid;
 			$this->databaseConnection = t3lib_div::makeInstance($this->databaseClass);
 
 			if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_article.php']['postinit'])) {
@@ -255,10 +260,10 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 				}
 			}
 
-			return TRUE;
-		} else {
-			return FALSE;
+			$return = TRUE;
 		}
+
+		return $return;
 	}
 
 	/**
@@ -325,10 +330,10 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 	 * @return array of arrays
 	 */
 	public function getArticleAttributes() {
-		$local_table = 'tx_commerce_articles';
-		$mm_table = 'tx_commerce_articles_article_attributes_mm';
-		$foreign_table = 'tx_commerce_attributes';
-		$select = 'DISTINCT ' . $foreign_table . '.uid, ' . $foreign_table . '.title';
+		$localTable = 'tx_commerce_articles';
+		$mmTable = 'tx_commerce_articles_article_attributes_mm';
+		$foreignTable = 'tx_commerce_attributes';
+		$select = 'DISTINCT ' . $foreignTable . '.uid, ' . $foreignTable . '.title';
 		$ignore = array('fe_group' => 1);
 
 		/** @var t3lib_pageSelect $pageSelect */
@@ -339,13 +344,13 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 		$database = $GLOBALS['TYPO3_DB'];
 
 		$setArticleAttributesResult = $database->exec_SELECT_mm_query(
-			$select, $local_table, $mm_table, $foreign_table, $whereClause, '', '', ''
+			$select, $localTable, $mmTable, $foreignTable, $whereClause, '', '', ''
 		);
 
 		$attributesUidList = array();
-		while ($return_data = $database->sql_fetch_assoc($setArticleAttributesResult)) {
-			if (!empty($return_data['uid'])) {
-				$attributesUidList[$return_data['uid']] = $return_data['title'];
+		while (($data = $database->sql_fetch_assoc($setArticleAttributesResult))) {
+			if (!empty($data['uid'])) {
+				$attributesUidList[$data['uid']] = $data['title'];
 			}
 		}
 		$database->sql_free_result($setArticleAttributesResult);
@@ -365,6 +370,8 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 	}
 
 	/**
+	 * Getter
+	 *
 	 * @return integer article_type
 	 */
 	public function getArticleTypeUid() {
@@ -437,6 +444,8 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 	}
 
 	/**
+	 * Getter
+	 *
 	 * @return string ordernumber
 	 */
 	public function getOrdernumber() {
@@ -449,11 +458,13 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 	 * @return double
 	 */
 	public function getPriceGross() {
+		$result = 'no valid price';
+
 		if ($this->price instanceof Tx_Commerce_Domain_Model_ArticlePrice) {
-			return $this->price->getPriceGross();
-		} else {
-			return 'no valid price';
+			$result = $this->price->getPriceGross();
 		}
+
+		return $result;
 	}
 
 	/**
@@ -462,11 +473,13 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 	 * @return double
 	 */
 	public function getPriceNet() {
+		$result = 'no valid price';
+
 		if ($this->price instanceof Tx_Commerce_Domain_Model_ArticlePrice) {
-			return $this->price->getPriceNet();
-		} else {
-			return 'no valid price';
+			$result = $this->price->getPriceNet();
 		}
+
+		return $result;
 	}
 
 	/**
@@ -481,12 +494,14 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 	/**
 	 * Get Article price scales
 	 *
-	 * @param integer $startCount Count where to start with teh listing of the sacles, default 1
+	 * @param integer $startCount Count where to start with the
+	 * 		listing of the sacles, default 1
 	 * @return array or prices grouped by the different scales
 	 */
 	public function getPriceScaleObjects($startCount = 1) {
 		$return = array();
 		$arrayOfPricesUids = $this->getPriceScales($startCount);
+
 		if (is_array($arrayOfPricesUids)) {
 			foreach ($arrayOfPricesUids as $startCount => $tmpArray) {
 				foreach ($tmpArray as $endCount => $pricdUid) {
@@ -498,17 +513,16 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 					$return[$startCount][$endCount] = $price;
 				}
 			}
-
-			return $return;
-		} else {
-			return FALSE;
 		}
+
+		return $return;
 	}
 
 	/**
 	 * Get Article price scales
 	 *
-	 * @param integer $startCount Count where to start with th listing of the sacles, default 1
+	 * @param integer $startCount Count where to start with the
+	 * 		listing of the sacles, default 1
 	 * @return array or priceUid grouped by the different scales
 	 */
 	public function getPriceScales($startCount = 1) {
@@ -540,14 +554,14 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 	 */
 	public function getParentProduct() {
 		if ($this->uid_product) {
-			$products_uid = $this->uid_product;
+			$productsUid = $this->uid_product;
 		} else {
-			$products_uid = $this->databaseConnection->get_parent_product_uid($this->getUid());
+			$productsUid = $this->databaseConnection->getParentProductUid($this->getUid());
 		}
 
 		/** @var $product Tx_Commerce_Domain_Model_Product */
 		$product = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product');
-		$product->init($products_uid);
+		$product->init($productsUid);
 		return $product;
 	}
 
@@ -563,9 +577,9 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 		if ($this->uid_product) {
 			$result = $this->uid_product;
 		} else {
-			$products_uid = $this->databaseConnection->get_parent_product_uid($this->uid);
-			if ($products_uid > 0) {
-				$result = $products_uid;
+			$productsUid = $this->databaseConnection->getParentProductUid($this->uid);
+			if ($productsUid > 0) {
+				$result = $productsUid;
 			}
 		}
 
@@ -648,6 +662,8 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 	}
 
 	/**
+	 * Getter
+	 *
 	 * @return double tax
 	 */
 	public function getTax() {
@@ -689,7 +705,8 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 			$this->prices_uids = $arrayOfPrices;
 
 			if ($this->prices_uids) {
-					// If we do have a Logged in usergroup walk thrue and check if there is a special price for this group
+				// If we do have a Logged in usergroup walk thrue and check if
+				// there is a special price for this group
 				if (
 					(empty($GLOBALS['TSFE']->fe_user->groupData['uid']) == FALSE)
 					&& ($GLOBALS['TSFE']->loginUser || count( $GLOBALS['TSFE']->fe_user->groupData['uid']) > 0)
@@ -745,19 +762,21 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 						if ($this->price) {
 							$this->price->loadData($translationMode);
 						} else {
-							return FALSE;
+							return 0;
 						}
 					}
 				}
 				$this->prices_loaded = TRUE;
 
-				return $this->price_uid;
+				$return = $this->price_uid;
 			} else {
-				return FALSE;
+				return 0;
 			}
 		} else {
-			return $this->price_uid;
+			$return = $this->price_uid;
 		}
+
+		return $return;
 	}
 
 	/**
@@ -768,7 +787,7 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 	 */
 	public function calculateDeliveryCosts() {
 		/**
-		 * Just one Hook as there is no sence for more than one delievery cost claculation
+		 * Just one Hook as there is no sense for more than one delievery cost
 		 */
 		if (($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_article.php']['calculateDeliveryCost'])) {
 			t3lib_div::deprecationLog('
@@ -805,8 +824,10 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 	 * if no Service is found or the hasStock Method is not implemented in Service,
 	 * it always returns one.
 	 *
-	 * @param array $serviceChain List of service keys which should be exluded in the search for a service. Array or comma list.
-	 * @param string $subType string  Sub type like file extensions or similar. Defined by the service.
+	 * @param string $subType string  Sub type like file extensions or similar.
+	 * 		Defined by the service.
+	 * @param array $serviceChain List of service keys which should be exluded in
+	 * 		the search for a service. Array or comma list.
 	 * @return integer amount of articles in stock
 	 */
 	public function getStock($subType = '', $serviceChain = array()) {
@@ -830,9 +851,11 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 	/**
 	 * Returns the avalibility of wanted amount of articles.
 	 *
-	 * @param integer $wantedArticles amount of Articles which should be added to basket
-	 * @param array $serviceChain List of service keys which should be exluded in the search for a service. Array or comma list.
-	 * @param string $subType Sub type like file extensions or similar. Defined by the service.
+	 * @param int $wantedArticles amount of Articles which should be added to basket
+	 * @param string $subType Sub type like file extensions or similar. Defined by
+	 * 		the service.
+	 * @param array $serviceChain List of service keys which should be exluded in the
+	 * 		search for a service. Array or comma list.
 	 * @return boolean avalibility of wanted amount of articles
 	 */
 	public function hasStock($wantedArticles = 0, $subType = '', $serviceChain = array()) {
@@ -844,7 +867,7 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 			$serviceChain .= ',' . $serviceObj->getServiceKey();
 			if (method_exists($serviceObj, 'hasStock')) {
 				$counter++;
-				if ($available = (int) $serviceObj->hasStock($this, $wantedArticles, $articlesInStock)) {
+				if (($available = (int) $serviceObj->hasStock($this, $wantedArticles, $articlesInStock))) {
 					break;
 				}
 			}
@@ -858,13 +881,15 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 	}
 
 	/**
-	 * substract the wanted Articles from stock. If you have more than one stock which
-	 * is handled to more than one Service please implement the Service due to Reference
-	 * on $wantedArticles so you can reduce this amount steplike.
+	 * substract the wanted Articles from stock. If you have more than one stock
+	 * which is handled to more than one Service please implement the Service due
+	 * to Reference on $wantedArticles so you can reduce this amount steplike.
 	 *
-	 * @param integer $wantedArticles Integer amount of Articles which should reduced from stock
-	 * @param array $serviceChain List of service keys which should be exluded in the search for a service. Array or comma list.
-	 * @param string $subType Sub type like file extensions or similar. Defined by the service.
+	 * @param int $wantedArticles amount of Articles which should reduced from stock
+	 * @param string $subType Sub type like file extensions or similar. Defined
+	 * 		by the service.
+	 * @param array $serviceChain List of service keys which should be exluded in
+	 * 		the search for a service. Array or comma list.
 	 * @return boolean Decribes the result of going through the chains
 	 */
 	public function reduceStock($wantedArticles = 0, $subType = '', $serviceChain = array()) {

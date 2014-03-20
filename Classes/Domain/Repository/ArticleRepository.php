@@ -49,7 +49,7 @@ class Tx_Commerce_Domain_Repository_ArticleRepository extends Tx_Commerce_Domain
 	 * @param boolean $translationMode
 	 * @return integer product uid
 	 */
-	public function get_parent_product_uid($uid, $translationMode = FALSE) {
+	public function getParentProductUid($uid, $translationMode = FALSE) {
 		$data = parent::getData($uid, $translationMode);
 		$result = FALSE;
 
@@ -62,6 +62,16 @@ class Tx_Commerce_Domain_Repository_ArticleRepository extends Tx_Commerce_Domain
 			}
 		}
 		return $result;
+	}
+
+	/**
+	 * @param int $uid
+	 * @param bool $translationMode
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use Tx_Commerce_Domain_Repository_ArticleRepository::getParentProductUid instead
+	 */
+	public function get_parent_product_uid($uid, $translationMode = FALSE) {
+		t3lib_div::logDeprecatedFunction();
+		return $this->getParentProductUid($uid, $translationMode);
 	}
 
 	/**
