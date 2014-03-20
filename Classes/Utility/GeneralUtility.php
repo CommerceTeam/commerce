@@ -336,7 +336,7 @@ class Tx_Commerce_Utility_GeneralUtility {
 	/**
 	 * Helperfunction for email validation
 	 *
-	 * @param array $list comma seperierte list of email addresses
+	 * @param string $list comma seperierte list of email addresses
 	 * @return string
 	 */
 	public static function validEmailList($list) {
