@@ -42,6 +42,11 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	public $prefixId = 'tx_commerce_pi3';
 
 	/**
+	 * @var bool
+	 */
+	public $pi_USER_INT_obj = TRUE;
+
+	/**
 	 * @var array
 	 */
 	public $dbFieldData = array();
