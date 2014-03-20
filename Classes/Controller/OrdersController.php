@@ -298,8 +298,9 @@ class Tx_Commerce_Controller_OrdersController extends t3lib_SCbase {
 
 			// Clipboard is initialized:
 			// Start clipboard
-			/** @var t3lib_clipboard clipObj */
-		$dblist->clipObj = t3lib_div::makeInstance('t3lib_clipboard');
+		/** @var t3lib_clipboard $clipObj */
+		$clipObj = t3lib_div::makeInstance('t3lib_clipboard');
+		$dblist->clipObj = $clipObj;
 			// Initialize - reads the clipboard content from the user session
 		$dblist->clipObj->initializeClipboard();
 
