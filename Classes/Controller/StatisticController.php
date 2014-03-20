@@ -60,6 +60,8 @@ class Tx_Commerce_Controller_StatisticController extends t3lib_SCbase {
 	protected $statistics;
 
 	/**
+	 * Initialization
+	 *
 	 * @return void
 	 */
 	public function init() {
@@ -152,14 +154,15 @@ class Tx_Commerce_Controller_StatisticController extends t3lib_SCbase {
 		/** @var language $language */
 		$language = $GLOBALS['LANG'];
 
-			// Access check!
-			// The page will show only if there is a valid page and if this page may be viewed by the user
+		// Access check!
+		// The page will show only if there is a valid page and if
+		// this page may be viewed by the user
 		$this->pageinfo = t3lib_BEfunc::readPageAccess($this->id, $this->perms_clause);
 		$access = is_array($this->pageinfo);
 
-			// Checking access:
+		// Checking access:
 		if (($this->id && $access) || $backendUser->isAdmin()) {
-				// Render content:
+			// Render content:
 			$this->moduleContent();
 		} else {
 				// If no access or if ID == zero
@@ -200,23 +203,28 @@ class Tx_Commerce_Controller_StatisticController extends t3lib_SCbase {
 
 	/**
 	 * Generates the module content
+	 *
+	 * @return void
 	 */
 	protected function moduleContent() {
-		switch((int) $this->MOD_SETTINGS['function']) {
-			case 1:
-				$this->content .= $this->showStatistics();
-			break;
+		switch ((int)$this->MOD_SETTINGS['function']) {
 			case 2:
 				$this->content .= $this->incrementalAggregation();
-			break;
+				break;
+
 			case 3:
 				$this->content .= $this->completeAggregation();
-			break;
+				break;
+
+			case 1:
+			default:
+				$this->content .= $this->showStatistics();
 		}
 	}
 
 	/**
-	 * Create the panel of buttons for submitting the form or otherwise perform operations.
+	 * Create the panel of buttons for submitting the form
+	 * or otherwise perform operations.
 	 *
 	 * @return array all available buttons as an assoc. array
 	 */
@@ -287,7 +295,7 @@ class Tx_Commerce_Controller_StatisticController extends t3lib_SCbase {
 			$endselect = 'SELECT max(crdate) FROM tx_commerce_order_articles';
 			$endres = $database->sql_query($endselect);
 			$endtime2 = 0;
-			if ($endres AND $endrow = $database->sql_fetch_row($endres)) {
+			if ($endres && ($endrow = $database->sql_fetch_row($endres))) {
 				$endtime2 = $endrow[0];
 			}
 
@@ -295,7 +303,7 @@ class Tx_Commerce_Controller_StatisticController extends t3lib_SCbase {
 
 			$startselect = 'SELECT min(crdate) FROM tx_commerce_order_articles WHERE crdate > 0';
 			$startres = $database->sql_query($startselect);
-			if ($startres AND $startrow = $database->sql_fetch_row($startres) AND $startrow[0] != NULL) {
+			if ($startres AND ($startrow = $database->sql_fetch_row($startres)) AND $startrow[0] != NULL) {
 				$starttime = $startrow[0];
 				$database->sql_query('truncate tx_commerce_salesfigures');
 				$result .= $this->statistics->doSalesAggregation($starttime, $endtime);
@@ -305,7 +313,7 @@ class Tx_Commerce_Controller_StatisticController extends t3lib_SCbase {
 
 			$endselect = 'SELECT max(crdate) FROM fe_users';
 			$endres = $database->sql_query($endselect);
-			if ($endres AND $endrow = $database->sql_fetch_row($endres)) {
+			if ($endres AND ($endrow = $database->sql_fetch_row($endres))) {
 				$endtime2 = $endrow[0];
 			}
 
@@ -313,7 +321,7 @@ class Tx_Commerce_Controller_StatisticController extends t3lib_SCbase {
 
 			$startselect = 'SELECT min(crdate) FROM fe_users WHERE crdate > 0 AND deleted = 0';
 			$startres = $database->sql_query($startselect);
-			if ($startres AND $startrow = $database->sql_fetch_row($startres) AND $startrow[0] != NULL) {
+			if ($startres AND ($startrow = $database->sql_fetch_row($startres)) AND $startrow[0] != NULL) {
 				$starttime = $startrow[0];
 				$database->sql_query('truncate tx_commerce_newclients');
 				$result = $this->statistics->doClientAggregation($starttime, $endtime);
@@ -347,7 +355,7 @@ class Tx_Commerce_Controller_StatisticController extends t3lib_SCbase {
 			$lastAggregationTimeValue = 0;
 			if (
 				$lastAggregationTimeres
-				AND $lastAggregationTimerow = $database->sql_fetch_row( $lastAggregationTimeres )
+				AND ($lastAggregationTimerow = $database->sql_fetch_row($lastAggregationTimeres))
 				AND $lastAggregationTimerow[0] != NULL
 			) {
 				$lastAggregationTimeValue = $lastAggregationTimerow[0];
@@ -356,7 +364,7 @@ class Tx_Commerce_Controller_StatisticController extends t3lib_SCbase {
 			$endselect = 'SELECT max(crdate) FROM tx_commerce_order_articles';
 			$endres = $database->sql_query($endselect);
 			$endtime2 = 0;
-			if ($endres AND $endrow = $database->sql_fetch_row($endres)) {
+			if ($endres AND ($endrow = $database->sql_fetch_row($endres))) {
 				$endtime2 = $endrow[0];
 			}
 			$starttime = $this->statistics->firstSecondOfDay($lastAggregationTimeValue);
@@ -377,7 +385,7 @@ class Tx_Commerce_Controller_StatisticController extends t3lib_SCbase {
 			$changeres = $database->sql_query($changeselect);
 			$changeDaysArray = array();
 			$changes = 0;
-			while ($changeres AND $changerow = $database->sql_fetch_assoc($changeres)) {
+			while ($changeres AND ($changerow = $database->sql_fetch_assoc($changeres))) {
 
 				$starttime =  $this->statistics->firstSecondOfDay($changerow['crdate']);
 				$endtime =  $this->statistics->lastSecondOfDay($changerow['crdate']);
@@ -396,12 +404,12 @@ class Tx_Commerce_Controller_StatisticController extends t3lib_SCbase {
 
 			$lastAggregationTime = 'SELECT max(tstamp) FROM tx_commerce_newclients';
 			$lastAggregationTimeres = $database->sql_query($lastAggregationTime);
-			if ($lastAggregationTimeres AND $lastAggregationTimerow = $database->sql_fetch_row($lastAggregationTimeres)) {
+			if ($lastAggregationTimeres AND ($lastAggregationTimerow = $database->sql_fetch_row($lastAggregationTimeres))) {
 				$lastAggregationTimeValue = $lastAggregationTimerow[0];
 			}
 			$endselect = 'SELECT max(crdate) FROM fe_users';
 			$endres = $database->sql_query($endselect);
-			if ($endres AND $endrow = $database->sql_fetch_row($endres)) {
+			if ($endres AND ($endrow = $database->sql_fetch_row($endres))) {
 				$endtime2 = $endrow[0];
 			}
 			if ($lastAggregationTimeValue <= $endtime2 AND $endtime2 != NULL AND $lastAggregationTimeValue != NULL) {
@@ -468,7 +476,7 @@ class Tx_Commerce_Controller_StatisticController extends t3lib_SCbase {
 				'day'
 			);
 			$daystat = array();
-			while ($statRow = $database->sql_fetch_assoc($statResult)) {
+			while (($statRow = $database->sql_fetch_assoc($statResult))) {
 				$daystat[$statRow['day']] = $statRow;
 			}
 			$lastday = date('d', mktime(0, 0, 0, t3lib_div::_GP('month') + 1, 0, t3lib_div::_GP('year')));
@@ -493,7 +501,7 @@ class Tx_Commerce_Controller_StatisticController extends t3lib_SCbase {
 			);
 
 			$daystat = array();
-			while ($statRow = $database->sql_fetch_assoc($statResult)) {
+			while (($statRow = $database->sql_fetch_assoc($statResult))) {
 				$daystat[$statRow['dow']] = $statRow;
 			}
 			for ($i = 0; $i <= 6; ++$i) {
@@ -517,7 +525,7 @@ class Tx_Commerce_Controller_StatisticController extends t3lib_SCbase {
 			);
 
 			$daystat = array();
-			while ($statRow = $database->sql_fetch_assoc($statResult)) {
+			while (($statRow = $database->sql_fetch_assoc($statResult))) {
 				$daystat[$statRow['hour']] = $statRow;
 			}
 			for ($i = 0; $i <= 23; ++$i) {
@@ -541,7 +549,7 @@ class Tx_Commerce_Controller_StatisticController extends t3lib_SCbase {
 				$whereClause,
 				'year,month'
 			);
-			while ($statRow = $database->sql_fetch_assoc($statResult) ) {
+			while (($statRow = $database->sql_fetch_assoc($statResult))) {
 				$tablestemp = '<tr><td><a href="?id=' . $this->id . '&amp;month=' . $statRow['month'] . '&amp;year=' .
 					$statRow['year'] . '&amp;show=details">' . $statRow['month'] . '.' . $statRow['year'] .
 					'</a></td><td align="right">%01.2f</td><td align="right">' . $statRow['salesfigures'] .
