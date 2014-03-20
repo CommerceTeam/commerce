@@ -37,7 +37,8 @@ class Tx_Commerce_Tree_CategoryMounts extends Tx_Commerce_Tree_Leaf_Mounts {
 	protected $field = 'tx_commerce_mountpoints';
 
 	/**
-	 * Returns the Mountdata, but not just as an array with ids, but with an array with arrays(id, category)
+	 * Returns the Mountdata, but not just as an array with ids, but with an array
+	 * with arrays(id, category)
 	 *
 	 * @return array
 	 */
@@ -135,7 +136,7 @@ class_alias('Tx_Commerce_Tree_CategoryMounts', 'tx_commerce_categorymounts');
 
 if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Tree/CategoryMounts.php']) {
 	/** @noinspection PhpIncludeInspection */
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Tree/CategoryMounts.php']);
+	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Tree/CategoryMounts.php']);
 }
 
 ?>

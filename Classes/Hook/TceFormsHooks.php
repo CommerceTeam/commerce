@@ -25,6 +25,9 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+/**
+ * Class Tx_Commerce_Hook_TceFormsHooks
+ */
 class Tx_Commerce_Hook_TceFormsHooks {
 	/**
 	 * @var array

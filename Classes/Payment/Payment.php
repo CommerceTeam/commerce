@@ -33,18 +33,18 @@
  * Die Grundfunktionen der Paymentklasse sind wietestgehen Statusmeldungen und
  * Errohandling.
  *
- * getPaymetmethods        - Liste der Methoden und Typen die die Schnittstelle bietet
+ * getPaymetmethods   - Liste der Methoden und Typen die die Schnittstelle bietet
  * getStatus                - allgemeine Daten der Klasse
  * getError                - gab es Fehler wen ja welche meldung
  * checkTransactiondata    - wurden alle daten komplett in der Klasse belegt?
  * Elemente der Parentklasse die in payment definiert und ggf. vorbelegt werden
  * setPaymentmethod        - ELV, Bank, KK (ggf Intern)
  * setPaymenttype        - reserve, book  (ggf Intern)
- * setData                - Speichert KK Nummer, Betrag, Name usw. (vielleicht splitte ich das noch
- *                          auf z.B. setKKnumber usw)
- * prepareMethod        - bereitet die Transaktion vor - erstellt die Parameterliste
- *                      ggf. auch prepareMethod->KK oder ->ELV Muss ich nochmal dr�ber nachdenken ich
- *                      denke aber das w�re kein schlechter weg, sonst als array �bergeben
+ * setData - Speichert KK Nummer, Betrag, Name usw.
+ *  (vielleicht splitte ich das noch auf z.B. setKKnumber usw)
+ * prepareMethod   - bereitet die Transaktion vor - erstellt die Parameterliste
+ * ggf. auch prepareMethod->KK oder >ELV Muss ich nochmal drüber nachdenken ich
+ *         denke aber das wäre kein schlechter weg, sonst als array übergeben
  * sendTransaction        - sendet zur Schnittstelle
  * getErrorOfErrorcode    - Gibt den Fehlertext zur�ck
  * getErrortype            - Warning, schwer, unbekannt, usw.

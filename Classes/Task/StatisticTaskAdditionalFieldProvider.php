@@ -25,6 +25,9 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+/**
+ * Class Tx_Commerce_Task_StatisticTaskAdditionalFieldProvider
+ */
 class Tx_Commerce_Task_StatisticTaskAdditionalFieldProvider implements tx_scheduler_AdditionalFieldProvider {
 	/**
 	 * @var array
@@ -42,10 +45,11 @@ class Tx_Commerce_Task_StatisticTaskAdditionalFieldProvider implements tx_schedu
 	/**
 	 * Add a multi select box with all available cache backends.
 	 *
-	 * @param array $taskInfo Reference to the array containing the info used in the add/edit form
-	 * @param Tx_Commerce_Task_StatisticTask $task When editing, reference to the current task object. Null when adding.
-	 * @param tx_scheduler_Module $parentObject Reference to the calling object (Scheduler's BE module)
-	 * @return array Array containg all the information pertaining to the additional fields
+	 * @param array &$taskInfo Reference to the array containing the info used
+	 * @param Tx_Commerce_Task_StatisticTask $task When editing, reference to
+	 * 	the current task object. Null when adding.
+	 * @param tx_scheduler_Module $parentObject Reference to the calling object
+	 * @return array containg all the information pertaining to the additional fields
 	 */
 	public function getAdditionalFields(array &$taskInfo, $task, tx_scheduler_Module $parentObject) {
 		$this->submittedData = $taskInfo;
@@ -149,7 +153,7 @@ class Tx_Commerce_Task_StatisticTaskAdditionalFieldProvider implements tx_schedu
 
 if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Task/StatisticTaskAdditionalFieldProvider.php']) {
 	/** @noinspection PhpIncludeInspection */
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Task/StatisticTaskAdditionalFieldProvider.php']);
+	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Task/StatisticTaskAdditionalFieldProvider.php']);
 }
 
 ?>

@@ -54,8 +54,9 @@ abstract class Tx_Commerce_Payment_Criterion_ProviderCriterionAbstract implement
 	/**
 	 * Constructor
 	 *
-	 * @param Tx_Commerce_Payment_Interface_Provider $providerObject Parent payment object
+	 * @param Tx_Commerce_Payment_Interface_Provider $providerObject Parent payment
 	 * @param array $options Configuration array
+	 * @return self
 	 */
 	public function __construct(Tx_Commerce_Payment_Interface_Provider $providerObject, array $options = array()) {
 		$this->providerObject = $providerObject;
@@ -69,7 +70,7 @@ class_alias('Tx_Commerce_Payment_Criterion_ProviderCriterionAbstract', 'tx_comme
 
 if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Payment/Criterion/ProviderCriterionAbstract.php']) {
 	/** @noinspection PhpIncludeInspection */
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Payment/Criterion/ProviderCriterionAbstract.php']);
+	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Payment/Criterion/ProviderCriterionAbstract.php']);
 }
 
 ?>

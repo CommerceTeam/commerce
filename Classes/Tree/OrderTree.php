@@ -26,7 +26,8 @@
  ***************************************************************/
 
 /**
- * Extension class for the t3lib_browsetree class, specially made for browsing pages in the Web module
+ * Extension class for the t3lib_browsetree class,
+ * specially made for browsing pages in the Web module
  */
 class Tx_Commerce_Tree_OrderTree extends t3lib_browseTree {
 	/**

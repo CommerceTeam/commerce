@@ -291,11 +291,7 @@ class Tx_Commerce_Domain_Model_BasketItem {
 	 * @return integer item sum net
 	 */
 	public function getItemSumNet($recalculate = FALSE) {
-		if ($recalculate == TRUE) {
-			return $this->calculateNetSum();
-		} else {
-			return $this->item_net_sum;
-		}
+		return $recalculate === TRUE ? $this->calculateNetSum() : $this->item_net_sum;
 	}
 
 	/**
@@ -305,11 +301,7 @@ class Tx_Commerce_Domain_Model_BasketItem {
 	 * @return integer Sum gross price
 	 */
 	public function getItemSumGross($recalculate = FALSE) {
-		if ($recalculate === TRUE) {
-			return $this->calculateGrossSum();
-		} else {
-			return $this->item_gross_sum;
-		}
+		return $recalculate === TRUE ? $this->calculateGrossSum() : $this->item_gross_sum;
 	}
 
 	/**
@@ -781,7 +773,7 @@ class_alias('Tx_Commerce_Domain_Model_BasketItem', 'tx_commerce_basket_item');
 
 if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Domain/Model/BasketItem.php']) {
 	/** @noinspection PhpIncludeInspection */
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Domain/Model/BasketItem.php']);
+	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Domain/Model/BasketItem.php']);
 }
 
 ?>

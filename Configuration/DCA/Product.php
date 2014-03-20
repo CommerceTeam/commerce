@@ -26,14 +26,16 @@ $simpleMode = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']
 
 	// the dynamic Flexform for products
 $dynaFlexConf = array(
-	/* This is the configuration for the correlationtype fields on tab "select attributes"
-	 * We fetch all correlationtypes from the database and for every ct we create two fields.
-	 * The first one is field of type none. The only reason for this field is to display all
-	 * attributes from the parent categories the product is assigned to. This field is filled
-	 * the tcehooks class.
-	 * The second field is a little bit more complex, because the user can select some attributes
-	 * from the db here. It's a normal select field which is handled by TYPO3. Only writing the
-	 * relations into the database is done in class tcehooks.
+	/**
+	 * This is the configuration for the correlationtype fields on tab
+	 * "select attributes" We fetch all correlationtypes from the database and for
+	 * every ct we create two fields. The first one is field of type none. The only
+	 * reason for this field is to display all attributes from the parent categories
+	 * the product is assigned to. This field is filled the tcehooks class.
+	 * The second field is a little bit more complex, because the user can select
+	 * some attributes from the db here. It's a normal select field which is handled
+	 * by TYPO3. Only writing the relations into the database is done in class
+	 * tcehooks.
 	 */
 	0 => array(
 		'path' => 'tx_commerce_products/columns/attributes/config/ds/default',

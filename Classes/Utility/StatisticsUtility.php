@@ -31,8 +31,8 @@
  */
 class Tx_Commerce_Utility_StatisticsUtility {
 	/**
-	 * List of exclude PIDs, PIDs whcih should not be used when calculation the statistics. This List should
-	 * be definable in Extension configuration
+	 * List of exclude PIDs, PIDs whcih should not be used when calculation
+	 * the statistics. This List should be definable in Extension configuration
 	 *
 	 * @var string
 	 */
@@ -46,6 +46,8 @@ class Tx_Commerce_Utility_StatisticsUtility {
 	public $daysback = 10;
 
 	/**
+	 * Initialization
+	 *
 	 * @param string $excludePids
 	 * @return void
 	 */

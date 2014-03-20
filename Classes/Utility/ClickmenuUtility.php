@@ -27,7 +27,8 @@
 
 /**
  * Extended Functionality for the Clickmenu when commerce-tables are hit
- * Basically does the same as the alt_clickmenu.php, only that for Categories the output needs to be overridden depending on the rights
+ * Basically does the same as the alt_clickmenu.php, only that for Categories
+ * the output needs to be overridden depending on the rights
  */
 class Tx_Commerce_Utility_ClickmenuUtility extends clickMenu {
 	/**
@@ -44,6 +45,11 @@ class Tx_Commerce_Utility_ClickmenuUtility extends clickMenu {
 	 * @var clickMenu
 	 */
 	protected $clickMenu;
+
+	/**
+	 * @var t3lib_clipboard
+	 */
+	protected $clipObj;
 
 	/**
 	 * @var array
@@ -124,23 +130,26 @@ class Tx_Commerce_Utility_ClickmenuUtility extends clickMenu {
 		}
 
 			// get rights based on the table
-		switch($table) {
+		switch ($table) {
 			case 'tx_commerce_categories':
 				$rights = $this->calculateCategoryRights($uid, $rights);
-			break;
+				break;
 
 			case 'tx_commerce_products':
 				$rights = $this->calculateProductRights($uid, $rights);
-			break;
+				break;
 
 			case 'tx_commerce_articles':
 				$rights = $this->calculateArticleRights($uid, $rights);
-			break;
+				break;
+
+			default:
 		}
 
 		$menuItems = array();
 
-			// If record found, go ahead and fill the $menuItems array which will contain data for the elements to render.
+		// If record found, go ahead and fill the $menuItems array which will contain
+		// data for the elements to render.
 		if (is_array($this->rec)) {
 				// Edit:
 			if (!$rights['root'] && !$rights['editLock'] && $rights['edit']) {
@@ -154,7 +163,7 @@ class Tx_Commerce_Utility_ClickmenuUtility extends clickMenu {
 				$this->clickMenu->editOK = 1;
 			}
 
-				// New: fix: always give the UID of the products page to create any commerce object
+			// fix: always give the UID of the products page to create any commerce object
 			if (!in_array('new', $this->disabledItems) && $rights['new']) {
 				$menuItems['new'] = $this->DB_new($table, Tx_Commerce_Utility_BackendUtility::getProductFolderUid());
 			}
@@ -278,7 +287,8 @@ class Tx_Commerce_Utility_ClickmenuUtility extends clickMenu {
 				// if category is in clipboard, check new-right
 			$rights['paste'] = $rights['new'];
 
-				// make sure we dont offer pasting one category into itself. that would lead to endless recursion
+			// make sure we dont offer pasting one category into itself. that
+			// would lead to endless recursion
 			$clipRecord = $this->clickMenu->clipObj->getSelectedRecord();
 			/** @var Tx_Commerce_Domain_Model_Category $category */
 			$category = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category');
@@ -462,7 +472,8 @@ class Tx_Commerce_Utility_ClickmenuUtility extends clickMenu {
 	 *
 	 * @param string $table Tablename
 	 * @param integer $uid uid of the record that should be overwritten
-	 * @param integer $redirect [optional] If set, then the redirect URL will point back to the current script, but with CB reset.
+	 * @param integer $redirect [optional] If set, then the redirect URL will point
+	 * 		back to the current script, but with CB reset.
 	 * @return string
 	 */
 	protected function overwriteUrl($table, $uid, $redirect = 1) {

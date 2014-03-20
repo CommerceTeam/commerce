@@ -26,9 +26,9 @@
  ***************************************************************/
 
 /**
- * class tx_srfeuserregister_hooksHandler for the extension takeaday feuser extension
- * The method registrationProcess_afterSaveCreate() from this class is called by save() from class.tx_srfeuserregister.php
- * The method registrationProcess_afterSaveEdit() from this class is called by save() from class.tx_srfeuserregister.php
+ * class tx_srfeuserregister_hooksHandler for the extension takeaday feuser
+ * The method registrationProcess_afterSaveCreate() is called by save()
+ * The method registrationProcess_afterSaveEdit() is called by save()
  *
  * This class handles frontend feuser updates
  */
@@ -38,7 +38,7 @@ class Tx_Commerce_Hook_SrfeuserregisterPi1Hook {
 	 *
 	 * sr_feuser_register registration process after saving new dataset
 	 *
-	 * @param array $currentArr: complete array of feuser fields
+	 * @param array $currentArr complete array of feuser fields
 	 * @return void
 	 */
 	public function registrationProcess_afterSaveCreate($currentArr) {
@@ -51,7 +51,7 @@ class Tx_Commerce_Hook_SrfeuserregisterPi1Hook {
 	 *
 	 * sr_feuser_register registration process after saving edited dataset
 	 *
-	 * @param array $currentArr: complete array of feuser fields
+	 * @param array $currentArr complete array of feuser fields
 	 * @return void
 	 */
 	public function registrationProcess_afterSaveEdit($currentArr) {
@@ -62,7 +62,7 @@ class Tx_Commerce_Hook_SrfeuserregisterPi1Hook {
 
 if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Hook/SrfeuserregisterPi1Hook.php']) {
 	/** @noinspection PhpIncludeInspection */
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Hook/SrfeuserregisterPi1Hook.php']);
+	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Hook/SrfeuserregisterPi1Hook.php']);
 }
 
 ?>

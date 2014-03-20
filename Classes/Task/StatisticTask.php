@@ -25,6 +25,9 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+/**
+ * Class Tx_Commerce_Task_StatisticTask
+ */
 class Tx_Commerce_Task_StatisticTask extends tx_scheduler_Task {
 	/**
 	 * @var string
@@ -114,7 +117,7 @@ class Tx_Commerce_Task_StatisticTask extends tx_scheduler_Task {
 		$lastAggregationTimeValue = 0;
 		if (
 			$lastAggregationTimeres
-			AND $lastAggregationTimerow = $this->database->sql_fetch_row($lastAggregationTimeres)
+			AND ($lastAggregationTimerow = $this->database->sql_fetch_row($lastAggregationTimeres))
 			AND $lastAggregationTimerow[0] != NULL
 		) {
 			$lastAggregationTimeValue = $lastAggregationTimerow[0];
@@ -150,7 +153,7 @@ class Tx_Commerce_Task_StatisticTask extends tx_scheduler_Task {
 		$changeDaysArray = array();
 		$changes = 0;
 		$result = '';
-		while ($changeres AND $changerow = $this->database->sql_fetch_assoc($changeres)) {
+		while ($changeres && ($changerow = $this->database->sql_fetch_assoc($changeres))) {
 			$starttime = $this->statistics->firstSecondOfDay($changerow['crdate']);
 			$endtime = $this->statistics->lastSecondOfDay($changerow['crdate']);
 

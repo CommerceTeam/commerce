@@ -37,10 +37,11 @@ $MCONF['name'] = 'commerce_txcommerceTreeBrowser';
 $MCONF['access'] = '';
 
 /** @noinspection PhpIncludeInspection */
-require($BACK_PATH . 'init.php');
+require_once($BACK_PATH . 'init.php');
 /** @noinspection PhpIncludeInspection */
-require($BACK_PATH . 'template.php');
+require_once($BACK_PATH . 'template.php');
 
+/** @var language $LANG */
 $LANG->includeLLFile('EXT:lang/locallang_misc.xml');
 
 /** @var Tx_Commerce_ViewHelpers_TreelibBrowser $SOBE */

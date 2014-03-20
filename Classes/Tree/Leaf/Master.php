@@ -57,8 +57,8 @@ class Tx_Commerce_Tree_Leaf_Master extends Tx_Commerce_Tree_Leaf_Leaf {
 	 * Initializes the leaf
 	 * Passes the Parameters to its child leafs
 	 *
-	 * @param $index {int}			Index of this leaf
-	 * @param $parentIndices {array}Array with parent indices
+	 * @param int $index Index of this leaf
+	 * @param array $parentIndices Array with parent indices
 	 * @return void
 	 */
 	public function init($index, $parentIndices = array()) {
@@ -69,7 +69,7 @@ class Tx_Commerce_Tree_Leaf_Master extends Tx_Commerce_Tree_Leaf_Leaf {
 			return;
 		}
 
-			// Load Mountpoints and init the Position if we want to read the leafs by Mountpoints
+		// Load Mountpoints and init the Position if we want to read the leafs by Mount
 		if ($this->byMounts) {
 			$this->loadMountpoints();
 		}
@@ -105,8 +105,8 @@ class Tx_Commerce_Tree_Leaf_Master extends Tx_Commerce_Tree_Leaf_Leaf {
 	/**
 	 * Sets if the leaf should be read by the Mountpoints
 	 *
-	 * @return boolean
 	 * @param boolean $flag Flag
+	 * @return void
 	 */
 	public function byMounts($flag = TRUE) {
 		$this->byMounts = (bool) $flag;
@@ -115,8 +115,8 @@ class Tx_Commerce_Tree_Leaf_Master extends Tx_Commerce_Tree_Leaf_Leaf {
 	/**
 	 * Pass the Item UID Array with the Mountpoints to the LeafData
 	 *
-	 * @return void
 	 * @param array $mountIds Array with item UIDs that are mountpoints
+	 * @return void
 	 */
 	public function setMounts($mountIds) {
 		if (!is_array($mountIds)) {
@@ -303,7 +303,7 @@ class Tx_Commerce_Tree_Leaf_Master extends Tx_Commerce_Tree_Leaf_Leaf {
 
 				// close the parent list if we are on a higher level than the list
 			if ($level < $lastLevel) {
-				for ($i = $level; $i < $lastLevel; $i ++) {
+				for ($i = $level; $i < $lastLevel; $i++) {
 						// get opener uid
 					$uid = array_pop($levelOpener);
 
@@ -324,9 +324,11 @@ class Tx_Commerce_Tree_Leaf_Master extends Tx_Commerce_Tree_Leaf_Leaf {
 			$cssExpanded = ($exp) ? 'expanded' : '';
 
 			if ($pid !== FALSE) {
-					// called by AJAX - to get it's true parent item, we have to pass the pid because otherwise its ambiguous
+				// called by AJAX - to get it's true parent item, we have to pass
+				// the pid because otherwise its ambiguous
 				$child['item_parent'] = $pid;
-					// all following items are not to be passed the pid because they are not ambiguous
+				// all following items are not to be passed the pid because
+				// they are not ambiguous
 				$pid = FALSE;
 			}
 

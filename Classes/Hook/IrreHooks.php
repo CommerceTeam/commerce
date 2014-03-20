@@ -25,6 +25,9 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+/**
+ * Class Tx_Commerce_Hook_IrreHooks
+ */
 class Tx_Commerce_Hook_IrreHooks implements t3lib_tceformsInlineHook {
 	/**
 	 * @var t3lib_TCEforms_inline

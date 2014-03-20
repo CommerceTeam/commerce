@@ -35,8 +35,9 @@ abstract class Tx_Commerce_Payment_PaymentAbstract implements Tx_Commerce_Paymen
 	public $errorMessages = array();
 
 	/**
-	 * @var Tx_Commerce_Controller_CheckoutController Reference to parent object, usually Tx_Commerce_Controller_BasketController
-	 * 		or Tx_Commerce_Controller_CheckoutController
+	 * @var Tx_Commerce_Controller_CheckoutController Reference to parent object,
+	 * 	usually Tx_Commerce_Controller_BasketController
+	 * 	or Tx_Commerce_Controller_CheckoutController
 	 */
 	protected $pObj = NULL;
 
@@ -46,7 +47,7 @@ abstract class Tx_Commerce_Payment_PaymentAbstract implements Tx_Commerce_Paymen
 	protected $type = '';
 
 	/**
-	 * @var Tx_Commerce_Payment_Provider_ProviderAbstract Payment proivder if configured for this payment
+	 * @var Tx_Commerce_Payment_Provider_ProviderAbstract Payment proivder configured
 	 */
 	protected $provider = NULL;
 

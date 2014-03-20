@@ -29,13 +29,12 @@
  * Implements the data view for leaf slave
  */
 abstract class Tx_Commerce_Tree_Leaf_SlaveData extends Tx_Commerce_Tree_Leaf_Data {
-
 	/**
 	 * Returns an array of Positions
 	 *
-	 * @return array
 	 * @param integer $index Index of this leaf
 	 * @param array $indices Parent Indices
+	 * @return array
 	 */
 	public function getPositionsByIndices($index, $indices) {
 		if (!is_numeric($index) || !is_array($indices)) {
@@ -62,11 +61,11 @@ abstract class Tx_Commerce_Tree_Leaf_SlaveData extends Tx_Commerce_Tree_Leaf_Dat
 
 	/**
 	 * Initializes the Records
-	 * All Products are read, no matter what the rights - only editing them is restricted!
+	 * All Products are read, no matter what the rights - only editing is restricted!
 	 *
 	 * @param integer $index Leaf index
 	 * @param array $parentIndices Parent Indices
-	 * @param Tx_Commerce_Tree_Leaf_MasterData $parentLeafData LeafData of the Parent Leaf
+	 * @param Tx_Commerce_Tree_Leaf_MasterData &$parentLeafData LeafData of parent
 	 * @return void
 	 */
 	public function initRecords($index, $parentIndices, &$parentLeafData) {

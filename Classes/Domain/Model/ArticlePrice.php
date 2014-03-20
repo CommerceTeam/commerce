@@ -121,7 +121,10 @@ class Tx_Commerce_Domain_Model_ArticlePrice extends Tx_Commerce_Domain_Model_Abs
 	}
 
 	/**
+	 * Setter
+	 *
 	 * @param String $currency
+	 * @return void
 	 */
 	public function setCurrency($currency) {
 		$this->currency = $currency;
@@ -284,7 +287,7 @@ class_alias('Tx_Commerce_Domain_Model_ArticlePrice', 'tx_commerce_article_price'
 
 if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Domain/Model/ArticlePrice.php']) {
 	/** @noinspection PhpIncludeInspection */
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Domain/Model/ArticlePrice.php']);
+	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Domain/Model/ArticlePrice.php']);
 }
 
 ?>

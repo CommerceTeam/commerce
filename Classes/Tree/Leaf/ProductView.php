@@ -45,7 +45,7 @@ class Tx_Commerce_Tree_Leaf_ProductView extends Tx_Commerce_Tree_Leaf_View {
 	 * Wrapping $title in a-tags.
 	 *
 	 * @param string $title Title string
-	 * @param array $row Item record
+	 * @param array &$row Item record
 	 * @param integer $bank Bank pointer (which mount point number)
 	 * @return string
 	 */
@@ -96,7 +96,7 @@ class_alias('Tx_Commerce_Tree_Leaf_ProductView', 'tx_commerce_leaf_productview')
 
 if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Tree/Leaf/ProductView.php']) {
 	/** @noinspection PhpIncludeInspection */
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Tree/Leaf/ProductView.php']);
+	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Tree/Leaf/ProductView.php']);
 }
 
 ?>

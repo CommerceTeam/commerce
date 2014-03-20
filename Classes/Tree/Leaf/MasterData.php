@@ -37,7 +37,7 @@ abstract class Tx_Commerce_Tree_Leaf_MasterData extends Tx_Commerce_Tree_Leaf_Da
 	protected $useMountpoints = FALSE;
 
 	/**
-	 * UID of the Items that acts as UBER-Parent (in case we read byUid, not byMounts)
+	 * UID of the Items that acts as UBER-Parent (in case we read byUid not byMounts)
 	 *
 	 * @var integer
 	 */

@@ -182,15 +182,14 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 			switch ($this->handle) {
 				case 'HANDLING':
 					$this->handleBasket();
-				break;
+					break;
 
 				case 'QUICKVIEW':
 					$this->getQuickView();
-				break;
+					break;
 
 				default:
 					$this->generateBasket();
-				break;
 			}
 		} else {
 			if ($this->handle == 'QUICKVIEW') {

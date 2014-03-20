@@ -39,6 +39,7 @@ require_once($BACK_PATH . 'init.php');
 /** @noinspection PhpIncludeInspection */
 require_once($BACK_PATH . 'template.php');
 
+/** @var language $LANG */
 $LANG->includeLLFile('EXT:commerce/Resources/Private/Language/locallang_mod_cce.xml');
 
 class Tx_Commerce_Utility_DataHandlerUtility {
@@ -593,7 +594,8 @@ if (defined('TYPO3_MODE') && isset($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLA
 }
 
 	// Make instance:
-$SOBE = t3lib_div::makeInstance('SC_tx_commerce_cce_db');
+/** @var Tx_Commerce_Utility_DataHandlerUtility $SOBE */
+$SOBE = t3lib_div::makeInstance('Tx_Commerce_Utility_DataHandlerUtility');
 $SOBE->init();
 $SOBE->initClipboard();
 $SOBE->main();

@@ -26,7 +26,7 @@
  * Base configuration settings for commerce.
  * This file will be merged to typo3conf/temp_CACHED_hash_ext_localconf.php
  * together with all other ext_localconf.php files of other extensions.
- * The code in here will be executed very early on every frontend and backend access.
+ * The code will be executed very early on every frontend and backend access.
  */
 
 if (!defined('TYPO3_MODE')) {
@@ -84,8 +84,8 @@ define('DELIVERYArticleType', DELIVERYARTICLETYPE);
 	// Unserialize the plugin configuration so we can use it
 $_EXTCONF = unserialize($_EXTCONF);
 
-	// This array holds global definitions of arbitrary commerce settings
-	// Add unserialized ext conf settings to global array for easy access of those settings
+// This array holds global definitions of arbitrary commerce settings
+// Add unserialized ext conf settings to global array for easy access
 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf'] = $_EXTCONF;
 
 	// Payment settings
@@ -114,7 +114,7 @@ $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['SYSPRODUCTS']['PAYMENT'
 			'ccvs_language_files' => PATH_TXCOMMERCE . 'payment/ccvs/language',
 			'provider' => array(
 				'wirecard' => array(
-						// @TODO: Remove this implementation if it turns out that it does not work anymore
+					// @todo: Remove this implementation if it turns out that it does not work
 					'class' => 'Tx_Commerce_Payment_Provider_Wirecard',
 				),
 			),
@@ -145,8 +145,9 @@ t3lib_extMgm::addPItoST43(COMMERCE_EXTKEY, 'Classes/Controller/InvoiceController
 
 
 if (TYPO3_MODE == 'BE') {
-		// XCLASS for version preview
-		// This XCLASS will create a link to singlePID / previewPageID in version module for commerce products
+	// XCLASS for version preview
+	// This XCLASS will create a link to singlePID / previewPageID
+	// in version module for commerce products
 	$GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/version/cm1/index.php'] =
 		PATH_TXCOMMERCE . 'Classes/Xclass/ux_versionindex.php';
 
@@ -201,7 +202,8 @@ if (empty($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Hook/DataMapH
 }
 
 
-	// This line configures to process the code selectConf with the class "tx_commerce_hooks"
+// This line configures to process the code selectConf
+// with the class "tx_commerce_hooks"
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] =
 	'EXT:commerce/Classes/Hook/TcehooksHandlerHooks.php:Tx_Commerce_Hook_TcehooksHandlerHooks';
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass'][] =

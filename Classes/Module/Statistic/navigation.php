@@ -30,11 +30,11 @@
  */
 unset($MCONF);
 
-include('conf.php');
+require_once('conf.php');
 /** @noinspection PhpIncludeInspection */
-include ($BACK_PATH . 'init.php');
+require_once($BACK_PATH . 'init.php');
 /** @noinspection PhpIncludeInspection */
-include ($BACK_PATH . 'template.php');
+require_once($BACK_PATH . 'template.php');
 
 	// Make instance:
 /** @var Tx_Commerce_ViewHelpers_Navigation_OrdersViewHelper $SOBE */

@@ -94,9 +94,9 @@ class Tx_Commerce_Payment_Debit extends Tx_Commerce_Payment_PaymentAbstract {
 	 * @return boolean TRUE if data is ok
 	 */
 	public function proofData(array $formData = array()) {
-			// If formData is empty we know that this is the very first
-			// call from Tx_Commerce_Controller_CheckoutController->handlePayment and at this time
-			// there can't be form data.
+		// If formData is empty we know that this is the very first
+		// call from Tx_Commerce_Controller_CheckoutController->handlePayment and
+		// at this time there can't be form data.
 		if (empty($formData)) {
 			return FALSE;
 		}
@@ -146,7 +146,7 @@ class Tx_Commerce_Payment_Debit extends Tx_Commerce_Payment_PaymentAbstract {
 
 if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Payment/Debit.php']) {
 	/** @noinspection PhpIncludeInspection */
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Payment/Debit.php']);
+	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Payment/Debit.php']);
 }
 
 ?>

@@ -33,6 +33,7 @@ interface Tx_Commerce_Payment_Interface_Provider {
 	 * Constructor gets parent object
 	 *
 	 * @param Tx_Commerce_Payment_Interface_Payment $paymentObject
+	 * @return self
 	 */
 	public function __construct(Tx_Commerce_Payment_Interface_Payment $paymentObject);
 

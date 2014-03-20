@@ -25,6 +25,9 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+/**
+ * Class Tx_Commerce_Tree_StatisticTree
+ */
 class Tx_Commerce_Tree_StatisticTree extends t3lib_browseTree {
 	/**
 	 * @var integer
@@ -46,6 +49,8 @@ class Tx_Commerce_Tree_StatisticTree extends t3lib_browseTree {
 	}
 
 	/**
+	 * Initialization
+	 *
 	 * @return void
 	 */
 	public function init() {
@@ -65,7 +70,7 @@ class Tx_Commerce_Tree_StatisticTree extends t3lib_browseTree {
 		$language = $GLOBALS['LANG'];
 
 			// If the record is locked, present a warning sign.
-		if ($lockInfo = t3lib_BEfunc::isRecordLocked('pages', $row['uid'])) {
+		if (($lockInfo = t3lib_BEfunc::isRecordLocked('pages', $row['uid']))) {
 			$aOnClick = 'alert(' . $language->JScharCode($lockInfo['msg']) . ');return false;';
 			$lockIcon = '<a href="#" onclick="' . htmlspecialchars($aOnClick) . '">' .
 				t3lib_iconWorks::getSpriteIcon(
@@ -121,7 +126,7 @@ class_alias('Tx_Commerce_Tree_StatisticTree', 'tx_commerce_statistic_pagetree');
 
 if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/mod_statistic/class.tx_commerce_statistic_pagetree.php']) {
 	/** @noinspection PhpIncludeInspection */
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/mod_statistic/class.tx_commerce_statistic_pagetree.php']);
+	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/mod_statistic/class.tx_commerce_statistic_pagetree.php']);
 }
 
 ?>

@@ -32,8 +32,9 @@ interface Tx_Commerce_Payment_Interface_ProviderCriterion {
 	/**
 	 * Constructor
 	 *
-	 * @param Tx_Commerce_Payment_Interface_Provider $providerObject Parent payment object
+	 * @param Tx_Commerce_Payment_Interface_Provider $providerObject Parent payment
 	 * @param array $options Configuration array
+	 * @return self
 	 */
 	public function __construct(Tx_Commerce_Payment_Interface_Provider $providerObject, array $options = array());
 

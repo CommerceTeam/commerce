@@ -58,7 +58,7 @@ class Tx_Commerce_Tree_Leaf_Base {
 
 	/**
 	 * Loads the LocalLang file
-	 * Overwrite this by and extending class if you want to change the ll file implementation
+	 * Extending this class if you want to change the ll file implementation
 	 * If you only want to use a different ll file, overwrite the variable instead!
 	 *
 	 * @return void
@@ -69,8 +69,9 @@ class Tx_Commerce_Tree_Leaf_Base {
 
 	/**
 	 * Gets a Locallang-Field inside the LANG
-	 * @return string
+	 *
 	 * @param string $field LL Field
+	 * @return string
 	 */
 	public function getLL($field) {
 		return $this->language->getLL($field);

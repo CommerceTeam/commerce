@@ -262,10 +262,10 @@ class Tx_Commerce_Domain_Model_Attribute extends Tx_Commerce_Domain_Model_Abstra
 				$attributeValue = $this->attribute_values[$uid];
 				$result = $attributeValue->getValue();
 			}
-			}
+		}
 
 		return $result;
-		}
+	}
 
 	/**
 	 * gets the attribute title

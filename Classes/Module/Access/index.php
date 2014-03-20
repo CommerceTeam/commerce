@@ -54,7 +54,7 @@ $SOBE->initPage();
 	// Include files?
 foreach ($SOBE->include_once as $INC_FILE) {
 	/** @noinspection PhpIncludeInspection */
-	include_once($INC_FILE);
+	require_once($INC_FILE);
 }
 
 $SOBE->main();

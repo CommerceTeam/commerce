@@ -29,15 +29,16 @@
  * Part of the COMMERCE (Advanced Shopping System) extension.
  *
  * Hook for article_class
- * This class is ment as programming-tutorial for programming hooks for delivery_costs
+ * This class is ment as programming-tutorial
+ * for programming hooks for delivery_costs
  */
 class Tx_Commerce_Hook_ArticleHooks {
 	/**
 	 * Basic Method to calculate the delivereycost (net)
-	 * Ment as Programming tutorial. Mostly you have to change or add some functionality
+	 * Ment as Programming tutorial. Mostly you have to change or add functionality
 	 *
-	 * @param integer $netPrice
-	 * @param Tx_Commerce_Domain_Model_Article $article (reference)
+	 * @param int &$netPrice
+	 * @param Tx_Commerce_Domain_Model_Article &$article
 	 * @return void
 	 */
 	public function calculateDeliveryCostNet(&$netPrice, &$article) {
@@ -51,9 +52,10 @@ class Tx_Commerce_Hook_ArticleHooks {
 
 	/**
 	 * Basic Method to calculate the delivereycost (gross)
-	 * Ment as Programming tutorial. Mostly you have to change or add some functionality
-	 * @param integer $grossPrice
-	 * @param Tx_Commerce_Domain_Model_Article $article (reference)
+	 * Ment as Programming tutorial. Mostly you have to change or add functionality
+	 *
+	 * @param int &$grossPrice
+	 * @param Tx_Commerce_Domain_Model_Article &$article
 	 * @return void
 	 */
 	public function calculateDeliveryCostGross(&$grossPrice, &$article) {
@@ -68,12 +70,12 @@ class Tx_Commerce_Hook_ArticleHooks {
 	/**
 	 * Load the deliveryArticle
 	 *
-	 * @param Tx_Commerce_Domain_Model_Article $article
+	 * @param Tx_Commerce_Domain_Model_Article &$article
 	 * @return Tx_Commerce_Domain_Model_Article $result
 	 */
 	protected function getDeliveryArticle(&$article) {
-		$delivery_conf = ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['SYSPRODUCTS']['DELIVERY']['types']);
-		$classname = array_shift(array_keys($delivery_conf));
+		$deliveryConf = ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['SYSPRODUCTS']['DELIVERY']['types']);
+		$classname = array_shift(array_keys($deliveryConf));
 
 		/** @var t3lib_db $database */
 		$database = $GLOBALS['TYPO3_DB'];
@@ -97,8 +99,8 @@ class Tx_Commerce_Hook_ArticleHooks {
 			$deliveryArticle->init($deliveryArticleUid, $article->getLang());
 
 			/**
-			 * Do not call loadData at this point, since loadData recalls this hook, so we have a
-			 * non endingrecursion
+			 * Do not call loadData at this point, since loadData recalls this hook,
+			 * so we have a non endingrecursion
 			 */
 			if (is_object($deliveryArticle)) {
 				$deliveryArticle->loadPrices();
@@ -112,7 +114,7 @@ class Tx_Commerce_Hook_ArticleHooks {
 
 if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Hook/ArticleHooks.php']) {
 	/** @noinspection PhpIncludeInspection */
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Hook/ArticleHooks.php']);
+	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Hook/ArticleHooks.php']);
 }
 
 ?>

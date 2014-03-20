@@ -37,11 +37,12 @@ if (!(defined('TYPO3_REQUESTTYPE') || defined('TYPO3_REQUESTTYPE_AJAX'))) {
 	/** @noinspection PhpIncludeInspection */
 	require_once($BACK_PATH . 'template.php');
 } else {
-		// In case of an AJAX Request the script including this script is ajax.php, from which the BACK PATH is ''
+	// In case of an AJAX Request the script including this script is ajax.php,
+	// from which the BACK PATH is ''
 	/** @noinspection PhpIncludeInspection */
 	require_once('init.php');
 	/** @noinspection PhpIncludeInspection */
-	require('template.php');
+	require_once('template.php');
 }
 
 	// Make instance if it is not an AJAX call

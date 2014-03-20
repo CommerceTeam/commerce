@@ -27,44 +27,45 @@
 
 /**
 * class tx_commerce_tcehooks for the extension openbc feuser extension
-* The method processDatamap_preProcessFieldArray() from this class is called by process_datamap() from class.t3lib_tcemain.php.
-* The method processDatamap_postProcessFieldArray() from this class is called by process_datamap() from class.t3lib_tcemain.php.
-* The method processDatamap_afterDatabaseOperations() from this class is called by process_datamap() from class.t3lib_tcemain.php.
 *
 * This class handles backend updates
 */
 class Tx_Commerce_Hook_Pi4Hooks {
 	/**
-	* deleteAddress()
-	* this function is called by the Hook in Tx_Commerce_Controller_AddressesController before processing delete address operations
-	* return false to permit delete operation
-	*
-	* @param integer $uid: reference to the incoming fields
-	* @return string error: do not delete message
-	*/
+	 * this function is called by the Hook in
+	 * Tx_Commerce_Controller_AddressesController before processing delete address
+	 * operations return false to permit delete operation
+	 *
+	 * @param integer $uid reference to the incoming fields
+	 * @return string error: do not delete message
+	 */
 	public function deleteAddress($uid) {
 		return $this->checkAddressDelete($uid);
 	}
 
 	/**
-	* beforeAddressSave()
-	* this function is called by the Hook in Tx_Commerce_Controller_AddressesController before processing insert address operations
-	*
-	* @param array $fieldArray: reference to the incoming fields
-	* @param object $pObj: page Object reference
-	* @return string error: do not delete message
-	*/
+	 * beforeAddressSave()
+	 * this function is called by the Hook in
+	 * Tx_Commerce_Controller_AddressesController before processing insert address
+	 * operations
+	 *
+	 * @param array &$fieldArray reference to the incoming fields
+	 * @param object &$pObj page Object reference
+	 * @return void
+	 */
 	public function beforeAddressSave(&$fieldArray, &$pObj) {
 	}
 
 	/**
 	 * afterAddressSave()
-	 * this function is called by the Hook in Tx_Commerce_Controller_AddressesController after processing insert address operations
+	 * this function is called by the Hook in
+	 * Tx_Commerce_Controller_AddressesController after processing
+	 * insert address operations
 	 *
 	 * @param integer $uid
-	 * @param array $fieldArray: reference to the incoming fields
-	 * @param object $pObj: page Object reference
-	 * @return string error: do not delete message
+	 * @param array &$fieldArray reference to the incoming fields
+	 * @param object &$pObj page Object reference
+	 * @return void
 	 */
 	public function afterAddressSave($uid, &$fieldArray, &$pObj) {
 			// notify address observer
@@ -73,24 +74,28 @@ class Tx_Commerce_Hook_Pi4Hooks {
 
 	/**
 	 * beforeAddressEdit()
-	 * this function is called by the Hook in Tx_Commerce_Controller_AddressesController before processing update address operations
+	 * this function is called by the Hook in
+	 * Tx_Commerce_Controller_AddressesController before processing update
+	 * address operations
 	 *
 	 * @param integer $uid
-	 * @param array $fieldArray: reference to the incoming fields
-	 * @param object $pObj: page Object reference
-	 * @return string error: do not delete message
+	 * @param array &$fieldArray reference to the incoming fields
+	 * @param object &$pObj page Object reference
+	 * @return void
 	 */
 	public function beforeAddressEdit($uid, &$fieldArray, &$pObj) {
 	}
 
 	/**
 	 * afterAddressEdit()
-	 * this function is called by the Hook in Tx_Commerce_Controller_AddressesController before processing update address operations
+	 * this function is called by the Hook in
+	 * Tx_Commerce_Controller_AddressesController before processing update address
+	 * operations
 	 *
 	 * @param integer $uid
-	 * @param array $fieldArray: reference to the incoming fields
-	 * @param object $pObj: page Object reference
-	 * @return string error: do not delete message
+	 * @param array &$fieldArray reference to the incoming fields
+	 * @param object &$pObj page Object reference
+	 * @return void
 	 */
 	public function afterAddressEdit($uid, &$fieldArray, &$pObj) {
 			// notify address observer
@@ -103,10 +108,10 @@ class Tx_Commerce_Hook_Pi4Hooks {
 	 *
 	 * check status and notify observer
 	 *
-	 * @param string $status: update or new
-	 * @param string $table: database table
-	 * @param integer $uid: record id
-	 * @param array $fieldArray: reference to the incoming fields
+	 * @param string $status update or new
+	 * @param string $table database table
+	 * @param integer $uid record id
+	 * @param array &$fieldArray reference to the incoming fields
 	 * @return void
 	 */
 	protected function notify_addressObserver($status, $table, $uid, &$fieldArray) {
@@ -114,6 +119,8 @@ class Tx_Commerce_Hook_Pi4Hooks {
 	}
 
 	/**
+	 * Check if an address is deleted
+	 *
 	 * @param integer $uid
 	 * @return boolean|string
 	 */

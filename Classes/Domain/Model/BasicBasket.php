@@ -32,7 +32,8 @@
  * instead use tx_commerce_basket.
  * Do not acces class variables directly, allways use the get and set methods,
  * variables will be changed in php5 to private
- * @TODO: Implement basket as singleton
+ *
+ * @todo: Implement basket as singleton
  */
 class Tx_Commerce_Domain_Model_BasicBasket {
 	/**
@@ -708,6 +709,7 @@ class Tx_Commerce_Domain_Model_BasicBasket {
 
 	/**
 	 * Clear basket
+	 *
 	 * @return boolean TRUE on success
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use deleteAllArticles instead
 	 */
@@ -829,7 +831,7 @@ class_alias('Tx_Commerce_Domain_Model_BasicBasket', 'tx_commerce_basic_basket');
 
 if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Domain/Model/BasicBasket.php']) {
 	/** @noinspection PhpIncludeInspection */
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Domain/Model/BasicBasket.php']);
+	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Domain/Model/BasicBasket.php']);
 }
 
 ?>

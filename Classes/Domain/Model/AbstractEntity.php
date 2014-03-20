@@ -160,18 +160,18 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 	/**
 	 * returns the possible attributes
 	 *
-	 * @param array $attribute_corelation_type_list array of attribut_correlation_types
+	 * @param array $attributeCorelationTypeList of attribut_correlation_types
 	 * @return array
 	 */
-	public function getAttributes($attribute_corelation_type_list = array()) {
+	public function getAttributes($attributeCorelationTypeList = array()) {
 		$result = array();
-		if ($this->attributes_uids = $this->databaseConnection->getAttributes($this->uid, $attribute_corelation_type_list)) {
-			foreach ($this->attributes_uids as $attribute_uid) {
+		if (($this->attributes_uids = $this->databaseConnection->getAttributes($this->uid, $attributeCorelationTypeList))) {
+			foreach ($this->attributes_uids as $attributeUid) {
 				/** @var Tx_Commerce_Domain_Model_Attribute $attribute */
 				$attribute = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Attribute');
-				$attribute->init($attribute_uid, $this->lang_uid);
+				$attribute->init($attributeUid, $this->lang_uid);
 				$attribute->loadData();
-				$this->attribute[$attribute_uid] = $attribute;
+				$this->attribute[$attributeUid] = $attribute;
 			}
 			$result = $this->attributes_uids;
 		}
@@ -492,13 +492,13 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 	/**
 	 * returns the possible attributes
 	 *
-	 * @param array $attribute_corelation_type_list array of attribut_correlation_types
+	 * @param array $attributeCorelationTypeList array of attribut_correlation_types
 	 * @return array
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getAttributes instead
 	 */
-	public function get_attributes($attribute_corelation_type_list = array()) {
+	public function get_attributes($attributeCorelationTypeList = array()) {
 		t3lib_div::logDeprecatedFunction();
-		return $this->getAttributes($attribute_corelation_type_list);
+		return $this->getAttributes($attributeCorelationTypeList);
 	}
 
 	/**

@@ -36,6 +36,7 @@ require_once($BACK_PATH . 'init.php');
 /** @noinspection PhpIncludeInspection */
 require_once($BACK_PATH . 'template.php');
 
+/** @var language $LANG */
 $LANG->includeLLFile('EXT:commerce/Resources/Private/Language/locallang_mod_systemdata.xml');
 
 	// This checks permissions and exits if the users has no permission for entry.

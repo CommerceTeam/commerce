@@ -144,8 +144,8 @@ abstract class Tx_Commerce_Tree_Leaf_Leaf extends Tx_Commerce_Tree_Leaf_Base {
 	/**
 	 * Stores the name of the tree
 	 *
-	 * @return void
 	 * @param string $treeName Name of the tree
+	 * @return void
 	 */
 	public function setTreeName($treeName) {
 		if (!is_string($treeName)) {

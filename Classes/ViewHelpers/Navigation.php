@@ -1151,17 +1151,18 @@ class Tx_Commerce_ViewHelpers_Navigation {
 		 * Add product to rootline, if a product is displayed and showProducts is set via TS
 		 */
 		if (($this->mConf['showProducts'] == 1) && ($this->gpVars['showUid'] > 0)) {
-			/** @var Tx_Commerce_Domain_Model_Product $ProductObject */
-			$ProductObject = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product');
-			$ProductObject->init($this->gpVars['showUid'], $GLOBALS['TSFE']->sys_language_uid);
-			$ProductObject->loadData();
+			/** @var Tx_Commerce_Domain_Model_Product $productObject */
+			$productObject = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product');
+			$productObject->init($this->gpVars['showUid'], $GLOBALS['TSFE']->sys_language_uid);
+			$productObject->loadData();
 
-			$CategoryObject = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category');
-			$CategoryObject->init($this->gpVars['catUid'], $GLOBALS['TSFE']->sys_language_uid);
-			$CategoryObject->loadData();
+			/** @var Tx_Commerce_Domain_Model_Category $categoryObject */
+			$categoryObject = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category');
+			$categoryObject->init($this->gpVars['catUid'], $GLOBALS['TSFE']->sys_language_uid);
+			$categoryObject->loadData();
 
-			$add_getvars = ini_get('arg_separator.output') . $this->prefixId . '[showUid]=' . $ProductObject->getUid() .
-				ini_get('arg_separator.output') . $this->prefixId . '[catUid]=' . $CategoryObject->getUid();
+			$add_getvars = ini_get('arg_separator.output') . $this->prefixId . '[showUid]=' . $productObject->getUid() .
+				ini_get('arg_separator.output') . $this->prefixId . '[catUid]=' . $categoryObject->getUid();
 			if (is_string($this->gpVars['basketHashValue'])) {
 				$add_getvars .= ini_get('arg_separator.output') . $this->prefixId . '[basketHashValue]=' . $this->gpVars['basketHashValue'];
 			}
@@ -1171,7 +1172,7 @@ class Tx_Commerce_ViewHelpers_Navigation {
 			 * Currentyl no Navtitle in tx_commerce_products
 			 * 'nav_title' => $ProductObject->get_navtitle(),
 			 */
-			if ($ProductObject->getUid() === $this->gpVars['showUid']) {
+			if ($productObject->getUid() === $this->gpVars['showUid']) {
 				$itemState = 'CUR';
 				$itemStateList = 'CUR,NO';
 			} else {
@@ -1180,12 +1181,12 @@ class Tx_Commerce_ViewHelpers_Navigation {
 			}
 
 			$returnArray[] = array(
-				'title' => $ProductObject->getTitle(),
+				'title' => $productObject->getTitle(),
 				'uid' => $this->PID,
 				'_ADD_GETVARS' => $add_getvars . ini_get('arg_separator.output') . 'cHash=' . $cHash,
 				'ITEM_STATE' => $itemState,
 				'ITEM_STATES_LIST' => $itemStateList,
-				'_PAGES_OVERLAY' => $ProductObject->getTitle(),
+				'_PAGES_OVERLAY' => $productObject->getTitle(),
 			);
 		}
 

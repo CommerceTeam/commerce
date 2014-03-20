@@ -65,8 +65,11 @@ class Tx_Commerce_Domain_Repository_ArticleRepository extends Tx_Commerce_Domain
 	}
 
 	/**
+	 * Get parent product uid
+	 *
 	 * @param int $uid
 	 * @param bool $translationMode
+	 * @return int
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use Tx_Commerce_Domain_Repository_ArticleRepository::getParentProductUid instead
 	 */
 	public function get_parent_product_uid($uid, $translationMode = FALSE) {
@@ -126,7 +129,7 @@ class Tx_Commerce_Domain_Repository_ArticleRepository extends Tx_Commerce_Domain
 		}
 
 		if ($uid > 0) {
-			$price_uid_list = array();
+			$priceUidList = array();
 			$proofSql = '';
 			if (is_object($GLOBALS['TSFE']->sys_page)) {
 				$proofSql = $GLOBALS['TSFE']->sys_page->enableFields('tx_commerce_article_prices', $GLOBALS['TSFE']->showHiddenRecords);
@@ -143,15 +146,11 @@ class Tx_Commerce_Domain_Repository_ArticleRepository extends Tx_Commerce_Domain
 				$orderField
 			);
 			if ($database->sql_num_rows($result) > 0) {
-				while ($return_data = $database->sql_fetch_assoc($result)) {
-						// Some users of the prices depend on fe_group being 0 when no group is selected. See bug #8894
-					if ($return_data['fe_group'] == '') {
-						$return_data['fe_group'] = '0';
-					}
-					$price_uid_list[$return_data['fe_group']][] = $return_data['uid'];
+				while (($data = $database->sql_fetch_assoc($result))) {
+					$priceUidList[(int)$data['fe_group']][] = $data['uid'];
 				}
 				$database->sql_free_result($result);
-				return $price_uid_list;
+				return $priceUidList;
 			} else {
 				$this->error('exec_SELECTquery(\'uid\', \'tx_commerce_article_prices\', \'uid_article = \' . $uid); returns no Result');
 				return FALSE;
@@ -182,12 +181,12 @@ class Tx_Commerce_Domain_Repository_ArticleRepository extends Tx_Commerce_Domain
 	 * @param integer $count
 	 * @return array of Price UID
 	 */
-	public function getPriceScales($uid,$count = 1) {
+	public function getPriceScales($uid, $count = 1) {
 		$uid = (int) $uid;
 		$count = (int) $count;
 		if ($uid > 0) {
 			$proofSql = '';
-			$price_uid_list = array();
+			$priceUidList = array();
 			if (is_object($GLOBALS['TSFE']->sys_page)) {
 				$proofSql = $GLOBALS['TSFE']->sys_page->enableFields('tx_commerce_article_prices', $GLOBALS['TSFE']->showHiddenRecords);
 			}
@@ -197,14 +196,14 @@ class Tx_Commerce_Domain_Repository_ArticleRepository extends Tx_Commerce_Domain
 
 			$result = $database->exec_SELECTquery('uid,price_scale_amount_start, price_scale_amount_end',
 				'tx_commerce_article_prices',
-				'uid_article = ' . $uid  . ' AND price_scale_amount_start >= ' . $count . $proofSql
+				'uid_article = ' . $uid . ' AND price_scale_amount_start >= ' . $count . $proofSql
 			);
 			if ($database->sql_num_rows($result) > 0) {
-				while ($return_data = $database->sql_fetch_assoc($result)) {
-					$price_uid_list[$return_data['price_scale_amount_start']][$return_data['price_scale_amount_end']] = $return_data['uid'];
+				while (($data = $database->sql_fetch_assoc($result))) {
+					$priceUidList[$data['price_scale_amount_start']][$data['price_scale_amount_end']] = $data['uid'];
 				}
 				$database->sql_free_result($result);
-				return $price_uid_list;
+				return $priceUidList;
 			} else {
 				$this->error('exec_SELECTquery(\'uid\', \'tx_commerce_article_prices\', \'uid_article = \' . $uid); returns no Result');
 				return FALSE;

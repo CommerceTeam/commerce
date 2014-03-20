@@ -158,12 +158,12 @@ class Tx_Commerce_Utility_FolderUtility {
 	 * @return boolean
 	 */
 	public static function makeProduct($catUid, $uname, $addArray) {
-			// first of all, check if there is a product for this value already in the database
-			// if the product already exists, exit
+		// first of all, check if there is a product for this value
+		// if the product already exists, exit
 		$pCheck = self::checkProd($catUid, $uname);
 		if (isset($pCheck) && !($pCheck === FALSE)) {
-				// the return value of the method above is the uid of the product that already exists
-				// in the category
+			// the return value of the method above is the uid of the product
+			// in the category
 			return $pCheck;
 		}
 
@@ -281,7 +281,7 @@ class_alias('Tx_Commerce_Utility_FolderUtility', 'tx_commerce_create_folder');
 
 if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_create_folder.php']) {
 	/** @noinspection PhpIncludeInspection */
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_create_folder.php']);
+	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/lib/class.tx_commerce_create_folder.php']);
 }
 
 ?>
