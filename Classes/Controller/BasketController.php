@@ -657,7 +657,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['generateBasketMarker'] as $classRef) {
 				$hookObj = &t3lib_div::getUserObj($classRef);
 				if (method_exists($hookObj, 'additionalMarker')) {
-					$basketArray = $hookObj->additionalMarker($basketArray, $this);
+					$basketArray = $hookObj->additionalMarker($basketArray, $this, $template);
 				}
 			}
 		}
@@ -665,7 +665,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BasketController.php']['generateBasketMarker'] as $classRef) {
 				$hookObj = &t3lib_div::getUserObj($classRef);
 				if (method_exists($hookObj, 'additionalMarker')) {
-					$basketArray = $hookObj->additionalMarker($basketArray, $this);
+					$basketArray = $hookObj->additionalMarker($basketArray, $this, $template);
 				}
 			}
 		}
