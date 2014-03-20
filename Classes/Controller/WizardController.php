@@ -67,11 +67,6 @@ class Tx_Commerce_Controller_WizardController {
 	public $code = '';
 
 	/**
-	 * @var string
-	 */
-	public $R_URI;
-
-	/**
 	 * @var integer
 	 */
 	protected $id;
@@ -93,7 +88,7 @@ class Tx_Commerce_Controller_WizardController {
 	/**
 	 * @var string
 	 */
-	protected $perms_clause;
+	protected $permsClause;
 
 	/**
 	 * @var mediumDoc
@@ -136,7 +131,7 @@ class Tx_Commerce_Controller_WizardController {
 		$language = $GLOBALS['LANG'];
 
 			// page-selection permission clause (reading)
-		$this->perms_clause = $backendUser->getPagePermsClause(1);
+		$this->permsClause = $backendUser->getPagePermsClause(1);
 
 			// Setting GPvars:
 			// The page id to operate from
@@ -160,16 +155,18 @@ class Tx_Commerce_Controller_WizardController {
 		$this->content .= $this->doc->startPage($this->head);
 		$this->content .= $this->doc->header($this->head);
 
-			// Id a positive id is supplied, ask for the page record with permission information contained:
+		// Id a positive id is supplied, ask for the page record
+		// with permission information contained:
 		if ($this->id > 0) {
-			$this->pageinfo = t3lib_BEfunc::readPageAccess($this->id, $this->perms_clause);
+			$this->pageinfo = t3lib_BEfunc::readPageAccess($this->id, $this->permsClause);
 		}
 
 			// If a page-record was returned, the user had read-access to the page.
 		if ($this->pageinfo['uid']) {
 				// Get record of parent page
 			$this->pidInfo = t3lib_BEfunc::getRecord('pages', $this->pageinfo['pid']);
-				// Checking the permissions for the user with regard to the parent page: Can he create new pages, new content record, new page after?
+			// Checking the permissions for the user with regard to the
+			// parent page: Can he create new pages, new content record, new page after?
 			if ($backendUser->doesUserHaveAccess($this->pageinfo, 16)) {
 				$this->newContentInto = 1;
 			}
@@ -193,7 +190,8 @@ class Tx_Commerce_Controller_WizardController {
 		/** @var language $language */
 		$language = $GLOBALS['LANG'];
 
-			// If there was a page - or if the user is admin (admins has access to the root) we proceed:
+		// If there was a page - or if the user is admin
+		// (admins has access to the root) we proceed:
 		if ($this->pageinfo['uid'] || $backendUser->isAdmin()) {
 				// Acquiring TSconfig for this module/current page:
 			$this->web_list_modTSconfig = t3lib_BEfunc::getModTSconfig($this->pageinfo['uid'], 'mod.web_list');
@@ -206,14 +204,13 @@ class Tx_Commerce_Controller_WizardController {
 				// Set header-HTML and return_url
 			$this->code = $this->doc->getHeader('pages', $this->pageinfo, $this->pageinfo['_thePath']) . '<br />
 			';
-			$this->R_URI = $this->returnUrl;
 
 			$this->regularNew();
 
 				// Create go-back link.
-			if ($this->R_URI) {
+			if ($this->returnUrl) {
 				$this->code .= '<br />
-					<a href="' . htmlspecialchars($this->R_URI) . '" class="typo3-goBack">' .
+					<a href="' . htmlspecialchars($this->returnUrl) . '" class="typo3-goBack">' .
 						t3lib_iconWorks::getSpriteIcon('actions-view-go-back', array('title' => $language->getLL('goBack', 1))) .
 					'</a>';
 			}
@@ -258,7 +255,7 @@ class Tx_Commerce_Controller_WizardController {
 				$cmd = ($param[$val]);
 				switch ($cmd) {
 					case 'new':
-							// Create new link for record:
+						// Create new link for record:
 						$rowContent = '<img' . t3lib_iconWorks::skinImg($this->doc->backPath, 'gfx/ol/join.gif', 'width="18" height="16"') . ' alt="" />' .
 							$this->linkWrap(
 								t3lib_iconWorks::getSpriteIconForRecord($table, array()) .
@@ -274,10 +271,9 @@ class Tx_Commerce_Controller_WizardController {
 					<td>' . t3lib_BEfunc::cshItem($table, '', $GLOBALS['BACK_PATH'], '') . '</td>
 				</tr>
 				';
-					break;
+						break;
 
 					default:
-					break;
 				}
 			}
 		}
@@ -302,11 +298,13 @@ class Tx_Commerce_Controller_WizardController {
 	}
 
 	/**
-	 * Links the string $code to a create-new form for a record in $table created on page $pid
+	 * Links the string $code to a create-new form for a record
+	 * in $table created on page $pid
 	 *
 	 * @param string $code Link string
 	 * @param string $table Table name (in which to create new record)
-	 * @param integer $pid PID value for the "&edit['.$table.']['.$pid.']=new" command (positive/negative)
+	 * @param integer $pid PID value for the
+	 * 		"&edit['.$table.']['.$pid.']=new" command (positive/negative)
 	 * @return string The link.
 	 */
 	protected function linkWrap($code, $table, $pid) {
@@ -316,6 +314,8 @@ class Tx_Commerce_Controller_WizardController {
 	}
 
 	/**
+	 * Compile def values
+	 *
 	 * @param string $table
 	 * @return string
 	 */
@@ -333,16 +333,18 @@ class Tx_Commerce_Controller_WizardController {
 	}
 
 	/**
-	 * Returns true if the tablename $checkTable is allowed to be created on the page with record $pid_row
+	 * Returns true if the tablename $checkTable is allowed to be created
+	 * on the page with record $row
 	 *
-	 * @param array $pid_row Record for parent page.
+	 * @param array $row Record for parent page.
 	 * @param string $checkTable Table name to check
-	 * @return boolean Returns true if the tablename $checkTable is allowed to be created on the page with record $pid_row
+	 * @return boolean Returns true if the tablename $checkTable is allowed
+	 * 		to be created on the page with record $row
 	 */
-	protected function isTableAllowedForThisPage($pid_row, $checkTable) {
+	protected function isTableAllowedForThisPage($row, $checkTable) {
 		$result = FALSE;
 
-		if (!is_array($pid_row)) {
+		if (!is_array($row)) {
 			if ($GLOBALS['BE_USER']->user['admin']) {
 				$result = TRUE;
 			} else {
@@ -354,8 +356,8 @@ class Tx_Commerce_Controller_WizardController {
 				$result = FALSE;
 			} else {
 					// Checking doktype:
-				$doktype = (int) $pid_row['doktype'];
-				if (!$allowedTableList = $GLOBALS['PAGES_TYPES'][$doktype]['allowedTables']) {
+				$doktype = (int) $row['doktype'];
+				if (!($allowedTableList = $GLOBALS['PAGES_TYPES'][$doktype]['allowedTables'])) {
 					$allowedTableList = $GLOBALS['PAGES_TYPES']['default']['allowedTables'];
 				}
 
@@ -370,11 +372,13 @@ class Tx_Commerce_Controller_WizardController {
 	}
 
 	/**
-	 * Returns true if the $table tablename is found in $allowedNewTables (or if $allowedNewTables is empty)
+	 * Returns true if the $table tablename is found in $allowedNewTables
+	 * (or if $allowedNewTables is empty)
 	 *
 	 * @param string $table Table name to test if in allowedTables
 	 * @param array $allowedNewTables Array of new tables that are allowed.
-	 * @return boolean Returns true if the $table tablename is found in $allowedNewTables (or if $allowedNewTables is empty)
+	 * @return boolean Returns true if the $table tablename is found in
+	 * 		$allowedNewTables (or if $allowedNewTables is empty)
 	 */
 	protected function showNewRecLink($table, $allowedNewTables = array()) {
 		$allowedNewTables = is_array($allowedNewTables) ? $allowedNewTables : $this->allowedNewTables;
