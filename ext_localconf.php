@@ -175,17 +175,17 @@ $GLOBALS['TYPO3_CONF_VARS']['BE']['AJAX']['tx_commerce_browselinkshooks::ajaxExp
 
 	// Hooks for datamap procesing
 	// For processing the order sfe, when changing the pid
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] =
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass']['commerce'] =
 	'EXT:commerce/Classes/Hook/DataMapHooks.php:Tx_Commerce_Hook_DataMapHooks';
 
 	// Hooks for commandmap processing
 	// For new drawing of the category tree after having deleted a record
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass'][] =
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass']['commerce'] =
 	'EXT:commerce/Classes/Hook/CommandMapHooks.php:Tx_Commerce_Hook_CommandMapHooks';
 
 	// Hooks for version swap procesing
 	// For processing the order sfe, when changing the pid
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processVersionSwapClass'][] =
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processVersionSwapClass']['commerce'] =
 	'EXT:commerce/Classes/Hook/VersionHooks.php:Tx_Commerce_Hook_VersionHooks';
 
 
@@ -201,12 +201,8 @@ if (empty($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Hook/DataMapH
 		'EXT:commerce/Classes/Hook/OrdermailHooks.php:Tx_Commerce_Hook_OrdermailHooks';
 }
 
-
 // This line configures to process the code selectConf
-// with the class "tx_commerce_hooks"
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] =
-	'EXT:commerce/Classes/Hook/TcehooksHandlerHooks.php:Tx_Commerce_Hook_TcehooksHandlerHooks';
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass'][] =
+$TYPO3_CONF_VARS['SC_OPTIONS']['t3lib/class.t3lib_tceforms.php']['getSingleFieldClass']['commerce'] =
 	'EXT:commerce/Classes/Hook/TcehooksHandlerHooks.php:Tx_Commerce_Hook_TcehooksHandlerHooks';
 
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tceforms_inline.php']['tceformsInlineHook'][] =

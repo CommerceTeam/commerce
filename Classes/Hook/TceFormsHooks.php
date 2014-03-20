@@ -49,11 +49,12 @@ class Tx_Commerce_Hook_TceFormsHooks {
 	}
 
 	/**
-	 * This hook gets called before a field in tceforms gets rendered. We use this to adjust TCA, to hide the NEW-Buttons for articles in simple mode
+	 * This hook gets called before a field in tceforms gets rendered. We use this
+	 * to adjust TCA, to hide the NEW-Buttons for articles in simple mode
 	 *
-	 * @param string $table: The name of the database table (just for calling compatibility)
-	 * @param string $field: The name of the field we work on in $table (just for calling compatibility)
-	 * @param array $row: The values of all $fields in $table
+	 * @param string $table The name of the database table
+	 * @param string $field The name of the field we work on in $table
+	 * @param array &$row The values of all $fields in $table
 	 * @return void
 	 */
 	public function getSingleField_preProcess($table, $field, &$row) {
@@ -89,10 +90,11 @@ class Tx_Commerce_Hook_TceFormsHooks {
 	}
 
 	/**
-	 * Converts a database price into a human readable one i.e. dividing it by 100 using . as a separator
+	 * Converts a database price into a human readable one i.e. dividing
+	 * it by 100 using . as a separator
 	 *
-	 * @param integer $price : The database price
-	 * @return string: The $price divided by 100
+	 * @param int $price The database price
+	 * @return string The $price divided by 100
 	 */
 	protected function centurionDivision($price) {
 		$price = floatval($price);
@@ -101,15 +103,16 @@ class Tx_Commerce_Hook_TceFormsHooks {
 	}
 
 	/**
-	 * This hook gets called after a field in tceforms gets rendered. We use this to restore the old values after the hook above got called
+	 * This hook gets called after a field in tceforms gets rendered. We use this to
+	 * restore the old values after the hook above got called
 	 *
-	 * @param string $table: The name of the database table (just for calling compatibility)
-	 * @param string $field: The name of the field we work on in $table (just for calling compatibility)
-	 * @param array $row: The values of all $fields in $table
-	 * @param string $out: Unknown, just for calling compatibility
-	 * @param string $palette: Unknown, just for calling compatibility
-	 * @param string $extra: Unknown, just for calling compatibility
-	 * @return void: Nothing
+	 * @param string $table The name of the database table
+	 * @param string $field The name of the field we work on in $table
+	 * @param array $row The values of all $fields in $table
+	 * @param string &$out Unknown, just for calling compatibility
+	 * @param string $palette Unknown, just for calling compatibility
+	 * @param string $extra Unknown, just for calling compatibility
+	 * @return void
 	 */
 	public function getSingleField_postProcess($table, $field, $row, &$out, $palette, $extra) {
 			// This value is set, if the preProcess updated the tca earlyer
@@ -134,6 +137,9 @@ class Tx_Commerce_Hook_TceFormsHooks {
 
 	/**
 	 * This function returns the html code for the scale price calculation
+	 *
+	 * @param int $uid
+	 * @return string
 	 */
 	protected function getScaleAmount($uid) {
 		return '<div class="bgColor5">price scale startamount</div>
@@ -169,7 +175,7 @@ class Tx_Commerce_Hook_TceFormsHooks {
 
 if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Hook/TceFormsHooks.php']) {
 	/** @noinspection PhpIncludeInspection */
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Hook/TceFormsHooks.php']);
+	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Hook/TceFormsHooks.php']);
 }
 
 ?>
