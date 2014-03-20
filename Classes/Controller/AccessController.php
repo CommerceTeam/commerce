@@ -125,6 +125,11 @@ class Tx_Commerce_Controller_AccessController extends t3lib_SCbase {
 		$this->lastEdited = t3lib_div::_GP('lastEdited');
 
 		$this->perms_clause = Tx_Commerce_Utility_BackendUtility::getCategoryPermsClause(1);
+
+			// Initializing document template object:
+		$this->doc = t3lib_div::makeInstance('template');
+		$this->doc->backPath = $GLOBALS['BACK_PATH'];
+		$this->doc->docType = 'xhtml_trans';
 	}
 
 	/**
@@ -133,10 +138,6 @@ class Tx_Commerce_Controller_AccessController extends t3lib_SCbase {
 	 * @return void
 	 */
 	public function initPage() {
-			// Initializing document template object:
-		$this->doc = t3lib_div::makeInstance('template');
-		$this->doc->backPath = $GLOBALS['BACK_PATH'];
-		$this->doc->docType = 'xhtml_trans';
 		$this->doc->setModuleTemplate(PATH_TXCOMMERCE . 'Resources/Private/Backend/mod_category_index.html');
 
 		if (!$this->doc->moduleTemplate) {
@@ -878,8 +879,6 @@ class Tx_Commerce_Controller_AccessController extends t3lib_SCbase {
 						':
 						''
 					);
-
-				$bgCol = $lE_bgCol;
 			}
 
 				// Compile table row:
