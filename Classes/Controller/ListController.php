@@ -257,7 +257,7 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 			$this->masterCategoryObj = t3lib_div::makeinstance('Tx_Commerce_Domain_Model_Category');
 			$this->masterCategoryObj->init($this->master_cat, $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
 			$this->masterCategoryObj->loadData();
-			$masterCategorySubCategories = $this->masterCategoryObj->get_rec_child_categories_uidlist();
+			$masterCategorySubCategories = $this->masterCategoryObj->getChildCategoriesUidlist();
 			if (in_array($this->piVars['catUid'], $masterCategorySubCategories)) {
 				$this->cat = (int)$this->piVars['catUid'];
 			} else {
