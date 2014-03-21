@@ -325,7 +325,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 	 * Recalculate Order sum
 	 *
 	 * @param string $table
-	 * @param integer $id
+	 * @param int $id
 	 * @param t3lib_TCEmain $pObj
 	 * @return void
 	 */
@@ -351,7 +351,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 				$pObj->log($table, $id, 2, 0, 2, 'SQL error: \'%s\' (%s)', 12, array($database->sql_error(), $table . ':' . $id));
 			}
 
-			$database->exec_UPDATEquery($table, 'order_id = ' . $database->fullQuoteStr($orderId, 'tx_commerce_orders'), $sum);
+			$database->exec_UPDATEquery('tx_commerce_orders', 'order_id = ' . $database->fullQuoteStr($orderId, 'tx_commerce_orders'), $sum);
 			if ($database->sql_error()) {
 				$pObj->log($table, $id, 2, 0, 2, 'SQL error: \'%s\' (%s)', 12, array($database->sql_error(), $table . ':' . $id));
 			}

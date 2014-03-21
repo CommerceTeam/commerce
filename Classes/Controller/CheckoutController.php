@@ -2659,8 +2659,8 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	 */
 	protected function initializeBackendUser() {
 		if (!($GLOBALS['BE_USER'] instanceof t3lib_beUserAuth)) {
-			/** @var t3lib_beUserAuth $backendUser */
-			$backendUser = t3lib_div::makeInstance('t3lib_beUserAuth');
+			/** @var t3lib_tsfeBeUserAuth $backendUser */
+			$backendUser = t3lib_div::makeInstance('t3lib_tsfeBeUserAuth');
 			$backendUser->warningEmail = $GLOBALS['TYPO3_CONF_VARS']['BE']['warning_email_addr'];
 			$backendUser->lockIP = $GLOBALS['TYPO3_CONF_VARS']['BE']['lockIP'];
 			$backendUser->auth_timeout_field = (int)$GLOBALS['TYPO3_CONF_VARS']['BE']['sessionTimeout'];
