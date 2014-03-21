@@ -234,8 +234,8 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 	/**
 	 * Sets if the clickmenu should be enabled for this Tx_Commerce_Tree_Leaf_View
 	 *
+	 * @param boolean $flag [optional] Flag
 	 * @return void
-	 * @param boolean $flag [optional]	Flag
 	 */
 	public function noClickmenu($flag = TRUE) {
 		$this->noClickmenu = (bool) $flag;

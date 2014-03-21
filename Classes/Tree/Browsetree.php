@@ -211,7 +211,7 @@ abstract class Tx_Commerce_Tree_Browsetree {
 	public function getBrowseableTree() {
 		$return = '';
 
-		switch($this->renderBy) {
+		switch ($this->renderBy) {
 			case 'Tx_Commerce_Tree_Leaf_Mounts':
 				$this->getTreeByMountpoints();
 				$return = $this->printTreeByMountpoints();

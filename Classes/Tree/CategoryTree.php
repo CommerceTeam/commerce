@@ -167,7 +167,7 @@ class Tx_Commerce_Tree_CategoryTree extends Tx_Commerce_Tree_Browsetree {
 	/**
 	 * Sets the noclick list for the leafs
 	 *
-	 * @param string $noClickList comma-separated list of leafs to disallow clicks for
+	 * @param string $noClickList comma-separated list of leafs to disallow clicks
 	 * @return void
 	 */
 	public function disallowClick($noClickList = '') {

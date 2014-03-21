@@ -254,6 +254,12 @@ class Tx_Commerce_Utility_ClickmenuUtility extends clickMenu {
 					$menuItems['review'] = $this->DB_review($table, $uid);
 				}
 			}
+		} else {
+			// if no item was found we clicked the top most node
+			if (!in_array('new', $this->disabledItems) && $rights['new']) {
+				$menuItems = array();
+				$menuItems['new'] = $this->DB_new($table, Tx_Commerce_Utility_BackendUtility::getProductFolderUid());
+			}
 		}
 
 		return $menuItems;
@@ -316,11 +322,16 @@ class Tx_Commerce_Utility_ClickmenuUtility extends clickMenu {
 		$mounts->init($backendUser->user['uid']);
 		$rights['DBmount'] = (in_array($uid, $mounts->getMountData()));
 
-			// if the category has no parent categories treat as root
+		// if the category has no parent categories treat as root
 		/** @var Tx_Commerce_Domain_Model_Category $category */
 		$category = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category');
-		$category->init($categoryToCheckRightsOn);
-		$rights['DBmount'] = count($category->getParentCategories()) ? $rights['DBmount'] : TRUE;
+		if ($categoryToCheckRightsOn) {
+			$category->init($categoryToCheckRightsOn);
+			$rights['DBmount'] = count($category->getParentCategories()) ? $rights['DBmount'] : TRUE;
+		} else {
+			// to enable new link on top most node
+			$rights['new'] = TRUE;
+		}
 
 		$rights['copy'] = ($this->rec['sys_language_uid'] == 0);
 		$rights['copyType'] = 'into';
