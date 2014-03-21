@@ -857,7 +857,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	 * @return array l18n overlay objects
 	 */
 	public function getL18nProducts() {
-		$uid_lang = $this->databaseConnection->get_l18n_products($this->uid);
+		$uid_lang = $this->databaseConnection->getL18nProducts($this->uid);
 		return $uid_lang;
 	}
 
@@ -931,7 +931,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	 */
 	public function getRelatedProducts() {
 		if (!$this->relatedProducts_loaded) {
-			$this->relatedProduct_uids = $this->databaseConnection->get_related_product_uids($this->uid);
+			$this->relatedProduct_uids = $this->databaseConnection->getRelatedProductUids($this->uid);
 			if (count($this->relatedProduct_uids) > 0) {
 				foreach ($this->relatedProduct_uids as $productId => $categoryId) {
 					/** @var Tx_Commerce_Domain_Model_Product $product */
@@ -1435,6 +1435,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 		}
 		return FALSE;
 	}
+
 
 	/**
 	 * Generates a Matrix from these concerning articles for all attributes and the values therefor

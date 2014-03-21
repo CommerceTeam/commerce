@@ -59,10 +59,11 @@ class Tx_Commerce_Domain_Repository_ProductRepository extends Tx_Commerce_Domain
 
 	/**
 	 * gets all articles form database related to this product
-	 * @param integer $uid uid= Product uid
+	 *
+	 * @param int $uid Product uid
 	 * @return array of Article UID
 	 */
-	public function get_articles($uid) {
+	public function getArticles($uid) {
 		$uid = (int) $uid;
 		$article_uid_list = array();
 		if ($uid) {
@@ -142,11 +143,12 @@ class Tx_Commerce_Domain_Repository_ProductRepository extends Tx_Commerce_Domain
 
 	/**
 	 * gets all attributes form database related to this product where corelation type = 4
-	 * @param integer $uid Product uid
-	 * @param array|integer $correlationtypes
+	 *
+	 * @param int $uid Product uid
+	 * @param array|int $correlationtypes
 	 * @return array of Article UID
 	 */
-	public function get_attributes($uid, $correlationtypes) {
+	public function getAttributes($uid, $correlationtypes) {
 		$uid = (int) $uid;
 		if ($uid > 0) {
 				// here some strang changes,
@@ -180,17 +182,19 @@ class Tx_Commerce_Domain_Repository_ProductRepository extends Tx_Commerce_Domain
 
 	/**
 	 * Returns a list of uid's that are related to this product
-	 * @param integer $uid product uid
+	 *
+	 * @param int $uid product uid
 	 * @return array Product UIDs
-	 * @TODO:we dont really need to extract category uids
+	 * @todo we dont really need to extract category uids
 	 */
-	public function get_related_product_uids($uid) {
+	public function getRelatedProductUids($uid) {
 		$uid = (int) $uid;
 		$res = $this->database->exec_SELECTquery(
 			'R.uid_foreign as rID,C.uid_foreign as cID',
 			$this->database_products_related_table . ' R,' . $this->database_category_rel_table . ' as C',
 			'R.uid_foreign = C.uid_local AND R.uid_local=' . (int) $uid,
-			'rID'
+			'rID',
+			'R.sorting ASC'
 		);
 		$relatedProducts = array();
 		while ($data = $this->database->sql_fetch_assoc($res)) {
@@ -200,69 +204,26 @@ class Tx_Commerce_Domain_Repository_ProductRepository extends Tx_Commerce_Domain
 	}
 
 	/**
-	 * Gets the "master" category from this product
-	 * @param integer $uid Product UID
-	 * @return integer Categorie UID
-	 * @TODO Change to correct handling way concering databas model, currently wrongly interperted
-	 * @TODO change to mm db class function
-	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getMasterParentCategory instead
-	 */
-	public function get_parent_category($uid) {
-		t3lib_div::logDeprecatedFunction();
-		return $this->getMasterParentCategory($uid);
-	}
-
-	/**
-	 * Gets the "master" category from this product
-	 * @param int $uid = Product UID
-	 * @return integer Categorie UID
-	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getParentCategories instead
-	 */
-	public function get_parent_categorie($uid) {
-		t3lib_div::logDeprecatedFunction();
-		return $this->getMasterParentCategory($uid);
-	}
-
-	/**
-	 * Gets the "master" category from this product
-	 * @param uid = Product UID
-	 * @return array of parent categories
-	 * @TODO Change to correct handling way concerning database model, currently wrongly interperted
-	 * @TODO currently only call to get_parent_category
-	 * @deprecated sinde commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getParentCategories instead
-	 */
-	public function get_parent_categories($uid) {
-		t3lib_div::logDeprecatedFunction();
-
-		return array($this->getParentCategories($uid));
-	}
-
-	/**
 	 * Returns an array of sys_language_uids of the i18n products
 	 * Only use in BE
 	 *
-	 * @param integer $uid uid of the product we want to get the i18n languages from
+	 * @param int $uid uid of the product we want to get the i18n languages from
 	 * @return array $uid uids
 	 */
-	public function get_l18n_products($uid) {
+	public function getL18nProducts($uid) {
 		if ((empty($uid)) || (!is_numeric($uid))) {
 			return FALSE;
 		}
 
 		$this->uid = $uid;
 
-		$res = $this->database->exec_SELECTquery(
+		$rows = $this->database->exec_SELECTgetRows(
 			't1.title, t1.uid, t2.flag, t2.uid as sys_language',
 			$this->databaseTable . ' AS t1 LEFT JOIN sys_language AS t2 ON t1.sys_language_uid = t2.uid',
 			'l18n_parent = ' . $uid . ' AND deleted = 0'
 		);
 
-		$uids = array();
-		while ($row = $this->database->sql_fetch_assoc($res)) {
-			$uids[] =  $row;
-		}
-
-		return $uids;
+		return $rows;
 	}
 
 	/**
@@ -276,40 +237,38 @@ class Tx_Commerce_Domain_Repository_ProductRepository extends Tx_Commerce_Domain
 	/**
 	 * Gets the parent categories of th
 	 *
-	 * @param integer $uid uid of the product
+	 * @param int $uid uid of the product
 	 * @return array parent categories for products
 	 */
 	public function getParentCategories($uid) {
 		if (!$uid || !is_numeric($uid)) {
-			$this->error('getparentCategories has not been delivered a proper uid');
+			$this->error('getParentCategories has not been delivered a proper uid');
 			return NULL;
 		}
 
 		$uids = array();
 
 			// read from sql
-		$result = $this->database->exec_SELECTquery(
+		$rows = (array)$this->database->exec_SELECTgetRows(
 			'uid_foreign',
 			$this->database_category_rel_table,
 			'uid_local = ' . $uid,
 			'',
 			'sorting ASC'
 		);
-		while ($row = $this->database->sql_fetch_assoc($result)) {
+		foreach ($rows as $row) {
 			$uids[] = $row['uid_foreign'];
 		}
 
-		$this->database->sql_free_result($result);
-
 			// If $uids is empty, the record might be a localized product, related to issue #27021
 		if (count($uids) === 0) {
-			$rows = $this->database->exec_SELECTgetRows(
+			$row = $this->database->exec_SELECTgetSingleRow(
 				'l18n_parent',
 				$this->databaseTable,
 				'uid = ' . $uid
 			);
-			if ($rows[0] && (int)$rows[0]['l18n_parent'] > 0) {
-				$uids = $this->getParentCategories($rows[0]['l18n_parent']);
+			if (is_array($row) && isset($row['l18n_parent']) && (int)$row['l18n_parent'] > 0) {
+				$uids = $this->getParentCategories($row['l18n_parent']);
 			}
 		}
 
@@ -318,22 +277,105 @@ class Tx_Commerce_Domain_Repository_ProductRepository extends Tx_Commerce_Domain
 
 	/**
 	 * Returns the Manuafacturer Title to a given Manufacturere UID
-	 * @param	integer	$ManufacturerUid
-	 * @return	string		Title
+	 *
+	 * @param int $ManufacturerUid
+	 * @return string Title
 	 */
 	public function getManufacturerTitle($ManufacturerUid) {
-		$rSql = $this->database->exec_SELECTquery(
+		$row = $this->database->exec_SELECTgetSingleRow(
 			'*',
 			'tx_commerce_manufacturer',
 			'uid = ' . (int) $ManufacturerUid
 		);
 
-		$sTitle = '';
-		while (($aFiche = $this->database->sql_fetch_assoc($rSql)) !== FALSE) {
-			$sTitle = $aFiche['title'];
-		}
+		return is_array($row) && isset($row['title']) ? $row['title'] : '';
+	}
 
-		return $sTitle;
+
+	/**
+	 * gets all articles form database related to this product
+	 *
+	 * @param int $uid Product uid
+	 * @return array of Article UID
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getArticles instead
+	 */
+	public function get_articles($uid) {
+		t3lib_div::logDeprecatedFunction();
+		return $this->getArticles($uid);
+	}
+
+	/**
+	 * gets all attributes form database related to this product where corelation type = 4
+	 *
+	 * @param int $uid Product uid
+	 * @param array|int $correlationtypes
+	 * @return array of Article UID
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getAttributes instead
+	 */
+	public function get_attributes($uid, $correlationtypes) {
+		t3lib_div::logDeprecatedFunction();
+		return $this->getAttributes($uid, $correlationtypes);
+	}
+
+	/**
+	 * Returns an array of sys_language_uids of the i18n products
+	 * Only use in BE
+	 *
+	 * @param int $uid uid of the product we want to get the i18n languages from
+	 * @return array $uid uids
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getL18nProducts instead
+	 */
+	public function get_l18n_products($uid) {
+		t3lib_div::logDeprecatedFunction();
+		return $this->getL18nProducts($uid);
+	}
+
+	/**
+	 * Returns a list of uid's that are related to this product
+	 *
+	 * @param int $uid product uid
+	 * @return array Product UIDs
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getRelatedProductUids instead
+	 */
+	public function get_related_product_uids($uid) {
+		t3lib_div::logDeprecatedFunction();
+		return $this->getRelatedProductUids($uid);
+	}
+
+	/**
+	 * Gets the "master" category from this product
+	 *
+	 * @param int $uid Product UID
+	 * @return int Categorie UID
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getMasterParentCategory instead
+	 */
+	public function get_parent_category($uid) {
+		t3lib_div::logDeprecatedFunction();
+		return $this->getMasterParentCategory($uid);
+	}
+
+	/**
+	 * Gets the "master" category from this product
+	 *
+	 * @param int $uid = Product UID
+	 * @return int Categorie UID
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getParentCategories instead
+	 */
+	public function get_parent_categorie($uid) {
+		t3lib_div::logDeprecatedFunction();
+		return $this->getMasterParentCategory($uid);
+	}
+
+	/**
+	 * Gets the "master" category from this product
+	 *
+	 * @param uid = Product UID
+	 * @return array of parent categories
+	 * @deprecated sinde commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getParentCategories instead
+	 */
+	public function get_parent_categories($uid) {
+		t3lib_div::logDeprecatedFunction();
+		return array($this->getParentCategories($uid));
 	}
 }
 

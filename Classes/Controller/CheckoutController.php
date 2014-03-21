@@ -2518,13 +2518,6 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		}
 
 			// create backend user for inserting the order data
-		/** @var $backendUser t3lib_userAuth */
-		$backendUser = t3lib_div::makeInstance('t3lib_userAuthGroup');
-		$backendUser->user['uid'] = 0;
-		$backendUser->user['username'] = '_cli_commerce';
-		$backendUser->user['admin'] = TRUE;
-		$backendUser->user['uc']['recursiveDelete'] = FALSE;
-
 		$orderData = array();
 		$orderData['cust_deliveryaddress'] = ((isset($uids['delivery'])) ? $uids['delivery'] : $uids['billing']);
 		$orderData['cust_invoice'] = $uids['billing'];
@@ -2557,19 +2550,19 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 
 		$this->debug($orderData, '$orderData', __FILE__ . ' ' . __LINE__);
 
-		$tce = $this->getTceMain($pid);
+		$tceMain = $this->getInstanceOfTceMain($pid);
 		$data = array();
 		if (isset($this->conf['lockOrderIdInGenerateOrderId']) && $this->conf['lockOrderIdInGenerateOrderId'] == 1) {
 			$data['tx_commerce_orders'][(int) $this->orderUid] = $orderData;
-			$tce->start($data, array(), $backendUser);
-			$tce->process_datamap();
+			$tceMain->start($data, array());
+			$tceMain->process_datamap();
 		} else {
 			$newUid = uniqid('NEW');
 			$data['tx_commerce_orders'][$newUid] = $orderData;
-			$tce->start($data, array(), $backendUser);
-			$tce->process_datamap();
+			$tceMain->start($data, array());
+			$tceMain->process_datamap();
 
-			$this->orderUid = $tce->substNEWwithIDs[$newUid];
+			$this->orderUid = $tceMain->substNEWwithIDs[$newUid];
 		}
 
 			// make orderUid avaible in hookObjects
@@ -2628,11 +2621,13 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 				}
 
 				$data = array();
-				$data['tx_commerce_order_articles'][$newUid] = $orderArticleData;
-				$tce->start($data, array(), $backendUser);
-				$tce->process_datamap();
 
-				$newUid = $tce->substNEWwithIDs[$newUid];
+				// $GLOBALS['LANG'] missing in frontend
+				$data['tx_commerce_order_articles'][$newUid] = $orderArticleData;
+				$tceMain->start($data, array());
+				$tceMain->process_datamap();
+
+				$newUid = $tceMain->substNEWwithIDs[$newUid];
 
 				foreach ($hookObjectsArr as $hookObj) {
 					if (method_exists($hookObj, 'modifyOrderArticlePostSave')) {
@@ -2648,16 +2643,61 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	}
 
 	/**
+	 * Get an instance of t3lib_TCEmain
+	 *
 	 * @param integer $pid
 	 * @return t3lib_TCEmain
 	 */
-	protected function getTceMain($pid) {
-		$tce = t3lib_div::makeInstance('t3lib_TCEmain');
-		$tce->bypassWorkspaceRestrictions = TRUE;
-		$tce->recInsertAccessCache['tx_commerce_orders'][$pid] = 1;
-		$tce->recInsertAccessCache['tx_commerce_order_articles'][$pid] = 1;
+	protected function getInstanceOfTceMain($pid) {
+		$this->initializeBackendUser();
+		$this->initializeLanguage();
 
-		return $tce;
+		$tceMain = t3lib_div::makeInstance('t3lib_TCEmain');
+		$tceMain->bypassWorkspaceRestrictions = TRUE;
+		$tceMain->recInsertAccessCache['tx_commerce_orders'][$pid] = 1;
+		$tceMain->recInsertAccessCache['tx_commerce_order_articles'][$pid] = 1;
+
+		return $tceMain;
+	}
+
+	/**
+	 * Initialize Backend user for TCEmain
+	 *
+	 * @return void
+	 */
+	protected function initializeBackendUser() {
+		if (!($GLOBALS['BE_USER'] instanceof t3lib_beUserAuth)) {
+			/** @var t3lib_beUserAuth $backendUser */
+			$backendUser = t3lib_div::makeInstance('t3lib_beUserAuth');
+			$backendUser->warningEmail = $GLOBALS['TYPO3_CONF_VARS']['BE']['warning_email_addr'];
+			$backendUser->lockIP = $GLOBALS['TYPO3_CONF_VARS']['BE']['lockIP'];
+			$backendUser->auth_timeout_field = (int)$GLOBALS['TYPO3_CONF_VARS']['BE']['sessionTimeout'];
+			$backendUser->OS = TYPO3_OS;
+			if (TYPO3_REQUESTTYPE & TYPO3_REQUESTTYPE_CLI) {
+				$backendUser->dontSetCookie = TRUE;
+			}
+			// Object is initialized
+			$backendUser->start();
+			$backendUser->setBeUserByName('_fe_commerce');
+			// Checking if there's a user logged in
+			$backendUser->backendCheckLogin();
+
+			$GLOBALS['BE_USER'] = $backendUser;
+		}
+	}
+
+	/**
+	 * Initialize language for TCEmain
+	 *
+	 * @return void
+	 */
+	protected function initializeLanguage() {
+		if (!($GLOBALS['LANG'] instanceof language)) {
+			/** @var language $language */
+			$language = t3lib_div::makeInstance('language');
+			$language->init($GLOBALS['BE_USER']->uc['lang']);
+			$GLOBALS['LANG'] = $language;
+		}
 	}
 
 	/**
