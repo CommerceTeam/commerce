@@ -256,7 +256,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 			throw new Exception('No target implementation found for payment type ' . $paymentType, 1305676132);
 		}
 
-			$paymentObject = t3lib_div::makeInstance($config['class'], $this);
+		$paymentObject = t3lib_div::makeInstance($config['class'], $this);
 		if (!$paymentObject instanceof Tx_Commerce_Payment_Interface_Payment) {
 			throw new Exception($config['class'] . ' must implement Tx_Commerce_Payment_Interface_Payment');
 		}

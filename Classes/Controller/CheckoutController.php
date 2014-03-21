@@ -784,10 +784,6 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 				die('PAYMENT:FATAL! No payment possible because I don\'t know how to handle it! (' . implode(', ', $errorStr) . ')');
 			}
 
-			$path = $GLOBALS['TSFE']->tmpl->getFileName($config['path']);
-			/** @noinspection PhpIncludeInspection */
-			require_once($path);
-
 			$paymentObj = t3lib_div::makeInstance($config['class']);
 		}
 

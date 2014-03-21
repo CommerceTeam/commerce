@@ -180,9 +180,10 @@ class Tx_Commerce_Hook_OrdermailHooks {
 	 * This method will be used by the initial methods before and after the Order
 	 * will be moved to another Orderstate
 	 *
-	 * @param array $orderdata Containing the orderdatea like UID and PID
-	 * @param array $detaildata Containing the detaildata to Order like order_id and CustomerUIDs
-	 * @param integer $mailkind: ...
+	 * @param array &$orderdata Containing the orderdatea like UID and PID
+	 * @param array &$detaildata Containing the detaildata to Order like
+	 * 		order_id and CustomerUIDs
+	 * @param int $mailkind
 	 * @return void
 	 */
 	protected function processOrdermails(&$orderdata, &$detaildata, $mailkind) {
