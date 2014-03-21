@@ -50,13 +50,6 @@ $language->includeLLFile('EXT:lang/locallang_mod_web_list.xml');
 $SOBE = t3lib_div::makeInstance('Tx_Commerce_Controller_CategoriesController');
 $SOBE->init();
 $SOBE->initPage();
-
-	// Include files?
-foreach ($SOBE->include_once as $INC_FILE) {
-	/** @noinspection PhpIncludeInspection */
-	require_once($INC_FILE);
-}
-
 $SOBE->clearCache();
 $SOBE->main();
 $SOBE->printContent();

@@ -50,13 +50,6 @@ $language->includeLLFile('EXT:commerce/Resources/Private/Language/locallang_mod_
 $SOBE = t3lib_div::makeInstance('Tx_Commerce_Controller_AccessController');
 $SOBE->init();
 $SOBE->initPage();
-
-	// Include files?
-foreach ($SOBE->include_once as $INC_FILE) {
-	/** @noinspection PhpIncludeInspection */
-	require_once($INC_FILE);
-}
-
 $SOBE->main();
 $SOBE->printContent();
 

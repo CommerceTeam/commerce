@@ -181,11 +181,6 @@ class Tx_Commerce_Controller_OrdersController extends t3lib_SCbase {
 			// Initialize menu
 		$this->menuConfig();
 
-			// Inclusions?
-		if ($this->clear_cache || $this->cmd == 'delete') {
-			$this->include_once[] = PATH_t3lib . 'class.t3lib_tcemain.php';
-		}
-
 			// Get Table and controlArray in a different way
 		$controlParams = t3lib_div::_GP('control');
 		if ($controlParams) {
@@ -608,7 +603,7 @@ class_alias('Tx_Commerce_Controller_OrdersController', 'tx_commerce_orders');
 
 if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Controller/OrdersController.php']) {
 	/** @noinspection PhpIncludeInspection */
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Controller/OrdersController.php']);
+	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Controller/OrdersController.php']);
 }
 
 ?>

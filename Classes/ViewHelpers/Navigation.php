@@ -1124,13 +1124,13 @@ class Tx_Commerce_ViewHelpers_Navigation {
 	}
 
 	/**
-	 * Method for gerenartin the rootlineMenue to use in TS
+	 * Method for generating the rootlineMenu to use in TS
 	 *
-	 * @param string $content $content passed to method
+	 * @param string $content passed to method
 	 * @param array $conf TS Array
-	 * @return array array for the menurendering of TYPO3
+	 * @return array for the menurendering of TYPO3
 	 */
-	public function CommerceRootline($content, $conf) {
+	public function renderRootline($content, $conf) {
 		$this->mConf = $this->processConf($conf);
 		$this->PID = (int) ($this->mConf['overridePid'] ? $this->mConf['overridePid'] : $GLOBALS['TSFE']->id);
 		$this->gpVars = t3lib_div::_GPmerged($this->prefixId);
@@ -1479,13 +1479,27 @@ class Tx_Commerce_ViewHelpers_Navigation {
 		}
 		return FALSE;
 	}
+
+
+	/**
+	 * Method for generating the rootlineMenu to use in TS
+	 *
+	 * @param string $content passed to method
+	 * @param array $conf TS Array
+	 * @return array for the menurendering of TYPO3
+	 * @deprecated sinde commerce 1.0.0, this function will be removed in commerce 1.4.0, please use renderRootline instead
+	 */
+	public function CommerceRootline($content, $conf) {
+		t3lib_div::logDeprecatedFunction();
+		return $this->renderRootline($content, $conf);
+	}
 }
 
 class_alias('Tx_Commerce_ViewHelpers_Navigation', 'tx_commerce_navigation');
 
 if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/ViewHelpers/Navigation.php']) {
 	/** @noinspection PhpIncludeInspection */
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/ViewHelpers/Navigation.php']);
+	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/ViewHelpers/Navigation.php']);
 }
 
 ?>

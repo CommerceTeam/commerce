@@ -179,11 +179,6 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 			// Initialize menu
 		$this->menuConfig();
 
-			// Inclusions?
-		if ($this->clear_cache || $this->cmd == 'delete') {
-			$this->include_once[] = PATH_t3lib . 'class.t3lib_tcemain.php';
-		}
-
 			// Get Tabpe and controlArray in a different way
 		$controlParams = t3lib_div::_GP('control');
 		if ($controlParams) {
@@ -804,8 +799,8 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 class_alias('Tx_Commerce_Controller_CategoriesController', 'tx_commerce_categories');
 
 if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Controller/CategoriesController.php']) {
-		/** @noinspection PhpIncludeInspection */
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Controller/CategoriesController.php']);
+	/** @noinspection PhpIncludeInspection */
+	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Controller/CategoriesController.php']);
 }
 
 ?>

@@ -145,7 +145,7 @@ class_alias('Tx_Commerce_Utility_TceformsUtility', 'tx_commerce_forms_select');
 
 if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Utility/TceformsUtility.php']) {
 	/** @noinspection PhpIncludeInspection */
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Utility/TceformsUtility.php']);
+	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Utility/TceformsUtility.php']);
 }
 
 ?>

@@ -918,7 +918,7 @@ lib.tx_commerce.navigation {
 lib.tx_commerce.rootline  = HMENU
 lib.tx_commerce.rootline {
 	special = userfunction
-	special.userFunc = Tx_Commerce_ViewHelpers_Navigation->CommerceRootline
+	special.userFunc = Tx_Commerce_ViewHelpers_Navigation->renderRootline
 	special {
 		# Root category for the display
 		category = {$plugin.tx_commerce_lib.catUid}
