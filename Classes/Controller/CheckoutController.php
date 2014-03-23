@@ -153,8 +153,10 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 
 		$this->conf['basketPid'] = $GLOBALS['TSFE']->id;
 
-		$this->staticInfo = t3lib_div::makeInstance('tx_staticinfotables_pi1');
-		$this->staticInfo->init();
+		/** @var tx_staticinfotables_pi1 $staticInfo */
+		$staticInfo = t3lib_div::makeInstance('tx_staticinfotables_pi1');
+		$staticInfo->init();
+		$this->staticInfo = $staticInfo;
 
 		$this->extConf = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf'];
 
@@ -216,9 +218,9 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			switch ($this->piVars['addressType']) {
 				case '2':
 					$this->currentStep = 'delivery';
-				break;
+					break;
+
 				default:
-				break;
 			}
 		}
 
@@ -264,9 +266,9 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		while ($content === FALSE && $finiteloop < 10) {
 			switch ($this->currentStep) {
 				case 'delivery':
-						// Get delivery address
+					// Get delivery address
 					$content = $this->getDeliveryAddress();
-				break;
+					break;
 
 				case 'payment':
 					$paymentObj = $this->getPaymentObject();
@@ -277,20 +279,20 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 					}
 						// Go on with listing
 					$this->currentStep = $this->getStepAfter('payment');
-				break;
+					break;
 
 				case 'listing':
 					$content = $this->getListing();
-				break;
+					break;
 
 				case 'finish':
 					$paymentObj = $this->getPaymentObject();
 					$content = $this->finishIt($paymentObj);
-				break;
+					break;
 
 				case 'billing':
 					$content = $this->getBillingAddress();
-				break;
+					break;
 
 				default:
 					foreach ($hookObjectsArr as $hookObj) {
@@ -302,7 +304,6 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 							// get billing address
 						$content = $this->getBillingAddress();
 					}
-				break;
 			}
 			$finiteloop++;
 		}
@@ -333,6 +334,8 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	}
 
 	/**
+	 * Store request data in session
+	 *
 	 * @return void
 	 */
 	protected function storeRequestDataIntoSession() {
@@ -371,6 +374,8 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	}
 
 	/**
+	 * Fetch billing, delivery and payment from session
+	 *
 	 * @return void
 	 */
 	protected function fetchSessionDataIntoSessionAttribute() {
@@ -395,6 +400,8 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	}
 
 	/**
+	 * Store the session data
+	 *
 	 * @return void
 	 */
 	public function storeSessionData() {
@@ -852,7 +859,8 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	}
 
 	/**
-	 * Method to list the content of the basket including all articles, sums and addresses.
+	 * Method to list the content of the basket including all articles,
+	 * sums and addresses.
 	 *
 	 * @param string $template Template for rendering
 	 * @return string Substituted template
@@ -939,7 +947,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	/**
 	 * Finishing Page from Checkout
 	 *
-	 * @param Tx_Commerce_Payment_Interface_Payment|null $paymentObj The payment object
+	 * @param Tx_Commerce_Payment_Interface_Payment|null $paymentObj the payment
 	 * @return string HTML-Content
 	 */
 	public function finishIt($paymentObj = NULL) {
@@ -1361,7 +1369,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/CheckoutController.php\'][\'beforeValidateAddress\']
 		');
 		$hookObjectsArr = $this->getHookObjectArray('bevorValidateAddress');
-			// @todo remove merge after above hook is removed
+		// @todo remove merge after above hook is removed
 		$hookObjectsArr = array_merge($hookObjectsArr, $this->getHookObjectArray('beforeValidateAddress'));
 
 		$this->debug($config, 'TS Config', __FILE__ . ' ' . __LINE__);
@@ -1396,7 +1404,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 							$this->formError[$name] = $this->pi_getLL('error_field_email');
 							$returnVal = FALSE;
 						}
-					break;
+						break;
 
 					case 'username':
 						if ($GLOBALS['TSFE']->loginUser) {
@@ -1406,42 +1414,42 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 							$this->formError[$name] = $this->pi_getLL('error_field_username');
 							$returnVal = FALSE;
 						}
-					break;
+						break;
 
 					case 'string':
 						if (!is_string($value)) {
 							$this->formError[$name] = $this->pi_getLL('error_field_string');
 							$returnVal = FALSE;
 						}
-					break;
+						break;
 
 					case 'int':
 						if (!is_integer($value) && preg_match('/^\d+$/', $value) !== 1) {
 							$this->formError[$name] = $this->pi_getLL('error_field_int');
 							$returnVal = FALSE;
 						}
-					break;
+						break;
 
 					case 'min':
 						if (strlen((string) $value) < (int) $method[1]) {
 							$this->formError[$name] = $this->pi_getLL('error_field_min');
 							$returnVal = FALSE;
 						}
-					break;
+						break;
 
 					case 'max':
 						if (strlen((string) $value) > (int) $method[1]) {
 							$this->formError[$name] = $this->pi_getLL('error_field_max');
 							$returnVal = FALSE;
 						}
-					break;
+						break;
 
 					case 'alpha':
 						if (preg_match('/[0-9]/', $value) === 1) {
 							$this->formError[$name] = $this->pi_getLL('error_field_alpha');
 							$returnVal = FALSE;
 						}
-					break;
+						break;
 
 					default:
 						if (!empty($method[0])) {
@@ -1454,7 +1462,6 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 								}
 							}
 						}
-					break;
 				}
 			}
 
@@ -1696,7 +1703,8 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 						$feuData['username'] = $this->sessionData['billing']['email'];
 					}
 
-						// uses either the typed in password (if configured) or a random password - default is random
+					// uses either the typed in password (if configured) or a random password
+					// default is random
 					if (
 						isset($config['dontUseRandomPassword'])
 						&& $config['dontUseRandomPassword']
@@ -1739,8 +1747,8 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 
 				// unsets the fields that are not present in tt_adress before inserting them
 			if (isset($config['tt_adressExcludeFields']) && $config['tt_adressExcludeFields'] != '') {
-				$tt_adressExcludeFields = t3lib_div::trimExplode(',', $config['tt_adressExcludeFields']);
-				foreach ($tt_adressExcludeFields as $excludeField) {
+				$ttAdressExcludeFields = t3lib_div::trimExplode(',', $config['tt_adressExcludeFields']);
+				foreach ($ttAdressExcludeFields as $excludeField) {
 					unset($dataArray[$excludeField]);
 				}
 			}
@@ -1757,6 +1765,8 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	}
 
 	/**
+	 * Get field value
+	 *
 	 * @param string $value
 	 * @param string $type
 	 * @param string $field
@@ -1796,7 +1806,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		switch (strtolower($fieldConfig['type'])) {
 			case 'select':
 				$result = $this->getSelectInputField($fieldName, $fieldConfig, $fieldValue, $step);
-			break;
+				break;
 
 			case 'static_info_tables':
 				$selected = $fieldValue != '' ? $fieldValue : $fieldConfig['default'];
@@ -1813,7 +1823,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 					$fieldConfig['select'],
 					$GLOBALS['TSFE']->tmpl->setup['config.']['language']
 				);
-			break;
+				break;
 
 			case 'static_info_country':
 				$countries = $this->staticInfo->initCountries(
@@ -1830,16 +1840,15 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 					'class="' . $fieldConfig['cssClass'] . '">' . LF;
 				$result .= $this->staticInfo->optionsConstructor($countries, array($selected), $outSelectedArray);
 				$result .= '</select>' . LF;
-			break;
+				break;
 
 			case 'check':
 				$result = $this->getCheckboxInputField($fieldName, $fieldConfig, $fieldValue, $step);
-			break;
+				break;
 
 			case 'single':
 			default:
 				$result = $this->getSingleInputField($fieldName, $fieldConfig, $step);
-			break;
 		}
 
 		return $result;
@@ -1921,12 +1930,10 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			$table = $fieldConfig['table'];
 			$select = $fieldConfig['select'] . $this->cObj->enableFields($fieldConfig['table']);
 			$fields = $fieldConfig['label'] . ' AS label,' . $fieldConfig['value'] . ' AS value';
-			$orderby = ($fieldConfig['orderby']) ?
-				$fieldConfig['orderby'] :
-				'';
-			$res = $database->exec_SELECTquery($fields, $table, $select, '', $orderby);
+			$orderby = ($fieldConfig['orderby']) ? $fieldConfig['orderby'] : '';
+			$rows = $database->exec_SELECTgetRows($fields, $table, $select, '', $orderby);
 
-			while ($row = $database->sql_fetch_assoc($res)) {
+			foreach ($rows as $row) {
 				$result .= '<option  value="' . $row['value'] . '"';
 				if ($row['value'] === $fieldConfig['default']) {
 					$result .= ' selected="selected"';
@@ -1977,7 +1984,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			return $result;
 		}
 
-		foreach ($fieldConfig as $key => $data) {
+		foreach (array_keys($fieldConfig) as $key) {
 			$result[] = rtrim($key, '.');
 		}
 
@@ -2396,8 +2403,8 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			// Get addresses
 		$deliveryAdress = '';
 		if ($orderData['cust_deliveryaddress']) {
-			$res = $database->exec_SELECTquery('*', 'tt_address', 'uid = ' . (int) $orderData['cust_deliveryaddress']);
-			if ($data = $database->sql_fetch_assoc($res)) {
+			$data = $database->exec_SELECTgetSingleRow('*', 'tt_address', 'uid = ' . (int) $orderData['cust_deliveryaddress']);
+			if (is_array($data)) {
 				$data = $this->parseRawData($data, $this->conf['delivery.']['sourceFields.']);
 				$deliveryAdress = $this->makeAdressView($data, '###DELIVERY_ADDRESS###');
 			}
@@ -2407,8 +2414,8 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 
 		$billingAdress = '';
 		if ($orderData['cust_invoice']) {
-			$res = $database->exec_SELECTquery('*', 'tt_address', 'uid = ' . (int) $orderData['cust_invoice']);
-			if ($data = $database->sql_fetch_assoc($res)) {
+			$data = $database->exec_SELECTgetSingleRow('*', 'tt_address', 'uid = ' . (int) $orderData['cust_invoice']);
+			if (is_array($data)) {
 				$data = $this->parseRawData($data, $this->conf['billing.']['sourceFields.']);
 				$billingAdress = $this->makeAdressView($data, '###BILLING_ADDRESS###');
 				$markerArray['###CUST_NAME###'] = $data['NAME'];
@@ -2715,6 +2722,8 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	}
 
 	/**
+	 * Debugging var with header and group
+	 *
 	 * @param mixed $var
 	 * @param string $header
 	 * @param string $group
@@ -2727,6 +2736,8 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	}
 
 	/**
+	 * Get hooks
+	 *
 	 * @param string $type
 	 * @return array
 	 */

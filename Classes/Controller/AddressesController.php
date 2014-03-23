@@ -70,8 +70,8 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 	/**
 	 * Main method. Starts the magic...
 	 *
-	 * @param string $content: Content of this plugin
-	 * @param array $conf: TS configuration for this plugin
+	 * @param string $content Content of this plugin
+	 * @param array $conf TS configuration for this plugin
 	 * @return string Compiled content
 	 */
 	public function main($content, $conf) {
@@ -110,7 +110,7 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 					break;
 				}
 				$content .= $this->getAddressForm('new', (int) $this->piVars['addressid'], $this->conf);
-			break;
+				break;
 
 			case 'delete':
 				$addresses = $this->getAddresses((int) $this->user['uid'], (int) $this->addresses[$this->piVars['addressid']]['tx_commerce_address_type_id']);
@@ -125,7 +125,7 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 					break;
 				}
 				$content .= $this->deleteAddressQuestion();
-			break;
+				break;
 
 			case 'edit':
 				if ($formValid) {
@@ -134,7 +134,7 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 					break;
 				}
 				$content .= $this->getAddressForm('edit', (int) $this->piVars['addressid'], $this->conf);
-			break;
+				break;
 
 			case 'listing':
 			default:
@@ -142,17 +142,17 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 					$this->saveAddressData(FALSE, (int) $this->piVars['addressType']);
 				}
 				$content .= $this->getListing();
-			break;
 		}
 
 		return $this->pi_wrapInBaseClass($content);
 	}
 
 	/**
-	 * Initialization. This method has to be called before the magic can start... ;-)
+	 * Initialization
 	 *
 	 * @param array $conf TS configuration for this template
-	 * @param boolean $getAddresses If this is set to TRUE, this method will fetch all addresses into $this->addresses (Default is TRUE)
+	 * @param boolean $getAddresses If this is set to TRUE, this method will fetch
+	 * 		all addresses into $this->addresses (Default is TRUE)
 	 * @return void
 	 */
 	public function init($conf, $getAddresses = TRUE) {
@@ -160,8 +160,10 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 		$this->pi_setPiVarDefaults();
 		$this->pi_loadLL();
 
-		$this->staticInfo = t3lib_div::makeInstance('tx_staticinfotables_pi1');
-		$this->staticInfo->init();
+		/** @var tx_staticinfotables_pi1 $staticInfo */
+		$staticInfo = t3lib_div::makeInstance('tx_staticinfotables_pi1');
+		$staticInfo->init();
+		$this->staticInfo = $staticInfo;
 
 		$addressType = 1;
 		if (!empty($this->piVars['addressType'])) {
@@ -171,11 +173,10 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 		switch ($addressType) {
 			case '2':
 				$addressType = 'delivery';
-			break;
+				break;
 
 			default:
 				$addressType = 'billing';
-			break;
 		}
 
 		if (!is_array($this->conf['formFields.'])) {
@@ -300,8 +301,8 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 				continue;
 			}
 
-			$itemMA = array();
-			$linkMA = array();
+			$itemMarkerArray = array();
+			$linkMarkerArray = array();
 
 				// Fill marker array
 			$address = Tx_Commerce_Utility_GeneralUtility::removeXSSStripTagsArray($address);
@@ -359,8 +360,8 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 						']" value="' . ($valueHidden ? $valueHidden : $value) . '" />';
 				}
 
-				$itemMA['###LABEL_' . $upperKey . '###'] = $this->pi_getLL('label_' . $key);
-				$itemMA['###' . $upperKey . '###'] = $value . $hidden;
+				$itemMarkerArray['###LABEL_' . $upperKey . '###'] = $this->pi_getLL('label_' . $key);
+				$itemMarkerArray['###' . $upperKey . '###'] = $value . $hidden;
 			}
 
 				// Create a pivars array for merging with link to edit page
@@ -374,38 +375,38 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 
 				// Set delete link only if addresses may be deleted, otherwise set it empty
 			if ((int)$addressTypeCounter[$address['tx_commerce_address_type_id']] > (int)$this->conf['minAddressCount']) {
-				$linkMA['###LINK_DELETE###'] = explode('|', $this->pi_linkTP_keepPIvars('|', array('action' => 'delete', 'addressid' => $address['uid'])));
-				$itemMA['###LABEL_LINK_DELETE###'] = $this->cObj->stdWrap($this->pi_getLL('label_link_delete'), $this->conf['deleteLinkWrap.']);
+				$linkMarkerArray['###LINK_DELETE###'] = explode('|', $this->pi_linkTP_keepPIvars('|', array('action' => 'delete', 'addressid' => $address['uid'])));
+				$itemMarkerArray['###LABEL_LINK_DELETE###'] = $this->cObj->stdWrap($this->pi_getLL('label_link_delete'), $this->conf['deleteLinkWrap.']);
 			} else {
-				$linkMA['###LINK_DELETE###'][0] = '';
-				$linkMA['###LINK_DELETE###'][1] = '';
-				$itemMA['###LABEL_LINK_DELETE###'] = '';
+				$linkMarkerArray['###LINK_DELETE###'][0] = '';
+				$linkMarkerArray['###LINK_DELETE###'][1] = '';
+				$itemMarkerArray['###LABEL_LINK_DELETE###'] = '';
 			}
 
-			$linkMA['###LINK_EDIT###'] = explode('|', $this->pi_linkTP_keepPIvars('|', array_merge($piArray, array('action' => 'edit', 'addressid' => $address['uid'], 'addressType' => $address['tx_commerce_address_type_id'])), FALSE, FALSE, $linkTarget));
-			$itemMA['###LABEL_LINK_EDIT###'] = $this->cObj->stdWrap($this->pi_getLL('label_link_edit'), $this->conf['editLinkWrap.']);
+			$linkMarkerArray['###LINK_EDIT###'] = explode('|', $this->pi_linkTP_keepPIvars('|', array_merge($piArray, array('action' => 'edit', 'addressid' => $address['uid'], 'addressType' => $address['tx_commerce_address_type_id'])), FALSE, FALSE, $linkTarget));
+			$itemMarkerArray['###LABEL_LINK_EDIT###'] = $this->cObj->stdWrap($this->pi_getLL('label_link_edit'), $this->conf['editLinkWrap.']);
 				// add an edit radio button, checked selected previously
-			$itemMA['###SELECT###'] = '<input type="radio" ';
+			$itemMarkerArray['###SELECT###'] = '<input type="radio" ';
 
 			if (($editAddressId == $address['uid']) || (empty($editAddressId) && $address['tx_commerce_is_main_address'])) {
-				$itemMA['###SELECT###'] .= 'checked="checked" ';
+				$itemMarkerArray['###SELECT###'] .= 'checked="checked" ';
 			}
 
-			$itemMA['###SELECT###'] .= 'name="' . $hiddenFieldPrefix . '[address_uid]" value="' . $address['uid'] . '" />';
+			$itemMarkerArray['###SELECT###'] .= 'name="' . $hiddenFieldPrefix . '[address_uid]" value="' . $address['uid'] . '" />';
 
 			foreach ($hookObjectsArr as $hookObj) {
 				if (method_exists($hookObj, 'processAddressMarker')) {
 						/** @noinspection PhpUndefinedMethodInspection */
-					$itemMA = $hookObj->processAddressMarker($itemMA, $address, $piArray, $this);
+					$itemMarkerArray = $hookObj->processAddressMarker($itemMarkerArray, $address, $piArray, $this);
 				}
 			}
 
 			$addressFound = TRUE;
 
-			$addressItems[$address['tx_commerce_address_type_id']] .= $this->substituteMarkerArrayNoCached($tplItem, $itemMA, array(), $linkMA);
+			$addressItems[$address['tx_commerce_address_type_id']] .= $this->substituteMarkerArrayNoCached($tplItem, $itemMarkerArray, array(), $linkMarkerArray);
 		}
 
-		$linkMA = array();
+		$linkMarkerArray = array();
 
 			// Create a pivars array for merging with link to edit page
 		if ($this->conf['editAddressPid'] > 0) {
@@ -419,39 +420,39 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 			// Create links and labels for every address type
 		if ($addressType == 0) {
 			foreach ($addressTypes as $addressType) {
-				$baseMA['###ADDRESS_ITEMS_OF_TYPE_' . $addressType . '###'] = $addressItems[$addressType];
-				$baseMA['###LABEL_ADDRESSES_OF_TYPE_' . $addressType . '###'] = $this->pi_getLL('label_addresses_of_type_' . $addressType);
-				$linkMA['###LINK_NEW_TYPE_' . $addressType . '###'] = explode('|', $this->pi_linkTP_keepPIvars('|', array_merge($piArray, array('action' => 'new', 'addressType' => $addressType)), FALSE, FALSE, $linkTarget));
-				$baseMA['###LABEL_LINK_NEW_TYPE_' . $addressType . '###'] = $this->cObj->stdWrap($this->pi_getLL('label_link_new_type_' . $addressType), $this->conf['newLinkWrap.']);
+				$baseMarkerArray['###ADDRESS_ITEMS_OF_TYPE_' . $addressType . '###'] = $addressItems[$addressType];
+				$baseMarkerArray['###LABEL_ADDRESSES_OF_TYPE_' . $addressType . '###'] = $this->pi_getLL('label_addresses_of_type_' . $addressType);
+				$linkMarkerArray['###LINK_NEW_TYPE_' . $addressType . '###'] = explode('|', $this->pi_linkTP_keepPIvars('|', array_merge($piArray, array('action' => 'new', 'addressType' => $addressType)), FALSE, FALSE, $linkTarget));
+				$baseMarkerArray['###LABEL_LINK_NEW_TYPE_' . $addressType . '###'] = $this->cObj->stdWrap($this->pi_getLL('label_link_new_type_' . $addressType), $this->conf['newLinkWrap.']);
 			}
 		} else {
-			$baseMA['###ADDRESS_ITEMS###'] = $addressItems[$addressType];
-			$linkMA['###LINK_NEW###'] = explode('|', $this->pi_linkTP_keepPIvars('|', array_merge($piArray, array('action' => 'new', 'addressType' => $addressType)), FALSE, FALSE, $linkTarget));
-			$baseMA['###LABEL_LINK_NEW###'] = $this->cObj->stdWrap($this->pi_getLL('label_link_new'), $this->conf['newLinkWrap.']);
+			$baseMarkerArray['###ADDRESS_ITEMS###'] = $addressItems[$addressType];
+			$linkMarkerArray['###LINK_NEW###'] = explode('|', $this->pi_linkTP_keepPIvars('|', array_merge($piArray, array('action' => 'new', 'addressType' => $addressType)), FALSE, FALSE, $linkTarget));
+			$baseMarkerArray['###LABEL_LINK_NEW###'] = $this->cObj->stdWrap($this->pi_getLL('label_link_new'), $this->conf['newLinkWrap.']);
 		}
 
 		if (!$addressFound) {
-			$baseMA['###NO_ADDRESS###'] = $this->cObj->stdWrap($this->pi_getLL('label_no_address'), $this->conf['noAddressWrap.']);
+			$baseMarkerArray['###NO_ADDRESS###'] = $this->cObj->stdWrap($this->pi_getLL('label_no_address'), $this->conf['noAddressWrap.']);
 		} else {
-			$baseMA['###NO_ADDRESS###'] = '';
+			$baseMarkerArray['###NO_ADDRESS###'] = '';
 		}
 
 			// Fill sysMessage marker if set
 		if (!empty($this->sysMessage)) {
-			$baseMA['###SYS_MESSAGE###'] = $this->cObj->stdWrap($this->sysMessage, $this->conf['sysMessageWrap.']);
+			$baseMarkerArray['###SYS_MESSAGE###'] = $this->cObj->stdWrap($this->sysMessage, $this->conf['sysMessageWrap.']);
 		} else {
-			$baseMA['###SYS_MESSAGE###'] = '';
+			$baseMarkerArray['###SYS_MESSAGE###'] = '';
 		}
 
 		foreach ($hookObjectsArr as $hookObj) {
 			if (method_exists($hookObj, 'processListingMarker')) {
 					/** @noinspection PhpUndefinedMethodInspection */
-				$hookObj->processListingMarker($baseMA, $linkMA, $addressItems, $addressType, $piArray, $this);
+				$hookObj->processListingMarker($baseMarkerArray, $linkMarkerArray, $addressItems, $addressType, $piArray, $this);
 			}
 		}
 
 			// Replace markers and return content
-		return $this->substituteMarkerArrayNoCached($tplBase, $baseMA, array(), $linkMA);
+		return $this->substituteMarkerArrayNoCached($tplBase, $baseMarkerArray, array(), $linkMarkerArray);
 	}
 
 	/**
@@ -490,14 +491,13 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 		switch ($addressType) {
 			case '2':
 				$addressType = 'delivery';
-			break;
+				break;
 
 			default:
 				$addressType = 'billing';
-			break;
 		}
 
-			// Build query to select an address from the database if we have a logged in user
+		// Build query to select an address from the database if user is logged in
 		$addressData = ($addressUid != NULL) ? $this->addresses[$addressUid] : array();
 
 		if ($this->formErrors()) {
@@ -528,7 +528,7 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 			// Create form fields
 		$fieldsMarkerArray = array();
 		foreach ($this->fieldList as $fieldName) {
-			$fieldMA = array();
+			$fieldMarkerArray = array();
 			$lowerName = strtolower($fieldName);
 
 				// Get field label
@@ -541,17 +541,17 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 
 				// Insert error message for this specific field
 			if (strlen($this->getFormError($fieldName)) > 0) {
-				$fieldMA['###FIELD_ERROR###'] = $this->getFormError($fieldName);
+				$fieldMarkerArray['###FIELD_ERROR###'] = $this->getFormError($fieldName);
 			} else {
-				$fieldMA['###FIELD_ERROR###'] = '';
+				$fieldMarkerArray['###FIELD_ERROR###'] = '';
 			}
 
 				// Create input field
 				// In this version we only create some simple text fields.
-			$fieldMA['###FIELD_INPUT###'] = $this->getInputField($fieldName, $config['formFields.'][$fieldName . '.'], $addressData[$fieldName]);
+			$fieldMarkerArray['###FIELD_INPUT###'] = $this->getInputField($fieldName, $config['formFields.'][$fieldName . '.'], $addressData[$fieldName]);
 
 				// Get field item
-			$fieldsMarkerArray['###FIELD_' . strtoupper($fieldName) . '###'] = $this->cObj->substituteMarkerArray($tplField, $fieldMA);
+			$fieldsMarkerArray['###FIELD_' . strtoupper($fieldName) . '###'] = $this->cObj->substituteMarkerArray($tplField, $fieldMarkerArray);
 			$fieldsMarkerArray['###LABEL_' . strtoupper($fieldName) . '###'] = $fieldLabel;
 		}
 
@@ -571,7 +571,8 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 		$submitCode .= '<input type="hidden" name="' . $this->prefixId . '[addressType]" value="' . $addressData['tx_commerce_address_type_id'] . '" />';
 		$submitCode .= '<input type="submit" name="' . $this->prefixId . '[check]" value="' . $this->pi_getLL('label_submit_edit') . '" />';
 
-			// Create a checkbox where the user can select if the address is his main address / Changed to label and field
+		// Create a checkbox where the user can select if the address is his main
+		// address / Changed to label and field
 		$isMainAddressCodeField = '<input type="checkbox" name="' . $this->prefixId . '[ismainaddress]"';
 		if ($addressData['tx_commerce_is_main_address'] || $addressData['ismainaddress']) {
 			$isMainAddressCodeField .= ' checked="checked"';
@@ -581,22 +582,22 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 
 			// Fill additional information
 		if ($addressData['tx_commerce_address_type_id'] == 1) {
-			$baseMA['###MESSAGE_EDIT###'] = $this->pi_getLL('message_edit_billing');
+			$baseMarkerArray['###MESSAGE_EDIT###'] = $this->pi_getLL('message_edit_billing');
 		} elseif ($addressData['tx_commerce_address_type_id'] == 2) {
-			$baseMA['###MESSAGE_EDIT###'] = $this->pi_getLL('message_edit_delivery');
+			$baseMarkerArray['###MESSAGE_EDIT###'] = $this->pi_getLL('message_edit_delivery');
 		} else {
-			$baseMA['###MESSAGE_EDIT###'] = $this->pi_getLL('message_edit_unknown');
+			$baseMarkerArray['###MESSAGE_EDIT###'] = $this->pi_getLL('message_edit_unknown');
 		}
 
 			// Fill the marker
-		$baseMA['###ADDRESS_FORM_FIELDS###'] = $formCode;
-		$baseMA['###ADDRESS_FORM_SUBMIT###'] = $submitCode;
-		$baseMA['###ADDRESS_FORM_IS_MAIN_ADDRESS_FIELD###'] = $isMainAddressCodeField;
-		$baseMA['###ADDRESS_FORM_IS_MAIN_ADDRESS_LABEL###'] = $isMainAddressCodeLabel;
+		$baseMarkerArray['###ADDRESS_FORM_FIELDS###'] = $formCode;
+		$baseMarkerArray['###ADDRESS_FORM_SUBMIT###'] = $submitCode;
+		$baseMarkerArray['###ADDRESS_FORM_IS_MAIN_ADDRESS_FIELD###'] = $isMainAddressCodeField;
+		$baseMarkerArray['###ADDRESS_FORM_IS_MAIN_ADDRESS_LABEL###'] = $isMainAddressCodeLabel;
 
 			// @Deprecated Obsolete Marker, use Field and label instead
-		$baseMA['###ADDRESS_FORM_IS_MAIN_ADDRESS###'] = $isMainAddressCodeField . ' ' . $isMainAddressCodeLabel;
-		$baseMA['###ADDRESS_TYPE###'] = $this->pi_getLL('label_address_of_type_' . $this->piVars['addressType']);
+		$baseMarkerArray['###ADDRESS_FORM_IS_MAIN_ADDRESS###'] = $isMainAddressCodeField . ' ' . $isMainAddressCodeLabel;
+		$baseMarkerArray['###ADDRESS_TYPE###'] = $this->pi_getLL('label_address_of_type_' . $this->piVars['addressType']);
 
 			// Get action link
 		if ((int) $this->piVars['backpid'] > 0) {
@@ -605,7 +606,7 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 			$link = '';
 		}
 
-		$baseMA['###ADDRESS_FORM_BACK###'] = $this->pi_linkToPage(
+		$baseMarkerArray['###ADDRESS_FORM_BACK###'] = $this->pi_linkToPage(
 			$this->pi_getLL('label_form_back', 'back'),
 			$this->piVars['backpid'],
 			'',
@@ -619,16 +620,17 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 		foreach ($hookObjectsArr as $hookObj) {
 			if (method_exists($hookObj, 'processAddressFormMarker')) {
 					/** @noinspection PhpUndefinedMethodInspection */
-				$hookObj->processAddressFormMarker($baseMA, $action, $addressUid, $addressData, $config, $this);
+				$hookObj->processAddressFormMarker($baseMarkerArray, $action, $addressUid, $addressData, $config, $this);
 			}
 		}
 
 		return '<form method="post" action="' . $link . '" ' . $this->conf[$addressType . '.']['formParams'] . '>' .
-			$this->cObj->substituteMarkerArray($tplBase, $baseMA) . '</form>';
+			$this->cObj->substituteMarkerArray($tplBase, $baseMarkerArray) . '</form>';
 	}
 
 	/**
-	 * Returns HTML code for a confirmation if the user wants to delete one of his addresses.
+	 * Returns HTML code for a confirmation if the user wants to delete
+	 * one of his addresses.
 	 *
 	 * @return string The HTML source with the delete confirmation form
 	 */
@@ -637,24 +639,24 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 
 			// Fill address data to marker
 		foreach ($this->fieldList as $name) {
-			$baseMA['label_' . $name] = $this->pi_getLL('label_' . $name);
-			$baseMA[$name] = $this->addresses[(int) $this->piVars['addressid']][$name];
+			$baseMarkerArray['label_' . $name] = $this->pi_getLL('label_' . $name);
+			$baseMarkerArray[$name] = $this->addresses[(int) $this->piVars['addressid']][$name];
 		}
 
-		$baseMA['QUESTION'] = $this->pi_getLL('question_delete');
-		$baseMA['YES'] = $this->cObj->stdWrap($this->pi_getLL('label_submit_yes'), $this->conf['yesLinkWrap.']);
-		$baseMA['NO'] = $this->cObj->stdWrap($this->pi_getLL('label_submit_no'), $this->conf['noLinkWrap.']);
-		$linkMA['###LINK_YES###'] = explode('|', $this->pi_linkTP_keepPIvars('|', array('action' => 'delete', 'confirmed' => 'yes')));
-		$linkMA['###LINK_NO###'] = explode('|', $this->pi_linkTP_keepPIvars('|', array('action' => 'listing')));
+		$baseMarkerArray['QUESTION'] = $this->pi_getLL('question_delete');
+		$baseMarkerArray['YES'] = $this->cObj->stdWrap($this->pi_getLL('label_submit_yes'), $this->conf['yesLinkWrap.']);
+		$baseMarkerArray['NO'] = $this->cObj->stdWrap($this->pi_getLL('label_submit_no'), $this->conf['noLinkWrap.']);
+		$linkMarkerArray['###LINK_YES###'] = explode('|', $this->pi_linkTP_keepPIvars('|', array('action' => 'delete', 'confirmed' => 'yes')));
+		$linkMarkerArray['###LINK_NO###'] = explode('|', $this->pi_linkTP_keepPIvars('|', array('action' => 'listing')));
 
-		$content = $this->cObj->substituteMarkerArray($tplBase, $baseMA, '###|###', 1);
+		$content = $this->cObj->substituteMarkerArray($tplBase, $baseMarkerArray, '###|###', 1);
 
-		return $this->substituteMarkerArrayNoCached($content, array(), array(), $linkMA);
+		return $this->substituteMarkerArrayNoCached($content, array(), array(), $linkMarkerArray);
 	}
 
 	/**
-	 * Deletes an address from the database. It doesn't delete the dataset in real, but it sets the deleted flag like it's
-	 * done inside TYPO3.
+	 * Deletes an address from the database. It doesn't delete the dataset in
+	 * real, but it sets the deleted flag like it's done inside TYPO3.
 	 * This method has no params, because it currently gets the data from piVars.
 	 *
 	 * @return boolean
@@ -712,8 +714,8 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 	 * This is just a switch between the specific methods.
 	 *
 	 * @param string $fieldName Name of the field
-	 * @param array $fieldConfig Configuration for this field (usually from TypoScript)
-	 * @param string $fieldValue Current value of this field (usually fetched from piVars)
+	 * @param array $fieldConfig Configuration for this field
+	 * @param string $fieldValue Current value of this field
 	 * @return string Result of the specific field methods (usually a html string)
 	 */
 	protected function getInputField($fieldName, $fieldConfig, $fieldValue = '') {
@@ -721,7 +723,7 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 		switch (strtolower($fieldConfig['type'])) {
 			case 'select':
 				$content .= $this->getSelectInputField($fieldName, $fieldConfig, $fieldValue);
-			break;
+				break;
 
 			case 'static_info_tables':
 				$selected = $fieldValue != '' ? $fieldValue : $fieldConfig['default'];
@@ -737,16 +739,15 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 					$fieldConfig['select'],
 					$GLOBALS['TSFE']->tmpl->setup['config.']['language']
 				);
-			break;
+				break;
 
 			case 'check':
 				$content .= $this->getCheckboxInputField($fieldName, $fieldConfig, $fieldValue);
-			break;
+				break;
 
 			case 'single':
 			default:
 				$content .= $this->getSingleInputField($fieldName, $fieldConfig, $fieldValue);
-			break;
 		}
 
 		/**
@@ -770,8 +771,8 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 	 * Returns a single textfield
 	 *
 	 * @param string $fieldName Name of the field
-	 * @param array $fieldConfig Configuration for this field (normally from TypoScript)
-	 * @param string $fieldValue Current value of this field (Normally fetched from piVars)
+	 * @param array $fieldConfig Configuration for this field
+	 * @param string $fieldValue Current value of this field
 	 * @return string A single field with type = text
 	 */
 	protected function getSingleInputField($fieldName, $fieldConfig, $fieldValue = '') {
@@ -800,8 +801,8 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 	 * Create a selectbox
 	 *
 	 * @param string $fieldName Name of the field
-	 * @param array $fieldConfig Configuration for this field (normally from TypoScript)
-	 * @param string $fieldValue Current value of this field (Normally fetched from piVars)
+	 * @param array $fieldConfig Configuration for this field
+	 * @param string $fieldValue Current value of this field
 	 * @return string HTML code for a select box with a set of options
 	 */
 	protected function getSelectInputField($fieldName, $fieldConfig, $fieldValue = '') {
@@ -827,14 +828,14 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 
 			/** @var t3lib_db $database */
 			$database = $GLOBALS['TYPO3_DB'];
-			$res = $database->exec_SELECTquery(
+			$rows = $database->exec_SELECTgetRows(
 				$fields,
 				$fieldConfig['table'],
 				$select,
 				'',
 				$fieldConfig['orderby']
 			);
-			while ($row = $database->sql_fetch_assoc($res)) {
+			foreach ($rows as $row) {
 				$result .= '<option name="' . $row['value'] . '" value="' . $row['value'] . '"';
 				if ($row['value'] === $fieldConfig['default']) {
 					$result .= ' selected="selected"';
@@ -851,8 +852,8 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 	 * Returns a checkbox
 	 *
 	 * @param string $fieldName Name of the field
-	 * @param array $fieldConfig Configuration for this field (normally from TypoScript)
-	 * @param string $fieldValue Current value of this field (Normally fetched from piVars)
+	 * @param array $fieldConfig Configuration for this field
+	 * @param string $fieldValue Current value of this field
 	 * @return string A single checkbox
 	 */
 	protected function getCheckboxInputField($fieldName, $fieldConfig, $fieldValue = '') {
@@ -873,11 +874,12 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 	}
 
 	/**
-	 * Reads in the complete configuration for a form, and parses the data that come from the piVars
-	 * and checks if this values fit the configuration for the field.
-	 * Errors are stored in internal formError Array. The key will be the name of the field and the value will be the error message.
+	 * Reads in the complete configuration for a form, and parses the data
+	 * that come from the piVars and checks if this values fit the configuration
+	 * for the field.
+	 * Errors are stored in internal formError Array. The key will be the name
+	 * of the field and the value will be the error message.
 	 *
-	 * @todo Fix english
 	 * @return boolean
 	 * @see setFormError()
 	 */
@@ -903,7 +905,8 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 		$config = $this->conf['formFields.'];
 		$result = TRUE;
 
-			// If the address doesn't exsist in session it's valid. In case no delivery address was set.
+		// If the address doesn't exsist in session it's valid. In case no delivery
+		// address was set.
 		foreach ($this->fieldList as $name) {
 			$value = $this->piVars[$name];
 			$options = $this->conf['formFields.'][$name . '.'];
@@ -922,56 +925,55 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 							$this->setFormError($name, $this->pi_getLL('error_field_email'));
 							$result = FALSE;
 						}
-					break;
+						break;
 
 					case 'string':
 						if (!is_string($value)) {
 							$this->setFormError($name, $this->pi_getLL('error_field_string'));
 							$result = FALSE;
 						}
-					break;
+						break;
 
 					case 'int':
 						if (!is_integer($value)) {
 							$this->setFormError($name, $this->pi_getLL('error_field_int'));
 							$result = FALSE;
 						}
-					break;
+						break;
 
 					case 'min':
 						if (strlen((string)$value) < (int) $method[1]) {
 							$this->setFormError($name, sprintf($this->pi_getLL('error_field_min'), $method[1]));
 							$result = FALSE;
 						}
-					break;
+						break;
 
 					case 'max':
 						if (strlen((string)$value) > (int) $method[1]) {
 							$this->setFormError($name, sprintf($this->pi_getLL('error_field_max'), $method[1]));
 							$result = FALSE;
 						}
-					break;
+						break;
 
 					case 'alpha':
 						if (preg_match('/[0-9]/', $value) === 1) {
 							$this->setFormError($name, $this->pi_getLL('error_field_alpha'));
 							$result = FALSE;
 						}
-					break;
+						break;
 
 					default:
 						if (!empty($method[0])) {
-							$act_method = 'validationMethod_' . strtolower($method[0]);
+							$currentMethod = 'validationMethod_' . strtolower($method[0]);
 							foreach ($hookObjectsArr as $hookObj) {
-								if (method_exists($hookObj, $act_method)) {
+								if (method_exists($hookObj, $currentMethod)) {
 										/** @noinspection PhpUndefinedMethodInspection */
-									if (!$hookObj->$act_method($this,$name,$value)) {
+									if (!$hookObj->$currentMethod($this,$name,$value)) {
 										$result = FALSE;
 									}
 								}
 							}
 						}
-					break;
 				}
 			}
 		}
@@ -982,7 +984,8 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 	/**
 	 * Save some data from piVars as address into database.
 	 *
-	 * @param boolean $new If this is TRUE, a new address will be created, otherwise it searches for an existing dataset and updates it
+	 * @param boolean $new If this is TRUE, a new address will be created,
+	 * 		otherwise it searches for an existing dataset and updates it
 	 * @param integer $addressType Type of address delivered by piVars
 	 * @return void
 	 */
@@ -998,7 +1001,8 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 
 		if ($this->piVars['ismainaddress'] == 'on') {
 			$newData['tx_commerce_is_main_address'] = 1;
-				// Remove all "is main address" flags from addresses that are assigned to this user
+			// Remove all "is main address" flags from addresses that
+			// are assigned to this user
 			$database->exec_UPDATEquery(
 				'tt_address',
 				'pid=' . $this->conf['addressPid'] . ' AND tx_commerce_fe_user_id=' . $this->user['uid'] . ' AND tx_commerce_address_type_id=' . $addressType,
@@ -1085,7 +1089,7 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 	 * Create a list of array keys where the last character is removed from it.
 	 *
 	 * @param array $dataArray Array where the keys should be cleaned
-	 * @return array An array with the cleaned arraykeys or the orginal data if it was no array
+	 * @return array with the cleaned arraykeys or the orginal data if not an array
 	 */
 	protected function parseFieldList($dataArray) {
 		$result = array();
@@ -1094,7 +1098,7 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 			return $result;
 		}
 
-		foreach ($dataArray as $key => $data) {
+		foreach (array_keys($dataArray) as $key) {
 				// remove the trailing '.'
 			$result[] = substr($key, 0, -1);
 		}
@@ -1106,7 +1110,7 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 	 * Get all addresses from the database that are assigned to the current user.
 	 *
 	 * @param integer $userId UID of the user
-	 * @param integer $addressType Type of addresses to retrieve (0 (default) means get all types)
+	 * @param integer $addressType Type of addresses to retrieve
 	 * @return array Keys with UIDs and values with complete addresses data
 	 */
 	public function getAddresses($userId, $addressType = 0) {
@@ -1153,7 +1157,7 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 
 		/** @var t3lib_db $database */
 		$database = $GLOBALS['TYPO3_DB'];
-		$res = $database->exec_SELECTquery(
+		$rows = $database->exec_SELECTgetRows(
 			'*',
 			'tt_address',
 			$select,
@@ -1162,7 +1166,7 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 		);
 
 		$result = array();
-		while ($address = $database->sql_fetch_assoc($res)) {
+		foreach ($rows as $address) {
 			$result[$address['uid']] = Tx_Commerce_Utility_GeneralUtility::removeXSSStripTagsArray($address);
 		}
 
@@ -1175,11 +1179,7 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 	 * @return boolean
 	 */
 	public function formErrors() {
-		if (count($this->formError) > 0) {
-			return TRUE;
-		} else {
-			return FALSE;
-		}
+		return count($this->formError) > 0;
 	}
 
 	/**

@@ -94,7 +94,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 	 * pi plugins of tx_commerce
 	 *
 	 * @param array $conf Configuration
-	 * @return string Error output in case of error else void
+	 * @return void
 	 */
 	protected function init(array $conf = array()) {
 		parent::init($conf);
@@ -125,6 +125,8 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 	}
 
 	/**
+	 * Initialize basket
+	 *
 	 * @return void
 	 */
 	public function initBasket() {
@@ -134,6 +136,8 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 	}
 
 	/**
+	 * Get basket
+	 *
 	 * @return Tx_Commerce_Domain_Model_Basket
 	 */
 	public function getBasket() {
@@ -243,6 +247,8 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 	}
 
 	/**
+	 * Handle basket deletion
+	 *
 	 * @return void
 	 */
 	public function handleDeleteBasket() {
@@ -276,6 +282,8 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 	}
 
 	/**
+	 * Handle adding article
+	 *
 	 * @return void
 	 */
 	public function handleAddArticle() {
@@ -306,6 +314,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 
 		if ($this->piVars['artAddUid']) {
 			while (list($k, $v) = each($this->piVars['artAddUid'])) {
+		//	foreach ($this->piVars['artAddUid'] as ) {
 				$k = (int) $k;
 
 				/** @var Tx_Commerce_Domain_Model_BasketItem $basketItem */
@@ -696,7 +705,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 			$allowedArticles = explode(',', $this->conf['delivery.']['allowedArticles']);
 		}
 
-			// Hook to define/overwrite individually, which delivery articles are allowed
+		// Hook to define/overwrite individually, which delivery articles are allowed
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['deliveryArticles'])) {
 			t3lib_div::deprecationLog('
 				hook
@@ -723,8 +732,8 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 		$select = '<select name="' . $this->prefixId . '[delArt]" onChange="this.form.submit();">';
 
 		$first = FALSE;
-		$price_net = '';
-		$price_gross = '';
+		$priceNet = '';
+		$priceGross = '';
 		/** @var $articleObj Tx_Commerce_Domain_Model_Article */
 		foreach ($this->deliveryProduct->getArticleObjects() as $articleUid => $articleObj) {
 			if (!count($allowedArticles) || in_array($articleUid, $allowedArticles)) {
@@ -732,11 +741,11 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 				if ($articleUid == $this->basketDeliveryArticles[0]) {
 					$first = 1;
 					$select .= ' selected="selected"';
-					$price_net = tx_moneylib::format($articleObj->getPriceNet(), $this->currency);
-					$price_gross = tx_moneylib::format($articleObj->getPriceGross(), $this->currency);
+					$priceNet = tx_moneylib::format($articleObj->getPriceNet(), $this->currency);
+					$priceGross = tx_moneylib::format($articleObj->getPriceGross(), $this->currency);
 				} elseif (!$first) {
-					$price_net = tx_moneylib::format($articleObj->getPriceNet(), $this->currency);
-					$price_gross = tx_moneylib::format($articleObj->getPriceGross(), $this->currency);
+					$priceNet = tx_moneylib::format($articleObj->getPriceNet(), $this->currency);
+					$priceGross = tx_moneylib::format($articleObj->getPriceGross(), $this->currency);
 					if (!is_array($this->basketDeliveryArticles) || count($this->basketDeliveryArticles) < 1) {
 						$this->basket->addArticle($articleUid);
 						$this->basket->storeData();
@@ -750,8 +759,8 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 		$select .= '</select>';
 
 		$basketArray['###DELIVERY_SELECT_BOX###'] = $select;
-		$basketArray['###DELIVERY_PRICE_GROSS###'] = $price_gross;
-		$basketArray['###DELIVERY_PRICE_NET###'] = $price_net;
+		$basketArray['###DELIVERY_PRICE_GROSS###'] = $priceGross;
+		$basketArray['###DELIVERY_PRICE_NET###'] = $priceNet;
 
 		return $basketArray;
 	}
@@ -774,15 +783,15 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 
 		$addPleaseSelect = FALSE;
 		$addDefaultPaymentToBasket = FALSE;
-			// Check if a Payment is selected if not, add standard payment
+		// Check if a Payment is selected if not, add standard payment
 		if (count($this->basketPaymentArticles) == 0) {
-				// Check if Payment selection is forced
+			// Check if Payment selection is forced
 			if ($this->conf['payment.']['forceSelection']) {
-					// Add Please Select Option
+				// Add Please Select Option
 				$select .= '<option value="-1" selected="selected">' . $this->pi_getLL('lang_payment_force') . '</option>';
 				$addPleaseSelect = TRUE;
 			} else {
-					// No payment article is in the basket, so add the first one
+				// No payment article is in the basket, so add the first one
 				$addDefaultPaymentToBasket = TRUE;
 			}
 		}
@@ -792,7 +801,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 			$allowedArticles = explode(',', $this->conf['payment.']['allowedArticles']);
 		}
 
-			// Check if payment articles are allowed
+		// Check if payment articles are allowed
 		$newAllowedArticles = array();
 		/** @var Tx_Commerce_Domain_Model_Article $articleObj */
 		foreach ($this->paymentProduct->getArticleObjects() as $articleUid => $articleObj) {
@@ -805,18 +814,19 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 			}
 		}
 
-			// If default Paymentarticle is, for example, credit card
-			// but when we have an article in the basket with the only possible
-			// payment method like debit, this ensures that there is still the correct
-			// payment article in the basket.
-			// @todo: Refactor default handling
+		// If default Paymentarticle is, for example, credit card
+		// but when we have an article in the basket with the only possible
+		// payment method like debit, this ensures that there is still the correct
+		// payment article in the basket.
+		// @todo: Refactor default handling
 		if (count($newAllowedArticles) == 1 && $this->conf['defaultPaymentArticleId'] != $newAllowedArticles[0]) {
 			$this->conf['defaultPaymentArticleId'] = $newAllowedArticles[0];
 		}
 		$allowedArticles = $newAllowedArticles;
 		unset ($newAllowedArticles);
 
-			// Hook to allow to define/overwrite individually, which payment articles are allowed
+		// Hook to allow to define/overwrite individually, which payment
+		// articles are allowed
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['paymentArticles'])) {
 			t3lib_div::deprecationLog('
 				hook
@@ -841,8 +851,8 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 		}
 
 		$first = FALSE;
-		$price_net = '';
-		$price_gross = '';
+		$priceNet = '';
+		$priceGross = '';
 		/** @var $articleObj Tx_Commerce_Domain_Model_Article */
 		foreach ($this->paymentProduct->getArticleObjects() as $articleUid => $articleObj) {
 			if (!count($allowedArticles) || in_array($articleUid, $allowedArticles)) {
@@ -856,11 +866,11 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 					$first = TRUE;
 					$select .= ' selected="selected"';
 					$this->basket->addArticle($articleUid);
-					$price_net = tx_moneylib::format($articleObj->getPriceNet(), $this->currency);
-					$price_gross = tx_moneylib::format($articleObj->getPriceGross(), $this->currency);
+					$priceNet = tx_moneylib::format($articleObj->getPriceNet(), $this->currency);
+					$priceGross = tx_moneylib::format($articleObj->getPriceGross(), $this->currency);
 				} elseif (!$first) {
-					$price_net = tx_moneylib::format($articleObj->getPriceNet(), $this->currency);
-					$price_gross = tx_moneylib::format($articleObj->getPriceGross(), $this->currency);
+					$priceNet = tx_moneylib::format($articleObj->getPriceNet(), $this->currency);
+					$priceGross = tx_moneylib::format($articleObj->getPriceGross(), $this->currency);
 					$this->basket->deleteArticle($articleUid);
 				}
 				$select .= '>' . $articleObj->getTitle() . '</option>';
@@ -871,13 +881,13 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 
 			// Set Prices to 0, if "please select " is shown
 		if ($addPleaseSelect) {
-			$price_gross = tx_moneylib::format(0, $this->currency);
-			$price_net = tx_moneylib::format(0, $this->currency);
+			$priceGross = tx_moneylib::format(0, $this->currency);
+			$priceNet = tx_moneylib::format(0, $this->currency);
 		}
 
 		$basketArray['###PAYMENT_SELECT_BOX###'] = $select;
-		$basketArray['###PAYMENT_PRICE_GROSS###'] = $price_gross;
-		$basketArray['###PAYMENT_PRICE_NET###'] = $price_net;
+		$basketArray['###PAYMENT_PRICE_GROSS###'] = $priceGross;
+		$basketArray['###PAYMENT_PRICE_NET###'] = $priceNet;
 
 		$this->basket->storeData();
 
@@ -894,6 +904,8 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 	}
 
 	/**
+	 * Make article view
+	 *
 	 * @param Tx_Commerce_Domain_Model_Article $article
 	 * @param Tx_Commerce_Domain_Model_Product $product
 	 * @return string
@@ -907,10 +919,10 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 			if (is_array($attributeArray)) {
 				$templateAttr = $this->cObj->getSubpart($this->templateCode, '###BASKET_SELECT_ATTRIBUTES###');
 
-				foreach ($attributeArray as $attribute_uid => $myAttribute) {
+				foreach ($attributeArray as $attributeUid => $myAttribute) {
 					/** @var $attributeObj Tx_Commerce_Domain_Model_Attribute */
 					$attributeObj = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Attribute');
-					$attributeObj->init($attribute_uid, $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
+					$attributeObj->init($attributeUid, $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
 					$attributeObj->loadData();
 
 					$markerArray['###SELECT_ATTRIBUTES_TITLE###'] = $myAttribute['title'];
@@ -1066,19 +1078,20 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 			/** @var $basketItem Tx_Commerce_Domain_Model_BasketItem */
 			$basketItem = $this->basket->getBasketItem($basketItemId);
 
-				// Check stock
-			$stockOK = TRUE;
+			// Check stock
+			$stockOk = TRUE;
 			if ($this->conf['checkStock'] == 1) {
 				if (!$basketItem->article->hasStock($basketItem->getQuantity())) {
-					$stockOK = FALSE;
+					$stockOk = FALSE;
 				}
 			}
 
-				// Check accessible
+			// Check accessible
 			$access = ($basketItem->getProduct()->isAccessible() && $basketItem->getArticle()->isAccessible());
 
-				// Only if Stock is ok and Access is ok (could have been changed since the article was put into the basket
-			if ($stockOK && $access) {
+			// Only if Stock is ok and Access is ok (could have been changed since
+			// the article was put into the basket
+			if ($stockOk && $access) {
 				$safePrefix = $this->prefixId;
 
 				$typoLinkConf = array();
@@ -1091,9 +1104,9 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 					$typoLinkConf['additionalParams'] .= $this->argSeparator . $this->prefixId . '[basketHashValue]=' . $this->basketHashValue;
 				}
 
-					// @todo change link building to pure TypoScript everywhere in commerce, cObj->data usage required
-				$lokalTSproduct = $this->addTypoLinkToTS($this->conf['fields.']['products.'], $typoLinkConf);
-				$lokalTSArticle = $this->addTypoLinkToTS($this->conf['fields.']['articles.'], $typoLinkConf);
+				// @todo change link building to pure TypoScript, cObj->data usage required
+				$lokalTsProduct = $this->addTypoLinkToTS($this->conf['fields.']['products.'], $typoLinkConf);
+				$lokalTsArticle = $this->addTypoLinkToTS($this->conf['fields.']['articles.'], $typoLinkConf);
 
 				$this->prefixId = $altPrefixSingle;
 
@@ -1108,8 +1121,8 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 
 				$this->prefixId = $safePrefix;
 
-				$productMarkerArray = $this->generateMarkerArray($basketItem->getProductAssocArray(''), $lokalTSproduct, 'product_', 'tx_commerce_products');
-				$articleMarkerArray = $this->generateMarkerArray($basketItem->getArticleAssocArray(''), $lokalTSArticle, 'article_', 'tx_commerce_articles');
+				$productMarkerArray = $this->generateMarkerArray($basketItem->getProductAssocArray(''), $lokalTsProduct, 'product_', 'tx_commerce_products');
+				$articleMarkerArray = $this->generateMarkerArray($basketItem->getArticleAssocArray(''), $lokalTsArticle, 'article_', 'tx_commerce_articles');
 				$this->selectAttributes = $basketItem->getProduct()->getAttributes(array(ATTRIB_SELECTOR));
 				$productMarkerArray['PRODUCT_BASKET_FOR_LISTVIEW'] = $this->makeArticleView($basketItem->getArticle(), $basketItem->getProduct());
 				$templateSelector = $changerowcount % 2;

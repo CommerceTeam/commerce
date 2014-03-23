@@ -33,7 +33,8 @@
  *
  * Variables:
  * $this->MOD_SETTINGS['depth']: integer 1-3: decides the depth of the list
- * $this->MOD_SETTINGS['mode']: 'perms' / '': decides if we view a user-overview or the permissions.
+ * $this->MOD_SETTINGS['mode']: 'perms' / '': decides if we view a user-overview
+ * 		or the permissions.
  */
 class Tx_Commerce_Controller_AccessController extends t3lib_SCbase {
 	/**
@@ -65,8 +66,10 @@ class Tx_Commerce_Controller_AccessController extends t3lib_SCbase {
 	public $editingAllowed;
 
 	/**
-	 * If set, editing of the category permissions will occur (showing the editing screen). Notice:
-	 * This value is evaluated against permissions and so it will change internally!
+	 * If set, editing of the category permissions will occur
+	 * (showing the editing screen). Notice: This value is evaluated against
+	 * permissions and so it will change internally!
+	 *
 	 * @var boolean
 	 */
 	public $edit;
@@ -169,10 +172,11 @@ class Tx_Commerce_Controller_AccessController extends t3lib_SCbase {
 		/** @var language $language */
 		$language = $GLOBALS['LANG'];
 
-			// MENU-ITEMS:
-			// If array, then it's a selector box menu
-			// If empty string it's just a variable, that'll be saved.
-			// Values NOT in this array will not be saved in the settings-array for the module.
+		// MENU-ITEMS:
+		// If array, then it's a selector box menu
+		// If empty string it's just a variable, that'll be saved.
+		// Values NOT in this array will not be saved in the settings-array
+		// for the module.
 		$levelLabel = $language->getLL('levels');
 		$this->MOD_MENU = array(
 			'depth' => array(
@@ -203,8 +207,9 @@ class Tx_Commerce_Controller_AccessController extends t3lib_SCbase {
 		/** @var language $language */
 		$language = $GLOBALS['LANG'];
 
-			// Access check...
-			// The page will show only if there is a valid page and if this page may be viewed by the user
+		// Access check...
+		// The page will show only if there is a valid page and if this page
+		// may be viewed by the user
 		if ($this->categoryUid) {
 			$this->pageinfo = Tx_Commerce_Utility_BackendUtility::readCategoryAccess($this->categoryUid, $this->perms_clause);
 		} else {
@@ -244,11 +249,14 @@ class Tx_Commerce_Controller_AccessController extends t3lib_SCbase {
 
 		$docHeaderButtons = $this->getHeaderButtons();
 
+		$categoryInfo = $this->categoryUid ? $this->getCategoryInfo($this->pageinfo) : $this->getPageInfo($this->pageinfo);
+		$categoryPath = $this->categoryUid ? $this->getCategoryPath($this->pageinfo) : $this->getPagePath($this->pageinfo);
+
 		$markers = array(
 			'CSH' => $docHeaderButtons['csh'],
 			'CONTENT' => $this->content,
-			'CATINFO' => $this->categoryUid ? $this->getCategoryInfo($this->pageinfo) : $this->getPageInfo($this->pageinfo),
-			'CATPATH' => $this->categoryUid ? $this->getCategoryPath($this->pageinfo) : $this->getPagePath($this->pageinfo),
+			'CATINFO' => $categoryInfo,
+			'CATPATH' => $categoryPath,
 		);
 		$markers['FUNC_MENU'] = $this->doc->funcMenu(
 			'',
@@ -277,7 +285,8 @@ class Tx_Commerce_Controller_AccessController extends t3lib_SCbase {
 	}
 
 	/**
-	 * Create the panel of buttons for submitting the form or otherwise perform operations.
+	 * Create the panel of buttons for submitting the form or otherwise
+	 * perform operations.
 	 *
 	 * @return array all available buttons as an assoc. array
 	 */
@@ -522,9 +531,9 @@ class Tx_Commerce_Controller_AccessController extends t3lib_SCbase {
 		if (!$backendUser->isAdmin()) {
 			$beUserArray = t3lib_BEfunc::blindUserNames($beUserArray, $beGroupKeys, 1);
 		}
-		$beGroupArray_o = $beGroupArray = t3lib_BEfunc::getGroupNames();
+		$beGroupArrayO = $beGroupArray = t3lib_BEfunc::getGroupNames();
 		if (!$backendUser->isAdmin()) {
-			$beGroupArray = t3lib_BEfunc::blindGroupNames($beGroupArray_o, $beGroupKeys, 1);
+			$beGroupArray = t3lib_BEfunc::blindGroupNames($beGroupArrayO, $beGroupKeys, 1);
 		}
 
 			// Owner selector:
@@ -566,7 +575,7 @@ class Tx_Commerce_Controller_AccessController extends t3lib_SCbase {
 		if (!$userset && $this->pageinfo['perms_groupid']) {
 			$options = '
 				<option value="' . $this->pageinfo['perms_groupid'] . '" selected="selected">' .
-					htmlspecialchars($beGroupArray_o[$this->pageinfo['perms_groupid']]['title']) .
+					htmlspecialchars($beGroupArrayO[$this->pageinfo['perms_groupid']]['title']) .
 				'</option>' .
 				$options;
 		}
@@ -662,11 +671,12 @@ class Tx_Commerce_Controller_AccessController extends t3lib_SCbase {
 		$backendUser = $GLOBALS['BE_USER'];
 		/** @var language $language */
 		$language = $GLOBALS['LANG'];
-		/** @var Tx_Commerce_Controller_PermissionAjaxController $permissionAjaxController */
-		$permissionAjaxController = t3lib_div::makeInstance('Tx_Commerce_Controller_PermissionAjaxController');
+		/** @var Tx_Commerce_Controller_PermissionAjaxController $permissionController */
+		$permissionController = t3lib_div::makeInstance('Tx_Commerce_Controller_PermissionAjaxController');
 
-			// Get usernames and groupnames: The arrays we get in return contains only 1) users which are members of the groups
-			// of the current user, 2) groups that the current user is member of
+		// Get usernames and groupnames: The arrays we get in return contains only
+		// 1) users which are members of the groups of the current user,
+		// 2) groups that the current user is member of
 		$beGroupKeys = $backendUser->userGroupsUID;
 		$beUserArray = t3lib_BEfunc::getUserNames();
 		if (!$backendUser->isAdmin()) {
@@ -739,7 +749,7 @@ class Tx_Commerce_Controller_AccessController extends t3lib_SCbase {
 		$l = count($records);
 		$lastDepth = 0;
 
-		for ($i = 0; $i < $l; $i ++) {
+		for ($i = 0; $i < $l; $i++) {
 			$row = $records[$i]['record'];
 
 			$cells  = array();
@@ -747,45 +757,45 @@ class Tx_Commerce_Controller_AccessController extends t3lib_SCbase {
 
 				// Background colors:
 			$bgCol = ($this->lastEdited == $pageId ? ' class="bgColor-20"' : '');
-			$lE_bgCol = $bgCol;
+			$elementBgCol = $bgCol;
 
 				// User/Group names:
 			$userName = $beUserArray[$row['perms_userid']] ?
 				$beUserArray[$row['perms_userid']]['username'] :
 				($row['perms_userid'] ? $row['perms_userid'] : '');
-			$userName = $permissionAjaxController->renderOwnername($pageId, $row['perms_userid'], htmlspecialchars(t3lib_div::fixed_lgd_cs($userName, 20)));
+			$userName = $permissionController->renderOwnername($pageId, $row['perms_userid'], htmlspecialchars(t3lib_div::fixed_lgd_cs($userName, 20)));
 
 			$groupName = $beGroupArray[$row['perms_groupid']] ?
 				$beGroupArray[$row['perms_groupid']]['title']  :
 				($row['perms_groupid'] ? $row['perms_groupid'] : '');
 			if ($row['perms_groupid'] && (!$beGroupArray[$row['perms_groupid']])) {
-				$groupName = $permissionAjaxController->renderGroupname($pageId, $row['perms_groupid'], htmlspecialchars(t3lib_div::fixed_lgd_cs($groupName, 20)), FALSE);
+				$groupName = $permissionController->renderGroupname($pageId, $row['perms_groupid'], htmlspecialchars(t3lib_div::fixed_lgd_cs($groupName, 20)), FALSE);
 			} else {
-				$groupName = $permissionAjaxController->renderGroupname($pageId, $row['perms_groupid'], htmlspecialchars(t3lib_div::fixed_lgd_cs($groupName, 20)));
+				$groupName = $permissionController->renderGroupname($pageId, $row['perms_groupid'], htmlspecialchars(t3lib_div::fixed_lgd_cs($groupName, 20)));
 			}
 
-				// Seeing if editing of permissions are allowed for that page:
+			// Seeing if editing of permissions are allowed for that page:
 			$editPermsAllowed = ($row['perms_userid'] == $backendUser->user['uid'] || $backendUser->isAdmin());
 
-				// First column:
-			$PMicon = '';
-				// Add PM only if we are not looking at the root
+			// First column:
+			$pmIcon = '';
+			// Add PM only if we are not looking at the root
 			if ($records[$i]['depth'] > 0) {
-					// Add simple join-images for categories that are deeper level than 1
+				// Add simple join-images for categories that are deeper level than 1
 				if ($records[$i]['depth'] > 1) {
 					$k = $records[$i]['depth'];
 
-					for ($j = 1; $j < $k; $j ++) {
+					for ($j = 1; $j < $k; $j++) {
 						if (!array_key_exists($j, $depthStop) || $depthStop[$j] != 1) {
-							$PMicon .= '<img' . t3lib_iconWorks::skinImg($this->doc->backPath, 'gfx/ol/line.gif', 'width="18" height="16"') . ' alt="" />';
+							$pmIcon .= '<img' . t3lib_iconWorks::skinImg($this->doc->backPath, 'gfx/ol/line.gif', 'width="18" height="16"') . ' alt="" />';
 						} elseif ($depthStop[$j] == 1) {
-							$PMicon .= '<img' . t3lib_iconWorks::skinImg($this->doc->backPath, 'gfx/ol/blank.gif', 'width="18" height="16"') . ' alt="" />';
+							$pmIcon .= '<img' . t3lib_iconWorks::skinImg($this->doc->backPath, 'gfx/ol/blank.gif', 'width="18" height="16"') . ' alt="" />';
 						}
 					}
 				}
 
 				if ($lastDepth > $records[$i]['depth']) {
-					for ($j = $records[$i]['depth'] + 1; $j <= $lastDepth; $j ++) {
+					for ($j = $records[$i]['depth'] + 1; $j <= $lastDepth; $j++) {
 						$depthStop[$j] = 0;
 					}
 				}
@@ -793,14 +803,15 @@ class Tx_Commerce_Controller_AccessController extends t3lib_SCbase {
 					// Add cross or bottom
 				$bottom = (TRUE == $records[$i]['last']) ? 'bottom' : '';
 
-					// save that the depth of the current record has its last item - is used to add blanks, not lines to following deeper elements
+				// save that the depth of the current record has its last item - is used to
+				// add blanks, not lines to following deeper elements
 				if (TRUE == $records[$i]['last']) {
 					$depthStop[$records[$i]['depth']] = 1;
 				}
 
 				$lastDepth = $records[$i]['depth'];
 
-				$PMicon .= '<img' . t3lib_iconWorks::skinImg($this->doc->backPath, 'gfx/ol/join' . $bottom . '.gif', 'width="18" height="16"') . ' alt="" />';
+				$pmIcon .= '<img' . t3lib_iconWorks::skinImg($this->doc->backPath, 'gfx/ol/join' . $bottom . '.gif', 'width="18" height="16"') . ' alt="" />';
 			}
 
 				// determine which icon to use
@@ -808,7 +819,7 @@ class Tx_Commerce_Controller_AccessController extends t3lib_SCbase {
 
 			$cellAttrib = ($row['_CSSCLASS'] ? ' class="' . $row['_CSSCLASS'] . '"' : '');
 			$cells[] = '
-				<td align="left" nowrap="nowrap"' . ($cellAttrib ? $cellAttrib : $bgCol) . '>' . $PMicon . $rowIcon .
+				<td align="left" nowrap="nowrap"' . ($cellAttrib ? $cellAttrib : $bgCol) . '>' . $pmIcon . $rowIcon .
 				htmlspecialchars(t3lib_div::fixed_lgd_cs($row['title'], $tLen)) . '&nbsp;</td>';
 
 				// "Edit permissions" -icon
@@ -828,13 +839,13 @@ class Tx_Commerce_Controller_AccessController extends t3lib_SCbase {
 			if ($this->MOD_SETTINGS['mode'] == 'perms') {
 				$cells[] = '
 					<td' . $bgCol . ' class="center"><img' . $lineImg . ' alt="" /></td>
-					<td' . $bgCol . ' nowrap="nowrap">' . ($pageId ? $permissionAjaxController->renderPermissions($row['perms_user'], $pageId, 'user') . ' ' . $userName : '') . '</td>
+					<td' . $bgCol . ' nowrap="nowrap">' . ($pageId ? $permissionController->renderPermissions($row['perms_user'], $pageId, 'user') . ' ' . $userName : '') . '</td>
 
 					<td' . $bgCol . ' class="center"><img' . $lineImg . ' alt="" /></td>
-					<td' . $bgCol . ' nowrap="nowrap">' . ($pageId ? $permissionAjaxController->renderPermissions($row['perms_group'], $pageId, 'group') . ' ' . $groupName : '') . '</td>
+					<td' . $bgCol . ' nowrap="nowrap">' . ($pageId ? $permissionController->renderPermissions($row['perms_group'], $pageId, 'group') . ' ' . $groupName : '') . '</td>
 
 					<td' . $bgCol . ' class="center"><img' . $lineImg . ' alt="" /></td>
-					<td' . $bgCol . ' nowrap="nowrap">' . ($pageId ? ' ' . $permissionAjaxController->renderPermissions($row['perms_everybody'], $pageId, 'everybody') : '') . '</td>
+					<td' . $bgCol . ' nowrap="nowrap">' . ($pageId ? ' ' . $permissionController->renderPermissions($row['perms_everybody'], $pageId, 'everybody') : '') . '</td>
 
 					<td' . $bgCol . ' class="center"><img' . $lineImg . ' alt="" /></td>
 					<td' . $bgCol . ' nowrap="nowrap">' . (
@@ -857,12 +868,12 @@ class Tx_Commerce_Controller_AccessController extends t3lib_SCbase {
 				$cells[] = '
 					<td' . $bgCol . ' class="center"><img' . $lineImg . ' alt="" /></td>';
 
-				$bgCol = ($backendUser->user['uid'] == $row['perms_userid'] ? ' class="bgColor-20"' : $lE_bgCol);
+				$bgCol = ($backendUser->user['uid'] == $row['perms_userid'] ? ' class="bgColor-20"' : $elementBgCol);
 
 				$cells[] = '
 					<td' . $bgCol . ' nowrap="nowrap" align="center">' . (
 						$pageId ?
-						$permissionAjaxController->renderPermissions($backendUser->calcPerms($row), $pageId, 'user') :
+						$permissionController->renderPermissions($backendUser->calcPerms($row), $pageId, 'user') :
 						''
 					) . '</td>
 					' . (!$backendUser->isAdmin() ?
@@ -934,8 +945,10 @@ class Tx_Commerce_Controller_AccessController extends t3lib_SCbase {
 	}
 
 	/**
-	 * Returns the permissions for a group based of the perms_groupid of $row. If the $row[perms_groupid] equals the
-	 * $firstGroup[uid] then the function returns perms_everybody OR'ed with perms_group, else just perms_everybody
+	 * Returns the permissions for a group based of the perms_groupid of
+	 * $row. If the $row[perms_groupid] equals the $firstGroup[uid] then
+	 * the function returns perms_everybody OR'ed with perms_group, else
+	 * just perms_everybody
 	 *
 	 * @param array $row array (from pages table)
 	 * @param array $firstGroup first group data
@@ -959,7 +972,7 @@ class Tx_Commerce_Controller_AccessController extends t3lib_SCbase {
 	 * Finding tree and offer setting of values recursively.
 	 *
 	 * @param integer $id Page id.
-	 * @return string Select form element for recursive levels (if any levels are found)
+	 * @return string Select form element for recursive levels
 	 */
 	public function getRecursiveSelect($id) {
 		/** @var t3lib_beUserAuth $backendUser */
@@ -983,16 +996,17 @@ class Tx_Commerce_Controller_AccessController extends t3lib_SCbase {
 			// If there are a hierarchy of category ids, then...
 		if ($backendUser->user['uid'] && count($recsPerLevel)) {
 				// Init:
-			$label_recur = $language->getLL('recursive');
-			$label_levels = $language->getLL('levels');
-			$label_pA = $language->getLL('pages_affected');
+			$labelRecursive = $language->getLL('recursive');
+			$labelLevels = $language->getLL('levels');
+			$labelPagesAffected = $language->getLL('pages_affected');
 			$theIdListArr = array();
 
 				// Put dummy entry so user is not forced to select
 			$opts = '<option value=""></option>';
 
-				// Traverse the number of levels we want to allow recursive setting of permissions for:
-			for ($a = 0; $a <= $this->getLevels; $a ++) {
+			// Traverse the number of levels we want to allow recursive setting
+			// of permissions for:
+			for ($a = 0; $a <= $this->getLevels; $a++) {
 					// Go through the levels
 				if (is_array($recsPerLevel[$a])) {
 					foreach ($recsPerLevel[$a] as $theId) {
@@ -1008,8 +1022,8 @@ class Tx_Commerce_Controller_AccessController extends t3lib_SCbase {
 					$opts .= '
 						<option value="' . htmlspecialchars(implode(',', $theIdListArr)) . '">
 							' .
-							t3lib_div::deHSCentities(htmlspecialchars($label_recur . ' ' . $lKey . ' ' . $label_levels)) .
-							' (' . count($theIdListArr) . ' ' . $label_pA . ')
+							t3lib_div::deHSCentities(htmlspecialchars($labelRecursive . ' ' . $lKey . ' ' . $labelLevels)) .
+							' (' . count($theIdListArr) . ' ' . $labelPagesAffected . ')
 						</option>';
 				}
 			}

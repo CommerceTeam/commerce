@@ -194,10 +194,12 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 	 */
 	public function initPage() {
 			// Initializing document template object:
-		$this->doc = t3lib_div::makeInstance('template');
+		/** @var template $doc */
+		$doc = t3lib_div::makeInstance('template');
 		$this->doc->backPath = $GLOBALS['BACK_PATH'];
 		$this->doc->docType = 'xhtml_trans';
 		$this->doc->setModuleTemplate(PATH_TXCOMMERCE . 'Resources/Private/Backend/mod_category_index.html');
+		$this->doc = $doc;
 
 		if (!$this->doc->moduleTemplate) {
 			t3lib_div::devLog('cannot set moduleTemplate', 'commerce', 2, array(
@@ -275,7 +277,8 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 		}
 
 			// Access check...
-			// The page will show only if there is a valid page and if this page may be viewed by the user
+		// The page will show only if there is a valid page
+		// and if this page may be viewed by the user
 		if ($this->categoryUid) {
 			$this->pageinfo = Tx_Commerce_Utility_BackendUtility::readCategoryAccess($this->categoryUid, $this->perms_clause);
 		} else {
@@ -334,35 +337,38 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 		$dblist->tableList = 'tx_commerce_categories,tx_commerce_products';
 		$dblist->parentUid = $this->categoryUid;
 
-			// Clipboard is initialized:
-			// Start clipboard
+		// Clipboard is initialized:
+		// Start clipboard
 		/** @var t3lib_clipboard $clipObj */
 		$clipObj = t3lib_div::makeInstance('t3lib_clipboard');
 		$dblist->clipObj = $clipObj;
-			// Initialize - reads the clipboard content from the user session
+		// Initialize - reads the clipboard content from the user session
 		$dblist->clipObj->initializeClipboard();
 
-			// Clipboard actions are handled:
-			// CB is the clipboard command array
-		$CB = t3lib_div::_GET('CB');
+		// Clipboard actions are handled:
+		// CB is the clipboard command array
+		$clipboard = t3lib_div::_GET('CB');
 		if ($this->cmd == 'setCB') {
-				// CBH is all the fields selected for the clipboard, CBC is the checkbox fields which were checked. By merging we get a full array of checked/unchecked elements
-				// This is set to the 'el' array of the CB after being parsed so only the table in question is registered.
-			$CB['el'] = $dblist->clipObj->cleanUpCBC(array_merge((array) t3lib_div::_POST('CBH'), (array) t3lib_div::_POST('CBC')), $this->cmd_table);
+			// CBH is all the fields selected for the clipboard, CBC is the checkbox fields
+			// which were checked. By merging we get a full array of checked/unchecked
+			// elements This is set to the 'el' array of the CB after being parsed so only
+			// the table in question is registered.
+			$clipboard['el'] = $dblist->clipObj->cleanUpCBC(array_merge((array) t3lib_div::_POST('CBH'), (array) t3lib_div::_POST('CBC')), $this->cmd_table);
 		}
 		if (!$this->MOD_SETTINGS['clipBoard']) {
-				// If the clipboard is NOT shown, set the pad to 'normal'.
-			$CB['setP'] = 'normal';
+			// If the clipboard is NOT shown, set the pad to 'normal'.
+			$clipboard['setP'] = 'normal';
 		}
-			// Execute commands.
-		$dblist->clipObj->setCmd($CB);
-			// Clean up pad
+		// Execute commands.
+		$dblist->clipObj->setCmd($clipboard);
+		// Clean up pad
 		$dblist->clipObj->cleanCurrent();
-			// Save the clipboard content
+		// Save the clipboard content
 		$dblist->clipObj->endClipboard();
 
-			// This flag will prevent the clipboard panel in being shown.
-			// It is set, if the clickmenu-layer is active AND the extended view is not enabled.
+		// This flag will prevent the clipboard panel in being shown.
+		// It is set, the clickmenu-layer is active AND the extended
+		// view is not enabled.
 		$dblist->dontShowClipControlPanels = $GLOBALS['CLIENT']['FORMSTYLE']
 			&& !$this->MOD_SETTINGS['bigControlPanel']
 			&& $dblist->clipObj->current == 'normal'
@@ -370,16 +376,19 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 			&& !$this->modTSconfig['properties']['showClipControlPanelsDespiteOfCMlayers'];
 
 		if ($access) {
-				// Deleting records...:
-				// Has not to do with the clipboard but is simply the delete action. The clipboard object is used to clean up the submitted entries to only the selected table.
+			// Deleting records...:
+			// Has not to do with the clipboard but is simply the delete action. The
+			// clipboard object is used to clean up the submitted entries to only the
+			// selected table.
 			if ($this->cmd == 'delete') {
 				$items = $dblist->clipObj->cleanUpCBC(t3lib_div::_POST('CBC'), $this->cmd_table, 1);
 				if (count($items)) {
 					$cmd = array();
-					foreach ($items as $iK => $value) {
-						$iKParts = explode('|', $iK);
-						$cmd[$iKParts[0]][$iKParts[1]]['delete'] = 1;
+					foreach (array_keys($items) as $iK) {
+						$iKparts = explode('|', $iK);
+						$cmd[$iKparts[0]][$iKparts[1]]['delete'] = 1;
 					}
+
 					/** @var t3lib_TCEmain $tce */
 					$tce = t3lib_div::makeInstance('t3lib_TCEmain');
 					$tce->stripslashes_values = 0;
@@ -573,11 +582,14 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 		$this->buttons = $dblist->getButtons($this->pageinfo);
 		$docHeaderButtons = $this->getHeaderButtons();
 
+		$categoryInfo = $this->categoryUid ? $this->getCategoryInfo($this->pageinfo) : $this->getPageInfo($this->pageinfo);
+		$categoryPath = $this->categoryUid ? $this->getCategoryPath($this->pageinfo) : $this->getPagePath($this->pageinfo);
+
 		$markers = array(
 			'CSH' => $docHeaderButtons['csh'],
 			'CONTENT' => $this->content,
-			'CATINFO' => $this->categoryUid ? $this->getCategoryInfo($this->pageinfo) : $this->getPageInfo($this->pageinfo),
-			'CATPATH' => $this->categoryUid ? $this->getCategoryPath($this->pageinfo) : $this->getPagePath($this->pageinfo),
+			'CATINFO' => $categoryInfo,
+			'CATPATH' => $categoryPath,
 		);
 		$markers['FUNC_MENU'] = $this->doc->funcMenu(
 			'',
@@ -606,7 +618,8 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 	}
 
 	/**
-	 * Create the panel of buttons for submitting the form or otherwise perform operations.
+	 * Create the panel of buttons for submitting the form or otherwise
+	 * perform operations.
 	 *
 	 * @return array all available buttons as an assoc. array
 	 */

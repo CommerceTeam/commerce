@@ -189,8 +189,10 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 	protected $argSeparator = '&';
 
 	/**
+	 * Initializing
+	 *
 	 * @param array $conf
-	 * @return string
+	 * @return void
 	 */
 	protected function init(array $conf = array()) {
 		if ($GLOBALS['TSFE']->beUserLogin) {
@@ -218,23 +220,22 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 
 		$this->generateLanguageMarker();
 		if (empty($this->conf['templateFile'])) {
-			return $this->error('init', __LINE__, 'Template File not defined in TS: ');
+			$this->error('init', __LINE__, 'Template File not defined in TS: ');
 		}
 
 		$this->templateCode = $this->cObj->fileResource($this->conf['templateFile']);
 		if ($this->conf['useRootlineInformationToUrl']) {
 			$this->useRootlineInformationToUrl = $this->conf['useRootlineInformationToUrl'];
 		}
-
-		return '';
 	}
 
 	/**
-	 * Returns the payment object for a specific payment type (creditcard, invoice, ...)
+	 * Returns the payment object for a specific payment type
+	 * (creditcard, invoice, ...)
 	 *
-	 * @throws Exception If payment object can not be created or is invalid
 	 * @param string $paymentType Payment type to get
 	 * @return Tx_Commerce_Payment_PaymentAbstract Current payment object
+	 * @throws Exception If payment object can not be created or is invalid
 	 */
 	protected function getPaymentObject($paymentType = '') {
 		if (!is_string($paymentType)) {
@@ -266,6 +267,8 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 
 	/**
 	 * Getting additional locallang-files through an Hook
+	 *
+	 * @return void
 	 */
 	public function addAdditionalLocallang() {
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['locallang'])) {
@@ -312,7 +315,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 			$markerArr = $this->LOCAL_LANG[$GLOBALS['TSFE']->tmpl->setup['config.']['language']];
 		}
 
-		foreach ($markerArr as $k => $v) {
+		foreach (array_keys($markerArr) as $k) {
 			if (stristr($k, 'lang_') OR stristr($k, 'label_')) {
 				$this->languageMarker['###' . strtoupper($k) . '###'] = $this->pi_getLL($k);
 			}
@@ -326,12 +329,12 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 	 *
 	 * @param Tx_Commerce_Domain_Model_Product $prodObj Product Object
 	 * @param array $subpartNameArray [optional]
-	 * @param boolean|array $TS [optional]
+	 * @param boolean|array $typoScript [optional]
 	 * @return string HTML-Output rendert
 	 */
-	public function renderProductAttributeList($prodObj, $subpartNameArray = array(), $TS = FALSE) {
-		if ($TS == FALSE) {
-			$TS = $this->conf['singleView.']['attributes.'];
+	public function renderProductAttributeList($prodObj, $subpartNameArray = array(), $typoScript = FALSE) {
+		if ($typoScript == FALSE) {
+			$typoScript = $this->conf['singleView.']['attributes.'];
 		}
 
 		$templateArray = array();
@@ -360,7 +363,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 		);
 
 		$i = 0;
-		$product_attributes_string = '';
+		$productAttributes = '';
 		if (is_array($this->product_attributes)) {
 			foreach ($this->product_attributes as $myAttributeUid) {
 				if (!$matrix[$myAttributeUid]['values'][0] && $this->conf['hideEmptyProdAttr']) {
@@ -377,30 +380,31 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 					'icon' => $matrix[$myAttributeUid]['icon'],
 				);
 
-				$markerArray = $this->generateMarkerArray($datas, $TS, $prefix = 'PRODUCT_ATTRIBUTES_', 'tx_commerce_attributes');
+				$markerArray = $this->generateMarkerArray($datas, $typoScript, $prefix = 'PRODUCT_ATTRIBUTES_', 'tx_commerce_attributes');
 				$marker['PRODUCT_ATTRIBUTES_TITLE'] = $matrix[$myAttributeUid]['title'];
-				$product_attributes = $this->cObj->substituteMarkerArray($templateArray[$i], $markerArray, '###|###', 1);
-				$product_attributes_string .= $this->cObj->substituteMarkerArray($product_attributes, $marker, '###|###', 1);
+				$productAttribute = $this->cObj->substituteMarkerArray($templateArray[$i], $markerArray, '###|###', 1);
+				$productAttributes .= $this->cObj->substituteMarkerArray($productAttribute, $marker, '###|###', 1);
 				$i++;
 			}
-			return $this->cObj->stdWrap($product_attributes_string, $TS);
+			return $this->cObj->stdWrap($productAttributes, $typoScript);
 		}
 		return '';
 	}
 
 	/**
-	 * Renders HTML output with list of attribute from a given product, reduced for some articles
+	 * Renders HTML output with list of attribute from a given product,
+	 * reduced for some articles
 	 * if article ids are givens
 	 * with possibility to
 	 * define a number of templates for interations.
 	 * when defining 2 templates you have an odd / even layout
 	 *
-	 * @param Tx_Commerce_Domain_Model_Product $prodObj for the current product, the attributes are taken from
+	 * @param Tx_Commerce_Domain_Model_Product &$product the current product
 	 * @param array $articleId with articleIds for filtering attributss
 	 * @param array $subpartNameArray array of suppart Names
 	 * @return string Stringoutput for attributes
 	 */
-	public function renderArticleAttributeList(&$prodObj, $articleId = array(), $subpartNameArray = array()) {
+	public function renderArticleAttributeList(&$product, $articleId = array(), $subpartNameArray = array()) {
 		$templateArray = array();
 		foreach ($subpartNameArray as $oneSubpartName) {
 			$tmpCode = $this->cObj->getSubpart($this->templateCode, $oneSubpartName);
@@ -415,11 +419,11 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 			$showHiddenValues = FALSE;
 		}
 
-		$this->can_attributes = $prodObj->getAttributes(array(ATTRIB_CAN));
-		$this->shall_attributes = $prodObj->getAttributes(array(ATTRIB_SHAL));
+		$this->can_attributes = $product->getAttributes(array(ATTRIB_CAN));
+		$this->shall_attributes = $product->getAttributes(array(ATTRIB_SHAL));
 
-		$matrix = $prodObj->getAttributeMatrix($articleId, $this->shall_attributes, $showHiddenValues);
-		$article_shalAttributes_string = '';
+		$matrix = $product->getAttributeMatrix($articleId, $this->shall_attributes, $showHiddenValues);
+		$articleShallAttributesString = '';
 		$i = 0;
 		if (is_array($this->shall_attributes)) {
 			foreach ($this->shall_attributes as $myAttributeUid) {
@@ -439,15 +443,15 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 				$markerArray = $this->generateMarkerArray($datas, $this->conf['singleView.']['attributes.'], $prefix = 'ARTICLE_ATTRIBUTES_');
 				$marker['ARTICLE_ATTRIBUTES_TITLE'] = $matrix[$myAttributeUid]['title'];
 
-				$article_shalAttributes_string .= $this->cObj->substituteMarkerArray($templateArray[$i], $markerArray, '###|###', 1);
+				$articleShallAttributesString .= $this->cObj->substituteMarkerArray($templateArray[$i], $markerArray, '###|###', 1);
 				$i++;
 			}
 		}
 
-		$article_shalAttributes_string = $this->cObj->stdWrap($article_shalAttributes_string, $this->conf['articleShalAttributsWrap.']);
+		$articleShallAttributesString = $this->cObj->stdWrap($articleShallAttributesString, $this->conf['articleShalAttributsWrap.']);
 
-		$matrix = $prodObj->getAttributeMatrix($articleId, $this->can_attributes, $showHiddenValues);
-		$article_canAttributes_string = '';
+		$matrix = $product->getAttributeMatrix($articleId, $this->can_attributes, $showHiddenValues);
+		$articleCanAttributesString = '';
 		$i = 0;
 		if (is_array($this->can_attributes)) {
 			foreach ($this->can_attributes as $myAttributeUid) {
@@ -467,17 +471,17 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 				$markerArray = $this->generateMarkerArray($datas, $this->conf['singleView.']['attributes.'], $prefix = 'ARTICLE_ATTRIBUTES_');
 				$marker['ARTICLE_ATTRIBUTES_TITLE'] = $matrix[$myAttributeUid]['title'];
 
-				$article_canAttributes_string .= $this->cObj->substituteMarkerArray($templateArray[$i], $markerArray, '###|###', 1);
+				$articleCanAttributesString .= $this->cObj->substituteMarkerArray($templateArray[$i], $markerArray, '###|###', 1);
 
 				$i++;
 			}
 		}
-		$article_canAttributes_string = $this->cObj->stdWrap($article_canAttributes_string, $this->conf['articleCanAttributsWrap.']);
+		$articleCanAttributesString = $this->cObj->stdWrap($articleCanAttributesString, $this->conf['articleCanAttributsWrap.']);
 
-		$article_attributes_string = $this->cObj->stdWrap($article_shalAttributes_string . $article_canAttributes_string, $this->conf['articleAttributsWrap.']);
-		$article_attributes_string = $this->cObj->stdWrap($article_attributes_string, $this->conf['singleView.']['attributes.']['stdWrap.']);
+		$articleAttributesString = $this->cObj->stdWrap($articleShallAttributesString . $articleCanAttributesString, $this->conf['articleAttributsWrap.']);
+		$articleAttributesString = $this->cObj->stdWrap($articleAttributesString, $this->conf['singleView.']['attributes.']['stdWrap.']);
 
-		return $article_attributes_string . ' ';
+		return $articleAttributesString . ' ';
 	}
 
 	/**
@@ -530,7 +534,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 				/**
 				 *  Build TS for Linking the Catergory Images
 				 */
-				$localTS = $this->conf['categoryListView.']['categories.'];
+				$localTs = $this->conf['categoryListView.']['categories.'];
 
 				if ($this->conf['overridePid']) {
 					$typoLinkConf['parameter'] = $this->conf['overridePid'];
@@ -554,12 +558,12 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 					$typoLinkConf['additionalParams'] .= $this->argSeparator . $this->prefixId . '[basketHashValue]=' . $this->basketHashValue;
 				}
 
-				$localTS['fields.']['images.']['stdWrap.']['typolink.'] = $typoLinkConf;
-				$localTS['fields.']['teaserimages.']['stdWrap.']['typolink.'] = $typoLinkConf;
+				$localTs['fields.']['images.']['stdWrap.']['typolink.'] = $typoLinkConf;
+				$localTs['fields.']['teaserimages.']['stdWrap.']['typolink.'] = $typoLinkConf;
 
-				$localTS = $this->addTypoLinkToTS($localTS, $typoLinkConf);
+				$localTs = $this->addTypoLinkToTS($localTs, $typoLinkConf);
 
-				$tmpCategory = $this->renderCategory($oneCategory, '###CATEGORY_LIST_ITEM###', $localTS, 'ITEM');
+				$tmpCategory = $this->renderCategory($oneCategory, '###CATEGORY_LIST_ITEM###', $localTs, 'ITEM');
 
 				/**
 				 * Build the link
@@ -704,6 +708,8 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 	}
 
 	/**
+	 * Get category path
+	 *
 	 * @param Tx_Commerce_Domain_Model_Category $cat
 	 * @return string
 	 */
@@ -725,12 +731,14 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 	}
 
 	/**
-	 * Renders the Article Marker and all additional informations needed for a basket form
-	 * This Method will not replace the Subpart, you have to replace your subpart in your template by you own
+	 * Renders the Article Marker and all additional informations needed for
+	 * a basket form. This Method will not replace the Subpart, you have to
+	 * replace your subpart in your template by you own
 	 *
-	 * @param Tx_Commerce_Domain_Model_Article $article Article Object the marker based on
-	 * @param boolean $priceid if set tu true (default) the price-id will berendered into the hiddenfields, otherwhise not
-	 * @return array $markerArray with all marker needed for the article and the basket form
+	 * @param Tx_Commerce_Domain_Model_Article $article Article the marker based on
+	 * @param boolean $priceid if set tu true (default) the price-id will be rendered
+	 * 		into the hiddenfields, otherwhise not
+	 * @return array $markerArray markers needed for the article and the basket form
 	 */
 	public function getArticleMarker($article, $priceid = FALSE) {
 		if (($this->handle) && is_array($this->conf[$this->handle . '.']) && is_array($this->conf[$this->handle . '.']['articles.'])) {
@@ -751,7 +759,8 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 		 * STARTFRM and HIDDENFIELDS are old marker, used bevor Version 0.9.3
 		 * Still existing for compatibility reasons
 		 *
-		 * Please use ARTICLE_HIDDENFIEDLS, ARTICLE_FORMACTION and ARTICLE_FORMNAME, ARTICLE_HIDDENCATUID
+		 * Please use ARTICLE_HIDDENFIEDLS, ARTICLE_FORMACTION
+		 * and ARTICLE_FORMNAME, ARTICLE_HIDDENCATUID
 		 */
 		$markerArray['STARTFRM'] = '<form name="basket_' . $article->getUid() . '" action="' . $this->pi_getPageLink($this->conf['basketPid']) . '" method="post">';
 		$markerArray['HIDDENFIELDS'] = '<input type="hidden" name="' . $this->prefixId . '[catUid]" value="' . $this->cat . '" />';
@@ -835,10 +844,10 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 
 	/**
 	 * Renders on Adress in the template
-	 * This Method will not replace the Subpart, you have to replace your subpart in your template
-	 * by you own
+	 * This Method will not replace the Subpart, you have to replace your subpart
+	 * in your template by you own
 	 *
-	 * @param array $addressArray Address Array (als Resultset from Select DB or Session)
+	 * @param array $addressArray Address Array (as result from Select DB or Session)
 	 * @param array $subpartMarker Subpart Template subpart
 	 * @return string $content string HTML-Content from the given Subpart.
 	 */
@@ -852,7 +861,8 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 
 	/**
 	 * Renders the given Basket to the Template
-	 * This Method will not replace the Subpart, you have to replace your subpart in your template by you own
+	 * This Method will not replace the Subpart, you have to replace your subpart
+	 * in your template by you own
 	 *
 	 * @param Tx_Commerce_Domain_Model_Basket $basketObj
 	 * @param array $subpartMarker Subpart Template Subpart
@@ -950,8 +960,8 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 
 	/**
 	 * Renders from the given Basket the Sum Information to HTML-Code
-	 * This Method will not replace the Subpart, you have to replace your subpart in your template
-	 * by you own
+	 * This Method will not replace the Subpart, you have to replace your subpart
+	 * in your template by you own
 	 *
 	 * @param Tx_Commerce_Domain_Model_Basket $basketObj
 	 * @param array $subpartMarker Subpart Template Subpart
@@ -1051,8 +1061,8 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 
 	/**
 	 * Renders the given Basket Ite,
-	 * This Method will not replace the Subpart, you have to replace your subpart in your template
-	 * by you own
+	 * This Method will not replace the Subpart, you have to replace your subpart
+	 * in your template by you own
 	 *
 	 * @param Tx_Commerce_Domain_Model_BasketItem $basketItemObj Basket Object
 	 * @param array $subpartMarker Subpart Template Subpart
@@ -1061,7 +1071,9 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 	 * Renders the following MARKER
 	 * ###PRODUCT_TITLE###
 	 * ###PRODUCT_IMAGES###<br />
-	 * <SPAN>###PRODUCT_SUBTITLE###<BR/>###LANG_ARTICLE_NUMBER### ###ARTICLE_EANCODE###<br/>###PRODUCT_LINK_DETAIL###</SPAN>
+	 * <SPAN>###PRODUCT_SUBTITLE###<BR/>
+	 * ###LANG_ARTICLE_NUMBER### ###ARTICLE_EANCODE###<br/>
+	 * ###PRODUCT_LINK_DETAIL###</SPAN>
 	 * ###LANG_PRICE_NET### ###BASKET_ITEM_PRICENET###<br/>
 	 * ###LANG_PRICE_GROSS### ###BASKET_ITEM_PRICEGROSS###<br/>
 	 * ###LANG_TAX### ###BASKET_ITEM_TAX_VALUE### ###BASKET_ITEM_TAX_PERCENT###<br/>
@@ -1126,11 +1138,11 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 		/**
 		 * Basket Artikcel Lementes
 		 */
-		$product_array = $basketItemObj->getProductAssocArray('PRODUCT_');
-		$content = $this->cObj->substituteMarkerArray($content, $product_array, '###|###', 1);
+		$productArray = $basketItemObj->getProductAssocArray('PRODUCT_');
+		$content = $this->cObj->substituteMarkerArray($content, $productArray, '###|###', 1);
 
-		$article_array = $basketItemObj->getArticleAssocArray('ARTICLE_');
-		$content = $this->cObj->substituteMarkerArray($content, $article_array, '###|###', 1);
+		$articleArray = $basketItemObj->getArticleAssocArray('ARTICLE_');
+		$content = $this->cObj->substituteMarkerArray($content, $articleArray, '###|###', 1);
 
 		$content = $this->cObj->substituteMarkerArray($content, $this->languageMarker, '###|###', 1);
 
@@ -1138,49 +1150,48 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 	}
 
 	/**
-	 * Adds the the commerce TYPO3 Link parameter for commerce to existing typoLink StdWarp
-	 * if typolink.setCommerceValues =1
-	 * is set.
+	 * Adds the the commerce TYPO3 Link parameter for commerce to existing
+	 * typoLink StdWarp if typolink.setCommerceValues = 1 is set.
 	 *
-	 * @param array $TSArray Existing TypoScriptConfiguration
-	 * @param array $TypoLinkConf TypoLink Configuration, buld bie view Method
+	 * @param array $typoscript Existing TypoScriptConfiguration
+	 * @param array $typoLinkConf TypoLink Configuration, buld bie view Method
 	 * @return array Changed TypoScript Configuration
 	 */
-	public function addTypoLinkToTS($TSArray, $TypoLinkConf) {
-		foreach ($TSArray['fields.'] as $tsKey => $tsValue) {
-			if (is_array($TSArray['fields.'][$tsKey]['typolink.'])) {
-				if ($TSArray['fields.'][$tsKey]['typolink.']['setCommerceValues'] == 1) {
-					$TSArray['fields.'][$tsKey]['typolink.']['parameter'] = $TypoLinkConf['parameter'];
-					$TSArray['fields.'][$tsKey]['typolink.']['additionalParams'] .= $TypoLinkConf['additionalParams'];
+	public function addTypoLinkToTS($typoscript, $typoLinkConf) {
+		foreach (array_keys($typoscript['fields.']) as $tsKey) {
+			if (is_array($typoscript['fields.'][$tsKey]['typolink.'])) {
+				if ($typoscript['fields.'][$tsKey]['typolink.']['setCommerceValues'] == 1) {
+					$typoscript['fields.'][$tsKey]['typolink.']['parameter'] = $typoLinkConf['parameter'];
+					$typoscript['fields.'][$tsKey]['typolink.']['additionalParams'] .= $typoLinkConf['additionalParams'];
 				}
 			}
-			if (is_array($TSArray['fields.'][$tsKey])) {
-				if (is_array($TSArray['fields.'][$tsKey]['stdWrap.'])) {
-					if (is_array($TSArray['fields.'][$tsKey]['stdWrap.']['typolink.'])) {
-						if ($TSArray['fields.'][$tsKey]['stdWrap.']['typolink.']['setCommerceValues'] == 1) {
-							$TSArray['fields.'][$tsKey]['stdWrap.']['typolink.']['parameter'] = $TypoLinkConf['parameter'];
-							$TSArray['fields.'][$tsKey]['stdWrap.']['typolink.']['additionalParams'] .= $TypoLinkConf['additionalParams'];
+			if (is_array($typoscript['fields.'][$tsKey])) {
+				if (is_array($typoscript['fields.'][$tsKey]['stdWrap.'])) {
+					if (is_array($typoscript['fields.'][$tsKey]['stdWrap.']['typolink.'])) {
+						if ($typoscript['fields.'][$tsKey]['stdWrap.']['typolink.']['setCommerceValues'] == 1) {
+							$typoscript['fields.'][$tsKey]['stdWrap.']['typolink.']['parameter'] = $typoLinkConf['parameter'];
+							$typoscript['fields.'][$tsKey]['stdWrap.']['typolink.']['additionalParams'] .= $typoLinkConf['additionalParams'];
 						}
 					}
 				}
 			}
 		}
 
-		return $TSArray;
+		return $typoscript;
 	}
 
 	/**
 	 * Generates a markerArray from given data and TypoScript
 	 *
-	 * @param array $data Assoc-Array with keys as Database fields and values as Values
-	 * @param array $TS TypoScript Configuration
+	 * @param array $data Assoc-Array with keys as Database fields and values
+	 * @param array $typoscript TypoScript Configuration
 	 * @param string $prefix for marker, default empty
 	 * @param string $table tx_commerce table name
 	 * @return array Marker Array for using cobj Marker array methods
 	 */
-	public function generateMarkerArray($data, $TS, $prefix = '', $table = '') {
-		if (!$TS['fields.']) {
-			$TS['fields.'] = $TS;
+	public function generateMarkerArray($data, $typoscript, $prefix = '', $table = '') {
+		if (!$typoscript['fields.']) {
+			$typoscript['fields.'] = $typoscript;
 		}
 		$markerArray = array();
 		if (is_array($data)) {
@@ -1189,12 +1200,12 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 
 			foreach ($data as $fieldName => $columnValue) {
 					// get TS config
-				$type = $TS['fields.'][$fieldName];
-				$config = $TS['fields.'][$fieldName . '.'];
+				$type = $typoscript['fields.'][$fieldName];
+				$config = $typoscript['fields.'][$fieldName . '.'];
 
 				if (empty($type)) {
-					$type = $TS['defaultField'];
-					$config = $TS['defaultField.'];
+					$type = $typoscript['defaultField'];
+					$config = $typoscript['defaultField.'];
 				}
 				if ($type == 'IMAGE') {
 					$config['altText'] = $data['title'];
@@ -1222,118 +1233,126 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 	 * Availiabe TS types are IMGTEXT, IMAGE, STDWRAP
 	 *
 	 * @param mixed $value Outputvalue
-	 * @param string $TStype TypoScript Type for this value
-	 * @param array $TSconf TypoScript Config for this value
+	 * @param string $typoscriptType TypoScript Type for this value
+	 * @param array $typoscriptConfig TypoScript Config for this value
 	 * @param string $field Database field name
 	 * @param string $table Database table name
 	 * @param int|string $uid Uid of record
 	 * @return string html-content
 	 */
-	public function renderValue($value, $TStype, $TSconf, $field = '', $table = '', $uid = '') {
+	public function renderValue($value, $typoscriptType, $typoscriptConfig, $field = '', $table = '', $uid = '') {
 		/**
 		 * If you add more TS Types using the imgPath, you should add these also to generateMarkerArray
 		 */
 		$output = '';
-		if (!isset($TSconf['imgPath'])) {
-			$TSconf['imgPath'] = $this->imgFolder;
+		if (!isset($typoscriptConfig['imgPath'])) {
+			$typoscriptConfig['imgPath'] = $this->imgFolder;
 		}
-		switch (strtoupper($TStype)) {
+		switch (strtoupper($typoscriptType)) {
 			case 'IMGTEXT':
-				$TSconf['imgList'] = $value;
-				$output = $this->cObj->IMGTEXT($TSconf);
+				$typoscriptConfig['imgList'] = $value;
+				$output = $this->cObj->IMGTEXT($typoscriptConfig);
 				break;
+
 			case 'RELATION':
 				$singleValue = explode(',', $value);
 
 				foreach ($singleValue as $uid) {
-					$data = $this->pi_getRecord($TSconf['table'], $uid);
+					$data = $this->pi_getRecord($typoscriptConfig['table'], $uid);
 					if ($data) {
-						$singleOutput = $this->renderTable($data, $TSconf['dataTS.'], $TSconf['subpart'], $TSconf['table'] . '_');
-						$output .= $this->cObj->stdWrap($singleOutput, $TSconf['singleStdWrap.']);
+						$singleOutput = $this->renderTable($data, $typoscriptConfig['dataTS.'], $typoscriptConfig['subpart'], $typoscriptConfig['table'] . '_');
+						$output .= $this->cObj->stdWrap($singleOutput, $typoscriptConfig['singleStdWrap.']);
 					}
 				}
 
 				if ($output) {
-					$output = $this->cObj->stdWrap($output, $TSconf['stdWrap.']);
+					$output = $this->cObj->stdWrap($output, $typoscriptConfig['stdWrap.']);
 				}
 				break;
+
 			case 'MMRELATION':
 				$local = 'uid_local';
 				$foreign = 'uid_foreign';
-				if ($TSconf['switchFields']) {
+				if ($typoscriptConfig['switchFields']) {
 					$foreign = 'uid_local';
 					$local = 'uid_foreign';
 				}
 
 				/** @var t3lib_db $database */
 				$database = $GLOBALS['TYPO3_DB'];
-				$res = $database->exec_SELECTquery(
+				$rows = $database->exec_SELECTgetRows(
 					'distinct(' . $foreign . ')',
-					$TSconf['tableMM'],
-					$local . ' = ' . (int) $uid . '  ' . $TSconf['table.']['addWhere'],
+					$typoscriptConfig['tableMM'],
+					$local . ' = ' . (int) $uid . '  ' . $typoscriptConfig['table.']['addWhere'],
 					'',
 					'sorting'
 				);
-				while ($row = $database->sql_fetch_assoc($res)) {
-					$data = $this->pi_getRecord($TSconf['table'], $row[$foreign]);
+				foreach ($rows as $row) {
+					$data = $this->pi_getRecord($typoscriptConfig['table'], $row[$foreign]);
 					if ($data) {
-						$singleOutput = $this->renderTable($data, $TSconf['dataTS.'], $TSconf['subpart'], $TSconf['table'] . '_');
-						$output .= $this->cObj->stdWrap($singleOutput, $TSconf['singleStdWrap.']);
+						$singleOutput = $this->renderTable($data, $typoscriptConfig['dataTS.'], $typoscriptConfig['subpart'], $typoscriptConfig['table'] . '_');
+						$output .= $this->cObj->stdWrap($singleOutput, $typoscriptConfig['singleStdWrap.']);
 					}
 				}
 
 				$output = trim(trim($output), ' ,:;');
-				$output = $this->cObj->stdWrap($output, $TSconf['stdWrap.']);
+				$output = $this->cObj->stdWrap($output, $typoscriptConfig['stdWrap.']);
 				break;
+
 			case 'FILES':
 				$files = explode(',', $value);
 				foreach ($files as $v) {
 					$file = $this->imgFolder . $v;
-					$text = $this->cObj->stdWrap($file, $TSconf['linkStdWrap.']) . $v;
-					$output .= $this->cObj->stdWrap($text, $TSconf['stdWrap.']);
+					$text = $this->cObj->stdWrap($file, $typoscriptConfig['linkStdWrap.']) . $v;
+					$output .= $this->cObj->stdWrap($text, $typoscriptConfig['stdWrap.']);
 				}
-				$output = $this->cObj->stdWrap($output, $TSconf['allStdWrap.']);
+				$output = $this->cObj->stdWrap($output, $typoscriptConfig['allStdWrap.']);
 				break;
+
 			case 'IMAGE':
 				if (is_string($value) && !empty($value)) {
 					foreach (explode(',', $value) as $oneValue) {
 						if (!is_numeric($value)) {
-							$this->cObj->setCurrentVal($TSconf['imgPath'] . $oneValue);
-							if ($TSconf['file'] <> 'GIFBUILDER') {
-								$TSconf['file'] = $TSconf['imgPath'] . $oneValue;
+							$this->cObj->setCurrentVal($typoscriptConfig['imgPath'] . $oneValue);
+							if ($typoscriptConfig['file'] <> 'GIFBUILDER') {
+								$typoscriptConfig['file'] = $typoscriptConfig['imgPath'] . $oneValue;
 							}
 						}
-						$output .= $this->cObj->IMAGE($TSconf);
+						$output .= $this->cObj->IMAGE($typoscriptConfig);
 					}
-				} elseif (strlen($TSconf['file']) && $TSconf['file'] <> 'GIFBUILDER') {
-					$output .= $this->cObj->IMAGE($TSconf);
+				} elseif (strlen($typoscriptConfig['file']) && $typoscriptConfig['file'] <> 'GIFBUILDER') {
+					$output .= $this->cObj->IMAGE($typoscriptConfig);
 				}
 				break;
+
 			case 'IMG_RESOURCE':
 				if (is_string($value) && !empty($value)) {
-					$TSconf['file'] = $TSconf['imgPath'] . $value;
-					$output = $this->cObj->IMG_RESOURCE($TSconf);
+					$typoscriptConfig['file'] = $typoscriptConfig['imgPath'] . $value;
+					$output = $this->cObj->IMG_RESOURCE($typoscriptConfig);
 				}
 				break;
+
 			/** @noinspection PhpMissingBreakStatementInspection */
-			case 'NUMBERFORMAT' :
-				if ($TSconf['format']) {
+			case 'NUMBERFORMAT':
+				if ($typoscriptConfig['format']) {
 					$value = number_format(
-						(float) $value, $TSconf['format.']['decimals'],
-						$TSconf['format.']['dec_point'],
-						$TSconf['format.']['thousands_sep']
+						(float) $value, $typoscriptConfig['format.']['decimals'],
+						$typoscriptConfig['format.']['dec_point'],
+						$typoscriptConfig['format.']['thousands_sep']
 					);
 				}
+				// passthrough
+
 			case 'STDWRAP':
-				if (is_array($TSconf['parseFunc.'])) {
-					$output = $this->cObj->stdWrap($value, $TSconf);
+				if (is_array($typoscriptConfig['parseFunc.'])) {
+					$output = $this->cObj->stdWrap($value, $typoscriptConfig);
 				} else {
-					$output = $this->cObj->stdWrap(strip_tags($value), $TSconf);
+					$output = $this->cObj->stdWrap(strip_tags($value), $typoscriptConfig);
 				}
 				break;
+
 			default:
 				$output = htmlspecialchars(strip_tags($value));
-				break;
 		}
 
 		$hookObjectsArr = array();
@@ -1360,8 +1379,8 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 					/** @noinspection PhpUndefinedMethodInspection */
 					$output = $hookObj->postRenderValue($output, array(
 						$value,
-						$TStype,
-						$TSconf,
+						$typoscriptType,
+						$typoscriptConfig,
 						$field,
 						$table,
 						$uid
@@ -1383,29 +1402,29 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 	/**
 	 * Reders a category as output
 	 *
-	 * @param Tx_Commerce_Domain_Model_Category $category Tx_Commerce_Domain_Model_Category object
+	 * @param Tx_Commerce_Domain_Model_Category $category object
 	 * @param string $subpartName template-subpart-name
-	 * @param array $TS TypoScript array for rendering
+	 * @param array $typoscript TypoScript array for rendering
 	 * @param string $prefix Prefix for Marker, optional#
 	 * @param string $template
 	 * @return string HTML-Content
 	 */
-	public function renderCategory($category, $subpartName, $TS, $prefix = '', $template = '') {
-		return $this->renderElement($category, $subpartName, $TS, $prefix, '###CATEGORY_', $template);
+	public function renderCategory($category, $subpartName, $typoscript, $prefix = '', $template = '') {
+		return $this->renderElement($category, $subpartName, $typoscript, $prefix, '###CATEGORY_', $template);
 	}
 
 	/**
 	 * Reders an element as output
 	 *
-	 * @param Tx_Commerce_Domain_Model_Category|Tx_Commerce_Domain_Model_Product|Tx_Commerce_Domain_Model_Article $element tx_commerce_* object
+	 * @param Tx_Commerce_Domain_Model_Category|Tx_Commerce_Domain_Model_Product|Tx_Commerce_Domain_Model_Article $element
 	 * @param string $subpartName template-subpart-name
-	 * @param array $TS TypoScript array for rendering
+	 * @param array $typoscript TypoScript array for rendering
 	 * @param string $prefix Prefix for Marker, optional#
 	 * @param string $markerWrap $secondPrefix for Marker, default ###
 	 * @param string $template
 	 * @return string HTML-Content
 	 */
-	public function renderElement($element, $subpartName, $TS, $prefix = '', $markerWrap = '###', $template = '') {
+	public function renderElement($element, $subpartName, $typoscript, $prefix = '', $markerWrap = '###', $template = '') {
 		if (empty($subpartName)) {
 			return $this->error('renderElement', __LINE__, 'No supart defined for class.Tx_Commerce_Controller_BaseController::renderElement');
 		}
@@ -1423,7 +1442,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 
 		$data = $element->returnAssocArray();
 
-		$markerArray = $this->generateMarkerArray($data, $TS);
+		$markerArray = $this->generateMarkerArray($data, $typoscript);
 
 		$hookObjectsArr = array();
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['generalElement'])) {
@@ -1456,7 +1475,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 
 		if (is_array($markerArray) && count($markerArray)) {
 			$output = $this->cObj->substituteMarkerArray($output, $markerArray, $markerWrap, 1);
-			$output = $this->cObj->stdWrap($output, $TS['stdWrap.']);
+			$output = $this->cObj->stdWrap($output, $typoscript['stdWrap.']);
 		} else {
 			$output = '';
 		}
@@ -1495,7 +1514,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 		}
 
 		$i = 0;
-		$AttributeValues = count($matrix[$myAttributeUid]['values']);
+		$attributeValues = count($matrix[$myAttributeUid]['values']);
 
 		foreach ((array) $matrix[$myAttributeUid]['values'] as $key => $value) {
 			if (is_array($value) && isset($value['value']) && $value['value'] != '') {
@@ -1510,7 +1529,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 			if ($hookObj && method_exists($hookObj, 'formatAttributeValue')) {
 				$return2 = $hookObj->formatAttributeValue($key, $myAttributeUid, $matrix[$myAttributeUid]['valueuidlist'][$key], $return2, $this);
 			}
-			if ($AttributeValues > 1) {
+			if ($attributeValues > 1) {
 				$return2 = $this->cObj->stdWrap($return2, $this->conf['mutipleAttributeValueWrap.']);
 			}
 			if ($i > 0) {
@@ -1519,7 +1538,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 			$return .= $return2;
 			$i++;
 		}
-		if ($AttributeValues > 1) {
+		if ($attributeValues > 1) {
 			$return = $this->cObj->stdWrap($return, $this->conf['mutipleAttributeValueSetWrap.']);
 		}
 
@@ -1556,76 +1575,13 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 	}
 
 	/**
-	 * calls renderProductAtrributeList with parametres from $this
-	 *
-	 * @see renderProductAttributeList
-	 * @param Tx_Commerce_Domain_Model_Product $myProduct
-	 * @return string Stringoutput for attributes
-	 * @depricated since commerce 1.0.0, this function will be removed in commerce 1.4.0, this method gets removed from the api
-	 */
-	public function makeproductAttributList($myProduct) {
-		t3lib_div::logDeprecatedFunction();
-		$subpartArray[] = '###' . strtoupper($this->conf['templateMarker.']['productAttributes']) . '###';
-		$subpartArray[] = '###' . strtoupper($this->conf['templateMarker.']['productAttributes2']) . '###';
-
-		return $this->renderProductAttributeList($myProduct, $subpartArray);
-	}
-
-	/**
-	 * Make the HTML output with list of attribute from a given product, reduced for some articles
-	 * if article ids are givens
-	 *
-	 * @param Tx_Commerce_Domain_Model_Product $prodObj : Object for the current product, the attributes are taken from
-	 * @param array $articleId array with articleIds for filtering attributss
-	 * @return string|boolean Stringoutput for attributes
-	 * @depricated since commerce 1.0.0, this function will be removed in commerce 1.4.0, this method gets removed from the api
-	 */
-	public function makeArticleAttributList(&$prodObj, $articleId = array()) {
-		t3lib_div::logDeprecatedFunction();
-		$subpartArray = array();
-		if (strlen($this->conf['templateMarker.']['articleAttributes']) > 0) {
-			$subpartArray[] = '###' . strtoupper($this->conf['templateMarker.']['articleAttributes']) . '###';
-		}
-		if (strlen($this->conf['templateMarker.']['articleAttributes2']) > 0) {
-			$subpartArray[] = '###' . strtoupper($this->conf['templateMarker.']['articleAttributes2']) . '###';
-		}
-		if (count($subpartArray) > 1) {
-			return $this->renderArticleAttributeList($prodObj, $articleId, $subpartArray);
-		}
-
-		return FALSE;
-	}
-
-	/**
-	 * Makes the single view for the current products
-	 *
-	 * @return string the content for a single product
-	 * @depricated since commerce 1.0.0, this function will be removed in commerce 1.4.0, this method gets removed from the api
-	 */
-	public function makeSingleView() {
-		t3lib_div::logDeprecatedFunction();
-		$subpartName = '###' . strtoupper($this->conf['templateMarker.']['productView']) . '###';
-		$subpartNameNostock = '###' . strtoupper($this->conf['templateMarker.']['productView']) . '_NOSTOCK###';
-
-			// ###########    product single    ######################
-		$content = $this->renderSingleView($this->product, $this->category, $subpartName, $subpartNameNostock);
-		$content = $this->cObj->substituteMarkerArray($content, $this->languageMarker);
-		$globalMarker = array();
-		$globalMarker = $this->addFormMarker($globalMarker);
-		$content = $this->cObj->substituteMarkerArray($content, $globalMarker, '###|###', 1);
-		$GLOBALS['TSFE']->fe_user->setKey('ses', 'tx_commerce_lastproducturl', $this->pi_linkTP_keepPIvars_url());
-
-		return $content;
-	}
-
-	/**
 	 * Return the amount of articles for the basket input form
 	 *
 	 * @param integer $articleId the articleId check for the amount
-	 * @param array|boolean $TSconf
+	 * @param array|boolean $typoscriptConfig
 	 * @return integer
 	 */
-	public function getArticleAmount($articleId, $TSconf = FALSE) {
+	public function getArticleAmount($articleId, $typoscriptConfig = FALSE) {
 		if (!$articleId) {
 			return FALSE;
 		}
@@ -1636,10 +1592,10 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 		if (is_object($basketItem)) {
 			$amount = $basketItem->getQuantity();
 		} else {
-			if ($TSconf == FALSE) {
+			if ($typoscriptConfig == FALSE) {
 				$amount = $this->conf['defaultArticleAmount'];
-			} elseif ($TSconf['defaultQuantity']) {
-				$amount = $TSconf['defaultQuantity'];
+			} elseif ($typoscriptConfig['defaultQuantity']) {
+				$amount = $typoscriptConfig['defaultQuantity'];
 			}
 		}
 
@@ -1647,13 +1603,15 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 	}
 
 	/**
+	 * Render products for list view
+	 *
 	 * @param array $categoryProducts
 	 * @param array $templateMarker
 	 * @param integer $iterations
-	 * @param string $TS_marker
+	 * @param string $typoscriptMarker
 	 * @return string
 	 */
-	public function renderProductsForList($categoryProducts, $templateMarker, $iterations, $TS_marker = '') {
+	public function renderProductsForList($categoryProducts, $templateMarker, $iterations, $typoscriptMarker = '') {
 		$markerArray = array();
 
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['renderProductsForList'])) {
@@ -1667,7 +1625,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 				$hookObj = & t3lib_div::getUserObj($classRef);
 				if (method_exists($hookObj, 'preProcessorProductsListView')) {
 					/** @noinspection PhpUndefinedMethodInspection */
-					$markerArray = $hookObj->preProcessorProductsListView($categoryProducts, $templateMarker, $iterations, $TS_marker, $this);
+					$markerArray = $hookObj->preProcessorProductsListView($categoryProducts, $templateMarker, $iterations, $typoscriptMarker, $this);
 				}
 			}
 		}
@@ -1676,12 +1634,12 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 				$hookObj = & t3lib_div::getUserObj($classRef);
 				if (method_exists($hookObj, 'preProcessorProductsListView')) {
 					/** @noinspection PhpUndefinedMethodInspection */
-					$markerArray = $hookObj->preProcessorProductsListView($categoryProducts, $templateMarker, $iterations, $TS_marker, $this);
+					$markerArray = $hookObj->preProcessorProductsListView($categoryProducts, $templateMarker, $iterations, $typoscriptMarker, $this);
 				}
 			}
 		}
 
-		$category_items_listview = '';
+		$categoryItemsListview = '';
 		$iterationCount = 0;
 		$content = '';
 		if (is_array($categoryProducts)) {
@@ -1698,21 +1656,21 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 				$myProduct->loadArticles();
 
 				if ($this->conf['useStockHandling'] == 1 AND $myProduct->hasStock() === FALSE) {
-					$typoScript = $this->conf['listView' . $TS_marker . '.']['products.']['nostock.'];
+					$typoScript = $this->conf['listView' . $typoscriptMarker . '.']['products.']['nostock.'];
 					$tempTemplate = $this->cObj->getSubpart($this->templateCode, '###' . $templateMarker[$iterationCount] . '_NOSTOCK###');
 					if ($tempTemplate != '') {
 						$template = $tempTemplate;
 					}
 				} else {
-					$typoScript = $this->conf['listView' . $TS_marker . '.']['products.'];
+					$typoScript = $this->conf['listView' . $typoscriptMarker . '.']['products.'];
 				}
 				$iterationCount++;
-				$category_items_listview .= $this->renderProduct($myProduct, $template, $typoScript, $this->conf['templateMarker.']['basketListView.'], $this->conf['templateMarker.']['basketListViewMarker'], $iterationCount);
+				$categoryItemsListview .= $this->renderProduct($myProduct, $template, $typoScript, $this->conf['templateMarker.']['basketListView.'], $this->conf['templateMarker.']['basketListViewMarker'], $iterationCount);
 			}
 
 			$markerArray = $this->addFormMarker($markerArray);
 
-			$content = $this->cObj->stdWrap($this->cObj->substituteMarkerArray($category_items_listview, $markerArray, '###|###', 1), $this->conf['listView.']['products.']['stdWrap.']);
+			$content = $this->cObj->stdWrap($this->cObj->substituteMarkerArray($categoryItemsListview, $markerArray, '###|###', 1), $this->conf['listView.']['products.']['stdWrap.']);
 		}
 
 		return $content;
@@ -1723,12 +1681,12 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 	 *
 	 * @param Tx_Commerce_Domain_Model_Product $myProduct
 	 * @param string $template TYPO3 Template
-	 * @param array $TS
-	 * @param array $articleMarker Marker for the article description to be filled up with makeArticleView
+	 * @param array $typoscript
+	 * @param array $articleMarker Marker for the article description
 	 * @param string $articleSubpart [optional]
 	 * @return string rendered HTML
 	 */
-	public function renderProduct($myProduct, $template, $TS, $articleMarker, $articleSubpart = '') {
+	public function renderProduct($myProduct, $template, $typoscript, $articleMarker, $articleSubpart = '') {
 		if (!($myProduct instanceof Tx_Commerce_Domain_Model_Product)) {
 			return FALSE;
 		}
@@ -1756,17 +1714,17 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 
 		$data = $myProduct->returnAssocArray();
 
-			// maybe this is a related product so category may be wrong
+		// maybe this is a related product so category may be wrong
 		$cat = $this->cat;
-		$prod_cats = $myProduct->getParentCategories();
-		if (!in_array($cat, $prod_cats, FALSE)) {
-			$cat = $prod_cats[0];
+		$productCategories = $myProduct->getParentCategories();
+		if (!in_array($cat, $productCategories, FALSE)) {
+			$cat = $productCategories[0];
 		}
 
 		/**
 		 *  Build TS for Linking the Catergory Images
 		 */
-		$localTS = $TS;
+		$localTs = $typoscript;
 
 		/**
 		 * Generate TypoLink Configuration and ad to fields by addTypoLinkToTs
@@ -1784,9 +1742,9 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 			$typoLinkConf['additionalParams'] .= $this->argSeparator . $this->prefixId . '[basketHashValue]=' . $this->basketHashValue;
 		}
 
-		$localTS = $this->addTypoLinkToTS($localTS, $typoLinkConf);
+		$localTs = $this->addTypoLinkToTS($localTs, $typoLinkConf);
 
-		$markerArray = $this->generateMarkerArray($data, $localTS, '', 'Tx_Commerce_Domain_Model_Products');
+		$markerArray = $this->generateMarkerArray($data, $localTs, '', 'Tx_Commerce_Domain_Model_Products');
 		$markerArrayUp = array();
 		foreach ($markerArray as $k => $v) {
 			$markerArrayUp[strtoupper($k)] = $v;
@@ -1797,11 +1755,11 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 		$this->selectAttributes = $myProduct->getAttributes(array(ATTRIB_SELECTOR));
 		$this->shall_attributes = $myProduct->getAttributes(array(ATTRIB_SHAL));
 
-		$ProductAttributesSubpartArray = array();
-		$ProductAttributesSubpartArray[] = '###' . strtoupper($this->conf['templateMarker.']['productAttributes']) . '###';
-		$ProductAttributesSubpartArray[] = '###' . strtoupper($this->conf['templateMarker.']['productAttributes2']) . '###';
+		$productAttributesSubpartArray = array();
+		$productAttributesSubpartArray[] = '###' . strtoupper($this->conf['templateMarker.']['productAttributes']) . '###';
+		$productAttributesSubpartArray[] = '###' . strtoupper($this->conf['templateMarker.']['productAttributes2']) . '###';
 
-		$markerArray['###SUBPART_PRODUCT_ATTRIBUTES###'] = $this->cObj->stdWrap($this->renderProductAttributeList($myProduct, $ProductAttributesSubpartArray, $TS['productAttributes.']['fields.']), $TS['productAttributes.']);
+		$markerArray['###SUBPART_PRODUCT_ATTRIBUTES###'] = $this->cObj->stdWrap($this->renderProductAttributeList($myProduct, $productAttributesSubpartArray, $typoscript['productAttributes.']['fields.']), $typoscript['productAttributes.']);
 
 		$linkArray['catUid'] = (int) $cat;
 
@@ -1828,8 +1786,8 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 		}
 
 			// Set RenderMaxArtickles to TS value
-		if ((!empty($localTS['maxArticles'])) && ((int) $localTS['maxArticles'] > 0)) {
-			$myProduct->setRenderMaxArticles((int) $localTS['maxArticles']);
+		if ((!empty($localTs['maxArticles'])) && ((int) $localTs['maxArticles'] > 0)) {
+			$myProduct->setRenderMaxArticles((int) $localTs['maxArticles']);
 		}
 
 		if ($this->conf['disableArticleViewForProductlist'] == 1 && !$this->piVars['showUid'] || $this->conf['disableArticleView'] == 1) {
@@ -1873,8 +1831,8 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 		}
 
 		$content = $this->substituteMarkerArrayNoCached($template, $markerArray, $subpartArray, $wrapMarkerArray);
-		if ($TS['editPanel'] == 1) {
-			$content = $this->cObj->editPanel($content, $TS['editPanel.'], 'Tx_Commerce_Domain_Model_Products:' . $myProduct->getUid());
+		if ($typoscript['editPanel'] == 1) {
+			$content = $this->cObj->editPanel($content, $typoscript['editPanel.'], 'Tx_Commerce_Domain_Model_Products:' . $myProduct->getUid());
 		}
 
 		foreach ($hookObjectsArr as $hookObj) {
@@ -1891,7 +1849,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 	 * Adds the global Marker for the formtags to the given marker array
 	 *
 	 * @param array $markerArray array Array of marker
-	 * @param string|boolean $wrap [default=false] if the marker should be wrapped by $wrap.
+	 * @param string|boolean $wrap [default=false] if the marker should be wrapped
 	 * @return array Marker Array with the new marker
 	 */
 	public function addFormMarker($markerArray, $wrap = FALSE) {
@@ -1916,25 +1874,33 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 	}
 
 	/**
+	 * Make article view
+	 *
 	 * @param string $kind
 	 * @param Tx_Commerce_Domain_Model_Article $articles
 	 * @param Tx_Commerce_Domain_Model_Product $product
 	 * @return string
 	 */
 	public function makeArticleView($kind, $articles, $product) {
+		return '';
 	}
 
 	/**
+	 * Render record table
+	 *
 	 * @param array $data
-	 * @param array $TS
+	 * @param array $typoscript
 	 * @param string $template
 	 * @param string $prefix
 	 * @return string
 	 */
-	public function renderTable($data, $TS, $template, $prefix) {
+	public function renderTable($data, $typoscript, $template, $prefix) {
+		return '';
 	}
 
 	/**
+	 * Render single view
+	 *
 	 * @param Tx_Commerce_Domain_Model_Product $prodObj
 	 * @param Tx_Commerce_Domain_Model_Category $catObj
 	 * @param string $subpartName
@@ -1942,49 +1908,23 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 	 * @return string
 	 */
 	public function renderSingleView($prodObj, $catObj, $subpartName, $subpartNameNostock) {
-	}
-
-	/**
-	 * Returns the TCA for either $this->table(if neither $table nor $this->TCA is set), $table(if set) or $this->TCA
-	 *
-	 * @param string $table The table to use
-	 * @return array The TCA
-	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, no replacement planed. this method is not used in pibase context
-	 */
-	public function makeControl($table = '') {
-		t3lib_div::logDeprecatedFunction();
-
-		if (!$table && !$this->TCA) {
-			t3lib_div::loadTCA($this->table);
-			$this->TCA = $GLOBALS['TCA'][$this->table];
-		}
-		if (!$table) {
-			return $this->TCA;
-		}
-
-		t3lib_div::loadTCA($table);
-		$localTCA = $GLOBALS['TCA'][$table];
-
-		return $localTCA;
+		return '';
 	}
 
 	/**
 	 * Multi substitution function
 	 * Copy from tslib_content -> substituteMarkerArrayCached, but without caching
 	 *
-	 * @see tslib_content: substituteMarkerArrayCached
-	 * This function should be a one-stop substitution function for working with HTML-template.
-	 * It does not substitute by str_replace but by splitting. This secures that the value inserted does not themselves contain markers or subparts.
-	 * This function takes three kinds of substitutions in one:
-	 * $markContentArray is a regular marker-array where the 'keys' are substituted in $content with their values
-	 * $subpartContentArray works exactly like markContentArray only is whole subparts substituted and not only a single marker.
-	 * $wrappedSubpartContentArray is an array of arrays with 0/1 keys where the subparts pointed to by the main key is wrapped with the 0/1 value alternating.
-	 *
 	 * @param string $content The content stream, typically HTML template content.
-	 * @param array $markContentArray Regular marker-array where the 'keys' are substituted in $content with their values
-	 * @param array $subpartContentArray Exactly like markContentArray only is whole subparts substituted and not only a single marker.
-	 * @param array $wrappedSubpartContentArray An array of arrays with 0/1 keys where the subparts pointed to by the main key is wrapped with the 0/1 value alternating.
+	 * @param array $markContentArray Regular marker-array where the 'keys' are
+	 * 		substituted in $content with their values
+	 * @param array $subpartContentArray Exactly like markContentArray only is
+	 * 		whole subparts substituted and not only a single marker.
+	 * @param array $wrappedSubpartContentArray An array of arrays with 0/1 keys
+	 * 		where the subparts pointed to by the main key is wrapped with the 0/1
+	 * 		value alternating.
 	 * @return string The output content stream
+	 * @see tslib_content: substituteMarkerArrayCached
 	 */
 	public function substituteMarkerArrayNoCached($content, $markContentArray = array(), $subpartContentArray = array(), $wrappedSubpartContentArray = array()) {
 		/** @var t3lib_timeTrack $timeTrack */
@@ -2016,13 +1956,13 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 		$storeArr = array();
 
 			// Finding subparts and substituting them with the subpart as a marker
-		foreach ($sPkeys as $sPK) {
-			$content = $this->cObj->substituteSubpart($content, $sPK, $sPK);
+		foreach ($sPkeys as $sPk) {
+			$content = $this->cObj->substituteSubpart($content, $sPk, $sPk);
 		}
 
 			// Finding subparts and wrapping them with markers
-		foreach ($wPkeys as $wPK) {
-			$content = $this->cObj->substituteSubpart($content, $wPK, array($wPK, $wPK));
+		foreach ($wPkeys as $wPk) {
+			$content = $this->cObj->substituteSubpart($content, $wPk, array($wPk, $wPk));
 		}
 
 			// traverse keys and quote them for reg ex.
@@ -2039,7 +1979,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 			// Merging content types together, resetting
 		$valueArr = array_merge($markContentArray, $subpartContentArray, $wrappedSubpartContentArray);
 
-		$wSCA_reg = array();
+		$wScaReg = array();
 		$content = '';
 			// traversing the keyList array and merging the static and dynamic content
 		foreach ($storeArr['k'] as $n => $keyN) {
@@ -2047,8 +1987,8 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 			if (!is_array($valueArr[$keyN])) {
 				$content .= $valueArr[$keyN];
 			} else {
-				$content .= $valueArr[$keyN][((int) $wSCA_reg[$keyN] % 2)];
-				$wSCA_reg[$keyN]++;
+				$content .= $valueArr[$keyN][((int) $wScaReg[$keyN] % 2)];
+				$wScaReg[$keyN]++;
 			}
 		}
 		$content .= $storeArr['c'][count($storeArr['k'])];
@@ -2058,10 +1998,101 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 	}
 
 	/**
+	 * Getter
+	 *
 	 * @return string
 	 */
 	public function getHandle() {
 		return $this->handle;
+	}
+
+
+	/**
+	 * Returns the TCA for either $this->table(if neither $table nor
+	 * $this->TCA is set), $table(if set) or $this->TCA
+	 *
+	 * @param string $table The table to use
+	 * @return array The TCA
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, no replacement planed. this method is not used in pibase context
+	 */
+	public function makeControl($table = '') {
+		t3lib_div::logDeprecatedFunction();
+
+		if (!$table && !$this->TCA) {
+			t3lib_div::loadTCA($this->table);
+			$this->TCA = $GLOBALS['TCA'][$this->table];
+		}
+		if (!$table) {
+			return $this->TCA;
+		}
+
+		t3lib_div::loadTCA($table);
+		$localTca = $GLOBALS['TCA'][$table];
+
+		return $localTca;
+	}
+
+	/**
+	 * calls renderProductAtrributeList with parametres from $this
+	 *
+	 * @param Tx_Commerce_Domain_Model_Product $myProduct
+	 * @return string Stringoutput for attributes
+	 * @see renderProductAttributeList
+	 * @depricated since commerce 1.0.0, this function will be removed in commerce 1.4.0, this method gets removed from the api
+	 */
+	public function makeproductAttributList($myProduct) {
+		t3lib_div::logDeprecatedFunction();
+		$subpartArray[] = '###' . strtoupper($this->conf['templateMarker.']['productAttributes']) . '###';
+		$subpartArray[] = '###' . strtoupper($this->conf['templateMarker.']['productAttributes2']) . '###';
+
+		return $this->renderProductAttributeList($myProduct, $subpartArray);
+	}
+
+	/**
+	 * Make the HTML output with list of attribute from a given product, reduced
+	 * for some articles if article ids are givens
+	 *
+	 * @param Tx_Commerce_Domain_Model_Product &$prodObj the current product
+	 * @param array $articleId array with articleIds for filtering attributss
+	 * @return string|boolean Stringoutput for attributes
+	 * @depricated since commerce 1.0.0, this function will be removed in commerce 1.4.0, this method gets removed from the api
+	 */
+	public function makeArticleAttributList(&$prodObj, $articleId = array()) {
+		t3lib_div::logDeprecatedFunction();
+		$subpartArray = array();
+		if (strlen($this->conf['templateMarker.']['articleAttributes']) > 0) {
+			$subpartArray[] = '###' . strtoupper($this->conf['templateMarker.']['articleAttributes']) . '###';
+		}
+		if (strlen($this->conf['templateMarker.']['articleAttributes2']) > 0) {
+			$subpartArray[] = '###' . strtoupper($this->conf['templateMarker.']['articleAttributes2']) . '###';
+		}
+		if (count($subpartArray) > 1) {
+			return $this->renderArticleAttributeList($prodObj, $articleId, $subpartArray);
+		}
+
+		return FALSE;
+	}
+
+	/**
+	 * Makes the single view for the current products
+	 *
+	 * @return string the content for a single product
+	 * @depricated since commerce 1.0.0, this function will be removed in commerce 1.4.0, this method gets removed from the api
+	 */
+	public function makeSingleView() {
+		t3lib_div::logDeprecatedFunction();
+		$subpartName = '###' . strtoupper($this->conf['templateMarker.']['productView']) . '###';
+		$subpartNameNostock = '###' . strtoupper($this->conf['templateMarker.']['productView']) . '_NOSTOCK###';
+
+			// ###########    product single    ######################
+		$content = $this->renderSingleView($this->product, $this->category, $subpartName, $subpartNameNostock);
+		$content = $this->cObj->substituteMarkerArray($content, $this->languageMarker);
+		$globalMarker = array();
+		$globalMarker = $this->addFormMarker($globalMarker);
+		$content = $this->cObj->substituteMarkerArray($content, $globalMarker, '###|###', 1);
+		$GLOBALS['TSFE']->fe_user->setKey('ses', 'tx_commerce_lastproducturl', $this->pi_linkTP_keepPIvars_url());
+
+		return $content;
 	}
 }
 
