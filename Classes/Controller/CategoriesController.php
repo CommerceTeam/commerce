@@ -196,9 +196,9 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 			// Initializing document template object:
 		/** @var template $doc */
 		$doc = t3lib_div::makeInstance('template');
-		$this->doc->backPath = $GLOBALS['BACK_PATH'];
-		$this->doc->docType = 'xhtml_trans';
-		$this->doc->setModuleTemplate(PATH_TXCOMMERCE . 'Resources/Private/Backend/mod_category_index.html');
+		$doc->backPath = $GLOBALS['BACK_PATH'];
+		$doc->docType = 'xhtml_trans';
+		$doc->setModuleTemplate(PATH_TXCOMMERCE . 'Resources/Private/Backend/mod_category_index.html');
 		$this->doc = $doc;
 
 		if (!$this->doc->moduleTemplate) {
