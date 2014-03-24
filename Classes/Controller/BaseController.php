@@ -980,7 +980,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 	 */
 	public function makeBasketInformation($basketObj, $subpartMarker) {
 		$template = $this->cObj->getSubpart($this->templateCode, $subpartMarker);
-		$basketObj->recalculate_sums();
+		$basketObj->recalculateSums();
 		$markerArray['###SUM_NET###'] = tx_moneylib::format($basketObj->getSumNet(TRUE), $this->currency, $this->showCurrency);
 		$markerArray['###SUM_GROSS###'] = tx_moneylib::format($basketObj->getSumGross(TRUE), $this->currency, $this->showCurrency);
 

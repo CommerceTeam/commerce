@@ -58,13 +58,13 @@ class Tx_Commerce_Payment_Creditcard extends Tx_Commerce_Payment_PaymentAbstract
 	public function needAdditionalData() {
 		$basePath = PATH_TXCOMMERCE . 'Resources/Private/Language/locallang_creditcard.xml';
 
-		foreach ($this->pObj->LOCAL_LANG as $llKey => $llData) {
+		foreach ($this->parentObject->LOCAL_LANG as $llKey => $llData) {
 			$newLL = t3lib_div::readLLfile($basePath, $llKey);
 			$this->LOCAL_LANG[$llKey] = $newLL[$llKey];
 		}
 
-		if ($this->pObj->altLLkey) {
-			$tempLOCAL_LANG = t3lib_div::readLLfile($basePath, $this->pObj->altLLkey);
+		if ($this->parentObject->altLLkey) {
+			$tempLOCAL_LANG = t3lib_div::readLLfile($basePath, $this->parentObject->altLLkey);
 			$this->LOCAL_LANG = array_merge(is_array($this->LOCAL_LANG) ? $this->LOCAL_LANG : array(), $tempLOCAL_LANG);
 		}
 
@@ -87,11 +87,11 @@ class Tx_Commerce_Payment_Creditcard extends Tx_Commerce_Payment_PaymentAbstract
 		$result = $ccvs->validateCreditCard($formData['cc_number'], $formData['cc_checksum']);
 		$this->errorMessages[] = $ccvs->CCVSError;
 
-		$config['sourceFields.'] = $this->getAdditionalFieldsConfig($this->pObj);
+		$config['sourceFields.'] = $this->getAdditionalFieldsConfig($this->parentObject);
 
-		foreach ($this->pObj->MYSESSION['payment'] as $name => $value) {
+		foreach ($this->parentObject->MYSESSION['payment'] as $name => $value) {
 			if ($config['sourceFields.'][$name . '.']['mandatory'] == 1 && strlen($value) == 0) {
-				$this->formError[$name] = $this->pObj->pi_getLL('error_field_mandatory');
+				$this->formError[$name] = $this->parentObject->pi_getLL('error_field_mandatory');
 				$result = FALSE;
 			}
 
@@ -101,7 +101,7 @@ class Tx_Commerce_Payment_Creditcard extends Tx_Commerce_Payment_PaymentAbstract
 				switch (strtolower($method[0])) {
 					case 'email':
 						if (!t3lib_div::validEmail($value)) {
-							$this->formError[$name] = $this->pObj->pi_getLL('error_field_email');
+							$this->formError[$name] = $this->parentObject->pi_getLL('error_field_email');
 							$result = FALSE;
 						}
 					break;
@@ -110,43 +110,43 @@ class Tx_Commerce_Payment_Creditcard extends Tx_Commerce_Payment_PaymentAbstract
 						if ($GLOBALS['TSFE']->loginUser) {
 							break;
 						}
-						if (!$this->pObj->checkUserName($value)) {
-							$this->formError[$name] = $this->pObj->pi_getLL('error_field_username');
+						if (!$this->parentObject->checkUserName($value)) {
+							$this->formError[$name] = $this->parentObject->pi_getLL('error_field_username');
 							$result = FALSE;
 						}
 					break;
 
 					case 'string':
 						if (!is_string($value)) {
-							$this->formError[$name] = $this->pObj->pi_getLL('error_field_string');
+							$this->formError[$name] = $this->parentObject->pi_getLL('error_field_string');
 							$result = FALSE;
 						}
 					break;
 
 					case 'int':
 						if (!is_integer($value)) {
-							$this->formError[$name] = $this->pObj->pi_getLL('error_field_int');
+							$this->formError[$name] = $this->parentObject->pi_getLL('error_field_int');
 							$result = FALSE;
 						}
 					break;
 
 					case 'min':
 						if (strlen((string)$value) < (int) $method[1]) {
-							$this->formError[$name] = $this->pObj->pi_getLL('error_field_min');
+							$this->formError[$name] = $this->parentObject->pi_getLL('error_field_min');
 							$result = FALSE;
 						}
 					break;
 
 					case 'max':
 						if (strlen((string)$value) > (int) $method[1]) {
-							$this->formError[$name] = $this->pObj->pi_getLL('error_field_max');
+							$this->formError[$name] = $this->parentObject->pi_getLL('error_field_max');
 							$result = FALSE;
 						}
 					break;
 
 					case 'alpha':
 						if (preg_match('/[0-9]/', $value) === 1) {
-							$this->formError[$name] = $this->pObj->pi_getLL('error_field_alpha');
+							$this->formError[$name] = $this->parentObject->pi_getLL('error_field_alpha');
 							$result = FALSE;
 						}
 					break;

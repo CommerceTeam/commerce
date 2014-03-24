@@ -101,7 +101,7 @@ class Tx_Commerce_Payment_Debit extends Tx_Commerce_Payment_PaymentAbstract {
 			return FALSE;
 		}
 
-		$config['sourceFields.'] = $this->getAdditionalFieldsConfig($this->pObj);
+		$config['sourceFields.'] = $this->getAdditionalFieldsConfig($this->parentObject);
 
 		$result = TRUE;
 

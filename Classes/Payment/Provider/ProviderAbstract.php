@@ -103,7 +103,7 @@ abstract class Tx_Commerce_Payment_Provider_ProviderAbstract implements Tx_Comme
 	 * @return string Provider type
 	 */
 	public function getType() {
-		return $this->type;
+		return strtolower($this->type);
 	}
 
 	/**

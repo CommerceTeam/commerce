@@ -39,10 +39,12 @@ abstract class Tx_Commerce_Payment_PaymentAbstract implements Tx_Commerce_Paymen
 	 * 	usually Tx_Commerce_Controller_BasketController
 	 * 	or Tx_Commerce_Controller_CheckoutController
 	 */
-	protected $pObj = NULL;
+	protected $parentObject = NULL;
 
 	/**
-	 * @var string Payment type, for example 'creditcard'. Extending classes _must_ set this!
+	 * Payment type, for example 'creditcard'. Extending classes _must_ set this!
+	 *
+	 * @var string
 	 */
 	protected $type = '';
 
@@ -59,11 +61,11 @@ abstract class Tx_Commerce_Payment_PaymentAbstract implements Tx_Commerce_Paymen
 	/**
 	 * Default constructor
 	 *
+	 * @param Tx_Commerce_Controller_BaseController|Tx_Commerce_Controller_CheckoutController|Tx_Commerce_Controller_BasketController $parentObject Parent object
 	 * @throws Exception If type was not set or criteria are not valid
-	 * @param Tx_Commerce_Controller_BaseController|Tx_Commerce_Controller_CheckoutController|Tx_Commerce_Controller_BasketController $pObj Parent object
 	 * @return self
 	 */
-	public function __construct(Tx_Commerce_Controller_BaseController $pObj) {
+	public function __construct(Tx_Commerce_Controller_BaseController $parentObject) {
 		if (!strlen($this->type) > 0) {
 			throw new Exception(
 				'$type not set.',
@@ -71,28 +73,9 @@ abstract class Tx_Commerce_Payment_PaymentAbstract implements Tx_Commerce_Paymen
 			);
 		}
 
-		$this->pObj = $pObj;
+		$this->parentObject = $parentObject;
 
-			// Create criterion objects if defined
-		$criteraConfigurations = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['SYSPRODUCTS']['PAYMENT']['types'][$this->type]['criteria'];
-		if (is_array($criteraConfigurations)) {
-			foreach ($criteraConfigurations as $criterionConfiguration) {
-				if (!is_array($criterionConfiguration['options'])) {
-					$criterionConfiguration['options'] = array();
-				}
-
-				/** @var Tx_Commerce_Payment_Interface_Criterion $criterion */
-				$criterion = t3lib_div::makeInstance($criterionConfiguration['class'], $this, $criterionConfiguration['options']);
-				if (!($criterion instanceof Tx_Commerce_Payment_Interface_Criterion)) {
-					throw new Exception(
-						'Criterion ' . $criterionConfiguration['class'] . ' must implement interface Tx_Commerce_Payment_Interface_Criterion',
-						1306267908
-					);
-				}
-				$this->criteria[] = $criterion;
-			}
-		}
-
+		$this->findCriterion();
 		$this->findProvider();
 	}
 
@@ -101,8 +84,8 @@ abstract class Tx_Commerce_Payment_PaymentAbstract implements Tx_Commerce_Paymen
 	 *
 	 * @return Tx_Commerce_Controller_CheckoutController Parent object instance
 	 */
-	public function getPObj() {
-		return $this->pObj;
+	public function getParentObject() {
+		return $this->parentObject;
 	}
 
 	/**
@@ -136,6 +119,34 @@ abstract class Tx_Commerce_Payment_PaymentAbstract implements Tx_Commerce_Paymen
 	 */
 	public function getProvider() {
 		return $this->provider;
+	}
+
+	/**
+	 * Find configured criterion
+	 *
+	 * @throws Exception
+	 * @return void
+	 */
+	protected function findCriterion() {
+			// Create criterion objects if defined
+		$criteraConfigurations = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['SYSPRODUCTS']['PAYMENT']['types'][$this->type]['criteria'];
+		if (is_array($criteraConfigurations)) {
+			foreach ($criteraConfigurations as $criterionConfiguration) {
+				if (!is_array($criterionConfiguration['options'])) {
+					$criterionConfiguration['options'] = array();
+				}
+
+				/** @var Tx_Commerce_Payment_Interface_Criterion $criterion */
+				$criterion = t3lib_div::makeInstance($criterionConfiguration['class'], $this, $criterionConfiguration['options']);
+				if (!($criterion instanceof Tx_Commerce_Payment_Interface_Criterion)) {
+					throw new Exception(
+						'Criterion ' . $criterionConfiguration['class'] . ' must implement interface Tx_Commerce_Payment_Interface_Criterion',
+						1306267908
+					);
+				}
+				$this->criteria[] = $criterion;
+			}
+		}
 	}
 
 	/**
@@ -264,6 +275,17 @@ abstract class Tx_Commerce_Payment_PaymentAbstract implements Tx_Commerce_Paymen
 		}
 
 		return $result;
+	}
+
+	/**
+	 * Get parent object
+	 *
+	 * @return Tx_Commerce_Controller_CheckoutController Parent object instance
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getParentObject instead
+	 */
+	public function getPObj() {
+		t3lib_div::logDeprecatedFunction();
+		return $this->getParentObject();
 	}
 }
 

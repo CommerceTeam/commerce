@@ -525,6 +525,8 @@ plugin.tx_commerce_pi3 {
 	useStockHandling  < lib.tx_commerce.useStockHandling
 	checkStock = 1
 
+	noStockWrap.wrap = <div class="cmrc_mb_no_stock">|</div>
+
 	# defines the systemproducts ID's has to be changed later, so that it isn't needed anymore
 	delProdId = {$plugin.tx_commerce_lib.delProdId}
 	payProdId = {$plugin.tx_commerce_lib.payProdId}
@@ -554,9 +556,11 @@ plugin.tx_commerce_pi3 {
 
 	actualStep = stdWrap
 	actualStep.wrap = <b>|</b>
+
 	# wrap arount an incative step in the step bar
 	inactiveStep = stdWrap
 	inactiveStep.wrap = <i>|</i>
+
 	# sets Usermail Charset and Encoding
 	usermail {
 		showCurrency = 0

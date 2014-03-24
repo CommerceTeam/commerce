@@ -126,7 +126,7 @@ class Tx_Commerce_Payment_Provider_Wirecard extends Tx_Commerce_Payment_Provider
 			'cvc' => $session['payment']['cc_checksum']
 		));
 
-		$actCurrency = $this->paymentObject->getPObj()->conf['currency'] != '' ?  $this->paymentObject->getPObj()->conf['currency'] : 'EUR';
+		$actCurrency = $this->paymentObject->getParentObject()->conf['currency'] != '' ?  $this->paymentObject->getParentObject()->conf['currency'] : 'EUR';
 
 		$paymentLib->setTransactionData(array(
 			'amount' => $basket->getSumGross(),

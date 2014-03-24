@@ -43,7 +43,7 @@ interface Tx_Commerce_Payment_Interface_Payment {
 	 *
 	 * @return Tx_Commerce_Controller_BaseController Parent object instance
 	 */
-	public function getPObj();
+	public function getParentObject();
 
 	/**
 	 * Get payment type

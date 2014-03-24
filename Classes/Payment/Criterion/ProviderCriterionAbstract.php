@@ -61,7 +61,7 @@ abstract class Tx_Commerce_Payment_Criterion_ProviderCriterionAbstract implement
 	public function __construct(Tx_Commerce_Payment_Interface_Provider $providerObject, array $options = array()) {
 		$this->providerObject = $providerObject;
 		$this->paymentObject = $this->providerObject->getPaymentObject();
-		$this->pibaseObject = $this->paymentObject->getPObj();
+		$this->pibaseObject = $this->paymentObject->getParentObject();
 		$this->options = $options;
 	}
 }

@@ -56,7 +56,7 @@ abstract class Tx_Commerce_Payment_Criterion_CriterionAbstract implements Tx_Com
 	 */
 	public function __construct(Tx_Commerce_Payment_Interface_Payment $paymentObject, array $options = array()) {
 		$this->paymentObject = $paymentObject;
-		$this->pibaseObject = $this->paymentObject->getPObj();
+		$this->pibaseObject = $this->paymentObject->getParentObject();
 		$this->options = $options;
 	}
 }
