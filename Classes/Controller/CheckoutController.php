@@ -1130,10 +1130,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			}
 		}
 
-		$content = $this->cObj->substituteMarkerArray(
-			$this->cObj->substituteMarkerArray($content, $markerArray),
-			$this->languageMarker
-		);
+		$content = $this->cObj->substituteMarkerArray($this->cObj->substituteMarkerArray($content, $markerArray), $this->languageMarker);
 
 		foreach ($hookObjectsArr as $hookObj) {
 			if (method_exists($hookObj, 'postFinish')) {
@@ -1149,15 +1146,15 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		}
 
 		$basket->finishOrder();
-		$GLOBALS['TSFE']->fe_user->tx_commerce_basket = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Basket');
-		$basket = & $GLOBALS['TSFE']->fe_user->tx_commerce_basket;
 
-		// Generate new Basket-ID
-		$basketId = md5($GLOBALS['TSFE']->fe_user->id . ':' . rand(0, PHP_INT_MAX));
-
-		$GLOBALS['TSFE']->fe_user->setKey('ses', 'commerceBasketId', $basketId);
-		$basket->setSessionId($basketId);
+		// create new basket to remove all values from old one
+		/** @var Tx_Commerce_Domain_Model_Basket $basket */
+		$basket = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Basket');
+		$basket->setSessionId(md5($GLOBALS['TSFE']->fe_user->id . ':' . rand(0, PHP_INT_MAX)));
 		$basket->loadData();
+
+		$GLOBALS['TSFE']->fe_user->setKey('ses', 'commerceBasketId', $basket->getSessionId());
+		$GLOBALS['TSFE']->fe_user->tx_commerce_basket = $basket;
 
 		return $content;
 	}
