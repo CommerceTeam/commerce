@@ -1759,7 +1759,10 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 		$productAttributesSubpartArray[] = '###' . strtoupper($this->conf['templateMarker.']['productAttributes']) . '###';
 		$productAttributesSubpartArray[] = '###' . strtoupper($this->conf['templateMarker.']['productAttributes2']) . '###';
 
-		$markerArray['###SUBPART_PRODUCT_ATTRIBUTES###'] = $this->cObj->stdWrap($this->renderProductAttributeList($myProduct, $productAttributesSubpartArray, $typoscript['productAttributes.']['fields.']), $typoscript['productAttributes.']);
+		$markerArray['###SUBPART_PRODUCT_ATTRIBUTES###'] = $this->cObj->stdWrap(
+			$this->renderProductAttributeList($myProduct, $productAttributesSubpartArray, $typoscript['productAttributes.']['fields.']),
+			$typoscript['productAttributes.']
+		);
 
 		$linkArray['catUid'] = (int) $cat;
 

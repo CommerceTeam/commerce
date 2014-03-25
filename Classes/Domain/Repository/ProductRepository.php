@@ -65,7 +65,7 @@ class Tx_Commerce_Domain_Repository_ProductRepository extends Tx_Commerce_Domain
 	 */
 	public function getArticles($uid) {
 		$uid = (int) $uid;
-		$article_uid_list = array();
+		$articleUids = array();
 		if ($uid) {
 			$localOrderField = $this->orderField;
 			if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_product.php']['articleOrder']) {
@@ -88,7 +88,7 @@ class Tx_Commerce_Domain_Repository_ProductRepository extends Tx_Commerce_Domain
 			}
 
 			if (is_object($GLOBALS['TSFE']) && is_object($GLOBALS['TSFE']->sys_page)) {
-				$where = 'uid_product = ' . $uid .  $GLOBALS['TSFE']->sys_page->enableFields('tx_commerce_articles', $GLOBALS['TSFE']->showHiddenRecords);
+				$where = 'uid_product = ' . $uid . $GLOBALS['TSFE']->sys_page->enableFields('tx_commerce_articles', $GLOBALS['TSFE']->showHiddenRecords);
 			} else {
 				$where = 'uid_product = ' . $uid;
 			}
@@ -127,11 +127,11 @@ class Tx_Commerce_Domain_Repository_ProductRepository extends Tx_Commerce_Domain
 
 			$result = $this->database->exec_SELECTquery('uid', 'tx_commerce_articles', $where . ' ' . $additionalWhere, '', $localOrderField);
 			if ($this->database->sql_num_rows($result) > 0) {
-				while ($return_data = $this->database->sql_fetch_assoc($result)) {
-					$article_uid_list[] = $return_data['uid'];
+				while (($data = $this->database->sql_fetch_assoc($result))) {
+					$articleUids[] = $data['uid'];
 				}
 				$this->database->sql_free_result($result);
-				return $article_uid_list;
+				return $articleUids;
 
 			} else {
 				$this->error('exec_SELECTquery("uid", "tx_commerce_articles", "uid_product = ' . $uid . '"); returns no Result');
@@ -142,42 +142,40 @@ class Tx_Commerce_Domain_Repository_ProductRepository extends Tx_Commerce_Domain
 	}
 
 	/**
-	 * gets all attributes form database related to this product where corelation type = 4
+	 * gets all attributes form database related to this product
+	 * where corelation type = 4
 	 *
 	 * @param int $uid Product uid
 	 * @param array|int $correlationtypes
 	 * @return array of Article UID
 	 */
 	public function getAttributes($uid, $correlationtypes) {
-		$uid = (int) $uid;
-		if ($uid > 0) {
-				// here some strang changes,
-				// change uid_product to uid_local since product_attributes table doesn't have a uid_product, but's it's running
+		if ((int)$uid) {
 			if (!is_array($correlationtypes)) {
 				$correlationtypes = array($correlationtypes);
 			}
 
-			$article_uid_list = array();
+			$articleUids = array();
 			$result = $this->database->exec_SELECTquery(
 				'distinct(uid_foreign) as uid',
 				$this->database_attribute_rel_table,
-				'uid_local = ' . $uid . ' and uid_correlationtype in (' . implode(',', $correlationtypes) . ')',
+				'uid_local = ' . (int)$uid . ' and uid_correlationtype in (' . implode(',', $correlationtypes) . ')',
 				'',
 				$this->database_attribute_rel_table . '.sorting'
 			);
 			if ($this->database->sql_num_rows($result) > 0) {
-				while ($return_data = $this->database->sql_fetch_assoc($result)) {
-					$article_uid_list[] = (int) $return_data['uid'];
+				while (($data = $this->database->sql_fetch_assoc($result))) {
+					$articleUids[] = (int) $data['uid'];
 				}
 				$this->database->sql_free_result($result);
-				return $article_uid_list;
+				return $articleUids;
 			} else {
-				$this->error('exec_SELECTquery(\'distinct(uid_foreign)\', ' . $this->database_attribute_rel_table . ', \'uid_local = ' . $uid . '\'); returns no Result');
+				$this->error('exec_SELECTquery(\'distinct(uid_foreign)\', ' . $this->database_attribute_rel_table . ', \'uid_local = ' . (int)$uid . '\'); returns no Result');
 				return FALSE;
 			}
-		} else {
-			return FALSE;
 		}
+
+		return FALSE;
 	}
 
 	/**
@@ -185,21 +183,17 @@ class Tx_Commerce_Domain_Repository_ProductRepository extends Tx_Commerce_Domain
 	 *
 	 * @param int $uid product uid
 	 * @return array Product UIDs
-	 * @todo we dont really need to extract category uids
 	 */
 	public function getRelatedProductUids($uid) {
-		$uid = (int) $uid;
-		$res = $this->database->exec_SELECTquery(
-			'R.uid_foreign as rID,C.uid_foreign as cID',
-			$this->database_products_related_table . ' R,' . $this->database_category_rel_table . ' as C',
-			'R.uid_foreign = C.uid_local AND R.uid_local=' . (int) $uid,
-			'rID',
-			'R.sorting ASC'
+		$relatedProducts = $this->database->exec_SELECTgetRows(
+			'r.uid_foreign as uid',
+			$this->database_products_related_table . ' AS r',
+			'r.uid_local = ' . (int)$uid,
+			'',
+			'r.sorting ASC',
+			'',
+			'uid'
 		);
-		$relatedProducts = array();
-		while ($data = $this->database->sql_fetch_assoc($res)) {
-			$relatedProducts[$data['rID']] = $data['cID'];
-		}
 		return $relatedProducts;
 	}
 
@@ -211,7 +205,7 @@ class Tx_Commerce_Domain_Repository_ProductRepository extends Tx_Commerce_Domain
 	 * @return array $uid uids
 	 */
 	public function getL18nProducts($uid) {
-		if ((empty($uid)) || (!is_numeric($uid))) {
+		if (!(int)$uid) {
 			return FALSE;
 		}
 
@@ -220,13 +214,15 @@ class Tx_Commerce_Domain_Repository_ProductRepository extends Tx_Commerce_Domain
 		$rows = $this->database->exec_SELECTgetRows(
 			't1.title, t1.uid, t2.flag, t2.uid as sys_language',
 			$this->databaseTable . ' AS t1 LEFT JOIN sys_language AS t2 ON t1.sys_language_uid = t2.uid',
-			'l18n_parent = ' . $uid . ' AND deleted = 0'
+			'l18n_parent = ' . (int)$uid . ' AND deleted = 0'
 		);
 
 		return $rows;
 	}
 
 	/**
+	 * Get first category as master
+	 *
 	 * @param int $uid
 	 * @return int
 	 */
@@ -241,7 +237,7 @@ class Tx_Commerce_Domain_Repository_ProductRepository extends Tx_Commerce_Domain
 	 * @return array parent categories for products
 	 */
 	public function getParentCategories($uid) {
-		if (!$uid || !is_numeric($uid)) {
+		if (!(int)$uid) {
 			$this->error('getParentCategories has not been delivered a proper uid');
 			return NULL;
 		}
@@ -252,7 +248,7 @@ class Tx_Commerce_Domain_Repository_ProductRepository extends Tx_Commerce_Domain
 		$rows = (array)$this->database->exec_SELECTgetRows(
 			'uid_foreign',
 			$this->database_category_rel_table,
-			'uid_local = ' . $uid,
+			'uid_local = ' . (int)$uid,
 			'',
 			'sorting ASC'
 		);
@@ -260,7 +256,7 @@ class Tx_Commerce_Domain_Repository_ProductRepository extends Tx_Commerce_Domain
 			$uids[] = $row['uid_foreign'];
 		}
 
-			// If $uids is empty, the record might be a localized product, related to issue #27021
+		// If $uids is empty, the record might be a localized product
 		if (count($uids) === 0) {
 			$row = $this->database->exec_SELECTgetSingleRow(
 				'l18n_parent',
@@ -278,14 +274,14 @@ class Tx_Commerce_Domain_Repository_ProductRepository extends Tx_Commerce_Domain
 	/**
 	 * Returns the Manuafacturer Title to a given Manufacturere UID
 	 *
-	 * @param int $ManufacturerUid
+	 * @param int $manufacturer
 	 * @return string Title
 	 */
-	public function getManufacturerTitle($ManufacturerUid) {
+	public function getManufacturerTitle($manufacturer) {
 		$row = $this->database->exec_SELECTgetSingleRow(
 			'*',
 			'tx_commerce_manufacturer',
-			'uid = ' . (int) $ManufacturerUid
+			'uid = ' . (int) $manufacturer
 		);
 
 		return is_array($row) && isset($row['title']) ? $row['title'] : '';
