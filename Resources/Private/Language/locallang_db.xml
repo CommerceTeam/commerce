@@ -70,7 +70,7 @@
 			<label index="tx_commerce_articles.price_scale_amount">Price scale amount</label>
 			<label index="tx_commerce_articles.purchase_price">Purchase price</label>
 			<label index="tx_commerce_articles.tax">Tax</label>
-			<label index="tx_commerce_articles.article_type_uid">article_type_uid</label>
+			<label index="tx_commerce_articles.article_type_uid">Article type</label>
 			<label index="tx_commerce_articles.products_uid">products_uid</label>
 			<label index="tx_commerce_articles.article_attributes">Article attributes</label>
 			<label index="tx_commerce_articles.relatedpage">Related Page</label>

@@ -373,7 +373,7 @@ plugin.tx_commerce_pi1 {
 	# hide Attributes with no true for show value
 	showHiddenValues = 0
 
-	singleView{
+	singleView {
 		products < lib.tx_commerce.products
 		products {
 			fields {

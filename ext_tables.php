@@ -343,7 +343,7 @@ $GLOBALS['TCA']['tx_commerce_article_types'] = array(
 		'enablecolumns' => array(
 			'disabled' => 'hidden',
 		),
-		'dynamicConfigFile' => PATH_TXCOMMERCE . 'Configuration/TCA/Articles.php',
+		'dynamicConfigFile' => PATH_TXCOMMERCE . 'Configuration/TCA/ArticleTypes.php',
 		'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL . 'icon_tx_commerce_article_types.gif',
 	),
 	'feInterface' => array(
