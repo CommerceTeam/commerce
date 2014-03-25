@@ -334,9 +334,8 @@ $GLOBALS['TCA']['tx_commerce_articles'] = Array(
 			'showitem' => '
 			hidden, title, subtitle, ordernumber,eancode,
 			description_extra;;;richtext:rte_transform[flag=rte_enabled|mode=ts_cssimgpath=uploads/tx_commerce/rte/], images,
-			plain_text, tax, supplier_uid, article_type_uid, relatedpage;;;;1-1-1, products_uid, article_attributes,' . ($simpleMode ?
-				'' :
-				'--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.edit_attributes,attributesedit;;;;1-1-1,') .
+			plain_text, tax, supplier_uid, article_type_uid, relatedpage;;;;1-1-1, products_uid, article_attributes,' .
+				($simpleMode ? '' : '--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.edit_attributes, attributesedit;;;;1-1-1,') .
 			'--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_articles.prices,prices'
 		),
 	),
@@ -368,9 +367,9 @@ if (!$simpleMode && is_array($postEdit['tx_commerce_articles']) && $postData == 
 }
 
 /**
- * Only perform from TCA if the BE form is called the first time ('First time' also means
- * calling the editform of an product), no data has to be saved and extension dynaflex is
- * available (of course!)
+ * Only perform from TCA if the BE form is called the first time
+ * ('First time' also means calling the editform of an product),
+ * no data has to be saved and extension dynaflex is available (of course!)
  */
 if (is_array($postEdit['tx_commerce_articles']) && $postData == NULL && t3lib_extMgm::isLoaded('dynaflex')) {
 		// Load the configuration from a file
