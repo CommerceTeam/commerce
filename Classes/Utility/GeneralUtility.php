@@ -31,8 +31,8 @@
 class Tx_Commerce_Utility_GeneralUtility {
 	/**
 	 * Removes XSS code and strips tags from an array recursivly
-	 * @Author Ingo Schmitt <is@marketing-factory.de>
-	 * @param  string $input Array of elements or other
+	 *
+	 * @param string $input Array of elements or other
 	 * @return boolean|array is an array, otherwhise false
 	 */
 	public static function removeXSSStripTagsArray($input) {
@@ -64,18 +64,6 @@ class Tx_Commerce_Utility_GeneralUtility {
 	}
 
 	/**
-	 * Formates a price for the designated output
-	 *
-	 * @param 	float	$price
-	 * @return	string	formated Price
-	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getAttributes instead
-	 */
-	public static function formatPrice($price) {
-		t3lib_div::logDeprecatedFunction();
-		return sprintf('%01.2f', $price);
-	}
-
-	/**
 	 * This method initilize the basket for the fe_user from
 	 * Session. If the basket is already initialized nothing happend
 	 * at this point.
@@ -84,24 +72,24 @@ class Tx_Commerce_Utility_GeneralUtility {
 	 */
 	public static function initializeFeUserBasket() {
 		if (!is_object($GLOBALS['TSFE']->fe_user->tx_commerce_basket)) {
-			$basketID = $GLOBALS['TSFE']->fe_user->getKey('ses', 'commerceBasketId');
+			$basketId = $GLOBALS['TSFE']->fe_user->getKey('ses', 'commerceBasketId');
 
-			if (empty($basketID)) {
-					$basketID = md5($GLOBALS['TSFE']->fe_user->id . ':' . rand(0, PHP_INT_MAX));
-				$GLOBALS['TSFE']->fe_user->setKey('ses', 'commerceBasketId', $basketID);
+			if (empty($basketId)) {
+				$basketId = md5($GLOBALS['TSFE']->fe_user->id . ':' . rand(0, PHP_INT_MAX));
+				$GLOBALS['TSFE']->fe_user->setKey('ses', 'commerceBasketId', $basketId);
 			}
 
 			$GLOBALS['TSFE']->fe_user->tx_commerce_basket = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Basket');
-			$GLOBALS['TSFE']->fe_user->tx_commerce_basket->setSessionId($basketID);
+			$GLOBALS['TSFE']->fe_user->tx_commerce_basket->setSessionId($basketId);
 			$GLOBALS['TSFE']->fe_user->tx_commerce_basket->loadData();
 		}
 	}
 
-	/***
+	/**
 	 * Remove Products from list wich have no articles wich are available from Stock
 	 *
 	 * @param array $productUids List of productUIDs to work onn
-	 * @param integer $dontRemoveProducts integer    switch to show or not show articles
+	 * @param int $dontRemoveProducts switch to show or not show articles
 	 * @return array Cleaned up Productarrayt
 	 */
 	public static function removeNoStockProducts($productUids = array(),$dontRemoveProducts = 1) {
@@ -109,7 +97,7 @@ class Tx_Commerce_Utility_GeneralUtility {
 			return $productUids;
 		}
 
-		foreach ( $productUids as $arrayKey => $productUid ) {
+		foreach ($productUids as $arrayKey => $productUid) {
 			/** @var Tx_Commerce_Domain_Model_Product $productObj */
 			$productObj = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product');
 			$productObj->init($productUid);
@@ -124,7 +112,7 @@ class Tx_Commerce_Utility_GeneralUtility {
 		return $productUids;
 	}
 
-	/***
+	/**
 	 * Remove article from product for frontendviewing, if articles
 	 * with no stock should not shown
 	 *
@@ -132,7 +120,7 @@ class Tx_Commerce_Utility_GeneralUtility {
 	 * @param integer $dontRemoveArticles switch to show or not show articles
 	 * @return Tx_Commerce_Domain_Model_Product Cleaned up Productobjectt
 	 */
-	public static function removeNoStockArticles( $productObj, $dontRemoveArticles = 1 ) {
+	public static function removeNoStockArticles($productObj, $dontRemoveArticles = 1) {
 		if ($dontRemoveArticles == 1) {
 			return $productObj;
 		}
@@ -152,11 +140,11 @@ class Tx_Commerce_Utility_GeneralUtility {
 	}
 
 	/**
-	* Generates a session key for identifiing session contents and matching to user
-	* @param string $key
-	* @return string Encoded Key as mixture of key and FE-User Uid
-	*
-	*/
+	 * Generates a session key for identifiing session contents and matching to user
+	 *
+	 * @param string $key
+	 * @return string Encoded Key as mixture of key and FE-User Uid
+	 */
 	public static function generateSessionKey($key) {
 		if ((int) $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['userSessionMd5Encrypt']) {
 			$sessionKey = md5($key . ':' . $GLOBALS['TSFE']->fe_user->user['uid']);
@@ -196,24 +184,26 @@ class Tx_Commerce_Utility_GeneralUtility {
 	 *
 	 * $mailconf = array(
 	 * 	'plain' => Array (
-	 * 				'content'=> '' 	// plain content as string
-	 * 				),
-	 * 	'html' => Array (
-	 * 		'content'=> '', 			// html content as string
-	 * 		'path' => '',
-	 * 		'useHtml' => '' 			// is set mail is send as multipart
+	 * 		'content'=> ''				// plain content as string
 	 * 	),
-	 * 	'defaultCharset' => 'utf-8',		// your chartset
+	 * 	'html' => Array (
+	 * 		'content'=> '',				// html content as string
+	 * 		'path' => '',
+	 * 		'useHtml' => ''				// is set mail is send as multipart
+	 * 	),
+	 * 	'defaultCharset' => 'utf-8',	// your chartset
 	 * 	'encoding' => '8-bit',			// your encoding
 	 * 	'attach' => Array (),			// your attachment as array
-	 * 	'alternateSubject' => '',			// is subject empty will be ste alternateSubject
+	 * 	'alternateSubject' => '',		// is subject empty will be ste alternateSubject
 	 * 	'recipient' => '', 				// comma seperate list of recipient
-	 * 	'recipient_copy' =>  '',			// bcc
+	 * 	'recipient_copy' => '',			// bcc
 	 * 	'fromEmail' => '', 				// fromMail
 	 * 	'fromName' => '',				// fromName
 	 * 	'replyTo' => '', 				// replyTo
-	 * 	'priority' => '3', 				// priority of your Mail - 1 = highest, 5 = lowest, 3 = normal
-	 * 	'callLocation' => 'myFunction' 		// Where call the function it is nescesary when you will use hooks?
+	 * 	'priority' => '3', 				// priority of your Mail
+	 * 		1 = highest,
+	 * 		5 = lowest,
+	 * 		3 = normal
 	 * );
 	 *
 	 * @param array $mailconf configuration for the mailerengine
@@ -258,7 +248,7 @@ class Tx_Commerce_Utility_GeneralUtility {
 			}
 		}
 
-			// validate e-mail addesses
+		// validate e-mail addesses
 		$mailconf['recipient'] = self::validEmailList($mailconf['recipient']);
 
 		if ($mailconf['recipient']) {
@@ -282,17 +272,17 @@ class Tx_Commerce_Utility_GeneralUtility {
 				$message->setEncoder(Swift_Encoding::get8BitEncoding());
 			}
 
-				// $htmlMail->mailer = 'TYPO3 Mailer :: commerce';
+			// $htmlMail->mailer = 'TYPO3 Mailer :: commerce';
 			$message->setSubject($subject);
 			$message->setTo($mailconf['recipient']);
 			$message->setFrom(
 				self::validEmailList($mailconf['fromEmail']),
 				implode(' ', t3lib_div::trimExplode(',', $mailconf['fromName']))
 			);
-			$message->setReplyTo(
-				$mailconf['replyTo'] ? $mailconf['replyTo'] :$mailconf['fromEmail'],
-				implode(' ', t3lib_div::trimExplode(',', $mailconf['replyTo'] ? '' : $mailconf['fromName']))
-			);
+
+			$replyAddress = $mailconf['replyTo'] ?: $mailconf['fromEmail'];
+			$replyName = implode(' ', t3lib_div::trimExplode(',', $mailconf['replyTo'] ? '' : $mailconf['fromName']));
+			$message->setReplyTo($replyAddress, $replyName);
 
 			if (isset($mailconf['recipient_copy']) && $mailconf['recipient_copy'] != '') {
 				if ($mailconf['recipient_copy'] != '') {
@@ -301,18 +291,17 @@ class Tx_Commerce_Utility_GeneralUtility {
 			}
 
 			$message->setReturnPath($mailconf['fromEmail']);
-				// $htmlMail->organisation = $mailconf['formName'];
 			$message->setPriority((int) $mailconf['priority']);
 
-				// add Html content
+			// add Html content
 			if ($mailconf['html']['useHtml'] && trim($mailconf['html']['content'])) {
 				$message->addPart($mailconf['html']['content'], 'text/html');
 			}
 
-				// add plain text content
+			// add plain text content
 			$message->addPart($mailconf['plain']['content']);
 
-				// add attachment
+			// add attachment
 			if (is_array($mailconf['attach'])) {
 				foreach ($mailconf['attach'] as $file) {
 					if ($file && file_exists($file)) {
@@ -352,18 +341,33 @@ class Tx_Commerce_Utility_GeneralUtility {
 		$newList = '';
 		if (is_array($returnArray)) {
 			$newList = implode(',', $returnArray);
-	}
+		}
 
 		return $newList;
 	}
 
 	/**
+	 * Sanitize string to have character and numbers only
+	 *
 	 * @param string $value
 	 * @return string
 	 */
 	public static function sanitizeAlphaNum($value) {
 		preg_match('@[ a-z0-9].*@i', $value, $matches);
 		return $matches[0];
+	}
+
+
+	/**
+	 * Formates a price for the designated output
+	 *
+	 * @param float $price
+	 * @return string formated Price
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getAttributes instead
+	 */
+	public static function formatPrice($price) {
+		t3lib_div::logDeprecatedFunction();
+		return sprintf('%01.2f', $price);
 	}
 }
 

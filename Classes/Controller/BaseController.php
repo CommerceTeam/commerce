@@ -1242,7 +1242,8 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 	 */
 	public function renderValue($value, $typoscriptType, $typoscriptConfig, $field = '', $table = '', $uid = '') {
 		/**
-		 * If you add more TS Types using the imgPath, you should add these also to generateMarkerArray
+		 * If you add more TS Types using the imgPath, you should add
+		 * these also to generateMarkerArray
 		 */
 		$output = '';
 		if (!isset($typoscriptConfig['imgPath'])) {
@@ -1341,8 +1342,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 						$typoscriptConfig['format.']['thousands_sep']
 					);
 				}
-				// passthrough
-
+				// pass
 			case 'STDWRAP':
 				if (is_array($typoscriptConfig['parseFunc.'])) {
 					$output = $this->cObj->stdWrap($value, $typoscriptConfig);
@@ -1901,13 +1901,13 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 	/**
 	 * Render single view
 	 *
-	 * @param Tx_Commerce_Domain_Model_Product $prodObj
-	 * @param Tx_Commerce_Domain_Model_Category $catObj
+	 * @param Tx_Commerce_Domain_Model_Product $product
+	 * @param Tx_Commerce_Domain_Model_Category $category
 	 * @param string $subpartName
 	 * @param string $subpartNameNostock
 	 * @return string
 	 */
-	public function renderSingleView($prodObj, $catObj, $subpartName, $subpartNameNostock) {
+	public function renderSingleView($product, $category, $subpartName, $subpartNameNostock) {
 		return '';
 	}
 

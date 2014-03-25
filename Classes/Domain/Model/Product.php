@@ -1323,7 +1323,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 
 	/**
 	 * Returns TRUE if one Article of Product have more than
-	 * null articles on stock
+	 * zero articles on stock
 	 *
 	 * @return boolean TRUE if one article of product has stock > 0
 	 */
@@ -1332,8 +1332,9 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 		$result = FALSE;
 		/** @var Tx_Commerce_Domain_Model_Article $article */
 		foreach ($this->articles as $article) {
-			if ($article->getStock() > 0) {
+			if ($article->getStock()) {
 				$result = TRUE;
+				break;
 			}
 		}
 		return $result;
