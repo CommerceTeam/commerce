@@ -1105,8 +1105,8 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 				}
 
 				// @todo change link building to pure TypoScript, cObj->data usage required
-				$lokalTsProduct = $this->addTypoLinkToTS($this->conf['fields.']['products.'], $typoLinkConf);
-				$lokalTsArticle = $this->addTypoLinkToTS($this->conf['fields.']['articles.'], $typoLinkConf);
+				$lokalTsProduct = $this->addTypoLinkToTypoScript($this->conf['fields.']['products.'], $typoLinkConf);
+				$lokalTsArticle = $this->addTypoLinkToTypoScript($this->conf['fields.']['articles.'], $typoLinkConf);
 
 				$this->prefixId = $altPrefixSingle;
 

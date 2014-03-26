@@ -886,8 +886,8 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 			 */
 			$tmpArray = array();
 			foreach ($lineTemplate as $subpartMarker) {
-				$test = $this->cObj->getSubpart($template, $subpartMarker);
-				if (!empty($test)) {
+				$subpartContent = $this->cObj->getSubpart($template, $subpartMarker);
+				if (!empty($subpartContent)) {
 					$tmpArray[] = $subpartMarker;
 				}
 			}

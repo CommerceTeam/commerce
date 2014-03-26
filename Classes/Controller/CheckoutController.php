@@ -1549,6 +1549,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 
 			if (strtoupper($paymentBasketItem->getArticle()->getTitle()) !== $this->piVars['payArt']) {
 				$basket->removeCurrentPaymentArticle();
+				$GLOBALS['TSFE']->fe_user->setKey('ses', Tx_Commerce_Utility_GeneralUtility::generateSessionKey('payment'), $this->piVars['payArt']);
 
 				$articleRow = $database->exec_SELECTgetSingleRow(
 					'*',
@@ -1558,6 +1559,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 				);
 				if (count($articleRow)) {
 					$basket->addArticle($articleRow['uid']);
+					$basket->storeData();
 				} else {
 					throw new Exception('Unknow payment type given for adding to basket', 1395653485);
 				}
