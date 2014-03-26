@@ -479,8 +479,8 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 			foreach (t3lib_div::_GP('createList') as $key => $switch) {
 				$this->createArticle($PA, $key);
 			}
-				// @todo why does this not work?
-			t3lib_BEfunc::setUpdateSignal('updatePageTree');
+
+			t3lib_BEfunc::setUpdateSignal('updateFolderTree');
 		}
 	}
 

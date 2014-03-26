@@ -108,7 +108,7 @@ class Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper extends t3lib_SCbase
 				// Call this function, refresh_nav(), from another script in the backend if you want to refresh the navigation frame (eg. after having changed a page title or moved pages etc.)
 				// See t3lib_BEfunc::getSetUpdateSignal()
 			function refresh_nav() {
-				window.setTimeout("_refresh_nav();", 0);
+				window.setTimeout(\'Tree.refresh();\', 0);
 			}
 		');
 

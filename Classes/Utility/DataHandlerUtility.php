@@ -567,7 +567,7 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 			&& (isset($this->data['tx_commerce_categories']) || isset($this->cmd['tx_commerce_categories']))
 			&& (isset($this->data['tx_commerce_products']) || isset($this->cmd['tx_commerce_products']))
 		) {
-			t3lib_BEfunc::setUpdateSignal('updatePageTree');
+			t3lib_BEfunc::setUpdateSignal('updateFolderTree');
 		}
 	}
 

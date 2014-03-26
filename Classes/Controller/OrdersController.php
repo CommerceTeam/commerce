@@ -334,7 +334,7 @@ class Tx_Commerce_Controller_OrdersController extends t3lib_SCbase {
 				$items = $dblist->clipObj->cleanUpCBC(t3lib_div::_POST('CBC'), $this->cmd_table, 1);
 				if (count($items)) {
 					$cmd = array();
-					foreach ($items as $iK => $value) {
+					foreach (array_keys($items) as $iK) {
 						$iKParts = explode('|', $iK);
 						$cmd[$iKParts[0]][$iKParts[1]]['delete'] = 1;
 					}
@@ -345,7 +345,7 @@ class Tx_Commerce_Controller_OrdersController extends t3lib_SCbase {
 					$tce->process_cmdmap();
 
 					if (isset($cmd['pages'])) {
-						t3lib_BEfunc::setUpdateSignal('updatePageTree');
+						t3lib_BEfunc::setUpdateSignal('updateFolderTree');
 					}
 
 					$tce->printLogErrorMessages(t3lib_div::getIndpEnv('REQUEST_URI'));

@@ -396,7 +396,7 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 					$tce->process_cmdmap();
 
 					if (isset($cmd['pages'])) {
-						t3lib_BEfunc::setUpdateSignal('updatePageTree');
+						t3lib_BEfunc::setUpdateSignal('updateFolderTree');
 					}
 
 					$tce->printLogErrorMessages(t3lib_div::getIndpEnv('REQUEST_URI'));
