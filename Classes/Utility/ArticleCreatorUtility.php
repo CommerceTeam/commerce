@@ -29,8 +29,9 @@
 require_once(PATH_TXCOMMERCE . 'Classes/Utility/GeneralUtility.php');
 
 /**
- * This class provides several methods for creating articles from within a product. It provides
- * the user fields and creates the entries in the database.
+ * This class provides several methods for creating articles from within
+ * a product. It provides the user fields and creates the entries in the
+ * database.
  */
 class Tx_Commerce_Utility_ArticleCreatorUtility {
 	/**
@@ -79,7 +80,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	}
 
 	/**
-	 * Initializes the Article Creator if it is not called directly from the Flexforms
+	 * Initializes the Article Creator if it's not called directly from the Flexforms
 	 *
 	 * @param integer $uid uid of the product
 	 * @param integer $pid page id
@@ -97,24 +98,24 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	/**
 	 * Get all articles that already exist. Add some buttons for editing.
 	 *
-	 * @param array $PA
+	 * @param array $parameter
 	 * @return string a HTML-table with the articles
 	 */
-	public function existingArticles($PA) {
+	public function existingArticles($parameter) {
 		/** @var t3lib_beUserAuth $backendUser */
 		$backendUser = $GLOBALS['BE_USER'];
 		/** @var t3lib_db $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
-		$this->uid = (int) $PA['row']['uid'];
-		$this->pid = (int) $PA['row']['pid'];
+		$this->uid = (int)$parameter['row']['uid'];
+		$this->pid = (int)$parameter['row']['pid'];
 
-			// get all attributes for this product, if they where not fetched yet
+		// get all attributes for this product, if they where not fetched yet
 		if ($this->attributes == NULL) {
 			$this->attributes = $this->belib->getAttributesForProduct($this->uid, TRUE, TRUE, TRUE);
 		}
 
-			// get existing articles for this product, if they where not fetched yet
+		// get existing articles for this product, if they where not fetched yet
 		if ($this->existingArticles == NULL) {
 			$this->existingArticles = $this->belib->getArticlesOfProduct($this->uid, '', 'sorting');
 		}
@@ -123,7 +124,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 			return 'No articles existing for this product';
 		}
 
-			// generate the security token
+		// generate the security token
 		$formSecurityToken = '&prErr=1&vC=' . $backendUser->veriCode() . t3lib_BEfunc::getUrlToken('tceAction');
 
 		$colCount = 0;
@@ -152,7 +153,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 						'tx_commerce_articles_article_attributes_mm',
 						'uid_local=' . $article['uid'] . ' AND uid_foreign=' . $attribute['uid_foreign']
 					);
-					while ($attributeData = $database->sql_fetch_assoc($atrRes)) {
+					while (($attributeData = $database->sql_fetch_assoc($atrRes))) {
 						if ($attribute['attributeData']['has_valuelist'] == 1) {
 							if ($attributeData['uid_valuelist'] == 0) {
 									// if the attribute has no value, create a select box with valid values
@@ -178,12 +179,12 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 				}
 			}
 
-				// the edit pencil (with jump back to this dataset)
+			// the edit pencil (with jump back to this dataset)
 			$result .= '<td style="border-top:1px black solid"><a href="#" onclick="document.location=\'alt_doc.php?returnUrl=alt_doc.php?edit[tx_commerce_products][' .
 				(int) $this->uid . ']=edit&amp;edit[tx_commerce_articles][' . (int) $article['uid'] . ']=edit\'; return false;">';
 			$result .= t3lib_iconWorks::getSpriteIcon('actions-document-open') . '</a></td>';
 
-				// add the hide button
+			// add the hide button
 			$result .= '<td style="border-top:1px black solid"><a href="#" onclick="return jumpToUrl(\'tce_db.php?&amp;data[tx_commerce_articles][' .
 				(int) $article['uid'] . '][hidden]=' . (!$article['hidden']) . '&amp;redirect=alt_doc.php?edit[tx_commerce_products][' .
 				(int) $this->uid . ']=edit\');">';
@@ -192,8 +193,8 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 				$this->uid . ']=edit' . $formSecurityToken . '\');">';
 			$result .= '<img src="../typo3/gfx/button_' . (($article['hidden']) ? 'un' : '') . 'hide.gif" border="0" /></a></td>';
 
-				// add the sorting buttons
-				// UP
+			// add the sorting buttons
+			// UP
 			if (isset($this->existingArticles[$i - 1])) {
 				if (isset($this->existingArticles[$i - 2])) {
 					$moveItTo = '-' . (int) $this->existingArticles[$i - 2]['uid'];
@@ -209,10 +210,10 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 					$formSecurityToken . '&redirect=alt_doc.php?edit[tx_commerce_products][' . (int) $this->uid .
 					']=edit\');"><img src="../typo3/gfx/button_up.gif" width="11" height="10" border="0" align="top" /></a></td>';
 			} else {
-				$result .= '<td><img src="/typo3/clear.gif" width="11" height="10"></td>';
+				$result .= '<td><img src="/clear.gif" width="11" height="10"></td>';
 			}
 
-				// DOWN
+			// DOWN
 			if (isset($this->existingArticles[$i + 1])) {
 				$params = 'cmd[tx_commerce_articles][' . (int) $article['uid'] . '][move]=-' . (int) $this->existingArticles[$i + 1]['uid'];
 				$result .= '<td style="border-top:1px black solid"><a href="#" onClick="return jumpToUrl(\'tce_db.php?' . $params .
@@ -222,10 +223,10 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 					$formSecurityToken . '&redirect=alt_doc.php?edit[tx_commerce_products][' . $this->uid .
 					']=edit\');"><img src="../typo3/gfx/button_down.gif" width="11" height="10" border="0" align="top" /></a></td>';
 			} else {
-				$result .= '<td style="border-top: 1px black solid"><img src="/typo3/clear.gif" width="11" height="10"></td>';
+				$result .= '<td style="border-top: 1px black solid"><img src="/clear.gif" width="11" height="10"></td>';
 			}
 
-				// add the delete icon
+			// add the delete icon
 			$result .= '<td style="border-top:1px black solid"><a href="#" onclick="deleteRecord(\'tx_commerce_articles\', ' .
 				(int) $article['uid'] . ', \'alt_doc.php?edit[tx_commerce_products][' . (int) $this->uid .
 				']=edit\');"><img src="../typo3/gfx/garbage.gif" border="0" /></a></td>';
@@ -244,13 +245,13 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	/**
 	 * Create a matrix of producible articles
 	 *
-	 * @param array $PA: ...
-	 * @param t3lib_TCEforms $fObj: ...
+	 * @param array $parameter
+	 * @param t3lib_TCEforms $fObj
 	 * @return string A HTML-table with checkboxes and all needed stuff
 	 */
-	public function producibleArticles($PA, $fObj) {
-		$this->uid = (int) $PA['row']['uid'];
-		$this->pid = (int) $PA['row']['pid'];
+	public function producibleArticles($parameter, $fObj) {
+		$this->uid = (int)$parameter['row']['uid'];
+		$this->pid = (int)$parameter['row']['pid'];
 
 			// get existing articles for this product, if they where not fetched yet
 		if ($this->existingArticles == NULL) {
@@ -267,7 +268,8 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 			return sprintf($fObj->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.to_many_articles'), $rowCount);
 		}
 
-			// create the headrow from the product attributes, select attributes without valuelist and normal select attributes
+		// create the headrow from the product attributes, select attributes without
+		// valuelist and normal select attributes
 		$colCount = 0;
 		$headRow = $this->getHeadRow($colCount, array('&nbsp;'));
 
@@ -283,7 +285,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 			$fObj->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.empty_article') . '</td></tr>';
 
 			// create a checkbox for selecting all articles
-		$selectJS = '<script language="JavaScript">
+		$selectJs = '<script language="JavaScript">
 			function updateArticleList() {
 				var sourceSB = document.getElementById("selectAllArticles");
 				for (var i = 1; i <= ' . $rowCount . '; i++) {
@@ -299,7 +301,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 				$fObj->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.select_all_articles') . '</td></tr>';
 		}
 
-		$result = '<table border="0">' . $selectJS . $headRow . $emptyRow . $selectAllRow . $resultRows . '</table>';
+		$result = '<table border="0">' . $selectJs . $headRow . $emptyRow . $selectAllRow . $resultRows . '</table>';
 
 		return $result;
 	}
@@ -307,7 +309,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	/**
 	 * This method builds up a matrix from the ct1 attributes with valuelist
 	 *
-	 * @param integer $index: The index we're currently working on
+	 * @param int $index The index we're currently working on
 	 * @return array
 	 */
 	protected function getValues($index = 0) {
@@ -360,7 +362,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 					$labelData = array();
 					$hashData = array();
 					reset($row);
-					while ($rd = current(array_slice(each($row), 1, 1))) {
+					while (($rd = current(array_slice(each($row), 1, 1)))) {
 						$hashData[$rd['aUid']] = $rd['vUid'];
 						$labelData[] = $rd['vLabel'];
 					}
@@ -400,7 +402,8 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	}
 
 	/**
-	 * returns the number of articles that would be created with the number of attributes the product have.
+	 * returns the number of articles that would be created with the number
+	 * of attributes the product have.
 	 *
 	 * @return integer The number of rows
 	 */
@@ -418,16 +421,16 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	/**
 	 * Returns the HTML code for the header row
 	 *
-	 * @param integer $colCount: The number of columns we have
-	 * @param array $acBefore: The additional columns before the attribute columns
-	 * @param array $acAfter: The additional columns after the attribute columns
-	 * @param boolean $addTR
+	 * @param integer &$colCount The number of columns we have
+	 * @param array $acBefore The additional columns before the attribute columns
+	 * @param array $acAfter The additional columns after the attribute columns
+	 * @param boolean $addTr
 	 * @return string The HTML header code
 	 */
-	protected function getHeadRow(&$colCount, $acBefore = NULL, $acAfter = NULL, $addTR = TRUE) {
+	protected function getHeadRow(&$colCount, $acBefore = NULL, $acAfter = NULL, $addTr = TRUE) {
 		$result = '';
 
-		if ($addTR) {
+		if ($addTr) {
 			$result .= '<tr>';
 		}
 
@@ -446,7 +449,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 			$result .= '<th>' . implode('</th><th>', Tx_Commerce_Utility_GeneralUtility::removeXSSStripTagsArray($acAfter)) . '</th>';
 		}
 
-		if ($addTR) {
+		if ($addTr) {
 			$result .= '</tr>';
 		}
 
@@ -458,10 +461,10 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	/**
 	 * Creates all articles that should be created (defined through the POST vars)
 	 *
-	 * @param array $PA: ...
+	 * @param array $parameter
 	 * @return void
 	 */
-	public function createArticles($PA) {
+	public function createArticles($parameter) {
 		/** @var t3lib_db $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
@@ -472,12 +475,12 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 				'deleted = 0'
 			);
 
-			while ($row = $database->sql_fetch_assoc($res)) {
+			while (($row = $database->sql_fetch_assoc($res))) {
 				$this->flattedAttributes[$row['uid']] = $row['value'];
 			}
 
-			foreach (t3lib_div::_GP('createList') as $key => $switch) {
-				$this->createArticle($PA, $key);
+			foreach (array_keys(t3lib_div::_GP('createList')) as $key) {
+				$this->createArticle($parameter, $key);
 			}
 
 			t3lib_BEfunc::setUpdateSignal('updateFolderTree');
@@ -486,8 +489,8 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 
 	/**
 	 * Updates all articles.
-	 * This adds new attributes to all existing articles that where added to the parent
-	 * product or categories.
+	 * This adds new attributes to all existing articles that where added
+	 * to the parent product or categories.
 	 *
 	 * @return void
 	 */
@@ -527,12 +530,12 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	/**
 	 * Creates article title out of attributes
 	 *
-	 * @param array $PA: ...
+	 * @param array $parameter
 	 * @param array $data
 	 * @return string Returns the product title + attribute titles for article title
 	 */
-	protected function createArticleTitleFromAttributes($PA, $data) {
-		$content = $PA['title'];
+	protected function createArticleTitleFromAttributes($parameter, $data) {
+		$content = $parameter['title'];
 		if (is_array($data) && count($data)) {
 			$selectedValues = array();
 			foreach ($data as $value) {
@@ -548,14 +551,14 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	}
 
 	/**
-	 * Creates an article in the database and all needed releations to attributes and values.
-	 * It also creates a new prices and assignes it to the new article.
+	 * Creates an article in the database and all needed releations to attributes
+	 * and values. It also creates a new prices and assignes it to the new article.
 	 *
-	 * @param array $PA: ...
-	 * @param string $key: The key in the POST var array
+	 * @param array $parameter
+	 * @param string $key The key in the POST var array
 	 * @return integer Returns the new articleUid if success
 	 */
-	protected function createArticle($PA, $key) {
+	protected function createArticle($parameter, $key) {
 		/** @var t3lib_db $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
@@ -580,7 +583,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 		$articleData = array(
 			'pid' => $this->pid,
 			'crdate' => time(),
-			'title' => strip_tags($this->createArticleTitleFromAttributes($PA, $data)),
+			'title' => strip_tags($this->createArticleTitleFromAttributes($parameter, $data)),
 			'uid_product' => (int) $this->uid,
 			'sorting' => $sorting['sorting'] * 2,
 			'article_attributes' => count($this->attributes['rest']) + count($data),
@@ -649,7 +652,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 			'uid_local = ' . (int) $this->uid
 		);
 		$attributesSorting = array();
-		while ($productsAttributes = $database->sql_fetch_assoc($productsAttributesRes)) {
+		while (($productsAttributes = $database->sql_fetch_assoc($productsAttributesRes))) {
 			$attributesSorting[$productsAttributes['uid_foreign']] = $productsAttributes['sorting'];
 		}
 
@@ -695,13 +698,13 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 			}
 		}
 
-			// update the article
-			// we have to write the xml datastructure for this article. This is needed
-			// to have the correct values inserted on first call of the article.
+		// update the article
+		// we have to write the xml datastructure for this article. This is needed
+		// to have the correct values inserted on first call of the article.
 		$this->belib->updateArticleXML($createdArticleRelations, FALSE, $articleUid);
 
-			// Now check, if the parent Product is already lokalised, so creat Article in the lokalised version
-			// Select from Database different localisations
+		// Now check, if the parent Product is already lokalised, so creat Article in
+		// the lokalised version Select from Database different localisations
 		$resOricArticle = $database->exec_SELECTquery('*', 'tx_commerce_articles', 'uid=' . (int) $articleUid . ' and deleted = 0');
 		$origArticle = $database->sql_fetch_assoc($resOricArticle);
 
@@ -709,7 +712,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 
 		if (($resLocalizedProducts) && ($database->sql_num_rows($resLocalizedProducts) > 0)) {
 				// Only if there are products
-			while ($localizedProducts = $database->sql_fetch_assoc($resLocalizedProducts)) {
+			while (($localizedProducts = $database->sql_fetch_assoc($resLocalizedProducts))) {
 					// walk thru and create articles
 				$destLanguage = $localizedProducts['sys_language_uid'];
 					// get the highest sorting
@@ -721,7 +724,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 				$articleData = array(
 					'pid' => $this->pid,
 					'crdate' => time(),
-					'title' => $PA['title'],
+					'title' => $parameter['title'],
 					'uid_product' => $localizedProducts['uid'],
 					'sys_language_uid' => $localizedProducts['sys_language_uid'],
 					'l18n_parent' => $articleUid,
@@ -734,21 +737,22 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 
 					// create the article
 				$articleRes = $database->exec_INSERTquery('tx_commerce_articles', $articleData);
-				$LocArticleUid = $database->sql_insert_id($articleRes);
+				$localizedArticleUid = $database->sql_insert_id($articleRes);
 
-					// get all relations to attributes from the old article and copy them to new article
+				// get all relations to attributes from the old article and copy them
+				// to new article
 				$res = $database->exec_SELECTquery(
 					'*',
 					'tx_commerce_articles_article_attributes_mm',
 					'uid_local=' . (int) $origArticle['uid'] . ' AND uid_valuelist=0'
 				);
 
-				while ($origRelation = $database->sql_fetch_assoc($res)) {
-					$origRelation['uid_local'] = $LocArticleUid;
+				while (($origRelation = $database->sql_fetch_assoc($res))) {
+					$origRelation['uid_local'] = $localizedArticleUid;
 
 					$database->exec_INSERTquery('tx_commerce_articles_article_attributes_mm', $origRelation);
 				}
-				$this->belib->updateArticleXML($createdArticleRelations, FALSE, $LocArticleUid);
+				$this->belib->updateArticleXML($createdArticleRelations, FALSE, $localizedArticleUid);
 			}
 		}
 
@@ -756,19 +760,21 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	}
 
 	/**
-	 * Creates a checkbox that has to be toggled for creating a new price for an article.
-	 * The handling for creating the new price is inside the tcehooks
+	 * Creates a checkbox that has to be toggled for creating a new price for an
+	 * article. The handling for creating the new price is inside the tcehooks
 	 *
+	 * @param array $parameter
+	 * @return string
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, this wont get replaced as it was removed from the api
 	 */
-	public function createNewPriceCB($PA) {
+	public function createNewPriceCB($parameter) {
 		t3lib_div::logDeprecatedFunction();
 
 		/** @var language $language */
 		$language = $GLOBALS['LANG'];
 
 		$content = '<div id="typo3-newRecordLink">
-				<input type="checkbox" name="data[tx_commerce_articles][' . (int) $PA['row']['uid'] . '][create_new_price]" />' .
+				<input type="checkbox" name="data[tx_commerce_articles][' . (int) $parameter['row']['uid'] . '][create_new_price]" />' .
 				$language->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:articles.add_article_price', 1) .
 			'</div>';
 		return $content;
@@ -777,45 +783,55 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	/**
 	 * Creates ...
 	 *
+	 * @param array $parameter
+	 * @return string
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, this wont get replaced as it was removed from the api
 	 */
-	public function createNewScalePricesCount($PA) {
+	public function createNewScalePricesCount($parameter) {
 		t3lib_div::logDeprecatedFunction();
 
 		return '<input style="width: 77px;" class="formField1" maxlength="20" type="input" name="data[tx_commerce_articles][' .
-			(int) $PA['row']['uid'] . '][create_new_scale_prices_count]" />';
+			(int) $parameter['row']['uid'] . '][create_new_scale_prices_count]" />';
 	}
 
 	/**
 	 * Creates ...
 	 *
+	 * @param array $parameter
+	 * @return string
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, this wont get replaced as it was removed from the api
 	 */
-	public function createNewScalePricesSteps($PA) {
+	public function createNewScalePricesSteps($parameter) {
 		t3lib_div::logDeprecatedFunction();
 
 		return '<input style="width: 77px;" class="formField1" maxlength="20"type="input" name="data[tx_commerce_articles][' .
-			(int) $PA['row']['uid'] . '][create_new_scale_prices_steps]" />';
+			(int) $parameter['row']['uid'] . '][create_new_scale_prices_steps]" />';
 	}
 
 	/**
 	 * Creates ...
 	 *
+	 * @param array $parameter
+	 * @return string
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, this wont get replaced as it was removed from the api
 	 */
-	public function createNewScalePricesStartAmount($PA) {
+	public function createNewScalePricesStartAmount($parameter) {
 		t3lib_div::logDeprecatedFunction();
 
 		return '<input style="width: 77px;" class="formField1" maxlength="20" type="input" name="data[tx_commerce_articles][' .
-			(int) $PA['row']['uid'] . '][create_new_scale_prices_startamount]" />';
+			(int) $parameter['row']['uid'] . '][create_new_scale_prices_startamount]" />';
 	}
 
 	/**
-	 * Creates a delete button that is assigned to a price. If the button is pressed the price will be deleted from the article
+	 * Creates a delete button that is assigned to a price. If the button is pressed
+	 * the price will be deleted from the article
 	 *
+	 * @param array $parameter
+	 * @param t3lib_TCEforms $fObj
+	 * @return string
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, this wont get replaced as it was removed from the api
 	 */
-	public function deletePriceButton($PA, $fObj) {
+	public function deletePriceButton($parameter, $fObj) {
 		t3lib_div::logDeprecatedFunction();
 
 		/** @var language $language */
@@ -826,7 +842,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 		$returnUrl = $returnUrl[(count($returnUrl) - 1)];
 
 			// get the UID of the price
-		$name = explode('caption_', $PA['itemFormElName']);
+		$name = explode('caption_', $parameter['itemFormElName']);
 		$name = explode(']', $name[1]);
 		$pUid = $name[0];
 
@@ -841,11 +857,11 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	/**
 	 * Returns a hidden field with the name and value of the current form element
 	 *
-	 * @param array $PA
+	 * @param array $parameter
 	 * @return string
 	 */
-	public function articleUid($PA) {
-		return '<input type="hidden" name="' . $PA['itemFormElName'] . '" value="' . htmlspecialchars($PA['itemFormElValue']) . '">';
+	public function articleUid($parameter) {
+		return '<input type="hidden" name="' . $parameter['itemFormElName'] . '" value="' . htmlspecialchars($parameter['itemFormElValue']) . '">';
 	}
 }
 
