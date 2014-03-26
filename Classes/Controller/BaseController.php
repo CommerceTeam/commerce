@@ -25,6 +25,9 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+/**
+ * Class Tx_Commerce_Controller_BaseController
+ */
 abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 	/**
 	 * The extension key.
@@ -561,7 +564,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 				$localTs['fields.']['images.']['stdWrap.']['typolink.'] = $typoLinkConf;
 				$localTs['fields.']['teaserimages.']['stdWrap.']['typolink.'] = $typoLinkConf;
 
-				$localTs = $this->addTypoLinkToTS($localTs, $typoLinkConf);
+				$localTs = $this->addTypoLinkToTypoScript($localTs, $typoLinkConf);
 
 				$tmpCategory = $this->renderCategory($oneCategory, '###CATEGORY_LIST_ITEM###', $localTs, 'ITEM');
 
@@ -1157,7 +1160,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 	 * @param array $typoLinkConf TypoLink Configuration, buld bie view Method
 	 * @return array Changed TypoScript Configuration
 	 */
-	public function addTypoLinkToTS($typoscript, $typoLinkConf) {
+	public function addTypoLinkToTypoScript($typoscript, $typoLinkConf) {
 		foreach (array_keys($typoscript['fields.']) as $tsKey) {
 			if (is_array($typoscript['fields.'][$tsKey]['typolink.'])) {
 				if ($typoscript['fields.'][$tsKey]['typolink.']['setCommerceValues'] == 1) {
@@ -1678,9 +1681,8 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 
 	/**
 	 * This method renders a product to a template
-
 	 *
-*@param Tx_Commerce_Domain_Model_Product $product
+	 * @param Tx_Commerce_Domain_Model_Product $product
 	 * @param string $template TYPO3 Template
 	 * @param array $typoscript
 	 * @param array $articleMarker Marker for the article description
@@ -1716,10 +1718,10 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 		$data = $product->returnAssocArray();
 
 		// maybe this is a related product so category may be wrong
-		$cat = $this->category->getUid();
+		$categoryUid = $this->category->getUid();
 		$productCategories = $product->getParentCategories();
-		if (!in_array($cat, $productCategories, FALSE)) {
-			$cat = $productCategories[0];
+		if (!in_array($categoryUid, $productCategories, FALSE)) {
+			$categoryUid = $productCategories[0];
 		}
 
 		/**
@@ -1737,13 +1739,13 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 		}
 		$typoLinkConf['useCacheHash'] = 1;
 		$typoLinkConf['additionalParams'] = $this->argSeparator . $this->prefixId . '[showUid]=' . $product->getUid();
-		$typoLinkConf['additionalParams'] .= $this->argSeparator . $this->prefixId . '[catUid]=' . $cat;
+		$typoLinkConf['additionalParams'] .= $this->argSeparator . $this->prefixId . '[catUid]=' . $categoryUid;
 
 		if ($this->basketHashValue) {
 			$typoLinkConf['additionalParams'] .= $this->argSeparator . $this->prefixId . '[basketHashValue]=' . $this->basketHashValue;
 		}
 
-		$localTs = $this->addTypoLinkToTS($localTs, $typoLinkConf);
+		$localTs = $this->addTypoLinkToTypoScript($localTs, $typoLinkConf);
 
 		$markerArray = $this->generateMarkerArray($data, $localTs, '', 'Tx_Commerce_Domain_Model_Products');
 		$markerArrayUp = array();
@@ -1765,7 +1767,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 			$typoscript['productAttributes.']
 		);
 
-		$linkArray['catUid'] = (int) $cat;
+		$linkArray['catUid'] = (int) $categoryUid;
 
 		if ($this->basketHashValue) {
 			$linkArray['basketHashValue'] = $this->basketHashValue;
@@ -1863,7 +1865,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 			$basketConf['returnLast'] = 'url';
 			$newMarkerArray['GENERAL_FORM_ACTION'] = $this->cObj->typoLink('', $basketConf);
 		}
-		if (is_integer($this->category->getUid())) {
+		if (is_object($this->category)) {
 			$newMarkerArray['GENERAL_HIDDENCATUID'] = '<input type="hidden" name="' . $this->prefixId . '[catUid]" value="' . $this->category->getUid() . '" />';
 		}
 		if ($wrap) {
@@ -2012,6 +2014,20 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 
 
 	/**
+	 * Adds the the commerce TYPO3 Link parameter for commerce to existing
+	 * typoLink StdWarp if typolink.setCommerceValues = 1 is set.
+	 *
+	 * @param array $typoscript Existing TypoScriptConfiguration
+	 * @param array $typoLinkConf TypoLink Configuration, buld bie view Method
+	 * @return array Changed TypoScript Configuration
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use addTypoLinkToTypoScript instead
+	 */
+	public function addTypoLinkToTS($typoscript, $typoLinkConf) {
+		t3lib_div::logDeprecatedFunction();
+		return $this->addTypoLinkToTypoScript($typoscript, $typoLinkConf);
+	}
+
+	/**
 	 * Returns the TCA for either $this->table(if neither $table nor
 	 * $this->TCA is set), $table(if set) or $this->TCA
 	 *
@@ -2088,7 +2104,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 		$subpartName = '###' . strtoupper($this->conf['templateMarker.']['productView']) . '###';
 		$subpartNameNostock = '###' . strtoupper($this->conf['templateMarker.']['productView']) . '_NOSTOCK###';
 
-			// ###########    product single    ######################
+		// ########### product single ######################
 		$content = $this->renderSingleView($this->product, $this->category, $subpartName, $subpartNameNostock);
 		$content = $this->cObj->substituteMarkerArray($content, $this->languageMarker);
 		$globalMarker = array();
