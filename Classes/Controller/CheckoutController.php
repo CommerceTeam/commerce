@@ -2665,7 +2665,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	 * @param integer $pid
 	 * @return t3lib_TCEmain
 	 */
-	protected function getInstanceOfTceMain($pid) {
+	public function getInstanceOfTceMain($pid) {
 		$this->initializeBackendUser();
 		$this->initializeLanguage();
 

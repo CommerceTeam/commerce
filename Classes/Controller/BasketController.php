@@ -29,7 +29,8 @@
  * Basket pi for commerce. This class is used to handle all events concerning
  * the basket. E.g. Adding things to basket, changing basket
  *
- * The basket itself is stored inside $GLOBALS['TSFE']->fe_user->Tx_Commerce_Domain_Model_Basket;
+ * The basket itself is stored inside
+ * $GLOBALS['TSFE']->fe_user->Tx_Commerce_Domain_Model_Basket;
  */
 class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_BaseController {
 	/**
@@ -313,8 +314,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 		}
 
 		if ($this->piVars['artAddUid']) {
-			while (list($k, $v) = each($this->piVars['artAddUid'])) {
-		//	foreach ($this->piVars['artAddUid'] as ) {
+			foreach ($this->piVars['artAddUid'] as $k => $v) {
 				$k = (int) $k;
 
 				/** @var Tx_Commerce_Domain_Model_BasketItem $basketItem */
@@ -327,7 +327,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 					$oldCountValue = 0;
 				}
 
-				if ($v['count'] < 0) {
+				if (!isset($v['count']) || $v['count'] < 0) {
 					$v['count'] = 1;
 				}
 
@@ -1063,9 +1063,9 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 		}
 
 		$list = array();
-		$articleTypes = explode(',', $this->conf['regularArticleTypes']);
-		while ($type = current(array_slice(each($articleTypes), 1, 1))) {
-			$list = array_merge($list, $this->basket->getArticlesByArticleTypeUidAsUidlist($type));
+		$articleTypes = t3lib_div::trimExplode(',', $this->conf['regularArticleTypes'], TRUE);
+		foreach ($articleTypes as $articleType) {
+			$list = array_merge($list, $this->basket->getArticlesByArticleTypeUidAsUidlist($articleType));
 		}
 
 			// ###########    product list    ######################
@@ -1073,7 +1073,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 		$templateMarker[] = '###' . strtoupper($this->conf['templateMarker.']['items_listview2']) . '###';
 
 		$changerowcount = 0;
-		while ($basketItemId = current(array_slice(each($list), 1, 1))) {
+		foreach ($list as $basketItemId) {
 				// Fill marker arrays with product/article values
 			/** @var $basketItem Tx_Commerce_Domain_Model_BasketItem */
 			$basketItem = $this->basket->getBasketItem($basketItemId);
