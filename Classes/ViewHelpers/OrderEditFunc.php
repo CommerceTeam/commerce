@@ -312,7 +312,7 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 	 * Selects only the oder folders from the pages List
 	 *
 	 * @param array $data
-	 * @see tcafiles/tx_commerce_orders.tca.php
+	 * @see Configuration/TCA/Orders.php
 	 */
 	public function orderStatus(&$data) {
 		/**
@@ -578,7 +578,7 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 	 * Selects only the oder folders from the pages List
 	 *
 	 * @param array $data
-	 * @see tcafiles/tx_commerce_orders.tca.php
+	 * @see Configuration/TCA/Orders.php
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use Tx_Commerce_ViewHelpers_OrderEditFunc::orderStatus instead
 	 */
 	public function order_status(&$data) {

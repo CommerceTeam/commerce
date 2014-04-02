@@ -652,7 +652,7 @@ $GLOBALS['TCA']['tx_commerce_address_types'] = array(
 		'transOrigPointerField' => 'l18n_parent',
 		'transOrigDiffSourceField' => 'l18n_diffsource',
 		'default_sortby' => 'ORDER BY crdate',
-		'dynamicConfigFile' => PATH_TXCOMMERCE . 'tcafiles/AddressTypes.php',
+		'dynamicConfigFile' => PATH_TXCOMMERCE . 'Configuration/TCA/AddressTypes.php',
 		'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL . 'address_types.gif',
 	),
 	'feInterface' => array(
@@ -672,7 +672,7 @@ $GLOBALS['TCA']['tx_commerce_user_states'] = array(
 		'transOrigDiffSourceField' => 'l18n_diffsource',
 		'default_sortby' => 'ORDER BY crdate',
 		'delete' => 'deleted',
-		'dynamicConfigFile' => PATH_TXCOMMERCE . 'tcafiles/UserStates.php',
+		'dynamicConfigFile' => PATH_TXCOMMERCE . 'Configuration/TCA/UserStates.php',
 		'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL . 'user_states.gif',
 	),
 	'feInterface' => array(
