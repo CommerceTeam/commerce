@@ -102,15 +102,13 @@ class Tx_Commerce_Hook_CommandMapHooks {
 	protected function preProcessCategory(&$command, &$categoryUid) {
 		if ($command == 'delete') {
 			/** @var Tx_Commerce_Domain_Model_Category $category */
-			$category = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category');
-			$category->init($categoryUid);
+			$category = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category', $categoryUid);
 			$category->loadData();
 
-				// check if category is a translation and get l18n parent for access right handling
+			// check if category is a translation and get l18n parent for access rights
 			if ($category->getL18nParent()) {
 				/** @var Tx_Commerce_Domain_Model_Category $category */
-				$category = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category');
-				$category->init($category->getL18nParent());
+				$category = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category', $category->getL18nParent());
 			}
 
 				// get mounted categories of user to check if current category is child of these

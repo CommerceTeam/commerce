@@ -2809,8 +2809,7 @@ class Tx_Commerce_Utility_BackendUtility {
 
 		for ($i = 0; $i < $l; $i ++) {
 			/** @var Tx_Commerce_Domain_Model_Category $category */
-			$category = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category');
-			$category->init($categoryUids[$keys[$i]]);
+			$category = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category', $categoryUids[$keys[$i]]);
 				// check if the category is in the commerce mounts
 			if (!$mounts->isInCommerceMounts($category->getUid())) {
 				return FALSE;

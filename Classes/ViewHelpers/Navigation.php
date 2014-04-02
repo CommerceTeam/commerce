@@ -355,8 +355,7 @@ class Tx_Commerce_ViewHelpers_Navigation {
 			 *
 			 * @var Tx_Commerce_Domain_Model_Category $myCat
 			 */
-			$myCat = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category');
-			$myCat->init($this->choosenCat);
+			$myCat = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category', $this->choosenCat);
 			$myCat->loadData();
 				// MODIF DE LUC >AMEOS : Get the right path with custom method
 			$aPath = $this->getRootLine($this->mTree, $this->choosenCat, $this->expandAll);
@@ -981,8 +980,7 @@ class Tx_Commerce_ViewHelpers_Navigation {
 		if ($this->mConf['hideEmptyCategories'] == 1 && $tableName == 'tx_commerce_categories' && is_array($row[0])) {
 				// Process Empty Categories
 				// Solution: Create Category Object and use tx_commerce_category->ProductsBelowCategory
-			$localCategory = t3lib_div::makeinstance('Tx_Commerce_Domain_Model_Category');
-			$localCategory->init($row[0]['uid'], $row[0]['sys_language_uid']);
+			$localCategory = t3lib_div::makeinstance('Tx_Commerce_Domain_Model_Category', $row[0]['uid'], $row[0]['sys_language_uid']);
 			$localCategory->loadData();
 			if (!$localCategory->ProductsBelowCategory()) {
 				return array();
@@ -1138,8 +1136,7 @@ class Tx_Commerce_ViewHelpers_Navigation {
 
 		$this->gpVars['basketHashValue'] =  $GLOBALS['TSFE']->fe_user->tx_commerce_basket->getBasketHashValue();
 		if (!is_object($this->category)) {
-			$this->category = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category');
-			$this->category->init($this->mConf['category'], $GLOBALS['TSFE']->sys_language_uid);
+			$this->category = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category', $this->mConf['category'], $GLOBALS['TSFE']->sys_language_uid);
 			$this->category->loadData();
 		}
 
@@ -1155,8 +1152,7 @@ class Tx_Commerce_ViewHelpers_Navigation {
 			$productObject->loadData();
 
 			/** @var Tx_Commerce_Domain_Model_Category $categoryObject */
-			$categoryObject = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category');
-			$categoryObject->init($this->gpVars['catUid'], $GLOBALS['TSFE']->sys_language_uid);
+			$categoryObject = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category', $this->gpVars['catUid'], $GLOBALS['TSFE']->sys_language_uid);
 			$categoryObject->loadData();
 
 			$add_getvars = ini_get('arg_separator.output') . $this->prefixId . '[showUid]=' . $productObject->getUid() .
@@ -1202,8 +1198,7 @@ class Tx_Commerce_ViewHelpers_Navigation {
 	public function getCategoryRootlineforTS($catID, $result = array()) {
 		if ($catID) {
 			/** @var Tx_Commerce_Domain_Model_Category $categoryObject */
-			$categoryObject = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category');
-			$categoryObject->init($catID, $GLOBALS['TSFE']->sys_language_uid);
+			$categoryObject = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category', $catID, $GLOBALS['TSFE']->sys_language_uid);
 			$categoryObject->loadData();
 
 			if (is_object($categoryObject->getParentCategory())) {

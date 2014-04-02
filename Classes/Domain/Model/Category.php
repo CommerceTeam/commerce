@@ -288,8 +288,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 			$this->categories = array();
 			foreach ($this->categories_uid as $childCategoryUid) {
 				/** @var Tx_Commerce_Domain_Model_Category $childCategory */
-				$childCategory = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category');
-				$childCategory->init($childCategoryUid, $this->lang_uid);
+				$childCategory = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category', $childCategoryUid, $this->lang_uid);
 
 				$this->categories[$childCategoryUid] = $childCategory;
 			}
@@ -414,8 +413,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	 */
 	public function getParentCategory() {
 		if ($this->parent_category_uid && !$this->parent_category) {
-			$this->parent_category = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category');
-			$this->parent_category->init($this->parent_category_uid, $this->lang_uid);
+			$this->parent_category = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category', $this->parent_category_uid, $this->lang_uid);
 		}
 
 		return $this->parent_category;
@@ -432,8 +430,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 		$parentCats = array();
 		for ($i = 0, $l = count($parents); $i < $l; $i++) {
 			/** @var Tx_Commerce_Domain_Model_Category $category */
-			$category = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category');
-			$category->init($parents[$i]);
+			$category = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category', $parents[$i]);
 			$parentCats[] = $category;
 		}
 
@@ -516,8 +513,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 			$childCategoriesList = $this->getChildCategoriesUidlist($depth);
 			foreach ($childCategoriesList as $oneCategoryUid) {
 				/** @var Tx_Commerce_Domain_Model_Category $category */
-				$category = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category');
-				$category->init($oneCategoryUid, $this->lang_uid);
+				$category = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category', $oneCategoryUid, $this->lang_uid);
 				$category->loadData();
 				$returnList = array_merge($returnList, $category->getProductUids());
 			}
@@ -720,8 +716,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 			$childCategoriesList = $this->getChildCategoriesUidlist($depth);
 			foreach ($childCategoriesList as $oneCategoryUid) {
 				/** @var Tx_Commerce_Domain_Model_Category $category */
-				$category = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category');
-				$category->init($oneCategoryUid, $this->lang_uid);
+				$category = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category', $oneCategoryUid, $this->lang_uid);
 				$category->loadData();
 				$returnValue = $category->hasProductsInSubCategories($depth);
 				if ($returnValue == TRUE) {

@@ -281,11 +281,10 @@ class Tx_Commerce_ViewHelpers_Browselinks_CategoryTree extends Tx_Commerce_Tree_
 			if ($mounts->isInCommerceMounts($this->openCategory)) {
 				$mountUids = $mounts->getMountData();
 
-					// get the category parents so we can open them as well
-					// load the category and go up the tree until we either reach a mount or we reach root
+				// get the category parents so we can open them as well
+				// load the category and go up the tree until we either reach a mount or a root
 				/** @var Tx_Commerce_Domain_Model_Category $cat */
-				$cat = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category');
-				$cat->init($this->openCategory);
+				$cat = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category', $this->openCategory);
 				$cat->loadData();
 
 				$tmpCats = $cat->getParentCategories();

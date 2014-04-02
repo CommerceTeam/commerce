@@ -206,16 +206,16 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 		/** @var Tx_Commerce_Domain_Model_Category $tmpCategory */
 		$tmpCategory = NULL;
 		if ($this->piVars['catUid']) {
-			$tmpCategory = t3lib_div::makeinstance('Tx_Commerce_Domain_Model_Category');
 			$this->cat = (int) $this->piVars['catUid'];
+			$tmpCategory = t3lib_div::makeinstance('Tx_Commerce_Domain_Model_Category', $this->cat);
 			$tmpCategory->init($this->cat, $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
 			$accessible = $tmpCategory->isAccessible();
 		}
 
 			// Validate given catUid, if it's given and accessible
 		if (!$this->piVars['catUid'] || !$accessible) {
-			$tmpCategory = t3lib_div::makeinstance('Tx_Commerce_Domain_Model_Category');
 			$this->cat = (int) $this->master_cat;
+			$tmpCategory = t3lib_div::makeinstance('Tx_Commerce_Domain_Model_Category', $this->cat);
 			$tmpCategory->init($this->cat, $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
 		}
 		if (!isset($this->piVars['catUid'])) {
@@ -254,8 +254,7 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 		if (($this->piVars['catUid']) && ($this->conf['checkCategoryTree'] == 1)) {
 				// Validate given CAT UID, if is below master_cat
 			/** @var Tx_Commerce_Domain_Model_Category masterCategoryObj */
-			$this->masterCategoryObj = t3lib_div::makeinstance('Tx_Commerce_Domain_Model_Category');
-			$this->masterCategoryObj->init($this->master_cat, $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
+			$this->masterCategoryObj = t3lib_div::makeinstance('Tx_Commerce_Domain_Model_Category', $this->master_cat, $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
 			$this->masterCategoryObj->loadData();
 			$masterCategorySubCategories = $this->masterCategoryObj->getChildCategoriesUidlist();
 			if (in_array($this->piVars['catUid'], $masterCategorySubCategories)) {
@@ -272,8 +271,7 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 				// Only, if the category has been changed
 			unset($this->category);
 			/** @var Tx_Commerce_Domain_Model_Category category */
-			$this->category = t3lib_div::makeinstance('Tx_Commerce_Domain_Model_Category');
-			$this->category->init($this->cat, $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
+			$this->category = t3lib_div::makeinstance('Tx_Commerce_Domain_Model_Category', $this->cat, $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
 			$this->category->loadData();
 		}
 

@@ -346,13 +346,13 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 
 				foreach ($hookObjectsArr as $hookObj) {
 					if (method_exists($hookObj, 'beforeFormClose')) {
-							// set $user_ignoreClose to true if you want to force the script to print out the execute button
+						// set $user_ignoreClose to true if you want to force the script to print out the execute button
 						$str .= $hookObj->beforeFormClose($uidClip, $uidTarget, $command, $user_ignoreClose);
 					}
 				}
 
 				if (0 >= $l && (0 != count($prods) || $user_ignoreClose)) {
-						// no child object - sorting position is irrelevant - just print a submit button and notify users that there are not products in the category yet
+					// no child object - sorting position is irrelevant - just print a submit button and notify users that there are not products in the category yet
 					$str .= '<input type="submit" value="' . $language->getLL('copy.submit') . '" />';
 				} elseif (0 < $l) {
 						// at least 1 item - offer choice
@@ -379,13 +379,12 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 				} else {
 					$noActionReq = TRUE;
 				}
-			break;
+				break;
 
 			case 'pasteCategory':
-					// chose locale to copy from category
+				// chose locale to copy from category
 				/** @var Tx_Commerce_Domain_Model_Category $cat */
-				$cat = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category');
-				$cat->init($uidClip);
+				$cat = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category', $uidClip);
 				$cat->loadData();
 				$cats = $cat->getL18nCategories();
 
@@ -397,7 +396,7 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 						// walk the l18n and get the selector box
 					$l = count($cats);
 
-					for ($i = 0; $i < $l; $i ++) {
+					for ($i = 0; $i < $l; $i++) {
 						$tmpCat = $cats[$i];
 
 						$flag = ($tmpCat['flag'] != '') ?  '<img src="' . $this->doc->backPath . 'gfx/flags/' . $tmpCat['flag'] . '" alt="Flag" />' : '';

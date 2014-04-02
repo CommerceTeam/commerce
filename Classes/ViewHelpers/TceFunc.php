@@ -173,16 +173,14 @@ class Tx_Commerce_ViewHelpers_TceFunc {
 			switch ($table) {
 				case 'tx_commerce_categories':
 					/** @var Tx_Commerce_Domain_Model_Category $category */
-					$category = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category');
-					$category->init($defVals['tx_commerce_categories']['parent_category']);
+					$category = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category', $defVals['tx_commerce_categories']['parent_category']);
 					$category->loadData();
 					$itemArray = array($category->getUid() . '|' . $category->getTitle());
 				break;
 
 				case 'tx_commerce_products':
 					/** @var Tx_Commerce_Domain_Model_Category $category */
-					$category = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category');
-					$category->init($defVals['tx_commerce_products']['categories']);
+					$category = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category', $defVals['tx_commerce_products']['categories']);
 					$category->loadData();
 					$itemArray = array($category->getUid() . '|' . $category->getTitle());
 				break;

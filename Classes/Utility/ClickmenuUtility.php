@@ -297,8 +297,7 @@ class Tx_Commerce_Utility_ClickmenuUtility extends clickMenu {
 			// would lead to endless recursion
 			$clipRecord = $this->clickMenu->clipObj->getSelectedRecord();
 			/** @var Tx_Commerce_Domain_Model_Category $category */
-			$category = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category');
-			$category->init($clipRecord['uid']);
+			$category = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category', $clipRecord['uid']);
 			$category->loadData();
 			$childCategories = $category->getChildCategories();
 
@@ -324,9 +323,8 @@ class Tx_Commerce_Utility_ClickmenuUtility extends clickMenu {
 
 		// if the category has no parent categories treat as root
 		/** @var Tx_Commerce_Domain_Model_Category $category */
-		$category = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category');
+		$category = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category', $categoryToCheckRightsOn);
 		if ($categoryToCheckRightsOn) {
-			$category->init($categoryToCheckRightsOn);
 			$rights['DBmount'] = count($category->getParentCategories()) ? $rights['DBmount'] : TRUE;
 		} else {
 			// to enable new link on top most node

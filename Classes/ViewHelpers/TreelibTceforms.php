@@ -484,8 +484,7 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 
 			// Get the parent Categories for the cat uid
 		/** @var Tx_Commerce_Domain_Model_Category $cat */
-		$cat = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category');
-		$cat->init($catUid);
+		$cat = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category', $catUid);
 		$cat->loadData();
 		$parent = $cat->getParentCategories();
 
@@ -527,8 +526,7 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 		}
 
 		/** @var Tx_Commerce_Domain_Model_Category $category */
-		$category = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category');
-		$category->init($catUid);
+		$category = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category', $catUid);
 		$category->loadData();
 
 		$this->itemArrayProcessed = array();
@@ -579,8 +577,7 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 
 		for ($i = 0, $l = count($parent); $i < $l; $i++) {
 			/** @var Tx_Commerce_Domain_Model_Category $cat */
-			$cat = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category');
-			$cat->init($parent[$i]);
+			$cat = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category', $parent[$i]);
 			$cat->loadData();
 
 			$title = ($cat->isPSet('show')) ?
@@ -630,8 +627,7 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 				$itemArray[] = $value . '|' . $article->getTitle();
 			} elseif ('tx_commerce_categories' == $table) {
 				/** @var Tx_Commerce_Domain_Model_Category $category */
-				$category = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category');
-				$category->init($uid);
+				$category = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category', $uid);
 				$category->loadData();
 
 				$itemArray[] = $value . '|' . $category->getTitle();

@@ -477,15 +477,13 @@ class Tx_Commerce_Hook_DataMapHooks {
 				$checkId = $id;
 
 				/** @var Tx_Commerce_Domain_Model_Category $category */
-				$category = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category');
-				$category->init($checkId);
+				$category = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category', $checkId);
 				$category->loadData();
 
 					// Use the l18n parent as category for permission checks.
 				if ($l18nParent || $category->getField('l18n_parent') > 0) {
 					$checkId = $l18nParent ?: $category->getField('l18n_parent');
-					$category = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category');
-					$category->init($checkId);
+					$category = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category', $checkId);
 				}
 
 					// check if the category is in mount
@@ -568,8 +566,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 				// abort if the user didn't assign a category - rights need not be checked then
 			if ($fieldArray['parent_category'] == '') {
 				/** @var Tx_Commerce_Domain_Model_Category $root */
-				$root = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category');
-				$root->init(0);
+				$root = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category', 0);
 
 				/** @var Tx_Commerce_Tree_CategoryMounts $mounts */
 				$mounts = t3lib_div::makeInstance('Tx_Commerce_Tree_CategoryMounts');
@@ -603,8 +600,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 					$uid = (int) $newParents[$keys[$i]];
 
 					/** @var Tx_Commerce_Domain_Model_Category $cat */
-					$category = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category');
-					$category->init($uid);
+					$category = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category', $uid);
 
 					/** @var Tx_Commerce_Tree_CategoryMounts $mounts */
 					$mounts = t3lib_div::makeInstance('Tx_Commerce_Tree_CategoryMounts');
@@ -665,8 +661,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 					}
 
 					/** @var Tx_Commerce_Domain_Model_Category $catDirect */
-					$catDirect = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category');
-					$catDirect->init($catUid);
+					$catDirect = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category', $catUid);
 					$catDirect->loadData();
 
 					$tmpCats = $catDirect->getParentCategories();

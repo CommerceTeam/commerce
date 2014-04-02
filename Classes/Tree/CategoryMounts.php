@@ -59,8 +59,7 @@ class Tx_Commerce_Tree_CategoryMounts extends Tx_Commerce_Tree_Leaf_Mounts {
 			} else {
 					// Get the title
 				/** @var Tx_Commerce_Domain_Model_Category $cat */
-				$cat = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category');
-				$cat->init($id);
+				$cat = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category', $id);
 				$cat->loadData();
 
 				$title = ($cat->isPermissionSet('show') && $this->isInCommerceMounts($cat->getUid())) ? $cat->getTitle() : $this->getLL('leaf.restrictedAccess');
@@ -98,8 +97,7 @@ class Tx_Commerce_Tree_CategoryMounts extends Tx_Commerce_Tree_Leaf_Mounts {
 
 			// load the category and go up the tree until we either reach a mount or we reach root
 		/** @var Tx_Commerce_Domain_Model_Category $cat */
-		$cat = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category');
-		$cat->init($categoryUid);
+		$cat = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category', $categoryUid);
 		$cat->loadData();
 
 		$tmpCats = $cat->getParentCategories();
