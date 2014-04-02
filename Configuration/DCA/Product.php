@@ -154,7 +154,7 @@ $dynaFlexConf = array(
 					'orderby' => 'sorting',
 				),
 				'field_config' => array(
-					'singleUserFunc' => 'tx_commerce_attributeEditor->getAttributeEditField',
+					'singleUserFunc' => 'Tx_Commerce_Utility_AttributeEditorUtility->getAttributeEditField',
 				),
 			),
 		),

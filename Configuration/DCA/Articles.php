@@ -44,7 +44,7 @@ $dynaFlexConf = array(
 					'where' => 'uid_local=###uid###',
 					'orderby' => 'sorting'
 				),
-				'allUserFunc' => 'tx_commerce_attributeEditor->getAttributeEditFields',
+				'allUserFunc' => 'Tx_Commerce_Utility_AttributeEditorUtility->getAttributeEditFields',
 			),
 		),
 	),
