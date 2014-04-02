@@ -303,8 +303,7 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 			case 'pasteProduct':
 					// chose local to copy from product
 				/** @var Tx_Commerce_Domain_Model_Product $product */
-				$product = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product');
-				$product->init($uidClip);
+				$product = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product', $uidClip);
 				$product->loadData();
 				$prods = $product->getL18nProducts();
 
@@ -317,7 +316,7 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 						// walk the l18n and get the selector box
 					$l = count($prods);
 
-					for ($i = 0; $i < $l; $i ++) {
+					for ($i = 0; $i < $l; $i++) {
 						$tmpProd = $prods[$i];
 
 						$flag = ($tmpProd['flag'] != '') ?  '<img src="' . $this->doc->backPath . 'gfx/flags/' . $tmpProd['flag'] . '" alt="Flag" />' : '';

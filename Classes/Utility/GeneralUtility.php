@@ -99,8 +99,7 @@ class Tx_Commerce_Utility_GeneralUtility {
 
 		foreach ($productUids as $arrayKey => $productUid) {
 			/** @var Tx_Commerce_Domain_Model_Product $productObj */
-			$productObj = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product');
-			$productObj->init($productUid);
+			$productObj = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product', $productUid);
 			$productObj->loadData();
 
 			if (!($productObj->hasStock())) {

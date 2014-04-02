@@ -693,8 +693,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 	 * @return array Array of marker
 	 */
 	public function makeDelivery($basketArray = array()) {
-		$this->deliveryProduct = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product');
-		$this->deliveryProduct->init($this->conf['delProdId'], $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
+		$this->deliveryProduct = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product', $this->conf['delProdId'], $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
 		$this->deliveryProduct->loadData();
 		$this->deliveryProduct->loadArticles();
 
@@ -772,8 +771,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 	 * @return array Array of template marker
 	 */
 	public function makePayment($basketArray = array()) {
-		$this->paymentProduct = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product');
-		$this->paymentProduct->init($this->conf['payProdId'], $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
+		$this->paymentProduct = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product', $this->conf['payProdId'], $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
 		$this->paymentProduct->loadData();
 		$this->paymentProduct->loadArticles();
 

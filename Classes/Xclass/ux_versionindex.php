@@ -72,8 +72,7 @@ class ux_tx_version_cm1 extends tx_version_cm1 {
 				$sysLanguageUid = (int) $row['sys_language_uid'];
 
 				/** @var $product Tx_Commerce_Domain_Model_Product */
-				$product = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product');
-				$product->init($row['t3ver_oid'], $sysLanguageUid);
+				$product = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product', $row['t3ver_oid'], $sysLanguageUid);
 				$product->loadData();
 
 				$getVars = ($sysLanguageUid > 0 ? '&L=' . $sysLanguageUid : '') .

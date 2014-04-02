@@ -960,8 +960,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 			if (count($this->relatedProduct_uids) > 0) {
 				foreach (array_keys($this->relatedProduct_uids) as $productId) {
 					/** @var Tx_Commerce_Domain_Model_Product $product */
-					$product = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product');
-					$product->init($productId, $this->lang_uid);
+					$product = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product', $productId, $this->lang_uid);
 					$product->loadData();
 					$product->loadArticles();
 

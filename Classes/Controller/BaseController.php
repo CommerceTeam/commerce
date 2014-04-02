@@ -1653,8 +1653,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 				$template = $this->cObj->getSubpart($this->templateCode, '###' . $templateMarker[$iterationCount] . '###');
 
 				/** @var Tx_Commerce_Domain_Model_Product $myProduct */
-				$myProduct = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product');
-				$myProduct->init($myProductId, $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
+				$myProduct = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product', $myProductId, $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
 				$myProduct->loadData();
 				$myProduct->loadArticles();
 

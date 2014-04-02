@@ -151,14 +151,12 @@ class Tx_Commerce_Hook_CommandMapHooks {
 			$backendUser->writeUC();
 		} elseif ($command == 'delete') {
 			/** @var Tx_Commerce_Domain_Model_Product $item */
-			$product = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product');
-			$product->init($productUid);
+			$product = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product', $productUid);
 
 				// check if product or if translated the translation parent category
 			if (!current($product->getParentCategories())) {
 				/** @var Tx_Commerce_Domain_Model_Product $product */
-				$product = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product');
-				$product->init($product->getL18nParent());
+				$product = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product', $product->getL18nParent());
 			}
 
 				// check existing categories
@@ -192,8 +190,7 @@ class Tx_Commerce_Hook_CommandMapHooks {
 				// check if product or if translated the translation parent category
 			if (!current($product->getParentCategories())) {
 				/** @var Tx_Commerce_Domain_Model_Product $product */
-				$product = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product');
-				$product->init($product->getL18nParent());
+				$product = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product', $product->getL18nParent());
 			}
 
 			if (!Tx_Commerce_Utility_BackendUtility::checkPermissionsOnCategoryContent($product->getParentCategories(), array('editcontent'))) {

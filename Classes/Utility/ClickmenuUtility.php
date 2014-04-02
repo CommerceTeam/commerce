@@ -356,8 +356,7 @@ class Tx_Commerce_Utility_ClickmenuUtility extends clickMenu {
 
 			// get all parent categories
 		/** @var Tx_Commerce_Domain_Model_Product $product */
-		$product = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product');
-		$product->init($uid);
+		$product = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product', $uid);
 
 		$parentCategories = $product->getParentCategories();
 
@@ -404,8 +403,7 @@ class Tx_Commerce_Utility_ClickmenuUtility extends clickMenu {
 
 			// get the parent categories of the product
 		/** @var Tx_Commerce_Domain_Model_Product $product */
-		$product = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product');
-		$product->init($productUid);
+		$product = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product', $productUid);
 
 		$parentCategories = $product->getParentCategories();
 

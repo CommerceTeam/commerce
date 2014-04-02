@@ -562,8 +562,7 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 
 			// Get the parent Categories for the cat uid
 		/** @var Tx_Commerce_Domain_Model_Product $prod */
-		$prod = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product');
-		$prod->init($uid);
+		$prod = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product', $uid);
 		$prod->loadData();
 
 			// read parent categories from the live product
@@ -618,8 +617,7 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 				// Product
 			if ('tx_commerce_products' == $table) {
 				/** @var Tx_Commerce_Domain_Model_Product $prod */
-				$prod = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product');
-				$prod->init($uid);
+				$prod = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product', $uid);
 				$prod->loadData();
 
 				$itemArray[] = $value . '|' . $prod->getTitle();

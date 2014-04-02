@@ -560,8 +560,7 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 		}
 
 		/** @var $product Tx_Commerce_Domain_Model_Product */
-		$product = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product');
-		$product->init($productsUid);
+		$product = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product', $productsUid);
 		return $product;
 	}
 

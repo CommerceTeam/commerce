@@ -199,7 +199,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	 * @param integer $languageUid
 	 * @return self
 	 */
-	public function __construct($uid = 0, $languageUid = 0) {
+	public function __construct($uid, $languageUid = 0) {
 		if ((int) $uid) {
 			$this->init($uid, $languageUid);
 		}
@@ -343,8 +343,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 		if ($this->products === NULL) {
 			foreach ($this->products_uid as $productUid) {
 				/** @var Tx_Commerce_Domain_Model_Product $childProduct */
-				$childProduct = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product');
-				$childProduct->init($productUid, $this->lang_uid);
+				$childProduct = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product', $productUid, $this->lang_uid);
 
 				$this->products[$productUid] = $childProduct;
 			}

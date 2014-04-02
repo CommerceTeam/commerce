@@ -341,8 +341,7 @@ class Tx_Commerce_ViewHelpers_Navigation {
 			 * even if wo haven't walked thrue the categories
 			 */
 			/** @var Tx_Commerce_Domain_Model_Product $myProduct */
-			$myProduct = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product');
-			$myProduct->init($this->gpVars['showUid']);
+			$myProduct = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product', $this->gpVars['showUid']);
 			$myProduct->loadData();
 			$this->choosenCat = $myProduct->getMasterparentCategory();
 		}
@@ -1152,8 +1151,7 @@ class Tx_Commerce_ViewHelpers_Navigation {
 		 */
 		if (($this->mConf['showProducts'] == 1) && ($this->gpVars['showUid'] > 0)) {
 			/** @var Tx_Commerce_Domain_Model_Product $productObject */
-			$productObject = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product');
-			$productObject->init($this->gpVars['showUid'], $GLOBALS['TSFE']->sys_language_uid);
+			$productObject = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product', $this->gpVars['showUid'], $GLOBALS['TSFE']->sys_language_uid);
 			$productObject->loadData();
 
 			/** @var Tx_Commerce_Domain_Model_Category $categoryObject */
@@ -1398,8 +1396,7 @@ class Tx_Commerce_ViewHelpers_Navigation {
 				$path = $this->manufacturerIdentifier . $aFiche['manufacturer_uid'] . ',' . $firstPath;
 
 				/** @var Tx_Commerce_Domain_Model_Product $myProduct */
-				$myProduct = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product');
-				$myProduct->init($aFiche['uid']);
+				$myProduct = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product', $aFiche['uid']);
 				$myProduct->loadData();
 
 				$sManuTitle = $myProduct->getManufacturerTitle();

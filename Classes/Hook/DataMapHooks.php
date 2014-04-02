@@ -182,9 +182,9 @@ class Tx_Commerce_Hook_DataMapHooks {
 			if ($previewPageId > 0) {
 					// Get Parent CAT UID
 				/** @var Tx_Commerce_Domain_Model_Product $productObj */
-				$productObj = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product');
-				$productObj->init($id);
+				$productObj = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product', $id);
 				$productObj->loadData();
+
 				$parentCateory = $productObj->getMasterparentCategory();
 				$GLOBALS['_POST']['popViewId_addParams'] =
 					($incomingFieldArray['sys_language_uid'] > 0 ? '&L=' . $incomingFieldArray['sys_language_uid'] : '') .
@@ -717,8 +717,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 			// Read the old parent categories
 		if ($status != 'new') {
 			/** @var Tx_Commerce_Domain_Model_Product $item */
-			$item = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product');
-			$item->init($id);
+			$item = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product', $id);
 
 			$parentCategories = $item->getParentCategories();
 
@@ -782,14 +781,12 @@ class Tx_Commerce_Hook_DataMapHooks {
 
 				// get the parent categories of the product
 			/** @var Tx_Commerce_Domain_Model_Product $product */
-			$product = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product');
-			$product->init($article->getParentProductUid());
+			$product = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product', $article->getParentProductUid());
 			$product->loadData();
 
 			if ($product->getL18nParent()) {
 				/** @var Tx_Commerce_Domain_Model_Product $product */
-				$product = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product');
-				$product->init($product->getL18nParent());
+				$product = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product', $product->getL18nParent());
 				$product->loadData();
 			}
 
@@ -909,8 +906,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 			// if fieldArray has been unset, do not save anything, but load dynaflex config
 		if (count($fieldArray)) {
 			/** @var Tx_Commerce_Domain_Model_Product $product */
-			$product = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product');
-			$product->init($id);
+			$product = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product', $id);
 			$product->loadData();
 
 			if (isset($fieldArray['categories'])) {
@@ -939,8 +935,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 		if (t3lib_div::testInt($id)) {
 				// check permissions
 			/** @var Tx_Commerce_Domain_Model_Product $product */
-			$product = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product');
-			$product->init($id);
+			$product = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product', $id);
 
 			$parentCategories = $product->getParentCategories();
 

@@ -406,8 +406,7 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 				$productId = $row['l18n_parent'];
 			}
 
-			$this->product = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product');
-			$this->product->init($productId, $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
+			$this->product = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product', $productId, $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
 			$this->product->loadData();
 
 			if ($this->product->isAccessible()) {
