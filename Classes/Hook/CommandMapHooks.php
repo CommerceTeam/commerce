@@ -118,7 +118,7 @@ class Tx_Commerce_Hook_CommandMapHooks {
 			$mounts = t3lib_div::makeInstance('Tx_Commerce_Tree_CategoryMounts');
 			$mounts->init($GLOBALS['BE_USER']->user['uid']);
 
-			if (!$category->isPSet($command) || !$mounts->isInCommerceMounts($category->getUid())) {
+			if (!$category->isPermissionSet($command) || !$mounts->isInCommerceMounts($category->getUid())) {
 					// Log the error
 				$this->pObj->log('tx_commerce_categories', $categoryUid, 3, 0, 1, 'Attempt to ' . $command . ' record without ' . $command . '-permissions');
 					// Set id to 0 (reference!) to prevent delete of the record

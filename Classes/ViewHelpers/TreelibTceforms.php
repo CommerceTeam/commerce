@@ -502,7 +502,7 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 				$parentObject->loadData();
 
 					// Separate Key and Title with a |
-				$title = ($parentObject->isPSet('show') && $mounts->isInCommerceMounts($parentObject->getUid())) ?
+				$title = ($parentObject->isPermissionSet('show') && $mounts->isInCommerceMounts($parentObject->getUid())) ?
 					$parentObject->getTitle() :
 					$this->language->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_treelib.xml:leaf.restrictedAccess', 1);
 				$this->itemArrayProcessed[] = $parentObject->getUid() . '|' . $title;

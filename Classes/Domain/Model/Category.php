@@ -199,7 +199,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	 * @param integer $languageUid
 	 * @return self
 	 */
-	public function __construct($uid, $languageUid = 0) {
+	public function __construct($uid = 0, $languageUid = 0) {
 		if ((int) $uid) {
 			$this->init($uid, $languageUid);
 		}
@@ -245,9 +245,9 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 			}
 
 			return TRUE;
-		} else {
-			return FALSE;
 		}
+
+		return FALSE;
 	}
 
 	/**
@@ -410,7 +410,8 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	/**
 	 * Loads the parent category in the parent-category variable
 	 *
-	 * @return Tx_Commerce_Domain_Model_Category|FALSE category object or FALSE if this category is already the topmost category
+	 * @return Tx_Commerce_Domain_Model_Category|FALSE category object or FALSE
+	 * 		if this category is already the topmost category
 	 */
 	public function getParentCategory() {
 		if ($this->parent_category_uid && !$this->parent_category) {
@@ -422,7 +423,8 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	}
 
 	/**
-	 * Returns an array of category objects (unloaded) that serve as the category's parent
+	 * Returns an array of category objects (unloaded)
+	 * that serve as category's parent
 	 *
 	 * @return array Array of category objects
 	 */
@@ -507,7 +509,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	 * @return array Array with list of product UIDs
 	 */
 	public function getProducts($depth = FALSE) {
-		$return_list = $this->getProductUids();
+		$returnList = $this->getProductUids();
 		if ($depth === FALSE) {
 			$depth = PHP_INT_MAX;
 		}
@@ -518,11 +520,11 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 				$category = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category');
 				$category->init($oneCategoryUid, $this->lang_uid);
 				$category->loadData();
-				$return_list = array_merge($return_list, $category->getProductUids());
+				$returnList = array_merge($returnList, $category->getProductUids());
 			}
 		}
 
-		return array_unique($return_list);
+		return array_unique($returnList);
 	}
 
 	/**
@@ -565,10 +567,10 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 				$parentCategory->loadData();
 
 				return $parentCategory->getTeaserImage();
-			} else {
-				return FALSE;
 			}
 		}
+
+		return FALSE;
 	}
 
 	/**
@@ -599,11 +601,11 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 		if (!is_array($this->categoryTSconfig)) {
 			$tSdataArray[] = $this->tsConfig;
 			$tSdataArray = t3lib_TSparser::checkIncludeLines_array($tSdataArray);
-			$categoryTS = implode(chr(10) . '[GLOBAL]' . chr(10), $tSdataArray);
+			$categoryTs = implode(chr(10) . '[GLOBAL]' . chr(10), $tSdataArray);
 
 			/** @var t3lib_TSparser $parseObj */
 			$parseObj = t3lib_div::makeInstance('t3lib_TSparser');
-			$parseObj->parse($categoryTS);
+			$parseObj->parse($categoryTs);
 			$this->categoryTSconfig = $parseObj->setup;
 		}
 
@@ -623,7 +625,8 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	/**
 	 * Loads the data
 	 *
-	 * @param boolean $translationMode Transaltionmode of the record, default FALSE to use the default way of translation
+	 * @param boolean $translationMode Transaltionmode of the record,
+	 * 		default FALSE to use the default way of translation
 	 * @return void
 	 */
 	public function loadData($translationMode = FALSE) {
@@ -672,7 +675,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	 * @param integer $perm Permission
 	 * @return boolean TRUE if permission is set, FALSE if permission is not set
 	 */
-	public function isPSet($perm) {
+	public function isPermissionSet($perm) {
 		if (!is_string($perm)) {
 			return FALSE;
 		}
@@ -700,9 +703,11 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	}
 
 	/**
-	 * Returns TRUE if this category has active products or if sub categories have active products
+	 * Returns TRUE if this category has active products or
+	 * if sub categories have active products
 	 *
-	 * @param boolean|integer $depth maximum deepth for going recursive, if not set go for maximum
+	 * @param boolean|integer $depth maximum depth for going recursive,
+	 * 		if not set go for maximum
 	 * @return boolean Returns TRUE, if category/subcategories hav active products
 	 */
 	public function hasProductsInSubCategories($depth = FALSE) {
@@ -740,15 +745,15 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	public function move($uid, $op = 'after') {
 		if ($op == 'into') {
 				// the $uid is a future parent
-			$parent_uid = $uid;
+			$parentUid = $uid;
 		} else {
 			return FALSE;
 		}
 			// Update parent_category
-		$set = $this->databaseConnection->updateRecord($this->uid, array('parent_category' => $parent_uid));
+		$set = $this->databaseConnection->updateRecord($this->uid, array('parent_category' => $parentUid));
 			// Only update relations if parent_category was successfully set
 		if ($set) {
-			$catList = array($parent_uid);
+			$catList = array($parentUid);
 			$catList = Tx_Commerce_Utility_BackendUtility::getUidListFromList($catList);
 			$catList = Tx_Commerce_Utility_BackendUtility::extractFieldArray($catList, 'uid_foreign', TRUE);
 
@@ -760,6 +765,18 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 		return TRUE;
 	}
 
+
+	/**
+	 * Returns whether the permission is set and allowed for the current usera
+	 *
+	 * @param integer $perm Permission
+	 * @return boolean TRUE if permission is set, FALSE if permission is not set
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use isPermissionSet instead
+	 */
+	public function isPSet($perm) {
+		t3lib_div::logDeprecatedFunction();
+		return $this->isPermissionSet($perm);
+	}
 
 	/**
 	 * Returns a list of all child categories from this category

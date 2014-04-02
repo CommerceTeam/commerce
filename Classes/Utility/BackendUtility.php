@@ -2818,7 +2818,7 @@ class Tx_Commerce_Utility_BackendUtility {
 
 				// check perms
 			for ($j = 0, $m = count($perms); $j < $m; $j ++) {
-				if (!$category->isPSet($perms[$j])) {
+				if (!$category->isPermissionSet($perms[$j])) {
 						// return false if perms are not granted
 					return FALSE;
 				}

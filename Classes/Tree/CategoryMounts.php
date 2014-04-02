@@ -63,7 +63,7 @@ class Tx_Commerce_Tree_CategoryMounts extends Tx_Commerce_Tree_Leaf_Mounts {
 				$cat->init($id);
 				$cat->loadData();
 
-				$title = ($cat->isPSet('show') && $this->isInCommerceMounts($cat->getUid())) ? $cat->getTitle() : $this->getLL('leaf.restrictedAccess');
+				$title = ($cat->isPermissionSet('show') && $this->isInCommerceMounts($cat->getUid())) ? $cat->getTitle() : $this->getLL('leaf.restrictedAccess');
 
 				$tupels[] = array($id, $title);
 			}

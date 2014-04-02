@@ -494,7 +494,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 				$mounts->init($backendUser->user['uid']);
 
 					// check
-				if (!$category->isPSet('edit') || !$mounts->isInCommerceMounts($category->getUid())) {
+				if (!$category->isPermissionSet('edit') || !$mounts->isInCommerceMounts($category->getUid())) {
 					$pObj->newlog('You dont have the permissions to edit this category.', 1);
 					$fieldArray = array();
 					return;
@@ -556,7 +556,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 					// if the user has no right to see one of the parent categories or its not
 					// in the mounts it would miss afterwards
 					// by this its readded to the parent_category field
-					if (!$parent->isPSet('read') || !$mounts->isInCommerceMounts($parent->getUid())) {
+					if (!$parent->isPermissionSet('read') || !$mounts->isInCommerceMounts($parent->getUid())) {
 						$fieldArray['parent_category'] .= ',' . $parent->getUid();
 					}
 				}
@@ -624,7 +624,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 					$category->loadPermissions();
 
 					// remove category from list if it is not permitted
-					if (!$category->isPSet('new')) {
+					if (!$category->isPermissionSet('new')) {
 						$fieldArray['parent_category'] = t3lib_div::rmFromList($uid, $fieldArray['parent_category']);
 					} else {
 						// conversion to int is important, otherwise the binary & will not work properly
