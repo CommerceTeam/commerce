@@ -1162,14 +1162,14 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 	 */
 	public function addTypoLinkToTypoScript($typoscript, $typoLinkConf) {
 		foreach (array_keys($typoscript['fields.']) as $tsKey) {
-			if (is_array($typoscript['fields.'][$tsKey]['typolink.'])) {
+			if (isset($typoscript['fields.'][$tsKey]['typolink.']) && is_array($typoscript['fields.'][$tsKey]['typolink.'])) {
 				if ($typoscript['fields.'][$tsKey]['typolink.']['setCommerceValues'] == 1) {
 					$typoscript['fields.'][$tsKey]['typolink.']['parameter'] = $typoLinkConf['parameter'];
 					$typoscript['fields.'][$tsKey]['typolink.']['additionalParams'] .= $typoLinkConf['additionalParams'];
 				}
 			}
 			if (is_array($typoscript['fields.'][$tsKey])) {
-				if (is_array($typoscript['fields.'][$tsKey]['stdWrap.'])) {
+				if (isset($typoscript['fields.'][$tsKey]['stdWrap.']) && is_array($typoscript['fields.'][$tsKey]['stdWrap.'])) {
 					if (is_array($typoscript['fields.'][$tsKey]['stdWrap.']['typolink.'])) {
 						if ($typoscript['fields.'][$tsKey]['stdWrap.']['typolink.']['setCommerceValues'] == 1) {
 							$typoscript['fields.'][$tsKey]['stdWrap.']['typolink.']['parameter'] = $typoLinkConf['parameter'];
