@@ -1145,7 +1145,7 @@ class Tx_Commerce_ViewHelpers_Navigation {
 		}
 
 		$returnArray = array();
-		$returnArray = $this->getCategoryRootlineforTS($this->gpVars['catUid'], $returnArray);
+		$returnArray = $this->getCategoryRootlineforTypoScript($this->gpVars['catUid'], $returnArray);
 
 		/**
 		 * Add product to rootline, if a product is displayed and showProducts
@@ -1200,7 +1200,7 @@ class Tx_Commerce_ViewHelpers_Navigation {
 	 * @param array $result
 	 * @return array
 	 */
-	public function getCategoryRootlineforTS($catId, $result = array()) {
+	public function getCategoryRootlineforTypoScript($catId, $result = array()) {
 		if ($catId) {
 			/** @var Tx_Commerce_Domain_Model_Category $categoryObject */
 			$categoryObject = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category', $catId, $GLOBALS['TSFE']->sys_language_uid);
@@ -1208,7 +1208,7 @@ class Tx_Commerce_ViewHelpers_Navigation {
 
 			if (is_object($categoryObject->getParentCategory())) {
 				if ($categoryObject->getParentCategory()->getUid() <> $this->category->getUid()) {
-					$result = $this->getCategoryRootlineforTS($categoryObject->getParentCategory()->getUid(), $result);
+					$result = $this->getCategoryRootlineforTypoScript($categoryObject->getParentCategory()->getUid(), $result);
 				}
 			}
 
@@ -1484,6 +1484,20 @@ class Tx_Commerce_ViewHelpers_Navigation {
 		return FALSE;
 	}
 
+
+	/**
+	 * Returns an array of array for the TS rootline
+	 * Recursive Call to buld rootline
+	 *
+	 * @param integer $catId
+	 * @param array $result
+	 * @return array
+	 * @deprecated sinde commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getCategoryRootlineforTypoScript instead
+	 */
+	public function getCategoryRootlineforTS($catId, $result = array()) {
+		t3lib_div::logDeprecatedFunction();
+		return $this->getCategoryRootlineforTypoScript($catId, $result);
+	}
 
 	/**
 	 * Gets all active categories from the rootline to change the ItemState
