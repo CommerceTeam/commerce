@@ -1859,8 +1859,7 @@ class Tx_Commerce_Utility_BackendUtility {
 				// if we localize an article, add the product uid of the $uidNew localized product
 			if ('tx_commerce_articles' == $table) {
 				/** @var Tx_Commerce_Domain_Model_Article $article */
-				$article = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Article');
-				$article->init($uidNew);
+				$article = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Article', $uidNew);
 				$productUid = $article->getParentProductUid();
 
 					// load uid of the localized product

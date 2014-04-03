@@ -620,8 +620,7 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 				$itemArray[] = $value . '|' . $prod->getTitle();
 			} elseif ('tx_commerce_articles' == $table) {
 				/** @var Tx_Commerce_Domain_Model_Article $article */
-				$article = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Article');
-				$article->init($uid);
+				$article = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Article', $uid);
 				$article->loadData();
 
 				$itemArray[] = $value . '|' . $article->getTitle();

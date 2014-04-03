@@ -394,8 +394,7 @@ class Tx_Commerce_Utility_ClickmenuUtility extends clickMenu {
 	protected function calculateArticleRights($uid, $rights) {
 			// get all parent categories for the parent product
 		/** @var Tx_Commerce_Domain_Model_Article $article */
-		$article = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Article');
-		$article->init($uid);
+		$article = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Article', $uid);
 
 		$productUid = $article->getParentProductUid();
 

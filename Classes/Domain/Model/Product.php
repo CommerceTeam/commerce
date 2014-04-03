@@ -431,8 +431,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 		$articleUidList = array();
 		foreach ($rawArticleUidList as $rawArticleUid) {
 			/** @var Tx_Commerce_Domain_Model_Article $article */
-			$article = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Article');
-			$article->init($rawArticleUid, $this->lang_uid);
+			$article = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Article', $rawArticleUid, $this->lang_uid);
 			$article->loadData();
 			$myPrice = $usePriceGrossInstead ? $article->getPriceGross() : $article->getPriceNet();
 			if (($priceMin <= $myPrice) && ($myPrice <= $priceMax)) {
@@ -1320,8 +1319,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 			if (($this->articles_uids = $this->databaseConnection->getArticles($uidToLoadFrom))) {
 				foreach ($this->articles_uids as $articleUid) {
 					/** @var Tx_Commerce_Domain_Model_Article $article */
-					$article = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Article');
-					$article->init($articleUid, $this->lang_uid);
+					$article = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Article', $articleUid, $this->lang_uid);
 					$article->loadData();
 					$this->articles[$articleUid] = $article;
 				}

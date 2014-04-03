@@ -95,8 +95,7 @@ class Tx_Commerce_Hook_ArticleHooks {
 			 *
 			 * @var Tx_Commerce_Domain_Model_Article $deliveryArticle
 			 */
-			$deliveryArticle = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Article');
-			$deliveryArticle->init($deliveryArticleUid, $article->getLang());
+			$deliveryArticle = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Article', $deliveryArticleUid, $article->getLang());
 
 			/**
 			 * Do not call loadData at this point, since loadData recalls this hook,

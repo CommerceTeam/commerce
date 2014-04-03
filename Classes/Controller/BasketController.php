@@ -343,8 +343,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 					}
 				} else {
 					/** @var $articleObj Tx_Commerce_Domain_Model_Article */
-					$articleObj = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Article');
-					$articleObj->init($k);
+					$articleObj = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Article', $k);
 					$articleObj->loadData('basket');
 
 					$productObj = $articleObj->getParentProduct();

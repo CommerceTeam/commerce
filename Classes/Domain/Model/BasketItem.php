@@ -158,8 +158,7 @@ class Tx_Commerce_Domain_Model_BasketItem {
 		}
 
 		/** @var Tx_Commerce_Domain_Model_Article $article */
-		$article = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Article');
-		$article->init($uid, $this->lang_uid);
+		$article = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Article', $uid, $this->lang_uid);
 
 		if (is_object($article)) {
 			$article->loadData('basket');

@@ -770,8 +770,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 		// overwriting an article
 		if ($status != 'new' && !$backendUser->uc['txcommerce_copyProcess']) {
 			/** @var Tx_Commerce_Domain_Model_Article $article */
-			$article = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Article');
-			$article->init($id);
+			$article = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Article', $id);
 			$article->loadData();
 
 				// get the parent categories of the product

@@ -570,7 +570,7 @@ class Tx_Commerce_ViewHelpers_Navigation {
 			$mainTable . '.uid = ' . $tableMm . '.uid_local and ' . $tableMm . '.uid_local<>"" AND ' . $tableMm .
 			'.uid_foreign = ' . $uidRoot;
 
-		$sorting = ' order by ' . $mainTable . '.sorting ';
+		$sorting = ' order by ' . $mainTable . '.sorting';
 
 		/**
 		 * Add some hooks for custom sorting

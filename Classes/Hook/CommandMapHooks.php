@@ -178,8 +178,7 @@ class Tx_Commerce_Hook_CommandMapHooks {
 			$this->error('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:article.localization');
 		} elseif ($command == 'delete') {
 			/** @var Tx_Commerce_Domain_Model_Article $article */
-			$article = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Article');
-			$article->init($articleUid);
+			$article = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Article', $articleUid);
 			$article->loadData();
 
 			/** @var Tx_Commerce_Domain_Model_Product $product */

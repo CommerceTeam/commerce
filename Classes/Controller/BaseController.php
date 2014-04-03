@@ -1806,8 +1806,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 		 */
 		$cheapestArticleUid = $product->getCheapestArticle();
 		/** @var Tx_Commerce_Domain_Model_Article $cheapestArticle */
-		$cheapestArticle = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Article');
-		$cheapestArticle->init($cheapestArticleUid);
+		$cheapestArticle = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Article', $cheapestArticleUid);
 		$cheapestArticle->loadData();
 		$cheapestArticle->loadPrices();
 
@@ -1815,8 +1814,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 
 		$cheapestArticleUid = $product->getCheapestArticle(1);
 		/** @var Tx_Commerce_Domain_Model_Article $cheapestArticle */
-		$cheapestArticle = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Article');
-		$cheapestArticle->init($cheapestArticleUid);
+		$cheapestArticle = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Article', $cheapestArticleUid);
 		$cheapestArticle->loadData();
 		$cheapestArticle->loadPrices();
 
