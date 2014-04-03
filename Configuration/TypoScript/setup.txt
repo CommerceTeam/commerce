@@ -937,11 +937,11 @@ lib.tx_commerce.rootline {
 # insert record support for products
 tt_content.shortcut.20.0.tables := addToList(tx_commerce_products)
 tx_commerce_products < plugin.tx_commerce_pi1
-tx_commerce_products.templateFile = fileadmin/template/exttmpl/commerce/product.html
+tx_commerce_products.templateFile = EXT:commerce/Resources/Private/Templates/category_product.html
 tx_commerce_products.insertRecord = products
 
 # insert record support for categories
 tt_content.shortcut.20.0.tables := addToList(tx_commerce_categories)
 tx_commerce_categories < plugin.tx_commerce_pi1
-tx_commerce_categories.templateFile = fileadmin/template/exttmpl/commerce/product.html
+tx_commerce_categories.templateFile = EXT:commerce/Resources/Private/Templates/category_product.html
 tx_commerce_categories.insertRecord = categories
