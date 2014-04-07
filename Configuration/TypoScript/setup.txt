@@ -898,6 +898,8 @@ lib.tx_commerce.navigation {
 		# add parameter deepth an dpath to URL for a even faster rendering of the navigation
 		useRootlineInformationToUrl = {$plugin.tx_commerce_lib.useRootlineInformationToUrl}
 		# Menuebenen
+
+		expandAll = 0
 	}
 
 	1 = TMENU
