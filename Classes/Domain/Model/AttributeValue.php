@@ -1,27 +1,21 @@
 <?php
 /***************************************************************
  *  Copyright notice
- *
  *  (c) 2005-2011 Ingo Schmitt <is@marketing-factory.de>
  *  All rights reserved
- *
  *  This script is part of the TYPO3 project. The TYPO3 project is
  *  free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
  *  (at your option) any later version.
- *
  *  The GNU General Public License can be found at
  *  http://www.gnu.org/copyleft/gpl.html.
  *  A copy is found in the textfile GPL.txt and important notices to the license
  *  from the author is found in LICENSE.txt distributed with these scripts.
- *
- *
  *  This script is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
- *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
@@ -31,10 +25,8 @@
  * to the commerce tables should be made directly
  * This Class is inhertited from Tx_Commerce_Domain_Model_AbstractEntity, all
  * basic Database calls are made from a separate Database Class
- *
  * Main script class for the handling of attribute Values. An attribute_value
  * desribes the technical data of an article
- *
  * Do not acces class variables directly, allways use the get and set methods,
  * variables will be changed in php5 to private
  */
@@ -110,31 +102,33 @@ class Tx_Commerce_Domain_Model_AttributeValue extends Tx_Commerce_Domain_Model_A
 	 * Init Class
 	 *
 	 * @param integer $uid or attribute
-	 * @param integer $lang_uid language uid, default 0
+	 * @param integer $languageUid language uid, default 0
 	 * @return void
 	 */
-	public function init($uid, $lang_uid = 0) {
+	public function init($uid, $languageUid = 0) {
 		$this->uid = (int) $uid;
-		$this->lang_uid = (int) $lang_uid;
+		$this->lang_uid = (int) $languageUid;
 		$this->databaseConnection = t3lib_div::makeInstance($this->databaseClass);
 
-		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_attribute_value.php']['postinit'])) {
-			t3lib_div::deprecationLog('
-				hook
-				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_attribute_value.php\'][\'postinit\']
-				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
-				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Domain/Model/AttributeValue.php\'][\'postinit\']
-			');
+		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_attribute_value.php']['postinit'])) {
+			t3lib_div::deprecationLog(
+				'
+								hook
+								$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_attribute_value.php\'][\'postinit\']
+								is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
+								$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Domain/Model/AttributeValue.php\'][\'postinit\']
+							'
+			);
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_attribute_value.php']['postinit'] as $classRef) {
-				$hookObj = &t3lib_div::getUserObj($classRef);
+				$hookObj = & t3lib_div::getUserObj($classRef);
 				if (method_exists($hookObj, 'postinit')) {
 					$hookObj->postinit($this);
 				}
 			}
 		}
-		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Model/AttributeValue.php']['postinit'])) {
+		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Model/AttributeValue.php']['postinit'])) {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Model/AttributeValue.php']['postinit'] as $classRef) {
-				$hookObj = &t3lib_div::getUserObj($classRef);
+				$hookObj = & t3lib_div::getUserObj($classRef);
 				if (method_exists($hookObj, 'postinit')) {
 					$hookObj->postinit($this);
 				}
@@ -161,6 +155,8 @@ class Tx_Commerce_Domain_Model_AttributeValue extends Tx_Commerce_Domain_Model_A
 	}
 
 	/**
+	 * Get show value
+	 *
 	 * @return boolean
 	 */
 	public function getShowvalue() {
@@ -178,9 +174,9 @@ class Tx_Commerce_Domain_Model_AttributeValue extends Tx_Commerce_Domain_Model_A
 			return $this->value;
 		} elseif ($checkvalue == FALSE) {
 			return $this->value;
-		} else {
-			return FALSE;
 		}
+
+		return FALSE;
 	}
 
 
@@ -193,6 +189,7 @@ class Tx_Commerce_Domain_Model_AttributeValue extends Tx_Commerce_Domain_Model_A
 	 */
 	public function getshowicon() {
 		t3lib_div::logDeprecatedFunction();
+
 		return $this->showicon;
 	}
 
@@ -204,6 +201,7 @@ class Tx_Commerce_Domain_Model_AttributeValue extends Tx_Commerce_Domain_Model_A
 	 */
 	public function get_attributes() {
 		t3lib_div::logDeprecatedFunction();
+
 		return $this->getAttributes();
 	}
 
@@ -214,13 +212,18 @@ class Tx_Commerce_Domain_Model_AttributeValue extends Tx_Commerce_Domain_Model_A
 	 */
 	public function get_value($checkvalue) {
 		t3lib_div::logDeprecatedFunction();
+
 		return $this->getValue($checkvalue);
 	}
 }
 
 class_alias('Tx_Commerce_Domain_Model_AttributeValue', 'tx_commerce_attribute_value');
 
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Domain/Model/AttributeValue.php']) {
+if (defined(
+		'TYPO3_MODE'
+	)
+	&& $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Domain/Model/AttributeValue.php']
+) {
 	/** @noinspection PhpIncludeInspection */
 	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Domain/Model/AttributeValue.php']);
 }

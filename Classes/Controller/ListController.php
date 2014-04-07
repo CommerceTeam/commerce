@@ -674,7 +674,7 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 				for ($i = 0; $i < $count; $i++) {
 					$attributeArray = $product->getAttributeMatrix(array($product->getArticleUid($i)), $this->selectAttributes, $showHiddenValues);
 
-						$attCode = '';
+					$attCode = '';
 					if (is_array($attributeArray)) {
 						$ct = 0;
 						foreach ($attributeArray as $attributeUid => $myAttribute) {
@@ -687,9 +687,14 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 
 							$markerArray['###SELECT_ATTRIBUTES_TITLE###'] = $myAttribute['title'];
 							$markerArray['###SELECT_ATTRIBUTES_ICON###'] = $myAttribute['icon'];
-							$v = current(array_splice(each($myAttribute['values']), 1, 1));
-							if (is_array($v) && isset($v['value']) && $v['value'] != '') {
-								$v = $v['value'];
+							// @todo check where the attribute values are
+							if (count($myAttribute['values'])) {
+								$v = current(array_splice(each($myAttribute['values']), 1, 1));
+								if (is_array($v) && isset($v['value']) && $v['value'] != '') {
+									$v = $v['value'];
+								}
+							} else {
+								$v = '';
 							}
 							$markerArray['###SELECT_ATTRIBUTES_VALUE###'] = $v;
 							$markerArray['###SELECT_ATTRIBUTES_UNIT###'] = $myAttribute['unit'];

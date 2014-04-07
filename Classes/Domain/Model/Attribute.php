@@ -1,27 +1,21 @@
 <?php
 /***************************************************************
  *  Copyright notice
- *
  *  (c) 2005-2011 Ingo Schmitt <is@marketing-factory.de>
  *  All rights reserved
- *
  *  This script is part of the TYPO3 project. The TYPO3 project is
  *  free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
  *  (at your option) any later version.
- *
  *  The GNU General Public License can be found at
  *  http://www.gnu.org/copyleft/gpl.html.
  *  A copy is found in the textfile GPL.txt and important notices to the license
  *  from the author is found in LICENSE.txt distributed with these scripts.
- *
- *
  *  This script is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
- *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
@@ -141,12 +135,14 @@ class Tx_Commerce_Domain_Model_Attribute extends Tx_Commerce_Domain_Model_Abstra
 			$this->databaseConnection = t3lib_div::makeInstance($this->databaseClass);
 
 			if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_attribute.php']['postinit'])) {
-				t3lib_div::deprecationLog('
-					hook
-					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_attribute.php\'][\'postinit\']
-					is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
-					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Domain/Model/Attribute.php\'][\'postinit\']
-				');
+				t3lib_div::deprecationLog(
+					'
+										hook
+										$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_attribute.php\'][\'postinit\']
+										is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
+										$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Domain/Model/Attribute.php\'][\'postinit\']
+									'
+				);
 				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_attribute.php']['postinit'] as $classRef) {
 					$hookObj = & t3lib_div::getUserObj($classRef);
 					if (method_exists($hookObj, 'postinit')) {
@@ -164,23 +160,24 @@ class Tx_Commerce_Domain_Model_Attribute extends Tx_Commerce_Domain_Model_Abstra
 			}
 
 			return TRUE;
-		} else {
-			return FALSE;
 		}
+
+		return FALSE;
 	}
 
 	/**
-	 * Franz: how do we take care about depencies between attributes?
+	 * how do we take care about depencies between attributes?
 	 *
-	 * @param boolean|object $returnObjects condition to return the value objects instead of values
-	 * @param boolean|object $productObject return only attribute values that are possible for the given product
+	 * @param boolean|object $returnObjects condition to return the value objects
+	 * @param boolean|object $productObject return only attribute values that are
+	 *        possible for the given product
 	 * @return array values of attribute
 	 * @access public
 	 */
 	public function getAllValues($returnObjects = FALSE, $productObject = FALSE) {
 		/** @var $attributeValue Tx_Commerce_Domain_Model_AttributeValue */
 		if ($this->attributeValuesLoaded === FALSE) {
-			if ($this->attribute_value_uids = $this->databaseConnection->getAttributeValueUids($this->uid)) {
+			if (($this->attribute_value_uids = $this->databaseConnection->getAttributeValueUids($this->uid))) {
 				foreach ($this->attribute_value_uids as $valueUid) {
 					/** @var Tx_Commerce_Domain_Model_AttributeValue $attributValue */
 					$attributValue = t3lib_div::makeInstance(
@@ -196,8 +193,8 @@ class Tx_Commerce_Domain_Model_Attribute extends Tx_Commerce_Domain_Model_Abstra
 
 		$attributeValues = $this->attribute_values;
 
-			// if productObject is a productObject we have to remove the attribute
-			// values wich are not possible at all for this product
+		// if productObject is a productObject we have to remove the attribute
+		// values wich are not possible at all for this product
 		if (is_object($productObject)) {
 			$tAttributeValues = array();
 			$productSelectAttributeValues = $productObject->get_selectattribute_matrix(FALSE, array($this->uid));
@@ -215,18 +212,20 @@ class Tx_Commerce_Domain_Model_Attribute extends Tx_Commerce_Domain_Model_Abstra
 			return $attributeValues;
 		}
 
-		$return_array = array();
+		$return = array();
 		foreach ($attributeValues as $valueUid => $attributeValue) {
-			$return_array[$valueUid] = $attributeValue->getValue();
+			$return[$valueUid] = $attributeValue->getValue();
 		}
 
-		return $return_array;
+		return $return;
 	}
 
 	/**
-	 * @param boolean|array $includeValues array of allowed values, if empty all values are allowed
+	 * Get first attribute value uid
+	 *
+	 * @param boolean|array $includeValues array of allowed values,
+	 *        if empty all values are allowed
 	 * @return integer first attribute uid
-	 *  @access public
 	 */
 	public function getFirstAttributeValueUid($includeValues = FALSE) {
 		$attributes = $this->databaseConnection->getAttributeValueUids($this->uid);
@@ -241,6 +240,7 @@ class Tx_Commerce_Domain_Model_Attribute extends Tx_Commerce_Domain_Model_Abstra
 	 * synonym to get_all_values
 	 *
 	 * @see tx_commerce_attributes->get_all_values()
+	 * @return array
 	 */
 	public function getValues() {
 		return $this->getAllValues();
@@ -249,9 +249,9 @@ class Tx_Commerce_Domain_Model_Attribute extends Tx_Commerce_Domain_Model_Abstra
 	/**
 	 * synonym to get_all_values
 	 *
-	 * @see tx_commerce_attributes->get_all_values()
-	 * @param integer $uid uid of value
+	 * @param integer $uid of value
 	 * @return boolean|string
+	 * @see tx_commerce_attributes->get_all_values()
 	 */
 	public function getValue($uid) {
 		$result = FALSE;
@@ -278,6 +278,8 @@ class Tx_Commerce_Domain_Model_Attribute extends Tx_Commerce_Domain_Model_Abstra
 	}
 
 	/**
+	 * Getter
+	 *
 	 * @return string unit
 	 */
 	public function getUnit() {
@@ -294,6 +296,8 @@ class Tx_Commerce_Domain_Model_Attribute extends Tx_Commerce_Domain_Model_Abstra
 	}
 
 	/**
+	 * Get parent
+	 *
 	 * @param boolean|string $translationMode
 	 * @return integer|Tx_Commerce_Domain_Model_Attribute
 	 */
@@ -311,6 +315,8 @@ class Tx_Commerce_Domain_Model_Attribute extends Tx_Commerce_Domain_Model_Abstra
 	}
 
 	/**
+	 * Get children
+	 *
 	 * @param boolean|string $translationMode
 	 * @return null|array
 	 */
@@ -338,9 +344,11 @@ class Tx_Commerce_Domain_Model_Attribute extends Tx_Commerce_Domain_Model_Abstra
 	 */
 	public function isIconmode() {
 		return $this->iconmode == '1';
-		}
+	}
 
 	/**
+	 * Check if attribute has parent
+	 *
 	 * @return boolean
 	 */
 	public function hasParent() {
@@ -348,6 +356,8 @@ class Tx_Commerce_Domain_Model_Attribute extends Tx_Commerce_Domain_Model_Abstra
 	}
 
 	/**
+	 * Check if attribute has children
+	 *
 	 * @return boolean
 	 */
 	public function hasChildren() {
@@ -363,6 +373,7 @@ class Tx_Commerce_Domain_Model_Attribute extends Tx_Commerce_Domain_Model_Abstra
 	 */
 	public function get_all_values($returnObjects = FALSE, $productObject = FALSE) {
 		t3lib_div::logDeprecatedFunction();
+
 		return $this->getAllValues($returnObjects, $productObject);
 	}
 
@@ -372,6 +383,7 @@ class Tx_Commerce_Domain_Model_Attribute extends Tx_Commerce_Domain_Model_Abstra
 	 */
 	public function get_values() {
 		t3lib_div::logDeprecatedFunction();
+
 		return $this->getValues();
 	}
 
@@ -382,6 +394,7 @@ class Tx_Commerce_Domain_Model_Attribute extends Tx_Commerce_Domain_Model_Abstra
 	 */
 	public function get_value($uid) {
 		t3lib_div::logDeprecatedFunction();
+
 		return $this->getValue($uid);
 	}
 
@@ -391,6 +404,7 @@ class Tx_Commerce_Domain_Model_Attribute extends Tx_Commerce_Domain_Model_Abstra
 	 */
 	public function get_title() {
 		t3lib_div::logDeprecatedFunction();
+
 		return $this->getTitle();
 	}
 
@@ -402,6 +416,7 @@ class Tx_Commerce_Domain_Model_Attribute extends Tx_Commerce_Domain_Model_Abstra
 	 */
 	public function get_attributes() {
 		t3lib_div::logDeprecatedFunction();
+
 		return $this->getAttributes();
 	}
 
@@ -411,13 +426,18 @@ class Tx_Commerce_Domain_Model_Attribute extends Tx_Commerce_Domain_Model_Abstra
 	 */
 	public function get_unit() {
 		t3lib_div::logDeprecatedFunction();
+
 		return $this->getUnit();
 	}
 }
 
 class_alias('Tx_Commerce_Domain_Model_Attribute', 'tx_commerce_attribute');
 
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Domain/Model/Attribute.php']) {
+if (defined(
+		'TYPO3_MODE'
+	)
+	&& $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Domain/Model/Attribute.php']
+) {
 	/** @noinspection PhpIncludeInspection */
 	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Domain/Model/Attribute.php']);
 }
