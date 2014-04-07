@@ -918,8 +918,10 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 
 				foreach ($attributeArray as $attributeUid => $myAttribute) {
 					/** @var $attributeObj Tx_Commerce_Domain_Model_Attribute */
-					$attributeObj = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Attribute');
-					$attributeObj->init($attributeUid, $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
+					$attributeObj = t3lib_div::makeInstance(
+						'Tx_Commerce_Domain_Model_Attribute', $attributeUid,
+						$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']
+					);
 					$attributeObj->loadData();
 
 					$markerArray['###SELECT_ATTRIBUTES_TITLE###'] = $myAttribute['title'];

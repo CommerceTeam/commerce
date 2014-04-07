@@ -168,9 +168,9 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 		if (($this->attributes_uids = $this->databaseConnection->getAttributes($this->uid, $attributeCorelationTypeList))) {
 			foreach ($this->attributes_uids as $attributeUid) {
 				/** @var Tx_Commerce_Domain_Model_Attribute $attribute */
-				$attribute = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Attribute');
-				$attribute->init($attributeUid, $this->lang_uid);
+				$attribute = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Attribute', $attributeUid, $this->lang_uid);
 				$attribute->loadData();
+
 				$this->attribute[$attributeUid] = $attribute;
 			}
 			$result = $this->attributes_uids;

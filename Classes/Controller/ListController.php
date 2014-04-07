@@ -679,9 +679,12 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 						$ct = 0;
 						foreach ($attributeArray as $attributeUid => $myAttribute) {
 							/** @var Tx_Commerce_Domain_Model_Attribute $attributeObj */
-							$attributeObj = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Attribute');
-							$attributeObj->init($attributeUid, $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
+							$attributeObj = t3lib_div::makeInstance(
+								'Tx_Commerce_Domain_Model_Attribute', $attributeUid,
+								$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']
+							);
 							$attributeObj->loadData();
+
 							$markerArray['###SELECT_ATTRIBUTES_TITLE###'] = $myAttribute['title'];
 							$markerArray['###SELECT_ATTRIBUTES_ICON###'] = $myAttribute['icon'];
 							$v = current(array_splice(each($myAttribute['values']), 1, 1));
@@ -753,10 +756,13 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 					$markerArray = array();
 					foreach ($attributeMatrix as $attrUid => $values) {
 						/** @var Tx_Commerce_Domain_Model_Attribute $attributeObj */
-						$attributeObj = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Attribute');
-						$attributeObj->init($attrUid, $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
+						$attributeObj = t3lib_div::makeInstance(
+							'Tx_Commerce_Domain_Model_Attribute', $attrUid,
+							$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']
+						);
 						$attributeObj->loadData();
-							// disable the icon mode by default
+
+						// disable the icon mode by default
 						$iconMode = FALSE;
 
 						// if the icon mode is enabled in TS check if the iconMode is also enabled

@@ -1223,27 +1223,31 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 		$possible = $values;
 		$impossible = array();
 
-		foreach ($levelAttributes as $kV) {
+		foreach ($levelAttributes as $attributeUid) {
 			$tImpossible = array();
 			$tPossible = array();
-			$selected = $attributeValues[$kV];
+			$selected = $attributeValues[$attributeUid];
 			if (!$selected) {
 				/** @var Tx_Commerce_Domain_Model_Attribute $attribute */
-				$attribute = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Attribute');
-				$attribute->init($kV, $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
+				$attribute = t3lib_div::makeInstance(
+					'Tx_Commerce_Domain_Model_Attribute', $attributeUid,
+					$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']
+				);
 				$attribute->loadData();
-				$attributeValues[$kV] = $selected = $attribute->getFirstAttributeValueUid($possible);
+				$attributeValues[$attributeUid] = $selected = $attribute->getFirstAttributeValueUid($possible);
 			}
 
 			foreach ($impossible as $key => $val) {
-				$selectMatrix[$kV][$key] = 'disabled';
+				$selectMatrix[$attributeUid][$key] = 'disabled';
 				foreach ($val as $k => $v) {
 					$tImpossible[$k] = $v;
 				}
 			}
 
 			foreach ($possible as $key => $val) {
-				$selectMatrix[$kV][$key] = $selected == $key ? 'selected' : 'possible';
+				$selectMatrix[$attributeUid][$key] = $selected == $key ?
+					'selected' :
+					'possible';
 				foreach ($val as $k => $v) {
 					if (!$selected || $key == $selected) {
 						$tPossible[$k] = $v;

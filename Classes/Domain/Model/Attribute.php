@@ -181,13 +181,14 @@ class Tx_Commerce_Domain_Model_Attribute extends Tx_Commerce_Domain_Model_Abstra
 		/** @var $attributeValue Tx_Commerce_Domain_Model_AttributeValue */
 		if ($this->attributeValuesLoaded === FALSE) {
 			if ($this->attribute_value_uids = $this->databaseConnection->getAttributeValueUids($this->uid)) {
-				foreach ($this->attribute_value_uids as $value_uid) {
+				foreach ($this->attribute_value_uids as $valueUid) {
 					/** @var Tx_Commerce_Domain_Model_AttributeValue $attributValue */
-					$attributValue = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_AttributeValue');
-					$attributValue->init($value_uid, $this->lang_uid);
+					$attributValue = t3lib_div::makeInstance(
+						'Tx_Commerce_Domain_Model_AttributeValue', $valueUid, $this->lang_uid
+					);
 					$attributValue->loadData();
 
-					$this->attribute_values[$value_uid] = $attributValue;
+					$this->attribute_values[$valueUid] = $attributValue;
 				}
 				$this->attributeValuesLoaded = TRUE;
 			}
@@ -215,8 +216,8 @@ class Tx_Commerce_Domain_Model_Attribute extends Tx_Commerce_Domain_Model_Abstra
 		}
 
 		$return_array = array();
-		foreach ($attributeValues as $value_uid => $attributeValue) {
-			$return_array[$value_uid] = $attributeValue->getValue();
+		foreach ($attributeValues as $valueUid => $attributeValue) {
+			$return_array[$valueUid] = $attributeValue->getValue();
 		}
 
 		return $return_array;
