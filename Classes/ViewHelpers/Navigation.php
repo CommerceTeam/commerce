@@ -47,6 +47,11 @@ class Tx_Commerce_ViewHelpers_Navigation {
 	public $prefixId = 'tx_commerce_pi1';
 
 	/**
+	 * @var tslib_cObj
+	 */
+	public $cObj;
+
+	/**
 	 * @var array
 	 */
 	public $activeCats = array();
@@ -655,8 +660,8 @@ class Tx_Commerce_ViewHelpers_Navigation {
 				if (in_array($row['uid_local'], $aCatToManu) || strtolower(trim($aCatToManu['0'])) == 'all') {
 					$nodeArray['--subLevel--'] = array();
 					$this->arrayMerge(
-						$nodeArray['--subLevel--'], $this->getManuAsCat(
-							$dataRow['pid'], $uidPage, $mainTable, $tableMm, $tableSubMain, $tableSubMm, $row['uid_local'],
+						$nodeArray['--subLevel--'], $this->getManufacturerAsCategory(
+							$dataRow['pid'], $uidPage, $tableMm, $tableSubMain, $tableSubMm, $row['uid_local'],
 							$mDepth + 1, $nodeArray['path']
 						)
 					);
@@ -1131,6 +1136,7 @@ class Tx_Commerce_ViewHelpers_Navigation {
 		return $menuArr;
 	}
 
+
 	/**
 	 * Method for generating the rootlineMenu to use in TS
 	 *
@@ -1365,79 +1371,76 @@ class Tx_Commerce_ViewHelpers_Navigation {
 		return $result;
 	}
 
+
 	/**
-	 * Adds the manuafacturer To the categoiry, as simulated category
+	 * Adds the manuafacturer to the category, as simulated category
 	 *
 	 * @param integer $pid Page PID for the level
 	 * @param integer $uidPage UidPage for the level
-	 * @param string $mainTable Main Database Table
-	 * @param string $tableMm RelationChip Table
+	 * @param string $tableMm Relation Table
 	 * @param string $tableSubMain
 	 * @param string $tableSubMm Sub Table Relationship
-	 * @param integer $iIdCat Category ID
+	 * @param integer $categoryUid Category ID
 	 * @param integer $mDepth Menue Deepth
 	 * @param string $path Path for fast resolving
 	 * @return array|boolean
 	 */
-	public function getManuAsCat($pid, $uidPage, $mainTable, $tableMm, $tableSubMain, $tableSubMm, $iIdCat, $mDepth, $path) {
+	public function getManufacturerAsCategory($pid, $uidPage, $tableMm, $tableSubMain, $tableSubMm, $categoryUid, $mDepth, $path) {
 		/** @var t3lib_db $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
-		$rSql = $database->exec_SELECTquery(
-			'*',
-			'tx_commerce_products_categories_mm',
-			'uid_foreign = ' . (int) $iIdCat
-			);
+		$result = $database->exec_SELECTquery('*', 'tx_commerce_products_categories_mm', 'uid_foreign = ' . (int) $categoryUid);
 
-		$aIdProducts = array();
-		while (($aFiche = $database->sql_fetch_assoc($rSql)) !== FALSE) {
-			$aIdProducts[] = $aFiche['uid_local'];
+		$productUids = array();
+		while (($mmRow = $database->sql_fetch_assoc($result)) !== FALSE) {
+			$productUids[] = (int)$mmRow['uid_local'];
 		}
 
-		if (!$aIdProducts) {
+		if (!count($productUids)) {
 			return FALSE;
 		}
 
-		$sIdProducts = implode(',', $aIdProducts);
-
-		$rSql = $database->exec_SELECTquery(
-			'uid,manufacturer_uid', 'tx_commerce_products', 'uid IN (' . $sIdProducts . ') AND deleted = 0 and hidden = 0'
+		$result = $database->exec_SELECTquery(
+			'uid, manufacturer_uid',
+			'tx_commerce_products',
+			'uid IN (' . implode(',', $productUids) . ')' . $this->cObj->enableFields('tx_commerce_products')
 		);
 
-		$aOutPut = array();
+		$outout = array();
 		$firstPath = $path;
-		while (($aFiche = $database->sql_fetch_assoc($rSql)) !== FALSE) {
-			if ($aFiche['manufacturer_uid'] != '0') {
+		while (($productRow = $database->sql_fetch_assoc($result)) !== FALSE) {
+			if ($productRow['manufacturer_uid'] != '0') {
 
 				/**
 				 * @TODO not a realy good solution
 				 */
-				$path = $this->manufacturerIdentifier . $aFiche['manufacturer_uid'] . ',' . $firstPath;
+				$path = $this->manufacturerIdentifier . $productRow['manufacturer_uid'] . ',' . $firstPath;
 
-				/** @var Tx_Commerce_Domain_Model_Product $myProduct */
-				$myProduct = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product', $aFiche['uid']);
-				$myProduct->loadData();
+				/** @var Tx_Commerce_Domain_Model_Product $product */
+				$product = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product', $productRow['uid']);
+				$product->loadData();
 
-				$sManuTitle = $myProduct->getManufacturerTitle();
-				$addGet = '&' . $this->prefixId . '[catUid]=' . $iIdCat . '&' . $this->prefixId . '[manufacturer]=' . $aFiche['manufacturer_uid'] . '';
+				$manufacturerTitle = htmlspecialchars(strip_tags($product->getManufacturerTitle()));
+				$addGet = $this->separator . $this->prefixId . '[catUid]=' . $categoryUid . $this->separator .
+					$this->prefixId . '[manufacturer]=' . $productRow['manufacturer_uid'] . '';
 				$cHash = t3lib_div::generateCHash($addGet . $GLOBALS['TSFE']->linkVars);
 				$addGet .= $this->separator . 'cHash=' . $cHash;
 				$aLevel = array(
 					'pid' => $pid,
 					'uid' => $uidPage,
-					'title' => htmlspecialchars(strip_tags($sManuTitle)),
-					'parent_id' => $iIdCat,
-					'nav_title' => htmlspecialchars(strip_tags($sManuTitle)),
+					'title' => $manufacturerTitle,
+					'parent_id' => $categoryUid,
+					'nav_title' => $manufacturerTitle,
 					'hidden' => '0',
 					'depth' => $mDepth,
-					'leaf' => $this->isLeaf($iIdCat, $tableMm, $tableSubMm),
-					'hasSubChild' => $this->hasSubChild($iIdCat, $tableSubMm),
+					'leaf' => $this->isLeaf($categoryUid, $tableMm, $tableSubMm),
+					'hasSubChild' => $this->hasSubChild($categoryUid, $tableSubMm),
 					'subChildTable' => $tableSubMm,
 					'tableSubMain' => $tableSubMain,
 					'path' => $path,
 					'_ADD_GETVARS' => $addGet,
 					'ITEM_STATE' => 'NO',
-					'manu' => $aFiche['manufacturer_uid'],
+					'manu' => $productRow['manufacturer_uid'],
 				);
 
 				if ($this->gpVars['manufacturer']) {
@@ -1446,7 +1449,7 @@ class Tx_Commerce_ViewHelpers_Navigation {
 
 				if ($aLevel['hasSubChild'] == 1 && $this->mConf['showProducts'] == 1) {
 					$aLevel['--subLevel--'] = $this->makeSubChildArrayPostRender(
-						$uidPage, $tableSubMain, $tableSubMm, $iIdCat, $mDepth + 1, $path, 'manu', $aFiche['manufacturer_uid']
+						$uidPage, $tableSubMain, $tableSubMm, $categoryUid, $mDepth + 1, $path, 'manu', $productRow['manufacturer_uid']
 					);
 				}
 
@@ -1454,11 +1457,11 @@ class Tx_Commerce_ViewHelpers_Navigation {
 					$aLevel['_SUB_MENU'] = $aLevel['--subLevel--'];
 				}
 
-				$aOutPut[$this->manufacturerIdentifier . $aFiche['manufacturer_uid']] = $aLevel;
+				$outout[$this->manufacturerIdentifier . $productRow['manufacturer_uid']] = $aLevel;
 			}
 		}
 
-		return $aOutPut;
+		return $outout;
 	}
 
 	/**
@@ -1496,6 +1499,25 @@ class Tx_Commerce_ViewHelpers_Navigation {
 		return FALSE;
 	}
 
+	/**
+	 * Adds the manuafacturer to the category, as simulated category
+	 *
+	 * @param integer $pid Page PID for the level
+	 * @param integer $uidPage UidPage for the level
+	 * @param string $mainTable Main Database Table
+	 * @param string $tableMm RelationChip Table
+	 * @param string $tableSubMain
+	 * @param string $tableSubMm Sub Table Relationship
+	 * @param integer $categoryUid Category ID
+	 * @param integer $mDepth Menue Deepth
+	 * @param string $path Path for fast resolving
+	 * @return array|boolean
+	 * @deprecated sinde commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getManufacturerAsCategory instead
+	 */
+	public function getManuAsCat($pid, $uidPage, $mainTable, $tableMm, $tableSubMain, $tableSubMm, $categoryUid, $mDepth, $path) {
+		t3lib_div::logDeprecatedFunction();
+		return $this->getManufacturerAsCategory($pid, $uidPage, $tableMm, $tableSubMain, $tableSubMm, $categoryUid, $mDepth, $path);
+	}
 
 	/**
 	 * Returns an array of array for the TS rootline
