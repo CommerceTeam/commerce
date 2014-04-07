@@ -333,7 +333,7 @@ $GLOBALS['TCA']['tx_commerce_products'] = Array(
 		),
 		'articles' => array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.attributes',
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.articles',
 			'config' => array(
 				'type' => 'flex',
 				'ds' => array(
@@ -388,7 +388,7 @@ $GLOBALS['TCA']['tx_commerce_products'] = Array(
 
 		'articleslok' => array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.attributes',
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.articleslok',
 			'config' => array(
 				'type' => 'flex',
 				'ds' => array(
@@ -438,9 +438,9 @@ $GLOBALS['TCA']['tx_commerce_products'] = Array(
 );
 
 /**
- * Only perform from TCA if the BE form is called the first time ('First time' also means
- * calling the editform of an product), no data has to be saved and extension dynaflex is
- * available (of course!)
+ * Only perform from TCA if the BE form is called the first time
+ * ('First time' also means calling the editform of an product),
+ * no data has to be saved and extension dynaflex is available
  */
 
 $postEdit = t3lib_div::_GP('edit');
