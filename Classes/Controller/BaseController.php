@@ -318,9 +318,9 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 			$markerArr = $this->LOCAL_LANG[$GLOBALS['TSFE']->tmpl->setup['config.']['language']];
 		}
 
-		foreach (array_keys($markerArr) as $k) {
-			if (stristr($k, 'lang_') OR stristr($k, 'label_')) {
-				$this->languageMarker['###' . strtoupper($k) . '###'] = $this->pi_getLL($k);
+		foreach (array_keys($markerArr) as $languageKey) {
+			if (stristr($languageKey, 'lang_') OR stristr($languageKey, 'label_')) {
+				$this->languageMarker['###' . strtoupper($languageKey) . '###'] = $this->pi_getLL($languageKey);
 			}
 		}
 	}

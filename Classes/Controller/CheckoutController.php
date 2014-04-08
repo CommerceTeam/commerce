@@ -619,7 +619,8 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 
 		$this->currentStep = 'billing';
 
-		return $this->cObj->substituteMarkerArray($this->cObj->substituteMarkerArray($template, $markerArray), $this->languageMarker);
+		$content = $this->cObj->substituteMarkerArray($template, $markerArray);
+		return $this->cObj->substituteMarkerArray($content, $this->languageMarker);
 	}
 
 	/**

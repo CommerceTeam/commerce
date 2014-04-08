@@ -209,17 +209,23 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 	 * Is called whenever the address handling is called without a logged in fe_user.
 	 * Currently this is just a dummy with no function.
 	 *
-	 * @todo Here we could return a template and / or call a hook
 	 * @return string
 	 */
 	protected function noUser() {
-		return $this->pi_getLL('not_logged_in');
+		$template = $this->cObj->getSubpart($this->templateCode, '###NOT_LOGGED###');
+
+		$markerArray = array(
+			'###NOT_LOGGED_IN###' => $this->pi_getLL('not_logged_in')
+		);
+
+		return $this->cObj->substituteMarkerArray($template, $markerArray);
 	}
 
 	/**
 	 * Returns the listing HTML of addresses.
 	 *
-	 * @param integer $addressType Type of addresses that should be returned. If this is 0 all types will be returned
+	 * @param integer $addressType Type of addresses that should be returned.
+	 * 		If this is 0 all types will be returned
 	 * @param boolean $createHiddenFields Create hidden fields
 	 * @param string $hiddenFieldPrefix Prefix for field names
 	 * @param boolean $selectAddressId Adress ID which should be selected by default
@@ -1179,7 +1185,7 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 	 * @return boolean
 	 */
 	public function formErrors() {
-		return count($this->formError) > 0;
+		return count($this->formError);
 	}
 
 	/**
@@ -1189,7 +1195,7 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 	 * @return string error message or empty string if no error
 	 */
 	public function getFormError($fieldName) {
-		return (string) $this->formError[$fieldName];
+		return $this->formError[$fieldName];
 	}
 
 	/**
@@ -1199,8 +1205,8 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 	 * @param string $errorMsg The error message for the field
 	 * @return void
 	 */
-	public function setFormError($fieldName,$errorMsg) {
-		$this->formError[$fieldName] = (string)$errorMsg;
+	public function setFormError($fieldName, $errorMsg) {
+		$this->formError[$fieldName] = $errorMsg;
 	}
 }
 
