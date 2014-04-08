@@ -33,11 +33,6 @@
  */
 
 /**
- * @todo Build Method to build UP Add Get Vars parameter to
- * @todo Have a central Method to build chash parameters
- */
-
-/**
  * Class Tx_Commerce_ViewHelpers_Navigation
  */
 class Tx_Commerce_ViewHelpers_Navigation {
@@ -122,9 +117,10 @@ class Tx_Commerce_ViewHelpers_Navigation {
 
 	/**
 	 * Default Menue Items States order by the defined Order
+
 	 *
+*@var array
 	 * @see: http://docs.typo3.org/typo3cms/TyposcriptReference/MenuObjects/CommonItemStates/Index.html
-	 * @var array
 	 */
 	public $MenueItemStates = array(
 		0 => 'USERDEF2',
@@ -1083,7 +1079,7 @@ class Tx_Commerce_ViewHelpers_Navigation {
 	 * Function clears all subelements. This is needed for clear error with mix up
 	 * pages and categories
 	 *
-*@param array $menuArr Array with menu item
+	 * @param array $menuArr Array with menu item
 	 * @param array $conf TSconfig, not used
 	 * @return array return the cleaned menu item
 	 */
@@ -1371,7 +1367,6 @@ class Tx_Commerce_ViewHelpers_Navigation {
 		return $result;
 	}
 
-
 	/**
 	 * Adds the manuafacturer to the category, as simulated category
 	 *
@@ -1498,6 +1493,7 @@ class Tx_Commerce_ViewHelpers_Navigation {
 		}
 		return FALSE;
 	}
+
 
 	/**
 	 * Adds the manuafacturer to the category, as simulated category
