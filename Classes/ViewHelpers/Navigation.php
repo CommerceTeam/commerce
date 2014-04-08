@@ -1075,17 +1075,15 @@ class Tx_Commerce_ViewHelpers_Navigation {
 	}
 
 	/**
-	 * Functions Sets needed Item-States, based on the Item-States set
-	 * by the TS Admin for the Menue
-	 * Availiable Item-Steates for a Menue-Levels are stored as
-	 * array in $conf['parentObj']->mconf
-	 * Menue Item State Priority
-	 * Order of priority:
+	 * Functions Sets needed Item-States, based on the Item-States set by the
+	 * TS Admin for the Menue. Available Item-States for a Menue-Levels are stored
+	 * as array in $conf['parentObj']->mconf
+	 * Menue Item State Priority Order of priority:
 	 * 		USERDEF2, USERDEF1, SPC, USR, CURIFSUB, CUR, ACTIFSUB, ACT, IFSUB
-	 * Function clears all subelements. This is needed for clear error with
-	 * mix up pages and categories
+	 * Function clears all subelements. This is needed for clear error with mix up
+	 * pages and categories
 	 *
-	 * @param array $menuArr Array with menu item
+*@param array $menuArr Array with menu item
 	 * @param array $conf TSconfig, not used
 	 * @return array return the cleaned menu item
 	 */
@@ -1093,11 +1091,13 @@ class Tx_Commerce_ViewHelpers_Navigation {
 		if ($menuArr[0]['CommerceMenu'] <> TRUE) {
 			$menuArr = array();
 		}
+
 		foreach ($menuArr as $item) {
 			if ($item['DO_NOT_RENDER'] == '1') {
 				$menuArr = array();
 			}
 		}
+
 		if ($menuArr[0]['CommerceMenu'] == TRUE) {
 			$availiableItemStates = $conf['parentObj']->mconf;
 			/**
@@ -1118,7 +1118,7 @@ class Tx_Commerce_ViewHelpers_Navigation {
 
 						ksort($this->MenueItemStates);
 						foreach ($this->MenueItemStates as $state) {
-							if (($availiableItemStates[$state] == 1) && (empty($menuArr[$mIndex]['ITEM_STATE']))) {
+							if ($availiableItemStates[$state] == 1 && empty($menuArr[$mIndex]['ITEM_STATE'])) {
 								if (in_array($state, $possibleItemStatesForItem)) {
 									$menuArr[$mIndex]['ITEM_STATE'] = $state;
 								}
