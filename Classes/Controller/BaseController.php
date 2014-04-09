@@ -95,10 +95,11 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 
 	/**
 	 * A handle to do something
+	 * Do not make protected to be able to handle different behaviour in a hook
 	 *
-	 * @var string
+*@var string
 	 */
-	protected $handle = '';
+	public $handle = '';
 
 	/**
 	 * Category UID for rendering

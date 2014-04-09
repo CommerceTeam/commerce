@@ -72,7 +72,9 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 	public $markerArray = array();
 
 	/**
-	 * @var string
+	 * Do not make protected to be able to handle different behaviour in a hook
+	 *
+*@var string
 	 */
 	public $content = '';
 
@@ -222,7 +224,7 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 			$this->piVars['catUid'] = $this->master_cat;
 		}
 		if (is_object($tmpCategory)) {
-		$tmpCategory->loadData();
+			$tmpCategory->loadData();
 		}
 		$this->category = $tmpCategory;
 
