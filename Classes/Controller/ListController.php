@@ -74,7 +74,7 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 	/**
 	 * Do not make protected to be able to handle different behaviour in a hook
 	 *
-*@var string
+	 * @var string
 	 */
 	public $content = '';
 
