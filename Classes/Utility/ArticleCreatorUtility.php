@@ -191,7 +191,9 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 			$result .= '<td style="border-top:1px black solid"><a href="#" onclick="return jumpToUrl(\'tce_db.php?&amp;data[tx_commerce_articles][' .
 				$article['uid'] . '][hidden]=' . (!$article['hidden']) . '&amp;redirect=alt_doc.php?edit[tx_commerce_products][' .
 				$this->uid . ']=edit' . $formSecurityToken . '\');">';
-			$result .= '<img src="../typo3/gfx/button_' . (($article['hidden']) ? 'un' : '') . 'hide.gif" border="0" /></a></td>';
+			$result .= '<img src="/typo3/gfx/button_' . (($article['hidden']) ?
+					'un' :
+					'') . 'hide.gif" border="0" /></a></td>';
 
 			// add the sorting buttons
 			// UP
@@ -210,7 +212,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 					$formSecurityToken . '&redirect=alt_doc.php?edit[tx_commerce_products][' . (int) $this->uid .
 					']=edit\');"><img src="../typo3/gfx/button_up.gif" width="11" height="10" border="0" align="top" /></a></td>';
 			} else {
-				$result .= '<td><img src="/clear.gif" width="11" height="10"></td>';
+				$result .= '<td><img src="/typo3/clear.gif" width="11" height="10"></td>';
 			}
 
 			// DOWN
@@ -223,13 +225,12 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 					$formSecurityToken . '&redirect=alt_doc.php?edit[tx_commerce_products][' . $this->uid .
 					']=edit\');"><img src="../typo3/gfx/button_down.gif" width="11" height="10" border="0" align="top" /></a></td>';
 			} else {
-				$result .= '<td style="border-top: 1px black solid"><img src="/clear.gif" width="11" height="10"></td>';
+				$result .= '<td style="border-top: 1px black solid"><img src="/typo3/clear.gif" width="11" height="10"></td>';
 			}
 
 			// add the delete icon
 			$result .= '<td style="border-top:1px black solid"><a href="#" onclick="deleteRecord(\'tx_commerce_articles\', ' .
-				(int) $article['uid'] . ', \'alt_doc.php?edit[tx_commerce_products][' . (int) $this->uid .
-				']=edit\');"><img src="../typo3/gfx/garbage.gif" border="0" /></a></td>';
+				(int) $article['uid'] . ', \'alt_doc.php?edit[tx_commerce_products][' . (int) $this->uid . ']=edit\');"><img src="/typo3/gfx/garbage.gif" border="0" /></a></td>';
 			$result .= '</tr>';
 
 			if ($article['uid'] > $lastUid) {
@@ -339,13 +340,13 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	/**
 	 * Returns the html table rows for the article matrix
 	 *
-	 * @param array $data: The data we should build the matrix from
-	 * @param array $resultRows: The resulting rows
-	 * @param integer $counter: The article counter
-	 * @param string $headRow: The header row (html for inserting after a number of articles)
-	 * @param array $extraRowData: some additional data like checkbox column
-	 * @param integer $index: The level inside the matrix
-	 * @param array $row: The current row data
+	 * @param array $data The data we should build the matrix from
+	 * @param array &$resultRows The resulting rows
+	 * @param integer &$counter The article counter
+	 * @param string $headRow The header row for inserting after a number of articles
+	 * @param array $extraRowData some additional data like checkbox column
+	 * @param integer $index The level inside the matrix
+	 * @param array $row The current row data
 	 * @return void
 	 */
 	protected function getRows($data, &$resultRows, &$counter, $headRow, $extraRowData = array(), $index = 1, $row = array()) {
@@ -361,8 +362,8 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 						// serialize data for formsaveing
 					$labelData = array();
 					$hashData = array();
-					reset($row);
-					while (($rd = current(array_slice(each($row), 1, 1)))) {
+
+					foreach ($row as $rd) {
 						$hashData[$rd['aUid']] = $rd['vUid'];
 						$labelData[] = $rd['vLabel'];
 					}
@@ -758,6 +759,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 
 		return $articleUid;
 	}
+
 
 	/**
 	 * Creates a checkbox that has to be toggled for creating a new price for an
