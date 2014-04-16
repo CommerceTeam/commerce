@@ -280,7 +280,7 @@ plugin.tx_commerce_pi1 {
 	# OverridePID for Detailview
 	overridePid = {$plugin.tx_commerce_lib.overridePid}
 
-	# currency used fro moneylib
+	# currency used from moneylib
 	currency = {$plugin.tx_commerce_lib.currency}
 
 	# switch on StockHandling
@@ -463,11 +463,11 @@ plugin.tx_commerce_pi2 {
 	templateFile = {$plugin.tx_commerce_pi2.templateFile}
 	regularArticleTypes =  {$plugin.tx_commerce_lib.regularArticleTypes}
 
-	# DefaultCode for inserting a basketElement with TS
+	# DefaultCode for inserting a basketElement with TS [quickview,handling,]
 	defaultCode =
 
 	useStockHandling  < lib.tx_commerce.useStockHandling
-	# If the catual Stock should be chhecked
+	# If the actual Stock should be checked
 	checkStock = 1
 
 	# defines the page for the pi1 plugin
@@ -475,19 +475,24 @@ plugin.tx_commerce_pi2 {
 
 	# defines the page for the pi3 plugin
 	checkoutPid = {$plugin.tx_commerce_lib.checkoutPid}
+
 	# defines itself for changing the del and payment articles
 	# also used for the quickview
 	basketPid = {$plugin.tx_commerce_lib.basketPid}
+
 	# The default Payment Article
 	# If set to > 1 this article Uid will be added by default, if no Payment
 	# is selected by the user
 	defaultPaymentArticleId = {$plugin.tx_commerce_lib.paymentArticleId}
+
 	# allowed Articles for the delivery
 	# comma separated list of delivery article uids
 	delivery.allowedArticles >
+
 	# allowed Articles for the payment
 	# comma separated list of payment article uids
 	payment.allowedArticles >
+
 	# currency used for moneylib
 	currency = {$plugin.tx_commerce_lib.currency}
 	templateMarker {
@@ -744,7 +749,7 @@ plugin.tx_commerce_pi4 {
 	}
 
 	delivery < plugin.tx_commerce_pi3.delivery
-	delivery  {
+	delivery {
 		subpartMarker {
 			listItem = ###ADDRESS_ITEM###
 			listWrap = ###ADDRESS_LISTING###
@@ -810,14 +815,14 @@ plugin.tx_commerce_pi6 {
 	invoiceheader.file.width = 680
 	shopname.value = Your Shop
 	shopdetails = COA
-	shopdetails{
+	shopdetails {
 		1 = TEXT
 		1.value = 123 Main streetSomewhere, some country
 		2 = TEXT
 		2.value = tel: +123456789fax: +1234567890email: shop@yoursite.com
 	}
 	intro.value = Your order details are below:
-	intro.lang{
+	intro.lang {
 		de = Sie haben sich für den(die) folgenden Artikel entschieden:
 	}
 	thankyou.value = Thank you for your order, and please visit us any time at http:#yoursite.com [^]
@@ -879,6 +884,7 @@ lib.tx_commerce.navigation {
 		entryLevel = 0
 
 		# Maximum Level in the Navigation
+		# lower this value to only have given amount of levels displayed
 		maxLevel = PHP_INT_MAX
 
 		# No Active Elements
@@ -924,8 +930,10 @@ lib.tx_commerce.rootline {
 	special {
 		# Root category for the display
 		category = {$plugin.tx_commerce_lib.catUid}
-		# zeige Producte
+
+		# show products
 		showProducts = 1
+
 		# PID for displaying the products
 		overridePid = {$plugin.tx_commerce_lib.overridePid}
 	}
