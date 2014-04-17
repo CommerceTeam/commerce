@@ -1,27 +1,21 @@
 <?php
 /***************************************************************
  *  Copyright notice
- *
  *  (c) 2005-2012 Ingo Schmitt <is@marketing-factory.de>
  *  All rights reserved
- *
  *  This script is part of the TYPO3 project. The TYPO3 project is
  *  free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
  *  (at your option) any later version.
- *
  *  The GNU General Public License can be found at
  *  http://www.gnu.org/copyleft/gpl.html.
  *  A copy is found in the textfile GPL.txt and important notices to the license
  *  from the author is found in LICENSE.txt distributed with these scripts.
- *
- *
  *  This script is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
- *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
@@ -175,6 +169,7 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 			}
 			$result = $this->attributes_uids;
 		}
+
 		return $result;
 	}
 
@@ -185,8 +180,8 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 	 *
 	 * @see add_fields_to_fieldlist
 	 * @see add_field_to_fieldlist
-	 * @param string	$field: fieldname
-	 * @param mixed	$value: value
+	 * @param string $field : fieldname
+	 * @param mixed $value : value
 	 * @return void
 	 */
 	public function setField($field, $value) {
@@ -200,8 +195,8 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 	 *
 	 * @see add_fields_to_fieldlist
 	 * @see add_field_to_fieldlist
-	 * @param string	$field: fieldname
-	 * @return mixed	value of the field
+	 * @param string $field : fieldname
+	 * @return mixed    value of the field
 	 */
 	public function getField($field) {
 		return $this->$field;
@@ -267,6 +262,7 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 
 		if (!$this->data) {
 			$this->recordTranslated = FALSE;
+
 			return FALSE;
 		} else {
 			$this->recordTranslated = TRUE;
@@ -290,6 +286,7 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 	 * and calls $this->add_fields_to_fieldlist
 	 *
 	 * @param string $fieldname Database fieldname
+	 * @return void
 	 */
 	public function addFieldToFieldlist($fieldname) {
 		$this->addFieldsToFieldlist(array(trim($fieldname)));
@@ -300,6 +297,7 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 	 * used for hooks to add own fields to the output
 	 *
 	 * @param array $fieldarray array of databse filednames
+	 * @return void
 	 */
 	public function addFieldsToFieldlist($fieldarray) {
 		$this->fieldlist = array_merge($this->fieldlist, (array) $fieldarray);
@@ -363,10 +361,11 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 	 * Sets the PageTitle titile from via the TSFE
 	 *
 	 * @param string $field (default title) for setting as title
+	 * @return void
 	 */
 	public function setPageTitle($field = 'title') {
 		$GLOBALS['TSFE']->page['title'] = $this->$field . ' : ' . $GLOBALS['TSFE']->page['title'];
-			// set pagetitle for indexed search also
+		// set pagetitle for indexed search also
 		$GLOBALS['TSFE']->indexedDocTitle = $this->$field . ' : ' . $GLOBALS['TSFE']->indexedDocTitle;
 	}
 
@@ -387,22 +386,24 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 		foreach ($markContentArray as $k => $v) {
 			$vr = '';
 			switch (strtoupper($conf[$k])) {
-				case 'IMGTEXT' :
-				case 'IMAGE' :
-						$i = 1;
+				case 'IMGTEXT':
+					// fall through
+				case 'IMAGE':
+					$i = 1;
 					$imgArray = explode(';', $v);
 					foreach ($imgArray as $img) {
 						$conf[$k . '.'][$i . '.'] = $conf[$k . '.']['defaultImgConf.'];
 						$conf[$k . '.'][$i . '.']['file'] = $conf['imageFolder'] . $img;
 						$vr = $cobj->IMAGE($conf[$k . '.'][$i . '.']);
-						}
-				break;
-				case 'STDWRAP' :
+					}
+					break;
+
+				case 'STDWRAP':
 					$vr = $cobj->stdWrap($v, $conf[$k . '.']);
-				break;
-				default :
+					break;
+
+				default:
 					$vr = $v;
-				break;
 			}
 			$markerArray['###' . strtoupper($prefix . $k) . '###'] = $vr;
 		}
@@ -418,6 +419,7 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 	 */
 	public function get_uid() {
 		t3lib_div::logDeprecatedFunction();
+
 		return $this->getUid();
 	}
 
@@ -429,6 +431,7 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 	 */
 	public function get_LOCALIZED_UID() {
 		t3lib_div::logDeprecatedFunction();
+
 		return $this->getLocalizedUid();
 	}
 
@@ -438,6 +441,7 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 	 */
 	public function get_lang() {
 		t3lib_div::logDeprecatedFunction();
+
 		return $this->getLang();
 	}
 
@@ -450,6 +454,7 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 	 */
 	public function return_assoc_array($prefix = '') {
 		t3lib_div::logDeprecatedFunction();
+
 		return $this->returnAssocArray($prefix);
 	}
 
@@ -486,6 +491,7 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 	 */
 	public function is_valid_uid() {
 		t3lib_div::logDeprecatedFunction();
+
 		return $this->isValidUid();
 	}
 
@@ -498,6 +504,7 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 	 */
 	public function get_attributes($attributeCorelationTypeList = array()) {
 		t3lib_div::logDeprecatedFunction();
+
 		return $this->getAttributes($attributeCorelationTypeList);
 	}
 
@@ -511,13 +518,18 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 	 */
 	public function load_data($translationMode = FALSE) {
 		t3lib_div::logDeprecatedFunction();
+
 		return $this->loadData($translationMode);
 	}
 }
 
 class_alias('Tx_Commerce_Domain_Model_AbstractEntity', 'tx_commerce_element_alib');
 
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Domain/Model/AbstractEntity.php']) {
+if (defined(
+		'TYPO3_MODE'
+	)
+	&& $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Domain/Model/AbstractEntity.php']
+) {
 	/** @noinspection PhpIncludeInspection */
 	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Domain/Model/AbstractEntity.php']);
 }

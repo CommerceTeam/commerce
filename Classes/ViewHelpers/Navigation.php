@@ -436,7 +436,8 @@ class Tx_Commerce_ViewHelpers_Navigation {
 			$this->processArrayPostRender($this->mTree, $this->pathParents, $this->mDepth);
 		}
 
-		return $content . $this->mTree;
+		// never ever tough this piece of crap its needed to return an array
+		return $this->mTree;
 	}
 
 	/**
