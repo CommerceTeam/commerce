@@ -1,27 +1,21 @@
 <?php
 /***************************************************************
  *  Copyright notice
- *
  *  (c) 2005-2012 Ingo Schmitt <is@marketing-factory.de>
  *  All rights reserved
- *
  *  This script is part of the TYPO3 project. The TYPO3 project is
  *  free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
  *  (at your option) any later version.
- *
  *  The GNU General Public License can be found at
  *  http://www.gnu.org/copyleft/gpl.html.
  *  A copy is found in the textfile GPL.txt and important notices to the license
  *  from the author is found in LICENSE.txt distributed with these scripts.
- *
- *
  *  This script is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
- *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
@@ -69,32 +63,25 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	public $currentStep = '';
 
 	/**
-	 * If set to TRUE some debug message will be printed.
-	 *
-	 * @var boolean
-	 */
-	public $debug = FALSE;
-
-	/**
 	 * TRUE if checkoutmail to user sent correctly
 	 *
 	 * @var boolean
 	 */
-	public $userMailOK;
+	public $userMailOk;
 
 	/**
 	 * TRUE if checkoutmail to Admin send correctly
 	 *
 	 * @var boolean
 	 */
-	public $adminMailOK;
+	public $adminMailOk;
 
 	/**
 	 * You have to implement FALSE by your own
 	 *
 	 * @var boolean TRUE if finish IT is ok
 	 */
-	public $finishItOK = TRUE;
+	public $finishItOk = TRUE;
 
 	/**
 	 * Array of checkout steps
@@ -140,7 +127,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	/**
 	 * @var boolean
 	 */
-	public $isHTMLMail;
+	public $isHtmlMail;
 
 	/**
 	 * Init Method, autmatically called $this->main
@@ -192,8 +179,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	public function main($content, $conf) {
 		$this->debug(
 			$GLOBALS['TSFE']->fe_user->getKey('ses', Tx_Commerce_Utility_GeneralUtility::generateSessionKey('billing')),
-			'billingsession',
-			__FILE__ . ' ' . __LINE__
+			'billingsession', __FILE__ . ' ' . __LINE__
 		);
 
 		$this->init($conf);
@@ -202,7 +188,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 
 		$hookObjectsArr = $this->getHookObjectArray('main');
 
-			// Set basket to readonly, if set in extension configuration
+		// Set basket to readonly, if set in extension configuration
 		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['lockBasket'] == 1) {
 			/** @var $basket Tx_Commerce_Domain_Model_Basket */
 			$basket = & $GLOBALS['TSFE']->fe_user->tx_commerce_basket;
@@ -210,10 +196,10 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			$basket->storeData();
 		}
 
-			// Store current step
+		// Store current step
 		$this->currentStep = strtolower($this->piVars['step']);
 
-			// Set deliverytype as current step, if comes from pi4 to create a new address
+		// Set deliverytype as current step, if comes from pi4 to create a new address
 		if (empty($this->currentStep) && $this->piVars['addressType']) {
 			switch ($this->piVars['addressType']) {
 				case '2':
@@ -224,7 +210,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			}
 		}
 
-			// Hook for handling own steps and information
+		// Hook for handling own steps and information
 		foreach ($hookObjectsArr as $hookObj) {
 			if (method_exists($hookObj, 'processData')) {
 				$hookObj->processData($this);
@@ -238,12 +224,11 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		$canMakeCheckout = $this->canMakeCheckout();
 		if (is_string($canMakeCheckout)) {
 			return $this->cObj->cObjGetSingle(
-				$this->conf['cantMakeCheckout.'][$canMakeCheckout],
-				$this->conf['cantMakeCheckout.'][$canMakeCheckout . '.']
+				$this->conf['cantMakeCheckout.'][$canMakeCheckout], $this->conf['cantMakeCheckout.'][$canMakeCheckout . '.']
 			);
 		}
 
-			// Get the template
+		// Get the template
 		$this->templateCode = $this->cObj->fileResource($this->conf['templateFile']);
 
 		$this->debug($this->currentStep, '$this->currentSteps', __FILE__ . ' ' . __LINE__);
@@ -254,9 +239,9 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			}
 		}
 
-			// The purpose of the while loop is simply to be able to define any
-			// step as the step after payment. This counter breaks the loop after 10
-			// rounds to prevent infinite loops with poorly setup shops
+		// The purpose of the while loop is simply to be able to define any
+		// step as the step after payment. This counter breaks the loop after 10
+		// rounds to prevent infinite loops with poorly setup shops
 		if (!$this->validateAddress('billing')) {
 			$this->currentStep = 'billing';
 		}
@@ -273,11 +258,11 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 				case 'payment':
 					$paymentObj = $this->getPaymentObject();
 					$content = $this->handlePayment($paymentObj);
-						// Only break at this point if we need some payment handling
+					// Only break at this point if we need some payment handling
 					if ($content != FALSE) {
 						break;
 					}
-						// Go on with listing
+					// Go on with listing
 					$this->currentStep = $this->getStepAfter('payment');
 					break;
 
@@ -301,7 +286,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 						}
 					}
 					if (!$content) {
-							// get billing address
+						// get billing address
 						$content = $this->getBillingAddress();
 					}
 			}
@@ -341,7 +326,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	protected function storeRequestDataIntoSession() {
 		/** @var $feUser tslib_feUserAuth */
 		$feUser = $GLOBALS['TSFE']->fe_user;
-			// Write the billing address into session, if it is present in the REQUEST
+		// Write the billing address into session, if it is present in the REQUEST
 		if (isset($this->piVars['billing'])) {
 			$this->piVars['billing'] = Tx_Commerce_Utility_GeneralUtility::removeXSSStripTagsArray($this->piVars['billing']);
 			$feUser->setKey('ses', Tx_Commerce_Utility_GeneralUtility::generateSessionKey('billing'), $this->piVars['billing']);
@@ -355,19 +340,18 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			$feUser->setKey('ses', Tx_Commerce_Utility_GeneralUtility::generateSessionKey('payment'), $this->piVars['payment']);
 		}
 
-			// Fetch the address data from hidden fields if address_id is set.
-			// This means that the address was selected from list with radio buttons.
+		// Fetch the address data from hidden fields if address_id is set.
+		// This means that the address was selected from list with radio buttons.
 		if (isset($this->piVars['address_uid'])) {
-				// Override missing or incorrect email with username if username is email,
-				// because we need to be sure to have at least one correct mail address
-				// This way email is not necessarily mandatory for billing/delivery address
+			// Override missing or incorrect email with username if username is email,
+			// because we need to be sure to have at least one correct mail address
+			// This way email is not necessarily mandatory for billing/delivery address
 			if (!$this->conf['randomUser'] && !t3lib_div::validEmail($this->piVars[$this->piVars['address_uid']]['email'])) {
 				$this->piVars[$this->piVars['address_uid']]['email'] = $GLOBALS['TSFE']->fe_user->user['email'];
 			}
 			$this->piVars[$this->piVars['address_uid']]['uid'] = (int) $this->piVars['address_uid'];
 			$feUser->setKey(
-				'ses',
-				Tx_Commerce_Utility_GeneralUtility::generateSessionKey($this->piVars['check']),
+				'ses', Tx_Commerce_Utility_GeneralUtility::generateSessionKey($this->piVars['check']),
 				$this->piVars[(int) $this->piVars['address_uid']]
 			);
 		}
@@ -393,7 +377,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		$this->sessionData['mails'] = $feUser->getKey('ses', Tx_Commerce_Utility_GeneralUtility::generateSessionKey('mails'));
 
 		if ($this->piVars['check'] == 'billing' && $this->piVars['step'] == 'payment') {
-				// Remove reference to delivery address
+			// Remove reference to delivery address
 			$this->sessionData['delivery'] = FALSE;
 			$feUser->setKey('ses', Tx_Commerce_Utility_GeneralUtility::generateSessionKey('delivery'), FALSE);
 		}
@@ -410,17 +394,17 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 
 		/** @var $feUser tslib_feUserAuth */
 		$feUser = & $GLOBALS['TSFE']->fe_user;
-			// Saves UC and SesData if changed.
+		// Saves UC and SesData if changed.
 		if ($feUser->userData_change) {
 			$feUser->writeUC('');
 		}
 
 		if ($feUser->sesData_change && $feUser->id) {
 			if (empty($feUser->sesData)) {
-					// Remove session-data
+				// Remove session-data
 				$feUser->removeSessionData();
 			} else {
-					// Write new session-data
+				// Write new session-data
 				$insertFields = array(
 					'hash' => $GLOBALS['TSFE']->fe_user->id,
 					'content' => serialize($feUser->sesData),
@@ -455,8 +439,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			$localTs = $this->conf['activeStep.'];
 			if ($localTs['typolink.']['setCommerceValues'] == 1) {
 				$localTs['typolink.']['parameter'] = $this->conf['basketPid'];
-				$localTs['typolink.']['additionalParams'] = $this->argSeparator . $this->prefixId .
-					'[step]=' . $this->checkoutSteps[$i];
+				$localTs['typolink.']['additionalParams'] = $this->argSeparator . $this->prefixId . '[step]=' . $this->checkoutSteps[$i];
 			}
 			$label = sprintf($this->pi_getLL('label_step_' . $this->checkoutSteps[$i]), $i + 1);
 			$lokContent = $this->cObj->stdWrap($label, $localTs);
@@ -494,8 +477,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		$this->debug($this->sessionData, 'sessionData', __FILE__ . ' ' . __LINE__);
 		if ($this->conf['billing.']['subpartMarker.']['containerWrap']) {
 			$template = $this->cObj->getSubpart(
-				$this->templateCode,
-				strtoupper($this->conf['billing.']['subpartMarker.']['containerWrap'])
+				$this->templateCode, strtoupper($this->conf['billing.']['subpartMarker.']['containerWrap'])
 			);
 		} else {
 			$template = $this->cObj->getSubpart($this->templateCode, '###ADDRESS_CONTAINER###');
@@ -504,23 +486,23 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		$markerArray['###ADDRESS_TITLE###'] = '';
 		$markerArray['###ADDRESS_DESCRIPTION###'] = '';
 		if ($withTitle == 1) {
-				// Fill standard markers
+			// Fill standard markers
 			$markerArray['###ADDRESS_TITLE###'] = $this->pi_getLL('billing_title');
 			$markerArray['###ADDRESS_DESCRIPTION###'] = $this->pi_getLL('billing_description');
 		}
 
-			// Get the form
-		$markerArray['###ADDRESS_FORM_TAG###'] = '<form name="addressForm" action="' .
-			$this->pi_getPageLink($GLOBALS['TSFE']->id) . '" method="post" ' . $this->conf[$this->step . '.']['formParams'] . '>';
-		$markerArray['###ADDRESS_FORM_HIDDENFIELDS###'] = '<input type="hidden" name="' .
-			$this->prefixId . '[check]" value="billing" />';
+		// Get the form
+		$markerArray['###ADDRESS_FORM_TAG###'] = '<form name="addressForm" action="' . $this->pi_getPageLink(
+				$GLOBALS['TSFE']->id
+			) . '" method="post" ' . $this->conf[$this->step . '.']['formParams'] . '>';
+		$markerArray['###ADDRESS_FORM_HIDDENFIELDS###'] = '<input type="hidden" name="' . $this->prefixId . '[check]" value="billing" />';
 
 		$billingForm = '<form name="addressForm" action="' . $this->pi_getPageLink($GLOBALS['TSFE']->id) . '" method="post">';
 		$billingForm .= '<input type="hidden" name="' . $this->prefixId . '[check]" value="billing" />';
 
 		$markerArray['###HIDDEN_STEP###'] = '<input type="hidden" name="' . $this->prefixId . '[check]" value="billing" />';
 
-			// If a user is logged in, get the form from the address management
+		// If a user is logged in, get the form from the address management
 		if ($GLOBALS['TSFE']->loginUser) {
 			$addressManagerConf = $this->conf;
 			$addressManagerConf['formFields.'] = $this->conf['billing.']['sourceFields.'];
@@ -532,23 +514,23 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			$addressMgm->templateCode = $this->templateCode;
 			$addressMgm->init($addressManagerConf, FALSE);
 			$addressMgm->addresses = $addressMgm->getAddresses(
-				$GLOBALS['TSFE']->fe_user->user['uid'],
-				$this->conf['billing.']['addressType']
+				$GLOBALS['TSFE']->fe_user->user['uid'], $this->conf['billing.']['addressType']
 			);
 			$addressMgm->piVars['backpid'] = $GLOBALS['TSFE']->id;
 
 			$markerArray['###ADDRESS_FORM_INPUTFIELDS###'] = $addressMgm->getListing(
-				$this->conf['billing.']['addressType'], TRUE, $this->prefixId, $this->sessionData['billing']['uid']);
+				$this->conf['billing.']['addressType'], TRUE, $this->prefixId, $this->sessionData['billing']['uid']
+			);
 		} else {
 			$markerArray['###ADDRESS_FORM_INPUTFIELDS###'] = $this->getInputForm($this->conf['billing.'], 'billing');
 		}
 
 		$billingForm .= $markerArray['###ADDRESS_FORM_INPUTFIELDS###'];
 
-			// Marker for the delivery address chooser
+		// Marker for the delivery address chooser
 		$stepNodelivery = $this->getStepAfter('delivery');
 
-			// Build pre selcted Radio Boxes
+		// Build pre selcted Radio Boxes
 		if ($this->piVars['step'] == $stepNodelivery) {
 			$deliveryChecked = '  ';
 			$paymentChecked = ' checked="checked" ';
@@ -589,15 +571,14 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			$this->conf['billing.']['deliveryAddress.']['nodelivery_label.']
 		);
 
-			// @Deprecated marker, use marker above instead (see example Template)
+		// @Deprecated marker, use marker above instead (see example Template)
 		$markerArray['###ADDRESS_FORM_FIELDS###'] = $billingForm;
 		$markerArray['###ADDRESS_FORM_SUBMIT###'] = '<input type="submit" value="' . $this->pi_getLL('billing_submit') . '" />';
 
-			// We are thrown back because address data is not valid
+		// We are thrown back because address data is not valid
 		if (($this->currentStep == 'billing' || $this->currentStep == 'delivery') && !$this->validateAddress('billing')) {
 			$markerArray['###ADDRESS_MANDATORY_MESSAGE###'] = $this->cObj->stdWrap(
-				$this->pi_getLL('label_loginUser_mandatory_message', 'data incorrect'),
-				$this->conf['billing.']['errorWrap.']
+				$this->pi_getLL('label_loginUser_mandatory_message', 'data incorrect'), $this->conf['billing.']['errorWrap.']
 			);
 		} else {
 			$markerArray['###ADDRESS_MANDATORY_MESSAGE###'] = '';
@@ -620,6 +601,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		$this->currentStep = 'billing';
 
 		$content = $this->cObj->substituteMarkerArray($template, $markerArray);
+
 		return $this->cObj->substituteMarkerArray($content, $this->languageMarker);
 	}
 
@@ -639,8 +621,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 
 		if ($this->conf['delivery.']['subpartMarker.']['containerWrap']) {
 			$template = $this->cObj->getSubpart(
-				$this->templateCode,
-				strtoupper($this->conf['delivery.']['subpartMarker.']['containerWrap'])
+				$this->templateCode, strtoupper($this->conf['delivery.']['subpartMarker.']['containerWrap'])
 			);
 		} else {
 			$template = $this->cObj->getSubpart($this->templateCode, '###ADDRESS_CONTAINER###');
@@ -649,21 +630,20 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		$markerArray['###ADDRESS_TITLE###'] = '';
 		$markerArray['###ADDRESS_DESCRIPTION###'] = '';
 		if ($withTitle == 1) {
-				// Fill standard markers
+			// Fill standard markers
 			$markerArray['###ADDRESS_TITLE###'] = $this->pi_getLL('delivery_title');
 			$markerArray['###ADDRESS_DESCRIPTION###'] = $this->pi_getLL('delivery_description');
 		}
 
-			// Get form
-			// @Depricated Marker
-		$markerArray['###ADDRESS_FORM_TAG###'] = '<form name="addressForm" action="' .
-			$this->pi_getPageLink($GLOBALS['TSFE']->id) . '" method="post" ' . $this->conf[$this->step . '.']['formParams'] . '>';
+		// Get form
+		// @Depricated Marker
+		$markerArray['###ADDRESS_FORM_TAG###'] = '<form name="addressForm" action="' . $this->pi_getPageLink(
+				$GLOBALS['TSFE']->id
+			) . '" method="post" ' . $this->conf[$this->step . '.']['formParams'] . '>';
 
 		$nextstep = $this->getStepAfter('delivery');
 
-		$markerArray['###ADDRESS_FORM_HIDDENFIELDS###'] = '<input type="hidden" name="' .
-			$this->prefixId . '[step]" value="' . $nextstep . '" /><input type="hidden" name="' .
-			$this->prefixId . '[check]" value="delivery" />';
+		$markerArray['###ADDRESS_FORM_HIDDENFIELDS###'] = '<input type="hidden" name="' . $this->prefixId . '[step]" value="' . $nextstep . '" /><input type="hidden" name="' . $this->prefixId . '[check]" value="delivery" />';
 
 		$deliveryForm = '<form name="addressForm" action="' . $this->pi_getPageLink($GLOBALS['TSFE']->id) . '" method="post">';
 		$deliveryForm .= '<input type="hidden" name="' . $this->prefixId . '[step]" value="' . $nextstep . '" />';
@@ -672,7 +652,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		$markerArray['###HIDDEN_STEP###'] = '<input type="hidden" name="' . $this->prefixId . '[step]" value="' . $nextstep . '" />';
 		$markerArray['###HIDDEN_STEP###'] .= '<input type="hidden" name="' . $this->prefixId . '[check]" value="delivery" />';
 
-			// If a user is logged in, get form from the address management
+		// If a user is logged in, get form from the address management
 		if ($GLOBALS['TSFE']->loginUser) {
 			$addressManagerConf = $this->conf;
 			$addressManagerConf['formFields.'] = $this->conf['delivery.']['sourceFields.'];
@@ -684,8 +664,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			$addressMgm->templateCode = $this->templateCode;
 			$addressMgm->init($addressManagerConf, FALSE);
 			$addressMgm->addresses = $addressMgm->getAddresses(
-				$GLOBALS['TSFE']->fe_user->user['uid'],
-				$this->conf['delivery.']['addressType']
+				$GLOBALS['TSFE']->fe_user->user['uid'], $this->conf['delivery.']['addressType']
 			);
 			$addressMgm->piVars['backpid'] = $GLOBALS['TSFE']->id;
 
@@ -703,15 +682,14 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		$markerArray['###ADDRESS_LABEL_DELIVERY###'] = '';
 		$markerArray['###ADDRESS_LABEL_NODELIVERY###'] = '';
 
-			// @Depricated marker, use new template
+		// @Depricated marker, use new template
 		$markerArray['###ADDRESS_FORM_FIELDS###'] = $deliveryForm;
 		$markerArray['###ADDRESS_FORM_SUBMIT###'] = '<input type="submit" value="' . $this->pi_getLL('delivery_submit') . '" />';
 
-			// We are thrown back because address data is not valid
+		// We are thrown back because address data is not valid
 		if ($this->currentStep == 'payment' && !$this->validateAddress('delivery')) {
 			$markerArray['###ADDRESS_MANDATORY_MESSAGE###'] = $this->cObj->stdWrap(
-				$this->pi_getLL('label_loginUser_mandatory_message', 'data incorrect'),
-				$this->conf['delivery.']['errorWrap.']
+				$this->pi_getLL('label_loginUser_mandatory_message', 'data incorrect'), $this->conf['delivery.']['errorWrap.']
 			);
 		} else {
 			$markerArray['###ADDRESS_MANDATORY_MESSAGE###'] = '';
@@ -733,7 +711,9 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 
 		$this->currentStep = 'delivery';
 
-		return $this->cObj->substituteMarkerArray($this->cObj->substituteMarkerArray($template, $markerArray), $this->languageMarker);
+		return $this->cObj->substituteMarkerArray(
+			$this->cObj->substituteMarkerArray($template, $markerArray), $this->languageMarker
+		);
 	}
 
 	/**
@@ -761,22 +741,25 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 
 		if ($this->conf[$paymentType . '.']['subpartMarker.']['listWrap']) {
 			$template = $this->cObj->getSubpart(
-				$this->templateCode,
-				strtoupper($this->conf[$paymentType . '.']['subpartMarker.']['listWrap'])
+				$this->templateCode, strtoupper($this->conf[$paymentType . '.']['subpartMarker.']['listWrap'])
 			);
 		} else {
 			$template = $this->cObj->getSubpart($this->templateCode, '###PAYMENT###');
 		}
 
-			// Fill standard markers
+		// Fill standard markers
 		$markerArray['###PAYMENT_TITLE###'] = $this->pi_getLL('payment_title');
 		$markerArray['###PAYMENT_DESCRIPTION###'] = $this->pi_getLL('payment_description');
-		$markerArray['###PAYMENT_DISCLAIMER###'] = $this->pi_getLL('general_disclaimer') . '<br />' . $this->pi_getLL('payment_disclaimer');
+		$markerArray['###PAYMENT_DISCLAIMER###'] = $this->pi_getLL('general_disclaimer') . '<br />' . $this->pi_getLL(
+				'payment_disclaimer'
+			);
 
-			// Check if we already have a payment object
-			// If we don't have one, try to create a new one from the config
+		// Check if we already have a payment object
+		// If we don't have one, try to create a new one from the config
 		if (!isset($paymentObj)) {
-			$config = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['SYSPRODUCTS']['PAYMENT']['types'][strtolower((string) $paymentType)];
+			$config = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['SYSPRODUCTS']['PAYMENT']['types'][strtolower(
+				(string) $paymentType
+			)];
 
 			$errorStr = NULL;
 			if (!isset($config['class'])) {
@@ -786,7 +769,9 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 				$errorStr[] = 'file not found!';
 			}
 			if (is_array($errorStr)) {
-				die('PAYMENT:FATAL! No payment possible because I don\'t know how to handle it! (' . implode(', ', $errorStr) . ')');
+				die('PAYMENT:FATAL! No payment possible because I don\'t know how to handle it! (' . implode(
+						', ', $errorStr
+					) . ')');
 			}
 
 			$paymentObj = t3lib_div::makeInstance($config['class']);
@@ -797,14 +782,11 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		 * payment information are stored in the session is invalid or
 		 * information in session result in an error
 		 */
-		if (
-			$paymentObj->needAdditionalData($this)
-			&& (
-				(isset($this->sessionData['payment']) && !$paymentObj->proofData($this->sessionData['payment']))
-				|| (!isset($this->sessionData['payment']) || $paymentObj->getLastError())
-			)
+		if ($paymentObj->needAdditionalData($this)
+			&& ((isset($this->sessionData['payment']) && !$paymentObj->proofData($this->sessionData['payment']))
+				|| (!isset($this->sessionData['payment']) || $paymentObj->getLastError()))
 		) {
-				// Merge local lang array with language information of payment object
+			// Merge local lang array with language information of payment object
 			if (is_array($this->LOCAL_LANG) && isset($paymentObj->LOCAL_LANG)) {
 				foreach ($this->LOCAL_LANG as $llKey => $llData) {
 					$newLlData = array();
@@ -826,7 +808,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 
 			$this->formError = $paymentObj->formError;
 
-				// Show the payment form if it's needed, otherwise go to next step
+			// Show the payment form if it's needed, otherwise go to next step
 			$paymentForm = '<form name="paymentForm" action="' . $formAction . '" method="post">';
 			$paymentForm .= '<input type="hidden" name="' . $this->prefixId . '[step]" value="payment" />';
 			$paymentConfig = $this->conf['payment.'];
@@ -839,10 +821,12 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 				$markerArray['###PAYMENT_PAYMENTOBJ_MESSAGE###'] = $this->pi_getLL('defaultPaymentDataError');
 			}
 			$markerArray['###PAYMENT_FORM_FIELDS###'] = $paymentForm;
-			$markerArray['###PAYMENT_FORM_SUBMIT###'] = '<input type="submit" value="' . $this->pi_getLL('payment_submit') . '" /></form>';
+			$markerArray['###PAYMENT_FORM_SUBMIT###'] = '<input type="submit" value="' . $this->pi_getLL(
+					'payment_submit'
+				) . '" /></form>';
 		} else {
-				// Redirect to the next page because no additional payment
-				// information is needed or everything is correct
+			// Redirect to the next page because no additional payment
+			// information is needed or everything is correct
 			return FALSE;
 		}
 		foreach ($hookObjectsArr as $hookObj) {
@@ -853,7 +837,9 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 
 		$this->currentStep = 'payment';
 
-		return $this->cObj->substituteMarkerArray($this->cObj->substituteMarkerArray($template, $markerArray), $this->languageMarker);
+		return $this->cObj->substituteMarkerArray(
+			$this->cObj->substituteMarkerArray($template, $markerArray), $this->languageMarker
+		);
 	}
 
 	/**
@@ -883,26 +869,23 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		$markerArray['###LISTING_DESCRIPTION###'] = $this->pi_getLL('listing_description');
 		$markerArray['###LISTING_FORM_FIELDS###'] = $listingForm;
 		$markerArray['###LISTING_BASKET###'] = $this->makeBasketView(
-			$basket,
-			'###BASKET_VIEW###',
-			t3lib_div::intExplode(',', $this->conf['regularArticleTypes']),
-			array('###LISTING_ARTICLE###', '###LISTING_ARTICLE2###')
+			$basket, '###BASKET_VIEW###', t3lib_div::intExplode(',', $this->conf['regularArticleTypes']), array(
+				'###LISTING_ARTICLE###',
+				'###LISTING_ARTICLE2###'
+			)
 		);
 		$markerArray['###BILLING_ADDRESS###'] = $this->cObj->stdWrap(
-			$this->getAddress('billing'),
-			$this->conf['listing.']['stdWrap_billing_address.']
+			$this->getAddress('billing'), $this->conf['listing.']['stdWrap_billing_address.']
 		);
 		$markerArray['###DELIVERY_ADDRESS###'] = $this->cObj->stdWrap(
-			$this->getAddress('delivery'),
-			$this->conf['listing.']['stdWrap_delivery_address.']
+			$this->getAddress('delivery'), $this->conf['listing.']['stdWrap_delivery_address.']
 		);
 		$markerArray['###LISTING_FORM_SUBMIT###'] = '<input type="submit" value="' . $this->pi_getLL('listing_submit') . '" />';
 		$markerArray['###LISTING_DISCLAIMER###'] = $this->pi_getLL('listing_disclaimer');
 
 		if ($this->formError['terms']) {
 			$markerArray['###ERROR_TERMS_ACCEPT###'] = $this->cObj->dataWrap(
-				$this->formError['terms'],
-				$this->conf['terms.']['errorWrap']
+				$this->formError['terms'], $this->conf['terms.']['errorWrap']
 			);
 		} else {
 			$markerArray['###ERROR_TERMS_ACCEPT###'] = '';
@@ -912,18 +895,18 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			$termsChecked = 'checked';
 		}
 
-		$comment = isset($this->piVars['comment']) ? t3lib_div::removeXSS(strip_tags($this->piVars['comment'])) : '';
+		$comment = isset($this->piVars['comment']) ?
+			t3lib_div::removeXSS(strip_tags($this->piVars['comment'])) :
+			'';
 
-			// Use new version with label and field
+		// Use new version with label and field
 		$markerArray['###LISTING_TERMS_ACCEPT_LABEL###'] = sprintf(
 			$this->pi_getLL('termstext'),
 			$this->cObj->typoLink($this->pi_getLL('termstext_tca'), $this->conf['termsAndConditionsUrl.'])
 		);
 		$markerArray['###LISTING_COMMENT_LABEL###'] = $this->pi_getLL('comment');
-		$markerArray['###LISTING_TERMS_ACCEPT_FIELD###'] = '<input type="checkbox" name="' .
-			$this->prefixId . '[terms]" value="termschecked" ' . $termsChecked . ' />';
-		$markerArray['###LISTING_COMMENT_FIELD###'] = '<textarea name="' .
-			$this->prefixId . '[comment]" rows="4" cols="40">' . $comment . '</textarea>';
+		$markerArray['###LISTING_TERMS_ACCEPT_FIELD###'] = '<input type="checkbox" name="' . $this->prefixId . '[terms]" value="termschecked" ' . $termsChecked . ' />';
+		$markerArray['###LISTING_COMMENT_FIELD###'] = '<textarea name="' . $this->prefixId . '[comment]" rows="4" cols="40">' . $comment . '</textarea>';
 
 		$hookObjectsArr = $this->getHookObjectArray('getListing');
 		foreach ($hookObjectsArr as $hookObj) {
@@ -936,7 +919,9 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 
 		$this->currentStep = 'listing';
 
-		return $this->cObj->substituteMarkerArray($this->cObj->substituteMarkerArray($template, $markerArray), $this->languageMarker);
+		return $this->cObj->substituteMarkerArray(
+			$this->cObj->substituteMarkerArray($template, $markerArray), $this->languageMarker
+		);
 	}
 
 	/**
@@ -952,15 +937,20 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 
 		if (!isset($paymentObj)) {
 			$paymentType = $this->getPaymentType();
-			$config = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['SYSPRODUCTS']['PAYMENT']['types'][strtolower((string) $paymentType)];
+			$config = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['SYSPRODUCTS']['PAYMENT']['types'][strtolower(
+				(string) $paymentType
+			)];
 
 			if (!isset($config['class']) || !file_exists($config['path'])) {
-				throw new Exception('FINISHING: FATAL! No payment possible because no payment handler is configured!', 1395665876);
+				throw new Exception(
+					'FINISHING: FATAL! No payment possible because no payment handler is configured!', 1395665876
+				);
 			}
 
 			$paymentObj = t3lib_div::makeInstance($config['class'], $this);
 		} else {
-			$config = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['SYSPRODUCTS']['PAYMENT']['types'][$paymentObj->getType()];
+			$config = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['SYSPRODUCTS']['PAYMENT']['types'][$paymentObj->getType(
+			)];
 		}
 
 		if ($paymentObj instanceof Tx_Commerce_Payment_Interface_Payment) {
@@ -969,7 +959,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			$paymentDone = FALSE;
 		}
 
-			// Check if terms are accepted
+		// Check if terms are accepted
 		if (!$paymentDone && (empty($this->piVars['terms']) || ($this->piVars['terms'] != 'termschecked'))) {
 			$this->formError['terms'] = $this->pi_getLL('error_terms_not_accepted');
 			$content = $this->handlePayment($paymentObj);
@@ -981,14 +971,16 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			return $content;
 		}
 
-			// Check stock amount of articles
+		// Check stock amount of articles
 		if (!$this->checkStock()) {
-			$content = $this->pi_getLL('not_all_articles_in_stock') . $this->pi_linkToPage($this->pi_getLL('no_stock_back'), $this->conf['noStockBackPID']);
+			$content = $this->pi_getLL('not_all_articles_in_stock') . $this->pi_linkToPage(
+					$this->pi_getLL('no_stock_back'), $this->conf['noStockBackPID']
+				);
 
 			return $this->cObj->stdWrap($content, $this->conf['noStockWrap.']);
 		}
 
-			// Handle orders
+		// Handle orders
 		/** @var $basket Tx_Commerce_Domain_Model_Basket */
 		$basket = & $GLOBALS['TSFE']->fe_user->tx_commerce_basket;
 
@@ -1040,7 +1032,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			$orderData['tstamp'] = $now;
 			$database->exec_INSERTquery('tx_commerce_orders', $orderData);
 			$orderUid = $database->sql_insert_id();
-				// make orderUid avaible in hookObjects
+			// make orderUid avaible in hookObjects
 			$this->orderUid = $orderUid;
 		}
 
@@ -1075,8 +1067,8 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		$orderData = $this->saveOrder($orderId, $orderData['pid'], $basket, $paymentObj, TRUE, TRUE);
 
 		// Send emails
-		$this->userMailOK = $this->sendUserMail($orderId, $orderData);
-		$this->adminMailOK = $this->sendAdminMail($orderId, $orderData);
+		$this->userMailOk = $this->sendUserMail($orderId, $orderData);
+		$this->adminMailOk = $this->sendAdminMail($orderId, $orderData);
 
 		foreach ($hookObjectsArr as $hookObj) {
 			if (method_exists($hookObj, 'afterMailSend')) {
@@ -1088,10 +1080,10 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		$content = $this->cObj->getSubpart($this->templateCode, '###FINISH###');
 
 		$markerArray['###LISTING_BASKET###'] = $this->makeBasketView(
-			$basket,
-			'###BASKET_VIEW###',
-			t3lib_div::intExplode(',', $this->conf['regularArticleTypes']),
-			array('###LISTING_ARTICLE###', '###LISTING_ARTICLE2###')
+			$basket, '###BASKET_VIEW###', t3lib_div::intExplode(',', $this->conf['regularArticleTypes']), array(
+				'###LISTING_ARTICLE###',
+				'###LISTING_ARTICLE2###'
+			)
 		);
 		$markerArray['###MESSAGE###'] = '';
 		$markerArray['###LISTING_TITLE###'] = $this->pi_getLL('order_confirmation');
@@ -1131,7 +1123,9 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			}
 		}
 
-		$content = $this->cObj->substituteMarkerArray($this->cObj->substituteMarkerArray($content, $markerArray), $this->languageMarker);
+		$content = $this->cObj->substituteMarkerArray(
+			$this->cObj->substituteMarkerArray($content, $markerArray), $this->languageMarker
+		);
 
 		foreach ($hookObjectsArr as $hookObj) {
 			if (method_exists($hookObj, 'postFinish')) {
@@ -1170,7 +1164,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	 * @return array $markerArray
 	 */
 	public function finishItRenderGoodBadMarker($markerArray) {
-		if ($this->finishItOK == TRUE) {
+		if ($this->finishItOk == TRUE) {
 			$markerArray['###FINISH_MESSAGE_GOOD###'] = $this->pi_getLL('finish_message_good');
 			$markerArray['###FINISH_MESSAGE_BAD###'] = '';
 		} else {
@@ -1178,7 +1172,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			$markerArray['###FINISH_MESSAGE_GOOD###'] = '';
 		}
 
-		if ($this->userMailOK && $this->adminMailOK) {
+		if ($this->userMailOk && $this->adminMailOk) {
 			$markerArray['###FINISH_MESSAGE_EMAIL###'] = $this->pi_getLL('finish_message_email');
 			$markerArray['###FINISH_MESSAGE_NOEMAIL###'] = '';
 		} else {
@@ -1323,8 +1317,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 
 			if ($this->conf[$addressType . '.']['subpartMarker.']['listItem']) {
 				$template = $this->cObj->getSubpart(
-					$this->templateCode,
-					strtoupper($this->conf[$addressType . '.']['subpartMarker.']['listItem'])
+					$this->templateCode, strtoupper($this->conf[$addressType . '.']['subpartMarker.']['listItem'])
 				);
 			} else {
 				$template = $this->cObj->getSubpart($this->templateCode, '###ADDRESS_LIST###');
@@ -1347,12 +1340,14 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		$config = $this->conf[$typeLower . '.'];
 		$returnVal = TRUE;
 
-		t3lib_div::deprecationLog('
-			hook
-			$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/pi3/class.tx_commerce_pi3.php\'][\'bevorValidateAddress\']
-			is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
-			$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/CheckoutController.php\'][\'beforeValidateAddress\']
-		');
+		t3lib_div::deprecationLog(
+			'
+						hook
+						$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/pi3/class.tx_commerce_pi3.php\'][\'bevorValidateAddress\']
+						is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
+						$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/CheckoutController.php\'][\'beforeValidateAddress\']
+					'
+		);
 		$hookObjectsArr = $this->getHookObjectArray('bevorValidateAddress');
 		// @todo remove merge after above hook is removed
 		$hookObjectsArr = array_merge($hookObjectsArr, $this->getHookObjectArray('beforeValidateAddress'));
@@ -1365,8 +1360,8 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			return TRUE;
 		}
 
-			// If the address doesn't exsist in the session it's valid.
-			// For the case that no delivery address was set
+		// If the address doesn't exsist in the session it's valid.
+		// For the case that no delivery address was set
 		$isArray = is_array($this->sessionData[$typeLower]);
 
 		if (!$isArray) {
@@ -1548,15 +1543,20 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 
 			$paymentBasketItem = $basket->getCurrentPaymentBasketItem();
 
-			if (strtoupper($paymentBasketItem->getArticle()->getTitle()) !== $this->piVars['payArt']) {
+			if (strtoupper(
+					$paymentBasketItem->getArticle()
+						->getTitle()
+				) !== $this->piVars['payArt']
+			) {
 				$basket->removeCurrentPaymentArticle();
-				$GLOBALS['TSFE']->fe_user->setKey('ses', Tx_Commerce_Utility_GeneralUtility::generateSessionKey('payment'), $this->piVars['payArt']);
+				$GLOBALS['TSFE']->fe_user->setKey(
+					'ses', Tx_Commerce_Utility_GeneralUtility::generateSessionKey('payment'), $this->piVars['payArt']
+				);
 
 				$articleRow = $database->exec_SELECTgetSingleRow(
-					'*',
-					'tx_commerce_articles',
-					'classname = ' . $database->fullQuoteStr(strtolower($this->piVars['payArt']), 'tx_commerce_articles') .
-						$this->cObj->enableFields('tx_commerce_articles')
+					'*', 'tx_commerce_articles', 'classname = ' . $database->fullQuoteStr(
+						strtolower($this->piVars['payArt']), 'tx_commerce_articles'
+					) . $this->cObj->enableFields('tx_commerce_articles')
 				);
 				if (count($articleRow)) {
 					$basket->addArticle($articleRow['uid']);
@@ -1572,9 +1572,9 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	 * Return payment type. The type is extracted from the basket object. The type
 	 * is stored in the basket as a special article.
 	 *
-	 * @param boolean $id  Switch for returning the id or classname
+	 * @param boolean $id Switch for returning the id or classname
 	 * @return string Determines the payment ('creditcard', 'invoice' or whatever)
-	 * 		if not $id is set, otherwise returns the id of the paymentarticle
+	 *        if not $id is set, otherwise returns the id of the paymentarticle
 	 */
 	public function getPaymentType($id = FALSE) {
 		/** @var $basket Tx_Commerce_Domain_Model_Basket */
@@ -1585,7 +1585,11 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			return $payment[0];
 		}
 
-		return strtolower($basket->getBasketItem($payment[0])->getArticle()->getClassname());
+		return strtolower(
+			$basket->getBasketItem($payment[0])
+				->getArticle()
+				->getClassname()
+		);
 	}
 
 	/**
@@ -1600,8 +1604,8 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	public function getInputForm($config, $step, $parseList = TRUE) {
 		$hookObjectsArr = $this->getHookObjectArray('processInputForm');
 
-			// Build a query for selecting an address from database
-			// if we have a logged in user
+		// Build a query for selecting an address from database
+		// if we have a logged in user
 		if ($parseList) {
 			$fieldList = $this->parseFieldList($config['sourceFields.']);
 		} else {
@@ -1622,25 +1626,27 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			}
 			$fieldMarkerArray['###FIELD_LABEL###'] = $fieldLabel;
 
-				// Clear the error field, this has to be implemented in future versions
+			// Clear the error field, this has to be implemented in future versions
 			if (strlen($this->formError[$fieldName]) > 0) {
-				$fieldMarkerArray['###FIELD_ERROR###'] = $this->cObj->stdWrap($this->formError[$fieldName], $config['fielderror.']);
+				$fieldMarkerArray['###FIELD_ERROR###'] = $this->cObj->stdWrap(
+					$this->formError[$fieldName], $config['fielderror.']
+				);
 			} else {
 				$fieldMarkerArray['###FIELD_ERROR###'] = '';
 			}
 
-				// Create input field
-			$arrayName = $fieldName . (($parseList) ? '.' : '');
+			// Create input field
+			$arrayName = $fieldName . (($parseList) ?
+					'.' :
+					'');
 			$fieldMarkerArray['###FIELD_INPUT###'] = $this->getInputField(
-				$fieldName,
-				$config['sourceFields.'][$arrayName],
-				t3lib_div::removeXSS(strip_tags($this->sessionData[$step][$fieldName])),
-				$step
+				$fieldName, $config['sourceFields.'][$arrayName],
+				t3lib_div::removeXSS(strip_tags($this->sessionData[$step][$fieldName])), $step
 			);
 			$fieldMarkerArray['###FIELD_NAME###'] = $this->prefixId . '[' . $step . '][' . $fieldName . ']';
 			$fieldMarkerArray['###FIELD_INPUTID###'] = $step . '-' . $fieldName;
 
-				// Save some data for mails
+			// Save some data for mails
 			$this->sessionData['mails'][$step][$fieldName] = array(
 				'data' => $this->sessionData[$step][$fieldName],
 				'label' => $fieldLabel
@@ -1659,7 +1665,9 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			$fieldCode .= $this->cObj->substituteMarkerArray($fieldCodeTemplate, $fieldMarkerArray);
 		}
 
-		$GLOBALS['TSFE']->fe_user->setKey('ses', Tx_Commerce_Utility_GeneralUtility::generateSessionKey('mails'), $this->sessionData['mails']);
+		$GLOBALS['TSFE']->fe_user->setKey(
+			'ses', Tx_Commerce_Utility_GeneralUtility::generateSessionKey('mails'), $this->sessionData['mails']
+		);
 
 		return $fieldCode;
 	}
@@ -1687,12 +1695,12 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			}
 		}
 
-			// Check if a uid is set, so address handling can be used.
-			// Only possible if user is logged in
+		// Check if a uid is set, so address handling can be used.
+		// Only possible if user is logged in
 		if ($this->sessionData[$type]['uid'] && $GLOBALS['TSFE']->loginUser) {
 			$uid = $this->sessionData[$type]['uid'];
 		} else {
-				// Create
+			// Create
 			if (isset($this->conf['addressPid'])) {
 				$dataArray['pid'] = $this->conf['addressPid'];
 			} else {
@@ -1704,28 +1712,28 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			if (isset($GLOBALS['TSFE']->fe_user->user['uid'])) {
 				$dataArray[$config['userConnection']] = $GLOBALS['TSFE']->fe_user->user['uid'];
 			} else {
-					// Create new user if no user is logged in and the option is set
+				// Create new user if no user is logged in and the option is set
 				if ($this->conf['createNewUsers']) {
-						// Added some changes for
-						// 1) using email as username by default
-						// 2) fill in new fields in table
-						// 3) provide data for usermail
-						// 4) use billing as default type
+					// Added some changes for
+					// 1) using email as username by default
+					// 2) fill in new fields in table
+					// 3) provide data for usermail
+					// 4) use billing as default type
 					$feuData = array();
 					$feuData['pid'] = $this->conf['userPID'];
 					$feuData['usergroup'] = $this->conf['userGroup'];
 					$feuData['tstamp'] = time();
 					if ($this->conf['randomUser']) {
-						$feuData['username'] = substr($this->sessionData['billing']['name'], 0, 2) .
-							substr($this->sessionData['billing']['surname'], 0, 4) . substr(uniqid(rand()), 0, 4);
+						$feuData['username'] = substr($this->sessionData['billing']['name'], 0, 2) . substr(
+								$this->sessionData['billing']['surname'], 0, 4
+							) . substr(uniqid(rand()), 0, 4);
 					} else {
 						$feuData['username'] = $this->sessionData['billing']['email'];
 					}
 
 					// uses either the typed in password (if configured) or a random password
 					// default is random
-					if (
-						isset($config['dontUseRandomPassword'])
+					if (isset($config['dontUseRandomPassword'])
 						&& $config['dontUseRandomPassword']
 						&& isset($this->sessionData['billing']['password'])
 					) {
@@ -1764,7 +1772,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 
 			$dataArray[$config['sourceLimiter.']['field']] = $config['sourceLimiter.']['value'];
 
-				// unsets the fields that are not present in tt_adress before inserting them
+			// unsets the fields that are not present in tt_adress before inserting them
 			if (isset($config['tt_adressExcludeFields']) && $config['tt_adressExcludeFields'] != '') {
 				$ttAdressExcludeFields = t3lib_div::trimExplode(',', $config['tt_adressExcludeFields']);
 				foreach ($ttAdressExcludeFields as $excludeField) {
@@ -1772,7 +1780,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 				}
 			}
 
-				// First address should be main address by default
+			// First address should be main address by default
 			$dataArray['tx_commerce_is_main_address'] = 1;
 
 			$database->exec_INSERTquery('tt_address', $dataArray);
@@ -1828,35 +1836,29 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 				break;
 
 			case 'static_info_tables':
-				$selected = $fieldValue != '' ? $fieldValue : $fieldConfig['default'];
+				$selected = $fieldValue != '' ?
+					$fieldValue :
+					$fieldConfig['default'];
 
 				$result = $this->staticInfo->buildStaticInfoSelector(
-					$fieldConfig['field'],
-					$this->prefixId . '[' . $step . '][' . $fieldName . ']',
-					$fieldConfig['cssClass'],
-					$selected,
-					'',
-					'',
-					$step . '-' . $fieldName,
-					'',
-					$fieldConfig['select'],
+					$fieldConfig['field'], $this->prefixId . '[' . $step . '][' . $fieldName . ']', $fieldConfig['cssClass'],
+					$selected, '', '', $step . '-' . $fieldName, '', $fieldConfig['select'],
 					$GLOBALS['TSFE']->tmpl->setup['config.']['language']
 				);
 				break;
 
 			case 'static_info_country':
 				$countries = $this->staticInfo->initCountries(
-					$fieldConfig['country_association'],
-					$GLOBALS['TSFE']->tmpl->setup['config.']['language'],
-					1,
+					$fieldConfig['country_association'], $GLOBALS['TSFE']->tmpl->setup['config.']['language'], 1,
 					$fieldConfig['select']
 				);
 				asort($countries, SORT_LOCALE_STRING);
 
-				$selected = $fieldValue != '' ? $fieldValue : $fieldConfig['default'];
+				$selected = $fieldValue != '' ?
+					$fieldValue :
+					$fieldConfig['default'];
 
-				$result = '<select id="' . $step . '-' . $fieldName . '" name="' . $this->prefixId . '[' . $step . '][' . $fieldName . ']" ' .
-					'class="' . $fieldConfig['cssClass'] . '">' . LF;
+				$result = '<select id="' . $step . '-' . $fieldName . '" name="' . $this->prefixId . '[' . $step . '][' . $fieldName . ']" ' . 'class="' . $fieldConfig['cssClass'] . '">' . LF;
 				$result .= $this->staticInfo->optionsConstructor($countries, array($selected), $outSelectedArray);
 				$result .= '</select>' . LF;
 				break;
@@ -1894,20 +1896,16 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		}
 
 		if ($fieldConfig['noPrefix'] == 1) {
-			$result = '<input id="' . $step . '-' . $fieldName . '" type="text" name="' . $fieldName .
-				'" value="' . $value . '" ' . $maxlength;
+			$result = '<input id="' . $step . '-' . $fieldName . '" type="text" name="' . $fieldName . '" value="' . $value . '" ' . $maxlength;
 			if ($fieldConfig['readonly'] == 1) {
-				$result .= ' readonly disabled /><input type="hidden" name="' . $fieldName .
-					'" value="' . $value . '" ' . $maxlength . ' />';
+				$result .= ' readonly disabled /><input type="hidden" name="' . $fieldName . '" value="' . $value . '" ' . $maxlength . ' />';
 			} else {
 				$result .= '/>';
 			}
 		} else {
-			$result = '<input id="' . $step . '-' . $fieldName . '" type="text" name="' . $this->prefixId .
-				'[' . $step . '][' . $fieldName . ']" value="' . $value . '" ' . $maxlength;
+			$result = '<input id="' . $step . '-' . $fieldName . '" type="text" name="' . $this->prefixId . '[' . $step . '][' . $fieldName . ']" value="' . $value . '" ' . $maxlength;
 			if ($fieldConfig['readonly'] == 1) {
-				$result .= ' readonly disabled /><input type="hidden" name="' . $this->prefixId .
-					'[' . $step . '][' . $fieldName . ']" value="' . $value . '" ' . $maxlength . ' />';
+				$result .= ' readonly disabled /><input type="hidden" name="' . $this->prefixId . '[' . $step . '][' . $fieldName . ']" value="' . $value . '" ' . $maxlength . ' />';
 			} else {
 				$result .= '/>';
 			}
@@ -1935,7 +1933,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			$fieldConfig['default'] = $fieldValue;
 		}
 
-			// If static items are set
+		// If static items are set
 		if (is_array($fieldConfig['values.'])) {
 			foreach ($fieldConfig['values.'] as $key => $option) {
 				$result .= '<option name="' . $key . '" value="' . $key . '"';
@@ -1945,11 +1943,13 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 				$result .= '>' . $option . '</option>' . LF;
 			}
 		} else {
-				// Try to fetch data from database
+			// Try to fetch data from database
 			$table = $fieldConfig['table'];
 			$select = $fieldConfig['select'] . $this->cObj->enableFields($fieldConfig['table']);
 			$fields = $fieldConfig['label'] . ' AS label,' . $fieldConfig['value'] . ' AS value';
-			$orderby = ($fieldConfig['orderby']) ? $fieldConfig['orderby'] : '';
+			$orderby = ($fieldConfig['orderby']) ?
+				$fieldConfig['orderby'] :
+				'';
 			$rows = $database->exec_SELECTgetRows($fields, $table, $select, '', $orderby);
 
 			foreach ($rows as $row) {
@@ -1975,8 +1975,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	 * @return string Single checkbox
 	 */
 	protected function getCheckboxInputField($fieldName, $fieldConfig, $fieldValue = '', $step = '') {
-		$result = '<input id="' . $step . '-' . $fieldName . '" type="checkbox" name="' . $this->prefixId .
-			'[' . $step . '][' . $fieldName . ']" id="' . $this->prefixId . '[' . $step . '][' . $fieldName . ']" value="1" ';
+		$result = '<input id="' . $step . '-' . $fieldName . '" type="checkbox" name="' . $this->prefixId . '[' . $step . '][' . $fieldName . ']" id="' . $this->prefixId . '[' . $step . '][' . $fieldName . ']" value="1" ';
 
 		if (($fieldConfig['default'] == '1' && $fieldValue != 0) || $fieldValue == 1) {
 			$result .= 'checked="checked" ';
@@ -2045,7 +2044,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			}
 		}
 
-			// Check if the hooks returned an error
+		// Check if the hooks returned an error
 		if (strlen($myCheck) >= 1) {
 			return $myCheck;
 		}
@@ -2053,12 +2052,12 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		/** @var $basket Tx_Commerce_Domain_Model_Basket */
 		$basket = & $GLOBALS['TSFE']->fe_user->tx_commerce_basket;
 
-			// Check if basket is empty
+		// Check if basket is empty
 		if (in_array('noarticles', $checks) && !$basket->hasArticles(NORMALARTICLETYPE)) {
 			return 'noarticles';
 		}
 
-			// Check if we have a payment article in the basket
+		// Check if we have a payment article in the basket
 		if (in_array('nopayment', $checks) && $this->currentStep == 'finish') {
 			$paymentArticles = $basket->getArticlesByArticleTypeUidAsUidlist(PAYMENTARTICLETYPE);
 			if (count($paymentArticles) <= 0) {
@@ -2066,13 +2065,13 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			}
 		}
 
-			// Check if we have a delivery address, some payment infos
-			// and if we are in the finishing step
+		// Check if we have a delivery address, some payment infos
+		// and if we are in the finishing step
 		if (in_array('nobilling', $checks) && $this->currentStep == 'finish' && !isset($this->sessionData['billing'])) {
 			return 'nobilling';
 		}
 
-			// If we reach this point, everything is fine
+		// If we reach this point, everything is fine
 		return TRUE;
 	}
 
@@ -2088,7 +2087,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		$hookObjectsArr = $this->getHookObjectArray('sendUserMail');
 
 		if (strlen($this->sessionData['billing']['email'])) {
-				// If user has email in the formular, use this
+			// If user has email in the formular, use this
 			$userMail = $this->sessionData['billing']['email'];
 		} elseif (is_array($GLOBALS['TSFE']->fe_user->user) && strlen($GLOBALS['TSFE']->fe_user->user['email'])) {
 			$userMail = $GLOBALS['TSFE']->fe_user->user['email'];
@@ -2140,52 +2139,48 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 				if ($this->conf['usermail.']['useHtml'] == '1' && $this->conf['usermail.']['templateFileHtml']) {
 					$userMailObj->templateCode = $this->cObj->fileResource($this->conf['usermail.']['templateFileHtml']);
 					$htmlContent = $userMailObj->generateMail($orderUid, $orderData, $userMarker, TRUE);
-					$userMailObj->isHTMLMail = TRUE;
+					$userMailObj->isHtmlMail = TRUE;
 					foreach ($hookObjectsArr as $hookObj) {
 						if (method_exists($hookObj, 'PostGenerateMail')) {
 							$hookObj->PostGenerateMail($userMailObj, $this, $basket, $htmlContent);
 						}
 					}
-					unset($userMailObj->isHTMLMail);
+					unset($userMailObj->isHtmlMail);
 				}
 
-					// Moved to plainMailEncoded
+				// Moved to plainMailEncoded
 				$parts = explode(chr(10), $mailcontent, 2);
-					// First line is subject
+				// First line is subject
 				$subject = trim($parts[0]);
 				$plainMessage = trim($parts[1]);
 
-					// Check if charset ist set by TS
-					// Otherwise set to default Charset
+				// Check if charset ist set by TS
+				// Otherwise set to default Charset
 				if (!$this->conf['usermail.']['charset']) {
 					$this->conf['usermail.']['charset'] = $GLOBALS['TSFE']->renderCharset;
 				}
 
-					// Checck if mailencoding ist set
-					// otherwise set to 8bit
+				// Checck if mailencoding ist set
+				// otherwise set to 8bit
 				if (!$this->conf['usermail.']['encoding']) {
 					$this->conf['usermail.']['encoding'] = '8bit';
 				}
 
-					// Convert Text to charset
+				// Convert Text to charset
 				$GLOBALS['TSFE']->csConvObj->initCharset($GLOBALS['TSFE']->renderCharset);
 				$GLOBALS['TSFE']->csConvObj->initCharset(strtolower($this->conf['usermail.']['charset']));
 				$plainMessage = $GLOBALS['TSFE']->csConvObj->conv(
-					$plainMessage,
-					$GLOBALS['TSFE']->renderCharset,
-					strtolower($this->conf['usermail.']['charset'])
+					$plainMessage, $GLOBALS['TSFE']->renderCharset, strtolower($this->conf['usermail.']['charset'])
 				);
 				$subject = $GLOBALS['TSFE']->csConvObj->conv(
-					$subject,
-					$GLOBALS['TSFE']->renderCharset,
-					strtolower($this->conf['usermail.']['charset'])
+					$subject, $GLOBALS['TSFE']->renderCharset, strtolower($this->conf['usermail.']['charset'])
 				);
 
 				if ($this->debug) {
 					print '<b>Usermail to ' . $userMail . '</b><pre>' . $plainMessage . '</pre>' . LF;
 				}
 
-					// Mailconf for  tx_commerce_div::sendMail($mailconf);
+				// Mailconf for  tx_commerce_div::sendMail($mailconf);
 				$recipient = array();
 				if ($this->conf['usermail.']['cc']) {
 					$recipient = t3lib_div::trimExplode(',', $this->conf['usermail.']['cc']);
@@ -2283,46 +2278,42 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			if ($this->conf['adminmail.']['useHtml'] == '1' && $this->conf['adminmail.']['templateFileHtml']) {
 				$adminMailObj->templateCode = $this->cObj->fileResource($this->conf['adminmail.']['templateFileHtml']);
 				$htmlContent = $adminMailObj->generateMail($orderUid, $orderData, '', TRUE);
-				$adminMailObj->isHTMLMail = TRUE;
+				$adminMailObj->isHtmlMail = TRUE;
 
 				foreach ($hookObjectsArr as $hookObj) {
 					if (method_exists($hookObj, 'PostGenerateMail')) {
 						$hookObj->PostGenerateMail($adminMailObj, $this, $basket, $htmlContent);
 					}
 				}
-				unset($adminMailObj->isHTMLMail);
+				unset($adminMailObj->isHtmlMail);
 			}
 
-				// Moved to plainMailEncoded
-				// First line is subject
+			// Moved to plainMailEncoded
+			// First line is subject
 			$parts = explode(chr(10), $mailcontent, 2);
 			$subject = trim($parts[0]);
 			$plainMessage = trim($parts[1]);
 
-				// Check if charset ist set by TS
-				// Otherwise set to default Charset
+			// Check if charset ist set by TS
+			// Otherwise set to default Charset
 			if (!$this->conf['adminmail.']['charset']) {
 				$this->conf['adminmail.']['charset'] = $GLOBALS['TSFE']->renderCharset;
 			}
 
-				// Checck if mailencoding ist set
-				// Otherwise set to 8bit
+			// Checck if mailencoding ist set
+			// Otherwise set to 8bit
 			if (!$this->conf['adminmail.']['encoding ']) {
 				$this->conf['adminmail.']['encoding '] = '8bit';
 			}
 
-				// Convert Text to charset
+			// Convert Text to charset
 			$GLOBALS['TSFE']->csConvObj->initCharset($GLOBALS['TSFE']->renderCharset);
 			$GLOBALS['TSFE']->csConvObj->initCharset(strtolower($this->conf['adminmail.']['charset']));
 			$plainMessage = $GLOBALS['TSFE']->csConvObj->conv(
-				$plainMessage,
-				$GLOBALS['TSFE']->renderCharset,
-				strtolower($this->conf['adminmail.']['charset'])
+				$plainMessage, $GLOBALS['TSFE']->renderCharset, strtolower($this->conf['adminmail.']['charset'])
 			);
 			$subject = $GLOBALS['TSFE']->csConvObj->conv(
-				$subject,
-				$GLOBALS['TSFE']->renderCharset,
-				strtolower($this->conf['adminmail.']['charset'])
+				$subject, $GLOBALS['TSFE']->renderCharset, strtolower($this->conf['adminmail.']['charset'])
 			);
 			$usernameMailencoded = $GLOBALS['TSFE']->csConvObj->specCharsToASCII($GLOBALS['TSFE']->renderCharset, $userName);
 
@@ -2330,7 +2321,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 				print '<b>Adminmail from </b><pre>' . $plainMessage . '</pre>' . LF;
 			}
 
-				// Mailconf for tx_commerce_div::sendMail($mailconf);
+			// Mailconf for tx_commerce_div::sendMail($mailconf);
 			$recipient = array();
 			if ($this->conf['adminmail.']['cc']) {
 				$recipient = t3lib_div::trimExplode(',', $this->conf['adminmail.']['cc']);
@@ -2360,7 +2351,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 				'additionalData' => $this
 			);
 
-				// Check if user mail is set
+			// Check if user mail is set
 			if (($userMail) && ($usernameMailencoded) && ($this->conf['adminmail.']['sendAsUser'] == 1)) {
 				$mailconf['fromEmail'] = $userMail;
 				$mailconf['fromName'] = $usernameMailencoded;
@@ -2393,13 +2384,14 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		$markerArray['###ORDERID###'] = $orderUid;
 		$markerArray['###ORDERDATE###'] = date($this->conf['generalMail.']['orderDate_format'], $orderData['tstamp']);
 		$markerArray['###COMMENT###'] = $orderData['comment'];
-		$markerArray['###LABEL_PAYMENTTYPE###'] =
-			$this->pi_getLL('payment_paymenttype_' . $orderData['paymenttype'], $orderData['paymenttype']);
+		$markerArray['###LABEL_PAYMENTTYPE###'] = $this->pi_getLL(
+			'payment_paymenttype_' . $orderData['paymenttype'], $orderData['paymenttype']
+		);
 
-			// Since The first line of the mail is the Suibject, trim the template
+		// Since The first line of the mail is the Suibject, trim the template
 		$template = ltrim($this->cObj->getSubpart($this->templateCode, '###MAILCONTENT###'));
 
-			// Added replacing marker for new users
+		// Added replacing marker for new users
 		$templateUser = '';
 		if (is_array($this->userData)) {
 			$templateUser = trim($this->cObj->getSubpart($template, '###NEW_USER###'));
@@ -2409,8 +2401,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		$content = $this->cObj->substituteSubpart($template, '###NEW_USER###', $templateUser);
 
 		$basketContent = $this->makeBasketView(
-			$GLOBALS['TSFE']->fe_user->tx_commerce_basket,
-			'###BASKET_VIEW###',
+			$GLOBALS['TSFE']->fe_user->tx_commerce_basket, '###BASKET_VIEW###',
 			t3lib_div::intExplode(',', $this->conf['regularArticleTypes']), array(
 				'###LISTING_ARTICLE###',
 				'###LISTING_ARTICLE2###'
@@ -2419,7 +2410,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 
 		$content = $this->cObj->substituteSubpart($content, '###BASKET_VIEW###', $basketContent);
 
-			// Get addresses
+		// Get addresses
 		$deliveryAdress = '';
 		if ($orderData['cust_deliveryaddress']) {
 			$data = $database->exec_SELECTgetSingleRow('*', 'tt_address', 'uid = ' . (int) $orderData['cust_deliveryaddress']);
@@ -2443,7 +2434,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 
 		$content = $this->cObj->substituteSubpart($content, '###BILLING_ADDRESS###', $billingAdress);
 
-			// Hook to process marker array
+		// Hook to process marker array
 		$hookObjectsArr = $this->getHookObjectArray('generateMail');
 		foreach ($hookObjectsArr as $hookObj) {
 			if (method_exists($hookObj, 'ProcessMarker')) {
@@ -2482,10 +2473,19 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			$newdata[$key] = $value;
 
 			$fieldConfig = $typoScript[$key . '.'];
-				// Get the value from database if the field is a select box
-			if (in_array($fieldConfig['type'], array('select', 'static_info_country')) && strlen($fieldConfig['table'])) {
+			// Get the value from database if the field is a select box
+			if (in_array(
+					$fieldConfig['type'], array(
+						'select',
+						'static_info_country'
+					)
+				)
+				&& strlen($fieldConfig['table'])
+			) {
 				$table = $fieldConfig['table'];
-				$select = $fieldConfig['value'] . ' = ' . $database->fullQuoteStr($value, $table) . $this->cObj->enableFields($table);
+				$select = $fieldConfig['value'] . ' = ' . $database->fullQuoteStr($value, $table) . $this->cObj->enableFields(
+						$table
+					);
 				$fields = $fieldConfig['label'] . ' AS label,';
 				$fields .= $fieldConfig['value'] . ' AS value';
 				$res = $database->exec_SELECTquery($fields, $table, $select);
@@ -2535,9 +2535,11 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			$orderId = uniqid('', TRUE);
 		}
 
-			// create backend user for inserting the order data
+		// create backend user for inserting the order data
 		$orderData = array();
-		$orderData['cust_deliveryaddress'] = ((isset($uids['delivery'])) ? $uids['delivery'] : $uids['billing']);
+		$orderData['cust_deliveryaddress'] = ((isset($uids['delivery'])) ?
+			$uids['delivery'] :
+			$uids['billing']);
 		$orderData['cust_invoice'] = $uids['billing'];
 		$orderData['paymenttype'] = $this->getPaymentType(TRUE);
 		$orderData['sum_price_net'] = $basket->getSumNet();
@@ -2554,11 +2556,11 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			$orderData['cust_fe_user'] = $GLOBALS['TSFE']->fe_user->user['uid'];
 		}
 
-			// Get hook objects
+		// Get hook objects
 		$hookObjectsArr = array();
 		if ($doHook) {
 			$hookObjectsArr = $this->getHookObjectArray('finishIt');
-				// Insert order
+			// Insert order
 			foreach ($hookObjectsArr as $hookObj) {
 				if (method_exists($hookObj, 'preinsert')) {
 					$hookObj->preinsert($orderData, $this);
@@ -2583,20 +2585,20 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			$this->orderUid = $tceMain->substNEWwithIDs[$newUid];
 		}
 
-			// make orderUid avaible in hookObjects
+		// make orderUid avaible in hookObjects
 		$orderUid = $this->orderUid;
 
-			// Call update method from the payment class
+		// Call update method from the payment class
 		$paymentObj->updateOrder($orderUid, $this->sessionData);
 
-			// Insert order
+		// Insert order
 		foreach ($hookObjectsArr as $hookObj) {
 			if (method_exists($hookObj, 'modifyBasketPreSave')) {
 				$hookObj->modifyBasketPreSave($basket, $this);
 			}
 		}
 
-			// Save order articles
+		// Save order articles
 		if (is_array($basket->getBasketItems())) {
 			/** @var $basketItem Tx_Commerce_Domain_Model_BasketItem */
 			foreach ($basket->getBasketItems() as $artUid => $basketItem) {
@@ -2689,7 +2691,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			$backendUser = t3lib_div::makeInstance('t3lib_tsfeBeUserAuth');
 			$backendUser->warningEmail = $GLOBALS['TYPO3_CONF_VARS']['BE']['warning_email_addr'];
 			$backendUser->lockIP = $GLOBALS['TYPO3_CONF_VARS']['BE']['lockIP'];
-			$backendUser->auth_timeout_field = (int)$GLOBALS['TYPO3_CONF_VARS']['BE']['sessionTimeout'];
+			$backendUser->auth_timeout_field = (int) $GLOBALS['TYPO3_CONF_VARS']['BE']['sessionTimeout'];
 			$backendUser->OS = TYPO3_OS;
 			if (TYPO3_REQUESTTYPE & TYPO3_REQUESTTYPE_CLI) {
 				$backendUser->dontSetCookie = TRUE;
@@ -2741,20 +2743,6 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	}
 
 	/**
-	 * Debugging var with header and group
-	 *
-	 * @param mixed $var
-	 * @param string $header
-	 * @param string $group
-	 * @return void
-	 */
-	protected function debug($var, $header, $group) {
-		if ($this->debug) {
-			t3lib_utility_Debug::debug($var, $header, $group);
-		}
-	}
-
-	/**
 	 * Get hooks
 	 *
 	 * @param string $type
@@ -2764,12 +2752,14 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		$hookObjectsArr = array();
 
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi3/class.tx_commerce_pi3.php'][$type])) {
-			t3lib_div::deprecationLog('
-				hook
-				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/pi3/class.tx_commerce_pi3.php\'][\'' . $type . '\']
+			t3lib_div::deprecationLog(
+				'
+								hook
+								$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/pi3/class.tx_commerce_pi3.php\'][\'' . $type . '\']
 				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/CheckoutController.php\'][\'' . $type . '\']
-			');
+			'
+			);
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi3/class.tx_commerce_pi3.php'][$type] as $classRef) {
 				$hookObjectsArr[] = & t3lib_div::getUserObj($classRef);
 			}
@@ -2786,7 +2776,11 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 
 class_alias('Tx_Commerce_Controller_CheckoutController', 'tx_commerce_pi3');
 
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Controller/CheckoutController.php']) {
+if (defined(
+		'TYPO3_MODE'
+	)
+	&& $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Controller/CheckoutController.php']
+) {
 	/** @noinspection PhpIncludeInspection */
 	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Controller/CheckoutController.php']);
 }

@@ -40,17 +40,17 @@ class Tx_Commerce_Domain_Repository_ProductRepository extends Tx_Commerce_Domain
 	/**
 	 * @var string
 	 */
-	public $database_attribute_rel_table = 'tx_commerce_products_attributes_mm';
+	public $databaseAttributeRelationTable = 'tx_commerce_products_attributes_mm';
 
 	/**
 	 * @var string
 	 */
-	public $database_category_rel_table = 'tx_commerce_products_categories_mm';
+	public $databaseCategoryRelationTable = 'tx_commerce_products_categories_mm';
 
 	/**
 	 * @var string
 	 */
-	public $database_products_related_table = 'tx_commerce_products_related_mm';
+	public $databaseProductsRelatedTable = 'tx_commerce_products_related_mm';
 
 	/**
 	 * @var string
@@ -157,11 +157,9 @@ class Tx_Commerce_Domain_Repository_ProductRepository extends Tx_Commerce_Domain
 
 			$articleUids = array();
 			$result = $this->database->exec_SELECTquery(
-				'distinct(uid_foreign) as uid',
-				$this->database_attribute_rel_table,
+				'distinct(uid_foreign) as uid', $this->databaseAttributeRelationTable,
 				'uid_local = ' . (int)$uid . ' and uid_correlationtype in (' . implode(',', $correlationtypes) . ')',
-				'',
-				$this->database_attribute_rel_table . '.sorting'
+				'', $this->databaseAttributeRelationTable . '.sorting'
 			);
 			if ($this->database->sql_num_rows($result) > 0) {
 				while (($data = $this->database->sql_fetch_assoc($result))) {
@@ -170,7 +168,9 @@ class Tx_Commerce_Domain_Repository_ProductRepository extends Tx_Commerce_Domain
 				$this->database->sql_free_result($result);
 				return $articleUids;
 			} else {
-				$this->error('exec_SELECTquery(\'distinct(uid_foreign)\', ' . $this->database_attribute_rel_table . ', \'uid_local = ' . (int)$uid . '\'); returns no Result');
+				$this->error(
+					'exec_SELECTquery(\'distinct(uid_foreign)\', ' . $this->databaseAttributeRelationTable . ', \'uid_local = ' . (int) $uid . '\'); returns no Result'
+				);
 				return FALSE;
 			}
 		}
@@ -186,8 +186,7 @@ class Tx_Commerce_Domain_Repository_ProductRepository extends Tx_Commerce_Domain
 	 */
 	public function getRelatedProductUids($uid) {
 		$relatedProducts = $this->database->exec_SELECTgetRows(
-			'r.uid_foreign as uid',
-			$this->database_products_related_table . ' AS r',
+			'r.uid_foreign as uid', $this->databaseProductsRelatedTable . ' AS r',
 			'r.uid_local = ' . (int)$uid,
 			'',
 			'r.sorting ASC',
@@ -246,8 +245,7 @@ class Tx_Commerce_Domain_Repository_ProductRepository extends Tx_Commerce_Domain
 
 			// read from sql
 		$rows = (array)$this->database->exec_SELECTgetRows(
-			'uid_foreign',
-			$this->database_category_rel_table,
+			'uid_foreign', $this->databaseCategoryRelationTable,
 			'uid_local = ' . (int)$uid,
 			'',
 			'sorting ASC'

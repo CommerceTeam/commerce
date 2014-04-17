@@ -39,22 +39,22 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 	/**
 	 * @var string mm_table
 	 */
-	protected $mm_database_table = 'tx_commerce_categories_parent_category_mm';
+	protected $databaseParentCategoryRelationTable = 'tx_commerce_categories_parent_category_mm';
 
 	/**
 	 * @var string Attribute rel table
 	 */
-	public $database_attribute_rel_table = 'tx_commerce_categories_attributes_mm';
+	protected $databaseAttributeRelationTable = 'tx_commerce_categories_attributes_mm';
 
 	/**
 	 * @var string Category sorting Field
 	 */
-	protected $CategoryOrderField = 'tx_commerce_categories.sorting';
+	protected $categoryOrderField = 'tx_commerce_categories.sorting';
 
 	/**
 	 * @var string Product sorting field
 	 */
-	protected $ProductOrderField = 'tx_commerce_products.sorting';
+	protected $productOrderField = 'tx_commerce_products.sorting';
 
 	/**
 	 * @var integer Uid of this Category
@@ -67,14 +67,18 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 	protected $lang_uid;
 
 	/**
-	 * @return integer
+	 * Getter
+	 *
+	 * @return int
 	 */
 	public function getUid() {
 		return $this->uid;
 	}
 
 	/**
-	 * @return int
+	 * Getter
+	 *
+*@return int
 	 */
 	public function getLangUid() {
 		return $this->lang_uid;
@@ -93,7 +97,10 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 		$result = 0;
 		if (t3lib_div::testInt($uid) && ($uid > 0)) {
 			$this->uid = $uid;
-			if ($result = $database->exec_SELECTquery('uid_foreign', $this->mm_database_table, 'uid_local = ' . (int) $uid . ' and is_reference=0')) {
+			if ($result = $database->exec_SELECTquery(
+				'uid_foreign', $this->databaseParentCategoryRelationTable, 'uid_local = ' . (int) $uid . ' and is_reference=0'
+			)
+			) {
 				if ($return_data = $database->sql_fetch_assoc($result)) {
 					$database->sql_free_result($result);
 					$result = $return_data['uid_foreign'];
@@ -120,9 +127,9 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 				'uid = ' . $uid
 			);
 			return $database->sql_fetch_assoc($result);
-		} else {
-			return array();
 		}
+
+		return array();
 	}
 
 	/**
@@ -140,22 +147,21 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 		}
 		$this->uid = $uid;
 		if (is_object($GLOBALS['TSFE']->sys_page)) {
-			$add_where = $GLOBALS['TSFE']->sys_page->enableFields($this->databaseTable, $GLOBALS['TSFE']->showHiddenRecords);
+			$additionalWhere = $GLOBALS['TSFE']->sys_page->enableFields($this->databaseTable, $GLOBALS['TSFE']->showHiddenRecords);
 		} else {
-			$add_where = '';
+			$additionalWhere = '';
 		}
 		$result = $database->exec_SELECT_mm_query(
 			'uid_foreign',
+			$this->databaseTable, $this->databaseParentCategoryRelationTable,
 			$this->databaseTable,
-			$this->mm_database_table,
-			$this->databaseTable,
-			' AND ' . $this->mm_database_table . '.uid_local= ' . (int) $uid . ' ' . $add_where
+			' AND ' . $this->databaseParentCategoryRelationTable . '.uid_local= ' . (int) $uid . ' ' . $additionalWhere
 		);
 		if ($result) {
 			$data = array();
-			while ($return_data = $database->sql_fetch_assoc($result)) {
-					// @TODO access_check for data sets
-				$data[] = (int) $return_data['uid_foreign'];
+			while (($row = $database->sql_fetch_assoc($result))) {
+				// @todo access_check for data sets
+				$data[] = (int) $row['uid_foreign'];
 			}
 			$database->sql_free_result($result);
 			return $data;
@@ -184,7 +190,7 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 			'l18n_parent = ' . $uid . ' AND deleted = 0'
 		);
 		$uids = array();
-		while ($row = $database->sql_fetch_assoc($res)) {
+		while (($row = $database->sql_fetch_assoc($res))) {
 			$uids[] = $row;
 		}
 		return $uids;
@@ -213,7 +219,7 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 			'tx_commerce_categories_parent_category_mm',
 			'uid_foreign = ' . $uid
 		);
-		while ($row = $database->sql_fetch_assoc($res)) {
+		while (($row = $database->sql_fetch_assoc($res))) {
 			$uids[] = $row['uid'];
 		}
 		return $uids;
@@ -222,28 +228,29 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 	/**
 	 * Gets the child categories from this category
 	 *
-	 * @param   integer $uid    Product     UID
-	 * @param   integer $lang_uid   Language UID
+	 * @param   integer $uid Product     UID
+	 * @param   integer $languageUid Language UID
 	 * @return array Array of child categories UID
 	 */
-	public function get_child_categories($uid, $lang_uid = -1) {
+	public function get_child_categories($uid, $languageUid = -1) {
 		if (empty($uid) || !is_numeric($uid)) {
 			return FALSE;
 		}
-		if ($lang_uid == -1) {
-			$lang_uid = 0;
+		if ($languageUid == -1) {
+			$languageUid = 0;
 		}
 		$this->uid = $uid;
-		if ($lang_uid == 0 && $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid'] > 0) {
-			$lang_uid = $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid'];
+		if ($languageUid == 0 && $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid'] > 0) {
+			$languageUid = $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid'];
 		}
-		$this->lang_uid = $lang_uid;
+		$this->lang_uid = $languageUid;
 
-			// @TODO: Sorting should be by database 'tx_commerce_categories_parent_category_mm.sorting'
-			// as TYPO3 is´nt currently able to sort by MM tables (or we haven't found a way to use it)
-			// We are using $this->databaseTable.sorting
+		// @todo Sorting should be by database
+		// 'tx_commerce_categories_parent_category_mm.sorting'
+		// as TYPO3 is´nt currently able to sort by MM tables
+		// We are using $this->databaseTable.sorting
 
-		$localOrderField = $this->CategoryOrderField;
+		$localOrderField = $this->categoryOrderField;
 
 		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_db_category.php']['categoryOrder']) {
 			t3lib_div::deprecationLog('
@@ -254,20 +261,20 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 			');
 			$hookObj = t3lib_div::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_db_category.php']['categoryOrder']);
 			if (method_exists($hookObj, 'categoryOrder')) {
-				$localOrderField = $hookObj->categoryOrder($this->CategoryOrderField, $this);
+				$localOrderField = $hookObj->categoryOrder($this->categoryOrderField, $this);
 			}
 		}
 		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Repository/CategoryRepository.php']['categoryOrder']) {
 			$hookObj = t3lib_div::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Repository/CategoryRepository.php']['categoryOrder']);
 			if (method_exists($hookObj, 'categoryOrder')) {
-				$localOrderField = $hookObj->categoryOrder($this->CategoryOrderField, $this);
+				$localOrderField = $hookObj->categoryOrder($this->categoryOrderField, $this);
 			}
 		}
 
 		if (is_object($GLOBALS['TSFE']->sys_page)) {
-			$add_where = $GLOBALS['TSFE']->sys_page->enableFields($this->databaseTable, $GLOBALS['TSFE']->showHiddenRecords);
+			$additionalWhere = $GLOBALS['TSFE']->sys_page->enableFields($this->databaseTable, $GLOBALS['TSFE']->showHiddenRecords);
 		} else {
-			$add_where = '';
+			$additionalWhere = '';
 		}
 
 		/** @var t3lib_db $database */
@@ -275,36 +282,34 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 
 		$result = $database->exec_SELECT_mm_query(
 			'uid_local',
+			$this->databaseTable, $this->databaseParentCategoryRelationTable,
 			$this->databaseTable,
-			$this->mm_database_table,
-			$this->databaseTable,
-			' AND ' . $this->mm_database_table . '.uid_foreign= ' . (int) $uid . ' ' . $add_where,
+			' AND ' . $this->databaseParentCategoryRelationTable . '.uid_foreign= ' . (int) $uid . ' ' . $additionalWhere,
 			'',
 			$localOrderField
 		);
 		if ($result) {
 			$data = array();
-			while ($return_data = $database->sql_fetch_assoc($result)) {
+			while (($row = $database->sql_fetch_assoc($result))) {
 				/**
 				 *  @todo access_check for datasets
 				 */
-				if ($lang_uid == 0) {
-					$data[] = (int) $return_data['uid_local'];
+				if ($languageUid == 0) {
+					$data[] = (int) $row['uid_local'];
 				} else {
 						// Check if a lokalised product is availiabe for this product
 					/**
-					 * @TODO: Check if this is correct in Multi Tree Sites
+					 * @todo Check if this is correct in Multi Tree Sites
 					 */
 					$lresult = $database->exec_SELECTquery(
 						'uid',
 						'tx_commerce_categories',
-						'l18n_parent = ' . (int) $return_data['uid_local'] .
-							' AND sys_language_uid=' . $lang_uid .
+						'l18n_parent = ' . (int) $row['uid_local'] . ' AND sys_language_uid=' . $languageUid .
 							$GLOBALS['TSFE']->sys_page->enableFields('tx_commerce_categories', $GLOBALS['TSFE']->showHiddenRecords)
 					);
 
 					if ($database->sql_num_rows( $lresult) == 1) {
-						$data[] = (int) $return_data['uid_local'];
+						$data[] = (int) $row['uid_local'];
 					}
 				}
 			}
@@ -338,23 +343,23 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 	 * Gets child products from this category
 	 *
 	 * @param integer $uid Product UID
-	 * @param integer $lang_uid Language UID
+	 * @param integer $languageUid Language UID
 	 * @return array Array of child products UIDs
 	 */
-	public function get_child_products($uid, $lang_uid = -1) {
+	public function get_child_products($uid, $languageUid = -1) {
 		if (empty($uid) || !is_numeric($uid)) {
 			return FALSE;
 		}
-		if ($lang_uid == -1) {
-			$lang_uid = 0;
+		if ($languageUid == -1) {
+			$languageUid = 0;
 		}
 		$this->uid = $uid;
-		if ($lang_uid == 0 && $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid'] > 0) {
-			$lang_uid = $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid'];
+		if ($languageUid == 0 && $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid'] > 0) {
+			$languageUid = $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid'];
 		}
-		$this->lang_uid = $lang_uid;
+		$this->lang_uid = $languageUid;
 
-		$localOrderField = $this->ProductOrderField;
+		$localOrderField = $this->productOrderField;
 
 		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_db_category.php']['productOrder']) {
 			t3lib_div::deprecationLog('
@@ -375,21 +380,22 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 			}
 		}
 
-		$where_clause = 'AND tx_commerce_products_categories_mm.uid_foreign = ' . (int) $uid . '
+		$whereClause = 'AND tx_commerce_products_categories_mm.uid_foreign = ' . (int) $uid . '
 			AND tx_commerce_products.uid=tx_commerce_articles.uid_product
 			AND tx_commerce_articles.uid=tx_commerce_article_prices.uid_article ';
 		if (is_object($GLOBALS['TSFE']->sys_page)) {
-			$where_clause .= $GLOBALS['TSFE']->sys_page->enableFields('tx_commerce_products', $GLOBALS['TSFE']->showHiddenRecords);
-			$where_clause .= $GLOBALS['TSFE']->sys_page->enableFields('tx_commerce_articles', $GLOBALS['TSFE']->showHiddenRecords);
-			$where_clause .= $GLOBALS['TSFE']->sys_page->enableFields('tx_commerce_article_prices', $GLOBALS['TSFE']->showHiddenRecords);
+			$whereClause .= $GLOBALS['TSFE']->sys_page->enableFields('tx_commerce_products', $GLOBALS['TSFE']->showHiddenRecords);
+			$whereClause .= $GLOBALS['TSFE']->sys_page->enableFields('tx_commerce_articles', $GLOBALS['TSFE']->showHiddenRecords);
+			$whereClause .= $GLOBALS['TSFE']->sys_page->enableFields(
+				'tx_commerce_article_prices', $GLOBALS['TSFE']->showHiddenRecords);
 		}
 
 			// Versioning - no deleted or versioned records, nor live placeholders
-		$where_clause .= ' AND tx_commerce_products.deleted = 0 AND tx_commerce_products.pid != -1 AND tx_commerce_products.t3ver_state != 1';
+		$whereClause .= ' AND tx_commerce_products.deleted = 0 AND tx_commerce_products.pid != -1 AND tx_commerce_products.t3ver_state != 1';
 		$queryArray = array(
 			'SELECT' => 'tx_commerce_products.uid',
 			'FROM' => 'tx_commerce_products ,tx_commerce_products_categories_mm,tx_commerce_articles, tx_commerce_article_prices',
-			'WHERE' => 'tx_commerce_products.uid=tx_commerce_products_categories_mm.uid_local ' . $where_clause,
+			'WHERE' => 'tx_commerce_products.uid=tx_commerce_products_categories_mm.uid_local ' . $whereClause,
 			'GROUPBY' => '',
 			'ORDERBY' => $localOrderField,
 			'LIMIT' => ''
@@ -420,20 +426,19 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 		$result = $database->exec_SELECT_queryArray($queryArray);
 		if ($result !== FALSE) {
 			$data = array();
-			while (($return_data = $database->sql_fetch_assoc($result)) !== FALSE ) {
-				if ($lang_uid == 0) {
-					$data[] = (int) $return_data['uid'];
+			while (($row = $database->sql_fetch_assoc($result)) !== FALSE) {
+				if ($languageUid == 0) {
+					$data[] = (int) $row['uid'];
 				} else {
-						// Check if a locallized product is availabe
-						// @TODO: Check if this is correct in multi tree sites
+					// Check if a locallized product is availabe
+					// @todo Check if this is correct in multi tree sites
 					$lresult = $database->exec_SELECTquery(
 						'uid',
-						'tx_commerce_products',
-						'l18n_parent = ' . (int) $return_data['uid'] . ' AND sys_language_uid=' . $lang_uid .
+						'tx_commerce_products', 'l18n_parent = ' . (int) $row['uid'] . ' AND sys_language_uid=' . $languageUid .
 							$GLOBALS['TSFE']->sys_page->enableFields('tx_commerce_products', $GLOBALS['TSFE']->showHiddenRecords)
 					);
 					if ($database->sql_num_rows($lresult) == 1) {
-						$data[] = (int)$return_data['uid'];
+						$data[] = (int) $row['uid'];
 					}
 				}
 			}

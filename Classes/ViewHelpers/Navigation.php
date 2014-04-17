@@ -1,27 +1,21 @@
 <?php
 /***************************************************************
  *  Copyright notice
- *
  *  (c) 2005-2013 Volker Graubaum <vg_typo3@e-netconsulting.de>
  *  All rights reserved
- *
  *  This script is part of the TYPO3 project. The TYPO3 project is
  *  free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
  *  (at your option) any later version.
- *
  *  The GNU General Public License can be found at
  *  http://www.gnu.org/copyleft/gpl.html.
  *  A copy is found in the textfile GPL.txt and important notices to the license
  *  from the author is found in LICENSE.txt distributed with these scripts.
- *
- *
  *  This script is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
- *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
@@ -97,7 +91,7 @@ class Tx_Commerce_ViewHelpers_Navigation {
 	public $manufacturerIdentifier = PHP_INT_MAX;
 
 	/**
-	 * @var	integer	[0-1]
+	 * @var    integer    [0-1]
 	 * @access private
 	 */
 	public $useRootlineInformationToUrl = 0;
@@ -117,12 +111,11 @@ class Tx_Commerce_ViewHelpers_Navigation {
 
 	/**
 	 * Default Menue Items States order by the defined Order
-
 	 *
-*@var array
+	 * @var array
 	 * @see: http://docs.typo3.org/typo3cms/TyposcriptReference/MenuObjects/CommonItemStates/Index.html
 	 */
-	public $MenueItemStates = array(
+	public $menueItemStates = array(
 		0 => 'USERDEF2',
 		1 => 'USERDEF1',
 		2 => 'SPC',
@@ -162,12 +155,12 @@ class Tx_Commerce_ViewHelpers_Navigation {
 	/**
 	 * @var integer
 	 */
-	public $PID;
+	public $pid;
 
 	/**
 	 * @var string
 	 */
-	public $PATH;
+	public $path;
 
 	/**
 	 * @var integer
@@ -182,7 +175,7 @@ class Tx_Commerce_ViewHelpers_Navigation {
 	/**
 	 * @var integer
 	 */
-	public $ShowUid;
+	public $showUid;
 
 	/**
 	 * @var array
@@ -225,12 +218,14 @@ class Tx_Commerce_ViewHelpers_Navigation {
 
 		$this->nodeArrayAdditionalFields = t3lib_div::trimExplode(',', $this->mConf['additionalFields'], 0);
 
-		$this->PID = $this->mConf['overridePid'] ? $this->mConf['overridePid'] : $GLOBALS['TSFE']->id;
+		$this->pid = $this->mConf['overridePid'] ?
+			$this->mConf['overridePid'] :
+			$GLOBALS['TSFE']->id;
 		$this->gpVars = t3lib_div::_GPmerged($this->prefixId);
 
 		Tx_Commerce_Utility_GeneralUtility::initializeFeUserBasket();
 
-		$this->gpVars['basketHashValue'] =  $GLOBALS['TSFE']->fe_user->tx_commerce_basket->getBasketHashValue();
+		$this->gpVars['basketHashValue'] = $GLOBALS['TSFE']->fe_user->tx_commerce_basket->getBasketHashValue();
 		$this->pageRootline = $GLOBALS['TSFE']->rootLine;
 		$this->menuType = $this->mConf['1'];
 		$this->entryLevel = (int) $this->mConf['entryLevel'];
@@ -254,20 +249,28 @@ class Tx_Commerce_ViewHelpers_Navigation {
 		}
 
 		$this->cat = $this->getRootCategory();
-			// Define a default
+		// Define a default
 		$this->choosenCat = $this->mConf['category'];
 
-		$this->ShowUid = $this->gpVars['showUid'] ? $this->gpVars['showUid'] : 0;
-		$this->mDepth = $this->gpVars['mDepth'] ? $this->gpVars['mDepth'] : 0;
-		$this->PATH = $this->gpVars['path'] ? $this->gpVars['path'] : 0;
-		$this->expandAll = $this->mConf['expandAll'] ? $this->mConf['expandAll'] : 0;
+		$this->showUid = $this->gpVars['showUid'] ?
+			$this->gpVars['showUid'] :
+			0;
+		$this->mDepth = $this->gpVars['mDepth'] ?
+			$this->gpVars['mDepth'] :
+			0;
+		$this->path = $this->gpVars['path'] ?
+			$this->gpVars['path'] :
+			0;
+		$this->expandAll = $this->mConf['expandAll'] ?
+			$this->mConf['expandAll'] :
+			0;
 
 		$menueErrorName = array();
 		if (!($this->cat > 0)) {
 			$menueErrorName[] = 'No category defined in TypoScript: lib.tx_commerce.navigation.special.category';
 		}
 
-		if (!($this->PID > 0)) {
+		if (!($this->pid > 0)) {
 			$menueErrorName[] = 'No OveridePID defined in TypoScript: lib.tx_commerce.navigation.special.overridePid';
 		}
 
@@ -275,6 +278,7 @@ class Tx_Commerce_ViewHelpers_Navigation {
 			foreach ($menueErrorName as $oneError) {
 				t3lib_utility_Debug::debug($this->mConf, $oneError);
 			}
+
 			return $this->makeErrorMenu(5);
 		}
 
@@ -288,17 +292,10 @@ class Tx_Commerce_ViewHelpers_Navigation {
 		 * Render Menue Array and store in cache, if possible
 		 */
 		if ($GLOBALS['TSFE']->no_cache == 1) {
-				// Build directly and don't sore, if no_cache=1'
+			// Build directly and don't sore, if no_cache=1'
 			$this->mTree = $this->makeArrayPostRender(
-				$this->PID,
-				'tx_commerce_categories',
-				'tx_commerce_categories_parent_category_mm',
-				'tx_commerce_products',
-				'tx_commerce_products_categories_mm',
-				$this->cat,
-				1,
-				0,
-				$this->maxLevel
+				$this->pid, 'tx_commerce_categories', 'tx_commerce_categories_parent_category_mm', 'tx_commerce_products',
+				'tx_commerce_products_categories_mm', $this->cat, 1, 0, $this->maxLevel
 			);
 
 			/**
@@ -311,21 +308,14 @@ class Tx_Commerce_ViewHelpers_Navigation {
 				$this->sortAllMenuArray($this->mTree, 'alphabetiDesc');
 			}
 		} elseif ($cachedMatrix != '') {
-				// User the cached version
+			// User the cached version
 			$this->mTree = unserialize($cachedMatrix);
 		} else {
 
-				// no cache present buld data and stor it in cache
+			// no cache present buld data and stor it in cache
 			$this->mTree = $this->makeArrayPostRender(
-				$this->PID,
-				'tx_commerce_categories',
-				'tx_commerce_categories_parent_category_mm',
-				'tx_commerce_products',
-				'tx_commerce_products_categories_mm',
-				$this->cat,
-				1,
-				0,
-				$this->maxLevel
+				$this->pid, 'tx_commerce_categories', 'tx_commerce_categories_parent_category_mm', 'tx_commerce_products',
+				'tx_commerce_products_categories_mm', $this->cat, 1, 0, $this->maxLevel
 			);
 
 			/**
@@ -365,8 +355,8 @@ class Tx_Commerce_ViewHelpers_Navigation {
 		}
 
 		if ($this->gpVars['path']) {
-			$this->PATH = $this->gpVars['path'];
-			$this->pathParents = explode(',', $this->PATH);
+			$this->path = $this->gpVars['path'];
+			$this->pathParents = explode(',', $this->path);
 		} elseif ((is_numeric($this->choosenCat)) && ($this->choosenCat > 0)) {
 			/**
 			 * Build the path by or own
@@ -375,7 +365,7 @@ class Tx_Commerce_ViewHelpers_Navigation {
 			 */
 			$myCat = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category', $this->choosenCat);
 			$myCat->loadData();
-				// MODIF DE LUC >AMEOS : Get the right path with custom method
+			// MODIF DE LUC >AMEOS : Get the right path with custom method
 			$aPath = $this->getRootLine($this->mTree, $this->choosenCat, $this->expandAll);
 			if (!$aPath) {
 				/**
@@ -421,9 +411,9 @@ class Tx_Commerce_ViewHelpers_Navigation {
 		}
 
 		/**
-		* If we do have an entry level,
-		* we strip away the number of array levels of the entry level value
-		*/
+		 * If we do have an entry level,
+		 * we strip away the number of array levels of the entry level value
+		 */
 		if ($this->entryLevel > 0) {
 			$newParentes = array_reverse($this->pathParents);
 
@@ -435,8 +425,8 @@ class Tx_Commerce_ViewHelpers_Navigation {
 				$this->mTree = $this->mTree[$newParentes[$i]]['--subLevel--'];
 
 				/**
-				* Reduce elementes in pathParents and decrese menue depth
-				*/
+				 * Reduce elementes in pathParents and decrese menue depth
+				 */
 				array_pop($this->pathParents);
 				$this->mDepth--;
 			}
@@ -446,7 +436,7 @@ class Tx_Commerce_ViewHelpers_Navigation {
 			$this->processArrayPostRender($this->mTree, $this->pathParents, $this->mDepth);
 		}
 
-		return $this->mTree;
+		return $content . $this->mTree;
 	}
 
 	/**
@@ -514,7 +504,7 @@ class Tx_Commerce_ViewHelpers_Navigation {
 	public function makeErrorMenu($max = 5, $mDepth = 1) {
 		$treeList = array();
 		for ($i = 0; $i < $max; $i++) {
-			$nodeArray['pid'] = $this->PID;
+			$nodeArray['pid'] = $this->pid;
 			$nodeArray['uid'] = $i;
 			$nodeArray['title'] = 'Error in the typoScript configuration.';
 			$nodeArray['parent_id'] = $i;
@@ -574,9 +564,7 @@ class Tx_Commerce_ViewHelpers_Navigation {
 			return array();
 		}
 
-		$sql = 'SELECT ' . $tableMm . '.* FROM ' . $tableMm . ',' . $mainTable . ' WHERE ' . $mainTable . '.deleted =0 and ' .
-			$mainTable . '.uid = ' . $tableMm . '.uid_local and ' . $tableMm . '.uid_local<>"" AND ' . $tableMm .
-			'.uid_foreign = ' . $uidRoot;
+		$sql = 'SELECT ' . $tableMm . '.* FROM ' . $tableMm . ',' . $mainTable . ' WHERE ' . $mainTable . '.deleted =0 and ' . $mainTable . '.uid = ' . $tableMm . '.uid_local and ' . $tableMm . '.uid_local<>"" AND ' . $tableMm . '.uid_foreign = ' . $uidRoot;
 
 		$sorting = ' order by ' . $mainTable . '.sorting';
 
@@ -584,12 +572,14 @@ class Tx_Commerce_ViewHelpers_Navigation {
 		 * Add some hooks for custom sorting
 		 */
 		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_db_navigation.php']['sortingOrder']) {
-			t3lib_div::deprecationLog('
-				hook
-				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_db_navigation.php\'][\'sortingOrder\']
-				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
-				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/ViewHelpers/Navigation.php\'][\'sortingOrder\']
-			');
+			t3lib_div::deprecationLog(
+				'
+								hook
+								$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_db_navigation.php\'][\'sortingOrder\']
+								is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
+								$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/ViewHelpers/Navigation.php\'][\'sortingOrder\']
+							'
+			);
 			$hookObj = & t3lib_div::getUserObj(
 				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_db_navigation.php']['sortingOrder']
 			);
@@ -629,7 +619,7 @@ class Tx_Commerce_ViewHelpers_Navigation {
 				$nodeArray['parent_id'] = $uidRoot;
 				$nodeArray['nav_title'] = htmlspecialchars(strip_tags($dataRow['navtitle']));
 
-					// Add custom Fields to array
+				// Add custom Fields to array
 				foreach ($this->nodeArrayAdditionalFields as $field) {
 					$nodeArray[$field] = htmlspecialchars(strip_tags($dataRow[$field]));
 				}
@@ -649,16 +639,15 @@ class Tx_Commerce_ViewHelpers_Navigation {
 
 				$aCatToManu = explode(',', $this->mConf['displayManuForCat']);
 				if ($this->useRootlineInformationToUrl == 1) {
-					$nodeArray['_ADD_GETVARS'] .= $this->separator . $this->prefixId . '[mDepth]=' . $mDepth .
-						$this->separator . $this->prefixId . '[path]=' . $nodeArray['path'];
+					$nodeArray['_ADD_GETVARS'] .= $this->separator . $this->prefixId . '[mDepth]=' . $mDepth . $this->separator . $this->prefixId . '[path]=' . $nodeArray['path'];
 				}
 
 				if (in_array($row['uid_local'], $aCatToManu) || strtolower(trim($aCatToManu['0'])) == 'all') {
 					$nodeArray['--subLevel--'] = array();
 					$this->arrayMerge(
 						$nodeArray['--subLevel--'], $this->getManufacturerAsCategory(
-							$dataRow['pid'], $uidPage, $tableMm, $tableSubMain, $tableSubMm, $row['uid_local'],
-							$mDepth + 1, $nodeArray['path']
+							$dataRow['pid'], $uidPage, $tableMm, $tableSubMain, $tableSubMm, $row['uid_local'], $mDepth + 1,
+							$nodeArray['path']
 						)
 					);
 				}
@@ -691,12 +680,11 @@ class Tx_Commerce_ViewHelpers_Navigation {
 						}
 					}
 
-					if (($this->expandAll > 0) || ($this->expandAll < 0 && ( - $this->expandAll >= $mDepth))) {
+					if (($this->expandAll > 0) || ($this->expandAll < 0 && (-$this->expandAll >= $mDepth))) {
 						$nodeArray['_SUB_MENU'] = $nodeArray['--subLevel--'];
 					}
 					if ($this->gpVars['basketHashValue']) {
-						$nodeArray['_ADD_GETVARS'] .= $this->separator . $this->prefixId . '[basketHashValue]=' .
-							$this->gpVars['basketHashValue'];
+						$nodeArray['_ADD_GETVARS'] .= $this->separator . $this->prefixId . '[basketHashValue]=' . $this->gpVars['basketHashValue'];
 					}
 					$cHash = t3lib_div::generateCHash($nodeArray['_ADD_GETVARS'] . $GLOBALS['TSFE']->linkVars);
 					$nodeArray['_ADD_GETVARS'] .= $this->separator . 'cHash=' . $cHash;
@@ -705,16 +693,13 @@ class Tx_Commerce_ViewHelpers_Navigation {
 				} else {
 					if ($nodeArray['hasSubChild'] == 2) {
 						$nodeArray['_ADD_GETVARS'] .= $this->separator . $this->prefixId . '[showUid]=' . $dataRow['uid'];
-						$nodeArray['_ADD_GETVARS'] .= $this->separator . $this->prefixId . '[mDepth]=' . $mDepth .
-							$this->separator . $this->prefixId . '[path]=' . $nodeArray['path'];
+						$nodeArray['_ADD_GETVARS'] .= $this->separator . $this->prefixId . '[mDepth]=' . $mDepth . $this->separator . $this->prefixId . '[path]=' . $nodeArray['path'];
 					}
 					if ($this->useRootlineInformationToUrl == 1) {
-						$nodeArray['_ADD_GETVARS'] .= $this->separator . $this->prefixId . '[mDepth]=' . $mDepth .
-							$this->separator . $this->prefixId . '[path]=' . $nodeArray['path'];
+						$nodeArray['_ADD_GETVARS'] .= $this->separator . $this->prefixId . '[mDepth]=' . $mDepth . $this->separator . $this->prefixId . '[path]=' . $nodeArray['path'];
 					}
 					if ($this->gpVars['basketHashValue']) {
-						$nodeArray['_ADD_GETVARS'] .= $this->separator . $this->prefixId . '[basketHashValue]=' .
-							$this->gpVars['basketHashValue'];
+						$nodeArray['_ADD_GETVARS'] .= $this->separator . $this->prefixId . '[basketHashValue]=' . $this->gpVars['basketHashValue'];
 					}
 					$cHash = t3lib_div::generateCHash($nodeArray['_ADD_GETVARS'] . $GLOBALS['TSFE']->linkVars);
 					$nodeArray['_ADD_GETVARS'] .= $this->separator . 'cHash=' . $cHash;
@@ -755,9 +740,7 @@ class Tx_Commerce_ViewHelpers_Navigation {
 		if (is_numeric($manuuid)) {
 			$sqlManufacturer = ' AND ' . $mainTable . '.manufacturer_uid = ' . (int) $manuuid . ' ';
 		}
-		$sql = 'SELECT ' . $tableMm . '.* FROM ' . $tableMm . ',' . $mainTable . ' WHERE ' . $mainTable . '.deleted =0 and ' .
-			$mainTable . '.uid = ' . $tableMm . '.uid_local and ' . $tableMm . '.uid_local<>"" AND ' . $tableMm .
-			'.uid_foreign =' . (int) $uidRoot . ' ' . $sqlManufacturer;
+		$sql = 'SELECT ' . $tableMm . '.* FROM ' . $tableMm . ',' . $mainTable . ' WHERE ' . $mainTable . '.deleted =0 and ' . $mainTable . '.uid = ' . $tableMm . '.uid_local and ' . $tableMm . '.uid_local<>"" AND ' . $tableMm . '.uid_foreign =' . (int) $uidRoot . ' ' . $sqlManufacturer;
 
 		$sorting = ' order by ' . $mainTable . '.sorting ';
 
@@ -765,12 +748,14 @@ class Tx_Commerce_ViewHelpers_Navigation {
 		 * Add some hooks for custom sorting
 		 */
 		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_db_navigation.php']['sortingOrder']) {
-			t3lib_div::deprecationLog('
-				hook
-				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_db_navigation.php\'][\'sortingOrder\']
-				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
-				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/ViewHelpers/Navigation.php\'][\'sortingOrder\']
-			');
+			t3lib_div::deprecationLog(
+				'
+								hook
+								$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_db_navigation.php\'][\'sortingOrder\']
+								is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
+								$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/ViewHelpers/Navigation.php\'][\'sortingOrder\']
+							'
+			);
 			$hookObj = & t3lib_div::getUserObj(
 				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_db_navigation.php']['sortingOrder']
 			);
@@ -801,11 +786,11 @@ class Tx_Commerce_ViewHelpers_Navigation {
 				$nodeArray['parent_id'] = $uidRoot;
 				$nodeArray['nav_title'] = htmlspecialchars(strip_tags($dataRow['navtitle']));
 				$nodeArray['hidden'] = $dataRow['hidden'];
-					// Add custom Fields to array
+				// Add custom Fields to array
 				foreach ($this->nodeArrayAdditionalFields as $field) {
 					$nodeArray[$field] = htmlspecialchars(strip_tags($dataRow[$field]));
 				}
-					// Add Pages Overlay to Array, if sys_language_uid ist set
+				// Add Pages Overlay to Array, if sys_language_uid ist set
 				if ($GLOBALS['TSFE']->sys_language_uid) {
 					$nodeArray['_PAGES_OVERLAY'] = $dataRow['title'];
 				}
@@ -817,7 +802,7 @@ class Tx_Commerce_ViewHelpers_Navigation {
 				} else {
 					$nodeArray['path'] = $dataRow['uid'];
 				}
-					// Set default
+				// Set default
 				$nodeArray['ITEM_STATE'] = 'NO';
 				if ($nodeArray['leaf'] == 1) {
 					$nodeArray['_ADD_GETVARS'] = $this->separator . $this->prefixId . '[catUid]=' . $uidRoot;
@@ -827,8 +812,7 @@ class Tx_Commerce_ViewHelpers_Navigation {
 				$nodeArray['_ADD_GETVARS'] .= $this->separator . $this->prefixId . '[showUid]=' . $dataRow['uid'];
 
 				if ($this->useRootlineInformationToUrl == 1) {
-					$nodeArray['_ADD_GETVARS'] .= $this->separator . $this->prefixId . '[mDepth]=' . $mDepth .
-						$this->separator . $this->prefixId . '[path]=' . $nodeArray['path'];
+					$nodeArray['_ADD_GETVARS'] .= $this->separator . $this->prefixId . '[mDepth]=' . $mDepth . $this->separator . $this->prefixId . '[path]=' . $nodeArray['path'];
 				}
 
 				if ($this->gpVars['basketHashValue']) {
@@ -842,8 +826,8 @@ class Tx_Commerce_ViewHelpers_Navigation {
 					$nodeArray['_ADD_GETVARS'] .= '&' . $this->prefixId . '[manufacturer]=' . $this->gpVars['manufacturer'];
 				}
 
-					// if this product is displayed set to CUR
-				if (($mainTable == 'tx_commerce_products') && ($dataRow['uid'] == $this->ShowUid)) {
+				// if this product is displayed set to CUR
+				if (($mainTable == 'tx_commerce_products') && ($dataRow['uid'] == $this->showUid)) {
 					$nodeArray['ITEM_STATE'] = 'CUR';
 				}
 
@@ -882,7 +866,6 @@ class Tx_Commerce_ViewHelpers_Navigation {
 				 * SPC, IFSUB, ACT, CUR or USR mode item, you can do so by specifying one
 				 * of these values in the key “ITEM_STATE” of the page record. This setting
 				 * will override the natural state-evaluation.
-				 *
 				 * So Only Implement ACT, CUR, IFSUB
 				 * Other states should be implemented below in clear
 				 */
@@ -908,21 +891,21 @@ class Tx_Commerce_ViewHelpers_Navigation {
 					/**
 					 * Sets this node (Product) as current item
 					 */
-					if ($this->ShowUid > 0) {
+					if ($this->showUid > 0) {
 						/**
 						 * If we do have a product
 						 * This must be the deepethst Element in the menue
 						 * SO, this MUST Be CUR and The Level Above must be
 						 */
-						$treeArray[$path[0]]['--subLevel--'][$this->ShowUid]['ITEM_STATE'] = 'CUR';
-						$treeArray[$path[0]]['--subLevel--'][$this->ShowUid]['ITEM_STATES_LIST'] = 'CUR,ACT,NO';
+						$treeArray[$path[0]]['--subLevel--'][$this->showUid]['ITEM_STATE'] = 'CUR';
+						$treeArray[$path[0]]['--subLevel--'][$this->showUid]['ITEM_STATES_LIST'] = 'CUR,ACT,NO';
 
 						$treeArray[$path[0]]['ITEM_STATE'] = 'ACT';
 						$treeArray[$path[0]]['ITEM_STATES_LIST'] = 'ACTIFSUB,ACT,IFSUB,NO';
 					}
 				}
 
-				if ($this->ShowUid == $path[0]) {
+				if ($this->showUid == $path[0]) {
 					if (count($treeArray[$path[0]]['--subLevel--']) > 0) {
 						$treeArray[$path[0]]['ITEM_STATE'] = 'IFSUB';
 						$treeArray[$path[0]]['ITEM_STATES_LIST'] = 'IFSUB,NO';
@@ -956,7 +939,7 @@ class Tx_Commerce_ViewHelpers_Navigation {
 								$treeArray[$nodeId]['ITEM_STATES_LIST'] = 'ACTIFSUB,ACT,IFSUB,NO';
 							}
 						}
-						if ($this->ShowUid == $treeArray[$nodeId]['parent_id']) {
+						if ($this->showUid == $treeArray[$nodeId]['parent_id']) {
 							$treeArray[$nodeId]['ITEM_STATE'] = 'CUR';
 							$treeArray[$nodeId]['ITEM_STATES_LIST'] = 'CUR,ACT,NO';
 
@@ -1007,7 +990,9 @@ class Tx_Commerce_ViewHelpers_Navigation {
 		if ($this->mConf['hideEmptyCategories'] == 1 && $tableName == 'tx_commerce_categories' && is_array($row[0])) {
 			// Process Empty Categories
 			/** @var Tx_Commerce_Domain_Model_Category $localCategory */
-			$localCategory = t3lib_div::makeinstance('Tx_Commerce_Domain_Model_Category', $row[0]['uid'], $row[0]['sys_language_uid']);
+			$localCategory = t3lib_div::makeinstance(
+				'Tx_Commerce_Domain_Model_Category', $row[0]['uid'], $row[0]['sys_language_uid']
+			);
 			$localCategory->loadData();
 			if (!$localCategory->hasProductsInSubCategories()) {
 				return array();
@@ -1075,7 +1060,7 @@ class Tx_Commerce_ViewHelpers_Navigation {
 	 * TS Admin for the Menue. Available Item-States for a Menue-Levels are stored
 	 * as array in $conf['parentObj']->mconf
 	 * Menue Item State Priority Order of priority:
-	 * 		USERDEF2, USERDEF1, SPC, USR, CURIFSUB, CUR, ACTIFSUB, ACT, IFSUB
+	 *        USERDEF2, USERDEF1, SPC, USR, CURIFSUB, CUR, ACTIFSUB, ACT, IFSUB
 	 * Function clears all subelements. This is needed for clear error with mix up
 	 * pages and categories
 	 *
@@ -1112,8 +1097,8 @@ class Tx_Commerce_ViewHelpers_Navigation {
 						$menuArr[$mIndex]['ITEM_STATE'] = '';
 						$possibleItemStatesForItem = explode(',', $menuArr[$mIndex]['ITEM_STATES_LIST']);
 
-						ksort($this->MenueItemStates);
-						foreach ($this->MenueItemStates as $state) {
+						ksort($this->menueItemStates);
+						foreach ($this->menueItemStates as $state) {
 							if ($availiableItemStates[$state] == 1 && empty($menuArr[$mIndex]['ITEM_STATE'])) {
 								if (in_array($state, $possibleItemStatesForItem)) {
 									$menuArr[$mIndex]['ITEM_STATE'] = $state;
@@ -1142,14 +1127,18 @@ class Tx_Commerce_ViewHelpers_Navigation {
 	 */
 	public function renderRootline($content, $conf) {
 		$this->mConf = $this->processConf($conf);
-		$this->PID = (int) ($this->mConf['overridePid'] ? $this->mConf['overridePid'] : $GLOBALS['TSFE']->id);
+		$this->pid = (int) ($this->mConf['overridePid'] ?
+			$this->mConf['overridePid'] :
+			$GLOBALS['TSFE']->id);
 		$this->gpVars = t3lib_div::_GPmerged($this->prefixId);
 
 		Tx_Commerce_Utility_GeneralUtility::initializeFeUserBasket();
 
-		$this->gpVars['basketHashValue'] =  $GLOBALS['TSFE']->fe_user->tx_commerce_basket->getBasketHashValue();
+		$this->gpVars['basketHashValue'] = $GLOBALS['TSFE']->fe_user->tx_commerce_basket->getBasketHashValue();
 		if (!is_object($this->category)) {
-			$this->category = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category', $this->mConf['category'], $GLOBALS['TSFE']->sys_language_uid);
+			$this->category = t3lib_div::makeInstance(
+				'Tx_Commerce_Domain_Model_Category', $this->mConf['category'], $GLOBALS['TSFE']->sys_language_uid
+			);
 			$this->category->loadData();
 		}
 
@@ -1162,15 +1151,19 @@ class Tx_Commerce_ViewHelpers_Navigation {
 		 */
 		if ($this->mConf['showProducts'] == 1 && $this->gpVars['showUid'] > 0) {
 			/** @var Tx_Commerce_Domain_Model_Product $productObject */
-			$productObject = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product', $this->gpVars['showUid'], $GLOBALS['TSFE']->sys_language_uid);
+			$productObject = t3lib_div::makeInstance(
+				'Tx_Commerce_Domain_Model_Product', $this->gpVars['showUid'], $GLOBALS['TSFE']->sys_language_uid
+			);
 			$productObject->loadData();
 
 			/** @var Tx_Commerce_Domain_Model_Category $categoryObject */
-			$categoryObject = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category', $this->gpVars['catUid'], $GLOBALS['TSFE']->sys_language_uid);
+			$categoryObject = t3lib_div::makeInstance(
+				'Tx_Commerce_Domain_Model_Category', $this->gpVars['catUid'], $GLOBALS['TSFE']->sys_language_uid
+			);
 			$categoryObject->loadData();
 
-			$addGetvars = $this->separator . $this->prefixId . '[showUid]=' . $productObject->getUid() .
-				$this->separator . $this->prefixId . '[catUid]=' . $categoryObject->getUid();
+			$addGetvars = $this->separator . $this->prefixId . '[showUid]=' . $productObject->getUid(
+				) . $this->separator . $this->prefixId . '[catUid]=' . $categoryObject->getUid();
 			if (is_string($this->gpVars['basketHashValue'])) {
 				$addGetvars .= $this->separator . $this->prefixId . '[basketHashValue]=' . $this->gpVars['basketHashValue'];
 			}
@@ -1190,7 +1183,7 @@ class Tx_Commerce_ViewHelpers_Navigation {
 
 			$returnArray[] = array(
 				'title' => $productObject->getTitle(),
-				'uid' => $this->PID,
+				'uid' => $this->pid,
 				'_ADD_GETVARS' => $addGetvars . $this->separator . 'cHash=' . $cHash,
 				'ITEM_STATE' => $itemState,
 				'ITEM_STATES_LIST' => $itemStateList,
@@ -1212,7 +1205,9 @@ class Tx_Commerce_ViewHelpers_Navigation {
 	public function getCategoryRootlineforTypoScript($categoryUid, $result = array()) {
 		if ($categoryUid) {
 			/** @var Tx_Commerce_Domain_Model_Category $categoryObject */
-			$categoryObject = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category', $categoryUid, $GLOBALS['TSFE']->sys_language_uid);
+			$categoryObject = t3lib_div::makeInstance(
+				'Tx_Commerce_Domain_Model_Category', $categoryUid, $GLOBALS['TSFE']->sys_language_uid
+			);
 			$categoryObject->loadData();
 
 			if (is_object($parentCategory = $categoryObject->getParentCategory())) {
@@ -1231,13 +1226,15 @@ class Tx_Commerce_ViewHelpers_Navigation {
 			if ($this->mConf['showProducts'] == 1 && $this->gpVars['showUid'] > 0) {
 				$itemState = 'NO';
 			} else {
-				$itemState = ($categoryObject->getUid() === $categoryUid ? 'CUR' : 'NO');
+				$itemState = ($categoryObject->getUid() === $categoryUid ?
+					'CUR' :
+					'NO');
 			}
 
 			$result[] = array(
 				'title' => $categoryObject->getTitle(),
 				'nav_title' => $categoryObject->getNavtitle(),
-				'uid' => $this->PID,
+				'uid' => $this->pid,
 				'_ADD_GETVARS' => $additionalParams . $this->separator . 'cHash=' . $cHash,
 				'ITEM_STATE' => $itemState,
 				'_PAGES_OVERLAY' => $categoryObject->getTitle(),
@@ -1254,11 +1251,11 @@ class Tx_Commerce_ViewHelpers_Navigation {
 	 * Usage: 2
 	 *
 	 * @param string $hash 32 bit hash string (eg. a md5 hash of a serialized
-	 * 		array identifying the data being stored)
+	 *        array identifying the data being stored)
 	 * @param string $data The data string. If you want to store an array,
-	 * 		then just serialize it first.
+	 *        then just serialize it first.
 	 * @param string $ident is just a textual identification in order to inform
-	 * 		about the content! May be 20 characters long.
+	 *        about the content! May be 20 characters long.
 	 * @return void
 	 */
 	public function storeHash($hash, $data, $ident) {
@@ -1283,15 +1280,15 @@ class Tx_Commerce_ViewHelpers_Navigation {
 	 *
 	 * @param string $hash key, 32 bytes hex
 	 * @param integer $expTime represents the expire time in seconds. For instance
-	 * 		a value of 3600 would allow cached content within the last hour,
-	 * 		otherwise nothing is returned.
+	 *        a value of 3600 would allow cached content within the last hour,
+	 *        otherwise nothing is returned.
 	 * @return string
 	 */
 	public function getHash($hash, $expTime = 0) {
 		/** @var t3lib_db $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
-			// if expTime is not set, the hash will never expire
+		// if expTime is not set, the hash will never expire
 		$expTime = (int) $expTime;
 		$whereAdd = '';
 		if ($expTime) {
@@ -1303,6 +1300,7 @@ class Tx_Commerce_ViewHelpers_Navigation {
 		if (($row = $database->sql_fetch_assoc($res))) {
 			return $row['content'];
 		}
+
 		return '';
 	}
 
@@ -1388,7 +1386,7 @@ class Tx_Commerce_ViewHelpers_Navigation {
 
 		$productUids = array();
 		while (($mmRow = $database->sql_fetch_assoc($result)) !== FALSE) {
-			$productUids[] = (int)$mmRow['uid_local'];
+			$productUids[] = (int) $mmRow['uid_local'];
 		}
 
 		if (!count($productUids)) {
@@ -1396,8 +1394,7 @@ class Tx_Commerce_ViewHelpers_Navigation {
 		}
 
 		$result = $database->exec_SELECTquery(
-			'uid, manufacturer_uid',
-			'tx_commerce_products',
+			'uid, manufacturer_uid', 'tx_commerce_products',
 			'uid IN (' . implode(',', $productUids) . ')' . $this->cObj->enableFields('tx_commerce_products')
 		);
 
@@ -1416,8 +1413,7 @@ class Tx_Commerce_ViewHelpers_Navigation {
 				$product->loadData();
 
 				$manufacturerTitle = htmlspecialchars(strip_tags($product->getManufacturerTitle()));
-				$addGet = $this->separator . $this->prefixId . '[catUid]=' . $categoryUid . $this->separator .
-					$this->prefixId . '[manufacturer]=' . $productRow['manufacturer_uid'] . '';
+				$addGet = $this->separator . $this->prefixId . '[catUid]=' . $categoryUid . $this->separator . $this->prefixId . '[manufacturer]=' . $productRow['manufacturer_uid'] . '';
 				$cHash = t3lib_div::generateCHash($addGet . $GLOBALS['TSFE']->linkVars);
 				$addGet .= $this->separator . 'cHash=' . $cHash;
 				$aLevel = array(
@@ -1444,11 +1440,12 @@ class Tx_Commerce_ViewHelpers_Navigation {
 
 				if ($aLevel['hasSubChild'] == 1 && $this->mConf['showProducts'] == 1) {
 					$aLevel['--subLevel--'] = $this->makeSubChildArrayPostRender(
-						$uidPage, $tableSubMain, $tableSubMm, $categoryUid, $mDepth + 1, $path, 'manu', $productRow['manufacturer_uid']
+						$uidPage, $tableSubMain, $tableSubMm, $categoryUid, $mDepth + 1, $path, 'manu',
+						$productRow['manufacturer_uid']
 					);
 				}
 
-				if ($this->expandAll > 0 || ($this->expandAll < 0 && ( - $this->expandAll >= $mDepth))) {
+				if ($this->expandAll > 0 || ($this->expandAll < 0 && (-$this->expandAll >= $mDepth))) {
 					$aLevel['_SUB_MENU'] = $aLevel['--subLevel--'];
 				}
 
@@ -1487,10 +1484,13 @@ class Tx_Commerce_ViewHelpers_Navigation {
 	 */
 	public function sortArrayList(&$listNodes, $sortType = 'alphabetiDesc') {
 		if ($sortType == 'alphabetiDesc') {
-			return uasort($listNodes, function($a, $b) {
-				return strcmp(strtoupper($a['title']), strtoupper($b['title']));
-			});
+			return uasort(
+				$listNodes, function ($a, $b) {
+					return strcmp(strtoupper($a['title']), strtoupper($b['title']));
+				}
+			);
 		}
+
 		return FALSE;
 	}
 
@@ -1512,7 +1512,10 @@ class Tx_Commerce_ViewHelpers_Navigation {
 	 */
 	public function getManuAsCat($pid, $uidPage, $mainTable, $tableMm, $tableSubMain, $tableSubMm, $categoryUid, $mDepth, $path) {
 		t3lib_div::logDeprecatedFunction();
-		return $this->getManufacturerAsCategory($pid, $uidPage, $tableMm, $tableSubMain, $tableSubMm, $categoryUid, $mDepth, $path);
+
+		return $this->getManufacturerAsCategory(
+			$pid, $uidPage, $tableMm, $tableSubMain, $tableSubMm, $categoryUid, $mDepth, $path
+		);
 	}
 
 	/**
@@ -1526,6 +1529,7 @@ class Tx_Commerce_ViewHelpers_Navigation {
 	 */
 	public function getCategoryRootlineforTS($catId, $result = array()) {
 		t3lib_div::logDeprecatedFunction();
+
 		return $this->getCategoryRootlineforTypoScript($catId, $result);
 	}
 
@@ -1557,13 +1561,18 @@ class Tx_Commerce_ViewHelpers_Navigation {
 	 */
 	public function CommerceRootline($content, $conf) {
 		t3lib_div::logDeprecatedFunction();
+
 		return $this->renderRootline($content, $conf);
 	}
 }
 
 class_alias('Tx_Commerce_ViewHelpers_Navigation', 'tx_commerce_navigation');
 
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/ViewHelpers/Navigation.php']) {
+if (defined(
+		'TYPO3_MODE'
+	)
+	&& $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/ViewHelpers/Navigation.php']
+) {
 	/** @noinspection PhpIncludeInspection */
 	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/ViewHelpers/Navigation.php']);
 }
