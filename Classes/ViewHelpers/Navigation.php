@@ -565,9 +565,9 @@ class Tx_Commerce_ViewHelpers_Navigation {
 			return array();
 		}
 
-		$sql = 'SELECT ' . $tableMm . '.* FROM ' . $tableMm . ',' . $mainTable . ' WHERE ' . $mainTable . '.deleted =0 and ' . $mainTable . '.uid = ' . $tableMm . '.uid_local and ' . $tableMm . '.uid_local<>"" AND ' . $tableMm . '.uid_foreign = ' . $uidRoot;
+		$sql = 'SELECT ' . $tableMm . '.* FROM ' . $tableMm . ',' . $mainTable . ' WHERE ' . $mainTable . '.deleted = 0 AND ' . $mainTable . '.uid = ' . $tableMm . '.uid_local AND ' . $tableMm . '.uid_local <> "" AND ' . $tableMm . '.uid_foreign = ' . $uidRoot;
 
-		$sorting = ' order by ' . $mainTable . '.sorting';
+		$sorting = ' ORDER BY ' . $mainTable . '.sorting';
 
 		/**
 		 * Add some hooks for custom sorting
@@ -575,11 +575,11 @@ class Tx_Commerce_ViewHelpers_Navigation {
 		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_db_navigation.php']['sortingOrder']) {
 			t3lib_div::deprecationLog(
 				'
-								hook
-								$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_db_navigation.php\'][\'sortingOrder\']
-								is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
-								$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/ViewHelpers/Navigation.php\'][\'sortingOrder\']
-							'
+					hook
+					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_db_navigation.php\'][\'sortingOrder\']
+					is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
+					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/ViewHelpers/Navigation.php\'][\'sortingOrder\']
+				'
 			);
 			$hookObj = & t3lib_div::getUserObj(
 				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_db_navigation.php']['sortingOrder']
