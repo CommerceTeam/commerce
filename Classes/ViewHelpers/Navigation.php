@@ -252,18 +252,10 @@ class Tx_Commerce_ViewHelpers_Navigation {
 		// Define a default
 		$this->choosenCat = $this->mConf['category'];
 
-		$this->showUid = $this->gpVars['showUid'] ?
-			$this->gpVars['showUid'] :
-			0;
-		$this->mDepth = $this->gpVars['mDepth'] ?
-			$this->gpVars['mDepth'] :
-			0;
-		$this->path = $this->gpVars['path'] ?
-			$this->gpVars['path'] :
-			0;
-		$this->expandAll = $this->mConf['expandAll'] ?
-			$this->mConf['expandAll'] :
-			0;
+		$this->showUid = $this->gpVars['showUid'] ? $this->gpVars['showUid'] : 0;
+		$this->mDepth = $this->gpVars['mDepth'] ? $this->gpVars['mDepth'] : 0;
+		$this->path = $this->gpVars['path'] ? $this->gpVars['path'] : 0;
+		$this->expandAll = $this->mConf['expandAll'] ? $this->mConf['expandAll'] : 0;
 
 		$menueErrorName = array();
 		if (!($this->cat > 0)) {
