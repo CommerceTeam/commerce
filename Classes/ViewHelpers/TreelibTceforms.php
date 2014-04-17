@@ -392,7 +392,7 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 
 		$width = '240px';
 
-		$this->config['autoSizeMax'] = t3lib_div::intInRange($this->config['autoSizeMax'], 0);
+		$this->config['autoSizeMax'] = max($this->config['autoSizeMax'], 0);
 		$height = $this->config['autoSizeMax'] ?
 			t3lib_div::intInRange(
 				$itemCountSelectable, t3lib_div::intInRange($this->config['size'], 1), $this->config['autoSizeMax']

@@ -207,8 +207,8 @@ class Tx_Commerce_ViewHelpers_TceFunc {
 		}
 
 			// Rendering and output
-		$minitems = t3lib_div::intInRange($config['minitems'], 0);
-		$maxitems = t3lib_div::intInRange($config['maxitems'], 0);
+		$minitems = max($config['minitems'], 0);
+		$maxitems = max($config['maxitems'], 0);
 		if (!$maxitems) {
 			$maxitems = 100000;
 		}

@@ -800,7 +800,7 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends localRecordList {
 
 			// Compile the options into a multiple selector box:
 		$lMenu = '
-										<select size="' . t3lib_div::intInRange(count($fields) + 1, 3, 20) . '" multiple="multiple" name="displayFields[' . $table . '][]">' . implode('', $opt) . '
+										<select size="' . max(min(count($fields) + 1, 20), 3) . '" multiple="multiple" name="displayFields[' . $table . '][]">' . implode('', $opt) . '
 										</select>
 				';
 

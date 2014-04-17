@@ -163,7 +163,7 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 		}
 
 		// Initialize the listing object, dblist, for rendering the list:
-		$this->pointer = t3lib_div::intInRange(t3lib_div::_GP('pointer'), 0, 100000);
+		$this->pointer = max(min(t3lib_div::_GP('pointer'), 100000), 0);
 		$this->imagemode = t3lib_div::_GP('imagemode');
 		$this->table = t3lib_div::_GP('table');
 		$this->search_field = t3lib_div::_GP('search_field');

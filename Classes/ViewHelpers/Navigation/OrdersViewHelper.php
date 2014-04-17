@@ -268,7 +268,7 @@ class Tx_Commerce_ViewHelpers_Navigation_OrdersViewHelper extends t3lib_SCbase {
 
 			// Set/Cancel Temporary DB Mount:
 		if (strlen($this->setTempDBmount)) {
-			$set = t3lib_div::intInRange($this->setTempDBmount, 0);
+			$set = max($this->setTempDBmount, 0);
 				// Setting...:
 			if ($set > 0 && $backendUser->isInWebMount($set)) {
 				$this->settingTemporaryMountPoint($set);
