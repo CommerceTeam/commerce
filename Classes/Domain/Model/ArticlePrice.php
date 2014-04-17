@@ -242,16 +242,16 @@ class Tx_Commerce_Domain_Model_ArticlePrice extends Tx_Commerce_Domain_Model_Abs
 	/**
 	 * Returns TCA label, used in TCA only
 	 *
-	 * @param array $params Record value
-	 * @return array New record values
+	 * @param array &$params Record value
+	 * @return void
 	 */
-	public function getTCARecordTitle($params) {
+	public function getTcaRecordTitle(&$params) {
 		/** @var language $language */
 		$language = & $GLOBALS['LANG'];
 		$params['title'] =
 			$language->sL(t3lib_befunc::getItemLabel('tx_commerce_article_prices', 'price_gross'), 1) . ': ' .
 				sprintf('%01.2f', $params['row']['price_gross'] / 100) .
-				' ,' . $language->sL(t3lib_befunc::getItemLabel('tx_commerce_article_prices', 'price_net'), 1) . ': ' .
+				', ' . $language->sL(t3lib_befunc::getItemLabel('tx_commerce_article_prices', 'price_net'), 1) . ': ' .
 				sprintf('%01.2f', $params['row']['price_net'] / 100) .
 				' (' . $language->sL(t3lib_befunc::getItemLabel('tx_commerce_article_prices', 'price_scale_amount_start'), 1) . ': ' .
 				$params['row']['price_scale_amount_start'] .
@@ -259,8 +259,6 @@ class Tx_Commerce_Domain_Model_ArticlePrice extends Tx_Commerce_Domain_Model_Abs
 				$params['row']['price_scale_amount_end'] . ') ' .
 				' ' . ($params['row']['fe_group'] ? ($language->sL(t3lib_befunc::getItemLabel('tx_commerce_article_prices', 'fe_group'), 1) . ' ' .
 				t3lib_BEfunc::getProcessedValueExtra('tx_commerce_article_prices', 'fe_group', $params['row']['fe_group'], 100, $params['row']['uid'])) : '');
-
-		return $params;
 	}
 
 
