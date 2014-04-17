@@ -15,6 +15,7 @@ $GLOBALS['TCA']['tx_commerce_article_prices'] = Array(
 				'default' => '0'
 			)
 		),
+
 		'starttime' => Array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:lang/locallang_general.php:LGL.starttime',
@@ -27,6 +28,7 @@ $GLOBALS['TCA']['tx_commerce_article_prices'] = Array(
 				'checkbox' => '0'
 			)
 		),
+
 		'endtime' => Array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:lang/locallang_general.php:LGL.endtime',
@@ -43,6 +45,7 @@ $GLOBALS['TCA']['tx_commerce_article_prices'] = Array(
 				)
 			)
 		),
+
 		'fe_group' => Array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:lang/locallang_general.php:LGL.fe_group',
@@ -68,16 +71,17 @@ $GLOBALS['TCA']['tx_commerce_article_prices'] = Array(
 			'config' => Array(
 				'type' => 'input',
 				'size' => '30',
-				'eval' => 'double2,nospace',
+				'eval' => 'nospace',
 			)
 		),
+
 		'price_net' => Array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_article_prices.price_net',
 			'config' => Array(
 				'type' => 'input',
 				'size' => '30',
-				'eval' => 'double2,nospace',
+				'eval' => 'nospace',
 			)
 		),
 
@@ -87,9 +91,10 @@ $GLOBALS['TCA']['tx_commerce_article_prices'] = Array(
 			'config' => Array(
 				'type' => 'input',
 				'size' => '30',
-				'eval' => 'double2,nospace',
+				'eval' => 'nospace',
 			)
 		),
+
 		'price_scale_amount_start' => Array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_articles.price_scale_amount_start',
@@ -101,6 +106,7 @@ $GLOBALS['TCA']['tx_commerce_article_prices'] = Array(
 				'default' => '1',
 			)
 		),
+
 		'price_scale_amount_end' => Array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_articles.price_scale_amount_end',

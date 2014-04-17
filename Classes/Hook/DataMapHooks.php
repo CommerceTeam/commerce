@@ -87,6 +87,10 @@ class Tx_Commerce_Hook_DataMapHooks {
 				$incomingFieldArray = $this->preProcessArticle($incomingFieldArray, $id);
 				break;
 
+			case 'tx_commerce_article_prices':
+				$incomingFieldArray = $this->preProcessArticlePrice($incomingFieldArray, $id);
+				break;
+
 			case 'tx_commerce_orders':
 				$incomingFieldArray = $this->preProcessOrder($incomingFieldArray, $table, $id, $pObj);
 				break;
@@ -123,6 +127,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 						|| isset($incomingFieldArray['create_new_price'])
 					)
 				)
+				|| ($table == 'tx_commerce_article_prices')
 				|| (
 						// categories or products may get preprocessed if attributes are set
 					($table == 'tx_commerce_products' || $table == 'tx_commerce_categories')
@@ -251,6 +256,39 @@ class Tx_Commerce_Hook_DataMapHooks {
 		}
 
 		return $incomingFieldArray;
+	}
+
+	/**
+	 * Preprocess article price
+	 *
+	 * @param array $incomingFieldArray
+	 * @param integer $id
+	 * @return array
+	 */
+	protected function preProcessArticlePrice($incomingFieldArray, $id) {
+		if (isset($incomingFieldArray['price_gross']) && $incomingFieldArray['price_gross']) {
+			$incomingFieldArray['price_gross'] = $this->centurionMultiplication($incomingFieldArray['price_gross']);
+		}
+		if (isset($incomingFieldArray['price_net']) && $incomingFieldArray['price_net']) {
+			$incomingFieldArray['price_net'] = $this->centurionMultiplication($incomingFieldArray['price_net']);
+		}
+		if (isset($incomingFieldArray['purchase_price']) && $incomingFieldArray['purchase_price']) {
+			$incomingFieldArray['purchase_price'] = $this->centurionMultiplication($incomingFieldArray['purchase_price']);
+		}
+
+		return $incomingFieldArray;
+	}
+
+	/**
+	 * Centurion multiplication
+	 *
+	 * @param float $price
+	 * @return int
+	 */
+	protected function centurionMultiplication($price) {
+		$price = floatval($price);
+		$result = intval($price * 100);
+		return $result;
 	}
 
 	/**
