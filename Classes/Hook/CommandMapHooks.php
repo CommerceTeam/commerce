@@ -67,10 +67,12 @@ class Tx_Commerce_Hook_CommandMapHooks {
 	 * @param string &$command
 	 * @param string $table the table the data will be stored in
 	 * @param integer &$id The uid of the dataset we're working on
+	 * @param mixed $value
+	 * @param t3lib_TCEmain $pObj
 	 * @return void
 	 */
-	public function processCmdmap_preProcess(&$command, $table, &$id) {
-		$this->pObj = t3lib_div::makeInstance('t3lib_TCEmain');
+	public function processCmdmap_preProcess(&$command, $table, &$id, $value, $pObj) {
+		$this->pObj = $pObj;
 
 		switch ($table) {
 			case 'tx_commerce_categories':
