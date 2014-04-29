@@ -322,9 +322,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	 * @return array of article uids
 	 */
 	public function getArticlesByAttributeArray($attributes, $proofUid = 1) {
-		$whereUid = $proofUid ?
-			' and tx_commerce_articles.uid_product = ' . $this->uid :
-			'';
+		$whereUid = $proofUid ? ' and tx_commerce_articles.uid_product = ' . $this->uid : '';
 
 		$first = 1;
 		if (is_array($attributes)) {
@@ -338,22 +336,22 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 
 				// attribute char is not used, thats why we check for id
 				if (is_string($uidValuePair['AttributeValue'])) {
-					$addwheretmp .= ' OR (tx_commerce_attributes.uid = ' . (int) $uidValuePair['AttributeUid'] . ' AND tx_commerce_articles_article_attributes_mm.value_char="' . $database->quoteStr(
-							$uidValuePair['AttributeValue'], 'tx_commerce_articles_article_attributes_mm'
-						) . '" )';
+					$addwheretmp .= ' OR (tx_commerce_attributes.uid = ' . (int) $uidValuePair['AttributeUid'] .
+						' AND tx_commerce_articles_article_attributes_mm.value_char="' .
+						$database->quoteStr($uidValuePair['AttributeValue'], 'tx_commerce_articles_article_attributes_mm') . '" )';
 				}
 
 				// Nach dem charwert immer ueberpruefen, solange value_char noch nicht drin ist.
 				if (is_float($uidValuePair['AttributeValue']) || (int) $uidValuePair['AttributeValue']) {
-					$addwheretmp .= ' OR (tx_commerce_attributes.uid = ' . (int) $uidValuePair['AttributeUid'] . ' AND tx_commerce_articles_article_attributes_mm.default_value in ("' . $database->quoteStr(
-							$uidValuePair['AttributeValue'], 'tx_commerce_articles_article_attributes_mm'
-						) . '" ) )';
+					$addwheretmp .= ' OR (tx_commerce_attributes.uid = ' . (int) $uidValuePair['AttributeUid'] .
+						' AND tx_commerce_articles_article_attributes_mm.default_value in ("' .
+						$database->quoteStr($uidValuePair['AttributeValue'], 'tx_commerce_articles_article_attributes_mm') . '" ) )';
 				}
 
 				if (is_float($uidValuePair['AttributeValue']) || (int) $uidValuePair['AttributeValue']) {
-					$addwheretmp .= ' OR (tx_commerce_attributes.uid = ' . (int) $uidValuePair['AttributeUid'] . ' AND tx_commerce_articles_article_attributes_mm.uid_valuelist in ("' . $database->quoteStr(
-							$uidValuePair['AttributeValue'], 'tx_commerce_articles_article_attributes_mm'
-						) . '") )';
+					$addwheretmp .= ' OR (tx_commerce_attributes.uid = ' . (int) $uidValuePair['AttributeUid'] .
+						' AND tx_commerce_articles_article_attributes_mm.uid_valuelist in ("' .
+						$database->quoteStr($uidValuePair['AttributeValue'], 'tx_commerce_articles_article_attributes_mm') . '") )';
 				}
 
 				$addwhere = ' AND (0 ' . $addwheretmp . ') ';
@@ -524,9 +522,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 
 		// Execute main query
 		$attributeDataArrayRessource = $database->sql_query(
-			$this->getAttributeMatrixQuery(
-				$parentTable, $mmTable, $sortingTable, $articleList, $attributeListInclude
-			)
+			$this->getAttributeMatrixQuery($parentTable, $mmTable, $sortingTable, $articleList, $attributeListInclude)
 		);
 
 		// Accumulated result array
@@ -545,9 +541,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 			// Don't handle this row if a prior row was already unable to fetch a language
 			// overlay of the attribute
 			if ($this->lang_uid > 0
-				&& count(
-					   array_intersect(array($currentAttributeUid), $attributeLanguageOverlayBlacklist)
-				   ) > 0
+				&& count(array_intersect(array($currentAttributeUid), $attributeLanguageOverlayBlacklist)) > 0
 			) {
 				continue;
 			}

@@ -356,11 +356,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 		}
 
 		// not needed write now, lets see later
-		if ($this->conf['showHiddenValues'] == 1) {
-			$showHiddenValues = TRUE;
-		} else {
-			$showHiddenValues = FALSE;
-		}
+		$showHiddenValues = $this->conf['showHiddenValues'] == 1;
 
 		$matrix = $prodObj->getAttributeMatrix(
 			FALSE, $this->product_attributes, $showHiddenValues, 'tx_commerce_products_attributes_mm', FALSE,
@@ -2259,11 +2255,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 
 class_alias('Tx_Commerce_Controller_BaseController', 'tx_commerce_pibase');
 
-if (defined(
-		'TYPO3_MODE'
-	)
-	&& $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Controller/BaseController.php']
-) {
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Controller/BaseController.php']) {
 	/** @noinspection PhpIncludeInspection */
 	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Controller/BaseController.php']);
 }
