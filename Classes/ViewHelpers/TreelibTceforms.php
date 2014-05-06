@@ -26,13 +26,16 @@
  ***************************************************************/
 
 /**
- * TCEforms functions for handling and rendering of trees for group/select elements
- * If we want to display a browseable tree, we need to run the tree in an iframe element.
- * In consequence this means that the display of the browseable tree needs to be generated from an extra script.
+ * TCEforms functions for handling and rendering of trees for group/select
+ * elements If we want to display a browseable tree, we need to run the tree
+ * in an iframe element. In consequence this means that the display of the
+ * browseable tree needs to be generated from an extra script.
  * This is the base class for such a script.
  * The class itself do not render the tree but call tceforms to render the field.
- * In beforehand the TCA config value of treeViewBrowseable will be set to 'iframeContent' to force the right rendering.
- * That means the script do not know anything about trees. It just set parameters and render the field with TCEforms.
+ * In beforehand the TCA config value of treeViewBrowseable will be set to
+ * 'iframeContent' to force the right rendering. That means the script do not
+ * know anything about trees. It just set parameters and render the field with
+ * TCEforms.
  */
 class Tx_Commerce_ViewHelpers_TreelibTceforms {
 	/**
@@ -140,17 +143,17 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 	/**
 	 * Init
 	 *
-	 * @param array $PA An array with additional configuration options.
+	 * @param array $parameter An array with additional configuration options.
 	 * @return void
 	 */
-	public function init($PA) {
-		$this->tceforms = & $PA['pObj'];
-		$this->PA = & $PA;
+	public function init($parameter) {
+		$this->tceforms = & $parameter['pObj'];
+		$this->PA = & $parameter;
 
-		$this->table = $PA['table'];
-		$this->field = $PA['field'];
-		$this->row = $PA['row'];
-		$this->config = $PA['fieldConf']['config'];
+		$this->table = $parameter['table'];
+		$this->field = $parameter['field'];
+		$this->row = $parameter['row'];
+		$this->config = $parameter['fieldConf']['config'];
 
 		$this->language = $GLOBALS['LANG'];
 
@@ -164,12 +167,12 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 	/**
 	 * Enable the iframe content rendering mode
 	 *
-	 * @param boolean $IFrameContentRendering
+	 * @param boolean $iFrameContentRendering
 	 * @param string $jsParent
 	 * @return void
 	 */
-	public function setIFrameContentRendering($IFrameContentRendering = TRUE, $jsParent = 'parent.') {
-		if ($this->iframeContentRendering = $IFrameContentRendering) {
+	public function setIFrameContentRendering($iFrameContentRendering = TRUE, $jsParent = 'parent.') {
+		if (($this->iframeContentRendering = $iFrameContentRendering)) {
 			$this->jsParent = $jsParent;
 		} else {
 			$this->jsParent = '';
@@ -280,14 +283,18 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 			// include function
 		$divFrame .= '<script type="text/javascript">';
 		$divFrame .= '
-		function jumpTo(id,linkObj,highLightID,script)	{
+			function jumpTo(id,linkObj,highLightID,script)	{
 				var catUid = id.substr(id.lastIndexOf("=") + 1); //We can leave out the "="
 				var text   = (linkObj.firstChild) ? linkObj.firstChild.nodeValue : "Unknown";
 				//Params (field, value, caption)
 				setFormValueFromBrowseWin("' . $this->PA['itemFormElName'] . '", catUid, text);
 			}';
 		$divFrame .= '</script>';
-		$divFrame .= '<script src="' . $this->tceforms->backPath . '../' . PATH_TXCOMMERCE_REL . 'Resources/Public/Javascript/tree.js" type=""></script>';
+		$divFrame .= '<script src="' . $this->tceforms->backPath . 'js/tree.js" type=""></script>';
+		$divFrame .= '
+			Tree.thisScript = "../../../../../typo3/ajax.php",
+			Tree.ajaxID = "Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper::ajaxExpandCollapse";
+		';
 
 		return $divFrame;
 	}

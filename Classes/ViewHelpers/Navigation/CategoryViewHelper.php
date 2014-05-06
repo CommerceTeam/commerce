@@ -52,9 +52,7 @@ class Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper extends t3lib_SCbase
 		// Get the Category Tree
 		$this->categoryTree = t3lib_div::makeInstance('Tx_Commerce_Tree_CategoryTree');
 		$this->categoryTree->setBare(FALSE);
-		$this->categoryTree->setSimpleMode(
-			(int) $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['simpleMode']
-		);
+		$this->categoryTree->setSimpleMode((int) $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['simpleMode']);
 		$this->categoryTree->init();
 	}
 
@@ -64,7 +62,9 @@ class Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper extends t3lib_SCbase
 	 * @return void
 	 */
 	public function initPage() {
-		$this->doc = t3lib_div::makeInstance('template');
+		/** @var template $doc */
+		$doc = t3lib_div::makeInstance('template');
+		$this->doc = $doc;
 		$this->doc->backPath = $GLOBALS['BACK_PATH'];
 		$this->doc->docType = 'xhtml_trans';
 		$this->doc->setModuleTemplate(PATH_TXCOMMERCE . 'Resources/Private/Backend/mod_navigation.html');
@@ -122,19 +122,21 @@ class Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper extends t3lib_SCbase
 
 		$this->doc->loadJavascriptLib('contrib/prototype/prototype.js');
 		$this->doc->loadJavascriptLib($this->doc->backPath . 'js/tree.js');
-		$this->doc->JScode .= $this->doc->wrapScriptTags(
-			'
-						Tree.thisScript = "../../../../../../typo3/ajax.php";
-						Tree.ajaxID = "Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper::ajaxExpandCollapse";
-					'
-		);
-		// Adding javascript code for AJAX (prototype), drag&drop and the pagetree as well as the click menu code
+		$this->doc->JScode .= $this->doc->wrapScriptTags('
+			Tree.thisScript = "../../../../../../typo3/ajax.php";
+			Tree.ajaxID = "Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper::ajaxExpandCollapse";
+		');
+
+		// Adding javascript code for AJAX (prototype), drag&drop and the
+		// pagetree as well as the click menu code
 		$this->doc->getContextMenuCode();
 
 		$this->doc->bodyTagId = 'typo3-pagetree';
 	}
 
 	/**
+	 * Main method
+	 *
 	 * @return void
 	 */
 	public function main() {
@@ -172,6 +174,8 @@ class Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper extends t3lib_SCbase
 	}
 
 	/**
+	 * Print content
+	 *
 	 * @return void
 	 */
 	public function printContent() {
@@ -179,7 +183,8 @@ class Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper extends t3lib_SCbase
 	}
 
 	/**
-	 * Create the panel of buttons for submitting the form or otherwise perform operations.
+	 * Create the panel of buttons for submitting the
+	 * form or otherwise perform operations.
 	 *
 	 * @return array all available buttons as an assoc. array
 	 */
@@ -190,13 +195,13 @@ class Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper extends t3lib_SCbase
 		);
 
 		// Refresh
-		$buttons['refresh'] = '<a href="' . htmlspecialchars(
-				t3lib_div::getIndpEnv('REQUEST_URI')
-			) . '">' . t3lib_iconWorks::getSpriteIcon('actions-system-refresh') . '</a>';
+		$buttons['refresh'] = '<a href="' . htmlspecialchars(t3lib_div::getIndpEnv('REQUEST_URI')) . '">' .
+			t3lib_iconWorks::getSpriteIcon('actions-system-refresh') . '</a>';
 
 		// CSH
 		$buttons['csh'] = str_replace(
-			'typo3-csh-inline', 'typo3-csh-inline show-right',
+			'typo3-csh-inline',
+			'typo3-csh-inline show-right',
 			t3lib_BEfunc::cshItem('xMOD_csh_commercebe', 'categorytree', $this->doc->backPath)
 		);
 
@@ -215,6 +220,7 @@ class Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper extends t3lib_SCbase
 		return $updater->access();
 	}
 
+
 	/**
 	 * Makes the AJAX call to expand or collapse the categorytree.
 	 * Called by typo3/ajax.php
@@ -224,26 +230,47 @@ class Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper extends t3lib_SCbase
 	 * @return void
 	 */
 	public function ajaxExpandCollapse($params, &$ajaxObj) {
-		$PM = t3lib_div::_GP('PM');
+		$parameter = t3lib_div::_GP('PM');
 		// IE takes anchor as parameter
-		if (($PMpos = strpos($PM, '#')) !== FALSE) {
-			$PM = substr($PM, 0, $PMpos);
+		if (($parameterPosition = strpos($parameter, '#')) !== FALSE) {
+			$parameter = substr($parameter, 0, $parameterPosition);
 		}
-		$PM = explode('_', $PM);
+		$parameter = explode('_', $parameter);
 
-		// Load the tree
+		// Get the Category Tree
 		$this->init();
-		$tree = $this->categoryTree->getBrowseableAjaxTree($PM);
+		$tree = $this->categoryTree->getBrowseableAjaxTree($parameter);
+
+		$ajaxObj->addContent('tree', $tree);
+	}
+
+	/**
+	 * Makes the AJAX call to expand or collapse the categorytree.
+	 * Called by typo3/ajax.php
+	 *
+	 * @param array $params additional parameters (not used here)
+	 * @param TYPO3AJAX &$ajaxObj reference of the TYPO3AJAX object of this request
+	 * @return void
+	 */
+	public function ajaxExpandCollapseWithoutProduct($params, &$ajaxObj) {
+		$parameter = t3lib_div::_GP('PM');
+		// IE takes anchor as parameter
+		if (($parameterPosition = strpos($parameter, '#')) !== FALSE) {
+			$parameter = substr($parameter, 0, $parameterPosition);
+		}
+		$parameter = explode('_', $parameter);
+
+		// Get the category tree without the products and the articles
+		/** @var Tx_Commerce_Tree_CategoryTree $categoryTree */
+		$categoryTree = t3lib_div::makeInstance('Tx_Commerce_Tree_CategoryTree');
+		$categoryTree->init();
+		$tree = $categoryTree->getBrowseableAjaxTree($parameter);
 
 		$ajaxObj->addContent('tree', $tree);
 	}
 }
 
-if (defined(
-		'TYPO3_MODE'
-	)
-	&& $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/ViewHelpers/Navigation/CategoryViewHelper.php']
-) {
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/ViewHelpers/Navigation/CategoryViewHelper.php']) {
 	/** @noinspection PhpIncludeInspection */
 	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/ViewHelpers/Navigation/CategoryViewHelper.php']);
 }

@@ -30,16 +30,20 @@
  *
  * Can display
  * - non-browseable trees (all expanded)
- * - and browsable trees that runs inside an iframe which is needed not to reload the whole page all the time
+ * - and browsable trees that runs inside an iframe which is needed
+ *   not to reload the whole page all the time
  *
- * If we want to display a browseable tree, we need to run the tree in an iframe element.
- * In consequence this means that the display of the browseable tree needs to be generated from an extra script.
+ * If we want to display a browseable tree, we need to run the tree in
+ * an iframe element. In consequence this means that the display of the
+ * browseable tree needs to be generated from an extra script.
  * This is the base class for such a script.
  *
  * The class itself do not render the tree but call tceforms to render the field.
- * In beforehand the TCA config value of treeViewBrowseable will be set to 'iframeContent' to force the right rendering.
+ * In beforehand the TCA config value of treeViewBrowseable will be set to
+ * 'iframeContent' to force the right rendering.
  *
- * That means the script do not know anything about trees. It just set parameters and render the field with TCEforms.
+ * That means the script do not know anything about trees. It just set
+ * parameters and render the field with TCEforms.
  *
  * Might be possible with AJAX ...
  */
@@ -67,7 +71,7 @@ class Tx_Commerce_ViewHelpers_TreelibBrowser extends t3lib_SCbase {
 	/**
 	 * @var string
 	 */
-	protected $flex_config;
+	protected $flexConfig;
 
 	/**
 	 * @var string
@@ -87,40 +91,41 @@ class Tx_Commerce_ViewHelpers_TreelibBrowser extends t3lib_SCbase {
 	public function init() {
 		parent::init();
 
-			// Setting GPvars:
+		// Setting GPvars:
 		$this->table = t3lib_div::_GP('table');
 		$this->field = t3lib_div::_GP('field');
 		$this->uid = t3lib_div::_GP('uid');
 		$this->itemFormElName = t3lib_div::_GP('elname');
-		$this->flex_config = t3lib_div::_GP('config');
+		$this->flexConfig = t3lib_div::_GP('config');
 		$seckey = t3lib_div::_GP('seckey');
 		$allowProducts = t3lib_div::_GP('allowProducts');
 
-			// since we are worried about someone forging parameters (XSS security hole) we will check with sent md5 hash:
 		if (!($seckey === t3lib_div::shortMD5($this->table . '|' . $this->field . '|' . $this->uid . '|' . $this->itemFormElName .
-				'|' . $this->flex_config . '|' . $allowProducts . '|' . $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey']))) {
+				'|' . $this->flexConfig . '|' . $allowProducts . '|' . $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey']))) {
 			die('access denied');
 		}
 
-		if ($this->flex_config) {
-			$this->flex_config = unserialize(base64_decode($this->flex_config));
+		if ($this->flexConfig) {
+			$this->flexConfig = unserialize(base64_decode($this->flexConfig));
 		}
 
 		$this->backPath = $GLOBALS['BACK_PATH'];
 
-			// Initialize template object
-		$this->doc = t3lib_div::makeInstance('template');
+		// Initialize template object
+		/** @var template $doc */
+		$doc = t3lib_div::makeInstance('template');
+		$this->doc = $doc;
 		$this->doc->docType = 'xhtml_trans';
 		$this->doc->backPath = $this->backPath;
 
-			// from tx_dam_SCbase
-		$this->doc->buttonColor = '#e3dfdb';
-		$this->doc->buttonColorHover = t3lib_div::modifyHTMLcolor($this->doc->buttonColor, -20, -20, -20);
+		// from tx_dam_SCbase
+		$buttonColor = '#e3dfdb';
+		$buttonColorHover = t3lib_div::modifyHTMLcolor($buttonColor, -20, -20, -20);
 
-			// in typo3/stylesheets.css css is defined with id instead of a class: TABLE#typo3-tree
-			// that's why we need TABLE.typo3-browsetree
+		// in typo3/stylesheets.css css is defined with id instead of
+		// a class: TABLE#typo3-tree that's why we need TABLE.typo3-browsetree
 		$this->doc->inDocStylesArray['typo3-browsetree'] = '
-					/* Trees */
+			/* Trees */
 			TABLE.typo3-browsetree A { text-decoration: none;  }
 			TABLE.typo3-browsetree TR TD { white-space: nowrap; vertical-align: middle; }
 			TABLE.typo3-browsetree TR TD IMG { vertical-align: middle; }
@@ -132,10 +137,10 @@ class Tx_Commerce_ViewHelpers_TreelibBrowser extends t3lib_SCbase {
 			}
 			TABLE.typo3-browsetree TR TD.typo3-browsetree-control a {
 				padding: 0px 3px 0px 3px;
-				background-color: ' . $this->doc->buttonColor . ';
+				background-color: ' . $buttonColor . ';
 			}
 			TABLE.typo3-browsetree TR TD.typo3-browsetree-control > a:hover {
-				background-color:' . $this->doc->buttonColorHover . ';
+				background-color:' . $buttonColorHover . ';
 			}';
 
 		$this->doc->inDocStylesArray['background-color'] = '
@@ -144,18 +149,25 @@ class Tx_Commerce_ViewHelpers_TreelibBrowser extends t3lib_SCbase {
 		';
 
 		$this->doc->loadJavascriptLib('contrib/prototype/prototype.js');
-		$this->doc->loadJavascriptLib('/' . PATH_TXCOMMERCE_REL . 'Resources/Public/Javascript/tree.js');
+		$this->doc->loadJavascriptLib('js/tree.js');
 
+		if ($allowProducts) {
 			// Check if we need to allow browsing of products.
-		if (1 == $allowProducts) {
-			$this->doc->JScode .= $this->doc->wrapScriptTags('Tree.ajaxID = "Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper::ajaxExpandCollapse";');
+			$this->doc->JScode .= $this->doc->wrapScriptTags('
+				Tree.thisScript = "../../../../../typo3/ajax.php",
+				Tree.ajaxID = "Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper::ajaxExpandCollapse";
+			');
+		} else {
+			// Check if we need to allow browsing of products.
+			$this->doc->JScode .= $this->doc->wrapScriptTags('
+				Tree.thisScript = "../../../../../typo3/ajax.php",
+				Tree.ajaxID = "Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper::ajaxExpandCollapseWithoutProduct";
+			');
 		}
 
-			// Setting JavaScript for menu
-			// in this context, the function jumpTo is different
-			// it adds the Category to the mountpoints
-			// DAM actually calls the function parent.setFormValueFromBrowseWin directly - we sneak around it ;)
-			// MAYBE WE SHOULD just use a different leaf_categoryview and give it a different JS function - DEPENDS how often a manipulation like this is needed###
+		// Setting JavaScript for menu
+		// in this context, the function jumpTo is different
+		// it adds the Category to the mountpoints
 		$this->doc->JScode .= $this->doc->wrapScriptTags(
 			($this->currentSubScript ? 'top.currentSubScript=unescape("' . rawurlencode($this->currentSubScript) . '");' : '') . '
 
@@ -174,7 +186,7 @@ class Tx_Commerce_ViewHelpers_TreelibBrowser extends t3lib_SCbase {
 	 * @return void
 	 */
 	public function main() {
-			// get the data of the field - the currently selected items
+		// get the data of the field - the currently selected items
 		$row = $this->getRecordProcessed();
 
 		$this->content .= $this->doc->startPage('Treeview Browser');
@@ -184,32 +196,32 @@ class Tx_Commerce_ViewHelpers_TreelibBrowser extends t3lib_SCbase {
 		$form->initDefaultBEmode();
 		$form->backPath = $this->backPath;
 
-			// modifying TCA to force the right rendering - not nice but works
+		// modifying TCA to force the right rendering - not nice but works
 		t3lib_div::loadTCA($this->table);
 
 		$row['uid'] = $this->uid;
 
-		$fakePA = array();
+		$parameter = array();
 
-		if (is_array($this->flex_config)) {
-			$fakePA['fieldConf'] = array(
-				'label' => $form->sL($this->flex_config['label']),
-				'config' => $this->flex_config['config'],
-				'defaultExtras' => $this->flex_config['defaultExtras']
+		if (is_array($this->flexConfig)) {
+			$parameter['fieldConf'] = array(
+				'label' => $form->sL($this->flexConfig['label']),
+				'config' => $this->flexConfig['config'],
+				'defaultExtras' => $this->flexConfig['defaultExtras']
 			);
 		} else {
-			$fakePA['fieldConf'] = array(
+			$parameter['fieldConf'] = array(
 				'label' => $form->sL($GLOBALS['TCA'][$this->table]['columns'][$this->field]['label']),
 				'config' => $GLOBALS['TCA'][$this->table]['columns'][$this->field]['config']
 			);
 		}
 
-		$fakePA['fieldConf']['config']['treeViewBrowseable'] = 'iframeContent';
-		$fakePA['fieldConf']['config']['noTableWrapping'] = TRUE;
-		$fakePA['itemFormElName'] = $this->itemFormElName;
-		$fakePA['itemFormElName_file'] = $this->itemFormElName;
+		$parameter['fieldConf']['config']['treeViewBrowseable'] = 'iframeContent';
+		$parameter['fieldConf']['config']['noTableWrapping'] = TRUE;
+		$parameter['itemFormElName'] = $this->itemFormElName;
+		$parameter['itemFormElName_file'] = $this->itemFormElName;
 
-		$this->content .= $form->getSingleField_SW($this->table, $this->field, $row, $fakePA);
+		$this->content .= $form->getSingleField_SW($this->table, $this->field, $row, $parameter);
 	}
 
 	/**
@@ -229,8 +241,8 @@ class Tx_Commerce_ViewHelpers_TreelibBrowser extends t3lib_SCbase {
 	 * @return array Record
 	 */
 	protected function getRecordProcessed() {
-			// This will render MM relation fields in the correct way.
-			// Read the whole record, which is not needed, but there's no other way.
+		// This will render MM relation fields in the correct way.
+		// Read the whole record, which is not needed, but there's no other way.
 		/** @var t3lib_transferData $trData */
 		$trData = t3lib_div::makeInstance('t3lib_transferData');
 		$trData->addRawData = TRUE;

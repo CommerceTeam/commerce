@@ -169,7 +169,7 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/rtehtmlarea/mod3/class.tx_rtehtml
 	'EXT:commerce/Classes/Hook/BrowselinksHooks.php:Tx_Commerce_Hook_BrowselinksHooks';
 
 	// Add ajax listener for tree in linkcommerce
-$GLOBALS['TYPO3_CONF_VARS']['BE']['AJAX']['tx_commerce_browselinkshooks::ajaxExpandCollapse'] =
+$GLOBALS['TYPO3_CONF_VARS']['BE']['AJAX']['Tx_Commerce_Hook_BrowselinksHooks::ajaxExpandCollapse'] =
 	'EXT:commerce/Classes/Hook/BrowselinksHooks.php:Tx_Commerce_Hook_BrowselinksHooks->ajaxExpandCollapse';
 
 
@@ -225,8 +225,8 @@ $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/AddressesCon
 	// Adding the AJAX listeners for Permission change/Browsing the Category tree
 $GLOBALS['TYPO3_CONF_VARS']['BE']['AJAX']['Tx_Commerce_Controller_PermissionAjaxController::dispatch'] =
 	'EXT:commerce/Classes/Controller/PermissionAjaxController.php:Tx_Commerce_Controller_PermissionAjaxController->dispatch';
-$GLOBALS['TYPO3_CONF_VARS']['BE']['AJAX']['Tx_Commerce_ViewHelpers_Navigation_AccessViewHelper::ajaxExpandCollapse'] =
-	'EXT:commerce/Classes/ViewHelpers/Navigation/AccessViewHelper.php:Tx_Commerce_ViewHelpers_Navigation_AccessViewHelper->ajaxExpandCollapse';
+$GLOBALS['TYPO3_CONF_VARS']['BE']['AJAX']['Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper::ajaxExpandCollapseWithoutProduct'] =
+	'EXT:commerce/Classes/ViewHelpers/Navigation/CategoryViewHelper.php:Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper->ajaxExpandCollapseWithoutProduct';
 $GLOBALS['TYPO3_CONF_VARS']['BE']['AJAX']['Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper::ajaxExpandCollapse'] =
 	'EXT:commerce/Classes/ViewHelpers/Navigation/CategoryViewHelper.php:Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper->ajaxExpandCollapse';
 
