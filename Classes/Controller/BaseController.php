@@ -1712,17 +1712,14 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 	public function renderProductsForList($categoryProducts, $templateMarker, $iterations, $typoscriptMarker = '') {
 		$markerArray = array();
 
-		if (is_array(
-			$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['renderProductsForList']
-		)
-		) {
+		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['renderProductsForList'])) {
 			t3lib_div::deprecationLog(
 				'
-								hook
-								$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_pibase.php\'][\'renderProductsForList\']
-								is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
-								$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/BaseController.php\'][\'renderProductsForList\']
-							'
+					hook
+					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_pibase.php\'][\'renderProductsForList\']
+					is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
+					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/BaseController.php\'][\'renderProductsForList\']
+				'
 			);
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['renderProductsForList'] as $classRef) {
 				$hookObj = & t3lib_div::getUserObj($classRef);
@@ -1734,10 +1731,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 				}
 			}
 		}
-		if (is_array(
-			$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BaseController.php']['renderProductsForList']
-		)
-		) {
+		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BaseController.php']['renderProductsForList'])) {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BaseController.php']['renderProductsForList'] as $classRef) {
 				$hookObj = & t3lib_div::getUserObj($classRef);
 				if (method_exists($hookObj, 'preProcessorProductsListView')) {
@@ -1760,9 +1754,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 				$template = $this->cObj->getSubpart($this->templateCode, '###' . $templateMarker[$iterationCount] . '###');
 
 				/** @var Tx_Commerce_Domain_Model_Product $myProduct */
-				$myProduct = t3lib_div::makeInstance(
-					'Tx_Commerce_Domain_Model_Product', $myProductId, $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']
-				);
+				$myProduct = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product', $myProductId, $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
 				$myProduct->loadData();
 				$myProduct->loadArticles();
 
@@ -1817,11 +1809,11 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['product'])) {
 			t3lib_div::deprecationLog(
 				'
-								hook
-								$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_pibase.php\'][\'product\']
-								is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
-								$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/BaseController.php\'][\'renderProduct\']
-							'
+					hook
+					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_pibase.php\'][\'product\']
+					is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
+					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/BaseController.php\'][\'renderProduct\']
+				'
 			);
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['product'] as $classRef) {
 				$hookObjectsArr[] = & t3lib_div::getUserObj($classRef);
