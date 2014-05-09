@@ -224,7 +224,8 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		$canMakeCheckout = $this->canMakeCheckout();
 		if (is_string($canMakeCheckout)) {
 			return $this->cObj->cObjGetSingle(
-				$this->conf['cantMakeCheckout.'][$canMakeCheckout], $this->conf['cantMakeCheckout.'][$canMakeCheckout . '.']
+				$this->conf['cantMakeCheckout.'][$canMakeCheckout],
+				$this->conf['cantMakeCheckout.'][$canMakeCheckout . '.']
 			);
 		}
 
@@ -740,9 +741,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		$paymentType = $this->getPaymentType();
 
 		if ($this->conf[$paymentType . '.']['subpartMarker.']['listWrap']) {
-			$template = $this->cObj->getSubpart(
-				$this->templateCode, strtoupper($this->conf[$paymentType . '.']['subpartMarker.']['listWrap'])
-			);
+			$template = $this->cObj->getSubpart($this->templateCode, strtoupper($this->conf[$paymentType . '.']['subpartMarker.']['listWrap']));
 		} else {
 			$template = $this->cObj->getSubpart($this->templateCode, '###PAYMENT###');
 		}
@@ -750,16 +749,12 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		// Fill standard markers
 		$markerArray['###PAYMENT_TITLE###'] = $this->pi_getLL('payment_title');
 		$markerArray['###PAYMENT_DESCRIPTION###'] = $this->pi_getLL('payment_description');
-		$markerArray['###PAYMENT_DISCLAIMER###'] = $this->pi_getLL('general_disclaimer') . '<br />' . $this->pi_getLL(
-				'payment_disclaimer'
-			);
+		$markerArray['###PAYMENT_DISCLAIMER###'] = $this->pi_getLL('general_disclaimer') . '<br />' . $this->pi_getLL('payment_disclaimer');
 
 		// Check if we already have a payment object
 		// If we don't have one, try to create a new one from the config
 		if (!isset($paymentObj)) {
-			$config = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['SYSPRODUCTS']['PAYMENT']['types'][strtolower(
-				(string) $paymentType
-			)];
+			$config = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['SYSPRODUCTS']['PAYMENT']['types'][strtolower((string) $paymentType)];
 
 			$errorStr = NULL;
 			if (!isset($config['class'])) {
@@ -769,9 +764,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 				$errorStr[] = 'file not found!';
 			}
 			if (is_array($errorStr)) {
-				die('PAYMENT:FATAL! No payment possible because I don\'t know how to handle it! (' . implode(
-						', ', $errorStr
-					) . ')');
+				die('PAYMENT:FATAL! No payment possible because I don\'t know how to handle it! (' . implode(', ', $errorStr) . ')');
 			}
 
 			$paymentObj = t3lib_div::makeInstance($config['class']);
@@ -782,9 +775,10 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		 * payment information are stored in the session is invalid or
 		 * information in session result in an error
 		 */
-		if ($paymentObj->needAdditionalData($this)
+		if (
+			$paymentObj->needAdditionalData($this)
 			&& ((isset($this->sessionData['payment']) && !$paymentObj->proofData($this->sessionData['payment']))
-				|| (!isset($this->sessionData['payment']) || $paymentObj->getLastError()))
+			|| (!isset($this->sessionData['payment']) || $paymentObj->getLastError()))
 		) {
 			// Merge local lang array with language information of payment object
 			if (is_array($this->LOCAL_LANG) && isset($paymentObj->LOCAL_LANG)) {
@@ -821,14 +815,13 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 				$markerArray['###PAYMENT_PAYMENTOBJ_MESSAGE###'] = $this->pi_getLL('defaultPaymentDataError');
 			}
 			$markerArray['###PAYMENT_FORM_FIELDS###'] = $paymentForm;
-			$markerArray['###PAYMENT_FORM_SUBMIT###'] = '<input type="submit" value="' . $this->pi_getLL(
-					'payment_submit'
-				) . '" /></form>';
+			$markerArray['###PAYMENT_FORM_SUBMIT###'] = '<input type="submit" value="' . $this->pi_getLL('payment_submit') . '" /></form>';
 		} else {
 			// Redirect to the next page because no additional payment
 			// information is needed or everything is correct
 			return FALSE;
 		}
+
 		foreach ($hookObjectsArr as $hookObj) {
 			if (method_exists($hookObj, 'ProcessMarker')) {
 				$markerArray = $hookObj->ProcessMarker($markerArray, $this);
@@ -837,9 +830,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 
 		$this->currentStep = 'payment';
 
-		return $this->cObj->substituteMarkerArray(
-			$this->cObj->substituteMarkerArray($template, $markerArray), $this->languageMarker
-		);
+		return $this->cObj->substituteMarkerArray($this->cObj->substituteMarkerArray($template, $markerArray), $this->languageMarker);
 	}
 
 	/**
@@ -937,20 +928,15 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 
 		if (!isset($paymentObj)) {
 			$paymentType = $this->getPaymentType();
-			$config = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['SYSPRODUCTS']['PAYMENT']['types'][strtolower(
-				(string) $paymentType
-			)];
+			$config = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['SYSPRODUCTS']['PAYMENT']['types'][strtolower((string) $paymentType)];
 
 			if (!isset($config['class']) || !file_exists($config['path'])) {
-				throw new Exception(
-					'FINISHING: FATAL! No payment possible because no payment handler is configured!', 1395665876
-				);
+				throw new Exception('FINISHING: FATAL! No payment possible because no payment handler is configured!', 1395665876);
 			}
 
 			$paymentObj = t3lib_div::makeInstance($config['class'], $this);
 		} else {
-			$config = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['SYSPRODUCTS']['PAYMENT']['types'][$paymentObj->getType(
-			)];
+			$config = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['SYSPRODUCTS']['PAYMENT']['types'][$paymentObj->getType()];
 		}
 
 		if ($paymentObj instanceof Tx_Commerce_Payment_Interface_Payment) {
@@ -973,16 +959,17 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 
 		// Check stock amount of articles
 		if (!$this->checkStock()) {
-			$content = $this->pi_getLL('not_all_articles_in_stock') . $this->pi_linkToPage(
-					$this->pi_getLL('no_stock_back'), $this->conf['noStockBackPID']
-				);
+			$content = $this->pi_getLL('not_all_articles_in_stock') .
+				$this->pi_linkToPage($this->pi_getLL('no_stock_back'), $this->conf['noStockBackPID']);
 
 			return $this->cObj->stdWrap($content, $this->conf['noStockWrap.']);
 		}
 
 		// Handle orders
+		/** @var $feUser tslib_feUserAuth */
+		$feUser = & $GLOBALS['TSFE']->fe_user;
 		/** @var $basket Tx_Commerce_Domain_Model_Basket */
-		$basket = & $GLOBALS['TSFE']->fe_user->tx_commerce_basket;
+		$basket = & $feUser->tx_commerce_basket;
 
 		$hookObjectsArr = $this->getHookObjectArray('finishIt');
 		foreach ($hookObjectsArr as $hookObj) {
@@ -1002,15 +989,9 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		}
 
 		if (method_exists($paymentObj, 'hasSpecialFinishingForm') && $paymentObj->hasSpecialFinishingForm($_REQUEST)) {
-			$content = $paymentObj->getSpecialFinishingForm($config, $this->sessionData, $basket);
-
-			return $content;
-		} else {
-			if (!$paymentObj->finishingFunction($config, $this->sessionData, $basket)) {
-				$content = $this->handlePayment($paymentObj);
-
-				return $content;
-			}
+			return $paymentObj->getSpecialFinishingForm($config, $this->sessionData, $basket);
+		} elseif (!$paymentObj->finishingFunction($config, $this->sessionData, $basket)) {
+			return $this->handlePayment($paymentObj);
 		}
 
 		foreach ($hookObjectsArr as $hookObj) {
@@ -1123,9 +1104,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			}
 		}
 
-		$content = $this->cObj->substituteMarkerArray(
-			$this->cObj->substituteMarkerArray($content, $markerArray), $this->languageMarker
-		);
+		$content = $this->cObj->substituteMarkerArray($this->cObj->substituteMarkerArray($content, $markerArray), $this->languageMarker);
 
 		foreach ($hookObjectsArr as $hookObj) {
 			if (method_exists($hookObj, 'postFinish')) {
@@ -1135,9 +1114,9 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 
 		// At last remove some things from the session
 		if ($this->clearSessionAfterCheckout == TRUE) {
-			$GLOBALS['TSFE']->fe_user->setKey('ses', Tx_Commerce_Utility_GeneralUtility::generateSessionKey('payment'), NULL);
-			$GLOBALS['TSFE']->fe_user->setKey('ses', Tx_Commerce_Utility_GeneralUtility::generateSessionKey('delivery'), NULL);
-			$GLOBALS['TSFE']->fe_user->setKey('ses', Tx_Commerce_Utility_GeneralUtility::generateSessionKey('billing'), NULL);
+			$feUser->setKey('ses', Tx_Commerce_Utility_GeneralUtility::generateSessionKey('payment'), NULL);
+			$feUser->setKey('ses', Tx_Commerce_Utility_GeneralUtility::generateSessionKey('delivery'), NULL);
+			$feUser->setKey('ses', Tx_Commerce_Utility_GeneralUtility::generateSessionKey('billing'), NULL);
 		}
 
 		$basket->finishOrder();
@@ -1145,11 +1124,12 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		// create new basket to remove all values from old one
 		/** @var Tx_Commerce_Domain_Model_Basket $basket */
 		$basket = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Basket');
-		$basket->setSessionId(md5($GLOBALS['TSFE']->fe_user->id . ':' . rand(0, PHP_INT_MAX)));
+		$basket->setSessionId(md5($feUser->id . ':' . rand(0, PHP_INT_MAX)));
 		$basket->loadData();
 
-		$GLOBALS['TSFE']->fe_user->setKey('ses', 'commerceBasketId', $basket->getSessionId());
-		$GLOBALS['TSFE']->fe_user->tx_commerce_basket = $basket;
+		/** @var tslib_fe $frontend */
+		$feUser->setKey('ses', 'commerceBasketId', $basket->getSessionId());
+		$feUser->tx_commerce_basket = $basket;
 
 		return $content;
 	}
