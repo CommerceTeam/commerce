@@ -1543,20 +1543,18 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 
 			$paymentBasketItem = $basket->getCurrentPaymentBasketItem();
 
-			if (strtoupper(
-					$paymentBasketItem->getArticle()
-						->getTitle()
-				) !== $this->piVars['payArt']
+			if (
+				(is_object($paymentBasketItem) && strtoupper($paymentBasketItem->getArticle()->getClassname()) !== $this->piVars['payArt'])
+				|| !is_object($paymentBasketItem)
 			) {
 				$basket->removeCurrentPaymentArticle();
-				$GLOBALS['TSFE']->fe_user->setKey(
-					'ses', Tx_Commerce_Utility_GeneralUtility::generateSessionKey('payment'), $this->piVars['payArt']
-				);
+				$GLOBALS['TSFE']->fe_user->setKey('ses', Tx_Commerce_Utility_GeneralUtility::generateSessionKey('payment'), $this->piVars['payArt']);
 
 				$articleRow = $database->exec_SELECTgetSingleRow(
-					'*', 'tx_commerce_articles', 'classname = ' . $database->fullQuoteStr(
-						strtolower($this->piVars['payArt']), 'tx_commerce_articles'
-					) . $this->cObj->enableFields('tx_commerce_articles')
+					'*',
+					'tx_commerce_articles',
+					'classname = ' . $database->fullQuoteStr(strtolower($this->piVars['payArt']), 'tx_commerce_articles') .
+						$this->cObj->enableFields('tx_commerce_articles')
 				);
 				if (count($articleRow)) {
 					$basket->addArticle($articleRow['uid']);

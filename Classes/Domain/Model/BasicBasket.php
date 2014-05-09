@@ -735,7 +735,10 @@ class Tx_Commerce_Domain_Model_BasicBasket {
 	 * @return void
 	 */
 	public function removeCurrentPaymentArticle() {
-		$this->deleteArticle($this->getCurrentPaymentBasketItem()->getArticleUid());
+		$paymentBasketItem = $this->getCurrentPaymentBasketItem();
+		if (is_object($paymentBasketItem)) {
+			$this->deleteArticle($paymentBasketItem->getArticleUid());
+		}
 	}
 
 
