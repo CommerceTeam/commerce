@@ -573,9 +573,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 				}
 
 				if ($this->useRootlineInformationToUrl == 1) {
-					$typoLinkConf['additionalParams'] .= $this->argSeparator . $this->prefixId . '[path]=' . $this->getPathCat(
-							$oneCategory
-						);
+					$typoLinkConf['additionalParams'] .= $this->argSeparator . $this->prefixId . '[path]=' . $this->getPathCat($oneCategory);
 					$typoLinkConf['additionalParams'] .= $this->argSeparator . $this->prefixId . '[mDepth]=' . $this->mDepth;
 				}
 
@@ -683,11 +681,8 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 			$this->internal['dontLinkActivePage'] = $this->conf['pageBrowser.']['dontLinkActivePage'];
 			$this->internal['showFirstLast'] = $this->conf['pageBrowser.']['showFirstLast'];
 			$this->internal['showRange'] = $this->conf['pageBrowser.']['showRange'];
-			if ($this->conf['pageBrowser.']['hscText'] != 1) {
-				$hscText = 0;
-			} else {
-				$hscText = 1;
-			}
+			$hscText = !($this->conf['pageBrowser.']['hscText'] != 1);
+
 			$markerArray['CATEGORY_BROWSEBOX'] = $this->pi_list_browseresults(
 				$this->conf['pageBrowser.']['showItemCount'], $this->conf['pageBrowser.']['tableParams.'],
 				$this->conf['pageBrowser.']['wraps.'], 'pointer', $hscText
@@ -699,11 +694,11 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['listview'])) {
 			t3lib_div::deprecationLog(
 				'
-								hook
-								$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_pibase.php\'][\'listview\']
-								is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
-								$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/BaseController.php\'][\'listView\']
-							'
+					hook
+					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_pibase.php\'][\'listview\']
+					is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
+					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/BaseController.php\'][\'listView\']
+				'
 			);
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['listview'] as $classRef) {
 				$hookObj = & t3lib_div::getUserObj($classRef);

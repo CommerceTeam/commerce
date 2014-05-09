@@ -706,7 +706,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 		$result = FALSE;
 
 		if ($this->hasProducts()) {
-			$result = $this->databaseConnection->getCountOfProductsWithStock($this->getProductUids()) > 0;
+			$result = count(Tx_Commerce_Utility_GeneralUtility::removeNoStockProducts($this->getProducts(), 0));
 		}
 
 		return $result;

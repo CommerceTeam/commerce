@@ -413,21 +413,6 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 		return FALSE;
 	}
 
-	/**
-	 * Get count of products with stock
-	 *
-	 * @param array $productsUids
-	 * @return int
-	 */
-	public function getCountOfProductsWithStock($productsUids) {
-		return $this->database->exec_SELECTcountRows(
-			'*',
-			'tx_commerce_articles',
-			'stock > 0 AND uid_product in (' . implode(',', $productsUids) . ')' .
-				$this->enableFields('tx_commerce_articles', $GLOBALS['TSFE']->showHiddenRecords)
-		);
-	}
-
 
 	/**
 	 * Getter
