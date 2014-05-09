@@ -531,7 +531,10 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 				if ($this->conf['hideEmptyCategories'] == 1) {
 					// First check TS setting (ceap)
 					// afterwards do the recursive call (expensive)
-					if (!$oneCategory->hasProductsInSubCategories()) {
+					if (
+						!$oneCategory->hasProductsInSubCategories()
+						|| ($this->conf['useStockHandling'] && !$oneCategory->hasProductsWithStock())
+					) {
 						// This category is empty, so
 						// skip this iteration and do next
 						continue;
