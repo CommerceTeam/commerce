@@ -393,7 +393,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	 * @return array Categories
 	 */
 	public function getL18nCategories() {
-		return $this->databaseConnection->get_l18n_categories($this->uid);
+		return $this->databaseConnection->getL18nCategories($this->uid);
 	}
 
 	/**
@@ -426,7 +426,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	 * @return array Array of category objects
 	 */
 	public function getParentCategories() {
-		$parents = $this->databaseConnection->get_parent_categories($this->uid);
+		$parents = $this->databaseConnection->getParentCategories($this->uid);
 		$parentCats = array();
 		for ($i = 0, $l = count($parents); $i < $l; $i++) {
 			/** @var Tx_Commerce_Domain_Model_Category $category */
@@ -630,9 +630,9 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 			$this->images_array = t3lib_div::trimExplode(',', $this->images, TRUE);
 			$this->teaserImagesArray = t3lib_div::trimExplode(',', $this->teaserimages, TRUE);
 
-			$this->categories_uid = $this->databaseConnection->get_child_categories($this->uid, $this->lang_uid);
-			$this->parent_category_uid = $this->databaseConnection->get_parent_category($this->uid);
-			$this->products_uid = $this->databaseConnection->get_child_products($this->uid, $this->lang_uid);
+			$this->categories_uid = $this->databaseConnection->getChildCategories($this->uid, $this->lang_uid);
+			$this->parent_category_uid = $this->databaseConnection->getParentCategory($this->uid);
+			$this->products_uid = $this->databaseConnection->getChildProducts($this->uid, $this->lang_uid);
 			$this->data_loaded = TRUE;
 		}
 	}
@@ -695,6 +695,21 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	 */
 	public function hasProducts() {
 		return count($this->getProductUids());
+	}
+
+	/**
+	 * Returns if this category has products with stock
+	 *
+	 * @return boolean TRUE, if this category has products with stock, FALSE if not
+	 */
+	public function hasProductsWithStock() {
+		$result = FALSE;
+
+		if ($this->hasProducts()) {
+			$result = $this->databaseConnection->getCountOfProductsWithStock($this->getProductUids()) > 0;
+		}
+
+		return $result;
 	}
 
 	/**

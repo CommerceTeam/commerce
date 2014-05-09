@@ -48,24 +48,21 @@ class Tx_Commerce_Domain_Repository_AttributeRepository extends Tx_Commerce_Doma
 	 * @return array
 	 */
 	public function getAttributeValueUids($uid) {
-		/** @var $db t3lib_db */
-		$db = & $GLOBALS['TYPO3_DB'];
-
-		$result = $db->exec_SELECTquery(
+		$result = $this->database->exec_SELECTquery(
 			'uid',
 			$this->childDatabaseTable,
-			'attributes_uid = ' . (int) $uid . $GLOBALS['TSFE']->sys_page->enableFields($this->childDatabaseTable),
+			'attributes_uid = ' . (int) $uid . $this->enableFields($this->childDatabaseTable),
 			'',
 			'sorting'
 		);
 
 		$attributeValueList = array();
-		if ($db->sql_num_rows($result) > 0) {
-			while ($data = $db->sql_fetch_assoc($result)) {
+		if ($this->database->sql_num_rows($result) > 0) {
+			while (($data = $this->database->sql_fetch_assoc($result))) {
 				$attributeValueList[] = (int) $data['uid'];
 			}
 		}
-		$db->sql_free_result($result);
+		$this->database->sql_free_result($result);
 
 		return $attributeValueList;
 	}
@@ -83,6 +80,8 @@ class Tx_Commerce_Domain_Repository_AttributeRepository extends Tx_Commerce_Doma
 	}
 
 	/**
+	 * Get child attribute uids
+	 *
 	 * @param integer $uid
 	 * @return array
 	 */
@@ -93,13 +92,13 @@ class Tx_Commerce_Domain_Repository_AttributeRepository extends Tx_Commerce_Doma
 			$result = $this->database->exec_SELECTquery(
 				'uid',
 				$this->databaseTable,
-				'parent = ' . (int) $uid . $GLOBALS['TSFE']->sys_page->enableFields($this->databaseTable),
+				'parent = ' . (int) $uid . $this->enableFields($this->databaseTable),
 				'',
 				'sorting'
 			);
 
 			if ($this->database->sql_num_rows($result) > 0) {
-				while ($data = $this->database->sql_fetch_assoc($result)) {
+				while (($data = $this->database->sql_fetch_assoc($result))) {
 					$childAttributeList[] = (int) $data['uid'];
 				}
 			}

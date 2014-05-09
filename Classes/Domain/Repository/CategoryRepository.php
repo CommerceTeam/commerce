@@ -67,30 +67,12 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 	protected $lang_uid;
 
 	/**
-	 * Getter
-	 *
-	 * @return int
-	 */
-	public function getUid() {
-		return $this->uid;
-	}
-
-	/**
-	 * Getter
-	 *
-*@return int
-	 */
-	public function getLangUid() {
-		return $this->lang_uid;
-	}
-
-	/**
 	 * Gets the "master" category from this category
 	 *
 	 * @param integer $uid Category UID
 	 * @return integer Category UID
 	 */
-	public function get_parent_category($uid) {
+	public function getParentCategory($uid) {
 		/** @var t3lib_db $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
@@ -138,7 +120,7 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 	 * @param integer $uid Category UID
 	 * @return array Array of parent categories UIDs
 	 */
-	public function get_parent_categories($uid) {
+	public function getParentCategories($uid) {
 		/** @var t3lib_db $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
@@ -146,11 +128,8 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 			return FALSE;
 		}
 		$this->uid = $uid;
-		if (is_object($GLOBALS['TSFE']->sys_page)) {
-			$additionalWhere = $GLOBALS['TSFE']->sys_page->enableFields($this->databaseTable, $GLOBALS['TSFE']->showHiddenRecords);
-		} else {
-			$additionalWhere = '';
-		}
+		$additionalWhere = $this->enableFields($this->databaseTable, $GLOBALS['TSFE']->showHiddenRecords);
+
 		$result = $database->exec_SELECT_mm_query(
 			'uid_foreign',
 			$this->databaseTable, $this->databaseParentCategoryRelationTable,
@@ -176,7 +155,7 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 	 * @param integer $uid UID of the category we want to get the i18n languages from
 	 * @return array Array of UIDs
 	 */
-	public function get_l18n_categories($uid) {
+	public function getL18nCategories($uid) {
 		/** @var t3lib_db $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
@@ -197,42 +176,13 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 	}
 
 	/**
-	 * Returns an array with uids of all direct child categories for the category
-	 *
-	 * @param integer $uid Category UID to start
-	 * @return array Array of category UIDs
-	 * @deprecated
-	 */
-	public function getChildCategories($uid) {
-		/** @var t3lib_db $database */
-		$database = $GLOBALS['TYPO3_DB'];
-
-		if (!is_numeric($uid)) {
-			if (TYPO3_DLOG) {
-				t3lib_div::devLog('getChildCategories (db_category) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
-			}
-			return array();
-		}
-		$uids = array();
-		$res = $database->exec_SELECTquery(
-			'uid_local AS uid',
-			'tx_commerce_categories_parent_category_mm',
-			'uid_foreign = ' . $uid
-		);
-		while (($row = $database->sql_fetch_assoc($res))) {
-			$uids[] = $row['uid'];
-		}
-		return $uids;
-	}
-
-	/**
 	 * Gets the child categories from this category
 	 *
 	 * @param   integer $uid Product     UID
 	 * @param   integer $languageUid Language UID
 	 * @return array Array of child categories UID
 	 */
-	public function get_child_categories($uid, $languageUid = -1) {
+	public function getChildCategories($uid, $languageUid = -1) {
 		if (empty($uid) || !is_numeric($uid)) {
 			return FALSE;
 		}
@@ -247,7 +197,7 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 
 		// @todo Sorting should be by database
 		// 'tx_commerce_categories_parent_category_mm.sorting'
-		// as TYPO3 is´nt currently able to sort by MM tables
+		// as TYPO3 isn't currently able to sort by MM tables
 		// We are using $this->databaseTable.sorting
 
 		$localOrderField = $this->categoryOrderField;
@@ -271,11 +221,7 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 			}
 		}
 
-		if (is_object($GLOBALS['TSFE']->sys_page)) {
-			$additionalWhere = $GLOBALS['TSFE']->sys_page->enableFields($this->databaseTable, $GLOBALS['TSFE']->showHiddenRecords);
-		} else {
-			$additionalWhere = '';
-		}
+		$additionalWhere = $this->enableFields($this->databaseTable, $GLOBALS['TSFE']->showHiddenRecords);
 
 		/** @var t3lib_db $database */
 		$database = $GLOBALS['TYPO3_DB'];
@@ -305,7 +251,7 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 						'uid',
 						'tx_commerce_categories',
 						'l18n_parent = ' . (int) $row['uid_local'] . ' AND sys_language_uid=' . $languageUid .
-							$GLOBALS['TSFE']->sys_page->enableFields('tx_commerce_categories', $GLOBALS['TSFE']->showHiddenRecords)
+							$this->enableFields('tx_commerce_categories', $GLOBALS['TSFE']->showHiddenRecords)
 					);
 
 					if ($database->sql_num_rows( $lresult) == 1) {
@@ -346,7 +292,7 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 	 * @param integer $languageUid Language UID
 	 * @return array Array of child products UIDs
 	 */
-	public function get_child_products($uid, $languageUid = -1) {
+	public function getChildProducts($uid, $languageUid = -1) {
 		if (empty($uid) || !is_numeric($uid)) {
 			return FALSE;
 		}
@@ -384,10 +330,9 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 			AND tx_commerce_products.uid=tx_commerce_articles.uid_product
 			AND tx_commerce_articles.uid=tx_commerce_article_prices.uid_article ';
 		if (is_object($GLOBALS['TSFE']->sys_page)) {
-			$whereClause .= $GLOBALS['TSFE']->sys_page->enableFields('tx_commerce_products', $GLOBALS['TSFE']->showHiddenRecords);
-			$whereClause .= $GLOBALS['TSFE']->sys_page->enableFields('tx_commerce_articles', $GLOBALS['TSFE']->showHiddenRecords);
-			$whereClause .= $GLOBALS['TSFE']->sys_page->enableFields(
-				'tx_commerce_article_prices', $GLOBALS['TSFE']->showHiddenRecords);
+			$whereClause .= $this->enableFields('tx_commerce_products', $GLOBALS['TSFE']->showHiddenRecords);
+			$whereClause .= $this->enableFields('tx_commerce_articles', $GLOBALS['TSFE']->showHiddenRecords);
+			$whereClause .= $this->enableFields('tx_commerce_article_prices', $GLOBALS['TSFE']->showHiddenRecords);
 		}
 
 			// Versioning - no deleted or versioned records, nor live placeholders
@@ -435,7 +380,7 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 					$lresult = $database->exec_SELECTquery(
 						'uid',
 						'tx_commerce_products', 'l18n_parent = ' . (int) $row['uid'] . ' AND sys_language_uid=' . $languageUid .
-							$GLOBALS['TSFE']->sys_page->enableFields('tx_commerce_products', $GLOBALS['TSFE']->showHiddenRecords)
+							$this->enableFields('tx_commerce_products', $GLOBALS['TSFE']->showHiddenRecords)
 					);
 					if ($database->sql_num_rows($lresult) == 1) {
 						$data[] = (int) $row['uid'];
@@ -466,6 +411,109 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 			return $data;
 		}
 		return FALSE;
+	}
+
+	/**
+	 * Get count of products with stock
+	 *
+	 * @param array $productsUids
+	 * @return int
+	 */
+	public function getCountOfProductsWithStock($productsUids) {
+		return $this->database->exec_SELECTcountRows(
+			'*',
+			'tx_commerce_articles',
+			'stock > 0 AND uid_product in (' . implode(',', $productsUids) . ')' .
+				$this->enableFields('tx_commerce_categories', $GLOBALS['TSFE']->showHiddenRecords)
+		);
+	}
+
+
+	/**
+	 * Getter
+	 *
+	 * @return int
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0
+	 * remove attributes and setting of them too
+	 */
+	public function getUid() {
+		t3lib_div::logDeprecatedFunction();
+		return $this->uid;
+	}
+
+	/**
+	 * Getter
+	 *
+	 * @return int
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0
+	 * remove attributes and setting of them too
+	 */
+	public function getLangUid() {
+		t3lib_div::logDeprecatedFunction();
+		return $this->lang_uid;
+	}
+
+	/**
+	 * Gets the "master" category from this category
+	 *
+	 * @param integer $uid Category UID
+	 * @return integer Category UID
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getParentCategory instead
+	 */
+	public function get_parent_category($uid) {
+		t3lib_div::logDeprecatedFunction();
+		return $this->getParentCategory($uid);
+	}
+
+	/**
+	 * Gets the parent categories from this category
+	 *
+	 * @param integer $uid Category UID
+	 * @return array Array of parent categories UIDs
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getParentCategories instead
+	 */
+	public function get_parent_categories($uid) {
+		t3lib_div::logDeprecatedFunction();
+		return $this->getParentCategories($uid);
+	}
+
+	/**
+	 * Returns an array of sys_language_uids of the i18n categories
+	 * Only use in BE
+	 *
+	 * @param integer $uid UID of the category we want to get the i18n languages from
+	 * @return array Array of UIDs
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getL18nCategories instead
+	 */
+	public function get_l18n_categories($uid) {
+		t3lib_div::logDeprecatedFunction();
+		return $this->getL18nCategories($uid);
+	}
+
+	/**
+	 * Gets the child categories from this category
+	 *
+	 * @param integer $uid Product
+	 * @param integer $languageUid Language
+	 * @return array Array of child categories
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getChildCategories instead
+	 */
+	public function get_child_categories($uid, $languageUid = -1) {
+		t3lib_div::logDeprecatedFunction();
+		return $this->getChildCategories($uid, $languageUid);
+	}
+
+	/**
+	 * Gets child products from this category
+	 *
+	 * @param integer $uid Product UID
+	 * @param integer $languageUid Language UID
+	 * @return array Array of child products UIDs
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getChildProducts instead
+	 */
+	public function get_child_products($uid, $languageUid = -1) {
+		t3lib_div::logDeprecatedFunction();
+		return $this->getChildProducts($uid, $languageUid);
 	}
 }
 

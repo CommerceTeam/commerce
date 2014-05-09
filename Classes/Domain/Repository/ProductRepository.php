@@ -87,11 +87,7 @@ class Tx_Commerce_Domain_Repository_ProductRepository extends Tx_Commerce_Domain
 				}
 			}
 
-			if (is_object($GLOBALS['TSFE']) && is_object($GLOBALS['TSFE']->sys_page)) {
-				$where = 'uid_product = ' . $uid . $GLOBALS['TSFE']->sys_page->enableFields('tx_commerce_articles', $GLOBALS['TSFE']->showHiddenRecords);
-			} else {
-				$where = 'uid_product = ' . $uid;
-			}
+			$where = 'uid_product = ' . $uid . $this->enableFields('tx_commerce_articles', $GLOBALS['TSFE']->showHiddenRecords);
 			$additionalWhere = '';
 
 			if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_product.php']['aditionalWhere']) {

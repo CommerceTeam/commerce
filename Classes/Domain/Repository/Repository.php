@@ -77,6 +77,8 @@ class Tx_Commerce_Domain_Repository_Repository {
 	protected $database;
 
 	/**
+	 * Constructor
+	 *
 	 * @return self
 	 */
 	public function __construct() {
@@ -84,6 +86,8 @@ class Tx_Commerce_Domain_Repository_Repository {
 	}
 
 	/**
+	 * Get data
+	 *
 	 * @param integer $uid UID for Data
 	 * @param integer $langUid Language Uid
 	 * @param boolean $translationMode Translation Mode for recordset
@@ -105,28 +109,28 @@ class Tx_Commerce_Domain_Repository_Repository {
 			$langUid = $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid'];
 		}
 
-		$proofSQL = '';
+		$proofSql = '';
 		if (is_object($GLOBALS['TSFE']->sys_page)) {
-			$proofSQL = $GLOBALS['TSFE']->sys_page->enableFields($this->databaseTable, $GLOBALS['TSFE']->showHiddenRecords);
+			$proofSql = $this->enableFields($this->databaseTable, $GLOBALS['TSFE']->showHiddenRecords);
 		}
 
 		$result = $this->database->exec_SELECTquery(
 			'*',
 			$this->databaseTable,
-			'uid = ' . $uid . $proofSQL
+			'uid = ' . $uid . $proofSql
 		);
 
 			// Result should contain only one Dataset
 		if ($this->database->sql_num_rows($result) == 1) {
-			$return_data = $this->database->sql_fetch_assoc($result);
+			$returnData = $this->database->sql_fetch_assoc($result);
 			$this->database->sql_free_result($result);
 
 				// @since 8.10.2008: get workspace version if available
 			if (!is_null($GLOBALS['TSFE']->sys_page)) {
-				$GLOBALS['TSFE']->sys_page->versionOL($this->databaseTable, $return_data);
+				$GLOBALS['TSFE']->sys_page->versionOL($this->databaseTable, $returnData);
 			}
 
-			if (!is_array($return_data)) {
+			if (!is_array($returnData)) {
 				$this->error('There was an error overlaying the record with the version');
 				return FALSE;
 			}
@@ -137,26 +141,26 @@ class Tx_Commerce_Domain_Repository_Repository {
 				 */
 				switch($translationMode) {
 					case 'basket':
-							// special Treatment for basket, so you could have a product not transleted inti a language
-							// but the basket is in the not translated laguage
-						$newData = $GLOBALS['TSFE']->sys_page->getRecordOverlay($this->databaseTable, $return_data, $langUid, $this->translationMode);
+						// special Treatment for basket, so you could have a product not translated init a language
+						// but the basket is in the not translated laguage
+						$newData = $GLOBALS['TSFE']->sys_page->getRecordOverlay($this->databaseTable, $returnData, $langUid, $this->translationMode);
 
 						if (!empty($newData)) {
-							$return_data = $newData;
+							$returnData = $newData;
 						}
-					break;
+						break;
+
 					default:
-						$return_data = $GLOBALS['TSFE']->sys_page->getRecordOverlay($this->databaseTable, $return_data, $langUid, $this->translationMode);
-					break;
+						$returnData = $GLOBALS['TSFE']->sys_page->getRecordOverlay($this->databaseTable, $returnData, $langUid, $this->translationMode);
 				}
 			}
 
-			return $return_data;
-		} else {
-				// error Handling
-			$this->error('exec_SELECTquery(\'*\', ' . $this->databaseTable . ', "uid = ' . $uid . '"); returns no or more than one Result');
-			return FALSE;
+			return $returnData;
 		}
+
+		// error Handling
+		$this->error('exec_SELECTquery(\'*\', ' . $this->databaseTable . ', "uid = ' . $uid . '"); returns no or more than one Result');
+		return FALSE;
 	}
 
 	/**
@@ -192,15 +196,15 @@ class Tx_Commerce_Domain_Repository_Repository {
 		$return = FALSE;
 		$uid = (int) $uid;
 		if ($uid > 0) {
-			$proofSQL = '';
+			$proofSql = '';
 			if (is_object($GLOBALS['TSFE']->sys_page)) {
-				$proofSQL = $GLOBALS['TSFE']->sys_page->enableFields($this->databaseTable, $GLOBALS['TSFE']->showHiddenRecords);
+				$proofSql = $this->enableFields($this->databaseTable, $GLOBALS['TSFE']->showHiddenRecords);
 			}
 
 			$result = $this->database->exec_SELECTquery(
 				'*',
 				$this->databaseTable,
-				'uid = ' . $uid . $proofSQL
+				'uid = ' . $uid . $proofSql
 			);
 
 			if ($this->database->sql_num_rows($result) == 1) {
@@ -216,6 +220,7 @@ class Tx_Commerce_Domain_Repository_Repository {
 	 * Error Handling Funktion
 	 *
 	 * @param string $err Errortext
+	 * @return void
 	 */
 	public function error($err) {
 		if ($this->debugMode) {
@@ -227,19 +232,19 @@ class Tx_Commerce_Domain_Repository_Repository {
 	 * gets all attributes from this product
 	 *
 	 * @param integer $uid Product uid
-	 * @param array $attribute_corelation_type_list list of corelation_types, optional
+	 * @param array $attributeCorrelationTypeList list of corelation_types
 	 * @return array of attribute UID
 	 */
-	public function getAttributes($uid, $attribute_corelation_type_list = NULL) {
+	public function getAttributes($uid, $attributeCorrelationTypeList = NULL) {
 		$uid = (int) $uid;
 		if ($this->databaseAttributeRelationTable == '') {
 			return FALSE;
 		}
 
-		$add_where = '';
-		if (is_array($attribute_corelation_type_list)) {
-			$add_where = ' AND ' . $this->databaseAttributeRelationTable . '.uid_correlationtype in (' .
-				implode(',', $attribute_corelation_type_list) . ')';
+		$additionalWhere = '';
+		if (is_array($attributeCorrelationTypeList)) {
+			$additionalWhere = ' AND ' . $this->databaseAttributeRelationTable . '.uid_correlationtype in (' .
+				implode(',', $attributeCorrelationTypeList) . ')';
 		}
 
 		$result = $this->database->exec_SELECT_mm_query(
@@ -247,14 +252,14 @@ class Tx_Commerce_Domain_Repository_Repository {
 			$this->databaseTable,
 			$this->databaseAttributeRelationTable,
 			'tx_commerce_attributes',
-			'AND ' . $this->databaseTable . '.uid = ' . $uid . $add_where . ' order by ' . $this->databaseAttributeRelationTable . '.sorting'
+			'AND ' . $this->databaseTable . '.uid = ' . $uid . $additionalWhere . ' order by ' . $this->databaseAttributeRelationTable . '.sorting'
 		);
 
 		$attributeUidList = FALSE;
 		if (($result) && ($this->database->sql_num_rows($result) > 0)) {
 			$attributeUidList = array();
-			while ($return_data = $this->database->sql_fetch_assoc($result)) {
-				$attributeUidList[] = (int) $return_data['uid'];
+			while (($returnData = $this->database->sql_fetch_assoc($result))) {
+				$attributeUidList[] = (int) $returnData['uid'];
 			}
 			$this->database->sql_free_result($result);
 		}
@@ -264,9 +269,9 @@ class Tx_Commerce_Domain_Repository_Repository {
 	/**
 	 * Update record data
 	 *
-	 * @return boolean
-	 * @param integer $uid  uid of the item
+	 * @param integer $uid uid of the item
 	 * @param array $fields Assoc. array with update fields
+	 * @return boolean
 	 */
 	public function updateRecord($uid, array $fields) {
 		if (!is_numeric($uid) || !is_array($fields)) {
@@ -289,16 +294,34 @@ class Tx_Commerce_Domain_Repository_Repository {
 	}
 
 	/**
+	 * Get enableFields
+	 *
+	 * @param string $tableName
+	 * @param boolean $showHiddenRecords
+	 * @return string
+	 */
+	public function enableFields($tableName, $showHiddenRecords = -1) {
+		if (TYPO3_MODE === 'FE') {
+			$result = $GLOBALS['TSFE']->sys_page->enableFields($tableName, $showHiddenRecords);
+		} else {
+			$result = t3lib_BEfunc::BEenableFields($tableName);
+		}
+
+		return $result;
+	}
+
+
+	/**
 	 * gets all attributes from this product
 	 *
 	 * @param integer $uid Product uid
-	 * @param array $attribute_corelation_type_list array of corelation_types, optional
+	 * @param array $attributeCorrelationTypeList array of corelation_types
 	 * @return array of attribute UID
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use Tx_Commerce_Domain_Repository_Repository::getAttributes instead
 	 */
-	public function get_attributes($uid, $attribute_corelation_type_list = NULL) {
+	public function get_attributes($uid, $attributeCorrelationTypeList = NULL) {
 		t3lib_div::logDeprecatedFunction();
-		return $this->getAttributes($uid, $attribute_corelation_type_list);
+		return $this->getAttributes($uid, $attributeCorrelationTypeList);
 	}
 }
 

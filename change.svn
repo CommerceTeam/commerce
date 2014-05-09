@@ -1297,7 +1297,7 @@ sponsored by Impulse Network Limited: http://www.schutzgeld.de/
 
 25.05.2007 Ingo Schmitt <is@marketing-factory.de>
 * corrected db_commerce_product to work, when not use in frontent
-* renamed method get_parent_categorie to get_parent_category
+* renamed method get_parent_categorie to getParentCategory
 * marked get_parent_categorie as depricated
 * Added Patch to fix Problem in Navigation, Thanks to Joerg Sprung
 

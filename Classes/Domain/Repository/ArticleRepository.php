@@ -130,10 +130,7 @@ class Tx_Commerce_Domain_Repository_ArticleRepository extends Tx_Commerce_Domain
 
 		if ($uid > 0) {
 			$priceUidList = array();
-			$proofSql = '';
-			if (is_object($GLOBALS['TSFE']->sys_page)) {
-				$proofSql = $GLOBALS['TSFE']->sys_page->enableFields('tx_commerce_article_prices', $GLOBALS['TSFE']->showHiddenRecords);
-			}
+			$proofSql = $this->enableFields('tx_commerce_article_prices', $GLOBALS['TSFE']->showHiddenRecords);
 
 			/** @var t3lib_db $database */
 			$database = $GLOBALS['TYPO3_DB'];
@@ -155,9 +152,9 @@ class Tx_Commerce_Domain_Repository_ArticleRepository extends Tx_Commerce_Domain
 				$this->error('exec_SELECTquery(\'uid\', \'tx_commerce_article_prices\', \'uid_article = \' . $uid); returns no Result');
 				return FALSE;
 			}
-		} else {
-			return FALSE;
 		}
+
+		return FALSE;
 	}
 
 	/**
@@ -185,11 +182,8 @@ class Tx_Commerce_Domain_Repository_ArticleRepository extends Tx_Commerce_Domain
 		$uid = (int) $uid;
 		$count = (int) $count;
 		if ($uid > 0) {
-			$proofSql = '';
 			$priceUidList = array();
-			if (is_object($GLOBALS['TSFE']->sys_page)) {
-				$proofSql = $GLOBALS['TSFE']->sys_page->enableFields('tx_commerce_article_prices', $GLOBALS['TSFE']->showHiddenRecords);
-			}
+			$proofSql = $this->enableFields('tx_commerce_article_prices', $GLOBALS['TSFE']->showHiddenRecords);
 
 			/** @var t3lib_db $database */
 			$database = $GLOBALS['TYPO3_DB'];
@@ -208,9 +202,8 @@ class Tx_Commerce_Domain_Repository_ArticleRepository extends Tx_Commerce_Domain
 				$this->error('exec_SELECTquery(\'uid\', \'tx_commerce_article_prices\', \'uid_article = \' . $uid); returns no Result');
 				return FALSE;
 			}
-		} else {
-			return FALSE;
 		}
+		return FALSE;
 	}
 
 	/**
@@ -248,11 +241,8 @@ class Tx_Commerce_Domain_Repository_ArticleRepository extends Tx_Commerce_Domain
 		$attributeUid = (int) $attributeUid;
 
 		if ($uid > 0) {
-				// First select attribute, to detecxt if is valuelist
-			$proofSql = '';
-			if (is_object($GLOBALS['TSFE']->sys_page)) {
-				$proofSql = $GLOBALS['TSFE']->sys_page->enableFields('tx_commerce_attributes', $GLOBALS['TSFE']->showHiddenRecords);
-			}
+			// First select attribute, to detecxt if is valuelist
+			$proofSql = $this->enableFields('tx_commerce_attributes', $GLOBALS['TSFE']->showHiddenRecords);
 
 			/** @var t3lib_db $database */
 			$database = $GLOBALS['TYPO3_DB'];
@@ -263,37 +253,37 @@ class Tx_Commerce_Domain_Repository_ArticleRepository extends Tx_Commerce_Domain
 				'uid = ' . (int) $attributeUid . $proofSql
 			);
 			if ($database->sql_num_rows($result) == 1) {
-				$return_data = $database->sql_fetch_assoc($result);
-				if ($return_data['has_valuelist'] == 1) {
+				$returnData = $database->sql_fetch_assoc($result);
+				if ($returnData['has_valuelist'] == 1) {
 						// Attribute has a valuelist, so do separate query
-					$a_result = $database->exec_SELECTquery(
+					$attributeResult = $database->exec_SELECTquery(
 						'DISTINCT distinct tx_commerce_attribute_values.value,tx_commerce_attribute_values.uid',
 						'tx_commerce_articles_article_attributes_mm, tx_commerce_attribute_values',
 						'tx_commerce_articles_article_attributes_mm.uid_valuelist = tx_commerce_attribute_values.uid' .
 							' AND uid_local = ' . $uid .
 							' AND uid_foreign = ' . $attributeUid
 					);
-					if ($database->sql_num_rows($a_result) == 1) {
-						$value_data = $database->sql_fetch_assoc($a_result);
+					if ($database->sql_num_rows($attributeResult) == 1) {
+						$valueData = $database->sql_fetch_assoc($attributeResult);
 						if ($valueListAsUid == TRUE) {
-							return $value_data['uid'];
+							return $valueData['uid'];
 						} else {
-							return $value_data['value'];
+							return $valueData['value'];
 						}
 					}
 				} else {
 						// attribute has no valuelist, so do normal query
-					$a_result = $database->exec_SELECTquery(
+					$attributeResult = $database->exec_SELECTquery(
 						'DISTINCT value_char,default_value',
 						'tx_commerce_articles_article_attributes_mm',
 						'uid_local = ' . $uid . ' AND uid_foreign = ' . $attributeUid
 					);
-					if ($database->sql_num_rows($a_result) == 1) {
-						$value_data = $database->sql_fetch_assoc($a_result);
-						if ($value_data['value_char']) {
-							return $value_data['value_char'];
+					if ($database->sql_num_rows($attributeResult) == 1) {
+						$valueData = $database->sql_fetch_assoc($attributeResult);
+						if ($valueData['value_char']) {
+							return $valueData['value_char'];
 						} else {
-							return 	$value_data['default_value'];
+							return $valueData['default_value'];
 						}
 					} else {
 						$this->error('More than one Value for thsi attribute');
@@ -326,8 +316,8 @@ class Tx_Commerce_Domain_Repository_ArticleRepository extends Tx_Commerce_Domain
 				'uid = ' . (int) $supplierUid
 			);
 			if ($database->sql_num_rows($result) == 1) {
-				$return_data = $database->sql_fetch_assoc($result);
-				return $return_data['title'];
+				$returnData = $database->sql_fetch_assoc($result);
+				return $returnData['title'];
 			}
 		}
 		return FALSE;

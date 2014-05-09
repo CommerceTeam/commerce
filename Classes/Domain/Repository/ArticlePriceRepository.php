@@ -42,6 +42,8 @@ class Tx_Commerce_Domain_Repository_ArticlePriceRepository extends Tx_Commerce_D
 	protected $databaseTable = 'tx_commerce_article_prices';
 
 	/**
+	 * Get data
+	 *
 	 * @param integer $uid UID for Data
 	 * @return array assoc Array with data
 	 * @todo implement access_check concering category tree
@@ -49,18 +51,16 @@ class Tx_Commerce_Domain_Repository_ArticlePriceRepository extends Tx_Commerce_D
 	 */
 	public function getData($uid) {
 		$uid = (int) $uid;
-		$proofSQL = '';
+
+		$proofSql = '';
 		/** @var t3lib_db $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
 		if (is_object($GLOBALS['TSFE']->sys_page)) {
-			$proofSQL = $GLOBALS['TSFE']->sys_page->enableFields($this->databaseTable, $GLOBALS['TSFE']->showHiddenRecords);
+			$proofSql = $this->enableFields($this->databaseTable, $GLOBALS['TSFE']->showHiddenRecords);
 		}
 
-		$result = $database->exec_SELECTquery('*',
-			$this->databaseTable,
-			'uid = ' . $uid  . $proofSQL
-		);
+		$result = $database->exec_SELECTquery('*', $this->databaseTable, 'uid = ' . $uid . $proofSql);
 
 			// Result should contain only one Dataset
 		if ($database->sql_num_rows($result) == 1) {
@@ -68,11 +68,10 @@ class Tx_Commerce_Domain_Repository_ArticlePriceRepository extends Tx_Commerce_D
 			$database->sql_free_result($result);
 
 			return $returnData;
-		} else {
-				// error Handling
-			$this->error('exec_SELECTquery(\'*\',' . $this->databaseTable . ',\'uid = ' . $uid . '\'); returns no or more than one Result');
-			return FALSE;
 		}
+
+		$this->error('exec_SELECTquery(\'*\',' . $this->databaseTable . ',\'uid = ' . $uid . '\'); returns no or more than one Result');
+		return FALSE;
 	}
 }
 
