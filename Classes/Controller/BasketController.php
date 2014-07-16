@@ -314,11 +314,11 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 		}
 
 		if ($this->piVars['artAddUid']) {
-			foreach ($this->piVars['artAddUid'] as $k => $v) {
-				$k = (int) $k;
+			foreach ($this->piVars['artAddUid'] as $articleUid => $articleAddValues) {
+				$articleUid = (int) $articleUid;
 
 				/** @var Tx_Commerce_Domain_Model_BasketItem $basketItem */
-				$basketItem = $this->basket->getBasketItem($k);
+				$basketItem = $this->basket->getBasketItem($articleUid);
 
 					// Safe old quantity for price limit
 				if ($basketItem) {
@@ -327,23 +327,23 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 					$oldCountValue = 0;
 				}
 
-				if (!isset($v['count']) || $v['count'] < 0) {
-					$v['count'] = 1;
+				if (!isset($articleAddValues['count']) || $articleAddValues['count'] < 0) {
+					$articleAddValues['count'] = 1;
 				}
 
-				if ((int) $v['count'] === 0) {
-					if ($this->basket->getQuantity($k) > 0) {
-						$this->basket->deleteArticle($k);
+				if ((int) $articleAddValues['count'] === 0) {
+					if ($this->basket->getQuantity($articleUid) > 0) {
+						$this->basket->deleteArticle($articleUid);
 					}
 
 					foreach ($hookObjectsArr as $hookObj) {
 						if (method_exists($hookObj, 'postDeleteArtUidSingle')) {
-							$hookObj->postDeleteArtUidSingle($k, $v, $oldCountValue, $this->basket, $this);
+							$hookObj->postDeleteArtUidSingle($articleUid, $articleAddValues, $oldCountValue, $this->basket, $this);
 						}
 					}
 				} else {
 					/** @var $articleObj Tx_Commerce_Domain_Model_Article */
-					$articleObj = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Article', $k);
+					$articleObj = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Article', $articleUid);
 					$articleObj->loadData('basket');
 
 					$productObj = $articleObj->getParentProduct();
@@ -351,7 +351,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 
 					foreach ($hookObjectsArr as $hookObj) {
 						if (method_exists($hookObj, 'preartAddUidSingle')) {
-							$hookObj->preartAddUidSingle($k, $v, $productObj, $articleObj, $this->basket, $this);
+							$hookObj->preartAddUidSingle($articleUid, $articleAddValues, $productObj, $articleObj, $this->basket, $this);
 						}
 					}
 
@@ -359,34 +359,37 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 							// Only if product and article are accessible
 						if ($this->conf['checkStock'] == 1) {
 								// Instance to calculate shipping costs
-							if ($articleObj->hasStock($v['count'])) {
-								if ((int)$v['price_id'] > 0) {
-									$this->basket->addArticle($k, $v['count'], $v['price_id']);
+							if ($articleObj->hasStock($articleAddValues['count'])) {
+								if ((int)$articleAddValues['price_id'] > 0) {
+									$this->basket->addArticle($articleUid, $articleAddValues['count'], $articleAddValues['price_id']);
 								} else {
-									$this->basket->addArticle($k, $v['count']);
+									$this->basket->addArticle($articleUid, $articleAddValues['count']);
 								}
 							} else {
 								$this->noStock = $this->pi_getLL('noStock');
 							}
 						} else {
 								// Add article by default
-							if ((int)$v['price_id'] > 0) {
-								$this->basket->addArticle($k, $v['count'], $v['price_id']);
+							if ((int)$articleAddValues['price_id'] > 0) {
+								$this->basket->addArticle($articleUid, $articleAddValues['count'], $articleAddValues['price_id']);
 							} else {
-								$this->basket->addArticle($k, $v['count']);
+								$this->basket->addArticle($articleUid, $articleAddValues['count']);
 							}
 						}
 					}
 
 					foreach ($hookObjectsArr as $hookObj) {
 						if (method_exists($hookObj, 'postartAddUidSingle')) {
-							$hookObj->postartAddUidSingle($k, $v, $productObj, $articleObj, $this->basket, $this);
+							$hookObj->postartAddUidSingle($articleUid, $articleAddValues, $productObj, $articleObj, $this->basket, $this);
 						}
 					}
 
 						// Check for basket price limit
-					if ((int) $this->conf['priceLimitForBasket'] > 0 && $this->basket->getSumGross() > (int) $this->conf['priceLimitForBasket']) {
-						$this->basket->addArticle($k, $oldCountValue);
+					if (
+						(int) $this->conf['priceLimitForBasket'] > 0 &&
+						$this->basket->getSumGross() > (int) $this->conf['priceLimitForBasket']
+					) {
+						$this->basket->addArticle($articleUid, $oldCountValue);
 						$this->priceLimitForBasket = 1;
 					}
 				}
@@ -1163,5 +1166,3 @@ if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['
 	/** @noinspection PhpIncludeInspection */
 	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Controller/BasketController.php']);
 }
-
-?>

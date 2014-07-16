@@ -234,17 +234,17 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 
 		$this->debug($this->currentStep, '$this->currentSteps', __FILE__ . ' ' . __LINE__);
 
-		foreach ($hookObjectsArr as $hookObj) {
-			if (method_exists($hookObj, 'preSwitch')) {
-				$hookObj->preSwitch($this->currentStep, $this);
-			}
-		}
-
 		// The purpose of the while loop is simply to be able to define any
 		// step as the step after payment. This counter breaks the loop after 10
 		// rounds to prevent infinite loops with poorly setup shops
 		if (!$this->validateAddress('billing')) {
 			$this->currentStep = 'billing';
+		}
+
+		foreach ($hookObjectsArr as $hookObj) {
+			if (method_exists($hookObj, 'preSwitch')) {
+				$hookObj->preSwitch($this->currentStep, $this);
+			}
 		}
 
 		$content = FALSE;
@@ -741,7 +741,9 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		$paymentType = $this->getPaymentType();
 
 		if ($this->conf[$paymentType . '.']['subpartMarker.']['listWrap']) {
-			$template = $this->cObj->getSubpart($this->templateCode, strtoupper($this->conf[$paymentType . '.']['subpartMarker.']['listWrap']));
+			$template = $this->cObj->getSubpart(
+				$this->templateCode, strtoupper($this->conf[$paymentType . '.']['subpartMarker.']['listWrap'])
+			);
 		} else {
 			$template = $this->cObj->getSubpart($this->templateCode, '###PAYMENT###');
 		}
@@ -749,7 +751,8 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		// Fill standard markers
 		$markerArray['###PAYMENT_TITLE###'] = $this->pi_getLL('payment_title');
 		$markerArray['###PAYMENT_DESCRIPTION###'] = $this->pi_getLL('payment_description');
-		$markerArray['###PAYMENT_DISCLAIMER###'] = $this->pi_getLL('general_disclaimer') . '<br />' . $this->pi_getLL('payment_disclaimer');
+		$markerArray['###PAYMENT_DISCLAIMER###'] = $this->pi_getLL('general_disclaimer') .
+			'<br />' . $this->pi_getLL('payment_disclaimer');
 
 		// Check if we already have a payment object
 		// If we don't have one, try to create a new one from the config
@@ -886,9 +889,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			$termsChecked = 'checked';
 		}
 
-		$comment = isset($this->piVars['comment']) ?
-			t3lib_div::removeXSS(strip_tags($this->piVars['comment'])) :
-			'';
+		$comment = isset($this->piVars['comment']) ? t3lib_div::removeXSS(strip_tags($this->piVars['comment'])) : '';
 
 		// Use new version with label and field
 		$markerArray['###LISTING_TERMS_ACCEPT_LABEL###'] = sprintf(
@@ -1322,11 +1323,11 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 
 		t3lib_div::deprecationLog(
 			'
-						hook
-						$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/pi3/class.tx_commerce_pi3.php\'][\'bevorValidateAddress\']
-						is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
-						$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/CheckoutController.php\'][\'beforeValidateAddress\']
-					'
+				hook
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/pi3/class.tx_commerce_pi3.php\'][\'bevorValidateAddress\']
+				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/CheckoutController.php\'][\'beforeValidateAddress\'
+			'
 		);
 		$hookObjectsArr = $this->getHookObjectArray('bevorValidateAddress');
 		// @todo remove merge after above hook is removed
@@ -2732,8 +2733,8 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi3/class.tx_commerce_pi3.php'][$type])) {
 			t3lib_div::deprecationLog(
 				'
-								hook
-								$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/pi3/class.tx_commerce_pi3.php\'][\'' . $type . '\']
+				hook
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/pi3/class.tx_commerce_pi3.php\'][\'' . $type . '\']
 				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/CheckoutController.php\'][\'' . $type . '\']
 			'
@@ -2754,13 +2755,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 
 class_alias('Tx_Commerce_Controller_CheckoutController', 'tx_commerce_pi3');
 
-if (defined(
-		'TYPO3_MODE'
-	)
-	&& $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Controller/CheckoutController.php']
-) {
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Controller/CheckoutController.php']) {
 	/** @noinspection PhpIncludeInspection */
 	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Controller/CheckoutController.php']);
 }
-
-?>
