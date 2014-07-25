@@ -67,17 +67,20 @@ attributeLocalizationType = 0
 # cat=basic/other/150; type=boolean; label=Lock Basket: Locks the baskt during the checkout, no changes are possible in second window.
 lockBasket = 0
 
-# cat=basic/other/100; type=boolean; label= Show field article number in the BE of orders
+# cat=basic/other/100; type=boolean; label=Show field article number in the BE of orders
 showArticleNumber  = 0
 
-# cat=basic/other/100; type=boolean; label= Show field article title in the BE of orders
+# cat=basic/other/100; type=boolean; label=Show field article title in the BE of orders
 showArticleTitle  = 0
 
-# cat=basic/other/100; type=boolean; label= User Sessionkey md5 encrypt
+# cat=basic/other/100; type=boolean; label=User Sessionkey md5 encrypt
 userSessionMd5Encrypt  = 1
 
-# cat=basic/other/100; type=boolean; label= Aggregation Allow: Allow Statistics Aggregation in BE if not using a cron
+# cat=basic/other/100; type=boolean; label=Aggregation Allow: Allow Statistics Aggregation in BE if not using a cron
 allowAggregation  = 1
 
 # cat=basic/other/100; type=String; label=type of basket...: default/database -> normal storing / persistent -> Old not finished basket will be restored after login (alpha)
 basketType = database
+
+# cat=basic/other/100; type=boolean; label=Basket id fallback : store the basket id as fallback for baskets that stay filled after login
+useCookieAsBasketIdFallback =

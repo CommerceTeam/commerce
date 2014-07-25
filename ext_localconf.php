@@ -210,7 +210,7 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tceforms_inline.php
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tceforms.php']['getSingleFieldClass'][] =
 	'EXT:commerce/Classes/Hook/TceFormsHooks.php:Tx_Commerce_Hook_TceFormsHooks';
 
-	// Hook to render recordlist parts differently
+// Hook to render recordlist parts differently
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/class.db_list_extra.inc']['actions'][] =
 	'EXT:commerce/Classes/Hook/LocalRecordListHooks.php:Tx_Commerce_Hook_LocalRecordListHooks';
 
@@ -222,7 +222,7 @@ $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/AddressesCon
 	'EXT:commerce/Classes/Hook/Pi4Hooks.php:Tx_Commerce_Hook_Pi4Hooks';
 
 
-	// Adding the AJAX listeners for Permission change/Browsing the Category tree
+// Adding the AJAX listeners for Permission change/Browsing the Category tree
 $GLOBALS['TYPO3_CONF_VARS']['BE']['AJAX']['Tx_Commerce_Controller_PermissionAjaxController::dispatch'] =
 	'EXT:commerce/Classes/Controller/PermissionAjaxController.php:Tx_Commerce_Controller_PermissionAjaxController->dispatch';
 $GLOBALS['TYPO3_CONF_VARS']['BE']['AJAX']['Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper::ajaxExpandCollapseWithoutProduct'] =

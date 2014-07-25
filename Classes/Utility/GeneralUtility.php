@@ -71,18 +71,51 @@ class Tx_Commerce_Utility_GeneralUtility {
 	 * @return void
 	 */
 	public static function initializeFeUserBasket() {
-		if (!is_object($GLOBALS['TSFE']->fe_user->tx_commerce_basket)) {
-			$basketId = $GLOBALS['TSFE']->fe_user->getKey('ses', 'commerceBasketId');
+		/** @var tslib_feUserAuth $feUser */
+		$feUser = $GLOBALS['TSFE']->fe_user;
+		/** @var Tx_Commerce_Domain_Model_Basket $basket */
+		$basket = & $feUser->tx_commerce_basket;
 
-			if (empty($basketId)) {
-				$basketId = md5($GLOBALS['TSFE']->fe_user->id . ':' . rand(0, PHP_INT_MAX));
-				$GLOBALS['TSFE']->fe_user->setKey('ses', 'commerceBasketId', $basketId);
+		if (!is_object($basket)) {
+			$basketId = $feUser->getKey('ses', 'commerceBasketId');
+			if (
+				empty($basketId) &&
+				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce']['extConf']['useCookieAsBasketIdFallback'] &&
+				$_COOKIE['commerceBasketId']
+			) {
+				$basketId = $_COOKIE['commerceBasketId'];
 			}
 
-			$GLOBALS['TSFE']->fe_user->tx_commerce_basket = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Basket');
-			$GLOBALS['TSFE']->fe_user->tx_commerce_basket->setSessionId($basketId);
-			$GLOBALS['TSFE']->fe_user->tx_commerce_basket->loadData();
+			if (empty($basketId)) {
+				$basketId = md5($feUser->id . ':' . rand(0, PHP_INT_MAX));
+				$feUser->setKey('ses', 'commerceBasketId', $basketId);
+				self::setCookie($basketId);
+			}
+
+			$basket = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Basket');
+			$basket->setSessionId($basketId);
+			$basket->loadData();
+
+			if (
+				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce']['extConf']['useCookieAsBasketIdFallback'] &&
+				!$_COOKIE['commerceBasketId']
+			) {
+				self::setCookie($basketId);
+			}
 		}
+	}
+
+	/**
+	 * @param string $basketId
+	 * @return void
+	 */
+	protected function setCookie($basketId) {
+		setcookie(
+			'commerceBasketId',
+			$basketId,
+			$GLOBALS['EXEC_TIME'] + intval($GLOBALS['TYPO3_CONF_VARS']['FE']['sessionDataLifetime']),
+			'/'
+		);
 	}
 
 	/**
@@ -355,7 +388,6 @@ class Tx_Commerce_Utility_GeneralUtility {
 		preg_match('@[ a-z0-9].*@i', $value, $matches);
 		return $matches[0];
 	}
-
 
 	/**
 	 * Formates a price for the designated output

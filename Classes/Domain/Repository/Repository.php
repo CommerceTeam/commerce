@@ -126,7 +126,7 @@ class Tx_Commerce_Domain_Repository_Repository {
 			$this->database->sql_free_result($result);
 
 				// @since 8.10.2008: get workspace version if available
-			if (!is_null($GLOBALS['TSFE']->sys_page)) {
+			if (!empty($GLOBALS['TSFE']->sys_page)) {
 				$GLOBALS['TSFE']->sys_page->versionOL($this->databaseTable, $returnData);
 			}
 
