@@ -695,9 +695,16 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 	 * @return array Array of marker
 	 */
 	public function makeDelivery($basketArray = array()) {
-		$this->deliveryProduct = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product', $this->conf['delProdId'], $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
+		$this->deliveryProduct = t3lib_div::makeInstance(
+			'Tx_Commerce_Domain_Model_Product',
+			$this->conf['delProdId'],
+			$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']
+		);
 		$this->deliveryProduct->loadData();
 		$this->deliveryProduct->loadArticles();
+
+		$deliverySelectTemplate = $this->cObj->getSubpart($this->templateCode, '###DELIVERY_ARTICLE_SELECT###');
+		$deliveryOptionTemplate = $this->cObj->getSubpart($this->templateCode, '###DELIVERY_ARTICLE_OPTION###');
 
 		$this->basketDeliveryArticles = $this->basket->getArticlesByArticleTypeUidAsUidlist(DELIVERYARTICLETYPE);
 
@@ -729,37 +736,42 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 				}
 			}
 		}
+		$allArticlesAllowed = !count($allowedArticles);
 
-		$select = '<select name="' . $this->prefixId . '[delArt]" onChange="this.form.submit();">';
-
-		$first = FALSE;
 		$priceNet = '';
 		$priceGross = '';
-		/** @var $articleObj Tx_Commerce_Domain_Model_Article */
-		foreach ($this->deliveryProduct->getArticleObjects() as $articleUid => $articleObj) {
-			if (!count($allowedArticles) || in_array($articleUid, $allowedArticles)) {
-				$select .= '<option value="' . $articleUid . '"';
-				if ($articleUid == $this->basketDeliveryArticles[0]) {
-					$first = 1;
-					$select .= ' selected="selected"';
-					$priceNet = tx_moneylib::format($articleObj->getPriceNet(), $this->currency);
-					$priceGross = tx_moneylib::format($articleObj->getPriceGross(), $this->currency);
+		$options = '';
+		$first = FALSE;
+		/** @var $deliveryArticle Tx_Commerce_Domain_Model_Article */
+		foreach ($this->deliveryProduct->getArticleObjects() as $deliveryArticle) {
+			if ($allArticlesAllowed || in_array($deliveryArticle->getUid(), $allowedArticles)) {
+				$selected = '';
+
+				if ($deliveryArticle->getUid() == $this->basketDeliveryArticles[0]) {
+					$selected = ' selected="selected"';
+					$priceNet = tx_moneylib::format($deliveryArticle->getPriceNet(), $this->currency);
+					$priceGross = tx_moneylib::format($deliveryArticle->getPriceGross(), $this->currency);
 				} elseif (!$first) {
-					$priceNet = tx_moneylib::format($articleObj->getPriceNet(), $this->currency);
-					$priceGross = tx_moneylib::format($articleObj->getPriceGross(), $this->currency);
+					$priceNet = tx_moneylib::format($deliveryArticle->getPriceNet(), $this->currency);
+					$priceGross = tx_moneylib::format($deliveryArticle->getPriceGross(), $this->currency);
 					if (!is_array($this->basketDeliveryArticles) || count($this->basketDeliveryArticles) < 1) {
-						$this->basket->addArticle($articleUid);
-						$this->basket->storeData();
+						$this->getBasket()->addArticle($deliveryArticle->getUid());
+						$this->getBasket()->storeData();
 					}
-					$first = TRUE;
 				}
-				$select .= '>' . $articleObj->getTitle() . '</option>';
+
+				$markerArray = array(
+					'value' => $deliveryArticle->getUid(),
+					'label' => $deliveryArticle->getTitle(),
+					'selected' => $selected,
+				);
+				$options .= $this->cObj->substituteMarkerArray($deliveryOptionTemplate, $markerArray, '###|###', TRUE);
+
+				$first = TRUE;
 			}
 		}
 
-		$select .= '</select>';
-
-		$basketArray['###DELIVERY_SELECT_BOX###'] = $select;
+		$basketArray['###DELIVERY_SELECT_BOX###'] = $this->cObj->substituteMarker($deliverySelectTemplate, '###OPTIONS###', $options);
 		$basketArray['###DELIVERY_PRICE_GROSS###'] = $priceGross;
 		$basketArray['###DELIVERY_PRICE_NET###'] = $priceNet;
 
