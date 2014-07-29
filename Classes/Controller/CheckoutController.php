@@ -2516,7 +2516,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 
 		// create backend user for inserting the order data
 		$orderData = array();
-		$orderData['cust_deliveryaddress'] = ((isset($uids['delivery'])) ?
+		$orderData['cust_deliveryaddress'] = ((isset($uids['delivery']) && !empty($uids['delivery'])) ?
 			$uids['delivery'] :
 			$uids['billing']);
 		$orderData['cust_invoice'] = $uids['billing'];
