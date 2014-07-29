@@ -710,24 +710,43 @@ class Tx_Commerce_Domain_Model_BasicBasket {
 		$this->readOnly = FALSE;
 	}
 
+    /**
+     * Returns first basket item by the given article type
+     *
+     * @param int $articleType
+     * @return Tx_Commerce_Domain_Model_BasketItem
+     */
+    public function getCurrentBasketItemByArticleType($articleType) {
+        $result = NULL;
+
+        /** @var Tx_Commerce_Domain_Model_BasketItem $basketItem */
+        foreach ($this->basketItems as $basketItem) {
+            if ((int)$basketItem->getArticleTypeUid() === (int)$articleType) {
+                $result = $basketItem;
+                break;
+            }
+        }
+
+        return $result;
+    }
+
 	/**
 	 * Get current payment article
 	 *
 	 * @return Tx_Commerce_Domain_Model_BasketItem
 	 */
 	public function getCurrentPaymentBasketItem() {
-		$result = NULL;
-
-		/** @var Tx_Commerce_Domain_Model_BasketItem $basketItem */
-		foreach ($this->basketItems as $basketItem) {
-			if ($basketItem->getArticleTypeUid() == PAYMENTARTICLETYPE) {
-				$result = $basketItem;
-				break;
-			}
-		}
-
-		return $result;
+        return $this->getCurrentBasketItemByArticleType(PAYMENTARTICLETYPE);
 	}
+
+	/**
+	 * Get current delivery article
+	 *
+	 * @return Tx_Commerce_Domain_Model_BasketItem
+	 */
+	public function getCurrentDeliveryBasketItem() {
+        return $this->getCurrentBasketItemByArticleType(DELIVERYARTICLETYPE);
+    }
 
 	/**
 	 * Remove current payment article from basket
@@ -741,6 +760,17 @@ class Tx_Commerce_Domain_Model_BasicBasket {
 		}
 	}
 
+	/**
+	 * Remove current delivery article from basket
+	 *
+	 * @return void
+	 */
+	public function removeCurrentDeliveryArticle() {
+		$deliveryBasketItem = $this->getCurrentDeliveryBasketItem();
+		if (is_object($deliveryBasketItem)) {
+			$this->deleteArticle($deliveryBasketItem->getArticleUid());
+		}
+	}
 
 	/**
 	 * Recalculate price sums
