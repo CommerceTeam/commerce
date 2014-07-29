@@ -1335,8 +1335,6 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 
 		$this->debug($config, 'TS Config', __FILE__ . ' ' . __LINE__);
 
-		$this->formError = array();
-
 		if ($this->piVars['check'] != $addressType) {
 			return TRUE;
 		}
@@ -1595,6 +1593,11 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 
 		$fieldTemplate = $this->cObj->getSubpart($this->templateCode, '###SINGLE_INPUT###');
 		$fieldTemplateCheckbox = $this->cObj->getSubpart($this->templateCode, '###SINGLE_CHECKBOX###');
+		$fieldTemplateHidden = $this->cObj->getSubpart($this->templateCode, '###SINGLE_HIDDEN###');
+		// downward compatibility
+		if ($fieldTemplateHidden == '') {
+			$fieldTemplateHidden = $fieldTemplate;
+		}
 
 		$fieldCode = '';
 		foreach ($fieldList as $fieldName) {
@@ -1632,7 +1635,9 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			);
 			if ($config['sourceFields.'][$arrayName]['type'] == 'check') {
 				$fieldCodeTemplate = $fieldTemplateCheckbox;
-			} else {
+			} elseif ($config['sourceFields.'][$arrayName]['type'] == 'hidden') {
+                $fieldCodeTemplate = $fieldTemplateHidden;
+            } else {
 				$fieldCodeTemplate = $fieldTemplate;
 			}
 
@@ -1846,6 +1851,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 				$result = $this->getCheckboxInputField($fieldName, $fieldConfig, $fieldValue, $step);
 				break;
 
+            case 'hidden':
 			case 'single':
 			default:
 				$result = $this->getSingleInputField($fieldName, $fieldConfig, $step);
@@ -1875,14 +1881,14 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		}
 
 		if ($fieldConfig['noPrefix'] == 1) {
-			$result = '<input id="' . $step . '-' . $fieldName . '" type="text" name="' . $fieldName . '" value="' . $value . '" ' . $maxlength;
+			$result = '<input id="' . $step . '-' . $fieldName . '" type="' . ($fieldConfig['type'] == 'hidden' ? 'hidden' : 'text') . '" name="' . $fieldName . '" value="' . $value . '" ' . $maxlength;
 			if ($fieldConfig['readonly'] == 1) {
 				$result .= ' readonly disabled /><input type="hidden" name="' . $fieldName . '" value="' . $value . '" ' . $maxlength . ' />';
 			} else {
 				$result .= '/>';
 			}
 		} else {
-			$result = '<input id="' . $step . '-' . $fieldName . '" type="text" name="' . $this->prefixId . '[' . $step . '][' . $fieldName . ']" value="' . $value . '" ' . $maxlength;
+			$result = '<input id="' . $step . '-' . $fieldName . '" type="' . ($fieldConfig['type'] == 'hidden' ? 'hidden' : 'text') . '" name="' . $this->prefixId . '[' . $step . '][' . $fieldName . ']" value="' . $value . '" ' . $maxlength;
 			if ($fieldConfig['readonly'] == 1) {
 				$result .= ' readonly disabled /><input type="hidden" name="' . $this->prefixId . '[' . $step . '][' . $fieldName . ']" value="' . $value . '" ' . $maxlength . ' />';
 			} else {
@@ -1908,14 +1914,14 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 
 		$result = '<select id="' . $step . '-' . $fieldName . '" name="' . $this->prefixId . '[' . $step . '][' . $fieldName . ']">';
 
-		if ($fieldValue != '') {
-			$fieldConfig['default'] = $fieldValue;
+		if ($fieldValue === '') {
+			$fieldValue = $fieldConfig['default'];
 		}
 
 		// If static items are set
 		if (is_array($fieldConfig['values.'])) {
 			foreach ($fieldConfig['values.'] as $key => $option) {
-				$result .= '<option name="' . $key . '" value="' . $key . '"';
+				$result .= '<option value="' . $key . '"';
 				if ($fieldValue === $key) {
 					$result .= ' selected="selected"';
 				}
@@ -1932,8 +1938,8 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			$rows = $database->exec_SELECTgetRows($fields, $table, $select, '', $orderby);
 
 			foreach ($rows as $row) {
-				$result .= '<option  value="' . $row['value'] . '"';
-				if ($row['value'] === $fieldConfig['default']) {
+				$result .= '<option value="' . $row['value'] . '"';
+				if ($fieldValue === $row['value']) {
 					$result .= ' selected="selected"';
 				}
 				$result .= '>' . $row['label'] . '</option>' . LF;
@@ -2716,6 +2722,28 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			$result = $step;
 		} else {
 			$result = $nextStep;
+		}
+
+		return $result;
+	}
+
+	/**
+	 * getStepBefore
+	 * returns Name of the previous step
+	 * if no next step is found, it returns itself, the actual step
+	 *
+	 * @param string $step Step
+	 * @return string
+	 */
+	public function getStepBefore($step) {
+		$rev = array_flip($this->checkoutSteps);
+
+		$previousStep = $this->checkoutSteps[--$rev[$step]];
+
+		if (empty($previousStep)) {
+			$result = $step;
+		} else {
+			$result = $previousStep;
 		}
 
 		return $result;
