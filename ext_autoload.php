@@ -206,6 +206,7 @@ return array(
 	'user_attributeedit_func' => $classPath . 'ViewHelpers/AttributeEditFunc.php',
 	'tx_commerce_viewhelpers_ordereditfunc' => $classPath . 'ViewHelpers/OrderEditFunc.php',
 	'user_orderedit_func' => $classPath . 'ViewHelpers/OrderEditFunc.php',
+	'tx_commerce_viewhelpers_money' => $classPath . 'ViewHelpers/Money.php',
 	'tx_commerce_viewhelpers_browselinks_categorytree' => $classPath . 'ViewHelpers/Browselinks/CategoryTree.php',
 	'tx_commerce_treelib_link_categorytree' => $classPath . 'ViewHelpers/Browselinks/CategoryTree.php',
 	'tx_commerce_viewhelpers_browselinks_categoryview' => $classPath . 'ViewHelpers/Browselinks/CategoryView.php',
@@ -218,7 +219,6 @@ return array(
 	'tx_commerce_viewhelpers_navigation_statisticviewhelper' => $classPath . 'ViewHelpers/Navigation/StatisticViewHelper.php',
 	'tx_commerce_viewhelpers_navigation_systemdataviewhelper' => $classPath . 'ViewHelpers/Navigation/SystemdataViewHelper.php',
 
-	'tx_moneylib' => t3lib_extMgm::extPath('moneylib') . 'class.tx_moneylib.php',
 	'tx_staticinfotables_pi1' => t3lib_extMgm::extPath('static_info_tables') . 'pi1/class.tx_staticinfotables_pi1.php',
 
 	'recordlist' => $typo3Path . 'class.db_list.inc',

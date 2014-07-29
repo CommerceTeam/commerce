@@ -520,8 +520,8 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 		$template = $this->cObj->getSubpart($this->templateCode, $templateMarker);
 
 		$basketArray = $this->languageMarker;
-		$basketArray['###PRICE_GROSS###'] = tx_moneylib::format($this->basket->getSumGross(), $this->currency);
-		$basketArray['###PRICE_NET###'] = tx_moneylib::format($this->basket->getSumNet(), $this->currency);
+		$basketArray['###PRICE_GROSS###'] = Tx_Commerce_ViewHelpers_Money::format($this->basket->getSumGross(), $this->currency);
+		$basketArray['###PRICE_NET###'] = Tx_Commerce_ViewHelpers_Money::format($this->basket->getSumNet(), $this->currency);
 
 			// @Deprecated ###ITEMS###
 		$basketArray['###ITEMS###'] = $this->basket->getArticleTypeCountFromList($articleTypes);
@@ -621,25 +621,25 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 		foreach ($taxRates as $taxRate => $taxRateSum) {
 			$taxRowArray = array();
 			$taxRowArray['###TAX_RATE###'] = $taxRate;
-			$taxRowArray['###TAX_RATE_SUM###'] = tx_moneylib::format($taxRateSum, $this->currency);
+			$taxRowArray['###TAX_RATE_SUM###'] = Tx_Commerce_ViewHelpers_Money::format($taxRateSum, $this->currency);
 			$taxRateRows .= $this->cObj->substituteMarkerArray($taxRateTemplate, $taxRowArray);
 		}
 
 		$template = $this->cObj->substituteSubpart($template, '###TAX_RATE_SUMS###', $taxRateRows);
 
-		$basketArray['###BASKET_NET_PRICE###'] = tx_moneylib::format($this->basket->getSumNet(), $this->currency);
-		$basketArray['###BASKET_GROSS_PRICE###'] = tx_moneylib::format($this->basket->getSumGross(), $this->currency);
-		$basketArray['###BASKET_TAX_PRICE###'] = tx_moneylib::format($this->basket->getSumGross() - $this->basket->getSumNet(), $this->currency);
-		$basketArray['###BASKET_VALUE_ADDED_TAX###'] = tx_moneylib::format($this->basket->getSumGross() - $this->basket->getSumNet(), $this->currency);
+		$basketArray['###BASKET_NET_PRICE###'] = Tx_Commerce_ViewHelpers_Money::format($this->basket->getSumNet(), $this->currency);
+		$basketArray['###BASKET_GROSS_PRICE###'] = Tx_Commerce_ViewHelpers_Money::format($this->basket->getSumGross(), $this->currency);
+		$basketArray['###BASKET_TAX_PRICE###'] = Tx_Commerce_ViewHelpers_Money::format($this->basket->getSumGross() - $this->basket->getSumNet(), $this->currency);
+		$basketArray['###BASKET_VALUE_ADDED_TAX###'] = Tx_Commerce_ViewHelpers_Money::format($this->basket->getSumGross() - $this->basket->getSumNet(), $this->currency);
 		$basketArray['###BASKET_ITEMS###'] = $this->basket->getItemsCount();
 		$basketArray['###DELBASKET###'] = $this->pi_linkTP_keepPIvars($this->pi_getLL('delete_basket', 'delete basket'), array('delBasket' => 1), 0, 1);
 		$basketArray['###BASKET_NEXTBUTTON###'] = $this->cObj->stdWrap($this->makeCheckOutLink(), $this->conf['nextbutton.']);
-		$basketArray['###BASKET_ARTICLES_NET_SUM###'] = tx_moneylib::format($this->basket->getArticleTypeSumNet(NORMALARTICLETYPE), $this->currency);
-		$basketArray['###BASKET_ARTICLES_GROSS_SUM###'] = tx_moneylib::format($this->basket->getArticleTypeSumGross(NORMALARTICLETYPE), $this->currency);
-		$basketArray['###BASKET_DELIVERY_NET_SUM###'] = tx_moneylib::format($this->basket->getArticleTypeSumNet(DELIVERYARTICLETYPE), $this->currency);
-		$basketArray['###BASKET_DELIVERY_GROSS_SUM###'] = tx_moneylib::format($this->basket->getArticleTypeSumGross(DELIVERYARTICLETYPE), $this->currency);
-		$basketArray['###BASKET_PAYMENT_NET_SUM###'] = tx_moneylib::format($this->basket->getArticleTypeSumNet(PAYMENTARTICLETYPE), $this->currency);
-		$basketArray['###BASKET_PAYMENT_GROSS_SUM###'] = tx_moneylib::format($this->basket->getArticleTypeSumGross(PAYMENTARTICLETYPE), $this->currency);
+		$basketArray['###BASKET_ARTICLES_NET_SUM###'] = Tx_Commerce_ViewHelpers_Money::format($this->basket->getArticleTypeSumNet(NORMALARTICLETYPE), $this->currency);
+		$basketArray['###BASKET_ARTICLES_GROSS_SUM###'] = Tx_Commerce_ViewHelpers_Money::format($this->basket->getArticleTypeSumGross(NORMALARTICLETYPE), $this->currency);
+		$basketArray['###BASKET_DELIVERY_NET_SUM###'] = Tx_Commerce_ViewHelpers_Money::format($this->basket->getArticleTypeSumNet(DELIVERYARTICLETYPE), $this->currency);
+		$basketArray['###BASKET_DELIVERY_GROSS_SUM###'] = Tx_Commerce_ViewHelpers_Money::format($this->basket->getArticleTypeSumGross(DELIVERYARTICLETYPE), $this->currency);
+		$basketArray['###BASKET_PAYMENT_NET_SUM###'] = Tx_Commerce_ViewHelpers_Money::format($this->basket->getArticleTypeSumNet(PAYMENTARTICLETYPE), $this->currency);
+		$basketArray['###BASKET_PAYMENT_GROSS_SUM###'] = Tx_Commerce_ViewHelpers_Money::format($this->basket->getArticleTypeSumGross(PAYMENTARTICLETYPE), $this->currency);
 		$basketArray['###BASKET_PAYMENT_ITEMS###'] = $this->basket->getArticleTypeCount(PAYMENTARTICLETYPE);
 		$basketArray['###BASKET_DELIVERY_ITEMS###'] = $this->basket->getArticleTypeCount(DELIVERYARTICLETYPE);
 		$basketArray['###BASKET_ARTICLES_ITEMS###'] = $this->basket->getArticleTypeCount(NORMALARTICLETYPE);
@@ -749,11 +749,11 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 
 				if ($deliveryArticle->getUid() == $this->basketDeliveryArticles[0]) {
 					$selected = ' selected="selected"';
-					$priceNet = tx_moneylib::format($deliveryArticle->getPriceNet(), $this->currency);
-					$priceGross = tx_moneylib::format($deliveryArticle->getPriceGross(), $this->currency);
+					$priceNet = Tx_Commerce_ViewHelpers_Money::format($deliveryArticle->getPriceNet(), $this->currency);
+					$priceGross = Tx_Commerce_ViewHelpers_Money::format($deliveryArticle->getPriceGross(), $this->currency);
 				} elseif (!$first) {
-					$priceNet = tx_moneylib::format($deliveryArticle->getPriceNet(), $this->currency);
-					$priceGross = tx_moneylib::format($deliveryArticle->getPriceGross(), $this->currency);
+					$priceNet = Tx_Commerce_ViewHelpers_Money::format($deliveryArticle->getPriceNet(), $this->currency);
+					$priceGross = Tx_Commerce_ViewHelpers_Money::format($deliveryArticle->getPriceGross(), $this->currency);
 					if (!is_array($this->basketDeliveryArticles) || count($this->basketDeliveryArticles) < 1) {
 						$this->getBasket()->addArticle($deliveryArticle->getUid());
 						$this->getBasket()->storeData();
@@ -878,11 +878,11 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 					$first = TRUE;
 					$select .= ' selected="selected"';
 					$this->basket->addArticle($articleUid);
-					$priceNet = tx_moneylib::format($articleObj->getPriceNet(), $this->currency);
-					$priceGross = tx_moneylib::format($articleObj->getPriceGross(), $this->currency);
+					$priceNet = Tx_Commerce_ViewHelpers_Money::format($articleObj->getPriceNet(), $this->currency);
+					$priceGross = Tx_Commerce_ViewHelpers_Money::format($articleObj->getPriceGross(), $this->currency);
 				} elseif (!$first) {
-					$priceNet = tx_moneylib::format($articleObj->getPriceNet(), $this->currency);
-					$priceGross = tx_moneylib::format($articleObj->getPriceGross(), $this->currency);
+					$priceNet = Tx_Commerce_ViewHelpers_Money::format($articleObj->getPriceNet(), $this->currency);
+					$priceGross = Tx_Commerce_ViewHelpers_Money::format($articleObj->getPriceGross(), $this->currency);
 					$this->basket->deleteArticle($articleUid);
 				}
 				$select .= '>' . $articleObj->getTitle() . '</option>';
@@ -893,8 +893,8 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 
 			// Set Prices to 0, if "please select " is shown
 		if ($addPleaseSelect) {
-			$priceGross = tx_moneylib::format(0, $this->currency);
-			$priceNet = tx_moneylib::format(0, $this->currency);
+			$priceGross = Tx_Commerce_ViewHelpers_Money::format(0, $this->currency);
+			$priceNet = Tx_Commerce_ViewHelpers_Money::format(0, $this->currency);
 		}
 
 		$basketArray['###PAYMENT_SELECT_BOX###'] = $select;
@@ -975,13 +975,13 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 			'[artAddUid][' . $article->getUid() . '][price_id]" value="' . $basketItem->getPriceUid() . '" />';
 		$markerArray['###QTY_INPUT_VALUE###'] = $basketItem->getQuantity();
 		$markerArray['###QTY_INPUT_NAME###'] = $this->prefixId . '[artAddUid][' . $article->getUid() . '][count]';
-		$markerArray['###BASKET_ITEM_PRICENET###'] = tx_moneylib::format($basketItem->getPriceNet(), $this->currency);
-		$markerArray['###BASKET_ITEM_PRICEGROSS###'] = tx_moneylib::format($basketItem->getPriceGross(), $this->currency);
-		$markerArray['###BASKET_ITEM_PRICENETNOSCALE###'] = tx_moneylib::format($basketItem->getNoScalePriceNet(), $this->currency);
-		$markerArray['###BASKET_ITEM_PRICEGROSSNOSCALE###'] = tx_moneylib::format($basketItem->getNoScalePriceGross(), $this->currency);
+		$markerArray['###BASKET_ITEM_PRICENET###'] = Tx_Commerce_ViewHelpers_Money::format($basketItem->getPriceNet(), $this->currency);
+		$markerArray['###BASKET_ITEM_PRICEGROSS###'] = Tx_Commerce_ViewHelpers_Money::format($basketItem->getPriceGross(), $this->currency);
+		$markerArray['###BASKET_ITEM_PRICENETNOSCALE###'] = Tx_Commerce_ViewHelpers_Money::format($basketItem->getNoScalePriceNet(), $this->currency);
+		$markerArray['###BASKET_ITEM_PRICEGROSSNOSCALE###'] = Tx_Commerce_ViewHelpers_Money::format($basketItem->getNoScalePriceGross(), $this->currency);
 		$markerArray['###BASKET_ITEM_COUNT###'] = $basketItem->getQuantity();
-		$markerArray['###BASKET_ITEM_PRICESUM_NET###'] = tx_moneylib::format($basketItem->getItemSumNet(), $this->currency);
-		$markerArray['###BASKET_ITEM_PRICESUM_GROSS###'] = tx_moneylib::format($basketItem->getItemSumGross(), $this->currency);
+		$markerArray['###BASKET_ITEM_PRICESUM_NET###'] = Tx_Commerce_ViewHelpers_Money::format($basketItem->getItemSumNet(), $this->currency);
+		$markerArray['###BASKET_ITEM_PRICESUM_GROSS###'] = Tx_Commerce_ViewHelpers_Money::format($basketItem->getItemSumGross(), $this->currency);
 
 			// Link to delete this article in basket
 		if (is_array($this->conf['deleteItem.'])) {

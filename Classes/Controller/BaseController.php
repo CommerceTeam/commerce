@@ -833,10 +833,10 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 		$markerArray['ARTICLE_NUMBER'] = $article->getOrdernumber();
 		$markerArray['ARTICLE_ORDERNUMBER'] = $article->getOrdernumber();
 
-		$markerArray['ARTICLE_PRICE_NET'] = tx_moneylib::format($article->getPriceNet(), $this->currency);
-		$markerArray['ARTICLE_PRICE_GROSS'] = tx_moneylib::format($article->getPriceGross(), $this->currency);
-		$markerArray['DELIVERY_PRICE_NET'] = tx_moneylib::format($article->getDeliveryCostNet(), $this->currency);
-		$markerArray['DELIVERY_PRICE_GROSS'] = tx_moneylib::format($article->getDeliveryCostGross(), $this->currency);
+		$markerArray['ARTICLE_PRICE_NET'] = Tx_Commerce_ViewHelpers_Money::format($article->getPriceNet(), $this->currency);
+		$markerArray['ARTICLE_PRICE_GROSS'] = Tx_Commerce_ViewHelpers_Money::format($article->getPriceGross(), $this->currency);
+		$markerArray['DELIVERY_PRICE_NET'] = Tx_Commerce_ViewHelpers_Money::format($article->getDeliveryCostNet(), $this->currency);
+		$markerArray['DELIVERY_PRICE_GROSS'] = Tx_Commerce_ViewHelpers_Money::format($article->getDeliveryCostGross(), $this->currency);
 
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['articleMarker'])) {
 			t3lib_div::deprecationLog(
@@ -1014,8 +1014,8 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 	public function makeBasketInformation($basketObj, $subpartMarker) {
 		$template = $this->cObj->getSubpart($this->templateCode, $subpartMarker);
 		$basketObj->recalculateSums();
-		$markerArray['###SUM_NET###'] = tx_moneylib::format($basketObj->getSumNet(TRUE), $this->currency, $this->showCurrency);
-		$markerArray['###SUM_GROSS###'] = tx_moneylib::format(
+		$markerArray['###SUM_NET###'] = Tx_Commerce_ViewHelpers_Money::format($basketObj->getSumNet(TRUE), $this->currency, $this->showCurrency);
+		$markerArray['###SUM_GROSS###'] = Tx_Commerce_ViewHelpers_Money::format(
 			$basketObj->getSumGross(TRUE), $this->currency, $this->showCurrency
 		);
 
@@ -1027,24 +1027,24 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 			$sumArticleGross += $basketObj->getArticleTypeSumGross($regularArticleType, 1);
 		}
 
-		$markerArray['###SUM_ARTICLE_NET###'] = tx_moneylib::format($sumArticleNet, $this->currency, $this->showCurrency);
-		$markerArray['###SUM_ARTICLE_GROSS###'] = tx_moneylib::format($sumArticleGross, $this->currency, $this->showCurrency);
-		$markerArray['###SUM_SHIPPING_NET###'] = tx_moneylib::format(
+		$markerArray['###SUM_ARTICLE_NET###'] = Tx_Commerce_ViewHelpers_Money::format($sumArticleNet, $this->currency, $this->showCurrency);
+		$markerArray['###SUM_ARTICLE_GROSS###'] = Tx_Commerce_ViewHelpers_Money::format($sumArticleGross, $this->currency, $this->showCurrency);
+		$markerArray['###SUM_SHIPPING_NET###'] = Tx_Commerce_ViewHelpers_Money::format(
 			$basketObj->getArticleTypeSumNet(DELIVERYARTICLETYPE, 1), $this->currency, $this->showCurrency
 		);
-		$markerArray['###SUM_SHIPPING_GROSS###'] = tx_moneylib::format(
+		$markerArray['###SUM_SHIPPING_GROSS###'] = Tx_Commerce_ViewHelpers_Money::format(
 			$basketObj->getArticleTypeSumGross(DELIVERYARTICLETYPE, 1), $this->currency, $this->showCurrency
 		);
 		$markerArray['###SHIPPING_TITLE###'] = $basketObj->getFirstArticleTypeTitle(DELIVERYARTICLETYPE);
-		$markerArray['###SUM_PAYMENT_NET###'] = tx_moneylib::format(
+		$markerArray['###SUM_PAYMENT_NET###'] = Tx_Commerce_ViewHelpers_Money::format(
 			$basketObj->getArticleTypeSumNet(PAYMENTARTICLETYPE, 1), $this->currency, $this->showCurrency
 		);
-		$markerArray['###SUM_PAYMENT_GROSS###'] = tx_moneylib::format(
+		$markerArray['###SUM_PAYMENT_GROSS###'] = Tx_Commerce_ViewHelpers_Money::format(
 			$basketObj->getArticleTypeSumGross(PAYMENTARTICLETYPE, 1), $this->currency, $this->showCurrency
 		);
 		$markerArray['###PAYMENT_TITLE###'] = $basketObj->getFirstArticleTypeTitle(PAYMENTARTICLETYPE);
 		$markerArray['###PAYMENT_DESCRIPTION###'] = $basketObj->getFirstArticleTypeDescription(PAYMENTARTICLETYPE);
-		$markerArray['###SUM_TAX###'] = tx_moneylib::format($basketObj->getTaxSum(), $this->currency, $this->showCurrency);
+		$markerArray['###SUM_TAX###'] = Tx_Commerce_ViewHelpers_Money::format($basketObj->getTaxSum(), $this->currency, $this->showCurrency);
 
 		$taxRateTemplate = $this->cObj->getSubpart($template, '###TAX_RATE_SUMS###');
 		$taxRates = $basketObj->getTaxRateSums();
@@ -1052,7 +1052,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 		foreach ($taxRates as $taxRate => $taxRateSum) {
 			$taxRowArray = array();
 			$taxRowArray['###TAX_RATE###'] = $taxRate;
-			$taxRowArray['###TAX_RATE_SUM###'] = tx_moneylib::format($taxRateSum, $this->currency, $this->showCurrency);
+			$taxRowArray['###TAX_RATE_SUM###'] = Tx_Commerce_ViewHelpers_Money::format($taxRateSum, $this->currency, $this->showCurrency);
 
 			$taxRateRows .= $this->cObj->substituteMarkerArray($taxRateTemplate, $taxRowArray);
 		}
@@ -1139,22 +1139,22 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 		/**
 		 * Basket Item Elements
 		 */
-		$markerArray['###BASKET_ITEM_PRICENET###'] = tx_moneylib::format(
+		$markerArray['###BASKET_ITEM_PRICENET###'] = Tx_Commerce_ViewHelpers_Money::format(
 			$basketItemObj->getPriceNet(), $this->currency, $this->showCurrency
 		);
-		$markerArray['###BASKET_ITEM_PRICEGROSS###'] = tx_moneylib::format(
+		$markerArray['###BASKET_ITEM_PRICEGROSS###'] = Tx_Commerce_ViewHelpers_Money::format(
 			$basketItemObj->getPriceGross(), $this->currency, $this->showCurrency
 		);
-		$markerArray['###BASKET_ITEM_PRICESUM_NET###'] = tx_moneylib::format(
+		$markerArray['###BASKET_ITEM_PRICESUM_NET###'] = Tx_Commerce_ViewHelpers_Money::format(
 			$basketItemObj->getItemSumNet(), $this->currency, $this->showCurrency
 		);
-		$markerArray['###BASKET_ITEM_PRICESUM_GROSS###'] = tx_moneylib::format(
+		$markerArray['###BASKET_ITEM_PRICESUM_GROSS###'] = Tx_Commerce_ViewHelpers_Money::format(
 			$basketItemObj->getItemSumGross(), $this->currency, $this->showCurrency
 		);
 		$markerArray['###BASKET_ITEM_ORDERNUMBER###'] = $basketItemObj->getOrderNumber();
 
 		$markerArray['###BASKET_ITEM_TAX_PERCENT###'] = $basketItemObj->getTax();
-		$markerArray['###BASKET_ITEM_TAX_VALUE###'] = tx_moneylib::format(
+		$markerArray['###BASKET_ITEM_TAX_VALUE###'] = Tx_Commerce_ViewHelpers_Money::format(
 			(int) $basketItemObj->getItemSumTax(), $this->currency, $this->showCurrency
 		);
 		$markerArray['###BASKET_ITEM_COUNT###'] = $basketItemObj->getQuantity();
@@ -1168,11 +1168,11 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['makeLineView'])) {
 			t3lib_div::deprecationLog(
 				'
-								hook
-								$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_pibase.php\'][\'makeLineView\']
-								is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
-								$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/BaseController.php\'][\'makeLineView\']
-							'
+					hook
+					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_pibase.php\'][\'makeLineView\']
+					is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
+					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/BaseController.php\'][\'makeLineView\']
+				'
 			);
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['makeLineView'] as $classRef) {
 				$hookObj = & t3lib_div::getUserObj($classRef);
@@ -1928,7 +1928,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 		$cheapestArticle->loadData();
 		$cheapestArticle->loadPrices();
 
-		$markerArray['###PRODUCT_CHEAPEST_PRICE_GROSS###'] = tx_moneylib::format(
+		$markerArray['###PRODUCT_CHEAPEST_PRICE_GROSS###'] = Tx_Commerce_ViewHelpers_Money::format(
 			$cheapestArticle->getPriceGross(), $this->currency
 		);
 
@@ -1938,7 +1938,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 		$cheapestArticle->loadData();
 		$cheapestArticle->loadPrices();
 
-		$markerArray['###PRODUCT_CHEAPEST_PRICE_NET###'] = tx_moneylib::format($cheapestArticle->getPriceNet(), $this->currency);
+		$markerArray['###PRODUCT_CHEAPEST_PRICE_NET###'] = Tx_Commerce_ViewHelpers_Money::format($cheapestArticle->getPriceNet(), $this->currency);
 
 		foreach ($hookObjectsArr as $hookObj) {
 			if (method_exists($hookObj, 'additionalMarkerProduct')) {

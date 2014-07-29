@@ -71,12 +71,12 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 	 * Article order_id
 	 * Just a hidden field
 	 *
-	 * @param array $PA
+	 * @param array $parameter
 	 * @return string HTML-Content
 	 */
-	public function sumPriceGrossFormat($PA) {
-		$content = '<input type="text" disabled name="' . $PA['itemFormElName'] . '" value="' .
-			tx_moneylib::format($PA['itemFormElValue'] / 100, '') . '">';
+	public function sumPriceGrossFormat($parameter) {
+		$content = '<input type="text" disabled name="' . $parameter['itemFormElName'] . '" value="' .
+			Tx_Commerce_ViewHelpers_Money::format($parameter['itemFormElValue'] / 100, '') . '">';
 		return $content;
 	}
 
@@ -200,8 +200,8 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 				$sum['price_net_value'] += $row['price_net'] / 100;
 				$sum['price_gross_value'] += $row['price_gross'] / 100;
 
-				$row['price_net'] = tx_moneylib::format($row['price_net'] / 100, '');
-				$row['price_gross'] = tx_moneylib::format($row['price_gross'] / 100, '');
+				$row['price_net'] = Tx_Commerce_ViewHelpers_Money::format($row['price_net'] / 100, '');
+				$row['price_gross'] = Tx_Commerce_ViewHelpers_Money::format($row['price_gross'] / 100, '');
 
 				$row_bgColor = (($cc % 2) ? '' : ' bgcolor="'  . t3lib_div::modifyHTMLColor($GLOBALS['SOBE']->doc->bgColor4, + 10, + 10, + 10) . '"');
 
@@ -262,8 +262,8 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 			 * Cerate the summ row
 			 */
 			$out .= '<tr>';
-			$sum['price_net'] = tx_moneylib::format($sum['price_net_value'], '');
-			$sum['price_gross'] = tx_moneylib::format($sum['price_gross_value'], '');
+			$sum['price_net'] = Tx_Commerce_ViewHelpers_Money::format($sum['price_net_value'], '');
+			$sum['price_gross'] = Tx_Commerce_ViewHelpers_Money::format($sum['price_gross_value'], '');
 
 			foreach ($field_rows as $field) {
 				switch ($field) {

@@ -620,7 +620,7 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends localRecordList {
 				if ($this->csvOutput) {
 					$row[$fCol] = $row[$fCol] / 100;
 				} else {
-					$theData[$fCol] = tx_moneylib::format($row[$fCol], $row['cu_iso_3'], FALSE);
+					$theData[$fCol] = Tx_Commerce_ViewHelpers_Money::format($row[$fCol], $row['cu_iso_3'], FALSE);
 				}
 			} elseif ($fCol == 'crdate') {
 				$theData[$fCol] = t3lib_BEfunc::date($row[$fCol]);
@@ -633,13 +633,13 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends localRecordList {
 				$articleNumber = array();
 				$articleName = array();
 
-				$res_articles = $database->exec_SELECTquery(
+				$resArticles = $database->exec_SELECTquery(
 					'article_number, title, order_uid',
 					'tx_commerce_order_articles',
 					'order_uid = ' . (int) $row['uid']
 				);
 				$articles = array();
-				while (($lokalRow = $database->sql_fetch_assoc($res_articles))) {
+				while (($lokalRow = $database->sql_fetch_assoc($resArticles))) {
 					$articles[] = $lokalRow['article_number'] . ':' . $lokalRow['title'];
 					$articleNumber[] = $lokalRow['article_number'];
 					$articleName[] = $lokalRow['title'];
@@ -652,36 +652,36 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends localRecordList {
 					$theData[$fCol] = '<input type="checkbox" name="orderUid[]" value="' . $row['uid'] . '">';
 				}
 			} elseif ($fCol == 'numarticles') {
-				$res_articles = $database->exec_SELECTquery(
+				$resArticles = $database->exec_SELECTquery(
 					'sum(amount) amount',
 					'tx_commerce_order_articles',
 					'order_uid = ' . (int) $row['uid'] . ' and article_type_uid =' . NORMALARTICLETYPE
 				);
-				if (($lokalRow = $database->sql_fetch_assoc($res_articles))) {
+				if (($lokalRow = $database->sql_fetch_assoc($resArticles))) {
 					$theData[$fCol] = $lokalRow['amount'];
 					$row[$fCol]  = $lokalRow['amount'];
 				}
 			} elseif ($fCol == 'article_number') {
 				$articleNumber = array();
 
-				$res_articles = $database->exec_SELECTquery(
+				$resArticles = $database->exec_SELECTquery(
 					'article_number',
 					'tx_commerce_order_articles',
 					'order_uid = ' . (int) $row['uid'] . ' and article_type_uid =' . NORMALARTICLETYPE
 				);
-				while (($lokalRow = $database->sql_fetch_assoc($res_articles))) {
+				while (($lokalRow = $database->sql_fetch_assoc($resArticles))) {
 					$articleNumber[] = $lokalRow['article_number'] ? $lokalRow['article_number'] : $language->sL('no_article_number');
 				}
 				$theData[$fCol] = implode(',', $articleNumber);
 			} elseif ($fCol == 'article_name') {
 				$articleName = array();
 
-				$res_articles = $database->exec_SELECTquery(
+				$resArticles = $database->exec_SELECTquery(
 					'title',
 					'tx_commerce_order_articles',
 					'order_uid = ' . (int) $row['uid'] . ' and article_type_uid =' . NORMALARTICLETYPE
 				);
-				while (($lokalRow = $database->sql_fetch_assoc($res_articles))) {
+				while (($lokalRow = $database->sql_fetch_assoc($resArticles))) {
 					$articleName[] = $lokalRow['title'] ? $lokalRow['title'] : $language->sL('no_article_title');
 				}
 				$theData[$fCol] = implode(',', $articleName);
