@@ -493,10 +493,10 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		}
 
 		// Get the form
-		$markerArray['###ADDRESS_FORM_TAG###'] = '<form name="addressForm" action="' . $this->pi_getPageLink(
-				$GLOBALS['TSFE']->id
-			) . '" method="post" ' . $this->conf[$this->step . '.']['formParams'] . '>';
-		$markerArray['###ADDRESS_FORM_HIDDENFIELDS###'] = '<input type="hidden" name="' . $this->prefixId . '[check]" value="billing" />';
+		$markerArray['###ADDRESS_FORM_TAG###'] = '<form name="addressForm" action="' .
+			$this->pi_getPageLink($GLOBALS['TSFE']->id) . '" method="post" ' . $this->conf[$this->step . '.']['formParams'] . '>';
+		$markerArray['###ADDRESS_FORM_HIDDENFIELDS###'] =
+			'<input type="hidden" name="' . $this->prefixId . '[check]" value="billing" />';
 
 		$billingForm = '<form name="addressForm" action="' . $this->pi_getPageLink($GLOBALS['TSFE']->id) . '" method="post">';
 		$billingForm .= '<input type="hidden" name="' . $this->prefixId . '[check]" value="billing" />';
@@ -560,7 +560,8 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			$this->conf['billing.']['deliveryAddress.']['delivery_radio.']
 		);
 		$markerArray['###ADDRESS_RADIOFORM_NODELIVERY###'] = $this->cObj->stdWrap(
-			'<input type="radio" id="nodelivery"  name="' . $this->prefixId . '[step]" value="' . $stepNodelivery . '" ' . $paymentChecked . '/>',
+			'<input type="radio" id="nodelivery"  name="' . $this->prefixId . '[step]" value="' . $stepNodelivery . '" ' .
+				$paymentChecked . '/>',
 			$this->conf['billing.']['deliveryAddress.']['nodelivery_radio.']
 		);
 		$markerArray['###ADDRESS_LABEL_DELIVERY###'] = $this->cObj->stdWrap(
@@ -644,7 +645,8 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 
 		$nextstep = $this->getStepAfter('delivery');
 
-		$markerArray['###ADDRESS_FORM_HIDDENFIELDS###'] = '<input type="hidden" name="' . $this->prefixId . '[step]" value="' . $nextstep . '" /><input type="hidden" name="' . $this->prefixId . '[check]" value="delivery" />';
+		$markerArray['###ADDRESS_FORM_HIDDENFIELDS###'] = '<input type="hidden" name="' . $this->prefixId . '[step]" value="' .
+			$nextstep . '" /><input type="hidden" name="' . $this->prefixId . '[check]" value="delivery" />';
 
 		$deliveryForm = '<form name="addressForm" action="' . $this->pi_getPageLink($GLOBALS['TSFE']->id) . '" method="post">';
 		$deliveryForm .= '<input type="hidden" name="' . $this->prefixId . '[step]" value="' . $nextstep . '" />';
@@ -897,8 +899,10 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			$this->cObj->typoLink($this->pi_getLL('termstext_tca'), $this->conf['termsAndConditionsUrl.'])
 		);
 		$markerArray['###LISTING_COMMENT_LABEL###'] = $this->pi_getLL('comment');
-		$markerArray['###LISTING_TERMS_ACCEPT_FIELD###'] = '<input type="checkbox" name="' . $this->prefixId . '[terms]" value="termschecked" ' . $termsChecked . ' />';
-		$markerArray['###LISTING_COMMENT_FIELD###'] = '<textarea name="' . $this->prefixId . '[comment]" rows="4" cols="40">' . $comment . '</textarea>';
+		$markerArray['###LISTING_TERMS_ACCEPT_FIELD###'] = '<input type="checkbox" name="' . $this->prefixId .
+			'[terms]" value="termschecked" ' . $termsChecked . ' />';
+		$markerArray['###LISTING_COMMENT_FIELD###'] = '<textarea name="' . $this->prefixId . '[comment]" rows="4" cols="40">' .
+			$comment . '</textarea>';
 
 		$hookObjectsArr = $this->getHookObjectArray('getListing');
 		foreach ($hookObjectsArr as $hookObj) {
@@ -1105,7 +1109,10 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			}
 		}
 
-		$content = $this->cObj->substituteMarkerArray($this->cObj->substituteMarkerArray($content, $markerArray), $this->languageMarker);
+		$content = $this->cObj->substituteMarkerArray(
+			$this->cObj->substituteMarkerArray($content, $markerArray),
+			$this->languageMarker
+		);
 
 		foreach ($hookObjectsArr as $hookObj) {
 			if (method_exists($hookObj, 'postFinish')) {
@@ -1370,7 +1377,10 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 							break;
 						}
 						if (!$this->checkUserName($value)) {
-							$this->formError[$name] = $this->pi_getLL('error_field_username');
+							$link = $this->cObj->cObjGetSingle($this->conf['passwordForgotLink'], $this->conf['passwordForgotLink.']);
+							$this->formError[$name] = str_replace(
+								'###PASSWORD_FORGOTTEN_LINK###', $link, $this->pi_getLL('error_field_username')
+							);
 							$returnVal = FALSE;
 						}
 						break;
@@ -1527,7 +1537,11 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 				|| !is_object($paymentBasketItem)
 			) {
 				$basket->removeCurrentPaymentArticle();
-				$GLOBALS['TSFE']->fe_user->setKey('ses', Tx_Commerce_Utility_GeneralUtility::generateSessionKey('payment'), $this->piVars['payArt']);
+				$GLOBALS['TSFE']->fe_user->setKey(
+					'ses',
+					Tx_Commerce_Utility_GeneralUtility::generateSessionKey('payment'),
+					$this->piVars['payArt']
+				);
 
 				$articleRow = $database->exec_SELECTgetSingleRow(
 					'*',
@@ -1636,8 +1650,8 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			if ($config['sourceFields.'][$arrayName]['type'] == 'check') {
 				$fieldCodeTemplate = $fieldTemplateCheckbox;
 			} elseif ($config['sourceFields.'][$arrayName]['type'] == 'hidden') {
-                $fieldCodeTemplate = $fieldTemplateHidden;
-            } else {
+				$fieldCodeTemplate = $fieldTemplateHidden;
+			} else {
 				$fieldCodeTemplate = $fieldTemplate;
 			}
 
@@ -1842,7 +1856,8 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 					$fieldValue :
 					$fieldConfig['default'];
 
-				$result = '<select id="' . $step . '-' . $fieldName . '" name="' . $this->prefixId . '[' . $step . '][' . $fieldName . ']" ' . 'class="' . $fieldConfig['cssClass'] . '">' . LF;
+				$result = '<select id="' . $step . '-' . $fieldName . '" name="' . $this->prefixId . '[' . $step . '][' .
+					$fieldName . ']" class="' . $fieldConfig['cssClass'] . '">' . LF;
 				$result .= $this->staticInfo->optionsConstructor($countries, array($selected), $outSelectedArray);
 				$result .= '</select>' . LF;
 				break;
@@ -1851,8 +1866,10 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 				$result = $this->getCheckboxInputField($fieldName, $fieldConfig, $fieldValue, $step);
 				break;
 
-            case 'hidden':
+			case 'hidden':
+				// fall through
 			case 'single':
+				// fall through
 			default:
 				$result = $this->getSingleInputField($fieldName, $fieldConfig, $step);
 		}
@@ -1881,16 +1898,19 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		}
 
 		if ($fieldConfig['noPrefix'] == 1) {
-			$result = '<input id="' . $step . '-' . $fieldName . '" type="' . ($fieldConfig['type'] == 'hidden' ? 'hidden' : 'text') . '" name="' . $fieldName . '" value="' . $value . '" ' . $maxlength;
+			$result = '<input id="' . $step . '-' . $fieldName . '" type="' . ($fieldConfig['type'] == 'hidden' ? 'hidden' : 'text') .
+				'" name="' . $fieldName . '" value="' . $value . '" ' . $maxlength;
 			if ($fieldConfig['readonly'] == 1) {
 				$result .= ' readonly disabled /><input type="hidden" name="' . $fieldName . '" value="' . $value . '" ' . $maxlength . ' />';
 			} else {
 				$result .= '/>';
 			}
 		} else {
-			$result = '<input id="' . $step . '-' . $fieldName . '" type="' . ($fieldConfig['type'] == 'hidden' ? 'hidden' : 'text') . '" name="' . $this->prefixId . '[' . $step . '][' . $fieldName . ']" value="' . $value . '" ' . $maxlength;
+			$result = '<input id="' . $step . '-' . $fieldName . '" type="' . ($fieldConfig['type'] == 'hidden' ? 'hidden' : 'text') .
+				'" name="' . $this->prefixId . '[' . $step . '][' . $fieldName . ']" value="' . $value . '" ' . $maxlength;
 			if ($fieldConfig['readonly'] == 1) {
-				$result .= ' readonly disabled /><input type="hidden" name="' . $this->prefixId . '[' . $step . '][' . $fieldName . ']" value="' . $value . '" ' . $maxlength . ' />';
+				$result .= ' readonly disabled /><input type="hidden" name="' . $this->prefixId . '[' . $step . '][' . $fieldName .
+					']" value="' . $value . '" ' . $maxlength . ' />';
 			} else {
 				$result .= '/>';
 			}
@@ -1960,7 +1980,8 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	 * @return string Single checkbox
 	 */
 	protected function getCheckboxInputField($fieldName, $fieldConfig, $fieldValue = '', $step = '') {
-		$result = '<input id="' . $step . '-' . $fieldName . '" type="checkbox" name="' . $this->prefixId . '[' . $step . '][' . $fieldName . ']" id="' . $this->prefixId . '[' . $step . '][' . $fieldName . ']" value="1" ';
+		$result = '<input id="' . $step . '-' . $fieldName . '" type="checkbox" name="' . $this->prefixId . '[' . $step . '][' .
+			$fieldName . ']" id="' . $this->prefixId . '[' . $step . '][' . $fieldName . ']" value="1" ';
 
 		if (($fieldConfig['default'] == '1' && $fieldValue != 0) || $fieldValue == 1) {
 			$result .= 'checked="checked" ';
