@@ -234,11 +234,11 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 
 		$this->debug($this->currentStep, '$this->currentSteps', __FILE__ . ' ' . __LINE__);
 
-		// The purpose of the while loop is simply to be able to define any
-		// step as the step after payment. This counter breaks the loop after 10
-		// rounds to prevent infinite loops with poorly setup shops
 		if (!$this->validateAddress('billing')) {
 			$this->currentStep = 'billing';
+		}
+		if (!$this->validateAddress('delivery')) {
+			$this->currentStep = 'delivery';
 		}
 
 		foreach ($hookObjectsArr as $hookObj) {
@@ -249,6 +249,9 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 
 		$content = FALSE;
 		$finiteloop = 0;
+		// The purpose of the while loop is simply to be able to define any
+		// step as the step after payment. This counter breaks the loop after 10
+		// rounds to prevent infinite loops with poorly setup shops
 		while ($content === FALSE && $finiteloop < 10) {
 			switch ($this->currentStep) {
 				case 'delivery':
