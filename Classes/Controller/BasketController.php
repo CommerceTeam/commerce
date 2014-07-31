@@ -755,6 +755,10 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 					$priceNet = Tx_Commerce_ViewHelpers_Money::format($deliveryArticle->getPriceNet(), $this->currency);
 					$priceGross = Tx_Commerce_ViewHelpers_Money::format($deliveryArticle->getPriceGross(), $this->currency);
 				} elseif (!$first) {
+					if (empty($this->basketDeliveryArticles[0])) {
+						$selected = $activeFlag;
+					}
+
 					$priceNet = Tx_Commerce_ViewHelpers_Money::format($deliveryArticle->getPriceNet(), $this->currency);
 					$priceGross = Tx_Commerce_ViewHelpers_Money::format($deliveryArticle->getPriceGross(), $this->currency);
 					if (!is_array($this->basketDeliveryArticles) || count($this->basketDeliveryArticles) < 1) {
