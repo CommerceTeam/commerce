@@ -242,18 +242,6 @@ class Tx_Commerce_Utility_ClickmenuUtility extends clickMenu {
 			if (!in_array('history', $this->disabledItems)) {
 				$menuItems['history'] = $this->DB_history($table, $uid, $elInfo);
 			}
-
-				// versioning
-			if (t3lib_extMgm::isLoaded('version')) {
-				/** @var tx_version_cm1 $version */
-				$version = t3lib_div::makeInstance('tx_version_cm1');
-				$menuItems = $version->main($this->clickMenu, $menuItems, $table, $uid);
-
-					// send to review
-				if (!in_array('review', $this->disabledItems) && $rights['review']) {
-					$menuItems['review'] = $this->DB_review($table, $uid);
-				}
-			}
 		} else {
 			// if no item was found we clicked the top most node
 			if (!in_array('new', $this->disabledItems) && $rights['new']) {
