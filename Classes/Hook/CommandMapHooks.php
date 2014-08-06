@@ -750,7 +750,8 @@ class Tx_Commerce_Hook_CommandMapHooks {
 			'deleted' => 1
 		);
 
-		$database->exec_UPDATEquery('tx_commerce_articles', 'uid IN (' . implode(',', $articleList) . ')', $updateValues);
+		$database->exec_UPDATEquery('tx_commerce_articles', 'uid IN (' . implode(',', $articleList) . ') OR l18n_parent IN (' .
+			implode(',', $articleList) . ')', $updateValues);
 	}
 
 	/**
