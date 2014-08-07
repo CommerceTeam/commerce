@@ -79,7 +79,8 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 	protected $itemArrayProcessed = array();
 
 	/**
-	 * Defines if the content of the iframe should be rendered instead of the iframe itself.
+	 * Defines if the content of the iframe should be
+	 * rendered instead of the iframe itself.
 	 * This is for iframe mode.
 	 *
 	 * @var boolean
@@ -274,7 +275,8 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 		if ($width == NULL) {
 			list($width, $height) = $this->calcFrameSizeCSS();
 		}
-		$divStyle = 'position:relative; left:0px; top:0px; height:' . $height . '; width:' . $width . ';border:solid 1px;overflow:auto;background:#fff;';
+		$divStyle = 'position:relative; left:0px; top:0px; height:' . $height . '; width:' . $width .
+			';border:solid 1px;overflow:auto;background:#fff;';
 		$divFrame = '<div  name="' . $this->PA['itemFormElName'] . '_selTree" style="' . htmlspecialchars($divStyle) . '">';
 
 		$divFrame .= $this->treeContent;
@@ -290,10 +292,11 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 				setFormValueFromBrowseWin("' . $this->PA['itemFormElName'] . '", catUid, text);
 			}';
 		$divFrame .= '</script>';
-		$divFrame .= '<script src="' . $this->tceforms->backPath . 'js/tree.js" type=""></script>';
-		$divFrame .= '
+		$divFrame .= '<script src="' . $this->tceforms->backPath . 'js/tree.js"></script>
+			<script type="text/javascript">
 			Tree.thisScript = "../../../../../typo3/ajax.php",
 			Tree.ajaxID = "Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper::ajaxExpandCollapse";
+			</script>
 		';
 
 		return $divFrame;
