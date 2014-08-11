@@ -78,7 +78,7 @@ class Tx_Commerce_Controller_AccessController extends t3lib_SCbase {
 	 * ID to return to after editing.
 	 * @var integer
 	 */
-	public $return_id;
+	public $returnPid;
 
 	/**
 	 * Id of the category which was just edited.
@@ -113,7 +113,8 @@ class Tx_Commerce_Controller_AccessController extends t3lib_SCbase {
 		$this->id = (int) t3lib_div::_GP('id');
 		if (!$this->id) {
 			Tx_Commerce_Utility_FolderUtility::initFolders();
-			$this->id = current(array_unique(Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Products', 'Commerce', 0, 'Commerce')));
+			$this->id =
+				current(array_unique(Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Products', 'Commerce', 0, 'Commerce')));
 		}
 
 			// Setting GPvars:
@@ -124,7 +125,7 @@ class Tx_Commerce_Controller_AccessController extends t3lib_SCbase {
 		}
 
 		$this->edit = t3lib_div::_GP('edit');
-		$this->return_id = t3lib_div::_GP('return_id');
+		$this->returnPid = t3lib_div::_GP('return_id');
 		$this->lastEdited = t3lib_div::_GP('lastEdited');
 
 		$this->perms_clause = Tx_Commerce_Utility_BackendUtility::getCategoryPermsClause(1);
@@ -636,7 +637,7 @@ class Tx_Commerce_Controller_AccessController extends t3lib_SCbase {
 				htmlspecialchars('jumpToUrl(\'index.php?id=' . $this->categoryUid . '\'); return false;') . '" />
 			<input type="hidden" name="redirect" value="' .
 				htmlspecialchars(TYPO3_MOD_PATH . 'index.php?mode=' . $this->MOD_SETTINGS['mode'] . '&depth=' .
-				$this->MOD_SETTINGS['depth'] . '&id=' . (int) $this->return_id . '&lastEdited=' . $this->categoryUid) . '" />
+				$this->MOD_SETTINGS['depth'] . '&id=' . (int) $this->returnPid . '&lastEdited=' . $this->categoryUid) . '" />
 		';
 
 			// Adding section with the permission setting matrix:
@@ -1049,5 +1050,3 @@ if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['
 	/** @noinspection PhpIncludeInspection */
 	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Controller/AccessController.php']);
 }
-
-?>

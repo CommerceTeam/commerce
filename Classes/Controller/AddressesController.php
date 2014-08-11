@@ -113,7 +113,10 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 				break;
 
 			case 'delete':
-				$addresses = $this->getAddresses((int) $this->user['uid'], (int) $this->addresses[$this->piVars['addressid']]['tx_commerce_address_type_id']);
+				$addresses = $this->getAddresses(
+					(int) $this->user['uid'],
+					(int) $this->addresses[$this->piVars['addressid']]['tx_commerce_address_type_id']
+				);
 				if (count($addresses) <= $this->conf['minAddressCount']) {
 					$this->sysMessage = $this->pi_getLL('message_cant_delete');
 					$content .= $this->getListing();
@@ -252,13 +255,19 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 		}
 
 		if ($this->conf[$addressType . '.']['subpartMarker.']['listWrap']) {
-			$tplBase = $this->cObj->getSubpart($this->templateCode, strtoupper($this->conf[$addressType . '.']['subpartMarker.']['listWrap']));
+			$tplBase = $this->cObj->getSubpart(
+				$this->templateCode,
+				strtoupper($this->conf[$addressType . '.']['subpartMarker.']['listWrap'])
+			);
 		} else {
 			$tplBase = $this->cObj->getSubpart($this->templateCode, '###ADDRESS_LISTING###');
 		}
 
 		if ($this->conf[$addressType . '.']['subpartMarker.']['listItem']) {
-			$tplItem = $this->cObj->getSubpart($this->templateCode, strtoupper($this->conf[$addressType . '.']['subpartMarker.']['listItem']));
+			$tplItem = $this->cObj->getSubpart(
+				$this->templateCode,
+				strtoupper($this->conf[$addressType . '.']['subpartMarker.']['listItem'])
+			);
 		} else {
 			$tplItem = $this->cObj->getSubpart($this->templateCode, '###ADDRESS_ITEM###');
 		}
@@ -381,17 +390,31 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 
 				// Set delete link only if addresses may be deleted, otherwise set it empty
 			if ((int)$addressTypeCounter[$address['tx_commerce_address_type_id']] > (int)$this->conf['minAddressCount']) {
-				$linkMarkerArray['###LINK_DELETE###'] = explode('|', $this->pi_linkTP_keepPIvars('|', array('action' => 'delete', 'addressid' => $address['uid'])));
-				$itemMarkerArray['###LABEL_LINK_DELETE###'] = $this->cObj->stdWrap($this->pi_getLL('label_link_delete'), $this->conf['deleteLinkWrap.']);
+				$linkMarkerArray['###LINK_DELETE###'] =
+					explode('|', $this->pi_linkTP_keepPIvars('|', array('action' => 'delete', 'addressid' => $address['uid'])));
+				$itemMarkerArray['###LABEL_LINK_DELETE###'] =
+					$this->cObj->stdWrap($this->pi_getLL('label_link_delete'), $this->conf['deleteLinkWrap.']);
 			} else {
 				$linkMarkerArray['###LINK_DELETE###'][0] = '';
 				$linkMarkerArray['###LINK_DELETE###'][1] = '';
 				$itemMarkerArray['###LABEL_LINK_DELETE###'] = '';
 			}
 
-			$linkMarkerArray['###LINK_EDIT###'] = explode('|', $this->pi_linkTP_keepPIvars('|', array_merge($piArray, array('action' => 'edit', 'addressid' => $address['uid'], 'addressType' => $address['tx_commerce_address_type_id'])), FALSE, FALSE, $linkTarget));
-			$itemMarkerArray['###LABEL_LINK_EDIT###'] = $this->cObj->stdWrap($this->pi_getLL('label_link_edit'), $this->conf['editLinkWrap.']);
-				// add an edit radio button, checked selected previously
+			$linkMarkerArray['###LINK_EDIT###'] =
+				explode('|', $this->pi_linkTP_keepPIvars(
+					'|',
+					array_merge(
+						$piArray,
+						array(
+							'action' => 'edit',
+							'addressid' => $address['uid'],
+							'addressType' => $address['tx_commerce_address_type_id']
+						)
+					), FALSE, FALSE, $linkTarget
+				));
+			$itemMarkerArray['###LABEL_LINK_EDIT###'] =
+				$this->cObj->stdWrap($this->pi_getLL('label_link_edit'), $this->conf['editLinkWrap.']);
+			// add an edit radio button, checked selected previously
 			$itemMarkerArray['###SELECT###'] = '<input type="radio" ';
 
 			if (($editAddressId == $address['uid']) || (empty($editAddressId) && $address['tx_commerce_is_main_address'])) {
@@ -409,7 +432,8 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 
 			$addressFound = TRUE;
 
-			$addressItems[$address['tx_commerce_address_type_id']] .= $this->substituteMarkerArrayNoCached($tplItem, $itemMarkerArray, array(), $linkMarkerArray);
+			$addressItems[$address['tx_commerce_address_type_id']] .=
+				$this->substituteMarkerArrayNoCached($tplItem, $itemMarkerArray, array(), $linkMarkerArray);
 		}
 
 		$linkMarkerArray = array();
@@ -427,18 +451,39 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 		if ($addressType == 0) {
 			foreach ($addressTypes as $addressType) {
 				$baseMarkerArray['###ADDRESS_ITEMS_OF_TYPE_' . $addressType . '###'] = $addressItems[$addressType];
-				$baseMarkerArray['###LABEL_ADDRESSES_OF_TYPE_' . $addressType . '###'] = $this->pi_getLL('label_addresses_of_type_' . $addressType);
-				$linkMarkerArray['###LINK_NEW_TYPE_' . $addressType . '###'] = explode('|', $this->pi_linkTP_keepPIvars('|', array_merge($piArray, array('action' => 'new', 'addressType' => $addressType)), FALSE, FALSE, $linkTarget));
-				$baseMarkerArray['###LABEL_LINK_NEW_TYPE_' . $addressType . '###'] = $this->cObj->stdWrap($this->pi_getLL('label_link_new_type_' . $addressType), $this->conf['newLinkWrap.']);
+				$baseMarkerArray['###LABEL_ADDRESSES_OF_TYPE_' . $addressType . '###'] =
+					$this->pi_getLL('label_addresses_of_type_' . $addressType);
+				$linkMarkerArray['###LINK_NEW_TYPE_' . $addressType . '###'] =
+					explode('|', $this->pi_linkTP_keepPIvars(
+						'|',
+						array_merge(
+							$piArray,
+							array(
+								'action' => 'new',
+								'addressType' => $addressType
+							)
+						), FALSE, FALSE, $linkTarget
+					));
+				$baseMarkerArray['###LABEL_LINK_NEW_TYPE_' . $addressType . '###'] =
+					$this->cObj->stdWrap($this->pi_getLL('label_link_new_type_' . $addressType), $this->conf['newLinkWrap.']);
 			}
 		} else {
 			$baseMarkerArray['###ADDRESS_ITEMS###'] = $addressItems[$addressType];
-			$linkMarkerArray['###LINK_NEW###'] = explode('|', $this->pi_linkTP_keepPIvars('|', array_merge($piArray, array('action' => 'new', 'addressType' => $addressType)), FALSE, FALSE, $linkTarget));
-			$baseMarkerArray['###LABEL_LINK_NEW###'] = $this->cObj->stdWrap($this->pi_getLL('label_link_new'), $this->conf['newLinkWrap.']);
+			$linkMarkerArray['###LINK_NEW###'] =
+				explode('|', $this->pi_linkTP_keepPIvars(
+					'|',
+					array_merge(
+						$piArray,
+						array('action' => 'new', 'addressType' => $addressType)
+					), FALSE, FALSE, $linkTarget
+				));
+			$baseMarkerArray['###LABEL_LINK_NEW###'] =
+				$this->cObj->stdWrap($this->pi_getLL('label_link_new'), $this->conf['newLinkWrap.']);
 		}
 
 		if (!$addressFound) {
-			$baseMarkerArray['###NO_ADDRESS###'] = $this->cObj->stdWrap($this->pi_getLL('label_no_address'), $this->conf['noAddressWrap.']);
+			$baseMarkerArray['###NO_ADDRESS###'] =
+				$this->cObj->stdWrap($this->pi_getLL('label_no_address'), $this->conf['noAddressWrap.']);
 		} else {
 			$baseMarkerArray['###NO_ADDRESS###'] = '';
 		}
@@ -516,17 +561,26 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 
 			// Get the templates
 		if ($this->conf[$addressType . '.']['subpartMarker.']['editWrap']) {
-			$tplBase = $this->cObj->getSubpart($this->templateCode, strtoupper($this->conf[$addressType . '.']['subpartMarker.']['editWrap']));
+			$tplBase = $this->cObj->getSubpart(
+				$this->templateCode,
+				strtoupper($this->conf[$addressType . '.']['subpartMarker.']['editWrap'])
+			);
 		} else {
 			$tplBase = $this->cObj->getSubpart($this->templateCode, '###ADDRESS_EDIT###');
 		}
 		if ($this->conf[$addressType . '.']['subpartMarker.']['editItem']) {
-			$tplForm = $this->cObj->getSubpart($this->templateCode, strtoupper($this->conf[$addressType . '.']['subpartMarker.']['editItem']));
+			$tplForm = $this->cObj->getSubpart(
+				$this->templateCode,
+				strtoupper($this->conf[$addressType . '.']['subpartMarker.']['editItem'])
+			);
 		} else {
 			$tplForm = $this->cObj->getSubpart($this->templateCode, '###ADDRESS_EDIT_FORM###');
 		}
 		if ($this->conf[$addressType . '.']['subpartMarker.']['editField']) {
-			$tplField = $this->cObj->getSubpart($this->templateCode, strtoupper($this->conf[$addressType . '.']['subpartMarker.']['editField']));
+			$tplField = $this->cObj->getSubpart(
+				$this->templateCode,
+				strtoupper($this->conf[$addressType . '.']['subpartMarker.']['editField'])
+			);
 		} else {
 			$tplField = $this->cObj->getSubpart($this->templateCode, '###SINGLE_INPUT###');
 		}
@@ -554,17 +608,23 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 
 				// Create input field
 				// In this version we only create some simple text fields.
-			$fieldMarkerArray['###FIELD_INPUT###'] = $this->getInputField($fieldName, $config['formFields.'][$fieldName . '.'], $addressData[$fieldName]);
+			$fieldMarkerArray['###FIELD_INPUT###'] = $this->getInputField(
+				$fieldName,
+				$config['formFields.'][$fieldName . '.'], $addressData[$fieldName]
+			);
 
 				// Get field item
-			$fieldsMarkerArray['###FIELD_' . strtoupper($fieldName) . '###'] = $this->cObj->substituteMarkerArray($tplField, $fieldMarkerArray);
+			$fieldsMarkerArray['###FIELD_' . strtoupper($fieldName) . '###'] =
+				$this->cObj->substituteMarkerArray($tplField, $fieldMarkerArray);
 			$fieldsMarkerArray['###LABEL_' . strtoupper($fieldName) . '###'] = $fieldLabel;
 		}
 
 		foreach ($hookObjectsArr as $hookObj) {
 			if (method_exists($hookObj, 'processAddressfieldsMarkerArray')) {
 					/** @noinspection PhpUndefinedMethodInspection */
-				$fieldsMarkerArray = $hookObj->processAddressfieldsMarkerArray($fieldsMarkerArray, $tplField, $addressData, $action, $addressUid, $config, $this);
+				$fieldsMarkerArray = $hookObj->processAddressfieldsMarkerArray(
+					$fieldsMarkerArray, $tplField, $addressData, $action, $addressUid, $config, $this
+				);
 			}
 		}
 
@@ -574,8 +634,10 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 			// Create submit button and some hidden fields
 		$submitCode = '<input type="hidden" name="' . $this->prefixId . '[action]" value="' . $action . '" />';
 		$submitCode .= '<input type="hidden" name="' . $this->prefixId . '[addressid]" value="' . $addressUid . '" />';
-		$submitCode .= '<input type="hidden" name="' . $this->prefixId . '[addressType]" value="' . $addressData['tx_commerce_address_type_id'] . '" />';
-		$submitCode .= '<input type="submit" name="' . $this->prefixId . '[check]" value="' . $this->pi_getLL('label_submit_edit') . '" />';
+		$submitCode .= '<input type="hidden" name="' . $this->prefixId . '[addressType]" value="' .
+			$addressData['tx_commerce_address_type_id'] . '" />';
+		$submitCode .= '<input type="submit" name="' . $this->prefixId . '[check]" value="' .
+			$this->pi_getLL('label_submit_edit') . '" />';
 
 		// Create a checkbox where the user can select if the address is his main
 		// address / Changed to label and field
@@ -1011,7 +1073,8 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 			// are assigned to this user
 			$database->exec_UPDATEquery(
 				'tt_address',
-				'pid=' . $this->conf['addressPid'] . ' AND tx_commerce_fe_user_id=' . $this->user['uid'] . ' AND tx_commerce_address_type_id=' . $addressType,
+				'pid = ' . $this->conf['addressPid'] . ' AND tx_commerce_fe_user_id=' . $this->user['uid'] .
+					' AND tx_commerce_address_type_id=' . $addressType,
 				array('tx_commerce_is_main_address' => 0)
 			);
 		} else {
@@ -1216,5 +1279,3 @@ if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['
 	/** @noinspection PhpIncludeInspection */
 	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Controller/AddressesController.php']);
 }
-
-?>
