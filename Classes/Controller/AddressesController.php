@@ -984,7 +984,9 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 				$result = FALSE;
 			}
 
-			$eval = explode(',', $config[$name . '.']['eval']);
+			$eval = isset($config[$name . '.']['eval']) && $config[$name . '.']['eval'] != '' ?
+				explode(',', $config[$name . '.']['eval']) :
+				array();
 			foreach ($eval as $method) {
 				$method = explode('_', $method);
 				switch (strtolower($method[0])) {
