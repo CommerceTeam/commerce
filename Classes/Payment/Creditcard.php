@@ -59,13 +59,13 @@ class Tx_Commerce_Payment_Creditcard extends Tx_Commerce_Payment_PaymentAbstract
 		$basePath = PATH_TXCOMMERCE . 'Resources/Private/Language/locallang_creditcard.xml';
 
 		foreach ($this->parentObject->LOCAL_LANG as $llKey => $llData) {
-			$newLL = t3lib_div::readLLfile($basePath, $llKey);
-			$this->LOCAL_LANG[$llKey] = $newLL[$llKey];
+			$newLl = t3lib_div::readLLfile($basePath, $llKey);
+			$this->LOCAL_LANG[$llKey] = $newLl[$llKey];
 		}
 
 		if ($this->parentObject->altLLkey) {
-			$tempLOCAL_LANG = t3lib_div::readLLfile($basePath, $this->parentObject->altLLkey);
-			$this->LOCAL_LANG = array_merge(is_array($this->LOCAL_LANG) ? $this->LOCAL_LANG : array(), $tempLOCAL_LANG);
+			$tempLocalLang = t3lib_div::readLLfile($basePath, $this->parentObject->altLLkey);
+			$this->LOCAL_LANG = array_merge(is_array($this->LOCAL_LANG) ? $this->LOCAL_LANG : array(), $tempLocalLang);
 		}
 
 		if ($this->provider !== NULL) {
@@ -89,7 +89,7 @@ class Tx_Commerce_Payment_Creditcard extends Tx_Commerce_Payment_PaymentAbstract
 
 		$config['sourceFields.'] = $this->getAdditionalFieldsConfig($this->parentObject);
 
-		foreach ($this->parentObject->MYSESSION['payment'] as $name => $value) {
+		foreach ($this->parentObject->sessionData['payment'] as $name => $value) {
 			if ($config['sourceFields.'][$name . '.']['mandatory'] == 1 && strlen($value) == 0) {
 				$this->formError[$name] = $this->parentObject->pi_getLL('error_field_mandatory');
 				$result = FALSE;
@@ -104,7 +104,7 @@ class Tx_Commerce_Payment_Creditcard extends Tx_Commerce_Payment_PaymentAbstract
 							$this->formError[$name] = $this->parentObject->pi_getLL('error_field_email');
 							$result = FALSE;
 						}
-					break;
+						break;
 
 					case 'username':
 						if ($GLOBALS['TSFE']->loginUser) {
@@ -114,42 +114,44 @@ class Tx_Commerce_Payment_Creditcard extends Tx_Commerce_Payment_PaymentAbstract
 							$this->formError[$name] = $this->parentObject->pi_getLL('error_field_username');
 							$result = FALSE;
 						}
-					break;
+						break;
 
 					case 'string':
 						if (!is_string($value)) {
 							$this->formError[$name] = $this->parentObject->pi_getLL('error_field_string');
 							$result = FALSE;
 						}
-					break;
+						break;
 
 					case 'int':
 						if (!is_integer($value)) {
 							$this->formError[$name] = $this->parentObject->pi_getLL('error_field_int');
 							$result = FALSE;
 						}
-					break;
+						break;
 
 					case 'min':
 						if (strlen((string)$value) < (int) $method[1]) {
 							$this->formError[$name] = $this->parentObject->pi_getLL('error_field_min');
 							$result = FALSE;
 						}
-					break;
+						break;
 
 					case 'max':
 						if (strlen((string)$value) > (int) $method[1]) {
 							$this->formError[$name] = $this->parentObject->pi_getLL('error_field_max');
 							$result = FALSE;
 						}
-					break;
+						break;
 
 					case 'alpha':
 						if (preg_match('/[0-9]/', $value) === 1) {
 							$this->formError[$name] = $this->parentObject->pi_getLL('error_field_alpha');
 							$result = FALSE;
 						}
-					break;
+						break;
+
+					default:
 				}
 			}
 		}
@@ -168,5 +170,3 @@ if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['
 	/** @noinspection PhpIncludeInspection */
 	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Payment/Creditcard.php']);
 }
-
-?>
