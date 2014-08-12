@@ -934,7 +934,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		/** @var t3lib_db $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
-		if (!isset($paymentObj)) {
+		if (!is_object($paymentObj)) {
 			$paymentType = $this->getPaymentType();
 			$config = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['SYSPRODUCTS']['PAYMENT']['types'][strtolower((string) $paymentType)];
 
