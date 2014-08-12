@@ -138,13 +138,17 @@ class Tx_Commerce_Domain_Repository_ArticleRepository extends Tx_Commerce_Domain
 			$result = $database->exec_SELECTquery(
 				'uid,fe_group',
 				'tx_commerce_article_prices',
-				'uid_article = ' . $uid . ' AND price_scale_amount_start <= ' . $count . ' AND price_scale_amount_end >= ' . $count . $proofSql . $additionalWhere,
+				'uid_article = ' . $uid . ' AND price_scale_amount_start <= ' . $count .
+					' AND price_scale_amount_end >= ' . $count . $proofSql . $additionalWhere,
 				'',
 				$orderField
 			);
 			if ($database->sql_num_rows($result) > 0) {
 				while (($data = $database->sql_fetch_assoc($result))) {
-					$priceUidList[(int)$data['fe_group']][] = $data['uid'];
+					$feGroups = t3lib_div::intExplode(',', $data['fe_group'], TRUE);
+					foreach ($feGroups as $feGroup) {
+						$priceUidList[$feGroup][] = $data['uid'];
+					}
 				}
 				$database->sql_free_result($result);
 				return $priceUidList;

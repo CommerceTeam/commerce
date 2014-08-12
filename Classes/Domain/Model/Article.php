@@ -700,22 +700,16 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 	 */
 	public function loadPrices($translationMode = FALSE) {
 		if ($this->prices_loaded == FALSE) {
-			$arrayOfPrices = $this->databaseConnection->getPrices($this->uid);
-			$this->prices_uids = $arrayOfPrices;
+			$this->prices_uids = $this->databaseConnection->getPrices($this->uid);
 
 			if ($this->prices_uids) {
 				// If we do have a Logged in usergroup walk thrue and check if
 				// there is a special price for this group
 				if (
 					(empty($GLOBALS['TSFE']->fe_user->groupData['uid']) == FALSE)
-					&& ($GLOBALS['TSFE']->loginUser || count( $GLOBALS['TSFE']->fe_user->groupData['uid']) > 0)
+					&& ($GLOBALS['TSFE']->loginUser || count($GLOBALS['TSFE']->fe_user->groupData['uid']))
 				) {
-					$tempGroups = $GLOBALS['TSFE']->fe_user->groupData['uid'];
-					$groups = array();
-					foreach ($tempGroups as $values) {
-						$groups[] = $values;
-					}
-
+					$groups = array_values($GLOBALS['TSFE']->fe_user->groupData['uid']);
 					$i = 0;
 					while (!$this->prices_uids[$groups[$i]] && $groups[$i]) {
 						$i++;
