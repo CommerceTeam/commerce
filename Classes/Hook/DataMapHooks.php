@@ -401,7 +401,11 @@ class Tx_Commerce_Hook_DataMapHooks {
 				$pObj->log($table, $id, 2, 0, 2, 'SQL error: \'%s\' (%s)', 12, array($database->sql_error(), $table . ':' . $id));
 			}
 
-			$database->exec_UPDATEquery('tx_commerce_orders', 'order_id = ' . $database->fullQuoteStr($orderId, 'tx_commerce_orders'), $sum);
+			$database->exec_UPDATEquery(
+				'tx_commerce_orders',
+				'order_id = ' . $database->fullQuoteStr($orderId, 'tx_commerce_orders'),
+				$sum
+			);
 			if ($database->sql_error()) {
 				$pObj->log($table, $id, 2, 0, 2, 'SQL error: \'%s\' (%s)', 12, array($database->sql_error(), $table . ':' . $id));
 			}
@@ -603,9 +607,6 @@ class Tx_Commerce_Hook_DataMapHooks {
 
 				// abort if the user didn't assign a category - rights need not be checked then
 			if ($fieldArray['parent_category'] == '') {
-				/** @var Tx_Commerce_Domain_Model_Category $root */
-				$root = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category', 0);
-
 				/** @var Tx_Commerce_Tree_CategoryMounts $mounts */
 				$mounts = t3lib_div::makeInstance('Tx_Commerce_Tree_CategoryMounts');
 				$mounts->init($backendUser->user['uid']);
@@ -662,7 +663,9 @@ class Tx_Commerce_Hook_DataMapHooks {
 						$fieldArray['parent_category'] = t3lib_div::rmFromList($uid, $fieldArray['parent_category']);
 					} else {
 						// conversion to int is important, otherwise the binary & will not work properly
-						$groupRights = ($groupRights === FALSE) ? (int) $category->getPermsGroup() : ($groupRights & (int) $category->getPermsGroup());
+						$groupRights = ($groupRights === FALSE) ?
+							(int) $category->getPermsGroup() :
+							($groupRights & (int) $category->getPermsGroup());
 						$groupId = $category->getPermsGroupId();
 					}
 				}
@@ -777,7 +780,8 @@ class Tx_Commerce_Hook_DataMapHooks {
 			$newCats = $this->singleDiffAssoc(t3lib_div::trimExplode(',', t3lib_div::uniqueList($data['categories'])), $parentCategories);
 
 			if (!Tx_Commerce_Utility_BackendUtility::checkPermissionsOnCategoryContent($newCats, array('editcontent'))) {
-				$pObj->newlog('You do not have the permissions to add one or all categories you added.' . t3lib_div::uniqueList($data['categories']), 1);
+				$pObj->newlog('You do not have the permissions to add one or all categories you added.' .
+					t3lib_div::uniqueList($data['categories']), 1);
 				$fieldArray = array();
 			}
 		}
@@ -1026,7 +1030,8 @@ class Tx_Commerce_Hook_DataMapHooks {
 		} else {
 			$uidArticle = $fieldArray['uid_article'];
 		}
-			// @todo what to do with this? it was empty before refactoring
+
+		// @todo what to do with this? it was empty before refactoring
 		$this->belib->savePriceFlexformWithArticle($id, $uidArticle, $fieldArray);
 	}
 
@@ -1106,7 +1111,10 @@ class Tx_Commerce_Hook_DataMapHooks {
 				if ($attributeData['multiple'] == 1) {
 					// remove relations before creating new relations this is needed because we dont
 					// know which attribute were removed
-					$database->exec_DELETEquery('tx_commerce_articles_article_attributes_mm', 'uid_local = ' . $id . ' AND uid_foreign = ' . $attributeId);
+					$database->exec_DELETEquery(
+						'tx_commerce_articles_article_attributes_mm',
+						'uid_local = ' . $id . ' AND uid_foreign = ' . $attributeId
+					);
 
 					$relCount = 0;
 					$relations = t3lib_div::trimExplode(',', $value, TRUE);
@@ -1271,7 +1279,12 @@ class Tx_Commerce_Hook_DataMapHooks {
 			if ($database->sql_num_rows($res) == 0 && $aRes['sys_language_uid'] < 1) {
 					// create a new price if no one exists
 				$database->exec_INSERTquery('tx_commerce_article_prices',
-					array('pid' => $fieldArray['pid'],'uid_article' => $aUid, 'tstamp' => $GLOBALS['EXEC_TIME'],'crdate' => $GLOBALS['EXEC_TIME'])
+					array(
+						'pid' => $fieldArray['pid'],
+						'uid_article' => $aUid,
+						'tstamp' => $GLOBALS['EXEC_TIME'],
+						'crdate' => $GLOBALS['EXEC_TIME']
+					)
 				);
 			}
 		}
@@ -1597,5 +1610,3 @@ if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['
 	/** @noinspection PhpIncludeInspection */
 	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Hook/DataMapHooks.php']);
 }
-
-?>

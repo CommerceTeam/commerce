@@ -340,7 +340,7 @@ class Tx_Commerce_Domain_Model_Basket extends Tx_Commerce_Domain_Model_BasicBask
 
 		$oneuid = 0;
 		/** @var Tx_Commerce_Domain_Model_BasketItem $oneItem */
-		foreach ($this->basketItems as $oneuid  => $oneItem) {
+		foreach ($this->basketItems as $oneuid => $oneItem) {
 			$insertData = array();
 			$insertData['pid'] = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['BasketStoragePid'];
 			$insertData['pos'] = $arBasketItemsKeys[$oneuid];
@@ -366,7 +366,7 @@ class Tx_Commerce_Domain_Model_Basket extends Tx_Commerce_Domain_Model_BasicBask
 							hook
 							$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_basket.php\'][\'store_data_to_database\']
 							is deprecated since commerce 1.0.0, this hook will be removed in commerce 1.4.0, please use instead
-							$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_basket.php\'][\'storeDataToDatabase\']
+							$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Domain/Model/Basket.php\'][\'storeDataToDatabase\']
 						');
 						$insertData = $hookObj->store_data_to_database($oneItem, $insertData);
 					}

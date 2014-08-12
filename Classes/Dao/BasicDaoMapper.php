@@ -195,18 +195,17 @@ class Tx_Commerce_Dao_BasicDaoMapper {
 	 * @return void
 	 */
 	protected function dbDelete($uid, &$object) {
-		$dbTable = $this->dbTable;
 		$dbWhere = 'uid="' . (int) $uid . '"';
 
 			// execute query
-		$this->database->exec_DELETEquery($dbTable, $dbWhere);
+		$this->database->exec_DELETEquery($this->dbTable, $dbWhere);
 
 			// any errors
 		$error = $this->database->sql_error();
 		if (!empty($error)) {
 			$this->addError(array(
 				$error,
-				$this->database->DELETEquery($dbTable, $dbWhere)
+				$this->database->DELETEquery($this->dbTable, $dbWhere)
 			));
 		}
 
