@@ -527,7 +527,11 @@ class Tx_Commerce_Domain_Model_BasicBasket {
 				$this->changeQuantity($articleUid, $quantity);
 			} else {
 				/** @var Tx_Commerce_Domain_Model_Article $article */
-				$article = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Article', $articleUid, $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
+				$article = t3lib_div::makeInstance(
+					'Tx_Commerce_Domain_Model_Article',
+					$articleUid,
+					$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']
+				);
 				$article->loadData('basket');
 
 				$priceids = $article->getPriceUids();

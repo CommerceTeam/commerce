@@ -60,6 +60,11 @@ class Tx_Commerce_Domain_Model_Basket extends Tx_Commerce_Domain_Model_BasicBask
 	protected $extensionConfigration = array();
 
 	/**
+	 * @var bool
+	 */
+	protected $isAlreadyLoaded = FALSE;
+
+	/**
 	 * Constructor for a commerce basket. Loads configuration data
 	 */
 	public function __construct() {
@@ -138,6 +143,10 @@ class Tx_Commerce_Domain_Model_Basket extends Tx_Commerce_Domain_Model_BasicBask
 	 * @return void
 	 */
 	public function loadData() {
+		if ($this->isAlreadyLoaded) {
+			return;
+		}
+
 		switch ($this->storageType) {
 			case 'persistent':
 				$this->restoreBasket();
@@ -151,6 +160,22 @@ class Tx_Commerce_Domain_Model_Basket extends Tx_Commerce_Domain_Model_BasicBask
 		}
 			// Method of Parent: Load the payment articcle if availiable
 		parent::loadData();
+
+		$this->setLoaded();
+	}
+
+	/**
+	 * @return void
+	 */
+	public function setUnloaded() {
+		$this->isAlreadyLoaded = FALSE;
+	}
+
+	/**
+	 * @return void
+	 */
+	public function setLoaded() {
+		$this->isAlreadyLoaded = TRUE;
 	}
 
 	/**

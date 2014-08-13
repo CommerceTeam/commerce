@@ -957,11 +957,11 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['makeBasketView'])) {
 			t3lib_div::deprecationLog(
 				'
-								hook
-								$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_pibase.php\'][\'makeBasketView\']
-								is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
-								$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/BaseController.php\'][\'makeBasketView\']
-							'
+					hook
+					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_pibase.php\'][\'makeBasketView\']
+					is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
+					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/BaseController.php\'][\'makeBasketView\']
+				'
 			);
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['makeBasketView'] as $classRef) {
 				$hookObj = & t3lib_div::getUserObj($classRef);
@@ -1061,26 +1061,20 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 		 * Hook for processing Taxes
 		 */
 		$hookObjectsArr = array();
-		if (is_array(
-			$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['makeBasketInformation']
-		)
-		) {
+		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['makeBasketInformation'])) {
 			t3lib_div::deprecationLog(
 				'
-								hook
-								$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_pibase.php\'][\'makeBasketInformation\']
-								is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
-								$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/BaseController.php\'][\'makeBasketInformation\']
-							'
+					hook
+					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_pibase.php\'][\'makeBasketInformation\']
+					is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
+					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/BaseController.php\'][\'makeBasketInformation\']
+				'
 			);
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['makeBasketInformation'] as $classRef) {
 				$hookObjectsArr[] = & t3lib_div::getUserObj($classRef);
 			}
 		}
-		if (is_array(
-			$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BaseController.php']['makeBasketInformation']
-		)
-		) {
+		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BaseController.php']['makeBasketInformation'])) {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BaseController.php']['makeBasketInformation'] as $classRef) {
 				$hookObjectsArr[] = & t3lib_div::getUserObj($classRef);
 			}
