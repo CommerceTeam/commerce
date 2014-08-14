@@ -1297,11 +1297,9 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	public function loadArticles() {
 		if ($this->articlesLoaded == FALSE) {
 			$uidToLoadFrom = $this->uid;
-			if ($this->getT3verOid() > 0 && $this->getT3verOid() <> $this->uid
-				&& (is_Object(
-						$GLOBALS['TSFE']
-					)
-					&& $GLOBALS['TSFE']->beUserLogin)
+			if (
+				$this->getT3verOid() > 0 && $this->getT3verOid() <> $this->uid &&
+				(is_Object($GLOBALS['TSFE']) && $GLOBALS['TSFE']->beUserLogin)
 			) {
 				$uidToLoadFrom = $this->getT3verOid();
 			}
