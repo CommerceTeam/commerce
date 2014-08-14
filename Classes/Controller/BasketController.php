@@ -1015,7 +1015,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 			'[artAddUid][' . $article->getUid() . '][count]=0';
 		// DELIOTMFROMBASKETLINK is deprecated
 		$markerArray['###DELETEFROMBASKETLINK###'] = $this->cObj->typoLink($this->pi_getLL('lang_basket_delete_item'), $typoLinkConf);
-		$markerArray['###DELIOTMFROMBASKETLINK###'] = $markerArray['###DELETEMFROMBASKETLINK###'];
+		$markerArray['###DELIOTMFROMBASKETLINK###'] = $markerArray['###DELETEFROMBASKETLINK###'];
 
 		$templateMarker = '###PRODUCT_BASKET_FORM_SMALL###';
 		$template = $this->cObj->getSubpart($this->templateCode, $templateMarker);
