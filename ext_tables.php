@@ -62,16 +62,16 @@ if (TYPO3_MODE == 'BE') {
 
 		// add module after 'File'
 	if (!isset($TBE_MODULES['txcommerceM1'])) {
-		$temp_TBE_MODULES = array();
+		$tbeModules = array();
 		foreach ($TBE_MODULES as $key => $val) {
 			if ($key == 'file') {
-				$temp_TBE_MODULES[$key] = $val;
-				$temp_TBE_MODULES['txcommerceM1'] = $val;
+				$tbeModules[$key] = $val;
+				$tbeModules['txcommerceM1'] = $val;
 			} else {
-				$temp_TBE_MODULES[$key] = $val;
+				$tbeModules[$key] = $val;
 			}
 		}
-		$TBE_MODULES = $temp_TBE_MODULES;
+		$TBE_MODULES = $tbeModules;
 	}
 
 	if (t3lib_extMgm::isLoaded('t3skin')) {
@@ -216,7 +216,7 @@ $tempColumns = array(
 
 t3lib_div::loadTCA('tt_address');
 t3lib_extMgm::addTCAcolumns('tt_address', $tempColumns, 1);
-t3lib_extMgm::addToAllTCAtypes('tt_address', 'tx_commerce_default_values;;;;1-1-1,tx_commerce_fe_user_id, tx_commerce_address_type_id, surname,tx_commerce_is_main_address');
+t3lib_extMgm::addToAllTCAtypes('tt_address', 'tx_commerce_default_values,tx_commerce_fe_user_id, tx_commerce_address_type_id, surname,tx_commerce_is_main_address');
 
 /**
  * Put surename directly to name
@@ -286,7 +286,11 @@ $tempColumns = array(
 
 t3lib_div::loadTCA('fe_users');
 t3lib_extMgm::addTCAcolumns('fe_users', $tempColumns, 1);
-t3lib_extMgm::addToAllTCAtypes('fe_users', 'tx_commerce_tt_address_id,tx_commerce_user_state_id,tx_commerce_orders;;;;1-1-1');
+t3lib_extMgm::addToAllTCAtypes(
+	'fe_users',
+	'--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:fe_users.tx_commerce,
+		tx_commerce_tt_address_id,tx_commerce_user_state_id,tx_commerce_orders'
+);
 
 
 $tempColumns = array(
@@ -561,7 +565,7 @@ $GLOBALS['TCA']['tx_commerce_trackingcodes'] = array(
 		'transOrigPointerField' => 'l18n_parent',
 		'transOrigDiffSourceField' => 'l18n_diffsource',
 		'default_sortby' => 'ORDER BY crdate',
-		'dynamicConfigFile' => PATH_TXCOMMERCE . 'Configuration/TCA/Tracking.php',
+		'dynamicConfigFile' => PATH_TXCOMMERCE . 'Configuration/TCA/Trackingcodes.php',
 		'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL . 'tracking_codes.gif',
 	),
 	'feInterface' => array(
@@ -582,7 +586,7 @@ $GLOBALS['TCA']['tx_commerce_order_types'] = array(
 		'default_sortby' => 'ORDER BY crdate',
 		'delete' => 'deleted',
 		'dynamicConfigFile' => PATH_TXCOMMERCE . 'Configuration/TCA/OrderTypes.php',
-		'iconfile' =>  PATH_TXCOMMERCE_ICON_TABLE_REL . 'order_types.gif',
+		'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL . 'order_types.gif',
 	),
 	'feInterface' => array(
 		'fe_admin_fieldList' => 'sys_language_uid, l18n_parent, l18n_diffsource, title',
@@ -599,7 +603,7 @@ $GLOBALS['TCA']['tx_commerce_tracking'] = array(
 		'versioning' => '1',
 		'default_sortby' => 'ORDER BY crdate',
 		'dynamicConfigFile' => PATH_TXCOMMERCE . 'Configuration/TCA/Tracking.php',
-		'iconfile' =>  PATH_TXCOMMERCE_ICON_TABLE_REL . 'tracking.gif',
+		'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL . 'tracking.gif',
 	),
 	'feInterface' => array(
 		'fe_admin_fieldList' => 'orders_uid, trackingcodes_uid, msg',
@@ -784,5 +788,3 @@ $GLOBALS['TCA']['tx_commerce_supplier'] = Array(
 		'fe_admin_fieldList' => 'hidden, title, street, number, zip, city, country, phone, fax, email, internet, contactperson, logo',
 	)
 );
-
-?>

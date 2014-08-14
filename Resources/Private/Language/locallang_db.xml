@@ -236,6 +236,10 @@
 			<label index="tx_commerce_supplier.logo">Logo</label>
 			<label index='tx_commerce_pages.tx_commerce_foldereditorder'>Orders in this folder editable</label>
 			<label index="label.tx_commerce_mountpoints">Commerce Mounts:</label>
+			<label index="fe_users.tx_commerce">Commerce</label>
+			<label index="fe_users.tx_commerce_user_state_id">Commerce user state</label>
+			<label index="fe_users.tx_commerce_tt_address_id">Commerce address</label>
+			<label index="fe_users.tx_commerce_feuser_orders">Commerce orders</label>
 		</languageKey>
 	</data>
 </T3locallang>
