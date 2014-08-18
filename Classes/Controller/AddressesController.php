@@ -147,6 +147,9 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 				$content .= $this->getListing();
 		}
 
+		// add removal of remaining empty markers
+		$content = $this->cObj->substituteMarkerArray($content, array(), '', TRUE, TRUE);
+
 		return $this->pi_wrapInBaseClass($content);
 	}
 
