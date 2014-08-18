@@ -2402,7 +2402,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 
 		// Added replacing marker for new users
 		$templateUser = '';
-		if (is_array($this->userData)) {
+		if (count($this->userData)) {
 			$templateUser = trim($this->cObj->getSubpart($template, '###NEW_USER###'));
 			$templateUser = $this->cObj->substituteMarkerArray($templateUser, $this->userData, '###|###', 1);
 		}
