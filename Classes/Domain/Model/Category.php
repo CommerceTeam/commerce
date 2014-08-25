@@ -428,9 +428,9 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	public function getParentCategories() {
 		$parents = $this->databaseConnection->getParentCategories($this->uid);
 		$parentCats = array();
-		for ($i = 0, $l = count($parents); $i < $l; $i++) {
+		foreach ($parents as $parent) {
 			/** @var Tx_Commerce_Domain_Model_Category $category */
-			$category = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category', $parents[$i]);
+			$category = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category', $parent);
 			$parentCats[] = $category;
 		}
 
