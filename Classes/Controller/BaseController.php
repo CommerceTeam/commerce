@@ -509,8 +509,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 	public function makeListView() {
 		if (is_array(
 			$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/ListController.php']['preRenderListView']
-		)
-		) {
+		)) {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/ListController.php']['preRenderListView'] as $classRef) {
 				$hookObjectsArr[] = & t3lib_div::getUserObj($classRef);
 			}

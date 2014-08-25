@@ -209,16 +209,22 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 		$tmpCategory = NULL;
 		if ($this->piVars['catUid']) {
 			$this->cat = (int) $this->piVars['catUid'];
-			$tmpCategory = t3lib_div::makeinstance('Tx_Commerce_Domain_Model_Category', $this->cat);
-			$tmpCategory->init($this->cat, $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
+			$tmpCategory = t3lib_div::makeinstance(
+				'Tx_Commerce_Domain_Model_Category',
+				$this->cat,
+				$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']
+			);
 			$accessible = $tmpCategory->isAccessible();
 		}
 
 			// Validate given catUid, if it's given and accessible
 		if (!$this->piVars['catUid'] || !$accessible) {
 			$this->cat = (int) $this->master_cat;
-			$tmpCategory = t3lib_div::makeinstance('Tx_Commerce_Domain_Model_Category', $this->cat);
-			$tmpCategory->init($this->cat, $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
+			$tmpCategory = t3lib_div::makeinstance(
+				'Tx_Commerce_Domain_Model_Category',
+				$this->cat,
+				$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']
+			);
 		}
 		if (!isset($this->piVars['catUid'])) {
 			$this->piVars['catUid'] = $this->master_cat;
@@ -382,7 +388,7 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 				break;
 
 			case 'listView':
-				$this->content = $this->makeListView($this->cat);
+				$this->content = $this->makeListView();
 				break;
 
 			default:

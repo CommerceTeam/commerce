@@ -254,7 +254,7 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 							$this->enableFields('tx_commerce_categories', $GLOBALS['TSFE']->showHiddenRecords)
 					);
 
-					if ($database->sql_num_rows( $lresult) == 1) {
+					if ($database->sql_num_rows($lresult)) {
 						$data[] = (int) $row['uid_local'];
 					}
 				}
@@ -382,7 +382,7 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 						'tx_commerce_products', 'l18n_parent = ' . (int) $row['uid'] . ' AND sys_language_uid=' . $languageUid .
 							$this->enableFields('tx_commerce_products', $GLOBALS['TSFE']->showHiddenRecords)
 					);
-					if ($database->sql_num_rows($lresult) == 1) {
+					if ($database->sql_num_rows($lresult)) {
 						$data[] = (int) $row['uid'];
 					}
 				}
