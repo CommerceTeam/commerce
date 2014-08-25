@@ -703,62 +703,18 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 			$this->prices_uids = $this->databaseConnection->getPrices($this->uid);
 
 			if ($this->prices_uids) {
-				// If we do have a Logged in usergroup walk thrue and check if
-				// there is a special price for this group
-				if (
-					(empty($GLOBALS['TSFE']->fe_user->groupData['uid']) == FALSE)
-					&& ($GLOBALS['TSFE']->loginUser || count($GLOBALS['TSFE']->fe_user->groupData['uid']))
-				) {
-					$groups = array_values($GLOBALS['TSFE']->fe_user->groupData['uid']);
-					$i = 0;
-					while (!$this->prices_uids[$groups[$i]] && $groups[$i]) {
-						$i++;
-					}
-					if ($groups[$i]) {
-						$this->price_uid = $this->prices_uids[$groups[$i]][0];
 
-						$this->price = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_ArticlePrice');
-						$this->price->init($this->price_uid);
-						$this->price->loadData($translationMode);
-					} else {
-						if ($this->prices_uids['-2']) {
-							$this->price_uid = $this->prices_uids['-2'][0];
+				$priceData = array_shift($this->prices_uids);
+				$this->price_uid = $priceData[0];
 
-							$this->price = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_ArticlePrice');
-							$this->price->init($this->price_uid);
-							$this->price->loadData($translationMode);
-						} else {
-							$this->price_uid = $this->prices_uids[0][0];
-
-							$this->price = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_ArticlePrice');
-							$this->price->init($this->price_uid);
-							if ($this->price) {
-								$this->price->loadData($translationMode);
-							} else {
-								return FALSE;
-							}
-						}
-					}
+				$this->price = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_ArticlePrice');
+				$this->price->init($this->price_uid);
+				if ($this->price) {
+					$this->price->loadData($translationMode);
 				} else {
-						// No special Handling if no special usergroup is logged in
-					if ($this->prices_uids['-1']) {
-						$this->price_uid = $this->prices_uids['-1'][0];
-
-						$this->price = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_ArticlePrice');
-						$this->price->init($this->price_uid);
-						$this->price->loadData($translationMode);
-					} else {
-						$this->price_uid = $this->prices_uids[0][0];
-
-						$this->price = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_ArticlePrice');
-						$this->price->init($this->price_uid);
-						if ($this->price) {
-							$this->price->loadData($translationMode);
-						} else {
-							return 0;
-						}
-					}
+					return 0;
 				}
+
 				$this->prices_loaded = TRUE;
 
 				$return = $this->price_uid;

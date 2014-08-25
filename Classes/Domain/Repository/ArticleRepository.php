@@ -148,10 +148,10 @@ class Tx_Commerce_Domain_Repository_ArticleRepository extends Tx_Commerce_Domain
 					$feGroups = t3lib_div::intExplode(',', $data['fe_group'], TRUE);
 					if (count($feGroups)) {
 						foreach ($feGroups as $feGroup) {
-							$priceUidList[$feGroup][] = $data['uid'];
+							$priceUidList[(string)$feGroup][] = $data['uid'];
 						}
 					} else {
-						$priceUidList[(int)$data['fe_group']][] = $data['uid'];
+						$priceUidList[(string)$data['fe_group']][] = $data['uid'];
 					}
 				}
 				$database->sql_free_result($result);

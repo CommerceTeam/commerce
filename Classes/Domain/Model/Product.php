@@ -835,7 +835,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 		asort($priceArr);
 		reset($priceArr);
 
-		return current(array_keys($priceArr));
+		return current(array_values($priceArr));
 	}
 
 	/**
