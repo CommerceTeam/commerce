@@ -79,14 +79,13 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 		$result = 0;
 		if (t3lib_div::testInt($uid) && ($uid > 0)) {
 			$this->uid = $uid;
-			if ($result = $database->exec_SELECTquery(
-				'uid_foreign', $this->databaseParentCategoryRelationTable, 'uid_local = ' . (int) $uid . ' and is_reference=0'
-			)
-			) {
-				if ($return_data = $database->sql_fetch_assoc($result)) {
-					$database->sql_free_result($result);
-					$result = $return_data['uid_foreign'];
-				}
+			$row = $database->exec_SELECTgetSingleRow(
+				'uid_foreign',
+				$this->databaseParentCategoryRelationTable,
+				'uid_local = ' . (int) $uid . ' and is_reference = 0'
+			);
+			if (is_array($row) && count($row)) {
+				$result = $row['uid_foreign'];
 			}
 		}
 		return $result;

@@ -630,9 +630,9 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 			$this->images_array = t3lib_div::trimExplode(',', $this->images, TRUE);
 			$this->teaserImagesArray = t3lib_div::trimExplode(',', $this->teaserimages, TRUE);
 
-			$this->categories_uid = $this->databaseConnection->getChildCategories($this->uid, $this->lang_uid);
+			$this->categories_uid = array_unique($this->databaseConnection->getChildCategories($this->uid, $this->lang_uid));
 			$this->parent_category_uid = $this->databaseConnection->getParentCategory($this->uid);
-			$this->products_uid = $this->databaseConnection->getChildProducts($this->uid, $this->lang_uid);
+			$this->products_uid = array_unique($this->databaseConnection->getChildProducts($this->uid, $this->lang_uid));
 			$this->data_loaded = TRUE;
 		}
 	}
