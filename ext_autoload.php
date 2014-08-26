@@ -70,7 +70,6 @@ return array(
 	'tx_commerce_domain_model_basketitem' => $classPath . 'Domain/Model/BasketItem.php',
 	'tx_commerce_basket_item' => $classPath . 'Domain/Model/BasketItem.php',
 	'tx_commerce_domain_model_category' => $classPath . 'Domain/Model/Category.php',
-	'Tx_Commerce_Domain_Model_Category' => $classPath . 'Domain/Model/Category.php',
 	'tx_commerce_category' => $classPath . 'Domain/Model/Category.php',
 	'tx_commerce_domain_model_product' => $classPath . 'Domain/Model/Product.php',
 	'tx_commerce_product' => $classPath . 'Domain/Model/Product.php',
