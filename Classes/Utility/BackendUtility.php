@@ -2761,10 +2761,13 @@ class Tx_Commerce_Utility_BackendUtility {
 			$row = $getPageForRootline_cache[$ident];
 		} else {
 			$res = $database->exec_SELECTquery(
-				'mm.uid_foreign AS pid, uid, hidden, title, ts_config, t3ver_oid',
-				'tx_commerce_categories JOIN tx_commerce_categories_parent_category_mm AS mm ON tx_commerce_categories.uid = mm.uid_local',
+				'mm.uid_foreign AS pid, tx_commerce_categories.uid, tx_commerce_categories.hidden, tx_commerce_categories.title,
+					tx_commerce_categories.ts_config, tx_commerce_categories.t3ver_oid',
+				'tx_commerce_categories
+					INNER JOIN pages ON tx_commerce_categories.pid = pages.uid
+					INNER JOIN tx_commerce_categories_parent_category_mm AS mm ON tx_commerce_categories.uid = mm.uid_local',
 					// whereClauseMightContainGroupOrderBy
-				'uid = ' . (int) $uid . ' ' . t3lib_BEfunc::deleteClause('tx_commerce_categories') . ' ' . $clause
+				'tx_commerce_categories.uid = ' . (int) $uid . ' ' . t3lib_BEfunc::deleteClause('tx_commerce_categories') . ' ' . $clause
 			);
 
 			$row = $database->sql_fetch_assoc($res);
