@@ -2678,6 +2678,16 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	 * @return t3lib_TCEmain
 	 */
 	public function getInstanceOfTceMain($pid) {
+		t3lib_div::loadTCA('tx_commerce_orders');
+		t3lib_div::loadTCA('tx_commerce_order_articles');
+
+		$hookObjectsArr = $this->getHookObjectArray('postTcaInit');
+		foreach ($hookObjectsArr as $hookObj) {
+			if (method_exists($hookObj, 'postTcaInit')) {
+				$hookObj->postTcaInit();
+			}
+		}
+
 		$this->initializeBackendUser();
 		$this->initializeLanguage();
 
