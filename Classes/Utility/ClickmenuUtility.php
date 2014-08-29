@@ -474,7 +474,7 @@ class Tx_Commerce_Utility_ClickmenuUtility extends clickMenu {
 	 * @param string $rootTable Table name of the root
 	 * @return array Item array, element in $menuItems
 	 */
-	public function DB_new($table, $uid, $pid, $rootTable = '') {
+	public function _DB_new($table, $uid, $pid, $rootTable = '') {
 		if ($table == 'tx_commerce_categories' || $table == 'tx_commerce_products') {
 
 			$loc = 'top.content' . (!$this->alwaysContentFrame ? '.list_frame' : '');
