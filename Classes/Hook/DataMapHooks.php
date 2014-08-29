@@ -427,7 +427,15 @@ class Tx_Commerce_Hook_DataMapHooks {
 			$this->belib->getParentCategoriesFromList($this->catList);
 
 			// get all correlation types from flexform thats was created by dynaflex!
-			$correlationTypes = $incomingFieldArray['attributes']['data']['sDEF']['lDEF'];
+			if (
+				is_array($incomingFieldArray) &&
+				isset($incomingFieldArray['attributes']) && is_array($incomingFieldArray['attributes']) &&
+				isset($incomingFieldArray['attributes']['data']) && is_array($incomingFieldArray['attributes']['data']) &&
+				isset($incomingFieldArray['attributes']['data']['sDEF']) && is_array($incomingFieldArray['attributes']['data']['sDEF']) &&
+				isset($incomingFieldArray['attributes']['data']['sDEF']['lDEF'])
+			) {
+				$correlationTypes = $incomingFieldArray['attributes']['data']['sDEF']['lDEF'];
+			}
 
 			$usedAttributes = array();
 
