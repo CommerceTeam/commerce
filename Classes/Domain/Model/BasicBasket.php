@@ -551,8 +551,14 @@ class Tx_Commerce_Domain_Model_BasicBasket {
 				}
 
 				/** @var Tx_Commerce_Domain_Model_BasketItem $basketItem */
-				$basketItem = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_BasketItem');
-				if ($basketItem->init($articleUid, $quantity, $priceid, $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid'])) {
+				$basketItem = t3lib_div::makeInstance(
+					'Tx_Commerce_Domain_Model_BasketItem',
+					$articleUid,
+					$quantity,
+					$priceid,
+					$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']
+				);
+				if ($basketItem->article) {
 					$basketItem->setTaxCalculationMethod($this->pricefromnet);
 					$this->recalculateSums();
 				}
