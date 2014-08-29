@@ -32,23 +32,23 @@ $GLOBALS['TCA']['tx_commerce_order_articles'] = Array(
 	),
 	'feInterface' => $GLOBALS['TCA']['tx_commerce_order_articles']['feInterface'],
 	'columns' => Array(
-		'article_type_uid' => Array(
-			'exclude' => 1,
-			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_order_articles.article_type_uid',
+		'tstamp' => Array(
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_order_articles.tstamp',
 			'config' => Array(
-				'type' => 'passthrough',
-			),
+				'type' => 'input',
+				'readOnly' => TRUE,
+			)
 		),
-		'order_uid' => Array(
-			'exclude' => 1,
-			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_order_articles.order_uid',
+		'crdate' => Array(
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_order_articles.crdate',
 			'config' => Array(
-				'type' => 'select',
-				'foreign_table' => 'tx_commerce_orders',
+				'type' => 'input',
+				'readOnly' => TRUE,
+				'format' => 'date',
+				'eval' => 'date',
 			)
 		),
 		'article_uid' => Array(
-			'exclude' => 1,
 			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_order_articles.article_uid',
 			'config' => Array(
 				'type' => 'group',
@@ -59,8 +59,14 @@ $GLOBALS['TCA']['tx_commerce_order_articles'] = Array(
 				'maxitems' => 1,
 			)
 		),
+		'article_type_uid' => Array(
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_order_articles.article_type_uid',
+			'config' => Array(
+				'type' => 'input',
+				'readOnly' => TRUE,
+			)
+		),
 		'article_number' => Array(
-			'exclude' => 1,
 			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_order_articles.article_number',
 			'config' => Array(
 				'type' => 'input',
@@ -70,7 +76,6 @@ $GLOBALS['TCA']['tx_commerce_order_articles'] = Array(
 			)
 		),
 		'title' => Array(
-			'exclude' => 1,
 			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_order_articles.title',
 			'config' => Array(
 				'type' => 'input',
@@ -80,7 +85,6 @@ $GLOBALS['TCA']['tx_commerce_order_articles'] = Array(
 			)
 		),
 		'subtitle' => Array(
-			'exclude' => 1,
 			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_order_articles.subtitle',
 			'config' => Array(
 				'type' => 'input',
@@ -90,7 +94,6 @@ $GLOBALS['TCA']['tx_commerce_order_articles'] = Array(
 			)
 		),
 		'price_net' => Array(
-			'exclude' => 1,
 			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_order_articles.price_net',
 			'config' => Array(
 				'type' => 'input',
@@ -99,7 +102,6 @@ $GLOBALS['TCA']['tx_commerce_order_articles'] = Array(
 			)
 		),
 		'price_gross' => Array(
-			'exclude' => 1,
 			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_order_articles.price_gross',
 			'config' => Array(
 				'type' => 'input',
@@ -108,7 +110,6 @@ $GLOBALS['TCA']['tx_commerce_order_articles'] = Array(
 			)
 		),
 		'tax' => Array(
-			'exclude' => 1,
 			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_order_articles.tax',
 			'config' => Array(
 				'type' => 'input',
@@ -117,7 +118,6 @@ $GLOBALS['TCA']['tx_commerce_order_articles'] = Array(
 			)
 		),
 		'amount' => Array(
-			'exclude' => 1,
 			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_order_articles.amount',
 			'config' => Array(
 				'type' => 'input',
@@ -125,15 +125,23 @@ $GLOBALS['TCA']['tx_commerce_order_articles'] = Array(
 				'eval' => 'required,num',
 			)
 		),
+		'order_uid' => Array(
+			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_order_articles.order_uid',
+			'config' => Array(
+				'type' => 'select',
+				'foreign_table' => 'tx_commerce_orders',
+				'readOnly' => TRUE,
+			)
+		),
 		/**
 		 * @todo Declaration for iproc function for selecting right value
 		 */
 		'order_id' => Array(
-			'exclude' => 1,
 			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_order_articles.order_id',
 			'config' => Array(
 				'type' => 'user',
 				'userFunc' => 'Tx_Commerce_ViewHelpers_OrderEditFunc->articleOrderId',
+				'readOnly' => TRUE,
 			)
 		),
 	),
