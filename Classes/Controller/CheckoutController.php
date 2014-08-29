@@ -2453,7 +2453,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 
 		$markerArray = array_merge((array) $markerArray, (array) $this->languageMarker);
 
-		$content = $this->cObj->substituteMarkerArray($content, $markerArray);
+		$content = $this->cObj->substituteMarkerArray($content, $markerArray, '', TRUE, TRUE);
 
 		return ltrim($content);
 	}
