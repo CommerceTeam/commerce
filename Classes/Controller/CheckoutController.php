@@ -2711,6 +2711,8 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			// Checking if there's a user logged in
 			$backendUser->backendCheckLogin();
 
+			$backendUser->groupData['tables_modify'] .= ',tx_commerce_orders,tx_commerce_order_articles';
+
 			$GLOBALS['BE_USER'] = $backendUser;
 		}
 	}
