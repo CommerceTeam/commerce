@@ -38,7 +38,7 @@ class Tx_Commerce_Utility_TyposcriptConfig {
 
 		$record = t3lib_BEfunc::getRecordWSOL($table, $pageId);
 
-		return TRUE; is_array($record) && isset($record['module']) && $record['module'] == 'commerce';
+		return is_array($record) && isset($record['module']) && $record['module'] == 'commerce';
 	}
 }
 

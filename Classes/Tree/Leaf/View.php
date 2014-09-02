@@ -147,6 +147,11 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 	public $showDefaultTitleAttribute = FALSE;
 
 	/**
+	 * @var int
+	 */
+	protected $parentCategory = 0;
+
+	/**
 	 * Initialises the variables iconPath and backPath
 	 *
 	 * @return self
@@ -157,7 +162,7 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 		if (t3lib_div::int_from_ver(TYPO3_version) >= '4002007') {
 			$rootPathT3 = t3lib_div::getIndpEnv('TYPO3_SITE_PATH');
 		} else {
-				// Code TYPO3 Site Path manually, backport from TYPO3 4.2.7 svn
+			// Code TYPO3 Site Path manually, backport from TYPO3 4.2.7 svn
 			$rootPathT3 = substr(t3lib_div::getIndpEnv('TYPO3_SITE_URL'), strlen(t3lib_div::getIndpEnv('TYPO3_REQUEST_HOST')));
 		}
 
@@ -331,7 +336,21 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 		}
 
 		if ($additionalParams == '' && $row['uid']) {
-			$additionalParams = urlencode('&control[' . $this->table . '][uid]=' . $row['uid']);
+			$additionalParams = '&control[' . $this->table . '][uid]=' . $row['uid'];
+
+			switch (get_class($this)) {
+				case 'Tx_Commerce_Tree_Leaf_CategoryView':
+					$additionalParams .= '&parentCategory=' . $row['uid'];
+					break;
+
+				case 'Tx_Commerce_Tree_Leaf_ProductView':
+					$additionalParams .= '&parentCategory=' . $row['item_parent'];
+					break;
+
+				default:
+			}
+
+			$additionalParams = urlencode($additionalParams);
 		}
 
 			// Wrap the Context Menu on the Icon if it is allowed

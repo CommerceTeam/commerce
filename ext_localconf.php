@@ -151,6 +151,9 @@ if (TYPO3_MODE == 'BE') {
 	$GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/version/cm1/index.php'] =
 		PATH_TXCOMMERCE . 'Classes/Xclass/ux_versionindex.php';
 
+	$GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['typo3/db_new.php'] =
+		PATH_TXCOMMERCE . 'Classes/Xclass/ux_db_new.php';
+
 	require_once(PATH_TXCOMMERCE . 'Classes/Utility/TyposcriptConfig.php');
 }
 
