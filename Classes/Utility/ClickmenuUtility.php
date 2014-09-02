@@ -142,15 +142,15 @@ class Tx_Commerce_Utility_ClickmenuUtility extends clickMenu {
 			// get rights based on the table
 		switch ($table) {
 			case 'tx_commerce_categories':
-				$rights = $this->calculateCategoryRights($uid, $rights);
+				$rights = $this->calculateCategoryRights($this->rec['uid'], $rights);
 				break;
 
 			case 'tx_commerce_products':
-				$rights = $this->calculateProductRights($uid, $rights);
+				$rights = $this->calculateProductRights($this->rec['uid'], $rights);
 				break;
 
 			case 'tx_commerce_articles':
-				$rights = $this->calculateArticleRights($uid, $rights);
+				$rights = $this->calculateArticleRights($this->rec['uid'], $rights);
 				break;
 
 			default:
@@ -295,7 +295,7 @@ class Tx_Commerce_Utility_ClickmenuUtility extends clickMenu {
 		$backendUser = $GLOBALS['BE_USER'];
 
 			// check if current item is root
-		$rights['root'] = !strcmp($uid, '0') ? 1 : 0;
+		$rights['root'] = (int)($uid == '0');
 
 			// find uid of category or translation parent category
 		$categoryToCheckRightsOn = $uid;

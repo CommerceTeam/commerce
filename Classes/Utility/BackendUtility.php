@@ -2802,24 +2802,21 @@ class Tx_Commerce_Utility_BackendUtility {
 			return TRUE;
 		}
 
-		$keys = array_keys($categoryUids);
-		$l = count($keys);
-
 		/** @var Tx_Commerce_Tree_CategoryMounts $mounts */
 		$mounts = t3lib_div::makeInstance('Tx_Commerce_Tree_CategoryMounts');
 		$mounts->init($backendUser->user['uid']);
 
-		for ($i = 0; $i < $l; $i ++) {
-			/** @var Tx_Commerce_Domain_Model_Category $category */
-			$category = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category', $categoryUids[$keys[$i]]);
-				// check if the category is in the commerce mounts
-			if (!$mounts->isInCommerceMounts($category->getUid())) {
+		foreach ($categoryUids as $categoryUid) {
+			// check if the category is in the commerce mounts
+			if (!$mounts->isInCommerceMounts($categoryUid)) {
 				return FALSE;
 			}
 
-				// check perms
-			for ($j = 0, $m = count($perms); $j < $m; $j ++) {
-				if (!$category->isPermissionSet($perms[$j])) {
+			/** @var Tx_Commerce_Domain_Model_Category $category */
+			$category = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category', $categoryUid);
+			// check perms
+			foreach ($perms as $perm) {
+				if (!$category->isPermissionSet($perm)) {
 						// return false if perms are not granted
 					return FALSE;
 				}
