@@ -290,13 +290,7 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 			));
 		}
 
-		$additionalParams = '';
-		if ($categoryUid) {
-			$additionalParams .= '&category=' . $categoryUid;
-		}
-		trim($additionalParams, ',');
-
-		return $this->wrapIcon($icon, $row, urlencode($additionalParams));
+		return $this->wrapIcon($icon, $row);
 	}
 
 	/**
@@ -314,7 +308,8 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 			return '';
 		}
 
-		$icon = '<img' . t3lib_iconWorks::skinImg($this->iconPath, $this->rootIconName, 'width="18" height="16"') . ' title="Root" alt="" />';
+		$icon = '<img' . t3lib_iconWorks::skinImg($this->iconPath, $this->rootIconName, 'width="18" height="16"') .
+			' title="Root" alt="" />';
 
 		return $this->wrapIcon($icon, $row);
 	}
@@ -335,12 +330,16 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 			return '';
 		}
 
+		if ($additionalParams == '' && $row['uid']) {
+			$additionalParams = urlencode('&control[' . $this->table . '][uid]=' . $row['uid']);
+		}
+
 			// Wrap the Context Menu on the Icon if it is allowed
 		if (isset($GLOBALS['TBE_TEMPLATE']) && !$this->noClickmenu) {
 			/** @var template $template */
 			$template = $GLOBALS['TBE_TEMPLATE'];
 			$template->backPath = $this->backPath;
-			$icon = $template->wrapClickMenuOnIcon($icon, $this->table, $row['uid'], 0, $additionalParams);
+			$icon = $template->wrapClickMenuOnIcon($icon, $this->table, $row['pid'], 0, $additionalParams);
 		}
 		return $icon;
 	}

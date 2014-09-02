@@ -126,7 +126,7 @@ class Tx_Commerce_Utility_ClickmenuUtility extends clickMenu {
 		/** @var t3lib_beUserAuth $backendUser */
 		$backendUser = $GLOBALS['BE_USER'];
 
-			// Check for List allow
+		// Check for List allow
 		if (!$backendUser->check('tables_select', $table)) {
 			if (TYPO3_DLOG) {
 				t3lib_div::devLog('Clickmenu not allowed for user.', COMMERCE_EXTKEY, 1);
@@ -134,19 +134,18 @@ class Tx_Commerce_Utility_ClickmenuUtility extends clickMenu {
 			return '';
 		}
 
-			// Configure the parent clickmenu
+		// Configure the parent clickmenu
 		$this->clickMenu = $clickMenu;
-		$this->rec = $this->clickMenu->rec;
 		$this->ajax = $this->clickMenu->ajax;
 		$this->listFrame = $this->clickMenu->listFrame;
 		$this->alwaysContentFrame = $this->clickMenu->alwaysContentFrame;
 		$this->clipObj = $this->clickMenu->clipObj;
 		$this->disabledItems = $this->clickMenu->disabledItems;
 		$this->clickMenu->backPath = $this->backPath;
-			// @todo do not allow the entry 'history' in the clickmenu
-		// $this->disabledItems[]  = 'history';
 
 		$this->additionalParameter = t3lib_div::explodeUrl2Array(urldecode(t3lib_div::_GET('addParams')));
+
+		$this->rec = t3lib_BEfunc::getRecordWSOL($table, $this->additionalParameter['control[' . $table . '][uid]']);
 
 			// Initialize the rights-variables
 		$rights = array(
@@ -462,6 +461,22 @@ class Tx_Commerce_Utility_ClickmenuUtility extends clickMenu {
 		$rights['edit'] = $rights['delete'];
 
 		return $rights;
+	}
+
+	function DB_new($table,$uid)	{
+		$editOnClick='';
+		$loc = 'top.content.list_frame';
+		$editOnClick='if('.$loc.'){'.$loc.".location.href=top.TS.PATH_typo3+'".
+					 ($this->listFrame?
+						 "alt_doc.php?returnUrl='+top.rawurlencode(" . $this->frameLocation($loc . '.document') . '.pathname+' . $this->frameLocation($loc . '.document') . ".search)+'&edit[".$table."][-".$uid."]=new'":
+						 'db_new.php?id='.intval($uid)."'").
+					 ';}';
+
+		return $this->linkItem(
+			$this->label('new'),
+			$this->excludeIcon(t3lib_iconWorks::getSpriteIcon('actions-' . ($table === 'pages' ? 'page' : 'document' ) . '-new')),
+			$editOnClick.'return hideCM();'
+		);
 	}
 
 

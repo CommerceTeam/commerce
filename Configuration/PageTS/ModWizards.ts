@@ -1,3 +1,12 @@
+[userFunc = user_isCommercePage()]
+mod.web_list.allowedNewTables = tx_commerce_products,tx_commerce_categories
+[GLOBAL]
+
+mod.txcommerceM1_category.enableDisplayBigControlPanel = selectable
+mod.txcommerceM1_category.enableClipBoard = selectable
+mod.txcommerceM1_category.enableLocalizationView = selectable
+mod.txcommerceM1_orders.enableDisplayBigControlPanel = selectable
+
 mod.wizards {
 	newContentElement {
 		wizardItems {
