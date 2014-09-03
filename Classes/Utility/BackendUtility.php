@@ -2762,7 +2762,9 @@ class Tx_Commerce_Utility_BackendUtility {
 		} else {
 			$res = $database->exec_SELECTquery(
 				'mm.uid_foreign AS pid, tx_commerce_categories.uid, tx_commerce_categories.hidden, tx_commerce_categories.title,
-					tx_commerce_categories.ts_config, tx_commerce_categories.t3ver_oid',
+					tx_commerce_categories.ts_config, tx_commerce_categories.t3ver_oid,
+					tx_commerce_categories.perms_userid, tx_commerce_categories.perms_groupid,
+					tx_commerce_categories.perms_user, tx_commerce_categories.perms_group, tx_commerce_categories.perms_everybody',
 				'tx_commerce_categories
 					INNER JOIN pages ON tx_commerce_categories.pid = pages.uid
 					INNER JOIN tx_commerce_categories_parent_category_mm AS mm ON tx_commerce_categories.uid = mm.uid_local',
