@@ -114,10 +114,10 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 			'shortcut' => '',
 		);
 
-			// Get users permissions for this row:
+		// Get users permissions for this row:
 		$localCalcPerms = $backendUser->calcPerms($row);
 
-			// CSH
+		// CSH
 		if (!strlen($this->id)) {
 			$buttons['csh'] = t3lib_BEfunc::cshItem('xMOD_csh_comerce', 'list_module_noId', $this->backPath, '', TRUE);
 		} elseif (!$this->id) {
@@ -127,25 +127,31 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 		}
 
 		if (isset($this->id)) {
-				// If edit permissions are set (see class.t3lib_userauthgroup.php)
+			// If edit permissions are set (see class.t3lib_userauthgroup.php)
 			if ($localCalcPerms & 2 && !empty($this->parentUid)) {
-					// Adding "New record" icon:
+				// Adding "New record" icon:
 				if (!$GLOBALS['SOBE']->modTSconfig['properties']['noCreateRecordsLink']) {
-					$buttons['new_record'] = $this->newRecordIcon;
+					$params = '&parentCategory=' . $this->parentUid;
+					$buttons['new_record'] = '<a href="#" onclick="' .
+						htmlspecialchars('return jumpExt(\'' . $this->backPath . 'db_new.php?id=' . $this->id . $params . '\');') . '">' .
+						t3lib_iconWorks::getSpriteIcon('actions-document-new', array('title' => $language->getLL('newRecordGeneral', TRUE))) .
+						'</a>';
 				}
-					// Edit
+
+				// Edit
 				$params = '&edit[tx_commerce_categories][' . $this->pageRow['uid'] . ']=edit';
 				$buttons['edit'] = '<a href="#" onclick="' .
-					htmlspecialchars(t3lib_BEfunc::editOnClick($params, $this->backPath, -1)) . '" title="' .
-					$language->getLL('editCategory', TRUE) . '">' . t3lib_iconWorks::getSpriteIcon('actions-page-open') . '</a>';
+					htmlspecialchars(t3lib_BEfunc::editOnClick($params, $this->backPath, -1)) . '">' .
+					t3lib_iconWorks::getSpriteIcon('actions-page-open', array('title' => $language->getLL('editCategory', TRUE))) .
+					'</a>';
 
-					// Unhide
+				// Unhide
 				if ($this->pageRow['hidden']) {
 					$params = '&data[tx_commerce_categories][' . $this->pageRow['uid'] . '][hidden]=0';
 					$buttons['hide_unhide'] = '<a href="#" onclick="' .
 						htmlspecialchars('return jumpToUrl(\'' . $GLOBALS['SOBE']->doc->issueCommand($params, -1) . '\');') . '" title="' .
 						$language->getLL('unHideCategory', TRUE) . '">' . t3lib_iconWorks::getSpriteIcon('actions-edit-unhide') . '</a>';
-					// Hide
+				// Hide
 				} else {
 					$params = '&data[tx_commerce_categories][' . $this->pageRow['uid'] . '][hidden]=1';
 					$buttons['hide_unhide'] = '<a href="#" onclick="' .
@@ -153,7 +159,7 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 						$language->getLL('hideCategory', TRUE) . '">' . t3lib_iconWorks::getSpriteIcon('actions-edit-hide') . '</a>';
 				}
 
-					// Setting title of page + the "Go up" link:
+				// Setting title of page + the "Go up" link:
 				$temp = $this->parentUid;
 				$this->parentUid = $this->pageRow['pid'];
 				$buttons['level_up'] = '<a href="' . htmlspecialchars($this->listURL($this->id)) .
@@ -164,7 +170,7 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 			}
 		}
 
-			// Paste
+		// Paste
 		if (($localCalcPerms & 8 || $localCalcPerms & 16) && $this->parentUid) {
 			$elFromTable = $this->clipObj->elFromTable('');
 			if (count($elFromTable)) {
@@ -176,12 +182,12 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 		}
 
 		if ($this->table) {
-				// CSV
+			// CSV
 			$buttons['csv'] = '<a href="' . htmlspecialchars($this->listURL() . '&csv=1') . '" title="' .
 				$language->sL('LLL:EXT:lang/locallang_core.php:labels.csv', 1) . '">' .
 				t3lib_iconWorks::getSpriteIcon('mimetypes-text-csv') . '</a>';
 
-				// Export
+			// Export
 			if (t3lib_extMgm::isLoaded('impexp')) {
 				$url = $this->backPath . t3lib_extMgm::extRelPath('impexp') . 'app/index.php?tx_impexp[action]=export';
 				$buttons['export'] = '<a href="' .
@@ -191,7 +197,7 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 			}
 		}
 
-			// Add "refresh" link:
+		// Add "refresh" link:
 		$buttons['reload'] = '<a href="' . htmlspecialchars($this->listURL()) . '">' .
 			t3lib_iconWorks::getSpriteIcon(
 				'actions-system-refresh',
@@ -1365,7 +1371,7 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 		/** @var language $language */
 		$language = $GLOBALS['LANG'];
 
-			// Return blank, if disabled:
+		// Return blank, if disabled:
 		if ($this->dontShowClipControlPanels) {
 			return '';
 		}
@@ -1615,7 +1621,7 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 		/** @var t3lib_beUserAuth $backendUser */
 		$backendUser = $GLOBALS['BE_USER'];
 
-			// If the title is blank, make a "no title" label:
+		// If the title is blank, make a "no title" label:
 		if (!strcmp($code, '')) {
 			$code = '<i>[' . $language->sL('LLL:EXT:lang/locallang_core.php:labels.no_title', 1) . ']</i> - ' .
 				htmlspecialchars(t3lib_div::fixed_lgd_cs(t3lib_BEfunc::getRecordTitle($table, $row), $backendUser->uc['titleLen']));
