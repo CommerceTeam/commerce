@@ -28,6 +28,19 @@ class ux_SC_db_new extends SC_db_new {
 			$parameters .= '&overrideVals[pages_language_overlay][doktype]=' . (int) $this->pageinfo['doktype'];
 		}
 
+		$parameters = $this->addCommerceParameter($parameters, $table);
+
+		$onClick = t3lib_BEfunc::editOnClick($parameters, '', $this->returnUrl);
+
+		return '<a href="#" onclick="' . htmlspecialchars($onClick) . '">' . $linkText . '</a>';
+	}
+
+	/**
+	 * @param string $parameters
+	 * @param string $table
+	 * @return string
+	 */
+	protected function addCommerceParameter($parameters, $table) {
 		if (t3lib_div::_GP('parentCategory')) {
 			switch ($table) {
 				case 'tx_commerce_categories':
@@ -42,8 +55,6 @@ class ux_SC_db_new extends SC_db_new {
 			}
 		}
 
-		$onClick = t3lib_BEfunc::editOnClick($parameters, '', $this->returnUrl);
-
-		return '<a href="#" onclick="' . htmlspecialchars($onClick) . '">' . $linkText . '</a>';
+		return $parameters;
 	}
 }
