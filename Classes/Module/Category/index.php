@@ -53,5 +53,3 @@ $SOBE->initPage();
 $SOBE->clearCache();
 $SOBE->main();
 $SOBE->printContent();
-
-?>

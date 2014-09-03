@@ -1,21 +1,28 @@
 <?php
 /***************************************************************
  *  Copyright notice
+ *
  *  (c) 2006-2011 Franz Holzinger <kontakt@fholzinger.com>
+ *  (c) 2013-2014 Sebastian Fischer <typo3@marketing-factory.de>
  *  All rights reserved
+ *
  *  This script is part of the TYPO3 project. The TYPO3 project is
  *  free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
  *  (at your option) any later version.
+ *
  *  The GNU General Public License can be found at
  *  http://www.gnu.org/copyleft/gpl.html.
  *  A copy is found in the textfile GPL.txt and important notices to the license
  *  from the author is found in LICENSE.txt distributed with these scripts.
+ *
+ *
  *  This script is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
+ *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
@@ -271,11 +278,8 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 				<!--
 					Link for creating a new record:
 				-->
-				<a href="' . htmlspecialchars(
-					$sumlink . '&returnUrl=' . rawurlencode(t3lib_div::getIndpEnv('REQUEST_URI'))
-				) . '">' . t3lib_iconWorks::getSpriteIcon(
-					'actions-document-new', array('title' => $language->getLL('editPage', 1))
-				) . '</a>';
+				<a href="' . htmlspecialchars($sumlink . '&returnUrl=' . rawurlencode(t3lib_div::getIndpEnv('REQUEST_URI'))) . '">' .
+					t3lib_iconWorks::getSpriteIcon('actions-document-new', array('title' => $language->getLL('editPage', 1))) . '</a>';
 		}
 
 		// Access check...
@@ -318,9 +322,7 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 		$dblist->calcPerms = $backendUser->calcPerms($this->pageinfo);
 		$dblist->thumbs = $backendUser->uc['thumbnailsByDefault'];
 		$dblist->returnUrl = $this->returnUrl;
-		$dblist->allFields = ($this->MOD_SETTINGS['bigControlPanel'] || $this->table) ?
-			1 :
-			0;
+		$dblist->allFields = ($this->MOD_SETTINGS['bigControlPanel'] || $this->table) ? 1 : 0;
 		$dblist->localizationView = $this->MOD_SETTINGS['localization'];
 		$dblist->showClipboard = 1;
 		$dblist->disableSingleTableView = $this->modTSconfig['properties']['disableSingleTableView'];
@@ -328,14 +330,10 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 		$dblist->hideTables = $this->modTSconfig['properties']['hideTables'];
 		$dblist->tableTSconfigOverTCA = $this->modTSconfig['properties']['table.'];
 		$dblist->clickTitleMode = $this->modTSconfig['properties']['clickTitleMode'];
-		$dblist->alternateBgColors = $this->modTSconfig['properties']['alternateBgColors'] ?
-			1 :
-			0;
+		$dblist->alternateBgColors = $this->modTSconfig['properties']['alternateBgColors'] ? 1 : 0;
 		$dblist->allowedNewTables = t3lib_div::trimExplode(',', $this->modTSconfig['properties']['allowedNewTables'], 1);
 		$dblist->deniedNewTables = t3lib_div::trimExplode(',', $this->modTSconfig['properties']['deniedNewTables'], 1);
-		$dblist->newWizards = $this->modTSconfig['properties']['newWizards'] ?
-			1 :
-			0;
+		$dblist->newWizards = $this->modTSconfig['properties']['newWizards'] ? 1 : 0;
 		$dblist->pageRow = $this->pageinfo;
 		$dblist->counter++;
 		$dblist->MOD_MENU = array(
@@ -383,11 +381,11 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 		// This flag will prevent the clipboard panel in being shown.
 		// It is set, the clickmenu-layer is active AND the extended
 		// view is not enabled.
-		$dblist->dontShowClipControlPanels = $GLOBALS['CLIENT']['FORMSTYLE']
-											 && !$this->MOD_SETTINGS['bigControlPanel']
-											 && $dblist->clipObj->current == 'normal'
-											 && !$backendUser->uc['disableCMlayers']
-											 && !$this->modTSconfig['properties']['showClipControlPanelsDespiteOfCMlayers'];
+		$dblist->dontShowClipControlPanels = $GLOBALS['CLIENT']['FORMSTYLE'] &&
+			!$this->MOD_SETTINGS['bigControlPanel'] &&
+			$dblist->clipObj->current == 'normal' &&
+			!$backendUser->uc['disableCMlayers'] &&
+			!$this->modTSconfig['properties']['showClipControlPanelsDespiteOfCMlayers'];
 
 		if ($access) {
 			// Deleting records...:
@@ -435,36 +433,35 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 			$dblist->writeBottom();
 			$listUrl = TYPO3_MOD_PATH . $dblist->listURL();
 			// Add JavaScript functions to the page:
-			$this->doc->JScode = $this->doc->wrapScriptTags(
-				'
-								function jumpToUrl(URL) {
-									window.location.href = URL;
-									return false;
-								}
-								function jumpExt(URL, anchor) {
-									var anc = anchor ? anchor : "";
-									window.location.href = URL + (T3_THIS_LOCATION ? "&returnUrl=" + T3_THIS_LOCATION : "") + anc;
-									return false;
-								}
-								function jumpSelf(URL) {
-									window.location.href = URL + (T3_RETURN_URL ? "&returnUrl=" + T3_RETURN_URL : "");
-									return false;
-								}
+			$this->doc->JScode = $this->doc->wrapScriptTags('
+				function jumpToUrl(URL) {
+					window.location.href = URL;
+					return false;
+				}
+				function jumpExt(URL, anchor) {
+					var anc = anchor ? anchor : "";
+					window.location.href = URL + (T3_THIS_LOCATION ? "&returnUrl=" + T3_THIS_LOCATION : "") + anc;
+					return false;
+				}
+				function jumpSelf(URL) {
+					window.location.href = URL + (T3_RETURN_URL ? "&returnUrl=" + T3_RETURN_URL : "");
+					return false;
+				}
 
-								function setHighlight(id) {
-									top.fsMod.recentIds["web"] = id;
-									top.fsMod.navFrameHighlightedID["web"] = "pages" + id + "_" + top.fsMod.currentBank;	// For highlighting
+				function setHighlight(id) {
+					top.fsMod.recentIds["web"] = id;
+					top.fsMod.navFrameHighlightedID["web"] = "pages" + id + "_" + top.fsMod.currentBank;	// For highlighting
 
-									if (top.content && top.content.nav_frame && top.content.nav_frame.refresh_nav) {
-										top.content.nav_frame.refresh_nav();
-									}
-								}
-								' . $this->doc->redirectUrls($listUrl) . '
+					if (top.content && top.content.nav_frame && top.content.nav_frame.refresh_nav) {
+						top.content.nav_frame.refresh_nav();
+					}
+				}
+				' . $this->doc->redirectUrls($listUrl) . '
 				' . $dblist->CBfunctions() . '
 				function editRecords(table, idList, addParams, CBflag) {
-					window.location.href = "' . $this->doc->backPath . 'alt_doc.php?returnUrl=' . rawurlencode(
-					t3lib_div::getIndpEnv('REQUEST_URI')
-				) . '&edit[" + table + "][" + idList + "]=edit" + addParams;
+					window.location.href = "' . $this->doc->backPath . 'alt_doc.php?returnUrl=' .
+					rawurlencode(t3lib_div::getIndpEnv('REQUEST_URI')) .
+					'&edit[" + table + "][" + idList + "]=edit" + addParams;
 				}
 				function editList(table, idList) {
 					var list = "";
@@ -490,8 +487,7 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 					top.fsMod.recentIds["web"] = ' . $this->id . ';
 					top.fsMod.recentIds["commerce"] = ' . $this->categoryUid . ';
 				}
-			'
-			);
+			');
 
 			// Setting up the context sensitive menu:
 			$this->doc->getContextMenuCode();
@@ -581,12 +577,8 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 		$this->buttons = $dblist->getButtons($this->pageinfo);
 		$docHeaderButtons = $this->getHeaderButtons();
 
-		$categoryInfo = $this->categoryUid ?
-			$this->getCategoryInfo($this->pageinfo) :
-			$this->getPageInfo($this->pageinfo);
-		$categoryPath = $this->categoryUid ?
-			$this->getCategoryPath($this->pageinfo) :
-			$this->getPagePath($this->pageinfo);
+		$categoryInfo = $this->categoryUid ? $this->getCategoryInfo($this->pageinfo) : $this->getPageInfo($this->pageinfo);
+		$categoryPath = $this->categoryUid ? $this->getCategoryPath($this->pageinfo) : $this->getPagePath($this->pageinfo);
 
 		$markers = array(
 			'CSH' => $docHeaderButtons['csh'],
@@ -595,9 +587,7 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 			'CATPATH' => $categoryPath,
 		);
 		$markers['FUNC_MENU'] = $this->doc->funcMenu(
-			'', t3lib_BEfunc::getFuncMenu(
-				$this->id, 'SET[mode]', $this->MOD_SETTINGS['mode'], $this->MOD_MENU['mode']
-			)
+			'', t3lib_BEfunc::getFuncMenu($this->id, 'SET[mode]', $this->MOD_SETTINGS['mode'], $this->MOD_MENU['mode'])
 		);
 
 		// put it all together
@@ -643,9 +633,8 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 
 		// If access to Web>List for user, then link to that module.
 		if ($backendUser->check('modules', 'web_list')) {
-			$href = $GLOBALS['BACK_PATH'] . 'db_list.php?id=' . $this->pageinfo['uid'] . '&returnUrl=' . rawurlencode(
-					t3lib_div::getIndpEnv('REQUEST_URI')
-				);
+			$href = $GLOBALS['BACK_PATH'] . 'db_list.php?id=' . $this->pageinfo['uid'] . '&returnUrl=' .
+				rawurlencode(t3lib_div::getIndpEnv('REQUEST_URI'));
 			$buttons['record_list'] = '<a href="' . htmlspecialchars($href) . '">' . t3lib_iconWorks::getSpriteIcon(
 					'apps-filetree-folder-list',
 					array('title' => $language->sL('LLL:EXT:lang/locallang_core.php:labels.showList', 1))
@@ -824,13 +813,10 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 
 class_alias('Tx_Commerce_Controller_CategoriesController', 'tx_commerce_categories');
 
-if (defined(
-		'TYPO3_MODE'
-	)
-	&& $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Controller/CategoriesController.php']
+if (
+	defined('TYPO3_MODE') &&
+	$GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Controller/CategoriesController.php']
 ) {
 	/** @noinspection PhpIncludeInspection */
 	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Controller/CategoriesController.php']);
 }
-
-?>

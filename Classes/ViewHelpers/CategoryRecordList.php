@@ -914,11 +914,8 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 				case '_CONTROL_':
 					if (!$GLOBALS['TCA'][$table]['ctrl']['readOnly']) {
 
-							// If new records can be created on this page, add links:
-						if ($this->calcPerms & ($table == 'pages' ?
-								8 :
-								16) && $this->showNewRecLink($table) && $this->parentUid
-						) {
+						// If new records can be created on this page, add links:
+						if ($this->calcPerms & ($table == 'pages' ? 8 : 16) && $this->showNewRecLink($table) && $this->parentUid) {
 							if ($table == 'tt_content' && $this->newWizards) {
 								// If mod.web_list.newContentWiz.overrideWithExtension is set,
 								// use that extension's create new content wizard instead:
@@ -944,16 +941,23 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 										t3lib_iconWorks::getSpriteIcon('actions-document-new')
 									) . '</a>';
 							} else {
-								$params = '&edit[' . $table . '][' . $this->id . ']=new';
+								$parameters = '&edit[' . $table . '][' . $this->id . ']=new';
 								if ($table == 'pages_language_overlay') {
-									$params .= '&overrideVals[pages_language_overlay][doktype]=' . (int) $this->pageRow['doktype'];
+									$parameters .= '&overrideVals[pages_language_overlay][doktype]=' . (int) $this->pageRow['doktype'];
 								}
-								$icon = '<a href="#" onclick="' . htmlspecialchars(t3lib_BEfunc::editOnClick($params, $this->backPath, -1)) .
-									'" title="' . $language->getLL('new', TRUE) . '">' . (
-										$table == 'pages' ?
-										t3lib_iconWorks::getSpriteIcon('actions-page-new') :
-										t3lib_iconWorks::getSpriteIcon('actions-document-new')
-									) . '</a>';
+								switch ($table) {
+									case 'tx_commerce_categories':
+										$parameters .= '&defVals[tx_commerce_categories][parent_category]=' . $this->parentUid;
+										break;
+
+									case 'tx_commerce_products':
+										$parameters .= '&defVals[tx_commerce_products][categories]=' . $this->parentUid;
+										break;
+
+									default:
+								}
+								$icon = '<a href="#" onclick="' . htmlspecialchars(t3lib_BEfunc::editOnClick($parameters, $this->backPath, -1)) .
+									'" title="' . $language->getLL('new', TRUE) . '">' . t3lib_iconWorks::getSpriteIcon('actions-document-new') . '</a>';
 							}
 						}
 
@@ -1057,7 +1061,7 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 			$rowUid = $row['_ORIG_uid'];
 		}
 
-			// Initialize:
+		// Initialize:
 		t3lib_div::loadTCA($table);
 		$cells = array();
 
@@ -1068,11 +1072,11 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 			$localCalcPerms = $backendUser->calcPerms(t3lib_BEfunc::getRecord('tx_commerce_categories', $row['uid']));
 		}
 
-			// This expresses the edit permissions for this particular element:
+		// This expresses the edit permissions for this particular element:
 		$permsEdit = ($table == 'tx_commerce_categories' && ($localCalcPerms & 2)) ||
 			($table != 'tx_commerce_categories' && ($this->calcPerms & 16));
 
-			// "Show" link (only tx_commerce_categories and tx_commerce_products elements)
+		// "Show" link (only tx_commerce_categories and tx_commerce_products elements)
 		if ($table == 'tx_commerce_categories' || $table == 'tx_commerce_products') {
 			$cells['view'] = '<a href="#" onclick="' .
 				htmlspecialchars(t3lib_BEfunc::viewOnClick(
@@ -1103,7 +1107,7 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 			$cells['edit'] = $this->spaceIcon;
 		}
 
-			// "Move" wizard link for tx_commerce_categories/tx_commerce_products elements:
+		// "Move" wizard link for tx_commerce_categories/tx_commerce_products elements:
 		if (($table == 'tx_commerce_products' && $permsEdit) || ($table == 'tx_commerce_categories')) {
 			$options = array('title' => $language->getLL('move_' . ($table == 'tx_commerce_products' ? 'record' : 'page'), TRUE));
 			$cells['move'] = '<a href="#" onclick="' .
@@ -1118,17 +1122,17 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 			$cells['move'] = $this->spaceIcon;
 		}
 
-			// If the extended control panel is enabled OR if we are seeing a single table:
+		// If the extended control panel is enabled OR if we are seeing a single table:
 		if ($GLOBALS['SOBE']->MOD_SETTINGS['bigControlPanel'] || $this->table) {
-				// "Info": (All records)
+			// "Info": (All records)
 			$cells['viewBig'] = '<a href="#" onclick="' .
 				htmlspecialchars('top.launchView(\'' . $table . '\', \'' . $row['uid'] . '\'); return false;') .
 				'" title="' . $language->getLL('showInfo', TRUE) . '">' . t3lib_iconWorks::getSpriteIcon('actions-document-info') .
 				'</a>';
 
-				// If the table is NOT a read-only table, then show these links:
+			// If the table is NOT a read-only table, then show these links:
 			if (!$GLOBALS['TCA'][$table]['ctrl']['readOnly']) {
-					// "Revert" link (history/undo)
+				// "Revert" link (history/undo)
 				$cells['history'] = '<a href="#" onclick="' .
 					htmlspecialchars(
 						'return jumpExt(\'' . $this->backPath . 'show_rechis.php?element=' .
@@ -1137,10 +1141,10 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 					'" title="' . $language->getLL('history', TRUE) . '">' . t3lib_iconWorks::getSpriteIcon('actions-document-history-open') .
 					'</a>';
 
-					// Versioning:
+				// Versioning:
 				if (t3lib_extMgm::isLoaded('version') && !t3lib_extMgm::isLoaded('workspaces')) {
 					$vers = t3lib_BEfunc::selectVersionsOfRecord($table, $row['uid'], 'uid', $GLOBALS['BE_USER']->workspace, FALSE, $row);
-						// If table can be versionized.
+					// If table can be versionized.
 					if (is_array($vers)) {
 						$versionIcon = 'no-version';
 						if (count($vers) > 1) {
@@ -1156,7 +1160,7 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 					}
 				}
 
-					// "Edit Perms" link:
+				// "Edit Perms" link:
 				if ($table == 'tx_commerce_categories' && $backendUser->check('modules', 'web_perm') && t3lib_extMgm::isLoaded('perm')) {
 					$cells['perms'] =
 						'<a href="' .
