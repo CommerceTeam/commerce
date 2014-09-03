@@ -27,6 +27,8 @@
 
 /**
  * Extension of localRecordList to render category and product lists
+ *
+ * Class Tx_Commerce_ViewHelpers_CategoryRecordList
  */
 class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 	/**
@@ -46,8 +48,10 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 	 * @var array
 	 */
 	public $joinTables = array(
-		'tx_commerce_products' => ' LEFT JOIN tx_commerce_products_categories_mm ON tx_commerce_products.uid = tx_commerce_products_categories_mm.uid_local',
-		'tx_commerce_categories' => ' LEFT JOIN tx_commerce_categories_parent_category_mm ON tx_commerce_categories.uid = tx_commerce_categories_parent_category_mm.uid_local',
+		'tx_commerce_products' => ' LEFT JOIN tx_commerce_products_categories_mm
+			ON tx_commerce_products.uid = tx_commerce_products_categories_mm.uid_local',
+		'tx_commerce_categories' => ' LEFT JOIN tx_commerce_categories_parent_category_mm
+			ON tx_commerce_categories.uid = tx_commerce_categories_parent_category_mm.uid_local',
 	);
 
 	/**
@@ -76,7 +80,8 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 	public $pageinfo;
 
 	/**
-	 * Create the panel of buttons for submitting the form or otherwise perform operations.
+	 * Create the panel of buttons for submitting the form
+	 * or otherwise perform operations.
 	 *
 	 * @param array $row
 	 * @return array all available buttons as an assoc. array
@@ -89,21 +94,21 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 
 		$buttons = array(
 			'csh' => '',
-				// group left 1
+			// group left 1
 			'level_up' => '',
 			'back' => '',
-				// group left 2
+			// group left 2
 			'new_record' => '',
 			'paste' => '',
-				// group left 3
+			// group left 3
 			'view' => '',
 			'edit' => '',
 			'move' => '',
 			'hide_unhide' => '',
-				// group left 4
+			// group left 4
 			'csv' => '',
 			'export' => '',
-				// group right 1
+			// group right 1
 			'cache' => '',
 			'reload' => '',
 			'shortcut' => '',
@@ -179,7 +184,8 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 				// Export
 			if (t3lib_extMgm::isLoaded('impexp')) {
 				$url = $this->backPath . t3lib_extMgm::extRelPath('impexp') . 'app/index.php?tx_impexp[action]=export';
-				$buttons['export'] = '<a href="' . htmlspecialchars($url . '&tx_impexp[list][]=' . rawurlencode($this->table . ':' . $this->id)) .
+				$buttons['export'] = '<a href="' .
+					htmlspecialchars($url . '&tx_impexp[list][]=' . rawurlencode($this->table . ':' . $this->id)) .
 					'" title="' . $language->sL('LLL:EXT:lang/locallang_core.php:rm.export', TRUE) . '">' .
 					t3lib_iconWorks::getSpriteIcon('actions-document-export-t3d') . '</a>';
 			}
@@ -187,7 +193,10 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 
 			// Add "refresh" link:
 		$buttons['reload'] = '<a href="' . htmlspecialchars($this->listURL()) . '">' .
-			t3lib_iconWorks::getSpriteIcon('actions-system-refresh', array('title' => $language->sL('LLL:EXT:lang/locallang_core.php:labels.reload', 1))) .
+			t3lib_iconWorks::getSpriteIcon(
+				'actions-system-refresh',
+				array('title' => $language->sL('LLL:EXT:lang/locallang_core.php:labels.reload', 1))
+			) .
 			'</a>';
 
 		return $buttons;
@@ -198,12 +207,13 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 	 *
 	 * @param string $table Table name
 	 * @param integer $id Page id
-	 * @param string $rowlist List of fields to show in the listing. Pseudo fields will be added including the record header.
+	 * @param string $rowlist List of fields to show in the listing.
+	 * 	Pseudo fields will be added including the record header.
 	 * @throws UnexpectedValueException
 	 * @return string HTML table with the listing for the record.
 	 */
 	public function getTable($table, $id, $rowlist) {
-			// Loading all TCA details for this table:
+		// Loading all TCA details for this table:
 		t3lib_div::loadTCA($table);
 		/** @var t3lib_db $database */
 		$database = & $GLOBALS['TYPO3_DB'];
@@ -212,24 +222,25 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 		/** @var t3lib_beUserAuth $backendUser */
 		$backendUser = $GLOBALS['BE_USER'];
 
-			// Init
+		// Init
 		$addWhere = '';
 		$titleCol = $GLOBALS['TCA'][$table]['ctrl']['label'];
 		$thumbsCol = $GLOBALS['TCA'][$table]['ctrl']['thumbnail'];
-		$l10nEnabled = $GLOBALS['TCA'][$table]['ctrl']['languageField']
-			&& $GLOBALS['TCA'][$table]['ctrl']['transOrigPointerField']
-			&& !$GLOBALS['TCA'][$table]['ctrl']['transOrigPointerTable'];
+		$l10nEnabled = $GLOBALS['TCA'][$table]['ctrl']['languageField'] &&
+			$GLOBALS['TCA'][$table]['ctrl']['transOrigPointerField'] &&
+			!$GLOBALS['TCA'][$table]['ctrl']['transOrigPointerTable'];
 		$tableCollapsed = (!$this->tablesCollapsed[$table]) ? FALSE : TRUE;
 
-			// prepare space icon
+		// prepare space icon
 		$this->spaceIcon = t3lib_iconWorks::getSpriteIcon('empty-empty', array('style' => 'background-position: 0 10px;'));
 
-			// Cleaning rowlist for duplicates and place the $titleCol as the first column always!
+		// Cleaning rowlist for duplicates and place the $titleCol
+		// as the first column always!
 		$this->fieldArray = array();
-			// title Column
-			// Add title column
+		// title Column
+		// Add title column
 		$this->fieldArray[] = $titleCol;
-			// Control-Panel
+		// Control-Panel
 		if (!t3lib_div::inList($rowlist, '_CONTROL_')) {
 			$this->fieldArray[] = '_CONTROL_';
 			$this->fieldArray[] = '_AFTERCONTROL_';
@@ -351,7 +362,7 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 			$queryParts = $this->makeQueryArray($table, $id, $addWhere, $selFieldList);
 		}
 
-			// Finding the total amount of records on the page (API function from class.db_list.inc)
+		// Finding the total amount of records on the page
 		$this->setTotalItems($queryParts);
 
 			// Init:
@@ -360,13 +371,15 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 		$listOnlyInSingleTableMode = $this->listOnlyInSingleTableMode && !$this->table;
 
 		$result = FALSE;
-			// If the count query returned any number of records, we perform the real query, selecting records.
+		// If the count query returned any number of records,
+		// we perform the real query, selecting records.
 		if ($this->totalItems) {
-				// Fetch records only if not in single table mode or if in multi table mode and not collapsed
+			// Fetch records only if not in single table mode or
+			// if in multi table mode and not collapsed
 			if ($listOnlyInSingleTableMode || (!$this->table && $tableCollapsed)) {
 				$dbCount = $this->totalItems;
 			} else {
-					// set the showLimit to the number of records when outputting as CSV
+				// set the showLimit to the number of records when outputting as CSV
 				if ($this->csvOutput) {
 					$this->showLimit = $this->totalItems;
 					$this->iLimit = $this->totalItems;
@@ -404,7 +417,8 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 			} else {
 				$theData[$titleCol] = $this->linkWrapTable(
 					$table,
-					'<span class="c-table">' . $language->sL($GLOBALS['TCA'][$table]['ctrl']['title'], TRUE) . '</span> (' . $this->totalItems . ') ' .
+					'<span class="c-table">' . $language->sL($GLOBALS['TCA'][$table]['ctrl']['title'], TRUE) .
+						'</span> (' . $this->totalItems . ') ' .
 					(
 						$this->table ?
 						t3lib_iconWorks::getSpriteIcon('actions-view-table-collapse', array('title' => $language->getLL('contractView', TRUE))) :
@@ -416,23 +430,30 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 			if ($listOnlyInSingleTableMode) {
 				$out .= '
 					<tr>
-						<td class="t3-row-header" style="width:95%;">' . t3lib_BEfunc::wrapInHelp($table, '', $theData[$titleCol]) . '</td>
+						<td class="t3-row-header" style="width: 95%;">' . t3lib_BEfunc::wrapInHelp($table, '', $theData[$titleCol]) . '</td>
 					</tr>';
 			} else {
-					// Render collapse button if in multi table mode
+				// Render collapse button if in multi table mode
 				$collapseIcon = '';
 				if (!$this->table) {
-					$collapseIcon = '<a href="' .
-						htmlspecialchars($this->listURL() . '&collapse[' . $table . ']=' . ($tableCollapsed ? '0' : '1')) .
-						'" title="' . (
-							$tableCollapsed ?
-							$language->sL('LLL:EXT:lang/locallang_core.php:labels.expandTable', TRUE) :
-							$language->sL('LLL:EXT:lang/locallang_core.php:labels.collapseTable', TRUE)
-						) . '">' .
+					if ($tableCollapsed) {
+						$options = array(
+							'class' => 'collapseIcon',
+							'title' => $language->sL('LLL:EXT:lang/locallang_core.php:labels.expandTable', TRUE)
+						);
+					} else {
+						$options = array(
+							'class' => 'collapseIcon',
+							'title' => $language->sL('LLL:EXT:lang/locallang_core.php:labels.collapseTable', TRUE)
+						);
+					}
+					$value = $tableCollapsed ? '0' : '1';
+
+					$collapseIcon = '<a href="' . htmlspecialchars($this->listURL() . '&collapse[' . $table . ']=' . $value) . '">' .
 						(
 							$tableCollapsed ?
-							t3lib_iconWorks::getSpriteIcon('actions-view-list-expand', array('class' => 'collapseIcon')) :
-							t3lib_iconWorks::getSpriteIcon('actions-view-list-collapse', array('class' => 'collapseIcon'))
+							t3lib_iconWorks::getSpriteIcon('actions-view-list-expand', $options) :
+							t3lib_iconWorks::getSpriteIcon('actions-view-list-collapse', $options)
 						) .
 						'</a>';
 				}
@@ -440,7 +461,8 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 			}
 
 			$iOut = '';
-				// Render table rows only if in multi table view and not collapsed or if in single table view
+			// Render table rows only if in multi table view
+			// and not collapsed or if in single table view
 			if (!$listOnlyInSingleTableMode && (!$tableCollapsed || $this->table)) {
 					// Fixing a order table for sortby tables
 				$this->currentTable = array();
@@ -460,7 +482,7 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 
 					// Accumulate rows here
 				$accRows = array();
-				while ($row = $database->sql_fetch_assoc($result)) {
+				while (($row = $database->sql_fetch_assoc($result))) {
 
 						// In offline workspace, look for alternative record:
 					t3lib_BEfunc::workspaceOL($table, $row, $GLOBALS['BE_USER']->workspace, TRUE);
@@ -503,12 +525,15 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 						$this->translations = FALSE;
 						$iOut .= $this->renderListRow($table, $row, $cc, $titleCol, $thumbsCol);
 
-							// If localization view is enabled it means that the selected records are either default or All language and here we will not select translations which point to the main record:
+						// If localization view is enabled it means that the selected records are
+						// either default or All language and here we will not select translations
+						// which point to the main record:
 						if ($this->localizationView && $l10nEnabled) {
 								// For each available translation, render the record:
 							if (is_array($this->translations)) {
 								foreach ($this->translations as $lRow) {
-										// $lRow isn't always what we want - if record was moved we've to work with the placeholder records otherwise the list is messed up a bit
+									// $lRow isn't always what we want - if record was moved we've to work with the
+									// placeholder records otherwise the list is messed up a bit
 									if ($row['_MOVE_PLH_uid'] && $row['_MOVE_PLH_pid']) {
 										$tmpRow = t3lib_BEfunc::getRecordRaw(
 											$table,
@@ -518,7 +543,8 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 										);
 										$lRow = is_array($tmpRow)?$tmpRow:$lRow;
 									}
-										// In offline workspace, look for alternative record:
+
+									// In offline workspace, look for alternative record:
 									t3lib_BEfunc::workspaceOL($table, $lRow, $GLOBALS['BE_USER']->workspace, TRUE);
 									if (is_array($lRow) && $backendUser->checkLanguageAccess($lRow[$GLOBALS['TCA'][$table]['ctrl']['languageField']])) {
 										$currentIdList[] = $lRow['uid'];
@@ -529,11 +555,12 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 						}
 					}
 
-						// Counter of total rows incremented:
+					// Counter of total rows incremented:
 					$this->eCounter++;
 				}
 
-					// Record navigation is added to the beginning and end of the table if in single table mode
+				// Record navigation is added to the beginning and
+				// end of the table if in single table mode
 				if ($this->table) {
 					$iOut = $this->renderListNavigation('top') . $iOut . $this->renderListNavigation('bottom');
 				} else {
@@ -541,13 +568,12 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 					if ($this->totalItems > $this->itemsLimitPerTable) {
 						$countOnFirstPage = $this->totalItems > $this->itemsLimitSingleTable ? $this->itemsLimitSingleTable : $this->totalItems;
 						$hasMore = ($this->totalItems > $this->itemsLimitSingleTable);
-						$iOut .= '<tr><td colspan="' . count($this->fieldArray) . '" style="padding:5px;">
-								<a href="' . htmlspecialchars($this->listURL() . '&table=' . rawurlencode($table)) . '">' .
-								'<img' . t3lib_iconWorks::skinImg($this->backPath, 'gfx/pildown.gif', 'width="14" height="14"') . ' alt="" />' .
-								' <i>[1 - ' . $countOnFirstPage . ($hasMore ? '+' : '') . ']</i></a>
-								</td></tr>';
-						}
-
+						$iOut .= '<tr><td colspan="' . count($this->fieldArray) . '" style="padding: 5px;">
+							<a href="' . htmlspecialchars($this->listURL() . '&table=' . rawurlencode($table)) . '">' .
+							'<img' . t3lib_iconWorks::skinImg($this->backPath, 'gfx/pildown.gif', 'width="14" height="14"') . ' alt="" />' .
+							' <i>[1 - ' . $countOnFirstPage . ($hasMore ? '+' : '') . ']</i></a>
+							</td></tr>';
+					}
 				}
 
 					// The header row for the table is now created:
@@ -566,7 +592,8 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 			<!--
 				DB listing of elements:	"' . htmlspecialchars($table) . '"
 			-->
-				<table border="0" cellpadding="0" cellspacing="0" class="typo3-dblist' . ($listOnlyInSingleTableMode ? ' typo3-dblist-overview' : '') . '">
+				<table border="0" cellpadding="0" cellspacing="0" class="typo3-dblist' .
+					($listOnlyInSingleTableMode ? ' typo3-dblist-overview' : '') . '">
 					' . $out . '
 				</table>';
 
@@ -582,12 +609,14 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 	}
 
 	/**
-	 * Returns the SQL-query array to select the records from a table $table with pid = $id
+	 * Returns the SQL-query array to select the records
+	 * from a table $table with pid = $id
 	 *
 	 * @param string $table Table name
 	 * @param integer $id Page id (NOT USED! $this->pidSelect is used instead)
 	 * @param string $addWhere Additional part for where clause
-	 * @param string $fieldList Field list to select, * for all (for "SELECT [fieldlist] FROM ...")
+	 * @param string $fieldList Field list to select,
+	 * 	* for all (for "SELECT [fieldlist] FROM ...")
 	 * @return array Returns query array
 	 */
 	public function makeQueryArray($table, $id, $addWhere = '', $fieldList = '*') {
@@ -614,18 +643,21 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 			}
 		}
 
-			// Set LIMIT:
-		$limit = $this->iLimit ? ($this->firstElementNumber ? $this->firstElementNumber . ',' : '') . ($this->iLimit + 1) : '';
+		// Set LIMIT:
+		$limit = '';
+		if ($this->iLimit) {
+			$limit = ($this->firstElementNumber ? $this->firstElementNumber . ',' : '') . ($this->iLimit + 1);
+		}
 
-			// Filtering on displayable pages (permissions):
+		// Filtering on displayable pages (permissions):
 		$pC = ($table == 'pages' && $this->perms_clause) ? ' AND ' . $this->perms_clause : '';
 
 		$categoryWhere = sprintf($this->addWhere[$table], $this->parentUid);
 
-			// Adding search constraints:
+		// Adding search constraints:
 		$search = $this->makeSearchString($table);
 
-			// Compiling query array:
+		// Compiling query array:
 		$queryParts = array(
 			'SELECT' => $fieldList,
 			'FROM' => $table . $this->joinTables[$table],
@@ -643,13 +675,13 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 			// Apply hook as requested in http://bugs.typo3.org/view.php?id=4361
 		foreach ($hookObjectsArr as $hookObj) {
 			if (method_exists($hookObj, 'makeQueryArray_post')) {
-				$_params = array(
+				$parameter = array(
 					'orderBy' => $orderBy,
 					'limit' => $limit,
 					'pC' => $pC,
 					'search' => $search,
 				);
-				$hookObj->makeQueryArray_post($queryParts, $this, $table, $id, $addWhere, $fieldList, $_params);
+				$hookObj->makeQueryArray_post($queryParts, $this, $table, $id, $addWhere, $fieldList, $parameter);
 			}
 		}
 
@@ -661,12 +693,20 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 	 * Returns a table-row with the content from the fields in the input data array.
 	 * OBS: $this->fieldArray MUST be set! (represents the list of fields to display)
 	 *
-	 * @param integer $h is an integer >=0 and denotes how tall a element is. Set to '0' makes a halv line, -1 = full line, set to 1 makes a 'join' and above makes 'line'
-	 * @param string $icon is the <img>+<a> of the record. If not supplied the first 'join'-icon will be a 'line' instead
-	 * @param array $data is the dataarray, record with the fields. Notice: These fields are (currently) NOT htmlspecialchar'ed before being wrapped in <td>-tags
-	 * @param string $trParams is insert in the <td>-tags. Must carry a ' ' as first character
-	 * @param integer|string $lMargin OBSOLETE - NOT USED ANYMORE. $lMargin is the leftMargin (integer)
-	 * @param string $altLine is the HTML <img>-tag for an alternative 'gfx/ol/line.gif'-icon (used in the top)
+	 * @param integer $h is an integer >=0 and denotes how tall a element is.
+	 * 	Set to '0' makes a halv line, -1 = full line, set to 1 makes a 'join'
+	 * 	and above makes 'line'
+	 * @param string $icon is the <img>+<a> of the record. If not supplied the
+	 * 	first 'join'-icon will be a 'line' instead
+	 * @param array $data is the dataarray, record with the fields.
+	 * 	Notice: These fields are (currently) NOT htmlspecialchar'ed before being
+	 * 	wrapped in <td>-tags
+	 * @param string $trParams is insert in the <td>-tags.
+	 * 	Must carry a ' ' as first character
+	 * @param integer|string $lMargin OBSOLETE - NOT USED ANYMORE.
+	 * 	$lMargin is the leftMargin (integer)
+	 * @param string $altLine is the HTML <img>-tag
+	 * 	for an alternative 'gfx/ol/line.gif'-icon (used in the top)
 	 * @return string HTML content for the table row
 	 */
 	public function addElement($h, $icon, $data, $trParams = '', $lMargin = '', $altLine = '') {
@@ -712,12 +752,8 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 					}
 
 					$out .= '
-						<td' .
-							$noWrap .
-							' class="' . $cssClass . '"' .
-							$colsp .
-							$this->addElement_tdParams[$lastKey] .
-							'>' . $data[$lastKey] . '</td>';
+						<td' . $noWrap . ' class="' . $cssClass . '"' . $colsp .
+							$this->addElement_tdParams[$lastKey] . '>' . $data[$lastKey] . '</td>';
 				}
 				$lastKey = $vKey;
 				$c = 1;
@@ -741,7 +777,9 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 			}
 
 			$out .= '
-				<td' . $noWrap . ' class="' . $cssClass . '"' . $colsp . $this->addElement_tdParams[$lastKey] . '>' . $data[$lastKey] . '</td>';
+				<td' . $noWrap . ' class="' . $cssClass . '"' . $colsp . $this->addElement_tdParams[$lastKey] . '>' .
+					$data[$lastKey] .
+				'</td>';
 		}
 
 			// End row
@@ -777,28 +815,29 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 					// Path
 				case '_PATH_':
 					$theData[$fCol] = '<i>[' . $language->sL('LLL:EXT:lang/locallang_core.php:labels._PATH_', 1) . ']</i>';
-				break;
+					break;
 
 					// References
 				case '_REF_':
 					$theData[$fCol] = '<i>[' . $language->sL('LLL:EXT:lang/locallang_mod_file_list.xml:c__REF_', 1) . ']</i>';
-				break;
+					break;
 
 					// Path
 				case '_LOCALIZATION_':
 					$theData[$fCol] = '<i>[' . $language->sL('LLL:EXT:lang/locallang_core.php:labels._LOCALIZATION_', 1) . ']</i>';
-				break;
+					break;
 
 					// Path
 				case '_LOCALIZATION_b':
 					$theData[$fCol] = $language->getLL('Localize', 1);
-				break;
+					break;
 
 					// Clipboard:
 				case '_CLIPBOARD_':
 					$cells = array();
 
-						// If there are elements on the clipboard for this table, then display the "paste into" icon:
+					// If there are elements on the clipboard for this table,
+					// then display the "paste into" icon:
 					$elFromTable = $this->clipObj->elFromTable($table);
 					if (count($elFromTable)) {
 						$cells['pasteAfter'] = '<a href="' . htmlspecialchars($this->clipObj->pasteUrl($table, $this->id)) .
@@ -807,7 +846,8 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 							t3lib_iconWorks::getSpriteIcon('actions-document-paste-after') . '</a>';
 					}
 
-						// If the numeric clipboard pads are enabled, display the control icons for that:
+					// If the numeric clipboard pads are enabled,
+					// display the control icons for that:
 					if ($this->clipObj->current != 'normal') {
 							// The "select" link:
 						$cells['copyMarked'] = $this->linkClipboardHeaderIcon(
@@ -821,8 +861,9 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 						$editIdList = "'+editList('" . $table . "','" . $editIdList . "')+'";
 						$params = '&edit[' . $table . '][' . $editIdList . ']=edit&disHelp=1';
 						$cells['edit'] = '<a href="#" onclick="' . htmlspecialchars(t3lib_BEfunc::editOnClick($params, $this->backPath, -1)) .
-							'" title="' . $language->getLL('clip_editMarked', TRUE) . '">' .
-							t3lib_iconWorks::getSpriteIcon('actions-document-open') . '</a>';
+							'">' .
+							t3lib_iconWorks::getSpriteIcon('actions-document-open', array('title' => $language->getLL('clip_editMarked', TRUE))) .
+							'</a>';
 
 							// The "Delete marked" link:
 						$cells['delete'] = $this->linkClipboardHeaderIcon(
@@ -842,10 +883,14 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 					}
 
 					/**
-					 * @hook renderListHeaderActions: Allows to change the clipboard icons of the Web>List table headers
+					 * @hook renderListHeaderActions: Allows to change the clipboard icons
 					 * @date 2007-11-20
 					 * @request Bernhard Kraft  <krafbt@kraftb.at>
-					 * @usage Above each listed table in Web>List a header row is shown. This hook allows to modify the icons responsible for the clipboard functions (shown above the clipboard checkboxes when a clipboard other than "Normal" is selected), or other "Action" functions which perform operations on the listed records.
+					 * @usage Above each listed table in Web>List a header row is shown.
+					 * 	This hook allows to modify the icons responsible for the clipboard
+					 * 	functions (shown above the clipboard checkboxes when a clipboard
+					 * 	other than "Normal" is selected), or other "Action" functions which
+					 * 	perform operations on the listed records.
 					 */
 					if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/class.db_list_extra.inc']['actions'])) {
 						foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/class.db_list_extra.inc']['actions'] as $classData) {
@@ -857,7 +902,7 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 						}
 					}
 					$theData[$fCol] = implode('', $cells);
-				break;
+					break;
 
 					// Control panel:
 				case '_CONTROL_':
@@ -869,11 +914,12 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 								16) && $this->showNewRecLink($table) && $this->parentUid
 						) {
 							if ($table == 'tt_content' && $this->newWizards) {
-									//  If mod.web_list.newContentWiz.overrideWithExtension is set, use that extension's create new content wizard instead:
-								$tmpTSc = t3lib_BEfunc::getModTSconfig($this->pageinfo['uid'], 'mod.web_list');
-								$tmpTSc = $tmpTSc['properties']['newContentWiz.']['overrideWithExtension'];
-								$newContentWizScriptPath = $this->backPath . t3lib_extMgm::isLoaded($tmpTSc) ?
-									(t3lib_extMgm::extRelPath($tmpTSc) . 'mod1/db_new_content_el.php') :
+								// If mod.web_list.newContentWiz.overrideWithExtension is set,
+								// use that extension's create new content wizard instead:
+								$tmpTyposcriptConfig = t3lib_BEfunc::getModTSconfig($this->pageinfo['uid'], 'mod.web_list');
+								$tmpTyposcriptConfig = $tmpTyposcriptConfig['properties']['newContentWiz.']['overrideWithExtension'];
+								$newContentWizScriptPath = $this->backPath . t3lib_extMgm::isLoaded($tmpTyposcriptConfig) ?
+									(t3lib_extMgm::extRelPath($tmpTyposcriptConfig) . 'mod1/db_new_content_el.php') :
 									'sysext/cms/layout/db_new_content_el.php';
 
 								$icon = '<a href="#" onclick="' .
@@ -884,7 +930,8 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 										t3lib_iconWorks::getSpriteIcon('actions-document-new')
 									) . '</a>';
 							} elseif ($table == 'pages' && $this->newWizards) {
-								$icon = '<a href="' . htmlspecialchars($this->backPath . 'db_new.php?id=' . $this->id . '&pagesOnly=1&returnUrl=' . rawurlencode(t3lib_div::getIndpEnv('REQUEST_URI'))) .
+								$icon = '<a href="' . htmlspecialchars($this->backPath . 'db_new.php?id=' . $this->id .
+									'&pagesOnly=1&returnUrl=' . rawurlencode(t3lib_div::getIndpEnv('REQUEST_URI'))) .
 									'" title="' . $language->getLL('new', TRUE) . '">' . (
 										$table == 'pages' ?
 										t3lib_iconWorks::getSpriteIcon('actions-page-new') :
@@ -904,7 +951,8 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 							}
 						}
 
-							// If the table can be edited, add link for editing ALL SHOWN fields for all listed records:
+						// If the table can be edited, add link for editing
+						// ALL SHOWN fields for all listed records:
 						if ($permsEdit && $this->table && is_array($currentIdList)) {
 							$editIdList = implode(',', $currentIdList);
 							if ($this->clipNumPane()) {
@@ -919,14 +967,14 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 							// add an empty entry, so column count fits again after moving this into $icon
 						$theData[$fCol] = '&nbsp;';
 					}
-				break;
+					break;
 
 					// space column
 				case '_AFTERCONTROL_':
 					// space column
 				case '_AFTERREF_':
 					$theData[$fCol] = '&nbsp;';
-				break;
+					break;
 
 					// Regular fields header:
 				default:
@@ -940,21 +988,23 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 								t3lib_iconWorks::getSpriteIcon('actions-document-duplicates-select') . '</a>';
 						}
 
-							// If the table can be edited, add link for editing THIS field for all listed records:
+						// If the table can be edited, add link for editing THIS field for all records:
 						if (!$GLOBALS['TCA'][$table]['ctrl']['readOnly'] && $permsEdit && $GLOBALS['TCA'][$table]['columns'][$fCol]) {
 							$editIdList = implode(',', $currentIdList);
 							if ($this->clipNumPane()) {
 								$editIdList = "'+editList('" . $table . "','" . $editIdList . "')+'";
 							}
 							$params = '&edit[' . $table . '][' . $editIdList . ']=edit&columnsOnly=' . $fCol . '&disHelp=1';
-							$iTitle = sprintf($language->getLL('editThisColumn'), rtrim(trim($language->sL(t3lib_BEfunc::getItemLabel($table, $fCol))), ':'));
+							$iTitle = sprintf(
+								$language->getLL('editThisColumn'),
+								rtrim(trim($language->sL(t3lib_BEfunc::getItemLabel($table, $fCol))), ':')
+							);
 							$theData[$fCol] .= '<a href="#" onclick="' . htmlspecialchars(t3lib_BEfunc::editOnClick($params, $this->backPath, -1)) .
 								'" title="' . htmlspecialchars($iTitle) . '">' .
 								t3lib_iconWorks::getSpriteIcon('actions-document-open') . '</a>';
 						}
 					}
 					$theData[$fCol] .= $this->addSortLink($language->sL(t3lib_BEfunc::getItemLabel($table, $fCol, '<i>[|]</i>')), $fCol, $table);
-				break;
 			}
 		}
 
@@ -1005,19 +1055,25 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 		t3lib_div::loadTCA($table);
 		$cells = array();
 
-			// If the listed table is 'tx_commerce_categories' we have to request the permission settings for each page:
+		// If the listed table is 'tx_commerce_categories' we have to request
+		// the permission settings for each page:
 		$localCalcPerms = 0;
 		if ($table == 'tx_commerce_categories') {
 			$localCalcPerms = $backendUser->calcPerms(t3lib_BEfunc::getRecord('tx_commerce_categories', $row['uid']));
 		}
 
 			// This expresses the edit permissions for this particular element:
-		$permsEdit = ($table == 'tx_commerce_categories' && ($localCalcPerms & 2)) || ($table != 'tx_commerce_categories' && ($this->calcPerms & 16));
+		$permsEdit = ($table == 'tx_commerce_categories' && ($localCalcPerms & 2)) ||
+			($table != 'tx_commerce_categories' && ($this->calcPerms & 16));
 
 			// "Show" link (only tx_commerce_categories and tx_commerce_products elements)
 		if ($table == 'tx_commerce_categories' || $table == 'tx_commerce_products') {
 			$cells['view'] = '<a href="#" onclick="' .
-				htmlspecialchars(t3lib_BEfunc::viewOnClick($table == 'tx_commerce_products' ? $this->id . '#' . $row['uid'] : $row['uid'], $this->backPath)) .
+				htmlspecialchars(t3lib_BEfunc::viewOnClick(
+					$table == 'tx_commerce_products' ?
+					$this->id . '#' . $row['uid'] :
+					$row['uid'], $this->backPath)
+				) .
 				'" title="' . $language->sL('LLL:EXT:lang/locallang_core.php:labels.showPage', TRUE) . '">' .
 				t3lib_iconWorks::getSpriteIcon('actions-document-view') .
 				'</a>';
@@ -1025,7 +1081,8 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 			$cells['view'] = $this->spaceIcon;
 		}
 
-			// "Edit" link: ( Only if permissions to edit the page-record of the content of the parent page ($this->id)
+		// "Edit" link: ( Only if permissions to edit the page-record of
+		// the content of the parent page ($this->id)
 		if ($permsEdit) {
 			$params = '&edit[' . $table . '][' . $row['uid'] . ']=edit';
 			$cells['edit'] = '<a href="#" onclick="' . htmlspecialchars(t3lib_BEfunc::editOnClick($params, $this->backPath, -1)) .
@@ -1042,10 +1099,14 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 
 			// "Move" wizard link for tx_commerce_categories/tx_commerce_products elements:
 		if (($table == 'tx_commerce_products' && $permsEdit) || ($table == 'tx_commerce_categories')) {
+			$options = array('title' => $language->getLL('move_' . ($table == 'tx_commerce_products' ? 'record' : 'page'), TRUE));
 			$cells['move'] = '<a href="#" onclick="' .
 				htmlspecialchars('return jumpExt(\'' . $this->backPath . 'move_el.php?table=' . $table . '&uid=' . $row['uid'] . '\');') .
-				'" title="' . $language->getLL('move_' . ($table == 'tx_commerce_products' ? 'record' : 'page'), TRUE) . '">' .
-				($table == 'tx_commerce_products' ? t3lib_iconWorks::getSpriteIcon('actions-document-move') : t3lib_iconWorks::getSpriteIcon('actions-page-move')) .
+				'">' .
+				($table == 'tx_commerce_products' ?
+					t3lib_iconWorks::getSpriteIcon('actions-document-move', $options) :
+					t3lib_iconWorks::getSpriteIcon('actions-page-move', $options)
+				) .
 				'</a>';
 		} elseif (!$this->table) {
 			$cells['move'] = $this->spaceIcon;
@@ -1063,7 +1124,10 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 			if (!$GLOBALS['TCA'][$table]['ctrl']['readOnly']) {
 					// "Revert" link (history/undo)
 				$cells['history'] = '<a href="#" onclick="' .
-					htmlspecialchars('return jumpExt(\'' . $this->backPath . 'show_rechis.php?element=' . rawurlencode($table . ':' . $row['uid']) . '\',\'#latest\');') .
+					htmlspecialchars(
+						'return jumpExt(\'' . $this->backPath . 'show_rechis.php?element=' .
+						rawurlencode($table . ':' . $row['uid']) . '\',\'#latest\');'
+					) .
 					'" title="' . $language->getLL('history', TRUE) . '">' . t3lib_iconWorks::getSpriteIcon('actions-document-history-open') .
 					'</a>';
 
@@ -1090,14 +1154,18 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 				if ($table == 'tx_commerce_categories' && $backendUser->check('modules', 'web_perm') && t3lib_extMgm::isLoaded('perm')) {
 					$cells['perms'] =
 						'<a href="' .
-							htmlspecialchars(t3lib_extMgm::extRelPath('perm') . 'mod1/index.php?id=' . $row['uid'] . '&return_id=' . $row['uid'] . '&edit=1') .
-							'" title="' . $language->getLL('permissions', TRUE) .
-						'">' . t3lib_iconWorks::getSpriteIcon('status-status-locked') . '</a>';
+						htmlspecialchars(
+							t3lib_extMgm::extRelPath('perm') . 'mod1/index.php?id=' . $row['uid'] . '&return_id=' . $row['uid'] . '&edit=1'
+						) .
+						'">' .
+						t3lib_iconWorks::getSpriteIcon('status-status-locked', array('titel' => $language->getLL('permissions', TRUE))) .
+						'</a>';
 				} elseif (!$this->table && $backendUser->check('modules', 'web_perm')) {
 					$cells['perms'] = $this->spaceIcon;
 				}
 
-					// "New record after" link (ONLY if the records in the table are sorted by a "sortby"-row or if default values can depend on previous record):
+				// "New record after" link (ONLY if the records in the table are sorted
+				// by a "sortby"-row or if default values can depend on previous record):
 				if ($GLOBALS['TCA'][$table]['ctrl']['sortby'] || $GLOBALS['TCA'][$table]['ctrl']['useColumnsForDefaultValues']) {
 					if (
 							// For NON-pages, must have permission to edit content on this parent page
@@ -1107,9 +1175,13 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 					) {
 						if ($this->showNewRecLink($table) && $this->parentUid) {
 							$params = '&edit[' . $table . '][' . ( - ($row['_MOVE_PLH'] ? $row['_MOVE_PLH_uid'] : $row['uid'])) . ']=new';
+							$options = array('title' => $language->getLL('new' . ($table == 'tx_commerce_categories' ? 'Category' : 'Record'), TRUE));
 							$cells['new'] = '<a href="#" onclick="' . htmlspecialchars(t3lib_BEfunc::editOnClick($params, $this->backPath, -1)) .
-								'" title="' . $language->getLL('new' . ($table == 'tx_commerce_categories' ? 'Category' : 'Record'), TRUE) . '">' .
-								($table == 'tx_commerce_categories' ? t3lib_iconWorks::getSpriteIcon('actions-page-new') : t3lib_iconWorks::getSpriteIcon('actions-document-new')) .
+								'"' .
+								($table == 'tx_commerce_categories' ?
+									t3lib_iconWorks::getSpriteIcon('actions-page-new', $options) :
+									t3lib_iconWorks::getSpriteIcon('actions-document-new', $options)
+								) .
 								'</a>';
 						}
 					}
@@ -1147,10 +1219,13 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 					// "Hide/Unhide" links:
 				$hiddenField = $GLOBALS['TCA'][$table]['ctrl']['enablecolumns']['disabled'];
 				if (
-					$permsEdit
-					&& $hiddenField
-					&& $GLOBALS['TCA'][$table]['columns'][$hiddenField]
-					&& (!$GLOBALS['TCA'][$table]['columns'][$hiddenField]['exclude'] || $backendUser->check('non_exclude_fields', $table . ':' . $hiddenField))
+					$permsEdit &&
+					$hiddenField &&
+					$GLOBALS['TCA'][$table]['columns'][$hiddenField] &&
+					(
+						!$GLOBALS['TCA'][$table]['columns'][$hiddenField]['exclude'] ||
+						$backendUser->check('non_exclude_fields', $table . ':' . $hiddenField)
+					)
 				) {
 					if ($row[$hiddenField]) {
 						$params = '&data[' . $table . '][' . $rowUid . '][' . $hiddenField . ']=0';
@@ -1185,13 +1260,18 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 						$row['uid'],
 						' ' . $language->sL('LLL:EXT:lang/locallang_core.xml:labels.referencesToRecord'),
 						$this->getReferenceCount($table, $row['uid'])
-					) . t3lib_BEfunc::translationCount($table, $row['uid'], ' ' . $language->sL('LLL:EXT:lang/locallang_core.xml:labels.translationsOfRecord'));
+					) . t3lib_BEfunc::translationCount(
+						$table,
+						$row['uid'],
+						' ' . $language->sL('LLL:EXT:lang/locallang_core.xml:labels.translationsOfRecord')
+					);
 
 					$cells['delete'] = '<a href="#" onclick="' .
-						htmlspecialchars('if (confirm(' . $language->JScharCode($language->getLL('deleteWarning') . ' "' . $title . '" ' . $refCountMsg) .
-							')) {jumpToUrl(\'' . $GLOBALS['SOBE']->doc->issueCommand($params, -1) . '\');} return false;') .
-						'" title="' . $language->getLL('delete', TRUE) . '">' .
-						t3lib_iconWorks::getSpriteIcon('actions-edit-delete') .
+						htmlspecialchars(
+							'if (confirm(' . $language->JScharCode($language->getLL('deleteWarning') . ' "' . $title . '" ' . $refCountMsg
+						) . ')) {jumpToUrl(\'' . $GLOBALS['SOBE']->doc->issueCommand($params, -1) . '\');} return false;') .
+						'">' .
+						t3lib_iconWorks::getSpriteIcon('actions-edit-delete', array('title' => $language->getLL('delete', TRUE))) .
 						'</a>';
 				} elseif (!$this->table) {
 					$cells['delete'] = $this->spaceIcon;
@@ -1208,7 +1288,10 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 					}
 						// Down (Paste as subpage to the page right above)
 					if ($this->currentTable['prevUid'][$row['uid']]) {
-						$localCalcPerms = $backendUser->calcPerms(t3lib_BEfunc::getRecord('tx_commerce_categories', $this->currentTable['prevUid'][$row['uid']]));
+						$localCalcPerms = $backendUser->calcPerms(
+							t3lib_BEfunc::getRecord('tx_commerce_categories',
+							$this->currentTable['prevUid'][$row['uid']])
+						);
 						if ($localCalcPerms & 8) {
 							$params = '&cmd[' . $table . '][' . $row['uid'] . '][move]=' . $this->currentTable['prevUid'][$row['uid']];
 							$cells['moveRight'] = '<a href="#" onclick="' .
@@ -1230,15 +1313,16 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 		}
 
 		/**
-		 * @hook recStatInfoHooks: Allows to insert HTML before record icons on various places
+		 * @hook recStatInfoHooks: Allows to insert HTML
+		 * 	before record icons on various places
 		 * @date 2007-09-22
 		 * @request Kasper Skårhøj <kasper2007@typo3.com>
 		 */
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['GLOBAL']['recStatInfoHooks'])) {
 			$stat = '';
-			$_params = array($table, $row['uid']);
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['GLOBAL']['recStatInfoHooks'] as $_funcRef) {
-				$stat .= t3lib_div::callUserFunction($_funcRef, $_params, $this);
+			$parameter = array($table, $row['uid']);
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['GLOBAL']['recStatInfoHooks'] as $functionReference) {
+				$stat .= t3lib_div::callUserFunction($functionReference, $parameter, $this);
 			}
 			$cells['stat'] = $stat;
 		}
@@ -1247,9 +1331,11 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 		 * @hook makeControl: Allows to change control icons of records in list-module
 		 * @date 2007-11-20
 		 * @request Bernhard Kraft  <krafbt@kraftb.at>
-		 * @usage This hook method gets passed the current $cells array as third parameter. This array contains values for the
-		 * icons/actions generated for each record in Web>List. Each array entry is accessible by an index-key. The order of the
-		 * icons is dependend on the order of those array entries.
+		 * @usage This hook method gets passed the current $cells
+		 * 	array as third parameter. This array contains values for the
+		 * 	icons/actions generated for each record in Web>List.
+		 * 	Each array entry is accessible by an index-key. The order of the
+		 * 	icons is dependend on the order of those array entries.
 		 */
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/class.db_list_extra.inc']['actions'])) {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/class.db_list_extra.inc']['actions'] as $classData) {
@@ -1287,34 +1373,52 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 		$cells = array();
 
 		$cells['pasteAfter'] = $cells['pasteInto'] = $this->spaceIcon;
-			// enables to hide the copy, cut and paste icons for localized records - doesn't make much sense to perform these options for them
-		$isL10nOverlay = $this->localizationView && $table != 'pages_language_overlay' && $row[$GLOBALS['TCA'][$table]['ctrl']['transOrigPointerField']] != 0;
-			// Return blank, if disabled:
-			// Whether a numeric clipboard pad is active or the normal pad we will see different content of the panel:
-			// For the "Normal" pad:
+		// enables to hide the copy, cut and paste icons for localized records
+		// - doesn't make much sense to perform these options for them
+		$isL10nOverlay = $this->localizationView && $table != 'pages_language_overlay' &&
+			$row[$GLOBALS['TCA'][$table]['ctrl']['transOrigPointerField']] != 0;
+		// Return blank, if disabled:
+		// Whether a numeric clipboard pad is active or the normal
+		// pad we will see different content of the panel:
+		// For the "Normal" pad:
 		if ($this->clipObj->current == 'normal') {
 				// Show copy/cut icons:
 			$isSel = (string) $this->clipObj->isSelected($table, $row['uid']);
 			$cells['copy'] = $isL10nOverlay ? $this->spaceIcon : '<a href="#" onclick="' .
-				htmlspecialchars('return jumpSelf(\'' . $this->clipObj->selUrlDB($table, $row['uid'], 1, ($isSel == 'copy'), array('returnUrl' => '')) . '\');') .
+				htmlspecialchars(
+					'return jumpSelf(\'' .
+					$this->clipObj->selUrlDB($table, $row['uid'], 1, ($isSel == 'copy'), array('returnUrl' => '')) . '\');'
+				) .
 				'" title="' . $language->sL('LLL:EXT:lang/locallang_core.php:cm.copy', TRUE) . '">' .
-				((!$isSel == 'copy') ? t3lib_iconWorks::getSpriteIcon('actions-edit-copy') : t3lib_iconWorks::getSpriteIcon('actions-edit-copy-release')) .
+				((!$isSel == 'copy') ?
+					t3lib_iconWorks::getSpriteIcon('actions-edit-copy') :
+					t3lib_iconWorks::getSpriteIcon('actions-edit-copy-release')
+				) .
 				'</a>';
 			$cells['cut'] = $isL10nOverlay ? $this->spaceIcon : '<a href="#" onclick="' .
-				htmlspecialchars('return jumpSelf(\'' . $this->clipObj->selUrlDB($table, $row['uid'], 0, ($isSel == 'cut'), array('returnUrl' => '')) . '\');') .
+				htmlspecialchars(
+					'return jumpSelf(\'' .
+					$this->clipObj->selUrlDB($table, $row['uid'], 0, ($isSel == 'cut'), array('returnUrl' => '')) . '\');'
+				) .
 				'" title="' . $language->sL('LLL:EXT:lang/locallang_core.php:cm.cut', TRUE) . '">' .
-				((!$isSel == 'cut') ? t3lib_iconWorks::getSpriteIcon('actions-edit-cut') : t3lib_iconWorks::getSpriteIcon('actions-edit-cut-release')) .
+				((!$isSel == 'cut') ?
+					t3lib_iconWorks::getSpriteIcon('actions-edit-cut') :
+					t3lib_iconWorks::getSpriteIcon('actions-edit-cut-release')
+				) .
 				'</a>';
-			// For the numeric clipboard pads (showing checkboxes where one can select elements on/off)
+		// For the numeric clipboard pads (showing checkboxes
+		// where one can select elements on/off)
 		} else {
-				// Setting name of the element in ->CBnames array:
+			// Setting name of the element in ->CBnames array:
 			$n = $table . '|' . $row['uid'];
 			$this->CBnames[] = $n;
 
-				// Check if the current element is selected and if so, prepare to set the checkbox as selected:
+			// Check if the current element is selected and if so,
+			// prepare to set the checkbox as selected:
 			$checked = ($this->clipObj->isSelected($table, $row['uid']) ? ' checked="checked"' : '');
 
-				// If the "duplicateField" value is set then select all elements which are duplicates...
+			// If the "duplicateField" value is set then select all
+			// elements which are duplicates...
 			if ($this->duplicateField && isset($row[$this->duplicateField])) {
 				$checked = '';
 				if (in_array($row[$this->duplicateField], $this->duplicateStack)) {
@@ -1323,16 +1427,17 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 				$this->duplicateStack[] = $row[$this->duplicateField];
 			}
 
-				// Adding the checkbox to the panel:
+			// Adding the checkbox to the panel:
 			$cells['select'] = $isL10nOverlay ?
 				$this->spaceIcon :
 				'<input type="hidden" name="CBH[' . $n . ']" value="0" /><input type="checkbox" name="CBC[' . $n .
 				']" value="1" class="smallCheckboxes"' . $checked . ' />';
 		}
 
-			// Now, looking for selected elements from the current table:
+		// Now, looking for selected elements from the current table:
 		$elFromTable = $this->clipObj->elFromTable($table);
-			// IF elements are found and they can be individually ordered, then add a "paste after" icon:
+		// IF elements are found and they can be individually ordered,
+		// then add a "paste after" icon:
 		if (count($elFromTable) && $GLOBALS['TCA'][$table]['ctrl']['sortby']) {
 			$cells['pasteAfter'] = $isL10nOverlay ? $this->spaceIcon : '<a href="' .
 				htmlspecialchars($this->clipObj->pasteUrl($table, - $row['uid'])) . '" onclick="' .
@@ -1342,13 +1447,13 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 				'</a>';
 		}
 
-			// Now, looking for elements in general:
+		// Now, looking for elements in general:
 		$elFromTable = $this->clipObj->elFromTable('');
 		if ($table == 'tx_commerce_categories' && count($elFromTable)) {
 			$cells['pasteInto'] = '<a href="' . htmlspecialchars($this->clipObj->pasteUrl('', $row['uid'])) .
 				'" onclick="' . htmlspecialchars('return ' . $this->clipObj->confirmMsg($table, $row, 'into', $elFromTable)) .
-				'" title="' . $language->getLL('clip_pasteInto', TRUE) . '">' .
-				t3lib_iconWorks::getSpriteIcon('actions-document-paste-into') .
+				'">' .
+				t3lib_iconWorks::getSpriteIcon('actions-document-paste-into', array('title' => $language->getLL('clip_pasteInto', TRUE))) .
 				'</a>';
 		}
 
@@ -1356,9 +1461,11 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 		 * @hook makeClip: Allows to change clip-icons of records in list-module
 		 * @date 2007-11-20
 		 * @request Bernhard Kraft  <krafbt@kraftb.at>
-		 * @usage This hook method gets passed the current $cells array as third parameter. This array contains values for the
-		 * clipboard icons generated for each record in Web>List. Each array entry is accessible by an index-key. The order of
-		 * the icons is dependend on the order of those array entries.
+		 * @usage This hook method gets passed the current $cells array as third
+		 * 	parameter. This array contains values for the clipboard icons generated
+		 * 	for each record in Web>List. Each array entry is accessible by an
+		 * 	index-key. The order of the icons is dependend on the order of those
+		 * 	array entries.
 		 */
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/class.db_list_extra.inc']['actions'])) {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/class.db_list_extra.inc']['actions'] as $classData) {
@@ -1399,16 +1506,17 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 		$out[0] = $this->languageFlag($row[$GLOBALS['TCA'][$table]['ctrl']['languageField']]);
 
 		if (is_array($translations)) {
-				// Traverse page translations and add icon for each language that does NOT yet exist:
+			// Traverse page translations and add icon
+			// for each language that does NOT yet exist:
 			$lNew = '';
-			foreach ($this->pageOverlays as $lUid_OnPage => $lsysRec) {
-				if (!isset($translations['translations'][$lUid_OnPage]) && $backendUser->checkLanguageAccess($lUid_OnPage)) {
-					$params = '&cmd[' . $table . '][' . $row['uid'] . '][localize]=' . $lUid_OnPage;
-					$language = t3lib_BEfunc::getRecord('sys_language', $lUid_OnPage, 'title');
-					if ($this->languageIconTitles[$lUid_OnPage]['flagIcon']) {
-						$lC = t3lib_iconWorks::getSpriteIcon($this->languageIconTitles[$lUid_OnPage]['flagIcon']);;
+			foreach (array_keys($this->pageOverlays) as $overlayUid) {
+				if (!isset($translations['translations'][$overlayUid]) && $backendUser->checkLanguageAccess($overlayUid)) {
+					$params = '&cmd[' . $table . '][' . $row['uid'] . '][localize]=' . $overlayUid;
+					$language = t3lib_BEfunc::getRecord('sys_language', $overlayUid, 'title');
+					if ($this->languageIconTitles[$overlayUid]['flagIcon']) {
+						$lC = t3lib_iconWorks::getSpriteIcon($this->languageIconTitles[$overlayUid]['flagIcon']);
 					} else {
-						$lC = $this->languageIconTitles[$lUid_OnPage]['title'];
+						$lC = $this->languageIconTitles[$overlayUid]['title'];
 					}
 					$lC = '<a href="#" onclick="' .
 						htmlspecialchars('return jumpToUrl(\'' . $GLOBALS['SOBE']->doc->issueCommand($params, -1) . '\');') .
@@ -1429,20 +1537,25 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 	}
 
 	/**
-	 * As we can't use t3lib_BEfunc::getModuleUrl this method needs to be overridden to set the url to $this->script
+	 * As we can't use t3lib_BEfunc::getModuleUrl this method needs
+	 * to be overridden to set the url to $this->script
 	 *
-	 * @NOTE: Since Typo3 4.5 we can't use listURL from parent class we need to link to $this->script instead of web_list
+	 * @NOTE: Since Typo3 4.5 we can't use listURL from parent class
+	 * we need to link to $this->script instead of web_list
 	 *
 	 * Creates the URL to this script, including all relevant GPvars
-	 * Fixed GPvars are id, table, imagemode, returlUrl, search_field, search_levels and showLimit
-	 * The GPvars "sortField" and "sortRev" are also included UNLESS they are found in the $exclList variable.
+	 * Fixed GPvars are id, table, imagemode, returlUrl, search_field,
+	 * search_levels and showLimit The GPvars "sortField" and "sortRev"
+	 * are also included UNLESS they are found in the $exclList variable.
 	 *
-	 * @param string $altId Alternative id value. Enter blank string for the current id ($this->id)
+	 * @param string $altId Alternative id value.
+	 * 	Enter blank string for the current id ($this->id)
 	 * @param string $table Tablename to display. Enter "-1" for the current table.
-	 * @param string $exclList Commalist of fields NOT to include ("sortField" or "sortRev")
+	 * @param string $excludeList Commalist of fields
+	 * 	NOT to include ("sortField" or "sortRev")
 	 * @return string URL
 	 */
-	public function listURL($altId = '', $table = -1, $exclList = '') {
+	public function listURL($altId = '', $table = '-1', $excludeList = '') {
 		$urlParameters = array();
 		if (strcmp($altId, '')) {
 			$urlParameters['id'] = $altId;
@@ -1452,7 +1565,7 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 		if ($this->parentUid) {
 			$urlParameters['control']['tx_commerce_categories']['uid'] = $this->parentUid;
 		}
-		if ($table === -1) {
+		if ($table === '-1') {
 			$urlParameters['table'] = $this->table;
 		} else {
 			$urlParameters['table'] = $table;
@@ -1472,13 +1585,13 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 		if ($this->showLimit) {
 			$urlParameters['showLimit'] = $this->showLimit;
 		}
-		if ((!$exclList || !t3lib_div::inList($exclList, 'firstElementNumber')) && $this->firstElementNumber) {
+		if ((!$excludeList || !t3lib_div::inList($excludeList, 'firstElementNumber')) && $this->firstElementNumber) {
 			$urlParameters['pointer'] = $this->firstElementNumber;
 		}
-		if ((!$exclList || !t3lib_div::inList($exclList, 'sortField')) && $this->sortField) {
+		if ((!$excludeList || !t3lib_div::inList($excludeList, 'sortField')) && $this->sortField) {
 			$urlParameters['sortField'] = $this->sortField;
 		}
-		if ((!$exclList || !t3lib_div::inList($exclList, 'sortRev')) && $this->sortRev) {
+		if ((!$excludeList || !t3lib_div::inList($excludeList, 'sortRev')) && $this->sortRev) {
 			$urlParameters['sortRev'] = $this->sortRev;
 		}
 
@@ -1486,13 +1599,15 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 	}
 
 	/**
-	 * Returns the title (based on $code) of a record (from table $table) with the proper link around (that is for 'tx_commerce_categories'-records a link to the level of that record...)
+	 * Returns the title (based on $code) of a record (from table $table) with
+	 * the proper link around (that is for 'tx_commerce_categories'-records
+	 * a link to the level of that record...)
 	 *
 	 * @param string $table Table name
 	 * @param integer $uid Item uid
 	 * @param string $code Item title (not htmlspecialchars()'ed yet)
 	 * @param array $row Item row
-	 * @return string The item title. Ready for HTML output (is htmlspecialchars()'ed)
+	 * @return string The item title. Ready for HTML output
 	 */
 	public function linkWrapItems($table, $uid, $code, $row) {
 		/** @var language $language */
@@ -1510,7 +1625,8 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 
 		switch ((string) $this->clickTitleMode) {
 			case 'edit':
-					// If the listed table is 'tx_commerce_categories' we have to request the permission settings for each page:
+				// If the listed table is 'tx_commerce_categories' we have to
+				// request the permission settings for each page:
 				if ($table == 'tx_commerce_categories') {
 					$localCalcPerms = $backendUser->calcPerms(t3lib_BEfunc::getRecord('tx_commerce_categories', $row['uid']));
 					$permsEdit = $localCalcPerms & 2;
@@ -1518,35 +1634,38 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends localRecordList {
 					$permsEdit = $this->calcPerms & 16;
 				}
 
-					// "Edit" link: ( Only if permissions to edit the page-record of the content of the parent page ($this->id)
+				// "Edit" link: ( Only if permissions to edit the page-record
+				// of the content of the parent page ($this->id)
 				if ($permsEdit) {
 					$params = '&edit[' . $table . '][' . $row['uid'] . ']=edit';
 					$code = '<a href="#" onclick="' . htmlspecialchars(t3lib_BEfunc::editOnClick($params, $this->backPath, -1)) .
 						'" title="' . $language->getLL('edit', 1) . '">' . $code . '</a>';
 				}
-			break;
+				break;
 
 			case 'show':
-					// "Show" link (only pages and tx_commerce_products elements)
+				// "Show" link (only pages and tx_commerce_products elements)
 				if ($table == 'tx_commerce_categories' || $table == 'tx_commerce_products') {
 					$code = '<a href="#" onclick="' .
-						htmlspecialchars(t3lib_BEfunc::viewOnClick($table == 'tx_commerce_products' ? $this->id . '#' . $row['uid'] : $row['uid'])) .
+						htmlspecialchars(
+							t3lib_BEfunc::viewOnClick($table == 'tx_commerce_products' ? $this->id . '#' . $row['uid'] : $row['uid'])
+						) .
 						'" title="' . $language->sL('LLL:EXT:lang/locallang_core.php:labels.showPage', 1) . '">' . $code . '</a>';
 				}
-			break;
+				break;
 
 			case 'info':
-					// "Info": (All records)
-				$code = '<a href="#" onclick="' . htmlspecialchars('top.launchView(\'' . $table . '\', \'' . $row['uid'] . '\'); return false;') .
+				// "Info": (All records)
+				$code = '<a href="#" onclick="' .
+					htmlspecialchars('top.launchView(\'' . $table . '\', \'' . $row['uid'] . '\'); return false;') .
 					'" title="' . $language->getLL('showInfo', 1) . '">' . $code . '</a>';
-			break;
+				break;
 
 			default:
 					// Output the label now:
 				if ($table == 'tx_commerce_categories') {
 					$code = '<a href="' . htmlspecialchars($this->listURL($uid, '')) . '">' . $code . '</a>';
 				}
-			break;
 		}
 
 		return $code;
@@ -1559,5 +1678,3 @@ if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['
 	/** @noinspection PhpIncludeInspection */
 	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/ViewHelpers/DatabaseListExtra.php']);
 }
-
-?>

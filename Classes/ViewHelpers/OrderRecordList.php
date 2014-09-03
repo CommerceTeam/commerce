@@ -1110,19 +1110,20 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends localRecordList {
 
 	/**
 	 * As we can't use t3lib_BEfunc::getModuleUrl this method needs to be overridden to set the url to $this->script
+
 	 *
-	 * @NOTE: Since Typo3 4.5 we can't use listURL from parent class we need to link to $this->script instead of web_list
-	 *
+*@NOTE: Since Typo3 4.5 we can't use listURL from parent class we need to link to $this->script instead of web_list
+
 	 * Creates the URL to this script, including all relevant GPvars
 	 * Fixed GPvars are id, table, imagemode, returlUrl, search_field, search_levels and showLimit
 	 * The GPvars "sortField" and "sortRev" are also included UNLESS they are found in the $exclList variable.
-	 *
+
 	 * @param string $altId Alternative id value. Enter blank string for the current id ($this->id)
 	 * @param string $table Tablename to display. Enter "-1" for the current table.
-	 * @param string $exclList Commalist of fields NOT to include ("sortField" or "sortRev")
+	 * @param string $excludeList Commalist of fields NOT to include ("sortField" or "sortRev")
 	 * @return string URL
 	 */
-	public function listURL($altId = '', $table = -1, $exclList = '') {
+	public function listURL($altId = '', $table = -1, $excludeList = '') {
 		$urlParameters = array();
 		if (strcmp($altId, '')) {
 			$urlParameters['id'] = $altId;
@@ -1149,13 +1150,13 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends localRecordList {
 		if ($this->showLimit) {
 			$urlParameters['showLimit'] = $this->showLimit;
 		}
-		if ((!$exclList || !t3lib_div::inList($exclList, 'firstElementNumber')) && $this->firstElementNumber) {
+		if ((!$excludeList || !t3lib_div::inList($excludeList, 'firstElementNumber')) && $this->firstElementNumber) {
 			$urlParameters['pointer'] = $this->firstElementNumber;
 		}
-		if ((!$exclList || !t3lib_div::inList($exclList, 'sortField')) && $this->sortField) {
+		if ((!$excludeList || !t3lib_div::inList($excludeList, 'sortField')) && $this->sortField) {
 			$urlParameters['sortField'] = $this->sortField;
 		}
-		if ((!$exclList || !t3lib_div::inList($exclList, 'sortRev')) && $this->sortRev) {
+		if ((!$excludeList || !t3lib_div::inList($excludeList, 'sortRev')) && $this->sortRev) {
 			$urlParameters['sortRev'] = $this->sortRev;
 		}
 
