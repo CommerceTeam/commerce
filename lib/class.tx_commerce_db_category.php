@@ -269,7 +269,7 @@ class tx_commerce_db_category extends tx_commerce_db_alib {
                             $GLOBALS['TSFE']->sys_page->enableFields('tx_commerce_categories', $GLOBALS['TSFE']->showHiddenRecords)
                     );
 
-                    if ($GLOBALS['TYPO3_DB']->sql_num_rows( $lresult) == 1)	 {
+                    if ($GLOBALS['TYPO3_DB']->sql_num_rows($lresult))	 {
                         $data[] = (int)$return_data['uid_local'];
                     }
                 }
