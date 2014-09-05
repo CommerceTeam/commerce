@@ -82,7 +82,7 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 	 *
 	 * @var string
 	 */
-	protected $descriptionExtra;
+	protected $description_extra;
 
 	/**
 	 * Normal Tax for this article in Percent
@@ -422,7 +422,7 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 	 * @return string
 	 */
 	public function getDescriptionExtra() {
-		return $this->descriptionExtra;
+		return $this->description_extra;
 	}
 
 	/**
