@@ -771,7 +771,10 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 					'value' => $deliveryArticle->getUid(),
 					'label' => $deliveryArticle->getTitle(),
 					'selected' => $selected,
-					'description' => $deliveryArticle->getDescriptionExtra(),
+					'description' => $this->cObj->stdWrap(
+						$deliveryArticle->getDescriptionExtra(),
+						$this->conf['fields.']['articles.']['fields.']['description_extra.']
+					),
 				);
 				$options .= $this->cObj->substituteMarkerArray($deliveryOptionTemplate, $markerArray, '###|###', TRUE);
 
