@@ -34,25 +34,19 @@ if (!(defined('TYPO3_REQUESTTYPE') || defined('TYPO3_REQUESTTYPE_AJAX'))) {
 	require_once('conf.php');
 	/** @noinspection PhpIncludeInspection */
 	require_once($BACK_PATH . 'init.php');
-	/** @noinspection PhpIncludeInspection */
-	require_once($BACK_PATH . 'template.php');
 } else {
 	// In case of an AJAX Request the script including this script is ajax.php,
 	// from which the BACK PATH is ''
 	/** @noinspection PhpIncludeInspection */
 	require_once('init.php');
-	/** @noinspection PhpIncludeInspection */
-	require_once('template.php');
 }
 
 	// Make instance if it is not an AJAX call
 if (!(TYPO3_REQUESTTYPE & TYPO3_REQUESTTYPE_AJAX)) {
 	/** @var Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper $SOBE */
-	$SOBE = t3lib_div::makeInstance('Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper');
+	$SOBE = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper');
 	$SOBE->init();
 	$SOBE->initPage();
 	$SOBE->main();
 	$SOBE->printContent();
 }
-
-?>

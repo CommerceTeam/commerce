@@ -30,30 +30,27 @@
  * convenient methods of editing of category permissions
  * (including category ownership (user and group)) via new TYPO3AJAX facility
  */
-	// require_once in 4.x needed because in ajax mod the class can't get autoloaded
-/** @noinspection PhpIncludeInspection */
-require_once(PATH_typo3 . 'sysext/perm/mod1/class.sc_mod_web_perm_ajax.php');
 
 /**
  * Class Tx_Commerce_Controller_PermissionAjaxController
  */
-class Tx_Commerce_Controller_PermissionAjaxController extends SC_mod_web_perm_ajax {
+class Tx_Commerce_Controller_PermissionAjaxController extends \TYPO3\CMS\Perm\Controller\PermissionAjaxController {
 	/**
 	 * The main dispatcher function. Collect data and prepare HTML output.
 	 *
 	 * @param array $params array of parameters from the AJAX interface
-	 * @param TYPO3AJAX &$ajaxObj object of type TYPO3AJAX
+	 * @param \TYPO3\CMS\Core\Http\AjaxRequestHandler &$ajaxObj
 	 * @return Void
 	 */
-	public function dispatch($params = array(), TYPO3AJAX &$ajaxObj = NULL) {
+	public function dispatch($params = array(), \TYPO3\CMS\Core\Http\AjaxRequestHandler &$ajaxObj = NULL) {
 		$content = '';
 
 			// Basic test for required value
 		if ($this->conf['page'] > 0) {
 
 				// Init TCE for execution of update
-			/** @var t3lib_TCEmain $tce */
-			$tce = t3lib_div::makeInstance('t3lib_TCEmain');
+			/** @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce */
+			$tce = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
 			$tce->stripslashes_values = 1;
 
 				// Determine the scripts to execute
@@ -111,11 +108,14 @@ class Tx_Commerce_Controller_PermissionAjaxController extends SC_mod_web_perm_aj
 					$tce->start($data, array());
 					$tce->process_datamap();
 
-					$content = $this->renderToggleEditLock($this->conf['page'], $data['tx_commerce_categories'][$this->conf['page']]['editlock']);
+					$content = $this->renderToggleEditLock(
+						$this->conf['page'],
+						$data['tx_commerce_categories'][$this->conf['page']]['editlock']
+					);
 					break;
 
-					// The script defaults to change permissions
 				default:
+					// The script defaults to change permissions
 					if ($this->conf['mode'] == 'delete') {
 						$this->conf['permissions'] = (int) ($this->conf['permissions'] - $this->conf['bits']);
 					} else {

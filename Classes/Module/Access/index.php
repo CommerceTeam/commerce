@@ -32,25 +32,21 @@ unset($MCONF);
 require_once('conf.php');
 /** @noinspection PhpIncludeInspection */
 require_once($BACK_PATH . 'init.php');
-/** @noinspection PhpIncludeInspection */
-require_once($BACK_PATH . 'template.php');
 
 	// This checks permissions and exits if the users has no permission for entry.
 /** @var t3lib_beUserAuth $backendUser */
 $backendUser = $GLOBALS['BE_USER'];
 /** @noinspection PhpUndefinedVariableInspection */
 $backendUser->modAccess($MCONF, 1);
-t3lib_BEfunc::lockRecords();
+\TYPO3\CMS\Backend\Utility\BackendUtility::lockRecords();
 
 /** @var language $language */
 $language = $GLOBALS['LANG'];
 $language->includeLLFile('EXT:commerce/Resources/Private/Language/locallang_mod_access.xml');
 
 /** @var Tx_Commerce_Controller_AccessController $SOBE */
-$SOBE = t3lib_div::makeInstance('Tx_Commerce_Controller_AccessController');
+$SOBE = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Controller_AccessController');
 $SOBE->init();
 $SOBE->initPage();
 $SOBE->main();
 $SOBE->printContent();
-
-?>
