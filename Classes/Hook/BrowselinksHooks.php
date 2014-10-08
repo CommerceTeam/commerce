@@ -28,7 +28,7 @@
 /**
  * Hook to adjust linkwizard (linkbrowser)
  */
-class Tx_Commerce_Hook_BrowselinksHooks implements t3lib_browseLinksHook {
+class Tx_Commerce_Hook_BrowselinksHooks implements \TYPO3\CMS\Core\ElementBrowser\ElementBrowserHookInterface {
 	/**
 	 * Sauvegarde locale du cObj parent
 	 *
@@ -271,10 +271,3 @@ class Tx_Commerce_Hook_BrowselinksHooks implements t3lib_browseLinksHook {
 		$ajaxObj->addContent('tree', $tree);
 	}
 }
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Hook/BrowselinksHooks.php']) {
-	/** @noinspection PhpIncludeInspection */
-	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Hook/BrowselinksHooks.php']);
-}
-
-?>

@@ -100,10 +100,3 @@ class Tx_Commerce_Hook_LinkhandlerHooks {
 		return $localcObj->typoLink($linktxt, $lconf);
 	}
 }
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Hook/LinkhandlerHooks.php']) {
-	/** @noinspection PhpIncludeInspection */
-	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Hook/LinkhandlerHooks.php']);
-}
-
-?>

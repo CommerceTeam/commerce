@@ -28,7 +28,7 @@
 /**
  * Class Tx_Commerce_Hook_IrreHooks
  */
-class Tx_Commerce_Hook_IrreHooks implements t3lib_tceformsInlineHook {
+class Tx_Commerce_Hook_IrreHooks implements \TYPO3\CMS\Backend\Form\Element\InlineElementHookInterface {
 	/**
 	 * @var t3lib_TCEforms_inline
 	 */
@@ -69,7 +69,8 @@ class Tx_Commerce_Hook_IrreHooks implements t3lib_tceformsInlineHook {
 	 * @param array &$enabledControls: (reference) Associative array with the enabled control items
 	 * @return void
 	 */
-	public function renderForeignRecordHeaderControl_preProcess($parentUid, $foreignTable, array $childRecord, array $childConfig, $isVirtual, array &$enabledControls) {
+	public function renderForeignRecordHeaderControl_preProcess($parentUid, $foreignTable, array $childRecord, array $childConfig,
+		$isVirtual, array &$enabledControls) {
 		if ($this->extconf['simpleMode'] == 1 && $foreignTable == 'tx_commerce_articles' && $parentUid == $this->extconf['deliveryID']) {
 			$enabledControls = array('new' => TRUE, 'hide' => TRUE, 'delete' => TRUE);
 		} elseif ($this->extconf['simpleMode'] == 1 && $foreignTable == 'tx_commerce_articles') {
@@ -91,13 +92,6 @@ class Tx_Commerce_Hook_IrreHooks implements t3lib_tceformsInlineHook {
 	 * @return void
 	 */
 	public function renderForeignRecordHeaderControl_postProcess($parentUid, $foreignTable, array $childRecord, array $childConfig, $isVirtual, array &$controlItems) {
-		// @todo why register a hook method that is empty?
+		// registered empty to satisfy interface
 	}
 }
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Hook/IrreHooks.php']) {
-	/** @noinspection PhpIncludeInspection */
-	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Hook/IrreHooks.php']);
-}
-
-?>
