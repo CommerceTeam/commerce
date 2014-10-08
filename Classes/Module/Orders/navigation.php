@@ -33,8 +33,6 @@ unset($MCONF);
 require_once('conf.php');
 /** @noinspection PhpIncludeInspection */
 require_once($BACK_PATH . 'init.php');
-/** @noinspection PhpIncludeInspection */
-require_once($BACK_PATH . 'template.php');
 
 /** @var Tx_Commerce_ViewHelpers_Navigation_OrdersViewHelper $SOBE */
 $SOBE = t3lib_div::makeInstance('Tx_Commerce_ViewHelpers_Navigation_OrdersViewHelper');
@@ -42,5 +40,3 @@ $SOBE->init();
 $SOBE->initPage();
 $SOBE->main();
 $SOBE->printContent();
-
-?>
