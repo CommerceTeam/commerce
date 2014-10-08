@@ -33,8 +33,6 @@ unset($MCONF);
 require_once('conf.php');
 /** @noinspection PhpIncludeInspection */
 require_once($BACK_PATH . 'init.php');
-/** @noinspection PhpIncludeInspection */
-require_once($BACK_PATH . 'template.php');
 
 /** @var language $LANG */
 $LANG->includeLLFile('EXT:commerce/Resources/Private/Language/locallang_mod_systemdata.xml');
@@ -47,11 +45,9 @@ $backendUser->modAccess($MCONF, 1);
 
 if (!(TYPO3_REQUESTTYPE & TYPO3_REQUESTTYPE_AJAX)) {
 	/** @var $SOBE Tx_Commerce_ViewHelpers_Navigation_SystemdataViewHelper */
-	$SOBE = t3lib_div::makeInstance('Tx_Commerce_ViewHelpers_Navigation_SystemdataViewHelper');
+	$SOBE = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_ViewHelpers_Navigation_SystemdataViewHelper');
 	$SOBE->init();
 	$SOBE->initPage();
 	$SOBE->main();
 	$SOBE->printContent();
 }
-
-?>

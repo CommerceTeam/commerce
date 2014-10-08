@@ -32,8 +32,6 @@ unset($MCONF);
 require_once('conf.php');
 /** @noinspection PhpIncludeInspection */
 require_once($BACK_PATH . 'init.php');
-/** @noinspection PhpIncludeInspection */
-require_once($BACK_PATH . 'template.php');
 
 	// This checks permissions and exits if the users has no permission for entry.
 /** @var t3lib_beUserAuth $backendUser */
@@ -47,10 +45,8 @@ $language->includeLLFile('EXT:commerce/Resources/Private/Language/locallang_mod_
 
 if (!(TYPO3_REQUESTTYPE & TYPO3_REQUESTTYPE_AJAX)) {
 	/** @var Tx_Commerce_Controller_SystemdataController $SOBE */
-	$SOBE = t3lib_div::makeInstance('Tx_Commerce_Controller_SystemdataController');
+	$SOBE = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Controller_SystemdataController');
 	$SOBE->init();
 	$SOBE->main();
 	$SOBE->printContent();
 }
-
-?>

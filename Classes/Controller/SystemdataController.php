@@ -24,11 +24,14 @@
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Backend\Utility\IconUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Module 'Systemdata' for the 'commerce' extension.
  */
-class Tx_Commerce_Controller_SystemdataController extends t3lib_SCbase {
+class Tx_Commerce_Controller_SystemdataController extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 	/**
 	 * @var t3lib_db
 	 */
@@ -72,6 +75,11 @@ class Tx_Commerce_Controller_SystemdataController extends t3lib_SCbase {
 	public $markers = array();
 
 	/**
+	 * @var \TYPO3\CMS\Backend\Template\DocumentTemplate
+	 */
+	public $doc;
+
+	/**
 	 * @var array
 	 */
 	protected $referenceCount = array();
@@ -89,24 +97,25 @@ class Tx_Commerce_Controller_SystemdataController extends t3lib_SCbase {
 		$this->user = & $GLOBALS['BE_USER'];
 
 		$this->id = $this->modPid = (int) reset(Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Commerce', 'commerce'));
-		$this->attributePid = (int) reset(Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Attributes', 'commerce', $this->modPid));
+		$this->attributePid =
+			(int) reset(Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Attributes', 'commerce', $this->modPid));
 
 		$this->perms_clause = $this->user->getPagePermsClause(1);
-		$this->pageRow = t3lib_BEfunc::readPageAccess($this->id, $this->perms_clause);
+		$this->pageRow = BackendUtility::readPageAccess($this->id, $this->perms_clause);
 
-		$this->doc = t3lib_div::makeInstance('template');
+		$this->doc = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
 		$this->doc->backPath = $GLOBALS['BACK_PATH'];
 		$this->doc->docType = 'xhtml_trans';
 		$this->doc->setModuleTemplate(PATH_TXCOMMERCE . 'Resources/Private/Backend/mod_index.html');
 
 		if (!$this->doc->moduleTemplate) {
-			t3lib_div::devLog('cannot set moduleTemplate', 'commerce', 2, array(
+			GeneralUtility::devLog('cannot set moduleTemplate', 'commerce', 2, array(
 				'backpath' => $this->doc->backPath,
 				'filename from TBE_STYLES' => $GLOBALS['TBE_STYLES']['htmlTemplates']['mod_index.html'],
 				'full path' => $this->doc->backPath . $GLOBALS['TBE_STYLES']['htmlTemplates']['mod_index.html']
 			));
 			$templateFile = PATH_TXCOMMERCE_REL . 'Resources/Private/Backend/mod_index.html';
-			$this->doc->moduleTemplate = t3lib_div::getURL(PATH_site . $templateFile);
+			$this->doc->moduleTemplate = GeneralUtility::getURL(PATH_site . $templateFile);
 		}
 	}
 
@@ -132,7 +141,7 @@ class Tx_Commerce_Controller_SystemdataController extends t3lib_SCbase {
 	 * @return void
 	 */
 	public function main() {
-		$listUrl = t3lib_div::getIndpEnv('REQUEST_URI');
+		$listUrl = GeneralUtility::getIndpEnv('REQUEST_URI');
 
 			// Access check!
 			// The page will show only if there is a valid page and if user may access it
@@ -178,7 +187,7 @@ class Tx_Commerce_Controller_SystemdataController extends t3lib_SCbase {
 		);
 		$markers['FUNC_MENU'] = $this->doc->funcMenu(
 			'',
-			t3lib_BEfunc::getFuncMenu(
+			BackendUtility::getFuncMenu(
 				$this->id,
 				'SET[function]',
 				$this->MOD_SETTINGS['function'],
@@ -223,24 +232,24 @@ class Tx_Commerce_Controller_SystemdataController extends t3lib_SCbase {
 
 			// CSH
 		if (!strlen($this->id)) {
-			$buttons['csh'] = t3lib_BEfunc::cshItem('_MOD_web_txcommerceM1', 'list_module_noId', $GLOBALS['BACK_PATH'], '', TRUE);
+			$buttons['csh'] = BackendUtility::cshItem('_MOD_web_txcommerceM1', 'list_module_noId', $GLOBALS['BACK_PATH'], '', TRUE);
 		} elseif (!$this->id) {
-			$buttons['csh'] = t3lib_BEfunc::cshItem('_MOD_web_txcommerceM1', 'list_module_root', $GLOBALS['BACK_PATH'], '', TRUE);
+			$buttons['csh'] = BackendUtility::cshItem('_MOD_web_txcommerceM1', 'list_module_root', $GLOBALS['BACK_PATH'], '', TRUE);
 		} else {
-			$buttons['csh'] = t3lib_BEfunc::cshItem('_MOD_web_txcommerceM1', 'list_module', $GLOBALS['BACK_PATH'], '', TRUE);
+			$buttons['csh'] = BackendUtility::cshItem('_MOD_web_txcommerceM1', 'list_module', $GLOBALS['BACK_PATH'], '', TRUE);
 		}
 
 			// New
 		$newParams = '&edit[tx_commerce_' . $this->tableForNewLink . '][' . (int) $this->modPid . ']=new';
 		$buttons['new_record'] = '<a href="#" onclick="' .
-			htmlspecialchars(t3lib_BEfunc::editOnClick($newParams, $GLOBALS['BACK_PATH'], -1)) .
+			htmlspecialchars(BackendUtility::editOnClick($newParams, $GLOBALS['BACK_PATH'], -1)) .
 			'" title="' . $this->language->getLL('create_' . $this->tableForNewLink) . '">' .
-			t3lib_iconWorks::getSpriteIcon('actions-document-new') .
+			IconUtility::getSpriteIcon('actions-document-new') .
 			'</a>';
 
 			// Reload
-		$buttons['reload'] = '<a href="' . htmlspecialchars(t3lib_div::linkThisScript()) . '">' .
-			t3lib_iconWorks::getSpriteIcon('actions-system-refresh') . '</a>';
+		$buttons['reload'] = '<a href="' . htmlspecialchars(GeneralUtility::linkThisScript()) . '">' .
+			IconUtility::getSpriteIcon('actions-system-refresh') . '</a>';
 
 			// Shortcut
 		if ($this->user->mayMakeShortcut()) {
@@ -306,7 +315,7 @@ class Tx_Commerce_Controller_SystemdataController extends t3lib_SCbase {
 	/**
 	 * Fetch attributes from db
 	 *
-	 * @return resource
+	 * @return mysqli_result
 	 */
 	protected function fetchAttributes() {
 		return $this->database->exec_SELECTquery(
@@ -322,13 +331,13 @@ class Tx_Commerce_Controller_SystemdataController extends t3lib_SCbase {
 	 * Fetch attribute translation
 	 *
 	 * @param integer $uid
-	 * @return resource
+	 * @return mysqli_result
 	 */
 	protected function fetchAttributeTranslation($uid) {
 		return $this->database->exec_SELECTquery(
 			'*',
 			'tx_commerce_attributes',
-			'pid=' . (int) $this->attributePid . ' AND hidden=0 AND deleted=0 and sys_language_uid <>0 and l18n_parent =' .
+			'pid = ' . (int) $this->attributePid . ' AND hidden=0 AND deleted=0 and sys_language_uid <>0 and l18n_parent =' .
 				(int) $uid,
 			'',
 			'sys_language_uid'
@@ -338,12 +347,12 @@ class Tx_Commerce_Controller_SystemdataController extends t3lib_SCbase {
 	/**
 	 * Render attribute rows
 	 *
-	 * @param resource $result
+	 * @param mysqli_result $result
 	 * @return string
 	 */
 	protected function renderAttributeRows($result) {
-		/** @var t3lib_recordList $recordList */
-		$recordList = t3lib_div::makeInstance('t3lib_recordList');
+		/** @var \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordList $recordList */
+		$recordList = GeneralUtility::makeInstance('TYPO3\\CMS\\Recordlist\\RecordList\\DatabaseRecordList');
 		$recordList->backPath = $this->doc->backPath;
 		$recordList->initializeLanguages();
 
@@ -351,7 +360,7 @@ class Tx_Commerce_Controller_SystemdataController extends t3lib_SCbase {
 
 		$table = 'tx_commerce_attributes';
 		while (($attribute = $this->database->sql_fetch_assoc($result))) {
-			$refCountMsg = t3lib_BEfunc::referenceCount(
+			$refCountMsg = BackendUtility::referenceCount(
 				$table,
 				$attribute['uid'],
 				' ' . $this->language->sL(
@@ -363,7 +372,7 @@ class Tx_Commerce_Controller_SystemdataController extends t3lib_SCbase {
 			$deleteParams = '&cmd[' . $table . '][' . (int) $attribute['uid'] . '][delete]=1';
 
 			$output .= '<tr><td class="bgColor4" align="center" valign="top"> ' .
-				t3lib_befunc::thumbCode($attribute, 'tx_commerce_attributes', 'icon', $this->doc->backPath) . '</td>';
+				BackendUtility::thumbCode($attribute, 'tx_commerce_attributes', 'icon', $this->doc->backPath) . '</td>';
 			if ($attribute['internal_title']) {
 				$output .= '<td valign="top" class="bgColor4"><strong>' . htmlspecialchars($attribute['internal_title']) . '</strong> (' .
 					htmlspecialchars($attribute['title']) . ')';
@@ -399,14 +408,15 @@ class Tx_Commerce_Controller_SystemdataController extends t3lib_SCbase {
 			$output .= ' <strong>' . $this->language->getLL('products') . '</strong>: ' . $proCount;
 			$output .= '</td>';
 
-			$output .= '<td><a href="#" onclick="' . htmlspecialchars(t3lib_BEfunc::editOnClick($editParams, $this->doc->backPath, -1)) . '">' .
-				t3lib_iconWorks::getSpriteIcon('actions-document-open', array('title' => $this->language->getLL('edit', TRUE))) . '</a>';
+			$output .= '<td><a href="#" onclick="' .
+				htmlspecialchars(BackendUtility::editOnClick($editParams, $this->doc->backPath, -1)) . '">' .
+				IconUtility::getSpriteIcon('actions-document-open', array('title' => $this->language->getLL('edit', TRUE))) . '</a>';
 			$output .= '<a href="#" onclick="' . htmlspecialchars(
 					'if (confirm(' . $this->language->JScharCode(
 						$this->language->getLL('deleteWarningManufacturer') . ' "' . $attribute['title'] . '" ' . $refCountMsg
 					) . ')) {jumpToUrl(\'' . $this->doc->issueCommand($deleteParams, -1) . '\');} return false;'
 				) . '">' .
-				t3lib_iconWorks::getSpriteIcon('actions-edit-delete', array('title' => $this->language->getLL('delete', TRUE))) . '</a>';
+				IconUtility::getSpriteIcon('actions-edit-delete', array('title' => $this->language->getLL('delete', TRUE))) . '</a>';
 
 			$output .= '</td><td>';
 
@@ -448,7 +458,7 @@ class Tx_Commerce_Controller_SystemdataController extends t3lib_SCbase {
 		$headerRow = '<tr><td></td>';
 		foreach ($fields as $field) {
 			$headerRow .= '<td class="bgColor6"><strong>' .
-				$this->language->sL(t3lib_BEfunc::getItemLabel('tx_commerce_manufacturer', htmlspecialchars($field))) .
+				$this->language->sL(BackendUtility::getItemLabel('tx_commerce_manufacturer', htmlspecialchars($field))) .
 				'</strong></td>';
 		}
 		$headerRow .= '</tr>';
@@ -464,7 +474,7 @@ class Tx_Commerce_Controller_SystemdataController extends t3lib_SCbase {
 	/**
 	 * Render manufacturer row
 	 *
-	 * @param resource $result
+	 * @param mysqli_result $result
 	 * @param array $fields
 	 * @return string
 	 */
@@ -473,7 +483,7 @@ class Tx_Commerce_Controller_SystemdataController extends t3lib_SCbase {
 
 		$table = 'tx_commerce_manufacturer';
 		while (($row = $this->database->sql_fetch_assoc($result))) {
-			$refCountMsg = t3lib_BEfunc::referenceCount(
+			$refCountMsg = BackendUtility::referenceCount(
 				$table,
 				$row['uid'],
 				' ' . $this->language->sL(
@@ -484,14 +494,15 @@ class Tx_Commerce_Controller_SystemdataController extends t3lib_SCbase {
 			$editParams = '&edit[' . $table . '][' . (int) $row['uid'] . ']=edit';
 			$deleteParams = '&cmd[' . $table . '][' . (int) $row['uid'] . '][delete]=1';
 
-			$output .= '<tr><td><a href="#" onclick="' . htmlspecialchars(t3lib_BEfunc::editOnClick($editParams, $this->doc->backPath, -1)) . '">' .
-				t3lib_iconWorks::getSpriteIcon('actions-document-open', array('title' => $this->language->getLL('edit', TRUE))) . '</a>';
+			$output .= '<tr><td><a href="#" onclick="' .
+				htmlspecialchars(BackendUtility::editOnClick($editParams, $this->doc->backPath, -1)) . '">' .
+				IconUtility::getSpriteIcon('actions-document-open', array('title' => $this->language->getLL('edit', TRUE))) . '</a>';
 			$output .= '<a href="#" onclick="' . htmlspecialchars(
 					'if (confirm(' . $this->language->JScharCode(
 						$this->language->getLL('deleteWarningManufacturer') . ' "' . htmlspecialchars($row['title']) . '" ' . $refCountMsg
 					) . ')) {jumpToUrl(\'' . $this->doc->issueCommand($deleteParams, -1) . '\');} return false;'
 				) . '">' .
-				t3lib_iconWorks::getSpriteIcon('actions-edit-delete', array('title' => $this->language->getLL('delete', TRUE))) . '</a>';
+				IconUtility::getSpriteIcon('actions-edit-delete', array('title' => $this->language->getLL('delete', TRUE))) . '</a>';
 			$output .= '</td>';
 
 			foreach ($fields as $field) {
@@ -515,7 +526,7 @@ class Tx_Commerce_Controller_SystemdataController extends t3lib_SCbase {
 		$headerRow = '<tr><td></td>';
 		foreach ($fields as $field) {
 			$headerRow .= '<td class="bgColor6"><strong>' .
-				$this->language->sL(t3lib_BEfunc::getItemLabel('tx_commerce_supplier', htmlspecialchars($field))) .
+				$this->language->sL(BackendUtility::getItemLabel('tx_commerce_supplier', htmlspecialchars($field))) .
 				'</strong></td>';
 		}
 		$headerRow .= '</tr>';
@@ -531,7 +542,7 @@ class Tx_Commerce_Controller_SystemdataController extends t3lib_SCbase {
 	/**
 	 * Render supplier row
 	 *
-	 * @param resource $result
+	 * @param mysqli_result $result
 	 * @param array $fields
 	 * @return string
 	 */
@@ -540,7 +551,7 @@ class Tx_Commerce_Controller_SystemdataController extends t3lib_SCbase {
 
 		$table = 'tx_commerce_supplier';
 		while (($row = $this->database->sql_fetch_assoc($result))) {
-			$refCountMsg = t3lib_BEfunc::referenceCount(
+			$refCountMsg = BackendUtility::referenceCount(
 				$table,
 				$row['uid'],
 				' ' . $this->language->sL(
@@ -551,14 +562,15 @@ class Tx_Commerce_Controller_SystemdataController extends t3lib_SCbase {
 			$editParams = '&edit[' . $table . '][' . (int) $row['uid'] . ']=edit';
 			$deleteParams = '&cmd[' . $table . '][' . (int) $row['uid'] . '][delete]=1';
 
-			$output .= '<tr><td><a href="#" onclick="' . htmlspecialchars(t3lib_BEfunc::editOnClick($editParams, $this->doc->backPath, -1)) . '">' .
-				t3lib_iconWorks::getSpriteIcon('actions-document-open', array('title' => $this->language->getLL('edit', TRUE))) . '</a>';
+			$output .= '<tr><td><a href="#" onclick="' .
+				htmlspecialchars(BackendUtility::editOnClick($editParams, $this->doc->backPath, -1)) . '">' .
+				IconUtility::getSpriteIcon('actions-document-open', array('title' => $this->language->getLL('edit', TRUE))) . '</a>';
 			$output .= '<a href="#" onclick="' . htmlspecialchars(
 					'if (confirm(' . $this->language->JScharCode(
 						$this->language->getLL('deleteWarningSupplier') . ' "' . htmlspecialchars($row['title']) . '" ' . $refCountMsg
 					) . ')) {jumpToUrl(\'' . $this->doc->issueCommand($deleteParams, -1) . '\');} return false;'
 				) . '">' .
-				t3lib_iconWorks::getSpriteIcon('actions-edit-delete', array('title' => $this->language->getLL('delete', TRUE))) . '</a>';
+				IconUtility::getSpriteIcon('actions-edit-delete', array('title' => $this->language->getLL('delete', TRUE))) . '</a>';
 			$output .= '</td>';
 
 			foreach ($fields as $field) {
@@ -575,7 +587,7 @@ class Tx_Commerce_Controller_SystemdataController extends t3lib_SCbase {
 	 * Fetch data for table
 	 *
 	 * @param string $table
-	 * @return resource
+	 * @return mysqli_result
 	 */
 	protected function fetchDataByTable($table) {
 		return $this->database->exec_SELECTquery(
