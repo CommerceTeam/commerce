@@ -810,13 +810,3 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 		return $pageInfo;
 	}
 }
-
-class_alias('Tx_Commerce_Controller_CategoriesController', 'tx_commerce_categories');
-
-if (
-	defined('TYPO3_MODE') &&
-	$GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Controller/CategoriesController.php']
-) {
-	/** @noinspection PhpIncludeInspection */
-	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Controller/CategoriesController.php']);
-}

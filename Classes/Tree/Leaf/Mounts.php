@@ -285,7 +285,3 @@ class Tx_Commerce_Tree_Leaf_Mounts extends Tx_Commerce_Tree_Leaf_Base {
 		$this->pointer = 0;
 	}
 }
-
-class_alias('Tx_Commerce_Tree_Leaf_Mounts', 'mounts');
-
-?>

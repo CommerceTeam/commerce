@@ -500,7 +500,3 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 		return '<a class="pm" onclick="' . $js . '">' . $icon . '</a>';
 	}
 }
-
-class_alias('Tx_Commerce_Tree_Leaf_View', 'leafView');
-
-?>

@@ -558,7 +558,3 @@ abstract class Tx_Commerce_Tree_Browsetree {
 		$backendUser->writeUC();
 	}
 }
-
-class_alias('Tx_Commerce_Tree_Browsetree', 'browsetree');
-
-?>

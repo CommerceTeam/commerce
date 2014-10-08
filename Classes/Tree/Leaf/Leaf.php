@@ -396,7 +396,3 @@ abstract class Tx_Commerce_Tree_Leaf_Leaf extends Tx_Commerce_Tree_Leaf_Base {
 		return (0 < count($children));
 	}
 }
-
-class_alias('Tx_Commerce_Tree_Leaf_Leaf', 'leaf');
-
-?>

@@ -130,12 +130,3 @@ class Tx_Commerce_Domain_Repository_FolderRepository {
 		return $database->sql_insert_id();
 	}
 }
-
-class_alias('Tx_Commerce_Domain_Repository_FolderRepository', 'tx_commerce_folder_db');
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Domain/Repository/FolderRepository.php']) {
-	/** @noinspection PhpIncludeInspection */
-	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Domain/Repository/FolderRepository.php']);
-}
-
-?>

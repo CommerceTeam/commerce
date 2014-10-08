@@ -2816,10 +2816,3 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		return $hookObjectsArr;
 	}
 }
-
-class_alias('Tx_Commerce_Controller_CheckoutController', 'tx_commerce_pi3');
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Controller/CheckoutController.php']) {
-	/** @noinspection PhpIncludeInspection */
-	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Controller/CheckoutController.php']);
-}

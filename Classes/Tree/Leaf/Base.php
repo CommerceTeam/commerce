@@ -77,7 +77,3 @@ class Tx_Commerce_Tree_Leaf_Base {
 		return $this->language->getLL($field);
 	}
 }
-
-class_alias('Tx_Commerce_Tree_Leaf_Base', 'langbase');
-
-?>

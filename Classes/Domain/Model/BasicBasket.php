@@ -911,12 +911,3 @@ class Tx_Commerce_Domain_Model_BasicBasket {
 		return $this->getSumNet();
 	}
 }
-
-class_alias('Tx_Commerce_Domain_Model_BasicBasket', 'tx_commerce_basic_basket');
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Domain/Model/BasicBasket.php']) {
-	/** @noinspection PhpIncludeInspection */
-	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Domain/Model/BasicBasket.php']);
-}
-
-?>

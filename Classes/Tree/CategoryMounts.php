@@ -129,12 +129,3 @@ class Tx_Commerce_Tree_CategoryMounts extends Tx_Commerce_Tree_Leaf_Mounts {
 		return FALSE;
 	}
 }
-
-class_alias('Tx_Commerce_Tree_CategoryMounts', 'tx_commerce_categorymounts');
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Tree/CategoryMounts.php']) {
-	/** @noinspection PhpIncludeInspection */
-	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Tree/CategoryMounts.php']);
-}
-
-?>

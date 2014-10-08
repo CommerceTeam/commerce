@@ -121,12 +121,3 @@ class Tx_Commerce_Tree_StatisticTree extends t3lib_browseTree {
 		return $str;
 	}
 }
-
-class_alias('Tx_Commerce_Tree_StatisticTree', 'tx_commerce_statistic_pagetree');
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/mod_statistic/class.tx_commerce_statistic_pagetree.php']) {
-	/** @noinspection PhpIncludeInspection */
-	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/mod_statistic/class.tx_commerce_statistic_pagetree.php']);
-}
-
-?>

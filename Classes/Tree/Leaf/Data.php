@@ -649,7 +649,3 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 		return $hasAccess ? TRUE : FALSE;
 	}
 }
-
-class_alias('Tx_Commerce_Tree_Leaf_Data', 'leafData');
-
-?>

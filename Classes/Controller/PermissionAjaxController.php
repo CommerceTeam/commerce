@@ -138,12 +138,3 @@ class Tx_Commerce_Controller_PermissionAjaxController extends SC_mod_web_perm_aj
 		$ajaxObj->addContent($this->conf['page'] . '_' . $this->conf['who'], $content);
 	}
 }
-
-class_alias('Tx_Commerce_Controller_PermissionAjaxController', 'SC_mod_access_perm_ajax');
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Controller/PermissionAjaxController.php']) {
-	/** @noinspection PhpIncludeInspection */
-	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Controller/PermissionAjaxController.php']);
-}
-
-?>

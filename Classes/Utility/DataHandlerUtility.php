@@ -581,17 +581,6 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 	}
 }
 
-class_alias('Tx_Commerce_Utility_DataHandlerUtility', 'SC_tx_commerce_cce_db');
-
-if (defined(
-		'TYPO3_MODE'
-	)
-	&& isset($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/mod_cce/tx_commerce_cce_db.php'])
-) {
-	/** @noinspection PhpIncludeInspection */
-	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/mod_cce/tx_commerce_cce_db.php']);
-}
-
 // Make instance:
 /** @var Tx_Commerce_Utility_DataHandlerUtility $SOBE */
 $SOBE = t3lib_div::makeInstance('Tx_Commerce_Utility_DataHandlerUtility');
@@ -599,5 +588,3 @@ $SOBE->init();
 $SOBE->initClipboard();
 $SOBE->main();
 $SOBE->finish();
-
-?>

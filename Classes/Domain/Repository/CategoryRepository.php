@@ -500,12 +500,3 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 		return $this->getChildProducts($uid, $languageUid);
 	}
 }
-
-class_alias('Tx_Commerce_Domain_Repository_CategoryRepository', 'tx_commerce_db_category');
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Domain/Repository/CategoryRepository.php']) {
-	/** @noinspection PhpIncludeInspection */
-	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Domain/Repository/CategoryRepository.php']);
-}
-
-?>

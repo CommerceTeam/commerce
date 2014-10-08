@@ -331,12 +331,3 @@ class Tx_Commerce_Domain_Repository_ArticleRepository extends Tx_Commerce_Domain
 		return FALSE;
 	}
 }
-
-class_alias('Tx_Commerce_Domain_Repository_ArticleRepository', 'tx_commerce_db_article');
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Domain/Repository/ArticleRepository.php']) {
-	/** @noinspection PhpIncludeInspection */
-	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Domain/Repository/ArticleRepository.php']);
-}
-
-?>

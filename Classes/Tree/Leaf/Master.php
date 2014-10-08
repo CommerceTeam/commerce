@@ -446,7 +446,3 @@ class Tx_Commerce_Tree_Leaf_Master extends Tx_Commerce_Tree_Leaf_Leaf {
 		return $out;
 	}
 }
-
-class_alias('Tx_Commerce_Tree_Leaf_Master', 'leafMaster');
-
-?>

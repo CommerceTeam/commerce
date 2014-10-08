@@ -227,7 +227,3 @@ class Tx_Commerce_Tree_Leaf_Slave extends Tx_Commerce_Tree_Leaf_Leaf {
 		return $out;
 	}
 }
-
-class_alias('Tx_Commerce_Tree_Leaf_Slave', 'leafSlave');
-
-?>

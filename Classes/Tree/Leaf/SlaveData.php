@@ -108,7 +108,3 @@ abstract class Tx_Commerce_Tree_Leaf_SlaveData extends Tx_Commerce_Tree_Leaf_Dat
 		$this->records = $this->loadRecords();
 	}
 }
-
-class_alias('Tx_Commerce_Tree_Leaf_SlaveData', 'leafSlaveData');
-
-?>

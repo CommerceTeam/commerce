@@ -388,12 +388,3 @@ class Tx_Commerce_Controller_WizardController {
 		return !count($allowedNewTables) || in_array($table, $allowedNewTables);
 	}
 }
-
-class_alias('Tx_Commerce_Controller_WizardController', 'tx_commerce_cmd_wizard');
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Controller/WizardController.php']) {
-	/** @noinspection PhpIncludeInspection */
-	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Controller/WizardController.php']);
-}
-
-?>

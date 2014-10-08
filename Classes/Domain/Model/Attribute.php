@@ -430,16 +430,3 @@ class Tx_Commerce_Domain_Model_Attribute extends Tx_Commerce_Domain_Model_Abstra
 		return $this->getUnit();
 	}
 }
-
-class_alias('Tx_Commerce_Domain_Model_Attribute', 'tx_commerce_attribute');
-
-if (defined(
-		'TYPO3_MODE'
-	)
-	&& $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Domain/Model/Attribute.php']
-) {
-	/** @noinspection PhpIncludeInspection */
-	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Domain/Model/Attribute.php']);
-}
-
-?>

@@ -1277,10 +1277,3 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 		$this->formError[$fieldName] = $errorMsg;
 	}
 }
-
-class_alias('Tx_Commerce_Controller_AddressesController', 'tx_commerce_pi4');
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Controller/AddressesController.php']) {
-	/** @noinspection PhpIncludeInspection */
-	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Controller/AddressesController.php']);
-}

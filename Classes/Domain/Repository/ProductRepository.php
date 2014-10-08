@@ -368,12 +368,3 @@ class Tx_Commerce_Domain_Repository_ProductRepository extends Tx_Commerce_Domain
 		return array($this->getParentCategories($uid));
 	}
 }
-
-class_alias('Tx_Commerce_Domain_Repository_ProductRepository', 'tx_commerce_db_product');
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Domain/Repository/ProductRepository.php']) {
-	/** @noinspection PhpIncludeInspection */
-	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Domain/Repository/ProductRepository.php']);
-}
-
-?>

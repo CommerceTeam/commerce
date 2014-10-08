@@ -2235,12 +2235,3 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 		return $content;
 	}
 }
-
-class_alias('Tx_Commerce_Controller_BaseController', 'tx_commerce_pibase');
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Controller/BaseController.php']) {
-	/** @noinspection PhpIncludeInspection */
-	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Controller/BaseController.php']);
-}
-
-?>

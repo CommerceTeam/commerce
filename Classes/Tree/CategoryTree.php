@@ -240,12 +240,3 @@ class Tx_Commerce_Tree_CategoryTree extends Tx_Commerce_Tree_Browsetree {
 		return $categoryLeaf->data->getChildByUid($uid);
 	}
 }
-
-class_alias('Tx_Commerce_Tree_CategoryTree', 'tx_commerce_categorytree');
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Tree/CategoryTree.php']) {
-	/** @noinspection PhpIncludeInspection */
-	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Tree/CategoryTree.php']);
-}
-
-?>

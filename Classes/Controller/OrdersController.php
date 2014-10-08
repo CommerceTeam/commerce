@@ -598,12 +598,3 @@ class Tx_Commerce_Controller_OrdersController extends t3lib_SCbase {
 		return $buttons;
 	}
 }
-
-class_alias('Tx_Commerce_Controller_OrdersController', 'tx_commerce_orders');
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Controller/OrdersController.php']) {
-	/** @noinspection PhpIncludeInspection */
-	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Controller/OrdersController.php']);
-}
-
-?>

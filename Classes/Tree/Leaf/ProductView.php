@@ -91,12 +91,3 @@ class Tx_Commerce_Tree_Leaf_ProductView extends Tx_Commerce_Tree_Leaf_View {
 		return $res;
 	}
 }
-
-class_alias('Tx_Commerce_Tree_Leaf_ProductView', 'tx_commerce_leaf_productview');
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Tree/Leaf/ProductView.php']) {
-	/** @noinspection PhpIncludeInspection */
-	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Tree/Leaf/ProductView.php']);
-}
-
-?>

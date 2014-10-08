@@ -540,5 +540,3 @@ class Tx_Commerce_Utility_ClickmenuUtility extends clickMenu {
 		return $rU;
 	}
 }
-
-class_alias('Tx_Commerce_Utility_ClickmenuUtility', 'tx_commerce_clickmenu');

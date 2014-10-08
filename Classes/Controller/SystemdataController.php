@@ -627,12 +627,3 @@ class Tx_Commerce_Controller_SystemdataController extends t3lib_SCbase {
 		return $this->referenceCount[$tableName][$uid];
 	}
 }
-
-class_alias('Tx_Commerce_Controller_SystemdataController', 'Tx_Commerce_SystemData');
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Controller/SystemdataController.php']) {
-	/** @noinspection PhpIncludeInspection */
-	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Controller/SystemdataController.php']);
-}
-
-?>

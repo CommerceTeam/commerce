@@ -240,12 +240,3 @@ class Tx_Commerce_Utility_AttributeEditorUtility {
 		)));
 	}
 }
-
-class_alias('Tx_Commerce_Utility_AttributeEditorUtility', 'tx_commerce_attributeEditor');
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/class.tx_commerce_attributeeditor.php']) {
-	/** @noinspection PhpIncludeInspection */
-	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/class.tx_commerce_attributeeditor.php']);
-}
-
-?>

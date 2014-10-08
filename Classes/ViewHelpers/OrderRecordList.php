@@ -1248,12 +1248,3 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends localRecordList {
 		return $fieldListArr;
 	}
 }
-
-class_alias('Tx_Commerce_ViewHelpers_OrderRecordList', 'tx_commerce_order_localRecordlist');
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/ViewHelpers/OrderRecordlist.php']) {
-	/** @noinspection PhpIncludeInspection */
-	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/ViewHelpers/OrderRecordlist.php']);
-}
-
-?>

@@ -329,7 +329,3 @@ abstract class Tx_Commerce_Tree_Leaf_MasterData extends Tx_Commerce_Tree_Leaf_Da
 		return $root;
 	}
 }
-
-class_alias('Tx_Commerce_Tree_Leaf_MasterData', 'leafMasterData');
-
-?>
