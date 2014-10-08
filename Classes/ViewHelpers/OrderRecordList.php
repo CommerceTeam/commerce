@@ -24,6 +24,10 @@
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Backend\Utility\IconUtility;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Renders order list in the BE order module
@@ -103,7 +107,7 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends localRecordList {
 		if ($this->id) {
 				// Setting title of page + the "Go up" link:
 			$buttons['level_up'] = '<a href="' . htmlspecialchars($this->listURL($row['pid'])) . '" onclick="setHighlight(' . $row['pid'] . ')">' .
-				t3lib_iconWorks::getSpriteIcon(
+				IconUtility::getSpriteIcon(
 					'actions-view-go-up',
 					array('title' => $language->sL('LLL:EXT:lang/locallang_core.php:labels.upOneLevel', 1))
 				) .
@@ -113,17 +117,17 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends localRecordList {
 			// Add "CSV" link, if a specific table is shown:
 		if ($this->table) {
 			$buttons['csv'] = '<a href="' . htmlspecialchars($this->listURL() . '&csv=1') . '">' .
-				t3lib_iconWorks::getSpriteIcon(
+				IconUtility::getSpriteIcon(
 					'mimetypes-text-csv',
 					array('title' => $language->sL('LLL:EXT:lang/locallang_core.php:labels.csv', 1))
 				) . '</a>';
 		}
 
 			// Add "Export" link, if a specific table is shown:
-		if ($this->table && t3lib_extMgm::isLoaded('impexp')) {
-			$buttons['export'] = '<a href="' . htmlspecialchars($this->backPath . t3lib_extMgm::extRelPath('impexp') .
+		if ($this->table && ExtensionManagementUtility::isLoaded('impexp')) {
+			$buttons['export'] = '<a href="' . htmlspecialchars($this->backPath . ExtensionManagementUtility::extRelPath('impexp') .
 				'app/index.php?tx_impexp[action]=export&tx_impexp[list][]=' . rawurlencode($this->table . ':' . $this->id)) . '">' .
-				t3lib_iconWorks::getSpriteIcon(
+				IconUtility::getSpriteIcon(
 					'actions-document-export-t3d',
 					array('title' => $language->sL('LLL:EXT:lang/locallang_core.php:rm.export', 1))
 				) . '</a>';
@@ -131,7 +135,7 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends localRecordList {
 
 			// Add "refresh" link:
 		$buttons['reload'] = '<a href="' . htmlspecialchars($this->listURL()) . '">' .
-			t3lib_iconWorks::getSpriteIcon('actions-system-refresh', array('title' => $language->sL('LLL:EXT:lang/locallang_core.php:labels.reload', 1))) .
+			IconUtility::getSpriteIcon('actions-system-refresh', array('title' => $language->sL('LLL:EXT:lang/locallang_core.php:labels.reload', 1))) .
 			'</a>';
 
 		return $buttons;
@@ -152,10 +156,6 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends localRecordList {
 		/** @var t3lib_beUserAuth $backendUser */
 		$backendUser = $GLOBALS['BE_USER'];
 
-			// Loading all TCA details for this table:
-		t3lib_div::loadTCA($table);
-		t3lib_div::loadTCA('tx_commerce_order_types');
-
 			// Init
 		$addWhere = '';
 		$titleCol = $GLOBALS['TCA'][$table]['ctrl']['label'];
@@ -166,15 +166,15 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends localRecordList {
 		$tableCollapsed = (!$this->tablesCollapsed[$table]) ? FALSE : TRUE;
 
 			// prepare space icon
-		$this->spaceIcon = t3lib_iconWorks::getSpriteIcon('empty-empty', array('style' => 'background-position: 0 10px;'));
+		$this->spaceIcon = IconUtility::getSpriteIcon('empty-empty', array('style' => 'background-position: 0 10px;'));
 
-			// Cleaning rowlist for duplicates and place the $titleCol as the first column always!
+		// Cleaning rowlist for duplicates and place the $titleCol as the first column always!
 		$this->fieldArray = array();
 			// Add title column
 		$this->fieldArray[] = $titleCol;
 
 			// Control-Panel
-		if (!t3lib_div::inList($rowlist, '_CONTROL_')) {
+		if (!GeneralUtility::inList($rowlist, '_CONTROL_')) {
 			$this->fieldArray[] = '_CONTROL_';
 			$this->fieldArray[] = '_AFTERCONTROL_';
 		}
@@ -211,7 +211,7 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends localRecordList {
 		}
 		$this->fieldArray = array_merge($this->fieldArray, $this->defaultFieldArray);
 
-		$this->fieldArray = array_unique(array_merge($this->fieldArray, t3lib_div::trimExplode(',', $rowlist, 1)));
+		$this->fieldArray = array_unique(array_merge($this->fieldArray, GeneralUtility::trimExplode(',', $rowlist, 1)));
 		if ($this->noControlPanels) {
 			$tempArray = array_flip($this->fieldArray);
 			unset($tempArray['_CONTROL_']);
@@ -228,7 +228,7 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends localRecordList {
 			$selectFields[] = $thumbsCol;
 		}
 		if ($table == 'pages') {
-			if (t3lib_extMgm::isLoaded('cms')) {
+			if (ExtensionManagementUtility::isLoaded('cms')) {
 				$selectFields[] = 'module';
 				$selectFields[] = 'extendToSubpages';
 				$selectFields[] = 'nav_hide';
@@ -256,7 +256,7 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends localRecordList {
 			$selectFields[] = $GLOBALS['TCA'][$table]['ctrl']['transOrigPointerField'];
 		}
 		if ($GLOBALS['TCA'][$table]['ctrl']['label_alt']) {
-			$selectFields = array_merge($selectFields, t3lib_div::trimExplode(',', $GLOBALS['TCA'][$table]['ctrl']['label_alt'], 1));
+			$selectFields = array_merge($selectFields, GeneralUtility::trimExplode(',', $GLOBALS['TCA'][$table]['ctrl']['label_alt'], 1));
 		}
 
 			// Unique list!
@@ -274,9 +274,9 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends localRecordList {
 		 */
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/class.db_list_extra.inc']['getTable'])) {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/class.db_list_extra.inc']['getTable'] as $classData) {
-				$hookObject = t3lib_div::getUserObj($classData);
+				$hookObject = GeneralUtility::getUserObj($classData);
 
-				if (!($hookObject instanceof t3lib_localRecordListGetTableHook)) {
+				if (!($hookObject instanceof \TYPO3\CMS\Backend\RecordList\RecordListGetTableHookInterface)) {
 					throw new UnexpectedValueException('$hookObject must implement interface t3lib_localRecordListGetTableHook', 1195114460);
 				}
 
@@ -349,22 +349,22 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends localRecordList {
 			$theData = Array();
 			if ($this->disableSingleTableView) {
 				$theData[$titleCol] = '<span class="c-table">' .
-					t3lib_BEfunc::wrapInHelp($table, '', $language->sL($GLOBALS['TCA'][$table]['ctrl']['title'], TRUE)) .
+					BackendUtility::wrapInHelp($table, '', $language->sL($GLOBALS['TCA'][$table]['ctrl']['title'], TRUE)) .
 					'</span> (' . $this->totalItems . ')';
 			} else {
 				$theData[$titleCol] = $this->linkWrapTable(
 					$table,
 					'<span class="c-table">' . $language->sL($GLOBALS['TCA'][$table]['ctrl']['title'], TRUE) . '</span> (' . $this->totalItems . ') ' .
 						($this->table ?
-							t3lib_iconWorks::getSpriteIcon('actions-view-table-collapse', array('title' => $language->getLL('contractView', TRUE))) :
-							t3lib_iconWorks::getSpriteIcon('actions-view-table-expand', array('title' => $language->getLL('expandView', TRUE))))
+							IconUtility::getSpriteIcon('actions-view-table-collapse', array('title' => $language->getLL('contractView', TRUE))) :
+							IconUtility::getSpriteIcon('actions-view-table-expand', array('title' => $language->getLL('expandView', TRUE))))
 				);
 			}
 
 			if ($listOnlyInSingleTableMode) {
 				$out .= '
 					<tr>
-						<td class="t3-row-header" style="width:95%;">' . t3lib_BEfunc::wrapInHelp($table, '', $theData[$titleCol]) . '</td>
+						<td class="t3-row-header" style="width:95%;">' . BackendUtility::wrapInHelp($table, '', $theData[$titleCol]) . '</td>
 					</tr>';
 			} else {
 					// Render collapse button if in multi table mode
@@ -379,8 +379,8 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends localRecordList {
 						) . '">' .
 						(
 							$tableCollapsed ?
-							t3lib_iconWorks::getSpriteIcon('actions-view-list-expand', array('class' => 'collapseIcon')) :
-							t3lib_iconWorks::getSpriteIcon('actions-view-list-collapse', array('class' => 'collapseIcon'))
+							IconUtility::getSpriteIcon('actions-view-list-expand', array('class' => 'collapseIcon')) :
+							IconUtility::getSpriteIcon('actions-view-list-collapse', array('class' => 'collapseIcon'))
 						) .
 						'</a>';
 				}
@@ -411,7 +411,7 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends localRecordList {
 				while ($row = $database->sql_fetch_assoc($result)) {
 
 						// In offline workspace, look for alternative record:
-					t3lib_BEfunc::workspaceOL($table, $row, $GLOBALS['BE_USER']->workspace, TRUE);
+					BackendUtility::workspaceOL($table, $row, $GLOBALS['BE_USER']->workspace, TRUE);
 
 					if (is_array($row)) {
 						$accRows[] = $row;
@@ -458,11 +458,16 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends localRecordList {
 								foreach ($this->translations as $lRow) {
 										// $lRow isn't always what we want - if record was moved we've to work with the placeholder records otherwise the list is messed up a bit
 									if ($row['_MOVE_PLH_uid'] && $row['_MOVE_PLH_pid']) {
-										$tmpRow = t3lib_BEfunc::getRecordRaw($table, 't3ver_move_id="' . (int) $lRow['uid'] . '" AND pid="' . (int) $row['_MOVE_PLH_pid'] . '" AND t3ver_wsid=' . $row['t3ver_wsid'] . t3lib_beFunc::deleteClause($table), $selFieldList);
+										$tmpRow = BackendUtility::getRecordRaw(
+											$table,
+											't3ver_move_id="' . (int) $lRow['uid'] . '" AND pid="' . (int) $row['_MOVE_PLH_pid'] .
+												'" AND t3ver_wsid=' . $row['t3ver_wsid'] . BackendUtility::deleteClause($table),
+											$selFieldList
+										);
 										$lRow = is_array($tmpRow)?$tmpRow:$lRow;
 									}
 										// In offline workspace, look for alternative record:
-									t3lib_BEfunc::workspaceOL($table, $lRow, $GLOBALS['BE_USER']->workspace, TRUE);
+									BackendUtility::workspaceOL($table, $lRow, $GLOBALS['BE_USER']->workspace, TRUE);
 									if (is_array($lRow) && $backendUser->checkLanguageAccess($lRow[$GLOBALS['TCA'][$table]['ctrl']['languageField']])) {
 										$currentIdList[] = $lRow['uid'];
 										$iOut .= $this->renderListRow($table, $lRow, $cc, $titleCol, $thumbsCol, 18);
@@ -486,11 +491,10 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends localRecordList {
 						$hasMore = ($this->totalItems > $this->itemsLimitSingleTable);
 						$iOut .= '<tr><td colspan="' . count($this->fieldArray) . '" style="padding:5px;">
 							<a href="' . htmlspecialchars($this->listURL() . '&table=' . rawurlencode($table)) . '"><img' .
-							t3lib_iconWorks::skinImg($this->backPath, 'gfx/pildown.gif', 'width="14" height="14"') .
+							IconUtility::skinImg($this->backPath, 'gfx/pildown.gif', 'width="14" height="14"') .
 							' alt="" /> <i>[1 - ' . $countOnFirstPage . ($hasMore ? '+' : '') . ']</i></a>
 							</td></tr>';
-						}
-
+					}
 				}
 
 					// The header row for the table is now created:
@@ -507,12 +511,11 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends localRecordList {
 				// ... and it is all wrapped in a table:
 			$out = '
 
-
-
 			<!--
 				DB listing of elements:	"' . htmlspecialchars($table) . '"
 			-->
-				<table border="0" cellpadding="0" cellspacing="0" class="typo3-dblist' . ($listOnlyInSingleTableMode ? ' typo3-dblist-overview' : '') . '">
+				<table border="0" cellpadding="0" cellspacing="0" class="typo3-dblist' .
+					($listOnlyInSingleTableMode ? ' typo3-dblist-overview' : '') . '">
 					' . $out . $moveToSelector . '
 				</table>';
 
@@ -550,19 +553,19 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends localRecordList {
 
 		if (substr(TYPO3_version, 0, 3)  >= '4.0') {
 				// In offline workspace, look for alternative record:
-			t3lib_BEfunc::workspaceOL($table, $row, $GLOBALS['BE_USER']->workspace);
+			BackendUtility::workspaceOL($table, $row, $GLOBALS['BE_USER']->workspace);
 		}
 			// Background color, if any:
-		$row_bgColor =
+		$rowBackgroundColor =
 			$this->alternateBgColors ?
-			(($cc % 2) ? '' : ' bgcolor="' . t3lib_div::modifyHTMLColor($GLOBALS['SOBE']->doc->bgColor4, 10, 10, 10) . '"') :
+			(($cc % 2) ? '' : ' bgcolor="' . GeneralUtility::modifyHTMLColor($GLOBALS['SOBE']->doc->bgColor4, 10, 10, 10) . '"') :
 			'';
 
 			// Overriding with versions background color if any:
-		$row_bgColor = $row['_CSSCLASS'] ? ' class="' . $row['_CSSCLASS'] . '"' : $row_bgColor;
+		$rowBackgroundColor = $row['_CSSCLASS'] ? ' class="' . $row['_CSSCLASS'] . '"' : $rowBackgroundColor;
 
 			// Initialization
-		$alttext = t3lib_BEfunc::getRecordIconAltText($row, $table);
+		$alttext = BackendUtility::getRecordIconAltText($row, $table);
 
 			// Incr. counter.
 		$this->counter++;
@@ -595,12 +598,12 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends localRecordList {
 			if ($row['tx_commerce_address_type_id'] == 2) {
 				$iconPath = 'orders_add.gif';
 			} else {
-				$iconImg = t3lib_iconWorks::getIconImage($table, $row, $this->backPath, $iconAttributes);
+				$iconImg = IconUtility::getIconImage($table, $row, $this->backPath, $iconAttributes);
 			}
 		}
 
 		if ($iconPath != '') {
-			$iconImg = '<img' . t3lib_iconWorks::skinImg(
+			$iconImg = '<img' . IconUtility::skinImg(
 				$this->backPath,
 				PATH_TXCOMMERCE_REL . 'Resources/Public/Icons/Table/' . $iconPath,
 				$iconAttributes
@@ -623,12 +626,12 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends localRecordList {
 					$theData[$fCol] = Tx_Commerce_ViewHelpers_Money::format($row[$fCol], $row['cu_iso_3'], FALSE);
 				}
 			} elseif ($fCol == 'crdate') {
-				$theData[$fCol] = t3lib_BEfunc::date($row[$fCol]);
+				$theData[$fCol] = BackendUtility::date($row[$fCol]);
 
-				$row[$fCol] = t3lib_BEfunc::date($row[$fCol]);
+				$row[$fCol] = BackendUtility::date($row[$fCol]);
 			} elseif ($fCol == 'tstamp') {
-				$theData[$fCol] = t3lib_BEfunc::date($row[$fCol]);
-				$row[$fCol] = t3lib_BEfunc::date($row[$fCol]);
+				$theData[$fCol] = BackendUtility::date($row[$fCol]);
+				$row[$fCol] = BackendUtility::date($row[$fCol]);
 			} elseif ($fCol == 'articles') {
 				$articleNumber = array();
 				$articleName = array();
@@ -686,16 +689,16 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends localRecordList {
 				}
 				$theData[$fCol] = implode(',', $articleName);
 			} elseif ($fCol == 'order_type_uid_noName') {
-				$res_type = $database->exec_SELECTquery(
+				$typesResult = $database->exec_SELECTquery(
 					'*',
 					'tx_commerce_order_types',
 					'uid = ' . (int) $row['order_type_uid_noName']
 				);
-				while (($localRow = $database->sql_fetch_assoc($res_type))) {
+				while (($localRow = $database->sql_fetch_assoc($typesResult))) {
 					if ($localRow['icon']) {
 						$filepath = $this->backPath . $GLOBALS['TCA']['tx_commerce_order_types']['columns']['icon']['config']['uploadfolder'] . '/' . $localRow['icon'];
 
-						$theData[$fCol] = '<img' . t3lib_iconWorks::skinImg(
+						$theData[$fCol] = '<img' . IconUtility::skinImg(
 							$this->backPath,
 							$filepath,
 							'title="' . htmlspecialchars($localRow['title']) . '"' . $indentStyle
@@ -720,7 +723,7 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends localRecordList {
 			} elseif ($fCol == 'order_id') {
 				$theData[$fCol] = $row[$fCol];
 			} else {
-				$theData[$fCol] = $this->linkUrlMail(htmlspecialchars(t3lib_BEfunc::getProcessedValueExtra($table, $fCol, $row[$fCol], 100, $row['uid'])), $row[$fCol]);
+				$theData[$fCol] = $this->linkUrlMail(htmlspecialchars(BackendUtility::getProcessedValueExtra($table, $fCol, $row[$fCol], 100, $row['uid'])), $row[$fCol]);
 			}
 		}
 
@@ -728,7 +731,7 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends localRecordList {
 		if ($this->csvOutput) {
 				// Charset Conversion
 			/** @var t3lib_cs $csObj */
-			$csObj = t3lib_div::makeInstance('t3lib_cs');
+			$csObj = GeneralUtility::makeInstance('t3lib_cs');
 			$csObj->initCharset($GLOBALS['TYPO3_CONF_VARS']['BE']['forceCharset']);
 
 			if (!$extConf['BECSVCharset']) {
@@ -740,10 +743,10 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends localRecordList {
 		}
 
 			// Create element in table cells:
-		$iOut .= $this->addelement(1, $theIcon, $theData, $row_bgColor);
+		$iOut .= $this->addelement(1, $theIcon, $theData, $rowBackgroundColor);
 			// Render thumbsnails if a thumbnail column exists and there is content in it:
 		if ($this->thumbs && trim($row[$thumbsCol])) {
-			$iOut .= $this->addelement(4, '', array($titleCol => $this->thumbCode($row, $table, $thumbsCol)), $row_bgColor);
+			$iOut .= $this->addelement(4, '', array($titleCol => $this->thumbCode($row, $table, $thumbsCol)), $rowBackgroundColor);
 		}
 
 			// Finally, return table row element:
@@ -761,8 +764,7 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends localRecordList {
 		/** @var language $language */
 		$language = $GLOBALS['LANG'];
 
-			// Init:
-		t3lib_div::loadTCA($table);
+		// Init:
 		$formElements = array('', '');
 		if ($formFields) {
 			$formElements = array('<form action="' . htmlspecialchars($this->listURL()) . '" method="post">', '</form>');
@@ -789,8 +791,8 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends localRecordList {
 				// Field label
 			$fL = is_array($GLOBALS['TCA'][$table]['columns'][$fN]) ?
 				rtrim($language->sL($GLOBALS['TCA'][$table]['columns'][$fN]['label']), ':') :
-				$language->sL(t3lib_BEfunc::getItemLabel($table, $fN, 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_orders.xml:|')) ?
-					$language->sL(t3lib_BEfunc::getItemLabel($table, $fN, 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_orders.xml:|')) :
+				$language->sL(BackendUtility::getItemLabel($table, $fN, 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_orders.xml:|')) ?
+					$language->sL(BackendUtility::getItemLabel($table, $fN, 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_orders.xml:|')) :
 					'[' . $fN . ']';
 			$opt[] = '
 											<option value="' . $fN . '"' . (in_array($fN, $setFields) ?
@@ -800,8 +802,8 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends localRecordList {
 
 			// Compile the options into a multiple selector box:
 		$lMenu = '
-										<select size="' . max(min(count($fields) + 1, 20), 3) . '" multiple="multiple" name="displayFields[' . $table . '][]">' . implode('', $opt) . '
-										</select>
+				<select size="' . max(min(count($fields) + 1, 20), 3) . '" multiple="multiple" name="displayFields[' . $table . '][]">' . implode('', $opt) . '
+				</select>
 				';
 
 			// Table with the field selector::
@@ -814,7 +816,8 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends localRecordList {
 				<table border="0" cellpadding="0" cellspacing="0" id="typo3-dblist-fieldSelect">
 					<tr>
 						<td>' . $lMenu . '</td>
-						<td><input type="submit" name="search" value="' . $language->sL('LLL:EXT:lang/locallang_core.php:labels.setFields', 1) . '" /></td>
+						<td><input type="submit" name="search" value="' .
+							$language->sL('LLL:EXT:lang/locallang_core.php:labels.setFields', 1) . '" /></td>
 					</tr>
 				</table>
 			' . $formElements[1];
@@ -846,11 +849,11 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends localRecordList {
 							'pid',
 							'pages',
 							'uid = ' . $this->id . ' ' .
-								t3lib_BEfunc::deleteClause($GLOBALS['TCA']['tx_commerce_orders']['columns']['newpid']['config']['foreign_table'])
+								BackendUtility::deleteClause($GLOBALS['TCA']['tx_commerce_orders']['columns']['newpid']['config']['foreign_table'])
 						);
 
 						$moveToSelectorRow = '';
-						if ($rowParentes = $database->sql_fetch_assoc($resParent)) {
+						if ($parentRow = $database->sql_fetch_assoc($resParent)) {
 								// Get the pages below $orderPid
 							$ret = Tx_Commerce_Utility_BackendUtility::getOrderFolderSelector(
 								$this->orderPid,
@@ -868,12 +871,11 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends localRecordList {
 
 						$theData[$fCol] = $moveToSelectorRow;
 					}
-				break;
+					break;
 
 					// Regular fields header:
 				default:
 					$theData[$fCol] = '';
-				break;
 			};
 		}
 
@@ -895,7 +897,7 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends localRecordList {
 		$hookObjectsArr = array();
 		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/class.db_list.inc']['makeQueryArray'])) {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/class.db_list.inc']['makeQueryArray'] as $classRef) {
-				$hookObjectsArr[] = t3lib_div::getUserObj($classRef);
+				$hookObjectsArr[] = GeneralUtility::getUserObj($classRef);
 			}
 		}
 
@@ -949,7 +951,8 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends localRecordList {
 				tt_address.mobile AS phone_2, tx_commerce_orders.cu_iso_3_uid, tx_commerce_orders.tstamp,
 				tx_commerce_orders.uid AS articles, tx_commerce_orders.comment, tx_commerce_orders.internalcomment,
 				tx_commerce_orders.order_type_uid AS order_type_uid_noName, static_currencies.cu_iso_3',
-			'FROM' => 'tx_commerce_orders, tt_address, tx_commerce_order_articles, tx_commerce_order_articles AS delivery_table, static_currencies',
+			'FROM' => 'tx_commerce_orders, tt_address, tx_commerce_order_articles,
+				tx_commerce_order_articles AS delivery_table, static_currencies',
 			'WHERE' => 'static_currencies.uid = tx_commerce_orders.cu_iso_3_uid
 				AND delivery_table.order_id = tx_commerce_orders.order_id
 				AND tx_commerce_order_articles.order_id = tx_commerce_orders.order_id
@@ -966,13 +969,13 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends localRecordList {
 		);
 
 			// get Module TSConfig
-		$moduleConfig = t3lib_BEfunc::getModTSconfig($id, 'mod.txcommerceM1_orders');
+		$moduleConfig = BackendUtility::getModTSconfig($id, 'mod.txcommerceM1_orders');
 
 		if ($moduleConfig['properties']['delProdUid']) {
-			t3lib_div::deprecationLog('mod.txcommerceM1_orders.delProdUid is deprecated since commerce 1.0.0, this setting will be removed in commerce 1.4.0, please use mod.txcommerceM1_orders.deliveryProductUid instead');
+			GeneralUtility::deprecationLog('mod.txcommerceM1_orders.delProdUid is deprecated since commerce 1.0.0, this setting will be removed in commerce 1.4.0, please use mod.txcommerceM1_orders.deliveryProductUid instead');
 		}
 		if ($moduleConfig['properties']['payProdUid']) {
-			t3lib_div::deprecationLog('mod.txcommerceM1_orders.payProdUid is deprecated since commerce 1.0.0, this setting will be removed in commerce 1.4.0, please use mod.txcommerceM1_orders.paymentProductUid instead');
+			GeneralUtility::deprecationLog('mod.txcommerceM1_orders.payProdUid is deprecated since commerce 1.0.0, this setting will be removed in commerce 1.4.0, please use mod.txcommerceM1_orders.paymentProductUid instead');
 		}
 
 		$deliveryProductUid = $moduleConfig['properties']['delProdUid'] ?
@@ -1000,13 +1003,13 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends localRecordList {
 			// Apply hook as requested in http://bugs.typo3.org/view.php?id=4361
 		foreach ($hookObjectsArr as $hookObj) {
 			if (method_exists($hookObj, 'makeQueryArray_post')) {
-				$_params = array(
+				$parameter = array(
 					'orderBy' => $orderBy,
 					'limit' => $limit,
 					'pC' => $pC,
 					'search' => $search,
 				);
-				$hookObj->makeQueryArray_post($queryParts, $this, $table, $id, $addWhere, $fieldList, $_params);
+				$hookObj->makeQueryArray_post($queryParts, $this, $table, $id, $addWhere, $fieldList, $parameter);
 			}
 		}
 
@@ -1109,7 +1112,7 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends localRecordList {
 	}
 
 	/**
-	 * As we can't use t3lib_BEfunc::getModuleUrl this method needs to be overridden to set the url to $this->script
+	 * As we can't use BackendUtility::getModuleUrl this method needs to be overridden to set the url to $this->script
 
 	 *
 *@NOTE: Since Typo3 4.5 we can't use listURL from parent class we need to link to $this->script instead of web_list
@@ -1150,17 +1153,17 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends localRecordList {
 		if ($this->showLimit) {
 			$urlParameters['showLimit'] = $this->showLimit;
 		}
-		if ((!$excludeList || !t3lib_div::inList($excludeList, 'firstElementNumber')) && $this->firstElementNumber) {
+		if ((!$excludeList || !GeneralUtility::inList($excludeList, 'firstElementNumber')) && $this->firstElementNumber) {
 			$urlParameters['pointer'] = $this->firstElementNumber;
 		}
-		if ((!$excludeList || !t3lib_div::inList($excludeList, 'sortField')) && $this->sortField) {
+		if ((!$excludeList || !GeneralUtility::inList($excludeList, 'sortField')) && $this->sortField) {
 			$urlParameters['sortField'] = $this->sortField;
 		}
-		if ((!$excludeList || !t3lib_div::inList($excludeList, 'sortRev')) && $this->sortRev) {
+		if ((!$excludeList || !GeneralUtility::inList($excludeList, 'sortRev')) && $this->sortRev) {
 			$urlParameters['sortRev'] = $this->sortRev;
 		}
 
-		return $this->script . '?' . t3lib_div::implodeArrayForUrl('', $urlParameters, '', TRUE);
+		return $this->script . '?' . GeneralUtility::implodeArrayForUrl('', $urlParameters, '', TRUE);
 	}
 
 	/**
@@ -1180,8 +1183,6 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends localRecordList {
 
 			// Check table:
 		if (is_array($GLOBALS['TCA'][$table])) {
-			t3lib_div::loadTCA($table);
-
 			if (isset($GLOBALS['TCA'][$table]['columns']) && is_array($GLOBALS['TCA'][$table]['columns'])) {
 					// Traverse configured columns and add them to field array, if available for user.
 				foreach ($GLOBALS['TCA'][$table]['columns'] as $fN => $fieldValue) {
@@ -1232,10 +1233,10 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends localRecordList {
 					}
 				}
 			} else {
-				t3lib_div::sysLog(
+				GeneralUtility::sysLog(
 					sprintf('$TCA is broken for the table "%s": no required "columns" entry in $TCA.', $table),
 					'core',
-					t3lib_div::SYSLOG_SEVERITY_ERROR
+					GeneralUtility::SYSLOG_SEVERITY_ERROR
 				);
 			}
 		}

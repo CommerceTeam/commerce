@@ -24,6 +24,7 @@
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * This metaclass provides several helper methods for handling relations in the backend.
@@ -875,7 +876,7 @@ class Tx_Commerce_Utility_BackendUtility {
 		if ($add && is_numeric($articleUid)) {
 			$result = $database->exec_SELECTquery('attributesedit', 'tx_commerce_articles', 'uid=' . (int) $articleUid);
 			$xmlData = $database->sql_fetch_assoc($result);
-			$xmlData = t3lib_div::xml2array($xmlData['attributesedit']);
+			$xmlData = GeneralUtility::xml2array($xmlData['attributesedit']);
 		}
 
 		$relationData = array();
@@ -923,7 +924,7 @@ class Tx_Commerce_Utility_BackendUtility {
 			}
 		}
 
-		$xmlData = t3lib_div::array2xml($xmlData, '', 0, 'T3FlexForms');
+		$xmlData = GeneralUtility::array2xml($xmlData, '', 0, 'T3FlexForms');
 
 		if ($articleUid) {
 			$database->exec_UPDATEquery(
@@ -959,7 +960,7 @@ class Tx_Commerce_Utility_BackendUtility {
 
 		$xmlDataResult = $database->exec_SELECTquery($xmlField, $table, 'uid=' . (int) $uid);
 		$xmlData = $database->sql_fetch_assoc($xmlDataResult);
-		$xmlData = t3lib_div::xml2array($xmlData[$xmlField]);
+		$xmlData = GeneralUtility::xml2array($xmlData[$xmlField]);
 		if (!is_array($xmlData)) {
 			$xmlData = array();
 		}
@@ -1011,7 +1012,7 @@ class Tx_Commerce_Utility_BackendUtility {
 			// build new XML
 		if (is_array($xmlData)) {
 				// Dump Quickfix
-			$xmlData = t3lib_div::array2xml($xmlData, '', 0, 'T3FlexForms');
+			$xmlData = GeneralUtility::array2xml($xmlData, '', 0, 'T3FlexForms');
 		} else {
 			$xmlData = '';
 		}
@@ -1157,7 +1158,7 @@ class Tx_Commerce_Utility_BackendUtility {
 	 * @return string XML-Flex-Form
 	 */
 	public function buildLocalisedAttributeValues($flexValue, $langIdent) {
-		$attrFFData = t3lib_div::xml2array($flexValue);
+		$attrFFData = GeneralUtility::xml2array($flexValue);
 
 		$result = '';
 		if (is_array($attrFFData)) {
@@ -1190,7 +1191,7 @@ class Tx_Commerce_Utility_BackendUtility {
 					}
 				break;
 			}
-			$result = t3lib_div::array2xml($attrFFData, '', 0, 'T3FlexForms');
+			$result = GeneralUtility::array2xml($attrFFData, '', 0, 'T3FlexForms');
 		}
 		return $result;
 	}
@@ -1203,7 +1204,7 @@ class Tx_Commerce_Utility_BackendUtility {
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, this wont get replaced as it was empty before and will get removed from the api
 	 */
 	public function savePriceFlexformWithArticle() {
-		t3lib_div::logDeprecatedFunction();
+		GeneralUtility::logDeprecatedFunction();
 	}
 
 	/**
@@ -1282,7 +1283,7 @@ class Tx_Commerce_Utility_BackendUtility {
 			$data['data']['sDEF']['lDEF']['price_scale_amount_end_' . $priceUid] = array('vDEF' => $priceDataArray['price_scale_amount_end']);
 		}
 
-		$xml = t3lib_div::array2xml($data, '', 0, 'T3FlexForms');
+		$xml = GeneralUtility::array2xml($data, '', 0, 'T3FlexForms');
 
 		$res = $database->exec_UPDATEquery(
 			'tx_commerce_articles',
@@ -1304,7 +1305,7 @@ class Tx_Commerce_Utility_BackendUtility {
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use Tx_Commerce_Utility_BackendUtility::updatePriceXMLFromDatabase
 	 */
 	public function fix_articles_price($article_uid = 0) {
-		t3lib_div::logDeprecatedFunction();
+		GeneralUtility::logDeprecatedFunction();
 		if ($article_uid > 0) {
 			self::updatePriceXMLFromDatabase($article_uid);
 		}
@@ -1319,7 +1320,7 @@ class Tx_Commerce_Utility_BackendUtility {
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use Tx_Commerce_Utility_BackendUtility::updateXML
 	 */
 	public function fix_product_atributte($product_uid = 0) {
-		t3lib_div::logDeprecatedFunction();
+		GeneralUtility::logDeprecatedFunction();
 		if ($product_uid > 0) {
 			/** @var t3lib_db $database */
 			$database = $GLOBALS['TYPO3_DB'];
@@ -1343,7 +1344,7 @@ class Tx_Commerce_Utility_BackendUtility {
 				}
 			}
 			$arrayToSave = array();
-			$xmlText = t3lib_div::array2xml_cs($xmlArray, 'T3FlexForms', $options = array(), $charset = '');
+			$xmlText = GeneralUtility::array2xml_cs($xmlArray, 'T3FlexForms', $options = array(), $charset = '');
 			$arrayToSave['attributes'] = $xmlText;
 
 			$database->exec_UPDATEquery(
@@ -1367,7 +1368,7 @@ class Tx_Commerce_Utility_BackendUtility {
 			// verify params
 		if (!is_numeric($pUidFrom) || !is_numeric($pUidTo)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('swapProductAttributes (Tx_Commerce_Utility_BackendUtility) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				GeneralUtility::devLog('swapProductAttributes (Tx_Commerce_Utility_BackendUtility) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
 			}
 			return FALSE;
 		}
@@ -1421,7 +1422,7 @@ class Tx_Commerce_Utility_BackendUtility {
 			// check params
 		if (!is_numeric($pUidFrom) || !is_numeric($pUidTo)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('swapProductArticles (Tx_Commerce_Utility_BackendUtility) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				GeneralUtility::devLog('swapProductArticles (Tx_Commerce_Utility_BackendUtility) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
 			}
 			return FALSE;
 		}
@@ -1476,7 +1477,7 @@ class Tx_Commerce_Utility_BackendUtility {
 			// check params
 		if (!is_numeric($uid) || !is_numeric($uid_product)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('copyArticle (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				GeneralUtility::devLog('copyArticle (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
 			}
 			return FALSE;
 		}
@@ -1507,7 +1508,7 @@ class Tx_Commerce_Utility_BackendUtility {
 
 			// init tce
 		/** @var t3lib_TCEmain $tce */
-		$tce = t3lib_div::makeInstance('t3lib_TCEmain');
+		$tce = GeneralUtility::makeInstance('t3lib_TCEmain');
 		$tce->stripslashes_values = 0;
 
 		$TCAdefaultOverride = $backendUser->getTSConfigProp('TCAdefaults');
@@ -1580,7 +1581,7 @@ class Tx_Commerce_Utility_BackendUtility {
 		while ($row = $database->sql_fetch_assoc($res)) {
 				// copy them to the new article
 			/** @var t3lib_TCEmain $tce */
-			$tce = t3lib_div::makeInstance('t3lib_TCEmain');
+			$tce = GeneralUtility::makeInstance('t3lib_TCEmain');
 			$tce->stripslashes_values = 0;
 
 			$TCAdefaultOverride = $backendUser->getTSConfigProp('TCAdefaults');
@@ -1685,7 +1686,7 @@ class Tx_Commerce_Utility_BackendUtility {
 			// check params
 		if (!is_numeric($uid) || !is_numeric($uid_category) || !is_numeric($sorting)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('copyProduct (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				GeneralUtility::devLog('copyProduct (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
 			}
 			return FALSE;
 		}
@@ -1711,19 +1712,19 @@ class Tx_Commerce_Utility_BackendUtility {
 			// First prepare user defined objects (if any) for hooks which extend this function:
 		$hookObjectsArr = array();
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_belib.php']['copyProductClass'])) {
-			t3lib_div::deprecationLog('
+			GeneralUtility::deprecationLog('
 				hook
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_belib.php\'][\'copyProductClass\']
 				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Utility/BackendUtility.php\'][\'copyProduct\']
 			');
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_belib.php']['copyProductClass'] as $classRef) {
-				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+				$hookObjectsArr[] = &GeneralUtility::getUserObj($classRef);
 			}
 		}
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Utility/BackendUtility.php']['copyProduct'])) {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Utility/BackendUtility.php']['copyProduct'] as $classRef) {
-				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+				$hookObjectsArr[] = &GeneralUtility::getUserObj($classRef);
 			}
 		}
 
@@ -1751,7 +1752,7 @@ class Tx_Commerce_Utility_BackendUtility {
 
 			// init tce
 		/** @var t3lib_TCEmain $tce */
-		$tce = t3lib_div::makeInstance('t3lib_TCEmain');
+		$tce = GeneralUtility::makeInstance('t3lib_TCEmain');
 		$tce->stripslashes_values = 0;
 			// set workspace bypass if requested
 		$tce->bypassWorkspaceRestrictions = $ignoreWS;
@@ -1818,7 +1819,7 @@ class Tx_Commerce_Utility_BackendUtility {
 			// check params
 		if (!is_string($table) || !is_numeric($uidCopied) || !is_numeric($uidNew) || !is_numeric($loc)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('copyLocale (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				GeneralUtility::devLog('copyLocale (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
 			}
 			return FALSE;
 		}
@@ -1829,12 +1830,10 @@ class Tx_Commerce_Utility_BackendUtility {
 		$database = $GLOBALS['TYPO3_DB'];
 
 		if ($GLOBALS['TCA'][$table] && $uidCopied) {
-			t3lib_div::loadTCA($table);
-
-				// make data
+			// make data
 			$rec = t3lib_BEfunc::getRecordLocalization($table, $uidCopied, $loc);
 
-				// if the item is not localized, return
+			// if the item is not localized, return
 			if (FALSE == $rec) {
 				return TRUE;
 			}
@@ -1848,7 +1847,7 @@ class Tx_Commerce_Utility_BackendUtility {
 			foreach ($GLOBALS['TCA'][$table]['columns'] as $fN => $fCfg) {
 					// Otherwise, do not copy field (unless it is the language field or pointer to the original language)
 				if (
-					t3lib_div::inList('exclude,noCopy,mergeIfNotBlank', $fCfg['l10n_mode'])
+					GeneralUtility::inList('exclude,noCopy,mergeIfNotBlank', $fCfg['l10n_mode'])
 					&& $fN != $GLOBALS['TCA'][$table]['ctrl']['languageField']
 					&& $fN != $GLOBALS['TCA'][$table]['ctrl']['transOrigPointerField']
 				) {
@@ -1859,7 +1858,7 @@ class Tx_Commerce_Utility_BackendUtility {
 				// if we localize an article, add the product uid of the $uidNew localized product
 			if ('tx_commerce_articles' == $table) {
 				/** @var Tx_Commerce_Domain_Model_Article $article */
-				$article = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Article', $uidNew);
+				$article = GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Article', $uidNew);
 				$productUid = $article->getParentProductUid();
 
 					// load uid of the localized product
@@ -1880,7 +1879,7 @@ class Tx_Commerce_Utility_BackendUtility {
 
 				// init tce
 			/** @var t3lib_TCEmain $tce */
-			$tce = t3lib_div::makeInstance('t3lib_TCEmain');
+			$tce = GeneralUtility::makeInstance('t3lib_TCEmain');
 			$tce->stripslashes_values = 0;
 				// set workspace bypass if requested
 			$tce->bypassWorkspaceRestrictions = $ignoreWS;
@@ -1933,20 +1932,18 @@ class Tx_Commerce_Utility_BackendUtility {
 			// check params
 		if (!is_string($table) || !is_numeric($uidCopied) || !is_numeric($uidOverwrite) || !is_numeric($loc)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('copyLocale (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				GeneralUtility::devLog('copyLocale (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
 			}
 			return FALSE;
 		}
 
 			// check if table is defined in the TCA
 		if ($GLOBALS['TCA'][$table] && $uidCopied) {
-			t3lib_div::loadTCA($table);
-
-				// make data
+			// make data
 			$recFrom = t3lib_BEfunc::getRecordLocalization($table, $uidCopied, $loc);
 			$recTo = t3lib_BEfunc::getRecordLocalization($table, $uidOverwrite, $loc);
 
-				// if the item is not localized, return
+			// if the item is not localized, return
 			if (FALSE == $recFrom) {
 				return TRUE;
 			}
@@ -1965,14 +1962,14 @@ class Tx_Commerce_Utility_BackendUtility {
 			foreach ($GLOBALS['TCA'][$table]['columns'] as $fN => $fCfg) {
 					// Otherwise, do not copy field (unless it is the language field or pointer to the original language)
 				if (
-					t3lib_div::inList('exclude,noCopy,mergeIfNotBlank', $fCfg['l10n_mode'])
+					GeneralUtility::inList('exclude,noCopy,mergeIfNotBlank', $fCfg['l10n_mode'])
 					&& $fN != $GLOBALS['TCA'][$table]['ctrl']['languageField']
 					&& $fN != $GLOBALS['TCA'][$table]['ctrl']['transOrigPointerField']
 				) {
 					unset($recFrom[0][$fN]);
 				} elseif (isset($fCfg['config']['type']) && 'flex' == $fCfg['config']['type'] && isset($recFrom[0][$fN])) {
 					if ('' != $recFrom[0][$fN]) {
-						$recFrom[0][$fN] = t3lib_div::xml2array($recFrom[0][$fN]);
+						$recFrom[0][$fN] = GeneralUtility::xml2array($recFrom[0][$fN]);
 
 						if ('' == trim($recFrom[0][$fN])) {
 							unset($recFrom[0][$fN]);
@@ -1988,7 +1985,7 @@ class Tx_Commerce_Utility_BackendUtility {
 
 				// init tce
 			/** @var t3lib_TCEmain $tce */
-			$tce = t3lib_div::makeInstance('t3lib_TCEmain');
+			$tce = GeneralUtility::makeInstance('t3lib_TCEmain');
 			$tce->stripslashes_values = 0;
 
 			$TCAdefaultOverride = $backendUser->getTSConfigProp('TCAdefaults');
@@ -2031,7 +2028,7 @@ class Tx_Commerce_Utility_BackendUtility {
 			// check params
 		if (!is_string($table) || !is_numeric($uid)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('deleteL18n (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				GeneralUtility::devLog('deleteL18n (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
 			}
 			return FALSE;
 		}
@@ -2064,7 +2061,7 @@ class Tx_Commerce_Utility_BackendUtility {
 			// check params
 		if (!is_numeric($uid) || !is_numeric($parent_uid) || $uid == $parent_uid) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('copyCategory (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				GeneralUtility::devLog('copyCategory (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
 			}
 			return FALSE;
 		}
@@ -2084,19 +2081,19 @@ class Tx_Commerce_Utility_BackendUtility {
 			// First prepare user defined objects (if any) for hooks which extend this function:
 		$hookObjectsArr = array();
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_belib.php']['copyCategoryClass'])) {
-			t3lib_div::deprecationLog('
+			GeneralUtility::deprecationLog('
 				hook
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_belib.php\'][\'copyCategoryClass\']
 				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Utility/BackendUtility.php\'][\'copyCategory\']
 			');
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_belib.php']['copyCategoryClass'] as $classRef) {
-				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+				$hookObjectsArr[] = &GeneralUtility::getUserObj($classRef);
 			}
 		}
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Utility/BackendUtility.php']['copyCategory'])) {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Utility/BackendUtility.php']['copyCategory'] as $classRef) {
-				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+				$hookObjectsArr[] = &GeneralUtility::getUserObj($classRef);
 			}
 		}
 
@@ -2123,7 +2120,7 @@ class Tx_Commerce_Utility_BackendUtility {
 
 			// init tce
 		/** @var t3lib_TCEmain $tce */
-		$tce = t3lib_div::makeInstance('t3lib_TCEmain');
+		$tce = GeneralUtility::makeInstance('t3lib_TCEmain');
 		$tce->stripslashes_values = 0;
 
 		/** @var t3lib_beUserAuth $backendUser */
@@ -2193,7 +2190,7 @@ class Tx_Commerce_Utility_BackendUtility {
 			// check params
 		if (!is_numeric($uidToChmod) || !is_numeric($uidFrom)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('chmodCategoryByCategory (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				GeneralUtility::devLog('chmodCategoryByCategory (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
 			}
 			return FALSE;
 		}
@@ -2267,7 +2264,7 @@ class Tx_Commerce_Utility_BackendUtility {
 			// check params
 		if (!is_numeric($catUidTo) || !is_numeric($catUidFrom)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('copyProductsByCategory (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				GeneralUtility::devLog('copyProductsByCategory (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
 			}
 			return FALSE;
 		}
@@ -2309,7 +2306,7 @@ class Tx_Commerce_Utility_BackendUtility {
 			// check params
 		if (!is_numeric($catUidTo) || !is_numeric($catUidFrom) || $catUidTo == $catUidFrom) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('copyCategoriesByCategory (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				GeneralUtility::devLog('copyCategoriesByCategory (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
 			}
 			return FALSE;
 		}
@@ -2349,7 +2346,7 @@ class Tx_Commerce_Utility_BackendUtility {
 			// check params
 		if (!is_numeric($prodUidTo) || !is_numeric($prodUidFrom)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('copyArticlesByProduct (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				GeneralUtility::devLog('copyArticlesByProduct (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
 			}
 			return FALSE;
 		}
@@ -2378,7 +2375,7 @@ class Tx_Commerce_Utility_BackendUtility {
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use updateXML instead
 	 */
 	public function fix_category_atributte($category_uid = 0) {
-		t3lib_div::logDeprecatedFunction();
+		GeneralUtility::logDeprecatedFunction();
 
 		if ($category_uid == 0) {
 			return;
@@ -2400,7 +2397,7 @@ class Tx_Commerce_Utility_BackendUtility {
 			}
 		}
 		$arrayToSave = array();
-		$xmlText = t3lib_div::array2xml_cs($xmlArray, 'T3FlexForms', $options = array(), $charset = '');
+		$xmlText = GeneralUtility::array2xml_cs($xmlArray, 'T3FlexForms', $options = array(), $charset = '');
 		$arrayToSave['attributes'] = $xmlText;
 
 		$database->exec_UPDATEquery('tx_commerce_categories', 'uid=' . $category_uid, $arrayToSave);
@@ -2521,7 +2518,7 @@ class Tx_Commerce_Utility_BackendUtility {
 	public static function getPermMask($perm) {
 		if (!is_string($perm)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('getPermMask (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				GeneralUtility::devLog('getPermMask (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
 			}
 			return 0;
 		}
@@ -2567,7 +2564,7 @@ class Tx_Commerce_Utility_BackendUtility {
 			// check params
 		if (!is_numeric($uid) || !is_string($perm)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('checkProductPerms (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				GeneralUtility::devLog('checkProductPerms (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
 			}
 			return FALSE;
 		}
@@ -2577,7 +2574,7 @@ class Tx_Commerce_Utility_BackendUtility {
 
 		if (0 == $mask) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('checkProductPerms (belib) gets passed an invalid permission to check for.', COMMERCE_EXTKEY, 3);
+				GeneralUtility::devLog('checkProductPerms (belib) gets passed an invalid permission to check for.', COMMERCE_EXTKEY, 3);
 			}
 			return FALSE;
 		}
@@ -2672,9 +2669,9 @@ class Tx_Commerce_Utility_BackendUtility {
 					// Adding visual token - Versioning Entry Point - that tells that THIS position was where the versionized branch got connected to the main tree. I will have to find a better name or something...
 				$output = ' [#VEP#]' . $output;
 			}
-			$output = '/' . t3lib_div::fixed_lgd_cs(strip_tags($record['title']), $titleLimit) . $output;
+			$output = '/' . GeneralUtility::fixed_lgd_cs(strip_tags($record['title']), $titleLimit) . $output;
 			if ($fullTitleLimit) {
-				$fullOutput = '/' . t3lib_div::fixed_lgd_cs(strip_tags($record['title']), $fullTitleLimit) . $fullOutput;
+				$fullOutput = '/' . GeneralUtility::fixed_lgd_cs(strip_tags($record['title']), $fullTitleLimit) . $fullOutput;
 			}
 		}
 
@@ -2805,7 +2802,7 @@ class Tx_Commerce_Utility_BackendUtility {
 		}
 
 		/** @var Tx_Commerce_Tree_CategoryMounts $mounts */
-		$mounts = t3lib_div::makeInstance('Tx_Commerce_Tree_CategoryMounts');
+		$mounts = GeneralUtility::makeInstance('Tx_Commerce_Tree_CategoryMounts');
 		$mounts->init($backendUser->user['uid']);
 
 		foreach ($categoryUids as $categoryUid) {
@@ -2815,7 +2812,7 @@ class Tx_Commerce_Utility_BackendUtility {
 			}
 
 			/** @var Tx_Commerce_Domain_Model_Category $category */
-			$category = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category', $categoryUid);
+			$category = GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Category', $categoryUid);
 			// check perms
 			foreach ($perms as $perm) {
 				if (!$category->isPermissionSet($perm)) {
@@ -2862,7 +2859,7 @@ class Tx_Commerce_Utility_BackendUtility {
 			// check params
 		if (!is_numeric($uidFrom) || !is_numeric($uidTo) || $uidFrom == $uidTo) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('overwriteProduct (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				GeneralUtility::devLog('overwriteProduct (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
 			}
 			return FALSE;
 		}
@@ -2889,19 +2886,19 @@ class Tx_Commerce_Utility_BackendUtility {
 			// First prepare user defined objects (if any) for hooks which extend this function:
 		$hookObjectsArr = array();
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_belib.php']['overwriteProductClass'])) {
-			t3lib_div::deprecationLog('
+			GeneralUtility::deprecationLog('
 				hook
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_belib.php\'][\'overwriteProductClass\']
 				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Utility/BackendUtility.php\'][\'overwriteProduct\']
 			');
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_belib.php']['overwriteProductClass'] as $classRef) {
-				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+				$hookObjectsArr[] = &GeneralUtility::getUserObj($classRef);
 			}
 		}
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Utility/BackendUtility.php']['overwriteProduct'])) {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Utility/BackendUtility.php']['overwriteProduct'] as $classRef) {
-				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+				$hookObjectsArr[] = &GeneralUtility::getUserObj($classRef);
 			}
 		}
 
@@ -2918,7 +2915,7 @@ class Tx_Commerce_Utility_BackendUtility {
 
 			// execute
 		/** @var t3lib_TCEmain $tce */
-		$tce = t3lib_div::makeInstance('t3lib_TCEmain');
+		$tce = GeneralUtility::makeInstance('t3lib_TCEmain');
 		$tce->stripslashes_values = 0;
 
 		/** @var t3lib_beUserAuth $backendUser */
@@ -3005,7 +3002,7 @@ class Tx_Commerce_Utility_BackendUtility {
 	 */
 	public function getOverwriteData($table, $uidFrom, $destPid) {
 		/** @var t3lib_TCEmain $tce */
-		$tce = t3lib_div::makeInstance('t3lib_TCEmain');
+		$tce = GeneralUtility::makeInstance('t3lib_TCEmain');
 		$tce->stripslashes_values = 0;
 
 		/** @var t3lib_beUserAuth $backendUser */
@@ -3022,14 +3019,12 @@ class Tx_Commerce_Utility_BackendUtility {
 		$language = 0;
 		$uid = $origUid = (int) $uidFrom;
 
-			// Only copy if the table is defined in TCA, a uid is given
+		// Only copy if the table is defined in TCA, a uid is given
 		if ($GLOBALS['TCA'][$table] && $uid) {
-			t3lib_div::loadTCA($table);
-
-				// This checks if the record can be selected which is all that a copy action requires.
+			// This checks if the record can be selected which is all that a copy action requires.
 			$data = Array();
 
-			$nonFields = array_unique(t3lib_div::trimExplode(
+			$nonFields = array_unique(GeneralUtility::trimExplode(
 				',',
 				'uid,perms_userid,perms_groupid,perms_user,perms_group,perms_everybody,t3ver_oid,t3ver_wsid,t3ver_id,t3ver_label,
 					t3ver_state,t3ver_swapmode,t3ver_count,t3ver_stage,t3ver_tstamp,',
@@ -3079,7 +3074,7 @@ class Tx_Commerce_Utility_BackendUtility {
 							// Revert to default for some fields:
 						} elseif (
 							$GLOBALS['TCA'][$table]['ctrl']['setToDefaultOnCopy']
-							&& t3lib_div::inList($GLOBALS['TCA'][$table]['ctrl']['setToDefaultOnCopy'], $field)
+							&& GeneralUtility::inList($GLOBALS['TCA'][$table]['ctrl']['setToDefaultOnCopy'], $field)
 						) {
 							$value = $defaultData[$field];
 						} else {
@@ -3138,7 +3133,7 @@ class Tx_Commerce_Utility_BackendUtility {
 			// check params
 		if (!is_numeric($uidFrom) || !is_numeric($uidTo)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('copyArticle (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				GeneralUtility::devLog('copyArticle (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
 			}
 			return FALSE;
 		}
@@ -3177,7 +3172,7 @@ class Tx_Commerce_Utility_BackendUtility {
 
 			// execute
 		/** @var t3lib_TCEmain $tce */
-		$tce = t3lib_div::makeInstance('t3lib_TCEmain');
+		$tce = GeneralUtility::makeInstance('t3lib_TCEmain');
 		$tce->stripslashes_values = 0;
 
 		/** @var t3lib_beUserAuth $backendUser */

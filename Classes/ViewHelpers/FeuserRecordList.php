@@ -24,11 +24,15 @@
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Backend\Utility\IconUtility;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Renders the Orderlist in the BE oredrmodule
  */
-class Tx_Commerce_ViewHelpers_FeuserRecordList extends localRecordList {
+class Tx_Commerce_ViewHelpers_FeuserRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordList {
 	/**
 	 * @var boolean
 	 */
@@ -54,8 +58,8 @@ class Tx_Commerce_ViewHelpers_FeuserRecordList extends localRecordList {
 			// Makes the code for the pageicon in the top
 		$this->pageRow = $row;
 		$this->counter++;
-		$alttext = t3lib_BEfunc::getRecordIconAltText($row, 'pages');
-		$iconImg = t3lib_iconWorks::getIconImage('pages', $row, $this->backPath, 'class="absmiddle" title="' . htmlspecialchars($alttext) . '"');
+		$alttext = BackendUtility::getRecordIconAltText($row, 'pages');
+		$iconImg = IconUtility::getIconImage('pages', $row, $this->backPath, 'class="absmiddle" title="' . htmlspecialchars($alttext) . '"');
 			// pseudo title column name
 		$titleCol = 'test';
 			// Setting the fields to display in the list (this is of course "pseudo fields" since this is the top!)
@@ -79,7 +83,7 @@ class Tx_Commerce_ViewHelpers_FeuserRecordList extends localRecordList {
 				// Adding "New record" icon:
 			if (!$GLOBALS['SOBE']->modTSconfig['properties']['noCreateRecordsLink']) {
 				$theCtrlPanel[] = '<a href="#" onclick="' . htmlspecialchars('return jumpExt(\'db_new.php?id=' . $this->id . '\');') . '">' .
-					t3lib_iconWorks::getSpriteIcon('actions-document-new', array('title' => $language->getLL('newRecordGeneral', 1))) .
+					IconUtility::getSpriteIcon('actions-document-new', array('title' => $language->getLL('newRecordGeneral', 1))) .
 					'</a>';
 			}
 
@@ -90,13 +94,13 @@ class Tx_Commerce_ViewHelpers_FeuserRecordList extends localRecordList {
 					$params = '&data[pages][' . $row['uid'] . '][hidden]=0';
 					$theCtrlPanel[] = '<a href="#" onclick="' .
 						htmlspecialchars('return jumpToUrl(\'' . $GLOBALS['SOBE']->doc->issueCommand($params, -1) . '\');') . '">' .
-						t3lib_iconWorks::getSpriteIcon('actions-edit-unhide', array('title' => $language->getLL('unHidePage', 1))) .
+						IconUtility::getSpriteIcon('actions-edit-unhide', array('title' => $language->getLL('unHidePage', 1))) .
 						'</a>';
 				} else {
 					$params = '&data[pages][' . $row['uid'] . '][hidden]=1';
 					$theCtrlPanel[] = '<a href="#" onclick="' .
 						htmlspecialchars('return jumpToUrl(\'' . $GLOBALS['SOBE']->doc->issueCommand($params, -1) . '\');') . '">' .
-						t3lib_iconWorks::getSpriteIcon('actions-edit-hide', array('title' => $language->getLL('hidePage', 1))) .
+						IconUtility::getSpriteIcon('actions-edit-hide', array('title' => $language->getLL('hidePage', 1))) .
 						'</a>';
 				}
 			}
@@ -108,7 +112,7 @@ class Tx_Commerce_ViewHelpers_FeuserRecordList extends localRecordList {
 			if (count($elFromTable)) {
 				$theCtrlPanel[] = '<a href="' . htmlspecialchars($this->clipObj->pasteUrl('', $this->id)) . '" onclick="' .
 					htmlspecialchars('return ' . $this->clipObj->confirmMsg('pages', $this->pageRow, 'into', $elFromTable)) . '">' .
-					t3lib_iconWorks::getSpriteIcon(
+					IconUtility::getSpriteIcon(
 						'actions-document-paste-into',
 						array('title' => $language->getLL('clip_paste', 1))
 					) . '</a>';
@@ -132,17 +136,17 @@ class Tx_Commerce_ViewHelpers_FeuserRecordList extends localRecordList {
 			// Add "CSV" link, if a specific table is shown:
 		if ($this->table) {
 			$theData['up'][] = '<a href="' . htmlspecialchars($this->listURL() . '&csv=1') . '">' .
-				t3lib_iconWorks::getSpriteIcon(
+				IconUtility::getSpriteIcon(
 					'mimetypes-text-csv',
 					array('title' => $language->sL('LLL:EXT:lang/locallang_core.php:labels.csv', 1))
 				) . '</a>';
 		}
 
 			// Add "Export" link, if a specific table is shown:
-		if ($this->table && t3lib_extMgm::isLoaded('impexp')) {
-			$theData['up'][] = '<a href="' . htmlspecialchars($this->backPath . t3lib_extMgm::extRelPath('impexp') .
+		if ($this->table && ExtensionManagementUtility::isLoaded('impexp')) {
+			$theData['up'][] = '<a href="' . htmlspecialchars($this->backPath . ExtensionManagementUtility::extRelPath('impexp') .
 				'app/index.php?tx_impexp[action]=export&tx_impexp[list][]=' . rawurlencode($this->table . ':' . $this->id)) . '">' .
-				t3lib_iconWorks::getSpriteIcon(
+				IconUtility::getSpriteIcon(
 					'actions-document-export-t3d',
 					array('title' => $language->sL('LLL:EXT:lang/locallang_core.php:rm.export', 1))
 				) . '</a>';
@@ -150,7 +154,7 @@ class Tx_Commerce_ViewHelpers_FeuserRecordList extends localRecordList {
 
 			// Add "refresh" link:
 		$theData['up'][] = '<a href="' . htmlspecialchars($this->listURL()) . '">' .
-			t3lib_iconWorks::getSpriteIcon('actions-system-refresh', array('title' => $language->sL('LLL:EXT:lang/locallang_core.php:labels.reload', 1)))  . '</a>';
+			IconUtility::getSpriteIcon('actions-system-refresh', array('title' => $language->sL('LLL:EXT:lang/locallang_core.php:labels.reload', 1)))  . '</a>';
 
 			// Add icon with clickmenu, etc:
 			// If there IS a real page...:
@@ -158,10 +162,10 @@ class Tx_Commerce_ViewHelpers_FeuserRecordList extends localRecordList {
 
 				// Setting title of page + the "Go up" link:
 			$theData[$titleCol] .= '<br /><span title="' . htmlspecialchars($row['_thePathFull']) . '">' .
-				htmlspecialchars(t3lib_div::fixed_lgd_cs($row['_thePath'], - $this->fixedL)) . '</span>';
+				htmlspecialchars(GeneralUtility::fixed_lgd_cs($row['_thePath'], - $this->fixedL)) . '</span>';
 			$theData['up'][] = '<a href="' . htmlspecialchars($this->listURL($row['pid'])) . '" onclick="setHighlight(' .
 				$row['pid'] . ')">' .
-				t3lib_iconWorks::getSpriteIcon(
+				IconUtility::getSpriteIcon(
 					'actions-view-go-up',
 					array('title' => $language->sL('LLL:EXT:lang/locallang_core.php:labels.upOneLevel', 1))
 				) . '</a>';
@@ -174,17 +178,17 @@ class Tx_Commerce_ViewHelpers_FeuserRecordList extends localRecordList {
 		} else {
 				// Setting title of root (sitename):
 			$theData[$titleCol] .= '<br />' .
-				htmlspecialchars(t3lib_div::fixed_lgd_cs($GLOBALS['TYPO3_CONF_VARS']['SYS']['sitename'], - $this->fixedL));
+				htmlspecialchars(GeneralUtility::fixed_lgd_cs($GLOBALS['TYPO3_CONF_VARS']['SYS']['sitename'], - $this->fixedL));
 
 				// Make Icon:
-			$theIcon = t3lib_iconWorks::getSpriteIcon('apps-pagetree-root');
+			$theIcon = IconUtility::getSpriteIcon('apps-pagetree-root');
 		}
 
 			// If there is a returnUrl given, add a back-link:
 		if ($this->returnUrl) {
-			$theData['up'][] = '<a href="' . htmlspecialchars(t3lib_div::linkThisUrl($this->returnUrl, array('id' => $this->id))) .
+			$theData['up'][] = '<a href="' . htmlspecialchars(GeneralUtility::linkThisUrl($this->returnUrl, array('id' => $this->id))) .
 				'" class="typo3-goBack">' .
-				t3lib_iconWorks::getSpriteIcon(
+				IconUtility::getSpriteIcon(
 					'actions-view-go-back',
 					array('title' => $language->sL('LLL:EXT:lang/locallang_core.php:labels.goBack', 1))
 				) . '</a>';
@@ -228,7 +232,7 @@ class Tx_Commerce_ViewHelpers_FeuserRecordList extends localRecordList {
 		} else {
 			$orderby = 'fe_users.crdate DESC';
 		}
-		$query_array = array(
+		$queryArray = array(
 			'SELECT' => 'fe_users.uid,fe_users.username,fe_users.name,fe_users.email,count(tx_commerce_orders.uid) as bestellungen ',
 			'FROM' => 'tx_commerce_orders,fe_users',
 			'WHERE' => 'fe_users.deleted = 0 AND tx_commerce_orders.cust_fe_user  = fe_users.uid AND tx_commerce_orders.pid=' .
@@ -241,7 +245,7 @@ class Tx_Commerce_ViewHelpers_FeuserRecordList extends localRecordList {
 
 		$this->dontShowClipControlPanels = 1;
 
-		return $query_array;
+		return $queryArray;
 	}
 
 	/**
@@ -251,10 +255,6 @@ class Tx_Commerce_ViewHelpers_FeuserRecordList extends localRecordList {
 		/** @var t3lib_beUserAuth $backendUser */
 		$backendUser = $GLOBALS['BE_USER'];
 
-		t3lib_div::loadTCA('fe_users');
-			// Traverse the TCA table array:
-		reset($GLOBALS['TCA']);
-
 		/**
 		 * @todo auf eine tabelle beschränken, keine while liste mehr
 		 */
@@ -263,13 +263,9 @@ class Tx_Commerce_ViewHelpers_FeuserRecordList extends localRecordList {
 				// Checks that we see only permitted/requested tables:
 			if (
 				(!$this->table || $tableName == $this->table)
-				&& (!$this->tableList || t3lib_div::inList($this->tableList, $tableName))
+				&& (!$this->tableList || GeneralUtility::inList($this->tableList, $tableName))
 				&& $backendUser->check('tables_select', $tableName)
 			) {
-
-					// Load full table definitions:
-				t3lib_div::loadTCA($tableName);
-
 					// iLimit is set depending on whether we're in single- or multi-table mode
 				if ($this->table) {
 					$this->iLimit = (isset($GLOBALS['TCA'][$tableName]['interface']['maxSingleDBListItems']) ?
@@ -306,12 +302,12 @@ class Tx_Commerce_ViewHelpers_FeuserRecordList extends localRecordList {
 	protected function myLinkUrlMail($code, $testString) {
 			// Check for URL:
 		$schema = parse_url($testString);
-		if ($schema['scheme'] && t3lib_div::inList('http,https,ftp', $schema['scheme'])) {
+		if ($schema['scheme'] && GeneralUtility::inList('http,https,ftp', $schema['scheme'])) {
 			return '<a href="' . htmlspecialchars($testString) . '" target="_blank">' . $code . '</a>';
 		}
 
 			// Check for email:
-		if (t3lib_div::validEmail($testString)) {
+		if (GeneralUtility::validEmail($testString)) {
 			return '<a href="mailto:' . htmlspecialchars($testString) . '" target="_blank">' . $code . '</a>';
 		}
 
@@ -341,30 +337,30 @@ class Tx_Commerce_ViewHelpers_FeuserRecordList extends localRecordList {
 
 		if (substr(TYPO3_version, 0, 3) >= '4.0') {
 				// In offline workspace, look for alternative record:
-			t3lib_BEfunc::workspaceOL($table, $row, $GLOBALS['BE_USER']->workspace);
+			BackendUtility::workspaceOL($table, $row, $GLOBALS['BE_USER']->workspace);
 		}
 			// Background color, if any:
 		$row_bgColor = $this->alternateBgColors ?
 			(($cc % 2) ?
 				'' :
-				' bgcolor="' . t3lib_div::modifyHTMLColor($GLOBALS['SOBE']->doc->bgColor4, 10, 10, 10) . '"') :
+				' bgcolor="' . GeneralUtility::modifyHTMLColor($GLOBALS['SOBE']->doc->bgColor4, 10, 10, 10) . '"') :
 			'';
 
 		if ($backendUser->getModuleData('commerce_orders/index.php/userid', 'ses') == $row['uid']) {
-			$row_bgColor = ' bgcolor="' . t3lib_div::modifyHTMLColor($GLOBALS['SOBE']->doc->bgColor4, 30, 30, 30) . '"';
+			$row_bgColor = ' bgcolor="' . GeneralUtility::modifyHTMLColor($GLOBALS['SOBE']->doc->bgColor4, 30, 30, 30) . '"';
 		}
 
 			// Overriding with versions background color if any:
 		$row_bgColor = $row['_CSSCLASS'] ? ' class="' . $row['_CSSCLASS'] . '"' : $row_bgColor;
 
 			// Initialization
-		$alttext = t3lib_BEfunc::getRecordIconAltText($row, $table);
+		$alttext = BackendUtility::getRecordIconAltText($row, $table);
 
 			// Incr. counter.
 		$this->counter++;
 
 			// The icon with link
-		$iconImg = t3lib_iconWorks::getIconImage($table, $row, $this->backPath, 'title="' . htmlspecialchars($alttext) . '"' . ($indent ?
+		$iconImg = IconUtility::getIconImage($table, $row, $this->backPath, 'title="' . htmlspecialchars($alttext) . '"' . ($indent ?
 				' style="margin-left: ' . $indent . 'px;"' :
 				''));
 		$theIcon = $this->clickMenuEnabled ?
@@ -380,7 +376,7 @@ class Tx_Commerce_ViewHelpers_FeuserRecordList extends localRecordList {
 			if ($fCol == 'username') {
 				$theData[$fCol] = $row[$fCol];
 			} elseif ($fCol == 'crdate') {
-				$theData[$fCol] = t3lib_BEfunc::date($row[$fCol]);
+				$theData[$fCol] = BackendUtility::date($row[$fCol]);
 			} elseif ($fCol == '_PATH_') {
 				$theData[$fCol] = $this->recPath($row['pid']);
 			} elseif ($fCol == '_CONTROL_') {
@@ -399,9 +395,9 @@ class Tx_Commerce_ViewHelpers_FeuserRecordList extends localRecordList {
 				 * Use own method, if typo3 4.0.0 is not installed
 				 */
 				if (substr(TYPO3_version, 0, 3) >= '4.0') {
-					$theData[$fCol] = $this->linkUrlMail(htmlspecialchars(t3lib_BEfunc::getProcessedValueExtra($table, $fCol, $row[$fCol], 100, $row['uid'])), $row[$fCol]);
+					$theData[$fCol] = $this->linkUrlMail(htmlspecialchars(BackendUtility::getProcessedValueExtra($table, $fCol, $row[$fCol], 100, $row['uid'])), $row[$fCol]);
 				} else {
-					$theData[$fCol] = $this->myLinkUrlMail(htmlspecialchars(t3lib_BEfunc::getProcessedValueExtra($table, $fCol, $row[$fCol], 100, $row['uid'])), $row[$fCol]);
+					$theData[$fCol] = $this->myLinkUrlMail(htmlspecialchars(BackendUtility::getProcessedValueExtra($table, $fCol, $row[$fCol], 100, $row['uid'])), $row[$fCol]);
 				}
 			}
 		}
@@ -410,7 +406,7 @@ class Tx_Commerce_ViewHelpers_FeuserRecordList extends localRecordList {
 		if ($this->csvOutput) {
 				// Charset Conversion
 			/** @var t3lib_cs $csObj */
-			$csObj = t3lib_div::makeInstance('t3lib_cs');
+			$csObj = GeneralUtility::makeInstance('t3lib_cs');
 			$csObj->initCharset($GLOBALS['TYPO3_CONF_VARS']['BE']['forceCharset']);
 
 			if (!$extConf['BECSVCharset']) {
@@ -461,7 +457,7 @@ class Tx_Commerce_ViewHelpers_FeuserRecordList extends localRecordList {
 							// If the numeric clipboard pads are selected, show duplicate sorting link:
 						if ($this->clipNumPane()) {
 							$theData[$fCol] .= '<a href="' . htmlspecialchars($this->listURL('', -1) . '&duplicateField=' . $fCol) . '">' .
-								t3lib_iconWorks::getSpriteIcon(
+								IconUtility::getSpriteIcon(
 									'actions-document-duplicates-select',
 									array('title' => $language->getLL('clip_duplicates', 1))
 								) . '</a>';
@@ -475,7 +471,7 @@ class Tx_Commerce_ViewHelpers_FeuserRecordList extends localRecordList {
 					$temp_data = '';
 					foreach ($tables as $work_table) {
 						if ($GLOBALS['TCA'][$work_table]['columns'][$fCol]) {
-							$temp_data = $this->addSortLink($language->sL(t3lib_BEfunc::getItemLabel($work_table, $fCol, '<i>[|]</i>')), $fCol, $table);
+							$temp_data = $this->addSortLink($language->sL(BackendUtility::getItemLabel($work_table, $fCol, '<i>[|]</i>')), $fCol, $table);
 						}
 					}
 					if ($temp_data) {
@@ -483,7 +479,7 @@ class Tx_Commerce_ViewHelpers_FeuserRecordList extends localRecordList {
 						$theData[$fCol] = $temp_data;
 					} else {
 							// default handling
-						$theData[$fCol] .= $this->addSortLink($language->sL(t3lib_BEfunc::getItemLabel($table, $fCol, '<i>[|]</i>')), $fCol, $table);
+						$theData[$fCol] .= $this->addSortLink($language->sL(BackendUtility::getItemLabel($table, $fCol, '<i>[|]</i>')), $fCol, $table);
 					}
 				break;
 			}
@@ -526,7 +522,7 @@ class Tx_Commerce_ViewHelpers_FeuserRecordList extends localRecordList {
 			$this->fieldArray[] = '_PATH_';
 		}
 			// Cleaning up:
-		$this->fieldArray = array_unique(array_merge($this->fieldArray, t3lib_div::trimExplode(',', $rowlist, 1)));
+		$this->fieldArray = array_unique(array_merge($this->fieldArray, GeneralUtility::trimExplode(',', $rowlist, 1)));
 		if ($this->noControlPanels) {
 			$tempArray = array_flip($this->fieldArray);
 			unset($tempArray['_CONTROL_']);
@@ -543,7 +539,7 @@ class Tx_Commerce_ViewHelpers_FeuserRecordList extends localRecordList {
 			$selectFields[] = $thumbsCol;
 		}
 		if ($table == 'pages') {
-			if (t3lib_extMgm::isLoaded('cms')) {
+			if (ExtensionManagementUtility::isLoaded('cms')) {
 				$selectFields[] = 'module';
 				$selectFields[] = 'extendToSubpages';
 			}
@@ -567,7 +563,7 @@ class Tx_Commerce_ViewHelpers_FeuserRecordList extends localRecordList {
 			$selectFields[] = $GLOBALS['TCA'][$table]['ctrl']['transOrigPointerField'];
 		}
 		if ($GLOBALS['TCA'][$table]['ctrl']['label_alt']) {
-			$selectFields = array_merge($selectFields, t3lib_div::trimExplode(',', $GLOBALS['TCA'][$table]['ctrl']['label_alt'], 1));
+			$selectFields = array_merge($selectFields, GeneralUtility::trimExplode(',', $GLOBALS['TCA'][$table]['ctrl']['label_alt'], 1));
 		}
 
 			// Unique list!
@@ -617,13 +613,13 @@ class Tx_Commerce_ViewHelpers_FeuserRecordList extends localRecordList {
 				$theData[$titleCol] = '<span class="c-table">' . $language->sL($GLOBALS['TCA'][$table]['ctrl']['title'], 1) . '</span> (' . $this->totalItems . ')';
 			} else {
 				$title = $language->getLL(!$this->table ? 'expandView' : 'contractView', 1);
-				$icon = t3lib_iconWorks::getSpriteIcon('actions-view-table-' . ($this->table ? 'collapse' : 'expand'), array('title' => $title));
+				$icon = IconUtility::getSpriteIcon('actions-view-table-' . ($this->table ? 'collapse' : 'expand'), array('title' => $title));
 				$theData[$titleCol] = $this->linkWrapTable($table, '<span class="c-table">' . $language->sL($GLOBALS['TCA'][$table]['ctrl']['title'], 1) .
 					'</span> (' . $this->totalItems . ') <img' . $icon);
 			}
 
 				// CSH:
-			$theData[$titleCol] .= t3lib_BEfunc::cshItem($table, '', $this->backPath, '', FALSE, 'margin-bottom:0px; white-space: normal;');
+			$theData[$titleCol] .= BackendUtility::cshItem($table, '', $this->backPath, '', FALSE, 'margin-bottom:0px; white-space: normal;');
 
 			if ($LOISmode) {
 				$out .= '
@@ -636,7 +632,7 @@ class Tx_Commerce_ViewHelpers_FeuserRecordList extends localRecordList {
 					if (isset($GLOBALS['TCA_DESCR'][$table]['columns'][''])) {
 						$out .= '
 					<tr>
-						<td class="c-tableDescription">' . t3lib_BEfunc::helpTextIcon($table, '', $this->backPath, TRUE) . $GLOBALS['TCA_DESCR'][$table]['columns']['']['description'] . '</td>
+						<td class="c-tableDescription">' . BackendUtility::helpTextIcon($table, '', $this->backPath, TRUE) . $GLOBALS['TCA_DESCR'][$table]['columns']['']['description'] . '</td>
 					</tr>';
 					}
 				}
@@ -644,7 +640,7 @@ class Tx_Commerce_ViewHelpers_FeuserRecordList extends localRecordList {
 
 				$theUpIcon = ($table == 'pages' && $this->id && isset($this->pageRow['pid'])) ?
 					'<a href="' . htmlspecialchars($this->listURL($this->pageRow['pid'])) . '">' .
-						t3lib_iconWorks::getSpriteIcon(
+						IconUtility::getSpriteIcon(
 							'actions-view-go-up',
 							array('title' => $language->sL('LLL:EXT:lang/locallang_core.php:labels.upOneLevel', 1))
 						) . '</a>' :
@@ -697,7 +693,7 @@ class Tx_Commerce_ViewHelpers_FeuserRecordList extends localRecordList {
 						// If render item, increment counter and call function
 					if ($flag) {
 						$cc++;
-						$row[$titleCol] = '<a href="' . t3lib_div::getIndpEnv('REQUEST_URI') . '&userId=' . $row['uid'] . '">' .
+						$row[$titleCol] = '<a href="' . GeneralUtility::getIndpEnv('REQUEST_URI') . '&userId=' . $row['uid'] . '">' .
 							$row[$titleCol] . '</a>';
 
 						$iOut .= $this->renderListRow($table, $row, $cc, $titleCol, $thumbsCol);
@@ -709,7 +705,7 @@ class Tx_Commerce_ViewHelpers_FeuserRecordList extends localRecordList {
 								$table,
 								'pid=' . $row['pid'] . ' AND ' . $GLOBALS['TCA'][$table]['ctrl']['languageField'] . ' > 0 AND ' .
 									$GLOBALS['TCA'][$table]['ctrl']['transOrigPointerField'] . '=' . (int) $row['uid'] .
-									t3lib_BEfunc::deleteClause($table)
+									BackendUtility::deleteClause($table)
 							);
 
 								// For each available translation, render the record:
