@@ -25,11 +25,15 @@
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Backend\Utility\IconUtility;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class Tx_Commerce_Controller_CategoriesController
  */
-class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
+class Tx_Commerce_Controller_CategoriesController extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 	/**
 	 * Pointer - for browsing list of records.
 	 *
@@ -161,7 +165,7 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 		$this->perms_clause = $backendUser->getPagePermsClause(1);
 
 		// GPvars:
-		$this->id = (int) t3lib_div::_GP('id');
+		$this->id = (int) GeneralUtility::_GP('id');
 		if (!$this->id) {
 			Tx_Commerce_Utility_FolderUtility::initFolders();
 			$this->id = current(
@@ -170,23 +174,23 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 		}
 
 		// Initialize the listing object, dblist, for rendering the list:
-		$this->pointer = max(min(t3lib_div::_GP('pointer'), 100000), 0);
-		$this->imagemode = t3lib_div::_GP('imagemode');
-		$this->table = t3lib_div::_GP('table');
-		$this->search_field = t3lib_div::_GP('search_field');
-		$this->search_levels = t3lib_div::_GP('search_levels');
-		$this->showLimit = (int) t3lib_div::_GP('showLimit');
-		$this->returnUrl = t3lib_div::sanitizeLocalUrl(t3lib_div::_GP('returnUrl'));
+		$this->pointer = max(min(GeneralUtility::_GP('pointer'), 100000), 0);
+		$this->imagemode = GeneralUtility::_GP('imagemode');
+		$this->table = GeneralUtility::_GP('table');
+		$this->search_field = GeneralUtility::_GP('search_field');
+		$this->search_levels = GeneralUtility::_GP('search_levels');
+		$this->showLimit = (int) GeneralUtility::_GP('showLimit');
+		$this->returnUrl = GeneralUtility::sanitizeLocalUrl(GeneralUtility::_GP('returnUrl'));
 
-		$this->clear_cache = (boolean) t3lib_div::_GP('clear_cache');
-		$this->cmd = t3lib_div::_GP('cmd');
-		$this->cmd_table = t3lib_div::_GP('cmd_table');
+		$this->clear_cache = (boolean) GeneralUtility::_GP('clear_cache');
+		$this->cmd = GeneralUtility::_GP('cmd');
+		$this->cmd_table = GeneralUtility::_GP('cmd_table');
 
 		// Initialize menu
 		$this->menuConfig();
 
 		// Get Tabpe and controlArray in a different way
-		$controlParams = t3lib_div::_GP('control');
+		$controlParams = GeneralUtility::_GP('control');
 		if ($controlParams) {
 			$this->controlArray = current($controlParams);
 			$this->categoryUid = (int) $this->controlArray['uid'];
@@ -201,14 +205,14 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 	public function initPage() {
 		// Initializing document template object:
 		/** @var template $doc */
-		$doc = t3lib_div::makeInstance('template');
+		$doc = GeneralUtility::makeInstance('template');
 		$doc->backPath = $GLOBALS['BACK_PATH'];
 		$doc->docType = 'xhtml_trans';
 		$doc->setModuleTemplate(PATH_TXCOMMERCE . 'Resources/Private/Backend/mod_category_index.html');
 		$this->doc = $doc;
 
 		if (!$this->doc->moduleTemplate) {
-			t3lib_div::devLog(
+			GeneralUtility::devLog(
 				'cannot set moduleTemplate', 'commerce', 2, array(
 					'backpath' => $this->doc->backPath,
 					'filename from TBE_STYLES' => $GLOBALS['TBE_STYLES']['htmlTemplates']['mod_category_index.html'],
@@ -216,7 +220,7 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 				)
 			);
 			$templateFile = PATH_TXCOMMERCE_REL . 'Resources/Private/Backend/mod_category_index.html';
-			$this->doc->moduleTemplate = t3lib_div::getURL(PATH_site . $templateFile);
+			$this->doc->moduleTemplate = GeneralUtility::getURL(PATH_site . $templateFile);
 		}
 	}
 
@@ -227,8 +231,8 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 	 */
 	public function clearCache() {
 		if ($this->clear_cache) {
-			/** @var t3lib_TCEmain $tce */
-			$tce = t3lib_div::makeInstance('t3lib_TCEmain');
+			/** @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce */
+			$tce = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
 			$tce->stripslashes_values = 0;
 			$tce->start(array(), array());
 			$tce->clear_cacheCmd($this->id);
@@ -263,7 +267,7 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 			$sumlink = $this->scriptNewWizard . '?id=' . (int) $this->id;
 			$defVals = '';
 			foreach ($controlls as $controldat) {
-				$treedb = t3lib_div::makeInstance($controldat['dataClass']);
+				$treedb = GeneralUtility::makeInstance($controldat['dataClass']);
 				$treedb->init();
 
 				if ($treedb->getTable()) {
@@ -278,8 +282,8 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 				<!--
 					Link for creating a new record:
 				-->
-				<a href="' . htmlspecialchars($sumlink . '&returnUrl=' . rawurlencode(t3lib_div::getIndpEnv('REQUEST_URI'))) . '">' .
-					t3lib_iconWorks::getSpriteIcon('actions-document-new', array('title' => $language->getLL('editPage', 1))) . '</a>';
+				<a href="' . htmlspecialchars($sumlink . '&returnUrl=' . rawurlencode(GeneralUtility::getIndpEnv('REQUEST_URI'))) . '">' .
+					IconUtility::getSpriteIcon('actions-document-new', array('title' => $language->getLL('editPage', 1))) . '</a>';
 		}
 
 		// Access check...
@@ -288,7 +292,7 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 		if ($this->categoryUid) {
 			$this->pageinfo = Tx_Commerce_Utility_BackendUtility::readCategoryAccess($this->categoryUid, $this->perms_clause);
 		} else {
-			$this->pageinfo = t3lib_BEfunc::readPageAccess($this->id, $this->perms_clause);
+			$this->pageinfo = BackendUtility::readPageAccess($this->id, $this->perms_clause);
 		}
 		$access = is_array($this->pageinfo);
 
@@ -316,7 +320,7 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 
 		// Initialize the dblist object:
 		/** @var $dblist Tx_Commerce_ViewHelpers_CategoryRecordList */
-		$dblist = t3lib_div::makeInstance('Tx_Commerce_ViewHelpers_CategoryRecordList');
+		$dblist = GeneralUtility::makeInstance('Tx_Commerce_ViewHelpers_CategoryRecordList');
 		$dblist->backPath = $this->doc->backPath;
 		$dblist->script = 'index.php';
 		$dblist->calcPerms = $backendUser->calcPerms($this->pageinfo);
@@ -331,8 +335,8 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 		$dblist->tableTSconfigOverTCA = $this->modTSconfig['properties']['table.'];
 		$dblist->clickTitleMode = $this->modTSconfig['properties']['clickTitleMode'];
 		$dblist->alternateBgColors = $this->modTSconfig['properties']['alternateBgColors'] ? 1 : 0;
-		$dblist->allowedNewTables = t3lib_div::trimExplode(',', $this->modTSconfig['properties']['allowedNewTables'], 1);
-		$dblist->deniedNewTables = t3lib_div::trimExplode(',', $this->modTSconfig['properties']['deniedNewTables'], 1);
+		$dblist->allowedNewTables = GeneralUtility::trimExplode(',', $this->modTSconfig['properties']['allowedNewTables'], 1);
+		$dblist->deniedNewTables = GeneralUtility::trimExplode(',', $this->modTSconfig['properties']['deniedNewTables'], 1);
 		$dblist->newWizards = $this->modTSconfig['properties']['newWizards'] ? 1 : 0;
 		$dblist->pageRow = $this->pageinfo;
 		$dblist->counter++;
@@ -350,21 +354,21 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 		// Clipboard is initialized:
 		// Start clipboard
 		/** @var t3lib_clipboard $clipObj */
-		$clipObj = t3lib_div::makeInstance('t3lib_clipboard');
+		$clipObj = GeneralUtility::makeInstance('t3lib_clipboard');
 		$dblist->clipObj = $clipObj;
 		// Initialize - reads the clipboard content from the user session
 		$dblist->clipObj->initializeClipboard();
 
 		// Clipboard actions are handled:
 		// CB is the clipboard command array
-		$clipboard = t3lib_div::_GET('CB');
+		$clipboard = GeneralUtility::_GET('CB');
 		if ($this->cmd == 'setCB') {
 			// CBH is all the fields selected for the clipboard, CBC is the checkbox fields
 			// which were checked. By merging we get a full array of checked/unchecked
 			// elements This is set to the 'el' array of the CB after being parsed so only
 			// the table in question is registered.
 			$clipboard['el'] = $dblist->clipObj->cleanUpCBC(
-				array_merge((array) t3lib_div::_POST('CBH'), (array) t3lib_div::_POST('CBC')), $this->cmd_table
+				array_merge((array) GeneralUtility::_POST('CBH'), (array) GeneralUtility::_POST('CBC')), $this->cmd_table
 			);
 		}
 		if (!$this->MOD_SETTINGS['clipBoard']) {
@@ -393,7 +397,7 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 			// clipboard object is used to clean up the submitted entries to only the
 			// selected table.
 			if ($this->cmd == 'delete') {
-				$items = $dblist->clipObj->cleanUpCBC(t3lib_div::_POST('CBC'), $this->cmd_table, 1);
+				$items = $dblist->clipObj->cleanUpCBC(GeneralUtility::_POST('CBC'), $this->cmd_table, 1);
 				if (count($items)) {
 					$cmd = array();
 					foreach (array_keys($items) as $iK) {
@@ -402,16 +406,16 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 					}
 
 					/** @var t3lib_TCEmain $tce */
-					$tce = t3lib_div::makeInstance('t3lib_TCEmain');
+					$tce = GeneralUtility::makeInstance('t3lib_TCEmain');
 					$tce->stripslashes_values = 0;
 					$tce->start(array(), $cmd);
 					$tce->process_cmdmap();
 
 					if (isset($cmd['pages'])) {
-						t3lib_BEfunc::setUpdateSignal('updateFolderTree');
+						BackendUtility::setUpdateSignal('updateFolderTree');
 					}
 
-					$tce->printLogErrorMessages(t3lib_div::getIndpEnv('REQUEST_URI'));
+					$tce->printLogErrorMessages(GeneralUtility::getIndpEnv('REQUEST_URI'));
 				}
 			}
 
@@ -420,7 +424,7 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 			$dblist->setDispFields();
 
 			// Render versioning selector:
-			if (t3lib_extMgm::isLoaded('version')) {
+			if (ExtensionManagementUtility::isLoaded('version')) {
 				$dblist->HTMLcode .= $this->doc->getVersionSelector($this->id);
 			}
 
@@ -429,8 +433,6 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 			// Render the list of tables:
 			$dblist->generateList();
 
-			// Write the bottom of the page:
-			$dblist->writeBottom();
 			$listUrl = TYPO3_MOD_PATH . $dblist->listURL();
 			// Add JavaScript functions to the page:
 			$this->doc->JScode = $this->doc->wrapScriptTags('
@@ -460,7 +462,7 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 				' . $dblist->CBfunctions() . '
 				function editRecords(table, idList, addParams, CBflag) {
 					window.location.href = "' . $this->doc->backPath . 'alt_doc.php?returnUrl=' .
-					rawurlencode(t3lib_div::getIndpEnv('REQUEST_URI')) .
+					rawurlencode(GeneralUtility::getIndpEnv('REQUEST_URI')) .
 					'&edit[" + table + "][" + idList + "]=edit" + addParams;
 				}
 				function editList(table, idList) {
@@ -517,12 +519,12 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 
 			// Add "display bigControlPanel" checkbox:
 			if ($this->modTSconfig['properties']['enableDisplayBigControlPanel'] === 'selectable') {
-				$this->content .= t3lib_BEfunc::getFuncCheck(
+				$this->content .= BackendUtility::getFuncCheck(
 					$this->id, 'SET[bigControlPanel]', $this->MOD_SETTINGS['bigControlPanel'], '', ($this->table ?
 						'&table=' . $this->table :
 						''), 'id="checkLargeControl"'
 				);
-				$this->content .= '<label for="checkLargeControl">' . t3lib_BEfunc::wrapInHelp(
+				$this->content .= '<label for="checkLargeControl">' . BackendUtility::wrapInHelp(
 						'xMOD_csh_corebe', 'list_options', $language->getLL('largeControl', TRUE)
 					) . '</label><br />';
 			}
@@ -530,12 +532,12 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 			// Add "clipboard" checkbox:
 			if ($this->modTSconfig['properties']['enableClipBoard'] === 'selectable') {
 				if ($dblist->showClipboard) {
-					$this->content .= t3lib_BEfunc::getFuncCheck(
+					$this->content .= BackendUtility::getFuncCheck(
 						$this->id, 'SET[clipBoard]', $this->MOD_SETTINGS['clipBoard'], '', ($this->table ?
 							'&table=' . $this->table :
 							''), 'id="checkShowClipBoard"'
 					);
-					$this->content .= '<label for="checkShowClipBoard">' . t3lib_BEfunc::wrapInHelp(
+					$this->content .= '<label for="checkShowClipBoard">' . BackendUtility::wrapInHelp(
 							'xMOD_csh_corebe', 'list_options', $language->getLL('showClipBoard', TRUE)
 						) . '</label><br />';
 				}
@@ -543,12 +545,12 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 
 			// Add "localization view" checkbox:
 			if ($this->modTSconfig['properties']['enableLocalizationView'] === 'selectable') {
-				$this->content .= t3lib_BEfunc::getFuncCheck(
+				$this->content .= BackendUtility::getFuncCheck(
 					$this->id, 'SET[localization]', $this->MOD_SETTINGS['localization'], '', ($this->table ?
 						'&table=' . $this->table :
 						''), 'id="checkLocalization"'
 				);
-				$this->content .= '<label for="checkLocalization">' . t3lib_BEfunc::wrapInHelp(
+				$this->content .= '<label for="checkLocalization">' . BackendUtility::wrapInHelp(
 						'xMOD_csh_corebe', 'list_options', $language->getLL('localization', TRUE)
 					) . '</label><br />';
 			}
@@ -563,15 +565,12 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 			}
 
 			// Search box:
-			$sectionTitle = t3lib_BEfunc::wrapInHelp(
+			$sectionTitle = BackendUtility::wrapInHelp(
 				'xMOD_csh_corebe', 'list_searchbox', $language->sL('LLL:EXT:lang/locallang_core.php:labels.search', TRUE)
 			);
 			$this->content .= $this->doc->section(
 				$sectionTitle, $dblist->getSearchBox(), FALSE, TRUE, FALSE, TRUE
 			);
-
-			// Display sys-notes, if any are found:
-			$this->content .= $dblist->showSysNotesForPage();
 		}
 
 		$this->buttons = $dblist->getButtons($this->pageinfo);
@@ -587,7 +586,7 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 			'CATPATH' => $categoryPath,
 		);
 		$markers['FUNC_MENU'] = $this->doc->funcMenu(
-			'', t3lib_BEfunc::getFuncMenu($this->id, 'SET[mode]', $this->MOD_SETTINGS['mode'], $this->MOD_MENU['mode'])
+			'', BackendUtility::getFuncMenu($this->id, 'SET[mode]', $this->MOD_SETTINGS['mode'], $this->MOD_MENU['mode'])
 		);
 
 		// put it all together
@@ -621,7 +620,7 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 		$buttons = $this->buttons;
 
 		// CSH
-		$buttons['csh'] = t3lib_BEfunc::cshItem('_MOD_commerce_categories', '', $GLOBALS['BACK_PATH'], '', TRUE);
+		$buttons['csh'] = BackendUtility::cshItem('_MOD_commerce_categories', '', $GLOBALS['BACK_PATH'], '', TRUE);
 
 		// Shortcut
 		if ($backendUser->mayMakeShortcut()) {
@@ -634,8 +633,8 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 		// If access to Web>List for user, then link to that module.
 		if ($backendUser->check('modules', 'web_list')) {
 			$href = $GLOBALS['BACK_PATH'] . 'db_list.php?id=' . $this->pageinfo['uid'] . '&returnUrl=' .
-				rawurlencode(t3lib_div::getIndpEnv('REQUEST_URI'));
-			$buttons['record_list'] = '<a href="' . htmlspecialchars($href) . '">' . t3lib_iconWorks::getSpriteIcon(
+				rawurlencode(GeneralUtility::getIndpEnv('REQUEST_URI'));
+			$buttons['record_list'] = '<a href="' . htmlspecialchars($href) . '">' . IconUtility::getSpriteIcon(
 					'apps-filetree-folder-list',
 					array('title' => $language->sL('LLL:EXT:lang/locallang_core.php:labels.showList', 1))
 				) . '</a>';
@@ -672,10 +671,8 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 		$pagePath = $language->sL('LLL:EXT:lang/locallang_core.php:labels.path', 1) . ': <span class="typo3-docheader-pagePath">';
 
 		// crop the title to title limit (or 50, if not defined)
-		$cropLength = (empty($backendUser->uc['titleLen'])) ?
-			50 :
-			$backendUser->uc['titleLen'];
-		$croppedTitle = t3lib_div::fixed_lgd_cs($title, -$cropLength);
+		$cropLength = empty($backendUser->uc['titleLen']) ? 50 : $backendUser->uc['titleLen'];
+		$croppedTitle = GeneralUtility::fixed_lgd_cs($title, - $cropLength);
 		if ($croppedTitle !== $title) {
 			$pagePath .= '<abbr title="' . htmlspecialchars($title) . '">' . htmlspecialchars($croppedTitle) . '</abbr>';
 		} else {
@@ -699,18 +696,18 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 		// Add icon with clickmenu, etc:
 		// If there IS a real page
 		if (is_array($categoryRecord) && $categoryRecord['uid']) {
-			$alttext = t3lib_BEfunc::getRecordIconAltText($categoryRecord, 'tx_commerce_categories');
-			$iconImg = t3lib_iconWorks::getSpriteIconForRecord(
+			$alttext = BackendUtility::getRecordIconAltText($categoryRecord, 'tx_commerce_categories');
+			$iconImg = IconUtility::getSpriteIconForRecord(
 				'tx_commerce_categories', $categoryRecord, array('title' => $alttext)
 			);
 			// Make Icon:
 			$theIcon = $GLOBALS['SOBE']->doc->wrapClickMenuOnIcon($iconImg, 'tx_commerce_categories', $categoryRecord['uid']);
 			$uid = $categoryRecord['uid'];
-			$title = t3lib_BEfunc::getRecordTitle('tx_commerce_categories', $categoryRecord);
+			$title = BackendUtility::getRecordTitle('tx_commerce_categories', $categoryRecord);
 		} else {
 			// On root-level of page tree
 			// Make Icon
-			$iconImg = t3lib_iconWorks::getSpriteIcon(
+			$iconImg = IconUtility::getSpriteIcon(
 				'apps-pagetree-root', array('title' => htmlspecialchars($GLOBALS['TYPO3_CONF_VARS']['SYS']['sitename']))
 			);
 			if ($backendUser->user['admin']) {
@@ -756,10 +753,8 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 		$pagePath = $language->sL('LLL:EXT:lang/locallang_core.php:labels.path', 1) . ': <span class="typo3-docheader-pagePath">';
 
 		// crop the title to title limit (or 50, if not defined)
-		$cropLength = (empty($backendUser->uc['titleLen'])) ?
-			50 :
-			$backendUser->uc['titleLen'];
-		$croppedTitle = t3lib_div::fixed_lgd_cs($title, -$cropLength);
+		$cropLength = empty($backendUser->uc['titleLen']) ? 50 : $backendUser->uc['titleLen'];
+		$croppedTitle = GeneralUtility::fixed_lgd_cs($title, - $cropLength);
 		if ($croppedTitle !== $title) {
 			$pagePath .= '<abbr title="' . htmlspecialchars($title) . '">' . htmlspecialchars($croppedTitle) . '</abbr>';
 		} else {
@@ -783,16 +778,16 @@ class Tx_Commerce_Controller_CategoriesController extends t3lib_SCbase {
 		// Add icon with clickmenu, etc:
 		// If there IS a real page
 		if (is_array($pageRecord) && $pageRecord['uid']) {
-			$alttext = t3lib_BEfunc::getRecordIconAltText($pageRecord, 'pages');
-			$iconImg = t3lib_iconWorks::getSpriteIconForRecord('pages', $pageRecord, array('title' => $alttext));
+			$alttext = BackendUtility::getRecordIconAltText($pageRecord, 'pages');
+			$iconImg = IconUtility::getSpriteIconForRecord('pages', $pageRecord, array('title' => $alttext));
 			// Make Icon:
 			$theIcon = $GLOBALS['SOBE']->doc->wrapClickMenuOnIcon($iconImg, 'pages', $pageRecord['uid']);
 			$uid = $pageRecord['uid'];
-			$title = t3lib_BEfunc::getRecordTitle('pages', $pageRecord);
+			$title = BackendUtility::getRecordTitle('pages', $pageRecord);
 		} else {
 			// On root-level of page tree
 			// Make Icon
-			$iconImg = t3lib_iconWorks::getSpriteIcon(
+			$iconImg = IconUtility::getSpriteIcon(
 				'apps-pagetree-root', array('title' => htmlspecialchars($GLOBALS['TYPO3_CONF_VARS']['SYS']['sitename']))
 			);
 			if ($backendUser->user['admin']) {
