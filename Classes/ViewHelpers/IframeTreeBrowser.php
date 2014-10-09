@@ -38,16 +38,12 @@ $MCONF['access'] = '';
 
 /** @noinspection PhpIncludeInspection */
 require_once($BACK_PATH . 'init.php');
-/** @noinspection PhpIncludeInspection */
-require_once($BACK_PATH . 'template.php');
 
 /** @var language $LANG */
 $LANG->includeLLFile('EXT:lang/locallang_misc.xml');
 
 /** @var Tx_Commerce_ViewHelpers_TreelibBrowser $SOBE */
-$SOBE = t3lib_div::makeInstance('Tx_Commerce_ViewHelpers_TreelibBrowser');
+$SOBE = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_ViewHelpers_TreelibBrowser');
 $SOBE->init();
 $SOBE->main();
 $SOBE->printContent();
-
-?>

@@ -24,6 +24,7 @@
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Holds the TCE Functions
@@ -83,7 +84,7 @@ class Tx_Commerce_ViewHelpers_TceFunc {
 		}
 
 		/** @var Tx_Commerce_Tree_CategoryTree $browseTrees */
-		$browseTrees = t3lib_div::makeInstance('Tx_Commerce_Tree_CategoryTree');
+		$browseTrees = GeneralUtility::makeInstance('Tx_Commerce_Tree_CategoryTree');
 			// disabled clickmenu
 		$browseTrees->noClickmenu();
 			// set the minimum permissions
@@ -107,7 +108,7 @@ class Tx_Commerce_ViewHelpers_TceFunc {
 		$browseTrees->init();
 
 		/** @var Tx_Commerce_ViewHelpers_TreelibTceforms $renderBrowseTrees */
-		$renderBrowseTrees = t3lib_div::makeInstance('Tx_Commerce_ViewHelpers_TreelibTceforms');
+		$renderBrowseTrees = GeneralUtility::makeInstance('Tx_Commerce_ViewHelpers_TreelibTceforms');
 		$renderBrowseTrees->init ($parameter, $fObj);
 		$renderBrowseTrees->setIFrameTreeBrowserScript(
 			$this->tceForms->backPath . PATH_TXCOMMERCE_REL . 'Classes/ViewHelpers/IframeTreeBrowser.php'
@@ -169,7 +170,7 @@ class Tx_Commerce_ViewHelpers_TceFunc {
 
 				case 'tt_content':
 					// Perform modification of the selected items array:
-					$itemArray = t3lib_div::trimExplode(',', $parameter['itemFormElValue'], 1);
+					$itemArray = GeneralUtility::trimExplode(',', $parameter['itemFormElValue'], 1);
 					$itemArray = $renderBrowseTrees->processItemArrayForBrowseableTreeCategory($browseTrees, $itemArray[0]);
 					break;
 
@@ -178,11 +179,11 @@ class Tx_Commerce_ViewHelpers_TceFunc {
 			}
 		} else {
 				// New record
-			$defVals = t3lib_div::_GP('defVals');
+			$defVals = GeneralUtility::_GP('defVals');
 			switch ($table) {
 				case 'tx_commerce_categories':
 					/** @var Tx_Commerce_Domain_Model_Category $category */
-					$category = t3lib_div::makeInstance(
+					$category = GeneralUtility::makeInstance(
 						'Tx_Commerce_Domain_Model_Category',
 						$defVals['tx_commerce_categories']['parent_category']
 					);
@@ -192,7 +193,7 @@ class Tx_Commerce_ViewHelpers_TceFunc {
 
 				case 'tx_commerce_products':
 					/** @var Tx_Commerce_Domain_Model_Category $category */
-					$category = t3lib_div::makeInstance(
+					$category = GeneralUtility::makeInstance(
 						'Tx_Commerce_Domain_Model_Category',
 						$defVals['tx_commerce_products']['categories']
 					);
@@ -212,7 +213,7 @@ class Tx_Commerce_ViewHelpers_TceFunc {
 		$noMatchingValueLabel = @sprintf($noMatchingValueLabel, $parameter['itemFormElValue']);
 
 		// Possibly remove some items:
-		$removeItems = t3lib_div::trimExplode(',', $parameter['fieldTSConfig']['removeItems'], TRUE);
+		$removeItems = GeneralUtility::trimExplode(',', $parameter['fieldTSConfig']['removeItems'], TRUE);
 		foreach ($itemArray as $tk => $tv) {
 			$tvP = explode('|', $tv, 2);
 			if (in_array($tvP[0], $removeItems) && !$parameter['fieldTSConfig']['disableNoMatchingValueElement']) {
@@ -238,7 +239,7 @@ class Tx_Commerce_ViewHelpers_TceFunc {
 
 		$params = array(
 			'size' => $config['size'],
-			'autoSizeMax' => t3lib_div::intInRange($config['autoSizeMax'], 0),
+			'autoSizeMax' => \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange($config['autoSizeMax'], 0),
 			'style' => ' style="width:200px;"',
 			'dontShowMoveIcons' => ($maxitems <= 1),
 			'maxitems' => $maxitems,

@@ -24,6 +24,7 @@
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Database Class for tx_commerce_categories. All database calls should
@@ -77,7 +78,7 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 		$database = $GLOBALS['TYPO3_DB'];
 
 		$result = 0;
-		if (t3lib_div::testInt($uid) && ($uid > 0)) {
+		if (\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($uid) && $uid > 0) {
 			$this->uid = $uid;
 			$row = $database->exec_SELECTgetSingleRow(
 				'uid_foreign',
@@ -101,7 +102,7 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 		/** @var t3lib_db $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
-		if (t3lib_div::testInt($uid) && ($uid > 0)) {
+		if (\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($uid) && ($uid > 0)) {
 			$result = $database->exec_SELECTquery(
 				'perms_everybody, perms_user, perms_group, perms_userid, perms_groupid, editlock',
 				$this->databaseTable,
@@ -202,19 +203,19 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 		$localOrderField = $this->categoryOrderField;
 
 		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_db_category.php']['categoryOrder']) {
-			t3lib_div::deprecationLog('
+			GeneralUtility::deprecationLog('
 				hook
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_db_category.php\'][\'categoryOrder\']
 				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Domain/Repository/CategoryRepository.php\'][\'categoryOrder\']
 			');
-			$hookObj = t3lib_div::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_db_category.php']['categoryOrder']);
+			$hookObj = GeneralUtility::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_db_category.php']['categoryOrder']);
 			if (method_exists($hookObj, 'categoryOrder')) {
 				$localOrderField = $hookObj->categoryOrder($this->categoryOrderField, $this);
 			}
 		}
 		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Repository/CategoryRepository.php']['categoryOrder']) {
-			$hookObj = t3lib_div::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Repository/CategoryRepository.php']['categoryOrder']);
+			$hookObj = GeneralUtility::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Repository/CategoryRepository.php']['categoryOrder']);
 			if (method_exists($hookObj, 'categoryOrder')) {
 				$localOrderField = $hookObj->categoryOrder($this->categoryOrderField, $this);
 			}
@@ -260,19 +261,19 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 			}
 
 			if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_db_category.php']['categoryQueryPostHook']) {
-				t3lib_div::deprecationLog('
+				GeneralUtility::deprecationLog('
 					hook
 					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_db_category.php\'][\'categoryQueryPostHook\']
 					is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
 					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Domain/Repository/CategoryRepository.php\'][\'categoryQueryPostHook\']
 				');
-				$hookObj = t3lib_div::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_db_category.php']['categoryQueryPostHook']);
+				$hookObj = GeneralUtility::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_db_category.php']['categoryQueryPostHook']);
 				if (is_object($hookObj) && method_exists($hookObj, 'categoryQueryPostHook')) {
 					$data = $hookObj->categoryQueryPostHook($data, $this);
 				}
 			}
 			if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Repository/CategoryRepository.php']['categoryQueryPostHook']) {
-				$hookObj = t3lib_div::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Repository/CategoryRepository.php']['categoryQueryPostHook']);
+				$hookObj = GeneralUtility::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Repository/CategoryRepository.php']['categoryQueryPostHook']);
 				if (is_object($hookObj) && method_exists($hookObj, 'categoryQueryPostHook')) {
 					$data = $hookObj->categoryQueryPostHook($data, $this);
 				}
@@ -307,19 +308,19 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 		$localOrderField = $this->productOrderField;
 
 		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_db_category.php']['productOrder']) {
-			t3lib_div::deprecationLog('
+			GeneralUtility::deprecationLog('
 				hook
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_db_category.php\'][\'productOrder\']
 				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Domain/Repository/CategoryRepository.php\'][\'productOrder\']
 			');
-			$hookObj = t3lib_div::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_db_category.php']['productOrder']);
+			$hookObj = GeneralUtility::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_db_category.php']['productOrder']);
 			if (is_object($hookObj) && method_exists($hookObj, 'productOrder')) {
 				$localOrderField = $hookObj->productOrder($localOrderField, $this);
 			}
 		}
 		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Repository/CategoryRepository.php']['productOrder']) {
-			$hookObj = t3lib_div::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Repository/CategoryRepository.php']['productOrder']);
+			$hookObj = GeneralUtility::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Repository/CategoryRepository.php']['productOrder']);
 			if (is_object($hookObj) && method_exists($hookObj, 'productOrder')) {
 				$localOrderField = $hookObj->productOrder($localOrderField, $this);
 			}
@@ -346,19 +347,19 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 		);
 
 		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_db_category.php']['productQueryPreHook']) {
-			t3lib_div::deprecationLog('
+			GeneralUtility::deprecationLog('
 				hook
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_db_category.php\'][\'productQueryPreHook\']
 				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Domain/Repository/CategoryRepository.php\'][\'productQueryPreHook\']
 			');
-			$hookObj = t3lib_div::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_db_category.php']['productQueryPreHook']);
+			$hookObj = GeneralUtility::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_db_category.php']['productQueryPreHook']);
 			if (is_object($hookObj) && method_exists($hookObj, 'productQueryPreHook')) {
 				$queryArray = $hookObj->productQueryPreHook($queryArray, $this);
 			}
 		}
 		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Repository/CategoryRepository.php']['productQueryPreHook']) {
-			$hookObj = t3lib_div::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Repository/CategoryRepository.php']['productQueryPreHook']);
+			$hookObj = GeneralUtility::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Repository/CategoryRepository.php']['productQueryPreHook']);
 			if (is_object($hookObj) && method_exists($hookObj, 'productQueryPreHook')) {
 				$queryArray = $hookObj->productQueryPreHook($queryArray, $this);
 			}
@@ -389,19 +390,19 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 			$database->sql_free_result($result);
 
 			if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_db_category.php']['productQueryPostHook']) {
-				t3lib_div::deprecationLog('
+				GeneralUtility::deprecationLog('
 					hook
 					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_db_category.php\'][\'productQueryPostHook\']
 					is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
 					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Domain/Repository/CategoryRepository.php\'][\'productQueryPostHook\']
 				');
-				$hookObj = t3lib_div::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_db_category.php']['productQueryPostHook']);
+				$hookObj = GeneralUtility::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_db_category.php']['productQueryPostHook']);
 				if (is_object($hookObj) && method_exists($hookObj, 'productQueryPostHook')) {
 					$data = $hookObj->productQueryPostHook($data, $this);
 				}
 			}
 			if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Repository/CategoryRepository.php']['productQueryPostHook']) {
-				$hookObj = t3lib_div::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Repository/CategoryRepository.php']['productQueryPostHook']);
+				$hookObj = GeneralUtility::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Repository/CategoryRepository.php']['productQueryPostHook']);
 				if (is_object($hookObj) && method_exists($hookObj, 'productQueryPostHook')) {
 					$data = $hookObj->productQueryPostHook($data, $this);
 				}
@@ -421,7 +422,7 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 	 * remove attributes and setting of them too
 	 */
 	public function getUid() {
-		t3lib_div::logDeprecatedFunction();
+		GeneralUtility::logDeprecatedFunction();
 		return $this->uid;
 	}
 
@@ -433,7 +434,7 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 	 * remove attributes and setting of them too
 	 */
 	public function getLangUid() {
-		t3lib_div::logDeprecatedFunction();
+		GeneralUtility::logDeprecatedFunction();
 		return $this->lang_uid;
 	}
 
@@ -445,7 +446,7 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getParentCategory instead
 	 */
 	public function get_parent_category($uid) {
-		t3lib_div::logDeprecatedFunction();
+		GeneralUtility::logDeprecatedFunction();
 		return $this->getParentCategory($uid);
 	}
 
@@ -457,7 +458,7 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getParentCategories instead
 	 */
 	public function get_parent_categories($uid) {
-		t3lib_div::logDeprecatedFunction();
+		GeneralUtility::logDeprecatedFunction();
 		return $this->getParentCategories($uid);
 	}
 
@@ -470,7 +471,7 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getL18nCategories instead
 	 */
 	public function get_l18n_categories($uid) {
-		t3lib_div::logDeprecatedFunction();
+		GeneralUtility::logDeprecatedFunction();
 		return $this->getL18nCategories($uid);
 	}
 
@@ -483,7 +484,7 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getChildCategories instead
 	 */
 	public function get_child_categories($uid, $languageUid = -1) {
-		t3lib_div::logDeprecatedFunction();
+		GeneralUtility::logDeprecatedFunction();
 		return $this->getChildCategories($uid, $languageUid);
 	}
 
@@ -496,7 +497,7 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getChildProducts instead
 	 */
 	public function get_child_products($uid, $languageUid = -1) {
-		t3lib_div::logDeprecatedFunction();
+		GeneralUtility::logDeprecatedFunction();
 		return $this->getChildProducts($uid, $languageUid);
 	}
 }
