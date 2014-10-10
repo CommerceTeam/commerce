@@ -1,36 +1,22 @@
 <?php
-/***************************************************************
- *  Copyright notice
- *  (c) 2005 - 2006 Ingo Schmitt <is@marketing-factory.de>
- *  All rights reserved
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
-
-/**
- * Dynamic config file for tx_commerce_order_articles
- */
-
-if (!defined('TYPO3_MODE')) {
-	die('Access denied.');
-}
-
-$GLOBALS['TCA']['tx_commerce_order_articles'] = Array(
-	'ctrl' => $GLOBALS['TCA']['tx_commerce_order_articles']['ctrl'],
-	'interface' => Array(
-		'showRecordFieldList' => 'amount,title,article_type_uid,article_uid,article_number,subtitle,price_net,price_gross,tax,order_uid',
+return array(
+	'ctrl' => array(
+		'title' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_order_articles',
+		'label' => 'title',
+		'tstamp' => 'tstamp',
+		'crdate' => 'crdate',
+		'cruser_id' => 'cruser_id',
+		'default_sortby' => 'ORDER BY crdate',
+		'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL . 'order_articles.gif',
 	),
-	'feInterface' => $GLOBALS['TCA']['tx_commerce_order_articles']['feInterface'],
+	'feInterface' => array(
+		'fe_admin_fieldList' => 'article_type_uid, article_uid, article_number,
+			title, subtitle, price_net, price_gross, tax, amount, order_id',
+	),
+	'interface' => Array(
+		'showRecordFieldList' => 'amount, title, article_type_uid, article_uid, article_number, subtitle, price_net, price_gross,
+			tax, order_uid',
+	),
 	'columns' => Array(
 		'tstamp' => Array(
 			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_order_articles.tstamp',
@@ -146,11 +132,10 @@ $GLOBALS['TCA']['tx_commerce_order_articles'] = Array(
 		),
 	),
 	'types' => Array(
-		'0' => Array('showitem' => 'order_id;;;;1-1-1,article_type_uid , article_uid, article_number, title;;;;2-2-2, subtitle,  amount;;;;3-3-3, price_net, price_gross, tax')
+		'0' => Array('showitem' => 'order_id;;;;1-1-1, article_type_uid, article_uid, article_number, title;;;;2-2-2, subtitle,
+			amount;;;;3-3-3, price_net, price_gross, tax')
 	),
 	'palettes' => Array(
 		'1' => Array('showitem' => '')
 	)
 );
-
-?>

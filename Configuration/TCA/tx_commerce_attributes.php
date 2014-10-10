@@ -26,11 +26,44 @@ if (!defined('TYPO3_MODE')) {
 }
 
 $GLOBALS['TCA']['tx_commerce_attributes'] = array(
-	'ctrl' => $GLOBALS['TCA']['tx_commerce_attributes']['ctrl'],
-	'interface' => array(
-		'showRecordFieldList' => 'sys_language_uid,l18n_parent,l18n_diffsource,hidden,starttime,endtime,fe_group,has_valuelist,title,internal_title, unit,valuelist,icon'
+	'ctrl' => array(
+		'title' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_attributes',
+		'label' => 'internal_title',
+		'label_alt' => 'title',
+		'tstamp' => 'tstamp',
+		'crdate' => 'crdate',
+		'cruser_id' => 'cruser_id',
+		'sortby' => 'sorting',
+		'versioning' => '1',
+		'dividers2tabs' => '1',
+		'requestUpdate' => 'has_valuelist',
+		'languageField' => 'sys_language_uid',
+		'thumbnail' => 'icon',
+		'transOrigPointerField' => 'l18n_parent',
+		'transOrigDiffSourceField' => 'l18n_diffsource',
+		'default_sortby' => 'ORDER BY sorting,crdate',
+		'delete' => 'deleted',
+		'enablecolumns' => array(
+			'disabled' => 'hidden',
+			'starttime' => 'starttime',
+			'endtime' => 'endtime',
+			'fe_group' => 'fe_group',
+		),
+		'typeicon_column' => 'has_valuelist',
+		'typeicons' => array(
+			'0' => PATH_TXCOMMERCE_ICON_TABLE_REL . 'attributes_free.gif',
+			'1' => PATH_TXCOMMERCE_ICON_TABLE_REL . 'attributes_list.gif'
+		),
+		'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL . 'attributes_free.gif',
 	),
-	'feInterface' => $GLOBALS['TCA']['tx_commerce_attributes']['feInterface'],
+	'feInterface' => array(
+		'fe_admin_fieldList' => 'sys_language_uid, l18n_parent, l18n_diffsource, hidden, starttime, endtime, fe_group,
+			has_valuelist, title, internal_title, unit, valueformat, valuelist',
+	),
+	'interface' => array(
+		'showRecordFieldList' => 'sys_language_uid, l18n_parent, l18n_diffsource, hidden, starttime, endtime, fe_group,
+			has_valuelist, title, internal_title, unit, valuelist, icon'
+	),
 	'columns' => array(
 		'sys_language_uid' => array(
 			'exclude' => 1,
@@ -55,7 +88,8 @@ $GLOBALS['TCA']['tx_commerce_attributes'] = array(
 					array('', 0),
 				),
 				'foreign_table' => 'tx_commerce_attributes',
-				'foreign_table_where' => 'AND tx_commerce_attributes.pid=###CURRENT_PID### AND tx_commerce_attributes.sys_language_uid IN (-1,0)',
+				'foreign_table_where' =>
+					'AND tx_commerce_attributes.pid=###CURRENT_PID### AND tx_commerce_attributes.sys_language_uid IN (-1,0)',
 			)
 		),
 		'l18n_diffsource' => array(
@@ -247,15 +281,15 @@ $GLOBALS['TCA']['tx_commerce_attributes'] = array(
 						'expandAll' => TRUE,
 						'showHeader' => TRUE,
 					),
-	),
-	),
+				),
+			),
 		),
 	),
 	'types' => array(
 		'0' => array(
-			'showitem' => '--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_attributes.basis, sys_language_uid;;;;1-1-1,
-				l18n_parent, l18n_diffsource, hidden;;1, parent, has_valuelist, multiple, valueformat, title;;;;2-2-2,
-				internal_title, unit, icon;;;;3-3-3;,iconmode,
+			'showitem' => '--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_attributes.basis,
+				sys_language_uid;;;;1-1-1, l18n_parent, l18n_diffsource, hidden;;1, parent, has_valuelist, multiple, valueformat,
+				title;;;;2-2-2, internal_title, unit, icon;;;;3-3-3;,iconmode,
 				--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_attributes.valuelistlist, valuelist'
 		)
 	),
@@ -263,6 +297,3 @@ $GLOBALS['TCA']['tx_commerce_attributes'] = array(
 		'1' => array('showitem' => 'starttime, endtime, fe_group')
 	)
 );
-
-
-?>

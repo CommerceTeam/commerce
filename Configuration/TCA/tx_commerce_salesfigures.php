@@ -1,35 +1,22 @@
 <?php
-/***************************************************************
- *  Copyright notice
- *  (c)  2005 - 2006 Joerg Sprung <jsp@marketing-factory.de>  All rights reserved
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
-
-/**
- * Dynamic config file for tx_commerce_salesfigures
- */
-
-if (!defined('TYPO3_MODE')) {
-	die('Access denied.');
-}
-
-$GLOBALS['TCA']['tx_commerce_salesfigures'] = Array(
-	'ctrl' => $GLOBALS['TCA']['tx_commerce_salesfigures']['ctrl'],
+return array(
+	'ctrl' => array(
+		'title' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_salesfigures',
+		'label' => 'uid',
+		'tstamp' => 'tstamp',
+		'crdate' => 'crdate',
+		'cruser_id' => 'cruser_id',
+		'default_sortby' => 'ORDER BY crdate',
+		'readOnly' => '1',
+		'adminOnly' => '1',
+		'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL . 'salesfigures.gif',
+	),
+	'feInterface' => array(
+		'fe_admin_fieldList' => 'year, month, day, dow, hour, pricegross, pricenet, amount, orders',
+	),
 	'interface' => Array(
 		'showRecordFieldList' => 'year,month,day,dow,hour,pricegross, pricenet,amount,orders'
 	),
-	'feInterface' => $GLOBALS['TCA']['tx_commerce_salesfigures']['feInterface'],
 	'columns' => Array(
 		'year' => Array(
 			'exclude' => 1,
@@ -138,5 +125,3 @@ $GLOBALS['TCA']['tx_commerce_salesfigures'] = Array(
 		'1' => Array('showitem' => '')
 	)
 );
-
-?>

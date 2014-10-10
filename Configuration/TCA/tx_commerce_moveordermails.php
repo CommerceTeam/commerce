@@ -1,18 +1,31 @@
 <?php
-/**
- * $Id: tx_commerce_moveordermails.tca.php 459 2006-12-14 18:16:52Z ingo $
- */
-
-if (!defined('TYPO3_MODE')) {
-	die('Access denied.');
-}
-
-$GLOBALS['TCA']['tx_commerce_moveordermails'] = Array(
-	'ctrl' => $GLOBALS['TCA']['tx_commerce_moveordermails']['ctrl'],
-	'interface' => Array(
-		'showRecordFieldList' => 'sys_language_uid,l18n_parent,l18n_diffsource,hidden,starttime,endtime,fe_group,name,mailkind,mailtemplate,htmltemplate,mailcharset,sendername,senderemail,otherreceiver,BCC'
+return array(
+	'ctrl' => array(
+		'title' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_moveordermails',
+		'label' => 'name',
+		'tstamp' => 'tstamp',
+		'crdate' => 'crdate',
+		'cruser_id' => 'cruser_id',
+		'default_sortby' => 'ORDER BY crdate',
+		'languageField' => 'sys_language_uid',
+		'transOrigPointerField' => 'l18n_parent',
+		'transOrigDiffSourceField' => 'l18n_diffsource',
+		'enablecolumns' => array(
+			'disabled' => 'hidden',
+			'starttime' => 'starttime',
+			'endtime' => 'endtime',
+			'fe_group' => 'fe_group',
+		),
+		'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL . 'moveordermails.gif',
 	),
-	'feInterface' => $GLOBALS['TCA']['tx_commerce_moveordermails']['feInterface'],
+	'feInterface' => array(
+		'fe_admin_fieldList' => 'sys_language_uid, l18n_parent, l18n_diffsource, hidden, starttime, endtime, fe_group, name,
+			mailkind, mailtemplate, htmltemplate, mailcharset, sendername, senderemail, otherreceiver, BCC',
+	),
+	'interface' => Array(
+		'showRecordFieldList' => 'sys_language_uid, l18n_parent, l18n_diffsource, hidden, starttime, endtime, fe_group, name,
+			mailkind, mailtemplate, htmltemplate, mailcharset, sendername, senderemail, otherreceiver, BCC'
+	),
 	'columns' => Array(
 		'sys_language_uid' => Array(
 			'exclude' => 1,
@@ -37,8 +50,8 @@ $GLOBALS['TCA']['tx_commerce_moveordermails'] = Array(
 					Array('', 0),
 				),
 				'foreign_table' => 'tx_commerce_moveordermails',
-				'foreign_table_where' => 'AND tx_commerce_moveordermails.pid=###CURRENT_PID### AND tx_commerce_moveordermails.sys_language_uid IN (-1,0)',
-
+				'foreign_table_where' =>
+					'AND tx_commerce_moveordermails.pid=###CURRENT_PID### AND tx_commerce_moveordermails.sys_language_uid IN (-1,0)',
 			)
 		),
 		'l18n_diffsource' => Array(
@@ -200,11 +213,10 @@ $GLOBALS['TCA']['tx_commerce_moveordermails'] = Array(
 		),
 	),
 	'types' => Array(
-		'0' => Array('showitem' => 'sys_language_uid;;;;1-1-1, l18n_parent, l18n_diffsource,hidden;;1;;1-1-1, name, mailkind, mailtemplate,htmltemplate, mailcharset, sendername, senderemail, otherreceiver, BCC')
+		'0' => Array('showitem' => 'sys_language_uid;;;;1-1-1, l18n_parent, l18n_diffsource,hidden;;1;;1-1-1, name, mailkind,
+			mailtemplate,htmltemplate, mailcharset, sendername, senderemail, otherreceiver, BCC')
 	),
 	'palettes' => Array(
 		'1' => Array('showitem' => 'starttime, endtime, fe_group')
 	)
 );
-
-?>

@@ -1,11 +1,24 @@
 <?php
-
-$GLOBALS['TCA']['tx_commerce_trackingcodes'] = Array(
-	'ctrl' => $GLOBALS['TCA']['tx_commerce_trackingcodes']['ctrl'],
+return array(
+	'ctrl' => array(
+		'title' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_trackingcodes',
+		'label' => 'description',
+		'tstamp' => 'tstamp',
+		'crdate' => 'crdate',
+		'cruser_id' => 'cruser_id',
+		'versioning' => '1',
+		'languageField' => 'sys_language_uid',
+		'transOrigPointerField' => 'l18n_parent',
+		'transOrigDiffSourceField' => 'l18n_diffsource',
+		'default_sortby' => 'ORDER BY crdate',
+		'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL . 'tracking_codes.gif',
+	),
+	'feInterface' => array(
+		'fe_admin_fieldList' => 'sys_language_uid, l18n_parent, l18n_diffsource, title, description',
+	),
 	'interface' => Array(
 		'showRecordFieldList' => 'sys_language_uid,l18n_parent,l18n_diffsource,title,description'
 	),
-	'feInterface' => $GLOBALS['TCA']['tx_commerce_trackingcodes']['feInterface'],
 	'columns' => Array(
 		'sys_language_uid' => Array(
 			'exclude' => 1,

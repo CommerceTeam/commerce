@@ -1,11 +1,24 @@
 <?php
-
-$GLOBALS['TCA']['tx_commerce_user_states'] = Array(
-	'ctrl' => $GLOBALS['TCA']['tx_commerce_user_states']['ctrl'],
+return array(
+	'ctrl' => array(
+		'title' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_user_states',
+		'label' => 'title',
+		'tstamp' => 'tstamp',
+		'crdate' => 'crdate',
+		'cruser_id' => 'cruser_id',
+		'languageField' => 'sys_language_uid',
+		'transOrigPointerField' => 'l18n_parent',
+		'transOrigDiffSourceField' => 'l18n_diffsource',
+		'default_sortby' => 'ORDER BY crdate',
+		'delete' => 'deleted',
+		'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL . 'user_states.gif',
+	),
+	'feInterface' => array(
+		'fe_admin_fieldList' => 'sys_language_uid, l18n_parent, l18n_diffsource, title',
+	),
 	'interface' => Array(
 		'showRecordFieldList' => 'sys_language_uid,l18n_parent,l18n_diffsource,title'
 	),
-	'feInterface' => $GLOBALS['TCA']['tx_commerce_user_states']['feInterface'],
 	'columns' => Array(
 		'sys_language_uid' => Array(
 			'exclude' => 1,
@@ -30,7 +43,8 @@ $GLOBALS['TCA']['tx_commerce_user_states'] = Array(
 					Array('', 0),
 				),
 				'foreign_table' => 'tx_commerce_user_states',
-				'foreign_table_where' => 'AND tx_commerce_user_states.pid=###CURRENT_PID### AND tx_commerce_user_states.sys_language_uid IN (-1,0)',
+				'foreign_table_where' =>
+					'AND tx_commerce_user_states.pid=###CURRENT_PID### AND tx_commerce_user_states.sys_language_uid IN (-1,0)',
 			)
 		),
 		'l18n_diffsource' => Array(
@@ -72,5 +86,3 @@ $GLOBALS['TCA']['tx_commerce_user_states'] = Array(
 		'1' => Array('showitem' => '')
 	)
 );
-
-?>

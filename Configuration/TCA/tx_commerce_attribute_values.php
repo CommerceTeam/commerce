@@ -1,36 +1,35 @@
 <?php
-/***************************************************************
- *  Copyright notice
- *  (c) 2005 - 2006 Ingo Schmitt <is@marketing-factory.de>
- *  All rights reserved
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
-
-/**
- * Dynamic config file for tx_commerce_attribute_values
- */
-
-if (!defined('TYPO3_MODE')) {
-	die('Access denied.');
-}
-
-$GLOBALS['TCA']['tx_commerce_attribute_values'] = array(
-	'ctrl' => $GLOBALS['TCA']['tx_commerce_attribute_values']['ctrl'],
+return array(
+	'ctrl' => array(
+		'title' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_attribute_values',
+		'label' => 'value',
+		'label_alt' => 'attributes_uid',
+		'label_alt_force' => 1,
+		'tstamp' => 'tstamp',
+		'crdate' => 'crdate',
+		'cruser_id' => 'cruser_id',
+		'sortby' => 'sorting',
+		'thumbnail' => 'icon',
+		'versioning' => '1',
+		'languageField' => 'sys_language_uid',
+		'transOrigPointerField' => 'l18n_parent',
+		'transOrigDiffSourceField' => 'l18n_diffsource',
+		'default_sortby' => 'ORDER BY attributes_uid,value',
+		'delete' => 'deleted',
+		'enablecolumns' => array(
+			'disabled' => 'hidden',
+			'starttime' => 'starttime',
+			'endtime' => 'endtime',
+		),
+		'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL . 'attribute_value.gif',
+	),
+	'feInterface' => array(
+		'fe_admin_fieldList' => 'sys_language_uid, l18n_parent, l18n_diffsource, hidden,
+			starttime, endtime, value, showvalue, attributes_uid',
+	),
 	'interface' => array(
 		'showRecordFieldList' => 'sys_language_uid,l18n_parent,l18n_diffsource,hidden,starttime,endtime,value,attributes_uid'
 	),
-	'feInterface' => $GLOBALS['TCA']['tx_commerce_attribute_values']['feInterface'],
 	'columns' => array(
 		'sys_language_uid' => array(
 			'exclude' => 1,
@@ -55,7 +54,8 @@ $GLOBALS['TCA']['tx_commerce_attribute_values'] = array(
 					array('', 0),
 				),
 				'foreign_table' => 'tx_commerce_attribute_values',
-				'foreign_table_where' => 'AND tx_commerce_attribute_values.pid=###CURRENT_PID### AND tx_commerce_attribute_values.sys_language_uid IN (-1,0)',
+				'foreign_table_where' =>
+					'AND tx_commerce_attribute_values.pid=###CURRENT_PID### AND tx_commerce_attribute_values.sys_language_uid IN (-1,0)',
 			)
 		),
 		'l18n_diffsource' => array(
@@ -149,10 +149,10 @@ $GLOBALS['TCA']['tx_commerce_attribute_values'] = array(
 		),
 	),
 	'types' => array(
-		'0' => array('showitem' => 'sys_language_uid;;;;1-1-1, l18n_parent, l18n_diffsource, hidden;;1, value, showvalue, icon, attributes_uid')
+		'0' => array('showitem' =>
+			'sys_language_uid;;;;1-1-1, l18n_parent, l18n_diffsource, hidden;;1, value, showvalue, icon, attributes_uid')
 	),
 	'palettes' => array(
 		'1' => array('showitem' => 'starttime, endtime')
 	),
 );
-?>

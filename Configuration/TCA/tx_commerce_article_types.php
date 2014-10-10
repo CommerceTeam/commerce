@@ -1,42 +1,30 @@
 <?php
-/***************************************************************
- *  Copyright notice
- *
- *  (c) 2005 - 2011 Thomas Hempel <thomas@work.de>
- *  (c) 2006 - 2011 Ingo Schmitt <is@marketing-factory.de>
- *  All rights reserved
- *
- *  This script is part of the Typo3 project. The Typo3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
- *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
-
-/**
- * Dynamic config file for tx_commerce_articles
- */
-
-if (!defined('TYPO3_MODE')) {
-	die('Access denied.');
-}
-
-$GLOBALS['TCA']['tx_commerce_article_types'] = Array(
-	'ctrl' => $GLOBALS['TCA']['tx_commerce_article_types']['ctrl'],
+return array(
+	'ctrl' => array(
+		'title' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_article_types',
+		'label' => 'title',
+		'tstamp' => 'tstamp',
+		'readOnly' => 1,
+		'adminOnly' => 1,
+		'rootLevel' => 1,
+		'is_static' => 1,
+		'versioning' => '1',
+		'languageField' => 'sys_language_uid',
+		'transOrigPointerField' => 'l18n_parent',
+		'transOrigDiffSourceField' => 'l18n_diffsource',
+		'default_sortby' => 'ORDER BY crdate',
+		'delete' => 'deleted',
+		'enablecolumns' => array(
+			'disabled' => 'hidden',
+		),
+		'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL . 'icon_tx_commerce_article_types.gif',
+	),
+	'feInterface' => array(
+		'fe_admin_fieldList' => 'sys_language_uid, l18n_parent, l18n_diffsource, hidden, title',
+	),
 	'interface' => Array(
 		'showRecordFieldList' => 'sys_language_uid,l18n_parent,l18n_diffsource,hidden,title'
 	),
-	'feInterface' => $GLOBALS['TCA']['tx_commerce_article_types']['feInterface'],
 	'columns' => Array(
 		'sys_language_uid' => Array(
 			'exclude' => 1,
@@ -61,7 +49,8 @@ $GLOBALS['TCA']['tx_commerce_article_types'] = Array(
 					Array('', 0),
 				),
 				'foreign_table' => 'tx_commerce_article_types',
-				'foreign_table_where' => 'AND tx_commerce_article_types.pid=###CURRENT_PID### AND tx_commerce_article_types.sys_language_uid IN (-1,0)',
+				'foreign_table_where' =>
+					'AND tx_commerce_article_types.pid=###CURRENT_PID### AND tx_commerce_article_types.sys_language_uid IN (-1,0)',
 			)
 		),
 		'l18n_diffsource' => Array(
@@ -94,5 +83,3 @@ $GLOBALS['TCA']['tx_commerce_article_types'] = Array(
 		'1' => Array('showitem' => '')
 	)
 );
-
-?>

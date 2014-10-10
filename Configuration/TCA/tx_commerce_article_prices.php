@@ -1,11 +1,36 @@
 <?php
-
-$GLOBALS['TCA']['tx_commerce_article_prices'] = Array(
-	'ctrl' => $GLOBALS['TCA']['tx_commerce_article_prices']['ctrl'],
-	'interface' => Array(
-		'showRecordFieldList' => 'hidden,starttime,endtime,fe_group,price_gross,price_net,purchase_price,price_scale_amount_start,price_scale_amount_end',
+return array(
+	'ctrl' => array(
+		'title' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_article_prices',
+		'label' => 'price_net',
+		'label_alt' => 'price_net,price_gross,purchase_price',
+		'label_alt_force' => 1,
+		'label_userFunc' =>
+			'EXT:commerce/Classes/Domain/Model/ArticlePrice.php:Tx_Commerce_Domain_Model_ArticlePrice->getTcaRecordTitle',
+		'tstamp' => 'tstamp',
+		'crdate' => 'crdate',
+		'cruser_id' => 'cruser_id',
+		'versioning' => '1',
+		'default_sortby' => 'ORDER BY crdate',
+		'delete' => 'deleted',
+		'enablecolumns' => array(
+			'disabled' => 'hidden',
+			'starttime' => 'starttime',
+			'endtime' => 'endtime',
+			'fe_group' => 'fe_group',
+		),
+		'dynamicConfigFile' => PATH_TXCOMMERCE . 'Configuration/TCA/ArticlePrices.php',
+		'dividers2tabs' => '1',
+		'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL . 'price.gif',
 	),
-	'feInterface' => $GLOBALS['TCA']['tx_commerce_articles']['feInterface'],
+	'feInterface' => array(
+		'fe_admin_fieldList' => 'sys_language_uid, l18n_parent, l18n_diffsource, hidden, starttime, endtime,
+			fe_group, price_gross, price_net, price_scale_amount, purchase_price',
+	),
+	'interface' => Array(
+		'showRecordFieldList' => 'hidden, starttime, endtime, fe_group, price_gross, price_net, purchase_price,
+			price_scale_amount_start, price_scale_amount_end',
+	),
 	'columns' => Array(
 		'hidden' => Array(
 			'exclude' => 1,
@@ -138,5 +163,3 @@ $GLOBALS['TCA']['tx_commerce_article_prices'] = Array(
 		'1' => Array('showitem' => 'starttime, endtime, fe_group')
 	)
 );
-
-?>

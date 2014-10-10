@@ -1,44 +1,24 @@
 <?php
-/***************************************************************
- *  Copyright notice
- *
- *  (c) 2005 - 2008 Ingo Schmitt <typo3@marketing-factory.de>
- *  All rights reserved
- *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
- *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *  A copy is found in the textfile GPL.txt and important notices to the license
- *  from the author is found in LICENSE.txt distributed with these scripts.
- *
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
-
-/**
- * Dynamic config file for tx_commerce_orders
- */
-
-if (!defined('TYPO3_MODE')) {
-	die('Access denied.');
-}
-
-$GLOBALS['TCA']['tx_commerce_orders'] = Array(
-	'ctrl' => $GLOBALS['TCA']['tx_commerce_orders']['ctrl'],
-	'interface' => Array(
-		'showRecordFieldList' => 'cust_deliveryaddress,order_type_uid,order_id,cust_fe_user,cust_invoice,paymenttype,sum_price_net,sum_price_gross,crdate,pid,payment_ref_id,cu_iso_3_uid,order_sys_language_uid,pricefromnet'
+return array(
+	'ctrl' => array(
+		'title' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_orders',
+		'label' => 'order_id',
+		'tstamp' => 'tstamp',
+		'crdate' => 'crdate',
+		'cruser_id' => 'cruser_id',
+		'default_sortby' => 'ORDER BY crdate',
+		'delete' => 'deleted',
+		'dividers2tabs' => '1',
+		'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL . 'orders.gif',
 	),
-	'feInterface' => $GLOBALS['TCA']['tx_commerce_orders']['feInterface'],
+	'feInterface' => array(
+		'fe_admin_fieldList' => 'cust_deliveryaddress, order_type_uid, order_id, cust_fe_user, cust_invoice,
+			paymenttype, sum_price_net, sum_price_gross,pid,cu_iso_3_uid,order_sys_language_uid,pricefromnet',
+	),
+	'interface' => Array(
+		'showRecordFieldList' => 'cust_deliveryaddress, order_type_uid, order_id, cust_fe_user, cust_invoice, paymenttype,
+			sum_price_net, sum_price_gross, crdate, pid, payment_ref_id, cu_iso_3_uid, order_sys_language_uid, pricefromnet'
+	),
 	'columns' => Array(
 		'cust_deliveryaddress' => Array(
 			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_orders.cust_deliveryaddress',
@@ -219,5 +199,3 @@ $GLOBALS['TCA']['tx_commerce_orders'] = Array(
 		'1' => array('showitem' => '')
 	)
 );
-
-?>
