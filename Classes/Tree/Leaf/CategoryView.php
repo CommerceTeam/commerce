@@ -30,7 +30,7 @@
  */
 class Tx_Commerce_Tree_Leaf_CategoryView extends Tx_Commerce_Tree_Leaf_View {
 	/**
-	 * DB Table ##isnt this read automatically?
+	 * DB Table isn't this read automatically?
 	 *
 	 * @var string
 	 */
@@ -50,7 +50,11 @@ class Tx_Commerce_Tree_Leaf_CategoryView extends Tx_Commerce_Tree_Leaf_View {
 	public function getJumpToParam($row) {
 		if (!is_array($row)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('getJumpToParam (Tx_Commerce_Tree_Leaf_View) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
+					'getJumpToParam (Tx_Commerce_Tree_Leaf_View) gets passed invalid parameters.',
+					COMMERCE_EXTKEY,
+					3
+				);
 			}
 			return '';
 		}

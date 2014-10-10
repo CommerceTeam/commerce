@@ -343,7 +343,7 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends \TYPO3\CMS\Recordlist\R
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/class.db_list_extra.inc']['getTable'] as $classData) {
 				$hookObject = GeneralUtility::getUserObj($classData);
 
-				if (!($hookObject instanceof t3lib_localRecordListGetTableHook)) {
+				if (!($hookObject instanceof \TYPO3\CMS\Backend\RecordList\RecordListGetTableHookInterface)) {
 					throw new UnexpectedValueException('$hookObject must implement interface t3lib_localRecordListGetTableHook', 1195114460);
 				}
 
@@ -404,7 +404,7 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends \TYPO3\CMS\Recordlist\R
 			if (!$listOnlyInSingleTableMode) {
 				$theData = array();
 				if (!$this->table && !$rowlist) {
-					$theData[$titleCol] = '<img src="/typo3/clear.gif" width="' .
+					$theData[$titleCol] = '<img src="/' . TYPO3_mainDir . '/clear.gif" width="' .
 						($GLOBALS['SOBE']->MOD_SETTINGS['bigControlPanel'] ? '230' : '350') . '" height="1" alt="" />';
 					if (in_array('_CONTROL_', $this->fieldArray)) {
 						$theData['_CONTROL_'] = '';
@@ -730,7 +730,7 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends \TYPO3\CMS\Recordlist\R
 			<td class="col-icon">';
 
 			if (!$h) {
-				$out .= '<img src="/typo3/clear.gif" width="1" height="8" alt="" />';
+				$out .= '<img src="/' . TYPO3_mainDir . '/clear.gif" width="1" height="8" alt="" />';
 			} else {
 				for ($a = 0; $a < $h; $a++) {
 					if (!$a) {
@@ -903,7 +903,7 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends \TYPO3\CMS\Recordlist\R
 					if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/class.db_list_extra.inc']['actions'])) {
 						foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/class.db_list_extra.inc']['actions'] as $classData) {
 							$hookObject = GeneralUtility::getUserObj($classData);
-							if (!($hookObject instanceof localRecordList_actionsHook)) {
+							if (!($hookObject instanceof \TYPO3\CMS\Recordlist\RecordList\RecordListHookInterface)) {
 								throw new UnexpectedValueException('$hookObject must implement interface localRecordList_actionsHook', 1195567850);
 							}
 							$cells = $hookObject->renderListHeaderActions($table, $currentIdList, $cells, $this);
@@ -1016,16 +1016,18 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends \TYPO3\CMS\Recordlist\R
 								IconUtility::getSpriteIcon('actions-document-open') . '</a>';
 						}
 					}
-					$theData[$fCol] .= $this->addSortLink($language->sL(BackendUtility::getItemLabel($table, $fCol, '<i>[|]</i>')), $fCol, $table);
+					$theData[$fCol] .= $this->addSortLink(
+						$language->sL(BackendUtility::getItemLabel($table, $fCol, '<i>[|]</i>')),
+						$fCol,
+						$table
+					);
 			}
 		}
 
 		/**
-		 * @hook renderListHeader: Allows to change the contents of columns/cells of the Web>List table headers
-		 * @date 2007-11-20
-		 * @request Bernhard Kraft <krafbt@kraftb.at>
-		 * @usage Above each listed table in Web>List a header row is shown. Containing the labels of all shown
-		 * fields and additional icons to create new records for this table or perform special clipboard tasks
+		 * @usage Above each listed table in Web>List a header row is shown.
+		 * Containing the labels of all shown fields and additional icons to
+		 * create new records for this table or perform special clipboard tasks
 		 * like mark and copy all listed records to clipboard, etc.
 		 */
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/class.db_list_extra.inc']['actions'])) {
@@ -1395,7 +1397,7 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends \TYPO3\CMS\Recordlist\R
 		// pad we will see different content of the panel:
 		// For the "Normal" pad:
 		if ($this->clipObj->current == 'normal') {
-				// Show copy/cut icons:
+			// Show copy/cut icons:
 			$isSel = (string) $this->clipObj->isSelected($table, $row['uid']);
 			$cells['copy'] = $isL10nOverlay ? $this->spaceIcon : '<a href="#" onclick="' .
 				htmlspecialchars(

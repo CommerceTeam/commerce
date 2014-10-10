@@ -24,6 +24,9 @@
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Backend\Utility\IconUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /** @noinspection PhpIncludeInspection */
 require_once(PATH_TXCOMMERCE . 'Classes/Utility/GeneralUtility.php');
@@ -75,8 +78,8 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	 * @return self
 	 */
 	public function __construct() {
-		$this->belib = t3lib_div::makeInstance('Tx_Commerce_Utility_BackendUtility');
-		$this->returnUrl = htmlspecialchars(urlencode(t3lib_div::_GP('returnUrl')));
+		$this->belib = GeneralUtility::makeInstance('Tx_Commerce_Utility_BackendUtility');
+		$this->returnUrl = htmlspecialchars(urlencode(GeneralUtility::_GP('returnUrl')));
 	}
 
 	/**
@@ -125,7 +128,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 		}
 
 		// generate the security token
-		$formSecurityToken = '&prErr=1&vC=' . $backendUser->veriCode() . t3lib_BEfunc::getUrlToken('tceAction');
+		$formSecurityToken = '&prErr=1&vC=' . $backendUser->veriCode() . BackendUtility::getUrlToken('tceAction');
 
 		$colCount = 0;
 		$headRow = $this->getHeadRow($colCount, NULL, NULL, FALSE);
@@ -180,20 +183,28 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 			}
 
 			// the edit pencil (with jump back to this dataset)
-			$result .= '<td style="border-top:1px black solid"><a href="#" onclick="document.location=\'alt_doc.php?returnUrl=alt_doc.php?edit[tx_commerce_products][' .
+			$result .= '<td style="border-top:1px black solid">
+				<a href="#" onclick="document.location=\'alt_doc.php?returnUrl=alt_doc.php?edit[tx_commerce_products][' .
 				(int) $this->uid . ']=edit&amp;edit[tx_commerce_articles][' . (int) $article['uid'] . ']=edit\'; return false;">';
-			$result .= t3lib_iconWorks::getSpriteIcon('actions-document-open') . '</a></td>';
+			$result .= IconUtility::getSpriteIcon('actions-document-open') . '</a></td>';
 
 			// add the hide button
-			$result .= '<td style="border-top:1px black solid"><a href="#" onclick="return jumpToUrl(\'tce_db.php?&amp;data[tx_commerce_articles][' .
+			$result .= '<td style="border-top:1px black solid">
+				<a href="#" onclick="return jumpToUrl(\'tce_db.php?&amp;data[tx_commerce_articles][' .
 				(int) $article['uid'] . '][hidden]=' . (!$article['hidden']) . '&amp;redirect=alt_doc.php?edit[tx_commerce_products][' .
 				(int) $this->uid . ']=edit\');">';
-			$result .= '<td style="border-top:1px black solid"><a href="#" onclick="return jumpToUrl(\'tce_db.php?&amp;data[tx_commerce_articles][' .
+			$result .= '<td style="border-top:1px black solid">
+				<a href="#" onclick="return jumpToUrl(\'tce_db.php?&amp;data[tx_commerce_articles][' .
 				$article['uid'] . '][hidden]=' . (!$article['hidden']) . '&amp;redirect=alt_doc.php?edit[tx_commerce_products][' .
 				$this->uid . ']=edit' . $formSecurityToken . '\');">';
-			$result .= '<img src="/typo3/gfx/button_' . (($article['hidden']) ?
+			$result .= '<img src="/' . TYPO3_mainDir . '/gfx/button_' . (($article['hidden']) ?
 					'un' :
 					'') . 'hide.gif" border="0" /></a></td>';
+
+			$buttonUp = '<img src="/' . TYPO3_mainDir . '/gfx/button_up.gif" width="11" height="10" align="top" />';
+			$buttonDown = '<img src="/' . TYPO3_mainDir . '/gfx/button_down.gif" width="11" height="10" align="top" />';
+			$clear = '<img src="/' . TYPO3_mainDir . 'clear.gif" width="11" height="10">';
+			$garbage = '<img src="/' . TYPO3_mainDir . '/gfx/garbage.gif" />';
 
 			// add the sorting buttons
 			// UP
@@ -207,12 +218,12 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 				$params = 'cmd[tx_commerce_articles][' . (int) $article['uid'] . '][move]=' . $moveItTo;
 				$result .= '<td style="border-top:1px black solid"><a href="#" onClick="return jumpToUrl(\'tce_db.php?' . $params .
 					'&redirect=alt_doc.php?edit[tx_commerce_products][' . (int) $this->uid .
-					']=edit\');"><img src="../typo3/gfx/button_up.gif" width="11" height="10" border="0" align="top" /></a></td>';
+					']=edit\');">' . $buttonUp . '</a></td>';
 				$result .= '<td style="border-top:1px black solid"><a href="#" onClick="return jumpToUrl(\'tce_db.php?' . $params .
 					$formSecurityToken . '&redirect=alt_doc.php?edit[tx_commerce_products][' . (int) $this->uid .
-					']=edit\');"><img src="../typo3/gfx/button_up.gif" width="11" height="10" border="0" align="top" /></a></td>';
+					']=edit\');">' . $buttonUp . '</a></td>';
 			} else {
-				$result .= '<td><img src="/typo3/clear.gif" width="11" height="10"></td>';
+				$result .= '<td>' . $clear . '</td>';
 			}
 
 			// DOWN
@@ -220,17 +231,18 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 				$params = 'cmd[tx_commerce_articles][' . (int) $article['uid'] . '][move]=-' . (int) $this->existingArticles[$i + 1]['uid'];
 				$result .= '<td style="border-top:1px black solid"><a href="#" onClick="return jumpToUrl(\'tce_db.php?' . $params .
 					'&redirect=alt_doc.php?edit[tx_commerce_products][' . (int) $this->uid .
-					']=edit\');"><img src="../typo3/gfx/button_down.gif" width="11" height="10" border="0" align="top" /></a></td>';
+					']=edit\');">' . $buttonDown . '</a></td>';
 				$result .= '<td style="border-top:1px black solid"><a href="#" onClick="return jumpToUrl(\'tce_db.php?' . $params .
 					$formSecurityToken . '&redirect=alt_doc.php?edit[tx_commerce_products][' . $this->uid .
-					']=edit\');"><img src="../typo3/gfx/button_down.gif" width="11" height="10" border="0" align="top" /></a></td>';
+					']=edit\');">' . $buttonDown . '</a></td>';
 			} else {
-				$result .= '<td style="border-top: 1px black solid"><img src="/typo3/clear.gif" width="11" height="10"></td>';
+				$result .= '<td>' . $clear . '</td>';
 			}
 
 			// add the delete icon
 			$result .= '<td style="border-top:1px black solid"><a href="#" onclick="deleteRecord(\'tx_commerce_articles\', ' .
-				(int) $article['uid'] . ', \'alt_doc.php?edit[tx_commerce_products][' . (int) $this->uid . ']=edit\');"><img src="/typo3/gfx/garbage.gif" border="0" /></a></td>';
+				(int) $article['uid'] . ', \'alt_doc.php?edit[tx_commerce_products][' . (int) $this->uid .
+				']=edit\');">' . $garbage . '</a></td>';
 			$result .= '</tr>';
 
 			if ($article['uid'] > $lastUid) {
@@ -266,7 +278,10 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 
 		$rowCount = $this->calculateRowCount();
 		if ($rowCount > 1000) {
-			return sprintf($fObj->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.to_many_articles'), $rowCount);
+			return sprintf(
+				$fObj->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.to_many_articles'),
+				$rowCount
+			);
 		}
 
 		// create the headrow from the product attributes, select attributes without
@@ -283,7 +298,8 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 
 		$emptyRow = '<tr><td><input type="checkbox" name="createList[empty]" /></td>';
 		$emptyRow .= '<td colspan="' . ($colCount - 1) . '">' .
-			$fObj->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.empty_article') . '</td></tr>';
+			$fObj->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.empty_article') .
+			'</td></tr>';
 
 			// create a checkbox for selecting all articles
 		$selectJs = '<script language="JavaScript">
@@ -299,7 +315,8 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 		if (count($valueMatrix) > 0) {
 			$selectAllRow = '<tr><td><input type="checkbox" id="selectAllArticles" onclick="updateArticleList()" /></td>';
 			$selectAllRow .= '<td colspan="' . ($colCount - 1) . '">' .
-				$fObj->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.select_all_articles') . '</td></tr>';
+				$fObj->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.select_all_articles') .
+				'</td></tr>';
 		}
 
 		$result = '<table border="0">' . $selectJs . $headRow . $emptyRow . $selectAllRow . $resultRows . '</table>';
@@ -388,13 +405,16 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 						// create the row
 					$resultRows .= '<tr><td style="' . $class . '">';
 					$resultRows .= '<input type="checkbox" name="createList[' . $counter . ']" id="createRow_' . $counter . '" />';
-					$resultRows .= '<input type="hidden" name="createData[' . $counter . ']" value="' . htmlspecialchars($hashData) . '" /></td>';
+					$resultRows .= '<input type="hidden" name="createData[' . $counter . ']" value="' .
+						htmlspecialchars($hashData) . '" /></td>';
 
 					$resultRows .= '<td style="' . $class . '">' .
-						implode('</td><td style="' . $class . '">', Tx_Commerce_Utility_GeneralUtility::removeXSSStripTagsArray($labelData)) . '</td>';
+						implode('</td><td style="' . $class . '">', Tx_Commerce_Utility_GeneralUtility::removeXSSStripTagsArray($labelData)) .
+						'</td>';
 					if (count($extraRowData) > 0) {
 						$resultRows .= '<td style="' . $class . '">' .
-							implode('</td><td style="' . $class . '">', Tx_Commerce_Utility_GeneralUtility::removeXSSStripTagsArray($extraRowData)) . '</td>';
+							implode('</td><td style="' . $class . '">', Tx_Commerce_Utility_GeneralUtility::removeXSSStripTagsArray($extraRowData)) .
+							'</td>';
 					}
 					$resultRows .= '</tr>';
 				}
@@ -469,7 +489,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 		/** @var t3lib_db $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
-		if (is_array(t3lib_div::_GP('createList'))) {
+		if (is_array(GeneralUtility::_GP('createList'))) {
 			$res = $database->exec_SELECTquery(
 				'uid,value',
 				'tx_commerce_attribute_values',
@@ -480,11 +500,11 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 				$this->flattedAttributes[$row['uid']] = $row['value'];
 			}
 
-			foreach (array_keys(t3lib_div::_GP('createList')) as $key) {
+			foreach (array_keys(GeneralUtility::_GP('createList')) as $key) {
 				$this->createArticle($parameter, $key);
 			}
 
-			t3lib_BEfunc::setUpdateSignal('updateFolderTree');
+			BackendUtility::setUpdateSignal('updateFolderTree');
 		}
 	}
 
@@ -506,8 +526,8 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 			$fullAttributeList[] = $attributeData['uid_foreign'];
 		}
 
-		if (is_array(t3lib_div::_GP('updateData'))) {
-			foreach (t3lib_div::_GP('updateData') as $articleUid => $relData) {
+		if (is_array(GeneralUtility::_GP('updateData'))) {
+			foreach (GeneralUtility::_GP('updateData') as $articleUid => $relData) {
 				foreach ($relData as $attributeUid => $attributeValueUid) {
 					if ($attributeValueUid == 0) {
 						continue;
@@ -564,7 +584,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 		$database = $GLOBALS['TYPO3_DB'];
 
 			// get the create data
-		$data = t3lib_div::_GP('createData');
+		$data = GeneralUtility::_GP('createData');
 		$data = $data[$key];
 		$hash = md5($data);
 		$data = unserialize($data);
@@ -592,9 +612,9 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 			'article_type_uid' => 1,
 		);
 
-		$temp = t3lib_BEfunc::getModTSconfig($this->pid, 'mod.commerce.category');
+		$temp = BackendUtility::getModTSconfig($this->pid, 'mod.commerce.category');
 		if ($temp) {
-			$moduleConfig = t3lib_BEfunc::implodeTSParams($temp['properties']);
+			$moduleConfig = BackendUtility::implodeTSParams($temp['properties']);
 			$defaultTax = (int) $moduleConfig['defaultTaxValue'];
 			if ($defaultTax > 0) {
 				$articleData['tax'] = $defaultTax;
@@ -602,14 +622,14 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 		}
 
 		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/class.tx_commerce_articlecreator.php']['preinsert'])) {
-			t3lib_div::deprecationLog('
+			GeneralUtility::deprecationLog('
 				hook
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/class.tx_commerce_articlecreator.php\'][\'preinsert\']
 				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_basket.php\'][\'createArticlePreInsert\']
 			');
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/class.tx_commerce_articlecreator.php']['preinsert'] as $classRef) {
-				$hookObj = &t3lib_div::getUserObj($classRef);
+				$hookObj = &GeneralUtility::getUserObj($classRef);
 				if (method_exists($hookObj, 'preinsert')) {
 					$hookObj->preinsert($articleData);
 				}
@@ -617,7 +637,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 		}
 		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Utility/ArticleCreatorUtility.php']['createArticlePreInsert'])) {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Utility/ArticleCreatorUtility.php']['createArticlePreInsert'] as $classRef) {
-				$hookObj = &t3lib_div::getUserObj($classRef);
+				$hookObj = &GeneralUtility::getUserObj($classRef);
 				if (method_exists($hookObj, 'preinsert')) {
 					$hookObj->preinsert($articleData);
 				}
@@ -709,7 +729,11 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 		$resOricArticle = $database->exec_SELECTquery('*', 'tx_commerce_articles', 'uid=' . (int) $articleUid . ' and deleted = 0');
 		$origArticle = $database->sql_fetch_assoc($resOricArticle);
 
-		$resLocalizedProducts = $database->exec_SELECTquery('*', 'tx_commerce_products', 'l18n_parent=' . (int) $this->uid . ' and deleted = 0');
+		$resLocalizedProducts = $database->exec_SELECTquery(
+			'*',
+			'tx_commerce_products',
+			'l18n_parent = ' . (int) $this->uid . ' AND deleted = 0'
+		);
 
 		if (($resLocalizedProducts) && ($database->sql_num_rows($resLocalizedProducts) > 0)) {
 				// Only if there are products
@@ -717,8 +741,8 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 					// walk thru and create articles
 				$destLanguage = $localizedProducts['sys_language_uid'];
 					// get the highest sorting
-				$langIsoCode = t3lib_BEfunc::getRecord('sys_language', (int) $destLanguage, 'static_lang_isocode');
-				$langIdent = t3lib_BEfunc::getRecord('static_languages', (int) $langIsoCode['static_lang_isocode'], 'lg_typo3');
+				$langIsoCode = BackendUtility::getRecord('sys_language', (int) $destLanguage, 'static_lang_isocode');
+				$langIdent = BackendUtility::getRecord('static_languages', (int) $langIsoCode['static_lang_isocode'], 'lg_typo3');
 				$langIdent = strtoupper($langIdent['lg_typo3']);
 
 					// create article data array
@@ -770,7 +794,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, this wont get replaced as it was removed from the api
 	 */
 	public function createNewPriceCB($parameter) {
-		t3lib_div::logDeprecatedFunction();
+		GeneralUtility::logDeprecatedFunction();
 
 		/** @var language $language */
 		$language = $GLOBALS['LANG'];
@@ -790,7 +814,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, this wont get replaced as it was removed from the api
 	 */
 	public function createNewScalePricesCount($parameter) {
-		t3lib_div::logDeprecatedFunction();
+		GeneralUtility::logDeprecatedFunction();
 
 		return '<input style="width: 77px;" class="formField1" maxlength="20" type="input" name="data[tx_commerce_articles][' .
 			(int) $parameter['row']['uid'] . '][create_new_scale_prices_count]" />';
@@ -804,7 +828,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, this wont get replaced as it was removed from the api
 	 */
 	public function createNewScalePricesSteps($parameter) {
-		t3lib_div::logDeprecatedFunction();
+		GeneralUtility::logDeprecatedFunction();
 
 		return '<input style="width: 77px;" class="formField1" maxlength="20"type="input" name="data[tx_commerce_articles][' .
 			(int) $parameter['row']['uid'] . '][create_new_scale_prices_steps]" />';
@@ -818,7 +842,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, this wont get replaced as it was removed from the api
 	 */
 	public function createNewScalePricesStartAmount($parameter) {
-		t3lib_div::logDeprecatedFunction();
+		GeneralUtility::logDeprecatedFunction();
 
 		return '<input style="width: 77px;" class="formField1" maxlength="20" type="input" name="data[tx_commerce_articles][' .
 			(int) $parameter['row']['uid'] . '][create_new_scale_prices_startamount]" />';
@@ -834,7 +858,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, this wont get replaced as it was removed from the api
 	 */
 	public function deletePriceButton($parameter, $fObj) {
-		t3lib_div::logDeprecatedFunction();
+		GeneralUtility::logDeprecatedFunction();
 
 		/** @var language $language */
 		$language = $GLOBALS['LANG'];
@@ -850,7 +874,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 
 			// build the link code
 		$result = '<a href="#" onclick="deleteRecord(\'tx_commerce_article_prices\', ' . (int) $pUid . ', \'' . $returnUrl . '\');">
-			<img src="../typo3/gfx/garbage.gif" border="0" />' .
+			<img src="/' . TYPO3_mainDir . '/gfx/garbage.gif" border="0" />' .
 			$language->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:articles.del_article_price', 1) . '</a>';
 
 		return $result;
@@ -866,10 +890,3 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 		return '<input type="hidden" name="' . $parameter['itemFormElName'] . '" value="' . htmlspecialchars($parameter['itemFormElValue']) . '">';
 	}
 }
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/class.tx_commerce_articlecreator.php']) {
-	/** @noinspection PhpIncludeInspection */
-	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/class.tx_commerce_articlecreator.php']);
-}
-
-?>

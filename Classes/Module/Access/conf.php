@@ -10,5 +10,3 @@ $MCONF['name'] = 'txcommerceM1_access';
 $MCONF['script'] = 'index.php';
 $MCONF['navFrameScript'] = 'navigation.php';
 $MCONF['access'] = 'user,group';
-
-?>

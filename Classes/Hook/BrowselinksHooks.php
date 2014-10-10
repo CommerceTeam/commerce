@@ -24,6 +24,7 @@
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Hook to adjust linkwizard (linkbrowser)
@@ -64,11 +65,11 @@ class Tx_Commerce_Hook_BrowselinksHooks implements \TYPO3\CMS\Core\ElementBrowse
 		// add js
 		// has to be added as script tags to the body since parentObject
 		// is not passed by reference first we go from rhtml path to typo3 path
-		$linkToTreeJs = '/typo3/js/tree.js';
+		$linkToTreeJs = '/' . TYPO3_mainDir . '/js/tree.js';
 
 		$this->script = '<script src="' . $linkToTreeJs . '" type="text/javascript"></script>';
-		$this->script .= t3lib_div::wrapJS('
-			Tree.thisScript = "../../../../typo3/ajax.php",
+		$this->script .= GeneralUtility::wrapJS('
+			Tree.thisScript = "/' . TYPO3_mainDir . '/ajax.php",
 			Tree.ajaxID = "Tx_Commerce_Hook_BrowselinksHooks::ajaxExpandCollapse";
 		');
 	}
@@ -80,7 +81,7 @@ class Tx_Commerce_Hook_BrowselinksHooks implements \TYPO3\CMS\Core\ElementBrowse
 	 */
 	protected function initTree() {
 		// initialiize the tree
-		$this->treeObj = t3lib_div::makeInstance('Tx_Commerce_ViewHelpers_Browselinks_CategoryTree');
+		$this->treeObj = GeneralUtility::makeInstance('Tx_Commerce_ViewHelpers_Browselinks_CategoryTree');
 		$this->treeObj->init();
 	}
 
@@ -131,10 +132,10 @@ class Tx_Commerce_Hook_BrowselinksHooks implements \TYPO3\CMS\Core\ElementBrowse
 			$productUid = 0;
 			$categoryUid = 0;
 
-			$linkHandlerData = t3lib_div::trimExplode('|', $url);
+			$linkHandlerData = GeneralUtility::trimExplode('|', $url);
 
 			foreach ($linkHandlerData as $linkData) {
-				$params = t3lib_div::trimExplode(':', $linkData);
+				$params = GeneralUtility::trimExplode(':', $linkData);
 				if (isset($params[0])) {
 					if ($params[0] == 'tx_commerce_products') {
 						$productUid = (int) $params[1];
@@ -214,13 +215,7 @@ class Tx_Commerce_Hook_BrowselinksHooks implements \TYPO3\CMS\Core\ElementBrowse
 	 * @return boolean
 	 */
 	public function isValid($type) {
-		$isValid = FALSE;
-
-		if ($type === 'rte') {
-			$isValid = TRUE;
-		}
-
-		return $isValid;
+		return $type === 'rte';
 	}
 
 	/**
@@ -233,7 +228,7 @@ class Tx_Commerce_Hook_BrowselinksHooks implements \TYPO3\CMS\Core\ElementBrowse
 		$result = '';
 
 		if (!$this->isRichTextEditor()) {
-			$result = t3lib_div::implodeArrayForUrl('P', t3lib_div::_GP('P'));
+			$result = GeneralUtility::implodeArrayForUrl('P', GeneralUtility::_GP('P'));
 		}
 
 		return $result;
@@ -257,12 +252,12 @@ class Tx_Commerce_Hook_BrowselinksHooks implements \TYPO3\CMS\Core\ElementBrowse
 	 * @return void
 	 */
 	public function ajaxExpandCollapse($params, &$ajaxObj) {
-		$parameter = t3lib_div::_GP('PM');
+		$parameter = GeneralUtility::_GP('PM');
 			// IE takes anchor as parameter
 		if (($parameterPosition = strpos($parameter, '#')) !== FALSE) {
 			$parameter = substr($parameter, 0, $parameterPosition);
 		}
-		$parameter = t3lib_div::trimExplode('_', $parameter);
+		$parameter = GeneralUtility::trimExplode('_', $parameter);
 
 			// Load the tree
 		$this->initTree();

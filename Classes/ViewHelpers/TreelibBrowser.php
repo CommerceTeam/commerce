@@ -155,13 +155,13 @@ class Tx_Commerce_ViewHelpers_TreelibBrowser extends \TYPO3\CMS\Backend\Module\B
 		if ($allowProducts) {
 			// Check if we need to allow browsing of products.
 			$this->doc->JScode .= $this->doc->wrapScriptTags('
-				Tree.thisScript = "../../../../../typo3/ajax.php",
+				Tree.thisScript = "/' . TYPO3_mainDir . '/ajax.php",
 				Tree.ajaxID = "Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper::ajaxExpandCollapse";
 			');
 		} else {
 			// Check if we need to allow browsing of products.
 			$this->doc->JScode .= $this->doc->wrapScriptTags('
-				Tree.thisScript = "../../../../../typo3/ajax.php",
+				Tree.thisScript = "/' . TYPO3_mainDir . '/ajax.php",
 				Tree.ajaxID = "Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper::ajaxExpandCollapseWithoutProduct";
 			');
 		}

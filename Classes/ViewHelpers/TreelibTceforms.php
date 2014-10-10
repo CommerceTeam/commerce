@@ -163,7 +163,7 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 		$itemArray = GeneralUtility::trimExplode(',', $this->PA['itemFormElValue'], TRUE);
 		$this->setItemArray($itemArray);
 
-		$this->setIFrameContentRendering($this->config['treeViewBrowseable'] === 'iframeContent');
+		$this->setIframeContentRendering($this->config['treeViewBrowseable'] === 'iframeContent');
 	}
 
 	/**
@@ -173,7 +173,7 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 	 * @param string $jsParent
 	 * @return void
 	 */
-	public function setIFrameContentRendering($iFrameContentRendering = TRUE, $jsParent = 'parent.') {
+	public function setIframeContentRendering($iFrameContentRendering = TRUE, $jsParent = 'parent.') {
 		if (($this->iframeContentRendering = $iFrameContentRendering)) {
 			$this->jsParent = $jsParent;
 		} else {
@@ -186,7 +186,7 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 	 *
 	 * @return boolean
 	 */
-	public function isIFrameContentRendering() {
+	public function isIframeContentRendering() {
 		return $this->iframeContentRendering;
 	}
 
@@ -195,7 +195,7 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 	 *
 	 * @return boolean
 	 */
-	public function isIFrameRendering() {
+	public function isIframeRendering() {
 		return ($this->config['treeViewBrowseable'] && !$this->iframeContentRendering);
 	}
 
@@ -274,7 +274,7 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 	 */
 	public function renderDivBox($width = NULL, $height = NULL) {
 		if ($width == NULL) {
-			list($width, $height) = $this->calcFrameSizeCSS();
+			list($width, $height) = $this->calcFrameSizeCss();
 		}
 		$divStyle = 'position:relative; left:0px; top:0px; height:' . $height . '; width:' . $width .
 			';border:solid 1px;overflow:auto;background:#fff;';
@@ -295,7 +295,7 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 		$divFrame .= '</script>';
 		$divFrame .= '<script src="' . $this->tceforms->backPath . 'js/tree.js"></script>
 			<script type="text/javascript">
-			Tree.thisScript = "../../../../../typo3/ajax.php",
+			Tree.thisScript = "/' . TYPO3_mainDir . '/ajax.php",
 			Tree.ajaxID = "Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper::ajaxExpandCollapse";
 			</script>
 		';
@@ -303,43 +303,41 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 		return $divFrame;
 	}
 
-	/**********************************************************
+	/*************************************************************
 	 * IFrame specific stuff
 	 ************************************************************/
 
 	/**
 	 * Set the script to be called for the iframe tree browser.
 	 *
-	 * @param    string $script Path to the script
-	 * @return    void
-	 * @see tx_dam_treelib_browser
+	 * @param string $script Path to the script
+	 * @return void
 	 */
-	public function setIFrameTreeBrowserScript($script) {
+	public function setIframeTreeBrowserScript($script) {
 		$this->treeBrowserScript = $script;
 	}
 
 	/**
 	 * Returns iframe HTML code to call the tree browser script.
 	 *
-	 * @param    string $width CSS width definition
-	 * @param    string $height CSS height definition
-	 * @return    string HTML content
-	 * @see tx_dam_treelib_browser
+	 * @param string $width CSS width definition
+	 * @param string $height CSS height definition
+	 * @return string HTML content
 	 */
-	public function renderIFrame($width = NULL, $height = NULL) {
+	public function renderIframe($width = NULL, $height = NULL) {
 		if (!$this->treeBrowserScript) {
 			die ('Tx_Commerce_ViewHelpers_TreelibTceforms: treeBrowserScript is not set!');
 		}
 
 		if ($width == NULL) {
-			list($width, $height) = $this->calcFrameSizeCSS();
+			list($width, $height) = $this->calcFrameSizeCss();
 		}
 
 		$table = $GLOBALS['TCA'][$this->table]['orig_table'] ?
 			$GLOBALS['TCA'][$this->table]['orig_table'] :
 			$this->table;
 
-		$iFrameParameter = $this->getIFrameParameter($table, $this->field, $this->row['uid']);
+		$iFrameParameter = $this->getIframeParameter($table, $this->field, $this->row['uid']);
 
 		$divStyle = 'height:' . $height . '; width:' . $width . '; border:solid 1px #000; background:#fff;';
 		$iFrame = '<iframe src="' . htmlspecialchars(
@@ -359,7 +357,7 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 	 * @return    string
 	 * @see tx_dam_treelib_browser
 	 */
-	public function getIFrameParameter($table, $field, $uid) {
+	public function getIframeParameter($table, $field, $uid) {
 		$params = array();
 
 		$config = '';
@@ -396,7 +394,7 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 	 * @param integer $itemCountSelectable
 	 * @return array array($width, $height)
 	 */
-	public function calcFrameSizeCSS($itemCountSelectable = NULL) {
+	public function calcFrameSizeCss($itemCountSelectable = NULL) {
 		if ($itemCountSelectable === NULL) {
 			$itemCountSelectable = max(1, $this->treeItemC + $this->treesC + 1);
 		}
@@ -554,7 +552,7 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 		$mounts->init($GLOBALS['BE_USER']->user['uid']);
 
 			// Separate Key and Title with a |
-		$title = ($category->isPSet('show') && $mounts->isInCommerceMounts($category->getUid())) ?
+		$title = ($category->isPermissionSet('show') && $mounts->isInCommerceMounts($category->getUid())) ?
 			$category->getTitle() :
 			$this->language->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_treelib.xml:leaf.restrictedAccess', 1);
 		$this->itemArrayProcessed = array($category->getUid() . '|' . $title);
@@ -595,15 +593,15 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 		$itemArray = array();
 
 		for ($i = 0, $l = count($parent); $i < $l; $i++) {
-			/** @var Tx_Commerce_Domain_Model_Category $cat */
-			$cat = GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Category', $parent[$i]);
-			$cat->loadData();
+			/** @var Tx_Commerce_Domain_Model_Category $category */
+			$category = GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Category', $parent[$i]);
+			$category->loadData();
 
-			$title = ($cat->isPSet('show')) ?
-				$cat->getTitle() :
+			$title = ($category->isPermissionSet('show')) ?
+				$category->getTitle() :
 				$this->language->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_treelib.xml:leaf.restrictedAccess', 1);
 				// Separate Key and Title with a |
-			$itemArray[] = $cat->getUid() . '|' . $title;
+			$itemArray[] = $category->getUid() . '|' . $title;
 		}
 
 		$this->itemArrayProcessed = $itemArray;

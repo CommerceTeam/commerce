@@ -159,7 +159,7 @@ class Tx_Commerce_Controller_AccessController extends t3lib_SCbase {
 
 			// override attributes of WebPermissions found in sysext/perm/mod1/perm.js
 		$this->doc->JScode .= $this->doc->wrapScriptTags('
-			WebPermissions.thisScript = "../../../../../../typo3/ajax.php";
+			WebPermissions.thisScript = "/' . TYPO3_mainDir . '/ajax.php";
 			WebPermissions.ajaxID = "Tx_Commerce_Controller_PermissionAjaxController::dispatch";
 		');
 	}

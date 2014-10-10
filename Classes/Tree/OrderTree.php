@@ -29,7 +29,7 @@
  * Extension class for the t3lib_browsetree class,
  * specially made for browsing pages in the Web module
  */
-class Tx_Commerce_Tree_OrderTree extends t3lib_browseTree {
+class Tx_Commerce_Tree_OrderTree extends \TYPO3\CMS\Backend\Tree\View\BrowseTreeView {
 	/**
 	 * @var integer
 	 */
@@ -69,10 +69,10 @@ class Tx_Commerce_Tree_OrderTree extends t3lib_browseTree {
 		$language = $GLOBALS['LANG'];
 
 			// If the record is locked, present a warning sign.
-		if ($lockInfo = t3lib_BEfunc::isRecordLocked('pages', $row['uid'])) {
+		if (($lockInfo = \TYPO3\CMS\Backend\Utility\BackendUtility::isRecordLocked('pages', $row['uid']))) {
 			$aOnClick = 'alert(' . $language->JScharCode($lockInfo['msg']) . ');return false;';
 			$lockIcon = '<a href="#" onclick="' . htmlspecialchars($aOnClick) . '">' .
-				t3lib_iconWorks::getSpriteIcon(
+				\TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon(
 					'status-warning-in-use',
 					array('title' => htmlspecialchars($lockInfo['msg']))
 				) .
@@ -106,7 +106,8 @@ class Tx_Commerce_Tree_OrderTree extends t3lib_browseTree {
 	}
 
 	/**
-	 * Adds a red "+" to the input string, $str, if the field "php_tree_stop" in the $row (pages) is set
+	 * Adds a red "+" to the input string, $str, if the field
+	 * "php_tree_stop" in the $row (pages) is set
 	 *
 	 * @param string $str Input string, like a page title for the tree
 	 * @param array $row record row with "php_tree_stop" field
@@ -115,7 +116,8 @@ class Tx_Commerce_Tree_OrderTree extends t3lib_browseTree {
 	 */
 	public function wrapStop($str, $row) {
 		if ($row['php_tree_stop']) {
-			$str .= '<a href="' . htmlspecialchars(t3lib_div::linkThisScript(array('setTempDBmount' => $row['uid']))) .
+			$str .= '<a href="' .
+				htmlspecialchars(\TYPO3\CMS\Core\Utility\GeneralUtility::linkThisScript(array('setTempDBmount' => $row['uid']))) .
 				'" class="typo3-red">+</a> ';
 		}
 		return $str;

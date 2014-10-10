@@ -110,7 +110,7 @@ class Tx_Commerce_ViewHelpers_TceFunc {
 		/** @var Tx_Commerce_ViewHelpers_TreelibTceforms $renderBrowseTrees */
 		$renderBrowseTrees = GeneralUtility::makeInstance('Tx_Commerce_ViewHelpers_TreelibTceforms');
 		$renderBrowseTrees->init ($parameter, $fObj);
-		$renderBrowseTrees->setIFrameTreeBrowserScript(
+		$renderBrowseTrees->setIframeTreeBrowserScript(
 			$this->tceForms->backPath . PATH_TXCOMMERCE_REL . 'Classes/ViewHelpers/IframeTreeBrowser.php'
 		);
 
@@ -119,10 +119,10 @@ class Tx_Commerce_ViewHelpers_TceFunc {
 
 		$thumbnails = '';
 		if (!$disabled) {
-			if ($renderBrowseTrees->isIFrameContentRendering()) {
+			if ($renderBrowseTrees->isIframeContentRendering()) {
 					// just the trees are needed - we're inside of an iframe!
 				return $renderBrowseTrees->getTreeContent();
-			} elseif ($renderBrowseTrees->isIFrameRendering()) {
+			} elseif ($renderBrowseTrees->isIframeRendering()) {
 				// If we want to display a browseable tree, we need to run the tree in an iframe
 				// element. In the logic of tceforms the iframe is displayed in the "thumbnails"
 				// position. In consequence this means that the current function is both
@@ -136,7 +136,7 @@ class Tx_Commerce_ViewHelpers_TceFunc {
 				// treeViewBrowseable is set to TRUE. The value 'iframeContent' for
 				// treeViewBrowseable will be set in dam/mod_treebrowser/index.php as
 				// internal configuration logic
-				$thumbnails = $renderBrowseTrees->renderIFrame();
+				$thumbnails = $renderBrowseTrees->renderIframe();
 			} else {
 				// tree frame <div>
 				$thumbnails = $renderBrowseTrees->renderDivBox();
