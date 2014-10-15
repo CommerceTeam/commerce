@@ -1,5 +1,11 @@
 <?php
 
+$GLOBALS['TCA']['pages']['columns']['module']['config']['items'][] = array(
+	'LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:commerce',
+	'commerce'
+);
+
+
 $tempColumns = array(
 	'tx_commerce_foldereditorder' => array(
 		'displayCond' => 'FIELD:tx_graytree_foldername:REQ:true',
@@ -13,4 +19,4 @@ $tempColumns = array(
 );
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTCAcolumns('pages', $tempColumns, 1);
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('pages', 'tx_commerce_foldereditorder;;;;1-1-1');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('pages', 'tx_commerce_foldereditorder');

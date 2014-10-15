@@ -24,6 +24,8 @@
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * A metaclass for creating inputfield fields in the backend.
@@ -40,13 +42,14 @@ class Tx_Commerce_Utility_AttributeEditorUtility {
 	 * @return self
 	 */
 	public function __construct() {
-		$this->belib = t3lib_div::makeInstance('Tx_Commerce_Utility_BackendUtility');
+		$this->belib = GeneralUtility::makeInstance('Tx_Commerce_Utility_BackendUtility');
 	}
 
 	/**
-	 * This method creates a dynaflex field configuration from the submitted database entry.
-	 * The variable "configData" contains the complete dynaflex configuration of the field and
-	 * the data that where maybe fetched from the database.
+	 * This method creates a dynaflex field configuration from the submitted
+	 * database entry. The variable "configData" contains the complete dynaflex
+	 * configuration of the field and the data that where maybe fetched from
+	 * the database.
 	 *
 	 * We have to fill the fields
 	 *
@@ -54,16 +57,22 @@ class Tx_Commerce_Utility_AttributeEditorUtility {
 	 * $config['label']
 	 * $config['config']
 	 *
-	 * @param array $aData: The data array contains in element "row" the dataset of the table we're creating
+	 * @param array $aData: The data array contains in element "row" the dataset
+	 * 	of the table we're creating
 	 * @param array $config: The config array is the fynaflex fieldconfiguration.
-	 * @param boolean $fetchFromDB: If true the attribute data is fetched from DB
-	 * @param boolean $onlyDisplay: If true the field is not an input field but is displayed
+	 * @param boolean $fetchFromDatabase: If true the attribute data is fetched
+	 * 	from database
+	 * @param boolean $onlyDisplay: If true the field is not an input field but
+	 * 	is displayed
 	 * @return array The modified dynaflex configuration
 	 */
-	public function getAttributeEditField($aData, &$config, $fetchFromDB = TRUE, $onlyDisplay = FALSE) {
+	public function getAttributeEditField($aData, &$config, $fetchFromDatabase = TRUE, $onlyDisplay = FALSE) {
 			// first of all, fetch data from attribute table
-		if ($fetchFromDB) {
-			$aData = $this->belib->getAttributeData($aData['row']['uid_foreign'], 'uid,title,has_valuelist,multiple,unit,deleted');
+		if ($fetchFromDatabase) {
+			$aData = $this->belib->getAttributeData(
+				$aData['row']['uid_foreign'],
+				'uid, title, has_valuelist, multiple, unit, deleted'
+			);
 		}
 
 		if ($aData['deleted'] == 1) {
@@ -71,39 +80,28 @@ class Tx_Commerce_Utility_AttributeEditorUtility {
 		}
 
 		/**
-		 * Try to detect article UID since there is currently no way to get the data from the method
-		 * and get language_uid from article
+		 * Try to detect article UID since there is currently no way to get the
+		 * data from the method and get language_uid from article
 		 */
-		$sys_language_uid = 0;
-		$getPostedit = t3lib_div::_GPmerged('edit');
+		$sysLanguageUid = 0;
+		$getPostedit = GeneralUtility::_GPmerged('edit');
 		if (is_array($getPostedit['tx_commerce_articles'])) {
 			$articleUid = array_keys($getPostedit['tx_commerce_articles']);
 			if ($articleUid[0] > 0) {
-				$lok_data = t3lib_BEfunc::getRecord('tx_commerce_articles', $articleUid[0], 'sys_language_uid');
-				$sys_language_uid = (int) $lok_data['sys_language_uid'];
+				$temporaryData = BackendUtility::getRecord('tx_commerce_articles', $articleUid[0], 'sys_language_uid');
+				$sysLanguageUid = (int) $temporaryData['sys_language_uid'];
 			}
 		} elseif (is_array($getPostedit['tx_commerce_products'])) {
 			$articleUid = array_keys($getPostedit['tx_commerce_products']);
 			if ($articleUid[0] > 0) {
-				$lok_data = t3lib_BEfunc::getRecord('tx_commerce_products', $articleUid[0], 'sys_language_uid');
-				$sys_language_uid = (int) $lok_data['sys_language_uid'];
+				$temporaryData = BackendUtility::getRecord('tx_commerce_products', $articleUid[0], 'sys_language_uid');
+				$sysLanguageUid = (int) $temporaryData['sys_language_uid'];
 			}
 		}
 
 			// set label and name
 		$config['label'] = $aData['title'];
 		$config['name'] = 'attribute_' . $aData['uid'];
-
-		/**
-		 * Try to get language label
-		 */
-		if ($sys_language_uid > 0) {
-			$translation = t3lib_BEfunc::getRecordRaw(
-				'tx_commerce_attributes',
-				'sys_language_uid=' . $sys_language_uid . ' AND l18n_parent=' . $aData['uid'],
-				'*'
-			);
-		}
 
 			// get the value
 		if ($onlyDisplay) {
@@ -151,7 +149,7 @@ class Tx_Commerce_Utility_AttributeEditorUtility {
 		}
 
 			// Dont display in lokalised version Attributes with valuelist
-		if (($aData['has_valuelist'] == 1) && ($sys_language_uid <> 0)) {
+		if (($aData['has_valuelist'] == 1) && ($sysLanguageUid <> 0)) {
 			$config['config']['type'] = '';
 			return FALSE;
 		}
@@ -162,8 +160,8 @@ class Tx_Commerce_Utility_AttributeEditorUtility {
 	/**
 	 * Returns the editfield dynaflex config for all attributes of a product
 	 *
-	 * @param array $funcDataArray: ...
-	 * @param array $baseConfig: ...
+	 * @param array $funcDataArray
+	 * @param array $baseConfig
 	 * @return array An array with fieldconfigs
 	 */
 	public function getAttributeEditFields($funcDataArray, $baseConfig) {
@@ -175,14 +173,17 @@ class Tx_Commerce_Utility_AttributeEditorUtility {
 				continue;
 			}
 
-			$aData = $this->belib->getAttributeData($funcData['row']['uid_foreign'], 'uid,title,has_valuelist,multiple,unit,deleted');
+			$aData = $this->belib->getAttributeData(
+				$funcData['row']['uid_foreign'],
+				'uid, title, has_valuelist, multiple, unit, deleted'
+			);
 
 				// get correlationtype for this attribute and the product of this article
 				// first get the product for this aticle
 			$productUid = $this->belib->getProductOfArticle($funcData['row']['uid_local'], FALSE);
 
-			$uidCT = $this->belib->getCtForAttributeOfProduct($funcData['row']['uid_foreign'], $productUid);
-			$sortedAttributes[$uidCT][] = $aData;
+			$uidCorrelationType = $this->belib->getCtForAttributeOfProduct($funcData['row']['uid_foreign'], $productUid);
+			$sortedAttributes[$uidCorrelationType][] = $aData;
 		}
 		ksort($sortedAttributes);
 		reset($sortedAttributes);
@@ -205,26 +206,26 @@ class Tx_Commerce_Utility_AttributeEditorUtility {
 	/**
 	 * Simply returns the value of an attribute of an article.
 	 *
-	 * @param array $PA
+	 * @param array $parameter
 	 * @return string
 	 */
-	public function displayAttributeValue($PA) {
+	public function displayAttributeValue($parameter) {
 		/** @var t3lib_db $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
 			// attribute value uid
-		$aUid = $PA['fieldConf']['config']['aUid'];
+		$aUid = $parameter['fieldConf']['config']['aUid'];
 
 		$relRes = $database->exec_SELECTquery(
 			'uid_valuelist,default_value,value_char',
 			'tx_commerce_articles_article_attributes_mm',
-			'uid_local=' . (int) $PA['row']['uid'] . ' AND uid_foreign=' . (int) $aUid
+			'uid_local=' . (int) $parameter['row']['uid'] . ' AND uid_foreign=' . (int) $aUid
 		);
 
 		$attributeData = $this->belib->getAttributeData($aUid, 'has_valuelist,multiple,unit');
 		$relationData = NULL;
 		if ($attributeData['multiple'] == 1) {
-			while ($relData = $database->sql_fetch_assoc($relRes)) {
+			while (($relData = $database->sql_fetch_assoc($relRes))) {
 				$relationData[] = $relData;
 			}
 		} else {
@@ -232,7 +233,7 @@ class Tx_Commerce_Utility_AttributeEditorUtility {
 		}
 
 		return htmlspecialchars(strip_tags($this->belib->getAttributeValue(
-			$PA['row']['uid'],
+			$parameter['row']['uid'],
 			$aUid,
 			'tx_commerce_articles_article_attributes_mm',
 			$relationData,

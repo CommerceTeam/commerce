@@ -3,7 +3,6 @@ This is a very short quick-install-guide. This text should enable you to install
 1) Please install the following extensions:
 tt_address
 dynaflex
-moneylib
 static_info_tables
 commerce
 

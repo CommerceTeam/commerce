@@ -104,17 +104,11 @@ if (TYPO3_MODE == 'BE') {
 	\TYPO3\CMS\Backend\Sprite\SpriteManager::addTcaTypeIcon(
 		'pages',
 		'contains-commerce',
-		'EXT:commerce/Resources/Public/Icons/Table/commerce_folder.gif'
+		PATH_TXCOMMERCE_REL . 'Resources/Public/Icons/Table/commerce_folder.gif'
 	);
 
 
-	$TCA['pages']['columns']['module']['config']['items'][] = array(
-		'LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:commerce',
-		'commerce'
-	);
-
-
-		// Add default User TS config
+	// Add default User TS config
 	\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addUserTSConfig('
 		options.saveDocNew {
 			tx_commerce_products = 1
@@ -127,15 +121,15 @@ if (TYPO3_MODE == 'BE') {
 		}
 	');
 
-		// Add default page TS config
+	// Add default page TS config
 	\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPageTSConfig('
 		# CONFIGURATION of RTE in table "tx_commerce_products", field "description"
 		RTE.config.tx_commerce_products.description {
 			hidePStyleItems = H1, H4, H5, H6
-			proc.exitHTMLparser_db=1
+			proc.exitHTMLparser_db = 1
 			proc.exitHTMLparser_db {
-				keepNonMatchedTags=1
-				tags.font.allowedAttribs= color
+				keepNonMatchedTags = 1
+				tags.font.allowedAttribs = color
 				tags.font.rmTagIfNoAttrib = 1
 				tags.font.nesting = global
 			}
@@ -147,102 +141,10 @@ if (TYPO3_MODE == 'BE') {
 }
 
 
-	// Add context menu for category trees in BE
+// Add context menu for category trees in BE
 $GLOBALS['TBE_MODULES_EXT']['xMOD_alt_clickmenu']['extendCMclasses'][] = array(
 	'name' => 'Tx_Commerce_Utility_ClickmenuUtility',
 	'path' => PATH_TXCOMMERCE . 'Classes/Utility/ClickmenuUtility.php'
-);
-
-
-$GLOBALS['TCA']['tx_commerce_articles'] = array(
-	'ctrl' => array(
-		'title' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_articles',
-		'label' => 'title',
-		'tstamp' => 'tstamp',
-		'crdate' => 'crdate',
-		'sortby' => 'sorting',
-		'cruser_id' => 'cruser_id',
-		'versioning' => '1',
-		'languageField' => 'sys_language_uid',
-		'transOrigPointerField' => 'l18n_parent',
-		'transOrigDiffSourceField' => 'l18n_diffsource',
-		'default_sortby' => 'ORDER BY sorting,crdate',
-		'delete' => 'deleted',
-		'enablecolumns' => array(
-			'disabled' => 'hidden',
-			'starttime' => 'starttime',
-			'endtime' => 'endtime',
-			'fe_group' => 'fe_group',
-		),
-		'dynamicConfigFile' => PATH_TXCOMMERCE . 'Configuration/TCA/Articles.php',
-		'dividers2tabs' => '1',
-		'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL . 'article.gif',
-	),
-	'feInterface' => array(
-		'fe_admin_fieldList' => 'sys_language_uid, l18n_parent, l18n_diffsource, hidden, starttime, endtime,
-			fe_group, title, subtitle, navtitle, images, ordernumber, eancode, description_extra,plain_text,
-			price_gross, price_net, purchase_price, tax, article_type_uid, products_uid, article_attributes',
-	)
-);
-
-$GLOBALS['TCA']['tx_commerce_categories'] = array(
-	'ctrl' => array(
-		'title' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_categories',
-		'label' => 'title',
-		'sortby' => 'sorting',
-		'tstamp' => 'tstamp',
-		'crdate' => 'crdate',
-		'cruser_id' => 'cruser_id',
-		'versioning' => '1',
-		'languageField' => 'sys_language_uid',
-		'transOrigPointerField' => 'l18n_parent',
-		'transOrigDiffSourceField' => 'l18n_diffsource',
-		'delete' => 'deleted',
-		'enablecolumns' => array(
-			'disabled' => 'hidden',
-			'starttime' => 'starttime',
-			'endtime' => 'endtime',
-			'fe_group' => 'fe_group',
-		),
-		'dynamicConfigFile' => PATH_TXCOMMERCE . 'Configuration/TCA/Categories.php',
-		'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL . 'categories.gif',
-		'dividers2tabs' => '1',
-	),
-	'feInterface' => array(
-		'fe_admin_fieldList' => 'sys_language_uid, l18n_parent, l18n_diffsource, hidden, starttime, endtime, fe_group, title,
-			subtitle, description, images, navtitle, keywords, attributes, parent_category, teaser, teaserimages',
-	)
-);
-
-$GLOBALS['TCA']['tx_commerce_products'] = array(
-	'ctrl' => array(
-		'title' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products',
-		'label' => 'title',
-		'tstamp' => 'tstamp',
-		'crdate' => 'crdate',
-		'sortby' => 'sorting',
-		'cruser_id' => 'cruser_id',
-		'versioning' => '1',
-		'languageField' => 'sys_language_uid',
-		'transOrigPointerField' => 'l18n_parent',
-		'transOrigDiffSourceField' => 'l18n_diffsource',
-		'versioningWS' => TRUE,
-		'delete' => 'deleted',
-		'thumbnail' => 'images',
-		'enablecolumns' => array(
-			'disabled' => 'hidden',
-			'starttime' => 'starttime',
-			'endtime' => 'endtime',
-			'fe_group' => 'fe_group',
-		),
-		'dynamicConfigFile' => PATH_TXCOMMERCE . 'Configuration/TCA/Products.php',
-		'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL . 'products.gif',
-		'dividers2tabs' => '1',
-	),
-	'feInterface' => array(
-		'fe_admin_fieldList' => 'sys_language_uid, l18n_parent, l18n_diffsource, hidden, starttime, endtime, fe_group,
-			title, subtitle, navtitle, description, images, teaser, teaserimages, categories, manufacturer_uid, attributes',
-	)
 );
 
 

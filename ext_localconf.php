@@ -250,6 +250,8 @@ if (TYPO3_MODE == 'BE') {
 
 	// Register dynaflex dca files
 $GLOBALS['T3_VAR']['ext']['dynaflex']['tx_commerce_categories'][] =
-	'EXT:commerce/Configuration/DCA/Categories.php:tx_commerce_configuration_dca_categories';
-
-?>
+	'EXT:commerce/Configuration/DCA/Categories.php:Tx_Commerce_Configuration_Dca_Categories';
+$GLOBALS['T3_VAR']['ext']['dynaflex']['tx_commerce_products'][] =
+	'EXT:commerce/Configuration/DCA/Product.php:Tx_Commerce_Configuration_Dca_Products';
+$GLOBALS['T3_VAR']['ext']['dynaflex']['tx_commerce_articles'][] =
+	'EXT:commerce/Configuration/DCA/Articles.php:Tx_Commerce_Configuration_Dca_Articles';

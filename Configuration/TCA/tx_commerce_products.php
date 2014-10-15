@@ -22,20 +22,38 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-/**
- * Dynamic config file for tx_commerce_products
- */
-
-if (!defined('TYPO3_MODE')) {
-	die('Access denied.');
-}
-
 $GLOBALS['TCA']['tx_commerce_products'] = Array(
-	'ctrl' => $GLOBALS['TCA']['tx_commerce_products']['ctrl'],
-	'interface' => Array(
-		'showRecordFieldList' => 'sys_language_uid,l18n_parent,l18n_diffsource,hidden,starttime,endtime,fe_group,title,subtitle,navtitle,description,images,teaser,teaserimages,manufacturer_uid'
+	'ctrl' => array(
+		'title' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products',
+		'label' => 'title',
+		'tstamp' => 'tstamp',
+		'crdate' => 'crdate',
+		'sortby' => 'sorting',
+		'cruser_id' => 'cruser_id',
+		'versioning' => '1',
+		'languageField' => 'sys_language_uid',
+		'transOrigPointerField' => 'l18n_parent',
+		'transOrigDiffSourceField' => 'l18n_diffsource',
+		'versioningWS' => TRUE,
+		'delete' => 'deleted',
+		'thumbnail' => 'images',
+		'enablecolumns' => array(
+			'disabled' => 'hidden',
+			'starttime' => 'starttime',
+			'endtime' => 'endtime',
+			'fe_group' => 'fe_group',
+		),
+		'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL . 'products.gif',
+		'dividers2tabs' => '1',
 	),
-	'feInterface' => $GLOBALS['TCA']['tx_commerce_products']['feInterface'],
+	'interface' => Array(
+		'showRecordFieldList' => 'sys_language_uid, l18n_parent, l18n_diffsource, hidden, starttime, endtime, fe_group, title,
+			subtitle, navtitle, description, images, teaser, teaserimages, manufacturer_uid'
+	),
+	'feInterface' => array(
+		'fe_admin_fieldList' => 'sys_language_uid, l18n_parent, l18n_diffsource, hidden, starttime, endtime, fe_group,
+			title, subtitle, navtitle, description, images, teaser, teaserimages, categories, manufacturer_uid, attributes',
+	),
 	'columns' => Array(
 		'sys_language_uid' => Array(
 			'exclude' => 1,
@@ -299,15 +317,14 @@ $GLOBALS['TCA']['tx_commerce_products'] = Array(
 				'type' => 'flex',
 				'ds' => Array(
 					'default' => '
-						<T3DataStructure>
-							<meta>
-								<langDisable>1</langDisable>
-							</meta>
-							<ROOT>
-								<type>array</type>
-							</ROOT>
-						</T3DataStructure>
-					'
+<T3DataStructure>
+	<meta>
+		<langDisable>1</langDisable>
+	</meta>
+	<ROOT>
+		<type>array</type>
+	</ROOT>
+</T3DataStructure>'
 				),
 			),
 		),
@@ -319,15 +336,14 @@ $GLOBALS['TCA']['tx_commerce_products'] = Array(
 				'type' => 'flex',
 				'ds' => Array(
 					'default' => '
-						<T3DataStructure>
-							<meta>
-								<langDisable>1</langDisable>
-							</meta>
-							<ROOT>
-								<type>array</type>
-							</ROOT>
-						</T3DataStructure>
-					'
+<T3DataStructure>
+	<meta>
+		<langDisable>1</langDisable>
+	</meta>
+	<ROOT>
+		<type>array</type>
+	</ROOT>
+</T3DataStructure>'
 				),
 			),
 		),
@@ -338,50 +354,49 @@ $GLOBALS['TCA']['tx_commerce_products'] = Array(
 				'type' => 'flex',
 				'ds' => array(
 					'default' => '
-						<T3DataStructure>
-							<meta>
-								<langDisable>1</langDisable>
-							</meta>
-							<sheets>
-								<sEXISTING>
-									<ROOT>
-										<TCEforms>
-											<sheetTitle>LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.existing_articles</sheetTitle>
-										</TCEforms>
-										<type>array</type>
-										<el>
-											<existingArticles>
-												<TCEforms>
-													<config>
-														<type>user</type>
-														<userFunc>Tx_Commerce_Utility_ArticleCreatorUtility->existingArticles</userFunc>
-													</config>
-												</TCEforms>
-											</existingArticles>
-										</el>
-									</ROOT>
-								</sEXISTING>
-								<sCREATE>
-									<ROOT>
-										<TCEforms>
-											<sheetTitle>LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.producible_articles</sheetTitle>
-										</TCEforms>
-										<type>array</type>
-										<el>
-											<producibleArticles>
-												<TCEforms>
-													<config>
-														<type>user</type>
-														<userFunc>Tx_Commerce_Utility_ArticleCreatorUtility->producibleArticles</userFunc>
-													</config>
-												</TCEforms>
-											</producibleArticles>
-										</el>
-									</ROOT>
-								</sCREATE>
-							</sheets>
-						</T3DataStructure>
-					',
+<T3DataStructure>
+	<meta>
+		<langDisable>1</langDisable>
+	</meta>
+	<sheets>
+		<sEXISTING>
+			<ROOT>
+				<TCEforms>
+					<sheetTitle>LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.existing_articles</sheetTitle>
+				</TCEforms>
+				<type>array</type>
+				<el>
+					<existingArticles>
+						<TCEforms>
+							<config>
+								<type>user</type>
+								<userFunc>Tx_Commerce_Utility_ArticleCreatorUtility->existingArticles</userFunc>
+							</config>
+						</TCEforms>
+					</existingArticles>
+				</el>
+			</ROOT>
+		</sEXISTING>
+		<sCREATE>
+			<ROOT>
+				<TCEforms>
+				<sheetTitle>LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.producible_articles</sheetTitle>
+				</TCEforms>
+				<type>array</type>
+				<el>
+					<producibleArticles>
+						<TCEforms>
+							<config>
+								<type>user</type>
+								<userFunc>Tx_Commerce_Utility_ArticleCreatorUtility->producibleArticles</userFunc>
+							</config>
+						</TCEforms>
+					</producibleArticles>
+				</el>
+			</ROOT>
+		</sCREATE>
+	</sheets>
+</T3DataStructure>',
 				),
 			),
 		),
@@ -393,32 +408,31 @@ $GLOBALS['TCA']['tx_commerce_products'] = Array(
 				'type' => 'flex',
 				'ds' => array(
 					'default' => '
-						<T3DataStructure>
-							<meta>
-								<langDisable>1</langDisable>
-							</meta>
-							<sheets>
-								<sEXISTING>
-									<ROOT>
-										<TCEforms>
-											<sheetTitle>LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.existing_articles</sheetTitle>
-										</TCEforms>
-										<type>array</type>
-										<el>
-											<existingArticles>
-												<TCEforms>
-													<config>
-														<type>user</type>
-														<userFunc>Tx_Commerce_Utility_ArticleCreatorUtility->existingArticles</userFunc>
-													</config>
-												</TCEforms>
-											</existingArticles>
-										</el>
-									</ROOT>
-								</sEXISTING>
-							</sheets>
-						</T3DataStructure>
-					',
+<T3DataStructure>
+	<meta>
+		<langDisable>1</langDisable>
+	</meta>
+	<sheets>
+		<sEXISTING>
+			<ROOT>
+				<TCEforms>
+					<sheetTitle>LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.existing_articles</sheetTitle>
+				</TCEforms>
+				<type>array</type>
+				<el>
+					<existingArticles>
+						<TCEforms>
+							<config>
+								<type>user</type>
+								<userFunc>Tx_Commerce_Utility_ArticleCreatorUtility->existingArticles</userFunc>
+							</config>
+						</TCEforms>
+					</existingArticles>
+				</el>
+			</ROOT>
+		</sEXISTING>
+	</sheets>
+</T3DataStructure>',
 				),
 			),
 		),
@@ -437,38 +451,6 @@ $GLOBALS['TCA']['tx_commerce_products'] = Array(
 	)
 );
 
-/**
- * Only perform from TCA if the BE form is called the first time
- * ('First time' also means calling the editform of an product),
- * no data has to be saved and extension dynaflex is available
- */
-
-$postEdit = t3lib_div::_GP('edit');
-$postData = t3lib_div::_GP('data');
-if (is_array($postEdit['tx_commerce_products']) && (($postData == NULL) || (t3lib_div::_GP('createArticles') == 'create')) &&
-	t3lib_extMgm::isLoaded('dynaflex')) {
-		// Load the configuration from a file
-	/** @noinspection PhpIncludeInspection */
-	require_once(t3lib_extMgm::extPath('commerce') . 'Configuration/DCA/Product.php');
-	$uid = array_keys($postEdit['tx_commerce_products']);
-	if ($postEdit['tx_commerce_products'][$uid[0]] == 'new') {
-		$uid = 0;
-	} else {
-		$uid = $uid[0];
-	}
-
-	$dynaFlexConf[0]['uid'] = $uid;
-	$dynaFlexConf[1]['uid'] = $uid;
-
-		// And start the dynyflex processing
-	/** @noinspection PhpIncludeInspection */
-	require_once(t3lib_extMgm::extPath('dynaflex') . 'class.dynaflex.php');
-	/** @var dynaflex $dynaflex */
-	$dynaflex = t3lib_div::makeInstance('dynaflex', $GLOBALS['TCA'], $dynaFlexConf);
-		// write back the modified TCA
-	$GLOBALS['TCA'] = $dynaflex->getDynamicTCA();
-}
-
 $simpleMode = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['simpleMode'];
 if ($simpleMode) {
 	$GLOBALS['TCA']['tx_commerce_products']['columns']['articles'] = array(
@@ -481,7 +463,11 @@ if ($simpleMode) {
 			'minitems' => 0,
 		),
 	);
-	$GLOBALS['TCA']['tx_commerce_products']['types']['0']['showitem'] = str_replace('articleslok', 'articles', $GLOBALS['TCA']['tx_commerce_products']['types']['0']['showitem']);
+	$GLOBALS['TCA']['tx_commerce_products']['types']['0']['showitem'] = str_replace(
+		'articleslok',
+		'articles',
+		$GLOBALS['TCA']['tx_commerce_products']['types']['0']['showitem']
+	);
 }
 
-?>
+return $GLOBALS['TCA']['tx_commerce_products'];
