@@ -119,6 +119,7 @@ class Tx_Commerce_ViewHelpers_TceFunc {
 
 		$thumbnails = '';
 		if (!$disabled) {
+			// @todo remove iframe part. only div rendering ist sufficent enough
 			if ($renderBrowseTrees->isIframeContentRendering()) {
 					// just the trees are needed - we're inside of an iframe!
 				return $renderBrowseTrees->getTreeContent();
@@ -252,6 +253,42 @@ class Tx_Commerce_ViewHelpers_TceFunc {
 			'readOnly' => $disabled,
 			'thumbnails' => $thumbnails
 		);
+
+		$item .= '
+		<style type="text/css">
+		.x-tree-root-ct ul {
+			padding: 0 0 0 19px;
+			margin: 0;
+		}
+
+		.x-tree-root-ct {
+			padding-left: 0;
+		}
+
+		tr:hover .x-tree-root-ct a {
+			text-decoration: none;
+		}
+
+		.x-tree-root-ct li {
+			list-style: none;
+			margin: 0;
+			padding: 0;
+		}
+
+		.x-tree-root-ct ul li.expanded ul {
+			background: url("/' . TYPO3_mainDir . '/sysext/t3skin/icons/gfx/ol/line.gif") repeat-y scroll left top transparent;
+		}
+
+		.x-tree-root-ct ul li.expanded.last ul {
+			background: none;
+		}
+
+		.x-tree-root-ct li {
+			clear: left;
+			margin-bottom: 0;
+		}
+		</style>
+		';
 
 		$item .= $this->tceForms->dbFileIcons(
 			$parameter['itemFormElName'], $config['internal_type'], $config['allowed'], $itemArray, '', $params, $parameter['onFocus']

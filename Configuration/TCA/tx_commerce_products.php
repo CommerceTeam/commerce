@@ -253,20 +253,21 @@ $GLOBALS['TCA']['tx_commerce_products'] = Array(
 			)
 		),
 		'categories' => Array(
-			'exclude' => 0,
+			'exclude' => 1,
 			'l10n_mode' => 'exclude',
 			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.categories',
 			'config' => Array(
-				'type' => 'passthrough',
+				'type' => 'group',
+				'internal_type' => 'passthrough',
+				'allowed' => 'tx_commerce_categories',
 				'form_type' => 'user',
-					// TYPO3 core will require_once the file automatically when needed
 				'userFunc' => 'Tx_Commerce_ViewHelpers_TceFunc->getSingleField_selectCategories',
-				'treeViewBrowseable' => TRUE,
-				'size' => 10,
-				'autoSizeMax' => 30,
-				'minitems' => 0,
+				'treeView' => 1,
+				'treeClass' => 'Tx_Commerce_ViewHelpers_TceFunc_CategoryTree',
+				'size' => 7,
+				'autoSizeMax' => 10,
+				'minitems' => 1,
 				'maxitems' => 20,
-				'eval' => 'required',
 			),
 		),
 

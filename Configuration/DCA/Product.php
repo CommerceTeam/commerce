@@ -189,7 +189,7 @@ class Tx_Commerce_Configuration_Dca_Products {
 						'compareTo' => 'DEF',
 					),
 					'config' => array(
-						'text' => ',--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.select_attributes,attributes;;;;1-1-1',
+						'text' => ',--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.select_attributes, attributes',
 					),
 				),
 				// add "edit attributes" tab if minimum one attribute with correlationtype 4
@@ -214,7 +214,7 @@ class Tx_Commerce_Configuration_Dca_Products {
 						),
 					),
 					'config' => array(
-						'text' => ',--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.edit_attributes,attributesedit;;;;1-1-1',
+						'text' => ',--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.edit_attributes, attributesedit',
 					),
 				),
 				// add "localise attributes" tab if minimum one attribute with correlationtype
@@ -238,7 +238,7 @@ class Tx_Commerce_Configuration_Dca_Products {
 						),
 					),
 					'config' => array(
-						'text' => ',--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.localedit_attributes,attributesedit;;;;1-1-1',
+						'text' => ',--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.localedit_attributes,attributesedit',
 					),
 				),
 				// add "create articles" tab if minimum one attribute with correlationtype 1
@@ -253,7 +253,7 @@ class Tx_Commerce_Configuration_Dca_Products {
 						'compareTo' => 'DEF',
 					),
 					'config' => array(
-						'text' => ',--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.create_articles,articles;;;;1-1-1',
+						'text' => ',--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.create_articles,articles',
 					),
 				),
 				// add "Localisze Articel" tab if we are in a localised language
@@ -269,7 +269,7 @@ class Tx_Commerce_Configuration_Dca_Products {
 						'compareTo' => 0,
 					),
 					'config' => array(
-						'text' => ',--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.lokalise_articles,articleslok;;;;1-1-1',
+						'text' => ',--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.lokalise_articles,articleslok',
 					),
 				),
 				// add "Localize Articel" tab if we are in a localised language
@@ -285,7 +285,7 @@ class Tx_Commerce_Configuration_Dca_Products {
 						'compareTo' => 0,
 					),
 					'config' => array(
-						'text' => ',--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.lokalise_articles,articles;;;;1-1-1',
+						'text' => ',--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.lokalise_articles,articles',
 					),
 				),
 				array(
@@ -331,7 +331,6 @@ class Tx_Commerce_Configuration_Dca_Products {
 
 		$this->DCA[3]['modifications'][4]['condition']['where'] .= $simpleMode;
 		$this->DCA[3]['modifications'][5]['condition']['where'] .= $simpleMode;
-
 
 		$postEdit = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('edit');
 		if (is_array($postEdit['tx_commerce_products'])) {
