@@ -24,13 +24,16 @@
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Extended Functionality for the Clickmenu when commerce-tables are hit
  * Basically does the same as the alt_clickmenu.php, only that for Categories
  * the output needs to be overridden depending on the rights
  */
-class Tx_Commerce_Utility_ClickmenuUtility extends clickMenu {
+class Tx_Commerce_Utility_ClickmenuUtility extends \TYPO3\CMS\Backend\ClickMenu\ClickMenu {
 	/**
 	 * @var string
 	 */
@@ -47,7 +50,7 @@ class Tx_Commerce_Utility_ClickmenuUtility extends clickMenu {
 	public $rec;
 
 	/**
-	 * @var clickMenu
+	 * @var \TYPO3\CMS\Backend\ClickMenu\ClickMenu
 	 */
 	protected $clickMenu;
 
@@ -96,7 +99,7 @@ class Tx_Commerce_Utility_ClickmenuUtility extends clickMenu {
 		// Check for List allow
 		if (!$backendUser->check('tables_select', $table)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('Clickmenu not allowed for user.', COMMERCE_EXTKEY, 1);
+				GeneralUtility::devLog('Clickmenu not allowed for user.', COMMERCE_EXTKEY, 1);
 			}
 			return '';
 		}
@@ -110,10 +113,10 @@ class Tx_Commerce_Utility_ClickmenuUtility extends clickMenu {
 		$this->disabledItems = $this->clickMenu->disabledItems;
 		$this->clickMenu->backPath = $this->backPath;
 
-		$this->additionalParameter = t3lib_div::explodeUrl2Array(urldecode(t3lib_div::_GET('addParams')));
+		$this->additionalParameter = GeneralUtility::explodeUrl2Array(urldecode(GeneralUtility::_GET('addParams')));
 		$this->newWizardAddParams = '&parentCategory=' . $this->additionalParameter['parentCategory'];
 
-		$this->rec = t3lib_BEfunc::getRecordWSOL($table, $this->additionalParameter['control[' . $table . '][uid]']);
+		$this->rec = BackendUtility::getRecordWSOL($table, $this->additionalParameter['control[' . $table . '][uid]']);
 
 			// Initialize the rights-variables
 		$rights = array(
@@ -135,7 +138,7 @@ class Tx_Commerce_Utility_ClickmenuUtility extends clickMenu {
 		);
 			// used to hide cut,copy icons for l10n-records
 			// should only be performed for overlay-records within the same table
-		if (t3lib_BEfunc::isTableLocalizable($table) && !isset($GLOBALS['TCA'][$table]['ctrl']['transOrigPointerTable'])) {
+		if (BackendUtility::isTableLocalizable($table) && !isset($GLOBALS['TCA'][$table]['ctrl']['transOrigPointerTable'])) {
 			$rights['l10nOverlay'] = intval($this->rec[$GLOBALS['TCA'][$table]['ctrl']['transOrigPointerField']]) != 0;
 		}
 
@@ -221,11 +224,11 @@ class Tx_Commerce_Utility_ClickmenuUtility extends clickMenu {
 			if (!in_array('paste', $this->disabledItems) && $elFromAllTables && $rights['paste']) {
 				$selItem = $this->clipObj->getSelectedRecord();
 				$elInfo = array(
-					t3lib_div::fixed_lgd_cs($selItem['_RECORD_TITLE'], $backendUser->uc['titleLen']),
+					GeneralUtility::fixed_lgd_cs($selItem['_RECORD_TITLE'], $backendUser->uc['titleLen']),
 					(
 						$rights['root'] ?
 						$GLOBALS['TYPO3_CONF_VARS']['SYS']['sitename'] :
-						t3lib_div::fixed_lgd_cs(t3lib_BEfunc::getRecordTitle($table, $this->rec), $backendUser->uc['titleLen'])
+						GeneralUtility::fixed_lgd_cs(BackendUtility::getRecordTitle($table, $this->rec), $backendUser->uc['titleLen'])
 					),
 					$this->clipObj->currentMode()
 				);
@@ -258,7 +261,10 @@ class Tx_Commerce_Utility_ClickmenuUtility extends clickMenu {
 			}
 
 				// Delete:
-			$elInfo = array(t3lib_div::fixed_lgd_cs(t3lib_BEfunc::getRecordTitle($table, $this->rec), $backendUser->uc['titleLen']));
+			$elInfo = array(GeneralUtility::fixed_lgd_cs(
+				BackendUtility::getRecordTitle($table, $this->rec),
+				$backendUser->uc['titleLen']
+			));
 
 			if (
 				!$rights['editLock'] &&
@@ -304,9 +310,18 @@ class Tx_Commerce_Utility_ClickmenuUtility extends clickMenu {
 		}
 
 			// get the rights for this category
-		$rights['delete'] = Tx_Commerce_Utility_BackendUtility::checkPermissionsOnCategoryContent(array($categoryToCheckRightsOn), array('delete'));
-		$rights['edit'] = Tx_Commerce_Utility_BackendUtility::checkPermissionsOnCategoryContent(array($categoryToCheckRightsOn), array('edit'));
-		$rights['new'] = Tx_Commerce_Utility_BackendUtility::checkPermissionsOnCategoryContent(array($categoryToCheckRightsOn), array('new'));
+		$rights['delete'] = Tx_Commerce_Utility_BackendUtility::checkPermissionsOnCategoryContent(
+			array($categoryToCheckRightsOn),
+			array('delete')
+		);
+		$rights['edit'] = Tx_Commerce_Utility_BackendUtility::checkPermissionsOnCategoryContent(
+			array($categoryToCheckRightsOn),
+			array('edit')
+		);
+		$rights['new'] = Tx_Commerce_Utility_BackendUtility::checkPermissionsOnCategoryContent(
+			array($categoryToCheckRightsOn),
+			array('new')
+		);
 
 			// check if we may paste into this category
 		if (count($this->clickMenu->clipObj->elFromTable('tx_commerce_categories'))) {
@@ -317,7 +332,7 @@ class Tx_Commerce_Utility_ClickmenuUtility extends clickMenu {
 			// would lead to endless recursion
 			$clipRecord = $this->clickMenu->clipObj->getSelectedRecord();
 			/** @var Tx_Commerce_Domain_Model_Category $category */
-			$category = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category', $clipRecord['uid']);
+			$category = GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Category', $clipRecord['uid']);
 			$category->loadData();
 			$childCategories = $category->getChildCategories();
 
@@ -337,13 +352,13 @@ class Tx_Commerce_Utility_ClickmenuUtility extends clickMenu {
 
 			// check if the current item is a db mount
 		/** @var Tx_Commerce_Tree_CategoryMounts $mounts */
-		$mounts = t3lib_div::makeInstance('Tx_Commerce_Tree_CategoryMounts');
+		$mounts = GeneralUtility::makeInstance('Tx_Commerce_Tree_CategoryMounts');
 		$mounts->init($backendUser->user['uid']);
 		$rights['DBmount'] = (in_array($uid, $mounts->getMountData()));
 
 		// if the category has no parent categories treat as root
 		/** @var Tx_Commerce_Domain_Model_Category $category */
-		$category = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category', $categoryToCheckRightsOn);
+		$category = GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Category', $categoryToCheckRightsOn);
 		if ($categoryToCheckRightsOn) {
 			$rights['DBmount'] = count($category->getParentCategories()) ? $rights['DBmount'] : TRUE;
 		} else {
@@ -374,12 +389,15 @@ class Tx_Commerce_Utility_ClickmenuUtility extends clickMenu {
 
 			// get all parent categories
 		/** @var Tx_Commerce_Domain_Model_Product $product */
-		$product = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product', $uid);
+		$product = GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Product', $uid);
 
 		$parentCategories = $product->getParentCategories();
 
 			// store the rights in the flags
-		$rights['delete'] = Tx_Commerce_Utility_BackendUtility::checkPermissionsOnCategoryContent($parentCategories, array('editcontent'));
+		$rights['delete'] = Tx_Commerce_Utility_BackendUtility::checkPermissionsOnCategoryContent(
+			$parentCategories,
+			array('editcontent')
+		);
 		$rights['edit'] = $rights['delete'];
 		$rights['new'] = $rights['delete'];
 		$rights['copy'] = ($this->rec['t3ver_state'] == 0 && $this->rec['sys_language_uid'] == 0);
@@ -400,8 +418,13 @@ class Tx_Commerce_Utility_ClickmenuUtility extends clickMenu {
 			}
 		}
 
-		$rights['version'] = ($backendUser->check('modules', 'web_txversionM1')) && t3lib_extMgm::isLoaded('version');
-		$rights['review'] = ($rights['version'] && ($this->rec['t3ver_oid'] != 0) && (($this->rec['t3ver_stage'] == 0) || ($this->rec['t3ver_stage'] == 1)));
+		$rights['version'] = ($backendUser->check('modules', 'web_txversionM1')) && ExtensionManagementUtility::isLoaded('version');
+		$rights['review'] = $rights['version'] &&
+			$this->rec['t3ver_oid'] != 0 &&
+			(
+				$this->rec['t3ver_stage'] == 0 ||
+				$this->rec['t3ver_stage'] == 1
+			);
 
 		return $rights;
 	}
@@ -414,18 +437,21 @@ class Tx_Commerce_Utility_ClickmenuUtility extends clickMenu {
 	protected function calculateArticleRights($uid, $rights) {
 			// get all parent categories for the parent product
 		/** @var Tx_Commerce_Domain_Model_Article $article */
-		$article = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Article', $uid);
+		$article = GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Article', $uid);
 
 		$productUid = $article->getParentProductUid();
 
 			// get the parent categories of the product
 		/** @var Tx_Commerce_Domain_Model_Product $product */
-		$product = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product', $productUid);
+		$product = GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Product', $productUid);
 
 		$parentCategories = $product->getParentCategories();
 
 			// store the rights in the flags
-		$rights['delete'] = Tx_Commerce_Utility_BackendUtility::checkPermissionsOnCategoryContent($parentCategories, array('editcontent'));
+		$rights['delete'] = Tx_Commerce_Utility_BackendUtility::checkPermissionsOnCategoryContent(
+			$parentCategories,
+			array('editcontent')
+		);
 		$rights['edit'] = $rights['delete'];
 
 		return $rights;
@@ -451,7 +477,7 @@ class Tx_Commerce_Utility_ClickmenuUtility extends clickMenu {
 
 		return $this->linkItem(
 			$this->label('new'),
-			$this->excludeIcon(t3lib_iconWorks::getSpriteIcon('actions-document-new')),
+			$this->excludeIcon(\TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon('actions-document-new')),
 			$editOnClick . 'return hideCM();'
 		);
 	}
@@ -488,8 +514,10 @@ class Tx_Commerce_Utility_ClickmenuUtility extends clickMenu {
 			$this->clickMenu->frameLocation($loc . '.document') . '); hideCM();}';
 
 		return $this->clickMenu->linkItem(
-			$language->makeEntities($language->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_treelib.xml:clickmenu.overwrite', 1)),
-			$this->clickMenu->excludeIcon(t3lib_iconWorks::getSpriteIcon('actions-document-paste-into')),
+			$language->makeEntities(
+				$language->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_treelib.xml:clickmenu.overwrite', 1)
+			),
+			$this->clickMenu->excludeIcon(\TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon('actions-document-paste-into')),
 			$editOnClick . 'return false;'
 		);
 	}
@@ -505,12 +533,14 @@ class Tx_Commerce_Utility_ClickmenuUtility extends clickMenu {
 		/** @var language $language */
 		$language = $GLOBALS['LANG'];
 
-		$url = t3lib_extMgm::extRelPath('version') . 'cm1/index.php?id=' . ($table == 'pages' ? $uid : $this->rec['pid']) .
+		$url = ExtensionManagementUtility::extRelPath('version') . 'cm1/index.php?id=' .
+			($table == 'pages' ? $uid : $this->rec['pid']) .
 			'&table=' . rawurlencode($table) . '&uid=' . $uid . '&sendToReview=1';
 
 		return $this->clickMenu->linkItem(
 			$language->sL('LLL:EXT:version/locallang.xml:title_review', 1),
-			$this->excludeIcon('<img src="' . $this->backPath . t3lib_extMgm::extRelPath('version') . 'cm1/cm_icon.gif" width="15" height="12" border="0" align="top" alt="" />'),
+			$this->excludeIcon('<img src="' . $this->backPath . ExtensionManagementUtility::extRelPath('version') .
+				'cm1/cm_icon.gif" width="15" height="12" border="0" align="top" alt="" />'),
 			$this->clickMenu->urlRefForCM($url),
 			1
 		);
@@ -531,12 +561,12 @@ class Tx_Commerce_Utility_ClickmenuUtility extends clickMenu {
 		$backendUser = $GLOBALS['BE_USER'];
 
 		$rU = $this->clickMenu->clipObj->backPath . PATH_TXCOMMERCE_REL . 'Classes/Utility/DataHandlerUtility.php?' .
-			($redirect ? 'redirect=' . rawurlencode(t3lib_div::linkThisScript(array('CB' => ''))) : '') .
+			($redirect ? 'redirect=' . rawurlencode(GeneralUtility::linkThisScript(array('CB' => ''))) : '') .
 			'&vC=' . $backendUser->veriCode() .
 			'&prErr=1&uPT=1' .
 			'&CB[overwrite]=' . rawurlencode($table . '|' . $uid) .
 			'&CB[pad]=' . $this->clickMenu->clipObj->current .
-			t3lib_BEfunc::getUrlToken('tceAction');
+			BackendUtility::getUrlToken('tceAction');
 		return $rU;
 	}
 }

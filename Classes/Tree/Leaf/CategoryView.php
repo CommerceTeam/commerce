@@ -59,7 +59,7 @@ class Tx_Commerce_Tree_Leaf_CategoryView extends Tx_Commerce_Tree_Leaf_View {
 			return '';
 		}
 
-			// get the UID of the Products SysFolder
+		// get the UID of the Products SysFolder
 		$productPid = Tx_Commerce_Utility_BackendUtility::getProductFolderUid();
 
 		$res = 'id=' . $productPid . '&control[' . $this->table . '][uid]=' . $row['uid'];

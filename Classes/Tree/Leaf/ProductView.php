@@ -24,6 +24,7 @@
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Implements the Tx_Commerce_Tree_Leaf_View for Product
@@ -52,13 +53,13 @@ class Tx_Commerce_Tree_Leaf_ProductView extends Tx_Commerce_Tree_Leaf_View {
 	public function wrapTitle($title, &$row, $bank = 0) {
 		if (!is_array($row) || !is_numeric($bank)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('wrapTitle (productview) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				GeneralUtility::devLog('wrapTitle (productview) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
 			}
 			return '';
 		}
 
 			// Max. size for Title of 255
-		$title = ('' != trim($title)) ? t3lib_div::fixed_lgd_cs($title, 255) : $this->getLL('leaf.noTitle');
+		$title = ('' != trim($title)) ? GeneralUtility::fixed_lgd_cs($title, 255) : $this->getLL('leaf.noTitle');
 
 		$aOnClick = 'if(top.content.list_frame){top.content.list_frame.location.href=top.TS.PATH_typo3+\'alt_doc.php?returnUrl=\'+top.rawurlencode(top.content.list_frame.document.location.pathname+top.content.list_frame.document.location.search)+\'&' . $this->getJumpToParam($row) . '\';}';
 
@@ -76,7 +77,7 @@ class Tx_Commerce_Tree_Leaf_ProductView extends Tx_Commerce_Tree_Leaf_View {
 	public function getJumpToParam(&$row) {
 		if (!is_array($row)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('getJumpToParam (productview) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				GeneralUtility::devLog('getJumpToParam (productview) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
 			}
 			return '';
 		}
@@ -87,7 +88,7 @@ class Tx_Commerce_Tree_Leaf_ProductView extends Tx_Commerce_Tree_Leaf_View {
 			$value = $this->table . '_' . $row['uid'];
 		}
 
-		$res = 'edit[' . $this->table . '][' . $row['uid'] . ']=' . $value;
+		$res = 'id=' . $row['pid'] . '&edit[' . $this->table . '][' . $row['uid'] . ']=' . $value;
 		return $res;
 	}
 }

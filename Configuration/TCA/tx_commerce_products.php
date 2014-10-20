@@ -441,14 +441,22 @@ $GLOBALS['TCA']['tx_commerce_products'] = Array(
 	'types' => Array(
 		'0' => Array(
 			'showitem' => '
-				sys_language_uid;;;;1-1-1, l18n_parent, l18n_diffsource, hidden;;1, title;;;;1-1-1, subtitle;;;;3-3-3, navtitle,
-				keywords, description;;;richtext:rte_transform[flag=rte_enabled|mode=ts_cssimgpath=uploads/tx_commerce/rte/],
-				images, teaser;;;richtext:rte_transform[flag=rte_enabled|mode=ts_cssimgpath=uploads/tx_commerce/rte/],
-				teaserimages, categories;;;;4-4-4, manufacturer_uid;;;;2-2-2, relatedpage;;;;1-1-1, relatedproducts;;;;1-1-1'
+				sys_language_uid, l18n_parent, l18n_diffsource,
+				title, subtitle, navtitle, keywords,
+				images, teaserimages,
+				description;;;richtext:rte_transform[flag=rte_enabled|mode=ts_cssimgpath=uploads/tx_commerce/rte/],
+				teaser;;;richtext:rte_transform[flag=rte_enabled|mode=ts_cssimgpath=uploads/tx_commerce/rte/],
+				--div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access,
+					--palette--;LLL:EXT:cms/locallang_ttc.xlf:palette.visibility;visibility,
+					--palette--;LLL:EXT:cms/locallang_ttc.xlf:palette.access;access,
+				--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tabs.references,
+					categories, manufacturer_uid, relatedpage, relatedproducts'
 		)
 	),
 	'palettes' => Array(
-		'1' => Array('showitem' => 'starttime, endtime, fe_group')
+		'1' => Array('showitem' => 'starttime, endtime, --linebreak--, fe_group'),
+		'access' => Array('showitem' => 'starttime, endtime, --linebreak--, fe_group'),
+		'visibility' => Array('showitem' => 'hidden'),
 	)
 );
 
