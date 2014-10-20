@@ -265,18 +265,15 @@ class Tx_Commerce_Controller_CategoriesController extends \TYPO3\CMS\Backend\Mod
 			);
 
 			$sumlink = $this->scriptNewWizard . '?id=' . (int) $this->id;
-			$defVals = '';
 			foreach ($controlls as $controldat) {
 				$treedb = GeneralUtility::makeInstance($controldat['dataClass']);
 				$treedb->init();
 
 				if ($treedb->getTable()) {
 					$sumlink .= '&edit[' . $treedb->getTable() . '][-' . $this->categoryUid . ']=new';
-					$tmpDefVals = '&defVals[' . $treedb->getTable() . '][' . $controldat['parent'] . ']=' . $this->categoryUid;
-					$defVals .= $tmpDefVals;
+					$sumlink .= '&defVals[' . $treedb->getTable() . '][' . $controldat['parent'] . ']=' . $this->categoryUid;
 				}
 			}
-			$sumlink .= $defVals;
 
 			$newRecordIcon = '
 				<!--
@@ -581,9 +578,10 @@ class Tx_Commerce_Controller_CategoriesController extends \TYPO3\CMS\Backend\Mod
 
 		$markers = array(
 			'CSH' => $docHeaderButtons['csh'],
-			'CONTENT' => $this->content,
-			'CATINFO' => $categoryInfo,
+			'TOP_FUNCTION_MENU' => '',
 			'CATPATH' => $categoryPath,
+			'CATINFO' => $categoryInfo,
+			'CONTENT' => $this->content,
 		);
 		$markers['FUNC_MENU'] = $this->doc->funcMenu(
 			'', BackendUtility::getFuncMenu($this->id, 'SET[mode]', $this->MOD_SETTINGS['mode'], $this->MOD_MENU['mode'])
