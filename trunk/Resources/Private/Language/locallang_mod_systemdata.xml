@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE T3locallang SYSTEM "http://dtd.evoweb.de/t3locallang.dtd">
+<T3locallang>
+	<meta type="array">
+		<description/>
+		<type>database</type>
+		<csh_table/>
+		<fileId>EXT:commerce/Resources/Private/Language/locallang_mod_systemdata.xml</fileId>
+	</meta>
+	<data type="array">
+		<languageKey index="default" type="array">
+			<label index="mlang_tabs_tab">Systemdata</label>
+			<label index="mlang_labels_tabdescr">Browse, edit and delete systemdata</label>
+			<label index="mlang_labels_tablabel">Systemdata</label>
+
+			<label index="title">Systemdata</label>
+			<label index="title_attributes">Attributes</label>
+			<label index="desc_attributes">Create and edit the attributes which are used for defining articles from products.</label>
+			<label index="title_values">Values</label>
+			<label index="create_attributes">Create new attribute</label>
+			<label index="deleteWarningAttribute">Do you really want to delete this attribute?</label>
+			<label index="no_values">This attribute has no values</label>
+			<label index="no_valuelist">This attribute has no value list</label>
+			<label index="usage">Usage in</label>
+			<label index="categories">categories</label>
+			<label index="products">products</label>
+			<label index="title_manufacturer">Manufacturer</label>
+			<label index="desc_manufacturer">Create and edit the manufacturers.</label>
+			<label index="create_manufacturer">Create new manufacturer</label>
+			<label index="deleteWarningManufacturer">Do you really want to delete this manufacturer?</label>
+			<label index="title_supplier">Supplier</label>
+			<label index="desc_supplier">Create and edit the suppliers.</label>
+			<label index="create_supplier">Create new supplier</label>
+			<label index="deleteWarningSupplier">Do you really want to delete this supplier?</label>
+		</languageKey>
+	</data>
+</T3locallang>

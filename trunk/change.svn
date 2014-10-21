@@ -1,0 +1,1754 @@
+25.11.2013 Torben Hansen <t.hansen@skyfillers.com>
+* Fixed issue #53916 - Missing getter for sess_id in basket
+
+22.11.2013 Torben Hansen <t.hansen@skyfillers.com>
+* Fixed issue #10934 - Performance issues, thanks to Thies Kracht
+* Fixed issue #40732 - prices get lost in BE, thanks to Georg Schönweger
+
+21.12.2012 Sebastian Fischer <sf@marketing-factory.de>
+* Merged complete rewrite of mod_systemdata
+
+20.12.2012 Ingo Schmitt <is@marketing-factory.de>
+* Released 0.13.10 in TER
+
+20.12.2012 Ingo Schmitt <is@marketing-factory.de>
+* Backported last fixes to 0.13. Branch
+
+13.11.2012 Ingo Schmitt <is@marketing-factory.de>
+* Fixed Issue #42450, Thanks to Sebastian Fischer
+* Set to Version 0.13.9
+
+05.11.2012 Ingo Schmitt <is@marketing-factory.de>
+ * Fixed Issue #42290, Thanks to Sebastian Fischer
+ * Set tp Version 0.13.7
+
+12.09.2012 Ingo Schmitt <is@marketing-factory.de>
+* Fixed Issue #40480, Thanks to Sebastian Fischer
+* Fixed Issue #40483, Thanks to Sebsatian Fischer
+* Fixed Issue #40481, Thanks to Sebastian Fischer
+* Fixed Issue #40480, Thanks to Sebsatian Fischer
+* Fixed Issue #40479, Thanks to Sebsatian Fischer
+* Fixed Issue #40478, Thanks to Sebsatian Fischer
+* Fixed Issue #40477, Thanks to Sebsatian Fischer
+* Fixed Issue #37954, Thanks to Martin Bless
+* Set to Version 0.13.6
+
+07.09.2012 Benny Schimmer <benny.schimmer@typovision.de>
+* Fixed Issue #40737: Dynaflex dependency
+
+13.08.2012 Ingo Schmitt <is@marketing-factory.de>
+* Fixed Issue #39575, thanks to Sebastian Fischer
+* Set to Version 0.13.5
+
+01.08.2012 Ingo Schmitt <is@marketing-factory.de>
+* Reverted 31226 and added Hook, Thanks to Georg Schönweger
+* Set to Version 0.13.4
+
+19.07.2012 Ingo Schmitt <is@marketing-factory.de>
+* Added Hook (Issue #39057), Thanks to Sebastian Michaelsen
+* Fixed Issue #39053, thanks to Sebastian Michaelsen
+* Fixed Issue #38681, thanks to Peter Niederlag
+* Set to version 0.13.3
+
+
+05.06.2012 Ingo Schmitt <is@marketing-factory.de>
+* Fixed issue #31785: languageFlags for translating products don't show up anymore (Thanks to Georg Schönweger)
+* Clenup Code in class.tx_commerce_db_list_extra.inc
+* Fixed issue #30743: Wrong path ext_autoload.php,  Thanks to Michael Staatz
+* Fixed issue #30824: Wrong makeInstance call in tx_commerce_payment_provider_abstract, Thanks to Michael Staatz
+* Fixed issue #31337: Modifying products for non admins, Thanks to Roman Schürmann
+* Fixed issue #31262: Sorting of translated categories in list view, Thanks to Roman Schürmann
+* Fixed issue #34424: Cannot use BE module to set access on categories, Thanks to G.Gothe and Torben Hansen
+* Fixed Issue #29113: Cannot change ordering of articles, Thanks to Benny Schimmer, G. Gothe, Roman Schürmann
+* Fixed Issue #7756: Not taken account of scaled prices when putting an article into basket. Thanks to Robert Heel, Torben Hanse, Roman Schürmann
+* Set Dynaflex 0.13.2 as required, ste PHP 5.3 as required
+* Fixed issue #7476: Hook processItemArrayForBrowseableTreeDefault has no return value, but must have. Thanks to Ralf Merz
+* Feature: Added TS Configuration lib.tx_commerce.navigation.special.maxLevel and lib.tx_commerce.navigation.special.noAct for speed up generation of Navigation
+* Added navigation TS properties to documentation
+
+12.09.2011 Michael Knabe <mk@e-netconsulting.com>
+* Added documentation for the moveOrder-hooks to hooks.html
+
+18.08.2011 Michael Knabe <mk@e-netconsulting.com>
+* Fixed issue #28959: New hook in tx_commerce_pibase::makeBasketView() (Thanks to Marcus Krause)
+* Fixed issue #28958: Preserve alternating article listings in pi3 for basket view (Thanks to Marcus Krause)
+
+15.08.2011 Christian Kuhn <lolli@schwarzbu.ch>
+* Fixed bug #28412: Wrong hook name in tx_commerce_cce_db (Thanks to Tymoteusz Motylewski)
+
+13.08.2011 Christian Kuhn <lolli@schwarzbu.ch>
+* Fixed bug #28576: Wrong XCLASS definition in tx_commerce_cce_db (Thanks to Tymoteusz Motylewski)
+
+12.08.2011 Christian Kuhn <lolli@schwarzbu.ch>
+* Added feature #4980: New payment interface (Thanks to Michael Staatz, Michael Knabe and Tom Rüther)
+
+19.07.2011 Michael Knabe <mk@e-netconsulting.com>
+* Fixed issue #28312 - Increase length of title & subtitle fields in commerce base entities (Thanks to Marcus Krause)
+
+14.06.2011 Christian Kuhn <lolli@schwarzbu.ch>
+* Fixed issue #7916: tx_commerce_payment_creditcard.php contains wrong TS for selectbox (Thanks to Pim Snel)
+
+26.05.2011 Ingo Schmitt <is@marketing-factory.de>
+* Fixed Issue #27021, non Admins can't edit lokaized articles
+* Added calls to t3lib_div::logDeprecatedFunction() when method is depricated
+
+24.05.2011 Ingo Schmitt <is@marketing-factory.de>
+* Removed deprecated function call in dmhooks, cmhooks and clickmenu
+
+18.05.2011 Torben Hansen <t.hansen@skyfillers.com>
+* Fix a regression in tx_commerce_category.php from latest cleanups accessing a now protected variable
+
+18.05.2011 Christian Kuhn <lolli@schwarzbu.ch>
+* Fixed #13747: substituteMarkerArray is called with null instead of array (Thanks to Sebastian Fischer)
+* Remove unused class tx_commerce_item
+* Fixed #26842: Invalid SQL in class.tx_commerce_db_article.php->getAttributeValue() (Thanks to Saleh Matani)
+
+16.05.2011 Christian Kuhn <lolli@schwarzbu.ch>
+* Fix a regression in pi4 from latest cleanups accessing a now protected variable (Thanks to Jonas)
+
+16.05.2011 Torben Hansen <t.hansen@skyfillers.com>
+* CGL cleanup in tx_commerce_category.php
+* CGL cleanup in tx_commerce_db_category
+
+16.05.2011 Christian Kuhn <lolli@schwarzbu.ch>
+* Remove empty folder payment/ccvs_language
+* Move tx_commerce_ccvs_lib to payment/ccvs and add to autoloader
+* Follow-up to CGL cleanup of Torben in tx_commerce_category fixing a regression
+* CGL cleanup tx_commerce_db_attribute (Thanks to Julius Detlefsen)
+* Follow-up to CGL cleanup of Torben in tx_commerce_category
+* Fixed #26552: Can not store addresses when using select field with value list (Thanks to Michael Knabe)
+* Remove unused broken marker pricefromnet from pi3
+* Further cleanups in pi4: Use initialized class variables and remove debug handling
+* Clean up pi4 a bit to make IDE's more happy
+* Define generateSessionKey as public static in tx_commerce_div
+* Define removeXSSStripTagsArray as public static in tx_commerce_div
+
+13.05.2011 Christian Kuhn <lolli@schwarzbu.ch>
+* Remove error message from lib/class.tx_commerce_pibase, it should be an exception anyway
+* Minor GGL fixes in tx_commerce_element_alib
+* Minor GGL cleanup in tx_commerce_basket_item
+* tx_commerce_basic_basket: introduce getGrossSum and getNetSum, deprecated get_gross_sum and get_net_num
+
+12.05.2011 Christian Kuhn <lolli@schwarzbu.ch>
+* Remove patches/ folder, containing patches are obsolete with TYPO3 4.5
+
+11.05.2011 Christian Kuhn <lolli@schwarzbu.ch>
+* CGL clean up in tx_commerce_basic_basket
+* Clean up change.svn
+* Clean up tx_commerce_basic_basket a bit: add getBasketItem(), change isReadOnly() to getIsReadOnly()
+* Clean up tx_commerce_basket_item a bit: deprecate two methods, add getProduct(), fix usage of deprecated methods
+* Fix usage of some deprecated methods in tx_commerce_article
+* Initialize $lang_uid to 0 in tx_commerce_element_alib
+* No-brainer cleanup in lib/class.tx_commerce_product.php
+* CGL clean up and method visibility in lib/class.tx_commerce_article_price.php
+
+10.05.2011 Christian Kuhn <lolli@schwarzbu.ch>
+* CGL clean up and method visibility in lib/class.tx_commerce_basket.php
+
+09.05.2011 Christian Kuhn <lolli@schwarzbu.ch>
+* Fix a regression introduced with latest pi2 change, leading to one item displayed in basket only
+* CGL changes and type hinting in pi2
+* Minor CGL fixes to make IDE's more happy
+
+08.05.2011 Christian Kuhn <lolli@schwarzbu.ch>
+* Fix usage of deprecated method fixed_lgd_pre in mod_statistic/index.php
+* Fix a fatal in mod_access if workspace extension is loaded
+* Fix further PHP 5.3 deprecation messages in dao/
+* Fix a PHP 5.3 deprecation message in dao/class.feusers_observer.php
+* Clean up some include_once statements
+* Finish migration to autoloader for now
+* Remove unused and broken perftest be module
+* Remove unused and broken tracking be module
+* Move mod_clickmenu/commerce_clickmenu.php to mod_clickmenu/class.tx_commerce_clickmenu.php
+* Remove unused file mod_clickmenu/class.tx_commerce_clickmenu.php
+* Autoloader and CGL fixes
+
+05.05.2011 Ingo Schmitt <is@marketing-factory.de>
+* TYPO3 Commerce is now 5.3 compatible
+* Removed unneded xclasses for older TYPO3 Versions
+* Made xclasses PHP 5.3 compatible
+
+05.05.2011 Christian Kuhn <lolli@schwarzbu.ch>
+* tx_commerce_folder_db in autoloader and casual cgl cleanups
+* Further autoloader usages and cleanups
+* Use autoloader for tx_commerce_product
+* Add tx_commerce_div to autoloader
+
+04.05.2011 Christian Kuhn <lolli@schwarzbu.ch>
+* Use autoloader and remove some require_once statements
+* Copyright year and whitespace fixes in pi files
+
+03.05.2011 ingo Schmitt <is@marketing-factory.de>
+* Created Version 0.13.x
+* Raised TYPO3 Version to 4.5
+
+03.05.2011 Ingo Schmitt <is@marketing-factory.de>
+* Released 0.12.5 in TER as "Current Version"
+
+29.04.2011 Benny Schimmer <bschimmer@cross-content.com>
+* Fixed #14035 deprecation warnings (Thanks to Daniel)
+
+26.04.2011 Christian Kuhn <lolli@schwarzbu.ch>
+* Fixed #26085 Remove all labels except default
+
+18.04.2011 Christian Kuhn <lolli@schwarzbu.ch>
+* CGL Whitespace changes in pi1/flexform_product.xml
+
+14.03.2011 Benny Schimmer <bschimmer@cross-content.com>
+* Fixed #8894 Article prices get stored wrong way in DB (Thanks to Michael Knabe)
+* Fixed #13334 Remove split and ereg calls (see #11922 and #11921)
+* Fixed #11921 Problem at checkout (php 5.3) with spliti in class.tx_comerce_div.php (Thanks to Jochen Biedermann)
+* Fixed #11922 Problem with Checkout (PH 5.3) with eregi in class.tx_commerce_pi3 (Thanks to Simon Schick)
+
+29.12.2010 Benny Schimmer <bschimmer@cross-content.com>
+* Fixed #11417 Static template breakes CSS-Layout
+
+22.11.2010 Benny Schimmer <bschimmer@cross-content.com>
+* Fixed #10852 TCA contains a deprecated definition using "newRecordLinkPosition"
+
+05.11.2010 Benny Schimmer <bschimmer@cross-content.com>
+* Fixed #10645 Deprecated COde in ext_tables.php
+
+01.10.2010 Sascha Egerer <seg@softvision.de>
+* Fixed #9894: tx_commerce_product->get_Articles_by_AttributeArray returns wrong articles
+
+10.09.2010 Ingo Schmitt <is@marketing-factory.de>
+* Fixed #8988, Thanks to Ingo Renner for reporting this issue
+* Fixed #9584, Thanks to Markus Gerlach
+* Fixed #9655, Thanks to Markus Gerlach
+
+08.09.2010 Ingo Schmitt <is@marketing-factory.de>
+* Fixed Naming if renderValue Hook
+* Corrected DCA File for tx_commerce_articles_dfconfig
+
+02.09.2010 Ingo Schmitt <is@marketing-factory.de>
+* Nobrainer: Increased number of possible FE groups
+
+27.08.2010 Ingo Schmitt <is@marketing-factory.de>
+* Bug #9471: Speedup for add_fields_to_fieldlist
+
+11.08.2010 Michael Knabe <t3@aafhh.de>
+* Bug #9055: Attribute selections cannot be changed due to caching
+
+03.08.2010 Michael Knabe <t3@aafhh.de>
+* Documented Bug #9120 in manual.sxw (known issues)
+
+02.08.2010 Christian Kuhn <lolli@schwarzbu.ch>
+* Bug #9068: Category tree in BE pi1 broken with TYPO3 4.4
+
+30.07.2010 Michael Knabe <t3@aafhh.de>
+* Bug #9035: PHP warning due to wrong parameter type
+
+27.07.2010 Michael Knabe <t3@aafhh.de>
+* Bug #9033: Removed use of deprecated ereg_replace
+* Bug #7862: Class constructor of tx_commerce_attribute_value causes PHP Warning (Thanks to Sascha Egerer)
+
+26.07.2010 Michael Knabe <t3@aafhh.de>
+* Fixed code formatting in lib/class.tx_commerce_category.php
+* Fixed code formatting in lib/class.tx_commerce_attribute_value.php
+
+23.07.2010 Christian Kuhn <lolli@schwarzbu.ch>
+* Nobrainer: Removing german comment and unused code
+
+03.07.2010 Ingo Schmitt <is@marketing-factory.de>
+* Fixed Bug #8605. Thanks to internezzo AG
+
+01.07.2010 Ingo Schmitt <is@marketing-factory.de>
+* Fixed Issue #8557
+
+28.06.2010 Ingo schmitt <is@marketing-factory.de>
+* Fixed Issue #7874
+
+07.06.2010 Sascha Egerer <seg@softvision.de>
+* Bug #7809: missing parameter in exec_SELECTquery
+* Bug #6595: Iconmode not working
+* Bug #6595: Pointer variable missing
+* Bug #6595: Select attribute selection not working
+
+22.05.2010 Ingo Schmitt <is@marketing-factory.de>
+* Added commerce documentation, thanks to Techdivision GmbH (fixed Feature #1804)
+
+21.05.2010 Sascha Egerer <seg@softvision.de>
+* Bug #7861: Fixed attribute status marker naming in category_product.tpl
+
+12.04.2010 Dimitri Koenig <dk@cabag.ch>
+* Bug #7134: CategoryTree will be displayed in other Linkhandler Tabs: solved
+* Bug #7133: Copying of an not existing object in Typoscript: solved
+
+08.04.2010 Christian Kuhn <lolli@schwarzbu.ch>
+* Bug #6634: Refactor tx_commerce_products get_attribute_matrix() and get_product_attribute_matrix(): Change old methods to wrappers of new method and deprecate them
+* Bug #6634: Refactor tx_commerce_products get_attribute_matrix() and get_product_attribute_matrix(): Use new methods instead of old ones
+* Bug #6634: Refactor tx_commerce_products get_attribute_matrix() and get_product_attribute_matrix(): Reverting previous test patch again
+* Bug #6634: Refactor tx_commerce_products get_attribute_matrix() and get_product_attribute_matrix(): Test patch running old and new method in parallel, revert svn to this version to hunt bugs in the new implementation
+* Bug #6634: Refactor tx_commerce_products get_attribute_matrix() and get_product_attribute_matrix(): Main patch that introduces the new methods getAttributeMatrix() and getAttributeMatrixQuery()
+* Bug #6634: Refactor tx_commerce_products get_attribute_matrix() and get_product_attribute_matrix(): Pre patch to the existing methods to fix some minor issues and to make the result arrays more predictable
+
+24.03.2010 Sascha Egerer <seg@softvision.de>
+* Related product without valid article causes PHP error #6662
+
+18.03.2010 Ingo Schmitt <is@marketing-factory.de>
+* Updated documentation concerning hooks in renderproduct
+* Raised version to 0.12.3
+
+04.03.2010 Ingo Schmitt <is@marketing-factory.de>
+* nobrainer, Added Comment to lib_navigation
+* Fixed Typecast in Navigation
+
+02.03.2010 Sascha Egerer <seg@softvision.de>
+* fixed nobrainer in pi1 - object was used as an array
+
+28.02.2010 Ingo Schmitt <is@marketing-factory.de>
+* Added guidelines to SVN, See http://forge.typo3.org/wiki/extension-commerce/Guidelines
+
+27.02.2010 Christian Kuhn <lolli@schwarzbu.ch>
+* Fixed deprecated method call get_atrribute_matrix again
+* CGL cleanup in lib/class.tx_commerce_product.php
+
+25.02.2010 Volker Graubaum <vg@e-netconsulting.de>
+* change select Matrix complete, see documentation in the wiki (soon)
+* first version with complete working select attribute handling, now iconmode has to be checked to
+
+22.02.2010 Ingo Schmitt <is@marketing-factory.de>
+* Raised Version to 0.12.2
+
+21.02.2010 Sascha Egerer <seg@softvision.de>
+* fixed attribute value sorting
+* sort attribute-values in the select-attribute matrix function
+
+21.02.2010 Volker Graubaum <vg@e-netconsulting.de>
+* change select Matrix complete, see documentation in the wiki (soon)
+
+21.02.2010 Ingo Schmitt <is@marketing-factory.de>
+* Added description of markers in the default template
+* Added additional Subpart for rendering link to product instead of all articles in category listview
+* Removed depricated function calls
+
+21.02.2010 Dimitri König <dk@cabag.ch>
+* fixed bug #5430
+
+20.02.2010 Sascha Egerer <seg@softvision.de>
+* fixed attribute sorting of new generated articles
+* fixed variable namechanged load_data_from_database to load_data
+* fixed bug #4812
+* fixed cropped attribute value in list view
+
+20.02.2010 Christian Kuhn <lolli@schwarzbu.ch>
+* Fixed deprecated method call get_atrribute_matrix
+
+20.02.2010 Erik Frister <ef@aijko.de>
+* Fixed Bug #5475
+* Fixed Bug #5478
+* Fixed Bug #6302
+
+20.02.2010 Dimitri König <dk@cabag.ch>
+* removed 'Customer Data' from mod_orders
+* Feature #6487: added 'postdelBasket' hook in pi2
+* Feature #6531: added 'editSelectStatement' hook in pi4->getAddresses
+* Feature #6532: added 'postGetInputField' hook in pi4->getInputField
+* Feature #5315 fixed: Date format (strftime) on invoice is hard-coded in pi6
+* Feature #5425 fixed: empty basketpid -> basket on every page
+* fixed Bug #5401
+* fixed Bug #5944
+* added feature: producible articles will have all attributes in title
+
+20.02.2010 Ingo Schmitt <is@marketing-factory.de>
+* Splitted tx_commerce_order_navframe to two files, since two classes
+* Fixed some typos
+* Fixed Bug #6107
+* Fixed Bug #6415
+* Fixed Issue #6328
+* Fixed Bug #6050
+* Fixed Bug #5679, thanks to Klaus Gössl
+
+19.02.2010 Ingo Schmitt <is@marketing-factory.de>
+* Changed BE Labels, thanks to Eckhard M. Jäger <systeme@familie-redlich.de>
+
+11.02.2010 Benny Schimmer <bschimmer@cross-content.com>
+* Fixed: #6445: added $, changed addessType from const to var.
+
+23.12.2009 Michael Staatz <michael.staatz@e-netconsulting.com>
+* added a new ts constant that makes it possible to to disable the article rendering in the pibase method
+  renderProduct. In some cases that can fix performance issues.
+
+14.12.2009 Michael Staatz <michael.staatz@e-netconsulting.com>
+* Fixed #4671: new Hook-Method after deleting articles from basket
+* Fixed #5683: Wrong handling of the checkbox tx_commerce_pi4->getAddressForm
+
+10.12.2009 Michael Staatz <michael.staatz@e-netconsulting.com>
+* Fixed #5145: Errors when using tx_commerce_attribute->get_all_values(), thanks to Robert Heel
+* Fixed #5684: typing error in lib/class.tx_commerce_attribute.php (double entry), thanks to Jens Witt
+
+08.12.2009 Michael Staatz <michael.staatz@e-netconsulting.com>
+* Fixed #3963: pi3->function saveOrder - wrong variable $newUid for article hooks
+
+2.12.2009 Erik Frister <ef@aijko.de>
+* Enabled substitution of realValues for categories as well in tcefunc.
+
+24.11.2009 Erik Frister <ef@aijko.de>
+* Cleanup of dmhook permission checks
+
+20.11.2009 Erik Frister <ef@aijko.de>
+* Fixed #5349: Add functionaloty to belib:checkPermissionsOnCategoryContent
+* Fixed #4447: Fatal error in product list view
+* Fixed tcefunc for TCA records field displaying the category tree, thanks to Julian Kleinhans
+
+19.11.2009 Benny Schimmer <bschimmer@cross-content.com>
+* Fixed #5433: new Hook for Marker Manipulation of empty QV-Basket
+
+15.11.2009 Christian Kuhn <lolli@schwarzbu.ch>
+* Fixed bug #2617: Pagebrowser for orders in BE isn't working
+* mod_orders: Make link "Orders" in header row work with TYPO3 4.3
+* Cleanup mod_orders/index.php
+
+13.11.2009 Michael Knabe <mk@e-netconsulting.de>
+* fixed issue #4225 Cleaned up the dynaflex-definition for products. (Thanks to Robert Heel)
+
+13.11.2009 Michael Staatz <michael.staatz@e-netconsulting.com>
+* finish issue #4516 PostInit - Hook for tx_commerce_pi2
+* finish issue #4299 added one more parameter buildStaticInfoSelector to change the language, thanks to David
+* finish issue #4290 Better rendering Output for Mandatory - Messages in Checkout
+* finish issue #4273 new hook prepayment in tx_commerce_pi3 finishIt, thanks to Dimitri Koenig
+* finish issue #3963 pi3/function saveOrder - wrong variable $newUid for article hooks, thanks to Dmitry Pikhno
+* added new hook method in pi3 method canMakeCheckout, thanks to Matthias Krappitz
+* finish issue #2380 wrong step after not accepting terms, thanks to Ralf Merz
+
+13.11.2009 Matthias Krappitz <matthias@aemka.de>
+* Fixed problem that attributes in detail-view select-box did not get listed when they had the same sorting value in database table
+* Raised maximum images for products and articles from 5 to 200
+
+13.11.2009 Volker Graubaum <vg@e-netconsulting.de>
+* finish issue #2385 now usergroup is displayed
+* add feature #3159 stdWrap for override PID thanks to Cedric Spindler
+* some cleanup in pibase
+* Fixed issue #4281 thanks to Florian Bachmann
+* fixed some spelling mistakes in pi3 and change check if $this->conf['currency'] is set
+* change LocalLang_DB for issue #4844
+
+13.11.2009 Christian Kuhn <lolli@schwarzbu.ch>
+* Fixed issue #2353: Remove street, zip and city as mandatory fields for manufacturer and supplier
+* Performance improvement: Do not call stdWrap by default if not given. Warning: This might break backwards compatibility if your TS was not configured properly. So if you need stdWrap on your value, you must explicitly define it now.
+* Merge substituteMarkerArrayNoCached with its parent in TYPO3v4 trunk, changing while to foreach, split to preg_split and quotemeta to preg_quote
+* Fixed issue #5340: Small mistake in pi3 mailconf, changed replayTo to replyTo in mails
+
+13.11.2009 Ingo Schmitt <is@marketing-factory.de>
+* Fixed issue 4892, Thanks to Michael Staatz
+* Fixed first part of 1345
+* Fixed 2479
+* Fixed issue #3920
+* Fixed issue #4362
+* Set Methodes as deprecated (belib:fix_articles_price, belib:fix_product_atributte, belib:fix_category_atributte)
+* Fixed issue #4375, Thanks to Rik Willems
+
+01.11.2009 Ingo Schmitt <is@marketing-factory.de>
+* Changed all spli calles to explode ore preg_split, since split will be depricated
+
+27.10.2009 Christian Kuhn <lolli@schwarzbu.ch>
+ * Removed exclude=1 definition from be_user and be_groups field tx_commerce_mountpoints, they are admin-only tables anyway
+
+22.10.2009 Ingo Schmitt <is@marketing-factory.de>
+* Corrected sorting in changelog
+* Added drag and drop sorting to attribute values
+
+21.10.2009 Ingo Schmitt <is@marketing-factory.de>
+* Fixed a Bug "Fatal Error", when data in XML Filed is corrupted
+* Raised Version to 0.12.1
+
+20.10.2009 Ingo Schmitt <is@marketing-factory.de>
+* Fixed issue 5038, Thanks to Dimitri Koenig
+* Fixed a TYPO
+* Fixed Issue 1439, Thanks to Frank Roeske
+
+19.10.2009 Ingo Schmitt <is@marketing-factory.de>
+* Fixed Issue 2770
+
+16.10.2009 Ingo Schmitt <is@marketing-factory.de>
+* Fixed Issue #4358, Thanks to Rik Willems
+
+07.10.2009 Volker Graubaum <vg@e-netconsulting.de>
+* Set version to 0.12.0 preparing new payment, see activity in the next days
+
+02.10.2009 Ingo Schmitt <is@marketing-factory.de>
+* Fixed bug with empty Arrays in removeXSS, Thanks to Tom Rüther and Michael Staatz
+
+16.09.2009 Christian Kuhn <lolli@schwarzbu.ch>
+* Fixed bug #4610: Rev 22511 breaks ability to select category in page insert plugin (Thanks to Cees Lensink)
+
+13.09.2009 Sascha Egerer <seg@softvision.de>
+* added some needed stuff for the dropdowns to the template
+
+13.09.2009 Sascha Egerer <seg@softvision.de>
+* added missing label for the "icon mode"
+* display the "icon mode" option only if the attribute has a valuelist
+
+11.09.2009 Michael Staatz <michael.staatz@e-netconsulting.com>
+* fixed typo in hook for own mail rendering
+
+11.09.2009 Volker Graubaum <vg@e-netconsulting.de>
+* FEATURE #4567: Add Hooks for manipulating markerArray in pi4 Addresslisting / part 2
+* FEATURE #4568: Set Pricelimit for Basket / part 2
+
+10.09.2009 Michael Staatz <michael.staatz@e-netconsulting.com>
+* Feature #4533: Updated version of manual.sxw in the doc folder
+
+10.09.2009 Michael Staatz <michael.staatz@e-netconsulting.com>
+* Feature #4532: Updated version of hooks.html in the doc folder
+
+09.09.2009 Volker Graubaum <vg@e-netconsulting.de>
+* Feature #4515: Set Pricelimit for Basket
+
+09.09.2009 Volker Graubaum <vg@e-netconsulting.de>
+* Feature #4514: Add Hooks for manipulating the Adding of Articles
+
+09.09.2009 Volker Graubaum <vg@e-netconsulting.de>
+* Fixed issue #4511: Add Hooks for manipulating markerArray in pi4 Addresslisting
+
+09.09.2009 Volker Graubaum <vg@e-netconsulting.de>
+* Fixed issue #4116: Own validators for Addresses
+
+09.09.2009 Volker Graubaum <vg@e-netconsulting.de>
+* Fixed issue #4117: Own handling for $orderUid in finishIt and saveOrder - function
+
+09.09.2009 Volker Graubaum <vg@e-netconsulting.de>
+* Fixed issue #4114: Alternative Paymentstep
+
+09.09.2009 Volker Graubaum <vg@e-netconsulting.de>
+* add a preInit Hook in pi1
+
+09.09.2009 Volker Graubaum <vg@e-netconsulting.de>
+* fix error in product_attribute_list with attribut sorting values
+* added hook for own mail rendering
+* fix error in load_perms if no uid is set
+* add attribute for sendMail in pi3, now pi3 object can be used in hooks
+
+09.09.2009 Benny Schimmer <bschimmer@cross-content.com>
+* Fixed Bug #4506: The "Please select"-option (payment) has the price 0,00 now
+
+08.09.2009 Benny Schimmer <bschimmer@cross-content.com>
+* Add feature: If plugin.tx_commerce_pi2.payment.forceSelection is set via TS, users are forced to select a payment on the basket page before going to checkout.
+
+07.09.2009 Erik Frister <efrister@marketing-factory.de>
+* Fixed bug #4384: Access Module for categories / Multilangual
+
+25.08.2009 Christian Kuhn <lolli@schwarzbu.ch>
+* Fixed bug #4286: Wrong if in tx_commerce_pi4->getListing "formFields" (Thanks to Michael Staatz)
+* Fixed bug #4288: Marker ADDRESS_MANDATORY_MESSAGE is always set to empty string in pi3 (Thanks to Michael Staatz)
+
+03.08.2009 Volker Graubaum <vg@e-netconsulting.de>
+* Fixed error in pi4, now it's possible to handle address different per type
+* added a lot of hooks
+* remove deprecated method makeProductListOld
+* add new articleMarker for articleview, this is an old feature, which gets lost
+
+22.07.2009 Ingo Schmitt <is@marketing-factory.de>
+* Fixed Error in basket loading, when no storage PID is defined.
+
+21.07.2009 Ingo Schmitt <is@marketing-factory.de>
+* Added commerce-typolink to teaserimages field
+* Set version to 0.11.14
+
+21.07.2009 Christian Kuhn <lolli@schwarzbu.ch>
+* Moved XCLASS in ext_localconf.php to BE only block
+* Fixed fatal error / non working XCLASS class.ux_t3lib_parsehtml_proc.php, added a warning comment.
+
+20.07.2009 Christian Kuhn <lolli@schwarzbu.ch>
+* Reverted parts of latest change: Moved XCLASS loading of ux_modulemenu back to ext_localconf to not trigger new race conditions in different loading order. Encapsulated in an "if BE" clause instead.
+* Restricted loading of XCLASS class.ux_modulemenu.php to TYPO3 versions 4.2.0 and 4.2.1 as this has been solved in 4.2.2. Moved loading of XCLASS to ext_tables.php as this is only relevant in BE.
+* Added tx_commerce_address_types to ext_tables.sql which was only in ext_tables_static+adt.sql until now. Otherwise install tool db compare wants to rename / remove this table.
+* Cleanup, re-sorting and duplicate deletion in ext_tables.sql
+
+19.07.2009 Christian Kuhn <lolli@schwarzbu.ch>
+* Refactored addUserTSConfig and addPageTSConfig calls in ext_localconf.php and moved to ext_tables.php as this is only relevant in BE
+* Removed require_once() of treelib/class.tx_commerce_tcefunc.php from ext_localconf.php. This is only used in BE as a userFunc for TCA fields and core takes care of loading source file.
+* Synced changes from ext_df_product_config.php to currently unused dcafiles/class.tx_commerce_products_dfconfig.php and cleaned up dcafiles/class.tx_commerce_products_dfconfig.php
+
+18.07.2009 Christian Kuhn <lolli@schwarzbu.ch>
+* Removed default settings of extConf values from ext_localconf, EM handles this already. Moved access to those settings to $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce']['extConf'].
+* Registered unserialized extConf array as global var in $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce']['extConf'] in ext_localconf.php. Refactored extConf access throughout the extension.
+* CGL cleanup and minor re-ordering in ext_localconf.php
+* Removed $_EXTKEY assignment in ext_localconf.php: This var is already set by TYPO3 core at this point
+* Removed setting in ext_localconf.php for php version < 4.4: trunk requires TYPO3 4.2 which requires php 5.2
+* Raised required dynaflex version from 1.6.0 to 1.7.2, we use its new load logic for category TCA
+* Fixed bug #3871: Order manufacturer alphabetically in BE
+* Fixed bug #3868: Saving category in root tree throws SQL error (Thanks to Christoph Niewerth)
+
+17.07.2009 Christian Kuhn <lolli@schwarzbu.ch>
+* Remove unused file ext_df_category_config.php
+* Remove dynaflex call for categories in dmhooks. This is handled by dynaflex itself by registering dcafiles/class.tx_commerce_categories_dfconfig.php in ext_localconf.php
+
+16.07.2009 Christian Kuhn <lolli@schwarzbu.ch>
+* Removed obsolete code from tcafiles/tx_commerce_categories.tca.php
+* Fixed missing closing php tags in mod_perftest
+* Fixed XCLASS inclusions in lib/ classes to make EM more happy
+* CGL cleanup in pi6/class.tx_commerce_pi6.php
+* CGL cleanup in pi6/class.tx_commerce_pi6_wizicon.php
+
+15.07.2009 Ingo Schmitt <is@marketing-factory.de>
+* Added Xclass for fix T3Core Bug 10331 which will be solved in 4.3.x, Thanks to David Rühr for debugging!
+* Increased Version Number
+
+13.07.2009 Christian Kuhn <lolli@schwarzbu.ch>
+* Minor comment fix in pi3
+
+10.07.2009 Ingo Schmitt <is@marketing-factory.de>
+* Fixed Bug 3847, 3729, 3629, 3504, 3499, Thanks to Erik Frister <efrister@marketing-factory.de>
+* Added CUR as Menue Item state to navigation for products
+
+10.07.2009 Christian Kuhn <lolli@schwarzbu.ch>
+* Fixed bug #3870: Remove pi5 from trunk
+* Removed is_todo.txt: Issues are documented on forge
+* Fixed bug #3869: Remove obsolete XCLASS from trunk
+* Fixed bug #3804: pi3 checks for the wrong method in hook (Thanks to Morten Olesen and Christoph Niewerth)
+* Fixed bug #3789: commerce_pibase->makeLineView dies with fatal error
+* CGL cleanup in pi4/class.tx_commerce_pi4.php
+* CGL cleanup in pi3/class.tx_commerce_pi3.php
+* CGL cleanup in pi4/class.tx_commerce_pi4_wizicon.php
+* CGL cleanup in pi3/class.tx_commerce_pi3_wizicon.php
+* Fixed bug #3863: pi4 doesn't require tx_commerce_pibase and dies with a fatal error
+
+09.07.2009 Michael Knabe <mk@e-netconsulting.de>
+* Fixed #3476: Moved the simplemode-tca for products out of an if clause that is not always true when needed
+
+09.07.2009 Ingo Schmitt <is@marketing-factory.de>
+* Fixed not working Hook in renderProductsForList (pibase)
+
+09.07.2009 Michael Knabe <mk@e-netconsulting.de>
+* Fixed Issue 3850: ext_localconf.php is included twice
+
+08.07.2009 Ingo Schmitt <is@marketing-factory.de>
+* Updated Ext EM Conf File
+* Added Shortcut for deleting Articles in pi2
+
+08.07.2009 Christian Kuhn <lolli@schwarzbu.ch>
+* CGL cleanup in pi2/class.tx_commerce_pi2_wizicon.php
+* CGL cleanup in pi1/class.tx_commerce_pi1_wizicon.php
+* Fixed XCLASS inclusion in pi1 to make EM happy
+* CGL cleanup in pi2/class.tx_commerce_pi2.php
+
+06.07.2009 Christian Kuhn <lolli@schwarzbu.ch>
+* CGL cleanup in pi1/class.tx_commerce_pi1.php
+
+06.07.2009 ingo Schmitt <is@marketing-factoryde>
+* Add Feature: plugin.tx_commerce_pi1.singleView.renderProductNameAsPageTitle to decide if the produtc name should be rendered as title to the page. See Documentation or wiki
+* Changed Version to 0.11.12
+06.07.2009 Julian Kleinhans <jk@marketing-factory.de>
+* Add Feature: display product direct if only one product exist
+
+29.06.2009 Volker Graubaum <vg@e-netconsulting.de>
+* Fixed error while creating categories Relations in Database
+
+28.06.2009 Volker Graubaum <vg@e-netconsulting.de>
+* create new tag for persistent basket and new payment concept
+
+25.06.2009 Ingo Schmitt <is@marketing-factory.de>
+* Fixed PHP -Error in commerce_pi1
+
+24.06.2009 Volker Graubaum <vg@e-netconsulting.de>
+* fixed BUG 3704
+* remove default nav_frame from mod_main module, so other modules can be displayed in commerce, without using a navframe
+
+20.06.2009 Sascha Egerer <seg@softvision.de>
+* fixed Bug #2599
+* fixed Bug #1678
+
+09.06.1009 Christian Kuhn <lolli@schwarzbu.ch>
+* Fixed minor cgl issues (superfuous dash in pi1, missing closing php tag in pi2, pi4 and pi5)
+
+28.05.2009 Ingo Schmitt <is@marketing-factory.de>
+* Changed leafView, TYPO3_SITE_URL is availiable from 4.2.7
+* Removed nostock as text from Template
+* Changed Version to 0.11.10
+* Fixed BUG #3500 thanks to David Rühr
+
+26.05.2009 Ingo Schmitt <is@marketing-factory.de>
+* Fixed Problem in Basket with wrong instantiating of classes
+* Fixed BUG 3164 and Feature 2478, thanks to Erik Frister
+
+16.05.2009 Ingo Schmitt <is@marketing-factory.de>
+* Added Hook in PI2 for allowed articles, Thanks to Melanie Meyer info@melaniemeyer.de
+* Fixed problem with recalculation of prices in basket, Thanks to Melanie Meyer info@melaniemeyer.de
+* Reload basket after changing the payment and delivery articles, Thanks to Melanie Meyer info@melaniemeyer.de
+* Fixed Problem with TYPO3_SITE_PATH, added fix for older TYPO3 Version
+
+16.05.2009 Michael Staatz <micsta@e-netconsulting.de>
+* Fixed Bug 1480, Thanks to Christian
+* Fixed Bug 2546, Thanks to Martin Holtz
+
+15.05.2009 Michael Staatz <micsta@e-netconsulting.de>
+* Fixed Bug 1515, Thanks to Tom Rüther
+* Added Feature 1563, new hook in pi1 'postInit' at the end of init.
+* And new hook in pi3 'processInputForm' for processing formfields
+* Fixed Bug 1759, repaired wrong Substitution
+
+15.05.2009 Ingo Schmitt <is@marketing-factory.de>
+* Fixed Bug in FolderDB, concerning quotes and double quotes, thanks to karsten@typo3.org
+* Removed graytree completely
+* Fixed Bug 2949, Thanks to Markus Kleinhenz
+* Fixed Bug 2590, Thanks to Michael Staatz
+* Fixed Bug 2866
+* Fixed Bug 2548
+
+24.04.2009 Volker Graubaum <vg@e-netconsulting.de>
+* commit old changes
+* change mod_access include, now use the same code as mod_category
+
+02.04.2009 Ingo Schmitt <is@marketing-factory.de>
+* Fixed Bug 2831, Thanks to David Rühr (dr@marketing-factory.de>
+* Fixed Bug 3006, Thanks to Ralf Merz
+* Fixed Bug 2986, Thanks to Sascha Eggerer
+* Fixed Bug 2953, Thanks to Markus Kleinhenz (mkleinhenz@gmail.com)
+* Set Version to 0.11.9
+
+10.03.2009 Volker Graubaum <vg@e-netconsulting.de>
+* change in pi3 userMail and adminMail, add a HTML flag before calling "postGenerateMailHook" with HTML content
+* change in dmhooks for simplemode and attributes in articles
+
+02.03.2009 Ingo Schmitt <is@marketing-factory.de>
+* Improved IRRE Handling of prices (display price in list)
+* Set Version to 0.11.8
+
+06.02.2009 Ingo Schmitt <is@marketing-factory.de>
+* Removed some debug output
+* Set Version to 0.11.7
+
+04.02.2009 Volker Graubaum <vg@e-netconsulting.de>
+* Fixed Bug 2529, Thanks to Ralf Merz and internezzo_ag this time complete
+
+02.02.2009 Volker Graubaum <vg@e-netconsulting.de>
+* Fixed Bug 2529, Thanks to Ralf Merz and internezzo_ag
+* added two "old" hooks (see change from 20.12.2008)
+
+27.01.2009 Ingo Schmitt <is@marketing-factory.de>
+* removed unneeded class.tx_commerce_feuserhooks.php
+* Rewrote Session Handling (see http://bugs.typo3.org/view.php?id=10205)
+* Set Version to 0.11.6
+
+24.01.2009 Volker Graubaum <vg@e-netconsulting.de>
+* remove all localization specific elements fro prices, since no localization for prices are needed
+
+23.01.2009 Ingo Schmitt <is@marketing-factory.de>
+* Fixed small bug in Treview concerning include paths
+* Added required to Category Fileds in category and products
+* Added default values to category select fields
+* fixed Error 2396, Thanks to Sascha Eggerer
+* Updated to 0.11.5
+
+20.01.2009 Ingo Schmitt <is@marketing-factory.de>
+* Fixed Bug 2489, Thanks to Rald Merz & Sascha Egerer
+
+17.01.2009 Ingo Schmitt <is@marketing-factory.de>
+* Fixed Bug 2474, Thanks to Sascha Egerer
+* Fixed Bug 2464, Thanks to Ralf Merz and Sascha Egerer
+* Fixed Bug 2458
+* Fixed Bug 2426, Thanks to Simon
+* Fixed Bug 2418, Thanks to Martin Holz
+* Fixed Bug 2407
+
+16.01.2009 ingo Schmitt <is@marketing-factory.de>
+* Fixed Linkpicker issue, Thanks to Erik Frister
+
+08.01.2009 Ingo Schmitt <is@marketing-factory.de>
+* Added save Oder Method to PI3 (for yuse with external payments)
+* Fixed undefined Array in PI2
+* Raised Version to 0.11.4
+* Added tx_commerce_create_folder::init_folders() to category module
+* Added Fix to PIbase, no different TS was used for article view, Thanks to Martin Haagen (Datafant AB) <martin.haagen@datafant.se>
+
+02.01.2008 Ingo Schmitt <is@marketing-factory.de>
+* Fixed Hooks References
+* Added removeXSS to G/P Parameter to better prevent XSS
+* Added Feature Insert Record, Thanks to Cedric Spindler <cs@cabag.ch>
+
+31.12.2008 Ingo Schmitt <is@marketing-factory.de>
+* Added Italien Translation to FE Plugins, Thanks to Cedric Spindler <cs@cabag.ch>
+* Fixed Issue 2321, Thanks to Cedric Spindler <cs@cabag.ch>
+* Fixed Issue 2191, Thanks to Sascha Egerer
+
+30.12.2008 Ingo Schmitt <is@marketing-factory.de>
+* Checked in Patch from Michael Knabe <mk@e-netconsulting.de>
+  * Changed prices to IRRE instead of dynaflex
+  * Changed articles to IRRE instead of dynaflex (for simple mode only)
+* Cleaned up Browselinks
+* Fixed Issue in Update Routine, when having localised categories
+
+30.12.2008 Volker Graubaum <vg@e-netconsulting.de>
+* Fixed small issue in detailview with allArticles = 1
+* Fixed small issue in listview, $this->pid was not set and is needed for title link to single view
+
+29.12.2008 Ingo Schmitt <is@marketing-factory.de>
+* Fixed Typo in hooks.html
+* Added Save-And Preview functionality
+* Added feature to load tx_commerce.Pi1 vars if other prefix is defined
+* Raised Version to 0.11.2beta
+* Sponsored Feature: Added Versioning and Workspaces to Commerce
+* Sponsored Feature: Added Acces Rights to Category Tree to Commerce
+* Sponsored Feature: Replaced Graytree by a much faster tree
+* Feature: Added Link Tab to Link Select Popup, Thanks to Christian Ehret und Erik Frister
+
+20.12.2008 Volker Graubaum <vg@e-netconsulting.de>
+* Fixed Error 2202
+* Fixed Error 1980
+  insert patch and remove some method calls from pi2 since they are also in pibase
+* Fixed Error 1979
+  Fixed in 2 ways, insert fix for pagebrowser , but use $this->cat instead of $this->piVars in DetailLink
+* Added new hooks to pi3 finishIt
+    modifyOrderArticlePreSave
+    modifyOrderArticlePreSave
+* Raised Version to 0.10.2
+* changed pi4 getSingleInputField
+    from  # $value = addslashes(htmlentities($fieldValue));
+    to $value = $fieldValue;
+ since it's making more problems than helping
+* fixe problems with article_prices and missing LanguageFields, removed from ext_tables.php/sql
+* add missing ?> to pi3
+* remove title from css include since it should be persistent
+ Specify that the style sheet is persistent, preferred, or alternate:
+  * To make a style sheet persistent, set the rel attribute to "stylesheet" and don't set the title attribute.
+  * To make a style sheet preferred, set the rel attribute to "stylesheet" and name the style sheet with the title attribute.
+  * To specify an alternate style sheet, set the rel attribute to "alternate stylesheet" and name the style sheet with the title attribute.
+ src: http://www.w3.org/TR/html4/present/styles.html#style-external
+
+3.12.2008 Ingo Schmitt <is@marketing-factory.de>
+* Fixed Error in PI Base, wrong parameter to postProcessLinkArray, Thanks to Ralf Merz
+
+24.11.2008 Ingo Schmitt <is@marketing-factory.de>
+* Fixed Error 2192
+
+19.11.2008 Ingo Schmitt <is@marketing-factory.de>
+* Created substituteMarkerArrayNoCached and replaced all calls to substituteMarkerArrayCached to prevent DoS on Cache Entries
+
+16.11.2008 Morten Olesen <mo@idefa.dk>
+* Integrated related products in product single view.
+
+16.11.2008 Ingo Schmitt <is@marketing-factory.de>
+* Fixed bug when changing language in basket to language where no translation exists for product
+* Fixed naming problems in German language
+* Removed no cache on product not found, only open PageBrowser and no_cache, see commet in code
+* removed empty manual.sxw
+* Fixed a typo in template_usermail.tpl
+
+16.10.2008 Sascha Eggerer <seg@softvision.de>
+* Implemented Drop-Downs for the frontend
+* Fixed Bug concerning rootline
+* Changed Attribute-Values to IRRE in BE Module Systemdata
+
+03.11.2008 Ingo Schmitt <is@marketing-factory.de>
+* Fixed a Bug in pibase concerning different markers, Thanks to Christian Ehret
+
+22.10.2008 Ingo Schmitt <is@marketing-factory.de>
+* Fixed a Bug in PI3, Thanks to Cedric Spindler
+
+21.10.2008 Ingo Schmitt <is@marketing-factory.de>
+* Added one more typecast
+
+20.10.2008 Ingo Schmitt <is@marketing-factory.de>
+* Fixed security issue TYPO3-20081020-2, please see http://typo3.org/teams/security/security-bulletins/typo3-20081020-2/
+* typecased all SQL and PiVARS
+* Raised version to 0.10.1,
+
+15.10.2008 Ingo Schmitt <is@marketing-factory.de>
+* Raised Version to 0.10.0, created branch 0.9.x in SVN to have it clear to the user about the changes
+
+17.09.2008 Ingo Schmitt <is@marketing-factory.de>
+* Fixed a dividion by zero bug in pibase
+
+21.08.2008 Ingo Schmitt <is@marketing-factory.de>
+* Fixed a bug in manual Sales Aggregation
+* Added Extension Configuration to disable Aggregation in BE
+* Fixed Problem in Statistics calculation
+
+21.08.2008 Volker Graubaum <vg@e-netconsulting.de>
+* Fixed a Bug in calculating price from gross & net
+
+19.08.2008 Ingo Schmitt <is@marketing-factory.de>
+* Fixed a Bug in detecting last Aggregation for statisticts
+* Added output to the statistic CLI module
+
+18.08.2008 Ingo Schmitt <is@marketing-factory.de>
+* Fixed a naming TYPO $artilceObj
+* Added CLI Scripts for calculation of statistics
+* Added default TAX configurable via Page TS
+* Set default view for orders to OrderData
+
+17.08.2008 Volker Graubaum <vg@e-netconsulting.de>
+* Add new hook for manipulating the productlist (pi_base / preProcessorProductsListView)
+* Add new hook for adding marker to the productView in the basket for example to mix article and product Marker
+  (pi2 / additionalMarkerProductList)
+
+15.08.2008 Ingo Schmitt <is@marketing-factory.de>
+* Fixed Bug in artikel_hook, thanks to Christian Ehret for reporting and fixing
+
+13.08.2008 Ingo Schmitt <is@marketing-factory.de>
+* Corrected german translation for products_not_copy
+
+11.08.2008 Ingo Schmitt <is@marketing-factory.de>
+* Fixed Bug in pi3.parseRawdata, no default value was set
+* Changed all new classname to makeInstance
+
+09.08.2008 Ingo Schmitt <is@marketing-factory.de>
+* Fixed Bug in db_article by defining SQL Staements as DISTINCT
+
+08.08.2008 Ingo Schmitt <is@marketing-factory.de>
+* Fixed forge Issue 1252 and bugs issue 9111
+* Added RTE for teaser in product
+* Fixed bugs issue 8452, thanks to Dmitry Pikhno
+* Fixed Bug in recaluclating the item sum when changing the price in the basket
+
+07.08.2008 Ingo Schmitt <is@marketing-factory.de>
+* Added feature to generate the Mail-Subjects also via TEXT Templates
+* Added new HOOK in PI3 modifyBasketPreSave
+* Removed old methods from div class (where already commented, so no changes to your installation)
+* Added modTSConfig for OrderModule mod.commerce.orders.delProdUid and mod.commerce.orders.payProdUid
+* Fixed a Bug in PI6 selecting addresses
+* Added Fearure in PI6 to have multiple payment and sippment items. Template for invoice was changed!
+
+06.08.2008 Ingo Schmitt <is@marketing-factory.de>
+* Fixed Bug in recursive display, thanks to Steffen Kamper in reporting and debugging
+
+05.08.2008 Ingo Schmitt <is@marketing-factory.de>
+* Fixed Bug (8856) in PI6, Invoice is not displayed if no user is generated.
+* Implemented Feature 9111
+
+04.08.2008 Ingo Schmitt <is@marketing-factory.de>
+* Fixed BUG 8921, Thanks to Sascha Egerer and Christian Ehret
+
+03.08.2008 Ingo Schmitt <is@marketing-factory.de>
+* Added Feature: You can define which fields are displayed in Supplier and Manufacturer listing, Thanks to Cynthia Mattingly <cm@marketing-factory.de>
+
+09.07.2008 Ingo Schmitt <is@marketing-factory.de>
+* Fixed Bug 8868, Thanks to Tom Rüther
+
+08.07.2008 Ingo Schmitt <is@marketing-factory.de>
+* Set MD5 Encoding as default for Session-Key
+* removed getLabelFromTCA, since not used in Commerce code from tx_commerce_pibase.php
+
+01.07.2008 Ingo Schmitt <is@marketing-factory.de>
+* Added new HookObj to pi3 (main) with 3 Methods. Please See hook dokumentation
+
+30.06.2008 Ingo Schmitt <is@marketing-factory.de>
+* removed some debug
+* Fixed Bug in Orderlist
+
+29.06.2008 Ingo Schmitt <is@marketing-factory.de>
+* Fixed Bug 8749, 8850, 8815, 8839, 8813, 8800, 8702, 8754, 8119, 8681, 8541
+
+1st Commerce-Workshop, Tom Rüther, Michael Duttlinger, Dirk Krause, Ingo Schmitt
+* Fixed Bug 8850, Thanks to Tom Buskens
+* Fixed Bug 8815, 8817, Thanks to Thomas
+* Fixed Bug with Backlink in PI4
+
+1st Commerce-Workshop, Christian Ehret, Ingo Schmitt
+* Implemented Feature 8800
+
+1st Commerce-Workshop, Sebastian Böttger
+* Fixed Bug in PI1, category could be displayed if not accessible to user
+
+28.06.2008 Ingo Schmitt <is@marketing-factory.de>
+1st Commerce-Workshop, Tom Rüther, Michael Duttlinger, Dirk Krause, Ingo Schmitt
+* Fixed Bug 8453
+* Fixed Documentation bug in pi4
+* Fixed bug: Already selected delivery addresses are checked now
+* fixed bug: If delievery address is selected, it's cheked in step 1 automatically
+* fixed bug: ###ADDRESS_FORM_BACK### was not replaced in PI4
+* fixed bug: Correct backlink for address management
+* fixed bug: 8749
+1st Commerce-Workshop, Christian Ehret
+* Fixed Bug 8710
+
+11.07.2008 Ingo Schmitt <is@marketing-factory.de>
+* Fixed naming error product
+
+06.07.2008 Ingo Schmitt <is@marketing-factory.de>
+* Fixed bug in navigation with HidePagesifnottranslated, thanks to internezzo AG for Sponsoring.
+* Fixed issue 8629, Thankks to intermezzo AG
+* Fixed issue 8549
+* Fixed issue 8536, Thanks to Heiko Haensge
+
+06.06.2008 Ingo Schmitt <is@marketing-factory.de>
+* Added feature to basket (pi2) to have the possibility of posting more than one payment and delivery article
+* newMethod for basic_basket getQuantity, getPriceGrosss,  getPriceNet
+* Beautified Sourcecode, tx_commerce_pibase
+* Added delProdId and payProdId as additional TS Conf variables to pi3 (checkout)
+
+10.05.2008 Ingo Schmtt <is@marketing-factory.de>
+* Raised dependency to graytree 0.2.x as minimum requirement
+* Syncronised to TER version 0.9.6
+
+09.05.2008 Ingo Schmitt <is@marketing-factory.de>
+* Added Edit-Wizzar to fe_user record in order detailed view
+* Fixed Bug 8359, Thanks to Franz Rueske
+* Changed Minibasket to use API Basket Methods, instead of own methods
+* checked all references to ArticleTypes and changed to Constants
+
+28.04.2008 Ingo Schmitt <is@marketing-factory.de>
+* Implemented as general solution commerce typolink on stdWrap on IMAGE
+* Default TS: Teaser Image added link to item below
+* Implemented Entrylevel on Menue
+* fixed Problem with non intitalised XML Array in BE lib
+
+24.04.2008 Ingo Schmitt <is@marketing-factory.de>
+* Added Output for Last Change in Order View
+* Changed Compatibility to maximum 4.1.9 TYPO3 Version, since Tree is not working with 4.2.0
+* Fixed BUG 8234, Thanks to Frank R√ºske
+* Fixed Bug 7966
+* Update ext_em_conf.php for Upload in TER
+* Raised version to 0.9.5 as new DEV Version
+
+12.03.2008 Ingo Schmitt <is@marketing-factory.de>
+* Quickfix for String is not Array in BE Lib
+* Added teaser and teaser-images to category (Thanks to Julian Kleinhans)
+
+10.03.2008 Ingo Schmitt <is@marketing-factory.de>
+* Fixed Bug in local record list
+* Added Fetaure in invoice (pi6), automatic processing -> no_cache
+* Fixed Bug: Allow more than one Image in fields (Thanks to Julian Kleinhans)
+* Fixed Bug: Rootline was not started at given UID (Thanks to Julian Kleinhans)
+
+05.03.2008 ingo Schmitt <is@marketing-factory.de>
+* Fixed Bug in Order view.
+
+29.02.2008 Ingo Schmitt <is@marketing-factory.de>
+* Added Gross Total and Net Total to Invoice (pi6)
+* Removed unneded pi6/locallang.php file
+* Removed unneded pi5/manual.sxw
+
+26.02.2008 Ingo Schmitt <is@marketing-factory.de>
+* Replaced while(list()) calls by foreach
+* Fixed Issue 6264
+* Fixed Issue 6315
+* Fixed Issue 7092
+* Fixed Issue 6489
+* Fixed Issue 6487
+
+20.02.2008 Ingo Schmitt <is@marketing-factory.de>
+* Fixed Bug 5802, Thanks to Christian Buelter
+* Fixed Bug 7261, Thanks to Sascha Egerer
+* Fixed Bug 7321, Thanks to Karsten Dambekalns
+* Fixed Bug 6388, Thanks to Karsten Dambekalns &  Patricia Tiedemann
+* Fixed Bug 7483, Thanks to Sascha Egerer
+
+19.02.2008 Volker Graubaum <vg@e-netconsulting.de>
+* add sys_language_uid Filter in TS for empty basket/checkout
+
+18.02.2008 Volker Graubaum <vg@e-netconsulting.de>
+* Fixed Bug 7213
+
+18.02.2008 Ingo Schmitt <is@marketing-factory.de>
+* Added mc_autokeywords as conflict Extension.
+
+16.02.2008 Ingo Schmitt <is@marketing-factory.de>
+* Patched Bug 7149, Thanks to Sascha Egerer
+* Fixed Bug 7321, changed all occurences of $TYPO3_CONF_VARS to $GLOBALS['TYPO3_CONF_VARS']
+* Fixed CSS in hooks.html
+
+11.02.2008 Ingo Schmitt <is@marketing-factory.de>
+* Fixed Bug 7089, Thanks to Jörg Sprung
+* Fixed Bug 7492 and 7493
+
+06.02.2008 Ingo Schmitt <is@marketing-factory.de>
+* Added Icon to User-States recordset
+* Added Icon to Order-types recordset
+* Listed Order Type icon also in Order List
+* Fixed naming of the Columns in order List
+
+18.01.2008 Fabian Seltmann <fs@marketing-factory.de> -> Approved by Ingo
+* Added comment to order for shop administrator
+* Different Icons in OrderView for Order (has user comment, has admin comment, has different delievery address)
+* Enhanced Order-View
+* List of Article Number and Articles in Order view is configurable in Extension configuration
+
+15.01.2008 Ingo Schmitt <is@marketing-factory.de>
+* Fixed Bug in Navigation concerning multi-language sites
+* Fixed Bug 7108,7110 Thanks to Sascha Egerer
+* Added Hook to pi3, Thanks to Sascha Egerer
+
+07.01.2008 Ingo Schmitt <is@marketing-factory.de>
+* Fixed Bug with disabled fields in Checkout, Thanks to Fabian Seltmann <fs@web-factory.de>
+* Fixed Bug 6318
+
+02.01.2008 Ingo Schmitt <is@marketing-factory.de>
+* Cleaned Up Code (tx_commerce_articles)
+* Fixed Problem with Quickview and empty quickview basket, Thanks to Fabian Seltmann <fs@web-factory.de>
+* Fixed Bug, when no Pagebrowser is defined in TS.
+
+31.12.2007 Ingo Schmitt <is@marketing-factory.de>
+* Fixed Bug 5518, since t3lib_db has alreday mm_rec capabilities since the 4.0.x branch
+* Raised Minimum TYPO3 Version to 4.0
+* Patched Feature 6315 to Core, Thanks to Alex Widschwendter
+* Fixed Bug 5374
+
+30.12.2007 Ingo Schmitt <is@marketing-factory.de>
+* Fixed Bug 5008
+* Fixed Bug 5545
+* Fixed Bug 5164, changed Encoding for usermail and adminmail to UTF8, changed template language to English
+* Fixed Bug 6679, Thanks to Michiel Roos and Dmitry Dulepov
+* Fixed Bug 7066
+
+29.12.2007 Volker Graubaum <vg@e-netconsulting.de>
+* add new hook in pi3, concerning Bug 5359, see hooklist in doc path
+
+28.12.2007 Ingo Schmitt <is@narketing-factory.de>
+* Added Feature "Lock Basket" for external Payment provider. Thanks to Thibaut van de Mortel <tibo@goutemesdisques.com> for pointing me to this issue.
+* Cleand up ext_em_conf Template
+* Fixed wrong xclass inclusion code in ux_localrecordlist.php. Thankts to Ricardo Mieres <ricardo.mieres@502.cl>
+* Fixed Typo in ext_tables.php, Thanks to Elena Kuprienko <elena@kuprienko.de>
+* Added method get_article_attributes() to tx_commerce_articles, Thanks to Sebastian Boettger - Cross Content Media <dev@cross-content.com>
+* Fixed Bug 6279, Thanks to Axel Klarmann and Michiel Roos
+* fixed Bug 6917, Thanks to Batomo
+* Fixed Bug 6850
+* Fixed Bug 6499, Thanks to Michiel Roos
+* Fixed Bug 6794, Thanks To Sascha Egerer
+
+27.12.2007 Ingo Schmitt <is@marketing-factory.de>
+* Updated Documentation concerning imgPath
+
+22.12.2007 Ingo Schmitt <is@marketing-factory.de>
+* Fixed Bug in static TS, Thanks to Fabian Seltmann <fs@web-factory.de>
+
+19.12.2007 Ingo Schmitt<is@marketing-factory.de>
+* Added Hooks for Processing in PI1, Thanks To Joerg Sprung <jsp@marketing-factory.de>
+
+13.12.2007 Ingo Schmitt <is@marketing-factory.de>
+* Added Translation pl,cz,hu
+* Added Hook for having own fields in Basket,  Thanks To Joerg Sprung <jsp@marketing-factory.de>
+10.12.2007 Ingo Schmitt <is@marketing-fcator.de>
+* Corrected handling of imgFolder, Thanks To Joerg Sprung <jsp@marketing-factory.de>
+* Added Handling for Alt-Tags in Images, Thanks to Christian Ehret <chris@ehret.name>
+* Corrected HTML in PI2 for IE7 and DropDown on Submit, Thanks to Julian Kleinhans <jk@marketing-factory.de>
+
+5.12.2007 Ingo Schmitt <is@marketing-factory.de>
+* Fixed Bug 6376
+
+30.11.2007 Ingo Schmitt <is@marketing-factory.de>
+sponsored by Impulse Network Limited: http://www.schutzgeld.de/
+* PI2: automatic deletion of Items, if prodtuct or article is not accessible
+* PI2: Automatic deletion of items, if stock is not mor availiabe.
+
+16.11.2007 Ingo Schmitt <is@marketing-factory.de>
+* Fixed Problem in PI6, when BE user and FE suer are logged in
+
+13.11.2007 Ingo Schmitt <is@marketing-factory.de>
+* Corrected Problem with User States Database definition
+* Lowered PHP version requirements to 4.3, added Patch for setting PHP_MAX_INT, thanks to Marc Bastian
+* Added ARTICLE_PRICE_GROSS, ARTICLE_TOTAL_GROSS, ARTICLE_PRICE_NET, ARTICLE_TOTAL_NET to invoice
+* PI1- new typoscript option checkCategoryTree, see documentation
+
+9.11.2007 Ingo Schmitt <is@marketing-factory.de>
+* New Hook in pibase -> additionalSubpartsProduct
+
+8.11.2007 Ingo Schmitt <is@marketing-factory.de>
+* Fixed Bug 6274, Thanks to Marc Bastian Heinrichs
+* Added Wizzard Icon, Thanks Michiel Roos
+* Fixed problem with manufacturer Title, thanks to alex
+* Raised PHP min Version to 4.4
+* Added new hook in pi_base to add your own XML Locallang file to language marker, thanks to Joerg Sprung for implementing and Metabo for sponsoring
+* New Hook in PI1 makeArticleView->additionalMarkerMakeArticleView
+
+6.11.2007 Ingo Schmitt <is@marketing-factory.de>
+* Fixed a Problem with PHP 5.2.x, Thanks to Joerg Sprung
+
+26.10.2007 Ingo Schmitt <is@marketing-factory.de>
+* Clariefied tx_commerce_categores documentation, regarding child_categories and child_products, Thanks to Joerg Sprung
+* Fixed bug in tx_commerce_product_db, checking opf GLOBALS[TSFE] is defined, Thanks to Joerg Sprung
+
+24.10.2007 Ingo Schmitt <is@marketing-factory.de>
+* Fixed Bug 6488, Thanks to Dmitry Dulepov, Michiel Roos, Sascha Egerer
+* Fixed Bug 6556, Thanks to Christoph Nikic
+* Fixed Bug 6536, Thanks to Sascha Egerer
+* Fixed Bug 6521, Thanks to Dmitry Dulepov
+
+21.10.2007 Ingo Schmitt <is@marketing-factory.de
+* Fixed Problem with sorting hook in tx_commerce_db_alib.php, thanks to Dmitry Dulepov
+* New Hooks productQueryPreHook and productQueryPostHook in tx_commerce_db_category, thanks to Dmitry Dulepov
+* New Hook formatAttributeValue in tx_commerce_pibase, thanks to Dmitry Dulepov
+* Added valueidlist to attribute matrix,  thanks to Dmitry Dulepov
+
+10.10.2007 Ingo Schmitt <is@marketing-factory.de>
+* Changed pi1 Maximum Number of products to PHP_INT_MAX, thanks to Dmitry Dulepov
+
+22.09.2007 Ingo Schmitt <is@marketing-factory.de> & Volker Graubaum <vg@e-netconsulting.de>
+* Udpated CSS, Thanks to Tom Rüther
+* Removed pass variable by reference to getPathCat
+* Fixed Bug 6222, Thanks to Karsten Dambekalns
+* Fixed Bug 6223
+* Fixed Bug 6267
+* Fixed Bug 6277
+* Fixed Bug 6189
+* Removed Company from tt_address aditional fields
+
+20.09.2007 Ingo Schmitt <is@marketing-factory.de>
+* Fixed bug 6310
+* products and categories could not be inserted on pages anymore
+
+13.09.2007 Ingo Schmitt <is@marketing-factory.de>
+* Fixed Bug in PI4
+
+11.09.2007 Ingo Schmitt <is@marketing-factory.de>
+* Added return value to tx_commerce_articlecreator::createArticle()
+
+31.08.2007 Ingo schmitt <is@marketing-factory.de>
+* Fixed two bugs in pi4, Thanks to Tom Rüther
+* Fixed Bug 6235, Thanks to "sascha" and Axel Klarmann
+* Fixed Bug in connecting Categories in tx_commerce_category, Thanks to "Roland"
+
+29.08.2007 Ingo Schmitt <is@marketing-factory.de>
+* Fixed Marker ###ITEMS### and ###BASKEt_ITEMS###
+* Changed link to basket from quickview to be cacheable
+
+24.08.2007 Ingo Schmitt <is@marketing-factory.de>
+* Updated documentation
+* Added fix for checking the catuid and showiuid in pi1
+* Fixed bug in navigation, thanks to Marc Bastian Heinrichs
+* Fixed Bug 6088, 6205
+
+23.08.2007 Ingo Schmitt <is@marketing-factory.de>
+* Added check of given uid for product and category in pi1
+* Fixed bug in agrgation of statistics, if no order has been processed Thanks to Joerg Sprung
+* Added missing commit for ext_localconf.php Thanks to Karsten Dambekalns
+* Fixed Bug 6153, Thanks to Karsten Dambekalns and Peter Ruijter
+* Fixed Bug 6151, Thanks to Thomas Mammitzsch
+* Fixed Bug 6136
+
+13.08.2007 Volker Graubaum <vg@e-netconsulting.de>
+* Updated Documentation and locallang
+* remove a spelling mistake
+
+13.08.2007 Volker Graubaum <vg@e-netconsulting.de>
+* Fix articleselector for pi1
+* rewrite of pi6 - Thanks To Tom Rüther
+
+12.08.2007 Ingo Schmitt <is@marketing-factory.de>
+* Added Processing of Language Marker to PI1, render list view
+* Added Language Marker to PI1 for ListView
+* Added new typolink Parameter setCommerceValues =1 to have the ability to add links to each fields element
+* Fixed Problem with PI rendering of ###CATEGORY_LIST_ITEM###
+* Added new Marker ###PRODUCT_CHEAPEST_PRICE_GROSS### and ###PRODUCT_CHEAPEST_PRICE_NET### to Render Product
+* Fixed Bug with checking priceIDs
+* Fixed Bug 6024
+* Added StepBar in Checkout
+* Made pi2 Templates XHTML valid, generated new default css. Thanks To Carla Froitzheim and Tom Rüther
+* Made pi3 Templates XHTML valid, generated new default css. Thanks To Carla Froitzheim and Tom Rüther
+* Added Delete from Basket Link to Basket Entries
+
+11.08.2007 Ingo Schmitt <is@marketing-factory.de>
+* Corrected Naming of Conf Variable Preview Page UID
+* Added new Marker to pi1, see template for usage
+* Added explicit set of $this->cat in tx_commerce_pi1 to integer
+* Added new TypoScript Property for article object, defaultQuantity
+* Added New Marker to Article Output, LINKTOPUTINBASKET
+* Added new TypoLink addToBasketLink to article rendering
+* Made pi1 Templates XHTML valid, generated new default css. Thanks To Carla Froitzheim and Tom Rüther
+
+08.08.2007 Ingo Schmitt <is@marketing-factory.de>
+* Added Check if object exists in tx_commerce_pibase::renderProduct
+* Added Check to Basket, if a given price ID is a valid price id from this article
+* New Method getPrices in tx_commerce_db_article
+* New Method getPossiblePriceUids in tx_commerce_articles
+* Fixed Issue 5204
+* Finally Fixed 5204 Thanks to Karsten Dambekalns
+
+03.08.2007 Ingo Schmitt <is@marketing-factory.de>
+* fixed Issue 5204
+* fixed problem with scaled prices and pascet item calculation
+* added new Param priceid to pibase::getArticleMarker
+
+02.08.2007 Ingo Schmitt <is@marketing-factory.de>
+* Fixed Problem with auto generating of invoices
+
+31.07.2007 Ingo Schmitt <is@marketing-factory.de>
+* Beautified sourcecode
+* Fixed a typo in extension Configuration
+* Added company to invoice output
+
+30.07.2007 Ingo Schmitt <is@marketing-factory.de>
+* Fixed issue 5539, Thanks to Paul Hansen
+* Fixed issue 5968, Thanks to Steffen Kamper
+* Fixed issue 6011, Thanks to Robert Destigter
+* Fixed issue 5711, Thanks to Martin Holtz
+* Fixed issue 5312, Thanks to Karsten Dambekalns
+
+28.07.2007 Ingo Schmitt <is@marketing-factory.de>
+* Corrected handling of marker (noit Subparts) in pi6
+* Added showCurrencySign to TS for PI6
+
+27.07.2007 Ingo Schmitt <is@marketing-factory.de>
+* Fixed wrong instantiation of tx_commerce_product in lib_navigation.
+
+11.07.2007 Ingo Schmitt <is@marketing-factory.de>
+* Introduced Marker BASKET_ITEM_PRICEGROSSNOSCALE and BASKET_ITEM_PRICENETNOSCALE in Basket output
+
+28.06.2007 Ingo Schmitt <is@marketing-fcatory.de>
+* Added max_length patch, you are now able to set the maxlength per field, thanks to Joerg Sprung
+
+22.06.2007 Ingo Schmitt <is@marketing-factory.de>
+* New statistics icon (changed white to blue for a better visibility)
+* added new configuration "genprices" to have the possibility to generazte from gross and net
+
+20.06.2007 Franz Holzinger <kontakt@fholzinger.com>
+* Fixed Problem with missing categories in category tree
+* Added link to edit-product in category tree
+* removed "add subcategory" item in clickmenue on article
+* removed unneeded span in category tree
+
+14.06.2007 Ingo Schmitt <is@marketing-fcatory.de>
+* Added oder tstamp to orderlist Module
+
+25.05.2007 Franz Holzinger <kontakt@fholzinger.com>
+* fix bug 5008: When you created a new product from the clickmenu then a wrong parent category has been taken.
+
+25.05.2007 Ingo Schmitt <is@marketing-factory.de>
+* corrected db_commerce_product to work, when not use in frontent
+* renamed method get_parent_categorie to getParentCategory
+* marked get_parent_categorie as depricated
+* Added Patch to fix Problem in Navigation, Thanks to Joerg Sprung
+
+24.05.2007 Franz Holzinger <kontakt@fholzinger.com>
+* fix bug 231 (typo3-commerce.org): move function slashJS from DAM into class.tx_graytree_div.php to have it ready for all JavaScript cases
+
+23.05.2007 Franz Holzinger <kontakt@fholzinger.com>
+* fix bug 117 (typo3-commerce.org): no products shown any more in field categories tree
+
+09.05.2007 Thomas Hempel <thomas@work.de>
+* Fixed bug concerning double $this in Hook call (0005577)
+* Fixed bug in pi3 concerning merge of non array objects (may be raised in combination with external payments)
+* Did some code cleanup
+* Fixed a typo in belib
+
+28.04.2007 Volker Graubaum <vg@e-netconsulting.de>
+* add new html file with hooklist
+
+28.04.2007 Ingo Schmitt <is@marketing-factory.de>
+* Patched Bug concerning Navigation (thanks to L.Muller <l.muller@ameos.com>
+* Patched security Problem in PI4.
+* Added method getMunufacturerTitle to class.tx_comemrce_products
+* Add postProcessLinkArray to renderProducts
+!!! Update your installation!!!
+* Changed the complet PI6 for use complete templating. Thanks to Sudara <williams@web-crossing.com>
+* Fixed Bug 230
+
+27.04.2007 Volker Graubaum <vg@e-netconsulting.de>
+* Added new hooks for rendering own fields and new steps
+* Fixed Bug 5408
+* Add funktion for rendering checkbox fields in pi3 and pi4
+* change fields with label to 2 different marker
+
+27.04.2007 Ingo Schmitt <is@marketing-factory.de>
+* Change Module Configuration and instantiation of classes to new TYPO3 style
+* Changed definition of payment types and delivery types in ext_localconf (fixed BUG 5027)
+* Fixed Bug 5402, Thanks to Batomo
+* Fixed Bug 5380, Thanks to heiko ÔøΩzaykut
+* Fixed Bug 3573, Thanks to Batomo
+* Added methods to rebuild flexform XML for the recordsets. Thanks to Ricardo Mieres <ricardo.mieres@502.cl>
+* Beatified Sourcecode
+* Added additionalMarker to pi2->quickView
+* Changed Marker in PI3 ARTICLE_NUMBER to ARTICLE_ORDERNUMBER to have the correct naming sceme
+* Added storage of last product to PI1 an pibase
+* Added ###BASKET_LASTPRODUCTURL### and ###LANG_LAST_PRODUCT### to Basket
+
+09.04.2007 Ingo Schmitt <is@marketing-factory.de>
+* Added method getParentProductuid to class.tx_commerce_articles
+
+05.04.2007 Ingo Schmitt <is@marketing-factory.de>
+* Added method getSupplierName to class.tx_commerce_articles
+* Added method getSupplierName to class.db_articles
+* Added supplier to Article View
+* Beatified Soucrecode in lib/class.tx_commerce_pibase.php
+* Beatified Soucrecode in pi1/class.tx_commerce_pi1.php
+* Added Errorcode to pibase->renderproduct if no articlemarker is defined
+
+04.04.2007 Ingo Schmitt <is@marketing-factory.de>
+* Updated documentation
+* Raised Version to 0.9.0
+* Upload to TER
+* Fixed Problem with product-selector in Content element, concerning ordernumber and eancode
+
+02.04.2007 Ingo Schmitt <is@marketing-factory.de>
+* Added change log history
+* Raised Version to 0.8.35
+
+28.03.2007 Ingo Schmitt <is@marketing-factory.de>
+* Fixed BUG 5238, thanks to Christian Sander
+* Fixed a problem with pagebrowser, concerning pointer in Page browser, thanks to Luc Muller <l.muller@ameos.com>
+* Fixed Bug 5194, thanks to batomo
+* Fixed Bug 5051
+
+28.03.2007 Ingo Schmitt <is@marketing-factory.de>
+* Fixed problem with setting empty PID when adding a price to a hidden article
+* Corrected PID handling in DM hooks
+* Added saving of cruser_id whe creating article_prices
+
+22.03.2007	Ingo Schmitt <is@marketing-factory.de>
+* Added support for stock handling service
+* Fixed PHP5 Warning when merging Marker Arrays
+* Raised Version to 0.8.32
+
+19.03.2007 Franz Holzinger <kontakt@fholzinger.com>
+* fix bug 247: show clickmenu on root category
+
+15.02.2006 Volker Graubaum <vg@e-netconsulting.de>
+* pi2
+*  Added a call to stdWrap for empty basket
+
+01.02.2006 Volker Graubaum <vg@e-netconsulting.de>
+* pibase
+  Added Hook for Processing MarkerArray in lineView
+
+22.01.2006 Thomas Hempel <thomas@work.de>
+* added a checkbox for selecting all articles in "create articles" list vis JavaScript
+* fixed a bug in belib in method checkArray (check if the incomming is really an array)
+
+21.01.2006 ingo Schmitt <is@marketing-factory.de>
+* pi3
+  Added $this as parameter to hooks (PostGenerateMail)
+  Added Hooks for Processing Marker Arrays
+
+16.01.2006 Thomas Hempel <thomas@work.de>
+* pi3
+  Added new template subparts for templating support in address management
+  Added "edit" functionality for addresses in checkout
+* pi4
+  Fixed some bugs in template support for address management
+  Added capability of handling edit from checkout
+  Fixed some bugs in handling of external edit pages
+
+Ingo Schmitt <is@marketing-factory.de>
+* Corrected typo in locallang.xml files
+* Added two ne Methods to tx_commerce_product:
+  getArticleUids() to replace getArticles()
+  getArticleObjects() as new method
+* declared getArticles() in tx_commerce_product as depricated
+* Changed getArticles in pi_base to getARticleUid()
+
+11.01.2006 Thomas Hempel <thomas@work.de>
+* Added template for edit addresse form
+
+
+10.01.2006 Ingo Schmitt <is@marketing-factory.de>
+* Changed refferences in TCA from locallang.php to locallang_db.xml
+
+7.1.2006 (Thomas Hempel <thomas@work.de>)
+* Changes in pi4 for min items of addresses, insert backpid and targetpid for changing
+
+5.1.2006 (Frank KrÔøΩber <fk@marketing-factory.de>)
+* Generally replace locallang php-files with locallang xml-files. PHP-files will be deleted on 13.01.2006.
+
+3.1.2006 (Ingo Schmitt <is@marketing-factory.de>)
+* pi3
+    Fixed Bug when sendin User- and Adminmail concerning namechange from surename to surname
+    Removed Textual Refferences to Projectname
+	Added OrderID to Object for refference in the Hook-Statements
+
+* pibase
+    Added Method to Merge the Langmarkers from default and actual language to on Array to Display correct Names for the fields
+
+* class.tx_comemrce_attributeeditor.php
+    Limited the selcetion of Attributes only to the commerce products pid
+
+* class.tx_commerce_belib.php
+* class.tx_commerce_dmhooks.php
+    Fixed Bug concerning Price changes. Now price changes works again
+
+* class.tx_commerce_dmhooks.php
+    Fixexd Bug concerning changes of Attribute Values
+
+   (Volker Graubaum <vg@e-netconsulting.de> )
+* changed pi4 for try to use as addressmanagement....
+* Updated setup with example lib for the HMENU
+
+2.1.2006 (Ingo Schmitt <is@marketing-factory.de>)
+* pi2
+	fixed typo with $this-currency. In TYPO Script currency and curency are valid names for setting the currency
+    made EUR as default currency if no currency is defined in TS
+    > Please Update TS to currency (from curency) to match correct written TS
+* pi3
+    Added init method for handling of TS values (Just moved Things from main to init)
+    Added currency to TS to change default currency
+    Translated English locallang Values to German
+    made EUR as default currency if no currency is defined in TS
+ constants.txt
+    Added pi3 / currency to constants
+ setup TXT
+    Added pi3 / currency to setup
+
+ ------------------------------------------------------------------------
+r61 | ingo | 2006-03-02 11:01:54 +0100 (Do, 02 MÔøΩr 2006) | 16 lines
+
+General cleanup for getting rid of install warnings in the EM
+* class.tx_commerce_feuserauth.php
+  Corrected XCLASS include statement
+* class.tx_commerce_ccvs_lib.php
+  Added basic inherited class to match TYPO3 Guidlines
+* class.tx_commerce_navigation.php
+  Added basic inherited class to match TYPO3 Guidlines
+  Corrected XCLASS include statement
+* class.tx_commerce_order_localrecordlist.php
+  Corrected XCLASS include statement
+* ext/commerce/mod_category/class.user_attributeedit_func.php
+  Corrected XCLASS include statement
+* ext/commerce/payment/class.tx_commerce_payment_cashondelivery.php
+  Corrected XCLASS include statement
+* ext/commerce/payment/class.tx_commerce_payment_paypal.php
+  Corrected XCLASS include statement
+------------------------------------------------------------------------
+r60 | ingo | 2006-03-02 09:52:27 +0100 (Do, 02 MÔøΩr 2006) | 1 line
+
+Fixed some typos
+------------------------------------------------------------------------
+r59 | ingo | 2006-03-02 09:49:01 +0100 (Do, 02 MÔøΩr 2006) | 1 line
+
+Updated Coding Guidlines
+------------------------------------------------------------------------
+r58 | ingo | 2006-03-02 09:30:51 +0100 (Do, 02 MÔøΩr 2006) | 1 line
+
+Updated Projectdescription
+------------------------------------------------------------------------
+r57 | ingo | 2006-02-17 15:39:48 +0100 (Fr, 17 Feb 2006) | 1 line
+
+new versions
+------------------------------------------------------------------------
+r56 | ingo | 2006-02-16 15:08:35 +0100 (Do, 16 Feb 2006) | 1 line
+
+Fixed bug  0001849
+------------------------------------------------------------------------
+r55 | ingo | 2006-02-16 14:54:56 +0100 (Do, 16 Feb 2006) | 1 line
+
+Fixed Buig Raphael Mentioned
+------------------------------------------------------------------------
+r54 | volker | 2006-02-15 12:33:36 +0100 (Mi, 15 Feb 2006) | 2 lines
+
+added change for empty basket
+
+------------------------------------------------------------------------
+r53 | ingo | 2006-02-14 14:09:55 +0100 (Di, 14 Feb 2006) | 1 line
+
+fixed problem with not defined arrays in generateLanguageMaker
+------------------------------------------------------------------------
+r52 | ingo | 2006-02-14 12:30:43 +0100 (Di, 14 Feb 2006) | 1 line
+
+removed debug ..
+------------------------------------------------------------------------
+r51 | ingo | 2006-02-14 12:27:03 +0100 (Di, 14 Feb 2006) | 1 line
+
+test debug
+------------------------------------------------------------------------
+r50 | ingo | 2006-02-14 12:21:32 +0100 (Di, 14 Feb 2006) | 1 line
+
+Bugfiexes for bugs came in twith the changes on sunday
+------------------------------------------------------------------------
+r49 | ingo | 2006-02-14 11:56:20 +0100 (Di, 14 Feb 2006) | 1 line
+
+released a problem
+------------------------------------------------------------------------
+r48 | ingo | 2006-02-14 11:54:25 +0100 (Di, 14 Feb 2006) | 1 line
+
+fixed bug with call of parent init method
+------------------------------------------------------------------------
+r47 | volker | 2006-02-14 11:44:33 +0100 (Di, 14 Feb 2006) | 2 lines
+
+fix error with " sign, which makes an error in IE
+
+------------------------------------------------------------------------
+r46 | ingo | 2006-02-13 10:48:31 +0100 (Mo, 13 Feb 2006) | 1 line
+
+Updated documentation
+------------------------------------------------------------------------
+r45 | ingo | 2006-02-13 10:48:17 +0100 (Mo, 13 Feb 2006) | 1 line
+
+fixed a bug in typo of method name
+------------------------------------------------------------------------
+r44 | volker | 2006-02-12 12:50:40 +0100 (So, 12 Feb 2006) | 1 line
+
+fix em bug
+------------------------------------------------------------------------
+r43 | thomas | 2006-02-12 10:14:46 +0100 (So, 12 Feb 2006) | 2 lines
+
+* made a copy of pi3 into pi5
+
+------------------------------------------------------------------------
+r42 | ingo | 2006-02-11 19:39:00 +0100 (Sa, 11 Feb 2006) | 1 line
+
+added getfiled and setfield methods for own fields
+------------------------------------------------------------------------
+r41 | ingo | 2006-02-11 19:11:55 +0100 (Sa, 11 Feb 2006) | 1 line
+
+changed naming from get_images to getImages, declared get_images as depricated
+------------------------------------------------------------------------
+r38 | ingo | 2006-02-11 17:50:49 +0100 (Sa, 11 Feb 2006) | 1 line
+
+removed unneded files
+------------------------------------------------------------------------
+r37 | ingo | 2006-02-11 17:50:20 +0100 (Sa, 11 Feb 2006) | 1 line
+
+moved hook files
+------------------------------------------------------------------------
+r36 | ingo | 2006-02-11 15:58:25 +0100 (Sa, 11 Feb 2006) | 1 line
+
+finally removed tca files, as moved to tca folder
+------------------------------------------------------------------------
+r35 | ingo | 2006-02-11 15:56:34 +0100 (Sa, 11 Feb 2006) | 1 line
+
+fixed a commentary bug
+------------------------------------------------------------------------
+r34 | ingo | 2006-02-11 15:50:08 +0100 (Sa, 11 Feb 2006) | 1 line
+
+moved refference to lib/locallang to locallang_be.xml
+------------------------------------------------------------------------
+r33 | ingo | 2006-02-11 15:45:55 +0100 (Sa, 11 Feb 2006) | 1 line
+
+Hook for basket creation
+------------------------------------------------------------------------
+r32 | ingo | 2006-02-11 15:45:02 +0100 (Sa, 11 Feb 2006) | 2 lines
+
+Moved all hook files to one Folder
+removed xclass use of fe_userinit, as typo3 3.8.0 comes with handy hook
+------------------------------------------------------------------------
+r31 | ingo | 2006-02-11 15:44:58 +0100 (Sa, 11 Feb 2006) | 2 lines
+
+Moved all hook files to one Folder
+removed xclass use of fe_userinit, as typo3 3.8.0 comes with handy hook
+------------------------------------------------------------------------
+r30 | volker | 2006-02-11 15:36:25 +0100 (Sa, 11 Feb 2006) | 2 lines
+
+changes the TCA. move tca to own folder
+
+------------------------------------------------------------------------
+r29 | volker | 2006-02-11 15:35:49 +0100 (Sa, 11 Feb 2006) | 2 lines
+
+changes some things
+
+------------------------------------------------------------------------
+r28 | ingo | 2006-02-11 15:09:33 +0100 (Sa, 11 Feb 2006) | 1 line
+
+added dokumentation
+------------------------------------------------------------------------
+r27 | ingo | 2006-02-11 15:09:23 +0100 (Sa, 11 Feb 2006) | 1 line
+
+removed unused files
+------------------------------------------------------------------------
+r26 | volker | 2006-02-11 15:01:07 +0100 (Sa, 11 Feb 2006) | 2 lines
+
+changed documentation in pi1
+
+------------------------------------------------------------------------
+r25 | ingo | 2006-02-11 14:52:01 +0100 (Sa, 11 Feb 2006) | 1 line
+
+Updated dokumentation
+------------------------------------------------------------------------
+r24 | ingo | 2006-02-11 14:50:16 +0100 (Sa, 11 Feb 2006) | 1 line
+
+Removed unused files
+------------------------------------------------------------------------
+r21 | thomas | 2006-02-11 11:30:59 +0100 (Sa, 11 Feb 2006) | 3 lines
+
+* renamed old manual
+* added empty manual template
+
+------------------------------------------------------------------------
+r20 | ingo | 2006-02-10 18:35:13 +0100 (Fr, 10 Feb 2006) | 1 line
+
+Fixed Problem with recursive Lang-Marker in XML Files
+------------------------------------------------------------------------
+r19 | ingo | 2006-02-10 18:19:03 +0100 (Fr, 10 Feb 2006) | 1 line
+
+First release for editor handbook
+------------------------------------------------------------------------
+r18 | volker | 2006-01-29 10:59:27 +0100 (So, 29 Jan 2006) | 5 lines
+
+
+another change for the article type
+
+M    trunk/ext_tables.sql
+
+------------------------------------------------------------------------
+r17 | volker | 2006-01-29 10:57:53 +0100 (So, 29 Jan 2006) | 5 lines
+
+
+change article type
+
+M    trunk/tx_commerce_articles.tca.php
+
+------------------------------------------------------------------------
+r2 | thomas | 2006-01-24 21:14:15 +0100 (Di, 24 Jan 2006) | 2 lines
+
+* initial import of commerce
+
+------------------------------------------------------------------------
+
+Changelog for tx_commerce
+22.01.2006 Thomas Hempel <thomas@work.de>
+* added a checkbox for selecting all articles in "create articles" list vis JavaScript
+* fixed a bug in belib in method checkArray (check if the incomming is really an array)
+
+21.01.2006 ingo Schmitt <is@marketing-factory.de>
+* pi3
+  Added $this as parameter to hooks (PostGenerateMail)
+  Added Hooks for Processing Marker Arrays
+
+16.01.2006 Thomas Hempel <thomas@work.de>
+* pi3
+  Added new template subparts for templating support in address management
+  Added "edit" functionality for addresses in checkout
+* pi4
+  Fixed some bugs in template support for address management
+  Added capability of handling edit from checkout
+  Fixed some bugs in handling of external edit pages
+
+Ingo Schmitt <is@marketing-factory.de>
+*   Corrected typo in locallang.xml files
+*   Added two ne Methods to tx_commerce_product:
+	getArticleUids() to replace getArticles()
+	getArticleObjects() as new method
+*	decared getArticles() in tx_commerce_product as de√ºpricated
+* 	Changed getArticles in pi_base to getARticleUid()
+
+11.01.2006 Thomas Hempel <thomas@work.de>
+*	Added template for edit addresse form
+
+
+10.01.2006 Ingo Schmitt <is@marketing-factory.de>
+*  Changed refferences in TCA from locallang.php to locallang_db.xml
+
+7.1.2006 (Thomas Hempel <thomas@work.de>)
+*  Changes in pi4 for min items of addresses, insert backpid and targetpid for changing
+
+5.1.2006 (Frank KrÔøΩber <fk@marketing-factory.de>)
+*   Generally replace locallang php-files with locallang xml-files. PHP-files will be deleted on 13.01.2006.
+
+3.1.2006 (Ingo Schmitt <is@marketing-factory.de>)
+* pi3
+    Fixed Bug when sendin User- and Adminmail concerning namechange from surename to surname
+    Removed Textual Refferences to Projectname
+	Added OrderID to Object for refference in the Hook-Statements
+
+* pibase
+    Added Method to Merge the Langmarkers from default and actual language to on Array to Display correct Names for the fields
+
+* class.tx_comemrce_attributeeditor.php
+    Limited the selcetion of Attributes only to the commerce products pid
+
+* class.tx_commerce_belib.php
+* class.tx_commerce_dmhooks.php
+    Fixed Bug concerning Price changes. Now price changes works again
+
+* class.tx_commerce_dmhooks.php
+    Fixexd Bug concerning changes of Attribute Values
+
+   (Volker Graubaum <vg@e-netconsulting.de> )
+* changed pi4 for try to use as addressmanagement....
+* Updated setup with example lib for the HMENU
+
+2.1.2006 (Ingo Schmitt <is@marketing-factory.de>)
+* pi2
+	fixed typo with $this-currency. In TYPO Script currency and curency are valid names for setting the currency
+    made EUR as default currency if no currency is defined in TS
+    > Please Update TS to currency (from curency) to match correct written TS
+* pi3
+    Added init method for handling of TS values (Just moved Things from main to init)
+    Added currency to TS to change default currency
+    Translated English locallang Values to German
+    made EUR as default currency if no currency is defined in TS
+ constants.txt
+    Added pi3 / currency to constants
+ setup TXT
+    Added pi3 / currency to setup
+
+

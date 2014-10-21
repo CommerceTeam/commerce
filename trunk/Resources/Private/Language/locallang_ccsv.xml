@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE T3locallang SYSTEM "http://dtd.evoweb.de/t3locallang.dtd">
+<T3locallang>
+	<meta type="array">
+		<description/>
+		<type>database</type>
+		<csh_table/>
+		<fileId>EXT:commerce/Resources/Private/Language/locallang_ccsv.xml</fileId>
+	</meta>
+	<data type="array">
+		<languageKey index="default" type="array">
+			<label index="ErrNumberString">Number isn't a string</label>
+			<label index="ErrVisa14">Visa usually has 16 or 13 digits, but you entered 14</label>
+			<label index="ErrUnknown">First four digits, %s, indicate unknown card type</label>
+			<label index="ErrAccepted">Programmer improperly used the Accepted argument</label>
+			<label index="ErrNoAccept">We don't accept %s cards</label>
+			<label index="ErrShort">Number is missing %s digit(s)</label>
+			<label index="ErrLong">Number has %s too many digit(s)</label>
+			<label index="ErrChecksum">Number failed checksum test</label>
+			<label index="ErrMonthString">Month isn't a string</label>
+			<label index="ErrMonthFormat">Month has invalid format</label>
+			<label index="ErrYearString">Year isn't a string</label>
+			<label index="ErrYearFormat">Year has invalid format</label>
+			<label index="ErrExpired">Card has expired</label>
+			<label index="ErrCheckNumber">Length of control number - %s - not ok</label>
+		</languageKey>
+		<languageKey index="de" type="array">
+			<label index="ErrNumberString">Nummer ist keine Zeichenkette</label>
+			<label index="ErrVisa14">Visa hat normalerweise 16 oder 13 Stellen, aber Sie gaben eine 14 stellige Nummer ein</label>
+			<label index="ErrUnknown">Den ersten vier Stellen (%s) zufolge handelt es sich um eine unbekannte Kartenart</label>
+			<label index="ErrAccepted">Der Programmierer verwendete das 'accepted' Argument falsch</label>
+			<label index="ErrNoAccept">Wir nehmen keine %s-Karten</label>
+			<label index="ErrShort">Es fehlen %s Stelle(n)</label>
+			<label index="ErrLong">Nummer hat %s Stelle(n) zu viel</label>
+			<label index="ErrChecksum">Prüfsummenfehler</label>
+			<label index="ErrMonthString">Monat ist keine Zeichenkette</label>
+			<label index="ErrMonthFormat">Monat hat ein unzulässiges Format</label>
+			<label index="ErrYearString">Jahr ist keine Zeichenkette</label>
+			<label index="ErrYearFormat">Jahr hat ein unzulässiges Format</label>
+			<label index="ErrExpired">Karte ist abgelaufen</label>
+			<label index="ErrCheckNumber">Länge der Kontrollnummer - %s - nicht ok</label>
+		</languageKey>
+		<languageKey index="fr" type="array">
+			<label index="ErrNumberString">Le numéro n'est pas une chaîne</label>
+			<label index="ErrVisa14">Visa a habituellement 16 ou 13 chiffres, mais vous en avez écrit 14</label>
+			<label index="ErrUnknown">Les quatres premiers chiffres, %s, n'indiquent pas un type de carte connu</label>
+			<label index="ErrAccepted">Le programmeur a incorrectement employé l'argument Accepted</label>
+			<label index="ErrNoAccept">Nous n'acceptons pas les cartes %s</label>
+			<label index="ErrShort">Le numéro manque %s chiffre(s)</label>
+			<label index="ErrLong">Le numéro a %s chiffre(s) en trop</label>
+			<label index="ErrChecksum">Le numéro a échoué à la vérification de somme</label>
+			<label index="ErrMonthString">Mois n'est pas une chaîne</label>
+			<label index="ErrMonthFormat">Le mois n'a pas un format admissible</label>
+			<label index="ErrYearString">Année n'est pas une chaîne</label>
+			<label index="ErrYearFormat">L'année n'a pas un format admissible</label>
+			<label index="ErrExpired">La carte est expirée</label>
+			<label index="ErrCheckNumber">Longueur de numéro de contrôle - %s - n'est pas correct</label>
+		</languageKey>
+		<languageKey index="es" type="array">
+			<label index="ErrNumberString">Número no es una secuencia</label>
+			<label index="ErrVisa14">Visa tiene generalmente 16 o 13 dígitos, pero usted introdujo 14</label>
+			<label index="ErrUnknown">Los primeros cuatro dígitos, %s, indican el tipo desconocido de la tarjeta</label>
+			<label index="ErrAccepted">Programador utilizó incorrectamente la discusión aceptada</label>
+			<label index="ErrNoAccept">No aceptamos tarjetas de %s</label>
+			<label index="ErrShort">Número está faltando %s dígito(s)</label>
+			<label index="ErrLong">Número tiene %s también muchos dígito(s)</label>
+			<label index="ErrChecksum">Número falló en la prueba de suma de comprobación</label>
+			<label index="ErrMonthString">Mes no es una secuencia</label>
+			<label index="ErrMonthFormat">Mes tiene formato inválido</label>
+			<label index="ErrYearString">Año no es una secuencia</label>
+			<label index="ErrYearFormat">Año tiene formato inválido</label>
+			<label index="ErrExpired">Tarjeta ha expirado</label>
+			<label index="ErrCheckNumber">Longitud del número de control -% s - no ok</label>
+		</languageKey>
+	</data>
+</T3locallang>
