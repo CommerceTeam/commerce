@@ -1,6 +1,13 @@
 This is a very short quick-install-guide. This text should enable you to install commerce until that state that you can use it. It's very short and not the final manual. This is just for the beta release and will be improved for the final documentation.
 
-1) Please create the following pages:
+1) Please install the following extensions:
+tt_address
+dynaflex
+moneylib
+static_info_tables
+commerce
+
+2) Please create the following pages:
 Shop
 	Productlist
 	Basket
@@ -11,14 +18,6 @@ Shop
 	Content for empty checkout
 	User (sysfolder)
 	addresses (sysfolder)
-
-2) Please install the following extensions:
-tt_address
-moneylib
-graytree
-dynaflex
-static_info_tables
-commerce
 
 3) Installation:
 
@@ -37,7 +36,7 @@ commerce
 		empty is default basket
 	Checkout: -> commerce: Checkout
 	AddressManagement -> commerce: Address Management
-	
+
 5) Create attributes
 Use the "Systemdata" module in section "commerce" to create some attributes and assign some values. Please keep in mind, that you can create articles only from "select attributes" or without attributes!
 
@@ -48,5 +47,5 @@ On the sheet "select attributes" you can assign the former created attributes to
 7) Create products
 In every category you can now create products. The attributes will be enritat from the parent categories. You can now define your products by inserting some additonal stuff like description etc.
 
-8) To create articles, select the sheet "articles" and there select the subsheet "producible articles". You will see a matrix of possible articles. This matrix is build up from the assigned select attributes. Check the articles you want to create and click the save button. After the page has been reloaded, the created articles can be found on the sheet "existing articles".
+8) To create articles, select in a product the sheet "articles" and there select the subsheet "producible articles". You will see a matrix of possible articles. This matrix is build up from the assigned select attributes. Check the articles you want to create and click the save button. After the page has been reloaded, the created articles can be found on the sheet "existing articles".
 There you can edit every article to add additional information and / or add additonal prices.
