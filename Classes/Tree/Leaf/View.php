@@ -358,7 +358,7 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 			/** @var template $template */
 			$template = $GLOBALS['TBE_TEMPLATE'];
 			$template->backPath = $this->backPath;
-			$icon = $template->wrapClickMenuOnIcon($icon, $this->table, $row['pid'], 0, $additionalParams);
+			$icon = $template->wrapClickMenuOnIcon($icon, $this->table, $row['uid'], 0, $additionalParams);
 		}
 		return $icon;
 	}
