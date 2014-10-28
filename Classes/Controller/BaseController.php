@@ -312,9 +312,7 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	 */
 	public function generateLanguageMarker() {
 		if ((is_array($this->LOCAL_LANG[$GLOBALS['TSFE']->tmpl->setup['config.']['language']]))
-			&& (is_array(
-				$this->LOCAL_LANG['default']
-			))
+			&& (is_array($this->LOCAL_LANG['default']))
 		) {
 			$markerArr = GeneralUtility::array_merge(
 				$this->LOCAL_LANG['default'], $this->LOCAL_LANG[$GLOBALS['TSFE']->tmpl->setup['config.']['language']]
