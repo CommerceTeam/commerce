@@ -1028,7 +1028,7 @@ class Tx_Commerce_Utility_BackendUtility {
 				$value = array();
 				if (is_array($relList)) {
 					foreach ($relList as $relation) {
-						if ($relation['uid_correlationtype'] == (int) $ct['uid']) {
+						if (isset($ct['uid']) && $relation['uid_correlationtype'] == (int) $ct['uid']) {
 								// add ctype to checklist in case we need to rebuild
 							if (!in_array($ct['uid'], $cTypes)) {
 								$cTypes[] = (int) $ct['uid'];
