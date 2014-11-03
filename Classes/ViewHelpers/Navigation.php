@@ -114,7 +114,6 @@ class Tx_Commerce_ViewHelpers_Navigation {
 	 * Default Menue Items States order by the defined Order
 	 *
 	 * @var array
-	 * @see: http://docs.typo3.org/typo3cms/TyposcriptReference/MenuObjects/CommonItemStates/Index.html
 	 */
 	public $menueItemStates = array(
 		0 => 'USERDEF2',
@@ -269,7 +268,7 @@ class Tx_Commerce_ViewHelpers_Navigation {
 
 		if (count($menueErrorName) > 0) {
 			foreach ($menueErrorName as $oneError) {
-				t3lib_utility_Debug::debug($this->mConf, $oneError);
+				\TYPO3\CMS\Core\Utility\DebugUtility::debug($this->mConf, $oneError);
 			}
 
 			return $this->makeErrorMenu(5);
@@ -547,7 +546,8 @@ class Tx_Commerce_ViewHelpers_Navigation {
 	 * @param integer $maxLevel
 	 * @return array TSConfig with ItemArrayProcFunc
 	 */
-	public function makeArrayPostRender($uidPage, $mainTable, $tableMm, $tableSubMain, $tableSubMm, $uidRoot, $mDepth = 1, $path = 0, $maxLevel = PHP_INT_MAX) {
+	public function makeArrayPostRender($uidPage, $mainTable, $tableMm, $tableSubMain, $tableSubMm, $uidRoot, $mDepth = 1,
+		$path = 0, $maxLevel = PHP_INT_MAX) {
 		/** @var t3lib_db $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
@@ -558,7 +558,9 @@ class Tx_Commerce_ViewHelpers_Navigation {
 			return array();
 		}
 
-		$sql = 'SELECT ' . $tableMm . '.* FROM ' . $tableMm . ',' . $mainTable . ' WHERE ' . $mainTable . '.deleted = 0 AND ' . $mainTable . '.uid = ' . $tableMm . '.uid_local AND ' . $tableMm . '.uid_local <> "" AND ' . $tableMm . '.uid_foreign = ' . $uidRoot;
+		$sql = 'SELECT ' . $tableMm . '.* FROM ' . $tableMm . ',' . $mainTable . ' WHERE ' . $mainTable . '.deleted = 0 AND ' .
+			$mainTable . '.uid = ' . $tableMm . '.uid_local AND ' . $tableMm . '.uid_local <> "" AND ' . $tableMm .
+			'.uid_foreign = ' . $uidRoot;
 
 		$sorting = ' ORDER BY ' . $mainTable . '.sorting';
 
@@ -633,7 +635,8 @@ class Tx_Commerce_ViewHelpers_Navigation {
 
 				$aCatToManu = explode(',', $this->mConf['displayManuForCat']);
 				if ($this->useRootlineInformationToUrl == 1) {
-					$nodeArray['_ADD_GETVARS'] .= $this->separator . $this->prefixId . '[mDepth]=' . $mDepth . $this->separator . $this->prefixId . '[path]=' . $nodeArray['path'];
+					$nodeArray['_ADD_GETVARS'] .= $this->separator . $this->prefixId . '[mDepth]=' . $mDepth . $this->separator .
+						$this->prefixId . '[path]=' . $nodeArray['path'];
 				}
 
 				if (in_array($row['uid_local'], $aCatToManu) || strtolower(trim($aCatToManu['0'])) == 'all') {
@@ -674,7 +677,7 @@ class Tx_Commerce_ViewHelpers_Navigation {
 						}
 					}
 
-					if (($this->expandAll > 0) || ($this->expandAll < 0 && (-$this->expandAll >= $mDepth))) {
+					if (($this->expandAll > 0) || ($this->expandAll < 0 && ( - $this->expandAll >= $mDepth))) {
 						$nodeArray['_SUB_MENU'] = $nodeArray['--subLevel--'];
 					}
 					if ($this->gpVars['basketHashValue']) {
@@ -686,10 +689,12 @@ class Tx_Commerce_ViewHelpers_Navigation {
 				} else {
 					if ($nodeArray['hasSubChild'] == 2) {
 						$nodeArray['_ADD_GETVARS'] .= $this->separator . $this->prefixId . '[showUid]=' . $dataRow['uid'];
-						$nodeArray['_ADD_GETVARS'] .= $this->separator . $this->prefixId . '[mDepth]=' . $mDepth . $this->separator . $this->prefixId . '[path]=' . $nodeArray['path'];
+						$nodeArray['_ADD_GETVARS'] .= $this->separator . $this->prefixId . '[mDepth]=' . $mDepth . $this->separator .
+							$this->prefixId . '[path]=' . $nodeArray['path'];
 					}
 					if ($this->useRootlineInformationToUrl == 1) {
-						$nodeArray['_ADD_GETVARS'] .= $this->separator . $this->prefixId . '[mDepth]=' . $mDepth . $this->separator . $this->prefixId . '[path]=' . $nodeArray['path'];
+						$nodeArray['_ADD_GETVARS'] .= $this->separator . $this->prefixId . '[mDepth]=' . $mDepth . $this->separator .
+							$this->prefixId . '[path]=' . $nodeArray['path'];
 					}
 					if ($this->gpVars['basketHashValue']) {
 						$nodeArray['_ADD_GETVARS'] .= $this->separator . $this->prefixId . '[basketHashValue]=' . $this->gpVars['basketHashValue'];
@@ -698,7 +703,8 @@ class Tx_Commerce_ViewHelpers_Navigation {
 					$nodeArray['ITEM_STATE'] = 'NO';
 				}
 
-				$nodeArray['_ADD_GETVARS'] .= $this->separator . 'cHash=' . $this->generateChash($nodeArray['_ADD_GETVARS'] . $GLOBALS['TSFE']->linkVars);
+				$nodeArray['_ADD_GETVARS'] .= $this->separator . 'cHash=' .
+					$this->generateChash($nodeArray['_ADD_GETVARS'] . $GLOBALS['TSFE']->linkVars);
 
 				$treeList[$row['uid_local']] = $nodeArray;
 			}
@@ -734,7 +740,9 @@ class Tx_Commerce_ViewHelpers_Navigation {
 		if (is_numeric($manuuid)) {
 			$sqlManufacturer = ' AND ' . $mainTable . '.manufacturer_uid = ' . (int) $manuuid . ' ';
 		}
-		$sql = 'SELECT ' . $tableMm . '.* FROM ' . $tableMm . ',' . $mainTable . ' WHERE ' . $mainTable . '.deleted =0 and ' . $mainTable . '.uid = ' . $tableMm . '.uid_local and ' . $tableMm . '.uid_local<>"" AND ' . $tableMm . '.uid_foreign =' . (int) $uidRoot . ' ' . $sqlManufacturer;
+		$sql = 'SELECT ' . $tableMm . '.* FROM ' . $tableMm . ',' . $mainTable . ' WHERE ' . $mainTable . '.deleted = 0 AND ' .
+			$mainTable . '.uid = ' . $tableMm . '.uid_local and ' . $tableMm . '.uid_local<>"" AND ' . $tableMm . '.uid_foreign = ' .
+			(int) $uidRoot . ' ' . $sqlManufacturer;
 
 		$sorting = ' order by ' . $mainTable . '.sorting ';
 
@@ -806,14 +814,16 @@ class Tx_Commerce_ViewHelpers_Navigation {
 				$nodeArray['_ADD_GETVARS'] .= $this->separator . $this->prefixId . '[showUid]=' . $dataRow['uid'];
 
 				if ($this->useRootlineInformationToUrl == 1) {
-					$nodeArray['_ADD_GETVARS'] .= $this->separator . $this->prefixId . '[mDepth]=' . $mDepth . $this->separator . $this->prefixId . '[path]=' . $nodeArray['path'];
+					$nodeArray['_ADD_GETVARS'] .= $this->separator . $this->prefixId . '[mDepth]=' . $mDepth . $this->separator .
+						$this->prefixId . '[path]=' . $nodeArray['path'];
 				}
 
 				if ($this->gpVars['basketHashValue']) {
 					$nodeArray['_ADD_GETVARS'] .= $this->separator . $this->prefixId . '[basketHashValue]=' . $this->gpVars['basketHashValue'];
 				}
 
-				$nodeArray['_ADD_GETVARS'] .= $this->separator . 'cHash=' . $this->generateChash($nodeArray['_ADD_GETVARS'] . $GLOBALS['TSFE']->linkVars);
+				$nodeArray['_ADD_GETVARS'] .= $this->separator . 'cHash=' .
+					$this->generateChash($nodeArray['_ADD_GETVARS'] . $GLOBALS['TSFE']->linkVars);
 
 				if ($this->gpVars['manufacturer']) {
 					$nodeArray['_ADD_GETVARS'] .= '&' . $this->prefixId . '[manufacturer]=' . $this->gpVars['manufacturer'];
