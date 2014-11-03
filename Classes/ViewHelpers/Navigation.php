@@ -722,27 +722,28 @@ class Tx_Commerce_ViewHelpers_Navigation {
 	/**
 	 * Makes a set of  ItemMenu product list  of a category.
 	 *
-	 * @param integer $uidPage
+	 * @param integer $pageUid
 	 * @param string $mainTable main table
-	 * @param string $tableMm
-	 * @param integer $uidRoot category Uid
+	 * @param string $mmTable
+	 * @param integer $categoryUid category Uid
 	 * @param integer $mDepth
 	 * @param integer $path
-	 * @param boolean $manuuid
+	 * @param boolean $manufacturerUid
 	 * @return array array to be processed by HMENU
 	 */
-	public function makeSubChildArrayPostRender($uidPage, $mainTable, $tableMm, $uidRoot, $mDepth = 1, $path = 0, $manuuid = FALSE) {
+	public function makeSubChildArrayPostRender($pageUid, $mainTable, $mmTable, $categoryUid, $mDepth = 1, $path = 0,
+			$manufacturerUid = FALSE) {
 		/** @var t3lib_db $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
 		$treeList = array();
 		$sqlManufacturer = '';
-		if (is_numeric($manuuid)) {
-			$sqlManufacturer = ' AND ' . $mainTable . '.manufacturer_uid = ' . (int) $manuuid . ' ';
+		if (is_numeric($manufacturerUid)) {
+			$sqlManufacturer = ' AND ' . $mainTable . '.manufacturer_uid = ' . (int) $manufacturerUid . ' ';
 		}
-		$sql = 'SELECT ' . $tableMm . '.* FROM ' . $tableMm . ',' . $mainTable . ' WHERE ' . $mainTable . '.deleted = 0 AND ' .
-			$mainTable . '.uid = ' . $tableMm . '.uid_local and ' . $tableMm . '.uid_local<>"" AND ' . $tableMm . '.uid_foreign = ' .
-			(int) $uidRoot . ' ' . $sqlManufacturer;
+		$sql = 'SELECT ' . $mmTable . '.* FROM ' . $mmTable . ',' . $mainTable . ' WHERE ' . $mainTable . '.deleted = 0 AND ' .
+			$mainTable . '.uid = ' . $mmTable . '.uid_local AND ' . $mmTable . '.uid_local<>"" AND ' . $mmTable . '.uid_foreign = ' .
+			(int) $categoryUid . ' ' . $sqlManufacturer;
 
 		$sorting = ' order by ' . $mainTable . '.sorting ';
 
@@ -762,7 +763,7 @@ class Tx_Commerce_ViewHelpers_Navigation {
 				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_db_navigation.php']['sortingOrder']
 			);
 			if (method_exists($hookObj, 'sortingOrder')) {
-				$sorting = $hookObj->sortingOrder($sorting, $uidRoot, $mainTable, $tableMm, $mDepth, $path, $this);
+				$sorting = $hookObj->sortingOrder($sorting, $categoryUid, $mainTable, $mmTable, $mDepth, $path, $this);
 			}
 		}
 		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/ViewHelpers/Navigation.php']['sortingOrder']) {
@@ -770,7 +771,7 @@ class Tx_Commerce_ViewHelpers_Navigation {
 				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/ViewHelpers/Navigation.php']['sortingOrder']
 			);
 			if (method_exists($hookObj, 'sortingOrder')) {
-				$sorting = $hookObj->sortingOrder($sorting, $uidRoot, $mainTable, $tableMm, $mDepth, $path, $this);
+				$sorting = $hookObj->sortingOrder($sorting, $categoryUid, $mainTable, $mmTable, $mDepth, $path, $this);
 			}
 		}
 
@@ -783,9 +784,9 @@ class Tx_Commerce_ViewHelpers_Navigation {
 			if ($dataRow['deleted'] == '0') {
 				$nodeArray['CommerceMenu'] = TRUE;
 				$nodeArray['pid'] = $dataRow['pid'];
-				$nodeArray['uid'] = $uidPage;
+				$nodeArray['uid'] = $pageUid;
 				$nodeArray['title'] = htmlspecialchars(strip_tags($dataRow['title']));
-				$nodeArray['parent_id'] = $uidRoot;
+				$nodeArray['parent_id'] = $categoryUid;
 				$nodeArray['nav_title'] = htmlspecialchars(strip_tags($dataRow['navtitle']));
 				$nodeArray['hidden'] = $dataRow['hidden'];
 				// Add custom Fields to array
@@ -807,7 +808,7 @@ class Tx_Commerce_ViewHelpers_Navigation {
 				// Set default
 				$nodeArray['ITEM_STATE'] = 'NO';
 				if ($nodeArray['leaf'] == 1) {
-					$nodeArray['_ADD_GETVARS'] = $this->separator . $this->prefixId . '[catUid]=' . $uidRoot;
+					$nodeArray['_ADD_GETVARS'] = $this->separator . $this->prefixId . '[catUid]=' . $categoryUid;
 				} else {
 					$nodeArray['_ADD_GETVARS'] = $this->separator . $this->prefixId . '[catUid]=' . $row['uid_foreign'];
 				}
@@ -1443,12 +1444,11 @@ class Tx_Commerce_ViewHelpers_Navigation {
 
 				if ($aLevel['hasSubChild'] == 1 && $this->mConf['showProducts'] == 1) {
 					$aLevel['--subLevel--'] = $this->makeSubChildArrayPostRender(
-						$uidPage, $tableSubMain, $tableSubMm, $categoryUid, $mDepth + 1, $path, 'manu',
-						$productRow['manufacturer_uid']
+						$uidPage, $tableSubMain, $tableSubMm, $categoryUid, $mDepth + 1, $path, $productRow['manufacturer_uid']
 					);
 				}
 
-				if ($this->expandAll > 0 || ($this->expandAll < 0 && (-$this->expandAll >= $mDepth))) {
+				if ($this->expandAll > 0 || ($this->expandAll < 0 && ( - $this->expandAll >= $mDepth))) {
 					$aLevel['_SUB_MENU'] = $aLevel['--subLevel--'];
 				}
 
