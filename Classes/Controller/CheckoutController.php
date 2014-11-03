@@ -146,7 +146,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		$staticInfo->init();
 		$this->staticInfo = $staticInfo;
 
-		$this->extConf = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf'];
+		$this->extConf = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['extConf'];
 
 		/** @var $basket Tx_Commerce_Domain_Model_Basket */
 		$basket = & $GLOBALS['TSFE']->fe_user->tx_commerce_basket;
@@ -190,7 +190,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		$hookObjectsArr = $this->getHookObjectArray('main');
 
 		// Set basket to readonly, if set in extension configuration
-		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['lockBasket'] == 1) {
+		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['extConf']['lockBasket'] == 1) {
 			/** @var $basket Tx_Commerce_Domain_Model_Basket */
 			$basket = & $GLOBALS['TSFE']->fe_user->tx_commerce_basket;
 			$basket->setReadOnly();
@@ -763,7 +763,8 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		// Check if we already have a payment object
 		// If we don't have one, try to create a new one from the config
 		if (!isset($paymentObj)) {
-			$config = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['SYSPRODUCTS']['PAYMENT']['types'][strtolower((string) $paymentType)];
+			$config =
+				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['SYSPRODUCTS']['PAYMENT']['types'][strtolower((string) $paymentType)];
 
 			$errorStr = NULL;
 			if (!isset($config['class'])) {
@@ -937,7 +938,8 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 
 		if (!is_object($paymentObj)) {
 			$paymentType = $this->getPaymentType();
-			$config = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['SYSPRODUCTS']['PAYMENT']['types'][strtolower((string) $paymentType)];
+			$config =
+				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['SYSPRODUCTS']['PAYMENT']['types'][strtolower((string) $paymentType)];
 
 			if (!isset($config['class']) || !file_exists($config['path'])) {
 				throw new Exception('FINISHING: FATAL! No payment possible because no payment handler is configured!', 1395665876);
@@ -1047,9 +1049,9 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			$orderData['pid'] = $this->conf['newOrderPid'];
 		}
 		if (empty($orderData['pid']) || ($orderData['pid'] < 0)) {
-			$comPid = array_keys(Tx_Commerce_Domain_Repository_FolderRepository::getFolders('commerce', 0, 'COMMERCE'));
-			$ordPid = array_keys(Tx_Commerce_Domain_Repository_FolderRepository::getFolders('commerce', $comPid[0], 'Orders'));
-			$incPid = array_keys(Tx_Commerce_Domain_Repository_FolderRepository::getFolders('commerce', $ordPid[0], 'Incoming'));
+			$comPid = array_keys(Tx_Commerce_Domain_Repository_FolderRepository::getFolders($this->extKey, 0, 'COMMERCE'));
+			$ordPid = array_keys(Tx_Commerce_Domain_Repository_FolderRepository::getFolders($this->extKey, $comPid[0], 'Orders'));
+			$incPid = array_keys(Tx_Commerce_Domain_Repository_FolderRepository::getFolders($this->extKey, $ordPid[0], 'Incoming'));
 			$orderData['pid'] = $incPid[0];
 		}
 
@@ -1469,7 +1471,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		$table = 'fe_users';
 		$fields = 'uid';
 		$select = 'username = ' . $database->fullQuoteStr($username, $table) . ' ';
-		$select .= t3lib_befunc::deleteClause($table);
+		$select .= \TYPO3\CMS\Backend\Utility\BackendUtility::deleteClause($table);
 		$select .= ' AND pid = ' . $this->conf['userPID'];
 
 		$res = $database->exec_SELECTquery($fields, $table, $select);
@@ -1707,7 +1709,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 				$dataArray['pid'] = $this->conf['addressPid'];
 			} else {
 				$modPid = 0;
-				list($commercePid) = Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Commerce', 'commerce', $modPid);
+				list($commercePid) = Tx_Commerce_Domain_Repository_FolderRepository::initFolders($this->extKey, $this->extKey, $modPid);
 				$dataArray['pid'] = $commercePid;
 			}
 
@@ -1739,10 +1741,12 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 						&& $config['dontUseRandomPassword']
 						&& isset($this->sessionData['billing']['password'])
 					) {
-						$feuData['password'] = $this->sessionData['billing']['password'];
+						$password = $this->sessionData['billing']['password'];
 					} else {
-						$feuData['password'] = substr(uniqid(rand()), 0, 6);
+						$password = substr(uniqid(rand()), 0, 6);
 					}
+
+					$feuData['password'] = $this->getHashedSaltedPassword($password);
 
 					$feuData['email'] = $this->sessionData['billing']['email'];
 					$feuData['name'] = $this->sessionData['billing']['name'] . ' ' . $this->sessionData['billing']['surname'];
@@ -1791,6 +1795,26 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		}
 
 		return $uid;
+	}
+
+	/**
+	 * Hash password with saltedpassword extension
+	 *
+	 * @param string $password
+	 * @return string
+	 */
+	protected function getHashedSaltedPassword($password) {
+		if (
+			\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('saltedpasswords') &&
+			\TYPO3\CMS\Saltedpasswords\Utility\SaltedPasswordsUtility::isUsageEnabled('FE')
+		) {
+			$objSalt = \TYPO3\CMS\Saltedpasswords\Salt\SaltFactory::getSaltingInstance(NULL);
+			if (is_object($objSalt)) {
+				$password = $objSalt->getHashedPassword($password);
+			}
+		}
+
+		return $password;
 	}
 
 	/**
@@ -2704,7 +2728,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	 * @return void
 	 */
 	protected function initializeBackendUser() {
-		if (!($GLOBALS['BE_USER'] instanceof t3lib_beUserAuth)) {
+		if (!($GLOBALS['BE_USER'] instanceof \TYPO3\CMS\Core\Authentication\BackendUserAuthentication)) {
 			/** @var t3lib_tsfeBeUserAuth $backendUser */
 			$backendUser = GeneralUtility::makeInstance('t3lib_tsfeBeUserAuth');
 			$backendUser->warningEmail = $GLOBALS['TYPO3_CONF_VARS']['BE']['warning_email_addr'];
@@ -2732,9 +2756,9 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	 * @return void
 	 */
 	protected function initializeLanguage() {
-		if (!($GLOBALS['LANG'] instanceof language)) {
-			/** @var language $language */
-			$language = GeneralUtility::makeInstance('language');
+		if (!($GLOBALS['LANG'] instanceof \TYPO3\CMS\Lang\LanguageService)) {
+			/** @var \TYPO3\CMS\Lang\LanguageService $language */
+			$language = GeneralUtility::makeInstance('TYPO3\\CMS\\Lang\\LanguageService');
 			$language->init($GLOBALS['BE_USER']->uc['lang']);
 			$GLOBALS['LANG'] = $language;
 		}
