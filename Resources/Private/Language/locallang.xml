@@ -62,6 +62,7 @@
 			<label index="payment_disclaimer">After clicking you will be taken to the secure payment service.</label>
 			<label index="listing_title">Your basket</label>
 			<label index="listing_submit">Continue</label>
+			<label index="listing_disclaimer">Order is only a purchase request and fullfillment is not guaranteed until confirmation of the shop team.</label>
 			<label index="termstext">Please confirm that you have read our %1$s</label>
 			<label index="termstext_tca">terms and conditions</label>
 			<label index="comment">Your comment</label>
