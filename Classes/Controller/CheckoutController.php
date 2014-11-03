@@ -1690,6 +1690,8 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			return 0;
 		}
 
+		$hookObjectsArr = $this->getHookObjectArray('handleAddress');
+
 		$config = $this->conf[$type . '.'];
 
 		$fieldList = $this->parseFieldList($config['sourceFields.']);
@@ -1788,6 +1790,12 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 
 			// First address should be main address by default
 			$dataArray['tx_commerce_is_main_address'] = 1;
+
+			foreach ($hookObjectsArr as $hookObj) {
+				if (method_exists($hookObj, 'preProcessAddressData')) {
+					$dataArray = $hookObj->preProcessAddressData($dataArray, $this);
+				}
+			}
 
 			$database->exec_INSERTquery('tt_address', $dataArray);
 
