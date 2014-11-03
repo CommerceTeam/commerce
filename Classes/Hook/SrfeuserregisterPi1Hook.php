@@ -38,12 +38,13 @@ class Tx_Commerce_Hook_SrfeuserregisterPi1Hook {
 	 *
 	 * sr_feuser_register registration process after saving new dataset
 	 *
-	 * @param array $currentArr complete array of feuser fields
+	 * @param string $theTable
+	 * @param array $dataArray complete array of feuser fields
 	 * @return void
 	 */
-	public function registrationProcess_afterSaveCreate($currentArr) {
-			// notify observer
-		Tx_Commerce_Dao_FeuserObserver::update('new', $currentArr['uid'], $currentArr);
+	public function registrationProcess_afterSaveCreate($theTable, $dataArray) {
+		// notify observer
+		Tx_Commerce_Dao_FeuserObserver::update('new', $dataArray['uid'], $dataArray);
 	}
 
 	/**
@@ -51,11 +52,12 @@ class Tx_Commerce_Hook_SrfeuserregisterPi1Hook {
 	 *
 	 * sr_feuser_register registration process after saving edited dataset
 	 *
-	 * @param array $currentArr complete array of feuser fields
+	 * @param string $theTable
+	 * @param array $dataArray complete array of feuser fields
 	 * @return void
 	 */
-	public function registrationProcess_afterSaveEdit($currentArr) {
+	public function registrationProcess_afterSaveEdit($theTable, $dataArray) {
 			// notify observer
-		Tx_Commerce_Dao_FeuserObserver::update('update', $currentArr['uid'], $currentArr);
+		Tx_Commerce_Dao_FeuserObserver::update('update', $dataArray['uid'], $dataArray);
 	}
 }
