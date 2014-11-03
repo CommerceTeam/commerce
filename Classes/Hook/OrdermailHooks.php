@@ -24,6 +24,7 @@
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * This class contains some hooks for processing formdata.
@@ -90,9 +91,9 @@ class Tx_Commerce_Hook_OrdermailHooks {
 	 * @return self
 	 */
 	public function __construct() {
-		$this->extConf = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf'];
-		$this->cObj = t3lib_div::makeInstance('tslib_cObj');
-		$this->csConvObj = t3lib_div::makeInstance('t3lib_cs');
+		$this->extConf = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce']['extConf'];
+		$this->cObj = GeneralUtility::makeInstance('tslib_cObj');
+		$this->csConvObj = GeneralUtility::makeInstance('t3lib_cs');
 		$this->templatePath = PATH_site . 'uploads/tx_commerce/';
 	}
 
@@ -121,15 +122,15 @@ class Tx_Commerce_Hook_OrdermailHooks {
 		$mailconf['plain']['content'] = $this->csConvObj->conv($mailconf['plain']['content'], 'utf-8', 'utf-8');
 		$mailconf['alternateSubject'] = $this->csConvObj->conv($mailconf['alternateSubject'], 'utf-8', 'utf-8');
 
-		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Hook/class.tx_commerce_ordermailhooks.php']['ordermoveSendMail'])) {
-			t3lib_div::deprecationLog('
+		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Hook/class.tx_commerce_ordermailhooks.php']['ordermoveSendMail'])) {
+			GeneralUtility::deprecationLog('
 				hook
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Hook/class.tx_commerce_ordermailhooks.php\'][\'ordermoveSendMail\']
 				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Hook/OrdermailHooks.php\'][\'ordermoveSendMail\']
 			');
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Hook/class.tx_commerce_ordermailhooks.php']['ordermoveSendMail'] as $classRef) {
-				$hookObj = t3lib_div::getUserObj($classRef);
+				$hookObj = GeneralUtility::getUserObj($classRef);
 				if (method_exists($hookObj, 'postOrdermoveSendMail')) {
 					$hookObj->postOrdermoveSendMail($mailconf, $orderdata, $template);
 				}
@@ -137,7 +138,7 @@ class Tx_Commerce_Hook_OrdermailHooks {
 		}
 		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Hook/OrdermailHooks.php']['ordermoveSendMail'])) {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Hook/OrdermailHooks.php']['ordermoveSendMail'] as $classRef) {
-				$hookObj = t3lib_div::getUserObj($classRef);
+				$hookObj = GeneralUtility::getUserObj($classRef);
 				if (method_exists($hookObj, 'postOrdermoveSendMail')) {
 					$hookObj->postOrdermoveSendMail($mailconf, $orderdata, $template);
 				}
@@ -156,16 +157,17 @@ class Tx_Commerce_Hook_OrdermailHooks {
 	 * @param int $orderSysLanguageUid
 	 * @return array of templatenames found in Filelist
 	 */
-	protected function generateTemplatearray($mailkind, $pid, $orderSysLanguageUid) {
+	protected function generateTemplateArray($mailkind, $pid, $orderSysLanguageUid) {
 		/** @var t3lib_db $database */
 		$database = $GLOBALS['TYPO3_DB'];
 		/** @var t3lib_pageSelect $t3libPage */
-		$t3libPage = t3lib_div::makeInstance('t3lib_pageSelect');
+		$t3libPage = GeneralUtility::makeInstance('t3lib_pageSelect');
 
 		$rows = $database->exec_SELECTgetRows(
 			'*',
 			$this->tablename,
-			'sys_language_uid=0 AND pid = ' . $pid . ' AND mailkind = ' . $mailkind . t3lib_BEfunc::BEenableFields($this->tablename)
+			'sys_language_uid = 0 AND pid = ' . $pid . ' AND mailkind = ' . $mailkind .
+				\TYPO3\CMS\Backend\Utility\BackendUtility::BEenableFields($this->tablename)
 		);
 
 		$templates = array();
@@ -187,11 +189,12 @@ class Tx_Commerce_Hook_OrdermailHooks {
 	 * @return void
 	 */
 	protected function processOrdermails(&$orderdata, &$detaildata, $mailkind) {
-		$templates = $this->generateTemplatearray($mailkind, $orderdata['pid'], $detaildata['order_sys_language_uid']);
+		$pid = $orderdata['pid'] ? $orderdata['pid'] : $detaildata['pid'];
+		$templates = $this->generateTemplateArray($mailkind, $pid, $detaildata['order_sys_language_uid']);
 
 		foreach ($templates as $template) {
-			$this->templateCode = t3lib_div::getURL($this->templatePath . $template['mailtemplate']);
-			$this->templateCodeHtml = t3lib_div::getURL($this->templatePath . $template['htmltemplate']);
+			$this->templateCode = GeneralUtility::getURL($this->templatePath . $template['mailtemplate']);
+			$this->templateCodeHtml = GeneralUtility::getURL($this->templatePath . $template['htmltemplate']);
 
 			$senderemail = $template['senderemail'] == '' ? $this->extConf['defEmailAddress'] : $template['senderemail'];
 			if ($template['sendername'] == '') {
@@ -329,14 +332,14 @@ class Tx_Commerce_Hook_OrdermailHooks {
 		 * Hook for processing Marker Array
 		 */
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce_ordermails/mod1/class.tx_commerce_moveordermail.php']['generateMail'])) {
-			t3lib_div::deprecationLog('
+			GeneralUtility::deprecationLog('
 				hook
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce_ordermails/mod1/class.tx_commerce_moveordermail.php\'][\'generateMail\']
 				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Hook/OrdermailHooks.php\'][\'generateMail\']
 			');
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce_ordermails/mod1/class.tx_commerce_moveordermail.php']['generateMail'] as $classRef) {
-				$hookObj = &t3lib_div::getUserObj($classRef);
+				$hookObj = GeneralUtility::getUserObj($classRef);
 				if (method_exists($hookObj, 'ProcessMarker')) {
 					$markerArray = $hookObj->ProcessMarker($markerArray, $this);
 				}
@@ -344,7 +347,7 @@ class Tx_Commerce_Hook_OrdermailHooks {
 		}
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Hook/OrdermailHooks.php']['generateMail'])) {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Hook/OrdermailHooks.php']['generateMail'] as $classRef) {
-				$hookObj = &t3lib_div::getUserObj($classRef);
+				$hookObj = GeneralUtility::getUserObj($classRef);
 				if (method_exists($hookObj, 'ProcessMarker')) {
 					$markerArray = $hookObj->ProcessMarker($markerArray, $this);
 				}
