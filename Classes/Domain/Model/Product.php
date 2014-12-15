@@ -831,11 +831,9 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 					$article->getPriceGross();
 			}
 		}
-
 		asort($priceArr);
 		reset($priceArr);
-
-		return current(array_values($priceArr));
+		return current(array_keys($priceArr));
 	}
 
 	/**
