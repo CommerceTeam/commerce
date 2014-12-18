@@ -957,7 +957,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		}
 
 		// Check if terms are accepted
-		if (!$paymentDone && (empty($this->piVars['terms']) || ($this->piVars['terms'] != 'termschecked'))) {
+		if (!$paymentDone || empty($this->piVars['terms']) || $this->piVars['terms'] != 'termschecked') {
 			$this->formError['terms'] = $this->pi_getLL('error_terms_not_accepted');
 			$content = $this->handlePayment($paymentObj);
 			if ($content == FALSE) {
