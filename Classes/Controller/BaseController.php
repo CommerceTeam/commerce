@@ -2123,6 +2123,24 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 		return $this->handle;
 	}
 
+	/**
+	 * @param array $hookObjects
+	 * @param string $method
+	 * @param mixed $data
+	 * @return mixed
+	 */
+	protected function processHooks($hookObjects, $method, $data) {
+		$arguments = array_slice(func_get_args(), 2);
+
+		foreach ($hookObjects as $hookObject) {
+			if (method_exists($hookObject, $method)) {
+				$data = call_user_func_array(array($hookObject, $method), $arguments);
+			}
+		}
+
+		return $data;
+	}
+
 
 	/**
 	 * Adds the the commerce TYPO3 Link parameter for commerce to existing
