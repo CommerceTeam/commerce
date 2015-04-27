@@ -298,6 +298,16 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	}
 
 	/**
+	 * @param array $categories
+	 * @return void
+	 */
+	public function setChildCategories($categories) {
+		if (is_array($categories)) {
+			$this->categories = $categories;
+		}
+	}
+
+	/**
 	 * Returns a list of all child categories from this category
 	 *
 	 * @param boolean|integer $depth Maximum depth for going recursive

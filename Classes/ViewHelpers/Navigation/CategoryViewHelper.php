@@ -1,23 +1,16 @@
 <?php
-/***************************************************************
- *  Copyright notice
- *  (c) 2005-2012 Franz Holzinger <kontakt@fholzinger.com>
- *  All rights reserved
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *  A copy is found in the textfile GPL.txt and important notices to the license
- *  from the author is found in LICENSE.txt distributed with these scripts.
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+/**
+ * This file is part of the TYPO3 CMS project.
+ *
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
+ *
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ *
+ * The TYPO3 project - inspiring people to share!
+ */
 
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -49,12 +42,13 @@ class Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper extends \TYPO3\CMS\B
 	/**
 	 * Initializes the Tree
 	 *
+	 * @param bool $bare if TRUE only categories get rendered
 	 * @return void
 	 */
-	public function init() {
+	public function init($bare = FALSE) {
 		// Get the Category Tree
 		$this->categoryTree = GeneralUtility::makeInstance('Tx_Commerce_Tree_CategoryTree');
-		$this->categoryTree->setBare(FALSE);
+		$this->categoryTree->setBare($bare);
 		$this->categoryTree->setSimpleMode((int) $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['simpleMode']);
 		$this->categoryTree->init();
 	}
@@ -62,15 +56,17 @@ class Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper extends \TYPO3\CMS\B
 	/**
 	 * Initializes the Page
 	 *
+	 * @param bool $bare if TRUE only categories get rendered
 	 * @return void
 	 */
-	public function initPage() {
+	public function initPage($bare = FALSE) {
 		/** @var \TYPO3\CMS\Backend\Template\DocumentTemplate $doc */
 		$doc = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
 		$this->doc = $doc;
 		$this->doc->backPath = $GLOBALS['BACK_PATH'];
-		$this->doc->docType = 'xhtml_trans';
-		$this->doc->setModuleTemplate(PATH_TXCOMMERCE . 'Resources/Private/Backend/mod_navigation.html');
+		$this->doc->setModuleTemplate('EXT:commerce/Resources/Private/Backend/mod_navigation.html');
+		$this->doc->showFlashMessages = FALSE;
+
 		$this->doc->inDocStyles .= '
 		#typo3-pagetree .x-tree-root-ct ul {
 			padding-left: 19px;
@@ -90,20 +86,6 @@ class Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper extends \TYPO3\CMS\B
 			margin-bottom: 0;
 		}
 		';
-
-		if (!$this->doc->moduleTemplate) {
-			GeneralUtility::devLog(
-				'cannot set navframeTemplate', 'commerce', 2, array(
-					'backpath' => $this->doc->backPath,
-					'filename from TBE_STYLES' =>
-						$GLOBALS['TBE_STYLES']['htmlTemplates']['commerce/Resources/Private/Backend/mod_navigation.html'],
-					'full path' =>
-						$this->doc->backPath . $GLOBALS['TBE_STYLES']['htmlTemplates']['commerce/Resources/Private/Backend/mod_navigation.html']
-				)
-			);
-			$templateFile = PATH_TXCOMMERCE_REL . 'Resources/Private/Backend/mod_navigation.html';
-			$this->doc->moduleTemplate = GeneralUtility::getURL(PATH_site . $templateFile);
-		}
 
 		$currentSubScript = ($this->currentSubScript ?
 			'top.currentSubScript = unescape("' . rawurlencode($this->currentSubScript) . '");' :
@@ -128,7 +110,7 @@ class Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper extends \TYPO3\CMS\B
 					theUrl = top.TS.PATH_typo3 + top.currentSubScript;
 				}
 
-				theUrl = theUrl + "?" + id;
+				theUrl = theUrl + id;
 
 				if (top.condensedMode) {
 					top.content.document.location = theUrl;
@@ -151,10 +133,10 @@ class Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper extends \TYPO3\CMS\B
 		);
 
 		$this->doc->loadJavascriptLib('contrib/prototype/prototype.js');
-		$this->doc->loadJavascriptLib($this->doc->backPath . 'js/tree.js');
+		$this->doc->loadJavascriptLib('js/tree.js');
 		$this->doc->JScode .= $this->doc->wrapScriptTags('
-			Tree.thisScript = "/' . TYPO3_mainDir . '/ajax.php";
-			Tree.ajaxID = "Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper::ajaxExpandCollapse";
+			Tree.ajaxID = "Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper::ajaxExpandCollapse' .
+			($bare ? 'WithoutProduct' : '') . '";
 		');
 
 		// Adding javascript code for AJAX (prototype), drag&drop and the
@@ -170,14 +152,13 @@ class Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper extends \TYPO3\CMS\B
 	 * @return void
 	 */
 	public function main() {
-		/** @var language $language */
-		$language = $GLOBALS['LANG'];
+		$language = $this->getLanguageService();
 
 		// Check if commerce needs to be updated.
 		if ($this->isUpdateNecessary()) {
 			$tree = $language->getLL('ext.update');
 		} else {
-			// Get the Browseable Tree
+			// Get the browseable Tree
 			$tree = $this->categoryTree->getBrowseableTree();
 		}
 
@@ -259,12 +240,7 @@ class Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper extends \TYPO3\CMS\B
 	 * @return void
 	 */
 	public function ajaxExpandCollapse($params, &$ajaxObj) {
-		$parameter = GeneralUtility::_GP('PM');
-		// IE takes anchor as parameter
-		if (($parameterPosition = strpos($parameter, '#')) !== FALSE) {
-			$parameter = substr($parameter, 0, $parameterPosition);
-		}
-		$parameter = explode('_', $parameter);
+		$parameter = $this->getParameter();
 
 		// Get the Category Tree
 		$this->init();
@@ -282,19 +258,24 @@ class Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper extends \TYPO3\CMS\B
 	 * @return void
 	 */
 	public function ajaxExpandCollapseWithoutProduct($params, &$ajaxObj) {
+		$parameter = $this->getParameter();
+
+		// Get the category tree without the products and the articles
+		$this->init(TRUE);
+		$tree = $this->categoryTree->getBrowseableAjaxTree($parameter);
+
+		$ajaxObj->addContent('tree', $tree);
+	}
+
+	/**
+	 * @return array
+	 */
+	protected function getParameter() {
 		$parameter = GeneralUtility::_GP('PM');
 		// IE takes anchor as parameter
 		if (($parameterPosition = strpos($parameter, '#')) !== FALSE) {
 			$parameter = substr($parameter, 0, $parameterPosition);
 		}
-		$parameter = explode('_', $parameter);
-
-		// Get the category tree without the products and the articles
-		/** @var Tx_Commerce_Tree_CategoryTree $categoryTree */
-		$categoryTree = GeneralUtility::makeInstance('Tx_Commerce_Tree_CategoryTree');
-		$categoryTree->init();
-		$tree = $categoryTree->getBrowseableAjaxTree($parameter);
-
-		$ajaxObj->addContent('tree', $tree);
+		return explode('_', $parameter);
 	}
 }

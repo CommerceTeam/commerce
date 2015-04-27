@@ -30,13 +30,6 @@
  */
 class Tx_Commerce_Tree_Leaf_CategoryData extends Tx_Commerce_Tree_Leaf_MasterData {
 	/**
-	 * Pointer to the internal Leafrow ###what is this for generally?###
-	 *
-	 * @var integer
-	 */
-	protected $pointer = 0;
-
-	/**
 	 * Permission Mask for reading Categories
 	 *
 	 * @var integer
@@ -48,7 +41,7 @@ class Tx_Commerce_Tree_Leaf_CategoryData extends Tx_Commerce_Tree_Leaf_MasterDat
 	 *
 	 * @var string
 	 */
-	protected $extendedFields  = 'parent_category, title, perms_userid, perms_groupid, perms_user, perms_group, perms_everybody, editlock, starttime, endtime, hidden';
+	protected $extendedFields  = 'parent_category, title, perms_userid, perms_groupid, perms_user, perms_group, perms_everybody, editlock, hidden, starttime, endtime, fe_group';
 
 	/**
 	 * @var string

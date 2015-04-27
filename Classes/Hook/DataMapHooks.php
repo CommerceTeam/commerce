@@ -192,10 +192,10 @@ class Tx_Commerce_Hook_DataMapHooks {
 				$productObj = GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Product', $id);
 				$productObj->loadData();
 
-				$parentCateory = $productObj->getMasterparentCategory();
+				$parentCategory = $productObj->getMasterparentCategory();
 				$GLOBALS['_POST']['popViewId_addParams'] =
 					($incomingFieldArray['sys_language_uid'] > 0 ? '&L=' . $incomingFieldArray['sys_language_uid'] : '') .
-					'&ADMCMD_vPrev&no_cache=1&tx_commerce[showUid]=' . $id . '&tx_commerce[catUid]=' . $parentCateory;
+					'&ADMCMD_vPrev&no_cache=1&tx_commerce_pi1[showUid]=' . $id . '&tx_commerce_pi1[catUid]=' . $parentCategory;
 				$GLOBALS['_POST']['popViewId'] = $previewPageId;
 			}
 		}

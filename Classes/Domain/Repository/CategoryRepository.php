@@ -128,11 +128,16 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 			return FALSE;
 		}
 		$this->uid = $uid;
-		$additionalWhere = $this->enableFields($this->databaseTable, $GLOBALS['TSFE']->showHiddenRecords);
+		if (is_object($GLOBALS['TSFE']->sys_page)) {
+			$additionalWhere = $GLOBALS['TSFE']->sys_page->enableFields($this->databaseTable, $GLOBALS['TSFE']->showHiddenRecords);
+		} else {
+			$additionalWhere = ' AND ' . $this->databaseTable . '.deleted = 0';
+		}
 
 		$result = $database->exec_SELECT_mm_query(
 			'uid_foreign',
-			$this->databaseTable, $this->databaseParentCategoryRelationTable,
+			$this->databaseTable,
+			$this->databaseParentCategoryRelationTable,
 			$this->databaseTable,
 			' AND ' . $this->databaseParentCategoryRelationTable . '.uid_local= ' . (int) $uid . ' ' . $additionalWhere
 		);
@@ -279,7 +284,7 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 				}
 			}
 
-			$database->sql_free_result($result);
+			//$database->sql_free_result($result);
 			return $data;
 		}
 		return FALSE;
@@ -413,6 +418,37 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 		return FALSE;
 	}
 
+	/**
+	 * Returns an array of array for the TS rootline
+	 * Recursive Call to build rootline
+	 *
+	 * @param integer $categoryUid
+	 * @param string $clause
+	 * @param array $result
+	 * @return array
+	 */
+	public function getCategoryRootline($categoryUid, $clause = '', $result = array()) {
+		if ($categoryUid) {
+			$row = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
+				'tx_commerce_categories.uid, mm.uid_foreign AS parent',
+				'tx_commerce_categories
+					INNER JOIN tx_commerce_categories_parent_category_mm AS mm ON tx_commerce_categories.uid = mm.uid_local',
+				'tx_commerce_categories.uid = ' . (int) $categoryUid .
+				$this->enableFields('tx_commerce_categories', $GLOBALS['TSFE']->showHiddenRecords)
+			);
+
+			if (is_array($row) && count($row) && $row['parent'] <> $categoryUid) {
+				$result = $this->getCategoryRootline((int) $row['parent'], $clause, $result);
+			}
+
+			$result[] = array(
+				'uid' => $row['uid'],
+			);
+		}
+
+		return $result;
+	}
+
 
 	/**
 	 * Getter
@@ -499,5 +535,13 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 	public function get_child_products($uid, $languageUid = -1) {
 		GeneralUtility::logDeprecatedFunction();
 		return $this->getChildProducts($uid, $languageUid);
+	}
+
+
+	/**
+	 * @return \TYPO3\CMS\Dbal\Database\DatabaseConnection
+	 */
+	protected function getDatabaseConnection() {
+		return $GLOBALS['TYPO3_DB'];
 	}
 }

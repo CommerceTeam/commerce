@@ -295,7 +295,6 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 		$divFrame .= '</script>';
 		$divFrame .= '<script src="' . $this->tceforms->backPath . 'js/tree.js"></script>
 			<script type="text/javascript">
-			Tree.thisScript = "/' . TYPO3_mainDir . '/ajax.php",
 			Tree.ajaxID = "Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper::ajaxExpandCollapse";
 			</script>
 		';

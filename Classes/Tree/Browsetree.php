@@ -469,9 +469,9 @@ abstract class Tx_Commerce_Tree_Browsetree {
 
 		for ($i = 0; $i < $l; $i++) {
 			if (!is_array($depth[$sortedData[$i]['depth']])) {
-				$depth[$sortedData[$i]['depth']] = array($sortedData[$i]['record']['uid']);
+				$depth[$sortedData[$i]['depth']] = array($sortedData[$i]['row']['uid']);
 			} else {
-				$depth[$sortedData[$i]['depth']][] = $sortedData[$i]['record']['uid'];
+				$depth[$sortedData[$i]['depth']][] = $sortedData[$i]['row']['uid'];
 			}
 		}
 

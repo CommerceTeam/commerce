@@ -957,7 +957,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		}
 
 		// Check if terms are accepted
-		if (!$paymentDone || empty($this->piVars['terms']) || $this->piVars['terms'] != 'termschecked') {
+		if (!$paymentDone && (empty($this->piVars['terms']) || ($this->piVars['terms'] != 'termschecked'))) {
 			$this->formError['terms'] = $this->pi_getLL('error_terms_not_accepted');
 			$content = $this->handlePayment($paymentObj);
 			if ($content == FALSE) {
@@ -2422,8 +2422,6 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		/** @var t3lib_db $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
-		$hookObjectsArr = $this->getHookObjectArray('generateMail');
-
 		$markerArray = $userMarker;
 		$markerArray['###ORDERID###'] = $orderUid;
 		$markerArray['###ORDERDATE###'] = date($this->conf['generalMail.']['orderDate_format'], $orderData['tstamp']);
@@ -2458,7 +2456,6 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		$deliveryAdress = '';
 		if ($orderData['cust_deliveryaddress']) {
 			$data = $database->exec_SELECTgetSingleRow('*', 'tt_address', 'uid = ' . (int) $orderData['cust_deliveryaddress']);
-			$data = $this->processHookMethod($hookObjectsArr, 'processDeliveryAddress', $data);
 			if (is_array($data)) {
 				$data = $this->parseRawData($data, $this->conf['delivery.']['sourceFields.']);
 				$deliveryAdress = $this->makeAdressView($data, '###DELIVERY_ADDRESS###');
@@ -2479,7 +2476,13 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 
 		$content = $this->cObj->substituteSubpart($content, '###BILLING_ADDRESS###', $billingAdress);
 
-		$markerArray = $this->processHooks($hookObjectsArr, 'ProcessMarker', $markerArray, $this);
+		// Hook to process marker array
+		$hookObjectsArr = $this->getHookObjectArray('generateMail');
+		foreach ($hookObjectsArr as $hookObj) {
+			if (method_exists($hookObj, 'ProcessMarker')) {
+				$markerArray = $hookObj->ProcessMarker($markerArray, $this);
+			}
+		}
 
 		$markerArray = array_merge((array) $markerArray, (array) $this->languageMarker);
 

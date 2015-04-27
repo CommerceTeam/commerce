@@ -25,6 +25,8 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 /**
  * Implements a Categorytree
  * A tree can have n leafs, and leafs can in itself contain other leafs
@@ -70,21 +72,21 @@ class Tx_Commerce_Tree_CategoryTree extends Tx_Commerce_Tree_Browsetree {
 	 * @return void
 	 */
 	public function init() {
-			// Call parent constructor
+		// Call parent constructor
 		parent::init();
 
-			// Create the category leaf
+		// Create the category leaf
 		/** @var Tx_Commerce_Tree_Leaf_Category $categoryLeaf */
-		$categoryLeaf = t3lib_div::makeInstance('Tx_Commerce_Tree_Leaf_Category');
+		$categoryLeaf = GeneralUtility::makeInstance('Tx_Commerce_Tree_Leaf_Category');
 
-			// Instantiate the categorydata, -view and set the permission mask (or the string rep.)
+		// Instantiate the categorydata, -view and set the permission mask (or the string rep.)
 		/** @var Tx_Commerce_Tree_Leaf_CategoryData $categorydata */
-		$categorydata = t3lib_div::makeInstance('Tx_Commerce_Tree_Leaf_CategoryData');
+		$categorydata = GeneralUtility::makeInstance('Tx_Commerce_Tree_Leaf_CategoryData');
 		$categorydata->setPermsMask(Tx_Commerce_Utility_BackendUtility::getPermMask($this->minCategoryPerms));
 
 		/** @var Tx_Commerce_Tree_Leaf_CategoryView $categoryview */
-		$categoryview = t3lib_div::makeInstance('Tx_Commerce_Tree_Leaf_CategoryView');
-			// disable the root onclick if the perms are set to editcontent - this way we cannot select the root as a parent for any content item
+		$categoryview = GeneralUtility::makeInstance('Tx_Commerce_Tree_Leaf_CategoryView');
+		// disable the root onclick if the perms are set to editcontent - this way we cannot select the root as a parent for any content item
 		$categoryview->noRootOnclick(($this->minCategoryPerms == 'editcontent'));
 
 			// Configure real values
@@ -93,7 +95,7 @@ class Tx_Commerce_Tree_CategoryTree extends Tx_Commerce_Tree_Browsetree {
 		}
 
 			// Configure the noOnclick for the leaf
-		if (t3lib_div::inList($this->noClickList, 'Tx_Commerce_Tree_Leaf_Category')) {
+		if (GeneralUtility::inList($this->noClickList, 'Tx_Commerce_Tree_Leaf_Category')) {
 			$categoryview->noOnclick();
 		}
 
@@ -101,18 +103,20 @@ class Tx_Commerce_Tree_CategoryTree extends Tx_Commerce_Tree_Browsetree {
 
 		$this->addLeaf($categoryLeaf);
 
-			// Add Product and Article Leafs if wanted - Productleaf will be added to Categoryleaf, and Articleleaf will be added to Productleaf
+		// Add Product and Article Leafs if wanted
+		// - Productleaf will be added to Categoryleaf,
+		// - Articleleaf will be added to Productleaf
 		if (!$this->bare) {
 			/** @var Tx_Commerce_Tree_Leaf_Product $productleaf */
-			$productleaf = t3lib_div::makeInstance('Tx_Commerce_Tree_Leaf_Product');
+			$productleaf = GeneralUtility::makeInstance('Tx_Commerce_Tree_Leaf_Product');
 			/** @var Tx_Commerce_Tree_Leaf_Article $articleleaf */
-			$articleleaf = t3lib_div::makeInstance('Tx_Commerce_Tree_Leaf_Article');
+			$articleleaf = GeneralUtility::makeInstance('Tx_Commerce_Tree_Leaf_Article');
 
 			/** @var Tx_Commerce_Tree_Leaf_ProductView $productview */
-			$productview = t3lib_div::makeInstance('Tx_Commerce_Tree_Leaf_ProductView');
+			$productview = GeneralUtility::makeInstance('Tx_Commerce_Tree_Leaf_ProductView');
 
 				// Configure the noOnclick for the leaf
-			if (t3lib_div::inList($this->noClickList, 'Tx_Commerce_Tree_Leaf_Product')) {
+			if (GeneralUtility::inList($this->noClickList, 'Tx_Commerce_Tree_Leaf_Product')) {
 				$productview->noOnclick();
 			}
 
@@ -122,10 +126,10 @@ class Tx_Commerce_Tree_CategoryTree extends Tx_Commerce_Tree_Browsetree {
 			}
 
 			/** @var Tx_Commerce_Tree_Leaf_ArticleView $articleview */
-			$articleview = t3lib_div::makeInstance('Tx_Commerce_Tree_Leaf_ArticleView');
+			$articleview = GeneralUtility::makeInstance('Tx_Commerce_Tree_Leaf_ArticleView');
 
 				// Configure the noOnclick for the leaf
-			if (t3lib_div::inList($this->noClickList, 'Tx_Commerce_Tree_Leaf_Article')) {
+			if (GeneralUtility::inList($this->noClickList, 'Tx_Commerce_Tree_Leaf_Article')) {
 				$articleview->noOnclick();
 			}
 
@@ -135,10 +139,10 @@ class Tx_Commerce_Tree_CategoryTree extends Tx_Commerce_Tree_Browsetree {
 			}
 
 			/** @var Tx_Commerce_Tree_Leaf_ProductData $productData */
-			$productData = t3lib_div::makeInstance('Tx_Commerce_Tree_Leaf_ProductData');
+			$productData = GeneralUtility::makeInstance('Tx_Commerce_Tree_Leaf_ProductData');
 			$productleaf->initBasic($productview, $productData);
 			/** @var Tx_Commerce_Tree_Leaf_ArticleData $articleData */
-			$articleData = t3lib_div::makeInstance('Tx_Commerce_Tree_Leaf_ArticleData');
+			$articleData = GeneralUtility::makeInstance('Tx_Commerce_Tree_Leaf_ArticleData');
 			$articleleaf->initBasic($articleview, $articleData);
 
 			$categoryLeaf->addLeaf($productleaf);
@@ -184,7 +188,7 @@ class Tx_Commerce_Tree_CategoryTree extends Tx_Commerce_Tree_Browsetree {
 		if (!is_bool($bare)) {
 				// only issue warning but transform the value to bool anyways
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('Bare-Mode of the tree was set with a non-boolean flag!', COMMERCE_EXTKEY, 2);
+				GeneralUtility::devLog('Bare-Mode of the tree was set with a non-boolean flag!', COMMERCE_EXTKEY, 2);
 			}
 		}
 		$this->bare = $bare;
@@ -221,7 +225,7 @@ class Tx_Commerce_Tree_CategoryTree extends Tx_Commerce_Tree_Browsetree {
 			// test parameters
 		if (!is_numeric($uid)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('getCategory (categorytree) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				GeneralUtility::devLog('getCategory (categorytree) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
 			}
 			return array();
 		}
@@ -231,7 +235,7 @@ class Tx_Commerce_Tree_CategoryTree extends Tx_Commerce_Tree_Browsetree {
 			// check if there is a category leaf
 		if (is_null($categoryLeaf)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('getCategory (categorytree) cannot find the category leaf.', COMMERCE_EXTKEY, 3);
+				GeneralUtility::devLog('getCategory (categorytree) cannot find the category leaf.', COMMERCE_EXTKEY, 3);
 			}
 			return array();
 		}

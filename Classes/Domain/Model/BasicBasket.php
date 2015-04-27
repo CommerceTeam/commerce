@@ -837,7 +837,7 @@ class Tx_Commerce_Domain_Model_BasicBasket {
 	 */
 	public function get_articles_by_article_type_uid_asUidlist($articleTypeUid) {
 		t3lib_div::logDeprecatedFunction();
-		return $this->getArticlesByArticleTypeUidAsUidlist($articleTypeUid);
+		$this->getArticlesByArticleTypeUidAsUidlist($articleTypeUid);
 	}
 
 	/**

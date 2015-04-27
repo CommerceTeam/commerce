@@ -6,22 +6,6 @@ if (!defined('TYPO3_MODE')) {
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile(COMMERCE_EXTKEY, 'Configuration/TypoScript/', 'COMMERCE');
 
-
-// mountpoints field in be_groups, be_users
-$GLOBALS['T3_VAR']['ext'][COMMERCE_EXTKEY]['TCA']['mountpoints_config'] = array(
-	// a special format is stored - that's why 'passthrough'
-	// see: flag TCEFormsSelect_prefixTreeName
-	// see: tx_dam_treelib_tceforms::getMountsForTree()
-	'type' => 'passthrough',
-	'form_type' => 'user',
-	'userFunc' => 'Tx_Commerce_ViewHelpers_TceFunc->getSingleField_selectCategories',
-	'treeViewBrowseable' => TRUE,
-	'size' => 10,
-	'autoSizeMax' => 30,
-	'minitems' => 0,
-	'maxitems' => 20,
-);
-
 if (TYPO3_MODE == 'BE') {
 	/**
 	 * WIZICON
@@ -49,7 +33,7 @@ if (TYPO3_MODE == 'BE') {
 		$presetSkinImgs = is_array($GLOBALS['TBE_STYLES']['skinImg']) ? $GLOBALS['TBE_STYLES']['skinImg'] : array();
 
 		$GLOBALS['TBE_STYLES']['skinImg'] = array_merge($presetSkinImgs, array(
-			'MOD:txcommerceM1_access/../../../Resources/Public/Icons/mod_access.gif' =>
+			'MOD:txcommerceM1_permission/../../../Resources/Public/Icons/mod_access.gif' =>
 				array(
 					\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('t3skin') . 'icons/module_web_perms.png',
 					'width="24" height="24"'
@@ -64,6 +48,7 @@ if (TYPO3_MODE == 'BE') {
 		'',
 		PATH_TXCOMMERCE . 'Classes/Module/Main/'
 	);
+
 	// add category module
 	\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addModule(
 		'txcommerceM1',
@@ -71,13 +56,27 @@ if (TYPO3_MODE == 'BE') {
 		'',
 		PATH_TXCOMMERCE . 'Classes/Module/Category/'
 	);
+	\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::registerAjaxHandler(
+		'Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper::ajaxExpandCollapseWithoutProduct',
+		'Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper->ajaxExpandCollapseWithoutProduct'
+	);
+	\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::registerAjaxHandler(
+		'Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper::ajaxExpandCollapse',
+		'Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper->ajaxExpandCollapse'
+	);
+
 	// Access Module
 	\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addModule(
 		'txcommerceM1',
-		'access',
+		'permission',
 		'',
-		PATH_TXCOMMERCE . 'Classes/Module/Access/'
+		PATH_TXCOMMERCE . 'Classes/Module/Permission/'
 	);
+	\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::registerAjaxHandler(
+		'Tx_Commerce_Controller_PermissionAjaxController::dispatch',
+		'Tx_Commerce_Controller_PermissionAjaxController->dispatch'
+	);
+
 	// Orders module
 	\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addModule(
 		'txcommerceM1',
@@ -85,6 +84,7 @@ if (TYPO3_MODE == 'BE') {
 		'',
 		PATH_TXCOMMERCE . 'Classes/Module/Orders/'
 	);
+
 	// Statistic Module
 	\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addModule(
 		'txcommerceM1',
@@ -92,6 +92,7 @@ if (TYPO3_MODE == 'BE') {
 		'',
 		PATH_TXCOMMERCE . 'Classes/Module/Statistic/'
 	);
+
 	// Systemdata module
 	\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addModule(
 		'txcommerceM1',

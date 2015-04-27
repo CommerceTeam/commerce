@@ -68,7 +68,7 @@ class Tx_Commerce_ViewHelpers_Browselinks_ProductView extends Tx_Commerce_Tree_L
 			// Max. size for Title of 30
 		$title = ('' != trim($title)) ? t3lib_div::fixed_lgd_cs($title, 30) : $this->getLL('leaf.noTitle');
 
-		$aOnClick = 'return link_folder(\'' . $this->getJumpToParam($row) . '\');';
+		$aOnClick = 'return link_commerce(\'' . $this->getJumpToParam($row) . '\');';
 
 		$style = ($row['uid'] == $this->openProd) ? 'style="color: red; font-weight: bold"' : '';
 		$res = '<a href="#" onclick="' . htmlspecialchars($aOnClick) . '" ' . $style . '>' . $title . '</a>';

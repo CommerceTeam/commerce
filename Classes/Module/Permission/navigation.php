@@ -13,13 +13,13 @@
  */
 
 /**
- * Category module navigation frame
+ * Access module navigation frame
  */
 unset($MCONF);
 
 if (!(defined('TYPO3_REQUESTTYPE') || defined('TYPO3_REQUESTTYPE_AJAX'))) {
 	require_once('conf.php');
-	define('TYPO3_MOD_PATH', '../typo3conf/ext/commerce/Classes/Module/Category/');
+	define('TYPO3_MOD_PATH', '../typo3conf/ext/commerce/Classes/Module/Permission/');
 	$BACK_PATH = '../../../../../../typo3/';
 } else {
 	// In case of an AJAX Request the script including this script is ajax.php,
@@ -34,8 +34,8 @@ require_once($BACK_PATH . 'init.php');
 if (!(TYPO3_REQUESTTYPE & TYPO3_REQUESTTYPE_AJAX)) {
 	/** @var Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper $SOBE */
 	$SOBE = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper');
-	$SOBE->init();
-	$SOBE->initPage();
+	$SOBE->init(TRUE);
+	$SOBE->initPage(TRUE);
 	$SOBE->main();
 	$SOBE->printContent();
 }

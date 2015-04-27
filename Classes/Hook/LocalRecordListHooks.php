@@ -29,7 +29,7 @@ class Tx_Commerce_Hook_LocalRecordListHooks implements \TYPO3\CMS\Recordlist\Rec
 	 * @param string $table the current database table
 	 * @param array $row the current record row
 	 * @param array $cells the default clip-icons to get modified
-	 * @param localRecordList $parentObject Instance of calling object
+	 * @param Tx_Commerce_ViewHelpers_CategoryRecordList $parentObject Instance of calling object
 	 * @return array the modified clip-icons
 	 */
 	public function makeClip($table, $row, $cells, &$parentObject) {
@@ -50,7 +50,7 @@ class Tx_Commerce_Hook_LocalRecordListHooks implements \TYPO3\CMS\Recordlist\Rec
 	 * @param string $table the current database table
 	 * @param array $row the current record row
 	 * @param array $cells the default control-icons to get modified
-	 * @param localRecordList $parentObject Instance of calling object
+	 * @param Tx_Commerce_ViewHelpers_CategoryRecordList $parentObject Instance of calling object
 	 * @return array the modified control-icons
 	 */
 	public function makeControl($table, $row, $cells, &$parentObject) {
@@ -61,7 +61,7 @@ class Tx_Commerce_Hook_LocalRecordListHooks implements \TYPO3\CMS\Recordlist\Rec
 	 * @param string $table
 	 * @param array $currentIdList
 	 * @param array $headerColumns
-	 * @param localRecordList $parentObject
+	 * @param Tx_Commerce_ViewHelpers_CategoryRecordList $parentObject
 	 * @return array
 	 */
 	public function renderListHeader($table, $currentIdList, $headerColumns, &$parentObject) {

@@ -2508,16 +2508,18 @@ class Tx_Commerce_Utility_BackendUtility {
 				return ' 1=1';
 			}
 
-				// Make sure it's integer.
+			// Make sure it's integer.
 			$perms = (int) $perms;
 			$str = ' (' .
-					// Everybody
-				'(perms_everybody & ' . $perms . ' = ' . $perms . ')' .
-					// User
-				'OR(perms_userid = ' . $backendUser->user['uid'] . ' AND perms_user & ' . $perms . ' = ' . $perms . ')';
+				// Everybody
+				'(tx_commerce_categories.perms_everybody & ' . $perms . ' = ' . $perms . ')' .
+				// User
+				'OR(tx_commerce_categories.perms_userid = ' . $backendUser->user['uid'] .
+					' AND tx_commerce_categories.perms_user & ' . $perms . ' = ' . $perms . ')';
 			if ($backendUser->groupList) {
-					// Group (if any is set)
-				$str .= 'OR(perms_groupid in (' . $backendUser->groupList . ') AND perms_group & ' . $perms . ' = ' . $perms . ')';
+				// Group (if any is set)
+				$str .= 'OR(tx_commerce_categories.perms_groupid in (' . $backendUser->groupList .
+					') AND tx_commerce_categories.perms_group & ' . $perms . ' = ' . $perms . ')';
 			}
 			$str .= ')';
 

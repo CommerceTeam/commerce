@@ -1,6 +1,6 @@
 <?php
 return array(
-	'SC_mod_access_perm_index' => 'Tx_Commerce_Controller_AccessController',
+	'SC_mod_access_perm_index' => 'Tx_Commerce_Controller_PermissionModuleController',
 	'tx_commerce_pi4' => 'Tx_Commerce_Controller_AddressesController',
 	'tx_commerce_pibase' => 'Tx_Commerce_Controller_BaseController',
 	'tx_commerce_pi2' => 'Tx_Commerce_Controller_BasketController',

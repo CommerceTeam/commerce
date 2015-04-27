@@ -66,11 +66,6 @@ class Tx_Commerce_ViewHelpers_Navigation_OrdersViewHelper extends \TYPO3\CMS\Bac
 	protected $doHighlight;
 
 	/**
-	 * @var boolean
-	 */
-	protected $hasFilterBox = FALSE;
-
-	/**
 	 * @var \TYPO3\CMS\Backend\Template\DocumentTemplate
 	 */
 	public $doc;
@@ -97,7 +92,7 @@ class Tx_Commerce_ViewHelpers_Navigation_OrdersViewHelper extends \TYPO3\CMS\Bac
 		$this->pagetree = GeneralUtility::makeInstance('Tx_Commerce_Tree_OrderTree');
 		$this->pagetree->ext_IconMode = $backendUser->getTSConfigVal('options.pageTree.disableIconLinkToContextmenu');
 		$this->pagetree->ext_showPageId = $backendUser->getTSConfigVal('options.pageTree.showPageIdWithTitle');
-		$this->pagetree->thisScript = $GLOBALS['BACK_PATH'] . PATH_TXCOMMERCE_REL . 'Classes/Module/Orders/navigation.php';
+		$this->pagetree->thisScript = 'Classes/Module/Orders/navigation.php';
 		$this->pagetree->addField('alias');
 		$this->pagetree->addField('shortcut');
 		$this->pagetree->addField('shortcut_mode');
@@ -122,22 +117,12 @@ class Tx_Commerce_ViewHelpers_Navigation_OrdersViewHelper extends \TYPO3\CMS\Bac
 	 * @return void
 	 */
 	public function initPage() {
-		$this->doc = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
+		/** @var \TYPO3\CMS\Backend\Template\DocumentTemplate $doc */
+		$doc = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
+		$this->doc = $doc;
 		$this->doc->backPath = $GLOBALS['BACK_PATH'];
-		$this->doc->docType = 'xhtml_trans';
-		$this->doc->setModuleTemplate(PATH_TXCOMMERCE . 'Resources/Private/Backend/mod_navigation.html');
-
-		if (!$this->doc->moduleTemplate) {
-			GeneralUtility::devLog('cannot set navframeTemplate', 'commerce', 2, array(
-				'backpath' => $this->doc->backPath,
-				'filename from TBE_STYLES' =>
-					$GLOBALS['TBE_STYLES']['htmlTemplates']['commerce/Resources/Private/Backend/mod_navigation.html'],
-				'full path' =>
-					$this->doc->backPath . $GLOBALS['TBE_STYLES']['htmlTemplates']['commerce/Resources/Private/Backend/mod_navigation.html']
-			));
-			$templateFile = PATH_TXCOMMERCE_REL . 'Resources/Private/Backend/mod_navigation.html';
-			$this->doc->moduleTemplate = GeneralUtility::getURL(PATH_site . $templateFile);
-		}
+		$this->doc->setModuleTemplate('EXT:commerce/Resources/Private/Backend/mod_navigation.html');
+		$this->doc->showFlashMessages = FALSE;
 
 		$subScript = $this->currentSubScript ? 'top.currentSubScript=unescape("' . rawurlencode($this->currentSubScript) . '");' : '';
 		$highlight = $this->doHighlight ? 'hilight_row("txcommerceM1",highLightID);' : '';
@@ -149,7 +134,7 @@ class Tx_Commerce_ViewHelpers_Navigation_OrdersViewHelper extends \TYPO3\CMS\Bac
 
 				// Function, loading the list frame from navigation tree:
 			function jumpTo(id, linkObj, highLightID) {
-				var theUrl = top.TS.PATH_typo3 + top.currentSubScript + "?id=" + id;
+				var theUrl = top.TS.PATH_typo3 + top.currentSubScript + "&id=" + id;
 
 				if (top.condensedMode) {
 					top.content.document.location = theUrl;
@@ -202,10 +187,7 @@ class Tx_Commerce_ViewHelpers_Navigation_OrdersViewHelper extends \TYPO3\CMS\Bac
 	 * @return void
 	 */
 	public function main() {
-		/** @var language $language */
-		$language = $GLOBALS['LANG'];
-
-			// Produce browse-tree:
+		// Produce browse-tree:
 		$tree = $this->pagetree->getBrowsableTree();
 
 		$docHeaderButtons = $this->getButtons();
@@ -216,16 +198,11 @@ class Tx_Commerce_ViewHelpers_Navigation_OrdersViewHelper extends \TYPO3\CMS\Bac
 			'CONTENT' => $tree
 		);
 
-		$subparts = array();
-		if (!$this->hasFilterBox) {
-			$subparts['###SECOND_ROW###'] = '';
-		}
-
 			// Build the <body> for the module
 		$this->content = $this->doc->startPage(
-			$language->sl('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:mod_orders.navigation_title')
+			$this->getLanguageService()->sl('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:mod_orders.navigation_title')
 		);
-		$this->content .= $this->doc->moduleBody('', $docHeaderButtons, $markers, $subparts);
+		$this->content .= $this->doc->moduleBody('', $docHeaderButtons, $markers);
 		$this->content .= $this->doc->endPage();
 		$this->content = $this->doc->insertStylesAndJS($this->content);
 	}
@@ -251,12 +228,12 @@ class Tx_Commerce_ViewHelpers_Navigation_OrdersViewHelper extends \TYPO3\CMS\Bac
 			'refresh' => '',
 		);
 
-			// Refresh
+		// Refresh
 		$buttons['refresh'] = '<a href="' . htmlspecialchars(GeneralUtility::getIndpEnv('REQUEST_URI')) . '">' .
 			\TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon('actions-system-refresh') .
 		'</a>';
 
-			// CSH
+		// CSH
 		$buttons['csh'] = str_replace(
 			'typo3-csh-inline',
 			'typo3-csh-inline show-right',
@@ -272,13 +249,12 @@ class Tx_Commerce_ViewHelpers_Navigation_OrdersViewHelper extends \TYPO3\CMS\Bac
 	 * @return void
 	 */
 	protected function initializeTemporaryDatabaseMount() {
-		/** @var t3lib_beUserAuth $backendUser */
-		$backendUser = $GLOBALS['BE_USER'];
+		$backendUser = $this->getBackendUser();
 
 			// Set/Cancel Temporary DB Mount:
 		if (strlen($this->setTemporaryDatabaseMount)) {
 			$set = max($this->setTemporaryDatabaseMount, 0);
-				// Setting...:
+			// Setting...:
 			if ($set > 0 && $backendUser->isInWebMount($set)) {
 				$this->settingTemporaryMountPoint($set);
 				// Clear:
@@ -287,7 +263,7 @@ class Tx_Commerce_ViewHelpers_Navigation_OrdersViewHelper extends \TYPO3\CMS\Bac
 			}
 		}
 
-			// Getting temporary mount point ID:
+		// Getting temporary mount point ID:
 		$temporaryMountPoint = (int) $backendUser->getSessionData('pageTree_temporaryMountPoint_orders');
 
 		// If mount point ID existed and is within users
@@ -303,10 +279,22 @@ class Tx_Commerce_ViewHelpers_Navigation_OrdersViewHelper extends \TYPO3\CMS\Bac
 	 * @return void
 	 */
 	protected function settingTemporaryMountPoint($pageId) {
-		/** @var t3lib_beUserAuth $backendUser */
-		$backendUser = $GLOBALS['BE_USER'];
+		// Setting temporary mount point ID:
+		$this->getBackendUser()->setAndSaveSessionData('pageTree_temporaryMountPoint_orders', (int) $pageId);
+	}
 
-			// Setting temporary mount point ID:
-		$backendUser->setAndSaveSessionData('pageTree_temporaryMountPoint_orders', (int) $pageId);
+
+	/**
+	 * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
+	 */
+	protected function getBackendUser() {
+		return $GLOBALS['BE_USER'];
+	}
+
+	/**
+	 * @return \TYPO3\CMS\Lang\LanguageService
+	 */
+	protected function getLanguageService() {
+		return $GLOBALS['LANG'];
 	}
 }

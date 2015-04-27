@@ -34,7 +34,7 @@ class Tx_Commerce_Tree_Leaf_ArticleData extends Tx_Commerce_Tree_Leaf_SlaveData 
 	 *
 	 * @var string
 	 */
-	protected $extendedFields = 'title, hidden';
+	protected $extendedFields = 'title, navtitle, hidden, deleted, starttime, endtime, fe_group, t3ver_oid, t3ver_id, t3ver_label';
 
 	/**
 	 * @var string

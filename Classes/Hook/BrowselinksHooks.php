@@ -64,14 +64,38 @@ class Tx_Commerce_Hook_BrowselinksHooks implements \TYPO3\CMS\Core\ElementBrowse
 
 		// add js
 		// has to be added as script tags to the body since parentObject
-		// is not passed by reference first we go from rhtml path to typo3 path
-		$linkToTreeJs = '/' . TYPO3_mainDir . '/js/tree.js';
+		// is not passed by reference first we go from html path to typo3 path
+		$linkToTreeJs = '/' . TYPO3_mainDir . 'js/tree.js';
 
 		$this->script = '<script src="' . $linkToTreeJs . '" type="text/javascript"></script>';
 		$this->script .= GeneralUtility::wrapJS('
-			Tree.thisScript = "/' . TYPO3_mainDir . '/ajax.php",
 			Tree.ajaxID = "Tx_Commerce_Hook_BrowselinksHooks::ajaxExpandCollapse";
 		');
+
+		if ($parentObject->RTEtsConfigParams) {
+			$this->script .= GeneralUtility::wrapJS('
+				/**
+				 * needed because link_folder contains the side domain lately
+				 */
+				function link_commerce(theLink) {
+					if (document.ltargetform.anchor_title) browse_links_setTitle(document.ltargetform.anchor_title.value);
+					if (document.ltargetform.anchor_class) browse_links_setClass(document.ltargetform.anchor_class.value);
+					if (document.ltargetform.ltarget) browse_links_setTarget(document.ltargetform.ltarget.value);
+					if (document.ltargetform.lrel) browse_links_setAdditionalValue("rel", document.ltargetform.lrel.value);
+					browse_links_setAdditionalValue("data-htmlarea-external", "");
+					plugin.createLink(theLink, cur_target, cur_class, cur_title, additionalValues);
+					return false;
+				}
+			');
+		} else {
+			$this->script .= GeneralUtility::wrapJS('
+				function link_commerce(theLink) {
+					updateValueInMainForm(theLink);
+					close();
+					return false;
+				}
+			');
+		}
 	}
 
 	/**
@@ -80,7 +104,7 @@ class Tx_Commerce_Hook_BrowselinksHooks implements \TYPO3\CMS\Core\ElementBrowse
 	 * @return void
 	 */
 	protected function initTree() {
-		// initialiize the tree
+		// initialize the tree
 		$this->treeObj = GeneralUtility::makeInstance('Tx_Commerce_ViewHelpers_Browselinks_CategoryTree');
 		$this->treeObj->init();
 	}

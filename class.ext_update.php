@@ -22,7 +22,7 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-require_once(dirname(__FILE__) . '/Classes/Utility/UpdateUtility.php');
+require_once(PATH_site . 'typo3conf/ext/commerce/Classes/Utility/UpdateUtility.php');
 
 /**
  * Update Class for DB Updates
@@ -37,5 +37,3 @@ if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['
 	/** @noinspection PhpIncludeInspection */
 	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/class.ext_update.php']);
 }
-
-?>

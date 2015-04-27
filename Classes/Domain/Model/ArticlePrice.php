@@ -76,19 +76,6 @@ class Tx_Commerce_Domain_Model_ArticlePrice extends Tx_Commerce_Domain_Model_Abs
 	protected $price_net = 0;
 
 	/**
-	 * Constructor Method, calls init method
-	 *
-	 * @param int $uid
-	 * @param int $languageUid
-	 * @return self
-	 */
-	public function __construct($uid, $languageUid = 0) {
-		if ((int) $uid) {
-			$this->init($uid, $languageUid);
-		}
-	}
-
-	/**
 	 * Usual init method
 	 *
 	 * @param integer $uid Uid of product

@@ -32,7 +32,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Renders order list in the BE order module
  */
-class Tx_Commerce_ViewHelpers_OrderRecordList extends localRecordList {
+class Tx_Commerce_ViewHelpers_OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordList {
 	/**
 	 * @var integer
 	 */

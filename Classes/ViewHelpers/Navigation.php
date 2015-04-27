@@ -31,6 +31,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * Class Tx_Commerce_ViewHelpers_Navigation
  */
 class Tx_Commerce_ViewHelpers_Navigation {
+	const navigationIdent = 'COMMERCE_MENU_NAV';
+
 	/**
 	 * @var string
 	 */
@@ -277,13 +279,17 @@ class Tx_Commerce_ViewHelpers_Navigation {
 		/**
 		 * Unique Hash for this usergroup and page to display the navigation
 		 */
-		$hash = md5('tx_commerce_navigation' . implode('-', $this->mConf) . ':' . $usergroups . ':' . $GLOBALS['TSFE']->linkVars);
+		$hash = md5(
+			'tx_commerce_navigation:' . implode('-', $this->mConf) . ':' . $usergroups . ':' .
+			$GLOBALS['TSFE']->linkVars . ':' . GeneralUtility::getIndpEnv('HTTP_HOST')
+		);
+
 		$cachedMatrix = $this->getHash($hash, 0);
 
 		/**
 		 * Render Menue Array and store in cache, if possible
 		 */
-		if ($GLOBALS['TSFE']->no_cache == 1) {
+		if (($GLOBALS['TSFE']->no_cache == 1)) {
 			// Build directly and don't sore, if no_cache=1'
 			$this->mTree = $this->makeArrayPostRender(
 				$this->pid, 'tx_commerce_categories', 'tx_commerce_categories_parent_category_mm', 'tx_commerce_products',
@@ -319,7 +325,7 @@ class Tx_Commerce_ViewHelpers_Navigation {
 			if ($this->mConf['sortAllitems.']['type'] == 'alphabetiDesc') {
 				$this->sortAllMenuArray($this->mTree, 'alphabetiDesc');
 			}
-			$this->storeHash($hash, serialize($this->mTree), 'COMMERCE_MENU_NAV' . $this->cat);
+			$this->storeHash($hash, serialize($this->mTree), self::navigationIdent . $this->cat);
 		}
 
 		/**
@@ -612,7 +618,6 @@ class Tx_Commerce_ViewHelpers_Navigation {
 					$nodeArray['_PAGES_OVERLAY'] = htmlspecialchars(strip_tags($dataRow['title']));
 				}
 				$nodeArray['parent_id'] = $uidRoot;
-				$nodeArray['parent_id'] = $uidRoot;
 				$nodeArray['nav_title'] = htmlspecialchars(strip_tags($dataRow['navtitle']));
 
 				// Add custom Fields to array
@@ -701,6 +706,10 @@ class Tx_Commerce_ViewHelpers_Navigation {
 					}
 
 					$nodeArray['ITEM_STATE'] = 'NO';
+				}
+
+				if (strpos($nodeArray['_ADD_GETVARS'], 'showUid') === FALSE) {
+					$nodeArray['_ADD_GETVARS'] = $this->separator . $this->prefixId . '[showUid]=' . $nodeArray['_ADD_GETVARS'];
 				}
 
 				$nodeArray['_ADD_GETVARS'] .= $this->separator . 'cHash=' .
@@ -1219,7 +1228,8 @@ class Tx_Commerce_ViewHelpers_Navigation {
 				}
 			}
 
-			$additionalParams = $this->separator . $this->prefixId . '[catUid]=' . $categoryObject->getUid();
+			$additionalParams = $this->separator . $this->prefixId . '[showUid]=' .
+				$this->separator . $this->prefixId . '[catUid]=' . $categoryObject->getUid();
 
 			if (is_string($this->gpVars['basketHashValue'])) {
 				$additionalParams .= $this->separator . $this->prefixId . '[basketHashValue]=' . $this->gpVars['basketHashValue'];
@@ -1573,13 +1583,8 @@ class Tx_Commerce_ViewHelpers_Navigation {
 	 * @return string
 	 */
 	protected function generateChash($parameter) {
-		if (!is_array($parameter)) {
-			parse_str($parameter, $temp);
-			$parameter = $temp;
-		}
-
 		/** @var \TYPO3\CMS\Frontend\Page\CacheHashCalculator $cacheHashCalculator */
 		$cacheHashCalculator = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\CacheHashCalculator');
-		return $cacheHashCalculator->calculateCacheHash($parameter);
+		return $cacheHashCalculator->calculateCacheHash($cacheHashCalculator->getRelevantParameters($parameter));
 	}
 }

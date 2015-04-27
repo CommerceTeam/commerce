@@ -219,17 +219,7 @@ $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/AddressesCon
 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/AddressesController.php']['saveAddress'][] =
 	'EXT:commerce/Classes/Hook/Pi4Hooks.php:Tx_Commerce_Hook_Pi4Hooks';
 
-
-// Adding the AJAX listeners for Permission change/Browsing the Category tree
-$GLOBALS['TYPO3_CONF_VARS']['BE']['AJAX']['Tx_Commerce_Controller_PermissionAjaxController::dispatch'] =
-	'EXT:commerce/Classes/Controller/PermissionAjaxController.php:Tx_Commerce_Controller_PermissionAjaxController->dispatch';
-$GLOBALS['TYPO3_CONF_VARS']['BE']['AJAX']['Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper::ajaxExpandCollapseWithoutProduct'] =
-	'EXT:commerce/Classes/ViewHelpers/Navigation/CategoryViewHelper.php:Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper->ajaxExpandCollapseWithoutProduct';
-$GLOBALS['TYPO3_CONF_VARS']['BE']['AJAX']['Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper::ajaxExpandCollapse'] =
-	'EXT:commerce/Classes/ViewHelpers/Navigation/CategoryViewHelper.php:Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper->ajaxExpandCollapse';
-
-
-	// CLI Skript configration
+	// CLI Script configuration
 if (TYPO3_MODE == 'BE') {
 		// Setting up scripts that can be run from the cli_dispatch.phpsh script
 	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['GLOBAL']['cliKeys'][COMMERCE_EXTKEY] = array(

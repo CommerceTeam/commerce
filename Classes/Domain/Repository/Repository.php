@@ -304,7 +304,7 @@ class Tx_Commerce_Domain_Repository_Repository {
 		if (TYPO3_MODE === 'FE') {
 			$result = $GLOBALS['TSFE']->sys_page->enableFields($tableName, $showHiddenRecords);
 		} else {
-			$result = t3lib_BEfunc::BEenableFields($tableName);
+			$result = \TYPO3\CMS\Backend\Utility\BackendUtility::BEenableFields($tableName);
 		}
 
 		return $result;

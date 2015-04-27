@@ -1,49 +1,24 @@
 <?php
-/***************************************************************
- *  Copyright notice
+/**
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2005-2012 Ingo Schmitt <is@marketing-factory.de>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *  A copy is found in the textfile GPL.txt and important notices to the license
- *  from the author is found in LICENSE.txt distributed with these scripts.
- *
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
+
+use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Main script class for the systemData navigation frame
  */
-class Tx_Commerce_ViewHelpers_Navigation_SystemdataViewHelper extends t3lib_SCbase {
-	/**
-	 * @var template
-	 */
-	public $doc;
-
-	/**
-	 * @var integer
-	 */
-	public $id;
-
-	/**
-	 * @var language
-	 */
-	protected $language;
-
+class Tx_Commerce_ViewHelpers_Navigation_SystemdataViewHelper extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 	/**
 	 * @var boolean
 	 */
@@ -53,7 +28,7 @@ class Tx_Commerce_ViewHelpers_Navigation_SystemdataViewHelper extends t3lib_SCba
 	 * @return void
 	 */
 	public function init() {
-		$this->language = & $GLOBALS['LANG'];
+		$this->getLanguageService()->includeLLFile('EXT:commerce/Resources/Private/Language/locallang_mod_systemdata.xml');
 
 		$this->id = reset(Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Commerce', 'commerce'));
 	}
@@ -64,25 +39,16 @@ class Tx_Commerce_ViewHelpers_Navigation_SystemdataViewHelper extends t3lib_SCba
 	 * @return void
 	 */
 	public function initPage() {
-		$this->doc = t3lib_div::makeInstance('template');
+		/** @var \TYPO3\CMS\Backend\Template\DocumentTemplate $doc */
+		$doc = GeneralUtility::makeInstance('template');
+		$this->doc = $doc;
 		$this->doc->backPath = $GLOBALS['BACK_PATH'];
-		$this->doc->docType = 'xhtml_trans';
-		$this->doc->setModuleTemplate(PATH_TXCOMMERCE . 'Resources/Private/Backend/mod_systemdata_navigation.html');
+		$this->doc->setModuleTemplate('EXT:commerce/Resources/Private/Backend/mod_systemdata_navigation.html');
+		$this->doc->showFlashMessages = FALSE;
 
-		if (!$this->doc->moduleTemplate) {
-			t3lib_div::devLog('cannot set navframeTemplate', 'commerce', 2, array(
-				'backpath' => $this->doc->backPath,
-				'filename from TBE_STYLES' => $GLOBALS['TBE_STYLES']['htmlTemplates']['commerce/Resources/Private/Backend/mod_systemdata_navigation.html'],
-				'full path' => $this->doc->backPath . $GLOBALS['TBE_STYLES']['htmlTemplates']['commerce/Resources/Private/Backend/mod_systemdata_navigation.html']
-			));
-			$templateFile = PATH_TXCOMMERCE_REL . 'Resources/Private/Backend/mod_systemdata_navigation.html';
-			$this->doc->moduleTemplate = t3lib_div::getURL(PATH_site . $templateFile);
-		}
-
-			// JavaScript
 		$this->doc->JScode = $this->doc->wrapScriptTags('
 			function jumpTo(func, linkObj) {
-				var theUrl = top.TS.PATH_typo3 + top.currentSubScript+"?SET[function]=" + func;
+				var theUrl = top.TS.PATH_typo3 + top.currentSubScript+"&SET[function]=" + func;
 
 				if (top.condensedMode)	{
 					top.content.document.location=theUrl;
@@ -112,14 +78,14 @@ class Tx_Commerce_ViewHelpers_Navigation_SystemdataViewHelper extends t3lib_SCba
 		$docHeaderButtons = $this->getButtons();
 
 		$markers = array(
-			'ATTRIBUTES_TITLE' => $this->language->getLL('title_attributes'),
-			'ATTRIBUTES_DESCRIPTION' => $this->language->getLL('desc_attributes'),
+			'ATTRIBUTES_TITLE' => $this->getLanguageService()->getLL('title_attributes'),
+			'ATTRIBUTES_DESCRIPTION' => $this->getLanguageService()->getLL('desc_attributes'),
 
-			'MANUFACTURER_TITLE' => $this->language->getLL('title_manufacturer'),
-			'MANUFACTURER_DESCRIPTION' => $this->language->getLL('desc_manufacturer'),
+			'MANUFACTURER_TITLE' => $this->getLanguageService()->getLL('title_manufacturer'),
+			'MANUFACTURER_DESCRIPTION' => $this->getLanguageService()->getLL('desc_manufacturer'),
 
-			'SUPPLIER_TITLE' => $this->language->getLL('title_supplier'),
-			'SUPPLIER_DESCRIPTION' => $this->language->getLL('desc_supplier'),
+			'SUPPLIER_TITLE' => $this->getLanguageService()->getLL('title_supplier'),
+			'SUPPLIER_DESCRIPTION' => $this->getLanguageService()->getLL('desc_supplier'),
 		);
 
 		$subparts = array();
@@ -128,7 +94,9 @@ class Tx_Commerce_ViewHelpers_Navigation_SystemdataViewHelper extends t3lib_SCba
 		}
 
 			// put it all together
-		$this->content = $this->doc->startPage($this->language->sl('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:mod_category.navigation_title'));
+		$this->content = $this->doc->startPage(
+			$this->getLanguageService()->sl('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:mod_category.navigation_title')
+		);
 		$this->content .= $this->doc->moduleBody('', $docHeaderButtons, $markers, $subparts);
 		$this->content .= $this->doc->endPage();
 		$this->content = $this->doc->insertStylesAndJS($this->content);
@@ -144,7 +112,8 @@ class Tx_Commerce_ViewHelpers_Navigation_SystemdataViewHelper extends t3lib_SCba
 	}
 
 	/**
-	 * Create the panel of buttons for submitting the form or otherwise perform operations.
+	 * Create the panel of buttons for submitting the
+	 * form or otherwise perform operations.
 	 *
 	 * @return array all available buttons as an assoc. array
 	 */
@@ -155,24 +124,17 @@ class Tx_Commerce_ViewHelpers_Navigation_SystemdataViewHelper extends t3lib_SCba
 		);
 
 			// Refresh
-		$buttons['refresh'] = '<a href="' . htmlspecialchars(t3lib_div::getIndpEnv('REQUEST_URI')) . '">' .
-				t3lib_iconWorks::getSpriteIcon('actions-system-refresh') .
-		'</a>';
+		$buttons['refresh'] = '<a href="' . htmlspecialchars(GeneralUtility::getIndpEnv('REQUEST_URI')) . '">' .
+			\TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon('actions-system-refresh') .
+			'</a>';
 
 			// CSH
 		$buttons['csh'] = str_replace(
 			'typo3-csh-inline',
 			'typo3-csh-inline show-right',
-			t3lib_BEfunc::cshItem('xMOD_csh_commercebe', 'systemdata', $this->doc->backPath)
+			BackendUtility::cshItem('xMOD_csh_commercebe', 'systemdata', $this->doc->backPath)
 		);
 
 		return $buttons;
 	}
 }
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/ViewHelpers/Navigation/SystemdataViewHelper.php']) {
-	/** @noinspection PhpIncludeInspection */
-	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/ViewHelpers/Navigation/SystemdataViewHelper.php']);
-}
-
-?>
