@@ -30,7 +30,7 @@
  */
 class Tx_Commerce_Tree_Leaf_CategoryView extends Tx_Commerce_Tree_Leaf_View {
 	/**
-	 * DB Table ##isnt this read automatically?
+	 * DB Table isn't this read automatically?
 	 *
 	 * @var string
 	 */
@@ -50,15 +50,19 @@ class Tx_Commerce_Tree_Leaf_CategoryView extends Tx_Commerce_Tree_Leaf_View {
 	public function getJumpToParam($row) {
 		if (!is_array($row)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('getJumpToParam (Tx_Commerce_Tree_Leaf_View) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
+					'getJumpToParam (Tx_Commerce_Tree_Leaf_View) gets passed invalid parameters.',
+					COMMERCE_EXTKEY,
+					3
+				);
 			}
 			return '';
 		}
 
-			// get the UID of the Products SysFolder
+		// get the UID of the Products SysFolder
 		$productPid = Tx_Commerce_Utility_BackendUtility::getProductFolderUid();
 
-		$res = 'id=' . $productPid . '&control[' . $this->table . '][uid]=' . $row['uid'];
+		$res = '&id=' . $productPid . '&control[' . $this->table . '][uid]=' . $row['uid'];
 
 		if ($this->realValues) {
 			$res = $this->table . '_' . $row['uid'];
@@ -67,12 +71,3 @@ class Tx_Commerce_Tree_Leaf_CategoryView extends Tx_Commerce_Tree_Leaf_View {
 		return $res;
 	}
 }
-
-class_alias('Tx_Commerce_Tree_Leaf_CategoryView', 'tx_commerce_leaf_categoryview');
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Tree/Leaf/CategoryView.php']) {
-	/** @noinspection PhpIncludeInspection */
-	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Tree/Leaf/CategoryView.php']);
-}
-
-?>

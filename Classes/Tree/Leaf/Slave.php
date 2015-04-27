@@ -37,7 +37,7 @@ class Tx_Commerce_Tree_Leaf_Slave extends Tx_Commerce_Tree_Leaf_Leaf {
 	protected $parentLeaf;
 
 	/**
-	 * @var Tx_Commerce_Tree_Leaf_CategoryData
+	 * @var Tx_Commerce_Tree_Leaf_SlaveData
 	 */
 	public $data;
 
@@ -60,7 +60,10 @@ class Tx_Commerce_Tree_Leaf_Slave extends Tx_Commerce_Tree_Leaf_Leaf {
 	public function setParentLeaf(Tx_Commerce_Tree_Leaf_Leaf &$parentLeaf) {
 		if (is_null($parentLeaf)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('setParentLeaf (Tx_Commerce_Tree_Leaf_Slave) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
+					'setParentLeaf (Tx_Commerce_Tree_Leaf_Slave) gets passed invalid parameters.',
+					COMMERCE_EXTKEY, 3
+				);
 			}
 			return;
 		}
@@ -78,7 +81,10 @@ class Tx_Commerce_Tree_Leaf_Slave extends Tx_Commerce_Tree_Leaf_Leaf {
 	public function init($index, $parentIndices = array()) {
 		if (!is_numeric($index) || !is_array($parentIndices)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('init (Tx_Commerce_Tree_Leaf_Slave) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
+					'init (Tx_Commerce_Tree_Leaf_Slave) gets passed invalid parameters.',
+					COMMERCE_EXTKEY, 3
+				);
 			}
 			return;
 		}
@@ -103,7 +109,10 @@ class Tx_Commerce_Tree_Leaf_Slave extends Tx_Commerce_Tree_Leaf_Leaf {
 			// Check for valid parameters
 		if (!is_numeric($startUid) || !is_numeric($bank)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('printChildleafsByLoop (Tx_Commerce_Tree_Leaf_Slave) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
+					'printChildleafsByLoop (Tx_Commerce_Tree_Leaf_Slave) gets passed invalid parameters.',
+					COMMERCE_EXTKEY, 3
+				);
 			}
 			return '';
 		}
@@ -125,7 +134,10 @@ class Tx_Commerce_Tree_Leaf_Slave extends Tx_Commerce_Tree_Leaf_Leaf {
 			// Abort if the starting Category is not found
 		if (NULL == $child) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('printChildleafsByLoop (Tx_Commerce_Tree_Leaf_Slave) cannot find the starting category by its uid.', COMMERCE_EXTKEY, 3);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
+					'printChildleafsByLoop (Tx_Commerce_Tree_Leaf_Slave) cannot find the starting category by its uid.',
+					COMMERCE_EXTKEY, 3
+				);
 			}
 			return '';
 		}
@@ -155,11 +167,11 @@ class Tx_Commerce_Tree_Leaf_Slave extends Tx_Commerce_Tree_Leaf_Leaf {
 		$out .= $this->view->PMicon($child, $isLast, $exp, $isBank, $hasChildren);
 
 			// icon
-		$out .= $this->view->getIcon($child, $this->pid);
+		$out .= $this->view->getIcon($child);
 
 		if (
-			(strpos(t3lib_div::getIndpEnv('REQUEST_URI'), '/navigation.php') === FALSE)
-			&& (strpos(t3lib_div::getIndpEnv('HTTP_REFERER'), '/navigation.php') === FALSE)
+			(strpos(\TYPO3\CMS\Core\Utility\GeneralUtility::getIndpEnv('REQUEST_URI'), '/navigation.php') === FALSE)
+			&& (strpos(\TYPO3\CMS\Core\Utility\GeneralUtility::getIndpEnv('HTTP_REFERER'), '/navigation.php') === FALSE)
 		) {
 			$this->view->substituteRealValues();
 		}
@@ -174,10 +186,10 @@ class Tx_Commerce_Tree_Leaf_Slave extends Tx_Commerce_Tree_Leaf_Leaf {
 			// Print the children from the child leafs if the current leaf is expanded
 		if ($exp) {
 			$out .= '<ul>';
-			for ($i = 0; $i < $this->leafcount; $i ++) {
+			for ($i = 0; $i < $this->leafcount; $i++) {
 				/** @var Tx_Commerce_Tree_Leaf_Slave $leaf */
 				$leaf = & $this->leafs[$i];
-				$out .= $leaf->printChildleafsByParent($child['uid'], $bank, $this->treeName);
+				$out .= $leaf->printChildleafsByParent($child['uid'], $bank);
 			}
 			$out .= '</ul>';
 		}
@@ -199,7 +211,10 @@ class Tx_Commerce_Tree_Leaf_Slave extends Tx_Commerce_Tree_Leaf_Leaf {
 			// Check for valid parameters
 		if (!is_numeric($pid) || !is_numeric($bank)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('printChildleafsByParent (Tx_Commerce_Tree_Leaf_Slave) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
+					'printChildleafsByParent (Tx_Commerce_Tree_Leaf_Slave) gets passed invalid parameters.',
+					COMMERCE_EXTKEY, 3
+				);
 			}
 			return '';
 		}
@@ -212,7 +227,7 @@ class Tx_Commerce_Tree_Leaf_Slave extends Tx_Commerce_Tree_Leaf_Leaf {
 		$l = count($children);
 
 			// Process the child and children
-		for ($i = 0; $i < $l; $i ++) {
+		for ($i = 0; $i < $l; $i++) {
 			$child = $children[$i];
 
 			$this->pid = $pid;
@@ -221,13 +236,12 @@ class Tx_Commerce_Tree_Leaf_Slave extends Tx_Commerce_Tree_Leaf_Leaf {
 
 			// DLOG
 		if (TYPO3_DLOG) {
-			t3lib_div::devLog('printChildleafsByParent (Tx_Commerce_Tree_Leaf_Slave) did ' . $l . ' loops!', COMMERCE_EXTKEY, 1);
+			\TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
+				'printChildleafsByParent (Tx_Commerce_Tree_Leaf_Slave) did ' . $l . ' loops!',
+				COMMERCE_EXTKEY, 1
+			);
 		}
 
 		return $out;
 	}
 }
-
-class_alias('Tx_Commerce_Tree_Leaf_Slave', 'leafSlave');
-
-?>

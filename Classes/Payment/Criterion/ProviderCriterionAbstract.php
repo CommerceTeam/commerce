@@ -65,12 +65,3 @@ abstract class Tx_Commerce_Payment_Criterion_ProviderCriterionAbstract implement
 		$this->options = $options;
 	}
 }
-
-class_alias('Tx_Commerce_Payment_Criterion_ProviderCriterionAbstract', 'tx_commerce_payment_provider_criterion_abstract');
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Payment/Criterion/ProviderCriterionAbstract.php']) {
-	/** @noinspection PhpIncludeInspection */
-	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Payment/Criterion/ProviderCriterionAbstract.php']);
-}
-
-?>

@@ -39,7 +39,10 @@ abstract class Tx_Commerce_Tree_Leaf_SlaveData extends Tx_Commerce_Tree_Leaf_Dat
 	public function getPositionsByIndices($index, $indices) {
 		if (!is_numeric($index) || !is_array($indices)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('getPositionsByIndices (productdata) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
+					'getPositionsByIndices (productdata) gets passed invalid parameters.',
+					COMMERCE_EXTKEY, 3
+				);
 			}
 			return array();
 		}
@@ -48,7 +51,10 @@ abstract class Tx_Commerce_Tree_Leaf_SlaveData extends Tx_Commerce_Tree_Leaf_Dat
 		$firstIndex = $indices[0];
 		if (!is_array($this->positionArray[$firstIndex])) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('getPositionsByIndices (Tx_Commerce_Tree_Leaf_SlaveData) does not find the first Index in the position array.', COMMERCE_EXTKEY, 2);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
+					'getPositionsByIndices (Tx_Commerce_Tree_Leaf_SlaveData) does not find the first Index in the position array.',
+					COMMERCE_EXTKEY, 2
+				);
 			}
 			$this->positionUids = array();
 			return $this->positionUids;
@@ -65,13 +71,16 @@ abstract class Tx_Commerce_Tree_Leaf_SlaveData extends Tx_Commerce_Tree_Leaf_Dat
 	 *
 	 * @param integer $index Leaf index
 	 * @param array $parentIndices Parent Indices
-	 * @param Tx_Commerce_Tree_Leaf_MasterData &$parentLeafData LeafData of parent
+	 * @param Tx_Commerce_Tree_Leaf_Data &$parentLeafData LeafData of parent
 	 * @return void
 	 */
 	public function initRecords($index, $parentIndices, &$parentLeafData) {
 		if (!is_numeric($index) || !is_array($parentIndices) || is_null($parentLeafData)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('initRecords (Tx_Commerce_Tree_Leaf_SlaveData) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
+					'initRecords (Tx_Commerce_Tree_Leaf_SlaveData) gets passed invalid parameters.',
+					COMMERCE_EXTKEY, 3
+				);
 			}
 			return;
 		}
@@ -81,7 +90,10 @@ abstract class Tx_Commerce_Tree_Leaf_SlaveData extends Tx_Commerce_Tree_Leaf_Dat
 		if (!$backendUser->check('tables_select', $this->table)) {
 			$this->records = NULL;
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('initRecords User is not allowed to view table:' . $this->table, COMMERCE_EXTKEY, 3);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
+					'initRecords User is not allowed to view table:' . $this->table,
+					COMMERCE_EXTKEY, 3
+				);
 			}
 			return;
 		}
@@ -108,7 +120,3 @@ abstract class Tx_Commerce_Tree_Leaf_SlaveData extends Tx_Commerce_Tree_Leaf_Dat
 		$this->records = $this->loadRecords();
 	}
 }
-
-class_alias('Tx_Commerce_Tree_Leaf_SlaveData', 'leafSlaveData');
-
-?>

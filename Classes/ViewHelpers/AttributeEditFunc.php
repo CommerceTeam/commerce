@@ -24,39 +24,34 @@
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Backend\Utility\BackendUtility;
 
 /**
  * User Class for displaying Orders
  */
 class Tx_Commerce_ViewHelpers_AttributeEditFunc {
 	/**
-	 * valuelist
-	 * renders the valulist to a value
+	 * renders the value list to a value
 	 *
-	 * @param array $PA
+	 * @param array $parameter
 	 * @return string HTML-Content
 	 */
-	public function valuelist($PA) {
+	public function valuelist($parameter) {
 		/** @var t3lib_db $database */
 		$database = $GLOBALS['TYPO3_DB'];
 		/** @var language $language */
 		$language = $GLOBALS['LANG'];
 
 		$content = '';
-		$foreign_table = 'tx_commerce_attribute_values';
+		$foreignTable = 'tx_commerce_attribute_values';
 		$table = 'tx_commerce_attributes';
 
-		/** @var smallDoc $doc */
-		$doc = t3lib_div::makeInstance('smallDoc');
+		/** @var \TYPO3\CMS\Backend\Template\SmallDocumentTemplate $doc */
+		$doc = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\SmallDocumentTemplate');
 		$doc->backPath = $GLOBALS['BACK_PATH'];
 
-		/**
-		 * Load the table TCA into local variable
-		 */
-		t3lib_div::loadTCA($foreign_table);
-
-		$attributeStoragePid = $PA['row']['pid'];
-		$attributeUid = $PA['row']['uid'];
+		$attributeStoragePid = $parameter['row']['pid'];
+		$attributeUid = $parameter['row']['uid'];
 		/**
 		 * Select Attribute Values
 		 */
@@ -64,19 +59,15 @@ class Tx_Commerce_ViewHelpers_AttributeEditFunc {
 		/**
 		 * @todo TS config of fields in list
 		 */
-		$field_rows = array('attributes_uid', 'value');
-
-		/**
-		 * Taken from class.db_list_extra.php
-		 */
-		$titleCol = $GLOBALS['TCA'][$foreign_table]['ctrl']['label'];
+		$rowFields = array('attributes_uid', 'value');
+		$titleCol = $GLOBALS['TCA'][$foreignTable]['ctrl']['label'];
 
 			// Create the SQL query for selecting the elements in the listing:
 		$result = $database->exec_SELECTquery(
 			'*',
-			$foreign_table,
-			'pid = $attributeStoragePid ' . t3lib_BEfunc::deleteClause($foreign_table) .
-				' AND attributes_uid=\'' . $database->quoteStr($attributeUid, $foreign_table) . '\''
+			$foreignTable,
+			'pid = $attributeStoragePid ' . BackendUtility::deleteClause($foreignTable) .
+				' AND attributes_uid=\'' . $database->quoteStr($attributeUid, $foreignTable) . '\''
 		);
 		$dbCount = $database->sql_num_rows($result);
 
@@ -85,18 +76,20 @@ class Tx_Commerce_ViewHelpers_AttributeEditFunc {
 			/**
 			 * Only if we have a result
 			 */
-			$theData[$titleCol] = '<span class="c-table">' . $language->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:attributeview.valuelist', 1) . '</span> (' . $dbCount . ')';
-			$num_cols = count($field_rows);
+			$theData[$titleCol] = '<span class="c-table">' .
+				$language->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:attributeview.valuelist', 1) .
+				'</span> (' . $dbCount . ')';
+			$fieldCount = count($rowFields);
 			$out .= '
 					<tr>
-						<td class="c-headLineTable" style="width:95%;" colspan="' . ($num_cols + 1) . '">' . $theData[$titleCol] . '</td>
+						<td class="c-headLineTable" style="width:95%;" colspan="' . ($fieldCount + 1) . '">' . $theData[$titleCol] . '</td>
 					</tr>';
 			/**
 			 * Header colum
 			 */
 			$out .= '<tr>';
-			foreach ($field_rows as $field) {
-				$out .= '<td class="c-headLineTable"><b>' . $language->sL(t3lib_BEfunc::getItemLabel($foreign_table, $field)) . '</b></td>';
+			foreach ($rowFields as $field) {
+				$out .= '<td class="c-headLineTable"><b>' . $language->sL(BackendUtility::getItemLabel($foreignTable, $field)) . '</b></td>';
 			}
 			$out .= '<td class="c-headLineTable"></td>';
 			$out .= '</tr>';
@@ -106,40 +99,47 @@ class Tx_Commerce_ViewHelpers_AttributeEditFunc {
 			 */
 			$cc = 0;
 			$iOut = '';
-			while ($row = $database->sql_fetch_assoc($result)) {
+			while (($row = $database->sql_fetch_assoc($result))) {
 				$cc++;
-				$row_bgColor = (($cc % 2) ? '' : ' bgcolor="' . t3lib_div::modifyHTMLColor($GLOBALS['SOBE']->doc->bgColor4, 10, 10, 10) . '"');
+				$rowBackgroundColor = (
+					($cc % 2) ?
+					'' :
+					' bgcolor="' . \TYPO3\CMS\Core\Utility\GeneralUtility::modifyHTMLColor($GLOBALS['SOBE']->doc->bgColor4, 10, 10, 10) . '"'
+				);
 
 				/**
 				 * Not very noice to render html_code directly
 				 *
 				 * @todo change rendering html code here
 				 * */
-				$iOut .= '<tr ' . $row_bgColor . '>';
-				foreach ($field_rows as $field) {
+				$iOut .= '<tr ' . $rowBackgroundColor . '>';
+				foreach ($rowFields as $field) {
 					$iOut .= '<td>';
 					$wrap = array('', '');
 
 					switch ($field) {
 						case $titleCol:
-							$params = '&edit[' . $foreign_table . '][' . $row['uid'] . ']=edit';
+							$params = '&edit[' . $foreignTable . '][' . $row['uid'] . ']=edit';
 							$wrap = array(
-								'<a href="#" onclick="' . htmlspecialchars(t3lib_BEfunc::editOnClick($params, $GLOBALS['BACK_PATH'])) . '">',
+								'<a href="#" onclick="' . htmlspecialchars(BackendUtility::editOnClick($params, $GLOBALS['BACK_PATH'])) . '">',
 								'</a>'
 							);
-						break;
+							break;
+
+						default:
 					}
-					$iOut .= implode(t3lib_BEfunc::getProcessedValue($foreign_table, $field, $row[$field], 100), $wrap);
+					$iOut .= implode(BackendUtility::getProcessedValue($foreignTable, $field, $row[$field], 100), $wrap);
 					$iOut .= '</td>';
 				}
 				/**
 				 * Trash icon
 				 */
-				$onClick = 'deleteRecord(\'' . $foreign_table . '\', ' . $row['uid'] . ', \'alt_doc.php?edit[tx_commerce_attributes][' . $attributeUid . ']=edit\');';
+				$onClick = 'deleteRecord(\'' . $foreignTable . '\', ' . $row['uid'] .
+					', \'alt_doc.php?edit[tx_commerce_attributes][' . $attributeUid . ']=edit\');';
 
 				$iOut .= '<td>&nbsp;';
 				$iOut .= '<a href="#" onclick="' . $onClick . '">' .
-					t3lib_iconWorks::getSpriteIcon('actions-edit-delete') . '</a></td>';
+					\TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon('actions-edit-delete') . '</a></td>';
 				$iOut .= '</tr>';
 			}
 
@@ -149,10 +149,10 @@ class Tx_Commerce_ViewHelpers_AttributeEditFunc {
 			 */
 			$out .= '<tr>';
 
-			foreach ($field_rows as $field) {
+			foreach ($rowFields as $field) {
 				$out .= '<td class="c-headLineTable"><b>';
 				if ($sum[$field] > 0) {
-					$out .= t3lib_BEfunc::getProcessedValueExtra($foreign_table, $field, $sum[$field], 100);
+					$out .= BackendUtility::getProcessedValueExtra($foreignTable, $field, $sum[$field], 100);
 				}
 
 				$out .= '</b></td>';
@@ -173,22 +173,14 @@ class Tx_Commerce_ViewHelpers_AttributeEditFunc {
 		/**
 		 * New article
 		 */
-		$params = '&edit[' . $foreign_table . '][' . $attributeStoragePid . ']=new&defVals[' . $foreign_table . '][attributes_uid]=' . urlencode($attributeUid);
-		$content .= '<div id="typo3-newRecordLink">';
-		$content .= '<a href="#" onclick="' . htmlspecialchars(t3lib_BEfunc::editOnClick($params, $GLOBALS['BACK_PATH'])) . '">';
-		$content .= $language->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:attributeview.addvalue', 1);
-		$content .= '</a>';
-		$content .= '</div>';
+		$params = '&edit[' . $foreignTable . '][' . $attributeStoragePid . ']=new&defVals[' . $foreignTable . '][attributes_uid]=' .
+			urlencode($attributeUid);
+		$content .= '<div id="typo3-newRecordLink">
+			<a href="#" onclick="' . htmlspecialchars(BackendUtility::editOnClick($params, $GLOBALS['BACK_PATH'])) . '">
+				' . $language->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:attributeview.addvalue', 1) .
+				'</a>
+			</div>';
 
 		return $content;
 	}
 }
-
-class_alias('Tx_Commerce_ViewHelpers_AttributeEditFunc', 'user_attributeedit_func');
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/ViewHelpers/AttributeEditFunc.php']) {
-	/** @noinspection PhpIncludeInspection */
-	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/ViewHelpers/AttributeEditFunc.php']);
-}
-
-?>

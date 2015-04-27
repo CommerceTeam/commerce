@@ -24,6 +24,7 @@
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Base class for the (iframe) treeview in TCEforms elements
@@ -47,7 +48,7 @@
  *
  * Might be possible with AJAX ...
  */
-class Tx_Commerce_ViewHelpers_TreelibBrowser extends t3lib_SCbase {
+class Tx_Commerce_ViewHelpers_TreelibBrowser extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 	/**
 	 * @var string
 	 */
@@ -92,15 +93,15 @@ class Tx_Commerce_ViewHelpers_TreelibBrowser extends t3lib_SCbase {
 		parent::init();
 
 		// Setting GPvars:
-		$this->table = t3lib_div::_GP('table');
-		$this->field = t3lib_div::_GP('field');
-		$this->uid = t3lib_div::_GP('uid');
-		$this->itemFormElName = t3lib_div::_GP('elname');
-		$this->flexConfig = t3lib_div::_GP('config');
-		$seckey = t3lib_div::_GP('seckey');
-		$allowProducts = t3lib_div::_GP('allowProducts');
+		$this->table = GeneralUtility::_GP('table');
+		$this->field = GeneralUtility::_GP('field');
+		$this->uid = GeneralUtility::_GP('uid');
+		$this->itemFormElName = GeneralUtility::_GP('elname');
+		$this->flexConfig = GeneralUtility::_GP('config');
+		$seckey = GeneralUtility::_GP('seckey');
+		$allowProducts = GeneralUtility::_GP('allowProducts');
 
-		if (!($seckey === t3lib_div::shortMD5($this->table . '|' . $this->field . '|' . $this->uid . '|' . $this->itemFormElName .
+		if (!($seckey === GeneralUtility::shortMD5($this->table . '|' . $this->field . '|' . $this->uid . '|' . $this->itemFormElName .
 				'|' . $this->flexConfig . '|' . $allowProducts . '|' . $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey']))) {
 			die('access denied');
 		}
@@ -113,14 +114,14 @@ class Tx_Commerce_ViewHelpers_TreelibBrowser extends t3lib_SCbase {
 
 		// Initialize template object
 		/** @var template $doc */
-		$doc = t3lib_div::makeInstance('template');
+		$doc = GeneralUtility::makeInstance('template');
 		$this->doc = $doc;
 		$this->doc->docType = 'xhtml_trans';
 		$this->doc->backPath = $this->backPath;
 
 		// from tx_dam_SCbase
 		$buttonColor = '#e3dfdb';
-		$buttonColorHover = t3lib_div::modifyHTMLcolor($buttonColor, -20, -20, -20);
+		$buttonColorHover = GeneralUtility::modifyHTMLcolor($buttonColor, -20, -20, -20);
 
 		// in typo3/stylesheets.css css is defined with id instead of
 		// a class: TABLE#typo3-tree that's why we need TABLE.typo3-browsetree
@@ -154,13 +155,11 @@ class Tx_Commerce_ViewHelpers_TreelibBrowser extends t3lib_SCbase {
 		if ($allowProducts) {
 			// Check if we need to allow browsing of products.
 			$this->doc->JScode .= $this->doc->wrapScriptTags('
-				Tree.thisScript = "../../../../../typo3/ajax.php",
 				Tree.ajaxID = "Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper::ajaxExpandCollapse";
 			');
 		} else {
 			// Check if we need to allow browsing of products.
 			$this->doc->JScode .= $this->doc->wrapScriptTags('
-				Tree.thisScript = "../../../../../typo3/ajax.php",
 				Tree.ajaxID = "Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper::ajaxExpandCollapseWithoutProduct";
 			');
 		}
@@ -171,7 +170,7 @@ class Tx_Commerce_ViewHelpers_TreelibBrowser extends t3lib_SCbase {
 		$this->doc->JScode .= $this->doc->wrapScriptTags(
 			($this->currentSubScript ? 'top.currentSubScript=unescape("' . rawurlencode($this->currentSubScript) . '");' : '') . '
 
-			function jumpTo(id,linkObj,highLightID,script)	{
+			function jumpTo(id, linkObj, highLightID, script) {
 				var catUid = id.substr(id.lastIndexOf("=") + 1); //We can leave out the "="
 				var text   = (linkObj.firstChild) ? linkObj.firstChild.nodeValue : "Unknown";
 				//Params (field, value, caption)
@@ -192,12 +191,9 @@ class Tx_Commerce_ViewHelpers_TreelibBrowser extends t3lib_SCbase {
 		$this->content .= $this->doc->startPage('Treeview Browser');
 
 		/** @var t3lib_tceforms $form */
-		$form = t3lib_div::makeInstance('t3lib_tceforms');
+		$form = GeneralUtility::makeInstance('t3lib_tceforms');
 		$form->initDefaultBEmode();
 		$form->backPath = $this->backPath;
-
-		// modifying TCA to force the right rendering - not nice but works
-		t3lib_div::loadTCA($this->table);
 
 		$row['uid'] = $this->uid;
 
@@ -244,7 +240,7 @@ class Tx_Commerce_ViewHelpers_TreelibBrowser extends t3lib_SCbase {
 		// This will render MM relation fields in the correct way.
 		// Read the whole record, which is not needed, but there's no other way.
 		/** @var t3lib_transferData $trData */
-		$trData = t3lib_div::makeInstance('t3lib_transferData');
+		$trData = GeneralUtility::makeInstance('t3lib_transferData');
 		$trData->addRawData = TRUE;
 		$trData->lockRecords = TRUE;
 		$trData->fetchRecord($this->table, $this->uid, '');
@@ -254,12 +250,3 @@ class Tx_Commerce_ViewHelpers_TreelibBrowser extends t3lib_SCbase {
 		return $row;
 	}
 }
-
-class_alias('Tx_Commerce_ViewHelpers_TreelibBrowser', 'tx_commerce_treelib_browser');
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/ViewHelpers/TreelibBrowser.php']) {
-	/** @noinspection PhpIncludeInspection */
-	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/ViewHelpers/TreelibBrowser.php']);
-}
-
-?>

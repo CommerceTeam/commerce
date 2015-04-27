@@ -24,6 +24,8 @@
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Implements the data view of the leaf
@@ -44,7 +46,8 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 	protected $positionUids;
 
 	/**
-	 * Holds an array with the positionUids per mount [mount] => array(pos1, pos2,...,posX)
+	 * Holds an array with the positionUids per mount
+	 * [mount] => array(pos1, pos2,...,posX)
 	 *
 	 * @var array
 	 */
@@ -100,7 +103,8 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 	protected $extendedFields = '';
 
 	/**
-	 * WHERE-Clause of the SELECT; will be calculated depending on if we read them recursively or by Mountpoints
+	 * WHERE-Clause of the SELECT; will be calculated depending
+	 * on if we read them recursively or by Mountpoints
 	 *
 	 * @var string
 	 */
@@ -174,6 +178,15 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 
 
 	/**
+	 * Initializes the data gets overridden by child
+	 * Builds the Permission-Statement
+	 *
+	 * @return void
+	 */
+	public function init() {
+	}
+
+	/**
 	 * Returns the table name
 	 *
 	 * @return string Table name
@@ -210,7 +223,7 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 	public function isExpanded($uid) {
 		if (!is_numeric($uid)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('isExpanded (Tx_Commerce_Tree_Leaf_Data) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				GeneralUtility::devLog('isExpanded (Tx_Commerce_Tree_Leaf_Data) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
 			}
 			return FALSE;
 		}
@@ -221,13 +234,13 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 	/**
 	 * Sets the position Ids
 	 *
+	 * @param array $positionIds - Array with the Category uids which are current
 	 * @return void
-	 * @param array $positionIds - Array with the Category uids which are current positions of the user
 	 */
 	public function setPositions(&$positionIds) {
 		if (!is_array($positionIds)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('setPositions (Tx_Commerce_Tree_Leaf_Data) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				GeneralUtility::devLog('setPositions (Tx_Commerce_Tree_Leaf_Data) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
 			}
 			return;
 		}
@@ -244,7 +257,7 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 	public function getPositionsByIndices($index, $indices) {
 		if (!is_numeric($index) || !is_array($indices)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('getPositionsByIndices (productdata) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				GeneralUtility::devLog('getPositionsByIndices (productdata) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
 			}
 			return array();
 		}
@@ -261,20 +274,24 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 			// if we didn't find mounts, exit
 		if ($l == 0) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('getPositionsByIndices (Tx_Commerce_Tree_Leaf_Data) cannot proceed because it did not find mounts', COMMERCE_EXTKEY, 3);
+				GeneralUtility::devLog(
+					'getPositionsByIndices (Tx_Commerce_Tree_Leaf_Data) cannot proceed because it did not find mounts',
+					COMMERCE_EXTKEY,
+					3
+				);
 			}
 			return array();
 		}
 
 		$positions = array();
 
-		for ($i = 0; $i < $l; $i ++) {
+		for ($i = 0; $i < $l; $i++) {
 			$posIds = $this->positionArray[$firstIndex][$mounts[$i]];
 
 				// Go to the correct Leaf in the Positions
 			if (0 < $m) {
 					// Go to correct parentleaf
-				for ($j = 1; $j < $m; $j ++) {
+				for ($j = 1; $j < $m; $j++) {
 					$posIds = $posIds[$indices[$j]];
 				}
 					// select current leaf
@@ -309,7 +326,7 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 	public function setBank($bank) {
 		if (!is_numeric($bank)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('setBank (Tx_Commerce_Tree_Leaf_Data) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				GeneralUtility::devLog('setBank (Tx_Commerce_Tree_Leaf_Data) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
 			}
 			return;
 		}
@@ -360,7 +377,7 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 	 * Sorts the records to represent the linar structure of the tree
 	 * Stores the resulting array in an internal variable
 	 *
-	 * @param integer $rootUid - UID of the Item that will act as the root to the tree
+	 * @param integer $rootUid - UID of the Item that will act as root
 	 * @param integer $depth
 	 * @param boolean $last
 	 * @param integer $crazyRecursionLimiter
@@ -369,7 +386,7 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 	public function sort($rootUid, $depth = 0, $last = FALSE, $crazyRecursionLimiter = 999) {
 		if (!is_numeric($rootUid) || !is_numeric($depth) || !is_numeric($crazyRecursionLimiter)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('sort (Tx_Commerce_Tree_Leaf_Data) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				GeneralUtility::devLog('sort (Tx_Commerce_Tree_Leaf_Data) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
 			}
 			return;
 		}
@@ -381,11 +398,14 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 
 		if (isset($this->records['uid'][$rootUid])) {
 
-				// Place the current record in the array
+			// Place the current record in the array
 			$entry = array();
+			// deprecated key should not be used anymore to be more compatible to pagetree
 			$entry['record'] = $this->records['uid'][$rootUid];
-			$entry['depth']  = $depth;
-			$entry['last']   = $last;
+			// new key to be more compatible to pagetree
+			$entry['row'] = $this->records['uid'][$rootUid];
+			$entry['depth'] = $depth;
+			$entry['last'] = $last;
 
 			$this->sortedArray[] = $entry;
 
@@ -394,12 +414,13 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 
 			$l = count($children);
 
-			for ($i = 0; $i < $l; $i ++) {
+			for ($i = 0; $i < $l; $i++) {
 				$this->sort($children[$i]['uid'], $depth + 1, ($i == $l - 1), $crazyRecursionLimiter - 1);
 			}
 		}
 
-			// Set sorted to True to block further sorting - only after all recursion is done
+		// Set sorted to True to block further sorting
+		// - only after all recursion is done
 		if (0 == $depth) {
 			$this->sorted = TRUE;
 		}
@@ -428,6 +449,7 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 		if (!$this->isLoaded()) {
 			return FALSE;
 		}
+
 		return (count($this->records['uid']) > 0 && count($this->records['pid']) > 0);
 	}
 
@@ -441,7 +463,7 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 	public function &getChildByUid($uid) {
 		if (!is_numeric($uid)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('getChildByUid (Tx_Commerce_Tree_Leaf_Data) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				GeneralUtility::devLog('getChildByUid (Tx_Commerce_Tree_Leaf_Data) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
 			}
 			return NULL;
 		}
@@ -463,7 +485,7 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 	public function &getChildrenByPid($pid) {
 		if (!is_numeric($pid)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('getChildrenByPid (Tx_Commerce_Tree_Leaf_Data) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				GeneralUtility::devLog('getChildrenByPid (Tx_Commerce_Tree_Leaf_Data) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
 			}
 			return NULL;
 		}
@@ -482,14 +504,14 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 	 */
 	public function loadRecords() {
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/tree/class.leafData.php']['loadRecords'])) {
-			t3lib_div::deprecationLog('
+			GeneralUtility::deprecationLog('
 				hook
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/tree/class.leafData.php\'][\'loadRecords\']
 				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Tree/Leaf/Data.php\'][\'loadRecords\']
 			');
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/tree/class.leafData.php']['loadRecords'] as $classRef) {
-				$hookObj = &t3lib_div::getUserObj($classRef);
+				$hookObj = &GeneralUtility::getUserObj($classRef);
 				if (method_exists($hookObj, 'addExtendedFields')) {
 					$this->extendedFields .= $hookObj->addExtendedFields($this->itemTable, $this->extendedFields);
 				}
@@ -497,7 +519,7 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 		}
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Tree/Leaf/Data.php']['loadRecords'])) {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Tree/Leaf/Data.php']['loadRecords'] as $classRef) {
-				$hookObj = &t3lib_div::getUserObj($classRef);
+				$hookObj = &GeneralUtility::getUserObj($classRef);
 				if (method_exists($hookObj, 'addExtendedFields')) {
 					$this->extendedFields .= $hookObj->addExtendedFields($this->itemTable, $this->extendedFields);
 				}
@@ -520,7 +542,8 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 		} else {
 			$where  = $this->whereClause;
 			$where .= ('' == $this->whereClause) ? '' : ' AND ';
-			$where .= '(' . $this->itemParentField . ' IN (' . $this->where[$this->itemParentField] . ') OR uid IN(' . $this->where['uid'] . '))';
+			$where .= '(' . $this->itemParentField . ' IN (' . $this->where[$this->itemParentField] .
+				') OR uid IN(' . $this->where['uid'] . '))';
 		}
 
 		/** @var t3lib_db $database */
@@ -535,7 +558,11 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 
 		if ($database->sql_error()) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('loadRecords (Tx_Commerce_Tree_Leaf_Data) could not load records. Possible sql error. Empty rows returned.', COMMERCE_EXTKEY, 3);
+				GeneralUtility::devLog(
+					'loadRecords (Tx_Commerce_Tree_Leaf_Data) could not load records. Possible sql error. Empty rows returned.',
+					COMMERCE_EXTKEY,
+					3
+				);
 			}
 			return array();
 		}
@@ -544,17 +571,21 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 		$checkRightRow = FALSE;
 
 		$rows = array();
-		while ($row = $database->sql_fetch_assoc($res)) {
+		while (($row = $database->sql_fetch_assoc($res))) {
 				// get the version overlay if wanted
 				// store parent item
 			$parentItem = $row['item_parent'];
 				// unset the pseudo-field (no pseudo-fields allowed for workspaceOL)
 			unset($row['item_parent']);
 
-			t3lib_BEfunc::workspaceOL($this->itemTable, $row);
+			BackendUtility::workspaceOL($this->itemTable, $row);
 
 			if (!is_array($row)) {
-				debug('There was an error overlaying a record with its workspace version.');
+				GeneralUtility::devLog(
+					'There was an error overlaying a record with its workspace version.',
+					COMMERCE_EXTKEY,
+					3
+				);
 				continue;
 			} else {
 					// write the pseudo field again
@@ -583,7 +614,12 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 			// Check perms on Commerce folders.
 		if ($checkRightRow !== FALSE && !$this->checkAccess($this->itemTable, $checkRightRow)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('loadRecords (Tx_Commerce_Tree_Leaf_Data) could not load records because it doesnt have permissions on the commerce folder. Return empty array.', COMMERCE_EXTKEY, 3);
+				GeneralUtility::devLog(
+					'loadRecords (Tx_Commerce_Tree_Leaf_Data) could not load records because it doesn\'t
+						have permissions on the commerce folder. Return empty array.',
+					COMMERCE_EXTKEY,
+					3
+				);
 			}
 			return array();
 		}
@@ -594,10 +630,11 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 			$l = count($keys);
 			$lastIndex = NULL;
 
-			for ($i = 0; $i < $l; $i ++) {
+			for ($i = 0; $i < $l; $i++) {
 				$lastIndex = end(array_keys($rows['pid'][$keys[$i]]));
 
-					// Change last-attribute in 'uid' and 'pid' array - this now holds under which pids the record is last
+				// Change last-attribute in 'uid' and 'pid' array
+				// - this now holds under which pids the record is last
 				$uidItem = $rows['uid'][$rows['pid'][$keys[$i]][$lastIndex]['uid']];
 
 				$rows['uid'][$rows['pid'][$keys[$i]][$lastIndex]['uid']]['lastNode'] =
@@ -612,8 +649,9 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 	}
 
 	/**
-	 * Checks the page access rights (Code for access check mostly taken from alt_doc.php)
-	 * as well as the table access rights of the user.
+	 * Checks the page access rights (Code for access check mostly
+	 * taken from alt_doc.php) as well as the table access rights
+	 * of the user.
 	 *
 	 * @see tx_recycler
 	 * @param string $table: The table to check access for
@@ -621,35 +659,36 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 	 * @return	boolean		Returns true is the user has access, or false if not
 	 */
 	public function checkAccess($table, $row) {
-			// Checking if the user has permissions? (Only working as a precaution, because the final permission check
-			// is always down in TCE. But it's good to notify the user on beforehand...)
-			// First, resetting flags.
+		// Checking if the user has permissions?
+		// (Only working as a precaution, because the final permission check
+		// is always down in TCE. But it's good to notify the user on beforehand...)
+		// First, resetting flags.
 		$hasAccess = 0;
-		/** @var t3lib_beUserAuth $backendUser */
-		$backendUser = & $GLOBALS['BE_USER'];
+		$backendUser = $this->getBackendUser();
 
-		$calcPRec = $row;
-		t3lib_BEfunc::fixVersioningPid($table, $calcPRec);
-		if (is_array($calcPRec)) {
+		$calcPermissionRecord = $row;
+		BackendUtility::fixVersioningPid($table, $calcPermissionRecord);
+		if (is_array($calcPermissionRecord)) {
 				// If pages:
 			if ($table == 'pages') {
-				$CALC_PERMS = $backendUser->calcPerms($calcPRec);
-				$hasAccess = $CALC_PERMS & 2 ? 1 : 0;
+				$hasAccess = $backendUser->calcPerms($calcPermissionRecord) & 2 ? 1 : 0;
 			} else {
-					// Fetching pid-record first.
-				$CALC_PERMS = $backendUser->calcPerms(t3lib_BEfunc::getRecord('pages', $calcPRec['pid']));
-				$hasAccess = $CALC_PERMS & 16 ? 1 : 0;
+				// Fetching pid-record first.
+				$hasAccess = $backendUser->calcPerms(BackendUtility::getRecord('pages', $calcPermissionRecord['pid'])) & 16 ? 1 : 0;
 			}
 		}
 
 		if ($hasAccess) {
-			$hasAccess = $backendUser->isInWebMount($calcPRec['pid'], '1=1');
+			$hasAccess = $backendUser->isInWebMount($calcPermissionRecord['pid'], '1=1');
 		}
 
 		return $hasAccess ? TRUE : FALSE;
 	}
+
+	/**
+	 * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
+	 */
+	protected function getBackendUser() {
+		return $GLOBALS['BE_USER'];
+	}
 }
-
-class_alias('Tx_Commerce_Tree_Leaf_Data', 'leafData');
-
-?>

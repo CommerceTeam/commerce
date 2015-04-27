@@ -90,20 +90,11 @@ class Tx_Commerce_Hook_LinkhandlerHooks {
 			$link_param = $DisplayPID;
 		}
 
-		$lconf = array (
-			'parameter' => $link_param,
-			'additionalParams' => $addparams,
-			'additionalParams.insertData' => 1,
-			'useCacheHash' => 1
-		);
+		$lconf = $conf;
+		unset($lconf['parameter.']);
+		$lconf['parameter'] = $link_param;
+		$lconf['additionalParams'] .= $addparams;
 
 		return $localcObj->typoLink($linktxt, $lconf);
 	}
 }
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Hook/LinkhandlerHooks.php']) {
-	/** @noinspection PhpIncludeInspection */
-	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Hook/LinkhandlerHooks.php']);
-}
-
-?>

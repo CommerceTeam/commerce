@@ -24,6 +24,8 @@
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * This class contains some hooks for processing formdata.
@@ -44,7 +46,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 	 * This is just a constructor to instanciate the backend library
 	 */
 	public function __construct() {
-		$this->belib = t3lib_div::makeInstance('Tx_Commerce_Utility_BackendUtility');
+		$this->belib = GeneralUtility::makeInstance('Tx_Commerce_Utility_BackendUtility');
 	}
 
 
@@ -147,7 +149,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 	 * @return array
 	 */
 	protected function preProcessCategory($incomingFieldArray, $id) {
-		$categories = array_diff(t3lib_div::trimExplode(',', $incomingFieldArray['parent_category'], TRUE), array($id));
+		$categories = array_diff(GeneralUtility::trimExplode(',', $incomingFieldArray['parent_category'], TRUE), array($id));
 
 		$incomingFieldArray['parent_category'] = count($categories) ? implode(',', $categories) : NULL;
 
@@ -164,7 +166,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 	 * @return array
 	 */
 	protected function preProcessProduct($incomingFieldArray, $id) {
-		$this->catList = $this->belib->getUidListFromList(t3lib_div::trimExplode(',', $incomingFieldArray['categories']));
+		$this->catList = $this->belib->getUidListFromList(GeneralUtility::trimExplode(',', $incomingFieldArray['categories']));
 
 		$articles = $this->belib->getArticlesOfProduct($id);
 		if (is_array($articles)) {
@@ -177,7 +179,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 		if (isset($GLOBALS['_POST']['_savedokview_x'])) {
 			// if "savedokview" has been pressed and  the beUser works in the LIVE workspace
 			// open current record in single view get page TSconfig
-			$pagesTypoScriptConfig = t3lib_BEfunc::getPagesTSconfig($GLOBALS['_POST']['popViewId']);
+			$pagesTypoScriptConfig = BackendUtility::getPagesTSconfig($GLOBALS['_POST']['popViewId']);
 			if ($pagesTypoScriptConfig['tx_commerce.']['singlePid']) {
 				$previewPageId = $pagesTypoScriptConfig['tx_commerce.']['singlePid'];
 			} else {
@@ -187,13 +189,13 @@ class Tx_Commerce_Hook_DataMapHooks {
 			if ($previewPageId > 0) {
 					// Get Parent CAT UID
 				/** @var Tx_Commerce_Domain_Model_Product $productObj */
-				$productObj = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product', $id);
+				$productObj = GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Product', $id);
 				$productObj->loadData();
 
-				$parentCateory = $productObj->getMasterparentCategory();
+				$parentCategory = $productObj->getMasterparentCategory();
 				$GLOBALS['_POST']['popViewId_addParams'] =
 					($incomingFieldArray['sys_language_uid'] > 0 ? '&L=' . $incomingFieldArray['sys_language_uid'] : '') .
-					'&ADMCMD_vPrev&no_cache=1&tx_commerce[showUid]=' . $id . '&tx_commerce[catUid]=' . $parentCateory;
+					'&ADMCMD_vPrev&no_cache=1&tx_commerce_pi1[showUid]=' . $id . '&tx_commerce_pi1[catUid]=' . $parentCategory;
 				$GLOBALS['_POST']['popViewId'] = $previewPageId;
 			}
 		}
@@ -515,7 +517,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 	 * @return void
 	 */
 	protected function postProcessCategory($status, $table, $id, &$fieldArray, $pObj) {
-		/** @var t3lib_beUserAuth $backendUser */
+		/** @var \TYPO3\CMS\Core\Authentication\BackendUserAuthentication $backendUser */
 		$backendUser = $GLOBALS['BE_USER'];
 
 		// Will be called for every Category that is in the datamap - so at this time
@@ -532,18 +534,18 @@ class Tx_Commerce_Hook_DataMapHooks {
 				$checkId = $id;
 
 				/** @var Tx_Commerce_Domain_Model_Category $category */
-				$category = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category', $checkId);
+				$category = GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Category', $checkId);
 				$category->loadData();
 
 					// Use the l18n parent as category for permission checks.
 				if ($l18nParent || $category->getField('l18n_parent') > 0) {
 					$checkId = $l18nParent ?: $category->getField('l18n_parent');
-					$category = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category', $checkId);
+					$category = GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Category', $checkId);
 				}
 
 					// check if the category is in mount
 				/** @var Tx_Commerce_Tree_CategoryMounts $mounts */
-				$mounts = t3lib_div::makeInstance('Tx_Commerce_Tree_CategoryMounts');
+				$mounts = GeneralUtility::makeInstance('Tx_Commerce_Tree_CategoryMounts');
 				$mounts->init($backendUser->user['uid']);
 
 					// check
@@ -603,7 +605,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 					$existingParents[] = $parent->getUid();
 
 					/** @var Tx_Commerce_Tree_CategoryMounts $mounts */
-					$mounts = t3lib_div::makeInstance('Tx_Commerce_Tree_CategoryMounts');
+					$mounts = GeneralUtility::makeInstance('Tx_Commerce_Tree_CategoryMounts');
 					$mounts->init($backendUser->user['uid']);
 
 					// if the user has no right to see one of the parent categories or its not
@@ -616,12 +618,12 @@ class Tx_Commerce_Hook_DataMapHooks {
 			}
 
 				// Unique the list
-			$fieldArray['parent_category'] = t3lib_div::uniqueList($fieldArray['parent_category']);
+			$fieldArray['parent_category'] = GeneralUtility::uniqueList($fieldArray['parent_category']);
 
 				// abort if the user didn't assign a category - rights need not be checked then
 			if ($fieldArray['parent_category'] == '') {
 				/** @var Tx_Commerce_Tree_CategoryMounts $mounts */
-				$mounts = t3lib_div::makeInstance('Tx_Commerce_Tree_CategoryMounts');
+				$mounts = GeneralUtility::makeInstance('Tx_Commerce_Tree_CategoryMounts');
 				$mounts->init($backendUser->user['uid']);
 
 				if ($mounts->isInCommerceMounts(0)) {
@@ -652,10 +654,10 @@ class Tx_Commerce_Hook_DataMapHooks {
 					$uid = (int) $newParents[$keys[$i]];
 
 					/** @var Tx_Commerce_Domain_Model_Category $cat */
-					$category = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category', $uid);
+					$category = GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Category', $uid);
 
 					/** @var Tx_Commerce_Tree_CategoryMounts $mounts */
-					$mounts = t3lib_div::makeInstance('Tx_Commerce_Tree_CategoryMounts');
+					$mounts = GeneralUtility::makeInstance('Tx_Commerce_Tree_CategoryMounts');
 					$mounts->init($backendUser->user['uid']);
 
 					// abort if the parent category is not in the webmounts
@@ -673,7 +675,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 
 					// remove category from list if it is not permitted
 					if (!$category->isPermissionSet('new')) {
-						$fieldArray['parent_category'] = t3lib_div::rmFromList($uid, $fieldArray['parent_category']);
+						$fieldArray['parent_category'] = GeneralUtility::rmFromList($uid, $fieldArray['parent_category']);
 					} else {
 						// conversion to int is important, otherwise the binary & will not work properly
 						$groupRights = ($groupRights === FALSE) ?
@@ -700,7 +702,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 			// make sure the category does not end up as its own parent - would lead
 			// to endless recursion.
 			if ($fieldArray['parent_category'] != '' && $status == 'new') {
-				$catUids = t3lib_div::intExplode(',', $fieldArray['parent_category']);
+				$catUids = GeneralUtility::intExplode(',', $fieldArray['parent_category']);
 
 				foreach ($catUids as $catUid) {
 						// Skip root.
@@ -715,7 +717,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 					}
 
 					/** @var Tx_Commerce_Domain_Model_Category $catDirect */
-					$catDirect = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category', $catUid);
+					$catDirect = GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Category', $catUid);
 					$catDirect->loadData();
 
 					$tmpCats = $catDirect->getParentCategories();
@@ -730,7 +732,11 @@ class Tx_Commerce_Hook_DataMapHooks {
 						}
 
 						if ($cat->getUid() == $id) {
-							$pObj->newlog('You cannot select a child category or self as a parent category. Selected Category in question: ' . $catDirect->getTitle(), 1);
+							$pObj->newlog(
+								'You cannot select a child category or self as a parent category. Selected Category in question: ' .
+									$catDirect->getTitle(),
+								1
+							);
 							$fieldArray = array();
 						}
 
@@ -766,7 +772,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 			// Read the old parent categories
 		if ($status != 'new') {
 			/** @var Tx_Commerce_Domain_Model_Product $item */
-			$item = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product', $id);
+			$item = GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Product', $id);
 
 			$parentCategories = $item->getParentCategories();
 
@@ -790,17 +796,20 @@ class Tx_Commerce_Hook_DataMapHooks {
 
 			// check new categories
 		if (isset($data['categories'])) {
-			$newCats = $this->singleDiffAssoc(t3lib_div::trimExplode(',', t3lib_div::uniqueList($data['categories'])), $parentCategories);
+			$newCats = $this->singleDiffAssoc(
+				GeneralUtility::trimExplode(',', GeneralUtility::uniqueList($data['categories'])),
+				$parentCategories
+			);
 
 			if (!Tx_Commerce_Utility_BackendUtility::checkPermissionsOnCategoryContent($newCats, array('editcontent'))) {
 				$pObj->newlog('You do not have the permissions to add one or all categories you added.' .
-					t3lib_div::uniqueList($data['categories']), 1);
+					GeneralUtility::uniqueList($data['categories']), 1);
 				$fieldArray = array();
 			}
 		}
 
 		if (isset($fieldArray['categories'])) {
-			$fieldArray['categories'] = t3lib_div::uniqueList($fieldArray['categories']);
+			$fieldArray['categories'] = GeneralUtility::uniqueList($fieldArray['categories']);
 		}
 
 		return $data;
@@ -825,17 +834,17 @@ class Tx_Commerce_Hook_DataMapHooks {
 		// overwriting an article
 		if ($status != 'new' && !$backendUser->uc['txcommerce_copyProcess']) {
 			/** @var Tx_Commerce_Domain_Model_Article $article */
-			$article = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Article', $id);
+			$article = GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Article', $id);
 			$article->loadData();
 
 				// get the parent categories of the product
 			/** @var Tx_Commerce_Domain_Model_Product $product */
-			$product = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product', $article->getParentProductUid());
+			$product = GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Product', $article->getParentProductUid());
 			$product->loadData();
 
 			if ($product->getL18nParent()) {
 				/** @var Tx_Commerce_Domain_Model_Product $product */
-				$product = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product', $product->getL18nParent());
+				$product = GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Product', $product->getL18nParent());
 				$product->loadData();
 			}
 
@@ -876,8 +885,6 @@ class Tx_Commerce_Hook_DataMapHooks {
 			$id = $pObj->substNEWwithIDs[$id];
 		}
 
-		$dynaFlexConf = array();
-
 		switch ($table) {
 			case 'tx_commerce_categories':
 				$this->afterDatabaseCategory($fieldArray, $id);
@@ -885,10 +892,6 @@ class Tx_Commerce_Hook_DataMapHooks {
 
 			case 'tx_commerce_products':
 				$this->afterDatabaseProduct($status, $table, $id, $fieldArray, $pObj);
-				break;
-
-			case 'tx_commerce_articles':
-				$dynaFlexConf = $this->afterDatabaseArticle($dynaFlexConf);
 				break;
 
 			case 'tx_commerce_article_prices':
@@ -899,10 +902,10 @@ class Tx_Commerce_Hook_DataMapHooks {
 		}
 
 		if (TYPO3_MODE == 'BE') {
-			t3lib_BEfunc::setUpdateSignal('updateFolderTree');
+			BackendUtility::setUpdateSignal('updateFolderTree');
 		}
 
-		$this->afterDatabaseHandleDynaflex($table, $id, $dynaFlexConf);
+		$this->afterDatabaseHandleDynaflex($table, $id);
 	}
 
 	/**
@@ -955,7 +958,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 			// if fieldArray has been unset, do not save anything, but load dynaflex config
 		if (count($fieldArray)) {
 			/** @var Tx_Commerce_Domain_Model_Product $product */
-			$product = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product', $id);
+			$product = GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Product', $id);
 			$product->loadData();
 
 			if (isset($fieldArray['categories'])) {
@@ -981,10 +984,10 @@ class Tx_Commerce_Hook_DataMapHooks {
 		// has been checked if that is the case and we have the rights, create the
 		// articles so we check if the product is already created and if we have edit
 		// rights on it
-		if (t3lib_div::testInt($id)) {
+		if (\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($id)) {
 				// check permissions
 			/** @var Tx_Commerce_Domain_Model_Product $product */
-			$product = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product', $id);
+			$product = GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Product', $id);
 
 			$parentCategories = $product->getParentCategories();
 
@@ -994,7 +997,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 			} else {
 					// ini the article creator
 				/** @var Tx_Commerce_Utility_ArticleCreatorUtility $articleCreator */
-				$articleCreator = t3lib_div::makeInstance('Tx_Commerce_Utility_ArticleCreatorUtility');
+				$articleCreator = GeneralUtility::makeInstance('Tx_Commerce_Utility_ArticleCreatorUtility');
 				$articleCreator->init($id, $this->belib->getProductFolderUid());
 
 					// create new articles
@@ -1004,26 +1007,6 @@ class Tx_Commerce_Hook_DataMapHooks {
 				$articleCreator->updateArticles($pObj->datamap[$table][$id]);
 			}
 		}
-
-			// load dynaflex config cant get autoloaded because they contain arrays
-		/** @noinspection PhpIncludeInspection */
-		require_once(t3lib_extMgm::extPath('commerce') . 'Configuration/DCA/Product.php');
-	}
-
-	/**
-	 * After database article handling
-	 *
-	 * @param array $dynaFlexConf
-	 * @return array
-	 */
-	protected function afterDatabaseArticle($dynaFlexConf) {
-		// articles always load dynaflex config
-		/** @noinspection PhpIncludeInspection */
-		require_once(t3lib_extMgm::extPath('commerce') . 'Configuration/DCA/Articles.php');
-
-		$dynaFlexConf['workingTable'] = 'tx_commerce_articles';
-
-		return $dynaFlexConf;
 	}
 
 	/**
@@ -1053,51 +1036,39 @@ class Tx_Commerce_Hook_DataMapHooks {
 	 *
 	 * @param string $table
 	 * @param integer $id
-	 * @param array $dynaFlexConf
 	 * @return void
 	 */
-	protected function afterDatabaseHandleDynaflex($table, $id, $dynaFlexConf) {
+	protected function afterDatabaseHandleDynaflex($table, $id) {
 		/** @var t3lib_beUserAuth $backendUser */
 		$backendUser = $GLOBALS['BE_USER'];
 
-		$loadDynaFlex = TRUE;
-		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['simpleMode']) {
-			if ($table == 'tx_commerce_articles') {
-				$loadDynaFlex = FALSE;
-			}
+		$record = BackendUtility::getRecord($table, $id);
+
+		$backendUser->uc['txcommerce_afterDatabaseOperations'] = 1;
+		$backendUser->writeUC();
+
+		$dynaFlexConf = Tx_Dynaflex_Utility_TcaUtility::loadDynaFlexConfig($table, $record['pid'], $record);
+		$dynaFlexConf = $dynaFlexConf['DCA'];
+
+		$backendUser->uc['txcommerce_afterDatabaseOperations'] = 0;
+		$backendUser->writeUC();
+
+		if (!is_array($dynaFlexConf) || !count($dynaFlexConf)) {
+			return;
 		}
 
 		// txcommerce_copyProcess: this is so that dynaflex is not called when we copy
 		// an article - otherwise we would get an error
 		if (
-			$loadDynaFlex && t3lib_extMgm::isLoaded('dynaflex') && !empty($dynaFlexConf)
-			&& (!isset($backendUser->uc['txcommerce_copyProcess']) || !$backendUser->uc['txcommerce_copyProcess'])
+			\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('dynaflex') &&
+			(!isset($backendUser->uc['txcommerce_copyProcess']) || $backendUser->uc['txcommerce_copyProcess'])
 		) {
 			$dynaFlexConf[0]['uid'] = $id;
 			$dynaFlexConf[1]['uid'] = $id;
 
-			/** @noinspection PhpIncludeInspection */
-			require_once(t3lib_extMgm::extPath('dynaflex') . 'class.dynaflex.php');
-
-			/** @var dynaflex $dynaflex */
-			$dynaflex = t3lib_div::makeInstance('dynaflex', $GLOBALS['TCA'], $dynaFlexConf);
+			/** @var Tx_Dynaflex_Utility_TcaUtility $dynaflex */
+			$dynaflex = GeneralUtility::makeInstance('Tx_Dynaflex_Utility_TcaUtility', $GLOBALS['TCA'], $dynaFlexConf);
 			$GLOBALS['TCA'] = $dynaflex->getDynamicTCA();
-				// change for simple mode
-				// override the dynaflex settings after the DynamicTCA
-			if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['simpleMode'] && $table == 'tx_commerce_products') {
-				$GLOBALS['TCA']['tx_commerce_products']['columns']['articles'] = array(
-					'exclude' => 1,
-					'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.articles',
-					'config' => array(
-							'type' => 'inline',
-							'foreign_table' => 'tx_commerce_articles',
-							'foreign_field' => 'uid_product',
-							'minitems' => 0,
-					),
-				);
-				$GLOBALS['TCA']['tx_commerce_products']['types']['0']['showitem'] =
-					str_replace('articleslok', 'articles', $GLOBALS['TCA']['tx_commerce_products']['types']['0']['showitem']);
-			}
 		}
 	}
 
@@ -1130,7 +1101,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 					);
 
 					$relCount = 0;
-					$relations = t3lib_div::trimExplode(',', $value, TRUE);
+					$relations = GeneralUtility::trimExplode(',', $value, TRUE);
 					foreach ($relations as $relation) {
 						$updateArrays = $this->belib->getUpdateData($attributeData, $relation);
 
@@ -1204,7 +1175,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 			// Then extract all attributes from this category and merge it into the
 			// attribute list
 			if (!empty($fieldArray['attributes'])) {
-				$ffData = (array) t3lib_div::xml2array($fieldArray['attributes']);
+				$ffData = (array) GeneralUtility::xml2array($fieldArray['attributes']);
 			} else {
 				$ffData = array();
 			}
@@ -1324,7 +1295,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 			$paList = array();
 
 			// extract all attributes from FlexForm
-			$ffData = t3lib_div::xml2array($fieldArray['attributes']);
+			$ffData = GeneralUtility::xml2array($fieldArray['attributes']);
 			if (is_array($ffData)) {
 				$this->belib->mergeAttributeListFromFFData($ffData['data']['sDEF']['lDEF'], 'ct_', $correlationTypeList, $productId, $paList);
 			}
@@ -1355,7 +1326,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 			$pXml = $database->sql_fetch_assoc($pXml);
 
 			if (!empty($pXml['attributesedit'])) {
-				$pXml = t3lib_div::xml2array($pXml['attributesedit']);
+				$pXml = GeneralUtility::xml2array($pXml['attributesedit']);
 
 				if (is_array($pXml['data']['sDEF']['lDEF'])) {
 					foreach (array_keys($pXml['data']['sDEF']['lDEF']) as $key) {
@@ -1368,7 +1339,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 				}
 
 				if (is_array($pXml) && is_array($pXml['data']) && is_array($pXml['data']['sDEF'])) {
-					$pXml = t3lib_div::array2xml($pXml, '', 0, 'T3FlexForms');
+					$pXml = GeneralUtility::array2xml($pXml, '', 0, 'T3FlexForms');
 					$fieldArray['attributesedit'] = $pXml;
 				}
 			}
@@ -1388,7 +1359,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 		$updateArrays = array();
 		// update all articles of this product
 		if (!empty($fieldArray['attributesedit'])) {
-			$ffData = (array) t3lib_div::xml2array($fieldArray['attributesedit']);
+			$ffData = (array) GeneralUtility::xml2array($fieldArray['attributesedit']);
 			if (is_array($ffData['data']) && is_array($ffData['data']['sDEF']['lDEF'])) {
 				// get articles if they are not already there
 				if (!$articles) {
@@ -1415,7 +1386,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 						);
 
 							// now explode the data
-						$attributeValues = t3lib_div::trimExplode(',', $ffDataItem['vDEF'], TRUE);
+						$attributeValues = GeneralUtility::trimExplode(',', $ffDataItem['vDEF'], TRUE);
 
 						foreach ($attributeValues as $attributeValue) {
 							// The first time an attribute value is selected, TYPO3 returns them
@@ -1460,7 +1431,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 								);
 
 								// now explode the data
-								$attributeValues = t3lib_div::trimExplode(',', $ffDataItem['vDEF'], TRUE);
+								$attributeValues = GeneralUtility::trimExplode(',', $ffDataItem['vDEF'], TRUE);
 								$attributeCount = 0;
 								$attributeValue = '';
 								foreach ($attributeValues as $attributeValue) {
@@ -1598,28 +1569,24 @@ class Tx_Commerce_Hook_DataMapHooks {
 		$hookObjectsArr = array();
 
 		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Hook/class.tx_commerce_dmhooks.php']['moveOrders'])) {
-			t3lib_div::deprecationLog('
+			GeneralUtility::deprecationLog('
 				hook
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Hook/class.tx_commerce_dmhooks.php\'][\'moveOrders\']
 				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Hook/DataMapHooks.php\'][\'moveOrders\']
 			');
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Hook/class.tx_commerce_dmhooks.php']['moveOrders'] as $classRef) {
-				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Hook/class.tx_commerce_dmhooks.php']['moveOrders'] as
+					$classRef) {
+				$hookObjectsArr[] = GeneralUtility::getUserObj($classRef);
 			}
 		}
 
 		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Hook/DataMapHooks.php']['moveOrders'])) {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Hook/DataMapHooks.php']['moveOrders'] as $classRef) {
-				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+				$hookObjectsArr[] = GeneralUtility::getUserObj($classRef);
 			}
 		}
 
 		return $hookObjectsArr;
 	}
-}
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Hook/DataMapHooks.php']) {
-	/** @noinspection PhpIncludeInspection */
-	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Hook/DataMapHooks.php']);
 }

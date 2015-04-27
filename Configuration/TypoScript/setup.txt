@@ -31,25 +31,20 @@ lib.tx_commerce {
 	stdField.setContentToCurrent = 1
 	stdField.if.isTrue.current  = 1
 	stdField.wrap = |
-	stdField.removeBadHTML = 1
 
 	stdFieldsGreater = stdWrap
 	stdFieldsGreater.setContentToCurrent = 1
 	stdFieldsGreater.if.isLessThan = 0
 	stdFieldsGreater.if.value.stdWrap.current = 1
-	stdFieldsGreater.removeBadHTML = 1
 
 	stdField_RTE = stdWrap
 	stdField_RTE.setContentToCurrent = 1
 	stdField_RTE.if.isTrue.current  = 1
 	stdField_RTE.wrap = |
 	stdField_RTE.parseFunc < lib.parseFunc_RTE
-	stdField_RTE.removeBadHTML = 1
 
 	attributes {
 		stdWrap < lib.tx_commerce.stdField
-		stdWrap.removeBadHTML = 0
-
 		defaultField < lib.tx_commerce.stdField
 
 		iconMode = 0
@@ -76,7 +71,6 @@ lib.tx_commerce {
 
 	article_prices {
 		stdWrap < lib.tx_commerce.stdField
-		stdWrap.removeBadHTML = 0
 		defaultField < lib.tx_commerce.stdField
 
 		fields {
@@ -90,7 +84,6 @@ lib.tx_commerce {
 
 	articles {
 		stdWrap < lib.tx_commerce.stdField
-		stdWrap.removeBadHTML = 0
 		defaultField < lib.tx_commerce.stdField
 
 		addToBasketLink = TypoLink
@@ -122,10 +115,10 @@ lib.tx_commerce {
 		# unset default new line to br, since we are using RTE rendering for TeaserFields
 		nl2br = 0
 		stdWrap < lib.tx_commerce.stdField
-		stdWrap.removeBadHTML = 0
-
 		defaultField  < lib.tx_commerce.stdField
+
 		productAttributes < lib.tx_commerce.attributes
+
 		fields {
 			# every colum in this table could be  wraped with the
 			# stdWrap, IMAGETEXT, IMAGE, GIFBUILDER
@@ -170,7 +163,6 @@ lib.tx_commerce {
 
 	categories {
 		stdWrap < lib.tx_commerce.stdField
-		stdWrap.removeBadHTML = 0
 		defaultField < lib.tx_commerce.stdField
 
 		fields {
@@ -210,7 +202,6 @@ lib.tx_commerce {
 
 	basket_items.default {
 		stdWrap < lib.tx_commerce.stdField
-		stdWrap.removeBadHTML = 0
 		defaultField < lib.tx_commerce.stdField
 
 		fields {
@@ -238,7 +229,6 @@ lib.tx_commerce {
 
 	baskets {
 		stdWrap < lib.tx_commerce.stdField
-		stdWrap.removeBadHTML = 0
 		defaultField < lib.tx_commerce.stdField
 
 		fields {
@@ -254,7 +244,6 @@ lib.tx_commerce {
 
 	tt_address {
 		stdWrap < lib.tx_commerce.stdField
-		stdWrap.removeBadHTML = 0
 		defaultField < lib.tx_commerce.stdField
 
 		fields {
@@ -675,7 +664,6 @@ plugin.tx_commerce_pi3 {
 
 		mandatorySign = *
 		mandatorySignStdWrap < lib.tx_commerce.stdField
-		mandatorySignStdWrap.removeBadHTML = 0
 
 			# the password is taken from session instead to generate a random one
 		dontUseRandomPassword = 1
@@ -832,10 +820,10 @@ plugin.tx_commerce_pi6 {
 
 	address {
 		stdWrap < lib.tx_commerce.stdField
-		stdWrap.removeBadHTML = 0
 		stdWrap.wrap = |
 		defaultField < lib.tx_commerce.stdField
 		defaultField.wrap = |
+
 		fields {
 			surname < lib.tx_commerce.stdField
 			surname.wrap = |<br/>
@@ -854,7 +842,6 @@ plugin.tx_commerce_pi6 {
 
 	OrderArticles {
 		stdWrap < lib.tx_commerce.stdField
-		stdWrap.removeBadHTML = 0
 		stdWrap.wrap = |
 		defaultField < lib.tx_commerce.stdField
 

@@ -522,16 +522,3 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 		return $this->loadData($translationMode);
 	}
 }
-
-class_alias('Tx_Commerce_Domain_Model_AbstractEntity', 'tx_commerce_element_alib');
-
-if (defined(
-		'TYPO3_MODE'
-	)
-	&& $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Domain/Model/AbstractEntity.php']
-) {
-	/** @noinspection PhpIncludeInspection */
-	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Domain/Model/AbstractEntity.php']);
-}
-
-?>

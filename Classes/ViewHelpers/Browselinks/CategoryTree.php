@@ -346,12 +346,3 @@ class Tx_Commerce_ViewHelpers_Browselinks_CategoryTree extends Tx_Commerce_Tree_
 		}
 	}
 }
-
-class_alias('Tx_Commerce_ViewHelpers_Browselinks_CategoryTree', 'tx_commerce_treelib_link_categorytree');
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/ViewHelpers/Browselinks/CategoryTree.php']) {
-	/** @noinspection PhpIncludeInspection */
-	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/ViewHelpers/Browselinks/CategoryTree.php']);
-}
-
-?>

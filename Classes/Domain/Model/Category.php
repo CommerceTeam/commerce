@@ -298,6 +298,16 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	}
 
 	/**
+	 * @param array $categories
+	 * @return void
+	 */
+	public function setChildCategories($categories) {
+		if (is_array($categories)) {
+			$this->categories = $categories;
+		}
+	}
+
+	/**
 	 * Returns a list of all child categories from this category
 	 *
 	 * @param boolean|integer $depth Maximum depth for going recursive
@@ -1067,12 +1077,3 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 		$this->loadData($translationMode = FALSE);
 	}
 }
-
-class_alias('Tx_Commerce_Domain_Model_Category', 'tx_commerce_category');
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Domain/Model/Category.php']) {
-	/** @noinspection PhpIncludeInspection */
-	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Domain/Model/Category.php']);
-}
-
-?>

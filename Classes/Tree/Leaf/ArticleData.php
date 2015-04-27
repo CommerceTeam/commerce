@@ -34,7 +34,7 @@ class Tx_Commerce_Tree_Leaf_ArticleData extends Tx_Commerce_Tree_Leaf_SlaveData 
 	 *
 	 * @var string
 	 */
-	protected $extendedFields = 'title, hidden';
+	protected $extendedFields = 'title, navtitle, hidden, deleted, starttime, endtime, fe_group, t3ver_oid, t3ver_id, t3ver_label';
 
 	/**
 	 * @var string
@@ -87,12 +87,3 @@ class Tx_Commerce_Tree_Leaf_ArticleData extends Tx_Commerce_Tree_Leaf_SlaveData 
 		return FALSE;
 	}
 }
-
-class_alias('Tx_Commerce_Tree_Leaf_ArticleData', 'tx_commerce_leaf_articledata');
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Tree/Leaf/ArticleData.php']) {
-	/** @noinspection PhpIncludeInspection */
-	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Tree/Leaf/ArticleData.php']);
-}
-
-?>

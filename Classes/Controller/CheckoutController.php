@@ -18,6 +18,7 @@
  *  GNU General Public License for more details.
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Plugin 'checkout' for the 'commerce' extension.
@@ -141,11 +142,11 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		$this->conf['basketPid'] = $GLOBALS['TSFE']->id;
 
 		/** @var tx_staticinfotables_pi1 $staticInfo */
-		$staticInfo = t3lib_div::makeInstance('tx_staticinfotables_pi1');
+		$staticInfo = GeneralUtility::makeInstance('tx_staticinfotables_pi1');
 		$staticInfo->init();
 		$this->staticInfo = $staticInfo;
 
-		$this->extConf = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf'];
+		$this->extConf = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['extConf'];
 
 		/** @var $basket Tx_Commerce_Domain_Model_Basket */
 		$basket = & $GLOBALS['TSFE']->fe_user->tx_commerce_basket;
@@ -189,7 +190,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		$hookObjectsArr = $this->getHookObjectArray('main');
 
 		// Set basket to readonly, if set in extension configuration
-		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['lockBasket'] == 1) {
+		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['extConf']['lockBasket'] == 1) {
 			/** @var $basket Tx_Commerce_Domain_Model_Basket */
 			$basket = & $GLOBALS['TSFE']->fe_user->tx_commerce_basket;
 			$basket->setReadOnly();
@@ -350,7 +351,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			// Override missing or incorrect email with username if username is email,
 			// because we need to be sure to have at least one correct mail address
 			// This way email is not necessarily mandatory for billing/delivery address
-			if (!$this->conf['randomUser'] && !t3lib_div::validEmail($this->piVars[$this->piVars['address_uid']]['email'])) {
+			if (!$this->conf['randomUser'] && !GeneralUtility::validEmail($this->piVars[$this->piVars['address_uid']]['email'])) {
 				$this->piVars[$this->piVars['address_uid']]['email'] = $GLOBALS['TSFE']->fe_user->user['email'];
 			}
 			$this->piVars[$this->piVars['address_uid']]['uid'] = (int) $this->piVars['address_uid'];
@@ -513,7 +514,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			$addressManagerConf['addressPid'] = $this->conf['addressPid'];
 
 			/** @var Tx_Commerce_Controller_AddressesController $addressMgm */
-			$addressMgm = t3lib_div::makeInstance('Tx_Commerce_Controller_AddressesController');
+			$addressMgm = GeneralUtility::makeInstance('Tx_Commerce_Controller_AddressesController');
 			$addressMgm->cObj = $this->cObj;
 			$addressMgm->templateCode = $this->templateCode;
 			$addressMgm->init($addressManagerConf, FALSE);
@@ -665,7 +666,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			$addressManagerConf['addressPid'] = $this->conf['addressPid'];
 
 			/** @var Tx_Commerce_Controller_AddressesController $addressMgm */
-			$addressMgm = t3lib_div::makeInstance('Tx_Commerce_Controller_AddressesController');
+			$addressMgm = GeneralUtility::makeInstance('Tx_Commerce_Controller_AddressesController');
 			$addressMgm->cObj = $this->cObj;
 			$addressMgm->templateCode = $this->templateCode;
 			$addressMgm->init($addressManagerConf, FALSE);
@@ -762,7 +763,8 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		// Check if we already have a payment object
 		// If we don't have one, try to create a new one from the config
 		if (!isset($paymentObj)) {
-			$config = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['SYSPRODUCTS']['PAYMENT']['types'][strtolower((string) $paymentType)];
+			$config =
+				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['SYSPRODUCTS']['PAYMENT']['types'][strtolower((string) $paymentType)];
 
 			$errorStr = NULL;
 			if (!isset($config['class'])) {
@@ -775,7 +777,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 				die('PAYMENT:FATAL! No payment possible because I don\'t know how to handle it! (' . implode(', ', $errorStr) . ')');
 			}
 
-			$paymentObj = t3lib_div::makeInstance($config['class']);
+			$paymentObj = GeneralUtility::makeInstance($config['class']);
 		}
 
 		/**
@@ -868,7 +870,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		$markerArray['###LISTING_DESCRIPTION###'] = $this->pi_getLL('listing_description');
 		$markerArray['###LISTING_FORM_FIELDS###'] = $listingForm;
 		$markerArray['###LISTING_BASKET###'] = $this->makeBasketView(
-			$basket, '###BASKET_VIEW###', t3lib_div::intExplode(',', $this->conf['regularArticleTypes']), array(
+			$basket, '###BASKET_VIEW###', GeneralUtility::intExplode(',', $this->conf['regularArticleTypes']), array(
 				'###LISTING_ARTICLE###',
 				'###LISTING_ARTICLE2###'
 			)
@@ -894,7 +896,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			$termsChecked = 'checked';
 		}
 
-		$comment = isset($this->piVars['comment']) ? t3lib_div::removeXSS(strip_tags($this->piVars['comment'])) : '';
+		$comment = isset($this->piVars['comment']) ? GeneralUtility::removeXSS(strip_tags($this->piVars['comment'])) : '';
 
 		// Use new version with label and field
 		$markerArray['###LISTING_TERMS_ACCEPT_LABEL###'] = sprintf(
@@ -938,13 +940,14 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 
 		if (!is_object($paymentObj)) {
 			$paymentType = $this->getPaymentType();
-			$config = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['SYSPRODUCTS']['PAYMENT']['types'][strtolower((string) $paymentType)];
+			$config =
+				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['SYSPRODUCTS']['PAYMENT']['types'][strtolower((string) $paymentType)];
 
 			if (!isset($config['class']) || !file_exists($config['path'])) {
 				throw new Exception('FINISHING: FATAL! No payment possible because no payment handler is configured!', 1395665876);
 			}
 
-			$paymentObj = t3lib_div::makeInstance($config['class'], $this);
+			$paymentObj = GeneralUtility::makeInstance($config['class'], $this);
 		} else {
 			$config = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['SYSPRODUCTS']['PAYMENT']['types'][$paymentObj->getType()];
 		}
@@ -1035,9 +1038,9 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			$orderData['pid'] = $this->conf['newOrderPid'];
 		}
 		if (empty($orderData['pid']) || ($orderData['pid'] < 0)) {
-			$comPid = array_keys(Tx_Commerce_Domain_Repository_FolderRepository::getFolders('commerce', 0, 'COMMERCE'));
-			$ordPid = array_keys(Tx_Commerce_Domain_Repository_FolderRepository::getFolders('commerce', $comPid[0], 'Orders'));
-			$incPid = array_keys(Tx_Commerce_Domain_Repository_FolderRepository::getFolders('commerce', $ordPid[0], 'Incoming'));
+			$comPid = array_keys(Tx_Commerce_Domain_Repository_FolderRepository::getFolders($this->extKey, 0, 'COMMERCE'));
+			$ordPid = array_keys(Tx_Commerce_Domain_Repository_FolderRepository::getFolders($this->extKey, $comPid[0], 'Orders'));
+			$incPid = array_keys(Tx_Commerce_Domain_Repository_FolderRepository::getFolders($this->extKey, $ordPid[0], 'Incoming'));
 			$orderData['pid'] = $incPid[0];
 		}
 
@@ -1058,7 +1061,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		$content = $this->cObj->getSubpart($this->templateCode, '###FINISH###');
 
 		$markerArray['###LISTING_BASKET###'] = $this->makeBasketView(
-			$basket, '###BASKET_VIEW###', t3lib_div::intExplode(',', $this->conf['regularArticleTypes']), array(
+			$basket, '###BASKET_VIEW###', GeneralUtility::intExplode(',', $this->conf['regularArticleTypes']), array(
 				'###LISTING_ARTICLE###',
 				'###LISTING_ARTICLE2###'
 			)
@@ -1123,7 +1126,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 
 		// create new basket to remove all values from old one
 		/** @var Tx_Commerce_Domain_Model_Basket $basket */
-		$basket = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Basket');
+		$basket = GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Basket');
 		$basket->setSessionId(md5($feUser->id . ':' . rand(0, PHP_INT_MAX)));
 		$basket->loadData();
 
@@ -1350,7 +1353,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		$config = $this->conf[$typeLower . '.'];
 		$returnVal = TRUE;
 
-		t3lib_div::deprecationLog(
+		GeneralUtility::deprecationLog(
 			'
 				hook
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/pi3/class.tx_commerce_pi3.php\'][\'bevorValidateAddress\']
@@ -1388,7 +1391,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 				$method = explode('_', $method);
 				switch (strtolower($method[0])) {
 					case 'email':
-						if (!t3lib_div::validEmail($value)) {
+						if (!GeneralUtility::validEmail($value)) {
 							$this->formError[$name] = $this->pi_getLL('error_field_email');
 							$returnVal = FALSE;
 						}
@@ -1487,7 +1490,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		$table = 'fe_users';
 		$fields = 'uid';
 		$select = 'username = ' . $database->fullQuoteStr($username, $table) . ' ';
-		$select .= t3lib_befunc::deleteClause($table);
+		$select .= \TYPO3\CMS\Backend\Utility\BackendUtility::deleteClause($table);
 		$select .= ' AND pid = ' . $this->conf['userPID'];
 
 		$res = $database->exec_SELECTquery($fields, $table, $select);
@@ -1659,7 +1662,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 					'');
 			$fieldMarkerArray['###FIELD_INPUT###'] = $this->getInputField(
 				$fieldName, $config['sourceFields.'][$arrayName],
-				t3lib_div::removeXSS(strip_tags($this->sessionData[$step][$fieldName])), $step
+				GeneralUtility::removeXSS(strip_tags($this->sessionData[$step][$fieldName])), $step
 			);
 			$fieldMarkerArray['###FIELD_NAME###'] = $this->prefixId . '[' . $step . '][' . $fieldName . ']';
 			$fieldMarkerArray['###FIELD_INPUTID###'] = $step . '-' . $fieldName;
@@ -1706,6 +1709,8 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			return 0;
 		}
 
+		$hookObjectsArr = $this->getHookObjectArray('handleAddress');
+
 		$config = $this->conf[$type . '.'];
 
 		$fieldList = $this->parseFieldList($config['sourceFields.']);
@@ -1725,7 +1730,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 				$dataArray['pid'] = $this->conf['addressPid'];
 			} else {
 				$modPid = 0;
-				list($commercePid) = Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Commerce', 'commerce', $modPid);
+				list($commercePid) = Tx_Commerce_Domain_Repository_FolderRepository::initFolders($this->extKey, $this->extKey, $modPid);
 				$dataArray['pid'] = $commercePid;
 			}
 
@@ -1757,10 +1762,12 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 						&& $config['dontUseRandomPassword']
 						&& isset($this->sessionData['billing']['password'])
 					) {
-						$feuData['password'] = $this->sessionData['billing']['password'];
+						$password = $this->sessionData['billing']['password'];
 					} else {
-						$feuData['password'] = substr(uniqid(rand()), 0, 6);
+						$password = substr(uniqid(rand()), 0, 6);
 					}
+
+					$feuData['password'] = $this->getHashedSaltedPassword($password);
 
 					$feuData['email'] = $this->sessionData['billing']['email'];
 					$feuData['name'] = $this->sessionData['billing']['name'] . ' ' . $this->sessionData['billing']['surname'];
@@ -1794,7 +1801,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 
 			// unsets the fields that are not present in tt_adress before inserting them
 			if (isset($config['tt_adressExcludeFields']) && $config['tt_adressExcludeFields'] != '') {
-				$ttAdressExcludeFields = t3lib_div::trimExplode(',', $config['tt_adressExcludeFields']);
+				$ttAdressExcludeFields = GeneralUtility::trimExplode(',', $config['tt_adressExcludeFields']);
 				foreach ($ttAdressExcludeFields as $excludeField) {
 					unset($dataArray[$excludeField]);
 				}
@@ -1803,12 +1810,38 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			// First address should be main address by default
 			$dataArray['tx_commerce_is_main_address'] = 1;
 
+			foreach ($hookObjectsArr as $hookObj) {
+				if (method_exists($hookObj, 'preProcessAddressData')) {
+					$dataArray = $hookObj->preProcessAddressData($dataArray, $this);
+				}
+			}
+
 			$database->exec_INSERTquery('tt_address', $dataArray);
 
 			$uid = $database->sql_insert_id();
 		}
 
 		return $uid;
+	}
+
+	/**
+	 * Hash password with saltedpassword extension
+	 *
+	 * @param string $password
+	 * @return string
+	 */
+	protected function getHashedSaltedPassword($password) {
+		if (
+			\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('saltedpasswords') &&
+			\TYPO3\CMS\Saltedpasswords\Utility\SaltedPasswordsUtility::isUsageEnabled('FE')
+		) {
+			$objSalt = \TYPO3\CMS\Saltedpasswords\Salt\SaltFactory::getSaltingInstance(NULL);
+			if (is_object($objSalt)) {
+				$password = $objSalt->getHashedPassword($password);
+			}
+		}
+
+		return $password;
 	}
 
 	/**
@@ -2132,9 +2165,9 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 				}
 			}
 
-			if ($userMail != '' && t3lib_div::validEmail($userMail)) {
+			if ($userMail != '' && GeneralUtility::validEmail($userMail)) {
 				/** @var $userMailObj Tx_Commerce_Controller_CheckoutController */
-				$userMailObj = t3lib_div::makeInstance('Tx_Commerce_Controller_CheckoutController');
+				$userMailObj = GeneralUtility::makeInstance('Tx_Commerce_Controller_CheckoutController');
 				$userMailObj->conf = $this->conf;
 				$userMailObj->pi_setPiVarDefaults();
 				$userMailObj->cObj = $this->cObj;
@@ -2211,7 +2244,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 				// Mailconf for  tx_commerce_div::sendMail($mailconf);
 				$recipient = array();
 				if ($this->conf['usermail.']['cc']) {
-					$recipient = t3lib_div::trimExplode(',', $this->conf['usermail.']['cc']);
+					$recipient = GeneralUtility::trimExplode(',', $this->conf['usermail.']['cc']);
 				}
 				if (is_array($recipient)) {
 					array_push($recipient, $userMail);
@@ -2274,7 +2307,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 
 		if ($this->conf['adminmail.']['from'] || $userMail) {
 			/** @var $adminMailObj Tx_Commerce_Controller_CheckoutController */
-			$adminMailObj = t3lib_div::makeInstance('Tx_Commerce_Controller_CheckoutController');
+			$adminMailObj = GeneralUtility::makeInstance('Tx_Commerce_Controller_CheckoutController');
 			$adminMailObj->conf = $this->conf;
 			$adminMailObj->pi_setPiVarDefaults();
 			$adminMailObj->cObj = $this->cObj;
@@ -2352,7 +2385,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			// Mailconf for tx_commerce_div::sendMail($mailconf);
 			$recipient = array();
 			if ($this->conf['adminmail.']['cc']) {
-				$recipient = t3lib_div::trimExplode(',', $this->conf['adminmail.']['cc']);
+				$recipient = GeneralUtility::trimExplode(',', $this->conf['adminmail.']['cc']);
 			}
 			if (is_array($recipient)) {
 				array_push($recipient, $this->conf['adminmail.']['mailto']);
@@ -2430,7 +2463,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 
 		$basketContent = $this->makeBasketView(
 			$GLOBALS['TSFE']->fe_user->tx_commerce_basket, '###BASKET_VIEW###',
-			t3lib_div::intExplode(',', $this->conf['regularArticleTypes']), array(
+			GeneralUtility::intExplode(',', $this->conf['regularArticleTypes']), array(
 				'###LISTING_ARTICLE###',
 				'###LISTING_ARTICLE2###'
 			)
@@ -2578,7 +2611,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		$orderData['crdate'] = $GLOBALS['EXEC_TIME'];
 		$orderData['tstamp'] = $GLOBALS['EXEC_TIME'];
 		$orderData['cu_iso_3_uid'] = $this->conf['currencyId'];
-		$orderData['comment'] = t3lib_div::removeXSS(strip_tags($this->piVars['comment']));
+		$orderData['comment'] = GeneralUtility::removeXSS(strip_tags($this->piVars['comment']));
 
 		if (is_array($GLOBALS['TSFE']->fe_user->user)) {
 			$orderData['cust_fe_user'] = $GLOBALS['TSFE']->fe_user->user['uid'];
@@ -2697,9 +2730,6 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	 * @return t3lib_TCEmain
 	 */
 	public function getInstanceOfTceMain($pid) {
-		t3lib_div::loadTCA('tx_commerce_orders');
-		t3lib_div::loadTCA('tx_commerce_order_articles');
-
 		$hookObjectsArr = $this->getHookObjectArray('postTcaInit');
 		foreach ($hookObjectsArr as $hookObj) {
 			if (method_exists($hookObj, 'postTcaInit')) {
@@ -2710,7 +2740,8 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		$this->initializeBackendUser();
 		$this->initializeLanguage();
 
-		$tceMain = t3lib_div::makeInstance('t3lib_TCEmain');
+		/** @var t3lib_TCEmain $tceMain */
+		$tceMain = GeneralUtility::makeInstance('t3lib_TCEmain');
 		$tceMain->bypassWorkspaceRestrictions = TRUE;
 		$tceMain->recInsertAccessCache['tx_commerce_orders'][$pid] = 1;
 		$tceMain->recInsertAccessCache['tx_commerce_order_articles'][$pid] = 1;
@@ -2724,9 +2755,9 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	 * @return void
 	 */
 	protected function initializeBackendUser() {
-		if (!($GLOBALS['BE_USER'] instanceof t3lib_beUserAuth)) {
+		if (!($GLOBALS['BE_USER'] instanceof \TYPO3\CMS\Core\Authentication\BackendUserAuthentication)) {
 			/** @var t3lib_tsfeBeUserAuth $backendUser */
-			$backendUser = t3lib_div::makeInstance('t3lib_tsfeBeUserAuth');
+			$backendUser = GeneralUtility::makeInstance('t3lib_tsfeBeUserAuth');
 			$backendUser->warningEmail = $GLOBALS['TYPO3_CONF_VARS']['BE']['warning_email_addr'];
 			$backendUser->lockIP = $GLOBALS['TYPO3_CONF_VARS']['BE']['lockIP'];
 			$backendUser->auth_timeout_field = (int) $GLOBALS['TYPO3_CONF_VARS']['BE']['sessionTimeout'];
@@ -2752,9 +2783,9 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	 * @return void
 	 */
 	protected function initializeLanguage() {
-		if (!($GLOBALS['LANG'] instanceof language)) {
-			/** @var language $language */
-			$language = t3lib_div::makeInstance('language');
+		if (!($GLOBALS['LANG'] instanceof \TYPO3\CMS\Lang\LanguageService)) {
+			/** @var \TYPO3\CMS\Lang\LanguageService $language */
+			$language = GeneralUtility::makeInstance('TYPO3\\CMS\\Lang\\LanguageService');
 			$language->init($GLOBALS['BE_USER']->uc['lang']);
 			$GLOBALS['LANG'] = $language;
 		}
@@ -2814,31 +2845,24 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		$hookObjectsArr = array();
 
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi3/class.tx_commerce_pi3.php'][$type])) {
-			t3lib_div::deprecationLog(
+			GeneralUtility::deprecationLog(
 				'
-				hook
-				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/pi3/class.tx_commerce_pi3.php\'][\'' . $type . '\']
-				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
-				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/CheckoutController.php\'][\'' . $type . '\']
-			'
+					hook
+					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/pi3/class.tx_commerce_pi3.php\'][\'' . $type . '\']
+					is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
+					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/CheckoutController.php\'][\'' . $type . '\']
+				'
 			);
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi3/class.tx_commerce_pi3.php'][$type] as $classRef) {
-				$hookObjectsArr[] = & t3lib_div::getUserObj($classRef);
+				$hookObjectsArr[] = & GeneralUtility::getUserObj($classRef);
 			}
 		}
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/CheckoutController.php'][$type])) {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/CheckoutController.php'][$type] as $classRef) {
-				$hookObjectsArr[] = & t3lib_div::getUserObj($classRef);
+				$hookObjectsArr[] = & GeneralUtility::getUserObj($classRef);
 			}
 		}
 
 		return $hookObjectsArr;
 	}
-}
-
-class_alias('Tx_Commerce_Controller_CheckoutController', 'tx_commerce_pi3');
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Controller/CheckoutController.php']) {
-	/** @noinspection PhpIncludeInspection */
-	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Controller/CheckoutController.php']);
 }

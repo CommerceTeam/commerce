@@ -24,6 +24,8 @@
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Backend\Utility\IconUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Implements the view of the leaf
@@ -124,6 +126,7 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 
 	/**
 	 * use real values for leafs that otherwise just have "edit"
+	 * this is needed for the parent category tree in records
 	 *
 	 * @var boolean
 	 */
@@ -159,12 +162,7 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 	public function __construct() {
 		parent::__construct();
 
-		if (t3lib_div::int_from_ver(TYPO3_version) >= '4002007') {
-			$rootPathT3 = t3lib_div::getIndpEnv('TYPO3_SITE_PATH');
-		} else {
-			// Code TYPO3 Site Path manually, backport from TYPO3 4.2.7 svn
-			$rootPathT3 = substr(t3lib_div::getIndpEnv('TYPO3_SITE_URL'), strlen(t3lib_div::getIndpEnv('TYPO3_REQUEST_HOST')));
-		}
+		$rootPathT3 = GeneralUtility::getIndpEnv('TYPO3_SITE_PATH');
 
 			// If we don't have any data, set /
 		if (empty($rootPathT3)) {
@@ -188,7 +186,7 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 	public function setLeafIndex($index) {
 		if (!is_numeric($index)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('setLeafIndex (Tx_Commerce_Tree_Leaf_View) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				GeneralUtility::devLog('setLeafIndex (Tx_Commerce_Tree_Leaf_View) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
 			}
 			return;
 		}
@@ -214,7 +212,7 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 	public function setBank($bank) {
 		if (!is_numeric($bank)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('setBank (Tx_Commerce_Tree_Leaf_View) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				GeneralUtility::devLog('setBank (Tx_Commerce_Tree_Leaf_View) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
 			}
 			return;
 		}
@@ -230,7 +228,11 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 	public function setTreeName($name) {
 		if (!is_string($name)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('setTreeName (Tx_Commerce_Tree_Leaf_View) gets passed wrong-cast parameters. Should be string but is not.', COMMERCE_EXTKEY, 2);
+				GeneralUtility::devLog(
+					'setTreeName (Tx_Commerce_Tree_Leaf_View) gets passed wrong-cast parameters. Should be string but is not.',
+					COMMERCE_EXTKEY,
+					2
+				);
 			}
 		}
 		$this->treeName = $name;
@@ -250,7 +252,7 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 	 * Sets if the root onlick should be enabled for this Tx_Commerce_Tree_Leaf_View
 	 *
 	 * @return void
-	 * @param boolean $flag [optional]	Flag
+	 * @param boolean $flag Flag
 	 */
 	public function noRootOnclick($flag = TRUE) {
 		$this->noRootOnclick = (bool)$flag;
@@ -278,18 +280,18 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 
 	/**
 	 * Get icon for the row.
-	 * If $this->iconPath and $this->iconName is set, try to get icon based on those values.
+	 * If $this->iconPath and $this->iconName is set,
+	 * 	try to get icon based on those values.
 	 *
 	 * @param array $row Item row.
-	 * @param integer $categoryUid
 	 * @return string Image tag.
 	 */
-	public function getIcon($row, $categoryUid = 0) {
+	public function getIcon($row) {
 		if ($this->iconPath && $this->iconName) {
-			$icon = '<img' . t3lib_iconWorks::skinImg('', $this->iconPath . $this->iconName, 'width="18" height="16"') . ' alt=""' .
+			$icon = '<img' . IconUtility::skinImg('', $this->iconPath . $this->iconName, 'width="18" height="16"') . ' alt=""' .
 				($this->showDefaultTitleAttribute ? ' title="UID: ' . $row['uid'] . '"' : '') . ' />';
 		} else {
-			$icon = t3lib_iconWorks::getSpriteIconForRecord($this->table, $row, array(
+			$icon = IconUtility::getSpriteIconForRecord($this->table, $row, array(
 				'title' => ($this->showDefaultTitleAttribute ? 'UID: ' . $row['uid'] : $this->getTitleAttrib($row)),
 				'class' => 'c-recIcon'
 			));
@@ -308,12 +310,12 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 	public function getRootIcon($row) {
 		if (!is_array($row)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('getRootIcon (Tx_Commerce_Tree_Leaf_View) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				GeneralUtility::devLog('getRootIcon (Tx_Commerce_Tree_Leaf_View) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
 			}
 			return '';
 		}
 
-		$icon = '<img' . t3lib_iconWorks::skinImg($this->iconPath, $this->rootIconName, 'width="18" height="16"') .
+		$icon = '<img' . IconUtility::skinImg($this->iconPath, $this->rootIconName, 'width="18" height="16"') .
 			' title="Root" alt="" />';
 
 		return $this->wrapIcon($icon, $row);
@@ -330,7 +332,7 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 	public function wrapIcon($icon, $row, $additionalParams = '') {
 		if (!is_array($row) || !is_string($additionalParams)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('wrapIcon (Tx_Commerce_Tree_Leaf_View) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				GeneralUtility::devLog('wrapIcon (Tx_Commerce_Tree_Leaf_View) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
 			}
 			return '';
 		}
@@ -375,15 +377,16 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 	public function wrapTitle($title, $row, $bank = 0) {
 		if (!is_array($row) || !is_numeric($bank)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('wrapTitle (Tx_Commerce_Tree_Leaf_View) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				GeneralUtility::devLog('wrapTitle (Tx_Commerce_Tree_Leaf_View) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
 			}
 			return '';
 		}
 
 			// Max. size for Title of 255
-		$title = ('' != $title) ? t3lib_div::fixed_lgd_cs($title, 255) : $this->getLL('leaf.noTitle');
+		$title = ('' != $title) ? GeneralUtility::fixed_lgd_cs($title, 255) : $this->getLL('leaf.noTitle');
 
-		$aOnClick = 'return jumpTo(\'' . $this->getJumpToParam($row) . '\',this,\'' . $this->domIdPrefix . $row['uid'] . '_' . $bank . '\',\'\');';
+		$aOnClick = 'return jumpTo(\'' . $this->getJumpToParam($row) . '\',this,\'' . $this->domIdPrefix .
+			$row['uid'] . '_' . $bank . '\',\'\');';
 
 		$res = (($this->noRootOnclick && 0 == $row['uid']) || $this->noOnclick) ?
 			htmlspecialchars(strip_tags($title)) :
@@ -395,7 +398,8 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 	/**
 	 * Returns the value for the image "title" attribute
 	 *
-	 * @param array $row The input row array (where the key "title" is used for the title)
+	 * @param array $row The input row array (where the key "title"
+	 * 	is used for the title)
 	 * @return string The attribute value (is htmlspecialchared() already)
 	 * @see wrapIcon()
 	 */
@@ -412,7 +416,7 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 	public function getJumpToParam($row) {
 		if (!is_array($row)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('getJumpToParam (Tx_Commerce_Tree_Leaf_View) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				GeneralUtility::devLog('getJumpToParam (Tx_Commerce_Tree_Leaf_View) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
 			}
 			return '';
 		}
@@ -426,25 +430,27 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 	 *
 	 * @param array $row record for the entry
 	 * @param integer $isLast The current entry number
-	 * @param integer $isExpanded The total number of entries. If equal to $a, a "bottom" element is returned.
-	 * @param boolean $isBank The element was expanded to render subelements if this flag is set.
+	 * @param integer $isExpanded The total number of entries.
+	 * 	If equal to $a, a "bottom" element is returned.
+	 * @param boolean $isBank The element was expanded to render
+	 * 	subelements if this flag is set.
 	 * @param boolean $hasChildren The Element is a Bank if this flag is set.
 	 * @return string Image tag with the plus/minus icon.
 	 * @see t3lib_pageTree::PMicon()
 	 */
-	public function PMicon(&$row, $isLast, $isExpanded, $isBank = FALSE, $hasChildren = FALSE) {
+	public function PMicon($row, $isLast, $isExpanded, $isBank = FALSE, $hasChildren = FALSE) {
 		if (!is_array($row)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('PMicon (Tx_Commerce_Tree_Leaf_View) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				GeneralUtility::devLog('PMicon (Tx_Commerce_Tree_Leaf_View) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
 			}
 			return '';
 		}
 
-		$PM = $hasChildren ? ($isExpanded ? 'minus' : 'plus') : 'join';
-		$BTM = ($isLast) ? 'bottom' : '';
-			// If the current row is a bank, display only the plus/minus
-		$BTM  = ($isBank) ? '' : $BTM;
-		$icon = '<img' . t3lib_iconWorks::skinImg($this->backPath, 'gfx/ol/' . $PM . $BTM . '.gif', 'width="18" height="16"') . ' alt="" />';
+		$plusMinus = $isExpanded ? '-minus' : '-plus';
+		$plusMinus = $hasChildren ? $plusMinus : '';
+		$bottom = ($isLast) ? '-end' : '';
+		$bottom  = ($isBank) ? '' : $bottom;
+		$icon = '<img alt="" src="/' . TYPO3_mainDir . 'clear.gif" class="x-tree-ec-icon x-tree-elbow' . $bottom . $plusMinus . '">';
 
 		if ($hasChildren) {
 				// Calculate the command
@@ -452,12 +458,13 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 
 			$cmd = array($this->treeName, $indexFirst, $this->bank, ($isExpanded ? 0 : 1));
 
-				// Add the parentIndices to the Command (also its own index since it has not been added if we HAVE parent indices
+			// Add the parentIndices to the Command (also its own index since
+			// it has not been added if we HAVE parent indices
 			if (0 < count($this->parentIndices)) {
 				$l = count($this->parentIndices);
 
 					// Add parent indices - first parent Index is already in the command
-				for ($i = 1; $i < $l; $i ++) {
+				for ($i = 1; $i < $l; $i++) {
 					$cmd[] = $this->parentIndices[$i];
 				}
 
@@ -485,22 +492,17 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 	 * @param string $cmd Command for 'PM' get var
 	 * @param boolean $isExpand
 	 * @return string Link-wrapped input string
-	 * @access private
 	 */
 	protected function PMiconATagWrap($icon, $cmd, $isExpand = TRUE) {
 		if (!is_string($icon) || !is_string($cmd)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('PMiconATagWrap (Tx_Commerce_Tree_Leaf_View) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				GeneralUtility::devLog('PMiconATagWrap (Tx_Commerce_Tree_Leaf_View) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
 			}
 			return '';
 		}
 
 			// activate dynamic ajax-based tree
-		$js = htmlspecialchars('Tree.load(\'' . $cmd . '\', ' . (int) $isExpand . ', this);');
+		$js = htmlspecialchars('Tree.load(' . GeneralUtility::quoteJSvalue($cmd) . ', ' . (int)$isExpand . ', this);');
 		return '<a class="pm" onclick="' . $js . '">' . $icon . '</a>';
 	}
 }
-
-class_alias('Tx_Commerce_Tree_Leaf_View', 'leafView');
-
-?>

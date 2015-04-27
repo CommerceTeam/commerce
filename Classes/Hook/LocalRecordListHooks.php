@@ -19,21 +19,17 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-// require_once in 4.x needed because in ajax mod the class can't get autoloaded
-/** @noinspection PhpIncludeInspection */
-require_once(PATH_typo3 . 'interfaces/interface.localrecordlist_actionsHook.php');
-
 /**
  * Class Tx_Commerce_Hook_LocalRecordListHooks
  */
-class Tx_Commerce_Hook_LocalRecordListHooks implements localRecordList_actionsHook {
+class Tx_Commerce_Hook_LocalRecordListHooks implements \TYPO3\CMS\Recordlist\RecordList\RecordListHookInterface {
 	/**
 	 * modifies Web>List clip icons (copy, cut, paste, etc.) of a displayed row
 	 *
 	 * @param string $table the current database table
 	 * @param array $row the current record row
 	 * @param array $cells the default clip-icons to get modified
-	 * @param localRecordList $parentObject Instance of calling object
+	 * @param Tx_Commerce_ViewHelpers_CategoryRecordList $parentObject Instance of calling object
 	 * @return array the modified clip-icons
 	 */
 	public function makeClip($table, $row, $cells, &$parentObject) {
@@ -54,7 +50,7 @@ class Tx_Commerce_Hook_LocalRecordListHooks implements localRecordList_actionsHo
 	 * @param string $table the current database table
 	 * @param array $row the current record row
 	 * @param array $cells the default control-icons to get modified
-	 * @param localRecordList $parentObject Instance of calling object
+	 * @param Tx_Commerce_ViewHelpers_CategoryRecordList $parentObject Instance of calling object
 	 * @return array the modified control-icons
 	 */
 	public function makeControl($table, $row, $cells, &$parentObject) {
@@ -65,7 +61,7 @@ class Tx_Commerce_Hook_LocalRecordListHooks implements localRecordList_actionsHo
 	 * @param string $table
 	 * @param array $currentIdList
 	 * @param array $headerColumns
-	 * @param localRecordList $parentObject
+	 * @param Tx_Commerce_ViewHelpers_CategoryRecordList $parentObject
 	 * @return array
 	 */
 	public function renderListHeader($table, $currentIdList, $headerColumns, &$parentObject) {
@@ -249,14 +245,3 @@ class Tx_Commerce_Hook_LocalRecordListHooks implements localRecordList_actionsHo
 		return $cells;
 	}
 }
-
-if (defined(
-		'TYPO3_MODE'
-	)
-	&& $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Hook/LocalRecordListHooks.php']
-) {
-	/** @noinspection PhpIncludeInspection */
-	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Hook/LocalRecordListHooks.php']);
-}
-
-?>

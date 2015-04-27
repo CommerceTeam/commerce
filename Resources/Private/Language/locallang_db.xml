@@ -9,6 +9,8 @@
 	</meta>
 	<data type="array">
 		<languageKey index="default" type="array">
+			<label index="tabs.references">References</label>
+
 			<label index="tt_address.surname">Surname</label>
 			<label index="tt_address.company">Company</label>
 			<label index="tt_address.tx_commerce_default_values">Default values</label>

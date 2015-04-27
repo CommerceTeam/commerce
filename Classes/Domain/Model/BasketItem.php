@@ -767,12 +767,3 @@ class Tx_Commerce_Domain_Model_BasketItem {
 		return $this->getQuantity();
 	}
 }
-
-class_alias('Tx_Commerce_Domain_Model_BasketItem', 'tx_commerce_basket_item');
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Domain/Model/BasketItem.php']) {
-	/** @noinspection PhpIncludeInspection */
-	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Domain/Model/BasketItem.php']);
-}
-
-?>

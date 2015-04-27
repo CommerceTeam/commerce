@@ -18,11 +18,14 @@
  ***************************************************************/
 
 /**
- * Implements the dynaflex config for the 'tx_commerce_categories' extension
+ * Implements the dynaflex config for the 'tx_commerce_categories' table
  */
-class tx_commerce_configuration_dca_categories {
+class Tx_Commerce_Configuration_Dca_Categories {
 	public $rowChecks = array();
 
+	/**
+	 * @var array
+	 */
 	public $DCA = array(
 		0 => array(
 			'path' => 'tx_commerce_categories/columns/attributes/config/ds/default',
@@ -112,5 +115,3 @@ class tx_commerce_configuration_dca_categories {
 
 	public $hooks = array();
 }
-
-?>

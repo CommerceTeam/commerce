@@ -191,7 +191,3 @@ class Tx_Commerce_Payment_Payment extends Tx_Commerce_Payment_Wirecard {
 		$this->referenzID = $referenceId;
 	}
 }
-
-class_alias('Tx_Commerce_Payment_Payment', 'payment');
-
-?>

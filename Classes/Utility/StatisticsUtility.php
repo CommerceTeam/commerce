@@ -272,12 +272,3 @@ class Tx_Commerce_Utility_StatisticsUtility {
 		return (int) mktime(23, 59, 59, strftime('%m', $timestamp), strftime('%d', $timestamp), strftime('%Y', $timestamp));
 	}
 }
-
-class_alias('Tx_Commerce_Utility_StatisticsUtility', 'tx_commerce_statistics');
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Utility/StatisticsUtility.php']) {
-	/** @noinspection PhpIncludeInspection */
-	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Utility/StatisticsUtility.php']);
-}
-
-?>

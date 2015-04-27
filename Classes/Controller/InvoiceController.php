@@ -397,12 +397,3 @@ class Tx_Commerce_Controller_InvoiceController extends Tx_Commerce_Controller_Ba
 	public function makeArticleView($kind, $articles, $product) {
 	}
 }
-
-class_alias('Tx_Commerce_Controller_InvoiceController', 'tx_commerce_pi6');
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Controller/InvoiceController.php']) {
-	/** @noinspection PhpIncludeInspection */
-	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Controller/InvoiceController.php']);
-}
-
-?>

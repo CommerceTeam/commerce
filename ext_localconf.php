@@ -43,14 +43,14 @@ if (!defined('COMMERCE_EXTkey')) {
 }
 
 if (!defined('PATH_TXCOMMERCE')) {
-	define('PATH_TXCOMMERCE', t3lib_extMgm::extPath(COMMERCE_EXTKEY));
+	define('PATH_TXCOMMERCE', \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath(COMMERCE_EXTKEY));
 }
 if (!defined('PATH_txcommerce')) {
 	define('PATH_txcommerce', PATH_TXCOMMERCE);
 }
 
 if (!defined('PATH_TXCOMMERCE_REL')) {
-	define('PATH_TXCOMMERCE_REL', t3lib_extMgm::extRelPath(COMMERCE_EXTKEY));
+	define('PATH_TXCOMMERCE_REL', \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath(COMMERCE_EXTKEY));
 }
 if (!defined('PATH_txcommerce_rel')) {
 	define('PATH_txcommerce_rel', PATH_TXCOMMERCE_REL);
@@ -137,11 +137,11 @@ $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['SYSPRODUCTS']['DELIVERY
 
 
 	// Add frontend plugins to content.default static template
-t3lib_extMgm::addPItoST43(COMMERCE_EXTKEY, 'Classes/Controller/ListController.php', '_pi1', 'list_type', 1);
-t3lib_extMgm::addPItoST43(COMMERCE_EXTKEY, 'Classes/Controller/BasketController.php', '_pi2', 'list_type', 0);
-t3lib_extMgm::addPItoST43(COMMERCE_EXTKEY, 'Classes/Controller/CheckoutController.php', '_pi3', 'list_type', 0);
-t3lib_extMgm::addPItoST43(COMMERCE_EXTKEY, 'Classes/Controller/AddressesController.php', '_pi4', 'list_type', 0);
-t3lib_extMgm::addPItoST43(COMMERCE_EXTKEY, 'Classes/Controller/InvoiceController.php', '_pi6', 'list_type', 0);
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43(COMMERCE_EXTKEY, 'Classes/Controller/ListController.php', '_pi1', 'list_type', 1);
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43(COMMERCE_EXTKEY, 'Classes/Controller/BasketController.php', '_pi2', 'list_type', 0);
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43(COMMERCE_EXTKEY, 'Classes/Controller/CheckoutController.php', '_pi3', 'list_type', 0);
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43(COMMERCE_EXTKEY, 'Classes/Controller/AddressesController.php', '_pi4', 'list_type', 0);
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43(COMMERCE_EXTKEY, 'Classes/Controller/InvoiceController.php', '_pi6', 'list_type', 0);
 
 
 if (TYPO3_MODE == 'BE') {
@@ -219,17 +219,7 @@ $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/AddressesCon
 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/AddressesController.php']['saveAddress'][] =
 	'EXT:commerce/Classes/Hook/Pi4Hooks.php:Tx_Commerce_Hook_Pi4Hooks';
 
-
-// Adding the AJAX listeners for Permission change/Browsing the Category tree
-$GLOBALS['TYPO3_CONF_VARS']['BE']['AJAX']['Tx_Commerce_Controller_PermissionAjaxController::dispatch'] =
-	'EXT:commerce/Classes/Controller/PermissionAjaxController.php:Tx_Commerce_Controller_PermissionAjaxController->dispatch';
-$GLOBALS['TYPO3_CONF_VARS']['BE']['AJAX']['Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper::ajaxExpandCollapseWithoutProduct'] =
-	'EXT:commerce/Classes/ViewHelpers/Navigation/CategoryViewHelper.php:Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper->ajaxExpandCollapseWithoutProduct';
-$GLOBALS['TYPO3_CONF_VARS']['BE']['AJAX']['Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper::ajaxExpandCollapse'] =
-	'EXT:commerce/Classes/ViewHelpers/Navigation/CategoryViewHelper.php:Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper->ajaxExpandCollapse';
-
-
-	// CLI Skript configration
+	// CLI Script configuration
 if (TYPO3_MODE == 'BE') {
 		// Setting up scripts that can be run from the cli_dispatch.phpsh script
 	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['GLOBAL']['cliKeys'][COMMERCE_EXTKEY] = array(
@@ -242,13 +232,16 @@ if (TYPO3_MODE == 'BE') {
 	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['Tx_Commerce_Task_StatisticTask'] = array(
 		'extension' => $_EXTKEY,
 		'title' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang_be.xml:tx_commerce_task_statistictask.name',
-		'description' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang_be.xml:tx_commerce_task_statistictask.description',
+		'description' =>
+			'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang_be.xml:tx_commerce_task_statistictask.description',
 		'additionalFields' => 'Tx_Commerce_Task_StatisticTaskAdditionalFieldProvider',
 	);
 }
 
 	// Register dynaflex dca files
 $GLOBALS['T3_VAR']['ext']['dynaflex']['tx_commerce_categories'][] =
-	'EXT:commerce/Configuration/DCA/Categories.php:tx_commerce_configuration_dca_categories';
-
-?>
+	'EXT:commerce/Configuration/DCA/Categories.php:Tx_Commerce_Configuration_Dca_Categories';
+$GLOBALS['T3_VAR']['ext']['dynaflex']['tx_commerce_products'][] =
+	'EXT:commerce/Configuration/DCA/Product.php:Tx_Commerce_Configuration_Dca_Products';
+$GLOBALS['T3_VAR']['ext']['dynaflex']['tx_commerce_articles'][] =
+	'EXT:commerce/Configuration/DCA/Articles.php:Tx_Commerce_Configuration_Dca_Articles';

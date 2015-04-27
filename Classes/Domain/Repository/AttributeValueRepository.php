@@ -37,12 +37,3 @@ class Tx_Commerce_Domain_Repository_AttributeValueRepository extends Tx_Commerce
 	 */
 	public $databaseTable = 'tx_commerce_attribute_values';
 }
-
-class_alias('Tx_Commerce_Domain_Repository_AttributeValueRepository', 'tx_commerce_db_attribute_value');
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Domain/Repository/AttributeValueRepository.php']) {
-	/** @noinspection PhpIncludeInspection */
-	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Domain/Repository/AttributeValueRepository.php']);
-}
-
-?>

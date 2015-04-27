@@ -77,8 +77,8 @@ class ux_tx_version_cm1 extends tx_version_cm1 {
 
 				$getVars = ($sysLanguageUid > 0 ? '&L=' . $sysLanguageUid : '') .
 					'&ADMCMD_vPrev[' . rawurlencode($table . ':' . $row['t3ver_oid']) . ']=' . $row['uid'] .
-					'&no_cache=1&tx_commerce[showUid]=' . $product->getUid() .
-					'&tx_commerce[catUid]=' . current($product->getMasterparentCategory());
+					'&no_cache=1&tx_commerce_pi1[showUid]=' . $product->getUid() .
+					'&tx_commerce_pi1[catUid]=' . current($product->getMasterparentCategory());
 
 				$adminLink .= '<a href="#" onclick="' .
 					htmlspecialchars(t3lib_BEfunc::viewOnClick($previewPageID, $this->doc->backPath, t3lib_BEfunc::BEgetRootLine($row['_REAL_PID']), '', '', $getVars)) .

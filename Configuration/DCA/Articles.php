@@ -22,51 +22,90 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-	// the dynamic Flexform for articles
-$dynaFlexConf = array(
-	0 => array(
-		'path' => 'tx_commerce_articles/columns/attributesedit/config/ds/default',
-		'modifications' => array(
-			array(
-				'method' => 'remove',
-				'inside' => 'ROOT/el',
-				'element' => 'dummy',
-			),
-			array(
-				'method' => 'add',
-				'path' => 'ROOT/el',
-				'type' => 'fields',
-				'source' => 'db',
-				'source_type' => 'entry_count',
-				'source_config' => array(
-					'table' => 'tx_commerce_articles_article_attributes_mm',
-					'select' => '*',
-					'where' => 'uid_local=###uid###',
-					'orderby' => 'sorting'
-				),
-				'allUserFunc' => 'Tx_Commerce_Utility_AttributeEditorUtility->getAttributeEditFields',
-			),
-		),
-	),
-	/**
-	 * This configuration is for the prices sheet. We have to give the user the
-	* possibility to add a free number of prices to all products. Each of that
-	* prices have it's own access fields, so the user can define different prices
-	* for various usergroups.
-		*/
-	1 => array(
-		'path' => 'tx_commerce_articles/types/0/showitem',
-		'parseXML' => FALSE,
-		'modifications' => array(
-			array(
-				'method' => 'add',
-				'type' => 'append',
-				'config' => array(
-					'text' => ',--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_articles.extras'
-				),
-			),
-		),
-	),
-);
+/**
+ * Implements the dynaflex config for the 'tx_commerce_articles' table
+ */
+class Tx_Commerce_Configuration_Dca_Articles {
 
-?>
+	/**
+	 * @var array
+	 */
+	public $rowChecks = array();
+
+	/**
+	 * @var array
+	 */
+	public $DCA = array(
+		0 => array(
+			'path' => 'tx_commerce_articles/columns/attributesedit/config/ds/default',
+			'modifications' => array(
+				array(
+					'method' => 'remove',
+					'inside' => 'ROOT/el',
+					'element' => 'dummy',
+				),
+				array(
+					'method' => 'add',
+					'path' => 'ROOT/el',
+					'type' => 'fields',
+					'source' => 'db',
+					'source_type' => 'entry_count',
+					'source_config' => array(
+						'table' => 'tx_commerce_articles_article_attributes_mm',
+						'select' => '*',
+						'where' => 'uid_local=###uid###',
+						'orderby' => 'sorting'
+					),
+					'allUserFunc' => 'Tx_Commerce_Utility_AttributeEditorUtility->getAttributeEditFields',
+				),
+			),
+		),
+		/**
+		 * This configuration is for the prices sheet. We have to give the user the
+		 * possibility to add a free number of prices to all products. Each of that
+		 * prices have it's own access fields, so the user can define different prices
+		 * for various usergroups.
+		 */
+		1 => array(
+			'path' => 'tx_commerce_articles/types/0/showitem',
+			'parseXML' => FALSE,
+			'modifications' => array(
+				array(
+					'method' => 'add',
+					'type' => 'append',
+					'config' => array(
+						'text' => ',--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_articles.extras'
+					),
+				),
+			),
+		),
+	);
+
+	/**
+	 * @var string
+	 */
+	public $cleanUpField = 'attributes';
+
+	/**
+	 * @var array
+	 */
+	public $hooks = array();
+
+	/**
+	 * @param array $resultDca
+	 * @return void
+	 */
+	public function alterDCA_onLoad(&$resultDca) {
+		/** @var t3lib_beUserAuth $backendUser */
+		$backendUser = $GLOBALS['BE_USER'];
+
+		if (
+			!(
+				\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('data') == NULL
+			) &&
+			$backendUser->uc['txcommerce_afterDatabaseOperations'] != 1
+		) {
+			$resultDca = array();
+		}
+	}
+}

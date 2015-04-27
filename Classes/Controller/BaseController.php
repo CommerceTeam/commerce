@@ -18,11 +18,12 @@
  *  GNU General Public License for more details.
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class Tx_Commerce_Controller_BaseController
  */
-abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
+abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 	/**
 	 * The extension key.
 	 *
@@ -262,7 +263,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 			throw new Exception('No target implementation found for payment type ' . $paymentType, 1305676132);
 		}
 
-		$paymentObject = t3lib_div::makeInstance($config['class'], $this);
+		$paymentObject = GeneralUtility::makeInstance($config['class'], $this);
 		if (!$paymentObject instanceof Tx_Commerce_Payment_Interface_Payment) {
 			throw new Exception($config['class'] . ' must implement Tx_Commerce_Payment_Interface_Payment');
 		}
@@ -277,16 +278,16 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 	 */
 	public function addAdditionalLocallang() {
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['locallang'])) {
-			t3lib_div::deprecationLog(
+			GeneralUtility::deprecationLog(
 				'
-								hook
-								$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_pibase.php\'][\'locallang\']
-								is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
-								$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/BaseController.php\'][\'locallang\']
-							'
+					hook
+					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_pibase.php\'][\'locallang\']
+					is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
+					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/BaseController.php\'][\'locallang\']
+				'
 			);
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['locallang'] as $classRef) {
-				$hookObj = & t3lib_div::getUserObj($classRef);
+				$hookObj = & GeneralUtility::getUserObj($classRef);
 				if (method_exists($hookObj, 'loadAdditionalLocallang')) {
 					/** @noinspection PhpUndefinedMethodInspection */
 					$hookObj->loadAdditionalLocallang($this);
@@ -295,7 +296,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 		}
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BaseController.php']['locallang'])) {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BaseController.php']['locallang'] as $classRef) {
-				$hookObj = & t3lib_div::getUserObj($classRef);
+				$hookObj = & GeneralUtility::getUserObj($classRef);
 				if (method_exists($hookObj, 'loadAdditionalLocallang')) {
 					/** @noinspection PhpUndefinedMethodInspection */
 					$hookObj->loadAdditionalLocallang($this);
@@ -311,11 +312,9 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 	 */
 	public function generateLanguageMarker() {
 		if ((is_array($this->LOCAL_LANG[$GLOBALS['TSFE']->tmpl->setup['config.']['language']]))
-			&& (is_array(
-				$this->LOCAL_LANG['default']
-			))
+			&& (is_array($this->LOCAL_LANG['default']))
 		) {
-			$markerArr = t3lib_div::array_merge(
+			$markerArr = GeneralUtility::array_merge(
 				$this->LOCAL_LANG['default'], $this->LOCAL_LANG[$GLOBALS['TSFE']->tmpl->setup['config.']['language']]
 			);
 		} elseif (is_array($this->LOCAL_LANG['default'])) {
@@ -511,7 +510,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 			$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/ListController.php']['preRenderListView']
 		)) {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/ListController.php']['preRenderListView'] as $classRef) {
-				$hookObjectsArr[] = & t3lib_div::getUserObj($classRef);
+				$hookObjectsArr[] = & GeneralUtility::getUserObj($classRef);
 			}
 		}
 		/**
@@ -691,7 +690,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 		}
 
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['listview'])) {
-			t3lib_div::deprecationLog(
+			GeneralUtility::deprecationLog(
 				'
 					hook
 					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_pibase.php\'][\'listview\']
@@ -700,7 +699,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 				'
 			);
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['listview'] as $classRef) {
-				$hookObj = & t3lib_div::getUserObj($classRef);
+				$hookObj = & GeneralUtility::getUserObj($classRef);
 				if (method_exists($hookObj, 'additionalMarker')) {
 					/** @noinspection PhpUndefinedMethodInspection */
 					$markerArray = $hookObj->additionalMarker($markerArray, $this);
@@ -709,7 +708,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 		}
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BaseController.php']['listView'])) {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BaseController.php']['listView'] as $classRef) {
-				$hookObj = t3lib_div::getUserObj($classRef);
+				$hookObj = GeneralUtility::getUserObj($classRef);
 				if (method_exists($hookObj, 'additionalMarker')) {
 					/** @noinspection PhpUndefinedMethodInspection */
 					$markerArray = $hookObj->additionalMarker($markerArray, $this);
@@ -838,16 +837,16 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 		$markerArray['DELIVERY_PRICE_GROSS'] = Tx_Commerce_ViewHelpers_Money::format($article->getDeliveryCostGross(), $this->currency);
 
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['articleMarker'])) {
-			t3lib_div::deprecationLog(
+			GeneralUtility::deprecationLog(
 				'
-								hook
-								$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_pibase.php\'][\'articleMarker\']
-								is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
-								$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/BaseController.php\'][\'articleMarker\']
-							'
+					hook
+					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_pibase.php\'][\'articleMarker\']
+					is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
+					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/BaseController.php\'][\'articleMarker\']
+				'
 			);
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['articleMarker'] as $classRef) {
-				$hookObj = & t3lib_div::getUserObj($classRef);
+				$hookObj = & GeneralUtility::getUserObj($classRef);
 				if (method_exists($hookObj, 'additionalMarkerArticle')) {
 					/** @noinspection PhpUndefinedMethodInspection */
 					$markerArray = $hookObj->additionalMarkerArticle($markerArray, $article, $this);
@@ -856,7 +855,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 		}
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BaseController.php']['articleMarker'])) {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BaseController.php']['articleMarker'] as $classRef) {
-				$hookObj = & t3lib_div::getUserObj($classRef);
+				$hookObj = & GeneralUtility::getUserObj($classRef);
 				if (method_exists($hookObj, 'additionalMarkerArticle')) {
 					/** @noinspection PhpUndefinedMethodInspection */
 					$markerArray = $hookObj->additionalMarkerArticle($markerArray, $article, $this);
@@ -954,7 +953,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 		}
 
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['makeBasketView'])) {
-			t3lib_div::deprecationLog(
+			GeneralUtility::deprecationLog(
 				'
 					hook
 					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_pibase.php\'][\'makeBasketView\']
@@ -963,7 +962,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 				'
 			);
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['makeBasketView'] as $classRef) {
-				$hookObj = & t3lib_div::getUserObj($classRef);
+				$hookObj = & GeneralUtility::getUserObj($classRef);
 				if (method_exists($hookObj, 'postBasketView')) {
 					/** @noinspection PhpUndefinedMethodInspection */
 					$content = $hookObj->postBasketView($content, $articletypes, $lineTemplate, $template, $basketObj, $this);
@@ -975,7 +974,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 		)
 		) {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BaseController.php']['makeBasketView'] as $classRef) {
-				$hookObj = t3lib_div::getUserObj($classRef);
+				$hookObj = GeneralUtility::getUserObj($classRef);
 				if (method_exists($hookObj, 'postBasketView')) {
 					/** @noinspection PhpUndefinedMethodInspection */
 					$content = $hookObj->postBasketView($content, $articletypes, $lineTemplate, $template, $basketObj, $this);
@@ -1020,7 +1019,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 
 		$sumArticleNet = 0;
 		$sumArticleGross = 0;
-		$regularArticleTypes = t3lib_div::intExplode(',', $this->conf['regularArticleTypes']);
+		$regularArticleTypes = GeneralUtility::intExplode(',', $this->conf['regularArticleTypes']);
 		foreach ($regularArticleTypes as $regularArticleType) {
 			$sumArticleNet += $basketObj->getArticleTypeSumNet($regularArticleType, 1);
 			$sumArticleGross += $basketObj->getArticleTypeSumGross($regularArticleType, 1);
@@ -1061,7 +1060,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 		 */
 		$hookObjectsArr = array();
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['makeBasketInformation'])) {
-			t3lib_div::deprecationLog(
+			GeneralUtility::deprecationLog(
 				'
 					hook
 					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_pibase.php\'][\'makeBasketInformation\']
@@ -1070,12 +1069,12 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 				'
 			);
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['makeBasketInformation'] as $classRef) {
-				$hookObjectsArr[] = & t3lib_div::getUserObj($classRef);
+				$hookObjectsArr[] = & GeneralUtility::getUserObj($classRef);
 			}
 		}
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BaseController.php']['makeBasketInformation'])) {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BaseController.php']['makeBasketInformation'] as $classRef) {
-				$hookObjectsArr[] = & t3lib_div::getUserObj($classRef);
+				$hookObjectsArr[] = & GeneralUtility::getUserObj($classRef);
 			}
 		}
 		foreach ($hookObjectsArr as $hookObj) {
@@ -1159,7 +1158,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 		);
 
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['makeLineView'])) {
-			t3lib_div::deprecationLog(
+			GeneralUtility::deprecationLog(
 				'
 					hook
 					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_pibase.php\'][\'makeLineView\']
@@ -1168,7 +1167,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 				'
 			);
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['makeLineView'] as $classRef) {
-				$hookObj = & t3lib_div::getUserObj($classRef);
+				$hookObj = & GeneralUtility::getUserObj($classRef);
 				if (method_exists($hookObj, 'processMarkerLineView')) {
 					/** @noinspection PhpUndefinedMethodInspection */
 					$markerArray = $hookObj->processMarkerLineView($markerArray, $basketItemObj, $this);
@@ -1177,7 +1176,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 		}
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BaseController.php']['makeLineView'])) {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BaseController.php']['makeLineView'] as $classRef) {
-				$hookObj = & t3lib_div::getUserObj($classRef);
+				$hookObj = & GeneralUtility::getUserObj($classRef);
 				if (method_exists($hookObj, 'processMarkerLineView')) {
 					/** @noinspection PhpUndefinedMethodInspection */
 					$markerArray = $hookObj->processMarkerLineView($markerArray, $basketItemObj, $this);
@@ -1261,14 +1260,6 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 				}
 				if ($type == 'IMAGE') {
 					$config['altText'] = $data['title'];
-				}
-				// Table should be set and as all tx_commerce tables are prefiex with
-				// tx_commerce (12 chars) at least 11 chars long
-				if (isset($table) && (strlen($table) > 11)) {
-					// Load only TCA if field is a image type, see  renderValue
-					if ($type == 'IMGTEXT' || $type == 'IMAGE' || $type == 'IMG_RESOURCE') {
-						t3lib_div::loadTCA($table);
-					}
 				}
 
 				$markerArray[strtoupper($prefix . $fieldName)] = $this->renderValue(
@@ -1411,21 +1402,21 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 
 		$hookObjectsArr = array();
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['renderValue'])) {
-			t3lib_div::deprecationLog(
+			GeneralUtility::deprecationLog(
 				'
-								hook
-								$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_pibase.php\'][\'renderValue\']
-								is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
-								$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/BaseController.php\'][\'renderValue\']
-							'
+					hook
+					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_pibase.php\'][\'renderValue\']
+					is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
+					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/BaseController.php\'][\'renderValue\']
+				'
 			);
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['renderValue'] as $classRef) {
-				$hookObjectsArr[] = & t3lib_div::getUserObj($classRef);
+				$hookObjectsArr[] = & GeneralUtility::getUserObj($classRef);
 			}
 		}
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BaseController.php']['renderValue'])) {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BaseController.php']['renderValue'] as $classRef) {
-				$hookObjectsArr[] = & t3lib_div::getUserObj($classRef);
+				$hookObjectsArr[] = & GeneralUtility::getUserObj($classRef);
 			}
 		}
 
@@ -1511,21 +1502,21 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 
 		$hookObjectsArr = array();
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['generalElement'])) {
-			t3lib_div::deprecationLog(
+			GeneralUtility::deprecationLog(
 				'
-								hook
-								$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_pibase.php\'][\'generalElement\']
-								is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
-								$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/BaseController.php\'][\'generalElement\']
-							'
+					hook
+					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_pibase.php\'][\'generalElement\']
+					is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
+					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/BaseController.php\'][\'generalElement\']
+				'
 			);
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['generalElement'] as $classRef) {
-				$hookObjectsArr[] = & t3lib_div::getUserObj($classRef);
+				$hookObjectsArr[] = & GeneralUtility::getUserObj($classRef);
 			}
 		}
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BaseController.php']['renderElement'])) {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BaseController.php']['renderElement'] as $classRef) {
-				$hookObjectsArr[] = & t3lib_div::getUserObj($classRef);
+				$hookObjectsArr[] = & GeneralUtility::getUserObj($classRef);
 			}
 		}
 		foreach ($hookObjectsArr as $hookObj) {
@@ -1568,20 +1559,20 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 		}
 		$hookObj = array();
 		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['formatAttributeValue']) {
-			t3lib_div::deprecationLog(
+			GeneralUtility::deprecationLog(
 				'
-								hook
-								$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_pibase.php\'][\'formatAttributeValue\']
-								is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
-								$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/BaseController.php\'][\'formatAttributeValue\']
-							'
+					hook
+					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_pibase.php\'][\'formatAttributeValue\']
+					is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
+					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/BaseController.php\'][\'formatAttributeValue\']
+				'
 			);
-			$hookObj = t3lib_div::getUserObj(
+			$hookObj = GeneralUtility::getUserObj(
 				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['formatAttributeValue']
 			);
 		}
 		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BaseController.php']['formatAttributeValue']) {
-			$hookObj = t3lib_div::getUserObj(
+			$hookObj = GeneralUtility::getUserObj(
 				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BaseController.php']['formatAttributeValue']
 			);
 		}
@@ -1704,7 +1695,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 		$markerArray = array();
 
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['renderProductsForList'])) {
-			t3lib_div::deprecationLog(
+			GeneralUtility::deprecationLog(
 				'
 					hook
 					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_pibase.php\'][\'renderProductsForList\']
@@ -1713,7 +1704,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 				'
 			);
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['renderProductsForList'] as $classRef) {
-				$hookObj = & t3lib_div::getUserObj($classRef);
+				$hookObj = & GeneralUtility::getUserObj($classRef);
 				if (method_exists($hookObj, 'preProcessorProductsListView')) {
 					/** @noinspection PhpUndefinedMethodInspection */
 					$markerArray = $hookObj->preProcessorProductsListView(
@@ -1724,7 +1715,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 		}
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BaseController.php']['renderProductsForList'])) {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BaseController.php']['renderProductsForList'] as $classRef) {
-				$hookObj = & t3lib_div::getUserObj($classRef);
+				$hookObj = & GeneralUtility::getUserObj($classRef);
 				if (method_exists($hookObj, 'preProcessorProductsListView')) {
 					/** @noinspection PhpUndefinedMethodInspection */
 					$markerArray = $hookObj->preProcessorProductsListView(
@@ -1745,7 +1736,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 				$template = $this->cObj->getSubpart($this->templateCode, '###' . $templateMarker[$iterationCount] . '###');
 
 				/** @var Tx_Commerce_Domain_Model_Product $myProduct */
-				$myProduct = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product', $myProductId, $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
+				$myProduct = GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Product', $myProductId, $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
 				$myProduct->loadData();
 				$myProduct->loadArticles();
 
@@ -1798,7 +1789,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 
 		$hookObjectsArr = array();
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['product'])) {
-			t3lib_div::deprecationLog(
+			GeneralUtility::deprecationLog(
 				'
 					hook
 					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_pibase.php\'][\'product\']
@@ -1807,12 +1798,12 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 				'
 			);
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['product'] as $classRef) {
-				$hookObjectsArr[] = & t3lib_div::getUserObj($classRef);
+				$hookObjectsArr[] = & GeneralUtility::getUserObj($classRef);
 			}
 		}
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BaseController.php']['renderProduct'])) {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BaseController.php']['renderProduct'] as $classRef) {
-				$hookObjectsArr[] = & t3lib_div::getUserObj($classRef);
+				$hookObjectsArr[] = & GeneralUtility::getUserObj($classRef);
 			}
 		}
 
@@ -1917,7 +1908,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 		 */
 		$cheapestArticleUid = $product->getCheapestArticle();
 		/** @var Tx_Commerce_Domain_Model_Article $cheapestArticle */
-		$cheapestArticle = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Article', $cheapestArticleUid);
+		$cheapestArticle = GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Article', $cheapestArticleUid);
 		$cheapestArticle->loadData();
 		$cheapestArticle->loadPrices();
 
@@ -1927,7 +1918,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 
 		$cheapestArticleUid = $product->getCheapestArticle(1);
 		/** @var Tx_Commerce_Domain_Model_Article $cheapestArticle */
-		$cheapestArticle = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Article', $cheapestArticleUid);
+		$cheapestArticle = GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Article', $cheapestArticleUid);
 		$cheapestArticle->loadData();
 		$cheapestArticle->loadPrices();
 
@@ -2045,7 +2036,8 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 	 * @return string The output content stream
 	 * @see tslib_content: substituteMarkerArrayCached
 	 */
-	public function substituteMarkerArrayNoCached($content, $markContentArray = array(), $subpartContentArray = array(), $wrappedSubpartContentArray = array()) {
+	public function substituteMarkerArrayNoCached($content, $markContentArray = array(), $subpartContentArray = array(),
+		$wrappedSubpartContentArray = array()) {
 		/** @var t3lib_timeTrack $timeTrack */
 		$timeTrack = & $GLOBALS['TT'];
 		$timeTrack->push('commerce: substituteMarkerArrayNoCache');
@@ -2142,7 +2134,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use addTypoLinkToTypoScript instead
 	 */
 	public function addTypoLinkToTS($typoscript, $typoLinkConf) {
-		t3lib_div::logDeprecatedFunction();
+		GeneralUtility::logDeprecatedFunction();
 
 		return $this->addTypoLinkToTypoScript($typoscript, $typoLinkConf);
 	}
@@ -2156,17 +2148,15 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, no replacement planed. this method is not used in pibase context
 	 */
 	public function makeControl($table = '') {
-		t3lib_div::logDeprecatedFunction();
+		GeneralUtility::logDeprecatedFunction();
 
 		if (!$table && !$this->TCA) {
-			t3lib_div::loadTCA($this->table);
 			$this->TCA = $GLOBALS['TCA'][$this->table];
 		}
 		if (!$table) {
 			return $this->TCA;
 		}
 
-		t3lib_div::loadTCA($table);
 		$localTca = $GLOBALS['TCA'][$table];
 
 		return $localTca;
@@ -2181,7 +2171,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 	 * @depricated since commerce 1.0.0, this function will be removed in commerce 1.4.0, this method gets removed from the api
 	 */
 	public function makeproductAttributList($myProduct) {
-		t3lib_div::logDeprecatedFunction();
+		GeneralUtility::logDeprecatedFunction();
 		$subpartArray[] = '###' . strtoupper($this->conf['templateMarker.']['productAttributes']) . '###';
 		$subpartArray[] = '###' . strtoupper($this->conf['templateMarker.']['productAttributes2']) . '###';
 
@@ -2198,7 +2188,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 	 * @depricated since commerce 1.0.0, this function will be removed in commerce 1.4.0, this method gets removed from the api
 	 */
 	public function makeArticleAttributList(&$prodObj, $articleId = array()) {
-		t3lib_div::logDeprecatedFunction();
+		GeneralUtility::logDeprecatedFunction();
 		$subpartArray = array();
 		if (strlen($this->conf['templateMarker.']['articleAttributes']) > 0) {
 			$subpartArray[] = '###' . strtoupper($this->conf['templateMarker.']['articleAttributes']) . '###';
@@ -2220,7 +2210,7 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 	 * @depricated since commerce 1.0.0, this function will be removed in commerce 1.4.0, this method gets removed from the api
 	 */
 	public function makeSingleView() {
-		t3lib_div::logDeprecatedFunction();
+		GeneralUtility::logDeprecatedFunction();
 		$subpartName = '###' . strtoupper($this->conf['templateMarker.']['productView']) . '###';
 		$subpartNameNostock = '###' . strtoupper($this->conf['templateMarker.']['productView']) . '_NOSTOCK###';
 
@@ -2235,12 +2225,3 @@ abstract class Tx_Commerce_Controller_BaseController extends tslib_pibase {
 		return $content;
 	}
 }
-
-class_alias('Tx_Commerce_Controller_BaseController', 'tx_commerce_pibase');
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Controller/BaseController.php']) {
-	/** @noinspection PhpIncludeInspection */
-	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Controller/BaseController.php']);
-}
-
-?>

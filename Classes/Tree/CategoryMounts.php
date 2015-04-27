@@ -24,6 +24,7 @@
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Gives functionality for Categorymounts
@@ -55,14 +56,18 @@ class Tx_Commerce_Tree_CategoryMounts extends Tx_Commerce_Tree_Leaf_Mounts {
 
 				// If the mountpoint is the root
 			if ($id == 0) {
-				$tupels[] = ($backendUser->isAdmin()) ? array($id, $this->getLL('leaf.category.root')) : array($id, $this->getLL('leaf.restrictedAccess'));
+				$tupels[] = $backendUser->isAdmin() ?
+					array($id, $this->getLL('leaf.category.root')) :
+					array($id, $this->getLL('leaf.restrictedAccess'));
 			} else {
 					// Get the title
 				/** @var Tx_Commerce_Domain_Model_Category $cat */
-				$cat = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category', $id);
+				$cat = GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Category', $id);
 				$cat->loadData();
 
-				$title = ($cat->isPermissionSet('show') && $this->isInCommerceMounts($cat->getUid())) ? $cat->getTitle() : $this->getLL('leaf.restrictedAccess');
+				$title = ($cat->isPermissionSet('show') && $this->isInCommerceMounts($cat->getUid())) ?
+					$cat->getTitle() :
+					$this->getLL('leaf.restrictedAccess');
 
 				$tupels[] = array($id, $title);
 			}
@@ -95,9 +100,10 @@ class Tx_Commerce_Tree_CategoryMounts extends Tx_Commerce_Tree_Leaf_Mounts {
 			return FALSE;
 		}
 
-			// load the category and go up the tree until we either reach a mount or we reach root
+		// load the category and go up the tree until
+		// we either reach a mount or we reach root
 		/** @var Tx_Commerce_Domain_Model_Category $cat */
-		$cat = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category', $categoryUid);
+		$cat = GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Category', $categoryUid);
 		$cat->loadData();
 
 		$tmpCats = $cat->getParentCategories();
@@ -108,12 +114,17 @@ class Tx_Commerce_Tree_CategoryMounts extends Tx_Commerce_Tree_Leaf_Mounts {
 				// Prevent endless recursion
 			if ($i < 0) {
 				if (TYPO3_DLOG) {
-					t3lib_div::devLog('isInCommerceMounts (categorymounts) has aborted because $i has reached its allowed recursive maximum.', COMMERCE_EXTKEY, 3);
+					GeneralUtility::devLog(
+						'isInCommerceMounts (categorymounts) has aborted because $i has reached its allowed recursive maximum.',
+						COMMERCE_EXTKEY,
+						3
+					);
 				}
 				return FALSE;
 			}
 
-				// true if we can find any parent category of this category in the commerce mounts
+			// true if we can find any parent category of
+			// this category in the commerce mounts
 			if (in_array($cat->getUid(), $categories)) {
 				return TRUE;
 			}
@@ -123,18 +134,9 @@ class Tx_Commerce_Tree_CategoryMounts extends Tx_Commerce_Tree_Leaf_Mounts {
 			if (is_array($tmpParents) && 0 < count($tmpParents)) {
 				$tmpCats = array_merge($tmpCats, $tmpParents);
 			}
-			$i --;
+			$i--;
 		}
 
 		return FALSE;
 	}
 }
-
-class_alias('Tx_Commerce_Tree_CategoryMounts', 'tx_commerce_categorymounts');
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Tree/CategoryMounts.php']) {
-	/** @noinspection PhpIncludeInspection */
-	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Tree/CategoryMounts.php']);
-}
-
-?>

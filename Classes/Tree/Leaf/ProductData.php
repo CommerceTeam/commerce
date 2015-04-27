@@ -34,7 +34,7 @@ class Tx_Commerce_Tree_Leaf_ProductData extends Tx_Commerce_Tree_Leaf_SlaveData 
 	 *
 	 * @var string
 	 */
-	protected $extendedFields = 'title, navtitle, hidden, deleted, starttime, endtime, t3ver_oid, t3ver_id, t3ver_wsid, t3ver_label, t3ver_state, t3ver_stage, t3ver_count, t3ver_tstamp';
+	protected $extendedFields = 'title, navtitle, hidden, deleted, starttime, endtime, fe_group, t3ver_oid, t3ver_id, t3ver_wsid, t3ver_label, t3ver_state, t3ver_stage, t3ver_count, t3ver_tstamp';
 
 	/**
 	 * @var string
@@ -114,12 +114,3 @@ class Tx_Commerce_Tree_Leaf_ProductData extends Tx_Commerce_Tree_Leaf_SlaveData 
 		return $this->loadRecords();
 	}
 }
-
-class_alias('Tx_Commerce_Tree_Leaf_ProductData', 'tx_commerce_leaf_productdata');
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Tree/Leaf/ProductData.php']) {
-	/** @noinspection PhpIncludeInspection */
-	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Tree/Leaf/ProductData.php']);
-}
-
-?>

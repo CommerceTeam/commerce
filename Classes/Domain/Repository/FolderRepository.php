@@ -37,7 +37,7 @@ class Tx_Commerce_Domain_Repository_FolderRepository {
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, this wont get replaced as it was removed from the api
 	 */
 	public function getFolderPidList($module = 'commerce') {
-		t3lib_div::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
 
 		return implode(',', array_keys(self::getFolders($module)));
 	}
@@ -80,21 +80,14 @@ class Tx_Commerce_Domain_Repository_FolderRepository {
 	 * @return array rows of found extension folders
 	 */
 	public static function getFolders($module = 'commerce', $pid = 0, $title = '') {
-		/** @var t3lib_db $database */
-		$database = $GLOBALS['TYPO3_DB'];
-
-		$rows = array();
-		$res = $database->exec_SELECTquery(
+		$row = self::getDatabaseConnection()->exec_SELECTgetSingleRow(
 			'uid,pid,title',
 			'pages',
-			'doktype=254 and tx_graytree_foldername = \'' . strtolower($title) . '\' AND pid = ' . (int) $pid . ' AND module=\'' .
-				$module . '\' ' . t3lib_BEfunc::deleteClause('pages')
+			'doktype = 254 AND tx_graytree_foldername = \'' . strtolower($title) . '\' AND pid = ' . (int) $pid . ' AND module=\'' .
+				$module . '\' ' . \TYPO3\CMS\Backend\Utility\BackendUtility::deleteClause('pages')
 		);
 
-		if ($row = $database->sql_fetch_assoc($res)) {
-			$rows[$row['uid']] = $row;
-		}
-		return $rows;
+		return isset($row['uid']) ? array($row['uid'] => $row) : array();
 	}
 
 	/**
@@ -109,33 +102,31 @@ class Tx_Commerce_Domain_Repository_FolderRepository {
 	 * @todo sorting
 	 */
 	protected function createFolder($title = 'Commerce', $module = 'commerce', $pid = 0) {
-		$fields_values = array();
-		$fields_values['pid'] = $pid;
-		$fields_values['sorting'] = 10111;
-		$fields_values['perms_user'] = 31;
-		$fields_values['perms_group'] = 31;
-		$fields_values['perms_everybody'] = 31;
-		$fields_values['title'] = $title;
-			// MAKE IT tx_commerce_foldername
-		$fields_values['tx_graytree_foldername'] =  strtolower($title);
-		$fields_values['doktype'] = 254;
-		$fields_values['module'] = $module;
-		$fields_values['crdate'] = time();
-		$fields_values['tstamp'] = time();
+		$fieldValues = array();
+		$fieldValues['pid'] = $pid;
+		$fieldValues['sorting'] = 10111;
+		$fieldValues['perms_user'] = 31;
+		$fieldValues['perms_group'] = 31;
+		$fieldValues['perms_everybody'] = 31;
+		$fieldValues['title'] = $title;
 
-		/** @var t3lib_db $database */
-		$database = $GLOBALS['TYPO3_DB'];
-		$database->exec_INSERTquery('pages', $fields_values);
+		// @todo MAKE IT tx_commerce_foldername
+		$fieldValues['tx_graytree_foldername'] =  strtolower($title);
+		$fieldValues['doktype'] = 254;
+		$fieldValues['module'] = $module;
+		$fieldValues['crdate'] = time();
+		$fieldValues['tstamp'] = time();
 
-		return $database->sql_insert_id();
+		$this->getDatabaseConnection()->exec_INSERTquery('pages', $fieldValues);
+
+		return $this->getDatabaseConnection()->sql_insert_id();
+	}
+
+
+	/**
+	 * @return \TYPO3\CMS\Dbal\Database\DatabaseConnection
+	 */
+	protected function getDatabaseConnection() {
+		return $GLOBALS['TYPO3_DB'];
 	}
 }
-
-class_alias('Tx_Commerce_Domain_Repository_FolderRepository', 'tx_commerce_folder_db');
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Domain/Repository/FolderRepository.php']) {
-	/** @noinspection PhpIncludeInspection */
-	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Domain/Repository/FolderRepository.php']);
-}
-
-?>

@@ -24,6 +24,9 @@
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Backend\Utility\IconUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * User Class for displaying Orders
@@ -98,13 +101,8 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 		$table = 'tx_commerce_orders';
 
 		/** @var smallDoc $doc */
-		$doc = t3lib_div::makeInstance('smallDoc');
+		$doc = GeneralUtility::makeInstance('smallDoc');
 		$doc->backPath = $GLOBALS['BACK_PATH'];
-
-		/**
-		 * Load the table TCA into local variable
-		 */
-		t3lib_div::loadTCA($foreign_table);
 
 		/**
 		 * GET Storage PID and order_id from Data
@@ -140,7 +138,7 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 		$result = $database->exec_SELECTquery(
 			'*',
 			$foreign_table,
-			'pid = ' . $order_storage_pid . t3lib_BEfunc::deleteClause($foreign_table) .
+			'pid = ' . $order_storage_pid . BackendUtility::deleteClause($foreign_table) .
 			' AND order_id=\'' . $database->quoteStr($order_id, $foreign_table) . '\''
 		);
 
@@ -174,7 +172,7 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 			 */
 			foreach ($field_rows as $field) {
 				$out .= '<td class="c-headLineTable"><b>' .
-					$language->sL(t3lib_BEfunc::getItemLabel($foreign_table, $field)) .
+					$language->sL(BackendUtility::getItemLabel($foreign_table, $field)) .
 					'</b></td>';
 			}
 
@@ -203,7 +201,7 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 				$row['price_net'] = Tx_Commerce_ViewHelpers_Money::format($row['price_net'] / 100, '');
 				$row['price_gross'] = Tx_Commerce_ViewHelpers_Money::format($row['price_gross'] / 100, '');
 
-				$row_bgColor = (($cc % 2) ? '' : ' bgcolor="'  . t3lib_div::modifyHTMLColor($GLOBALS['SOBE']->doc->bgColor4, + 10, + 10, + 10) . '"');
+				$row_bgColor = (($cc % 2) ? '' : ' bgcolor="'  . GeneralUtility::modifyHTMLColor($GLOBALS['SOBE']->doc->bgColor4, + 10, + 10, + 10) . '"');
 
 				/**
 				 * Not very noice to render html_code directly
@@ -218,35 +216,34 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 							if ($orderEditable) {
 								$params = '&edit[' . $foreign_table . '][' . $row['uid'] . ']=edit';
 								$wrap = array(
-									'<a href="#" onclick="' . htmlspecialchars(t3lib_BEfunc::editOnClick($params, $GLOBALS['BACK_PATH'])) . '">',
+									'<a href="#" onclick="' . htmlspecialchars(BackendUtility::editOnClick($params, $GLOBALS['BACK_PATH'])) . '">',
 									'</a>'
 								);
 							}
-						break;
+							break;
 
 						case 'amount':
 							$iOut .= '<td>';
 							if ($orderEditable) {
 								$params = '&edit[' . $foreign_table . '][' . $row['uid'] . ']=edit&columnsOnly=amount';
 								$wrap = array(
-									'<b><a href="#" onclick="' . htmlspecialchars(t3lib_BEfunc::editOnClick($params, $GLOBALS['BACK_PATH'])) . '">' .
-									t3lib_iconWorks::getSpriteIcon('actions-document-open'),
+									'<b><a href="#" onclick="' . htmlspecialchars(BackendUtility::editOnClick($params, $GLOBALS['BACK_PATH'])) . '">' .
+									IconUtility::getSpriteIcon('actions-document-open'),
 									'</a></b>'
 								);
 							}
-						break;
+							break;
 
 						case 'price_net':
 						case 'price_gross':
 							$iOut .= '<td style="text-align: right">';
-						break;
+							break;
 
 						default:
 							$iOut .= '<td>';
-						break;
 					}
 
-					$iOut .= implode(t3lib_BEfunc::getProcessedValue($foreign_table, $field, $row[$field], 100), $wrap);
+					$iOut .= implode(BackendUtility::getProcessedValue($foreign_table, $field, $row[$field], 100), $wrap);
 					$iOut .= '</td>';
 				}
 
@@ -270,15 +267,14 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 					case 'price_net':
 					case 'price_gross':
 						$out .= '<td class="c-headLineTable" style="text-align: right"><b>';
-					break;
+						break;
 
 					default:
 						$out .= '<td class="c-headLineTable"><b>';
-					break;
 				}
 
 				if ($sum[$field] > 0) {
-					$out .= t3lib_BEfunc::getProcessedValueExtra($foreign_table, $field, $sum[$field], 100);
+					$out .= BackendUtility::getProcessedValueExtra($foreign_table, $field, $sum[$field], 100);
 				}
 
 				$out .= '</b></td>';
@@ -339,7 +335,7 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 		 */
 		$myPID = $data['row']['pid'];
 
-		$rootline = t3lib_BEfunc::BEgetRootLine($myPID);
+		$rootline = BackendUtility::BEgetRootLine($myPID);
 		$rootlinePIDs = array();
 		foreach ($rootline as $pages) {
 			if (isset($pages['uid'])) {
@@ -351,7 +347,7 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 			/** @var t3lib_db $database */
 			$database = $GLOBALS['TYPO3_DB'];
 
-			$result = $database->exec_SELECTquery('pid ', 'pages', 'uid = ' . $myPID . t3lib_BEfunc::deleteClause('pages'), '', 'sorting' );
+			$result = $database->exec_SELECTquery('pid ', 'pages', 'uid = ' . $myPID . BackendUtility::deleteClause('pages'), '', 'sorting' );
 			if ($database->sql_num_rows($result) > 0) {
 				while ($return_data = $database->sql_fetch_assoc($result)) {
 					$orderPid = $return_data['pid'];
@@ -430,13 +426,13 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 		 *
 		 * @var smallDoc $doc
 		 */
-		$doc = t3lib_div::makeInstance('smallDoc');
+		$doc = GeneralUtility::makeInstance('smallDoc');
 		$doc->backPath = $GLOBALS['BACK_PATH'];
 
 		/**
 		 * Load the table TCA into local variable
 		 */
-		t3lib_div::loadTCA($table);
+		GeneralUtility::loadTCA($table);
 
 		$content = '';
 
@@ -445,7 +441,7 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 		 * Fist select Data from Database
 		 *
 		 */
-		if ($data_row = t3lib_BEfunc::getRecord($table, $uid, 'uid,' . $GLOBALS['TCA'][$table]['interface']['showRecordFieldList'])) {
+		if ($data_row = BackendUtility::getRecord($table, $uid, 'uid,' . $GLOBALS['TCA'][$table]['interface']['showRecordFieldList'])) {
 			/**
 			 * We should get just one Result
 			 * So Render Result as $arr for template::table()
@@ -461,7 +457,7 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 			 */
 			$params = '&edit[' . $table . '][' . $uid . ']=edit';
 
-			$wrap_the_header = array('<b><a href="#" onclick="' . htmlspecialchars(t3lib_BEfunc::editOnClick($params, $GLOBALS['BACK_PATH'])) . '">', '</a></b>');
+			$wrap_the_header = array('<b><a href="#" onclick="' . htmlspecialchars(BackendUtility::editOnClick($params, $GLOBALS['BACK_PATH'])) . '">', '</a></b>');
 			$content .= $doc->getHeader($table, $data_row, 'Local Lang definition is missing', 1, $wrap_the_header);
 			$content .= $doc->spacer(10);
 			$display_arr = array();
@@ -475,11 +471,11 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 				 * get TCA values
 				 * and LL Names
 				 */
-				if (t3lib_div::inList($GLOBALS['TCA'][$table]['interface']['showRecordFieldList'], $key)) {
+				if (GeneralUtility::inList($GLOBALS['TCA'][$table]['interface']['showRecordFieldList'], $key)) {
 					/**
 					 * Get The label
 					 */
-					$local_row_name = $language->sL(t3lib_BEfunc::getItemLabel($table, $key));
+					$local_row_name = $language->sL(BackendUtility::getItemLabel($table, $key));
 					$display_arr[$key] = array($local_row_name, htmlspecialchars($value));
 				}
 			}
@@ -508,7 +504,7 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 		$backendUser = $GLOBALS['BE_USER'];
 
 		/** @var Tx_Commerce_ViewHelpers_OrderRecordlist $dblist */
-		$dblist = t3lib_div::makeInstance('Tx_Commerce_ViewHelpers_OrderRecordlist');
+		$dblist = GeneralUtility::makeInstance('Tx_Commerce_ViewHelpers_OrderRecordlist');
 		$dblist->backPath = $GLOBALS['BACK_PATH'];
 		$dblist->script = 'index.php';
 		$dblist->calcPerms = $backendUser->calcPerms($this->pageinfo);
@@ -519,11 +515,11 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 		$dblist->showClipboard = 0;
 
 			// CB is the clipboard command array
-		$CB = t3lib_div::_GET('CB');
+		$CB = GeneralUtility::_GET('CB');
 		if ($this->cmd == 'setCB') {
 				// CBH is all the fields selected for the clipboard, CBC is the checkbox fields which were checked. By merging we get a full array of checked/unchecked elements
 				// This is set to the 'el' array of the CB after being parsed so only the table in question is registered.
-			$CB['el'] = $dblist->clipObj->cleanUpCBC(array_merge(t3lib_div::_POST('CBH'), t3lib_div::_POST('CBC')), $this->cmd_table);
+			$CB['el'] = $dblist->clipObj->cleanUpCBC(array_merge(GeneralUtility::_POST('CBH'), GeneralUtility::_POST('CBC')), $this->cmd_table);
 		}
 		$dblist->start(NULL, 'tx_commerce_orders', 0);
 
@@ -543,7 +539,7 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use Tx_Commerce_ViewHelpers_OrderEditFunc::articleOrderId instead
 	 */
 	public function article_order_id($PA) {
-		t3lib_div::logDeprecatedFunction();
+		GeneralUtility::logDeprecatedFunction();
 		return $this->articleOrderId($PA);
 	}
 
@@ -556,7 +552,7 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use Tx_Commerce_ViewHelpers_OrderEditFunc::sumPriceGrossFormat instead
 	 */
 	public function sum_price_gross_format($PA) {
-		t3lib_div::logDeprecatedFunction();
+		GeneralUtility::logDeprecatedFunction();
 		return $this->sumPriceGrossFormat($PA);
 	}
 
@@ -569,7 +565,7 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use Tx_Commerce_ViewHelpers_OrderEditFunc::orderArticles instead
 	 */
 	public function order_articles($PA) {
-		t3lib_div::logDeprecatedFunction();
+		GeneralUtility::logDeprecatedFunction();
 		return $this->orderArticles($PA);
 	}
 
@@ -582,7 +578,7 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use Tx_Commerce_ViewHelpers_OrderEditFunc::orderStatus instead
 	 */
 	public function order_status(&$data) {
-		t3lib_div::logDeprecatedFunction();
+		GeneralUtility::logDeprecatedFunction();
 		$this->orderStatus($data);
 	}
 
@@ -596,7 +592,7 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use Tx_Commerce_ViewHelpers_OrderEditFunc::invoiceAddress instead
 	 */
 	public function invoice_adress($PA, $fobj) {
-		t3lib_div::logDeprecatedFunction();
+		GeneralUtility::logDeprecatedFunction();
 		return $this->invoiceAddress($PA, $fobj);
 	}
 
@@ -610,7 +606,7 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use Tx_Commerce_ViewHelpers_OrderEditFunc::deliveryAddress instead
 	 */
 	public function delivery_adress($PA, $fobj) {
-		t3lib_div::logDeprecatedFunction();
+		GeneralUtility::logDeprecatedFunction();
 		return $this->deliveryAddress($PA, $fobj);
 	}
 
@@ -623,7 +619,7 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use Tx_Commerce_ViewHelpers_OrderEditFunc::getAttributes instead
 	 */
 	public function adress($PA, $fobj, $table, $uid) {
-		t3lib_div::logDeprecatedFunction();
+		GeneralUtility::logDeprecatedFunction();
 		return $this->address($PA, $fobj, $table, $uid);
 	}
 
@@ -633,16 +629,7 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use Tx_Commerce_ViewHelpers_OrderEditFunc::feUserOrders instead
 	 */
 	public function fe_user_orders($PA) {
-		t3lib_div::logDeprecatedFunction();
+		GeneralUtility::logDeprecatedFunction();
 		return $this->feUserOrders($PA);
 	}
 }
-
-class_alias('Tx_Commerce_ViewHelpers_OrderEditFunc', 'user_orderedit_func');
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/ViewHelpers/OrderEditFunc.php']) {
-	/** @noinspection PhpIncludeInspection */
-	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/ViewHelpers/OrderEditFunc.php']);
-}
-
-?>

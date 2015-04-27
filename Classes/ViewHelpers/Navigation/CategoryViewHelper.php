@@ -1,28 +1,24 @@
 <?php
-/***************************************************************
- *  Copyright notice
- *  (c) 2005-2012 Franz Holzinger <kontakt@fholzinger.com>
- *  All rights reserved
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *  A copy is found in the textfile GPL.txt and important notices to the license
- *  from the author is found in LICENSE.txt distributed with these scripts.
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+/**
+ * This file is part of the TYPO3 CMS project.
+ *
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
+ *
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ *
+ * The TYPO3 project - inspiring people to share!
+ */
+
+use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper
  */
-class Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper extends t3lib_SCbase {
+class Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 	/**
 	 * @var Tx_Commerce_Tree_CategoryTree
 	 */
@@ -46,12 +42,13 @@ class Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper extends t3lib_SCbase
 	/**
 	 * Initializes the Tree
 	 *
+	 * @param bool $bare if TRUE only categories get rendered
 	 * @return void
 	 */
-	public function init() {
+	public function init($bare = FALSE) {
 		// Get the Category Tree
-		$this->categoryTree = t3lib_div::makeInstance('Tx_Commerce_Tree_CategoryTree');
-		$this->categoryTree->setBare(FALSE);
+		$this->categoryTree = GeneralUtility::makeInstance('Tx_Commerce_Tree_CategoryTree');
+		$this->categoryTree->setBare($bare);
 		$this->categoryTree->setSimpleMode((int) $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['simpleMode']);
 		$this->categoryTree->init();
 	}
@@ -59,33 +56,50 @@ class Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper extends t3lib_SCbase
 	/**
 	 * Initializes the Page
 	 *
+	 * @param bool $bare if TRUE only categories get rendered
 	 * @return void
 	 */
-	public function initPage() {
-		/** @var template $doc */
-		$doc = t3lib_div::makeInstance('template');
+	public function initPage($bare = FALSE) {
+		/** @var \TYPO3\CMS\Backend\Template\DocumentTemplate $doc */
+		$doc = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
 		$this->doc = $doc;
 		$this->doc->backPath = $GLOBALS['BACK_PATH'];
-		$this->doc->docType = 'xhtml_trans';
-		$this->doc->setModuleTemplate(PATH_TXCOMMERCE . 'Resources/Private/Backend/mod_navigation.html');
+		$this->doc->setModuleTemplate('EXT:commerce/Resources/Private/Backend/mod_navigation.html');
+		$this->doc->showFlashMessages = FALSE;
 
-		if (!$this->doc->moduleTemplate) {
-			t3lib_div::devLog(
-				'cannot set navframeTemplate', 'commerce', 2, array(
-					'backpath' => $this->doc->backPath,
-					'filename from TBE_STYLES' => $GLOBALS['TBE_STYLES']['htmlTemplates']['commerce/Resources/Private/Backend/mod_navigation.html'],
-					'full path' => $this->doc->backPath . $GLOBALS['TBE_STYLES']['htmlTemplates']['commerce/Resources/Private/Backend/mod_navigation.html']
-				)
-			);
-			$templateFile = PATH_TXCOMMERCE_REL . 'Resources/Private/Backend/mod_navigation.html';
-			$this->doc->moduleTemplate = t3lib_div::getURL(PATH_site . $templateFile);
+		$this->doc->inDocStyles .= '
+		#typo3-pagetree .x-tree-root-ct ul {
+			padding-left: 19px;
+			margin: 0;
 		}
+
+		.x-tree-root-ct ul li.expanded ul {
+			background: url("/' . TYPO3_mainDir . '/sysext/t3skin/icons/gfx/ol/line.gif") repeat-y scroll left top transparent;
+		}
+
+		.x-tree-root-ct ul li.expanded.last ul {
+			background: none;
+		}
+
+		.x-tree-root-ct li {
+			clear: left;
+			margin-bottom: 0;
+		}
+		';
+
+		$currentSubScript = ($this->currentSubScript ?
+			'top.currentSubScript = unescape("' . rawurlencode($this->currentSubScript) . '");' :
+			'');
+		$doHighlight = ($this->doHighlight ?
+			'hilight_row("row" + top.fsMod.recentIds["txcommerceM1"], highLightID);' :
+			'');
+		$formStyle = (!$GLOBALS['CLIENT']['FORMSTYLE'] ?
+			'' :
+			'if (linkObj) { linkObj.blur(); }');
 
 		// Setting JavaScript for menu.
 		$this->doc->JScode = $this->doc->wrapScriptTags(
-			($this->currentSubScript ?
-				'top.currentSubScript = unescape("' . rawurlencode($this->currentSubScript) . '");' :
-				'') . '
+			$currentSubScript . '
 
 			function jumpTo(id, linkObj, highLightID, script) {
 				var theUrl;
@@ -96,24 +110,22 @@ class Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper extends t3lib_SCbase
 					theUrl = top.TS.PATH_typo3 + top.currentSubScript;
 				}
 
-				theUrl = theUrl + "?" + id;
+				theUrl = theUrl + id;
 
 				if (top.condensedMode) {
 					top.content.document.location = theUrl;
 				} else {
 					parent.list_frame.document.location = theUrl;
 				}
-				' . ($this->doHighlight ?
-				'hilight_row("row" + top.fsMod.recentIds["txcommerceM1"], highLightID);' :
-				'') . '
-				' . (!$GLOBALS['CLIENT']['FORMSTYLE'] ?
-				'' :
-				'if (linkObj) { linkObj.blur(); }') . '
+				' . $doHighlight . '
+				' . $formStyle . '
 				return false;
 			}
 
-				// Call this function, refresh_nav(), from another script in the backend if you want to refresh the navigation frame (eg. after having changed a page title or moved pages etc.)
-				// See t3lib_BEfunc::getSetUpdateSignal()
+			// Call this function, refresh_nav(), from another script in the backend
+			// if you want to refresh the navigation frame (eg. after having changed
+			// a page title or moved pages etc.)
+			// See BackendUtility::getSetUpdateSignal()
 			function refresh_nav() {
 				window.setTimeout(\'Tree.refresh();\', 0);
 			}
@@ -121,10 +133,10 @@ class Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper extends t3lib_SCbase
 		);
 
 		$this->doc->loadJavascriptLib('contrib/prototype/prototype.js');
-		$this->doc->loadJavascriptLib($this->doc->backPath . 'js/tree.js');
+		$this->doc->loadJavascriptLib('js/tree.js');
 		$this->doc->JScode .= $this->doc->wrapScriptTags('
-			Tree.thisScript = "../../../../../../typo3/ajax.php";
-			Tree.ajaxID = "Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper::ajaxExpandCollapse";
+			Tree.ajaxID = "Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper::ajaxExpandCollapse' .
+			($bare ? 'WithoutProduct' : '') . '";
 		');
 
 		// Adding javascript code for AJAX (prototype), drag&drop and the
@@ -140,14 +152,13 @@ class Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper extends t3lib_SCbase
 	 * @return void
 	 */
 	public function main() {
-		/** @var language $language */
-		$language = $GLOBALS['LANG'];
+		$language = $this->getLanguageService();
 
 		// Check if commerce needs to be updated.
 		if ($this->isUpdateNecessary()) {
 			$tree = $language->getLL('ext.update');
 		} else {
-			// Get the Browseable Tree
+			// Get the browseable Tree
 			$tree = $this->categoryTree->getBrowseableTree();
 		}
 
@@ -195,14 +206,14 @@ class Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper extends t3lib_SCbase
 		);
 
 		// Refresh
-		$buttons['refresh'] = '<a href="' . htmlspecialchars(t3lib_div::getIndpEnv('REQUEST_URI')) . '">' .
-			t3lib_iconWorks::getSpriteIcon('actions-system-refresh') . '</a>';
+		$buttons['refresh'] = '<a href="' . htmlspecialchars(GeneralUtility::getIndpEnv('REQUEST_URI')) . '">' .
+			\TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon('actions-system-refresh') . '</a>';
 
 		// CSH
 		$buttons['csh'] = str_replace(
 			'typo3-csh-inline',
 			'typo3-csh-inline show-right',
-			t3lib_BEfunc::cshItem('xMOD_csh_commercebe', 'categorytree', $this->doc->backPath)
+			BackendUtility::cshItem('xMOD_csh_commercebe', 'categorytree', $this->doc->backPath)
 		);
 
 		return $buttons;
@@ -215,11 +226,10 @@ class Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper extends t3lib_SCbase
 	 */
 	protected function isUpdateNecessary() {
 		/** @var Tx_Commerce_Utility_UpdateUtility $updater */
-		$updater = t3lib_div::makeInstance('Tx_Commerce_Utility_UpdateUtility');
+		$updater = GeneralUtility::makeInstance('Tx_Commerce_Utility_UpdateUtility');
 
 		return $updater->access();
 	}
-
 
 	/**
 	 * Makes the AJAX call to expand or collapse the categorytree.
@@ -230,12 +240,7 @@ class Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper extends t3lib_SCbase
 	 * @return void
 	 */
 	public function ajaxExpandCollapse($params, &$ajaxObj) {
-		$parameter = t3lib_div::_GP('PM');
-		// IE takes anchor as parameter
-		if (($parameterPosition = strpos($parameter, '#')) !== FALSE) {
-			$parameter = substr($parameter, 0, $parameterPosition);
-		}
-		$parameter = explode('_', $parameter);
+		$parameter = $this->getParameter();
 
 		// Get the Category Tree
 		$this->init();
@@ -253,26 +258,24 @@ class Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper extends t3lib_SCbase
 	 * @return void
 	 */
 	public function ajaxExpandCollapseWithoutProduct($params, &$ajaxObj) {
-		$parameter = t3lib_div::_GP('PM');
+		$parameter = $this->getParameter();
+
+		// Get the category tree without the products and the articles
+		$this->init(TRUE);
+		$tree = $this->categoryTree->getBrowseableAjaxTree($parameter);
+
+		$ajaxObj->addContent('tree', $tree);
+	}
+
+	/**
+	 * @return array
+	 */
+	protected function getParameter() {
+		$parameter = GeneralUtility::_GP('PM');
 		// IE takes anchor as parameter
 		if (($parameterPosition = strpos($parameter, '#')) !== FALSE) {
 			$parameter = substr($parameter, 0, $parameterPosition);
 		}
-		$parameter = explode('_', $parameter);
-
-		// Get the category tree without the products and the articles
-		/** @var Tx_Commerce_Tree_CategoryTree $categoryTree */
-		$categoryTree = t3lib_div::makeInstance('Tx_Commerce_Tree_CategoryTree');
-		$categoryTree->init();
-		$tree = $categoryTree->getBrowseableAjaxTree($parameter);
-
-		$ajaxObj->addContent('tree', $tree);
+		return explode('_', $parameter);
 	}
 }
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/ViewHelpers/Navigation/CategoryViewHelper.php']) {
-	/** @noinspection PhpIncludeInspection */
-	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/ViewHelpers/Navigation/CategoryViewHelper.php']);
-}
-
-?>

@@ -24,6 +24,7 @@
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * TCEforms functions for handling and rendering of trees for group/select
@@ -159,10 +160,10 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 		$this->language = $GLOBALS['LANG'];
 
 			// set currently selected items
-		$itemArray = t3lib_div::trimExplode(',', $this->PA['itemFormElValue'], TRUE);
+		$itemArray = GeneralUtility::trimExplode(',', $this->PA['itemFormElValue'], TRUE);
 		$this->setItemArray($itemArray);
 
-		$this->setIFrameContentRendering($this->config['treeViewBrowseable'] === 'iframeContent');
+		$this->setIframeContentRendering($this->config['treeViewBrowseable'] === 'iframeContent');
 	}
 
 	/**
@@ -172,7 +173,7 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 	 * @param string $jsParent
 	 * @return void
 	 */
-	public function setIFrameContentRendering($iFrameContentRendering = TRUE, $jsParent = 'parent.') {
+	public function setIframeContentRendering($iFrameContentRendering = TRUE, $jsParent = 'parent.') {
 		if (($this->iframeContentRendering = $iFrameContentRendering)) {
 			$this->jsParent = $jsParent;
 		} else {
@@ -185,7 +186,7 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 	 *
 	 * @return boolean
 	 */
-	public function isIFrameContentRendering() {
+	public function isIframeContentRendering() {
 		return $this->iframeContentRendering;
 	}
 
@@ -194,7 +195,7 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 	 *
 	 * @return boolean
 	 */
-	public function isIFrameRendering() {
+	public function isIframeRendering() {
 		return ($this->config['treeViewBrowseable'] && !$this->iframeContentRendering);
 	}
 
@@ -273,7 +274,7 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 	 */
 	public function renderDivBox($width = NULL, $height = NULL) {
 		if ($width == NULL) {
-			list($width, $height) = $this->calcFrameSizeCSS();
+			list($width, $height) = $this->calcFrameSizeCss();
 		}
 		$divStyle = 'position:relative; left:0px; top:0px; height:' . $height . '; width:' . $width .
 			';border:solid 1px;overflow:auto;background:#fff;';
@@ -294,7 +295,6 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 		$divFrame .= '</script>';
 		$divFrame .= '<script src="' . $this->tceforms->backPath . 'js/tree.js"></script>
 			<script type="text/javascript">
-			Tree.thisScript = "../../../../../typo3/ajax.php",
 			Tree.ajaxID = "Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper::ajaxExpandCollapse";
 			</script>
 		';
@@ -302,43 +302,41 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 		return $divFrame;
 	}
 
-	/**********************************************************
+	/*************************************************************
 	 * IFrame specific stuff
 	 ************************************************************/
 
 	/**
 	 * Set the script to be called for the iframe tree browser.
 	 *
-	 * @param    string $script Path to the script
-	 * @return    void
-	 * @see tx_dam_treelib_browser
+	 * @param string $script Path to the script
+	 * @return void
 	 */
-	public function setIFrameTreeBrowserScript($script) {
+	public function setIframeTreeBrowserScript($script) {
 		$this->treeBrowserScript = $script;
 	}
 
 	/**
 	 * Returns iframe HTML code to call the tree browser script.
 	 *
-	 * @param    string $width CSS width definition
-	 * @param    string $height CSS height definition
-	 * @return    string HTML content
-	 * @see tx_dam_treelib_browser
+	 * @param string $width CSS width definition
+	 * @param string $height CSS height definition
+	 * @return string HTML content
 	 */
-	public function renderIFrame($width = NULL, $height = NULL) {
+	public function renderIframe($width = NULL, $height = NULL) {
 		if (!$this->treeBrowserScript) {
 			die ('Tx_Commerce_ViewHelpers_TreelibTceforms: treeBrowserScript is not set!');
 		}
 
 		if ($width == NULL) {
-			list($width, $height) = $this->calcFrameSizeCSS();
+			list($width, $height) = $this->calcFrameSizeCss();
 		}
 
 		$table = $GLOBALS['TCA'][$this->table]['orig_table'] ?
 			$GLOBALS['TCA'][$this->table]['orig_table'] :
 			$this->table;
 
-		$iFrameParameter = $this->getIFrameParameter($table, $this->field, $this->row['uid']);
+		$iFrameParameter = $this->getIframeParameter($table, $this->field, $this->row['uid']);
 
 		$divStyle = 'height:' . $height . '; width:' . $width . '; border:solid 1px #000; background:#fff;';
 		$iFrame = '<iframe src="' . htmlspecialchars(
@@ -358,7 +356,7 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 	 * @return    string
 	 * @see tx_dam_treelib_browser
 	 */
-	public function getIFrameParameter($table, $field, $uid) {
+	public function getIframeParameter($table, $field, $uid) {
 		$params = array();
 
 		$config = '';
@@ -378,11 +376,11 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 		$params['elname'] = $this->PA['itemFormElName'];
 		$params['config'] = $config;
 		$params['allowProducts'] = $allowProducts;
-		$params['seckey'] = t3lib_div::shortMD5(
+		$params['seckey'] = GeneralUtility::shortMD5(
 			implode('|', $params) . '|' . $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey']
 		);
 
-		return t3lib_div::implodeArrayForUrl('', $params);
+		return GeneralUtility::implodeArrayForUrl('', $params);
 	}
 
 	/**********************************************************
@@ -395,7 +393,7 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 	 * @param integer $itemCountSelectable
 	 * @return array array($width, $height)
 	 */
-	public function calcFrameSizeCSS($itemCountSelectable = NULL) {
+	public function calcFrameSizeCss($itemCountSelectable = NULL) {
 		if ($itemCountSelectable === NULL) {
 			$itemCountSelectable = max(1, $this->treeItemC + $this->treesC + 1);
 		}
@@ -404,8 +402,9 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 
 		$this->config['autoSizeMax'] = max($this->config['autoSizeMax'], 0);
 		$height = $this->config['autoSizeMax'] ?
-			t3lib_div::intInRange(
-				$itemCountSelectable, t3lib_div::intInRange($this->config['size'], 1), $this->config['autoSizeMax']
+			\TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange(
+				$itemCountSelectable,
+				\TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange($this->config['size'], 1), $this->config['autoSizeMax']
 			) :
 			$this->config['size'];
 
@@ -423,17 +422,19 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 	 ************************************************************/
 
 	/**
-	 * In effect this function returns an array with the preselected item (aka Mountpoints that are already assigned) to the user
+	 * In effect this function returns an array with the preselected item
+	 * (aka Mountpoints that are already assigned) to the user
 	 *    [0] => 5|Fernseher
 	 *  Meta: [0] => $key|$caption
 	 *
 	 * @return array
 	 * @param object $tree Browsetree Object
-	 * @param integer $userid User UID (this is not NECESSARILY the UID of the currently logged-in user
+	 * @param integer $userid User UID (this is not NECESSARILY
+	 * the UID of the currently logged-in user
 	 */
 	public function processItemArrayForBrowseableTree(&$tree, $userid) {
 		/** @var Tx_Commerce_Tree_CategoryMounts $mounts */
-		$mounts = t3lib_div::makeInstance('Tx_Commerce_Tree_CategoryMounts');
+		$mounts = GeneralUtility::makeInstance('Tx_Commerce_Tree_CategoryMounts');
 		$mounts->init($userid);
 
 		$preselected = $mounts->getMountDataLabeled();
@@ -451,17 +452,19 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 	}
 
 	/**
-	 * In effect this function returns an array with the preselected item (aka Mountpoints that are already assigned) to the Group
+	 * In effect this function returns an array with the preselected item
+	 * (aka Mountpoints that are already assigned) to the Group
 	 *    [0] => 5|Fernseher
 	 *  Meta: [0] => $key|$caption
 	 *
 	 * @return array
 	 * @param object $tree Browsetree Object
-	 * @param integer $groupuid User UID (this is not NECESSARILY the UID of the currently logged-in user
+	 * @param integer $groupuid User UID (this is not NECESSARILY
+	 * the UID of the currently logged-in user
 	 */
 	public function processItemArrayForBrowseableTreeGroups(&$tree, $groupuid) {
 		/** @var Tx_Commerce_Tree_CategoryMounts $mounts */
-		$mounts = t3lib_div::makeInstance('Tx_Commerce_Tree_CategoryMounts');
+		$mounts = GeneralUtility::makeInstance('Tx_Commerce_Tree_CategoryMounts');
 		$mounts->initByGroup($groupuid);
 
 		$preselected = $mounts->getMountDataLabeled();
@@ -479,7 +482,8 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 	}
 
 	/**
-	 * In effect this function returns an array with the preselected item (aka Parent Categories that are already assigned)
+	 * In effect this function returns an array with the preselected item
+	 * (aka Parent Categories that are already assigned)
 	 *    [0] => 5|Fernseher
 	 *  Meta: [0] => $key|$caption
 	 *
@@ -494,14 +498,14 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 
 			// Get the parent Categories for the cat uid
 		/** @var Tx_Commerce_Domain_Model_Category $cat */
-		$cat = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category', $catUid);
+		$cat = GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Category', $catUid);
 		$cat->loadData();
 		$parent = $cat->getParentCategories();
 
 		$this->itemArrayProcessed = array();
 
 		/** @var Tx_Commerce_Tree_CategoryMounts $mounts */
-		$mounts = t3lib_div::makeInstance('Tx_Commerce_Tree_CategoryMounts');
+		$mounts = GeneralUtility::makeInstance('Tx_Commerce_Tree_CategoryMounts');
 		$mounts->init($GLOBALS['BE_USER']->user['uid']);
 
 		if (is_array($parent)) {
@@ -522,7 +526,8 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 	}
 
 	/**
-	 * In effect this function returns an array with the preselected item (aka Categories that are already assigned to the plugin)
+	 * In effect this function returns an array with the preselected item
+	 * (aka Categories that are already assigned to the plugin)
 	 *    [0] => 5|Fernseher
 	 *  Meta: [0] => $key|$caption
 	 *
@@ -536,17 +541,17 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 		}
 
 		/** @var Tx_Commerce_Domain_Model_Category $category */
-		$category = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category', $catUid);
+		$category = GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Category', $catUid);
 		$category->loadData();
 
 		$this->itemArrayProcessed = array();
 
 		/** @var Tx_Commerce_Tree_CategoryMounts $mounts */
-		$mounts = t3lib_div::makeInstance('Tx_Commerce_Tree_CategoryMounts');
+		$mounts = GeneralUtility::makeInstance('Tx_Commerce_Tree_CategoryMounts');
 		$mounts->init($GLOBALS['BE_USER']->user['uid']);
 
 			// Separate Key and Title with a |
-		$title = ($category->isPSet('show') && $mounts->isInCommerceMounts($category->getUid())) ?
+		$title = ($category->isPermissionSet('show') && $mounts->isInCommerceMounts($category->getUid())) ?
 			$category->getTitle() :
 			$this->language->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_treelib.xml:leaf.restrictedAccess', 1);
 		$this->itemArrayProcessed = array($category->getUid() . '|' . $title);
@@ -555,7 +560,8 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 	}
 
 	/**
-	 * In effect this function returns an array with the preselected item (aka Parent Categories that are already assigned to the product!)
+	 * In effect this function returns an array with the preselected item
+	 * (aka Parent Categories that are already assigned to the product!)
 	 *    [0] => 5|Fernseher
 	 *  Meta: [0] => $key|$caption
 	 *
@@ -570,7 +576,7 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 
 			// Get the parent Categories for the cat uid
 		/** @var Tx_Commerce_Domain_Model_Product $prod */
-		$prod = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product', $uid);
+		$prod = GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Product', $uid);
 		$prod->loadData();
 
 			// read parent categories from the live product
@@ -586,15 +592,15 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 		$itemArray = array();
 
 		for ($i = 0, $l = count($parent); $i < $l; $i++) {
-			/** @var Tx_Commerce_Domain_Model_Category $cat */
-			$cat = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category', $parent[$i]);
-			$cat->loadData();
+			/** @var Tx_Commerce_Domain_Model_Category $category */
+			$category = GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Category', $parent[$i]);
+			$category->loadData();
 
-			$title = ($cat->isPSet('show')) ?
-				$cat->getTitle() :
+			$title = ($category->isPermissionSet('show')) ?
+				$category->getTitle() :
 				$this->language->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_treelib.xml:leaf.restrictedAccess', 1);
 				// Separate Key and Title with a |
-			$itemArray[] = $cat->getUid() . '|' . $title;
+			$itemArray[] = $category->getUid() . '|' . $title;
 		}
 
 		$this->itemArrayProcessed = $itemArray;
@@ -609,14 +615,14 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 	 * @return array
 	 */
 	public function processItemArrayForBrowseableTreeDefault($itemFormElValue) {
-		$items = t3lib_div::trimExplode(',', $itemFormElValue, TRUE);
+		$items = GeneralUtility::trimExplode(',', $itemFormElValue, TRUE);
 
 		$itemArray = array();
 
 			// Walk the records we have.
 		foreach ($items as $value) {
 				// Get parts.
-			$parts = t3lib_div::trimExplode('_', $value, TRUE);
+			$parts = GeneralUtility::trimExplode('_', $value, TRUE);
 
 			$uid = array_pop($parts);
 			$table = implode('_', $parts);
@@ -624,33 +630,33 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 				// Product
 			if ('tx_commerce_products' == $table) {
 				/** @var Tx_Commerce_Domain_Model_Product $prod */
-				$prod = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product', $uid);
+				$prod = GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Product', $uid);
 				$prod->loadData();
 
 				$itemArray[] = $value . '|' . $prod->getTitle();
 			} elseif ('tx_commerce_articles' == $table) {
 				/** @var Tx_Commerce_Domain_Model_Article $article */
-				$article = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Article', $uid);
+				$article = GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Article', $uid);
 				$article->loadData();
 
 				$itemArray[] = $value . '|' . $article->getTitle();
 			} elseif ('tx_commerce_categories' == $table) {
 				/** @var Tx_Commerce_Domain_Model_Category $category */
-				$category = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category', $uid);
+				$category = GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Category', $uid);
 				$category->loadData();
 
 				$itemArray[] = $value . '|' . $category->getTitle();
 			} else {
 					// Hook:
 				if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/treelib/class.tx_commerce_treelib_tceforms.php']['processItemArrayForBrowseableTreeDefault'])) {
-					t3lib_div::deprecationLog('
+					GeneralUtility::deprecationLog('
 						hook
 						$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/treelib/class.tx_commerce_treelib_tceforms.php\'][\'processItemArrayForBrowseableTreeDefault\']
 						is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
 						$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/ViewHelpers/TreelibTceforms.php\'][\'processItemArrayForBrowseableTreeDefault\']
 					');
 					foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/treelib/class.tx_commerce_treelib_tceforms.php']['processItemArrayForBrowseableTreeDefault'] as $classRef) {
-						$hookObj = & t3lib_div::getUserObj($classRef);
+						$hookObj = & GeneralUtility::getUserObj($classRef);
 						if (method_exists($hookObj, 'processDefault')) {
 							$itemArray[] = $hookObj->processDefault($itemFormElValue, $table, $uid);
 						}
@@ -658,7 +664,7 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 				}
 				if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/ViewHelpers/TreelibTceforms.php']['processItemArrayForBrowseableTreeDefault'])) {
 					foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/ViewHelpers/TreelibTceforms.php']['processItemArrayForBrowseableTreeDefault'] as $classRef) {
-						$hookObj = & t3lib_div::getUserObj($classRef);
+						$hookObj = & GeneralUtility::getUserObj($classRef);
 						if (method_exists($hookObj, 'processDefault')) {
 							$itemArray[] = $hookObj->processDefault($itemFormElValue, $table, $uid);
 						}
@@ -678,21 +684,12 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 	 */
 	public function getItemFormElValueIdArr($itemFormElValue) {
 		$out = array();
-		$items = t3lib_div::trimExplode(',', $itemFormElValue, TRUE);
+		$items = GeneralUtility::trimExplode(',', $itemFormElValue, TRUE);
 		foreach ($items as $value) {
-			$values = t3lib_div::trimExplode('|', $value, TRUE);
+			$values = GeneralUtility::trimExplode('|', $value, TRUE);
 			$out[] = $values[0];
 		}
 
 		return $out;
 	}
 }
-
-class_alias('Tx_Commerce_ViewHelpers_TreelibTceforms', 'tx_commerce_treelib_tceforms');
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/ViewHelpers/TreelibTceforms.php']) {
-	/** @noinspection PhpIncludeInspection */
-	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/ViewHelpers/TreelibTceforms.php']);
-}
-
-?>

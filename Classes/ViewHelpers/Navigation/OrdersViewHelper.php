@@ -24,11 +24,13 @@
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Main script class for the tree edit navigation frame
  */
-class Tx_Commerce_ViewHelpers_Navigation_OrdersViewHelper extends t3lib_SCbase {
+class Tx_Commerce_ViewHelpers_Navigation_OrdersViewHelper extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 	/**
 	 * @var Tx_Commerce_Tree_OrderTree
 	 */
@@ -39,7 +41,7 @@ class Tx_Commerce_ViewHelpers_Navigation_OrdersViewHelper extends t3lib_SCbase {
 	 *
 	 * @var integer
 	 */
-	protected $active_tempMountPoint = 0;
+	protected $activeTemporaryMountPoint = 0;
 
 	/**
 	 * @var string
@@ -56,7 +58,7 @@ class Tx_Commerce_ViewHelpers_Navigation_OrdersViewHelper extends t3lib_SCbase {
 	 *
 	 * @var string
 	 */
-	protected $setTempDBmount;
+	protected $setTemporaryDatabaseMount;
 
 	/**
 	 * @var boolean
@@ -64,9 +66,9 @@ class Tx_Commerce_ViewHelpers_Navigation_OrdersViewHelper extends t3lib_SCbase {
 	protected $doHighlight;
 
 	/**
-	 * @var boolean
+	 * @var \TYPO3\CMS\Backend\Template\DocumentTemplate
 	 */
-	protected $hasFilterBox = FALSE;
+	public $doc;
 
 	/**
 	 * Initialiation of the class
@@ -79,18 +81,18 @@ class Tx_Commerce_ViewHelpers_Navigation_OrdersViewHelper extends t3lib_SCbase {
 		$backendUser = $GLOBALS['BE_USER'];
 
 			// Setting GPvars:
-		$this->currentSubScript = t3lib_div::_GP('currentSubScript');
-		$this->cMR = t3lib_div::_GP('cMR');
-		$this->setTempDBmount = t3lib_div::_GP('setTempDBmount');
+		$this->currentSubScript = GeneralUtility::_GP('currentSubScript');
+		$this->cMR = GeneralUtility::_GP('cMR');
+		$this->setTemporaryDatabaseMount = GeneralUtility::_GP('setTempDBmount');
 
 			// Generate Folder if necessary
 		Tx_Commerce_Utility_FolderUtility::initFolders();
 
 			// Create page tree object:
-		$this->pagetree = t3lib_div::makeInstance('Tx_Commerce_Tree_OrderTree');
+		$this->pagetree = GeneralUtility::makeInstance('Tx_Commerce_Tree_OrderTree');
 		$this->pagetree->ext_IconMode = $backendUser->getTSConfigVal('options.pageTree.disableIconLinkToContextmenu');
 		$this->pagetree->ext_showPageId = $backendUser->getTSConfigVal('options.pageTree.showPageIdWithTitle');
-		$this->pagetree->thisScript = $GLOBALS['BACK_PATH'] . PATH_TXCOMMERCE_REL . 'Classes/Module/Orders/navigation.php';
+		$this->pagetree->thisScript = 'Classes/Module/Orders/navigation.php';
 		$this->pagetree->addField('alias');
 		$this->pagetree->addField('shortcut');
 		$this->pagetree->addField('shortcut_mode');
@@ -100,8 +102,10 @@ class Tx_Commerce_ViewHelpers_Navigation_OrdersViewHelper extends t3lib_SCbase {
 		$this->pagetree->addField('url');
 
 			// Temporary DB mounts:
-		$this->pagetree->MOUNTS = array_unique(Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Orders', 'Commerce', 0, 'Commerce'));
-		$this->initializeTemporaryDBmount();
+		$this->pagetree->MOUNTS = array_unique(
+			Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Orders', 'Commerce', 0, 'Commerce')
+		);
+		$this->initializeTemporaryDatabaseMount();
 
 			// Setting highlight mode:
 		$this->doHighlight = !$backendUser->getTSConfigVal('options.pageTree.disableTitleHighlight');
@@ -113,37 +117,24 @@ class Tx_Commerce_ViewHelpers_Navigation_OrdersViewHelper extends t3lib_SCbase {
 	 * @return void
 	 */
 	public function initPage() {
-		$this->doc = t3lib_div::makeInstance('template');
+		/** @var \TYPO3\CMS\Backend\Template\DocumentTemplate $doc */
+		$doc = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
+		$this->doc = $doc;
 		$this->doc->backPath = $GLOBALS['BACK_PATH'];
-		$this->doc->docType = 'xhtml_trans';
-		$this->doc->setModuleTemplate(PATH_TXCOMMERCE . 'Resources/Private/Backend/mod_navigation.html');
+		$this->doc->setModuleTemplate('EXT:commerce/Resources/Private/Backend/mod_navigation.html');
+		$this->doc->showFlashMessages = FALSE;
 
-		if (!$this->doc->moduleTemplate) {
-			t3lib_div::devLog('cannot set navframeTemplate', 'commerce', 2, array(
-				'backpath' => $this->doc->backPath,
-				'filename from TBE_STYLES' => $GLOBALS['TBE_STYLES']['htmlTemplates']['commerce/Resources/Private/Backend/mod_navigation.html'],
-				'full path' => $this->doc->backPath . $GLOBALS['TBE_STYLES']['htmlTemplates']['commerce/Resources/Private/Backend/mod_navigation.html']
-			));
-			$templateFile = PATH_TXCOMMERCE_REL . 'Resources/Private/Backend/mod_navigation.html';
-			$this->doc->moduleTemplate = t3lib_div::getURL(PATH_site . $templateFile);
-		}
-
-			// Click menu code is added:
-		/*
-		No click menu needed here
-		$CMparts = $this->doc->getContextMenuCode();
-		$this->doc->bodyTagAdditions = $CMparts[1];
-		$this->doc->JScode .= $CMparts[0];
-		$this->doc->postCode .= $CMparts[2];
-		*/
+		$subScript = $this->currentSubScript ? 'top.currentSubScript=unescape("' . rawurlencode($this->currentSubScript) . '");' : '';
+		$highlight = $this->doHighlight ? 'hilight_row("txcommerceM1",highLightID);' : '';
+		$formstyle = !$GLOBALS['CLIENT']['FORMSTYLE'] ? '' : 'if (linkObj) { linkObj.blur(); }';
 
 			// Setting JavaScript for menu.
 		$this->doc->JScode = $this->doc->wrapScriptTags(
-			($this->currentSubScript ? 'top.currentSubScript=unescape("' . rawurlencode($this->currentSubScript) . '");' : '') . '
+			$subScript . '
 
 				// Function, loading the list frame from navigation tree:
 			function jumpTo(id, linkObj, highLightID) {
-				var theUrl = top.TS.PATH_typo3 + top.currentSubScript + "?id=" + id;
+				var theUrl = top.TS.PATH_typo3 + top.currentSubScript + "&id=" + id;
 
 				if (top.condensedMode) {
 					top.content.document.location = theUrl;
@@ -151,14 +142,14 @@ class Tx_Commerce_ViewHelpers_Navigation_OrdersViewHelper extends t3lib_SCbase {
 					parent.list_frame.document.location = theUrl;
 				}
 
-				' . ($this->doHighlight ? 'hilight_row("txcommerceM1",highLightID);' : '') . '
-
-				' . (!$GLOBALS['CLIENT']['FORMSTYLE'] ? '' : 'if (linkObj) { linkObj.blur(); }') . '
+				' . $highlight . '
+				' . $formstyle . '
 				return false;
 			}
 
-				// Call this function, refresh_nav(), from another script in the backend if you want to refresh the navigation frame (eg. after having changed a page title or moved pages etc.)
-				// See t3lib_BEfunc::getSetUpdateSignal()
+			// Call this function, refresh_nav(), from another script in the backend if you
+			// want to refresh the navigation frame (eg. after having changed a page title or moved pages etc.)
+			// See BackendUtility::getSetUpdateSignal()
 			function refresh_nav() {
 				window.setTimeout("_refresh_nav();", 0);
 			}
@@ -180,7 +171,7 @@ class Tx_Commerce_ViewHelpers_Navigation_OrdersViewHelper extends t3lib_SCbase {
 				theObj = document.getElementById(highLightID + "_0");
 
 				if (theObj) {
-					theObj.style.backgroundColor = "' . t3lib_div::modifyHTMLColorAll($this->doc->bgColor, -20) . '";
+					theObj.style.backgroundColor = "' . GeneralUtility::modifyHTMLColorAll($this->doc->bgColor, -20) . '";
 				}
 			}
 
@@ -196,10 +187,7 @@ class Tx_Commerce_ViewHelpers_Navigation_OrdersViewHelper extends t3lib_SCbase {
 	 * @return void
 	 */
 	public function main() {
-		/** @var language $language */
-		$language = $GLOBALS['LANG'];
-
-			// Produce browse-tree:
+		// Produce browse-tree:
 		$tree = $this->pagetree->getBrowsableTree();
 
 		$docHeaderButtons = $this->getButtons();
@@ -210,14 +198,11 @@ class Tx_Commerce_ViewHelpers_Navigation_OrdersViewHelper extends t3lib_SCbase {
 			'CONTENT' => $tree
 		);
 
-		$subparts = array();
-		if (!$this->hasFilterBox) {
-			$subparts['###SECOND_ROW###'] = '';
-		}
-
 			// Build the <body> for the module
-		$this->content = $this->doc->startPage($language->sl('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:mod_orders.navigation_title'));
-		$this->content .= $this->doc->moduleBody('', $docHeaderButtons, $markers, $subparts);
+		$this->content = $this->doc->startPage(
+			$this->getLanguageService()->sl('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:mod_orders.navigation_title')
+		);
+		$this->content .= $this->doc->moduleBody('', $docHeaderButtons, $markers);
 		$this->content .= $this->doc->endPage();
 		$this->content = $this->doc->insertStylesAndJS($this->content);
 	}
@@ -232,7 +217,8 @@ class Tx_Commerce_ViewHelpers_Navigation_OrdersViewHelper extends t3lib_SCbase {
 	}
 
 	/**
-	 * Create the panel of buttons for submitting the form or otherwise perform operations.
+	 * Create the panel of buttons for submitting the form
+	 * or otherwise perform operations.
 	 *
 	 * @return array all available buttons as an assoc. array
 	 */
@@ -242,16 +228,16 @@ class Tx_Commerce_ViewHelpers_Navigation_OrdersViewHelper extends t3lib_SCbase {
 			'refresh' => '',
 		);
 
-			// Refresh
-		$buttons['refresh'] = '<a href="' . htmlspecialchars(t3lib_div::getIndpEnv('REQUEST_URI')) . '">' .
-				t3lib_iconWorks::getSpriteIcon('actions-system-refresh') .
+		// Refresh
+		$buttons['refresh'] = '<a href="' . htmlspecialchars(GeneralUtility::getIndpEnv('REQUEST_URI')) . '">' .
+			\TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon('actions-system-refresh') .
 		'</a>';
 
-			// CSH
+		// CSH
 		$buttons['csh'] = str_replace(
 			'typo3-csh-inline',
 			'typo3-csh-inline show-right',
-			t3lib_BEfunc::cshItem('xMOD_csh_commercebe', 'orderstree', $this->doc->backPath)
+			BackendUtility::cshItem('xMOD_csh_commercebe', 'orderstree', $this->doc->backPath)
 		);
 
 		return $buttons;
@@ -262,14 +248,13 @@ class Tx_Commerce_ViewHelpers_Navigation_OrdersViewHelper extends t3lib_SCbase {
 	 *
 	 * @return void
 	 */
-	protected function initializeTemporaryDBmount() {
-		/** @var t3lib_beUserAuth $backendUser */
-		$backendUser = $GLOBALS['BE_USER'];
+	protected function initializeTemporaryDatabaseMount() {
+		$backendUser = $this->getBackendUser();
 
 			// Set/Cancel Temporary DB Mount:
-		if (strlen($this->setTempDBmount)) {
-			$set = max($this->setTempDBmount, 0);
-				// Setting...:
+		if (strlen($this->setTemporaryDatabaseMount)) {
+			$set = max($this->setTemporaryDatabaseMount, 0);
+			// Setting...:
 			if ($set > 0 && $backendUser->isInWebMount($set)) {
 				$this->settingTemporaryMountPoint($set);
 				// Clear:
@@ -278,13 +263,14 @@ class Tx_Commerce_ViewHelpers_Navigation_OrdersViewHelper extends t3lib_SCbase {
 			}
 		}
 
-			// Getting temporary mount point ID:
+		// Getting temporary mount point ID:
 		$temporaryMountPoint = (int) $backendUser->getSessionData('pageTree_temporaryMountPoint_orders');
 
-			// If mount point ID existed and is within users real mount points, then set it temporarily:
+		// If mount point ID existed and is within users
+		// real mount points, then set it temporarily:
 		if ($temporaryMountPoint > 0 && $backendUser->isInWebMount($temporaryMountPoint)) {
 			$this->pagetree->MOUNTS = array($temporaryMountPoint);
-			$this->active_tempMountPoint = t3lib_BEfunc::readPageAccess($temporaryMountPoint, $backendUser->getPagePermsClause(1));
+			$this->activeTemporaryMountPoint = BackendUtility::readPageAccess($temporaryMountPoint, $backendUser->getPagePermsClause(1));
 		}
 	}
 
@@ -293,17 +279,22 @@ class Tx_Commerce_ViewHelpers_Navigation_OrdersViewHelper extends t3lib_SCbase {
 	 * @return void
 	 */
 	protected function settingTemporaryMountPoint($pageId) {
-		/** @var t3lib_beUserAuth $backendUser */
-		$backendUser = $GLOBALS['BE_USER'];
+		// Setting temporary mount point ID:
+		$this->getBackendUser()->setAndSaveSessionData('pageTree_temporaryMountPoint_orders', (int) $pageId);
+	}
 
-			// Setting temporary mount point ID:
-		$backendUser->setAndSaveSessionData('pageTree_temporaryMountPoint_orders', (int) $pageId);
+
+	/**
+	 * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
+	 */
+	protected function getBackendUser() {
+		return $GLOBALS['BE_USER'];
+	}
+
+	/**
+	 * @return \TYPO3\CMS\Lang\LanguageService
+	 */
+	protected function getLanguageService() {
+		return $GLOBALS['LANG'];
 	}
 }
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/ViewHelpers/Navigation/OrdersViewHelper.php']) {
-	/** @noinspection PhpIncludeInspection */
-	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/ViewHelpers/Navigation/OrdersViewHelper.php']);
-}
-
-?>

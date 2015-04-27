@@ -24,11 +24,12 @@
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Hook to adjust linkwizard (linkbrowser)
  */
-class Tx_Commerce_Hook_BrowselinksHooks implements t3lib_browseLinksHook {
+class Tx_Commerce_Hook_BrowselinksHooks implements \TYPO3\CMS\Core\ElementBrowser\ElementBrowserHookInterface {
 	/**
 	 * Sauvegarde locale du cObj parent
 	 *
@@ -63,14 +64,38 @@ class Tx_Commerce_Hook_BrowselinksHooks implements t3lib_browseLinksHook {
 
 		// add js
 		// has to be added as script tags to the body since parentObject
-		// is not passed by reference first we go from rhtml path to typo3 path
-		$linkToTreeJs = '/typo3/js/tree.js';
+		// is not passed by reference first we go from html path to typo3 path
+		$linkToTreeJs = '/' . TYPO3_mainDir . 'js/tree.js';
 
 		$this->script = '<script src="' . $linkToTreeJs . '" type="text/javascript"></script>';
-		$this->script .= t3lib_div::wrapJS('
-			Tree.thisScript = "../../../../typo3/ajax.php",
+		$this->script .= GeneralUtility::wrapJS('
 			Tree.ajaxID = "Tx_Commerce_Hook_BrowselinksHooks::ajaxExpandCollapse";
 		');
+
+		if ($parentObject->RTEtsConfigParams) {
+			$this->script .= GeneralUtility::wrapJS('
+				/**
+				 * needed because link_folder contains the side domain lately
+				 */
+				function link_commerce(theLink) {
+					if (document.ltargetform.anchor_title) browse_links_setTitle(document.ltargetform.anchor_title.value);
+					if (document.ltargetform.anchor_class) browse_links_setClass(document.ltargetform.anchor_class.value);
+					if (document.ltargetform.ltarget) browse_links_setTarget(document.ltargetform.ltarget.value);
+					if (document.ltargetform.lrel) browse_links_setAdditionalValue("rel", document.ltargetform.lrel.value);
+					browse_links_setAdditionalValue("data-htmlarea-external", "");
+					plugin.createLink(theLink, cur_target, cur_class, cur_title, additionalValues);
+					return false;
+				}
+			');
+		} else {
+			$this->script .= GeneralUtility::wrapJS('
+				function link_commerce(theLink) {
+					updateValueInMainForm(theLink);
+					close();
+					return false;
+				}
+			');
+		}
 	}
 
 	/**
@@ -79,8 +104,8 @@ class Tx_Commerce_Hook_BrowselinksHooks implements t3lib_browseLinksHook {
 	 * @return void
 	 */
 	protected function initTree() {
-		// initialiize the tree
-		$this->treeObj = t3lib_div::makeInstance('Tx_Commerce_ViewHelpers_Browselinks_CategoryTree');
+		// initialize the tree
+		$this->treeObj = GeneralUtility::makeInstance('Tx_Commerce_ViewHelpers_Browselinks_CategoryTree');
 		$this->treeObj->init();
 	}
 
@@ -131,10 +156,10 @@ class Tx_Commerce_Hook_BrowselinksHooks implements t3lib_browseLinksHook {
 			$productUid = 0;
 			$categoryUid = 0;
 
-			$linkHandlerData = t3lib_div::trimExplode('|', $url);
+			$linkHandlerData = GeneralUtility::trimExplode('|', $url);
 
 			foreach ($linkHandlerData as $linkData) {
-				$params = t3lib_div::trimExplode(':', $linkData);
+				$params = GeneralUtility::trimExplode(':', $linkData);
 				if (isset($params[0])) {
 					if ($params[0] == 'tx_commerce_products') {
 						$productUid = (int) $params[1];
@@ -214,13 +239,7 @@ class Tx_Commerce_Hook_BrowselinksHooks implements t3lib_browseLinksHook {
 	 * @return boolean
 	 */
 	public function isValid($type) {
-		$isValid = FALSE;
-
-		if ($type === 'rte') {
-			$isValid = TRUE;
-		}
-
-		return $isValid;
+		return $type === 'rte';
 	}
 
 	/**
@@ -233,7 +252,7 @@ class Tx_Commerce_Hook_BrowselinksHooks implements t3lib_browseLinksHook {
 		$result = '';
 
 		if (!$this->isRichTextEditor()) {
-			$result = t3lib_div::implodeArrayForUrl('P', t3lib_div::_GP('P'));
+			$result = GeneralUtility::implodeArrayForUrl('P', GeneralUtility::_GP('P'));
 		}
 
 		return $result;
@@ -257,12 +276,12 @@ class Tx_Commerce_Hook_BrowselinksHooks implements t3lib_browseLinksHook {
 	 * @return void
 	 */
 	public function ajaxExpandCollapse($params, &$ajaxObj) {
-		$parameter = t3lib_div::_GP('PM');
+		$parameter = GeneralUtility::_GP('PM');
 			// IE takes anchor as parameter
 		if (($parameterPosition = strpos($parameter, '#')) !== FALSE) {
 			$parameter = substr($parameter, 0, $parameterPosition);
 		}
-		$parameter = t3lib_div::trimExplode('_', $parameter);
+		$parameter = GeneralUtility::trimExplode('_', $parameter);
 
 			// Load the tree
 		$this->initTree();
@@ -271,10 +290,3 @@ class Tx_Commerce_Hook_BrowselinksHooks implements t3lib_browseLinksHook {
 		$ajaxObj->addContent('tree', $tree);
 	}
 }
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Hook/BrowselinksHooks.php']) {
-	/** @noinspection PhpIncludeInspection */
-	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Hook/BrowselinksHooks.php']);
-}
-
-?>

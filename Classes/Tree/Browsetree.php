@@ -24,6 +24,7 @@
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Implements a browseable AJAX tree
@@ -119,7 +120,11 @@ abstract class Tx_Commerce_Tree_Browsetree {
 	public function noClickmenu($flag = TRUE) {
 		if (!is_bool($flag)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('noClickmenu (Tx_Commerce_Tree_Browsetree) gets a non-boolean parameter (expected boolean)!', COMMERCE_EXTKEY, 2);
+				GeneralUtility::devLog(
+					'noClickmenu (Tx_Commerce_Tree_Browsetree) gets a non-boolean parameter (expected boolean)!',
+					COMMERCE_EXTKEY,
+					2
+				);
 			}
 		}
 		$this->noClickmenu = $flag;
@@ -128,7 +133,8 @@ abstract class Tx_Commerce_Tree_Browsetree {
 	/**
 	 * Adds a leaf to the Tree
 	 *
-	 * @param Tx_Commerce_Tree_Leaf_Master $leaf - Treeleaf Object which holds the Tx_Commerce_Tree_Leaf_Data and the Tx_Commerce_Tree_Leaf_View
+	 * @param Tx_Commerce_Tree_Leaf_Master $leaf - Treeleaf Object which
+	 * 	holds the Tx_Commerce_Tree_Leaf_Data and the Tx_Commerce_Tree_Leaf_View
 	 * @return boolean
 	 */
 	public function addLeaf(Tx_Commerce_Tree_Leaf_Master &$leaf) {
@@ -137,7 +143,7 @@ abstract class Tx_Commerce_Tree_Browsetree {
 		$leaf->noClickmenu($this->noClickmenu);
 
 			// add to collection
-		$this->leafs[$this->leafcount ++] = $leaf;
+		$this->leafs[$this->leafcount++] = $leaf;
 
 		return TRUE;
 	}
@@ -151,7 +157,7 @@ abstract class Tx_Commerce_Tree_Browsetree {
 	public function getLeaf($index) {
 		if (!is_numeric($index) || !isset($this->leafs[$index])) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('getLeaf (Tx_Commerce_Tree_Browsetree) has an invalid parameter.', COMMERCE_EXTKEY, 3);
+				GeneralUtility::devLog('getLeaf (Tx_Commerce_Tree_Browsetree) has an invalid parameter.', COMMERCE_EXTKEY, 3);
 			}
 			return NULL;
 		}
@@ -176,7 +182,7 @@ abstract class Tx_Commerce_Tree_Browsetree {
 	 * @return void
 	 */
 	public function readByMounts() {
-			// set internal var
+		// set internal var
 		$this->renderBy = 'Tx_Commerce_Tree_Leaf_Mounts';
 	}
 
@@ -191,7 +197,7 @@ abstract class Tx_Commerce_Tree_Browsetree {
 	public function readRecursively($uid, $depth = 100) {
 		if (!is_numeric($uid)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('readRecursively (Tx_Commerce_Tree_Browsetree) has an invalid parameter.', COMMERCE_EXTKEY, 3);
+				GeneralUtility::devLog('readRecursively (Tx_Commerce_Tree_Browsetree) has an invalid parameter.', COMMERCE_EXTKEY, 3);
 			}
 			return;
 		}
@@ -219,15 +225,14 @@ abstract class Tx_Commerce_Tree_Browsetree {
 
 			case 'recursively':
 				$this->getTree();
-					// @see printTree
+				// @see printTree
 				$return = $this->printTree(0);
 				break;
 
 			default:
 				if (TYPO3_DLOG) {
-					t3lib_div::devLog('The Browseable Tree could not be printed. No rendering method was specified', COMMERCE_EXTKEY, 3);
+					GeneralUtility::devLog('The Browseable Tree could not be printed. No rendering method was specified', COMMERCE_EXTKEY, 3);
 				}
-				break;
 		}
 
 		return $return;
@@ -238,14 +243,17 @@ abstract class Tx_Commerce_Tree_Browsetree {
 	 * Note that so far this is only supported if you work with mountpoints;
 	 *
 	 * @todo Make it possible as well for a recursive tree
-	 *
 	 * @return string HTML Code for Tree
-	 * @param array $PM Array from PM link
+	 * @param array $parameter Array from PM link
 	 */
-	public function getBrowseableAjaxTree($PM) {
-		if (is_null($PM) || !is_array($PM)) {
+	public function getBrowseableAjaxTree($parameter) {
+		if (is_null($parameter) || !is_array($parameter)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('The browseable AJAX tree (getBrowseableAjaxTree) was not printed because a parameter was invalid.', COMMERCE_EXTKEY, 3);
+				GeneralUtility::devLog(
+					'The browseable AJAX tree (getBrowseableAjaxTree) was not printed because a parameter was invalid.',
+					COMMERCE_EXTKEY,
+					3
+				);
 			}
 			return '';
 		}
@@ -253,7 +261,7 @@ abstract class Tx_Commerce_Tree_Browsetree {
 			// Create the tree by mountpoints
 		$this->getTreeByMountpoints();
 
-		return $this->printAjaxTree($PM);
+		return $this->printAjaxTree($parameter);
 	}
 
 	/**
@@ -262,20 +270,20 @@ abstract class Tx_Commerce_Tree_Browsetree {
 	 * @return void
 	 */
 	public function getTreeByMountpoints() {
-			// Alternate Approach: Read all open Categories at once
-			// Select those whose parent_id is set in the positions-Array
-			// and those whose UID is set as the Mountpoint
+		// Alternate Approach: Read all open Categories at once
+		// Select those whose parent_id is set in the positions-Array
+		// and those whose UID is set as the Mountpoint
 
-			// Get the current position of the user
+		// Get the current position of the user
 		$this->initializePositionSaving();
 
-			// Go through the leafs and feed them the ids
+		// Go through the leafs and feed them the ids
 		$leafCount = count($this->leafs);
-		for ($i = 0; $i < $leafCount; $i ++) {
+		for ($i = 0; $i < $leafCount; $i++) {
 			/** @var Tx_Commerce_Tree_Leaf_Master $leaf */
 			$leaf = & $this->leafs[$i];
 			$leaf->byMounts();
-				// Pass $i as the leaf's index
+			// Pass $i as the leaf's index
 			$leaf->init($i);
 		}
 	}
@@ -291,7 +299,7 @@ abstract class Tx_Commerce_Tree_Browsetree {
 
 			// Go through the leafs and feed them the id
 		$leafCount = count($this->leafs);
-		for ($i = 0; $i < $leafCount; $i ++) {
+		for ($i = 0; $i < $leafCount; $i++) {
 			/** @var Tx_Commerce_Tree_Leaf_Master $leaf */
 			$leaf = & $this->leafs[$i];
 			$leaf->setUid($uid);
@@ -304,28 +312,32 @@ abstract class Tx_Commerce_Tree_Browsetree {
 	 * Prints the subtree for AJAX requests only
 	 *
 	 * @return string HTML Code
-	 * @param array $PM Array from PM link
+	 * @param array $parameter Array from PM link
 	 */
-	public function printAjaxTree($PM) {
-		if (is_null($PM) || !is_array($PM)) {
+	public function printAjaxTree($parameter) {
+		if (is_null($parameter) || !is_array($parameter)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('The AJAX Tree (printAjaxTree) was not printed because the parameter was invalid.', COMMERCE_EXTKEY, 3);
+				GeneralUtility::devLog(
+					'The AJAX Tree (printAjaxTree) was not printed because the parameter was invalid.',
+					COMMERCE_EXTKEY,
+					3
+				);
 			}
 			return '';
 		}
 
-		$l = count($PM);
+		$l = count($parameter);
 
 			// parent|ID is always the last Item
-		$values = explode('|', $PM[count($PM) - 1]);
+		$values = explode('|', $parameter[count($parameter) - 1]);
 
 			// assign current uid
 		$id = $values[0];
 			// assign item parent
 		$pid = $values[1];
 			// Extract the bank
-		$bank = $PM[2];
-		$indexFirst = $PM[1];
+		$bank = $parameter[2];
+		$indexFirst = $parameter[1];
 
 		$out = '';
 
@@ -333,10 +345,11 @@ abstract class Tx_Commerce_Tree_Browsetree {
 		/** @var Tx_Commerce_Tree_Leaf_Master $leaf */
 		$leaf = &$this->leafs[$indexFirst];
 
-			// i = 4 because if we have childleafs at all, this is where they will stand in PM Array
-			// l - 1 because the last entry in PM is the id
-		for ($i = 4; $i < $l - 1; $i ++) {
-			$leaf = &$leaf->getChildLeaf($PM[$i]);
+		// i = 4 because if we have childleafs at all,
+		// this is where they will stand in PM Array
+		// l - 1 because the last entry in PM is the id
+		for ($i = 4; $i < $l - 1; $i++) {
+			$leaf = &$leaf->getChildLeaf($parameter[$i]);
 
 				// If we didnt get a leaf, return
 			if ($leaf == NULL) {
@@ -352,13 +365,15 @@ abstract class Tx_Commerce_Tree_Browsetree {
 	/**
 	 * Prints the Tree starting with the uid
 	 *
-	 * @todo Implement this function if it is ever needed. So far it's not. Delete this function if it is never needed.
+	 * @todo Implement this function if it is ever needed.
+	 * 	So far it's not. Delete this function if it is never needed.
 	 *
 	 * @return string
 	 * @param integer $uid UID of the Item that will be started with
 	 */
 	public function printTree($uid) {
-		die('The function printTree in Browsetree.php is not yet filled. Fill it if you are using it. Search for this text to find the code. ' . $uid);
+		die('The function printTree in Browsetree.php is not yet filled.
+			Fill it if you are using it. Search for this text to find the code. ' . $uid);
 	}
 
 	/**
@@ -367,10 +382,10 @@ abstract class Tx_Commerce_Tree_Browsetree {
 	 * @return string HTML Code for Tree
 	 */
 	public function printTreeByMountpoints() {
-		$out = '<ul class="tree">';
+		$out = '<ul class="x-tree-root-ct x-tree-lines">';
 
-			// Get the Tree for each leaf
-		for ($i = 0; $i < $this->leafcount; $i ++) {
+		// Get the Tree for each leaf
+		for ($i = 0; $i < $this->leafcount; $i++) {
 			/** @var Tx_Commerce_Tree_Leaf_Master $leaf */
 			$leaf = & $this->leafs[$i];
 			$out .= $leaf->printLeafByMounts();
@@ -384,24 +399,25 @@ abstract class Tx_Commerce_Tree_Browsetree {
 	 * Returns the Records in the tree as a array
 	 * Records will be sorted to represent the tree in linear order
 	 *
-	 * @param integer $rootUid - UId of the Item that will act as the root of the tree
+	 * @param integer $rootUid - UId of the Item that will
+	 * 	act as the root of the tree
 	 * @return array
 	 */
 	public function getRecordsAsArray($rootUid) {
 		if (!is_numeric($rootUid)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('getRecordsAsArray has an invalid $rootUid', COMMERCE_EXTKEY, 3);
+				GeneralUtility::devLog('getRecordsAsArray has an invalid $rootUid', COMMERCE_EXTKEY, 3);
 			}
 			return array();
 		}
 
-			// Go through the leafs and get sorted array
+		// Go through the leafs and get sorted array
 		$leafCount = count($this->leafs);
 
 		$sortedData = array();
 
-			// Initialize the categories (and its leafs)
-		for ($i = 0; $i < $leafCount; $i ++) {
+		// Initialize the categories (and its leafs)
+		for ($i = 0; $i < $leafCount; $i++) {
 			/** @var Tx_Commerce_Tree_Leaf_Master $leaf */
 			$leaf = $this->leafs[$i];
 			if ($leaf->data->hasRecords()) {
@@ -414,29 +430,30 @@ abstract class Tx_Commerce_Tree_Browsetree {
 	}
 
 	/**
-	 * Returns an array that has as key the depth and as value the category ids on that depth
+	 * Returns an array that has as key the depth
+	 * and as value the category ids on that depth
 	 * Sorts the array in the process
-	 * 		[0] => '13'
-	 * 		[1] => '12, 11, 39, 54'
+	 * 	[0] => '13'
+	 * 	[1] => '12, 11, 39, 54'
 	 *
 	 * @return array
 	 * @param integer $rootUid
 	 */
-	public function &getRecordsPerLevelArray($rootUid) {
+	public function getRecordsPerLevelArray($rootUid) {
 		if (!is_numeric($rootUid)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('getRecordsPerLevelArray has an invalid parameter.', COMMERCE_EXTKEY, 3);
+				GeneralUtility::devLog('getRecordsPerLevelArray has an invalid parameter.', COMMERCE_EXTKEY, 3);
 			}
 			return array();
 		}
 
-			// Go through the leafs and get sorted array
+		// Go through the leafs and get sorted array
 		$leafCount = count($this->leafs);
 
 		$sortedData = array();
 
-			// Sort and return the sorted array
-		for ($i = 0; $i < $leafCount; $i ++) {
+		// Sort and return the sorted array
+		for ($i = 0; $i < $leafCount; $i++) {
 			/** @var Tx_Commerce_Tree_Leaf_Master $leaf */
 			$leaf = $this->leafs[$i];
 
@@ -445,16 +462,16 @@ abstract class Tx_Commerce_Tree_Browsetree {
 			$sortedData = array_merge($sortedData, $sorted);
 		}
 
-			// Create the depth_catUids array
+		// Create the depth_catUids array
 		$depth = array();
 
 		$l = count($sortedData);
 
-		for ($i = 0; $i < $l; $i ++) {
+		for ($i = 0; $i < $l; $i++) {
 			if (!is_array($depth[$sortedData[$i]['depth']])) {
-				$depth[$sortedData[$i]['depth']] = array($sortedData[$i]['record']['uid']);
+				$depth[$sortedData[$i]['depth']] = array($sortedData[$i]['row']['uid']);
 			} else {
-				$depth[$sortedData[$i]['depth']][] = $sortedData[$i]['record']['uid'];
+				$depth[$sortedData[$i]['depth']][] = $sortedData[$i]['row']['uid'];
 			}
 		}
 
@@ -463,73 +480,79 @@ abstract class Tx_Commerce_Tree_Browsetree {
 
 	/**
 	 * Will initialize the User Position
-	 * Saves it in the Session and gives the Position UIDs to the Tx_Commerce_Tree_Leaf_Data
+	 * Saves it in the Session and gives
+	 * the Position UIDs to the Tx_Commerce_Tree_Leaf_Data
 	 *
 	 * @return void
 	 */
 	protected function initializePositionSaving() {
-			// Get stored tree structure:
+		// Get stored tree structure:
 		$positions = unserialize($GLOBALS['BE_USER']->uc['browseTrees'][$this->treeName]);
 
-			// In case the array is not set, initialize it
+		// In case the array is not set, initialize it
 		if (!is_array($positions) || 0 >= count($positions) || key($positions[0][key($positions[0])]) !== 'items') {
-				// reinitialize damaged array
+			// reinitialize damaged array
 			$positions = array();
 			$this->savePosition($positions);
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('Resetting the Positions of the Browsetree. Were damaged.', COMMERCE_EXTKEY, 2);
+				GeneralUtility::devLog('Resetting the Positions of the Browsetree. Were damaged.', COMMERCE_EXTKEY, 2);
 			}
 		}
 
-		$PM = t3lib_div::_GP('PM');
-			// IE takes # as anchor
-		if (($PMpos = strpos($PM, '#')) !== FALSE) {
-			$PM = substr($PM, 0, $PMpos);
+		$parameter = GeneralUtility::_GP('PM');
+		// IE takes # as anchor
+		if (($parameterPosition = strpos($parameter, '#')) !== FALSE) {
+			$parameter = substr($parameter, 0, $parameterPosition);
 		}
 
-			// 0: treeName, 1: leafIndex, 2: Mount, 3: set/clear [4:,5:,.. further leafIndices], 5[+++]: Item UID
-		$PM = explode('_', $PM);
+		// 0: treeName,
+		// 1: leafIndex,
+		// 2: Mount,
+		// 3: set/clear
+		// [4:,5:,.. further leafIndices], 5[+++]: Item UID
+		$parameter = explode('_', $parameter);
 
 			// PM has to be at LEAST 5 Items (up to a (theoratically) unlimited count)
-		if (count($PM) >= 5 && $PM[0] == $this->treeName) {
-					// Get the value - is always the last item
-					// so far this is 'current UID|Parent UID'
-				$value = explode('|', $PM[count($PM) - 1]);
-					// now it is 'current UID'
-				$value = $value[0];
+		if (count($parameter) >= 5 && $parameter[0] == $this->treeName) {
+			// Get the value - is always the last item
+			// so far this is 'current UID|Parent UID'
+			$value = explode('|', $parameter[count($parameter) - 1]);
+			// now it is 'current UID'
+			$value = $value[0];
 
-					// Prepare the Array
-				$c = count($PM);
-					// We get the Mount-Array of the corresponding leaf index
-				$field = &$positions[$PM[1]][$PM[2]];
+			// Prepare the Array
+			$c = count($parameter);
+			// We get the Mount-Array of the corresponding leaf index
+			$field = &$positions[$parameter[1]][$parameter[2]];
 
-					// Move the field forward if necessary
-				if ($c > 5) {
-					$c -= 4;
+			// Move the field forward if necessary
+			if ($c > 5) {
+				$c -= 4;
 
-						// Walk the PM
-					$i = 4;
+				// Walk the PM
+				$i = 4;
 
-						// Leave out last value of the $PM Array since that is the value and no longer a leaf Index
-					while ($c > 1) {
-							// Mind that we increment $i on the fly on this line
-						$field = &$field[$PM[$i++]];
-						$c --;
-					}
+				// Leave out last value of the $PM Array since that
+				// is the value and no longer a leaf Index
+				while ($c > 1) {
+					// Mind that we increment $i on the fly on this line
+					$field = &$field[$parameter[$i++]];
+					$c--;
 				}
+			}
 
-				if ($PM[3]) {
-					$field['items'][$value] = 1;
-					$this->savePosition($positions);
-				} else {
-					unset($field['items'][$value]);
-					$this->savePosition($positions);
-				}
+			if ($parameter[3]) {
+				$field['items'][$value] = 1;
+				$this->savePosition($positions);
+			} else {
+				unset($field['items'][$value]);
+				$this->savePosition($positions);
+			}
 		}
 
-			// Set the Positions for each leaf
+		// Set the Positions for each leaf
 		$leafCount = count($this->leafs);
-		for ($i = 0; $i < $leafCount; $i ++) {
+		for ($i = 0; $i < $leafCount; $i++) {
 			/** @var Tx_Commerce_Tree_Leaf_Master $leaf */
 			$leaf = & $this->leafs[$i];
 			$leaf->setDataPositions($positions);
@@ -542,12 +565,11 @@ abstract class Tx_Commerce_Tree_Browsetree {
 	 *
 	 * @param array $positions	Positionsarray
 	 * @return void
-	 * @access private
 	 */
 	protected function savePosition(&$positions) {
 		if (is_null($positions) || !is_array($positions)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('The Positions were not saved because the parameter was invalid', COMMERCE_EXTKEY, 3);
+				GeneralUtility::devLog('The Positions were not saved because the parameter was invalid', COMMERCE_EXTKEY, 3);
 			}
 			return;
 		}
@@ -558,7 +580,3 @@ abstract class Tx_Commerce_Tree_Browsetree {
 		$backendUser->writeUC();
 	}
 }
-
-class_alias('Tx_Commerce_Tree_Browsetree', 'browsetree');
-
-?>

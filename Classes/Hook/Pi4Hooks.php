@@ -128,10 +128,3 @@ class Tx_Commerce_Hook_Pi4Hooks {
 		return Tx_Commerce_Dao_AddressObserver::checkDelete($uid);
 	}
 }
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Hook/Pi4Hooks.php']) {
-	/** @noinspection PhpIncludeInspection */
-	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Hook/Pi4Hooks.php']);
-}
-
-?>

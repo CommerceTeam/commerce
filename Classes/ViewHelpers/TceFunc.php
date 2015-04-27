@@ -24,6 +24,7 @@
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Holds the TCE Functions
@@ -83,7 +84,7 @@ class Tx_Commerce_ViewHelpers_TceFunc {
 		}
 
 		/** @var Tx_Commerce_Tree_CategoryTree $browseTrees */
-		$browseTrees = t3lib_div::makeInstance('Tx_Commerce_Tree_CategoryTree');
+		$browseTrees = GeneralUtility::makeInstance('Tx_Commerce_Tree_CategoryTree');
 			// disabled clickmenu
 		$browseTrees->noClickmenu();
 			// set the minimum permissions
@@ -107,9 +108,9 @@ class Tx_Commerce_ViewHelpers_TceFunc {
 		$browseTrees->init();
 
 		/** @var Tx_Commerce_ViewHelpers_TreelibTceforms $renderBrowseTrees */
-		$renderBrowseTrees = t3lib_div::makeInstance('Tx_Commerce_ViewHelpers_TreelibTceforms');
+		$renderBrowseTrees = GeneralUtility::makeInstance('Tx_Commerce_ViewHelpers_TreelibTceforms');
 		$renderBrowseTrees->init ($parameter, $fObj);
-		$renderBrowseTrees->setIFrameTreeBrowserScript(
+		$renderBrowseTrees->setIframeTreeBrowserScript(
 			$this->tceForms->backPath . PATH_TXCOMMERCE_REL . 'Classes/ViewHelpers/IframeTreeBrowser.php'
 		);
 
@@ -118,10 +119,11 @@ class Tx_Commerce_ViewHelpers_TceFunc {
 
 		$thumbnails = '';
 		if (!$disabled) {
-			if ($renderBrowseTrees->isIFrameContentRendering()) {
+			// @todo remove iframe part. only div rendering ist sufficent enough
+			if ($renderBrowseTrees->isIframeContentRendering()) {
 					// just the trees are needed - we're inside of an iframe!
 				return $renderBrowseTrees->getTreeContent();
-			} elseif ($renderBrowseTrees->isIFrameRendering()) {
+			} elseif ($renderBrowseTrees->isIframeRendering()) {
 				// If we want to display a browseable tree, we need to run the tree in an iframe
 				// element. In the logic of tceforms the iframe is displayed in the "thumbnails"
 				// position. In consequence this means that the current function is both
@@ -135,7 +137,7 @@ class Tx_Commerce_ViewHelpers_TceFunc {
 				// treeViewBrowseable is set to TRUE. The value 'iframeContent' for
 				// treeViewBrowseable will be set in dam/mod_treebrowser/index.php as
 				// internal configuration logic
-				$thumbnails = $renderBrowseTrees->renderIFrame();
+				$thumbnails = $renderBrowseTrees->renderIframe();
 			} else {
 				// tree frame <div>
 				$thumbnails = $renderBrowseTrees->renderDivBox();
@@ -169,7 +171,7 @@ class Tx_Commerce_ViewHelpers_TceFunc {
 
 				case 'tt_content':
 					// Perform modification of the selected items array:
-					$itemArray = t3lib_div::trimExplode(',', $parameter['itemFormElValue'], 1);
+					$itemArray = GeneralUtility::trimExplode(',', $parameter['itemFormElValue'], 1);
 					$itemArray = $renderBrowseTrees->processItemArrayForBrowseableTreeCategory($browseTrees, $itemArray[0]);
 					break;
 
@@ -178,11 +180,11 @@ class Tx_Commerce_ViewHelpers_TceFunc {
 			}
 		} else {
 				// New record
-			$defVals = t3lib_div::_GP('defVals');
+			$defVals = GeneralUtility::_GP('defVals');
 			switch ($table) {
 				case 'tx_commerce_categories':
 					/** @var Tx_Commerce_Domain_Model_Category $category */
-					$category = t3lib_div::makeInstance(
+					$category = GeneralUtility::makeInstance(
 						'Tx_Commerce_Domain_Model_Category',
 						$defVals['tx_commerce_categories']['parent_category']
 					);
@@ -192,7 +194,7 @@ class Tx_Commerce_ViewHelpers_TceFunc {
 
 				case 'tx_commerce_products':
 					/** @var Tx_Commerce_Domain_Model_Category $category */
-					$category = t3lib_div::makeInstance(
+					$category = GeneralUtility::makeInstance(
 						'Tx_Commerce_Domain_Model_Category',
 						$defVals['tx_commerce_products']['categories']
 					);
@@ -212,7 +214,7 @@ class Tx_Commerce_ViewHelpers_TceFunc {
 		$noMatchingValueLabel = @sprintf($noMatchingValueLabel, $parameter['itemFormElValue']);
 
 		// Possibly remove some items:
-		$removeItems = t3lib_div::trimExplode(',', $parameter['fieldTSConfig']['removeItems'], TRUE);
+		$removeItems = GeneralUtility::trimExplode(',', $parameter['fieldTSConfig']['removeItems'], TRUE);
 		foreach ($itemArray as $tk => $tv) {
 			$tvP = explode('|', $tv, 2);
 			if (in_array($tvP[0], $removeItems) && !$parameter['fieldTSConfig']['disableNoMatchingValueElement']) {
@@ -238,7 +240,7 @@ class Tx_Commerce_ViewHelpers_TceFunc {
 
 		$params = array(
 			'size' => $config['size'],
-			'autoSizeMax' => t3lib_div::intInRange($config['autoSizeMax'], 0),
+			'autoSizeMax' => \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange($config['autoSizeMax'], 0),
 			'style' => ' style="width:200px;"',
 			'dontShowMoveIcons' => ($maxitems <= 1),
 			'maxitems' => $maxitems,
@@ -251,6 +253,42 @@ class Tx_Commerce_ViewHelpers_TceFunc {
 			'readOnly' => $disabled,
 			'thumbnails' => $thumbnails
 		);
+
+		$item .= '
+		<style type="text/css">
+		.x-tree-root-ct ul {
+			padding: 0 0 0 19px;
+			margin: 0;
+		}
+
+		.x-tree-root-ct {
+			padding-left: 0;
+		}
+
+		tr:hover .x-tree-root-ct a {
+			text-decoration: none;
+		}
+
+		.x-tree-root-ct li {
+			list-style: none;
+			margin: 0;
+			padding: 0;
+		}
+
+		.x-tree-root-ct ul li.expanded ul {
+			background: url("/' . TYPO3_mainDir . '/sysext/t3skin/icons/gfx/ol/line.gif") repeat-y scroll left top transparent;
+		}
+
+		.x-tree-root-ct ul li.expanded.last ul {
+			background: none;
+		}
+
+		.x-tree-root-ct li {
+			clear: left;
+			margin-bottom: 0;
+		}
+		</style>
+		';
 
 		$item .= $this->tceForms->dbFileIcons(
 			$parameter['itemFormElName'], $config['internal_type'], $config['allowed'], $itemArray, '', $params, $parameter['onFocus']
@@ -267,11 +305,4 @@ class Tx_Commerce_ViewHelpers_TceFunc {
 
 		return $item;
 	}
-}
-
-class_alias('Tx_Commerce_ViewHelpers_TceFunc', 'tx_commerce_tceFunc');
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/ViewHelpers/TceFunc.php']) {
-	/** @noinspection PhpIncludeInspection */
-	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/ViewHelpers/TceFunc.php']);
 }

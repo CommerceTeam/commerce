@@ -93,7 +93,7 @@ class Tx_Commerce_ViewHelpers_Browselinks_CategoryView extends Tx_Commerce_Tree_
 			// Max. size for Title of 30
 		$title = ('' != $title) ? t3lib_div::fixed_lgd_cs($title, 30) : $this->getLL('leaf.noTitle');
 
-		$aOnClick = 'return link_folder(\'' . $this->getJumpToParam($row) . '\');';
+		$aOnClick = 'return link_commerce(\'' . $this->getJumpToParam($row) . '\');';
 		$style = ($row['uid'] == $this->openCat && 0 != $this->openCat) ? 'style="color: red; font-weight: bold"' : '';
 		$res = (($this->noRootOnclick && 0 == $row['uid']) || $this->noOnclick) ?
 			$title :
@@ -102,12 +102,3 @@ class Tx_Commerce_ViewHelpers_Browselinks_CategoryView extends Tx_Commerce_Tree_
 		return $res;
 	}
 }
-
-class_alias('Tx_Commerce_ViewHelpers_Browselinks_CategoryView', 'tx_commerce_treelib_link_leaf_categoryview');
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/ViewHelpers/Browselinks/CategoryView.php']) {
-	/** @noinspection PhpIncludeInspection */
-	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/ViewHelpers/Browselinks/CategoryView.php']);
-}
-
-?>
