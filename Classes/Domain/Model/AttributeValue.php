@@ -108,10 +108,10 @@ class Tx_Commerce_Domain_Model_AttributeValue extends Tx_Commerce_Domain_Model_A
 	public function init($uid, $languageUid = 0) {
 		$this->uid = (int) $uid;
 		$this->lang_uid = (int) $languageUid;
-		$this->databaseConnection = t3lib_div::makeInstance($this->databaseClass);
+		$this->databaseConnection = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance($this->databaseClass);
 
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_attribute_value.php']['postinit'])) {
-			t3lib_div::deprecationLog(
+			\TYPO3\CMS\Core\Utility\GeneralUtility::deprecationLog(
 				'
 								hook
 								$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_attribute_value.php\'][\'postinit\']
@@ -120,7 +120,7 @@ class Tx_Commerce_Domain_Model_AttributeValue extends Tx_Commerce_Domain_Model_A
 							'
 			);
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_attribute_value.php']['postinit'] as $classRef) {
-				$hookObj = & t3lib_div::getUserObj($classRef);
+				$hookObj = & \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
 				if (method_exists($hookObj, 'postinit')) {
 					$hookObj->postinit($this);
 				}
@@ -128,7 +128,7 @@ class Tx_Commerce_Domain_Model_AttributeValue extends Tx_Commerce_Domain_Model_A
 		}
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Model/AttributeValue.php']['postinit'])) {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Model/AttributeValue.php']['postinit'] as $classRef) {
-				$hookObj = & t3lib_div::getUserObj($classRef);
+				$hookObj = & \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
 				if (method_exists($hookObj, 'postinit')) {
 					$hookObj->postinit($this);
 				}
@@ -188,7 +188,7 @@ class Tx_Commerce_Domain_Model_AttributeValue extends Tx_Commerce_Domain_Model_A
 	 * remove $this->showicon with this method
 	 */
 	public function getshowicon() {
-		t3lib_div::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
 
 		return $this->showicon;
 	}
@@ -200,7 +200,7 @@ class Tx_Commerce_Domain_Model_AttributeValue extends Tx_Commerce_Domain_Model_A
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getValue
 	 */
 	public function get_attributes() {
-		t3lib_div::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
 
 		return $this->getAttributes();
 	}
@@ -211,7 +211,7 @@ class Tx_Commerce_Domain_Model_AttributeValue extends Tx_Commerce_Domain_Model_A
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getValue
 	 */
 	public function get_value($checkvalue) {
-		t3lib_div::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
 
 		return $this->getValue($checkvalue);
 	}

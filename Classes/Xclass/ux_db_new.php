@@ -3,7 +3,7 @@
 /**
  * Class ux_SC_db_new
  */
-class ux_SC_db_new extends SC_db_new {
+class ux_SC_db_new extends \TYPO3\CMS\Backend\Controller\NewRecordController {
 	/**
 	 * Links the string $code to a create-new form for a record
 	 * in $table created on page $pid
@@ -30,7 +30,7 @@ class ux_SC_db_new extends SC_db_new {
 
 		$parameters = $this->addCommerceParameter($parameters, $table);
 
-		$onClick = t3lib_BEfunc::editOnClick($parameters, '', $this->returnUrl);
+		$onClick = \TYPO3\CMS\Backend\Utility\BackendUtility::editOnClick($parameters, '', $this->returnUrl);
 
 		return '<a href="#" onclick="' . htmlspecialchars($onClick) . '">' . $linkText . '</a>';
 	}
@@ -41,14 +41,16 @@ class ux_SC_db_new extends SC_db_new {
 	 * @return string
 	 */
 	protected function addCommerceParameter($parameters, $table) {
-		if (t3lib_div::_GP('parentCategory')) {
+		if (\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('parentCategory')) {
 			switch ($table) {
 				case 'tx_commerce_categories':
-					$parameters .= '&defVals[tx_commerce_categories][parent_category]=' . t3lib_div::_GP('parentCategory');
+					$parameters .= '&defVals[tx_commerce_categories][parent_category]=' .
+						\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('parentCategory');
 					break;
 
 				case 'tx_commerce_products':
-					$parameters .= '&defVals[tx_commerce_products][categories]=' . t3lib_div::_GP('parentCategory');
+					$parameters .= '&defVals[tx_commerce_products][categories]=' .
+						\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('parentCategory');
 					break;
 
 				default:

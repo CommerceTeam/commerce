@@ -53,7 +53,7 @@ class Tx_Commerce_Domain_Repository_ArticlePriceRepository extends Tx_Commerce_D
 		$uid = (int) $uid;
 
 		$proofSql = '';
-		/** @var t3lib_db $database */
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
 		if (is_object($GLOBALS['TSFE']->sys_page)) {

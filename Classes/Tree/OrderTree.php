@@ -26,7 +26,7 @@
  ***************************************************************/
 
 /**
- * Extension class for the t3lib_browsetree class,
+ * Extension class for the BrowseTreeView class,
  * specially made for browsing pages in the Web module
  */
 class Tx_Commerce_Tree_OrderTree extends \TYPO3\CMS\Backend\Tree\View\BrowseTreeView {

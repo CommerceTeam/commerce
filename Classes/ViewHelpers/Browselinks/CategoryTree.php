@@ -69,22 +69,24 @@ class Tx_Commerce_ViewHelpers_Browselinks_CategoryTree extends Tx_Commerce_Tree_
 	public function init() {
 		parent::init();
 
-			// Create the category leaf
+		// Create the category leaf
 		/** @var Tx_Commerce_Tree_Leaf_Category $categoryLeaf */
-		$categoryLeaf = t3lib_div::makeInstance('Tx_Commerce_Tree_Leaf_Category');
+		$categoryLeaf = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Tree_Leaf_Category');
 
-			// Instantiate the categorydata, -view and set the permission mask (or the string rep.)
+		// Instantiate the categorydata,
+		// -view and set the permission mask (or the string rep.)
 		/** @var Tx_Commerce_Tree_Leaf_CategoryData $categorydata */
-		$categorydata = t3lib_div::makeInstance('Tx_Commerce_Tree_Leaf_CategoryData');
+		$categorydata = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Tree_Leaf_CategoryData');
 		$categorydata->setPermsMask(Tx_Commerce_Utility_BackendUtility::getPermMask($this->minCategoryPerms));
 
 		/** @var Tx_Commerce_ViewHelpers_Browselinks_CategoryView $categoryview */
-		$categoryview = t3lib_div::makeInstance('Tx_Commerce_ViewHelpers_Browselinks_CategoryView');
-			// disable the root onclick if the perms are set to editcontent - this way we cannot select the root as a parent for any content item
+		$categoryview = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_ViewHelpers_Browselinks_CategoryView');
+		// disable the root onclick if the perms are set to editcontent
+		// this way we cannot select the root as a parent for any content item
 		$categoryview->noRootOnclick(($this->minCategoryPerms == 'editcontent'));
 
 			// Configure the noOnclick for the leaf
-		if (t3lib_div::inList($this->noClickList, 'Tx_Commerce_Tree_Leaf_Category')) {
+		if (\TYPO3\CMS\Core\Utility\GeneralUtility::inList($this->noClickList, 'Tx_Commerce_Tree_Leaf_Category')) {
 			$categoryview->noOnclick();
 		}
 
@@ -92,20 +94,20 @@ class Tx_Commerce_ViewHelpers_Browselinks_CategoryTree extends Tx_Commerce_Tree_
 
 		$this->addLeaf($categoryLeaf);
 
-			// Add Product - Productleaf will be added to Categoryleaf
+		// Add Product - Productleaf will be added to Categoryleaf
 		/** @var Tx_Commerce_Tree_Leaf_Product $productleaf */
-		$productleaf = t3lib_div::makeInstance('Tx_Commerce_Tree_Leaf_Product');
+		$productleaf = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Tree_Leaf_Product');
 
 		/** @var Tx_Commerce_ViewHelpers_Browselinks_ProductView $productview */
-		$productview = t3lib_div::makeInstance('Tx_Commerce_ViewHelpers_Browselinks_ProductView');
+		$productview = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_ViewHelpers_Browselinks_ProductView');
 
-			// Configure the noOnclick for the leaf
-		if (t3lib_div::inList($this->noClickList, 'Tx_Commerce_Tree_Leaf_Product')) {
+		// Configure the noOnclick for the leaf
+		if (\TYPO3\CMS\Core\Utility\GeneralUtility::inList($this->noClickList, 'Tx_Commerce_Tree_Leaf_Product')) {
 			$productview->noOnclick();
 		}
 
 		/** @var Tx_Commerce_Tree_Leaf_ProductData $productData */
-		$productData = t3lib_div::makeInstance('Tx_Commerce_Tree_Leaf_ProductData');
+		$productData = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Tree_Leaf_ProductData');
 
 		$productleaf->initBasic($productview, $productData);
 
@@ -116,7 +118,8 @@ class Tx_Commerce_ViewHelpers_Browselinks_CategoryTree extends Tx_Commerce_Tree_
 	 * Sets the minimum Permissions needed for the Category Leaf
 	 * Must be called BEFORE calling init
 	 *
-	 * @param string $perm String-Representation of the right. Can be 'show, new, delete, editcontent, cut, move, copy, edit'
+	 * @param string $perm String-Representation of the right.
+	 * Can be 'show, new, delete, editcontent, cut, move, copy, edit'
 	 * @return void
 	 */
 	public function setMinCategoryPerms($perm) {
@@ -129,7 +132,8 @@ class Tx_Commerce_ViewHelpers_Browselinks_CategoryTree extends Tx_Commerce_Tree_
 	/**
 	 * Sets the noclick list for the leafs
 	 *
-	 * @param string $noClickList comma-separated list of leafs to disallow clicks for
+	 * @param string $noClickList comma-separated
+	 * list of leafs to disallow clicks for
 	 * @return void
 	 */
 	public function disallowClick($noClickList = '') {
@@ -177,7 +181,9 @@ class Tx_Commerce_ViewHelpers_Browselinks_CategoryTree extends Tx_Commerce_Tree_
 			// test parameters
 		if (!is_numeric($uid)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('getCategory (categorytree) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
+					'getCategory (categorytree) gets passed invalid parameters.', COMMERCE_EXTKEY, 3
+				);
 			}
 			return array();
 		}
@@ -187,7 +193,9 @@ class Tx_Commerce_ViewHelpers_Browselinks_CategoryTree extends Tx_Commerce_Tree_
 			// check if there is a category leaf
 		if (is_null($categoryLeaf)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('getCategory (categorytree) cannot find the category leaf.', COMMERCE_EXTKEY, 3);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
+					'getCategory (categorytree) cannot find the category leaf.', COMMERCE_EXTKEY, 3
+				);
 			}
 			return array();
 		}
@@ -198,7 +206,8 @@ class Tx_Commerce_ViewHelpers_Browselinks_CategoryTree extends Tx_Commerce_Tree_
 
 	/**
 	 * Will initialize the User Position
-	 * Saves it in the Session and gives the Position UIDs to the Tx_Commerce_Tree_Leaf_Data
+	 * Saves it in the Session and gives the Position
+	 * UIDs to the Tx_Commerce_Tree_Leaf_Data
 	 *
 	 * @return void
 	 */
@@ -212,31 +221,33 @@ class Tx_Commerce_ViewHelpers_Browselinks_CategoryTree extends Tx_Commerce_Tree_
 			$positions = array();
 			$this->savePosition($positions);
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('Resetting the Positions of the Browsetree. Were damaged.', COMMERCE_EXTKEY, 2);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
+					'Resetting the Positions of the Browsetree. Were damaged.', COMMERCE_EXTKEY, 2
+				);
 			}
 		}
 
-		$PM = t3lib_div::_GP('PM');
+		$parameter = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('PM');
 			// IE takes # as anchor
-		if (($PMpos = strpos($PM, '#')) !== FALSE) {
-			$PM = substr($PM, 0, $PMpos);
+		if (($parameterPosition = strpos($parameter, '#')) !== FALSE) {
+			$parameter = substr($parameter, 0, $parameterPosition);
 		}
 			// 0: treeName, 1: leafIndex, 2: Mount, 3: set/clear [4:,5:,.. further leafIndices], 5[+++]: Item UID
-		$PM = explode('_', $PM);
+		$parameter = explode('_', $parameter);
 
-			// PM has to be at LEAST 5 Items (up to a (theoratically) unlimited count)
-		if (count($PM) >= 5 && $PM[0] == $this->treeName) {
+			// PM has to be at LEAST 5 Items (up to a (theoraticaly) unlimited count)
+		if (count($parameter) >= 5 && $parameter[0] == $this->treeName) {
 
 				// Get the value - is always the last item
 				// so far this is 'current UID|Parent UID'
-			$value = explode('|', $PM[count($PM) - 1]);
+			$value = explode('|', $parameter[count($parameter) - 1]);
 				// now it is 'current UID'
 			$value = $value[0];
 
 				// Prepare the Array
-			$c = count($PM);
+			$c = count($parameter);
 				// We get the Mount-Array of the corresponding leaf index
-			$field = &$positions[$PM[1]][$PM[2]];
+			$field = &$positions[$parameter[1]][$parameter[2]];
 
 				// Move the field forward if necessary
 			if ($c > 5) {
@@ -244,16 +255,17 @@ class Tx_Commerce_ViewHelpers_Browselinks_CategoryTree extends Tx_Commerce_Tree_
 					// Walk the PM
 				$i = 4;
 
-					// Leave out last value of the $PM Array since that is the value and no longer a leaf Index
+				// Leave out last value of the $PM Array since
+				// that is the value and no longer a leaf Index
 				while ($c > 1) {
 						// Mind that we increment $i on the fly on this line
-					$field = &$field[$PM[$i++]];
-					$c --;
+					$field = &$field[$parameter[$i++]];
+					$c--;
 				}
 			}
 
 				// set
-			if ($PM[3]) {
+			if ($parameter[3]) {
 				$field['items'][$value] = 1;
 				$this->savePosition($positions);
 				// clear
@@ -269,12 +281,13 @@ class Tx_Commerce_ViewHelpers_Browselinks_CategoryTree extends Tx_Commerce_Tree_
 		if (0 != $this->openCategory) {
 
 			if (0 >= count($positions)) {
-					// we simply add the category and all its parents, starting from the mountpoint, to the positions
+				// we simply add the category and all its
+				// parents, starting from the mountpoint, to the positions
 				$positions[0] = array();
 			}
 
 			/** @var Tx_Commerce_Tree_CategoryMounts $mounts */
-			$mounts = t3lib_div::makeInstance('Tx_Commerce_Tree_CategoryMounts');
+			$mounts = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Tree_CategoryMounts');
 			$mounts->init($GLOBALS['BE_USER']->user['uid']);
 
 				// only go if the item is in the mounts
@@ -284,7 +297,7 @@ class Tx_Commerce_ViewHelpers_Browselinks_CategoryTree extends Tx_Commerce_Tree_
 				// get the category parents so we can open them as well
 				// load the category and go up the tree until we either reach a mount or a root
 				/** @var Tx_Commerce_Domain_Model_Category $cat */
-				$cat = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category', $this->openCategory);
+				$cat = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Category', $this->openCategory);
 				$cat->loadData();
 
 				$tmpCats = $cat->getParentCategories();
@@ -298,13 +311,18 @@ class Tx_Commerce_ViewHelpers_Browselinks_CategoryTree extends Tx_Commerce_Tree_
 						// Prevent endless recursion
 					if ($i < 0) {
 						if (TYPO3_DLOG) {
-							t3lib_div::devLog('initializePositionSaving (link_categorytree) has aborted because $i has reached its allowed recursive maximum.', COMMERCE_EXTKEY, 3);
+							\TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
+								'initializePositionSaving (link_categorytree) has aborted because $i has reached its allowed recursive maximum.',
+								COMMERCE_EXTKEY,
+								3
+							);
 						}
 						$cats = array();
 						break;
 					}
 
-						// true if we can find any parent category of this category in the commerce mounts
+					// true if we can find any parent category
+					// of this category in the commerce mounts
 					$cats[] = $cat->getUid();
 
 					$tmpParents = $cat->getParentCategories();
@@ -312,11 +330,12 @@ class Tx_Commerce_ViewHelpers_Browselinks_CategoryTree extends Tx_Commerce_Tree_
 					if (is_array($tmpParents) && 0 < count($tmpParents)) {
 						$tmpCats = array_merge($tmpCats, $tmpParents);
 					}
-					$i --;
+					$i--;
 				}
 
 				foreach ($mountUids as $muid) {
-						// if the user has the root mount, add positions anyway - else if the mount is in the category array
+					// if the user has the root mount, add positions anyway
+					// - else if the mount is in the category array
 					if (0 == $muid || in_array($muid, $cats)) {
 						if (!is_array($positions[0][$muid]['items'])) {
 							$positions[0][$muid]['items'] = array();
@@ -339,7 +358,7 @@ class Tx_Commerce_ViewHelpers_Browselinks_CategoryTree extends Tx_Commerce_Tree_
 			// END OF CHANGE
 
 			// Set the Positions for each leaf
-		for ($i = 0; $i < $this->leafcount; $i ++) {
+		for ($i = 0; $i < $this->leafcount; $i++) {
 			/** @var Tx_Commerce_Tree_Leaf_Leaf $leaf */
 			$leaf = $this->leafs[$i];
 			$leaf->setDataPositions($positions);

@@ -74,7 +74,7 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 	 * @return integer Category UID
 	 */
 	public function getParentCategory($uid) {
-		/** @var t3lib_db $database */
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
 		$result = 0;
@@ -99,7 +99,7 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 	 * @return array Array with permission information
 	 */
 	public function getPermissionsRecord($uid) {
-		/** @var t3lib_db $database */
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
 		if (\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($uid) && ($uid > 0)) {
@@ -121,7 +121,7 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 	 * @return array Array of parent categories UIDs
 	 */
 	public function getParentCategories($uid) {
-		/** @var t3lib_db $database */
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
 		if (empty($uid) || !is_numeric($uid)) {
@@ -161,7 +161,7 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 	 * @return array Array of UIDs
 	 */
 	public function getL18nCategories($uid) {
-		/** @var t3lib_db $database */
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
 		if ((empty($uid)) || (!is_numeric($uid))) {
@@ -228,7 +228,7 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 
 		$additionalWhere = $this->enableFields($this->databaseTable, $GLOBALS['TSFE']->showHiddenRecords);
 
-		/** @var t3lib_db $database */
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
 		$result = $database->exec_SELECT_mm_query(
@@ -370,7 +370,7 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 			}
 		}
 
-		/** @var t3lib_db $database */
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
 		$result = $database->exec_SELECT_queryArray($queryArray);

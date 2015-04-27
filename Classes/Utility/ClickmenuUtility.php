@@ -55,7 +55,7 @@ class Tx_Commerce_Utility_ClickmenuUtility extends \TYPO3\CMS\Backend\ClickMenu\
 	protected $clickMenu;
 
 	/**
-	 * @var t3lib_clipboard
+	 * @var \TYPO3\CMS\Backend\Clipboard\Clipboard
 	 */
 	protected $clipObj;
 
@@ -93,7 +93,7 @@ class Tx_Commerce_Utility_ClickmenuUtility extends \TYPO3\CMS\Backend\ClickMenu\
 			return $menuItems;
 		}
 
-		/** @var t3lib_beUserAuth $backendUser */
+		/** @var \TYPO3\CMS\Core\Authentication\BackendUserAuthentication $backendUser */
 		$backendUser = $GLOBALS['BE_USER'];
 
 		// Check for List allow
@@ -297,7 +297,7 @@ class Tx_Commerce_Utility_ClickmenuUtility extends \TYPO3\CMS\Backend\ClickMenu\
 	 * @return array
 	 */
 	protected function calculateCategoryRights($uid, $rights) {
-		/** @var t3lib_beUserAuth $backendUser */
+		/** @var \TYPO3\CMS\Core\Authentication\BackendUserAuthentication $backendUser */
 		$backendUser = $GLOBALS['BE_USER'];
 
 			// check if current item is root
@@ -384,7 +384,7 @@ class Tx_Commerce_Utility_ClickmenuUtility extends \TYPO3\CMS\Backend\ClickMenu\
 	 * @return array
 	 */
 	protected function calculateProductRights($uid, $rights) {
-		/** @var t3lib_beUserAuth $backendUser */
+		/** @var \TYPO3\CMS\Core\Authentication\BackendUserAuthentication $backendUser */
 		$backendUser = $GLOBALS['BE_USER'];
 
 			// get all parent categories
@@ -493,7 +493,7 @@ class Tx_Commerce_Utility_ClickmenuUtility extends \TYPO3\CMS\Backend\ClickMenu\
 	public function DB_overwrite($table, $uid, $elInfo) {
 		/** @var language $language */
 		$language = $GLOBALS['LANG'];
-		/** @var t3lib_beUserAuth $backendUser */
+		/** @var \TYPO3\CMS\Core\Authentication\BackendUserAuthentication $backendUser */
 		$backendUser = $GLOBALS['BE_USER'];
 
 		$loc = 'top.content' . ($this->clickMenu->listFrame && !$this->clickMenu->alwaysContentFrame ? '.list_frame' : '');
@@ -557,7 +557,7 @@ class Tx_Commerce_Utility_ClickmenuUtility extends \TYPO3\CMS\Backend\ClickMenu\
 	 * @return string
 	 */
 	protected function overwriteUrl($table, $uid, $redirect = 1) {
-		/** @var t3lib_beUserAuth $backendUser */
+		/** @var \TYPO3\CMS\Core\Authentication\BackendUserAuthentication $backendUser */
 		$backendUser = $GLOBALS['BE_USER'];
 
 		$rU = $this->clickMenu->clipObj->backPath . PATH_TXCOMMERCE_REL . 'Classes/Utility/DataHandlerUtility.php?' .

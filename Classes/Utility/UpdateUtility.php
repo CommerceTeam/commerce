@@ -65,7 +65,7 @@ class Tx_Commerce_Utility_UpdateUtility {
 	 * @return integer
 	 */
 	public function createDefaultRights() {
-		/** @var t3lib_db $database */
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = $GLOBALS['TYPO3_DB'];
 		$countRecords = 0;
 
@@ -86,7 +86,7 @@ class Tx_Commerce_Utility_UpdateUtility {
 			'tx_commerce_categories',
 			'perms_user = 0 OR perms_group = 0 OR perms_everybody = 0'
 		);
-		while ($row = $database->sql_fetch_assoc($result)) {
+		while (($row = $database->sql_fetch_assoc($result))) {
 			$database->exec_UPDATEquery('tx_commerce_categories', 'uid = ' . $row['uid'], $data);
 			$countRecords++;
 		}
@@ -99,16 +99,17 @@ class Tx_Commerce_Utility_UpdateUtility {
 	 * @return integer Num Records Changed
 	 */
 	public function createParentMMRecords() {
-		/** @var t3lib_db $database */
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = $GLOBALS['TYPO3_DB'];
 		$countRecords = 0;
 
 		$result = $database->exec_SELECTquery(
 			'uid',
 			'tx_commerce_categories',
-			'sys_language_uid = 0 AND l18n_parent = 0 AND uid NOT IN (SELECT uid_local FROM tx_commerce_categories_parent_category_mm) AND tx_commerce_categories.deleted = 0'
+			'sys_language_uid = 0 AND l18n_parent = 0
+				AND uid NOT IN (SELECT uid_local FROM tx_commerce_categories_parent_category_mm) AND tx_commerce_categories.deleted = 0'
 		);
-		while ($row = $database->sql_fetch_assoc($result)) {
+		while (($row = $database->sql_fetch_assoc($result))) {
 			$data = array(
 				'uid_local' => $row['uid'],
 				'uid_foreign' => 0,
@@ -128,17 +129,18 @@ class Tx_Commerce_Utility_UpdateUtility {
 	 * @return boolean True if update should be perfomed
 	 */
 	public function access() {
-		if (!t3lib_extMgm::isLoaded('commerce')) {
+		if (!\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('commerce')) {
 			return FALSE;
 		}
 
-		/** @var t3lib_db $database */
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
 		$result = $database->exec_SELECTquery(
 			'uid',
 			'tx_commerce_categories',
-			'uid NOT IN (SELECT uid_local FROM tx_commerce_categories_parent_category_mm) AND tx_commerce_categories.deleted = 0 AND sys_language_uid = 0 AND l18n_parent = 0'
+			'uid NOT IN (SELECT uid_local FROM tx_commerce_categories_parent_category_mm)
+				AND tx_commerce_categories.deleted = 0 AND sys_language_uid = 0 AND l18n_parent = 0'
 		);
 
 		if ($result && ($database->sql_num_rows($result) > 0)) {
@@ -148,7 +150,11 @@ class Tx_Commerce_Utility_UpdateUtility {
 		/**
 		 * No userrights set at all, must be an update.
 		 */
-		$result = $database->exec_SELECTquery('uid', 'tx_commerce_categories', 'perms_user = 0 AND perms_group = 0 AND perms_everybody = 0');
+		$result = $database->exec_SELECTquery(
+			'uid',
+			'tx_commerce_categories',
+			'perms_user = 0 AND perms_group = 0 AND perms_everybody = 0'
+		);
 		if (($result) && ($database->sql_num_rows($result) > 0)) {
 			return TRUE;
 		}
@@ -156,5 +162,3 @@ class Tx_Commerce_Utility_UpdateUtility {
 		return FALSE;
 	}
 }
-
-?>

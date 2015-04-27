@@ -96,7 +96,7 @@ class Tx_Commerce_Configuration_Dca_Articles {
 	 * @return void
 	 */
 	public function alterDCA_onLoad(&$resultDca) {
-		/** @var t3lib_beUserAuth $backendUser */
+		/** @var \TYPO3\CMS\Core\Authentication\BackendUserAuthentication $backendUser */
 		$backendUser = $GLOBALS['BE_USER'];
 
 		if (

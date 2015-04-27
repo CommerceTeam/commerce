@@ -199,8 +199,10 @@ class Tx_Commerce_Controller_OrdersModuleController extends \TYPO3\CMS\Recordlis
 
 			// If there is access to the page, then render the list contents and set up the document template object:
 		if ($access) {
-				// Deleting records...:
-				// Has not to do with the clipboard but is simply the delete action. The clipboard object is used to clean up the submitted entries to only the selected table.
+			// Deleting records...:
+			// Has not to do with the clipboard but is simply the delete
+			// action. The clipboard object is used to clean up the
+			// submitted entries to only the selected table.
 			if ($this->cmd == 'delete') {
 				$items = $dblist->clipObj->cleanUpCBC(GeneralUtility::_POST('CBC'), $this->cmd_table, 1);
 				if (count($items)) {
@@ -209,8 +211,8 @@ class Tx_Commerce_Controller_OrdersModuleController extends \TYPO3\CMS\Recordlis
 						$iKParts = explode('|', $iK);
 						$cmd[$iKParts[0]][$iKParts[1]]['delete'] = 1;
 					}
-					/** @var t3lib_TCEmain $tce */
-					$tce = GeneralUtility::makeInstance('t3lib_TCEmain');
+					/** @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce */
+					$tce = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
 					$tce->stripslashes_values = 0;
 					$tce->start(array(), $cmd);
 					$tce->process_cmdmap();
@@ -394,7 +396,7 @@ class Tx_Commerce_Controller_OrdersModuleController extends \TYPO3\CMS\Recordlis
 	 * @return array all available buttons as an assoc. array
 	 */
 	protected function getHeaderButtons($buttons) {
-		/** @var t3lib_beUserAuth $backendUser */
+		/** @var \TYPO3\CMS\Core\Authentication\BackendUserAuthentication $backendUser */
 		$backendUser = $GLOBALS['BE_USER'];
 		/** @var language $language */
 		$language = $GLOBALS['LANG'];
@@ -416,7 +418,7 @@ class Tx_Commerce_Controller_OrdersModuleController extends \TYPO3\CMS\Recordlis
 			$href = $GLOBALS['BACK_PATH'] . 'db_list.php?id=' . $this->pageinfo['uid'] . '&returnUrl=' .
 				rawurlencode(GeneralUtility::getIndpEnv('REQUEST_URI'));
 			$buttons['record_list'] = '<a href="' . htmlspecialchars($href) . '">' .
-				t3lib_iconWorks::getSpriteIcon(
+				\TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon(
 					'apps-filetree-folder-list',
 					array('title' => $language->sL('LLL:EXT:lang/locallang_core.php:labels.showList', 1))
 				) . '</a>';

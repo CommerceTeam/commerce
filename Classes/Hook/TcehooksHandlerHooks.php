@@ -65,7 +65,7 @@ class Tx_Commerce_Hook_TcehooksHandlerHooks {
 
 	/**
 	 * processDatamap_postProcessFieldArray()
-	 * this function is called by the Hook in tce from class.t3lib_tcemain.php
+	 * this function is called by the Hook in tce from DataHandler.php
 	 * after processing insert & update database operations
 	 *
 	 * @param string $status update or new
@@ -87,7 +87,7 @@ class Tx_Commerce_Hook_TcehooksHandlerHooks {
 
 	/**
 	 * processDatamap_afterDatabaseOperations()
-	 * this function is called by the Hook in tce from class.t3lib_tcemain.php
+	 * this function is called by the Hook in tce from class.DataHandler.php
 	 * after processing insert & update database operations
 	 *
 	 * @param string $status update or new
@@ -116,7 +116,7 @@ class Tx_Commerce_Hook_TcehooksHandlerHooks {
 			&& $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['simpleMode']
 			&& ($articleId = $pObj->substNEWwithIDs[$id])
 		) {
-			/** @var t3lib_db $database */
+			/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 			$database = $GLOBALS['TYPO3_DB'];
 
 			// Now check, if the parent Product is already lokalised, so creat Article in
@@ -155,7 +155,7 @@ class Tx_Commerce_Hook_TcehooksHandlerHooks {
 	}
 
 	/**
-	 * this function is called by the Hook in tce from class.t3lib_tcemain.php
+	 * this function is called by the Hook in tce from class.DataHandler.php
 	 * before processing commands
 	 *
 	 * @param string &$command reference to: move,copy,version,delete or undelete
@@ -234,7 +234,7 @@ class Tx_Commerce_Hook_TcehooksHandlerHooks {
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use Tx_Commerce_Hook_TcehooksHandlerHooks::notifyFeuserObserver instead
 	 */
 	protected function notify_feuserObserver($status, $table, $id, &$fieldArray, &$pObj) {
-		t3lib_div::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
 		$this->notifyFeuserObserver($status, $table, $id, $fieldArray, $pObj);
 	}
 
@@ -270,7 +270,7 @@ class Tx_Commerce_Hook_TcehooksHandlerHooks {
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use Tx_Commerce_Hook_TcehooksHandlerHooks::notifyAddressObserver instead
 	 */
 	protected function notify_addressObserver($status, $table, $id, &$fieldArray, &$pObj) {
-		t3lib_div::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
 		$this->notifyAddressObserver($status, $table, $id, $fieldArray, $pObj);
 	}
 

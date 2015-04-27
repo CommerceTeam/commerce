@@ -574,7 +574,7 @@ abstract class Tx_Commerce_Tree_Browsetree {
 			return;
 		}
 
-		/** @var t3lib_beUserAuth $backendUser */
+		/** @var \TYPO3\CMS\Core\Authentication\BackendUserAuthentication $backendUser */
 		$backendUser = & $GLOBALS['BE_USER'];
 		$backendUser->uc['browseTrees'][$this->treeName] = serialize($positions);
 		$backendUser->writeUC();

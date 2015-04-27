@@ -436,7 +436,6 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 	 * 	subelements if this flag is set.
 	 * @param boolean $hasChildren The Element is a Bank if this flag is set.
 	 * @return string Image tag with the plus/minus icon.
-	 * @see t3lib_pageTree::PMicon()
 	 */
 	public function PMicon($row, $isLast, $isExpanded, $isBank = FALSE, $hasChildren = FALSE) {
 		if (!is_array($row)) {

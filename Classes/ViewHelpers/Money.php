@@ -69,7 +69,7 @@ class Tx_Commerce_ViewHelpers_Money {
 	 * 	symbol(s) or FALSE if $amount was of the type float
 	 */
 	public static function format($amount, $currency, $withSymbol = TRUE) {
-		/** @var t3lib_db $database */
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
 		if (is_float($amount)) {

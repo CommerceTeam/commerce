@@ -105,9 +105,9 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	 * @return string a HTML-table with the articles
 	 */
 	public function existingArticles($parameter) {
-		/** @var t3lib_beUserAuth $backendUser */
+		/** @var \TYPO3\CMS\Core\Authentication\BackendUserAuthentication $backendUser */
 		$backendUser = $GLOBALS['BE_USER'];
-		/** @var t3lib_db $database */
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
 		$this->uid = (int)$parameter['row']['uid'];
@@ -259,7 +259,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	 * Create a matrix of producible articles
 	 *
 	 * @param array $parameter
-	 * @param t3lib_TCEforms $fObj
+	 * @param \TYPO3\CMS\Backend\Form\FormEngine $fObj
 	 * @return string A HTML-table with checkboxes and all needed stuff
 	 */
 	public function producibleArticles($parameter, $fObj) {
@@ -486,7 +486,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	 * @return void
 	 */
 	public function createArticles($parameter) {
-		/** @var t3lib_db $database */
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
 		if (is_array(GeneralUtility::_GP('createList'))) {
@@ -533,7 +533,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 						continue;
 					}
 
-					/** @var t3lib_db $database */
+					/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 					$database = $GLOBALS['TYPO3_DB'];
 
 					$database->exec_UPDATEquery(
@@ -580,7 +580,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	 * @return integer Returns the new articleUid if success
 	 */
 	protected function createArticle($parameter, $key) {
-		/** @var t3lib_db $database */
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
 			// get the create data
@@ -853,7 +853,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	 * the price will be deleted from the article
 	 *
 	 * @param array $parameter
-	 * @param t3lib_TCEforms $fObj
+	 * @param \TYPO3\CMS\Backend\Form\FormEngine $fObj
 	 * @return string
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, this wont get replaced as it was removed from the api
 	 */

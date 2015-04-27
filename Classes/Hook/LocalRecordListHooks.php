@@ -50,7 +50,7 @@ class Tx_Commerce_Hook_LocalRecordListHooks implements \TYPO3\CMS\Recordlist\Rec
 	 * @param string $table the current database table
 	 * @param array $row the current record row
 	 * @param array $cells the default control-icons to get modified
-	 * @param Tx_Commerce_ViewHelpers_CategoryRecordList $parentObject Instance of calling object
+	 * @param Tx_Commerce_ViewHelpers_CategoryRecordList $parentObject calling object
 	 * @return array the modified control-icons
 	 */
 	public function makeControl($table, $row, $cells, &$parentObject) {
@@ -106,7 +106,11 @@ class Tx_Commerce_Hook_LocalRecordListHooks implements \TYPO3\CMS\Recordlist\Rec
 
 					// Clipboard:
 					case '_CLIPBOARD_':
-						if ($parentObject->id && !$GLOBALS['TCA'][$table]['ctrl']['readOnly'] && $GLOBALS['SOBE']->MOD_SETTINGS['bigControlPanel']) {
+						if (
+							$parentObject->id &&
+							!$GLOBALS['TCA'][$table]['ctrl']['readOnly'] &&
+							$GLOBALS['SOBE']->MOD_SETTINGS['bigControlPanel']
+						) {
 							$headerColumns[$fCol] = $language->getLL('moveorderto');
 						} else {
 							$headerColumns[$fCol] = '';
@@ -124,40 +128,43 @@ class Tx_Commerce_Hook_LocalRecordListHooks implements \TYPO3\CMS\Recordlist\Rec
 								&& $parentObject->showNewRecLink($table)
 							) {
 								if ($table == 'tt_content' && $parentObject->newWizards) {
-									//  If mod.web_list.newContentWiz.overrideWithExtension is set, use that extension's create new content wizard instead:
-									$tmpTSc = t3lib_BEfunc::getModTSconfig($parentObject->id, 'mod.web_list');
-									$tmpTSc = $tmpTSc['properties']['newContentWiz.']['overrideWithExtension'];
-									$newContentWizScriptPath = $parentObject->backPath . t3lib_extMgm::isLoaded($tmpTSc) ?
-										(t3lib_extMgm::extRelPath($tmpTSc) . 'mod1/db_new_content_el.php') :
+									// If mod.web_list.newContentWiz.overrideWithExtension is set,
+									// use that extension's create new content wizard instead:
+									$tmpTyposcriptConfig = \TYPO3\CMS\Backend\Utility\BackendUtility::getModTSconfig($parentObject->id, 'mod.web_list');
+									$tmpTyposcriptConfig = $tmpTyposcriptConfig['properties']['newContentWiz.']['overrideWithExtension'];
+									$newContentWizScriptPath =
+										$parentObject->backPath . \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded($tmpTyposcriptConfig) ?
+										(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath($tmpTyposcriptConfig) . 'mod1/db_new_content_el.php') :
 										'sysext/cms/layout/db_new_content_el.php';
 
 									$icon = '<a href="#" onclick="' . htmlspecialchars(
 											'return jumpExt(\'' . $newContentWizScriptPath . '?id=' . $parentObject->id . '\');'
 										) . '" title="' . $language->getLL('new', TRUE) . '">' . ($table == 'pages' ?
-											t3lib_iconWorks::getSpriteIcon('actions-page-new') :
-											t3lib_iconWorks::getSpriteIcon('actions-document-new')) . '</a>';
+											\TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon('actions-page-new') :
+											\TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon('actions-document-new')) . '</a>';
 								} elseif ($table == 'pages' && $parentObject->newWizards) {
 									$icon = '<a href="' . htmlspecialchars(
 											$parentObject->backPath . 'db_new.php?id=' . $parentObject->id . '&pagesOnly=1&returnUrl=' . rawurlencode(
-												t3lib_div::getIndpEnv('REQUEST_URI')
+												\TYPO3\CMS\Core\Utility\GeneralUtility::getIndpEnv('REQUEST_URI')
 											)
 										) . '" title="' . $language->getLL('new', TRUE) . '">' . ($table == 'pages' ?
-											t3lib_iconWorks::getSpriteIcon('actions-page-new') :
-											t3lib_iconWorks::getSpriteIcon('actions-document-new')) . '</a>';
+											\TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon('actions-page-new') :
+											\TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon('actions-document-new')) . '</a>';
 								} else {
 									$params = '&edit[' . $table . '][' . $parentObject->id . ']=new';
 									if ($table == 'pages_language_overlay') {
 										$params .= '&overrideVals[pages_language_overlay][doktype]=' . (int) $parentObject->pageRow['doktype'];
 									}
 									$icon = '<a href="#" onclick="' . htmlspecialchars(
-											t3lib_BEfunc::editOnClick($params, $parentObject->backPath, -1)
+											\TYPO3\CMS\Backend\Utility\BackendUtility::editOnClick($params, $parentObject->backPath, -1)
 										) . '" title="' . $language->getLL('new', TRUE) . '">' . ($table == 'pages' ?
-											t3lib_iconWorks::getSpriteIcon('actions-page-new') :
-											t3lib_iconWorks::getSpriteIcon('actions-document-new')) . '</a>';
+											\TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon('actions-page-new') :
+											\TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon('actions-document-new')) . '</a>';
 								}
 							}
 
-							// If the table can be edited, add link for editing ALL SHOWN fields for all listed records:
+							// If the table can be edited, add link for editing
+							// ALL SHOWN fields for all listed records:
 							if ($permsEdit && $parentObject->table && is_array($currentIdList)) {
 								$editIdList = implode(',', $currentIdList);
 								if ($parentObject->clipNumPane()) {
@@ -167,10 +174,10 @@ class Tx_Commerce_Hook_LocalRecordListHooks implements \TYPO3\CMS\Recordlist\Rec
 										',', $parentObject->fieldArray
 									) . '&disHelp=1';
 								$icon .= '<a href="#" onclick="' . htmlspecialchars(
-										t3lib_BEfunc::editOnClick($params, $parentObject->backPath, -1)
+										\TYPO3\CMS\Backend\Utility\BackendUtility::editOnClick($params, $parentObject->backPath, -1)
 									) . '" title="' . $language->getLL(
 										'editShownColumns', TRUE
-									) . '">' . t3lib_iconWorks::getSpriteIcon('actions-document-open') . '</a>';
+									) . '">' . \TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon('actions-document-open') . '</a>';
 							}
 							// add an empty entry, so column count fits again after moving this into $icon
 							$headerColumns[$fCol] = '&nbsp;';
@@ -195,10 +202,11 @@ class Tx_Commerce_Hook_LocalRecordListHooks implements \TYPO3\CMS\Recordlist\Rec
 										$parentObject->listURL('', -1) . '&duplicateField=' . $fCol
 									) . '" title="' . $language->getLL(
 										'clip_duplicates', TRUE
-									) . '">' . t3lib_iconWorks::getSpriteIcon('actions-document-duplicates-select') . '</a>';
+									) . '">' . \TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon('actions-document-duplicates-select') . '</a>';
 							}
 
-							// If the table can be edited, add link for editing THIS field for all listed records:
+							// If the table can be edited, add link for
+							// editing THIS field for all listed records:
 							if (!$GLOBALS['TCA'][$table]['ctrl']['readOnly'] && $permsEdit && $GLOBALS['TCA'][$table]['columns'][$fCol]) {
 								$editIdList = implode(',', $currentIdList);
 								if ($parentObject->clipNumPane()) {
@@ -207,23 +215,22 @@ class Tx_Commerce_Hook_LocalRecordListHooks implements \TYPO3\CMS\Recordlist\Rec
 								$params = '&edit[' . $table . '][' . $editIdList . ']=edit&columnsOnly=' . $fCol . '&disHelp=1';
 								$iTitle = sprintf(
 									$language->getLL('editThisColumn'),
-									rtrim(trim($language->sL(t3lib_BEfunc::getItemLabel($table, $fCol))), ':')
+									rtrim(trim($language->sL(\TYPO3\CMS\Backend\Utility\BackendUtility::getItemLabel($table, $fCol))), ':')
 								);
 								$headerColumns[$fCol] .= '<a href="#" onclick="' . htmlspecialchars(
-										t3lib_BEfunc::editOnClick($params, $parentObject->backPath, -1)
-									) . '" title="' . htmlspecialchars($iTitle) . '">' . t3lib_iconWorks::getSpriteIcon(
+										\TYPO3\CMS\Backend\Utility\BackendUtility::editOnClick($params, $parentObject->backPath, -1)
+									) . '" title="' . htmlspecialchars($iTitle) . '">' . \TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon(
 										'actions-document-open'
 									) . '</a>';
 							}
 						}
 						$headerColumns[$fCol] .= $parentObject->addSortLink(
 							$language->sL(
-								t3lib_BEfunc::getItemLabel(
+								\TYPO3\CMS\Backend\Utility\BackendUtility::getItemLabel(
 									$table, $fCol, 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_orders.xml:|'
 								)
 							), $fCol, $table
 						);
-						break;
 				}
 			}
 		}

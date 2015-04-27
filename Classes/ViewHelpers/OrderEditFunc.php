@@ -91,7 +91,7 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 	 * @return string HTML-Content
 	 */
 	public function orderArticles($PA) {
-		/** @var t3lib_db $database */
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = $GLOBALS['TYPO3_DB'];
 		/** @var language $language */
 		$language = $GLOBALS['LANG'];
@@ -344,7 +344,7 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 		}
 
 		if (in_array($orderPid, $rootlinePIDs)) {
-			/** @var t3lib_db $database */
+			/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 			$database = $GLOBALS['TYPO3_DB'];
 
 			$result = $database->exec_SELECTquery('pid ', 'pages', 'uid = ' . $myPID . BackendUtility::deleteClause('pages'), '', 'sorting' );
@@ -367,7 +367,7 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 	 * Renders the invoice adresss
 	 *
 	 * @param array $PA
-	 * @param t3lib_TCEforms $fobj
+	 * @param \TYPO3\CMS\Backend\Form\FormEngine $fobj
 	 * @return string HTML-Content
 	 */
 	public function invoiceAddress($PA, $fobj) {
@@ -381,7 +381,7 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 	 * Renders the crdate
 	 *
 	 * @param array $PA
-	 * @param t3lib_TCEforms $fObj
+	 * @param \TYPO3\CMS\Backend\Form\FormEngine $fObj
 	 * @return string HTML-Content
 	 */
 	public function crdate($PA, $fObj) {
@@ -398,7 +398,7 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 	 * Renders the invoice adresss
 	 *
 	 * @param array $PA
-	 * @param t3lib_TCEforms $fobj
+	 * @param \TYPO3\CMS\Backend\Form\FormEngine $fobj
 	 * @return string HTML-Content
 	 */
 	public function deliveryAddress($PA, $fobj) {
@@ -413,7 +413,7 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 	 * Renders an address block
 	 *
 	 * @param array $PA
-	 * @param t3lib_TCEforms $fobj
+	 * @param \TYPO3\CMS\Backend\Form\FormEngine $fobj
 	 * @param string $table
 	 * @param integer $uid Record UID
 	 * @return string HTML-Content
@@ -500,7 +500,7 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 	 * @return string
 	 */
 	public function feUserOrders() {
-		/** @var t3lib_beUserAuth $backendUser */
+		/** @var \TYPO3\CMS\Core\Authentication\BackendUserAuthentication $backendUser */
 		$backendUser = $GLOBALS['BE_USER'];
 
 		/** @var Tx_Commerce_ViewHelpers_OrderRecordlist $dblist */
@@ -583,11 +583,11 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 	}
 
 	/**
-	 * Invoice Adresss
-	 * Renders the invoice adresss
+	 * Invoice Address
+	 * Renders the invoice address
 	 *
 	 * @param array $PA
-	 * @param t3lib_TCEforms $fobj
+	 * @param \TYPO3\CMS\Backend\Form\FormEngine $fobj
 	 * @return string HTML-Content
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use Tx_Commerce_ViewHelpers_OrderEditFunc::invoiceAddress instead
 	 */
@@ -597,11 +597,11 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 	}
 
 	/**
-	 * Invoice Adresss
-	 * Renders the invoice adresss
+	 * Invoice Address
+	 * Renders the invoice address
 	 *
 	 * @param array $PA
-	 * @param t3lib_TCEforms $fobj
+	 * @param \TYPO3\CMS\Backend\Form\FormEngine $fobj
 	 * @return string HTML-Content
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use Tx_Commerce_ViewHelpers_OrderEditFunc::deliveryAddress instead
 	 */
@@ -612,7 +612,7 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 
 	/**
 	 * @param array $PA
-	 * @param t3lib_TCEforms $fobj
+	 * @param \TYPO3\CMS\Backend\Form\FormEngine $fobj
 	 * @param string $table
 	 * @param integer $uid
 	 * @return string

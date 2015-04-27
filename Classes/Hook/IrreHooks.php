@@ -30,7 +30,7 @@
  */
 class Tx_Commerce_Hook_IrreHooks implements \TYPO3\CMS\Backend\Form\Element\InlineElementHookInterface {
 	/**
-	 * @var t3lib_TCEforms_inline
+	 * @var \TYPO3\CMS\Backend\Form\Element\InlineElement
 	 */
 	protected $parentObject;
 
@@ -51,7 +51,8 @@ class Tx_Commerce_Hook_IrreHooks implements \TYPO3\CMS\Backend\Form\Element\Inli
 	/**
 	 * Initializes this hook object.
 	 *
-	 * @param t3lib_TCEforms_inline $parentObject: The calling t3lib_TCEforms_inline object.
+	 * @param \TYPO3\CMS\Backend\Form\Element\InlineElement $parentObject:
+	 * 	The calling \TYPO3\CMS\Backend\Form\Element\InlineElement object.
 	 * @return void
 	 */
 	public function init(&$parentObject) {
@@ -70,7 +71,7 @@ class Tx_Commerce_Hook_IrreHooks implements \TYPO3\CMS\Backend\Form\Element\Inli
 	 * @return void
 	 */
 	public function renderForeignRecordHeaderControl_preProcess($parentUid, $foreignTable, array $childRecord, array $childConfig,
-		$isVirtual, array &$enabledControls) {
+			$isVirtual, array &$enabledControls) {
 		if ($this->extconf['simpleMode'] == 1 && $foreignTable == 'tx_commerce_articles' && $parentUid == $this->extconf['deliveryID']) {
 			$enabledControls = array('new' => TRUE, 'hide' => TRUE, 'delete' => TRUE);
 		} elseif ($this->extconf['simpleMode'] == 1 && $foreignTable == 'tx_commerce_articles') {
@@ -91,7 +92,8 @@ class Tx_Commerce_Hook_IrreHooks implements \TYPO3\CMS\Backend\Form\Element\Inli
 	 * @param array &$controlItems: (reference) Associative array with the currently available control items
 	 * @return void
 	 */
-	public function renderForeignRecordHeaderControl_postProcess($parentUid, $foreignTable, array $childRecord, array $childConfig, $isVirtual, array &$controlItems) {
+	public function renderForeignRecordHeaderControl_postProcess($parentUid, $foreignTable, array $childRecord, array $childConfig,
+			$isVirtual, array &$controlItems) {
 		// registered empty to satisfy interface
 	}
 }

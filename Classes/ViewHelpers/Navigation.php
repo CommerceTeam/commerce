@@ -39,7 +39,7 @@ class Tx_Commerce_ViewHelpers_Navigation {
 	public $prefixId = 'tx_commerce_pi1';
 
 	/**
-	 * @var tslib_cObj
+	 * @var \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController
 	 */
 	public $cObj;
 
@@ -107,10 +107,8 @@ class Tx_Commerce_ViewHelpers_Navigation {
 
 	/**
 	 * @Var Translation Mode for getRecordOverlay
-	 * @see class.t3lib_page.php
-	 * @acces private
 	 */
-	public $translationMode = 'hideNonTranslated';
+	private $translationMode = 'hideNonTranslated';
 
 	/**
 	 * Default Menue Items States order by the defined Order
@@ -554,7 +552,7 @@ class Tx_Commerce_ViewHelpers_Navigation {
 	 */
 	public function makeArrayPostRender($uidPage, $mainTable, $tableMm, $tableSubMain, $tableSubMm, $uidRoot, $mDepth = 1,
 		$path = 0, $maxLevel = PHP_INT_MAX) {
-		/** @var t3lib_db $database */
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
 		$treeList = array();
@@ -742,7 +740,7 @@ class Tx_Commerce_ViewHelpers_Navigation {
 	 */
 	public function makeSubChildArrayPostRender($pageUid, $mainTable, $mmTable, $categoryUid, $mDepth = 1, $path = 0,
 			$manufacturerUid = FALSE) {
-		/** @var t3lib_db $database */
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
 		$treeList = array();
@@ -979,7 +977,7 @@ class Tx_Commerce_ViewHelpers_Navigation {
 	 * @return array
 	 */
 	public function getDataRow($uid, $tableName) {
-		/** @var t3lib_db $database */
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
 		if ($uid == '' or $tableName == '') {
@@ -1032,7 +1030,7 @@ class Tx_Commerce_ViewHelpers_Navigation {
 			return 2;
 		}
 
-		/** @var t3lib_db $database */
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = $GLOBALS['TYPO3_DB'];
 		$res = $database->exec_SELECTquery('*', $tableMm, 'uid_foreign = ' . (int) $uid, '', '', 1);
 
@@ -1056,7 +1054,7 @@ class Tx_Commerce_ViewHelpers_Navigation {
 			return 2;
 		}
 
-		/** @var t3lib_db $database */
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = $GLOBALS['TYPO3_DB'];
 		$res = $database->exec_SELECTquery('*', $tableMm, 'uid_foreign = ' . (int) $uid, '', '', 1);
 
@@ -1260,7 +1258,7 @@ class Tx_Commerce_ViewHelpers_Navigation {
 	/**
 	 * Stores the string value $data in the 'cache_hash' table with the hash
 	 * key, $hash, and visual/symbolic identification, $ident
-	 * IDENTICAL to the function by same name found in t3lib_page:
+	 * IDENTICAL to the function by same name found in PageTreeView:
 	 * Usage: 2
 	 *
 	 * @param string $hash 32 bit hash string (eg. a md5 hash of a serialized
@@ -1279,7 +1277,7 @@ class Tx_Commerce_ViewHelpers_Navigation {
 			'tstamp' => time()
 		);
 
-		/** @var t3lib_db $database */
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
 		$database->exec_DELETEquery('cache_hash', 'hash=' . $database->fullQuoteStr($hash, 'cache_hash'));
@@ -1288,7 +1286,7 @@ class Tx_Commerce_ViewHelpers_Navigation {
 
 	/**
 	 * Retrieves the string content stored with hash key, $hash, in cache_hash
-	 * IDENTICAL to the function by same name found in t3lib_page:
+	 * IDENTICAL to the function by same name found in PageTreeView:
 	 * Usage: 2
 	 *
 	 * @param string $hash key, 32 bytes hex
@@ -1298,7 +1296,7 @@ class Tx_Commerce_ViewHelpers_Navigation {
 	 * @return string
 	 */
 	public function getHash($hash, $expTime = 0) {
-		/** @var t3lib_db $database */
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
 		// if expTime is not set, the hash will never expire
@@ -1392,7 +1390,7 @@ class Tx_Commerce_ViewHelpers_Navigation {
 	 * @return array|boolean
 	 */
 	public function getManufacturerAsCategory($pid, $uidPage, $tableMm, $tableSubMain, $tableSubMm, $categoryUid, $mDepth, $path) {
-		/** @var t3lib_db $database */
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
 		$result = $database->exec_SELECTquery('*', 'tx_commerce_products_categories_mm', 'uid_foreign = ' . (int) $categoryUid);

@@ -28,7 +28,7 @@
 /**
  * Class Tx_Commerce_Task_StatisticTaskAdditionalFieldProvider
  */
-class Tx_Commerce_Task_StatisticTaskAdditionalFieldProvider implements tx_scheduler_AdditionalFieldProvider {
+class Tx_Commerce_Task_StatisticTaskAdditionalFieldProvider implements \TYPO3\CMS\Scheduler\AdditionalFieldProviderInterface {
 	/**
 	 * @var array
 	 */
@@ -48,10 +48,10 @@ class Tx_Commerce_Task_StatisticTaskAdditionalFieldProvider implements tx_schedu
 	 * @param array &$taskInfo Reference to the array containing the info used
 	 * @param Tx_Commerce_Task_StatisticTask $task When editing, reference to
 	 * 	the current task object. Null when adding.
-	 * @param tx_scheduler_Module $parentObject Reference to the calling object
+	 * @param \TYPO3\CMS\Scheduler\Controller\SchedulerModuleController $parentObject Reference to the calling object
 	 * @return array containg all the information pertaining to the additional fields
 	 */
-	public function getAdditionalFields(array &$taskInfo, $task, tx_scheduler_Module $parentObject) {
+	public function getAdditionalFields(array &$taskInfo, $task, \TYPO3\CMS\Scheduler\Controller\SchedulerModuleController $parentObject) {
 		$this->submittedData = $taskInfo;
 		$uid = $this->getTaskUid();
 
@@ -91,10 +91,10 @@ class Tx_Commerce_Task_StatisticTaskAdditionalFieldProvider implements tx_schedu
 	 * Checks that all selected backends exist in available backend list
 	 *
 	 * @param array $submittedData Reference to the array containing the data submitted by the user
-	 * @param tx_scheduler_Module $parentObject Reference to the calling object (Scheduler's BE module)
+	 * @param \TYPO3\CMS\Scheduler\Controller\SchedulerModuleController $parentObject Reference to the calling object (Scheduler's BE module)
 	 * @return boolean True if validation was ok (or selected class is not relevant), false otherwise
 	 */
-	public function validateAdditionalFields(array &$submittedData, tx_scheduler_Module $parentObject) {
+	public function validateAdditionalFields(array &$submittedData, \TYPO3\CMS\Scheduler\Controller\SchedulerModuleController $parentObject) {
 		$this->submittedData = $submittedData;
 		$uid = $this->getTaskUid();
 		$validData = TRUE;
@@ -110,10 +110,10 @@ class Tx_Commerce_Task_StatisticTaskAdditionalFieldProvider implements tx_schedu
 	 * Save selected backends in task object
 	 *
 	 * @param array $submittedData Contains data submitted by the user
-	 * @param tx_scheduler_Task $task Reference to the current task object
+	 * @param \TYPO3\CMS\Scheduler\Task\AbstractTask $task Reference to the current task object
 	 * @return void
 	 */
-	public function saveAdditionalFields(array $submittedData, tx_scheduler_Task $task) {
+	public function saveAdditionalFields(array $submittedData, \TYPO3\CMS\Scheduler\Task\AbstractTask $task) {
 		$this->submittedData = $submittedData;
 		$uid = $this->getTaskUid();
 
@@ -150,10 +150,3 @@ class Tx_Commerce_Task_StatisticTaskAdditionalFieldProvider implements tx_schedu
 		return $this->submittedData['uid'];
 	}
 }
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Task/StatisticTaskAdditionalFieldProvider.php']) {
-	/** @noinspection PhpIncludeInspection */
-	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Task/StatisticTaskAdditionalFieldProvider.php']);
-}
-
-?>

@@ -42,7 +42,7 @@ class Tx_Commerce_Utility_BackendUtility {
 	 * @return array An array of UIDs of all categories for this product
 	 */
 	public function getCategoriesForProductFromDb($pUid) {
-		/** @var t3lib_db $database */
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
 			// get categories that are directly stored in the product dataset
@@ -63,7 +63,7 @@ class Tx_Commerce_Utility_BackendUtility {
 	 * @return array
 	 */
 	public function getProductParentCategories($uid) {
-		/** @var t3lib_db $database */
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
 		$pCategories = $database->exec_SELECTquery('uid_foreign', 'tx_commerce_products_categories_mm', 'uid_local = ' . (int) $uid);
@@ -98,7 +98,7 @@ class Tx_Commerce_Utility_BackendUtility {
 			return array();
 		}
 
-		/** @var t3lib_db $database */
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = & $GLOBALS['TYPO3_DB'];
 
 			// get all attributes for the product
@@ -178,7 +178,7 @@ class Tx_Commerce_Utility_BackendUtility {
 	 */
 	public function getParentCategories($cUid, &$cUidList, $dontAdd = 0, $excludeUid = 0, $recursive = TRUE) {
 		if (strlen((string) $cUid) > 0) {
-			/** @var t3lib_db $database */
+			/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 			$database = $GLOBALS['TYPO3_DB'];
 
 			// add the submitted uid to the list if it is bigger
@@ -229,7 +229,7 @@ class Tx_Commerce_Utility_BackendUtility {
 		// add the submitted uid to the list if it is bigger
 		// than 0 and not already in the list
 		if ((int) $cUid && $cUid != $excludeUid) {
-			/** @var t3lib_db $database */
+			/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 			$database = $GLOBALS['TYPO3_DB'];
 
 			if (!in_array($cUid, $categoryUidList) && $cUid != $dontAdd) {
@@ -285,7 +285,7 @@ class Tx_Commerce_Utility_BackendUtility {
 	 * @return array An associative array with the data of the category
 	 */
 	public function getCategoryData($cUid, $select = '*', $groupBy = '', $orderBy = '') {
-		/** @var t3lib_db $database */
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
 		$result = $database->exec_SELECTquery(
@@ -338,7 +338,7 @@ class Tx_Commerce_Utility_BackendUtility {
 	 * @return array of attributes
 	 */
 	public function getAttributesForCategory($categoryUid, $correlationtype = NULL, $excludeAttributes = NULL) {
-		/** @var t3lib_db $database */
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
 			// build the basic query
@@ -416,7 +416,7 @@ class Tx_Commerce_Utility_BackendUtility {
 	 * @return array associative array with the attributeData
 	 */
 	public function getAttributeData($aUid, $select = '*') {
-		/** @var t3lib_db $database */
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = $GLOBALS['TYPO3_DB'];
 		return $database->exec_SELECTgetSingleRow($select, 'tx_commerce_attributes', 'uid = ' . (int) $aUid);
 	}
@@ -441,7 +441,7 @@ class Tx_Commerce_Utility_BackendUtility {
 	 * 	unit of the attribute
 	 */
 	public function getAttributeValue($pUid, $aUid, $relationTable, $relationData = NULL, $attributeData = NULL) {
-		/** @var t3lib_db $database */
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
 		if ($relationData == NULL || $attributeData == NULL) {
@@ -498,7 +498,7 @@ class Tx_Commerce_Utility_BackendUtility {
 	 * @return integer The correlationtype
 	 */
 	public function getCtForAttributeOfProduct($aUid, $pUid) {
-		/** @var t3lib_db $database */
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = $GLOBALS['TYPO3_DB'];
 		$uidCorrelationType = $database->exec_SELECTgetSingleRow(
 			'uid_correlationtype',
@@ -520,7 +520,7 @@ class Tx_Commerce_Utility_BackendUtility {
 	 * @return array of article datasets as assoc array or false if nothing was found
 	 */
 	public function getArticlesOfProduct($pUid, $additionalWhere = '', $orderBy = '') {
-		/** @var t3lib_db $database */
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
 		$result = (array) $database->exec_SELECTgetRows(
@@ -543,7 +543,7 @@ class Tx_Commerce_Utility_BackendUtility {
 	 * @return array of article UIDs, ready to implode for coma separed list
 	 */
 	public static function getArticlesOfProductAsUidList($pUid, $additionalWhere = '', $orderBy = '') {
-		/** @var t3lib_db $database */
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
 		$where = 'uid_product = ' . (int) $pUid . ' AND deleted = 0';
@@ -573,7 +573,7 @@ class Tx_Commerce_Utility_BackendUtility {
 	 * 	UID as integer, otherwise it returns an associative array of the dataset
 	 */
 	public function getProductOfArticle($aUid, $getProductData = '*') {
-		/** @var t3lib_db $database */
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
 		$where = 'uid = ' . (int) $aUid . ' AND deleted=0';
@@ -630,7 +630,7 @@ class Tx_Commerce_Utility_BackendUtility {
 			$where .= ' AND uid_foreign NOT IN (' . implode(',', $eAttributes) . ')';
 		}
 
-		/** @var t3lib_db $database */
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
 		// execute the query
@@ -652,7 +652,7 @@ class Tx_Commerce_Utility_BackendUtility {
 	 * @return string
 	 */
 	public function getArticleHash($aUid, $fullAttributeList) {
-		/** @var t3lib_db $database */
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
 		$hashData = array();
@@ -697,7 +697,7 @@ class Tx_Commerce_Utility_BackendUtility {
 
 		$hash = $this->getArticleHash($aUid, $fullAttributeList);
 
-		/** @var t3lib_db $database */
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
 			// update the article
@@ -822,7 +822,7 @@ class Tx_Commerce_Utility_BackendUtility {
 		$delWhere = array();
 		$counter = 1;
 
-		/** @var t3lib_db $database */
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
 		if (is_array($relationData)) {
@@ -878,7 +878,7 @@ class Tx_Commerce_Utility_BackendUtility {
 	 * @return array with correlation type entities
 	 */
 	public function getAllCorrelationTypes() {
-		/** @var t3lib_db $database */
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
 		$ctRes = $database->exec_SELECTquery('uid', 'tx_commerce_attribute_correlationtypes', '1');
@@ -908,7 +908,7 @@ class Tx_Commerce_Utility_BackendUtility {
 	 * @return void
 	 */
 	public function updateArticleXML($articleRelations, $add = FALSE, $articleUid = NULL, $productUid = NULL) {
-		/** @var t3lib_db $database */
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
 		$xmlData = array();
@@ -997,7 +997,7 @@ class Tx_Commerce_Utility_BackendUtility {
 	 * @return array array($xmlField => $xmlData)
 	 */
 	public function updateXML($xmlField, $table, $uid, $type, $ctList, $rebuild = FALSE) {
-		/** @var t3lib_db $database */
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
 		$xmlDataResult = $database->exec_SELECTquery($xmlField, $table, 'uid=' . (int) $uid);
@@ -1150,7 +1150,7 @@ class Tx_Commerce_Utility_BackendUtility {
 	 * @return array with the entities of the found products
 	 */
 	public function getProductsOfCategory($categoryUid) {
-		/** @var t3lib_db $database */
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
 		$result = (array) $database->exec_SELECTgetRows(
@@ -1273,7 +1273,7 @@ class Tx_Commerce_Utility_BackendUtility {
 			$prep .= '- ';
 		}
 
-		/** @var t3lib_db $database */
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
 		$result = $database->exec_SELECTquery(
@@ -1311,7 +1311,7 @@ class Tx_Commerce_Utility_BackendUtility {
 	 * @return boolean Status of method
 	 */
 	public function updatePriceXMLFromDatabase($articleUid) {
-		/** @var t3lib_db $database */
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
 		$res = $database->exec_SELECTquery(
@@ -1375,7 +1375,7 @@ class Tx_Commerce_Utility_BackendUtility {
 	public function fix_product_atributte($productUid = 0) {
 		GeneralUtility::logDeprecatedFunction();
 		if ($productUid > 0) {
-			/** @var t3lib_db $database */
+			/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 			$database = $GLOBALS['TYPO3_DB'];
 
 			$mmTable = 'tx_commerce_products_attributes_mm';
@@ -1441,7 +1441,7 @@ class Tx_Commerce_Utility_BackendUtility {
 			return FALSE;
 		}
 
-		/** @var t3lib_db $database */
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
 		if (!$copy) {
@@ -1505,7 +1505,7 @@ class Tx_Commerce_Utility_BackendUtility {
 			return FALSE;
 		}
 
-		/** @var t3lib_db $database */
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
 		if (!$copy) {
@@ -1541,9 +1541,9 @@ class Tx_Commerce_Utility_BackendUtility {
 	 * @return integer UID of the new article or false on error
 	 */
 	public function copyArticle($uid, $uidProduct, $locale = array()) {
-		/** @var t3lib_beUserAuth $backendUser */
+		/** @var \TYPO3\CMS\Core\Authentication\BackendUserAuthentication $backendUser */
 		$backendUser = $GLOBALS['BE_USER'];
-		/** @var t3lib_db $database */
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
 		// check params
@@ -1581,8 +1581,8 @@ class Tx_Commerce_Utility_BackendUtility {
 		$uidLast = $row['uid'];
 
 			// init tce
-		/** @var t3lib_TCEmain $tce */
-		$tce = GeneralUtility::makeInstance('t3lib_TCEmain');
+		/** @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce */
+		$tce = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
 		$tce->stripslashes_values = 0;
 
 		$tcaDefaultOverride = $backendUser->getTSConfigProp('TCAdefaults');
@@ -1649,9 +1649,9 @@ class Tx_Commerce_Utility_BackendUtility {
 	 * @return boolean
 	 */
 	public function copyPrices($uidFrom, $uidTo) {
-		/** @var t3lib_beUserAuth $backendUser */
+		/** @var \TYPO3\CMS\Core\Authentication\BackendUserAuthentication $backendUser */
 		$backendUser = $GLOBALS['BE_USER'];
-		/** @var t3lib_db $database */
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
 			// select all existing prices of the article
@@ -1660,8 +1660,8 @@ class Tx_Commerce_Utility_BackendUtility {
 		$newUid = 0;
 		while (($row = $database->sql_fetch_assoc($res))) {
 				// copy them to the new article
-			/** @var t3lib_TCEmain $tce */
-			$tce = GeneralUtility::makeInstance('t3lib_TCEmain');
+			/** @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce */
+			$tce = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
 			$tce->stripslashes_values = 0;
 
 			$TCAdefaultOverride = $backendUser->getTSConfigProp('TCAdefaults');
@@ -1700,7 +1700,7 @@ class Tx_Commerce_Utility_BackendUtility {
 	 * @return boolean	Success
 	 */
 	public function overwriteArticleAttributes($uidFrom, $uidTo, $loc = 0) {
-		/** @var t3lib_db $database */
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = $GLOBALS['TYPO3_DB'];
 			// delete existing attributes
 		$table = 'tx_commerce_articles_article_attributes_mm';
@@ -1808,9 +1808,9 @@ class Tx_Commerce_Utility_BackendUtility {
 			}
 		}
 
-		/** @var t3lib_beUserAuth $backendUser */
+		/** @var \TYPO3\CMS\Core\Authentication\BackendUserAuthentication $backendUser */
 		$backendUser = $GLOBALS['BE_USER'];
-		/** @var t3lib_db $database */
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
 		if ($sorting == 0) {
@@ -1831,8 +1831,8 @@ class Tx_Commerce_Utility_BackendUtility {
 		}
 
 			// init tce
-		/** @var t3lib_TCEmain $tce */
-		$tce = GeneralUtility::makeInstance('t3lib_TCEmain');
+		/** @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce */
+		$tce = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
 		$tce->stripslashes_values = 0;
 			// set workspace bypass if requested
 		$tce->bypassWorkspaceRestrictions = $ignoreWS;
@@ -1904,9 +1904,9 @@ class Tx_Commerce_Utility_BackendUtility {
 			return FALSE;
 		}
 
-		/** @var t3lib_beUserAuth $backendUser */
+		/** @var \TYPO3\CMS\Core\Authentication\BackendUserAuthentication $backendUser */
 		$backendUser = $GLOBALS['BE_USER'];
-		/** @var t3lib_db $database */
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
 		if ($GLOBALS['TCA'][$table] && $uidCopied) {
@@ -1958,8 +1958,8 @@ class Tx_Commerce_Utility_BackendUtility {
 			$data[$table][$newUid] = $rec[0];
 
 				// init tce
-			/** @var t3lib_TCEmain $tce */
-			$tce = GeneralUtility::makeInstance('t3lib_TCEmain');
+			/** @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce */
+			$tce = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
 			$tce->stripslashes_values = 0;
 				// set workspace bypass if requested
 			$tce->bypassWorkspaceRestrictions = $ignoreWS;
@@ -2006,7 +2006,7 @@ class Tx_Commerce_Utility_BackendUtility {
 	 * @return boolean Success
 	 */
 	public function overwriteLocale($table, $uidCopied, $uidOverwrite, $loc) {
-		/** @var t3lib_beUserAuth $backendUser */
+		/** @var \TYPO3\CMS\Core\Authentication\BackendUserAuthentication $backendUser */
 		$backendUser = $GLOBALS['BE_USER'];
 
 			// check params
@@ -2064,8 +2064,8 @@ class Tx_Commerce_Utility_BackendUtility {
 			$data[$table][$recTo[0]['uid']] = $recFrom[0];
 
 				// init tce
-			/** @var t3lib_TCEmain $tce */
-			$tce = GeneralUtility::makeInstance('t3lib_TCEmain');
+			/** @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce */
+			$tce = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
 			$tce->stripslashes_values = 0;
 
 			$TCAdefaultOverride = $backendUser->getTSConfigProp('TCAdefaults');
@@ -2113,7 +2113,7 @@ class Tx_Commerce_Utility_BackendUtility {
 			return FALSE;
 		}
 
-		/** @var t3lib_db $database */
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
 			// get all locales
@@ -2177,7 +2177,7 @@ class Tx_Commerce_Utility_BackendUtility {
 			}
 		}
 
-		/** @var t3lib_db $database */
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
 		if (0 == $sorting) {
@@ -2199,11 +2199,11 @@ class Tx_Commerce_Utility_BackendUtility {
 		}
 
 			// init tce
-		/** @var t3lib_TCEmain $tce */
-		$tce = GeneralUtility::makeInstance('t3lib_TCEmain');
+		/** @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce */
+		$tce = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
 		$tce->stripslashes_values = 0;
 
-		/** @var t3lib_beUserAuth $backendUser */
+		/** @var \TYPO3\CMS\Core\Authentication\BackendUserAuthentication $backendUser */
 		$backendUser = $GLOBALS['BE_USER'];
 
 		$TCAdefaultOverride = $backendUser->getTSConfigProp('TCAdefaults');
@@ -2275,7 +2275,7 @@ class Tx_Commerce_Utility_BackendUtility {
 			return FALSE;
 		}
 
-		/** @var t3lib_db $database */
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
 			// select current perms
@@ -2310,7 +2310,7 @@ class Tx_Commerce_Utility_BackendUtility {
 	 * @return integer
 	 */
 	public function getCopyPid($table, $uid) {
-		/** @var t3lib_db $database */
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
 		$res  = $database->exec_SELECTquery(
@@ -2349,7 +2349,7 @@ class Tx_Commerce_Utility_BackendUtility {
 			return FALSE;
 		}
 
-		/** @var t3lib_db $database */
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
 		$res = $database->exec_SELECT_mm_query(
@@ -2391,7 +2391,7 @@ class Tx_Commerce_Utility_BackendUtility {
 			return FALSE;
 		}
 
-		/** @var t3lib_db $database */
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
 		$res = $database->exec_SELECT_mm_query(
@@ -2431,7 +2431,7 @@ class Tx_Commerce_Utility_BackendUtility {
 			return FALSE;
 		}
 
-		/** @var t3lib_db $database */
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
 		$res = $database->exec_SELECTquery('uid', 'tx_commerce_articles', 'deleted = 0 AND uid_product = ' . $prodUidFrom);
@@ -2461,7 +2461,7 @@ class Tx_Commerce_Utility_BackendUtility {
 			return;
 		}
 
-		/** @var t3lib_db $database */
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
 		$mm_table = 'tx_commerce_categories_attributes_mm';
@@ -2500,7 +2500,7 @@ class Tx_Commerce_Utility_BackendUtility {
 	 * @return string Part of where clause. Prefix " AND " to this.
 	 */
 	public static function getCategoryPermsClause($perms) {
-		/** @var t3lib_beUserAuth $backendUser */
+		/** @var \TYPO3\CMS\Core\Authentication\BackendUserAuthentication $backendUser */
 		$backendUser = $GLOBALS['BE_USER'];
 
 		if (is_array($backendUser->user)) {
@@ -2541,7 +2541,7 @@ class Tx_Commerce_Utility_BackendUtility {
 			return FALSE;
 		}
 
-		/** @var t3lib_beUserAuth $backendUser */
+		/** @var \TYPO3\CMS\Core\Authentication\BackendUserAuthentication $backendUser */
 		$backendUser = $GLOBALS['BE_USER'];
 
 			// If User is admin, he may do anything
@@ -2692,7 +2692,7 @@ class Tx_Commerce_Utility_BackendUtility {
 	 * @return array Returns category record if OK, otherwise false.
 	 */
 	public static function readCategoryAccess($id, $perms_clause) {
-		/** @var t3lib_beUserAuth $backendUser */
+		/** @var \TYPO3\CMS\Core\Authentication\BackendUserAuthentication $backendUser */
 		$backendUser = $GLOBALS['BE_USER'];
 
 		if ((string) $id != '') {
@@ -2830,7 +2830,7 @@ class Tx_Commerce_Utility_BackendUtility {
 	 * @see BEgetRootLine
 	 */
 	protected static function getCategoryForRootline($uid, $clause, $workspaceOL) {
-		/** @var t3lib_db $database */
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
 		static $getPageForRootline_cache = array();
@@ -2875,7 +2875,7 @@ class Tx_Commerce_Utility_BackendUtility {
 	 * @return boolean
 	 */
 	public static function checkPermissionsOnCategoryContent($categoryUids, $perms) {
-		/** @var t3lib_beUserAuth $backendUser */
+		/** @var \TYPO3\CMS\Core\Authentication\BackendUserAuthentication $backendUser */
 		$backendUser = $GLOBALS['BE_USER'];
 
 			// admin is allowed to do anything
@@ -2996,11 +2996,11 @@ class Tx_Commerce_Utility_BackendUtility {
 		$datamap = $data;
 
 			// execute
-		/** @var t3lib_TCEmain $tce */
-		$tce = GeneralUtility::makeInstance('t3lib_TCEmain');
+		/** @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce */
+		$tce = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
 		$tce->stripslashes_values = 0;
 
-		/** @var t3lib_beUserAuth $backendUser */
+		/** @var \TYPO3\CMS\Core\Authentication\BackendUserAuthentication $backendUser */
 		$backendUser = $GLOBALS['BE_USER'];
 
 		$TCAdefaultOverride = $backendUser->getTSConfigProp('TCAdefaults');
@@ -3083,11 +3083,11 @@ class Tx_Commerce_Utility_BackendUtility {
 	 * @return array
 	 */
 	public function getOverwriteData($table, $uidFrom, $destPid) {
-		/** @var t3lib_TCEmain $tce */
-		$tce = GeneralUtility::makeInstance('t3lib_TCEmain');
+		/** @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce */
+		$tce = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
 		$tce->stripslashes_values = 0;
 
-		/** @var t3lib_beUserAuth $backendUser */
+		/** @var \TYPO3\CMS\Core\Authentication\BackendUserAuthentication $backendUser */
 		$backendUser = $GLOBALS['BE_USER'];
 
 		$TCAdefaultOverride = $backendUser->getTSConfigProp('TCAdefaults');
@@ -3253,11 +3253,11 @@ class Tx_Commerce_Utility_BackendUtility {
 		$datamap = $data;
 
 			// execute
-		/** @var t3lib_TCEmain $tce */
-		$tce = GeneralUtility::makeInstance('t3lib_TCEmain');
+		/** @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce */
+		$tce = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
 		$tce->stripslashes_values = 0;
 
-		/** @var t3lib_beUserAuth $backendUser */
+		/** @var \TYPO3\CMS\Core\Authentication\BackendUserAuthentication $backendUser */
 		$backendUser = $GLOBALS['BE_USER'];
 
 		$TCAdefaultOverride = $backendUser->getTSConfigProp('TCAdefaults');

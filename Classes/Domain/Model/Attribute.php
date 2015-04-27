@@ -132,10 +132,10 @@ class Tx_Commerce_Domain_Model_Attribute extends Tx_Commerce_Domain_Model_Abstra
 		if ($uid > 0) {
 			$this->uid = $uid;
 			$this->lang_uid = (int) $languageUid;
-			$this->databaseConnection = t3lib_div::makeInstance($this->databaseClass);
+			$this->databaseConnection = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance($this->databaseClass);
 
 			if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_attribute.php']['postinit'])) {
-				t3lib_div::deprecationLog(
+				\TYPO3\CMS\Core\Utility\GeneralUtility::deprecationLog(
 					'
 										hook
 										$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_attribute.php\'][\'postinit\']
@@ -144,7 +144,7 @@ class Tx_Commerce_Domain_Model_Attribute extends Tx_Commerce_Domain_Model_Abstra
 									'
 				);
 				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_attribute.php']['postinit'] as $classRef) {
-					$hookObj = & t3lib_div::getUserObj($classRef);
+					$hookObj = & \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
 					if (method_exists($hookObj, 'postinit')) {
 						$hookObj->postinit($this);
 					}
@@ -152,7 +152,7 @@ class Tx_Commerce_Domain_Model_Attribute extends Tx_Commerce_Domain_Model_Abstra
 			}
 			if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Model/Attribute.php']['postinit'])) {
 				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Model/Attribute.php']['postinit'] as $classRef) {
-					$hookObj = & t3lib_div::getUserObj($classRef);
+					$hookObj = & \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
 					if (method_exists($hookObj, 'postinit')) {
 						$hookObj->postinit($this);
 					}
@@ -180,7 +180,7 @@ class Tx_Commerce_Domain_Model_Attribute extends Tx_Commerce_Domain_Model_Abstra
 			if (($this->attribute_value_uids = $this->databaseConnection->getAttributeValueUids($this->uid))) {
 				foreach ($this->attribute_value_uids as $valueUid) {
 					/** @var Tx_Commerce_Domain_Model_AttributeValue $attributValue */
-					$attributValue = t3lib_div::makeInstance(
+					$attributValue = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
 						'Tx_Commerce_Domain_Model_AttributeValue', $valueUid, $this->lang_uid
 					);
 					$attributValue->loadData();
@@ -304,7 +304,7 @@ class Tx_Commerce_Domain_Model_Attribute extends Tx_Commerce_Domain_Model_Abstra
 	public function getParent($translationMode = FALSE) {
 		if (is_int($this->parent) && $this->parent > 0) {
 			/** @var $parent Tx_Commerce_Domain_Model_Attribute */
-			$parent = t3lib_div::makeInstance(get_class($this));
+			$parent = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(get_class($this));
 			$parent->init($this->parent, $this->lang_uid);
 			$parent->loadData($translationMode);
 
@@ -326,7 +326,7 @@ class Tx_Commerce_Domain_Model_Attribute extends Tx_Commerce_Domain_Model_Abstra
 
 			foreach ($childAttributeList as $childAttributeUid) {
 				/** @var $parent Tx_Commerce_Domain_Model_Attribute */
-				$attribute = t3lib_div::makeInstance(get_class($this));
+				$attribute = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(get_class($this));
 				$attribute->init($childAttributeUid, $this->lang_uid);
 				$attribute->loadData($translationMode);
 
@@ -372,7 +372,7 @@ class Tx_Commerce_Domain_Model_Attribute extends Tx_Commerce_Domain_Model_Abstra
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0 - Use tx_commerce_attribute::getAllValues() instead
 	 */
 	public function get_all_values($returnObjects = FALSE, $productObject = FALSE) {
-		t3lib_div::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
 
 		return $this->getAllValues($returnObjects, $productObject);
 	}
@@ -382,7 +382,7 @@ class Tx_Commerce_Domain_Model_Attribute extends Tx_Commerce_Domain_Model_Abstra
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0 - Use tx_commerce_attribute::getValues() instead
 	 */
 	public function get_values() {
-		t3lib_div::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
 
 		return $this->getValues();
 	}
@@ -393,7 +393,7 @@ class Tx_Commerce_Domain_Model_Attribute extends Tx_Commerce_Domain_Model_Abstra
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0 - Use tx_commerce_attribute::getValue() instead
 	 */
 	public function get_value($uid) {
-		t3lib_div::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
 
 		return $this->getValue($uid);
 	}
@@ -403,7 +403,7 @@ class Tx_Commerce_Domain_Model_Attribute extends Tx_Commerce_Domain_Model_Abstra
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0 - Use tx_commerce_attribute::getTitle() instead
 	 */
 	public function get_title() {
-		t3lib_div::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
 
 		return $this->getTitle();
 	}
@@ -415,7 +415,7 @@ class Tx_Commerce_Domain_Model_Attribute extends Tx_Commerce_Domain_Model_Abstra
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0 - Use tx_commerce_attribute::getAttributes() instead
 	 */
 	public function get_attributes() {
-		t3lib_div::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
 
 		return $this->getAttributes();
 	}
@@ -425,7 +425,7 @@ class Tx_Commerce_Domain_Model_Attribute extends Tx_Commerce_Domain_Model_Abstra
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0 - Use tx_commerce_attribute::getUnit() instead
 	 */
 	public function get_unit() {
-		t3lib_div::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
 
 		return $this->getUnit();
 	}

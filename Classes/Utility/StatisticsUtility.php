@@ -73,7 +73,7 @@ class Tx_Commerce_Utility_StatisticsUtility {
 	 * @return boolean result of aggregation
 	 */
 	public function doSalesAggregation($starttime, $endtime) {
-		/** @var t3lib_db $database */
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
 		$hour = date('H', $starttime);
@@ -140,7 +140,7 @@ class Tx_Commerce_Utility_StatisticsUtility {
 	 * @return boolean result of aggregation
 	 */
 	public function doSalesUpdateAggregation($starttime, $endtime, $doOutput = TRUE) {
-		/** @var t3lib_db $database */
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
 		$hour = date('H', $starttime);
@@ -212,7 +212,7 @@ class Tx_Commerce_Utility_StatisticsUtility {
 	 * @return boolean result of aggregation
 	 */
 	public function doClientAggregation($starttime, $endtime) {
-		/** @var t3lib_db $database */
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
 		$hour = date('H', $starttime);

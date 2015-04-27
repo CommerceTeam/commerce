@@ -1326,7 +1326,7 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 					$local = 'uid_foreign';
 				}
 
-				/** @var t3lib_db $database */
+				/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 				$database = $GLOBALS['TYPO3_DB'];
 				$rows = $database->exec_SELECTgetRows(
 					'distinct(' . $foreign . ')', $typoscriptConfig['tableMM'],
@@ -1632,7 +1632,7 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 		}
 
 		if ($this->conf['showErrors']) {
-			t3lib_utility_Debug::debug($errorOutput, 'ERROR');
+			\TYPO3\CMS\Core\Utility\DebugUtility::debug($errorOutput, 'ERROR');
 
 			return $errorOutput;
 		}
@@ -1650,7 +1650,7 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	 */
 	protected function debug($var, $header, $group) {
 		if ($this->debug) {
-			t3lib_utility_Debug::debug($var, $header, $group);
+			\TYPO3\CMS\Core\Utility\DebugUtility::debug($var, $header, $group);
 		}
 	}
 
@@ -2023,7 +2023,8 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 
 	/**
 	 * Multi substitution function
-	 * Copy from tslib_content -> substituteMarkerArrayCached, but without caching
+	 * Copy from \TYPO3\CMS\Frontend\ContentObject\AbstractContentObject
+	 * -> substituteMarkerArrayCached, but without caching
 	 *
 	 * @param string $content The content stream, typically HTML template content.
 	 * @param array $markContentArray Regular marker-array where the 'keys' are
@@ -2034,11 +2035,10 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	 *        where the subparts pointed to by the main key is wrapped with the 0/1
 	 *        value alternating.
 	 * @return string The output content stream
-	 * @see tslib_content: substituteMarkerArrayCached
 	 */
 	public function substituteMarkerArrayNoCached($content, $markContentArray = array(), $subpartContentArray = array(),
 		$wrappedSubpartContentArray = array()) {
-		/** @var t3lib_timeTrack $timeTrack */
+		/** @var \TYPO3\CMS\Core\TimeTracker\TimeTracker $timeTrack */
 		$timeTrack = & $GLOBALS['TT'];
 		$timeTrack->push('commerce: substituteMarkerArrayNoCache');
 

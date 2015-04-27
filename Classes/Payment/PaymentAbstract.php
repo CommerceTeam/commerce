@@ -137,7 +137,11 @@ abstract class Tx_Commerce_Payment_PaymentAbstract implements Tx_Commerce_Paymen
 				}
 
 				/** @var Tx_Commerce_Payment_Interface_Criterion $criterion */
-				$criterion = t3lib_div::makeInstance($criterionConfiguration['class'], $this, $criterionConfiguration['options']);
+				$criterion = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+					$criterionConfiguration['class'],
+					$this,
+					$criterionConfiguration['options']
+				);
 				if (!($criterion instanceof Tx_Commerce_Payment_Interface_Criterion)) {
 					throw new Exception(
 						'Criterion ' . $criterionConfiguration['class'] . ' must implement interface Tx_Commerce_Payment_Interface_Criterion',
@@ -162,7 +166,7 @@ abstract class Tx_Commerce_Payment_PaymentAbstract implements Tx_Commerce_Paymen
 		if (is_array($providerConfigurations)) {
 			foreach ($providerConfigurations as $providerConfiguration) {
 				/** @var Tx_Commerce_Payment_Interface_Provider $provider */
-				$provider = t3lib_div::makeInstance($providerConfiguration['class'], $this);
+				$provider = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance($providerConfiguration['class'], $this);
 				if (!($provider instanceof Tx_Commerce_Payment_Interface_Provider)) {
 					throw new Exception(
 						'Provider ' . $providerConfiguration['class'] . ' must implement interface Tx_Commerce_Payment_Interface_Provider',
@@ -226,7 +230,8 @@ abstract class Tx_Commerce_Payment_PaymentAbstract implements Tx_Commerce_Paymen
 	 * @param Tx_Commerce_Domain_Model_Basket $basket Basket object
 	 * @return boolean True is finishing order is allowed
 	 */
-	public function finishingFunction(array $config = array(), array $session = array(), Tx_Commerce_Domain_Model_Basket $basket = NULL) {
+	public function finishingFunction(array $config = array(), array $session = array(),
+			Tx_Commerce_Domain_Model_Basket $basket = NULL) {
 		$result = TRUE;
 		if ($this->provider !== NULL) {
 			$result = $this->provider->finishingFunction($config, $session, $basket);
@@ -284,7 +289,8 @@ abstract class Tx_Commerce_Payment_PaymentAbstract implements Tx_Commerce_Paymen
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getParentObject instead
 	 */
 	public function getPObj() {
-		t3lib_div::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		return $this->getParentObject();
 	}
 }

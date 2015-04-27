@@ -99,7 +99,7 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 	protected $jsParent = '';
 
 	/**
-	 * @var t3lib_TCEforms
+	 * @var \TYPO3\CMS\Backend\Form\FormEngine
 	 */
 	public $tceforms;
 

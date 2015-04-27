@@ -119,7 +119,7 @@ class CreditCardValidationSolution {
 	 * @return self
 	 */
 	public function __construct() {
-		$this->language = t3lib_div::makeInstance('language');
+		$this->language = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('language');
 		if (is_object($GLOBALS['BE_USER'])) {
 			$languageKey = $GLOBALS['BE_USER']->uc['lang'];
 		} else {
@@ -172,11 +172,11 @@ class CreditCardValidationSolution {
 	 * assisted. Neil Fraser helped a bit on the Perl version.  Steve
 	 * Horsley, Roedy Green and Jon Skeet provided tips on the Java Edition.</p>
 	 *
-	 * @param string $Number the number of the credit card to
+	 * @param string $number the number of the credit card to
 	 *                                  validate.
-	 * @param string $CheckNumber the ISO 639-1 two letter code of
+	 * @param string $checkNumber the ISO 639-1 two letter code of
 	 *                                  the language for error messages.
-	 * @param array|string $Accepted credit card types you accept.  If
+	 * @param array|string $accepted credit card types you accept.  If
 	 *                                  not used in function call, all
 	 *                                  known cards are accepted.  Set
 	 *                                  it before calling the function: <br /><kbd>
@@ -191,11 +191,11 @@ class CreditCardValidationSolution {
 	 *                                  <li> JCB                 </li>
 	 *                                  <li> MasterCard          </li>
 	 *                                  <li> Visa                </li></ul>
-	 * @param string $RequireExp should the expiration date be
+	 * @param string $requireExp should the expiration date be
 	 *                                  checked?  Y or N.
-	 * @param int|string $Month the card's expiration month
+	 * @param int|string $month the card's expiration month
 	 *                                  in M, 0M or MM foramt.
-	 * @param int|string $Year the card's expiration year in YYYY format.
+	 * @param int|string $year the card's expiration year in YYYY format.
 	 * @return boolean  TRUE if everything is fine.  FALSE if problems.
 	 * @version    $Name: rel-5-14 $
 	 * @author     Daniel Convissor <danielc@analysisandsolutions.com>
@@ -205,7 +205,7 @@ class CreditCardValidationSolution {
 	 * @link       http://www.analysisandsolutions.com/donate/
 	 * @license    http://www.analysisandsolutions.com/software/license.htm Simple Public License
 	 */
-	public function validateCreditCard($Number, $CheckNumber, $Accepted = '', $RequireExp = 'N', $Month = '', $Year = '') {
+	public function validateCreditCard($number, $checkNumber, $accepted = '', $requireExp = 'N', $month = '', $year = '') {
 		$this->CCVSNumber = '';
 		$this->CCVSNumberLeft = '';
 		$this->CCVSNumberRight = '';
@@ -214,68 +214,68 @@ class CreditCardValidationSolution {
 		$this->CCVSError = '';
 
 			// Catch malformed input.
-		if (empty($Number) || !is_string($Number)) {
+		if (empty($number) || !is_string($number)) {
 			$this->CCVSError = $this->language->getLL('ErrNumberString');
 
 			return FALSE;
 		}
 
 			// Ensure number doesn't overrun.
-		$Number = substr($Number, 0, 30);
+		$number = substr($number, 0, 30);
 
 			// Remove non-numeric characters.
-		$this->CCVSNumber = preg_replace('/[^0-9]/', '', $Number);
+		$this->CCVSNumber = preg_replace('/[^0-9]/', '', $number);
 
 			// Set up variables.
-		$this->CCVSCheckNumber = trim($CheckNumber);
+		$this->CCVSCheckNumber = trim($checkNumber);
 		$this->CCVSNumberLeft = substr($this->CCVSNumber, 0, 4);
 		$this->CCVSNumberRight = substr($this->CCVSNumber, -4);
-		$NumberLength = strlen($this->CCVSNumber);
-		$DoChecksum = 'Y';
+		$numberLength = strlen($this->CCVSNumber);
+		$doChecksum = 'Y';
 
 			// Determine the card type and appropriate length.
 		if (($this->CCVSNumberLeft >= 3000) && ($this->CCVSNumberLeft <= 3059)) {
 			$this->CCVSType = 'Diners Club';
-			$ShouldLength = 14;
+			$shouldLength = 14;
 		} elseif (($this->CCVSNumberLeft >= 3600) && ($this->CCVSNumberLeft <= 3699)) {
 			$this->CCVSType = 'Diners Club';
-			$ShouldLength = 14;
+			$shouldLength = 14;
 		} elseif (($this->CCVSNumberLeft >= 3800) && ($this->CCVSNumberLeft <= 3889)) {
 			$this->CCVSType = 'Diners Club';
-			$ShouldLength = 14;
+			$shouldLength = 14;
 		} elseif (($this->CCVSNumberLeft >= 3400) && ($this->CCVSNumberLeft <= 3499)) {
 			$this->CCVSType = 'American Express';
-			$ShouldLength = 15;
+			$shouldLength = 15;
 		} elseif (($this->CCVSNumberLeft >= 3700) && ($this->CCVSNumberLeft <= 3799)) {
 			$this->CCVSType = 'American Express';
-			$ShouldLength = 15;
+			$shouldLength = 15;
 		} elseif (($this->CCVSNumberLeft >= 3088) && ($this->CCVSNumberLeft <= 3094)) {
 			$this->CCVSType = 'JCB';
-			$ShouldLength = 16;
+			$shouldLength = 16;
 		} elseif (($this->CCVSNumberLeft >= 3096) && ($this->CCVSNumberLeft <= 3102)) {
 			$this->CCVSType = 'JCB';
-			$ShouldLength = 16;
+			$shouldLength = 16;
 		} elseif (($this->CCVSNumberLeft >= 3112) && ($this->CCVSNumberLeft <= 3120)) {
 			$this->CCVSType = 'JCB';
-			$ShouldLength = 16;
+			$shouldLength = 16;
 		} elseif (($this->CCVSNumberLeft >= 3158) && ($this->CCVSNumberLeft <= 3159)) {
 			$this->CCVSType = 'JCB';
-			$ShouldLength = 16;
+			$shouldLength = 16;
 		} elseif (($this->CCVSNumberLeft >= 3337) && ($this->CCVSNumberLeft <= 3349)) {
 			$this->CCVSType = 'JCB';
-			$ShouldLength = 16;
+			$shouldLength = 16;
 		} elseif (($this->CCVSNumberLeft >= 3528) && ($this->CCVSNumberLeft <= 3589)) {
 			$this->CCVSType = 'JCB';
-			$ShouldLength = 16;
+			$shouldLength = 16;
 		} elseif (($this->CCVSNumberLeft >= 3890) && ($this->CCVSNumberLeft <= 3899)) {
 			$this->CCVSType = 'Carte Blanche';
-			$ShouldLength = 14;
+			$shouldLength = 14;
 		} elseif (($this->CCVSNumberLeft >= 4000) && ($this->CCVSNumberLeft <= 4999)) {
 			$this->CCVSType = 'Visa';
-			if ($NumberLength > 14) {
-				$ShouldLength = 16;
-			} elseif ($NumberLength < 14) {
-				$ShouldLength = 13;
+			if ($numberLength > 14) {
+				$shouldLength = 16;
+			} elseif ($numberLength < 14) {
+				$shouldLength = 13;
 			} else {
 				$this->CCVSError = $this->language->getLL('ErrVisa14');
 
@@ -283,13 +283,13 @@ class CreditCardValidationSolution {
 			}
 		} elseif (($this->CCVSNumberLeft >= 5100) && ($this->CCVSNumberLeft <= 5599)) {
 			$this->CCVSType = 'MasterCard';
-			$ShouldLength = 16;
+			$shouldLength = 16;
 		} elseif ($this->CCVSNumberLeft == 5610) {
 			$this->CCVSType = 'Australian BankCard';
-			$ShouldLength = 16;
+			$shouldLength = 16;
 		} elseif ($this->CCVSNumberLeft == 6011) {
 			$this->CCVSType = 'Discover/Novus';
-			$ShouldLength = 16;
+			$shouldLength = 16;
 		} else {
 			$this->CCVSError = sprintf($this->language->getLL('ErrUnknown'), $this->CCVSNumberLeft);
 
@@ -297,13 +297,13 @@ class CreditCardValidationSolution {
 		}
 
 			// Check acceptance.
-		if (!empty($Accepted)) {
-			if (!is_array($Accepted)) {
+		if (!empty($accepted)) {
+			if (!is_array($accepted)) {
 				$this->CCVSError = $this->language->getLL('ErrAccepted');
 
 				return FALSE;
 			}
-			if (!in_array($this->CCVSType, $Accepted)) {
+			if (!in_array($this->CCVSType, $accepted)) {
 				$this->CCVSError = sprintf($this->language->getLL('ErrNoAccept'), $this->CCVSType);
 
 				return FALSE;
@@ -312,69 +312,69 @@ class CreditCardValidationSolution {
 
 		/* Check CheckNumber. */
 		if (!empty($this->CCVSType)) {
-			switch($this->CCVSType) {
+			switch ($this->CCVSType) {
 				case 'American Express':
 					if (strlen($this->CCVSCheckNumber) != 4) {
 						$this->CCVSError = sprintf($this->language->getLL('ErrCheckNumber'), $this->CCVSCheckNumber);
 						return FALSE;
 					}
-				break;
+					break;
 
 				case 'MasterCard':
 					if (strlen($this->CCVSCheckNumber) != 3) {
 						$this->CCVSError = sprintf($this->language->getLL('ErrCheckNumber'), $this->CCVSCheckNumber);
 						return FALSE;
 					}
-				break;
+					break;
 
 				case 'Visa':
 					if (strlen($this->CCVSCheckNumber) != 3) {
 						$this->CCVSError = sprintf($this->language->getLL('ErrCheckNumber'), $this->CCVSCheckNumber);
 						return FALSE;
 					}
-				break;
+					break;
 			}
 		}
 
 			// Check length.
-		if ($NumberLength <> $ShouldLength) {
-			$Missing = $NumberLength - $ShouldLength;
-			if ($Missing < 0) {
-				$this->CCVSError = sprintf($this->language->getLL('ErrShort'), abs($Missing));
+		if ($numberLength <> $shouldLength) {
+			$missing = $numberLength - $shouldLength;
+			if ($missing < 0) {
+				$this->CCVSError = sprintf($this->language->getLL('ErrShort'), abs($missing));
 			} else {
-				$this->CCVSError = sprintf($this->language->getLL('ErrLong'), $Missing);
+				$this->CCVSError = sprintf($this->language->getLL('ErrLong'), $missing);
 			}
 
 			return FALSE;
 		}
 
 			// Mod10 checksum process...
-		if ($DoChecksum == 'Y') {
-			$Checksum = 0;
+		if ($doChecksum == 'Y') {
+			$checksum = 0;
 
 			/**
 			 * Add even digits in even length strings
 			 * or odd digits in odd length strings.
 			 */
-			for ($Location = 1 - ($NumberLength % 2); $Location < $NumberLength; $Location += 2) {
-				$Checksum += (int) substr($this->CCVSNumber, $Location, 1);
+			for ($location = 1 - ($numberLength % 2); $location < $numberLength; $location += 2) {
+				$checksum += (int) substr($this->CCVSNumber, $location, 1);
 			}
 
 			/**
 			 * Analyze odd digits in even length strings
 			 * or even digits in odd length strings.
 			 */
-			for ($Location = ($NumberLength % 2); $Location < $NumberLength; $Location += 2) {
-				$Digit = (int) substr($this->CCVSNumber, $Location, 1) * 2;
-				if ($Digit < 10) {
-					$Checksum += $Digit;
+			for ($location = ($numberLength % 2); $location < $numberLength; $location += 2) {
+				$digit = (int) substr($this->CCVSNumber, $location, 1) * 2;
+				if ($digit < 10) {
+					$checksum += $digit;
 				} else {
-					$Checksum += $Digit - 9;
+					$checksum += $digit - 9;
 				}
 			}
 
 				// Checksums not divisible by 10 are bad.
-			if ($Checksum % 10 != 0) {
+			if ($checksum % 10 != 0) {
 				$this->CCVSError = $this->language->getLL('ErrChecksum');
 
 				return FALSE;
@@ -382,48 +382,46 @@ class CreditCardValidationSolution {
 		}
 
 			// Expiration date process...
-		if ($RequireExp == 'Y') {
-			if (empty($Month) || !is_string($Month)) {
+		if ($requireExp == 'Y') {
+			if (empty($month) || !is_string($month)) {
 				$this->CCVSError = $this->language->getLL('ErrMonthString');
 
 				return FALSE;
 			}
 
-			if (!preg_match('/^(0?[1-9]|1[0-2])$/', $Month)) {
+			if (!preg_match('/^(0?[1-9]|1[0-2])$/', $month)) {
 				$this->CCVSError = $this->language->getLL('ErrMonthFormat');
 
 				return FALSE;
 			}
 
-			if (empty($Year) || !is_string($Year)) {
+			if (empty($year) || !is_string($year)) {
 				$this->CCVSError = $this->language->getLL('ErrYearString');
 
 				return FALSE;
 			}
 
-			if (!preg_match('/^[0-9]{4}$/', $Year)) {
+			if (!preg_match('/^[0-9]{4}$/', $year)) {
 				$this->CCVSError = $this->language->getLL('ErrYearFormat');
 
 				return FALSE;
 			}
 
-			if ($Year < date('Y')) {
+			if ($year < date('Y')) {
 				$this->CCVSError = $this->language->getLL('ErrExpired');
 
 				return FALSE;
-			} elseif ($Year == date('Y')) {
-				if ($Month < date('m')) {
+			} elseif ($year == date('Y')) {
+				if ($month < date('m')) {
 					$this->CCVSError = $this->language->getLL('ErrExpired');
 
 					return FALSE;
 				}
 			}
 
-			$this->CCVSExpiration = sprintf('%02d', $Month) . substr($Year, -2);
+			$this->CCVSExpiration = sprintf('%02d', $month) . substr($year, -2);
 		}
 
 		return TRUE;
 	}
 }
-
-?>

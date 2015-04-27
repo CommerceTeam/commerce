@@ -243,10 +243,10 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 		if ($uid > 0) {
 			$this->uid = $uid;
 			$this->lang_uid = $langUid;
-			$this->databaseConnection = t3lib_div::makeInstance($this->databaseClass);
+			$this->databaseConnection = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance($this->databaseClass);
 
 			if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_product.php']['postinit'])) {
-				t3lib_div::deprecationLog(
+				\TYPO3\CMS\Core\Utility\GeneralUtility::deprecationLog(
 					'
 										hook
 										$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_product.php\'][\'postinit\']
@@ -255,7 +255,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 									'
 				);
 				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_product.php']['postinit'] as $classRef) {
-					$hookObj = & t3lib_div::getUserObj($classRef);
+					$hookObj = & \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
 					if (method_exists($hookObj, 'postinit')) {
 						/** @noinspection PhpUndefinedMethodInspection */
 						$hookObj->postinit($this);
@@ -264,7 +264,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 			}
 			if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Model/Product.php']['postinit'])) {
 				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Model/Product.php']['postinit'] as $classRef) {
-					$hookObj = & t3lib_div::getUserObj($classRef);
+					$hookObj = & \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
 					if (method_exists($hookObj, 'postinit')) {
 						/** @noinspection PhpUndefinedMethodInspection */
 						$hookObj->postinit($this);
@@ -326,11 +326,11 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 
 		$first = 1;
 		if (is_array($attributes)) {
-			/** @var t3lib_db $database */
+			/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 			$database = & $GLOBALS['TYPO3_DB'];
 			$attributeUids = array();
 			foreach ($attributes as $uidValuePair) {
-				// Initialize arrays to prevent warningn in array_intersect()
+				// Initialize arrays to prevent warning in array_intersect()
 				$next = array();
 				$addwheretmp = '';
 
@@ -416,7 +416,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 		$orderBy = 'sorting';
 		$limit = '';
 
-		/** @var t3lib_db $database */
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = & $GLOBALS['TYPO3_DB'];
 
 		$rows = $database->exec_SELECTgetRows('uid', $table, $where, $groupBy, $orderBy, $limit);
@@ -429,7 +429,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 		$articleUidList = array();
 		foreach ($rawArticleUidList as $rawArticleUid) {
 			/** @var Tx_Commerce_Domain_Model_Article $article */
-			$article = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Article', $rawArticleUid, $this->lang_uid);
+			$article = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Article', $rawArticleUid, $this->lang_uid);
 			$article->loadData();
 			$myPrice = $usePriceGrossInstead ?
 				$article->getPriceGross() :
@@ -504,7 +504,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	 * @return mixed Array if attributes where found, else FALSE
 	 */
 	public function getAttributeMatrix($articleList = FALSE, $attributeListInclude = FALSE, $valueListShowValueInArticleProduct = TRUE, $sortingTable = 'tx_commerce_articles_article_attributes_mm', $localizationAttributeValuesFallbackToDefault = FALSE, $parentTable = 'tx_commerce_articles') {
-		/** @var t3lib_db $database */
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = & $GLOBALS['TYPO3_DB'];
 
 		// Early return if no product is given
@@ -735,8 +735,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	 * @return string Query to be executed
 	 */
 	protected function getAttributeMatrixQuery($parentTable = 'tx_commerce_articles', $mmTable = 'tx_commerce_articles_article_attributes_mm', $sortingTable = 'tx_commerce_articles_article_attributes_mm', $articleList = FALSE, $attributeList = FALSE) {
-
-		/** @var t3lib_db $database */
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = & $GLOBALS['TYPO3_DB'];
 
 		$selectFields = array();
@@ -940,7 +939,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 			if (count($this->relatedProduct_uids) > 0) {
 				foreach (array_keys($this->relatedProduct_uids) as $productId) {
 					/** @var Tx_Commerce_Domain_Model_Product $product */
-					$product = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product', $productId, $this->lang_uid);
+					$product = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Product', $productId, $this->lang_uid);
 					$product->loadData();
 					$product->loadArticles();
 
@@ -1009,7 +1008,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 				$addwhere2 = ' AND tx_commerce_articles.uid in (' . $queryArticleList . ')';
 			}
 
-			/** @var t3lib_db $database */
+			/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 			$database = & $GLOBALS['TYPO3_DB'];
 			$result = $database->exec_SELECT_mm_query(
 				'distinct tx_commerce_attributes.uid, tx_commerce_attributes.sys_language_uid, tx_commerce_articles.uid as article,
@@ -1132,7 +1131,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 		$values = array();
 		$levelAttributes = array();
 
-		/** @var t3lib_db $database */
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = & $GLOBALS['TYPO3_DB'];
 
 		if ($this->uid > 0) {
@@ -1207,7 +1206,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 			$selected = $attributeValues[$attributeUid];
 			if (!$selected) {
 				/** @var Tx_Commerce_Domain_Model_Attribute $attribute */
-				$attribute = t3lib_div::makeInstance(
+				$attribute = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
 					'Tx_Commerce_Domain_Model_Attribute', $attributeUid,
 					$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']
 				);
@@ -1304,7 +1303,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 			if (($this->articles_uids = $this->databaseConnection->getArticles($uidToLoadFrom))) {
 				foreach ($this->articles_uids as $articleUid) {
 					/** @var Tx_Commerce_Domain_Model_Article $article */
-					$article = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Article', $articleUid, $this->lang_uid);
+					$article = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Article', $articleUid, $this->lang_uid);
 					$article->loadData();
 					$this->articles[$articleUid] = $article;
 				}
@@ -1331,8 +1330,8 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 		$return = parent::loadData($translationMode);
 
 		/** @noinspection PhpParamsInspection */
-		$this->images_array = t3lib_div::trimExplode(',', $this->images);
-		$this->teaserImagesArray = t3lib_div::trimExplode(',', $this->teaserimages);
+		$this->images_array = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $this->images);
+		$this->teaserImagesArray = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $this->teaserimages);
 
 		return $return;
 	}
@@ -1418,7 +1417,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, is not used in commerce
 	 */
 	public function getRelevantArticles($attributeArray = FALSE) {
-		t3lib_div::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
 		// First we need all possible Attribute id's (not attribute value id's)
 		foreach ($this->attribute as $attribute) {
 			$attributeIsInArray = FALSE;
@@ -1454,7 +1453,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 				$sql .= ') AS data GROUP BY article_id having COUNT(article_id) >= ' . (count($unionSelects) - 1) . '';
 			}
 
-			/** @var t3lib_db $database */
+			/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 			$database = & $GLOBALS['TYPO3_DB'];
 
 			$res = $database->sql_query($sql);
@@ -1482,7 +1481,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getSelectAttributeMatrix instead
 	 */
 	public function get_selectattribute_matrix($articleList = FALSE, $attributeToInclude = FALSE, $showHiddenValues = TRUE, $sortingTable = 'tx_commerce_articles_article_attributes_mm') {
-		t3lib_div::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
 
 		return $this->getSelectAttributeMatrix($articleList, $attributeToInclude, $showHiddenValues, $sortingTable);
 	}
@@ -1496,7 +1495,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getArticlesByAttribute instead
 	 */
 	public function get_Articles_by_Attribute($attributeUid, $attributeValue) {
-		t3lib_div::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
 
 		return $this->getArticlesByAttribute($attributeUid, $attributeValue);
 	}
@@ -1514,7 +1513,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getArticlesByAttributeArray instead
 	 */
 	public function get_Articles_by_AttributeArray($attribute_Array, $proofUid = 1) {
-		t3lib_div::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
 
 		return $this->getArticlesByAttributeArray($attribute_Array, $proofUid);
 	}
@@ -1527,7 +1526,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, is not used in commerce
 	 */
 	public static function compareBySorting($array1, $array2) {
-		t3lib_div::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
 
 		return $array1['sorting'] - $array2['sorting'];
 	}
@@ -1539,7 +1538,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getL18nProducts instead
 	 */
 	public function get_l18n_products() {
-		t3lib_div::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
 
 		return $this->getL18nProducts();
 	}
@@ -1551,7 +1550,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getArticlesCount instead
 	 */
 	public function getNumberOfArticles() {
-		t3lib_div::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
 
 		return $this->getArticlesCount();
 	}
@@ -1563,7 +1562,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getTeaser instead
 	 */
 	public function get_teaser() {
-		t3lib_div::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
 
 		return $this->getTeaser();
 	}
@@ -1575,7 +1574,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getDescription instead
 	 */
 	public function get_description() {
-		t3lib_div::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
 
 		return $this->getDescription();
 	}
@@ -1587,7 +1586,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getSubtitle instead
 	 */
 	public function get_subtitle() {
-		t3lib_div::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
 
 		return $this->getSubtitle();
 	}
@@ -1599,7 +1598,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getT3verOid instead
 	 */
 	public function get_t3ver_oid() {
-		t3lib_div::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
 
 		return $this->getT3verOid();
 	}
@@ -1611,7 +1610,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getPid instead
 	 */
 	public function get_pid() {
-		t3lib_div::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
 
 		return $this->getPid();
 	}
@@ -1623,7 +1622,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getMasterparentCategory instead
 	 */
 	public function getMasterparentCategorie() {
-		t3lib_div::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
 
 		return $this->getMasterparentCategory();
 	}
@@ -1635,7 +1634,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getTitle instead
 	 */
 	public function get_title() {
-		t3lib_div::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
 
 		return $this->getTitle();
 	}
@@ -1647,7 +1646,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getMasterparentCategory instead
 	 */
 	public function get_masterparent_categorie() {
-		t3lib_div::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
 
 		return $this->getMasterparentCategory();
 	}
@@ -1659,7 +1658,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getImages instead
 	 */
 	public function get_parent_categories() {
-		t3lib_div::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
 
 		return $this->getParentCategories();
 	}
@@ -1670,7 +1669,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getImages instead
 	 */
 	public function get_images() {
-		t3lib_div::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
 
 		return $this->getImages();
 	}
@@ -1681,7 +1680,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use typoscript instead
 	 */
 	public function set_leng_description($leng = 150) {
-		t3lib_div::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
 		$this->description = substr($this->description, 0, $leng) . '...';
 	}
 
@@ -1692,7 +1691,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getAttributeMatrix instead
 	 */
 	public function get_attribute_matrix($articleList = FALSE, $attribute_include = FALSE, $showHiddenValues = TRUE, $sortingTable = 'tx_commerce_articles_article_attributes_mm', $fallbackToDefault = FALSE) {
-		t3lib_div::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
 
 		return $this->getAttributeMatrix($articleList, $attribute_include, $showHiddenValues, $sortingTable, $fallbackToDefault);
 	}
@@ -1704,7 +1703,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getAttributeMatrix instead
 	 */
 	public function get_atrribute_matrix($articleList = FALSE, $attribute_include = FALSE, $showHiddenValues = TRUE, $sortingTable = 'tx_commerce_articles_article_attributes_mm') {
-		t3lib_div::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
 
 		return $this->getAttributeMatrix($articleList, $attribute_include, $showHiddenValues, $sortingTable);
 	}
@@ -1716,7 +1715,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getAttributeMatrix instead
 	 */
 	public function get_product_attribute_matrix($attribute_include = FALSE, $showHiddenValues = TRUE, $sortingTable = 'tx_commerce_products_attributes_mm') {
-		t3lib_div::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
 
 		return $this->getAttributeMatrix(
 			FALSE, $attribute_include, $showHiddenValues, $sortingTable, FALSE, 'tx_commerce_products'
@@ -1730,7 +1729,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getAttributeMatrix instead
 	 */
 	public function get_product_atrribute_matrix($attribute_include = FALSE, $showHiddenValues = TRUE, $sortingTable = 'tx_commerce_products_attributes_mm') {
-		t3lib_div::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
 
 		return $this->getAttributeMatrix(
 			FALSE, $attribute_include, $showHiddenValues, $sortingTable, FALSE, 'tx_commerce_products'
@@ -1742,7 +1741,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getArticleUids instead
 	 */
 	public function getArticles() {
-		t3lib_div::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
 
 		return $this->getArticleUids();
 	}
@@ -1754,7 +1753,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use loadArticles instead
 	 */
 	public function load_articles() {
-		t3lib_div::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
 
 		return $this->loadArticles();
 	}

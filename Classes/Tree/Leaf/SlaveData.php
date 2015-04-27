@@ -85,7 +85,7 @@ abstract class Tx_Commerce_Tree_Leaf_SlaveData extends Tx_Commerce_Tree_Leaf_Dat
 			return;
 		}
 			// Check if User's Group may view the records
-		/** @var t3lib_beUserAuth $backendUser */
+		/** @var \TYPO3\CMS\Core\Authentication\BackendUserAuthentication $backendUser */
 		$backendUser = & $GLOBALS['BE_USER'];
 		if (!$backendUser->check('tables_select', $this->table)) {
 			$this->records = NULL;

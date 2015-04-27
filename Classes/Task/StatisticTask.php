@@ -35,12 +35,12 @@ class Tx_Commerce_Task_StatisticTask extends tx_scheduler_Task {
 	protected $selectedAggregation = '';
 
 	/**
-	 * @var t3lib_beUserAuth
+	 * @var \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
 	 */
 	protected $backendUser;
 
 	/**
-	 * @var t3lib_db
+	 * @var \TYPO3\CMS\Core\Database\DatabaseConnection
 	 */
 	protected $database;
 
@@ -62,7 +62,7 @@ class Tx_Commerce_Task_StatisticTask extends tx_scheduler_Task {
 
 		$this->database = $GLOBALS['TYPO3_DB'];
 
-		$this->statistics = t3lib_div::makeInstance('Tx_Commerce_Utility_StatisticsUtility');
+		$this->statistics = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Utility_StatisticsUtility');
 		$this->statistics->init(
 			$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['excludeStatisticFolders'] != '' ?
 				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['excludeStatisticFolders'] :
@@ -98,12 +98,11 @@ class Tx_Commerce_Task_StatisticTask extends tx_scheduler_Task {
 		switch ($this->selectedAggregation) {
 			case 'incrementalAggregation':
 				$this->incrementalAggregation();
-			break;
+				break;
 
 			case 'completeAggregation':
 			default:
 				$this->completeAggregation();
-			break;
 		}
 
 		return TRUE;
@@ -268,10 +267,3 @@ class Tx_Commerce_Task_StatisticTask extends tx_scheduler_Task {
 		);
 	}
 }
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Task/StatisticTask.php']) {
-	/** @noinspection PhpIncludeInspection */
-	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Task/StatisticTask.php']);
-}
-
-?>

@@ -210,7 +210,7 @@ class Tx_Commerce_Utility_AttributeEditorUtility {
 	 * @return string
 	 */
 	public function displayAttributeValue($parameter) {
-		/** @var t3lib_db $database */
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
 			// attribute value uid

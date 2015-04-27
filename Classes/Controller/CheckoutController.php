@@ -308,7 +308,9 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			}
 		}
 
-		/** @var $feUser tslib_feUserAuth */
+		/**
+		 * @var $feUser \TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication
+		 */
 		$feUser = & $GLOBALS['TSFE']->fe_user;
 		$feUser->setKey('ses', Tx_Commerce_Utility_GeneralUtility::generateSessionKey('currentStep'), $this->currentStep);
 
@@ -329,7 +331,9 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	 * @return void
 	 */
 	protected function storeRequestDataIntoSession() {
-		/** @var $feUser tslib_feUserAuth */
+		/**
+		 * @var $feUser \TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication
+		 */
 		$feUser = $GLOBALS['TSFE']->fe_user;
 		// Write the billing address into session, if it is present in the REQUEST
 		if (isset($this->piVars['billing'])) {
@@ -368,7 +372,9 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	 * @return void
 	 */
 	protected function fetchSessionDataIntoSessionAttribute() {
-		/** @var $feUser tslib_feUserAuth */
+		/**
+		 * @var $feUser \TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication
+		 */
 		$feUser = & $GLOBALS['TSFE']->fe_user;
 		$this->sessionData['billing'] = Tx_Commerce_Utility_GeneralUtility::removeXSSStripTagsArray(
 			$feUser->getKey('ses', Tx_Commerce_Utility_GeneralUtility::generateSessionKey('billing'))
@@ -394,10 +400,12 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	 * @return void
 	 */
 	public function storeSessionData() {
-		/** @var t3lib_db $database */
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
-		/** @var $feUser tslib_feUserAuth */
+		/**
+		 * @var $feUser \TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication
+		 */
 		$feUser = & $GLOBALS['TSFE']->fe_user;
 		// Saves UC and SesData if changed.
 		if ($feUser->userData_change) {
@@ -933,7 +941,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	 * @return string HTML-Content
 	 */
 	public function finishIt($paymentObj = NULL) {
-		/** @var t3lib_db $database */
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
 		$orderId = $this->getOrderId();
@@ -979,7 +987,9 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		}
 
 		// Handle orders
-		/** @var $feUser tslib_feUserAuth */
+		/**
+		 * @var $feUser \TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication
+		 */
 		$feUser = & $GLOBALS['TSFE']->fe_user;
 		/** @var $basket Tx_Commerce_Domain_Model_Basket */
 		$basket = & $feUser->tx_commerce_basket;
@@ -1141,7 +1151,9 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	 * @return string
 	 */
 	public function getOrderId() {
-		/** @var $feUser tslib_feUserAuth */
+		/**
+		 * @var $feUser \TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication
+		 */
 		$feUser = & $GLOBALS['TSFE']->fe_user;
 		/** @var $basket Tx_Commerce_Domain_Model_Basket */
 		$basket = & $feUser->tx_commerce_basket;
@@ -1484,7 +1496,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	 * @return boolean
 	 */
 	public function checkUserName($username) {
-		/** @var t3lib_db $database */
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
 		$table = 'fe_users';
@@ -1552,7 +1564,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		if ($this->piVars['payArt']) {
 			/** @var $basket Tx_Commerce_Domain_Model_Basket */
 			$basket = & $GLOBALS['TSFE']->fe_user->tx_commerce_basket;
-			/** @var t3lib_db $database */
+			/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 			$database = $GLOBALS['TYPO3_DB'];
 
 			$paymentBasketItem = $basket->getCurrentPaymentBasketItem();
@@ -1702,7 +1714,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	 * @return integer uid of user
 	 */
 	public function handleAddress($type) {
-		/** @var t3lib_db $database */
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
 		if (!is_array($this->sessionData[$type])) {
@@ -1853,7 +1865,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	 * @return string
 	 */
 	public function getField($value, $type, $field) {
-		/** @var t3lib_db $database */
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
 		if ($this->conf[$type . '.']['sourceFields.'][$field . '.']['table']) {
@@ -1984,7 +1996,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	 * @return string Single selectbox
 	 */
 	protected function getSelectInputField($fieldName, $fieldConfig, $fieldValue = '', $step = '') {
-		/** @var t3lib_db $database */
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
 		$result = '<select id="' . $step . '-' . $fieldName . '" name="' . $this->prefixId . '[' . $step . '][' . $fieldName . ']">';
@@ -2438,7 +2450,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	 * @return string MailContent
 	 */
 	public function generateMail($orderUid, $orderData, $userMarker = array()) {
-		/** @var t3lib_db $database */
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
 		$markerArray = $userMarker;
@@ -2524,7 +2536,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			return array();
 		}
 
-		/** @var t3lib_db $database */
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
 		$this->debug($typoScript, '$typoScript', __FILE__ . ' ' . __LINE__);
@@ -2581,7 +2593,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	 * @return array $orderData Array with all the order data
 	 */
 	public function saveOrder($orderId, $pid, $basket, $paymentObj, $doHook = TRUE, $doStock = TRUE) {
-		/** @var t3lib_db $database */
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
 		// Save addresses with reference to the pObj - which is an instance of pi3
@@ -2724,10 +2736,10 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	}
 
 	/**
-	 * Get an instance of t3lib_TCEmain
+	 * Get an instance of \TYPO3\CMS\Core\DataHandling\DataHandler
 	 *
 	 * @param integer $pid
-	 * @return t3lib_TCEmain
+	 * @return \TYPO3\CMS\Core\DataHandling\DataHandler
 	 */
 	public function getInstanceOfTceMain($pid) {
 		$hookObjectsArr = $this->getHookObjectArray('postTcaInit');
@@ -2740,8 +2752,8 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		$this->initializeBackendUser();
 		$this->initializeLanguage();
 
-		/** @var t3lib_TCEmain $tceMain */
-		$tceMain = GeneralUtility::makeInstance('t3lib_TCEmain');
+		/** @var \TYPO3\CMS\Core\DataHandling\DataHandler $tceMain */
+		$tceMain = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
 		$tceMain->bypassWorkspaceRestrictions = TRUE;
 		$tceMain->recInsertAccessCache['tx_commerce_orders'][$pid] = 1;
 		$tceMain->recInsertAccessCache['tx_commerce_order_articles'][$pid] = 1;
@@ -2756,8 +2768,8 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	 */
 	protected function initializeBackendUser() {
 		if (!($GLOBALS['BE_USER'] instanceof \TYPO3\CMS\Core\Authentication\BackendUserAuthentication)) {
-			/** @var t3lib_tsfeBeUserAuth $backendUser */
-			$backendUser = GeneralUtility::makeInstance('t3lib_tsfeBeUserAuth');
+			/** @var \TYPO3\CMS\Backend\FrontendBackendUserAuthentication $backendUser */
+			$backendUser = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\FrontendBackendUserAuthentication');
 			$backendUser->warningEmail = $GLOBALS['TYPO3_CONF_VARS']['BE']['warning_email_addr'];
 			$backendUser->lockIP = $GLOBALS['TYPO3_CONF_VARS']['BE']['lockIP'];
 			$backendUser->auth_timeout_field = (int) $GLOBALS['TYPO3_CONF_VARS']['BE']['sessionTimeout'];

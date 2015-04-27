@@ -32,16 +32,14 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class Tx_Commerce_Hook_OrdermailHooks {
 	/**
-	 * The cObj from class.tslib_content.php
-	 *
-	 * @var tslib_cObj
+	 * @var \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController
 	 */
 	protected $cObj;
 
 	/**
-	 * The Conversionobject from class.t3lib_cs.php
+	 * The Conversion object
 	 *
-	 * @var t3lib_cs
+	 * @var \TYPO3\CMS\Core\Charset\CharsetConverter
 	 */
 	protected $csConvObj;
 
@@ -92,8 +90,8 @@ class Tx_Commerce_Hook_OrdermailHooks {
 	 */
 	public function __construct() {
 		$this->extConf = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce']['extConf'];
-		$this->cObj = GeneralUtility::makeInstance('tslib_cObj');
-		$this->csConvObj = GeneralUtility::makeInstance('t3lib_cs');
+		$this->cObj = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Controller\\TypoScriptFrontendController');
+		$this->csConvObj = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Charset\\CharsetConverter');
 		$this->templatePath = PATH_site . 'uploads/tx_commerce/';
 	}
 
@@ -103,7 +101,7 @@ class Tx_Commerce_Hook_OrdermailHooks {
 	 * @param array $mailconf
 	 * @param array &$orderdata
 	 * @param string &$template
-	 * @return boolean of t3lib_div::plainMailEncoded
+	 * @return boolean of \TYPO3\CMS\Core\Utility\GeneralUtility::plainMailEncoded
 	 */
 	protected function ordermoveSendMail($mailconf, &$orderdata, &$template) {
 			// First line is subject
@@ -158,10 +156,10 @@ class Tx_Commerce_Hook_OrdermailHooks {
 	 * @return array of templatenames found in Filelist
 	 */
 	protected function generateTemplateArray($mailkind, $pid, $orderSysLanguageUid) {
-		/** @var t3lib_db $database */
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = $GLOBALS['TYPO3_DB'];
-		/** @var t3lib_pageSelect $t3libPage */
-		$t3libPage = GeneralUtility::makeInstance('t3lib_pageSelect');
+		/** @var \TYPO3\CMS\Frontend\Page\PageRepository $t3libPage */
+		$t3libPage = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\PageRepository');
 
 		$rows = $database->exec_SELECTgetRows(
 			'*',
@@ -294,7 +292,7 @@ class Tx_Commerce_Hook_OrdermailHooks {
 	 * @return string The built Mailcontent
 	 */
 	protected function generateMail($orderUid, $orderData, $templateCode) {
-		/** @var t3lib_db $database */
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
 		$markerArray = array();

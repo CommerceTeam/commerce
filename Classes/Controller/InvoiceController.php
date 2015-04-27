@@ -86,9 +86,9 @@ class Tx_Commerce_Controller_InvoiceController extends Tx_Commerce_Controller_Ba
 	 * @return string Compiled content
 	 */
 	public function main($content, $conf) {
-		/** @var tslib_fe $frontend */
+		/** @var \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController $frontend */
 		$frontend = $GLOBALS['TSFE'];
-		/** @var t3lib_beUserAuth $backendUser */
+		/** @var \TYPO3\CMS\Core\Authentication\BackendUserAuthentication $backendUser */
 		$backendUser = $GLOBALS['BE_USER'];
 
 		$this->conf = $conf;
@@ -115,10 +115,10 @@ class Tx_Commerce_Controller_InvoiceController extends Tx_Commerce_Controller_Ba
 		$this->generateLanguageMarker();
 
 			// We may need to do some character conversion tricks
-		/** @var t3lib_cs $convert */
-		$convert = t3lib_div::makeInstance('t3lib_cs');
+		/** @var \TYPO3\CMS\Core\Charset\CharsetConverter $convert */
+		$convert = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Charset\\CharsetConverter');
 
-			// If there is no order id, this plugin serves no pupose
+			// If there is no order id, this plugin serves no purpose
 		$this->order_id = $this->piVars['order_id'];
 
 			// @TODO In case of a FE user this should not give a hint about what's wrong, but instead redirect the user
@@ -165,19 +165,19 @@ class Tx_Commerce_Controller_InvoiceController extends Tx_Commerce_Controller_Ba
 				// Hook to process new/changed marker
 			$hookObjectsArr = array();
 			if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi6/class.tx_commerce_pi6.php']['invoice'])) {
-				t3lib_div::deprecationLog('
+				\TYPO3\CMS\Core\Utility\GeneralUtility::deprecationLog('
 					hook
 					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/pi6/class.tx_commerce_pi6.php\'][\'invoice\']
 					is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
 					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/InvoiceController.php\'][\'invoice\']
 				');
 				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi6/class.tx_commerce_pi6.php']['invoice'] as $classRef) {
-					$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+					$hookObjectsArr[] = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
 				}
 			}
 			if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/InvoiceController.php']['invoice'])) {
 				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/InvoiceController.php']['invoice'] as $classRef) {
-					$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+					$hookObjectsArr[] = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
 				}
 			}
 			$subpartArray = array();
@@ -217,8 +217,12 @@ class Tx_Commerce_Controller_InvoiceController extends Tx_Commerce_Controller_Ba
 	 */
 	protected function invoiceBackendOnly($enabled = FALSE) {
 		if ($enabled && !$GLOBALS['BE_USER']->user['uid'] && ($_SERVER['REMOTE_ADDR'] != $_SERVER['SERVER_ADDR'])) {
-			/** @var t3lib_message_ErrorPageMessage $messageObj */
-			$messageObj = t3lib_div::makeInstance('t3lib_message_ErrorPageMessage', 'Login-error', 'No user logged in! Sorry, I can\'t proceed then!');
+			/** @var \TYPO3\CMS\Core\Messaging\ErrorpageMessage $messageObj */
+			$messageObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+				'TYPO3\\CMS\\Core\\Messaging\\ErrorpageMessage',
+				'Login-error',
+				'No user logged in! Sorry, I can\'t proceed then!'
+			);
 			$messageObj->output();
 			exit;
 		}
@@ -233,7 +237,7 @@ class Tx_Commerce_Controller_InvoiceController extends Tx_Commerce_Controller_Ba
 	 * @return string HTML-Output rendert
 	 */
 	protected function getOrderArticles($orderUid, $TS = array(), $prefix) {
-		/** @var t3lib_db $database */
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
 		if (empty($TS)) {
@@ -276,7 +280,7 @@ class Tx_Commerce_Controller_InvoiceController extends Tx_Commerce_Controller_Ba
 	 * @return string HTML-Output rendert
 	 */
 	protected function getAddressData($addressUid = 0, $TS = array(), $prefix) {
-		/** @var t3lib_db $database */
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
 		if (empty($TS)) {
@@ -329,7 +333,7 @@ class Tx_Commerce_Controller_InvoiceController extends Tx_Commerce_Controller_Ba
 	 * @return array orderData
 	 */
 	protected function getOrderData() {
-		/** @var t3lib_db $database */
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
 		$queryString = 'order_id="' . mysql_real_escape_string($this->order_id) . '"';
@@ -359,7 +363,7 @@ class Tx_Commerce_Controller_InvoiceController extends Tx_Commerce_Controller_Ba
 	 * @return array System Articles
 	 */
 	protected function getOrderSystemArticles($orderUid, $articleType = 0, $prefix) {
-		/** @var t3lib_db $database */
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
 		$queryString = 'order_uid=' . $orderUid . ' ';
@@ -374,12 +378,16 @@ class Tx_Commerce_Controller_InvoiceController extends Tx_Commerce_Controller_Ba
 			$queryString
 		);
 		$content = '';
-		while ($row = $database->sql_fetch_assoc($res)) {
+		while (($row = $database->sql_fetch_assoc($res))) {
 			$subpart = $this->cObj->getSubpart($this->templateCode, '###LISTING_' . $prefix . 'ROW###');
 				// @TODO: Use $markerArray = $this->generateMarkerArray($row,'',$prefix);
 			$markerArray['###' . $prefix . 'AMOUNT###'] = $row['amount'];
 			$markerArray['###' . $prefix . 'METHOD###'] = $row['title'];
-			$markerArray['###' . $prefix . 'COST###'] = Tx_Commerce_ViewHelpers_Money::format(($row['amount'] * $row['price_gross']), $this->conf['currency'], (boolean)$this->conf['showCurrencySign']);
+			$markerArray['###' . $prefix . 'COST###'] = Tx_Commerce_ViewHelpers_Money::format(
+				($row['amount'] * $row['price_gross']),
+				$this->conf['currency'],
+				(boolean)$this->conf['showCurrencySign']
+			);
 			$content .= $this->cObj->substituteMarkerArray($subpart, $markerArray);
 		}
 

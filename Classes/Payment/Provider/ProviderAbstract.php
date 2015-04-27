@@ -53,7 +53,7 @@ abstract class Tx_Commerce_Payment_Provider_ProviderAbstract implements Tx_Comme
 	/**
 	 * Construct this payment provider
 	 *
-	 * @param Tx_Commerce_Payment_Interface_Payment $paymentObject Parent payment object
+	 * @param Tx_Commerce_Payment_Interface_Payment $paymentObject Parent object
 	 * @return self
 	 */
 	public function __construct(Tx_Commerce_Payment_Interface_Payment $paymentObject) {
@@ -76,10 +76,15 @@ abstract class Tx_Commerce_Payment_Provider_ProviderAbstract implements Tx_Comme
 					$criterionConfiguration['options'] = array();
 				}
 				/** @var $criterion Tx_Commerce_Payment_Interface_ProviderCriterion */
-				$criterion = t3lib_div::makeInstance($criterionConfiguration['class'], $this, $criterionConfiguration['options']);
+				$criterion = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+					$criterionConfiguration['class'],
+					$this,
+					$criterionConfiguration['options']
+				);
 				if (!($criterion instanceof Tx_Commerce_Payment_Interface_ProviderCriterion)) {
 					throw new Exception(
-						'Criterion ' . $criterionConfiguration['class'] . ' must implement interface Tx_Commerce_Payment_Interface_ProviderCriterion',
+						'Criterion ' . $criterionConfiguration['class'] .
+							' must implement interface Tx_Commerce_Payment_Interface_ProviderCriterion',
 						1307720945
 					);
 				}
@@ -107,7 +112,8 @@ abstract class Tx_Commerce_Payment_Provider_ProviderAbstract implements Tx_Comme
 	}
 
 	/**
-	 * Check if this payment provider is allowed for the current amount, payment type etc.
+	 * Check if this payment provider is allowed for
+	 * the current amount, payment type etc.
 	 *
 	 * @return boolean TRUE if provider is allowed
 	 */
@@ -133,7 +139,8 @@ abstract class Tx_Commerce_Payment_Provider_ProviderAbstract implements Tx_Comme
 	}
 
 	/**
-	 * Returns an array containing some configuration for the fields the customer shall enter his data into.
+	 * Returns an array containing some configuration for
+	 * the fields the customer shall enter his data into.
 	 *
 	 * @return mixed NULL for no data
 	 */
@@ -160,7 +167,8 @@ abstract class Tx_Commerce_Payment_Provider_ProviderAbstract implements Tx_Comme
 	 * @param Tx_Commerce_Domain_Model_Basket $basket Basket object
 	 * @return boolean TRUE if finishing order is allowed
 	 */
-	public function finishingFunction(array $config = array(), array $session = array(), Tx_Commerce_Domain_Model_Basket $basket = NULL) {
+	public function finishingFunction(array $config = array(), array $session = array(),
+			Tx_Commerce_Domain_Model_Basket $basket = NULL) {
 		return TRUE;
 	}
 

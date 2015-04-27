@@ -44,7 +44,7 @@ class Tx_Commerce_Tree_CategoryMounts extends Tx_Commerce_Tree_Leaf_Mounts {
 	 * @return array
 	 */
 	public function getMountDataLabeled() {
-		/** @var t3lib_beUserAuth $backendUser */
+		/** @var \TYPO3\CMS\Core\Authentication\BackendUserAuthentication $backendUser */
 		$backendUser = $GLOBALS['BE_USER'];
 
 		$this->resetPointer();
@@ -85,7 +85,7 @@ class Tx_Commerce_Tree_CategoryMounts extends Tx_Commerce_Tree_Leaf_Mounts {
 	 * @return boolean Is in mounts?
 	 */
 	public function isInCommerceMounts($categoryUid) {
-		/** @var t3lib_beUserAuth $backendUser */
+		/** @var \TYPO3\CMS\Core\Authentication\BackendUserAuthentication $backendUser */
 		$backendUser = $GLOBALS['BE_USER'];
 
 		$categories = $this->getMountData();

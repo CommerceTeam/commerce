@@ -94,7 +94,7 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 
 			// Merge default vars, if other prefix_id
 		if ($this->prefixId <> 'tx_commerce_pi1') {
-			$generellRequestVars = t3lib_div::_GP('tx_commerce');
+			$generellRequestVars = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('tx_commerce');
 			if (is_array($generellRequestVars)) {
 				foreach ($generellRequestVars as $key => $value) {
 					if (empty($this->piVars[$key])) {
@@ -105,14 +105,14 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 		}
 
 		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi1/class.tx_commerce_pi1.php']['init'])) {
-			t3lib_div::deprecationLog('
+			\TYPO3\CMS\Core\Utility\GeneralUtility::deprecationLog('
 				hook
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/pi1/class.tx_commerce_pi1.php\'][\'init\']
 				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/ListController.php\'][\'init\']
 			');
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi1/class.tx_commerce_pi1.php']['init'] as $classRef) {
-				$hookObj = &t3lib_div::getUserObj($classRef);
+				$hookObj = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
 				if (method_exists($hookObj, 'preInit')) {
 					$hookObj->preInit($this);
 				}
@@ -120,7 +120,7 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 		}
 		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/ListController.php']['init'])) {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/ListController.php']['init'] as $classRef) {
-				$hookObj = &t3lib_div::getUserObj($classRef);
+				$hookObj = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
 				if (method_exists($hookObj, 'preInit')) {
 					$hookObj->preInit($this);
 				}
@@ -209,7 +209,7 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 		$tmpCategory = NULL;
 		if ($this->piVars['catUid']) {
 			$this->cat = (int) $this->piVars['catUid'];
-			$tmpCategory = t3lib_div::makeinstance(
+			$tmpCategory = \TYPO3\CMS\Core\Utility\GeneralUtility::makeinstance(
 				'Tx_Commerce_Domain_Model_Category',
 				$this->cat,
 				$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']
@@ -220,7 +220,7 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 			// Validate given catUid, if it's given and accessible
 		if (!$this->piVars['catUid'] || !$accessible) {
 			$this->cat = (int) $this->master_cat;
-			$tmpCategory = t3lib_div::makeinstance(
+			$tmpCategory = \TYPO3\CMS\Core\Utility\GeneralUtility::makeinstance(
 				'Tx_Commerce_Domain_Model_Category',
 				$this->cat,
 				$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']
@@ -236,7 +236,7 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 
 		$categorySubproducts = $this->category->getProductUids();
 
-		/** @var tslib_fe $frontend */
+		/** @var \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController $frontend */
 		$frontend = & $GLOBALS['TSFE'];
 
 		if ((!$this->conf['singleProduct']) && ((int)$this->piVars['showUid'] > 0) && (!$GLOBALS['TSFE']->beUserLogin)) {
@@ -262,7 +262,11 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 		if (($this->piVars['catUid']) && ($this->conf['checkCategoryTree'] == 1)) {
 				// Validate given CAT UID, if is below master_cat
 			/** @var Tx_Commerce_Domain_Model_Category masterCategoryObj */
-			$this->masterCategoryObj = t3lib_div::makeinstance('Tx_Commerce_Domain_Model_Category', $this->master_cat, $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
+			$this->masterCategoryObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeinstance(
+				'Tx_Commerce_Domain_Model_Category',
+				$this->master_cat,
+				$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']
+			);
 			$this->masterCategoryObj->loadData();
 			$masterCategorySubCategories = $this->masterCategoryObj->getChildCategoriesUidlist();
 			if (in_array($this->piVars['catUid'], $masterCategorySubCategories)) {
@@ -279,7 +283,11 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 				// Only, if the category has been changed
 			unset($this->category);
 			/** @var Tx_Commerce_Domain_Model_Category category */
-			$this->category = t3lib_div::makeinstance('Tx_Commerce_Domain_Model_Category', $this->cat, $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
+			$this->category = \TYPO3\CMS\Core\Utility\GeneralUtility::makeinstance(
+				'Tx_Commerce_Domain_Model_Category',
+				$this->cat,
+				$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']
+			);
 			$this->category->loadData();
 		}
 
@@ -303,7 +311,7 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 
 			$catConf = $this->category->getTyposcriptConfig();
 			if (is_array($catConf['catTS.'])) {
-				$this->conf = t3lib_div::array_merge_recursive_overrule($this->conf, $catConf['catTS.']);
+				$this->conf = \TYPO3\CMS\Core\Utility\GeneralUtility::array_merge_recursive_overrule($this->conf, $catConf['catTS.']);
 			}
 
 			if ($long) {
@@ -327,14 +335,14 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 		}
 
 		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi1/class.tx_commerce_pi1.php']['postInit'])) {
-			t3lib_div::deprecationLog('
+			\TYPO3\CMS\Core\Utility\GeneralUtility::deprecationLog('
 				hook
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/pi1/class.tx_commerce_pi1.php\'][\'postInit\']
 				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/ListController.php\'][\'postInit\']
 			');
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi1/class.tx_commerce_pi1.php']['postInit'] as $classRef) {
-				$hookObj = &t3lib_div::getUserObj($classRef);
+				$hookObj = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
 				if (method_exists($hookObj, 'postInit')) {
 					$hookObj->postInit($this);
 				}
@@ -342,7 +350,7 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 		}
 		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/ListController.php']['postInit'])) {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/ListController.php']['postInit'] as $classRef) {
-				$hookObj = &t3lib_div::getUserObj($classRef);
+				$hookObj = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
 				if (method_exists($hookObj, 'postInit')) {
 					$hookObj->postInit($this);
 				}
@@ -409,16 +417,24 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 		$productId = (int) $productId;
 
 		if ($productId > 0) {
-			/** @var t3lib_db $database */
+			/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 			$database = $GLOBALS['TYPO3_DB'];
 
 				// Get not localized product
 			$mainProductRes = $database->exec_SELECTquery('l18n_parent', 'tx_commerce_products', 'uid = ' . $productId);
-			if ($database->sql_num_rows($mainProductRes) == 1 AND $row = $database->sql_fetch_assoc($mainProductRes) AND $row['l18n_parent'] != 0) {
+			if (
+				$database->sql_num_rows($mainProductRes) == 1 &&
+				$row = $database->sql_fetch_assoc($mainProductRes) &&
+				$row['l18n_parent'] != 0
+			) {
 				$productId = $row['l18n_parent'];
 			}
 
-			$this->product = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product', $productId, $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
+			$this->product = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+				'Tx_Commerce_Domain_Model_Product',
+				$productId,
+				$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']
+			);
 			$this->product->loadData();
 
 			if ($this->product->isAccessible()) {
@@ -462,19 +478,19 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 	public function renderSingleView($product, $category, $subpartName, $subpartNameNostock) {
 		$hookObjectsArr = array();
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['singleview'])) {
-			t3lib_div::deprecationLog('
+			\TYPO3\CMS\Core\Utility\GeneralUtility::deprecationLog('
 				hook
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_pibase.php\'][\'singleview\']
 				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/ListController.php\'][\'renderSingleView\']
 			');
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['singleview'] as $classRef) {
-				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+				$hookObjectsArr[] = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
 			}
 		}
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/ListController.php']['renderSingleView'])) {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/ListController.php']['renderSingleView'] as $classRef) {
-				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+				$hookObjectsArr[] = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
 			}
 		}
 
@@ -593,19 +609,19 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 	public function makeArticleView($viewKind, $conf = array(), $product, $templateMarkerArray = '', $template = '') {
 		$hookObjectsArr = array();
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['articleview'])) {
-			t3lib_div::deprecationLog('
+			\TYPO3\CMS\Core\Utility\GeneralUtility::deprecationLog('
 				hook
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_pibase.php\'][\'articleview\']
 				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/ListController.php\'][\'articleView\']
 			');
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['articleview'] as $classRef) {
-				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+				$hookObjectsArr[] = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
 			}
 		}
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/ListController.php']['articleView'])) {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/ListController.php']['articleView'] as $classRef) {
-				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+				$hookObjectsArr[] = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
 			}
 		}
 
@@ -693,7 +709,7 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 						$ct = 0;
 						foreach ($attributeArray as $attributeUid => $myAttribute) {
 							/** @var Tx_Commerce_Domain_Model_Attribute $attributeObj */
-							$attributeObj = t3lib_div::makeInstance(
+							$attributeObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
 								'Tx_Commerce_Domain_Model_Attribute', $attributeUid,
 								$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']
 							);
@@ -775,7 +791,7 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 					$markerArray = array();
 					foreach ($attributeMatrix as $attrUid => $values) {
 						/** @var Tx_Commerce_Domain_Model_Attribute $attributeObj */
-						$attributeObj = t3lib_div::makeInstance(
+						$attributeObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
 							'Tx_Commerce_Domain_Model_Attribute', $attrUid,
 							$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']
 						);
@@ -804,7 +820,9 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 						$markerArray['###SELECT_ATTRIBUTES_HTML_ELEMENT_NAME###'] = $this->prefixId . '[attsel_' . $attrUid . ']';
 
 						if (strpos($templateAttrSelector, '###SELECT_ATTRIBUTES_ITEM_TEXT_ALL###') !== FALSE) {
-							t3lib_div::deprecationLog('marker ###SELECT_ATTRIBUTES_ITEM_TEXT_ALL### is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0');
+							\TYPO3\CMS\Core\Utility\GeneralUtility::deprecationLog(
+								'marker ###SELECT_ATTRIBUTES_ITEM_TEXT_ALL### is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0'
+							);
 						}
 						$markerArray['###SELECT_ATTRIBUTES_ITEM_TEXT_ALL###'] = '';
 						$markerArray['###SELECT_ATTRIBUTES_UNIT###'] = $attributeObj->getUnit();
@@ -838,7 +856,10 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 							}
 
 							if (strpos($templateAttrSelector, '###SELECT_ATTRIBUTES_ITEM_TEXT_ALL###') !== FALSE) {
-								t3lib_div::deprecationLog('marker ###SELECT_ATTRIBUTES_VALUE_SELECTED### is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use ###SELECT_ATTRIBUTES_VALUE_STATUS### instead');
+								\TYPO3\CMS\Core\Utility\GeneralUtility::deprecationLog(
+									'marker ###SELECT_ATTRIBUTES_VALUE_SELECTED### is deprecated since commerce 1.0.0, it will be
+									removed in commerce 1.4.0, please use ###SELECT_ATTRIBUTES_VALUE_STATUS### instead'
+								);
 							}
 							$markerArrayItem['###SELECT_ATTRIBUTES_VALUE_SELECTED###'] = $markerArrayItem['###SELECT_ATTRIBUTES_VALUE_STATUS###'];
 							foreach ($hookObjectsArr as $hookObj) {

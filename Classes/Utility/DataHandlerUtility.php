@@ -89,7 +89,7 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 	public $cmd;
 
 	/**
-	 * @var t3lib_clipboard
+	 * @var \TYPO3\CMS\Backend\Clipboard\Clipboard
 	 */
 	public $clipObj;
 
@@ -151,15 +151,15 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 	 */
 	public function init() {
 		// GPvars:
-		$this->id = (int) t3lib_div::_GP('id');
-		$this->redirect = t3lib_div::_GP('redirect');
-		$this->prErr = t3lib_div::_GP('prErr');
-		$this->CB = t3lib_div::_GP('CB');
-		$this->vC = t3lib_div::_GP('vC');
-		$this->uPT = t3lib_div::_GP('uPT');
-		$this->sorting = t3lib_div::_GP('sorting');
-		$this->locales = t3lib_div::_GP('locale');
-		$this->cmd = t3lib_div::_GP('cmd');
+		$this->id = (int) \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('id');
+		$this->redirect = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('redirect');
+		$this->prErr = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('prErr');
+		$this->CB = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('CB');
+		$this->vC = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('vC');
+		$this->uPT = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('uPT');
+		$this->sorting = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('sorting');
+		$this->locales = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('locale');
+		$this->cmd = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('cmd');
 		$this->clipObj = NULL;
 		$this->content = '';
 
@@ -168,15 +168,15 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 			'CB[paste]=' . rawurlencode($this->CB['paste']) . '&CB[pad]=' . $this->CB['pad'];
 
 		// Initializing document template object:
-		$this->doc = t3lib_div::makeInstance('template');
+		$this->doc = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('template');
 		$this->doc->backPath = $GLOBALS['BACK_PATH'];
 		$this->doc->docType = 'xhtml_trans';
 		$this->doc->setModuleTemplate(PATH_TXCOMMERCE . 'Resources/Private/Backend/mod_index.html');
 		$this->doc->loadJavascriptLib('contrib/prototype/prototype.js');
 		$this->doc->loadJavascriptLib($this->doc->backPath . PATH_TXCOMMERCE_REL . 'Resources/Public/Javascript/copyPaste.js');
-		$this->doc->form = '<form action="DataHandlerUtility.php?' . $cbString . '&vC=' . $this->vC . '&uPT=' . $this->uPT . '&redirect=' . rawurlencode(
-				$this->redirect
-			) . '&prErr=' . $this->prErr . '&cmd=commit" method="post" name="localeform" id="localeform">';
+		$this->doc->form = '<form action="DataHandlerUtility.php?' . $cbString . '&vC=' . $this->vC . '&uPT=' . $this->uPT .
+			'&redirect=' . rawurlencode($this->redirect) .
+			'&prErr=' . $this->prErr . '&cmd=commit" method="post" name="localeform" id="localeform">';
 	}
 
 	/**
@@ -186,8 +186,8 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 	 */
 	public function initClipboard() {
 		if (is_array($this->CB)) {
-			/** @var t3lib_clipboard $clipObj */
-			$clipObj = t3lib_div::makeInstance('t3lib_clipboard');
+			/** @var \TYPO3\CMS\Backend\Clipboard\Clipboard $clipObj */
+			$clipObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Clipboard\\Clipboard');
 			$clipObj->initializeClipboard();
 			$clipObj->setCurrentPad($this->CB['pad']);
 			$this->clipObj = $clipObj;
@@ -200,18 +200,21 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 	 * @return void
 	 */
 	public function main() {
-		/** @var t3lib_beUserAuth $backendUser */
+		/**
+		 * @var \TYPO3\CMS\Core\Authentication\BackendUserAuthentication $backendUser
+		 */
 		$backendUser = $GLOBALS['BE_USER'];
 
 		// Checking referer / executing
-		$refInfo = parse_url(t3lib_div::getIndpEnv('HTTP_REFERER'));
-		$httpHost = t3lib_div::getIndpEnv('TYPO3_HOST_ONLY');
+		$refInfo = parse_url(\TYPO3\CMS\Core\Utility\GeneralUtility::getIndpEnv('HTTP_REFERER'));
+		$httpHost = \TYPO3\CMS\Core\Utility\GeneralUtility::getIndpEnv('TYPO3_HOST_ONLY');
 
 		if ($httpHost != $refInfo['host']
 			&& $this->vC != $backendUser->veriCode()
 			&& !$GLOBALS['TYPO3_CONF_VARS']['SYS']['doNotCheckReferer']
 		) {
-			// writelog($type, $action, $error, $details_nr, $details, $data, $tablename, $recuid, $recpid)
+			// writelog($type, $action, $error, $details_nr,
+			// $details, $data, $tablename, $recuid, $recpid)
 			$backendUser->writelog(
 				1, 2, 3, 0, 'Referer host "%s" and server host "%s" did not match and veriCode was not valid either!', array(
 					$refInfo['host'],
@@ -271,39 +274,42 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 		$str .= $this->doc->header($language->getLL('Copy'));
 		$str .= $this->doc->spacer(5);
 
-		// flag if neither sorting nor localizations are existing and we can immediately copy
+		// flag if neither sorting nor localizations
+		// are existing and we can immediately copy
 		$noActionReq = FALSE;
 
-		// First prepare user defined objects (if any) for hooks which extend this function:
+		// First prepare user defined objects (if any)
+		// for hooks which extend this function:
 		$hookObjectsArr = array();
 		if (is_array(
 			$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/mod_cce/class.tx_commerce_cce_db.php']['copyWizardClass']
 		)
 		) {
-			t3lib_div::deprecationLog(
+			\TYPO3\CMS\Core\Utility\GeneralUtility::deprecationLog(
 				'
-								hook
-								$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/mod_cce/class.tx_commerce_cce_db.php\'][\'copyWizardClass\']
-								is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
-								$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Utility/DataHandlerUtility.php\'][\'copyWizard\']
-							'
+					hook
+					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/mod_cce/class.tx_commerce_cce_db.php\'][\'copyWizardClass\']
+					is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
+					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Utility/DataHandlerUtility.php\'][\'copyWizard\']
+				'
 			);
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/mod_cce/class.tx_commerce_cce_db.php']['copyWizardClass'] as $classRef) {
-				$hookObjectsArr[] = & t3lib_div::getUserObj($classRef);
+				$hookObjectsArr[] = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
 			}
 		}
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Utility/DataHandlerUtility.php']['copyWizard'])) {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Utility/DataHandlerUtility.php']['copyWizard'] as $classRef) {
-				$hookObjectsArr[] = & t3lib_div::getUserObj($classRef);
+				$hookObjectsArr[] = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
 			}
 		}
 
 		switch ($command) {
 			case 'overwrite':
+				// fallthrough
 			case 'pasteProduct':
 				// chose local to copy from product
 				/** @var Tx_Commerce_Domain_Model_Product $product */
-				$product = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product', $uidClip);
+				$product = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Product', $uidClip);
 				$product->loadData();
 				$prods = $product->getL18nProducts();
 
@@ -323,7 +329,9 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 							'<img src="' . $this->doc->backPath . 'gfx/flags/' . $tmpProd['flag'] . '" alt="Flag" />' :
 							'';
 
-						$str .= '<li><input type="checkbox" name="locale[]" id="loc_' . $tmpProd['uid'] . '" value="' . $tmpProd['sys_language'] . '" /><label for="loc_' . $tmpProd['uid'] . '">' . $flag . $tmpProd['title'] . '</label></li>';
+						$str .= '<li><input type="checkbox" name="locale[]" id="loc_' . $tmpProd['uid'] . '" value="' .
+							$tmpProd['sys_language'] . '" /><label for="loc_' . $tmpProd['uid'] . '">' . $flag .
+							$tmpProd['title'] . '</label></li>';
 					}
 
 					$str .= '</ul>';
@@ -334,7 +342,7 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 				if ($command != 'overwrite') {
 					// Initialize tree object:
 					/** @var Tx_Commerce_Tree_Leaf_ProductData $treedb */
-					$treedb = t3lib_div::makeInstance('Tx_Commerce_Tree_Leaf_ProductData');
+					$treedb = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Tree_Leaf_ProductData');
 					$treedb->init();
 
 					$records = $treedb->getRecordsDbList($uidTarget);
@@ -342,35 +350,40 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 				$l = count($records['pid'][$uidTarget]);
 
 				// Hook: beforeFormClose
-				$user_ignoreClose = FALSE;
+				$userIgnoreClose = FALSE;
 
 				foreach ($hookObjectsArr as $hookObj) {
 					if (method_exists($hookObj, 'beforeFormClose')) {
-						// set $user_ignoreClose to true if you want to force the script to print out the execute button
-						$str .= $hookObj->beforeFormClose($uidClip, $uidTarget, $command, $user_ignoreClose);
+						// set $user_ignoreClose to true if you want to
+						// force the script to print out the execute button
+						$str .= $hookObj->beforeFormClose($uidClip, $uidTarget, $command, $userIgnoreClose);
 					}
 				}
 
-				if (0 >= $l && (0 != count($prods) || $user_ignoreClose)) {
-					// no child object - sorting position is irrelevant - just print a submit button and notify users that there are not products in the category yet
+				if (0 >= $l && (0 != count($prods) || $userIgnoreClose)) {
+					// no child object - sorting position is irrelevant - just print
+					// a submit button and notify users that there are not products
+					// in the category yet
 					$str .= '<input type="submit" value="' . $language->getLL('copy.submit') . '" />';
 				} elseif (0 < $l) {
 					// at least 1 item - offer choice
-					$icon = '<img' . t3lib_iconWorks::skinImg(
+					$icon = '<img' . \TYPO3\CMS\Backend\Utility\IconUtility::skinImg(
 							$this->doc->backPath, 'gfx/newrecord_marker_d.gif', 'width="281" height="8"'
 						) . ' alt="" title="Insert the category" />';
-					$prodIcon = t3lib_iconWorks::getIconImage(
+					$prodIcon = \TYPO3\CMS\Backend\Utility\IconUtility::getIconImage(
 						'tx_commerce_products', array('uid' => $uidTarget), $this->doc->backPath, 'align="top" class="c-recIcon"'
 					);
 					$str .= '<h1>' . $language->getLL('copy.position') . '</h1>';
 
-					$str .= '<span class="nobr"><a href="javascript:void(0)" onclick="submitForm(' . $records['pid'][$uidTarget][0]['uid'] . ')">' . $icon . '</a></span><br />';
+					$str .= '<span class="nobr"><a href="javascript:void(0)" onclick="submitForm(' .
+						$records['pid'][$uidTarget][0]['uid'] . ')">' . $icon . '</a></span><br />';
 
 					for ($i = 0; $i < $l; $i++) {
 						$record = $records['pid'][$uidTarget][$i];
 
 						$str .= '<span class="nobr">' . $prodIcon . $record['title'] . '</span><br />';
-						$str .= '<span class="nobr"><a href="javascript:void(0)" onclick="submitForm(-' . $record['uid'] . ')">' . $icon . '</a></span><br />';
+						$str .= '<span class="nobr"><a href="javascript:void(0)" onclick="submitForm(-' .
+							$record['uid'] . ')">' . $icon . '</a></span><br />';
 					}
 				} else {
 					$noActionReq = TRUE;
@@ -380,7 +393,7 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 			case 'pasteCategory':
 				// chose locale to copy from category
 				/** @var Tx_Commerce_Domain_Model_Category $cat */
-				$cat = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category', $uidClip);
+				$cat = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Category', $uidClip);
 				$cat->loadData();
 				$cats = $cat->getL18nCategories();
 
@@ -399,7 +412,9 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 							'<img src="' . $this->doc->backPath . 'gfx/flags/' . $tmpCat['flag'] . '" alt="Flag" />' :
 							'';
 
-						$str .= '<li><input type="checkbox" name="locale[]" id="loc_' . $tmpCat['uid'] . '" value="' . $tmpCat['sys_language'] . '" /><label for="loc_' . $tmpCat['uid'] . '">' . $flag . $tmpCat['title'] . '</label></li>';
+						$str .= '<li><input type="checkbox" name="locale[]" id="loc_' . $tmpCat['uid'] . '" value="' .
+							$tmpCat['sys_language'] . '" /><label for="loc_' . $tmpCat['uid'] . '">' . $flag . $tmpCat['title'] .
+							'</label></li>';
 					}
 
 					$str .= '</ul>';
@@ -408,7 +423,7 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 				// chose sorting position
 				// Initialize tree object:
 				/** @var Tx_Commerce_Tree_Leaf_CategoryData $treedb */
-				$treedb = t3lib_div::makeInstance('Tx_Commerce_Tree_Leaf_CategoryData');
+				$treedb = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Tree_Leaf_CategoryData');
 				$treedb->init();
 
 				$records = $treedb->getRecordsDbList($uidTarget);
@@ -416,35 +431,37 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 				$l = count($records['pid'][$uidTarget]);
 
 				// Hook: beforeFormClose
-				$user_ignoreClose = FALSE;
+				$userIgnoreClose = FALSE;
 
 				foreach ($hookObjectsArr as $hookObj) {
 					if (method_exists($hookObj, 'beforeFormClose')) {
-						$str .= $hookObj->beforeFormClose($uidClip, $uidTarget, $command, $user_ignoreClose);
+						$str .= $hookObj->beforeFormClose($uidClip, $uidTarget, $command, $userIgnoreClose);
 					}
 				}
 
-				if (0 == $l && (0 != count($cats) || $user_ignoreClose)) {
+				if (0 == $l && (0 != count($cats) || $userIgnoreClose)) {
 					// no child object - sorting position is irrelevant - just print a submit button
 					$str .= '<input type="submit" value="' . $language->getLL('copy.submit') . '" />';
 				} elseif (0 < $l) {
 					// at least 1 item - offer choice
-					$icon = '<img' . t3lib_iconWorks::skinImg(
+					$icon = '<img' . \TYPO3\CMS\Backend\Utility\IconUtility::skinImg(
 							$this->doc->backPath, 'gfx/newrecord_marker_d.gif', 'width="281" height="8"'
 						) . ' alt="" title="Insert the category" />';
-					$catIcon = t3lib_iconWorks::getIconImage(
+					$catIcon = \TYPO3\CMS\Backend\Utility\IconUtility::getIconImage(
 						'tx_commerce_categories', array('uid' => $uidTarget), $this->doc->backPath,
 						'align="top" class="c-recIcon"'
 					);
 					$str .= '<h1>' . $language->getLL('copy.position') . '</h1>';
 
-					$str .= '<span class="nobr"><a href="javascript:void(0)" onclick="submitForm(' . $records['pid'][$uidTarget][0]['uid'] . ')">' . $icon . '</a></span><br />';
+					$str .= '<span class="nobr"><a href="javascript:void(0)" onclick="submitForm(' .
+						$records['pid'][$uidTarget][0]['uid'] . ')">' . $icon . '</a></span><br />';
 
 					for ($i = 0; $i < $l; $i++) {
 						$record = $records['pid'][$uidTarget][$i];
 
 						$str .= '<span class="nobr">' . $catIcon . $record['title'] . '</span><br />
-							<span class="nobr"><a href="javascript:void(0)" onclick="submitForm(-' . $record['uid'] . ')">' . $icon . '</a></span><br />';
+							<span class="nobr"><a href="javascript:void(0)" onclick="submitForm(-' .
+							$record['uid'] . ')">' . $icon . '</a></span><br />';
 					}
 				} else {
 					$noActionReq = TRUE;
@@ -453,10 +470,10 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 
 			default:
 				die('unknown command');
-				break;
 		}
 
-		// skip transforming and execute the command if there are no locales and no positions
+		// skip transforming and execute the command
+		// if there are no locales and no positions
 		if ($noActionReq) {
 			$this->commitCommand($uidClip, $uidTarget, $command);
 
@@ -479,7 +496,7 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 			'CATPATH' => '',
 		);
 		$markers['FUNC_MENU'] = $this->doc->funcMenu(
-			'', t3lib_BEfunc::getFuncMenu(
+			'', \TYPO3\CMS\Backend\Utility\BackendUtility::getFuncMenu(
 				$this->id, 'SET[mode]', $this->MOD_SETTINGS['mode'], $this->MOD_MENU['mode']
 			)
 		);
@@ -504,7 +521,7 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 			$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/mod_cce/class.tx_commerce_cce_db.php']['commitCommandClass']
 		)
 		) {
-			t3lib_div::deprecationLog(
+			\TYPO3\CMS\Core\Utility\GeneralUtility::deprecationLog(
 				'
 								hook
 								$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/mod_cce/class.tx_commerce_cce_db.php\'][\'storeDataToDatabase\']
@@ -513,7 +530,7 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 							'
 			);
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/mod_cce/class.tx_commerce_cce_db.php']['commitCommandClass'] as $classRef) {
-				$hookObjectsArr[] = t3lib_div::getUserObj($classRef);
+				$hookObjectsArr[] = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
 			}
 		}
 		if (is_array(
@@ -521,7 +538,7 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 		)
 		) {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Utility/DataHandlerUtility.php']['commitCommand'] as $classRef) {
-				$hookObjectsArr[] = t3lib_div::getUserObj($classRef);
+				$hookObjectsArr[] = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
 			}
 		}
 		// Hook: beforeCommit
@@ -562,7 +579,7 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 			&& (isset($this->data['tx_commerce_categories']) || isset($this->cmd['tx_commerce_categories']))
 			&& (isset($this->data['tx_commerce_products']) || isset($this->cmd['tx_commerce_products']))
 		) {
-			t3lib_BEfunc::setUpdateSignal('updateFolderTree');
+			\TYPO3\CMS\Backend\Utility\BackendUtility::setUpdateSignal('updateFolderTree');
 		}
 	}
 
@@ -576,14 +593,14 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 		if ($this->content != '') {
 			echo $this->content;
 		} elseif ($this->redirect) {
-			header('Location: ' . t3lib_div::locationHeaderUrl($this->redirect));
+			header('Location: ' . \TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl($this->redirect));
 		}
 	}
 }
 
 // Make instance:
 /** @var Tx_Commerce_Utility_DataHandlerUtility $SOBE */
-$SOBE = t3lib_div::makeInstance('Tx_Commerce_Utility_DataHandlerUtility');
+$SOBE = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Utility_DataHandlerUtility');
 $SOBE->init();
 $SOBE->initClipboard();
 $SOBE->main();

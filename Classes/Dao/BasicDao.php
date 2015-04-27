@@ -71,9 +71,9 @@ class Tx_Commerce_Dao_BasicDao {
 	 * @return void
 	 */
 	protected function init() {
-		$this->parser = t3lib_div::makeInstance('Tx_Commerce_Dao_BasicDaoParser');
-		$this->mapper = t3lib_div::makeInstance('Tx_Commerce_Dao_BasicDaoMapper', $this->parser);
-		$this->object = t3lib_div::makeInstance('Tx_Commerce_Dao_BasicDaoObject');
+		$this->parser = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Dao_BasicDaoParser');
+		$this->mapper = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Dao_BasicDaoMapper', $this->parser);
+		$this->object = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Dao_BasicDaoObject');
 	}
 
 	/**
@@ -200,10 +200,3 @@ class Tx_Commerce_Dao_BasicDao {
 		$this->mapper->remove($this->object);
 	}
 }
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Dao/BasicDao.php']) {
-	/** @noinspection PhpIncludeInspection */
-	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Dao/BasicDao.php']);
-}
-
-?>

@@ -37,15 +37,8 @@ class Tx_Commerce_Dao_FeuserDao extends Tx_Commerce_Dao_BasicDao {
 	 * @return void
 	 */
 	protected function init() {
-		$this->parser = t3lib_div::makeInstance('Tx_Commerce_Dao_FeuserDaoParser');
-		$this->mapper = t3lib_div::makeInstance('Tx_Commerce_Dao_FeuserDaoMapper', $this->parser);
-		$this->object = t3lib_div::makeInstance('Tx_Commerce_Dao_FeuserDaoObject');
+		$this->parser = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Dao_FeuserDaoParser');
+		$this->mapper = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Dao_FeuserDaoMapper', $this->parser);
+		$this->object = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Dao_FeuserDaoObject');
 	}
 }
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Dao/FeuserDao.php']) {
-	/** @noinspection PhpIncludeInspection */
-	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Dao/FeuserDao.php']);
-}
-
-?>

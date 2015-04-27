@@ -33,7 +33,7 @@ class Tx_Commerce_Utility_TceformsUtility {
 	 * @param array $data
 	 */
 	public function productsSelector(&$data) {
-		/** @var t3lib_db $database */
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
 		$numArticleNumbersShow = 3;

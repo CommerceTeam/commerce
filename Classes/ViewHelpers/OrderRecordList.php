@@ -154,11 +154,11 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends \TYPO3\CMS\Recordlist\Reco
 	 * @return string
 	 */
 	public function getTable($table, $id, $rowlist) {
-		/** @var t3lib_db $database */
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = $GLOBALS['TYPO3_DB'];
 		/** @var language $language */
 		$language = $GLOBALS['LANG'];
-		/** @var t3lib_beUserAuth $backendUser */
+		/** @var \TYPO3\CMS\Core\Authentication\BackendUserAuthentication $backendUser */
 		$backendUser = $GLOBALS['BE_USER'];
 
 			// Init
@@ -558,7 +558,7 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends \TYPO3\CMS\Recordlist\Reco
 	 * @see getTable()
 	 */
 	public function renderListRow($table, $row, $cc, $titleCol, $thumbsCol, $indent = 0) {
-		/** @var t3lib_db $database */
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = $GLOBALS['TYPO3_DB'];
 		/** @var language $language */
 		$language = $GLOBALS['LANG'];
@@ -750,8 +750,8 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends \TYPO3\CMS\Recordlist\Reco
 			// Add row to CSV list:
 		if ($this->csvOutput) {
 				// Charset Conversion
-			/** @var t3lib_cs $csObj */
-			$csObj = GeneralUtility::makeInstance('t3lib_cs');
+			/** @var \TYPO3\CMS\Core\Charset\CharsetConverter $csObj */
+			$csObj = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Charset\\CharsetConverter');
 			$csObj->initCharset($GLOBALS['TYPO3_CONF_VARS']['BE']['forceCharset']);
 
 			if (!$extConf['BECSVCharset']) {
@@ -759,12 +759,12 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends \TYPO3\CMS\Recordlist\Reco
 			}
 			$csObj->initCharset($extConf['BECSVCharset']);
 			$csObj->convArray($row, $GLOBALS['TYPO3_CONF_VARS']['BE']['forceCharset'], $extConf['BECSVCharset']);
-			$this->addToCSV($row, $table);
+			$this->addToCSV($row);
 		}
 
 			// Create element in table cells:
 		$iOut .= $this->addelement(1, $theIcon, $theData, $rowBackgroundColor);
-			// Render thumbsnails if a thumbnail column exists and there is content in it:
+			// Render thumbnails if a thumbnail column exists and there is content in it:
 		if ($this->thumbs && trim($row[$thumbsCol])) {
 			$iOut .= $this->addelement(4, '', array($titleCol => $this->thumbCode($row, $table, $thumbsCol)), $rowBackgroundColor);
 		}
@@ -857,7 +857,7 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends \TYPO3\CMS\Recordlist\Reco
 	 * @return string
 	 */
 	protected function renderMoveToSelector($table) {
-		/** @var t3lib_db $database */
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = $GLOBALS['TYPO3_DB'];
 		/** @var language $language */
 		$language = $GLOBALS['LANG'];
@@ -917,7 +917,7 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends \TYPO3\CMS\Recordlist\Reco
 	 * @return array
 	 */
 	public function makeQueryArray($table, $id, $addWhere = '', $fieldList = '*') {
-		/** @var t3lib_db $database */
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
 		$hookObjectsArr = array();
@@ -1227,7 +1227,7 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends \TYPO3\CMS\Recordlist\Reco
 	 * @return array Array, where values are fieldnames to include in query
 	 */
 	public function makeFieldList($table, $dontCheckUser = 0, $addDateFields = 0) {
-		/** @var t3lib_beUserAuth $backendUser */
+		/** @var \TYPO3\CMS\Core\Authentication\BackendUserAuthentication $backendUser */
 		$backendUser = $GLOBALS['BE_USER'];
 
 			// Init fieldlist array:
