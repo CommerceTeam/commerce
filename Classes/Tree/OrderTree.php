@@ -41,6 +41,11 @@ class Tx_Commerce_Tree_OrderTree extends \TYPO3\CMS\Backend\Tree\View\BrowseTree
 	public $ext_IconMode;
 
 	/**
+	 * @var string
+	 */
+	public $thisScript = 'navigation.php';
+
+	/**
 	 * Calls init functions
 	 *
 	 * @return self

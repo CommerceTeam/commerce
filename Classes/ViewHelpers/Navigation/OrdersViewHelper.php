@@ -66,33 +66,29 @@ class Tx_Commerce_ViewHelpers_Navigation_OrdersViewHelper extends \TYPO3\CMS\Bac
 	protected $doHighlight;
 
 	/**
-	 * @var \TYPO3\CMS\Backend\Template\DocumentTemplate
-	 */
-	public $doc;
-
-	/**
 	 * Initialiation of the class
 	 *
 	 * @todo Check with User Permissions
 	 * @return void
 	 */
 	public function init() {
-		/** @var \TYPO3\CMS\Core\Authentication\BackendUserAuthentication $backendUser */
+		/**
+		 * @var \TYPO3\CMS\Core\Authentication\BackendUserAuthentication $backendUser
+		 */
 		$backendUser = $GLOBALS['BE_USER'];
 
-			// Setting GPvars:
+		// Setting GPvars:
 		$this->currentSubScript = GeneralUtility::_GP('currentSubScript');
 		$this->cMR = GeneralUtility::_GP('cMR');
 		$this->setTemporaryDatabaseMount = GeneralUtility::_GP('setTempDBmount');
 
-			// Generate Folder if necessary
+		// Generate Folder if necessary
 		Tx_Commerce_Utility_FolderUtility::initFolders();
 
-			// Create page tree object:
+		// Create page tree object:
 		$this->pagetree = GeneralUtility::makeInstance('Tx_Commerce_Tree_OrderTree');
 		$this->pagetree->ext_IconMode = $backendUser->getTSConfigVal('options.pageTree.disableIconLinkToContextmenu');
 		$this->pagetree->ext_showPageId = $backendUser->getTSConfigVal('options.pageTree.showPageIdWithTitle');
-		$this->pagetree->thisScript = 'Classes/Module/Orders/navigation.php';
 		$this->pagetree->addField('alias');
 		$this->pagetree->addField('shortcut');
 		$this->pagetree->addField('shortcut_mode');
@@ -101,13 +97,13 @@ class Tx_Commerce_ViewHelpers_Navigation_OrdersViewHelper extends \TYPO3\CMS\Bac
 		$this->pagetree->addField('nav_hide');
 		$this->pagetree->addField('url');
 
-			// Temporary DB mounts:
+		// Temporary DB mounts:
 		$this->pagetree->MOUNTS = array_unique(
 			Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Orders', 'Commerce', 0, 'Commerce')
 		);
 		$this->initializeTemporaryDatabaseMount();
 
-			// Setting highlight mode:
+		// Setting highlight mode:
 		$this->doHighlight = !$backendUser->getTSConfigVal('options.pageTree.disableTitleHighlight');
 	}
 
