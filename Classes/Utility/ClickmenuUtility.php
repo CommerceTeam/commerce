@@ -491,9 +491,11 @@ class Tx_Commerce_Utility_ClickmenuUtility extends \TYPO3\CMS\Backend\ClickMenu\
 	 * @return string
 	 */
 	public function DB_overwrite($table, $uid, $elInfo) {
-		/** @var language $language */
+		/** @var \TYPO3\CMS\Lang\LanguageService $language */
 		$language = $GLOBALS['LANG'];
-		/** @var \TYPO3\CMS\Core\Authentication\BackendUserAuthentication $backendUser */
+		/**
+		 * @var \TYPO3\CMS\Core\Authentication\BackendUserAuthentication $backendUser
+		 */
 		$backendUser = $GLOBALS['BE_USER'];
 
 		$loc = 'top.content' . ($this->clickMenu->listFrame && !$this->clickMenu->alwaysContentFrame ? '.list_frame' : '');
@@ -530,7 +532,7 @@ class Tx_Commerce_Utility_ClickmenuUtility extends \TYPO3\CMS\Backend\ClickMenu\
 	 * @return string
 	 */
 	public function DB_review($table, $uid) {
-		/** @var language $language */
+		/** @var \TYPO3\CMS\Lang\LanguageService $language */
 		$language = $GLOBALS['LANG'];
 
 		$url = ExtensionManagementUtility::extRelPath('version') . 'cm1/index.php?id=' .

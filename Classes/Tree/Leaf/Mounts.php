@@ -115,7 +115,9 @@ class Tx_Commerce_Tree_Leaf_Mounts extends Tx_Commerce_Tree_Leaf_Base {
 		$this->mountlist = '';
 		$this->mountdata = array();
 		$this->pointer = 0;
-		$this->user = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('\TYPO3\CMS\Core\Authentication\BackendUserAuthentication');
+		$this->user = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+			'TYPO3\\CMS\\Core\\Authentication\\BackendUserAuthentication'
+		);
 		$this->group = 0;
 		$this->byGroup = FALSE;
 	}

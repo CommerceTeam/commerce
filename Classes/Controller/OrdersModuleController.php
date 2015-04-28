@@ -81,7 +81,7 @@ class Tx_Commerce_Controller_OrdersModuleController extends \TYPO3\CMS\Recordlis
 	 * @return void
 	 */
 	public function initPage() {
-		$this->doc = GeneralUtility::makeInstance('template');
+		$this->doc = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
 		$this->doc->backPath = $GLOBALS['BACK_PATH'];
 		$this->doc->docType = 'xhtml_trans';
 		$this->doc->setModuleTemplate(PATH_TXCOMMERCE . 'Resources/Private/Backend/mod_index.html');
@@ -396,9 +396,11 @@ class Tx_Commerce_Controller_OrdersModuleController extends \TYPO3\CMS\Recordlis
 	 * @return array all available buttons as an assoc. array
 	 */
 	protected function getHeaderButtons($buttons) {
-		/** @var \TYPO3\CMS\Core\Authentication\BackendUserAuthentication $backendUser */
+		/**
+		 * @var \TYPO3\CMS\Core\Authentication\BackendUserAuthentication $backendUser
+		 */
 		$backendUser = $GLOBALS['BE_USER'];
-		/** @var language $language */
+		/** @var \TYPO3\CMS\Lang\LanguageService $language */
 		$language = $GLOBALS['LANG'];
 
 			// CSH

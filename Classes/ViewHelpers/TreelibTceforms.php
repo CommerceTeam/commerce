@@ -134,7 +134,7 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 	public $treeBrowserScript;
 
 	/**
-	 * @var language
+	 * @var \TYPO3\CMS\Lang\LanguageService
 	 */
 	public $language;
 

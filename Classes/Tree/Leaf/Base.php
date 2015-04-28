@@ -32,7 +32,7 @@ class Tx_Commerce_Tree_Leaf_Base {
 	/**
 	 * Holds a reference to the global $LANG object
 	 *
-	 * @var language
+	 * @var \TYPO3\CMS\Lang\LanguageService
 	 */
 	protected $language;
 

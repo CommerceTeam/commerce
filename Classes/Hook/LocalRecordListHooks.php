@@ -65,7 +65,7 @@ class Tx_Commerce_Hook_LocalRecordListHooks implements \TYPO3\CMS\Recordlist\Rec
 	 * @return array
 	 */
 	public function renderListHeader($table, $currentIdList, $headerColumns, &$parentObject) {
-		/** @var language $language */
+		/** @var \TYPO3\CMS\Lang\LanguageService $language */
 		$language = $GLOBALS['LANG'];
 
 		if (get_class($parentObject) == 'Tx_Commerce_ViewHelpers_OrderRecordList') {

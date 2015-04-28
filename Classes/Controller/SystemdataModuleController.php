@@ -38,7 +38,7 @@ class Tx_Commerce_Controller_SystemdataModuleController extends \TYPO3\CMS\Backe
 	protected $database;
 
 	/**
-	 * @var language
+	 * @var \TYPO3\CMS\Lang\LanguageService
 	 */
 	protected $language;
 
@@ -92,7 +92,7 @@ class Tx_Commerce_Controller_SystemdataModuleController extends \TYPO3\CMS\Backe
 	public function init() {
 		parent::init();
 
-		/** @var language $language */
+		/** @var \TYPO3\CMS\Lang\LanguageService $language */
 		$language = $GLOBALS['LANG'];
 		$language->includeLLFile('EXT:commerce/Resources/Private/Language/locallang_mod_systemdata.xml');
 

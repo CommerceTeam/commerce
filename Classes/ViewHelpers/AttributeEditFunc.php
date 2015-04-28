@@ -39,15 +39,15 @@ class Tx_Commerce_ViewHelpers_AttributeEditFunc {
 	public function valuelist($parameter) {
 		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = $GLOBALS['TYPO3_DB'];
-		/** @var language $language */
+		/** @var \TYPO3\CMS\Lang\LanguageService $language */
 		$language = $GLOBALS['LANG'];
 
 		$content = '';
 		$foreignTable = 'tx_commerce_attribute_values';
 		$table = 'tx_commerce_attributes';
 
-		/** @var \TYPO3\CMS\Backend\Template\SmallDocumentTemplate $doc */
-		$doc = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\SmallDocumentTemplate');
+		/** @var \TYPO3\CMS\Backend\Template\DocumentTemplate $doc */
+		$doc = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
 		$doc->backPath = $GLOBALS['BACK_PATH'];
 
 		$attributeStoragePid = $parameter['row']['pid'];

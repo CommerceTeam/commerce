@@ -65,7 +65,7 @@ class Tx_Commerce_Tree_OrderTree extends \TYPO3\CMS\Backend\Tree\View\BrowseTree
 	 * @return string Page icon
 	 */
 	public function wrapIcon($icon, &$row) {
-		/** @var language $language */
+		/** @var \TYPO3\CMS\Lang\LanguageService $language */
 		$language = $GLOBALS['LANG'];
 
 			// If the record is locked, present a warning sign.
@@ -86,7 +86,7 @@ class Tx_Commerce_Tree_OrderTree extends \TYPO3\CMS\Backend\Tree\View\BrowseTree
 
 			// Wrap icon in click-menu link.
 		if (!$this->ext_IconMode) {
-			/** @var template $tbeTemplate */
+			/** @var \TYPO3\CMS\Backend\Template\DocumentTemplate $tbeTemplate */
 			$tbeTemplate = $GLOBALS['TBE_TEMPLATE'];
 
 			$thePageIcon = $tbeTemplate->wrapClickMenuOnIcon($thePageIcon, 'pages', $row['uid'], 0, '&bank=' . $this->bank);

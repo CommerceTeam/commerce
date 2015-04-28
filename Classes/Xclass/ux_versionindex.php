@@ -47,7 +47,7 @@ class ux_tx_version_cm1 extends \TYPO3\CMS\Version\Controller\VersionModuleContr
 		if ($table !== 'tx_commerce_products') {
 			return parent::adminLinks($table, $row);
 		} else {
-			/** @var language $language */
+			/** @var \TYPO3\CMS\Lang\LanguageService $language */
 			$language = $GLOBALS['LANG'];
 
 			// Edit link:

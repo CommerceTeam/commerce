@@ -50,9 +50,11 @@ class Tx_Commerce_ViewHelpers_FeuserRecordList extends \TYPO3\CMS\Recordlist\Rec
 	 * @return void
 	 */
 	public function writeTop($row) {
-		/** @var language $language */
+		/** @var \TYPO3\CMS\Lang\LanguageService $language */
 		$language = $GLOBALS['LANG'];
-		/** @var \TYPO3\CMS\Core\Authentication\BackendUserAuthentication $backendUser */
+		/**
+		 * @var \TYPO3\CMS\Core\Authentication\BackendUserAuthentication $backendUser
+		 */
 		$backendUser = $GLOBALS['BE_USER'];
 
 		// Makes the code for the pageicon in the top
@@ -457,7 +459,7 @@ class Tx_Commerce_ViewHelpers_FeuserRecordList extends \TYPO3\CMS\Recordlist\Rec
 	 * @return string Header table row
 	 */
 	public function renderListHeader($table, $currentIdList) {
-		/** @var language $language */
+		/** @var \TYPO3\CMS\Lang\LanguageService $language */
 		$language = $GLOBALS['LANG'];
 
 			// Init:
@@ -606,7 +608,7 @@ class Tx_Commerce_ViewHelpers_FeuserRecordList extends \TYPO3\CMS\Recordlist\Rec
 
 		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = $GLOBALS['TYPO3_DB'];
-		/** @var language $language */
+		/** @var \TYPO3\CMS\Lang\LanguageService $language */
 		$language = $GLOBALS['LANG'];
 
 		// If the count query returned any number of records,

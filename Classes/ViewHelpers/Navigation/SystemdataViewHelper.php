@@ -40,7 +40,7 @@ class Tx_Commerce_ViewHelpers_Navigation_SystemdataViewHelper extends \TYPO3\CMS
 	 */
 	public function initPage() {
 		/** @var \TYPO3\CMS\Backend\Template\DocumentTemplate $doc */
-		$doc = GeneralUtility::makeInstance('template');
+		$doc = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
 		$this->doc = $doc;
 		$this->doc->backPath = $GLOBALS['BACK_PATH'];
 		$this->doc->setModuleTemplate('EXT:commerce/Resources/Private/Backend/mod_systemdata_navigation.html');

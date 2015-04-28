@@ -259,7 +259,7 @@ class Tx_Commerce_Domain_Model_ArticlePrice extends Tx_Commerce_Domain_Model_Abs
 	 * @return void
 	 */
 	public function getTcaRecordTitle(&$params) {
-		/** @var language $language */
+		/** @var \TYPO3\CMS\Lang\LanguageService $language */
 		$language = & $GLOBALS['LANG'];
 		$params['title'] =
 			$language->sL(\TYPO3\CMS\Backend\Utility\BackendUtility::getItemLabel('tx_commerce_article_prices', 'price_gross'), 1) . ': ' .

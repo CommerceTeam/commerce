@@ -30,10 +30,8 @@ $BACK_PATH = '../../../../../typo3/';
 $MLANG['default']['ll_ref'] = 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_cce.xml';
 /** @noinspection PhpIncludeInspection */
 require_once($BACK_PATH . 'init.php');
-/** @noinspection PhpIncludeInspection */
-require_once($BACK_PATH . 'template.php');
 
-/** @var language $LANG */
+/** @var \TYPO3\CMS\Lang\LanguageService $LANG */
 $LANG->includeLLFile('EXT:commerce/Resources/Private/Language/locallang_mod_cce.xml');
 
 /**
@@ -123,7 +121,7 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 	/**
 	 * Document Template Object
 	 *
-	 * @var template
+	 * @var \TYPO3\CMS\Backend\Template\DocumentTemplate
 	 */
 	public $doc;
 
@@ -168,7 +166,7 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 			'CB[paste]=' . rawurlencode($this->CB['paste']) . '&CB[pad]=' . $this->CB['pad'];
 
 		// Initializing document template object:
-		$this->doc = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('template');
+		$this->doc = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
 		$this->doc->backPath = $GLOBALS['BACK_PATH'];
 		$this->doc->docType = 'xhtml_trans';
 		$this->doc->setModuleTemplate(PATH_TXCOMMERCE . 'Resources/Private/Backend/mod_index.html');
@@ -262,7 +260,7 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 	 * @return void
 	 */
 	protected function showCopyWizard($uidClip, $uidTarget, $command) {
-		/** @var language $language */
+		/** @var \TYPO3\CMS\Lang\LanguageService $language */
 		$language = $GLOBALS['LANG'];
 
 		$str = '';

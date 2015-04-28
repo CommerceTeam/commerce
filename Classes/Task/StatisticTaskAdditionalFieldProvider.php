@@ -131,13 +131,13 @@ class Tx_Commerce_Task_StatisticTaskAdditionalFieldProvider implements \TYPO3\CM
 	 * @return string HTML of selectbox options
 	 */
 	protected function renderOptions($fieldName, $fieldId, array $valuesAndLabels, $selectedValue) {
-		/** @var language $language */
+		/** @var \TYPO3\CMS\Lang\LanguageService $language */
 		$language = $GLOBALS['LANG'];
 		$options = array();
 
 		foreach ($valuesAndLabels as $value => $label) {
 			$selected = $value == $selectedValue ? ' selected="selected"' : '';
-			$options[] = '<option value="' . $value .  '"' . $selected . '>' . $language->sL($label) . '</option>';
+			$options[] = '<option value="' . $value . '"' . $selected . '>' . $language->sL($label) . '</option>';
 		}
 
 		return '<select name="' . $fieldName . '" id="' . $fieldId . '">' . implode('', $options) . '</select>';

@@ -785,11 +785,11 @@ class Tx_Commerce_Hook_CommandMapHooks {
 	 * @return void
 	 */
 	protected function error($error) {
-		/** @var language $language */
+		/** @var \TYPO3\CMS\Lang\LanguageService $language */
 		$language = $GLOBALS['LANG'];
 
-		/** @var template $errorDocument */
-		$errorDocument = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('template');
+		/** @var \TYPO3\CMS\Backend\Template\DocumentTemplate $errorDocument */
+		$errorDocument = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
 		$errorDocument->backPath = '';
 
 		$content = $errorDocument->startPage('Tx_Commerce_Hook_CommandMapHooks error Output');

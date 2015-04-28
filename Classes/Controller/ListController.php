@@ -197,7 +197,10 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 		if ($this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'hscText', 's_template')) {
 			$this->conf['pageBrowser.']['hscText'] = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'hscText', 's_template');
 		}
-		if ($this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'template', 's_template') && file_exists($this->templateFolder . $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'template', 's_template'))) {
+		if (
+			$this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'template', 's_template') &&
+			file_exists($this->templateFolder . $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'template', 's_template'))
+		) {
 			$this->conf['templateFile'] = $this->templateFolder . $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'template', 's_template');
 			if ($this->cObj->fileResource($this->conf['templateFile'])) {
 				$this->templateCode = $this->cObj->fileResource($this->conf['templateFile']);

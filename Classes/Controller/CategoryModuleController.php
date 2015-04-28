@@ -451,9 +451,11 @@ class Tx_Commerce_Controller_CategoryModuleController extends \TYPO3\CMS\Recordl
 	 * @return string
 	 */
 	protected function getCategoryPath($categoryRecord) {
-		/** @var language $language */
+		/** @var \TYPO3\CMS\Lang\LanguageService $language */
 		$language = $GLOBALS['LANG'];
-		/** @var \TYPO3\CMS\Core\Authentication\BackendUserAuthentication $backendUser */
+		/**
+		 * @var \TYPO3\CMS\Core\Authentication\BackendUserAuthentication $backendUser
+		 */
 		$backendUser = $GLOBALS['BE_USER'];
 
 		// Is this a real page

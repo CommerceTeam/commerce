@@ -111,7 +111,7 @@ class CreditCardValidationSolution {
 	public $CCVSError = '';
 
 	/**
-	 * @var language
+	 * @var \TYPO3\CMS\Lang\LanguageService
 	 */
 	protected $language;
 
@@ -119,7 +119,7 @@ class CreditCardValidationSolution {
 	 * @return self
 	 */
 	public function __construct() {
-		$this->language = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('language');
+		$this->language = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('\TYPO3\CMS\Lang\LanguageService');
 		if (is_object($GLOBALS['BE_USER'])) {
 			$languageKey = $GLOBALS['BE_USER']->uc['lang'];
 		} else {

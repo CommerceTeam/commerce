@@ -93,7 +93,7 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 	public function orderArticles($PA) {
 		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = $GLOBALS['TYPO3_DB'];
-		/** @var language $language */
+		/** @var \TYPO3\CMS\Lang\LanguageService $language */
 		$language = $GLOBALS['LANG'];
 
 		$content = '';
@@ -101,7 +101,7 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 		$table = 'tx_commerce_orders';
 
 		/** @var smallDoc $doc */
-		$doc = GeneralUtility::makeInstance('smallDoc');
+		$doc = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
 		$doc->backPath = $GLOBALS['BACK_PATH'];
 
 		/**
@@ -426,7 +426,7 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 		 *
 		 * @var smallDoc $doc
 		 */
-		$doc = GeneralUtility::makeInstance('smallDoc');
+		$doc = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
 		$doc->backPath = $GLOBALS['BACK_PATH'];
 
 		/**
@@ -462,7 +462,7 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 			$content .= $doc->spacer(10);
 			$display_arr = array();
 
-			/** @var language $language */
+			/** @var \TYPO3\CMS\Lang\LanguageService $language */
 			$language = $GLOBALS['LANG'];
 
 			foreach ($data_row as $key => $value) {

@@ -39,7 +39,7 @@ $MCONF['access'] = '';
 /** @noinspection PhpIncludeInspection */
 require_once($BACK_PATH . 'init.php');
 
-/** @var language $LANG */
+/** @var \TYPO3\CMS\Lang\LanguageService $LANG */
 $LANG->includeLLFile('EXT:lang/locallang_misc.xml');
 
 /** @var Tx_Commerce_ViewHelpers_TreelibBrowser $SOBE */

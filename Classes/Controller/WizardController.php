@@ -128,9 +128,11 @@ class Tx_Commerce_Controller_WizardController {
 	 * @return	void
 	 */
 	public function init() {
-		/** @var \TYPO3\CMS\Core\Authentication\BackendUserAuthentication $backendUser */
+		/**
+		 * @var \TYPO3\CMS\Core\Authentication\BackendUserAuthentication $backendUser
+		 */
 		$backendUser = $GLOBALS['BE_USER'];
-		/** @var language $language */
+		/** @var \TYPO3\CMS\Lang\LanguageService $language */
 		$language = $GLOBALS['LANG'];
 
 			// page-selection permission clause (reading)
@@ -148,7 +150,7 @@ class Tx_Commerce_Controller_WizardController {
 		$this->defVals = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('defVals');
 
 			// Create instance of template class for output
-		$this->doc = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('mediumDoc');
+		$this->doc = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
 		$this->doc->backPath = $GLOBALS['BACK_PATH'];
 		$this->doc->docType = 'xhtml_trans';
 		$this->doc->JScode = '';
@@ -190,9 +192,11 @@ class Tx_Commerce_Controller_WizardController {
 	 * @return void
 	 */
 	public function main() {
-		/** @var \TYPO3\CMS\Core\Authentication\BackendUserAuthentication $backendUser */
+		/**
+		 * @var \TYPO3\CMS\Core\Authentication\BackendUserAuthentication $backendUser
+		 */
 		$backendUser = $GLOBALS['BE_USER'];
-		/** @var language $language */
+		/** @var \TYPO3\CMS\Lang\LanguageService $language */
 		$language = $GLOBALS['LANG'];
 
 		// If there was a page - or if the user is admin
@@ -251,9 +255,11 @@ class Tx_Commerce_Controller_WizardController {
 	 * @return void
 	 */
 	protected function regularNew() {
-		/** @var \TYPO3\CMS\Core\Authentication\BackendUserAuthentication $backendUser */
+		/**
+		 * @var \TYPO3\CMS\Core\Authentication\BackendUserAuthentication $backendUser
+		 */
 		$backendUser = $GLOBALS['BE_USER'];
-		/** @var language $language */
+		/** @var \TYPO3\CMS\Lang\LanguageService $language */
 		$language = $GLOBALS['LANG'];
 
 			// Slight spacer from header:

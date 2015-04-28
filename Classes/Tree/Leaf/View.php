@@ -357,7 +357,7 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 
 			// Wrap the Context Menu on the Icon if it is allowed
 		if (isset($GLOBALS['TBE_TEMPLATE']) && !$this->noClickmenu) {
-			/** @var template $template */
+			/** @var \TYPO3\CMS\Backend\Template\DocumentTemplate $template */
 			$template = $GLOBALS['TBE_TEMPLATE'];
 			$template->backPath = $this->backPath;
 			$icon = $template->wrapClickMenuOnIcon($icon, $this->table, $row['uid'], 0, $additionalParams);

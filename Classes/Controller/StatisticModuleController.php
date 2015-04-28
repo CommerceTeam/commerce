@@ -30,11 +30,6 @@
  */
 class Tx_Commerce_Controller_StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 	/**
-	 * @var template
-	 */
-	public $doc;
-
-	/**
 	 * @var array
 	 */
 	protected $extConf;
@@ -87,7 +82,7 @@ class Tx_Commerce_Controller_StatisticModuleController extends \TYPO3\CMS\Backen
 			$this->id = $this->orderPageId;
 		}
 
-		$this->doc = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('template');
+		$this->doc = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
 		$this->doc->backPath = $GLOBALS['BACK_PATH'];
 		$this->doc->docType = 'xhtml_trans';
 		$this->doc->setModuleTemplate(PATH_TXCOMMERCE . 'Resources/Private/Backend/mod_index.html');
@@ -125,7 +120,7 @@ class Tx_Commerce_Controller_StatisticModuleController extends \TYPO3\CMS\Backen
 	 * @return void
 	 */
 	public function menuConfig() {
-		/** @var language $language */
+		/** @var \TYPO3\CMS\Lang\LanguageService $language */
 		$language = $GLOBALS['LANG'];
 
 		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['allowAggregation'] == 1) {
@@ -153,9 +148,11 @@ class Tx_Commerce_Controller_StatisticModuleController extends \TYPO3\CMS\Backen
 	 * @return void
 	 */
 	public function main() {
-		/** @var \TYPO3\CMS\Core\Authentication\BackendUserAuthentication $backendUser */
+		/**
+		 * @var \TYPO3\CMS\Core\Authentication\BackendUserAuthentication $backendUser
+		 */
 		$backendUser = $GLOBALS['BE_USER'];
-		/** @var language $language */
+		/** @var \TYPO3\CMS\Lang\LanguageService $language */
 		$language = $GLOBALS['LANG'];
 
 		// Access check!
@@ -233,9 +230,11 @@ class Tx_Commerce_Controller_StatisticModuleController extends \TYPO3\CMS\Backen
 	 * @return array all available buttons as an assoc. array
 	 */
 	protected function getHeaderButtons() {
-		/** @var \TYPO3\CMS\Core\Authentication\BackendUserAuthentication $backendUser */
+		/**
+		 * @var \TYPO3\CMS\Core\Authentication\BackendUserAuthentication $backendUser
+		 */
 		$backendUser = $GLOBALS['BE_USER'];
-		/** @var language $language */
+		/** @var \TYPO3\CMS\Lang\LanguageService $language */
 		$language = $GLOBALS['LANG'];
 
 		$buttons = array(
@@ -335,7 +334,7 @@ class Tx_Commerce_Controller_StatisticModuleController extends \TYPO3\CMS\Backen
 				$result .= '<br />no client data available';
 			}
 		} else {
-			/** @var language $language */
+			/** @var \TYPO3\CMS\Lang\LanguageService $language */
 			$language = $GLOBALS['LANG'];
 
 			$result = 'Dieser Vorgang kann eventuell lange dauern<br /><br />';
@@ -433,7 +432,7 @@ class Tx_Commerce_Controller_StatisticModuleController extends \TYPO3\CMS\Backen
 				$result .= 'No new Customers<br />';
 			}
 		} else {
-			/** @var language $language */
+			/** @var \TYPO3\CMS\Lang\LanguageService $language */
 			$language = $GLOBALS['LANG'];
 
 			$result = 'Dieser Vorgang kann eventuelle eine hohe Laufzeit haben<br /><br />';
@@ -449,7 +448,7 @@ class Tx_Commerce_Controller_StatisticModuleController extends \TYPO3\CMS\Backen
 	 * @return string statistictables in HTML
 	 */
 	protected function showStatistics() {
-		/** @var language $language */
+		/** @var \TYPO3\CMS\Lang\LanguageService $language */
 		$language = $GLOBALS['LANG'];
 		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
 		$database = $GLOBALS['TYPO3_DB'];

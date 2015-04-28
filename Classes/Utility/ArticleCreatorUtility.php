@@ -796,7 +796,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	public function createNewPriceCB($parameter) {
 		GeneralUtility::logDeprecatedFunction();
 
-		/** @var language $language */
+		/** @var \TYPO3\CMS\Lang\LanguageService $language */
 		$language = $GLOBALS['LANG'];
 
 		$content = '<div id="typo3-newRecordLink">
@@ -860,7 +860,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	public function deletePriceButton($parameter, $fObj) {
 		GeneralUtility::logDeprecatedFunction();
 
-		/** @var language $language */
+		/** @var \TYPO3\CMS\Lang\LanguageService $language */
 		$language = $GLOBALS['LANG'];
 
 			// get the return URL.This is need to fit all possible combinations of GET vars
