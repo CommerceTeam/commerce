@@ -1,36 +1,27 @@
 <?php
-/***************************************************************
- *  Copyright notice
+/**
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2008-2011 Erik Frister <typo3@marketing-factory.de>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *  A copy is found in the textfile GPL.txt and important notices to the license
- *  from the author is found in LICENSE.txt distributed with these scripts.
- *
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Holds the TCE Functions
+ *
+ * @author Erik Frister <typo3@marketing-factory.de>
  */
 class Tx_Commerce_ViewHelpers_TceFunc {
 	/**
+	 * TCE Form
+	 *
 	 * @var t3lib_TCEforms
 	 */
 	protected $tceForms;
@@ -41,10 +32,11 @@ class Tx_Commerce_ViewHelpers_TceFunc {
 	 * Depending on the tree it display full trees or root elements only
 	 *
 	 * @param array $parameter An array with additional configuration options.
-	 * @param t3lib_TCEforms $fObj TCEForms object reference
+	 * @param \TYPO3\CMS\Backend\Form\FormEngine $fObj TCEForms object reference
+	 *
 	 * @return string The HTML code for the TCEform field
 	 */
-	public function getSingleField_selectCategories($parameter, &$fObj) {
+	public function getSingleField_selectCategories(array $parameter, \TYPO3\CMS\Backend\Form\FormEngine &$fObj) {
 		$this->tceForms = &$parameter['pObj'];
 
 		$table = $parameter['table'];
@@ -57,10 +49,10 @@ class Tx_Commerce_ViewHelpers_TceFunc {
 			$disabled = ' disabled="disabled"';
 		}
 
-			// @todo it seems TCE has a bug and do not work correctly with '1'
+		// @todo it seems TCE has a bug and do not work correctly with '1'
 		$config['maxitems'] = ($config['maxitems'] == 2) ? 1 : $config['maxitems'];
 
-			// read the permissions we are restricting the tree to, depending on the table
+		// read the permissions we are restricting the tree to, depending on the table
 		$perms = 'show';
 
 		switch ($table) {
@@ -83,11 +75,15 @@ class Tx_Commerce_ViewHelpers_TceFunc {
 			default:
 		}
 
-		/** @var Tx_Commerce_Tree_CategoryTree $browseTrees */
+		/**
+		 * Browse tree
+		 *
+		 * @var Tx_Commerce_Tree_CategoryTree $browseTrees
+		 */
 		$browseTrees = GeneralUtility::makeInstance('Tx_Commerce_Tree_CategoryTree');
-			// disabled clickmenu
+		// disabled clickmenu
 		$browseTrees->noClickmenu();
-			// set the minimum permissions
+		// set the minimum permissions
 		$browseTrees->setMinCategoryPerms($perms);
 
 		if ($config['allowProducts']) {
@@ -107,9 +103,13 @@ class Tx_Commerce_ViewHelpers_TceFunc {
 
 		$browseTrees->init();
 
-		/** @var Tx_Commerce_ViewHelpers_TreelibTceforms $renderBrowseTrees */
+		/**
+		 * Browse tree renderer
+		 *
+		 * @var Tx_Commerce_ViewHelpers_TreelibTceforms $renderBrowseTrees
+		 */
 		$renderBrowseTrees = GeneralUtility::makeInstance('Tx_Commerce_ViewHelpers_TreelibTceforms');
-		$renderBrowseTrees->init ($parameter, $fObj);
+		$renderBrowseTrees->init($parameter);
 		$renderBrowseTrees->setIframeTreeBrowserScript(
 			$this->tceForms->backPath . PATH_TXCOMMERCE_REL . 'Classes/ViewHelpers/IframeTreeBrowser.php'
 		);
@@ -151,7 +151,7 @@ class Tx_Commerce_ViewHelpers_TceFunc {
 		$itemArray = array();
 
 		if ((int) $row['uid']) {
-				// existing Record
+			// existing Record
 			switch($table) {
 				case 'tx_commerce_categories':
 					$itemArray = $renderBrowseTrees->processItemArrayForBrowseableTreePCategory($browseTrees, $row['uid']);
@@ -179,11 +179,15 @@ class Tx_Commerce_ViewHelpers_TceFunc {
 					$itemArray = $renderBrowseTrees->processItemArrayForBrowseableTreeDefault($parameter['itemFormElValue']);
 			}
 		} else {
-				// New record
+			// New record
 			$defVals = GeneralUtility::_GP('defVals');
 			switch ($table) {
 				case 'tx_commerce_categories':
-					/** @var Tx_Commerce_Domain_Model_Category $category */
+					/**
+					 * Category
+					 *
+					 * @var Tx_Commerce_Domain_Model_Category $category
+					 */
 					$category = GeneralUtility::makeInstance(
 						'Tx_Commerce_Domain_Model_Category',
 						$defVals['tx_commerce_categories']['parent_category']
@@ -193,13 +197,19 @@ class Tx_Commerce_ViewHelpers_TceFunc {
 					break;
 
 				case 'tx_commerce_products':
-					/** @var Tx_Commerce_Domain_Model_Category $category */
+					/**
+					 * Category
+					 *
+					 * @var Tx_Commerce_Domain_Model_Category $category
+					 */
 					$category = GeneralUtility::makeInstance(
 						'Tx_Commerce_Domain_Model_Category',
 						$defVals['tx_commerce_products']['categories']
 					);
 					$category->loadData();
-					$itemArray = array($category->getUid() . '|' . $category->getTitle());
+					if ($category->getUid() > 0) {
+						$itemArray = array($category->getUid() . '|' . $category->getTitle());
+					}
 					break;
 
 				default:

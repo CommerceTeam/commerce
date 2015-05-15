@@ -17,35 +17,48 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper
+ *
+ * @author Ingo Schmitt
  */
 class Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 	/**
+	 * Category tree
+	 *
 	 * @var Tx_Commerce_Tree_CategoryTree
 	 */
 	protected $categoryTree;
 
 	/**
+	 * Current sub script
+	 *
 	 * @var string
 	 */
 	protected $currentSubScript;
 
 	/**
-	 * @var boolean
+	 * Do highlight
+	 *
+	 * @var bool
 	 */
 	protected $doHighlight;
 
 	/**
-	 * @var boolean
+	 * Has filter box
+	 *
+	 * @var bool
 	 */
 	protected $hasFilterBox;
 
 	/**
 	 * Initializes the Tree
 	 *
-	 * @param bool $bare if TRUE only categories get rendered
+	 * @param bool $bare Categories get rendered  if TRUE
+	 *
 	 * @return void
 	 */
 	public function init($bare = FALSE) {
+		$this->getLanguageService()->includeLLFile('EXT:commerce/Resources/Private/Language/locallang_mod_category.xml');
+
 		// Get the Category Tree
 		$this->categoryTree = GeneralUtility::makeInstance('Tx_Commerce_Tree_CategoryTree');
 		$this->categoryTree->setBare($bare);
@@ -56,11 +69,16 @@ class Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper extends \TYPO3\CMS\B
 	/**
 	 * Initializes the Page
 	 *
-	 * @param bool $bare if TRUE only categories get rendered
+	 * @param bool $bare Categories get rendered if TRUE
+	 *
 	 * @return void
 	 */
 	public function initPage($bare = FALSE) {
-		/** @var \TYPO3\CMS\Backend\Template\DocumentTemplate $doc */
+		/**
+		 * Document template
+		 *
+		 * @var \TYPO3\CMS\Backend\Template\DocumentTemplate $doc
+		 */
 		$doc = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
 		$this->doc = $doc;
 		$this->doc->backPath = $GLOBALS['BACK_PATH'];
@@ -222,10 +240,14 @@ class Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper extends \TYPO3\CMS\B
 	/**
 	 * Checks if an update of the commerce extension is necessary
 	 *
-	 * @return boolean
+	 * @return bool
 	 */
 	protected function isUpdateNecessary() {
-		/** @var Tx_Commerce_Utility_UpdateUtility $updater */
+		/**
+		 * Update utility
+		 *
+		 * @var Tx_Commerce_Utility_UpdateUtility $updater
+		 */
 		$updater = GeneralUtility::makeInstance('Tx_Commerce_Utility_UpdateUtility');
 
 		return $updater->access();
@@ -235,11 +257,12 @@ class Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper extends \TYPO3\CMS\B
 	 * Makes the AJAX call to expand or collapse the categorytree.
 	 * Called by typo3/ajax.php
 	 *
-	 * @param array $params : additional parameters (not used here)
-	 * @param TYPO3AJAX &$ajaxObj : reference of the TYPO3AJAX object of this request
+	 * @param array $params Additional parameters (not used here)
+	 * @param \TYPO3\CMS\Core\Http\AjaxRequestHandler $ajaxObj Reference of the ajax object of this request
+	 *
 	 * @return void
 	 */
-	public function ajaxExpandCollapse($params, &$ajaxObj) {
+	public function ajaxExpandCollapse(array $params, \TYPO3\CMS\Core\Http\AjaxRequestHandler &$ajaxObj) {
 		$parameter = $this->getParameter();
 
 		// Get the Category Tree
@@ -253,11 +276,12 @@ class Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper extends \TYPO3\CMS\B
 	 * Makes the AJAX call to expand or collapse the categorytree.
 	 * Called by typo3/ajax.php
 	 *
-	 * @param array $params additional parameters (not used here)
-	 * @param TYPO3AJAX &$ajaxObj reference of the TYPO3AJAX object of this request
+	 * @param array $params Additional parameters (not used here)
+	 * @param \TYPO3\CMS\Core\Http\AjaxRequestHandler $ajaxObj Reference of the TYPO3AJAX object of this request
+	 *
 	 * @return void
 	 */
-	public function ajaxExpandCollapseWithoutProduct($params, &$ajaxObj) {
+	public function ajaxExpandCollapseWithoutProduct(array $params, \TYPO3\CMS\Core\Http\AjaxRequestHandler &$ajaxObj) {
 		$parameter = $this->getParameter();
 
 		// Get the category tree without the products and the articles
@@ -268,6 +292,8 @@ class Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper extends \TYPO3\CMS\B
 	}
 
 	/**
+	 * Get parameter
+	 *
 	 * @return array
 	 */
 	protected function getParameter() {

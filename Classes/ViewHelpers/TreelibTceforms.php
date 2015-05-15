@@ -138,14 +138,15 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 	 */
 	public $language;
 
-	/**********************************************************
+	/**
 	 * Getter / Setter
-	 ************************************************************/
+	 */
 
 	/**
 	 * Init
 	 *
 	 * @param array $parameter An array with additional configuration options.
+	 *
 	 * @return void
 	 */
 	public function init($parameter) {
@@ -159,7 +160,7 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 
 		$this->language = $GLOBALS['LANG'];
 
-			// set currently selected items
+		// set currently selected items
 		$itemArray = GeneralUtility::trimExplode(',', $this->PA['itemFormElValue'], TRUE);
 		$this->setItemArray($itemArray);
 
