@@ -28,14 +28,25 @@ class Tx_Commerce_Controller_CategoryModuleController extends \TYPO3\CMS\Recordl
 	public $scriptNewWizard = 'wizard.php';
 
 	/**
-	 * @var integer
+	 * Category uid
+	 *
+	 * @var int
 	 */
 	public $categoryUid = 0;
 
 	/**
+	 * Body content
+	 *
 	 * @var string
 	 */
 	protected $body;
+
+	/**
+	 * If category tree should get reloaded
+	 *
+	 * @var bool
+	 */
+	protected $reloadTree = FALSE;
 
 	/**
 	 * Initializing the module

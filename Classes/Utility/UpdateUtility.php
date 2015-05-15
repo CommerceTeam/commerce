@@ -143,7 +143,7 @@ class Tx_Commerce_Utility_UpdateUtility {
 			'tx_commerce_categories',
 			'perms_user = 0 AND perms_group = 0 AND perms_everybody = 0'
 		);
-		if (($result) && ($this->getDatabaseConnection()->sql_num_rows($result) > 0)) {
+		if ($result && ($this->getDatabaseConnection()->sql_num_rows($result) > 0)) {
 			return TRUE;
 		}
 

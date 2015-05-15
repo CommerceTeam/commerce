@@ -82,12 +82,24 @@ class Tx_Commerce_Utility_FolderUtility {
 				$hookObjectsArr[] = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
 			}
 		}
+
 		if (!$res || (int) $catUid == 0) {
 			$catArray = $addArray;
 			$catArray['title'] = 'SYSTEM';
 			$catArray['uname'] = 'SYSTEM';
+			$catArray['perms_user'] = 31;
+			$catArray['perms_group'] = 31;
+			$catArray['perms_everybody'] = 31;
 			self::getDatabaseConnection()->exec_INSERTquery('tx_commerce_categories', $catArray);
 			$catUid = self::getDatabaseConnection()->sql_insert_id();
+
+			$data = array(
+				'uid_local' => $catUid,
+				'uid_foreign' => 0,
+				'tablenames' => '',
+				'sorting' => 99,
+			);
+			self::getDatabaseConnection()->exec_INSERTquery('tx_commerce_categories_parent_category_mm', $data);
 		}
 		$hookObjectsArr = array();
 		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/class.tx_commerce_create_folder.php']['postcreatesyscategory'])) {
