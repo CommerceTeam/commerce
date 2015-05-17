@@ -18,10 +18,12 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class Tx_Commerce_Controller_CategoryModuleController
+ *
+ * @author Ingo Schmitt
  */
 class Tx_Commerce_Controller_CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList {
 	/**
-	 * the script for the wizard of the command 'new'
+	 * The script for the wizard of the command 'new'
 	 *
 	 * @var string
 	 */
@@ -103,7 +105,11 @@ class Tx_Commerce_Controller_CategoryModuleController extends \TYPO3\CMS\Recordl
 	 * @return void
 	 */
 	public function initPage() {
-		/** @var \TYPO3\CMS\Backend\Template\DocumentTemplate $doc */
+		/**
+		 * Document template
+		 *
+		 * @var \TYPO3\CMS\Backend\Template\DocumentTemplate $doc
+		 */
 		$doc = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
 		$doc->backPath = $GLOBALS['BACK_PATH'];
 		$doc->setModuleTemplate(PATH_TXCOMMERCE . 'Resources/Private/Backend/mod_category_index.html');
@@ -134,7 +140,11 @@ class Tx_Commerce_Controller_CategoryModuleController extends \TYPO3\CMS\Recordl
 
 			$newRecordLink = $this->scriptNewWizard . '?id=' . (int) $this->id;
 			foreach ($controls as $controlData) {
-				/** @var Tx_Commerce_Tree_Leaf_Data $treeData */
+				/**
+				 * Tree data
+				 *
+				 * @var Tx_Commerce_Tree_Leaf_Data $treeData
+				 */
 				$treeData = GeneralUtility::makeInstance($controlData['dataClass']);
 				$treeData->init();
 
@@ -182,12 +192,20 @@ class Tx_Commerce_Controller_CategoryModuleController extends \TYPO3\CMS\Recordl
 		}
 
 		// Initialize the dblist object:
-		/** @var $dbList Tx_Commerce_ViewHelpers_CategoryRecordList */
+		/**
+		 * Category record list
+		 *
+		 * @var $dbList Tx_Commerce_ViewHelpers_CategoryRecordList
+		 */
 		$dbList = GeneralUtility::makeInstance('Tx_Commerce_ViewHelpers_CategoryRecordList');
 		$dbList->backPath = $GLOBALS['BACK_PATH'];
 		$dbList->script = BackendUtility::getModuleUrl('txcommerceM1_category', array(), '');
 
-		/** @var \CommerceTeam\Commerce\Utility\BackendUserUtility $utility */
+		/**
+		 * Backend user utility
+		 *
+		 * @var \CommerceTeam\Commerce\Utility\BackendUserUtility $utility
+		 */
 		$utility = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Utility\\BackendUserUtility');
 		$dbList->calcPerms = $utility->calcPerms(BackendUtility::getRecord('tx_commerce_categories', $this->categoryUid));
 		$dbList->thumbs = $this->getBackendUser()->uc['thumbnailsByDefault'];
@@ -217,7 +235,11 @@ class Tx_Commerce_Controller_CategoryModuleController extends \TYPO3\CMS\Recordl
 
 		// Clipboard is initialized:
 		// Start clipboard
-		/** @var \TYPO3\CMS\Backend\Clipboard\Clipboard $clipObj */
+		/**
+		 * Clipboard
+		 *
+		 * @var \TYPO3\CMS\Backend\Clipboard\Clipboard $clipObj
+		 */
 		$clipObj = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Clipboard\\Clipboard');
 		$dbList->clipObj = $clipObj;
 		// Initialize - reads the clipboard content from the user session
@@ -269,7 +291,11 @@ class Tx_Commerce_Controller_CategoryModuleController extends \TYPO3\CMS\Recordl
 						$cmd[$iKparts[0]][$iKparts[1]]['delete'] = 1;
 					}
 
-					/** @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce */
+					/**
+					 * Data handler
+					 *
+					 * @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce
+					 */
 					$tce = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
 					$tce->stripslashes_values = 0;
 					$tce->start(array(), $cmd);
@@ -458,15 +484,11 @@ class Tx_Commerce_Controller_CategoryModuleController extends \TYPO3\CMS\Recordl
 	/**
 	 * Returns the Category Path info
 	 *
-	 * @param array $categoryRecord Category row
+	 * @param array|NULL $categoryRecord Category row
+	 *
 	 * @return string
 	 */
 	protected function getCategoryPath($categoryRecord) {
-		/** @var language $language */
-		$language = $GLOBALS['LANG'];
-		/** @var t3lib_beUserAuth $backendUser */
-		$backendUser = $GLOBALS['BE_USER'];
-
 		// Is this a real page
 		if (is_array($categoryRecord) && $categoryRecord['uid']) {
 			$title = substr($categoryRecord['_thePathFull'], 0, -1);
@@ -480,10 +502,11 @@ class Tx_Commerce_Controller_CategoryModuleController extends \TYPO3\CMS\Recordl
 		}
 
 		// Setting the path of the page
-		$pagePath = $language->sL('LLL:EXT:lang/locallang_core.php:labels.path', 1) . ': <span class="typo3-docheader-pagePath">';
+		$pagePath = $this->getLanguageService()->sL('LLL:EXT:lang/locallang_core.php:labels.path', 1) .
+			': <span class="typo3-docheader-pagePath">';
 
 		// crop the title to title limit (or 50, if not defined)
-		$cropLength = empty($backendUser->uc['titleLen']) ? 50 : $backendUser->uc['titleLen'];
+		$cropLength = empty($this->getBackendUser()->uc['titleLen']) ? 50 : $this->getBackendUser()->uc['titleLen'];
 		$croppedTitle = GeneralUtility::fixed_lgd_cs($title, - $cropLength);
 		if ($croppedTitle !== $title) {
 			$pagePath .= '<abbr title="' . htmlspecialchars($title) . '">' . htmlspecialchars($croppedTitle) . '</abbr>';
@@ -498,7 +521,8 @@ class Tx_Commerce_Controller_CategoryModuleController extends \TYPO3\CMS\Recordl
 	/**
 	 * Returns the info for the Category Path
 	 *
-	 * @param array $categoryRecord - Category record
+	 * @param array|NULL $categoryRecord Category record
+	 *
 	 * @return string
 	 */
 	protected function getCategoryInfo($categoryRecord) {
@@ -537,7 +561,8 @@ class Tx_Commerce_Controller_CategoryModuleController extends \TYPO3\CMS\Recordl
 	/**
 	 * Generate the page path for docheader
 	 *
-	 * @param array $pageRecord Current page
+	 * @param array|NULL $pageRecord Current page
+	 *
 	 * @return string Page path
 	 */
 	protected function getPagePath($pageRecord) {
@@ -575,7 +600,8 @@ class Tx_Commerce_Controller_CategoryModuleController extends \TYPO3\CMS\Recordl
 	/**
 	 * Setting page icon with clickmenu + uid for docheader
 	 *
-	 * @param array $pageRecord Current page
+	 * @param array|NULL $pageRecord Current page
+	 *
 	 * @return string Page info
 	 */
 	protected function getPageInfo($pageRecord) {
@@ -611,6 +637,8 @@ class Tx_Commerce_Controller_CategoryModuleController extends \TYPO3\CMS\Recordl
 
 
 	/**
+	 * Get backend user
+	 *
 	 * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
 	 */
 	protected function getBackendUser() {
@@ -618,6 +646,8 @@ class Tx_Commerce_Controller_CategoryModuleController extends \TYPO3\CMS\Recordl
 	}
 
 	/**
+	 * Get language service
+	 *
 	 * @return \TYPO3\CMS\Lang\LanguageService
 	 */
 	protected function getLanguageService() {

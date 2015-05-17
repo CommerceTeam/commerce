@@ -1,37 +1,33 @@
 <?php
-/***************************************************************
- *  Copyright notice
+/**
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2005 - 2006 Thomas Hempel <thomas@work.de>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the Typo3 project. The Typo3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
 
 /**
  * Implements the dynaflex config for the 'tx_commerce_products' table
+ *
+ * @author Thomas Hempel <thomas@work.de>
  */
 class Tx_Commerce_Configuration_Dca_Products {
 	/**
+	 * Row checks
+	 *
 	 * @var array
 	 */
 	public $rowChecks = array();
 
 	/**
+	 * Dynamic configuration array
+	 *
 	 * @var array
 	 */
 	public $DCA = array(
@@ -189,7 +185,8 @@ class Tx_Commerce_Configuration_Dca_Products {
 						'compareTo' => 'DEF',
 					),
 					'config' => array(
-						'text' => ',--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.select_attributes, attributes',
+						'text' =>
+							',--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.select_attributes, attributes',
 					),
 				),
 				// add "edit attributes" tab if minimum one attribute with correlationtype 4
@@ -214,7 +211,8 @@ class Tx_Commerce_Configuration_Dca_Products {
 						),
 					),
 					'config' => array(
-						'text' => ',--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.edit_attributes, attributesedit',
+						'text' =>
+							',--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.edit_attributes, attributesedit',
 					),
 				),
 				// add "localise attributes" tab if minimum one attribute with correlationtype
@@ -238,7 +236,8 @@ class Tx_Commerce_Configuration_Dca_Products {
 						),
 					),
 					'config' => array(
-						'text' => ',--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.localedit_attributes,attributesedit',
+						'text' =>
+							',--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.localedit_attributes,attributesedit',
 					),
 				),
 				// add "create articles" tab if minimum one attribute with correlationtype 1
@@ -253,7 +252,8 @@ class Tx_Commerce_Configuration_Dca_Products {
 						'compareTo' => 'DEF',
 					),
 					'config' => array(
-						'text' => ',--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.create_articles,articles',
+						'text' =>
+							',--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.create_articles,articles',
 					),
 				),
 				// add "Localisze Articel" tab if we are in a localised language
@@ -269,7 +269,8 @@ class Tx_Commerce_Configuration_Dca_Products {
 						'compareTo' => 0,
 					),
 					'config' => array(
-						'text' => ',--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.lokalise_articles,articleslok',
+						'text' =>
+							',--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.lokalise_articles,articleslok',
 					),
 				),
 				// add "Localize Articel" tab if we are in a localised language
@@ -285,7 +286,8 @@ class Tx_Commerce_Configuration_Dca_Products {
 						'compareTo' => 0,
 					),
 					'config' => array(
-						'text' => ',--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.lokalise_articles,articles',
+						'text' =>
+							',--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.lokalise_articles,articles',
 					),
 				),
 				array(
@@ -310,16 +312,22 @@ class Tx_Commerce_Configuration_Dca_Products {
 	);
 
 	/**
+	 * Cleanup field
+	 *
 	 * @var string
 	 */
 	public $cleanUpField = 'attributes';
 
 	/**
+	 * Hooks
+	 *
 	 * @var array
 	 */
 	public $hooks = array('tx_commerce_configuration_dca_products');
 
 	/**
+	 * Constructor
+	 *
 	 * @return self
 	 */
 	public function __construct() {
@@ -348,21 +356,31 @@ class Tx_Commerce_Configuration_Dca_Products {
 	}
 
 	/**
-	 * @param array $resultDca
+	 * Alter dca
+	 *
+	 * @param array $resultDca Result
+	 *
 	 * @return void
 	 */
 	public function alterDCA_onLoad(&$resultDca) {
-		/** @var t3lib_beUserAuth $backendUser */
-		$backendUser = $GLOBALS['BE_USER'];
-
 		if (
 			!(
 				\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('data') == NULL ||
 				\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('createArticles') == 'create'
 			) &&
-			$backendUser->uc['txcommerce_afterDatabaseOperations'] != 1
+			$this->getBackendUser()->uc['txcommerce_afterDatabaseOperations'] != 1
 		) {
 			$resultDca = array();
 		}
+	}
+
+
+	/**
+	 * Get backend user
+	 *
+	 * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
+	 */
+	protected function getBackendUser() {
+		return $GLOBALS['BE_USER'];
 	}
 }

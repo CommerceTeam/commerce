@@ -1,39 +1,20 @@
 <?php
-/***************************************************************
- *  Copyright notice
- *
- *  (c) 2006 - 2011 Ingo Schmitt <is@marketing-factory.de>
- *  All rights reserved
- *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
- *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
-
 /**
- * Base configuration settings for commerce.
- * This file will be merged to typo3conf/temp_CACHED_hash_ext_localconf.php
- * together with all other ext_localconf.php files of other extensions.
- * The code will be executed very early on every frontend and backend access.
+ * This file is part of the TYPO3 CMS project.
+ *
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
+ *
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ *
+ * The TYPO3 project - inspiring people to share!
  */
 
-if (!defined('TYPO3_MODE')) {
-	die('Access denied.');
-}
+defined('TYPO3_MODE') or die('Access denied.');
 
-	// Definition of some helpfull constants
+// Definition of some helpfull constants
 if (!defined('COMMERCE_EXTKEY')) {
 	/** @noinspection PhpUndefinedVariableInspection */
 	define('COMMERCE_EXTKEY', $_EXTKEY);
@@ -81,7 +62,7 @@ define('DELIVERYARTICLETYPE', 3);
 define('DELIVERYArticleType', DELIVERYARTICLETYPE);
 
 
-	// Unserialize the plugin configuration so we can use it
+// Unserialize the plugin configuration so we can use it
 $_EXTCONF = unserialize($_EXTCONF);
 
 // This array holds global definitions of arbitrary commerce settings
@@ -136,7 +117,7 @@ $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['SYSPRODUCTS']['DELIVERY
 );
 
 
-	// Add frontend plugins to content.default static template
+// Add frontend plugins to content.default static template
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43(COMMERCE_EXTKEY, 'Classes/Controller/ListController.php', '_pi1', 'list_type', 1);
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43(COMMERCE_EXTKEY, 'Classes/Controller/BasketController.php', '_pi2', 'list_type', 0);
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43(COMMERCE_EXTKEY, 'Classes/Controller/CheckoutController.php', '_pi3', 'list_type', 0);
@@ -158,7 +139,7 @@ if (TYPO3_MODE == 'BE') {
 }
 
 
-	// Add linkhandler for "commerce"
+// Add linkhandler for "commerce"
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_content.php']['typolinkLinkHandler']['commerce'] =
 	'EXT:commerce/Classes/Hook/LinkhandlerHooks.php:&Tx_Commerce_Hook_LinkhandlerHooks';
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/class.browse_links.php']['browseLinksHook'][] =
@@ -166,29 +147,29 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/class.browse_links.php']['brows
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/rtehtmlarea/mod3/class.tx_rtehtmlarea_browse_links.php']['browseLinksHook'][] =
 	'EXT:commerce/Classes/Hook/BrowselinksHooks.php:Tx_Commerce_Hook_BrowselinksHooks';
 
-	// Add ajax listener for tree in linkcommerce
+// Add ajax listener for tree in linkcommerce
 $GLOBALS['TYPO3_CONF_VARS']['BE']['AJAX']['Tx_Commerce_Hook_BrowselinksHooks::ajaxExpandCollapse'] =
 	'EXT:commerce/Classes/Hook/BrowselinksHooks.php:Tx_Commerce_Hook_BrowselinksHooks->ajaxExpandCollapse';
 
 
-	// Hooks for datamap procesing
-	// For processing the order sfe, when changing the pid
+// Hooks for datamap procesing
+// For processing the order sfe, when changing the pid
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass']['commerce'] =
 	'EXT:commerce/Classes/Hook/DataMapHooks.php:Tx_Commerce_Hook_DataMapHooks';
 
-	// Hooks for commandmap processing
-	// For new drawing of the category tree after having deleted a record
+// Hooks for commandmap processing
+// For new drawing of the category tree after having deleted a record
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass']['commerce'] =
 	'EXT:commerce/Classes/Hook/CommandMapHooks.php:Tx_Commerce_Hook_CommandMapHooks';
 
-	// Hooks for version swap procesing
-	// For processing the order sfe, when changing the pid
+// Hooks for version swap procesing
+// For processing the order sfe, when changing the pid
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processVersionSwapClass']['commerce'] =
 	'EXT:commerce/Classes/Hook/VersionHooks.php:Tx_Commerce_Hook_VersionHooks';
 
 
-	// Adding some hooks for tx_commerce_article_processing
-	// As basic hook for calculation the delivery_costs
+// Adding some hooks for tx_commerce_article_processing
+// As basic hook for calculation the delivery_costs
 if (empty($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Model/Article.php']['calculateDeliveryCost'])) {
 	$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Model/Article.php']['calculateDeliveryCost'] =
 		'EXT:commerce/Classes/Hook/ArticleHooks.php:Tx_Commerce_Hook_ArticleHooks';
@@ -219,15 +200,15 @@ $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/AddressesCon
 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/AddressesController.php']['saveAddress'][] =
 	'EXT:commerce/Classes/Hook/Pi4Hooks.php:Tx_Commerce_Hook_Pi4Hooks';
 
-	// CLI Script configuration
+// CLI Script configuration
 if (TYPO3_MODE == 'BE') {
-		// Setting up scripts that can be run from the cli_dispatch.phpsh script
+	// Setting up scripts that can be run from the cli_dispatch.phpsh script
 	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['GLOBAL']['cliKeys'][COMMERCE_EXTKEY] = array(
 		PATH_TXCOMMERCE . 'Classes/Cli/Statistic.php',
 		'_CLI_commerce'
 	);
 
-		// Add statistic task
+	// Add statistic task
 	/** @noinspection PhpUndefinedVariableInspection */
 	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['Tx_Commerce_Task_StatisticTask'] = array(
 		'extension' => $_EXTKEY,
@@ -238,7 +219,7 @@ if (TYPO3_MODE == 'BE') {
 	);
 }
 
-	// Register dynaflex dca files
+// Register dynaflex dca files
 $GLOBALS['T3_VAR']['ext']['dynaflex']['tx_commerce_categories'][] =
 	'EXT:commerce/Configuration/DCA/Categories.php:Tx_Commerce_Configuration_Dca_Categories';
 $GLOBALS['T3_VAR']['ext']['dynaflex']['tx_commerce_products'][] =

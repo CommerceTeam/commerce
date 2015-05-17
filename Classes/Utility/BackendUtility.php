@@ -1,29 +1,16 @@
 <?php
-/***************************************************************
- *  Copyright notice
+/**
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2006-2012 Thomas Hempel <thomas@work.de>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *  A copy is found in the textfile GPL.txt and important notices to the license
- *  from the author is found in LICENSE.txt distributed with these scripts.
- *
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -32,13 +19,16 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * the backend. This is quite useful because attributes for an article can
  * come from products and categories. And products can be assigned to several
  * categories and a category can have a lot of parent categories.
+ *
+ * @author 2006-2012 Thomas Hempel <thomas@work.de>
  */
 class Tx_Commerce_Utility_BackendUtility {
 	/**
 	 * This gets all categories for a product from the database
 	 * (even those that are not direct).
 	 *
-	 * @param integer $pUid The UID of the product
+	 * @param int $pUid Product uid
+	 *
 	 * @return array An array of UIDs of all categories for this product
 	 */
 	public function getCategoriesForProductFromDb($pUid) {
@@ -59,7 +49,8 @@ class Tx_Commerce_Utility_BackendUtility {
 	/**
 	 * Gets all direct parent categories of a product
 	 *
-	 * @param integer $uid uid of the product
+	 * @param int $uid Product uid
+	 *
 	 * @return array
 	 */
 	public function getProductParentCategories($uid) {
@@ -80,16 +71,16 @@ class Tx_Commerce_Utility_BackendUtility {
 	 * Fetches all attribute relation from the database that are assigned to a
 	 * product specified through pUid. It can also fetch information about the
 	 * attribute and a list of attribute values if the attribute has a valuelist.
-
 	 *
-*@param integer $pUid: The uid of the product
-	 * @param boolean $separateCorrelationType1: If this is true, all attributes with ct1
+	 * @param int $pUid Product uid
+	 * @param bool $separateCorrelationType1 If this is true, all attributes with ct1
 	 * 	will be saved in a separated result section
-	 * @param boolean $addAttributeData: If true, all information about the
+	 * @param bool $addAttributeData If true, all information about the
 	 * 	attributes will be fetched from the database (default is false)
-	 * @param boolean $getValueListData: If this is true and additional data is
+	 * @param bool $getValueListData If this is true and additional data is
 	 * 	fetched and an attribute has a valuelist, this gets the values for the
 	 * 	list (default is false)
+	 *
 	 * @return array of attributes
 	 */
 	public function getAttributesForProduct($pUid, $separateCorrelationType1 = FALSE, $addAttributeData = FALSE,
@@ -161,22 +152,25 @@ class Tx_Commerce_Utility_BackendUtility {
 		return $result;
 	}
 
-	/** CATEGORIES **/
+	/**
+	 * CATEGORIES
+	 */
 
 	/**
 	 *  Fetch all parent categories for a given category.
 	 *
-	 * @param integer $cUid: The UID of the category that is the startingpoint
-	 * @param array $cUidList: A list of category UIDs. PASSED BY REFERENCE
-	 * @param integer $dontAdd: A single UID, if this is found in the parent
+	 * @param int $cUid The UID of the category that is the startingpoint
+	 * @param array $cUidList A list of category UIDs. PASSED BY REFERENCE
+	 * @param int $dontAdd A single UID, if this is found in the parent
 	 * 	results, it's not added to the list
-	 * @param integer $excludeUid: If the current cUid is like this UID the
+	 * @param int $excludeUid If the current cUid is like this UID the
 	 * 	cUid is not processed at all
-	 * @param boolean $recursive: If true, this method calls itself for each
+	 * @param bool $recursive If true, this method calls itself for each
 	 * 	category if finds
+	 *
 	 * @return void
 	 */
-	public function getParentCategories($cUid, &$cUidList, $dontAdd = 0, $excludeUid = 0, $recursive = TRUE) {
+	public function getParentCategories($cUid, array &$cUidList, $dontAdd = 0, $excludeUid = 0, $recursive = TRUE) {
 		if (strlen((string) $cUid) > 0) {
 			/** @var t3lib_db $database */
 			$database = $GLOBALS['TYPO3_DB'];
@@ -374,7 +368,9 @@ class Tx_Commerce_Utility_BackendUtility {
 		return $result;
 	}
 
-	/** ATTRIBUTES **/
+	/**
+	 * ATTRIBUTES
+	 */
 
 	/**
 	 * Returns the title of an attribute.
@@ -509,7 +505,9 @@ class Tx_Commerce_Utility_BackendUtility {
 	}
 
 
-	/** ARTICLES **/
+	/**
+	 * ARTICLES
+	 */
 
 	/**
 	 * Return all articles that where created from a given product.
@@ -537,9 +535,10 @@ class Tx_Commerce_Utility_BackendUtility {
 	/**
 	 * Return all articles that where created from a given product.
 	 *
-	 * @param integer $pUid: The UID of the product
+	 * @param int $pUid: The UID of the product
 	 * @param string $additionalWhere
 	 * @param string $orderBy
+	 *
 	 * @return array of article UIDs, ready to implode for coma separed list
 	 */
 	public static function getArticlesOfProductAsUidList($pUid, $additionalWhere = '', $orderBy = '') {
@@ -552,15 +551,14 @@ class Tx_Commerce_Utility_BackendUtility {
 			$where .= ' AND ' . $additionalWhere;
 		}
 
+		$result = array();
 		$res = $database->exec_SELECTquery('uid', 'tx_commerce_articles', $where, '', $orderBy);
 		if ($res && $database->sql_num_rows($res) > 0) {
-			$result = array();
 			while (($article = $database->sql_fetch_assoc($res))) {
 				$result[] = $article['uid'];
 			}
-			return $result;
 		}
-		return FALSE;
+		return $result;
 	}
 
 	/**
@@ -708,7 +706,9 @@ class Tx_Commerce_Utility_BackendUtility {
 		);
 	}
 
-	/** Diverse **/
+	/**
+	 * Diverse
+	 */
 
 	/**
 	 * proofs if there are non numeric chars in it
@@ -3286,4 +3286,7 @@ class Tx_Commerce_Utility_BackendUtility {
 		}
 		return TRUE;
 	}
+
+
+
 }
