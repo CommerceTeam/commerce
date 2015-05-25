@@ -16,12 +16,12 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Holds the TCE Functions
  *
- * @author Erik Frister <typo3@marketing-factory.de>
+ * Class Tx_Commerce_ViewHelpers_TceFunc
+ *
+ * @author 2008-2011 Erik Frister <typo3@marketing-factory.de>
  */
 class Tx_Commerce_ViewHelpers_TceFunc {
 	/**
-	 * TCE Form
-	 *
 	 * @var t3lib_TCEforms
 	 */
 	protected $tceForms;
@@ -32,11 +32,10 @@ class Tx_Commerce_ViewHelpers_TceFunc {
 	 * Depending on the tree it display full trees or root elements only
 	 *
 	 * @param array $parameter An array with additional configuration options.
-	 * @param \TYPO3\CMS\Backend\Form\FormEngine $fObj TCEForms object reference
-	 *
+	 * @param t3lib_TCEforms $fObj TCEForms object reference
 	 * @return string The HTML code for the TCEform field
 	 */
-	public function getSingleField_selectCategories(array $parameter, \TYPO3\CMS\Backend\Form\FormEngine &$fObj) {
+	public function getSingleField_selectCategories($parameter, &$fObj) {
 		$this->tceForms = &$parameter['pObj'];
 
 		$table = $parameter['table'];
@@ -75,11 +74,7 @@ class Tx_Commerce_ViewHelpers_TceFunc {
 			default:
 		}
 
-		/**
-		 * Browse tree
-		 *
-		 * @var Tx_Commerce_Tree_CategoryTree $browseTrees
-		 */
+		/** @var Tx_Commerce_Tree_CategoryTree $browseTrees */
 		$browseTrees = GeneralUtility::makeInstance('Tx_Commerce_Tree_CategoryTree');
 		// disabled clickmenu
 		$browseTrees->noClickmenu();
@@ -103,13 +98,9 @@ class Tx_Commerce_ViewHelpers_TceFunc {
 
 		$browseTrees->init();
 
-		/**
-		 * Browse tree renderer
-		 *
-		 * @var Tx_Commerce_ViewHelpers_TreelibTceforms $renderBrowseTrees
-		 */
+		/** @var Tx_Commerce_ViewHelpers_TreelibTceforms $renderBrowseTrees */
 		$renderBrowseTrees = GeneralUtility::makeInstance('Tx_Commerce_ViewHelpers_TreelibTceforms');
-		$renderBrowseTrees->init($parameter);
+		$renderBrowseTrees->init ($parameter, $fObj);
 		$renderBrowseTrees->setIframeTreeBrowserScript(
 			$this->tceForms->backPath . PATH_TXCOMMERCE_REL . 'Classes/ViewHelpers/IframeTreeBrowser.php'
 		);
@@ -121,7 +112,7 @@ class Tx_Commerce_ViewHelpers_TceFunc {
 		if (!$disabled) {
 			// @todo remove iframe part. only div rendering ist sufficent enough
 			if ($renderBrowseTrees->isIframeContentRendering()) {
-					// just the trees are needed - we're inside of an iframe!
+				// just the trees are needed - we're inside of an iframe!
 				return $renderBrowseTrees->getTreeContent();
 			} elseif ($renderBrowseTrees->isIframeRendering()) {
 				// If we want to display a browseable tree, we need to run the tree in an iframe
@@ -183,11 +174,7 @@ class Tx_Commerce_ViewHelpers_TceFunc {
 			$defVals = GeneralUtility::_GP('defVals');
 			switch ($table) {
 				case 'tx_commerce_categories':
-					/**
-					 * Category
-					 *
-					 * @var Tx_Commerce_Domain_Model_Category $category
-					 */
+					/** @var Tx_Commerce_Domain_Model_Category $category */
 					$category = GeneralUtility::makeInstance(
 						'Tx_Commerce_Domain_Model_Category',
 						$defVals['tx_commerce_categories']['parent_category']
@@ -197,19 +184,13 @@ class Tx_Commerce_ViewHelpers_TceFunc {
 					break;
 
 				case 'tx_commerce_products':
-					/**
-					 * Category
-					 *
-					 * @var Tx_Commerce_Domain_Model_Category $category
-					 */
+					/** @var Tx_Commerce_Domain_Model_Category $category */
 					$category = GeneralUtility::makeInstance(
 						'Tx_Commerce_Domain_Model_Category',
 						$defVals['tx_commerce_products']['categories']
 					);
 					$category->loadData();
-					if ($category->getUid() > 0) {
-						$itemArray = array($category->getUid() . '|' . $category->getTitle());
-					}
+					$itemArray = array($category->getUid() . '|' . $category->getTitle());
 					break;
 
 				default:
@@ -235,7 +216,7 @@ class Tx_Commerce_ViewHelpers_TceFunc {
 			$itemArray[$tk] = implode('|', $tvP);
 		}
 
-			// Rendering and output
+		// Rendering and output
 		$minitems = max($config['minitems'], 0);
 		$maxitems = max($config['maxitems'], 0);
 		if (!$maxitems) {

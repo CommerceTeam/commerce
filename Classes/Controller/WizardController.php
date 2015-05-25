@@ -15,69 +15,51 @@
 /**
  * Class Tx_Commerce_Controller_WizardController
  *
- * @author Ingo Schmitt <is@marketing-factory.de>
+ * @author 2008-2011 Ingo Schmitt <is@marketing-factory.de>
  */
 class Tx_Commerce_Controller_WizardController {
 	/**
-	 * Page informations
-	 *
 	 * @var array
 	 */
 	public $pageinfo = array();
 
 	/**
-	 * Page id informations
-	 *
 	 * @var array
 	 */
 	public $pidInfo = array();
 
 	/**
-	 * News content into
-	 *
-	 * @var int
+	 * @var integer
 	 */
 	public $newContentInto;
 
 	/**
-	 * Mod list ts config
-	 *
 	 * @var array
 	 */
 	public $web_list_modTSconfig = array();
 
 	/**
-	 * Mod list ts config pid
-	 *
 	 * @var array
 	 */
 	public $web_list_modTSconfig_pid = array();
 
 	/**
-	 * Allowed new tables
-	 *
 	 * @var array
 	 */
 	public $allowedNewTables = array();
 
 	/**
-	 * Allowed new table pid
-	 *
 	 * @var array
 	 */
 	public $allowedNewTables_pid = array();
 
 	/**
-	 * Code
-	 *
 	 * @var string
 	 */
 	public $code = '';
 
 	/**
-	 * Page id
-	 *
-	 * @var int
+	 * @var integer
 	 */
 	protected $id;
 
@@ -89,23 +71,19 @@ class Tx_Commerce_Controller_WizardController {
 	protected $returnUrl = '';
 
 	/**
-	 * PagesOnly flag.
+	 * pagesOnly flag.
 	 *
-	 * @var bool
+	 * @var boolean
 	 */
 	protected $pagesOnly;
 
 	/**
-	 * Permission clause
-	 *
 	 * @var string
 	 */
 	protected $permsClause;
 
 	/**
-	 * Document template
-	 *
-	 * @var \TYPO3\CMS\Backend\Template\DocumentTemplate
+	 * @var mediumDoc
 	 */
 	public $doc;
 
@@ -117,21 +95,17 @@ class Tx_Commerce_Controller_WizardController {
 	protected $content = '';
 
 	/**
-	 * Header
-	 *
 	 * @var string
 	 */
 	protected $head = '';
 
 	/**
-	 * Parameter
-	 *
 	 * @var array
 	 */
 	protected $param;
 
 	/**
-	 * Default values to be used
+	 * default values to be used
 	 *
 	 * @var array
 	 */
@@ -143,29 +117,32 @@ class Tx_Commerce_Controller_WizardController {
 	 * @return	void
 	 */
 	public function init() {
-		// page-selection permission clause (reading)
-		$this->permsClause = $this->getBackendUser()->getPagePermsClause(1);
+		/** @var t3lib_beUserAuth $backendUser */
+		$backendUser = $GLOBALS['BE_USER'];
+		/** @var language $language */
+		$language = $GLOBALS['LANG'];
 
-		// Setting GPvars:
-		// The page id to operate from
-		$this->id = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('id') ?
-			(int) \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('id') :
-			Tx_Commerce_Utility_BackendUtility::getProductFolderUid();
-		$this->returnUrl = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('returnUrl');
+			// page-selection permission clause (reading)
+		$this->permsClause = $backendUser->getPagePermsClause(1);
 
-		// this to be accomplished from the caller: &edit['.$table.'][-'.$uid.']=new&
-		$this->param = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('edit');
-		$this->defVals = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('defVals');
+			// Setting GPvars:
+			// The page id to operate from
+		$this->id = t3lib_div::_GP('id') ? (int) t3lib_div::_GP('id') : Tx_Commerce_Utility_BackendUtility::getProductFolderUid();
+		$this->returnUrl = t3lib_div::_GP('returnUrl');
 
-		// Create instance of template class for output
-		$this->doc = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('mediumDoc');
+			// this to be accomplished from the caller: &edit['.$table.'][-'.$uid.']=new&
+		$this->param = t3lib_div::_GP('edit');
+		$this->defVals = t3lib_div::_GP('defVals');
+
+			// Create instance of template class for output
+		$this->doc = t3lib_div::makeInstance('mediumDoc');
 		$this->doc->backPath = $GLOBALS['BACK_PATH'];
 		$this->doc->docType = 'xhtml_trans';
 		$this->doc->JScode = '';
 
-		$this->head = $this->getLanguageService()->getLL('newRecordGeneral', 1);
+		$this->head = $language->getLL('newRecordGeneral', 1);
 
-		// Creating content
+			// Creating content
 		$this->content = '';
 		$this->content .= $this->doc->startPage($this->head);
 		$this->content .= $this->doc->header($this->head);
@@ -173,24 +150,23 @@ class Tx_Commerce_Controller_WizardController {
 		// Id a positive id is supplied, ask for the page record
 		// with permission information contained:
 		if ($this->id > 0) {
-			$this->pageinfo = \TYPO3\CMS\Backend\Utility\BackendUtility::readPageAccess($this->id, $this->permsClause);
+			$this->pageinfo = t3lib_BEfunc::readPageAccess($this->id, $this->permsClause);
 		}
 
 			// If a page-record was returned, the user had read-access to the page.
 		if ($this->pageinfo['uid']) {
-			// Get record of parent page
-			$this->pidInfo = \TYPO3\CMS\Backend\Utility\BackendUtility::getRecord('pages', $this->pageinfo['pid']);
-
+				// Get record of parent page
+			$this->pidInfo = t3lib_BEfunc::getRecord('pages', $this->pageinfo['pid']);
 			// Checking the permissions for the user with regard to the
 			// parent page: Can he create new pages, new content record, new page after?
-			if ($this->getBackendUser()->doesUserHaveAccess($this->pageinfo, 16)) {
+			if ($backendUser->doesUserHaveAccess($this->pageinfo, 16)) {
 				$this->newContentInto = 1;
 			}
-		} elseif ($this->getBackendUser()->isAdmin()) {
-			// Admins can do it all
+		} elseif ($backendUser->isAdmin()) {
+				// Admins can do it all
 			$this->newContentInto = 1;
 		} else {
-			// People with no permission can do nothing
+				// People with no permission can do nothing
 			$this->newContentInto = 0;
 		}
 	}
@@ -201,41 +177,36 @@ class Tx_Commerce_Controller_WizardController {
 	 * @return void
 	 */
 	public function main() {
+		/** @var t3lib_beUserAuth $backendUser */
+		$backendUser = $GLOBALS['BE_USER'];
+		/** @var language $language */
+		$language = $GLOBALS['LANG'];
+
 		// If there was a page - or if the user is admin
 		// (admins has access to the root) we proceed:
-		if ($this->pageinfo['uid'] || $this->getBackendUser()->isAdmin()) {
-			// Acquiring TSconfig for this module/current page:
-			$this->web_list_modTSconfig = \TYPO3\CMS\Backend\Utility\BackendUtility::getModTSconfig(
-				$this->pageinfo['uid'], 'mod.web_list'
-			);
-			$this->allowedNewTables = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(
-				',', $this->web_list_modTSconfig['properties']['allowedNewTables'], 1
-			);
+		if ($this->pageinfo['uid'] || $backendUser->isAdmin()) {
+				// Acquiring TSconfig for this module/current page:
+			$this->web_list_modTSconfig = t3lib_BEfunc::getModTSconfig($this->pageinfo['uid'], 'mod.web_list');
+			$this->allowedNewTables = t3lib_div::trimExplode(',', $this->web_list_modTSconfig['properties']['allowedNewTables'], 1);
 
-			// Acquiring TSconfig for this module/parent page:
-			$this->web_list_modTSconfig_pid = \TYPO3\CMS\Backend\Utility\BackendUtility::getModTSconfig(
-				$this->pageinfo['pid'], 'mod.web_list'
-			);
-			$this->allowedNewTables_pid = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(
-				',', $this->web_list_modTSconfig_pid['properties']['allowedNewTables'], 1
-			);
+				// Acquiring TSconfig for this module/parent page:
+			$this->web_list_modTSconfig_pid = t3lib_BEfunc::getModTSconfig($this->pageinfo['pid'], 'mod.web_list');
+			$this->allowedNewTables_pid = t3lib_div::trimExplode(',', $this->web_list_modTSconfig_pid['properties']['allowedNewTables'], 1);
 
-			// Set header-HTML and return_url
-			$this->code = $this->doc->getHeader('pages', $this->pageinfo, $this->pageinfo['_thePath']) . '<br />';
+				// Set header-HTML and return_url
+			$this->code = $this->doc->getHeader('pages', $this->pageinfo, $this->pageinfo['_thePath']) . '<br />
+			';
 
 			$this->regularNew();
 
-			// Create go-back link.
+				// Create go-back link.
 			if ($this->returnUrl) {
 				$this->code .= '<br />
 					<a href="' . htmlspecialchars($this->returnUrl) . '" class="typo3-goBack">' .
-						\TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon(
-							'actions-view-go-back', array('title' => $this->getLanguageService()->getLL('goBack', 1))
-						) .
+						t3lib_iconWorks::getSpriteIcon('actions-view-go-back', array('title' => $language->getLL('goBack', 1))) .
 					'</a>';
 			}
-
-			// Add all the content to an output section
+				// Add all the content to an output section
 			$this->content .= $this->doc->section('', $this->code);
 		}
 		$this->content .= $this->doc->endPage();
@@ -256,17 +227,20 @@ class Tx_Commerce_Controller_WizardController {
 	 * @return void
 	 */
 	protected function regularNew() {
-		// Slight spacer from header:
-		$this->code .= '<img' . \TYPO3\CMS\Backend\Utility\IconUtility::skinImg(
-				$this->doc->backPath, 'gfx/ol/halfline.gif', 'width="18" height="8"'
-			) . ' alt="" /><br />';
+		/** @var t3lib_beUserAuth $backendUser */
+		$backendUser = $GLOBALS['BE_USER'];
+		/** @var language $language */
+		$language = $GLOBALS['LANG'];
 
-		// New tables INSIDE this category
+			// Slight spacer from header:
+		$this->code .= '<img' . t3lib_iconWorks::skinImg($this->doc->backPath, 'gfx/ol/halfline.gif', 'width="18" height="8"') . ' alt="" /><br />';
+
+			// New tables INSIDE this category
 		foreach ($this->param as $table => $param) {
 			if (
 				$this->showNewRecLink($table)
 				&& $this->isTableAllowedForThisPage($this->pageinfo, $table)
-				&& $this->getBackendUser()->check('tables_modify', $table)
+				&& $backendUser->check('tables_modify', $table)
 				&& ($param['ctrl']['rootLevel'] xor $this->id || $param['ctrl']['rootLevel'] == -1)
 			) {
 				$val = key($param);
@@ -274,21 +248,19 @@ class Tx_Commerce_Controller_WizardController {
 				switch ($cmd) {
 					case 'new':
 						// Create new link for record:
-						$rowContent = '<img' . \TYPO3\CMS\Backend\Utility\IconUtility::skinImg(
-								$this->doc->backPath, 'gfx/ol/join.gif', 'width="18" height="16"'
-							) . ' alt="" />' .
+						$rowContent = '<img' . t3lib_iconWorks::skinImg($this->doc->backPath, 'gfx/ol/join.gif', 'width="18" height="16"') . ' alt="" />' .
 							$this->linkWrap(
-								\TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIconForRecord($table, array()) .
-									$this->getLanguageService()->sL($GLOBALS['TCA'][$table]['ctrl']['title'], 1),
+								t3lib_iconWorks::getSpriteIconForRecord($table, array()) .
+									$language->sL($GLOBALS['TCA'][$table]['ctrl']['title'], 1),
 								$table,
 								$this->id
 							);
 
-						// Compile table row:
+							// Compile table row:
 						$tRows[] = '
 				<tr>
 					<td nowrap="nowrap">' . $rowContent . '</td>
-					<td>' . \TYPO3\CMS\Backend\Utility\BackendUtility::cshItem($table, '', $GLOBALS['BACK_PATH'], '') . '</td>
+					<td>' . t3lib_BEfunc::cshItem($table, '', $GLOBALS['BACK_PATH'], '') . '</td>
 				</tr>
 				';
 						break;
@@ -298,27 +270,23 @@ class Tx_Commerce_Controller_WizardController {
 			}
 		}
 
-		// Compile table row:
+			// Compile table row:
 		$tRows[] = '
 			<tr>
-				<td><img' . \TYPO3\CMS\Backend\Utility\IconUtility::skinImg(
-				$this->doc->backPath, 'gfx/ol/stopper.gif', 'width="18" height="16"'
-			) . ' alt="" /></td>
+				<td><img' . t3lib_iconWorks::skinImg($this->doc->backPath, 'gfx/ol/stopper.gif', 'width="18" height="16"') . ' alt="" /></td>
 				<td></td>
 			</tr>
 		';
 
-		// Make table:
+			// Make table:
 		$this->code .= '
 			<table border="0" cellpadding="0" cellspacing="0" id="typo3-newRecord">
 			' . implode('', $tRows) . '
 			</table>
 		';
 
-		// Add CSH:
-		$this->code .= \TYPO3\CMS\Backend\Utility\BackendUtility::cshItem(
-			'xMOD_csh_corebe', 'new_regular', $GLOBALS['BACK_PATH'], '<br/>'
-		);
+			// Add CSH:
+		$this->code .= t3lib_BEfunc::cshItem('xMOD_csh_corebe', 'new_regular', $GLOBALS['BACK_PATH'], '<br/>');
 	}
 
 	/**
@@ -327,26 +295,24 @@ class Tx_Commerce_Controller_WizardController {
 	 *
 	 * @param string $code Link string
 	 * @param string $table Table name (in which to create new record)
-	 * @param int $pid PID value for the
+	 * @param integer $pid PID value for the
 	 * 		"&edit['.$table.']['.$pid.']=new" command (positive/negative)
-	 *
 	 * @return string The link.
 	 */
 	protected function linkWrap($code, $table, $pid) {
 		$params = '&edit[' . $table . '][' . $pid . ']=new' . $this->compileDefVals($table);
-		$onClick = \TYPO3\CMS\Backend\Utility\BackendUtility::editOnClick($params, $GLOBALS['BACK_PATH'], $this->returnUrl);
+		$onClick = t3lib_BEfunc::editOnClick($params, $GLOBALS['BACK_PATH'], $this->returnUrl);
 		return '<a href="#" onclick="' . htmlspecialchars($onClick) . '">' . $code . '</a>';
 	}
 
 	/**
 	 * Compile def values
 	 *
-	 * @param string $table Tablename
-	 *
+	 * @param string $table
 	 * @return string
 	 */
 	protected function compileDefVals($table) {
-		$data = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('defVals');
+		$data = t3lib_div::_GP('defVals');
 		if (is_array($data[$table])) {
 			$result = '';
 			foreach ($data[$table] as $key => $value) {
@@ -362,10 +328,9 @@ class Tx_Commerce_Controller_WizardController {
 	 * Returns true if the tablename $checkTable is allowed to be created
 	 * on the page with record $row
 	 *
-	 * @param array|NULL $row Record for parent page.
+	 * @param array $row Record for parent page.
 	 * @param string $checkTable Table name to check
-	 *
-	 * @return bool Returns true if the tablename $checkTable is allowed
+	 * @return boolean Returns true if the tablename $checkTable is allowed
 	 * 		to be created on the page with record $row
 	 */
 	protected function isTableAllowedForThisPage($row, $checkTable) {
@@ -378,18 +343,18 @@ class Tx_Commerce_Controller_WizardController {
 				$result = FALSE;
 			}
 		} else {
-			// be_users and be_groups may not be created anywhere but in the root.
+				// be_users and be_groups may not be created anywhere but in the root.
 			if ($checkTable == 'be_users' || $checkTable == 'be_groups') {
 				$result = FALSE;
 			} else {
-				// Checking doktype:
+					// Checking doktype:
 				$doktype = (int) $row['doktype'];
 				if (!($allowedTableList = $GLOBALS['PAGES_TYPES'][$doktype]['allowedTables'])) {
 					$allowedTableList = $GLOBALS['PAGES_TYPES']['default']['allowedTables'];
 				}
 
-				// If all tables or the table is listed as a allowed type, return true
-				if (strstr($allowedTableList, '*') || \TYPO3\CMS\Core\Utility\GeneralUtility::inList($allowedTableList, $checkTable)) {
+					// If all tables or the table is listed as a allowed type, return true
+				if (strstr($allowedTableList, '*') || t3lib_div::inList($allowedTableList, $checkTable)) {
 					$result = TRUE;
 				}
 			}
@@ -403,32 +368,12 @@ class Tx_Commerce_Controller_WizardController {
 	 * (or if $allowedNewTables is empty)
 	 *
 	 * @param string $table Table name to test if in allowedTables
-	 * @param array|NULL $allowedNewTables Array of new tables that are allowed.
-	 *
-	 * @return bool Returns true if the $table tablename is found in
+	 * @param array $allowedNewTables Array of new tables that are allowed.
+	 * @return boolean Returns true if the $table tablename is found in
 	 * 		$allowedNewTables (or if $allowedNewTables is empty)
 	 */
 	protected function showNewRecLink($table, $allowedNewTables = array()) {
 		$allowedNewTables = is_array($allowedNewTables) ? $allowedNewTables : $this->allowedNewTables;
 		return !count($allowedNewTables) || in_array($table, $allowedNewTables);
-	}
-
-
-	/**
-	 * Get backend user
-	 *
-	 * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
-	 */
-	protected function getBackendUser() {
-		return $GLOBALS['BE_USER'];
-	}
-
-	/**
-	 * Get language service
-	 *
-	 * @return \TYPO3\CMS\Lang\LanguageService
-	 */
-	protected function getLanguageService() {
-		return $GLOBALS['LANG'];
 	}
 }

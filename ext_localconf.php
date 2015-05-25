@@ -69,7 +69,7 @@ $_EXTCONF = unserialize($_EXTCONF);
 // Add unserialized ext conf settings to global array for easy access
 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf'] = $_EXTCONF;
 
-	// Payment settings
+// Payment settings
 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['SYSPRODUCTS']['PAYMENT'] = array(
 	'tablefields' => array(
 		'title' => 'SYSTEMPRODUCT_PAYMENT',
@@ -132,16 +132,13 @@ if (TYPO3_MODE == 'BE') {
 	$GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/version/cm1/index.php'] =
 		PATH_TXCOMMERCE . 'Classes/Xclass/ux_versionindex.php';
 
-    require_once(PATH_TXCOMMERCE .'Classes/Xclass/NewRecordController.php');
-    
-    // For TYPO3 6.2
-    $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects']['TYPO3\\CMS\\Backend\\Controller\\NewRecordController'] = array(
-        'className' => 'NewRecordController'
-    );
-    
-	$GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['typo3/db_new.php'] = 
-		PATH_TXCOMMERCE . 'Classes/Xclass/ux_db_new.php';    
-    
+	require_once(PATH_TXCOMMERCE .'Classes/Xclass/NewRecordController.php');
+
+	// For TYPO3 6.2
+	$GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects']['TYPO3\\CMS\\Backend\\Controller\\NewRecordController'] = array(
+		'className' => 'NewRecordController'
+	);
+
 	require_once(PATH_TXCOMMERCE . 'Classes/Utility/TyposcriptConfig.php');
 }
 

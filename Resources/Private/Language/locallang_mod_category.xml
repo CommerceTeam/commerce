@@ -15,7 +15,7 @@
 
 			<label index="category_title">Category</label>
 			<label index="product_title">Product</label>
-			<label index="ext.update">You need to "UPDATE!" the commerce extension. Please go to Extension Manager > Commerce. Then click "Execute the update script" button.</label>
+			<label index="ext.update">You need to "UPDATE!" the commerce extension. Please go to Extensions->Commerce. Then choose "UPDATE!" in the select-box.</label>
 		</languageKey>
 	</data>
 </T3locallang>

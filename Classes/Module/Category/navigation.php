@@ -32,11 +32,7 @@ require_once($BACK_PATH . 'init.php');
 
 	// Make instance if it is not an AJAX call
 if (!(TYPO3_REQUESTTYPE & TYPO3_REQUESTTYPE_AJAX)) {
-	/**
-	 * Category navigation viewhelper
-	 *
-	 * @var Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper $SOBE
-	 */
+	/** @var Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper $SOBE */
 	$SOBE = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper');
 	$SOBE->init();
 	$SOBE->initPage();

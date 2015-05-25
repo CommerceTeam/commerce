@@ -15,11 +15,13 @@
 /**
  * Implements the dynaflex config for the 'tx_commerce_categories' table
  *
- * @author Erik Frister <typo3@marketing-factory.de>
+ * Class Tx_Commerce_Configuration_Dca_Categories
+ *
+ * @author 2008 Erik Frister <efrister@marketing-factory.de>
  */
 class Tx_Commerce_Configuration_Dca_Categories {
 	/**
-	 * Row checks
+	 * Rows to check
 	 *
 	 * @var array
 	 */
@@ -53,7 +55,7 @@ class Tx_Commerce_Configuration_Dca_Categories {
 								'type' => 'select',
 								'foreign_table' => 'tx_commerce_attributes',
 								'foreign_label' => 'title',
-								'foreign_table_where' => ' AND has_valuelist=1 AND multiple=0 AND sys_language_uid in (0,-1) ORDER BY title',
+								'foreign_table_where' => ' AND has_valuelist = 1 AND multiple = 0 AND sys_language_uid in (0, -1) ORDER BY title',
 								'size' => 5,
 								'minitems' => 0,
 								'maxitems' => 30,
@@ -94,7 +96,7 @@ class Tx_Commerce_Configuration_Dca_Categories {
 								'type' => 'select',
 								'foreign_table' => 'tx_commerce_attributes',
 								'foreign_label' => 'title',
-								'foreign_table_where' => ' AND sys_language_uid in (0,-1) ORDER BY title',
+								'foreign_table_where' => ' AND sys_language_uid in (0, -1) ORDER BY title',
 								'size' => 5,
 								'minitems' => 0,
 								'maxitems' => 30,
@@ -115,7 +117,17 @@ class Tx_Commerce_Configuration_Dca_Categories {
 		),
 	);
 
+	/**
+	 * Fields to cleanup
+	 *
+	 * @var string
+	 */
 	public $cleanUpField = 'attributes';
 
+	/**
+	 * Hooks
+	 *
+	 * @var array
+	 */
 	public $hooks = array();
 }

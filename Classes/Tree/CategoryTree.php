@@ -17,6 +17,10 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Implements a Categorytree
  * A tree can have n leafs, and leafs can in itself contain other leafs
+ *
+ * Class Tx_Commerce_Tree_CategoryTree
+ *
+ * @author 2008-2011 Erik Frister <typo3@marketing-factory.de>
  */
 class Tx_Commerce_Tree_CategoryTree extends Tx_Commerce_Tree_Browsetree {
 	/**

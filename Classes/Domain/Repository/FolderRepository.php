@@ -15,16 +15,16 @@
 /**
  * Misc commerce db functions
  *
- * @author Eric Frister <ef@marketing-factory.de>
+ * Class Tx_Commerce_Domain_Repository_FolderRepository
+ *
+ * @author 2008-2011 Eric Frister <ef@marketing-factory.de>
  */
 class Tx_Commerce_Domain_Repository_FolderRepository {
 	/**
 	 * Returns pidList of extension Folders
 	 *
-	 * @param string $module Module name
-	 *
+	 * @param string $module
 	 * @return string commalist of PIDs
-	 *
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, this wont get replaced as it was removed from the api
 	 */
 	public function getFolderPidList($module = 'commerce') {
@@ -38,14 +38,13 @@ class Tx_Commerce_Domain_Repository_FolderRepository {
 	 *
 	 * @param string $title Folder Title as named in pages table
 	 * @param string $module Extension Moduke
-	 * @param int $pid Parent Page id
+	 * @param integer $pid Parent Page id
 	 * @param string $parentTitle Parent Folder Title
-	 *
 	 * @return array
 	 */
 	public static function initFolders($title = 'Commerce', $module = 'commerce', $pid = 0, $parentTitle = '') {
-		// creates a Commerce folder on the fly
-		// not really a clean way ...
+			// creates a Commerce folder on the fly
+			// not really a clean way ...
 		if ($parentTitle) {
 			$parentFolders = self::getFolders($module, $pid, $parentTitle);
 			$currentParentFolders = current($parentFolders);
@@ -66,10 +65,9 @@ class Tx_Commerce_Domain_Repository_FolderRepository {
 	/**
 	 * Find the extension folders
 	 *
-	 * @param string $module Module name
-	 * @param int $pid Page id
-	 * @param string $title Title
-	 *
+	 * @param string $module
+	 * @param integer $pid
+	 * @param string $title
 	 * @return array rows of found extension folders
 	 */
 	public static function getFolders($module = 'commerce', $pid = 0, $title = '') {
@@ -87,44 +85,39 @@ class Tx_Commerce_Domain_Repository_FolderRepository {
 	 * Create your database table folder
 	 * overwrite this if wanted
 	 *
-	 * @param string $title Title
-	 * @param string $module Name of the module
-	 * @param int $pid Page id
-	 *
-	 * @return int
-	 *
+	 * @param string $title
+	 * @param string $module
+	 * @param integer $pid: ...
+	 * @return integer
 	 * @todo title aus extkey ziehen
 	 * @todo sorting
 	 */
 	protected function createFolder($title = 'Commerce', $module = 'commerce', $pid = 0) {
-		$fieldValues = array(
-			'sorting' => 10111,
-			'perms_user' => 31,
-			'perms_group' => 31,
-			'perms_everybody' => 31,
-			'doktype' => 254,
-			'crdate' => $GLOBALS['EXEC_TIME'],
-			'tstamp' => $GLOBALS['EXEC_TIME'],
+		$fieldValues = array();
+		$fieldValues['pid'] = $pid;
+		$fieldValues['sorting'] = 10111;
+		$fieldValues['perms_user'] = 31;
+		$fieldValues['perms_group'] = 31;
+		$fieldValues['perms_everybody'] = 31;
+		$fieldValues['title'] = $title;
 
-			'pid' => $pid,
-			'title' => $title,
-			'module' => $module,
+		// @todo MAKE IT tx_commerce_foldername
+		$fieldValues['tx_graytree_foldername'] =  strtolower($title);
+		$fieldValues['doktype'] = 254;
+		$fieldValues['module'] = $module;
+		$fieldValues['crdate'] = time();
+		$fieldValues['tstamp'] = time();
 
-			// @todo MAKE IT tx_commerce_foldername
-			'tx_graytree_foldername' => strtolower($title),
-		);
+		$this->getDatabaseConnection()->exec_INSERTquery('pages', $fieldValues);
 
-		self::getDatabaseConnection()->exec_INSERTquery('pages', $fieldValues);
-		return self::getDatabaseConnection()->sql_insert_id();
+		return $this->getDatabaseConnection()->sql_insert_id();
 	}
 
 
 	/**
-	 * Get database connection
-	 *
 	 * @return \TYPO3\CMS\Dbal\Database\DatabaseConnection
 	 */
-	protected static function getDatabaseConnection() {
+	protected function getDatabaseConnection() {
 		return $GLOBALS['TYPO3_DB'];
 	}
 }
