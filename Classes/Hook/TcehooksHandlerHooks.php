@@ -1,35 +1,24 @@
 <?php
-/***************************************************************
- *  Copyright notice
+/**
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2005-2013 Carsten Lausen <cl@e-netconsulting.de>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *  A copy is found in the textfile GPL.txt and important notices to the license
- *  from the author is found in LICENSE.txt distributed with these scripts.
- *
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
 
 /**
-* class tx_commerce_tcehooks for the extension openbc feuser extension
-*
-* This class handles backend updates
-*/
+ * This class handles backend updates
+ *
+ * Class Tx_Commerce_Hook_TcehooksHandlerHooks
+ *
+ * @author 2005-2013 Carsten Lausen <cl@e-netconsulting.de>
+ */
 class Tx_Commerce_Hook_TcehooksHandlerHooks {
 	/**
 	 * At this place we process prices, before they are written to the database.
@@ -39,11 +28,12 @@ class Tx_Commerce_Hook_TcehooksHandlerHooks {
 	 * @param string $table The table we are working on
 	 * @param int $id The uid we are working on
 	 * @param mixed $pObj The caller
+	 * 
 	 * @return void
 	 */
 	public function processDatamap_preProcessFieldArray(&$incomingFieldArray, $table, $id, $pObj) {
 		if ($table == 'tx_commerce_article_prices') {
-				// Get the whole price, not only the tce-form fields
+			// Get the whole price, not only the tce-form fields
 			foreach ($pObj->datamap['tx_commerce_articles'] as $v) {
 				$uids = explode(',', $v['prices']);
 				if (in_array($id, $uids) && ($incomingFieldArray['price_net'] || $incomingFieldArray['price_gross'])) {
@@ -54,8 +44,8 @@ class Tx_Commerce_Hook_TcehooksHandlerHooks {
 			foreach ($incomingFieldArray as $key => $value) {
 				if ($key == 'price_net' || $key == 'price_gross' || $key == 'purchase_price') {
 					if (is_numeric($value)) {
-							// first convert the float value to a string - this is required because of a php "bug"
-							// details on http://forge.typo3.org/issues/show/2986
+						// first convert the float value to a string - this is required because of a php "bug"
+						// details on http://forge.typo3.org/issues/show/2986
 						$incomingFieldArray[$key] = (int) strval($value * 100);
 					}
 				}
@@ -72,11 +62,12 @@ class Tx_Commerce_Hook_TcehooksHandlerHooks {
 	 * @param string $table database table
 	 * @param string $id database table
 	 * @param array &$fieldArray reference to the incoming fields
+	 * 
 	 * @return void
 	 */
 	public function processDatamap_postProcessFieldArray($status, $table, $id, &$fieldArray) {
 		if ($table == 'tx_commerce_article_prices') {
-				// ugly hack since typo3 makes ugly checks
+			// ugly hack since typo3 makes ugly checks
 			foreach ($fieldArray as $key => $value) {
 				if ($key == 'price_net' || $key == 'price_gross' || $key == 'purchase_price') {
 					$fieldArray[$key] = (int) $value;
@@ -95,6 +86,7 @@ class Tx_Commerce_Hook_TcehooksHandlerHooks {
 	 * @param string $id database table
 	 * @param array &$fieldArray reference to the incoming fields
 	 * @param object &$pObj page Object reference
+	 * 
 	 * @return void
 	 */
 	public function processDatamap_afterDatabaseOperations($status, $table, $id, &$fieldArray, &$pObj) {
@@ -143,7 +135,7 @@ class Tx_Commerce_Hook_TcehooksHandlerHooks {
 						'uid_product' => (int) $localisedProducts['uid'],
 						'sys_language_uid' => (int) $localisedProducts['sys_language_uid'],
 						'l18n_parent' => (int) $articleId,
-						'sorting' => ((int) $fieldArray['sorting'] * 2),
+						'sorting' => ((int) $fieldArray['sorting'] + 20),
 						'article_type_uid' => (int) $fieldArray['article_type_uid'],
 					);
 
@@ -161,6 +153,7 @@ class Tx_Commerce_Hook_TcehooksHandlerHooks {
 	 * @param string &$command reference to: move,copy,version,delete or undelete
 	 * @param string $table database table
 	 * @param string $id database record uid
+	 * 
 	 * @return void
 	 */
 	public function processCmdmap_preProcess(&$command, $table, $id) {
@@ -175,6 +168,7 @@ class Tx_Commerce_Hook_TcehooksHandlerHooks {
 	/**
 	 * @param array $fieldArray
 	 * @param integer $tax
+	 * 
 	 * @return void
 	 */
 	protected function calculateTax(&$fieldArray, $tax) {
@@ -208,15 +202,16 @@ class Tx_Commerce_Hook_TcehooksHandlerHooks {
 	 * @param string $id database table
 	 * @param array &$fieldArray reference to the incoming fields
 	 * @param object &$pObj page Object reference
+	 * 
 	 * @return void
 	 */
 	protected function notifyFeuserObserver($status, $table, $id, &$fieldArray, &$pObj) {
-			// get id
+		// get id
 		if ($status == 'new') {
 			$id = $pObj->substNEWwithIDs[$id];
 		}
 
-			// notify observer
+		// notify observer
 		Tx_Commerce_Dao_FeuserObserver::update($status, $id, $fieldArray);
 	}
 
@@ -230,6 +225,7 @@ class Tx_Commerce_Hook_TcehooksHandlerHooks {
 	 * @param string $id database table
 	 * @param array &$fieldArray reference to the incoming fields
 	 * @param object &$pObj page Object reference
+	 * 
 	 * @return void
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use Tx_Commerce_Hook_TcehooksHandlerHooks::notifyFeuserObserver instead
 	 */
@@ -247,10 +243,11 @@ class Tx_Commerce_Hook_TcehooksHandlerHooks {
 	 * @param string $id database table
 	 * @param array &$fieldArray reference to the incoming fields
 	 * @param object &$pObj page Object reference
+	 * 
 	 * @return void
 	 */
 	protected function notifyAddressObserver($status, $table, $id, &$fieldArray, &$pObj) {
-			// if address is updated
+		// if address is updated
 		if ($status == 'update') {
 				// notify observer
 			Tx_Commerce_Dao_AddressObserver::update($status, $id, $fieldArray);
@@ -266,6 +263,7 @@ class Tx_Commerce_Hook_TcehooksHandlerHooks {
 	 * @param string $id database table
 	 * @param array &$fieldArray reference to the incoming fields
 	 * @param object &$pObj page Object reference
+	 * 
 	 * @return void
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use Tx_Commerce_Hook_TcehooksHandlerHooks::notifyAddressObserver instead
 	 */
@@ -278,6 +276,7 @@ class Tx_Commerce_Hook_TcehooksHandlerHooks {
 	 * Check if an address is deleted
 	 *
 	 * @param integer $id
+	 * 
 	 * @return boolean|string
 	 */
 	protected function checkAddressDelete($id) {

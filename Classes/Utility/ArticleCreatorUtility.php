@@ -1,29 +1,16 @@
 <?php
-/***************************************************************
- *  Copyright notice
+/**
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2005-2012 Thomas Hempel <thomas@work.de>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *  A copy is found in the textfile GPL.txt and important notices to the license
- *  from the author is found in LICENSE.txt distributed with these scripts.
- *
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Backend\Utility\IconUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -35,6 +22,10 @@ require_once(PATH_TXCOMMERCE . 'Classes/Utility/GeneralUtility.php');
  * This class provides several methods for creating articles from within
  * a product. It provides the user fields and creates the entries in the
  * database.
+ *
+ * Class Tx_Commerce_Utility_ArticleCreatorUtility
+ *
+ * @author 2005-2012 Thomas Hempel <thomas@work.de>
  */
 class Tx_Commerce_Utility_ArticleCreatorUtility {
 	/**
@@ -87,6 +78,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	 *
 	 * @param integer $uid uid of the product
 	 * @param integer $pid page id
+	 * 
 	 * @return void
 	 */
 	public function init($uid, $pid) {
@@ -102,6 +94,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	 * Get all articles that already exist. Add some buttons for editing.
 	 *
 	 * @param array $parameter
+	 * 
 	 * @return string a HTML-table with the articles
 	 */
 	public function existingArticles($parameter) {
@@ -260,6 +253,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	 *
 	 * @param array $parameter
 	 * @param t3lib_TCEforms $fObj
+	 * 
 	 * @return string A HTML-table with checkboxes and all needed stuff
 	 */
 	public function producibleArticles($parameter, $fObj) {
@@ -328,6 +322,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	 * This method builds up a matrix from the ct1 attributes with valuelist
 	 *
 	 * @param int $index The index we're currently working on
+	 * 
 	 * @return array
 	 */
 	protected function getValues($index = 0) {
@@ -364,6 +359,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	 * @param array $extraRowData some additional data like checkbox column
 	 * @param integer $index The level inside the matrix
 	 * @param array $row The current row data
+	 * 
 	 * @return void
 	 */
 	protected function getRows($data, &$resultRows, &$counter, $headRow, $extraRowData = array(), $index = 1, $row = array()) {
@@ -446,6 +442,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	 * @param array $acBefore The additional columns before the attribute columns
 	 * @param array $acAfter The additional columns after the attribute columns
 	 * @param boolean $addTr
+	 * 
 	 * @return string The HTML header code
 	 */
 	protected function getHeadRow(&$colCount, $acBefore = NULL, $acAfter = NULL, $addTr = TRUE) {
@@ -483,6 +480,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	 * Creates all articles that should be created (defined through the POST vars)
 	 *
 	 * @param array $parameter
+	 * 
 	 * @return void
 	 */
 	public function createArticles($parameter) {
@@ -553,6 +551,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	 *
 	 * @param array $parameter
 	 * @param array $data
+	 * 
 	 * @return string Returns the product title + attribute titles for article title
 	 */
 	protected function createArticleTitleFromAttributes($parameter, $data) {
@@ -577,36 +576,37 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	 *
 	 * @param array $parameter
 	 * @param string $key The key in the POST var array
+	 * 
 	 * @return integer Returns the new articleUid if success
 	 */
 	protected function createArticle($parameter, $key) {
 		/** @var t3lib_db $database */
 		$database = $GLOBALS['TYPO3_DB'];
 
-			// get the create data
+		// get the create data
 		$data = GeneralUtility::_GP('createData');
 		$data = $data[$key];
 		$hash = md5($data);
 		$data = unserialize($data);
 
-			// get the highest sorting
+		// get the highest sorting
 		$res = $database->exec_SELECTquery(
-			'uid,sorting',
+			'uid, sorting',
 			'tx_commerce_articles',
-			'uid_product=' . $this->uid,
+			'uid_product = ' . $this->uid,
 			'',
 			'sorting DESC',
 			1
 		);
 		$sorting = $database->sql_fetch_assoc($res);
 
-			// create article data array
+		// create article data array
 		$articleData = array(
 			'pid' => $this->pid,
 			'crdate' => time(),
 			'title' => strip_tags($this->createArticleTitleFromAttributes($parameter, $data)),
 			'uid_product' => (int) $this->uid,
-			'sorting' => $sorting['sorting'] * 2,
+			'sorting' => $sorting['sorting'] + 20,
 			'article_attributes' => count($this->attributes['rest']) + count($data),
 			'attribute_hash' => $hash,
 			'article_type_uid' => 1,
@@ -644,11 +644,11 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 			}
 		}
 
-			// create the article
+		// create the article
 		$articleRes = $database->exec_INSERTquery('tx_commerce_articles', $articleData);
 		$articleUid = $database->sql_insert_id($articleRes);
 
-			// create a new price that is assigned to the new article
+		// create a new price that is assigned to the new article
 		$database->exec_INSERTquery(
 			'tx_commerce_article_prices',
 			array (
@@ -659,7 +659,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 			)
 		);
 
-			// now write all relations between article and attributes into the database
+		// now write all relations between article and attributes into the database
 		$relationBaseData = array(
 			'uid_local' => $articleUid,
 		);
@@ -668,7 +668,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 		$relationCreateData = $relationBaseData;
 
 		$productsAttributesRes = $database->exec_SELECTquery(
-			'sorting,uid_local,uid_foreign',
+			'sorting, uid_local, uid_foreign',
 			'tx_commerce_products_attributes_mm',
 			'uid_local = ' . (int) $this->uid
 		);
@@ -736,16 +736,16 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 		);
 
 		if (($resLocalizedProducts) && ($database->sql_num_rows($resLocalizedProducts) > 0)) {
-				// Only if there are products
+			// Only if there are products
 			while (($localizedProducts = $database->sql_fetch_assoc($resLocalizedProducts))) {
-					// walk thru and create articles
+				// walk thru and create articles
 				$destLanguage = $localizedProducts['sys_language_uid'];
-					// get the highest sorting
+				// get the highest sorting
 				$langIsoCode = BackendUtility::getRecord('sys_language', (int) $destLanguage, 'static_lang_isocode');
 				$langIdent = BackendUtility::getRecord('static_languages', (int) $langIsoCode['static_lang_isocode'], 'lg_typo3');
 				$langIdent = strtoupper($langIdent['lg_typo3']);
 
-					// create article data array
+				// create article data array
 				$articleData = array(
 					'pid' => $this->pid,
 					'crdate' => time(),
@@ -753,14 +753,14 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 					'uid_product' => $localizedProducts['uid'],
 					'sys_language_uid' => $localizedProducts['sys_language_uid'],
 					'l18n_parent' => $articleUid,
-					'sorting' => $sorting['sorting'] * 2,
+					'sorting' => $sorting['sorting'] + 20,
 					'article_attributes' => count($this->attributes['rest']) + count($data),
 					'attribute_hash' => $hash,
 					'article_type_uid' => 1,
 					'attributesedit' => $this->belib->buildLocalisedAttributeValues($origArticle['attributesedit'], $langIdent),
 				);
 
-					// create the article
+				// create the article
 				$articleRes = $database->exec_INSERTquery('tx_commerce_articles', $articleData);
 				$localizedArticleUid = $database->sql_insert_id($articleRes);
 
@@ -769,7 +769,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 				$res = $database->exec_SELECTquery(
 					'*',
 					'tx_commerce_articles_article_attributes_mm',
-					'uid_local=' . (int) $origArticle['uid'] . ' AND uid_valuelist=0'
+					'uid_local = ' . (int) $origArticle['uid'] . ' AND uid_valuelist = 0'
 				);
 
 				while (($origRelation = $database->sql_fetch_assoc($res))) {
@@ -790,6 +790,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	 * article. The handling for creating the new price is inside the tcehooks
 	 *
 	 * @param array $parameter
+	 * 
 	 * @return string
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, this wont get replaced as it was removed from the api
 	 */
@@ -810,6 +811,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	 * Creates ...
 	 *
 	 * @param array $parameter
+	 * 
 	 * @return string
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, this wont get replaced as it was removed from the api
 	 */
@@ -824,6 +826,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	 * Creates ...
 	 *
 	 * @param array $parameter
+	 * 
 	 * @return string
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, this wont get replaced as it was removed from the api
 	 */
@@ -838,6 +841,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	 * Creates ...
 	 *
 	 * @param array $parameter
+	 * 
 	 * @return string
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, this wont get replaced as it was removed from the api
 	 */
@@ -854,6 +858,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	 *
 	 * @param array $parameter
 	 * @param t3lib_TCEforms $fObj
+	 * 
 	 * @return string
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, this wont get replaced as it was removed from the api
 	 */
@@ -884,6 +889,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	 * Returns a hidden field with the name and value of the current form element
 	 *
 	 * @param array $parameter
+	 * 
 	 * @return string
 	 */
 	public function articleUid($parameter) {
