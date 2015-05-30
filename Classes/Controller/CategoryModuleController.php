@@ -18,21 +18,27 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class Tx_Commerce_Controller_CategoryModuleController
+ *
+ * @author Sebastian Fischer <typo3@marketing-factory.de>
  */
 class Tx_Commerce_Controller_CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList {
 	/**
-	 * the script for the wizard of the command 'new'
+	 * The script for the wizard of the command 'new'
 	 *
 	 * @var string
 	 */
 	public $scriptNewWizard = 'wizard.php';
 
 	/**
-	 * @var integer
+	 * Category uid
+	 *
+	 * @var int
 	 */
 	public $categoryUid = 0;
 
 	/**
+	 * Body content
+	 *
 	 * @var string
 	 */
 	protected $body;
@@ -127,7 +133,11 @@ class Tx_Commerce_Controller_CategoryModuleController extends \TYPO3\CMS\Recordl
 
 			$newRecordLink = $this->scriptNewWizard . '?id=' . (int) $this->id;
 			foreach ($controls as $controlData) {
-				/** @var Tx_Commerce_Tree_Leaf_Data $treeData */
+				/**
+				 * Tree data
+				 *
+				 * @var Tx_Commerce_Tree_Leaf_Data $treeData
+				 */
 				$treeData = GeneralUtility::makeInstance($controlData['dataClass']);
 				$treeData->init();
 
@@ -151,7 +161,7 @@ class Tx_Commerce_Controller_CategoryModuleController extends \TYPO3\CMS\Recordl
 		if ($this->categoryUid) {
 			$this->pageinfo = Tx_Commerce_Utility_BackendUtility::readCategoryAccess($this->categoryUid, $this->perms_clause);
 		} else {
-			$this->pageinfo = BackendUtility::readPageAccess($this->id, $this->perms_clause);
+			$this->pageinfo = BackendUtility::readPageAccess($this->id, $this->getBackendUser()->getPagePermsClause(1));
 		}
 		$access = is_array($this->pageinfo);
 		// Apply predefined values for hidden checkboxes
@@ -175,12 +185,20 @@ class Tx_Commerce_Controller_CategoryModuleController extends \TYPO3\CMS\Recordl
 		}
 
 		// Initialize the dblist object:
-		/** @var $dbList Tx_Commerce_ViewHelpers_CategoryRecordList */
+		/**
+		 * Category record list
+		 *
+		 * @var $dbList Tx_Commerce_ViewHelpers_CategoryRecordList
+		 */
 		$dbList = GeneralUtility::makeInstance('Tx_Commerce_ViewHelpers_CategoryRecordList');
 		$dbList->backPath = $GLOBALS['BACK_PATH'];
 		$dbList->script = BackendUtility::getModuleUrl('txcommerceM1_category', array(), '');
 
-		/** @var \CommerceTeam\Commerce\Utility\BackendUserUtility $utility */
+		/**
+		 * Backend utility
+		 *
+		 * @var \CommerceTeam\Commerce\Utility\BackendUserUtility $utility
+		 */
 		$utility = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Utility\\BackendUserUtility');
 		$dbList->calcPerms = $utility->calcPerms(BackendUtility::getRecord('tx_commerce_categories', $this->categoryUid));
 		$dbList->thumbs = $this->getBackendUser()->uc['thumbnailsByDefault'];
@@ -210,7 +228,11 @@ class Tx_Commerce_Controller_CategoryModuleController extends \TYPO3\CMS\Recordl
 
 		// Clipboard is initialized:
 		// Start clipboard
-		/** @var \TYPO3\CMS\Backend\Clipboard\Clipboard $clipObj */
+		/**
+		 * Clipboard
+		 *
+		 * @var \TYPO3\CMS\Backend\Clipboard\Clipboard $clipObj
+		 */
 		$clipObj = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Clipboard\\Clipboard');
 		$dbList->clipObj = $clipObj;
 		// Initialize - reads the clipboard content from the user session
@@ -262,7 +284,11 @@ class Tx_Commerce_Controller_CategoryModuleController extends \TYPO3\CMS\Recordl
 						$cmd[$iKparts[0]][$iKparts[1]]['delete'] = 1;
 					}
 
-					/** @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce */
+					/**
+					 * Data handler
+					 *
+					 * @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce
+					 */
 					$tce = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
 					$tce->stripslashes_values = 0;
 					$tce->start(array(), $cmd);
