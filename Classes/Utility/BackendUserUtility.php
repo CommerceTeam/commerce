@@ -184,9 +184,11 @@ class BackendUserUtility implements SingletonInterface {
 		foreach ($groups as $group) {
 			$mount = current($group);
 			if (!empty($mount)) {
-				$mountPoints[] = $mount;
+				$mountPoints = array_merge($mountPoints, GeneralUtility::trimExplode(',', $mount));
 			}
 		}
+
+		$mountPoints = array_unique($mountPoints);
 
 		return $mountPoints;
 	}
