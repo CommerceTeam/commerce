@@ -60,7 +60,7 @@ class Tx_Commerce_Tree_Leaf_Mounts extends Tx_Commerce_Tree_Leaf_Base {
 	/**
 	 * User for this mount
 	 *
-	 * @var t3lib_beUserAuth
+	 * @var \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
 	 */
 	protected $user;
 
@@ -115,7 +115,7 @@ class Tx_Commerce_Tree_Leaf_Mounts extends Tx_Commerce_Tree_Leaf_Base {
 		$this->mountlist = '';
 		$this->mountdata = array();
 		$this->pointer = 0;
-		$this->user = t3lib_div::makeInstance('t3lib_beUserAuth');
+		$this->user = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Authentication\\BackendUserAuthentication');
 		$this->group = 0;
 		$this->byGroup = FALSE;
 	}
@@ -131,7 +131,7 @@ class Tx_Commerce_Tree_Leaf_Mounts extends Tx_Commerce_Tree_Leaf_Base {
 			// Return if the UID is not numeric - could also be because we have a new user
 		if (!is_numeric($uid) || $this->field == NULL) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('init (Tx_Commerce_Tree_Leaf_Mounts) gets passed invalid parameters. Script is aborted.', COMMERCE_EXTKEY, 2);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('init (Tx_Commerce_Tree_Leaf_Mounts) gets passed invalid parameters. Script is aborted.', COMMERCE_EXTKEY, 2);
 			}
 			return;
 		}
@@ -147,7 +147,7 @@ class Tx_Commerce_Tree_Leaf_Mounts extends Tx_Commerce_Tree_Leaf_Base {
 		}
 
 			// Store the results
-		$this->mountlist = t3lib_div::uniqueList($mounts);
+		$this->mountlist = \TYPO3\CMS\Core\Utility\GeneralUtility::uniqueList($mounts);
 			// Clean duplicates
 		$this->mountdata = explode(',', $this->mountlist);
 	}
@@ -163,7 +163,7 @@ class Tx_Commerce_Tree_Leaf_Mounts extends Tx_Commerce_Tree_Leaf_Base {
 			// Return if the UID is not numeric - could also be because we have a new user
 		if (!is_numeric($uid) || $this->field == NULL) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('initByGroup (mounts) gets passed invalid parameters. Script is aborted.', COMMERCE_EXTKEY, 2);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('initByGroup (mounts) gets passed invalid parameters. Script is aborted.', COMMERCE_EXTKEY, 2);
 			}
 			return;
 		}
@@ -180,7 +180,7 @@ class Tx_Commerce_Tree_Leaf_Mounts extends Tx_Commerce_Tree_Leaf_Base {
 		}
 
 			// Store the results
-		$this->mountlist = t3lib_div::uniqueList($mounts);
+		$this->mountlist = \TYPO3\CMS\Core\Utility\GeneralUtility::uniqueList($mounts);
 			// Clean duplicates
 		$this->mountdata = explode(',', $this->mountlist);
 	}
@@ -197,8 +197,7 @@ class Tx_Commerce_Tree_Leaf_Mounts extends Tx_Commerce_Tree_Leaf_Base {
 		if (!$this->byGroup && $this->user->isAdmin()) {
 			$mounts = '0';
 		} else {
-			/** @var t3lib_db $database */
-			$database = & $GLOBALS['TYPO3_DB'];
+			$database = $this->getDatabaseConnection();
 				// Read usermounts - if none are set, mounts are set to NULL
 			if (!$this->byGroup) {
 				$result = $database->exec_SELECTquery(
@@ -212,7 +211,7 @@ class Tx_Commerce_Tree_Leaf_Mounts extends Tx_Commerce_Tree_Leaf_Base {
 				$mounts = $row[$this->field];
 
 					// Read Usergroup mounts
-				$groups = t3lib_div::uniqueList($row[$this->usergroupField]);
+				$groups = \TYPO3\CMS\Core\Utility\GeneralUtility::uniqueList($row[$this->usergroupField]);
 			} else {
 				$groups = $this->group;
 			}
@@ -226,7 +225,7 @@ class Tx_Commerce_Tree_Leaf_Mounts extends Tx_Commerce_Tree_Leaf_Base {
 				}
 
 					// Make nicely formated list
-				$mounts = t3lib_div::uniqueList($mounts);
+				$mounts = \TYPO3\CMS\Core\Utility\GeneralUtility::uniqueList($mounts);
 			}
 		}
 
@@ -283,5 +282,15 @@ class Tx_Commerce_Tree_Leaf_Mounts extends Tx_Commerce_Tree_Leaf_Base {
 	 */
 	public function resetPointer() {
 		$this->pointer = 0;
+	}
+
+
+	/**
+	 * Get database connection
+	 *
+	 * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+	 */
+	protected function getDatabaseConnection() {
+		return $GLOBALS['TYPO3_DB'];
 	}
 }

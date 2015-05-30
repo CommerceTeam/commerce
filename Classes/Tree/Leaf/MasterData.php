@@ -75,7 +75,7 @@ abstract class Tx_Commerce_Tree_Leaf_MasterData extends Tx_Commerce_Tree_Leaf_Da
 	public function initRecords($index, &$indices) {
 		if (!is_numeric($index) || !is_array($indices)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('initRecords (Tx_Commerce_Tree_Leaf_MasterData) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('initRecords (Tx_Commerce_Tree_Leaf_MasterData) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
 			}
 			return;
 		}
@@ -85,23 +85,22 @@ abstract class Tx_Commerce_Tree_Leaf_MasterData extends Tx_Commerce_Tree_Leaf_Da
 		 * Error Handling should be improved in this case, since in case of no access to records, no records would be read
 		 * when selecting the mounts and the error woudl be no Mounts
 		 */
-			// Check if User's Group may view the records
-		/** @var t3lib_beUserAuth $backendUser */
-		$backendUser = & $GLOBALS['BE_USER'];
+		// Check if User's Group may view the records
+		$backendUser = $this->getBackendUser();
 		if (!$backendUser->check('tables_select', $this->table)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('initRecords (Tx_Commerce_Tree_Leaf_MasterData): Usergroup is not allowed to view the records. ', COMMERCE_EXTKEY, 2);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('initRecords (Tx_Commerce_Tree_Leaf_MasterData): Usergroup is not allowed to view the records. ', COMMERCE_EXTKEY, 2);
 			}
 			$this->records = NULL;
 			return;
 		}
 
-			// Check if we have access to the records.
+		// Check if we have access to the records.
 		if (!$backendUser->check('tables_select', $this->table)) {
 			return;
 		}
 
-			// Get the records
+		// Get the records
 		if ($this->useMountpoints) {
 				// Get the records by Mountpoint
 			$this->records = &$this->getRecordsByMountpoints($index, $indices);
@@ -120,7 +119,7 @@ abstract class Tx_Commerce_Tree_Leaf_MasterData extends Tx_Commerce_Tree_Leaf_Da
 	public function setMounts($mountIds) {
 		if (!is_array($mountIds)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('setMounts (Tx_Commerce_Tree_Leaf_MasterData) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('setMounts (Tx_Commerce_Tree_Leaf_MasterData) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
 			}
 			return;
 		}
@@ -138,7 +137,7 @@ abstract class Tx_Commerce_Tree_Leaf_MasterData extends Tx_Commerce_Tree_Leaf_Da
 	public function setUid($uid) {
 		if (!is_numeric($uid)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('setUid (Tx_Commerce_Tree_Leaf_MasterData) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('setUid (Tx_Commerce_Tree_Leaf_MasterData) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
 			}
 			return;
 		}
@@ -162,7 +161,7 @@ abstract class Tx_Commerce_Tree_Leaf_MasterData extends Tx_Commerce_Tree_Leaf_Da
 	public function setDepth($depth) {
 		if (!is_numeric($depth)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('setDepth (Tx_Commerce_Tree_Leaf_MasterData) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('setDepth (Tx_Commerce_Tree_Leaf_MasterData) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
 			}
 			return;
 		}
@@ -180,7 +179,7 @@ abstract class Tx_Commerce_Tree_Leaf_MasterData extends Tx_Commerce_Tree_Leaf_Da
 	protected function &getRecordsByMountpoints($index, &$indices) {
 		if (!is_numeric($index) || !is_array($indices) || !is_array($this->mountIds) || 0 == count($this->mountIds)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('getRecordsByMountpoints (Tx_Commerce_Tree_Leaf_MasterData) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('getRecordsByMountpoints (Tx_Commerce_Tree_Leaf_MasterData) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
 			}
 			return NULL;
 		}
@@ -189,7 +188,7 @@ abstract class Tx_Commerce_Tree_Leaf_MasterData extends Tx_Commerce_Tree_Leaf_Da
 		$hookObjectsArr = array();
 		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['commerce/class.leafMasterData.php']['getRecordsByMountpointsClass'])) {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['commerce/class.leafMasterData.php']['getRecordsByMountpointsClass'] as $classRef) {
-				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+				$hookObjectsArr[] = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
 			}
 		}
 
@@ -263,7 +262,7 @@ abstract class Tx_Commerce_Tree_Leaf_MasterData extends Tx_Commerce_Tree_Leaf_Da
 	protected function &getRecursiveUids($uid, $depth, &$array = NULL) {
 		if (!is_numeric($uid) || !is_numeric($depth)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('getRecursiveUids (Tx_Commerce_Tree_Leaf_MasterData) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('getRecursiveUids (Tx_Commerce_Tree_Leaf_MasterData) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
 			}
 			return array();
 		}
@@ -277,8 +276,7 @@ abstract class Tx_Commerce_Tree_Leaf_MasterData extends Tx_Commerce_Tree_Leaf_Da
 
 		$array[] = $uid;
 
-		/** @var t3lib_db $database */
-		$database = & $GLOBALS['TYPO3_DB'];
+		$database = $this->getDatabaseConnection();
 		if ($this->useMMTable) {
 			$res = $database->exec_SELECTquery('uid_local AS uid', $this->mmTable, 'uid_foreign = ' . $uid);
 		} else {
@@ -327,5 +325,24 @@ abstract class Tx_Commerce_Tree_Leaf_MasterData extends Tx_Commerce_Tree_Leaf_Da
 		$root['item_parent'] = 0;
 
 		return $root;
+	}
+
+
+	/**
+	 * Get backend user
+	 *
+	 * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
+	 */
+	protected function getBackendUser() {
+		return $GLOBALS['BE_USER'];
+	}
+
+	/**
+	 * Get database connection
+	 *
+	 * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+	 */
+	protected function getDatabaseConnection() {
+		return $GLOBALS['TYPO3_DB'];
 	}
 }

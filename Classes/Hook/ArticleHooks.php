@@ -77,8 +77,7 @@ class Tx_Commerce_Hook_ArticleHooks {
 		$deliveryConf = ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['SYSPRODUCTS']['DELIVERY']['types']);
 		$classname = array_shift(array_keys($deliveryConf));
 
-		/** @var t3lib_db $database */
-		$database = $GLOBALS['TYPO3_DB'];
+		$database = $this->getDatabaseConnection();
 
 		$row = $database->exec_SELECTgetSingleRow(
 			'uid',
@@ -95,7 +94,7 @@ class Tx_Commerce_Hook_ArticleHooks {
 			 *
 			 * @var Tx_Commerce_Domain_Model_Article $deliveryArticle
 			 */
-			$deliveryArticle = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Article', $deliveryArticleUid, $article->getLang());
+			$deliveryArticle = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Article', $deliveryArticleUid, $article->getLang());
 
 			/**
 			 * Do not call loadData at this point, since loadData recalls this hook,
@@ -108,5 +107,15 @@ class Tx_Commerce_Hook_ArticleHooks {
 		}
 
 		return $result;
+	}
+
+
+	/**
+	 * Get database connection
+	 *
+	 * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+	 */
+	protected function getDatabaseConnection() {
+		return $GLOBALS['TYPO3_DB'];
 	}
 }

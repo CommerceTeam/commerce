@@ -60,10 +60,11 @@ class Tx_Commerce_Hook_DataMapHooks {
 	 * will work with the data we maybe have modified here.
 	 * Calculation of missing price
 	 *
-	 * @param array &$incomingFieldArray fields that where changed in BE
-	 * @param string $table the table the data will be stored in
-	 * @param integer $id The uid of the dataset we're working on
-	 * @param t3lib_TCEmain $pObj The instance of the BE Form
+	 * @param array $incomingFieldArray Fields that where changed in BE
+	 * @param string $table Table the data will be stored in
+	 * @param int $id The uid of the dataset we're working on
+	 * @param \TYPO3\CMS\Core\DataHandling\DataHandler $pObj The instance of the BE Form
+	 *
 	 * @return void
 	 */
 	public function processDatamap_preProcessFieldArray(&$incomingFieldArray, $table, $id, $pObj) {
@@ -211,8 +212,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 	 * @return array
 	 */
 	protected function preProcessArticle($incomingFieldArray, $id) {
-		/** @var t3lib_db $database */
-		$database = $GLOBALS['TYPO3_DB'];
+		$database = $this->getDatabaseConnection();
 
 		$this->updateArticleAttributeRelations($incomingFieldArray, $id);
 
@@ -301,7 +301,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 	 * @param array $incomingFieldArray
 	 * @param string $table
 	 * @param integer $id
-	 * @param t3lib_TCEmain &$pObj
+	 * @param \TYPO3\CMS\Core\DataHandling\DataHandler $pObj
 	 * @return array
 	 */
 	protected function preProcessOrder($incomingFieldArray, $table, $id, &$pObj) {
@@ -310,8 +310,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 		if (isset($incomingFieldArray['newpid'])) {
 			$hookObjectsArr = $this->getMoveOrderHooks();
 
-			/** @var t3lib_db $database */
-			$database = $GLOBALS['TYPO3_DB'];
+			$database = $this->getDatabaseConnection();
 
 				// Add first the pid filled
 			$incomingFieldArray['pid'] = $incomingFieldArray['newpid'];
@@ -378,12 +377,11 @@ class Tx_Commerce_Hook_DataMapHooks {
 	 *
 	 * @param string $table
 	 * @param int $id
-	 * @param t3lib_TCEmain $pObj
+	 * @param \TYPO3\CMS\Core\DataHandling\DataHandler $pObj
 	 * @return void
 	 */
 	protected function preProcessOrderArticle($table, $id, $pObj) {
-		/** @var t3lib_db $database */
-		$database = $GLOBALS['TYPO3_DB'];
+		$database = $this->getDatabaseConnection();
 
 		$orderIdResult = $database->exec_SELECTquery('order_id', $table, 'uid = ' . (int) $id);
 		if (!$database->sql_error()) {
@@ -482,7 +480,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 	 * @param string $table DB Table we are operating on
 	 * @param integer $id UID of the Item we are operating on
 	 * @param array &$fieldArray fields to be inserted into the db
-	 * @param t3lib_TCEmain $pObj Reference to the BE Form Object of the caller
+	 * @param \TYPO3\CMS\Core\DataHandling\DataHandler $pObj Reference to the BE Form Object of the caller
 	 * @return void
 	 */
 	public function processDatamap_postProcessFieldArray($status, $table, $id, &$fieldArray, $pObj) {
@@ -513,7 +511,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 	 * @param string $table
 	 * @param integer|string $id
 	 * @param array &$fieldArray
-	 * @param t3lib_TCEmain $pObj
+	 * @param \TYPO3\CMS\Core\DataHandling\DataHandler $pObj
 	 * @return void
 	 */
 	protected function postProcessCategory($status, $table, $id, &$fieldArray, $pObj) {
@@ -760,12 +758,11 @@ class Tx_Commerce_Hook_DataMapHooks {
 	 * @param string $table
 	 * @param integer|string $id
 	 * @param array &$fieldArray
-	 * @param t3lib_TCEmain $pObj
+	 * @param \TYPO3\CMS\Core\DataHandling\DataHandler $pObj
 	 * @return array
 	 */
 	protected function postProcessProduct($status, $table, $id, &$fieldArray, $pObj) {
-		/** @var t3lib_beUserAuth $backendUser */
-		$backendUser = $GLOBALS['BE_USER'];
+		$backendUser = $this->getBackendUser();
 
 		$data = $pObj->datamap[$table][$id];
 
@@ -821,12 +818,11 @@ class Tx_Commerce_Hook_DataMapHooks {
 	 * @param string $status
 	 * @param integer|string $id
 	 * @param array &$fieldArray
-	 * @param t3lib_TCEmain $pObj
+	 * @param \TYPO3\CMS\Core\DataHandling\DataHandler $pObj
 	 * @return void
 	 */
 	protected function postProcessArticle($status, $id, &$fieldArray, $pObj) {
-		/** @var t3lib_beUserAuth $backendUser */
-		$backendUser = $GLOBALS['BE_USER'];
+		$backendUser = $this->getBackendUser();
 
 		$parentCategories = array();
 
@@ -876,7 +872,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 	 * @param string $table
 	 * @param integer $id
 	 * @param array $fieldArray
-	 * @param t3lib_TCEmain $pObj
+	 * @param \TYPO3\CMS\Core\DataHandling\DataHandler $pObj
 	 * @return void
 	 */
 	public function processDatamap_afterDatabaseOperations($status, $table, $id, $fieldArray, $pObj) {
@@ -951,7 +947,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 	 * @param string $table
 	 * @param string|integer $id
 	 * @param array $fieldArray
-	 * @param t3lib_TCEmain $pObj
+	 * @param \TYPO3\CMS\Core\DataHandling\DataHandler $pObj
 	 * @return void
 	 */
 	protected function afterDatabaseProduct($status, $table, $id, $fieldArray, $pObj) {
@@ -1018,8 +1014,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 	 */
 	protected function afterDatabasePrice($fieldArray, $id) {
 		if (!isset($fieldArray['uid_article'])) {
-			/** @var t3lib_db $database */
-			$database = $GLOBALS['TYPO3_DB'];
+			$database = $this->getDatabaseConnection();
 
 			$uidArticleRow = $database->exec_SELECTgetSingleRow('uid_article', 'tx_commerce_article_prices', 'uid = ' . (int) $id);
 			$uidArticle = $uidArticleRow['uid_article'];
@@ -1039,8 +1034,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 	 * @return void
 	 */
 	protected function afterDatabaseHandleDynaflex($table, $id) {
-		/** @var t3lib_beUserAuth $backendUser */
-		$backendUser = $GLOBALS['BE_USER'];
+		$backendUser = $this->getBackendUser();
 
 		$record = BackendUtility::getRecord($table, $id);
 
@@ -1081,8 +1075,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 	 */
 	protected function updateArticleAttributeRelations($incomingFieldArray, $id) {
 		if (isset($incomingFieldArray['attributesedit'])) {
-			/** @var t3lib_db $database */
-			$database = $GLOBALS['TYPO3_DB'];
+			$database = $this->getDatabaseConnection();
 
 			// get the data from the flexForm
 			$attributes = $incomingFieldArray['attributesedit']['data']['sDEF']['lDEF'];
@@ -1228,8 +1221,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 		// of this product.
 		// We don't have to check for any parent categories, because the attributes
 		// from them should already be saved for this product.
-		/** @var t3lib_db $database */
-		$database = $GLOBALS['TYPO3_DB'];
+		$database = $this->getDatabaseConnection();
 
 			// create an article and a new price for a new product
 		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['simpleMode'] && $productId != NULL) {
@@ -1588,5 +1580,24 @@ class Tx_Commerce_Hook_DataMapHooks {
 		}
 
 		return $hookObjectsArr;
+	}
+
+
+	/**
+	 * Get backend user
+	 *
+	 * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
+	 */
+	protected function getBackendUser() {
+		return $GLOBALS['BE_USER'];
+	}
+
+	/**
+	 * Get database connection
+	 *
+	 * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+	 */
+	protected function getDatabaseConnection() {
+		return $GLOBALS['TYPO3_DB'];
 	}
 }

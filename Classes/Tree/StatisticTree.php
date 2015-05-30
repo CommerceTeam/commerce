@@ -1,34 +1,23 @@
 <?php
-/***************************************************************
- *  Copyright notice
+/**
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2005-2011 Ingo Schmitt <is@marketing-factory.de>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *  A copy is found in the textfile GPL.txt and important notices to the license
- *  from the author is found in LICENSE.txt distributed with these scripts.
- *
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
 
 /**
  * Class Tx_Commerce_Tree_StatisticTree
+ *
+ * @author Ingo Schmitt <is@marketing-factory.de>
  */
-class Tx_Commerce_Tree_StatisticTree extends t3lib_browseTree {
+class Tx_Commerce_Tree_StatisticTree extends \TYPO3\CMS\Backend\Tree\View\BrowseTreeView {
 	/**
 	 * @var integer
 	 */
@@ -63,17 +52,18 @@ class Tx_Commerce_Tree_StatisticTree extends t3lib_browseTree {
 	 *
 	 * @param string $icon Icon IMG code
 	 * @param array $row Data row for element.
+	 *
 	 * @return string Page icon
 	 */
 	public function wrapIcon($icon, &$row) {
 		/** @var language $language */
 		$language = $GLOBALS['LANG'];
 
-			// If the record is locked, present a warning sign.
-		if (($lockInfo = t3lib_BEfunc::isRecordLocked('pages', $row['uid']))) {
+		// If the record is locked, present a warning sign.
+		if (($lockInfo = \TYPO3\CMS\Backend\Utility\BackendUtility::isRecordLocked('pages', $row['uid']))) {
 			$aOnClick = 'alert(' . $language->JScharCode($lockInfo['msg']) . ');return false;';
 			$lockIcon = '<a href="#" onclick="' . htmlspecialchars($aOnClick) . '">' .
-				t3lib_iconWorks::getSpriteIcon(
+				\TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon(
 					'status-warning-in-use',
 					array('title' => htmlspecialchars($lockInfo['msg']))
 				) .
@@ -82,10 +72,10 @@ class Tx_Commerce_Tree_StatisticTree extends t3lib_browseTree {
 			$lockIcon = '';
 		}
 
-			// Add title attribute to input icon tag
+		// Add title attribute to input icon tag
 		$thePageIcon = $this->addTagAttributes($icon, $this->titleAttrib . '="' . $this->getTitleAttrib($row) . '"');
 
-			// Wrap icon in click-menu link.
+		// Wrap icon in click-menu link.
 		if (!$this->ext_IconMode) {
 			/** @var template $tbeTemplate */
 			$tbeTemplate = $GLOBALS['TBE_TEMPLATE'];
@@ -96,7 +86,7 @@ class Tx_Commerce_Tree_StatisticTree extends t3lib_browseTree {
 			$thePageIcon = '<a href="#" onclick="' . htmlspecialchars($aOnClick) . '">' . $thePageIcon . '</a>';
 		}
 
-			// Add Page ID:
+		// Add Page ID:
 		if ($this->ext_showPageId) {
 			$pageIdStr = '[' . $row['uid'] . ']&nbsp;';
 		} else {
@@ -107,16 +97,19 @@ class Tx_Commerce_Tree_StatisticTree extends t3lib_browseTree {
 	}
 
 	/**
-	 * Adds a red "+" to the input string, $str, if the field "php_tree_stop" in the $row (pages) is set
+	 * Adds a red "+" to the input string, $str,
+	 * if the field "php_tree_stop" in the $row (pages) is set
 	 *
 	 * @param string $str Input string, like a page title for the tree
-	 * @param array $row record row with "php_tree_stop" field
+	 * @param array $row Record row with "php_tree_stop" field
+	 *
 	 * @return string Modified string
 	 */
 	public function wrapStop($str, $row) {
 		if ($row['php_tree_stop']) {
 			$str .= '<a href="' .
-				htmlspecialchars(t3lib_div::linkThisScript(array('setTempDBmount' => $row['uid']))) . '" class="typo3-red">+</a> ';
+				htmlspecialchars(\TYPO3\CMS\Core\Utility\GeneralUtility::linkThisScript(array('setTempDBmount' => $row['uid']))) .
+					'" class="typo3-red">+</a> ';
 		}
 		return $str;
 	}

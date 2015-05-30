@@ -92,7 +92,11 @@ class Tx_Commerce_Controller_CategoryModuleController extends \TYPO3\CMS\Recordl
 	 * @return void
 	 */
 	public function initPage() {
-		/** @var \TYPO3\CMS\Backend\Template\DocumentTemplate $doc */
+		/**
+		 * Template
+		 *
+		 * @var \TYPO3\CMS\Backend\Template\DocumentTemplate $doc
+		 */
 		$doc = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
 		$doc->backPath = $GLOBALS['BACK_PATH'];
 		$doc->setModuleTemplate(PATH_TXCOMMERCE . 'Resources/Private/Backend/mod_category_index.html');
@@ -448,13 +452,12 @@ class Tx_Commerce_Controller_CategoryModuleController extends \TYPO3\CMS\Recordl
 	 * Returns the Category Path info
 	 *
 	 * @param array $categoryRecord Category row
+	 *
 	 * @return string
 	 */
-	protected function getCategoryPath($categoryRecord) {
-		/** @var language $language */
-		$language = $GLOBALS['LANG'];
-		/** @var t3lib_beUserAuth $backendUser */
-		$backendUser = $GLOBALS['BE_USER'];
+	protected function getCategoryPath(array $categoryRecord) {
+		$language = $this->getLanguageService();
+		$backendUser = $this->getBackendUser();
 
 		// Is this a real page
 		if (is_array($categoryRecord) && $categoryRecord['uid']) {
@@ -487,10 +490,11 @@ class Tx_Commerce_Controller_CategoryModuleController extends \TYPO3\CMS\Recordl
 	/**
 	 * Returns the info for the Category Path
 	 *
-	 * @param array $categoryRecord - Category record
+	 * @param array $categoryRecord Category record
+	 *
 	 * @return string
 	 */
-	protected function getCategoryInfo($categoryRecord) {
+	protected function getCategoryInfo(array $categoryRecord) {
 		// Add icon with clickmenu, etc:
 		// If there IS a real page
 		if (is_array($categoryRecord) && $categoryRecord['uid']) {
@@ -527,9 +531,10 @@ class Tx_Commerce_Controller_CategoryModuleController extends \TYPO3\CMS\Recordl
 	 * Generate the page path for docheader
 	 *
 	 * @param array $pageRecord Current page
+	 *
 	 * @return string Page path
 	 */
-	protected function getPagePath($pageRecord) {
+	protected function getPagePath(array $pageRecord) {
 		$backendUser = $this->getBackendUser();
 
 		// Is this a real page
@@ -565,9 +570,10 @@ class Tx_Commerce_Controller_CategoryModuleController extends \TYPO3\CMS\Recordl
 	 * Setting page icon with clickmenu + uid for docheader
 	 *
 	 * @param array $pageRecord Current page
+	 *
 	 * @return string Page info
 	 */
-	protected function getPageInfo($pageRecord) {
+	protected function getPageInfo(array $pageRecord) {
 		// Add icon with clickmenu, etc:
 		// If there IS a real page
 		if (is_array($pageRecord) && $pageRecord['uid']) {

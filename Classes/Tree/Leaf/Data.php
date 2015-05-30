@@ -546,8 +546,7 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 				') OR uid IN(' . $this->where['uid'] . '))';
 		}
 
-		/** @var t3lib_db $database */
-		$database = $GLOBALS['TYPO3_DB'];
+		$database = $this->getDatabaseConnection();
 
 			// exec the query
 		if ($this->useMMTable) {
@@ -685,10 +684,20 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 		return $hasAccess ? TRUE : FALSE;
 	}
 
+
 	/**
 	 * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
 	 */
 	protected function getBackendUser() {
 		return $GLOBALS['BE_USER'];
+	}
+
+	/**
+	 * Get database connection
+	 *
+	 * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+	 */
+	protected function getDatabaseConnection() {
+		return $GLOBALS['TYPO3_DB'];
 	}
 }

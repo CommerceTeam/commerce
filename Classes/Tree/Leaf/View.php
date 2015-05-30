@@ -206,7 +206,8 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 	/**
 	 * Sets the bank
 	 *
-	 * @param integer $bank - Category UID of the Mount (aka Bank)
+	 * @param int $bank Category UID of the Mount (aka Bank)
+	 *
 	 * @return void
 	 */
 	public function setBank($bank) {
@@ -222,8 +223,9 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 	/**
 	 * Sets the Tree Name of the Parent Tree
 	 *
-	 * @return void
 	 * @param string $name Name of the tree
+	 *
+	 * @return void
 	 */
 	public function setTreeName($name) {
 		if (!is_string($name)) {
@@ -241,7 +243,8 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 	/**
 	 * Sets if the clickmenu should be enabled for this Tx_Commerce_Tree_Leaf_View
 	 *
-	 * @param boolean $flag [optional] Flag
+	 * @param bool $flag Flag
+	 *
 	 * @return void
 	 */
 	public function noClickmenu($flag = TRUE) {
@@ -251,8 +254,9 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 	/**
 	 * Sets if the root onlick should be enabled for this Tx_Commerce_Tree_Leaf_View
 	 *
+	 * @param bool $flag Flag
+	 *
 	 * @return void
-	 * @param boolean $flag Flag
 	 */
 	public function noRootOnclick($flag = TRUE) {
 		$this->noRootOnclick = (bool)$flag;
@@ -261,8 +265,9 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 	/**
 	 * Sets the noClick for the title
 	 *
+	 * @param bool $flag
+	 *
 	 * @return void
-	 * @param boolean $flag
 	 */
 	public function noOnclick($flag = TRUE) {
 		$this->noOnclick = $flag;
@@ -284,6 +289,7 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 	 * 	try to get icon based on those values.
 	 *
 	 * @param array $row Item row.
+	 *
 	 * @return string Image tag.
 	 */
 	public function getIcon($row) {
@@ -305,6 +311,7 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 	 * $this->iconPath and $this->rootIconName have to be set
 	 *
 	 * @param array $row
+	 *
 	 * @return string Image tag
 	 */
 	public function getRootIcon($row) {
@@ -327,6 +334,7 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 	 * @param string $icon
 	 * @param array $row
 	 * @param string $additionalParams
+	 *
 	 * @return string HTML Code
 	 */
 	public function wrapIcon($icon, $row, $additionalParams = '') {
@@ -400,17 +408,18 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 	 *
 	 * @param array $row The input row array (where the key "title"
 	 * 	is used for the title)
+	 *
 	 * @return string The attribute value (is htmlspecialchared() already)
-	 * @see wrapIcon()
 	 */
 	public function getTitleAttrib($row) {
 		return htmlspecialchars('[' . $row['uid'] . '] ' . $row['title']);
 	}
 
 	/**
-	 * returns the link from the tree used to jump to a destination
+	 * Link from the tree used to jump to a destination
 	 *
-	 * @param array $row - Array with the ID Information
+	 * @param array $row Array with the ID Information
+	 *
 	 * @return string
 	 */
 	public function getJumpToParam($row) {
@@ -428,15 +437,15 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 	/**
 	 * Generate the plus/minus icon for the browsable tree.
 	 *
-	 * @param array $row record for the entry
-	 * @param integer $isLast The current entry number
-	 * @param integer $isExpanded The total number of entries.
+	 * @param array $row Record for the entry
+	 * @param int $isLast The current entry number
+	 * @param int $isExpanded The total number of entries.
 	 * 	If equal to $a, a "bottom" element is returned.
-	 * @param boolean $isBank The element was expanded to render
+	 * @param bool $isBank The element was expanded to render
 	 * 	subelements if this flag is set.
-	 * @param boolean $hasChildren The Element is a Bank if this flag is set.
+	 * @param bool $hasChildren The Element is a Bank if this flag is set.
+	 *
 	 * @return string Image tag with the plus/minus icon.
-	 * @see t3lib_pageTree::PMicon()
 	 */
 	public function PMicon($row, $isLast, $isExpanded, $isBank = FALSE, $hasChildren = FALSE) {
 		if (!is_array($row)) {

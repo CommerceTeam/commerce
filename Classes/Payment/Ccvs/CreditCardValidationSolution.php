@@ -119,7 +119,7 @@ class CreditCardValidationSolution {
 	 * @return self
 	 */
 	public function __construct() {
-		$this->language = t3lib_div::makeInstance('language');
+		$this->language = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('language');
 		if (is_object($GLOBALS['BE_USER'])) {
 			$languageKey = $GLOBALS['BE_USER']->uc['lang'];
 		} else {

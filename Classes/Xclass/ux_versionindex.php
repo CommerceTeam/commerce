@@ -52,17 +52,17 @@ class ux_tx_version_cm1 extends tx_version_cm1 {
 
 				// Edit link:
 			$adminLink = '<a href="#" onclick="' .
-				htmlspecialchars(t3lib_BEfunc::editOnClick('&edit[' . $table . '][' . $row['uid'] . ']=edit', $this->doc->backPath)) . '">' .
-				t3lib_iconWorks::getSpriteIcon('actions-document-open', array('title' => $language->sL('LLL:EXT:lang/locallang_core.xml:cm.edit', TRUE))) . '</a>';
+				htmlspecialchars(\TYPO3\CMS\Backend\Utility\BackendUtility::editOnClick('&edit[' . $table . '][' . $row['uid'] . ']=edit', $this->doc->backPath)) . '">' .
+				\TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon('actions-document-open', array('title' => $language->sL('LLL:EXT:lang/locallang_core.xml:cm.edit', TRUE))) . '</a>';
 
 				// Delete link:
 			$adminLink .= '<a href="' .
 				htmlspecialchars($this->doc->issueCommand('&cmd[' . $table . '][' . $row['uid'] . '][delete]=1')) . '">' .
-				t3lib_iconWorks::getSpriteIcon('actions-edit-delete', array('title' => $language->sL('LLL:EXT:lang/locallang_core.php:cm.delete', TRUE))) . '</a>';
+				\TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon('actions-edit-delete', array('title' => $language->sL('LLL:EXT:lang/locallang_core.php:cm.delete', TRUE))) . '</a>';
 
 			if ($row['pid'] == -1) {
 					// get page TSconfig
-				$pagesTSC = t3lib_BEfunc::getPagesTSconfig($GLOBALS['_POST']['popViewId']);
+				$pagesTSC = \TYPO3\CMS\Backend\Utility\BackendUtility::getPagesTSconfig($GLOBALS['_POST']['popViewId']);
 				if ($pagesTSC['tx_commerce.']['singlePid']) {
 					$previewPageID = $pagesTSC['tx_commerce.']['singlePid'];
 				} else {
@@ -72,7 +72,7 @@ class ux_tx_version_cm1 extends tx_version_cm1 {
 				$sysLanguageUid = (int) $row['sys_language_uid'];
 
 				/** @var $product Tx_Commerce_Domain_Model_Product */
-				$product = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product', $row['t3ver_oid'], $sysLanguageUid);
+				$product = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Product', $row['t3ver_oid'], $sysLanguageUid);
 				$product->loadData();
 
 				$getVars = ($sysLanguageUid > 0 ? '&L=' . $sysLanguageUid : '') .
@@ -81,8 +81,12 @@ class ux_tx_version_cm1 extends tx_version_cm1 {
 					'&tx_commerce_pi1[catUid]=' . current($product->getMasterparentCategory());
 
 				$adminLink .= '<a href="#" onclick="' .
-					htmlspecialchars(t3lib_BEfunc::viewOnClick($previewPageID, $this->doc->backPath, t3lib_BEfunc::BEgetRootLine($row['_REAL_PID']), '', '', $getVars)) .
-					'">' . t3lib_iconWorks::getSpriteIcon('actions-document-view') . '</a>';
+					htmlspecialchars(\TYPO3\CMS\Backend\Utility\BackendUtility::viewOnClick(
+						$previewPageID,
+						$this->doc->backPath,
+						\TYPO3\CMS\Backend\Utility\BackendUtility::BEgetRootLine($row['_REAL_PID']), '', '', $getVars)
+					) .
+					'">' . \TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon('actions-document-view') . '</a>';
 			}
 
 			return $adminLink;

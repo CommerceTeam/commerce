@@ -320,7 +320,10 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends \TYPO3\CMS\Recordlist\R
 				$hookObject = GeneralUtility::getUserObj($classData);
 
 				if (!($hookObject instanceof \TYPO3\CMS\Backend\RecordList\RecordListGetTableHookInterface)) {
-					throw new UnexpectedValueException('$hookObject must implement interface t3lib_localRecordListGetTableHook', 1195114460);
+					throw new UnexpectedValueException(
+						'$hookObject must implement interface \TYPO3\CMS\Backend\RecordList\RecordListGetTableHookInterface',
+						1195114460
+					);
 				}
 
 				$hookObject->getDBlistQuery($table, $id, $addWhere, $selFieldList, $this);

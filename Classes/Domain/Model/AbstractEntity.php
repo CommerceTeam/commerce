@@ -131,13 +131,16 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 	protected $attribute = array();
 
 	/**
-	 * @var string Translation Mode for getRecordOverlay
-	 * @see class.t3lib_page.php
+	 * Translation Mode for getRecordOverlay
+	 *
+	 * @var string
 	 */
 	protected $translationMode = 'hideNonTranslated';
 
 	/**
-	 * @return boolean if a record is translaed
+	 * Flag if record is translaed
+	 *
+	 * @return bool
 	 */
 	protected $recordTranslated = FALSE;
 
@@ -162,7 +165,7 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 		if (($this->attributes_uids = $this->databaseConnection->getAttributes($this->uid, $attributeCorelationTypeList))) {
 			foreach ($this->attributes_uids as $attributeUid) {
 				/** @var Tx_Commerce_Domain_Model_Attribute $attribute */
-				$attribute = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Attribute', $attributeUid, $this->lang_uid);
+				$attribute = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Attribute', $attributeUid, $this->lang_uid);
 				$attribute->loadData();
 
 				$this->attribute[$attributeUid] = $attribute;
@@ -256,7 +259,7 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 		}
 
 		if (!$this->databaseConnection) {
-			$this->databaseConnection = t3lib_div::makeInstance($this->databaseClass);
+			$this->databaseConnection = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance($this->databaseClass);
 		}
 		$this->data = $this->databaseConnection->getData($this->uid, $this->lang_uid, $translationMode);
 
@@ -313,7 +316,7 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 	 */
 	public function isAccessible() {
 		if (!$this->databaseConnection) {
-			$this->databaseConnection = t3lib_div::makeInstance($this->databaseClass);
+			$this->databaseConnection = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance($this->databaseClass);
 		}
 
 		return $this->databaseConnection->isAccessible($this->uid);
@@ -335,7 +338,7 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 	 */
 	public function isValidUid() {
 		if (!$this->databaseConnection) {
-			$this->databaseConnection = t3lib_div::makeInstance($this->databaseClass);
+			$this->databaseConnection = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance($this->databaseClass);
 		}
 
 		return $this->databaseConnection->isUid($this->uid);
@@ -380,7 +383,7 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use tx_commerce_pibase->renderElement in combination with $this->returnAssocArray instead
 	 */
 	public function getMarkerArray(&$cobj, $conf, $prefix = '') {
-		t3lib_div::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
 		$markContentArray = $this->returnAssocArray('');
 		$markerArray = array();
 		foreach ($markContentArray as $k => $v) {
@@ -418,7 +421,7 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getUid instead
 	 */
 	public function get_uid() {
-		t3lib_div::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
 
 		return $this->getUid();
 	}
@@ -430,7 +433,7 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getLocalizedUid instead
 	 */
 	public function get_LOCALIZED_UID() {
-		t3lib_div::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
 
 		return $this->getLocalizedUid();
 	}
@@ -440,7 +443,7 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getLang instead
 	 */
 	public function get_lang() {
-		t3lib_div::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
 
 		return $this->getLang();
 	}
@@ -453,7 +456,7 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use returnAssocArray instead
 	 */
 	public function return_assoc_array($prefix = '') {
-		t3lib_div::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
 
 		return $this->returnAssocArray($prefix);
 	}
@@ -468,7 +471,7 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use addFieldToFieldlist instead
 	 */
 	public function add_field_to_fieldlist($fieldname) {
-		t3lib_div::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
 		$this->addFieldToFieldlist($fieldname);
 	}
 
@@ -479,7 +482,7 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use addFieldsToFieldlist instead
 	 */
 	public function add_fields_to_fieldlist($fieldarray) {
-		t3lib_div::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
 		$this->addFieldsToFieldlist($fieldarray);
 	}
 
@@ -490,7 +493,7 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use isValidUid instead
 	 */
 	public function is_valid_uid() {
-		t3lib_div::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
 
 		return $this->isValidUid();
 	}
@@ -503,7 +506,7 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getAttributes instead
 	 */
 	public function get_attributes($attributeCorelationTypeList = array()) {
-		t3lib_div::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
 
 		return $this->getAttributes($attributeCorelationTypeList);
 	}
@@ -517,7 +520,7 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use loadData instead
 	 */
 	public function load_data($translationMode = FALSE) {
-		t3lib_div::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
 
 		return $this->loadData($translationMode);
 	}

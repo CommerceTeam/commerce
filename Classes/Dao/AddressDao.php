@@ -37,9 +37,9 @@ class Tx_Commerce_Dao_AddressDao extends Tx_Commerce_Dao_BasicDao {
 	 * @return void
 	 */
 	protected function init() {
-		$this->parser = t3lib_div::makeInstance('Tx_Commerce_Dao_AddressDaoParser');
-		$this->mapper = t3lib_div::makeInstance('Tx_Commerce_Dao_AddressDaoMapper', $this->parser);
-		$this->object = t3lib_div::makeInstance('Tx_Commerce_Dao_AddressDaoObject');
+		$this->parser = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Dao_AddressDaoParser');
+		$this->mapper = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Dao_AddressDaoMapper', $this->parser);
+		$this->object = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Dao_AddressDaoObject');
 	}
 }
 

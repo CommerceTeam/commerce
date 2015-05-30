@@ -210,10 +210,9 @@ class Tx_Commerce_Utility_AttributeEditorUtility {
 	 * @return string
 	 */
 	public function displayAttributeValue($parameter) {
-		/** @var t3lib_db $database */
-		$database = $GLOBALS['TYPO3_DB'];
+		$database = $this->getDatabaseConnection();
 
-			// attribute value uid
+		// attribute value uid
 		$aUid = $parameter['fieldConf']['config']['aUid'];
 
 		$relRes = $database->exec_SELECTquery(
@@ -239,5 +238,15 @@ class Tx_Commerce_Utility_AttributeEditorUtility {
 			$relationData,
 			$attributeData
 		)));
+	}
+
+
+	/**
+	 * Get database connection
+	 *
+	 * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+	 */
+	protected function getDatabaseConnection() {
+		return $GLOBALS['TYPO3_DB'];
 	}
 }

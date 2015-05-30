@@ -89,7 +89,7 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 	public $cmd;
 
 	/**
-	 * @var t3lib_clipboard
+	 * @var \TYPO3\CMS\Backend\Clipboard\Clipboard
 	 */
 	public $clipObj;
 
@@ -151,15 +151,15 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 	 */
 	public function init() {
 		// GPvars:
-		$this->id = (int) t3lib_div::_GP('id');
-		$this->redirect = t3lib_div::_GP('redirect');
-		$this->prErr = t3lib_div::_GP('prErr');
-		$this->CB = t3lib_div::_GP('CB');
-		$this->vC = t3lib_div::_GP('vC');
-		$this->uPT = t3lib_div::_GP('uPT');
-		$this->sorting = t3lib_div::_GP('sorting');
-		$this->locales = t3lib_div::_GP('locale');
-		$this->cmd = t3lib_div::_GP('cmd');
+		$this->id = (int) \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('id');
+		$this->redirect = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('redirect');
+		$this->prErr = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('prErr');
+		$this->CB = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('CB');
+		$this->vC = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('vC');
+		$this->uPT = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('uPT');
+		$this->sorting = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('sorting');
+		$this->locales = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('locale');
+		$this->cmd = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('cmd');
 		$this->clipObj = NULL;
 		$this->content = '';
 
@@ -168,7 +168,7 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 			'CB[paste]=' . rawurlencode($this->CB['paste']) . '&CB[pad]=' . $this->CB['pad'];
 
 		// Initializing document template object:
-		$this->doc = t3lib_div::makeInstance('template');
+		$this->doc = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('template');
 		$this->doc->backPath = $GLOBALS['BACK_PATH'];
 		$this->doc->docType = 'xhtml_trans';
 		$this->doc->setModuleTemplate(PATH_TXCOMMERCE . 'Resources/Private/Backend/mod_index.html');
@@ -186,8 +186,12 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 	 */
 	public function initClipboard() {
 		if (is_array($this->CB)) {
-			/** @var t3lib_clipboard $clipObj */
-			$clipObj = t3lib_div::makeInstance('t3lib_clipboard');
+			/**
+			 * Clipboard
+			 *
+			 * @var \TYPO3\CMS\Backend\Clipboard\Clipboard $clipObj
+			 */
+			$clipObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Clipboard\\Clipboard');
 			$clipObj->initializeClipboard();
 			$clipObj->setCurrentPad($this->CB['pad']);
 			$this->clipObj = $clipObj;
@@ -200,12 +204,11 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 	 * @return void
 	 */
 	public function main() {
-		/** @var t3lib_beUserAuth $backendUser */
-		$backendUser = $GLOBALS['BE_USER'];
+		$backendUser = $this->getBackendUser();
 
 		// Checking referer / executing
-		$refInfo = parse_url(t3lib_div::getIndpEnv('HTTP_REFERER'));
-		$httpHost = t3lib_div::getIndpEnv('TYPO3_HOST_ONLY');
+		$refInfo = parse_url(\TYPO3\CMS\Core\Utility\GeneralUtility::getIndpEnv('HTTP_REFERER'));
+		$httpHost = \TYPO3\CMS\Core\Utility\GeneralUtility::getIndpEnv('TYPO3_HOST_ONLY');
 
 		if ($httpHost != $refInfo['host']
 			&& $this->vC != $backendUser->veriCode()
@@ -280,21 +283,19 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 			$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/mod_cce/class.tx_commerce_cce_db.php']['copyWizardClass']
 		)
 		) {
-			t3lib_div::deprecationLog(
-				'
-								hook
-								$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/mod_cce/class.tx_commerce_cce_db.php\'][\'copyWizardClass\']
-								is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
-								$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Utility/DataHandlerUtility.php\'][\'copyWizard\']
-							'
-			);
+			\TYPO3\CMS\Core\Utility\GeneralUtility::deprecationLog('
+				hook
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/mod_cce/class.tx_commerce_cce_db.php\'][\'copyWizardClass\']
+				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Utility/DataHandlerUtility.php\'][\'copyWizard\']
+			');
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/mod_cce/class.tx_commerce_cce_db.php']['copyWizardClass'] as $classRef) {
-				$hookObjectsArr[] = & t3lib_div::getUserObj($classRef);
+				$hookObjectsArr[] = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
 			}
 		}
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Utility/DataHandlerUtility.php']['copyWizard'])) {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Utility/DataHandlerUtility.php']['copyWizard'] as $classRef) {
-				$hookObjectsArr[] = & t3lib_div::getUserObj($classRef);
+				$hookObjectsArr[] = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
 			}
 		}
 
@@ -303,7 +304,7 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 			case 'pasteProduct':
 				// chose local to copy from product
 				/** @var Tx_Commerce_Domain_Model_Product $product */
-				$product = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product', $uidClip);
+				$product = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Product', $uidClip);
 				$product->loadData();
 				$prods = $product->getL18nProducts();
 
@@ -334,7 +335,7 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 				if ($command != 'overwrite') {
 					// Initialize tree object:
 					/** @var Tx_Commerce_Tree_Leaf_ProductData $treedb */
-					$treedb = t3lib_div::makeInstance('Tx_Commerce_Tree_Leaf_ProductData');
+					$treedb = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Tree_Leaf_ProductData');
 					$treedb->init();
 
 					$records = $treedb->getRecordsDbList($uidTarget);
@@ -356,10 +357,10 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 					$str .= '<input type="submit" value="' . $language->getLL('copy.submit') . '" />';
 				} elseif (0 < $l) {
 					// at least 1 item - offer choice
-					$icon = '<img' . t3lib_iconWorks::skinImg(
+					$icon = '<img' . \TYPO3\CMS\Backend\Utility\IconUtility::skinImg(
 							$this->doc->backPath, 'gfx/newrecord_marker_d.gif', 'width="281" height="8"'
 						) . ' alt="" title="Insert the category" />';
-					$prodIcon = t3lib_iconWorks::getIconImage(
+					$prodIcon = \TYPO3\CMS\Backend\Utility\IconUtility::getIconImage(
 						'tx_commerce_products', array('uid' => $uidTarget), $this->doc->backPath, 'align="top" class="c-recIcon"'
 					);
 					$str .= '<h1>' . $language->getLL('copy.position') . '</h1>';
@@ -380,7 +381,7 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 			case 'pasteCategory':
 				// chose locale to copy from category
 				/** @var Tx_Commerce_Domain_Model_Category $cat */
-				$cat = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category', $uidClip);
+				$cat = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Category', $uidClip);
 				$cat->loadData();
 				$cats = $cat->getL18nCategories();
 
@@ -408,7 +409,7 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 				// chose sorting position
 				// Initialize tree object:
 				/** @var Tx_Commerce_Tree_Leaf_CategoryData $treedb */
-				$treedb = t3lib_div::makeInstance('Tx_Commerce_Tree_Leaf_CategoryData');
+				$treedb = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Tree_Leaf_CategoryData');
 				$treedb->init();
 
 				$records = $treedb->getRecordsDbList($uidTarget);
@@ -429,10 +430,10 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 					$str .= '<input type="submit" value="' . $language->getLL('copy.submit') . '" />';
 				} elseif (0 < $l) {
 					// at least 1 item - offer choice
-					$icon = '<img' . t3lib_iconWorks::skinImg(
+					$icon = '<img' . \TYPO3\CMS\Backend\Utility\IconUtility::skinImg(
 							$this->doc->backPath, 'gfx/newrecord_marker_d.gif', 'width="281" height="8"'
 						) . ' alt="" title="Insert the category" />';
-					$catIcon = t3lib_iconWorks::getIconImage(
+					$catIcon = \TYPO3\CMS\Backend\Utility\IconUtility::getIconImage(
 						'tx_commerce_categories', array('uid' => $uidTarget), $this->doc->backPath,
 						'align="top" class="c-recIcon"'
 					);
@@ -479,7 +480,7 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 			'CATPATH' => '',
 		);
 		$markers['FUNC_MENU'] = $this->doc->funcMenu(
-			'', t3lib_BEfunc::getFuncMenu(
+			'', \TYPO3\CMS\Backend\Utility\BackendUtility::getFuncMenu(
 				$this->id, 'SET[mode]', $this->MOD_SETTINGS['mode'], $this->MOD_MENU['mode']
 			)
 		);
@@ -504,7 +505,7 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 			$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/mod_cce/class.tx_commerce_cce_db.php']['commitCommandClass']
 		)
 		) {
-			t3lib_div::deprecationLog(
+			\TYPO3\CMS\Core\Utility\GeneralUtility::deprecationLog(
 				'
 								hook
 								$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/mod_cce/class.tx_commerce_cce_db.php\'][\'storeDataToDatabase\']
@@ -513,7 +514,7 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 							'
 			);
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/mod_cce/class.tx_commerce_cce_db.php']['commitCommandClass'] as $classRef) {
-				$hookObjectsArr[] = t3lib_div::getUserObj($classRef);
+				$hookObjectsArr[] = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
 			}
 		}
 		if (is_array(
@@ -521,7 +522,7 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 		)
 		) {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Utility/DataHandlerUtility.php']['commitCommand'] as $classRef) {
-				$hookObjectsArr[] = t3lib_div::getUserObj($classRef);
+				$hookObjectsArr[] = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
 			}
 		}
 		// Hook: beforeCommit
@@ -562,7 +563,7 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 			&& (isset($this->data['tx_commerce_categories']) || isset($this->cmd['tx_commerce_categories']))
 			&& (isset($this->data['tx_commerce_products']) || isset($this->cmd['tx_commerce_products']))
 		) {
-			t3lib_BEfunc::setUpdateSignal('updateFolderTree');
+			\TYPO3\CMS\Backend\Utility\BackendUtility::setUpdateSignal('updateFolderTree');
 		}
 	}
 
@@ -576,14 +577,24 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 		if ($this->content != '') {
 			echo $this->content;
 		} elseif ($this->redirect) {
-			header('Location: ' . t3lib_div::locationHeaderUrl($this->redirect));
+			header('Location: ' . \TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl($this->redirect));
 		}
+	}
+
+
+	/**
+	 * Get backend user
+	 *
+	 * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
+	 */
+	protected function getBackendUser() {
+		return $GLOBALS['BE_USER'];
 	}
 }
 
 // Make instance:
 /** @var Tx_Commerce_Utility_DataHandlerUtility $SOBE */
-$SOBE = t3lib_div::makeInstance('Tx_Commerce_Utility_DataHandlerUtility');
+$SOBE = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Utility_DataHandlerUtility');
 $SOBE->init();
 $SOBE->initClipboard();
 $SOBE->main();

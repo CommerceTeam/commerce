@@ -47,7 +47,7 @@ class Tx_Commerce_Hook_CommandMapHooks {
 	protected $belib;
 
 	/**
-	 * @var t3lib_TCEmain
+	 * @var \TYPO3\CMS\Core\DataHandling\DataHandler
 	 */
 	protected $pObj;
 
@@ -56,7 +56,7 @@ class Tx_Commerce_Hook_CommandMapHooks {
 	 * This is just a constructor to instanciate the backend library
 	 */
 	public function __construct() {
-		$this->belib = t3lib_div::makeInstance('Tx_Commerce_Utility_BackendUtility');
+		$this->belib = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Utility_BackendUtility');
 	}
 
 
@@ -68,7 +68,7 @@ class Tx_Commerce_Hook_CommandMapHooks {
 	 * @param string $table the table the data will be stored in
 	 * @param integer &$id The uid of the dataset we're working on
 	 * @param mixed $value
-	 * @param t3lib_TCEmain $pObj
+	 * @param \TYPO3\CMS\Core\DataHandling\DataHandler $pObj
 	 * @return void
 	 */
 	public function processCmdmap_preProcess(&$command, $table, &$id, $value, $pObj) {
@@ -101,18 +101,18 @@ class Tx_Commerce_Hook_CommandMapHooks {
 	protected function preProcessCategory(&$command, &$categoryUid) {
 		if ($command == 'delete') {
 			/** @var Tx_Commerce_Domain_Model_Category $category */
-			$category = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category', $categoryUid);
+			$category = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Category', $categoryUid);
 			$category->loadData();
 
 			// check if category is a translation and get l18n parent for access rights
 			if ($category->getL18nParent()) {
 				/** @var Tx_Commerce_Domain_Model_Category $category */
-				$category = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Category', $category->getL18nParent());
+				$category = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Category', $category->getL18nParent());
 			}
 
 			// get mounted categories of user to check if current category is child of these
 			/** @var Tx_Commerce_Tree_CategoryMounts $mounts */
-			$mounts = t3lib_div::makeInstance('Tx_Commerce_Tree_CategoryMounts');
+			$mounts = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Tree_CategoryMounts');
 			$mounts->init($GLOBALS['BE_USER']->user['uid']);
 
 			if (!$category->isPermissionSet($command) || !$mounts->isInCommerceMounts($category->getUid())) {
@@ -135,8 +135,7 @@ class Tx_Commerce_Hook_CommandMapHooks {
 	 * @return void
 	 */
 	protected function preProcessProduct(&$command, &$productUid) {
-		/** @var t3lib_beUserAuth $backendUser */
-		$backendUser = $GLOBALS['BE_USER'];
+		$backendUser = $this->getBackendUser();
 
 		if ($command == 'localize') {
 			// check if product has articles
@@ -155,12 +154,12 @@ class Tx_Commerce_Hook_CommandMapHooks {
 			$backendUser->writeUC();
 		} elseif ($command == 'delete') {
 			/** @var Tx_Commerce_Domain_Model_Product $item */
-			$product = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product', $productUid);
+			$product = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Product', $productUid);
 
 			// check if product or if translated the translation parent category
 			if (!current($product->getParentCategories())) {
 				/** @var Tx_Commerce_Domain_Model_Product $product */
-				$product = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product', $product->getL18nParent());
+				$product = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Product', $product->getL18nParent());
 			}
 
 			// check existing categories
@@ -192,7 +191,7 @@ class Tx_Commerce_Hook_CommandMapHooks {
 			$this->error('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:article.localization');
 		} elseif ($command == 'delete') {
 			/** @var Tx_Commerce_Domain_Model_Article $article */
-			$article = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Article', $articleUid);
+			$article = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Article', $articleUid);
 			$article->loadData();
 
 			/** @var Tx_Commerce_Domain_Model_Product $product */
@@ -201,7 +200,7 @@ class Tx_Commerce_Hook_CommandMapHooks {
 			// check if product or if translated the translation parent category
 			if (!current($product->getParentCategories())) {
 				/** @var Tx_Commerce_Domain_Model_Product $product */
-				$product = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product', $product->getL18nParent());
+				$product = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Product', $product->getL18nParent());
 			}
 
 			if (!Tx_Commerce_Utility_BackendUtility::checkPermissionsOnCategoryContent(
@@ -228,7 +227,7 @@ class Tx_Commerce_Hook_CommandMapHooks {
 	 * @param string $table the table the data will be stored in
 	 * @param integer $id The uid of the dataset we're working on
 	 * @param integer $value
-	 * @param t3lib_TCEmain $pObj The instance of the BE data handler
+	 * @param \TYPO3\CMS\Core\DataHandling\DataHandler $pObj The instance of the BE data handler
 	 * @return void
 	 */
 	public function processCmdmap_postProcess(&$command, $table, $id, $value, $pObj) {
@@ -305,8 +304,7 @@ class Tx_Commerce_Hook_CommandMapHooks {
 			$this->error('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:product.no_find_uid');
 		}
 
-		/** @var t3lib_beUserAuth $backendUser */
-		$backendUser = $GLOBALS['BE_USER'];
+		$backendUser = $this->getBackendUser();
 
 		// copying done, clear session
 		$backendUser->uc['txcommerce_copyProcess'] = 0;
@@ -325,8 +323,7 @@ class Tx_Commerce_Hook_CommandMapHooks {
 	 * @return void
 	 */
 	protected function translateAttributesOfProduct($productUid, $localizedProductUid, $value) {
-		/** @var t3lib_db $database */
-		$database = $GLOBALS['TYPO3_DB'];
+		$database = $this->getDatabaseConnection();
 
 		// get all related attributes
 		$productAttributes = $this->belib->getAttributesForProduct($productUid, FALSE, TRUE);
@@ -337,8 +334,8 @@ class Tx_Commerce_Hook_CommandMapHooks {
 		// avaliable for localized version
 		if ($localizedProductAttributes == FALSE && count($productAttributes)) {
 			// if true
-			$langIsoCode = t3lib_BEfunc::getRecord('sys_language', (int) $value, 'static_lang_isocode');
-			$langIdent = t3lib_BEfunc::getRecord('static_languages', (int) $langIsoCode['static_lang_isocode'], 'lg_typo3');
+			$langIsoCode = \TYPO3\CMS\Backend\Utility\BackendUtility::getRecord('sys_language', (int) $value, 'static_lang_isocode');
+			$langIdent = \TYPO3\CMS\Backend\Utility\BackendUtility::getRecord('static_languages', (int) $langIsoCode['static_lang_isocode'], 'lg_typo3');
 			$langIdent = strtoupper($langIdent['lg_typo3']);
 
 			foreach ($productAttributes as $productAttribute) {
@@ -361,7 +358,7 @@ class Tx_Commerce_Hook_CommandMapHooks {
 					if (isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['attributeLokalisationType'])
 						&& $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['attributeLokalisationType']
 					) {
-						t3lib_div::deprecationLog(
+						\TYPO3\CMS\Core\Utility\GeneralUtility::deprecationLog(
 							'
 														extension configuration parameter
 														attributeLokalisationType
@@ -419,8 +416,7 @@ class Tx_Commerce_Hook_CommandMapHooks {
 	 * @return void
 	 */
 	protected function translateArticlesOfProduct($productUid, $localizedProductUid, $value) {
-		/** @var t3lib_db $database */
-		$database = $GLOBALS['TYPO3_DB'];
+		$database = $this->getDatabaseConnection();
 
 		// get articles of localized Product
 		$localizedProductArticles = $this->belib->getArticlesOfProduct($localizedProductUid);
@@ -435,8 +431,8 @@ class Tx_Commerce_Hook_CommandMapHooks {
 		if (count($articles) && !count($localizedProductArticles)) {
 			// determine language identifier
 			// this is needed for updating the XML of the new created articles
-			$langIsoCode = t3lib_BEfunc::getRecord('sys_language', (int) $value, 'static_lang_isocode');
-			$langIdent = t3lib_BEfunc::getRecord('static_languages', (int) $langIsoCode['static_lang_isocode'], 'lg_typo3');
+			$langIsoCode = \TYPO3\CMS\Backend\Utility\BackendUtility::getRecord('sys_language', (int) $value, 'static_lang_isocode');
+			$langIdent = \TYPO3\CMS\Backend\Utility\BackendUtility::getRecord('static_languages', (int) $langIsoCode['static_lang_isocode'], 'lg_typo3');
 			$langIdent = strtoupper($langIdent['lg_typo3']);
 			if (empty($langIdent)) {
 				$langIdent = 'DEF';
@@ -498,8 +494,7 @@ class Tx_Commerce_Hook_CommandMapHooks {
 		list($commercePid) = Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Commerce', 'commerce');
 		list($productPid) = Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Products', 'commerce', $commercePid);
 
-		/** @var t3lib_db $database */
-		$database = $GLOBALS['TYPO3_DB'];
+		$database = $this->getDatabaseConnection();
 
 		$locale = array_keys(
 			(array) $database->exec_SELECTgetRows(
@@ -517,19 +512,18 @@ class Tx_Commerce_Hook_CommandMapHooks {
 	 * @return void
 	 */
 	protected function changeCategoryOfCopiedProduct($productUid) {
-		$pasteData = t3lib_div::_GP('CB');
+		$pasteData = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('CB');
 
-		/** @var t3lib_clipboard $clipObj */
-		$clipObj = t3lib_div::makeInstance('t3lib_clipboard');
+		/** @var \TYPO3\CMS\Backend\Clipboard\Clipboard $clipObj */
+		$clipObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Clipboard\\Clipboard');
 		$clipObj->initializeClipboard();
 		$clipObj->setCurrentPad($pasteData['pad']);
 
-		$fromData = array_pop(t3lib_div::trimExplode('|', key($clipObj->clipData[$clipObj->current]['el']), TRUE));
-		$toData = array_pop(t3lib_div::trimExplode('|', $pasteData['paste'], TRUE));
+		$fromData = array_pop(\TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode('|', key($clipObj->clipData[$clipObj->current]['el']), TRUE));
+		$toData = array_pop(\TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode('|', $pasteData['paste'], TRUE));
 
 		if ($fromData && $toData) {
-			/** @var t3lib_db $database */
-			$database = $GLOBALS['TYPO3_DB'];
+			$database = $this->getDatabaseConnection();
 
 			$database->exec_DELETEquery(
 				'tx_commerce_products_categories_mm', 'uid_local = ' . $productUid . ' AND uid_foreign = ' . $fromData
@@ -551,18 +545,16 @@ class Tx_Commerce_Hook_CommandMapHooks {
 	 * @return void
 	 */
 	protected function copyProductTanslations($oldProductUid, $newProductUid) {
-		/** @var t3lib_db $database */
-		$database = $GLOBALS['TYPO3_DB'];
-		/** @var t3lib_beUserAuth $backendUser */
-		$backendUser = $GLOBALS['BE_USER'];
+		$database = $this->getDatabaseConnection();
+		$backendUser = $this->getBackendUser();
 
 		$products = $database->exec_SELECTgetRows('*', 'tx_commerce_products', 'l18n_parent = ' . $oldProductUid);
 
 		foreach ($products as $product) {
 			$oldTranslationProductUid = $product['uid'];
 
-			/** @var t3lib_TCEmain $tce */
-			$tce = t3lib_div::makeInstance('t3lib_TCEmain');
+			/** @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce */
+			$tce = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
 			$tce->stripslashes_values = 0;
 
 			$tcaDefaultOverride = $backendUser->getTSConfigProp('TCAdefaults');
@@ -657,8 +649,7 @@ class Tx_Commerce_Hook_CommandMapHooks {
 	 * @return void
 	 */
 	protected function deleteCategoriesByCategoryList($categoryList) {
-		/** @var t3lib_db $database */
-		$database = $GLOBALS['TYPO3_DB'];
+		$database = $this->getDatabaseConnection();
 
 		$updateValues = array(
 			'tstamp' => $GLOBALS['EXEC_TIME'],
@@ -675,8 +666,7 @@ class Tx_Commerce_Hook_CommandMapHooks {
 	 * @return void
 	 */
 	protected function deleteCategoryTranslationsByCategoryList($categoryList) {
-		/** @var t3lib_db $database */
-		$database = $GLOBALS['TYPO3_DB'];
+		$database = $this->getDatabaseConnection();
 
 		$updateValues = array(
 			'tstamp' => $GLOBALS['EXEC_TIME'],
@@ -695,8 +685,7 @@ class Tx_Commerce_Hook_CommandMapHooks {
 	 * @return void
 	 */
 	protected function deleteProductsByProductList($productList) {
-		/** @var t3lib_db $database */
-		$database = $GLOBALS['TYPO3_DB'];
+		$database = $this->getDatabaseConnection();
 
 		$updateValues = array(
 			'tstamp' => $GLOBALS['EXEC_TIME'],
@@ -713,8 +702,7 @@ class Tx_Commerce_Hook_CommandMapHooks {
 	 * @return void
 	 */
 	protected function deleteProductTranslationsByProductList($productList) {
-		/** @var t3lib_db $database */
-		$database = $GLOBALS['TYPO3_DB'];
+		$database = $this->getDatabaseConnection();
 
 		$updateValues = array(
 			'tstamp' => $GLOBALS['EXEC_TIME'],
@@ -742,8 +730,7 @@ class Tx_Commerce_Hook_CommandMapHooks {
 	 * @return void
 	 */
 	protected function deleteArticlesByArticleList($articleList) {
-		/** @var t3lib_db $database */
-		$database = $GLOBALS['TYPO3_DB'];
+		$database = $this->getDatabaseConnection();
 
 		$updateValues = array(
 			'tstamp' => $GLOBALS['EXEC_TIME'],
@@ -761,8 +748,7 @@ class Tx_Commerce_Hook_CommandMapHooks {
 	 * @return void
 	 */
 	protected function deletePricesByArticleList($articleList) {
-		/** @var t3lib_db $database */
-		$database = $GLOBALS['TYPO3_DB'];
+		$database = $this->getDatabaseConnection();
 
 		$updateValues = array(
 			'tstamp' => $GLOBALS['EXEC_TIME'],
@@ -784,7 +770,7 @@ class Tx_Commerce_Hook_CommandMapHooks {
 		$language = $GLOBALS['LANG'];
 
 		/** @var template $errorDocument */
-		$errorDocument = t3lib_div::makeInstance('template');
+		$errorDocument = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('template');
 		$errorDocument->backPath = '';
 
 		$content = $errorDocument->startPage('Tx_Commerce_Hook_CommandMapHooks error Output');
@@ -798,7 +784,7 @@ class Tx_Commerce_Hook_CommandMapHooks {
 			) . '</strong></td>
 				</tr>
 				<tr class="bgColor4">
-					<td valign="top">' . t3lib_iconWorks::getSpriteIcon('status-dialog-error') . '</td>
+					<td valign="top">' . \TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon('status-dialog-error') . '</td>
 					<td>' . $language->sL($error, 0) . '</td>
 				</tr>
 				<tr>
@@ -816,5 +802,23 @@ class Tx_Commerce_Hook_CommandMapHooks {
 		$content .= $errorDocument->endPage();
 		echo $content;
 		exit;
+	}
+
+	/**
+	 * Get backend user
+	 *
+	 * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
+	 */
+	protected function getBackendUser() {
+		return $GLOBALS['BE_USER'];
+	}
+
+	/**
+	 * Get database connection
+	 *
+	 * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+	 */
+	protected function getDatabaseConnection() {
+		return $GLOBALS['TYPO3_DB'];
 	}
 }

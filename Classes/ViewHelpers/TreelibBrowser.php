@@ -190,8 +190,12 @@ class Tx_Commerce_ViewHelpers_TreelibBrowser extends \TYPO3\CMS\Backend\Module\B
 
 		$this->content .= $this->doc->startPage('Treeview Browser');
 
-		/** @var t3lib_tceforms $form */
-		$form = GeneralUtility::makeInstance('t3lib_tceforms');
+		/**
+		 * Form engine
+		 *
+		 * @var \TYPO3\CMS\Backend\Form\FormEngine $form
+		 */
+		$form = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Form\\FormEngine');
 		$form->initDefaultBEmode();
 		$form->backPath = $this->backPath;
 
@@ -239,8 +243,12 @@ class Tx_Commerce_ViewHelpers_TreelibBrowser extends \TYPO3\CMS\Backend\Module\B
 	protected function getRecordProcessed() {
 		// This will render MM relation fields in the correct way.
 		// Read the whole record, which is not needed, but there's no other way.
-		/** @var t3lib_transferData $trData */
-		$trData = GeneralUtility::makeInstance('t3lib_transferData');
+		/**
+		 * Data preprocessor
+		 *
+		 * @var \TYPO3\CMS\Backend\Form\DataPreprocessor $trData
+		 */
+		$trData = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Form\\DataPreprocessor');
 		$trData->addRawData = TRUE;
 		$trData->lockRecords = TRUE;
 		$trData->fetchRecord($this->table, $this->uid, '');

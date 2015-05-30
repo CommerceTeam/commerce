@@ -73,7 +73,7 @@ class Tx_Commerce_Domain_Repository_ArticleRepository extends Tx_Commerce_Domain
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use Tx_Commerce_Domain_Repository_ArticleRepository::getParentProductUid instead
 	 */
 	public function get_parent_product_uid($uid, $translationMode = FALSE) {
-		t3lib_div::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
 		return $this->getParentProductUid($uid, $translationMode);
 	}
 
@@ -90,19 +90,19 @@ class Tx_Commerce_Domain_Repository_ArticleRepository extends Tx_Commerce_Domain
 		$count = (int) $count;
 
 		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_article.php']['priceOrder']) {
-			t3lib_div::deprecationLog('
+			\TYPO3\CMS\Core\Utility\GeneralUtility::deprecationLog('
 				hook
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_article.php\'][\'priceOrder\']
 				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Domain/Repository/ArticleRepository.php\'][\'priceOrder\']
 			');
-			$hookObj = &t3lib_div::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_article.php']['priceOrder']);
+			$hookObj = &\TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_article.php']['priceOrder']);
 			if (method_exists($hookObj, 'priceOrder')) {
 				$orderField = $hookObj->priceOrder($orderField);
 			}
 		}
 		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Repository/ArticleRepository.php']['priceOrder']) {
-			$hookObj = &t3lib_div::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Repository/ArticleRepository.php']['priceOrder']);
+			$hookObj = &\TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Repository/ArticleRepository.php']['priceOrder']);
 			if (method_exists($hookObj, 'priceOrder')) {
 				$orderField = $hookObj->priceOrder($orderField);
 			}
@@ -110,19 +110,19 @@ class Tx_Commerce_Domain_Repository_ArticleRepository extends Tx_Commerce_Domain
 
 		$additionalWhere = '';
 		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_article.php']['additionalPriceWhere']) {
-			t3lib_div::deprecationLog('
+			\TYPO3\CMS\Core\Utility\GeneralUtility::deprecationLog('
 				hook
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_article.php\'][\'additionalPriceWhere\']
 				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Domain/Repository/ArticleRepository.php\'][\'additionalPriceWhere\']
 			');
-			$hookObj = &t3lib_div::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_article.php']['additionalPriceWhere']);
+			$hookObj = &\TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_article.php']['additionalPriceWhere']);
 			if (method_exists($hookObj, 'additionalPriceWhere')) {
 				$additionalWhere = $hookObj->additionalPriceWhere($this, $uid);
 			}
 		}
 		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Repository/ArticleRepository.php']['additionalPriceWhere']) {
-			$hookObj = &t3lib_div::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Repository/ArticleRepository.php']['additionalPriceWhere']);
+			$hookObj = &\TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Repository/ArticleRepository.php']['additionalPriceWhere']);
 			if (method_exists($hookObj, 'additionalPriceWhere')) {
 				$additionalWhere = $hookObj->additionalPriceWhere($this, $uid);
 			}
@@ -132,8 +132,7 @@ class Tx_Commerce_Domain_Repository_ArticleRepository extends Tx_Commerce_Domain
 			$priceUidList = array();
 			$proofSql = $this->enableFields('tx_commerce_article_prices', $GLOBALS['TSFE']->showHiddenRecords);
 
-			/** @var t3lib_db $database */
-			$database = $GLOBALS['TYPO3_DB'];
+			$database = $this->getDatabaseConnection();
 
 			$result = $database->exec_SELECTquery(
 				'uid,fe_group',
@@ -145,7 +144,7 @@ class Tx_Commerce_Domain_Repository_ArticleRepository extends Tx_Commerce_Domain
 			);
 			if ($database->sql_num_rows($result) > 0) {
 				while (($data = $database->sql_fetch_assoc($result))) {
-					$feGroups = t3lib_div::intExplode(',', $data['fe_group'], TRUE);
+					$feGroups = \TYPO3\CMS\Core\Utility\GeneralUtility::intExplode(',', $data['fe_group'], TRUE);
 					if (count($feGroups)) {
 						foreach ($feGroups as $feGroup) {
 							$priceUidList[(string)$feGroup][] = $data['uid'];
@@ -175,7 +174,7 @@ class Tx_Commerce_Domain_Repository_ArticleRepository extends Tx_Commerce_Domain
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use Tx_Commerce_Domain_Repository_ArticleRepository::getPrices instead
 	 */
 	public function get_prices($uid, $count = 1, $orderField = 'price_net') {
-		t3lib_div::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
 		return $this->getPrices($uid, $count, $orderField);
 	}
 
@@ -193,8 +192,7 @@ class Tx_Commerce_Domain_Repository_ArticleRepository extends Tx_Commerce_Domain
 			$priceUidList = array();
 			$proofSql = $this->enableFields('tx_commerce_article_prices', $GLOBALS['TSFE']->showHiddenRecords);
 
-			/** @var t3lib_db $database */
-			$database = $GLOBALS['TYPO3_DB'];
+			$database = $this->getDatabaseConnection();
 
 			$result = $database->exec_SELECTquery('uid,price_scale_amount_start, price_scale_amount_end',
 				'tx_commerce_article_prices',
@@ -232,7 +230,7 @@ class Tx_Commerce_Domain_Repository_ArticleRepository extends Tx_Commerce_Domain
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use Tx_Commerce_Domain_Repository_ArticleRepository::getAttributes instead
 	 */
 	public function get_attributes($uid) {
-		t3lib_div::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
 		return $this->getAttributes($uid);
 	}
 
@@ -252,8 +250,7 @@ class Tx_Commerce_Domain_Repository_ArticleRepository extends Tx_Commerce_Domain
 			// First select attribute, to detecxt if is valuelist
 			$proofSql = $this->enableFields('tx_commerce_attributes', $GLOBALS['TSFE']->showHiddenRecords);
 
-			/** @var t3lib_db $database */
-			$database = $GLOBALS['TYPO3_DB'];
+			$database = $this->getDatabaseConnection();
 
 			$result = $database->exec_SELECTquery(
 				'DISTINCT uid,has_valuelist',
@@ -314,8 +311,7 @@ class Tx_Commerce_Domain_Repository_ArticleRepository extends Tx_Commerce_Domain
 	 * @return string Supplier name
 	 */
 	public function getSupplierName($supplierUid) {
-		/** @var t3lib_db $database */
-		$database = $GLOBALS['TYPO3_DB'];
+		$database = $this->getDatabaseConnection();
 
 		if ($supplierUid > 0) {
 			$result = $database->exec_SELECTquery(
@@ -329,5 +325,15 @@ class Tx_Commerce_Domain_Repository_ArticleRepository extends Tx_Commerce_Domain
 			}
 		}
 		return FALSE;
+	}
+
+
+	/**
+	 * Get database connection
+	 *
+	 * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+	 */
+	protected function getDatabaseConnection() {
+		return $GLOBALS['TYPO3_DB'];
 	}
 }

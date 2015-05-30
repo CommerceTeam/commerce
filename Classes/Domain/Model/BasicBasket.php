@@ -244,7 +244,7 @@ class Tx_Commerce_Domain_Model_BasicBasket {
 		$result = FALSE;
 
 		if (!$GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_commerce_pi1.']['dontUseBasketHashValue'] && count($this->basketItems) > 0) {
-			$result = t3lib_div::shortMD5(serialize($this->basketItems));
+			$result = \TYPO3\CMS\Core\Utility\GeneralUtility::shortMD5(serialize($this->basketItems));
 		}
 
 		return $result;
@@ -527,7 +527,7 @@ class Tx_Commerce_Domain_Model_BasicBasket {
 				$this->changeQuantity($articleUid, $quantity);
 			} else {
 				/** @var Tx_Commerce_Domain_Model_Article $article */
-				$article = t3lib_div::makeInstance(
+				$article = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
 					'Tx_Commerce_Domain_Model_Article',
 					$articleUid,
 					$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']
@@ -551,7 +551,7 @@ class Tx_Commerce_Domain_Model_BasicBasket {
 				}
 
 				/** @var Tx_Commerce_Domain_Model_BasketItem $basketItem */
-				$basketItem = t3lib_div::makeInstance(
+				$basketItem = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
 					'Tx_Commerce_Domain_Model_BasketItem',
 					$articleUid,
 					$quantity,
@@ -788,7 +788,7 @@ class Tx_Commerce_Domain_Model_BasicBasket {
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use deleteAllArticles instead
 	 */
 	public function recalculate_sums() {
-		t3lib_div::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
 		$this->recalculateSums();
 	}
 
@@ -799,7 +799,7 @@ class Tx_Commerce_Domain_Model_BasicBasket {
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use deleteAllArticles instead
 	 */
 	public function delete_all_articles() {
-		t3lib_div::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
 		return $this->deleteAllArticles();
 	}
 
@@ -811,7 +811,7 @@ class Tx_Commerce_Domain_Model_BasicBasket {
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use deleteArticle instead
 	 */
 	public function delete_article($article_uid) {
-		t3lib_div::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
 		return $this->deleteArticle($article_uid);
 	}
 
@@ -824,7 +824,7 @@ class Tx_Commerce_Domain_Model_BasicBasket {
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use changeQuantity instead
 	 */
 	public function change_quantity($articleUid, $quantity = 1) {
-		t3lib_div::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
 		return $this->changeQuantity($articleUid, $quantity);
 	}
 
@@ -836,7 +836,7 @@ class Tx_Commerce_Domain_Model_BasicBasket {
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getArticlesByArticleTypeUidAsUidlist instead
 	 */
 	public function get_articles_by_article_type_uid_asUidlist($articleTypeUid) {
-		t3lib_div::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
 		$this->getArticlesByArticleTypeUidAsUidlist($articleTypeUid);
 	}
 
@@ -857,7 +857,7 @@ class Tx_Commerce_Domain_Model_BasicBasket {
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getAssocArrays instead
 	 */
 	public function get_assoc_arrays($prefix = '') {
-		t3lib_div::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
 		return $this->getAssocArrays($prefix);
 	}
 
@@ -871,7 +871,7 @@ class Tx_Commerce_Domain_Model_BasicBasket {
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use addArticle instead
 	 */
 	public function add_article($articleUid, $quantity = 1, $priceid = '') {
-		t3lib_div::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
 		return $this->addArticle($articleUid, $quantity, $priceid);
 	}
 
@@ -880,7 +880,7 @@ class Tx_Commerce_Domain_Model_BasicBasket {
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getReadOnly instead
 	 */
 	public function isReadOnly() {
-		t3lib_div::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
 		return $this->getReadOnly();
 	}
 
@@ -891,7 +891,7 @@ class Tx_Commerce_Domain_Model_BasicBasket {
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getReadOnly instead
 	 */
 	public function getIsReadOnly() {
-		t3lib_div::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
 		return $this->getReadOnly();
 	}
 
@@ -899,7 +899,7 @@ class Tx_Commerce_Domain_Model_BasicBasket {
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getSumGross instead
 	 */
 	public function get_gross_sum() {
-		t3lib_div::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
 		return $this->getSumGross();
 	}
 
@@ -907,7 +907,7 @@ class Tx_Commerce_Domain_Model_BasicBasket {
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getSumNet instead
 	 */
 	public function get_net_sum() {
-		t3lib_div::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
 		return $this->getSumNet();
 	}
 }

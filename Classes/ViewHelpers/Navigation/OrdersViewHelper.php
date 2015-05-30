@@ -77,8 +77,7 @@ class Tx_Commerce_ViewHelpers_Navigation_OrdersViewHelper extends \TYPO3\CMS\Bac
 	 * @return void
 	 */
 	public function init() {
-		/** @var t3lib_beUserAuth $backendUser */
-		$backendUser = $GLOBALS['BE_USER'];
+		$backendUser = $this->getBackendUser();
 
 			// Setting GPvars:
 		$this->currentSubScript = GeneralUtility::_GP('currentSubScript');

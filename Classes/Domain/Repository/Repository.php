@@ -62,7 +62,6 @@ class Tx_Commerce_Domain_Repository_Repository {
 
 	/**
 	 * @var string Translation Mode for getRecordOverlay
-	 * @see class.t3lib_page.php
 	 */
 	protected $translationMode = 'hideNonTranslated';
 
@@ -72,7 +71,7 @@ class Tx_Commerce_Domain_Repository_Repository {
 	protected $uid;
 
 	/**
-	 * @var t3lib_db
+	 * @var \TYPO3\CMS\Core\Database\DatabaseConnection
 	 */
 	protected $database;
 
@@ -276,17 +275,16 @@ class Tx_Commerce_Domain_Repository_Repository {
 	public function updateRecord($uid, array $fields) {
 		if (!is_numeric($uid) || !is_array($fields)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('updateRecord (db_alib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('updateRecord (db_alib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
 			}
 			return FALSE;
 		}
 
-		/** @var t3lib_db $database */
-		$database = $GLOBALS['TYPO3_DB'];
+		$database = $this->getDatabaseConnection();
 		$database->exec_UPDATEquery($this->databaseTable, 'uid = ' . $uid, $fields);
 		if ($database->sql_error()) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('updateRecord (db_alib): invalid sql.', COMMERCE_EXTKEY, 3);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('updateRecord (db_alib): invalid sql.', COMMERCE_EXTKEY, 3);
 			}
 			return FALSE;
 		}
@@ -320,7 +318,17 @@ class Tx_Commerce_Domain_Repository_Repository {
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use Tx_Commerce_Domain_Repository_Repository::getAttributes instead
 	 */
 	public function get_attributes($uid, $attributeCorrelationTypeList = NULL) {
-		t3lib_div::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
 		return $this->getAttributes($uid, $attributeCorrelationTypeList);
+	}
+
+
+	/**
+	 * Get database connection
+	 *
+	 * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+	 */
+	protected function getDatabaseConnection() {
+		return $GLOBALS['TYPO3_DB'];
 	}
 }

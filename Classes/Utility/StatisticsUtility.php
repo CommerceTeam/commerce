@@ -73,8 +73,7 @@ class Tx_Commerce_Utility_StatisticsUtility {
 	 * @return boolean result of aggregation
 	 */
 	public function doSalesAggregation($starttime, $endtime) {
-		/** @var t3lib_db $database */
-		$database = $GLOBALS['TYPO3_DB'];
+		$database = $this->getDatabaseConnection();
 
 		$hour = date('H', $starttime);
 		$day = date('d', $starttime);
@@ -140,8 +139,7 @@ class Tx_Commerce_Utility_StatisticsUtility {
 	 * @return boolean result of aggregation
 	 */
 	public function doSalesUpdateAggregation($starttime, $endtime, $doOutput = TRUE) {
-		/** @var t3lib_db $database */
-		$database = $GLOBALS['TYPO3_DB'];
+		$database = $this->getDatabaseConnection();
 
 		$hour = date('H', $starttime);
 		$day = date('d', $starttime);
@@ -212,8 +210,7 @@ class Tx_Commerce_Utility_StatisticsUtility {
 	 * @return boolean result of aggregation
 	 */
 	public function doClientAggregation($starttime, $endtime) {
-		/** @var t3lib_db $database */
-		$database = $GLOBALS['TYPO3_DB'];
+		$database = $this->getDatabaseConnection();
 
 		$hour = date('H', $starttime);
 		$day = date('d', $starttime);
@@ -270,5 +267,15 @@ class Tx_Commerce_Utility_StatisticsUtility {
 	 */
 	public function lastSecondOfDay($timestamp) {
 		return (int) mktime(23, 59, 59, strftime('%m', $timestamp), strftime('%d', $timestamp), strftime('%Y', $timestamp));
+	}
+
+
+	/**
+	 * Get database connection
+	 *
+	 * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+	 */
+	protected function getDatabaseConnection() {
+		return $GLOBALS['TYPO3_DB'];
 	}
 }

@@ -110,7 +110,7 @@ class Tx_Commerce_Payment_Provider_Wirecard extends Tx_Commerce_Payment_Provider
 	 */
 	public function finishingFunction(array $config = array(), array $session = array(), Tx_Commerce_Domain_Model_Basket $basket = NULL) {
 		/** @var Tx_Commerce_Payment_Payment $paymentLib */
-		$paymentLib = t3lib_div::makeInstance('Tx_Commerce_Payment_Payment');
+		$paymentLib = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Payment_Payment');
 
 			// I think there is a new URL for testing with wirecard, so overwrite
 			// the old value. you can replace this with your own.
@@ -156,17 +156,25 @@ class Tx_Commerce_Payment_Provider_Wirecard extends Tx_Commerce_Payment_Provider
 	 * @return void
 	 */
 	public function updateOrder($orderUid, array $session = array()) {
-			// Update order that was created by checkout process
-			// With credit card payment a reference ID has to be stored in field payment_ref_id (I
-			// have no idea where it comes from, maybe it is given by wirecard?!)
-			// To update the order something like this should be sufficient:
-			// $this->paymentRefId should probably be set in finishingFunction()
-		/** @var t3lib_db $database */
-		$database = $GLOBALS['TYPO3_DB'];
-		$database->exec_UPDATEquery(
+		// Update order that was created by checkout process
+		// With credit card payment a reference ID has to be stored in field payment_ref_id (I
+		// have no idea where it comes from, maybe it is given by wirecard?!)
+		// To update the order something like this should be sufficient:
+		// $this->paymentRefId should probably be set in finishingFunction()
+		$this->getDatabaseConnection()->exec_UPDATEquery(
 			'tx_commerce_orders', 'uid = ' . $orderUid,
 			array('payment_ref_id' => $this->paymentRefId)
 		);
+	}
+
+
+	/**
+	 * Get database connection
+	 *
+	 * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+	 */
+	protected function getDatabaseConnection() {
+		return $GLOBALS['TYPO3_DB'];
 	}
 }
 
@@ -174,5 +182,3 @@ if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['
 	/** @noinspection PhpIncludeInspection */
 	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Payment/Provider/Wirecard.php']);
 }
-
-?>

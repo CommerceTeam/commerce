@@ -84,9 +84,8 @@ abstract class Tx_Commerce_Tree_Leaf_SlaveData extends Tx_Commerce_Tree_Leaf_Dat
 			}
 			return;
 		}
-			// Check if User's Group may view the records
-		/** @var t3lib_beUserAuth $backendUser */
-		$backendUser = & $GLOBALS['BE_USER'];
+		// Check if User's Group may view the records
+		$backendUser = $this->getBackendUser();
 		if (!$backendUser->check('tables_select', $this->table)) {
 			$this->records = NULL;
 			if (TYPO3_DLOG) {
@@ -118,5 +117,15 @@ abstract class Tx_Commerce_Tree_Leaf_SlaveData extends Tx_Commerce_Tree_Leaf_Dat
 		}
 
 		$this->records = $this->loadRecords();
+	}
+
+
+	/**
+	 * Get backend user
+	 *
+	 * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
+	 */
+	protected function getBackendUser() {
+		return $GLOBALS['BE_USER'];
 	}
 }

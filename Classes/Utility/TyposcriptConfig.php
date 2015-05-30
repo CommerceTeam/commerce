@@ -34,9 +34,9 @@ class Tx_Commerce_Utility_TyposcriptConfig {
 	 */
 	public static function isCommercePage() {
 		$table = 'pages';
-		$pageId = t3lib_div::_GP('id');
+		$pageId = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('id');
 
-		$record = t3lib_BEfunc::getRecordWSOL($table, $pageId);
+		$record = \TYPO3\CMS\Backend\Utility\BackendUtility::getRecordWSOL($table, $pageId);
 
 		return is_array($record) && isset($record['module']) && $record['module'] == 'commerce';
 	}

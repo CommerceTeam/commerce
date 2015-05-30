@@ -48,7 +48,7 @@ class Tx_Commerce_Dao_FeuserDaoObject extends Tx_Commerce_Dao_BasicDaoObject {
 	public function __construct() {
 			// add any mapped fields to object
 		/** @var Tx_Commerce_Dao_FeuserAddressFieldmapper $feuserAddressMapper */
-		$feuserAddressMapper = t3lib_div::makeInstance('Tx_Commerce_Dao_FeuserAddressFieldmapper');
+		$feuserAddressMapper = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Dao_FeuserAddressFieldmapper');
 		$fields = $feuserAddressMapper->getFeuserFields();
 
 		foreach ($fields as $field) {

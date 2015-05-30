@@ -311,7 +311,7 @@ Functions: 57<br/>
 				Call: categoryOrder($this-&gt;CategoryOrderField,$this)<br/>
 				Type: Single<br/>
 				Result: string - The new ORDER BY clause to read the database<br />
-				This hook returns the ORDER BY field(s) that will be passed on to the t3lib_db later on.</div>
+				This hook returns the ORDER BY field(s) that will be passed on to the \TYPO3\CMS\Core\Database\DatabaseConnection later on.</div>
 			<div class="hookname">GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_db_category.php']['categoryQueryPostHook']</div>
 			<div class="description">
 				Call: categoryQueryPostHook($data, $this);<br/>
@@ -323,7 +323,7 @@ Functions: 57<br/>
 				<div class="description">Call: productOrder($this-&gt;orderField,$this)<br/>
 				Type: Single<br/>
 				Result: string - The new ORDER BY clause to read the database<br />
-				This hook returns the ORDER BY field(s) that will be passed on to the t3lib_db later on.</div>
+				This hook returns the ORDER BY field(s) that will be passed on to the \TYPO3\CMS\Core\Database\DatabaseConnection later on.</div>
 			<div class="hookname">GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_db_category.php']['productQueryPreHook']</div>
 
 				<div class="Description">productQueryPreHook($data, $this)<br />
@@ -342,7 +342,7 @@ Functions: 57<br/>
 			<div class="description">Call: additionalWhere($where) <br/>
 			Type: Single<br/>
 			Result: string - The new WHERE clause to read the database<br />
-			The result of this hook is concatenated with the where clause which will be passed on to the t3lib_db later on.</div>
+			The result of this hook is concatenated with the where clause which will be passed on to the \TYPO3\CMS\Core\Database\DatabaseConnection later on.</div>
 
 
 <div class="filename">hooks/class.tx_commerce_dmhooks.php</div>

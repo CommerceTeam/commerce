@@ -37,8 +37,7 @@ class Tx_Commerce_ViewHelpers_AttributeEditFunc {
 	 * @return string HTML-Content
 	 */
 	public function valuelist($parameter) {
-		/** @var t3lib_db $database */
-		$database = $GLOBALS['TYPO3_DB'];
+		$database = $this->getDatabaseConnection();
 		/** @var language $language */
 		$language = $GLOBALS['LANG'];
 
@@ -182,5 +181,15 @@ class Tx_Commerce_ViewHelpers_AttributeEditFunc {
 			</div>';
 
 		return $content;
+	}
+
+
+	/**
+	 * Get database connection
+	 *
+	 * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+	 */
+	protected function getDatabaseConnection() {
+		return $GLOBALS['TYPO3_DB'];
 	}
 }

@@ -83,7 +83,7 @@ class Tx_Commerce_Tree_Leaf_CategoryData extends Tx_Commerce_Tree_Leaf_MasterDat
 	public function setPermsMask($mask) {
 		if (!is_numeric($mask)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('setPermsMask (categorydata) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('setPermsMask (categorydata) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
 			}
 		} else {
 			$this->permsMask = $mask;
@@ -111,18 +111,17 @@ class Tx_Commerce_Tree_Leaf_CategoryData extends Tx_Commerce_Tree_Leaf_MasterDat
 	public function getRecordsDbList($uid, $depth = 2) {
 		if (!is_numeric($uid) || !is_numeric($depth)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('getRecordsDbList (categorydata) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('getRecordsDbList (categorydata) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
 			}
 			return array();
 		}
 
-		/** @var t3lib_beUserAuth $backendUser */
-		$backendUser = $GLOBALS['BE_USER'];
+		$backendUser = $this->getBackendUser();
 
 			// Check if User's Group may view the records
 		if (!$backendUser->check('tables_select', $this->table)) {
 			if (TYPO3_DLOG) {
-				t3lib_div::devLog('getRecordsDbList (categorydata): Usergroup is not allowed to view the records.', COMMERCE_EXTKEY, 2);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('getRecordsDbList (categorydata): Usergroup is not allowed to view the records.', COMMERCE_EXTKEY, 2);
 			}
 			return array();
 		}
@@ -152,5 +151,15 @@ class Tx_Commerce_Tree_Leaf_CategoryData extends Tx_Commerce_Tree_Leaf_MasterDat
 		$root['item_parent'] = 0;
 
 		return $root;
+	}
+
+
+	/**
+	 * Get backend user
+	 *
+	 * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
+	 */
+	protected function getBackendUser() {
+		return $GLOBALS['BE_USER'];
 	}
 }

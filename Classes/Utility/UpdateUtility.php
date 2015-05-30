@@ -54,8 +54,7 @@ class Tx_Commerce_Utility_UpdateUtility {
 	 * @return integer
 	 */
 	public function createDefaultRights() {
-		/** @var t3lib_db $database */
-		$database = $GLOBALS['TYPO3_DB'];
+		$database = $this->getDatabaseConnection();
 		$countRecords = 0;
 
 		/**
@@ -88,8 +87,7 @@ class Tx_Commerce_Utility_UpdateUtility {
 	 * @return integer Num Records Changed
 	 */
 	public function createParentMMRecords() {
-		/** @var t3lib_db $database */
-		$database = $GLOBALS['TYPO3_DB'];
+		$database = $this->getDatabaseConnection();
 		$countRecords = 0;
 
 		$result = $database->exec_SELECTquery(
@@ -117,12 +115,11 @@ class Tx_Commerce_Utility_UpdateUtility {
 	 * @return boolean True if update should be perfomed
 	 */
 	public function access() {
-		if (!t3lib_extMgm::isLoaded('commerce')) {
+		if (!\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('commerce')) {
 			return FALSE;
 		}
 
-		/** @var t3lib_db $database */
-		$database = $GLOBALS['TYPO3_DB'];
+		$database = $this->getDatabaseConnection();
 
 		$result = $database->exec_SELECTquery(
 			'uid',
@@ -143,5 +140,15 @@ class Tx_Commerce_Utility_UpdateUtility {
 		}
 
 		return FALSE;
+	}
+
+
+	/**
+	 * Get database connection
+	 *
+	 * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+	 */
+	protected function getDatabaseConnection() {
+		return $GLOBALS['TYPO3_DB'];
 	}
 }

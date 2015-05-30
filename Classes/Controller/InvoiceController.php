@@ -88,8 +88,7 @@ class Tx_Commerce_Controller_InvoiceController extends Tx_Commerce_Controller_Ba
 	public function main($content, $conf) {
 		/** @var tslib_fe $frontend */
 		$frontend = $GLOBALS['TSFE'];
-		/** @var t3lib_beUserAuth $backendUser */
-		$backendUser = $GLOBALS['BE_USER'];
+		$backendUser = $this->getBackendUser();
 
 		$this->conf = $conf;
 		$this->pi_setPiVarDefaults();
@@ -111,17 +110,21 @@ class Tx_Commerce_Controller_InvoiceController extends Tx_Commerce_Controller_Ba
 			$$frontend->set_no_cache();
 		}
 
-			// Lets make this multilingual, eh?
+		// Lets make this multilingual, eh?
 		$this->generateLanguageMarker();
 
-			// We may need to do some character conversion tricks
-		/** @var t3lib_cs $convert */
-		$convert = t3lib_div::makeInstance('t3lib_cs');
+		// We may need to do some character conversion tricks
+		/**
+		 * Charset converter
+		 *
+		 * @var \TYPO3\CMS\Core\Charset\CharsetConverter $convert
+		 */
+		$convert = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Charset\\CharsetConverter');
 
-			// If there is no order id, this plugin serves no pupose
+		// If there is no order id, this plugin serves no pupose
 		$this->order_id = $this->piVars['order_id'];
 
-			// @TODO In case of a FE user this should not give a hint about what's wrong, but instead redirect the user
+		// @TODO In case of a FE user this should not give a hint about what's wrong, but instead redirect the user
 		if (empty($this->order_id)) {
 			return $this->pi_wrapInBaseClass($this->pi_getLL('error_orderid'));
 		}
@@ -165,19 +168,19 @@ class Tx_Commerce_Controller_InvoiceController extends Tx_Commerce_Controller_Ba
 				// Hook to process new/changed marker
 			$hookObjectsArr = array();
 			if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi6/class.tx_commerce_pi6.php']['invoice'])) {
-				t3lib_div::deprecationLog('
+				\TYPO3\CMS\Core\Utility\GeneralUtility::deprecationLog('
 					hook
 					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/pi6/class.tx_commerce_pi6.php\'][\'invoice\']
 					is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
 					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/InvoiceController.php\'][\'invoice\']
 				');
 				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi6/class.tx_commerce_pi6.php']['invoice'] as $classRef) {
-					$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+					$hookObjectsArr[] = &\TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
 				}
 			}
 			if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/InvoiceController.php']['invoice'])) {
 				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/InvoiceController.php']['invoice'] as $classRef) {
-					$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+					$hookObjectsArr[] = &\TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
 				}
 			}
 			$subpartArray = array();
@@ -212,13 +215,22 @@ class Tx_Commerce_Controller_InvoiceController extends Tx_Commerce_Controller_Ba
 	/**
 	 * Check Access
 	 *
-	 * @param boolean|string $enabled Optional, default FALSE
+	 * @param bool|string $enabled Optional, default FALSE
+	 *
 	 * @return void
 	 */
 	protected function invoiceBackendOnly($enabled = FALSE) {
 		if ($enabled && !$GLOBALS['BE_USER']->user['uid'] && ($_SERVER['REMOTE_ADDR'] != $_SERVER['SERVER_ADDR'])) {
-			/** @var t3lib_message_ErrorPageMessage $messageObj */
-			$messageObj = t3lib_div::makeInstance('t3lib_message_ErrorPageMessage', 'Login-error', 'No user logged in! Sorry, I can\'t proceed then!');
+			/**
+			 * Error message
+			 *
+			 * @var \TYPO3\CMS\Core\Messaging\ErrorpageMessage $messageObj
+			 */
+			$messageObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+				'TYPO3\\CMS\\Core\\Messaging\\ErrorpageMessage',
+				'Login-error',
+				'No user logged in! Sorry, I can\'t proceed then!'
+			);
 			$messageObj->output();
 			exit;
 		}
@@ -233,8 +245,7 @@ class Tx_Commerce_Controller_InvoiceController extends Tx_Commerce_Controller_Ba
 	 * @return string HTML-Output rendert
 	 */
 	protected function getOrderArticles($orderUid, $TS = array(), $prefix) {
-		/** @var t3lib_db $database */
-		$database = $GLOBALS['TYPO3_DB'];
+		$database = $this->getBackendUser();
 
 		if (empty($TS)) {
 			$TS = $this->conf['OrderArticles.'];
@@ -276,8 +287,7 @@ class Tx_Commerce_Controller_InvoiceController extends Tx_Commerce_Controller_Ba
 	 * @return string HTML-Output rendert
 	 */
 	protected function getAddressData($addressUid = 0, $TS = array(), $prefix) {
-		/** @var t3lib_db $database */
-		$database = $GLOBALS['TYPO3_DB'];
+		$database = $this->getDatabaseConnection();
 
 		if (empty($TS)) {
 			$TS = $this->conf['address.'];
@@ -329,8 +339,7 @@ class Tx_Commerce_Controller_InvoiceController extends Tx_Commerce_Controller_Ba
 	 * @return array orderData
 	 */
 	protected function getOrderData() {
-		/** @var t3lib_db $database */
-		$database = $GLOBALS['TYPO3_DB'];
+		$database = $this->getDatabaseConnection();
 
 		$queryString = 'order_id="' . mysql_real_escape_string($this->order_id) . '"';
 		$queryString .= $this->cObj->enableFields('tx_commerce_orders');
@@ -359,8 +368,7 @@ class Tx_Commerce_Controller_InvoiceController extends Tx_Commerce_Controller_Ba
 	 * @return array System Articles
 	 */
 	protected function getOrderSystemArticles($orderUid, $articleType = 0, $prefix) {
-		/** @var t3lib_db $database */
-		$database = $GLOBALS['TYPO3_DB'];
+		$database = $this->getDatabaseConnection();
 
 		$queryString = 'order_uid=' . $orderUid . ' ';
 		if ($articleType) {
@@ -395,5 +403,24 @@ class Tx_Commerce_Controller_InvoiceController extends Tx_Commerce_Controller_Ba
 	 * @return string|void
 	 */
 	public function makeArticleView($kind, $articles, $product) {
+	}
+
+
+	/**
+	 * Get backend user
+	 *
+	 * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
+	 */
+	protected function getBackendUser() {
+		return $GLOBALS['BE_USER'];
+	}
+
+	/**
+	 * Get database connection
+	 *
+	 * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+	 */
+	protected function getDatabaseConnection() {
+		return $GLOBALS['TYPO3_DB'];
 	}
 }

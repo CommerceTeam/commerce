@@ -43,11 +43,11 @@ class Tx_Commerce_Hook_LinkhandlerHooks {
 	public function main($linktxt, $conf, $linkHandlerKeyword, $linkHandlerValue, $link_param, &$pObj) {
 		$this->pObj = &$pObj;
 
-		$linkHandlerData = t3lib_div::trimExplode('|', $linkHandlerValue);
+		$linkHandlerData = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode('|', $linkHandlerValue);
 
 		$addparams = '';
 		foreach ($linkHandlerData as $linkData) {
-			$params = t3lib_div::trimExplode(':', $linkData);
+			$params = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(':', $linkData);
 			if (isset($params[0])) {
 				if ($params[0] == 'tx_commerce_products') {
 					$addparams .= '&tx_commerce_pi1[showUid]=' . (int) $params[1];
@@ -69,7 +69,7 @@ class Tx_Commerce_Hook_LinkhandlerHooks {
 		}
 
 		/** @var tslib_cObj $localcObj */
-		$localcObj = t3lib_div::makeInstance('tslib_cObj');
+		$localcObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tslib_cObj');
 
 		$DisplayPID = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_commerce_pi1.']['overridePid'];
 		if (empty($DisplayPID)) {

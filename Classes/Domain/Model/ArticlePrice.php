@@ -86,17 +86,17 @@ class Tx_Commerce_Domain_Model_ArticlePrice extends Tx_Commerce_Domain_Model_Abs
 		$initializationResult = FALSE;
 		$this->uid = (int) $uid;
 		if ($this->uid > 0) {
-			$this->databaseConnection = t3lib_div::makeInstance($this->databaseClass);
+			$this->databaseConnection = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance($this->databaseClass);
 
 			if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_article_price.php']['postinit'])) {
-				t3lib_div::deprecationLog('
+				\TYPO3\CMS\Core\Utility\GeneralUtility::deprecationLog('
 					hook
 					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_article_price.php\'][\'postinit\']
 					is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
 					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Domain/Model/ArticlePrice.php\'][\'postinit\']
 				');
 				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_article_price.php']['postinit'] as $classRef) {
-					$hookObj = t3lib_div::getUserObj($classRef);
+					$hookObj = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
 					if (method_exists($hookObj, 'postinit')) {
 						/** @noinspection PhpUndefinedMethodInspection */
 						$hookObj->postinit($this);
@@ -105,7 +105,7 @@ class Tx_Commerce_Domain_Model_ArticlePrice extends Tx_Commerce_Domain_Model_Abs
 			}
 			if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Model/ArticlePrice.php']['postinit'])) {
 				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Model/ArticlePrice.php']['postinit'] as $classRef) {
-					$hookObj = t3lib_div::getUserObj($classRef);
+					$hookObj = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
 					if (method_exists($hookObj, 'postinit')) {
 						/** @noinspection PhpUndefinedMethodInspection */
 						$hookObj->postinit($this);
@@ -152,14 +152,14 @@ class Tx_Commerce_Domain_Model_ArticlePrice extends Tx_Commerce_Domain_Model_Abs
 	 */
 	public function getPriceNet() {
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_article_price.php']['postpricenet'])) {
-			t3lib_div::deprecationLog('
+			\TYPO3\CMS\Core\Utility\GeneralUtility::deprecationLog('
 				hook
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_article_price.php\'][\'postpricenet\']
 				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Domain/Model/ArticlePrice.php\'][\'postPriceNet\']
 			');
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_article_price.php']['postpricenet'] as $classRef) {
-				$hookObj = t3lib_div::getUserObj($classRef);
+				$hookObj = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
 				if (method_exists($hookObj, 'postpricenet')) {
 					/** @noinspection PhpUndefinedMethodInspection */
 					$hookObj->postpricenet($this);
@@ -168,7 +168,7 @@ class Tx_Commerce_Domain_Model_ArticlePrice extends Tx_Commerce_Domain_Model_Abs
 		}
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Model/ArticlePrice.php']['postPriceNet'])) {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Model/ArticlePrice.php']['postPriceNet'] as $classRef) {
-				$hookObj = t3lib_div::getUserObj($classRef);
+				$hookObj = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
 				if (method_exists($hookObj, 'postpricenet')) {
 					/** @noinspection PhpUndefinedMethodInspection */
 					$hookObj->postpricenet($this);
@@ -194,14 +194,14 @@ class Tx_Commerce_Domain_Model_ArticlePrice extends Tx_Commerce_Domain_Model_Abs
 	 */
 	public function getPriceGross() {
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_article_price.php']['postpricegross'])) {
-			t3lib_div::deprecationLog('
+			\TYPO3\CMS\Core\Utility\GeneralUtility::deprecationLog('
 				hook
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_article_price.php\'][\'postpricegross\']
 				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Domain/Model/ArticlePrice.php\'][\'postPriceGross\']
 			');
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_article_price.php']['postpricegross'] as $classRef) {
-				$hookObj = t3lib_div::getUserObj($classRef);
+				$hookObj = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
 				if (method_exists($hookObj, 'postpricegross')) {
 					/** @noinspection PhpUndefinedMethodInspection */
 					$hookObj->postpricegross($this);
@@ -210,7 +210,7 @@ class Tx_Commerce_Domain_Model_ArticlePrice extends Tx_Commerce_Domain_Model_Abs
 		}
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Model/ArticlePrice.php']['postPriceGross'])) {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Model/ArticlePrice.php']['postPriceGross'] as $classRef) {
-				$hookObj = t3lib_div::getUserObj($classRef);
+				$hookObj = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
 				if (method_exists($hookObj, 'postpricegross')) {
 					/** @noinspection PhpUndefinedMethodInspection */
 					$hookObj->postpricegross($this);
@@ -249,16 +249,16 @@ class Tx_Commerce_Domain_Model_ArticlePrice extends Tx_Commerce_Domain_Model_Abs
 		/** @var language $language */
 		$language = & $GLOBALS['LANG'];
 		$params['title'] =
-			$language->sL(t3lib_befunc::getItemLabel('tx_commerce_article_prices', 'price_gross'), 1) . ': ' .
+			$language->sL(\TYPO3\CMS\Backend\Utility\BackendUtility::getItemLabel('tx_commerce_article_prices', 'price_gross'), 1) . ': ' .
 				sprintf('%01.2f', $params['row']['price_gross'] / 100) .
-				', ' . $language->sL(t3lib_befunc::getItemLabel('tx_commerce_article_prices', 'price_net'), 1) . ': ' .
+				', ' . $language->sL(\TYPO3\CMS\Backend\Utility\BackendUtility::getItemLabel('tx_commerce_article_prices', 'price_net'), 1) . ': ' .
 				sprintf('%01.2f', $params['row']['price_net'] / 100) .
-				' (' . $language->sL(t3lib_befunc::getItemLabel('tx_commerce_article_prices', 'price_scale_amount_start'), 1) . ': ' .
+				' (' . $language->sL(\TYPO3\CMS\Backend\Utility\BackendUtility::getItemLabel('tx_commerce_article_prices', 'price_scale_amount_start'), 1) . ': ' .
 				$params['row']['price_scale_amount_start'] .
-				' ' . $language->sL(t3lib_befunc::getItemLabel('tx_commerce_article_prices', 'price_scale_amount_end'), 1) . ': ' .
+				' ' . $language->sL(\TYPO3\CMS\Backend\Utility\BackendUtility::getItemLabel('tx_commerce_article_prices', 'price_scale_amount_end'), 1) . ': ' .
 				$params['row']['price_scale_amount_end'] . ') ' .
-				' ' . ($params['row']['fe_group'] ? ($language->sL(t3lib_befunc::getItemLabel('tx_commerce_article_prices', 'fe_group'), 1) . ' ' .
-				t3lib_BEfunc::getProcessedValueExtra('tx_commerce_article_prices', 'fe_group', $params['row']['fe_group'], 100, $params['row']['uid'])) : '');
+				' ' . ($params['row']['fe_group'] ? ($language->sL(\TYPO3\CMS\Backend\Utility\BackendUtility::getItemLabel('tx_commerce_article_prices', 'fe_group'), 1) . ' ' .
+				\TYPO3\CMS\Backend\Utility\BackendUtility::getProcessedValueExtra('tx_commerce_article_prices', 'fe_group', $params['row']['fe_group'], 100, $params['row']['uid'])) : '');
 	}
 
 
@@ -267,7 +267,7 @@ class Tx_Commerce_Domain_Model_ArticlePrice extends Tx_Commerce_Domain_Model_Abs
 	 * @return integer
 	 */
 	public function get_price_net() {
-		t3lib_div::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
 		return $this->getPriceNet();
 	}
 
@@ -276,7 +276,7 @@ class Tx_Commerce_Domain_Model_ArticlePrice extends Tx_Commerce_Domain_Model_Abs
 	 * @return integer
 	 */
 	public function get_price_gross() {
-		t3lib_div::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
 		return $this->getPriceGross();
 	}
 }

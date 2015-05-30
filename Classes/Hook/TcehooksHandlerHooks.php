@@ -24,11 +24,11 @@ class Tx_Commerce_Hook_TcehooksHandlerHooks {
 	 * At this place we process prices, before they are written to the database.
 	 * We use this for tax calculation
 	 *
-	 * @param array &$incomingFieldArray The values from the form, by reference
+	 * @param array $incomingFieldArray The values from the form, by reference
 	 * @param string $table The table we are working on
 	 * @param int $id The uid we are working on
 	 * @param mixed $pObj The caller
-	 * 
+	 *
 	 * @return void
 	 */
 	public function processDatamap_preProcessFieldArray(&$incomingFieldArray, $table, $id, $pObj) {
@@ -54,15 +54,14 @@ class Tx_Commerce_Hook_TcehooksHandlerHooks {
 	}
 
 	/**
-	 * processDatamap_postProcessFieldArray()
-	 * this function is called by the Hook in tce from class.t3lib_tcemain.php
+	 * This function is called by the Hook in tce
 	 * after processing insert & update database operations
 	 *
-	 * @param string $status update or new
-	 * @param string $table database table
-	 * @param string $id database table
-	 * @param array &$fieldArray reference to the incoming fields
-	 * 
+	 * @param string $status Update or new
+	 * @param string $table Database table
+	 * @param string $id Database table
+	 * @param array $fieldArray Reference to the incoming fields
+	 *
 	 * @return void
 	 */
 	public function processDatamap_postProcessFieldArray($status, $table, $id, &$fieldArray) {
@@ -77,16 +76,15 @@ class Tx_Commerce_Hook_TcehooksHandlerHooks {
 	}
 
 	/**
-	 * processDatamap_afterDatabaseOperations()
-	 * this function is called by the Hook in tce from class.t3lib_tcemain.php
+	 * This function is called by the Hook in tce
 	 * after processing insert & update database operations
 	 *
-	 * @param string $status update or new
-	 * @param string $table database table
-	 * @param string $id database table
-	 * @param array &$fieldArray reference to the incoming fields
-	 * @param object &$pObj page Object reference
-	 * 
+	 * @param string $status Update or new
+	 * @param string $table Database table
+	 * @param string $id Database table
+	 * @param array $fieldArray Reference to the incoming fields
+	 * @param object $pObj Page Object reference
+	 *
 	 * @return void
 	 */
 	public function processDatamap_afterDatabaseOperations($status, $table, $id, &$fieldArray, &$pObj) {
@@ -108,8 +106,7 @@ class Tx_Commerce_Hook_TcehooksHandlerHooks {
 			&& $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['simpleMode']
 			&& ($articleId = $pObj->substNEWwithIDs[$id])
 		) {
-			/** @var t3lib_db $database */
-			$database = $GLOBALS['TYPO3_DB'];
+			$database = $this->getDatabaseConnection();
 
 			// Now check, if the parent Product is already lokalised, so creat Article in
 			// the localised version Select from Database different localisations
@@ -135,11 +132,11 @@ class Tx_Commerce_Hook_TcehooksHandlerHooks {
 						'uid_product' => (int) $localisedProducts['uid'],
 						'sys_language_uid' => (int) $localisedProducts['sys_language_uid'],
 						'l18n_parent' => (int) $articleId,
-						'sorting' => ((int) $fieldArray['sorting'] + 20),
+						'sorting' => ((int) $fieldArray['sorting'] * 2),
 						'article_type_uid' => (int) $fieldArray['article_type_uid'],
 					);
 
-						// create the article
+					// create the article
 					$database->exec_INSERTquery('tx_commerce_articles', $articleData);
 				}
 			}
@@ -147,13 +144,13 @@ class Tx_Commerce_Hook_TcehooksHandlerHooks {
 	}
 
 	/**
-	 * this function is called by the Hook in tce from class.t3lib_tcemain.php
+	 * Function is called by the Hook in tce
 	 * before processing commands
 	 *
-	 * @param string &$command reference to: move,copy,version,delete or undelete
-	 * @param string $table database table
-	 * @param string $id database record uid
-	 * 
+	 * @param string $command Reference to: move,copy,version,delete or undelete
+	 * @param string $table Database table
+	 * @param string $id Database record uid
+	 *
 	 * @return void
 	 */
 	public function processCmdmap_preProcess(&$command, $table, $id) {
@@ -168,7 +165,7 @@ class Tx_Commerce_Hook_TcehooksHandlerHooks {
 	/**
 	 * @param array $fieldArray
 	 * @param integer $tax
-	 * 
+	 *
 	 * @return void
 	 */
 	protected function calculateTax(&$fieldArray, $tax) {
@@ -202,7 +199,7 @@ class Tx_Commerce_Hook_TcehooksHandlerHooks {
 	 * @param string $id database table
 	 * @param array &$fieldArray reference to the incoming fields
 	 * @param object &$pObj page Object reference
-	 * 
+	 *
 	 * @return void
 	 */
 	protected function notifyFeuserObserver($status, $table, $id, &$fieldArray, &$pObj) {
@@ -225,12 +222,12 @@ class Tx_Commerce_Hook_TcehooksHandlerHooks {
 	 * @param string $id database table
 	 * @param array &$fieldArray reference to the incoming fields
 	 * @param object &$pObj page Object reference
-	 * 
+	 *
 	 * @return void
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use Tx_Commerce_Hook_TcehooksHandlerHooks::notifyFeuserObserver instead
 	 */
 	protected function notify_feuserObserver($status, $table, $id, &$fieldArray, &$pObj) {
-		t3lib_div::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
 		$this->notifyFeuserObserver($status, $table, $id, $fieldArray, $pObj);
 	}
 
@@ -243,7 +240,7 @@ class Tx_Commerce_Hook_TcehooksHandlerHooks {
 	 * @param string $id database table
 	 * @param array &$fieldArray reference to the incoming fields
 	 * @param object &$pObj page Object reference
-	 * 
+	 *
 	 * @return void
 	 */
 	protected function notifyAddressObserver($status, $table, $id, &$fieldArray, &$pObj) {
@@ -263,12 +260,12 @@ class Tx_Commerce_Hook_TcehooksHandlerHooks {
 	 * @param string $id database table
 	 * @param array &$fieldArray reference to the incoming fields
 	 * @param object &$pObj page Object reference
-	 * 
+	 *
 	 * @return void
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use Tx_Commerce_Hook_TcehooksHandlerHooks::notifyAddressObserver instead
 	 */
 	protected function notify_addressObserver($status, $table, $id, &$fieldArray, &$pObj) {
-		t3lib_div::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
 		$this->notifyAddressObserver($status, $table, $id, $fieldArray, $pObj);
 	}
 
@@ -276,10 +273,20 @@ class Tx_Commerce_Hook_TcehooksHandlerHooks {
 	 * Check if an address is deleted
 	 *
 	 * @param integer $id
-	 * 
+	 *
 	 * @return boolean|string
 	 */
 	protected function checkAddressDelete($id) {
 		return Tx_Commerce_Dao_AddressObserver::checkDelete($id);
+	}
+
+
+	/**
+	 * Get database connection
+	 *
+	 * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+	 */
+	protected function getDatabaseConnection() {
+		return $GLOBALS['TYPO3_DB'];
 	}
 }

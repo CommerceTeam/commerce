@@ -126,10 +126,7 @@ class Tx_Commerce_Payment_Debit extends Tx_Commerce_Payment_PaymentAbstract {
 	 * @return void
 	 */
 	public function updateOrder($orderUid, array $session = array()) {
-		/** @var t3lib_db $database */
-		$database = $GLOBALS['TYPO3_DB'];
-
-		$database->exec_UPDATEquery(
+		$this->getDatabaseConnection()->exec_UPDATEquery(
 			'tx_commerce_orders',
 			'uid = ' . $orderUid,
 			array(
@@ -141,6 +138,16 @@ class Tx_Commerce_Payment_Debit extends Tx_Commerce_Payment_PaymentAbstract {
 			)
 		);
 	}
+
+
+	/**
+	 * Get database connection
+	 *
+	 * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+	 */
+	protected function getDatabaseConnection() {
+		return $GLOBALS['TYPO3_DB'];
+	}
 }
 
 
@@ -148,5 +155,3 @@ if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['
 	/** @noinspection PhpIncludeInspection */
 	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Payment/Debit.php']);
 }
-
-?>

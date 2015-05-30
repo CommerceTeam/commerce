@@ -47,7 +47,7 @@ class Tx_Commerce_Utility_GeneralUtility {
 			return $input;
 		}
 		if (is_string($input)) {
-			return (string) t3lib_div::removeXSS(strip_tags($input));
+			return (string) \TYPO3\CMS\Core\Utility\GeneralUtility::removeXSS(strip_tags($input));
 		}
 		if (is_array($input)) {
 			$returnValue = array();
@@ -55,7 +55,7 @@ class Tx_Commerce_Utility_GeneralUtility {
 				if (is_array($value)) {
 					$returnValue[$key] = self::removeXSSStripTagsArray($value);
 				} else {
-					$returnValue[$key] = t3lib_div::removeXSS(strip_tags($value));
+					$returnValue[$key] = \TYPO3\CMS\Core\Utility\GeneralUtility::removeXSS(strip_tags($value));
 				}
 			}
 			return $returnValue;
@@ -92,7 +92,7 @@ class Tx_Commerce_Utility_GeneralUtility {
 				self::setCookie($basketId);
 			}
 
-			$basket = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Basket');
+			$basket = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Basket');
 			$basket->setSessionId($basketId);
 			$basket->loadData();
 
@@ -132,7 +132,7 @@ class Tx_Commerce_Utility_GeneralUtility {
 
 		foreach ($productUids as $arrayKey => $productUid) {
 			/** @var Tx_Commerce_Domain_Model_Product $productObj */
-			$productObj = t3lib_div::makeInstance('Tx_Commerce_Domain_Model_Product', $productUid);
+			$productObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Product', $productUid);
 			$productObj->loadData();
 
 			if (!($productObj->hasStock())) {
@@ -185,14 +185,14 @@ class Tx_Commerce_Utility_GeneralUtility {
 		}
 
 		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_div.php']['generateSessionKey'])) {
-			t3lib_div::deprecationLog('
+			\TYPO3\CMS\Core\Utility\GeneralUtility::deprecationLog('
 				hook
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_div.php\'][\'generateSessionKey\']
 				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Utility/GeneralUtility.php\'][\'generateSessionKey\']
 			');
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_div.php']['generateSessionKey'] as $classRef) {
-				$hookObj = &t3lib_div::getUserObj($classRef);
+				$hookObj = &\TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
 				if (method_exists($hookObj, 'postGenerateSessionKey')) {
 					$sessionKey = $hookObj->postGenerateSessionKey($key);
 				}
@@ -200,7 +200,7 @@ class Tx_Commerce_Utility_GeneralUtility {
 		}
 		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Utility/GeneralUtility.php']['generateSessionKey'])) {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Utility/GeneralUtility.php']['generateSessionKey'] as $classRef) {
-				$hookObj = &t3lib_div::getUserObj($classRef);
+				$hookObj = &\TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
 				if (method_exists($hookObj, 'postGenerateSessionKey')) {
 					$sessionKey = $hookObj->postGenerateSessionKey($key);
 				}
@@ -244,19 +244,19 @@ class Tx_Commerce_Utility_GeneralUtility {
 	public static function sendMail($mailconf) {
 		$hookObjectsArr = array();
 		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_div.php']['sendMail'])) {
-			t3lib_div::deprecationLog('
+			\TYPO3\CMS\Core\Utility\GeneralUtility::deprecationLog('
 				hook
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_div.php\'][\'sendMail\']
 				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Utility/GeneralUtility.php\'][\'sendMail\']
 			');
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_div.php']['sendMail'] as $classRef) {
-				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+				$hookObjectsArr[] = &\TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
 			}
 		}
 		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Utility/GeneralUtility.php']['sendMail'])) {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Utility/GeneralUtility.php']['sendMail'] as $classRef) {
-				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+				$hookObjectsArr[] = &\TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
 			}
 		}
 
@@ -294,8 +294,12 @@ class Tx_Commerce_Utility_GeneralUtility {
 				$subject = $mailconf['alternateSubject'];
 			}
 
-			/** @var t3lib_mail_Message $message */
-			$message = t3lib_div::makeInstance('t3lib_mail_Message');
+			/**
+			 * Mail message
+			 *
+			 * @var \TYPO3\CMS\Core\Mail\MailMessage $message
+			 */
+			$message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Mail\\MailMessage');
 			$message->setCharset($mailconf['defaultCharset']);
 
 			if ($mailconf['encoding'] == 'base64') {
@@ -304,16 +308,15 @@ class Tx_Commerce_Utility_GeneralUtility {
 				$message->setEncoder(Swift_Encoding::get8BitEncoding());
 			}
 
-			// $htmlMail->mailer = 'TYPO3 Mailer :: commerce';
 			$message->setSubject($subject);
 			$message->setTo($mailconf['recipient']);
 			$message->setFrom(
 				self::validEmailList($mailconf['fromEmail']),
-				implode(' ', t3lib_div::trimExplode(',', $mailconf['fromName']))
+				implode(' ', \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $mailconf['fromName']))
 			);
 
 			$replyAddress = $mailconf['replyTo'] ?: $mailconf['fromEmail'];
-			$replyName = implode(' ', t3lib_div::trimExplode(',', $mailconf['replyTo'] ? '' : $mailconf['fromName']));
+			$replyName = implode(' ', \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $mailconf['replyTo'] ? '' : $mailconf['fromName']));
 			$message->setReplyTo($replyAddress, $replyName);
 
 			if (isset($mailconf['recipient_copy']) && $mailconf['recipient_copy'] != '') {
@@ -361,11 +364,11 @@ class Tx_Commerce_Utility_GeneralUtility {
 	 * @return string
 	 */
 	public static function validEmailList($list) {
-		$dataArray = t3lib_div::trimExplode(',', $list);
+		$dataArray = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $list);
 
 		$returnArray = array();
 		foreach ($dataArray as $data) {
-			if (t3lib_div::validEmail($data)) {
+			if (\TYPO3\CMS\Core\Utility\GeneralUtility::validEmail($data)) {
 				$returnArray[] = $data;
 			}
 		}
@@ -397,7 +400,7 @@ class Tx_Commerce_Utility_GeneralUtility {
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getAttributes instead
 	 */
 	public static function formatPrice($price) {
-		t3lib_div::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
 		return sprintf('%01.2f', $price);
 	}
 }

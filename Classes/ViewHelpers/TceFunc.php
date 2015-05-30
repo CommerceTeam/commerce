@@ -22,7 +22,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class Tx_Commerce_ViewHelpers_TceFunc {
 	/**
-	 * @var t3lib_TCEforms
+	 * @var \TYPO3\CMS\Backend\Form\FormEngine
 	 */
 	protected $tceForms;
 
@@ -32,7 +32,8 @@ class Tx_Commerce_ViewHelpers_TceFunc {
 	 * Depending on the tree it display full trees or root elements only
 	 *
 	 * @param array $parameter An array with additional configuration options.
-	 * @param t3lib_TCEforms $fObj TCEForms object reference
+	 * @param \TYPO3\CMS\Backend\Form\FormEngine $fObj TCEForms object reference
+	 *
 	 * @return string The HTML code for the TCEform field
 	 */
 	public function getSingleField_selectCategories($parameter, &$fObj) {

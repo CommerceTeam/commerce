@@ -98,10 +98,8 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	 * @return string a HTML-table with the articles
 	 */
 	public function existingArticles($parameter) {
-		/** @var t3lib_beUserAuth $backendUser */
-		$backendUser = $GLOBALS['BE_USER'];
-		/** @var t3lib_db $database */
-		$database = $GLOBALS['TYPO3_DB'];
+		$backendUser = $this->getBackendUser();
+		$database = $this->getDatabaseConnection();
 
 		$this->uid = (int)$parameter['row']['uid'];
 		$this->pid = (int)$parameter['row']['pid'];
@@ -252,7 +250,8 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	 * Create a matrix of producible articles
 	 *
 	 * @param array $parameter
-	 * @param t3lib_TCEforms $fObj
+	 * @param \TYPO3\CMS\Backend\Form\FormEngine $fObj
+	 *
 	 * 
 	 * @return string A HTML-table with checkboxes and all needed stuff
 	 */
@@ -484,8 +483,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	 * @return void
 	 */
 	public function createArticles($parameter) {
-		/** @var t3lib_db $database */
-		$database = $GLOBALS['TYPO3_DB'];
+		$database = $this->getDatabaseConnection();
 
 		if (is_array(GeneralUtility::_GP('createList'))) {
 			$res = $database->exec_SELECTquery(
@@ -531,8 +529,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 						continue;
 					}
 
-					/** @var t3lib_db $database */
-					$database = $GLOBALS['TYPO3_DB'];
+					$database = $this->getDatabaseConnection();
 
 					$database->exec_UPDATEquery(
 						'tx_commerce_articles_article_attributes_mm',
@@ -580,8 +577,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	 * @return integer Returns the new articleUid if success
 	 */
 	protected function createArticle($parameter, $key) {
-		/** @var t3lib_db $database */
-		$database = $GLOBALS['TYPO3_DB'];
+		$database = $this->getDatabaseConnection();
 
 		// get the create data
 		$data = GeneralUtility::_GP('createData');
@@ -857,7 +853,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	 * the price will be deleted from the article
 	 *
 	 * @param array $parameter
-	 * @param t3lib_TCEforms $fObj
+	 * @param \TYPO3\CMS\Backend\Form\FormEngine $fObj
 	 * 
 	 * @return string
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, this wont get replaced as it was removed from the api
@@ -894,5 +890,24 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	 */
 	public function articleUid($parameter) {
 		return '<input type="hidden" name="' . $parameter['itemFormElName'] . '" value="' . htmlspecialchars($parameter['itemFormElValue']) . '">';
+	}
+
+
+	/**
+	 * Get backend user
+	 *
+	 * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
+	 */
+	protected function getBackendUser() {
+		return $GLOBALS['BE_USER'];
+	}
+
+	/**
+	 * Get database connection
+	 *
+	 * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+	 */
+	protected function getDatabaseConnection() {
+		return $GLOBALS['TYPO3_DB'];
 	}
 }

@@ -65,8 +65,7 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 	 * @return integer Category UID
 	 */
 	public function getParentCategory($uid) {
-		/** @var t3lib_db $database */
-		$database = $GLOBALS['TYPO3_DB'];
+		$database = $this->getDatabaseConnection();
 
 		$result = 0;
 		if (\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($uid) && $uid > 0) {
@@ -90,8 +89,7 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 	 * @return array Array with permission information
 	 */
 	public function getPermissionsRecord($uid) {
-		/** @var t3lib_db $database */
-		$database = $GLOBALS['TYPO3_DB'];
+		$database = $this->getDatabaseConnection();
 
 		if (\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($uid) && ($uid > 0)) {
 			$result = $database->exec_SELECTquery(
@@ -112,8 +110,7 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 	 * @return array Array of parent categories UIDs
 	 */
 	public function getParentCategories($uid) {
-		/** @var t3lib_db $database */
-		$database = $GLOBALS['TYPO3_DB'];
+		$database = $this->getDatabaseConnection();
 
 		if (empty($uid) || !is_numeric($uid)) {
 			return FALSE;
@@ -152,8 +149,7 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 	 * @return array Array of UIDs
 	 */
 	public function getL18nCategories($uid) {
-		/** @var t3lib_db $database */
-		$database = $GLOBALS['TYPO3_DB'];
+		$database = $this->getDatabaseConnection();
 
 		if ((empty($uid)) || (!is_numeric($uid))) {
 			return FALSE;
@@ -219,8 +215,7 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 
 		$additionalWhere = $this->enableFields($this->databaseTable, $GLOBALS['TSFE']->showHiddenRecords);
 
-		/** @var t3lib_db $database */
-		$database = $GLOBALS['TYPO3_DB'];
+		$database = $this->getDatabaseConnection();
 
 		$result = $database->exec_SELECT_mm_query(
 			'uid_local',
@@ -361,8 +356,7 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 			}
 		}
 
-		/** @var t3lib_db $database */
-		$database = $GLOBALS['TYPO3_DB'];
+		$database = $this->getDatabaseConnection();
 
 		$result = $database->exec_SELECT_queryArray($queryArray);
 		if ($result !== FALSE) {

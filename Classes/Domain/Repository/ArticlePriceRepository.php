@@ -53,8 +53,7 @@ class Tx_Commerce_Domain_Repository_ArticlePriceRepository extends Tx_Commerce_D
 		$uid = (int) $uid;
 
 		$proofSql = '';
-		/** @var t3lib_db $database */
-		$database = $GLOBALS['TYPO3_DB'];
+		$database = $this->getDatabaseConnection();
 
 		if (is_object($GLOBALS['TSFE']->sys_page)) {
 			$proofSql = $this->enableFields($this->databaseTable, $GLOBALS['TSFE']->showHiddenRecords);
@@ -62,7 +61,7 @@ class Tx_Commerce_Domain_Repository_ArticlePriceRepository extends Tx_Commerce_D
 
 		$result = $database->exec_SELECTquery('*', $this->databaseTable, 'uid = ' . $uid . $proofSql);
 
-			// Result should contain only one Dataset
+		// Result should contain only one Dataset
 		if ($database->sql_num_rows($result) == 1) {
 			$returnData = $database->sql_fetch_assoc($result);
 			$database->sql_free_result($result);
@@ -72,5 +71,15 @@ class Tx_Commerce_Domain_Repository_ArticlePriceRepository extends Tx_Commerce_D
 
 		$this->error('exec_SELECTquery(\'*\',' . $this->databaseTable . ',\'uid = ' . $uid . '\'); returns no or more than one Result');
 		return FALSE;
+	}
+
+
+	/**
+	 * Get database connection
+	 *
+	 * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+	 */
+	protected function getDatabaseConnection() {
+		return $GLOBALS['TYPO3_DB'];
 	}
 }

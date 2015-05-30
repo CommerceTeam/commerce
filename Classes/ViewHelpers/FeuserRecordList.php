@@ -52,8 +52,7 @@ class Tx_Commerce_ViewHelpers_FeuserRecordList extends \TYPO3\CMS\Recordlist\Rec
 	public function writeTop($row) {
 		/** @var language $language */
 		$language = $GLOBALS['LANG'];
-		/** @var t3lib_beUserAuth $backendUser */
-		$backendUser = $GLOBALS['BE_USER'];
+		$backendUser = $this->getBackendUser();
 
 		// Makes the code for the pageicon in the top
 		$this->pageRow = $row;
@@ -84,7 +83,7 @@ class Tx_Commerce_ViewHelpers_FeuserRecordList extends \TYPO3\CMS\Recordlist\Rec
 		// - since they make sense only on a real page, not root level.
 		$theCtrlPanel = array();
 
-			// If edit permissions are set (see class.t3lib_userauthgroup.php)
+			// If edit permissions are set
 		if ($localCalcPerms & 2) {
 				// Adding "New record" icon:
 			if (!$GLOBALS['SOBE']->modTSconfig['properties']['noCreateRecordsLink']) {
@@ -263,8 +262,7 @@ class Tx_Commerce_ViewHelpers_FeuserRecordList extends \TYPO3\CMS\Recordlist\Rec
 	 * @return void
 	 */
 	public function generateList() {
-		/** @var t3lib_beUserAuth $backendUser */
-		$backendUser = $GLOBALS['BE_USER'];
+		$backendUser = $this->getBackendUser();
 
 		/**
 		 * @todo auf eine tabelle beschränken, keine while liste mehr
@@ -341,8 +339,7 @@ class Tx_Commerce_ViewHelpers_FeuserRecordList extends \TYPO3\CMS\Recordlist\Rec
 	 * @see getTable()
 	 */
 	public function renderListRow($table, $row, $cc, $titleCol, $thumbsCol, $indent = 0) {
-		/** @var t3lib_beUserAuth $backendUser */
-		$backendUser = $GLOBALS['BE_USER'];
+		$backendUser = $this->getBackendUser();
 
 		$iOut = '';
 		$extConf = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf'];
@@ -421,11 +418,15 @@ class Tx_Commerce_ViewHelpers_FeuserRecordList extends \TYPO3\CMS\Recordlist\Rec
 			}
 		}
 
-			// Add row to CSV list:
+		// Add row to CSV list:
 		if ($this->csvOutput) {
-				// Charset Conversion
-			/** @var t3lib_cs $csObj */
-			$csObj = GeneralUtility::makeInstance('t3lib_cs');
+			// Charset Conversion
+			/**
+			 * Charset converter
+			 *
+			 * @var \TYPO3\CMS\Core\Charset\CharsetConverter $csObj
+			 */
+			$csObj = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Charset\\CharsetConverter');
 			$csObj->initCharset($GLOBALS['TYPO3_CONF_VARS']['BE']['forceCharset']);
 
 			if (!$extConf['BECSVCharset']) {
@@ -605,8 +606,7 @@ class Tx_Commerce_ViewHelpers_FeuserRecordList extends \TYPO3\CMS\Recordlist\Rec
 		$dbCount = 0;
 		$out = '';
 
-		/** @var t3lib_db $database */
-		$database = $GLOBALS['TYPO3_DB'];
+		$database = $this->getDatabaseConnection();
 		/** @var language $language */
 		$language = $GLOBALS['LANG'];
 
@@ -778,5 +778,24 @@ class Tx_Commerce_ViewHelpers_FeuserRecordList extends \TYPO3\CMS\Recordlist\Rec
 
 			// Return content:
 		return $out;
+	}
+
+
+	/**
+	 * Get backend user
+	 *
+	 * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
+	 */
+	protected function getBackendUser() {
+		return $GLOBALS['BE_USER'];
+	}
+
+	/**
+	 * Get database connection
+	 *
+	 * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+	 */
+	protected function getDatabaseConnection() {
+		return $GLOBALS['TYPO3_DB'];
 	}
 }

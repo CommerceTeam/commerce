@@ -50,13 +50,13 @@ class Tx_Commerce_Utility_FolderUtility {
 
 		$hookObjectsArr = array();
 		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/class.tx_commerce_create_folder.php']['postcreatefolder'])) {
-			t3lib_div::deprecationLog('
+			\TYPO3\CMS\Core\Utility\GeneralUtility::deprecationLog('
 				hook
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/class.tx_commerce_create_folder.php\'][\'postcreatefolder\']
 				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0 as no method was used
 			');
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/class.tx_commerce_create_folder.php']['postcreatefolder'] as $classRef) {
-				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+				$hookObjectsArr[] = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
 			}
 		}
 
@@ -64,8 +64,7 @@ class Tx_Commerce_Utility_FolderUtility {
 		$now = time();
 		$addArray = array('tstamp' => $now, 'crdate' => $now, 'pid' => $prodPid);
 
-		/** @var t3lib_db $database */
-		$database = $GLOBALS['TYPO3_DB'];
+		$database = self::getDatabaseConnection();
 
 			// handle payment types
 			// create the category if it not exists
@@ -78,13 +77,13 @@ class Tx_Commerce_Utility_FolderUtility {
 		$catUid = $catUid['uid'];
 		$hookObjectsArr = array();
 		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/class.tx_commerce_create_folder.php']['precreatesyscategory'])) {
-			t3lib_div::deprecationLog('
+			\TYPO3\CMS\Core\Utility\GeneralUtility::deprecationLog('
 				hook
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/class.tx_commerce_create_folder.php\'][\'precreatesyscategory\']
 				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0 as no method was used
 			');
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/class.tx_commerce_create_folder.php']['precreatesyscategory'] as $classRef) {
-				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+				$hookObjectsArr[] = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
 			}
 		}
 		if (!$res || (int) $catUid == 0) {
@@ -96,13 +95,13 @@ class Tx_Commerce_Utility_FolderUtility {
 		}
 		$hookObjectsArr = array();
 		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/class.tx_commerce_create_folder.php']['postcreatesyscategory'])) {
-			t3lib_div::deprecationLog('
+			\TYPO3\CMS\Core\Utility\GeneralUtility::deprecationLog('
 				hook
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/class.tx_commerce_create_folder.php\'][\'postcreatesyscategory\']
 				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0 as no method was used
 			');
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/class.tx_commerce_create_folder.php']['postcreatesyscategory'] as $classRef) {
-				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+				$hookObjectsArr[] = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
 			}
 		}
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['SYSPRODUCTS'])) {
@@ -112,13 +111,13 @@ class Tx_Commerce_Utility_FolderUtility {
 		}
 		$hookObjectsArr = array();
 		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/class.tx_commerce_create_folder.php']['postcreatediliveryarticles'])) {
-			t3lib_div::deprecationLog('
+			\TYPO3\CMS\Core\Utility\GeneralUtility::deprecationLog('
 				hook
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/class.tx_commerce_create_folder.php\'][\'postcreatediliveryarticles\']
 				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0 as no method was used
 			');
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/class.tx_commerce_create_folder.php']['postcreatediliveryarticles'] as $classRef) {
-				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+				$hookObjectsArr[] = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
 			}
 		}
 	}
@@ -165,8 +164,7 @@ class Tx_Commerce_Utility_FolderUtility {
 		$paArray['title'] = $uname;
 		$paArray['categories'] = $catUid;
 
-		/** @var t3lib_db $database */
-		$database = $GLOBALS['TYPO3_DB'];
+		$database = self::getDatabaseConnection();
 
 		$database->exec_INSERTquery('tx_commerce_products', $paArray);
 		$pUid = $database->sql_insert_id();
@@ -186,8 +184,7 @@ class Tx_Commerce_Utility_FolderUtility {
 	 * @return boolean|integer false or UID of the found product
 	 */
 	public static function checkProd($cUid, $uname) {
-		/** @var t3lib_db $database */
-		$database = $GLOBALS['TYPO3_DB'];
+		$database = self::getDatabaseConnection();
 
 			// select all product from that category
 		$res = $database->exec_SELECTquery(
@@ -227,13 +224,12 @@ class Tx_Commerce_Utility_FolderUtility {
 	 * @return integer
 	 */
 	public static function makeArticle($pUid, $key, $value, $addArray) {
-		/** @var t3lib_db $database */
-		$database = $GLOBALS['TYPO3_DB'];
+		$database = self::getDatabaseConnection();
 
 			// try to select an article that has a relation for this product
 			// and the correct classname
 		/** @var Tx_Commerce_Utility_BackendUtility $belib */
-		$belib = t3lib_div::makeInstance('Tx_Commerce_Utility_BackendUtility');
+		$belib = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Utility_BackendUtility');
 		$articles = $belib->getArticlesOfProduct($pUid, 'classname=\'' . $key . '\'');
 
 		if (is_array($articles) AND count($articles) > 0) {
@@ -263,7 +259,17 @@ class Tx_Commerce_Utility_FolderUtility {
 	 * @return void
 	 */
 	public static function init_folders() {
-		t3lib_div::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
 		self::initFolders();
+	}
+
+
+	/**
+	 * Get database connection
+	 *
+	 * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+	 */
+	protected static function getDatabaseConnection() {
+		return $GLOBALS['TYPO3_DB'];
 	}
 }

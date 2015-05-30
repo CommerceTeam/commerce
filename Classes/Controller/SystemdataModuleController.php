@@ -33,7 +33,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class Tx_Commerce_Controller_SystemdataModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 	/**
-	 * @var t3lib_db
+	 * @var \TYPO3\CMS\Core\Database\DatabaseConnection
 	 */
 	protected $database;
 
@@ -43,7 +43,7 @@ class Tx_Commerce_Controller_SystemdataModuleController extends \TYPO3\CMS\Backe
 	protected $language;
 
 	/**
-	 * @var t3lib_beUserAuth
+	 * @var \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
 	 */
 	protected $user;
 

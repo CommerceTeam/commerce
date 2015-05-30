@@ -69,8 +69,7 @@ class Tx_Commerce_ViewHelpers_Money {
 	 * 	symbol(s) or FALSE if $amount was of the type float
 	 */
 	public static function format($amount, $currency, $withSymbol = TRUE) {
-		/** @var t3lib_db $database */
-		$database = $GLOBALS['TYPO3_DB'];
+		$database = self::getDatabaseConnection();
 
 		if (is_float($amount)) {
 			return FALSE;
@@ -104,5 +103,15 @@ class Tx_Commerce_ViewHelpers_Money {
 		}
 
 		return $wholeString;
+	}
+
+
+	/**
+	 * Get database connection
+	 *
+	 * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+	 */
+	protected static function getDatabaseConnection() {
+		return $GLOBALS['TYPO3_DB'];
 	}
 }

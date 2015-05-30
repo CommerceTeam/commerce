@@ -626,8 +626,7 @@ class Tx_Commerce_Utility_BackendUtility {
 			$where .= ' AND uid_foreign NOT IN (' . implode(',', $eAttributes) . ')';
 		}
 
-		/** @var t3lib_db $database */
-		$database = $GLOBALS['TYPO3_DB'];
+		$database = $this->getDatabaseConnection();
 
 		// execute the query
 		$result = (array) $database->exec_SELECTgetRows(
@@ -1583,9 +1582,9 @@ class Tx_Commerce_Utility_BackendUtility {
 		/**
 		 * TCE main
 		 *
-		 * @var t3lib_TCEmain $tce
+		 * @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce
 		 */
-		$tce = GeneralUtility::makeInstance('t3lib_TCEmain');
+		$tce = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
 		$tce->stripslashes_values = 0;
 
 		$tcaDefaultOverride = $backendUser->getTSConfigProp('TCAdefaults');
@@ -1662,8 +1661,8 @@ class Tx_Commerce_Utility_BackendUtility {
 		$newUid = 0;
 		while (($row = $database->sql_fetch_assoc($res))) {
 				// copy them to the new article
-			/** @var t3lib_TCEmain $tce */
-			$tce = GeneralUtility::makeInstance('t3lib_TCEmain');
+			/** @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce */
+			$tce = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
 			$tce->stripslashes_values = 0;
 
 			$TCAdefaultOverride = $backendUser->getTSConfigProp('TCAdefaults');
@@ -1832,8 +1831,8 @@ class Tx_Commerce_Utility_BackendUtility {
 		}
 
 			// init tce
-		/** @var t3lib_TCEmain $tce */
-		$tce = GeneralUtility::makeInstance('t3lib_TCEmain');
+		/** @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce */
+		$tce = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
 		$tce->stripslashes_values = 0;
 			// set workspace bypass if requested
 		$tce->bypassWorkspaceRestrictions = $ignoreWS;
@@ -1958,8 +1957,8 @@ class Tx_Commerce_Utility_BackendUtility {
 			$data[$table][$newUid] = $rec[0];
 
 				// init tce
-			/** @var t3lib_TCEmain $tce */
-			$tce = GeneralUtility::makeInstance('t3lib_TCEmain');
+			/** @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce */
+			$tce = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
 			$tce->stripslashes_values = 0;
 				// set workspace bypass if requested
 			$tce->bypassWorkspaceRestrictions = $ignoreWS;
@@ -2064,8 +2063,8 @@ class Tx_Commerce_Utility_BackendUtility {
 			$data[$table][$recTo[0]['uid']] = $recFrom[0];
 
 				// init tce
-			/** @var t3lib_TCEmain $tce */
-			$tce = GeneralUtility::makeInstance('t3lib_TCEmain');
+			/** @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce */
+			$tce = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
 			$tce->stripslashes_values = 0;
 
 			$TCAdefaultOverride = $backendUser->getTSConfigProp('TCAdefaults');
@@ -2199,8 +2198,8 @@ class Tx_Commerce_Utility_BackendUtility {
 		}
 
 			// init tce
-		/** @var t3lib_TCEmain $tce */
-		$tce = GeneralUtility::makeInstance('t3lib_TCEmain');
+		/** @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce */
+		$tce = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
 		$tce->stripslashes_values = 0;
 
 		$backendUser = self::getBackendUser();
@@ -2275,8 +2274,7 @@ class Tx_Commerce_Utility_BackendUtility {
 			return FALSE;
 		}
 
-		/** @var t3lib_db $database */
-		$database = $GLOBALS['TYPO3_DB'];
+		$database = $this->getDatabaseConnection();
 
 			// select current perms
 		$res  = $database->exec_SELECTquery(
@@ -3008,8 +3006,8 @@ class Tx_Commerce_Utility_BackendUtility {
 		$datamap = $data;
 
 			// execute
-		/** @var t3lib_TCEmain $tce */
-		$tce = GeneralUtility::makeInstance('t3lib_TCEmain');
+		/** @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce */
+		$tce = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
 		$tce->stripslashes_values = 0;
 
 		$backendUser = self::getBackendUser();
@@ -3095,8 +3093,8 @@ class Tx_Commerce_Utility_BackendUtility {
 	 * @return array
 	 */
 	public function getOverwriteData($table, $uidFrom, $destPid) {
-		/** @var t3lib_TCEmain $tce */
-		$tce = GeneralUtility::makeInstance('t3lib_TCEmain');
+		/** @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce */
+		$tce = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
 		$tce->stripslashes_values = 0;
 
 		$backendUser = self::getBackendUser();
@@ -3264,8 +3262,8 @@ class Tx_Commerce_Utility_BackendUtility {
 		$datamap = $data;
 
 			// execute
-		/** @var t3lib_TCEmain $tce */
-		$tce = GeneralUtility::makeInstance('t3lib_TCEmain');
+		/** @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce */
+		$tce = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
 		$tce->stripslashes_values = 0;
 
 		$backendUser = self::getBackendUser();

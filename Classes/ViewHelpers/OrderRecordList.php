@@ -154,14 +154,12 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends \TYPO3\CMS\Recordlist\Reco
 	 * @return string
 	 */
 	public function getTable($table, $id, $rowlist) {
-		/** @var t3lib_db $database */
-		$database = $GLOBALS['TYPO3_DB'];
+		$database = $this->getDatabaseConnection();
 		/** @var language $language */
 		$language = $GLOBALS['LANG'];
-		/** @var t3lib_beUserAuth $backendUser */
-		$backendUser = $GLOBALS['BE_USER'];
+		$backendUser = $this->getBackendUser();
 
-			// Init
+		// Init
 		$addWhere = '';
 		$titleCol = $GLOBALS['TCA'][$table]['ctrl']['label'];
 		$thumbsCol = $GLOBALS['TCA'][$table]['ctrl']['thumbnail'];
@@ -283,7 +281,10 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends \TYPO3\CMS\Recordlist\Reco
 				$hookObject = GeneralUtility::getUserObj($classData);
 
 				if (!($hookObject instanceof \TYPO3\CMS\Backend\RecordList\RecordListGetTableHookInterface)) {
-					throw new UnexpectedValueException('$hookObject must implement interface t3lib_localRecordListGetTableHook', 1195114460);
+					throw new UnexpectedValueException(
+						'$hookObject must implement interface \TYPO3\CMS\Backend\RecordList\RecordListGetTableHookInterface',
+						1195114460
+					);
 				}
 
 				$hookObject->getDBlistQuery($table, $id, $addWhere, $selFieldList, $this);
@@ -558,8 +559,7 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends \TYPO3\CMS\Recordlist\Reco
 	 * @see getTable()
 	 */
 	public function renderListRow($table, $row, $cc, $titleCol, $thumbsCol, $indent = 0) {
-		/** @var t3lib_db $database */
-		$database = $GLOBALS['TYPO3_DB'];
+		$database = $this->getDatabaseConnection();
 		/** @var language $language */
 		$language = $GLOBALS['LANG'];
 
@@ -750,8 +750,12 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends \TYPO3\CMS\Recordlist\Reco
 			// Add row to CSV list:
 		if ($this->csvOutput) {
 				// Charset Conversion
-			/** @var t3lib_cs $csObj */
-			$csObj = GeneralUtility::makeInstance('t3lib_cs');
+			/**
+			 * Charset converter
+			 *
+			 * @var \TYPO3\CMS\Core\Charset\CharsetConverter $csObj
+			 */
+			$csObj = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Charset\\CharsetConverter');
 			$csObj->initCharset($GLOBALS['TYPO3_CONF_VARS']['BE']['forceCharset']);
 
 			if (!$extConf['BECSVCharset']) {
@@ -857,8 +861,7 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends \TYPO3\CMS\Recordlist\Reco
 	 * @return string
 	 */
 	protected function renderMoveToSelector($table) {
-		/** @var t3lib_db $database */
-		$database = $GLOBALS['TYPO3_DB'];
+		$database = $this->getDatabaseConnection();
 		/** @var language $language */
 		$language = $GLOBALS['LANG'];
 
@@ -917,8 +920,7 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends \TYPO3\CMS\Recordlist\Reco
 	 * @return array
 	 */
 	public function makeQueryArray($table, $id, $addWhere = '', $fieldList = '*') {
-		/** @var t3lib_db $database */
-		$database = $GLOBALS['TYPO3_DB'];
+		$database = $this->getDatabaseConnection();
 
 		$hookObjectsArr = array();
 		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/class.db_list.inc']['makeQueryArray'])) {
@@ -1227,8 +1229,7 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends \TYPO3\CMS\Recordlist\Reco
 	 * @return array Array, where values are fieldnames to include in query
 	 */
 	public function makeFieldList($table, $dontCheckUser = 0, $addDateFields = 0) {
-		/** @var t3lib_beUserAuth $backendUser */
-		$backendUser = $GLOBALS['BE_USER'];
+		$backendUser = $this->getBackendUser();
 
 			// Init fieldlist array:
 		$fieldListArr = array();
@@ -1300,5 +1301,24 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends \TYPO3\CMS\Recordlist\Reco
 		}
 
 		return $fieldListArr;
+	}
+
+
+	/**
+	 * Get backend user
+	 *
+	 * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
+	 */
+	protected function getBackendUser() {
+		return $GLOBALS['BE_USER'];
+	}
+
+	/**
+	 * Get database connection
+	 *
+	 * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+	 */
+	protected function getDatabaseConnection() {
+		return $GLOBALS['TYPO3_DB'];
 	}
 }

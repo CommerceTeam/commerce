@@ -28,19 +28,19 @@
 /**
  * Class Tx_Commerce_Task_StatisticTask
  */
-class Tx_Commerce_Task_StatisticTask extends tx_scheduler_Task {
+class Tx_Commerce_Task_StatisticTask extends \TYPO3\CMS\Scheduler\Task\AbstractTask {
 	/**
 	 * @var string
 	 */
 	protected $selectedAggregation = '';
 
 	/**
-	 * @var t3lib_beUserAuth
+	 * @var \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
 	 */
 	protected $backendUser;
 
 	/**
-	 * @var t3lib_db
+	 * @var \TYPO3\CMS\Core\Database\DatabaseConnection
 	 */
 	protected $database;
 
@@ -62,7 +62,7 @@ class Tx_Commerce_Task_StatisticTask extends tx_scheduler_Task {
 
 		$this->database = $GLOBALS['TYPO3_DB'];
 
-		$this->statistics = t3lib_div::makeInstance('Tx_Commerce_Utility_StatisticsUtility');
+		$this->statistics = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Utility_StatisticsUtility');
 		$this->statistics->init(
 			$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['excludeStatisticFolders'] != '' ?
 				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['excludeStatisticFolders'] :

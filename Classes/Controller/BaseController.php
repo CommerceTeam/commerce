@@ -1326,9 +1326,7 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 					$local = 'uid_foreign';
 				}
 
-				/** @var t3lib_db $database */
-				$database = $GLOBALS['TYPO3_DB'];
-				$rows = $database->exec_SELECTgetRows(
+				$rows = $this->getDatabaseConnection()->exec_SELECTgetRows(
 					'distinct(' . $foreign . ')', $typoscriptConfig['tableMM'],
 					$local . ' = ' . (int) $uid . '  ' . $typoscriptConfig['table.']['addWhere'], '', 'sorting'
 				);
@@ -1632,7 +1630,7 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 		}
 
 		if ($this->conf['showErrors']) {
-			t3lib_utility_Debug::debug($errorOutput, 'ERROR');
+			\TYPO3\CMS\Core\Utility\DebugUtility::debug($errorOutput, 'ERROR');
 
 			return $errorOutput;
 		}
@@ -1650,7 +1648,7 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	 */
 	protected function debug($var, $header, $group) {
 		if ($this->debug) {
-			t3lib_utility_Debug::debug($var, $header, $group);
+			\TYPO3\CMS\Core\Utility\DebugUtility::debug($var, $header, $group);
 		}
 	}
 
@@ -2038,8 +2036,7 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	 */
 	public function substituteMarkerArrayNoCached($content, $markContentArray = array(), $subpartContentArray = array(),
 		$wrappedSubpartContentArray = array()) {
-		/** @var t3lib_timeTrack $timeTrack */
-		$timeTrack = & $GLOBALS['TT'];
+		$timeTrack = $this->getTimeTracker();
 		$timeTrack->push('commerce: substituteMarkerArrayNoCache');
 
 		// If not arrays then set them
@@ -2223,5 +2220,24 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 		$GLOBALS['TSFE']->fe_user->setKey('ses', 'tx_commerce_lastproducturl', $this->pi_linkTP_keepPIvars_url());
 
 		return $content;
+	}
+
+
+	/**
+	 * Get database connection
+	 *
+	 * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+	 */
+	protected function getDatabaseConnection() {
+		return $GLOBALS['TYPO3_DB'];
+	}
+
+	/**
+	 * Get time tracker
+	 *
+	 * @return \TYPO3\CMS\Core\TimeTracker\TimeTracker
+	 */
+	protected function getTimeTracker() {
+		return $GLOBALS['TT'];
 	}
 }

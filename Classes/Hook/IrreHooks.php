@@ -30,7 +30,9 @@
  */
 class Tx_Commerce_Hook_IrreHooks implements \TYPO3\CMS\Backend\Form\Element\InlineElementHookInterface {
 	/**
-	 * @var t3lib_TCEforms_inline
+	 * Parent object
+	 *
+	 * @var \TYPO3\CMS\Backend\Form\Element\InlineElement
 	 */
 	protected $parentObject;
 
@@ -51,7 +53,8 @@ class Tx_Commerce_Hook_IrreHooks implements \TYPO3\CMS\Backend\Form\Element\Inli
 	/**
 	 * Initializes this hook object.
 	 *
-	 * @param t3lib_TCEforms_inline $parentObject: The calling t3lib_TCEforms_inline object.
+	 * @param \TYPO3\CMS\Backend\Form\Element\InlineElement $parentObject The calling object.
+	 *
 	 * @return void
 	 */
 	public function init(&$parentObject) {

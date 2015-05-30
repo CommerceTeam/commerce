@@ -346,17 +346,23 @@ class Tx_Commerce_Configuration_Dca_Products {
 	 * @return void
 	 */
 	public function alterDCA_onLoad(&$resultDca) {
-		/** @var t3lib_beUserAuth $backendUser */
-		$backendUser = $GLOBALS['BE_USER'];
-
 		if (
 			!(
 				\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('data') == NULL ||
 				\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('createArticles') == 'create'
-			) &&
-			$backendUser->uc['txcommerce_afterDatabaseOperations'] != 1
+			)
+			&& $this->getBackendUser()->uc['txcommerce_afterDatabaseOperations'] != 1
 		) {
 			$resultDca = array();
 		}
+	}
+
+	/**
+	 * Get backend user
+	 *
+	 * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
+	 */
+	protected function getBackendUser() {
+		return $GLOBALS['BE_USER'];
 	}
 }

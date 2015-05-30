@@ -66,7 +66,7 @@ class Tx_Commerce_Dao_AddressObserver {
 	public static function update($status, $id) {
 			// get complete address object
 		/** @var Tx_Commerce_Dao_AddressDao $addressDao */
-		$addressDao = t3lib_div::makeInstance('Tx_Commerce_Dao_AddressDao', $id);
+		$addressDao = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Dao_AddressDao', $id);
 
 			// get feuser id
 		$feuserId = $addressDao->get('tx_commerce_fe_user_id');
@@ -74,11 +74,11 @@ class Tx_Commerce_Dao_AddressObserver {
 		if (!empty($feuserId)) {
 				// get associated feuser object
 			/** @var Tx_Commerce_Dao_FeuserDao $feuserDao */
-			$feuserDao = t3lib_div::makeInstance('Tx_Commerce_Dao_FeuserDao', $feuserId);
+			$feuserDao = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Dao_FeuserDao', $feuserId);
 
 				// update feuser object
 			/** @var Tx_Commerce_Dao_FeuserAddressFieldmapper $fieldMapper */
-			$fieldMapper = t3lib_div::makeInstance('Tx_Commerce_Dao_FeuserAddressFieldmapper');
+			$fieldMapper = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Dao_FeuserAddressFieldmapper');
 			$fieldMapper->mapAddressToFeuser($addressDao, $feuserDao);
 
 				// set main address id in feuser
@@ -98,17 +98,16 @@ class Tx_Commerce_Dao_AddressObserver {
 		$dbTable = 'fe_users';
 		$dbWhere = '(tx_commerce_tt_address_id="' . (int) $id . '") AND (deleted="0")';
 
-		/** @var t3lib_db $database */
-		$database = $GLOBALS['TYPO3_DB'];
+		$database = self::getDatabaseConnection();
 
 		$res = $database->exec_SELECTquery($dbFields, $dbTable, $dbWhere);
 
-			// check dependencies (selected rows)
+		// check dependencies (selected rows)
 		if ($database->sql_num_rows($res) > 0) {
-				// errormessage
+			// errormessage
 			$msg = 'Main feuser address. You can not delete this address.';
 		} else {
-				// no errormessage
+			// no errormessage
 			$msg = FALSE;
 		}
 
@@ -117,11 +116,19 @@ class Tx_Commerce_Dao_AddressObserver {
 
 		return $msg;
 	}
+
+
+	/**
+	 * Get database connection
+	 *
+	 * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+	 */
+	protected static function getDatabaseConnection() {
+		return $GLOBALS['TYPO3_DB'];
+	}
 }
 
 if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Dao/AddressObserver.php']) {
 	/** @noinspection PhpIncludeInspection */
 	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Dao/AddressObserver.php']);
 }
-
-?>

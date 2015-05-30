@@ -28,7 +28,7 @@
 /**
  * Module 'Statistics' for the 'commerce' extension.
  */
-class Tx_Commerce_Controller_StatisticModuleController extends t3lib_SCbase {
+class Tx_Commerce_Controller_StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 	/**
 	 * @var template
 	 */
@@ -74,7 +74,7 @@ class Tx_Commerce_Controller_StatisticModuleController extends t3lib_SCbase {
 
 		$this->excludePids = $this->extConf['excludeStatisticFolders'] != '' ? $this->extConf['excludeStatisticFolders'] : 0;
 
-		$this->statistics = t3lib_div::makeInstance('Tx_Commerce_Utility_StatisticsUtility');
+		$this->statistics = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Utility_StatisticsUtility');
 		$this->statistics->init($this->extConf['excludeStatisticFolders'] != '' ? $this->extConf['excludeStatisticFolders'] : 0);
 
 		$this->orderPageId = current(array_unique(Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Orders', 'Commerce', 0, 'Commerce')));
@@ -82,24 +82,24 @@ class Tx_Commerce_Controller_StatisticModuleController extends t3lib_SCbase {
 		/**
 		 * If we get an id via GP use this, else use the default id
 		 */
-		$this->id = (int) t3lib_div::_GP('id');
+		$this->id = (int) \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('id');
 		if (!$this->id) {
 			$this->id = $this->orderPageId;
 		}
 
-		$this->doc = t3lib_div::makeInstance('template');
+		$this->doc = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('template');
 		$this->doc->backPath = $GLOBALS['BACK_PATH'];
 		$this->doc->docType = 'xhtml_trans';
 		$this->doc->setModuleTemplate(PATH_TXCOMMERCE . 'Resources/Private/Backend/mod_index.html');
 
 		if (!$this->doc->moduleTemplate) {
-			t3lib_div::devLog('cannot set moduleTemplate', 'commerce', 2, array(
+			\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('cannot set moduleTemplate', 'commerce', 2, array(
 				'backpath' => $this->doc->backPath,
 				'filename from TBE_STYLES' => $GLOBALS['TBE_STYLES']['htmlTemplates']['mod_index.html'],
 				'full path' => $this->doc->backPath . $GLOBALS['TBE_STYLES']['htmlTemplates']['mod_index.html']
 			));
 			$templateFile = PATH_TXCOMMERCE_REL . 'Resources/Private/Backend/mod_index.html';
-			$this->doc->moduleTemplate = t3lib_div::getURL(PATH_site . $templateFile);
+			$this->doc->moduleTemplate = \TYPO3\CMS\Core\Utility\GeneralUtility::getURL(PATH_site . $templateFile);
 		}
 
 		$this->doc->form = '<form action="" method="POST" name="editform">';
@@ -153,15 +153,14 @@ class Tx_Commerce_Controller_StatisticModuleController extends t3lib_SCbase {
 	 * @return void
 	 */
 	public function main() {
-		/** @var t3lib_beUserAuth $backendUser */
-		$backendUser = $GLOBALS['BE_USER'];
+		$backendUser = $this->getBackendUser();
 		/** @var language $language */
 		$language = $GLOBALS['LANG'];
 
 		// Access check!
 		// The page will show only if there is a valid page and if
 		// this page may be viewed by the user
-		$this->pageinfo = t3lib_BEfunc::readPageAccess($this->id, $this->perms_clause);
+		$this->pageinfo = \TYPO3\CMS\Backend\Utility\BackendUtility::readPageAccess($this->id, $this->perms_clause);
 		$access = is_array($this->pageinfo);
 
 		// Checking access:
@@ -181,7 +180,7 @@ class Tx_Commerce_Controller_StatisticModuleController extends t3lib_SCbase {
 		);
 		$markers['FUNC_MENU'] = $this->doc->funcMenu(
 			'',
-			t3lib_BEfunc::getFuncMenu(
+			\TYPO3\CMS\Backend\Utility\BackendUtility::getFuncMenu(
 				$this->id,
 				'SET[function]',
 				$this->MOD_SETTINGS['function'],
@@ -189,7 +188,7 @@ class Tx_Commerce_Controller_StatisticModuleController extends t3lib_SCbase {
 			)
 		);
 
-			// put it all together
+		// put it all together
 		$this->content = $this->doc->startPage($language->getLL('statistic'));
 		$this->content .= $this->doc->moduleBody($this->pageinfo, $docHeaderButtons, $markers);
 		$this->content .= $this->doc->endPage();
@@ -233,8 +232,7 @@ class Tx_Commerce_Controller_StatisticModuleController extends t3lib_SCbase {
 	 * @return array all available buttons as an assoc. array
 	 */
 	protected function getHeaderButtons() {
-		/** @var t3lib_beUserAuth $backendUser */
-		$backendUser = $GLOBALS['BE_USER'];
+		$backendUser = $this->getBackendUser();
 		/** @var language $language */
 		$language = $GLOBALS['LANG'];
 
@@ -261,7 +259,7 @@ class Tx_Commerce_Controller_StatisticModuleController extends t3lib_SCbase {
 		);
 
 			// CSH
-		$buttons['csh'] = t3lib_BEfunc::cshItem('_MOD_commerce_statistic', '', $GLOBALS['BACK_PATH'], '', TRUE);
+		$buttons['csh'] = \TYPO3\CMS\Backend\Utility\BackendUtility::cshItem('_MOD_commerce_statistic', '', $GLOBALS['BACK_PATH'], '', TRUE);
 
 			// Shortcut
 		if ($backendUser->mayMakeShortcut()) {
@@ -275,9 +273,9 @@ class Tx_Commerce_Controller_StatisticModuleController extends t3lib_SCbase {
 			// If access to Web>List for user, then link to that module.
 		if ($backendUser->check('modules', 'web_list')) {
 			$href = $GLOBALS['BACK_PATH'] . 'db_list.php?id=' . $this->pageinfo['uid'] . '&returnUrl=' .
-				rawurlencode(t3lib_div::getIndpEnv('REQUEST_URI'));
+				rawurlencode(\TYPO3\CMS\Core\Utility\GeneralUtility::getIndpEnv('REQUEST_URI'));
 			$buttons['record_list'] = '<a href="' . htmlspecialchars($href) . '">' .
-				t3lib_iconWorks::getSpriteIcon(
+				\TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon(
 					'apps-filetree-folder-list',
 					array('title' => $language->sL('LLL:EXT:lang/locallang_core.php:labels.showList', 1))
 				) . '</a>';
@@ -291,8 +289,7 @@ class Tx_Commerce_Controller_StatisticModuleController extends t3lib_SCbase {
 	 * @return string Content to show in BE
 	 */
 	protected function completeAggregation() {
-		/** @var t3lib_db $database */
-		$database = $GLOBALS['TYPO3_DB'];
+		$database = $this->getDatabaseConnection();
 
 		$result = '';
 		if (isset($GLOBALS['HTTP_POST_VARS']['fullaggregation'])) {
@@ -349,8 +346,7 @@ class Tx_Commerce_Controller_StatisticModuleController extends t3lib_SCbase {
 	 * @return String Content to show in BE
 	 */
 	protected function incrementalAggregation() {
-		/** @var t3lib_db $database */
-		$database = $GLOBALS['TYPO3_DB'];
+		$database = $this->getDatabaseConnection();
 
 		$result = '';
 		if (isset($GLOBALS['HTTP_POST_VARS']['incrementalaggregation'])) {
@@ -449,8 +445,7 @@ class Tx_Commerce_Controller_StatisticModuleController extends t3lib_SCbase {
 	protected function showStatistics() {
 		/** @var language $language */
 		$language = $GLOBALS['LANG'];
-		/** @var t3lib_db $database */
-		$database = $GLOBALS['TYPO3_DB'];
+		$database = $this->getDatabaseConnection();
 
 		$whereClause = '';
 		if ($this->id != $this->orderPageId) {
@@ -467,11 +462,11 @@ class Tx_Commerce_Controller_StatisticModuleController extends t3lib_SCbase {
 		);
 
 		$tables = '';
-		if (t3lib_div::_GP('show')) {
+		if (\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('show')) {
 			$whereClause = $whereClause != '' ? $whereClause . ' AND' : '';
-			$whereClause .=  ' month = ' . t3lib_div::_GP('month') . '  AND year = ' . t3lib_div::_GP('year');
+			$whereClause .=  ' month = ' . \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('month') . '  AND year = ' . \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('year');
 
-			$tables .= '<h2>' . t3lib_div::_GP('month') . ' - ' . t3lib_div::_GP('year') .
+			$tables .= '<h2>' . \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('month') . ' - ' . \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('year') .
 				'</h2><table><tr><th>Days</th><th>turnover</th><th>amount</th><th>orders</th></tr>';
 			$statResult = $database->exec_SELECTquery(
 				'sum(pricegross) as turnover,sum(amount) as salesfigures ,sum(orders) as sumorders,day',
@@ -483,7 +478,7 @@ class Tx_Commerce_Controller_StatisticModuleController extends t3lib_SCbase {
 			while (($statRow = $database->sql_fetch_assoc($statResult))) {
 				$daystat[$statRow['day']] = $statRow;
 			}
-			$lastday = date('d', mktime(0, 0, 0, t3lib_div::_GP('month') + 1, 0, t3lib_div::_GP('year')));
+			$lastday = date('d', mktime(0, 0, 0, \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('month') + 1, 0, \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('year')));
 			for ($i = 1; $i <= $lastday; ++$i) {
 				if (array_key_exists($i, $daystat)) {
 					$tablestemp = '<tr><td>' . $daystat[$i]['day'] . '</a></td><td align="right">%01.2f</td><td align="right">' .
@@ -563,5 +558,24 @@ class Tx_Commerce_Controller_StatisticModuleController extends t3lib_SCbase {
 			$tables .= '</table>';
 		}
 		return $tables;
+	}
+
+
+	/**
+	 * Get backend user
+	 *
+	 * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
+	 */
+	protected function getBackendUser() {
+		return $GLOBALS['BE_USER'];
+	}
+
+	/**
+	 * Get database connection
+	 *
+	 * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+	 */
+	protected function getDatabaseConnection() {
+		return $GLOBALS['TYPO3_DB'];
 	}
 }

@@ -76,7 +76,7 @@ abstract class Tx_Commerce_Payment_Provider_ProviderAbstract implements Tx_Comme
 					$criterionConfiguration['options'] = array();
 				}
 				/** @var $criterion Tx_Commerce_Payment_Interface_ProviderCriterion */
-				$criterion = t3lib_div::makeInstance($criterionConfiguration['class'], $this, $criterionConfiguration['options']);
+				$criterion = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance($criterionConfiguration['class'], $this, $criterionConfiguration['options']);
 				if (!($criterion instanceof Tx_Commerce_Payment_Interface_ProviderCriterion)) {
 					throw new Exception(
 						'Criterion ' . $criterionConfiguration['class'] . ' must implement interface Tx_Commerce_Payment_Interface_ProviderCriterion',

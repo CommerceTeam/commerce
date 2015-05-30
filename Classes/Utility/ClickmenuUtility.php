@@ -55,7 +55,7 @@ class Tx_Commerce_Utility_ClickmenuUtility extends \TYPO3\CMS\Backend\ClickMenu\
 	protected $clickMenu;
 
 	/**
-	 * @var t3lib_clipboard
+	 * @var \TYPO3\CMS\Backend\Clipboard\Clipboard
 	 */
 	protected $clipObj;
 
@@ -93,8 +93,7 @@ class Tx_Commerce_Utility_ClickmenuUtility extends \TYPO3\CMS\Backend\ClickMenu\
 			return $menuItems;
 		}
 
-		/** @var t3lib_beUserAuth $backendUser */
-		$backendUser = $GLOBALS['BE_USER'];
+		$backendUser = $this->getBackendUser();
 
 		// Check for List allow
 		if (!$backendUser->check('tables_select', $table)) {
@@ -297,13 +296,12 @@ class Tx_Commerce_Utility_ClickmenuUtility extends \TYPO3\CMS\Backend\ClickMenu\
 	 * @return array
 	 */
 	protected function calculateCategoryRights($uid, $rights) {
-		/** @var t3lib_beUserAuth $backendUser */
-		$backendUser = $GLOBALS['BE_USER'];
+		$backendUser = $this->getBackendUser();
 
-			// check if current item is root
+		// check if current item is root
 		$rights['root'] = (int)($uid == '0');
 
-			// find uid of category or translation parent category
+		// find uid of category or translation parent category
 		$categoryToCheckRightsOn = $uid;
 		if ($this->rec['sys_language_uid']) {
 			$categoryToCheckRightsOn = $this->rec['l18n_parent'];
@@ -384,8 +382,7 @@ class Tx_Commerce_Utility_ClickmenuUtility extends \TYPO3\CMS\Backend\ClickMenu\
 	 * @return array
 	 */
 	protected function calculateProductRights($uid, $rights) {
-		/** @var t3lib_beUserAuth $backendUser */
-		$backendUser = $GLOBALS['BE_USER'];
+		$backendUser = $this->getBackendUser();
 
 			// get all parent categories
 		/** @var Tx_Commerce_Domain_Model_Product $product */
@@ -493,8 +490,7 @@ class Tx_Commerce_Utility_ClickmenuUtility extends \TYPO3\CMS\Backend\ClickMenu\
 	public function DB_overwrite($table, $uid, $elInfo) {
 		/** @var language $language */
 		$language = $GLOBALS['LANG'];
-		/** @var t3lib_beUserAuth $backendUser */
-		$backendUser = $GLOBALS['BE_USER'];
+		$backendUser = $this->getBackendUser();
 
 		$loc = 'top.content' . ($this->clickMenu->listFrame && !$this->clickMenu->alwaysContentFrame ? '.list_frame' : '');
 
@@ -557,8 +553,7 @@ class Tx_Commerce_Utility_ClickmenuUtility extends \TYPO3\CMS\Backend\ClickMenu\
 	 * @return string
 	 */
 	protected function overwriteUrl($table, $uid, $redirect = 1) {
-		/** @var t3lib_beUserAuth $backendUser */
-		$backendUser = $GLOBALS['BE_USER'];
+		$backendUser = $this->getBackendUser();
 
 		$rU = $this->clickMenu->clipObj->backPath . PATH_TXCOMMERCE_REL . 'Classes/Utility/DataHandlerUtility.php?' .
 			($redirect ? 'redirect=' . rawurlencode(GeneralUtility::linkThisScript(array('CB' => ''))) : '') .
@@ -568,5 +563,15 @@ class Tx_Commerce_Utility_ClickmenuUtility extends \TYPO3\CMS\Backend\ClickMenu\
 			'&CB[pad]=' . $this->clickMenu->clipObj->current .
 			BackendUtility::getUrlToken('tceAction');
 		return $rU;
+	}
+
+
+	/**
+	 * Get backend user
+	 *
+	 * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
+	 */
+	protected function getBackendUser() {
+		return $GLOBALS['BE_USER'];
 	}
 }
