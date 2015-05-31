@@ -38,7 +38,9 @@ class Tx_Commerce_Controller_SystemdataModuleController extends \TYPO3\CMS\Backe
 	protected $database;
 
 	/**
+	 * Language
 	 * @var language
+	 * @deprecated Since 2.0.0 will be removed in 4.0.0
 	 */
 	protected $language;
 
@@ -92,13 +94,12 @@ class Tx_Commerce_Controller_SystemdataModuleController extends \TYPO3\CMS\Backe
 	public function init() {
 		parent::init();
 
-		/** @var language $language */
-		$language = $GLOBALS['LANG'];
+		$language = $this->getLanguageService();
 		$language->includeLLFile('EXT:commerce/Resources/Private/Language/locallang_mod_systemdata.xml');
 
-		$this->database = & $GLOBALS['TYPO3_DB'];
-		$this->language = & $GLOBALS['LANG'];
-		$this->user = & $GLOBALS['BE_USER'];
+		$this->database = $GLOBALS['TYPO3_DB'];
+		$this->language = $this->getLanguageService();
+		$this->user = $GLOBALS['BE_USER'];
 
 		$this->id = $this->modPid = (int) reset(Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Commerce', 'commerce'));
 		$this->attributePid =
@@ -199,8 +200,8 @@ class Tx_Commerce_Controller_SystemdataModuleController extends \TYPO3\CMS\Backe
 			)
 		);
 
-			// put it all together
-		$this->content = $this->doc->startPage($this->language->getLL('title'));
+		// put it all together
+		$this->content = $this->doc->startPage($this->getLanguageService()->getLL('title'));
 		$this->content .= $this->doc->moduleBody($this->pageRow, $docHeaderButtons, $markers);
 		$this->content .= $this->doc->endPage();
 		$this->content = $this->doc->insertStylesAndJS($this->content);
@@ -243,19 +244,19 @@ class Tx_Commerce_Controller_SystemdataModuleController extends \TYPO3\CMS\Backe
 			$buttons['csh'] = BackendUtility::cshItem('_MOD_web_txcommerceM1', 'list_module', $GLOBALS['BACK_PATH'], '', TRUE);
 		}
 
-			// New
+		// New
 		$newParams = '&edit[tx_commerce_' . $this->tableForNewLink . '][' . (int) $this->modPid . ']=new';
 		$buttons['new_record'] = '<a href="#" onclick="' .
 			htmlspecialchars(BackendUtility::editOnClick($newParams, $GLOBALS['BACK_PATH'], -1)) .
-			'" title="' . $this->language->getLL('create_' . $this->tableForNewLink) . '">' .
+			'" title="' . $this->getLanguageService()->getLL('create_' . $this->tableForNewLink) . '">' .
 			IconUtility::getSpriteIcon('actions-document-new') .
 			'</a>';
 
-			// Reload
+		// Reload
 		$buttons['reload'] = '<a href="' . htmlspecialchars(GeneralUtility::linkThisScript()) . '">' .
 			IconUtility::getSpriteIcon('actions-system-refresh') . '</a>';
 
-			// Shortcut
+		// Shortcut
 		if ($this->user->mayMakeShortcut()) {
 			$buttons['shortcut'] = $this->doc->makeShortcutIcon(
 				'id, showThumbs, pointer, table, search_field, searchLevels, showLimit, sortField, sortRev',
@@ -305,8 +306,10 @@ class Tx_Commerce_Controller_SystemdataModuleController extends \TYPO3\CMS\Backe
 	 * @return string
 	 */
 	protected function getAttributeListing() {
-		$headerRow = '<tr><td class="bgColor6" colspan="3"><strong>' . $this->language->getLL('title_attributes') .
-			'</strong></td><td class="bgColor6"><strong>' . $this->language->getLL('title_values') . '</strong></td></tr>';
+		$language = $this->getLanguageService();
+
+		$headerRow = '<tr><td class="bgColor6" colspan="3"><strong>' . $language->getLL('title_attributes') .
+			'</strong></td><td class="bgColor6"><strong>' . $language->getLL('title_values') . '</strong></td></tr>';
 
 		$result = $this->fetchAttributes();
 		$attributeRows = $this->renderAttributeRows($result);
@@ -355,7 +358,13 @@ class Tx_Commerce_Controller_SystemdataModuleController extends \TYPO3\CMS\Backe
 	 * @return string
 	 */
 	protected function renderAttributeRows($result) {
-		/** @var \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordList $recordList */
+		$language = $this->getLanguageService();
+
+		/**
+		 * Record list
+		 *
+		 * @var \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordList $recordList
+		 */
 		$recordList = GeneralUtility::makeInstance('TYPO3\\CMS\\Recordlist\\RecordList\\DatabaseRecordList');
 		$recordList->backPath = $this->doc->backPath;
 		$recordList->initializeLanguages();
@@ -367,7 +376,7 @@ class Tx_Commerce_Controller_SystemdataModuleController extends \TYPO3\CMS\Backe
 			$refCountMsg = BackendUtility::referenceCount(
 				$table,
 				$attribute['uid'],
-				' ' . $this->language->sL(
+				' ' . $language->sL(
 					'LLL:EXT:lang/locallang_core.xml:labels.referencesToRecord'
 				),
 				$this->getReferenceCount($table, $attribute['uid'])
@@ -387,7 +396,7 @@ class Tx_Commerce_Controller_SystemdataModuleController extends \TYPO3\CMS\Backe
 			$catCount = $this->fetchRelationCount('tx_commerce_categories_attributes_mm', $attribute['uid']);
 			$proCount = $this->fetchRelationCount('tx_commerce_products_attributes_mm', $attribute['uid']);
 
-				// Select language versions
+			// Select language versions
 			$resLocalVersion = $this->fetchAttributeTranslation($attribute['uid']);
 			if ($this->database->sql_num_rows($resLocalVersion) > 0) {
 				$output .= '<table >';
@@ -407,20 +416,20 @@ class Tx_Commerce_Controller_SystemdataModuleController extends \TYPO3\CMS\Backe
 				$output .= '</table>';
 			}
 
-			$output .= '<br />' . $this->language->getLL('usage');
-			$output .= ' <strong>' . $this->language->getLL('categories') . '</strong>: ' . $catCount;
-			$output .= ' <strong>' . $this->language->getLL('products') . '</strong>: ' . $proCount;
+			$output .= '<br />' . $language->getLL('usage');
+			$output .= ' <strong>' . $language->getLL('categories') . '</strong>: ' . $catCount;
+			$output .= ' <strong>' . $language->getLL('products') . '</strong>: ' . $proCount;
 			$output .= '</td>';
 
 			$output .= '<td><a href="#" onclick="' .
 				htmlspecialchars(BackendUtility::editOnClick($editParams, $this->doc->backPath, -1)) . '">' .
-				IconUtility::getSpriteIcon('actions-document-open', array('title' => $this->language->getLL('edit', TRUE))) . '</a>';
+				IconUtility::getSpriteIcon('actions-document-open', array('title' => $language->getLL('edit', TRUE))) . '</a>';
 			$output .= '<a href="#" onclick="' . htmlspecialchars(
-					'if (confirm(' . $this->language->JScharCode(
-						$this->language->getLL('deleteWarningManufacturer') . ' "' . $attribute['title'] . '" ' . $refCountMsg
+					'if (confirm(' . $language->JScharCode(
+						$language->getLL('deleteWarningManufacturer') . ' "' . $attribute['title'] . '" ' . $refCountMsg
 					) . ')) {jumpToUrl(\'' . $this->doc->issueCommand($deleteParams, -1) . '\');} return false;'
 				) . '">' .
-				IconUtility::getSpriteIcon('actions-edit-delete', array('title' => $this->language->getLL('delete', TRUE))) . '</a>';
+				IconUtility::getSpriteIcon('actions-edit-delete', array('title' => $language->getLL('delete', TRUE))) . '</a>';
 
 			$output .= '</td><td>';
 
@@ -439,10 +448,10 @@ class Tx_Commerce_Controller_SystemdataModuleController extends \TYPO3\CMS\Backe
 					}
 					$output .= '</table>';
 				} else {
-					$output .= $this->language->getLL('no_values');
+					$output .= $language->getLL('no_values');
 				}
 			} else {
-				$output .= $this->language->getLL('no_valuelist');
+				$output .= $language->getLL('no_valuelist');
 			}
 
 			$output .= '</td></tr>';
@@ -462,7 +471,7 @@ class Tx_Commerce_Controller_SystemdataModuleController extends \TYPO3\CMS\Backe
 		$headerRow = '<tr><td></td>';
 		foreach ($fields as $field) {
 			$headerRow .= '<td class="bgColor6"><strong>' .
-				$this->language->sL(BackendUtility::getItemLabel('tx_commerce_manufacturer', htmlspecialchars($field))) .
+				$this->getLanguageService()->sL(BackendUtility::getItemLabel('tx_commerce_manufacturer', htmlspecialchars($field))) .
 				'</strong></td>';
 		}
 		$headerRow .= '</tr>';
@@ -483,6 +492,7 @@ class Tx_Commerce_Controller_SystemdataModuleController extends \TYPO3\CMS\Backe
 	 * @return string
 	 */
 	protected function renderManufacturerRows($result, $fields) {
+		$language = $this->getLanguageService();
 		$output = '';
 
 		$table = 'tx_commerce_manufacturer';
@@ -490,7 +500,7 @@ class Tx_Commerce_Controller_SystemdataModuleController extends \TYPO3\CMS\Backe
 			$refCountMsg = BackendUtility::referenceCount(
 				$table,
 				$row['uid'],
-				' ' . $this->language->sL(
+				' ' . $language->sL(
 					'LLL:EXT:lang/locallang_core.xml:labels.referencesToRecord'
 				),
 				$this->getReferenceCount($table, $row['uid'])
@@ -500,13 +510,13 @@ class Tx_Commerce_Controller_SystemdataModuleController extends \TYPO3\CMS\Backe
 
 			$output .= '<tr><td><a href="#" onclick="' .
 				htmlspecialchars(BackendUtility::editOnClick($editParams, $this->doc->backPath, -1)) . '">' .
-				IconUtility::getSpriteIcon('actions-document-open', array('title' => $this->language->getLL('edit', TRUE))) . '</a>';
+				IconUtility::getSpriteIcon('actions-document-open', array('title' => $language->getLL('edit', TRUE))) . '</a>';
 			$output .= '<a href="#" onclick="' . htmlspecialchars(
-					'if (confirm(' . $this->language->JScharCode(
-						$this->language->getLL('deleteWarningManufacturer') . ' "' . htmlspecialchars($row['title']) . '" ' . $refCountMsg
+					'if (confirm(' . $language->JScharCode(
+						$language->getLL('deleteWarningManufacturer') . ' "' . htmlspecialchars($row['title']) . '" ' . $refCountMsg
 					) . ')) {jumpToUrl(\'' . $this->doc->issueCommand($deleteParams, -1) . '\');} return false;'
 				) . '">' .
-				IconUtility::getSpriteIcon('actions-edit-delete', array('title' => $this->language->getLL('delete', TRUE))) . '</a>';
+				IconUtility::getSpriteIcon('actions-edit-delete', array('title' => $language->getLL('delete', TRUE))) . '</a>';
 			$output .= '</td>';
 
 			foreach ($fields as $field) {
@@ -530,7 +540,7 @@ class Tx_Commerce_Controller_SystemdataModuleController extends \TYPO3\CMS\Backe
 		$headerRow = '<tr><td></td>';
 		foreach ($fields as $field) {
 			$headerRow .= '<td class="bgColor6"><strong>' .
-				$this->language->sL(BackendUtility::getItemLabel('tx_commerce_supplier', htmlspecialchars($field))) .
+				$this->getLanguageService()->sL(BackendUtility::getItemLabel('tx_commerce_supplier', htmlspecialchars($field))) .
 				'</strong></td>';
 		}
 		$headerRow .= '</tr>';
@@ -551,6 +561,7 @@ class Tx_Commerce_Controller_SystemdataModuleController extends \TYPO3\CMS\Backe
 	 * @return string
 	 */
 	protected function renderSupplierRows($result, $fields) {
+		$language = $this->getLanguageService();
 		$output = '';
 
 		$table = 'tx_commerce_supplier';
@@ -558,7 +569,7 @@ class Tx_Commerce_Controller_SystemdataModuleController extends \TYPO3\CMS\Backe
 			$refCountMsg = BackendUtility::referenceCount(
 				$table,
 				$row['uid'],
-				' ' . $this->language->sL(
+				' ' . $language->sL(
 					'LLL:EXT:lang/locallang_core.xml:labels.referencesToRecord'
 				),
 				$this->getReferenceCount($table, $row['uid'])
@@ -568,13 +579,13 @@ class Tx_Commerce_Controller_SystemdataModuleController extends \TYPO3\CMS\Backe
 
 			$output .= '<tr><td><a href="#" onclick="' .
 				htmlspecialchars(BackendUtility::editOnClick($editParams, $this->doc->backPath, -1)) . '">' .
-				IconUtility::getSpriteIcon('actions-document-open', array('title' => $this->language->getLL('edit', TRUE))) . '</a>';
+				IconUtility::getSpriteIcon('actions-document-open', array('title' => $language->getLL('edit', TRUE))) . '</a>';
 			$output .= '<a href="#" onclick="' . htmlspecialchars(
-					'if (confirm(' . $this->language->JScharCode(
-						$this->language->getLL('deleteWarningSupplier') . ' "' . htmlspecialchars($row['title']) . '" ' . $refCountMsg
+					'if (confirm(' . $language->JScharCode(
+						$language->getLL('deleteWarningSupplier') . ' "' . htmlspecialchars($row['title']) . '" ' . $refCountMsg
 					) . ')) {jumpToUrl(\'' . $this->doc->issueCommand($deleteParams, -1) . '\');} return false;'
 				) . '">' .
-				IconUtility::getSpriteIcon('actions-edit-delete', array('title' => $this->language->getLL('delete', TRUE))) . '</a>';
+				IconUtility::getSpriteIcon('actions-edit-delete', array('title' => $language->getLL('delete', TRUE))) . '</a>';
 			$output .= '</td>';
 
 			foreach ($fields as $field) {
@@ -641,5 +652,15 @@ class Tx_Commerce_Controller_SystemdataModuleController extends \TYPO3\CMS\Backe
 		}
 
 		return $this->referenceCount[$tableName][$uid];
+	}
+
+
+	/**
+	 * Get language service
+	 *
+	 * @return \TYPO3\CMS\Lang\LanguageService
+	 */
+	protected function getLanguageService() {
+		return $GLOBALS['LANG'];
 	}
 }

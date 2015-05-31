@@ -86,8 +86,7 @@ class Tx_Commerce_Controller_InvoiceController extends Tx_Commerce_Controller_Ba
 	 * @return string Compiled content
 	 */
 	public function main($content, $conf) {
-		/** @var tslib_fe $frontend */
-		$frontend = $GLOBALS['TSFE'];
+		$frontend = $this->getFrontendController();
 		$backendUser = $this->getBackendUser();
 
 		$this->conf = $conf;
@@ -422,5 +421,14 @@ class Tx_Commerce_Controller_InvoiceController extends Tx_Commerce_Controller_Ba
 	 */
 	protected function getDatabaseConnection() {
 		return $GLOBALS['TYPO3_DB'];
+	}
+
+	/**
+	 * Get typoscript frontend controller
+	 *
+	 * @return \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController
+	 */
+	protected function getFrontendController() {
+		return $GLOBALS['TSFE'];
 	}
 }

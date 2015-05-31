@@ -27,7 +27,9 @@
 
 class Tx_Commerce_Hook_LinkhandlerHooks {
 	/**
-	 * @var tslib_cObj
+	 * Parent object
+	 *
+	 * @var \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer
 	 */
 	protected $pObj;
 
@@ -37,7 +39,7 @@ class Tx_Commerce_Hook_LinkhandlerHooks {
 	 * @param string $linkHandlerKeyword
 	 * @param string $linkHandlerValue
 	 * @param array $link_param
-	 * @param tslib_cObj $pObj
+	 * @param \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer $pObj
 	 * @return string
 	 */
 	public function main($linktxt, $conf, $linkHandlerKeyword, $linkHandlerValue, $link_param, &$pObj) {
@@ -68,8 +70,8 @@ class Tx_Commerce_Hook_LinkhandlerHooks {
 			return $linktxt;
 		}
 
-		/** @var tslib_cObj $localcObj */
-		$localcObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tslib_cObj');
+		/** @var \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer $localcObj */
+		$localcObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
 
 		$DisplayPID = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_commerce_pi1.']['overridePid'];
 		if (empty($DisplayPID)) {

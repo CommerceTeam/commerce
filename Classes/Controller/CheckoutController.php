@@ -305,8 +305,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			}
 		}
 
-		/** @var $feUser tslib_feUserAuth */
-		$feUser = & $GLOBALS['TSFE']->fe_user;
+		$feUser = $this->getFrontendController()->fe_user;
 		$feUser->setKey('ses', Tx_Commerce_Utility_GeneralUtility::generateSessionKey('currentStep'), $this->currentStep);
 
 		$content = $this->renderSteps($content);
@@ -326,8 +325,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	 * @return void
 	 */
 	protected function storeRequestDataIntoSession() {
-		/** @var $feUser tslib_feUserAuth */
-		$feUser = $GLOBALS['TSFE']->fe_user;
+		$feUser = $this->getFrontendController()->fe_user;
 		// Write the billing address into session, if it is present in the REQUEST
 		if (isset($this->piVars['billing'])) {
 			$this->piVars['billing'] = Tx_Commerce_Utility_GeneralUtility::removeXSSStripTagsArray($this->piVars['billing']);
@@ -365,8 +363,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	 * @return void
 	 */
 	protected function fetchSessionDataIntoSessionAttribute() {
-		/** @var $feUser tslib_feUserAuth */
-		$feUser = & $GLOBALS['TSFE']->fe_user;
+		$feUser = $this->getFrontendController()->fe_user;
 		$this->sessionData['billing'] = Tx_Commerce_Utility_GeneralUtility::removeXSSStripTagsArray(
 			$feUser->getKey('ses', Tx_Commerce_Utility_GeneralUtility::generateSessionKey('billing'))
 		);
@@ -392,9 +389,8 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	 */
 	public function storeSessionData() {
 		$database = $this->getDatabaseConnection();
+		$feUser = $this->getFrontendController()->fe_user;
 
-		/** @var $feUser tslib_feUserAuth */
-		$feUser = & $GLOBALS['TSFE']->fe_user;
 		// Saves UC and SesData if changed.
 		if ($feUser->userData_change) {
 			$feUser->writeUC('');
@@ -799,7 +795,11 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 
 			$formAction = $this->pi_getPageLink($GLOBALS['TSFE']->id);
 			if (method_exists($paymentObj, 'getProvider')) {
-				/** @var $paymentProvider Tx_Commerce_Payment_Provider_ProviderAbstract */
+				/**
+				 * Payment provider
+				 *
+				 * @var $paymentProvider Tx_Commerce_Payment_Provider_ProviderAbstract
+				 */
 				$paymentProvider = $paymentObj->getProvider();
 				if (method_exists($paymentProvider, 'getAlternativFormAction')) {
 					$formAction = $paymentProvider->getAlternativFormAction($this);
@@ -972,10 +972,9 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		}
 
 		// Handle orders
-		/** @var $feUser tslib_feUserAuth */
-		$feUser = & $GLOBALS['TSFE']->fe_user;
+		$feUser = $this->getFrontendController()->fe_user;
 		/** @var $basket Tx_Commerce_Domain_Model_Basket */
-		$basket = & $feUser->tx_commerce_basket;
+		$basket = $feUser->tx_commerce_basket;
 
 		$hookObjectsArr = $this->getHookObjectArray('finishIt');
 		foreach ($hookObjectsArr as $hookObj) {
@@ -1136,7 +1135,6 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		$basket->setSessionId(md5($feUser->id . ':' . rand(0, PHP_INT_MAX)));
 		$basket->loadData();
 
-		/** @var tslib_fe $frontend */
 		$feUser->setKey('ses', 'commerceBasketId', $basket->getSessionId());
 		$feUser->tx_commerce_basket = $basket;
 
@@ -1868,13 +1866,13 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 				$result = $this->staticInfo->buildStaticInfoSelector(
 					$fieldConfig['field'], $this->prefixId . '[' . $step . '][' . $fieldName . ']', $fieldConfig['cssClass'],
 					$selected, '', '', $step . '-' . $fieldName, '', $fieldConfig['select'],
-					$GLOBALS['TSFE']->tmpl->setup['config.']['language']
+					$this->getFrontendController()->tmpl->setup['config.']['language']
 				);
 				break;
 
 			case 'static_info_country':
 				$countries = $this->staticInfo->initCountries(
-					$fieldConfig['country_association'], $GLOBALS['TSFE']->tmpl->setup['config.']['language'], 1,
+					$fieldConfig['country_association'], $this->getFrontendController()->tmpl->setup['config.']['language'], 1,
 					$fieldConfig['select']
 				);
 				asort($countries, SORT_LOCALE_STRING);
@@ -2573,7 +2571,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		$orderData['paymenttype'] = $this->getPaymentType(TRUE);
 		$orderData['sum_price_net'] = $basket->getSumNet();
 		$orderData['sum_price_gross'] = $basket->getSumGross();
-		$orderData['order_sys_language_uid'] = $GLOBALS['TSFE']->config['config']['sys_language_uid'];
+		$orderData['order_sys_language_uid'] = $this->getFrontendController()->config['config']['sys_language_uid'];
 		$orderData['pid'] = $pid;
 		$orderData['order_id'] = $orderId;
 		$orderData['crdate'] = $GLOBALS['EXEC_TIME'];
@@ -2671,7 +2669,6 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 
 				$data = array();
 
-				// $GLOBALS['LANG'] missing in frontend
 				$data['tx_commerce_order_articles'][$newUid] = $orderArticleData;
 				$tceMain->start($data, array());
 				$tceMain->process_datamap();
@@ -2843,5 +2840,14 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	 */
 	protected function getDatabaseConnection() {
 		return $GLOBALS['TYPO3_DB'];
+	}
+
+	/**
+	 * Get typoscript frontend controller
+	 *
+	 * @return \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController
+	 */
+	protected function getFrontendController() {
+		return $GLOBALS['TSFE'];
 	}
 }

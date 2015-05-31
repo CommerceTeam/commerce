@@ -92,15 +92,14 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 	 */
 	public function orderArticles($PA) {
 		$database = $this->getDatabaseConnection();
-		/** @var language $language */
-		$language = $GLOBALS['LANG'];
+		$language = $this->getLanguageService();
 
 		$content = '';
 		$foreign_table = 'tx_commerce_order_articles';
 		$table = 'tx_commerce_orders';
 
-		/** @var smallDoc $doc */
-		$doc = GeneralUtility::makeInstance('smallDoc');
+		/** @var \TYPO3\CMS\Backend\Template\DocumentTemplate $doc */
+		$doc = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
 		$doc->backPath = $GLOBALS['BACK_PATH'];
 
 		/**
@@ -418,19 +417,14 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 	 */
 	public function address($PA, $fobj, $table, $uid) {
 		/**
-		 * instatiate Template Class
+		 * intialize Template Class
 		 * as this class is included via alt_doc we don't have to require template.php
 		 * in fact an require would cause an error
 		 *
-		 * @var smallDoc $doc
+		 * @var \TYPO3\CMS\Backend\Template\DocumentTemplate $doc
 		 */
-		$doc = GeneralUtility::makeInstance('smallDoc');
+		$doc = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
 		$doc->backPath = $GLOBALS['BACK_PATH'];
-
-		/**
-		 * Load the table TCA into local variable
-		 */
-		GeneralUtility::loadTCA($table);
 
 		$content = '';
 
@@ -460,8 +454,7 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 			$content .= $doc->spacer(10);
 			$display_arr = array();
 
-			/** @var language $language */
-			$language = $GLOBALS['LANG'];
+			$language = $this->getLanguageService();
 
 			foreach ($data_row as $key => $value) {
 				/**
@@ -647,5 +640,14 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 	 */
 	protected function getDatabaseConnection() {
 		return $GLOBALS['TYPO3_DB'];
+	}
+
+	/**
+	 * Get language service
+	 *
+	 * @return \TYPO3\CMS\Lang\LanguageService
+	 */
+	protected function getLanguageService() {
+		return $GLOBALS['LANG'];
 	}
 }

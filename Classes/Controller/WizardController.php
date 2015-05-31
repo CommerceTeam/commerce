@@ -83,7 +83,7 @@ class Tx_Commerce_Controller_WizardController {
 	protected $permsClause;
 
 	/**
-	 * @var mediumDoc
+	 * @var \TYPO3\CMS\Backend\Template\DocumentTemplate
 	 */
 	public $doc;
 
@@ -118,8 +118,7 @@ class Tx_Commerce_Controller_WizardController {
 	 */
 	public function init() {
 		$backendUser = $this->getBackendUser();
-		/** @var language $language */
-		$language = $GLOBALS['LANG'];
+		$language = $this->getLanguageService();
 
 			// page-selection permission clause (reading)
 		$this->permsClause = $backendUser->getPagePermsClause(1);
@@ -134,7 +133,7 @@ class Tx_Commerce_Controller_WizardController {
 		$this->defVals = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('defVals');
 
 			// Create instance of template class for output
-		$this->doc = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('mediumDoc');
+		$this->doc = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
 		$this->doc->backPath = $GLOBALS['BACK_PATH'];
 		$this->doc->docType = 'xhtml_trans';
 		$this->doc->JScode = '';
@@ -177,8 +176,7 @@ class Tx_Commerce_Controller_WizardController {
 	 */
 	public function main() {
 		$backendUser = $this->getBackendUser();
-		/** @var language $language */
-		$language = $GLOBALS['LANG'];
+		$language = $this->getLanguageService();
 
 		// If there was a page - or if the user is admin
 		// (admins has access to the root) we proceed:
@@ -226,13 +224,12 @@ class Tx_Commerce_Controller_WizardController {
 	 */
 	protected function regularNew() {
 		$backendUser = $this->getBackendUser();
-		/** @var language $language */
-		$language = $GLOBALS['LANG'];
+		$language = $this->getLanguageService();
 
-			// Slight spacer from header:
+		// Slight spacer from header:
 		$this->code .= '<img' . \TYPO3\CMS\Backend\Utility\IconUtility::skinImg($this->doc->backPath, 'gfx/ol/halfline.gif', 'width="18" height="8"') . ' alt="" /><br />';
 
-			// New tables INSIDE this category
+		// New tables INSIDE this category
 		foreach ($this->param as $table => $param) {
 			if (
 				$this->showNewRecLink($table)
@@ -382,5 +379,14 @@ class Tx_Commerce_Controller_WizardController {
 	 */
 	protected function getBackendUser() {
 		return $GLOBALS['BE_USER'];
+	}
+
+	/**
+	 * Get language service
+	 *
+	 * @return \TYPO3\CMS\Lang\LanguageService
+	 */
+	protected function getLanguageService() {
+		return $GLOBALS['LANG'];
 	}
 }

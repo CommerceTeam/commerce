@@ -71,8 +71,8 @@ class Tx_Commerce_Utility_GeneralUtility {
 	 * @return void
 	 */
 	public static function initializeFeUserBasket() {
-		/** @var tslib_feUserAuth $feUser */
-		$feUser = $GLOBALS['TSFE']->fe_user;
+		/** @var \TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication $feUser */
+		$feUser = self::getFrontendController()->fe_user;
 		/** @var Tx_Commerce_Domain_Model_Basket $basket */
 		$basket = & $feUser->tx_commerce_basket;
 
@@ -402,5 +402,15 @@ class Tx_Commerce_Utility_GeneralUtility {
 	public static function formatPrice($price) {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
 		return sprintf('%01.2f', $price);
+	}
+
+
+	/**
+	 * Get typoscript frontend controller
+	 *
+	 * @return \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController
+	 */
+	protected static function getFrontendController() {
+		return $GLOBALS['TSFE'];
 	}
 }

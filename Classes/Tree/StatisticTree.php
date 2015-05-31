@@ -56,8 +56,7 @@ class Tx_Commerce_Tree_StatisticTree extends \TYPO3\CMS\Backend\Tree\View\Browse
 	 * @return string Page icon
 	 */
 	public function wrapIcon($icon, &$row) {
-		/** @var language $language */
-		$language = $GLOBALS['LANG'];
+		$language = $this->getLanguageService();
 
 		// If the record is locked, present a warning sign.
 		if (($lockInfo = \TYPO3\CMS\Backend\Utility\BackendUtility::isRecordLocked('pages', $row['uid']))) {
@@ -112,5 +111,15 @@ class Tx_Commerce_Tree_StatisticTree extends \TYPO3\CMS\Backend\Tree\View\Browse
 					'" class="typo3-red">+</a> ';
 		}
 		return $str;
+	}
+
+
+	/**
+	 * Get language service
+	 *
+	 * @return \TYPO3\CMS\Lang\LanguageService
+	 */
+	protected function getLanguageService() {
+		return $GLOBALS['LANG'];
 	}
 }

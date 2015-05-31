@@ -18,7 +18,7 @@
  *
  * The basket object is stored as object within the Frontend user
  * fe_user->tx_commerce_basket, you could acces the Basket object in the Frontend
- * via $GLOBALS['TSFE']->fe_user->tx_commerce_basket;
+ * via frontend user basket;
  *
  * Do not acces class variables directly, allways use the get and set methods,
  * variables will be changed in php5 to private

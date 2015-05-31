@@ -111,19 +111,23 @@ class CreditCardValidationSolution {
 	public $CCVSError = '';
 
 	/**
+	 * \TYPO3\CMS\Lang\LanguageService
+	 *
 	 * @var language
 	 */
 	protected $language;
 
 	/**
+	 * Constructor
+	 *
 	 * @return self
 	 */
 	public function __construct() {
-		$this->language = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('language');
-		if (is_object($GLOBALS['BE_USER'])) {
-			$languageKey = $GLOBALS['BE_USER']->uc['lang'];
+		$this->language = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Lang\\LanguageService');
+		if (is_object($this->getBackendUser())) {
+			$languageKey = $this->getBackendUser()->uc['lang'];
 		} else {
-			$languageKey = $GLOBALS['TSFE']->config['config']['language'];
+			$languageKey = $this->getFrontendController()->config['config']['language'];
 		}
 		$this->language->init($languageKey);
 		$this->language->includeLLFile('EXT:commerce/Resources/Private/Language/locallang_ccsv.xml');
@@ -424,6 +428,23 @@ class CreditCardValidationSolution {
 
 		return TRUE;
 	}
-}
 
-?>
+
+	/**
+	 * Get backend user
+	 *
+	 * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
+	 */
+	protected function getBackendUser() {
+		return $GLOBALS['BE_USER'];
+	}
+
+	/**
+	 * Get typoscript frontend controller
+	 *
+	 * @return \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController
+	 */
+	protected function getFrontendController() {
+		return $GLOBALS['TSFE'];
+	}
+}

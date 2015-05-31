@@ -39,7 +39,9 @@ class Tx_Commerce_ViewHelpers_Navigation {
 	public $prefixId = 'tx_commerce_pi1';
 
 	/**
-	 * @var tslib_cObj
+	 *
+	 *
+	 * @var \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer
 	 */
 	public $cObj;
 
@@ -610,7 +612,7 @@ class Tx_Commerce_ViewHelpers_Navigation {
 				$nodeArray['pid'] = $dataRow['pid'];
 				$nodeArray['uid'] = $uidPage;
 				$nodeArray['title'] = htmlspecialchars(strip_tags($dataRow['title']));
-				if ($GLOBALS['TSFE']->sys_language_uid) {
+				if ($this->getFrontendController()->sys_language_uid) {
 					/**
 					 * Add Pages Overlayto Array, if not syslaguage
 					 */
@@ -801,7 +803,7 @@ class Tx_Commerce_ViewHelpers_Navigation {
 					$nodeArray[$field] = htmlspecialchars(strip_tags($dataRow[$field]));
 				}
 				// Add Pages Overlay to Array, if sys_language_uid ist set
-				if ($GLOBALS['TSFE']->sys_language_uid) {
+				if ($this->getFrontendController()->sys_language_uid) {
 					$nodeArray['_PAGES_OVERLAY'] = $dataRow['title'];
 				}
 				$nodeArray['depth'] = $mDepth;
@@ -988,8 +990,8 @@ class Tx_Commerce_ViewHelpers_Navigation {
 			'*', $tableName, $where . $addWhere, $groupBy = '', $orderBy = '', '1', ''
 		);
 
-		if (($GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid'] > 0) && $row[0]) {
-			$langUid = $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid'];
+		if (($this->getFrontendController()->tmpl->setup['config.']['sys_language_uid'] > 0) && $row[0]) {
+			$langUid = $this->getFrontendController()->tmpl->setup['config.']['sys_language_uid'];
 
 			/**
 			 * Get Overlay, if available
@@ -1144,7 +1146,7 @@ class Tx_Commerce_ViewHelpers_Navigation {
 		$this->gpVars['basketHashValue'] = $GLOBALS['TSFE']->fe_user->tx_commerce_basket->getBasketHashValue();
 		if (!is_object($this->category)) {
 			$this->category = GeneralUtility::makeInstance(
-				'Tx_Commerce_Domain_Model_Category', $this->mConf['category'], $GLOBALS['TSFE']->sys_language_uid
+				'Tx_Commerce_Domain_Model_Category', $this->mConf['category'], $this->getFrontendController()->sys_language_uid
 			);
 			$this->category->loadData();
 		}
@@ -1159,13 +1161,13 @@ class Tx_Commerce_ViewHelpers_Navigation {
 		if ($this->mConf['showProducts'] == 1 && $this->gpVars['showUid'] > 0) {
 			/** @var Tx_Commerce_Domain_Model_Product $productObject */
 			$productObject = GeneralUtility::makeInstance(
-				'Tx_Commerce_Domain_Model_Product', $this->gpVars['showUid'], $GLOBALS['TSFE']->sys_language_uid
+				'Tx_Commerce_Domain_Model_Product', $this->gpVars['showUid'], $this->getFrontendController()->sys_language_uid
 			);
 			$productObject->loadData();
 
 			/** @var Tx_Commerce_Domain_Model_Category $categoryObject */
 			$categoryObject = GeneralUtility::makeInstance(
-				'Tx_Commerce_Domain_Model_Category', $this->gpVars['catUid'], $GLOBALS['TSFE']->sys_language_uid
+				'Tx_Commerce_Domain_Model_Category', $this->gpVars['catUid'], $this->getFrontendController()->sys_language_uid
 			);
 			$categoryObject->loadData();
 
@@ -1213,7 +1215,7 @@ class Tx_Commerce_ViewHelpers_Navigation {
 		if ($categoryUid) {
 			/** @var Tx_Commerce_Domain_Model_Category $categoryObject */
 			$categoryObject = GeneralUtility::makeInstance(
-				'Tx_Commerce_Domain_Model_Category', $categoryUid, $GLOBALS['TSFE']->sys_language_uid
+				'Tx_Commerce_Domain_Model_Category', $categoryUid, $this->getFrontendController()->sys_language_uid
 			);
 			$categoryObject->loadData();
 
@@ -1588,5 +1590,14 @@ class Tx_Commerce_ViewHelpers_Navigation {
 	 */
 	protected function getDatabaseConnection() {
 		return $GLOBALS['TYPO3_DB'];
+	}
+
+	/**
+	 * Get typoscript frontend controller
+	 *
+	 * @return \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController
+	 */
+	protected function getFrontendController() {
+		return $GLOBALS['TSFE'];
 	}
 }

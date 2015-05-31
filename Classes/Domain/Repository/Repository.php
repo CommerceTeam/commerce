@@ -104,8 +104,8 @@ class Tx_Commerce_Domain_Repository_Repository {
 			$langUid = 0;
 		}
 
-		if ((($langUid == 0) || empty($langUid)) && ($GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid'] > 0)) {
-			$langUid = $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid'];
+		if (($langUid == 0 || empty($langUid)) && $this->getFrontendController()->tmpl->setup['config.']['sys_language_uid'] > 0) {
+			$langUid = $this->getFrontendController()->tmpl->setup['config.']['sys_language_uid'];
 		}
 
 		$proofSql = '';
@@ -119,12 +119,12 @@ class Tx_Commerce_Domain_Repository_Repository {
 			'uid = ' . $uid . $proofSql
 		);
 
-			// Result should contain only one Dataset
+		// Result should contain only one Dataset
 		if ($this->database->sql_num_rows($result) == 1) {
 			$returnData = $this->database->sql_fetch_assoc($result);
 			$this->database->sql_free_result($result);
 
-				// @since 8.10.2008: get workspace version if available
+			// @since 8.10.2008: get workspace version if available
 			if (!empty($GLOBALS['TSFE']->sys_page)) {
 				$GLOBALS['TSFE']->sys_page->versionOL($this->databaseTable, $returnData);
 			}
@@ -331,5 +331,14 @@ class Tx_Commerce_Domain_Repository_Repository {
 	 */
 	protected function getDatabaseConnection() {
 		return $GLOBALS['TYPO3_DB'];
+	}
+
+	/**
+	 * Get typoscript frontend controller
+	 *
+	 * @return \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController
+	 */
+	protected function getFrontendController() {
+		return $GLOBALS['TSFE'];
 	}
 }

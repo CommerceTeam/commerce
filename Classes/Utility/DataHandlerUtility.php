@@ -28,7 +28,7 @@ require_once($BACK_PATH . 'template.php');
 /**
  * Language
  *
- * @var language $LANG
+ * @var \TYPO3\CMS\Lang\LanguageService $LANG
  */
 $LANG->includeLLFile('EXT:commerce/Resources/Private/Language/locallang_mod_cce.xml');
 
@@ -168,7 +168,7 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 			'CB[paste]=' . rawurlencode($this->CB['paste']) . '&CB[pad]=' . $this->CB['pad'];
 
 		// Initializing document template object:
-		$this->doc = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('template');
+		$this->doc = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
 		$this->doc->backPath = $GLOBALS['BACK_PATH'];
 		$this->doc->docType = 'xhtml_trans';
 		$this->doc->setModuleTemplate(PATH_TXCOMMERCE . 'Resources/Private/Backend/mod_index.html');

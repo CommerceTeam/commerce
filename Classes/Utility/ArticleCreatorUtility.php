@@ -78,7 +78,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	 *
 	 * @param integer $uid uid of the product
 	 * @param integer $pid page id
-	 * 
+	 *
 	 * @return void
 	 */
 	public function init($uid, $pid) {
@@ -94,7 +94,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	 * Get all articles that already exist. Add some buttons for editing.
 	 *
 	 * @param array $parameter
-	 * 
+	 *
 	 * @return string a HTML-table with the articles
 	 */
 	public function existingArticles($parameter) {
@@ -252,7 +252,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	 * @param array $parameter
 	 * @param \TYPO3\CMS\Backend\Form\FormEngine $fObj
 	 *
-	 * 
+	 *
 	 * @return string A HTML-table with checkboxes and all needed stuff
 	 */
 	public function producibleArticles($parameter, $fObj) {
@@ -321,7 +321,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	 * This method builds up a matrix from the ct1 attributes with valuelist
 	 *
 	 * @param int $index The index we're currently working on
-	 * 
+	 *
 	 * @return array
 	 */
 	protected function getValues($index = 0) {
@@ -358,7 +358,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	 * @param array $extraRowData some additional data like checkbox column
 	 * @param integer $index The level inside the matrix
 	 * @param array $row The current row data
-	 * 
+	 *
 	 * @return void
 	 */
 	protected function getRows($data, &$resultRows, &$counter, $headRow, $extraRowData = array(), $index = 1, $row = array()) {
@@ -441,7 +441,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	 * @param array $acBefore The additional columns before the attribute columns
 	 * @param array $acAfter The additional columns after the attribute columns
 	 * @param boolean $addTr
-	 * 
+	 *
 	 * @return string The HTML header code
 	 */
 	protected function getHeadRow(&$colCount, $acBefore = NULL, $acAfter = NULL, $addTr = TRUE) {
@@ -479,7 +479,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	 * Creates all articles that should be created (defined through the POST vars)
 	 *
 	 * @param array $parameter
-	 * 
+	 *
 	 * @return void
 	 */
 	public function createArticles($parameter) {
@@ -548,7 +548,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	 *
 	 * @param array $parameter
 	 * @param array $data
-	 * 
+	 *
 	 * @return string Returns the product title + attribute titles for article title
 	 */
 	protected function createArticleTitleFromAttributes($parameter, $data) {
@@ -573,7 +573,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	 *
 	 * @param array $parameter
 	 * @param string $key The key in the POST var array
-	 * 
+	 *
 	 * @return integer Returns the new articleUid if success
 	 */
 	protected function createArticle($parameter, $key) {
@@ -786,15 +786,14 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	 * article. The handling for creating the new price is inside the tcehooks
 	 *
 	 * @param array $parameter
-	 * 
+	 *
 	 * @return string
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, this wont get replaced as it was removed from the api
 	 */
 	public function createNewPriceCB($parameter) {
 		GeneralUtility::logDeprecatedFunction();
 
-		/** @var language $language */
-		$language = $GLOBALS['LANG'];
+		$language = $this->getLanguageService();
 
 		$content = '<div id="typo3-newRecordLink">
 				<input type="checkbox" name="data[tx_commerce_articles][' . (int) $parameter['row']['uid'] . '][create_new_price]" />' .
@@ -807,7 +806,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	 * Creates ...
 	 *
 	 * @param array $parameter
-	 * 
+	 *
 	 * @return string
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, this wont get replaced as it was removed from the api
 	 */
@@ -822,7 +821,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	 * Creates ...
 	 *
 	 * @param array $parameter
-	 * 
+	 *
 	 * @return string
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, this wont get replaced as it was removed from the api
 	 */
@@ -837,7 +836,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	 * Creates ...
 	 *
 	 * @param array $parameter
-	 * 
+	 *
 	 * @return string
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, this wont get replaced as it was removed from the api
 	 */
@@ -854,15 +853,14 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	 *
 	 * @param array $parameter
 	 * @param \TYPO3\CMS\Backend\Form\FormEngine $fObj
-	 * 
+	 *
 	 * @return string
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, this wont get replaced as it was removed from the api
 	 */
 	public function deletePriceButton($parameter, $fObj) {
 		GeneralUtility::logDeprecatedFunction();
 
-		/** @var language $language */
-		$language = $GLOBALS['LANG'];
+		$language = $this->getLanguageService();
 
 			// get the return URL.This is need to fit all possible combinations of GET vars
 		$returnUrl = explode('/', $fObj->returnUrl);
@@ -885,7 +883,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	 * Returns a hidden field with the name and value of the current form element
 	 *
 	 * @param array $parameter
-	 * 
+	 *
 	 * @return string
 	 */
 	public function articleUid($parameter) {
@@ -909,5 +907,14 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	 */
 	protected function getDatabaseConnection() {
 		return $GLOBALS['TYPO3_DB'];
+	}
+
+	/**
+	 * Get language service
+	 *
+	 * @return \TYPO3\CMS\Lang\LanguageService
+	 */
+	protected function getLanguageService() {
+		return $GLOBALS['LANG'];
 	}
 }

@@ -246,8 +246,8 @@ class Tx_Commerce_Domain_Model_ArticlePrice extends Tx_Commerce_Domain_Model_Abs
 	 * @return void
 	 */
 	public function getTcaRecordTitle(&$params) {
-		/** @var language $language */
-		$language = & $GLOBALS['LANG'];
+		$language = $this->getLanguageService();
+
 		$params['title'] =
 			$language->sL(\TYPO3\CMS\Backend\Utility\BackendUtility::getItemLabel('tx_commerce_article_prices', 'price_gross'), 1) . ': ' .
 				sprintf('%01.2f', $params['row']['price_gross'] / 100) .
@@ -278,5 +278,15 @@ class Tx_Commerce_Domain_Model_ArticlePrice extends Tx_Commerce_Domain_Model_Abs
 	public function get_price_gross() {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
 		return $this->getPriceGross();
+	}
+
+
+	/**
+	 * Get language service
+	 *
+	 * @return \TYPO3\CMS\Lang\LanguageService
+	 */
+	protected function getLanguageService() {
+		return $GLOBALS['LANG'];
 	}
 }

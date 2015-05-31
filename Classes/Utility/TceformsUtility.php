@@ -53,7 +53,7 @@ class Tx_Commerce_Utility_TceformsUtility {
 		$items = array();
 		$items[] = array('', -1);
 		while ($rowProducts = $database->sql_fetch_assoc($resProducts)) {
-				// Select Languages
+			// Select Languages
 			$language = '';
 
 			if ($rowProducts['sys_language_uid'] > 0) {

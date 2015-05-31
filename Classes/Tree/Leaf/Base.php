@@ -33,15 +33,20 @@ class Tx_Commerce_Tree_Leaf_Base {
 	 * Holds a reference to the global $LANG object
 	 *
 	 * @var language
+	 * @deprecated Since 2.0.0 will be removed in 4.0.0
 	 */
 	protected $language;
 
 	/**
-	 * @var boolean
+	 * Flag if is loaded
+	 *
+	 * @var bool
 	 */
 	protected $isLoaded = FALSE;
 
 	/**
+	 * Path to language file
+	 *
 	 * @var string
 	 */
 	protected $llFile = 'EXT:commerce/Resources/Private/Language/locallang_treelib.xml';
@@ -52,7 +57,7 @@ class Tx_Commerce_Tree_Leaf_Base {
 	 * @return self
 	 */
 	public function __construct() {
-		$this->language = $GLOBALS['LANG'];
+		$this->language = $this->getLanguageService();
 		$this->loadLL();
 	}
 
@@ -64,7 +69,7 @@ class Tx_Commerce_Tree_Leaf_Base {
 	 * @return void
 	 */
 	public function loadLL() {
-		$this->language->includeLLFile($this->llFile);
+		$this->getLanguageService()->includeLLFile($this->llFile);
 	}
 
 	/**
@@ -74,6 +79,16 @@ class Tx_Commerce_Tree_Leaf_Base {
 	 * @return string
 	 */
 	public function getLL($field) {
-		return $this->language->getLL($field);
+		return $this->getLanguageService()->getLL($field);
+	}
+
+
+	/**
+	 * Get language service
+	 *
+	 * @return \TYPO3\CMS\Lang\LanguageService
+	 */
+	protected function getLanguageService() {
+		return $GLOBALS['LANG'];
 	}
 }

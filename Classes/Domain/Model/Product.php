@@ -564,7 +564,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 					$overwriteValues['unit'] = $attributeDataRow['attributes_unit'];
 					$overwriteValues['internal_title'] = $attributeDataRow['attributes_internal_title'];
 
-					$languageOverlayRecord = $GLOBALS['TSFE']->sys_page->getRecordOverlay(
+					$languageOverlayRecord = $this->getFrontendController()->sys_page->getRecordOverlay(
 						'tx_commerce_attributes', $overwriteValues, $this->lang_uid, $this->translationMode
 					);
 					if ($languageOverlayRecord) {
@@ -604,9 +604,8 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 					// (lang_uid = selected lang and l18n_parent = current article)
 					$localizedArticleUid = $database->exec_SELECTgetRows(
 						'uid', $parentTable,
-						'l18n_parent=' . $attributeDataRow['parent_uid'] . ' AND sys_language_uid=' . $this->lang_uid . $GLOBALS['TSFE']->sys_page->enableFields(
-							$parentTable, $GLOBALS['TSFE']->showHiddenRecords
-						)
+						'l18n_parent=' . $attributeDataRow['parent_uid'] . ' AND sys_language_uid=' . $this->lang_uid .
+						$this->getFrontendController()->sys_page->enableFields($parentTable, $GLOBALS['TSFE']->showHiddenRecords)
 					);
 
 					// Fetch the article-attribute mm record with localized article uid
@@ -1199,8 +1198,9 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 			if (!$selected) {
 				/** @var Tx_Commerce_Domain_Model_Attribute $attribute */
 				$attribute = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-					'Tx_Commerce_Domain_Model_Attribute', $attributeUid,
-					$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']
+					'Tx_Commerce_Domain_Model_Attribute',
+					$attributeUid,
+					$this->getFrontendController()->tmpl->setup['config.']['sys_language_uid']
 				);
 				$attribute->loadData();
 				$attributeValues[$attributeUid] = $selected = $attribute->getFirstAttributeValueUid($possible);
@@ -1757,5 +1757,14 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	 */
 	protected function getDatabaseConnection() {
 		return $GLOBALS['TYPO3_DB'];
+	}
+
+	/**
+	 * Get typoscript frontend controller
+	 *
+	 * @return \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController
+	 */
+	protected function getFrontendController() {
+		return $GLOBALS['TSFE'];
 	}
 }

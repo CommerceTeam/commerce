@@ -240,6 +240,11 @@ class Tx_Commerce_Controller_PermissionModuleController extends \TYPO3\CMS\Perm\
 
 		if ($backendUser->workspace != 0) {
 			// Adding section with the permission setting matrix:
+			/**
+			 * FlashMessage
+			 *
+			 * @var \TYPO3\CMS\Core\Messaging\FlashMessage $flashMessage
+			 */
 			$flashMessage = GeneralUtility::makeInstance(
 				'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 				$language->getLL('WorkspaceWarningText'),

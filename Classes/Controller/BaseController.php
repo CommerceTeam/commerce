@@ -237,8 +237,8 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	 * @return void
 	 */
 	protected function init(array $conf = array()) {
-		if ($GLOBALS['TSFE']->beUserLogin) {
-			$this->workspace = $GLOBALS['BE_USER']->workspace;
+		if ($this->getFrontendController()->beUserLogin) {
+			$this->workspace = $this->getBackendUser()->workspace;
 		}
 
 		// enable typoscript objects for overridePid
@@ -254,8 +254,8 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 
 		Tx_Commerce_Utility_GeneralUtility::initializeFeUserBasket();
 
-		$this->pid = $GLOBALS['TSFE']->id;
-		$this->basketHashValue = $GLOBALS['TSFE']->fe_user->tx_commerce_basket->getBasketHashValue();
+		$this->pid = $this->getFrontendController()->id;
+		$this->basketHashValue = $this->getFrontendController()->fe_user->tx_commerce_basket->getBasketHashValue();
 		$this->piVars['basketHashValue'] = $this->basketHashValue;
 		$this->argSeparator = ini_get('arg_separator.output');
 		$this->addAdditionalLocallang();
@@ -346,16 +346,17 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	 * @return void
 	 */
 	public function generateLanguageMarker() {
-		if ((is_array($this->LOCAL_LANG[$GLOBALS['TSFE']->tmpl->setup['config.']['language']]))
-			&& (is_array($this->LOCAL_LANG['default']))
+		if (
+			is_array($this->LOCAL_LANG[$this->getFrontendController()->tmpl->setup['config.']['language']])
+			&& is_array($this->LOCAL_LANG['default'])
 		) {
 			$markerArr = GeneralUtility::array_merge(
-				$this->LOCAL_LANG['default'], $this->LOCAL_LANG[$GLOBALS['TSFE']->tmpl->setup['config.']['language']]
+				$this->LOCAL_LANG['default'], $this->LOCAL_LANG[$this->getFrontendController()->tmpl->setup['config.']['language']]
 			);
 		} elseif (is_array($this->LOCAL_LANG['default'])) {
 			$markerArr = $this->LOCAL_LANG['default'];
 		} else {
-			$markerArr = $this->LOCAL_LANG[$GLOBALS['TSFE']->tmpl->setup['config.']['language']];
+			$markerArr = $this->LOCAL_LANG[$this->getFrontendController()->tmpl->setup['config.']['language']];
 		}
 
 		foreach (array_keys($markerArr) as $languageKey) {
@@ -1793,7 +1794,7 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 				$myProduct = GeneralUtility::makeInstance(
 					'Tx_Commerce_Domain_Model_Product',
 					$myProductId,
-					$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']
+					$this->getFrontendController()->tmpl->setup['config.']['sys_language_uid']
 				);
 				$myProduct->loadData();
 				$myProduct->loadArticles();
@@ -2092,7 +2093,6 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 
 	/**
 	 * Multi substitution function
-	 * Copy from tslib_content -> substituteMarkerArrayCached, but without caching
 	 *
 	 * @param string $content The content stream, typically HTML template content.
 	 * @param array $markContentArray Regular marker-array where the 'keys' are
@@ -2286,7 +2286,7 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 		$globalMarker = array();
 		$globalMarker = $this->addFormMarker($globalMarker);
 		$content = $this->cObj->substituteMarkerArray($content, $globalMarker, '###|###', 1);
-		$GLOBALS['TSFE']->fe_user->setKey('ses', 'tx_commerce_lastproducturl', $this->pi_linkTP_keepPIvars_url());
+		$this->getFrontendController()->fe_user->setKey('ses', 'tx_commerce_lastproducturl', $this->pi_linkTP_keepPIvars_url());
 
 		return $content;
 	}
@@ -2308,5 +2308,23 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	 */
 	protected function getTimeTracker() {
 		return $GLOBALS['TT'];
+	}
+
+	/**
+	 * Get backend user
+	 *
+	 * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
+	 */
+	protected function getBackendUser() {
+		return $GLOBALS['BE_USER'];
+	}
+
+	/**
+	 * Get typoscript frontend controller
+	 *
+	 * @return \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController
+	 */
+	protected function getFrontendController() {
+		return $GLOBALS['TSFE'];
 	}
 }

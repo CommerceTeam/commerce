@@ -131,8 +131,7 @@ class Tx_Commerce_Task_StatisticTaskAdditionalFieldProvider implements \TYPO3\CM
 	 * @return string HTML of selectbox options
 	 */
 	protected function renderOptions($fieldName, $fieldId, array $valuesAndLabels, $selectedValue) {
-		/** @var language $language */
-		$language = $GLOBALS['LANG'];
+		$language = $this->getLanguageService();
 		$options = array();
 
 		foreach ($valuesAndLabels as $value => $label) {
@@ -148,6 +147,16 @@ class Tx_Commerce_Task_StatisticTaskAdditionalFieldProvider implements \TYPO3\CM
 	 */
 	protected function getTaskUid() {
 		return $this->submittedData['uid'];
+	}
+
+
+	/**
+	 * Get language service
+	 *
+	 * @return \TYPO3\CMS\Lang\LanguageService
+	 */
+	protected function getLanguageService() {
+		return $GLOBALS['LANG'];
 	}
 }
 

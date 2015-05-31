@@ -181,7 +181,9 @@ class Tx_Commerce_Domain_Model_Attribute extends Tx_Commerce_Domain_Model_Abstra
 				foreach ($this->attribute_value_uids as $valueUid) {
 					/** @var Tx_Commerce_Domain_Model_AttributeValue $attributValue */
 					$attributValue = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-						'Tx_Commerce_Domain_Model_AttributeValue', $valueUid, $this->lang_uid
+						'Tx_Commerce_Domain_Model_AttributeValue',
+						$valueUid,
+						$this->lang_uid
 					);
 					$attributValue->loadData();
 

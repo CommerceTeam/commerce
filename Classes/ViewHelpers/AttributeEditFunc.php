@@ -38,8 +38,7 @@ class Tx_Commerce_ViewHelpers_AttributeEditFunc {
 	 */
 	public function valuelist($parameter) {
 		$database = $this->getDatabaseConnection();
-		/** @var language $language */
-		$language = $GLOBALS['LANG'];
+		$language = $this->getLanguageService();
 
 		$content = '';
 		$foreignTable = 'tx_commerce_attribute_values';
@@ -191,5 +190,14 @@ class Tx_Commerce_ViewHelpers_AttributeEditFunc {
 	 */
 	protected function getDatabaseConnection() {
 		return $GLOBALS['TYPO3_DB'];
+	}
+
+	/**
+	 * Get language service
+	 *
+	 * @return \TYPO3\CMS\Lang\LanguageService
+	 */
+	protected function getLanguageService() {
+		return $GLOBALS['LANG'];
 	}
 }

@@ -81,7 +81,7 @@ class Tx_Commerce_Controller_OrdersModuleController extends \TYPO3\CMS\Recordlis
 	 * @return void
 	 */
 	public function initPage() {
-		$this->doc = GeneralUtility::makeInstance('template');
+		$this->doc = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
 		$this->doc->backPath = $GLOBALS['BACK_PATH'];
 		$this->doc->docType = 'xhtml_trans';
 		$this->doc->setModuleTemplate(PATH_TXCOMMERCE . 'Resources/Private/Backend/mod_index.html');
@@ -131,7 +131,11 @@ class Tx_Commerce_Controller_OrdersModuleController extends \TYPO3\CMS\Recordlis
 		}
 
 			// Initialize the dblist object:
-		/** @var $dblist Tx_Commerce_ViewHelpers_OrderRecordList */
+		/**
+		 * Order record list
+		 *
+		 * @var $dblist Tx_Commerce_ViewHelpers_OrderRecordList
+		 */
 		$dblist = GeneralUtility::makeInstance('Tx_Commerce_ViewHelpers_OrderRecordList');
 		$dblist->backPath = $GLOBALS['BACK_PATH'];
 		$dblist->script = BackendUtility::getModuleUrl('txcommerceM1_orders', array(), '');
@@ -162,7 +166,11 @@ class Tx_Commerce_Controller_OrdersModuleController extends \TYPO3\CMS\Recordlis
 
 		// Clipboard is initialized:
 		// Start clipboard
-		/** @var \TYPO3\CMS\Backend\Clipboard\Clipboard $clipObj */
+		/**
+		 * Clipboard
+		 *
+		 * @var \TYPO3\CMS\Backend\Clipboard\Clipboard $clipObj
+		 */
 		$clipObj = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Clipboard\\Clipboard');
 		$dblist->clipObj = $clipObj;
 		// Initialize - reads the clipboard content from the user session
@@ -179,7 +187,7 @@ class Tx_Commerce_Controller_OrdersModuleController extends \TYPO3\CMS\Recordlis
 			);
 		}
 		if (!$this->MOD_SETTINGS['clipBoard']) {
-				// If the clipboard is NOT shown, set the pad to 'normal'.
+			// If the clipboard is NOT shown, set the pad to 'normal'.
 			$clipboard['setP'] = 'normal';
 		}
 		// Execute commands.
@@ -197,19 +205,23 @@ class Tx_Commerce_Controller_OrdersModuleController extends \TYPO3\CMS\Recordlis
 			!$this->modTSconfig['properties']['showClipControlPanelsDespiteOfCMlayers']
 		);
 
-			// If there is access to the page, then render the list contents and set up the document template object:
+		// If there is access to the page, then render the list contents and set up the document template object:
 		if ($access) {
-				// Deleting records...:
-				// Has not to do with the clipboard but is simply the delete action. The clipboard object is used to clean up the submitted entries to only the selected table.
+			// Deleting records...:
+			// Has not to do with the clipboard but is simply the delete action. The clipboard object is used to clean up the submitted entries to only the selected table.
 			if ($this->cmd == 'delete') {
 				$items = $dblist->clipObj->cleanUpCBC(GeneralUtility::_POST('CBC'), $this->cmd_table, 1);
 				if (count($items)) {
 					$cmd = array();
 					foreach (array_keys($items) as $iK) {
-						$iKParts = explode('|', $iK);
-						$cmd[$iKParts[0]][$iKParts[1]]['delete'] = 1;
+						$iKparts = explode('|', $iK);
+						$cmd[$iKparts[0]][$iKparts[1]]['delete'] = 1;
 					}
-					/** @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce */
+					/**
+					 * Data handler
+					 *
+					 * @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce
+					 */
 					$tce = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
 					$tce->stripslashes_values = 0;
 					$tce->start(array(), $cmd);
@@ -290,6 +302,7 @@ class Tx_Commerce_Controller_OrdersModuleController extends \TYPO3\CMS\Recordlis
 				// Setting up the context sensitive menu:
 			$this->doc->getContextMenuCode();
 		}
+
 		// access
 		// Begin to compile the whole page, starting out with page header:
 		$this->body = $this->doc->header($this->pageinfo['title']);
@@ -390,18 +403,18 @@ class Tx_Commerce_Controller_OrdersModuleController extends \TYPO3\CMS\Recordlis
 	 * Create the panel of buttons for submitting the
 	 * form or otherwise perform operations.
 	 *
-	 * @param array $buttons
-	 * @return array all available buttons as an assoc. array
+	 * @param array $buttons Button
+	 *
+	 * @return array All available buttons as an assoc. array
 	 */
-	protected function getHeaderButtons($buttons) {
+	protected function getHeaderButtons(array $buttons) {
 		$backendUser = $this->getBackendUser();
-		/** @var language $language */
-		$language = $GLOBALS['LANG'];
+		$language = $this->getLanguageService();
 
-			// CSH
+		// CSH
 		$buttons['csh'] = BackendUtility::cshItem('_MOD_commerce_orders', '', $GLOBALS['BACK_PATH'], '', TRUE);
 
-			// Shortcut
+		// Shortcut
 		if ($backendUser->mayMakeShortcut()) {
 			$buttons['shortcut'] = $this->doc->makeShortcutIcon(
 				'id, edit_record, pointer, new_unique_uid, search_field, search_levels, showLimit',
@@ -410,7 +423,7 @@ class Tx_Commerce_Controller_OrdersModuleController extends \TYPO3\CMS\Recordlis
 			);
 		}
 
-			// If access to Web>List for user, then link to that module.
+		// If access to Web>List for user, then link to that module.
 		if ($backendUser->check('modules', 'web_list')) {
 			$href = $GLOBALS['BACK_PATH'] . 'db_list.php?id=' . $this->pageinfo['uid'] . '&returnUrl=' .
 				rawurlencode(GeneralUtility::getIndpEnv('REQUEST_URI'));
@@ -425,6 +438,8 @@ class Tx_Commerce_Controller_OrdersModuleController extends \TYPO3\CMS\Recordlis
 
 
 	/**
+	 * Get backend user
+	 *
 	 * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
 	 */
 	protected function getBackendUser() {
@@ -432,6 +447,8 @@ class Tx_Commerce_Controller_OrdersModuleController extends \TYPO3\CMS\Recordlis
 	}
 
 	/**
+	 * Get language service
+	 *
 	 * @return \TYPO3\CMS\Lang\LanguageService
 	 */
 	protected function getLanguageService() {

@@ -376,7 +376,7 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 	/**
 	 * Renders values from fieldlist to markers
 	 *
-	 * @param tslib_cObj &$cobj refference to cobj class
+	 * @param \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer $cobj Reference to cobj class
 	 * @param array $conf configuration for this viewmode to render cObj
 	 * @param string $prefix optinonal prefix for marker
 	 * @return array

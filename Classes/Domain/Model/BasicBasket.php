@@ -530,7 +530,7 @@ class Tx_Commerce_Domain_Model_BasicBasket {
 				$article = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
 					'Tx_Commerce_Domain_Model_Article',
 					$articleUid,
-					$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']
+					$this->getFrontendController()->tmpl->setup['config.']['sys_language_uid']
 				);
 				$article->loadData('basket');
 
@@ -556,7 +556,7 @@ class Tx_Commerce_Domain_Model_BasicBasket {
 					$articleUid,
 					$quantity,
 					$priceid,
-					$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']
+					$this->getFrontendController()->tmpl->setup['config.']['sys_language_uid']
 				);
 				if ($basketItem->article) {
 					$basketItem->setTaxCalculationMethod($this->pricefromnet);
@@ -909,5 +909,15 @@ class Tx_Commerce_Domain_Model_BasicBasket {
 	public function get_net_sum() {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
 		return $this->getSumNet();
+	}
+
+
+	/**
+	 * Get typoscript frontend controller
+	 *
+	 * @return \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController
+	 */
+	protected function getFrontendController() {
+		return $GLOBALS['TSFE'];
 	}
 }

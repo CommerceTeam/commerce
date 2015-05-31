@@ -28,7 +28,7 @@
 /**
  * This class replaces the version preview of version index.php
  */
-class ux_tx_version_cm1 extends tx_version_cm1 {
+class ux_tx_version_cm1 extends \TYPO3\CMS\Version\Controller\VersionModuleController {
 	/**
 	 * document template object
 	 *
@@ -47,8 +47,7 @@ class ux_tx_version_cm1 extends tx_version_cm1 {
 		if ($table !== 'tx_commerce_products') {
 			return parent::adminLinks($table, $row);
 		} else {
-			/** @var language $language */
-			$language = $GLOBALS['LANG'];
+			$language = $this->getLanguageService();
 
 				// Edit link:
 			$adminLink = '<a href="#" onclick="' .
@@ -92,11 +91,18 @@ class ux_tx_version_cm1 extends tx_version_cm1 {
 			return $adminLink;
 		}
 	}
+
+	/**
+	 * Get language service
+	 *
+	 * @return \TYPO3\CMS\Lang\LanguageService
+	 */
+	protected function getLanguageService() {
+		return $GLOBALS['LANG'];
+	}
 }
 
 if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['commerce/ux_versinondex.php']) {
 	/** @noinspection PhpIncludeInspection */
 	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['commerce/ux_versinondex.php']);
 }
-
-?>

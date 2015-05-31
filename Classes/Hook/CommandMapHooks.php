@@ -766,11 +766,10 @@ class Tx_Commerce_Hook_CommandMapHooks {
 	 * @return void
 	 */
 	protected function error($error) {
-		/** @var language $language */
-		$language = $GLOBALS['LANG'];
+		$language = $this->getLanguageService();
 
-		/** @var template $errorDocument */
-		$errorDocument = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('template');
+		/** @var \TYPO3\CMS\Backend\Template\DocumentTemplate $errorDocument */
+		$errorDocument = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
 		$errorDocument->backPath = '';
 
 		$content = $errorDocument->startPage('Tx_Commerce_Hook_CommandMapHooks error Output');
@@ -804,6 +803,7 @@ class Tx_Commerce_Hook_CommandMapHooks {
 		exit;
 	}
 
+
 	/**
 	 * Get backend user
 	 *
@@ -820,5 +820,14 @@ class Tx_Commerce_Hook_CommandMapHooks {
 	 */
 	protected function getDatabaseConnection() {
 		return $GLOBALS['TYPO3_DB'];
+	}
+
+	/**
+	 * Get language service
+	 *
+	 * @return \TYPO3\CMS\Lang\LanguageService
+	 */
+	protected function getLanguageService() {
+		return $GLOBALS['LANG'];
 	}
 }

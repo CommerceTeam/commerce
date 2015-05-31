@@ -212,18 +212,18 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 			$tmpCategory = \TYPO3\CMS\Core\Utility\GeneralUtility::makeinstance(
 				'Tx_Commerce_Domain_Model_Category',
 				$this->cat,
-				$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']
+				$this->getFrontendController()->tmpl->setup['config.']['sys_language_uid']
 			);
 			$accessible = $tmpCategory->isAccessible();
 		}
 
-			// Validate given catUid, if it's given and accessible
+		// Validate given catUid, if it's given and accessible
 		if (!$this->piVars['catUid'] || !$accessible) {
 			$this->cat = (int) $this->master_cat;
 			$tmpCategory = \TYPO3\CMS\Core\Utility\GeneralUtility::makeinstance(
 				'Tx_Commerce_Domain_Model_Category',
 				$this->cat,
-				$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']
+				$this->getFrontendController()->tmpl->setup['config.']['sys_language_uid']
 			);
 		}
 		if (!isset($this->piVars['catUid'])) {
@@ -236,8 +236,7 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 
 		$categorySubproducts = $this->category->getProductUids();
 
-		/** @var tslib_fe $frontend */
-		$frontend = & $GLOBALS['TSFE'];
+		$frontend = $this->getFrontendController();
 
 		if ((!$this->conf['singleProduct']) && ((int)$this->piVars['showUid'] > 0) && (!$GLOBALS['TSFE']->beUserLogin)) {
 			if (is_array($categorySubproducts)) {
@@ -262,7 +261,11 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 		if (($this->piVars['catUid']) && ($this->conf['checkCategoryTree'] == 1)) {
 				// Validate given CAT UID, if is below master_cat
 			/** @var Tx_Commerce_Domain_Model_Category masterCategoryObj */
-			$this->masterCategoryObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeinstance('Tx_Commerce_Domain_Model_Category', $this->master_cat, $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
+			$this->masterCategoryObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeinstance(
+				'Tx_Commerce_Domain_Model_Category',
+				$this->master_cat,
+				$this->getFrontendController()->tmpl->setup['config.']['sys_language_uid']
+			);
 			$this->masterCategoryObj->loadData();
 			$masterCategorySubCategories = $this->masterCategoryObj->getChildCategoriesUidlist();
 			if (in_array($this->piVars['catUid'], $masterCategorySubCategories)) {
@@ -713,8 +716,9 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 						foreach ($attributeArray as $attributeUid => $myAttribute) {
 							/** @var Tx_Commerce_Domain_Model_Attribute $attributeObj */
 							$attributeObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-								'Tx_Commerce_Domain_Model_Attribute', $attributeUid,
-								$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']
+								'Tx_Commerce_Domain_Model_Attribute',
+								$attributeUid,
+								$this->getFrontendController()->tmpl->setup['config.']['sys_language_uid']
 							);
 							$attributeObj->loadData();
 
@@ -796,8 +800,9 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 					foreach ($attributeMatrix as $attrUid => $values) {
 						/** @var Tx_Commerce_Domain_Model_Attribute $attributeObj */
 						$attributeObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-							'Tx_Commerce_Domain_Model_Attribute', $attrUid,
-							$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']
+							'Tx_Commerce_Domain_Model_Attribute',
+							$attrUid,
+							$this->getFrontendController()->tmpl->setup['config.']['sys_language_uid']
 						);
 						$attributeObj->loadData();
 
@@ -952,5 +957,14 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 	 */
 	protected function getDatabaseConnection() {
 		return $GLOBALS['TYPO3_DB'];
+	}
+
+	/**
+	 * Get typoscript frontend controller
+	 *
+	 * @return \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController
+	 */
+	protected function getFrontendController() {
+		return $GLOBALS['TSFE'];
 	}
 }

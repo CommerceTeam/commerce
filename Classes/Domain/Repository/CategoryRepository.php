@@ -182,8 +182,8 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 			$languageUid = 0;
 		}
 		$this->uid = $uid;
-		if ($languageUid == 0 && $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid'] > 0) {
-			$languageUid = $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid'];
+		if ($languageUid == 0 && $this->getFrontendController()->tmpl->setup['config.']['sys_language_uid'] > 0) {
+			$languageUid = $this->getFrontendController()->tmpl->setup['config.']['sys_language_uid'];
 		}
 		$this->lang_uid = $languageUid;
 
@@ -291,8 +291,8 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 			$languageUid = 0;
 		}
 		$this->uid = $uid;
-		if ($languageUid == 0 && $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid'] > 0) {
-			$languageUid = $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid'];
+		if ($languageUid == 0 && $this->getFrontendController()->tmpl->setup['config.']['sys_language_uid'] > 0) {
+			$languageUid = $this->getFrontendController()->tmpl->setup['config.']['sys_language_uid'];
 		}
 		$this->lang_uid = $languageUid;
 
@@ -528,5 +528,14 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 	 */
 	protected function getDatabaseConnection() {
 		return $GLOBALS['TYPO3_DB'];
+	}
+
+	/**
+	 * Get typoscript frontend controller
+	 *
+	 * @return \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController
+	 */
+	protected function getFrontendController() {
+		return $GLOBALS['TSFE'];
 	}
 }

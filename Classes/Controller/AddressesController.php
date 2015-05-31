@@ -799,7 +799,7 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 					'',
 					'',
 					$fieldConfig['select'],
-					$GLOBALS['TSFE']->tmpl->setup['config.']['language']
+					$this->getFrontendController()->tmpl->setup['config.']['language']
 				);
 				break;
 
@@ -1272,5 +1272,14 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 	 */
 	protected function getDatabaseConnection() {
 		return $GLOBALS['TYPO3_DB'];
+	}
+
+	/**
+	 * Get typoscript frontend controller
+	 *
+	 * @return \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController
+	 */
+	protected function getFrontendController() {
+		return $GLOBALS['TSFE'];
 	}
 }

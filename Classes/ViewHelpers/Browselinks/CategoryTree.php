@@ -204,7 +204,7 @@ class Tx_Commerce_ViewHelpers_Browselinks_CategoryTree extends Tx_Commerce_Tree_
 	 */
 	protected function initializePositionSaving() {
 			// Get stored tree structure:
-		$positions = unserialize($GLOBALS['BE_USER']->uc['browseTrees'][$this->treeName]);
+		$positions = unserialize($this->getBackendUser()->uc['browseTrees'][$this->treeName]);
 
 			// In case the array is not set, initialize it
 		if (!is_array($positions) || 0 >= count($positions) || key($positions[0][key($positions[0])]) !== 'items') {
@@ -275,7 +275,7 @@ class Tx_Commerce_ViewHelpers_Browselinks_CategoryTree extends Tx_Commerce_Tree_
 
 			/** @var Tx_Commerce_Tree_CategoryMounts $mounts */
 			$mounts = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Tree_CategoryMounts');
-			$mounts->init($GLOBALS['BE_USER']->user['uid']);
+			$mounts->init($this->getBackendUser()->user['uid']);
 
 				// only go if the item is in the mounts
 			if ($mounts->isInCommerceMounts($this->openCategory)) {
@@ -344,5 +344,15 @@ class Tx_Commerce_ViewHelpers_Browselinks_CategoryTree extends Tx_Commerce_Tree_
 			$leaf = $this->leafs[$i];
 			$leaf->setDataPositions($positions);
 		}
+	}
+
+
+	/**
+	 * Get backend user
+	 *
+	 * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
+	 */
+	protected function getBackendUser() {
+		return $GLOBALS['BE_USER'];
 	}
 }

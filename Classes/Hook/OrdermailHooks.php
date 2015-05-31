@@ -32,9 +32,9 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class Tx_Commerce_Hook_OrdermailHooks {
 	/**
-	 * The cObj from class.tslib_content.php
+	 * Content object
 	 *
-	 * @var tslib_cObj
+	 * @var \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer
 	 */
 	protected $cObj;
 
@@ -92,7 +92,7 @@ class Tx_Commerce_Hook_OrdermailHooks {
 	 */
 	public function __construct() {
 		$this->extConf = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce']['extConf'];
-		$this->cObj = GeneralUtility::makeInstance('tslib_cObj');
+		$this->cObj = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
 		$this->csConvObj = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Charset\\CharsetConverter');
 		$this->templatePath = PATH_site . 'uploads/tx_commerce/';
 	}

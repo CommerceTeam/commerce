@@ -113,8 +113,8 @@ class Tx_Commerce_ViewHelpers_TreelibBrowser extends \TYPO3\CMS\Backend\Module\B
 		$this->backPath = $GLOBALS['BACK_PATH'];
 
 		// Initialize template object
-		/** @var template $doc */
-		$doc = GeneralUtility::makeInstance('template');
+		/** @var \TYPO3\CMS\Backend\Template\DocumentTemplate $doc */
+		$doc = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
 		$this->doc = $doc;
 		$this->doc->docType = 'xhtml_trans';
 		$this->doc->backPath = $this->backPath;

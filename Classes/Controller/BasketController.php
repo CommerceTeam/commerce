@@ -18,7 +18,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * the basket. E.g. Adding things to basket, changing basket
  *
  * The basket itself is stored inside
- * $GLOBALS['TSFE']->fe_user->Tx_Commerce_Domain_Model_Basket;
+ * frontend user basket
  *
  * Class Tx_Commerce_Controller_BasketController
  *
@@ -144,7 +144,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 	 * @return void
 	 */
 	public function initBasket() {
-		$this->basket = $GLOBALS['TSFE']->fe_user->tx_commerce_basket;
+		$this->basket = $this->getFrontendController()->fe_user->tx_commerce_basket;
 		$this->basket->setTaxCalculationMethod($this->conf['priceFromNet']);
 		$this->basket->loadData();
 	}
@@ -665,7 +665,8 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 		$basketArray['###URL_CHECKOUT###'] = $this->cObj->lastTypoLinkUrl;
 		$basketArray['###NO_STOCK_MESSAGE###'] = $this->noStock;
 		$basketArray['###BASKET_LASTPRODUCTURL###'] = $this->cObj->stdWrap(
-			$GLOBALS['TSFE']->fe_user->getKey('ses', 'tx_commerce_lastproducturl'), $this->conf['lastProduct']
+			$this->getFrontendController()->fe_user->getKey('ses', 'tx_commerce_lastproducturl'),
+			$this->conf['lastProduct']
 		);
 
 		if ($this->getPriceLimitForBasket() == 1 && $this->conf['priceLimitForBasketMessage']) {
@@ -719,7 +720,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 		$this->deliveryProduct = GeneralUtility::makeInstance(
 			'Tx_Commerce_Domain_Model_Product',
 			$this->conf['delProdId'],
-			$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']
+			$this->getFrontendController()->tmpl->setup['config.']['sys_language_uid']
 		);
 		$this->deliveryProduct->loadData();
 		$this->deliveryProduct->loadArticles();
@@ -823,7 +824,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 		$this->paymentProduct = GeneralUtility::makeInstance(
 			'Tx_Commerce_Domain_Model_Product',
 			$this->conf['payProdId'],
-			$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']
+			$this->getFrontendController()->tmpl->setup['config.']['sys_language_uid']
 		);
 		$this->paymentProduct->loadData();
 		$this->paymentProduct->loadArticles();
@@ -988,7 +989,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 					$attributeObj = GeneralUtility::makeInstance(
 						'Tx_Commerce_Domain_Model_Attribute',
 						$attributeUid,
-						$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']
+						$this->getFrontendController()->tmpl->setup['config.']['sys_language_uid']
 					);
 					$attributeObj->loadData();
 
@@ -1129,10 +1130,10 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/BasketController.php\'][\'alternativePrefixId\']
 			');
-			$hookObject = &GeneralUtility::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['alternativePrefixId']);
+			$hookObject = GeneralUtility::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['alternativePrefixId']);
 		}
 		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BasketController.php']['alternativePrefixId']) {
-			$hookObject = &GeneralUtility::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BasketController.php']['alternativePrefixId']);
+			$hookObject = GeneralUtility::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BasketController.php']['alternativePrefixId']);
 		}
 		if (method_exists($hookObject, 'SingeDisplayPrefixId')) {
 			$altPrefixSingle = $hookObject->SingeDisplayPrefixId();
@@ -1342,5 +1343,15 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 	 */
 	public function setPriceLimitForBasket($priceLimitForBasket) {
 		$this->priceLimitForBasket = $priceLimitForBasket;
+	}
+
+
+	/**
+	 * Get typoscript frontend controller
+	 *
+	 * @return \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController
+	 */
+	protected function getFrontendController() {
+		return $GLOBALS['TSFE'];
 	}
 }
