@@ -294,8 +294,9 @@ class Tx_Commerce_Domain_Repository_Repository {
 	/**
 	 * Get enableFields
 	 *
-	 * @param string $tableName
-	 * @param boolean $showHiddenRecords
+	 * @param string $tableName Table name
+	 * @param bool|int $showHiddenRecords Show hidden records
+	 *
 	 * @return string
 	 */
 	public function enableFields($tableName, $showHiddenRecords = -1) {

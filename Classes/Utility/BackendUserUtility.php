@@ -205,10 +205,7 @@ class BackendUserUtility implements SingletonInterface {
 	 * @param string $clause Clause can be used to select other criteria. It
 	 * 	would typically be where-clauses that stops the process if we meet a
 	 * 	page, the user has no reading access to.
-	 * @param boolean $workspaceOverlay If TRUE, version overlay is applied. This
-	 * 	must be requested specifically because it is usually only wanted when
-	 * 	the rootline is used for visual output while for permission checking
-	 * 	you want the raw thing!
+	 *
 	 * @return array Root line array, all the way to the page tree root
 	 * 	(or as far as $clause allows!)
 	 */
