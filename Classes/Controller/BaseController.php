@@ -39,6 +39,8 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	public $scriptRelPath = 'Resources/Private/Language/locallang.xml';
 
 	/**
+	 * Configuration
+	 *
 	 * @param array
 	 */
 	public $conf = array();
@@ -51,19 +53,22 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	public $debug = FALSE;
 
 	/**
+	 * Image folder
+	 *
+	 * @todo migrate to fal handling
 	 * @var string
 	 */
 	public $imgFolder = 'uploads/tx_commerce/';
 
 	/**
-	 * extension to moneylib, if currency should be put out
+	 * Flag if currency should be put out
 	 *
-	 * @var boolean
+	 * @var bool
 	 */
 	public $showCurrency = TRUE;
 
 	/**
-	 * currency if no currency is set otherwise
+	 * Currency if no currency is set otherwise
 	 *
 	 * @var string
 	 */
@@ -77,7 +82,7 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	public $languageMarker = array();
 
 	/**
-	 * holds the basketItemHash for making the whole shop cachable
+	 * Holds the basketItemHash for making the whole shop cachable
 	 *
 	 * @var string
 	 */
@@ -91,7 +96,9 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	public $workspace = FALSE;
 
 	/**
-	 * @var integer [0-1]
+	 * Flag if rootline information in url
+	 *
+	 * @var int [0-1]
 	 */
 	protected $useRootlineInformationToUrl = 0;
 
@@ -106,16 +113,20 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	/**
 	 * Category UID for rendering
 	 *
-	 * @var integer
+	 * @var int
 	 */
 	public $cat;
 
 	/**
+	 * Category
+	 *
 	 * @var Tx_Commerce_Domain_Model_Category
 	 */
 	public $category;
 
 	/**
+	 * Category products
+	 *
 	 * @var array
 	 */
 	public $category_products;
@@ -128,61 +139,85 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	public $currentCategory;
 
 	/**
+	 * Tpo products
+	 *
 	 * @var array
 	 */
 	public $top_products;
 
 	/**
+	 * Product
+	 *
 	 * @var Tx_Commerce_Domain_Model_Product
 	 */
 	public $product;
 
 	/**
+	 * Template code
+	 *
 	 * @var string
 	 */
 	public $templateCode;
 
 	/**
+	 * Template path
+	 *
 	 * @var string
 	 */
 	public $template;
 
 	/**
-	 * @var integer
+	 * Page id
+	 *
+	 * @var int
 	 */
 	public $pid;
 
 	/**
+	 * Product attributes
+	 *
 	 * @var array
 	 */
 	public $product_attributes = array();
 
 	/**
+	 * Can attributes
+	 *
 	 * @var array
 	 */
 	public $can_attributes = array();
 
 	/**
+	 * Shall products
+	 *
 	 * @var array
 	 */
 	public $shall_attributes = array();
 
 	/**
+	 * Select attributes
+	 *
 	 * @var array
 	 */
 	public $selectAttributes = array();
 
 	/**
-	 * @var integer
+	 * Path depth
+	 *
+	 * @var int
 	 */
 	public $mDepth;
 
 	/**
+	 * TCA
+	 *
 	 * @var array
 	 */
 	public $TCA;
 
 	/**
+	 * Table
+	 *
 	 * @var string
 	 */
 	public $table;
@@ -197,7 +232,8 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	/**
 	 * Initializing
 	 *
-	 * @param array $conf
+	 * @param array $conf Configuration
+	 *
 	 * @return void
 	 */
 	protected function init(array $conf = array()) {
@@ -240,6 +276,7 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	 * (creditcard, invoice, ...)
 	 *
 	 * @param string $paymentType Payment type to get
+	 *
 	 * @return Tx_Commerce_Payment_PaymentAbstract Current payment object
 	 * @throws Exception If payment object can not be created or is invalid
 	 */
@@ -289,7 +326,6 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['locallang'] as $classRef) {
 				$hookObj = & GeneralUtility::getUserObj($classRef);
 				if (method_exists($hookObj, 'loadAdditionalLocallang')) {
-					/** @noinspection PhpUndefinedMethodInspection */
 					$hookObj->loadAdditionalLocallang($this);
 				}
 			}
@@ -298,7 +334,6 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BaseController.php']['locallang'] as $classRef) {
 				$hookObj = & GeneralUtility::getUserObj($classRef);
 				if (method_exists($hookObj, 'loadAdditionalLocallang')) {
-					/** @noinspection PhpUndefinedMethodInspection */
 					$hookObj->loadAdditionalLocallang($this);
 				}
 			}
@@ -336,8 +371,9 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	 * when defining 2 templates you have an odd / even layout
 	 *
 	 * @param Tx_Commerce_Domain_Model_Product $prodObj Product Object
-	 * @param array $subpartNameArray [optional]
-	 * @param boolean|array $typoScript [optional]
+	 * @param array $subpartNameArray Subpart names
+	 * @param bool|array $typoScript Typoscript
+	 *
 	 * @return string HTML-Output rendert
 	 */
 	public function renderProductAttributeList($prodObj, $subpartNameArray = array(), $typoScript = FALSE) {
@@ -378,6 +414,7 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 					'value' => $this->formatAttributeValue($matrix, $myAttributeUid),
 					'unit' => $matrix[$myAttributeUid]['unit'],
 					'icon' => $matrix[$myAttributeUid]['icon'],
+					'internal_title' => $matrix[$myAttributeUid]['internal_title'],
 				);
 
 				$markerArray = $this->generateMarkerArray(
@@ -403,9 +440,10 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	 * define a number of templates for interations.
 	 * when defining 2 templates you have an odd / even layout
 	 *
-	 * @param Tx_Commerce_Domain_Model_Product &$product the current product
-	 * @param array $articleId with articleIds for filtering attributss
-	 * @param array $subpartNameArray array of suppart Names
+	 * @param Tx_Commerce_Domain_Model_Product $product Current product
+	 * @param array $articleId ArticleIds for filtering attributss
+	 * @param array $subpartNameArray Suppart Names
+	 *
 	 * @return string Stringoutput for attributes
 	 */
 	public function renderArticleAttributeList(&$product, $articleId = array(), $subpartNameArray = array()) {
@@ -443,6 +481,7 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 					'value' => $this->formatAttributeValue($matrix, $myAttributeUid),
 					'unit' => $matrix[$myAttributeUid]['unit'],
 					'icon' => $matrix[$myAttributeUid]['icon'],
+					'internal_title' => $matrix[$myAttributeUid]['internal_title'],
 				);
 				$markerArray = $this->generateMarkerArray(
 					$datas, $this->conf['singleView.']['attributes.'], $prefix = 'ARTICLE_ATTRIBUTES_'
@@ -477,6 +516,7 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 					'value' => $this->formatAttributeValue($matrix, $myAttributeUid),
 					'unit' => $matrix[$myAttributeUid]['unit'],
 					'icon' => $matrix[$myAttributeUid]['icon'],
+					'internal_title' => $matrix[$myAttributeUid]['internal_title'],
 				);
 				$markerArray = $this->generateMarkerArray(
 					$datas, $this->conf['singleView.']['attributes.'], $prefix = 'ARTICLE_ATTRIBUTES_'
@@ -506,9 +546,7 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	 * @return string the content for the list view
 	 */
 	public function makeListView() {
-		if (is_array(
-			$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/ListController.php']['preRenderListView']
-		)) {
+		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/ListController.php']['preRenderListView'])) {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/ListController.php']['preRenderListView'] as $classRef) {
 				$hookObjectsArr[] = & GeneralUtility::getUserObj($classRef);
 			}
@@ -521,7 +559,11 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 		$this->template = $this->templateCode;
 
 		if ($this->category->hasSubcategories()) {
-			/** @var $oneCategory Tx_Commerce_Domain_Model_Category */
+			/**
+			 * Category
+			 *
+			 * @var $oneCategory Tx_Commerce_Domain_Model_Category
+			 */
 			foreach ($this->category->getChildCategories() as $oneCategory) {
 				$oneCategory->loadData();
 				$this->currentCategory = & $oneCategory;
@@ -601,7 +643,11 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 
 				$tmpCategory = $this->cObj->substituteSubpart($tmpCategory, '###CATEGORY_ITEM_DETAILLINK###', $link);
 
-				if ($this->conf['groupProductsByCategory'] && !$this->conf['hideProductsInList'] && !$this->conf['hideProductsInSubcategories']) {
+				if (
+					$this->conf['groupProductsByCategory']
+					&& !$this->conf['hideProductsInList']
+					&& !$this->conf['hideProductsInSubcategories']
+				) {
 					$categoryProducts = $oneCategory->getProducts();
 					if ($this->conf['useStockHandling'] == 1) {
 						$categoryProducts = Tx_Commerce_Utility_GeneralUtility::removeNoStockProducts(
@@ -630,9 +676,7 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 		$markerArray['CATEGORY_SUB_LIST'] = $this->cObj->substituteSubpart(
 			$categoryListSubpart, '###CATEGORY_LIST_ITEM###', $categoryOutput
 		);
-		$startPoint = ($this->piVars['pointer']) ?
-			$this->internal['results_at_a_time'] * $this->piVars['pointer'] :
-			0;
+		$startPoint = ($this->piVars['pointer']) ? $this->internal['results_at_a_time'] * $this->piVars['pointer'] : 0;
 
 		// Display TopProducts???
 		// for this, make a few basicSettings for pageBrowser
@@ -701,7 +745,6 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['listview'] as $classRef) {
 				$hookObj = & GeneralUtility::getUserObj($classRef);
 				if (method_exists($hookObj, 'additionalMarker')) {
-					/** @noinspection PhpUndefinedMethodInspection */
 					$markerArray = $hookObj->additionalMarker($markerArray, $this);
 				}
 			}
@@ -710,7 +753,6 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BaseController.php']['listView'] as $classRef) {
 				$hookObj = GeneralUtility::getUserObj($classRef);
 				if (method_exists($hookObj, 'additionalMarker')) {
-					/** @noinspection PhpUndefinedMethodInspection */
 					$markerArray = $hookObj->additionalMarker($markerArray, $this);
 				}
 			}
@@ -728,11 +770,12 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	/**
 	 * Get category path
 	 *
-	 * @param Tx_Commerce_Domain_Model_Category $cat
+	 * @param Tx_Commerce_Domain_Model_Category $category
+	 *
 	 * @return string
 	 */
-	public function getPathCat($cat) {
-		$rootline = $cat->getParentCategoriesUidlist();
+	public function getPathCat($category) {
+		$rootline = $category->getParentCategoriesUidlist();
 		array_pop($rootline);
 		$active = array_reverse($rootline);
 		$this->mDepth = 0;
@@ -755,15 +798,16 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	 * replace your subpart in your template by you own
 	 *
 	 * @param Tx_Commerce_Domain_Model_Article $article Article the marker based on
-	 * @param boolean $priceid if set tu true (default) the price-id will be rendered
+	 * @param bool $priceid If set true (default) the price-id will be rendered
 	 *        into the hiddenfields, otherwhise not
+	 *
 	 * @return array $markerArray markers needed for the article and the basket form
 	 */
 	public function getArticleMarker($article, $priceid = FALSE) {
-		if (($this->handle) && is_array($this->conf[$this->handle . '.'])
-			&& is_array(
-				$this->conf[$this->handle . '.']['articles.']
-			)
+		if (
+			$this->handle
+			&& is_array($this->conf[$this->handle . '.'])
+			&& is_array($this->conf[$this->handle . '.']['articles.'])
 		) {
 			$tsconf = $this->conf[$this->handle . '.']['articles.'];
 		} else {
@@ -784,15 +828,14 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 		 * Please use ARTICLE_HIDDENFIEDLS, ARTICLE_FORMACTION
 		 * and ARTICLE_FORMNAME, ARTICLE_HIDDENCATUID
 		 */
-		$markerArray['STARTFRM'] = '<form name="basket_' . $article->getUid() . '" action="' . $this->pi_getPageLink(
-				$this->conf['basketPid']
-			) . '" method="post">';
-		$markerArray['HIDDENFIELDS'] = '<input type="hidden" name="' . $this->prefixId . '[catUid]" value="' . $this->category->getUid(
-			) . '" />';
+		$markerArray['STARTFRM'] = '<form name="basket_' . $article->getUid() . '" action="' .
+			$this->pi_getPageLink($this->conf['basketPid']) . '" method="post">';
+		$markerArray['HIDDENFIELDS'] = '<input type="hidden" name="' . $this->prefixId . '[catUid]" value="' .
+			$this->category->getUid() . '" />';
 		$markerArray['ARTICLE_FORMACTION'] = $this->pi_getPageLink($this->conf['basketPid']);
 		$markerArray['ARTICLE_FORMNAME'] = 'basket_' . $article->getUid();
-		$markerArray['ARTICLE_HIDDENCATUID'] = '<input type="hidden" name="' . $this->prefixId . '[catUid]" value="' . $this->category->getUid(
-			) . '" />';
+		$markerArray['ARTICLE_HIDDENCATUID'] = '<input type="hidden" name="' . $this->prefixId . '[catUid]" value="' .
+			$this->category->getUid() . '" />';
 		$markerArray['ARTICLE_HIDDENFIELDS'] = '';
 
 		/**
@@ -807,22 +850,22 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 		$typoLinkConf['additionalParams'] .= $this->argSeparator . $this->prefixId . '[catUid]=' . $this->category->getUid();
 
 		if ($priceid == TRUE) {
-			$markerArray['ARTICLE_HIDDENFIELDS'] .= '<input type="hidden" name="' . $this->prefixId . '[artAddUid][' . $article->getUid(
-				) . '][price_id]" value="' . $article->getPriceUid() . '" />';
-			$markerArray['HIDDENFIELDS'] .= '<input type="hidden" name="' . $this->prefixId . '[artAddUid][' . $article->getUid(
-				) . '][price_id]" value="' . $article->getPriceUid() . '" />';
-			$typoLinkConf['additionalParams'] .= $this->argSeparator . $this->prefixId . '[artAddUid][' . $article->getUid(
-				) . '][price_id]=' . $article->getPriceUid();
+			$markerArray['ARTICLE_HIDDENFIELDS'] .= '<input type="hidden" name="' . $this->prefixId . '[artAddUid][' .
+				$article->getUid() . '][price_id]" value="' . $article->getPriceUid() . '" />';
+			$markerArray['HIDDENFIELDS'] .= '<input type="hidden" name="' . $this->prefixId . '[artAddUid][' .
+				$article->getUid() . '][price_id]" value="' . $article->getPriceUid() . '" />';
+			$typoLinkConf['additionalParams'] .= $this->argSeparator . $this->prefixId . '[artAddUid][' .
+				$article->getUid() . '][price_id]=' . $article->getPriceUid();
 		} else {
-			$markerArray['HIDDENFIELDS'] .= '<input type="hidden" name="' . $this->prefixId . '[artAddUid][' . $article->getUid(
-				) . '][price_id]" value="" />';
-			$markerArray['ARTICLE_HIDDENFIELDS'] .= '<input type="hidden" name="' . $this->prefixId . '[artAddUid][' . $article->getUid(
-				) . '][price_id]" value="" />';
-			$typoLinkConf['additionalParams'] .= $this->argSeparator . $this->prefixId . '[artAddUid][' . $article->getUid(
-				) . '][price_id]=';
+			$markerArray['HIDDENFIELDS'] .= '<input type="hidden" name="' . $this->prefixId . '[artAddUid][' .
+				$article->getUid() . '][price_id]" value="" />';
+			$markerArray['ARTICLE_HIDDENFIELDS'] .= '<input type="hidden" name="' . $this->prefixId . '[artAddUid][' .
+				$article->getUid() . '][price_id]" value="" />';
+			$typoLinkConf['additionalParams'] .= $this->argSeparator . $this->prefixId . '[artAddUid][' .
+				$article->getUid() . '][price_id]=';
 		}
-		$typoLinkConf['additionalParams'] .= $this->argSeparator . $this->prefixId . '[artAddUid][' . $article->getUid(
-			) . '][count]=1';
+		$typoLinkConf['additionalParams'] .= $this->argSeparator . $this->prefixId . '[artAddUid][' .
+			$article->getUid() . '][count]=1';
 
 		$markerArray['LINKTOPUTINBASKET'] = $this->cObj->typoLink($this->pi_getLL('lang_addtobasketlink'), $typoLinkConf);
 
@@ -837,18 +880,15 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 		$markerArray['DELIVERY_PRICE_GROSS'] = Tx_Commerce_ViewHelpers_Money::format($article->getDeliveryCostGross(), $this->currency);
 
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['articleMarker'])) {
-			GeneralUtility::deprecationLog(
-				'
-					hook
-					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_pibase.php\'][\'articleMarker\']
-					is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
-					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/BaseController.php\'][\'articleMarker\']
-				'
-			);
+			GeneralUtility::deprecationLog('
+				hook
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_pibase.php\'][\'articleMarker\']
+				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/BaseController.php\'][\'articleMarker\']
+			');
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['articleMarker'] as $classRef) {
 				$hookObj = & GeneralUtility::getUserObj($classRef);
 				if (method_exists($hookObj, 'additionalMarkerArticle')) {
-					/** @noinspection PhpUndefinedMethodInspection */
 					$markerArray = $hookObj->additionalMarkerArticle($markerArray, $article, $this);
 				}
 			}
@@ -857,7 +897,6 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BaseController.php']['articleMarker'] as $classRef) {
 				$hookObj = & GeneralUtility::getUserObj($classRef);
 				if (method_exists($hookObj, 'additionalMarkerArticle')) {
-					/** @noinspection PhpUndefinedMethodInspection */
 					$markerArray = $hookObj->additionalMarkerArticle($markerArray, $article, $this);
 				}
 			}
@@ -877,6 +916,7 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	 *
 	 * @param array $addressArray Address Array (as result from Select DB or Session)
 	 * @param array $subpartMarker Subpart Template subpart
+	 *
 	 * @return string $content string HTML-Content from the given Subpart.
 	 */
 	public function makeAdressView($addressArray, $subpartMarker) {
@@ -892,10 +932,11 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	 * This Method will not replace the Subpart, you have to replace your subpart
 	 * in your template by you own
 	 *
-	 * @param Tx_Commerce_Domain_Model_Basket $basketObj
+	 * @param Tx_Commerce_Domain_Model_Basket $basketObj Basket
 	 * @param array $subpartMarker Subpart Template Subpart
-	 * @param array|boolean $articletypes array of articletypes
-	 * @param string $lineTemplate
+	 * @param array|bool $articletypes Articletypes
+	 * @param string $lineTemplate Line templates
+	 *
 	 * @return string $content HTML-Ccontent from the given Subpart
 	 */
 	public function makeBasketView($basketObj, $subpartMarker, $articletypes = FALSE, $lineTemplate = '###LISTING_ARTICLE###') {
@@ -928,7 +969,11 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 			$articleLines = '';
 			$count = 0;
 
-			/** @var $itemObj Tx_Commerce_Domain_Model_BasketItem */
+			/**
+			 * Item
+			 *
+			 * @var $itemObj Tx_Commerce_Domain_Model_BasketItem
+			 */
 			foreach ($basketObj->getBasketItems() as $itemObj) {
 				$part = $count % $templateElements;
 
@@ -953,18 +998,15 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 		}
 
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['makeBasketView'])) {
-			GeneralUtility::deprecationLog(
-				'
-					hook
-					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_pibase.php\'][\'makeBasketView\']
-					is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
-					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/BaseController.php\'][\'makeBasketView\']
-				'
-			);
+			GeneralUtility::deprecationLog('
+				hook
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_pibase.php\'][\'makeBasketView\']
+				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/BaseController.php\'][\'makeBasketView\']
+			');
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['makeBasketView'] as $classRef) {
 				$hookObj = & GeneralUtility::getUserObj($classRef);
 				if (method_exists($hookObj, 'postBasketView')) {
-					/** @noinspection PhpUndefinedMethodInspection */
 					$content = $hookObj->postBasketView($content, $articletypes, $lineTemplate, $template, $basketObj, $this);
 				}
 			}
@@ -976,7 +1018,6 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BaseController.php']['makeBasketView'] as $classRef) {
 				$hookObj = GeneralUtility::getUserObj($classRef);
 				if (method_exists($hookObj, 'postBasketView')) {
-					/** @noinspection PhpUndefinedMethodInspection */
 					$content = $hookObj->postBasketView($content, $articletypes, $lineTemplate, $template, $basketObj, $this);
 				}
 			}
@@ -994,8 +1035,9 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	 * This Method will not replace the Subpart, you have to replace your subpart
 	 * in your template by you own
 	 *
-	 * @param Tx_Commerce_Domain_Model_Basket $basketObj
+	 * @param Tx_Commerce_Domain_Model_Basket $basketObj Basket
 	 * @param array $subpartMarker Subpart Template Subpart
+	 *
 	 * @return string $content HTML-Ccontent from the given Subpart
 	 * @abstract
 	 * Renders the following MARKER
@@ -1012,37 +1054,45 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	public function makeBasketInformation($basketObj, $subpartMarker) {
 		$template = $this->cObj->getSubpart($this->templateCode, $subpartMarker);
 		$basketObj->recalculateSums();
-		$markerArray['###SUM_NET###'] = Tx_Commerce_ViewHelpers_Money::format($basketObj->getSumNet(TRUE), $this->currency, $this->showCurrency);
+		$markerArray['###SUM_NET###'] = Tx_Commerce_ViewHelpers_Money::format(
+			$basketObj->getSumNet(), $this->currency, $this->showCurrency
+		);
 		$markerArray['###SUM_GROSS###'] = Tx_Commerce_ViewHelpers_Money::format(
-			$basketObj->getSumGross(TRUE), $this->currency, $this->showCurrency
+			$basketObj->getSumGross(), $this->currency, $this->showCurrency
 		);
 
 		$sumArticleNet = 0;
 		$sumArticleGross = 0;
 		$regularArticleTypes = GeneralUtility::intExplode(',', $this->conf['regularArticleTypes']);
 		foreach ($regularArticleTypes as $regularArticleType) {
-			$sumArticleNet += $basketObj->getArticleTypeSumNet($regularArticleType, 1);
-			$sumArticleGross += $basketObj->getArticleTypeSumGross($regularArticleType, 1);
+			$sumArticleNet += $basketObj->getArticleTypeSumNet($regularArticleType);
+			$sumArticleGross += $basketObj->getArticleTypeSumGross($regularArticleType);
 		}
 
-		$markerArray['###SUM_ARTICLE_NET###'] = Tx_Commerce_ViewHelpers_Money::format($sumArticleNet, $this->currency, $this->showCurrency);
-		$markerArray['###SUM_ARTICLE_GROSS###'] = Tx_Commerce_ViewHelpers_Money::format($sumArticleGross, $this->currency, $this->showCurrency);
+		$markerArray['###SUM_ARTICLE_NET###'] = Tx_Commerce_ViewHelpers_Money::format(
+			$sumArticleNet, $this->currency, $this->showCurrency
+		);
+		$markerArray['###SUM_ARTICLE_GROSS###'] = Tx_Commerce_ViewHelpers_Money::format(
+			$sumArticleGross, $this->currency, $this->showCurrency
+		);
 		$markerArray['###SUM_SHIPPING_NET###'] = Tx_Commerce_ViewHelpers_Money::format(
-			$basketObj->getArticleTypeSumNet(DELIVERYARTICLETYPE, 1), $this->currency, $this->showCurrency
+			$basketObj->getArticleTypeSumNet(DELIVERYARTICLETYPE), $this->currency, $this->showCurrency
 		);
 		$markerArray['###SUM_SHIPPING_GROSS###'] = Tx_Commerce_ViewHelpers_Money::format(
-			$basketObj->getArticleTypeSumGross(DELIVERYARTICLETYPE, 1), $this->currency, $this->showCurrency
+			$basketObj->getArticleTypeSumGross(DELIVERYARTICLETYPE), $this->currency, $this->showCurrency
 		);
 		$markerArray['###SHIPPING_TITLE###'] = $basketObj->getFirstArticleTypeTitle(DELIVERYARTICLETYPE);
 		$markerArray['###SUM_PAYMENT_NET###'] = Tx_Commerce_ViewHelpers_Money::format(
-			$basketObj->getArticleTypeSumNet(PAYMENTARTICLETYPE, 1), $this->currency, $this->showCurrency
+			$basketObj->getArticleTypeSumNet(PAYMENTARTICLETYPE), $this->currency, $this->showCurrency
 		);
 		$markerArray['###SUM_PAYMENT_GROSS###'] = Tx_Commerce_ViewHelpers_Money::format(
-			$basketObj->getArticleTypeSumGross(PAYMENTARTICLETYPE, 1), $this->currency, $this->showCurrency
+			$basketObj->getArticleTypeSumGross(PAYMENTARTICLETYPE), $this->currency, $this->showCurrency
 		);
 		$markerArray['###PAYMENT_TITLE###'] = $basketObj->getFirstArticleTypeTitle(PAYMENTARTICLETYPE);
 		$markerArray['###PAYMENT_DESCRIPTION###'] = $basketObj->getFirstArticleTypeDescription(PAYMENTARTICLETYPE);
-		$markerArray['###SUM_TAX###'] = Tx_Commerce_ViewHelpers_Money::format($basketObj->getTaxSum(), $this->currency, $this->showCurrency);
+		$markerArray['###SUM_TAX###'] = Tx_Commerce_ViewHelpers_Money::format(
+			$basketObj->getTaxSum(), $this->currency, $this->showCurrency
+		);
 
 		$taxRateTemplate = $this->cObj->getSubpart($template, '###TAX_RATE_SUMS###');
 		$taxRates = $basketObj->getTaxRateSums();
@@ -1079,7 +1129,6 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 		}
 		foreach ($hookObjectsArr as $hookObj) {
 			if (method_exists($hookObj, 'processMarkerTaxInformation')) {
-				/** @noinspection PhpUndefinedMethodInspection */
 				$taxRateRows = $hookObj->processMarkerTaxInformation($taxRateTemplate, $basketObj, $this);
 			}
 		}
@@ -1091,7 +1140,6 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 		 */
 		foreach ($hookObjectsArr as $hookObj) {
 			if (method_exists($hookObj, 'processMarkerBasketInformation')) {
-				/** @noinspection PhpUndefinedMethodInspection */
 				$markerArray = $hookObj->processMarkerBasketInformation($markerArray, $basketObj, $this);
 			}
 		}
@@ -1109,6 +1157,7 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	 *
 	 * @param Tx_Commerce_Domain_Model_BasketItem $basketItemObj Basket Object
 	 * @param array $subpartMarker Subpart Template Subpart
+	 *
 	 * @return string $content HTML-Ccontent from the given Subpart
 	 * @abstract
 	 * Renders the following MARKER
@@ -1169,7 +1218,6 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['makeLineView'] as $classRef) {
 				$hookObj = & GeneralUtility::getUserObj($classRef);
 				if (method_exists($hookObj, 'processMarkerLineView')) {
-					/** @noinspection PhpUndefinedMethodInspection */
 					$markerArray = $hookObj->processMarkerLineView($markerArray, $basketItemObj, $this);
 				}
 			}
@@ -1178,7 +1226,6 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BaseController.php']['makeLineView'] as $classRef) {
 				$hookObj = & GeneralUtility::getUserObj($classRef);
 				if (method_exists($hookObj, 'processMarkerLineView')) {
-					/** @noinspection PhpUndefinedMethodInspection */
 					$markerArray = $hookObj->processMarkerLineView($markerArray, $basketItemObj, $this);
 				}
 			}
@@ -1206,6 +1253,7 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	 *
 	 * @param array $typoscript Existing TypoScriptConfiguration
 	 * @param array $typoLinkConf TypoLink Configuration, buld bie view Method
+	 *
 	 * @return array Changed TypoScript Configuration
 	 */
 	public function addTypoLinkToTypoScript($typoscript, $typoLinkConf) {
@@ -1236,8 +1284,9 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	 *
 	 * @param array $data Assoc-Array with keys as Database fields and values
 	 * @param array $typoscript TypoScript Configuration
-	 * @param string $prefix for marker, default empty
-	 * @param string $table tx_commerce table name
+	 * @param string $prefix For marker, default empty
+	 * @param string $table Table name
+	 *
 	 * @return array Marker Array for using cobj Marker array methods
 	 */
 	public function generateMarkerArray($data, $typoscript, $prefix = '', $table = '') {
@@ -1283,6 +1332,7 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	 * @param string $field Database field name
 	 * @param string $table Database table name
 	 * @param int|string $uid Uid of record
+	 *
 	 * @return string html-content
 	 */
 	public function renderValue($value, $typoscriptType, $typoscriptConfig, $field = '', $table = '', $uid = '') {
@@ -1377,7 +1427,7 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 				}
 				break;
 
-			/** @noinspection PhpMissingBreakStatementInspection */
+
 			case 'NUMBERFORMAT':
 				if ($typoscriptConfig['format']) {
 					$value = number_format(
@@ -1385,7 +1435,7 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 						$typoscriptConfig['format.']['thousands_sep']
 					);
 				}
-			// pass
+				// pass through
 			case 'STDWRAP':
 				if (is_array($typoscriptConfig['parseFunc.'])) {
 					$output = $this->cObj->stdWrap($value, $typoscriptConfig);
@@ -1421,7 +1471,6 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 		if (is_array($hookObjectsArr)) {
 			foreach ($hookObjectsArr as $hookObj) {
 				if (method_exists($hookObj, 'postRenderValue')) {
-					/** @noinspection PhpUndefinedMethodInspection */
 					$output = $hookObj->postRenderValue(
 						$output, array(
 							$value,
@@ -1449,11 +1498,12 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	/**
 	 * Reders a category as output
 	 *
-	 * @param Tx_Commerce_Domain_Model_Category $category object
-	 * @param string $subpartName template-subpart-name
+	 * @param Tx_Commerce_Domain_Model_Category $category Category
+	 * @param string $subpartName Template subpart name
 	 * @param array $typoscript TypoScript array for rendering
 	 * @param string $prefix Prefix for Marker, optional#
-	 * @param string $template
+	 * @param string $template Template
+	 *
 	 * @return string HTML-Content
 	 */
 	public function renderCategory($category, $subpartName, $typoscript, $prefix = '', $template = '') {
@@ -1463,12 +1513,13 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	/**
 	 * Reders an element as output
 	 *
-	 * @param Tx_Commerce_Domain_Model_Category|Tx_Commerce_Domain_Model_Product|Tx_Commerce_Domain_Model_Article $element
-	 * @param string $subpartName template-subpart-name
+	 * @param Tx_Commerce_Domain_Model_Category|Tx_Commerce_Domain_Model_Product|Tx_Commerce_Domain_Model_Article $element Element
+	 * @param string $subpartName Template subpart name
 	 * @param array $typoscript TypoScript array for rendering
 	 * @param string $prefix Prefix for Marker, optional#
-	 * @param string $markerWrap $secondPrefix for Marker, default ###
-	 * @param string $template
+	 * @param string $markerWrap SecondPrefix for Marker, default ###
+	 * @param string $template Template
+	 *
 	 * @return string HTML-Content
 	 */
 	public function renderElement($element, $subpartName, $typoscript, $prefix = '', $markerWrap = '###', $template = '') {
@@ -1500,14 +1551,12 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 
 		$hookObjectsArr = array();
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['generalElement'])) {
-			GeneralUtility::deprecationLog(
-				'
-					hook
-					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_pibase.php\'][\'generalElement\']
-					is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
-					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/BaseController.php\'][\'generalElement\']
-				'
-			);
+			GeneralUtility::deprecationLog('
+				hook
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_pibase.php\'][\'generalElement\']
+				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/BaseController.php\'][\'generalElement\']
+			');
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['generalElement'] as $classRef) {
 				$hookObjectsArr[] = & GeneralUtility::getUserObj($classRef);
 			}
@@ -1519,7 +1568,6 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 		}
 		foreach ($hookObjectsArr as $hookObj) {
 			if (method_exists($hookObj, 'additionalMarkerElement')) {
-				/** @noinspection PhpUndefinedMethodInspection */
 				$markerArray = $hookObj->additionalMarkerElement($markerArray, $element, $this);
 			}
 		}
@@ -1544,7 +1592,8 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	 * concerning the sprinf formating if value is a number
 	 *
 	 * @param array $matrix AttributeMatrix
-	 * @param integer $myAttributeUid Uid of attribute
+	 * @param int $myAttributeUid Uid of attribute
+	 *
 	 * @return string Formated Value
 	 */
 	public function formatAttributeValue($matrix, $myAttributeUid) {
@@ -1557,14 +1606,12 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 		}
 		$hookObj = array();
 		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['formatAttributeValue']) {
-			GeneralUtility::deprecationLog(
-				'
-					hook
-					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_pibase.php\'][\'formatAttributeValue\']
-					is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
-					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/BaseController.php\'][\'formatAttributeValue\']
-				'
-			);
+			GeneralUtility::deprecationLog('
+				hook
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_pibase.php\'][\'formatAttributeValue\']
+				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/BaseController.php\'][\'formatAttributeValue\']
+			');
 			$hookObj = GeneralUtility::getUserObj(
 				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['formatAttributeValue']
 			);
@@ -1579,6 +1626,7 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 		$attributeValues = count($matrix[$myAttributeUid]['values']);
 
 		foreach ((array) $matrix[$myAttributeUid]['values'] as $key => $value) {
+			// Sometimes $value is the whole database array
 			if (is_array($value) && isset($value['value']) && $value['value'] != '') {
 				$value = $value['value'];
 			}
@@ -1614,9 +1662,10 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	 * plus adding debug of $this->conf;
 	 *
 	 * @param string $methodName Methdo Name from where thsi error is called
-	 * @param integer $line line of code (normally should be __LINE__)
+	 * @param int $line Line of code (normally should be __LINE__)
 	 * @param string $errortext Text for this error
-	 * @param boolean|string $additionaloutput Aditional code output in <pre></pre>
+	 * @param bool|string $additionaloutput Aditional code output in <pre></pre>
+	 *
 	 * @return string HTML Code
 	 */
 	public function error($methodName, $line, $errortext, $additionaloutput = FALSE) {
@@ -1641,9 +1690,10 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	/**
 	 * Debugging var with header and group
 	 *
-	 * @param mixed $var
-	 * @param string $header
-	 * @param string $group
+	 * @param mixed $var Var
+	 * @param string $header Header
+	 * @param string $group Group
+	 *
 	 * @return void
 	 */
 	protected function debug($var, $header, $group) {
@@ -1655,9 +1705,10 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	/**
 	 * Return the amount of articles for the basket input form
 	 *
-	 * @param integer $articleId the articleId check for the amount
-	 * @param array|boolean $typoscriptConfig
-	 * @return integer
+	 * @param int $articleId ArticleId check for the amount
+	 * @param array|bool $typoscriptConfig Typoscript config
+	 *
+	 * @return int
 	 */
 	public function getArticleAmount($articleId, $typoscriptConfig = FALSE) {
 		if (!$articleId) {
@@ -1665,7 +1716,11 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 		}
 
 		$amount = 0;
-		/** @var Tx_Commerce_Domain_Model_BasketItem $basketItem */
+		/**
+		 * Basket item
+		 *
+		 * @var Tx_Commerce_Domain_Model_BasketItem $basketItem
+		 */
 		$basketItem = $GLOBALS['TSFE']->fe_user->tx_commerce_basket->getBasketItem($articleId);
 		if (is_object($basketItem)) {
 			$amount = $basketItem->getQuantity();
@@ -1683,28 +1738,26 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	/**
 	 * Render products for list view
 	 *
-	 * @param array $categoryProducts
-	 * @param array $templateMarker
-	 * @param integer $iterations
-	 * @param string $typoscriptMarker
+	 * @param array $categoryProducts Category product
+	 * @param array $templateMarker Template marker
+	 * @param int $iterations Iterations
+	 * @param string $typoscriptMarker Marker
+	 *
 	 * @return string
 	 */
 	public function renderProductsForList($categoryProducts, $templateMarker, $iterations, $typoscriptMarker = '') {
 		$markerArray = array();
 
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['renderProductsForList'])) {
-			GeneralUtility::deprecationLog(
-				'
-					hook
-					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_pibase.php\'][\'renderProductsForList\']
-					is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
-					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/BaseController.php\'][\'renderProductsForList\']
-				'
-			);
+			GeneralUtility::deprecationLog('
+				hook
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_pibase.php\'][\'renderProductsForList\']
+				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/BaseController.php\'][\'renderProductsForList\']
+			');
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['renderProductsForList'] as $classRef) {
 				$hookObj = & GeneralUtility::getUserObj($classRef);
 				if (method_exists($hookObj, 'preProcessorProductsListView')) {
-					/** @noinspection PhpUndefinedMethodInspection */
 					$markerArray = $hookObj->preProcessorProductsListView(
 						$categoryProducts, $templateMarker, $iterations, $typoscriptMarker, $this
 					);
@@ -1715,7 +1768,6 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BaseController.php']['renderProductsForList'] as $classRef) {
 				$hookObj = & GeneralUtility::getUserObj($classRef);
 				if (method_exists($hookObj, 'preProcessorProductsListView')) {
-					/** @noinspection PhpUndefinedMethodInspection */
 					$markerArray = $hookObj->preProcessorProductsListView(
 						$categoryProducts, $templateMarker, $iterations, $typoscriptMarker, $this
 					);
@@ -1733,8 +1785,16 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 				}
 				$template = $this->cObj->getSubpart($this->templateCode, '###' . $templateMarker[$iterationCount] . '###');
 
-				/** @var Tx_Commerce_Domain_Model_Product $myProduct */
-				$myProduct = GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Product', $myProductId, $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']);
+				/**
+				 * Product
+				 *
+				 * @var Tx_Commerce_Domain_Model_Product $myProduct
+				 */
+				$myProduct = GeneralUtility::makeInstance(
+					'Tx_Commerce_Domain_Model_Product',
+					$myProductId,
+					$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']
+				);
 				$myProduct->loadData();
 				$myProduct->loadArticles();
 
@@ -1770,11 +1830,12 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	/**
 	 * This method renders a product to a template
 	 *
-	 * @param Tx_Commerce_Domain_Model_Product $product
+	 * @param Tx_Commerce_Domain_Model_Product $product Product
 	 * @param string $template TYPO3 Template
-	 * @param array $typoscript
+	 * @param array $typoscript TypoScript
 	 * @param array $articleMarker Marker for the article description
-	 * @param string $articleSubpart [optional]
+	 * @param string $articleSubpart Subpart
+	 *
 	 * @return string rendered HTML
 	 */
 	public function renderProduct($product, $template, $typoscript, $articleMarker, $articleSubpart = '') {
@@ -1787,14 +1848,12 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 
 		$hookObjectsArr = array();
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['product'])) {
-			GeneralUtility::deprecationLog(
-				'
-					hook
-					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_pibase.php\'][\'product\']
-					is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
-					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/BaseController.php\'][\'renderProduct\']
-				'
-			);
+			GeneralUtility::deprecationLog('
+				hook
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_pibase.php\'][\'product\']
+				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/BaseController.php\'][\'renderProduct\']
+			');
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['product'] as $classRef) {
 				$hookObjectsArr[] = & GeneralUtility::getUserObj($classRef);
 			}
@@ -1873,7 +1932,6 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 		}
 		foreach ($hookObjectsArr as $hookObj) {
 			if (method_exists($hookObj, 'postProcessLinkArray')) {
-				/** @noinspection PhpUndefinedMethodInspection */
 				$linkArray = $hookObj->postProcessLinkArray($linkArray, $product, $this);
 			}
 		}
@@ -1893,7 +1951,11 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 			$product->setRenderMaxArticles((int) $localTs['maxArticles']);
 		}
 
-		if ($this->conf['disableArticleViewForProductlist'] == 1 && !$this->piVars['showUid'] || $this->conf['disableArticleView'] == 1) {
+		if (
+			$this->conf['disableArticleViewForProductlist'] == 1
+			&& !$this->piVars['showUid']
+			|| $this->conf['disableArticleView'] == 1
+		) {
 			$subpartArray['###' . strtoupper($articleSubpart) . '###'] = '';
 		} else {
 			$subpartArray['###' . strtoupper($articleSubpart) . '###'] = $this->makeArticleView(
@@ -1905,7 +1967,11 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 		 * Get The Checapest Price
 		 */
 		$cheapestArticleUid = $product->getCheapestArticle();
-		/** @var Tx_Commerce_Domain_Model_Article $cheapestArticle */
+		/**
+		 * Cheapest Article
+		 *
+		 * @var Tx_Commerce_Domain_Model_Article $cheapestArticle
+		 */
 		$cheapestArticle = GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Article', $cheapestArticleUid);
 		$cheapestArticle->loadData();
 		$cheapestArticle->loadPrices();
@@ -1915,7 +1981,11 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 		);
 
 		$cheapestArticleUid = $product->getCheapestArticle(1);
-		/** @var Tx_Commerce_Domain_Model_Article $cheapestArticle */
+		/**
+		 * Cheapest Article
+		 *
+		 * @var Tx_Commerce_Domain_Model_Article $cheapestArticle
+		 */
 		$cheapestArticle = GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Article', $cheapestArticleUid);
 		$cheapestArticle->loadData();
 		$cheapestArticle->loadPrices();
@@ -1924,13 +1994,11 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 
 		foreach ($hookObjectsArr as $hookObj) {
 			if (method_exists($hookObj, 'additionalMarkerProduct')) {
-				/** @noinspection PhpUndefinedMethodInspection */
 				$markerArray = $hookObj->additionalMarkerProduct($markerArray, $product, $this);
 			}
 		}
 		foreach ($hookObjectsArr as $hookObj) {
 			if (method_exists($hookObj, 'additionalSubpartsProduct')) {
-				/** @noinspection PhpUndefinedMethodInspection */
 				$subpartArray = $hookObj->additionalSubpartsProduct($subpartArray, $product, $this);
 			}
 		}
@@ -1944,7 +2012,6 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 
 		foreach ($hookObjectsArr as $hookObj) {
 			if (method_exists($hookObj, 'ModifyContentProduct')) {
-				/** @noinspection PhpUndefinedMethodInspection */
 				$content = $hookObj->ModifyContentProduct($content, $product, $this);
 			}
 		}
@@ -1955,8 +2022,9 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	/**
 	 * Adds the global Marker for the formtags to the given marker array
 	 *
-	 * @param array $markerArray array Array of marker
-	 * @param string|boolean $wrap [default=false] if the marker should be wrapped
+	 * @param array $markerArray Array of marker
+	 * @param string|bool $wrap If the marker should be wrapped
+	 *
 	 * @return array Marker Array with the new marker
 	 */
 	public function addFormMarker($markerArray, $wrap = FALSE) {
@@ -1967,8 +2035,8 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 			$newMarkerArray['GENERAL_FORM_ACTION'] = $this->cObj->typoLink('', $basketConf);
 		}
 		if (is_object($this->category)) {
-			$newMarkerArray['GENERAL_HIDDENCATUID'] = '<input type="hidden" name="' . $this->prefixId . '[catUid]" value="' . $this->category->getUid(
-				) . '" />';
+			$newMarkerArray['GENERAL_HIDDENCATUID'] = '<input type="hidden" name="' . $this->prefixId .
+				'[catUid]" value="' . $this->category->getUid() . '" />';
 		}
 		if ($wrap) {
 			foreach ($newMarkerArray as $key => $value) {
@@ -1984,9 +2052,10 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	/**
 	 * Make article view
 	 *
-	 * @param string $kind
-	 * @param Tx_Commerce_Domain_Model_Article $articles
-	 * @param Tx_Commerce_Domain_Model_Product $product
+	 * @param string $kind Kind
+	 * @param Tx_Commerce_Domain_Model_Article $articles Articles
+	 * @param Tx_Commerce_Domain_Model_Product $product Product
+	 *
 	 * @return string
 	 */
 	public function makeArticleView($kind, $articles, $product) {
@@ -1996,10 +2065,11 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	/**
 	 * Render record table
 	 *
-	 * @param array $data
-	 * @param array $typoscript
-	 * @param string $template
-	 * @param string $prefix
+	 * @param array $data Data
+	 * @param array $typoscript TypoScript
+	 * @param string $template Template
+	 * @param string $prefix Prefix
+	 *
 	 * @return string
 	 */
 	public function renderTable($data, $typoscript, $template, $prefix) {
@@ -2009,10 +2079,11 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	/**
 	 * Render single view
 	 *
-	 * @param Tx_Commerce_Domain_Model_Product $product
-	 * @param Tx_Commerce_Domain_Model_Category $category
-	 * @param string $subpartName
-	 * @param string $subpartNameNostock
+	 * @param Tx_Commerce_Domain_Model_Product $product Product
+	 * @param Tx_Commerce_Domain_Model_Category $category Category
+	 * @param string $subpartName Subpart
+	 * @param string $subpartNameNostock Subport no stock
+	 *
 	 * @return string
 	 */
 	public function renderSingleView($product, $category, $subpartName, $subpartNameNostock) {
@@ -2031,8 +2102,8 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	 * @param array $wrappedSubpartContentArray An array of arrays with 0/1 keys
 	 *        where the subparts pointed to by the main key is wrapped with the 0/1
 	 *        value alternating.
+	 *
 	 * @return string The output content stream
-	 * @see tslib_content: substituteMarkerArrayCached
 	 */
 	public function substituteMarkerArrayNoCached($content, $markContentArray = array(), $subpartContentArray = array(),
 		$wrappedSubpartContentArray = array()) {
@@ -2070,12 +2141,7 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 
 		// Finding subparts and wrapping them with markers
 		foreach ($wPkeys as $wPk) {
-			$content = $this->cObj->substituteSubpart(
-				$content, $wPk, array(
-					$wPk,
-					$wPk
-				)
-			);
+			$content = $this->cObj->substituteSubpart($content, $wPk, array($wPk, $wPk));
 		}
 
 		// traverse keys and quote them for reg ex.
@@ -2127,6 +2193,7 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	 *
 	 * @param array $typoscript Existing TypoScriptConfiguration
 	 * @param array $typoLinkConf TypoLink Configuration, buld bie view Method
+	 *
 	 * @return array Changed TypoScript Configuration
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use addTypoLinkToTypoScript instead
 	 */
@@ -2141,6 +2208,7 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	 * $this->TCA is set), $table(if set) or $this->TCA
 	 *
 	 * @param string $table The table to use
+	 *
 	 * @return array The TCA
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, no replacement planed. this method is not used in pibase context
 	 */
@@ -2162,9 +2230,9 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	/**
 	 * calls renderProductAtrributeList with parametres from $this
 	 *
-	 * @param Tx_Commerce_Domain_Model_Product $myProduct
+	 * @param Tx_Commerce_Domain_Model_Product $myProduct Product
+	 *
 	 * @return string Stringoutput for attributes
-	 * @see renderProductAttributeList
 	 * @depricated since commerce 1.0.0, this function will be removed in commerce 1.4.0, this method gets removed from the api
 	 */
 	public function makeproductAttributList($myProduct) {
@@ -2179,8 +2247,9 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	 * Make the HTML output with list of attribute from a given product, reduced
 	 * for some articles if article ids are givens
 	 *
-	 * @param Tx_Commerce_Domain_Model_Product &$prodObj the current product
-	 * @param array $articleId array with articleIds for filtering attributss
+	 * @param Tx_Commerce_Domain_Model_Product $prodObj The current product
+	 * @param array $articleId Array with articleIds for filtering attributss
+	 *
 	 * @return string|boolean Stringoutput for attributes
 	 * @depricated since commerce 1.0.0, this function will be removed in commerce 1.4.0, this method gets removed from the api
 	 */
@@ -2203,7 +2272,7 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	/**
 	 * Makes the single view for the current products
 	 *
-	 * @return string the content for a single product
+	 * @return string The content for a single product
 	 * @depricated since commerce 1.0.0, this function will be removed in commerce 1.4.0, this method gets removed from the api
 	 */
 	public function makeSingleView() {
