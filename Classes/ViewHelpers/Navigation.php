@@ -106,7 +106,9 @@ class Tx_Commerce_ViewHelpers_Navigation {
 	public $pathParents = array();
 
 	/**
-	 * @var Translation Mode for getRecordOverlay
+	 * Translation Mode for getRecordOverlay
+	 *
+	 * @var string
 	 */
 	protected $translationMode = 'hideNonTranslated';
 
