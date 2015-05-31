@@ -125,8 +125,8 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 		if (empty($this->conf['templateFile'])) {
 			$this->error('init', __LINE__, 'Template File not defined in TS: ');
 		}
-		$this->templateCode = $this->cObj->fileResource($this->conf['templateFile']);
-		if (empty($this->templateCode)) {
+		$this->setTemplateCode($this->cObj->fileResource($this->conf['templateFile']));
+		if (empty($this->getTemplateCode())) {
 			$this->error('init', __LINE__, 'Template File not loaded, maybe it doesn\'t exist: ' . $this->conf['templateFile']);
 		}
 
@@ -147,15 +147,6 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 		$this->basket = $GLOBALS['TSFE']->fe_user->tx_commerce_basket;
 		$this->basket->setTaxCalculationMethod($this->conf['priceFromNet']);
 		$this->basket->loadData();
-	}
-
-	/**
-	 * Get basket
-	 *
-	 * @return Tx_Commerce_Domain_Model_Basket
-	 */
-	public function getBasket() {
-		return $this->basket;
 	}
 
 	/**
@@ -190,7 +181,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 			if (method_exists($hookObj, 'postInit')) {
 				$result = $hookObj->postInit($this);
 				if ($result === FALSE) {
-					return $this->pi_wrapInBaseClass($this->content);
+					return $this->pi_wrapInBaseClass($this->getContent());
 				}
 			}
 		}
@@ -204,7 +195,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 		}
 
 		if ($this->basket->getItemsCount() && $regularArticleCount) {
-				// Get template
+			// Get template
 			switch ($this->handle) {
 				case 'HANDLING':
 					$this->handleBasket();
@@ -224,7 +215,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 				$templateMarker = '###PRODUCT_BASKET_EMPTY###';
 			}
 
-			$template = $this->cObj->getSubpart($this->templateCode, $templateMarker);
+			$template = $this->cObj->getSubpart($this->getTemplateCode(), $templateMarker);
 
 			$markerArray = $this->languageMarker;
 			$markerArray['###EMPTY_BASKET###'] = $this->cObj->cObjGetSingle($this->conf['emptyContent'], $this->conf['emptyContent.']);
@@ -241,11 +232,11 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 				}
 			}
 
-			$this->content = $this->cObj->substituteMarkerArray($template, $markerArray);
+			$this->setContent($this->cObj->substituteMarkerArray($template, $markerArray));
 		}
-		$content = $this->cObj->substituteMarkerArray($content, $this->languageMarker);
+		$this->setContent($this->cObj->substituteMarkerArray($this->getContent(), $this->languageMarker));
 
-		return $this->pi_wrapInBaseClass($content . $this->content);
+		return $this->pi_wrapInBaseClass($content . $this->getContent());
 	}
 
 	/**
@@ -414,7 +405,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 						$this->basket->getSumGross() > (int) $this->conf['priceLimitForBasket']
 					) {
 						$this->basket->addArticle($articleUid, $oldCountValue);
-						$this->priceLimitForBasket = 1;
+						$this->setPriceLimitForBasket(1);
 					}
 				}
 			}
@@ -541,14 +532,15 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 		$articleTypes = explode(',', $this->conf['regularArticleTypes']);
 
 		$templateMarker = '###PRODUCT_BASKET_QUICKVIEW###';
-		$template = $this->cObj->getSubpart($this->templateCode, $templateMarker);
+		$template = $this->cObj->getSubpart($this->getTemplateCode(), $templateMarker);
 
 		$basketArray = $this->languageMarker;
 		$basketArray['###PRICE_GROSS###'] = Tx_Commerce_ViewHelpers_Money::format($this->basket->getSumGross(), $this->currency);
 		$basketArray['###PRICE_NET###'] = Tx_Commerce_ViewHelpers_Money::format($this->basket->getSumNet(), $this->currency);
 
-		// @Deprecated ###ITEMS###
-		$basketArray['###ITEMS###'] = $this->basket->getArticleTypeCountFromList($articleTypes);
+		// @deprecated ###ITEMS###
+		$basketArray['###ITEMS###'] = 'DEPRECATED WILL BE REMOVED IN COMMERCE 3.0.0! ' .
+			$this->basket->getArticleTypeCountFromList($articleTypes);
 
 		$basketArray['###BASKET_ITEMS###'] = $this->basket->getArticleTypeCountFromList($articleTypes);
 		$this->pi_linkTP('', array(), 0, $this->conf['basketPid']);
@@ -580,17 +572,17 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 			}
 		}
 
-		$this->content = $this->cObj->substituteMarkerArray($template, $basketArray);
+		$this->setContent($this->cObj->substituteMarkerArray($template, $basketArray));
 		return TRUE;
 	}
 
 	/**
-	 * Generates HTML-Code of the basket and stores content to $this->content
+	 * Generates HTML-Code of the basket and stores content
 	 *
 	 * @return void
 	 */
 	public function generateBasket() {
-		$template = $this->cObj->getSubpart($this->templateCode, '###BASKET###');
+		$template = $this->cObj->getSubpart($this->getTemplateCode(), '###BASKET###');
 
 		// Render locked information
 		if ($this->basket->getReadOnly()) {
@@ -618,7 +610,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 		}
 
 		// No delivery article is present, so draw selector
-		$contentDelivery = $this->cObj->getSubpart($this->templateCode, '###DELIVERYBOX###');
+		$contentDelivery = $this->cObj->getSubpart($this->getTemplateCode(), '###DELIVERYBOX###');
 
 		if (method_exists($hookObject, 'makeDelivery')) {
 			$contentDelivery = $hookObject->makeDelivery($this, $this->basket, $contentDelivery);
@@ -629,7 +621,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 			$template = $this->cObj->substituteSubpart($template, '###DELIVERYBOX###', $contentDelivery);
 		}
 
-		$contentPayment = $this->cObj->getSubpart($this->templateCode, '###PAYMENTBOX###');
+		$contentPayment = $this->cObj->getSubpart($this->getTemplateCode(), '###PAYMENTBOX###');
 		if (method_exists($hookObject, 'makePayment')) {
 			$contentPayment = $hookObject->makePayment($this, $this->basket, $contentPayment);
 			$template = $this->cObj->substituteSubpart($template, '###PAYMENTBOX###', $contentPayment);
@@ -676,7 +668,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 			$GLOBALS['TSFE']->fe_user->getKey('ses', 'tx_commerce_lastproducturl'), $this->conf['lastProduct']
 		);
 
-		if ($this->priceLimitForBasket == 1 && $this->conf['priceLimitForBasketMessage']) {
+		if ($this->getPriceLimitForBasket() == 1 && $this->conf['priceLimitForBasketMessage']) {
 			$basketArray['###BASKET_PRICELIMIT###'] = $this->cObj->cObjGetSingle(
 				$this->conf['priceLimitForBasketMessage'], $this->conf['priceLimitForBasketMessage.']
 			);
@@ -709,11 +701,11 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 			}
 		}
 
-		$this->content = $this->cObj->substituteMarkerArray($template, $basketArray);
+		$this->setContent($this->cObj->substituteMarkerArray($template, $basketArray));
 
 		$markerArrayGlobal = $this->addFormMarker(array());
 
-		$this->content = $this->cObj->substituteMarkerArray($this->content, $markerArrayGlobal, '###|###');
+		$this->setContent($this->cObj->substituteMarkerArray($this->getContent(), $markerArrayGlobal, '###|###'));
 	}
 
 	/**
@@ -732,8 +724,8 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 		$this->deliveryProduct->loadData();
 		$this->deliveryProduct->loadArticles();
 
-		$deliverySelectTemplate = $this->cObj->getSubpart($this->templateCode, '###DELIVERY_ARTICLE_SELECT###');
-		$deliveryOptionTemplate = $this->cObj->getSubpart($this->templateCode, '###DELIVERY_ARTICLE_OPTION###');
+		$deliverySelectTemplate = $this->cObj->getSubpart($this->getTemplateCode(), '###DELIVERY_ARTICLE_SELECT###');
+		$deliveryOptionTemplate = $this->cObj->getSubpart($this->getTemplateCode(), '###DELIVERY_ARTICLE_OPTION###');
 
 		$this->basketDeliveryArticles = $this->basket->getArticlesByArticleTypeUidAsUidlist(DELIVERYARTICLETYPE);
 
@@ -985,7 +977,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 			$attributeArray = $product->getAttributeMatrix(array($article->getUid()), $this->selectAttributes);
 
 			if (is_array($attributeArray)) {
-				$templateAttr = $this->cObj->getSubpart($this->templateCode, '###BASKET_SELECT_ATTRIBUTES###');
+				$templateAttr = $this->cObj->getSubpart($this->getTemplateCode(), '###BASKET_SELECT_ATTRIBUTES###');
 
 				foreach ($attributeArray as $attributeUid => $myAttribute) {
 					/**
@@ -1071,7 +1063,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 		$markerArray['###DELIOTMFROMBASKETLINK###'] = $markerArray['###DELETEFROMBASKETLINK###'];
 
 		$templateMarker = '###PRODUCT_BASKET_FORM_SMALL###';
-		$template = $this->cObj->getSubpart($this->templateCode, $templateMarker);
+		$template = $this->cObj->getSubpart($this->getTemplateCode(), $templateMarker);
 
 		$markerArray = array_merge($markerArray, $this->languageMarker);
 
@@ -1161,7 +1153,11 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 		$changerowcount = 0;
 		foreach ($list as $basketItemId) {
 			// Fill marker arrays with product/article values
-			/** @var $basketItem Tx_Commerce_Domain_Model_BasketItem */
+			/**
+			 * Basket item
+			 *
+			 * @var $basketItem Tx_Commerce_Domain_Model_BasketItem
+			 */
 			$basketItem = $this->basket->getBasketItem($basketItemId);
 
 			// Check stock
@@ -1234,7 +1230,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 					}
 				}
 
-				$template = $this->cObj->getSubpart($this->templateCode, $templateMarker[$templateSelector]);
+				$template = $this->cObj->getSubpart($this->getTemplateCode(), $templateMarker[$templateSelector]);
 				$changerowcount++;
 
 				$template = $this->cObj->substituteSubpart($template, '###PRODUCT_BASKET_FORM_SMALL###', '');
@@ -1256,5 +1252,95 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 		}
 
 		return $content;
+	}
+
+
+	/**
+	 * Get basket
+	 *
+	 * @return Tx_Commerce_Domain_Model_Basket
+	 */
+	public function getBasket() {
+		return $this->basket;
+	}
+
+	/**
+	 * Getter
+	 *
+	 * @return array
+	 */
+	public function getMarkerArray() {
+		return $this->markerArray;
+	}
+
+	/**
+	 * Setter
+	 *
+	 * @param array $markerArray Marker array
+	 *
+	 * @return void
+	 */
+	public function setMarkerArray(array $markerArray) {
+		$this->markerArray = $markerArray;
+	}
+
+	/**
+	 * Getter
+	 *
+	 * @return string
+	 */
+	public function getTemplateCode() {
+		return $this->templateCode;
+	}
+
+	/**
+	 * Setter
+	 *
+	 * @param string $templateCode Template code
+	 *
+	 * @return void
+	 */
+	public function setTemplateCode($templateCode) {
+		$this->templateCode = $templateCode;
+	}
+
+	/**
+	 * Getter
+	 *
+	 * @return string
+	 */
+	public function getContent() {
+		return $this->content;
+	}
+
+	/**
+	 * Setter
+	 *
+	 * @param string $content Content
+	 *
+	 * @return void
+	 */
+	public function setContent($content) {
+		$this->content = $content;
+	}
+
+	/**
+	 * Getter
+	 *
+	 * @return int
+	 */
+	public function getPriceLimitForBasket() {
+		return $this->priceLimitForBasket;
+	}
+
+	/**
+	 * Setter
+	 *
+	 * @param int $priceLimitForBasket Limit for basket
+	 *
+	 * @return void
+	 */
+	public function setPriceLimitForBasket($priceLimitForBasket) {
+		$this->priceLimitForBasket = $priceLimitForBasket;
 	}
 }
