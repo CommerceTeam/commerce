@@ -160,8 +160,12 @@ class Tx_Commerce_Hook_OrdermailHooks {
 	 */
 	protected function generateTemplateArray($mailkind, $pid, $orderSysLanguageUid) {
 		$database = $this->getDatabaseConnection();
-		/** @var \TYPO3\CMS\Frontend\Page\PageRepository $t3libPage */
-		$t3libPage = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\PageRepository');
+		/**
+		 * Page repository
+		 *
+		 * @var \TYPO3\CMS\Frontend\Page\PageRepository $pageRepository
+		 */
+		$pageRepository = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\PageRepository');
 
 		$rows = $database->exec_SELECTgetRows(
 			'*',
@@ -172,7 +176,7 @@ class Tx_Commerce_Hook_OrdermailHooks {
 
 		$templates = array();
 		foreach ($rows as $row) {
-			$templates[] = $t3libPage->getRecordOverlay($this->tablename, $row, $orderSysLanguageUid);
+			$templates[] = $pageRepository->getRecordOverlay($this->tablename, $row, $orderSysLanguageUid);
 		}
 
 		return $templates;
