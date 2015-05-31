@@ -242,7 +242,7 @@ class Tx_Commerce_Domain_Model_BasketItem {
 	 * @return integer uid
 	 */
 	public function getArticleUid() {
-		return $this->article->getUid();
+		return is_object($this->article) ? $this->article->getUid() : 0;
 	}
 
 	/**
