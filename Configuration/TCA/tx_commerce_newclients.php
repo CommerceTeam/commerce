@@ -92,5 +92,3 @@ return array(
 		'1' => Array('showitem' => '')
 	)
 );
-
-?>

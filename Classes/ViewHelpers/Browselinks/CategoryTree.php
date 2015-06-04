@@ -1,33 +1,24 @@
 <?php
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2008-2011 Erik Frister <typo3@marketing-factory.de>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *  A copy is found in the textfile GPL.txt and important notices to the license
- *  from the author is found in LICENSE.txt distributed with these scripts.
- *
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
 
 /**
  * Implements a Categorytree for the Link-Commerce Module
  * A tree can have n leafs, and leafs can in itself contain other leafs
+ *
+ * Class Tx_Commerce_ViewHelpers_Browselinks_CategoryTree
+ *
+ * @author 2008-2011 Erik Frister <typo3@marketing-factory.de>
  */
 class Tx_Commerce_ViewHelpers_Browselinks_CategoryTree extends Tx_Commerce_Tree_Browsetree {
 	/**
@@ -203,12 +194,12 @@ class Tx_Commerce_ViewHelpers_Browselinks_CategoryTree extends Tx_Commerce_Tree_
 	 * @return void
 	 */
 	protected function initializePositionSaving() {
-			// Get stored tree structure:
+		// Get stored tree structure:
 		$positions = unserialize($this->getBackendUser()->uc['browseTrees'][$this->treeName]);
 
-			// In case the array is not set, initialize it
+		// In case the array is not set, initialize it
 		if (!is_array($positions) || 0 >= count($positions) || key($positions[0][key($positions[0])]) !== 'items') {
-				// reinitialize damaged array
+			// reinitialize damaged array
 			$positions = array();
 			$this->savePosition($positions);
 			if (TYPO3_DLOG) {
@@ -217,36 +208,35 @@ class Tx_Commerce_ViewHelpers_Browselinks_CategoryTree extends Tx_Commerce_Tree_
 		}
 
 		$PM = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('PM');
-			// IE takes # as anchor
+		// IE takes # as anchor
 		if (($PMpos = strpos($PM, '#')) !== FALSE) {
 			$PM = substr($PM, 0, $PMpos);
 		}
-			// 0: treeName, 1: leafIndex, 2: Mount, 3: set/clear [4:,5:,.. further leafIndices], 5[+++]: Item UID
+		// 0: treeName, 1: leafIndex, 2: Mount, 3: set/clear [4:,5:,.. further leafIndices], 5[+++]: Item UID
 		$PM = explode('_', $PM);
 
-			// PM has to be at LEAST 5 Items (up to a (theoratically) unlimited count)
+		// PM has to be at LEAST 5 Items (up to a (theoratically) unlimited count)
 		if (count($PM) >= 5 && $PM[0] == $this->treeName) {
-
-				// Get the value - is always the last item
-				// so far this is 'current UID|Parent UID'
+			// Get the value - is always the last item
+			// so far this is 'current UID|Parent UID'
 			$value = explode('|', $PM[count($PM) - 1]);
-				// now it is 'current UID'
+			// now it is 'current UID'
 			$value = $value[0];
 
-				// Prepare the Array
+			// Prepare the Array
 			$c = count($PM);
-				// We get the Mount-Array of the corresponding leaf index
+			// We get the Mount-Array of the corresponding leaf index
 			$field = &$positions[$PM[1]][$PM[2]];
 
-				// Move the field forward if necessary
+			// Move the field forward if necessary
 			if ($c > 5) {
 				$c -= 4;
-					// Walk the PM
+				// Walk the PM
 				$i = 4;
 
-					// Leave out last value of the $PM Array since that is the value and no longer a leaf Index
+				// Leave out last value of the $PM Array since that is the value and no longer a leaf Index
 				while ($c > 1) {
-						// Mind that we increment $i on the fly on this line
+					// Mind that we increment $i on the fly on this line
 					$field = &$field[$PM[$i++]];
 					$c --;
 				}

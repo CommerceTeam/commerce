@@ -1,32 +1,23 @@
 <?php
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2008-2011 Erik Frister <typo3@marketing-factory.de>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *  A copy is found in the textfile GPL.txt and important notices to the license
- *  from the author is found in LICENSE.txt distributed with these scripts.
- *
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
 
 /**
  * Implements the hooks for versioning and swapping
+ *
+ * Class Tx_Commerce_Hook_VersionHooks
+ *
+ * @author 2008-2011 Erik Frister <typo3@marketing-factory.de>
  */
 class Tx_Commerce_Hook_VersionHooks {
 	/**
@@ -35,19 +26,21 @@ class Tx_Commerce_Hook_VersionHooks {
 	 * 2) copies the Articles and keeps their relations
 	 *
 	 * @param string $table Tablename on which the swap happens
-	 * @param integer $id id of the LIVE Version to swap
-	 * @param integer $swapWith id of the Offline Version to swap with
-	 * @param integer $swapIntoWS If set, swaps online into workspace instead of publishing out of workspace.
+	 * @param int $id Id of the LIVE Version to swap
+	 * @param int $swapWith Id of the Offline Version to swap with
+	 * @param int $swapIntoWorkspace If set, swaps online into workspace
+	 * 	instead of publishing out of workspace.
+	 *
 	 * @return void
 	 */
-	public function processSwap_postProcessSwap($table, $id, $swapWith, $swapIntoWS) {
+	public function processSwap_postProcessSwap($table, $id, $swapWith, $swapIntoWorkspace) {
 		if ('tx_commerce_products' == $table) {
-			$copy = !is_null($swapIntoWS);
+			$copy = !is_null($swapIntoWorkspace);
 
-				// give Attributes from swapWith to id
+			// give Attributes from swapWith to id
 			Tx_Commerce_Utility_BackendUtility::swapProductAttributes($swapWith, $id, $copy);
 
-				// give Articles from swapWith to id
+			// give Articles from swapWith to id
 			Tx_Commerce_Utility_BackendUtility::swapProductArticles($swapWith, $id, $copy);
 		}
 	}
