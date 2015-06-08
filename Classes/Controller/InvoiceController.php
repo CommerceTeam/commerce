@@ -33,7 +33,7 @@ class Tx_Commerce_Controller_InvoiceController extends Tx_Commerce_Controller_Ba
 	public $extKey = COMMERCE_EXTKEY;
 
 	/**
-	 * @var boolean
+	 * @var bool
 	 */
 	public $pi_checkCHash = TRUE;
 
@@ -139,10 +139,10 @@ class Tx_Commerce_Controller_InvoiceController extends Tx_Commerce_Controller_Ba
 			$this->orderPayment = $this->getOrderSystemArticles($this->order['uid'], '2', 'PAYMENT_');
 			$this->orderDelivery = $this->getOrderSystemArticles($this->order['uid'], '3', 'SHIPPING_');
 
-			$markerArray['###ORDER_TAX###'] = Tx_Commerce_ViewHelpers_Money::format($this->order['sum_price_gross'] - $this->order['sum_price_net'], $this->conf['currency'], (boolean) $this->conf['showCurrencySign']);
-			$markerArray['###ORDER_TOTAL###'] = Tx_Commerce_ViewHelpers_Money::format($this->order['sum_price_gross'], $this->conf['currency'], (boolean) $this->conf['showCurrencySign']);
-			$markerArray['###ORDER_NET_TOTAL###'] = Tx_Commerce_ViewHelpers_Money::format($this->order['sum_price_net'], $this->conf['currency'], (boolean) $this->conf['showCurrencySign']);
-			$markerArray['###ORDER_GROSS_TOTAL###'] = Tx_Commerce_ViewHelpers_Money::format($this->order['sum_price_gross'], $this->conf['currency'], (boolean) $this->conf['showCurrencySign']);
+			$markerArray['###ORDER_TAX###'] = Tx_Commerce_ViewHelpers_Money::format($this->order['sum_price_gross'] - $this->order['sum_price_net'], $this->conf['currency'], (bool) $this->conf['showCurrencySign']);
+			$markerArray['###ORDER_TOTAL###'] = Tx_Commerce_ViewHelpers_Money::format($this->order['sum_price_gross'], $this->conf['currency'], (bool) $this->conf['showCurrencySign']);
+			$markerArray['###ORDER_NET_TOTAL###'] = Tx_Commerce_ViewHelpers_Money::format($this->order['sum_price_net'], $this->conf['currency'], (bool) $this->conf['showCurrencySign']);
+			$markerArray['###ORDER_GROSS_TOTAL###'] = Tx_Commerce_ViewHelpers_Money::format($this->order['sum_price_gross'], $this->conf['currency'], (bool) $this->conf['showCurrencySign']);
 			$markerArray['###ORDER_ID###'] = $this->order['order_id'];
 			$markerArray['###ORDER_DATE###'] = strftime($this->conf['orderDateFormat'], $this->order['crdate']);
 
@@ -227,10 +227,11 @@ class Tx_Commerce_Controller_InvoiceController extends Tx_Commerce_Controller_Ba
 	/**
 	 * Render ordered articles
 	 *
-	 * @param integer $orderUid OrderUID
+	 * @param int $orderUid OrderUID
 	 * @param array $TS Optional, default is FALSE, contains TS configuration
 	 * @param string $prefix
-	 * @return string HTML-Output rendert
+	 *
+	 * @return string HTML-Output rendered
 	 */
 	protected function getOrderArticles($orderUid, $TS = array(), $prefix) {
 		$database = $this->getBackendUser();
@@ -253,12 +254,12 @@ class Tx_Commerce_Controller_InvoiceController extends Tx_Commerce_Controller_Ba
 		$out = '';
 		while ($row = $database->sql_fetch_assoc($res)) {
 			$markerArray = $this->generateMarkerArray($row, $TS, $prefix, 'tx_commerce_order_articles');
-			$markerArray['ARTICLE_PRICE'] = Tx_Commerce_ViewHelpers_Money::format($row['price_gross'], $this->conf['currency'], (boolean) $this->conf['showCurrencySign']);
-			$markerArray['ARTICLE_PRICE_GROSS'] = Tx_Commerce_ViewHelpers_Money::format($row['price_gross'], $this->conf['currency'], (boolean) $this->conf['showCurrencySign']);
-			$markerArray['ARTICLE_PRICE_NET'] = Tx_Commerce_ViewHelpers_Money::format($row['price_net'], $this->conf['currency'], (boolean) $this->conf['showCurrencySign']);
-			$markerArray['ARTICLE_TOTAL'] = Tx_Commerce_ViewHelpers_Money::format(($row['amount'] * $row['price_gross']), $this->conf['currency'], (boolean) $this->conf['showCurrencySign']);
-			$markerArray['ARTICLE_TOTAL_GROSS'] = Tx_Commerce_ViewHelpers_Money::format(($row['amount'] * $row['price_gross']), $this->conf['currency'], (boolean) $this->conf['showCurrencySign']);
-			$markerArray['ARTICLE_TOTAL_NET'] = Tx_Commerce_ViewHelpers_Money::format(($row['amount'] * $row['price_net']), $this->conf['currency'], (boolean) $this->conf['showCurrencySign']);
+			$markerArray['ARTICLE_PRICE'] = Tx_Commerce_ViewHelpers_Money::format($row['price_gross'], $this->conf['currency'], (bool) $this->conf['showCurrencySign']);
+			$markerArray['ARTICLE_PRICE_GROSS'] = Tx_Commerce_ViewHelpers_Money::format($row['price_gross'], $this->conf['currency'], (bool) $this->conf['showCurrencySign']);
+			$markerArray['ARTICLE_PRICE_NET'] = Tx_Commerce_ViewHelpers_Money::format($row['price_net'], $this->conf['currency'], (bool) $this->conf['showCurrencySign']);
+			$markerArray['ARTICLE_TOTAL'] = Tx_Commerce_ViewHelpers_Money::format(($row['amount'] * $row['price_gross']), $this->conf['currency'], (bool) $this->conf['showCurrencySign']);
+			$markerArray['ARTICLE_TOTAL_GROSS'] = Tx_Commerce_ViewHelpers_Money::format(($row['amount'] * $row['price_gross']), $this->conf['currency'], (bool) $this->conf['showCurrencySign']);
+			$markerArray['ARTICLE_TOTAL_NET'] = Tx_Commerce_ViewHelpers_Money::format(($row['amount'] * $row['price_net']), $this->conf['currency'], (bool) $this->conf['showCurrencySign']);
 			$markerArray['ARTICLE_POSITION'] = $orderpos++;
 			$out .= $this->cObj->substituteMarkerArray($this->template['item'], $markerArray, '###|###', 1);
 		}
@@ -269,9 +270,10 @@ class Tx_Commerce_Controller_InvoiceController extends Tx_Commerce_Controller_Ba
 	/**
 	 * Render address data
 	 *
-	 * @param integer $addressUid AddressUID
+	 * @param int $addressUid AddressUID
 	 * @param array $TS Optional, default is FALSE, contains TS configuration
 	 * @param string $prefix
+	 *
 	 * @return string HTML-Output rendert
 	 */
 	protected function getAddressData($addressUid = 0, $TS = array(), $prefix) {
@@ -350,9 +352,10 @@ class Tx_Commerce_Controller_InvoiceController extends Tx_Commerce_Controller_Ba
 	/**
 	 * Render marker array for System Articles
 	 *
-	 * @param integer $orderUid OrderUID
-	 * @param integer $articleType Optional, articleTypeID
+	 * @param int $orderUid OrderUID
+	 * @param int $articleType Optional, articleTypeID
 	 * @param string $prefix
+	 *
 	 * @return array System Articles
 	 */
 	protected function getOrderSystemArticles($orderUid, $articleType = 0, $prefix) {
@@ -375,7 +378,7 @@ class Tx_Commerce_Controller_InvoiceController extends Tx_Commerce_Controller_Ba
 				// @TODO: Use $markerArray = $this->generateMarkerArray($row,'',$prefix);
 			$markerArray['###' . $prefix . 'AMOUNT###'] = $row['amount'];
 			$markerArray['###' . $prefix . 'METHOD###'] = $row['title'];
-			$markerArray['###' . $prefix . 'COST###'] = Tx_Commerce_ViewHelpers_Money::format(($row['amount'] * $row['price_gross']), $this->conf['currency'], (boolean)$this->conf['showCurrencySign']);
+			$markerArray['###' . $prefix . 'COST###'] = Tx_Commerce_ViewHelpers_Money::format(($row['amount'] * $row['price_gross']), $this->conf['currency'], (bool)$this->conf['showCurrencySign']);
 			$content .= $this->cObj->substituteMarkerArray($subpart, $markerArray);
 		}
 

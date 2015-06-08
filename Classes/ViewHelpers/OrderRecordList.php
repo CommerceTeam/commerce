@@ -25,7 +25,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class Tx_Commerce_ViewHelpers_OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordList {
 	/**
-	 * @var integer
+	 * @var int
 	 */
 	public $orderPid;
 
@@ -54,7 +54,7 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends \TYPO3\CMS\Recordlist\Reco
 		'internalcomment', 'articles');
 
 	/**
-	 * @var boolean
+	 * @var bool
 	 */
 	public $disableSingleTableView;
 
@@ -138,10 +138,11 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends \TYPO3\CMS\Recordlist\Reco
 
 	/**
 	 * @param string $table
-	 * @param integer $id
+	 * @param int $id
 	 * @param string $rowlist
-	 * @throws UnexpectedValueException
+	 *
 	 * @return string
+	 * @throws UnexpectedValueException
 	 */
 	public function getTable($table, $id, $rowlist) {
 		$database = $this->getDatabaseConnection();
@@ -538,12 +539,13 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends \TYPO3\CMS\Recordlist\Reco
 	 *
 	 * @param string $table Table name
 	 * @param array $row Current record
-	 * @param integer $cc Counter, counting for each time an element is rendered
+	 * @param int $cc Counter, counting for each time an element is rendered
 	 * 	(used for alternating colors)
 	 * @param string $titleCol Table field (column) where header value is found
 	 * @param string $thumbsCol Table field (column) where (possible) thumbnails
 	 * 	can be found
-	 * @param integer $indent Indent from left.
+	 * @param int $indent Indent from left.
+	 *
 	 * @return string Table row for the element
 	 * @see getTable()
 	 */
@@ -769,8 +771,9 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends \TYPO3\CMS\Recordlist\Reco
 	 * Create the selector box for selecting fields to display from a table:
 	 *
 	 * @param string $table Table name
-	 * @param bool|integer $formFields If true, form-fields will be wrapped
+	 * @param bool|int $formFields If true, form-fields will be wrapped
 	 * 	around the table.
+	 *
 	 * @return string HTML table with the selector box
 	 * 	(name: displayFields['.$table.'][])
 	 */
@@ -900,9 +903,10 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends \TYPO3\CMS\Recordlist\Reco
 
 	/**
 	 * @param string $table
-	 * @param integer $id
+	 * @param int $id
 	 * @param string $addWhere
 	 * @param string $fieldList
+	 *
 	 * @return array
 	 */
 	public function makeQueryArray($table, $id, $addWhere = '', $fieldList = '*') {
@@ -1043,7 +1047,7 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends \TYPO3\CMS\Recordlist\Reco
 	 * Returns a table-row with the content from the fields in the input data array.
 	 * OBS: $this->fieldArray MUST be set! (represents the list of fields to display)
 	 *
-	 * @param integer $h is an integer >=0 and denotes how tall a element is. Set to
+	 * @param int $h is an int >=0 and denotes how tall a element is. Set to
 	 * 	'0' makes a halv line, -1 = full line, set to 1 makes a 'join' and above
 	 * 	makes 'line'
 	 * @param string $icon is the <img>+<a> of the record. If not supplied the first
@@ -1053,8 +1057,8 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends \TYPO3\CMS\Recordlist\Reco
 	 * 	<td>-tags
 	 * @param string $trParams is insert in the <td>-tags. Must carry a ' ' as
 	 * 	first character
-	 * @param integer|string $lMargin OBSOLETE - NOT USED ANYMORE. $lMargin is
-	 * 	the leftMargin (integer)
+	 * @param int|string $lMargin OBSOLETE - NOT USED ANYMORE. $lMargin is
+	 * 	the leftMargin (int)
 	 * @param string $altLine is the HTML <img>-tag for an alternative
 	 * 	'gfx/ol/line.gif'-icon (used in the top)
 	 * @return string HTML content for the table row
@@ -1207,11 +1211,12 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends \TYPO3\CMS\Recordlist\Reco
 	 * Makes the list of fields to select for a table
 	 *
 	 * @param string $table Table name
-	 * @param boolean|integer $dontCheckUser If set, users access to the
+	 * @param bool|int $dontCheckUser If set, users access to the
 	 * 	field (non-exclude-fields) is NOT checked.
-	 * @param boolean|integer $addDateFields If set, also adds crdate and
+	 * @param bool|int $addDateFields If set, also adds crdate and
 	 * 	tstamp fields (note: they will also be added if user is admin or
 	 * 	dontCheckUser is set)
+	 *
 	 * @return array Array, where values are fieldnames to include in query
 	 */
 	public function makeFieldList($table, $dontCheckUser = 0, $addDateFields = 0) {

@@ -227,7 +227,8 @@ class Tx_Commerce_Hook_BrowselinksHooks implements \TYPO3\CMS\Core\ElementBrowse
 	 * Check if call of hook is valid
 	 *
 	 * @param string $type
-	 * @return boolean
+	 *
+	 * @return bool
 	 */
 	public function isValid($type) {
 		return $type === 'rte';
@@ -252,7 +253,7 @@ class Tx_Commerce_Hook_BrowselinksHooks implements \TYPO3\CMS\Core\ElementBrowse
 	/**
 	 * Check if mode is rte
 	 *
-	 * @return boolean
+	 * @return bool
 	 */
 	protected function isRichTextEditor() {
 		return $this->pObj->mode == 'rte';

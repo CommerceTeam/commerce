@@ -42,7 +42,7 @@ class Tx_Commerce_Payment_Creditcard extends Tx_Commerce_Payment_PaymentAbstract
 	/**
 	 * Determine if additional data is needed
 	 *
-	 * @return boolean True if additional data is needed
+	 * @return bool True if additional data is needed
 	 */
 	public function needAdditionalData() {
 		$basePath = PATH_TXCOMMERCE . 'Resources/Private/Language/locallang_creditcard.xml';
@@ -68,7 +68,8 @@ class Tx_Commerce_Payment_Creditcard extends Tx_Commerce_Payment_PaymentAbstract
 	 * Check if provided data is ok
 	 *
 	 * @param array $formData Current form data
-	 * @return boolean TRUE if data is ok
+	 *
+	 * @return bool TRUE if data is ok
 	 */
 	public function proofData(array $formData = array()) {
 		/** @var $ccvs Tx_Commerce_Payment_Ccvs */

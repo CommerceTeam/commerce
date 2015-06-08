@@ -35,7 +35,8 @@ class Tx_Commerce_Domain_Repository_AttributeRepository extends Tx_Commerce_Doma
 	/**
 	 * Gets a list of attribute_value_uids
 	 *
-	 * @param integer $uid
+	 * @param int $uid
+	 *
 	 * @return array
 	 */
 	public function getAttributeValueUids($uid) {
@@ -61,7 +62,8 @@ class Tx_Commerce_Domain_Repository_AttributeRepository extends Tx_Commerce_Doma
 	/**
 	 * Gets a list of attribute value uids
 	 *
-	 * @param integer $uid
+	 * @param int $uid
+	 *
 	 * @return array
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0 - Use tx_commerce_db_attribute::getAttributeValueUids() instead
 	 */
@@ -73,7 +75,8 @@ class Tx_Commerce_Domain_Repository_AttributeRepository extends Tx_Commerce_Doma
 	/**
 	 * Get child attribute uids
 	 *
-	 * @param integer $uid
+	 * @param int $uid
+	 *
 	 * @return array
 	 */
 	public function getChildAttributeUids($uid) {

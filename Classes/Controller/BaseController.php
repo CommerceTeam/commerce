@@ -43,7 +43,7 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	/**
 	 * If set to TRUE some debug message will be printed.
 	 *
-	 * @var boolean
+	 * @var bool
 	 */
 	public $debug = FALSE;
 
@@ -86,7 +86,7 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	/**
 	 * Holds the workspace, if one is used
 	 *
-	 * @var integer
+	 * @var int
 	 */
 	public $workspace = FALSE;
 
@@ -2245,7 +2245,7 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	 * @param Tx_Commerce_Domain_Model_Product $prodObj The current product
 	 * @param array $articleId Array with articleIds for filtering attributss
 	 *
-	 * @return string|boolean Stringoutput for attributes
+	 * @return string|bool Stringoutput for attributes
 	 * @depricated since commerce 1.0.0, this function will be removed in commerce 1.4.0, this method gets removed from the api
 	 */
 	public function makeArticleAttributList(&$prodObj, $articleId = array()) {

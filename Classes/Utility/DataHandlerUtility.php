@@ -54,9 +54,10 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 	protected $redirect;
 
 	/**
-	 * Boolean. If set, errors will be printed on screen instead of redirection. Should always be used, otherwise you will see no errors if they happen.
+	 * If set, errors will be printed on screen instead of redirection.
+	 * Should always be used, otherwise you will see no errors if they happen.
 	 *
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $prErr;
 
@@ -75,9 +76,10 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 	protected $vC;
 
 	/**
-	 * Boolean. Update Page Tree Trigger. If set and the manipulated records are tx_commerce_categories then the update page tree signal will be set.
+	 * Update Page Tree Trigger. If set and the manipulated records are
+	 * tx_commerce_categories then the update page tree signal will be set.
 	 *
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $uPT;
 
@@ -104,9 +106,9 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 	public $pageinfo;
 
 	/**
-	 * holds the sorting of copied record
+	 * Holds the sorting of copied record
 	 *
-	 * @var integer
+	 * @var int
 	 */
 	public $sorting;
 

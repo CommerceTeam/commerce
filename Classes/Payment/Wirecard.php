@@ -142,7 +142,7 @@ class Tx_Commerce_Payment_Wirecard {
 	* Sendet die Daten - bei Wirecard mit einem Post auf Curl SSL
 	* Das Ergebniss steht im result und muss in das Error/Status Array geschrieben werden.
 	*
-	* @return boolean
+	* @return bool
 	*/
 	public function sendTransaction() {
 		$header = array(
@@ -201,7 +201,7 @@ class Tx_Commerce_Payment_Wirecard {
 	 */
 
 	/**
-	 * @return integer
+	 * @return int
 	 */
 	public function isError() {
 		if (is_array($this->error)) {
@@ -216,7 +216,8 @@ class Tx_Commerce_Payment_Wirecard {
 	 * Parst das ergebnis und schreibt die Werte in das Status/Error Array
 	 *
 	 * @param string $result
-	 * @return integer
+	 *
+	 * @return int
 	 */
 	public function parseResult($result) {
 		if (!$result) {

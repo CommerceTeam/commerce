@@ -63,21 +63,21 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	/**
 	 * TRUE if checkoutmail to user sent correctly
 	 *
-	 * @var boolean
+	 * @var bool
 	 */
 	public $userMailOk;
 
 	/**
 	 * TRUE if checkoutmail to Admin send correctly
 	 *
-	 * @var boolean
+	 * @var bool
 	 */
 	public $adminMailOk;
 
 	/**
 	 * You have to implement FALSE by your own
 	 *
-	 * @var boolean TRUE if finish IT is ok
+	 * @var bool TRUE if finish IT is ok
 	 */
 	public $finishItOk = TRUE;
 
@@ -108,7 +108,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	public $sessionData = array();
 
 	/**
-	 * @var integer
+	 * @var int
 	 */
 	public $orderUid = 0;
 
@@ -123,7 +123,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	public $step;
 
 	/**
-	 * @var boolean
+	 * @var bool
 	 */
 	public $isHtmlMail;
 
@@ -467,7 +467,8 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	/**
 	 * Creates a form for collection the billing address data.
 	 *
-	 * @param integer $withTitle
+	 * @param int $withTitle
+	 *
 	 * @return string $content
 	 */
 	public function getBillingAddress($withTitle = 1) {
@@ -1175,7 +1176,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	/**
 	 * check if all Articles of Basket are in stock
 	 *
-	 * @return boolean
+	 * @return bool
 	 */
 	public function checkStock() {
 		$result = TRUE;
@@ -1320,7 +1321,8 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	 * Checks if an address in the SESSION is valid
 	 *
 	 * @param string $addressType
-	 * @return boolean
+	 *
+	 * @return bool
 	 */
 	public function validateAddress($addressType) {
 		$typeLower = strtolower($addressType);
@@ -1455,7 +1457,8 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	 * Check if a username is valid
 	 *
 	 * @param string $username Username
-	 * @return boolean
+	 *
+	 * @return bool
 	 */
 	public function checkUserName($username) {
 		$database = $this->getDatabaseConnection();
@@ -1560,7 +1563,8 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	 * Return payment type. The type is extracted from the basket object. The type
 	 * is stored in the basket as a special article.
 	 *
-	 * @param boolean $id Switch for returning the id or classname
+	 * @param bool $id Switch for returning the id or classname
+	 *
 	 * @return string Determines the payment ('creditcard', 'invoice' or whatever)
 	 *        if not $id is set, otherwise returns the id of the paymentarticle
 	 */
@@ -1586,7 +1590,8 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	 *
 	 * @param array $config Config array
 	 * @param string $step Current step
-	 * @param boolean $parseList
+	 * @param bool $parseList
+	 *
 	 * @return string Form HTML
 	 */
 	public function getInputForm($config, $step, $parseList = TRUE) {
@@ -1671,7 +1676,8 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	 * Handle adress data
 	 *
 	 * @param string $type Session type
-	 * @return integer uid of user
+	 *
+	 * @return int uid of user
 	 */
 	public function handleAddress($type) {
 		$database = $this->getDatabaseConnection();
@@ -2046,7 +2052,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	 * - nopayment => User has no payment type selected
 	 * - nobilling => User is in step 'finish' but no billing address was set
 	 *
-	 * @return string|boolean TRUE if checkout is possible, else one of the keywords
+	 * @return string|bool TRUE if checkout is possible, else one of the keywords
 	 */
 	protected function canMakeCheckout() {
 		$checks = array(
@@ -2107,11 +2113,12 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 
 	/**
 	 * Sends information mail to the user
-	 * Also performes a charset Conversion for the mail
+	 * Also performs a charset Conversion for the mail
 	 *
-	 * @param integer $orderUid OrderID
+	 * @param int $orderUid OrderID
 	 * @param array $orderData Collected Order Data form PI3
-	 * @return boolean TRUE on success
+	 *
+	 * @return bool TRUE on success
 	 */
 	public function sendUserMail($orderUid, $orderData) {
 		$hookObjectsArr = $this->getHookObjectArray('sendUserMail');
@@ -2255,9 +2262,10 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	 * Send admin mail
 	 * Also performes a charset Conversion for the mail, including Sender
 	 *
-	 * @param integer $orderUid Order ID
+	 * @param int $orderUid Order ID
 	 * @param array $orderData Collected Order Data form PI3
-	 * @return boolean TRUE on success
+	 *
+	 * @return bool TRUE on success
 	 */
 	public function sendAdminMail($orderUid, $orderData) {
 		$hookObjectsArr = $this->getHookObjectArray('sendAdminMail');
@@ -2543,8 +2551,9 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	 * @param int $pid Uid of the folder to save the order in
 	 * @param Tx_Commerce_Domain_Model_Basket $basket Basket object of the user
 	 * @param object $paymentObj Payment Object
-	 * @param boolean $doHook Flag if the hooks should be executed
-	 * @param boolean $doStock Flag if stockreduce should be executed
+	 * @param bool $doHook Flag if the hooks should be executed
+	 * @param bool $doStock Flag if stock reduce should be executed
+	 *
 	 * @return array $orderData Array with all the order data
 	 */
 	public function saveOrder($orderId, $pid, $basket, $paymentObj, $doHook = TRUE, $doStock = TRUE) {
@@ -2691,7 +2700,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	/**
 	 * Get an instance of DataHandler
 	 *
-	 * @param integer $pid
+	 * @param int $pid
 	 *
 	 * @return \TYPO3\CMS\Core\DataHandling\DataHandler
 	 */

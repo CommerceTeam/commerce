@@ -47,7 +47,7 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 	/**
 	 * Item UID of the Mount for this Data
 	 *
-	 * @var integer
+	 * @var int
 	 */
 	protected $bank;
 
@@ -151,7 +151,7 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 	protected $where;
 
 	/**
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $sorted = FALSE;
 
@@ -208,8 +208,9 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 	/**
 	 * Returns true if this leaf is currently expanded
 	 *
-	 * @param integer $uid uid of the current row
-	 * @return boolean
+	 * @param int $uid Uid of the current row
+	 *
+	 * @return bool
 	 */
 	public function isExpanded($uid) {
 		if (!is_numeric($uid)) {
@@ -241,9 +242,10 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 	/**
 	 * Returns an array of Positions
 	 *
-	 * @return array
-	 * @param integer $index Index of this leaf
+	 * @param int $index Index of this leaf
 	 * @param array $indices Parent Indices
+	 *
+	 * @return array
 	 */
 	public function getPositionsByIndices($index, $indices) {
 		if (!is_numeric($index) || !is_array($indices)) {
@@ -311,7 +313,8 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 	/**
 	 * Sets the bank
 	 *
-	 * @param integer $bank - Category UID of the Mount (aka Bank)
+	 * @param int $bank Category UID of the Mount (aka Bank)
+	 *
 	 * @return void
 	 */
 	public function setBank($bank) {
@@ -358,7 +361,7 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 	/**
 	 * Returns whether this Tx_Commerce_Tree_Leaf_Data has been loaded
 	 *
-	 * @return boolean
+	 * @return bool
 	 */
 	public function isLoaded() {
 		return ($this->records != NULL);
@@ -368,10 +371,11 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 	 * Sorts the records to represent the linar structure of the tree
 	 * Stores the resulting array in an internal variable
 	 *
-	 * @param integer $rootUid - UID of the Item that will act as root
-	 * @param integer $depth
-	 * @param boolean $last
-	 * @param integer $crazyRecursionLimiter
+	 * @param int $rootUid UID of the Item that will act as root
+	 * @param int $depth
+	 * @param bool $last
+	 * @param int $crazyRecursionLimiter
+	 *
 	 * @return void
 	 */
 	public function sort($rootUid, $depth = 0, $last = FALSE, $crazyRecursionLimiter = 999) {
@@ -421,7 +425,7 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 	 * Returns the sorted array
 	 * False if the data has not been sorted yet
 	 *
-	 * @return array|boolean
+	 * @return array|bool
 	 */
 	public function &getSortedArray() {
 		if (!$this->sorted) {
@@ -434,7 +438,7 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 	/**
 	 * Returns if the data has loaded any records
 	 *
-	 * @return boolean
+	 * @return bool
 	 */
 	public function hasRecords() {
 		if (!$this->isLoaded()) {
@@ -448,7 +452,8 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 	 * Returns a record from the 'uid' array
 	 * Returns null if the index is not found
 	 *
-	 * @param integer $uid - UID for which we will look
+	 * @param int $uid UID for which we will look
+	 *
 	 * @return array
 	 */
 	public function &getChildByUid($uid) {
@@ -470,7 +475,8 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 	 * Returns a subset of records from the 'pid' array
 	 * Returns null if PID is not found
 	 *
-	 * @param integer $pid
+	 * @param int $pid
+	 *
 	 * @return array
 	 */
 	public function &getChildrenByPid($pid) {
@@ -643,10 +649,11 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 	 * taken from alt_doc.php) as well as the table access rights
 	 * of the user.
 	 *
+	 * @param string $table The table to check access
+	 * @param string $row The record uid of the table
+	 *
+	 * @return bool Returns true is the user has access, or false if not
 	 * @see tx_recycler
-	 * @param string $table: The table to check access for
-	 * @param string $row: The record uid of the table
-	 * @return	boolean		Returns true is the user has access, or false if not
 	 */
 	public function checkAccess($table, $row) {
 		// Checking if the user has permissions?

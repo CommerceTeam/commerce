@@ -30,9 +30,9 @@ class Tx_Commerce_Utility_StatisticsUtility {
 	public $excludePids;
 
 	/**
-	 * How mayn dasys the update agregation wil recaluclate
+	 * How many days the update aggregation wil recalculate
 	 *
-	 * @var integer
+	 * @var int
 	 */
 	public $daysback = 10;
 
@@ -49,7 +49,7 @@ class Tx_Commerce_Utility_StatisticsUtility {
 	/**
 	 * Public method to return days back
 	 *
-	 * @return integer
+	 * @return int
 	 */
 	public function getDaysBack() {
 		return $this->daysback;
@@ -59,9 +59,10 @@ class Tx_Commerce_Utility_StatisticsUtility {
 	 * Aggregate ans Insert the Salesfigures per Hour in the timespare from
 	 * $starttime to $enttime
 	 *
-	 * @param integer $starttime Timestamp of timecode to start the aggregation
-	 * @param integer $endtime Timestamp of timecode to end the aggregation
-	 * @return boolean result of aggregation
+	 * @param int $starttime Timestamp of timecode to start the aggregation
+	 * @param int $endtime Timestamp of timecode to end the aggregation
+	 *
+	 * @return bool result of aggregation
 	 */
 	public function doSalesAggregation($starttime, $endtime) {
 		$database = $this->getDatabaseConnection();
@@ -124,10 +125,11 @@ class Tx_Commerce_Utility_StatisticsUtility {
 	 * Aggregate and Update the Salesfigures per Hour in the timespare from
 	 * $starttime to $enttime
 	 *
-	 * @param integer $starttime Timestamp of timecode to start the aggregation
-	 * @param integer $endtime Timestamp of timecode to end the aggregation
-	 * @param boolean $doOutput Boolen, if output should be genared whiel caluclating, shoudl be fals for cli
-	 * @return boolean result of aggregation
+	 * @param int $starttime Timestamp of timecode to start the aggregation
+	 * @param int $endtime Timestamp of timecode to end the aggregation
+	 * @param bool $doOutput Boolen, if output should be genared whiel caluclating, shoudl be fals for cli
+	 *
+	 * @return bool result of aggregation
 	 */
 	public function doSalesUpdateAggregation($starttime, $endtime, $doOutput = TRUE) {
 		$database = $this->getDatabaseConnection();
@@ -196,9 +198,10 @@ class Tx_Commerce_Utility_StatisticsUtility {
 	 * Aggregate and Insert the New Users (Registrations in fe_user)) per hour
 	 * in the timespare from $starttime to $enttime
 	 *
-	 * @param integer $starttime Timestamp of timecode to start the aggregation
-	 * @param integer $endtime Timestamp of timecode to end the aggregation
-	 * @return boolean result of aggregation
+	 * @param int $starttime Timestamp of timecode to start the aggregation
+	 * @param int $endtime Timestamp of timecode to end the aggregation
+	 *
+	 * @return bool result of aggregation
 	 */
 	public function doClientAggregation($starttime, $endtime) {
 		$database = $this->getDatabaseConnection();
@@ -243,8 +246,9 @@ class Tx_Commerce_Utility_StatisticsUtility {
 	/**
 	 * Retursn the first second of a day as Timestamp
 	 *
-	 * @param integer $timestamp
-	 * @return integer Timestamp
+	 * @param int $timestamp
+	 *
+	 * @return int Timestamp
 	 */
 	public function firstSecondOfDay($timestamp) {
 		return (int) mktime(0, 0, 0, strftime('%m', $timestamp), strftime('%d', $timestamp), strftime('%Y', $timestamp));
@@ -253,8 +257,9 @@ class Tx_Commerce_Utility_StatisticsUtility {
 	/**
 	 * Retursn the last second of a day as Timestamp
 	 *
-	 * @param integer $timestamp
-	 * @return integer Timestamp
+	 * @param int $timestamp
+	 *
+	 * @return int Timestamp
 	 */
 	public function lastSecondOfDay($timestamp) {
 		return (int) mktime(23, 59, 59, strftime('%m', $timestamp), strftime('%d', $timestamp), strftime('%Y', $timestamp));

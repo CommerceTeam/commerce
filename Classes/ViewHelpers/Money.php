@@ -45,7 +45,7 @@ class Tx_Commerce_ViewHelpers_Money {
 	 * given currency.
 	 * IMPORTANT NOTE:
 	 * The amount must always be the smallest unit passed as a string
-	 * or integer! It is a very bad idea to use float for monetary
+	 * or int! It is a very bad idea to use float for monetary
 	 * calculations if you need exact values, therefore
 	 * this method won't accept float values.
 	 * Examples:
@@ -55,7 +55,8 @@ class Tx_Commerce_ViewHelpers_Money {
 	 *
 	 * @param int|string $amount Amount to be formatted. Must be the smalles unit
 	 * @param string $currency ISO 3 letter code of the currency, for example "EUR"
-	 * @param boolean $withSymbol If set the currency symbol will be rendered
+	 * @param bool $withSymbol If set the currency symbol will be rendered
+	 *
 	 * @return string|bool String representation of the amount including currency
 	 * 	symbol(s) or FALSE if $amount was of the type float
 	 */

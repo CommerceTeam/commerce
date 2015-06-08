@@ -39,16 +39,16 @@ class Tx_Commerce_ViewHelpers_Browselinks_CategoryTree extends Tx_Commerce_Tree_
 	protected $noClickList = '';
 
 	/**
-	 * the linked product
+	 * The linked product
 	 *
-	 * @var integer
+	 * @var int
 	 */
 	protected $openProduct = 0;
 
 	/**
-	 * the linked category
+	 * The linked category
 	 *
-	 * @var integer
+	 * @var int
 	 */
 	protected $openCategory = 0;
 
@@ -130,7 +130,8 @@ class Tx_Commerce_ViewHelpers_Browselinks_CategoryTree extends Tx_Commerce_Tree_
 	/**
 	 * Sets the linked product
 	 *
-	 * @param integer $uid uid of the linked product
+	 * @param int $uid Linked product
+	 *
 	 * @return void
 	 */
 	public function setOpenProduct($uid) {
@@ -145,7 +146,8 @@ class Tx_Commerce_ViewHelpers_Browselinks_CategoryTree extends Tx_Commerce_Tree_
 	/**
 	 * Sets the linked category
 	 *
-	 * @param integer $uid uid of the linked category
+	 * @param int $uid Linked category
+	 *
 	 * @return void
 	 */
 	public function setOpenCategory($uid) {
@@ -161,7 +163,8 @@ class Tx_Commerce_ViewHelpers_Browselinks_CategoryTree extends Tx_Commerce_Tree_
 	 * Returns the record of the category with the corresponding uid
 	 * Categories must have been loaded already - the DB is NOT queried
 	 *
-	 * @param integer $uid of the category
+	 * @param int $uid Category
+	 *
 	 * @return array record
 	 */
 	public function getCategory($uid) {

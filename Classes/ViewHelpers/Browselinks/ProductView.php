@@ -33,9 +33,9 @@ class Tx_Commerce_ViewHelpers_Browselinks_ProductView extends Tx_Commerce_Tree_L
 	protected $domIdPrefix = 'txcommerceProduct';
 
 	/**
-	 * uid of the open product
+	 * Uid of the open product
 	 *
-	 * @var integer
+	 * @var int
 	 */
 	protected $openProd = 0;
 
@@ -44,7 +44,8 @@ class Tx_Commerce_ViewHelpers_Browselinks_ProductView extends Tx_Commerce_Tree_L
 	 *
 	 * @param string $title Title string
 	 * @param string $row Item record
-	 * @param integer $bank Bank pointer (which mount point number)
+	 * @param int $bank Bank pointer (which mount point number)
+	 *
 	 * @return string
 	 * @access private
 	 */
@@ -70,7 +71,8 @@ class Tx_Commerce_ViewHelpers_Browselinks_ProductView extends Tx_Commerce_Tree_L
 	/**
 	 * Setter
 	 *
-	 * @param integer $uid
+	 * @param int $uid
+	 *
 	 * @return void
 	 */
 	public function setOpenProduct($uid) {

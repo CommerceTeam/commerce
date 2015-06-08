@@ -31,7 +31,7 @@ abstract class Tx_Commerce_Tree_Browsetree {
 	/**
 	 * Should the clickmenu be disabled?
 	 *
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $noClickmenu;
 
@@ -45,14 +45,14 @@ abstract class Tx_Commerce_Tree_Browsetree {
 	/**
 	 * has the tree already been initialized?
 	 *
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $isInit;
 
 	/**
 	 * Number of leafs in the tree
 	 *
-	 * @var integer
+	 * @var int
 	 */
 	protected $leafcount;
 
@@ -66,14 +66,14 @@ abstract class Tx_Commerce_Tree_Browsetree {
 	/**
 	 * the uid from which to start rendering recursively, if we so chose to
 	 *
-	 * @var integer
+	 * @var int
 	 */
 	protected $startingUid;
 
 	/**
 	 * the recursive depth to choose if we chose to render recursively
 	 *
-	 * @var integer
+	 * @var int
 	 */
 	protected $depth;
 
@@ -105,14 +105,15 @@ abstract class Tx_Commerce_Tree_Browsetree {
 	 * Gets passed along to all leafs, which themselves pass it to their view
 	 * Has to be set BEFORE initializing the tree with init()
 	 *
+	 * @param bool $flag [optional]	Flag
+	 *
 	 * @return void
-	 * @param boolean $flag [optional]	Flag
 	 */
 	public function noClickmenu($flag = TRUE) {
 		if (!is_bool($flag)) {
 			if (TYPO3_DLOG) {
 				GeneralUtility::devLog(
-					'noClickmenu (Tx_Commerce_Tree_Browsetree) gets a non-boolean parameter (expected boolean)!',
+					'noClickmenu (Tx_Commerce_Tree_Browsetree) gets a non-bool parameter (expected bool)!',
 					COMMERCE_EXTKEY,
 					2
 				);
@@ -126,7 +127,8 @@ abstract class Tx_Commerce_Tree_Browsetree {
 	 *
 	 * @param Tx_Commerce_Tree_Leaf_Master $leaf - Treeleaf Object which
 	 * 	holds the Tx_Commerce_Tree_Leaf_Data and the Tx_Commerce_Tree_Leaf_View
-	 * @return boolean
+	 *
+	 * @return bool
 	 */
 	public function addLeaf(Tx_Commerce_Tree_Leaf_Master &$leaf) {
 			// pass tree vars to the new leaf
@@ -142,7 +144,8 @@ abstract class Tx_Commerce_Tree_Browsetree {
 	/**
 	 * Returns the leaf object at the given index
 	 *
-	 * @param integer $index Leaf index
+	 * @param int $index Leaf index
+	 *
 	 * @return Tx_Commerce_Tree_Leaf_Master
 	 */
 	public function getLeaf($index) {
@@ -181,9 +184,10 @@ abstract class Tx_Commerce_Tree_Browsetree {
 	 * Sets the internal rendering method to 'recursively'
 	 * Call BEFORE initializing
 	 *
-	 * @return void
-	 * @param integer $uid UID from which the masterleafs should start
-	 * @param integer $depth
+	 * @param int $uid UID from which the masterleafs should start
+	 * @param int $depth
+	 *
+	 *  @return void
 	 */
 	public function readRecursively($uid, $depth = 100) {
 		if (!is_numeric($uid)) {
@@ -356,11 +360,11 @@ abstract class Tx_Commerce_Tree_Browsetree {
 	/**
 	 * Prints the Tree starting with the uid
 	 *
+	 * @param int $uid UID of the Item that will be started with
+	 *
+	 * @return void
 	 * @todo Implement this function if it is ever needed.
 	 * 	So far it's not. Delete this function if it is never needed.
-	 *
-	 * @return string
-	 * @param integer $uid UID of the Item that will be started with
 	 */
 	public function printTree($uid) {
 		die('The function printTree in Browsetree.php is not yet filled.
@@ -390,8 +394,8 @@ abstract class Tx_Commerce_Tree_Browsetree {
 	 * Returns the Records in the tree as a array
 	 * Records will be sorted to represent the tree in linear order
 	 *
-	 * @param integer $rootUid - UId of the Item that will
-	 * 	act as the root of the tree
+	 * @param int $rootUid Uid of the Item that will act as the root of the tree
+	 *
 	 * @return array
 	 */
 	public function getRecordsAsArray($rootUid) {
@@ -427,8 +431,9 @@ abstract class Tx_Commerce_Tree_Browsetree {
 	 * 	[0] => '13'
 	 * 	[1] => '12, 11, 39, 54'
 	 *
+	 * @param int $rootUid
+	 *
 	 * @return array
-	 * @param integer $rootUid
 	 */
 	public function getRecordsPerLevelArray($rootUid) {
 		if (!is_numeric($rootUid)) {

@@ -34,11 +34,12 @@ class Tx_Commerce_Domain_Repository_ArticleRepository extends Tx_Commerce_Domain
 	public $databaseAttributeRelationTable = 'tx_commerce_articles_article_attributes_mm';
 
 	/**
-	 * returns the parent Product uid
+	 * Returns the parent Product uid
 	 *
-	 * @param integer $uid Article uid
-	 * @param boolean $translationMode
-	 * @return integer product uid
+	 * @param int $uid Article uid
+	 * @param bool $translationMode
+	 *
+	 * @return int product uid
 	 */
 	public function getParentProductUid($uid, $translationMode = FALSE) {
 		$data = parent::getData($uid, $translationMode);
@@ -71,9 +72,10 @@ class Tx_Commerce_Domain_Repository_ArticleRepository extends Tx_Commerce_Domain
 	/**
 	 * gets all prices form database related to this product
 	 *
-	 * @param integer $uid Article uid
-	 * @param integer $count = Number of Articles for price_scale_amount, default 1
+	 * @param int $uid Article uid
+	 * @param int $count Number of Articles for price_scale_amount, default 1
 	 * @param string $orderField
+	 *
 	 * @return array of Price UID
 	 */
 	public function getPrices($uid, $count = 1, $orderField = 'price_net') {
@@ -158,9 +160,10 @@ class Tx_Commerce_Domain_Repository_ArticleRepository extends Tx_Commerce_Domain
 	/**
 	 * gets all prices form database related to this product
 	 *
-	 * @param integer $uid Article uid
-	 * @param integer $count = Number of Articles for price_scale_amount, default 1
+	 * @param int $uid Article uid
+	 * @param int $count Number of Articles for price_scale_amount, default 1
 	 * @param string $orderField
+	 *
 	 * @return array of Price UID
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use Tx_Commerce_Domain_Repository_ArticleRepository::getPrices instead
 	 */
@@ -172,8 +175,9 @@ class Tx_Commerce_Domain_Repository_ArticleRepository extends Tx_Commerce_Domain
 	/**
 	 * Returns an array of all scale price amounts
 	 *
-	 * @param integer $uid Article uid
-	 * @param integer $count
+	 * @param int $uid Article uid
+	 * @param int $count
+	 *
 	 * @return array of Price UID
 	 */
 	public function getPriceScales($uid, $count = 1) {
@@ -206,7 +210,8 @@ class Tx_Commerce_Domain_Repository_ArticleRepository extends Tx_Commerce_Domain
 	/**
 	 * gets all attributes from this product
 	 *
-	 * @param integer $uid Product uid
+	 * @param int $uid Product uid
+	 *
 	 * @return array of attribute UID
 	 */
 	public function getAttributes($uid) {
@@ -216,7 +221,8 @@ class Tx_Commerce_Domain_Repository_ArticleRepository extends Tx_Commerce_Domain
 	/**
 	 * gets all attributes from this product
 	 *
-	 * @param integer $uid Product uid
+	 * @param int $uid Product uid
+	 *
 	 * @return array of attribute UID
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use Tx_Commerce_Domain_Repository_ArticleRepository::getAttributes instead
 	 */
@@ -228,9 +234,10 @@ class Tx_Commerce_Domain_Repository_ArticleRepository extends Tx_Commerce_Domain
 	/**
 	 * Returns the attribute Value from the given Article attribute pair
 	 *
-	 * @param integer $uid Article UID
-	 * @param integer $attributeUid Attribute UID
-	 * @param boolean $valueListAsUid if true, returns not the value from the valuelist, instaed the uid
+	 * @param int $uid Article UID
+	 * @param int $attributeUid Attribute UID
+	 *
+	 * @param bool $valueListAsUid if true, returns not the value from the valuelist, instead the uid
 	 * @return string
 	 */
 	public function getAttributeValue($uid, $attributeUid, $valueListAsUid = FALSE) {
@@ -298,7 +305,8 @@ class Tx_Commerce_Domain_Repository_ArticleRepository extends Tx_Commerce_Domain
 	/**
 	 * returns the supplier name to a given UID, selected from tx_commerce_supplier
 	 *
-	 * @param integer $supplierUid
+	 * @param int $supplierUid
+	 *
 	 * @return string Supplier name
 	 */
 	public function getSupplierName($supplierUid) {

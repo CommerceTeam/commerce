@@ -36,8 +36,9 @@ class Tx_Commerce_Tree_Leaf_ArticleView extends Tx_Commerce_Tree_Leaf_View {
 	 * Wrapping $title in a-tags.
 	 *
 	 * @param string $title string
-	 * @param string &$row record
-	 * @param integer $bank pointer (which mount point number)
+	 * @param string $row Record
+	 * @param int $bank Pointer (which mount point number)
+	 *
 	 * @return string
 	 * @access private
 	 */

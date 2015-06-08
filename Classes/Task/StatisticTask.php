@@ -79,7 +79,7 @@ class Tx_Commerce_Task_StatisticTask extends \TYPO3\CMS\Scheduler\Task\AbstractT
 	/**
 	 * Execute garbage collection, called by scheduler.
 	 *
-	 * @return boolean
+	 * @return bool
 	 */
 	public function execute() {
 		$this->init();
@@ -242,8 +242,9 @@ class Tx_Commerce_Task_StatisticTask extends \TYPO3\CMS\Scheduler\Task\AbstractT
 
 	/**
 	 * @param string $message
-	 * @param integer $status
+	 * @param int $status
 	 * @param string $code
+	 *
 	 * @return void
 	 */
 	public function log($message, $status = 0, $code = 'commerce') {

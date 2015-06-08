@@ -42,7 +42,7 @@ class Tx_Commerce_Tree_Leaf_ArticleData extends Tx_Commerce_Tree_Leaf_SlaveData 
 	/**
 	 * Flag if mm table is to be used or the parent field
 	 *
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $useMMTable = FALSE;
 
@@ -67,11 +67,12 @@ class Tx_Commerce_Tree_Leaf_ArticleData extends Tx_Commerce_Tree_Leaf_SlaveData 
 	}
 
 	/**
-	 * @todo If we implement the positions (see above), we should also implement this and any function related to making this leaf not ultimate
 	 * Returns true if this Article is currently expanded
 	 *
-	 * @param array $row - Current Row
-	 * @return boolean
+	 * @param array $row Current Row
+	 *
+	 * @return bool
+	 * @todo If we implement the positions (see above), we should also implement this and any function related to making this leaf not ultimate
 	 */
 	public function isExpanded(&$row) {
 			// Article is the ultimate leaf, so to speak - it currently has no subleafs

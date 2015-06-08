@@ -72,7 +72,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	protected $categories_uid = array();
 
 	/**
-	 * @var integer UID of parent category
+	 * @var int UID of parent category
 	 */
 	protected $parent_category_uid = 0;
 
@@ -112,7 +112,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	protected $teaserImagesArray = array();
 
 	/**
-	 * @var boolean Is true when data is loaded
+	 * @var bool Is true when data is loaded
 	 */
 	protected $data_loaded = FALSE;
 
@@ -122,37 +122,37 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	public $perms_record = array();
 
 	/**
-	 * @var integer The uid of the user owning the category
+	 * @var int The uid of the user owning the category
 	 */
 	public $perms_userid = 0;
 
 	/**
-	 * @var integer The uid of the group owning the category
+	 * @var int The uid of the group owning the category
 	 */
 	public $perms_groupid = 0;
 
 	/**
-	 * @var integer User permissions
+	 * @var int User permissions
 	 */
 	public $perms_user = 0;
 
 	/**
-	 * @var integer Group permissions
+	 * @var int Group permissions
 	 */
 	public $perms_group = 0;
 
 	/**
-	 * @var integer Everybody permissions
+	 * @var int Everybody permissions
 	 */
 	public $perms_everybody = 0;
 
 	/**
-	 * @var integer Editlock-flag
+	 * @var int Editlock-flag
 	 */
 	public $editlock = 0;
 
 	/**
-	 * @var boolean Flag if permissions have been loaded
+	 * @var bool Flag if permissions have been loaded
 	 */
 	public $permsLoaded = FALSE;
 
@@ -186,8 +186,9 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	/**
 	 * Constructor, basically calls init
 	 *
-	 * @param integer $uid
-	 * @param integer $languageUid
+	 * @param int $uid
+	 * @param int $languageUid
+	 *
 	 * @return self
 	 */
 	public function __construct($uid, $languageUid = 0) {
@@ -199,9 +200,10 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	/**
 	 * Init called by the constructor
 	 *
-	 * @param integer $uid Uid of category
-	 * @param integer $languageUid Language_uid , default 0
-	 * @return boolean TRUE on success, FALSE if no $uid is submitted
+	 * @param int $uid Uid of category
+	 * @param int $languageUid Language_uid , default 0
+	 *
+	 * @return bool TRUE on success, FALSE if no $uid is submitted
 	 */
 	public function init($uid, $languageUid = 0) {
 		$uid = (int) $uid;
@@ -301,7 +303,8 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	/**
 	 * Returns a list of all child categories from this category
 	 *
-	 * @param boolean|integer $depth Maximum depth for going recursive
+	 * @param bool|int $depth Maximum depth for going recursive
+	 *
 	 * @return array List of category uids
 	 */
 	public function getChildCategoriesUidlist($depth = FALSE) {
@@ -328,7 +331,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	/**
 	 * Returns the number of child categories
 	 *
-	 * @return integer Number of child categories
+	 * @return int Number of child categories
 	 */
 	public function getChildCategoriesCount() {
 		return is_array($this->categories_uid) ? count($this->categories_uid) : 0;
@@ -364,7 +367,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	/**
 	 * Returns the editlock flag
 	 *
-	 * @return integer Editlock-Flag
+	 * @return int Editlock-Flag
 	 */
 	public function getEditlock() {
 		return $this->editlock;
@@ -457,7 +460,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	/**
 	 * Returns the Group-ID of the category
 	 *
-	 * @return integer UID of group
+	 * @return int UID of group
 	 */
 	public function getPermsGroupId() {
 		return $this->perms_groupid;
@@ -466,7 +469,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	/**
 	 * Returns the User-ID of the category
 	 *
-	 * @return integer UID of user
+	 * @return int UID of user
 	 */
 	public function getPermsUserId() {
 		return $this->perms_userid;
@@ -475,7 +478,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	/**
 	 * Returns the permissions for everybody
 	 *
-	 * @return integer Permissions for everybody
+	 * @return int Permissions for everybody
 	 */
 	public function getPermsEverybody() {
 		return $this->perms_everybody;
@@ -484,7 +487,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	/**
 	 * Returns the Permissions for the group
 	 *
-	 * @return integer Permissions for group
+	 * @return int Permissions for group
 	 */
 	public function getPermsGroup() {
 		return $this->perms_group;
@@ -493,7 +496,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	/**
 	 * Returns the Permissions for the user
 	 *
-	 * @return integer Permissions for user
+	 * @return int Permissions for user
 	 */
 	public function getPermsUser() {
 		return $this->perms_user;
@@ -502,7 +505,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	/**
 	 * Returns a list of all products under this category
 	 *
-	 * @param boolean|integer $depth Depth maximum depth for going recursive
+	 * @param bool|int $depth Depth maximum depth for going recursive
 	 * @return array Array with list of product UIDs
 	 */
 	public function getProducts($depth = FALSE) {
@@ -611,7 +614,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	/**
 	 * Returns the UID of the category
 	 *
-	 * @return integer UID of the category
+	 * @return int UID of the category
 	 */
 	public function getUid() {
 		return $this->uid;
@@ -621,8 +624,9 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	/**
 	 * Loads the data
 	 *
-	 * @param boolean $translationMode Transaltionmode of the record,
+	 * @param bool $translationMode Translation mode of the record,
 	 * 		default FALSE to use the default way of translation
+	 *
 	 * @return void
 	 */
 	public function loadData($translationMode = FALSE) {
@@ -668,8 +672,9 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	/**
 	 * Returns whether the permission is set and allowed for the current usera
 	 *
-	 * @param integer $perm Permission
-	 * @return boolean TRUE if permission is set, FALSE if permission is not set
+	 * @param int $perm Permission
+	 *
+	 * @return bool TRUE if permission is set, FALSE if permission is not set
 	 */
 	public function isPermissionSet($perm) {
 		if (!is_string($perm)) {
@@ -683,7 +688,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	/**
 	 * Returns if the actual category has subcategories
 	 *
-	 * @return boolean TRUE if the category has subcategories, FALSE if not
+	 * @return bool TRUE if the category has subcategories, FALSE if not
 	 */
 	public function hasSubcategories() {
 		return count($this->categories_uid) > 0;
@@ -692,7 +697,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	/**
 	 * Returns if this category has products
 	 *
-	 * @return boolean TRUE, if this category has products, FALSE if not
+	 * @return bool TRUE, if this category has products, FALSE if not
 	 */
 	public function hasProducts() {
 		return count($this->getProductUids());
@@ -701,7 +706,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	/**
 	 * Returns if this category has products with stock
 	 *
-	 * @return boolean TRUE, if this category has products with stock, FALSE if not
+	 * @return bool TRUE, if this category has products with stock, FALSE if not
 	 */
 	public function hasProductsWithStock() {
 		$result = FALSE;
@@ -717,9 +722,10 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	 * Returns TRUE if this category has active products or
 	 * if sub categories have active products
 	 *
-	 * @param boolean|integer $depth maximum depth for going recursive,
+	 * @param bool|int $depth maximum depth for going recursive,
 	 * 		if not set go for maximum
-	 * @return boolean Returns TRUE, if category/subcategories hav active products
+	 *
+	 * @return bool Returns TRUE, if category/subcategories hav active products
 	 */
 	public function hasProductsInSubCategories($depth = FALSE) {
 		if ($this->hasProducts()) {
@@ -748,9 +754,10 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	 * Carries out the move of the category to the new parent
 	 * Permissions are NOT checked, this MUST be done beforehand
 	 *
-	 * @param integer $uid UID of the move target
+	 * @param int $uid UID of the move target
 	 * @param string $op Operation of move (can be 'after' or 'into')
-	 * @return boolean TRUE if the move was successfull, FALSE if not
+	 *
+	 * @return bool TRUE if the move was successful, FALSE if not
 	 */
 	public function move($uid, $op = 'after') {
 		if ($op == 'into') {
@@ -779,8 +786,9 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	/**
 	 * Returns whether the permission is set and allowed for the current usera
 	 *
-	 * @param integer $perm Permission
-	 * @return boolean TRUE if permission is set, FALSE if permission is not set
+	 * @param int $perm Permission
+	 *
+	 * @return bool TRUE if permission is set, FALSE if permission is not set
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use isPermissionSet instead
 	 */
 	public function isPSet($perm) {
@@ -791,7 +799,8 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	/**
 	 * Returns a list of all child categories from this category
 	 *
-	 * @param boolean|integer $depth Maximum depth for going recursive
+	 * @param bool|int $depth Maximum depth for going recursive
+	 *
 	 * @return array List of category uids
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getChildCategoriesUidlist instead
 	 */
@@ -814,8 +823,9 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	/**
 	 * Returns TRUE if this category has active products or if sub categories have active products
 	 *
-	 * @param boolean|integer $depth maximum deepth for going recursive, if not set go for maximum
-	 * @return boolean Returns TRUE, if category/subcategories hav active products
+	 * @param bool|int $depth maximum depth for going recursive, if not set go for maximum
+	 *
+	 * @return bool Returns TRUE, if category/subcategories hav active products
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use hasProductsInSubCategories instead
 	 */
 	public function ProductsBelowCategory($depth = FALSE) {
@@ -848,7 +858,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	/**
 	 * Returns the number of child categories
 	 *
-	 * @return integer Number of child categories
+	 * @return int Number of child categories
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getChildCategoriesCount instead
 	 */
 	public function numOfChildCategories() {
@@ -885,7 +895,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	/**
 	 * Returns if the actual category has subproducts
 	 *
-	 * @return boolean TRUE if the category has subproducts, FALSE if not
+	 * @return bool TRUE if the category has subproducts, FALSE if not
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use hasProducts instead
 	 */
 	public function has_subproducts() {
@@ -900,7 +910,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	/**
 	 * Returns if the actual category has subcategories
 	 *
-	 * @return boolean TRUE if the category has subcategories, FALSE if not
+	 * @return bool TRUE if the category has subcategories, FALSE if not
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use hasSubcategories instead
 	 */
 	public function has_subcategories() {

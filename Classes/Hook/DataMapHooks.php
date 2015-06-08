@@ -104,8 +104,9 @@ class Tx_Commerce_Hook_DataMapHooks {
 	 *
 	 * @param array $incomingFieldArray
 	 * @param string $table
-	 * @param string|integer $id
-	 * @return boolean
+	 * @param string|int $id
+	 *
+	 * @return bool
 	 */
 	protected function isPreProcessAllowed($incomingFieldArray, $table, $id) {
 			// preprocess is not allowed if the dataset was just created
@@ -137,7 +138,8 @@ class Tx_Commerce_Hook_DataMapHooks {
 	 * going to save
 	 *
 	 * @param array $incomingFieldArray
-	 * @param integer $id
+	 * @param int $id
+	 *
 	 * @return array
 	 */
 	protected function preProcessCategory($incomingFieldArray, $id) {
@@ -154,7 +156,8 @@ class Tx_Commerce_Hook_DataMapHooks {
 	 * Preprocess product
 	 *
 	 * @param array $incomingFieldArray
-	 * @param integer $id
+	 * @param int $id
+	 *
 	 * @return array
 	 */
 	protected function preProcessProduct($incomingFieldArray, $id) {
@@ -199,7 +202,8 @@ class Tx_Commerce_Hook_DataMapHooks {
 	 * Preprocess article
 	 *
 	 * @param array $incomingFieldArray
-	 * @param integer $id
+	 * @param int $id
+	 *
 	 * @return array
 	 */
 	protected function preProcessArticle($incomingFieldArray, $id) {
@@ -255,7 +259,8 @@ class Tx_Commerce_Hook_DataMapHooks {
 	 * Preprocess article price
 	 *
 	 * @param array $incomingFieldArray
-	 * @param integer $id
+	 * @param int $id
+	 *
 	 * @return array
 	 */
 	protected function preProcessArticlePrice($incomingFieldArray, $id) {
@@ -287,12 +292,13 @@ class Tx_Commerce_Hook_DataMapHooks {
 	/**
 	 * Process Data when saving Order
 	 * Change the PID from this order via the new field newpid
-	 * As TYPO3 don't allowes changing the PId directly
+	 * As TYPO3 don't allows changing the PId directly
 	 *
 	 * @param array $incomingFieldArray
 	 * @param string $table
-	 * @param integer $id
+	 * @param int $id
 	 * @param \TYPO3\CMS\Core\DataHandling\DataHandler $pObj
+	 *
 	 * @return array
 	 */
 	protected function preProcessOrder($incomingFieldArray, $table, $id, &$pObj) {
@@ -409,7 +415,8 @@ class Tx_Commerce_Hook_DataMapHooks {
 	 * Check attributes of products and categories
 	 *
 	 * @param array $incomingFieldArray
-	 * @param boolean|int $handleAttributes
+	 * @param bool|int $handleAttributes
+	 *
 	 * @return mixed
 	 */
 	protected function preProcessAttributes($incomingFieldArray, $handleAttributes) {
@@ -469,9 +476,10 @@ class Tx_Commerce_Hook_DataMapHooks {
 	 *
 	 * @param string $status Status of the Datamap
 	 * @param string $table DB Table we are operating on
-	 * @param integer $id UID of the Item we are operating on
+	 * @param int $id UID of the Item we are operating on
 	 * @param array &$fieldArray fields to be inserted into the db
 	 * @param \TYPO3\CMS\Core\DataHandling\DataHandler $pObj Reference to the BE Form Object of the caller
+	 *
 	 * @return void
 	 */
 	public function processDatamap_postProcessFieldArray($status, $table, $id, &$fieldArray, $pObj) {
@@ -500,9 +508,10 @@ class Tx_Commerce_Hook_DataMapHooks {
 	 *
 	 * @param string $status
 	 * @param string $table
-	 * @param integer|string $id
+	 * @param int|string $id
 	 * @param array &$fieldArray
 	 * @param \TYPO3\CMS\Core\DataHandling\DataHandler $pObj
+	 *
 	 * @return void
 	 */
 	protected function postProcessCategory($status, $table, $id, &$fieldArray, $pObj) {
@@ -747,9 +756,10 @@ class Tx_Commerce_Hook_DataMapHooks {
 	 *
 	 * @param string $status
 	 * @param string $table
-	 * @param integer|string $id
+	 * @param int|string $id
 	 * @param array &$fieldArray
 	 * @param \TYPO3\CMS\Core\DataHandling\DataHandler $pObj
+	 *
 	 * @return array
 	 */
 	protected function postProcessProduct($status, $table, $id, &$fieldArray, $pObj) {
@@ -807,9 +817,10 @@ class Tx_Commerce_Hook_DataMapHooks {
 	 * Checks if the permissions we need to process the datamap are still in place
 	 *
 	 * @param string $status
-	 * @param integer|string $id
+	 * @param int|string $id
 	 * @param array &$fieldArray
 	 * @param \TYPO3\CMS\Core\DataHandling\DataHandler $pObj
+	 *
 	 * @return void
 	 */
 	protected function postProcessArticle($status, $id, &$fieldArray, $pObj) {
@@ -861,9 +872,10 @@ class Tx_Commerce_Hook_DataMapHooks {
 	 *
 	 * @param string $status
 	 * @param string $table
-	 * @param integer $id
+	 * @param int $id
 	 * @param array $fieldArray
 	 * @param \TYPO3\CMS\Core\DataHandling\DataHandler $pObj
+	 *
 	 * @return void
 	 */
 	public function processDatamap_afterDatabaseOperations($status, $table, $id, $fieldArray, $pObj) {
@@ -899,7 +911,8 @@ class Tx_Commerce_Hook_DataMapHooks {
 	 * After database category handling
 	 *
 	 * @param array $fieldArray
-	 * @param integer $id
+	 * @param int $id
+	 *
 	 * @return void
 	 */
 	protected function afterDatabaseCategory($fieldArray, $id) {
@@ -936,9 +949,10 @@ class Tx_Commerce_Hook_DataMapHooks {
 	 *
 	 * @param string $status
 	 * @param string $table
-	 * @param string|integer $id
+	 * @param string|int $id
 	 * @param array $fieldArray
 	 * @param \TYPO3\CMS\Core\DataHandling\DataHandler $pObj
+	 *
 	 * @return void
 	 */
 	protected function afterDatabaseProduct($status, $table, $id, $fieldArray, $pObj) {
@@ -1021,7 +1035,8 @@ class Tx_Commerce_Hook_DataMapHooks {
 	 * After database dynaflex handling
 	 *
 	 * @param string $table
-	 * @param integer $id
+	 * @param int $id
+	 *
 	 * @return void
 	 */
 	protected function afterDatabaseHandleDynaflex($table, $id) {
@@ -1061,7 +1076,8 @@ class Tx_Commerce_Hook_DataMapHooks {
 	 * update article attribute relations
 	 *
 	 * @param array $incomingFieldArray
-	 * @param integer $id
+	 * @param int $id
+	 *
 	 * @return void
 	 */
 	protected function updateArticleAttributeRelations($incomingFieldArray, $id) {
@@ -1135,11 +1151,12 @@ class Tx_Commerce_Hook_DataMapHooks {
 	/**
 	 * Save category relations
 	 *
-	 * @param integer $cUid
+	 * @param int $cUid
 	 * @param array $fieldArray
-	 * @param boolean $saveAnyway
-	 * @param boolean $delete
-	 * @param boolean $updateXml
+	 * @param bool $saveAnyway
+	 * @param bool $delete
+	 * @param bool $updateXml
+	 *
 	 * @return void
 	 */
 	protected function saveCategoryRelations($cUid, $fieldArray = NULL, $saveAnyway = FALSE, $delete = TRUE, $updateXml = TRUE) {
@@ -1202,8 +1219,9 @@ class Tx_Commerce_Hook_DataMapHooks {
 	/**
 	 * Saves all relations between products and his attributes
 	 *
-	 * @param integer $productId The UID of the product
+	 * @param int $productId The UID of the product
 	 * @param array $fieldArray
+	 *
 	 * @return void
 	 */
 	protected function saveProductRelations($productId, $fieldArray = NULL) {

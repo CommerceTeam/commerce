@@ -72,7 +72,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	protected $title = '';
 
 	/**
-	 * @var integer
+	 * @var int
 	 */
 	public $pid = 0;
 
@@ -136,9 +136,9 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	protected $articles_uids = array();
 
 	/**
-	 * if artciles are loaded, so load articles can simply return with the values from the object
+	 * If articles are loaded, so load articles can simply return with the values from the object
 	 *
-	 * @var boolean articlesLoaded TRUE
+	 * @var bool
 	 */
 	protected $articlesLoaded = FALSE;
 
@@ -168,7 +168,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	public $relatedProduct_uids = array();
 
 	/**
-	 * @var boolean
+	 * @var bool
 	 */
 	public $relatedProducts_loaded = FALSE;
 
@@ -179,12 +179,12 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 
 	// Versioning
 	/**
-	 * @var integer
+	 * @var int
 	 */
 	public $t3ver_oid = 0;
 
 	/**
-	 * @var integer
+	 * @var int
 	 */
 	public $t3ver_id = 0;
 
@@ -194,30 +194,31 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	public $t3ver_label = '';
 
 	/**
-	 * @var integer
+	 * @var int
 	 */
 	public $t3ver_wsid = 0;
 
 	/**
-	 * @var integer
+	 * @var int
 	 */
 	public $t3ver_state = 0;
 
 	/**
-	 * @var integer
+	 * @var int
 	 */
 	public $t3ver_stage = 0;
 
 	/**
-	 * @var integer
+	 * @var int
 	 */
 	public $t3ver_tstamp = 0;
 
 	/**
 	 * Constructor, basically calls init
 	 *
-	 * @param integer $uid
-	 * @param integer $languageUid
+	 * @param int $uid
+	 * @param int $languageUid
+	 *
 	 * @return self
 	 */
 	public function __construct($uid, $languageUid = 0) {
@@ -229,9 +230,10 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	/**
 	 * Class initialization
 	 *
-	 * @param integer $uid uid of product
-	 * @param integer $langUid language uid, default 0
-	 * @return boolean TRUE if initialization was successful
+	 * @param int $uid Uid of product
+	 * @param int $langUid Language uid, default 0
+	 *
+	 * @return bool TRUE if initialization was successful
 	 */
 	public function init($uid, $langUid = 0) {
 		$uid = (int) $uid;
@@ -276,7 +278,8 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	/**
 	 * Get list of article uids
 	 *
-	 * @param integer $uid
+	 * @param int $uid
+	 *
 	 * @return Tx_Commerce_Domain_Model_Article Article uids
 	 */
 	public function getArticle($uid) {
@@ -312,8 +315,9 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	 *            array('AttributeUid'=>$attributeUID, 'AttributeValue'=>$attributeValue),
 	 *            ...
 	 *        )
-	 * @param boolean|integer $proofUid Proof if script is running without instance
+	 * @param bool|int $proofUid Proof if script is running without instance
 	 *        and so without a single product
+	 *
 	 * @return array of article uids
 	 */
 	public function getArticlesByAttributeArray($attributes, $proofUid = 1) {
@@ -386,12 +390,13 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	/**
 	 * Returns list of articles (from this product) filtered by price
 	 *
-	 * @param integer $priceMin smallest unit (e.g. cents)
-	 * @param integer $priceMax biggest unit (e.g. cents)
-	 * @param boolean|integer $usePriceGrossInstead Normally we check for net price,
+	 * @param int $priceMin smallest unit (e.g. cents)
+	 * @param int $priceMax biggest unit (e.g. cents)
+	 * @param bool|int $usePriceGrossInstead Normally we check for net price,
 	 *        switch to gross price
-	 * @param boolean|integer $proofUid If script is running without instance and
+	 * @param bool|int $proofUid If script is running without instance and
 	 *        so without a single product
+	 *
 	 * @return array of article uids
 	 */
 	public function getArticlesByPrice($priceMin = 0, $priceMax = 0, $usePriceGrossInstead = 0, $proofUid = 1) {
@@ -440,7 +445,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	/**
 	 * Get number of articles of this product
 	 *
-	 * @return integer Number of articles
+	 * @return int Number of articles
 	 */
 	public function getArticlesCount() {
 		return count($this->articles);
@@ -480,20 +485,21 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	 * This method gets the attributes of a product or an article and compiles them
 	 * to an unified array of attributes
 	 * This method handles the different types of values of an attribute: character
-	 * values, integer values and value lists
+	 * values, int values and value lists
 	 *
 	 * @param mixed $articleList Array of restricted product articles
 	 *        (usually shall, must, ...), FALSE for all, FALSE for product attribute list
 	 * @param mixed $attributeListInclude Array of restricted attributes,
 	 *        FALSE for all
-	 * @param boolean $valueListShowValueInArticleProduct TRUE if 'showvalue' field
+	 * @param bool $valueListShowValueInArticleProduct TRUE if 'showvalue' field
 	 *        of value list table should be cared of
 	 * @param string $sortingTable Name of table with sorting field of table to order
 	 *        records
-	 * @param boolean $localizationAttributeValuesFallbackToDefault TRUE if a
+	 * @param bool $localizationAttributeValuesFallbackToDefault TRUE if a
 	 *        fallback to default value should be done if a localization of an attribute
 	 *        value or value char is not available in localized row
 	 * @param string $parentTable Name of parent table
+	 *
 	 * @return mixed Array if attributes where found, else FALSE
 	 */
 	public function getAttributeMatrix($articleList = FALSE, $attributeListInclude = FALSE, $valueListShowValueInArticleProduct = TRUE, $sortingTable = 'tx_commerce_articles_article_attributes_mm', $localizationAttributeValuesFallbackToDefault = FALSE, $parentTable = 'tx_commerce_articles') {
@@ -579,7 +585,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 
 			// There is a nasty difference between article and product attributes regarding
 			// default_value field:
-			// For attributes: default_value must be an integer value and string values are
+			// For attributes: default_value must be an int value and string values are
 			// stored in value_char
 			// For products: Everything is stored in default_value
 			$defaultValue = FALSE;
@@ -801,8 +807,9 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	/**
 	 * Evaluates the cheapest article for current product by gross price
 	 *
-	 * @param integer $usePriceNet If true, Compare prices by net instead of gross
-	 * @return integer|boolean article id, FALSE if no article
+	 * @param int $usePriceNet If true, Compare prices by net instead of gross
+	 *
+	 * @return int|bool article id, FALSE if no article
 	 */
 	public function getCheapestArticle($usePriceNet = 0) {
 		$this->loadArticles();
@@ -872,7 +879,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	/**
 	 * Get manufacturer UID of the product if set
 	 *
-	 * @return integer UID of manufacturer
+	 * @return int UID of manufacturer
 	 */
 	public function getManufacturerUid() {
 		if (isset($this->manufacturer_uid)) {
@@ -903,7 +910,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	/**
 	 * Return product pid
 	 *
-	 * @return integer Product pid
+	 * @return int Product pid
 	 */
 	public function getPid() {
 		return $this->pid;
@@ -912,7 +919,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	/**
 	 * Returns the related page of the product
 	 *
-	 * @return integer related page
+	 * @return int related page
 	 */
 	public function getRelatedPage() {
 		return $this->relatedpage;
@@ -972,9 +979,10 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	 * @param mixed $articleList Uids of articles or FALSE
 	 * @param mixed $attributesToInclude Array of attribute uids to include
 	 *        or FALSE for all attributes
-	 * @param boolean $showHiddenValues Wether or net hidden values should be shown
+	 * @param bool $showHiddenValues Wether or net hidden values should be shown
 	 * @param string $sortingTable Default order by of attributes
-	 * @return boolean|array
+	 *
+	 * @return bool|array
 	 */
 	public function getSelectAttributeMatrix($articleList = FALSE, $attributesToInclude = FALSE, $showHiddenValues = TRUE, $sortingTable = 'tx_commerce_articles_article_attributes_mm') {
 		$return = array();
@@ -1242,7 +1250,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	/**
 	 * Returns the uid of the live version of this product
 	 *
-	 * @return integer UID of live version of this product
+	 * @return int UID of live version of this product
 	 */
 	public function getT3verOid() {
 		return $this->t3ver_oid;
@@ -1329,7 +1337,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	 * Returns TRUE if one Article of Product have more than
 	 * zero articles on stock
 	 *
-	 * @return boolean TRUE if one article of product has stock > 0
+	 * @return bool TRUE if one article of product has stock > 0
 	 */
 	public function hasStock() {
 		$this->loadArticles();
@@ -1347,11 +1355,12 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 
 	/**
 	 * Carries out the move of the product to the new parent
-	 * Permissions are NOT checked, this MUST be done beforehanda
+	 * Permissions are NOT checked, this MUST be done beforehand
 	 *
-	 * @param integer $uid uid of the move target
+	 * @param int $uid uid of the move target
 	 * @param string $op Operation of move (can be 'after' or 'into'
-	 * @return boolean True on success
+	 *
+	 * @return bool True on success
 	 */
 	public function move($uid, $op = 'after') {
 		if ($op == 'into') {
@@ -1380,7 +1389,8 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	/**
 	 * Remove article uid by index
 	 *
-	 * @param integer $index
+	 * @param int $index
+	 *
 	 * @return void
 	 */
 	public function removeArticleUid($index) {
@@ -1390,7 +1400,8 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	/**
 	 * Remove article
 	 *
-	 * @param integer $uid
+	 * @param int $uid
+	 *
 	 * @return void
 	 */
 	public function removeArticle($uid) {
@@ -1401,8 +1412,9 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	/**
 	 * Get relevant articles
 	 *
-	 * @param array|boolean $attributeArray
-	 * @return array|boolean
+	 * @param array|bool $attributeArray
+	 *
+	 * @return array|bool
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, is not used in commerce
 	 */
 	public function getRelevantArticles($attributeArray = FALSE) {
@@ -1463,9 +1475,10 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	 * @param mixed $articleList Uids of articles or FALSE
 	 * @param mixed $attributeToInclude Array of attribute uids to include
 	 *        or FALSE for all attributes
-	 * @param boolean $showHiddenValues Wether or net hidden values should be shown
+	 * @param bool $showHiddenValues Wether or net hidden values should be shown
 	 * @param string $sortingTable Default order by of attributes
-	 * @return boolean|array
+	 *
+	 * @return bool|array
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getSelectAttributeMatrix instead
 	 */
 	public function get_selectattribute_matrix($articleList = FALSE, $attributeToInclude = FALSE, $showHiddenValues = TRUE, $sortingTable = 'tx_commerce_articles_article_attributes_mm') {
@@ -1496,7 +1509,8 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	 *            array('AttributeUid'=>$attributeUID, 'AttributeValue'=>$attributeValue),
 	 *        ...
 	 *        )
-	 * @param boolean|integer $proofUid Proof if script is running without instance and so without a single product
+	 * @param bool|int $proofUid Proof if script is running without instance and so without a single product
+	 *
 	 * @return array of article uids
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getArticlesByAttributeArray instead
 	 */
@@ -1534,7 +1548,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	/**
 	 * Get number of articles of this product
 	 *
-	 * @return integer Number of articles
+	 * @return int Number of articles
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getArticlesCount instead
 	 */
 	public function getNumberOfArticles() {
@@ -1582,7 +1596,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	/**
 	 * Returns the uid of the live version of this product
 	 *
-	 * @return integer UID of live version of this product
+	 * @return int UID of live version of this product
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getT3verOid instead
 	 */
 	public function get_t3ver_oid() {
@@ -1594,7 +1608,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	/**
 	 * Return product pid
 	 *
-	 * @return integer Product pid
+	 * @return int Product pid
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getPid instead
 	 */
 	public function get_pid() {
@@ -1606,7 +1620,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	/**
 	 * Get category master parent category
 	 *
-	 * @return integer uid of master parent category
+	 * @return int uid of master parent category
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getMasterparentCategory instead
 	 */
 	public function getMasterparentCategorie() {

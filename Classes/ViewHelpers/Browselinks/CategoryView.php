@@ -33,9 +33,9 @@ class Tx_Commerce_ViewHelpers_Browselinks_CategoryView extends Tx_Commerce_Tree_
 	protected $domIdPrefix = 'txcommerceCategory';
 
 	/**
-	 * the linked category
+	 * The linked category
 	 *
-	 * @var integer
+	 * @var int
 	 */
 	protected $openCat = 0;
 
@@ -68,9 +68,10 @@ class Tx_Commerce_ViewHelpers_Browselinks_CategoryView extends Tx_Commerce_Tree_
 	 * Wrapping $title in a-tags.
 	 *
 	 * @param string $title string
-	 * @param string $row record
-	 * @param integer $bank pointer (which mount point number)
-	 * @return	string
+	 * @param string $row Record
+	 * @param int $bank Pointer (which mount point number)
+	 *
+	 * @return string
 	 * @access private
 	 */
 	public function wrapTitle($title, $row, $bank = 0) {

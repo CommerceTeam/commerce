@@ -32,7 +32,8 @@ class BackendUserUtility implements SingletonInterface {
 	 * If the user is admin, 31 is returned	(full permissions for all five flags)
 	 *
 	 * @param array $row Input page row with all perms_* fields available.
-	 * @return integer Bitwise representation of the users permissions in
+	 *
+	 * @return int Bitwise representation of the users permissions in
 	 * 	relation to input page row, $row
 	 */
 	public function calcPerms($row) {
@@ -72,11 +73,12 @@ class BackendUserUtility implements SingletonInterface {
 	 * (fx. by setting TYPO3_CONF_VARS['BE']['lockBeUserToDBmounts']=0) then it returns "1" right away
 	 * Otherwise the function will return the uid of the webmount which was first found in the rootline of the input page $id
 	 *
-	 * @param integer $id Page ID to check
+	 * @param int $id Page ID to check
 	 * @param string $readPerms Content of "->getPagePermsClause(1)" (read-permissions). If not set, they will be internally calculated (but if you have the correct value right away you can save that database lookup!)
 	 * @param bool|int $exitOnError If set, then the function will exit with an error message.
-	 * @throws \RuntimeException
+	 *
 	 * @return int|NULL The page UID of a page in the rootline that matched a mount point
+	 * @throws \RuntimeException
 	 * @todo Define visibility
 	 */
 	public function isInWebMount($id, $readPerms = '', $exitOnError = 0) {
@@ -124,7 +126,8 @@ class BackendUserUtility implements SingletonInterface {
 	 * return WHERE clauses for *selecting* pages in backend listings
 	 * - in other words this will check read permissions.
 	 *
-	 * @param integer $perms Permission mask to use, see function description
+	 * @param int $perms Permission mask to use, see function description
+	 *
 	 * @return string Part of where clause. Prefix " AND " to this.
 	 * @todo Define visibility
 	 */
@@ -135,7 +138,7 @@ class BackendUserUtility implements SingletonInterface {
 				return ' 1=1';
 			}
 			$perms = (int)$perms;
-			// Make sure it's integer.
+			// Make sure it's int.
 			$str = ' ( (tx_commerce_categories.perms_everybody & ' . $perms . ' = ' . $perms .
 				') OR (tx_commerce_categories.perms_userid = ' . $backenduser->user['uid'] .
 				' AND tx_commerce_categories.perms_user & ' . $perms . ' = ' . $perms . ')';
@@ -192,7 +195,7 @@ class BackendUserUtility implements SingletonInterface {
 	 * opposite to another kind of root line known from the frontend where the
 	 * rootline stops when a root-template is found.
 	 *
-	 * @param integer $uid Page id for which to create the root line.
+	 * @param int $uid Page id for which to create the root line.
 	 * @param string $clause Clause can be used to select other criteria. It
 	 * 	would typically be where-clauses that stops the process if we meet a
 	 * 	page, the user has no reading access to.

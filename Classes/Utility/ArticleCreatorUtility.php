@@ -44,12 +44,12 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	protected $flattedAttributes = array();
 
 	/**
-	 * @var integer
+	 * @var int
 	 */
 	protected $uid = 0;
 
 	/**
-	 * @var integer
+	 * @var int
 	 */
 	protected $pid = 0;
 
@@ -76,8 +76,8 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	/**
 	 * Initializes the Article Creator if it's not called directly from the Flexforms
 	 *
-	 * @param integer $uid uid of the product
-	 * @param integer $pid page id
+	 * @param int $uid Uid of the product
+	 * @param int $pid Page id
 	 *
 	 * @return void
 	 */
@@ -352,11 +352,11 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	 * Returns the html table rows for the article matrix
 	 *
 	 * @param array $data The data we should build the matrix from
-	 * @param array &$resultRows The resulting rows
-	 * @param integer &$counter The article counter
+	 * @param array $resultRows The resulting rows
+	 * @param int $counter The article counter
 	 * @param string $headRow The header row for inserting after a number of articles
 	 * @param array $extraRowData some additional data like checkbox column
-	 * @param integer $index The level inside the matrix
+	 * @param int $index The level inside the matrix
 	 * @param array $row The current row data
 	 *
 	 * @return void
@@ -418,10 +418,10 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	}
 
 	/**
-	 * returns the number of articles that would be created with the number
+	 * Returns the number of articles that would be created with the number
 	 * of attributes the product have.
 	 *
-	 * @return integer The number of rows
+	 * @return int The number of rows
 	 */
 	protected function calculateRowCount() {
 		$result = 1;
@@ -437,10 +437,10 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	/**
 	 * Returns the HTML code for the header row
 	 *
-	 * @param integer &$colCount The number of columns we have
+	 * @param int $colCount The number of columns we have
 	 * @param array $acBefore The additional columns before the attribute columns
 	 * @param array $acAfter The additional columns after the attribute columns
-	 * @param boolean $addTr
+	 * @param bool $addTr
 	 *
 	 * @return string The HTML header code
 	 */
@@ -574,7 +574,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	 * @param array $parameter
 	 * @param string $key The key in the POST var array
 	 *
-	 * @return integer Returns the new articleUid if success
+	 * @return int Returns the new articleUid if success
 	 */
 	protected function createArticle($parameter, $key) {
 		$database = $this->getDatabaseConnection();

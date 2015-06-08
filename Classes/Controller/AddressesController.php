@@ -148,8 +148,9 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 	 * Initialization
 	 *
 	 * @param array $conf TS configuration for this template
-	 * @param boolean $getAddresses If this is set to TRUE, this method will fetch
+	 * @param bool $getAddresses If this is set to TRUE, this method will fetch
 	 * 		all addresses into $this->addresses (Default is TRUE)
+	 *
 	 * @return void
 	 */
 	public function init($conf, $getAddresses = TRUE) {
@@ -221,11 +222,12 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 	/**
 	 * Returns the listing HTML of addresses.
 	 *
-	 * @param integer $addressType Type of addresses that should be returned.
+	 * @param int $addressType Type of addresses that should be returned.
 	 * 		If this is 0 all types will be returned
-	 * @param boolean $createHiddenFields Create hidden fields
+	 * @param bool $createHiddenFields Create hidden fields
 	 * @param string $hiddenFieldPrefix Prefix for field names
-	 * @param boolean $selectAddressId Adress ID which should be selected by default
+	 * @param bool $selectAddressId Adress ID which should be selected by default
+	 *
 	 * @throws Exception
 	 * @return string HTML with addresses
 	 */
@@ -503,8 +505,9 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 	 * tt_address and configured in TS.
 	 *
 	 * @param string $action Action that should be performed (can be "new" or "edit")
-	 * @param integer $addressUid UID of the page where the addresses are stored
+	 * @param int $addressUid UID of the page where the addresses are stored
 	 * @param array $config Configuration array for all fields
+	 *
 	 * @return string HTML code with the form for editing an address
 	 */
 	protected function getAddressForm($action = 'new', $addressUid = NULL, $config) {
@@ -722,7 +725,7 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 	 * real, but it sets the deleted flag like it's done inside TYPO3.
 	 * This method has no params, because it currently gets the data from piVars.
 	 *
-	 * @return boolean
+	 * @return bool
 	 */
 	protected function deleteAddress() {
 		if (!in_array((int) $this->piVars['addressid'], array_keys($this->addresses))) {
@@ -940,7 +943,7 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 	 * Errors are stored in internal formError Array. The key will be the name
 	 * of the field and the value will be the error message.
 	 *
-	 * @return boolean
+	 * @return bool
 	 * @see setFormError()
 	 */
 	protected function checkAddressForm() {
@@ -1046,9 +1049,10 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 	/**
 	 * Save some data from piVars as address into database.
 	 *
-	 * @param boolean $new If this is TRUE, a new address will be created,
+	 * @param bool $new If this is TRUE, a new address will be created,
 	 * 		otherwise it searches for an existing dataset and updates it
-	 * @param integer $addressType Type of address delivered by piVars
+	 * @param int $addressType Type of address delivered by piVars
+	 *
 	 * @return void
 	 */
 	protected function saveAddressData($new = FALSE, $addressType = 0) {
@@ -1172,8 +1176,9 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 	/**
 	 * Get all addresses from the database that are assigned to the current user.
 	 *
-	 * @param integer $userId UID of the user
-	 * @param integer $addressType Type of addresses to retrieve
+	 * @param int $userId UID of the user
+	 * @param int $addressType Type of addresses to retrieve
+	 *
 	 * @return array Keys with UIDs and values with complete addresses data
 	 */
 	public function getAddresses($userId, $addressType = 0) {
@@ -1237,7 +1242,7 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 	/**
 	 * Returns if there are any form field errors
 	 *
-	 * @return boolean
+	 * @return bool
 	 */
 	public function formErrors() {
 		return count($this->formError);

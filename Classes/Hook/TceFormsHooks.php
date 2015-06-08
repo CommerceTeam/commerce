@@ -24,7 +24,7 @@ class Tx_Commerce_Hook_TceFormsHooks {
 	protected $extconf;
 
 	/**
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $lastMaxItems = FALSE;
 

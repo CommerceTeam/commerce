@@ -23,11 +23,12 @@
  */
 class Tx_Commerce_Hook_Pi4Hooks {
 	/**
-	 * this function is called by the Hook in
+	 * This function is called by the Hook in
 	 * Tx_Commerce_Controller_AddressesController before processing delete address
 	 * operations return false to permit delete operation
 	 *
-	 * @param integer $uid reference to the incoming fields
+	 * @param int $uid Reference to the incoming fields
+	 *
 	 * @return string error: do not delete message
 	 */
 	public function deleteAddress($uid) {
@@ -53,9 +54,10 @@ class Tx_Commerce_Hook_Pi4Hooks {
 	 * Tx_Commerce_Controller_AddressesController after processing
 	 * insert address operations
 	 *
-	 * @param integer $uid
-	 * @param array &$fieldArray reference to the incoming fields
-	 * @param object &$pObj page Object reference
+	 * @param int $uid
+	 * @param array $fieldArray Reference to the incoming fields
+	 * @param object $pObj Page Object reference
+	 *
 	 * @return void
 	 */
 	public function afterAddressSave($uid, &$fieldArray, &$pObj) {
@@ -69,9 +71,10 @@ class Tx_Commerce_Hook_Pi4Hooks {
 	 * Tx_Commerce_Controller_AddressesController before processing update
 	 * address operations
 	 *
-	 * @param integer $uid
-	 * @param array &$fieldArray reference to the incoming fields
-	 * @param object &$pObj page Object reference
+	 * @param int $uid
+	 * @param array $fieldArray Reference to the incoming fields
+	 * @param object $pObj Page Object reference
+	 *
 	 * @return void
 	 */
 	public function beforeAddressEdit($uid, &$fieldArray, &$pObj) {
@@ -83,9 +86,10 @@ class Tx_Commerce_Hook_Pi4Hooks {
 	 * Tx_Commerce_Controller_AddressesController before processing update address
 	 * operations
 	 *
-	 * @param integer $uid
-	 * @param array &$fieldArray reference to the incoming fields
-	 * @param object &$pObj page Object reference
+	 * @param int $uid
+	 * @param array $fieldArray Reference to the incoming fields
+	 * @param object $pObj Page Object reference
+	 *
 	 * @return void
 	 */
 	public function afterAddressEdit($uid, &$fieldArray, &$pObj) {
@@ -95,14 +99,14 @@ class Tx_Commerce_Hook_Pi4Hooks {
 
 
 	/**
-	 * notify address observer
-	 *
+	 * Notify address observer
 	 * check status and notify observer
 	 *
-	 * @param string $status update or new
-	 * @param string $table database table
-	 * @param integer $uid record id
-	 * @param array &$fieldArray reference to the incoming fields
+	 * @param string $status Update or new
+	 * @param string $table Database table
+	 * @param int $uid Record id
+	 * @param array $fieldArray Reference to the incoming fields
+	 *
 	 * @return void
 	 */
 	protected function notify_addressObserver($status, $table, $uid, &$fieldArray) {
@@ -112,8 +116,9 @@ class Tx_Commerce_Hook_Pi4Hooks {
 	/**
 	 * Check if an address is deleted
 	 *
-	 * @param integer $uid
-	 * @return boolean|string
+	 * @param int $uid
+	 *
+	 * @return bool|string
 	 */
 	protected function checkAddressDelete($uid) {
 		return Tx_Commerce_Dao_AddressObserver::checkDelete($uid);

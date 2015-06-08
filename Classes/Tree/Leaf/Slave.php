@@ -38,7 +38,7 @@ class Tx_Commerce_Tree_Leaf_Slave extends Tx_Commerce_Tree_Leaf_Leaf {
 	public $view;
 
 	/**
-	 * @var integer
+	 * @var int
 	 */
 	protected $pid;
 
@@ -65,8 +65,9 @@ class Tx_Commerce_Tree_Leaf_Slave extends Tx_Commerce_Tree_Leaf_Leaf {
 	 * Initializes the leaf
 	 * Passes the Parameters to its child leafs
 	 *
-	 * @param integer $index Index of this leaf
+	 * @param int $index Index of this leaf
 	 * @param array $parentIndices Array with parent indices
+	 *
 	 * @return void
 	 */
 	public function init($index, $parentIndices = array()) {
@@ -91,9 +92,10 @@ class Tx_Commerce_Tree_Leaf_Slave extends Tx_Commerce_Tree_Leaf_Leaf {
 	 * Prints the single leaf item
 	 * Since this is a slave, this can only EVER be called by AJAX
 	 *
-	 * @param integer $startUid UID in which we start
-	 * @param integer $bank Bank UID
-	 * @param integer $pid UID of the parent item
+	 * @param int $startUid UID in which we start
+	 * @param int $bank Bank UID
+	 * @param int $pid UID of the parent item
+	 *
 	 * @return string HTML Code
 	 */
 	public function printChildleafsByLoop($startUid, $bank, $pid) {
@@ -194,8 +196,9 @@ class Tx_Commerce_Tree_Leaf_Slave extends Tx_Commerce_Tree_Leaf_Leaf {
 	/**
 	 * Prints all leafs by the parent item
 	 *
-	 * @param integer $pid UID of the parent item
-	 * @param integer $bank Bank UID
+	 * @param int $pid UID of the parent item
+	 * @param int $bank Bank UID
+	 *
 	 * @return string HTML Code
 	 */
 	public function printChildleafsByParent($pid, $bank) {

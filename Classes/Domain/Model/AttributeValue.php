@@ -66,7 +66,7 @@ class Tx_Commerce_Domain_Model_AttributeValue extends Tx_Commerce_Domain_Model_A
 	/**
 	 * if this value should be shown in Fe output
 	 *
-	 * @var boolean show value
+	 * @var bool show value
 	 */
 	protected $showvalue = 1;
 
@@ -85,8 +85,9 @@ class Tx_Commerce_Domain_Model_AttributeValue extends Tx_Commerce_Domain_Model_A
 	/**
 	 * Constructor, basically calls init
 	 *
-	 * @param integer $uid
-	 * @param integer $languageUid
+	 * @param int $uid
+	 * @param int $languageUid
+	 *
 	 * @return self
 	 */
 	public function __construct($uid, $languageUid = 0) {
@@ -98,8 +99,9 @@ class Tx_Commerce_Domain_Model_AttributeValue extends Tx_Commerce_Domain_Model_A
 	/**
 	 * Init Class
 	 *
-	 * @param integer $uid or attribute
-	 * @param integer $languageUid language uid, default 0
+	 * @param int $uid Attribute
+	 * @param int $languageUid Language uid, default 0
+	 *
 	 * @return void
 	 */
 	public function init($uid, $languageUid = 0) {
@@ -134,7 +136,7 @@ class Tx_Commerce_Domain_Model_AttributeValue extends Tx_Commerce_Domain_Model_A
 	/**
 	 * Overwrite get_attributes as attribute_values can't have attributes
 	 *
-	 * @return boolean FALSE
+	 * @return bool FALSE
 	 */
 	public function getAttributes() {
 		return FALSE;
@@ -152,7 +154,7 @@ class Tx_Commerce_Domain_Model_AttributeValue extends Tx_Commerce_Domain_Model_A
 	/**
 	 * Get show value
 	 *
-	 * @return boolean
+	 * @return bool
 	 */
 	public function getShowvalue() {
 		return $this->showvalue;
@@ -161,7 +163,8 @@ class Tx_Commerce_Domain_Model_AttributeValue extends Tx_Commerce_Domain_Model_A
 	/**
 	 * gets the attribute title
 	 *
-	 * @param boolean $checkvalue optional check if value shoudl be show in FE
+	 * @param bool $checkvalue optional check if value shoudl be show in FE
+	 *
 	 * @return string title
 	 */
 	public function getValue($checkvalue = FALSE) {
@@ -178,7 +181,7 @@ class Tx_Commerce_Domain_Model_AttributeValue extends Tx_Commerce_Domain_Model_A
 	/**
 	 * Gets the showicon value
 	 *
-	 * @return integer
+	 * @return int
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, never was returning a value
 	 * remove $this->showicon with this method
 	 */
@@ -191,7 +194,7 @@ class Tx_Commerce_Domain_Model_AttributeValue extends Tx_Commerce_Domain_Model_A
 	/**
 	 * Overwrite get_attributes as attribute_values can't have attributes
 	 *
-	 * @return boolean FALSE
+	 * @return bool FALSE
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getValue
 	 */
 	public function get_attributes() {
@@ -201,7 +204,8 @@ class Tx_Commerce_Domain_Model_AttributeValue extends Tx_Commerce_Domain_Model_A
 	}
 
 	/**
-	 * @param boolean $checkvalue
+	 * @param bool $checkvalue
+	 *
 	 * @return string
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getValue
 	 */

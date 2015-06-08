@@ -30,12 +30,12 @@ class Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper extends \TYPO3\CMS\B
 	protected $currentSubScript;
 
 	/**
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $doHighlight;
 
 	/**
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $hasFilterBox;
 
@@ -222,7 +222,7 @@ class Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper extends \TYPO3\CMS\B
 	/**
 	 * Checks if an update of the commerce extension is necessary
 	 *
-	 * @return boolean
+	 * @return bool
 	 */
 	protected function isUpdateNecessary() {
 		/** @var Tx_Commerce_Utility_UpdateUtility $updater */

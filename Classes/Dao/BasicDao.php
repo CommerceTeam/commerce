@@ -50,7 +50,8 @@ class Tx_Commerce_Dao_BasicDao {
 	/**
 	 * Constructor
 	 *
-	 * @param integer $id
+	 * @param int $id
+	 *
 	 * @return self
 	 */
 	public function __construct($id = NULL) {
@@ -95,7 +96,7 @@ class Tx_Commerce_Dao_BasicDao {
 	/**
 	 * Getter
 	 *
-	 * @return integer
+	 * @return int
 	 */
 	public function getId() {
 		return $this->object->getId();
@@ -104,7 +105,8 @@ class Tx_Commerce_Dao_BasicDao {
 	/**
 	 * Setter
 	 *
-	 * @param integer $value
+	 * @param int $value
+	 *
 	 * @return void
 	 */
 	public function setId($value) {
@@ -150,7 +152,8 @@ class Tx_Commerce_Dao_BasicDao {
 	 * Check if property is empty
 	 *
 	 * @param string $propertyName
-	 * @return boolean
+	 *
+	 * @return bool
 	 */
 	public function isEmpty($propertyName) {
 		$properties = get_object_vars($this->object);
@@ -162,7 +165,8 @@ class Tx_Commerce_Dao_BasicDao {
 	 * Check if property exists
 	 *
 	 * @param string $propertyName
-	 * @return boolean
+	 *
+	 * @return bool
 	 */
 	public function issetProperty($propertyName) {
 		$properties = get_object_vars($this->object);

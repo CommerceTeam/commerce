@@ -48,12 +48,12 @@ class Tx_Commerce_Controller_SystemdataModuleController extends \TYPO3\CMS\Backe
 	/**
 	 * Containing the Root-Folder-Pid of Commerce
 	 *
-	 * @var integer
+	 * @var int
 	 */
 	public $modPid;
 
 	/**
-	 * @var integer
+	 * @var int
 	 */
 	public $attributePid;
 
@@ -328,7 +328,8 @@ class Tx_Commerce_Controller_SystemdataModuleController extends \TYPO3\CMS\Backe
 	/**
 	 * Fetch attribute translation
 	 *
-	 * @param integer $uid
+	 * @param int $uid
+	 *
 	 * @return mysqli_result
 	 */
 	protected function fetchAttributeTranslation($uid) {
@@ -609,8 +610,9 @@ class Tx_Commerce_Controller_SystemdataModuleController extends \TYPO3\CMS\Backe
 	 * Fetch the relation count
 	 *
 	 * @param string $table
-	 * @param integer $uidForeign
-	 * @return integer
+	 * @param int $uidForeign
+	 *
+	 * @return int
 	 */
 	protected function fetchRelationCount($table, $uidForeign) {
 		$result = $this->database->exec_SELECTquery('COUNT(*) as count', $table, 'uid_foreign=' . (int) $uidForeign);
@@ -622,9 +624,10 @@ class Tx_Commerce_Controller_SystemdataModuleController extends \TYPO3\CMS\Backe
 	 * Gets the number of records referencing the record with the UID $uid in
 	 * the table $tableName.
 	 *
-	 * @param string $tableName table name of the referenced record
+	 * @param string $tableName Table name of the referenced record
 	 * @param int $uid UID of the referenced record, must be > 0
-	 * @return integer the number of references to record $uid in table
+	 *
+	 * @return int the number of references to record $uid in table
 	 *                 $tableName, will be >= 0
 	 */
 	protected function getReferenceCount($tableName, $uid) {

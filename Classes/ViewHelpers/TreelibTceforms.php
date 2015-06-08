@@ -31,16 +31,16 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class Tx_Commerce_ViewHelpers_TreelibTceforms {
 	/**
-	 * count rendered tree items - just for frame height calculation
+	 * Count rendered tree items - just for frame height calculation
 	 *
-	 * @var integer
+	 * @var int
 	 */
 	public $treeItemC = 0;
 
 	/**
-	 * count rendered trees
+	 * Count rendered trees
 	 *
-	 * @var integer
+	 * @var int
 	 */
 	public $treesC = 0;
 
@@ -75,8 +75,7 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 	 * rendered instead of the iframe itself.
 	 * This is for iframe mode.
 	 *
-	 * @var boolean
-	 * @access private
+	 * @var bool
 	 */
 	protected $iframeContentRendering = FALSE;
 
@@ -161,8 +160,9 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 	/**
 	 * Enable the iframe content rendering mode
 	 *
-	 * @param boolean $iFrameContentRendering
+	 * @param bool $iFrameContentRendering
 	 * @param string $jsParent
+	 *
 	 * @return void
 	 */
 	public function setIframeContentRendering($iFrameContentRendering = TRUE, $jsParent = 'parent.') {
@@ -176,7 +176,7 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 	/**
 	 * Returns true if iframe content rendering mode is enabled
 	 *
-	 * @return boolean
+	 * @return bool
 	 */
 	public function isIframeContentRendering() {
 		return $this->iframeContentRendering;
@@ -185,7 +185,7 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 	/**
 	 * Returns true if iframe content rendering mode is enabled
 	 *
-	 * @return boolean
+	 * @return bool
 	 */
 	public function isIframeRendering() {
 		return ($this->config['treeViewBrowseable'] && !$this->iframeContentRendering);
@@ -213,7 +213,7 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 	/**
 	 * Return the count value of selectable items
 	 *
-	 * @return integer
+	 * @return int
 	 */
 	public function getItemCountSelectable() {
 		return $this->treeItemC;
@@ -222,7 +222,7 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 	/**
 	 * Return the count value of rendered trees
 	 *
-	 * @return integer
+	 * @return int
 	 */
 	public function getItemCountTrees() {
 		return $this->treesC;
@@ -380,9 +380,10 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 	 ************************************************************/
 
 	/**
-	 * calculate size of the tree frame
+	 * Calculate size of the tree frame
 	 *
-	 * @param integer $itemCountSelectable
+	 * @param int $itemCountSelectable
+	 *
 	 * @return array array($width, $height)
 	 */
 	public function calcFrameSizeCss($itemCountSelectable = NULL) {
@@ -419,10 +420,11 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 	 *    [0] => 5|Fernseher
 	 *  Meta: [0] => $key|$caption
 	 *
-	 * @return array
 	 * @param object $tree Browsetree Object
-	 * @param integer $userid User UID (this is not NECESSARILY
-	 * the UID of the currently logged-in user
+	 * @param int $userid User UID (this is not NECESSARILY
+	 * 	the UID of the currently logged-in user
+	 *
+	 * @return array
 	 */
 	public function processItemArrayForBrowseableTree(&$tree, $userid) {
 		/** @var Tx_Commerce_Tree_CategoryMounts $mounts */
@@ -449,10 +451,11 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 	 *    [0] => 5|Fernseher
 	 *  Meta: [0] => $key|$caption
 	 *
-	 * @return array
 	 * @param object $tree Browsetree Object
-	 * @param integer $groupuid User UID (this is not NECESSARILY
+	 * @param int $groupuid User UID (this is not NECESSARILY
 	 * the UID of the currently logged-in user
+	 *
+	 * @return array
 	 */
 	public function processItemArrayForBrowseableTreeGroups(&$tree, $groupuid) {
 		/** @var Tx_Commerce_Tree_CategoryMounts $mounts */
@@ -479,9 +482,10 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 	 *    [0] => 5|Fernseher
 	 *  Meta: [0] => $key|$caption
 	 *
-	 * @return array
 	 * @param object $tree Browsetree Object
-	 * @param integer $catUid Cat UID
+	 * @param int $catUid Cat UID
+	 *
+	 * @return array
 	 */
 	public function processItemArrayForBrowseableTreePCategory(&$tree, $catUid) {
 		if (!is_numeric($catUid)) {
@@ -523,9 +527,10 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 	 *    [0] => 5|Fernseher
 	 *  Meta: [0] => $key|$caption
 	 *
-	 * @return array
 	 * @param object $tree Browsetree Object
-	 * @param integer $catUid Cat UID
+	 * @param int $catUid Cat UID
+	 *
+	 * @return array
 	 */
 	public function processItemArrayForBrowseableTreeCategory(&$tree, $catUid) {
 		if (!is_numeric($catUid)) {
@@ -557,9 +562,10 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 	 *    [0] => 5|Fernseher
 	 *  Meta: [0] => $key|$caption
 	 *
-	 * @return array
 	 * @param object $tree Browsetree Object
-	 * @param integer $uid Product UID
+	 * @param int $uid Product UID
+	 *
+	 * @return array
 	 */
 	public function processItemArrayForBrowseableTreeProduct(&$tree, $uid) {
 		if (!is_numeric($uid)) {

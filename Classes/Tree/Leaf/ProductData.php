@@ -49,7 +49,7 @@ class Tx_Commerce_Tree_Leaf_ProductData extends Tx_Commerce_Tree_Leaf_SlaveData 
 	/**
 	 * Flag if mm table is to be used or the parent field
 	 *
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $useMMTable = TRUE;
 
@@ -72,8 +72,9 @@ class Tx_Commerce_Tree_Leaf_ProductData extends Tx_Commerce_Tree_Leaf_SlaveData 
 	/**
 	 * Loads and returns the Array of Records
 	 *
-	 * @param integer $uid UID of the Category that is the parent
-	 * @param integer $depth [optional] Recursive Depth (not used here)
+	 * @param int $uid UID of the Category that is the parent
+	 * @param int $depth Recursive Depth (not used here)
+	 *
 	 * @return array
 	 */
 	public function getRecordsDbList($uid, $depth = 2) {

@@ -22,12 +22,12 @@
  */
 class Tx_Commerce_Tree_OrderTree extends \TYPO3\CMS\Backend\Tree\View\BrowseTreeView {
 	/**
-	 * @var integer
+	 * @var int
 	 */
 	public $ext_showPageId;
 
 	/**
-	 * @var boolean
+	 * @var bool
 	 */
 	public $ext_IconMode;
 

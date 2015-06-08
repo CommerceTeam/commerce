@@ -45,8 +45,9 @@ class Tx_Commerce_Domain_Repository_Repository {
 	protected $databaseAttributeRelationTable = '';
 
 	/**
-	 * debugmode for errorHandling
-	 * @var boolean debugMode Boolean
+	 * Debugmode for errorHandling
+	 *
+	 * @var bool
 	 */
 	protected $debugMode = FALSE;
 
@@ -56,7 +57,7 @@ class Tx_Commerce_Domain_Repository_Repository {
 	protected $translationMode = 'hideNonTranslated';
 
 	/**
-	 * @var integer
+	 * @var int
 	 */
 	protected $uid;
 
@@ -77,9 +78,10 @@ class Tx_Commerce_Domain_Repository_Repository {
 	/**
 	 * Get data
 	 *
-	 * @param integer $uid UID for Data
-	 * @param integer $langUid Language Uid
-	 * @param boolean $translationMode Translation Mode for recordset
+	 * @param int $uid UID for Data
+	 * @param int $langUid Language Uid
+	 * @param bool $translationMode Translation Mode for recordset
+	 *
 	 * @return array assoc Array with data
 	 * @todo implement access_check concering category tree
 	 */
@@ -155,8 +157,9 @@ class Tx_Commerce_Domain_Repository_Repository {
 	/**
 	 * checks if one given UID is availiabe
 	 *
-	 * @param integer $uid
-	 * @return boolean true id availiabe
+	 * @param int $uid
+	 *
+	 * @return bool true id availiabe
 	 * @todo implement access_check
 	 */
 	public function isUid($uid) {
@@ -177,9 +180,10 @@ class Tx_Commerce_Domain_Repository_Repository {
 	 * Checks in the Database if a UID is accessiblbe,
 	 * basically checks against the enableFields
 	 *
-	 * @param integer $uid Record Uid
-	 * @return boolean	TRUE if is accessible
-	 * 					FALSE	if is not accessible
+	 * @param int $uid Record Uid
+	 *
+	 * @return bool	TRUE if is accessible
+	 * 				FALSE	if is not accessible
 	 */
 	public function isAccessible($uid) {
 		$return = FALSE;
@@ -220,8 +224,9 @@ class Tx_Commerce_Domain_Repository_Repository {
 	/**
 	 * gets all attributes from this product
 	 *
-	 * @param integer $uid Product uid
+	 * @param int $uid Product uid
 	 * @param array $attributeCorrelationTypeList list of corelation_types
+	 *
 	 * @return array of attribute UID
 	 */
 	public function getAttributes($uid, $attributeCorrelationTypeList = NULL) {
@@ -258,9 +263,10 @@ class Tx_Commerce_Domain_Repository_Repository {
 	/**
 	 * Update record data
 	 *
-	 * @param integer $uid uid of the item
+	 * @param int $uid Uid of the item
 	 * @param array $fields Assoc. array with update fields
-	 * @return boolean
+	 *
+	 * @return bool
 	 */
 	public function updateRecord($uid, array $fields) {
 		if (!is_numeric($uid) || !is_array($fields)) {
@@ -303,8 +309,9 @@ class Tx_Commerce_Domain_Repository_Repository {
 	/**
 	 * gets all attributes from this product
 	 *
-	 * @param integer $uid Product uid
+	 * @param int $uid Product uid
 	 * @param array $attributeCorrelationTypeList array of corelation_types
+	 *
 	 * @return array of attribute UID
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use Tx_Commerce_Domain_Repository_Repository::getAttributes instead
 	 */

@@ -32,7 +32,8 @@ class Tx_Commerce_Dao_BasicDaoObject {
 	/**
 	 * Setter
 	 *
-	 * @param integer $id
+	 * @param int $id
+	 *
 	 * @return void
 	 */
 	public function setId($id) {
@@ -44,7 +45,7 @@ class Tx_Commerce_Dao_BasicDaoObject {
 	/**
 	 * Getter
 	 *
-	 * @return integer
+	 * @return int
 	 */
 	public function getId() {
 		return $this->id;
@@ -53,7 +54,7 @@ class Tx_Commerce_Dao_BasicDaoObject {
 	/**
 	 * Check if id is set
 	 *
-	 * @return boolean
+	 * @return bool
 	 */
 	public function issetId() {
 		return !empty($this->id);

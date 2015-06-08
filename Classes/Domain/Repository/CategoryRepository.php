@@ -49,20 +49,21 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 	protected $productOrderField = 'tx_commerce_products.sorting';
 
 	/**
-	 * @var integer Uid of this Category
+	 * @var int Uid of this Category
 	 */
 	protected $uid;
 
 	/**
-	 * @var integer Language UID
+	 * @var int Language UID
 	 */
 	protected $lang_uid;
 
 	/**
 	 * Gets the "master" category from this category
 	 *
-	 * @param integer $uid Category UID
-	 * @return integer Category UID
+	 * @param int $uid Category UID
+	 *
+	 * @return int Category UID
 	 */
 	public function getParentCategory($uid) {
 		$database = $this->getDatabaseConnection();
@@ -85,7 +86,8 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 	/**
 	 * Returns the permissions information for the category with the uid
 	 *
-	 * @param integer $uid Category UID
+	 * @param int $uid Category UID
+	 *
 	 * @return array Array with permission information
 	 */
 	public function getPermissionsRecord($uid) {
@@ -106,7 +108,8 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 	/**
 	 * Gets the parent categories from this category
 	 *
-	 * @param integer $uid Category UID
+	 * @param int $uid Category UID
+	 *
 	 * @return array Array of parent categories UIDs
 	 */
 	public function getParentCategories($uid) {
@@ -145,7 +148,8 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 	 * Returns an array of sys_language_uids of the i18n categories
 	 * Only use in BE
 	 *
-	 * @param integer $uid UID of the category we want to get the i18n languages from
+	 * @param int $uid UID of the category we want to get the i18n languages from
+	 *
 	 * @return array Array of UIDs
 	 */
 	public function getL18nCategories($uid) {
@@ -170,8 +174,9 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 	/**
 	 * Gets the child categories from this category
 	 *
-	 * @param   integer $uid Product     UID
-	 * @param   integer $languageUid Language UID
+	 * @param int $uid Product UID
+	 * @param int $languageUid Language UID
+	 *
 	 * @return array Array of child categories UID
 	 */
 	public function getChildCategories($uid, $languageUid = -1) {
@@ -279,8 +284,9 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 	/**
 	 * Gets child products from this category
 	 *
-	 * @param integer $uid Product UID
-	 * @param integer $languageUid Language UID
+	 * @param int $uid Product UID
+	 * @param int $languageUid Language UID
+	 *
 	 * @return array Array of child products UIDs
 	 */
 	public function getChildProducts($uid, $languageUid = -1) {
@@ -407,9 +413,10 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 	 * Returns an array of array for the TS rootline
 	 * Recursive Call to build rootline
 	 *
-	 * @param integer $categoryUid
+	 * @param int $categoryUid
 	 * @param string $clause
 	 * @param array $result
+	 *
 	 * @return array
 	 */
 	public function getCategoryRootline($categoryUid, $clause = '', $result = array()) {
@@ -462,8 +469,9 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 	/**
 	 * Gets the "master" category from this category
 	 *
-	 * @param integer $uid Category UID
-	 * @return integer Category UID
+	 * @param int $uid Category UID
+	 *
+	 * @return int Category UID
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getParentCategory instead
 	 */
 	public function get_parent_category($uid) {
@@ -474,7 +482,8 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 	/**
 	 * Gets the parent categories from this category
 	 *
-	 * @param integer $uid Category UID
+	 * @param int $uid Category UID
+	 *
 	 * @return array Array of parent categories UIDs
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getParentCategories instead
 	 */
@@ -487,7 +496,8 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 	 * Returns an array of sys_language_uids of the i18n categories
 	 * Only use in BE
 	 *
-	 * @param integer $uid UID of the category we want to get the i18n languages from
+	 * @param int $uid UID of the category we want to get the i18n languages from
+	 *
 	 * @return array Array of UIDs
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getL18nCategories instead
 	 */
@@ -499,8 +509,9 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 	/**
 	 * Gets the child categories from this category
 	 *
-	 * @param integer $uid Product
-	 * @param integer $languageUid Language
+	 * @param int $uid Product
+	 * @param int $languageUid Language
+	 *
 	 * @return array Array of child categories
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getChildCategories instead
 	 */
@@ -512,8 +523,9 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 	/**
 	 * Gets child products from this category
 	 *
-	 * @param integer $uid Product UID
-	 * @param integer $languageUid Language UID
+	 * @param int $uid Product UID
+	 * @param int $languageUid Language UID
+	 *
 	 * @return array Array of child products UIDs
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getChildProducts instead
 	 */
@@ -524,6 +536,8 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 
 
 	/**
+	 * Get database connection
+	 *
 	 * @return \TYPO3\CMS\Dbal\Database\DatabaseConnection
 	 */
 	protected function getDatabaseConnection() {

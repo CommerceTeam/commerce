@@ -23,7 +23,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 	/**
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $leafIndex = FALSE;
 
@@ -73,7 +73,7 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 	/**
 	 * Item UID of the Mount for this View
 	 *
-	 * @var integer
+	 * @var int
 	 */
 	protected $bank;
 
@@ -97,29 +97,29 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 	/**
 	 * Should clickmenu be enabled
 	 *
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $noClickmenu;
 
 	/**
 	 * Should the root item have a title-onclick?
 	 *
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $noRootOnclick = FALSE;
 
 	/**
-	 * should the otem in general have a title-onclick?
+	 * Should the otem in general have a title-onclick?
 	 *
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $noOnclick = FALSE;
 
 	/**
-	 * use real values for leafs that otherwise just have "edit"
+	 * Use real values for leafs that otherwise just have "edit"
 	 * this is needed for the parent category tree in records
 	 *
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $realValues = FALSE;
 
@@ -131,12 +131,12 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 	protected $icon;
 
 	/**
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $iconGenerated = FALSE;
 
 	/**
-	 * @var boolean
+	 * @var bool
 	 */
 	public $showDefaultTitleAttribute = FALSE;
 
@@ -171,7 +171,8 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 	/**
 	 * Sets the Leaf Index
 	 *
-	 * @param integer $index Leaf Index
+	 * @param int $index Leaf Index
+	 *
 	 * @return void
 	 */
 	public function setLeafIndex($index) {
@@ -368,8 +369,9 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 	 * Wrapping $title in a-tags.
 	 *
 	 * @param string $title string
-	 * @param string $row item record
-	 * @param integer $bank pointer (which mount point number)
+	 * @param string $row Item record
+	 * @param int $bank Pointer (which mount point number)
+	 *
 	 * @return string
 	 * @access private
 	 */
@@ -490,7 +492,8 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 	 *
 	 * @param string $icon HTML string to wrap, probably an image tag.
 	 * @param string $cmd Command for 'PM' get var
-	 * @param boolean $isExpand
+	 * @param bool $isExpand
+	 *
 	 * @return string Link-wrapped input string
 	 */
 	protected function PMiconATagWrap($icon, $cmd, $isExpand = TRUE) {

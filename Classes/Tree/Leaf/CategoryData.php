@@ -23,7 +23,7 @@ class Tx_Commerce_Tree_Leaf_CategoryData extends Tx_Commerce_Tree_Leaf_MasterDat
 	/**
 	 * Permission Mask for reading Categories
 	 *
-	 * @var integer
+	 * @var int
 	 */
 	protected $permsMask = 1;
 
@@ -61,14 +61,15 @@ class Tx_Commerce_Tree_Leaf_CategoryData extends Tx_Commerce_Tree_Leaf_MasterDat
 	/**
 	 * Flag if mm table is to be used or the parent field
 	 *
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $useMMTable = TRUE;
 
 	/**
 	 * Sets the Permission Mask for reading Categories from the db
 	 *
-	 * @param $mask integer mask for reading the permissions
+	 * @param $mask int mask for reading the permissions
+	 *
 	 * @return void
 	 */
 	public function setPermsMask($mask) {
@@ -95,8 +96,9 @@ class Tx_Commerce_Tree_Leaf_CategoryData extends Tx_Commerce_Tree_Leaf_MasterDat
 	/**
 	 * Loads and returns the Array of Records (for db_list)
 	 *
-	 * @param integer $uid UID of the starting Category
-	 * @param integer $depth Recursive Depth
+	 * @param int $uid UID of the starting Category
+	 * @param int $depth Recursive Depth
+	 *
 	 * @return array
 	 */
 	public function getRecordsDbList($uid, $depth = 2) {

@@ -138,8 +138,8 @@ class Tx_Commerce_ViewHelpers_TceFunc {
 
 		// get selected processed items - depending on the table we want to insert
 		// into (tx_commerce_products, tx_commerce_categories, be_users)
-		// if row['uid'] is defined and is an integer we do display an existing record
-		// otherwhise it's a new record, so get default values
+		// if row['uid'] is defined and is an int we do display an existing record
+		// otherwise it's a new record, so get default values
 		$itemArray = array();
 
 		if ((int) $row['uid']) {

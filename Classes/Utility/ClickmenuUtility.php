@@ -75,7 +75,8 @@ class Tx_Commerce_Utility_ClickmenuUtility extends \TYPO3\CMS\Backend\ClickMenu\
 	 * @param clickMenu $clickMenu clickenu object
 	 * @param array $menuItems current menu Items
 	 * @param string $table db table
-	 * @param integer $uid uid of the record
+	 * @param int $uid uid of the record
+	 *
 	 * @return array Menu Items Array
 	 */
 	public function main(&$clickMenu, $menuItems, $table, $uid) {
@@ -282,8 +283,9 @@ class Tx_Commerce_Utility_ClickmenuUtility extends \TYPO3\CMS\Backend\ClickMenu\
 	}
 
 	/**
-	 * @param integer $uid
+	 * @param int $uid
 	 * @param array $rights
+	 *
 	 * @return array
 	 */
 	protected function calculateCategoryRights($uid, $rights) {
@@ -368,8 +370,9 @@ class Tx_Commerce_Utility_ClickmenuUtility extends \TYPO3\CMS\Backend\ClickMenu\
 	}
 
 	/**
-	 * @param integer $uid
+	 * @param int $uid
 	 * @param array $rights
+	 *
 	 * @return array
 	 */
 	protected function calculateProductRights($uid, $rights) {
@@ -418,8 +421,9 @@ class Tx_Commerce_Utility_ClickmenuUtility extends \TYPO3\CMS\Backend\ClickMenu\
 	}
 
 	/**
-	 * @param integer $uid
+	 * @param int $uid
 	 * @param array $rights
+	 *
 	 * @return array
 	 */
 	protected function calculateArticleRights($uid, $rights) {
@@ -474,8 +478,9 @@ class Tx_Commerce_Utility_ClickmenuUtility extends \TYPO3\CMS\Backend\ClickMenu\
 	 * Displays the overwrite option
 	 *
 	 * @param string $table Table that is to be host of the overwrite
-	 * @param integer $uid uid of the item that is to be overwritten
+	 * @param int $uid uid of the item that is to be overwritten
 	 * @param array $elInfo Info Array
+	 *
 	 * @return string
 	 */
 	public function DB_overwrite($table, $uid, $elInfo) {
@@ -512,7 +517,8 @@ class Tx_Commerce_Utility_ClickmenuUtility extends \TYPO3\CMS\Backend\ClickMenu\
 	 * Displays the 'Send to review/public' option
 	 *
 	 * @param string $table Table that is to be host of the sending
-	 * @param integer $uid uid of the item that is to be send
+	 * @param int $uid uid of the item that is to be send
+	 *
 	 * @return string
 	 */
 	public function DB_review($table, $uid) {
@@ -536,9 +542,10 @@ class Tx_Commerce_Utility_ClickmenuUtility extends \TYPO3\CMS\Backend\ClickMenu\
 	 * overwriteUrl of the element (database)
 	 *
 	 * @param string $table Tablename
-	 * @param integer $uid uid of the record that should be overwritten
-	 * @param integer $redirect [optional] If set, then the redirect URL will point
+	 * @param int $uid uid of the record that should be overwritten
+	 * @param int $redirect [optional] If set, then the redirect URL will point
 	 * 		back to the current script, but with CB reset.
+	 *
 	 * @return string
 	 */
 	protected function overwriteUrl($table, $uid, $redirect = 1) {

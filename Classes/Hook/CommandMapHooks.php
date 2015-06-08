@@ -23,17 +23,17 @@
  */
 class Tx_Commerce_Hook_CommandMapHooks {
 	/**
-	 * @var integer
+	 * @var int
 	 */
 	const ATTRIBUTE_LOCALIZATION_TITLE_EMPTY = 0;
 
 	/**
-	 * @var integer
+	 * @var int
 	 */
 	const ATTRIBUTE_LOCALIZATION_TITLE_COPY = 1;
 
 	/**
-	 * @var integer
+	 * @var int
 	 */
 	const ATTRIBUTE_LOCALIZATION_TITLE_PREPENDED = 2;
 
@@ -61,11 +61,12 @@ class Tx_Commerce_Hook_CommandMapHooks {
 	 * This hook is processed Before a commandmap is processed (delete, etc.)
 	 * Do Nothing if the command is lokalize an table is article
 	 *
-	 * @param string &$command
-	 * @param string $table the table the data will be stored in
-	 * @param integer &$id The uid of the dataset we're working on
+	 * @param string $command
+	 * @param string $table Table the data will be stored in
+	 * @param int $id The uid of the dataset we're working on
 	 * @param mixed $value
 	 * @param \TYPO3\CMS\Core\DataHandling\DataHandler $pObj
+	 *
 	 * @return void
 	 */
 	public function processCmdmap_preProcess(&$command, $table, &$id, $value, $pObj) {
@@ -91,8 +92,9 @@ class Tx_Commerce_Hook_CommandMapHooks {
 	/**
 	 * Preprocess category
 	 *
-	 * @param string &$command
-	 * @param integer &$categoryUid
+	 * @param string $command
+	 * @param int $categoryUid
+	 *
 	 * @return void
 	 */
 	protected function preProcessCategory(&$command, &$categoryUid) {
@@ -127,8 +129,9 @@ class Tx_Commerce_Hook_CommandMapHooks {
 	/**
 	 * Preprocess product
 	 *
-	 * @param string &$command
-	 * @param integer &$productUid
+	 * @param string $command
+	 * @param int $productUid
+	 *
 	 * @return void
 	 */
 	protected function preProcessProduct(&$command, &$productUid) {
@@ -178,8 +181,9 @@ class Tx_Commerce_Hook_CommandMapHooks {
 	/**
 	 * Proprocess article
 	 *
-	 * @param string &$command
-	 * @param integer &$articleUid
+	 * @param string $command
+	 * @param int $articleUid
+	 *
 	 * @return void
 	 */
 	protected function preProcessArticle(&$command, &$articleUid) {
@@ -220,11 +224,12 @@ class Tx_Commerce_Hook_CommandMapHooks {
 	 * This hook is processed AFTER a commandmap is processed (delete, etc.)
 	 * Calculation of missing price
 	 *
-	 * @param string &$command
-	 * @param string $table the table the data will be stored in
-	 * @param integer $id The uid of the dataset we're working on
-	 * @param integer $value
+	 * @param string $command
+	 * @param string $table Table the data will be stored in
+	 * @param int $id The uid of the dataset we're working on
+	 * @param int $value
 	 * @param \TYPO3\CMS\Core\DataHandling\DataHandler $pObj The instance of the BE data handler
+	 *
 	 * @return void
 	 */
 	public function processCmdmap_postProcess(&$command, $table, $id, $value, $pObj) {
@@ -290,8 +295,9 @@ class Tx_Commerce_Hook_CommandMapHooks {
 	 * Localize all articles that are related to the current product
 	 * and localize all product attributes realted to this product from
 	 *
-	 * @param integer $productUid The uid of the dataset we're working on
-	 * @param integer $value
+	 * @param int $productUid The uid of the dataset we're working on
+	 * @param int $value
+	 *
 	 * @return void
 	 */
 	protected function translateArticlesAndAttributesOfProduct($productUid, $value) {
@@ -314,9 +320,10 @@ class Tx_Commerce_Hook_CommandMapHooks {
 	/**
 	 * Localize attributes of product
 	 *
-	 * @param integer $productUid
-	 * @param integer $localizedProductUid
-	 * @param integer $value
+	 * @param int $productUid
+	 * @param int $localizedProductUid
+	 * @param int $value
+	 *
 	 * @return void
 	 */
 	protected function translateAttributesOfProduct($productUid, $localizedProductUid, $value) {
@@ -407,9 +414,10 @@ class Tx_Commerce_Hook_CommandMapHooks {
 	/**
 	 * Localize articles of product
 	 *
-	 * @param integer $productUid
-	 * @param integer $localizedProductUid
-	 * @param integer $value
+	 * @param int $productUid
+	 * @param int $localizedProductUid
+	 * @param int $value
+	 *
 	 * @return void
 	 */
 	protected function translateArticlesOfProduct($productUid, $localizedProductUid, $value) {
@@ -537,8 +545,9 @@ class Tx_Commerce_Hook_CommandMapHooks {
 	/**
 	 * Copy product localizations
 	 *
-	 * @param integer $oldProductUid
-	 * @param integer $newProductUid
+	 * @param int $oldProductUid
+	 * @param int $newProductUid
+	 *
 	 * @return void
 	 */
 	protected function copyProductTanslations($oldProductUid, $newProductUid) {
@@ -579,7 +588,8 @@ class Tx_Commerce_Hook_CommandMapHooks {
 	 * This is not wanted because you might want to
 	 * restore deleted categories, products or articles.
 	 *
-	 * @param integer $categoryUid
+	 * @param int $categoryUid
+	 *
 	 * @return void
 	 */
 	protected function deleteChildCategoriesProductsArticlesPricesOfCategory($categoryUid) {
@@ -623,7 +633,8 @@ class Tx_Commerce_Hook_CommandMapHooks {
 	/**
 	 * If a product is deleted, delete all articles below and their locales.
 	 *
-	 * @param integer $productUid
+	 * @param int $productUid
+	 *
 	 * @return void
 	 */
 	protected function deleteArticlesAndPricesOfProduct($productUid) {

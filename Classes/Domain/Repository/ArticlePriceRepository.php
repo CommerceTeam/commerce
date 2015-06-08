@@ -35,7 +35,8 @@ class Tx_Commerce_Domain_Repository_ArticlePriceRepository extends Tx_Commerce_D
 	/**
 	 * Get data
 	 *
-	 * @param integer $uid UID for Data
+	 * @param int $uid UID for Data
+	 *
 	 * @return array assoc Array with data
 	 * @todo implement access_check concering category tree
 	 * Special Implementation for prices, as they don't have a localisation'

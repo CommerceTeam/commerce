@@ -45,7 +45,7 @@ abstract class Tx_Commerce_Tree_Leaf_Leaf extends Tx_Commerce_Tree_Leaf_Base {
 	/**
 	 * Amount of childleafs (ONLY direct children are counted)
 	 *
-	 * @var integer
+	 * @var int
 	 */
 	protected $leafcount;
 
@@ -60,7 +60,7 @@ abstract class Tx_Commerce_Tree_Leaf_Leaf extends Tx_Commerce_Tree_Leaf_Base {
 	protected $treeName;
 
 	/**
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $resetDone;
 
@@ -105,7 +105,8 @@ abstract class Tx_Commerce_Tree_Leaf_Leaf extends Tx_Commerce_Tree_Leaf_Base {
 	/**
 	 * Passes to the leafview if it should enable the clickmenu
 	 *
-	 * @param boolean $flag Flag
+	 * @param bool $flag Flag
+	 *
 	 * @return void
 	 */
 	public function noClickmenu($flag = TRUE) {
@@ -116,7 +117,8 @@ abstract class Tx_Commerce_Tree_Leaf_Leaf extends Tx_Commerce_Tree_Leaf_Base {
 	 * Adds a child leaf to the leaf
 	 *
 	 * @param Tx_Commerce_Tree_Leaf_Slave $leaf Slave Leaf-Object
-	 * @return boolean
+	 *
+	 * @return bool
 	 */
 	public function addLeaf(Tx_Commerce_Tree_Leaf_Slave &$leaf) {
 		if (NULL == $leaf) {
@@ -153,7 +155,8 @@ abstract class Tx_Commerce_Tree_Leaf_Leaf extends Tx_Commerce_Tree_Leaf_Base {
 	/**
 	 * Returns the childleaf at a given index
 	 *
-	 * @param integer $index Index of the childleaf
+	 * @param int $index Index of the childleaf
+	 *
 	 * @return Tx_Commerce_Tree_Leaf_Slave Childleaf
 	 */
 	public function getChildLeaf($index) {
@@ -194,8 +197,9 @@ abstract class Tx_Commerce_Tree_Leaf_Leaf extends Tx_Commerce_Tree_Leaf_Base {
 	 * Initializes the leaf
 	 * Passes the Parameters to its child leafs
 	 *
-	 * @param integer $index Index of this leaf
+	 * @param int $index Index of this leaf
 	 * @param array $parentIndices Array with parent indices
+	 *
 	 * @return void
 	 */
 	public function init($index, $parentIndices = array()) {
@@ -253,7 +257,8 @@ abstract class Tx_Commerce_Tree_Leaf_Leaf extends Tx_Commerce_Tree_Leaf_Base {
 	 * Sorts the Leafdata in a way to represent the linear tree structure
 	 * Sorts its leafs as well
 	 *
-	 * @param integer $rootUid uid of the Item that will act as the root of the tree
+	 * @param int $rootUid Item that will act as the root of the tree
+	 *
 	 * @return void
 	 */
 	public function sort($rootUid) {
@@ -295,8 +300,9 @@ abstract class Tx_Commerce_Tree_Leaf_Leaf extends Tx_Commerce_Tree_Leaf_Base {
 	/**
 	 * Returns if any leaf (beneath this one) has subrecords for a specific row
 	 *
-	 * @param integer $pid Row Item which would be parent of the leaf's records
-	 * @return boolean
+	 * @param int $pid Row Item which would be parent of the leaf's records
+	 *
+	 * @return bool
 	 */
 	public function leafsHaveRecords($pid) {
 		if (!is_numeric($pid)) {
@@ -324,9 +330,10 @@ abstract class Tx_Commerce_Tree_Leaf_Leaf extends Tx_Commerce_Tree_Leaf_Base {
 	/**
 	 * Returns whether or not a node is the last in the current subtree
 	 *
-	 * @return boolean
 	 * @param array $row Row Item
-	 * @param integer $pid Parent UID of the current Row Item
+	 * @param int $pid Parent UID of the current Row Item
+	 *
+	 * @return bool
 	 */
 	public function isLast($row, $pid = 0) {
 		if (!is_array($row) || !is_numeric($pid)) {
@@ -347,7 +354,8 @@ abstract class Tx_Commerce_Tree_Leaf_Leaf extends Tx_Commerce_Tree_Leaf_Base {
 	 * Returns whether or not a node has Children
 	 *
 	 * @param array $row Row Item
-	 * @return boolean
+	 *
+	 * @return bool
 	 */
 	public function hasChildren($row) {
 		if (!is_array($row)) {
@@ -376,8 +384,9 @@ abstract class Tx_Commerce_Tree_Leaf_Leaf extends Tx_Commerce_Tree_Leaf_Base {
 	/**
 	 * Returns whether we have at least 1 subitem for a specific parent row
 	 *
-	 * @return boolean
 	 * @param array $row Parent Row Information
+	 *
+	 * @return bool
 	 */
 	public function hasSubitems($row) {
 		if (!is_array($row)) {

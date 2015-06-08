@@ -49,7 +49,7 @@ class Tx_Commerce_ViewHelpers_Navigation {
 	public $mConf;
 
 	/**
-	 * @var integer
+	 * @var int
 	 */
 	public $cat;
 
@@ -69,12 +69,12 @@ class Tx_Commerce_ViewHelpers_Navigation {
 	public $out;
 
 	/**
-	 * @var integer
+	 * @var int
 	 */
 	public $mDepth = 2;
 
 	/**
-	 * @var integer
+	 * @var int
 	 */
 	public $entryCat = 0;
 
@@ -84,12 +84,12 @@ class Tx_Commerce_ViewHelpers_Navigation {
 	public $listNodes = array();
 
 	/**
-	 * @var integer
+	 * @var int
 	 */
 	public $manufacturerIdentifier = PHP_INT_MAX;
 
 	/**
-	 * @var    integer    [0-1]
+	 * @var int [0-1]
 	 * @access private
 	 */
 	public $useRootlineInformationToUrl = 0;
@@ -140,17 +140,17 @@ class Tx_Commerce_ViewHelpers_Navigation {
 	protected $separator = '&';
 
 	/**
-	 * @var boolean Do not check if an element is active
+	 * @var bool Do not check if an element is active
 	 */
 	protected $noAct = FALSE;
 
 	/**
-	 * @var integer
+	 * @var int
 	 */
 	public $choosenCat;
 
 	/**
-	 * @var integer
+	 * @var int
 	 */
 	public $pid;
 
@@ -160,17 +160,17 @@ class Tx_Commerce_ViewHelpers_Navigation {
 	public $path;
 
 	/**
-	 * @var integer
+	 * @var int
 	 */
 	public $entryLevel;
 
 	/**
-	 * @var boolean
+	 * @var bool
 	 */
 	public $expandAll;
 
 	/**
-	 * @var integer
+	 * @var int
 	 */
 	public $showUid;
 
@@ -185,7 +185,7 @@ class Tx_Commerce_ViewHelpers_Navigation {
 	protected $pageRootline;
 
 	/**
-	 * @var integer
+	 * @var int
 	 */
 	protected $menuType;
 
@@ -436,8 +436,9 @@ class Tx_Commerce_ViewHelpers_Navigation {
 	/**
 	 * Fix path parents
 	 *
-	 * @param array &$pathArray by reference
-	 * @param integer $chosenCatUid
+	 * @param array $pathArray by reference
+	 * @param int $chosenCatUid
+	 *
 	 * @return void
 	 */
 	public function fixPathParents(&$pathArray, $chosenCatUid) {
@@ -453,7 +454,7 @@ class Tx_Commerce_ViewHelpers_Navigation {
 	/**
 	 * Get root category
 	 *
-	 * @return integer
+	 * @return int
 	 */
 	public function getRootCategory() {
 		if ($this->mConf['groupOptions.']['onOptions'] == 1) {
@@ -491,8 +492,9 @@ class Tx_Commerce_ViewHelpers_Navigation {
 	/**
 	 * Make menu error node
 	 *
-	 * @param integer $max
-	 * @param integer $mDepth
+	 * @param int $max
+	 * @param int $mDepth
+	 *
 	 * @return array
 	 */
 	public function makeErrorMenu($max = 5, $mDepth = 1) {
@@ -536,15 +538,16 @@ class Tx_Commerce_ViewHelpers_Navigation {
 	/**
 	 * Makes the post array,which  the typo3 render Function will be work
 	 *
-	 * @param integer $uidPage
+	 * @param int $uidPage
 	 * @param string $mainTable
 	 * @param string $tableMm
 	 * @param string $tableSubMain
 	 * @param string $tableSubMm
-	 * @param integer $uidRoot
-	 * @param integer $mDepth
-	 * @param integer $path
-	 * @param integer $maxLevel
+	 * @param int $uidRoot
+	 * @param int $mDepth
+	 * @param int $path
+	 * @param int $maxLevel
+	 *
 	 * @return array TSConfig with ItemArrayProcFunc
 	 */
 	public function makeArrayPostRender($uidPage, $mainTable, $tableMm, $tableSubMain, $tableSubMm, $uidRoot, $mDepth = 1,
@@ -725,13 +728,14 @@ class Tx_Commerce_ViewHelpers_Navigation {
 	/**
 	 * Makes a set of  ItemMenu product list  of a category.
 	 *
-	 * @param integer $pageUid
+	 * @param int $pageUid
 	 * @param string $mainTable main table
 	 * @param string $mmTable
-	 * @param integer $categoryUid category Uid
-	 * @param integer $mDepth
-	 * @param integer $path
-	 * @param boolean $manufacturerUid
+	 * @param int $categoryUid category Uid
+	 * @param int $mDepth
+	 * @param int $path
+	 * @param bool $manufacturerUid
+	 *
 	 * @return array array to be processed by HMENU
 	 */
 	public function makeSubChildArrayPostRender($pageUid, $mainTable, $mmTable, $categoryUid, $mDepth = 1, $path = 0,
@@ -847,9 +851,10 @@ class Tx_Commerce_ViewHelpers_Navigation {
 	/**
 	 * Process the menuArray to set state for a selected item
 	 *
-	 * @param array &$treeArray
+	 * @param array $treeArray
 	 * @param array $path path of the itemMen
-	 * @param integer $mDepth depth of the itemMenu
+	 * @param int $mDepth depth of the itemMenu
+	 *
 	 * @return void
 	 */
 	public function processArrayPostRender(&$treeArray, $path = array(), $mDepth) {
@@ -967,8 +972,9 @@ class Tx_Commerce_ViewHelpers_Navigation {
 	/**
 	 * Gets the data to fill a node
 	 *
-	 * @param integer $uid
+	 * @param int $uid
 	 * @param string $tableName
+	 *
 	 * @return array
 	 */
 	public function getDataRow($uid, $tableName) {
@@ -1014,10 +1020,11 @@ class Tx_Commerce_ViewHelpers_Navigation {
 	/**
 	 * Determines if a item has no sub item
 	 *
-	 * @param integer $uid
+	 * @param int $uid
 	 * @param string $tableMm
 	 * @param string $subTableMm
-	 * @return integer : 0|1|2
+	 *
+	 * @return int : 0|1|2
 	 */
 	public function isLeaf($uid, $tableMm, $subTableMm) {
 		if ($uid == '' || $tableMm == '') {
@@ -1038,9 +1045,10 @@ class Tx_Commerce_ViewHelpers_Navigation {
 	/**
 	 * Determines if an item has sub items in another table
 	 *
-	 * @param integer $uid
+	 * @param int $uid
 	 * @param string $tableMm
-	 * @return integer : 0|1|2
+	 *
+	 * @return int : 0|1|2
 	 */
 	public function hasSubChild($uid, $tableMm) {
 		if ($uid == '' or $tableMm == '') {
@@ -1200,8 +1208,9 @@ class Tx_Commerce_ViewHelpers_Navigation {
 	 * Returns an array of array for the TS rootline
 	 * Recursive Call to build rootline
 	 *
-	 * @param integer $categoryUid
+	 * @param int $categoryUid
 	 * @param array $result
+	 *
 	 * @return array
 	 */
 	public function getCategoryRootlineforTypoScript($categoryUid, $result = array()) {
@@ -1281,9 +1290,10 @@ class Tx_Commerce_ViewHelpers_Navigation {
 	 * Usage: 2
 	 *
 	 * @param string $hash key, 32 bytes hex
-	 * @param integer $expTime represents the expire time in seconds. For instance
+	 * @param int $expTime represents the expire time in seconds. For instance
 	 *        a value of 3600 would allow cached content within the last hour,
 	 *        otherwise nothing is returned.
+	 *
 	 * @return string
 	 */
 	public function getHash($hash, $expTime = 0) {
@@ -1325,8 +1335,9 @@ class Tx_Commerce_ViewHelpers_Navigation {
 	 * if a category has more than one parentes
 	 *
 	 * @param array &$tree Menuetree
-	 * @param integer $choosencat The actual category
-	 * @param integer $expand If the menue has to be expanded
+	 * @param int $choosencat The actual category
+	 * @param int $expand If the menue has to be expanded
+	 *
 	 * @return array Rootline as Array
 	 */
 	public function getRootLine(&$tree, $choosencat, $expand) {
@@ -1367,17 +1378,18 @@ class Tx_Commerce_ViewHelpers_Navigation {
 	}
 
 	/**
-	 * Adds the manuafacturer to the category, as simulated category
+	 * Adds the manufacturer to the category, as simulated category
 	 *
-	 * @param integer $pid Page PID for the level
-	 * @param integer $uidPage UidPage for the level
+	 * @param int $pid Page PID for the level
+	 * @param int $uidPage UidPage for the level
 	 * @param string $tableMm Relation Table
 	 * @param string $tableSubMain
 	 * @param string $tableSubMm Sub Table Relationship
-	 * @param integer $categoryUid Category ID
-	 * @param integer $mDepth Menue Deepth
+	 * @param int $categoryUid Category ID
+	 * @param int $mDepth Menu Depth
 	 * @param string $path Path for fast resolving
-	 * @return array|boolean
+	 *
+	 * @return array|bool
 	 */
 	public function getManufacturerAsCategory($pid, $uidPage, $tableMm, $tableSubMain, $tableSubMm, $categoryUid, $mDepth, $path) {
 		$database = $this->getDatabaseConnection();
@@ -1477,9 +1489,10 @@ class Tx_Commerce_ViewHelpers_Navigation {
 	/**
 	 * Sorts a list of menu items
 	 *
-	 * @param array &$listNodes
+	 * @param array $listNodes
 	 * @param string $sortType
-	 * @return boolean
+	 *
+	 * @return bool
 	 * @todo: implement sortType:alphabetiAsc,byUid, bySorting
 	 */
 	public function sortArrayList(&$listNodes, $sortType = 'alphabetiDesc') {
@@ -1496,18 +1509,19 @@ class Tx_Commerce_ViewHelpers_Navigation {
 
 
 	/**
-	 * Adds the manuafacturer to the category, as simulated category
+	 * Adds the manufacturer to the category, as simulated category
 	 *
-	 * @param integer $pid Page PID for the level
-	 * @param integer $uidPage UidPage for the level
+	 * @param int $pid Page PID for the level
+	 * @param int $uidPage UidPage for the level
 	 * @param string $mainTable Main Database Table
 	 * @param string $tableMm RelationChip Table
 	 * @param string $tableSubMain
 	 * @param string $tableSubMm Sub Table Relationship
-	 * @param integer $categoryUid Category ID
-	 * @param integer $mDepth Menue Deepth
+	 * @param int $categoryUid Category ID
+	 * @param int $mDepth Menu Depth
 	 * @param string $path Path for fast resolving
-	 * @return array|boolean
+	 *
+	 * @return array|bool
 	 * @deprecated sinde commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getManufacturerAsCategory instead
 	 */
 	public function getManuAsCat($pid, $uidPage, $mainTable, $tableMm, $tableSubMain, $tableSubMm, $categoryUid, $mDepth, $path) {
@@ -1522,8 +1536,9 @@ class Tx_Commerce_ViewHelpers_Navigation {
 	 * Returns an array of array for the TS rootline
 	 * Recursive Call to buld rootline
 	 *
-	 * @param integer $catId
+	 * @param int $catId
 	 * @param array $result
+	 *
 	 * @return array
 	 * @deprecated sinde commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getCategoryRootlineforTypoScript instead
 	 */

@@ -37,8 +37,9 @@ class Tx_Commerce_Tree_Leaf_ProductView extends Tx_Commerce_Tree_Leaf_View {
 	 * Wrapping $title in a-tags.
 	 *
 	 * @param string $title Title string
-	 * @param array &$row Item record
-	 * @param integer $bank Bank pointer (which mount point number)
+	 * @param array $row Item record
+	 * @param int $bank Bank pointer (which mount point number)
+	 *
 	 * @return string
 	 */
 	public function wrapTitle($title, &$row, $bank = 0) {

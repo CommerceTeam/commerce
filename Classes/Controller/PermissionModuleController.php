@@ -23,7 +23,7 @@ use TYPO3\CMS\Backend\Utility\IconUtility;
  * This module lets you view and change permissions for pages.
  *
  * Variables:
- * $this->MOD_SETTINGS['depth']: integer 1-3: decides the depth of the list
+ * $this->MOD_SETTINGS['depth']: int 1-3: decides the depth of the list
  * $this->MOD_SETTINGS['mode']: 'perms' / '': decides if we view a user-overview
  * 		or the permissions.
  *
@@ -33,7 +33,7 @@ use TYPO3\CMS\Backend\Utility\IconUtility;
  */
 class Tx_Commerce_Controller_PermissionModuleController extends \TYPO3\CMS\Perm\Controller\PermissionModuleController {
 	/**
-	 * @var integer
+	 * @var int
 	 */
 	protected $categoryUid = 0;
 
@@ -586,7 +586,8 @@ class Tx_Commerce_Controller_PermissionModuleController extends \TYPO3\CMS\Perm\
 	 * Print a checkbox for the edit-permission form
 	 *
 	 * @param string $checkName Checkbox name key
-	 * @param integer $num Checkbox number index
+	 * @param int $num Checkbox number index
+	 *
 	 * @return string HTML checkbox
 	 */
 	public function printCheckBox($checkName, $num) {
@@ -599,7 +600,8 @@ class Tx_Commerce_Controller_PermissionModuleController extends \TYPO3\CMS\Perm\
 	/**
 	 * Finding tree and offer setting of values recursively.
 	 *
-	 * @param integer $id Page id.
+	 * @param int $id Page id.
+	 *
 	 * @return string Select form element for recursive levels
 	 */
 	public function getRecursiveSelect($id) {

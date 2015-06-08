@@ -79,10 +79,9 @@ class Tx_Commerce_Payment_Payment extends Tx_Commerce_Payment_Wirecard {
 	}
 
 	/**
-	 * function: getError
-	 * liefert den Errorcode der Paymentklasse
+	 * Liefert den Errorcode der Paymentklasse
 	 *
-	 * @return integer
+	 * @return int
 	 */
 	public function getError() {
 		return $this->error[$this->referenzID];

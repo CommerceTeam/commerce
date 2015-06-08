@@ -565,8 +565,8 @@ class Tx_Commerce_Utility_BackendUtility {
 	 * @param string $getProductData Which fields should be returned of the
 	 * 	product. This is a comma separated list (default *)
 	 *
-	 * @return int the "getProductData" param is empty, this returnss the
-	 * 	UID as integer, otherwise it returns an associative array of the dataset
+	 * @return int the "getProductData" param is empty, this returns the
+	 * 	UID as int, otherwise it returns an associative array of the dataset
 	 */
 	public function getProductOfArticle($aUid, $getProductData = '*') {
 		$database = self::getDatabaseConnection();
@@ -1166,7 +1166,7 @@ class Tx_Commerce_Utility_BackendUtility {
 	 * fact... :-/
 	 *
 	 * @param array $attributeData Data that should be stored
-	 * @param string|integer $data Value of the attribute
+	 * @param string|int $data Value of the attribute
 	 * @param int $productUid UID of the produt
 	 *
 	 * @return array with two arrays as elements
@@ -1261,7 +1261,7 @@ class Tx_Commerce_Utility_BackendUtility {
 	 * @param int $levels
 	 * @param int $aktLevel
 	 *
-	 * @return array|boolean
+	 * @return array|bool
 	 */
 	public static function getOrderFolderSelector($pid, $levels, $aktLevel = 0) {
 		$returnArray = array();
@@ -1649,7 +1649,7 @@ class Tx_Commerce_Utility_BackendUtility {
 	 * @param int $uidFrom
 	 * @param int $uidTo
 	 *
-	 * @return boolean
+	 * @return bool
 	 */
 	public function copyPrices($uidFrom, $uidTo) {
 		$backendUser = self::getBackendUser();
@@ -2306,7 +2306,7 @@ class Tx_Commerce_Utility_BackendUtility {
 	 * @param string $table Table from which we want to read
 	 * @param int $uid Uid of the record that we want to move our element to - in front of it
 	 *
-	 * @return integer
+	 * @return int
 	 */
 	public function getCopyPid($table, $uid) {
 		$database = self::getDatabaseConnection();
@@ -2505,7 +2505,7 @@ class Tx_Commerce_Utility_BackendUtility {
 				return ' 1=1';
 			}
 
-			// Make sure it's integer.
+			// Make sure it's int.
 			$perms = (int) $perms;
 			$str = ' (' .
 				// Everybody
@@ -2882,7 +2882,7 @@ class Tx_Commerce_Utility_BackendUtility {
 	 * @param array $categoryUids Uids of the categories
 	 * @param array $perms String for permissions to check
 	 *
-	 * @return boolean
+	 * @return bool
 	 */
 	public static function checkPermissionsOnCategoryContent($categoryUids, $perms) {
 		$backendUser = self::getBackendUser();
@@ -2918,7 +2918,7 @@ class Tx_Commerce_Utility_BackendUtility {
 	/**
 	 * Returns if typo3 is running under a AJAX request
 	 *
-	 * @return boolean
+	 * @return bool
 	 */
 	public function isAjaxRequest() {
 		return (bool) (TYPO3_REQUESTTYPE & TYPO3_REQUESTTYPE_AJAX);
@@ -2943,7 +2943,7 @@ class Tx_Commerce_Utility_BackendUtility {
 	 * @param int $uidTo UID of the product we want to overwrite
 	 * @param array $locale
 	 *
-	 * @return boolean
+	 * @return bool
 	 */
 	public static function overwriteProduct($uidFrom, $uidTo, $locale = array()) {
 		$table = 'tx_commerce_products';

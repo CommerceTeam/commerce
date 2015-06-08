@@ -23,28 +23,28 @@ abstract class Tx_Commerce_Tree_Leaf_MasterData extends Tx_Commerce_Tree_Leaf_Da
 	/**
 	 * Do we want to read the leafs by Mountpoints
 	 *
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $useMountpoints = FALSE;
 
 	/**
 	 * UID of the Items that acts as UBER-Parent (in case we read byUid not byMounts)
 	 *
-	 * @var integer
+	 * @var int
 	 */
 	protected $uid;
 
 	/**
 	 * Recursive Depth if we are reading by UIDs
 	 *
-	 * @var integer
+	 * @var int
 	 */
 	protected $depth;
 
 	/**
 	 * Flag if mounts should be ignored
 	 *
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $ignoreMounts = FALSE;
 
@@ -122,8 +122,9 @@ abstract class Tx_Commerce_Tree_Leaf_MasterData extends Tx_Commerce_Tree_Leaf_Da
 	/**
 	 * Sets the UID of the item which acts as the uber-parent
 	 *
+	 * @param int $uid UID of the Uber-item (could be a mountpoint, but a separate function exists for those)
+	 *
 	 * @return void
-	 * @param integer $uid - UID of the Uber-item (could be a mountpoint, but a separate function exists for those)
 	 */
 	public function setUid($uid) {
 		if (!is_numeric($uid)) {
@@ -137,7 +138,7 @@ abstract class Tx_Commerce_Tree_Leaf_MasterData extends Tx_Commerce_Tree_Leaf_Da
 	}
 
 	/**
-	 * @return integer
+	 * @return int
 	 */
 	public function getUid() {
 		return $this->uid;
@@ -146,8 +147,9 @@ abstract class Tx_Commerce_Tree_Leaf_MasterData extends Tx_Commerce_Tree_Leaf_Da
 	/**
 	 * Sets the depth of the recursion
 	 *
+	 * @param int $depth Depth of Recursion
+	 *
 	 * @return void
-	 * @param integer $depth - Depth of Recursion
 	 */
 	public function setDepth($depth) {
 		if (!is_numeric($depth)) {
@@ -245,9 +247,10 @@ abstract class Tx_Commerce_Tree_Leaf_MasterData extends Tx_Commerce_Tree_Leaf_Da
 	/**
 	 * Returns an array with all Uids that should be read
 	 *
-	 * @param integer $uid - UID to be added and recursed
-	 * @param integer $depth - Recursive Depth
+	 * @param int $uid UID to be added and recursed
+	 * @param int $depth Recursive Depth
 	 * @param array|NULL $array
+	 *
 	 * @return array
 	 */
 	protected function &getRecursiveUids($uid, $depth, &$array = NULL) {

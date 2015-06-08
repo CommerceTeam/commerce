@@ -48,13 +48,14 @@ class Tx_Commerce_Utility_AttributeEditorUtility {
 	 * $config['label']
 	 * $config['config']
 	 *
-	 * @param array $aData: The data array contains in element "row" the dataset
+	 * @param array $aData The data array contains in element "row" the dataset
 	 * 	of the table we're creating
-	 * @param array $config: The config array is the fynaflex fieldconfiguration.
-	 * @param boolean $fetchFromDatabase: If true the attribute data is fetched
+	 * @param array $config The config array is the dynaflex fieldconfiguration.
+	 * @param bool $fetchFromDatabase If true the attribute data is fetched
 	 * 	from database
-	 * @param boolean $onlyDisplay: If true the field is not an input field but
+	 * @param bool $onlyDisplay If true the field is not an input field but
 	 * 	is displayed
+	 *
 	 * @return array The modified dynaflex configuration
 	 */
 	public function getAttributeEditField($aData, &$config, $fetchFromDatabase = TRUE, $onlyDisplay = FALSE) {

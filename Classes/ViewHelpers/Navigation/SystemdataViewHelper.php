@@ -20,7 +20,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class Tx_Commerce_ViewHelpers_Navigation_SystemdataViewHelper extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 	/**
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $hasFilterBox = FALSE;
 

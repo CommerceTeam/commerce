@@ -18,28 +18,28 @@
  */
 
 /**
- * @var integer
+ * @var int
  * @see sql tx_commerce_attribute_correlationtypes
  */
 define ('ATTRIB_SELECTOR', 1);
 define ('ATTRIB_selector', ATTRIB_SELECTOR);
 
 /**
- * @var integer
+ * @var int
  * @see sql tx_commerce_attribute_correlationtypes
  */
 define ('ATTRIB_SHAL', 2);
 define ('ATTRIB_shal', ATTRIB_SHAL);
 
 /**
- * @var integer
+ * @var int
  * @see sql tx_commerce_attribute_correlationtypes
  */
 define ('ATTRIB_CAN', 3);
 define ('ATTRIB_can', ATTRIB_CAN);
 
 /**
- * @var integer
+ * @var int
  * @see sql tx_commerce_attribute_correlationtypes
  */
 define ('ATTRIB_PRODUCT', 4);
@@ -58,23 +58,23 @@ define ('ATTRIB_product', ATTRIB_PRODUCT);
  */
 class Tx_Commerce_Domain_Model_AbstractEntity {
 	/**
-	 * uid of element
+	 * Uid of element
 	 *
-	 * @var integer
+	 * @var int
 	 */
 	protected $uid = 0;
 
 	/**
 	 * Language uid
 	 *
-	 * @var integer
+	 * @var int
 	 */
 	protected $lang_uid = 0;
 
 	/**
 	 * Language uid
 	 *
-	 * @var integer
+	 * @var int
 	 */
 	protected $l18n_parent;
 
@@ -142,7 +142,7 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 	protected $recordTranslated = FALSE;
 
 	/**
-	 * @var integer lokalized UID   the uid of the localized record
+	 * @var int lokalized UID   the uid of the localized record
 	 */
 	public $_LOCALIZED_UID;
 
@@ -210,24 +210,23 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 	}
 
 	/**
-	 * language id
+	 * Language id
 	 *
-	 * @return integer
+	 * @return int
 	 */
 	public function getLang() {
 		return $this->lang_uid;
 	}
 
 	/**
-	 * @return integer l18n_partent uid
-	 * @access public
+	 * @return int l18n_partent uid
 	 */
 	public function getL18nParent() {
 		return $this->l18n_parent;
 	}
 
 	/**
-	 * @return integer
+	 * @return int
 	 */
 	public function getLocalizedUid() {
 		return $this->_LOCALIZED_UID;
@@ -236,7 +235,7 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 	/**
 	 * Get uid of item
 	 *
-	 * @return integer Uid
+	 * @return int Uid
 	 */
 	public function getUid() {
 		return (int) $this->uid;
@@ -247,7 +246,8 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 	 * Loads the Data from the database
 	 * via the named database class $databaseClass
 	 *
-	 * @param boolean $translationMode Transaltio Mode of the record, default false to use the default way of translation
+	 * @param bool $translationMode Transaltio Mode of the record, default false to use the default way of translation
+	 *
 	 * @return array
 	 */
 	public function loadData($translationMode = FALSE) {
@@ -308,7 +308,7 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 	 * basically checks against the enableFields
 	 *
 	 * @see: class.tx_commerce_db_alib.php->isAccessible(
-	 * @return boolean   TRUE    if is accessible
+	 * @return bool TRUE    if is accessible
 	 *            FALSE    if is not accessible
 	 */
 	public function isAccessible() {
@@ -320,18 +320,18 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 	}
 
 	/**
-	 * Returns true, if a translation for the initialised Laguage is availiable
+	 * Returns true, if a translation for the initialised Language is available
 	 *
-	 * @return boolean
+	 * @return bool
 	 */
 	public function isTranslated() {
 		return $this->recordTranslated;
 	}
 
 	/**
-	 * Checks if the UID is valid and availiable in the database
+	 * Checks if the UID is valid and available in the database
 	 *
-	 * @return boolean true if uid is valid
+	 * @return bool true if uid is valid
 	 */
 	public function isValidUid() {
 		if (!$this->databaseConnection) {
@@ -414,7 +414,7 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 	/**
 	 * Get uid of object
 	 *
-	 * @return integer uid
+	 * @return int uid
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getUid instead
 	 */
 	public function get_uid() {
@@ -426,7 +426,7 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 	/**
 	 * Returns the UID of the localized Record
 	 *
-	 * @return integer _LOCALIZED_UID
+	 * @return int _LOCALIZED_UID
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getLocalizedUid instead
 	 */
 	public function get_LOCALIZED_UID() {
@@ -436,7 +436,7 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 	}
 
 	/**
-	 * @return integer language id
+	 * @return int language id
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getLang instead
 	 */
 	public function get_lang() {
@@ -484,9 +484,9 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 	}
 
 	/**
-	 * Checks if the UID is valid and availiable in the database
+	 * Checks if the UID is valid and available in the database
 	 *
-	 * @return boolean true if uid is valid
+	 * @return bool true if uid is valid
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use isValidUid instead
 	 */
 	public function is_valid_uid() {
@@ -512,7 +512,8 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 	 * Loads the Data from the database
 	 * via the named database class $databaseClass
 	 *
-	 * @param boolean $translationMode Transaltio Mode of the record, default false to use the default way of translation
+	 * @param bool $translationMode Translation Mode of the record, default false to use the default way of translation
+	 *
 	 * @return array
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use loadData instead
 	 */

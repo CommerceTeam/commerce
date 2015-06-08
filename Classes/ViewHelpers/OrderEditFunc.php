@@ -403,7 +403,8 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 	 * @param array $PA
 	 * @param \TYPO3\CMS\Backend\Form\FormEngine $fobj
 	 * @param string $table
-	 * @param integer $uid Record UID
+	 * @param int $uid Record UID
+	 *
 	 * @return string HTML-Content
 	 */
 	public function address($PA, $fobj, $table, $uid) {
@@ -595,7 +596,8 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 	 * @param array $PA
 	 * @param \TYPO3\CMS\Backend\Form\FormEngine $fobj
 	 * @param string $table
-	 * @param integer $uid
+	 * @param int $uid
+	 *
 	 * @return string
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use Tx_Commerce_ViewHelpers_OrderEditFunc::getAttributes instead
 	 */

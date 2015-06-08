@@ -23,7 +23,7 @@ class Tx_Commerce_Tree_Leaf_Mounts extends Tx_Commerce_Tree_Leaf_Base {
 	/**
 	 * Uid of the User
 	 *
-	 * @var integer
+	 * @var int
 	 */
 	protected $user_uid;
 
@@ -44,7 +44,7 @@ class Tx_Commerce_Tree_Leaf_Mounts extends Tx_Commerce_Tree_Leaf_Base {
 	/**
 	 * Walk-Pointer
 	 *
-	 * @var integer
+	 * @var int
 	 */
 	protected $pointer;
 
@@ -58,14 +58,14 @@ class Tx_Commerce_Tree_Leaf_Mounts extends Tx_Commerce_Tree_Leaf_Base {
 	/**
 	 * Group for this mount
 	 *
-	 * @var integer
+	 * @var int
 	 */
 	protected $group;
 
 	/**
 	 * Flag if we want to read the mounts by group
 	 *
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $byGroup;
 
@@ -226,7 +226,7 @@ class Tx_Commerce_Tree_Leaf_Mounts extends Tx_Commerce_Tree_Leaf_Base {
 	/**
 	 * Checks whether the User has mounts
 	 *
-	 * @return boolean
+	 * @return bool
 	 */
 	public function hasMounts() {
 		return ($this->mountlist != '');
@@ -254,7 +254,7 @@ class Tx_Commerce_Tree_Leaf_Mounts extends Tx_Commerce_Tree_Leaf_Base {
 	 * Walks the category mounts
 	 * Returns the mount-id or FALSE
 	 *
-	 * @return integer
+	 * @return int
 	 */
 	public function walk() {
 			// Abort if we reached the end of this collection

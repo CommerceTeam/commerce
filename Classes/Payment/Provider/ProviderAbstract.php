@@ -98,9 +98,10 @@ abstract class Tx_Commerce_Payment_Provider_ProviderAbstract implements Tx_Comme
 	}
 
 	/**
-	 * Check if this payment provider is allowed for the current amount, payment type etc.
+	 * Check if this payment provider is allowed for
+	 * the current amount, payment type etc.
 	 *
-	 * @return boolean TRUE if provider is allowed
+	 * @return bool TRUE if provider is allowed
 	 */
 	public function isAllowed() {
 		$result = TRUE;
@@ -117,7 +118,7 @@ abstract class Tx_Commerce_Payment_Provider_ProviderAbstract implements Tx_Comme
 	/**
 	 * Determine if additional data is needed.
 	 *
-	 * @return boolean TRUE if the provider should be queried for more data
+	 * @return bool TRUE if the provider should be queried for more data
 	 */
 	public function needAdditionalData() {
 		return TRUE;
@@ -136,7 +137,8 @@ abstract class Tx_Commerce_Payment_Provider_ProviderAbstract implements Tx_Comme
 	 * Check if provided data is ok
 	 *
 	 * @param array $formData Current form data
-	 * @param boolean $parentResult Already determined result of payment object
+	 * @param bool $parentResult Already determined result of payment object
+	 *
 	 * @return bool TRUE if data is ok
 	 */
 	public function proofData(array $formData = array(), $parentResult = TRUE) {
@@ -149,7 +151,8 @@ abstract class Tx_Commerce_Payment_Provider_ProviderAbstract implements Tx_Comme
 	 * @param array $config Current configuration
 	 * @param array $session Session data
 	 * @param Tx_Commerce_Domain_Model_Basket $basket Basket object
-	 * @return boolean TRUE if finishing order is allowed
+	 *
+	 * @return bool TRUE if finishing order is allowed
 	 */
 	public function finishingFunction(array $config = array(), array $session = array(), Tx_Commerce_Domain_Model_Basket $basket = NULL) {
 		return TRUE;
@@ -160,7 +163,8 @@ abstract class Tx_Commerce_Payment_Provider_ProviderAbstract implements Tx_Comme
 	 *
 	 * @param array $globalRequest _REQUEST
 	 * @param array $session Session array
-	 * @return boolean TRUE if data is ok
+	 *
+	 * @return bool TRUE if data is ok
 	 */
 	public function checkExternalData(array $globalRequest = array(), array $session = array()) {
 		return TRUE;
@@ -169,8 +173,9 @@ abstract class Tx_Commerce_Payment_Provider_ProviderAbstract implements Tx_Comme
 	/**
 	 * Update order data after order has been finished
 	 *
-	 * @param integer $orderUid Id of this order
+	 * @param int $orderUid Id of this order
 	 * @param array $session Session data
+	 *
 	 * @return void
 	 */
 	public function updateOrder($orderUid, array $session = array()) {

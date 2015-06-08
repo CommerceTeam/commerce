@@ -80,8 +80,9 @@ class Tx_Commerce_Dao_AddressObserver {
 	/**
 	 * Check if address may get deleted
 	 *
-	 * @param integer $id
-	 * @return boolean|string
+	 * @param int $id
+	 *
+	 * @return bool|string
 	 */
 	public static function checkDelete($id) {
 		$dbFields = 'uid';

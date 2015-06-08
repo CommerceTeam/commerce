@@ -46,7 +46,7 @@ class Tx_Commerce_Dao_BasicDaoMapper {
 	protected $parser;
 
 	/**
-	 * @var integer
+	 * @var int
 	 */
 	protected $createPid = 0;
 
@@ -59,8 +59,9 @@ class Tx_Commerce_Dao_BasicDaoMapper {
 	 * Constructor
 	 *
 	 * @param Tx_Commerce_Dao_BasicDaoParser &$parser
-	 * @param integer $createPid
+	 * @param int $createPid
 	 * @param string $dbTable
+	 *
 	 * @return self
 	 */
 	public function __construct(&$parser, $createPid = 0, $dbTable = NULL) {
@@ -154,8 +155,9 @@ class Tx_Commerce_Dao_BasicDaoMapper {
 	/**
 	 * Db update object
 	 *
-	 * @param integer $uid
+	 * @param int $uid
 	 * @param Tx_Commerce_Dao_BasicDaoObject &$object
+	 *
 	 * @return void
 	 */
 	protected function dbUpdate($uid, &$object) {
@@ -180,8 +182,9 @@ class Tx_Commerce_Dao_BasicDaoMapper {
 	/**
 	 * Db delete object
 	 *
-	 * @param integer $uid
+	 * @param int $uid
 	 * @param Tx_Commerce_Dao_BasicDaoObject &$object
+	 *
 	 * @return void
 	 */
 	protected function dbDelete($uid, &$object) {
@@ -206,8 +209,9 @@ class Tx_Commerce_Dao_BasicDaoMapper {
 	/**
 	 * DB select object by id
 	 *
-	 * @param integer $uid
+	 * @param int $uid
 	 * @param Tx_Commerce_Dao_BasicDaoObject &$object
+	 *
 	 * @return void
 	 */
 	protected function dbSelectById($uid, &$object) {
@@ -246,7 +250,7 @@ class Tx_Commerce_Dao_BasicDaoMapper {
 	/**
 	 * Check if error was raised
 	 *
-	 * @return boolean
+	 * @return bool
 	 */
 	protected function isError() {
 		return !empty($this->error);
@@ -255,7 +259,7 @@ class Tx_Commerce_Dao_BasicDaoMapper {
 	/**
 	 * Get error
 	 *
-	 * @return array|boolean
+	 * @return array|bool
 	 */
 	protected function getError() {
 		return $this->error ?: FALSE;

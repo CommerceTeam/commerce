@@ -25,12 +25,12 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class Tx_Commerce_ViewHelpers_FeuserRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordList {
 	/**
-	 * @var boolean
+	 * @var bool
 	 */
 	public $alternateBgColors = TRUE;
 
 	/**
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $disableSingleTableView;
 
@@ -217,9 +217,10 @@ class Tx_Commerce_ViewHelpers_FeuserRecordList extends \TYPO3\CMS\Recordlist\Rec
 
 	/**
 	 * @param string $table
-	 * @param integer $id
+	 * @param int $id
 	 * @param string $addWhere
 	 * @param string $fieldList
+	 *
 	 * @return array
 	 */
 	public function makeQueryArray($table, $id, $addWhere = '', $fieldList = '*') {
@@ -319,12 +320,13 @@ class Tx_Commerce_ViewHelpers_FeuserRecordList extends \TYPO3\CMS\Recordlist\Rec
 	 *
 	 * @param string $table Table name
 	 * @param array $row Current record
-	 * @param integer $cc Counter, counting for each time an element
+	 * @param int $cc Counter, counting for each time an element
 	 * 	is rendered (used for alternating colors)
 	 * @param string $titleCol Table field (column) where header value is found
 	 * @param string $thumbsCol Table field (column) where (possible)
 	 * 	thumbnails can be found
-	 * @param integer $indent Indent from left.
+	 * @param int $indent Indent from left.
+	 *
 	 * @return string Table row for the element
 	 * @see getTable()
 	 */
@@ -499,8 +501,9 @@ class Tx_Commerce_ViewHelpers_FeuserRecordList extends \TYPO3\CMS\Recordlist\Rec
 
 	/**
 	 * @param string $table
-	 * @param integer $id
+	 * @param int $id
 	 * @param array $rowlist
+	 *
 	 * @return string
 	 */
 	public function getTable($table, $id, $rowlist) {

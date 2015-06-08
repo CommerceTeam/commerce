@@ -24,7 +24,8 @@ class Tx_Commerce_Utility_GeneralUtility {
 	 * Removes XSS code and strips tags from an array recursivly
 	 *
 	 * @param string $input Array of elements or other
-	 * @return boolean|array is an array, otherwhise false
+	 *
+	 * @return bool|array is an array, otherwise false
 	 */
 	public static function removeXSSStripTagsArray($input) {
 		/**
@@ -140,7 +141,8 @@ class Tx_Commerce_Utility_GeneralUtility {
 	 * with no stock should not shown
 	 *
 	 * @param Tx_Commerce_Domain_Model_Product $productObj ProductObject to work on
-	 * @param integer $dontRemoveArticles switch to show or not show articles
+	 * @param int $dontRemoveArticles Switch to show or not show articles
+	 *
 	 * @return Tx_Commerce_Domain_Model_Product Cleaned up Productobjectt
 	 */
 	public static function removeNoStockArticles($productObj, $dontRemoveArticles = 1) {
@@ -229,8 +231,9 @@ class Tx_Commerce_Utility_GeneralUtility {
 	 * 		3 = normal
 	 * );
 	 *
-	 * @param array $mailconf configuration for the mailerengine
-	 * @return boolean
+	 * @param array $mailconf Configuration for the mailerengine
+	 *
+	 * @return bool
 	 */
 	public static function sendMail($mailconf) {
 		$hookObjectsArr = array();

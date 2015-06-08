@@ -184,11 +184,12 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends \TYPO3\CMS\Recordlist\R
 	 * Creates the listing of records from a single table
 	 *
 	 * @param string $table Table name
-	 * @param integer $id Page id
+	 * @param int $id Page id
 	 * @param string $rowlist List of fields to show in the listing.
 	 * 	Pseudo fields will be added including the record header.
-	 * @throws UnexpectedValueException
+	 *
 	 * @return string HTML table with the listing for the record.
+	 * @throws UnexpectedValueException
 	 */
 	public function getTable($table, $id, $rowlist) {
 		$database = $this->getDatabaseConnection();
@@ -589,10 +590,11 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends \TYPO3\CMS\Recordlist\R
 	 * from a table $table with pid = $id
 	 *
 	 * @param string $table Table name
-	 * @param integer $id Page id (NOT USED! $this->pidSelect is used instead)
+	 * @param int $id Page id (NOT USED! $this->pidSelect is used instead)
 	 * @param string $addWhere Additional part for where clause
 	 * @param string $fieldList Field list to select,
 	 * 	* for all (for "SELECT [fieldlist] FROM ...")
+	 *
 	 * @return array Returns query array
 	 */
 	public function makeQueryArray($table, $id, $addWhere = '', $fieldList = '*') {
@@ -668,7 +670,7 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends \TYPO3\CMS\Recordlist\R
 	 * Returns a table-row with the content from the fields in the input data array.
 	 * OBS: $this->fieldArray MUST be set! (represents the list of fields to display)
 	 *
-	 * @param integer $h is an integer >=0 and denotes how tall a element is.
+	 * @param int $h is an int >=0 and denotes how tall a element is.
 	 * 	Set to '0' makes a halv line, -1 = full line, set to 1 makes a 'join'
 	 * 	and above makes 'line'
 	 * @param string $icon is the <img>+<a> of the record. If not supplied the
@@ -678,10 +680,11 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends \TYPO3\CMS\Recordlist\R
 	 * 	wrapped in <td>-tags
 	 * @param string $trParams is insert in the <td>-tags.
 	 * 	Must carry a ' ' as first character
-	 * @param integer|string $lMargin OBSOLETE - NOT USED ANYMORE.
-	 * 	$lMargin is the leftMargin (integer)
+	 * @param int|string $lMargin OBSOLETE - NOT USED ANYMORE.
+	 * 	$lMargin is the leftMargin (int)
 	 * @param string $altLine is the HTML <img>-tag
 	 * 	for an alternative 'gfx/ol/line.gif'-icon (used in the top)
+	 *
 	 * @return string HTML content for the table row
 	 */
 	public function addElement($h, $icon, $data, $trParams = '', $lMargin = '', $altLine = '') {
@@ -1588,9 +1591,10 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends \TYPO3\CMS\Recordlist\R
 	 * a link to the level of that record...)
 	 *
 	 * @param string $table Table name
-	 * @param integer $uid Item uid
+	 * @param int $uid Item uid
 	 * @param string $code Item title (not htmlspecialchars()'ed yet)
 	 * @param array $row Item row
+	 *
 	 * @return string The item title. Ready for HTML output
 	 */
 	public function linkWrapItems($table, $uid, $code, $row) {

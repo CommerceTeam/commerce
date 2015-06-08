@@ -22,7 +22,7 @@
  */
 class Tx_Commerce_Dao_FeuserDaoObject extends Tx_Commerce_Dao_BasicDaoObject {
 	/**
-	 * @var integer
+	 * @var int
 	 */
 	public $tx_commerce_tt_address_id;
 
@@ -69,7 +69,7 @@ class Tx_Commerce_Dao_FeuserDaoObject extends Tx_Commerce_Dao_BasicDaoObject {
 	/**
 	 * Getter
 	 *
-	 * @return integer
+	 * @return int
 	 */
 	public function getTx_commerce_tt_address_id() {
 		return $this->tx_commerce_tt_address_id;
@@ -78,7 +78,8 @@ class Tx_Commerce_Dao_FeuserDaoObject extends Tx_Commerce_Dao_BasicDaoObject {
 	/**
 	 * Setter
 	 *
-	 * @param integer $value
+	 * @param int $value
+	 *
 	 * @return void
 	 */
 	public function setTx_commerce_tt_address_id($value) {

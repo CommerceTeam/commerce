@@ -29,7 +29,7 @@ class Tx_Commerce_Controller_WizardController {
 	public $pidInfo = array();
 
 	/**
-	 * @var integer
+	 * @var int
 	 */
 	public $newContentInto;
 
@@ -59,7 +59,7 @@ class Tx_Commerce_Controller_WizardController {
 	public $code = '';
 
 	/**
-	 * @var integer
+	 * @var int
 	 */
 	protected $id;
 
@@ -73,7 +73,7 @@ class Tx_Commerce_Controller_WizardController {
 	/**
 	 * pagesOnly flag.
 	 *
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $pagesOnly;
 
@@ -289,8 +289,9 @@ class Tx_Commerce_Controller_WizardController {
 	 *
 	 * @param string $code Link string
 	 * @param string $table Table name (in which to create new record)
-	 * @param integer $pid PID value for the
+	 * @param int $pid PID value for the
 	 * 		"&edit['.$table.']['.$pid.']=new" command (positive/negative)
+	 *
 	 * @return string The link.
 	 */
 	protected function linkWrap($code, $table, $pid) {
@@ -324,7 +325,8 @@ class Tx_Commerce_Controller_WizardController {
 	 *
 	 * @param array $row Record for parent page.
 	 * @param string $checkTable Table name to check
-	 * @return boolean Returns true if the tablename $checkTable is allowed
+	 *
+	 * @return bool Returns true if the tablename $checkTable is allowed
 	 * 		to be created on the page with record $row
 	 */
 	protected function isTableAllowedForThisPage($row, $checkTable) {
@@ -363,7 +365,8 @@ class Tx_Commerce_Controller_WizardController {
 	 *
 	 * @param string $table Table name to test if in allowedTables
 	 * @param array $allowedNewTables Array of new tables that are allowed.
-	 * @return boolean Returns true if the $table tablename is found in
+	 *
+	 * @return bool Returns true if the $table tablename is found in
 	 * 		$allowedNewTables (or if $allowedNewTables is empty)
 	 */
 	protected function showNewRecLink($table, $allowedNewTables = array()) {

@@ -33,7 +33,7 @@ class Tx_Commerce_Tree_CategoryTree extends Tx_Commerce_Tree_Browsetree {
 	/**
 	 * Should the tree be only Categories? Or also Products and Articles?
 	 *
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $bare = TRUE;
 
@@ -48,12 +48,12 @@ class Tx_Commerce_Tree_CategoryTree extends Tx_Commerce_Tree_Browsetree {
 	protected $noClickList = '';
 
 	/**
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $simpleMode = FALSE;
 
 	/**
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $realValues = FALSE;
 
@@ -172,14 +172,15 @@ class Tx_Commerce_Tree_CategoryTree extends Tx_Commerce_Tree_Browsetree {
 	/**
 	 * Sets the tree's Bare Mode - bare means only category leaf is added
 	 *
-	 * @param boolean $bare Flag
+	 * @param bool $bare Flag
+	 *
 	 * @return void
 	 */
 	public function setBare($bare = TRUE) {
 		if (!is_bool($bare)) {
 				// only issue warning but transform the value to bool anyways
 			if (TYPO3_DLOG) {
-				GeneralUtility::devLog('Bare-Mode of the tree was set with a non-boolean flag!', COMMERCE_EXTKEY, 2);
+				GeneralUtility::devLog('Bare-Mode of the tree was set with a non-bool flag!', COMMERCE_EXTKEY, 2);
 			}
 		}
 		$this->bare = $bare;
@@ -188,7 +189,8 @@ class Tx_Commerce_Tree_CategoryTree extends Tx_Commerce_Tree_Browsetree {
 	/**
 	 * Sets if we are running in simple mode.
 	 *
-	 * @param integer $simpleMode SimpleMode?
+	 * @param int $simpleMode SimpleMode?
+	 *
 	 * @return void
 	 */
 	public function setSimpleMode($simpleMode = 1) {
@@ -209,7 +211,8 @@ class Tx_Commerce_Tree_CategoryTree extends Tx_Commerce_Tree_Browsetree {
 	 * Returns the record of the category with the corresponding uid
 	 * Categories must have been loaded already - the DB is NOT queried
 	 *
-	 * @param integer $uid uid of the category
+	 * @param int $uid Uid of the category
+	 *
 	 * @return array record
 	 */
 	public function getCategory($uid) {

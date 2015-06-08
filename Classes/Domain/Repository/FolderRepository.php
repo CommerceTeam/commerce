@@ -38,8 +38,9 @@ class Tx_Commerce_Domain_Repository_FolderRepository {
 	 *
 	 * @param string $title Folder Title as named in pages table
 	 * @param string $module Extension Moduke
-	 * @param integer $pid Parent Page id
+	 * @param int $pid Parent Page id
 	 * @param string $parentTitle Parent Folder Title
+	 *
 	 * @return array
 	 */
 	public static function initFolders($title = 'Commerce', $module = 'commerce', $pid = 0, $parentTitle = '') {
@@ -66,8 +67,9 @@ class Tx_Commerce_Domain_Repository_FolderRepository {
 	 * Find the extension folders
 	 *
 	 * @param string $module
-	 * @param integer $pid
+	 * @param int $pid
 	 * @param string $title
+	 *
 	 * @return array rows of found extension folders
 	 */
 	public static function getFolders($module = 'commerce', $pid = 0, $title = '') {
@@ -87,8 +89,9 @@ class Tx_Commerce_Domain_Repository_FolderRepository {
 	 *
 	 * @param string $title
 	 * @param string $module
-	 * @param integer $pid: ...
-	 * @return integer
+	 * @param int $pid ...
+	 *
+	 * @return int
 	 * @todo title aus extkey ziehen
 	 * @todo sorting
 	 */

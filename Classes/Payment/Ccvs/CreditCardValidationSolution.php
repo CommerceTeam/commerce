@@ -200,7 +200,7 @@ class CreditCardValidationSolution {
 	 * @param int|string $Month the card's expiration month
 	 *                                  in M, 0M or MM foramt.
 	 * @param int|string $Year the card's expiration year in YYYY format.
-	 * @return boolean  TRUE if everything is fine.  FALSE if problems.
+	 * @return bool  TRUE if everything is fine.  FALSE if problems.
 	 * @version    $Name: rel-5-14 $
 	 * @author     Daniel Convissor <danielc@analysisandsolutions.com>
 	 * @copyright  The Analysis and Solutions Company, 2002-2006

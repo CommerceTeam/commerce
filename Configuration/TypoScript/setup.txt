@@ -258,7 +258,7 @@ lib.tx_commerce {
 
 # -----------------------------------------------------------------------
 plugin.tx_commerce_pi1 {
-	# boolean - display product direct if only one product exist
+	# bool - display product direct if only one product exist
 	displayProductIfOneProduct = {$plugin.tx_commerce_lib.displayProductIfOneProduct}
 
 	showErrors = {$plugin.tx_commerce_lib.showErrors}

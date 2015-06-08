@@ -47,31 +47,32 @@ class Tx_Commerce_Domain_Model_ArticlePrice extends Tx_Commerce_Domain_Model_Abs
 	protected $currency = 'EUR';
 
 	/**
-	 * @var integer Price scale amount start
+	 * @var int Price scale amount start
 	 */
 	protected $price_scale_amount_start = 1;
 
 	/**
-	 * @var integer Price scale amount end
+	 * @var int Price scale amount end
 	 */
 	protected $price_scale_amount_end = 1;
 
 	/**
-	 * @var integer Price gross
+	 * @var int Price gross
 	 */
 	protected $price_gross = 0;
 
 	/**
-	 * @var integer Price net
+	 * @var int Price net
 	 */
 	protected $price_net = 0;
 
 	/**
 	 * Usual init method
 	 *
-	 * @param integer $uid Uid of product
-	 * @param integer $languageUid Uid of language, unused
-	 * @return boolean TRUE if $uid is > 0
+	 * @param int $uid Uid of product
+	 * @param int $languageUid Uid of language, unused
+	 *
+	 * @return bool TRUE if $uid is > 0
 	 */
 	public function init($uid, $languageUid = 0) {
 		$initializationResult = FALSE;
@@ -129,7 +130,8 @@ class Tx_Commerce_Domain_Model_ArticlePrice extends Tx_Commerce_Domain_Model_Abs
 	}
 
 	/**
-	 * @param integer $priceNet
+	 * @param int $priceNet
+	 *
 	 * @return void
 	 */
 	public function setPriceNet($priceNet) {
@@ -139,7 +141,7 @@ class Tx_Commerce_Domain_Model_ArticlePrice extends Tx_Commerce_Domain_Model_Abs
 	/**
 	 * Get net price
 	 *
-	 * @return integer Price net
+	 * @return int Price net
 	 */
 	public function getPriceNet() {
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_article_price.php']['postpricenet'])) {
@@ -171,7 +173,8 @@ class Tx_Commerce_Domain_Model_ArticlePrice extends Tx_Commerce_Domain_Model_Abs
 	}
 
 	/**
-	 * @param integer $priceGross
+	 * @param int $priceGross
+	 *
 	 * @return void
 	 */
 	public function setPriceGross($priceGross) {
@@ -181,7 +184,7 @@ class Tx_Commerce_Domain_Model_ArticlePrice extends Tx_Commerce_Domain_Model_Abs
 	/**
 	 * Get price gross
 	 *
-	 * @return integer price gross
+	 * @return int price gross
 	 */
 	public function getPriceGross() {
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_article_price.php']['postpricegross'])) {
@@ -215,7 +218,7 @@ class Tx_Commerce_Domain_Model_ArticlePrice extends Tx_Commerce_Domain_Model_Abs
 	/**
 	 * Get price scale amount start
 	 *
-	 * @return integer Scale amount start
+	 * @return int Scale amount start
 	 */
 	public function getPriceScaleAmountStart() {
 		return $this->price_scale_amount_start;
@@ -224,7 +227,7 @@ class Tx_Commerce_Domain_Model_ArticlePrice extends Tx_Commerce_Domain_Model_Abs
 	/**
 	 * Get price scale amount end
 	 *
-	 * @return integer Scale amount end
+	 * @return int Scale amount end
 	 */
 	public function getPriceScaleAmountEnd() {
 		return $this->price_scale_amount_end;
@@ -255,7 +258,7 @@ class Tx_Commerce_Domain_Model_ArticlePrice extends Tx_Commerce_Domain_Model_Abs
 
 	/**
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getPriceNet instead
-	 * @return integer
+	 * @return int
 	 */
 	public function get_price_net() {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
@@ -264,7 +267,7 @@ class Tx_Commerce_Domain_Model_ArticlePrice extends Tx_Commerce_Domain_Model_Abs
 
 	/**
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getPriceGross instead
-	 * @return integer
+	 * @return int
 	 */
 	public function get_price_gross() {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();

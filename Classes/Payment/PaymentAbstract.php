@@ -91,7 +91,7 @@ abstract class Tx_Commerce_Payment_PaymentAbstract implements Tx_Commerce_Paymen
 	/**
 	 * Return TRUE if this payment type is allowed.
 	 *
-	 * @return boolean
+	 * @return bool
 	 */
 	public function isAllowed() {
 		/** @var Tx_Commerce_Payment_Criterion_CriterionAbstract $criterion */
@@ -172,7 +172,7 @@ abstract class Tx_Commerce_Payment_PaymentAbstract implements Tx_Commerce_Paymen
 	/**
 	 * Determine if additional data is needed
 	 *
-	 * @return boolean True if additional data is needed
+	 * @return bool True if additional data is needed
 	 */
 	public function needAdditionalData() {
 		$result = FALSE;
@@ -199,7 +199,8 @@ abstract class Tx_Commerce_Payment_PaymentAbstract implements Tx_Commerce_Paymen
 	 * Check if provided data is ok
 	 *
 	 * @param array $formData Current form data
-	 * @return boolean TRUE if data is ok
+	 *
+	 * @return bool TRUE if data is ok
 	 */
 	public function proofData(array $formData = array()) {
 		$result = TRUE;
@@ -215,7 +216,8 @@ abstract class Tx_Commerce_Payment_PaymentAbstract implements Tx_Commerce_Paymen
 	 * @param array $config Current configuration
 	 * @param array $session Session data
 	 * @param Tx_Commerce_Domain_Model_Basket $basket Basket object
-	 * @return boolean True is finishing order is allowed
+	 *
+	 * @return bool True is finishing order is allowed
 	 */
 	public function finishingFunction(array $config = array(), array $session = array(), Tx_Commerce_Domain_Model_Basket $basket = NULL) {
 		$result = TRUE;
@@ -230,7 +232,8 @@ abstract class Tx_Commerce_Payment_PaymentAbstract implements Tx_Commerce_Paymen
 	 *
 	 * @param array $globalRequest _REQUEST
 	 * @param array $session Session array
-	 * @return boolean TRUE if data is ok
+	 *
+	 * @return bool TRUE if data is ok
 	 */
 	public function checkExternalData(array $globalRequest = array(), array $session = array()) {
 		$result = TRUE;
@@ -243,8 +246,9 @@ abstract class Tx_Commerce_Payment_PaymentAbstract implements Tx_Commerce_Paymen
 	/**
 	 * Update order data after order has been finished
 	 *
-	 * @param integer $orderUid Id of this order
+	 * @param int $orderUid Id of this order
 	 * @param array $session Session data
+	 *
 	 * @return void
 	 */
 	public function updateOrder($orderUid, array $session = array()) {

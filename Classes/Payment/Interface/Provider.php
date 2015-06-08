@@ -45,7 +45,7 @@ interface Tx_Commerce_Payment_Interface_Provider {
 	/**
 	 * Return TRUE if this payment type is allowed.
 	 *
-	 * @return boolean
+	 * @return bool
 	 */
 	public function isAllowed();
 
@@ -67,7 +67,8 @@ interface Tx_Commerce_Payment_Interface_Provider {
 	 * Check if provided data is ok
 	 *
 	 * @param array $formData Current form data
-	 * @param boolean $parentResult Already determined result of payment object
+	 * @param bool $parentResult Already determined result of payment object
+	 *
 	 * @return bool TRUE if data is ok
 	 */
 	public function proofData(array $formData = array(), $parentResult = TRUE);
@@ -87,15 +88,17 @@ interface Tx_Commerce_Payment_Interface_Provider {
 	 *
 	 * @param array $globalRequest _REQUEST
 	 * @param array $session Session array
-	 * @return boolean TRUE if data is ok
+	 *
+	 * @return bool TRUE if data is ok
 	 */
 	public function checkExternalData(array $globalRequest = array(), array $session = array());
 
 	/**
 	 * Update order data after order has been finished
 	 *
-	 * @param integer $orderUid Id of this order
+	 * @param int $orderUid Id of this order
 	 * @param array $session Session data
+	 *
 	 * @return void
 	 */
 	public function updateOrder($orderUid, array $session = array());

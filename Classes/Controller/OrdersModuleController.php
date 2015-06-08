@@ -29,7 +29,7 @@ class Tx_Commerce_Controller_OrdersModuleController extends \TYPO3\CMS\Recordlis
 	protected $body;
 
 	/**
-	 * @var integer
+	 * @var int
 	 */
 	protected $orderPid;
 
@@ -59,7 +59,7 @@ class Tx_Commerce_Controller_OrdersModuleController extends \TYPO3\CMS\Recordlis
 		$this->showLimit = (int) GeneralUtility::_GP('showLimit');
 		$this->returnUrl = GeneralUtility::sanitizeLocalUrl(GeneralUtility::_GP('returnUrl'));
 
-		$this->clear_cache = (boolean) GeneralUtility::_GP('clear_cache');
+		$this->clear_cache = (bool) GeneralUtility::_GP('clear_cache');
 		$this->cmd = GeneralUtility::_GP('cmd');
 		$this->cmd_table = GeneralUtility::_GP('cmd_table');
 

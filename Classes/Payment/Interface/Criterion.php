@@ -32,7 +32,7 @@ interface Tx_Commerce_Payment_Interface_Criterion {
 	/**
 	 * Return TRUE if this payment type is allowed.
 	 *
-	 * @return boolean
+	 * @return bool
 	 */
 	public function isAllowed();
 }

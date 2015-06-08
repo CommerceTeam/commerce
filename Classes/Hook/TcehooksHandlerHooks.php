@@ -164,7 +164,7 @@ class Tx_Commerce_Hook_TcehooksHandlerHooks {
 
 	/**
 	 * @param array $fieldArray
-	 * @param integer $tax
+	 * @param int $tax
 	 *
 	 * @return void
 	 */
@@ -272,9 +272,9 @@ class Tx_Commerce_Hook_TcehooksHandlerHooks {
 	/**
 	 * Check if an address is deleted
 	 *
-	 * @param integer $id
+	 * @param int $id
 	 *
-	 * @return boolean|string
+	 * @return bool|string
 	 */
 	protected function checkAddressDelete($id) {
 		return Tx_Commerce_Dao_AddressObserver::checkDelete($id);

@@ -56,14 +56,14 @@ class Tx_Commerce_Domain_Model_Attribute extends Tx_Commerce_Domain_Model_Abstra
 	/**
 	 * If the attribute has a separate value_list for selecting the value (private)
 	 *
-	 * @var integer
+	 * @var int
 	 */
 	protected $has_valuelist = 0;
 
 	/**
-	 * check if attribute values are already loaded
+	 * Check if attribute values are already loaded
 	 *
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $attributeValuesLoaded = FALSE;
 
@@ -82,12 +82,12 @@ class Tx_Commerce_Domain_Model_Attribute extends Tx_Commerce_Domain_Model_Abstra
 	protected $attribute_values = array();
 
 	/**
-	 * @var integer
+	 * @var int
 	 */
 	protected $iconmode = 0;
 
 	/**
-	 * @var integer|Tx_Commerce_Domain_Model_Attribute
+	 * @var int|Tx_Commerce_Domain_Model_Attribute
 	 */
 	protected $parent = 0;
 
@@ -99,8 +99,9 @@ class Tx_Commerce_Domain_Model_Attribute extends Tx_Commerce_Domain_Model_Abstra
 	/**
 	 * Constructor class, basically calls init
 	 *
-	 * @param integer $uid
-	 * @param integer $languageUid
+	 * @param int $uid
+	 * @param int $languageUid
+	 *
 	 * @return self
 	 */
 	public function __construct($uid, $languageUid = 0) {
@@ -109,11 +110,13 @@ class Tx_Commerce_Domain_Model_Attribute extends Tx_Commerce_Domain_Model_Abstra
 		}
 	}
 
-	/** Constructor class, basically calls init
+	/**
+	 * Constructor class, basically calls init
 	 *
-	 * @param integer $uid uid or attribute
-	 * @param integer $languageUid language uid, default 0
-	 * @return boolean
+	 * @param int $uid Uid or attribute
+	 * @param int $languageUid Language uid, default 0
+	 *
+	 * @return bool
 	 */
 	public function init($uid, $languageUid = 0) {
 		$uid = (int) $uid;
@@ -165,11 +168,11 @@ class Tx_Commerce_Domain_Model_Attribute extends Tx_Commerce_Domain_Model_Abstra
 	/**
 	 * how do we take care about depencies between attributes?
 	 *
-	 * @param boolean|object $returnObjects condition to return the value objects
-	 * @param boolean|object $productObject return only attribute values that are
+	 * @param bool|object $returnObjects condition to return the value objects
+	 * @param bool|object $productObject return only attribute values that are
 	 *        possible for the given product
+	 *
 	 * @return array values of attribute
-	 * @access public
 	 */
 	public function getAllValues($returnObjects = FALSE, $productObject = FALSE) {
 		/** @var $attributeValue Tx_Commerce_Domain_Model_AttributeValue */
@@ -222,9 +225,10 @@ class Tx_Commerce_Domain_Model_Attribute extends Tx_Commerce_Domain_Model_Abstra
 	/**
 	 * Get first attribute value uid
 	 *
-	 * @param boolean|array $includeValues array of allowed values,
+	 * @param bool|array $includeValues Array of allowed values,
 	 *        if empty all values are allowed
-	 * @return integer first attribute uid
+	 *
+	 * @return int first attribute uid
 	 */
 	public function getFirstAttributeValueUid($includeValues = FALSE) {
 		$attributes = $this->databaseConnection->getAttributeValueUids($this->uid);
@@ -246,10 +250,11 @@ class Tx_Commerce_Domain_Model_Attribute extends Tx_Commerce_Domain_Model_Abstra
 	}
 
 	/**
-	 * synonym to get_all_values
+	 * Synonym to get_all_values
 	 *
-	 * @param integer $uid of value
-	 * @return boolean|string
+	 * @param int $uid Value
+	 *
+	 * @return bool|string
 	 * @see tx_commerce_attributes->get_all_values()
 	 */
 	public function getValue($uid) {
@@ -288,7 +293,7 @@ class Tx_Commerce_Domain_Model_Attribute extends Tx_Commerce_Domain_Model_Abstra
 	/**
 	 * Overwrite get_attributes as attributes cant hav attributes
 	 *
-	 * @return boolean
+	 * @return bool
 	 */
 	public function getAttributes() {
 		return FALSE;
@@ -297,8 +302,9 @@ class Tx_Commerce_Domain_Model_Attribute extends Tx_Commerce_Domain_Model_Abstra
 	/**
 	 * Get parent
 	 *
-	 * @param boolean|string $translationMode
-	 * @return integer|Tx_Commerce_Domain_Model_Attribute
+	 * @param bool|string $translationMode
+	 *
+	 * @return int|Tx_Commerce_Domain_Model_Attribute
 	 */
 	public function getParent($translationMode = FALSE) {
 		if (is_int($this->parent) && $this->parent > 0) {
@@ -316,7 +322,8 @@ class Tx_Commerce_Domain_Model_Attribute extends Tx_Commerce_Domain_Model_Abstra
 	/**
 	 * Get children
 	 *
-	 * @param boolean|string $translationMode
+	 * @param bool|string $translationMode
+	 *
 	 * @return null|array
 	 */
 	public function getChildren($translationMode = FALSE) {
@@ -339,7 +346,7 @@ class Tx_Commerce_Domain_Model_Attribute extends Tx_Commerce_Domain_Model_Abstra
 	/**
 	 * Check if it is an Iconmode Attribute
 	 *
-	 * @return boolean
+	 * @return bool
 	 */
 	public function isIconmode() {
 		return $this->iconmode == '1';
@@ -348,7 +355,7 @@ class Tx_Commerce_Domain_Model_Attribute extends Tx_Commerce_Domain_Model_Abstra
 	/**
 	 * Check if attribute has parent
 	 *
-	 * @return boolean
+	 * @return bool
 	 */
 	public function hasParent() {
 		return is_object($this->parent);
@@ -357,7 +364,7 @@ class Tx_Commerce_Domain_Model_Attribute extends Tx_Commerce_Domain_Model_Abstra
 	/**
 	 * Check if attribute has children
 	 *
-	 * @return boolean
+	 * @return bool
 	 */
 	public function hasChildren() {
 		return count($this->children) > 0;
@@ -365,8 +372,9 @@ class Tx_Commerce_Domain_Model_Attribute extends Tx_Commerce_Domain_Model_Abstra
 
 
 	/**
-	 * @param boolean|object $returnObjects
-	 * @param boolean|object $productObject
+	 * @param bool|object $returnObjects
+	 * @param bool|object $productObject
+	 *
 	 * @return array
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0 - Use tx_commerce_attribute::getAllValues() instead
 	 */
@@ -387,8 +395,9 @@ class Tx_Commerce_Domain_Model_Attribute extends Tx_Commerce_Domain_Model_Abstra
 	}
 
 	/**
-	 * @param integer $uid
-	 * @return boolean|string
+	 * @param int $uid
+	 *
+	 * @return bool|string
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0 - Use tx_commerce_attribute::getValue() instead
 	 */
 	public function get_value($uid) {
@@ -410,7 +419,7 @@ class Tx_Commerce_Domain_Model_Attribute extends Tx_Commerce_Domain_Model_Abstra
 	/**
 	 * Overwrite get_attributes as attributes cant hav attributes
 	 *
-	 * @return boolean
+	 * @return bool
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0 - Use tx_commerce_attribute::getAttributes() instead
 	 */
 	public function get_attributes() {

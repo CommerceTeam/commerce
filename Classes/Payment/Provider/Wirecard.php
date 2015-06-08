@@ -97,7 +97,8 @@ class Tx_Commerce_Payment_Provider_Wirecard extends Tx_Commerce_Payment_Provider
 	 * @param array $config Configuration from TYPO3_CONF_VARS
 	 * @param array $session Current session data
 	 * @param Tx_Commerce_Domain_Model_Basket $basket Basket object
-	 * @return boolean TRUE if everything was ok
+	 *
+	 * @return bool TRUE if everything was ok
 	 */
 	public function finishingFunction(array $config = array(), array $session = array(), Tx_Commerce_Domain_Model_Basket $basket = NULL) {
 		/** @var Tx_Commerce_Payment_Payment $paymentLib */
@@ -142,8 +143,9 @@ class Tx_Commerce_Payment_Provider_Wirecard extends Tx_Commerce_Payment_Provider
 	/**
 	 * Update order data after order has been finished
 	 *
-	 * @param integer $orderUid Id of this order
+	 * @param int $orderUid Id of this order
 	 * @param array $session Session data
+	 *
 	 * @return void
 	 */
 	public function updateOrder($orderUid, array $session = array()) {

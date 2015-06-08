@@ -78,7 +78,7 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 	/**
 	 * Normal Tax for this article in Percent
 	 *
-	 * @var integer
+	 * @var int
 	 */
 	protected $tax;
 
@@ -113,49 +113,50 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 	/**
 	 * Parent product Uid
 	 *
-	 * @var integer
+	 * @var int
 	 */
 	protected $uid_product;
 
 	/**
 	 * Related page
 	 *
-	 * @var integer
+	 * @var int
 	 */
 	protected $relatedpage;
 
 	/**
-	 * UID for the article Type (should be refered to table tx_commerce_article_types)
+	 * UID for the article Type
+	 * (should be refered to table tx_commerce_article_types)
 	 *
-	 * @var integer
+	 * @var int
 	 */
 	protected $article_type_uid;
 
 	/**
-	 * @var integer
+	 * @var int
 	 */
 	protected $supplier_uid;
 
 	/**
-	 * cost for displaying the article delivery cost on the page
+	 * Cost for displaying the article delivery cost on the page
 	 * needed for german Law Preisauszeichnung
 	 *
-	 * @var integer
+	 * @var int
 	 */
 	protected $deliveryCostNet;
 
 	/**
-	 * cost for displaying the article delivery cost on the page
+	 * Cost for displaying the article delivery cost on the page
 	 * needed for german Law Preisauszeichnung
 	 *
-	 * @var integer
+	 * @var int
 	 */
 	protected $deliveryCostGross;
 
 	/**
-	 * uid from actual article price
+	 * Uid from actual article price
 	 *
-	 * @var integer
+	 * @var int
 	 */
 	protected $price_uid;
 
@@ -174,9 +175,9 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 	protected $price;
 
 	/**
-	 * if the price is loaded from the database
+	 * If the price is loaded from the database
 	 *
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $prices_loaded = FALSE;
 
@@ -188,7 +189,7 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 	/**
 	 * Stock for this article
 	 *
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $stock = TRUE;
 
@@ -217,7 +218,8 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 	 *
 	 * @param int $uid uid of article
 	 * @param int $languageUid language uid, default 0
-	 * @return boolean
+	 *
+	 * @return bool
 	 */
 	public function init($uid, $languageUid = 0) {
 		$this->uid = (int) $uid;
@@ -260,8 +262,9 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 	/**
 	 * Get the priceUid for a sepcific amount for this article
 	 *
-	 * @param integer $count    Count for this article
-	 * @return integer Price Uid
+	 * @param int $count Count for this article
+	 *
+	 * @return int Price Uid
 	 */
 	public function getActualPriceforScaleUid($count) {
 			// Hook for doing your own calculation
@@ -362,7 +365,7 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 	/**
 	 * Getter
 	 *
-	 * @return integer article_type
+	 * @return int article_type
 	 */
 	public function getArticleTypeUid() {
 		return $this->article_type_uid;
@@ -371,8 +374,9 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 	/**
 	 * Gets the Value from one distinct attribute of this article
 	 *
-	 * @param integer $attributeUid
-	 * @param boolean $valueListAsUid
+	 * @param int $attributeUid
+	 * @param bool $valueListAsUid
+	 *
 	 * @return string Value
 	 */
 	public function getAttributeValue($attributeUid, $valueListAsUid = FALSE) {
@@ -391,7 +395,7 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 	/**
 	 * Delivery Cost for this article
 	 *
-	 * @return integer
+	 * @return int
 	 */
 	public function getDeliveryCostNet() {
 		return $this->deliveryCostNet;
@@ -400,7 +404,7 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 	/**
 	 * Delivery Cost for this article
 	 *
-	 * @return integer
+	 * @return int
 	 */
 	public function getDeliveryCostGross() {
 		return $this->deliveryCostGross;
@@ -484,8 +488,9 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 	/**
 	 * Get Article price scales
 	 *
-	 * @param integer $startCount Count where to start with the
+	 * @param int $startCount Count where to start with the
 	 * 		listing of the sacles, default 1
+	 *
 	 * @return array or prices grouped by the different scales
 	 */
 	public function getPriceScaleObjects($startCount = 1) {
@@ -511,8 +516,9 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 	/**
 	 * Get Article price scales
 	 *
-	 * @param integer $startCount Count where to start with the
+	 * @param int $startCount Count where to start with the
 	 * 		listing of the sacles, default 1
+	 *
 	 * @return array or priceUid grouped by the different scales
 	 */
 	public function getPriceScales($startCount = 1) {
@@ -522,7 +528,7 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 	/**
 	 * Returns the price Uid
 	 *
-	 * @return integer
+	 * @return int
 	 */
 	public function getPriceUid() {
 		return $this->price_uid;
@@ -555,10 +561,9 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 	}
 
 	/**
-	 * returns the parent Product Uid
+	 * Returns the parent Product Uid
 	 *
-	 * @see tx_commerce_product
-	 * @return integer uid of tx_commerce_products
+	 * @return int uid of tx_commerce_products
 	 */
 	public function getParentProductUid() {
 		$result = FALSE;
@@ -578,16 +583,16 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 	/**
 	 * Returns the related page for the product
 	 *
-	 * @return integer
+	 * @return int
 	 */
 	public function getRelatedpage() {
 		return $this->relatedpage;
 	}
 
 	/**
-	 * returns the default price Object, which doesn't have any start or stoptime
+	 * Returns the default price Object, which doesn't have any start or stoptime
 	 *
-	 * @return integer price_uid
+	 * @return int price_uid
 	 */
 	public function getSpecialPrice() {
 		$this->loadPrices();
@@ -644,7 +649,7 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 	/**
 	 * Returns the Supplier UID of the Article if set
 	 *
-	 * @return integer UID of supplier
+	 * @return int UID of supplier
 	 */
 	public function getSupplierUid() {
 		return $this->supplier_uid;
@@ -670,9 +675,10 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 
 
 	/**
-	 * Loads the data and divides comma sparated images in array
+	 * Loads the data and divides comma separated images in array
 	 *
-	 * @param boolean $translationMode
+	 * @param bool $translationMode
+	 *
 	 * @return void
 	 */
 	public function loadData($translationMode = FALSE) {
@@ -685,8 +691,9 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 	/**
 	 * Gets the price of this article and stores in private variable
 	 *
-	 * @param boolean $translationMode
-	 * @return integer
+	 * @param bool $translationMode
+	 *
+	 * @return int
 	 */
 	public function loadPrices($translationMode = FALSE) {
 		if ($this->prices_loaded == FALSE) {
@@ -767,7 +774,8 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 	 * 		Defined by the service.
 	 * @param array $serviceChain List of service keys which should be exluded in
 	 * 		the search for a service. Array or comma list.
-	 * @return integer amount of articles in stock
+	 *
+	 * @return int amount of articles in stock
 	 */
 	public function getStock($subType = '', $serviceChain = array()) {
 		$counter = 0;
@@ -788,14 +796,15 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 	}
 
 	/**
-	 * Returns the avalibility of wanted amount of articles.
+	 * Returns the availability of wanted amount of articles.
 	 *
 	 * @param int $wantedArticles amount of Articles which should be added to basket
 	 * @param string $subType Sub type like file extensions or similar. Defined by
 	 * 		the service.
 	 * @param array $serviceChain List of service keys which should be exluded in the
 	 * 		search for a service. Array or comma list.
-	 * @return boolean avalibility of wanted amount of articles
+	 *
+	 * @return bool availability of wanted amount of articles
 	 */
 	public function hasStock($wantedArticles = 0, $subType = '', $serviceChain = array()) {
 		$counter = 0;
@@ -829,7 +838,7 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 	 * 		by the service.
 	 * @param array $serviceChain List of service keys which should be exluded in
 	 * 		the search for a service. Array or comma list.
-	 * @return boolean Decribes the result of going through the chains
+	 * @return bool Describes the result of going through the chains
 	 */
 	public function reduceStock($wantedArticles = 0, $subType = '', $serviceChain = array()) {
 		$counter = 0;
@@ -898,7 +907,7 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 	}
 
 	/**
-	 * @return integer valid priceid
+	 * @return int valid priceid
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use tx_commerce_article::getPriceUid instead
 	 */
 	public function get_article_price_uid() {
@@ -925,7 +934,7 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 	}
 
 	/**
-	 * @return integer valid priceid
+	 * @return int valid priceid
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use tx_commerce_article::getPriceUid instead
 	 */
 	public function getArticlePriceUid() {
@@ -992,7 +1001,7 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 	}
 
 	/**
-	 * @return integer article_type
+	 * @return int article_type
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use tx_commerce_article::getArticleTypeUid instead
 	 */
 	public function get_article_type_uid() {
@@ -1003,8 +1012,9 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 	/**
 	 * Gets the price of this article and stores in private variable
 	 *
-	 * @param boolean $translationMode
-	 * @return integer
+	 * @param bool $translationMode
+	 *
+	 * @return int
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use tx_commerce_article::loadPrices instead
 	 */
 	public function load_prices($translationMode = FALSE) {

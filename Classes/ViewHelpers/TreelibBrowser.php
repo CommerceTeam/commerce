@@ -51,7 +51,7 @@ class Tx_Commerce_ViewHelpers_TreelibBrowser extends \TYPO3\CMS\Backend\Module\B
 	protected $field;
 
 	/**
-	 * @var integer
+	 * @var int
 	 */
 	protected $uid;
 

@@ -46,68 +46,69 @@ class Tx_Commerce_Domain_Model_BasketItem {
 	protected $price;
 
 	/**
-	 * integer quantity for this article
+	 * Quantity for this article
 	 *
-	 * @var integer
+	 * @var int
 	 */
 	protected $quantity = 0;
 
 	/**
-	 * integer priceid for this item
+	 * Priceid for this item
 	 *
-	 * @var integer
+	 * @var int
 	 */
 	protected $priceid = 0;
 
 	/**
-	 * item summe from net_price
+	 * Item summe from net_price
 	 *
-	 * @var integer
+	 * @var int
 	 */
 	protected $item_net_sum = 0;
 
 	/**
-	 * item summe from gross_price
+	 * Item summe from gross_price
 	 *
-	 * @var integer
+	 * @var int
 	 */
 	protected $item_gross_sum = 0;
 
 	/**
-	 * calculated price from net price
+	 * Calculated price from net price
 	 *
-	 * @var integer
+	 * @var int
 	 */
 	protected $pricefromnet = 0;
 
 	/**
 	 * Net Price for this item
 	 *
-	 * @var integer
+	 * @var int
 	 */
 	protected $priceNet;
 
 	/**
 	 * Gross Price for this item
 	 *
-	 * @var integer
+	 * @var int
 	 */
 	protected $priceGross;
 
 	/**
 	 * Lang uid
 	 *
-	 * @var integer
+	 * @var int
 	 */
 	protected $lang_uid = 0;
 
 	/**
 	 * Constructor, basically calls init
 	 *
-	 * @param integer $uid
-	 * @param integer $quantity
-	 * @param integer $priceid
-	 * @param integer $languageUid
+	 * @param int $uid
+	 * @param int $quantity
+	 * @param int $priceid
+	 * @param int $languageUid
+	 *
 	 * @return self
 	 */
 	public function __construct($uid, $quantity, $priceid, $languageUid = 0) {
@@ -120,10 +121,11 @@ class Tx_Commerce_Domain_Model_BasketItem {
 	 * Initialises the object,
 	 * checks if given uid is valid and loads the the article an product data
 	 *
-	 * @param integer $uid artcile UID
-	 * @param integer $quantity amount for this article
-	 * @param integer $priceid id of the price to use
-	 * @param integer $langUid Language ID
+	 * @param int $uid Article UID
+	 * @param int $quantity Amount for this article
+	 * @param int $priceid Id of the price to use
+	 * @param int $langUid Language ID
+	 *
 	 * @return bool
 	 */
 	public function init($uid, $quantity, $priceid, $langUid = 0) {
@@ -219,18 +221,18 @@ class Tx_Commerce_Domain_Model_BasketItem {
 	}
 
 	/**
-	 * gets the article type uid
+	 * Gets the article type uid
 	 *
-	 * @return integer type of the article
+	 * @return int type of the article
 	 */
 	public function getArticleTypeUid() {
 		return $this->article->getArticleTypeUid();
 	}
 
 	/**
-	 * gets the uid from the article
+	 * Gets the uid from the article
 	 *
-	 * @return integer uid
+	 * @return int uid
 	 */
 	public function getArticleUid() {
 		return is_object($this->article) ? $this->article->getUid() : 0;
@@ -275,10 +277,11 @@ class Tx_Commerce_Domain_Model_BasketItem {
 	}
 
 	/**
-	 * retruns the item_sum_net
+	 * Returns the item_sum_net
 	 *
-	 * @param boolean $recalculate if the sum should be recalculated, default false
-	 * @return integer item sum net
+	 * @param bool $recalculate If the sum should be recalculated, default false
+	 *
+	 * @return int item sum net
 	 */
 	public function getItemSumNet($recalculate = FALSE) {
 		return $recalculate === TRUE ? $this->calculateNetSum() : $this->item_net_sum;
@@ -287,18 +290,20 @@ class Tx_Commerce_Domain_Model_BasketItem {
 	/**
 	 * Return calculated item sum gross
 	 *
-	 * @param boolean $recalculate True if sum should be recalculated
-	 * @return integer Sum gross price
+	 * @param bool $recalculate True if sum should be recalculated
+	 *
+	 * @return int Sum gross price
 	 */
 	public function getItemSumGross($recalculate = FALSE) {
 		return $recalculate === TRUE ? $this->calculateGrossSum() : $this->item_gross_sum;
 	}
 
 	/**
-	 * retruns the absolut TAX
+	 * Returns the absolut TAX
 	 *
-	 * @param boolean $recalculate if the sum shoudl be recalculated, defaul false
-	 * @return integer item sum gross
+	 * @param bool $recalculate The sum shoudl be recalculated, defaul false
+	 *
+	 * @return int item sum gross
 	 */
 	public function getItemSumTax($recalculate = FALSE) {
 		return ($this->getItemSumGross($recalculate) - $this->getItemSumNet($recalculate));
@@ -330,7 +335,7 @@ class Tx_Commerce_Domain_Model_BasketItem {
 	/**
 	 * Sets pre gross price
 	 *
-	 * @param integer $value new Price Value
+	 * @param int $value New Price Value
 	 */
 	public function setPriceGross($value) {
 		$this->priceGross = $value;
@@ -338,9 +343,9 @@ class Tx_Commerce_Domain_Model_BasketItem {
 	}
 
 	/**
-	 * gets the price_gross from thhe article
+	 * Gets the price_gross from thhe article
 	 *
-	 * @return integer
+	 * @return int
 	 */
 	public function getPriceGross() {
 		return $this->priceGross;
@@ -349,7 +354,8 @@ class Tx_Commerce_Domain_Model_BasketItem {
 	/**
 	 * Sets the net price
 	 *
-	 * @param integer $value new Price Value
+	 * @param int $value New Price Value
+	 *
 	 * @return void
 	 */
 	public function setPriceNet($value) {
@@ -358,18 +364,18 @@ class Tx_Commerce_Domain_Model_BasketItem {
 	}
 
 	/**
-	 * gets the price_net from thhe article
+	 * Gets the price_net from the article
 	 *
-	 * @return integer
+	 * @return int
 	 */
 	public function getPriceNet() {
 		return $this->priceNet;
 	}
 
 	/**
-	 * gets the uid from thhe article
+	 * Gets the uid from the article
 	 *
-	 * @return integer uid
+	 * @return int uid
 	 */
 	public function getPriceUid() {
 		return $this->priceid;
@@ -405,18 +411,18 @@ class Tx_Commerce_Domain_Model_BasketItem {
 	}
 
 	/**
-	 * gets the uid from the product
+	 * Gets the uid from the product
 	 *
-	 * @return integer uid
+	 * @return int uid
 	 */
 	public function getProductUid() {
 		return $this->product->getUid();
 	}
 
 	/**
-	 * gets the quantity from thos item
+	 * Gets the quantity from thos item
 	 *
-	 * @return integer quantity
+	 * @return int quantity
 	 */
 	public function getQuantity() {
 		return $this->quantity;
@@ -457,7 +463,7 @@ class Tx_Commerce_Domain_Model_BasketItem {
 	/**
 	 * This Method Sets the Tax Calculation method (pricefromnet)
 	 *
-	 * @param boolean $priceFromNet Switch if calculationg from net or not
+	 * @param bool $priceFromNet Switch if calculating from net or not
 	 * @return void
 	 */
 	public function setTaxCalculationMethod($priceFromNet) {
@@ -516,8 +522,9 @@ class Tx_Commerce_Domain_Model_BasketItem {
 	/**
 	 * Calculates the net_sum
 	 *
-	 * @param $useValues boolean Use the stored values instead of calculating gross or net price
-	 * @return integer net_sum
+	 * @param bool $useValues Use the stored values instead of calculating gross or net price
+	 *
+	 * @return int net_sum
 	 * @todo add hook for this function
 	 */
 	public function calculateNetSum($useValues = FALSE) {
@@ -535,8 +542,9 @@ class Tx_Commerce_Domain_Model_BasketItem {
 	/**
 	 * Calculates the gross_sum
 	 *
-	 * @param $useValues boolean Use the stored values instead of calculating gross or net price
-	 * @return integer gross_sum
+	 * @param bool $useValues Use the stored values instead of calculating gross or net price
+	 *
+	 * @return int gross_sum
 	 * @todo add hook for this function
 	 */
 	public function calculateGrossSum($useValues = FALSE) {
@@ -554,7 +562,7 @@ class Tx_Commerce_Domain_Model_BasketItem {
 	/**
 	 * recalculates the itm sums
 	 *
-	 * @param $useValues boolean Use the stored values instead of calculating gross or net price
+	 * @param bool $useValues Use the stored values instead of calculating gross or net price
 	 * @return void
 	 */
 	public function recalculateItemSums($useValues = FALSE) {
@@ -566,7 +574,7 @@ class Tx_Commerce_Domain_Model_BasketItem {
 	/**
 	 * recalculates the itm sums
 	 *
-	 * @param $useValues boolean Use the stored values instead of calculating gross or net price
+	 * @param bool $useValues Use the stored values instead of calculating gross or net price
 	 * @return void
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use recalculateItemSums instead
 	 */
@@ -578,8 +586,9 @@ class Tx_Commerce_Domain_Model_BasketItem {
 	/**
 	 * Calculates the gross_sum
 	 *
-	 * @param $useValues boolean Use the stored values instead of calculating gross or net price
-	 * @return integer gross_sum
+	 * @param bool $useValues Use the stored values instead of calculating gross or net price
+	 *
+	 * @return int gross_sum
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use calculateGrossSum instead
 	 */
 	public function calculate_gross_sum($useValues = FALSE) {
@@ -590,8 +599,9 @@ class Tx_Commerce_Domain_Model_BasketItem {
 	/**
 	 * Calculates the net_sum
 	 *
-	 * @param $useValues boolean Use the stored values instead of calculating gross or net price
-	 * @return integer net_sum
+	 * @param bool $useValues Use the stored values instead of calculating gross or net price
+	 *
+	 * @return int net_sum
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use calculateNetSum instead
 	 */
 	public function calculate_net_sum($useValues = FALSE) {
@@ -612,9 +622,9 @@ class Tx_Commerce_Domain_Model_BasketItem {
 	}
 
 	/**
-	 * gets the uid from the article
+	 * Gets the uid from the article
 	 *
-	 * @return integer uid
+	 * @return int uid
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getArticleUid instead
 	 */
 	public function get_article_uid() {
@@ -634,9 +644,9 @@ class Tx_Commerce_Domain_Model_BasketItem {
 	}
 
 	/**
-	 * gets the price_gross from thhe article
+	 * Gets the price_gross from the article
 	 *
-	 * @return integer
+	 * @return int
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getPriceGross instead
 	 */
 	public function get_price_gross() {
@@ -645,9 +655,9 @@ class Tx_Commerce_Domain_Model_BasketItem {
 	}
 
 	/**
-	 * gets the uid from thhe article
+	 * Gets the uid from the article
 	 *
-	 * @return integer uid
+	 * @return int uid
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getPriceUid instead
 	 */
 	public function get_price_uid() {
@@ -656,10 +666,11 @@ class Tx_Commerce_Domain_Model_BasketItem {
 	}
 
 	/**
-	 * retruns the item_sum_net
+	 * Returns the item_sum_net
 	 *
-	 * @param boolean $recalculate if the sum should be recalculated, default false
-	 * @return integer item sum net
+	 * @param bool $recalculate if the sum should be recalculated, default false
+	 *
+	 * @return int item sum net
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getItemSumNet instead
 	 */
 	public function get_item_sum_net($recalculate = FALSE) {
@@ -668,8 +679,9 @@ class Tx_Commerce_Domain_Model_BasketItem {
 	}
 
 	/**
-	 * @param boolean $recalculate
-	 * @return integer
+	 * @param bool $recalculate
+	 *
+	 * @return int
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getItemSumGross instead
 	 */
 	public function get_item_sum_gross($recalculate = FALSE) {
@@ -678,10 +690,10 @@ class Tx_Commerce_Domain_Model_BasketItem {
 	}
 
 	/**
-	 * retruns the absolut TAX
+	 * Returns the absolute TAX
 	 *
-	 * @param boolean $recalculate if the sum shoudl be recalculated, defaul false
-	 * @return integer item sum gross
+	 * @param bool $recalculate if the sum should be recalculated, default false
+	 * @return int item sum gross
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getItemSumTax instead
 	 */
 	public function get_item_sum_tax($recalculate = FALSE) {
@@ -728,7 +740,7 @@ class Tx_Commerce_Domain_Model_BasketItem {
 	}
 
 	/**
-	 * @return integer
+	 * @return int
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getPriceNet instead
 	 */
 	public function get_price_net() {
@@ -737,9 +749,9 @@ class Tx_Commerce_Domain_Model_BasketItem {
 	}
 
 	/**
-	 * gets the article Type uid
+	 * Gets the article Type uid
 	 *
-	 * @return integer article type uid
+	 * @return int article type uid
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getArticleTypeUid instead
 	 */
 	public function get_article_article_type_uid() {
@@ -748,9 +760,9 @@ class Tx_Commerce_Domain_Model_BasketItem {
 	}
 
 	/**
-	 * gets the quantity from thos item
+	 * Gets the quantity from this item
 	 *
-	 * @return integer
+	 * @return int
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getQuantity instead
 	 */
 	public function get_quantity() {

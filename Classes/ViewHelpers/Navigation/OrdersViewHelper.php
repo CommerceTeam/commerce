@@ -30,7 +30,7 @@ class Tx_Commerce_ViewHelpers_Navigation_OrdersViewHelper extends \TYPO3\CMS\Bac
 	/**
 	 * Temporary mount point (record), if any
 	 *
-	 * @var integer
+	 * @var int
 	 */
 	protected $activeTemporaryMountPoint = 0;
 
@@ -52,7 +52,7 @@ class Tx_Commerce_ViewHelpers_Navigation_OrdersViewHelper extends \TYPO3\CMS\Bac
 	protected $setTemporaryDatabaseMount;
 
 	/**
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $doHighlight;
 
@@ -265,7 +265,8 @@ class Tx_Commerce_ViewHelpers_Navigation_OrdersViewHelper extends \TYPO3\CMS\Bac
 	}
 
 	/**
-	 * @param integer $pageId
+	 * @param int $pageId
+	 *
 	 * @return void
 	 */
 	protected function settingTemporaryMountPoint($pageId) {

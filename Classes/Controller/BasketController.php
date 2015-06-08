@@ -435,7 +435,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 			// Add new article
 			if (is_array($this->piVars['payArt'])) {
 				foreach ($this->piVars['payArt'] as $articleUid => $articleCount) {
-					// Set to integer to be sure it is integer
+					// Set to int to be sure it is int
 					$articleUid = (int) $articleUid;
 					$articleCount = (int) $articleCount;
 					$this->basket->addArticle($articleUid, $articleCount['count']);

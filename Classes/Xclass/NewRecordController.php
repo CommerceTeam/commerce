@@ -18,18 +18,19 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class NewRecordController extends \TYPO3\CMS\Backend\Controller\NewRecordController {
 
-    /**
-     * Links the string $code to a create-new form for a record
+	/**
+	 * Links the string $code to a create-new form for a record
 	 * in $table created on page $pid
-     *
-     * @param string $linkText Link text
-     * @param string $table Table name (in which to create new record)
-     * @param integer $pid PID value for the
+	 *
+	 * @param string $linkText Link text
+	 * @param string $table Table name (in which to create new record)
+	 * @param int $pid PID value for the
 	 *  "&edit['.$table.']['.$pid.']=new" command (positive/negative)
-     * @param boolean $addContentTable If $addContentTable is set,
+	 * @param bool $addContentTable If $addContentTable is set,
 	 *  then a new contentTable record is created together with pages
-     * @return string The link.
-     */
+	 *
+	 * @return string The link.
+	 */
     public function linkWrap($linkText, $table, $pid, $addContentTable = FALSE) {
         $parameters = '&edit[' . $table . '][' . $pid . ']=new';
 

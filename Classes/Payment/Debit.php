@@ -82,7 +82,8 @@ class Tx_Commerce_Payment_Debit extends Tx_Commerce_Payment_PaymentAbstract {
 	 * Check if provided data is ok
 	 *
 	 * @param array $formData Current form data
-	 * @return boolean TRUE if data is ok
+	 *
+	 * @return bool TRUE if data is ok
 	 */
 	public function proofData(array $formData = array()) {
 		// If formData is empty we know that this is the very first
@@ -112,8 +113,9 @@ class Tx_Commerce_Payment_Debit extends Tx_Commerce_Payment_PaymentAbstract {
 	/**
 	 * Update order data after order has been finished
 	 *
-	 * @param integer $orderUid Id of this order
+	 * @param int $orderUid Id of this order
 	 * @param array $session Session data
+	 *
 	 * @return void
 	 */
 	public function updateOrder($orderUid, array $session = array()) {

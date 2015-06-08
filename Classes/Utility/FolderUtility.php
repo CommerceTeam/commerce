@@ -125,9 +125,10 @@ class Tx_Commerce_Utility_FolderUtility {
 	/**
 	 * Generates the System Articles
 	 *
-	 * @param integer $catUid
+	 * @param int $catUid
 	 * @param string $type
 	 * @param array $addArray
+	 *
 	 * @return void
 	 */
 	public static function makeSystemCatsProductsArtcilesAndPrices($catUid, $type, $addArray) {
@@ -142,10 +143,11 @@ class Tx_Commerce_Utility_FolderUtility {
 	 * Creates a product with a special uname inside of a specific category.
 	 * If the product already exists, the method returns the UID of it.
 	 *
-	 * @param integer $catUid
+	 * @param int $catUid
 	 * @param string $uname
 	 * @param array $addArray
-	 * @return boolean
+	 *
+	 * @return bool
 	 */
 	public static function makeProduct($catUid, $uname, $addArray) {
 		// first of all, check if there is a product for this value
@@ -179,9 +181,10 @@ class Tx_Commerce_Utility_FolderUtility {
 	 * Checks if a product is inside a category. The product is identified
 	 * by the uname field.
 	 *
-	 * @param integer $cUid The uid of the category we search in
+	 * @param int $cUid The uid of the category we search in
 	 * @param string $uname The unique name by which the product should be identified
-	 * @return boolean|integer false or UID of the found product
+	 *
+	 * @return bool|int false or UID of the found product
 	 */
 	public static function checkProd($cUid, $uname) {
 		$database = self::getDatabaseConnection();
@@ -217,11 +220,12 @@ class Tx_Commerce_Utility_FolderUtility {
 	/**
 	 * Creates an article for the product. Used for sysarticles (e.g. payment articles)
 	 *
-	 * @param integer $pUid Product Uid under wich the articles are created
-	 * @param integer $key keyname for the sysarticle, used for classname and title first, title can be changed
+	 * @param int $pUid Product Uid under wich the articles are created
+	 * @param int $key keyname for the sysarticle, used for classname and title first, title can be changed
 	 * @param array $value values for the article, only type is used
 	 * @param array $addArray additional params for the inserts (like timestamp)
-	 * @return integer
+	 *
+	 * @return int
 	 */
 	public static function makeArticle($pUid, $key, $value, $addArray) {
 		$database = self::getDatabaseConnection();
