@@ -221,6 +221,8 @@ class BackendUserUtility implements SingletonInterface {
 
 
 	/**
+	 * Get backend user
+	 *
 	 * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
 	 */
 	protected function getBackendUser() {
@@ -228,6 +230,8 @@ class BackendUserUtility implements SingletonInterface {
 	}
 
 	/**
+	 * Get database connection
+	 *
 	 * @return \TYPO3\CMS\Dbal\Database\DatabaseConnection
 	 */
 	protected function getDatabaseConnection() {

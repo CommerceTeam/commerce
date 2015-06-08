@@ -667,6 +667,8 @@ class Tx_Commerce_Controller_PermissionModuleController extends \TYPO3\CMS\Perm\
 
 
 	/**
+	 * Get backend user
+	 *
 	 * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
 	 */
 	protected function getBackendUser() {
@@ -674,6 +676,8 @@ class Tx_Commerce_Controller_PermissionModuleController extends \TYPO3\CMS\Perm\
 	}
 
 	/**
+	 * Get language service
+	 *
 	 * @return \TYPO3\CMS\Lang\LanguageService
 	 */
 	protected function getLanguageService() {

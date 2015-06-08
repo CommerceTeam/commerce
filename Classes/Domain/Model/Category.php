@@ -1071,6 +1071,9 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	/**
 	 * Constructor, basically calls init
 	 *
+	 * @param bool $translationMode
+	 *
+	 * @return void
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use loadData instead
 	 */
 	public function load_data($translationMode = FALSE) {

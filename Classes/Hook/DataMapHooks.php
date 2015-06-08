@@ -1562,7 +1562,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 	}
 
 	/**
-	 * get move order hooks
+	 * Get move order hooks
 	 *
 	 * @return array
 	 */

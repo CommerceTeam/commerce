@@ -25,18 +25,22 @@ class Tx_Commerce_Controller_PermissionAjaxController extends \TYPO3\CMS\Perm\Co
 	/**
 	 * The main dispatcher function. Collect data and prepare HTML output.
 	 *
-	 * @param array $params array of parameters from the AJAX interface
-	 * @param \TYPO3\CMS\Core\Http\AjaxRequestHandler &$ajaxObj
-	 * @return Void
+	 * @param array $params Parameters from the AJAX interface
+	 * @param \TYPO3\CMS\Core\Http\AjaxRequestHandler $ajaxObj Ajax object
+	 *
+	 * @return void
 	 */
-	public function dispatch($params = array(), \TYPO3\CMS\Core\Http\AjaxRequestHandler &$ajaxObj = NULL) {
+	public function dispatch(array $params = array(), \TYPO3\CMS\Core\Http\AjaxRequestHandler &$ajaxObj = NULL) {
 		$content = '';
 
 			// Basic test for required value
 		if ($this->conf['page'] > 0) {
-
-				// Init TCE for execution of update
-			/** @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce */
+			// Init TCE for execution of update
+			/**
+			 * Data handler
+			 *
+			 * @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce
+			 */
 			$tce = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
 			$tce->stripslashes_values = 1;
 

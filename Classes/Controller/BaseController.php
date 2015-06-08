@@ -1942,7 +1942,7 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 			);
 		}
 
-		// Set RenderMaxArtickles to TS value
+		// Set RenderMaxArticles to TS value
 		if ((!empty($localTs['maxArticles'])) && ((int) $localTs['maxArticles'] > 0)) {
 			$product->setRenderMaxArticles((int) $localTs['maxArticles']);
 		}
@@ -2049,7 +2049,7 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	 * Make article view
 	 *
 	 * @param string $kind Kind
-	 * @param Tx_Commerce_Domain_Model_Article $articles Articles
+	 * @param array $articles Articles
 	 * @param Tx_Commerce_Domain_Model_Product $product Product
 	 *
 	 * @return string

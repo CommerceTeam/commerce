@@ -476,6 +476,9 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 	 * Adds a set of fields to the $fieldlist variable
 	 * used for hooks to add own fields to the output
 	 *
+	 * @param array $fieldarray
+	 *
+	 * @return void
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use addFieldsToFieldlist instead
 	 */
 	public function add_fields_to_fieldlist($fieldarray) {

@@ -1679,6 +1679,9 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	/**
 	 * Sets a short description
 	 *
+	 * @param int $leng
+	 *
+	 * @return void
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use typoscript instead
 	 */
 	public function set_leng_description($leng = 150) {
@@ -1689,6 +1692,13 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	/**
 	 * Returns the attribute matrix
 	 *
+	 * @param bool $articleList
+	 * @param bool $attribute_include
+	 * @param bool $showHiddenValues
+	 * @param string $sortingTable
+	 * @param bool $fallbackToDefault
+	 *
+	 * @return mixed
 	 * @see getAttributeMatrix()
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getAttributeMatrix instead
 	 */
@@ -1701,6 +1711,12 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	/**
 	 * Returns the attribute matrix
 	 *
+	 * @param bool $articleList
+	 * @param bool $attribute_include
+	 * @param bool $showHiddenValues
+	 * @param string $sortingTable
+	 *
+	 * @return mixed
 	 * @see getAttributeMatrix()
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getAttributeMatrix instead
 	 */
@@ -1713,6 +1729,11 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	/**
 	 * Returns the attribute matrix
 	 *
+	 * @param bool $attribute_include
+	 * @param bool $showHiddenValues
+	 * @param string $sortingTable
+	 *
+	 * @return mixed
 	 * @see getAttributeMatrix()
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getAttributeMatrix instead
 	 */
@@ -1727,6 +1748,11 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	/**
 	 * Generates a Matrix fro these concerning products for all Attributes and the values therfor
 	 *
+	 * @param bool $attribute_include
+	 * @param bool $showHiddenValues
+	 * @param string $sortingTable
+	 *
+	 * @return mixed
 	 * @see getAttributeMatrix()
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getAttributeMatrix instead
 	 */

@@ -684,6 +684,8 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 
 
 	/**
+	 * Get backend user
+	 *
 	 * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
 	 */
 	protected function getBackendUser() {

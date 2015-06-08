@@ -276,6 +276,8 @@ class Tx_Commerce_ViewHelpers_Navigation_OrdersViewHelper extends \TYPO3\CMS\Bac
 
 
 	/**
+	 * Get backend user
+	 *
 	 * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
 	 */
 	protected function getBackendUser() {
@@ -283,6 +285,8 @@ class Tx_Commerce_ViewHelpers_Navigation_OrdersViewHelper extends \TYPO3\CMS\Bac
 	}
 
 	/**
+	 * Get language service
+	 *
 	 * @return \TYPO3\CMS\Lang\LanguageService
 	 */
 	protected function getLanguageService() {

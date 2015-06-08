@@ -1659,6 +1659,8 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends \TYPO3\CMS\Recordlist\R
 
 
 	/**
+	 * Get backend user
+	 *
 	 * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
 	 */
 	protected function getBackendUser() {
@@ -1666,6 +1668,8 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends \TYPO3\CMS\Recordlist\R
 	}
 
 	/**
+	 * Get language service
+	 *
 	 * @return \TYPO3\CMS\Lang\LanguageService
 	 */
 	protected function getLanguageService() {
@@ -1673,6 +1677,8 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends \TYPO3\CMS\Recordlist\R
 	}
 
 	/**
+	 * Get database connection
+	 *
 	 * @return \TYPO3\CMS\Dbal\Database\DatabaseConnection
 	 */
 	protected function getDatabaseConnection() {
@@ -1680,6 +1686,8 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends \TYPO3\CMS\Recordlist\R
 	}
 
 	/**
+	 * Get document template
+	 *
 	 * @return \TYPO3\CMS\Backend\Template\DocumentTemplate
 	 */
 	protected function getDocumentTemplate() {

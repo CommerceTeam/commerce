@@ -118,6 +118,8 @@ class Tx_Commerce_Domain_Repository_FolderRepository {
 
 
 	/**
+	 * Get database connection
+	 *
 	 * @return \TYPO3\CMS\Dbal\Database\DatabaseConnection
 	 */
 	protected function getDatabaseConnection() {
