@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * This file is part of the TYPO3 CMS project.
  *
  * It is free software; you can redistribute it and/or modify it under
@@ -136,8 +136,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 			$article = $this->existingArticles[$i];
 
 			$result .= '<tr><td style="border-top:1px black solid; border-right: 1px gray dotted"><strong>' .
-				htmlspecialchars($article['title']) . '</strong>';
-			$result .= '<br />UID:' . (int) $article['uid'] . '</td>';
+				htmlspecialchars($article['title']) . '</strong><br />UID:' . (int) $article['uid'] . '</td>';
 
 			if (is_array($this->attributes['ct1'])) {
 				foreach ($this->attributes['ct1'] as $attribute) {
@@ -147,11 +146,13 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 						'tx_commerce_articles_article_attributes_mm',
 						'uid_local=' . $article['uid'] . ' AND uid_foreign=' . $attribute['uid_foreign']
 					);
+
+					$cellStyle = 'border-top:1px black solid; border-right: 1px gray dotted';
 					while (($attributeData = $database->sql_fetch_assoc($atrRes))) {
 						if ($attribute['attributeData']['has_valuelist'] == 1) {
 							if ($attributeData['uid_valuelist'] == 0) {
 									// if the attribute has no value, create a select box with valid values
-								$result .= '<td style="border-top:1px black solid; border-right: 1px gray dotted"><select name="updateData[' .
+								$result .= '<td style="' . $cellStyle . '"><select name="updateData[' .
 									(int) $article['uid'] . '][' . (int) $attribute['uid_foreign'] . ']" />';
 								$result .= '<option value="0" selected="selected"></option>';
 								foreach ($attribute['valueList'] as $attrValueUid => $attrValueData) {
@@ -159,14 +160,14 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 								}
 								$result .= '</select></td>';
 							} else {
-								$result .= '<td style="border-top:1px black solid; border-right: 1px gray dotted">' .
+								$result .= '<td style="' . $cellStyle . '">' .
 									htmlspecialchars(strip_tags($attribute['valueList'][$attributeData['uid_valuelist']]['value'])) . '</td>';
 							}
 						} elseif (!empty($attributeData['value_char'])) {
-							$result .= '<td style="border-top:1px black solid; border-right: 1px gray dotted">' .
+							$result .= '<td style="' . $cellStyle . '">' .
 								htmlspecialchars(strip_tags($attributeData['value_char'])) . '</td>';
 						} else {
-							$result .= '<td style="border-top:1px black solid; border-right: 1px gray dotted">' .
+							$result .= '<td style="' . $cellStyle . '">' .
 								htmlspecialchars(strip_tags($attributeData['default_value'])) . '</td>';
 						}
 					}

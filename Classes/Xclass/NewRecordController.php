@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * This file is part of the TYPO3 CMS project.
  *
  * It is free software; you can redistribute it and/or modify it under
@@ -15,9 +15,12 @@
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-
+/**
+ * Class NewRecordController
+ *
+ * @author Sebastian Fischer <typo3@marketing-factory.de>
+ */
 class NewRecordController extends \TYPO3\CMS\Backend\Controller\NewRecordController {
-
 	/**
 	 * Links the string $code to a create-new form for a record
 	 * in $table created on page $pid
@@ -31,27 +34,30 @@ class NewRecordController extends \TYPO3\CMS\Backend\Controller\NewRecordControl
 	 *
 	 * @return string The link.
 	 */
-    public function linkWrap($linkText, $table, $pid, $addContentTable = FALSE) {
-        $parameters = '&edit[' . $table . '][' . $pid . ']=new';
+	public function linkWrap($linkText, $table, $pid, $addContentTable = FALSE) {
+		$parameters = '&edit[' . $table . '][' . $pid . ']=new';
 
 		if ($table == 'pages'
 			&& $GLOBALS['TYPO3_CONF_VARS']['SYS']['contentTable']
 			&& isset($GLOBALS['TCA'][$GLOBALS['TYPO3_CONF_VARS']['SYS']['contentTable']])
 			&& $addContentTable) {
-            $parameters .= '&edit[' . $GLOBALS['TYPO3_CONF_VARS']['SYS']['contentTable'] . '][prev]=new&returnNewPageId=1';
-        } elseif ($table == 'pages_language_overlay') {
-            $parameters .= '&overrideVals[pages_language_overlay][doktype]=' . (int)$this->pageinfo['doktype'];
-        }
+			$parameters .= '&edit[' . $GLOBALS['TYPO3_CONF_VARS']['SYS']['contentTable'] . '][prev]=new&returnNewPageId=1';
+		} elseif ($table == 'pages_language_overlay') {
+			$parameters .= '&overrideVals[pages_language_overlay][doktype]=' . (int)$this->pageinfo['doktype'];
+		}
 
 		$parameters = $this->addCommerceParameter($parameters, $table);
-        $onClick = BackendUtility::editOnClick($parameters, '', $this->returnUrl);
+		$onClick = BackendUtility::editOnClick($parameters, '', $this->returnUrl);
 
 		return '<a href="#" onclick="' . htmlspecialchars($onClick) . '">' . $linkText . '</a>';
 	}
 
 	/**
-	 * @param string $parameters
-	 * @param string $table
+	 * Add commerce parameters
+	 *
+	 * @param string $parameters Parameters
+	 * @param string $table Table
+	 *
 	 * @return string
 	 */
 	protected function addCommerceParameter($parameters, $table) {

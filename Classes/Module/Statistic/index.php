@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * This file is part of the TYPO3 CMS project.
  *
  * It is free software; you can redistribute it and/or modify it under
@@ -14,9 +14,9 @@
 
 /**
  * Module 'Statistics' for the 'commerce' extension.
+ *
+ * @var Tx_Commerce_Controller_StatisticModuleController $SOBE
  */
-
-/** @var Tx_Commerce_Controller_StatisticModuleController $SOBE */
 $SOBE = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Controller_StatisticModuleController');
 $SOBE->init();
 $SOBE->main();

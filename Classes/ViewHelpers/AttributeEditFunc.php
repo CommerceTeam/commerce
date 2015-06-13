@@ -20,9 +20,10 @@ use TYPO3\CMS\Backend\Utility\BackendUtility;
  */
 class Tx_Commerce_ViewHelpers_AttributeEditFunc {
 	/**
-	 * renders the value list to a value
+	 * Renders the value list to a value
 	 *
-	 * @param array $parameter
+	 * @param array $parameter Parameter
+	 *
 	 * @return string HTML-Content
 	 */
 	public function valuelist($parameter) {

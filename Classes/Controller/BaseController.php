@@ -372,7 +372,8 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	 *
 	 * @return string HTML-Output rendert
 	 */
-	public function renderProductAttributeList($prodObj, $subpartNameArray = array(), $typoScript = FALSE) {
+	public function renderProductAttributeList(Tx_Commerce_Domain_Model_Product $prodObj, array $subpartNameArray = array(),
+			$typoScript = FALSE) {
 		if ($typoScript == FALSE) {
 			$typoScript = $this->conf['singleView.']['attributes.'];
 		}
@@ -442,7 +443,8 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	 *
 	 * @return string Stringoutput for attributes
 	 */
-	public function renderArticleAttributeList(&$product, $articleId = array(), $subpartNameArray = array()) {
+	public function renderArticleAttributeList(Tx_Commerce_Domain_Model_Product &$product, array $articleId = array(),
+			array $subpartNameArray = array()) {
 		$templateArray = array();
 		foreach ($subpartNameArray as $oneSubpartName) {
 			$tmpCode = $this->cObj->getSubpart($this->templateCode, $oneSubpartName);
@@ -766,11 +768,11 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	/**
 	 * Get category path
 	 *
-	 * @param Tx_Commerce_Domain_Model_Category $category
+	 * @param Tx_Commerce_Domain_Model_Category $category Category
 	 *
 	 * @return string
 	 */
-	public function getPathCat($category) {
+	public function getPathCat(Tx_Commerce_Domain_Model_Category $category) {
 		$rootline = $category->getParentCategoriesUidlist();
 		array_pop($rootline);
 		$active = array_reverse($rootline);
@@ -799,7 +801,7 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	 *
 	 * @return array $markerArray markers needed for the article and the basket form
 	 */
-	public function getArticleMarker($article, $priceid = FALSE) {
+	public function getArticleMarker(Tx_Commerce_Domain_Model_Article $article, $priceid = FALSE) {
 		if (
 			$this->handle
 			&& is_array($this->conf[$this->handle . '.'])
@@ -915,7 +917,7 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	 *
 	 * @return string $content string HTML-Content from the given Subpart.
 	 */
-	public function makeAdressView($addressArray, $subpartMarker) {
+	public function makeAdressView(array $addressArray, array $subpartMarker) {
 		$template = $this->cObj->getSubpart($this->templateCode, $subpartMarker);
 
 		$content = $this->cObj->substituteMarkerArray($template, $addressArray, '###|###', 1);
@@ -935,7 +937,8 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	 *
 	 * @return string $content HTML-Ccontent from the given Subpart
 	 */
-	public function makeBasketView($basketObj, $subpartMarker, $articletypes = FALSE, $lineTemplate = '###LISTING_ARTICLE###') {
+	public function makeBasketView(Tx_Commerce_Domain_Model_Basket $basketObj, array $subpartMarker, array $articletypes = array(),
+			$lineTemplate = '###LISTING_ARTICLE###') {
 		$template = $this->cObj->getSubpart($this->templateCode, $subpartMarker);
 
 		if (!is_array($lineTemplate)) {
@@ -1047,7 +1050,7 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	 * ###SUM_TAX###
 	 * ###LABEL_SUM_GROSS### ###SUM_GROSS###
 	 */
-	public function makeBasketInformation($basketObj, $subpartMarker) {
+	public function makeBasketInformation(Tx_Commerce_Domain_Model_Basket $basketObj, array $subpartMarker) {
 		$template = $this->cObj->getSubpart($this->templateCode, $subpartMarker);
 		$basketObj->recalculateSums();
 		$markerArray['###SUM_NET###'] = Tx_Commerce_ViewHelpers_Money::format(
@@ -1169,7 +1172,7 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	 * ###LANG_PRICESUM_NET### ###BASKET_ITEM_PRICESUM_NET### <br/>
 	 * ###LANG_PRICESUM_GROSS### ###BASKET_ITEM_PRICESUM_GROSS### <br/>
 	 */
-	public function makeLineView($basketItemObj, $subpartMarker) {
+	public function makeLineView(Tx_Commerce_Domain_Model_BasketItem $basketItemObj, array $subpartMarker) {
 		$markerArray = array();
 		$template = $this->cObj->getSubpart($this->templateCode, $subpartMarker);
 
@@ -1252,7 +1255,7 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	 *
 	 * @return array Changed TypoScript Configuration
 	 */
-	public function addTypoLinkToTypoScript($typoscript, $typoLinkConf) {
+	public function addTypoLinkToTypoScript(array $typoscript, array $typoLinkConf) {
 		foreach (array_keys($typoscript['fields.']) as $tsKey) {
 			if (isset($typoscript['fields.'][$tsKey]['typolink.']) && is_array($typoscript['fields.'][$tsKey]['typolink.'])) {
 				if ($typoscript['fields.'][$tsKey]['typolink.']['setCommerceValues'] == 1) {
@@ -1285,7 +1288,7 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	 *
 	 * @return array Marker Array for using cobj Marker array methods
 	 */
-	public function generateMarkerArray($data, $typoscript, $prefix = '', $table = '') {
+	public function generateMarkerArray(array $data, array $typoscript, $prefix = '', $table = '') {
 		if (!$typoscript['fields.']) {
 			$typoscript['fields.'] = $typoscript;
 		}
@@ -1331,7 +1334,7 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	 *
 	 * @return string html-content
 	 */
-	public function renderValue($value, $typoscriptType, $typoscriptConfig, $field = '', $table = '', $uid = '') {
+	public function renderValue($value, $typoscriptType, array $typoscriptConfig, $field = '', $table = '', $uid = '') {
 		/**
 		 * If you add more TS Types using the imgPath, you should add
 		 * these also to generateMarkerArray
@@ -1373,8 +1376,11 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 				}
 
 				$rows = $this->getDatabaseConnection()->exec_SELECTgetRows(
-					'distinct(' . $foreign . ')', $typoscriptConfig['tableMM'],
-					$local . ' = ' . (int) $uid . '  ' . $typoscriptConfig['table.']['addWhere'], '', 'sorting'
+					'distinct(' . $foreign . ')',
+					$typoscriptConfig['tableMM'],
+					$local . ' = ' . (int) $uid . '  ' . $typoscriptConfig['table.']['addWhere'],
+					'',
+					'sorting'
 				);
 				foreach ($rows as $row) {
 					$data = $this->pi_getRecord($typoscriptConfig['table'], $row[$foreign]);
@@ -1427,7 +1433,9 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 			case 'NUMBERFORMAT':
 				if ($typoscriptConfig['format']) {
 					$value = number_format(
-						(float) $value, $typoscriptConfig['format.']['decimals'], $typoscriptConfig['format.']['dec_point'],
+						(float) $value,
+						$typoscriptConfig['format.']['decimals'],
+						$typoscriptConfig['format.']['dec_point'],
 						$typoscriptConfig['format.']['thousands_sep']
 					);
 				}
@@ -1502,7 +1510,8 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	 *
 	 * @return string HTML-Content
 	 */
-	public function renderCategory($category, $subpartName, $typoscript, $prefix = '', $template = '') {
+	public function renderCategory(Tx_Commerce_Domain_Model_Category $category, $subpartName, array $typoscript, $prefix = '',
+			$template = '') {
 		return $this->renderElement($category, $subpartName, $typoscript, $prefix, '###CATEGORY_', $template);
 	}
 
@@ -1592,7 +1601,7 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	 *
 	 * @return string Formated Value
 	 */
-	public function formatAttributeValue($matrix, $myAttributeUid) {
+	public function formatAttributeValue(array $matrix, $myAttributeUid) {
 		$return = '';
 		/**
 		 * return if empty
@@ -2194,7 +2203,7 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	 * @return array Changed TypoScript Configuration
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use addTypoLinkToTypoScript instead
 	 */
-	public function addTypoLinkToTS($typoscript, $typoLinkConf) {
+	public function addTypoLinkToTS(array $typoscript, array $typoLinkConf) {
 		GeneralUtility::logDeprecatedFunction();
 
 		return $this->addTypoLinkToTypoScript($typoscript, $typoLinkConf);
@@ -2225,14 +2234,14 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	}
 
 	/**
-	 * calls renderProductAtrributeList with parametres from $this
+	 * Calls renderProductAtrributeList with parametres from $this
 	 *
 	 * @param Tx_Commerce_Domain_Model_Product $myProduct Product
 	 *
 	 * @return string Stringoutput for attributes
 	 * @depricated since commerce 1.0.0, this function will be removed in commerce 1.4.0, this method gets removed from the api
 	 */
-	public function makeproductAttributList($myProduct) {
+	public function makeproductAttributList(Tx_Commerce_Domain_Model_Product $myProduct) {
 		GeneralUtility::logDeprecatedFunction();
 		$subpartArray[] = '###' . strtoupper($this->conf['templateMarker.']['productAttributes']) . '###';
 		$subpartArray[] = '###' . strtoupper($this->conf['templateMarker.']['productAttributes2']) . '###';
@@ -2250,7 +2259,7 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	 * @return string|bool Stringoutput for attributes
 	 * @depricated since commerce 1.0.0, this function will be removed in commerce 1.4.0, this method gets removed from the api
 	 */
-	public function makeArticleAttributList(&$prodObj, $articleId = array()) {
+	public function makeArticleAttributList(Tx_Commerce_Domain_Model_Product &$prodObj, array $articleId = array()) {
 		GeneralUtility::logDeprecatedFunction();
 		$subpartArray = array();
 		if (strlen($this->conf['templateMarker.']['articleAttributes']) > 0) {

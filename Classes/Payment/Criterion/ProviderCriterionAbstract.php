@@ -19,7 +19,8 @@
  *
  * @author 2009-2011 Volker Graubaum <vg@e-netconsulting.de>
  */
-abstract class Tx_Commerce_Payment_Criterion_ProviderCriterionAbstract implements Tx_Commerce_Payment_Interface_ProviderCriterion {
+abstract class Tx_Commerce_Payment_Criterion_ProviderCriterionAbstract
+		implements Tx_Commerce_Payment_Interface_ProviderCriterion {
 	/**
 	 * @var Tx_Commerce_Controller_BaseController Parent commerce pibase object
 	 */

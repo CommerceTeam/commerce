@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * This file is part of the TYPO3 CMS project.
  *
  * It is free software; you can redistribute it and/or modify it under
@@ -1249,10 +1249,14 @@ class Tx_Commerce_Utility_BackendUtility {
 	 * Removed with irre implementation. Stub left for api compatibility
 	 * save Price-Flexform with given Article-UID
 	 *
-	 * @return bool Status of method
+	 * @param int $id Id
+	 * @param int $uidArticle Article uid
+	 * @param array $fieldArray Field values
+	 *
+	 * @return void
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, this wont get replaced as it was empty before and will get removed from the api
 	 */
-	public function savePriceFlexformWithArticle($id, $uidArticle, $fieldArray) {
+	public function savePriceFlexformWithArticle($id, $uidArticle, array $fieldArray) {
 		GeneralUtility::logDeprecatedFunction();
 	}
 

@@ -125,7 +125,8 @@ abstract class Tx_Commerce_Payment_Provider_ProviderAbstract implements Tx_Comme
 	}
 
 	/**
-	 * Returns an array containing some configuration for the fields the customer shall enter his data into.
+	 * Returns an array containing some configuration
+	 * for the fields the customer shall enter his data into.
 	 *
 	 * @return mixed NULL for no data
 	 */

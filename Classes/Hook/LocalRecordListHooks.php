@@ -19,12 +19,13 @@
  */
 class Tx_Commerce_Hook_LocalRecordListHooks implements \TYPO3\CMS\Recordlist\RecordList\RecordListHookInterface {
 	/**
-	 * modifies Web>List clip icons (copy, cut, paste, etc.) of a displayed row
+	 * Modifies Web>List clip icons (copy, cut, paste, etc.) of a displayed row
 	 *
-	 * @param string $table the current database table
-	 * @param array $row the current record row
-	 * @param array $cells the default clip-icons to get modified
-	 * @param Tx_Commerce_ViewHelpers_CategoryRecordList $parentObject Instance of calling object
+	 * @param string $table Database table
+	 * @param array $row Record row
+	 * @param array $cells Clip-icons to get modified
+	 * @param Tx_Commerce_ViewHelpers_CategoryRecordList $parentObject Calling object
+	 *
 	 * @return array the modified clip-icons
 	 */
 	public function makeClip($table, $row, $cells, &$parentObject) {

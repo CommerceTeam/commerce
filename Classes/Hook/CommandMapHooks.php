@@ -780,15 +780,17 @@ class Tx_Commerce_Hook_CommandMapHooks {
 		$errorDocument = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
 		$errorDocument->backPath = '';
 
+		$errorHeadline = $language->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:error', 1);
+		$submitLabel = $language->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:continue', 1);
+		$onClickAction = 'onclick="document.location=\'' . htmlspecialchars($_SERVER['HTTP_REFERER']) . '\'; return false;"';
+
 		$content = $errorDocument->startPage('Tx_Commerce_Hook_CommandMapHooks error Output');
 		$content .= '
 			<br/>
 			<br/>
 			<table>
 				<tr class="bgColor5">
-					<td colspan="2" align="center"><strong>' . $language->sL(
-				'LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:error', 1
-			) . '</strong></td>
+					<td colspan="2" align="center"><strong>' . $errorHeadline . '</strong></td>
 				</tr>
 				<tr class="bgColor4">
 					<td valign="top">' . \TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon('status-dialog-error') . '</td>
@@ -798,9 +800,7 @@ class Tx_Commerce_Hook_CommandMapHooks {
 					<td colspan="2" align="center">
 					<br />
 						<form action="' . htmlspecialchars($_SERVER['HTTP_REFERER']) . '">
-							<input type="submit" value="' . $language->sL(
-				'LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:continue', 1
-			) . '" onclick="document.location=' . htmlspecialchars($_SERVER['HTTP_REFERER']) . 'return false;" />
+							<input type="submit" value="' . $submitLabel . '" ' . $onClickAction . ' />
 						</form>
 					</td>
 				</tr>

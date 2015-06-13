@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * This file is part of the TYPO3 CMS project.
  *
  * It is free software; you can redistribute it and/or modify it under
@@ -15,6 +15,11 @@
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
+/**
+ * Class Tx_Commerce_Controller_OrdersModuleController
+ *
+ * @author Sebastian Fischer <typo3@marketing-factory.de>
+ */
 class Tx_Commerce_Controller_OrdersModuleController extends \TYPO3\CMS\Recordlist\RecordList {
 	/**
 	 * the script for the wizard of the command 'new'

@@ -18,6 +18,8 @@
  */
 
 /**
+ * Attribute correlation type selector
+ *
  * @var int
  * @see sql tx_commerce_attribute_correlationtypes
  */
@@ -25,6 +27,8 @@ define ('ATTRIB_SELECTOR', 1);
 define ('ATTRIB_selector', ATTRIB_SELECTOR);
 
 /**
+ * Attribute correlation type shall
+ *
  * @var int
  * @see sql tx_commerce_attribute_correlationtypes
  */
@@ -32,6 +36,8 @@ define ('ATTRIB_SHAL', 2);
 define ('ATTRIB_shal', ATTRIB_SHAL);
 
 /**
+ * Attribute correlation type can
+ *
  * @var int
  * @see sql tx_commerce_attribute_correlationtypes
  */
@@ -39,6 +45,8 @@ define ('ATTRIB_CAN', 3);
 define ('ATTRIB_can', ATTRIB_CAN);
 
 /**
+ * Attribute correlation type product
+ *
  * @var int
  * @see sql tx_commerce_attribute_correlationtypes
  */
