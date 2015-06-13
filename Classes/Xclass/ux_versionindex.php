@@ -21,9 +21,9 @@
  */
 class ux_tx_version_cm1 extends \TYPO3\CMS\Version\Controller\VersionModuleController {
 	/**
-	 * document template object
+	 * Document template object
 	 *
-	 * @var mediumDoc
+	 * @var \TYPO3\CMS\Backend\Template\DocumentTemplate
 	 */
 	public $doc;
 
@@ -32,9 +32,10 @@ class ux_tx_version_cm1 extends \TYPO3\CMS\Version\Controller\VersionModuleContr
 	 *
 	 * @param string $table Table name
 	 * @param array $row Record for which administrative links are generated.
+	 *
 	 * @return string HTML link tags.
 	 */
-	public function adminLinks($table, $row) {
+	public function adminLinks($table, array $row) {
 		if ($table !== 'tx_commerce_products') {
 			return parent::adminLinks($table, $row);
 		} else {
@@ -42,27 +43,43 @@ class ux_tx_version_cm1 extends \TYPO3\CMS\Version\Controller\VersionModuleContr
 
 				// Edit link:
 			$adminLink = '<a href="#" onclick="' .
-				htmlspecialchars(\TYPO3\CMS\Backend\Utility\BackendUtility::editOnClick('&edit[' . $table . '][' . $row['uid'] . ']=edit', $this->doc->backPath)) . '">' .
-				\TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon('actions-document-open', array('title' => $language->sL('LLL:EXT:lang/locallang_core.xml:cm.edit', TRUE))) . '</a>';
+				htmlspecialchars(\TYPO3\CMS\Backend\Utility\BackendUtility::editOnClick(
+					'&edit[' . $table . '][' . $row['uid'] . ']=edit', $this->doc->backPath
+				)) . '">' .
+				\TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon(
+					'actions-document-open',
+					array('title' => $language->sL('LLL:EXT:lang/locallang_core.xml:cm.edit', TRUE))
+				) . '</a>';
 
 				// Delete link:
 			$adminLink .= '<a href="' .
 				htmlspecialchars($this->doc->issueCommand('&cmd[' . $table . '][' . $row['uid'] . '][delete]=1')) . '">' .
-				\TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon('actions-edit-delete', array('title' => $language->sL('LLL:EXT:lang/locallang_core.php:cm.delete', TRUE))) . '</a>';
+				\TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon(
+					'actions-edit-delete',
+					array('title' => $language->sL('LLL:EXT:lang/locallang_core.php:cm.delete', TRUE))
+				) . '</a>';
 
 			if ($row['pid'] == -1) {
 					// get page TSconfig
-				$pagesTSC = \TYPO3\CMS\Backend\Utility\BackendUtility::getPagesTSconfig($GLOBALS['_POST']['popViewId']);
-				if ($pagesTSC['tx_commerce.']['singlePid']) {
-					$previewPageID = $pagesTSC['tx_commerce.']['singlePid'];
+				$pagesTyposcriptConfig = \TYPO3\CMS\Backend\Utility\BackendUtility::getPagesTSconfig($GLOBALS['_POST']['popViewId']);
+				if ($pagesTyposcriptConfig['tx_commerce.']['singlePid']) {
+					$previewPageId = $pagesTyposcriptConfig['tx_commerce.']['singlePid'];
 				} else {
-					$previewPageID = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['previewPageID'];
+					$previewPageId = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['previewPageID'];
 				}
 
 				$sysLanguageUid = (int) $row['sys_language_uid'];
 
-				/** @var $product Tx_Commerce_Domain_Model_Product */
-				$product = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Product', $row['t3ver_oid'], $sysLanguageUid);
+				/**
+				 * Product
+				 *
+				 * @var $product Tx_Commerce_Domain_Model_Product
+				 */
+				$product = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+					'Tx_Commerce_Domain_Model_Product',
+					$row['t3ver_oid'],
+					$sysLanguageUid
+				);
 				$product->loadData();
 
 				$getVars = ($sysLanguageUid > 0 ? '&L=' . $sysLanguageUid : '') .
@@ -72,7 +89,7 @@ class ux_tx_version_cm1 extends \TYPO3\CMS\Version\Controller\VersionModuleContr
 
 				$adminLink .= '<a href="#" onclick="' .
 					htmlspecialchars(\TYPO3\CMS\Backend\Utility\BackendUtility::viewOnClick(
-						$previewPageID,
+						$previewPageId,
 						$this->doc->backPath,
 						\TYPO3\CMS\Backend\Utility\BackendUtility::BEgetRootLine($row['_REAL_PID']), '', '', $getVars)
 					) .
@@ -91,9 +108,4 @@ class ux_tx_version_cm1 extends \TYPO3\CMS\Version\Controller\VersionModuleContr
 	protected function getLanguageService() {
 		return $GLOBALS['LANG'];
 	}
-}
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['commerce/ux_versinondex.php']) {
-	/** @noinspection PhpIncludeInspection */
-	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['commerce/ux_versinondex.php']);
 }

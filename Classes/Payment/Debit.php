@@ -21,12 +21,16 @@
  */
 class Tx_Commerce_Payment_Debit extends Tx_Commerce_Payment_PaymentAbstract {
 	/**
-	 * @var string Payment type
+	 * Payment type
+	 *
+	 * @var string
 	 */
 	protected $type = 'debit';
 
 	/**
-	 * @var array Locallang array, only needed if individual fields are defined
+	 * Locallang array, only needed if individual fields are defined
+	 *
+	 * @var array
 	 */
 	public $LOCAL_LANG = array(
 		'default' => array(
@@ -55,10 +59,10 @@ class Tx_Commerce_Payment_Debit extends Tx_Commerce_Payment_PaymentAbstract {
 	/**
 	 * Get configuration of additional fields
 	 *
-	 * @return mixed|null
+	 * @return array
 	 */
 	public function getAdditionalFieldsConfig() {
-		$result = array(
+		return array(
 			'debit_bic.' => array(
 				'mandatory' => 1
 			),
@@ -75,7 +79,6 @@ class Tx_Commerce_Payment_Debit extends Tx_Commerce_Payment_PaymentAbstract {
 				'mandatory' => 0
 			)
 		);
-		return $result;
 	}
 
 	/**
@@ -83,7 +86,7 @@ class Tx_Commerce_Payment_Debit extends Tx_Commerce_Payment_PaymentAbstract {
 	 *
 	 * @param array $formData Current form data
 	 *
-	 * @return bool TRUE if data is ok
+	 * @return bool Check if data is ok
 	 */
 	public function proofData(array $formData = array()) {
 		// If formData is empty we know that this is the very first
@@ -93,7 +96,7 @@ class Tx_Commerce_Payment_Debit extends Tx_Commerce_Payment_PaymentAbstract {
 			return FALSE;
 		}
 
-		$config['sourceFields.'] = $this->getAdditionalFieldsConfig($this->parentObject);
+		$config['sourceFields.'] = $this->getAdditionalFieldsConfig();
 
 		$result = TRUE;
 
@@ -141,10 +144,4 @@ class Tx_Commerce_Payment_Debit extends Tx_Commerce_Payment_PaymentAbstract {
 	protected function getDatabaseConnection() {
 		return $GLOBALS['TYPO3_DB'];
 	}
-}
-
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Payment/Debit.php']) {
-	/** @noinspection PhpIncludeInspection */
-	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Payment/Debit.php']);
 }

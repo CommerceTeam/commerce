@@ -35,7 +35,8 @@ class Tx_Commerce_Dao_AddressObserver {
 	 * Link observer and observable
 	 * Not needed for typo3 hook concept.
 	 *
-	 * @param object &$observable : observed object
+	 * @param object $observable Observed object
+	 *
 	 * @return self
 	 */
 	public function __construct(&$observable) {
@@ -49,25 +50,38 @@ class Tx_Commerce_Dao_AddressObserver {
 	 * Keep this method static for efficient integration into hookHandlers.
 	 * Communicate using push principle to avoid errors.
 	 *
-	 * @param string $status : update or new
-	 * @param string $id : database table
+	 * @param string $status Status [update,new]
+	 * @param string $id Database table id
+	 *
 	 * @return void
 	 */
 	public static function update($status, $id) {
-			// get complete address object
-		/** @var Tx_Commerce_Dao_AddressDao $addressDao */
+		// get complete address object
+		/**
+		 * Address data access object
+		 *
+		 * @var Tx_Commerce_Dao_AddressDao $addressDao
+		 */
 		$addressDao = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Dao_AddressDao', $id);
 
-			// get feuser id
+		// get feuser id
 		$feuserId = $addressDao->get('tx_commerce_fe_user_id');
 
 		if (!empty($feuserId)) {
-				// get associated feuser object
-			/** @var Tx_Commerce_Dao_FeuserDao $feuserDao */
+			// get associated feuser object
+			/**
+			 * Frontend user data access object
+			 *
+			 * @var Tx_Commerce_Dao_FeuserDao $feuserDao
+			 */
 			$feuserDao = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Dao_FeuserDao', $feuserId);
 
-				// update feuser object
-			/** @var Tx_Commerce_Dao_FeuserAddressFieldmapper $fieldMapper */
+			// update feuser object
+			/**
+			 * Frontend user address field mapper
+			 *
+			 * @var Tx_Commerce_Dao_FeuserAddressFieldmapper $fieldMapper
+			 */
 			$fieldMapper = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Dao_FeuserAddressFieldmapper');
 			$fieldMapper->mapAddressToFeuser($addressDao, $feuserDao);
 
@@ -80,14 +94,14 @@ class Tx_Commerce_Dao_AddressObserver {
 	/**
 	 * Check if address may get deleted
 	 *
-	 * @param int $id
+	 * @param int $uid Uid
 	 *
 	 * @return bool|string
 	 */
-	public static function checkDelete($id) {
+	public static function checkDelete($uid) {
 		$dbFields = 'uid';
 		$dbTable = 'fe_users';
-		$dbWhere = '(tx_commerce_tt_address_id="' . (int) $id . '") AND (deleted="0")';
+		$dbWhere = 'tx_commerce_tt_address_id = "' . (int) $uid . '" AND deleted = "0"';
 
 		$database = self::getDatabaseConnection();
 
@@ -117,9 +131,4 @@ class Tx_Commerce_Dao_AddressObserver {
 	protected static function getDatabaseConnection() {
 		return $GLOBALS['TYPO3_DB'];
 	}
-}
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Dao/AddressObserver.php']) {
-	/** @noinspection PhpIncludeInspection */
-	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Dao/AddressObserver.php']);
 }

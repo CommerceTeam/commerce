@@ -55,8 +55,12 @@ class Tx_Commerce_Dao_AddressDaoObject extends Tx_Commerce_Dao_BasicDaoObject {
 	 * @return self
 	 */
 	public function __construct() {
-			// add mapped fields to object
-		/** @var Tx_Commerce_Dao_FeuserAddressFieldmapper $feuserAddressMapper */
+		// add mapped fields to object
+		/**
+		 * Frontend address mapper
+		 *
+		 * @var Tx_Commerce_Dao_FeuserAddressFieldmapper $feuserAddressMapper
+		 */
 		$feuserAddressMapper = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Dao_FeuserAddressFieldmapper');
 		$fields = $feuserAddressMapper->getAddressFields();
 
@@ -77,15 +81,11 @@ class Tx_Commerce_Dao_AddressDaoObject extends Tx_Commerce_Dao_BasicDaoObject {
 	/**
 	 * Setter
 	 *
-	 * @param string $name
+	 * @param string $name Name
+	 *
 	 * @return void
 	 */
 	public function setName($name) {
 		$this->name = $name;
 	}
-}
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Dao/AddressDaoObject.php']) {
-	/** @noinspection PhpIncludeInspection */
-	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Dao/AddressDaoObject.php']);
 }

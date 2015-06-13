@@ -51,52 +51,60 @@ class Tx_Commerce_Dao_FeuserObserver {
 	 * Keep this method static for efficient integration into hookHandlers.
 	 * Communicate using push principle to avoid errors.
 	 *
-	 * @param string $status : update or new
-	 * @param string $id : database table
+	 * @param string $status Status [update,new]
+	 * @param string $id Database table
+	 *
 	 * @return void
 	 */
 	public static function update($status, $id) {
-		/** @var Tx_Commerce_Dao_FeuserDao $feuserDao */
+		/**
+		 * Frontend user data access object
+		 *
+		 * @var Tx_Commerce_Dao_FeuserDao $feuserDao
+		 */
 		$feuserDao = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Dao_FeuserDao', $id);
 
-			// get main address id from feuser object
+		// get main address id from feuser object
 		$topId = $feuserDao->get('tx_commerce_tt_address_id');
 
-		/** @var Tx_Commerce_Dao_AddressDao $addressDao */
 		if (empty($topId)) {
-				// get new address object
+			// get new address object
+			/**
+			 * Address data access object
+			 *
+			 * @var Tx_Commerce_Dao_AddressDao $addressDao
+			 */
 			$addressDao = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Dao_AddressDao');
 
-				// set feuser uid and main address flag
+			// set feuser uid and main address flag
 			$addressDao->set('tx_commerce_fe_user_id', $feuserDao->get('id'));
 			$addressDao->set('tx_commerce_is_main_address', '1');
 
-				// set address type if not yet defined
+			// set address type if not yet defined
 			if (!$addressDao->issetProperty('tx_commerce_address_type_id')) {
 				$addressDao->set('tx_commerce_address_type_id', 1);
 			}
 		} else {
-				// get existing address object
+			// get existing address object
 			$addressDao = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Dao_AddressDao', $topId);
 		}
 
-			// apply changes to address object
-		/** @var Tx_Commerce_Dao_FeuserAddressFieldmapper $fieldMapper */
+		// apply changes to address object
+		/**
+		 * Field mapper
+		 *
+		 * @var Tx_Commerce_Dao_FeuserAddressFieldmapper $fieldMapper
+		 */
 		$fieldMapper = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Dao_FeuserAddressFieldmapper');
 		$fieldMapper->mapFeuserToAddress($feuserDao, $addressDao);
 
-			// save address object
+		// save address object
 		$addressDao->save();
 
-			// update main address id
+		// update main address id
 		if ($topId != $addressDao->get('id')) {
 			$feuserDao->set('tx_commerce_tt_address_id', $addressDao->get('id'));
 			$feuserDao->save();
 		}
 	}
-}
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Dao/FeuserObserver.php']) {
-	/** @noinspection PhpIncludeInspection */
-	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Dao/FeuserObserver.php']);
 }

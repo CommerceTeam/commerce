@@ -18,23 +18,23 @@
  * @author 2005-2011 Thomas Hempel <thomas@work.de>
  */
 class Tx_Commerce_Payment_Creditcard extends Tx_Commerce_Payment_PaymentAbstract {
-
 	/**
-	 * @var array Locallang array, only needed if individual fields are defined
+	 * Locallang array, only needed if individual fields are defined
+	 *
+	 * @var array
 	 */
 	public $LOCAL_LANG = array();
 
 	/**
-	 * @var string Payment type
+	 * Payment type
+	 *
+	 * @var string
 	 */
 	protected $type = 'creditcard';
 
 	/**
-	 * @var string
-	 */
-	protected $scriptRelPath;
-
-	/**
+	 * Form errors
+	 *
 	 * @var array
 	 */
 	protected $formError = array();
@@ -42,7 +42,7 @@ class Tx_Commerce_Payment_Creditcard extends Tx_Commerce_Payment_PaymentAbstract
 	/**
 	 * Determine if additional data is needed
 	 *
-	 * @return bool True if additional data is needed
+	 * @return bool If additional data is needed true gets returned
 	 */
 	public function needAdditionalData() {
 		$basePath = PATH_TXCOMMERCE . 'Resources/Private/Language/locallang_creditcard.xml';
@@ -69,15 +69,19 @@ class Tx_Commerce_Payment_Creditcard extends Tx_Commerce_Payment_PaymentAbstract
 	 *
 	 * @param array $formData Current form data
 	 *
-	 * @return bool TRUE if data is ok
+	 * @return bool If data is ok true gets returned
 	 */
 	public function proofData(array $formData = array()) {
-		/** @var $ccvs Tx_Commerce_Payment_Ccvs */
+		/**
+		 * Credit card validation service
+		 *
+		 * @var $ccvs Tx_Commerce_Payment_Ccvs
+		 */
 		$ccvs = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Payment_Ccvs');
 		$result = $ccvs->validateCreditCard($formData['cc_number'], $formData['cc_checksum']);
 		$this->errorMessages[] = $ccvs->CCVSError;
 
-		$config['sourceFields.'] = $this->getAdditionalFieldsConfig($this->parentObject);
+		$config['sourceFields.'] = $this->getAdditionalFieldsConfig();
 
 		foreach ($this->parentObject->sessionData['payment'] as $name => $value) {
 			if ($config['sourceFields.'][$name . '.']['mandatory'] == 1 && strlen($value) == 0) {
@@ -154,9 +158,4 @@ class Tx_Commerce_Payment_Creditcard extends Tx_Commerce_Payment_PaymentAbstract
 
 		return $result;
 	}
-}
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Payment/Creditcard.php']) {
-	/** @noinspection PhpIncludeInspection */
-	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Payment/Creditcard.php']);
 }

@@ -12,9 +12,10 @@
  * The TYPO3 project - inspiring people to share!
  */
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 /**
  * Hook for the extension openbc feuser extension
- *
  * This class handles backend updates
  *
  * Class Tx_Commerce_Hook_Pi4Hooks
@@ -31,96 +32,116 @@ class Tx_Commerce_Hook_Pi4Hooks {
 	 *
 	 * @return string error: do not delete message
 	 */
-	public function deleteAddress($uid) {
-		return $this->checkAddressDelete($uid);
+	public function beforeDeleteAddress($uid) {
+		return Tx_Commerce_Dao_AddressObserver::checkDelete($uid);
 	}
 
 	/**
-	 * beforeAddressSave()
-	 * this function is called by the Hook in
-	 * Tx_Commerce_Controller_AddressesController before processing insert address
-	 * operations
-	 *
-	 * @param array &$fieldArray reference to the incoming fields
-	 * @param object &$pObj page Object reference
-	 * @return void
-	 */
-	public function beforeAddressSave(&$fieldArray, &$pObj) {
-	}
-
-	/**
-	 * afterAddressSave()
-	 * this function is called by the Hook in
+	 * This function is called by the Hook in
 	 * Tx_Commerce_Controller_AddressesController after processing
 	 * insert address operations
 	 *
-	 * @param int $uid
+	 * @param int $uid Address uid
 	 * @param array $fieldArray Reference to the incoming fields
 	 * @param object $pObj Page Object reference
 	 *
 	 * @return void
 	 */
-	public function afterAddressSave($uid, &$fieldArray, &$pObj) {
-			// notify address observer
-		$this->notify_addressObserver('new', 'tt_address', $uid, $fieldArray, $pObj);
+	public function afterAddressSave($uid, array &$fieldArray, &$pObj) {
+		// notify address observer
+		Tx_Commerce_Dao_AddressObserver::update('new', $uid);
 	}
 
 	/**
-	 * beforeAddressEdit()
-	 * this function is called by the Hook in
-	 * Tx_Commerce_Controller_AddressesController before processing update
-	 * address operations
-	 *
-	 * @param int $uid
-	 * @param array $fieldArray Reference to the incoming fields
-	 * @param object $pObj Page Object reference
-	 *
-	 * @return void
-	 */
-	public function beforeAddressEdit($uid, &$fieldArray, &$pObj) {
-	}
-
-	/**
-	 * afterAddressEdit()
-	 * this function is called by the Hook in
+	 * This function is called by the Hook in
 	 * Tx_Commerce_Controller_AddressesController before processing update address
 	 * operations
 	 *
-	 * @param int $uid
+	 * @param int $uid Uid
 	 * @param array $fieldArray Reference to the incoming fields
 	 * @param object $pObj Page Object reference
 	 *
 	 * @return void
 	 */
-	public function afterAddressEdit($uid, &$fieldArray, &$pObj) {
-			// notify address observer
-		$this->notify_addressObserver('update', 'tt_address', $uid, $fieldArray, $pObj);
+	public function afterAddressEdit($uid, array &$fieldArray, &$pObj) {
+		// notify address observer
+		Tx_Commerce_Dao_AddressObserver::update('update', $uid);
 	}
 
+
+	/**
+	 * This function is called by the Hook in
+	 * Tx_Commerce_Controller_AddressesController before processing delete address
+	 * operations return false to permit delete operation
+	 *
+	 * @param int $uid Reference to the incoming fields
+	 *
+	 * @return string error: do not delete message
+	 * @deprecated This method is redundant and will be removed in 4.0.0
+	 */
+	public function deleteAddress($uid) {
+		GeneralUtility::logDeprecatedFunction();
+		return $this->beforeDeleteAddress($uid);
+	}
+
+	/**
+	 * This function is called by the Hook in
+	 * Tx_Commerce_Controller_AddressesController before processing insert address
+	 * operations
+	 *
+	 * @param array $fieldArray Reference to the incoming fields
+	 * @param object $pObj Page Object reference
+	 *
+	 * @return void
+	 * @deprecated This method is redundant and will be removed in 4.0.0
+	 */
+	public function beforeAddressSave(array &$fieldArray, &$pObj) {
+		GeneralUtility::logDeprecatedFunction();
+	}
+
+	/**
+	 * This function is called by the Hook in
+	 * Tx_Commerce_Controller_AddressesController before processing update
+	 * address operations
+	 *
+	 * @param int $uid Uid
+	 * @param array $fieldArray Reference to the incoming fields
+	 * @param object $pObj Page Object reference
+	 *
+	 * @return void
+	 * @deprecated This method is redundant and will be removed in 4.0.0
+	 */
+	public function beforeAddressEdit($uid, array &$fieldArray, &$pObj) {
+		GeneralUtility::logDeprecatedFunction();
+	}
 
 	/**
 	 * Notify address observer
 	 * check status and notify observer
 	 *
-	 * @param string $status Update or new
+	 * @param string $status Status [update,new]
 	 * @param string $table Database table
 	 * @param int $uid Record id
 	 * @param array $fieldArray Reference to the incoming fields
 	 *
 	 * @return void
+	 * @deprecated This method is redundant and will be removed in 4.0.0 please use hook afterAddressSave or afterAddressEdit
 	 */
-	protected function notify_addressObserver($status, $table, $uid, &$fieldArray) {
-		Tx_Commerce_Dao_AddressObserver::update($status, $uid, $fieldArray);
+	protected function notify_addressObserver($status, $table, $uid, array &$fieldArray) {
+		GeneralUtility::logDeprecatedFunction();
+		Tx_Commerce_Dao_AddressObserver::update($status, $uid);
 	}
 
 	/**
 	 * Check if an address is deleted
 	 *
-	 * @param int $uid
+	 * @param int $uid Uid
 	 *
 	 * @return bool|string
+	 * @deprecated This method is redundant and will be removed in 4.0.0
 	 */
 	protected function checkAddressDelete($uid) {
+		GeneralUtility::logDeprecatedFunction();
 		return Tx_Commerce_Dao_AddressObserver::checkDelete($uid);
 	}
 }

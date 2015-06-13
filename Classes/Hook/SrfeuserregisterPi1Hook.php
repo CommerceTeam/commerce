@@ -34,9 +34,9 @@ class Tx_Commerce_Hook_SrfeuserregisterPi1Hook {
 	 *
 	 * @return void
 	 */
-	public function registrationProcess_afterSaveCreate($theTable, $dataArray) {
+	public function registrationProcess_afterSaveCreate($theTable, array $dataArray) {
 		// notify observer
-		Tx_Commerce_Dao_FeuserObserver::update('new', $dataArray['uid'], $dataArray);
+		Tx_Commerce_Dao_FeuserObserver::update('new', $dataArray['uid']);
 	}
 
 	/**
@@ -49,8 +49,8 @@ class Tx_Commerce_Hook_SrfeuserregisterPi1Hook {
 	 *
 	 * @return void
 	 */
-	public function registrationProcess_afterSaveEdit($theTable, $dataArray) {
+	public function registrationProcess_afterSaveEdit($theTable, array $dataArray) {
 			// notify observer
-		Tx_Commerce_Dao_FeuserObserver::update('update', $dataArray['uid'], $dataArray);
+		Tx_Commerce_Dao_FeuserObserver::update('update', $dataArray['uid']);
 	}
 }

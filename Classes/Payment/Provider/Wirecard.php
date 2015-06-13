@@ -30,29 +30,35 @@
  * @author 2009-2011 Volker Graubaum <vg@e-netconsulting.de>
  */
 class Tx_Commerce_Payment_Provider_Wirecard extends Tx_Commerce_Payment_Provider_ProviderAbstract {
-
 	/**
-	 * @var string Provider type
+	 * Provider type
+	 *
+	 * @var string
 	 */
 	protected $type = 'wirecard';
 
 	/**
-	 * @var string Payment type
+	 * Payment type
+	 *
+	 * @var string
 	 */
 	public $LOCAL_LANG = array();
 
 	/**
+	 * Payment reference id
+	 *
 	 * @var string
 	 */
 	public $paymentRefId;
 
 	/**
-	 * Returns an array containing some configuration for the fields the customer shall enter his data into.
+	 * Returns an array containing some configuration for
+	 * the fields the customer shall enter his data into.
 	 *
-	 * @return mixed NULL for no data
+	 * @return array
 	 */
 	public function getAdditionalFieldsConfig() {
-		$result = array(
+		return array(
 			'cc_type.' => array (
 				'mandatory' => 1,
 				'type' => 'select',
@@ -84,13 +90,11 @@ class Tx_Commerce_Payment_Provider_Wirecard extends Tx_Commerce_Payment_Provider
 				'mandatory' => 1
 			),
 		);
-
-		return $result;
 	}
 
 	/**
-	 * This method is called in the last step. Here can be made some final checks or whatever is
-	 * needed to be done before saving some data in the database.
+	 * This method is called in the last step. Here can be made some final checks
+	 * or whatever is needed to be done before saving some data in the database.
 	 * Write any errors into $this->errorMessages!
 	 * To save some additional data in the database use the method updateOrder().
 	 *
@@ -98,14 +102,19 @@ class Tx_Commerce_Payment_Provider_Wirecard extends Tx_Commerce_Payment_Provider
 	 * @param array $session Current session data
 	 * @param Tx_Commerce_Domain_Model_Basket $basket Basket object
 	 *
-	 * @return bool TRUE if everything was ok
+	 * @return bool Check if everything was ok
 	 */
-	public function finishingFunction(array $config = array(), array $session = array(), Tx_Commerce_Domain_Model_Basket $basket = NULL) {
-		/** @var Tx_Commerce_Payment_Payment $paymentLib */
+	public function finishingFunction(array $config = array(), array $session = array(),
+			Tx_Commerce_Domain_Model_Basket $basket = NULL) {
+		/**
+		 * Payment library
+		 *
+		 * @var Tx_Commerce_Payment_Payment $paymentLib
+		 */
 		$paymentLib = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Payment_Payment');
 
-			// I think there is a new URL for testing with wirecard, so overwrite
-			// the old value. you can replace this with your own.
+		// I think there is a new URL for testing with wirecard, so overwrite
+		// the old value. you can replace this with your own.
 		$paymentLib->setUrl('https://c3-test.wirecard.com');
 		$paymentLib->paymentmethod = 'creditcard';
 		$paymentLib->paymenttype = 'cc';
@@ -134,8 +143,8 @@ class Tx_Commerce_Payment_Provider_Wirecard extends Tx_Commerce_Payment_Provider
 			return FALSE;
 		} else {
 			$this->paymentRefId = $paymentLib->referenzID;
-				// The ReferenceID should be stored here, so that it can be
-				// added to the record in updateOrder()
+			// The ReferenceID should be stored here, so that it can be
+			// added to the record in updateOrder()
 			return TRUE;
 		}
 	}
@@ -150,12 +159,14 @@ class Tx_Commerce_Payment_Provider_Wirecard extends Tx_Commerce_Payment_Provider
 	 */
 	public function updateOrder($orderUid, array $session = array()) {
 		// Update order that was created by checkout process
-		// With credit card payment a reference ID has to be stored in field payment_ref_id (I
-		// have no idea where it comes from, maybe it is given by wirecard?!)
+		// With credit card payment a reference ID has to be stored in field
+		// payment_ref_id (I have no idea where it comes from, maybe it is
+		// given by wirecard?!)
 		// To update the order something like this should be sufficient:
 		// $this->paymentRefId should probably be set in finishingFunction()
 		$this->getDatabaseConnection()->exec_UPDATEquery(
-			'tx_commerce_orders', 'uid = ' . $orderUid,
+			'tx_commerce_orders',
+			'uid = ' . (int) $orderUid,
 			array('payment_ref_id' => $this->paymentRefId)
 		);
 	}
@@ -169,9 +180,4 @@ class Tx_Commerce_Payment_Provider_Wirecard extends Tx_Commerce_Payment_Provider
 	protected function getDatabaseConnection() {
 		return $GLOBALS['TYPO3_DB'];
 	}
-}
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Payment/Provider/Wirecard.php']) {
-	/** @noinspection PhpIncludeInspection */
-	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/Classes/Payment/Provider/Wirecard.php']);
 }
