@@ -1252,7 +1252,7 @@ class Tx_Commerce_Utility_BackendUtility {
 	 * @return bool Status of method
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, this wont get replaced as it was empty before and will get removed from the api
 	 */
-	public function savePriceFlexformWithArticle() {
+	public function savePriceFlexformWithArticle($id, $uidArticle, $fieldArray) {
 		GeneralUtility::logDeprecatedFunction();
 	}
 

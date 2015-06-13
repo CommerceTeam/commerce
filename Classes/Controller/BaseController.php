@@ -1808,7 +1808,7 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 				$iterationCount++;
 				$categoryItemsListview .= $this->renderProduct(
 					$myProduct, $template, $typoScript, $this->conf['templateMarker.']['basketListView.'],
-					$this->conf['templateMarker.']['basketListViewMarker'], $iterationCount
+					$this->conf['templateMarker.']['basketListViewMarker']
 				);
 			}
 
@@ -2051,10 +2051,12 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	 * @param string $kind Kind
 	 * @param array $articles Articles
 	 * @param Tx_Commerce_Domain_Model_Product $product Product
+	 * @param string $articleMarker Article marker
+	 * @param string $articleTemplate Article template
 	 *
 	 * @return string
 	 */
-	public function makeArticleView($kind, $articles, $product) {
+	public function makeArticleView($kind, $articles, $product, $articleMarker = '', $articleTemplate = '') {
 		return '';
 	}
 

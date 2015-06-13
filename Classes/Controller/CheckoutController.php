@@ -779,7 +779,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		 * information in session result in an error
 		 */
 		if (
-			$paymentObj->needAdditionalData($this)
+			$paymentObj->needAdditionalData()
 			&& ((isset($this->sessionData['payment']) && !$paymentObj->proofData($this->sessionData['payment']))
 			|| (!isset($this->sessionData['payment']) || $paymentObj->getLastError()))
 		) {
@@ -2089,7 +2089,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		$basket = & $GLOBALS['TSFE']->fe_user->tx_commerce_basket;
 
 		// Check if basket is empty
-		if (in_array('noarticles', $checks) && !$basket->hasArticles(NORMALARTICLETYPE)) {
+		if (in_array('noarticles', $checks) && !$basket->getFirstArticleTypeTitle(NORMALARTICLETYPE)) {
 			return 'noarticles';
 		}
 
@@ -2175,7 +2175,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 				$htmlContent = '';
 				if ($this->conf['usermail.']['useHtml'] == '1' && $this->conf['usermail.']['templateFileHtml']) {
 					$userMailObj->templateCode = $this->cObj->fileResource($this->conf['usermail.']['templateFileHtml']);
-					$htmlContent = $userMailObj->generateMail($orderUid, $orderData, $userMarker, TRUE);
+					$htmlContent = $userMailObj->generateMail($orderUid, $orderData, $userMarker);
 					$userMailObj->isHtmlMail = TRUE;
 					foreach ($hookObjectsArr as $hookObj) {
 						if (method_exists($hookObj, 'PostGenerateMail')) {
@@ -2315,7 +2315,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			$htmlContent = '';
 			if ($this->conf['adminmail.']['useHtml'] == '1' && $this->conf['adminmail.']['templateFileHtml']) {
 				$adminMailObj->templateCode = $this->cObj->fileResource($this->conf['adminmail.']['templateFileHtml']);
-				$htmlContent = $adminMailObj->generateMail($orderUid, $orderData, '', TRUE);
+				$htmlContent = $adminMailObj->generateMail($orderUid, $orderData, array());
 				$adminMailObj->isHtmlMail = TRUE;
 
 				foreach ($hookObjectsArr as $hookObj) {

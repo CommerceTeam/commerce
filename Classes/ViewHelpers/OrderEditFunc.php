@@ -608,12 +608,13 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 
 	/**
 	 * @param array $PA
+	 *
 	 * @return string
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use Tx_Commerce_ViewHelpers_OrderEditFunc::feUserOrders instead
 	 */
 	public function fe_user_orders($PA) {
 		GeneralUtility::logDeprecatedFunction();
-		return $this->feUserOrders($PA);
+		return $this->feUserOrders();
 	}
 
 

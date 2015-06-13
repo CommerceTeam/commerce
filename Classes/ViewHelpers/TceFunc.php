@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * This file is part of the TYPO3 CMS project.
  *
  * It is free software; you can redistribute it and/or modify it under
@@ -22,6 +22,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class Tx_Commerce_ViewHelpers_TceFunc {
 	/**
+	 * Form engine
+	 *
 	 * @var \TYPO3\CMS\Backend\Form\FormEngine
 	 */
 	protected $tceForms;
@@ -36,7 +38,7 @@ class Tx_Commerce_ViewHelpers_TceFunc {
 	 *
 	 * @return string The HTML code for the TCEform field
 	 */
-	public function getSingleField_selectCategories($parameter, &$fObj) {
+	public function getSingleField_selectCategories(array $parameter, &$fObj) {
 		$this->tceForms = &$parameter['pObj'];
 
 		$table = $parameter['table'];
@@ -75,7 +77,11 @@ class Tx_Commerce_ViewHelpers_TceFunc {
 			default:
 		}
 
-		/** @var Tx_Commerce_Tree_CategoryTree $browseTrees */
+		/**
+		 * Category tree
+		 *
+		 * @var Tx_Commerce_Tree_CategoryTree $browseTrees
+		 */
 		$browseTrees = GeneralUtility::makeInstance('Tx_Commerce_Tree_CategoryTree');
 		// disabled clickmenu
 		$browseTrees->noClickmenu();
@@ -99,9 +105,13 @@ class Tx_Commerce_ViewHelpers_TceFunc {
 
 		$browseTrees->init();
 
-		/** @var Tx_Commerce_ViewHelpers_TreelibTceforms $renderBrowseTrees */
+		/**
+		 * Browse tree
+		 *
+		 * @var Tx_Commerce_ViewHelpers_TreelibTceforms $renderBrowseTrees
+		 */
 		$renderBrowseTrees = GeneralUtility::makeInstance('Tx_Commerce_ViewHelpers_TreelibTceforms');
-		$renderBrowseTrees->init ($parameter, $fObj);
+		$renderBrowseTrees->init($parameter);
 		$renderBrowseTrees->setIframeTreeBrowserScript(
 			$this->tceForms->backPath . PATH_TXCOMMERCE_REL . 'Classes/ViewHelpers/IframeTreeBrowser.php'
 		);
@@ -111,7 +121,7 @@ class Tx_Commerce_ViewHelpers_TceFunc {
 
 		$thumbnails = '';
 		if (!$disabled) {
-			// @todo remove iframe part. only div rendering ist sufficent enough
+			// @todo remove iframe part. only div rendering is sufficent enough
 			if ($renderBrowseTrees->isIframeContentRendering()) {
 				// just the trees are needed - we're inside of an iframe!
 				return $renderBrowseTrees->getTreeContent();
@@ -175,7 +185,11 @@ class Tx_Commerce_ViewHelpers_TceFunc {
 			$defVals = GeneralUtility::_GP('defVals');
 			switch ($table) {
 				case 'tx_commerce_categories':
-					/** @var Tx_Commerce_Domain_Model_Category $category */
+					/**
+					 * Category
+					 *
+					 * @var Tx_Commerce_Domain_Model_Category $category
+					 */
 					$category = GeneralUtility::makeInstance(
 						'Tx_Commerce_Domain_Model_Category',
 						$defVals['tx_commerce_categories']['parent_category']
@@ -185,7 +199,11 @@ class Tx_Commerce_ViewHelpers_TceFunc {
 					break;
 
 				case 'tx_commerce_products':
-					/** @var Tx_Commerce_Domain_Model_Category $category */
+					/**
+					 * Category
+					 *
+					 * @var Tx_Commerce_Domain_Model_Category $category
+					 */
 					$category = GeneralUtility::makeInstance(
 						'Tx_Commerce_Domain_Model_Category',
 						$defVals['tx_commerce_products']['categories']
@@ -239,7 +257,7 @@ class Tx_Commerce_ViewHelpers_TceFunc {
 			'info' => '',
 			'headers' => array(
 				'selector' => $this->tceForms->getLL('l_selected') . ':<br />',
-				'items' => ($disabled ? '': $this->tceForms->getLL('l_items') . ':<br />')
+				'items' => ($disabled ? '' : $this->tceForms->getLL('l_items') . ':<br />')
 			),
 			'noBrowser' => TRUE,
 			'readOnly' => $disabled,

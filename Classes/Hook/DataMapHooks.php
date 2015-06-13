@@ -1005,7 +1005,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 				$articleCreator->createArticles($pObj->datamap[$table][$id]);
 
 					// update articles if new attributes were added
-				$articleCreator->updateArticles($pObj->datamap[$table][$id]);
+				$articleCreator->updateArticles();
 			}
 		}
 	}
@@ -1242,7 +1242,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 				$pRes = $database->exec_SELECTquery('title', 'tx_commerce_products', 'uid = ' . $productId, '', '', 1);
 				$productData = $database->sql_fetch_assoc($pRes);
 
-				$aRes = $database->exec_INSERTquery(
+				$database->exec_INSERTquery(
 					'tx_commerce_articles',
 					array(
 						'pid' => $fieldArray['pid'],
@@ -1253,7 +1253,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 						'title' => $productData['title']
 					)
 				);
-				$aUid = $database->sql_insert_id($aRes);
+				$aUid = $database->sql_insert_id();
 			} else {
 				$aRes = $database->sql_fetch_assoc($res);
 				$aUid = $aRes['uid'];

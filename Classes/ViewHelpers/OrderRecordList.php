@@ -753,7 +753,7 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends \TYPO3\CMS\Recordlist\Reco
 			}
 			$csObj->initCharset($extConf['BECSVCharset']);
 			$csObj->convArray($row, $GLOBALS['TYPO3_CONF_VARS']['BE']['forceCharset'], $extConf['BECSVCharset']);
-			$this->addToCSV($row, $table);
+			$this->addToCSV($row);
 		}
 
 			// Create element in table cells:

@@ -15,6 +15,7 @@
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Backend\Utility\IconUtility;
+use TYPO3\CMS\Perm\Controller\PermissionAjaxController;
 
 /**
  * Module: Permission setting
@@ -242,9 +243,15 @@ class Tx_Commerce_Controller_PermissionModuleController extends \TYPO3\CMS\Perm\
 				$language->getLL('WorkspaceWarning'),
 				\TYPO3\CMS\Core\Messaging\FlashMessage::WARNING
 			);
-			/** @var $flashMessageService \TYPO3\CMS\Core\Messaging\FlashMessageService */
+			/**
+			 * Flash message service
+			 *
+			 * @var $flashMessageService \TYPO3\CMS\Core\Messaging\FlashMessageService
+			 */
 			$flashMessageService = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Messaging\\FlashMessageService');
 			/**
+			 * Flash message queue
+			 *
 			 * @var $defaultFlashMessageQueue \TYPO3\CMS\Core\Messaging\FlashMessageQueue
 			 */
 			$defaultFlashMessageQueue = $flashMessageService->getMessageQueueByIdentifier();
@@ -347,12 +354,23 @@ class Tx_Commerce_Controller_PermissionModuleController extends \TYPO3\CMS\Perm\
 				</tbody>
 			</table>
 
-			<input type="hidden" name="data[tx_commerce_categories][' . $this->categoryUid . '][perms_user]" value="' . $this->pageinfo['perms_user'] . '" />
-			<input type="hidden" name="data[tx_commerce_categories][' . $this->categoryUid . '][perms_group]" value="' . $this->pageinfo['perms_group'] . '" />
-			<input type="hidden" name="data[tx_commerce_categories][' . $this->categoryUid . '][perms_everybody]" value="' . $this->pageinfo['perms_everybody'] . '" />
-			' . $this->getRecursiveSelect($this->id, $this->perms_clause) . '
-			<input type="submit" name="submit" value="' . $language->getLL('Save', TRUE) . '" /><input type="submit" value="' . $language->getLL('Abort', TRUE) . '" onclick="' . htmlspecialchars(('jumpToUrl(' . GeneralUtility::quoteJSvalue((BackendUtility::getModuleUrl('txcommerceM1_permission') . '&id=' . $this->id), TRUE) . '); return false;')) . '" />
-			<input type="hidden" name="redirect" value="' . htmlspecialchars((BackendUtility::getModuleUrl('txcommerceM1_permission') . '&mode=' . $this->MOD_SETTINGS['mode'] . '&depth=' . $this->MOD_SETTINGS['depth'] . '&id=' . (int)$this->return_id . '&lastEdited=' . $this->id)) . '" />
+			<input type="hidden" name="data[tx_commerce_categories][' . $this->categoryUid . '][perms_user]" value="' .
+			$this->pageinfo['perms_user'] . '" />
+			<input type="hidden" name="data[tx_commerce_categories][' . $this->categoryUid . '][perms_group]" value="' .
+			$this->pageinfo['perms_group'] . '" />
+			<input type="hidden" name="data[tx_commerce_categories][' . $this->categoryUid . '][perms_everybody]" value="' .
+			$this->pageinfo['perms_everybody'] . '" />
+			' . $this->getRecursiveSelect($this->id) . '
+			<input type="submit" name="submit" value="' . $language->getLL('Save', TRUE) . '" /><input type="submit" value="' .
+			$language->getLL('Abort', TRUE) . '" onclick="' . htmlspecialchars(
+				'jumpToUrl(' .
+				GeneralUtility::quoteJSvalue(BackendUtility::getModuleUrl('txcommerceM1_permission') . '&id=' . $this->id) .
+				'); return false;'
+			) . '" />
+			<input type="hidden" name="redirect" value="' . htmlspecialchars(
+				BackendUtility::getModuleUrl('txcommerceM1_permission') . '&mode=' . $this->MOD_SETTINGS['mode'] . '&depth=' .
+				$this->MOD_SETTINGS['depth'] . '&id=' . (int)$this->return_id . '&lastEdited=' . $this->id
+			) . '" />
 			' . \TYPO3\CMS\Backend\Form\FormEngine::getHiddenTokenField('tceAction');
 
 		// Adding section with the permission setting matrix:
@@ -410,7 +428,11 @@ class Tx_Commerce_Controller_PermissionModuleController extends \TYPO3\CMS\Perm\
 		$this->content .= $this->doc->section('', $code);
 
 		// Initialize tree object:
-		/** @var Tx_Commerce_Tree_CategoryTree $tree */
+		/**
+		 * Category tree
+		 *
+		 * @var Tx_Commerce_Tree_CategoryTree $tree
+		 */
 		$tree = GeneralUtility::makeInstance('Tx_Commerce_Tree_CategoryTree');
 		$tree->setBare();
 		$tree->init();
@@ -451,11 +473,11 @@ class Tx_Commerce_Controller_PermissionModuleController extends \TYPO3\CMS\Perm\
 				($data['row']['perms_userid'] ? $data['row']['perms_userid'] : '');
 
 			if ($data['row']['perms_userid'] && !$beUserArray[$data['row']['perms_userid']]) {
-				$userName = \TYPO3\CMS\Perm\Controller\PermissionAjaxController::renderOwnername(
+				$userName = PermissionAjaxController::renderOwnername(
 					$pageId, $data['row']['perms_userid'], htmlspecialchars(GeneralUtility::fixed_lgd_cs($userName, 20)), FALSE
 				);
 			} else {
-				$userName = \TYPO3\CMS\Perm\Controller\PermissionAjaxController::renderOwnername(
+				$userName = PermissionAjaxController::renderOwnername(
 					$pageId, $data['row']['perms_userid'], htmlspecialchars(GeneralUtility::fixed_lgd_cs($userName, 20))
 				);
 			}
@@ -465,11 +487,11 @@ class Tx_Commerce_Controller_PermissionModuleController extends \TYPO3\CMS\Perm\
 				($data['row']['perms_groupid'] ? $data['row']['perms_groupid'] : '');
 
 			if ($data['row']['perms_groupid'] && !$beGroupArray[$data['row']['perms_groupid']]) {
-				$groupName = \TYPO3\CMS\Perm\Controller\PermissionAjaxController::renderGroupname(
+				$groupName = PermissionAjaxController::renderGroupname(
 					$pageId, $data['row']['perms_groupid'], htmlspecialchars(GeneralUtility::fixed_lgd_cs($groupName, 20)), FALSE
 				);
 			} else {
-				$groupName = \TYPO3\CMS\Perm\Controller\PermissionAjaxController::renderGroupname(
+				$groupName = PermissionAjaxController::renderGroupname(
 					$pageId, $data['row']['perms_groupid'], htmlspecialchars(GeneralUtility::fixed_lgd_cs($groupName, 20))
 				);
 			}
@@ -516,8 +538,8 @@ class Tx_Commerce_Controller_PermissionModuleController extends \TYPO3\CMS\Perm\
 			}
 
 			// determine which icon to use
-			$rowIcon = $plusMinusIcon . ($pageId ? IconUtility::getSpriteIconForRecord('tx_commerce_categories', $data['row']) :
-					$rootIcon);
+			$rowIcon = $plusMinusIcon .
+				($pageId ? IconUtility::getSpriteIconForRecord('tx_commerce_categories', $data['row']) : $rootIcon);
 			// @todo end of check for better solution
 
 			// First column:
@@ -537,11 +559,26 @@ class Tx_Commerce_Controller_PermissionModuleController extends \TYPO3\CMS\Perm\
 				$cells[] = LF . '<td' . $bgCol . '></td>';
 			}
 
+			$userPermission = PermissionAjaxController::renderPermissions($data['row']['perms_user'], $pageId, 'user');
+			$groupPermission = PermissionAjaxController::renderPermissions($data['row']['perms_group'], $pageId, 'group');
+			$allPermission = PermissionAjaxController::renderPermissions($data['row']['perms_everybody'], $pageId, 'everybody');
+
 			$cells[] = '
-				<td' . $bgCol . ' nowrap="nowrap">' . ($pageId ? \TYPO3\CMS\Perm\Controller\PermissionAjaxController::renderPermissions($data['row']['perms_user'], $pageId, 'user') . ' ' . $userName : '') . '</td>
-				<td' . $bgCol . ' nowrap="nowrap">' . ($pageId ? \TYPO3\CMS\Perm\Controller\PermissionAjaxController::renderPermissions($data['row']['perms_group'], $pageId, 'group') . ' ' . $groupName : '') . '</td>
-				<td' . $bgCol . ' nowrap="nowrap">' . ($pageId ? ' ' . \TYPO3\CMS\Perm\Controller\PermissionAjaxController::renderPermissions($data['row']['perms_everybody'], $pageId, 'everybody') : '') . '</td>
-				<td' . $bgCol . ' nowrap="nowrap">' . ($data['row']['editlock'] ? '<span id="el_' . $pageId . '" class="editlock"><a class="editlock" onclick="WebPermissions.toggleEditLock(\'' . $pageId . '\', \'1\');" title="' . $language->getLL('EditLock_descr', TRUE) . '">' . IconUtility::getSpriteIcon('status-warning-lock') . '</a></span>' : ($pageId === 0 ? '' : '<span id="el_' . $pageId . '" class="editlock"><a class="editlock" onclick="WebPermissions.toggleEditLock(\'' . $pageId . '\', \'0\');" title="Enable the &raquo;Admin-only&laquo; edit lock for this page">[+]</a></span>')) . '</td>
+				<td' . $bgCol . ' nowrap="nowrap">' . ($pageId ? $userPermission . ' ' . $userName : '') . '</td>
+				<td' . $bgCol . ' nowrap="nowrap">' . ($pageId ? $groupPermission . ' ' . $groupName : '') . '</td>
+				<td' . $bgCol . ' nowrap="nowrap">' . ($pageId ? ' ' . $allPermission : '') . '</td>
+				<td' . $bgCol . ' nowrap="nowrap">' . (
+					$data['row']['editlock'] ?
+						'<span id="el_' . $pageId . '" class="editlock"><a class="editlock" onclick="WebPermissions.toggleEditLock(\'' .
+							$pageId . '\', \'1\');" title="' . $language->getLL('EditLock_descr', TRUE) . '">' .
+							IconUtility::getSpriteIcon('status-warning-lock') . '</a></span>' :
+						(
+							$pageId === 0 ?
+								'' :
+								'<span id="el_' . $pageId . '" class="editlock"><a class="editlock" onclick="WebPermissions.toggleEditLock(\'' .
+								$pageId . '\', \'0\');" title="Enable the &raquo;Admin-only&laquo; edit lock for this page">[+]</a></span>'
+						)
+				) . '</td>
 			';
 
 			// Compile table row:
@@ -609,7 +646,11 @@ class Tx_Commerce_Controller_PermissionModuleController extends \TYPO3\CMS\Perm\
 		$language = $this->getLanguageService();
 
 		// Initialize tree object:
-		/** @var Tx_Commerce_Tree_CategoryTree $tree */
+		/**
+		 * Category tree
+		 *
+		 * @var Tx_Commerce_Tree_CategoryTree $tree
+		 */
 		$tree = GeneralUtility::makeInstance('Tx_Commerce_Tree_CategoryTree');
 		$tree->setBare();
 		$tree->readRecursively($this->categoryUid, $this->getLevels);
@@ -627,8 +668,7 @@ class Tx_Commerce_Controller_PermissionModuleController extends \TYPO3\CMS\Perm\
 			$labelLevels = $language->getLL('levels');
 			$labelPagesAffected = $language->getLL('pages_affected');
 			$theIdListArr = array();
-			$opts = '
-						<option value=""></option>';
+			$opts = '<option value=""></option>' . LF;
 			// Traverse the number of levels we want to
 			// allow recursive setting of permissions for:
 			for ($a = 0; $a <= $this->getLevels; $a++) {

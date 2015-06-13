@@ -428,7 +428,7 @@ class Tx_Commerce_ViewHelpers_FeuserRecordList extends \TYPO3\CMS\Recordlist\Rec
 
 			$csObj->convArray($row, $GLOBALS['TYPO3_CONF_VARS']['BE']['forceCharset'], $extConf['BECSVCharset']);
 
-			$this->addToCSV($row, $table);
+			$this->addToCSV($row);
 		}
 
 			// Create element in table cells:
@@ -507,9 +507,9 @@ class Tx_Commerce_ViewHelpers_FeuserRecordList extends \TYPO3\CMS\Recordlist\Rec
 	 * @return string
 	 */
 	public function getTable($table, $id, $rowlist) {
-			// Loading all TCA details for this table:
+		// Loading all TCA details for this table:
 
-			// Init
+		// Init
 		$addWhere = '';
 		$titleCol = $GLOBALS['TCA'][$table]['ctrl']['label'];
 		$thumbsCol = $GLOBALS['TCA'][$table]['ctrl']['thumbnail'];
@@ -638,9 +638,10 @@ class Tx_Commerce_ViewHelpers_FeuserRecordList extends \TYPO3\CMS\Recordlist\Rec
 				);
 			}
 
-				// CSH:
-			$theData[$titleCol] .=
-				BackendUtility::cshItem($table, '', $this->backPath, '', FALSE, 'margin-bottom:0px; white-space: normal;');
+			// CSH:
+			$theData[$titleCol] .= BackendUtility::cshItem(
+				$table, '', $this->backPath, '', FALSE, 'margin-bottom:0px; white-space: normal;'
+			);
 
 			if ($listOnlyInSingleTableMode) {
 				$out .= '
@@ -659,7 +660,6 @@ class Tx_Commerce_ViewHelpers_FeuserRecordList extends \TYPO3\CMS\Recordlist\Rec
 					}
 				}
 			} else {
-
 				$theUpIcon = ($table == 'pages' && $this->id && isset($this->pageRow['pid'])) ?
 					'<a href="' . htmlspecialchars($this->listURL($this->pageRow['pid'])) . '">' .
 						IconUtility::getSpriteIcon(
@@ -739,18 +739,18 @@ class Tx_Commerce_ViewHelpers_FeuserRecordList extends \TYPO3\CMS\Recordlist\Rec
 						}
 					}
 
-						// Counter of total rows incremented:
+					// Counter of total rows incremented:
 					$this->eCounter++;
 				}
 
-					// The header row for the table is now created:
+				// The header row for the table is now created:
 				$out .= $this->renderListHeader($table, $currentIdList);
 			}
 
-				// The list of records is added after the header:
+			// The list of records is added after the header:
 			$out .= $iOut;
 
-				// ... and it is all wrapped in a table:
+			// ... and it is all wrapped in a table:
 			$out = '
 			<!--
 				DB listing of elements:	"' . htmlspecialchars($table) . '"
@@ -761,13 +761,13 @@ class Tx_Commerce_ViewHelpers_FeuserRecordList extends \TYPO3\CMS\Recordlist\Rec
 					' . $out . '
 				</table>';
 
-				// Output csv if...
+			// Output csv if...
 			if ($this->csvOutput) {
 				$this->outputCSV($table);
 			}
 		}
 
-			// Return content:
+		// Return content:
 		return $out;
 	}
 

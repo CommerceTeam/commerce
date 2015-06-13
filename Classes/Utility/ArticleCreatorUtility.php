@@ -641,8 +641,8 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 		}
 
 		// create the article
-		$articleRes = $database->exec_INSERTquery('tx_commerce_articles', $articleData);
-		$articleUid = $database->sql_insert_id($articleRes);
+		$database->exec_INSERTquery('tx_commerce_articles', $articleData);
+		$articleUid = $database->sql_insert_id();
 
 		// create a new price that is assigned to the new article
 		$database->exec_INSERTquery(
@@ -757,8 +757,8 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 				);
 
 				// create the article
-				$articleRes = $database->exec_INSERTquery('tx_commerce_articles', $articleData);
-				$localizedArticleUid = $database->sql_insert_id($articleRes);
+				$database->exec_INSERTquery('tx_commerce_articles', $articleData);
+				$localizedArticleUid = $database->sql_insert_id();
 
 				// get all relations to attributes from the old article and copy them
 				// to new article

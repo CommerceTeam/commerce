@@ -259,7 +259,7 @@ class Tx_Commerce_Tree_Leaf_Master extends Tx_Commerce_Tree_Leaf_Leaf {
 	 * @return string HTML Code
 	 */
 	public function printChildleafsByLoop($startUid, $bank, $pid = FALSE) {
-			// Check for valid parameters
+		// Check for valid parameters
 		if (!is_numeric($startUid) || !is_numeric($bank)) {
 			if (TYPO3_DLOG) {
 				GeneralUtility::devLog(
@@ -271,20 +271,20 @@ class Tx_Commerce_Tree_Leaf_Master extends Tx_Commerce_Tree_Leaf_Leaf {
 			return '';
 		}
 
-			// Set the bank
+		// Set the bank
 		$this->view->setBank($bank);
 		$this->data->setBank($bank);
 
-			// Set the TreeName
+		// Set the TreeName
 		$this->view->setTreeName($this->treeName);
 
-			// init vars
+		// init vars
 		$out = '';
 		$lastLevel = 0;
 
-			// Max. number of loops we make
+		// Max. number of loops we make
 		$crazyStart = $crazyRecursion = 10000;
-			// temporary child stack
+		// temporary child stack
 		$tempChildren = array();
 		// temporary level stack - already filled with
 		// a 0 because the starting child is on level 0
@@ -292,10 +292,10 @@ class Tx_Commerce_Tree_Leaf_Master extends Tx_Commerce_Tree_Leaf_Leaf {
 			// holds which uid openend which level
 		$levelOpener = array();
 
-			// get the current item and set it as the starting child to print
+		// get the current item and set it as the starting child to print
 		$child = $this->data->getChildByUid($startUid);
 
-			// Abort if the starting Category is not found
+		// Abort if the starting Category is not found
 		if ($child == NULL) {
 			if (TYPO3_DLOG) {
 				GeneralUtility::devLog(
@@ -307,20 +307,20 @@ class Tx_Commerce_Tree_Leaf_Master extends Tx_Commerce_Tree_Leaf_Leaf {
 			return '';
 		}
 
-			// Process the child and children
+		// Process the child and children
 		while (!is_null($child) && is_array($child) && $crazyRecursion > 0) {
-				// get the current level
+			// get the current level
 			$level = @array_pop($tempLevels);
 
-				// close the parent list if we are on a higher level than the list
+			// close the parent list if we are on a higher level than the list
 			if ($level < $lastLevel) {
 				for ($i = $level; $i < $lastLevel; $i++) {
-						// get opener uid
+					// get opener uid
 					$uid = array_pop($levelOpener);
 
-						// print slave elements from the opener
+					// print slave elements from the opener
 					$out .= $this->getSlaveElements($uid, $bank);
-						// close opener
+					// close opener
 					$out .= '</ul></li>';
 				}
 			}
@@ -330,7 +330,7 @@ class Tx_Commerce_Tree_Leaf_Master extends Tx_Commerce_Tree_Leaf_Leaf {
 			/********************
 			 * Printing the Item
 			 *******************/
-				// Give class 'expanded' if it is
+			// Give class 'expanded' if it is
 			$exp = $child['uid'] ? $this->data->isExpanded($child['uid']) : TRUE;
 			$cssExpanded = ($exp) ? 'expanded' : '';
 
@@ -343,13 +343,13 @@ class Tx_Commerce_Tree_Leaf_Master extends Tx_Commerce_Tree_Leaf_Leaf {
 				$pid = FALSE;
 			}
 
-				// Add class 'last' if it is
+			// Add class 'last' if it is
 			$isLast = $this->isLast($child, $child['item_parent']);
 			$cssLast = ($isLast) ? ' last' : '';
 
 			$cssClass = $cssExpanded . ' ' . $cssLast . ($child['uid'] > 0 ? '' : ' typo3-pagetree-node-notExpandable');
 
-				// start the element
+			// start the element
 			$out .= '<li class="' . $cssClass . '">
 				<div>';
 
@@ -362,7 +362,7 @@ class Tx_Commerce_Tree_Leaf_Master extends Tx_Commerce_Tree_Leaf_Leaf {
 				$out .= '<img alt="" src="/' . TYPO3_mainDir . 'clear.gif" class="x-tree-ec-icon x-tree-elbow-end-minus">';
 			}
 
-			$out .= $child['uid'] ? $this->view->getIcon($child, $child['uid']) : $this->view->getRootIcon($child);
+			$out .= $child['uid'] ? $this->view->getIcon($child) : $this->view->getRootIcon($child);
 			$out .= $this->view->wrapTitle($child['title'], $child);
 
 			$out .= '</div>';
@@ -387,17 +387,17 @@ class Tx_Commerce_Tree_Leaf_Master extends Tx_Commerce_Tree_Leaf_Leaf {
 				$out .= '<ul>';
 				$level++;
 
-					// add all children except the first to the stack
+				// add all children except the first to the stack
 				for ($j = $m - 1; $j > 0; $j--) {
 					$tempChildren[] = $childElements[$j];
-						// Add the levels of the current items to the stack
+					// Add the levels of the current items to the stack
 					$tempLevels[] = $level;
 				}
 
-					// add the level of the next child as well
+				// add the level of the next child as well
 				$tempLevels[] = $level;
 			} else {
-					// Print the children from the slave leafs if the current leaf is expanded
+				// Print the children from the slave leafs if the current leaf is expanded
 				if ($exp) {
 					$out .= '<ul>';
 					$out .= $this->getSlaveElements($child['uid'], $bank);
@@ -415,7 +415,7 @@ class Tx_Commerce_Tree_Leaf_Master extends Tx_Commerce_Tree_Leaf_Leaf {
 			$crazyRecursion--;
 		}
 
-			// DLOG
+		// DLOG
 		if (TYPO3_DLOG) {
 			GeneralUtility::devLog(
 				'printChildLeafsByLoop (Tx_Commerce_Tree_Leaf_Master) did ' . ($crazyStart - $crazyRecursion) . ' loops!',
@@ -424,19 +424,18 @@ class Tx_Commerce_Tree_Leaf_Master extends Tx_Commerce_Tree_Leaf_Leaf {
 			);
 		}
 
-			// Close the rest of the lists
+		// Close the rest of the lists
 		for ($i = 0; $i < $lastLevel; $i++) {
-
-				// get opener uid
+			// get opener uid
 			$uid = array_pop($levelOpener);
 
-				// print slave elements for the opener
+			// print slave elements for the opener
 			$out .= $this->getSlaveElements($uid, $bank);
-				// close the opener
+			// close the opener
 			$out .= '</ul></li>';
 		}
 
-			// Abort if the max. number of loops has been reached
+		// Abort if the max. number of loops has been reached
 		if ($crazyRecursion <= 0) {
 			if (TYPO3_DLOG) {
 				GeneralUtility::devLog(
@@ -454,15 +453,19 @@ class Tx_Commerce_Tree_Leaf_Master extends Tx_Commerce_Tree_Leaf_Leaf {
 	/**
 	 * Gets the elements of the slave leafs
 	 *
-	 * @param int $pid
-	 * @param int $bank
+	 * @param int $pid Pade id
+	 * @param int $bank Bank
 	 *
 	 * @return string HTML Code generated by the slaveleafs
 	 */
 	protected function getSlaveElements($pid, $bank) {
 		$out = '';
 
-		/** @var Tx_Commerce_Tree_Leaf_Slave $leaf */
+		/**
+		 * Leaf
+		 *
+		 * @var Tx_Commerce_Tree_Leaf_Slave $leaf
+		 */
 		foreach ($this->leafs as $leaf) {
 			$out .= $leaf->printChildleafsByParent($pid, $bank);
 		}

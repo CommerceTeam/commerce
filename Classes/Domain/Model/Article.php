@@ -118,6 +118,13 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 	protected $uid_product;
 
 	/**
+	 * Parent product
+	 *
+	 * @var Tx_Commerce_Domain_Model_Product
+	 */
+	protected $parentProduct;
+
+	/**
 	 * Related page
 	 *
 	 * @var int
@@ -549,15 +556,16 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 	 * @return Tx_Commerce_Domain_Model_Product Product object
 	 */
 	public function getParentProduct() {
-		if ($this->uid_product) {
-			$productsUid = $this->uid_product;
-		} else {
-			$productsUid = $this->databaseConnection->getParentProductUid($this->getUid());
-		}
+		if ($this->parentProduct == NULL) {
+			if ($this->uid_product) {
+				$productsUid = $this->uid_product;
+			} else {
+				$productsUid = $this->databaseConnection->getParentProductUid($this->getUid());
+			}
 
-		/** @var $product Tx_Commerce_Domain_Model_Product */
-		$product = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Product', $productsUid);
-		return $product;
+			$this->parentProduct = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Product', $productsUid);
+		}
+		return $this->parentProduct;
 	}
 
 	/**
