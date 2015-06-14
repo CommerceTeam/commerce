@@ -104,10 +104,10 @@ class Tx_Commerce_Domain_Model_BasketItem {
 	/**
 	 * Constructor, basically calls init
 	 *
-	 * @param int $uid
-	 * @param int $quantity
-	 * @param int $priceid
-	 * @param int $languageUid
+	 * @param int $uid Article uid
+	 * @param int $quantity Amount for this article
+	 * @param int $priceid Id of the price to use
+	 * @param int $languageUid Language id
 	 *
 	 * @return self
 	 */
@@ -118,13 +118,13 @@ class Tx_Commerce_Domain_Model_BasketItem {
 	}
 
 	/**
-	 * Initialises the object,
+	 * Initialise the object,
 	 * checks if given uid is valid and loads the the article an product data
 	 *
-	 * @param int $uid Article UID
+	 * @param int $uid Article uid
 	 * @param int $quantity Amount for this article
 	 * @param int $priceid Id of the price to use
-	 * @param int $langUid Language ID
+	 * @param int $langUid Language id
 	 *
 	 * @return bool
 	 */
@@ -150,23 +150,33 @@ class Tx_Commerce_Domain_Model_BasketItem {
 			return FALSE;
 		}
 
-		/** @var Tx_Commerce_Domain_Model_Article $article */
+		/**
+		 * Article
+		 *
+		 * @var Tx_Commerce_Domain_Model_Article $article
+		 */
 		$article = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Article', $uid, $this->lang_uid);
 
 		if (is_object($article)) {
 			$article->loadData('basket');
 			$this->article = $article;
 
-			/** @var Tx_Commerce_Domain_Model_Product $product */
 			$product = $article->getParentProduct();
 			$product->loadData('basket');
 			$this->product = $product;
 
 			$this->priceid = $priceid;
 
-			/** @var Tx_Commerce_Domain_Model_ArticlePrice $price */
-			$price = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_ArticlePrice');
-			$price->init($priceid, $this->lang_uid);
+			/**
+			 * Price
+			 *
+			 * @var Tx_Commerce_Domain_Model_ArticlePrice $price
+			 */
+			$price = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+				'Tx_Commerce_Domain_Model_ArticlePrice',
+				$priceid,
+				$this->lang_uid
+			);
 			$price->loadData('basket');
 			$this->price = $price;
 
@@ -189,9 +199,10 @@ class Tx_Commerce_Domain_Model_BasketItem {
 	}
 
 	/**
-	 * gets an array of get_article_assoc_array and get_product_assoc_array
+	 * Get an array of get_article_assoc_array and get_product_assoc_array
 	 *
 	 * @param string $prefix Prefix for the keys or returnung array optional
+	 *
 	 * @return array
 	 */
 	public function getArrayOfAssocArray($prefix = '') {
@@ -211,9 +222,10 @@ class Tx_Commerce_Domain_Model_BasketItem {
 	}
 
 	/**
-	 * returns the ArticleAssocArray
+	 * ArticleAssocArray
 	 *
-	 * @param string $prefix
+	 * @param string $prefix Prefix
+	 *
 	 * @return array
 	 */
 	public function getArticleAssocArray($prefix) {
@@ -239,7 +251,7 @@ class Tx_Commerce_Domain_Model_BasketItem {
 	}
 
 	/**
-	 * return the Ordernumber of item
+	 * Ordernumber of item
 	 *
 	 * @return string ean of Articles
 	 */
@@ -248,14 +260,14 @@ class Tx_Commerce_Domain_Model_BasketItem {
 	}
 
 	/**
-	 * set a given field, only to use with custom field without own method
-	 * Warning: commerce provides getMethods for all default fields. For Compatibility
-	 * reasons always use the built in Methods. Only use this method with you own added fields
+	 * Set a given field, only to use with custom field without own method
+	 * Warning: commerce provides getMethods for all default fields. For
+	 * Compatibility reasons always use the built in Methods. Only use this
+	 * method with you own added fields
 	 *
-	 * @see add_fields_to_fieldlist
-	 * @see add_field_to_fieldlist
-	 * @param string $field : fieldname
-	 * @param mixed $value : value
+	 * @param string $field Fieldname
+	 * @param mixed $value Value
+	 *
 	 * @return void
 	 */
 	public function setField($field, $value) {
@@ -263,13 +275,13 @@ class Tx_Commerce_Domain_Model_BasketItem {
 	}
 
 	/**
-	 * get a given field value, only to use with custom field without own method
-	 * Warning: commerce provides getMethods for all default fields. For Compatibility
-	 * reasons always use the built in Methods. Only use this method with you own added fields
+	 * Get a given field value, only to use with custom field without own method
+	 * Warning: commerce provides getMethods for all default fields. For
+	 * compatibility reasons always use the built in Methods. Only use this
+	 * method with you own added fields
 	 *
-	 * @see add_fields_to_fieldlist
-	 * @see add_field_to_fieldlist
-	 * @param string $field : fieldname
+	 * @param string $field Fieldname
+	 *
 	 * @return mixed value of the field
 	 */
 	public function getField($field) {
@@ -310,21 +322,25 @@ class Tx_Commerce_Domain_Model_BasketItem {
 	}
 
 	/**
-	 * return the the gross price without the scale calculation
+	 * Gross price without the scale calculation
+	 *
+	 * @return float
 	 */
 	public function getNoScalePriceGross() {
 		return $this->article->getPriceGross();
 	}
 
 	/**
-	 * return the the net price without the scale calculation
+	 * Net price without the scale calculation
+	 *
+	 * @return float
 	 */
 	public function getNoScalePriceNet() {
 		return $this->article->getPriceNet();
 	}
 
 	/**
-	 * return the Ordernumber of item
+	 * Ordernumber of item
 	 *
 	 * @return string Ordernumber of Articles
 	 */
@@ -336,6 +352,8 @@ class Tx_Commerce_Domain_Model_BasketItem {
 	 * Sets pre gross price
 	 *
 	 * @param int $value New Price Value
+	 *
+	 * @return void
 	 */
 	public function setPriceGross($value) {
 		$this->priceGross = $value;
@@ -391,9 +409,10 @@ class Tx_Commerce_Domain_Model_BasketItem {
 	}
 
 	/**
-	 * returns the ArticleAssocArray
+	 * ArticleAssocArray
 	 *
-	 * @param string $prefix
+	 * @param string $prefix Prefix
+	 *
 	 * @return array
 	 */
 	public function getProductAssocArray($prefix) {
@@ -401,10 +420,9 @@ class Tx_Commerce_Domain_Model_BasketItem {
 	}
 
 	/**
-	 * gets the master parent category
+	 * Gets the master parent category
 	 *
 	 * @return array category
-	 * @see product
 	 */
 	public function getProductMasterparentCategorie() {
 		return $this->product->getMasterparentCategory();
@@ -431,7 +449,8 @@ class Tx_Commerce_Domain_Model_BasketItem {
 	/**
 	 * Gets the subtitle of the basket item
 	 *
-	 * @param string $type of subtitle, possible values arte article and product
+	 * @param string $type Type possible values arte article and product
+	 *
 	 * @return string Subtitle of article (default) or product
 	 */
 	public function getSubtitle($type = 'article') {
@@ -440,13 +459,14 @@ class Tx_Commerce_Domain_Model_BasketItem {
 				return $this->product->getSubtitle();
 
 			case 'article':
+				// fall through
 			default:
 				return $this->article->getSubtitle();
 		}
 	}
 
 	/**
-	 * gets the tax from the article
+	 * Gets the tax from the article
 	 *
 	 * @return float percantage of tax
 	 */
@@ -464,6 +484,7 @@ class Tx_Commerce_Domain_Model_BasketItem {
 	 * This Method Sets the Tax Calculation method (pricefromnet)
 	 *
 	 * @param bool $priceFromNet Switch if calculating from net or not
+	 *
 	 * @return void
 	 */
 	public function setTaxCalculationMethod($priceFromNet) {
@@ -473,7 +494,9 @@ class Tx_Commerce_Domain_Model_BasketItem {
 	/**
 	 * Sets the Title
 	 *
-	 * @param string $title
+	 * @param string $title Title
+	 *
+	 * @return void
 	 */
 	public function setTitle($title) {
 		$this->article->setField('title', $title);
@@ -483,7 +506,8 @@ class Tx_Commerce_Domain_Model_BasketItem {
 	/**
 	 * Gets the title
 	 *
-	 * @param string $type of title, possible values arte article and product
+	 * @param string $type Type possible values arte article and product
+	 *
 	 * @return string title of article (default) or product
 	 */
 	public function getTitle($type = 'article') {
@@ -492,6 +516,7 @@ class Tx_Commerce_Domain_Model_BasketItem {
 				return $this->product->getTitle();
 
 			case 'article':
+				// fall through
 			default:
 				return $this->article->getTitle();
 		}
@@ -501,16 +526,19 @@ class Tx_Commerce_Domain_Model_BasketItem {
 	/**
 	 * Change the basket item quantity
 	 *
-	 * @param quanitity
+	 * @param int $quantity Quantity
+	 *
 	 * @return true
-	 * @access public
 	 */
 	public function changeQuantity($quantity) {
 		$this->quantity = $quantity;
 		$this->priceid = $this->article->getActualPriceforScaleUid($quantity);
 
-		$this->price = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_ArticlePrice');
-		$this->price->init($this->priceid, $this->lang_uid);
+		$this->price = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+			'Tx_Commerce_Domain_Model_ArticlePrice',
+			$this->priceid,
+			$this->lang_uid
+		);
 		$this->price->loadData();
 		$this->priceNet = $this->price->getPriceNet();
 		$this->priceGross = $this->price->getPriceGross();
@@ -522,7 +550,8 @@ class Tx_Commerce_Domain_Model_BasketItem {
 	/**
 	 * Calculates the net_sum
 	 *
-	 * @param bool $useValues Use the stored values instead of calculating gross or net price
+	 * @param bool $useValues Use the stored values
+	 * 	instead of calculating gross or net price
 	 *
 	 * @return int net_sum
 	 * @todo add hook for this function
@@ -542,7 +571,8 @@ class Tx_Commerce_Domain_Model_BasketItem {
 	/**
 	 * Calculates the gross_sum
 	 *
-	 * @param bool $useValues Use the stored values instead of calculating gross or net price
+	 * @param bool $useValues Use the stored values
+	 * 	instead of calculating gross or net price
 	 *
 	 * @return int gross_sum
 	 * @todo add hook for this function
@@ -560,9 +590,11 @@ class Tx_Commerce_Domain_Model_BasketItem {
 	}
 
 	/**
-	 * recalculates the itm sums
+	 * Recalculates the item sums
 	 *
-	 * @param bool $useValues Use the stored values instead of calculating gross or net price
+	 * @param bool $useValues Use the stored values instead
+	 * 	of calculating gross or net price
+	 *
 	 * @return void
 	 */
 	public function recalculateItemSums($useValues = FALSE) {

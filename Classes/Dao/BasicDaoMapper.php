@@ -29,28 +29,36 @@
  */
 class Tx_Commerce_Dao_BasicDaoMapper {
 	/**
-	 * dbtable for persistence
+	 * Table for persistence
 	 *
 	 * @var null|string
 	 */
 	protected $dbTable = '';
 
 	/**
+	 * Database connection
+	 *
 	 * @var \TYPO3\CMS\Core\Database\DatabaseConnection
 	 */
 	protected $database;
 
 	/**
+	 * Parser
+	 *
 	 * @var Tx_Commerce_Dao_BasicDaoParser
 	 */
 	protected $parser;
 
 	/**
+	 * Create pid
+	 *
 	 * @var int
 	 */
 	protected $createPid = 0;
 
 	/**
+	 * Error
+	 *
 	 * @var array
 	 */
 	protected $error = array();
@@ -58,15 +66,15 @@ class Tx_Commerce_Dao_BasicDaoMapper {
 	/**
 	 * Constructor
 	 *
-	 * @param Tx_Commerce_Dao_BasicDaoParser &$parser
-	 * @param int $createPid
-	 * @param string $dbTable
+	 * @param Tx_Commerce_Dao_BasicDaoParser $parser Parser
+	 * @param int $createPid Create pid
+	 * @param string $dbTable Table
 	 *
 	 * @return self
 	 */
-	public function __construct(&$parser, $createPid = 0, $dbTable = NULL) {
+	public function __construct(Tx_Commerce_Dao_BasicDaoParser &$parser, $createPid = 0, $dbTable = NULL) {
 		$this->init();
-		$this->parser = & $parser;
+		$this->parser = &$parser;
 		if (!empty($createPid)) {
 			$this->createPid = $createPid;
 		}
@@ -87,10 +95,11 @@ class Tx_Commerce_Dao_BasicDaoMapper {
 	/**
 	 * Load object
 	 *
-	 * @param Tx_Commerce_Dao_BasicDaoObject &$object
+	 * @param Tx_Commerce_Dao_BasicDaoObject $object Object
+	 *
 	 * @return void
 	 */
-	public function load(&$object) {
+	public function load(Tx_Commerce_Dao_BasicDaoObject &$object) {
 		if ($object->issetId()) {
 			$this->dbSelectById($object->getId(), $object);
 		}
@@ -99,10 +108,11 @@ class Tx_Commerce_Dao_BasicDaoMapper {
 	/**
 	 * Save object
 	 *
-	 * @param Tx_Commerce_Dao_BasicDaoObject &$object
+	 * @param Tx_Commerce_Dao_BasicDaoObject $object Object
+	 *
 	 * @return void
 	 */
-	public function save(&$object) {
+	public function save(Tx_Commerce_Dao_BasicDaoObject &$object) {
 		if ($object->issetId()) {
 			$this->dbUpdate($object->getId(), $object);
 		} else {
@@ -113,10 +123,11 @@ class Tx_Commerce_Dao_BasicDaoMapper {
 	/**
 	 * Remove object
 	 *
-	 * @param Tx_Commerce_Dao_BasicDaoObject &$object
+	 * @param Tx_Commerce_Dao_BasicDaoObject $object Object
+	 *
 	 * @return void
 	 */
-	public function remove(&$object) {
+	public function remove(Tx_Commerce_Dao_BasicDaoObject &$object) {
 		if ($object->issetId()) {
 			$this->dbDelete($object->getId(), $object);
 		}
@@ -125,20 +136,21 @@ class Tx_Commerce_Dao_BasicDaoMapper {
 	/**
 	 * Db add object
 	 *
-	 * @param Tx_Commerce_Dao_BasicDaoObject &$object
+	 * @param Tx_Commerce_Dao_BasicDaoObject $object Object
+	 *
 	 * @return void
 	 */
-	protected function dbInsert(&$object) {
+	protected function dbInsert(Tx_Commerce_Dao_BasicDaoObject &$object) {
 		$dbTable = $this->dbTable;
 		$dbModel = $this->parser->parseObjectToModel($object);
 
-			// set pid
+		// set pid
 		$this->parser->setPid($dbModel, $this->createPid);
 
-			// execute query
+		// execute query
 		$this->database->exec_INSERTquery($dbTable, $dbModel);
 
-			// any errors
+		// any errors
 		$error = $this->database->sql_error();
 		if (!empty($error)) {
 			$this->addError(array(
@@ -148,27 +160,27 @@ class Tx_Commerce_Dao_BasicDaoMapper {
 			));
 		}
 
-			// set object id
+		// set object id
 		$object->setId($this->database->sql_insert_id());
 	}
 
 	/**
 	 * Db update object
 	 *
-	 * @param int $uid
-	 * @param Tx_Commerce_Dao_BasicDaoObject &$object
+	 * @param int $uid Uid
+	 * @param Tx_Commerce_Dao_BasicDaoObject $object Object
 	 *
 	 * @return void
 	 */
-	protected function dbUpdate($uid, &$object) {
+	protected function dbUpdate($uid, Tx_Commerce_Dao_BasicDaoObject &$object) {
 		$dbTable = $this->dbTable;
-		$dbWhere = 'uid="' . (int) $uid . '"';
+		$dbWhere = 'uid = ' . (int) $uid;
 		$dbModel = $this->parser->parseObjectToModel($object);
 
-			// execute query
+		// execute query
 		$this->database->exec_UPDATEquery($dbTable, $dbWhere, $dbModel);
 
-			// any errors
+		// any errors
 		$error = $this->database->sql_error();
 		if (!empty($error)) {
 			$this->addError(array(
@@ -182,18 +194,18 @@ class Tx_Commerce_Dao_BasicDaoMapper {
 	/**
 	 * Db delete object
 	 *
-	 * @param int $uid
-	 * @param Tx_Commerce_Dao_BasicDaoObject &$object
+	 * @param int $uid Uid
+	 * @param Tx_Commerce_Dao_BasicDaoObject $object Object
 	 *
 	 * @return void
 	 */
-	protected function dbDelete($uid, &$object) {
-		$dbWhere = 'uid="' . (int) $uid . '"';
+	protected function dbDelete($uid, Tx_Commerce_Dao_BasicDaoObject &$object) {
+		$dbWhere = 'uid = ' . (int) $uid;
 
-			// execute query
+		// execute query
 		$this->database->exec_DELETEquery($this->dbTable, $dbWhere);
 
-			// any errors
+		// any errors
 		$error = $this->database->sql_error();
 		if (!empty($error)) {
 			$this->addError(array(
@@ -202,48 +214,49 @@ class Tx_Commerce_Dao_BasicDaoMapper {
 			));
 		}
 
-			// remove object itself
+		// remove object itself
 		$object->destroy();
 	}
 
 	/**
 	 * DB select object by id
 	 *
-	 * @param int $uid
-	 * @param Tx_Commerce_Dao_BasicDaoObject &$object
+	 * @param int $uid Uid
+	 * @param Tx_Commerce_Dao_BasicDaoObject $object Object
 	 *
 	 * @return void
 	 */
-	protected function dbSelectById($uid, &$object) {
+	protected function dbSelectById($uid, Tx_Commerce_Dao_BasicDaoObject &$object) {
 		$dbFields = '*';
 		$dbTable = $this->dbTable;
-		$dbWhere = '(uid="' . (int) $uid . '")';
-		$dbWhere .= 'AND (deleted="0")';
+		$dbWhere = 'uid = ' . (int) $uid;
+		$dbWhere .= 'AND deleted = 0';
 
-			// execute query
+		// execute query
 		$res = $this->database->exec_SELECTquery($dbFields, $dbTable, $dbWhere);
 
-			// insert into object
+		// insert into object
 		$model = $this->database->sql_fetch_assoc($res);
 		if ($model) {
-				// parse into object
+			// parse into object
 			$this->parser->parseModelToObject($model, $object);
 		} else {
-				// no object found, empty obj and id
+			// no object found, empty obj and id
 			$object->clear();
 		}
 
-			// free results
+		// free results
 		$this->database->sql_free_result($res);
 	}
 
 	/**
 	 * Add error message
 	 *
-	 * @param array $error
+	 * @param array $error Error
+	 *
 	 * @return void
 	 */
-	protected function addError($error) {
+	protected function addError(array $error) {
 		$this->error[] = $error;
 	}
 

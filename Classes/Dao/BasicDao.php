@@ -50,7 +50,7 @@ class Tx_Commerce_Dao_BasicDao {
 	/**
 	 * Constructor
 	 *
-	 * @param int $id
+	 * @param int $id Id
 	 *
 	 * @return self
 	 */
@@ -89,7 +89,7 @@ class Tx_Commerce_Dao_BasicDao {
 	 *
 	 * @return void
 	 */
-	public function setObject(&$object) {
+	public function setObject(Tx_Commerce_Dao_BasicDaoObject &$object) {
 		$this->object = $object;
 	}
 
@@ -105,7 +105,7 @@ class Tx_Commerce_Dao_BasicDao {
 	/**
 	 * Setter
 	 *
-	 * @param int $value
+	 * @param int $value Id
 	 *
 	 * @return void
 	 */
@@ -116,7 +116,8 @@ class Tx_Commerce_Dao_BasicDao {
 	/**
 	 * Getter
 	 *
-	 * @param string $propertyName
+	 * @param string $propertyName Property name
+	 *
 	 * @return mixed
 	 */
 	public function get($propertyName) {
@@ -133,8 +134,9 @@ class Tx_Commerce_Dao_BasicDao {
 	/**
 	 * Setter
 	 *
-	 * @param string $propertyName
-	 * @param mixed $value
+	 * @param string $propertyName Property name
+	 * @param mixed $value Value
+	 *
 	 * @return void
 	 */
 	public function set($propertyName, $value) {
@@ -151,7 +153,7 @@ class Tx_Commerce_Dao_BasicDao {
 	/**
 	 * Check if property is empty
 	 *
-	 * @param string $propertyName
+	 * @param string $propertyName Property name
 	 *
 	 * @return bool
 	 */
@@ -164,7 +166,7 @@ class Tx_Commerce_Dao_BasicDao {
 	/**
 	 * Check if property exists
 	 *
-	 * @param string $propertyName
+	 * @param string $propertyName Property name
 	 *
 	 * @return bool
 	 */

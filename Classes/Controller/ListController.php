@@ -352,7 +352,7 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 
 			$catConf = $this->category->getTyposcriptConfig();
 			if (is_array($catConf['catTS.'])) {
-				$this->conf = \TYPO3\CMS\Core\Utility\GeneralUtility::array_merge_recursive_overrule($this->conf, $catConf['catTS.']);
+				\TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($this->conf, $catConf['catTS.']);
 			}
 
 			if ($long) {

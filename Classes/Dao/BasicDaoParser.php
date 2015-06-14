@@ -38,7 +38,7 @@ class Tx_Commerce_Dao_BasicDaoParser {
 	 *
 	 * @return array
 	 */
-	public function parseObjectToModel($object) {
+	public function parseObjectToModel(Tx_Commerce_Dao_BasicDaoObject $object) {
 		$model = array();
 
 			// parse attribs
@@ -65,7 +65,7 @@ class Tx_Commerce_Dao_BasicDaoParser {
 	 *
 	 * @return void
 	 */
-	public function parseModelToObject($model, &$object) {
+	public function parseModelToObject(array $model, Tx_Commerce_Dao_BasicDaoObject &$object) {
 			// parse attribs
 		$propertyNames = array_keys(get_object_vars($object));
 		foreach ($propertyNames as $attrib) {
@@ -89,7 +89,7 @@ class Tx_Commerce_Dao_BasicDaoParser {
 	 *
 	 * @return void
 	 */
-	public function setPid(&$model, $pid) {
+	public function setPid(array &$model, $pid) {
 		$model['pid'] = $pid;
 	}
 }

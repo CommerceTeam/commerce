@@ -28,31 +28,36 @@ class Tx_Commerce_Tree_Leaf_CategoryData extends Tx_Commerce_Tree_Leaf_MasterDat
 	protected $permsMask = 1;
 
 	/**
-	 * make this as a var which field is used as item_parent
+	 * Make this as a var which field is used as item_parent
 	 *
 	 * @var string
 	 */
-	protected $extendedFields  = 'parent_category, title, perms_userid, perms_groupid, perms_user, perms_group, perms_everybody, editlock, hidden, starttime, endtime, fe_group';
+	protected $extendedFields  = 'parent_category, title, perms_userid, perms_groupid, perms_user, perms_group, perms_everybody,
+		editlock, hidden, starttime, endtime, fe_group';
 
 	/**
+	 * Database table
+	 *
 	 * @var string
 	 */
 	protected $table = 'tx_commerce_categories';
 
 	/**
+	 * Mm relation field
+	 *
 	 * @var string
 	 */
 	protected $item_parent = 'uid_foreign';
 
 	/**
-	 * table to read the leafitems from
+	 * Table to read the leafitems from
 	 *
 	 * @var string
 	 */
 	protected $itemTable = 'tx_commerce_categories';
 
 	/**
-	 * table that is to be used to find parent items
+	 * Relation table
 	 *
 	 * @var string
 	 */
@@ -68,14 +73,18 @@ class Tx_Commerce_Tree_Leaf_CategoryData extends Tx_Commerce_Tree_Leaf_MasterDat
 	/**
 	 * Sets the Permission Mask for reading Categories from the db
 	 *
-	 * @param $mask int mask for reading the permissions
+	 * @param int $mask Mask for reading the permissions
 	 *
 	 * @return void
 	 */
 	public function setPermsMask($mask) {
 		if (!is_numeric($mask)) {
 			if (TYPO3_DLOG) {
-				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('setPermsMask (categorydata) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
+					'setPermsMask (categorydata) gets passed invalid parameters.',
+					COMMERCE_EXTKEY,
+					3
+				);
 			}
 		} else {
 			$this->permsMask = $mask;
@@ -104,17 +113,25 @@ class Tx_Commerce_Tree_Leaf_CategoryData extends Tx_Commerce_Tree_Leaf_MasterDat
 	public function getRecordsDbList($uid, $depth = 2) {
 		if (!is_numeric($uid) || !is_numeric($depth)) {
 			if (TYPO3_DLOG) {
-				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('getRecordsDbList (categorydata) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
+					'getRecordsDbList (categorydata) gets passed invalid parameters.',
+					COMMERCE_EXTKEY,
+					3
+				);
 			}
 			return array();
 		}
 
 		$backendUser = $this->getBackendUser();
 
-			// Check if User's Group may view the records
+		// Check if User's Group may view the records
 		if (!$backendUser->check('tables_select', $this->table)) {
 			if (TYPO3_DLOG) {
-				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('getRecordsDbList (categorydata): Usergroup is not allowed to view the records.', COMMERCE_EXTKEY, 2);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
+					'getRecordsDbList (categorydata): Usergroup is not allowed to view the records.',
+					COMMERCE_EXTKEY,
+					2
+				);
 			}
 			return array();
 		}
@@ -122,9 +139,7 @@ class Tx_Commerce_Tree_Leaf_CategoryData extends Tx_Commerce_Tree_Leaf_MasterDat
 		$this->setUid($uid);
 		$this->setDepth($depth);
 
-		$records = $this->getRecordsByUid();
-
-		return $records;
+		return $this->getRecordsByUid();
 	}
 
 	/**
@@ -138,7 +153,8 @@ class Tx_Commerce_Tree_Leaf_CategoryData extends Tx_Commerce_Tree_Leaf_MasterDat
 		$root['uid'] = 0;
 		$root['pid'] = 0;
 		$root['title'] = $this->getLL('leaf.category.root');
-			// root always has pm icon
+
+		// root always has pm icon
 		$root['hasChildren'] = 1;
 		$root['lastNode'] = TRUE;
 		$root['item_parent'] = 0;

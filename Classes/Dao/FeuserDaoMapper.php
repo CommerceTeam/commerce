@@ -22,7 +22,7 @@
  */
 class Tx_Commerce_Dao_FeuserDaoMapper extends Tx_Commerce_Dao_BasicDaoMapper {
 	/**
-	 * dbtable for persistence
+	 * Table for persistence
 	 *
 	 * @var string
 	 */

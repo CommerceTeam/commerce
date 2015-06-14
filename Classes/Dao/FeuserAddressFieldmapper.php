@@ -24,16 +24,22 @@
  */
 class Tx_Commerce_Dao_FeuserAddressFieldmapper {
 	/**
+	 * Mapping
+	 *
 	 * @var string
 	 */
 	protected $mapping;
 
 	/**
+	 * Frontend user fields
+	 *
 	 * @var array
 	 */
 	protected $feuserFields = array();
 
 	/**
+	 * Address fields
+	 *
 	 * @var array
 	 */
 	protected $addressFields = array();
@@ -76,11 +82,12 @@ class Tx_Commerce_Dao_FeuserAddressFieldmapper {
 	/**
 	 * Map feuser to address
 	 *
-	 * @param Tx_Commerce_Dao_FeuserDao &$feuser
-	 * @param Tx_Commerce_Dao_AddressDao &$address
+	 * @param Tx_Commerce_Dao_FeuserDao $feuser Frontend user
+	 * @param Tx_Commerce_Dao_AddressDao $address Address
+	 *
 	 * @return void
 	 */
-	public function mapFeuserToAddress(&$feuser, &$address) {
+	public function mapFeuserToAddress(Tx_Commerce_Dao_FeuserDao &$feuser, Tx_Commerce_Dao_AddressDao &$address) {
 		if (empty($this->feuserFields)) {
 			$this->explodeMapping();
 		}
@@ -92,11 +99,12 @@ class Tx_Commerce_Dao_FeuserAddressFieldmapper {
 	/**
 	 * Map address to feuser
 	 *
-	 * @param Tx_Commerce_Dao_AddressDao &$address
-	 * @param Tx_Commerce_Dao_FeuserDao &$feuser
+	 * @param Tx_Commerce_Dao_AddressDao $address Address
+	 * @param Tx_Commerce_Dao_FeuserDao $feuser Frontend user
+	 *
 	 * @return void
 	 */
-	public function mapAddressToFeuser(&$address, &$feuser) {
+	public function mapAddressToFeuser(Tx_Commerce_Dao_AddressDao &$address, Tx_Commerce_Dao_FeuserDao &$feuser) {
 		if (empty($this->addressFields)) {
 			$this->explodeMapping();
 		}

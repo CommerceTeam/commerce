@@ -32,7 +32,7 @@ class Tx_Commerce_Dao_BasicDaoObject {
 	/**
 	 * Setter
 	 *
-	 * @param int $id
+	 * @param int $id Id
 	 *
 	 * @return void
 	 */
