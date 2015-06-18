@@ -34,16 +34,22 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	public $prefixId = 'tx_commerce_pi3';
 
 	/**
+	 * Flag if chash should be ignored
+	 *
 	 * @var bool
 	 */
 	public $pi_USER_INT_obj = TRUE;
 
 	/**
+	 * Database field data
+	 *
 	 * @var array
 	 */
 	public $dbFieldData = array();
 
 	/**
+	 * Form errors
+	 *
 	 * @var array
 	 */
 	public $formError = array();
@@ -51,11 +57,13 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	/**
 	 * Holding the Static_info object
 	 *
-	 * @var tx_staticinfotables_pi1
+	 * @var \SJBR\StaticInfoTables\PiBaseApi
 	 */
 	public $staticInfo;
 
 	/**
+	 * Current form step
+	 *
 	 * @var string
 	 */
 	public $currentStep = '';
@@ -103,26 +111,36 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	public $clearSessionAfterCheckout = TRUE;
 
 	/**
+	 * Session data
+	 *
 	 * @var array
 	 */
 	public $sessionData = array();
 
 	/**
+	 * Order uid
+	 *
 	 * @var int
 	 */
 	public $orderUid = 0;
 
 	/**
+	 * User data
+	 *
 	 * @var array
 	 */
 	public $userData = array();
 
 	/**
+	 * Step
+	 *
 	 * @var string
 	 */
 	public $step;
 
 	/**
+	 * Flag if email should be send as html
+	 *
 	 * @var bool
 	 */
 	public $isHtmlMail;
@@ -131,6 +149,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	 * Init Method, autmatically called $this->main
 	 *
 	 * @param string $conf Configuration
+	 *
 	 * @return void
 	 */
 	public function init($conf) {
@@ -170,11 +189,12 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	/**
 	 * Main Method, automatically called by TYPO3
 	 *
-	 * @param string $content from Parent Page
+	 * @param string $content From parent page
 	 * @param array $conf Configuration
+	 *
 	 * @return string HTML-Content
 	 */
-	public function main($content, $conf) {
+	public function main($content, array $conf = array()) {
 		$this->debug(
 			$GLOBALS['TSFE']->fe_user->getKey('ses', Tx_Commerce_Utility_GeneralUtility::generateSessionKey('billing')),
 			'billingsession', __FILE__ . ' ' . __LINE__
@@ -188,7 +208,11 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 
 		// Set basket to readonly, if set in extension configuration
 		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['extConf']['lockBasket'] == 1) {
-			/** @var $basket Tx_Commerce_Domain_Model_Basket */
+			/**
+			 * Basket
+			 *
+			 * @var $basket Tx_Commerce_Domain_Model_Basket
+			 */
 			$basket = & $GLOBALS['TSFE']->fe_user->tx_commerce_basket;
 			$basket->setReadOnly();
 			$basket->storeData();
@@ -419,6 +443,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	 * It replaces the subpart ###CHECKOUT_STEPS###
 	 *
 	 * @param string $content Content
+	 *
 	 * @return string $content
 	 */
 	public function renderSteps($content) {
@@ -462,12 +487,12 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		return $content;
 	}
 
-	/** STEP ROUTINES **/
+	/* STEP ROUTINES */
 
 	/**
 	 * Creates a form for collection the billing address data.
 	 *
-	 * @param int $withTitle
+	 * @param int $withTitle Flag if rendering with title
 	 *
 	 * @return string $content
 	 */
@@ -492,8 +517,8 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		// Get the form
 		$markerArray['###ADDRESS_FORM_TAG###'] = '<form name="addressForm" action="' .
 			$this->pi_getPageLink($GLOBALS['TSFE']->id) . '" method="post" ' . $this->conf[$this->step . '.']['formParams'] . '>';
-		$markerArray['###ADDRESS_FORM_HIDDENFIELDS###'] =
-			'<input type="hidden" name="' . $this->prefixId . '[check]" value="billing" />';
+		$markerArray['###ADDRESS_FORM_HIDDENFIELDS###'] = '<input type="hidden" name="' . $this->prefixId .
+			'[check]" value="billing" />';
 
 		$billingForm = '<form name="addressForm" action="' . $this->pi_getPageLink($GLOBALS['TSFE']->id) . '" method="post">';
 		$billingForm .= '<input type="hidden" name="' . $this->prefixId . '[check]" value="billing" />';
@@ -506,7 +531,11 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			$addressManagerConf['formFields.'] = $this->conf['billing.']['sourceFields.'];
 			$addressManagerConf['addressPid'] = $this->conf['addressPid'];
 
-			/** @var Tx_Commerce_Controller_AddressesController $addressMgm */
+			/**
+			 * Addresses controller
+			 *
+			 * @var Tx_Commerce_Controller_AddressesController $addressMgm
+			 */
 			$addressMgm = GeneralUtility::makeInstance('Tx_Commerce_Controller_AddressesController');
 			$addressMgm->cObj = $this->cObj;
 			$addressMgm->templateCode = $this->templateCode;
@@ -570,7 +599,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			$this->conf['billing.']['deliveryAddress.']['nodelivery_label.']
 		);
 
-		// @Deprecated marker, use marker above instead (see example Template)
+		// @deprecated marker, use marker above instead (see example Template)
 		$markerArray['###ADDRESS_FORM_FIELDS###'] = $billingForm;
 		$markerArray['###ADDRESS_FORM_SUBMIT###'] = '<input type="submit" value="' . $this->pi_getLL('billing_submit') . '" />';
 
@@ -607,7 +636,8 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	/**
 	 * Creates a form for collection the delivery address data.
 	 *
-	 * @param int $withTitle
+	 * @param int $withTitle Flag if rendering with title
+	 *
 	 * @return string $content
 	 */
 	public function getDeliveryAddress($withTitle = 1) {
@@ -635,7 +665,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		}
 
 		// Get form
-		// @Depricated Marker
+		// @depricated Marker
 		$markerArray['###ADDRESS_FORM_TAG###'] = '<form name="addressForm" action="' . $this->pi_getPageLink(
 				$GLOBALS['TSFE']->id
 			) . '" method="post" ' . $this->conf[$this->step . '.']['formParams'] . '>';
@@ -658,7 +688,11 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			$addressManagerConf['formFields.'] = $this->conf['delivery.']['sourceFields.'];
 			$addressManagerConf['addressPid'] = $this->conf['addressPid'];
 
-			/** @var Tx_Commerce_Controller_AddressesController $addressMgm */
+			/**
+			 * Addresses controller
+			 *
+			 * @var Tx_Commerce_Controller_AddressesController $addressMgm
+			 */
 			$addressMgm = GeneralUtility::makeInstance('Tx_Commerce_Controller_AddressesController');
 			$addressMgm->cObj = $this->cObj;
 			$addressMgm->templateCode = $this->templateCode;
@@ -720,9 +754,10 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	 * Handles all the stuff concerning the payment.
 	 *
 	 * @param Tx_Commerce_Payment_Interface_Payment $paymentObj The payment object
+	 *
 	 * @return string Substituted template
 	 */
-	public function handlePayment($paymentObj = NULL) {
+	public function handlePayment(Tx_Commerce_Payment_Interface_Payment $paymentObj = NULL) {
 		$hookObjectsArr = $this->getHookObjectArray('handlePayment');
 		foreach ($hookObjectsArr as $hookObj) {
 			if (method_exists($hookObj, 'alternativePaymentStep')) {
@@ -845,6 +880,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	 * sums and addresses.
 	 *
 	 * @param string $template Template for rendering
+	 *
 	 * @return string Substituted template
 	 */
 	public function getListing($template = '') {
@@ -852,7 +888,11 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			$template = $this->cObj->getSubpart($this->templateCode, '###LISTING###');
 		}
 
-		/** @var $basket Tx_Commerce_Domain_Model_Basket */
+		/**
+		 * Basket
+		 *
+		 * @var $basket Tx_Commerce_Domain_Model_Basket
+		 */
 		$basket = & $GLOBALS['TSFE']->fe_user->tx_commerce_basket;
 		$this->debug($basket, '$basket', __FILE__ . ' ' . __LINE__);
 
@@ -925,11 +965,12 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	/**
 	 * Finishing Page from Checkout
 	 *
-	 * @param Tx_Commerce_Payment_Interface_Payment|null $paymentObj the payment
-	 * @throws Exception
+	 * @param Tx_Commerce_Payment_Interface_Payment $paymentObj The payment
+	 *
 	 * @return string HTML-Content
+	 * @throws Exception If no payment type was configured
 	 */
-	public function finishIt($paymentObj = NULL) {
+	public function finishIt(Tx_Commerce_Payment_Interface_Payment $paymentObj = NULL) {
 		$database = $this->getDatabaseConnection();
 
 		if (!is_object($paymentObj)) {
@@ -974,7 +1015,11 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 
 		// Handle orders
 		$feUser = $this->getFrontendController()->fe_user;
-		/** @var $basket Tx_Commerce_Domain_Model_Basket */
+		/**
+		 * Basket
+		 *
+		 * @var $basket Tx_Commerce_Domain_Model_Basket
+		 */
 		$basket = $feUser->tx_commerce_basket;
 
 		$hookObjectsArr = $this->getHookObjectArray('finishIt');
@@ -1131,7 +1176,11 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		$basket->finishOrder();
 
 		// create new basket to remove all values from old one
-		/** @var Tx_Commerce_Domain_Model_Basket $basket */
+		/**
+		 * Basket
+		 *
+		 * @var Tx_Commerce_Domain_Model_Basket $basket
+		 */
 		$basket = GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Basket');
 		$basket->setSessionId(md5($feUser->id . ':' . rand(0, PHP_INT_MAX)));
 		$basket->loadData();
@@ -1142,16 +1191,17 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		return $content;
 	}
 
-	/** HELPER ROUTINES **/
+	/* HELPER ROUTINES */
 
 	/**
 	 * Fills the markerArray with correct markers, regarding the success of the order
 	 * Currently a dummy, will be filed in future with more error codes
 	 *
-	 * @param array $markerArray
+	 * @param array $markerArray Marker array
+	 *
 	 * @return array $markerArray
 	 */
-	public function finishItRenderGoodBadMarker($markerArray) {
+	public function finishItRenderGoodBadMarker(array $markerArray) {
 		if ($this->finishItOk == TRUE) {
 			$markerArray['###FINISH_MESSAGE_GOOD###'] = $this->pi_getLL('finish_message_good');
 			$markerArray['###FINISH_MESSAGE_BAD###'] = '';
@@ -1174,7 +1224,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	}
 
 	/**
-	 * check if all Articles of Basket are in stock
+	 * Check if all Articles of Basket are in stock
 	 *
 	 * @return bool
 	 */
@@ -1182,12 +1232,24 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		$result = TRUE;
 
 		if ($this->conf['useStockHandling'] == 1 AND $this->conf['checkStock'] == 1) {
-			/** @var $basket Tx_Commerce_Domain_Model_Basket */
-			$basket = & $GLOBALS['TSFE']->fe_user->tx_commerce_basket;
+			/**
+			 * Basket
+			 *
+			 * @var $basket Tx_Commerce_Domain_Model_Basket
+			 */
+			$basket = $GLOBALS['TSFE']->fe_user->tx_commerce_basket;
 			if (is_array($basket->getBasketItems())) {
-				/** @var $basketItem Tx_Commerce_Domain_Model_BasketItem */
+				/**
+				 * Basket item
+				 *
+				 * @var $basketItem Tx_Commerce_Domain_Model_BasketItem
+				 */
 				foreach ($basket->getBasketItems() as $artUid => $basketItem) {
-					/** @var $article Tx_Commerce_Domain_Model_Article */
+					/**
+					 * Article
+					 *
+					 * @var $article Tx_Commerce_Domain_Model_Article
+					 */
 					$article = $basketItem->article;
 					$this->debug($article, '$article', __FILE__ . ' ' . __LINE__);
 					if (!$article->hasStock($basketItem->getQuantity())) {
@@ -1211,12 +1273,17 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	 *  - sum for tax
 	 *  - end sum (gross)
 	 *
-	 * @param string $type ?
+	 * @param string $type Marker subtype
+	 *
 	 * @return string Basket sum
 	 */
 	public function getBasketSum($type = 'WEB') {
-		/** @var $basket Tx_Commerce_Domain_Model_Basket */
-		$basket = & $GLOBALS['TSFE']->fe_user->tx_commerce_basket;
+		/**
+		 * Basket
+		 *
+		 * @var $basket Tx_Commerce_Domain_Model_Basket
+		 */
+		$basket = $GLOBALS['TSFE']->fe_user->tx_commerce_basket;
 
 		$template = $this->cObj->getSubpart($this->templateCode, '###LISTING_BASKET_' . strtoupper($type) . '###');
 
@@ -1230,7 +1297,11 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		$sumShippingGross = 0;
 
 		foreach ($deliveryArticleArray as $oneDeliveryArticle) {
-			/** @var Tx_Commerce_Domain_Model_BasketItem $basketItem */
+			/**
+			 * Basket item
+			 *
+			 * @var Tx_Commerce_Domain_Model_BasketItem $basketItem
+			 */
 			$basketItem = $basket->getBasketItem($oneDeliveryArticle);
 			$sumShippingNet += $basketItem->getPriceNet();
 			$sumShippingGross += $basketItem->getPriceGross();
@@ -1242,7 +1313,11 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		$sumPaymentGross = 0;
 
 		foreach ($paymentArticleArray as $onePaymentArticle) {
-			/** @var Tx_Commerce_Domain_Model_BasketItem $basketItem */
+			/**
+			 * Basket item
+			 *
+			 * @var Tx_Commerce_Domain_Model_BasketItem $basketItem
+			 */
 			$basketItem = $basket->getBasketItem($onePaymentArticle);
 			$sumPaymentNet += $basketItem->getPriceNet();
 			$sumPaymentGross += $basketItem->getPriceGross();
@@ -1287,6 +1362,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	 * Type can be 'billing' or 'delivery'.
 	 *
 	 * @param string $addressType Type of the address that should be exported
+	 *
 	 * @return string Address
 	 */
 	public function getAddress($addressType) {
@@ -1320,7 +1396,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	/**
 	 * Checks if an address in the SESSION is valid
 	 *
-	 * @param string $addressType
+	 * @param string $addressType Address type
 	 *
 	 * @return bool
 	 */
@@ -1506,7 +1582,8 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	 * Returns the payment object and includes the Payment Class.
 	 * If there is no payment it throws an error
 	 *
-	 * @param string $paymentType
+	 * @param string $paymentType Payment type
+	 *
 	 * @return Tx_Commerce_Payment_Interface_Payment
 	 */
 	public function getPaymentObject($paymentType = '') {
@@ -1521,13 +1598,17 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	/**
 	 * Get payment from request if set
 	 *
-	 * @throws Exception
+	 * @throws Exception If no payment article could be found
 	 * @return void
 	 */
 	public function getPaymentFromRequest() {
 		if ($this->piVars['payArt']) {
-			/** @var $basket Tx_Commerce_Domain_Model_Basket */
-			$basket = & $GLOBALS['TSFE']->fe_user->tx_commerce_basket;
+			/**
+			 * Basket
+			 *
+			 * @var $basket Tx_Commerce_Domain_Model_Basket
+			 */
+			$basket = $GLOBALS['TSFE']->fe_user->tx_commerce_basket;
 			$database = $this->getDatabaseConnection();
 
 			$paymentBasketItem = $basket->getCurrentPaymentBasketItem();
@@ -1569,19 +1650,19 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	 *        if not $id is set, otherwise returns the id of the paymentarticle
 	 */
 	public function getPaymentType($id = FALSE) {
-		/** @var $basket Tx_Commerce_Domain_Model_Basket */
-		$basket = & $GLOBALS['TSFE']->fe_user->tx_commerce_basket;
+		/**
+		 * Basket
+		 *
+		 * @var $basket Tx_Commerce_Domain_Model_Basket
+		 */
+		$basket = $GLOBALS['TSFE']->fe_user->tx_commerce_basket;
 		$payment = $basket->getArticlesByArticleTypeUidAsUidlist(PAYMENTARTICLETYPE);
 
 		if ($id) {
 			return $payment[0];
 		}
 
-		return strtolower(
-			$basket->getBasketItem($payment[0])
-				->getArticle()
-				->getClassname()
-		);
+		return strtolower($basket->getBasketItem($payment[0])->getArticle()->getClassname());
 	}
 
 	/**
@@ -1590,11 +1671,11 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	 *
 	 * @param array $config Config array
 	 * @param string $step Current step
-	 * @param bool $parseList
+	 * @param bool $parseList Parse list
 	 *
 	 * @return string Form HTML
 	 */
-	public function getInputForm($config, $step, $parseList = TRUE) {
+	public function getInputForm(array $config, $step, $parseList = TRUE) {
 		$hookObjectsArr = $this->getHookObjectArray('processInputForm');
 
 		// Build a query for selecting an address from database
@@ -1610,7 +1691,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		$fieldTemplate = $this->cObj->getSubpart($this->templateCode, '###SINGLE_INPUT###');
 		$fieldTemplateCheckbox = $this->cObj->getSubpart($this->templateCode, '###SINGLE_CHECKBOX###');
 		$fieldTemplateHidden = $this->cObj->getSubpart($this->templateCode, '###SINGLE_HIDDEN###');
-		// downward compatibility
+		// backward compatibility
 		if ($fieldTemplateHidden == '') {
 			$fieldTemplateHidden = $fieldTemplate;
 		}
@@ -1634,9 +1715,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			}
 
 			// Create input field
-			$arrayName = $fieldName . (($parseList) ?
-					'.' :
-					'');
+			$arrayName = $fieldName . (($parseList) ? '.' : '');
 			$fieldMarkerArray['###FIELD_INPUT###'] = $this->getInputField(
 				$fieldName, $config['sourceFields.'][$arrayName],
 				GeneralUtility::removeXSS(strip_tags($this->sessionData[$step][$fieldName])), $step
@@ -1804,13 +1883,14 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	/**
 	 * Hash password with saltedpassword extension
 	 *
-	 * @param string $password
+	 * @param string $password Password
+	 *
 	 * @return string
 	 */
 	protected function getHashedSaltedPassword($password) {
 		if (
-			\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('saltedpasswords') &&
-			\TYPO3\CMS\Saltedpasswords\Utility\SaltedPasswordsUtility::isUsageEnabled('FE')
+			\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('saltedpasswords')
+			&& \TYPO3\CMS\Saltedpasswords\Utility\SaltedPasswordsUtility::isUsageEnabled('FE')
 		) {
 			$objSalt = \TYPO3\CMS\Saltedpasswords\Salt\SaltFactory::getSaltingInstance(NULL);
 			if (is_object($objSalt)) {
@@ -1824,9 +1904,10 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	/**
 	 * Get field value
 	 *
-	 * @param string $value
-	 * @param string $type
-	 * @param string $field
+	 * @param string $value Value
+	 * @param string $type Type
+	 * @param string $field Field
+	 *
 	 * @return string
 	 */
 	public function getField($value, $type, $field) {
@@ -1852,9 +1933,10 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	 * @param array $fieldConfig Configuration of this field
 	 * @param string $fieldValue Current value of this field
 	 * @param string $step Name of the step
+	 *
 	 * @return string Single input field
 	 */
-	protected function getInputField($fieldName, $fieldConfig, $fieldValue, $step) {
+	protected function getInputField($fieldName, array $fieldConfig, $fieldValue, $step) {
 		$this->debug($step, '$step', __FILE__ . ' ' . __LINE__);
 		$this->debug($fieldConfig, '$fieldConfig', __FILE__ . ' ' . __LINE__);
 		$this->debug($fieldValue, '$fieldValue', __FILE__ . ' ' . __LINE__);
@@ -1865,9 +1947,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 				break;
 
 			case 'static_info_tables':
-				$selected = $fieldValue != '' ?
-					$fieldValue :
-					$fieldConfig['default'];
+				$selected = $fieldValue != '' ? $fieldValue : $fieldConfig['default'];
 
 				$result = $this->staticInfo->buildStaticInfoSelector(
 					$fieldConfig['field'], $this->prefixId . '[' . $step . '][' . $fieldName . ']', $fieldConfig['cssClass'],
@@ -1883,13 +1963,11 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 				);
 				asort($countries, SORT_LOCALE_STRING);
 
-				$selected = $fieldValue != '' ?
-					$fieldValue :
-					$fieldConfig['default'];
+				$selected = $fieldValue != '' ? $fieldValue : $fieldConfig['default'];
 
 				$result = '<select id="' . $step . '-' . $fieldName . '" name="' . $this->prefixId . '[' . $step . '][' .
 					$fieldName . ']" class="' . $fieldConfig['cssClass'] . '">' . LF;
-				$result .= $this->staticInfo->optionsConstructor($countries, array($selected), $outSelectedArray);
+				$result .= $this->staticInfo->optionsConstructor($countries, array($selected), array());
 				$result .= '</select>' . LF;
 				break;
 
@@ -1914,9 +1992,10 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	 * @param string $fieldName Name of the field
 	 * @param array $fieldConfig Configuration of this field (usually TypoScript)
 	 * @param string $step Name of the step
+	 *
 	 * @return string Single input field
 	 */
-	protected function getSingleInputField($fieldName, $fieldConfig, $step) {
+	protected function getSingleInputField($fieldName, array $fieldConfig, $step) {
 		if (($fieldConfig['default']) && empty($this->dbFieldData[$fieldName])) {
 			$value = $fieldConfig['default'];
 		} else {
@@ -1957,9 +2036,10 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	 * @param array $fieldConfig Configuration of this field (usually TypoScript)
 	 * @param string $fieldValue Current value of this field (usually from piVars)
 	 * @param string $step Name of the step
+	 *
 	 * @return string Single selectbox
 	 */
-	protected function getSelectInputField($fieldName, $fieldConfig, $fieldValue = '', $step = '') {
+	protected function getSelectInputField($fieldName, array $fieldConfig, $fieldValue = '', $step = '') {
 		$database = $this->getDatabaseConnection();
 
 		$result = '<select id="' . $step . '-' . $fieldName . '" name="' . $this->prefixId . '[' . $step . '][' . $fieldName . ']">';
@@ -1982,9 +2062,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			$table = $fieldConfig['table'];
 			$select = $fieldConfig['select'] . $this->cObj->enableFields($fieldConfig['table']);
 			$fields = $fieldConfig['label'] . ' AS label,' . $fieldConfig['value'] . ' AS value';
-			$orderby = ($fieldConfig['orderby']) ?
-				$fieldConfig['orderby'] :
-				'';
+			$orderby = ($fieldConfig['orderby']) ? $fieldConfig['orderby'] : '';
 			$rows = $database->exec_SELECTgetRows($fields, $table, $select, '', $orderby);
 
 			foreach ($rows as $row) {
@@ -2007,9 +2085,10 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	 * @param array $fieldConfig Configuration of this field (usually TypoScript)
 	 * @param string $fieldValue Current value of this field (usually piVars)
 	 * @param string $step Name of the step
+	 *
 	 * @return string Single checkbox
 	 */
-	protected function getCheckboxInputField($fieldName, $fieldConfig, $fieldValue = '', $step = '') {
+	protected function getCheckboxInputField($fieldName, array $fieldConfig, $fieldValue = '', $step = '') {
 		$result = '<input id="' . $step . '-' . $fieldName . '" type="checkbox" name="' . $this->prefixId . '[' . $step . '][' .
 			$fieldName . ']" id="' . $this->prefixId . '[' . $step . '][' . $fieldName . ']" value="1" ';
 
@@ -2030,9 +2109,10 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	 * but only if the last character is a dot (.)
 	 *
 	 * @param array $fieldConfig Configuration of this field
+	 *
 	 * @return array
 	 */
-	protected function parseFieldList($fieldConfig) {
+	protected function parseFieldList(array $fieldConfig) {
 		$result = array();
 		if (!is_array($fieldConfig)) {
 			return $result;
@@ -2085,8 +2165,12 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			return $myCheck;
 		}
 
-		/** @var $basket Tx_Commerce_Domain_Model_Basket */
-		$basket = & $GLOBALS['TSFE']->fe_user->tx_commerce_basket;
+		/**
+		 * Basket
+		 *
+		 * @var $basket Tx_Commerce_Domain_Model_Basket
+		 */
+		$basket = $GLOBALS['TSFE']->fe_user->tx_commerce_basket;
 
 		// Check if basket is empty
 		if (in_array('noarticles', $checks) && !$basket->getFirstArticleTypeTitle(NORMALARTICLETYPE)) {
@@ -2120,7 +2204,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	 *
 	 * @return bool TRUE on success
 	 */
-	public function sendUserMail($orderUid, $orderData) {
+	public function sendUserMail($orderUid, array $orderData) {
 		$hookObjectsArr = $this->getHookObjectArray('sendUserMail');
 
 		if (strlen($this->sessionData['billing']['email'])) {
@@ -2142,7 +2226,11 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			}
 
 			if ($userMail != '' && GeneralUtility::validEmail($userMail)) {
-				/** @var $userMailObj Tx_Commerce_Controller_CheckoutController */
+				/**
+				 * Checkout controller
+				 *
+				 * @var $userMailObj Tx_Commerce_Controller_CheckoutController
+				 */
 				$userMailObj = GeneralUtility::makeInstance('Tx_Commerce_Controller_CheckoutController');
 				$userMailObj->conf = $this->conf;
 				$userMailObj->pi_setPiVarDefaults();
@@ -2164,8 +2252,12 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 				$userMarker = array();
 				$mailcontent = $userMailObj->generateMail($orderUid, $orderData, $userMarker);
 
-				/** @var $basket Tx_Commerce_Domain_Model_Basket */
-				$basket = & $GLOBALS['TSFE']->fe_user->tx_commerce_basket;
+				/**
+				 * Basket
+				 *
+				 * @var $basket Tx_Commerce_Domain_Model_Basket
+				 */
+				$basket = $GLOBALS['TSFE']->fe_user->tx_commerce_basket;
 				foreach ($hookObjectsArr as $hookObj) {
 					if (method_exists($hookObj, 'PostGenerateMail')) {
 						$hookObj->PostGenerateMail($userMailObj, $this, $basket, $mailcontent);
@@ -2267,7 +2359,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	 *
 	 * @return bool TRUE on success
 	 */
-	public function sendAdminMail($orderUid, $orderData) {
+	public function sendAdminMail($orderUid, array $orderData) {
 		$hookObjectsArr = $this->getHookObjectArray('sendAdminMail');
 
 		if (is_array($GLOBALS['TSFE']->fe_user->user && strlen($GLOBALS['TSFE']->fe_user->user['email']))) {
@@ -2283,7 +2375,11 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		}
 
 		if ($this->conf['adminmail.']['from'] || $userMail) {
-			/** @var $adminMailObj Tx_Commerce_Controller_CheckoutController */
+			/**
+			 * Checkout controller
+			 *
+			 * @var $adminMailObj Tx_Commerce_Controller_CheckoutController
+			 */
 			$adminMailObj = GeneralUtility::makeInstance('Tx_Commerce_Controller_CheckoutController');
 			$adminMailObj->conf = $this->conf;
 			$adminMailObj->pi_setPiVarDefaults();
@@ -2304,7 +2400,11 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 
 			$mailcontent = $adminMailObj->generateMail($orderUid, $orderData);
 
-			/** @var $basket Tx_Commerce_Domain_Model_Basket */
+			/**
+			 * Basket
+			 *
+			 * @var $basket Tx_Commerce_Domain_Model_Basket
+			 */
 			$basket = & $GLOBALS['TSFE']->fe_user->tx_commerce_basket;
 			foreach ($hookObjectsArr as $hookObj) {
 				if (method_exists($hookObj, 'PostGenerateMail')) {
@@ -2412,9 +2512,10 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	 * @param string $orderUid The Order UID
 	 * @param array $orderData Collected Order Data form PI3
 	 * @param array $userMarker User marker array
+	 *
 	 * @return string MailContent
 	 */
-	public function generateMail($orderUid, $orderData, $userMarker = array()) {
+	public function generateMail($orderUid, array $orderData, array $userMarker = array()) {
 		$database = $this->getDatabaseConnection();
 
 		$markerArray = $userMarker;
@@ -2492,10 +2593,11 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	 *
 	 * @param array $data Address data
 	 * @param array $typoScript TypoScript for addresshandling for this type
-	 * @throws Exception
+	 *
 	 * @return array Address data
+	 * @throws Exception If configuration is not correct
 	 */
-	public function parseRawData($data = array(), $typoScript) {
+	public function parseRawData(array $data = array(), array $typoScript) {
 		if (!is_array($data)) {
 			return array();
 		}
@@ -2510,18 +2612,13 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 
 			$fieldConfig = $typoScript[$key . '.'];
 			// Get the value from database if the field is a select box
-			if (in_array(
-					$fieldConfig['type'], array(
-						'select',
-						'static_info_country'
-					)
-				)
+			if (
+				in_array($fieldConfig['type'], array('select', 'static_info_country'))
 				&& strlen($fieldConfig['table'])
 			) {
 				$table = $fieldConfig['table'];
-				$select = $fieldConfig['value'] . ' = ' . $database->fullQuoteStr($value, $table) . $this->cObj->enableFields(
-						$table
-					);
+				$select = $fieldConfig['value'] . ' = ' . $database->fullQuoteStr($value, $table) .
+					$this->cObj->enableFields($table);
 				$fields = $fieldConfig['label'] . ' AS label,';
 				$fields .= $fieldConfig['value'] . ' AS value';
 				$res = $database->exec_SELECTquery($fields, $table, $select);
@@ -2533,6 +2630,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			} elseif ($fieldConfig['type'] == 'select') {
 				throw new Exception('Neither table nor value-list defined for select field ' . $key, 1304333953);
 			}
+
 			if ($fieldConfig['type'] == 'static_info_tables') {
 				$field = $fieldConfig['field'];
 				$valueHidden = $this->staticInfo->getStaticInfoName($field, $value);
@@ -2550,13 +2648,15 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	 * @param int $orderId Uid of the order
 	 * @param int $pid Uid of the folder to save the order in
 	 * @param Tx_Commerce_Domain_Model_Basket $basket Basket object of the user
-	 * @param object $paymentObj Payment Object
+	 * @param Tx_Commerce_Payment_Interface_Payment $paymentObj Payment Object
 	 * @param bool $doHook Flag if the hooks should be executed
 	 * @param bool $doStock Flag if stock reduce should be executed
 	 *
 	 * @return array $orderData Array with all the order data
 	 */
-	public function saveOrder($orderId, $pid, $basket, $paymentObj, $doHook = TRUE, $doStock = TRUE) {
+	public function saveOrder($orderId, $pid, Tx_Commerce_Domain_Model_Basket $basket,
+		Tx_Commerce_Payment_Interface_Payment$paymentObj, $doHook = TRUE, $doStock = TRUE
+	) {
 		$database = $this->getDatabaseConnection();
 
 		// Save addresses with reference to the pObj - which is an instance of pi3
@@ -2636,9 +2736,17 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 
 		// Save order articles
 		if (is_array($basket->getBasketItems())) {
-			/** @var $basketItem Tx_Commerce_Domain_Model_BasketItem */
+			/**
+			 * Basket item
+			 *
+			 * @var $basketItem Tx_Commerce_Domain_Model_BasketItem
+			 */
 			foreach ($basket->getBasketItems() as $artUid => $basketItem) {
-				/** @var $article Tx_Commerce_Domain_Model_Article */
+				/**
+				 * Article
+				 *
+				 * @var $article Tx_Commerce_Domain_Model_Article
+				 */
 				$article = $basketItem->article;
 
 				$this->debug($article, '$article', __FILE__ . ' ' . __LINE__);
@@ -2700,7 +2808,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	/**
 	 * Get an instance of DataHandler
 	 *
-	 * @param int $pid
+	 * @param int $pid Page id
 	 *
 	 * @return \TYPO3\CMS\Core\DataHandling\DataHandler
 	 */
@@ -2715,7 +2823,11 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		$this->initializeBackendUser();
 		$this->initializeLanguage();
 
-		/** @var \TYPO3\CMS\Core\DataHandling\DataHandler $tceMain */
+		/**
+		 * Tce Main
+		 *
+		 * @var \TYPO3\CMS\Core\DataHandling\DataHandler $tceMain
+		 */
 		$tceMain = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
 		$tceMain->bypassWorkspaceRestrictions = TRUE;
 		$tceMain->recInsertAccessCache['tx_commerce_orders'][$pid] = 1;
@@ -2731,7 +2843,11 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	 */
 	protected function initializeBackendUser() {
 		if (!($GLOBALS['BE_USER'] instanceof \TYPO3\CMS\Core\Authentication\BackendUserAuthentication)) {
-			/** @var \TYPO3\CMS\Backend\FrontendBackendUserAuthentication $backendUser */
+			/**
+			 * Backend user
+			 *
+			 * @var \TYPO3\CMS\Backend\FrontendBackendUserAuthentication $backendUser
+			 */
 			$backendUser = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\FrontendBackendUserAuthentication');
 			$backendUser->warningEmail = $GLOBALS['TYPO3_CONF_VARS']['BE']['warning_email_addr'];
 			$backendUser->lockIP = $GLOBALS['TYPO3_CONF_VARS']['BE']['lockIP'];
@@ -2759,7 +2875,11 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	 */
 	protected function initializeLanguage() {
 		if (!($GLOBALS['LANG'] instanceof \TYPO3\CMS\Lang\LanguageService)) {
-			/** @var \TYPO3\CMS\Lang\LanguageService $language */
+			/**
+			 * Language service
+			 *
+			 * @var \TYPO3\CMS\Lang\LanguageService $language
+			 */
 			$language = GeneralUtility::makeInstance('TYPO3\\CMS\\Lang\\LanguageService');
 			$language->init($GLOBALS['BE_USER']->uc['lang']);
 			$GLOBALS['LANG'] = $language;
@@ -2767,11 +2887,12 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	}
 
 	/**
-	 * getStepAfter
+	 * Get step after
 	 * returns Name of the next step
 	 * if no next step is found, it returns itself, the actual step
 	 *
 	 * @param string $step Step
+	 *
 	 * @return string
 	 */
 	public function getStepAfter($step) {
@@ -2789,11 +2910,12 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	}
 
 	/**
-	 * getStepBefore
+	 * Get step before
 	 * returns Name of the previous step
 	 * if no next step is found, it returns itself, the actual step
 	 *
 	 * @param string $step Step
+	 *
 	 * @return string
 	 */
 	public function getStepBefore($step) {
@@ -2813,7 +2935,8 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	/**
 	 * Get hooks
 	 *
-	 * @param string $type
+	 * @param string $type Hook type
+	 *
 	 * @return array
 	 */
 	public function getHookObjectArray($type) {

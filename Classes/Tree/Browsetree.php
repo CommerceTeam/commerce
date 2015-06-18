@@ -220,8 +220,8 @@ abstract class Tx_Commerce_Tree_Browsetree {
 
 			case 'recursively':
 				$this->getTree();
-				// @see printTree
-				$return = $this->printTree(0);
+				// @todo decide what needs to happen here
+				$this->printTree(0);
 				break;
 
 			default:

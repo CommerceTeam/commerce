@@ -26,43 +26,50 @@ class Tx_Commerce_Controller_InvoiceController extends Tx_Commerce_Controller_Ba
 	public $prefixId = 'tx_commerce_pi6';
 
 	/**
-	 * The extension key.
+	 * Flag if chash should be checked
 	 *
-	 * @var string
-	 */
-	public $extKey = COMMERCE_EXTKEY;
-
-	/**
 	 * @var bool
 	 */
 	public $pi_checkCHash = TRUE;
 
 	/**
+	 * Order id
+	 *
 	 * @var string
 	 */
 	public $order_id;
 
 	/**
+	 * Frontend user
+	 *
 	 * @var array
 	 */
 	protected $user;
 
 	/**
+	 * Content
+	 *
 	 * @var string
 	 */
 	protected $content;
 
 	/**
+	 * Order
+	 *
 	 * @var array
 	 */
 	protected $order;
 
 	/**
+	 * Order payment
+	 *
 	 * @var string
 	 */
 	protected $orderPayment;
 
 	/**
+	 * Order delivery
+	 *
 	 * @var string
 	 */
 	protected $orderDelivery;
@@ -72,9 +79,10 @@ class Tx_Commerce_Controller_InvoiceController extends Tx_Commerce_Controller_Ba
 	 *
 	 * @param string $content Content of this plugin
 	 * @param array $conf TS configuration for this plugin
+	 *
 	 * @return string Compiled content
 	 */
-	public function main($content, $conf) {
+	public function main($content, array $conf = array()) {
 		$frontend = $this->getFrontendController();
 		$backendUser = $this->getBackendUser();
 
@@ -82,18 +90,18 @@ class Tx_Commerce_Controller_InvoiceController extends Tx_Commerce_Controller_Ba
 		$this->pi_setPiVarDefaults();
 		$this->pi_loadLL();
 
-			// Checking backend user login
+		// Checking backend user login
 		$this->invoiceBackendOnly($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['invoiceBackendOnly']);
 
-			// Check for the logged in USER
-			// It could be an FE USer, a BE User or an automated script
+		// Check for the logged in USER
+		// It could be an FE USer, a BE User or an automated script
 		if ((empty($frontend->fe_user->user)) && (!$backendUser->user['uid']) && ($_SERVER['REMOTE_ADDR'] != $_SERVER['SERVER_ADDR'])) {
 			return $this->pi_getLL('not_logged_in');
 		} elseif ($frontend->fe_user->user && !$backendUser->user['uid']) {
 			$this->user = $GLOBALS['TSFE']->fe_user->user;
 		}
 
-			// If it's an automated process, no caching
+		// If it's an automated process, no caching
 		if ($_SERVER['REMOTE_ADDR'] == $_SERVER['SERVER_ADDR']) {
 			$$frontend->set_no_cache();
 		}
@@ -112,7 +120,8 @@ class Tx_Commerce_Controller_InvoiceController extends Tx_Commerce_Controller_Ba
 		// If there is no order id, this plugin serves no pupose
 		$this->order_id = $this->piVars['order_id'];
 
-		// @TODO In case of a FE user this should not give a hint about what's wrong, but instead redirect the user
+		// @todo In case of a FE user this should not give a hint
+		// about what's wrong, but instead redirect the user
 		if (empty($this->order_id)) {
 			return $this->pi_wrapInBaseClass($this->pi_getLL('error_orderid'));
 		}
@@ -139,17 +148,29 @@ class Tx_Commerce_Controller_InvoiceController extends Tx_Commerce_Controller_Ba
 			$this->orderPayment = $this->getOrderSystemArticles($this->order['uid'], '2', 'PAYMENT_');
 			$this->orderDelivery = $this->getOrderSystemArticles($this->order['uid'], '3', 'SHIPPING_');
 
-			$markerArray['###ORDER_TAX###'] = Tx_Commerce_ViewHelpers_Money::format($this->order['sum_price_gross'] - $this->order['sum_price_net'], $this->conf['currency'], (bool) $this->conf['showCurrencySign']);
-			$markerArray['###ORDER_TOTAL###'] = Tx_Commerce_ViewHelpers_Money::format($this->order['sum_price_gross'], $this->conf['currency'], (bool) $this->conf['showCurrencySign']);
-			$markerArray['###ORDER_NET_TOTAL###'] = Tx_Commerce_ViewHelpers_Money::format($this->order['sum_price_net'], $this->conf['currency'], (bool) $this->conf['showCurrencySign']);
-			$markerArray['###ORDER_GROSS_TOTAL###'] = Tx_Commerce_ViewHelpers_Money::format($this->order['sum_price_gross'], $this->conf['currency'], (bool) $this->conf['showCurrencySign']);
+			$markerArray['###ORDER_TAX###'] = Tx_Commerce_ViewHelpers_Money::format(
+				$this->order['sum_price_gross'] - $this->order['sum_price_net'],
+				$this->conf['currency'],
+				(bool) $this->conf['showCurrencySign']
+			);
+			$markerArray['###ORDER_TOTAL###'] = Tx_Commerce_ViewHelpers_Money::format(
+				$this->order['sum_price_gross'], $this->conf['currency'], (bool) $this->conf['showCurrencySign']
+			);
+			$markerArray['###ORDER_NET_TOTAL###'] = Tx_Commerce_ViewHelpers_Money::format(
+				$this->order['sum_price_net'], $this->conf['currency'], (bool) $this->conf['showCurrencySign']
+			);
+			$markerArray['###ORDER_GROSS_TOTAL###'] = Tx_Commerce_ViewHelpers_Money::format(
+				$this->order['sum_price_gross'], $this->conf['currency'], (bool) $this->conf['showCurrencySign']
+			);
 			$markerArray['###ORDER_ID###'] = $this->order['order_id'];
 			$markerArray['###ORDER_DATE###'] = strftime($this->conf['orderDateFormat'], $this->order['crdate']);
 
 				// Fill some of the content from typoscript settings, to ease the
 			$markerArray['###INVOICE_HEADER###'] = $this->cObj->cObjGetSingle($this->conf['invoiceheader'], $this->conf['invoiceheader.']);
 			$markerArray['###INVOICE_SHOP_NAME###'] = $this->cObj->TEXT($this->conf['shopname.']);
-			$markerArray['###INVOICE_SHOP_ADDRESS###'] = $this->cObj->cObjGetSingle($this->conf['shopdetails'], $this->conf['shopdetails.']);
+			$markerArray['###INVOICE_SHOP_ADDRESS###'] = $this->cObj->cObjGetSingle(
+				$this->conf['shopdetails'], $this->conf['shopdetails.']
+			);
 			$markerArray['###INVOICE_INTRO_MESSAGE###'] = $this->cObj->TEXT($this->conf['intro.']);
 			$markerArray['###INVOICE_THANKYOU###'] = $this->cObj->TEXT($this->conf['thankyou.']);
 
@@ -167,7 +188,9 @@ class Tx_Commerce_Controller_InvoiceController extends Tx_Commerce_Controller_Ba
 				}
 			}
 			if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/InvoiceController.php']['invoice'])) {
-				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/InvoiceController.php']['invoice'] as $classRef) {
+				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/InvoiceController.php']['invoice'] as
+					$classRef
+				) {
 					$hookObjectsArr[] = &\TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
 				}
 			}
@@ -178,9 +201,15 @@ class Tx_Commerce_Controller_InvoiceController extends Tx_Commerce_Controller_Ba
 				}
 			}
 
-			$subpartArray['###LISTING_ARTICLE###'] = $this->getOrderArticles($this->order['uid'], $this->conf['OrderArticles.'], 'ARTICLE_');
-			$subpartArray['###ADDRESS_BILLING_DATA###'] = $this->getAddressData($this->order['cust_invoice'], $this->conf['addressBilling.'], 'ADDRESS_BILLING_');
-			$subpartArray['###ADDRESS_DELIVERY_DATA###'] = $this->getAddressData($this->order['cust_deliveryaddress'], $this->conf['addressDelivery.'], 'ADDRESS_DELIVERY_');
+			$subpartArray['###LISTING_ARTICLE###'] = $this->getOrderArticles(
+				$this->order['uid'], $this->conf['OrderArticles.'], 'ARTICLE_'
+			);
+			$subpartArray['###ADDRESS_BILLING_DATA###'] = $this->getAddressData(
+				$this->order['cust_invoice'], $this->conf['addressBilling.'], 'ADDRESS_BILLING_'
+			);
+			$subpartArray['###ADDRESS_DELIVERY_DATA###'] = $this->getAddressData(
+				$this->order['cust_deliveryaddress'], $this->conf['addressDelivery.'], 'ADDRESS_DELIVERY_'
+			);
 			$this->content = $this->substituteMarkerArrayNoCached($this->template['invoice'], array(), $subpartArray);
 
 				// Buid content from template + array
@@ -228,16 +257,16 @@ class Tx_Commerce_Controller_InvoiceController extends Tx_Commerce_Controller_Ba
 	 * Render ordered articles
 	 *
 	 * @param int $orderUid OrderUID
-	 * @param array $TS Optional, default is FALSE, contains TS configuration
-	 * @param string $prefix
+	 * @param array $typoScript Optional, default is FALSE, contains TS configuration
+	 * @param string $prefix Prefix
 	 *
 	 * @return string HTML-Output rendered
 	 */
-	protected function getOrderArticles($orderUid, $TS = array(), $prefix) {
-		$database = $this->getBackendUser();
+	protected function getOrderArticles($orderUid, array $typoScript = array(), $prefix) {
+		$database = $this->getDatabaseConnection();
 
-		if (empty($TS)) {
-			$TS = $this->conf['OrderArticles.'];
+		if (empty($typoScript)) {
+			$typoScript = $this->conf['OrderArticles.'];
 		}
 
 		$queryString = 'order_uid=' . (int) $orderUid . ' AND article_type_uid < 2 ';
@@ -252,35 +281,47 @@ class Tx_Commerce_Controller_InvoiceController extends Tx_Commerce_Controller_Ba
 
 		$orderpos = 1;
 		$out = '';
-		while ($row = $database->sql_fetch_assoc($res)) {
-			$markerArray = $this->generateMarkerArray($row, $TS, $prefix, 'tx_commerce_order_articles');
-			$markerArray['ARTICLE_PRICE'] = Tx_Commerce_ViewHelpers_Money::format($row['price_gross'], $this->conf['currency'], (bool) $this->conf['showCurrencySign']);
-			$markerArray['ARTICLE_PRICE_GROSS'] = Tx_Commerce_ViewHelpers_Money::format($row['price_gross'], $this->conf['currency'], (bool) $this->conf['showCurrencySign']);
-			$markerArray['ARTICLE_PRICE_NET'] = Tx_Commerce_ViewHelpers_Money::format($row['price_net'], $this->conf['currency'], (bool) $this->conf['showCurrencySign']);
-			$markerArray['ARTICLE_TOTAL'] = Tx_Commerce_ViewHelpers_Money::format(($row['amount'] * $row['price_gross']), $this->conf['currency'], (bool) $this->conf['showCurrencySign']);
-			$markerArray['ARTICLE_TOTAL_GROSS'] = Tx_Commerce_ViewHelpers_Money::format(($row['amount'] * $row['price_gross']), $this->conf['currency'], (bool) $this->conf['showCurrencySign']);
-			$markerArray['ARTICLE_TOTAL_NET'] = Tx_Commerce_ViewHelpers_Money::format(($row['amount'] * $row['price_net']), $this->conf['currency'], (bool) $this->conf['showCurrencySign']);
+		while (($row = $database->sql_fetch_assoc($res))) {
+			$markerArray = $this->generateMarkerArray($row, $typoScript, $prefix, 'tx_commerce_order_articles');
+			$markerArray['ARTICLE_PRICE'] = Tx_Commerce_ViewHelpers_Money::format(
+				$row['price_gross'], $this->conf['currency'], (bool) $this->conf['showCurrencySign']
+			);
+			$markerArray['ARTICLE_PRICE_GROSS'] = Tx_Commerce_ViewHelpers_Money::format(
+				$row['price_gross'], $this->conf['currency'], (bool) $this->conf['showCurrencySign']
+			);
+			$markerArray['ARTICLE_PRICE_NET'] = Tx_Commerce_ViewHelpers_Money::format(
+				$row['price_net'], $this->conf['currency'], (bool) $this->conf['showCurrencySign']
+			);
+			$markerArray['ARTICLE_TOTAL'] = Tx_Commerce_ViewHelpers_Money::format(
+				($row['amount'] * $row['price_gross']), $this->conf['currency'], (bool) $this->conf['showCurrencySign']
+			);
+			$markerArray['ARTICLE_TOTAL_GROSS'] = Tx_Commerce_ViewHelpers_Money::format(
+				($row['amount'] * $row['price_gross']), $this->conf['currency'], (bool) $this->conf['showCurrencySign']
+			);
+			$markerArray['ARTICLE_TOTAL_NET'] = Tx_Commerce_ViewHelpers_Money::format(
+				($row['amount'] * $row['price_net']), $this->conf['currency'], (bool) $this->conf['showCurrencySign']
+			);
 			$markerArray['ARTICLE_POSITION'] = $orderpos++;
 			$out .= $this->cObj->substituteMarkerArray($this->template['item'], $markerArray, '###|###', 1);
 		}
 
-		return $this->cObj->stdWrap($out, $TS);
+		return $this->cObj->stdWrap($out, $typoScript);
 	}
 
 	/**
 	 * Render address data
 	 *
 	 * @param int $addressUid AddressUID
-	 * @param array $TS Optional, default is FALSE, contains TS configuration
-	 * @param string $prefix
+	 * @param array $typoScript Optional, default is FALSE, contains TS configuration
+	 * @param string $prefix Prefix
 	 *
 	 * @return string HTML-Output rendert
 	 */
-	protected function getAddressData($addressUid = 0, $TS = array(), $prefix) {
+	protected function getAddressData($addressUid = 0, array $typoScript = array(), $prefix) {
 		$database = $this->getDatabaseConnection();
 
-		if (empty($TS)) {
-			$TS = $this->conf['address.'];
+		if (empty($typoScript)) {
+			$typoScript = $this->conf['address.'];
 		}
 
 		if ($this->user) {
@@ -315,12 +356,12 @@ class Tx_Commerce_Controller_InvoiceController extends Tx_Commerce_Controller_Ba
 				'1'
 			);
 		}
-		$markerArray = $this->generateMarkerArray($database->sql_fetch_assoc($res), $TS, $prefix, 'tt_address');
+		$markerArray = $this->generateMarkerArray($database->sql_fetch_assoc($res), $typoScript, $prefix, 'tt_address');
 		$template = $this->cObj->getSubpart($this->templateCode, '###' . $prefix . 'DATA###');
 		$content = $this->cObj->substituteMarkerArray($template, $markerArray, '###|###', 1);
 		$content = $this->cObj->substituteMarkerArray($content, $this->languageMarker);
 
-		return $this->cObj->stdWrap($content, $TS);
+		return $this->cObj->stdWrap($content, $typoScript);
 	}
 
 	/**
@@ -354,7 +395,7 @@ class Tx_Commerce_Controller_InvoiceController extends Tx_Commerce_Controller_Ba
 	 *
 	 * @param int $orderUid OrderUID
 	 * @param int $articleType Optional, articleTypeID
-	 * @param string $prefix
+	 * @param string $prefix Prefix
 	 *
 	 * @return array System Articles
 	 */
@@ -373,27 +414,18 @@ class Tx_Commerce_Controller_InvoiceController extends Tx_Commerce_Controller_Ba
 			$queryString
 		);
 		$content = '';
-		while ($row = $database->sql_fetch_assoc($res)) {
+		while (($row = $database->sql_fetch_assoc($res))) {
 			$subpart = $this->cObj->getSubpart($this->templateCode, '###LISTING_' . $prefix . 'ROW###');
-				// @TODO: Use $markerArray = $this->generateMarkerArray($row,'',$prefix);
+			// @todo Use $markerArray = $this->generateMarkerArray($row,'',$prefix);
 			$markerArray['###' . $prefix . 'AMOUNT###'] = $row['amount'];
 			$markerArray['###' . $prefix . 'METHOD###'] = $row['title'];
-			$markerArray['###' . $prefix . 'COST###'] = Tx_Commerce_ViewHelpers_Money::format(($row['amount'] * $row['price_gross']), $this->conf['currency'], (bool)$this->conf['showCurrencySign']);
+			$markerArray['###' . $prefix . 'COST###'] = Tx_Commerce_ViewHelpers_Money::format(
+				($row['amount'] * $row['price_gross']), $this->conf['currency'], (bool) $this->conf['showCurrencySign']
+			);
 			$content .= $this->cObj->substituteMarkerArray($subpart, $markerArray);
 		}
 
 		return $content;
-	}
-
-	/**
-	 * To satisfy abstract class
-	 *
-	 * @param string $kind
-	 * @param Tx_Commerce_Domain_Model_Article $articles
-	 * @param Tx_Commerce_Domain_Model_Product $product
-	 * @return string|void
-	 */
-	public function makeArticleView($kind, $articles, $product) {
 	}
 
 

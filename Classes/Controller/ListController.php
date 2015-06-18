@@ -521,7 +521,8 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 	 *
 	 * @return string The content for a single product
 	 */
-	public function renderSingleView($product, $category, $subpartName, $subpartNameNostock) {
+	public function renderSingleView(Tx_Commerce_Domain_Model_Product $product, Tx_Commerce_Domain_Model_Category $category,
+			$subpartName, $subpartNameNostock) {
 		$hookObjectsArr = array();
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['singleview'])) {
 			\TYPO3\CMS\Core\Utility\GeneralUtility::deprecationLog('
@@ -535,7 +536,9 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 			}
 		}
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/ListController.php']['renderSingleView'])) {
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/ListController.php']['renderSingleView'] as $classRef) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/ListController.php']['renderSingleView'] as
+				$classRef
+			) {
 				$hookObjectsArr[] = &\TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
 			}
 		}
@@ -681,7 +684,8 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 	 *
 	 * @return string the content for a single product
 	 */
-	public function makeArticleView($viewKind, $conf = array(), $product, $templateMarkerArray = '', $template = '') {
+	public function makeArticleView($viewKind, array $conf = array(), Tx_Commerce_Domain_Model_Product $product,
+			$templateMarkerArray = '', $template = '') {
 		$hookObjectsArr = array();
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['articleview'])) {
 			\TYPO3\CMS\Core\Utility\GeneralUtility::deprecationLog('
