@@ -359,17 +359,16 @@ class Tx_Commerce_Hook_CommandMapHooks {
 					 * 1: Copy
 					 * 2: prepend [Translate to . $langRec['title'] . :]
 					 */
-					if (isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['attributeLokalisationType'])
+					if (
+						isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['attributeLokalisationType'])
 						&& $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['attributeLokalisationType']
 					) {
-						\TYPO3\CMS\Core\Utility\GeneralUtility::deprecationLog(
-							'
-														extension configuration parameter
-														attributeLokalisationType
-														is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
-														attributeLocalizationType
-													'
-						);
+						\TYPO3\CMS\Core\Utility\GeneralUtility::deprecationLog('
+							extension configuration parameter
+							attributeLokalisationType
+							is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
+							attributeLocalizationType
+						');
 
 						$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['attributeLocalizationType'] = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['attributeLokalisationType'];
 					}

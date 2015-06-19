@@ -22,23 +22,29 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class Tx_Commerce_Controller_OrdersModuleController extends \TYPO3\CMS\Recordlist\RecordList {
 	/**
-	 * the script for the wizard of the command 'new'
+	 * The script for the wizard of the command 'new'
 	 *
 	 * @var string
 	 */
 	public $scriptNewWizard = 'wizard.php';
 
 	/**
+	 * Body content
+	 *
 	 * @var string
 	 */
 	protected $body;
 
 	/**
+	 * Order pid
+	 *
 	 * @var int
 	 */
 	protected $orderPid;
 
 	/**
+	 * Initialization
+	 *
 	 * @return void
 	 */
 	public function init() {
@@ -95,7 +101,8 @@ class Tx_Commerce_Controller_OrdersModuleController extends \TYPO3\CMS\Recordlis
 			GeneralUtility::devLog('cannot set moduleTemplate', 'commerce', 2, array(
 				'backpath' => $this->doc->backPath,
 				'filename from TBE_STYLES' => $GLOBALS['TBE_STYLES']['htmlTemplates']['commerce/Resources/Private/Backend/mod_index.html'],
-				'full path' => $this->doc->backPath . $GLOBALS['TBE_STYLES']['htmlTemplates']['commerce/Resources/Private/Backend/mod_index.html']
+				'full path' => $this->doc->backPath .
+					$GLOBALS['TBE_STYLES']['htmlTemplates']['commerce/Resources/Private/Backend/mod_index.html']
 			));
 			$templateFile = PATH_TXCOMMERCE_REL . 'Resources/Private/Backend/mod_index.html';
 			$this->doc->moduleTemplate = GeneralUtility::getURL(PATH_site . $templateFile);
@@ -184,8 +191,11 @@ class Tx_Commerce_Controller_OrdersModuleController extends \TYPO3\CMS\Recordlis
 		// CB is the clipboard command array
 		$clipboard = GeneralUtility::_GET('CB');
 		if ($this->cmd == 'setCB') {
-			// CBH is all the fields selected for the clipboard, CBC is the checkbox fields which were checked. By merging we get a full array of checked/unchecked elements
-			// This is set to the 'el' array of the CB after being parsed so only the table in question is registered.
+			// CBH is all the fields selected for the clipboard, CBC is
+			// the checkbox fields which were checked. By merging we get
+			// a full array of checked/unchecked elements
+			// This is set to the 'el' array of the CB after being parsed
+			// so only the table in question is registered.
 			$clipboard['el'] = $dblist->clipObj->cleanUpCBC(
 				array_merge((array) GeneralUtility::_POST('CBH'), (array) GeneralUtility::_POST('CBC')),
 				$this->cmd_table
@@ -203,17 +213,21 @@ class Tx_Commerce_Controller_OrdersModuleController extends \TYPO3\CMS\Recordlis
 		$dblist->clipObj->endClipboard();
 
 		// This flag will prevent the clipboard panel in being shown.
-		// It is set, if the clickmenu-layer is active AND the extended view is not enabled.
+		// It is set, if the clickmenu-layer is active
+		// AND the extended view is not enabled.
 		$dblist->dontShowClipControlPanels = (
 			!$this->MOD_SETTINGS['bigControlPanel'] &&
 			$dblist->clipObj->current == 'normal' &&
 			!$this->modTSconfig['properties']['showClipControlPanelsDespiteOfCMlayers']
 		);
 
-		// If there is access to the page, then render the list contents and set up the document template object:
+		// If there is access to the page, then render the list contents
+		// and set up the document template object:
 		if ($access) {
 			// Deleting records...:
-			// Has not to do with the clipboard but is simply the delete action. The clipboard object is used to clean up the submitted entries to only the selected table.
+			// Has not to do with the clipboard but is simply the delete
+			// action. The clipboard object is used to clean up the
+			// submitted entries to only the selected table.
 			if ($this->cmd == 'delete') {
 				$items = $dblist->clipObj->cleanUpCBC(GeneralUtility::_POST('CBC'), $this->cmd_table, 1);
 				if (count($items)) {

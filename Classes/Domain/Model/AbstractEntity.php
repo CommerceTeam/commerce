@@ -12,6 +12,8 @@
  * The TYPO3 project - inspiring people to share!
  */
 
+use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
+
 /**
  * Constants definition for Attribute correlation_types
  * Add new contants to array in alib class
@@ -94,12 +96,16 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 	protected $databaseClass = 'Tx_Commerce_Domain_Repository_Repository';
 
 	/**
+	 * Database connection
+	 *
 	 * @var Tx_Commerce_Domain_Repository_Repository
 	 */
 	protected $databaseConnection;
 
 	/**
-	 * @var array fieldlist for inhertitation
+	 * Fieldlist for inhertitation
+	 *
+	 * @var array
 	 */
 	protected $fieldlist = array(
 		'title',
@@ -121,17 +127,23 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 	);
 
 	/**
-	 * @var string default_add_where for deleted hidden and more
+	 * Default add where for deleted hidden and more
+	 *
+	 * @var string
 	 */
 	protected $default_add_where = ' AND hidden = 0 AND deleted = 0';
 
 	/**
-	 * @var array of attribute UIDs
+	 * Attribute UIDs
+	 *
+	 * @var array
 	 */
 	protected $attributes_uids = array();
 
 	/**
-	 * @var array of attributes
+	 * Attributes
+	 *
+	 * @var array
 	 */
 	protected $attribute = array();
 
@@ -150,27 +162,41 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 	protected $recordTranslated = FALSE;
 
 	/**
-	 * @var int lokalized UID   the uid of the localized record
+	 * Localized UID
+	 * the uid of the localized record
+	 *
+	 * @var int
 	 */
 	public $_LOCALIZED_UID;
 
 	/**
+	 * Database record
+	 *
 	 * @var array
 	 */
 	protected $data = array();
 
 	/**
-	 * returns the possible attributes
+	 * Possible attributes
 	 *
-	 * @param array $attributeCorelationTypeList of attribut_correlation_types
+	 * @param array $attributeCorelationTypeList Attribut correlation types
+	 *
 	 * @return array
 	 */
-	public function getAttributes($attributeCorelationTypeList = array()) {
+	public function getAttributes(array $attributeCorelationTypeList = array()) {
 		$result = array();
 		if (($this->attributes_uids = $this->databaseConnection->getAttributes($this->uid, $attributeCorelationTypeList))) {
 			foreach ($this->attributes_uids as $attributeUid) {
-				/** @var Tx_Commerce_Domain_Model_Attribute $attribute */
-				$attribute = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Attribute', $attributeUid, $this->lang_uid);
+				/**
+				 * Attribute
+				 *
+				 * @var Tx_Commerce_Domain_Model_Attribute $attribute
+				 */
+				$attribute = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+					'Tx_Commerce_Domain_Model_Attribute',
+					$attributeUid,
+					$this->lang_uid
+				);
 				$attribute->loadData();
 
 				$this->attribute[$attributeUid] = $attribute;
@@ -182,14 +208,14 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 	}
 
 	/**
-	 * set a given field, only to use with custom field without own method
-	 * Warning: commerce provides getMethods for all default fields. For Compatibility
-	 * reasons always use the built in Methods. Only use this method with you own added fields
+	 * Set a given field, only to use with custom field without own method
+	 * Warning: commerce provides getMethods for all default fields. For
+	 * compatibility reasons always use the built in methods. Only use this
+	 * method with you own added fields
 	 *
-	 * @see add_fields_to_fieldlist
-	 * @see add_field_to_fieldlist
-	 * @param string $field : fieldname
-	 * @param mixed $value : value
+	 * @param string $field Fieldname
+	 * @param mixed $value Value
+	 *
 	 * @return void
 	 */
 	public function setField($field, $value) {
@@ -197,20 +223,22 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 	}
 
 	/**
-	 * get a given field value, only to use with custom field without own method
-	 * Warning: commerce provides getMethods for all default fields. For Compatibility
-	 * reasons always use the built in Methods. Only use this method with you own added fields
+	 * Get a given field value, only to use with custom field without own method
+	 * Warning: commerce provides getMethods for all default fields. For
+	 * compatibility reasons always use the built in methods. Only use this
+	 * method with you own added fields
 	 *
-	 * @see add_fields_to_fieldlist
-	 * @see add_field_to_fieldlist
-	 * @param string $field : fieldname
-	 * @return mixed    value of the field
+	 * @param string $field Fieldname
+	 *
+	 * @return mixed Value of the field
 	 */
 	public function getField($field) {
 		return $this->$field;
 	}
 
 	/**
+	 * Get data array
+	 *
 	 * @return array
 	 */
 	public function getData() {
@@ -218,30 +246,34 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 	}
 
 	/**
-	 * Language id
+	 * Language uid
 	 *
 	 * @return int
 	 */
 	public function getLang() {
-		return $this->lang_uid;
+		return (int) $this->lang_uid;
 	}
 
 	/**
+	 * L18n parent uid
+	 *
 	 * @return int l18n_partent uid
 	 */
 	public function getL18nParent() {
-		return $this->l18n_parent;
+		return (int) $this->l18n_parent;
 	}
 
 	/**
+	 * Localized uid
+	 *
 	 * @return int
 	 */
 	public function getLocalizedUid() {
-		return $this->_LOCALIZED_UID;
+		return (int) $this->_LOCALIZED_UID;
 	}
 
 	/**
-	 * Get uid of item
+	 * Get uid
 	 *
 	 * @return int Uid
 	 */
@@ -254,7 +286,8 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 	 * Loads the Data from the database
 	 * via the named database class $databaseClass
 	 *
-	 * @param bool $translationMode Transaltio Mode of the record, default false to use the default way of translation
+	 * @param bool $translationMode Translation mode of the record,
+	 * 	default false to use the default way of translation
 	 *
 	 * @return array
 	 */
@@ -266,6 +299,7 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 		if (!$this->databaseConnection) {
 			$this->databaseConnection = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance($this->databaseClass);
 		}
+
 		$this->data = $this->databaseConnection->getData($this->uid, $this->lang_uid, $translationMode);
 
 		if (!$this->data) {
@@ -294,6 +328,7 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 	 * and calls $this->add_fields_to_fieldlist
 	 *
 	 * @param string $fieldname Database fieldname
+	 *
 	 * @return void
 	 */
 	public function addFieldToFieldlist($fieldname) {
@@ -304,10 +339,11 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 	 * Adds a set of fields to the $fieldlist variable
 	 * used for hooks to add own fields to the output
 	 *
-	 * @param array $fieldarray array of databse filednames
+	 * @param array $fieldarray Databse filednames
+	 *
 	 * @return void
 	 */
-	public function addFieldsToFieldlist($fieldarray) {
+	public function addFieldsToFieldlist(array $fieldarray) {
 		$this->fieldlist = array_merge($this->fieldlist, (array) $fieldarray);
 	}
 
@@ -315,9 +351,7 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 	 * Checks in the Database if object is
 	 * basically checks against the enableFields
 	 *
-	 * @see: class.tx_commerce_db_alib.php->isAccessible(
-	 * @return bool TRUE    if is accessible
-	 *            FALSE    if is not accessible
+	 * @return bool If is accessible [TRUE|FALSE]
 	 */
 	public function isAccessible() {
 		if (!$this->databaseConnection) {
@@ -337,7 +371,7 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 	}
 
 	/**
-	 * Checks if the UID is valid and available in the database
+	 * Checks if the uid is valid and available in the database
 	 *
 	 * @return bool true if uid is valid
 	 */
@@ -353,7 +387,8 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 	 * Returns the data of this object als array
 	 *
 	 * @param string $prefix Prefix for the keys or returnung array optional
-	 * @return array Assoc Arry of data
+	 *
+	 * @return array Assoc array of data
 	 */
 	public function returnAssocArray($prefix = '') {
 		$data = array();
@@ -368,27 +403,30 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 	/**
 	 * Sets the PageTitle titile from via the TSFE
 	 *
-	 * @param string $field (default title) for setting as title
+	 * @param string $field Setting of page title
+	 *
 	 * @return void
 	 */
 	public function setPageTitle($field = 'title') {
-		$GLOBALS['TSFE']->page['title'] = $this->$field . ' : ' . $GLOBALS['TSFE']->page['title'];
+		$this->getFrontendController()->page['title'] = $this->$field . ' : ' . $GLOBALS['TSFE']->page['title'];
 		// set pagetitle for indexed search also
-		$GLOBALS['TSFE']->indexedDocTitle = $this->$field . ' : ' . $GLOBALS['TSFE']->indexedDocTitle;
+		$this->getFrontendController()->indexedDocTitle = $this->$field . ' : ' . $GLOBALS['TSFE']->indexedDocTitle;
 	}
 
 
 	/**
 	 * Renders values from fieldlist to markers
 	 *
-	 * @param \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer $cobj Reference to cobj class
-	 * @param array $conf configuration for this viewmode to render cObj
-	 * @param string $prefix optinonal prefix for marker
+	 * @param ContentObjectRenderer $cobj Content object
+	 * @param array $conf Configuration for this viewmode
+	 * @param string $prefix Optional prefix for marker
+	 *
 	 * @return array
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use tx_commerce_pibase->renderElement in combination with $this->returnAssocArray instead
 	 */
-	public function getMarkerArray(&$cobj, $conf, $prefix = '') {
+	public function getMarkerArray(ContentObjectRenderer &$cobj, array $conf, $prefix = '') {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		$markContentArray = $this->returnAssocArray('');
 		$markerArray = array();
 		foreach ($markContentArray as $k => $v) {
@@ -444,6 +482,8 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 	}
 
 	/**
+	 * Get language
+	 *
 	 * @return int language id
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getLang instead
 	 */
@@ -456,7 +496,8 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 	/**
 	 * Returns  the data of this object als array
 	 *
-	 * @param string $prefix for the keys or returnung array optional
+	 * @param string $prefix Prefix for the keys or returnung array optional
+	 *
 	 * @return array Assoc Arry of data
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use returnAssocArray instead
 	 */
@@ -477,6 +518,7 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 	 */
 	public function add_field_to_fieldlist($fieldname) {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		$this->addFieldToFieldlist($fieldname);
 	}
 
@@ -484,13 +526,14 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 	 * Adds a set of fields to the $fieldlist variable
 	 * used for hooks to add own fields to the output
 	 *
-	 * @param array $fieldarray
+	 * @param array $fieldarray Field array
 	 *
 	 * @return void
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use addFieldsToFieldlist instead
 	 */
 	public function add_fields_to_fieldlist($fieldarray) {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		$this->addFieldsToFieldlist($fieldarray);
 	}
 
@@ -507,9 +550,10 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 	}
 
 	/**
-	 * returns the possible attributes
+	 * Returns the possible attributes
 	 *
-	 * @param array $attributeCorelationTypeList array of attribut_correlation_types
+	 * @param array $attributeCorelationTypeList Array of attribut_correlation_types
+	 *
 	 * @return array
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getAttributes instead
 	 */
@@ -523,7 +567,8 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 	 * Loads the Data from the database
 	 * via the named database class $databaseClass
 	 *
-	 * @param bool $translationMode Translation Mode of the record, default false to use the default way of translation
+	 * @param bool $translationMode Translation Mode of the record,
+	 * 	default false to use the default way of translation
 	 *
 	 * @return array
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use loadData instead
@@ -532,5 +577,15 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
 
 		return $this->loadData($translationMode);
+	}
+
+
+	/**
+	 * Get typoscript frontend controller
+	 *
+	 * @return \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController
+	 */
+	protected function getFrontendController() {
+		return $GLOBALS['TSFE'];
 	}
 }

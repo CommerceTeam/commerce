@@ -157,14 +157,22 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 
 		$this->conf['basketPid'] = $GLOBALS['TSFE']->id;
 
-		/** @var tx_staticinfotables_pi1 $staticInfo */
-		$staticInfo = GeneralUtility::makeInstance('tx_staticinfotables_pi1');
+		/**
+		 * Static info tables
+		 *
+		 * @var \SJBR\StaticInfoTables\PiBaseApi $staticInfo
+		 */
+		$staticInfo = GeneralUtility::makeInstance('SJBR\\StaticInfoTables\\PiBaseApi');
 		$staticInfo->init();
 		$this->staticInfo = $staticInfo;
 
 		$this->extConf = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['extConf'];
 
-		/** @var $basket Tx_Commerce_Domain_Model_Basket */
+		/**
+		 * Basket
+		 *
+		 * @var $basket Tx_Commerce_Domain_Model_Basket
+		 */
 		$basket = & $GLOBALS['TSFE']->fe_user->tx_commerce_basket;
 		$basket->setTaxCalculationMethod($this->conf['priceFromNet']);
 

@@ -163,8 +163,10 @@ class Tx_Commerce_ViewHelpers_AttributeEditFunc {
 		 */
 		$params = '&edit[' . $foreignTable . '][' . $attributeStoragePid . ']=new&defVals[' . $foreignTable . '][attributes_uid]=' .
 			urlencode($attributeUid);
+		$onClickAction = 'onclick="' . htmlspecialchars(BackendUtility::editOnClick($params, $GLOBALS['BACK_PATH'])) . '"';
+
 		$content .= '<div id="typo3-newRecordLink">
-			<a href="#" onclick="' . htmlspecialchars(BackendUtility::editOnClick($params, $GLOBALS['BACK_PATH'])) . '">
+			<a href="#" ' . $onClickAction . '>
 				' . $language->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:attributeview.addvalue', 1) .
 				'</a>
 			</div>';

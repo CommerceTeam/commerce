@@ -138,7 +138,7 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 	protected $relatedpage;
 
 	/**
-	 * UID for the article Type
+	 * Uid for the article Type
 	 * (should be refered to table tx_commerce_article_types)
 	 *
 	 * @var int
@@ -913,108 +913,139 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 
 
 	/**
+	 * Title of article
+	 *
 	 * @return string title of article
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use tx_commerce_article::getTitle instead
 	 */
 	public function get_title() {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		return $this->getTitle();
 	}
 
 	/**
+	 * Subtitle
+	 *
 	 * @return string title of article
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use tx_commerce_article::getSubtitle instead
 	 */
 	public function get_subtitle() {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		return $this->getSubtitle();
 	}
 
 	/**
-	 * @return string title of article
+	 * Classname
+	 *
+	 * @return string classname
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use tx_commerce_article::getClassname instead
 	 */
 	public function get_classname() {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		return $this->getClassname();
 	}
 
 	/**
-	 * @return string title of article
+	 * Description exta
+	 *
+	 * @return string description exta
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use tx_commerce_article::getDescriptionExtra instead
 	 */
 	public function get_description_extra() {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		return $this->getDescriptionExtra();
 	}
 
 	/**
+	 * Article price uid
+	 *
 	 * @return int valid priceid
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use tx_commerce_article::getPriceUid instead
 	 */
 	public function get_article_price_uid() {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		return $this->getPriceUid();
 	}
 
 	/**
+	 * Price gross
+	 *
 	 * @return double price_gross
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use tx_commerce_article::getPriceGross instead
 	 */
 	public function get_price_gross() {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		return $this->getPriceGross();
 	}
 
 	/**
+	 * Price net
+	 *
 	 * @return double price_net
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use tx_commerce_article::getPriceNet instead
 	 */
 	public function get_price_net() {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		return $this->getPriceNet();
 	}
 
 	/**
+	 * Article price uid
+	 *
 	 * @return int valid priceid
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use tx_commerce_article::getPriceUid instead
 	 */
 	public function getArticlePriceUid() {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		return $this->getPriceUid();
 	}
 
 	/**
-	 * Get Article all possivle  prices as UDI Array
+	 * Get Article all possible prices as uid Array
 	 *
 	 * @return array or priceUid
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use tx_commerce_article::getPriceUids instead
 	 */
 	public function getPossiblePriceUids() {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		return $this->getPriceUids();
 	}
 
 	/**
+	 * Tax
+	 *
 	 * @return double tax
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use tx_commerce_article::getTax instead
 	 */
 	public function get_tax() {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		return $this->getTax();
 	}
 
 	/**
+	 * Order number
+	 *
 	 * @return string ordernumber
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use tx_commerce_article::getOrdernumber instead
 	 */
 	public function get_ordernumber() {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		return $this->getOrdernumber();
 	}
 
 	/**
-	 * returns the parent product as object
+	 * Parent product as object
 	 *
 	 * @see tx_commerce_product
 	 * @return Tx_Commerce_Domain_Model_Product Product object
@@ -1022,6 +1053,7 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 	 */
 	public function get_parent_product() {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		return $this->getParentProduct();
 	}
 
@@ -1039,28 +1071,33 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 	 */
 	public function get_article_attributes() {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		return $this->getArticleAttributes();
 	}
 
 	/**
+	 * Article type uid
+	 *
 	 * @return int article_type
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use tx_commerce_article::getArticleTypeUid instead
 	 */
 	public function get_article_type_uid() {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		return $this->getArticleTypeUid();
 	}
 
 	/**
 	 * Gets the price of this article and stores in private variable
 	 *
-	 * @param bool $translationMode
+	 * @param bool $translationMode Translation mode
 	 *
 	 * @return int
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use tx_commerce_article::loadPrices instead
 	 */
 	public function load_prices($translationMode = FALSE) {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		return $this->loadPrices($translationMode);
 	}
 

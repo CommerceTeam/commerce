@@ -604,52 +604,61 @@ class Tx_Commerce_Domain_Model_BasketItem {
 
 
 	/**
-	 * recalculates the itm sums
+	 * Recalculates the itm sums
 	 *
-	 * @param bool $useValues Use the stored values instead of calculating gross or net price
+	 * @param bool $useValues Use the stored values instead
+	 * 	of calculating gross or net price
+	 *
 	 * @return void
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use recalculateItemSums instead
 	 */
 	public function recalculate_item_sums($useValues = FALSE) {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		$this->recalculateItemSums($useValues);
 	}
 
 	/**
 	 * Calculates the gross_sum
 	 *
-	 * @param bool $useValues Use the stored values instead of calculating gross or net price
+	 * @param bool $useValues Use the stored values
+	 * 	instead of calculating gross or net price
 	 *
 	 * @return int gross_sum
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use calculateGrossSum instead
 	 */
 	public function calculate_gross_sum($useValues = FALSE) {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		return $this->calculateGrossSum($useValues);
 	}
 
 	/**
 	 * Calculates the net_sum
 	 *
-	 * @param bool $useValues Use the stored values instead of calculating gross or net price
+	 * @param bool $useValues Use the stored values
+	 * 	instead of calculating gross or net price
 	 *
 	 * @return int net_sum
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use calculateNetSum instead
 	 */
 	public function calculate_net_sum($useValues = FALSE) {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		$this->calculateNetSum($useValues);
 	}
 
 	/**
 	 * Change the basket item quantity
 	 *
-	 * @param quanitity
+	 * @param int $quantity Quanitity
+	 *
 	 * @return true
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use changeQuantity instead
 	 */
 	public function change_quantity($quantity) {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		return $this->changeQuantity($quantity);
 	}
 
@@ -661,17 +670,19 @@ class Tx_Commerce_Domain_Model_BasketItem {
 	 */
 	public function get_article_uid() {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		return $this->getArticleUid();
 	}
 
 	/**
-	 * gets the tax from the article
+	 * Gets the tax from the article
 	 *
 	 * @return float percantage of tax
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getTax instead
 	 */
 	public function get_tax() {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		return $this->getTax();
 	}
 
@@ -683,6 +694,7 @@ class Tx_Commerce_Domain_Model_BasketItem {
 	 */
 	public function get_price_gross() {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		return $this->getPriceGross();
 	}
 
@@ -694,6 +706,7 @@ class Tx_Commerce_Domain_Model_BasketItem {
 	 */
 	public function get_price_uid() {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		return $this->getPriceUid();
 	}
 
@@ -707,76 +720,89 @@ class Tx_Commerce_Domain_Model_BasketItem {
 	 */
 	public function get_item_sum_net($recalculate = FALSE) {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		return $this->getItemSumNet($recalculate);
 	}
 
 	/**
-	 * @param bool $recalculate
+	 * Get item sum gross
+	 *
+	 * @param bool $recalculate If sum should be recalculated
 	 *
 	 * @return int
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getItemSumGross instead
 	 */
 	public function get_item_sum_gross($recalculate = FALSE) {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		return $this->getItemSumGross($recalculate);
 	}
 
 	/**
 	 * Returns the absolute TAX
 	 *
-	 * @param bool $recalculate if the sum should be recalculated, default false
+	 * @param bool $recalculate If the sum should be recalculated, default false
+	 *
 	 * @return int item sum gross
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getItemSumTax instead
 	 */
 	public function get_item_sum_tax($recalculate = FALSE) {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		return $this->getItemSumTax($recalculate);
 	}
 
 	/**
-	 * gets the article_assoc_array
+	 * Gets the article_assoc_array
 	 *
 	 * @param string $prefix Prefix for the keys or returnung array optional
+	 *
 	 * @return array
-	 * @see tx_commerce_article <- Tx_Commerce_Domain_Model_AbstractEntity
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getArticleAssocArray instead
 	 */
 	public function get_article_assoc_array($prefix = '') {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		return $this->getArticleAssocArray($prefix);
 	}
 
 	/**
-	 * gets the product_assoc_array
+	 * Gets the product_assoc_array
 	 *
 	 * @param string $prefix Prefix for the keys or returnung array optional
+	 *
 	 * @return array
-	 * @see tx_commerce_product <- Tx_Commerce_Domain_Model_AbstractEntity
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getProductAssocArray instead
 	 */
 	public function get_product_assoc_array($prefix = '') {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		return $this->getProductAssocArray($prefix);
 	}
 
 	/**
-	 * gets an array of get_article_assoc_array and get_product_assoc_array
+	 * Gets an array of get_article_assoc_array and get_product_assoc_array
 	 *
 	 * @param string $prefix Prefix for the keys or returnung array optional
+	 *
 	 * @return array
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getArrayOfAssocArray instead
 	 */
 	public function get_array_of_assoc_array($prefix = '') {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		return $this->getArrayOfAssocArray($prefix);
 	}
 
 	/**
+	 * Get price net
+	 *
 	 * @return int
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getPriceNet instead
 	 */
 	public function get_price_net() {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		return $this->getPriceNet();
 	}
 
@@ -788,6 +814,7 @@ class Tx_Commerce_Domain_Model_BasketItem {
 	 */
 	public function get_article_article_type_uid() {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		return $this->getArticleTypeUid();
 	}
 
@@ -799,6 +826,7 @@ class Tx_Commerce_Domain_Model_BasketItem {
 	 */
 	public function get_quantity() {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		return $this->getQuantity();
 	}
 }

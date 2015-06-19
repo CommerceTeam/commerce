@@ -28,16 +28,22 @@
  */
 class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_AbstractEntity {
 	/**
+	 * Database class name
+	 *
 	 * @var string
 	 */
 	protected $databaseClass = 'Tx_Commerce_Domain_Repository_ProductRepository';
 
 	/**
+	 * Database connection
+	 *
 	 * @var Tx_Commerce_Domain_Repository_ProductRepository
 	 */
 	public $databaseConnection;
 
 	/**
+	 * Field list
+	 *
 	 * @var array
 	 */
 	protected $fieldlist = array(
@@ -61,154 +67,189 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 		't3ver_tstamp'
 	);
 
+	/* Data Variables */
+
 	/**
-	 * Data Variables
-	 */
-	/**
-	 * Title of the product e.g.productname
+	 * Title
 	 *
 	 * @var string
 	 */
 	protected $title = '';
 
 	/**
+	 * Pid
+	 *
 	 * @var int
 	 */
 	public $pid = 0;
 
 	/**
-	 * Subtitle of the product
+	 * Subtitle
 	 *
 	 * @var string
 	 */
 	protected $subtitle = '';
 
 	/**
-	 * product description
+	 * Description
 	 *
 	 * @var string
 	 */
 	protected $description = '';
 
 	/**
+	 * Teaser
+	 *
 	 * @var string
 	 */
 	public $teaser = '';
 
 	/**
+	 * Teaser images
+	 *
 	 * @var string
 	 */
 	public $teaserimages = '';
 
 	/**
-	 * images database field
-	 *
-	 * @var string
-	 */
-	protected $images = '';
-
-	/**
-	 * Images for the product
-	 *
-	 * @var array
-	 */
-	protected $images_array = array();
-
-	/**
-	 * Images for the product
+	 * Teaser images as array
 	 *
 	 * @var array
 	 */
 	protected $teaserImagesArray = array();
 
 	/**
-	 * array of Tx_Commerce_Domain_Model_Article
+	 * Images
+	 *
+	 * @var string
+	 */
+	protected $images = '';
+
+	/**
+	 * Images as array
+	 *
+	 * @var array
+	 */
+	protected $images_array = array();
+
+	/**
+	 * Array of child articles
 	 *
 	 * @var array
 	 */
 	protected $articles = array();
 
 	/**
-	 * Array of tx_commerce_article_uid
+	 * Array of article uids
 	 *
 	 * @var array
 	 */
 	protected $articles_uids = array();
 
 	/**
-	 * If articles are loaded, so load articles can simply return with the values from the object
+	 * If articles are loaded, so load articles can simply
+	 * return with the values from the object
 	 *
 	 * @var bool
 	 */
 	protected $articlesLoaded = FALSE;
 
 	/**
+	 * Attributes
+	 *
 	 * @var array
 	 */
 	public $attributes = array();
 
 	/**
+	 * Attribute uids
+	 *
 	 * @var array
 	 */
 	public $attributes_uids = array();
 
 	/**
+	 * Related page
+	 *
 	 * @var string
 	 */
 	public $relatedpage = '';
 
 	/**
+	 * Related products
+	 *
 	 * @var array
 	 */
 	public $relatedProducts = array();
 
 	/**
+	 * Related product uids
+	 *
 	 * @var array
 	 */
 	public $relatedProduct_uids = array();
 
 	/**
+	 * Related products loaded
+	 *
 	 * @var bool
 	 */
 	public $relatedProducts_loaded = FALSE;
 
 	/**
-	 * @var int Maximum Articles to render for this product. Normally PHP_INT_MAX
+	 * Maximum Articles to render for this product. Normally PHP_INT_MAX
+	 *
+	 * @var int
 	 */
 	public $renderMaxArticles = PHP_INT_MAX;
 
-	// Versioning
+	/* Versioning */
+
 	/**
+	 * Version oid
+	 *
 	 * @var int
 	 */
 	public $t3ver_oid = 0;
 
 	/**
+	 * Version id
+	 *
 	 * @var int
 	 */
 	public $t3ver_id = 0;
 
 	/**
+	 * Version label
+	 *
 	 * @var string
 	 */
 	public $t3ver_label = '';
 
 	/**
+	 * Version workspace id
+	 *
 	 * @var int
 	 */
 	public $t3ver_wsid = 0;
 
 	/**
+	 * Version state
+	 *
 	 * @var int
 	 */
 	public $t3ver_state = 0;
 
 	/**
+	 * Version stage
+	 *
 	 * @var int
 	 */
 	public $t3ver_stage = 0;
 
 	/**
+	 * Version timestamp
+	 *
 	 * @var int
 	 */
 	public $t3ver_tstamp = 0;
@@ -216,8 +257,8 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	/**
 	 * Constructor, basically calls init
 	 *
-	 * @param int $uid
-	 * @param int $languageUid
+	 * @param int $uid Product uid
+	 * @param int $languageUid Language uid
 	 *
 	 * @return self
 	 */
@@ -252,18 +293,16 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Domain/Model/Product.php\'][\'postinit\']
 				');
 				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_product.php']['postinit'] as $classRef) {
-					$hookObj = & \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
+					$hookObj = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
 					if (method_exists($hookObj, 'postinit')) {
-						/** @noinspection PhpUndefinedMethodInspection */
 						$hookObj->postinit($this);
 					}
 				}
 			}
 			if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Model/Product.php']['postinit'])) {
 				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Model/Product.php']['postinit'] as $classRef) {
-					$hookObj = & \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
+					$hookObj = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
 					if (method_exists($hookObj, 'postinit')) {
-						/** @noinspection PhpUndefinedMethodInspection */
 						$hookObj->postinit($this);
 					}
 				}
@@ -278,7 +317,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	/**
 	 * Get list of article uids
 	 *
-	 * @param int $uid
+	 * @param int $uid Article uid
 	 *
 	 * @return Tx_Commerce_Domain_Model_Article Article uids
 	 */
@@ -290,10 +329,10 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	 * Get list of articles of this product filtered by given attribute UID
 	 * and attribute value
 	 *
-	 * @param int $attributeUid
-	 * @param mixed $attributeValue
-	 * @return array of article uids
-	 * @see getArticlesByAttributeArray()
+	 * @param int $attributeUid Attribute uid
+	 * @param mixed $attributeValue Attribute value
+	 *
+	 * @return array of article uids Article uids
 	 */
 	public function getArticlesByAttribute($attributeUid, $attributeValue) {
 		return $this->getArticlesByAttributeArray(
@@ -310,17 +349,17 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	 * Get list of articles of this product filtered by given attribute UID
 	 * and attribute value
 	 *
-	 * @param array $attributes array(
-	 *            array('AttributeUid'=>$attributeUID, 'AttributeValue'=>$attributeValue),
-	 *            array('AttributeUid'=>$attributeUID, 'AttributeValue'=>$attributeValue),
-	 *            ...
-	 *        )
+	 * @param array $attributes Attributes array(
+	 *		array('AttributeUid'=>$attributeUID, 'AttributeValue'=>$attributeValue),
+	 *		array('AttributeUid'=>$attributeUID, 'AttributeValue'=>$attributeValue),
+	 *		...
+	 *	)
 	 * @param bool|int $proofUid Proof if script is running without instance
-	 *        and so without a single product
+	 *	and so without a single product
 	 *
 	 * @return array of article uids
 	 */
-	public function getArticlesByAttributeArray($attributes, $proofUid = 1) {
+	public function getArticlesByAttributeArray(array $attributes, $proofUid = 1) {
 		$whereUid = $proofUid ? ' and tx_commerce_articles.uid_product = ' . $this->uid : '';
 
 		$first = 1;
@@ -390,8 +429,8 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	/**
 	 * Returns list of articles (from this product) filtered by price
 	 *
-	 * @param int $priceMin smallest unit (e.g. cents)
-	 * @param int $priceMax biggest unit (e.g. cents)
+	 * @param int $priceMin Smallest unit (e.g. cents)
+	 * @param int $priceMax Biggest unit (e.g. cents)
 	 * @param bool|int $usePriceGrossInstead Normally we check for net price,
 	 *        switch to gross price
 	 * @param bool|int $proofUid If script is running without instance and
@@ -426,20 +465,24 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 		// Run price test
 		$articleUidList = array();
 		foreach ($rawArticleUidList as $rawArticleUid) {
-			/** @var Tx_Commerce_Domain_Model_Article $article */
-			$article = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Article', $rawArticleUid, $this->lang_uid);
+			/**
+			 * Article
+			 *
+			 * @var Tx_Commerce_Domain_Model_Article $article
+			 */
+			$article = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+				'Tx_Commerce_Domain_Model_Article',
+				$rawArticleUid,
+				$this->lang_uid
+			);
 			$article->loadData();
-			$myPrice = $usePriceGrossInstead ?
-				$article->getPriceGross() :
-				$article->getPriceNet();
+			$myPrice = $usePriceGrossInstead ? $article->getPriceGross() : $article->getPriceNet();
 			if (($priceMin <= $myPrice) && ($myPrice <= $priceMax)) {
 				$articleUidList[] = $article->getUid();
 			}
 		}
 
-		return count($articleUidList) ?
-			$articleUidList :
-			array();
+		return count($articleUidList) ? $articleUidList : array();
 	}
 
 	/**
@@ -463,7 +506,8 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	/**
 	 * Get list of article uids
 	 *
-	 * @param int $index
+	 * @param int $index Index
+	 *
 	 * @return int Article uid
 	 */
 	public function getArticleUid($index) {
@@ -488,21 +532,24 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	 * values, int values and value lists
 	 *
 	 * @param mixed $articleList Array of restricted product articles
-	 *        (usually shall, must, ...), FALSE for all, FALSE for product attribute list
+	 *	(usually shall, must, ...), FALSE for all, FALSE for product attribute list
 	 * @param mixed $attributeListInclude Array of restricted attributes,
-	 *        FALSE for all
+	 *	FALSE for all
 	 * @param bool $valueListShowValueInArticleProduct TRUE if 'showvalue' field
-	 *        of value list table should be cared of
+	 *	of value list table should be cared of
 	 * @param string $sortingTable Name of table with sorting field of table to order
-	 *        records
+	 *	records
 	 * @param bool $localizationAttributeValuesFallbackToDefault TRUE if a
-	 *        fallback to default value should be done if a localization of an attribute
-	 *        value or value char is not available in localized row
+	 *	fallback to default value should be done if a localization of an attribute
+	 *	value or value char is not available in localized row
 	 * @param string $parentTable Name of parent table
 	 *
 	 * @return mixed Array if attributes where found, else FALSE
 	 */
-	public function getAttributeMatrix($articleList = FALSE, $attributeListInclude = FALSE, $valueListShowValueInArticleProduct = TRUE, $sortingTable = 'tx_commerce_articles_article_attributes_mm', $localizationAttributeValuesFallbackToDefault = FALSE, $parentTable = 'tx_commerce_articles') {
+	public function getAttributeMatrix($articleList = FALSE, $attributeListInclude = FALSE,
+		$valueListShowValueInArticleProduct = TRUE, $sortingTable = 'tx_commerce_articles_article_attributes_mm',
+		$localizationAttributeValuesFallbackToDefault = FALSE, $parentTable = 'tx_commerce_articles'
+	) {
 		$database = $this->getDatabaseConnection();
 
 		// Early return if no product is given
@@ -538,8 +585,9 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 
 			// Don't handle this row if a prior row was already unable to fetch a language
 			// overlay of the attribute
-			if ($this->lang_uid > 0
-				&& count(array_intersect(array($currentAttributeUid), $attributeLanguageOverlayBlacklist)) > 0
+			if (
+				$this->lang_uid > 0
+				&& count(array_intersect(array($currentAttributeUid), $attributeLanguageOverlayBlacklist))
 			) {
 				continue;
 			}
@@ -600,7 +648,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 			}
 
 			// Handle value, default_value and value lists of attributes
-			if ((strlen($attributeDataRow['value_char']) > 0) || $defaultValue) {
+			if (strlen($attributeDataRow['value_char']) || $defaultValue) {
 				// Localization of value_char
 				if ($this->lang_uid > 0) {
 					// Get uid of localized article
@@ -656,7 +704,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 							array_intersect(
 								array($valueListArrayRow['uid']), $targetDataArray[$currentAttributeUid]['valueuidlist']
 							)
-						) > 0
+						)
 					) {
 						continue;
 					}
@@ -729,9 +777,13 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	 *        FALSE if $parentTable = tx_commerce_products
 	 * @param mixed $attributeList Array of restricted attributes,
 	 *        FALSE for all attributes
+	 *
 	 * @return string Query to be executed
 	 */
-	protected function getAttributeMatrixQuery($parentTable = 'tx_commerce_articles', $mmTable = 'tx_commerce_articles_article_attributes_mm', $sortingTable = 'tx_commerce_articles_article_attributes_mm', $articleList = FALSE, $attributeList = FALSE) {
+	protected function getAttributeMatrixQuery($parentTable = 'tx_commerce_articles',
+		$mmTable = 'tx_commerce_articles_article_attributes_mm', $sortingTable = 'tx_commerce_articles_article_attributes_mm',
+		$articleList = FALSE, $attributeList = FALSE
+	) {
 		$database = $this->getDatabaseConnection();
 
 		$selectFields = array();
@@ -786,11 +838,11 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 
 		// Get enabled rows only
 		$selectWhere[] = ' 1 ' . $GLOBALS['TSFE']->sys_page->enableFields(
-				'tx_commerce_attributes', $GLOBALS['TSFE']->showHiddenRecords
-			);
+			'tx_commerce_attributes', $GLOBALS['TSFE']->showHiddenRecords
+		);
 		$selectWhere[] = ' 1 ' . $GLOBALS['TSFE']->sys_page->enableFields(
-				$parentTable, $GLOBALS['TSFE']->showHiddenRecords
-			);
+			$parentTable, $GLOBALS['TSFE']->showHiddenRecords
+		);
 
 		// Order rows by given sorting table
 		$selectOrder = $sortingTable . '.sorting';
@@ -821,10 +873,8 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 		$articleCount = count($this->articles_uids);
 		for ($j = 0; $j < $articleCount; $j++) {
 			$article = & $this->articles[$this->articles_uids[$j]];
-			if (is_object($article) && ($article instanceof Tx_Commerce_Domain_Model_Article)) {
-				$priceArr[$article->getUid()] = ($usePriceNet) ?
-					$article->getPriceNet() :
-					$article->getPriceGross();
+			if (is_object($article) && $article instanceof Tx_Commerce_Domain_Model_Article) {
+				$priceArr[$article->getUid()] = $usePriceNet ? $article->getPriceNet() : $article->getPriceGross();
 			}
 		}
 		asort($priceArr);
@@ -933,10 +983,18 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	public function getRelatedProducts() {
 		if (!$this->relatedProducts_loaded) {
 			$this->relatedProduct_uids = $this->databaseConnection->getRelatedProductUids($this->uid);
-			if (count($this->relatedProduct_uids) > 0) {
+			if (count($this->relatedProduct_uids)) {
 				foreach (array_keys($this->relatedProduct_uids) as $productId) {
-					/** @var Tx_Commerce_Domain_Model_Product $product */
-					$product = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Product', $productId, $this->lang_uid);
+					/**
+					 * Product
+					 *
+					 * @var Tx_Commerce_Domain_Model_Product $product
+					 */
+					$product = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+						'Tx_Commerce_Domain_Model_Product',
+						$productId,
+						$this->lang_uid
+					);
 					$product->loadData();
 					$product->loadArticles();
 
@@ -957,6 +1015,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	 * Sets renderMaxArticles Value in the Object
 	 *
 	 * @param int $count New Value
+	 *
 	 * @return void
 	 */
 	public function setRenderMaxArticles($count) {
@@ -984,7 +1043,9 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	 *
 	 * @return bool|array
 	 */
-	public function getSelectAttributeMatrix($articleList = FALSE, $attributesToInclude = FALSE, $showHiddenValues = TRUE, $sortingTable = 'tx_commerce_articles_article_attributes_mm') {
+	public function getSelectAttributeMatrix($articleList = FALSE, $attributesToInclude = FALSE, $showHiddenValues = TRUE,
+		$sortingTable = 'tx_commerce_articles_article_attributes_mm'
+	) {
 		$return = array();
 
 		// If no list is given, take complate arctile-list from product
@@ -1013,7 +1074,8 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 					tx_commerce_attributes.internal_title, tx_commerce_attributes.icon, tx_commerce_attributes.iconmode,
 					' . $sortingTable . '.sorting', 'tx_commerce_articles', 'tx_commerce_articles_article_attributes_mm',
 				'tx_commerce_attributes',
-				' AND tx_commerce_articles.uid_product = ' . $this->uid . ' ' . $addwhere . $addwhere2 . ' order by ' . $sortingTable . '.sorting'
+				' AND tx_commerce_articles.uid_product = ' . $this->uid . ' ' . $addwhere . $addwhere2 . ' order by ' .
+					$sortingTable . '.sorting'
 			);
 
 			$addwhere = $addwhere2;
@@ -1063,7 +1125,8 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 					$attributeValueResult = $database->exec_SELECT_mm_query(
 						'distinct tx_commerce_articles_article_attributes_mm.uid_valuelist', 'tx_commerce_articles',
 						'tx_commerce_articles_article_attributes_mm', 'tx_commerce_attributes',
-						' AND tx_commerce_articles_article_attributes_mm.uid_valuelist>0 ' . ' AND tx_commerce_articles.uid_product = ' . $this->uid . ' AND tx_commerce_attributes.uid=' . $attributeUid . $addwhere
+						' AND tx_commerce_articles_article_attributes_mm.uid_valuelist>0 AND tx_commerce_articles.uid_product = ' .
+							$this->uid . ' AND tx_commerce_attributes.uid=' . $attributeUid . $addwhere
 					);
 					if (($valueshown == FALSE) && ($attributeValueResult)
 						&& ($database->sql_num_rows(
@@ -1121,10 +1184,11 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	/**
 	 * Generates the matrix for attribute values for attribute select options in FE
 	 *
-	 * @param array &$attributeValues of attribute->value pairs, used as default.
+	 * @param array $attributeValues Of attribute->value pairs, used as default.
+	 *
 	 * @return array Values
 	 */
-	public function getSelectAttributeValueMatrix(&$attributeValues = array()) {
+	public function getSelectAttributeValueMatrix(array &$attributeValues = array()) {
 		$values = array();
 		$levelAttributes = array();
 
@@ -1140,8 +1204,11 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 			}
 
 			$articleAttributes = $database->exec_SELECTgetRows(
-				'uid_local,uid_foreign,uid_valuelist', 'tx_commerce_articles_article_attributes_mm', $addWhere, '',
-				'uid_local,sorting'
+				'uid_local, uid_foreign, uid_valuelist',
+				'tx_commerce_articles_article_attributes_mm',
+				$addWhere,
+				'',
+				'uid_local, sorting'
 			);
 
 			$levels = array();
@@ -1180,11 +1247,13 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 			}
 
 			// Get the sorting value for all attribute values
-			if (count($attributeValuesList) > 0) {
+			if (count($attributeValuesList)) {
 				$attributeValuesList = array_unique($attributeValuesList);
 				$attributeValuesList = implode($attributeValuesList, ',');
 				$attributeValueSortQuery = $database->exec_SELECTquery(
-					'sorting,uid', 'tx_commerce_attribute_values', 'uid IN (' . $attributeValuesList . ')'
+					'sorting, uid',
+					'tx_commerce_attribute_values',
+					'uid IN (' . $attributeValuesList . ')'
 				);
 				while (($attributeValueSort = $database->sql_fetch_assoc($attributeValueSortQuery))) {
 					$attributeValueSortIndex[$attributeValueSort['uid']] = $attributeValueSort['sorting'];
@@ -1201,7 +1270,11 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 			$tPossible = array();
 			$selected = $attributeValues[$attributeUid];
 			if (!$selected) {
-				/** @var Tx_Commerce_Domain_Model_Attribute $attribute */
+				/**
+				 * Attribute
+				 *
+				 * @var Tx_Commerce_Domain_Model_Attribute $attribute
+				 */
 				$attribute = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
 					'Tx_Commerce_Domain_Model_Attribute',
 					$attributeUid,
@@ -1219,9 +1292,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 			}
 
 			foreach ($possible as $key => $val) {
-				$selectMatrix[$attributeUid][$key] = $selected == $key ?
-					'selected' :
-					'possible';
+				$selectMatrix[$attributeUid][$key] = $selected == $key ? 'selected' : 'possible';
 				foreach ($val as $k => $v) {
 					if (!$selected || $key == $selected) {
 						$tPossible[$k] = $v;
@@ -1299,8 +1370,16 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 			}
 			if (($this->articles_uids = $this->databaseConnection->getArticles($uidToLoadFrom))) {
 				foreach ($this->articles_uids as $articleUid) {
-					/** @var Tx_Commerce_Domain_Model_Article $article */
-					$article = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Article', $articleUid, $this->lang_uid);
+					/**
+					 * Article
+					 *
+					 * @var Tx_Commerce_Domain_Model_Article $article
+					 */
+					$article = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+						'Tx_Commerce_Domain_Model_Article',
+						$articleUid,
+						$this->lang_uid
+					);
 					$article->loadData();
 					$this->articles[$articleUid] = $article;
 				}
@@ -1320,13 +1399,13 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	 * inherited from parent
 	 *
 	 * @param mixed $translationMode Translation mode of the record,
-	 *        default FALSE to use the default way of translation
+	 *	default FALSE to use the default way of translation
+	 *
 	 * @return Tx_Commerce_Domain_Model_Product
 	 */
 	public function loadData($translationMode = FALSE) {
 		$return = parent::loadData($translationMode);
 
-		/** @noinspection PhpParamsInspection */
 		$this->images_array = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $this->images);
 		$this->teaserImagesArray = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $this->teaserimages);
 
@@ -1342,7 +1421,11 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	public function hasStock() {
 		$this->loadArticles();
 		$result = FALSE;
-		/** @var Tx_Commerce_Domain_Model_Article $article */
+		/**
+		 * Article
+		 *
+		 * @var Tx_Commerce_Domain_Model_Article $article
+		 */
 		foreach ($this->articles as $article) {
 			if ($article->getStock()) {
 				$result = TRUE;
@@ -1357,7 +1440,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	 * Carries out the move of the product to the new parent
 	 * Permissions are NOT checked, this MUST be done beforehand
 	 *
-	 * @param int $uid uid of the move target
+	 * @param int $uid Uid of the move target
 	 * @param string $op Operation of move (can be 'after' or 'into'
 	 *
 	 * @return bool True on success
@@ -1387,9 +1470,9 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	}
 
 	/**
-	 * Remove article uid by index
+	 * Remove article uid from array by index
 	 *
-	 * @param int $index
+	 * @param int $index Index
 	 *
 	 * @return void
 	 */
@@ -1398,9 +1481,9 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	}
 
 	/**
-	 * Remove article
+	 * Remove article object from array by uid
 	 *
-	 * @param int $uid
+	 * @param int $uid Uid
 	 *
 	 * @return void
 	 */
@@ -1412,7 +1495,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	/**
 	 * Get relevant articles
 	 *
-	 * @param array|bool $attributeArray
+	 * @param array|bool $attributeArray Attribute array
 	 *
 	 * @return array|bool
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, is not used in commerce
@@ -1439,19 +1522,26 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 			$unionSelects = array();
 			foreach ($attributeArray as $attr) {
 				if ($attr['AttributeValue']) {
-					$unionSelects[] = 'SELECT uid_local AS article_id,uid_valuelist FROM tx_commerce_articles_article_attributes_mm,tx_commerce_articles WHERE uid_local = uid AND uid_valuelist = ' . (int) $attr['AttributeValue'] . ' AND tx_commerce_articles.uid_product = ' . $this->uid . ' AND uid_foreign = ' . (int) $attr['AttributeUid'] . $GLOBALS['TSFE']->sys_page->enableFields(
-							'tx_commerce_articles', $GLOBALS['TSFE']->showHiddenRecords
-						);
+					$unionSelects[] = '
+						SELECT uid_local AS article_id, uid_valuelist
+						FROM tx_commerce_articles_article_attributes_mm, tx_commerce_articles
+						WHERE uid_local = uid AND uid_valuelist = ' . (int) $attr['AttributeValue'] .
+							' AND tx_commerce_articles.uid_product = ' . $this->uid .
+							' AND uid_foreign = ' . (int) $attr['AttributeUid'] .
+							$GLOBALS['TSFE']->sys_page->enableFields('tx_commerce_articles', $GLOBALS['TSFE']->showHiddenRecords);
 				} else {
-					$unionSelects[] = 'SELECT uid_local AS article_id,uid_valuelist FROM tx_commerce_articles_article_attributes_mm,tx_commerce_articles WHERE uid_local = uid AND tx_commerce_articles.uid_product = ' . $this->uid . ' AND uid_foreign = ' . (int) $attr['AttributeUid'] . $GLOBALS['TSFE']->sys_page->enableFields(
-							'tx_commerce_articles', $GLOBALS['TSFE']->showHiddenRecords
-						);
+					$unionSelects[] = '
+						SELECT uid_local AS article_id, uid_valuelist
+						FROM tx_commerce_articles_article_attributes_mm, tx_commerce_articles
+						WHERE uid_local = uid AND tx_commerce_articles.uid_product = ' . $this->uid .
+							' AND uid_foreign = ' . (int) $attr['AttributeUid'] .
+							$GLOBALS['TSFE']->sys_page->enableFields('tx_commerce_articles', $GLOBALS['TSFE']->showHiddenRecords);
 				}
 			}
 			$sql = '';
 			if (is_array($unionSelects)) {
-				$sql .= ' SELECT count(article_id) AS counter, article_id FROM ( ' . implode(" \n UNION \n ", $unionSelects);
-				$sql .= ') AS data GROUP BY article_id having COUNT(article_id) >= ' . (count($unionSelects) - 1) . '';
+				$sql .= ' SELECT count(article_id) AS counter, article_id FROM (' . implode(' UNION ', $unionSelects) .
+					') AS data GROUP BY article_id having COUNT(article_id) >= ' . (count($unionSelects) - 1) . '';
 			}
 
 			$database = $this->getDatabaseConnection();
@@ -1481,17 +1571,21 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	 * @return bool|array
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getSelectAttributeMatrix instead
 	 */
-	public function get_selectattribute_matrix($articleList = FALSE, $attributeToInclude = FALSE, $showHiddenValues = TRUE, $sortingTable = 'tx_commerce_articles_article_attributes_mm') {
+	public function get_selectattribute_matrix($articleList = FALSE, $attributeToInclude = FALSE, $showHiddenValues = TRUE,
+		$sortingTable = 'tx_commerce_articles_article_attributes_mm'
+	) {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
 
 		return $this->getSelectAttributeMatrix($articleList, $attributeToInclude, $showHiddenValues, $sortingTable);
 	}
 
 	/**
-	 * Get list of articles of this product filtered by given attribute UID and attribute value
+	 * Get list of articles of this product filtered by given attribute
+	 * UID and attribute value
 	 *
-	 * @param attribute_UID
-	 * @param attribute_value
+	 * @param int $attributeUid Attribute_UID
+	 * @param int $attributeValue Attribute_value
+	 *
 	 * @return array of article uids
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getArticlesByAttribute instead
 	 */
@@ -1502,14 +1596,16 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	}
 
 	/**
-	 * Get list of articles of this product filtered by given attribute UID and attribute value
+	 * Get list of articles of this product filtered by given attribute
+	 * UID and attribute value
 	 *
-	 * @param array $attribute_Array (
-	 *            array('AttributeUid'=>$attributeUID, 'AttributeValue'=>$attributeValue),
-	 *            array('AttributeUid'=>$attributeUID, 'AttributeValue'=>$attributeValue),
-	 *        ...
-	 *        )
-	 * @param bool|int $proofUid Proof if script is running without instance and so without a single product
+	 * @param array $attribute_Array Attributes(
+	 *	array('AttributeUid'=>$attributeUID, 'AttributeValue'=>$attributeValue),
+	 *	array('AttributeUid'=>$attributeUID, 'AttributeValue'=>$attributeValue),
+	 *   ...
+	 * )
+	 * @param bool|int $proofUid Proof if script is running without
+	 * 	instance and so without a single product
 	 *
 	 * @return array of article uids
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getArticlesByAttributeArray instead
@@ -1525,6 +1621,8 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	 *
 	 * @param array $array1 Left
 	 * @param array $array2 Right
+	 *
+	 * @return int
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, is not used in commerce
 	 */
 	public static function compareBySorting($array1, $array2) {
@@ -1668,6 +1766,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	/**
 	 * Returns an Array of Images
 	 *
+	 * @return array
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getImages instead
 	 */
 	public function get_images() {
@@ -1679,30 +1778,32 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	/**
 	 * Sets a short description
 	 *
-	 * @param int $leng
+	 * @param int $leng Length
 	 *
 	 * @return void
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use typoscript instead
 	 */
 	public function set_leng_description($leng = 150) {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		$this->description = substr($this->description, 0, $leng) . '...';
 	}
 
 	/**
 	 * Returns the attribute matrix
 	 *
-	 * @param bool $articleList
-	 * @param bool $attribute_include
-	 * @param bool $showHiddenValues
-	 * @param string $sortingTable
-	 * @param bool $fallbackToDefault
+	 * @param bool $articleList Article list
+	 * @param bool $attribute_include Attribute include
+	 * @param bool $showHiddenValues Show hidden values
+	 * @param string $sortingTable Sorting table
+	 * @param bool $fallbackToDefault Fallback to default
 	 *
 	 * @return mixed
-	 * @see getAttributeMatrix()
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getAttributeMatrix instead
 	 */
-	public function get_attribute_matrix($articleList = FALSE, $attribute_include = FALSE, $showHiddenValues = TRUE, $sortingTable = 'tx_commerce_articles_article_attributes_mm', $fallbackToDefault = FALSE) {
+	public function get_attribute_matrix($articleList = FALSE, $attribute_include = FALSE, $showHiddenValues = TRUE,
+		$sortingTable = 'tx_commerce_articles_article_attributes_mm', $fallbackToDefault = FALSE
+	) {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
 
 		return $this->getAttributeMatrix($articleList, $attribute_include, $showHiddenValues, $sortingTable, $fallbackToDefault);
@@ -1711,16 +1812,18 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	/**
 	 * Returns the attribute matrix
 	 *
-	 * @param bool $articleList
-	 * @param bool $attribute_include
-	 * @param bool $showHiddenValues
-	 * @param string $sortingTable
+	 * @param bool $articleList Article list
+	 * @param bool $attribute_include Attribute include
+	 * @param bool $showHiddenValues Show hidden values
+	 * @param string $sortingTable Sorting table
 	 *
 	 * @return mixed
 	 * @see getAttributeMatrix()
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getAttributeMatrix instead
 	 */
-	public function get_atrribute_matrix($articleList = FALSE, $attribute_include = FALSE, $showHiddenValues = TRUE, $sortingTable = 'tx_commerce_articles_article_attributes_mm') {
+	public function get_atrribute_matrix($articleList = FALSE, $attribute_include = FALSE, $showHiddenValues = TRUE,
+		$sortingTable = 'tx_commerce_articles_article_attributes_mm'
+	) {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
 
 		return $this->getAttributeMatrix($articleList, $attribute_include, $showHiddenValues, $sortingTable);
@@ -1729,15 +1832,16 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	/**
 	 * Returns the attribute matrix
 	 *
-	 * @param bool $attribute_include
-	 * @param bool $showHiddenValues
-	 * @param string $sortingTable
+	 * @param bool $attribute_include Attribute include
+	 * @param bool $showHiddenValues Show hidden values
+	 * @param string $sortingTable Sorting Table
 	 *
 	 * @return mixed
-	 * @see getAttributeMatrix()
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getAttributeMatrix instead
 	 */
-	public function get_product_attribute_matrix($attribute_include = FALSE, $showHiddenValues = TRUE, $sortingTable = 'tx_commerce_products_attributes_mm') {
+	public function get_product_attribute_matrix($attribute_include = FALSE, $showHiddenValues = TRUE,
+		$sortingTable = 'tx_commerce_products_attributes_mm'
+	) {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
 
 		return $this->getAttributeMatrix(
@@ -1746,17 +1850,20 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	}
 
 	/**
-	 * Generates a Matrix fro these concerning products for all Attributes and the values therfor
+	 * Generates a Matrix fro these concerning products
+	 * for all Attributes and the values therfor
 	 *
-	 * @param bool $attribute_include
-	 * @param bool $showHiddenValues
-	 * @param string $sortingTable
+	 * @param bool $attribute_include Attribte include
+	 * @param bool $showHiddenValues Show hidden values
+	 * @param string $sortingTable Sorting table
 	 *
 	 * @return mixed
 	 * @see getAttributeMatrix()
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getAttributeMatrix instead
 	 */
-	public function get_product_atrribute_matrix($attribute_include = FALSE, $showHiddenValues = TRUE, $sortingTable = 'tx_commerce_products_attributes_mm') {
+	public function get_product_atrribute_matrix($attribute_include = FALSE, $showHiddenValues = TRUE,
+		$sortingTable = 'tx_commerce_products_attributes_mm'
+	) {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
 
 		return $this->getAttributeMatrix(
@@ -1765,7 +1872,9 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	}
 
 	/**
-	 * @see tx_comemrce_product::getARticleUids();
+	 * Get articles uids
+	 *
+	 * @return array
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getArticleUids instead
 	 */
 	public function getArticles() {

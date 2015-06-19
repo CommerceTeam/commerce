@@ -66,7 +66,7 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 	/**
 	 * Instance of static info view helper
 	 *
-	 * @var tx_staticinfotables_pi1
+	 * @var \SJBR\StaticInfoTables\PiBaseApi
 	 */
 	public $staticInfo;
 
@@ -174,9 +174,9 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 		/**
 		 * Static info tables plugin
 		 *
-		 * @var tx_staticinfotables_pi1 $staticInfo
+		 * @var \SJBR\StaticInfoTables\PiBaseApi $staticInfo
 		 */
-		$staticInfo = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tx_staticinfotables_pi1');
+		$staticInfo = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('SJBR\\StaticInfoTables\\PiBaseApi');
 		$staticInfo->init();
 		$this->staticInfo = $staticInfo;
 

@@ -29,16 +29,22 @@
  */
 class Tx_Commerce_Domain_Model_AttributeValue extends Tx_Commerce_Domain_Model_AbstractEntity {
 	/**
+	 * Database class name
+	 *
 	 * @var string
 	 */
 	protected $databaseClass = 'Tx_Commerce_Domain_Repository_AttributeValueRepository';
 
 	/**
+	 * Database connection
+	 *
 	 * @var Tx_Commerce_Domain_Repository_AttributeValueRepository
 	 */
 	public $databaseConnection;
 
 	/**
+	 * Field list
+	 *
 	 * @var array
 	 */
 	protected $fieldlist = array(
@@ -64,7 +70,7 @@ class Tx_Commerce_Domain_Model_AttributeValue extends Tx_Commerce_Domain_Model_A
 	protected $value = '';
 
 	/**
-	 * if this value should be shown in Fe output
+	 * If this value should be shown in Fe output
 	 *
 	 * @var bool show value
 	 */
@@ -78,6 +84,8 @@ class Tx_Commerce_Domain_Model_AttributeValue extends Tx_Commerce_Domain_Model_A
 	protected $icon = '';
 
 	/**
+	 * Show icon
+	 *
 	 * @var string
 	 */
 	protected $showicon;
@@ -85,8 +93,8 @@ class Tx_Commerce_Domain_Model_AttributeValue extends Tx_Commerce_Domain_Model_A
 	/**
 	 * Constructor, basically calls init
 	 *
-	 * @param int $uid
-	 * @param int $languageUid
+	 * @param int $uid Attribute value uid
+	 * @param int $languageUid Language uid
 	 *
 	 * @return self
 	 */
@@ -116,8 +124,10 @@ class Tx_Commerce_Domain_Model_AttributeValue extends Tx_Commerce_Domain_Model_A
 				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Domain/Model/AttributeValue.php\'][\'postinit\']
 			');
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_attribute_value.php']['postinit'] as $classRef) {
-				$hookObj = & \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_attribute_value.php']['postinit'] as
+				$classRef
+			) {
+				$hookObj = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
 				if (method_exists($hookObj, 'postinit')) {
 					$hookObj->postinit($this);
 				}
@@ -125,7 +135,7 @@ class Tx_Commerce_Domain_Model_AttributeValue extends Tx_Commerce_Domain_Model_A
 		}
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Model/AttributeValue.php']['postinit'])) {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Model/AttributeValue.php']['postinit'] as $classRef) {
-				$hookObj = & \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
+				$hookObj = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
 				if (method_exists($hookObj, 'postinit')) {
 					$hookObj->postinit($this);
 				}
@@ -161,14 +171,14 @@ class Tx_Commerce_Domain_Model_AttributeValue extends Tx_Commerce_Domain_Model_A
 	}
 
 	/**
-	 * gets the attribute title
+	 * Gets the attribute value
 	 *
-	 * @param bool $checkvalue optional check if value shoudl be show in FE
+	 * @param bool $checkvalue Check if value should be show in FE
 	 *
 	 * @return string title
 	 */
 	public function getValue($checkvalue = FALSE) {
-		if (($checkvalue) && ($this->showvalue)) {
+		if ($checkvalue && $this->showvalue) {
 			return $this->value;
 		} elseif ($checkvalue == FALSE) {
 			return $this->value;
@@ -204,7 +214,9 @@ class Tx_Commerce_Domain_Model_AttributeValue extends Tx_Commerce_Domain_Model_A
 	}
 
 	/**
-	 * @param bool $checkvalue
+	 * Get value
+	 *
+	 * @param bool $checkvalue Check value
 	 *
 	 * @return string
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getValue

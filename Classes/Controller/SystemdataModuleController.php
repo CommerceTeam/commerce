@@ -24,23 +24,32 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class Tx_Commerce_Controller_SystemdataModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 	/**
+	 * Database connection
+	 *
 	 * @var \TYPO3\CMS\Core\Database\DatabaseConnection
+	 * @deprecated Since 2.0.0 will be removed in 4.0.0
 	 */
 	protected $database;
 
 	/**
 	 * Language
-	 * @var language
+	 *
+	 * @var \TYPO3\CMS\Lang\LanguageService
 	 * @deprecated Since 2.0.0 will be removed in 4.0.0
 	 */
 	protected $language;
 
 	/**
+	 * Backend user
+	 *
 	 * @var \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
+	 * @deprecated Since 2.0.0 will be removed in 4.0.0
 	 */
 	protected $user;
 
 	/**
+	 * Page record
+	 *
 	 * @var array
 	 */
 	public $pageRow;
@@ -53,26 +62,36 @@ class Tx_Commerce_Controller_SystemdataModuleController extends \TYPO3\CMS\Backe
 	public $modPid;
 
 	/**
+	 * Attribute page id
+	 *
 	 * @var int
 	 */
 	public $attributePid;
 
 	/**
+	 * Table to be used in new link
+	 *
 	 * @var string
 	 */
 	protected $tableForNewLink;
 
 	/**
+	 * Marker
+	 *
 	 * @var array
 	 */
 	public $markers = array();
 
 	/**
+	 * Document template
+	 *
 	 * @var \TYPO3\CMS\Backend\Template\DocumentTemplate
 	 */
 	public $doc;
 
 	/**
+	 * Reference count
+	 *
 	 * @var array
 	 */
 	protected $referenceCount = array();
@@ -88,15 +107,16 @@ class Tx_Commerce_Controller_SystemdataModuleController extends \TYPO3\CMS\Backe
 		$language = $this->getLanguageService();
 		$language->includeLLFile('EXT:commerce/Resources/Private/Language/locallang_mod_systemdata.xml');
 
-		$this->database = $GLOBALS['TYPO3_DB'];
+		$this->database = $this->getDatabaseConnection();
 		$this->language = $this->getLanguageService();
-		$this->user = $GLOBALS['BE_USER'];
+		$this->user = $this->getBackendUser();
 
 		$this->id = $this->modPid = (int) reset(Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Commerce', 'commerce'));
-		$this->attributePid =
-			(int) reset(Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Attributes', 'commerce', $this->modPid));
+		$this->attributePid = (int) reset(
+			Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Attributes', 'commerce', $this->modPid)
+		);
 
-		$this->perms_clause = $this->user->getPagePermsClause(1);
+		$this->perms_clause = $this->getBackendUser()->getPagePermsClause(1);
 		$this->pageRow = BackendUtility::readPageAccess($this->id, $this->perms_clause);
 
 		$this->doc = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
@@ -248,7 +268,7 @@ class Tx_Commerce_Controller_SystemdataModuleController extends \TYPO3\CMS\Backe
 			IconUtility::getSpriteIcon('actions-system-refresh') . '</a>';
 
 		// Shortcut
-		if ($this->user->mayMakeShortcut()) {
+		if ($this->getBackendUser()->mayMakeShortcut()) {
 			$buttons['shortcut'] = $this->doc->makeShortcutIcon(
 				'id, showThumbs, pointer, table, search_field, searchLevels, showLimit, sortField, sortRev',
 				implode(',', array_keys($this->MOD_MENU)), 'txcommerceM1_systemdata');
@@ -272,7 +292,7 @@ class Tx_Commerce_Controller_SystemdataModuleController extends \TYPO3\CMS\Backe
 	 * @return void
 	 */
 	protected function moduleContent() {
-		switch ((string)$this->MOD_SETTINGS['function']) {
+		switch ((string) $this->MOD_SETTINGS['function']) {
 			case '2':
 				$content = $this->getManufacturerListing();
 				$this->content .= $this->doc->section('', $content, 0, 1);
@@ -316,7 +336,7 @@ class Tx_Commerce_Controller_SystemdataModuleController extends \TYPO3\CMS\Backe
 	 * @return mysqli_result
 	 */
 	protected function fetchAttributes() {
-		return $this->database->exec_SELECTquery(
+		return $this->getDatabaseConnection()->exec_SELECTquery(
 			'*',
 			'tx_commerce_attributes',
 			'pid=' . (int) $this->attributePid . ' AND hidden=0 AND deleted=0 and (sys_language_uid = 0 OR sys_language_uid = -1)',
@@ -328,12 +348,12 @@ class Tx_Commerce_Controller_SystemdataModuleController extends \TYPO3\CMS\Backe
 	/**
 	 * Fetch attribute translation
 	 *
-	 * @param int $uid
+	 * @param int $uid Attribute uid
 	 *
 	 * @return mysqli_result
 	 */
 	protected function fetchAttributeTranslation($uid) {
-		return $this->database->exec_SELECTquery(
+		return $this->getDatabaseConnection()->exec_SELECTquery(
 			'*',
 			'tx_commerce_attributes',
 			'pid = ' . (int) $this->attributePid . ' AND hidden=0 AND deleted=0 and sys_language_uid <>0 and l18n_parent =' .
@@ -346,11 +366,13 @@ class Tx_Commerce_Controller_SystemdataModuleController extends \TYPO3\CMS\Backe
 	/**
 	 * Render attribute rows
 	 *
-	 * @param mysqli_result $result
+	 * @param mysqli_result $result Result
+	 *
 	 * @return string
 	 */
-	protected function renderAttributeRows($result) {
+	protected function renderAttributeRows(mysqli_result $result) {
 		$language = $this->getLanguageService();
+		$database = $this->getDatabaseConnection();
 
 		/**
 		 * Record list
@@ -364,7 +386,7 @@ class Tx_Commerce_Controller_SystemdataModuleController extends \TYPO3\CMS\Backe
 		$output = '';
 
 		$table = 'tx_commerce_attributes';
-		while (($attribute = $this->database->sql_fetch_assoc($result))) {
+		while (($attribute = $database->sql_fetch_assoc($result))) {
 			$refCountMsg = BackendUtility::referenceCount(
 				$table,
 				$attribute['uid'],
@@ -390,9 +412,9 @@ class Tx_Commerce_Controller_SystemdataModuleController extends \TYPO3\CMS\Backe
 
 			// Select language versions
 			$resLocalVersion = $this->fetchAttributeTranslation($attribute['uid']);
-			if ($this->database->sql_num_rows($resLocalVersion) > 0) {
+			if ($database->sql_num_rows($resLocalVersion) > 0) {
 				$output .= '<table >';
-				while (($localAttributes = $this->database->sql_fetch_assoc($resLocalVersion))) {
+				while (($localAttributes = $database->sql_fetch_assoc($resLocalVersion))) {
 					$output .= '<tr><td>&nbsp;';
 					$output .= '</td><td>';
 					if ($localAttributes['internal_title']) {
@@ -413,8 +435,9 @@ class Tx_Commerce_Controller_SystemdataModuleController extends \TYPO3\CMS\Backe
 			$output .= ' <strong>' . $language->getLL('products') . '</strong>: ' . $proCount;
 			$output .= '</td>';
 
-			$output .= '<td><a href="#" onclick="' .
-				htmlspecialchars(BackendUtility::editOnClick($editParams, $this->doc->backPath, -1)) . '">' .
+			$onClickAction = 'onclick="' . htmlspecialchars(BackendUtility::editOnClick($editParams, $this->doc->backPath, -1)) . '"';
+
+			$output .= '<td><a href="#" ' . $onClickAction . '>' .
 				IconUtility::getSpriteIcon('actions-document-open', array('title' => $language->getLL('edit', TRUE))) . '</a>';
 			$output .= '<a href="#" onclick="' . htmlspecialchars(
 					'if (confirm(' . $language->JScharCode(
@@ -426,16 +449,16 @@ class Tx_Commerce_Controller_SystemdataModuleController extends \TYPO3\CMS\Backe
 			$output .= '</td><td>';
 
 			if ($attribute['has_valuelist'] == 1) {
-				$valueRes = $this->database->exec_SELECTquery(
+				$valueRes = $database->exec_SELECTquery(
 					'*',
 					'tx_commerce_attribute_values',
 					'attributes_uid=' . (int) $attribute['uid'] . ' AND hidden=0 AND deleted=0',
 					'',
 					'sorting'
 				);
-				if ($this->database->sql_num_rows($valueRes) > 0) {
+				if ($database->sql_num_rows($valueRes) > 0) {
 					$output .= '<table border="0">';
-					while (($value = $this->database->sql_fetch_assoc($valueRes))) {
+					while (($value = $database->sql_fetch_assoc($valueRes))) {
 						$output .= '<tr><td>' . htmlspecialchars($value['value']) . '</td></tr>';
 					}
 					$output .= '</table>';
@@ -453,7 +476,7 @@ class Tx_Commerce_Controller_SystemdataModuleController extends \TYPO3\CMS\Backe
 	}
 
 	/**
-	 * generates a list of all saved Manufacturers
+	 * Generates a list of all saved Manufacturers
 	 *
 	 * @return string
 	 */
@@ -479,16 +502,17 @@ class Tx_Commerce_Controller_SystemdataModuleController extends \TYPO3\CMS\Backe
 	/**
 	 * Render manufacturer row
 	 *
-	 * @param mysqli_result $result
-	 * @param array $fields
+	 * @param mysqli_result $result Result
+	 * @param array $fields Fields
+	 *
 	 * @return string
 	 */
-	protected function renderManufacturerRows($result, $fields) {
+	protected function renderManufacturerRows(mysqli_result $result, array $fields) {
 		$language = $this->getLanguageService();
 		$output = '';
 
 		$table = 'tx_commerce_manufacturer';
-		while (($row = $this->database->sql_fetch_assoc($result))) {
+		while (($row = $this->getDatabaseConnection()->sql_fetch_assoc($result))) {
 			$refCountMsg = BackendUtility::referenceCount(
 				$table,
 				$row['uid'],
@@ -500,8 +524,9 @@ class Tx_Commerce_Controller_SystemdataModuleController extends \TYPO3\CMS\Backe
 			$editParams = '&edit[' . $table . '][' . (int) $row['uid'] . ']=edit';
 			$deleteParams = '&cmd[' . $table . '][' . (int) $row['uid'] . '][delete]=1';
 
-			$output .= '<tr><td><a href="#" onclick="' .
-				htmlspecialchars(BackendUtility::editOnClick($editParams, $this->doc->backPath, -1)) . '">' .
+			$onClickAction = 'onclick="' . htmlspecialchars(BackendUtility::editOnClick($editParams, $this->doc->backPath, -1)) . '"';
+
+			$output .= '<tr><td><a href="#" ' . $onClickAction . '>' .
 				IconUtility::getSpriteIcon('actions-document-open', array('title' => $language->getLL('edit', TRUE))) . '</a>';
 			$output .= '<a href="#" onclick="' . htmlspecialchars(
 					'if (confirm(' . $language->JScharCode(
@@ -522,7 +547,7 @@ class Tx_Commerce_Controller_SystemdataModuleController extends \TYPO3\CMS\Backe
 	}
 
 	/**
-	 * generates a list of all saved Suppliers
+	 * Generates a list of all saved Suppliers
 	 *
 	 * @return string
 	 */
@@ -548,29 +573,29 @@ class Tx_Commerce_Controller_SystemdataModuleController extends \TYPO3\CMS\Backe
 	/**
 	 * Render supplier row
 	 *
-	 * @param mysqli_result $result
-	 * @param array $fields
+	 * @param mysqli_result $result Result
+	 * @param array $fields Fields
+	 *
 	 * @return string
 	 */
-	protected function renderSupplierRows($result, $fields) {
+	protected function renderSupplierRows(mysqli_result $result, array $fields) {
 		$language = $this->getLanguageService();
 		$output = '';
 
 		$table = 'tx_commerce_supplier';
-		while (($row = $this->database->sql_fetch_assoc($result))) {
+		while (($row = $this->getDatabaseConnection()->sql_fetch_assoc($result))) {
 			$refCountMsg = BackendUtility::referenceCount(
 				$table,
 				$row['uid'],
-				' ' . $language->sL(
-					'LLL:EXT:lang/locallang_core.xml:labels.referencesToRecord'
-				),
+				' ' . $language->sL('LLL:EXT:lang/locallang_core.xml:labels.referencesToRecord'),
 				$this->getReferenceCount($table, $row['uid'])
 			);
 			$editParams = '&edit[' . $table . '][' . (int) $row['uid'] . ']=edit';
 			$deleteParams = '&cmd[' . $table . '][' . (int) $row['uid'] . '][delete]=1';
 
-			$output .= '<tr><td><a href="#" onclick="' .
-				htmlspecialchars(BackendUtility::editOnClick($editParams, $this->doc->backPath, -1)) . '">' .
+			$onClickAction = 'onclick="' . htmlspecialchars(BackendUtility::editOnClick($editParams, $this->doc->backPath, -1)) . '"';
+
+			$output .= '<tr><td><a href="#" ' . $onClickAction . '>' .
 				IconUtility::getSpriteIcon('actions-document-open', array('title' => $language->getLL('edit', TRUE))) . '</a>';
 			$output .= '<a href="#" onclick="' . htmlspecialchars(
 					'if (confirm(' . $language->JScharCode(
@@ -593,14 +618,15 @@ class Tx_Commerce_Controller_SystemdataModuleController extends \TYPO3\CMS\Backe
 	/**
 	 * Fetch data for table
 	 *
-	 * @param string $table
+	 * @param string $table Table
+	 *
 	 * @return mysqli_result
 	 */
 	protected function fetchDataByTable($table) {
-		return $this->database->exec_SELECTquery(
+		return $this->getDatabaseConnection()->exec_SELECTquery(
 			'*',
 			$table,
-			'pid=' . (int) $this->modPid . ' AND hidden=0 AND deleted=0',
+			'pid = ' . (int) $this->modPid . ' AND hidden = 0 AND deleted = 0',
 			'',
 			'title'
 		);
@@ -609,14 +635,18 @@ class Tx_Commerce_Controller_SystemdataModuleController extends \TYPO3\CMS\Backe
 	/**
 	 * Fetch the relation count
 	 *
-	 * @param string $table
-	 * @param int $uidForeign
+	 * @param string $table Table
+	 * @param int $uidForeign Foreign uid
 	 *
 	 * @return int
 	 */
 	protected function fetchRelationCount($table, $uidForeign) {
-		$result = $this->database->exec_SELECTquery('COUNT(*) as count', $table, 'uid_foreign=' . (int) $uidForeign);
-		$row = $this->database->sql_fetch_assoc($result);
+		$row = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
+			'COUNT(*) as count',
+			$table,
+			'uid_foreign = ' . (int) $uidForeign
+		);
+
 		return $row['count'];
 	}
 
@@ -632,12 +662,10 @@ class Tx_Commerce_Controller_SystemdataModuleController extends \TYPO3\CMS\Backe
 	 */
 	protected function getReferenceCount($tableName, $uid) {
 		if (!isset($this->referenceCount[$tableName][$uid])) {
-			$numberOfReferences = $this->database->exec_SELECTcountRows(
+			$numberOfReferences = $this->getDatabaseConnection()->exec_SELECTcountRows(
 				'*',
 				'sys_refindex',
-				'ref_table = ' . $this->database->fullQuoteStr(
-					$tableName, 'sys_refindex'
-				) .
+				'ref_table = ' . $this->getDatabaseConnection()->fullQuoteStr($tableName, 'sys_refindex') .
 					' AND ref_uid = ' . (int) $uid .
 					' AND deleted = 0'
 			);
@@ -650,11 +678,29 @@ class Tx_Commerce_Controller_SystemdataModuleController extends \TYPO3\CMS\Backe
 
 
 	/**
+	 * Get database connection
+	 *
+	 * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+	 */
+	protected function getDatabaseConnection() {
+		return $GLOBALS['TYPO3_DB'];
+	}
+
+	/**
 	 * Get language service
 	 *
 	 * @return \TYPO3\CMS\Lang\LanguageService
 	 */
 	protected function getLanguageService() {
 		return $GLOBALS['LANG'];
+	}
+
+	/**
+	 * Get backend user
+	 *
+	 * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
+	 */
+	protected function getBackendUser() {
+		return $GLOBALS['BE_USER'];
 	}
 }
