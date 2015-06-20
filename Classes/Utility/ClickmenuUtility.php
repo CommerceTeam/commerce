@@ -12,6 +12,7 @@
  * The TYPO3 project - inspiring people to share!
  */
 
+use TYPO3\CMS\Backend\ClickMenu\ClickMenu;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -25,7 +26,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @author 2008-2012 Erik Frister <typo3@marketing-factory.de>
  */
-class Tx_Commerce_Utility_ClickmenuUtility extends \TYPO3\CMS\Backend\ClickMenu\ClickMenu {
+class Tx_Commerce_Utility_ClickmenuUtility extends ClickMenu {
 	/**
 	 * Back path
 	 *
@@ -43,7 +44,7 @@ class Tx_Commerce_Utility_ClickmenuUtility extends \TYPO3\CMS\Backend\ClickMenu\
 	/**
 	 * Click menu
 	 *
-	 * @var \TYPO3\CMS\Backend\ClickMenu\ClickMenu
+	 * @var ClickMenu
 	 */
 	protected $clickMenu;
 
@@ -82,14 +83,14 @@ class Tx_Commerce_Utility_ClickmenuUtility extends \TYPO3\CMS\Backend\ClickMenu\
 	/**
 	 * Changes the clickmenu Items for the Commerce Records
 	 *
-	 * @param clickMenu $clickMenu Clickenu object
+	 * @param ClickMenu $clickMenu Clickenu object
 	 * @param array $menuItems Current menu Items
 	 * @param string $table Table
 	 * @param int $uid Uid
 	 *
 	 * @return array Menu Items Array
 	 */
-	public function main(clickMenu &$clickMenu, array $menuItems, $table, $uid) {
+	public function main(ClickMenu &$clickMenu, array $menuItems, $table, $uid) {
 		// Only modify the menu Items if we have the correct table
 		if (!in_array($table, $this->commerceTables)) {
 			return $menuItems;

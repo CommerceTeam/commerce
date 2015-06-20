@@ -11,6 +11,7 @@
  *
  * The TYPO3 project - inspiring people to share!
  */
+
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -71,7 +72,6 @@ class Tx_Commerce_Utility_BackendUtility {
 	 * Fetches all attribute relation from the database that are assigned to a
 	 * product specified through pUid. It can also fetch information about the
 	 * attribute and a list of attribute values if the attribute has a valuelist.
-
 	 *
 	 * @param int $pUid Uid of the product
 	 * @param bool $separateCorrelationType1 If this is true, all attributes with ct1
@@ -152,7 +152,7 @@ class Tx_Commerce_Utility_BackendUtility {
 		return $result;
 	}
 
-	/** CATEGORIES **/
+	/* CATEGORIES */
 
 	/**
 	 *  Fetch all parent categories for a given category.
@@ -168,7 +168,7 @@ class Tx_Commerce_Utility_BackendUtility {
 	 *
 	 * @return void
 	 */
-	public function getParentCategories($cUid, &$cUidList, $dontAdd = 0, $excludeUid = 0, $recursive = TRUE) {
+	public function getParentCategories($cUid, array &$cUidList, $dontAdd = 0, $excludeUid = 0, $recursive = TRUE) {
 		if (strlen((string) $cUid) > 0) {
 			$database = self::getDatabaseConnection();
 
@@ -216,7 +216,7 @@ class Tx_Commerce_Utility_BackendUtility {
 	 *
 	 * @return void
 	 */
-	public function getChildCategories($cUid, &$categoryUidList, $dontAdd = 0, $excludeUid = 0, $recursive = TRUE) {
+	public function getChildCategories($cUid, array &$categoryUidList, $dontAdd = 0, $excludeUid = 0, $recursive = TRUE) {
 		// @todo make $categoryUidList not a reference
 		// add the submitted uid to the list if it is bigger
 		// than 0 and not already in the list
@@ -259,7 +259,7 @@ class Tx_Commerce_Utility_BackendUtility {
 	 *
 	 * @return void
 	 */
-	public function getParentCategoriesFromList(&$cUidList) {
+	public function getParentCategoriesFromList(array &$cUidList) {
 		if (is_array($cUidList)) {
 			foreach ($cUidList as $cUid) {
 				$this->getParentCategories($cUid, $cUidList);
@@ -303,7 +303,7 @@ class Tx_Commerce_Utility_BackendUtility {
 	 *
 	 * @return array of attributes
 	 */
-	public function getAttributesForCategoryList($catList, $ct = NULL, $uidField = 'uid', $excludeAttributes = array()) {
+	public function getAttributesForCategoryList(array $catList, $ct = NULL, $uidField = 'uid', array $excludeAttributes = array()) {
 		$result = array();
 		if (!is_array($catList)) {
 			return $result;
@@ -332,7 +332,7 @@ class Tx_Commerce_Utility_BackendUtility {
 	 *
 	 * @return array of attributes
 	 */
-	public function getAttributesForCategory($categoryUid, $correlationtype = NULL, $excludeAttributes = NULL) {
+	public function getAttributesForCategory($categoryUid, $correlationtype = NULL, array $excludeAttributes = NULL) {
 		$database = self::getDatabaseConnection();
 
 		// build the basic query
@@ -369,7 +369,7 @@ class Tx_Commerce_Utility_BackendUtility {
 		return $result;
 	}
 
-	/** ATTRIBUTES **/
+	/* ATTRIBUTES */
 
 	/**
 	 * Returns the title of an attribute.
@@ -393,7 +393,7 @@ class Tx_Commerce_Utility_BackendUtility {
 	 *
 	 * @return array of attribute titles as strings
 	 */
-	public function getAttributeTitles($attributeList, $uidField = 'uid') {
+	public function getAttributeTitles(array $attributeList, $uidField = 'uid') {
 		$result = array();
 		if (is_array($attributeList) && count($attributeList) > 0) {
 			foreach ($attributeList as $attribute) {
@@ -414,8 +414,7 @@ class Tx_Commerce_Utility_BackendUtility {
 	 * @return array associative array with the attributeData
 	 */
 	public function getAttributeData($aUid, $select = '*') {
-		$database = self::getDatabaseConnection();
-		return $database->exec_SELECTgetSingleRow($select, 'tx_commerce_attributes', 'uid = ' . (int) $aUid);
+		return self::getDatabaseConnection()->exec_SELECTgetSingleRow($select, 'tx_commerce_attributes', 'uid = ' . (int) $aUid);
 	}
 
 	/**
@@ -438,7 +437,7 @@ class Tx_Commerce_Utility_BackendUtility {
 	 * @return string The value of the attribute. It's maybe appended with the
 	 * 	unit of the attribute
 	 */
-	public function getAttributeValue($pUid, $aUid, $relationTable, $relationData = NULL, $attributeData = NULL) {
+	public function getAttributeValue($pUid, $aUid, $relationTable, array $relationData = NULL, array $attributeData = NULL) {
 		$database = self::getDatabaseConnection();
 
 		if ($relationData == NULL || $attributeData == NULL) {
@@ -505,8 +504,7 @@ class Tx_Commerce_Utility_BackendUtility {
 		return $uidCorrelationType['uid_correlationtype'];
 	}
 
-
-	/** ARTICLES **/
+	/* ARTICLES */
 
 	/**
 	 * Return all articles that where created from a given product.
@@ -596,7 +594,7 @@ class Tx_Commerce_Utility_BackendUtility {
 	 *
 	 * @return array of attributes
 	 */
-	public function getAttributesForArticle($aUid, $ct = NULL, $excludeAttributes = NULL) {
+	public function getAttributesForArticle($aUid, $ct = NULL, array $excludeAttributes = array()) {
 		// build the basic query
 		$where = 'uid_local=' . $aUid;
 
@@ -647,7 +645,7 @@ class Tx_Commerce_Utility_BackendUtility {
 	 *
 	 * @return string
 	 */
-	public function getArticleHash($aUid, $fullAttributeList) {
+	public function getArticleHash($aUid, array $fullAttributeList) {
 		$database = self::getDatabaseConnection();
 
 		$hashData = array();
@@ -680,7 +678,7 @@ class Tx_Commerce_Utility_BackendUtility {
 	 *
 	 * @return void
 	 */
-	public function updateArticleHash($aUid, $fullAttributeList = NULL) {
+	public function updateArticleHash($aUid, array $fullAttributeList = array()) {
 		if ($fullAttributeList == NULL) {
 			$fullAttributeList = array();
 			$articleAttributes = $this->getAttributesForArticle($aUid, 1);
@@ -701,14 +699,15 @@ class Tx_Commerce_Utility_BackendUtility {
 		);
 	}
 
-	/** Diverse **/
+	/* Diverse */
 
 	/**
-	 * proofs if there are non numeric chars in it
+	 * Proofs if there are non numeric chars in it
 	 *
 	 * @param string $data String to check for a number
 	 *
 	 * @return int length of wrong chars
+	 * @todo change to regex
 	 */
 	public function isNumber($data) {
 		$charArray = array(1, 2, 3, 4, 5, 6, 7, 8, 9, 0, '.');
@@ -727,7 +726,7 @@ class Tx_Commerce_Utility_BackendUtility {
 	 *
 	 * @return int value of the last part from the key
 	 */
-	public function getUidFromKey($key, &$keyData) {
+	public function getUidFromKey($key, array &$keyData) {
 		$uid = 0;
 
 		if (strpos($key, '_') === FALSE) {
@@ -751,7 +750,7 @@ class Tx_Commerce_Utility_BackendUtility {
 	 *
 	 * @return bool if the needle was found, otherwise false
 	 */
-	public function checkArray($needle, $array, $field) {
+	public function checkArray($needle, array $array, $field) {
 		$result = FALSE;
 
 		if (is_array($array)) {
@@ -784,13 +783,11 @@ class Tx_Commerce_Utility_BackendUtility {
 	/**
 	 * Returns a list of UID from a list of strings that contains UIDs.
 	 *
-	 * @see $this->getUidFromKey
-	 *
-	 * @param array $list: The list of strings
+	 * @param array $list The list of strings
 	 *
 	 * @return array with extracted UIDs
 	 */
-	public static function getUidListFromList($list) {
+	public static function getUidListFromList(array $list) {
 		$result = array();
 		if (is_array($list)) {
 			foreach ($list as $item) {
@@ -817,7 +814,7 @@ class Tx_Commerce_Utility_BackendUtility {
 	 *
 	 * @return void
 	 */
-	public static function saveRelations($uidLocal, $relationData, $relationTable, $delete = FALSE, $withReference = TRUE) {
+	public static function saveRelations($uidLocal, array $relationData, $relationTable, $delete = FALSE, $withReference = TRUE) {
 		$delWhere = array();
 		$counter = 1;
 
@@ -895,8 +892,6 @@ class Tx_Commerce_Utility_BackendUtility {
 	 * So this method, updates all the flexform value data in the database for
 	 * the articles we change.
 	 *
-	 * @see $this->updateXML
-	 *
 	 * @param array $articleRelations Relation dataset for the article
 	 * @param bool $add If this is true, we fetch the existing data before.
 	 * 	Otherwise we overwrite it
@@ -905,7 +900,7 @@ class Tx_Commerce_Utility_BackendUtility {
 	 *
 	 * @return void
 	 */
-	public function updateArticleXML($articleRelations, $add = FALSE, $articleUid = NULL, $productUid = NULL) {
+	public function updateArticleXML(array $articleRelations, $add = FALSE, $articleUid = NULL, $productUid = NULL) {
 		$database = self::getDatabaseConnection();
 
 		$xmlData = array();
@@ -983,8 +978,6 @@ class Tx_Commerce_Utility_BackendUtility {
 	 * Updates the XML of an FlexForm value field. This is almost the same as
 	 * "updateArticleXML" but more general.
 	 *
-	 * @see $this->updateArticleXML
-	 *
 	 * @param string $xmlField Fieldname where the FlexForm values are stored
 	 * @param string $table Table in which the FlexForm values are stored
 	 * @param int $uid UID of the entity inside the table
@@ -992,9 +985,9 @@ class Tx_Commerce_Utility_BackendUtility {
 	 * @param array $ctList A list of correlationtype UID we should handle
 	 * @param bool $rebuild Wether the xmlData should be rebuild or not
 	 *
-	 * @return array array($xmlField => $xmlData)
+	 * @return array
 	 */
-	public function updateXML($xmlField, $table, $uid, $type, $ctList, $rebuild = FALSE) {
+	public function updateXML($xmlField, $table, $uid, $type, array $ctList, $rebuild = FALSE) {
 		$database = self::getDatabaseConnection();
 
 		$xmlDataResult = $database->exec_SELECTquery($xmlField, $table, 'uid=' . (int) $uid);
@@ -1070,12 +1063,12 @@ class Tx_Commerce_Utility_BackendUtility {
 	 * @param array $ffData FlexForm data as array
 	 * @param string $prefix Prefix that is used for the correlationtypes
 	 * @param array $ctList List of correlations that should be processed
-	 * @param int $uidLocal "uid_local" in the relation table
+	 * @param int $uidLocal Field in the relation table
 	 * @param array $paList List of product attributes (PASSED BY REFERENCE)
 	 *
 	 * @return void
 	 */
-	public function mergeAttributeListFromFFData($ffData, $prefix, $ctList, $uidLocal, &$paList) {
+	public function mergeAttributeListFromFFData(array $ffData, $prefix, array $ctList, $uidLocal, array &$paList) {
 		if (is_array($ctList)) {
 			foreach ($ctList as $ctUid) {
 				$ffaList = explode(',', $ffData[$prefix . $ctUid['uid']]['vDEF']);
@@ -1115,7 +1108,7 @@ class Tx_Commerce_Utility_BackendUtility {
 	 *
 	 * @return array with fieldnames
 	 */
-	public static function extractFieldArray($array, $field, $makeArray = FALSE, $extraFields = array()) {
+	public static function extractFieldArray(array $array, $field, $makeArray = FALSE, array $extraFields = array()) {
 		$result = array();
 		if (is_array($array)) {
 			foreach ($array as $data) {
@@ -1171,7 +1164,7 @@ class Tx_Commerce_Utility_BackendUtility {
 	 *
 	 * @return array with two arrays as elements
 	 */
-	public function getUpdateData($attributeData, $data, $productUid = 0) {
+	public function getUpdateData(array $attributeData, $data, $productUid = 0) {
 		$updateArray = array();
 		$updateArray['uid_valuelist'] = '';
 		$updateArray['default_value'] = '';
@@ -1208,7 +1201,7 @@ class Tx_Commerce_Utility_BackendUtility {
 
 		$result = '';
 		if (is_array($attrFlexformData)) {
-				// change the language
+			// change the language
 			$attrFlexformData['data']['sDEF']['l' . $langIdent] = $attrFlexformData['data']['sDEF']['lDEF'];
 
 			/**
@@ -1233,8 +1226,8 @@ class Tx_Commerce_Utility_BackendUtility {
 					 */
 					$prepend = '[Translate to ' . $langIdent . ':] ';
 					foreach (array_keys($attrFlexformData['data']['sDEF']['lDEF']) as $attribKey) {
-						$attrFlexformData['data']['sDEF']['lDEF'][$attribKey]['vDEF'] =
-							$prepend . $attrFlexformData['data']['sDEF']['lDEF'][$attribKey]['vDEF'];
+						$attrFlexformData['data']['sDEF']['lDEF'][$attribKey]['vDEF'] = $prepend .
+							$attrFlexformData['data']['sDEF']['lDEF'][$attribKey]['vDEF'];
 					}
 					break;
 
@@ -1246,24 +1239,11 @@ class Tx_Commerce_Utility_BackendUtility {
 	}
 
 	/**
-	 * Removed with irre implementation. Stub left for api compatibility
-	 * save Price-Flexform with given Article-UID
+	 * Get order folder selector
 	 *
-	 * @param int $id Id
-	 * @param int $uidArticle Article uid
-	 * @param array $fieldArray Field values
-	 *
-	 * @return void
-	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, this wont get replaced as it was empty before and will get removed from the api
-	 */
-	public function savePriceFlexformWithArticle($id, $uidArticle, array $fieldArray) {
-		GeneralUtility::logDeprecatedFunction();
-	}
-
-	/**
-	 * @param int $pid
-	 * @param int $levels
-	 * @param int $aktLevel
+	 * @param int $pid Page id
+	 * @param int $levels Levels
+	 * @param int $aktLevel Current level
 	 *
 	 * @return array|bool
 	 */
@@ -1308,7 +1288,7 @@ class Tx_Commerce_Utility_BackendUtility {
 	}
 
 	/**
-	 * update Flexform XML from Database
+	 * Update Flexform XML from Database
 	 *
 	 * @param int $articleUid ID of article
 	 *
@@ -1324,19 +1304,19 @@ class Tx_Commerce_Utility_BackendUtility {
 		);
 
 		$data = array('data' => array('sDEF' => array('lDEF')));
+		$lDef = & $data['data']['sDEF']['lDEF'];
 		while (($price = $database->sql_fetch_assoc($res))) {
 			$priceUid = $price['uid'];
 
-			$data['data']['sDEF']['lDEF']['price_net_' . $priceUid] = array('vDEF' => sprintf('%.2f', ($price['price_net'] / 100)));
-			$data['data']['sDEF']['lDEF']['price_gross_' . $priceUid] = array('vDEF' => sprintf('%.2f', ($price['price_gross'] / 100)));
-			$data['data']['sDEF']['lDEF']['purchase_price_' . $priceUid] =
-				array('vDEF' => sprintf('%.2f', ($price['purchase_price'] / 100)));
-			$data['data']['sDEF']['lDEF']['hidden_' . $priceUid] = array('vDEF' => $price['hidden']);
-			$data['data']['sDEF']['lDEF']['starttime_' . $priceUid] = array('vDEF' => $price['starttime']);
-			$data['data']['sDEF']['lDEF']['endtime_' . $priceUid] = array('vDEF' => $price['endtime']);
-			$data['data']['sDEF']['lDEF']['fe_group_' . $priceUid] = array('vDEF' => $price['fe_group']);
-			$data['data']['sDEF']['lDEF']['price_scale_amount_start_' . $priceUid] = array('vDEF' => $price['price_scale_amount_start']);
-			$data['data']['sDEF']['lDEF']['price_scale_amount_end_' . $priceUid] = array('vDEF' => $price['price_scale_amount_end']);
+			$lDef['price_net_' . $priceUid] = array('vDEF' => sprintf('%.2f', ($price['price_net'] / 100)));
+			$lDef['price_gross_' . $priceUid] = array('vDEF' => sprintf('%.2f', ($price['price_gross'] / 100)));
+			$lDef['purchase_price_' . $priceUid] = array('vDEF' => sprintf('%.2f', ($price['purchase_price'] / 100)));
+			$lDef['hidden_' . $priceUid] = array('vDEF' => $price['hidden']);
+			$lDef['starttime_' . $priceUid] = array('vDEF' => $price['starttime']);
+			$lDef['endtime_' . $priceUid] = array('vDEF' => $price['endtime']);
+			$lDef['fe_group_' . $priceUid] = array('vDEF' => $price['fe_group']);
+			$lDef['price_scale_amount_start_' . $priceUid] = array('vDEF' => $price['price_scale_amount_start']);
+			$lDef['price_scale_amount_end_' . $priceUid] = array('vDEF' => $price['price_scale_amount_end']);
 		}
 
 		$xml = GeneralUtility::array2xml($data, '', 0, 'T3FlexForms');
@@ -1348,68 +1328,6 @@ class Tx_Commerce_Utility_BackendUtility {
 		);
 
 		return (bool) $res;
-	}
-
-	/**
-	 * This makes the Xml to draw the price form of an article
-	 * Call this function if you have imported data to the database and havn't
-	 * updated the Flexform
-	 *
-	 * @param int $articleUid
-	 *
-	 * @return void
-	 * @see updatePriceXMLFromDatabase
-	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use Tx_Commerce_Utility_BackendUtility::updatePriceXMLFromDatabase
-	 */
-	public function fix_articles_price($articleUid = 0) {
-		GeneralUtility::logDeprecatedFunction();
-		if ($articleUid > 0) {
-			self::updatePriceXMLFromDatabase($articleUid);
-		}
-	}
-
-	/**
-	 * This makes the Xml for the product Attributes
-	 * Call thos function if you have imported data to the database and havn't
-	 * updated the Flexform
-	 *
-	 * @param int $productUid
-	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use Tx_Commerce_Utility_BackendUtility::updateXML
-	 */
-	public function fix_product_atributte($productUid = 0) {
-		GeneralUtility::logDeprecatedFunction();
-		if ($productUid > 0) {
-			$database = self::getDatabaseConnection();
-
-			$mmTable = 'tx_commerce_products_attributes_mm';
-			$where = 'uid_local= ' . (int) $productUid;
-			$rs = $database->exec_SELECTquery(
-				'uid_correlationtype,uid_foreign',
-				$mmTable,
-				$where,
-				$groupBy = '',
-				$orderBy = '',
-				$limit = ''
-			);
-			$xmlArray = array();
-			while (($row = $database->sql_fetch_assoc($rs))) {
-				if (empty($xmlArray['data']['sDEF']['lDEF']['ct_' . $row['uid_correlationtype']]['vDEF'])) {
-					$xmlArray['data']['sDEF']['lDEF']['ct_' . $row['uid_correlationtype']]['vDEF'] = $row['uid_foreign'];
-				} else {
-					$xmlArray['data']['sDEF']['lDEF']['ct_' . $row['uid_correlationtype']]['vDEF'] .= ',' . $row['uid_foreign'];
-				}
-			}
-			$arrayToSave = array();
-			$xmlText = GeneralUtility::array2xml_cs($xmlArray, 'T3FlexForms', $options = array(), $charset = '');
-			$arrayToSave['attributes'] = $xmlText;
-
-			$database->exec_UPDATEquery(
-				'tx_commerce_products',
-				'uid=' . $productUid,
-				$arrayToSave,
-				FALSE
-			);
-		}
 	}
 
 	/**
@@ -1425,7 +1343,7 @@ class Tx_Commerce_Utility_BackendUtility {
 	 * @return bool Success
 	 */
 	public static function swapProductAttributes($pUidFrom, $pUidTo, $copy = FALSE) {
-			// verify params
+		// verify params
 		if (!is_numeric($pUidFrom) || !is_numeric($pUidTo)) {
 			if (TYPO3_DLOG) {
 				GeneralUtility::devLog(
@@ -1437,7 +1355,7 @@ class Tx_Commerce_Utility_BackendUtility {
 			return FALSE;
 		}
 
-			// check perms
+		// check perms
 		if (!self::checkProductPerms($pUidFrom, ($copy) ? 'show' : 'editcontent')) {
 			return FALSE;
 		}
@@ -1448,7 +1366,7 @@ class Tx_Commerce_Utility_BackendUtility {
 		$database = self::getDatabaseConnection();
 
 		if (!$copy) {
-				// cut the attributes - or, update the mm table with the new uids of the product
+			// cut the attributes - or, update the mm table with the new uids of the product
 			$database->exec_UPDATEquery(
 				'tx_commerce_products_attributes_mm',
 				'uid_local = ' . (int) $pUidFrom,
@@ -1538,13 +1456,13 @@ class Tx_Commerce_Utility_BackendUtility {
 	/**
 	 * Copies the specified Article to the new product
 	 *
-	 * @param int $uid uid of existing article which is to be copied
-	 * @param int $uidProduct uid of product that is new parent
-	 * @param array $locale array with sys_langauges to copy along, none if null
+	 * @param int $uid Uid of existing article which is to be copied
+	 * @param int $uidProduct Uid of product that is new parent
+	 * @param array $locale Array with sys_langauges to copy along, none if null
 	 *
 	 * @return int UID of the new article or false on error
 	 */
-	public function copyArticle($uid, $uidProduct, $locale = array()) {
+	public function copyArticle($uid, $uidProduct, array $locale = array()) {
 		$backendUser = self::getBackendUser();
 		$database = self::getDatabaseConnection();
 
@@ -1570,19 +1488,19 @@ class Tx_Commerce_Utility_BackendUtility {
 			return FALSE;
 		}
 
-			// get uid of the last article in the articles table
+		// get uid of the last article in the articles table
 		$res = $database->exec_SELECTquery('uid', 'tx_commerce_articles', 'deleted = 0', '', 'uid DESC', '0,1');
 
-			// if there are no articles at all, abort.
+		// if there are no articles at all, abort.
 		if (0 >= $database->sql_num_rows($res)) {
 			return FALSE;
 		}
 
 		$row = $database->sql_fetch_assoc($res);
-			// uid of the last article (after this article we will copy the new article
+		// uid of the last article (after this article we will copy the new article
 		$uidLast = $row['uid'];
 
-			// init tce
+		// init tce
 		/**
 		 * TCE main
 		 *
@@ -1627,7 +1545,7 @@ class Tx_Commerce_Utility_BackendUtility {
 			return FALSE;
 		}
 
-			// copy prices - not possible through datamap so we do it here
+		// copy prices - not possible through datamap so we do it here
 		self::copyPrices($uid, $newUid);
 
 		// copy attributes - creating attributes doesn't work with normal
@@ -1637,7 +1555,7 @@ class Tx_Commerce_Utility_BackendUtility {
 		// attributes manually
 		self::overwriteArticleAttributes($uid, $newUid);
 
-			// copy locales
+		// copy locales
 		if (count($locale)) {
 			foreach ($locale as $loc) {
 				self::copyLocale('tx_commerce_articles', $uid, $newUid, $loc);
@@ -1650,8 +1568,8 @@ class Tx_Commerce_Utility_BackendUtility {
 	/**
 	 * Copies the Prices of a Article
 	 *
-	 * @param int $uidFrom
-	 * @param int $uidTo
+	 * @param int $uidFrom Article uid from
+	 * @param int $uidTo Article uid to
 	 *
 	 * @return bool
 	 */
@@ -1659,25 +1577,29 @@ class Tx_Commerce_Utility_BackendUtility {
 		$backendUser = self::getBackendUser();
 		$database = self::getDatabaseConnection();
 
-			// select all existing prices of the article
+		// select all existing prices of the article
 		$res = $database->exec_SELECTquery('uid', 'tx_commerce_article_prices', 'deleted = 0 AND uid_article = ' . $uidFrom, '');
 
 		$newUid = 0;
 		while (($row = $database->sql_fetch_assoc($res))) {
-				// copy them to the new article
-			/** @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce */
+			// copy them to the new article
+			/**
+			 * Data handler
+			 *
+			 * @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce
+			 */
 			$tce = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
 			$tce->stripslashes_values = 0;
 
-			$TCAdefaultOverride = $backendUser->getTSConfigProp('TCAdefaults');
-			if (is_array($TCAdefaultOverride)) {
-				$tce->setDefaultsFromUserTS($TCAdefaultOverride);
+			$tcaDefaultOverride = $backendUser->getTSConfigProp('TCAdefaults');
+			if (is_array($tcaDefaultOverride)) {
+				$tce->setDefaultsFromUserTS($tcaDefaultOverride);
 			}
 
-				// start
+			// start
 			$tce->start(array(), array());
 
-				// invoke the copy manually so we can actually override the uid_product field
+			// invoke the copy manually so we can actually override the uid_product field
 			$overrideArray = array('uid_article' => $uidTo);
 
 			$backendUser->uc['txcommerce_copyProcess'] = 1;
@@ -1685,7 +1607,7 @@ class Tx_Commerce_Utility_BackendUtility {
 
 			$newUid = $tce->copyRecord('tx_commerce_article_prices', $row['uid'], - $row['uid'], 1, $overrideArray);
 
-				// copying done, clear session
+			// copying done, clear session
 			$backendUser->uc['txcommerce_copyProcess'] = 0;
 			$backendUser->writeUC();
 		}
@@ -1701,29 +1623,29 @@ class Tx_Commerce_Utility_BackendUtility {
 	 *
 	 * @param int $uidFrom Uid of the article we get the attributes from
 	 * @param int $uidTo Uid of the article we want to copy the attributes to
-	 * @param int $loc
+	 * @param int $languageUid Language uid
 	 *
 	 * @return bool Success
 	 */
-	public function overwriteArticleAttributes($uidFrom, $uidTo, $loc = 0) {
+	public function overwriteArticleAttributes($uidFrom, $uidTo, $languageUid = 0) {
 		$database = self::getDatabaseConnection();
-			// delete existing attributes
+		// delete existing attributes
 		$table = 'tx_commerce_articles_article_attributes_mm';
 
-		if ($loc != 0) {
-				// we want to overwrite the attributes of the locale
-				// replace $uidFrom and $uidTo with their localized versions
+		if ($languageUid != 0) {
+			// we want to overwrite the attributes of the locale
+			// replace $uidFrom and $uidTo with their localized versions
 			$uids = $uidFrom . ',' . $uidTo;
 			$res = $database->exec_SELECTquery(
 				'uid, l18n_parent',
 				'tx_commerce_articles',
-				'sys_language_uid = ' . $loc . ' AND l18n_parent IN (' . $uids . ')'
+				'sys_language_uid = ' . $languageUid . ' AND l18n_parent IN (' . $uids . ')'
 			);
 			$newFrom = $uidFrom;
 			$newTo = $uidTo;
 
-				// get uids
-			while ($row = $database->sql_fetch_assoc($res)) {
+			// get uids
+			while (($row = $database->sql_fetch_assoc($res))) {
 				if ($row['l18n_parent'] == $uidFrom) {
 					$newFrom = $row['uid'];
 				} elseif ($row['l18n_parent'] == $uidTo) {
@@ -1731,12 +1653,12 @@ class Tx_Commerce_Utility_BackendUtility {
 				}
 			}
 
-				// abort if we didn't find the locale for any of the articles
+			// abort if we didn't find the locale for any of the articles
 			if ($newFrom == $uidFrom || $newTo == $uidTo) {
 				return FALSE;
 			}
 
-				// replace uids
+			// replace uids
 			$uidFrom = $newFrom;
 			$uidTo = $newTo;
 		}
@@ -1746,10 +1668,10 @@ class Tx_Commerce_Utility_BackendUtility {
 			'uid_local=' . $uidTo
 		);
 
-			// copy the attributes
+		// copy the attributes
 		$res = $database->exec_SELECTquery('*', $table, 'uid_local=' . $uidFrom . ' AND uid_valuelist = 0');
 
-		while ($origRelation = $database->sql_fetch_assoc($res)) {
+		while (($origRelation = $database->sql_fetch_assoc($res))) {
 			$origRelation['uid_local'] = $uidTo;
 			$database->exec_INSERTquery($table, $origRelation);
 		}
@@ -1760,42 +1682,49 @@ class Tx_Commerce_Utility_BackendUtility {
 	/**
 	 * Copies the specified Product to the new category
 	 *
-	 * @param int $uid uid of existing product which is to be copied
-	 * @param int $uid_category
-	 * @param bool $ignoreWS true if versioning should be disabled (be warned: use this only if you are 100% sure you know what you are doing)
-	 * @param array $locale array of languages that should be copied, or null if none are specified
-	 * @param int $sorting uid of the record behind which we insert this product, or 0 to just append
+	 * @param int $uid Uid of existing product which is to be copied
+	 * @param int $categoryUid Category uid
+	 * @param bool $ignoreWs If versioning should be disabled
+	 * 	(be warned: use this only if you are 100% sure you know what you are doing)
+	 * @param array $locale Languages that should be copied,
+	 *	or null if none are specified
+	 * @param int $sorting Uid of the record behind which we
+	 *	insert this product, or 0 to just append
 	 *
 	 * @return int UID of the new product or false on error
 	 */
-	public static function copyProduct($uid, $uid_category, $ignoreWS = FALSE, $locale = NULL, $sorting = 0) {
-			// check params
-		if (!is_numeric($uid) || !is_numeric($uid_category) || !is_numeric($sorting)) {
+	public static function copyProduct($uid, $categoryUid, $ignoreWs = FALSE, array $locale = NULL, $sorting = 0) {
+		// check params
+		if (!is_numeric($uid) || !is_numeric($categoryUid) || !is_numeric($sorting)) {
 			if (TYPO3_DLOG) {
 				GeneralUtility::devLog('copyProduct (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
 			}
 			return FALSE;
 		}
 
-			// check if we may actually copy the product (no permission check, only check if we are not accidentally copying a placeholder or deleted product)
-			// also hidden products are not allowed to be copied
+		// check if we may actually copy the product (no permission
+		// check, only check if we are not accidentally copying a
+		// placeholder or deleted product)
+		// also hidden products are not allowed to be copied
 		$record = BackendUtility::getRecordWSOL('tx_commerce_products', $uid, '*', ' AND hidden = 0 AND t3ver_state = 0');
 
 		if (!$record) {
 			return FALSE;
 		}
 
-			// check if we have the permissions to copy (check category rights) - skip if we are copying locales
+		// check if we have the permissions to copy
+		// (check category rights) - skip if we are copying locales
 		if (!self::checkProductPerms($uid, 'copy')) {
 			return FALSE;
 		}
 
 			// check editcontent right for uid_category
-		if (!self::readCategoryAccess($uid_category, self::getCategoryPermsClause(self::getPermMask('editcontent')))) {
+		if (!self::readCategoryAccess($categoryUid, self::getCategoryPermsClause(self::getPermMask('editcontent')))) {
 			return FALSE;
 		}
 
-			// First prepare user defined objects (if any) for hooks which extend this function:
+		// First prepare user defined objects (if any)
+		// for hooks which extend this function:
 		$hookObjectsArr = array();
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_belib.php']['copyProductClass'])) {
 			GeneralUtility::deprecationLog('
@@ -1818,41 +1747,45 @@ class Tx_Commerce_Utility_BackendUtility {
 		$database = self::getDatabaseConnection();
 
 		if ($sorting == 0) {
-				// get uid of the last product in the products table
+			// get uid of the last product in the products table
 			$res = $database->exec_SELECTquery('uid', 'tx_commerce_products', 'deleted = 0 AND pid != -1', '', 'uid DESC', '0,1');
 
-				// if there are no products at all, abort.
+			// if there are no products at all, abort.
 			if (!$database->sql_num_rows($res)) {
 				return FALSE;
 			}
 
 			$row = $database->sql_fetch_assoc($res);
-				// uid of the last product (after this product we will copy the new product)
+			// uid of the last product (after this product we will copy the new product)
 			$uidLast = - $row['uid'];
 		} else {
-				// sorting position is specified
+			// sorting position is specified
 			$uidLast = (0 > $sorting) ? $sorting : self::getCopyPid('tx_commerce_products', $sorting);
 		}
 
 			// init tce
-		/** @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce */
+		/**
+		 * Data handler
+		 *
+		 * @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce
+		 */
 		$tce = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
 		$tce->stripslashes_values = 0;
-			// set workspace bypass if requested
-		$tce->bypassWorkspaceRestrictions = $ignoreWS;
+		// set workspace bypass if requested
+		$tce->bypassWorkspaceRestrictions = $ignoreWs;
 
-		$TCAdefaultOverride = $backendUser->getTSConfigProp('TCAdefaults');
-		if (is_array($TCAdefaultOverride)) {
-			$tce->setDefaultsFromUserTS($TCAdefaultOverride);
+		$tcaDefaultOverride = $backendUser->getTSConfigProp('TCAdefaults');
+		if (is_array($tcaDefaultOverride)) {
+			$tce->setDefaultsFromUserTS($tcaDefaultOverride);
 		}
 
-			// start
+		// start
 		$tce->start(array(), array());
 
-			// invoke the copy manually so we can actually override the categories field
-		$overrideArray = array('categories' => $uid_category);
+		// invoke the copy manually so we can actually override the categories field
+		$overrideArray = array('categories' => $categoryUid);
 
-			// Hook: beforeCopy
+		// Hook: beforeCopy
 		foreach ($hookObjectsArr as $hookObj) {
 			if (method_exists($hookObj, 'beforeCopy')) {
 				$hookObj->beforeCopy($uid, $uidLast, $overrideArray);
@@ -1861,7 +1794,7 @@ class Tx_Commerce_Utility_BackendUtility {
 
 		$newUid = $tce->copyRecord('tx_commerce_products', $uid, $uidLast, 1, $overrideArray);
 
-			// Hook: afterCopy
+		// Hook: afterCopy
 		foreach ($hookObjectsArr as $hookObj) {
 			if (method_exists($hookObj, 'afterCopy')) {
 				$hookObj->afterCopy($newUid, $uid, $$overrideArray);
@@ -1872,19 +1805,20 @@ class Tx_Commerce_Utility_BackendUtility {
 			return FALSE;
 		}
 
-			// copy locales
+		// copy locales
 		if (is_array($locale) && 0 != count($locale)) {
 			foreach ($locale as $loc) {
-				self::copyLocale('tx_commerce_products', $uid, $newUid, $loc, $ignoreWS);
+				self::copyLocale('tx_commerce_products', $uid, $newUid, $loc, $ignoreWs);
 			}
 		}
 
-			// copy articles
+		// copy articles
 		$success = self::copyArticlesByProduct($newUid, $uid, $locale);
 
-			// Overwrite the Product we just created again - to fix that Attributes and Prices are not copied for Articles when they are only copied
-			// This should be TEMPORARY - find a clean way to fix that problem
-			// self::overwriteProduct($uid, $newUid, $locale); ###fixed###
+		// Overwrite the Product we just created again - to fix that Attributes
+		// and Prices are not copied for Articles when they are only copied
+		// This should be TEMPORARY - find a clean way to fix that problem
+		// self::overwriteProduct($uid, $newUid, $locale); ###fixed###
 		return !$success ? $success : $newUid;
 
 	}
@@ -1893,16 +1827,16 @@ class Tx_Commerce_Utility_BackendUtility {
 	 * Copies any locale of a commerce items
 	 *
 	 * @param string $table Name of the table in which the locale is
-	 * @param int $uidCopied uid of the record that is localized
-	 * @param int $uidNew uid of the record that was copied and now needs a locale
-	 * @param int $loc id of the sys_language
-	 * @param bool $ignoreWS
+	 * @param int $uidCopied Uid of the record that is localized
+	 * @param int $uidNew Uid of the record that was copied and now needs a locale
+	 * @param int $languageUid Uid of the sys_language
+	 * @param bool $ignoreWs Ignore workspace
 	 *
 	 * @return bool Success
 	 */
-	public function copyLocale($table, $uidCopied, $uidNew, $loc, $ignoreWS = FALSE) {
-			// check params
-		if (!is_string($table) || !is_numeric($uidCopied) || !is_numeric($uidNew) || !is_numeric($loc)) {
+	public function copyLocale($table, $uidCopied, $uidNew, $languageUid, $ignoreWs = FALSE) {
+		// check params
+		if (!is_string($table) || !is_numeric($uidCopied) || !is_numeric($uidNew) || !is_numeric($languageUid)) {
 			if (TYPO3_DLOG) {
 				GeneralUtility::devLog('copyLocale (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
 			}
@@ -1914,21 +1848,22 @@ class Tx_Commerce_Utility_BackendUtility {
 
 		if ($GLOBALS['TCA'][$table] && $uidCopied) {
 			// make data
-			$rec = BackendUtility::getRecordLocalization($table, $uidCopied, $loc);
+			$rec = BackendUtility::getRecordLocalization($table, $uidCopied, $languageUid);
 
 			// if the item is not localized, return
 			if (FALSE == $rec) {
 				return TRUE;
 			}
 
-				// overwrite l18n parent
+			// overwrite l18n parent
 			$rec[0]['l18n_parent'] = $uidNew;
-				// unset uid for cleanliness
+			// unset uid for cleanliness
 			unset($rec[0]['uid']);
 
-				// unset all fields that are not supposed to be copied on localized versions
+			// unset all fields that are not supposed to be copied on localized versions
 			foreach ($GLOBALS['TCA'][$table]['columns'] as $fN => $fCfg) {
-					// Otherwise, do not copy field (unless it is the language field or pointer to the original language)
+				// Otherwise, do not copy field (unless it is the
+				// language field or pointer to the original language)
 				if (
 					GeneralUtility::inList('exclude,noCopy,mergeIfNotBlank', $fCfg['l10n_mode'])
 					&& $fN != $GLOBALS['TCA'][$table]['ctrl']['languageField']
@@ -1938,18 +1873,22 @@ class Tx_Commerce_Utility_BackendUtility {
 				}
 			}
 
-				// if we localize an article, add the product uid of the $uidNew localized product
+			// if we localize an article, add the product
+			// uid of the $uidNew localized product
 			if ('tx_commerce_articles' == $table) {
-				/** @var Tx_Commerce_Domain_Model_Article $article */
+				/**
+				 * Article
+				 *
+				 * @var Tx_Commerce_Domain_Model_Article $article
+				 */
 				$article = GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Article', $uidNew);
 				$productUid = $article->getParentProductUid();
 
-					// load uid of the localized product
+				// load uid of the localized product
 				$res = $database->exec_SELECTquery(
 					'uid',
 					'tx_commerce_products',
-					'l18n_parent = ' . $productUid . ' AND sys_language_uid = ' . $loc
-				);
+					'l18n_parent = ' . $productUid . ' AND sys_language_uid = ' . $languageUid);
 				$row = $database->sql_fetch_assoc($res);
 
 				$rec[0]['uid_product'] = $row['uid'];
@@ -1960,39 +1899,44 @@ class Tx_Commerce_Utility_BackendUtility {
 			$newUid = uniqid('NEW');
 			$data[$table][$newUid] = $rec[0];
 
-				// init tce
-			/** @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce */
+			// init tce
+			/**
+			 * Data handler
+			 *
+			 * @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce
+			 */
 			$tce = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
 			$tce->stripslashes_values = 0;
-				// set workspace bypass if requested
-			$tce->bypassWorkspaceRestrictions = $ignoreWS;
+			// set workspace bypass if requested
+			$tce->bypassWorkspaceRestrictions = $ignoreWs;
 
-			$TCAdefaultOverride = $backendUser->getTSConfigProp('TCAdefaults');
-			if (is_array($TCAdefaultOverride)) {
-				$tce->setDefaultsFromUserTS($TCAdefaultOverride);
+			$tcaDefaultOverride = $backendUser->getTSConfigProp('TCAdefaults');
+			if (is_array($tcaDefaultOverride)) {
+				$tce->setDefaultsFromUserTS($tcaDefaultOverride);
 			}
 
-				// start
+			// start
 			$tce->start($data, array());
 
-				// Write to session that we copy
-				// this is used by the hook to the datamap class to figure out if it should call the dynaflex
-				// so far this is the best (though not very clean) way to solve the issue we get when saving an article
+			// Write to session that we copy
+			// this is used by the hook to the datamap class to figure out if
+			// it should call the dynaflex so far this is the best (though not
+			// very clean) way to solve the issue we get when saving an article
 			$backendUser->uc['txcommerce_copyProcess'] = 1;
 			$backendUser->writeUC();
 
 			$tce->process_datamap();
 
-				// copying done, clear session
+			// copying done, clear session
 			$backendUser->uc['txcommerce_copyProcess'] = 0;
 			$backendUser->writeUC();
 
-				// get real uid
+			// get real uid
 			$newUid = $tce->substNEWwithIDs[$newUid];
 
-				// for articles we have to overwrite the attributes
+			// for articles we have to overwrite the attributes
 			if ('tx_commerce_articles' == $table) {
-				self::overwriteArticleAttributes($uidCopied, $newUid, $loc);
+				self::overwriteArticleAttributes($uidCopied, $newUid, $languageUid);
 			}
 		}
 		return TRUE;
@@ -2003,16 +1947,16 @@ class Tx_Commerce_Utility_BackendUtility {
 	 * if the record does not have the localization, it is copied to the record
 	 *
 	 * @param string $table Name of the table in which we overwrite records
-	 * @param int $uidCopied uid of the record that is the overwriter
-	 * @param int $uidOverwrite uid of the record that is to be overwritten
-	 * @param int $loc uid of the syslang that is overwritten
+	 * @param int $uidCopied Uid of the record that is the overwriter
+	 * @param int $uidOverwrite Uid of the record that is to be overwritten
+	 * @param int $loc Uid of the syslang that is overwritten
 	 *
 	 * @return bool Success
 	 */
 	public function overwriteLocale($table, $uidCopied, $uidOverwrite, $loc) {
 		$backendUser = $this->getBackendUser();
 
-			// check params
+		// check params
 		if (!is_string($table) || !is_numeric($uidCopied) || !is_numeric($uidOverwrite) || !is_numeric($loc)) {
 			if (TYPO3_DLOG) {
 				GeneralUtility::devLog('copyLocale (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
@@ -2020,7 +1964,7 @@ class Tx_Commerce_Utility_BackendUtility {
 			return FALSE;
 		}
 
-			// check if table is defined in the TCA
+		// check if table is defined in the TCA
 		if ($GLOBALS['TCA'][$table] && $uidCopied) {
 			// make data
 			$recFrom = BackendUtility::getRecordLocalization($table, $uidCopied, $loc);
@@ -2031,19 +1975,21 @@ class Tx_Commerce_Utility_BackendUtility {
 				return TRUE;
 			}
 
-				// if the overwritten record does not have the corresponding localization, just copy it
+			// if the overwritten record does not have
+			// the corresponding localization, just copy it
 			if (FALSE == $recTo) {
 				return self::copyLocale($table, $uidCopied, $uidOverwrite, $loc);
 			}
 
-				// overwrite l18n parent
+			// overwrite l18n parent
 			$recFrom[0]['l18n_parent'] = $uidOverwrite;
-				// unset uid for cleanliness
+			// unset uid for cleanliness
 			unset($recFrom[0]['uid']);
 
-				// unset all fields that are not supposed to be copied on localized versions
+			// unset all fields that are not supposed to be copied on localized versions
 			foreach ($GLOBALS['TCA'][$table]['columns'] as $fN => $fCfg) {
-					// Otherwise, do not copy field (unless it is the language field or pointer to the original language)
+				// Otherwise, do not copy field (unless it is the
+				// language field or pointer to the original language)
 				if (
 					GeneralUtility::inList('exclude,noCopy,mergeIfNotBlank', $fCfg['l10n_mode'])
 					&& $fN != $GLOBALS['TCA'][$table]['ctrl']['languageField']
@@ -2066,32 +2012,37 @@ class Tx_Commerce_Utility_BackendUtility {
 			$data = array();
 			$data[$table][$recTo[0]['uid']] = $recFrom[0];
 
-				// init tce
-			/** @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce */
+			// init tce
+			/**
+			 * Data handler
+			 *
+			 * @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce
+			 */
 			$tce = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
 			$tce->stripslashes_values = 0;
 
-			$TCAdefaultOverride = $backendUser->getTSConfigProp('TCAdefaults');
-			if (is_array($TCAdefaultOverride)) {
-				$tce->setDefaultsFromUserTS($TCAdefaultOverride);
+			$tcaDefaultOverride = $backendUser->getTSConfigProp('TCAdefaults');
+			if (is_array($tcaDefaultOverride)) {
+				$tce->setDefaultsFromUserTS($tcaDefaultOverride);
 			}
 
-				// start
+			// start
 			$tce->start($data, array());
 
-				// Write to session that we copy
-				// this is used by the hook to the datamap class to figure out if it should call the dynaflex
-				// so far this is the best (though not very clean) way to solve the issue we get when saving an article
+			// Write to session that we copy
+			// this is used by the hook to the datamap class to figure out if
+			// it should call the dynaflex so far this is the best (though not
+			// very clean) way to solve the issue we get when saving an article
 			$backendUser->uc['txcommerce_copyProcess'] = 1;
 			$backendUser->writeUC();
 
 			$tce->process_datamap();
 
-				// copying done, clear session
+			// copying done, clear session
 			$backendUser->uc['txcommerce_copyProcess'] = 0;
 			$backendUser->writeUC();
 
-				// for articles we have to overwrite the attributes
+			// for articles we have to overwrite the attributes
 			if ('tx_commerce_articles' == $table) {
 				self::overwriteArticleAttributes($uidCopied, $uidOverwrite, $loc);
 			}
@@ -2101,7 +2052,8 @@ class Tx_Commerce_Utility_BackendUtility {
 
 	/**
 	 * Deletes all localizations of a record
-	 * Note that no permission check is made whatsoever! Check perms if you implement this beforehand
+	 * Note that no permission check is made whatsoever!
+	 * Check perms if you implement this beforehand
 	 *
 	 * @param string $table Table name
 	 * @param int $uid Uid of the record
@@ -2109,7 +2061,7 @@ class Tx_Commerce_Utility_BackendUtility {
 	 * @return bool Success
 	 */
 	public function deleteL18n($table, $uid) {
-			// check params
+		// check params
 		if (!is_string($table) || !is_numeric($uid)) {
 			if (TYPO3_DLOG) {
 				GeneralUtility::devLog('deleteL18n (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
@@ -2119,11 +2071,11 @@ class Tx_Commerce_Utility_BackendUtility {
 
 		$database = self::getDatabaseConnection();
 
-			// get all locales
+		// get all locales
 		$res = $database->exec_SELECTquery('uid', $table, 'l18n_parent = ' . (int) $uid);
 
-			// delete them
-		while ($row = $database->sql_fetch_assoc($res)) {
+		// delete them
+		while (($row = $database->sql_fetch_assoc($res))) {
 			$database->exec_UPDATEquery($table, 'uid = ' . $row['uid'], array('deleted' => 1));
 		}
 
@@ -2135,15 +2087,17 @@ class Tx_Commerce_Utility_BackendUtility {
 	 * note: you may NOT copy the same category into itself
 	 *
 	 * @param int $uid Uid of existing category which is to be copied
-	 * @param int $parent_uid Uid of category that is new parent
-	 * @param array $locale Array with all uids of languages that should as well be copied - if null, no languages shall be copied
-	 * @param int $sorting Uid of the record behind which we copy (like - 23), or 0 if none is given at it should just be appended
+	 * @param int $parentUid Uid of category that is new parent
+	 * @param array $locale Array with all uids of languages that should
+	 *	as well be copied - if null, no languages shall be copied
+	 * @param int $sorting Uid of the record behind which we copy
+	 *	(like - 23), or 0 if none is given at it should just be appended
 	 *
 	 * @return int UID of the new category or false on error
 	 */
-	public static function copyCategory($uid, $parent_uid, $locale = NULL, $sorting = 0) {
+	public static function copyCategory($uid, $parentUid, array $locale = NULL, $sorting = 0) {
 		// check params
-		if (!is_numeric($uid) || !is_numeric($parent_uid) || $uid == $parent_uid) {
+		if (!is_numeric($uid) || !is_numeric($parentUid) || $uid == $parentUid) {
 			if (TYPO3_DLOG) {
 				GeneralUtility::devLog('copyCategory (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
 			}
@@ -2158,11 +2112,12 @@ class Tx_Commerce_Utility_BackendUtility {
 
 		// check if we have the right to insert into the parent Category
 		// new right
-		if (!self::readCategoryAccess($parent_uid, self::getCategoryPermsClause(self::getPermMask('new')))) {
+		if (!self::readCategoryAccess($parentUid, self::getCategoryPermsClause(self::getPermMask('new')))) {
 			return FALSE;
 		}
 
-		// First prepare user defined objects (if any) for hooks which extend this function:
+		// First prepare user defined objects (if any)
+		// for hooks which extend this function:
 		$hookObjectsArr = array();
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_belib.php']['copyCategoryClass'])) {
 			GeneralUtility::deprecationLog('
@@ -2171,7 +2126,9 @@ class Tx_Commerce_Utility_BackendUtility {
 				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Utility/BackendUtility.php\'][\'copyCategory\']
 			');
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_belib.php']['copyCategoryClass'] as $classRef) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_belib.php']['copyCategoryClass'] as
+				$classRef
+			) {
 				$hookObjectsArr[] = &GeneralUtility::getUserObj($classRef);
 			}
 		}
@@ -2184,44 +2141,48 @@ class Tx_Commerce_Utility_BackendUtility {
 		$database = self::getDatabaseConnection();
 
 		if (0 == $sorting) {
-				// get uid of the last category in the category table
+			// get uid of the last category in the category table
 			$res = $database->exec_SELECTquery('uid', 'tx_commerce_categories', 'deleted = 0', '', 'uid DESC', '0,1');
 
-				// if there are no categories at all, abort.
+			// if there are no categories at all, abort.
 			if (0 >= $database->sql_num_rows($res)) {
 				return FALSE;
 			}
 
 			$row = $database->sql_fetch_assoc($res);
 
-				// uid of the last category (after this product we will copy the new category)
+			// uid of the last category (after this product we will copy the new category)
 			$uidLast = - $row['uid'];
 		} else {
-				// copy after the given sorting point
+			// copy after the given sorting point
 			$uidLast = (0 > $sorting) ? $sorting : self::getCopyPid('tx_commerce_categories', $sorting);
 		}
 
-			// init tce
-		/** @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce */
+		// init tce
+		/**
+		 * Data handler
+		 *
+		 * @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce
+		 */
 		$tce = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
 		$tce->stripslashes_values = 0;
 
 		$backendUser = self::getBackendUser();
 
-		$TCAdefaultOverride = $backendUser->getTSConfigProp('TCAdefaults');
-		if (is_array($TCAdefaultOverride)) {
-			$tce->setDefaultsFromUserTS($TCAdefaultOverride);
+		$tcaDefaultOverride = $backendUser->getTSConfigProp('TCAdefaults');
+		if (is_array($tcaDefaultOverride)) {
+			$tce->setDefaultsFromUserTS($tcaDefaultOverride);
 		}
 
-			// start
+		// start
 		$tce->start(array(), array());
 
-			// invoke the copy manually so we can actually override the categories field
+		// invoke the copy manually so we can actually override the categories field
 		$overrideArray = array(
-			'parent_category' => $parent_uid
+			'parent_category' => $parentUid
 		);
 
-			// Hook: beforeCopy
+		// Hook: beforeCopy
 		foreach ($hookObjectsArr as $hookObj) {
 			if (method_exists($hookObj, 'beforeCopy')) {
 				$hookObj->beforeCopy($uid, $uidLast, $overrideArray);
@@ -2230,7 +2191,7 @@ class Tx_Commerce_Utility_BackendUtility {
 
 		$newUid = $tce->copyRecord('tx_commerce_categories', $uid, $uidLast, 1, $overrideArray);
 
-			// Hook: afterCopy
+		// Hook: afterCopy
 		foreach ($hookObjectsArr as $hookObj) {
 			if (method_exists($hookObj, 'afterCopy')) {
 				$hookObj->afterCopy($newUid, $uid, $overrideArray);
@@ -2241,36 +2202,36 @@ class Tx_Commerce_Utility_BackendUtility {
 			return FALSE;
 		}
 
-			// chmod the new category since perms are not copied
+		// chmod the new category since perms are not copied
 		self::chmodCategoryByCategory($newUid, $uid);
 
-			// copy locale
+		// copy locale
 		if (is_array($locale) && 0 != count($locale)) {
 			foreach ($locale as $loc) {
 				self::copyLocale('tx_commerce_categories', $uid, $newUid, $loc);
 			}
 		}
 
-			// copy all child products
+		// copy all child products
 		self::copyProductsByCategory($newUid, $uid, $locale);
 
-			// copy all child categories
+		// copy all child categories
 		self::copyCategoriesByCategory($newUid, $uid, $locale);
 
 		return $newUid;
 	}
 
 	/**
-	 * Changes the permissions of a category and applies the permissions of another category
-	 * Note that this does ALSO change owner or group
+	 * Changes the permissions of a category and applies the permissions
+	 * of another category Note that this does ALSO change owner or group
 	 *
-	 * @param int $uidToChmod uid of the category to chmod
-	 * @param int $uidFrom uid of the category from which we take the perms
+	 * @param int $uidToChmod Uid of the category to chmod
+	 * @param int $uidFrom Uid of the category from which we take the perms
 	 *
 	 * @return bool Success
 	 */
 	public function chmodCategoryByCategory($uidToChmod, $uidFrom) {
-			// check params
+		// check params
 		if (!is_numeric($uidToChmod) || !is_numeric($uidFrom)) {
 			if (TYPO3_DLOG) {
 				GeneralUtility::devLog('chmodCategoryByCategory (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
@@ -2280,7 +2241,7 @@ class Tx_Commerce_Utility_BackendUtility {
 
 		$database = $this->getDatabaseConnection();
 
-			// select current perms
+		// select current perms
 		$res  = $database->exec_SELECTquery(
 			'perms_everybody, perms_group, perms_user, perms_groupid, perms_userid',
 			'tx_commerce_categories',
@@ -2288,8 +2249,8 @@ class Tx_Commerce_Utility_BackendUtility {
 		);
 		$res2 = FALSE;
 
-		while ($row = $database->sql_fetch_assoc($res)) {
-				// apply the permissions
+		while (($row = $database->sql_fetch_assoc($res))) {
+			// apply the permissions
 			$updateFields = array(
 				'perms_everybody' => $row['perms_everybody'],
 				'perms_group' => $row['perms_group'],
@@ -2305,10 +2266,12 @@ class Tx_Commerce_Utility_BackendUtility {
 	}
 
 	/**
-	 * Returns the pid new pid for the copied item - this is only used when inserting a record on front of another
+	 * Returns the pid new pid for the copied item - this is only used when
+	 * inserting a record on front of another
 	 *
 	 * @param string $table Table from which we want to read
-	 * @param int $uid Uid of the record that we want to move our element to - in front of it
+	 * @param int $uid Uid of the record that we want to move our element to
+	 *	- in front of it
 	 *
 	 * @return int
 	 */
@@ -2324,7 +2287,8 @@ class Tx_Commerce_Utility_BackendUtility {
 		$row = $database->sql_fetch_assoc($res);
 
 		if ($row == NULL) {
-				// the item we want to skip is the item with the lowest sorting - use pid of the 'Product' Folder
+			// the item we want to skip is the item with the lowest
+			// sorting - use pid of the 'Product' Folder
 			$pid = self::getProductFolderUid();
 		} else {
 			$pid = - $row['uid'];
@@ -2337,14 +2301,14 @@ class Tx_Commerce_Utility_BackendUtility {
 	 * Copies all Products under a category to a new category
 	 * Note that Products that are copied in this indirect way are not versioned
 	 *
-	 * @param int $catUidTo uid of the category to which the products should be copied
-	 * @param int $catUidFrom uid of the category from which the products should come
-	 * @param array $locale sys_langauges which are to be copied as well, null if none
+	 * @param int $catUidTo Uid of category to which the products should be copied
+	 * @param int $catUidFrom Uid of category from which the products should come
+	 * @param array $locale Languages which are to be copied as well, null if none
 	 *
 	 * @return bool Success
 	 */
-	public function copyProductsByCategory($catUidTo, $catUidFrom, $locale = NULL) {
-			// check params
+	public function copyProductsByCategory($catUidTo, $catUidFrom, array $locale = NULL) {
+		// check params
 		if (!is_numeric($catUidTo) || !is_numeric($catUidFrom)) {
 			if (TYPO3_DLOG) {
 				GeneralUtility::devLog('copyProductsByCategory (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
@@ -2367,9 +2331,9 @@ class Tx_Commerce_Utility_BackendUtility {
 
 		$success = TRUE;
 
-		while ($row = $database->sql_fetch_assoc($res)) {
+		while (($row = $database->sql_fetch_assoc($res))) {
 			$productCopied = self::copyProduct($row['uid_local'], $catUidTo, TRUE, $locale);
-				// keep false if one action was false
+			// keep false if one action was false
 			$success = ($success) ? $productCopied : $success;
 		}
 
@@ -2379,12 +2343,13 @@ class Tx_Commerce_Utility_BackendUtility {
 	/**
 	 * Copies all Categories under a category to a new category
 	 *
-	 * @param int $catUidTo uid of the category to which the categories should be copied
-	 * @param int $catUidFrom uid of the category from which the categories should come
-	 * @param array $locale sys_langauges that should be copied as well
+	 * @param int $catUidTo Uid of category to which the categories should be copied
+	 * @param int $catUidFrom Uid of category from which the categories should come
+	 * @param array $locale Langauges that should be copied as well
+	 *
 	 * @return bool Success
 	 */
-	public function copyCategoriesByCategory($catUidTo, $catUidFrom, $locale = NULL) {
+	public function copyCategoriesByCategory($catUidTo, $catUidFrom, array $locale = NULL) {
 			// check params
 		if (!is_numeric($catUidTo) || !is_numeric($catUidFrom) || $catUidTo == $catUidFrom) {
 			if (TYPO3_DLOG) {
@@ -2407,7 +2372,7 @@ class Tx_Commerce_Utility_BackendUtility {
 		);
 		$success = TRUE;
 
-		while ($row = $database->sql_fetch_assoc($res)) {
+		while (($row = $database->sql_fetch_assoc($res))) {
 			$categoryCopied = self::copyCategory($row['uid_local'], $catUidTo, $locale);
 			$success = ($success) ? $categoryCopied : $success;
 		}
@@ -2418,13 +2383,13 @@ class Tx_Commerce_Utility_BackendUtility {
 	/**
 	 * Copies all Articles from one Product to another
 	 *
-	 * @param int $prodUidTo uid of product from which we copy the articles
-	 * @param int $prodUidFrom uid of product to which we copy the articles
-	 * @param array $locale array with sys_languages to copy along, null if none
+	 * @param int $prodUidTo Uid of product from which we copy the articles
+	 * @param int $prodUidFrom Uid of product to which we copy the articles
+	 * @param array $locale Languages to copy along, null if none
 	 *
 	 * @return bool Success
 	 */
-	public function copyArticlesByProduct($prodUidTo, $prodUidFrom, $locale = NULL) {
+	public function copyArticlesByProduct($prodUidTo, $prodUidFrom, array $locale = NULL) {
 		// check params
 		if (!is_numeric($prodUidTo) || !is_numeric($prodUidFrom)) {
 			if (TYPO3_DLOG) {
@@ -2438,50 +2403,12 @@ class Tx_Commerce_Utility_BackendUtility {
 		$res = $database->exec_SELECTquery('uid', 'tx_commerce_articles', 'deleted = 0 AND uid_product = ' . $prodUidFrom);
 		$success = TRUE;
 
-		while ($row = $database->sql_fetch_assoc($res)) {
+		while (($row = $database->sql_fetch_assoc($res))) {
 			$succ = self::copyArticle($row['uid'], $prodUidTo, $locale);
 			$success = ($success) ? $succ : $success;
 		}
 
 		return $success;
-	}
-
-	/**
-	 * This makes the Xml for the category Attributes
-	 * Call this function if you have imported data to the database and haven't
-	 * updated the Flexform
-	 *
-	 * @param int $category_uid
-	 *
-	 * @return void
-	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use updateXML instead
-	 */
-	public function fix_category_atributte($category_uid = 0) {
-		GeneralUtility::logDeprecatedFunction();
-
-		if ($category_uid == 0) {
-			return;
-		}
-
-		$database = self::getDatabaseConnection();
-
-		$mm_table = 'tx_commerce_categories_attributes_mm';
-		$where = 'uid_local= ' . (int) $category_uid;
-		$rs = $database->exec_SELECTquery('uid_correlationtype,uid_foreign', $mm_table, $where, $groupBy = '', $orderBy = '', $limit = '');
-
-		$xmlArray = array();
-		while ($row = $database->sql_fetch_assoc($rs)) {
-			if (empty($xmlArray['data']['sDEF']['lDEF']['ct_' . $row['uid_correlationtype']]['vDEF'])) {
-				$xmlArray['data']['sDEF']['lDEF']['ct_' . $row['uid_correlationtype']]['vDEF'] = $row['uid_foreign'];
-			} else {
-				$xmlArray['data']['sDEF']['lDEF']['ct_' . $row['uid_correlationtype']]['vDEF'] .= ',' . $row['uid_foreign'];
-			}
-		}
-		$arrayToSave = array();
-		$xmlText = GeneralUtility::array2xml_cs($xmlArray, 'T3FlexForms', $options = array(), $charset = '');
-		$arrayToSave['attributes'] = $xmlText;
-
-		$database->exec_UPDATEquery('tx_commerce_categories', 'uid=' . $category_uid, $arrayToSave);
 	}
 
 	/**
@@ -2533,41 +2460,42 @@ class Tx_Commerce_Utility_BackendUtility {
 	/**
 	 * Returns whether the Permission is set and allowed for the corresponding user
 	 *
-	 * @param string $perm Word rep. for the wanted right ('show', 'edit', 'editcontent', 'delete', 'new')
+	 * @param string $perm Word rep. for the wanted right
+	 * 	('show', 'edit', 'editcontent', 'delete', 'new')
 	 * @param array $record Record data
 	 *
 	 * @return bool $perm User allowed this action or not for the current category
 	 */
-	public static function isPSet($perm, &$record) {
+	public static function isPSet($perm, array &$record) {
 		if (!is_string($perm) || is_null($record)) {
 			return FALSE;
 		}
 
 		$backendUser = self::getBackendUser();
 
-			// If User is admin, he may do anything
+		// If User is admin, he may do anything
 		if ($backendUser->isAdmin()) {
 			return TRUE;
 		}
 
 		$mask = self::getPermMask($perm);
-			// if no mask is found, cancel.
+		// if no mask is found, cancel.
 		if ($mask == 0) {
 			return FALSE;
 		}
 
-			// if editlock is enabled and we edit, cancel edit.
+		// if editlock is enabled and we edit, cancel edit.
 		if ($mask == 2 && $record['editlock']) {
 			return FALSE;
 		}
 
-			// Check the rights of the current record
-			// Check if anybody has the right to do the current operation
+		// Check the rights of the current record
+		// Check if anybody has the right to do the current operation
 		if (isset($record['perms_everybody']) && (($record['perms_everybody'] & $mask) == $mask)) {
 			return TRUE;
 		}
 
-			// Check if user is owner of category and the owner may do the current operation
+		// Check if user is owner of category and the owner may do the current operation
 		if (
 			isset($record['perms_userid']) && isset($record['perms_user'])
 			&& ($record['perms_userid'] == $backendUser->user['uid'])
@@ -2576,11 +2504,11 @@ class Tx_Commerce_Utility_BackendUtility {
 			return TRUE;
 		}
 
-			// Check if the Group has the right to do the current operation
+		// Check if the Group has the right to do the current operation
 		if (isset($record['perms_groupid']) && isset($record['perms_group'])) {
 			$usergroups = explode(',', $backendUser->groupList);
 
-			for ($i = 0, $l = count($usergroups); $i < $l; $i ++) {
+			for ($i = 0, $l = count($usergroups); $i < $l; $i++) {
 					// User is member of the Group of the category - check the rights
 				if ($record['perms_groupid'] == $usergroups[$i]) {
 					if (($record['perms_group'] & $mask) == $mask) {
@@ -2612,34 +2540,40 @@ class Tx_Commerce_Utility_BackendUtility {
 
 		switch ($perm) {
 			case 'read':
+				// fall through
 			case 'show':
+				// fall through
 			case 'copy':
 				$mask = 1;
-			break;
+				break;
 
 			case 'edit':
+				// fall through
 			case 'move':
 				$mask = 2;
-			break;
+				break;
 
 			case 'delete':
 				$mask = 4;
-			break;
+				break;
 
 			case 'new':
 				$mask = 8;
-			break;
+				break;
 
 			case 'editcontent':
 				$mask = 16;
-			break;
+				break;
+
+			default:
 		}
 
 		return $mask;
 	}
 
 	/**
-	 * Checks the permissions for a product (by checking for the permission in all parent categories)
+	 * Checks the permissions for a product
+	 * (by checking for the permission in all parent categories)
 	 *
 	 * @param int $uid Product UId
 	 * @param string $perm String-Rep of the Permission
@@ -2672,7 +2606,7 @@ class Tx_Commerce_Utility_BackendUtility {
 		if (0 < count($parents)) {
 			$l = count($parents);
 
-			for ($i = 0; $i < $l; $i ++) {
+			for ($i = 0; $i < $l; $i++) {
 				if (!self::readCategoryAccess($parents[$i], self::getCategoryPermsClause($mask))) {
 					return FALSE;
 				}
@@ -2695,12 +2629,12 @@ class Tx_Commerce_Utility_BackendUtility {
 	 * (regardless of $perms_clause)
 	 *
 	 * @param int $id Category uid for which to check read-access
-	 * @param string $perms_clause $perms_clause is typically a value
+	 * @param string $permsClause Permission clause is typically a value
 	 *  generated with SELF->getCategoryPermsClause(1);
 	 *
 	 * @return array Returns category record if OK, otherwise false.
 	 */
-	public static function readCategoryAccess($id, $perms_clause) {
+	public static function readCategoryAccess($id, $permsClause) {
 		$backendUser = self::getBackendUser();
 
 		if ((string) $id != '') {
@@ -2712,12 +2646,16 @@ class Tx_Commerce_Utility_BackendUtility {
 					return $pageinfo;
 				}
 			} else {
-					// $pageinfo = BackendUtility::getRecord('tx_commerce_categories', $id, '*', ($perms_clause ? ' AND ' . $perms_clause : ''));
-				$pageinfo = self::getCategoryForRootline($id, ($perms_clause ? ' AND ' . $perms_clause : ''), FALSE);
+				$pageinfo = self::getCategoryForRootline($id, ($permsClause ? ' AND ' . $permsClause : ''), FALSE);
 				BackendUtility::workspaceOL('tx_commerce_categories', $pageinfo);
 				if (is_array($pageinfo)) {
 					BackendUtility::fixVersioningPid('tx_commerce_categories', $pageinfo);
-					list($pageinfo['_thePath'], $pageinfo['_thePathFull']) = self::getCategoryPath((int) $pageinfo['uid'], $perms_clause, 15, 1000);
+					list($pageinfo['_thePath'], $pageinfo['_thePathFull']) = self::getCategoryPath(
+						(int) $pageinfo['uid'],
+						$permsClause,
+						15,
+						1000
+					);
 					return $pageinfo;
 				}
 			}
@@ -2726,17 +2664,19 @@ class Tx_Commerce_Utility_BackendUtility {
 	}
 
 	/**
-	 * Returns the path (visually) of a page $uid, fx. "/First page/Second page/Another subpage"
+	 * Returns the path (visually) of a page $uid, fx. "/First page/Second
+	 * page/Another subpage"
 	 * Each part of the path will be limited to $titleLimit characters
 	 * Deleted pages are filtered out.
 	 * Usage: 15
 	 *
 	 * @param int $uid Page uid for which to create record path
-	 * @param string $clause is additional where clauses, eg. "
+	 * @param string $clause Is additional where clauses, eg. "
 	 * @param int $titleLimit Title limit
 	 * @param int $fullTitleLimit Title limit of Full title (typ. set to 1000 or so)
 	 *
-	 * @return mixed Path of record (string) OR array with short/long title if $fullTitleLimit is set.
+	 * @return mixed Path of record (string) OR array with
+	 *	short/long title if $fullTitleLimit is set.
 	 */
 	public static function getCategoryPath($uid, $clause, $titleLimit, $fullTitleLimit = 0) {
 		if (!$titleLimit) {
@@ -2755,9 +2695,13 @@ class Tx_Commerce_Utility_BackendUtility {
 			if ($record['uid'] === 0) {
 				continue;
 			}
-				// Branch points
+
+			// Branch points
 			if ($record['_ORIG_pid'] && $record['t3ver_swapmode'] > 0) {
-					// Adding visual token - Versioning Entry Point - that tells that THIS position was where the versionized branch got connected to the main tree. I will have to find a better name or something...
+				// Adding visual token - Versioning Entry Point - that tells
+				// that THIS position was where the versionized branch got
+				// connected to the main tree. I will have to find a better
+				// name or something...
 				$output = ' [#VEP#]' . $output;
 			}
 			$output = '/' . GeneralUtility::fixed_lgd_cs(strip_tags($record['title']), $titleLimit) . $output;
@@ -2782,26 +2726,32 @@ class Tx_Commerce_Utility_BackendUtility {
 	 * rootline stops when a root-template is found.
 	 *
 	 * @param int $uid Page id for which to create the root line.
-	 * @param string $clause Can be used to select other criteria. It would typically be where-clauses that stops the process if we meet a page, the user has no reading access to.
-	 * @param bool $workspaceOL If true, version overlay is applied. This must be requested specifically because it is usually only wanted when the rootline is used for visual output while for permission checking you want the raw thing!
+	 * @param string $clause Can be used to select other criteria. It would
+	 *	typically be where-clauses that stops the process if we meet a page,
+	 *	the user has no reading access to.
+	 * @param bool $workspaceOl If true, version overlay is applied. This must
+	 *	be requested specifically because it is usually only wanted when the
+	 *	rootline is used for visual output while for permission checking you
+	 *	want the raw thing!
 	 *
-	 * @return array Root line array, all the way to the page tree root (or as far as $clause allows!)
+	 * @return array Root line array,
+	 *	all the way to the page tree root (or as far as $clause allows!)
 	 */
-	public static function BEgetRootLine($uid, $clause = '', $workspaceOL = FALSE) {
-		static $BEgetRootLine_cache = array();
+	public static function BEgetRootLine($uid, $clause = '', $workspaceOl = FALSE) {
+		static $backendGetRootLineCache = array();
 
 		$output = array();
 		$pid = $uid;
-		$ident = $pid . '-' . $clause . '-' . $workspaceOL;
+		$ident = $pid . '-' . $clause . '-' . $workspaceOl;
 
-		if (is_array($BEgetRootLine_cache[$ident])) {
-			$output = $BEgetRootLine_cache[$ident];
+		if (is_array($backendGetRootLineCache[$ident])) {
+			$output = $backendGetRootLineCache[$ident];
 		} else {
 			$loopCheck = 100;
 			$theRowArray = array();
 			while ($uid != 0 && $loopCheck) {
 				$loopCheck--;
-				$row = self::getCategoryForRootline($uid, $clause, $workspaceOL);
+				$row = self::getCategoryForRootline($uid, $clause, $workspaceOl);
 				if (is_array($row)) {
 					$uid = $row['pid'];
 					$theRowArray[] = $row;
@@ -2827,7 +2777,7 @@ class Tx_Commerce_Utility_BackendUtility {
 					$output[$c]['_ORIG_pid'] = $val['_ORIG_pid'];
 				}
 			}
-			$BEgetRootLine_cache[$ident] = $output;
+			$backendGetRootLineCache[$ident] = $output;
 		}
 		return $output;
 	}
@@ -2836,20 +2786,25 @@ class Tx_Commerce_Utility_BackendUtility {
 	 * Gets the cached page record for the rootline
 	 *
 	 * @param int $uid Page id for which to create the root line.
-	 * @param string $clause Can be used to select other criteria. It would typically be where-clauses that stops the process if we meet a page, the user has no reading access to.
-	 * @param bool $workspaceOL If true, version overlay is applied. This must be requested specifically because it is usually only wanted when the rootline is used for visual output while for permission checking you want the raw thing!
+	 * @param string $clause Can be used to select other criteria. It would
+	 *	typically be where-clauses that stops the process if we meet a page,
+	 *	the user has no reading access to.
+	 * @param bool $workspaceOl If true, version overlay is applied. This must
+	 *	be requested specifically because it is usually only wanted when the
+	 *	rootline is used for visual output while for permission checking you
+	 *	want the raw thing!
 	 *
 	 * @return array Cached page record for the rootline
 	 * @see BEgetRootLine
 	 */
-	protected static function getCategoryForRootline($uid, $clause, $workspaceOL) {
+	protected static function getCategoryForRootline($uid, $clause, $workspaceOl) {
 		$database = self::getDatabaseConnection();
 
-		static $getPageForRootline_cache = array();
-		$ident = $uid . '-' . $clause . '-' . $workspaceOL;
+		static $getPageForRootlineCache = array();
+		$ident = $uid . '-' . $clause . '-' . $workspaceOl;
 
-		if (is_array($getPageForRootline_cache[$ident])) {
-			$row = $getPageForRootline_cache[$ident];
+		if (is_array($getPageForRootlineCache[$ident])) {
+			$row = $getPageForRootlineCache[$ident];
 		} else {
 			$res = $database->exec_SELECTquery(
 				'mm.uid_foreign AS pid, tx_commerce_categories.uid, tx_commerce_categories.hidden, tx_commerce_categories.title,
@@ -2865,12 +2820,12 @@ class Tx_Commerce_Utility_BackendUtility {
 
 			$row = $database->sql_fetch_assoc($res);
 			if ($row) {
-				if ($workspaceOL) {
+				if ($workspaceOl) {
 					BackendUtility::workspaceOL('tx_commerce_categories', $row);
 				}
 				if (is_array($row)) {
 					BackendUtility::fixVersioningPid('tx_commerce_categories', $row);
-					$getPageForRootline_cache[$ident] = $row;
+					$getPageForRootlineCache[$ident] = $row;
 				}
 			}
 			$database->sql_free_result($res);
@@ -2888,15 +2843,19 @@ class Tx_Commerce_Utility_BackendUtility {
 	 *
 	 * @return bool
 	 */
-	public static function checkPermissionsOnCategoryContent($categoryUids, $perms) {
+	public static function checkPermissionsOnCategoryContent(array $categoryUids, array $perms) {
 		$backendUser = self::getBackendUser();
 
-			// admin is allowed to do anything
+		// admin is allowed to do anything
 		if ($backendUser->isAdmin()) {
 			return TRUE;
 		}
 
-		/** @var Tx_Commerce_Tree_CategoryMounts $mounts */
+		/**
+		 * Category mount
+		 *
+		 * @var Tx_Commerce_Tree_CategoryMounts $mounts
+		 */
 		$mounts = GeneralUtility::makeInstance('Tx_Commerce_Tree_CategoryMounts');
 		$mounts->init($backendUser->user['uid']);
 
@@ -2906,7 +2865,11 @@ class Tx_Commerce_Utility_BackendUtility {
 				return FALSE;
 			}
 
-			/** @var Tx_Commerce_Domain_Model_Category $category */
+			/**
+			 * Category
+			 *
+			 * @var Tx_Commerce_Domain_Model_Category $category
+			 */
 			$category = GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Category', $categoryUid);
 			// check perms
 			foreach ($perms as $perm) {
@@ -2945,14 +2908,14 @@ class Tx_Commerce_Utility_BackendUtility {
 	 *
 	 * @param int $uidFrom UID of the product we want to copy
 	 * @param int $uidTo UID of the product we want to overwrite
-	 * @param array $locale
+	 * @param array $locale Languages
 	 *
 	 * @return bool
 	 */
-	public static function overwriteProduct($uidFrom, $uidTo, $locale = array()) {
+	public static function overwriteProduct($uidFrom, $uidTo, array $locale = array()) {
 		$table = 'tx_commerce_products';
 
-			// check params
+		// check params
 		if (!is_numeric($uidFrom) || !is_numeric($uidTo) || $uidFrom == $uidTo) {
 			if (TYPO3_DLOG) {
 				GeneralUtility::devLog('overwriteProduct (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
@@ -2960,26 +2923,32 @@ class Tx_Commerce_Utility_BackendUtility {
 			return FALSE;
 		}
 
-			// check if we may actually copy the product (no permission check, only check if we are not accidentally copying a placeholder or shadow or deleted product)
+		// check if we may actually copy the product (no permission check, only
+		// check if we are not accidentally copying a placeholder or shadow or
+		// deleted product)
 		$recordFrom = BackendUtility::getRecordWSOL($table, $uidFrom, '*', ' AND pid != -1 AND t3ver_state != 1 AND deleted = 0');
 
 		if (!$recordFrom) {
 			return FALSE;
 		}
 
-			// check if we may actually overwrite the product (no permission check, only check if we are not accidentaly overwriting a placeholder or shadow or deleted product)
+		// check if we may actually overwrite the product (no permission check,
+		// only check if we are not accidentaly overwriting a placeholder or
+		// shadow or deleted product)
 		$recordTo = BackendUtility::getRecordWSOL($table, $uidTo, '*', ' AND pid != -1 AND t3ver_state != 1 AND deleted = 0');
 
 		if (!$recordTo) {
 			return FALSE;
 		}
 
-			// check if we have the permissions to copy and overwrite (check category rights)
+		// check if we have the permissions to
+		// copy and overwrite (check category rights)
 		if (!self::checkProductPerms($uidFrom, 'copy') || !self::checkProductPerms($uidTo, 'editcontent')) {
 			return FALSE;
 		}
 
-			// First prepare user defined objects (if any) for hooks which extend this function:
+		// First prepare user defined objects (if any)
+		// for hooks which extend this function:
 		$hookObjectsArr = array();
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_belib.php']['overwriteProductClass'])) {
 			GeneralUtility::deprecationLog('
@@ -2988,19 +2957,23 @@ class Tx_Commerce_Utility_BackendUtility {
 				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Utility/BackendUtility.php\'][\'overwriteProduct\']
 			');
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_belib.php']['overwriteProductClass'] as $classRef) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_belib.php']['overwriteProductClass'] as
+				$classRef
+			) {
 				$hookObjectsArr[] = &GeneralUtility::getUserObj($classRef);
 			}
 		}
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Utility/BackendUtility.php']['overwriteProduct'])) {
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Utility/BackendUtility.php']['overwriteProduct'] as $classRef) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Utility/BackendUtility.php']['overwriteProduct'] as
+				$classRef
+			) {
 				$hookObjectsArr[] = &GeneralUtility::getUserObj($classRef);
 			}
 		}
 
 		$data = self::getOverwriteData($table, $uidFrom, $uidTo);
 
-			// do not overwrite uid, parent_categories, and create_date
+		// do not overwrite uid, parent_categories, and create_date
 		unset($data[$table][$uidTo]['uid'],
 			$data[$table][$uidTo]['categories'],
 			$data[$table][$uidTo]['crdate'],
@@ -3009,19 +2982,23 @@ class Tx_Commerce_Utility_BackendUtility {
 
 		$datamap = $data;
 
-			// execute
-		/** @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce */
+		// execute
+		/**
+		 * Data handler
+		 *
+		 * @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce
+		 */
 		$tce = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
 		$tce->stripslashes_values = 0;
 
 		$backendUser = self::getBackendUser();
 
-		$TCAdefaultOverride = $backendUser->getTSConfigProp('TCAdefaults');
-		if (is_array($TCAdefaultOverride)) {
-			$tce->setDefaultsFromUserTS($TCAdefaultOverride);
+		$tcaDefaultOverride = $backendUser->getTSConfigProp('TCAdefaults');
+		if (is_array($tcaDefaultOverride)) {
+			$tce->setDefaultsFromUserTS($tcaDefaultOverride);
 		}
 
-			// Hook: beforeOverwrite
+		// Hook: beforeOverwrite
 		foreach ($hookObjectsArr as $hookObj) {
 			if (method_exists($hookObj, 'beforeOverwrite')) {
 				$hookObj->beforeOverwrite($uidFrom, $uidTo, $datamap);
@@ -3031,42 +3008,44 @@ class Tx_Commerce_Utility_BackendUtility {
 		$tce->start($datamap, array());
 		$tce->process_datamap();
 
-			// Hook: afterOverwrite
+		// Hook: afterOverwrite
 		foreach ($hookObjectsArr as $hookObj) {
 			if (method_exists($hookObj, 'beforeCopy')) {
 				$hookObj->beforeCopy($uidFrom, $uidTo, $datamap, $tce);
 			}
 		}
 
-			// overwrite locales
+		// Overwrite locales
 		if (count($locale) > 0) {
 			foreach ($locale as $loc) {
 				self::overwriteLocale($table, $uidFrom, $uidTo, $loc);
 			}
 		}
 
-			// overwrite articles which are existing - do NOT delete articles that are not in the overwritten product but in the overwriting one
+		// overwrite articles which are existing - do NOT delete articles
+		// that are not in the overwritten product but in the overwriting one
 		$articlesFrom = self::getArticlesOfProduct($uidFrom);
 
 		if (is_array($articlesFrom)) {
-				// the product has articles - check if they exist in the overwritten product
+			// the product has articles - check if they exist in the overwritten product
 			$articlesTo = self::getArticlesOfProduct($uidTo);
 
-				// simply copy if the overwritten product does not have articles
+			// simply copy if the overwritten product does not have articles
 			if (FALSE === $articlesTo || !is_array($articlesTo)) {
 				self::copyArticlesByProduct($uidTo, $uidFrom, $locale);
 			} else {
-					// go through each article of the overwriting product and check if it exists in the overwritten product
+				// go through each article of the overwriting product
+				// and check if it exists in the overwritten product
 				$l = count($articlesFrom);
 				$m = count($articlesTo);
 
-					// walk the articles
-				for ($i = 0; $i < $l; $i ++) {
+				// walk the articles
+				for ($i = 0; $i < $l; $i++) {
 					$overwrite = FALSE;
 					$uid = $articlesFrom[$i]['uid'];
 
-						// check if we need to overwrite
-					for ($j = 0; $j < $m; $j ++) {
+					// check if we need to overwrite
+					for ($j = 0; $j < $m; $j++) {
 						if ($articlesFrom[$i]['ordernumber'] == $articlesTo[$j]['ordernumber']) {
 							$overwrite = TRUE;
 							break;
@@ -3074,10 +3053,10 @@ class Tx_Commerce_Utility_BackendUtility {
 					}
 
 					if (!$overwrite) {
-							// copy if we do not need to overwrite
+						// copy if we do not need to overwrite
 						self::copyArticle($uid, $uidTo, $locale);
 					} else {
-							// overwrite if the article already exists
+						// overwrite if the article already exists
 						self::overwriteArticle($uid, $articlesTo[$j]['uid'], $locale);
 					}
 				}
@@ -3097,15 +3076,19 @@ class Tx_Commerce_Utility_BackendUtility {
 	 * @return array
 	 */
 	public function getOverwriteData($table, $uidFrom, $destPid) {
-		/** @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce */
+		/**
+		 * Data handler
+		 *
+		 * @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce
+		 */
 		$tce = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
 		$tce->stripslashes_values = 0;
 
 		$backendUser = self::getBackendUser();
 
-		$TCAdefaultOverride = $backendUser->getTSConfigProp('TCAdefaults');
-		if (is_array($TCAdefaultOverride)) {
-			$tce->setDefaultsFromUserTS($TCAdefaultOverride);
+		$tcaDefaultOverride = $backendUser->getTSConfigProp('TCAdefaults');
+		if (is_array($tcaDefaultOverride)) {
+			$tce->setDefaultsFromUserTS($tcaDefaultOverride);
 		}
 
 		$tce->start(array(), array());
@@ -3116,7 +3099,8 @@ class Tx_Commerce_Utility_BackendUtility {
 
 		// Only copy if the table is defined in TCA, a uid is given
 		if ($GLOBALS['TCA'][$table] && $uid) {
-			// This checks if the record can be selected which is all that a copy action requires.
+			// This checks if the record can be selected
+			// which is all that a copy action requires.
 			$data = Array();
 
 			$nonFields = array_unique(GeneralUtility::trimExplode(
@@ -3126,38 +3110,37 @@ class Tx_Commerce_Utility_BackendUtility {
 				1
 			));
 
-				// So it copies (and localized) content from workspace...
+			// So it copies (and localized) content from workspace...
 			$row = BackendUtility::getRecordWSOL($table, $uid);
 			if (is_array($row)) {
-
-					// Initializing:
-				$theNewID = $destPid;
+				// Initializing:
+				$theNewId = $destPid;
 				$enableField = isset($GLOBALS['TCA'][$table]['ctrl']['enablecolumns']) ?
 					$GLOBALS['TCA'][$table]['ctrl']['enablecolumns']['disabled'] :
 					'';
 				$headerField = $GLOBALS['TCA'][$table]['ctrl']['label'];
 
-					// Getting default data:
+				// Getting default data:
 				$defaultData = $tce->newFieldArray($table);
 
-					// Getting "copy-after" fields if applicable:
+				// Getting "copy-after" fields if applicable:
 				$copyAfterFields = array();
 
-					// Page TSconfig related:
-					// NOT using BackendUtility::getTSCpid() because we need the real pid - not the ID of a page, if the input is a page...
-				$tscPID = BackendUtility::getTSconfig_pidValue($table, $uid, - $destPid);
-				$TSConfig = $tce->getTCEMAIN_TSconfig($tscPID);
-				$tE = $tce->getTableEntries($table, $TSConfig);
+				// Page TSconfig related:
+				// NOT using BackendUtility::getTSCpid() because we need the
+				// real pid - not the ID of a page, if the input is a page...
+				$tscPid = BackendUtility::getTSconfig_pidValue($table, $uid, - $destPid);
+				$tsConfig = $tce->getTCEMAIN_TSconfig($tscPid);
+				$tE = $tce->getTableEntries($table, $tsConfig);
 
-					// Traverse ALL fields of the selected record:
+				// Traverse ALL fields of the selected record:
 				foreach ($row as $field => $value) {
 					if (!in_array($field, $nonFields)) {
-
-							// Get TCA configuration for the field:
+						// Get TCA configuration for the field:
 						$conf = $GLOBALS['TCA'][$table]['columns'][$field]['config'];
 
-							// Preparation/Processing of the value:
-							// "pid" is hardcoded of course:
+						// Preparation/Processing of the value:
+						// "pid" is hardcoded of course:
 						if ($field == 'pid') {
 							$value = $destPid;
 							// Override value...
@@ -3173,7 +3156,7 @@ class Tx_Commerce_Utility_BackendUtility {
 						) {
 							$value = $defaultData[$field];
 						} else {
-								// Hide at copy may override:
+							// Hide at copy may override:
 							if (
 								$first
 								&& $field == $enableField
@@ -3183,28 +3166,36 @@ class Tx_Commerce_Utility_BackendUtility {
 							) {
 								$value = 1;
 							}
-								// Prepend label on copy:
+
+							// Prepend label on copy:
 							if ($first && $field == $headerField && $GLOBALS['TCA'][$table]['ctrl']['prependAtCopy'] && !$tE['disablePrependAtCopy']) {
-									// @todo this can't work resolvePid and clearPrefixFromValue are not implement in any file of commerce
-								$value = $tce->getCopyHeader($table, $this->resolvePid($table, $destPid), $field, $this->clearPrefixFromValue($table, $value), 0);
+								// @todo this can't work resolvePid and clearPrefixFromValue are not implement in any file of commerce
+								$value = $tce->getCopyHeader(
+									$table,
+									$this->resolvePid($table, $destPid),
+									$field,
+									$this->clearPrefixFromValue($table, $value),
+									0
+								);
 							}
-								// Processing based on the TCA config field type (files, references, flexforms...)
-							$value = $tce->copyRecord_procBasedOnFieldType($table, $uid, $field, $value, $row, $conf, $tscPID, $language);
+							// Processing based on the TCA config field
+							// type (files, references, flexforms...)
+							$value = $tce->copyRecord_procBasedOnFieldType($table, $uid, $field, $value, $row, $conf, $tscPid, $language);
 						}
 
-							// Add value to array.
-						$data[$table][$theNewID][$field] = $value;
+						// Add value to array.
+						$data[$table][$theNewId][$field] = $value;
 					}
 				}
 
-					// Overriding values:
+				// Overriding values:
 				if ($GLOBALS['TCA'][$table]['ctrl']['editlock']) {
-					$data[$table][$theNewID][$GLOBALS['TCA'][$table]['ctrl']['editlock']] = 0;
+					$data[$table][$theNewId][$GLOBALS['TCA'][$table]['ctrl']['editlock']] = 0;
 				}
 
-					// Setting original UID:
+				// Setting original UID:
 				if ($GLOBALS['TCA'][$table]['ctrl']['origUid']) {
-					$data[$table][$theNewID][$GLOBALS['TCA'][$table]['ctrl']['origUid']] = $uid;
+					$data[$table][$theNewId][$GLOBALS['TCA'][$table]['ctrl']['origUid']] = $uid;
 				}
 
 				return $data;
@@ -3217,15 +3208,16 @@ class Tx_Commerce_Utility_BackendUtility {
 	/**
 	 * Overwrites the article
 	 *
-	 * @param int $uidFrom uid of article that provides the new data
-	 * @param int $uidTo uid of article that is to be overwritten
-	 * @param array $locale uids of sys_languages to overwrite
+	 * @param int $uidFrom Uid of article that provides the new data
+	 * @param int $uidTo Uid of article that is to be overwritten
+	 * @param array $locale Uids of sys_languages to overwrite
+	 *
 	 * @return bool Success
 	 */
-	public function overwriteArticle($uidFrom, $uidTo, $locale = NULL) {
+	public function overwriteArticle($uidFrom, $uidTo, array $locale = NULL) {
 		$table = 'tx_commerce_articles';
 
-			// check params
+		// check params
 		if (!is_numeric($uidFrom) || !is_numeric($uidTo)) {
 			if (TYPO3_DLOG) {
 				GeneralUtility::devLog('copyArticle (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
@@ -3233,21 +3225,21 @@ class Tx_Commerce_Utility_BackendUtility {
 			return FALSE;
 		}
 
-			// check show right for overwriting article
+		// check show right for overwriting article
 		$prodFrom = self::getProductOfArticle($uidFrom);
 
 		if (!self::checkProductPerms($prodFrom['uid'], 'show')) {
 			return FALSE;
 		}
 
-			// check editcontent right for overwritten article
+		// check editcontent right for overwritten article
 		$prodTo = self::getProductOfArticle($uidTo);
 
 		if (!self::checkProductPerms($prodTo['uid'], 'editcontent')) {
 			return FALSE;
 		}
 
-			// get the records
+		// get the records
 		$recordFrom = BackendUtility::getRecordWSOL($table, $uidFrom, '*');
 		$recordTo = BackendUtility::getRecordWSOL($table, $uidTo, '*');
 
@@ -3265,32 +3257,38 @@ class Tx_Commerce_Utility_BackendUtility {
 
 		$datamap = $data;
 
-			// execute
-		/** @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce */
+		// execute
+		/**
+		 * Data handler
+		 *
+		 * @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce
+		 */
 		$tce = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
 		$tce->stripslashes_values = 0;
 
 		$backendUser = self::getBackendUser();
 
-		$TCAdefaultOverride = $backendUser->getTSConfigProp('TCAdefaults');
-		if (is_array($TCAdefaultOverride)) {
-			$tce->setDefaultsFromUserTS($TCAdefaultOverride);
+		$tcaDefaultOverride = $backendUser->getTSConfigProp('TCAdefaults');
+		if (is_array($tcaDefaultOverride)) {
+			$tce->setDefaultsFromUserTS($tcaDefaultOverride);
 		}
 		$tce->start($datamap, array());
 
-			// Write to session that we copy
-			// this is used by the hook to the datamap class to figure out if it should call the dynaflex
-			// so far this is the best (though not very clean) way to solve the issue we get when saving an article
+		// Write to session that we copy
+		// this is used by the hook to the datamap class
+		// to figure out if it should call the dynaflex
+		// so far this is the best (though not very clean)
+		// way to solve the issue we get when saving an article
 		$backendUser->uc['txcommerce_copyProcess'] = 1;
 		$backendUser->writeUC();
 
 		$tce->process_datamap();
 
-			// copying done, clear session
+		// copying done, clear session
 		$backendUser->uc['txcommerce_copyProcess'] = 0;
 		$backendUser->writeUC();
 
-			// overwrite locales
+		// overwrite locales
 		if (is_array($locale) && 0 != count($locale)) {
 			foreach ($locale as $loc) {
 				self::overwriteLocale($table, $uidFrom, $uidTo, $loc);
@@ -3298,6 +3296,125 @@ class Tx_Commerce_Utility_BackendUtility {
 		}
 		return TRUE;
 	}
+
+
+	/**
+	 * Removed with irre implementation. Stub left for api compatibility
+	 * save Price-Flexform with given Article-UID
+	 *
+	 * @param int $id Id
+	 * @param int $uidArticle Article uid
+	 * @param array $fieldArray Field values
+	 *
+	 * @return void
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, this wont get replaced as it was empty before and will get removed from the api
+	 */
+	public function savePriceFlexformWithArticle($id, $uidArticle, array $fieldArray) {
+		GeneralUtility::logDeprecatedFunction();
+	}
+
+	/**
+	 * This makes the Xml to draw the price form of an article
+	 * Call this function if you have imported data to the database and havn't
+	 * updated the Flexform
+	 *
+	 * @param int $articleUid Article uid
+	 *
+	 * @return void
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use Tx_Commerce_Utility_BackendUtility::updatePriceXMLFromDatabase
+	 */
+	public function fix_articles_price($articleUid = 0) {
+		GeneralUtility::logDeprecatedFunction();
+
+		if ($articleUid > 0) {
+			self::updatePriceXMLFromDatabase($articleUid);
+		}
+	}
+
+	/**
+	 * This makes the Xml for the product Attributes
+	 * Call thos function if you have imported data to the database and havn't
+	 * updated the Flexform
+	 *
+	 * @param int $productUid
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use Tx_Commerce_Utility_BackendUtility::updateXML
+	 */
+	public function fix_product_atributte($productUid = 0) {
+		GeneralUtility::logDeprecatedFunction();
+
+		if ($productUid > 0) {
+			$database = self::getDatabaseConnection();
+
+			$mmTable = 'tx_commerce_products_attributes_mm';
+			$where = 'uid_local= ' . (int) $productUid;
+			$rs = $database->exec_SELECTquery(
+				'uid_correlationtype,uid_foreign',
+				$mmTable,
+				$where,
+				$groupBy = '',
+				$orderBy = '',
+				$limit = ''
+			);
+			$xmlArray = array();
+			while (($row = $database->sql_fetch_assoc($rs))) {
+				if (empty($xmlArray['data']['sDEF']['lDEF']['ct_' . $row['uid_correlationtype']]['vDEF'])) {
+					$xmlArray['data']['sDEF']['lDEF']['ct_' . $row['uid_correlationtype']]['vDEF'] = $row['uid_foreign'];
+				} else {
+					$xmlArray['data']['sDEF']['lDEF']['ct_' . $row['uid_correlationtype']]['vDEF'] .= ',' . $row['uid_foreign'];
+				}
+			}
+			$arrayToSave = array();
+			$xmlText = GeneralUtility::array2xml_cs($xmlArray, 'T3FlexForms', $options = array(), $charset = '');
+			$arrayToSave['attributes'] = $xmlText;
+
+			$database->exec_UPDATEquery(
+				'tx_commerce_products',
+				'uid=' . $productUid,
+				$arrayToSave,
+				FALSE
+			);
+		}
+	}
+
+	/**
+	 * This makes the Xml for the category Attributes
+	 * Call this function if you have imported data to the database and haven't
+	 * updated the Flexform
+	 *
+	 * @param int $categoryUid Category uid
+	 *
+	 * @return void
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use updateXML instead
+	 */
+	public function fix_category_atributte($categoryUid = 0) {
+		GeneralUtility::logDeprecatedFunction();
+
+		if ($categoryUid == 0) {
+			return;
+		}
+
+		$database = self::getDatabaseConnection();
+
+		$mm_table = 'tx_commerce_categories_attributes_mm';
+		$where = 'uid_local= ' . (int) $categoryUid;
+		$rs = $database->exec_SELECTquery('uid_correlationtype,uid_foreign', $mm_table, $where, $groupBy = '', $orderBy = '', $limit = '');
+
+		$xmlArray = array();
+		while (($row = $database->sql_fetch_assoc($rs))) {
+			if (empty($xmlArray['data']['sDEF']['lDEF']['ct_' . $row['uid_correlationtype']]['vDEF'])) {
+				$xmlArray['data']['sDEF']['lDEF']['ct_' . $row['uid_correlationtype']]['vDEF'] = $row['uid_foreign'];
+			} else {
+				$xmlArray['data']['sDEF']['lDEF']['ct_' . $row['uid_correlationtype']]['vDEF'] .= ',' . $row['uid_foreign'];
+			}
+		}
+		$arrayToSave = array();
+		$xmlText = GeneralUtility::array2xml_cs($xmlArray, 'T3FlexForms', $options = array(), $charset = '');
+		$arrayToSave['attributes'] = $xmlText;
+
+		$database->exec_UPDATEquery('tx_commerce_categories', 'uid=' . $categoryUid, $arrayToSave);
+	}
+
+
 
 
 	/**

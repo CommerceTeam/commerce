@@ -12,6 +12,7 @@ namespace CommerceTeam\Commerce\Utility;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
@@ -36,7 +37,7 @@ class BackendUserUtility implements SingletonInterface {
 	 * @return int Bitwise representation of the users permissions in
 	 * 	relation to input page row, $row
 	 */
-	public function calcPerms($row) {
+	public function calcPerms(array $row) {
 		$backendUser = $this->getBackendUser();
 		// Return 31 for admin users.
 		if ($backendUser->isAdmin()) {
@@ -65,20 +66,26 @@ class BackendUserUtility implements SingletonInterface {
 
 	/**
 	 * Checks if the page id, $id, is found within the webmounts set up for the user.
-	 * This should ALWAYS be checked for any page id a user works with, whether it's about reading, writing or whatever.
-	 * The point is that this will add the security that a user can NEVER touch parts outside his mounted
-	 * pages in the page tree. This is otherwise possible if the raw page permissions allows for it.
+	 * This should ALWAYS be checked for any page id a user works with, whether it's
+	 * about reading, writing or whatever. The point is that this will add the
+	 * security that a user can NEVER touch parts outside his mounted pages in the
+	 * page tree. This is otherwise possible if the raw page permissions allows for
+	 * it.
 	 * So this security check just makes it easier to make safe user configurations.
 	 * If the user is admin OR if this feature is disabled
-	 * (fx. by setting TYPO3_CONF_VARS['BE']['lockBeUserToDBmounts']=0) then it returns "1" right away
-	 * Otherwise the function will return the uid of the webmount which was first found in the rootline of the input page $id
+	 * (fx. by setting TYPO3_CONF_VARS['BE']['lockBeUserToDBmounts']=0) then it
+	 * returns "1" right away. Otherwise the function will return the uid of the
+	 * webmount which was first found in the rootline of the input page $id
 	 *
 	 * @param int $id Page ID to check
-	 * @param string $readPerms Content of "->getPagePermsClause(1)" (read-permissions). If not set, they will be internally calculated (but if you have the correct value right away you can save that database lookup!)
-	 * @param bool|int $exitOnError If set, then the function will exit with an error message.
+	 * @param string $readPerms Content of "getPagePermsClause(1)" (read-permissions)
+	 *	If not set, they will be internally calculated (but if you have the correct
+	 *	value right away you can save that database lookup!)
+	 * @param bool|int $exitOnError If set, then the function will exit with an error
+	 *	message.
 	 *
-	 * @return int|NULL The page UID of a page in the rootline that matched a mount point
-	 * @throws \RuntimeException
+	 * @return int|NULL The page UID in the rootline that matched a mount point
+	 * @throws \RuntimeException If page is not in database mount
 	 * @todo Define visibility
 	 */
 	public function isInWebMount($id, $readPerms = '', $exitOnError = 0) {
@@ -209,7 +216,11 @@ class BackendUserUtility implements SingletonInterface {
 		if (is_array($categoryRootlineCache[$uid])) {
 			$output = $categoryRootlineCache[$uid];
 		} else {
-			/** @var \Tx_Commerce_Domain_Repository_CategoryRepository $repository */
+			/**
+			 * Category repository
+			 *
+			 * @var \Tx_Commerce_Domain_Repository_CategoryRepository $repository
+			 */
 			$repository = GeneralUtility::makeInstance('Tx_Commerce_Domain_Repository_CategoryRepository');
 			$output = $repository->getCategoryRootline((int) $uid, $clause);
 

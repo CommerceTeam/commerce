@@ -35,6 +35,11 @@ class Tx_Commerce_Utility_TyposcriptConfig {
 	}
 }
 
+/**
+ * Check if a commerce plugin is on the page
+ *
+ * @return bool
+ */
 function user_isCommercePage() {
 	return Tx_Commerce_Utility_TyposcriptConfig::isCommercePage();
 }

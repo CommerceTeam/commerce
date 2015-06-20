@@ -22,8 +22,6 @@ $BACK_PATH = '../../../../../typo3/';
 
 $MLANG['default']['ll_ref'] = 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_cce.xml';
 require_once($BACK_PATH . 'init.php');
-/** @noinspection PhpIncludeInspection */
-require_once($BACK_PATH . 'template.php');
 
 /**
  * Language
@@ -47,7 +45,8 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 
 	// Internal, static: GPvar
 	/**
-	 * Redirect URL. Script will redirect to this location after performing operations (unless errors has occured)
+	 * Redirect URL. Script will redirect to this location after
+	 * performing operations (unless errors has occured)
 	 *
 	 * @var string
 	 */
@@ -91,16 +90,22 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 	public $cmd;
 
 	/**
+	 * Clipboard
+	 *
 	 * @var \TYPO3\CMS\Backend\Clipboard\Clipboard
 	 */
 	public $clipObj;
 
 	/**
+	 * Content
+	 *
 	 * @var string
 	 */
 	public $content;
 
 	/**
+	 * Page info
+	 *
 	 * @var
 	 */
 	public $pageinfo;
@@ -113,11 +118,15 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 	public $sorting;
 
 	/**
+	 * Locales
+	 *
 	 * @var
 	 */
 	public $locales;
 
 	/**
+	 * Data
+	 *
 	 * @var array
 	 */
 	public $data;
@@ -125,7 +134,7 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 	/**
 	 * Document Template Object
 	 *
-	 * @var template
+	 * @var \TYPO3\CMS\Backend\Template\DocumentTemplate
 	 */
 	public $doc;
 
@@ -137,11 +146,15 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 	public $cce;
 
 	/**
+	 * Module settings
+	 *
 	 * @var array
 	 */
 	protected $MOD_SETTINGS;
 
 	/**
+	 * Module menu
+	 *
 	 * @var array
 	 */
 	protected $MOD_MENU;
@@ -216,7 +229,8 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 			&& $this->vC != $backendUser->veriCode()
 			&& !$GLOBALS['TYPO3_CONF_VARS']['SYS']['doNotCheckReferer']
 		) {
-			// writelog($type, $action, $error, $details_nr, $details, $data, $tablename, $recuid, $recpid)
+			// writelog($type, $action, $error, $details_nr, $details,
+			// $data, $tablename, $recuid, $recpid)
 			$backendUser->writelog(
 				1, 2, 3, 0, 'Referer host "%s" and server host "%s" did not match and veriCode was not valid either!', array(
 					$refInfo['host'],
@@ -276,10 +290,12 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 		$str .= $this->doc->header($language->getLL('Copy'));
 		$str .= $this->doc->spacer(5);
 
-		// flag if neither sorting nor localizations are existing and we can immediately copy
+		// flag if neither sorting nor localizations
+		// are existing and we can immediately copy
 		$noActionReq = FALSE;
 
-		// First prepare user defined objects (if any) for hooks which extend this function:
+		// First prepare user defined objects (if any)
+		// for hooks which extend this function:
 		$hookObjectsArr = array();
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/mod_cce/class.tx_commerce_cce_db.php']['copyWizardClass'])) {
 			\TYPO3\CMS\Core\Utility\GeneralUtility::deprecationLog('
@@ -288,12 +304,16 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Utility/DataHandlerUtility.php\'][\'copyWizard\']
 			');
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/mod_cce/class.tx_commerce_cce_db.php']['copyWizardClass'] as $classRef) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/mod_cce/class.tx_commerce_cce_db.php']['copyWizardClass'] as
+				$classRef
+			) {
 				$hookObjectsArr[] = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
 			}
 		}
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Utility/DataHandlerUtility.php']['copyWizard'])) {
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Utility/DataHandlerUtility.php']['copyWizard'] as $classRef) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Utility/DataHandlerUtility.php']['copyWizard'] as
+				$classRef
+			) {
 				$hookObjectsArr[] = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
 			}
 		}
@@ -356,7 +376,8 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 
 				foreach ($hookObjectsArr as $hookObj) {
 					if (method_exists($hookObj, 'beforeFormClose')) {
-						// set $user_ignoreClose to true if you want to force the script to print out the execute button
+						// set $user_ignoreClose to true if you want to
+						// force the script to print out the execute button
 						$str .= $hookObj->beforeFormClose($uidClip, $uidTarget, $command, $userIgnoreClose);
 					}
 				}
@@ -375,15 +396,15 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 					);
 					$str .= '<h1>' . $language->getLL('copy.position') . '</h1>';
 
-					$str .= '<span class="nobr"><a href="javascript:void(0)" onclick="submitForm(' .
-						$records['pid'][$uidTarget][0]['uid'] . ')">' . $icon . '</a></span><br />';
+					$onClickAction = 'onclick="submitForm(' . $records['pid'][$uidTarget][0]['uid'] . ')"';
+					$str .= '<span class="nobr"><a href="javascript:void(0)" ' . $onClickAction . '>' . $icon . '</a></span><br />';
 
 					for ($i = 0; $i < $l; $i++) {
 						$record = $records['pid'][$uidTarget][$i];
 
+						$onClickAction = 'onclick="submitForm(-' . $record['uid'] . ')"';
 						$str .= '<span class="nobr">' . $prodIcon . $record['title'] . '</span><br />';
-						$str .= '<span class="nobr"><a href="javascript:void(0)" onclick="submitForm(-' .
-							$record['uid'] . ')">' . $icon . '</a></span><br />';
+						$str .= '<span class="nobr"><a href="javascript:void(0)" ' . $onClickAction . '>' . $icon . '</a></span><br />';
 					}
 				} else {
 					$noActionReq = TRUE;
@@ -461,15 +482,15 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 					);
 					$str .= '<h1>' . $language->getLL('copy.position') . '</h1>';
 
-					$str .= '<span class="nobr"><a href="javascript:void(0)" onclick="submitForm(' .
-						$records['pid'][$uidTarget][0]['uid'] . ')">' . $icon . '</a></span><br />';
+					$onClickAction = 'onclick="submitForm(' . $records['pid'][$uidTarget][0]['uid'] . ')"';
+					$str .= '<span class="nobr"><a href="javascript:void(0)" ' . $onClickAction . '>' . $icon . '</a></span><br />';
 
 					for ($i = 0; $i < $l; $i++) {
 						$record = $records['pid'][$uidTarget][$i];
 
+						$onClickAction = 'onclick="submitForm(-' . $record['uid'] . ')"';
 						$str .= '<span class="nobr">' . $catIcon . $record['title'] . '</span><br />
-							<span class="nobr"><a href="javascript:void(0)" onclick="submitForm(-' .
-							$record['uid'] . ')">' . $icon . '</a></span><br />';
+							<span class="nobr"><a href="javascript:void(0)" ' . $onClickAction . '>' . $icon . '</a></span><br />';
 					}
 				} else {
 					$noActionReq = TRUE;
@@ -480,7 +501,8 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 				die('unknown command');
 		}
 
-		// skip transforming and execute the command if there are no locales and no positions
+		// skip transforming and execute the command
+		// if there are no locales and no positions
 		if ($noActionReq) {
 			$this->commitCommand($uidClip, $uidTarget, $command);
 
@@ -523,7 +545,8 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 	 * @return void
 	 */
 	protected function commitCommand($uidClip, $uidTarget, $command) {
-		// First prepare user defined objects (if any) for hooks which extend this function:
+		// First prepare user defined objects (if any)
+		// for hooks which extend this function:
 		$hookObjectsArr = array();
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/mod_cce/class.tx_commerce_cce_db.php']['commitCommandClass'])) {
 			\TYPO3\CMS\Core\Utility\GeneralUtility::deprecationLog('
@@ -532,15 +555,16 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Utility/DataHandlerUtility.php\'][\'commitCommand\']
 			');
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/mod_cce/class.tx_commerce_cce_db.php']['commitCommandClass'] as $classRef) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/mod_cce/class.tx_commerce_cce_db.php']['commitCommandClass'] as
+				$classRef
+			) {
 				$hookObjectsArr[] = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
 			}
 		}
-		if (is_array(
-			$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Utility/DataHandlerUtility.php']['commitCommand']
-		)
-		) {
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Utility/DataHandlerUtility.php']['commitCommand'] as $classRef) {
+		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Utility/DataHandlerUtility.php']['commitCommand'])) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Utility/DataHandlerUtility.php']['commitCommand'] as
+				$classRef
+			) {
 				$hookObjectsArr[] = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
 			}
 		}

@@ -11,6 +11,7 @@
  *
  * The TYPO3 project - inspiring people to share!
  */
+
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -23,6 +24,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class Tx_Commerce_Utility_AttributeEditorUtility {
 	/**
+	 * Backend utility
+	 *
 	 * @var Tx_Commerce_Utility_BackendUtility
 	 */
 	protected $belib;
@@ -58,8 +61,8 @@ class Tx_Commerce_Utility_AttributeEditorUtility {
 	 *
 	 * @return array The modified dynaflex configuration
 	 */
-	public function getAttributeEditField($aData, &$config, $fetchFromDatabase = TRUE, $onlyDisplay = FALSE) {
-			// first of all, fetch data from attribute table
+	public function getAttributeEditField(array $aData, array &$config, $fetchFromDatabase = TRUE, $onlyDisplay = FALSE) {
+		// first of all, fetch data from attribute table
 		if ($fetchFromDatabase) {
 			$aData = $this->belib->getAttributeData(
 				$aData['row']['uid_foreign'],
@@ -91,11 +94,11 @@ class Tx_Commerce_Utility_AttributeEditorUtility {
 			}
 		}
 
-			// set label and name
+		// set label and name
 		$config['label'] = $aData['title'];
 		$config['name'] = 'attribute_' . $aData['uid'];
 
-			// get the value
+		// get the value
 		if ($onlyDisplay) {
 			$config['config']['type'] = 'user';
 			$config['config']['userFunc'] = 'tx_commerce_attributeEditor->displayAttributeValue';
@@ -126,21 +129,21 @@ class Tx_Commerce_Utility_AttributeEditorUtility {
 			);
 
 			if ((int) $aData['multiple'] == 1) {
-					// create a selectbox for multiple selection
+				// create a selectbox for multiple selection
 				$config['config']['multiple'] = 1;
 				$config['config']['size'] = 5;
 				$config['config']['maxitems'] = 100;
 				unset($config['config']['items']);
 			}
 		} else {
-				// the field should be a simple input field
+			// the field should be a simple input field
 			if ($aData['unit'] != '') {
 				$config['label'] .= ' (' . $aData['unit'] . ')';
 			}
 			$config['config'] = array('type' => 'input');
 		}
 
-			// Dont display in lokalised version Attributes with valuelist
+		// Dont display in lokalised version Attributes with valuelist
 		if (($aData['has_valuelist'] == 1) && ($sysLanguageUid <> 0)) {
 			$config['config']['type'] = '';
 			return FALSE;
@@ -152,11 +155,12 @@ class Tx_Commerce_Utility_AttributeEditorUtility {
 	/**
 	 * Returns the editfield dynaflex config for all attributes of a product
 	 *
-	 * @param array $funcDataArray
-	 * @param array $baseConfig
+	 * @param array $funcDataArray Function data
+	 * @param array $baseConfig Base config
+	 *
 	 * @return array An array with fieldconfigs
 	 */
-	public function getAttributeEditFields($funcDataArray, $baseConfig) {
+	public function getAttributeEditFields(array $funcDataArray, array $baseConfig) {
 		$result = array();
 
 		$sortedAttributes = array();
@@ -170,13 +174,14 @@ class Tx_Commerce_Utility_AttributeEditorUtility {
 				'uid, title, has_valuelist, multiple, unit, deleted'
 			);
 
-				// get correlationtype for this attribute and the product of this article
-				// first get the product for this aticle
+			// get correlationtype for this attribute and the product of this article
+			// first get the product for this aticle
 			$productUid = $this->belib->getProductOfArticle($funcData['row']['uid_local'], FALSE);
 
 			$uidCorrelationType = $this->belib->getCtForAttributeOfProduct($funcData['row']['uid_foreign'], $productUid);
 			$sortedAttributes[$uidCorrelationType][] = $aData;
 		}
+
 		ksort($sortedAttributes);
 		reset($sortedAttributes);
 
@@ -198,10 +203,11 @@ class Tx_Commerce_Utility_AttributeEditorUtility {
 	/**
 	 * Simply returns the value of an attribute of an article.
 	 *
-	 * @param array $parameter
+	 * @param array $parameter Parameter
+	 *
 	 * @return string
 	 */
-	public function displayAttributeValue($parameter) {
+	public function displayAttributeValue(array $parameter) {
 		$database = $this->getDatabaseConnection();
 
 		// attribute value uid

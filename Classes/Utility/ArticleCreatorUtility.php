@@ -11,11 +11,11 @@
  *
  * The TYPO3 project - inspiring people to share!
  */
+use TYPO3\CMS\Backend\Form\FormEngine;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Backend\Utility\IconUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-/** @noinspection PhpIncludeInspection */
 require_once(PATH_TXCOMMERCE . 'Classes/Utility/GeneralUtility.php');
 
 /**
@@ -29,36 +29,50 @@ require_once(PATH_TXCOMMERCE . 'Classes/Utility/GeneralUtility.php');
  */
 class Tx_Commerce_Utility_ArticleCreatorUtility {
 	/**
+	 * Existing articles
+	 *
 	 * @var array
 	 */
 	protected $existingArticles = NULL;
 
 	/**
+	 * Attributes
+	 *
 	 * @var array
 	 */
 	protected $attributes = NULL;
 
 	/**
+	 * Flatted attributes
+	 *
 	 * @var array
 	 */
 	protected $flattedAttributes = array();
 
 	/**
+	 * Uid
+	 *
 	 * @var int
 	 */
 	protected $uid = 0;
 
 	/**
+	 * Page id
+	 *
 	 * @var int
 	 */
 	protected $pid = 0;
 
 	/**
+	 * Backend utility
+	 *
 	 * @var Tx_Commerce_Utility_BackendUtility
 	 */
 	protected $belib;
 
 	/**
+	 * Return url
+	 *
 	 * @var string
 	 */
 	protected $returnUrl;
@@ -93,11 +107,11 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	/**
 	 * Get all articles that already exist. Add some buttons for editing.
 	 *
-	 * @param array $parameter
+	 * @param array $parameter Parameter
 	 *
 	 * @return string a HTML-table with the articles
 	 */
-	public function existingArticles($parameter) {
+	public function existingArticles(array $parameter) {
 		$backendUser = $this->getBackendUser();
 		$database = $this->getDatabaseConnection();
 
@@ -250,13 +264,12 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	/**
 	 * Create a matrix of producible articles
 	 *
-	 * @param array $parameter
-	 * @param \TYPO3\CMS\Backend\Form\FormEngine $fObj
-	 *
+	 * @param array $parameter Parameter
+	 * @param FormEngine $fObj Form engine
 	 *
 	 * @return string A HTML-table with checkboxes and all needed stuff
 	 */
-	public function producibleArticles($parameter, $fObj) {
+	public function producibleArticles(array $parameter, FormEngine $fObj) {
 		$this->uid = (int)$parameter['row']['uid'];
 		$this->pid = (int)$parameter['row']['pid'];
 
@@ -356,13 +369,15 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	 * @param array $resultRows The resulting rows
 	 * @param int $counter The article counter
 	 * @param string $headRow The header row for inserting after a number of articles
-	 * @param array $extraRowData some additional data like checkbox column
+	 * @param array $extraRowData Some additional data like checkbox column
 	 * @param int $index The level inside the matrix
 	 * @param array $row The current row data
 	 *
 	 * @return void
 	 */
-	protected function getRows($data, &$resultRows, &$counter, $headRow, $extraRowData = array(), $index = 1, $row = array()) {
+	protected function getRows(array $data, array &$resultRows, &$counter, $headRow, array $extraRowData = array(), $index = 1,
+		array $row = array()
+	) {
 		if (is_array($data)) {
 			foreach ($data as $dataItem) {
 				$dummyData = $dataItem;
@@ -441,11 +456,11 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	 * @param int $colCount The number of columns we have
 	 * @param array $acBefore The additional columns before the attribute columns
 	 * @param array $acAfter The additional columns after the attribute columns
-	 * @param bool $addTr
+	 * @param bool $addTr Add table row
 	 *
 	 * @return string The HTML header code
 	 */
-	protected function getHeadRow(&$colCount, $acBefore = NULL, $acAfter = NULL, $addTr = TRUE) {
+	protected function getHeadRow(&$colCount, array $acBefore = NULL, array $acAfter = NULL, $addTr = TRUE) {
 		$result = '';
 
 		if ($addTr) {
@@ -479,11 +494,11 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	/**
 	 * Creates all articles that should be created (defined through the POST vars)
 	 *
-	 * @param array $parameter
+	 * @param array $parameter Parameter
 	 *
 	 * @return void
 	 */
-	public function createArticles($parameter) {
+	public function createArticles(array $parameter) {
 		$database = $this->getDatabaseConnection();
 
 		if (is_array(GeneralUtility::_GP('createList'))) {
@@ -547,12 +562,12 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	/**
 	 * Creates article title out of attributes
 	 *
-	 * @param array $parameter
-	 * @param array $data
+	 * @param array $parameter Parameter
+	 * @param array $data Data
 	 *
 	 * @return string Returns the product title + attribute titles for article title
 	 */
-	protected function createArticleTitleFromAttributes($parameter, $data) {
+	protected function createArticleTitleFromAttributes(array $parameter, array $data) {
 		$content = $parameter['title'];
 		if (is_array($data) && count($data)) {
 			$selectedValues = array();
@@ -572,12 +587,12 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	 * Creates an article in the database and all needed releations to attributes
 	 * and values. It also creates a new prices and assignes it to the new article.
 	 *
-	 * @param array $parameter
+	 * @param array $parameter Parameter
 	 * @param string $key The key in the POST var array
 	 *
 	 * @return int Returns the new articleUid if success
 	 */
-	protected function createArticle($parameter, $key) {
+	protected function createArticle(array $parameter, $key) {
 		$database = $this->getDatabaseConnection();
 
 		// get the create data
@@ -632,7 +647,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 				}
 			}
 		}
-		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Utility/ArticleCreatorUtility.php']['createArticlePreInsert'])) {
+		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Utility/ArticleCreatorUtility.php']['createArticlePreInsert'])) {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Utility/ArticleCreatorUtility.php']['createArticlePreInsert'] as $classRef) {
 				$hookObj = &GeneralUtility::getUserObj($classRef);
 				if (method_exists($hookObj, 'preinsert')) {
@@ -781,24 +796,34 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 		return $articleUid;
 	}
 
+	/**
+	 * Returns a hidden field with the name and value of the current form element
+	 *
+	 * @param array $parameter Parameter
+	 *
+	 * @return string
+	 */
+	public function articleUid(array $parameter) {
+		return '<input type="hidden" name="' . $parameter['itemFormElName'] . '" value="' .
+			htmlspecialchars($parameter['itemFormElValue']) . '">';
+	}
+
 
 	/**
 	 * Creates a checkbox that has to be toggled for creating a new price for an
 	 * article. The handling for creating the new price is inside the tcehooks
 	 *
-	 * @param array $parameter
+	 * @param array $parameter Parameter
 	 *
 	 * @return string
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, this wont get replaced as it was removed from the api
 	 */
-	public function createNewPriceCB($parameter) {
+	public function createNewPriceCB(array $parameter) {
 		GeneralUtility::logDeprecatedFunction();
 
-		$language = $this->getLanguageService();
-
 		$content = '<div id="typo3-newRecordLink">
-				<input type="checkbox" name="data[tx_commerce_articles][' . (int) $parameter['row']['uid'] . '][create_new_price]" />' .
-				$language->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:articles.add_article_price', 1) .
+			<input type="checkbox" name="data[tx_commerce_articles][' . (int) $parameter['row']['uid'] . '][create_new_price]" />' .
+			$this->getLanguageService()->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:articles.add_article_price', 1) .
 			'</div>';
 		return $content;
 	}
@@ -806,12 +831,12 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	/**
 	 * Creates ...
 	 *
-	 * @param array $parameter
+	 * @param array $parameter Parameter
 	 *
 	 * @return string
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, this wont get replaced as it was removed from the api
 	 */
-	public function createNewScalePricesCount($parameter) {
+	public function createNewScalePricesCount(array $parameter) {
 		GeneralUtility::logDeprecatedFunction();
 
 		return '<input style="width: 77px;" class="formField1" maxlength="20" type="input" name="data[tx_commerce_articles][' .
@@ -821,12 +846,12 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	/**
 	 * Creates ...
 	 *
-	 * @param array $parameter
+	 * @param array $parameter Parameter
 	 *
 	 * @return string
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, this wont get replaced as it was removed from the api
 	 */
-	public function createNewScalePricesSteps($parameter) {
+	public function createNewScalePricesSteps(array $parameter) {
 		GeneralUtility::logDeprecatedFunction();
 
 		return '<input style="width: 77px;" class="formField1" maxlength="20"type="input" name="data[tx_commerce_articles][' .
@@ -836,12 +861,12 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	/**
 	 * Creates ...
 	 *
-	 * @param array $parameter
+	 * @param array $parameter Parameter
 	 *
 	 * @return string
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, this wont get replaced as it was removed from the api
 	 */
-	public function createNewScalePricesStartAmount($parameter) {
+	public function createNewScalePricesStartAmount(array $parameter) {
 		GeneralUtility::logDeprecatedFunction();
 
 		return '<input style="width: 77px;" class="formField1" maxlength="20" type="input" name="data[tx_commerce_articles][' .
@@ -852,43 +877,31 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	 * Creates a delete button that is assigned to a price. If the button is pressed
 	 * the price will be deleted from the article
 	 *
-	 * @param array $parameter
-	 * @param \TYPO3\CMS\Backend\Form\FormEngine $fObj
+	 * @param array $parameter Parameter
+	 * @param FormEngine $fObj Form engine
 	 *
 	 * @return string
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, this wont get replaced as it was removed from the api
 	 */
-	public function deletePriceButton($parameter, $fObj) {
+	public function deletePriceButton(array $parameter, FormEngine $fObj) {
 		GeneralUtility::logDeprecatedFunction();
 
-		$language = $this->getLanguageService();
-
-			// get the return URL.This is need to fit all possible combinations of GET vars
+		// get the return URL.This is need to fit all possible combinations of GET vars
 		$returnUrl = explode('/', $fObj->returnUrl);
 		$returnUrl = $returnUrl[(count($returnUrl) - 1)];
 
-			// get the UID of the price
+		// get the UID of the price
 		$name = explode('caption_', $parameter['itemFormElName']);
 		$name = explode(']', $name[1]);
 		$pUid = $name[0];
 
-			// build the link code
+		// build the link code
 		$result = '<a href="#" onclick="deleteRecord(\'tx_commerce_article_prices\', ' . (int) $pUid . ', \'' . $returnUrl . '\');">
 			<img src="/' . TYPO3_mainDir . '/gfx/garbage.gif" border="0" />' .
-			$language->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:articles.del_article_price', 1) . '</a>';
+			$this->getLanguageService()->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:articles.del_article_price', 1) .
+			'</a>';
 
 		return $result;
-	}
-
-	/**
-	 * Returns a hidden field with the name and value of the current form element
-	 *
-	 * @param array $parameter
-	 *
-	 * @return string
-	 */
-	public function articleUid($parameter) {
-		return '<input type="hidden" name="' . $parameter['itemFormElName'] . '" value="' . htmlspecialchars($parameter['itemFormElValue']) . '">';
 	}
 
 

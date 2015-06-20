@@ -39,7 +39,8 @@ class Tx_Commerce_Utility_StatisticsUtility {
 	/**
 	 * Initialization
 	 *
-	 * @param string $excludePids
+	 * @param string $excludePids Exclude pids
+	 *
 	 * @return void
 	 */
 	public function init($excludePids) {
@@ -93,7 +94,7 @@ class Tx_Commerce_Utility_StatisticsUtility {
 				'toa.pid'
 			);
 
-			while ($statrow = $database->sql_fetch_row($statres)) {
+			while (($statrow = $database->sql_fetch_row($statres))) {
 				$insertStatArray = array(
 					'pid' => $statrow[3],
 					'year' => date('Y', $oldtimeend),
@@ -127,7 +128,7 @@ class Tx_Commerce_Utility_StatisticsUtility {
 	 *
 	 * @param int $starttime Timestamp of timecode to start the aggregation
 	 * @param int $endtime Timestamp of timecode to end the aggregation
-	 * @param bool $doOutput Boolen, if output should be genared whiel caluclating, shoudl be fals for cli
+	 * @param bool $doOutput If output should be generated while calculating
 	 *
 	 * @return bool result of aggregation
 	 */
@@ -159,7 +160,7 @@ class Tx_Commerce_Utility_StatisticsUtility {
 					AND tco.deleted = 0',
 				'toa.pid'
 			);
-			while ($statrow = $database->sql_fetch_row($statres)) {
+			while (($statrow = $database->sql_fetch_row($statres))) {
 				$updateStatArray = array(
 					'pid' => $statrow[3],
 					'year' => date('Y', $oldtimeend),
@@ -221,7 +222,7 @@ class Tx_Commerce_Utility_StatisticsUtility {
 				'crdate >= ' . $oldtimestart . ' AND crdate <= ' . $oldtimeend,
 				'pid'
 			);
-			while ($statrow = $database->sql_fetch_row($statres)) {
+			while (($statrow = $database->sql_fetch_row($statres))) {
 				$insertStatArray = array(
 					'pid' => $statrow[1],
 					'year' => date('Y', $oldtimeend),
@@ -246,7 +247,7 @@ class Tx_Commerce_Utility_StatisticsUtility {
 	/**
 	 * Retursn the first second of a day as Timestamp
 	 *
-	 * @param int $timestamp
+	 * @param int $timestamp Timestamp
 	 *
 	 * @return int Timestamp
 	 */
@@ -257,7 +258,7 @@ class Tx_Commerce_Utility_StatisticsUtility {
 	/**
 	 * Retursn the last second of a day as Timestamp
 	 *
-	 * @param int $timestamp
+	 * @param int $timestamp Timestamp
 	 *
 	 * @return int Timestamp
 	 */
