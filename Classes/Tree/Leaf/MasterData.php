@@ -288,14 +288,18 @@ abstract class Tx_Commerce_Tree_Leaf_MasterData extends Tx_Commerce_Tree_Leaf_Da
 	 *
 	 * @param int $uid UID to be added and recursed
 	 * @param int $depth Recursive Depth
-	 * @param array|NULL $array
+	 * @param array|NULL $array Result
 	 *
 	 * @return array
 	 */
 	protected function getRecursiveUids($uid, $depth, &$array = NULL) {
 		if (!is_numeric($uid) || !is_numeric($depth)) {
 			if (TYPO3_DLOG) {
-				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('getRecursiveUids (Tx_Commerce_Tree_Leaf_MasterData) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
+					'getRecursiveUids (Tx_Commerce_Tree_Leaf_MasterData) gets passed invalid parameters.',
+					COMMERCE_EXTKEY,
+					3
+				);
 			}
 			return array();
 		}
@@ -316,7 +320,7 @@ abstract class Tx_Commerce_Tree_Leaf_MasterData extends Tx_Commerce_Tree_Leaf_Da
 			$res = $database->exec_SELECTquery('uid', $this->itemTable, $this->itemParentField . ' = ' . $uid);
 		}
 
-		while ($row = $database->sql_fetch_assoc($res)) {
+		while (($row = $database->sql_fetch_assoc($res))) {
 			$this->getRecursiveUids($row['uid'], $depth - 1, $array);
 		}
 
@@ -332,7 +336,13 @@ abstract class Tx_Commerce_Tree_Leaf_MasterData extends Tx_Commerce_Tree_Leaf_Da
 		$rows = parent::loadRecords();
 
 			// Add the root if it is the starting ID or in the mounts
-		if (!$this->ignoreMounts && ((!$this->useMountpoints && $this->uid == 0) || ($this->useMountpoints && in_array(0, $this->mountIds)))) {
+		if (
+			!$this->ignoreMounts
+			&& (
+				(!$this->useMountpoints && $this->uid == 0)
+				|| ($this->useMountpoints && in_array(0, $this->mountIds))
+			)
+		) {
 			$rows['uid'][0] = $this->getRootRecord();
 		}
 

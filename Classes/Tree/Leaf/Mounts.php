@@ -70,26 +70,36 @@ class Tx_Commerce_Tree_Leaf_Mounts extends Tx_Commerce_Tree_Leaf_Base {
 	protected $byGroup;
 
 	/**
+	 * Table
+	 *
 	 * @var string
 	 */
 	protected $table = 'be_users';
 
 	/**
+	 * Group table
+	 *
 	 * @var string
 	 */
 	protected $grouptable = 'be_groups';
 
 	/**
+	 * Field
+	 *
 	 * @var string
 	 */
 	protected $field = NULL;
 
 	/**
+	 * Usergroup field
+	 *
 	 * @var string
 	 */
 	protected $usergroupField = 'usergroup';
 
 	/**
+	 * Where
+	 *
 	 * @var string
 	 */
 	protected $where = '';
@@ -106,23 +116,31 @@ class Tx_Commerce_Tree_Leaf_Mounts extends Tx_Commerce_Tree_Leaf_Base {
 		$this->mountlist = '';
 		$this->mountdata = array();
 		$this->pointer = 0;
-		$this->user = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Authentication\\BackendUserAuthentication');
+		$this->user = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+			'TYPO3\\CMS\\Core\\Authentication\\BackendUserAuthentication'
+		);
 		$this->group = 0;
 		$this->byGroup = FALSE;
 	}
 
 	/**
 	 * Initializes the Mounts for a user
-	 * Overwrite this function if you plan to not read Mountpoints from the be_users table
+	 * Overwrite this function if you plan to not
+	 * read Mountpoints from the be_users table
 	 *
-	 * @param $uid {int}	User UID
+	 * @param int $uid User UID
+	 *
 	 * @return void
 	 */
 	public function init($uid) {
-			// Return if the UID is not numeric - could also be because we have a new user
+		// Return if the UID is not numeric - could also be because we have a new user
 		if (!is_numeric($uid) || $this->field == NULL) {
 			if (TYPO3_DLOG) {
-				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('init (Tx_Commerce_Tree_Leaf_Mounts) gets passed invalid parameters. Script is aborted.', COMMERCE_EXTKEY, 2);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
+					'init (Tx_Commerce_Tree_Leaf_Mounts) gets passed invalid parameters. Script is aborted.',
+					COMMERCE_EXTKEY,
+					2
+				);
 			}
 			return;
 		}
@@ -132,29 +150,35 @@ class Tx_Commerce_Tree_Leaf_Mounts extends Tx_Commerce_Tree_Leaf_Base {
 
 		$mounts = $this->getMounts();
 
-			// If neither User nor Group have mounts, return
+		// If neither User nor Group have mounts, return
 		if ($mounts == NULL) {
 			return;
 		}
 
-			// Store the results
+		// Store the results
 		$this->mountlist = \TYPO3\CMS\Core\Utility\GeneralUtility::uniqueList($mounts);
-			// Clean duplicates
+		// Clean duplicates
 		$this->mountdata = explode(',', $this->mountlist);
 	}
 
 	/**
 	 * Initializes the Mounts for a group
-	 * Overwrite this function if you plan to not read Mountpoints from the be_groups table
+	 * Overwrite this function if you plan to not
+	 * read Mountpoints from the be_groups table
 	 *
-	 * @param $uid {int}	Group UID
+	 * @param int $uid Group UID
+	 *
 	 * @return void
 	 */
 	public function initByGroup($uid) {
-			// Return if the UID is not numeric - could also be because we have a new user
+		// Return if the UID is not numeric - could also be because we have a new user
 		if (!is_numeric($uid) || $this->field == NULL) {
 			if (TYPO3_DLOG) {
-				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('initByGroup (mounts) gets passed invalid parameters. Script is aborted.', COMMERCE_EXTKEY, 2);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
+					'initByGroup (mounts) gets passed invalid parameters. Script is aborted.',
+					COMMERCE_EXTKEY,
+					2
+				);
 			}
 			return;
 		}
@@ -165,14 +189,14 @@ class Tx_Commerce_Tree_Leaf_Mounts extends Tx_Commerce_Tree_Leaf_Base {
 
 		$mounts = $this->getMounts();
 
-			// If the Group has no mounts, return
+		// If the Group has no mounts, return
 		if ($mounts == NULL) {
 			return;
 		}
 
-			// Store the results
+		// Store the results
 		$this->mountlist = \TYPO3\CMS\Core\Utility\GeneralUtility::uniqueList($mounts);
-			// Clean duplicates
+		// Clean duplicates
 		$this->mountdata = explode(',', $this->mountlist);
 	}
 
@@ -184,12 +208,12 @@ class Tx_Commerce_Tree_Leaf_Mounts extends Tx_Commerce_Tree_Leaf_Base {
 	protected function getMounts() {
 		$mounts = '';
 
-			// Set mount to 0 if the User is a admin
+		// Set mount to 0 if the User is a admin
 		if (!$this->byGroup && $this->user->isAdmin()) {
 			$mounts = '0';
 		} else {
 			$database = $this->getDatabaseConnection();
-				// Read usermounts - if none are set, mounts are set to NULL
+			// Read usermounts - if none are set, mounts are set to NULL
 			if (!$this->byGroup) {
 				$result = $database->exec_SELECTquery(
 					$this->field . ',' . $this->usergroupField,
@@ -201,7 +225,7 @@ class Tx_Commerce_Tree_Leaf_Mounts extends Tx_Commerce_Tree_Leaf_Base {
 				$row = $database->sql_fetch_assoc($result);
 				$mounts = $row[$this->field];
 
-					// Read Usergroup mounts
+				// Read Usergroup mounts
 				$groups = \TYPO3\CMS\Core\Utility\GeneralUtility::uniqueList($row[$this->usergroupField]);
 			} else {
 				$groups = $this->group;
@@ -210,12 +234,12 @@ class Tx_Commerce_Tree_Leaf_Mounts extends Tx_Commerce_Tree_Leaf_Base {
 			if (trim($groups)) {
 				$result = $database->exec_SELECTquery($this->field, $this->grouptable, 'uid IN (' . $groups . ')');
 
-					// Walk the groups and add the mounts
-				while ($row = $database->sql_fetch_assoc($result)) {
+				// Walk the groups and add the mounts
+				while (($row = $database->sql_fetch_assoc($result))) {
 					$mounts .= ',' . $row[$this->field];
 				}
 
-					// Make nicely formated list
+				// Make nicely formated list
 				$mounts = \TYPO3\CMS\Core\Utility\GeneralUtility::uniqueList($mounts);
 			}
 		}

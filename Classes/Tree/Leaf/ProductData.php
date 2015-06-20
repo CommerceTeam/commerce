@@ -25,22 +25,25 @@ class Tx_Commerce_Tree_Leaf_ProductData extends Tx_Commerce_Tree_Leaf_SlaveData 
 	 *
 	 * @var string
 	 */
-	protected $extendedFields = 'title, navtitle, hidden, deleted, starttime, endtime, fe_group, t3ver_oid, t3ver_id, t3ver_wsid, t3ver_label, t3ver_state, t3ver_stage, t3ver_count, t3ver_tstamp';
+	protected $extendedFields = 'title, navtitle, hidden, deleted, starttime, endtime, fe_group, t3ver_oid, t3ver_id, t3ver_wsid,
+		t3ver_label, t3ver_state, t3ver_stage, t3ver_count, t3ver_tstamp';
 
 	/**
+	 * Data table
+	 *
 	 * @var string
 	 */
 	protected $table = 'tx_commerce_products';
 
 	/**
-	 * table to read the leafitems from
+	 * Table to read the leafitems from
 	 *
 	 * @var string
 	 */
 	protected $itemTable = 'tx_commerce_products';
 
 	/**
-	 * table that is to be used to find parent items
+	 * Table that is to be used to find parent items
 	 *
 	 * @var string
 	 */
@@ -54,6 +57,8 @@ class Tx_Commerce_Tree_Leaf_ProductData extends Tx_Commerce_Tree_Leaf_SlaveData 
 	protected $useMMTable = TRUE;
 
 	/**
+	 * Item parent
+	 *
 	 * @var string
 	 */
 	protected $item_parent = 'uid_foreign';
@@ -64,7 +69,7 @@ class Tx_Commerce_Tree_Leaf_ProductData extends Tx_Commerce_Tree_Leaf_SlaveData 
 	 * @return void
 	 */
 	public function init() {
-			// do not read deleted and offline versions
+		// do not read deleted and offline versions
 		$this->whereClause  = 'tx_commerce_products.deleted = 0 AND tx_commerce_products.pid != -1';
 		$this->order = 'tx_commerce_products.sorting ASC';
 	}
@@ -82,15 +87,23 @@ class Tx_Commerce_Tree_Leaf_ProductData extends Tx_Commerce_Tree_Leaf_SlaveData 
 
 		if (!is_numeric($uid) || !is_numeric($depth)) {
 			if (TYPO3_DLOG) {
-				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('getRecordsDbList (productdata) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
+					'getRecordsDbList (productdata) gets passed invalid parameters.',
+					COMMERCE_EXTKEY,
+					3
+				);
 			}
 			return NULL;
 		}
 
-			// Check if User's Group may view the records
+		// Check if User's Group may view the records
 		if (!$backendUser->check('tables_select', $this->table)) {
 			if (TYPO3_DLOG) {
-				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('getRecordsDbList (productdata): Usergroup is not allowed to view records.', COMMERCE_EXTKEY, 2);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
+					'getRecordsDbList (productdata): Usergroup is not allowed to view records.',
+					COMMERCE_EXTKEY,
+					2
+				);
 			}
 			return NULL;
 		}

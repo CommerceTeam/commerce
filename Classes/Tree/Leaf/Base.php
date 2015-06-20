@@ -67,6 +67,7 @@ class Tx_Commerce_Tree_Leaf_Base {
 	 * Gets a Locallang-Field inside the LANG
 	 *
 	 * @param string $field LL Field
+	 *
 	 * @return string
 	 */
 	public function getLL($field) {

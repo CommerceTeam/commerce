@@ -109,28 +109,28 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 	protected $defaultFields = 'uid, pid';
 
 	/**
-	 * field that will be aliased as item_parent; MANDATORY!
+	 * Field that will be aliased as item_parent; MANDATORY!
 	 *
 	 * @var string
 	 */
 	protected $item_parent = '';
 
 	/**
-	 * table to read the leafitems from
+	 * Table to read the leafitems from
 	 *
 	 * @var string
 	 */
 	protected $itemTable;
 
 	/**
-	 * table that is to be used to find parent items
+	 * Table that is to be used to find parent items
 	 *
 	 * @var string
 	 */
 	protected $mmTable;
 
 	/**
-	 * if no mm table is used, this field will be used to get the parents
+	 * If no mm table is used, this field will be used to get the parents
 	 *
 	 * @var string
 	 */
@@ -151,11 +151,15 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 	protected $where;
 
 	/**
+	 * Sorted
+	 *
 	 * @var bool
 	 */
 	protected $sorted = FALSE;
 
 	/**
+	 * Sorted by
+	 *
 	 * @var array
 	 */
 	protected $sortedArray = NULL;
@@ -226,10 +230,11 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 	/**
 	 * Sets the position Ids
 	 *
-	 * @param array $positionIds - Array with the Category uids which are current
+	 * @param array $positionIds Array with the Category uids which are current
+	 *
 	 * @return void
 	 */
-	public function setPositions(&$positionIds) {
+	public function setPositions(array &$positionIds) {
 		if (!is_array($positionIds)) {
 			if (TYPO3_DLOG) {
 				GeneralUtility::devLog('setPositions (Tx_Commerce_Tree_Leaf_Data) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
@@ -247,7 +252,7 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 	 *
 	 * @return array
 	 */
-	public function getPositionsByIndices($index, $indices) {
+	public function getPositionsByIndices($index, array $indices) {
 		if (!is_numeric($index) || !is_array($indices)) {
 			if (TYPO3_DLOG) {
 				GeneralUtility::devLog('getPositionsByIndices (productdata) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
@@ -257,14 +262,14 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 
 		$m = count($indices);
 
-			// Construct the Array of Position Ids
+		// Construct the Array of Position Ids
 		$firstIndex = (0 >= $m) ? $index : $indices[0];
 
-			// normally we read the mounts
+		// normally we read the mounts
 		$mounts = $this->mountIds;
 		$l = count($mounts);
 
-			// if we didn't find mounts, exit
+		// if we didn't find mounts, exit
 		if ($l == 0) {
 			if (TYPO3_DLOG) {
 				GeneralUtility::devLog(
@@ -281,27 +286,27 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 		for ($i = 0; $i < $l; $i++) {
 			$posIds = $this->positionArray[$firstIndex][$mounts[$i]];
 
-				// Go to the correct Leaf in the Positions
+			// Go to the correct Leaf in the Positions
 			if (0 < $m) {
-					// Go to correct parentleaf
+				// Go to correct parentleaf
 				for ($j = 1; $j < $m; $j++) {
 					$posIds = $posIds[$indices[$j]];
 				}
-					// select current leaf
+				// select current leaf
 				$posIds = $posIds[$index];
 			}
 
-				// If no Items are set for the current Leaf, skip it
+			// If no Items are set for the current Leaf, skip it
 			if (!is_array($posIds['items'])) {
 				continue;
 			}
 
-				// Get the position uids
+			// Get the position uids
 			$positionUids = array_keys($posIds['items']);
 
-				// Store in the Mount - PosUids Array
+			// Store in the Mount - PosUids Array
 			$this->positionMountUids[$mounts[$i]] = $positionUids;
-				// Store in Array of all UIDS
+			// Store in Array of all UIDS
 			$positions = array_merge($positions, $positionUids);
 		}
 
@@ -372,9 +377,9 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 	 * Stores the resulting array in an internal variable
 	 *
 	 * @param int $rootUid UID of the Item that will act as root
-	 * @param int $depth
-	 * @param bool $last
-	 * @param int $crazyRecursionLimiter
+	 * @param int $depth Depth
+	 * @param bool $last Last
+	 * @param int $crazyRecursionLimiter Recursion limit
 	 *
 	 * @return void
 	 */
@@ -392,7 +397,6 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 		}
 
 		if (isset($this->records['uid'][$rootUid])) {
-
 			// Place the current record in the array
 			$entry = array();
 			// deprecated key should not be used anymore to be more compatible to pagetree
@@ -475,7 +479,7 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 	 * Returns a subset of records from the 'pid' array
 	 * Returns null if PID is not found
 	 *
-	 * @param int $pid
+	 * @param int $pid Page id
 	 *
 	 * @return array
 	 */
@@ -523,15 +527,17 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 			}
 		}
 
-			// Add the extended fields to the select statement
-		$select = (is_string($this->extendedFields) && '' != $this->extendedFields) ?
-			$this->defaultFields . ',' . $this->extendedFields :
-			$this->defaultFields;
+		// Add the extended fields to the select statement
+		if (is_string($this->extendedFields) && '' != $this->extendedFields) {
+			$select = $this->defaultFields . ',' . $this->extendedFields;
+		} else {
+			$select = $this->defaultFields;
+		}
 
-			// add item parent
+		// add item parent
 		$select .= ',' . $this->item_parent . ' AS item_parent';
 
-			// add the item search
+		// add the item search
 		$where = '';
 		if ($this->useMMTable) {
 			$where .= ('' == $this->whereClause) ? '' : ' AND ' . $this->whereClause;
@@ -545,7 +551,7 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 
 		$database = $this->getDatabaseConnection();
 
-			// exec the query
+		// exec the query
 		if ($this->useMMTable) {
 			$res = $database->exec_SELECT_mm_query($select, $this->itemTable, $this->mmTable, '', $where, '', $this->order, $this->limit);
 		} else {
@@ -563,15 +569,15 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 			return array();
 		}
 
-			// Will hold a record to check rights against after this loop.
+		// Will hold a record to check rights against after this loop.
 		$checkRightRow = FALSE;
 
 		$rows = array();
 		while (($row = $database->sql_fetch_assoc($res))) {
-				// get the version overlay if wanted
-				// store parent item
+			// get the version overlay if wanted
+			// store parent item
 			$parentItem = $row['item_parent'];
-				// unset the pseudo-field (no pseudo-fields allowed for workspaceOL)
+			// unset the pseudo-field (no pseudo-fields allowed for workspaceOL)
 			unset($row['item_parent']);
 
 			BackendUtility::workspaceOL($this->itemTable, $row);
@@ -584,21 +590,21 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 				);
 				continue;
 			} else {
-					// write the pseudo field again
+				// write the pseudo field again
 				$row['item_parent'] = $parentItem;
 			}
 
-				// the row will by default start with being the last node
+			// the row will by default start with being the last node
 			$row['lastNode'] = FALSE;
 
-				// Set the row in the 'uid' part
+			// Set the row in the 'uid' part
 			$rows['uid'][$row['uid']] = $row;
 
-				// Set the row in the 'pid' part
+			// Set the row in the 'pid' part
 			if (!isset($rows['pid'][$row['item_parent']])) {
 				$rows['pid'][$row['item_parent']] = array($row);
 			} else {
-					// store
+				// store
 				$rows['pid'][$row['item_parent']][] = $row;
 			}
 
@@ -607,7 +613,7 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 
 		$database->sql_free_result($res);
 
-			// Check perms on Commerce folders.
+		// Check perms on Commerce folders.
 		if ($checkRightRow !== FALSE && !$this->checkAccess($this->itemTable, $checkRightRow)) {
 			if (TYPO3_DLOG) {
 				GeneralUtility::devLog(
@@ -620,7 +626,7 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 			return array();
 		}
 
-			// Calculate the records which are last
+		// Calculate the records which are last
 		if (is_array($rows['pid'])) {
 			$keys = array_keys($rows['pid']);
 			$l = count($keys);

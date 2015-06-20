@@ -50,26 +50,36 @@ abstract class Tx_Commerce_Tree_Leaf_Leaf extends Tx_Commerce_Tree_Leaf_Base {
 	protected $leafcount;
 
 	/**
+	 * Back path
+	 *
 	 * @var string
 	 */
 	protected $BACK_PATH = '../../../../typo3/';
 
 	/**
+	 * Tree name
+	 *
 	 * @var string
 	 */
 	protected $treeName;
 
 	/**
+	 * Reset done
+	 *
 	 * @var bool
 	 */
 	protected $resetDone;
 
 	/**
+	 * Parent class
+	 *
 	 * @var string
 	 */
 	protected $parentClass = '';
 
 	/**
+	 * Self class
+	 *
 	 * @var string
 	 */
 	protected $selfClass = '';
@@ -79,9 +89,10 @@ abstract class Tx_Commerce_Tree_Leaf_Leaf extends Tx_Commerce_Tree_Leaf_Base {
 	 *
 	 * @param Tx_Commerce_Tree_Leaf_View $view LeafView of the Leaf
 	 * @param Tx_Commerce_Tree_Leaf_Data $data LeafData of the Leaf
+	 *
 	 * @return void
 	 */
-	public function initBasic(&$view, &$data) {
+	public function initBasic(Tx_Commerce_Tree_Leaf_View &$view, Tx_Commerce_Tree_Leaf_Data &$data) {
 		if (is_null($view) || is_null($data)) {
 			if (TYPO3_DLOG) {
 				GeneralUtility::devLog('initBasic (leaf) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
@@ -89,16 +100,16 @@ abstract class Tx_Commerce_Tree_Leaf_Leaf extends Tx_Commerce_Tree_Leaf_Base {
 			return;
 		}
 
-			// Storing the View and the Data and initializing the standard values
+		// Storing the View and the Data and initializing the standard values
 		$this->view = $view;
 		$this->data = $data;
 
 		$this->leafs = array();
 		$this->leafcount = 0;
 
-			// do NOT set treename or it will break the functionality
+		// do NOT set treename or it will break the functionality
 		$this->resetDone = FALSE;
-			// store the name of this class
+		// store the name of this class
 		$this->selfClass = get_class($this);
 	}
 
@@ -139,6 +150,7 @@ abstract class Tx_Commerce_Tree_Leaf_Leaf extends Tx_Commerce_Tree_Leaf_Base {
 	 * Stores the name of the tree
 	 *
 	 * @param string $treeName Name of the tree
+	 *
 	 * @return void
 	 */
 	public function setTreeName($treeName) {
@@ -180,10 +192,11 @@ abstract class Tx_Commerce_Tree_Leaf_Leaf extends Tx_Commerce_Tree_Leaf_Base {
 	/**
 	 * Pass the Item UID Array with the Userpositions to the LeafData
 	 *
-	 * @return void
 	 * @param array $positionIds Array with item uids that are positions
+	 *
+	 * @return void
 	 */
-	public function setPositions(&$positionIds) {
+	public function setPositions(array &$positionIds) {
 		if (!is_array($positionIds)) {
 			if (TYPO3_DLOG) {
 				GeneralUtility::devLog('setPositions (leaf) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
@@ -202,7 +215,7 @@ abstract class Tx_Commerce_Tree_Leaf_Leaf extends Tx_Commerce_Tree_Leaf_Base {
 	 *
 	 * @return void
 	 */
-	public function init($index, $parentIndices = array()) {
+	public function init($index, array $parentIndices = array()) {
 		if (!is_numeric($index) || !is_array($parentIndices)) {
 			if (TYPO3_DLOG) {
 				GeneralUtility::devLog('init (leaf) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
@@ -221,7 +234,11 @@ abstract class Tx_Commerce_Tree_Leaf_Leaf extends Tx_Commerce_Tree_Leaf_Base {
 		// are NOT read by mounts
 		for ($i = 0; $i < $this->leafcount; $i++) {
 				// For every childleaf, set its parent leaf to the current leaf
-			/** @var Tx_Commerce_Tree_Leaf_Slave $leaf */
+			/**
+			 * Slave
+			 *
+			 * @var Tx_Commerce_Tree_Leaf_Slave $leaf
+			 */
 			$leaf = & $this->leafs[$i];
 			$leaf->setParentLeaf($this);
 			$leaf->init($i, $parentIndices);
@@ -232,10 +249,11 @@ abstract class Tx_Commerce_Tree_Leaf_Leaf extends Tx_Commerce_Tree_Leaf_Base {
 	 * Sets the PositionIds for this leafs own LeafData and
 	 * its ChildLeafs ("recursively")
 	 *
-	 * @param array $positions item uids that are positions
+	 * @param array $positions Item uids that are positions
+	 *
 	 * @return void
 	 */
-	public function setDataPositions(&$positions) {
+	public function setDataPositions(array &$positions) {
 		if (!is_array($positions)) {
 			if (TYPO3_DLOG) {
 				GeneralUtility::devLog('setDataPositions (leaf) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
@@ -247,7 +265,11 @@ abstract class Tx_Commerce_Tree_Leaf_Leaf extends Tx_Commerce_Tree_Leaf_Base {
 
 		// "Recursive" Call
 		for ($i = 0; $i < $this->leafcount; $i++) {
-			/** @var Tx_Commerce_Tree_Leaf_Leaf $leaf */
+			/**
+			 * Leaf
+			 *
+			 * @var Tx_Commerce_Tree_Leaf_Leaf $leaf
+			 */
 			$leaf = & $this->leafs[$i];
 			$leaf->setDataPositions($positions);
 		}
@@ -273,7 +295,11 @@ abstract class Tx_Commerce_Tree_Leaf_Leaf extends Tx_Commerce_Tree_Leaf_Base {
 
 			// Sort Leafs
 		for ($i = 0; $i < $this->leafcount; $i++) {
-			/** @var Tx_Commerce_Tree_Leaf_Leaf $leaf */
+			/**
+			 * Leaf
+			 *
+			 * @var Tx_Commerce_Tree_Leaf_Leaf $leaf
+			 */
 			$leaf = & $this->leafs[$i];
 			$leaf->sort($rootUid);
 		}
@@ -289,7 +315,11 @@ abstract class Tx_Commerce_Tree_Leaf_Leaf extends Tx_Commerce_Tree_Leaf_Base {
 		$sortedData = $this->data->getSortedArray();
 
 		for ($i = 0; $i < $this->leafcount; $i++) {
-			/** @var Tx_Commerce_Tree_Leaf_Leaf $leaf */
+			/**
+			 * Leaf
+			 *
+			 * @var Tx_Commerce_Tree_Leaf_Leaf $leaf
+			 */
 			$leaf = & $this->leafs[$i];
 			$sortedData = array_merge($sortedData, $leaf->getSortedArray());
 		}
@@ -319,7 +349,7 @@ abstract class Tx_Commerce_Tree_Leaf_Leaf extends Tx_Commerce_Tree_Leaf_Base {
 		}
 
 		for ($i = 0; $i < $this->leafcount; $i++) {
-				// if the childleaf has children for the parent
+			// if the childleaf has children for the parent
 			if (0 < count($this->leafs[$i]->data->getChildrenByPid($pid))) {
 				return TRUE;
 			}
@@ -335,7 +365,7 @@ abstract class Tx_Commerce_Tree_Leaf_Leaf extends Tx_Commerce_Tree_Leaf_Base {
 	 *
 	 * @return bool
 	 */
-	public function isLast($row, $pid = 0) {
+	public function isLast(array $row, $pid = 0) {
 		if (!is_array($row) || !is_numeric($pid)) {
 			if (TYPO3_DLOG) {
 				GeneralUtility::devLog('isLast (leaf) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
@@ -357,7 +387,7 @@ abstract class Tx_Commerce_Tree_Leaf_Leaf extends Tx_Commerce_Tree_Leaf_Base {
 	 *
 	 * @return bool
 	 */
-	public function hasChildren($row) {
+	public function hasChildren(array $row) {
 		if (!is_array($row)) {
 			if (TYPO3_DLOG) {
 				GeneralUtility::devLog('hasChildren (leaf) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
@@ -370,7 +400,11 @@ abstract class Tx_Commerce_Tree_Leaf_Leaf extends Tx_Commerce_Tree_Leaf_Base {
 			// check if any leaf has a subitem for the current row
 		if ($this->leafcount > 0) {
 			for ($i = 0; $i < $this->leafcount; $i++) {
-				/** @var Tx_Commerce_Tree_Leaf_Leaf $leaf */
+				/**
+				 * Leaf
+				 *
+				 * @var Tx_Commerce_Tree_Leaf_Leaf $leaf
+				 */
 				$leaf = & $this->leafs[$i];
 				$hasChildren = $leaf->hasSubitems($row);
 				if (TRUE == $hasChildren) {
@@ -388,7 +422,7 @@ abstract class Tx_Commerce_Tree_Leaf_Leaf extends Tx_Commerce_Tree_Leaf_Base {
 	 *
 	 * @return bool
 	 */
-	public function hasSubitems($row) {
+	public function hasSubitems(array $row) {
 		if (!is_array($row)) {
 			if (TYPO3_DLOG) {
 				GeneralUtility::devLog('hasSubitems (leaf) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);

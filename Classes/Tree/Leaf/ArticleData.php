@@ -28,12 +28,14 @@ class Tx_Commerce_Tree_Leaf_ArticleData extends Tx_Commerce_Tree_Leaf_SlaveData 
 	protected $extendedFields = 'title, navtitle, hidden, deleted, starttime, endtime, fe_group, t3ver_oid, t3ver_id, t3ver_label';
 
 	/**
+	 * Table
+	 *
 	 * @var string
 	 */
 	protected $table = 'tx_commerce_articles';
 
 	/**
-	 * table to read the leafitems from
+	 * Table to read the leafitems from
 	 *
 	 * @var string
 	 */
@@ -47,11 +49,15 @@ class Tx_Commerce_Tree_Leaf_ArticleData extends Tx_Commerce_Tree_Leaf_SlaveData 
 	protected $useMMTable = FALSE;
 
 	/**
+	 * Item parent field
+	 *
 	 * @var string
 	 */
 	protected $itemParentField = 'uid_product';
 
 	/**
+	 * Item parent
+	 *
 	 * @var string
 	 */
 	protected $item_parent = 'uid_product';
@@ -69,13 +75,13 @@ class Tx_Commerce_Tree_Leaf_ArticleData extends Tx_Commerce_Tree_Leaf_SlaveData 
 	/**
 	 * Returns true if this Article is currently expanded
 	 *
-	 * @param array $row Current Row
+	 * @param array $uid Uid of the current row
 	 *
 	 * @return bool
 	 * @todo If we implement the positions (see above), we should also implement this and any function related to making this leaf not ultimate
 	 */
-	public function isExpanded(&$row) {
-			// Article is the ultimate leaf, so to speak - it currently has no subleafs
+	public function isExpanded($uid) {
+		// Article is the ultimate leaf, so to speak - it currently has no subleafs
 		return FALSE;
 	}
 }

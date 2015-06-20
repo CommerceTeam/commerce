@@ -21,23 +21,29 @@
  */
 class Tx_Commerce_Tree_Leaf_Slave extends Tx_Commerce_Tree_Leaf_Leaf {
 	/**
-	 * If the leaf has a parent leaf, then it is stored in this variable
+	 * Parent leaf
 	 *
 	 * @var Tx_Commerce_Tree_Leaf_Leaf
 	 */
 	protected $parentLeaf;
 
 	/**
+	 * Slave data
+	 *
 	 * @var Tx_Commerce_Tree_Leaf_SlaveData
 	 */
 	public $data;
 
 	/**
+	 * Leaf view
+	 *
 	 * @var Tx_Commerce_Tree_Leaf_View
 	 */
 	public $view;
 
 	/**
+	 * Page id
+	 *
 	 * @var int
 	 */
 	protected $pid;
@@ -45,7 +51,8 @@ class Tx_Commerce_Tree_Leaf_Slave extends Tx_Commerce_Tree_Leaf_Leaf {
 	/**
 	 * Sets the parent leaf of this leaf
 	 *
-	 * @param Tx_Commerce_Tree_Leaf_Leaf $parentLeaf that is the parent of this leaf
+	 * @param Tx_Commerce_Tree_Leaf_Leaf $parentLeaf Parent of this leaf
+	 *
 	 * @return void
 	 */
 	public function setParentLeaf(Tx_Commerce_Tree_Leaf_Leaf &$parentLeaf) {
@@ -70,7 +77,7 @@ class Tx_Commerce_Tree_Leaf_Slave extends Tx_Commerce_Tree_Leaf_Leaf {
 	 *
 	 * @return void
 	 */
-	public function init($index, $parentIndices = array()) {
+	public function init($index, array $parentIndices = array()) {
 		if (!is_numeric($index) || !is_array($parentIndices)) {
 			if (TYPO3_DLOG) {
 				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
@@ -81,7 +88,7 @@ class Tx_Commerce_Tree_Leaf_Slave extends Tx_Commerce_Tree_Leaf_Leaf {
 			return;
 		}
 
-			// Initialize the Tx_Commerce_Tree_Leaf_Data
+		// Initialize the Tx_Commerce_Tree_Leaf_Data
 		$this->data->init();
 		$this->data->initRecords($index, $parentIndices, $this->parentLeaf->data);
 
@@ -99,7 +106,7 @@ class Tx_Commerce_Tree_Leaf_Slave extends Tx_Commerce_Tree_Leaf_Leaf {
 	 * @return string HTML Code
 	 */
 	public function printChildleafsByLoop($startUid, $bank, $pid) {
-			// Check for valid parameters
+		// Check for valid parameters
 		if (!is_numeric($startUid) || !is_numeric($bank)) {
 			if (TYPO3_DLOG) {
 				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
@@ -110,21 +117,21 @@ class Tx_Commerce_Tree_Leaf_Slave extends Tx_Commerce_Tree_Leaf_Leaf {
 			return '';
 		}
 
-			// Set the bank
+		// Set the bank
 		$this->view->setBank($bank);
 		$this->data->setBank($bank);
 
-			// Set the TreeName
+		// Set the TreeName
 		$this->view->setTreeName($this->treeName);
 
-			// init vars
+		// init vars
 		$out = '';
 
-			// get the Parent Item and set it as the starting child to print
+		// get the Parent Item and set it as the starting child to print
 		$child = $this->data->getChildByUid($startUid);
 		$child['item_parent'] = $pid;
 
-			// Abort if the starting Category is not found
+		// Abort if the starting Category is not found
 		if (NULL == $child) {
 			if (TYPO3_DLOG) {
 				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
@@ -138,56 +145,60 @@ class Tx_Commerce_Tree_Leaf_Slave extends Tx_Commerce_Tree_Leaf_Leaf {
 		/********************
 		 * Printing the Item
 		 *******************/
-			// Give class 'expanded' if it is
+		// Give class 'expanded' if it is
 		$exp = $this->data->isExpanded($child['uid']);
 		$cssExpanded = ($exp) ? 'expanded' : '';
 
-			// Add class 'last' if it is
+		// Add class 'last' if it is
 		$isLast = $this->isLast($child, $pid);
 		$cssLast = ($isLast) ? ' last' : '';
 
 		$cssClass = $cssExpanded . ' ' . $cssLast;
 
-			// start the element
+		// start the element
 		$out .= '<li class="' . $cssClass . '">
 					<div>';
 
-			// a slave can never be a bank
+		// a slave can never be a bank
 		$isBank = FALSE;
 		$hasChildren = $this->hasChildren($child);
 
-			// pm icon
+		// pm icon
 		$out .= $this->view->PMicon($child, $isLast, $exp, $isBank, $hasChildren);
 
-			// icon
+		// icon
 		$out .= $this->view->getIcon($child);
 
 		if (
-			(strpos(\TYPO3\CMS\Core\Utility\GeneralUtility::getIndpEnv('REQUEST_URI'), '/navigation.php') === FALSE)
-			&& (strpos(\TYPO3\CMS\Core\Utility\GeneralUtility::getIndpEnv('HTTP_REFERER'), '/navigation.php') === FALSE)
+			strpos(\TYPO3\CMS\Core\Utility\GeneralUtility::getIndpEnv('REQUEST_URI'), '/navigation.php') === FALSE
+			&& strpos(\TYPO3\CMS\Core\Utility\GeneralUtility::getIndpEnv('HTTP_REFERER'), '/navigation.php') === FALSE
 		) {
 			$this->view->substituteRealValues();
 		}
 
-			// title
+		// title
 		$out .= $this->view->wrapTitle($child['title'], $child) . '</div>';
 
 		/******************
 		 * Done printing
 		 *****************/
 
-			// Print the children from the child leafs if the current leaf is expanded
+		// Print the children from the child leafs if the current leaf is expanded
 		if ($exp) {
 			$out .= '<ul>';
 			for ($i = 0; $i < $this->leafcount; $i++) {
-				/** @var Tx_Commerce_Tree_Leaf_Slave $leaf */
+				/**
+				 * Slave
+				 *
+				 * @var Tx_Commerce_Tree_Leaf_Slave $leaf
+				 */
 				$leaf = & $this->leafs[$i];
 				$out .= $leaf->printChildleafsByParent($child['uid'], $bank);
 			}
 			$out .= '</ul>';
 		}
 
-			// close the list item
+		// close the list item
 		$out .= '</li>';
 
 		return $out;

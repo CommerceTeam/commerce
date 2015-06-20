@@ -28,17 +28,20 @@ class Tx_Commerce_Tree_Leaf_CategoryView extends Tx_Commerce_Tree_Leaf_View {
 	protected $table = 'tx_commerce_categories';
 
 	/**
+	 * Dom id prefix
+	 *
 	 * @var string
 	 */
 	protected $domIdPrefix = 'txcommerceCategory';
 
 	/**
-	 * returns the link from the tree used to jump to a destination
+	 * Returns the link from the tree used to jump to a destination
 	 *
-	 * @param array $row - Array with the ID Information
+	 * @param array $row Array with the ID Information
+	 *
 	 * @return string
 	 */
-	public function getJumpToParam($row) {
+	public function getJumpToParam(array $row) {
 		if (!is_array($row)) {
 			if (TYPO3_DLOG) {
 				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog(

@@ -22,6 +22,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class Tx_Commerce_Tree_Leaf_Master extends Tx_Commerce_Tree_Leaf_Leaf {
 	/**
+	 * Mount class
+	 *
 	 * @var string
 	 */
 	protected $mountClass = 'Tx_Commerce_Tree_Leaf_Mounts';
@@ -41,6 +43,8 @@ class Tx_Commerce_Tree_Leaf_Master extends Tx_Commerce_Tree_Leaf_Leaf {
 	protected $mounts;
 
 	/**
+	 * Leaf data
+	 *
 	 * @var Tx_Commerce_Tree_Leaf_MasterData
 	 */
 	public $data;
@@ -51,9 +55,10 @@ class Tx_Commerce_Tree_Leaf_Master extends Tx_Commerce_Tree_Leaf_Leaf {
 	 *
 	 * @param int $index Index of this leaf
 	 * @param array $parentIndices Array with parent indices
+	 *
 	 * @return void
 	 */
-	public function init($index, $parentIndices = array()) {
+	public function init($index, array $parentIndices = array()) {
 		if (!is_numeric($index) || !is_array($parentIndices)) {
 			if (TYPO3_DLOG) {
 				GeneralUtility::devLog('init (leaf) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
@@ -76,11 +81,12 @@ class Tx_Commerce_Tree_Leaf_Master extends Tx_Commerce_Tree_Leaf_Leaf {
 	/**
 	 * Sets the View and the Data of the Leaf
 	 *
-	 * @return void
 	 * @param Tx_Commerce_Tree_Leaf_View $view LeafView of the Leaf
 	 * @param Tx_Commerce_Tree_Leaf_Data $data LeafData of the Leaf
+	 *
+	 * @return void
 	 */
-	public function initBasic(&$view, &$data) {
+	public function initBasic(Tx_Commerce_Tree_Leaf_View &$view, Tx_Commerce_Tree_Leaf_Data &$data) {
 		if (is_null($view) || is_null($data)) {
 			if (TYPO3_DLOG) {
 				GeneralUtility::devLog('initBasic (leaf) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
@@ -109,9 +115,10 @@ class Tx_Commerce_Tree_Leaf_Master extends Tx_Commerce_Tree_Leaf_Leaf {
 	 * Pass the Item UID Array with the Mountpoints to the LeafData
 	 *
 	 * @param array $mountIds Array with item UIDs that are mountpoints
+	 *
 	 * @return void
 	 */
-	public function setMounts($mountIds) {
+	public function setMounts(array $mountIds) {
 		if (!is_array($mountIds)) {
 			if (TYPO3_DLOG) {
 				GeneralUtility::devLog('setMounts (Tx_Commerce_Tree_Leaf_Master) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
@@ -151,6 +158,8 @@ class Tx_Commerce_Tree_Leaf_Master extends Tx_Commerce_Tree_Leaf_Leaf {
 	}
 
 	/**
+	 * Get uid
+	 *
 	 * @return int
 	 */
 	public function getUid() {
@@ -202,7 +211,7 @@ class Tx_Commerce_Tree_Leaf_Master extends Tx_Commerce_Tree_Leaf_Leaf {
 	 *
 	 * @return bool
 	 */
-	public function isLast($row, $pid = 0) {
+	public function isLast(array $row, $pid = 0) {
 		if (!is_array($row) || !is_numeric($pid)) {
 			if (TYPO3_DLOG) {
 				GeneralUtility::devLog('isLast (leaf) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
@@ -228,7 +237,7 @@ class Tx_Commerce_Tree_Leaf_Master extends Tx_Commerce_Tree_Leaf_Leaf {
 	 *
 	 * @return bool
 	 */
-	public function hasChildren($row) {
+	public function hasChildren(array $row) {
 		if (!is_array($row)) {
 			if (TYPO3_DLOG) {
 				GeneralUtility::devLog('hasChildren (Tx_Commerce_Tree_Leaf_Master) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);

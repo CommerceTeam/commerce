@@ -28,7 +28,7 @@ abstract class Tx_Commerce_Tree_Leaf_SlaveData extends Tx_Commerce_Tree_Leaf_Dat
 	 *
 	 * @return array
 	 */
-	public function getPositionsByIndices($index, $indices) {
+	public function getPositionsByIndices($index, array $indices) {
 		if (!is_numeric($index) || !is_array($indices)) {
 			if (TYPO3_DLOG) {
 				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
@@ -39,7 +39,7 @@ abstract class Tx_Commerce_Tree_Leaf_SlaveData extends Tx_Commerce_Tree_Leaf_Dat
 			return array();
 		}
 
-			// Construct the Array of Position Ids
+		// Construct the Array of Position Ids
 		$firstIndex = $indices[0];
 		if (!is_array($this->positionArray[$firstIndex])) {
 			if (TYPO3_DLOG) {
@@ -67,7 +67,7 @@ abstract class Tx_Commerce_Tree_Leaf_SlaveData extends Tx_Commerce_Tree_Leaf_Dat
 	 *
 	 * @return void
 	 */
-	public function initRecords($index, $parentIndices, &$parentLeafData) {
+	public function initRecords($index, array $parentIndices, Tx_Commerce_Tree_Leaf_Data &$parentLeafData) {
 		if (!is_numeric($index) || !is_array($parentIndices) || is_null($parentLeafData)) {
 			if (TYPO3_DLOG) {
 				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
@@ -90,17 +90,17 @@ abstract class Tx_Commerce_Tree_Leaf_SlaveData extends Tx_Commerce_Tree_Leaf_Dat
 			return;
 		}
 
-			// Store the position Uids
+		// Store the position Uids
 		$this->getPositionsByIndices($index, $parentIndices);
 
-			// Get the uids of the open parent - returns uids which are currently open
+		// Get the uids of the open parent - returns uids which are currently open
 		$recordUids = $parentLeafData->getRecordsUids();
 
 		if ($recordUids == NULL) {
 			return;
 		}
 
-			// Read all items
+		// Read all items
 		if ($this->useMMTable) {
 			$this->where['uid_foreign'] = implode(',', $recordUids);
 			$this->where['uid_local'] = 0;
