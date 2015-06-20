@@ -38,21 +38,29 @@ class Tx_Commerce_Tree_CategoryTree extends Tx_Commerce_Tree_Browsetree {
 	protected $bare = TRUE;
 
 	/**
+	 * Min category permission
+	 *
 	 * @var string
 	 */
 	protected $minCategoryPerms = 'show';
 
 	/**
+	 * No click list
+	 *
 	 * @var string
 	 */
 	protected $noClickList = '';
 
 	/**
+	 * Simple mode
+	 *
 	 * @var bool
 	 */
 	protected $simpleMode = FALSE;
 
 	/**
+	 * Real values
+	 *
 	 * @var bool
 	 */
 	protected $realValues = FALSE;
@@ -67,17 +75,31 @@ class Tx_Commerce_Tree_CategoryTree extends Tx_Commerce_Tree_Browsetree {
 		parent::init();
 
 		// Create the category leaf
-		/** @var Tx_Commerce_Tree_Leaf_Category $categoryLeaf */
+		/**
+		 * Category leaf
+		 *
+		 * @var Tx_Commerce_Tree_Leaf_Category $categoryLeaf
+		 */
 		$categoryLeaf = GeneralUtility::makeInstance('Tx_Commerce_Tree_Leaf_Category');
 
-		// Instantiate the categorydata, -view and set the permission mask (or the string rep.)
-		/** @var Tx_Commerce_Tree_Leaf_CategoryData $categorydata */
+		// Instantiate the categorydata, -view and set
+		// the permission mask (or the string rep.)
+		/**
+		 * Category data
+		 *
+		 * @var Tx_Commerce_Tree_Leaf_CategoryData $categorydata
+		 */
 		$categorydata = GeneralUtility::makeInstance('Tx_Commerce_Tree_Leaf_CategoryData');
 		$categorydata->setPermsMask(Tx_Commerce_Utility_BackendUtility::getPermMask($this->minCategoryPerms));
 
-		/** @var Tx_Commerce_Tree_Leaf_CategoryView $categoryview */
+		/**
+		 * Category view
+		 *
+		 * @var Tx_Commerce_Tree_Leaf_CategoryView $categoryview
+		 */
 		$categoryview = GeneralUtility::makeInstance('Tx_Commerce_Tree_Leaf_CategoryView');
-		// disable the root onclick if the perms are set to editcontent - this way we cannot select the root as a parent for any content item
+		// disable the root onclick if the perms are set to editcontent
+		// this way we cannot select the root as a parent for any content item
 		$categoryview->noRootOnclick(($this->minCategoryPerms == 'editcontent'));
 
 			// Configure real values
@@ -98,12 +120,24 @@ class Tx_Commerce_Tree_CategoryTree extends Tx_Commerce_Tree_Browsetree {
 		// - Productleaf will be added to Categoryleaf,
 		// - Articleleaf will be added to Productleaf
 		if (!$this->bare) {
-			/** @var Tx_Commerce_Tree_Leaf_Product $productleaf */
+			/**
+			 * Product leaf
+			 *
+			 * @var Tx_Commerce_Tree_Leaf_Product $productleaf
+			 */
 			$productleaf = GeneralUtility::makeInstance('Tx_Commerce_Tree_Leaf_Product');
-			/** @var Tx_Commerce_Tree_Leaf_Article $articleleaf */
+			/**
+			 * Article leaf
+			 *
+			 * @var Tx_Commerce_Tree_Leaf_Article $articleleaf
+			 */
 			$articleleaf = GeneralUtility::makeInstance('Tx_Commerce_Tree_Leaf_Article');
 
-			/** @var Tx_Commerce_Tree_Leaf_ProductView $productview */
+			/**
+			 * Product view
+			 *
+			 * @var Tx_Commerce_Tree_Leaf_ProductView $productview
+			 */
 			$productview = GeneralUtility::makeInstance('Tx_Commerce_Tree_Leaf_ProductView');
 
 				// Configure the noOnclick for the leaf
@@ -116,7 +150,11 @@ class Tx_Commerce_Tree_CategoryTree extends Tx_Commerce_Tree_Browsetree {
 				$productview->substituteRealValues();
 			}
 
-			/** @var Tx_Commerce_Tree_Leaf_ArticleView $articleview */
+			/**
+			 * Article view
+			 *
+			 * @var Tx_Commerce_Tree_Leaf_ArticleView $articleview
+			 */
 			$articleview = GeneralUtility::makeInstance('Tx_Commerce_Tree_Leaf_ArticleView');
 
 				// Configure the noOnclick for the leaf
@@ -129,10 +167,18 @@ class Tx_Commerce_Tree_CategoryTree extends Tx_Commerce_Tree_Browsetree {
 				$articleview->substituteRealValues();
 			}
 
-			/** @var Tx_Commerce_Tree_Leaf_ProductData $productData */
+			/**
+			 * Product data
+			 *
+			 * @var Tx_Commerce_Tree_Leaf_ProductData $productData
+			 */
 			$productData = GeneralUtility::makeInstance('Tx_Commerce_Tree_Leaf_ProductData');
 			$productleaf->initBasic($productview, $productData);
-			/** @var Tx_Commerce_Tree_Leaf_ArticleData $articleData */
+			/**
+			 * Article data
+			 *
+			 * @var Tx_Commerce_Tree_Leaf_ArticleData $articleData
+			 */
 			$articleData = GeneralUtility::makeInstance('Tx_Commerce_Tree_Leaf_ArticleData');
 			$articleleaf->initBasic($articleview, $articleData);
 
@@ -149,12 +195,14 @@ class Tx_Commerce_Tree_CategoryTree extends Tx_Commerce_Tree_Browsetree {
 	 * Sets the minimum Permissions needed for the Category Leaf
 	 * Must be called BEFORE calling init
 	 *
-	 * @param string $perm String-Representation of the right. Can be 'show, new, delete, editcontent, cut, move, copy, edit'
+	 * @param string $perm String-Representation of the right.
+	 * 	Can be 'show, new, delete, editcontent, cut, move, copy, edit'
+	 *
 	 * @return void
 	 */
 	public function setMinCategoryPerms($perm) {
 		if (!$this->isInit) {
-				// store the string and let it be added once init is called
+			// store the string and let it be added once init is called
 			$this->minCategoryPerms = $perm;
 		}
 	}
@@ -162,7 +210,9 @@ class Tx_Commerce_Tree_CategoryTree extends Tx_Commerce_Tree_Browsetree {
 	/**
 	 * Sets the noclick list for the leafs
 	 *
-	 * @param string $noClickList comma-separated list of leafs to disallow clicks
+	 * @param string $noClickList Comma-separated list
+	 *	of leafs to disallow clicks
+	 *
 	 * @return void
 	 */
 	public function disallowClick($noClickList = '') {

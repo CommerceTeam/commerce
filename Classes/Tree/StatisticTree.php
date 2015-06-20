@@ -19,11 +19,15 @@
  */
 class Tx_Commerce_Tree_StatisticTree extends \TYPO3\CMS\Backend\Tree\View\BrowseTreeView {
 	/**
+	 * Extension show page id
+	 *
 	 * @var int
 	 */
 	public $ext_showPageId;
 
 	/**
+	 * Extension icon mode
+	 *
 	 * @var bool
 	 */
 	public $ext_IconMode;
@@ -55,7 +59,7 @@ class Tx_Commerce_Tree_StatisticTree extends \TYPO3\CMS\Backend\Tree\View\Browse
 	 *
 	 * @return string Page icon
 	 */
-	public function wrapIcon($icon, &$row) {
+	public function wrapIcon($icon, array &$row) {
 		$language = $this->getLanguageService();
 
 		// If the record is locked, present a warning sign.
@@ -76,7 +80,11 @@ class Tx_Commerce_Tree_StatisticTree extends \TYPO3\CMS\Backend\Tree\View\Browse
 
 		// Wrap icon in click-menu link.
 		if (!$this->ext_IconMode) {
-			/** @var template $tbeTemplate */
+			/**
+			 * Template
+			 *
+			 * @var template $tbeTemplate
+			 */
 			$tbeTemplate = $GLOBALS['TBE_TEMPLATE'];
 
 			$thePageIcon = $tbeTemplate->wrapClickMenuOnIcon($thePageIcon, 'pages', $row['uid'], 0, '&bank=' . $this->bank);
@@ -104,7 +112,7 @@ class Tx_Commerce_Tree_StatisticTree extends \TYPO3\CMS\Backend\Tree\View\Browse
 	 *
 	 * @return string Modified string
 	 */
-	public function wrapStop($str, $row) {
+	public function wrapStop($str, array $row) {
 		if ($row['php_tree_stop']) {
 			$str .= '<a href="' .
 				htmlspecialchars(\TYPO3\CMS\Core\Utility\GeneralUtility::linkThisScript(array('setTempDBmount' => $row['uid']))) .

@@ -57,21 +57,21 @@ abstract class Tx_Commerce_Tree_Browsetree {
 	protected $leafcount;
 
 	/**
-	 * will hold the rendering method of the tree
+	 * Will hold the rendering method of the tree
 	 *
 	 * @var string
 	 */
 	protected $renderBy;
 
 	/**
-	 * the uid from which to start rendering recursively, if we so chose to
+	 * The uid from which to start rendering recursively, if we so chose to
 	 *
 	 * @var int
 	 */
 	protected $startingUid;
 
 	/**
-	 * the recursive depth to choose if we chose to render recursively
+	 * The recursive depth to choose if we chose to render recursively
 	 *
 	 * @var int
 	 */
@@ -105,7 +105,7 @@ abstract class Tx_Commerce_Tree_Browsetree {
 	 * Gets passed along to all leafs, which themselves pass it to their view
 	 * Has to be set BEFORE initializing the tree with init()
 	 *
-	 * @param bool $flag [optional]	Flag
+	 * @param bool $flag Value to set
 	 *
 	 * @return void
 	 */
@@ -125,17 +125,17 @@ abstract class Tx_Commerce_Tree_Browsetree {
 	/**
 	 * Adds a leaf to the Tree
 	 *
-	 * @param Tx_Commerce_Tree_Leaf_Master $leaf - Treeleaf Object which
+	 * @param Tx_Commerce_Tree_Leaf_Master $leaf Treeleaf Object which
 	 * 	holds the Tx_Commerce_Tree_Leaf_Data and the Tx_Commerce_Tree_Leaf_View
 	 *
 	 * @return bool
 	 */
 	public function addLeaf(Tx_Commerce_Tree_Leaf_Master &$leaf) {
-			// pass tree vars to the new leaf
+		// pass tree vars to the new leaf
 		$leaf->setTreeName($this->treeName);
 		$leaf->noClickmenu($this->noClickmenu);
 
-			// add to collection
+		// add to collection
 		$this->leafs[$this->leafcount++] = $leaf;
 
 		return TRUE;
@@ -162,8 +162,9 @@ abstract class Tx_Commerce_Tree_Browsetree {
 	/**
 	 * Sets the unique tree name
 	 *
+	 * @param string $tree Name of the Tree
+	 *
 	 * @return void
-	 * @param string $tree - Name of the Tree
 	 */
 	public function setTreeName($tree = '') {
 		$this->treeName = $tree;
@@ -185,9 +186,9 @@ abstract class Tx_Commerce_Tree_Browsetree {
 	 * Call BEFORE initializing
 	 *
 	 * @param int $uid UID from which the masterleafs should start
-	 * @param int $depth
+	 * @param int $depth Depth
 	 *
-	 *  @return void
+	 * @return void
 	 */
 	public function readRecursively($uid, $depth = 100) {
 		if (!is_numeric($uid)) {
@@ -197,7 +198,7 @@ abstract class Tx_Commerce_Tree_Browsetree {
 			return;
 		}
 
-			// set internal vars
+		// set internal vars
 		$this->renderBy = 'recursively';
 		$this->depth = $depth;
 		$this->startingUid = $uid;
@@ -237,11 +238,12 @@ abstract class Tx_Commerce_Tree_Browsetree {
 	 * Returns a browseable Tree (only called by AJAX)
 	 * Note that so far this is only supported if you work with mountpoints;
 	 *
-	 * @todo Make it possible as well for a recursive tree
-	 * @return string HTML Code for Tree
 	 * @param array $parameter Array from PM link
+	 *
+	 * @return string HTML Code for Tree
+	 * @todo Make it possible as well for a recursive tree
 	 */
-	public function getBrowseableAjaxTree($parameter) {
+	public function getBrowseableAjaxTree(array $parameter) {
 		if (is_null($parameter) || !is_array($parameter)) {
 			if (TYPO3_DLOG) {
 				GeneralUtility::devLog(
@@ -253,7 +255,7 @@ abstract class Tx_Commerce_Tree_Browsetree {
 			return '';
 		}
 
-			// Create the tree by mountpoints
+		// Create the tree by mountpoints
 		$this->getTreeByMountpoints();
 
 		return $this->printAjaxTree($parameter);
@@ -275,7 +277,11 @@ abstract class Tx_Commerce_Tree_Browsetree {
 		// Go through the leafs and feed them the ids
 		$leafCount = count($this->leafs);
 		for ($i = 0; $i < $leafCount; $i++) {
-			/** @var Tx_Commerce_Tree_Leaf_Master $leaf */
+			/**
+			 * Leaf
+			 *
+			 * @var Tx_Commerce_Tree_Leaf_Master $leaf
+			 */
 			$leaf = & $this->leafs[$i];
 			$leaf->byMounts();
 			// Pass $i as the leaf's index
@@ -292,10 +298,14 @@ abstract class Tx_Commerce_Tree_Browsetree {
 		$uid = $this->startingUid;
 		$depth = $this->depth;
 
-			// Go through the leafs and feed them the id
+		// Go through the leafs and feed them the id
 		$leafCount = count($this->leafs);
 		for ($i = 0; $i < $leafCount; $i++) {
-			/** @var Tx_Commerce_Tree_Leaf_Master $leaf */
+			/**
+			 * Leaf
+			 *
+			 * @var Tx_Commerce_Tree_Leaf_Master $leaf
+			 */
 			$leaf = & $this->leafs[$i];
 			$leaf->setUid($uid);
 			$leaf->setDepth($depth);
@@ -306,10 +316,11 @@ abstract class Tx_Commerce_Tree_Browsetree {
 	/**
 	 * Prints the subtree for AJAX requests only
 	 *
-	 * @return string HTML Code
 	 * @param array $parameter Array from PM link
+	 *
+	 * @return string HTML Code
 	 */
-	public function printAjaxTree($parameter) {
+	public function printAjaxTree(array $parameter) {
 		if (is_null($parameter) || !is_array($parameter)) {
 			if (TYPO3_DLOG) {
 				GeneralUtility::devLog(
@@ -323,21 +334,25 @@ abstract class Tx_Commerce_Tree_Browsetree {
 
 		$l = count($parameter);
 
-			// parent|ID is always the last Item
+		// parent|ID is always the last Item
 		$values = explode('|', $parameter[count($parameter) - 1]);
 
-			// assign current uid
+		// assign current uid
 		$id = $values[0];
-			// assign item parent
+		// assign item parent
 		$pid = $values[1];
-			// Extract the bank
+		// Extract the bank
 		$bank = $parameter[2];
 		$indexFirst = $parameter[1];
 
 		$out = '';
 
-			// Go to the correct leaf and print it
-		/** @var Tx_Commerce_Tree_Leaf_Master $leaf */
+		// Go to the correct leaf and print it
+		/**
+		 * Leaf
+		 *
+		 * @var Tx_Commerce_Tree_Leaf_Master $leaf
+		 */
 		$leaf = &$this->leafs[$indexFirst];
 
 		// i = 4 because if we have childleafs at all,
@@ -346,7 +361,7 @@ abstract class Tx_Commerce_Tree_Browsetree {
 		for ($i = 4; $i < $l - 1; $i++) {
 			$leaf = &$leaf->getChildLeaf($parameter[$i]);
 
-				// If we didnt get a leaf, return
+			// If we didnt get a leaf, return
 			if ($leaf == NULL) {
 				return '';
 			}
@@ -381,7 +396,11 @@ abstract class Tx_Commerce_Tree_Browsetree {
 
 		// Get the Tree for each leaf
 		for ($i = 0; $i < $this->leafcount; $i++) {
-			/** @var Tx_Commerce_Tree_Leaf_Master $leaf */
+			/**
+			 * Leaf
+			 *
+			 * @var Tx_Commerce_Tree_Leaf_Master $leaf
+			 */
 			$leaf = & $this->leafs[$i];
 			$out .= $leaf->printLeafByMounts();
 		}
@@ -413,7 +432,11 @@ abstract class Tx_Commerce_Tree_Browsetree {
 
 		// Initialize the categories (and its leafs)
 		for ($i = 0; $i < $leafCount; $i++) {
-			/** @var Tx_Commerce_Tree_Leaf_Master $leaf */
+			/**
+			 * Leaf
+			 *
+			 * @var Tx_Commerce_Tree_Leaf_Master $leaf
+			 */
 			$leaf = $this->leafs[$i];
 			if ($leaf->data->hasRecords()) {
 				$leaf->sort($rootUid);
@@ -431,7 +454,7 @@ abstract class Tx_Commerce_Tree_Browsetree {
 	 * 	[0] => '13'
 	 * 	[1] => '12, 11, 39, 54'
 	 *
-	 * @param int $rootUid
+	 * @param int $rootUid Root uid
 	 *
 	 * @return array
 	 */
@@ -450,7 +473,11 @@ abstract class Tx_Commerce_Tree_Browsetree {
 
 		// Sort and return the sorted array
 		for ($i = 0; $i < $leafCount; $i++) {
-			/** @var Tx_Commerce_Tree_Leaf_Master $leaf */
+			/**
+			 * Leaf
+			 *
+			 * @var Tx_Commerce_Tree_Leaf_Master $leaf
+			 */
 			$leaf = $this->leafs[$i];
 
 			$leaf->sort($rootUid);
@@ -549,7 +576,11 @@ abstract class Tx_Commerce_Tree_Browsetree {
 		// Set the Positions for each leaf
 		$leafCount = count($this->leafs);
 		for ($i = 0; $i < $leafCount; $i++) {
-			/** @var Tx_Commerce_Tree_Leaf_Master $leaf */
+			/**
+			 * Leaf
+			 *
+			 * @var Tx_Commerce_Tree_Leaf_Master $leaf
+			 */
 			$leaf = & $this->leafs[$i];
 			$leaf->setDataPositions($positions);
 		}
@@ -559,10 +590,11 @@ abstract class Tx_Commerce_Tree_Browsetree {
 	 * Saves the content of ->stored (keeps track of expanded positions in the tree)
 	 * $this->treeName will be used as key for BE_USER->uc[] to store it in
 	 *
-	 * @param array $positions	Positionsarray
+	 * @param array $positions Positions array
+	 *
 	 * @return void
 	 */
-	protected function savePosition(&$positions) {
+	protected function savePosition(array &$positions) {
 		if (is_null($positions) || !is_array($positions)) {
 			if (TYPO3_DLOG) {
 				GeneralUtility::devLog('The Positions were not saved because the parameter was invalid', COMMERCE_EXTKEY, 3);

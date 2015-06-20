@@ -22,11 +22,15 @@
  */
 class Tx_Commerce_Tree_OrderTree extends \TYPO3\CMS\Backend\Tree\View\BrowseTreeView {
 	/**
+	 * Extension page id
+	 *
 	 * @var int
 	 */
 	public $ext_showPageId;
 
 	/**
+	 * Extension icon mode
+	 *
 	 * @var bool
 	 */
 	public $ext_IconMode;
@@ -41,6 +45,8 @@ class Tx_Commerce_Tree_OrderTree extends \TYPO3\CMS\Backend\Tree\View\BrowseTree
 	}
 
 	/**
+	 * Initialization
+	 *
 	 * @return void
 	 */
 	public function init() {
@@ -53,9 +59,10 @@ class Tx_Commerce_Tree_OrderTree extends \TYPO3\CMS\Backend\Tree\View\BrowseTree
 	 *
 	 * @param string $icon IMG code
 	 * @param array $row Data row for element.
+	 *
 	 * @return string Page icon
 	 */
-	public function wrapIcon($icon, &$row) {
+	public function wrapIcon($icon, array &$row) {
 		$language = $this->getLanguageService();
 
 			// If the record is locked, present a warning sign.
@@ -76,7 +83,11 @@ class Tx_Commerce_Tree_OrderTree extends \TYPO3\CMS\Backend\Tree\View\BrowseTree
 
 			// Wrap icon in click-menu link.
 		if (!$this->ext_IconMode) {
-			/** @var template $tbeTemplate */
+			/**
+			 * Template
+			 *
+			 * @var template $tbeTemplate
+			 */
 			$tbeTemplate = $GLOBALS['TBE_TEMPLATE'];
 
 			$thePageIcon = $tbeTemplate->wrapClickMenuOnIcon($thePageIcon, 'pages', $row['uid'], 0, '&bank=' . $this->bank);
@@ -100,11 +111,12 @@ class Tx_Commerce_Tree_OrderTree extends \TYPO3\CMS\Backend\Tree\View\BrowseTree
 	 * "php_tree_stop" in the $row (pages) is set
 	 *
 	 * @param string $str Input string, like a page title for the tree
-	 * @param array $row record row with "php_tree_stop" field
+	 * @param array $row Record row with "php_tree_stop" field
+	 *
 	 * @return string Modified string
 	 * @access private
 	 */
-	public function wrapStop($str, $row) {
+	public function wrapStop($str, array $row) {
 		if ($row['php_tree_stop']) {
 			$str .= '<a href="' .
 				htmlspecialchars(\TYPO3\CMS\Core\Utility\GeneralUtility::linkThisScript(array('setTempDBmount' => $row['uid']))) .
