@@ -23,13 +23,20 @@ $MCONF['script'] = 'index.php';
 $MCONF['name'] = 'commerce_txcommerceTreeBrowser';
 $MCONF['access'] = '';
 
-/** @noinspection PhpIncludeInspection */
 require_once($BACK_PATH . 'init.php');
 
-/** @var \TYPO3\CMS\Lang\LanguageService $LANG */
+/**
+ * Language service
+ *
+ * @var \TYPO3\CMS\Lang\LanguageService $LANG
+ */
 $LANG->includeLLFile('EXT:lang/locallang_misc.xml');
 
-/** @var Tx_Commerce_ViewHelpers_TreelibBrowser $SOBE */
+/**
+ * Treelib browser
+ *
+ * @var Tx_Commerce_ViewHelpers_TreelibBrowser $SOBE
+ */
 $SOBE = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_ViewHelpers_TreelibBrowser');
 $SOBE->init();
 $SOBE->main();

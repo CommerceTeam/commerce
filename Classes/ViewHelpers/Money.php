@@ -24,18 +24,19 @@
  */
 class Tx_Commerce_ViewHelpers_Money {
 	/**
-	 * use this function from TS, example:
+	 * Use this function from TS, example:
 	 * includeLibs.moneylib = EXT:commerce/Classes/ViewHelpers/Money.php
 	 * price_net = stdWrap
 	 * price_net.postUserFunc = Tx_Commerce_ViewHelpers_Money->user_tsFormat
 	 * price_net.postUserFunc.currency = EUR
 	 * price_net.postUserFunc.withSymbol = 0
 	 *
-	 * @param string $content
-	 * @param string $conf
+	 * @param string $content Content
+	 * @param array $conf Config
+	 *
 	 * @return string representation of the amount including currency symbol(s)
 	 */
-	public function user_tsFormat($content, $conf) {
+	public function user_tsFormat($content, array $conf) {
 		$withSymbol = is_null($conf['withSymbol']) ? TRUE : $conf['withSymbol'];
 		return (string)self::format($content, $conf['currency'], $withSymbol);
 	}
@@ -61,11 +62,11 @@ class Tx_Commerce_ViewHelpers_Money {
 	 * 	symbol(s) or FALSE if $amount was of the type float
 	 */
 	public static function format($amount, $currency, $withSymbol = TRUE) {
-		$database = self::getDatabaseConnection();
-
 		if (is_float($amount)) {
 			return FALSE;
 		}
+
+		$database = self::getDatabaseConnection();
 
 		$row = $database->exec_SELECTgetSingleRow(
 			'cu_symbol_left, cu_symbol_right, cu_sub_symbol_left, cu_sub_symbol_right, cu_decimal_point, cu_thousands_point,

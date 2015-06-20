@@ -41,36 +41,50 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class Tx_Commerce_ViewHelpers_TreelibBrowser extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 	/**
+	 * Table
+	 *
 	 * @var string
 	 */
 	protected $table;
 
 	/**
+	 * Field
+	 *
 	 * @var string
 	 */
 	protected $field;
 
 	/**
+	 * Uid
+	 *
 	 * @var int
 	 */
 	protected $uid;
 
 	/**
+	 * Item form element name
+	 *
 	 * @var string
 	 */
 	protected $itemFormElName;
 
 	/**
+	 * Flex config
+	 *
 	 * @var string
 	 */
 	protected $flexConfig;
 
 	/**
+	 * Back path
+	 *
 	 * @var string
 	 */
 	protected $backPath;
 
 	/**
+	 * Current sub script
+	 *
 	 * @var string
 	 */
 	protected $currentSubScript;
@@ -104,7 +118,11 @@ class Tx_Commerce_ViewHelpers_TreelibBrowser extends \TYPO3\CMS\Backend\Module\B
 		$this->backPath = $GLOBALS['BACK_PATH'];
 
 		// Initialize template object
-		/** @var \TYPO3\CMS\Backend\Template\DocumentTemplate $doc */
+		/**
+		 * Document template
+		 *
+		 * @var \TYPO3\CMS\Backend\Template\DocumentTemplate $doc
+		 */
 		$doc = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
 		$this->doc = $doc;
 		$this->doc->docType = 'xhtml_trans';
@@ -244,6 +262,7 @@ class Tx_Commerce_ViewHelpers_TreelibBrowser extends \TYPO3\CMS\Backend\Module\B
 		$trData->lockRecords = TRUE;
 		$trData->fetchRecord($this->table, $this->uid, '');
 		reset($trData->regTableItems_data);
+
 		$row = current($trData->regTableItems_data);
 
 		return $row;

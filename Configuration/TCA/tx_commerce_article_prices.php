@@ -27,24 +27,24 @@ return array(
 		'fe_admin_fieldList' => 'sys_language_uid, l18n_parent, l18n_diffsource, hidden, starttime, endtime,
 			fe_group, price_gross, price_net, price_scale_amount, purchase_price',
 	),
-	'interface' => Array(
+	'interface' => array(
 		'showRecordFieldList' => 'hidden, starttime, endtime, fe_group, price_gross, price_net, purchase_price,
 			price_scale_amount_start, price_scale_amount_end',
 	),
-	'columns' => Array(
-		'hidden' => Array(
+	'columns' => array(
+		'hidden' => array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:lang/locallang_general.php:LGL.hidden',
-			'config' => Array(
+			'config' => array(
 				'type' => 'check',
 				'default' => '0'
 			)
 		),
 
-		'starttime' => Array(
+		'starttime' => array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:lang/locallang_general.php:LGL.starttime',
-			'config' => Array(
+			'config' => array(
 				'type' => 'input',
 				'size' => '8',
 				'max' => '20',
@@ -54,27 +54,27 @@ return array(
 			)
 		),
 
-		'endtime' => Array(
+		'endtime' => array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:lang/locallang_general.php:LGL.endtime',
-			'config' => Array(
+			'config' => array(
 				'type' => 'input',
 				'size' => '8',
 				'max' => '20',
 				'eval' => 'date',
 				'checkbox' => '0',
 				'default' => '0',
-				'range' => Array(
+				'range' => array(
 					'upper' => mktime(0, 0, 0, 12, 31, 2020),
 					'lower' => mktime(0, 0, 0, date('m') - 1, date('d'), date('Y'))
 				)
 			)
 		),
 
-		'fe_group' => Array(
+		'fe_group' => array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:lang/locallang_general.php:LGL.fe_group',
-			'config' => Array(
+			'config' => array(
 				'type' => 'select',
 				'size' => 5,
 				'maxitems' => 50,
@@ -90,40 +90,40 @@ return array(
 			)
 		),
 
-		'price_gross' => Array(
+		'price_gross' => array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_article_prices.price_gross',
-			'config' => Array(
+			'config' => array(
 				'type' => 'input',
 				'size' => '30',
 				'eval' => 'nospace',
 			)
 		),
 
-		'price_net' => Array(
+		'price_net' => array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_article_prices.price_net',
-			'config' => Array(
+			'config' => array(
 				'type' => 'input',
 				'size' => '30',
 				'eval' => 'nospace',
 			)
 		),
 
-		'purchase_price' => Array(
+		'purchase_price' => array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_article_prices.purchase_price',
-			'config' => Array(
+			'config' => array(
 				'type' => 'input',
 				'size' => '30',
 				'eval' => 'nospace',
 			)
 		),
 
-		'price_scale_amount_start' => Array(
+		'price_scale_amount_start' => array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_articles.price_scale_amount_start',
-			'config' => Array(
+			'config' => array(
 				'type' => 'input',
 				'size' => '10',
 				'eval' => 'int,nospace,required',
@@ -132,10 +132,10 @@ return array(
 			)
 		),
 
-		'price_scale_amount_end' => Array(
+		'price_scale_amount_end' => array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_articles.price_scale_amount_end',
-			'config' => Array(
+			'config' => array(
 				'type' => 'input',
 				'size' => '10',
 				'eval' => 'int,nospace,required',
@@ -144,7 +144,7 @@ return array(
 			)
 		),
 
-		'uid_article' => Array(
+		'uid_article' => array(
 			'exclude' => 1,
 			'label' => 'Article UID',
 			'config' => array(
@@ -153,13 +153,13 @@ return array(
 			),
 		),
 	),
-	'types' => Array(
-		'0' => Array(
+	'types' => array(
+		'0' => array(
 			'showitem' => '
 			hidden;;1, price_gross, price_net, price_scale_amount_start, price_scale_amount_end, purchase_price;;;;3-3-3, uid_article'
 		),
 	),
-	'palettes' => Array(
-		'1' => Array('showitem' => 'starttime, endtime, fe_group')
+	'palettes' => array(
+		'1' => array('showitem' => 'starttime, endtime, fe_group')
 	)
 );

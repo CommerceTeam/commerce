@@ -24,79 +24,109 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @author 2005-2013 Volker Graubaum <vg_typo3@e-netconsulting.de>
  */
 class Tx_Commerce_ViewHelpers_Navigation {
+	/**
+	 * Navigation ident
+	 *
+	 * @var string
+	 */
 	const navigationIdent = 'COMMERCE_MENU_NAV';
 
 	/**
+	 * Commerce plugin id
+	 *
 	 * @var string
 	 */
 	public $prefixId = 'tx_commerce_pi1';
 
 	/**
-	 *
+	 * Content object renderer
 	 *
 	 * @var \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer
 	 */
 	public $cObj;
 
 	/**
+	 * Active category
+	 *
 	 * @var array
 	 */
 	public $activeCats = array();
 
 	/**
+	 * Configuration
+	 *
 	 * @var array
 	 */
 	public $mConf;
 
 	/**
+	 * Category
+	 *
 	 * @var int
 	 */
 	public $cat;
 
 	/**
+	 * Tree
+	 *
 	 * @var
 	 */
 	public $tree;
 
 	/**
+	 * Module tree
+	 *
 	 * @var
 	 */
 	public $mTree;
 
 	/**
+	 * Output
+	 *
 	 * @var string
 	 */
 	public $out;
 
 	/**
+	 * Depth
+	 *
 	 * @var int
 	 */
 	public $mDepth = 2;
 
 	/**
+	 * Entry category
+	 *
 	 * @var int
 	 */
 	public $entryCat = 0;
 
 	/**
+	 * List nodes
+	 *
 	 * @var array
 	 */
 	public $listNodes = array();
 
 	/**
+	 * Manufacturer identifier
+	 *
 	 * @var int
 	 */
 	public $manufacturerIdentifier = PHP_INT_MAX;
 
 	/**
+	 * Use rootline information to url
+	 *
 	 * @var int [0-1]
 	 * @access private
 	 */
 	public $useRootlineInformationToUrl = 0;
 
 	/**
-	 * @var array pathParents
 	 * Array holding the parentes of this cat as uid list
+	 *
+	 * @var array pathParents
 	 */
 	public $pathParents = array();
 
@@ -125,76 +155,106 @@ class Tx_Commerce_ViewHelpers_Navigation {
 	);
 
 	/**
+	 * Get and post variables
+	 *
 	 * @var array
 	 */
 	public $gpVars = array();
 
 	/**
-	 * @var int Maximum Level for Menu, Default all PHP_INT_MAX
+	 * Maximum Level for Menu, Default all PHP_INT_MAX
+	 *
+	 * @var int
 	 */
 	protected $maxLevel = PHP_INT_MAX;
 
 	/**
+	 * Separator
+	 *
 	 * @var string
 	 */
 	protected $separator = '&';
 
 	/**
-	 * @var bool Do not check if an element is active
+	 * Do not check if an element is active
+	 *
+	 * @var bool
 	 */
 	protected $noAct = FALSE;
 
 	/**
+	 * Choosen category
+	 *
 	 * @var int
 	 */
 	public $choosenCat;
 
 	/**
+	 * Page id
+	 *
 	 * @var int
 	 */
 	public $pid;
 
 	/**
+	 * Path
+	 *
 	 * @var string
 	 */
 	public $path;
 
 	/**
+	 * Entry level
+	 *
 	 * @var int
 	 */
 	public $entryLevel;
 
 	/**
+	 * Expand all
+	 *
 	 * @var bool
 	 */
 	public $expandAll;
 
 	/**
+	 * Show uid
+	 *
 	 * @var int
 	 */
 	public $showUid;
 
 	/**
+	 * Node additional fields
+	 *
 	 * @var array
 	 */
 	protected $nodeArrayAdditionalFields;
 
 	/**
+	 * Page rootline
+	 *
 	 * @var array
 	 */
 	protected $pageRootline;
 
 	/**
+	 * Menu type
+	 *
 	 * @var int
 	 */
 	protected $menuType;
 
 	/**
+	 * Category object
+	 *
 	 * @var Tx_Commerce_Domain_Model_Category
 	 */
 	protected $catObj;
 
 	/**
+	 * Category object
+	 *
 	 * @var Tx_Commerce_Domain_Model_Category
 	 */
 	protected $category;
@@ -202,11 +262,12 @@ class Tx_Commerce_ViewHelpers_Navigation {
 	/**
 	 * Init Method for initialising the navigation
 	 *
-	 * @param string $content $content passed to method
-	 * @param array $conf TS Array
+	 * @param string $content Content passed to method
+	 * @param array $conf Typoscript Array
+	 *
 	 * @return array array for the menurendering of TYPO3
 	 */
-	public function init($content, $conf) {
+	public function init($content, array $conf) {
 		$this->mConf = $this->processConf($conf);
 		if ($this->mConf['useRootlineInformationToUrl']) {
 			$this->useRootlineInformationToUrl = $this->mConf['useRootlineInformationToUrl'];
@@ -304,7 +365,6 @@ class Tx_Commerce_ViewHelpers_Navigation {
 			// User the cached version
 			$this->mTree = unserialize($cachedMatrix);
 		} else {
-
 			// no cache present buld data and stor it in cache
 			$this->mTree = $this->makeArrayPostRender(
 				$this->pid, 'tx_commerce_categories', 'tx_commerce_categories_parent_category_mm', 'tx_commerce_products',
@@ -323,8 +383,9 @@ class Tx_Commerce_ViewHelpers_Navigation {
 			$this->storeHash($hash, serialize($this->mTree), self::navigationIdent . $this->cat);
 		}
 
-		/**
-		 * finish menue array rendering, now postprocessing with current status of menue
+		/*
+		 * Finish menue array rendering, now postprocessing
+		 * with current status of menue
 		 */
 		$keys = array_keys($this->mTree);
 
@@ -341,7 +402,11 @@ class Tx_Commerce_ViewHelpers_Navigation {
 			 * If a product is shown, we have to detect the parent category as well
 			 * even if wo haven't walked thrue the categories
 			 */
-			/** @var Tx_Commerce_Domain_Model_Product $myProduct */
+			/**
+			 * Product
+			 *
+			 * @var Tx_Commerce_Domain_Model_Product $myProduct
+			 */
 			$myProduct = GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Product', $this->gpVars['showUid']);
 			$myProduct->loadData();
 			$this->choosenCat = $myProduct->getMasterparentCategory();
@@ -361,8 +426,8 @@ class Tx_Commerce_ViewHelpers_Navigation {
 			// MODIF DE LUC >AMEOS : Get the right path with custom method
 			$aPath = $this->getRootLine($this->mTree, $this->choosenCat, $this->expandAll);
 			if (!$aPath) {
-				/**
-				 * if the methode getRootLine fail, we take the path direct from the DB.
+				/*
+				 * If the methode getRootLine fail, we take the path direct from the DB.
 				 */
 				$tmpArray = $myCat->getParentCategoriesUidlist();
 				$this->fixPathParents($tmpArray, $this->cat);
@@ -436,12 +501,12 @@ class Tx_Commerce_ViewHelpers_Navigation {
 	/**
 	 * Fix path parents
 	 *
-	 * @param array $pathArray by reference
-	 * @param int $chosenCatUid
+	 * @param array $pathArray Path by reference
+	 * @param int $chosenCatUid Choosen category uid
 	 *
 	 * @return void
 	 */
-	public function fixPathParents(&$pathArray, $chosenCatUid) {
+	public function fixPathParents(array &$pathArray, $chosenCatUid) {
 		if ($pathArray == NULL) {
 			return;
 		}
@@ -463,7 +528,6 @@ class Tx_Commerce_ViewHelpers_Navigation {
 			for ($i = 1; $i <= $catOptionsCount; $i++) {
 				$chosenGroups = GeneralUtility::trimExplode(',', $this->mConf['groupOptions.'][$i . '.']['group']);
 				if ($GLOBALS['TSFE']->fe_user->user['usergroup'] == '') {
-
 					return $this->mConf['category'];
 				}
 				$feGroups = explode(',', $GLOBALS['TSFE']->fe_user->user['usergroup']);
@@ -492,8 +556,8 @@ class Tx_Commerce_ViewHelpers_Navigation {
 	/**
 	 * Make menu error node
 	 *
-	 * @param int $max
-	 * @param int $mDepth
+	 * @param int $max Max
+	 * @param int $mDepth Depth
 	 *
 	 * @return array
 	 */
@@ -518,9 +582,10 @@ class Tx_Commerce_ViewHelpers_Navigation {
 	 * Sets the clear Function for each MenuItem
 	 *
 	 * @param array $conf TSconfig to parse
+	 *
 	 * @return array TSConfig with ItemArrayProcFunc
 	 */
-	public function processConf($conf) {
+	public function processConf(array $conf) {
 		$i = 1;
 		foreach ($conf as $k) {
 			if ($k == $i . '.') {
@@ -538,15 +603,15 @@ class Tx_Commerce_ViewHelpers_Navigation {
 	/**
 	 * Makes the post array,which  the typo3 render Function will be work
 	 *
-	 * @param int $uidPage
-	 * @param string $mainTable
-	 * @param string $tableMm
-	 * @param string $tableSubMain
-	 * @param string $tableSubMm
-	 * @param int $uidRoot
-	 * @param int $mDepth
-	 * @param int $path
-	 * @param int $maxLevel
+	 * @param int $uidPage Page uid
+	 * @param string $mainTable Main table
+	 * @param string $tableMm Relation table
+	 * @param string $tableSubMain Sub table
+	 * @param string $tableSubMm Sub relation table
+	 * @param int $uidRoot Root uid
+	 * @param int $mDepth Depth
+	 * @param int $path Path
+	 * @param int $maxLevel Max level
 	 *
 	 * @return array TSConfig with ItemArrayProcFunc
 	 */
@@ -571,14 +636,12 @@ class Tx_Commerce_ViewHelpers_Navigation {
 		 * Add some hooks for custom sorting
 		 */
 		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_db_navigation.php']['sortingOrder']) {
-			GeneralUtility::deprecationLog(
-				'
-					hook
-					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_db_navigation.php\'][\'sortingOrder\']
-					is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
-					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/ViewHelpers/Navigation.php\'][\'sortingOrder\']
-				'
-			);
+			GeneralUtility::deprecationLog('
+				hook
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_db_navigation.php\'][\'sortingOrder\']
+				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/ViewHelpers/Navigation.php\'][\'sortingOrder\']
+			');
 			$hookObj = & GeneralUtility::getUserObj(
 				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_db_navigation.php']['sortingOrder']
 			);
@@ -728,13 +791,13 @@ class Tx_Commerce_ViewHelpers_Navigation {
 	/**
 	 * Makes a set of  ItemMenu product list  of a category.
 	 *
-	 * @param int $pageUid
-	 * @param string $mainTable main table
-	 * @param string $mmTable
-	 * @param int $categoryUid category Uid
-	 * @param int $mDepth
-	 * @param int $path
-	 * @param bool $manufacturerUid
+	 * @param int $pageUid Page uid
+	 * @param string $mainTable Main table
+	 * @param string $mmTable Relation table
+	 * @param int $categoryUid Category Uid
+	 * @param int $mDepth Depth
+	 * @param int $path Path
+	 * @param bool $manufacturerUid Manufacturer uid
 	 *
 	 * @return array array to be processed by HMENU
 	 */
@@ -757,14 +820,12 @@ class Tx_Commerce_ViewHelpers_Navigation {
 		 * Add some hooks for custom sorting
 		 */
 		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_db_navigation.php']['sortingOrder']) {
-			GeneralUtility::deprecationLog(
-				'
-					hook
-					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_db_navigation.php\'][\'sortingOrder\']
-					is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
-					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/ViewHelpers/Navigation.php\'][\'sortingOrder\']
-				'
-			);
+			GeneralUtility::deprecationLog('
+				hook
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_db_navigation.php\'][\'sortingOrder\']
+				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/ViewHelpers/Navigation.php\'][\'sortingOrder\']
+			');
 			$hookObj = & GeneralUtility::getUserObj(
 				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_db_navigation.php']['sortingOrder']
 			);
@@ -851,13 +912,13 @@ class Tx_Commerce_ViewHelpers_Navigation {
 	/**
 	 * Process the menuArray to set state for a selected item
 	 *
-	 * @param array $treeArray
-	 * @param array $path path of the itemMen
-	 * @param int $mDepth depth of the itemMenu
+	 * @param array $treeArray Tree
+	 * @param array $path Path of the itemMen
+	 * @param int $mDepth Depth of the itemMenu
 	 *
 	 * @return void
 	 */
-	public function processArrayPostRender(&$treeArray, $path = array(), $mDepth) {
+	public function processArrayPostRender(array &$treeArray, array $path = array(), $mDepth) {
 		if ($this->gpVars['manufacturer']) {
 			foreach ($treeArray as $val) {
 				if ($val['parent_id'] == $this->choosenCat && $val['manu'] == $this->gpVars['manufacturer']) {
@@ -883,7 +944,6 @@ class Tx_Commerce_ViewHelpers_Navigation {
 				$treeArray[$path[0]]['ITEM_STATE'] = 'ACT';
 				$treeArray[$path[0]]['ITEM_STATES_LIST'] = 'ACT,NO';
 				if ($path[0] == $this->choosenCat) {
-
 					/**
 					 * Set CUR:
 					 * a menu item if the item is the current page.
@@ -972,8 +1032,8 @@ class Tx_Commerce_ViewHelpers_Navigation {
 	/**
 	 * Gets the data to fill a node
 	 *
-	 * @param int $uid
-	 * @param string $tableName
+	 * @param int $uid Uid
+	 * @param string $tableName Table name
 	 *
 	 * @return array
 	 */
@@ -1000,7 +1060,11 @@ class Tx_Commerce_ViewHelpers_Navigation {
 
 		if ($this->mConf['hideEmptyCategories'] == 1 && $tableName == 'tx_commerce_categories' && is_array($row[0])) {
 			// Process Empty Categories
-			/** @var Tx_Commerce_Domain_Model_Category $localCategory */
+			/**
+			 * Category
+			 *
+			 * @var Tx_Commerce_Domain_Model_Category $localCategory
+			 */
 			$localCategory = GeneralUtility::makeinstance(
 				'Tx_Commerce_Domain_Model_Category', $row[0]['uid'], $row[0]['sys_language_uid']
 			);
@@ -1020,9 +1084,9 @@ class Tx_Commerce_ViewHelpers_Navigation {
 	/**
 	 * Determines if a item has no sub item
 	 *
-	 * @param int $uid
-	 * @param string $tableMm
-	 * @param string $subTableMm
+	 * @param int $uid Uid
+	 * @param string $tableMm Relation table
+	 * @param string $subTableMm Sub relation table
 	 *
 	 * @return int : 0|1|2
 	 */
@@ -1045,8 +1109,8 @@ class Tx_Commerce_ViewHelpers_Navigation {
 	/**
 	 * Determines if an item has sub items in another table
 	 *
-	 * @param int $uid
-	 * @param string $tableMm
+	 * @param int $uid Uid
+	 * @param string $tableMm Relation table
 	 *
 	 * @return int : 0|1|2
 	 */
@@ -1076,9 +1140,10 @@ class Tx_Commerce_ViewHelpers_Navigation {
 	 *
 	 * @param array $menuArr Array with menu item
 	 * @param array $conf TSconfig, not used
+	 *
 	 * @return array return the cleaned menu item
 	 */
-	public function clear($menuArr, $conf) {
+	public function clear(array $menuArr, array $conf) {
 		if ($menuArr[0]['CommerceMenu'] <> TRUE) {
 			$menuArr = array();
 		}
@@ -1091,13 +1156,12 @@ class Tx_Commerce_ViewHelpers_Navigation {
 
 		if ($menuArr[0]['CommerceMenu'] == TRUE) {
 			$availiableItemStates = $conf['parentObj']->mconf;
-			/**
+			/*
 			 * @TODO: Try to get the expAll state from the TS Menue config and process it
 			 * Data from TS Menue is stored in $conf['parentObj']->mconf['expAll']
 			 */
 			foreach (array_keys($menuArr) as $mIndex) {
 				if ($menuArr[$mIndex]['ITEM_STATE'] <> 'NO') {
-
 					if ($menuArr[$mIndex]['ITEM_STATES_LIST']) {
 						/**
 						 * Get the possible Item States
@@ -1131,15 +1195,14 @@ class Tx_Commerce_ViewHelpers_Navigation {
 	/**
 	 * Method for generating the rootlineMenu to use in TS
 	 *
-	 * @param string $content passed to method
+	 * @param string $content Passed to method
 	 * @param array $conf TS Array
+	 *
 	 * @return array for the menurendering of TYPO3
 	 */
-	public function renderRootline($content, $conf) {
+	public function renderRootline($content, array $conf) {
 		$this->mConf = $this->processConf($conf);
-		$this->pid = (int) ($this->mConf['overridePid'] ?
-			$this->mConf['overridePid'] :
-			$GLOBALS['TSFE']->id);
+		$this->pid = (int) ($this->mConf['overridePid'] ? $this->mConf['overridePid'] : $GLOBALS['TSFE']->id);
 		$this->gpVars = GeneralUtility::_GPmerged($this->prefixId);
 
 		Tx_Commerce_Utility_GeneralUtility::initializeFeUserBasket();
@@ -1160,15 +1223,27 @@ class Tx_Commerce_ViewHelpers_Navigation {
 		 * is set via TS
 		 */
 		if ($this->mConf['showProducts'] == 1 && $this->gpVars['showUid'] > 0) {
-			/** @var Tx_Commerce_Domain_Model_Product $productObject */
+			/**
+			 * Product
+			 *
+			 * @var Tx_Commerce_Domain_Model_Product $productObject
+			 */
 			$productObject = GeneralUtility::makeInstance(
-				'Tx_Commerce_Domain_Model_Product', $this->gpVars['showUid'], $this->getFrontendController()->sys_language_uid
+				'Tx_Commerce_Domain_Model_Product',
+				$this->gpVars['showUid'],
+				$this->getFrontendController()->sys_language_uid
 			);
 			$productObject->loadData();
 
-			/** @var Tx_Commerce_Domain_Model_Category $categoryObject */
+			/**
+			 * Category
+			 *
+			 * @var Tx_Commerce_Domain_Model_Category $categoryObject
+			 */
 			$categoryObject = GeneralUtility::makeInstance(
-				'Tx_Commerce_Domain_Model_Category', $this->gpVars['catUid'], $this->getFrontendController()->sys_language_uid
+				'Tx_Commerce_Domain_Model_Category',
+				$this->gpVars['catUid'],
+				$this->getFrontendController()->sys_language_uid
 			);
 			$categoryObject->loadData();
 
@@ -1208,14 +1283,18 @@ class Tx_Commerce_ViewHelpers_Navigation {
 	 * Returns an array of array for the TS rootline
 	 * Recursive Call to build rootline
 	 *
-	 * @param int $categoryUid
-	 * @param array $result
+	 * @param int $categoryUid Category uid
+	 * @param array $result Result
 	 *
 	 * @return array
 	 */
-	public function getCategoryRootlineforTypoScript($categoryUid, $result = array()) {
+	public function getCategoryRootlineforTypoScript($categoryUid, array $result = array()) {
 		if ($categoryUid) {
-			/** @var Tx_Commerce_Domain_Model_Category $categoryObject */
+			/**
+			 * Category
+			 *
+			 * @var Tx_Commerce_Domain_Model_Category $categoryObject
+			 */
 			$categoryObject = GeneralUtility::makeInstance(
 				'Tx_Commerce_Domain_Model_Category', $categoryUid, $this->getFrontendController()->sys_language_uid
 			);
@@ -1238,9 +1317,7 @@ class Tx_Commerce_ViewHelpers_Navigation {
 			if ($this->mConf['showProducts'] == 1 && $this->gpVars['showUid'] > 0) {
 				$itemState = 'NO';
 			} else {
-				$itemState = ($categoryObject->getUid() === $categoryUid ?
-					'CUR' :
-					'NO');
+				$itemState = ($categoryObject->getUid() === $categoryUid ? 'CUR' : 'NO');
 			}
 
 			$result[] = array(
@@ -1262,12 +1339,13 @@ class Tx_Commerce_ViewHelpers_Navigation {
 	 * IDENTICAL to the function by same name found in PageRepository:
 	 * Usage: 2
 	 *
-	 * @param string $hash 32 bit hash string (eg. a md5 hash of a serialized
+	 * @param string $hash Hash string 32 bit (eg. a md5 hash of a serialized
 	 *        array identifying the data being stored)
 	 * @param string $data The data string. If you want to store an array,
 	 *        then just serialize it first.
-	 * @param string $ident is just a textual identification in order to inform
+	 * @param string $ident Is just a textual identification in order to inform
 	 *        about the content! May be 20 characters long.
+	 *
 	 * @return void
 	 */
 	public function storeHash($hash, $data, $ident) {
@@ -1289,8 +1367,8 @@ class Tx_Commerce_ViewHelpers_Navigation {
 	 * IDENTICAL to the function by same name found in PageRepository:
 	 * Usage: 2
 	 *
-	 * @param string $hash key, 32 bytes hex
-	 * @param int $expTime represents the expire time in seconds. For instance
+	 * @param string $hash Hash key, 32 bytes hex
+	 * @param int $expTime Represents the expire time in seconds. For instance
 	 *        a value of 3600 would allow cached content within the last hour,
 	 *        otherwise nothing is returned.
 	 *
@@ -1318,11 +1396,12 @@ class Tx_Commerce_ViewHelpers_Navigation {
 	/**
 	 * Merges the Array elementes of the second element into the first element
 	 *
-	 * @param array &$arr1
-	 * @param array &$arr2
+	 * @param array $arr1 Array one
+	 * @param array $arr2 Array two
+	 *
 	 * @return void
 	 */
-	public function arrayMerge(&$arr1, &$arr2) {
+	public function arrayMerge(array &$arr1, array &$arr2) {
 		if (is_array($arr2)) {
 			foreach ($arr2 as $key => $value) {
 				$arr1[$key] = $value;
@@ -1334,13 +1413,13 @@ class Tx_Commerce_ViewHelpers_Navigation {
 	 * Generates the Rootline of a category to have the right parent elements
 	 * if a category has more than one parentes
 	 *
-	 * @param array &$tree Menuetree
+	 * @param array $tree Menuetree
 	 * @param int $choosencat The actual category
 	 * @param int $expand If the menue has to be expanded
 	 *
 	 * @return array Rootline as Array
 	 */
-	public function getRootLine(&$tree, $choosencat, $expand) {
+	public function getRootLine(array &$tree, $choosencat, $expand) {
 		$result = array();
 
 		foreach ($tree as $key => $val) {
@@ -1383,7 +1462,7 @@ class Tx_Commerce_ViewHelpers_Navigation {
 	 * @param int $pid Page PID for the level
 	 * @param int $uidPage UidPage for the level
 	 * @param string $tableMm Relation Table
-	 * @param string $tableSubMain
+	 * @param string $tableSubMain Sub table
 	 * @param string $tableSubMm Sub Table Relationship
 	 * @param int $categoryUid Category ID
 	 * @param int $mDepth Menu Depth
@@ -1414,13 +1493,16 @@ class Tx_Commerce_ViewHelpers_Navigation {
 		$firstPath = $path;
 		while (($productRow = $database->sql_fetch_assoc($result)) !== FALSE) {
 			if ($productRow['manufacturer_uid'] != '0') {
-
-				/**
-				 * @TODO not a realy good solution
+				/*
+				 * @todo not a realy good solution
 				 */
 				$path = $this->manufacturerIdentifier . $productRow['manufacturer_uid'] . ',' . $firstPath;
 
-				/** @var Tx_Commerce_Domain_Model_Product $product */
+				/**
+				 * Product
+				 *
+				 * @var Tx_Commerce_Domain_Model_Product $product
+				 */
 				$product = GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Product', $productRow['uid']);
 				$product->loadData();
 
@@ -1471,11 +1553,12 @@ class Tx_Commerce_ViewHelpers_Navigation {
 	/**
 	 * Sorts all items of the array menu
 	 *
-	 * @param array &$treeArray
-	 * @param string $sortType
+	 * @param array $treeArray Tree
+	 * @param string $sortType Sort type
+	 *
 	 * @return void
 	 */
-	public function sortAllMenuArray(&$treeArray, $sortType = 'alphabetiDesc') {
+	public function sortAllMenuArray(array &$treeArray, $sortType = 'alphabetiDesc') {
 		if ($treeArray) {
 			foreach ($treeArray as $nodeUid => $node) {
 				if (is_array($node['--subLevel--'])) {
@@ -1489,13 +1572,13 @@ class Tx_Commerce_ViewHelpers_Navigation {
 	/**
 	 * Sorts a list of menu items
 	 *
-	 * @param array $listNodes
-	 * @param string $sortType
+	 * @param array $listNodes Node list
+	 * @param string $sortType Sorting type
 	 *
 	 * @return bool
-	 * @todo: implement sortType:alphabetiAsc,byUid, bySorting
+	 * @todo: implement sortType: alphabetiAsc, byUid, bySorting
 	 */
-	public function sortArrayList(&$listNodes, $sortType = 'alphabetiDesc') {
+	public function sortArrayList(array &$listNodes, $sortType = 'alphabetiDesc') {
 		if ($sortType == 'alphabetiDesc') {
 			return uasort(
 				$listNodes, function ($a, $b) {
@@ -1507,6 +1590,23 @@ class Tx_Commerce_ViewHelpers_Navigation {
 		return FALSE;
 	}
 
+	/**
+	 * Calculate cache hash
+	 *
+	 * @param array|string $parameter Parameter
+	 *
+	 * @return string
+	 */
+	protected function generateChash($parameter) {
+		/**
+		 * Cache hash calculator
+		 *
+		 * @var \TYPO3\CMS\Frontend\Page\CacheHashCalculator $cacheHashCalculator
+		 */
+		$cacheHashCalculator = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\CacheHashCalculator');
+		return $cacheHashCalculator->calculateCacheHash($cacheHashCalculator->getRelevantParameters($parameter));
+	}
+
 
 	/**
 	 * Adds the manufacturer to the category, as simulated category
@@ -1515,7 +1615,7 @@ class Tx_Commerce_ViewHelpers_Navigation {
 	 * @param int $uidPage UidPage for the level
 	 * @param string $mainTable Main Database Table
 	 * @param string $tableMm RelationChip Table
-	 * @param string $tableSubMain
+	 * @param string $tableSubMain Sub table
 	 * @param string $tableSubMm Sub Table Relationship
 	 * @param int $categoryUid Category ID
 	 * @param int $mDepth Menu Depth
@@ -1525,7 +1625,7 @@ class Tx_Commerce_ViewHelpers_Navigation {
 	 * @deprecated sinde commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getManufacturerAsCategory instead
 	 */
 	public function getManuAsCat($pid, $uidPage, $mainTable, $tableMm, $tableSubMain, $tableSubMm, $categoryUid, $mDepth, $path) {
-		GeneralUtility::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
 
 		return $this->getManufacturerAsCategory(
 			$pid, $uidPage, $tableMm, $tableSubMain, $tableSubMm, $categoryUid, $mDepth, $path
@@ -1536,14 +1636,14 @@ class Tx_Commerce_ViewHelpers_Navigation {
 	 * Returns an array of array for the TS rootline
 	 * Recursive Call to buld rootline
 	 *
-	 * @param int $catId
-	 * @param array $result
+	 * @param int $catId Category uid
+	 * @param array $result Result
 	 *
 	 * @return array
 	 * @deprecated sinde commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getCategoryRootlineforTypoScript instead
 	 */
-	public function getCategoryRootlineforTS($catId, $result = array()) {
-		GeneralUtility::logDeprecatedFunction();
+	public function getCategoryRootlineforTS($catId, array $result = array()) {
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
 
 		return $this->getCategoryRootlineforTypoScript($catId, $result);
 	}
@@ -1555,7 +1655,7 @@ class Tx_Commerce_ViewHelpers_Navigation {
 	 * @depricated since commerce 1.0.0, this function will be removed in commerce 1.4.0, method is no API and should be used
 	 */
 	public function getActiveCats() {
-		GeneralUtility::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
 
 		$active = array('0' => $this->catObj->getUid());
 		$rootline = $this->catObj->getParentCategoriesUidlist();
@@ -1569,25 +1669,16 @@ class Tx_Commerce_ViewHelpers_Navigation {
 	/**
 	 * Method for generating the rootlineMenu to use in TS
 	 *
-	 * @param string $content passed to method
+	 * @param string $content Content passed to method
 	 * @param array $conf TS Array
+	 *
 	 * @return array for the menurendering of TYPO3
 	 * @deprecated sinde commerce 1.0.0, this function will be removed in commerce 1.4.0, please use renderRootline instead
 	 */
-	public function CommerceRootline($content, $conf) {
-		GeneralUtility::logDeprecatedFunction();
+	public function CommerceRootline($content, array $conf) {
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
 
 		return $this->renderRootline($content, $conf);
-	}
-
-	/**
-	 * @param array|string $parameter
-	 * @return string
-	 */
-	protected function generateChash($parameter) {
-		/** @var \TYPO3\CMS\Frontend\Page\CacheHashCalculator $cacheHashCalculator */
-		$cacheHashCalculator = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\CacheHashCalculator');
-		return $cacheHashCalculator->calculateCacheHash($cacheHashCalculator->getRelevantParameters($parameter));
 	}
 
 

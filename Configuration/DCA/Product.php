@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * This file is part of the TYPO3 CMS project.
  *
  * It is free software; you can redistribute it and/or modify it under
@@ -342,14 +342,17 @@ class Tx_Commerce_Configuration_Dca_Products {
 	}
 
 	/**
-	 * @param array $resultDca
+	 * Alter dca on load
+	 *
+	 * @param array $resultDca Result DCA
+	 *
 	 * @return void
 	 */
-	public function alterDCA_onLoad(&$resultDca) {
+	public function alterDCA_onLoad(array &$resultDca) {
 		if (
 			!(
-				\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('data') == NULL ||
-				\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('createArticles') == 'create'
+				\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('data') == NULL
+				|| \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('createArticles') == 'create'
 			)
 			&& $this->getBackendUser()->uc['txcommerce_afterDatabaseOperations'] != 1
 		) {

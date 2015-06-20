@@ -11,6 +11,8 @@
  *
  * The TYPO3 project - inspiring people to share!
  */
+
+use TYPO3\CMS\Backend\Form\FormEngine;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -24,7 +26,7 @@ class Tx_Commerce_ViewHelpers_TceFunc {
 	/**
 	 * Form engine
 	 *
-	 * @var \TYPO3\CMS\Backend\Form\FormEngine
+	 * @var FormEngine
 	 */
 	protected $tceForms;
 
@@ -34,11 +36,11 @@ class Tx_Commerce_ViewHelpers_TceFunc {
 	 * Depending on the tree it display full trees or root elements only
 	 *
 	 * @param array $parameter An array with additional configuration options.
-	 * @param \TYPO3\CMS\Backend\Form\FormEngine $fObj TCEForms object reference
+	 * @param FormEngine $fObj TCEForms object reference
 	 *
 	 * @return string The HTML code for the TCEform field
 	 */
-	public function getSingleField_selectCategories(array $parameter, &$fObj) {
+	public function getSingleField_selectCategories(array $parameter, FormEngine &$fObj) {
 		$this->tceForms = &$parameter['pObj'];
 
 		$table = $parameter['table'];

@@ -25,11 +25,15 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class Tx_Commerce_ViewHelpers_CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordList {
 	/**
+	 * Parent uid
+	 *
 	 * @var int
 	 */
 	public $parentUid;
 
 	/**
+	 * Additional where per table
+	 *
 	 * @var array
 	 */
 	public $addWhere = array(
@@ -38,6 +42,8 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends \TYPO3\CMS\Recordlist\R
 	);
 
 	/**
+	 * Join queries per table
+	 *
 	 * @var array
 	 */
 	public $joinTables = array(
@@ -48,16 +54,22 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends \TYPO3\CMS\Recordlist\R
 	);
 
 	/**
+	 * Module menu
+	 *
 	 * @var array
 	 */
 	public $MOD_MENU;
 
 	/**
+	 * New record icon
+	 *
 	 * @var string
 	 */
 	public $newRecordIcon = '';
 
 	/**
+	 * Page information
+	 *
 	 * @var array
 	 */
 	public $pageinfo;
@@ -66,10 +78,11 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends \TYPO3\CMS\Recordlist\R
 	 * Create the panel of buttons for submitting the form
 	 * or otherwise perform operations.
 	 *
-	 * @param array $row
+	 * @param array $row Data
+	 *
 	 * @return array all available buttons as an assoc. array
 	 */
-	public function getButtons($row) {
+	public function getButtons(array $row) {
 		$language = $this->getLanguageService();
 
 		$buttons = array(
@@ -189,7 +202,7 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends \TYPO3\CMS\Recordlist\R
 	 * 	Pseudo fields will be added including the record header.
 	 *
 	 * @return string HTML table with the listing for the record.
-	 * @throws UnexpectedValueException
+	 * @throws UnexpectedValueException If hook was of wrong interface
 	 */
 	public function getTable($table, $id, $rowlist) {
 		$database = $this->getDatabaseConnection();
@@ -219,21 +232,21 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends \TYPO3\CMS\Recordlist\R
 			$this->fieldArray[] = '_CONTROL_';
 			$this->fieldArray[] = '_AFTERCONTROL_';
 		}
-			// Clipboard
+		// Clipboard
 		if ($this->showClipboard) {
 			$this->fieldArray[] = '_CLIPBOARD_';
 		}
-			// Ref
+		// Ref
 		if (!$this->dontShowClipControlPanels) {
 			$this->fieldArray[] = '_REF_';
 			$this->fieldArray[] = '_AFTERREF_';
 		}
 
-			// Path
+		// Path
 		if ($this->searchLevels) {
 			$this->fieldArray[] = '_PATH_';
 		}
-			// Localization
+		// Localization
 		if ($this->localizationView && $l10nEnabled) {
 			$this->fieldArray[] = '_LOCALIZATION_';
 			$this->fieldArray[] = '_LOCALIZATION_b';
@@ -243,7 +256,7 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends \TYPO3\CMS\Recordlist\R
 				' . $GLOBALS['TCA'][$table]['ctrl']['transOrigPointerField'] . ' = 0
 			)';
 		}
-			// Cleaning up:
+		// Cleaning up:
 		$this->fieldArray = array_unique(array_merge($this->fieldArray, GeneralUtility::trimExplode(',', $rowlist, 1)));
 		if ($this->noControlPanels) {
 			$tempArray = array_flip($this->fieldArray);
@@ -252,11 +265,11 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends \TYPO3\CMS\Recordlist\R
 			$this->fieldArray = array_keys($tempArray);
 		}
 
-			// Creating the list of fields to include in the SQL query:
+		// Creating the list of fields to include in the SQL query:
 		$selectFields = $this->fieldArray;
 		$selectFields[] = 'uid';
 		$selectFields[] = 'pid';
-			// adding column for thumbnails
+		// adding column for thumbnails
 		if ($thumbsCol) {
 			$selectFields[] = $thumbsCol;
 		}
@@ -292,16 +305,17 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends \TYPO3\CMS\Recordlist\R
 		if ($GLOBALS['TCA'][$table]['ctrl']['label_alt']) {
 			$selectFields = array_merge($selectFields, GeneralUtility::trimExplode(',', $GLOBALS['TCA'][$table]['ctrl']['label_alt'], 1));
 		}
-			// Unique list!
+		// Unique list!
 		$selectFields = array_unique($selectFields);
-			// Making sure that the fields in the field-list ARE in the field-list from TCA!
+		// Making sure that the fields in the field-list ARE in the field-list from TCA!
 		$selectFields = array_intersect($selectFields, $this->makeFieldList($table, 1));
-			// implode it into a list of fields for the SQL-statement.
+		// implode it into a list of fields for the SQL-statement.
 		$selFieldList = implode(',', $selectFields);
 		$this->selFieldList = $selFieldList;
 
 		/**
-		 * @hook DB-List getTable
+		 * DB-List getTable
+		 *
 		 * @date 2007-11-16
 		 * @request Malte Jansen <mail@maltejansen.de>
 		 */
@@ -320,29 +334,29 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends \TYPO3\CMS\Recordlist\R
 			}
 		}
 
-			// Create the SQL query for selecting the elements in the listing:
-			// do not do paging when outputting as CSV
+		// Create the SQL query for selecting the elements in the listing:
+		// do not do paging when outputting as CSV
 		if ($this->csvOutput) {
 			$this->iLimit = 0;
 		}
 
 		if ($this->firstElementNumber > 2 && $this->iLimit > 0) {
-				// Get the two previous rows for sorting if displaying page > 1
+			// Get the two previous rows for sorting if displaying page > 1
 			$this->firstElementNumber = $this->firstElementNumber - 2;
 			$this->iLimit = $this->iLimit + 2;
-				// (API function from class.db_list.inc)
+			// (API function from class.db_list.inc)
 			$queryParts = $this->makeQueryArray($table, $id, $addWhere, $selFieldList);
 			$this->firstElementNumber = $this->firstElementNumber + 2;
 			$this->iLimit = $this->iLimit - 2;
 		} else {
-				// (API function from class.db_list.inc)
+			// (API function from class.db_list.inc)
 			$queryParts = $this->makeQueryArray($table, $id, $addWhere, $selFieldList);
 		}
 
 		// Finding the total amount of records on the page
 		$this->setTotalItems($queryParts);
 
-			// Init:
+		// Init:
 		$dbCount = 0;
 		$out = '';
 		$listOnlyInSingleTableMode = $this->listOnlyInSingleTableMode && !$this->table;
@@ -366,10 +380,9 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends \TYPO3\CMS\Recordlist\R
 			}
 		}
 
-			// If any records was selected, render the list:
+		// If any records was selected, render the list:
 		if ($dbCount) {
-
-				// Half line is drawn between tables:
+			// Half line is drawn between tables:
 			if (!$listOnlyInSingleTableMode) {
 				$theData = array();
 				if (!$this->table && !$rowlist) {
@@ -460,8 +473,7 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends \TYPO3\CMS\Recordlist\R
 					// Accumulate rows here
 				$accRows = array();
 				while (($row = $database->sql_fetch_assoc($result))) {
-
-						// In offline workspace, look for alternative record:
+					// In offline workspace, look for alternative record:
 					BackendUtility::workspaceOL($table, $row, $this->getBackendUser()->workspace, TRUE);
 
 					if (is_array($row)) {
@@ -482,12 +494,12 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends \TYPO3\CMS\Recordlist\R
 
 				$this->totalRowCount = count($accRows);
 
-					// CSV initiated
+				// CSV initiated
 				if ($this->csvOutput) {
 					$this->initCSV();
 				}
 
-					// Render items:
+				// Render items:
 				$this->CBnames = array();
 				$this->duplicateStack = array();
 				$this->eCounter = $this->firstElementNumber;
@@ -496,7 +508,7 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends \TYPO3\CMS\Recordlist\R
 				$cc = 0;
 
 				foreach ($accRows as $row) {
-						// Render item row if counter < limit
+					// Render item row if counter < limit
 					if ($cc < $this->iLimit) {
 						$cc++;
 						$this->translations = FALSE;
@@ -518,7 +530,7 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends \TYPO3\CMS\Recordlist\R
 												'" AND t3ver_wsid=' . $row['t3ver_wsid'] . BackendUtility::deleteClause($table),
 											$selFieldList
 										);
-										$lRow = is_array($tmpRow)?$tmpRow:$lRow;
+										$lRow = is_array($tmpRow) ? $tmpRow : $lRow;
 									}
 
 									// In offline workspace, look for alternative record:
@@ -593,7 +605,7 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends \TYPO3\CMS\Recordlist\R
 	 * @param int $id Page id (NOT USED! $this->pidSelect is used instead)
 	 * @param string $addWhere Additional part for where clause
 	 * @param string $fieldList Field list to select,
-	 * 	* for all (for "SELECT [fieldlist] FROM ...")
+	 * 	for all (for "SELECT [fieldlist] FROM ...")
 	 *
 	 * @return array Returns query array
 	 */
@@ -607,7 +619,7 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends \TYPO3\CMS\Recordlist\R
 			}
 		}
 
-			// Set ORDER BY:
+		// Set ORDER BY:
 		$orderBy = $GLOBALS['TCA'][$table]['ctrl']['sortby'] ?
 			'ORDER BY ' . $table . '.' . $GLOBALS['TCA'][$table]['ctrl']['sortby'] :
 			$GLOBALS['TCA'][$table]['ctrl']['default_sortby'];
@@ -639,17 +651,17 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends \TYPO3\CMS\Recordlist\R
 			'SELECT' => $fieldList,
 			'FROM' => $table . $this->joinTables[$table],
 			'WHERE' => $this->pidSelect .
-						' ' . $pC .
-						BackendUtility::deleteClause($table) .
-						BackendUtility::versioningPlaceholderClause($table) .
-						' ' . $addWhere . $categoryWhere .
-						' ' . $search,
+				' ' . $pC .
+				BackendUtility::deleteClause($table) .
+				BackendUtility::versioningPlaceholderClause($table) .
+				' ' . $addWhere . $categoryWhere .
+				' ' . $search,
 			'GROUPBY' => '',
 			'ORDERBY' => $database->stripOrderBy($orderBy),
 			'LIMIT' => $limit
 		);
 
-			// Apply hook as requested in http://bugs.typo3.org/view.php?id=4361
+		// Apply hook as requested in http://bugs.typo3.org/view.php?id=4361
 		foreach ($hookObjectsArr as $hookObj) {
 			if (method_exists($hookObj, 'makeQueryArray_post')) {
 				$parameter = array(
@@ -662,7 +674,7 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends \TYPO3\CMS\Recordlist\R
 			}
 		}
 
-			// Return query:
+		// Return query:
 		return $queryParts;
 	}
 
@@ -670,31 +682,31 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends \TYPO3\CMS\Recordlist\R
 	 * Returns a table-row with the content from the fields in the input data array.
 	 * OBS: $this->fieldArray MUST be set! (represents the list of fields to display)
 	 *
-	 * @param int $h is an int >=0 and denotes how tall a element is.
+	 * @param int $h Is an int >=0 and denotes how tall a element is.
 	 * 	Set to '0' makes a halv line, -1 = full line, set to 1 makes a 'join'
 	 * 	and above makes 'line'
-	 * @param string $icon is the <img>+<a> of the record. If not supplied the
+	 * @param string $icon Is the <img>+<a> of the record. If not supplied the
 	 * 	first 'join'-icon will be a 'line' instead
-	 * @param array $data is the dataarray, record with the fields.
+	 * @param array $data Is the dataarray, record with the fields.
 	 * 	Notice: These fields are (currently) NOT htmlspecialchar'ed before being
 	 * 	wrapped in <td>-tags
-	 * @param string $trParams is insert in the <td>-tags.
+	 * @param string $trParams Is insert in the <td>-tags.
 	 * 	Must carry a ' ' as first character
-	 * @param int|string $lMargin OBSOLETE - NOT USED ANYMORE.
+	 * @param int|string $lMargin Obsolete - NOT USED ANYMORE.
 	 * 	$lMargin is the leftMargin (int)
-	 * @param string $altLine is the HTML <img>-tag
+	 * @param string $altLine Is the HTML <img>-tag
 	 * 	for an alternative 'gfx/ol/line.gif'-icon (used in the top)
 	 *
 	 * @return string HTML content for the table row
 	 */
-	public function addElement($h, $icon, $data, $trParams = '', $lMargin = '', $altLine = '') {
+	public function addElement($h, $icon, array $data, $trParams = '', $lMargin = '', $altLine = '') {
 		$noWrap = ($this->no_noWrap) ? '' : ' nowrap="nowrap"';
 
-			// Start up:
+		// Start up:
 		$out = '
 		<!-- Element, begin: -->
 		<tr ' . $trParams . '>';
-			// Show icon and lines
+		// Show icon and lines
 		if ($this->showIcon) {
 			$out .= '
 			<td class="col-icon">';
@@ -714,13 +726,13 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends \TYPO3\CMS\Recordlist\R
 			';
 		}
 
-			// Init rendering.
+		// Init rendering.
 		$colsp = '';
 		$lastKey = '';
 		$c = 0;
 		$ccount = 0;
 
-			// Traverse field array which contains the data to present:
+		// Traverse field array which contains the data to present:
 		foreach ($this->fieldArray as $vKey) {
 			if (isset($data[$vKey])) {
 				if ($lastKey) {
@@ -760,11 +772,11 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends \TYPO3\CMS\Recordlist\R
 				'</td>';
 		}
 
-			// End row
+		// End row
 		$out .= '
 		</tr>';
 
-			// Return row.
+		// Return row.
 		return $out;
 	}
 
@@ -773,19 +785,20 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends \TYPO3\CMS\Recordlist\R
 	 *
 	 * @param string $table Table name
 	 * @param array $currentIdList Array of the currently displayed uids of the table
-	 * @throws UnexpectedValueException
+	 *
 	 * @return string Header table row
+	 * @throws UnexpectedValueException If hook was of wrong interface
 	 */
-	public function renderListHeader($table, $currentIdList) {
+	public function renderListHeader($table, array $currentIdList) {
 		$language = & $this->getLanguageService();
 
-			// Init:
+		// Init:
 		$theData = Array();
 
 		$icon = '';
-			// Traverse the fields:
+		// Traverse the fields:
 		foreach ($this->fieldArray as $fCol) {
-				// Calculate users permissions to edit records in the table:
+			// Calculate users permissions to edit records in the table:
 			$permsEdit = $this->calcPerms & ($table == 'tx_commerce_categories' ? 2 : 16);
 
 			switch ((string) $fCol) {
@@ -861,7 +874,7 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends \TYPO3\CMS\Recordlist\R
 					}
 
 					/**
-					 * @hook renderListHeaderActions: Allows to change the clipboard icons
+					 * Render list header actions hook: Allows to change the clipboard icons
 					 * @date 2007-11-20
 					 * @request Bernhard Kraft  <krafbt@kraftb.at>
 					 * @usage Above each listed table in Web>List a header row is shown.
@@ -887,7 +900,6 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends \TYPO3\CMS\Recordlist\R
 					// Control panel:
 				case '_CONTROL_':
 					if (!$GLOBALS['TCA'][$table]['ctrl']['readOnly']) {
-
 						// If new records can be created on this page, add links:
 						if ($this->calcPerms & ($table == 'tx_commerce_categories' ? 8 : 16) && $this->showNewRecLink($table) && $this->parentUid) {
 							if ($table == 'tt_content' && $this->newWizards) {
@@ -964,8 +976,7 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends \TYPO3\CMS\Recordlist\R
 				default:
 					$theData[$fCol] = '';
 					if ($this->table && is_array($currentIdList)) {
-
-							// If the numeric clipboard pads are selected, show duplicate sorting link:
+						// If the numeric clipboard pads are selected, show duplicate sorting link:
 						if ($this->clipNumPane()) {
 							$theData[$fCol] .= '<a href="' . htmlspecialchars($this->listURL('', -1) .
 								'&duplicateField=' . $fCol) . '" title="' . $language->getLL('clip_duplicates', TRUE) . '">' .
@@ -997,7 +1008,7 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends \TYPO3\CMS\Recordlist\R
 		}
 
 		/**
-		 * @usage Above each listed table in Web>List a header row is shown.
+		 * Above each listed table in Web>List a header row is shown.
 		 * Containing the labels of all shown fields and additional icons to
 		 * create new records for this table or perform special clipboard tasks
 		 * like mark and copy all listed records to clipboard, etc.
@@ -1023,10 +1034,11 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends \TYPO3\CMS\Recordlist\R
 	 *
 	 * @param string $table The table
 	 * @param array $row The record for which to make the control panel.
-	 * @throws UnexpectedValueException
+	 *
 	 * @return string HTML table with the control panel (unless disabled)
+	 * @throws UnexpectedValueException If hook was of wrong interface
 	 */
-	public function makeControl($table, $row) {
+	public function makeControl($table, array $row) {
 		$backendUser = $this->getBackendUser();
 		$language = $this->getLanguageService();
 
@@ -1042,7 +1054,11 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends \TYPO3\CMS\Recordlist\R
 		// the permission settings for each page:
 		$localCalcPerms = 0;
 		if ($table == 'tx_commerce_categories' || $table == 'tx_commerce_products') {
-			/** @var \CommerceTeam\Commerce\Utility\BackendUserUtility $utility */
+			/**
+			 * Utility
+			 *
+			 * @var \CommerceTeam\Commerce\Utility\BackendUserUtility $utility
+			 */
 			$utility = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Utility\\BackendUserUtility');
 			$localCalcPerms = $utility->calcPerms(BackendUtility::getRecord('tx_commerce_categories', $this->parentUid));
 		}
@@ -1135,11 +1151,10 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends \TYPO3\CMS\Recordlist\R
 
 				// "Edit Perms" link:
 				if (
-					$table == 'tx_commerce_categories' &&
-					$backendUser->check('modules', 'txcommerceM1_permission')
+					$table == 'tx_commerce_categories'
+					&& $backendUser->check('modules', 'txcommerceM1_permission')
 				) {
-					$cells['perms'] =
-						'<a href="' .
+					$cells['perms'] = '<a href="' .
 						htmlspecialchars(
 							BackendUtility::getModuleUrl('txcommerceM1_permission') . '&control[tx_commerce_categories][uid]=' . $row['uid'] .
 							'&return_id=' . $row['uid'] . '&edit=1'
@@ -1206,12 +1221,12 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends \TYPO3\CMS\Recordlist\R
 				// "Hide/Unhide" links:
 				$hiddenField = $GLOBALS['TCA'][$table]['ctrl']['enablecolumns']['disabled'];
 				if (
-					$permsEdit &&
-					$hiddenField &&
-					$GLOBALS['TCA'][$table]['columns'][$hiddenField] &&
-					(
-						!$GLOBALS['TCA'][$table]['columns'][$hiddenField]['exclude'] ||
-						$backendUser->check('non_exclude_fields', $table . ':' . $hiddenField)
+					$permsEdit
+					&& $hiddenField
+					&& $GLOBALS['TCA'][$table]['columns'][$hiddenField]
+					&& (
+						!$GLOBALS['TCA'][$table]['columns'][$hiddenField]['exclude']
+						|| $backendUser->check('non_exclude_fields', $table . ':' . $hiddenField)
 					)
 				) {
 					if ($row[$hiddenField]) {
@@ -1301,7 +1316,7 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends \TYPO3\CMS\Recordlist\R
 		}
 
 		/**
-		 * @hook recStatInfoHooks: Allows to insert HTML
+		 * Record stat info hooks: Allows to insert HTML
 		 * 	before record icons on various places
 		 * @date 2007-09-22
 		 * @request Kasper Skårhøj <kasper2007@typo3.com>
@@ -1316,7 +1331,7 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends \TYPO3\CMS\Recordlist\R
 		}
 
 		/**
-		 * @hook makeControl: Allows to change control icons of records in list-module
+		 * Make control Hook: Allows to change control icons of records in list-module
 		 * @date 2007-11-20
 		 * @request Bernhard Kraft  <krafbt@kraftb.at>
 		 * @usage This hook method gets passed the current $cells
@@ -1348,10 +1363,11 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends \TYPO3\CMS\Recordlist\R
 	 *
 	 * @param string $table The table
 	 * @param array $row The record for which to make the clipboard panel.
-	 * @throws UnexpectedValueException
+	 *
 	 * @return string HTML table with the clipboard panel (unless disabled)
+	 * @throws UnexpectedValueException If hook was of wrong interface
 	 */
-	public function makeClip($table, $row) {
+	public function makeClip($table, array $row) {
 		$language = $this->getLanguageService();
 
 		// Return blank, if disabled:
@@ -1447,7 +1463,8 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends \TYPO3\CMS\Recordlist\R
 		}
 
 		/**
-		 * @hook makeClip: Allows to change clip-icons of records in list-module
+		 * Make clip hook: Allows to change clip-icons of records in list-module
+		 *
 		 * @date 2007-11-20
 		 * @request Bernhard Kraft  <krafbt@kraftb.at>
 		 * @usage This hook method gets passed the current $cells array as third
@@ -1479,9 +1496,10 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends \TYPO3\CMS\Recordlist\R
 	 *
 	 * @param string $table The table
 	 * @param array $row The record for which to make the localization panel.
+	 *
 	 * @return array Array with key 0/1 with content for column 1 and 2
 	 */
-	public function makeLocalizationPanel($table, $row) {
+	public function makeLocalizationPanel($table, array $row) {
 		$backendUser = $this->getBackendUser();
 
 		$out = array(0 => '', 1 => '');
@@ -1527,7 +1545,7 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends \TYPO3\CMS\Recordlist\R
 	 * As we can't use BackendUtility::getModuleUrl this method needs
 	 * to be overridden to set the url to $this->script
 	 *
-	 * @NOTE: Since Typo3 4.5 we can't use listURL from parent class
+	 * NOTE: Since Typo3 4.5 we can't use listURL from parent class
 	 * we need to link to $this->script instead of web_list
 	 *
 	 * Creates the URL to this script, including all relevant GPvars
@@ -1540,6 +1558,7 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends \TYPO3\CMS\Recordlist\R
 	 * @param string $table Tablename to display. Enter "-1" for the current table.
 	 * @param string $excludeList Commalist of fields
 	 * 	NOT to include ("sortField" or "sortRev")
+	 *
 	 * @return string URL
 	 */
 	public function listURL($altId = '', $table = '-1', $excludeList = '') {
@@ -1597,7 +1616,7 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends \TYPO3\CMS\Recordlist\R
 	 *
 	 * @return string The item title. Ready for HTML output
 	 */
-	public function linkWrapItems($table, $uid, $code, $row) {
+	public function linkWrapItems($table, $uid, $code, array $row) {
 		$language = $this->getLanguageService();
 		$backendUser = $this->getBackendUser();
 

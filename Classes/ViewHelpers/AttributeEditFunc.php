@@ -26,7 +26,7 @@ class Tx_Commerce_ViewHelpers_AttributeEditFunc {
 	 *
 	 * @return string HTML-Content
 	 */
-	public function valuelist($parameter) {
+	public function valuelist(array $parameter) {
 		$database = $this->getDatabaseConnection();
 		$language = $this->getLanguageService();
 
@@ -34,7 +34,11 @@ class Tx_Commerce_ViewHelpers_AttributeEditFunc {
 		$foreignTable = 'tx_commerce_attribute_values';
 		$table = 'tx_commerce_attributes';
 
-		/** @var \TYPO3\CMS\Backend\Template\SmallDocumentTemplate $doc */
+		/**
+		 * Document template
+		 *
+		 * @var \TYPO3\CMS\Backend\Template\SmallDocumentTemplate $doc
+		 */
 		$doc = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\SmallDocumentTemplate');
 		$doc->backPath = $GLOBALS['BACK_PATH'];
 
@@ -44,9 +48,7 @@ class Tx_Commerce_ViewHelpers_AttributeEditFunc {
 		 * Select Attribute Values
 		 */
 
-		/**
-		 * @todo TS config of fields in list
-		 */
+		// @todo TS config of fields in list
 		$rowFields = array('attributes_uid', 'value');
 		$titleCol = $GLOBALS['TCA'][$foreignTable]['ctrl']['label'];
 

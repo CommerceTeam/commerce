@@ -511,8 +511,6 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 	 * @return string
 	 */
 	public function feUserOrders() {
-		$backendUser = $this->getBackendUser();
-
 		/**
 		 * Order record list
 		 *
@@ -521,7 +519,7 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 		$dblist = GeneralUtility::makeInstance('Tx_Commerce_ViewHelpers_OrderRecordlist');
 		$dblist->backPath = $GLOBALS['BACK_PATH'];
 		$dblist->script = 'index.php';
-		$dblist->calcPerms = $backendUser->calcPerms($this->pageinfo);
+		$dblist->calcPerms = $this->getBackendUser()->calcPerms($this->pageinfo);
 		$dblist->thumbs = $GLOBALS['BE_USER']->uc['thumbnailsByDefault'];
 		$dblist->returnUrl = $this->returnUrl;
 		$dblist->allFields = 1;
@@ -553,12 +551,14 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 	 * Article order_id
 	 * Just a hidden field
 	 *
-	 * @param array $PA
+	 * @param array $PA Parameter
+	 *
 	 * @return string HTML-Content
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use Tx_Commerce_ViewHelpers_OrderEditFunc::articleOrderId instead
 	 */
 	public function article_order_id($PA) {
-		GeneralUtility::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		return $this->articleOrderId($PA);
 	}
 
@@ -566,12 +566,14 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 	 * Article order_id
 	 * Just a hidden field
 	 *
-	 * @param array $PA
+	 * @param array $PA Parameter
+	 *
 	 * @return string HTML-Content
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use Tx_Commerce_ViewHelpers_OrderEditFunc::sumPriceGrossFormat instead
 	 */
 	public function sum_price_gross_format($PA) {
-		GeneralUtility::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		return $this->sumPriceGrossFormat($PA);
 	}
 
@@ -579,12 +581,14 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 	 * Oder Articles
 	 * Renders the List of aricles
 	 *
-	 * @param array $PA
+	 * @param array $PA Parameter
+	 *
 	 * @return string HTML-Content
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use Tx_Commerce_ViewHelpers_OrderEditFunc::orderArticles instead
 	 */
 	public function order_articles($PA) {
-		GeneralUtility::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		return $this->orderArticles($PA);
 	}
 
@@ -592,12 +596,14 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 	 * Oder Status
 	 * Selects only the oder folders from the pages List
 	 *
-	 * @param array $data
-	 * @see Configuration/TCA/Orders.php
+	 * @param array $data Data
+	 *
+	 * @return void
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use Tx_Commerce_ViewHelpers_OrderEditFunc::orderStatus instead
 	 */
-	public function order_status(&$data) {
-		GeneralUtility::logDeprecatedFunction();
+	public function order_status(array &$data) {
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		$this->orderStatus($data);
 	}
 
@@ -605,13 +611,15 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 	 * Invoice Adresss
 	 * Renders the invoice adresss
 	 *
-	 * @param array $PA
-	 * @param \TYPO3\CMS\Backend\Form\FormEngine $fobj
+	 * @param array $PA Parameter
+	 * @param \TYPO3\CMS\Backend\Form\FormEngine $fobj Form engine
+	 *
 	 * @return string HTML-Content
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use Tx_Commerce_ViewHelpers_OrderEditFunc::invoiceAddress instead
 	 */
 	public function invoice_adress($PA, $fobj) {
-		GeneralUtility::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		return $this->invoiceAddress($PA, $fobj);
 	}
 
@@ -619,38 +627,46 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 	 * Invoice Adresss
 	 * Renders the invoice adresss
 	 *
-	 * @param array $PA
-	 * @param \TYPO3\CMS\Backend\Form\FormEngine $fobj
+	 * @param array $PA Parameter
+	 * @param \TYPO3\CMS\Backend\Form\FormEngine $fobj Form engine
+	 *
 	 * @return string HTML-Content
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use Tx_Commerce_ViewHelpers_OrderEditFunc::deliveryAddress instead
 	 */
 	public function delivery_adress($PA, $fobj) {
-		GeneralUtility::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		return $this->deliveryAddress($PA, $fobj);
 	}
 
 	/**
-	 * @param array $PA
-	 * @param \TYPO3\CMS\Backend\Form\FormEngine $fobj
-	 * @param string $table
-	 * @param int $uid
+	 * Address
+	 *
+	 * @param array $PA Parameter
+	 * @param \TYPO3\CMS\Backend\Form\FormEngine $fobj Form engine
+	 * @param string $table Table
+	 * @param int $uid Uid
 	 *
 	 * @return string
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use Tx_Commerce_ViewHelpers_OrderEditFunc::getAttributes instead
 	 */
 	public function adress($PA, $fobj, $table, $uid) {
-		GeneralUtility::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		return $this->address($PA, $fobj, $table, $uid);
 	}
 
 	/**
-	 * @param array $PA
+	 * Frontend user orders
+	 *
+	 * @param array $PA Parameter
 	 *
 	 * @return string
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use Tx_Commerce_ViewHelpers_OrderEditFunc::feUserOrders instead
 	 */
 	public function fe_user_orders($PA) {
-		GeneralUtility::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		return $this->feUserOrders();
 	}
 
