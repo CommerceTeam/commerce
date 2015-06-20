@@ -28,7 +28,9 @@
  */
 class Tx_Commerce_Domain_Repository_ArticlePriceRepository extends Tx_Commerce_Domain_Repository_Repository {
 	/**
-	 * @var string table concerning the data
+	 * Table concerning the prices
+	 *
+	 * @var string
 	 */
 	protected $databaseTable = 'tx_commerce_article_prices';
 

@@ -24,11 +24,15 @@
  */
 class Tx_Commerce_Domain_Repository_ArticleRepository extends Tx_Commerce_Domain_Repository_Repository {
 	/**
+	 * Database table
+	 *
 	 * @var string
 	 */
 	public $databaseTable = 'tx_commerce_articles';
 
 	/**
+	 * Database relation table
+	 *
 	 * @var string
 	 */
 	public $databaseAttributeRelationTable = 'tx_commerce_articles_article_attributes_mm';
@@ -37,7 +41,7 @@ class Tx_Commerce_Domain_Repository_ArticleRepository extends Tx_Commerce_Domain
 	 * Returns the parent Product uid
 	 *
 	 * @param int $uid Article uid
-	 * @param bool $translationMode
+	 * @param bool $translationMode Translation mode
 	 *
 	 * @return int product uid
 	 */
@@ -57,24 +61,11 @@ class Tx_Commerce_Domain_Repository_ArticleRepository extends Tx_Commerce_Domain
 	}
 
 	/**
-	 * Get parent product uid
-	 *
-	 * @param int $uid
-	 * @param bool $translationMode
-	 * @return int
-	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use Tx_Commerce_Domain_Repository_ArticleRepository::getParentProductUid instead
-	 */
-	public function get_parent_product_uid($uid, $translationMode = FALSE) {
-		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
-		return $this->getParentProductUid($uid, $translationMode);
-	}
-
-	/**
-	 * gets all prices form database related to this product
+	 * Gets all prices form database related to this product
 	 *
 	 * @param int $uid Article uid
 	 * @param int $count Number of Articles for price_scale_amount, default 1
-	 * @param string $orderField
+	 * @param string $orderField Order field
 	 *
 	 * @return array of Price UID
 	 */
@@ -89,13 +80,17 @@ class Tx_Commerce_Domain_Repository_ArticleRepository extends Tx_Commerce_Domain
 				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Domain/Repository/ArticleRepository.php\'][\'priceOrder\']
 			');
-			$hookObj = &\TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_article.php']['priceOrder']);
+			$hookObj = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj(
+				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_article.php']['priceOrder']
+			);
 			if (method_exists($hookObj, 'priceOrder')) {
 				$orderField = $hookObj->priceOrder($orderField);
 			}
 		}
 		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Repository/ArticleRepository.php']['priceOrder']) {
-			$hookObj = &\TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Repository/ArticleRepository.php']['priceOrder']);
+			$hookObj = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj(
+				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Repository/ArticleRepository.php']['priceOrder']
+			);
 			if (method_exists($hookObj, 'priceOrder')) {
 				$orderField = $hookObj->priceOrder($orderField);
 			}
@@ -109,13 +104,17 @@ class Tx_Commerce_Domain_Repository_ArticleRepository extends Tx_Commerce_Domain
 				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Domain/Repository/ArticleRepository.php\'][\'additionalPriceWhere\']
 			');
-			$hookObj = &\TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_article.php']['additionalPriceWhere']);
+			$hookObj = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj(
+				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_article.php']['additionalPriceWhere']
+			);
 			if (method_exists($hookObj, 'additionalPriceWhere')) {
 				$additionalWhere = $hookObj->additionalPriceWhere($this, $uid);
 			}
 		}
 		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Repository/ArticleRepository.php']['additionalPriceWhere']) {
-			$hookObj = &\TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Repository/ArticleRepository.php']['additionalPriceWhere']);
+			$hookObj = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj(
+				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Repository/ArticleRepository.php']['additionalPriceWhere']
+			);
 			if (method_exists($hookObj, 'additionalPriceWhere')) {
 				$additionalWhere = $hookObj->additionalPriceWhere($this, $uid);
 			}
@@ -158,25 +157,10 @@ class Tx_Commerce_Domain_Repository_ArticleRepository extends Tx_Commerce_Domain
 	}
 
 	/**
-	 * gets all prices form database related to this product
-	 *
-	 * @param int $uid Article uid
-	 * @param int $count Number of Articles for price_scale_amount, default 1
-	 * @param string $orderField
-	 *
-	 * @return array of Price UID
-	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use Tx_Commerce_Domain_Repository_ArticleRepository::getPrices instead
-	 */
-	public function get_prices($uid, $count = 1, $orderField = 'price_net') {
-		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
-		return $this->getPrices($uid, $count, $orderField);
-	}
-
-	/**
 	 * Returns an array of all scale price amounts
 	 *
 	 * @param int $uid Article uid
-	 * @param int $count
+	 * @param int $count Count
 	 *
 	 * @return array of Price UID
 	 */
@@ -208,7 +192,7 @@ class Tx_Commerce_Domain_Repository_ArticleRepository extends Tx_Commerce_Domain
 	}
 
 	/**
-	 * gets all attributes from this product
+	 * Gets all attributes from this product
 	 *
 	 * @param int $uid Product uid
 	 *
@@ -219,25 +203,13 @@ class Tx_Commerce_Domain_Repository_ArticleRepository extends Tx_Commerce_Domain
 	}
 
 	/**
-	 * gets all attributes from this product
-	 *
-	 * @param int $uid Product uid
-	 *
-	 * @return array of attribute UID
-	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use Tx_Commerce_Domain_Repository_ArticleRepository::getAttributes instead
-	 */
-	public function get_attributes($uid) {
-		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
-		return $this->getAttributes($uid);
-	}
-
-	/**
 	 * Returns the attribute Value from the given Article attribute pair
 	 *
 	 * @param int $uid Article UID
 	 * @param int $attributeUid Attribute UID
+	 * @param bool $valueListAsUid If true, returns not the value from
+	 *	the valuelist, instead the uid
 	 *
-	 * @param bool $valueListAsUid if true, returns not the value from the valuelist, instead the uid
 	 * @return string
 	 */
 	public function getAttributeValue($uid, $attributeUid, $valueListAsUid = FALSE) {
@@ -303,9 +275,9 @@ class Tx_Commerce_Domain_Repository_ArticleRepository extends Tx_Commerce_Domain
 	}
 
 	/**
-	 * returns the supplier name to a given UID, selected from tx_commerce_supplier
+	 * Rreturns the supplier name to a given UID, selected from tx_commerce_supplier
 	 *
-	 * @param int $supplierUid
+	 * @param int $supplierUid Supplier uid
 	 *
 	 * @return string Supplier name
 	 */
@@ -324,6 +296,49 @@ class Tx_Commerce_Domain_Repository_ArticleRepository extends Tx_Commerce_Domain
 			}
 		}
 		return FALSE;
+	}
+
+
+	/**
+	 * Get parent product uid
+	 *
+	 * @param int $uid Product uid
+	 * @param bool $translationMode Translation mode
+	 *
+	 * @return int
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use Tx_Commerce_Domain_Repository_ArticleRepository::getParentProductUid instead
+	 */
+	public function get_parent_product_uid($uid, $translationMode = FALSE) {
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+		return $this->getParentProductUid($uid, $translationMode);
+	}
+
+	/**
+	 * Gets all prices form database related to this product
+	 *
+	 * @param int $uid Article uid
+	 * @param int $count Number of Articles for price_scale_amount, default 1
+	 * @param string $orderField Order field
+	 *
+	 * @return array of Price UID
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use Tx_Commerce_Domain_Repository_ArticleRepository::getPrices instead
+	 */
+	public function get_prices($uid, $count = 1, $orderField = 'price_net') {
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+		return $this->getPrices($uid, $count, $orderField);
+	}
+
+	/**
+	 * Gets all attributes from this product
+	 *
+	 * @param int $uid Product uid
+	 *
+	 * @return array of attribute UID
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use Tx_Commerce_Domain_Repository_ArticleRepository::getAttributes instead
+	 */
+	public function get_attributes($uid) {
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+		return $this->getAttributes($uid);
 	}
 
 

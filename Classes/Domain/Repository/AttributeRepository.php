@@ -23,11 +23,15 @@
  */
 class Tx_Commerce_Domain_Repository_AttributeRepository extends Tx_Commerce_Domain_Repository_Repository {
 	/**
+	 * Database table
+	 *
 	 * @var string
 	 */
 	public $databaseTable = 'tx_commerce_attributes';
 
 	/**
+	 * Database value table
+	 *
 	 * @var string Child database table
 	 */
 	protected $childDatabaseTable = 'tx_commerce_attribute_values';
@@ -35,12 +39,14 @@ class Tx_Commerce_Domain_Repository_AttributeRepository extends Tx_Commerce_Doma
 	/**
 	 * Gets a list of attribute_value_uids
 	 *
-	 * @param int $uid
+	 * @param int $uid Uid
 	 *
 	 * @return array
 	 */
 	public function getAttributeValueUids($uid) {
-		$result = $this->database->exec_SELECTquery(
+		$database = $this->getDatabaseConnection();
+
+		$result = $database->exec_SELECTquery(
 			'uid',
 			$this->childDatabaseTable,
 			'attributes_uid = ' . (int) $uid . $this->enableFields($this->childDatabaseTable),
@@ -49,41 +55,29 @@ class Tx_Commerce_Domain_Repository_AttributeRepository extends Tx_Commerce_Doma
 		);
 
 		$attributeValueList = array();
-		if ($this->database->sql_num_rows($result) > 0) {
-			while (($data = $this->database->sql_fetch_assoc($result))) {
+		if ($database->sql_num_rows($result) > 0) {
+			while (($data = $database->sql_fetch_assoc($result))) {
 				$attributeValueList[] = (int) $data['uid'];
 			}
 		}
-		$this->database->sql_free_result($result);
+		$database->sql_free_result($result);
 
 		return $attributeValueList;
 	}
 
 	/**
-	 * Gets a list of attribute value uids
-	 *
-	 * @param int $uid
-	 *
-	 * @return array
-	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0 - Use tx_commerce_db_attribute::getAttributeValueUids() instead
-	 */
-	public function get_attribute_value_uids($uid) {
-		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
-		return $this->getAttributeValueUids($uid);
-	}
-
-	/**
 	 * Get child attribute uids
 	 *
-	 * @param int $uid
+	 * @param int $uid Uid
 	 *
 	 * @return array
 	 */
 	public function getChildAttributeUids($uid) {
-		$childAttributeList = array();
+		$database = $this->getDatabaseConnection();
 
+		$childAttributeList = array();
 		if ((int) $uid) {
-			$result = $this->database->exec_SELECTquery(
+			$result = $database->exec_SELECTquery(
 				'uid',
 				$this->databaseTable,
 				'parent = ' . (int) $uid . $this->enableFields($this->databaseTable),
@@ -91,14 +85,39 @@ class Tx_Commerce_Domain_Repository_AttributeRepository extends Tx_Commerce_Doma
 				'sorting'
 			);
 
-			if ($this->database->sql_num_rows($result) > 0) {
-				while (($data = $this->database->sql_fetch_assoc($result))) {
+			if ($database->sql_num_rows($result) > 0) {
+				while (($data = $database->sql_fetch_assoc($result))) {
 					$childAttributeList[] = (int) $data['uid'];
 				}
 			}
-			$this->database->sql_free_result($result);
+			$database->sql_free_result($result);
 		}
 
 		return $childAttributeList;
+	}
+
+
+	/**
+	 * Gets a list of attribute value uids
+	 *
+	 * @param int $uid Uid
+	 *
+	 * @return array
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0 - Use tx_commerce_db_attribute::getAttributeValueUids() instead
+	 */
+	public function get_attribute_value_uids($uid) {
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
+		return $this->getAttributeValueUids($uid);
+	}
+
+
+	/**
+	 * Get database connection
+	 *
+	 * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+	 */
+	protected function getDatabaseConnection() {
+		return $GLOBALS['TYPO3_DB'];
 	}
 }

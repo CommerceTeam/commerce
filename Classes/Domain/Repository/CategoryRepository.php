@@ -24,46 +24,60 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domain_Repository_Repository {
 	/**
-	 * @var string Database table concerning the data
+	 * Database table
+	 *
+	 * @var string
 	 */
 	public $databaseTable = 'tx_commerce_categories';
 
 	/**
-	 * @var string mm_table
+	 * Database parent category relation table
+	 *
+	 * @var string
 	 */
 	protected $databaseParentCategoryRelationTable = 'tx_commerce_categories_parent_category_mm';
 
 	/**
+	 * Database attribute relation table
+	 *
 	 * @var string Attribute rel table
 	 */
 	protected $databaseAttributeRelationTable = 'tx_commerce_categories_attributes_mm';
 
 	/**
-	 * @var string Category sorting Field
+	 * Category sorting field
+	 *
+	 * @var string
 	 */
 	protected $categoryOrderField = 'tx_commerce_categories.sorting';
 
 	/**
-	 * @var string Product sorting field
+	 * Product sorting field
+	 *
+	 * @var string
 	 */
 	protected $productOrderField = 'tx_commerce_products.sorting';
 
 	/**
-	 * @var int Uid of this Category
+	 * Uid of current Category
+	 *
+	 * @var int
 	 */
 	protected $uid;
 
 	/**
-	 * @var int Language UID
+	 * Language Uid
+	 *
+	 * @var int
 	 */
 	protected $lang_uid;
 
 	/**
 	 * Gets the "master" category from this category
 	 *
-	 * @param int $uid Category UID
+	 * @param int $uid Category uid
 	 *
-	 * @return int Category UID
+	 * @return int Category uid
 	 */
 	public function getParentCategory($uid) {
 		$database = $this->getDatabaseConnection();
@@ -80,6 +94,7 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 				$result = $row['uid_foreign'];
 			}
 		}
+
 		return $result;
 	}
 
@@ -93,31 +108,31 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 	public function getPermissionsRecord($uid) {
 		$database = $this->getDatabaseConnection();
 
+		$result = array();
 		if (\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($uid) && ($uid > 0)) {
-			$result = $database->exec_SELECTquery(
+			$result = $database->exec_SELECTgetSingleRow(
 				'perms_everybody, perms_user, perms_group, perms_userid, perms_groupid, editlock',
 				$this->databaseTable,
 				'uid = ' . $uid
 			);
-			return $database->sql_fetch_assoc($result);
 		}
 
-		return array();
+		return $result;
 	}
 
 	/**
 	 * Gets the parent categories from this category
 	 *
-	 * @param int $uid Category UID
+	 * @param int $uid Category uid
 	 *
-	 * @return array Array of parent categories UIDs
+	 * @return array Parent categories Uids
 	 */
 	public function getParentCategories($uid) {
-		$database = $this->getDatabaseConnection();
-
 		if (empty($uid) || !is_numeric($uid)) {
 			return FALSE;
 		}
+
+		$database = $this->getDatabaseConnection();
 		$this->uid = $uid;
 		if (is_object($GLOBALS['TSFE']->sys_page)) {
 			$additionalWhere = $GLOBALS['TSFE']->sys_page->enableFields($this->databaseTable, $GLOBALS['TSFE']->showHiddenRecords);
@@ -132,6 +147,7 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 			$this->databaseTable,
 			' AND ' . $this->databaseParentCategoryRelationTable . '.uid_local= ' . (int) $uid . ' ' . $additionalWhere
 		);
+
 		if ($result) {
 			$data = array();
 			while (($row = $database->sql_fetch_assoc($result))) {
@@ -148,16 +164,16 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 	 * Returns an array of sys_language_uids of the i18n categories
 	 * Only use in BE
 	 *
-	 * @param int $uid UID of the category we want to get the i18n languages from
+	 * @param int $uid Uid of the category we want to get the i18n languages from
 	 *
 	 * @return array Array of UIDs
 	 */
 	public function getL18nCategories($uid) {
-		$database = $this->getDatabaseConnection();
-
 		if ((empty($uid)) || (!is_numeric($uid))) {
 			return FALSE;
 		}
+
+		$database = $this->getDatabaseConnection();
 		$this->uid = $uid;
 		$res = $database->exec_SELECTquery(
 			't1.title, t1.uid, t2.flag, t2.uid as sys_language',
@@ -183,6 +199,7 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 		if (empty($uid) || !is_numeric($uid)) {
 			return array();
 		}
+
 		if ($languageUid == -1) {
 			$languageUid = 0;
 		}
@@ -206,13 +223,17 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Domain/Repository/CategoryRepository.php\'][\'categoryOrder\']
 			');
-			$hookObj = GeneralUtility::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_db_category.php']['categoryOrder']);
+			$hookObj = GeneralUtility::getUserObj(
+				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_db_category.php']['categoryOrder']
+			);
 			if (method_exists($hookObj, 'categoryOrder')) {
 				$localOrderField = $hookObj->categoryOrder($this->categoryOrderField, $this);
 			}
 		}
 		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Repository/CategoryRepository.php']['categoryOrder']) {
-			$hookObj = GeneralUtility::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Repository/CategoryRepository.php']['categoryOrder']);
+			$hookObj = GeneralUtility::getUserObj(
+				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Repository/CategoryRepository.php']['categoryOrder']
+			);
 			if (method_exists($hookObj, 'categoryOrder')) {
 				$localOrderField = $hookObj->categoryOrder($this->categoryOrderField, $this);
 			}
@@ -230,19 +251,16 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 			'',
 			$localOrderField
 		);
+		$return = array();
 		if ($result) {
 			$data = array();
 			while (($row = $database->sql_fetch_assoc($result))) {
-				/**
-				 *  @todo access_check for datasets
-				 */
+				// @todo access_check for datasets
 				if ($languageUid == 0) {
 					$data[] = (int) $row['uid_local'];
 				} else {
-						// Check if a lokalised product is availiabe for this product
-					/**
-					 * @todo Check if this is correct in Multi Tree Sites
-					 */
+					// Check if a localised product is availiabe for this product
+					// @todo Check if this is correct in Multi Tree Sites
 					$lresult = $database->exec_SELECTquery(
 						'uid',
 						'tx_commerce_categories',
@@ -263,29 +281,33 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 					is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
 					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Domain/Repository/CategoryRepository.php\'][\'categoryQueryPostHook\']
 				');
-				$hookObj = GeneralUtility::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_db_category.php']['categoryQueryPostHook']);
+				$hookObj = GeneralUtility::getUserObj(
+					$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_db_category.php']['categoryQueryPostHook']
+				);
 				if (is_object($hookObj) && method_exists($hookObj, 'categoryQueryPostHook')) {
 					$data = $hookObj->categoryQueryPostHook($data, $this);
 				}
 			}
 			if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Repository/CategoryRepository.php']['categoryQueryPostHook']) {
-				$hookObj = GeneralUtility::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Repository/CategoryRepository.php']['categoryQueryPostHook']);
+				$hookObj = GeneralUtility::getUserObj(
+					$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Repository/CategoryRepository.php']['categoryQueryPostHook']
+				);
 				if (is_object($hookObj) && method_exists($hookObj, 'categoryQueryPostHook')) {
 					$data = $hookObj->categoryQueryPostHook($data, $this);
 				}
 			}
 
-			//$database->sql_free_result($result);
-			return $data;
+			$database->sql_free_result($result);
+			$return = $data;
 		}
-		return array();
+		return $return;
 	}
 
 	/**
 	 * Gets child products from this category
 	 *
-	 * @param int $uid Product UID
-	 * @param int $languageUid Language UID
+	 * @param int $uid Product uid
+	 * @param int $languageUid Language uid
 	 *
 	 * @return array Array of child products UIDs
 	 */
@@ -293,6 +315,7 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 		if (empty($uid) || !is_numeric($uid)) {
 			return FALSE;
 		}
+
 		if ($languageUid == -1) {
 			$languageUid = 0;
 		}
@@ -311,13 +334,17 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Domain/Repository/CategoryRepository.php\'][\'productOrder\']
 			');
-			$hookObj = GeneralUtility::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_db_category.php']['productOrder']);
+			$hookObj = GeneralUtility::getUserObj(
+				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_db_category.php']['productOrder']
+			);
 			if (is_object($hookObj) && method_exists($hookObj, 'productOrder')) {
 				$localOrderField = $hookObj->productOrder($localOrderField, $this);
 			}
 		}
 		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Repository/CategoryRepository.php']['productOrder']) {
-			$hookObj = GeneralUtility::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Repository/CategoryRepository.php']['productOrder']);
+			$hookObj = GeneralUtility::getUserObj(
+				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Repository/CategoryRepository.php']['productOrder']
+			);
 			if (is_object($hookObj) && method_exists($hookObj, 'productOrder')) {
 				$localOrderField = $hookObj->productOrder($localOrderField, $this);
 			}
@@ -350,13 +377,17 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Domain/Repository/CategoryRepository.php\'][\'productQueryPreHook\']
 			');
-			$hookObj = GeneralUtility::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_db_category.php']['productQueryPreHook']);
+			$hookObj = GeneralUtility::getUserObj(
+				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_db_category.php']['productQueryPreHook']
+			);
 			if (is_object($hookObj) && method_exists($hookObj, 'productQueryPreHook')) {
 				$queryArray = $hookObj->productQueryPreHook($queryArray, $this);
 			}
 		}
 		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Repository/CategoryRepository.php']['productQueryPreHook']) {
-			$hookObj = GeneralUtility::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Repository/CategoryRepository.php']['productQueryPreHook']);
+			$hookObj = GeneralUtility::getUserObj(
+				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Repository/CategoryRepository.php']['productQueryPreHook']
+			);
 			if (is_object($hookObj) && method_exists($hookObj, 'productQueryPreHook')) {
 				$queryArray = $hookObj->productQueryPreHook($queryArray, $this);
 			}
@@ -364,6 +395,7 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 
 		$database = $this->getDatabaseConnection();
 
+		$return = FALSE;
 		$result = $database->exec_SELECT_queryArray($queryArray);
 		if ($result !== FALSE) {
 			$data = array();
@@ -392,34 +424,38 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 					is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
 					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Domain/Repository/CategoryRepository.php\'][\'productQueryPostHook\']
 				');
-				$hookObj = GeneralUtility::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_db_category.php']['productQueryPostHook']);
+				$hookObj = GeneralUtility::getUserObj(
+					$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_db_category.php']['productQueryPostHook']
+				);
 				if (is_object($hookObj) && method_exists($hookObj, 'productQueryPostHook')) {
 					$data = $hookObj->productQueryPostHook($data, $this);
 				}
 			}
 			if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Repository/CategoryRepository.php']['productQueryPostHook']) {
-				$hookObj = GeneralUtility::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Repository/CategoryRepository.php']['productQueryPostHook']);
+				$hookObj = GeneralUtility::getUserObj(
+					$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Repository/CategoryRepository.php']['productQueryPostHook']
+				);
 				if (is_object($hookObj) && method_exists($hookObj, 'productQueryPostHook')) {
 					$data = $hookObj->productQueryPostHook($data, $this);
 				}
 			}
 
-			return $data;
+			$return = $data;
 		}
-		return FALSE;
+		return $return;
 	}
 
 	/**
 	 * Returns an array of array for the TS rootline
 	 * Recursive Call to build rootline
 	 *
-	 * @param int $categoryUid
-	 * @param string $clause
-	 * @param array $result
+	 * @param int $categoryUid Category uid
+	 * @param string $clause Where clause
+	 * @param array $result Result
 	 *
 	 * @return array
 	 */
-	public function getCategoryRootline($categoryUid, $clause = '', $result = array()) {
+	public function getCategoryRootline($categoryUid, $clause = '', array $result = array()) {
 		if ($categoryUid) {
 			$row = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
 				'tx_commerce_categories.uid, mm.uid_foreign AS parent',
@@ -450,7 +486,8 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 	 * remove attributes and setting of them too
 	 */
 	public function getUid() {
-		GeneralUtility::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		return $this->uid;
 	}
 
@@ -462,7 +499,8 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 	 * remove attributes and setting of them too
 	 */
 	public function getLangUid() {
-		GeneralUtility::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		return $this->lang_uid;
 	}
 
@@ -475,20 +513,22 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getParentCategory instead
 	 */
 	public function get_parent_category($uid) {
-		GeneralUtility::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		return $this->getParentCategory($uid);
 	}
 
 	/**
 	 * Gets the parent categories from this category
 	 *
-	 * @param int $uid Category UID
+	 * @param int $uid Category uid
 	 *
 	 * @return array Array of parent categories UIDs
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getParentCategories instead
 	 */
 	public function get_parent_categories($uid) {
-		GeneralUtility::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		return $this->getParentCategories($uid);
 	}
 
@@ -496,41 +536,44 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 	 * Returns an array of sys_language_uids of the i18n categories
 	 * Only use in BE
 	 *
-	 * @param int $uid UID of the category we want to get the i18n languages from
+	 * @param int $uid Uid of the category we want to get the i18n languages from
 	 *
 	 * @return array Array of UIDs
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getL18nCategories instead
 	 */
 	public function get_l18n_categories($uid) {
-		GeneralUtility::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		return $this->getL18nCategories($uid);
 	}
 
 	/**
 	 * Gets the child categories from this category
 	 *
-	 * @param int $uid Product
-	 * @param int $languageUid Language
+	 * @param int $uid Product uid
+	 * @param int $languageUid Language uid
 	 *
 	 * @return array Array of child categories
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getChildCategories instead
 	 */
 	public function get_child_categories($uid, $languageUid = -1) {
-		GeneralUtility::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		return $this->getChildCategories($uid, $languageUid);
 	}
 
 	/**
 	 * Gets child products from this category
 	 *
-	 * @param int $uid Product UID
-	 * @param int $languageUid Language UID
+	 * @param int $uid Product uid
+	 * @param int $languageUid Language uid
 	 *
 	 * @return array Array of child products UIDs
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getChildProducts instead
 	 */
 	public function get_child_products($uid, $languageUid = -1) {
-		GeneralUtility::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		return $this->getChildProducts($uid, $languageUid);
 	}
 

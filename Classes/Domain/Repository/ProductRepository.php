@@ -24,39 +24,52 @@
  */
 class Tx_Commerce_Domain_Repository_ProductRepository extends Tx_Commerce_Domain_Repository_Repository {
 	/**
-	 * @var string table concerning the data
+	 * Database table
+	 *
+	 * @var string
 	 */
 	public $databaseTable = 'tx_commerce_products';
 
 	/**
+	 * Database attribute relation table
+	 *
 	 * @var string
 	 */
 	public $databaseAttributeRelationTable = 'tx_commerce_products_attributes_mm';
 
 	/**
+	 * Database category relation table
+	 *
 	 * @var string
 	 */
 	public $databaseCategoryRelationTable = 'tx_commerce_products_categories_mm';
 
 	/**
+	 * Database related product relation table
+	 *
 	 * @var string
 	 */
 	public $databaseProductsRelatedTable = 'tx_commerce_products_related_mm';
 
 	/**
+	 * Sorting field
+	 *
 	 * @var string
 	 */
 	public $orderField = 'sorting';
 
 	/**
-	 * gets all articles form database related to this product
+	 * Gets all articles form database related to this product
 	 *
 	 * @param int $uid Product uid
+	 *
 	 * @return array of Article UID
 	 */
 	public function getArticles($uid) {
 		$uid = (int) $uid;
 		$articleUids = array();
+
+		$return = FALSE;
 		if ($uid) {
 			$localOrderField = $this->orderField;
 			if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_product.php']['articleOrder']) {
@@ -66,13 +79,17 @@ class Tx_Commerce_Domain_Repository_ProductRepository extends Tx_Commerce_Domain
 					is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
 					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Domain/Repository/ProductRepository.php\'][\'storeDataToDatabase\']
 				');
-				$hookObj = &\TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_product.php']['articleOrder']);
+				$hookObj = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj(
+					$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_product.php']['articleOrder']
+				);
 				if (method_exists($hookObj, 'articleOrder')) {
 					$localOrderField = $hookObj->articleOrder($this->orderField);
 				}
 			}
 			if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Repository/ProductRepository.php']['articleOrder']) {
-				$hookObj = &\TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Repository/ProductRepository.php']['articleOrder']);
+				$hookObj = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj(
+					$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Repository/ProductRepository.php']['articleOrder']
+				);
 				if (method_exists($hookObj, 'articleOrder')) {
 					$localOrderField = $hookObj->articleOrder($this->orderField);
 				}
@@ -88,7 +105,9 @@ class Tx_Commerce_Domain_Repository_ProductRepository extends Tx_Commerce_Domain
 					is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
 					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Domain/Repository/ProductRepository.php\'][\'additionalWhere\']
 				');
-				$hookObj = &\TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_product.php']['aditionalWhere']);
+				$hookObj = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj(
+					$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_product.php']['aditionalWhere']
+				);
 				if (method_exists($hookObj, 'aditionalWhere')) {
 					$additionalWhere = $hookObj->aditionalWhere($where);
 				}
@@ -100,94 +119,108 @@ class Tx_Commerce_Domain_Repository_ProductRepository extends Tx_Commerce_Domain
 					is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
 					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Domain/Repository/ProductRepository.php\'][\'additionalWhere\']
 				');
-				$hookObj = &\TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_product.php']['additionalWhere']);
+				$hookObj = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj(
+					$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_product.php']['additionalWhere']
+				);
 				if (method_exists($hookObj, 'additionalWhere')) {
 					$additionalWhere = $hookObj->additionalWhere($where);
 				}
 			}
 			if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Repository/ProductRepository.php']['additionalWhere']) {
-				$hookObj = &\TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Repository/ProductRepository.php']['additionalWhere']);
+				$hookObj = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj(
+					$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Repository/ProductRepository.php']['additionalWhere']
+				);
 				if (method_exists($hookObj, 'additionalWhere')) {
 					$additionalWhere = $hookObj->additionalWhere($where);
 				}
 			}
 
-			$result = $this->database->exec_SELECTquery('uid', 'tx_commerce_articles', $where . ' ' . $additionalWhere, '', $localOrderField);
-			if ($this->database->sql_num_rows($result) > 0) {
-				while (($data = $this->database->sql_fetch_assoc($result))) {
+			$database = $this->getDatabaseConnection();
+			$result = $database->exec_SELECTquery(
+				'uid',
+				'tx_commerce_articles',
+				$where . ' ' . $additionalWhere,
+				'',
+				$localOrderField
+			);
+			if ($database->sql_num_rows($result) > 0) {
+				while (($data = $database->sql_fetch_assoc($result))) {
 					$articleUids[] = $data['uid'];
 				}
-				$this->database->sql_free_result($result);
-				return $articleUids;
-
+				$database->sql_free_result($result);
+				$return = $articleUids;
 			} else {
 				$this->error('exec_SELECTquery("uid", "tx_commerce_articles", "uid_product = ' . $uid . '"); returns no Result');
-				return FALSE;
 			}
 		}
-		return FALSE;
+		return $return;
 	}
 
 	/**
-	 * gets all attributes form database related to this product
+	 * Gets all attributes form database related to this product
 	 * where corelation type = 4
 	 *
 	 * @param int $uid Product uid
-	 * @param array|int $correlationtypes
+	 * @param array|int $correlationtypes Correlation types
+	 *
 	 * @return array of Article UID
 	 */
 	public function getAttributes($uid, $correlationtypes) {
-		if ((int)$uid) {
+		$return = FALSE;
+		if ((int) $uid) {
 			if (!is_array($correlationtypes)) {
 				$correlationtypes = array($correlationtypes);
 			}
 
+			$database = $this->getDatabaseConnection();
 			$articleUids = array();
-			$result = $this->database->exec_SELECTquery(
+			$result = $database->exec_SELECTquery(
 				'distinct(uid_foreign) as uid', $this->databaseAttributeRelationTable,
 				'uid_local = ' . (int)$uid . ' and uid_correlationtype in (' . implode(',', $correlationtypes) . ')',
 				'', $this->databaseAttributeRelationTable . '.sorting'
 			);
-			if ($this->database->sql_num_rows($result) > 0) {
-				while (($data = $this->database->sql_fetch_assoc($result))) {
+
+			if ($database->sql_num_rows($result) > 0) {
+				while (($data = $database->sql_fetch_assoc($result))) {
 					$articleUids[] = (int) $data['uid'];
 				}
-				$this->database->sql_free_result($result);
-				return $articleUids;
+				$database->sql_free_result($result);
+				$return = $articleUids;
 			} else {
 				$this->error(
-					'exec_SELECTquery(\'distinct(uid_foreign)\', ' . $this->databaseAttributeRelationTable . ', \'uid_local = ' . (int) $uid . '\'); returns no Result'
+					'exec_SELECTquery(\'distinct(uid_foreign)\', ' . $this->databaseAttributeRelationTable .
+					', \'uid_local = ' . (int) $uid . '\'); returns no Result'
 				);
-				return FALSE;
 			}
 		}
 
-		return FALSE;
+		return $return;
 	}
 
 	/**
 	 * Returns a list of uid's that are related to this product
 	 *
-	 * @param int $uid product uid
+	 * @param int $uid Product uid
+	 *
 	 * @return array Product UIDs
 	 */
 	public function getRelatedProductUids($uid) {
-		$relatedProducts = $this->database->exec_SELECTgetRows(
+		return $this->getDatabaseConnection()->exec_SELECTgetRows(
 			'r.uid_foreign as uid', $this->databaseProductsRelatedTable . ' AS r',
-			'r.uid_local = ' . (int)$uid,
+			'r.uid_local = ' . (int) $uid,
 			'',
 			'r.sorting ASC',
 			'',
 			'uid'
 		);
-		return $relatedProducts;
 	}
 
 	/**
 	 * Returns an array of sys_language_uids of the i18n products
 	 * Only use in BE
 	 *
-	 * @param int $uid uid of the product we want to get the i18n languages from
+	 * @param int $uid Uid of the product we want to get the i18n languages from
+	 *
 	 * @return array $uid uids
 	 */
 	public function getL18nProducts($uid) {
@@ -197,7 +230,7 @@ class Tx_Commerce_Domain_Repository_ProductRepository extends Tx_Commerce_Domain
 
 		$this->uid = $uid;
 
-		$rows = $this->database->exec_SELECTgetRows(
+		$rows = $this->getDatabaseConnection()->exec_SELECTgetRows(
 			't1.title, t1.uid, t2.flag, t2.uid as sys_language',
 			$this->databaseTable . ' AS t1 LEFT JOIN sys_language AS t2 ON t1.sys_language_uid = t2.uid',
 			'l18n_parent = ' . (int)$uid . ' AND deleted = 0'
@@ -209,7 +242,8 @@ class Tx_Commerce_Domain_Repository_ProductRepository extends Tx_Commerce_Domain
 	/**
 	 * Get first category as master
 	 *
-	 * @param int $uid
+	 * @param int $uid Master parent category
+	 *
 	 * @return int
 	 */
 	public function getMasterParentCategory($uid) {
@@ -219,7 +253,8 @@ class Tx_Commerce_Domain_Repository_ProductRepository extends Tx_Commerce_Domain
 	/**
 	 * Gets the parent categories of th
 	 *
-	 * @param int $uid uid of the product
+	 * @param int $uid Uid of the product
+	 *
 	 * @return array parent categories for products
 	 */
 	public function getParentCategories($uid) {
@@ -231,7 +266,7 @@ class Tx_Commerce_Domain_Repository_ProductRepository extends Tx_Commerce_Domain
 		$uids = array();
 
 			// read from sql
-		$rows = (array)$this->database->exec_SELECTgetRows(
+		$rows = (array) $this->getDatabaseConnection()->exec_SELECTgetRows(
 			'uid_foreign', $this->databaseCategoryRelationTable,
 			'uid_local = ' . (int)$uid,
 			'',
@@ -243,7 +278,7 @@ class Tx_Commerce_Domain_Repository_ProductRepository extends Tx_Commerce_Domain
 
 		// If $uids is empty, the record might be a localized product
 		if (count($uids) === 0) {
-			$row = $this->database->exec_SELECTgetSingleRow(
+			$row = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
 				'l18n_parent',
 				$this->databaseTable,
 				'uid = ' . $uid
@@ -259,11 +294,12 @@ class Tx_Commerce_Domain_Repository_ProductRepository extends Tx_Commerce_Domain
 	/**
 	 * Returns the Manuafacturer Title to a given Manufacturere UID
 	 *
-	 * @param int $manufacturer
+	 * @param int $manufacturer Manufacturer
+	 *
 	 * @return string Title
 	 */
 	public function getManufacturerTitle($manufacturer) {
-		$row = $this->database->exec_SELECTgetSingleRow(
+		$row = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
 			'*',
 			'tx_commerce_manufacturer',
 			'uid = ' . (int) $manufacturer
@@ -274,27 +310,32 @@ class Tx_Commerce_Domain_Repository_ProductRepository extends Tx_Commerce_Domain
 
 
 	/**
-	 * gets all articles form database related to this product
+	 * Gets all articles form database related to this product
 	 *
 	 * @param int $uid Product uid
+	 *
 	 * @return array of Article UID
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getArticles instead
 	 */
 	public function get_articles($uid) {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		return $this->getArticles($uid);
 	}
 
 	/**
-	 * gets all attributes form database related to this product where corelation type = 4
+	 * Gets all attributes form database related
+	 * to this product where corelation type = 4
 	 *
 	 * @param int $uid Product uid
-	 * @param array|int $correlationtypes
+	 * @param array|int $correlationtypes Correlation types
+	 *
 	 * @return array of Article UID
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getAttributes instead
 	 */
 	public function get_attributes($uid, $correlationtypes) {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		return $this->getAttributes($uid, $correlationtypes);
 	}
 
@@ -302,60 +343,80 @@ class Tx_Commerce_Domain_Repository_ProductRepository extends Tx_Commerce_Domain
 	 * Returns an array of sys_language_uids of the i18n products
 	 * Only use in BE
 	 *
-	 * @param int $uid uid of the product we want to get the i18n languages from
+	 * @param int $uid Uid of the product we want to get the i18n languages from
+	 *
 	 * @return array $uid uids
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getL18nProducts instead
 	 */
 	public function get_l18n_products($uid) {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		return $this->getL18nProducts($uid);
 	}
 
 	/**
 	 * Returns a list of uid's that are related to this product
 	 *
-	 * @param int $uid product uid
+	 * @param int $uid Product uid
+	 *
 	 * @return array Product UIDs
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getRelatedProductUids instead
 	 */
 	public function get_related_product_uids($uid) {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		return $this->getRelatedProductUids($uid);
 	}
 
 	/**
 	 * Gets the "master" category from this product
 	 *
-	 * @param int $uid Product UID
-	 * @return int Categorie UID
+	 * @param int $uid Product uid
+	 *
+	 * @return int Categorie uid
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getMasterParentCategory instead
 	 */
 	public function get_parent_category($uid) {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		return $this->getMasterParentCategory($uid);
 	}
 
 	/**
 	 * Gets the "master" category from this product
 	 *
-	 * @param int $uid = Product UID
-	 * @return int Categorie UID
+	 * @param int $uid Product uid
+	 *
+	 * @return int Categorie uid
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getParentCategories instead
 	 */
 	public function get_parent_categorie($uid) {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		return $this->getMasterParentCategory($uid);
 	}
 
 	/**
 	 * Gets the "master" category from this product
 	 *
-	 * @param uid = Product UID
+	 * @param int $uid Product uid
+	 *
 	 * @return array of parent categories
 	 * @deprecated sinde commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getParentCategories instead
 	 */
 	public function get_parent_categories($uid) {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		return array($this->getParentCategories($uid));
+	}
+
+
+	/**
+	 * Get database connection
+	 *
+	 * @return \TYPO3\CMS\Dbal\Database\DatabaseConnection
+	 */
+	protected function getDatabaseConnection() {
+		return $GLOBALS['TYPO3_DB'];
 	}
 }

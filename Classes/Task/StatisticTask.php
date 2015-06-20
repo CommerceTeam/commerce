@@ -19,50 +19,67 @@
  */
 class Tx_Commerce_Task_StatisticTask extends \TYPO3\CMS\Scheduler\Task\AbstractTask {
 	/**
+	 * Selected aggregation
+	 *
 	 * @var string
 	 */
 	protected $selectedAggregation = '';
 
 	/**
+	 * Backend user
+	 *
 	 * @var \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
+	 * @deprecated Since 2.0.0 will be removed in 4.0.0
 	 */
 	protected $backendUser;
 
 	/**
+	 * Database connection
+	 *
 	 * @var \TYPO3\CMS\Core\Database\DatabaseConnection
+	 * @deprecated Since 2.0.0 will be removed in 4.0.0
 	 */
 	protected $database;
 
 	/**
+	 * Statistics utility
+	 *
 	 * @var Tx_Commerce_Utility_StatisticsUtility
 	 */
 	protected $statistics;
 
 	/**
+	 * Extension configuration
+	 *
 	 * @var array
 	 */
 	protected $extConf = array();
 
 	/**
+	 * Initialization
+	 *
 	 * @return void
 	 */
 	protected function init() {
-		$this->backendUser = $GLOBALS['BE_USER'];
+		$this->backendUser = $this->getBackendUser();
+		$this->database = $this->getDatabaseConnection();
 
-		$this->database = $GLOBALS['TYPO3_DB'];
+		$excludeStatisticFolders = 0;
+		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['excludeStatisticFolders'] != '') {
+			$excludeStatisticFolders = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['excludeStatisticFolders'];
+		}
 
 		$this->statistics = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Utility_StatisticsUtility');
-		$this->statistics->init(
-			$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['excludeStatisticFolders'] != '' ?
-				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['excludeStatisticFolders'] :
-				0
-		);
+		$this->statistics->init($excludeStatisticFolders);
 
 		$this->extConf = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf'];
 	}
 
 	/**
-	 * @param string $selectedAggregation
+	 * Set selected aggregation
+	 *
+	 * @param string $selectedAggregation Selected aggregation
+	 *
 	 * @return void
 	 */
 	public function setSelectedAggregation($selectedAggregation) {
@@ -70,6 +87,8 @@ class Tx_Commerce_Task_StatisticTask extends \TYPO3\CMS\Scheduler\Task\AbstractT
 	}
 
 	/**
+	 * Get selected aggregation
+	 *
 	 * @return string
 	 */
 	public function getSelectedAggregation() {
@@ -87,34 +106,38 @@ class Tx_Commerce_Task_StatisticTask extends \TYPO3\CMS\Scheduler\Task\AbstractT
 		switch ($this->selectedAggregation) {
 			case 'incrementalAggregation':
 				$this->incrementalAggregation();
-			break;
+				break;
 
 			case 'completeAggregation':
+				// fall through
 			default:
 				$this->completeAggregation();
-			break;
 		}
 
 		return TRUE;
 	}
 
 	/**
+	 * Incremental aggregation
+	 *
 	 * @return void
 	 */
 	protected function incrementalAggregation() {
-		$lastAggregationTimeres = $this->database->sql_query('SELECT max(tstamp) FROM tx_commerce_salesfigures');
+		$database = $this->getDatabaseConnection();
+
+		$lastAggregationTimeres = $database->sql_query('SELECT max(tstamp) FROM tx_commerce_salesfigures');
 		$lastAggregationTimeValue = 0;
 		if (
 			$lastAggregationTimeres
-			AND ($lastAggregationTimerow = $this->database->sql_fetch_row($lastAggregationTimeres))
-			AND $lastAggregationTimerow[0] != NULL
+			&& ($lastAggregationTimerow = $database->sql_fetch_row($lastAggregationTimeres))
+			&& $lastAggregationTimerow[0] != NULL
 		) {
 			$lastAggregationTimeValue = $lastAggregationTimerow[0];
 		}
 
-		$endres = $this->database->sql_query('SELECT max(crdate) FROM tx_commerce_order_articles');
+		$endres = $database->sql_query('SELECT max(crdate) FROM tx_commerce_order_articles');
 		$endtime2 = 0;
-		if ($endres AND ($endrow = $this->database->sql_fetch_row($endres))) {
+		if ($endres && ($endrow = $database->sql_fetch_row($endres))) {
 			$endtime2 = $endrow[0];
 		}
 		$starttime = $this->statistics->firstSecondOfDay($lastAggregationTimeValue);
@@ -129,6 +152,7 @@ class Tx_Commerce_Task_StatisticTask extends \TYPO3\CMS\Scheduler\Task\AbstractT
 				'Incremental Sales Aggregation for sales for the period from ' . strftime('%d.%m.%Y', $starttime) .
 					' to ' . strftime('%d.%m.%Y', $endtime) . ' (DD.MM.YYYY)'
 			);
+
 			if (!$this->statistics->doSalesAggregation($starttime, $endtime)) {
 				$this->log('Problems with incremetal Aggregation of orders');
 			}
@@ -138,11 +162,11 @@ class Tx_Commerce_Task_StatisticTask extends \TYPO3\CMS\Scheduler\Task\AbstractT
 
 		$changeselect = 'SELECT distinct crdate FROM tx_commerce_order_articles where tstamp > ' .
 			($lastAggregationTimeValue - ($this->statistics->getDaysBack() * 24 * 60 * 60));
-		$changeres = $this->database->sql_query($changeselect);
+		$changeres = $database->sql_query($changeselect);
 		$changeDaysArray = array();
 		$changes = 0;
 		$result = '';
-		while ($changeres && ($changerow = $this->database->sql_fetch_assoc($changeres))) {
+		while ($changeres && ($changerow = $database->sql_fetch_assoc($changeres))) {
 			$starttime = $this->statistics->firstSecondOfDay($changerow['crdate']);
 			$endtime = $this->statistics->lastSecondOfDay($changerow['crdate']);
 
@@ -164,17 +188,17 @@ class Tx_Commerce_Task_StatisticTask extends \TYPO3\CMS\Scheduler\Task\AbstractT
 
 		$this->log($changes . ' Days changed');
 
-		$lastAggregationTimeres = $this->database->sql_query('SELECT max(tstamp) FROM tx_commerce_newclients');
+		$lastAggregationTimeres = $database->sql_query('SELECT max(tstamp) FROM tx_commerce_newclients');
 		if (
 			$lastAggregationTimeres
-			AND ($lastAggregationTimerow = $this->database->sql_fetch_row($lastAggregationTimeres))
+			&& ($lastAggregationTimerow = $database->sql_fetch_row($lastAggregationTimeres))
 		) {
 			$lastAggregationTimeValue = $lastAggregationTimerow[0];
 		}
 		$lastAggregationTimeValue = $this->statistics->firstSecondOfDay($lastAggregationTimeValue);
 
-		$endres = $this->database->sql_query('SELECT max(crdate) FROM fe_users');
-		if ($endres AND ($endrow = $this->database->sql_fetch_row($endres))) {
+		$endres = $database->sql_query('SELECT max(crdate) FROM fe_users');
+		if ($endres && ($endrow = $database->sql_fetch_row($endres))) {
 			$endtime2 = $endrow[0];
 		}
 
@@ -199,21 +223,25 @@ class Tx_Commerce_Task_StatisticTask extends \TYPO3\CMS\Scheduler\Task\AbstractT
 	}
 
 	/**
+	 * Complete aggregation
+	 *
 	 * @return void
 	 */
 	protected function completeAggregation() {
-		$endres = $this->database->sql_query('SELECT max(crdate) FROM tx_commerce_order_articles');
+		$database = $this->getDatabaseConnection();
+
+		$endres = $database->sql_query('SELECT max(crdate) FROM tx_commerce_order_articles');
 		$endtime2 = 0;
-		if ($endres AND ($endrow = $this->database->sql_fetch_row($endres))) {
+		if ($endres AND ($endrow = $database->sql_fetch_row($endres))) {
 			$endtime2 = $endrow[0];
 		}
 
 		$endtime = $endtime2 > mktime(0, 0, 0) ? mktime(0, 0, 0) : strtotime('+1 hour', $endtime2);
 
-		$startres = $this->database->sql_query('SELECT min(crdate) FROM tx_commerce_order_articles WHERE crdate > 0');
-		if ($startres AND ($startrow = $this->database->sql_fetch_row($startres)) AND $startrow[0] != NULL) {
+		$startres = $database->sql_query('SELECT min(crdate) FROM tx_commerce_order_articles WHERE crdate > 0');
+		if ($startres AND ($startrow = $database->sql_fetch_row($startres)) AND $startrow[0] != NULL) {
 			$starttime = $startrow[0];
-			$this->database->sql_query('truncate tx_commerce_salesfigures');
+			$database->sql_query('truncate tx_commerce_salesfigures');
 			if (!$this->statistics->doSalesAggregation($starttime, $endtime)) {
 				$this->log('problems with completeAgregation of Sales');
 			}
@@ -221,17 +249,17 @@ class Tx_Commerce_Task_StatisticTask extends \TYPO3\CMS\Scheduler\Task\AbstractT
 			$this->log('no sales data available');
 		}
 
-		$endres = $this->database->sql_query('SELECT max(crdate) FROM fe_users');
-		if ($endres AND ($endrow = $this->database->sql_fetch_row($endres))) {
+		$endres = $database->sql_query('SELECT max(crdate) FROM fe_users');
+		if ($endres AND ($endrow = $database->sql_fetch_row($endres))) {
 			$endtime2 = $endrow[0];
 		}
 
 		$endtime = $endtime2 > mktime(0, 0, 0) ? mktime(0, 0, 0) : strtotime('+1 hour', $endtime2);
 
-		$startres = $this->database->sql_query('SELECT min(crdate) FROM fe_users WHERE crdate > 0 AND deleted = 0');
-		if ($startres AND ($startrow = $this->database->sql_fetch_row($startres)) AND $startrow[0] != NULL) {
+		$startres = $database->sql_query('SELECT min(crdate) FROM fe_users WHERE crdate > 0 AND deleted = 0');
+		if ($startres AND ($startrow = $database->sql_fetch_row($startres)) AND $startrow[0] != NULL) {
 			$starttime = $startrow[0];
-			$this->database->sql_query('truncate tx_commerce_newclients');
+			$database->sql_query('truncate tx_commerce_newclients');
 			if (!$this->statistics->doClientAggregation($starttime, $endtime)) {
 				$this->log('Probvlems with cle complete agregation Clients');
 			}
@@ -241,14 +269,16 @@ class Tx_Commerce_Task_StatisticTask extends \TYPO3\CMS\Scheduler\Task\AbstractT
 	}
 
 	/**
-	 * @param string $message
-	 * @param int $status
-	 * @param string $code
+	 * Log message
+	 *
+	 * @param string $message Message
+	 * @param int $status Status
+	 * @param string $code Code
 	 *
 	 * @return void
 	 */
 	public function log($message, $status = 0, $code = 'commerce') {
-		$this->backendUser->writelog(
+		$this->getBackendUser()->writelog(
 			4,
 			0,
 			$status,
@@ -256,5 +286,24 @@ class Tx_Commerce_Task_StatisticTask extends \TYPO3\CMS\Scheduler\Task\AbstractT
 			'[commerce]: ' . $message,
 			array()
 		);
+	}
+
+
+	/**
+	 * Get database connection
+	 *
+	 * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+	 */
+	protected function getDatabaseConnection() {
+		return $GLOBALS['TYPO3_DB'];
+	}
+
+	/**
+	 * Get backend user
+	 *
+	 * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
+	 */
+	protected function getBackendUser() {
+		return $GLOBALS['BE_USER'];
 	}
 }
