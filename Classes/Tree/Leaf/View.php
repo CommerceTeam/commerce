@@ -368,14 +368,13 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 	/**
 	 * Wrapping $title in a-tags.
 	 *
-	 * @param string $title string
+	 * @param string $title Title
 	 * @param string $row Item record
 	 * @param int $bank Pointer (which mount point number)
 	 *
 	 * @return string
-	 * @access private
 	 */
-	public function wrapTitle($title, $row, $bank = 0) {
+	protected function wrapTitle($title, $row, $bank = 0) {
 		if (!is_array($row) || !is_numeric($bank)) {
 			if (TYPO3_DLOG) {
 				GeneralUtility::devLog('wrapTitle (Tx_Commerce_Tree_Leaf_View) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);

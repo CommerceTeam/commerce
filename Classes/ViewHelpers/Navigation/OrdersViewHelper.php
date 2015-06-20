@@ -23,6 +23,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class Tx_Commerce_ViewHelpers_Navigation_OrdersViewHelper extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 	/**
+	 * Page tree
+	 *
 	 * @var Tx_Commerce_Tree_OrderTree
 	 */
 	protected $pagetree;
@@ -35,11 +37,15 @@ class Tx_Commerce_ViewHelpers_Navigation_OrdersViewHelper extends \TYPO3\CMS\Bac
 	protected $activeTemporaryMountPoint = 0;
 
 	/**
+	 * Current sub script
+	 *
 	 * @var string
 	 */
 	protected $currentSubScript;
 
 	/**
+	 * Cmr Parameter
+	 *
 	 * @var string
 	 */
 	protected $cMR;
@@ -52,11 +58,15 @@ class Tx_Commerce_ViewHelpers_Navigation_OrdersViewHelper extends \TYPO3\CMS\Bac
 	protected $setTemporaryDatabaseMount;
 
 	/**
+	 * Do highlight
+	 *
 	 * @var bool
 	 */
 	protected $doHighlight;
 
 	/**
+	 * Document template
+	 *
 	 * @var \TYPO3\CMS\Backend\Template\DocumentTemplate
 	 */
 	public $doc;
@@ -70,15 +80,15 @@ class Tx_Commerce_ViewHelpers_Navigation_OrdersViewHelper extends \TYPO3\CMS\Bac
 	public function init() {
 		$backendUser = $this->getBackendUser();
 
-			// Setting GPvars:
+		// Setting GPvars:
 		$this->currentSubScript = GeneralUtility::_GP('currentSubScript');
 		$this->cMR = GeneralUtility::_GP('cMR');
 		$this->setTemporaryDatabaseMount = GeneralUtility::_GP('setTempDBmount');
 
-			// Generate Folder if necessary
+		// Generate Folder if necessary
 		Tx_Commerce_Utility_FolderUtility::initFolders();
 
-			// Create page tree object:
+		// Create page tree object:
 		$this->pagetree = GeneralUtility::makeInstance('Tx_Commerce_Tree_OrderTree');
 		$this->pagetree->ext_IconMode = $backendUser->getTSConfigVal('options.pageTree.disableIconLinkToContextmenu');
 		$this->pagetree->ext_showPageId = $backendUser->getTSConfigVal('options.pageTree.showPageIdWithTitle');
@@ -91,13 +101,13 @@ class Tx_Commerce_ViewHelpers_Navigation_OrdersViewHelper extends \TYPO3\CMS\Bac
 		$this->pagetree->addField('nav_hide');
 		$this->pagetree->addField('url');
 
-			// Temporary DB mounts:
+		// Temporary DB mounts:
 		$this->pagetree->MOUNTS = array_unique(
 			Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Orders', 'Commerce', 0, 'Commerce')
 		);
 		$this->initializeTemporaryDatabaseMount();
 
-			// Setting highlight mode:
+		// Setting highlight mode:
 		$this->doHighlight = !$backendUser->getTSConfigVal('options.pageTree.disableTitleHighlight');
 	}
 
@@ -107,7 +117,11 @@ class Tx_Commerce_ViewHelpers_Navigation_OrdersViewHelper extends \TYPO3\CMS\Bac
 	 * @return void
 	 */
 	public function initPage() {
-		/** @var \TYPO3\CMS\Backend\Template\DocumentTemplate $doc */
+		/**
+		 * Document template
+		 *
+		 * @var \TYPO3\CMS\Backend\Template\DocumentTemplate $doc
+		 */
 		$doc = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
 		$this->doc = $doc;
 		$this->doc->backPath = $GLOBALS['BACK_PATH'];
@@ -265,7 +279,9 @@ class Tx_Commerce_ViewHelpers_Navigation_OrdersViewHelper extends \TYPO3\CMS\Bac
 	}
 
 	/**
-	 * @param int $pageId
+	 * Setting temporary mount point
+	 *
+	 * @param int $pageId Page id
 	 *
 	 * @return void
 	 */

@@ -12,6 +12,8 @@
  * The TYPO3 project - inspiring people to share!
  */
 
+use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
+
 /**
  * Class Tx_Commerce_Hook_LinkhandlerHooks
  *
@@ -21,7 +23,7 @@ class Tx_Commerce_Hook_LinkhandlerHooks {
 	/**
 	 * Parent object
 	 *
-	 * @var \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer
+	 * @var ContentObjectRenderer
 	 */
 	protected $pObj;
 
@@ -33,11 +35,13 @@ class Tx_Commerce_Hook_LinkhandlerHooks {
 	 * @param string $linkHandlerKeyword Keyword
 	 * @param string $linkHandlerValue Value
 	 * @param array $linkParameter Link parameter
-	 * @param \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer $pObj Parent Object
+	 * @param ContentObjectRenderer $pObj Parent
 
 	 * @return string
 	 */
-	public function main($linktxt, $conf, $linkHandlerKeyword, $linkHandlerValue, $linkParameter, &$pObj) {
+	public function main($linktxt, array $conf, $linkHandlerKeyword, $linkHandlerValue, array $linkParameter,
+		ContentObjectRenderer &$pObj
+	) {
 		$this->pObj = &$pObj;
 
 		$linkHandlerData = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode('|', $linkHandlerValue);
@@ -68,7 +72,7 @@ class Tx_Commerce_Hook_LinkhandlerHooks {
 		/**
 		 * Local content object
 		 *
-		 * @var \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer $localcObj
+		 * @var ContentObjectRenderer $localcObj
 		 */
 		$localcObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
 
@@ -77,8 +81,9 @@ class Tx_Commerce_Hook_LinkhandlerHooks {
 			$displayPageId = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['previewPageID'];
 		}
 
-		// remove the first param of '$link_param' (this is the page id wich is set by $DisplayPID)
-		// and add all params left (e.g. css class, target...) to the value of $lconf['paramter']
+		// remove the first param of '$link_param' (this is the page id wich is
+		// set by $DisplayPID) and add all params left (e.g. css class,
+		// target...) to the value of $lconf['paramter']
 		$linkParamArray = explode(' ', $linkParameter);
 		if (is_array($linkParamArray)) {
 			$linkParamArray = array_splice($linkParamArray, 1);

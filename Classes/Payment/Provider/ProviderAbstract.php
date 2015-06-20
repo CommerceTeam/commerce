@@ -20,31 +20,39 @@
  * @author 2009-2011 Volker Graubaum <vg@e-netconsulting.de>
  */
 abstract class Tx_Commerce_Payment_Provider_ProviderAbstract implements Tx_Commerce_Payment_Interface_Provider {
-
 	/**
-	 * @var array Index of error messages (keys are field names)
+	 * Error messages (keys are field names)
+	 *
+	 * @var array
 	 */
 	public $errorMessages = array();
 
 	/**
-	 * @var Tx_Commerce_Payment_Interface_Payment Parent payment object
+	 * Payment object
+	 *
+	 * @var Tx_Commerce_Payment_Interface_Payment
 	 */
 	protected $paymentObject = NULL;
 
 	/**
-	 * @var string Provider type, eg 'wirecard'
+	 * Provider type, eg 'wirecard'
+	 *
+	 * @var string
 	 */
 	protected $type = '';
 
 	/**
-	 * @var array Criteria objects bound to this payment provider
+	 * Criteria objects bound to this payment provider
+	 *
+	 * @var array
 	 */
 	protected $criteria = array();
 
 	/**
 	 * Construct this payment provider
 	 *
-	 * @param Tx_Commerce_Payment_Interface_Payment $paymentObject Parent payment object
+	 * @param Tx_Commerce_Payment_Interface_Payment $paymentObject Payment object
+	 *
 	 * @return self
 	 */
 	public function __construct(Tx_Commerce_Payment_Interface_Payment $paymentObject) {
@@ -55,22 +63,31 @@ abstract class Tx_Commerce_Payment_Provider_ProviderAbstract implements Tx_Comme
 	/**
 	 * Load configured criteria
 	 *
-	 * @throws Exception
 	 * @return void
+	 * @throws Exception If criteria was not of correct interface
 	 */
 	protected function loadCriteria() {
-			// Get and instantiate registered criteria of this payment provider
+		// Get and instantiate registered criteria of this payment provider
 		$criteraConfigurations = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['SYSPRODUCTS']['PAYMENT']['types'][$this->paymentObject->getType()]['provider'][$this->type]['criteria'];
 		if (is_array($criteraConfigurations)) {
 			foreach ($criteraConfigurations as $criterionConfiguration) {
 				if (!is_array($criterionConfiguration['options'])) {
 					$criterionConfiguration['options'] = array();
 				}
-				/** @var $criterion Tx_Commerce_Payment_Interface_ProviderCriterion */
-				$criterion = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance($criterionConfiguration['class'], $this, $criterionConfiguration['options']);
+				/**
+				 * Criterion
+				 *
+				 * @var $criterion Tx_Commerce_Payment_Interface_ProviderCriterion
+				 */
+				$criterion = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+					$criterionConfiguration['class'],
+					$this,
+					$criterionConfiguration['options']
+				);
 				if (!($criterion instanceof Tx_Commerce_Payment_Interface_ProviderCriterion)) {
 					throw new Exception(
-						'Criterion ' . $criterionConfiguration['class'] . ' must implement interface Tx_Commerce_Payment_Interface_ProviderCriterion',
+						'Criterion ' . $criterionConfiguration['class'] .
+							' must implement interface Tx_Commerce_Payment_Interface_ProviderCriterion',
 						1307720945
 					);
 				}
@@ -105,7 +122,11 @@ abstract class Tx_Commerce_Payment_Provider_ProviderAbstract implements Tx_Comme
 	 */
 	public function isAllowed() {
 		$result = TRUE;
-		/** @var Tx_Commerce_Payment_Criterion_CriterionAbstract $criterion */
+		/**
+		 * Criterion
+		 *
+		 * @var Tx_Commerce_Payment_Criterion_CriterionAbstract $criterion
+		 */
 		foreach ($this->criteria as $criterion) {
 			if ($criterion->isAllowed() === FALSE) {
 				$result = FALSE;
@@ -155,14 +176,16 @@ abstract class Tx_Commerce_Payment_Provider_ProviderAbstract implements Tx_Comme
 	 *
 	 * @return bool TRUE if finishing order is allowed
 	 */
-	public function finishingFunction(array $config = array(), array $session = array(), Tx_Commerce_Domain_Model_Basket $basket = NULL) {
+	public function finishingFunction(array $config = array(), array $session = array(),
+		Tx_Commerce_Domain_Model_Basket $basket = NULL
+	) {
 		return TRUE;
 	}
 
 	/**
 	 * Method called in finishIt function
 	 *
-	 * @param array $globalRequest _REQUEST
+	 * @param array $globalRequest Global request
 	 * @param array $session Session array
 	 *
 	 * @return bool TRUE if data is ok

@@ -28,11 +28,12 @@ class Tx_Commerce_Hook_ArticleHooks {
 	 * Basic Method to calculate the delivereycost (net)
 	 * Ment as Programming tutorial. Mostly you have to change or add functionality
 	 *
-	 * @param int &$netPrice
-	 * @param Tx_Commerce_Domain_Model_Article &$article
+	 * @param int $netPrice Net price
+	 * @param Tx_Commerce_Domain_Model_Article $article Article
+	 *
 	 * @return void
 	 */
-	public function calculateDeliveryCostNet(&$netPrice, &$article) {
+	public function calculateDeliveryCostNet(&$netPrice, Tx_Commerce_Domain_Model_Article &$article) {
 		$deliveryArticle = $this->getDeliveryArticle($article);
 		if ($deliveryArticle) {
 			$netPrice = $deliveryArticle->getPriceNet();
@@ -45,11 +46,12 @@ class Tx_Commerce_Hook_ArticleHooks {
 	 * Basic Method to calculate the delivereycost (gross)
 	 * Ment as Programming tutorial. Mostly you have to change or add functionality
 	 *
-	 * @param int &$grossPrice
-	 * @param Tx_Commerce_Domain_Model_Article &$article
+	 * @param int $grossPrice Gross price
+	 * @param Tx_Commerce_Domain_Model_Article $article Article
+	 *
 	 * @return void
 	 */
-	public function calculateDeliveryCostGross(&$grossPrice, &$article) {
+	public function calculateDeliveryCostGross(&$grossPrice, Tx_Commerce_Domain_Model_Article &$article) {
 		$deliveryArticle = $this->getDeliveryArticle($article);
 		if ($deliveryArticle) {
 			$grossPrice = $deliveryArticle->getPriceGross();
@@ -61,10 +63,11 @@ class Tx_Commerce_Hook_ArticleHooks {
 	/**
 	 * Load the deliveryArticle
 	 *
-	 * @param Tx_Commerce_Domain_Model_Article &$article
+	 * @param Tx_Commerce_Domain_Model_Article $article Article
+	 *
 	 * @return Tx_Commerce_Domain_Model_Article $result
 	 */
-	protected function getDeliveryArticle(&$article) {
+	protected function getDeliveryArticle(Tx_Commerce_Domain_Model_Article &$article) {
 		$deliveryConf = ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['SYSPRODUCTS']['DELIVERY']['types']);
 		$classname = array_shift(array_keys($deliveryConf));
 
@@ -78,14 +81,16 @@ class Tx_Commerce_Hook_ArticleHooks {
 
 		$result = FALSE;
 		if (!empty($row)) {
-			$deliveryArticleUid = $row['uid'];
-
 			/**
 			 * Instantiate article class
 			 *
 			 * @var Tx_Commerce_Domain_Model_Article $deliveryArticle
 			 */
-			$deliveryArticle = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Article', $deliveryArticleUid, $article->getLang());
+			$deliveryArticle = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+				'Tx_Commerce_Domain_Model_Article',
+				$row['uid'],
+				$article->getLang()
+			);
 
 			/**
 			 * Do not call loadData at this point, since loadData recalls this hook,

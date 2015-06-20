@@ -12,6 +12,8 @@
  * The TYPO3 project - inspiring people to share!
  */
 
+use TYPO3\CMS\Backend\Form\Element\InlineElement;
+
 /**
  * Class Tx_Commerce_Hook_IrreHooks
  *
@@ -21,11 +23,13 @@ class Tx_Commerce_Hook_IrreHooks implements \TYPO3\CMS\Backend\Form\Element\Inli
 	/**
 	 * Parent object
 	 *
-	 * @var \TYPO3\CMS\Backend\Form\Element\InlineElement
+	 * @var InlineElement
 	 */
 	protected $parentObject;
 
 	/**
+	 * Extension configuration
+	 *
 	 * @var array
 	 */
 	protected $extconf;
@@ -42,7 +46,7 @@ class Tx_Commerce_Hook_IrreHooks implements \TYPO3\CMS\Backend\Form\Element\Inli
 	/**
 	 * Initializes this hook object.
 	 *
-	 * @param \TYPO3\CMS\Backend\Form\Element\InlineElement $parentObject The calling object.
+	 * @param InlineElement $parentObject Calling object
 	 *
 	 * @return void
 	 */
@@ -53,18 +57,23 @@ class Tx_Commerce_Hook_IrreHooks implements \TYPO3\CMS\Backend\Form\Element\Inli
 	/**
 	 * Pre-processing to define which control items are enabled or disabled.
 	 *
-	 * @param string $parentUid The uid of the parent (embedding) record (uid or NEW...)
-	 * @param string $foreignTable The table (foreign_table) we create control-icons for
+	 * @param string $parentUid The uid of the parent record (uid or NEW...)
+	 * @param string $foreignTable The table we create control-icons for
 	 * @param array $childRecord The current record of that foreign_table
-	 * @param array $childConfig TCA configuration of the current field of the child record
-	 * @param bool $isVirtual Defines whether the current records is only virtually shown and not physically part of the parent record
-	 * @param array $enabledControls (reference) Associative array with the enabled control items
+	 * @param array $childConfig TCA configuration of the current field
+	 * @param bool $isVirtual Defines whether the current records is only virtually
+	 *	shown and not physically part of the parent record
+	 * @param array $enabledControls Associative array with the enabled control items
 	 *
 	 * @return void
 	 */
 	public function renderForeignRecordHeaderControl_preProcess($parentUid, $foreignTable, array $childRecord, array $childConfig,
 		$isVirtual, array &$enabledControls) {
-		if ($this->extconf['simpleMode'] == 1 && $foreignTable == 'tx_commerce_articles' && $parentUid == $this->extconf['deliveryID']) {
+		if (
+			$this->extconf['simpleMode'] == 1
+			&& $foreignTable == 'tx_commerce_articles'
+			&& $parentUid == $this->extconf['deliveryID']
+		) {
 			$enabledControls = array('new' => TRUE, 'hide' => TRUE, 'delete' => TRUE);
 		} elseif ($this->extconf['simpleMode'] == 1 && $foreignTable == 'tx_commerce_articles') {
 			$enabledControls = array('hide' => TRUE);
@@ -74,18 +83,23 @@ class Tx_Commerce_Hook_IrreHooks implements \TYPO3\CMS\Backend\Form\Element\Inli
 	}
 
 	/**
-	 * Post-processing to define which control items to show. Possibly own icons can be added here.
+	 * Post-processing to define which control items to show.
+	 * Possibly own icons can be added here.
 	 *
-	 * @param string $parentUid The uid of the parent (embedding) record (uid or NEW...)
-	 * @param string $foreignTable The table (foreign_table) we create control-icons for
+	 * @param string $parentUid The uid of the parent record (uid or NEW...)
+	 * @param string $foreignTable The table we create control-icons for
 	 * @param array $childRecord The current record of that foreign_table
-	 * @param array $childConfig TCA configuration of the current field of the child record
-	 * @param bool $isVirtual Defines whether the current records is only virtually shown and not physically part of the parent record
-	 * @param array $controlItems (reference) Associative array with the currently available control items
+	 * @param array $childConfig TCA configuration of the current field
+	 * @param bool $isVirtual Defines whether the current records is only
+	 *	virtually shown and not physically part of the parent record
+	 * @param array $controlItems Associative array with the currently
+	 *	available control items
 	 *
 	 * @return void
 	 */
-	public function renderForeignRecordHeaderControl_postProcess($parentUid, $foreignTable, array $childRecord, array $childConfig, $isVirtual, array &$controlItems) {
+	public function renderForeignRecordHeaderControl_postProcess($parentUid, $foreignTable, array $childRecord, array $childConfig,
+		$isVirtual, array &$controlItems
+	) {
 		// registered empty to satisfy interface
 	}
 }

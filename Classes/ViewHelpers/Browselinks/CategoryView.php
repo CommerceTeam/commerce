@@ -21,13 +21,15 @@
  */
 class Tx_Commerce_ViewHelpers_Browselinks_CategoryView extends Tx_Commerce_Tree_Leaf_View {
 	/**
-	 * DB Table ##isnt this read automatically?###
+	 * DB Table
 	 *
 	 * @var string
 	 */
 	protected $table = 'tx_commerce_categories';
 
 	/**
+	 * Dom id prefix
+	 *
 	 * @var string
 	 */
 	protected $domIdPrefix = 'txcommerceCategory';
@@ -40,15 +42,20 @@ class Tx_Commerce_ViewHelpers_Browselinks_CategoryView extends Tx_Commerce_Tree_
 	protected $openCat = 0;
 
 	/**
-	 * returns the link from the tree used to jump to a destination
+	 * Returns the link from the tree used to jump to a destination
 	 *
-	 * @param array $row - Array with the ID Information
+	 * @param array $row Array with the ID Information
+	 *
 	 * @return string
 	 */
-	public function getJumpToParam($row) {
+	public function getJumpToParam(array $row) {
 		if (!is_array($row)) {
 			if (TYPO3_DLOG) {
-				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('getJumpToParam (Tx_Commerce_Tree_Leaf_View) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
+					'getJumpToParam (Tx_Commerce_Tree_Leaf_View) gets passed invalid parameters.',
+					COMMERCE_EXTKEY,
+					3
+				);
 			}
 			return '';
 		}
@@ -57,7 +64,10 @@ class Tx_Commerce_ViewHelpers_Browselinks_CategoryView extends Tx_Commerce_Tree_
 	}
 
 	/**
-	 * @param $uid
+	 * Set open category
+	 *
+	 * @param int $uid Uid
+	 *
 	 * @return void
 	 */
 	public function setOpenCategory($uid) {
@@ -67,17 +77,20 @@ class Tx_Commerce_ViewHelpers_Browselinks_CategoryView extends Tx_Commerce_Tree_
 	/**
 	 * Wrapping $title in a-tags.
 	 *
-	 * @param string $title string
+	 * @param string $title Title
 	 * @param string $row Record
 	 * @param int $bank Pointer (which mount point number)
 	 *
 	 * @return string
-	 * @access private
 	 */
-	public function wrapTitle($title, $row, $bank = 0) {
+	protected function wrapTitle($title, $row, $bank = 0) {
 		if (!is_array($row) || !is_numeric($bank)) {
 			if (TYPO3_DLOG) {
-				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('wrapTitle (Tx_Commerce_Tree_Leaf_View) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
+					'wrapTitle (Tx_Commerce_Tree_Leaf_View) gets passed invalid parameters.',
+					COMMERCE_EXTKEY,
+					3
+				);
 			}
 			return '';
 		}

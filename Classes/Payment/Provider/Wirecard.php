@@ -105,7 +105,8 @@ class Tx_Commerce_Payment_Provider_Wirecard extends Tx_Commerce_Payment_Provider
 	 * @return bool Check if everything was ok
 	 */
 	public function finishingFunction(array $config = array(), array $session = array(),
-			Tx_Commerce_Domain_Model_Basket $basket = NULL) {
+		Tx_Commerce_Domain_Model_Basket $basket = NULL
+	) {
 		/**
 		 * Payment library
 		 *
@@ -127,7 +128,8 @@ class Tx_Commerce_Payment_Provider_Wirecard extends Tx_Commerce_Payment_Provider
 			'cvc' => $session['payment']['cc_checksum']
 		));
 
-		$actCurrency = $this->paymentObject->getParentObject()->conf['currency'] != '' ?  $this->paymentObject->getParentObject()->conf['currency'] : 'EUR';
+		$parent = $this->paymentObject->getParentObject();
+		$actCurrency = $parent->conf['currency'] != '' ? $parent->conf['currency'] : 'EUR';
 
 		$paymentLib->setTransactionData(array(
 			'amount' => $basket->getSumGross(),

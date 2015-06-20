@@ -15,7 +15,8 @@
 /**
  * This class extends the commerce module in the TYPO3 Backend to provide
  * convenient methods of editing of category permissions
- * (including category ownership (user and group)) via new TYPO3AJAX facility
+ * (including category ownership (user and group)) via new
+ * \TYPO3\CMS\Core\Http\AjaxRequestHandler facility
  *
  * Class Tx_Commerce_Controller_PermissionAjaxController
  *

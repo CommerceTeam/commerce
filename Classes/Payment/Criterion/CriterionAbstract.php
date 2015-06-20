@@ -20,14 +20,17 @@
  * @author 2009-2011 Volker Graubaum <vg@e-netconsulting.com>
  */
 abstract class Tx_Commerce_Payment_Criterion_CriterionAbstract implements Tx_Commerce_Payment_Interface_Criterion {
-
 	/**
-	 * @var Tx_Commerce_Controller_BaseController Parent commerce pibase object
+	 * Parent commerce pibase object
+	 *
+	 * @var Tx_Commerce_Controller_BaseController
 	 */
 	protected $pibaseObject = NULL;
 
 	/**
-	 * @var Tx_Commerce_Payment_Interface_Payment Parent payment object
+	 * Payment object
+	 *
+	 * @var Tx_Commerce_Payment_Interface_Payment
 	 */
 	protected $paymentObject = NULL;
 
@@ -41,8 +44,9 @@ abstract class Tx_Commerce_Payment_Criterion_CriterionAbstract implements Tx_Com
 	/**
 	 * Constructor
 	 *
-	 * @param Tx_Commerce_Payment_Interface_Payment $paymentObject Parent payment object
+	 * @param Tx_Commerce_Payment_Interface_Payment $paymentObject Payment object
 	 * @param array $options Configuration array
+	 *
 	 * @return self
 	 */
 	public function __construct(Tx_Commerce_Payment_Interface_Payment $paymentObject, array $options = array()) {

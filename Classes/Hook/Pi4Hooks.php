@@ -12,8 +12,6 @@
  * The TYPO3 project - inspiring people to share!
  */
 
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-
 /**
  * Hook for the extension openbc feuser extension
  * This class handles backend updates
@@ -80,7 +78,8 @@ class Tx_Commerce_Hook_Pi4Hooks {
 	 * @deprecated This method is redundant and will be removed in 4.0.0
 	 */
 	public function deleteAddress($uid) {
-		GeneralUtility::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		return $this->beforeDeleteAddress($uid);
 	}
 
@@ -96,7 +95,7 @@ class Tx_Commerce_Hook_Pi4Hooks {
 	 * @deprecated This method is redundant and will be removed in 4.0.0
 	 */
 	public function beforeAddressSave(array &$fieldArray, &$pObj) {
-		GeneralUtility::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
 	}
 
 	/**
@@ -112,7 +111,7 @@ class Tx_Commerce_Hook_Pi4Hooks {
 	 * @deprecated This method is redundant and will be removed in 4.0.0
 	 */
 	public function beforeAddressEdit($uid, array &$fieldArray, &$pObj) {
-		GeneralUtility::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
 	}
 
 	/**
@@ -128,7 +127,8 @@ class Tx_Commerce_Hook_Pi4Hooks {
 	 * @deprecated This method is redundant and will be removed in 4.0.0 please use hook afterAddressSave or afterAddressEdit
 	 */
 	protected function notify_addressObserver($status, $table, $uid, array &$fieldArray) {
-		GeneralUtility::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		Tx_Commerce_Dao_AddressObserver::update($status, $uid);
 	}
 
@@ -141,7 +141,8 @@ class Tx_Commerce_Hook_Pi4Hooks {
 	 * @deprecated This method is redundant and will be removed in 4.0.0
 	 */
 	protected function checkAddressDelete($uid) {
-		GeneralUtility::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		return Tx_Commerce_Dao_AddressObserver::checkDelete($uid);
 	}
 }

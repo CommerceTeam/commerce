@@ -22,29 +22,39 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class Tx_Commerce_Hook_BrowselinksHooks implements \TYPO3\CMS\Core\ElementBrowser\ElementBrowserHookInterface {
 	/**
-	 * Sauvegarde locale du cObj parent
+	 * Local content object cObj parent
 	 *
 	 * @var tx_rtehtmlarea_browse_links
 	 */
 	protected $pObj;
 
 	/**
+	 * Category tree
+	 *
 	 * @var Tx_Commerce_ViewHelpers_Browselinks_CategoryTree
 	 */
 	protected $treeObj;
 
 	/**
+	 * Script
+	 *
 	 * @var string
 	 */
 	protected $script;
 
+	/**
+	 * Commerce tab
+	 *
+	 * @var string
+	 */
 	protected $tabKey = 'commerce_tab';
 
 	/**
-	 * Initialisation (additionalParameters est un tableau vide)
+	 * Initialisation (additionalParameters is an empty array)
 	 *
-	 * @param tx_rtehtmlarea_browse_links $parentObject
-	 * @param array $additionalParameters
+	 * @param tx_rtehtmlarea_browse_links $parentObject Parent object
+	 * @param array $additionalParameters Parameter
+	 *
 	 * @return void
 	 */
 	public function init($parentObject, $additionalParameters) {
@@ -103,7 +113,8 @@ class Tx_Commerce_Hook_BrowselinksHooks implements \TYPO3\CMS\Core\ElementBrowse
 	/**
 	 * Add allowed items
 	 *
-	 * @param array $currentlyAllowedItems
+	 * @param array $currentlyAllowedItems Allowed items
+	 *
 	 * @return array
 	 */
 	public function addAllowedItems($currentlyAllowedItems) {
@@ -115,7 +126,8 @@ class Tx_Commerce_Hook_BrowselinksHooks implements \TYPO3\CMS\Core\ElementBrowse
 	/**
 	 * Modify menu definition
 	 *
-	 * @param array $menuDefinition
+	 * @param array $menuDefinition Menu definition
+	 *
 	 * @return array
 	 */
 	public function modifyMenuDefinition($menuDefinition) {
@@ -134,7 +146,8 @@ class Tx_Commerce_Hook_BrowselinksHooks implements \TYPO3\CMS\Core\ElementBrowse
 	/**
 	 * Content of new tab
 	 *
-	 * @param string $act
+	 * @param string $act Active tab
+	 *
 	 * @return string
 	 */
 	public function getTab($act) {
@@ -209,9 +222,10 @@ class Tx_Commerce_Hook_BrowselinksHooks implements \TYPO3\CMS\Core\ElementBrowse
 	/**
 	 * Parse current url for commerce fragments
 	 *
-	 * @param string $href
-	 * @param string $siteUrl
-	 * @param array $info
+	 * @param string $href Link
+	 * @param string $siteUrl Site url
+	 * @param array $info Information
+	 *
 	 * @return array
 	 */
 	public function parseCurrentUrl($href, $siteUrl, $info) {
@@ -226,7 +240,7 @@ class Tx_Commerce_Hook_BrowselinksHooks implements \TYPO3\CMS\Core\ElementBrowse
 	/**
 	 * Check if call of hook is valid
 	 *
-	 * @param string $type
+	 * @param string $type Type
 	 *
 	 * @return bool
 	 */
@@ -235,7 +249,7 @@ class Tx_Commerce_Hook_BrowselinksHooks implements \TYPO3\CMS\Core\ElementBrowse
 	}
 
 	/**
-	 * returns additional addon parameters - required to keep several
+	 * Returns additional addon parameters - required to keep several
 	 * informations for the RTE linkwizard
 	 *
 	 * @return string
@@ -263,11 +277,12 @@ class Tx_Commerce_Hook_BrowselinksHooks implements \TYPO3\CMS\Core\ElementBrowse
 	 * Makes the AJAX call to expand or collapse the categorytree.
 	 * Called by typo3/ajax.php
 	 *
-	 * @param array $params additional parameters (not used here)
-	 * @param TYPO3AJAX &$ajaxObj reference of the TYPO3AJAX object of this request
+	 * @param array $params Additional parameters (not used here)
+	 * @param \TYPO3\CMS\Core\Http\AjaxRequestHandler $ajaxObj Ajax object
+	 *
 	 * @return void
 	 */
-	public function ajaxExpandCollapse($params, &$ajaxObj) {
+	public function ajaxExpandCollapse(array $params, \TYPO3\CMS\Core\Http\AjaxRequestHandler &$ajaxObj) {
 		$parameter = GeneralUtility::_GP('PM');
 			// IE takes anchor as parameter
 		if (($parameterPosition = strpos($parameter, '#')) !== FALSE) {

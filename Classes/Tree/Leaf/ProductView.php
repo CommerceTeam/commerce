@@ -29,6 +29,8 @@ class Tx_Commerce_Tree_Leaf_ProductView extends Tx_Commerce_Tree_Leaf_View {
 	protected $table = 'tx_commerce_products';
 
 	/**
+	 * Dom id prefix
+	 *
 	 * @var string
 	 */
 	protected $domIdPrefix = 'txcommerceProduct';
@@ -42,7 +44,7 @@ class Tx_Commerce_Tree_Leaf_ProductView extends Tx_Commerce_Tree_Leaf_View {
 	 *
 	 * @return string
 	 */
-	public function wrapTitle($title, &$row, $bank = 0) {
+	protected function wrapTitle($title, array &$row, $bank = 0) {
 		if (!is_array($row) || !is_numeric($bank)) {
 			if (TYPO3_DLOG) {
 				GeneralUtility::devLog('wrapTitle (productview) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
@@ -61,12 +63,13 @@ class Tx_Commerce_Tree_Leaf_ProductView extends Tx_Commerce_Tree_Leaf_View {
 	}
 
 	/**
-	 * returns the link from the tree used to jump to a destination
+	 * Returns the link from the tree used to jump to a destination
 	 *
-	 * @param array $row - Array with the ID Information
+	 * @param array $row Array with the ID Information
+	 *
 	 * @return string
 	 */
-	public function getJumpToParam(&$row) {
+	public function getJumpToParam(array &$row) {
 		if (!is_array($row)) {
 			if (TYPO3_DLOG) {
 				GeneralUtility::devLog('getJumpToParam (productview) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);

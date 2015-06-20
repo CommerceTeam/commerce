@@ -19,11 +19,15 @@
  */
 class Tx_Commerce_Hook_TceFormsHooks {
 	/**
+	 * Extension configuration
+	 *
 	 * @var array
 	 */
 	protected $extconf;
 
 	/**
+	 * Last max items
+	 *
 	 * @var bool
 	 */
 	protected $lastMaxItems = FALSE;
@@ -43,7 +47,8 @@ class Tx_Commerce_Hook_TceFormsHooks {
 	 *
 	 * @param string $table The name of the database table
 	 * @param string $field The name of the field we work on in $table
-	 * @param array &$row The values of all $fields in $table
+	 * @param array $row The values of all $fields in $table
+	 *
 	 * @return void
 	 */
 	public function getSingleField_preProcess($table, $field, &$row) {
@@ -83,6 +88,7 @@ class Tx_Commerce_Hook_TceFormsHooks {
 	 * it by 100 using . as a separator
 	 *
 	 * @param int $price The database price
+	 *
 	 * @return string The $price divided by 100
 	 */
 	protected function centurionDivision($price) {
@@ -98,13 +104,14 @@ class Tx_Commerce_Hook_TceFormsHooks {
 	 * @param string $table The name of the database table
 	 * @param string $field The name of the field we work on in $table
 	 * @param array $row The values of all $fields in $table
-	 * @param string &$out Unknown, just for calling compatibility
+	 * @param string $out Unknown, just for calling compatibility
 	 * @param string $palette Unknown, just for calling compatibility
 	 * @param string $extra Unknown, just for calling compatibility
+	 *
 	 * @return void
 	 */
 	public function getSingleField_postProcess($table, $field, $row, &$out, $palette, $extra) {
-			// This value is set, if the preProcess updated the tca earlyer
+		// This value is set, if the preProcess updated the tca earlyer
 		if ($this->lastMaxItems !== FALSE) {
 			$GLOBALS['TCA']['tx_commerce_products']['columns']['articles']['config']['maxitems'] = $this->lastMaxItems;
 			$this->lastMaxItems = FALSE;
@@ -127,32 +134,40 @@ class Tx_Commerce_Hook_TceFormsHooks {
 	/**
 	 * This function returns the html code for the scale price calculation
 	 *
-	 * @param int $uid
+	 * @param int $uid Uid
+	 *
 	 * @return string
 	 */
 	protected function getScaleAmount($uid) {
 		return '<div class="bgColor5">price scale startamount</div>
 			<div class="bgColor4">
-				<input style="width: 77px;" class="formField1" maxlength="20" name="data[tx_commerce_articles][' . $uid . '][create_new_scale_prices_startamount]" type="input">
+				<input style="width: 77px;" class="formField1" maxlength="20" name="data[tx_commerce_articles][' . $uid .
+			'][create_new_scale_prices_startamount]" type="text"/>
 			</div>
 		</div>
 		<div>
 			<div class="bgColor5">price scale add prices</div>
 			<div class="bgColor4">
-				<input style="width: 77px;" class="formField1" maxlength="20" name="data[tx_commerce_articles][' . $uid . '][create_new_scale_prices_count]" type="input">
+				<input style="width: 77px;" class="formField1" maxlength="20" name="data[tx_commerce_articles][' . $uid .
+			'][create_new_scale_prices_count]" type="text"/>
 			</div>
 		</div>
 		<div>
 			<div class="bgColor5">price scale steps</div>
 			<div class="bgColor4">
-				<input style="width: 77px;" class="formField1" maxlength="20" name="data[tx_commerce_articles][' . $uid . '][create_new_scale_prices_steps]" type="input">
+				<input style="width: 77px;" class="formField1" maxlength="20" name="data[tx_commerce_articles][' . $uid .
+			'][create_new_scale_prices_steps]" type="text"/>
 			</div>
 		</div>
 		<div>
 			<div class="bgColor5">price scale access</div>
 			<div class="bgColor4">
-				<input name="data[tx_commerce_articles][' . $uid . '][prices][data][sDEF][lDEF][create_new_scale_prices_fe_group][vDEF]_selIconVal" value="0" type="hidden">
-				<select name="data[tx_commerce_articles][' . $uid . '][prices][data][sDEF][lDEF][create_new_scale_prices_fe_group][vDEF]" class="select" onchange="if (this.options[this.selectedIndex].value==\'--div--\') {this.selectedIndex=0;} TBE_EDITOR.fieldChanged(\'tx_commerce_articles\',\'' . $uid . '\',\'prices\',\'data[tx_commerce_articles][' . $uid . '][prices]\');">
+				<input name="data[tx_commerce_articles][' . $uid .
+			'][prices][data][sDEF][lDEF][create_new_scale_prices_fe_group][vDEF]_selIconVal" value="0" type="hidden"/>
+				<select name="data[tx_commerce_articles][' . $uid .
+			'][prices][data][sDEF][lDEF][create_new_scale_prices_fe_group][vDEF]" class="select"
+			 		onchange="if (this.options[this.selectedIndex].value == \'--div--\') { this.selectedIndex = 0; } TBE_EDITOR.fieldChanged(\'tx_commerce_articles\',\'' .
+			$uid . '\',\'prices\',\'data[tx_commerce_articles][' . $uid . '][prices]\');">
 					<option value="0" selected="selected"></option>
 					<option value="-1">Hide at login</option>
 					<option value="-2">Show at any login</option>

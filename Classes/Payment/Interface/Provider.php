@@ -23,7 +23,8 @@ interface Tx_Commerce_Payment_Interface_Provider {
 	/**
 	 * Constructor gets parent object
 	 *
-	 * @param Tx_Commerce_Payment_Interface_Payment $paymentObject
+	 * @param Tx_Commerce_Payment_Interface_Payment $paymentObject Payment object
+	 *
 	 * @return self
 	 */
 	public function __construct(Tx_Commerce_Payment_Interface_Payment $paymentObject);
@@ -79,14 +80,17 @@ interface Tx_Commerce_Payment_Interface_Provider {
 	 * @param array $config Current configuration
 	 * @param array $session Session data
 	 * @param Tx_Commerce_Domain_Model_Basket $basket Basket object
+	 *
 	 * @return bool True is finishing order is allowed
 	 */
-	public function finishingFunction(array $config = array(), array $session = array(), Tx_Commerce_Domain_Model_Basket $basket = NULL);
+	public function finishingFunction(array $config = array(), array $session = array(),
+		Tx_Commerce_Domain_Model_Basket $basket = NULL
+	);
 
 	/**
 	 * Method called in finishIt function
 	 *
-	 * @param array $globalRequest _REQUEST
+	 * @param array $globalRequest Global Request
 	 * @param array $session Session array
 	 *
 	 * @return bool TRUE if data is ok

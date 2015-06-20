@@ -25,6 +25,7 @@ interface Tx_Commerce_Payment_Interface_Criterion {
 	 *
 	 * @param Tx_Commerce_Payment_Interface_Payment $paymentObject Parent payment
 	 * @param array $options Configuration array
+	 *
 	 * @return self
 	 */
 	public function __construct(Tx_Commerce_Payment_Interface_Payment $paymentObject, array $options = array());

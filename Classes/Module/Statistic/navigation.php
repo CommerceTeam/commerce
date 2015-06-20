@@ -21,10 +21,13 @@ require_once('conf.php');
 define('TYPO3_MOD_PATH', '../typo3conf/ext/commerce/Classes/Module/Statistic/');
 $BACK_PATH = '../../../../../../typo3/';
 
-/** @noinspection PhpIncludeInspection */
 require_once($BACK_PATH . 'init.php');
 
-/** @var Tx_Commerce_ViewHelpers_Navigation_OrdersViewHelper $SOBE */
+/**
+ * Orders navigation viewhelper
+ *
+ * @var Tx_Commerce_ViewHelpers_Navigation_OrdersViewHelper $SOBE
+ */
 $SOBE = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_ViewHelpers_Navigation_OrdersViewHelper');
 $SOBE->init();
 $SOBE->initPage();

@@ -33,7 +33,7 @@ class Tx_Commerce_Hook_TcehooksHandlerHooks {
 	 *
 	 * @return void
 	 */
-	public function processDatamap_preProcessFieldArray(array &$incomingFieldArray, $table, $id, $pObj) {
+	public function processDatamap_preProcessFieldArray(array &$incomingFieldArray, $table, $id, DataHandler $pObj) {
 		if ($table == 'tx_commerce_article_prices') {
 			// Get the whole price, not only the tce-form fields
 			foreach ($pObj->datamap['tx_commerce_articles'] as $v) {
@@ -89,7 +89,7 @@ class Tx_Commerce_Hook_TcehooksHandlerHooks {
 	 *
 	 * @return void
 	 */
-	public function processDatamap_afterDatabaseOperations($status, $table, $id, array &$fieldArray, &$pObj) {
+	public function processDatamap_afterDatabaseOperations($status, $table, $id, array &$fieldArray, DataHandler &$pObj) {
 		if ($table == 'fe_users') {
 			if ($status == 'new' || empty($fieldArray['tx_commerce_tt_address_id'])) {
 				$this->notifyFeuserObserver($status, $table, $id, $fieldArray, $pObj);
@@ -208,7 +208,7 @@ class Tx_Commerce_Hook_TcehooksHandlerHooks {
 	 *
 	 * @return void
 	 */
-	protected function notifyFeuserObserver($status, $table, $id, array &$fieldArray, &$pObj) {
+	protected function notifyFeuserObserver($status, $table, $id, array &$fieldArray, DataHandler &$pObj) {
 		// get id
 		if ($status == 'new') {
 			$id = $pObj->substNEWwithIDs[$id];
@@ -230,7 +230,7 @@ class Tx_Commerce_Hook_TcehooksHandlerHooks {
 	 *
 	 * @return void
 	 */
-	protected function notifyAddressObserver($status, $table, $id, array &$fieldArray, &$pObj) {
+	protected function notifyAddressObserver($status, $table, $id, array &$fieldArray, DataHandler &$pObj) {
 		// get id
 		if ($status == 'new') {
 			$id = $pObj->substNEWwithIDs[$id];
@@ -238,7 +238,7 @@ class Tx_Commerce_Hook_TcehooksHandlerHooks {
 
 		// if address is updated
 		if ($status == 'update') {
-				// notify observer
+			// notify observer
 			Tx_Commerce_Dao_AddressObserver::update($status, $id);
 		}
 	}
@@ -268,8 +268,9 @@ class Tx_Commerce_Hook_TcehooksHandlerHooks {
 	 * @return void
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use Tx_Commerce_Hook_TcehooksHandlerHooks::notifyFeuserObserver instead
 	 */
-	protected function notify_feuserObserver($status, $table, $id, array &$fieldArray, &$pObj) {
+	protected function notify_feuserObserver($status, $table, $id, array &$fieldArray, DataHandler &$pObj) {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		$this->notifyFeuserObserver($status, $table, $id, $fieldArray, $pObj);
 	}
 
@@ -286,8 +287,9 @@ class Tx_Commerce_Hook_TcehooksHandlerHooks {
 	 * @return void
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use Tx_Commerce_Hook_TcehooksHandlerHooks::notifyAddressObserver instead
 	 */
-	protected function notify_addressObserver($status, $table, $id, array &$fieldArray, &$pObj) {
+	protected function notify_addressObserver($status, $table, $id, array &$fieldArray, DataHandler &$pObj) {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		$this->notifyAddressObserver($status, $table, $id, $fieldArray, $pObj);
 	}
 

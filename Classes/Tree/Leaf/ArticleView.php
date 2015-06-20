@@ -28,6 +28,8 @@ class Tx_Commerce_Tree_Leaf_ArticleView extends Tx_Commerce_Tree_Leaf_View {
 	protected $table = 'tx_commerce_articles';
 
 	/**
+	 * Dom id prefix
+	 *
 	 * @var string
 	 */
 	protected $domIdPrefix = 'txcommerceArticle';
@@ -35,14 +37,13 @@ class Tx_Commerce_Tree_Leaf_ArticleView extends Tx_Commerce_Tree_Leaf_View {
 	/**
 	 * Wrapping $title in a-tags.
 	 *
-	 * @param string $title string
+	 * @param string $title Title
 	 * @param string $row Record
 	 * @param int $bank Pointer (which mount point number)
 	 *
 	 * @return string
-	 * @access private
 	 */
-	public function wrapTitle($title, &$row, $bank = 0) {
+	protected function wrapTitle($title, &$row, $bank = 0) {
 		if (!is_array($row) || !is_numeric($bank)) {
 			if (TYPO3_DLOG) {
 				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('wrapTitle (articleview) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
@@ -51,8 +52,8 @@ class Tx_Commerce_Tree_Leaf_ArticleView extends Tx_Commerce_Tree_Leaf_View {
 			return '';
 		}
 
-			// Max. size for Title of 255
-		$title = ('' != trim($title)) ? \TYPO3\CMS\Core\Utility\GeneralUtility::fixed_lgd_cs($title, 255) : $this->getLL('leaf.noTitle');
+		// Max. size for Title of 255
+		$title = trim($title) ? \TYPO3\CMS\Core\Utility\GeneralUtility::fixed_lgd_cs($title, 255) : $this->getLL('leaf.noTitle');
 
 		$aOnClick = 'if(top.content.list_frame){top.content.list_frame.location.href=top.TS.PATH_typo3+\'alt_doc.php?returnUrl=\'+top.rawurlencode(top.content.list_frame.document.location.pathname+top.content.list_frame.document.location.search)+\'&' . $this->getJumpToParam($row) . '\';}';
 
@@ -64,12 +65,13 @@ class Tx_Commerce_Tree_Leaf_ArticleView extends Tx_Commerce_Tree_Leaf_View {
 	}
 
 	/**
-	 * returns the link from the tree used to jump to a destination
+	 * Returns the link from the tree used to jump to a destination
 	 *
-	 * @param array $row - Array with the ID Information
+	 * @param array $row Array with the ID Information
+	 *
 	 * @return string
 	 */
-	public function getJumpToParam(&$row) {
+	public function getJumpToParam(array &$row) {
 		if (!is_array($row)) {
 			if (TYPO3_DLOG) {
 				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('getJumpToParam gets passed invalid parameters.', COMMERCE_EXTKEY, 3);

@@ -40,11 +40,15 @@
  */
 class Tx_Commerce_Payment_Payment extends Tx_Commerce_Payment_Wirecard {
 	/**
+	 * Error
+	 *
 	 * @var array
 	 */
 	public $error;
 
 	/**
+	 * Status
+	 *
 	 * @var string
 	 */
 	public $status;
@@ -55,11 +59,12 @@ class Tx_Commerce_Payment_Payment extends Tx_Commerce_Payment_Wirecard {
 	 * @return self
 	 */
 	public function __construct() {
+		parent::__construct();
 		$this->setReferenzID();
 	}
 
 	/**
-	 * function: getPaymetmethods
+	 * Get Payment methods
 	 * delivers a list of payment types that are provided by the parent class
 	 *
 	 * @return array
@@ -69,8 +74,7 @@ class Tx_Commerce_Payment_Payment extends Tx_Commerce_Payment_Wirecard {
 	}
 
 	/**
-	 * function: getStatus
-	 * liefert den Status der Klasse sowie grunddaten welche Schnittstelle benutzt wird
+	 * Get status
 	 *
 	 * @return array
 	 */
@@ -79,7 +83,7 @@ class Tx_Commerce_Payment_Payment extends Tx_Commerce_Payment_Wirecard {
 	}
 
 	/**
-	 * Liefert den Errorcode der Paymentklasse
+	 * Get error
 	 *
 	 * @return int
 	 */
@@ -88,7 +92,10 @@ class Tx_Commerce_Payment_Payment extends Tx_Commerce_Payment_Wirecard {
 	}
 
 	/**
-	 * @param string $url
+	 * Set url
+	 *
+	 * @param string $url Url
+	 *
 	 * @return void
 	 */
 	public function setUrl($url) {
@@ -96,62 +103,65 @@ class Tx_Commerce_Payment_Payment extends Tx_Commerce_Payment_Wirecard {
 	}
 
 	/**
-	 * function: setData
-	 * Setzt die �bertragunsparameter
+	 * Set data
 	 *
-	 * @param array $data
+	 * @param array $data Data
+	 *
 	 * @return void
 	 */
-	public function setData($data) {
-			// Die Benutzerdaten in einem Assoziativen Array �bergeben
-			// folgende Benutzerdaten werdem vom System allgemein beachtet:
-			// - firstname
-			// - lastname
-			// - street
-			// - zip
-			// - city
-			// - country
-			// KK Spezifisch
+	public function setData(array $data) {
+		// Die Benutzerdaten in einem Assoziativen Array �bergeben
+		// folgende Benutzerdaten werdem vom System allgemein beachtet:
+		// - firstname
+		// - lastname
+		// - street
+		// - zip
+		// - city
+		// - country
+		// KK Spezifisch
 		$this->userData = $data;
 	}
 
 	/**
-	 * function: setPaymentData
 	 * Set payment data for transfer
 	 *
-	 * @param array $data
+	 * @param array $data Data
+	 *
 	 * @return void
 	 */
-	public function setPaymentData($data) {
-			// Die Benutzerdaten in einem Assoziativen Array �bergeben
-			// folgende Benutzerdaten werdem vom System allgemein beachtet:
-			// Betrifft Kreditkarten
-			// - kknumber
-			// - exp_month
-			// - exp_year
-			// - holder
-			// - city
-			// - country
+	public function setPaymentData(array $data) {
+		// Die Benutzerdaten in einem Assoziativen Array �bergeben
+		// folgende Benutzerdaten werdem vom System allgemein beachtet:
+		// Betrifft Kreditkarten
+		// - kknumber
+		// - exp_month
+		// - exp_year
+		// - holder
+		// - city
+		// - country
 		$this->paymentData = $data;
 	}
 
 	/**
-	* function: setTransactionData
-	* set the data for payment
-	*
-	* @param array $data
-	* @return void
-	*/
-	public function setTransactionData($data) {
-			// Die Benutzerdaten in einem Assoziativen Array �bergeben
-			// folgende Benutzerdaten werdem vom System allgemein beachtet:
-			// - amount
-			// - currency
+	 * Set the data for the transaction
+	 *
+	 * @param array $data Data
+	 *
+	 * @return void
+	 */
+	public function setTransactionData(array $data) {
+		// Die Benutzerdaten in einem Assoziativen Array �bergeben
+		// folgende Benutzerdaten werdem vom System allgemein beachtet:
+		// - amount
+		// - currency
 		$this->transactionData = $data;
 	}
 
 	/**
-	 * @param string $method
+	 * Set payment method
+	 *
+	 * @param string $method Method
+	 *
 	 * @return void
 	 */
 	public function setPaymentmethod($method) {
@@ -159,20 +169,24 @@ class Tx_Commerce_Payment_Payment extends Tx_Commerce_Payment_Wirecard {
 	}
 
 	/**
-	 * @param object $type
+	 * Set payment type
+	 *
+	 * @param object $type Type
+	 *
+	 * @return void
 	 */
 	public function setPaymenttype($type) {
 		$this->paymenttype = $type;
 	}
 
 	/**
-	 * Intern - function: setReferenzID
-	 * Setzt eine referenz ID f�r die Tranksaktion
+	 * Set reference id
 	 *
-	 * @param string $referenceId
+	 * @param string $referenceId Reference id
+	 *
 	 * @return void
 	 */
-	public function setReferenzID($referenceId = '') {
+	public function setReferenzId($referenceId = '') {
 		if ($referenceId == '') {
 			$referenceId = 'ref_' . time();
 		}

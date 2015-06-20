@@ -28,6 +28,8 @@ class Tx_Commerce_ViewHelpers_Browselinks_ProductView extends Tx_Commerce_Tree_L
 	protected $table = 'tx_commerce_products';
 
 	/**
+	 * Dom id prefix
+	 *
 	 * @var string
 	 */
 	protected $domIdPrefix = 'txcommerceProduct';
@@ -43,13 +45,12 @@ class Tx_Commerce_ViewHelpers_Browselinks_ProductView extends Tx_Commerce_Tree_L
 	 * Wrapping $title in a-tags.
 	 *
 	 * @param string $title Title string
-	 * @param string $row Item record
+	 * @param array $row Item record
 	 * @param int $bank Bank pointer (which mount point number)
 	 *
 	 * @return string
-	 * @access private
 	 */
-	public function wrapTitle($title, &$row, $bank = 0) {
+	protected function wrapTitle($title, array &$row, $bank = 0) {
 		if (!is_array($row) || !is_numeric($bank)) {
 			if (TYPO3_DLOG) {
 				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('wrapTitle (productview) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
@@ -71,7 +72,7 @@ class Tx_Commerce_ViewHelpers_Browselinks_ProductView extends Tx_Commerce_Tree_L
 	/**
 	 * Setter
 	 *
-	 * @param int $uid
+	 * @param int $uid Uid
 	 *
 	 * @return void
 	 */
@@ -80,15 +81,20 @@ class Tx_Commerce_ViewHelpers_Browselinks_ProductView extends Tx_Commerce_Tree_L
 	}
 
 	/**
-	 * returns the link from the tree used to jump to a destination
+	 * Returns the link from the tree used to jump to a destination
 	 *
-	 * @param array $row - Array with the ID Information
+	 * @param array $row Array with the ID Information
+	 *
 	 * @return string
 	 */
-	public function getJumpToParam(&$row) {
+	public function getJumpToParam(array &$row) {
 		if (!is_array($row)) {
 			if (TYPO3_DLOG) {
-				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('getJumpToParam (productview) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
+					'getJumpToParam (productview) gets passed invalid parameters.',
+					COMMERCE_EXTKEY,
+					3
+				);
 			}
 			return '';
 		}

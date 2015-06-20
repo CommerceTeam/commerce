@@ -20,11 +20,11 @@
  * @author 2011 Christian Kuhn <lolli@schwarzbu.ch>
  */
 interface Tx_Commerce_Payment_Interface_Payment {
-
 	/**
 	 * Constructor gets parent object
 	 *
-	 * @param Tx_Commerce_Controller_BaseController|Tx_Commerce_Controller_CheckoutController|Tx_Commerce_Controller_BasketController $pObj
+	 * @param Tx_Commerce_Controller_BaseController $pObj Parent object
+	 *
 	 * @return self
 	 */
 	public function __construct(Tx_Commerce_Controller_BaseController $pObj);
@@ -89,12 +89,14 @@ interface Tx_Commerce_Payment_Interface_Payment {
 	 *
 	 * @return bool TRUE if finishing order is allowed
 	 */
-	public function finishingFunction(array $config = array(), array $session = array(), Tx_Commerce_Domain_Model_Basket $basket = NULL);
+	public function finishingFunction(array $config = array(), array $session = array(),
+		Tx_Commerce_Domain_Model_Basket $basket = NULL
+	);
 
 	/**
 	 * Method called in finishIt function
 	 *
-	 * @param array $globalRequest _REQUEST
+	 * @param array $globalRequest Global request
 	 * @param array $session Session array
 	 *
 	 * @return bool TRUE if data is ok

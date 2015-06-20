@@ -22,17 +22,23 @@
 abstract class Tx_Commerce_Payment_Criterion_ProviderCriterionAbstract
 		implements Tx_Commerce_Payment_Interface_ProviderCriterion {
 	/**
-	 * @var Tx_Commerce_Controller_BaseController Parent commerce pibase object
+	 * Parent commerce pibase object
+	 *
+	 * @var Tx_Commerce_Controller_BaseController
 	 */
 	protected $pibaseObject = NULL;
 
 	/**
-	 * @var Tx_Commerce_Payment_Interface_Payment Parent payment object
+	 * Payment object
+	 *
+	 * @var Tx_Commerce_Payment_Interface_Payment
 	 */
 	protected $paymentObject = NULL;
 
 	/**
-	 * @var Tx_Commerce_Payment_Interface_Provider Parent provider object
+	 * Provider object
+	 *
+	 * @var Tx_Commerce_Payment_Interface_Provider
 	 */
 	protected $providerObject = NULL;
 
@@ -48,6 +54,7 @@ abstract class Tx_Commerce_Payment_Criterion_ProviderCriterionAbstract
 	 *
 	 * @param Tx_Commerce_Payment_Interface_Provider $providerObject Parent payment
 	 * @param array $options Configuration array
+	 *
 	 * @return self
 	 */
 	public function __construct(Tx_Commerce_Payment_Interface_Provider $providerObject, array $options = array()) {
