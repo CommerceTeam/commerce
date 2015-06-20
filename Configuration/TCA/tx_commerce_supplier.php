@@ -18,126 +18,126 @@ return array(
 	'feInterface' => array(
 		'fe_admin_fieldList' => 'hidden, title, street, number, zip, city, country, phone, fax, email, internet, contactperson, logo',
 	),
-	'interface' => Array(
+	'interface' => array(
 		'showRecordFieldList' => 'hidden, title, street, number, zip, city, country, phone, fax, email, internet, contactperson, logo'
 	),
-	'columns' => Array(
-		'title' => Array(
+	'columns' => array(
+		'title' => array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_supplier.title',
-			'config' => Array(
+			'config' => array(
 				'type' => 'input',
 				'size' => '40',
 				'max' => '80',
 				'eval' => 'required,trim',
 			)
 		),
-		'street' => Array(
+		'street' => array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_supplier.street',
-			'config' => Array(
+			'config' => array(
 				'type' => 'input',
 				'size' => '40',
 				'max' => '80',
 				'eval' => 'trim',
 			)
 		),
-		'number' => Array(
+		'number' => array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_supplier.number',
-			'config' => Array(
+			'config' => array(
 				'type' => 'input',
 				'size' => '40',
 				'max' => '80',
 				'eval' => 'trim',
 			)
 		),
-		'zip' => Array(
+		'zip' => array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_supplier.zip',
-			'config' => Array(
+			'config' => array(
 				'type' => 'input',
 				'size' => '40',
 				'max' => '80',
 				'eval' => 'trim',
 			)
 		),
-		'city' => Array(
+		'city' => array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_supplier.city',
-			'config' => Array(
+			'config' => array(
 				'type' => 'input',
 				'size' => '40',
 				'max' => '80',
 				'eval' => 'trim',
 			)
 		),
-		'country' => Array(
+		'country' => array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_supplier.country',
 			'l10n_mode' => 'exclude',
-			'config' => Array(
+			'config' => array(
 				'type' => 'select',
 				'foreign_table' => 'static_countries',
 				'foreign_table_where' => 'ORDER BY static_countries.cn_short_en',
 
 			)
 		),
-		'phone' => Array(
+		'phone' => array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_supplier.phone',
-			'config' => Array(
+			'config' => array(
 				'type' => 'input',
 				'size' => '40',
 				'max' => '80',
 				'eval' => 'trim',
 			)
 		),
-		'fax' => Array(
+		'fax' => array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_supplier.fax',
-			'config' => Array(
+			'config' => array(
 				'type' => 'input',
 				'size' => '40',
 				'max' => '80',
 				'eval' => 'trim',
 			)
 		),
-		'email' => Array(
+		'email' => array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_supplier.email',
-			'config' => Array(
+			'config' => array(
 				'type' => 'input',
 				'size' => '40',
 				'max' => '80',
 				'eval' => 'trim',
 			)
 		),
-		'internet' => Array(
+		'internet' => array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_supplier.internet',
-			'config' => Array(
+			'config' => array(
 				'type' => 'input',
 				'size' => '40',
 				'max' => '80',
 				'eval' => 'trim',
 			)
 		),
-		'contactperson' => Array(
+		'contactperson' => array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_supplier.contactperson',
-			'config' => Array(
+			'config' => array(
 				'type' => 'input',
 				'size' => '40',
 				'max' => '80',
 				'eval' => 'trim',
 			)
 		),
-		'logo' => Array(
+		'logo' => array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_supplier.logo',
 			'l10n_mode' => 'mergeIfNotBlank',
-			'config' => Array(
+			'config' => array(
 				'type' => 'group',
 				'internal_type' => 'file',
 				'allowed' => $GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext'],
@@ -149,13 +149,13 @@ return array(
 			)
 		),
 	),
-	'types' => Array(
-		'0' => Array(
+	'types' => array(
+		'0' => array(
 			'showitem' => '
 			hidden, title, street, number, zip, city, country, phone, fax, email, internet, contactperson,logo;;;;2-2-2'
 			),
 	),
-	'palettes' => Array(
-		'1' => Array('showitem' => '')
+	'palettes' => array(
+		'1' => array('showitem' => '')
 	)
 );

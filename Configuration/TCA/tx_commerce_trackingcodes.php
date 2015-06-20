@@ -16,69 +16,69 @@ return array(
 	'feInterface' => array(
 		'fe_admin_fieldList' => 'sys_language_uid, l18n_parent, l18n_diffsource, title, description',
 	),
-	'interface' => Array(
+	'interface' => array(
 		'showRecordFieldList' => 'sys_language_uid,l18n_parent,l18n_diffsource,title,description'
 	),
-	'columns' => Array(
-		'sys_language_uid' => Array(
+	'columns' => array(
+		'sys_language_uid' => array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:lang/locallang_general.php:LGL.language',
-			'config' => Array(
+			'config' => array(
 				'type' => 'select',
 				'foreign_table' => 'sys_language',
 				'foreign_table_where' => 'ORDER BY sys_language.title',
-				'items' => Array(
-					Array('LLL:EXT:lang/locallang_general.php:LGL.allLanguages', -1),
-					Array('LLL:EXT:lang/locallang_general.php:LGL.default_value', 0)
+				'items' => array(
+					array('LLL:EXT:lang/locallang_general.php:LGL.allLanguages', -1),
+					array('LLL:EXT:lang/locallang_general.php:LGL.default_value', 0)
 				)
 			)
 		),
-		'l18n_parent' => Array(
+		'l18n_parent' => array(
 			'displayCond' => 'FIELD:sys_language_uid:>:0',
 			'exclude' => 1,
 			'label' => 'LLL:EXT:lang/locallang_general.php:LGL.l18n_parent',
-			'config' => Array(
+			'config' => array(
 				'type' => 'select',
-				'items' => Array(
-					Array('', 0),
+				'items' => array(
+					array('', 0),
 				),
 				'foreign_table' => 'tx_commerce_trackingcodes',
 				'foreign_table_where' => 'AND tx_commerce_trackingcodes.pid=###CURRENT_PID###
 					AND tx_commerce_trackingcodes.sys_language_uid IN (-1,0)',
 			)
 		),
-		'l18n_diffsource' => Array(
-			'config' => Array(
+		'l18n_diffsource' => array(
+			'config' => array(
 				'type' => 'passthrough'
 			)
 		),
-		'title' => Array(
+		'title' => array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_trackingcodes.title',
-			'config' => Array(
+			'config' => array(
 				'type' => 'input',
 				'size' => '40',
 				'max' => '80',
 				'eval' => 'required,trim',
 			)
 		),
-		'description' => Array(
+		'description' => array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_trackingcodes.description',
-			'config' => Array(
+			'config' => array(
 				'type' => 'text',
 				'cols' => '30',
 				'rows' => '10',
 			)
 		),
 	),
-	'types' => Array(
-		'0' => Array('showitem' => '
+	'types' => array(
+		'0' => array('showitem' => '
 			sys_language_uid;;;;1-1-1, l18n_parent, l18n_diffsource, title;;;;2-2-2,
 			description;;;richtext:rte_transform[flag=rte_enabled|mode=ts_css]
 		')
 	),
-	'palettes' => Array(
-		'1' => Array('showitem' => '')
+	'palettes' => array(
+		'1' => array('showitem' => '')
 	)
 );

@@ -43,7 +43,7 @@ return array(
 					array('', 0),
 				),
 				'foreign_table' => 'tx_commerce_address_types',
-				'foreign_table_where' => 'AND tx_commerce_address_types.pid = ###CURRENT_PID###
+				'foreign_table_where' => ' AND tx_commerce_address_types.pid = ###CURRENT_PID###
 					AND tx_commerce_address_types.sys_language_uid IN (-1,0)',
 			)
 		),

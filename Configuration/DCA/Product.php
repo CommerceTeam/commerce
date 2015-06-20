@@ -21,11 +21,15 @@
  */
 class Tx_Commerce_Configuration_Dca_Products {
 	/**
+	 * Row checks
+	 *
 	 * @var array
 	 */
 	public $rowChecks = array();
 
 	/**
+	 * DCA
+	 *
 	 * @var array
 	 */
 	public $DCA = array(
@@ -66,7 +70,7 @@ class Tx_Commerce_Configuration_Dca_Products {
 								'type' => 'select',
 								'foreign_table' => 'tx_commerce_attributes',
 								'foreign_label' => 'title',
-								'foreign_table_where' => '  AND sys_language_uid in (0,-1) AND has_valuelist=1 AND multiple=0 ORDER BY title',
+								'foreign_table_where' => ' AND sys_language_uid in (0,-1) AND has_valuelist=1 AND multiple=0 ORDER BY title',
 								'size' => 5,
 								'minitems' => 0,
 								'maxitems' => 50,
@@ -304,16 +308,22 @@ class Tx_Commerce_Configuration_Dca_Products {
 	);
 
 	/**
+	 * Clean up field
+	 *
 	 * @var string
 	 */
 	public $cleanUpField = 'attributes';
 
 	/**
+	 * Hooks
+	 *
 	 * @var array
 	 */
 	public $hooks = array('tx_commerce_configuration_dca_products');
 
 	/**
+	 * Constructor
+	 *
 	 * @return self
 	 */
 	public function __construct() {

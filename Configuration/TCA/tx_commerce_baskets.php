@@ -12,24 +12,24 @@ return array(
 	'feInterface' => array(
 		'fe_admin_fieldList' => 'sid, finished_time, article_id,price_id, price_gross, price_net, quantity',
 	),
-	'interface' => Array(
+	'interface' => array(
 		'showRecordFieldList' => 'sid,article_id,price_gross,price_net,quantity'
 	),
-	'columns' => Array(
-		'sid' => Array(
+	'columns' => array(
+		'sid' => array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_baskets.sid',
-			'config' => Array(
+			'config' => array(
 				'type' => 'input',
 				'size' => '40',
 				'max' => '80',
 				'eval' => 'required,trim',
 			)
 		),
-		'article_id' => Array(
+		'article_id' => array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_baskets.article_id',
-			'config' => Array(
+			'config' => array(
 				'type' => 'group',
 				'internal_type' => 'db',
 				'allowed' => 'tx_commerce_articles',
@@ -38,10 +38,10 @@ return array(
 				'maxitems' => 1,
 			)
 		),
-		'price_id' => Array(
+		'price_id' => array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_baskets.price_id',
-			'config' => Array(
+			'config' => array(
 				'type' => 'group',
 				'internal_type' => 'db',
 				'allowed' => 'tx_commerce_article_prices',
@@ -50,49 +50,49 @@ return array(
 				'maxitems' => 1,
 			)
 		),
-		'price_gross' => Array(
+		'price_gross' => array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_baskets.price_gross',
-			'config' => Array(
+			'config' => array(
 				'type' => 'input',
 				'size' => '30',
 				'eval' => 'double2,nospace',
 			)
 		),
-		'price_net' => Array(
+		'price_net' => array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_baskets.price_net',
-			'config' => Array(
+			'config' => array(
 				'type' => 'input',
 				'size' => '30',
 				'eval' => 'double2,nospace',
 			)
 		),
-		'quantity' => Array(
+		'quantity' => array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_baskets.quantity',
-			'config' => Array(
+			'config' => array(
 				'type' => 'input',
 				'size' => '4',
 				'max' => '4',
 				'eval' => 'int',
 				'checkbox' => '0',
-				'range' => Array(
+				'range' => array(
 					'upper' => '5000',
 					'lower' => '0'
 				),
 				'default' => 0
 			)
 		),
-		'finished_time' => Array(
+		'finished_time' => array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_basket.finished_time',
-			'config' => Array(
+			'config' => array(
 				'type' => 'input',
 				'eval' => 'date',
 			)
 		),
-		'readonly' => Array(
+		'readonly' => array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_basket.readonly',
 			'config' => array(
@@ -100,10 +100,10 @@ return array(
 			)
 		),
 	),
-	'types' => Array(
-		'0' => Array('showitem' => 'sid;;;;1-1-1, article_id,price_id, price_gross, price_net, quantity')
+	'types' => array(
+		'0' => array('showitem' => 'sid;;;;1-1-1, article_id,price_id, price_gross, price_net, quantity')
 	),
-	'palettes' => Array(
-		'1' => Array('showitem' => '')
+	'palettes' => array(
+		'1' => array('showitem' => '')
 	)
 );

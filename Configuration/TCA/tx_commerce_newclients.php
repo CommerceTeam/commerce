@@ -14,14 +14,14 @@ return array(
 	'feInterface' => array(
 		'fe_admin_fieldList' => 'year, month, day, dow, hour, registration',
 	),
-	'interface' => Array(
+	'interface' => array(
 		'showRecordFieldList' => 'year,month,day,dow,hour,registration'
 	),
-	'columns' => Array(
-		'year' => Array(
+	'columns' => array(
+		'year' => array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_newclients.year',
-			'config' => Array(
+			'config' => array(
 				'type' => 'input',
 				'size' => '11',
 				'max' => '11',
@@ -29,10 +29,10 @@ return array(
 				'default' => 0
 			)
 		),
-		'month' => Array(
+		'month' => array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_newclients.month',
-			'config' => Array(
+			'config' => array(
 				'type' => 'input',
 				'size' => '11',
 				'max' => '11',
@@ -40,10 +40,10 @@ return array(
 				'default' => 0
 			)
 		),
-		'day' => Array(
+		'day' => array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_newclients.day',
-			'config' => Array(
+			'config' => array(
 				'type' => 'input',
 				'size' => '11',
 				'max' => '11',
@@ -51,10 +51,10 @@ return array(
 				'default' => 0
 			)
 		),
-		'dow' => Array(
+		'dow' => array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_newclients.dow',
-			'config' => Array(
+			'config' => array(
 				'type' => 'input',
 				'size' => '11',
 				'max' => '11',
@@ -62,10 +62,10 @@ return array(
 				'default' => 0
 			)
 		),
-		'hour' => Array(
+		'hour' => array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_newclients.hour',
-			'config' => Array(
+			'config' => array(
 				'type' => 'input',
 				'size' => '11',
 				'max' => '11',
@@ -73,10 +73,10 @@ return array(
 				'default' => 0
 			)
 		),
-		'registration' => Array(
+		'registration' => array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_newclients.registration',
-			'config' => Array(
+			'config' => array(
 				'type' => 'input',
 				'size' => '11',
 				'max' => '11',
@@ -85,10 +85,10 @@ return array(
 			)
 		),
 	),
-	'types' => Array(
-		'0' => Array('showitem' => 'year;;;;1-1-1, month, day, dow, hour, registration')
+	'types' => array(
+		'0' => array('showitem' => 'year;;;;1-1-1, month, day, dow, hour, registration')
 	),
-	'palettes' => Array(
-		'1' => Array('showitem' => '')
+	'palettes' => array(
+		'1' => array('showitem' => '')
 	)
 );

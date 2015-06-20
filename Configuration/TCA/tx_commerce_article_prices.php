@@ -5,8 +5,7 @@ return array(
 		'label' => 'price_net',
 		'label_alt' => 'price_net,price_gross,purchase_price',
 		'label_alt_force' => 1,
-		'label_userFunc' =>
-			'EXT:commerce/Classes/Domain/Model/ArticlePrice.php:Tx_Commerce_Domain_Model_ArticlePrice->getTcaRecordTitle',
+		'label_userFunc' => 'Tx_Commerce_Domain_Model_ArticlePrice->getTcaRecordTitle',
 		'tstamp' => 'tstamp',
 		'crdate' => 'crdate',
 		'cruser_id' => 'cruser_id',

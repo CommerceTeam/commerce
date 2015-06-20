@@ -43,8 +43,8 @@ return array(
 					array('', 0),
 				),
 				'foreign_table' => 'tx_commerce_order_types',
-				'foreign_table_where' =>
-					'AND tx_commerce_order_types.pid=###CURRENT_PID### AND tx_commerce_order_types.sys_language_uid IN (-1,0)',
+				'foreign_table_where' => ' AND tx_commerce_order_types.pid = ###CURRENT_PID###
+					AND tx_commerce_order_types.sys_language_uid IN (-1,0)',
 			)
 		),
 		'l18n_diffsource' => array(

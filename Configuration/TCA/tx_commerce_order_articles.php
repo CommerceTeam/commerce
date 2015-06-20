@@ -13,30 +13,30 @@ return array(
 		'fe_admin_fieldList' => 'article_type_uid, article_uid, article_number,
 			title, subtitle, price_net, price_gross, tax, amount, order_id',
 	),
-	'interface' => Array(
+	'interface' => array(
 		'showRecordFieldList' => 'amount, title, article_type_uid, article_uid, article_number, subtitle, price_net, price_gross,
 			tax, order_uid',
 	),
-	'columns' => Array(
-		'tstamp' => Array(
+	'columns' => array(
+		'tstamp' => array(
 			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_order_articles.tstamp',
-			'config' => Array(
+			'config' => array(
 				'type' => 'input',
 				'readOnly' => TRUE,
 			)
 		),
-		'crdate' => Array(
+		'crdate' => array(
 			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_order_articles.crdate',
-			'config' => Array(
+			'config' => array(
 				'type' => 'input',
 				'readOnly' => TRUE,
 				'format' => 'date',
 				'eval' => 'date',
 			)
 		),
-		'article_uid' => Array(
+		'article_uid' => array(
 			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_order_articles.article_uid',
-			'config' => Array(
+			'config' => array(
 				'type' => 'group',
 				'internal_type' => 'db',
 				'allowed' => 'tx_commerce_articles',
@@ -45,97 +45,95 @@ return array(
 				'maxitems' => 1,
 			)
 		),
-		'article_type_uid' => Array(
+		'article_type_uid' => array(
 			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_order_articles.article_type_uid',
-			'config' => Array(
+			'config' => array(
 				'type' => 'input',
 				'readOnly' => TRUE,
 			)
 		),
-		'article_number' => Array(
+		'article_number' => array(
 			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_order_articles.article_number',
-			'config' => Array(
+			'config' => array(
 				'type' => 'input',
 				'size' => '40',
 				'max' => '80',
 				'eval' => 'required,trim',
 			)
 		),
-		'title' => Array(
+		'title' => array(
 			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_order_articles.title',
-			'config' => Array(
+			'config' => array(
 				'type' => 'input',
 				'size' => '40',
 				'max' => '255',
 				'eval' => 'required,trim',
 			)
 		),
-		'subtitle' => Array(
+		'subtitle' => array(
 			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_order_articles.subtitle',
-			'config' => Array(
+			'config' => array(
 				'type' => 'input',
 				'size' => '40',
 				'max' => '255',
 				'eval' => 'trim',
 			)
 		),
-		'price_net' => Array(
+		'price_net' => array(
 			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_order_articles.price_net',
-			'config' => Array(
+			'config' => array(
 				'type' => 'input',
 				'size' => '6',
 				'eval' => 'integer',
 			)
 		),
-		'price_gross' => Array(
+		'price_gross' => array(
 			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_order_articles.price_gross',
-			'config' => Array(
+			'config' => array(
 				'type' => 'input',
 				'size' => '6',
 				'eval' => 'integer',
 			)
 		),
-		'tax' => Array(
+		'tax' => array(
 			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_order_articles.tax',
-			'config' => Array(
+			'config' => array(
 				'type' => 'input',
 				'size' => '6',
 				'eval' => 'integer',
 			)
 		),
-		'amount' => Array(
+		'amount' => array(
 			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_order_articles.amount',
-			'config' => Array(
+			'config' => array(
 				'type' => 'input',
 				'size' => '2',
 				'eval' => 'required,num',
 			)
 		),
-		'order_uid' => Array(
+		'order_uid' => array(
 			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_order_articles.order_uid',
-			'config' => Array(
+			'config' => array(
 				'type' => 'select',
 				'foreign_table' => 'tx_commerce_orders',
 				'readOnly' => TRUE,
 			)
 		),
-		/**
-		 * @todo Declaration for iproc function for selecting right value
-		 */
-		'order_id' => Array(
+		// @todo Declaration for iproc function for selecting right value
+		'order_id' => array(
 			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_order_articles.order_id',
-			'config' => Array(
+			'config' => array(
 				'type' => 'user',
 				'userFunc' => 'Tx_Commerce_ViewHelpers_OrderEditFunc->articleOrderId',
 				'readOnly' => TRUE,
 			)
 		),
 	),
-	'types' => Array(
-		'0' => Array('showitem' => 'order_id;;;;1-1-1, article_type_uid, article_uid, article_number, title;;;;2-2-2, subtitle,
+	'types' => array(
+		'0' => array('showitem' => 'order_id;;;;1-1-1, article_type_uid, article_uid, article_number, title;;;;2-2-2, subtitle,
 			amount;;;;3-3-3, price_net, price_gross, tax')
 	),
-	'palettes' => Array(
-		'1' => Array('showitem' => '')
+	'palettes' => array(
+		'1' => array('showitem' => '')
 	)
 );

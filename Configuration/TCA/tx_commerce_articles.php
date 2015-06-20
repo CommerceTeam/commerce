@@ -56,7 +56,8 @@ $GLOBALS['TCA']['tx_commerce_articles'] = array(
 					array('', 0),
 				),
 				'foreign_table' => 'tx_commerce_articles',
-				'foreign_table_where' => 'AND tx_commerce_articles.pid=###CURRENT_PID### AND tx_commerce_articles.sys_language_uid IN (-1,0)',
+				'foreign_table_where' => ' AND tx_commerce_articles.pid = ###CURRENT_PID###
+					AND tx_commerce_articles.sys_language_uid IN (-1,0)',
 			)
 		),
 		'l18n_diffsource' => array(
