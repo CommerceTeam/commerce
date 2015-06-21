@@ -318,9 +318,13 @@ $GLOBALS['TCA']['tx_commerce_products'] = array(
 	<meta>
 		<langDisable>1</langDisable>
 	</meta>
-	<ROOT>
-		<type>array</type>
-	</ROOT>
+	<sheets>
+		<sDEF>
+			<ROOT>
+				<type>array</type>
+			</ROOT>
+		</sDEF>
+	</sheets>
 </T3DataStructure>'
 				),
 			),

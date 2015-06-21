@@ -407,13 +407,13 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 
 					$counter++;
 
-						// select format and insert headrow if we are in the 20th row
+					// select format and insert headrow if we are in the 20th row
 					if (($counter % 20) == 0) {
 						$resultRows .= $headRow;
 					}
 					$class = ($counter % 2 == 1) ? 'background-color:silver' : 'background:none';
 
-						// create the row
+					// create the row
 					$resultRows .= '<tr><td style="' . $class . '">';
 					$resultRows .= '<input type="checkbox" name="createList[' . $counter . ']" id="createRow_' . $counter . '" />';
 					$resultRows .= '<input type="hidden" name="createData[' . $counter . ']" value="' .
@@ -597,12 +597,16 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 
 		// get the create data
 		$data = GeneralUtility::_GP('createData');
-		$data = $data[$key];
-		$hash = md5($data);
-		$data = unserialize($data);
-
+		$hash = '';
+		if (is_array($data)) {
+			$data = $data[$key];
+			$hash = md5($data);
+			$data = unserialize($data);
+		}
+		$database->debugOutput = 1;
+		$database->store_lastBuiltQuery = TRUE;
 		// get the highest sorting
-		$res = $database->exec_SELECTquery(
+		$sorting = $database->exec_SELECTgetSingleRow(
 			'uid, sorting',
 			'tx_commerce_articles',
 			'uid_product = ' . $this->uid,
@@ -610,15 +614,15 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 			'sorting DESC',
 			1
 		);
-		$sorting = $database->sql_fetch_assoc($res);
+		$sorting = (is_array($sorting) && isset($sorting['sorting'])) ? $sorting['sorting'] + 20 : 0;
 
 		// create article data array
 		$articleData = array(
 			'pid' => $this->pid,
 			'crdate' => time(),
-			'title' => strip_tags($this->createArticleTitleFromAttributes($parameter, $data)),
+			'title' => strip_tags($this->createArticleTitleFromAttributes($parameter, (array)$data)),
 			'uid_product' => (int) $this->uid,
-			'sorting' => $sorting['sorting'] + 20,
+			'sorting' => $sorting,
 			'article_attributes' => count($this->attributes['rest']) + count($data),
 			'attribute_hash' => $hash,
 			'article_type_uid' => 1,
