@@ -200,7 +200,7 @@ class Tx_Commerce_Controller_CategoryModuleController extends \TYPO3\CMS\Recordl
 		 * @var \CommerceTeam\Commerce\Utility\BackendUserUtility $utility
 		 */
 		$utility = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Utility\\BackendUserUtility');
-		$dbList->calcPerms = $utility->calcPerms(BackendUtility::getRecord('tx_commerce_categories', $this->categoryUid));
+		$dbList->calcPerms = $utility->calcPerms((array) BackendUtility::getRecord('tx_commerce_categories', $this->categoryUid));
 		$dbList->thumbs = $this->getBackendUser()->uc['thumbnailsByDefault'];
 		$dbList->returnUrl = $this->returnUrl;
 		$dbList->allFields = $this->MOD_SETTINGS['bigControlPanel'] || $this->table ? 1 : 0;

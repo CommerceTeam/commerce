@@ -70,7 +70,7 @@ class Tx_Commerce_Configuration_Dca_Products {
 								'type' => 'select',
 								'foreign_table' => 'tx_commerce_attributes',
 								'foreign_label' => 'title',
-								'foreign_table_where' => ' AND sys_language_uid in (0,-1) AND has_valuelist=1 AND multiple=0 ORDER BY title',
+								'foreign_table_where' => ' AND sys_language_uid in (0,-1) AND has_valuelist = 1 AND multiple = 0 ORDER BY title',
 								'size' => 5,
 								'minitems' => 0,
 								'maxitems' => 50,
@@ -130,7 +130,7 @@ class Tx_Commerce_Configuration_Dca_Products {
 				),
 			),
 		),
-		/**
+		/*
 		 * Here we define the fields on "edit attributes" tab. They will be
 		 * defined by a userfunction. This userfunction IS NOT the same as the
 		 * userdefined field thing of TYPO3. It's something dynaflex related!
@@ -168,7 +168,7 @@ class Tx_Commerce_Configuration_Dca_Products {
 				),
 			),
 		),
-		/**
+		/*
 		 * At last we have to decide which tabs have to be displayed. We do this with a
 		 * dynaflex condition and if it triggers, we append something at the showitem
 		 * value in the products TCA.
@@ -177,7 +177,7 @@ class Tx_Commerce_Configuration_Dca_Products {
 			'path' => 'tx_commerce_products/types/0/showitem',
 			'parseXML' => FALSE,
 			'modifications' => array(
-				// display the "select attributes only in def language
+				// 0 - display the "select attributes only in def language
 				array(
 					'method' => 'add',
 					'type' => 'append',
@@ -190,7 +190,7 @@ class Tx_Commerce_Configuration_Dca_Products {
 						'text' => ',--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.select_attributes, attributes',
 					),
 				),
-				// add "edit attributes" tab if minimum one attribute with correlationtype 4
+				// 1 - add "edit attributes" tab if minimum one attribute with correlationtype 4
 				// exists for this product this also recognizes attributes from categories
 				// of this product.
 				array(
@@ -215,7 +215,7 @@ class Tx_Commerce_Configuration_Dca_Products {
 						'text' => ',--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.edit_attributes, attributesedit',
 					),
 				),
-				// add "localise attributes" tab if minimum one attribute with correlationtype
+				// 2 - "localise attributes" tab if minimum one attribute with correlationtype
 				// 4 exists for this product and we are in a localised view
 				array(
 					'method' => 'add',
@@ -236,10 +236,10 @@ class Tx_Commerce_Configuration_Dca_Products {
 						),
 					),
 					'config' => array(
-						'text' => ',--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.localedit_attributes,attributesedit',
+						'text' => ',--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.localedit_attributes, attributesedit',
 					),
 				),
-				// add "create articles" tab if minimum one attribute with correlationtype 1
+				// 3 - add "create articles" tab if minimum one attribute with correlationtype 1
 				// exists for this product this also recognizes attributes from categories
 				// of this product. The fields on the tab are allready defined in the TCA!
 				array(
@@ -251,10 +251,10 @@ class Tx_Commerce_Configuration_Dca_Products {
 						'compareTo' => 'DEF',
 					),
 					'config' => array(
-						'text' => ',--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.create_articles,articles',
+						'text' => ',--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.create_articles, articles',
 					),
 				),
-				// add "Localisze Articel" tab if we are in a localised language
+				// 4 - add "Localisze Articel" tab if we are in a localised language
 				array(
 					'method' => 'add',
 					'type' => 'append',
@@ -267,10 +267,10 @@ class Tx_Commerce_Configuration_Dca_Products {
 						'compareTo' => 0,
 					),
 					'config' => array(
-						'text' => ',--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.lokalise_articles,articleslok',
+						'text' => ',--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.lokalise_articles, articleslok',
 					),
 				),
-				// add "Localize Articel" tab if we are in a localised language
+				// 5 - add "Localize Articel" tab if we are in a localised language
 				array(
 					'method' => 'add',
 					'type' => 'append',
@@ -283,9 +283,10 @@ class Tx_Commerce_Configuration_Dca_Products {
 						'compareTo' => 0,
 					),
 					'config' => array(
-						'text' => ',--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.lokalise_articles,articles',
+						'text' => ',--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.lokalise_articles, articles',
 					),
 				),
+				// 6
 				array(
 					'method' => 'add',
 					'type' => 'append',
@@ -298,6 +299,7 @@ class Tx_Commerce_Configuration_Dca_Products {
 						'text' => ',--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.extras'
 					),
 				),
+				// 7
 				array(
 					'method' => 'move',
 					'type' => 'extraFields',

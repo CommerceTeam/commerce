@@ -40,6 +40,13 @@ class Tx_Commerce_Hook_DataMapHooks {
 	protected $catList = array();
 
 	/**
+	 * Unsubstituted id
+	 *
+	 * @var string
+	 */
+	protected $unsubstitutedId;
+
+	/**
 	 * This is just a constructor to instanciate the backend library
 	 *
 	 * @return self
@@ -947,6 +954,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 	public function processDatamap_afterDatabaseOperations($status, $table, $id, array $fieldArray, DataHandler $pObj) {
 		// get the UID of the created record if it was just created
 		if ($status == 'new' && count($fieldArray)) {
+			$this->unsubstitutedId = $id;
 			$id = $pObj->substNEWwithIDs[$id];
 		}
 
@@ -1080,7 +1088,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 				$articleCreator->init($id, $this->belib->getProductFolderUid());
 
 				// create new articles
-				$articleCreator->createArticles($pObj->datamap[$table][$id]);
+				$articleCreator->createArticles($pObj->datamap[$table][$this->unsubstitutedId ? $this->unsubstitutedId : $id]);
 
 				// update articles if new attributes were added
 				$articleCreator->updateArticles();

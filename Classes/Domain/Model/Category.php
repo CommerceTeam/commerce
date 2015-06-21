@@ -791,7 +791,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 		}
 		$this->loadPermissions();
 
-		return Tx_Commerce_Utility_BackendUtility::isPSet($perm, $this->perms_record);
+		return Tx_Commerce_Utility_BackendUtility::isPermissionSet($perm, $this->perms_record);
 	}
 
 	/**

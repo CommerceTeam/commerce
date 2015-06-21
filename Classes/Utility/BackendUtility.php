@@ -788,6 +788,7 @@ class Tx_Commerce_Utility_BackendUtility {
 	 * @return array with extracted UIDs
 	 */
 	public static function getUidListFromList(array $list) {
+		$keyData = array();
 		$result = array();
 		if (is_array($list)) {
 			foreach ($list as $item) {
@@ -2466,7 +2467,7 @@ class Tx_Commerce_Utility_BackendUtility {
 	 *
 	 * @return bool $perm User allowed this action or not for the current category
 	 */
-	public static function isPSet($perm, array &$record) {
+	public static function isPermissionSet($perm, array &$record) {
 		if (!is_string($perm) || is_null($record)) {
 			return FALSE;
 		}
@@ -3414,7 +3415,21 @@ class Tx_Commerce_Utility_BackendUtility {
 		$database->exec_UPDATEquery('tx_commerce_categories', 'uid=' . $categoryUid, $arrayToSave);
 	}
 
+	/**
+	 * Returns whether the Permission is set and allowed for the corresponding user
+	 *
+	 * @param string $perm Word rep. for the wanted right
+	 * 	('show', 'edit', 'editcontent', 'delete', 'new')
+	 * @param array $record Record data
+	 *
+	 * @return bool $perm User allowed this action or not for the current category
+	 * @deprecated since commerce 3.0.0, this function will be removed in commerce 4.0.0, please use updateXML instead
+	 */
+	public static function isPSet($perm, array &$record) {
+		GeneralUtility::logDeprecatedFunction();
 
+		return static::isPermissionSet($perm, $record);
+	}
 
 
 	/**

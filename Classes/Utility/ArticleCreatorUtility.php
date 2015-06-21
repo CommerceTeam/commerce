@@ -296,7 +296,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 		$colCount = 0;
 		$headRow = $this->getHeadRow($colCount, array('&nbsp;'));
 
-		$valueMatrix = $this->getValues();
+		$valueMatrix = (array) $this->getValues();
 		$counter = 0;
 		$resultRows = '';
 		$resultRows .= $fObj->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.create_warning');
@@ -366,7 +366,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	 * Returns the html table rows for the article matrix
 	 *
 	 * @param array $data The data we should build the matrix from
-	 * @param array $resultRows The resulting rows
+	 * @param string $resultRows The rendered resulting rows
 	 * @param int $counter The article counter
 	 * @param string $headRow The header row for inserting after a number of articles
 	 * @param array $extraRowData Some additional data like checkbox column
@@ -375,7 +375,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	 *
 	 * @return void
 	 */
-	protected function getRows(array $data, array &$resultRows, &$counter, $headRow, array $extraRowData = array(), $index = 1,
+	protected function getRows(array $data, &$resultRows, &$counter, $headRow, array $extraRowData = array(), $index = 1,
 		array $row = array()
 	) {
 		if (is_array($data)) {
