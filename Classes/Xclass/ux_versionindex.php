@@ -41,7 +41,7 @@ class ux_tx_version_cm1 extends \TYPO3\CMS\Version\Controller\VersionModuleContr
 		} else {
 			$language = $this->getLanguageService();
 
-				// Edit link:
+			// Edit link:
 			$adminLink = '<a href="#" onclick="' .
 				htmlspecialchars(\TYPO3\CMS\Backend\Utility\BackendUtility::editOnClick(
 					'&edit[' . $table . '][' . $row['uid'] . ']=edit', $this->doc->backPath
@@ -51,7 +51,7 @@ class ux_tx_version_cm1 extends \TYPO3\CMS\Version\Controller\VersionModuleContr
 					array('title' => $language->sL('LLL:EXT:lang/locallang_core.xml:cm.edit', TRUE))
 				) . '</a>';
 
-				// Delete link:
+			// Delete link:
 			$adminLink .= '<a href="' .
 				htmlspecialchars($this->doc->issueCommand('&cmd[' . $table . '][' . $row['uid'] . '][delete]=1')) . '">' .
 				\TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon(
@@ -60,7 +60,7 @@ class ux_tx_version_cm1 extends \TYPO3\CMS\Version\Controller\VersionModuleContr
 				) . '</a>';
 
 			if ($row['pid'] == -1) {
-					// get page TSconfig
+				// get page TSconfig
 				$pagesTyposcriptConfig = \TYPO3\CMS\Backend\Utility\BackendUtility::getPagesTSconfig($GLOBALS['_POST']['popViewId']);
 				if ($pagesTyposcriptConfig['tx_commerce.']['singlePid']) {
 					$previewPageId = $pagesTyposcriptConfig['tx_commerce.']['singlePid'];

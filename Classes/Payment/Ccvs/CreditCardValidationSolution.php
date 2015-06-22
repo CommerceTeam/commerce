@@ -111,9 +111,9 @@ class CreditCardValidationSolution {
 	public $CCVSError = '';
 
 	/**
-	 * \TYPO3\CMS\Lang\LanguageService
+	 * Language service
 	 *
-	 * @var language
+	 * @var \TYPO3\CMS\Lang\LanguageService
 	 */
 	protected $language;
 

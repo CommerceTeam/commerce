@@ -92,7 +92,6 @@ class Tx_Commerce_ViewHelpers_Navigation_OrdersViewHelper extends \TYPO3\CMS\Bac
 		$this->pagetree = GeneralUtility::makeInstance('Tx_Commerce_Tree_OrderTree');
 		$this->pagetree->ext_IconMode = $backendUser->getTSConfigVal('options.pageTree.disableIconLinkToContextmenu');
 		$this->pagetree->ext_showPageId = $backendUser->getTSConfigVal('options.pageTree.showPageIdWithTitle');
-		$this->pagetree->thisScript = 'Classes/Module/Orders/navigation.php';
 		$this->pagetree->addField('alias');
 		$this->pagetree->addField('shortcut');
 		$this->pagetree->addField('shortcut_mode');

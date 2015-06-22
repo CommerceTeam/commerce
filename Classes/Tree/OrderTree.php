@@ -36,6 +36,11 @@ class Tx_Commerce_Tree_OrderTree extends \TYPO3\CMS\Backend\Tree\View\BrowseTree
 	public $ext_IconMode;
 
 	/**
+	 * @var string
+	 */
+	public $thisScript = 'navigation.php';
+
+	/**
 	 * Calls init functions
 	 *
 	 * @return self
@@ -65,7 +70,7 @@ class Tx_Commerce_Tree_OrderTree extends \TYPO3\CMS\Backend\Tree\View\BrowseTree
 	public function wrapIcon($icon, array &$row) {
 		$language = $this->getLanguageService();
 
-			// If the record is locked, present a warning sign.
+		// If the record is locked, present a warning sign.
 		if (($lockInfo = \TYPO3\CMS\Backend\Utility\BackendUtility::isRecordLocked('pages', $row['uid']))) {
 			$aOnClick = 'alert(' . $language->JScharCode($lockInfo['msg']) . ');return false;';
 			$lockIcon = '<a href="#" onclick="' . htmlspecialchars($aOnClick) . '">' .
@@ -78,15 +83,15 @@ class Tx_Commerce_Tree_OrderTree extends \TYPO3\CMS\Backend\Tree\View\BrowseTree
 			$lockIcon = '';
 		}
 
-			// Add title attribute to input icon tag
+		// Add title attribute to input icon tag
 		$thePageIcon = $this->addTagAttributes($icon, $this->titleAttrib . '="' . $this->getTitleAttrib($row) . '"');
 
-			// Wrap icon in click-menu link.
+		// Wrap icon in click-menu link.
 		if (!$this->ext_IconMode) {
 			/**
 			 * Template
 			 *
-			 * @var template $tbeTemplate
+			 * @var \TYPO3\CMS\Backend\Template\DocumentTemplate $tbeTemplate
 			 */
 			$tbeTemplate = $GLOBALS['TBE_TEMPLATE'];
 

@@ -85,7 +85,7 @@ class Tx_Commerce_Dao_AddressObserver {
 			$fieldMapper = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Dao_FeuserAddressFieldmapper');
 			$fieldMapper->mapAddressToFeuser($addressDao, $feuserDao);
 
-				// set main address id in feuser
+			// set main address id in feuser
 			$feuserDao->set('tx_commerce_tt_address_id', $id);
 			$feuserDao->save();
 		}
