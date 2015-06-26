@@ -1504,13 +1504,14 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends \TYPO3\CMS\Recordlist\R
 
 		$out = array(0 => '', 1 => '');
 
+		$this->translations = array();
 		$translations = $this->translateTools->translationInfo($table, $row['uid'], 0, $row, $this->selFieldList);
-		$this->translations = $translations['translations'];
 
 			// Language title and icon:
 		$out[0] = $this->languageFlag($row[$GLOBALS['TCA'][$table]['ctrl']['languageField']]);
 
 		if (is_array($translations)) {
+			$this->translations = $translations['translations'];
 			// Traverse page translations and add icon
 			// for each language that does NOT yet exist:
 			$lNew = '';
