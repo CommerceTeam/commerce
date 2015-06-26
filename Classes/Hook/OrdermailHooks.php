@@ -1,56 +1,51 @@
 <?php
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2006-2011 Joerg Sprung <jsp@marketing-factory.de>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *  A copy is found in the textfile GPL.txt and important notices to the license
- *  from the author is found in LICENSE.txt distributed with these scripts.
- *
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * This class contains some hooks for processing formdata.
  * Hook for saving order data and order_articles.
+ *
+ * Class Tx_Commerce_Hook_OrdermailHooks
+ *
+ * @author 2006-2011 Joerg Sprung <jsp@marketing-factory.de>
  */
 class Tx_Commerce_Hook_OrdermailHooks {
 	/**
-	 * @var \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController
+	 * Content object
+	 *
+	 * @var \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer
 	 */
 	protected $cObj;
 
 	/**
-	 * The Conversion object
+	 * The Conversionobject
 	 *
 	 * @var \TYPO3\CMS\Core\Charset\CharsetConverter
 	 */
 	protected $csConvObj;
 
 	/**
-	 * the content of the TEmplate in Progress
+	 * The content of the template in progress
 	 *
 	 * @var string
 	 */
 	protected $templateCode = '';
 
 	/**
+	 * Template html code
+	 *
 	 * @var string
 	 */
 	protected $templateCodeHtml;
@@ -63,7 +58,7 @@ class Tx_Commerce_Hook_OrdermailHooks {
 	protected $templatePath;
 
 	/**
-	 * Caontaing the actual Usermailadress which is in Progress
+	 * Containg the actual Usermailadress which is in Progress
 	 *
 	 * @var string
 	 */
@@ -90,7 +85,7 @@ class Tx_Commerce_Hook_OrdermailHooks {
 	 */
 	public function __construct() {
 		$this->extConf = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce']['extConf'];
-		$this->cObj = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Controller\\TypoScriptFrontendController');
+		$this->cObj = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
 		$this->csConvObj = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Charset\\CharsetConverter');
 		$this->templatePath = PATH_site . 'uploads/tx_commerce/';
 	}
@@ -98,17 +93,18 @@ class Tx_Commerce_Hook_OrdermailHooks {
 	/**
 	 * This method converts an sends mails.
 	 *
-	 * @param array $mailconf
-	 * @param array &$orderdata
-	 * @param string &$template
-	 * @return boolean of \TYPO3\CMS\Core\Utility\GeneralUtility::plainMailEncoded
+	 * @param array $mailconf Mail configuration
+	 * @param array $orderdata Order data
+	 * @param string $template Template
+	 *
+	 * @return bool of \TYPO3\CMS\Core\Mail\MailMessage
 	 */
-	protected function ordermoveSendMail($mailconf, &$orderdata, &$template) {
-			// First line is subject
+	protected function ordermoveSendMail(array $mailconf, array &$orderdata, &$template) {
+		// First line is subject
 		$parts = explode(chr(10), $mailconf['plain']['content'], 2);
-			// add mail subject
+		// add mail subject
 		$mailconf['alternateSubject'] = trim($parts[0]);
-			// replace plaintext content
+		// replace plaintext content
 		$mailconf['plain']['content'] = trim($parts[1]);
 
 		/**
@@ -135,7 +131,9 @@ class Tx_Commerce_Hook_OrdermailHooks {
 			}
 		}
 		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Hook/OrdermailHooks.php']['ordermoveSendMail'])) {
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Hook/OrdermailHooks.php']['ordermoveSendMail'] as $classRef) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Hook/OrdermailHooks.php']['ordermoveSendMail'] as
+				$classRef
+			) {
 				$hookObj = GeneralUtility::getUserObj($classRef);
 				if (method_exists($hookObj, 'postOrdermoveSendMail')) {
 					$hookObj->postOrdermoveSendMail($mailconf, $orderdata, $template);
@@ -143,25 +141,28 @@ class Tx_Commerce_Hook_OrdermailHooks {
 			}
 		}
 
-		return Tx_Commerce_Utility_GeneralUtility::sendMail($mailconf, $this);
+		return Tx_Commerce_Utility_GeneralUtility::sendMail($mailconf);
 	}
 
 	/**
 	 * Getting a template with all Templatenames in the Mailtemplaterecords
 	 * according to the given mailkind and pid
 	 *
-	 * @param int $mailkind 0 move in and 1 move out the Order in the Orderfolder
+	 * @param int $mailkind Move the Order in the Orderfolder
 	 * @param int $pid The PID of the order to move
-	 * @param int $orderSysLanguageUid
+	 * @param int $orderSysLanguageUid Order language uid
+	 *
 	 * @return array of templatenames found in Filelist
 	 */
 	protected function generateTemplateArray($mailkind, $pid, $orderSysLanguageUid) {
-		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
-		$database = $GLOBALS['TYPO3_DB'];
-		/** @var \TYPO3\CMS\Frontend\Page\PageRepository $t3libPage */
-		$t3libPage = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\PageRepository');
+		/**
+		 * Page repository
+		 *
+		 * @var \TYPO3\CMS\Frontend\Page\PageRepository $pageRepository
+		 */
+		$pageRepository = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\PageRepository');
 
-		$rows = $database->exec_SELECTgetRows(
+		$rows = $this->getDatabaseConnection()->exec_SELECTgetRows(
 			'*',
 			$this->tablename,
 			'sys_language_uid = 0 AND pid = ' . $pid . ' AND mailkind = ' . $mailkind .
@@ -170,7 +171,7 @@ class Tx_Commerce_Hook_OrdermailHooks {
 
 		$templates = array();
 		foreach ($rows as $row) {
-			$templates[] = $t3libPage->getRecordOverlay($this->tablename, $row, $orderSysLanguageUid);
+			$templates[] = $pageRepository->getRecordOverlay($this->tablename, $row, $orderSysLanguageUid);
 		}
 
 		return $templates;
@@ -180,13 +181,14 @@ class Tx_Commerce_Hook_OrdermailHooks {
 	 * This method will be used by the initial methods before and after the Order
 	 * will be moved to another Orderstate
 	 *
-	 * @param array &$orderdata Containing the orderdatea like UID and PID
-	 * @param array &$detaildata Containing the detaildata to Order like
+	 * @param array $orderdata Containing the orderdatea like UID and PID
+	 * @param array $detaildata Containing the detaildata to Order like
 	 * 		order_id and CustomerUIDs
-	 * @param int $mailkind
+	 * @param int $mailkind Mail kind
+	 *
 	 * @return void
 	 */
-	protected function processOrdermails(&$orderdata, &$detaildata, $mailkind) {
+	protected function processOrdermails(array &$orderdata, array &$detaildata, $mailkind) {
 		$pid = $orderdata['pid'] ? $orderdata['pid'] : $detaildata['pid'];
 		$templates = $this->generateTemplateArray($mailkind, $pid, $detaildata['order_sys_language_uid']);
 
@@ -220,7 +222,7 @@ class Tx_Commerce_Hook_OrdermailHooks {
 				'attach' => '',
 				'alternateSubject' => 'TYPO3 :: commerce',
 				'recipient' => '',
-				'recipient_copy' =>  $template['BCC'],
+				'recipient_copy' => $template['BCC'],
 				'fromEmail' => $senderemail,
 				'fromName' => $sendername,
 				'replyTo' => $this->cObj->conf['usermail.']['from'],
@@ -242,13 +244,14 @@ class Tx_Commerce_Hook_OrdermailHooks {
 	 * Initial method for hook that will be performed after the Order
 	 * will be moved to another Orderstate
 	 *
-	 * @param array &$orderdata Containing the orderdatea like UID and
+	 * @param array $orderdata Containing the orderdatea like UID and
 	 * 		PID after moving
-	 * @param array &$detaildata Containing the detaildata to Order like
+	 * @param array $detaildata Containing the detaildata to Order like
 	 * 		order_id and CustomerUIDs
+	 *
 	 * @return void
 	 */
-	public function moveOrders_preMoveOrder(&$orderdata, &$detaildata) {
+	public function moveOrders_preMoveOrder(array &$orderdata, array &$detaildata) {
 		$this->processOrdermails($orderdata, $detaildata, 1);
 	}
 
@@ -256,13 +259,14 @@ class Tx_Commerce_Hook_OrdermailHooks {
 	 * Initial method for hook that will be performed before the Order
 	 * will be moved to another Orderstate
 	 *
-	 * @param array &$orderdata Containing the orderdatea like UID and
+	 * @param array $orderdata Containing the orderdatea like UID and
 	 * 		PID before moving
-	 * @param array &$detaildata Containing the detaildata to Order like
+	 * @param array $detaildata Containing the detaildata to Order like
 	 * 		order_id and CustomerUIDs
+	 *
 	 * @return void
 	 */
-	public function moveOrders_postMoveOrder(&$orderdata, &$detaildata) {
+	public function moveOrders_postMoveOrder(array &$orderdata, array &$detaildata) {
 		$this->processOrdermails($orderdata, $detaildata, 0);
 	}
 
@@ -273,9 +277,10 @@ class Tx_Commerce_Hook_OrdermailHooks {
 	 *
 	 * @param array $addressArray Address (als Resultset from Select DB or Session)
 	 * @param array $subpartMarker Template subpart
+	 *
 	 * @return string $content HTML-Content from the given Subpart.
 	 */
-	protected function makeAdressView($addressArray, $subpartMarker) {
+	protected function makeAdressView(array $addressArray, array $subpartMarker) {
 		$template = $this->cObj->getSubpart($this->templateCode, $subpartMarker);
 		$content = $this->cObj->substituteMarkerArray($template, $addressArray, '###|###', 1);
 		return $content;
@@ -288,12 +293,12 @@ class Tx_Commerce_Hook_OrdermailHooks {
 	 *
 	 * @param string $orderUid The uid for the specified Order
 	 * @param array $orderData Contaning additional data like Customer UIDs.
-	 * @param string $templateCode
+	 * @param string $templateCode Template code
+	 *
 	 * @return string The built Mailcontent
 	 */
-	protected function generateMail($orderUid, $orderData, $templateCode) {
-		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
-		$database = $GLOBALS['TYPO3_DB'];
+	protected function generateMail($orderUid, array $orderData, $templateCode) {
+		$database = $this->getDatabaseConnection();
 
 		$markerArray = array();
 		$markerArray['###ORDERID###'] = $orderUid;
@@ -354,5 +359,15 @@ class Tx_Commerce_Hook_OrdermailHooks {
 		$content = $this->cObj->substituteMarkerArray($content, $markerArray);
 
 		return ltrim($content);
+	}
+
+
+	/**
+	 * Get database connection
+	 *
+	 * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+	 */
+	protected function getDatabaseConnection() {
+		return $GLOBALS['TYPO3_DB'];
 	}
 }

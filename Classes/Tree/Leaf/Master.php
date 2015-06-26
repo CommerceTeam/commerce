@@ -1,36 +1,29 @@
 <?php
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2008-2009 Erik Frister <typo3@marketing-factory.de>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *  A copy is found in the textfile GPL.txt and important notices to the license
- *  from the author is found in LICENSE.txt distributed with these scripts.
- *
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Implements a master leaf for the Tx_Commerce_Tree_Browsetree
+ *
+ * Class Tx_Commerce_Tree_Leaf_Master
+ *
+ * @author 2008-2009 Erik Frister <typo3@marketing-factory.de>
  */
 class Tx_Commerce_Tree_Leaf_Master extends Tx_Commerce_Tree_Leaf_Leaf {
 	/**
+	 * Mount class
+	 *
 	 * @var string
 	 */
 	protected $mountClass = 'Tx_Commerce_Tree_Leaf_Mounts';
@@ -38,7 +31,7 @@ class Tx_Commerce_Tree_Leaf_Master extends Tx_Commerce_Tree_Leaf_Leaf {
 	/**
 	 * Flag if the Leafitems shall be read by specific mountpoints
 	 *
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $byMounts;
 
@@ -50,6 +43,8 @@ class Tx_Commerce_Tree_Leaf_Master extends Tx_Commerce_Tree_Leaf_Leaf {
 	protected $mounts;
 
 	/**
+	 * Leaf data
+	 *
 	 * @var Tx_Commerce_Tree_Leaf_MasterData
 	 */
 	public $data;
@@ -60,9 +55,10 @@ class Tx_Commerce_Tree_Leaf_Master extends Tx_Commerce_Tree_Leaf_Leaf {
 	 *
 	 * @param int $index Index of this leaf
 	 * @param array $parentIndices Array with parent indices
+	 *
 	 * @return void
 	 */
-	public function init($index, $parentIndices = array()) {
+	public function init($index, array $parentIndices = array()) {
 		if (!is_numeric($index) || !is_array($parentIndices)) {
 			if (TYPO3_DLOG) {
 				GeneralUtility::devLog('init (leaf) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
@@ -85,11 +81,12 @@ class Tx_Commerce_Tree_Leaf_Master extends Tx_Commerce_Tree_Leaf_Leaf {
 	/**
 	 * Sets the View and the Data of the Leaf
 	 *
-	 * @return void
 	 * @param Tx_Commerce_Tree_Leaf_View $view LeafView of the Leaf
 	 * @param Tx_Commerce_Tree_Leaf_Data $data LeafData of the Leaf
+	 *
+	 * @return void
 	 */
-	public function initBasic(&$view, &$data) {
+	public function initBasic(Tx_Commerce_Tree_Leaf_View &$view, Tx_Commerce_Tree_Leaf_Data &$data) {
 		if (is_null($view) || is_null($data)) {
 			if (TYPO3_DLOG) {
 				GeneralUtility::devLog('initBasic (leaf) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
@@ -106,7 +103,8 @@ class Tx_Commerce_Tree_Leaf_Master extends Tx_Commerce_Tree_Leaf_Leaf {
 	/**
 	 * Sets if the leaf should be read by the Mountpoints
 	 *
-	 * @param boolean $flag Flag
+	 * @param bool $flag Flag
+	 *
 	 * @return void
 	 */
 	public function byMounts($flag = TRUE) {
@@ -117,9 +115,10 @@ class Tx_Commerce_Tree_Leaf_Master extends Tx_Commerce_Tree_Leaf_Leaf {
 	 * Pass the Item UID Array with the Mountpoints to the LeafData
 	 *
 	 * @param array $mountIds Array with item UIDs that are mountpoints
+	 *
 	 * @return void
 	 */
-	public function setMounts($mountIds) {
+	public function setMounts(array $mountIds) {
 		if (!is_array($mountIds)) {
 			if (TYPO3_DLOG) {
 				GeneralUtility::devLog('setMounts (Tx_Commerce_Tree_Leaf_Master) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
@@ -144,8 +143,9 @@ class Tx_Commerce_Tree_Leaf_Master extends Tx_Commerce_Tree_Leaf_Leaf {
 	/**
 	 * Pass the UID of the Item to recursively build a tree from to the LeafData
 	 *
+	 * @param int $uid UID of the Item
+	 *
 	 * @return void
-	 * @param integer $uid UID of the Item
 	 */
 	public function setUid($uid) {
 		if (!is_numeric($uid)) {
@@ -158,7 +158,9 @@ class Tx_Commerce_Tree_Leaf_Master extends Tx_Commerce_Tree_Leaf_Leaf {
 	}
 
 	/**
-	 * @return integer
+	 * Get uid
+	 *
+	 * @return int
 	 */
 	public function getUid() {
 		return $this->data->getUid();
@@ -167,8 +169,9 @@ class Tx_Commerce_Tree_Leaf_Master extends Tx_Commerce_Tree_Leaf_Leaf {
 	/**
 	 * Sets the recursive depth of the tree
 	 *
+	 * @param int $depth Recursive Depth
+	 *
 	 * @return void
-	 * @param integer $depth Recursive Depth
 	 */
 	public function setDepth($depth) {
 		if (!is_numeric($depth)) {
@@ -203,11 +206,12 @@ class Tx_Commerce_Tree_Leaf_Master extends Tx_Commerce_Tree_Leaf_Leaf {
 	/**
 	 * Returns whether or not a node is the last in the current subtree
 	 *
-	 * @return boolean
 	 * @param array $row Row Item
-	 * @param integer $pid Parent UID of the current Row Item
+	 * @param int $pid Parent UID of the current Row Item
+	 *
+	 * @return bool
 	 */
-	public function isLast($row, $pid = 0) {
+	public function isLast(array $row, $pid = 0) {
 		if (!is_array($row) || !is_numeric($pid)) {
 			if (TYPO3_DLOG) {
 				GeneralUtility::devLog('isLast (leaf) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
@@ -230,9 +234,10 @@ class Tx_Commerce_Tree_Leaf_Master extends Tx_Commerce_Tree_Leaf_Leaf {
 	 * Returns whether or not a node has Children
 	 *
 	 * @param array $row Row Item
-	 * @return boolean
+	 *
+	 * @return bool
 	 */
-	public function hasChildren($row) {
+	public function hasChildren(array $row) {
 		if (!is_array($row)) {
 			if (TYPO3_DLOG) {
 				GeneralUtility::devLog('hasChildren (Tx_Commerce_Tree_Leaf_Master) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
@@ -254,15 +259,16 @@ class Tx_Commerce_Tree_Leaf_Master extends Tx_Commerce_Tree_Leaf_Leaf {
 	 * Does the same thing printChildleafsByUid and printChildleafsByPid
 	 * do in one function without recursion
 	 *
-	 * @return string HTML Code
-	 * @param integer $startUid UID in which we start
-	 * @param integer $bank Bank UID
-	 * @param boolean|integer $pid UID of the parent Item - only passed if
+	 * @param int $startUid UID in which we start
+	 * @param int $bank Bank UID
+	 * @param bool|int $pid UID of the parent Item - only passed if
 	 * 	this function is called by ajax; thus it will only influence functionality
 	 * 	if it is numeric
+	 *
+	 * @return string HTML Code
 	 */
 	public function printChildleafsByLoop($startUid, $bank, $pid = FALSE) {
-			// Check for valid parameters
+		// Check for valid parameters
 		if (!is_numeric($startUid) || !is_numeric($bank)) {
 			if (TYPO3_DLOG) {
 				GeneralUtility::devLog(
@@ -274,20 +280,20 @@ class Tx_Commerce_Tree_Leaf_Master extends Tx_Commerce_Tree_Leaf_Leaf {
 			return '';
 		}
 
-			// Set the bank
+		// Set the bank
 		$this->view->setBank($bank);
 		$this->data->setBank($bank);
 
-			// Set the TreeName
+		// Set the TreeName
 		$this->view->setTreeName($this->treeName);
 
-			// init vars
+		// init vars
 		$out = '';
 		$lastLevel = 0;
 
-			// Max. number of loops we make
+		// Max. number of loops we make
 		$crazyStart = $crazyRecursion = 10000;
-			// temporary child stack
+		// temporary child stack
 		$tempChildren = array();
 		// temporary level stack - already filled with
 		// a 0 because the starting child is on level 0
@@ -295,10 +301,10 @@ class Tx_Commerce_Tree_Leaf_Master extends Tx_Commerce_Tree_Leaf_Leaf {
 			// holds which uid openend which level
 		$levelOpener = array();
 
-			// get the current item and set it as the starting child to print
+		// get the current item and set it as the starting child to print
 		$child = $this->data->getChildByUid($startUid);
 
-			// Abort if the starting Category is not found
+		// Abort if the starting Category is not found
 		if ($child == NULL) {
 			if (TYPO3_DLOG) {
 				GeneralUtility::devLog(
@@ -310,20 +316,20 @@ class Tx_Commerce_Tree_Leaf_Master extends Tx_Commerce_Tree_Leaf_Leaf {
 			return '';
 		}
 
-			// Process the child and children
+		// Process the child and children
 		while (!is_null($child) && is_array($child) && $crazyRecursion > 0) {
-				// get the current level
+			// get the current level
 			$level = @array_pop($tempLevels);
 
-				// close the parent list if we are on a higher level than the list
+			// close the parent list if we are on a higher level than the list
 			if ($level < $lastLevel) {
 				for ($i = $level; $i < $lastLevel; $i++) {
-						// get opener uid
+					// get opener uid
 					$uid = array_pop($levelOpener);
 
-						// print slave elements from the opener
+					// print slave elements from the opener
 					$out .= $this->getSlaveElements($uid, $bank);
-						// close opener
+					// close opener
 					$out .= '</ul></li>';
 				}
 			}
@@ -333,7 +339,7 @@ class Tx_Commerce_Tree_Leaf_Master extends Tx_Commerce_Tree_Leaf_Leaf {
 			/********************
 			 * Printing the Item
 			 *******************/
-				// Give class 'expanded' if it is
+			// Give class 'expanded' if it is
 			$exp = $child['uid'] ? $this->data->isExpanded($child['uid']) : TRUE;
 			$cssExpanded = ($exp) ? 'expanded' : '';
 
@@ -346,13 +352,13 @@ class Tx_Commerce_Tree_Leaf_Master extends Tx_Commerce_Tree_Leaf_Leaf {
 				$pid = FALSE;
 			}
 
-				// Add class 'last' if it is
+			// Add class 'last' if it is
 			$isLast = $this->isLast($child, $child['item_parent']);
 			$cssLast = ($isLast) ? ' last' : '';
 
 			$cssClass = $cssExpanded . ' ' . $cssLast . ($child['uid'] > 0 ? '' : ' typo3-pagetree-node-notExpandable');
 
-				// start the element
+			// start the element
 			$out .= '<li class="' . $cssClass . '">
 				<div>';
 
@@ -365,7 +371,7 @@ class Tx_Commerce_Tree_Leaf_Master extends Tx_Commerce_Tree_Leaf_Leaf {
 				$out .= '<img alt="" src="/' . TYPO3_mainDir . 'clear.gif" class="x-tree-ec-icon x-tree-elbow-end-minus">';
 			}
 
-			$out .= $child['uid'] ? $this->view->getIcon($child, $child['uid']) : $this->view->getRootIcon($child);
+			$out .= $child['uid'] ? $this->view->getIcon($child) : $this->view->getRootIcon($child);
 			$out .= $this->view->wrapTitle($child['title'], $child);
 
 			$out .= '</div>';
@@ -390,17 +396,17 @@ class Tx_Commerce_Tree_Leaf_Master extends Tx_Commerce_Tree_Leaf_Leaf {
 				$out .= '<ul>';
 				$level++;
 
-					// add all children except the first to the stack
+				// add all children except the first to the stack
 				for ($j = $m - 1; $j > 0; $j--) {
 					$tempChildren[] = $childElements[$j];
-						// Add the levels of the current items to the stack
+					// Add the levels of the current items to the stack
 					$tempLevels[] = $level;
 				}
 
-					// add the level of the next child as well
+				// add the level of the next child as well
 				$tempLevels[] = $level;
 			} else {
-					// Print the children from the slave leafs if the current leaf is expanded
+				// Print the children from the slave leafs if the current leaf is expanded
 				if ($exp) {
 					$out .= '<ul>';
 					$out .= $this->getSlaveElements($child['uid'], $bank);
@@ -418,7 +424,7 @@ class Tx_Commerce_Tree_Leaf_Master extends Tx_Commerce_Tree_Leaf_Leaf {
 			$crazyRecursion--;
 		}
 
-			// DLOG
+		// DLOG
 		if (TYPO3_DLOG) {
 			GeneralUtility::devLog(
 				'printChildLeafsByLoop (Tx_Commerce_Tree_Leaf_Master) did ' . ($crazyStart - $crazyRecursion) . ' loops!',
@@ -427,19 +433,18 @@ class Tx_Commerce_Tree_Leaf_Master extends Tx_Commerce_Tree_Leaf_Leaf {
 			);
 		}
 
-			// Close the rest of the lists
+		// Close the rest of the lists
 		for ($i = 0; $i < $lastLevel; $i++) {
-
-				// get opener uid
+			// get opener uid
 			$uid = array_pop($levelOpener);
 
-				// print slave elements for the opener
+			// print slave elements for the opener
 			$out .= $this->getSlaveElements($uid, $bank);
-				// close the opener
+			// close the opener
 			$out .= '</ul></li>';
 		}
 
-			// Abort if the max. number of loops has been reached
+		// Abort if the max. number of loops has been reached
 		if ($crazyRecursion <= 0) {
 			if (TYPO3_DLOG) {
 				GeneralUtility::devLog(
@@ -457,14 +462,19 @@ class Tx_Commerce_Tree_Leaf_Master extends Tx_Commerce_Tree_Leaf_Leaf {
 	/**
 	 * Gets the elements of the slave leafs
 	 *
-	 * @param integer $pid
-	 * @param integer $bank
+	 * @param int $pid Pade id
+	 * @param int $bank Bank
+	 *
 	 * @return string HTML Code generated by the slaveleafs
 	 */
 	protected function getSlaveElements($pid, $bank) {
 		$out = '';
 
-		/** @var Tx_Commerce_Tree_Leaf_Slave $leaf */
+		/**
+		 * Leaf
+		 *
+		 * @var Tx_Commerce_Tree_Leaf_Slave $leaf
+		 */
 		foreach ($this->leafs as $leaf) {
 			$out .= $leaf->printChildleafsByParent($pid, $bank);
 		}

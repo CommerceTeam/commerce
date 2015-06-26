@@ -1,63 +1,56 @@
 <?php
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2005-2008 Carsten Lausen <cl@e-netconsulting.de>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *  A copy is found in the textfile GPL.txt and important notices to the license
- *  from the author is found in LICENSE.txt distributed with these scripts.
- *
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
 
 /**
- * class tx_srfeuserregister_hooksHandler for the extension takeaday feuser
+ * Hook for the extension takeaday feuser
  * The method registrationProcess_afterSaveCreate() is called by save()
  * The method registrationProcess_afterSaveEdit() is called by save()
  *
  * This class handles frontend feuser updates
+ *
+ * Class Tx_Commerce_Hook_SrfeuserregisterPi1Hook
+ *
+ * @author 2005-2008 Carsten Lausen <cl@e-netconsulting.de>
  */
 class Tx_Commerce_Hook_SrfeuserregisterPi1Hook {
 	/**
-	 * after save create
+	 * After save create
 	 *
-	 * sr_feuser_register registration process after saving new dataset
+	 * Sr_feuser_register registration process after saving new dataset
 	 *
-	 * @param string $theTable
-	 * @param array $dataArray complete array of feuser fields
+	 * @param string $theTable Table
+	 * @param array $dataArray Complete array of feuser fields
+	 *
 	 * @return void
 	 */
-	public function registrationProcess_afterSaveCreate($theTable, $dataArray) {
+	public function registrationProcess_afterSaveCreate($theTable, array $dataArray) {
 		// notify observer
-		Tx_Commerce_Dao_FeuserObserver::update('new', $dataArray['uid'], $dataArray);
+		Tx_Commerce_Dao_FeuserObserver::update('new', $dataArray['uid']);
 	}
 
 	/**
-	 * after edit create
+	 * After edit create
 	 *
-	 * sr_feuser_register registration process after saving edited dataset
+	 * Sr_feuser_register registration process after saving edited dataset
 	 *
-	 * @param string $theTable
-	 * @param array $dataArray complete array of feuser fields
+	 * @param string $theTable Table
+	 * @param array $dataArray Complete array of feuser fields
+	 *
 	 * @return void
 	 */
-	public function registrationProcess_afterSaveEdit($theTable, $dataArray) {
+	public function registrationProcess_afterSaveEdit($theTable, array $dataArray) {
 			// notify observer
-		Tx_Commerce_Dao_FeuserObserver::update('update', $dataArray['uid'], $dataArray);
+		Tx_Commerce_Dao_FeuserObserver::update('update', $dataArray['uid']);
 	}
 }

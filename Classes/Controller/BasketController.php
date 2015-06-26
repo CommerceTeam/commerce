@@ -1,29 +1,16 @@
 <?php
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2005-2011 Volker Graubaum <vg@e-netconsulting.de>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *  A copy is found in the textfile GPL.txt and important notices to the license
- *  from the author is found in LICENSE.txt distributed with these scripts.
- *
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -31,7 +18,11 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * the basket. E.g. Adding things to basket, changing basket
  *
  * The basket itself is stored inside
- * $GLOBALS['TSFE']->fe_user->Tx_Commerce_Domain_Model_Basket;
+ * frontend user basket
+ *
+ * Class Tx_Commerce_Controller_BasketController
+ *
+ * @author Volker Graubaum <vg@e-netconsulting.de>
  */
 class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_BaseController {
 	/**
@@ -42,51 +33,71 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 	public $prefixId = 'tx_commerce_pi1';
 
 	/**
+	 * Flag if object should be handled as user int
+	 *
 	 * @var bool
 	 */
 	public $pi_USER_INT_obj = TRUE;
 
 	/**
+	 * No stock handling
+	 *
 	 * @var string
 	 */
 	public $noStock = '';
 
 	/**
+	 * Delivery product
+	 *
 	 * @var Tx_Commerce_Domain_Model_Product
 	 */
 	public $deliveryProduct;
 
 	/**
+	 * Basket delivery articles
+	 *
 	 * @var array
 	 */
 	public $basketDeliveryArticles;
 
 	/**
+	 * Payment product
+	 *
 	 * @var Tx_Commerce_Domain_Model_Product
 	 */
 	public $paymentProduct;
 
 	/**
+	 * Basket payment articles
+	 *
 	 * @var array
 	 */
 	public $basketPaymentArticles;
 
 	/**
-	 * @var Tx_Commerce_Domain_Model_Basket Basket object
+	 * Basket object
+	 *
+	 * @var Tx_Commerce_Domain_Model_Basket
 	 */
 	protected $basket = NULL;
 
 	/**
-	 * @var array Marker array
+	 * Marker array
+	 *
+	 * @var array
 	 */
 	protected $markerArray = array();
 
 	/**
-	 * @var string Compiled content
+	 * Compiled content
+	 *
+	 * @var string
 	 */
 	protected $content = '';
 
 	/**
+	 * Price limit for basket
+	 *
 	 * @var int
 	 */
 	protected $priceLimitForBasket = 0;
@@ -96,6 +107,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 	 * pi plugins of tx_commerce
 	 *
 	 * @param array $conf Configuration
+	 *
 	 * @return void
 	 */
 	protected function init(array $conf = array()) {
@@ -113,14 +125,14 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 		if (empty($this->conf['templateFile'])) {
 			$this->error('init', __LINE__, 'Template File not defined in TS: ');
 		}
-		$this->templateCode = $this->cObj->fileResource($this->conf['templateFile']);
-		if (empty($this->templateCode)) {
+		$this->setTemplateCode($this->cObj->fileResource($this->conf['templateFile']));
+		if (empty($this->getTemplateCode())) {
 			$this->error('init', __LINE__, 'Template File not loaded, maybe it doesn\'t exist: ' . $this->conf['templateFile']);
 		}
 
 		$this->handleBasket();
 
-			// Define the currency
+		// Define the currency
 		if (strlen($this->conf['currency']) > 0) {
 			$this->currency = $this->conf['currency'];
 		}
@@ -132,18 +144,9 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 	 * @return void
 	 */
 	public function initBasket() {
-		$this->basket = $GLOBALS['TSFE']->fe_user->tx_commerce_basket;
+		$this->basket = $this->getFrontendController()->fe_user->tx_commerce_basket;
 		$this->basket->setTaxCalculationMethod($this->conf['priceFromNet']);
 		$this->basket->loadData();
-	}
-
-	/**
-	 * Get basket
-	 *
-	 * @return Tx_Commerce_Domain_Model_Basket
-	 */
-	public function getBasket() {
-		return $this->basket;
 	}
 
 	/**
@@ -151,6 +154,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 	 *
 	 * @param string $content Content
 	 * @param array $conf Configuration
+	 *
 	 * @return string HTML-Content
 	 */
 	public function main($content = '', array $conf = array()) {
@@ -177,7 +181,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 			if (method_exists($hookObj, 'postInit')) {
 				$result = $hookObj->postInit($this);
 				if ($result === FALSE) {
-					return $this->pi_wrapInBaseClass($this->content);
+					return $this->pi_wrapInBaseClass($this->getContent());
 				}
 			}
 		}
@@ -191,7 +195,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 		}
 
 		if ($this->basket->getItemsCount() && $regularArticleCount) {
-				// Get template
+			// Get template
 			switch ($this->handle) {
 				case 'HANDLING':
 					$this->handleBasket();
@@ -211,7 +215,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 				$templateMarker = '###PRODUCT_BASKET_EMPTY###';
 			}
 
-			$template = $this->cObj->getSubpart($this->templateCode, $templateMarker);
+			$template = $this->cObj->getSubpart($this->getTemplateCode(), $templateMarker);
 
 			$markerArray = $this->languageMarker;
 			$markerArray['###EMPTY_BASKET###'] = $this->cObj->cObjGetSingle($this->conf['emptyContent'], $this->conf['emptyContent.']);
@@ -228,11 +232,11 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 				}
 			}
 
-			$this->content = $this->cObj->substituteMarkerArray($template, $markerArray);
+			$this->setContent($this->cObj->substituteMarkerArray($template, $markerArray));
 		}
-		$content = $this->cObj->substituteMarkerArray($content, $this->languageMarker);
+		$this->setContent($this->cObj->substituteMarkerArray($this->getContent(), $this->languageMarker));
 
-		return $this->pi_wrapInBaseClass($content . $this->content);
+		return $this->pi_wrapInBaseClass($content . $this->getContent());
 	}
 
 	/**
@@ -259,7 +263,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 		if ($this->piVars['delBasket']) {
 			$this->basket->deleteAllArticles();
 
-				// Hook to process basket after deleting all articles from basket
+			// Hook to process basket after deleting all articles from basket
 			if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['postdelBasket'])) {
 				GeneralUtility::deprecationLog('
 					hook
@@ -274,8 +278,12 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 					}
 				}
 			}
-			if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BasketController.php']['postDeleteBasket'])) {
-				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BasketController.php']['postDeleteBasket'] as $classRef) {
+			if (
+				is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BasketController.php']['postDeleteBasket'])
+			) {
+				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BasketController.php']['postDeleteBasket'] as
+					$classRef
+				) {
 					$hookObj = &GeneralUtility::getUserObj($classRef);
 					if (method_exists($hookObj, 'postdelBasket')) {
 						$hookObj->postdelBasket($this->basket, $this);
@@ -304,7 +312,9 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 			}
 		}
 		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BasketController.php']['addArticleUid'])) {
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BasketController.php']['addArticleUid'] as $classRef) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BasketController.php']['addArticleUid'] as
+				$classRef
+			) {
 				$hookObjectsArr[] = &GeneralUtility::getUserObj($classRef);
 			}
 		}
@@ -316,11 +326,15 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 			}
 		}
 
-		if ($this->piVars['artAddUid']) {
+		if (isset($this->piVars['artAddUid']) && is_array($this->piVars['artAddUid'])) {
 			foreach ($this->piVars['artAddUid'] as $articleUid => $articleAddValues) {
 				$articleUid = (int) $articleUid;
 
-				/** @var Tx_Commerce_Domain_Model_BasketItem $basketItem */
+				/**
+				 * Basket item
+				 *
+				 * @var Tx_Commerce_Domain_Model_BasketItem $basketItem
+				 */
 				$basketItem = $this->basket->getBasketItem($articleUid);
 
 				// Safe old quantity for price limit
@@ -345,7 +359,11 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 						}
 					}
 				} else {
-					/** @var $articleObj Tx_Commerce_Domain_Model_Article */
+					/**
+					 * Article
+					 *
+					 * @var $articleObj Tx_Commerce_Domain_Model_Article
+					 */
 					$articleObj = GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Article', $articleUid);
 					$articleObj->loadData('basket');
 
@@ -393,7 +411,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 						$this->basket->getSumGross() > (int) $this->conf['priceLimitForBasket']
 					) {
 						$this->basket->addArticle($articleUid, $oldCountValue);
-						$this->priceLimitForBasket = 1;
+						$this->setPriceLimitForBasket(1);
 					}
 				}
 			}
@@ -423,7 +441,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 			// Add new article
 			if (is_array($this->piVars['payArt'])) {
 				foreach ($this->piVars['payArt'] as $articleUid => $articleCount) {
-						// Set to integer to be sure it is integer
+					// Set to int to be sure it is int
 					$articleUid = (int) $articleUid;
 					$articleCount = (int) $articleCount;
 					$this->basket->addArticle($articleUid, $articleCount['count']);
@@ -447,8 +465,12 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 					}
 				}
 			}
-			if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BasketController.php']['postPaymentArticle'])) {
-				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BasketController.php']['postPaymentArticle'] as $classRef) {
+			if (
+				is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BasketController.php']['postPaymentArticle'])
+			) {
+				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BasketController.php']['postPaymentArticle'] as
+					$classRef
+				) {
 					$hookObj = &GeneralUtility::getUserObj($classRef);
 					if (method_exists($hookObj, 'postpayArt')) {
 						$hookObj->postpayArt($this->basket, $this);
@@ -498,8 +520,12 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 					}
 				}
 			}
-			if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BasketController.php']['postDeliveryArticle'])) {
-				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BasketController.php']['postDeliveryArticle'] as $classRef) {
+			if (
+				is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BasketController.php']['postDeliveryArticle'])
+			) {
+				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BasketController.php']['postDeliveryArticle'] as
+					$classRef
+				) {
 					$hookObj = &GeneralUtility::getUserObj($classRef);
 					if (method_exists($hookObj, 'postdelArt')) {
 						$hookObj->postdelArt($this->basket, $this);
@@ -520,14 +546,15 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 		$articleTypes = explode(',', $this->conf['regularArticleTypes']);
 
 		$templateMarker = '###PRODUCT_BASKET_QUICKVIEW###';
-		$template = $this->cObj->getSubpart($this->templateCode, $templateMarker);
+		$template = $this->cObj->getSubpart($this->getTemplateCode(), $templateMarker);
 
 		$basketArray = $this->languageMarker;
 		$basketArray['###PRICE_GROSS###'] = Tx_Commerce_ViewHelpers_Money::format($this->basket->getSumGross(), $this->currency);
 		$basketArray['###PRICE_NET###'] = Tx_Commerce_ViewHelpers_Money::format($this->basket->getSumNet(), $this->currency);
 
-		// @Deprecated ###ITEMS###
-		$basketArray['###ITEMS###'] = $this->basket->getArticleTypeCountFromList($articleTypes);
+		// @deprecated ###ITEMS###
+		$basketArray['###ITEMS###'] = 'DEPRECATED WILL BE REMOVED IN COMMERCE 3.0.0! ' .
+			$this->basket->getArticleTypeCountFromList($articleTypes);
 
 		$basketArray['###BASKET_ITEMS###'] = $this->basket->getArticleTypeCountFromList($articleTypes);
 		$this->pi_linkTP('', array(), 0, $this->conf['basketPid']);
@@ -551,7 +578,9 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 			}
 		}
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BasketController.php']['getQuickView'])) {
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BasketController.php']['getQuickView'] as $classRef) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BasketController.php']['getQuickView'] as
+				$classRef
+			) {
 				$hookObj = &GeneralUtility::getUserObj($classRef);
 				if (method_exists($hookObj, 'additionalMarker')) {
 					$basketArray = $hookObj->additionalMarker($basketArray, $this);
@@ -559,17 +588,17 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 			}
 		}
 
-		$this->content = $this->cObj->substituteMarkerArray($template, $basketArray);
+		$this->setContent($this->cObj->substituteMarkerArray($template, $basketArray));
 		return TRUE;
 	}
 
 	/**
-	 * Generates HTML-Code of the basket and stores content to $this->content
+	 * Generates HTML-Code of the basket and stores content
 	 *
 	 * @return void
 	 */
 	public function generateBasket() {
-		$template = $this->cObj->getSubpart($this->templateCode, '###BASKET###');
+		$template = $this->cObj->getSubpart($this->getTemplateCode(), '###BASKET###');
 
 		// Render locked information
 		if ($this->basket->getReadOnly()) {
@@ -583,7 +612,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 
 		// Generate basket hooks
 		$hookObject = NULL;
-		if (($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['generateBasket'])) {
+		if (isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['generateBasket'])) {
 			GeneralUtility::deprecationLog('
 				hook
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/pi2/class.tx_commerce_pi2.php\'][\'generateBasket\']
@@ -592,12 +621,12 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 			');
 			$hookObject = GeneralUtility::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['generateBasket']);
 		}
-		if (($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BasketController.php']['generateBasket'])) {
+		if (isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BasketController.php']['generateBasket'])) {
 			$hookObject = GeneralUtility::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BasketController.php']['generateBasket']);
 		}
 
 		// No delivery article is present, so draw selector
-		$contentDelivery = $this->cObj->getSubpart($this->templateCode, '###DELIVERYBOX###');
+		$contentDelivery = $this->cObj->getSubpart($this->getTemplateCode(), '###DELIVERYBOX###');
 
 		if (method_exists($hookObject, 'makeDelivery')) {
 			$contentDelivery = $hookObject->makeDelivery($this, $this->basket, $contentDelivery);
@@ -608,7 +637,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 			$template = $this->cObj->substituteSubpart($template, '###DELIVERYBOX###', $contentDelivery);
 		}
 
-		$contentPayment = $this->cObj->getSubpart($this->templateCode, '###PAYMENTBOX###');
+		$contentPayment = $this->cObj->getSubpart($this->getTemplateCode(), '###PAYMENTBOX###');
 		if (method_exists($hookObject, 'makePayment')) {
 			$contentPayment = $hookObject->makePayment($this, $this->basket, $contentPayment);
 			$template = $this->cObj->substituteSubpart($template, '###PAYMENTBOX###', $contentPayment);
@@ -632,17 +661,46 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 
 		$basketArray['###BASKET_NET_PRICE###'] = Tx_Commerce_ViewHelpers_Money::format($this->basket->getSumNet(), $this->currency);
 		$basketArray['###BASKET_GROSS_PRICE###'] = Tx_Commerce_ViewHelpers_Money::format($this->basket->getSumGross(), $this->currency);
-		$basketArray['###BASKET_TAX_PRICE###'] = Tx_Commerce_ViewHelpers_Money::format($this->basket->getSumGross() - $this->basket->getSumNet(), $this->currency);
-		$basketArray['###BASKET_VALUE_ADDED_TAX###'] = Tx_Commerce_ViewHelpers_Money::format($this->basket->getSumGross() - $this->basket->getSumNet(), $this->currency);
+		$basketArray['###BASKET_TAX_PRICE###'] = Tx_Commerce_ViewHelpers_Money::format(
+			$this->basket->getSumGross() - $this->basket->getSumNet(),
+			$this->currency
+		);
+		$basketArray['###BASKET_VALUE_ADDED_TAX###'] = Tx_Commerce_ViewHelpers_Money::format(
+			$this->basket->getSumGross() - $this->basket->getSumNet(),
+			$this->currency
+		);
 		$basketArray['###BASKET_ITEMS###'] = $this->basket->getItemsCount();
-		$basketArray['###DELBASKET###'] = $this->pi_linkTP_keepPIvars($this->pi_getLL('delete_basket', 'delete basket'), array('delBasket' => 1), 0, 1);
+		$basketArray['###DELBASKET###'] = $this->pi_linkTP_keepPIvars(
+			$this->pi_getLL('delete_basket', 'delete basket'),
+			array('delBasket' => 1),
+			0,
+			1
+		);
 		$basketArray['###BASKET_NEXTBUTTON###'] = $this->cObj->stdWrap($this->makeCheckOutLink(), $this->conf['nextbutton.']);
-		$basketArray['###BASKET_ARTICLES_NET_SUM###'] = Tx_Commerce_ViewHelpers_Money::format($this->basket->getArticleTypeSumNet(NORMALARTICLETYPE), $this->currency);
-		$basketArray['###BASKET_ARTICLES_GROSS_SUM###'] = Tx_Commerce_ViewHelpers_Money::format($this->basket->getArticleTypeSumGross(NORMALARTICLETYPE), $this->currency);
-		$basketArray['###BASKET_DELIVERY_NET_SUM###'] = Tx_Commerce_ViewHelpers_Money::format($this->basket->getArticleTypeSumNet(DELIVERYARTICLETYPE), $this->currency);
-		$basketArray['###BASKET_DELIVERY_GROSS_SUM###'] = Tx_Commerce_ViewHelpers_Money::format($this->basket->getArticleTypeSumGross(DELIVERYARTICLETYPE), $this->currency);
-		$basketArray['###BASKET_PAYMENT_NET_SUM###'] = Tx_Commerce_ViewHelpers_Money::format($this->basket->getArticleTypeSumNet(PAYMENTARTICLETYPE), $this->currency);
-		$basketArray['###BASKET_PAYMENT_GROSS_SUM###'] = Tx_Commerce_ViewHelpers_Money::format($this->basket->getArticleTypeSumGross(PAYMENTARTICLETYPE), $this->currency);
+		$basketArray['###BASKET_ARTICLES_NET_SUM###'] = Tx_Commerce_ViewHelpers_Money::format(
+			$this->basket->getArticleTypeSumNet(NORMALARTICLETYPE),
+			$this->currency
+		);
+		$basketArray['###BASKET_ARTICLES_GROSS_SUM###'] = Tx_Commerce_ViewHelpers_Money::format(
+			$this->basket->getArticleTypeSumGross(NORMALARTICLETYPE),
+			$this->currency
+		);
+		$basketArray['###BASKET_DELIVERY_NET_SUM###'] = Tx_Commerce_ViewHelpers_Money::format(
+			$this->basket->getArticleTypeSumNet(DELIVERYARTICLETYPE),
+			$this->currency
+		);
+		$basketArray['###BASKET_DELIVERY_GROSS_SUM###'] = Tx_Commerce_ViewHelpers_Money::format(
+			$this->basket->getArticleTypeSumGross(DELIVERYARTICLETYPE),
+			$this->currency
+		);
+		$basketArray['###BASKET_PAYMENT_NET_SUM###'] = Tx_Commerce_ViewHelpers_Money::format(
+			$this->basket->getArticleTypeSumNet(PAYMENTARTICLETYPE),
+			$this->currency
+		);
+		$basketArray['###BASKET_PAYMENT_GROSS_SUM###'] = Tx_Commerce_ViewHelpers_Money::format(
+			$this->basket->getArticleTypeSumGross(PAYMENTARTICLETYPE),
+			$this->currency
+		);
 		$basketArray['###BASKET_PAYMENT_ITEMS###'] = $this->basket->getArticleTypeCount(PAYMENTARTICLETYPE);
 		$basketArray['###BASKET_DELIVERY_ITEMS###'] = $this->basket->getArticleTypeCount(DELIVERYARTICLETYPE);
 		$basketArray['###BASKET_ARTICLES_ITEMS###'] = $this->basket->getArticleTypeCount(NORMALARTICLETYPE);
@@ -652,10 +710,11 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 		$basketArray['###URL_CHECKOUT###'] = $this->cObj->lastTypoLinkUrl;
 		$basketArray['###NO_STOCK_MESSAGE###'] = $this->noStock;
 		$basketArray['###BASKET_LASTPRODUCTURL###'] = $this->cObj->stdWrap(
-			$GLOBALS['TSFE']->fe_user->getKey('ses', 'tx_commerce_lastproducturl'), $this->conf['lastProduct']
+			$this->getFrontendController()->fe_user->getKey('ses', 'tx_commerce_lastproducturl'),
+			$this->conf['lastProduct']
 		);
 
-		if ($this->priceLimitForBasket == 1 && $this->conf['priceLimitForBasketMessage']) {
+		if ($this->getPriceLimitForBasket() == 1 && $this->conf['priceLimitForBasketMessage']) {
 			$basketArray['###BASKET_PRICELIMIT###'] = $this->cObj->cObjGetSingle(
 				$this->conf['priceLimitForBasketMessage'], $this->conf['priceLimitForBasketMessage.']
 			);
@@ -672,15 +731,21 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/BasketController.php\'][\'generateBasketMarker\']
 			');
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['generateBasketMarker'] as $classRef) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['generateBasketMarker'] as
+				$classRef
+			) {
 				$hookObj = &GeneralUtility::getUserObj($classRef);
 				if (method_exists($hookObj, 'additionalMarker')) {
 					$basketArray = $hookObj->additionalMarker($basketArray, $this, $template);
 				}
 			}
 		}
-		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BasketController.php']['generateBasketMarker'])) {
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BasketController.php']['generateBasketMarker'] as $classRef) {
+		if (
+			is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BasketController.php']['generateBasketMarker'])
+		) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BasketController.php']['generateBasketMarker'] as
+				$classRef
+			) {
 				$hookObj = &GeneralUtility::getUserObj($classRef);
 				if (method_exists($hookObj, 'additionalMarker')) {
 					$basketArray = $hookObj->additionalMarker($basketArray, $this, $template);
@@ -688,30 +753,31 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 			}
 		}
 
-		$this->content = $this->cObj->substituteMarkerArray($template, $basketArray);
+		$this->setContent($this->cObj->substituteMarkerArray($template, $basketArray));
 
 		$markerArrayGlobal = $this->addFormMarker(array());
 
-		$this->content = $this->cObj->substituteMarkerArray($this->content, $markerArrayGlobal, '###|###');
+		$this->setContent($this->cObj->substituteMarkerArray($this->getContent(), $markerArrayGlobal, '###|###'));
 	}
 
 	/**
 	 * Generates the Markers for the delivery-selector
 	 *
 	 * @param array $basketArray Array of marker
-	 * @return array Array of marker
+	 *
+	 * @return array Markers
 	 */
-	public function makeDelivery($basketArray = array()) {
+	public function makeDelivery(array $basketArray = array()) {
 		$this->deliveryProduct = GeneralUtility::makeInstance(
 			'Tx_Commerce_Domain_Model_Product',
 			$this->conf['delProdId'],
-			$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']
+			$this->getFrontendController()->tmpl->setup['config.']['sys_language_uid']
 		);
 		$this->deliveryProduct->loadData();
 		$this->deliveryProduct->loadArticles();
 
-		$deliverySelectTemplate = $this->cObj->getSubpart($this->templateCode, '###DELIVERY_ARTICLE_SELECT###');
-		$deliveryOptionTemplate = $this->cObj->getSubpart($this->templateCode, '###DELIVERY_ARTICLE_OPTION###');
+		$deliverySelectTemplate = $this->cObj->getSubpart($this->getTemplateCode(), '###DELIVERY_ARTICLE_SELECT###');
+		$deliveryOptionTemplate = $this->cObj->getSubpart($this->getTemplateCode(), '###DELIVERY_ARTICLE_OPTION###');
 
 		$this->basketDeliveryArticles = $this->basket->getArticlesByArticleTypeUidAsUidlist(DELIVERYARTICLETYPE);
 
@@ -736,7 +802,9 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 			}
 		}
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BasketController.php']['deliveryArticles'])) {
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BasketController.php']['deliveryArticles'] as $classRef) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BasketController.php']['deliveryArticles'] as
+				$classRef
+			) {
 				$hookObj = &GeneralUtility::getUserObj($classRef);
 				if (method_exists($hookObj, 'deliveryAllowedArticles')) {
 					$allowedArticles = $hookObj->deliveryAllowedArticles($this, $allowedArticles);
@@ -750,7 +818,11 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 		$priceGross = '';
 		$options = '';
 		$first = FALSE;
-		/** @var $deliveryArticle Tx_Commerce_Domain_Model_Article */
+		/**
+		 * Article
+		 *
+		 * @var $deliveryArticle Tx_Commerce_Domain_Model_Article
+		 */
 		foreach ($this->deliveryProduct->getArticleObjects() as $deliveryArticle) {
 			if ($allArticlesAllowed || in_array($deliveryArticle->getUid(), $allowedArticles)) {
 				$selected = '';
@@ -798,13 +870,14 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 	 * Generates payment drop down list for this shop
 	 *
 	 * @param array $basketArray Array of template marker
-	 * @return array Array of template marker
+	 *
+	 * @return array Template marker
 	 */
-	public function makePayment($basketArray = array()) {
+	public function makePayment(array $basketArray = array()) {
 		$this->paymentProduct = GeneralUtility::makeInstance(
 			'Tx_Commerce_Domain_Model_Product',
 			$this->conf['payProdId'],
-			$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']
+			$this->getFrontendController()->tmpl->setup['config.']['sys_language_uid']
 		);
 		$this->paymentProduct->loadData();
 		$this->paymentProduct->loadArticles();
@@ -835,11 +908,15 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 
 		// Check if payment articles are allowed
 		$newAllowedArticles = array();
-		/** @var Tx_Commerce_Domain_Model_Article $articleObj */
-		foreach ($this->paymentProduct->getArticleObjects() as $articleUid => $articleObj) {
+		/**
+		 * Article
+		 *
+		 * @var Tx_Commerce_Domain_Model_Article $article
+		 */
+		foreach ($this->paymentProduct->getArticleObjects() as $articleUid => $article) {
 			if (!count($allowedArticles) || in_array($articleUid, $allowedArticles)) {
-				$articleObj->loadData();
-				$payment = $this->getPaymentObject($articleObj->getClassname());
+				$article->loadData();
+				$payment = $this->getPaymentObject($article->getClassname());
 				if ($payment->isAllowed()) {
 					$newAllowedArticles[] = $articleUid;
 				}
@@ -874,7 +951,9 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 			}
 		}
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BasketController.php']['paymentArticles'])) {
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BasketController.php']['paymentArticles'] as $classRef) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BasketController.php']['paymentArticles'] as
+				$classRef
+			) {
 				$hookObj = &GeneralUtility::getUserObj($classRef);
 				if (method_exists($hookObj, 'paymentAllowedArticles')) {
 					$allowedArticles = $hookObj->paymentAllowedArticles($this, $allowedArticles);
@@ -885,8 +964,12 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 		$first = FALSE;
 		$priceNet = '';
 		$priceGross = '';
-		/** @var $articleObj Tx_Commerce_Domain_Model_Article */
-		foreach ($this->paymentProduct->getArticleObjects() as $articleUid => $articleObj) {
+		/**
+		 * Article
+		 *
+		 * @var $article Tx_Commerce_Domain_Model_Article
+		 */
+		foreach ($this->paymentProduct->getArticleObjects() as $articleUid => $article) {
 			if (!count($allowedArticles) || in_array($articleUid, $allowedArticles)) {
 				$select .= '<option value="' . $articleUid . '"';
 				if (
@@ -898,14 +981,14 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 					$first = TRUE;
 					$select .= ' selected="selected"';
 					$this->basket->addArticle($articleUid);
-					$priceNet = Tx_Commerce_ViewHelpers_Money::format($articleObj->getPriceNet(), $this->currency);
-					$priceGross = Tx_Commerce_ViewHelpers_Money::format($articleObj->getPriceGross(), $this->currency);
+					$priceNet = Tx_Commerce_ViewHelpers_Money::format($article->getPriceNet(), $this->currency);
+					$priceGross = Tx_Commerce_ViewHelpers_Money::format($article->getPriceGross(), $this->currency);
 				} elseif (!$first) {
-					$priceNet = Tx_Commerce_ViewHelpers_Money::format($articleObj->getPriceNet(), $this->currency);
-					$priceGross = Tx_Commerce_ViewHelpers_Money::format($articleObj->getPriceGross(), $this->currency);
+					$priceNet = Tx_Commerce_ViewHelpers_Money::format($article->getPriceNet(), $this->currency);
+					$priceGross = Tx_Commerce_ViewHelpers_Money::format($article->getPriceGross(), $this->currency);
 					$this->basket->deleteArticle($articleUid);
 				}
-				$select .= '>' . $articleObj->getTitle() . '</option>';
+				$select .= '>' . $article->getTitle() . '</option>';
 			}
 		}
 
@@ -938,25 +1021,30 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 	/**
 	 * Make article view
 	 *
-	 * @param Tx_Commerce_Domain_Model_Article $article
-	 * @param Tx_Commerce_Domain_Model_Product $product
+	 * @param Tx_Commerce_Domain_Model_Article $article Article
+	 * @param Tx_Commerce_Domain_Model_Product $product Product
+	 *
 	 * @return string
 	 */
-	public function makeArticleView($article, $product) {
+	public function makeArticleView(Tx_Commerce_Domain_Model_Article $article, Tx_Commerce_Domain_Model_Product $product) {
 		// Getting the select attributes for view
 		$attCode = '';
 		if (is_object($product)) {
 			$attributeArray = $product->getAttributeMatrix(array($article->getUid()), $this->selectAttributes);
 
 			if (is_array($attributeArray)) {
-				$templateAttr = $this->cObj->getSubpart($this->templateCode, '###BASKET_SELECT_ATTRIBUTES###');
+				$templateAttr = $this->cObj->getSubpart($this->getTemplateCode(), '###BASKET_SELECT_ATTRIBUTES###');
 
 				foreach ($attributeArray as $attributeUid => $myAttribute) {
-					/** @var $attributeObj Tx_Commerce_Domain_Model_Attribute */
+					/**
+					 * Attribute
+					 *
+					 * @var $attributeObj Tx_Commerce_Domain_Model_Attribute
+					 */
 					$attributeObj = GeneralUtility::makeInstance(
 						'Tx_Commerce_Domain_Model_Attribute',
 						$attributeUid,
-						$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']
+						$this->getFrontendController()->tmpl->setup['config.']['sys_language_uid']
 					);
 					$attributeObj->loadData();
 
@@ -970,7 +1058,11 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 			}
 		}
 
-		/** @var Tx_Commerce_Domain_Model_BasketItem $basketItem */
+		/**
+		 * Basket item
+		 *
+		 * @var Tx_Commerce_Domain_Model_BasketItem $basketItem
+		 */
 		$basketItem = $this->basket->getBasketItem($article->getUid());
 
 		$tmpArray = $this->generateMarkerArray(
@@ -1001,13 +1093,31 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 			'[artAddUid][' . $article->getUid() . '][price_id]" value="' . $basketItem->getPriceUid() . '" />';
 		$markerArray['###QTY_INPUT_VALUE###'] = $basketItem->getQuantity();
 		$markerArray['###QTY_INPUT_NAME###'] = $this->prefixId . '[artAddUid][' . $article->getUid() . '][count]';
-		$markerArray['###BASKET_ITEM_PRICENET###'] = Tx_Commerce_ViewHelpers_Money::format($basketItem->getPriceNet(), $this->currency);
-		$markerArray['###BASKET_ITEM_PRICEGROSS###'] = Tx_Commerce_ViewHelpers_Money::format($basketItem->getPriceGross(), $this->currency);
-		$markerArray['###BASKET_ITEM_PRICENETNOSCALE###'] = Tx_Commerce_ViewHelpers_Money::format($basketItem->getNoScalePriceNet(), $this->currency);
-		$markerArray['###BASKET_ITEM_PRICEGROSSNOSCALE###'] = Tx_Commerce_ViewHelpers_Money::format($basketItem->getNoScalePriceGross(), $this->currency);
+		$markerArray['###BASKET_ITEM_PRICENET###'] = Tx_Commerce_ViewHelpers_Money::format(
+			$basketItem->getPriceNet(),
+			$this->currency
+		);
+		$markerArray['###BASKET_ITEM_PRICEGROSS###'] = Tx_Commerce_ViewHelpers_Money::format(
+			$basketItem->getPriceGross(),
+			$this->currency
+		);
+		$markerArray['###BASKET_ITEM_PRICENETNOSCALE###'] = Tx_Commerce_ViewHelpers_Money::format(
+			$basketItem->getNoScalePriceNet(),
+			$this->currency
+		);
+		$markerArray['###BASKET_ITEM_PRICEGROSSNOSCALE###'] = Tx_Commerce_ViewHelpers_Money::format(
+			$basketItem->getNoScalePriceGross(),
+			$this->currency
+		);
 		$markerArray['###BASKET_ITEM_COUNT###'] = $basketItem->getQuantity();
-		$markerArray['###BASKET_ITEM_PRICESUM_NET###'] = Tx_Commerce_ViewHelpers_Money::format($basketItem->getItemSumNet(), $this->currency);
-		$markerArray['###BASKET_ITEM_PRICESUM_GROSS###'] = Tx_Commerce_ViewHelpers_Money::format($basketItem->getItemSumGross(), $this->currency);
+		$markerArray['###BASKET_ITEM_PRICESUM_NET###'] = Tx_Commerce_ViewHelpers_Money::format(
+			$basketItem->getItemSumNet(),
+			$this->currency
+		);
+		$markerArray['###BASKET_ITEM_PRICESUM_GROSS###'] = Tx_Commerce_ViewHelpers_Money::format(
+			$basketItem->getItemSumGross(),
+			$this->currency
+		);
 
 		// Link to delete this article in basket
 		if (is_array($this->conf['deleteItem.'])) {
@@ -1027,7 +1137,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 		$markerArray['###DELIOTMFROMBASKETLINK###'] = $markerArray['###DELETEFROMBASKETLINK###'];
 
 		$templateMarker = '###PRODUCT_BASKET_FORM_SMALL###';
-		$template = $this->cObj->getSubpart($this->templateCode, $templateMarker);
+		$template = $this->cObj->getSubpart($this->getTemplateCode(), $templateMarker);
 
 		$markerArray = array_merge($markerArray, $this->languageMarker);
 
@@ -1041,15 +1151,29 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['makeArticleView'] as $classRef) {
 				$hookObj = GeneralUtility::getUserObj($classRef);
 				if (method_exists($hookObj, 'additionalMarker')) {
-					$markerArray = $hookObj->additionalMarker($markerArray, $this, $article, $product);
+					$markerArray = $hookObj->additionalMarker(
+						$markerArray,
+						$this,
+						$article,
+						$product,
+						$this->basket->getBasketItem($article->getUid())
+					);
 				}
 			}
 		}
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BasketController.php']['makeArticleView'])) {
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BasketController.php']['makeArticleView'] as $classRef) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BasketController.php']['makeArticleView'] as
+				$classRef
+			) {
 				$hookObj = GeneralUtility::getUserObj($classRef);
 				if (method_exists($hookObj, 'additionalMarker')) {
-					$markerArray = $hookObj->additionalMarker($markerArray, $this, $article, $product);
+					$markerArray = $hookObj->additionalMarker(
+						$markerArray,
+						$this,
+						$article,
+						$product,
+						$this->basket->getBasketItem($article->getUid())
+					);
 				}
 			}
 		}
@@ -1080,7 +1204,9 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 			}
 		}
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BasketController.php']['makeProductList'])) {
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BasketController.php']['makeProductList'] as $classRef) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BasketController.php']['makeProductList'] as
+				$classRef
+			) {
 				$hookObjectsArr[] = &GeneralUtility::getUserObj($classRef);
 			}
 		}
@@ -1093,10 +1219,10 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/BasketController.php\'][\'alternativePrefixId\']
 			');
-			$hookObject = &GeneralUtility::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['alternativePrefixId']);
+			$hookObject = GeneralUtility::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['alternativePrefixId']);
 		}
 		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BasketController.php']['alternativePrefixId']) {
-			$hookObject = &GeneralUtility::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BasketController.php']['alternativePrefixId']);
+			$hookObject = GeneralUtility::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BasketController.php']['alternativePrefixId']);
 		}
 		if (method_exists($hookObject, 'SingeDisplayPrefixId')) {
 			$altPrefixSingle = $hookObject->SingeDisplayPrefixId();
@@ -1117,7 +1243,11 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 		$changerowcount = 0;
 		foreach ($list as $basketItemId) {
 			// Fill marker arrays with product/article values
-			/** @var $basketItem Tx_Commerce_Domain_Model_BasketItem */
+			/**
+			 * Basket item
+			 *
+			 * @var $basketItem Tx_Commerce_Domain_Model_BasketItem
+			 */
 			$basketItem = $this->basket->getBasketItem($basketItemId);
 
 			// Check stock
@@ -1190,7 +1320,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 					}
 				}
 
-				$template = $this->cObj->getSubpart($this->templateCode, $templateMarker[$templateSelector]);
+				$template = $this->cObj->getSubpart($this->getTemplateCode(), $templateMarker[$templateSelector]);
 				$changerowcount++;
 
 				$template = $this->cObj->substituteSubpart($template, '###PRODUCT_BASKET_FORM_SMALL###', '');
@@ -1212,5 +1342,105 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 		}
 
 		return $content;
+	}
+
+
+	/**
+	 * Get basket
+	 *
+	 * @return Tx_Commerce_Domain_Model_Basket
+	 */
+	public function getBasket() {
+		return $this->basket;
+	}
+
+	/**
+	 * Getter
+	 *
+	 * @return array
+	 */
+	public function getMarkerArray() {
+		return $this->markerArray;
+	}
+
+	/**
+	 * Setter
+	 *
+	 * @param array $markerArray Marker array
+	 *
+	 * @return void
+	 */
+	public function setMarkerArray(array $markerArray) {
+		$this->markerArray = $markerArray;
+	}
+
+	/**
+	 * Getter
+	 *
+	 * @return string
+	 */
+	public function getTemplateCode() {
+		return $this->templateCode;
+	}
+
+	/**
+	 * Setter
+	 *
+	 * @param string $templateCode Template code
+	 *
+	 * @return void
+	 */
+	public function setTemplateCode($templateCode) {
+		$this->templateCode = $templateCode;
+	}
+
+	/**
+	 * Getter
+	 *
+	 * @return string
+	 */
+	public function getContent() {
+		return $this->content;
+	}
+
+	/**
+	 * Setter
+	 *
+	 * @param string $content Content
+	 *
+	 * @return void
+	 */
+	public function setContent($content) {
+		$this->content = $content;
+	}
+
+	/**
+	 * Getter
+	 *
+	 * @return int
+	 */
+	public function getPriceLimitForBasket() {
+		return $this->priceLimitForBasket;
+	}
+
+	/**
+	 * Setter
+	 *
+	 * @param int $priceLimitForBasket Limit for basket
+	 *
+	 * @return void
+	 */
+	public function setPriceLimitForBasket($priceLimitForBasket) {
+		$this->priceLimitForBasket = $priceLimitForBasket;
+	}
+
+
+	/**
+	 * Get typoscript frontend controller
+	 *
+	 * @return \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController
+	 */
+	protected function getFrontendController() {
+		return $GLOBALS['TSFE'];
 	}
 }

@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * This file is part of the TYPO3 CMS project.
  *
  * It is free software; you can redistribute it and/or modify it under
@@ -13,36 +13,48 @@
  */
 
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Http\AjaxRequestHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper
+ *
+ * @author Sebastian Fischer <typo3@marketing-factory.de>
  */
 class Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 	/**
+	 * Category tree
+	 *
 	 * @var Tx_Commerce_Tree_CategoryTree
 	 */
 	protected $categoryTree;
 
 	/**
+	 * Current sub script
+	 *
 	 * @var string
 	 */
 	protected $currentSubScript;
 
 	/**
-	 * @var boolean
+	 * Do highlight
+	 *
+	 * @var bool
 	 */
 	protected $doHighlight;
 
 	/**
-	 * @var boolean
+	 * Has filter box
+	 *
+	 * @var bool
 	 */
 	protected $hasFilterBox;
 
 	/**
 	 * Initializes the Tree
 	 *
-	 * @param bool $bare if TRUE only categories get rendered
+	 * @param bool $bare If TRUE only categories get rendered
+	 *
 	 * @return void
 	 */
 	public function init($bare = FALSE) {
@@ -56,11 +68,16 @@ class Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper extends \TYPO3\CMS\B
 	/**
 	 * Initializes the Page
 	 *
-	 * @param bool $bare if TRUE only categories get rendered
+	 * @param bool $bare If TRUE only categories get rendered
+	 *
 	 * @return void
 	 */
 	public function initPage($bare = FALSE) {
-		/** @var \TYPO3\CMS\Backend\Template\DocumentTemplate $doc */
+		/**
+		 * Document template
+		 *
+		 * @var \TYPO3\CMS\Backend\Template\DocumentTemplate $doc
+		 */
 		$doc = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
 		$this->doc = $doc;
 		$this->doc->backPath = $GLOBALS['BACK_PATH'];
@@ -87,15 +104,17 @@ class Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper extends \TYPO3\CMS\B
 		}
 		';
 
-		$currentSubScript = ($this->currentSubScript ?
-			'top.currentSubScript = unescape("' . rawurlencode($this->currentSubScript) . '");' :
-			'');
-		$doHighlight = ($this->doHighlight ?
-			'hilight_row("row" + top.fsMod.recentIds["txcommerceM1"], highLightID);' :
-			'');
-		$formStyle = (!$GLOBALS['CLIENT']['FORMSTYLE'] ?
-			'' :
-			'if (linkObj) { linkObj.blur(); }');
+		$currentSubScript = '';
+		if ($this->currentSubScript) {
+			$currentSubScript = 'top.currentSubScript = unescape("' . rawurlencode($this->currentSubScript) . '");';
+		}
+
+		$doHighlight = '';
+		if ($this->doHighlight) {
+			$doHighlight = 'hilight_row("row" + top.fsMod.recentIds["txcommerceM1"], highLightID);';
+		}
+
+		$formStyle = (!$GLOBALS['CLIENT']['FORMSTYLE'] ? '' : 'if (linkObj) { linkObj.blur(); }');
 
 		// Setting JavaScript for menu.
 		$this->doc->JScode = $this->doc->wrapScriptTags(
@@ -222,10 +241,14 @@ class Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper extends \TYPO3\CMS\B
 	/**
 	 * Checks if an update of the commerce extension is necessary
 	 *
-	 * @return boolean
+	 * @return bool
 	 */
 	protected function isUpdateNecessary() {
-		/** @var Tx_Commerce_Utility_UpdateUtility $updater */
+		/**
+		 * Updater
+		 *
+		 * @var Tx_Commerce_Utility_UpdateUtility $updater
+		 */
 		$updater = GeneralUtility::makeInstance('Tx_Commerce_Utility_UpdateUtility');
 
 		return $updater->access();
@@ -235,11 +258,12 @@ class Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper extends \TYPO3\CMS\B
 	 * Makes the AJAX call to expand or collapse the categorytree.
 	 * Called by typo3/ajax.php
 	 *
-	 * @param array $params : additional parameters (not used here)
-	 * @param TYPO3AJAX &$ajaxObj : reference of the TYPO3AJAX object of this request
+	 * @param array $params Additional parameters (not used here)
+	 * @param AjaxRequestHandler $ajaxObj Ajax object
+	 *
 	 * @return void
 	 */
-	public function ajaxExpandCollapse($params, &$ajaxObj) {
+	public function ajaxExpandCollapse(array $params, AjaxRequestHandler &$ajaxObj) {
 		$parameter = $this->getParameter();
 
 		// Get the Category Tree
@@ -253,11 +277,12 @@ class Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper extends \TYPO3\CMS\B
 	 * Makes the AJAX call to expand or collapse the categorytree.
 	 * Called by typo3/ajax.php
 	 *
-	 * @param array $params additional parameters (not used here)
-	 * @param TYPO3AJAX &$ajaxObj reference of the TYPO3AJAX object of this request
+	 * @param array $params Additional parameters (not used here)
+	 * @param AjaxRequestHandler $ajaxObj Ajax object
+	 *
 	 * @return void
 	 */
-	public function ajaxExpandCollapseWithoutProduct($params, &$ajaxObj) {
+	public function ajaxExpandCollapseWithoutProduct(array $params, AjaxRequestHandler &$ajaxObj) {
 		$parameter = $this->getParameter();
 
 		// Get the category tree without the products and the articles
@@ -268,6 +293,8 @@ class Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper extends \TYPO3\CMS\B
 	}
 
 	/**
+	 * Parameter getter
+	 *
 	 * @return array
 	 */
 	protected function getParameter() {

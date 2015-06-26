@@ -1,67 +1,63 @@
 <?php
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2008-2009 Erik Frister <typo3@marketing-factory.de>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *  A copy is found in the textfile GPL.txt and important notices to the license
- *  from the author is found in LICENSE.txt distributed with these scripts.
- *
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
 
 /**
  * Implements the Tx_Commerce_Tree_Leaf_Data for the Category
+ *
+ * Class Tx_Commerce_Tree_Leaf_CategoryData
+ *
+ * @author 2008-2009 Erik Frister <typo3@marketing-factory.de>
  */
 class Tx_Commerce_Tree_Leaf_CategoryData extends Tx_Commerce_Tree_Leaf_MasterData {
 	/**
 	 * Permission Mask for reading Categories
 	 *
-	 * @var integer
+	 * @var int
 	 */
 	protected $permsMask = 1;
 
 	/**
-	 * make this as a var which field is used as item_parent
+	 * Make this as a var which field is used as item_parent
 	 *
 	 * @var string
 	 */
-	protected $extendedFields  = 'parent_category, title, perms_userid, perms_groupid, perms_user, perms_group, perms_everybody, editlock, hidden, starttime, endtime, fe_group';
+	protected $extendedFields  = 'parent_category, title, perms_userid, perms_groupid, perms_user, perms_group, perms_everybody,
+		editlock, hidden, starttime, endtime, fe_group';
 
 	/**
+	 * Database table
+	 *
 	 * @var string
 	 */
 	protected $table = 'tx_commerce_categories';
 
 	/**
+	 * Mm relation field
+	 *
 	 * @var string
 	 */
 	protected $item_parent = 'uid_foreign';
 
 	/**
-	 * table to read the leafitems from
+	 * Table to read the leafitems from
 	 *
 	 * @var string
 	 */
 	protected $itemTable = 'tx_commerce_categories';
 
 	/**
-	 * table that is to be used to find parent items
+	 * Relation table
 	 *
 	 * @var string
 	 */
@@ -70,21 +66,24 @@ class Tx_Commerce_Tree_Leaf_CategoryData extends Tx_Commerce_Tree_Leaf_MasterDat
 	/**
 	 * Flag if mm table is to be used or the parent field
 	 *
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $useMMTable = TRUE;
 
 	/**
 	 * Sets the Permission Mask for reading Categories from the db
 	 *
-	 * @param $mask integer mask for reading the permissions
+	 * @param int $mask Mask for reading the permissions
+	 *
 	 * @return void
 	 */
 	public function setPermsMask($mask) {
 		if (!is_numeric($mask)) {
 			if (TYPO3_DLOG) {
 				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
-					'setPermsMask (categorydata) gets passed invalid parameters.', COMMERCE_EXTKEY, 3
+					'setPermsMask (categorydata) gets passed invalid parameters.',
+					COMMERCE_EXTKEY,
+					3
 				);
 			}
 		} else {
@@ -106,25 +105,33 @@ class Tx_Commerce_Tree_Leaf_CategoryData extends Tx_Commerce_Tree_Leaf_MasterDat
 	/**
 	 * Loads and returns the Array of Records (for db_list)
 	 *
-	 * @param integer $uid UID of the starting Category
-	 * @param integer $depth Recursive Depth
+	 * @param int $uid UID of the starting Category
+	 * @param int $depth Recursive Depth
+	 *
 	 * @return array
 	 */
 	public function getRecordsDbList($uid, $depth = 2) {
 		if (!is_numeric($uid) || !is_numeric($depth)) {
 			if (TYPO3_DLOG) {
-				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('getRecordsDbList (categorydata) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
+					'getRecordsDbList (categorydata) gets passed invalid parameters.',
+					COMMERCE_EXTKEY,
+					3
+				);
 			}
 			return array();
 		}
 
-		/** @var \TYPO3\CMS\Core\Authentication\BackendUserAuthentication $backendUser */
-		$backendUser = $GLOBALS['BE_USER'];
+		$backendUser = $this->getBackendUser();
 
-			// Check if User's Group may view the records
+		// Check if User's Group may view the records
 		if (!$backendUser->check('tables_select', $this->table)) {
 			if (TYPO3_DLOG) {
-				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('getRecordsDbList (categorydata): Usergroup is not allowed to view the records.', COMMERCE_EXTKEY, 2);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
+					'getRecordsDbList (categorydata): Usergroup is not allowed to view the records.',
+					COMMERCE_EXTKEY,
+					2
+				);
 			}
 			return array();
 		}
@@ -132,9 +139,7 @@ class Tx_Commerce_Tree_Leaf_CategoryData extends Tx_Commerce_Tree_Leaf_MasterDat
 		$this->setUid($uid);
 		$this->setDepth($depth);
 
-		$records = $this->getRecordsByUid();
-
-		return $records;
+		return $this->getRecordsByUid();
 	}
 
 	/**
@@ -148,11 +153,22 @@ class Tx_Commerce_Tree_Leaf_CategoryData extends Tx_Commerce_Tree_Leaf_MasterDat
 		$root['uid'] = 0;
 		$root['pid'] = 0;
 		$root['title'] = $this->getLL('leaf.category.root');
-			// root always has pm icon
+
+		// root always has pm icon
 		$root['hasChildren'] = 1;
 		$root['lastNode'] = TRUE;
 		$root['item_parent'] = 0;
 
 		return $root;
+	}
+
+
+	/**
+	 * Get backend user
+	 *
+	 * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
+	 */
+	protected function getBackendUser() {
+		return $GLOBALS['BE_USER'];
 	}
 }

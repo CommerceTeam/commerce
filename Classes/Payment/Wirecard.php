@@ -1,43 +1,37 @@
 <?php
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2005-2011 Marco Klawonn <info@webprog.de>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *  A copy is found in the textfile GPL.txt and important notices to the license
- *  from the author is found in LICENSE.txt distributed with these scripts.
- *
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
 
 /**
- * class: payment_wirdecard
  * Schnittstelle zu wirecard
  * setPaymentmethod        - ELV, Bank, KK (ggf Intern)
  * setPaymenttype        - reserve, book  (ggf Intern)
- * setData                - Speichert KK Nummer, Betrag, Name usw. (vielleicht splitte ich das noch
+ * setData                - Speichert KK Nummer, Betrag,
+ * 	Name usw. (vielleicht splitte ich das noch
  *                          auf z.B. setKKnumber usw)
- * prepareMethod        - bereitet die Transaktion vor - erstellt die Parameterliste
- *                      ggf. auch prepareMethod->KK oder ->ELV Muss ich nochmal dr�ber nachdenken ich
- *                      denke aber das w�re kein schlechter weg, sonst als array �bergeben
+ * prepareMethod        - bereitet die Transaktion vor
+ * 	- erstellt die Parameterliste
+ *                      ggf. auch prepareMethod->KK oder
+ * 	->ELV Muss ich nochmal drüber nachdenken ich
+ *                      denke aber das wäre kein schlechter
+ * 	weg, sonst als array übergeben
  * sendTransaction        - sendet zur Schnittstelle
  * getErrorOfErrorcode    - Gibt den Fehlertext zur�ck
  * getErrortype            - Warning, schwer, unbekannt, usw.
+ *
+ * Class Tx_Commerce_Payment_Wirecard
+ *
+ * @author 2005-2011 Marco Klawonn <info@webprog.de>
  */
 class Tx_Commerce_Payment_Wirecard {
 	/**
@@ -62,48 +56,65 @@ class Tx_Commerce_Payment_Wirecard {
 	protected $businesscasesignature = '56500';
 
 	/**
+	 * Reference id
+	 *
 	 * @var string
 	 */
 	public $referenzID;
 
 	/**
+	 * Order code
+	 *
 	 * @var string
 	 */
 	protected $orderCode = '';
 
 	/**
-	 * it is better to keep this url outside your HTML dir which has public (internet) access
+	 * It is better to keep this url outside your
+	 * HTML dir which has public (internet) access
 	 *
 	 * @var string
 	 */
 	protected $url = 'https://frontend-test.wirecard.com/secure/ssl-gateway';
 
 	/**
+	 * Error
+	 *
 	 * @var array
 	 */
 	public $error;
 
 	/**
+	 * Payment method
+	 *
 	 * @var string
 	 */
 	public $paymentmethod;
 
 	/**
+	 * Payment type
+	 *
 	 * @var string
 	 */
 	public $paymenttype;
 
 	/**
+	 * Payment data
+	 *
 	 * @var array
 	 */
 	public $paymentData = array();
 
 	/**
+	 * Transaction data
+	 *
 	 * @var array
 	 */
 	public $transactionData = array();
 
 	/**
+	 * User data
+	 *
 	 * @var array
 	 */
 	public $userData = array();
@@ -114,20 +125,23 @@ class Tx_Commerce_Payment_Wirecard {
 	 * @return self
 	 */
 	public function __construct() {
-			// Ordercode immer neu setzen
+		// Ordercode immer neu setzen
 		$this->orderCode = $this->referenzID;
 
-			// daten die versendet werden
+		// daten die versendet werden
 		$this->sendData = '';
 	}
 
-	/**
-	 * Pflichtfunktion - function: checkTransactiondata
-	 * kontrolliert welche Daten f�r wirecard und den gew�hlten Paymenttyp wichtig sind
-	 * gibt zur�ck ob alle daten ok sind oder einen Array mit den Daten die Fehlen
+	/*
+	 * Required function - checkTransactiondata
+	 * kontrolliert welche Daten f�r wirecard und den gew�hlten Paymenttyp wichtig
+	 * sind gibt zur�ck ob alle daten ok sind oder einen Array mit den Daten die
+	 * Fehlen
 	 */
 
 	/**
+	 * Check transaction data
+	 *
 	 * @return NULL
 	 */
 	public function checkTransactiondata() {
@@ -137,6 +151,8 @@ class Tx_Commerce_Payment_Wirecard {
 	}
 
 	/**
+	 * Prepare method
+	 *
 	 * @return NULL
 	 */
 	public function prepareMethod() {
@@ -144,12 +160,10 @@ class Tx_Commerce_Payment_Wirecard {
 	}
 
 	/**
-	* Pflichtfunktion - function: sendTransaction
-	* Sendet die Daten - bei Wirecard mit einem Post auf Curl SSL
-	* Das Ergebniss steht im result und muss in das Error/Status Array geschrieben werden.
-	*
-	* @return boolean
-	*/
+	 * Send transaction
+	 *
+	 * @return bool
+	 */
 	public function sendTransaction() {
 		$header = array(
 			'Authorization: Basic ' . base64_encode($this->merchantCode . ':' . $this->password . LF),
@@ -187,6 +201,8 @@ class Tx_Commerce_Payment_Wirecard {
 	}
 
 	/**
+	 * Get error
+	 *
 	 * @return NULL
 	 */
 	public function getErrorOfErrorcode() {
@@ -194,35 +210,36 @@ class Tx_Commerce_Payment_Wirecard {
 	}
 
 	/**
+	 * Get error type
+	 *
 	 * @return NULL
 	 */
 	public function getErrortype() {
 		return NULL;
 	}
 
-	/**
-	 * Interne Funktionen
+	/*
+	 * Internal functions
+	 *
 	 * Diese Funktionen sind private und werden nie von aussen aufgerufen
 	 * K�nnen deshalb auch frei mit den anderen Klassenfunktionen reden
 	 */
 
 	/**
-	 * @return integer
+	 * Is error
+	 *
+	 * @return int
 	 */
 	public function isError() {
-		if (is_array($this->error)) {
-			return 1;
-		} else {
-			return 0;
-		}
+		return (int) (is_array($this->error));
 	}
 
 	/**
-	 * Intern - function: parseResult
-	 * Parst das ergebnis und schreibt die Werte in das Status/Error Array
+	 * Parse result
 	 *
-	 * @param string $result
-	 * @return integer
+	 * @param string $result Result
+	 *
+	 * @return int
 	 */
 	public function parseResult($result) {
 		if (!$result) {
@@ -240,12 +257,14 @@ class Tx_Commerce_Payment_Wirecard {
 					// ERROR auswerten und in $this->error schreiben
 					// -----------------------------------------------------------
 				case 'ERROR':
-					while ($v2 = current(array_slice(each($v), 1, 1))) {
+					while (($v2 = current(array_slice(each($v), 1, 1)))) {
 						if ($vals[$v2 + 1]['tag'] <> 'ERROR') {
 							$this->error[$this->referenzID][$vals[$v2 + 1]['tag']] = $vals[$v2 + 1]['value'];
 						}
 					}
-				break;
+					break;
+
+				default:
 			}
 		};
 
@@ -259,12 +278,11 @@ class Tx_Commerce_Payment_Wirecard {
 	 * @return string
 	 */
 	public function getwirecardXML() {
-		$xml = "
-			<?xml version='1.0' encoding='UTF-8'?>
-			<WIRECARD_BXML xmlns:xsi='http://www.w3.org/1999/XMLSchema-instance' xsi:noNamespaceSchemaLocation='wirecard.xsd'>
+		$xml = '<?xml version="1.0" encoding="UTF-8"?>
+			<WIRECARD_BXML xmlns:xsi="http://www.w3.org/1999/XMLSchema-instance" xsi:noNamespaceSchemaLocation="wirecard.xsd">
 				<W_REQUEST>
 					<W_JOB>
-						<JobID>" . $this->orderCode . '</JobID>
+						<JobID>' . $this->orderCode . '</JobID>
 						<BusinessCaseSignature>' . $this->businesscasesignature . '</BusinessCaseSignature>
 						<FNC_CC_TRANSACTION>
 							<FunctionID>WireCard Test</FunctionID>
@@ -301,9 +319,7 @@ class Tx_Commerce_Payment_Wirecard {
 	}
 
 	/**
-	 * Intern - function: getPaymentMask
-	 * XML f�r die Payment Daten
-	 * Unterfunktion von getwirecardXML
+	 * Get payment mask
 	 *
 	 * @return string
 	 */
@@ -325,10 +341,10 @@ class Tx_Commerce_Payment_Wirecard {
 	}
 
 	/**
-	 * Intern - function: getCountryCode
-	 * Gibt einen Country Code zur�ck
+	 * Get country code
 	 *
-	 * @param string $country
+	 * @param string $country Country
+	 *
 	 * @return string
 	 */
 	public function getCountryCode($country) {

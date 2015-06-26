@@ -1,32 +1,23 @@
 <?php
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2008 Erik Frister <typo3@marketing-factory.de>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *  A copy is found in the textfile GPL.txt and important notices to the license
- *  from the author is found in LICENSE.txt distributed with these scripts.
- *
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
 
 /**
  * Implements the Data for the Article Leaf
+ *
+ * Class Tx_Commerce_Tree_Leaf_ArticleData
+ *
+ * @author 2008 Erik Frister <typo3@marketing-factory.de>
  */
 class Tx_Commerce_Tree_Leaf_ArticleData extends Tx_Commerce_Tree_Leaf_SlaveData {
 	/**
@@ -37,12 +28,14 @@ class Tx_Commerce_Tree_Leaf_ArticleData extends Tx_Commerce_Tree_Leaf_SlaveData 
 	protected $extendedFields = 'title, navtitle, hidden, deleted, starttime, endtime, fe_group, t3ver_oid, t3ver_id, t3ver_label';
 
 	/**
+	 * Table
+	 *
 	 * @var string
 	 */
 	protected $table = 'tx_commerce_articles';
 
 	/**
-	 * table to read the leafitems from
+	 * Table to read the leafitems from
 	 *
 	 * @var string
 	 */
@@ -51,16 +44,20 @@ class Tx_Commerce_Tree_Leaf_ArticleData extends Tx_Commerce_Tree_Leaf_SlaveData 
 	/**
 	 * Flag if mm table is to be used or the parent field
 	 *
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $useMMTable = FALSE;
 
 	/**
+	 * Item parent field
+	 *
 	 * @var string
 	 */
 	protected $itemParentField = 'uid_product';
 
 	/**
+	 * Item parent
+	 *
 	 * @var string
 	 */
 	protected $item_parent = 'uid_product';
@@ -76,14 +73,15 @@ class Tx_Commerce_Tree_Leaf_ArticleData extends Tx_Commerce_Tree_Leaf_SlaveData 
 	}
 
 	/**
-	 * @todo If we implement the positions (see above), we should also implement this and any function related to making this leaf not ultimate
 	 * Returns true if this Article is currently expanded
 	 *
-	 * @param array $row - Current Row
-	 * @return boolean
+	 * @param array $uid Uid of the current row
+	 *
+	 * @return bool
+	 * @todo If we implement the positions (see above), we should also implement this and any function related to making this leaf not ultimate
 	 */
-	public function isExpanded(&$row) {
-			// Article is the ultimate leaf, so to speak - it currently has no subleafs
+	public function isExpanded($uid) {
+		// Article is the ultimate leaf, so to speak - it currently has no subleafs
 		return FALSE;
 	}
 }

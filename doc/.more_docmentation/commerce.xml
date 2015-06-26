@@ -47,7 +47,7 @@
 <OPTION Name="ZEROFILL" Default="0" />
 </OPTIONS>
 </DATATYPE>
-<DATATYPE ID="5" IDGroup="0" TypeName="INTEGER" Description="A normal-size integer. The signed range is -2147483648 to 2147483647. The unsigned range is 0 to 4294967295." ParamCount="1" OptionCount="2" ParamRequired="0" EditParamsAsString="0" SynonymGroup="1" PhysicalMapping="0" PhysicalTypeName="" >
+<DATATYPE ID="5" IDGroup="0" TypeName="integer" Description="A normal-size integer. The signed range is -2147483648 to 2147483647. The unsigned range is 0 to 4294967295." ParamCount="1" OptionCount="2" ParamRequired="0" EditParamsAsString="0" SynonymGroup="1" PhysicalMapping="0" PhysicalTypeName="" >
 <PARAMS>
 <PARAM Name="length" />
 </PARAMS>

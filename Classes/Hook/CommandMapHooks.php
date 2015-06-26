@@ -1,53 +1,62 @@
 <?php
-/***************************************************************
- *  Copyright notice
- *  (c) 2005-2011 Franz Holzinger <kontakt@fholzinger.com>
- *  All rights reserved
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *  A copy is found in the textfile GPL.txt and important notices to the license
- *  from the author is found in LICENSE.txt distributed with these scripts.
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+/*
+ * This file is part of the TYPO3 CMS project.
+ *
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
+ *
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ *
+ * The TYPO3 project - inspiring people to share!
+ */
+
+use TYPO3\CMS\Core\DataHandling\DataHandler;
 
 /**
  * Part of the COMMERCE (Advanced Shopping System) extension.
  * This class contains some hooks for processing formdata.
  * Hook for saving order data and order_articles.
+ *
+ * Class Tx_Commerce_Hook_CommandMapHooks
+ *
+ * @author 2005-2011 Franz Holzinger <kontakt@fholzinger.com>
  */
 class Tx_Commerce_Hook_CommandMapHooks {
 	/**
-	 * @var integer
+	 * Attribute without localized title
+	 *
+	 * @var int
 	 */
 	const ATTRIBUTE_LOCALIZATION_TITLE_EMPTY = 0;
 
 	/**
-	 * @var integer
+	 * Attribute without copied title
+	 *
+	 * @var int
 	 */
 	const ATTRIBUTE_LOCALIZATION_TITLE_COPY = 1;
 
 	/**
-	 * @var integer
+	 * Attribute without prepended title
+	 *
+	 * @var int
 	 */
 	const ATTRIBUTE_LOCALIZATION_TITLE_PREPENDED = 2;
 
 
 	/**
+	 * Backend utility
+	 *
 	 * @var Tx_Commerce_Utility_BackendUtility
 	 */
 	protected $belib;
 
 	/**
-	 * @var \TYPO3\CMS\Core\DataHandling\DataHandler
+	 * Data handler
+	 *
+	 * @var DataHandler
 	 */
 	protected $pObj;
 
@@ -64,14 +73,15 @@ class Tx_Commerce_Hook_CommandMapHooks {
 	 * This hook is processed Before a commandmap is processed (delete, etc.)
 	 * Do Nothing if the command is lokalize an table is article
 	 *
-	 * @param string &$command
-	 * @param string $table the table the data will be stored in
-	 * @param integer &$id The uid of the dataset we're working on
-	 * @param mixed $value
-	 * @param \TYPO3\CMS\Core\DataHandling\DataHandler $pObj
+	 * @param string $command Command
+	 * @param string $table Table the data will be stored in
+	 * @param int $id The uid of the dataset we're working on
+	 * @param mixed $value Value
+	 * @param DataHandler $pObj Parent
+	 *
 	 * @return void
 	 */
-	public function processCmdmap_preProcess(&$command, $table, &$id, $value, $pObj) {
+	public function processCmdmap_preProcess(&$command, $table, &$id, $value, DataHandler $pObj) {
 		$this->pObj = $pObj;
 
 		switch ($table) {
@@ -94,24 +104,40 @@ class Tx_Commerce_Hook_CommandMapHooks {
 	/**
 	 * Preprocess category
 	 *
-	 * @param string &$command
-	 * @param integer &$categoryUid
+	 * @param string $command Command
+	 * @param int $categoryUid Category uid
+	 *
 	 * @return void
 	 */
 	protected function preProcessCategory(&$command, &$categoryUid) {
 		if ($command == 'delete') {
-			/** @var Tx_Commerce_Domain_Model_Category $category */
+			/**
+			 * Category
+			 *
+			 * @var Tx_Commerce_Domain_Model_Category $category
+			 */
 			$category = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Category', $categoryUid);
 			$category->loadData();
 
 			// check if category is a translation and get l18n parent for access rights
 			if ($category->getL18nParent()) {
-				/** @var Tx_Commerce_Domain_Model_Category $category */
-				$category = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Category', $category->getL18nParent());
+				/**
+				 * Category
+				 *
+				 * @var Tx_Commerce_Domain_Model_Category $category
+				 */
+				$category = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+					'Tx_Commerce_Domain_Model_Category',
+					$category->getL18nParent()
+				);
 			}
 
 			// get mounted categories of user to check if current category is child of these
-			/** @var Tx_Commerce_Tree_CategoryMounts $mounts */
+			/**
+			 * Category mounts
+			 *
+			 * @var Tx_Commerce_Tree_CategoryMounts $mounts
+			 */
 			$mounts = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Tree_CategoryMounts');
 			$mounts->init($GLOBALS['BE_USER']->user['uid']);
 
@@ -130,13 +156,13 @@ class Tx_Commerce_Hook_CommandMapHooks {
 	/**
 	 * Preprocess product
 	 *
-	 * @param string &$command
-	 * @param integer &$productUid
+	 * @param string $command Command
+	 * @param int $productUid Product uid
+	 *
 	 * @return void
 	 */
 	protected function preProcessProduct(&$command, &$productUid) {
-		/** @var \TYPO3\CMS\Core\Authentication\BackendUserAuthentication $backendUser */
-		$backendUser = $GLOBALS['BE_USER'];
+		$backendUser = $this->getBackendUser();
 
 		if ($command == 'localize') {
 			// check if product has articles
@@ -154,19 +180,27 @@ class Tx_Commerce_Hook_CommandMapHooks {
 			$backendUser->uc['txcommerce_copyProcess'] = 1;
 			$backendUser->writeUC();
 		} elseif ($command == 'delete') {
-			/** @var Tx_Commerce_Domain_Model_Product $item */
+			/**
+			 * Product
+			 *
+			 * @var Tx_Commerce_Domain_Model_Product $product
+			 */
 			$product = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Product', $productUid);
 
 			// check if product or if translated the translation parent category
 			if (!current($product->getParentCategories())) {
-				/** @var Tx_Commerce_Domain_Model_Product $product */
-				$product = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Product', $product->getL18nParent());
+				$product = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+					'Tx_Commerce_Domain_Model_Product',
+					$product->getL18nParent()
+				);
 			}
 
 			// check existing categories
-			if (!Tx_Commerce_Utility_BackendUtility::checkPermissionsOnCategoryContent(
-				$product->getParentCategories(), array('editcontent')
-			)
+			if (
+				!Tx_Commerce_Utility_BackendUtility::checkPermissionsOnCategoryContent(
+					$product->getParentCategories(),
+					array('editcontent')
+				)
 			) {
 				// Log the error
 				$this->pObj->log(
@@ -182,8 +216,9 @@ class Tx_Commerce_Hook_CommandMapHooks {
 	/**
 	 * Proprocess article
 	 *
-	 * @param string &$command
-	 * @param integer &$articleUid
+	 * @param string $command Command
+	 * @param int $articleUid Article uid
+	 *
 	 * @return void
 	 */
 	protected function preProcessArticle(&$command, &$articleUid) {
@@ -191,22 +226,34 @@ class Tx_Commerce_Hook_CommandMapHooks {
 			$command = '';
 			$this->error('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:article.localization');
 		} elseif ($command == 'delete') {
-			/** @var Tx_Commerce_Domain_Model_Article $article */
+			/**
+			 * Article
+			 *
+			 * @var Tx_Commerce_Domain_Model_Article $article
+			 */
 			$article = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Article', $articleUid);
 			$article->loadData();
 
-			/** @var Tx_Commerce_Domain_Model_Product $product */
+			/**
+			 * Product
+			 *
+			 * @var Tx_Commerce_Domain_Model_Product $product
+			 */
 			$product = $article->getParentProduct();
 
 			// check if product or if translated the translation parent category
 			if (!current($product->getParentCategories())) {
-				/** @var Tx_Commerce_Domain_Model_Product $product */
-				$product = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Product', $product->getL18nParent());
+				$product = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+					'Tx_Commerce_Domain_Model_Product',
+					$product->getL18nParent()
+				);
 			}
 
-			if (!Tx_Commerce_Utility_BackendUtility::checkPermissionsOnCategoryContent(
-				$product->getParentCategories(), array('editcontent')
-			)
+			if (
+				!Tx_Commerce_Utility_BackendUtility::checkPermissionsOnCategoryContent(
+					$product->getParentCategories(),
+					array('editcontent')
+				)
 			) {
 				// Log the error
 				$this->pObj->log(
@@ -224,14 +271,15 @@ class Tx_Commerce_Hook_CommandMapHooks {
 	 * This hook is processed AFTER a commandmap is processed (delete, etc.)
 	 * Calculation of missing price
 	 *
-	 * @param string &$command
-	 * @param string $table the table the data will be stored in
-	 * @param integer $id The uid of the dataset we're working on
-	 * @param integer $value
-	 * @param \TYPO3\CMS\Core\DataHandling\DataHandler $pObj The instance of the BE data handler
+	 * @param string $command Command
+	 * @param string $table Table the data will be stored in
+	 * @param int $id The uid of the dataset we're working on
+	 * @param int $value Value
+	 * @param DataHandler $pObj The instance of the BE data handler
+	 *
 	 * @return void
 	 */
-	public function processCmdmap_postProcess(&$command, $table, $id, $value, $pObj) {
+	public function processCmdmap_postProcess(&$command, $table, $id, $value, DataHandler $pObj) {
 		$this->pObj = $pObj;
 
 		switch ($table) {
@@ -250,8 +298,9 @@ class Tx_Commerce_Hook_CommandMapHooks {
 	/**
 	 * Postprocess category
 	 *
-	 * @param string $command
-	 * @param int $categoryUid
+	 * @param string $command Command
+	 * @param int $categoryUid Category uid
+	 *
 	 * @return void
 	 */
 	protected function postProcessCategory($command, $categoryUid) {
@@ -269,9 +318,10 @@ class Tx_Commerce_Hook_CommandMapHooks {
 	/**
 	 * Postprocess product
 	 *
-	 * @param string &$command
-	 * @param int $productUid
-	 * @param int $value
+	 * @param string $command Command
+	 * @param int $productUid Product uid
+	 * @param int $value Value
+	 *
 	 * @return void
 	 */
 	protected function postProcessProduct(&$command, $productUid, $value) {
@@ -294,8 +344,9 @@ class Tx_Commerce_Hook_CommandMapHooks {
 	 * Localize all articles that are related to the current product
 	 * and localize all product attributes realted to this product from
 	 *
-	 * @param integer $productUid The uid of the dataset we're working on
-	 * @param integer $value
+	 * @param int $productUid The uid of the dataset we're working on
+	 * @param int $value Value
+	 *
 	 * @return void
 	 */
 	protected function translateArticlesAndAttributesOfProduct($productUid, $value) {
@@ -305,8 +356,7 @@ class Tx_Commerce_Hook_CommandMapHooks {
 			$this->error('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:product.no_find_uid');
 		}
 
-		/** @var \TYPO3\CMS\Core\Authentication\BackendUserAuthentication $backendUser */
-		$backendUser = $GLOBALS['BE_USER'];
+		$backendUser = $this->getBackendUser();
 
 		// copying done, clear session
 		$backendUser->uc['txcommerce_copyProcess'] = 0;
@@ -319,22 +369,22 @@ class Tx_Commerce_Hook_CommandMapHooks {
 	/**
 	 * Localize attributes of product
 	 *
-	 * @param integer $productUid
-	 * @param integer $localizedProductUid
-	 * @param integer $value
+	 * @param int $productUid Product uid
+	 * @param int $localizedProductUid Localized product uid
+	 * @param int $value Value
+	 *
 	 * @return void
 	 */
 	protected function translateAttributesOfProduct($productUid, $localizedProductUid, $value) {
-		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
-		$database = $GLOBALS['TYPO3_DB'];
+		$database = $this->getDatabaseConnection();
 
 		// get all related attributes
 		$productAttributes = $this->belib->getAttributesForProduct($productUid, FALSE, TRUE);
 		// check if localized product has attributes
 		$localizedProductAttributes = $this->belib->getAttributesForProduct($localizedProductUid);
 
-		// Check product has attributes and no attributes are
-		// available for localized version
+		// Check product has attrinutes and no attributes are
+		// avaliable for localized version
 		if ($localizedProductAttributes == FALSE && count($productAttributes)) {
 			// if true
 			$langIsoCode = \TYPO3\CMS\Backend\Utility\BackendUtility::getRecord('sys_language', (int) $value, 'static_lang_isocode');
@@ -362,20 +412,19 @@ class Tx_Commerce_Hook_CommandMapHooks {
 					 * 1: Copy
 					 * 2: prepend [Translate to . $langRec['title'] . :]
 					 */
-					if (isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['attributeLokalisationType'])
+					if (
+						isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['attributeLokalisationType'])
 						&& $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['attributeLokalisationType']
 					) {
-						\TYPO3\CMS\Core\Utility\GeneralUtility::deprecationLog(
-							'
-														extension configuration parameter
-														attributeLokalisationType
-														is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
-														attributeLocalizationType
-													'
-						);
+						\TYPO3\CMS\Core\Utility\GeneralUtility::deprecationLog('
+							extension configuration parameter
+							attributeLokalisationType
+							is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
+							attributeLocalizationType
+						');
 
-						$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['attributeLocalizationType'] =
-							$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['attributeLokalisationType'];
+						$extConf = &$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf'];
+						$extConf['attributeLocalizationType'] = $extConf['attributeLokalisationType'];
 					}
 
 					switch ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['attributeLocalizationType']) {
@@ -418,14 +467,14 @@ class Tx_Commerce_Hook_CommandMapHooks {
 	/**
 	 * Localize articles of product
 	 *
-	 * @param integer $productUid
-	 * @param integer $localizedProductUid
-	 * @param integer $value
+	 * @param int $productUid Product uid
+	 * @param int $localizedProductUid Localized product uid
+	 * @param int $value Value
+	 *
 	 * @return void
 	 */
 	protected function translateArticlesOfProduct($productUid, $localizedProductUid, $value) {
-		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
-		$database = $GLOBALS['TYPO3_DB'];
+		$database = $this->getDatabaseConnection();
 
 		// get articles of localized Product
 		$localizedProductArticles = $this->belib->getArticlesOfProduct($localizedProductUid);
@@ -441,7 +490,11 @@ class Tx_Commerce_Hook_CommandMapHooks {
 			// determine language identifier
 			// this is needed for updating the XML of the new created articles
 			$langIsoCode = \TYPO3\CMS\Backend\Utility\BackendUtility::getRecord('sys_language', (int) $value, 'static_lang_isocode');
-			$langIdent = \TYPO3\CMS\Backend\Utility\BackendUtility::getRecord('static_languages', (int) $langIsoCode['static_lang_isocode'], 'lg_typo3');
+			$langIdent = \TYPO3\CMS\Backend\Utility\BackendUtility::getRecord(
+				'static_languages',
+				(int) $langIsoCode['static_lang_isocode'],
+				'lg_typo3'
+			);
 			$langIdent = strtoupper($langIdent['lg_typo3']);
 			if (empty($langIdent)) {
 				$langIdent = 'DEF';
@@ -503,8 +556,7 @@ class Tx_Commerce_Hook_CommandMapHooks {
 		list($commercePid) = Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Commerce', 'commerce');
 		list($productPid) = Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Products', 'commerce', $commercePid);
 
-		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
-		$database = $GLOBALS['TYPO3_DB'];
+		$database = $this->getDatabaseConnection();
 
 		$locale = array_keys(
 			(array) $database->exec_SELECTgetRows(
@@ -518,23 +570,29 @@ class Tx_Commerce_Hook_CommandMapHooks {
 	/**
 	 * Change category of copied product
 	 *
-	 * @param int $productUid
+	 * @param int $productUid Product uid
+	 *
 	 * @return void
 	 */
 	protected function changeCategoryOfCopiedProduct($productUid) {
 		$pasteData = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('CB');
 
-		/** @var \TYPO3\CMS\Backend\Clipboard\Clipboard $clipObj */
+		/**
+		 * Clipboard
+		 *
+		 * @var \TYPO3\CMS\Backend\Clipboard\Clipboard $clipObj
+		 */
 		$clipObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Clipboard\\Clipboard');
 		$clipObj->initializeClipboard();
 		$clipObj->setCurrentPad($pasteData['pad']);
 
-		$fromData = array_pop(\TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode('|', key($clipObj->clipData[$clipObj->current]['el']), TRUE));
+		$fromData = array_pop(
+			\TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode('|', key($clipObj->clipData[$clipObj->current]['el']), TRUE)
+		);
 		$toData = array_pop(\TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode('|', $pasteData['paste'], TRUE));
 
 		if ($fromData && $toData) {
-			/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
-			$database = $GLOBALS['TYPO3_DB'];
+			$database = $this->getDatabaseConnection();
 
 			$database->exec_DELETEquery(
 				'tx_commerce_products_categories_mm', 'uid_local = ' . $productUid . ' AND uid_foreign = ' . $fromData
@@ -551,22 +609,25 @@ class Tx_Commerce_Hook_CommandMapHooks {
 	/**
 	 * Copy product localizations
 	 *
-	 * @param integer $oldProductUid
-	 * @param integer $newProductUid
+	 * @param int $oldProductUid Old product uid
+	 * @param int $newProductUid New product uid
+	 *
 	 * @return void
 	 */
 	protected function copyProductTanslations($oldProductUid, $newProductUid) {
-		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
-		$database = $GLOBALS['TYPO3_DB'];
-		/** @var \TYPO3\CMS\Core\Authentication\BackendUserAuthentication $backendUser */
-		$backendUser = $GLOBALS['BE_USER'];
+		$database = $this->getDatabaseConnection();
+		$backendUser = $this->getBackendUser();
 
 		$products = $database->exec_SELECTgetRows('*', 'tx_commerce_products', 'l18n_parent = ' . $oldProductUid);
 
 		foreach ($products as $product) {
 			$oldTranslationProductUid = $product['uid'];
 
-			/** @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce */
+			/**
+			 * Data handler
+			 *
+			 * @var DataHandler $tce
+			 */
 			$tce = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
 			$tce->stripslashes_values = 0;
 
@@ -595,7 +656,8 @@ class Tx_Commerce_Hook_CommandMapHooks {
 	 * This is not wanted because you might want to
 	 * restore deleted categories, products or articles.
 	 *
-	 * @param integer $categoryUid
+	 * @param int $categoryUid Category uid
+	 *
 	 * @return void
 	 */
 	protected function deleteChildCategoriesProductsArticlesPricesOfCategory($categoryUid) {
@@ -639,7 +701,8 @@ class Tx_Commerce_Hook_CommandMapHooks {
 	/**
 	 * If a product is deleted, delete all articles below and their locales.
 	 *
-	 * @param integer $productUid
+	 * @param int $productUid Product uid
+	 *
 	 * @return void
 	 */
 	protected function deleteArticlesAndPricesOfProduct($productUid) {
@@ -656,14 +719,14 @@ class Tx_Commerce_Hook_CommandMapHooks {
 	}
 
 	/**
-	 * flag categories as deleted for categoryList
+	 * Flag categories as deleted for categoryList
 	 *
-	 * @param array $categoryList
+	 * @param array $categoryList Category list
+	 *
 	 * @return void
 	 */
-	protected function deleteCategoriesByCategoryList($categoryList) {
-		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
-		$database = $GLOBALS['TYPO3_DB'];
+	protected function deleteCategoriesByCategoryList(array $categoryList) {
+		$database = $this->getDatabaseConnection();
 
 		$updateValues = array(
 			'tstamp' => $GLOBALS['EXEC_TIME'],
@@ -674,14 +737,14 @@ class Tx_Commerce_Hook_CommandMapHooks {
 	}
 
 	/**
-	 * flag category translations as deleted for categoryList
+	 * Flag category translations as deleted for categoryList
 	 *
-	 * @param array $categoryList
+	 * @param array $categoryList Category list
+	 *
 	 * @return void
 	 */
-	protected function deleteCategoryTranslationsByCategoryList($categoryList) {
-		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
-		$database = $GLOBALS['TYPO3_DB'];
+	protected function deleteCategoryTranslationsByCategoryList(array $categoryList) {
+		$database = $this->getDatabaseConnection();
 
 		$updateValues = array(
 			'tstamp' => $GLOBALS['EXEC_TIME'],
@@ -694,14 +757,14 @@ class Tx_Commerce_Hook_CommandMapHooks {
 	}
 
 	/**
-	 * flag product as deleted for productList
+	 * Flag product as deleted for productList
 	 *
-	 * @param array $productList
+	 * @param array $productList Product list
+	 *
 	 * @return void
 	 */
-	protected function deleteProductsByProductList($productList) {
-		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
-		$database = $GLOBALS['TYPO3_DB'];
+	protected function deleteProductsByProductList(array $productList) {
+		$database = $this->getDatabaseConnection();
 
 		$updateValues = array(
 			'tstamp' => $GLOBALS['EXEC_TIME'],
@@ -712,14 +775,14 @@ class Tx_Commerce_Hook_CommandMapHooks {
 	}
 
 	/**
-	 * flag product translations as deleted for productList
+	 * Flag product translations as deleted for productList
 	 *
-	 * @param array $productList
+	 * @param array $productList Product list
+	 *
 	 * @return void
 	 */
-	protected function deleteProductTranslationsByProductList($productList) {
-		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
-		$database = $GLOBALS['TYPO3_DB'];
+	protected function deleteProductTranslationsByProductList(array $productList) {
+		$database = $this->getDatabaseConnection();
 
 		$updateValues = array(
 			'tstamp' => $GLOBALS['EXEC_TIME'],
@@ -741,14 +804,14 @@ class Tx_Commerce_Hook_CommandMapHooks {
 	}
 
 	/**
-	 * flag articles as deleted for articleList
+	 * Flag articles as deleted for articleList
 	 *
-	 * @param array $articleList
+	 * @param array $articleList Article list
+	 *
 	 * @return void
 	 */
-	protected function deleteArticlesByArticleList($articleList) {
-		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
-		$database = $GLOBALS['TYPO3_DB'];
+	protected function deleteArticlesByArticleList(array $articleList) {
+		$database = $this->getDatabaseConnection();
 
 		$updateValues = array(
 			'tstamp' => $GLOBALS['EXEC_TIME'],
@@ -760,14 +823,14 @@ class Tx_Commerce_Hook_CommandMapHooks {
 	}
 
 	/**
-	 * flag prices as deleted for articleList
+	 * Flag prices as deleted for articleList
 	 *
-	 * @param array $articleList
+	 * @param array $articleList Article list
+	 *
 	 * @return void
 	 */
-	protected function deletePricesByArticleList($articleList) {
-		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
-		$database = $GLOBALS['TYPO3_DB'];
+	protected function deletePricesByArticleList(array $articleList) {
+		$database = $this->getDatabaseConnection();
 
 		$updateValues = array(
 			'tstamp' => $GLOBALS['EXEC_TIME'],
@@ -781,16 +844,24 @@ class Tx_Commerce_Hook_CommandMapHooks {
 	/**
 	 * Prints out the error
 	 *
-	 * @param string $error
+	 * @param string $error Error
+	 *
 	 * @return void
 	 */
 	protected function error($error) {
-		/** @var \TYPO3\CMS\Lang\LanguageService $language */
-		$language = $GLOBALS['LANG'];
+		$language = $this->getLanguageService();
 
-		/** @var \TYPO3\CMS\Backend\Template\DocumentTemplate $errorDocument */
+		/**
+		 * Document template
+		 *
+		 * @var \TYPO3\CMS\Backend\Template\DocumentTemplate $errorDocument
+		 */
 		$errorDocument = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
 		$errorDocument->backPath = '';
+
+		$errorHeadline = $language->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:error', 1);
+		$submitLabel = $language->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:continue', 1);
+		$onClickAction = 'onclick="document.location=\'' . htmlspecialchars($_SERVER['HTTP_REFERER']) . '\'; return false;"';
 
 		$content = $errorDocument->startPage('Tx_Commerce_Hook_CommandMapHooks error Output');
 		$content .= '
@@ -798,9 +869,7 @@ class Tx_Commerce_Hook_CommandMapHooks {
 			<br/>
 			<table>
 				<tr class="bgColor5">
-					<td colspan="2" align="center"><strong>' . $language->sL(
-				'LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:error', 1
-			) . '</strong></td>
+					<td colspan="2" align="center"><strong>' . $errorHeadline . '</strong></td>
 				</tr>
 				<tr class="bgColor4">
 					<td valign="top">' . \TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon('status-dialog-error') . '</td>
@@ -810,9 +879,7 @@ class Tx_Commerce_Hook_CommandMapHooks {
 					<td colspan="2" align="center">
 					<br />
 						<form action="' . htmlspecialchars($_SERVER['HTTP_REFERER']) . '">
-							<input type="submit" value="' . $language->sL(
-				'LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:continue', 1
-			) . '" onclick="document.location=' . htmlspecialchars($_SERVER['HTTP_REFERER']) . 'return false;" />
+							<input type="submit" value="' . $submitLabel . '" ' . $onClickAction . ' />
 						</form>
 					</td>
 				</tr>
@@ -821,5 +888,33 @@ class Tx_Commerce_Hook_CommandMapHooks {
 		$content .= $errorDocument->endPage();
 		echo $content;
 		exit;
+	}
+
+
+	/**
+	 * Get backend user
+	 *
+	 * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
+	 */
+	protected function getBackendUser() {
+		return $GLOBALS['BE_USER'];
+	}
+
+	/**
+	 * Get database connection
+	 *
+	 * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+	 */
+	protected function getDatabaseConnection() {
+		return $GLOBALS['TYPO3_DB'];
+	}
+
+	/**
+	 * Get language service
+	 *
+	 * @return \TYPO3\CMS\Lang\LanguageService
+	 */
+	protected function getLanguageService() {
+		return $GLOBALS['LANG'];
 	}
 }

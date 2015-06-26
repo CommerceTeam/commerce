@@ -1,37 +1,35 @@
 <?php
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2005 - 2006 Thomas Hempel <thomas@work.de>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the Typo3 project. The Typo3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
 
 /**
  * Implements the dynaflex config for the 'tx_commerce_products' table
+ *
+ * Class Tx_Commerce_Configuration_Dca_Products
+ *
+ * @author 2005 - 2006 Thomas Hempel <thomas@work.de>
  */
 class Tx_Commerce_Configuration_Dca_Products {
 	/**
+	 * Row checks
+	 *
 	 * @var array
 	 */
 	public $rowChecks = array();
 
 	/**
+	 * DCA
+	 *
 	 * @var array
 	 */
 	public $DCA = array(
@@ -72,7 +70,7 @@ class Tx_Commerce_Configuration_Dca_Products {
 								'type' => 'select',
 								'foreign_table' => 'tx_commerce_attributes',
 								'foreign_label' => 'title',
-								'foreign_table_where' => '  AND sys_language_uid in (0,-1) AND has_valuelist=1 AND multiple=0 ORDER BY title',
+								'foreign_table_where' => ' AND sys_language_uid in (0,-1) AND has_valuelist = 1 AND multiple = 0 ORDER BY title',
 								'size' => 5,
 								'minitems' => 0,
 								'maxitems' => 50,
@@ -132,7 +130,7 @@ class Tx_Commerce_Configuration_Dca_Products {
 				),
 			),
 		),
-		/**
+		/*
 		 * Here we define the fields on "edit attributes" tab. They will be
 		 * defined by a userfunction. This userfunction IS NOT the same as the
 		 * userdefined field thing of TYPO3. It's something dynaflex related!
@@ -170,7 +168,7 @@ class Tx_Commerce_Configuration_Dca_Products {
 				),
 			),
 		),
-		/**
+		/*
 		 * At last we have to decide which tabs have to be displayed. We do this with a
 		 * dynaflex condition and if it triggers, we append something at the showitem
 		 * value in the products TCA.
@@ -179,7 +177,7 @@ class Tx_Commerce_Configuration_Dca_Products {
 			'path' => 'tx_commerce_products/types/0/showitem',
 			'parseXML' => FALSE,
 			'modifications' => array(
-				// display the "select attributes only in def language
+				// 0 - display the "select attributes only in def language
 				array(
 					'method' => 'add',
 					'type' => 'append',
@@ -192,7 +190,7 @@ class Tx_Commerce_Configuration_Dca_Products {
 						'text' => ',--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.select_attributes, attributes',
 					),
 				),
-				// add "edit attributes" tab if minimum one attribute with correlationtype 4
+				// 1 - add "edit attributes" tab if minimum one attribute with correlationtype 4
 				// exists for this product this also recognizes attributes from categories
 				// of this product.
 				array(
@@ -217,7 +215,7 @@ class Tx_Commerce_Configuration_Dca_Products {
 						'text' => ',--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.edit_attributes, attributesedit',
 					),
 				),
-				// add "localise attributes" tab if minimum one attribute with correlationtype
+				// 2 - "localise attributes" tab if minimum one attribute with correlationtype
 				// 4 exists for this product and we are in a localised view
 				array(
 					'method' => 'add',
@@ -238,10 +236,10 @@ class Tx_Commerce_Configuration_Dca_Products {
 						),
 					),
 					'config' => array(
-						'text' => ',--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.localedit_attributes,attributesedit',
+						'text' => ',--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.localedit_attributes, attributesedit',
 					),
 				),
-				// add "create articles" tab if minimum one attribute with correlationtype 1
+				// 3 - add "create articles" tab if minimum one attribute with correlationtype 1
 				// exists for this product this also recognizes attributes from categories
 				// of this product. The fields on the tab are allready defined in the TCA!
 				array(
@@ -253,10 +251,10 @@ class Tx_Commerce_Configuration_Dca_Products {
 						'compareTo' => 'DEF',
 					),
 					'config' => array(
-						'text' => ',--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.create_articles,articles',
+						'text' => ',--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.create_articles, articles',
 					),
 				),
-				// add "Localisze Articel" tab if we are in a localised language
+				// 4 - add "Localisze Articel" tab if we are in a localised language
 				array(
 					'method' => 'add',
 					'type' => 'append',
@@ -269,10 +267,10 @@ class Tx_Commerce_Configuration_Dca_Products {
 						'compareTo' => 0,
 					),
 					'config' => array(
-						'text' => ',--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.lokalise_articles,articleslok',
+						'text' => ',--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.lokalise_articles, articleslok',
 					),
 				),
-				// add "Localize Articel" tab if we are in a localised language
+				// 5 - add "Localize Articel" tab if we are in a localised language
 				array(
 					'method' => 'add',
 					'type' => 'append',
@@ -285,9 +283,10 @@ class Tx_Commerce_Configuration_Dca_Products {
 						'compareTo' => 0,
 					),
 					'config' => array(
-						'text' => ',--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.lokalise_articles,articles',
+						'text' => ',--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.lokalise_articles, articles',
 					),
 				),
+				// 6
 				array(
 					'method' => 'add',
 					'type' => 'append',
@@ -300,6 +299,7 @@ class Tx_Commerce_Configuration_Dca_Products {
 						'text' => ',--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.extras'
 					),
 				),
+				// 7
 				array(
 					'method' => 'move',
 					'type' => 'extraFields',
@@ -310,16 +310,22 @@ class Tx_Commerce_Configuration_Dca_Products {
 	);
 
 	/**
+	 * Clean up field
+	 *
 	 * @var string
 	 */
 	public $cleanUpField = 'attributes';
 
 	/**
+	 * Hooks
+	 *
 	 * @var array
 	 */
 	public $hooks = array('tx_commerce_configuration_dca_products');
 
 	/**
+	 * Constructor
+	 *
 	 * @return self
 	 */
 	public function __construct() {
@@ -348,21 +354,30 @@ class Tx_Commerce_Configuration_Dca_Products {
 	}
 
 	/**
-	 * @param array $resultDca
+	 * Alter dca on load
+	 *
+	 * @param array $resultDca Result DCA
+	 *
 	 * @return void
 	 */
-	public function alterDCA_onLoad(&$resultDca) {
-		/** @var \TYPO3\CMS\Core\Authentication\BackendUserAuthentication $backendUser */
-		$backendUser = $GLOBALS['BE_USER'];
-
+	public function alterDCA_onLoad(array &$resultDca) {
 		if (
 			!(
-				\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('data') == NULL ||
-				\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('createArticles') == 'create'
-			) &&
-			$backendUser->uc['txcommerce_afterDatabaseOperations'] != 1
+				\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('data') == NULL
+				|| \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('createArticles') == 'create'
+			)
+			&& $this->getBackendUser()->uc['txcommerce_afterDatabaseOperations'] != 1
 		) {
 			$resultDca = array();
 		}
+	}
+
+	/**
+	 * Get backend user
+	 *
+	 * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
+	 */
+	protected function getBackendUser() {
+		return $GLOBALS['BE_USER'];
 	}
 }

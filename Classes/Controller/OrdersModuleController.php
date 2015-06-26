@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * This file is part of the TYPO3 CMS project.
  *
  * It is free software; you can redistribute it and/or modify it under
@@ -15,25 +15,36 @@
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
+/**
+ * Class Tx_Commerce_Controller_OrdersModuleController
+ *
+ * @author Sebastian Fischer <typo3@marketing-factory.de>
+ */
 class Tx_Commerce_Controller_OrdersModuleController extends \TYPO3\CMS\Recordlist\RecordList {
 	/**
-	 * the script for the wizard of the command 'new'
+	 * The script for the wizard of the command 'new'
 	 *
 	 * @var string
 	 */
 	public $scriptNewWizard = 'wizard.php';
 
 	/**
+	 * Body content
+	 *
 	 * @var string
 	 */
 	protected $body;
 
 	/**
-	 * @var integer
+	 * Order pid
+	 *
+	 * @var int
 	 */
 	protected $orderPid;
 
 	/**
+	 * Initialization
+	 *
 	 * @return void
 	 */
 	public function init() {
@@ -59,7 +70,7 @@ class Tx_Commerce_Controller_OrdersModuleController extends \TYPO3\CMS\Recordlis
 		$this->showLimit = (int) GeneralUtility::_GP('showLimit');
 		$this->returnUrl = GeneralUtility::sanitizeLocalUrl(GeneralUtility::_GP('returnUrl'));
 
-		$this->clear_cache = (boolean) GeneralUtility::_GP('clear_cache');
+		$this->clear_cache = (bool) GeneralUtility::_GP('clear_cache');
 		$this->cmd = GeneralUtility::_GP('cmd');
 		$this->cmd_table = GeneralUtility::_GP('cmd_table');
 
@@ -90,7 +101,8 @@ class Tx_Commerce_Controller_OrdersModuleController extends \TYPO3\CMS\Recordlis
 			GeneralUtility::devLog('cannot set moduleTemplate', 'commerce', 2, array(
 				'backpath' => $this->doc->backPath,
 				'filename from TBE_STYLES' => $GLOBALS['TBE_STYLES']['htmlTemplates']['commerce/Resources/Private/Backend/mod_index.html'],
-				'full path' => $this->doc->backPath . $GLOBALS['TBE_STYLES']['htmlTemplates']['commerce/Resources/Private/Backend/mod_index.html']
+				'full path' => $this->doc->backPath .
+					$GLOBALS['TBE_STYLES']['htmlTemplates']['commerce/Resources/Private/Backend/mod_index.html']
 			));
 			$templateFile = PATH_TXCOMMERCE_REL . 'Resources/Private/Backend/mod_index.html';
 			$this->doc->moduleTemplate = GeneralUtility::getURL(PATH_site . $templateFile);
@@ -131,7 +143,11 @@ class Tx_Commerce_Controller_OrdersModuleController extends \TYPO3\CMS\Recordlis
 		}
 
 			// Initialize the dblist object:
-		/** @var $dblist Tx_Commerce_ViewHelpers_OrderRecordList */
+		/**
+		 * Order record list
+		 *
+		 * @var $dblist Tx_Commerce_ViewHelpers_OrderRecordList
+		 */
 		$dblist = GeneralUtility::makeInstance('Tx_Commerce_ViewHelpers_OrderRecordList');
 		$dblist->backPath = $GLOBALS['BACK_PATH'];
 		$dblist->script = BackendUtility::getModuleUrl('txcommerceM1_orders', array(), '');
@@ -162,7 +178,11 @@ class Tx_Commerce_Controller_OrdersModuleController extends \TYPO3\CMS\Recordlis
 
 		// Clipboard is initialized:
 		// Start clipboard
-		/** @var \TYPO3\CMS\Backend\Clipboard\Clipboard $clipObj */
+		/**
+		 * Clipboard
+		 *
+		 * @var \TYPO3\CMS\Backend\Clipboard\Clipboard $clipObj
+		 */
 		$clipObj = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Clipboard\\Clipboard');
 		$dblist->clipObj = $clipObj;
 		// Initialize - reads the clipboard content from the user session
@@ -171,15 +191,18 @@ class Tx_Commerce_Controller_OrdersModuleController extends \TYPO3\CMS\Recordlis
 		// CB is the clipboard command array
 		$clipboard = GeneralUtility::_GET('CB');
 		if ($this->cmd == 'setCB') {
-			// CBH is all the fields selected for the clipboard, CBC is the checkbox fields which were checked. By merging we get a full array of checked/unchecked elements
-			// This is set to the 'el' array of the CB after being parsed so only the table in question is registered.
+			// CBH is all the fields selected for the clipboard, CBC is
+			// the checkbox fields which were checked. By merging we get
+			// a full array of checked/unchecked elements
+			// This is set to the 'el' array of the CB after being parsed
+			// so only the table in question is registered.
 			$clipboard['el'] = $dblist->clipObj->cleanUpCBC(
 				array_merge((array) GeneralUtility::_POST('CBH'), (array) GeneralUtility::_POST('CBC')),
 				$this->cmd_table
 			);
 		}
 		if (!$this->MOD_SETTINGS['clipBoard']) {
-				// If the clipboard is NOT shown, set the pad to 'normal'.
+			// If the clipboard is NOT shown, set the pad to 'normal'.
 			$clipboard['setP'] = 'normal';
 		}
 		// Execute commands.
@@ -190,14 +213,16 @@ class Tx_Commerce_Controller_OrdersModuleController extends \TYPO3\CMS\Recordlis
 		$dblist->clipObj->endClipboard();
 
 		// This flag will prevent the clipboard panel in being shown.
-		// It is set, if the clickmenu-layer is active AND the extended view is not enabled.
+		// It is set, if the clickmenu-layer is active
+		// AND the extended view is not enabled.
 		$dblist->dontShowClipControlPanels = (
 			!$this->MOD_SETTINGS['bigControlPanel'] &&
 			$dblist->clipObj->current == 'normal' &&
 			!$this->modTSconfig['properties']['showClipControlPanelsDespiteOfCMlayers']
 		);
 
-			// If there is access to the page, then render the list contents and set up the document template object:
+		// If there is access to the page, then render the list contents
+		// and set up the document template object:
 		if ($access) {
 			// Deleting records...:
 			// Has not to do with the clipboard but is simply the delete
@@ -208,10 +233,14 @@ class Tx_Commerce_Controller_OrdersModuleController extends \TYPO3\CMS\Recordlis
 				if (count($items)) {
 					$cmd = array();
 					foreach (array_keys($items) as $iK) {
-						$iKParts = explode('|', $iK);
-						$cmd[$iKParts[0]][$iKParts[1]]['delete'] = 1;
+						$iKparts = explode('|', $iK);
+						$cmd[$iKparts[0]][$iKparts[1]]['delete'] = 1;
 					}
-					/** @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce */
+					/**
+					 * Data handler
+					 *
+					 * @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce
+					 */
 					$tce = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
 					$tce->stripslashes_values = 0;
 					$tce->start(array(), $cmd);
@@ -292,6 +321,7 @@ class Tx_Commerce_Controller_OrdersModuleController extends \TYPO3\CMS\Recordlis
 				// Setting up the context sensitive menu:
 			$this->doc->getContextMenuCode();
 		}
+
 		// access
 		// Begin to compile the whole page, starting out with page header:
 		$this->body = $this->doc->header($this->pageinfo['title']);
@@ -392,21 +422,18 @@ class Tx_Commerce_Controller_OrdersModuleController extends \TYPO3\CMS\Recordlis
 	 * Create the panel of buttons for submitting the
 	 * form or otherwise perform operations.
 	 *
-	 * @param array $buttons
-	 * @return array all available buttons as an assoc. array
+	 * @param array $buttons Button
+	 *
+	 * @return array All available buttons as an assoc. array
 	 */
-	protected function getHeaderButtons($buttons) {
-		/**
-		 * @var \TYPO3\CMS\Core\Authentication\BackendUserAuthentication $backendUser
-		 */
-		$backendUser = $GLOBALS['BE_USER'];
-		/** @var \TYPO3\CMS\Lang\LanguageService $language */
-		$language = $GLOBALS['LANG'];
+	protected function getHeaderButtons(array $buttons) {
+		$backendUser = $this->getBackendUser();
+		$language = $this->getLanguageService();
 
-			// CSH
+		// CSH
 		$buttons['csh'] = BackendUtility::cshItem('_MOD_commerce_orders', '', $GLOBALS['BACK_PATH'], '', TRUE);
 
-			// Shortcut
+		// Shortcut
 		if ($backendUser->mayMakeShortcut()) {
 			$buttons['shortcut'] = $this->doc->makeShortcutIcon(
 				'id, edit_record, pointer, new_unique_uid, search_field, search_levels, showLimit',
@@ -415,7 +442,7 @@ class Tx_Commerce_Controller_OrdersModuleController extends \TYPO3\CMS\Recordlis
 			);
 		}
 
-			// If access to Web>List for user, then link to that module.
+		// If access to Web>List for user, then link to that module.
 		if ($backendUser->check('modules', 'web_list')) {
 			$href = $GLOBALS['BACK_PATH'] . 'db_list.php?id=' . $this->pageinfo['uid'] . '&returnUrl=' .
 				rawurlencode(GeneralUtility::getIndpEnv('REQUEST_URI'));
@@ -430,6 +457,8 @@ class Tx_Commerce_Controller_OrdersModuleController extends \TYPO3\CMS\Recordlis
 
 
 	/**
+	 * Get backend user
+	 *
 	 * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
 	 */
 	protected function getBackendUser() {
@@ -437,6 +466,8 @@ class Tx_Commerce_Controller_OrdersModuleController extends \TYPO3\CMS\Recordlis
 	}
 
 	/**
+	 * Get language service
+	 *
 	 * @return \TYPO3\CMS\Lang\LanguageService
 	 */
 	protected function getLanguageService() {

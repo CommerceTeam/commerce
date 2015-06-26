@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * This file is part of the TYPO3 CMS project.
  *
  * It is free software; you can redistribute it and/or modify it under
@@ -17,14 +17,20 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Main script class for the systemData navigation frame
+ *
+ * @author Sebastian Fischer <typo3@marketing-factory.de>
  */
 class Tx_Commerce_ViewHelpers_Navigation_SystemdataViewHelper extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 	/**
-	 * @var boolean
+	 * Has filter box
+	 *
+	 * @var bool
 	 */
 	protected $hasFilterBox = FALSE;
 
 	/**
+	 * Initialization
+	 *
 	 * @return void
 	 */
 	public function init() {
@@ -39,8 +45,12 @@ class Tx_Commerce_ViewHelpers_Navigation_SystemdataViewHelper extends \TYPO3\CMS
 	 * @return void
 	 */
 	public function initPage() {
-		/** @var \TYPO3\CMS\Backend\Template\DocumentTemplate $doc */
-		$doc = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
+		/**
+		 * Document template
+		 *
+		 * @var \TYPO3\CMS\Backend\Template\DocumentTemplate $doc
+		 */
+		$doc = GeneralUtility::makeInstance('\TYPO3\CMS\Backend\Template\DocumentTemplate');
 		$this->doc = $doc;
 		$this->doc->backPath = $GLOBALS['BACK_PATH'];
 		$this->doc->setModuleTemplate('EXT:commerce/Resources/Private/Backend/mod_systemdata_navigation.html');
@@ -72,6 +82,8 @@ class Tx_Commerce_ViewHelpers_Navigation_SystemdataViewHelper extends \TYPO3\CMS
 	}
 
 	/**
+	 * Main method
+	 *
 	 * @return void
 	 */
 	public function main() {
@@ -93,7 +105,7 @@ class Tx_Commerce_ViewHelpers_Navigation_SystemdataViewHelper extends \TYPO3\CMS
 			$subparts['###SECOND_ROW###'] = '';
 		}
 
-			// put it all together
+		// put it all together
 		$this->content = $this->doc->startPage(
 			$this->getLanguageService()->sl('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:mod_category.navigation_title')
 		);
@@ -123,12 +135,12 @@ class Tx_Commerce_ViewHelpers_Navigation_SystemdataViewHelper extends \TYPO3\CMS
 			'refresh' => '',
 		);
 
-			// Refresh
+		// Refresh
 		$buttons['refresh'] = '<a href="' . htmlspecialchars(GeneralUtility::getIndpEnv('REQUEST_URI')) . '">' .
 			\TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon('actions-system-refresh') .
 			'</a>';
 
-			// CSH
+		// CSH
 		$buttons['csh'] = str_replace(
 			'typo3-csh-inline',
 			'typo3-csh-inline show-right',

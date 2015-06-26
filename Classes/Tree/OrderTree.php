@@ -1,42 +1,37 @@
 <?php
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2010-2011 Ingo Schmitt <is@marketing-factory.de>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *  A copy is found in the textfile GPL.txt and important notices to the license
- *  from the author is found in LICENSE.txt distributed with these scripts.
- *
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
 
 /**
  * Extension class for the BrowseTreeView class,
  * specially made for browsing pages in the Web module
+ *
+ * Class Tx_Commerce_Tree_OrderTree
+ *
+ * @author 2010-2011 Ingo Schmitt <is@marketing-factory.de>
  */
 class Tx_Commerce_Tree_OrderTree extends \TYPO3\CMS\Backend\Tree\View\BrowseTreeView {
 	/**
-	 * @var integer
+	 * Extension page id
+	 *
+	 * @var int
 	 */
 	public $ext_showPageId;
 
 	/**
-	 * @var boolean
+	 * Extension icon mode
+	 *
+	 * @var bool
 	 */
 	public $ext_IconMode;
 
@@ -55,6 +50,8 @@ class Tx_Commerce_Tree_OrderTree extends \TYPO3\CMS\Backend\Tree\View\BrowseTree
 	}
 
 	/**
+	 * Initialization
+	 *
 	 * @return void
 	 */
 	public function init() {
@@ -67,13 +64,13 @@ class Tx_Commerce_Tree_OrderTree extends \TYPO3\CMS\Backend\Tree\View\BrowseTree
 	 *
 	 * @param string $icon IMG code
 	 * @param array $row Data row for element.
+	 *
 	 * @return string Page icon
 	 */
-	public function wrapIcon($icon, &$row) {
-		/** @var \TYPO3\CMS\Lang\LanguageService $language */
-		$language = $GLOBALS['LANG'];
+	public function wrapIcon($icon, array &$row) {
+		$language = $this->getLanguageService();
 
-			// If the record is locked, present a warning sign.
+		// If the record is locked, present a warning sign.
 		if (($lockInfo = \TYPO3\CMS\Backend\Utility\BackendUtility::isRecordLocked('pages', $row['uid']))) {
 			$aOnClick = 'alert(' . $language->JScharCode($lockInfo['msg']) . ');return false;';
 			$lockIcon = '<a href="#" onclick="' . htmlspecialchars($aOnClick) . '">' .
@@ -86,12 +83,16 @@ class Tx_Commerce_Tree_OrderTree extends \TYPO3\CMS\Backend\Tree\View\BrowseTree
 			$lockIcon = '';
 		}
 
-			// Add title attribute to input icon tag
+		// Add title attribute to input icon tag
 		$thePageIcon = $this->addTagAttributes($icon, $this->titleAttrib . '="' . $this->getTitleAttrib($row) . '"');
 
-			// Wrap icon in click-menu link.
+		// Wrap icon in click-menu link.
 		if (!$this->ext_IconMode) {
-			/** @var \TYPO3\CMS\Backend\Template\DocumentTemplate $tbeTemplate */
+			/**
+			 * Template
+			 *
+			 * @var \TYPO3\CMS\Backend\Template\DocumentTemplate $tbeTemplate
+			 */
 			$tbeTemplate = $GLOBALS['TBE_TEMPLATE'];
 
 			$thePageIcon = $tbeTemplate->wrapClickMenuOnIcon($thePageIcon, 'pages', $row['uid'], 0, '&bank=' . $this->bank);
@@ -115,16 +116,27 @@ class Tx_Commerce_Tree_OrderTree extends \TYPO3\CMS\Backend\Tree\View\BrowseTree
 	 * "php_tree_stop" in the $row (pages) is set
 	 *
 	 * @param string $str Input string, like a page title for the tree
-	 * @param array $row record row with "php_tree_stop" field
+	 * @param array $row Record row with "php_tree_stop" field
+	 *
 	 * @return string Modified string
 	 * @access private
 	 */
-	public function wrapStop($str, $row) {
+	public function wrapStop($str, array $row) {
 		if ($row['php_tree_stop']) {
 			$str .= '<a href="' .
 				htmlspecialchars(\TYPO3\CMS\Core\Utility\GeneralUtility::linkThisScript(array('setTempDBmount' => $row['uid']))) .
 				'" class="typo3-red">+</a> ';
 		}
 		return $str;
+	}
+
+
+	/**
+	 * Get language service
+	 *
+	 * @return \TYPO3\CMS\Lang\LanguageService
+	 */
+	protected function getLanguageService() {
+		return $GLOBALS['LANG'];
 	}
 }

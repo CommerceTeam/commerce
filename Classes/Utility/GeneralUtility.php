@@ -1,39 +1,31 @@
 <?php
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2005-2011 Ingo Schmitt <is@marketing-factory.de>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *  A copy is found in the textfile GPL.txt and important notices to the license
- *  from the author is found in LICENSE.txt distributed with these scripts.
- *
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
 
 /**
  * Misc COMMERCE functions
+ *
+ * Class Tx_Commerce_Utility_GeneralUtility
+ *
+ * @author 2005-2011 Ingo Schmitt <is@marketing-factory.de>
  */
 class Tx_Commerce_Utility_GeneralUtility {
 	/**
 	 * Removes XSS code and strips tags from an array recursivly
 	 *
 	 * @param string $input Array of elements or other
-	 * @return boolean|array is an array, otherwhise false
+	 *
+	 * @return bool|array is an array, otherwise false
 	 */
 	public static function removeXSSStripTagsArray($input) {
 		/**
@@ -71,19 +63,20 @@ class Tx_Commerce_Utility_GeneralUtility {
 	 * @return void
 	 */
 	public static function initializeFeUserBasket() {
+		$feUser = self::getFrontendController()->fe_user;
 		/**
-		 * @var $feUser \TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication
+		 * Basket
+		 *
+		 * @var Tx_Commerce_Domain_Model_Basket $basket
 		 */
-		$feUser = $GLOBALS['TSFE']->fe_user;
-		/** @var Tx_Commerce_Domain_Model_Basket $basket */
 		$basket = & $feUser->tx_commerce_basket;
 
 		if (!is_object($basket)) {
 			$basketId = $feUser->getKey('ses', 'commerceBasketId');
 			if (
 				empty($basketId) &&
-				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce']['extConf']['useCookieAsBasketIdFallback'] &&
-				$_COOKIE['commerceBasketId']
+				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce']['extConf']['useCookieAsBasketIdFallback']
+				&& $_COOKIE['commerceBasketId']
 			) {
 				$basketId = $_COOKIE['commerceBasketId'];
 			}
@@ -99,8 +92,8 @@ class Tx_Commerce_Utility_GeneralUtility {
 			$basket->loadData();
 
 			if (
-				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce']['extConf']['useCookieAsBasketIdFallback'] &&
-				!$_COOKIE['commerceBasketId']
+				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce']['extConf']['useCookieAsBasketIdFallback']
+				&& !$_COOKIE['commerceBasketId']
 			) {
 				self::setCookie($basketId);
 			}
@@ -108,7 +101,10 @@ class Tx_Commerce_Utility_GeneralUtility {
 	}
 
 	/**
-	 * @param string $basketId
+	 * Set cookie for basket
+	 *
+	 * @param string $basketId Basket id
+	 *
 	 * @return void
 	 */
 	protected function setCookie($basketId) {
@@ -124,16 +120,21 @@ class Tx_Commerce_Utility_GeneralUtility {
 	 * Remove Products from list wich have no articles wich are available from Stock
 	 *
 	 * @param array $productUids List of productUIDs to work onn
-	 * @param int $dontRemoveProducts switch to show or not show articles
-	 * @return array Cleaned up Productarrayt
+	 * @param int $dontRemoveProducts Switch to show or not show articles
+	 *
+	 * @return array Cleaned up Product array
 	 */
-	public static function removeNoStockProducts($productUids = array(),$dontRemoveProducts = 1) {
+	public static function removeNoStockProducts(array $productUids = array(), $dontRemoveProducts = 1) {
 		if ($dontRemoveProducts == 1) {
 			return $productUids;
 		}
 
 		foreach ($productUids as $arrayKey => $productUid) {
-			/** @var Tx_Commerce_Domain_Model_Product $productObj */
+			/**
+			 * Product
+			 *
+			 * @var Tx_Commerce_Domain_Model_Product $productObj
+			 */
 			$productObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Product', $productUid);
 			$productObj->loadData();
 
@@ -151,10 +152,11 @@ class Tx_Commerce_Utility_GeneralUtility {
 	 * with no stock should not shown
 	 *
 	 * @param Tx_Commerce_Domain_Model_Product $productObj ProductObject to work on
-	 * @param integer $dontRemoveArticles switch to show or not show articles
+	 * @param int $dontRemoveArticles Switch to show or not show articles
+	 *
 	 * @return Tx_Commerce_Domain_Model_Product Cleaned up Productobjectt
 	 */
-	public static function removeNoStockArticles($productObj, $dontRemoveArticles = 1) {
+	public static function removeNoStockArticles(Tx_Commerce_Domain_Model_Product $productObj, $dontRemoveArticles = 1) {
 		if ($dontRemoveArticles == 1) {
 			return $productObj;
 		}
@@ -162,7 +164,11 @@ class Tx_Commerce_Utility_GeneralUtility {
 		$articleUids = $productObj->getArticleUids();
 		$articles = $productObj->getArticleObjects();
 		foreach ($articleUids as $arrayKey => $articleUid) {
-			/** @var Tx_Commerce_Domain_Model_Article $article */
+			/**
+			 * Article
+			 *
+			 * @var Tx_Commerce_Domain_Model_Article $article
+			 */
 			$article = $articles[$articleUid];
 			if ($article->getStock() <= 0) {
 				$productObj->removeArticleUid($arrayKey);
@@ -176,7 +182,8 @@ class Tx_Commerce_Utility_GeneralUtility {
 	/**
 	 * Generates a session key for identifiing session contents and matching to user
 	 *
-	 * @param string $key
+	 * @param string $key Key
+	 *
 	 * @return string Encoded Key as mixture of key and FE-User Uid
 	 */
 	public static function generateSessionKey($key) {
@@ -194,15 +201,17 @@ class Tx_Commerce_Utility_GeneralUtility {
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Utility/GeneralUtility.php\'][\'generateSessionKey\']
 			');
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_div.php']['generateSessionKey'] as $classRef) {
-				$hookObj = &\TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
+				$hookObj = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
 				if (method_exists($hookObj, 'postGenerateSessionKey')) {
 					$sessionKey = $hookObj->postGenerateSessionKey($key);
 				}
 			}
 		}
 		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Utility/GeneralUtility.php']['generateSessionKey'])) {
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Utility/GeneralUtility.php']['generateSessionKey'] as $classRef) {
-				$hookObj = &\TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Utility/GeneralUtility.php']['generateSessionKey'] as
+				$classRef
+			) {
+				$hookObj = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
 				if (method_exists($hookObj, 'postGenerateSessionKey')) {
 					$sessionKey = $hookObj->postGenerateSessionKey($key);
 				}
@@ -240,10 +249,11 @@ class Tx_Commerce_Utility_GeneralUtility {
 	 * 		3 = normal
 	 * );
 	 *
-	 * @param array $mailconf configuration for the mailerengine
-	 * @return boolean
+	 * @param array $mailconf Configuration for the mailerengine
+	 *
+	 * @return bool
 	 */
-	public static function sendMail($mailconf) {
+	public static function sendMail(array $mailconf) {
 		$hookObjectsArr = array();
 		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_div.php']['sendMail'])) {
 			\TYPO3\CMS\Core\Utility\GeneralUtility::deprecationLog('
@@ -253,12 +263,12 @@ class Tx_Commerce_Utility_GeneralUtility {
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Utility/GeneralUtility.php\'][\'sendMail\']
 			');
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_div.php']['sendMail'] as $classRef) {
-				$hookObjectsArr[] = &\TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
+				$hookObjectsArr[] = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
 			}
 		}
 		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Utility/GeneralUtility.php']['sendMail'])) {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Utility/GeneralUtility.php']['sendMail'] as $classRef) {
-				$hookObjectsArr[] = &\TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
+				$hookObjectsArr[] = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
 			}
 		}
 
@@ -268,9 +278,7 @@ class Tx_Commerce_Utility_GeneralUtility {
 		}
 
 		foreach ($hookObjectsArr as $hookObj) {
-			/**
-			 * this is the current hook
-			 */
+			// this is the current hook
 			if (method_exists($hookObj, 'preProcessMail')) {
 				$hookObj->preProcessMail($mailconf, $additionalData);
 			}
@@ -296,7 +304,11 @@ class Tx_Commerce_Utility_GeneralUtility {
 				$subject = $mailconf['alternateSubject'];
 			}
 
-			/** @var \TYPO3\CMS\Core\Mail\MailMessage $message */
+			/**
+			 * Mail message
+			 *
+			 * @var \TYPO3\CMS\Core\Mail\MailMessage $message
+			 */
 			$message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Mail\\MailMessage');
 			$message->setCharset($mailconf['defaultCharset']);
 
@@ -306,7 +318,6 @@ class Tx_Commerce_Utility_GeneralUtility {
 				$message->setEncoder(Swift_Encoding::get8BitEncoding());
 			}
 
-			// $htmlMail->mailer = 'TYPO3 Mailer :: commerce';
 			$message->setSubject($subject);
 			$message->setTo($mailconf['recipient']);
 			$message->setFrom(
@@ -315,7 +326,10 @@ class Tx_Commerce_Utility_GeneralUtility {
 			);
 
 			$replyAddress = $mailconf['replyTo'] ?: $mailconf['fromEmail'];
-			$replyName = implode(' ', \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $mailconf['replyTo'] ? '' : $mailconf['fromName']));
+			$replyName = implode(
+				' ',
+				\TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $mailconf['replyTo'] ? '' : $mailconf['fromName'])
+			);
 			$message->setReplyTo($replyAddress, $replyName);
 
 			if (isset($mailconf['recipient_copy']) && $mailconf['recipient_copy'] != '') {
@@ -359,7 +373,8 @@ class Tx_Commerce_Utility_GeneralUtility {
 	/**
 	 * Helperfunction for email validation
 	 *
-	 * @param string $list comma seperierte list of email addresses
+	 * @param string $list Comma seperierte list of email addresses
+	 *
 	 * @return string
 	 */
 	public static function validEmailList($list) {
@@ -383,7 +398,8 @@ class Tx_Commerce_Utility_GeneralUtility {
 	/**
 	 * Sanitize string to have character and numbers only
 	 *
-	 * @param string $value
+	 * @param string $value Value
+	 *
 	 * @return string
 	 */
 	public static function sanitizeAlphaNum($value) {
@@ -391,15 +407,28 @@ class Tx_Commerce_Utility_GeneralUtility {
 		return $matches[0];
 	}
 
+
 	/**
 	 * Formates a price for the designated output
 	 *
-	 * @param float $price
+	 * @param float $price Value
+	 *
 	 * @return string formated Price
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getAttributes instead
 	 */
 	public static function formatPrice($price) {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		return sprintf('%01.2f', $price);
+	}
+
+
+	/**
+	 * Get typoscript frontend controller
+	 *
+	 * @return \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController
+	 */
+	protected static function getFrontendController() {
+		return $GLOBALS['TSFE'];
 	}
 }

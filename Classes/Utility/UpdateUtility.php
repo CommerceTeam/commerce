@@ -1,35 +1,24 @@
 <?php
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2008-2011 Ingo Schmitt <is@marketing-factory.de>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *  A copy is found in the textfile GPL.txt and important notices to the license
- *  from the author is found in LICENSE.txt distributed with these scripts.
- *
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
 
 /**
  * Update Class for DB Updates of version 0.11.0
  *
  * Basically checks for the new Tree, if all records have a MM
  * relation to Record UID 0 if not, these records are created
+ *
+ * @author 2008-2011 Ingo Schmitt <is@marketing-factory.de>
  */
 class Tx_Commerce_Utility_UpdateUtility {
 	/**
@@ -39,7 +28,7 @@ class Tx_Commerce_Utility_UpdateUtility {
 	 * @return string
 	 */
 	public function main() {
-		$createdRelations = $this->createParentMMRecords();
+		$createdRelations = $this->createParentMmRecords();
 		$createDefaultRights = $this->createDefaultRights();
 
 		$htmlCode = array();
@@ -48,10 +37,12 @@ class Tx_Commerce_Utility_UpdateUtility {
 			<ul>';
 
 		if ($createdRelations > 0) {
-			$htmlCode[] = '<li>' . $createdRelations . ' updated mm-Relations for the Category Records. <b>Please Check you Category Tree!</b></li>';
+			$htmlCode[] = '<li>' . $createdRelations .
+				' updated mm-Relations for the Category Records. <b>Please Check you Category Tree!</b></li>';
 		}
 		if ($createDefaultRights > 0) {
-			$htmlCode[] = '<li>' . $createDefaultRights . ' updated User-rights on categories. Set to rights on the commerce products folder</li>';
+			$htmlCode[] = '<li>' . $createDefaultRights .
+				' updated User-rights on categories. Set to rights on the commerce products folder</li>';
 
 		}
 		$htmlCode[] = '</ul>';
@@ -60,13 +51,13 @@ class Tx_Commerce_Utility_UpdateUtility {
 	}
 
 	/**
-	 * Sets the default user rights, based on the <User-Rights in the commerce-products folder
+	 * Sets the default user rights, based on the
+	 * <User-Rights in the commerce-products folder
 	 *
-	 * @return integer
+	 * @return int
 	 */
 	public function createDefaultRights() {
-		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
-		$database = $GLOBALS['TYPO3_DB'];
+		$database = $this->getDatabaseConnection();
 		$countRecords = 0;
 
 		/**
@@ -96,18 +87,18 @@ class Tx_Commerce_Utility_UpdateUtility {
 	/**
 	 * Creates the missing MM records for categories below the root (UID=0) element
 	 *
-	 * @return integer Num Records Changed
+	 * @return int Num Records Changed
 	 */
-	public function createParentMMRecords() {
-		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
-		$database = $GLOBALS['TYPO3_DB'];
+	public function createParentMmRecords() {
+		$database = $this->getDatabaseConnection();
 		$countRecords = 0;
 
 		$result = $database->exec_SELECTquery(
 			'uid',
 			'tx_commerce_categories',
-			'sys_language_uid = 0 AND l18n_parent = 0
-				AND uid NOT IN (SELECT uid_local FROM tx_commerce_categories_parent_category_mm) AND tx_commerce_categories.deleted = 0'
+			'sys_language_uid = 0 AND l18n_parent = 0 AND uid NOT IN (
+				SELECT uid_local FROM tx_commerce_categories_parent_category_mm
+			) AND tx_commerce_categories.deleted = 0'
 		);
 		while (($row = $database->sql_fetch_assoc($result))) {
 			$data = array(
@@ -124,26 +115,43 @@ class Tx_Commerce_Utility_UpdateUtility {
 	}
 
 	/**
-	 * echeck if the Ipdate is neassessary
+	 * Creates the missing MM records for categories below the root (UID=0) element
 	 *
-	 * @return boolean True if update should be perfomed
+	 * @return void
+	 */
+	public function createBackendUser() {
+		$data = array(
+			'pid' => 0,
+			'username' => '_fe_commerce',
+			'password' => 'MD5(RAND())',
+			'tstamp' => $GLOBALS['EXEC_TIME'],
+			'crdate' => $GLOBALS['EXEC_TIME'],
+		);
+
+		$this->getDatabaseConnection()->exec_INSERTquery('be_users', $data, array('password', 'tstamp', 'crdate'));
+	}
+
+	/**
+	 * Check if the Ipdate is necessary
+	 *
+	 * @return bool True if update should be perfomed
 	 */
 	public function access() {
 		if (!\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('commerce')) {
 			return FALSE;
 		}
 
-		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
-		$database = $GLOBALS['TYPO3_DB'];
+		$database = $this->getDatabaseConnection();
 
 		$result = $database->exec_SELECTquery(
 			'uid',
 			'tx_commerce_categories',
-			'uid NOT IN (SELECT uid_local FROM tx_commerce_categories_parent_category_mm)
-				AND tx_commerce_categories.deleted = 0 AND sys_language_uid = 0 AND l18n_parent = 0'
+			'uid NOT IN (
+				SELECT uid_local FROM tx_commerce_categories_parent_category_mm
+			) AND tx_commerce_categories.deleted = 0 AND sys_language_uid = 0 AND l18n_parent = 0'
 		);
 
-		if ($result && ($database->sql_num_rows($result) > 0)) {
+		if ($result && $database->sql_num_rows($result) > 0) {
 			return TRUE;
 		}
 
@@ -155,10 +163,25 @@ class Tx_Commerce_Utility_UpdateUtility {
 			'tx_commerce_categories',
 			'perms_user = 0 AND perms_group = 0 AND perms_everybody = 0'
 		);
-		if (($result) && ($database->sql_num_rows($result) > 0)) {
+		if ($result && $database->sql_num_rows($result) > 0) {
+			return TRUE;
+		}
+
+		$result = $database->exec_SELECTquery('uid', 'be_users', 'username = \'_fe_commerce\'');
+		if ($result && $database->sql_num_rows($result) == 0) {
 			return TRUE;
 		}
 
 		return FALSE;
+	}
+
+
+	/**
+	 * Get database connection
+	 *
+	 * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+	 */
+	protected function getDatabaseConnection() {
+		return $GLOBALS['TYPO3_DB'];
 	}
 }

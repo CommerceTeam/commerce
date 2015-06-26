@@ -13,14 +13,14 @@ return array(
 	'feInterface' => array(
 		'fe_admin_fieldList' => 'orders_uid, trackingcodes_uid, msg',
 	),
-	'interface' => Array(
+	'interface' => array(
 		'showRecordFieldList' => 'orders_uid,trackingcodes_uid,msg'
 	),
-	'columns' => Array(
-		'orders_uid' => Array(
+	'columns' => array(
+		'orders_uid' => array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_tracking.orders_uid',
-			'config' => Array(
+			'config' => array(
 				'type' => 'group',
 				'internal_type' => 'db',
 				'allowed' => 'tx_commerce_orders',
@@ -29,10 +29,10 @@ return array(
 				'maxitems' => 1,
 			)
 		),
-		'trackingcodes_uid' => Array(
+		'trackingcodes_uid' => array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_tracking.trackingcodes_uid',
-			'config' => Array(
+			'config' => array(
 				'type' => 'group',
 				'internal_type' => 'db',
 				'allowed' => 'tx_commerce_trackingcodes',
@@ -41,10 +41,10 @@ return array(
 				'maxitems' => 1,
 			)
 		),
-		'msg' => Array(
+		'msg' => array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_tracking.msg',
-			'config' => Array(
+			'config' => array(
 				'type' => 'input',
 				'size' => '40',
 				'max' => '80',
@@ -52,10 +52,10 @@ return array(
 			)
 		),
 	),
-	'types' => Array(
-		'0' => Array('showitem' => 'orders_uid;;;;1-1-1, trackingcodes_uid, msg')
+	'types' => array(
+		'0' => array('showitem' => 'orders_uid;;;;1-1-1, trackingcodes_uid, msg')
 	),
-	'palettes' => Array(
-		'1' => Array('showitem' => '')
+	'palettes' => array(
+		'1' => array('showitem' => '')
 	)
 );

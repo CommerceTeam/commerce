@@ -1,73 +1,78 @@
 <?php
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2005-2012 Thomas Hempel <thomas@work.de>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *  A copy is found in the textfile GPL.txt and important notices to the license
- *  from the author is found in LICENSE.txt distributed with these scripts.
- *
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
+use TYPO3\CMS\Backend\Form\FormEngine;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Backend\Utility\IconUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-/** @noinspection PhpIncludeInspection */
 require_once(PATH_TXCOMMERCE . 'Classes/Utility/GeneralUtility.php');
 
 /**
  * This class provides several methods for creating articles from within
  * a product. It provides the user fields and creates the entries in the
  * database.
+ *
+ * Class Tx_Commerce_Utility_ArticleCreatorUtility
+ *
+ * @author 2005-2012 Thomas Hempel <thomas@work.de>
  */
 class Tx_Commerce_Utility_ArticleCreatorUtility {
 	/**
+	 * Existing articles
+	 *
 	 * @var array
 	 */
 	protected $existingArticles = NULL;
 
 	/**
+	 * Attributes
+	 *
 	 * @var array
 	 */
 	protected $attributes = NULL;
 
 	/**
+	 * Flatted attributes
+	 *
 	 * @var array
 	 */
 	protected $flattedAttributes = array();
 
 	/**
-	 * @var integer
+	 * Uid
+	 *
+	 * @var int
 	 */
 	protected $uid = 0;
 
 	/**
-	 * @var integer
+	 * Page id
+	 *
+	 * @var int
 	 */
 	protected $pid = 0;
 
 	/**
+	 * Backend utility
+	 *
 	 * @var Tx_Commerce_Utility_BackendUtility
 	 */
 	protected $belib;
 
 	/**
+	 * Return url
+	 *
 	 * @var string
 	 */
 	protected $returnUrl;
@@ -85,8 +90,9 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	/**
 	 * Initializes the Article Creator if it's not called directly from the Flexforms
 	 *
-	 * @param integer $uid uid of the product
-	 * @param integer $pid page id
+	 * @param int $uid Uid of the product
+	 * @param int $pid Page id
+	 *
 	 * @return void
 	 */
 	public function init($uid, $pid) {
@@ -101,14 +107,13 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	/**
 	 * Get all articles that already exist. Add some buttons for editing.
 	 *
-	 * @param array $parameter
+	 * @param array $parameter Parameter
+	 *
 	 * @return string a HTML-table with the articles
 	 */
-	public function existingArticles($parameter) {
-		/** @var \TYPO3\CMS\Core\Authentication\BackendUserAuthentication $backendUser */
-		$backendUser = $GLOBALS['BE_USER'];
-		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
-		$database = $GLOBALS['TYPO3_DB'];
+	public function existingArticles(array $parameter) {
+		$backendUser = $this->getBackendUser();
+		$database = $this->getDatabaseConnection();
 
 		$this->uid = (int)$parameter['row']['uid'];
 		$this->pid = (int)$parameter['row']['pid'];
@@ -145,8 +150,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 			$article = $this->existingArticles[$i];
 
 			$result .= '<tr><td style="border-top:1px black solid; border-right: 1px gray dotted"><strong>' .
-				htmlspecialchars($article['title']) . '</strong>';
-			$result .= '<br />UID:' . (int) $article['uid'] . '</td>';
+				htmlspecialchars($article['title']) . '</strong><br />UID:' . (int) $article['uid'] . '</td>';
 
 			if (is_array($this->attributes['ct1'])) {
 				foreach ($this->attributes['ct1'] as $attribute) {
@@ -156,11 +160,13 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 						'tx_commerce_articles_article_attributes_mm',
 						'uid_local=' . $article['uid'] . ' AND uid_foreign=' . $attribute['uid_foreign']
 					);
+
+					$cellStyle = 'border-top:1px black solid; border-right: 1px gray dotted';
 					while (($attributeData = $database->sql_fetch_assoc($atrRes))) {
 						if ($attribute['attributeData']['has_valuelist'] == 1) {
 							if ($attributeData['uid_valuelist'] == 0) {
 									// if the attribute has no value, create a select box with valid values
-								$result .= '<td style="border-top:1px black solid; border-right: 1px gray dotted"><select name="updateData[' .
+								$result .= '<td style="' . $cellStyle . '"><select name="updateData[' .
 									(int) $article['uid'] . '][' . (int) $attribute['uid_foreign'] . ']" />';
 								$result .= '<option value="0" selected="selected"></option>';
 								foreach ($attribute['valueList'] as $attrValueUid => $attrValueData) {
@@ -168,14 +174,14 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 								}
 								$result .= '</select></td>';
 							} else {
-								$result .= '<td style="border-top:1px black solid; border-right: 1px gray dotted">' .
+								$result .= '<td style="' . $cellStyle . '">' .
 									htmlspecialchars(strip_tags($attribute['valueList'][$attributeData['uid_valuelist']]['value'])) . '</td>';
 							}
 						} elseif (!empty($attributeData['value_char'])) {
-							$result .= '<td style="border-top:1px black solid; border-right: 1px gray dotted">' .
+							$result .= '<td style="' . $cellStyle . '">' .
 								htmlspecialchars(strip_tags($attributeData['value_char'])) . '</td>';
 						} else {
-							$result .= '<td style="border-top:1px black solid; border-right: 1px gray dotted">' .
+							$result .= '<td style="' . $cellStyle . '">' .
 								htmlspecialchars(strip_tags($attributeData['default_value'])) . '</td>';
 						}
 					}
@@ -258,11 +264,12 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	/**
 	 * Create a matrix of producible articles
 	 *
-	 * @param array $parameter
-	 * @param \TYPO3\CMS\Backend\Form\FormEngine $fObj
+	 * @param array $parameter Parameter
+	 * @param FormEngine $fObj Form engine
+	 *
 	 * @return string A HTML-table with checkboxes and all needed stuff
 	 */
-	public function producibleArticles($parameter, $fObj) {
+	public function producibleArticles(array $parameter, FormEngine $fObj) {
 		$this->uid = (int)$parameter['row']['uid'];
 		$this->pid = (int)$parameter['row']['pid'];
 
@@ -289,7 +296,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 		$colCount = 0;
 		$headRow = $this->getHeadRow($colCount, array('&nbsp;'));
 
-		$valueMatrix = $this->getValues();
+		$valueMatrix = (array) $this->getValues();
 		$counter = 0;
 		$resultRows = '';
 		$resultRows .= $fObj->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.create_warning');
@@ -328,6 +335,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	 * This method builds up a matrix from the ct1 attributes with valuelist
 	 *
 	 * @param int $index The index we're currently working on
+	 *
 	 * @return array
 	 */
 	protected function getValues($index = 0) {
@@ -358,15 +366,18 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	 * Returns the html table rows for the article matrix
 	 *
 	 * @param array $data The data we should build the matrix from
-	 * @param array &$resultRows The resulting rows
-	 * @param integer &$counter The article counter
+	 * @param string $resultRows The rendered resulting rows
+	 * @param int $counter The article counter
 	 * @param string $headRow The header row for inserting after a number of articles
-	 * @param array $extraRowData some additional data like checkbox column
-	 * @param integer $index The level inside the matrix
+	 * @param array $extraRowData Some additional data like checkbox column
+	 * @param int $index The level inside the matrix
 	 * @param array $row The current row data
+	 *
 	 * @return void
 	 */
-	protected function getRows($data, &$resultRows, &$counter, $headRow, $extraRowData = array(), $index = 1, $row = array()) {
+	protected function getRows(array $data, &$resultRows, &$counter, $headRow, array $extraRowData = array(), $index = 1,
+		array $row = array()
+	) {
 		if (is_array($data)) {
 			foreach ($data as $dataItem) {
 				$dummyData = $dataItem;
@@ -396,13 +407,13 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 
 					$counter++;
 
-						// select format and insert headrow if we are in the 20th row
+					// select format and insert headrow if we are in the 20th row
 					if (($counter % 20) == 0) {
 						$resultRows .= $headRow;
 					}
 					$class = ($counter % 2 == 1) ? 'background-color:silver' : 'background:none';
 
-						// create the row
+					// create the row
 					$resultRows .= '<tr><td style="' . $class . '">';
 					$resultRows .= '<input type="checkbox" name="createList[' . $counter . ']" id="createRow_' . $counter . '" />';
 					$resultRows .= '<input type="hidden" name="createData[' . $counter . ']" value="' .
@@ -423,10 +434,10 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	}
 
 	/**
-	 * returns the number of articles that would be created with the number
+	 * Returns the number of articles that would be created with the number
 	 * of attributes the product have.
 	 *
-	 * @return integer The number of rows
+	 * @return int The number of rows
 	 */
 	protected function calculateRowCount() {
 		$result = 1;
@@ -442,13 +453,14 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	/**
 	 * Returns the HTML code for the header row
 	 *
-	 * @param integer &$colCount The number of columns we have
+	 * @param int $colCount The number of columns we have
 	 * @param array $acBefore The additional columns before the attribute columns
 	 * @param array $acAfter The additional columns after the attribute columns
-	 * @param boolean $addTr
+	 * @param bool $addTr Add table row
+	 *
 	 * @return string The HTML header code
 	 */
-	protected function getHeadRow(&$colCount, $acBefore = NULL, $acAfter = NULL, $addTr = TRUE) {
+	protected function getHeadRow(&$colCount, array $acBefore = NULL, array $acAfter = NULL, $addTr = TRUE) {
 		$result = '';
 
 		if ($addTr) {
@@ -482,12 +494,12 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	/**
 	 * Creates all articles that should be created (defined through the POST vars)
 	 *
-	 * @param array $parameter
+	 * @param array $parameter Parameter
+	 *
 	 * @return void
 	 */
-	public function createArticles($parameter) {
-		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
-		$database = $GLOBALS['TYPO3_DB'];
+	public function createArticles(array $parameter) {
+		$database = $this->getDatabaseConnection();
 
 		if (is_array(GeneralUtility::_GP('createList'))) {
 			$res = $database->exec_SELECTquery(
@@ -533,8 +545,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 						continue;
 					}
 
-					/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
-					$database = $GLOBALS['TYPO3_DB'];
+					$database = $this->getDatabaseConnection();
 
 					$database->exec_UPDATEquery(
 						'tx_commerce_articles_article_attributes_mm',
@@ -551,11 +562,12 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	/**
 	 * Creates article title out of attributes
 	 *
-	 * @param array $parameter
-	 * @param array $data
+	 * @param array $parameter Parameter
+	 * @param array $data Data
+	 *
 	 * @return string Returns the product title + attribute titles for article title
 	 */
-	protected function createArticleTitleFromAttributes($parameter, $data) {
+	protected function createArticleTitleFromAttributes(array $parameter, array $data) {
 		$content = $parameter['title'];
 		if (is_array($data) && count($data)) {
 			$selectedValues = array();
@@ -575,38 +587,42 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	 * Creates an article in the database and all needed releations to attributes
 	 * and values. It also creates a new prices and assignes it to the new article.
 	 *
-	 * @param array $parameter
+	 * @param array $parameter Parameter
 	 * @param string $key The key in the POST var array
-	 * @return integer Returns the new articleUid if success
+	 *
+	 * @return int Returns the new articleUid if success
 	 */
-	protected function createArticle($parameter, $key) {
-		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
-		$database = $GLOBALS['TYPO3_DB'];
+	protected function createArticle(array $parameter, $key) {
+		$database = $this->getDatabaseConnection();
 
-			// get the create data
+		// get the create data
 		$data = GeneralUtility::_GP('createData');
-		$data = $data[$key];
-		$hash = md5($data);
-		$data = unserialize($data);
-
-			// get the highest sorting
-		$res = $database->exec_SELECTquery(
-			'uid,sorting',
+		$hash = '';
+		if (is_array($data)) {
+			$data = $data[$key];
+			$hash = md5($data);
+			$data = unserialize($data);
+		}
+		$database->debugOutput = 1;
+		$database->store_lastBuiltQuery = TRUE;
+		// get the highest sorting
+		$sorting = $database->exec_SELECTgetSingleRow(
+			'uid, sorting',
 			'tx_commerce_articles',
-			'uid_product=' . $this->uid,
+			'uid_product = ' . $this->uid,
 			'',
 			'sorting DESC',
 			1
 		);
-		$sorting = $database->sql_fetch_assoc($res);
+		$sorting = (is_array($sorting) && isset($sorting['sorting'])) ? $sorting['sorting'] + 20 : 0;
 
-			// create article data array
+		// create article data array
 		$articleData = array(
 			'pid' => $this->pid,
 			'crdate' => time(),
-			'title' => strip_tags($this->createArticleTitleFromAttributes($parameter, $data)),
+			'title' => strip_tags($this->createArticleTitleFromAttributes($parameter, (array)$data)),
 			'uid_product' => (int) $this->uid,
-			'sorting' => $sorting['sorting'] * 2,
+			'sorting' => $sorting,
 			'article_attributes' => count($this->attributes['rest']) + count($data),
 			'attribute_hash' => $hash,
 			'article_type_uid' => 1,
@@ -635,7 +651,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 				}
 			}
 		}
-		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Utility/ArticleCreatorUtility.php']['createArticlePreInsert'])) {
+		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Utility/ArticleCreatorUtility.php']['createArticlePreInsert'])) {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Utility/ArticleCreatorUtility.php']['createArticlePreInsert'] as $classRef) {
 				$hookObj = &GeneralUtility::getUserObj($classRef);
 				if (method_exists($hookObj, 'preinsert')) {
@@ -644,11 +660,11 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 			}
 		}
 
-			// create the article
-		$articleRes = $database->exec_INSERTquery('tx_commerce_articles', $articleData);
-		$articleUid = $database->sql_insert_id($articleRes);
+		// create the article
+		$database->exec_INSERTquery('tx_commerce_articles', $articleData);
+		$articleUid = $database->sql_insert_id();
 
-			// create a new price that is assigned to the new article
+		// create a new price that is assigned to the new article
 		$database->exec_INSERTquery(
 			'tx_commerce_article_prices',
 			array (
@@ -659,7 +675,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 			)
 		);
 
-			// now write all relations between article and attributes into the database
+		// now write all relations between article and attributes into the database
 		$relationBaseData = array(
 			'uid_local' => $articleUid,
 		);
@@ -668,7 +684,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 		$relationCreateData = $relationBaseData;
 
 		$productsAttributesRes = $database->exec_SELECTquery(
-			'sorting,uid_local,uid_foreign',
+			'sorting, uid_local, uid_foreign',
 			'tx_commerce_products_attributes_mm',
 			'uid_local = ' . (int) $this->uid
 		);
@@ -736,16 +752,16 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 		);
 
 		if (($resLocalizedProducts) && ($database->sql_num_rows($resLocalizedProducts) > 0)) {
-				// Only if there are products
+			// Only if there are products
 			while (($localizedProducts = $database->sql_fetch_assoc($resLocalizedProducts))) {
-					// walk thru and create articles
+				// walk thru and create articles
 				$destLanguage = $localizedProducts['sys_language_uid'];
-					// get the highest sorting
+				// get the highest sorting
 				$langIsoCode = BackendUtility::getRecord('sys_language', (int) $destLanguage, 'static_lang_isocode');
 				$langIdent = BackendUtility::getRecord('static_languages', (int) $langIsoCode['static_lang_isocode'], 'lg_typo3');
 				$langIdent = strtoupper($langIdent['lg_typo3']);
 
-					// create article data array
+				// create article data array
 				$articleData = array(
 					'pid' => $this->pid,
 					'crdate' => time(),
@@ -753,23 +769,23 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 					'uid_product' => $localizedProducts['uid'],
 					'sys_language_uid' => $localizedProducts['sys_language_uid'],
 					'l18n_parent' => $articleUid,
-					'sorting' => $sorting['sorting'] * 2,
+					'sorting' => $sorting['sorting'] + 20,
 					'article_attributes' => count($this->attributes['rest']) + count($data),
 					'attribute_hash' => $hash,
 					'article_type_uid' => 1,
 					'attributesedit' => $this->belib->buildLocalisedAttributeValues($origArticle['attributesedit'], $langIdent),
 				);
 
-					// create the article
-				$articleRes = $database->exec_INSERTquery('tx_commerce_articles', $articleData);
-				$localizedArticleUid = $database->sql_insert_id($articleRes);
+				// create the article
+				$database->exec_INSERTquery('tx_commerce_articles', $articleData);
+				$localizedArticleUid = $database->sql_insert_id();
 
 				// get all relations to attributes from the old article and copy them
 				// to new article
 				$res = $database->exec_SELECTquery(
 					'*',
 					'tx_commerce_articles_article_attributes_mm',
-					'uid_local=' . (int) $origArticle['uid'] . ' AND uid_valuelist=0'
+					'uid_local = ' . (int) $origArticle['uid'] . ' AND uid_valuelist = 0'
 				);
 
 				while (($origRelation = $database->sql_fetch_assoc($res))) {
@@ -784,24 +800,34 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 		return $articleUid;
 	}
 
+	/**
+	 * Returns a hidden field with the name and value of the current form element
+	 *
+	 * @param array $parameter Parameter
+	 *
+	 * @return string
+	 */
+	public function articleUid(array $parameter) {
+		return '<input type="hidden" name="' . $parameter['itemFormElName'] . '" value="' .
+			htmlspecialchars($parameter['itemFormElValue']) . '">';
+	}
+
 
 	/**
 	 * Creates a checkbox that has to be toggled for creating a new price for an
 	 * article. The handling for creating the new price is inside the tcehooks
 	 *
-	 * @param array $parameter
+	 * @param array $parameter Parameter
+	 *
 	 * @return string
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, this wont get replaced as it was removed from the api
 	 */
-	public function createNewPriceCB($parameter) {
+	public function createNewPriceCB(array $parameter) {
 		GeneralUtility::logDeprecatedFunction();
 
-		/** @var \TYPO3\CMS\Lang\LanguageService $language */
-		$language = $GLOBALS['LANG'];
-
 		$content = '<div id="typo3-newRecordLink">
-				<input type="checkbox" name="data[tx_commerce_articles][' . (int) $parameter['row']['uid'] . '][create_new_price]" />' .
-				$language->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:articles.add_article_price', 1) .
+			<input type="checkbox" name="data[tx_commerce_articles][' . (int) $parameter['row']['uid'] . '][create_new_price]" />' .
+			$this->getLanguageService()->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:articles.add_article_price', 1) .
 			'</div>';
 		return $content;
 	}
@@ -809,11 +835,12 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	/**
 	 * Creates ...
 	 *
-	 * @param array $parameter
+	 * @param array $parameter Parameter
+	 *
 	 * @return string
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, this wont get replaced as it was removed from the api
 	 */
-	public function createNewScalePricesCount($parameter) {
+	public function createNewScalePricesCount(array $parameter) {
 		GeneralUtility::logDeprecatedFunction();
 
 		return '<input style="width: 77px;" class="formField1" maxlength="20" type="input" name="data[tx_commerce_articles][' .
@@ -823,11 +850,12 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	/**
 	 * Creates ...
 	 *
-	 * @param array $parameter
+	 * @param array $parameter Parameter
+	 *
 	 * @return string
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, this wont get replaced as it was removed from the api
 	 */
-	public function createNewScalePricesSteps($parameter) {
+	public function createNewScalePricesSteps(array $parameter) {
 		GeneralUtility::logDeprecatedFunction();
 
 		return '<input style="width: 77px;" class="formField1" maxlength="20"type="input" name="data[tx_commerce_articles][' .
@@ -837,11 +865,12 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	/**
 	 * Creates ...
 	 *
-	 * @param array $parameter
+	 * @param array $parameter Parameter
+	 *
 	 * @return string
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, this wont get replaced as it was removed from the api
 	 */
-	public function createNewScalePricesStartAmount($parameter) {
+	public function createNewScalePricesStartAmount(array $parameter) {
 		GeneralUtility::logDeprecatedFunction();
 
 		return '<input style="width: 77px;" class="formField1" maxlength="20" type="input" name="data[tx_commerce_articles][' .
@@ -852,41 +881,58 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	 * Creates a delete button that is assigned to a price. If the button is pressed
 	 * the price will be deleted from the article
 	 *
-	 * @param array $parameter
-	 * @param \TYPO3\CMS\Backend\Form\FormEngine $fObj
+	 * @param array $parameter Parameter
+	 * @param FormEngine $fObj Form engine
+	 *
 	 * @return string
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, this wont get replaced as it was removed from the api
 	 */
-	public function deletePriceButton($parameter, $fObj) {
+	public function deletePriceButton(array $parameter, FormEngine $fObj) {
 		GeneralUtility::logDeprecatedFunction();
 
-		/** @var \TYPO3\CMS\Lang\LanguageService $language */
-		$language = $GLOBALS['LANG'];
-
-			// get the return URL.This is need to fit all possible combinations of GET vars
+		// get the return URL.This is need to fit all possible combinations of GET vars
 		$returnUrl = explode('/', $fObj->returnUrl);
 		$returnUrl = $returnUrl[(count($returnUrl) - 1)];
 
-			// get the UID of the price
+		// get the UID of the price
 		$name = explode('caption_', $parameter['itemFormElName']);
 		$name = explode(']', $name[1]);
 		$pUid = $name[0];
 
-			// build the link code
+		// build the link code
 		$result = '<a href="#" onclick="deleteRecord(\'tx_commerce_article_prices\', ' . (int) $pUid . ', \'' . $returnUrl . '\');">
 			<img src="/' . TYPO3_mainDir . '/gfx/garbage.gif" border="0" />' .
-			$language->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:articles.del_article_price', 1) . '</a>';
+			$this->getLanguageService()->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:articles.del_article_price', 1) .
+			'</a>';
 
 		return $result;
 	}
 
+
 	/**
-	 * Returns a hidden field with the name and value of the current form element
+	 * Get backend user
 	 *
-	 * @param array $parameter
-	 * @return string
+	 * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
 	 */
-	public function articleUid($parameter) {
-		return '<input type="hidden" name="' . $parameter['itemFormElName'] . '" value="' . htmlspecialchars($parameter['itemFormElValue']) . '">';
+	protected function getBackendUser() {
+		return $GLOBALS['BE_USER'];
+	}
+
+	/**
+	 * Get database connection
+	 *
+	 * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+	 */
+	protected function getDatabaseConnection() {
+		return $GLOBALS['TYPO3_DB'];
+	}
+
+	/**
+	 * Get language service
+	 *
+	 * @return \TYPO3\CMS\Lang\LanguageService
+	 */
+	protected function getLanguageService() {
+		return $GLOBALS['LANG'];
 	}
 }

@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * This file is part of the TYPO3 CMS project.
  *
  * It is free software; you can redistribute it and/or modify it under
@@ -21,10 +21,13 @@ require_once('conf.php');
 define('TYPO3_MOD_PATH', '../typo3conf/ext/commerce/Classes/Module/Systemdata/');
 $BACK_PATH = '../../../../../../typo3/';
 
-/** @noinspection PhpIncludeInspection */
 require_once($BACK_PATH . 'init.php');
 
-/** @var $SOBE Tx_Commerce_ViewHelpers_Navigation_SystemdataViewHelper */
+/**
+ * System data navigation viewhelper
+ *
+ * @var $SOBE Tx_Commerce_ViewHelpers_Navigation_SystemdataViewHelper
+ */
 $SOBE = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_ViewHelpers_Navigation_SystemdataViewHelper');
 $SOBE->init();
 $SOBE->initPage();

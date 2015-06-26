@@ -1,59 +1,38 @@
 <?php
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2008-2011 Eric Frister <ef@marketing-factory.de>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *  A copy is found in the textfile GPL.txt and important notices to the license
- *  from the author is found in LICENSE.txt distributed with these scripts.
- *
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
 
 /**
  * Misc commerce db functions
+ *
+ * Class Tx_Commerce_Domain_Repository_FolderRepository
+ *
+ * @author 2008-2011 Eric Frister <ef@marketing-factory.de>
  */
 class Tx_Commerce_Domain_Repository_FolderRepository {
-	/**
-	 * Returns pidList of extension Folders
-	 *
-	 * @param string $module
-	 * @return string commalist of PIDs
-	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, this wont get replaced as it was removed from the api
-	 */
-	public function getFolderPidList($module = 'commerce') {
-		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
-
-		return implode(',', array_keys(self::getFolders($module)));
-	}
-
 	/**
 	 * Find the extension folders or create one.
 	 *
 	 * @param string $title Folder Title as named in pages table
 	 * @param string $module Extension Moduke
-	 * @param integer $pid Parent Page id
+	 * @param int $pid Parent Page id
 	 * @param string $parentTitle Parent Folder Title
+	 *
 	 * @return array
 	 */
 	public static function initFolders($title = 'Commerce', $module = 'commerce', $pid = 0, $parentTitle = '') {
-			// creates a Commerce folder on the fly
-			// not really a clean way ...
+		// creates a Commerce folder on the fly
+		// not really a clean way ...
 		if ($parentTitle) {
 			$parentFolders = self::getFolders($module, $pid, $parentTitle);
 			$currentParentFolders = current($parentFolders);
@@ -74,9 +53,10 @@ class Tx_Commerce_Domain_Repository_FolderRepository {
 	/**
 	 * Find the extension folders
 	 *
-	 * @param string $module
-	 * @param integer $pid
-	 * @param string $title
+	 * @param string $module Module
+	 * @param int $pid Page id
+	 * @param string $title Title
+	 *
 	 * @return array rows of found extension folders
 	 */
 	public static function getFolders($module = 'commerce', $pid = 0, $title = '') {
@@ -94,10 +74,11 @@ class Tx_Commerce_Domain_Repository_FolderRepository {
 	 * Create your database table folder
 	 * overwrite this if wanted
 	 *
-	 * @param string $title
-	 * @param string $module
-	 * @param integer $pid: ...
-	 * @return integer
+	 * @param string $title Title
+	 * @param string $module Module
+	 * @param int $pid Page id
+	 *
+	 * @return int
 	 * @todo title aus extkey ziehen
 	 * @todo sorting
 	 */
@@ -111,7 +92,7 @@ class Tx_Commerce_Domain_Repository_FolderRepository {
 		$fieldValues['title'] = $title;
 
 		// @todo MAKE IT tx_commerce_foldername
-		$fieldValues['tx_graytree_foldername'] =  strtolower($title);
+		$fieldValues['tx_graytree_foldername'] = strtolower($title);
 		$fieldValues['doktype'] = 254;
 		$fieldValues['module'] = $module;
 		$fieldValues['crdate'] = time();
@@ -124,6 +105,23 @@ class Tx_Commerce_Domain_Repository_FolderRepository {
 
 
 	/**
+	 * Returns pidList of extension Folders
+	 *
+	 * @param string $module Module
+	 *
+	 * @return string commalist of PIDs
+	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, this wont get replaced as it was removed from the api
+	 */
+	public function getFolderPidList($module = 'commerce') {
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
+		return implode(',', array_keys(self::getFolders($module)));
+	}
+
+
+	/**
+	 * Get database connection
+	 *
 	 * @return \TYPO3\CMS\Dbal\Database\DatabaseConnection
 	 */
 	protected function getDatabaseConnection() {

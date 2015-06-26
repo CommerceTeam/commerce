@@ -1,38 +1,29 @@
 <?php
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2008-2011 Erik Frister <typo3@marketing-factory.de>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *  A copy is found in the textfile GPL.txt and important notices to the license
- *  from the author is found in LICENSE.txt distributed with these scripts.
- *
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
 
 /**
  * Implements the mounts for Tx_Commerce_Tree_Leaf_Master
+ *
+ * Class Tx_Commerce_Tree_Leaf_Mounts
+ *
+ * @author 2008-2011 Erik Frister <typo3@marketing-factory.de>
  */
 class Tx_Commerce_Tree_Leaf_Mounts extends Tx_Commerce_Tree_Leaf_Base {
 	/**
 	 * Uid of the User
 	 *
-	 * @var integer
+	 * @var int
 	 */
 	protected $user_uid;
 
@@ -53,7 +44,7 @@ class Tx_Commerce_Tree_Leaf_Mounts extends Tx_Commerce_Tree_Leaf_Base {
 	/**
 	 * Walk-Pointer
 	 *
-	 * @var integer
+	 * @var int
 	 */
 	protected $pointer;
 
@@ -67,38 +58,48 @@ class Tx_Commerce_Tree_Leaf_Mounts extends Tx_Commerce_Tree_Leaf_Base {
 	/**
 	 * Group for this mount
 	 *
-	 * @var integer
+	 * @var int
 	 */
 	protected $group;
 
 	/**
 	 * Flag if we want to read the mounts by group
 	 *
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $byGroup;
 
 	/**
+	 * Table
+	 *
 	 * @var string
 	 */
 	protected $table = 'be_users';
 
 	/**
+	 * Group table
+	 *
 	 * @var string
 	 */
 	protected $grouptable = 'be_groups';
 
 	/**
+	 * Field
+	 *
 	 * @var string
 	 */
 	protected $field = NULL;
 
 	/**
+	 * Usergroup field
+	 *
 	 * @var string
 	 */
 	protected $usergroupField = 'usergroup';
 
 	/**
+	 * Where
+	 *
 	 * @var string
 	 */
 	protected $where = '';
@@ -124,16 +125,22 @@ class Tx_Commerce_Tree_Leaf_Mounts extends Tx_Commerce_Tree_Leaf_Base {
 
 	/**
 	 * Initializes the Mounts for a user
-	 * Overwrite this function if you plan to not read Mountpoints from the be_users table
+	 * Overwrite this function if you plan to not
+	 * read Mountpoints from the be_users table
 	 *
-	 * @param $uid {int}	User UID
+	 * @param int $uid User UID
+	 *
 	 * @return void
 	 */
 	public function init($uid) {
-			// Return if the UID is not numeric - could also be because we have a new user
+		// Return if the UID is not numeric - could also be because we have a new user
 		if (!is_numeric($uid) || $this->field == NULL) {
 			if (TYPO3_DLOG) {
-				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('init (Tx_Commerce_Tree_Leaf_Mounts) gets passed invalid parameters. Script is aborted.', COMMERCE_EXTKEY, 2);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
+					'init (Tx_Commerce_Tree_Leaf_Mounts) gets passed invalid parameters. Script is aborted.',
+					COMMERCE_EXTKEY,
+					2
+				);
 			}
 			return;
 		}
@@ -143,29 +150,35 @@ class Tx_Commerce_Tree_Leaf_Mounts extends Tx_Commerce_Tree_Leaf_Base {
 
 		$mounts = $this->getMounts();
 
-			// If neither User nor Group have mounts, return
+		// If neither User nor Group have mounts, return
 		if ($mounts == NULL) {
 			return;
 		}
 
-			// Store the results
+		// Store the results
 		$this->mountlist = \TYPO3\CMS\Core\Utility\GeneralUtility::uniqueList($mounts);
-			// Clean duplicates
+		// Clean duplicates
 		$this->mountdata = explode(',', $this->mountlist);
 	}
 
 	/**
 	 * Initializes the Mounts for a group
-	 * Overwrite this function if you plan to not read Mountpoints from the be_groups table
+	 * Overwrite this function if you plan to not
+	 * read Mountpoints from the be_groups table
 	 *
-	 * @param $uid {int}	Group UID
+	 * @param int $uid Group UID
+	 *
 	 * @return void
 	 */
 	public function initByGroup($uid) {
-			// Return if the UID is not numeric - could also be because we have a new user
+		// Return if the UID is not numeric - could also be because we have a new user
 		if (!is_numeric($uid) || $this->field == NULL) {
 			if (TYPO3_DLOG) {
-				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('initByGroup (mounts) gets passed invalid parameters. Script is aborted.', COMMERCE_EXTKEY, 2);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
+					'initByGroup (mounts) gets passed invalid parameters. Script is aborted.',
+					COMMERCE_EXTKEY,
+					2
+				);
 			}
 			return;
 		}
@@ -176,14 +189,14 @@ class Tx_Commerce_Tree_Leaf_Mounts extends Tx_Commerce_Tree_Leaf_Base {
 
 		$mounts = $this->getMounts();
 
-			// If the Group has no mounts, return
+		// If the Group has no mounts, return
 		if ($mounts == NULL) {
 			return;
 		}
 
-			// Store the results
+		// Store the results
 		$this->mountlist = \TYPO3\CMS\Core\Utility\GeneralUtility::uniqueList($mounts);
-			// Clean duplicates
+		// Clean duplicates
 		$this->mountdata = explode(',', $this->mountlist);
 	}
 
@@ -195,13 +208,12 @@ class Tx_Commerce_Tree_Leaf_Mounts extends Tx_Commerce_Tree_Leaf_Base {
 	protected function getMounts() {
 		$mounts = '';
 
-			// Set mount to 0 if the User is a admin
+		// Set mount to 0 if the User is a admin
 		if (!$this->byGroup && $this->user->isAdmin()) {
 			$mounts = '0';
 		} else {
-			/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
-			$database = & $GLOBALS['TYPO3_DB'];
-				// Read usermounts - if none are set, mounts are set to NULL
+			$database = $this->getDatabaseConnection();
+			// Read usermounts - if none are set, mounts are set to NULL
 			if (!$this->byGroup) {
 				$result = $database->exec_SELECTquery(
 					$this->field . ',' . $this->usergroupField,
@@ -213,7 +225,7 @@ class Tx_Commerce_Tree_Leaf_Mounts extends Tx_Commerce_Tree_Leaf_Base {
 				$row = $database->sql_fetch_assoc($result);
 				$mounts = $row[$this->field];
 
-					// Read Usergroup mounts
+				// Read Usergroup mounts
 				$groups = \TYPO3\CMS\Core\Utility\GeneralUtility::uniqueList($row[$this->usergroupField]);
 			} else {
 				$groups = $this->group;
@@ -222,12 +234,12 @@ class Tx_Commerce_Tree_Leaf_Mounts extends Tx_Commerce_Tree_Leaf_Base {
 			if (trim($groups)) {
 				$result = $database->exec_SELECTquery($this->field, $this->grouptable, 'uid IN (' . $groups . ')');
 
-					// Walk the groups and add the mounts
-				while ($row = $database->sql_fetch_assoc($result)) {
+				// Walk the groups and add the mounts
+				while (($row = $database->sql_fetch_assoc($result))) {
 					$mounts .= ',' . $row[$this->field];
 				}
 
-					// Make nicely formated list
+				// Make nicely formated list
 				$mounts = \TYPO3\CMS\Core\Utility\GeneralUtility::uniqueList($mounts);
 			}
 		}
@@ -238,7 +250,7 @@ class Tx_Commerce_Tree_Leaf_Mounts extends Tx_Commerce_Tree_Leaf_Base {
 	/**
 	 * Checks whether the User has mounts
 	 *
-	 * @return boolean
+	 * @return bool
 	 */
 	public function hasMounts() {
 		return ($this->mountlist != '');
@@ -266,7 +278,7 @@ class Tx_Commerce_Tree_Leaf_Mounts extends Tx_Commerce_Tree_Leaf_Base {
 	 * Walks the category mounts
 	 * Returns the mount-id or FALSE
 	 *
-	 * @return integer
+	 * @return int
 	 */
 	public function walk() {
 			// Abort if we reached the end of this collection
@@ -285,5 +297,15 @@ class Tx_Commerce_Tree_Leaf_Mounts extends Tx_Commerce_Tree_Leaf_Base {
 	 */
 	public function resetPointer() {
 		$this->pointer = 0;
+	}
+
+
+	/**
+	 * Get database connection
+	 *
+	 * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+	 */
+	protected function getDatabaseConnection() {
+		return $GLOBALS['TYPO3_DB'];
 	}
 }

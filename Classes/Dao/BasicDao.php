@@ -1,32 +1,18 @@
 <?php
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2006-2011 Carsten Lausen <cl@e-netconsulting.de>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *  A copy is found in the textfile GPL.txt and important notices to the license
- *  from the author is found in LICENSE.txt distributed with these scripts.
- *
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
 
 /**
- * class basic Dao
  * This class handles basic object persistence using the Dao design pattern.
  * It defines parsing and database storage of an object.
  * It can create objects and object Lists.
@@ -34,19 +20,29 @@
  * The class needs an object (to be stored).
  * The class needs a mapper for database storage.
  * The class needs a parser for object <-> model (transfer object) mapping.
+ *
+ * Class Tx_Commerce_Dao_BasicDao
+ *
+ * @author 2006-2011 Carsten Lausen <cl@e-netconsulting.de>
  */
 class Tx_Commerce_Dao_BasicDao {
 	/**
+	 * Dao object
+	 *
 	 * @var Tx_Commerce_Dao_BasicDaoObject
 	 */
 	protected $object;
 
 	/**
+	 * Parser
+	 *
 	 * @var Tx_Commerce_Dao_BasicDaoParser
 	 */
 	protected $parser;
 
 	/**
+	 * Mapper
+	 *
 	 * @var Tx_Commerce_Dao_BasicDaoMapper
 	 */
 	protected $mapper;
@@ -54,7 +50,8 @@ class Tx_Commerce_Dao_BasicDao {
 	/**
 	 * Constructor
 	 *
-	 * @param integer $id
+	 * @param int $id Id
+	 *
 	 * @return self
 	 */
 	public function __construct($id = NULL) {
@@ -81,24 +78,25 @@ class Tx_Commerce_Dao_BasicDao {
 	 *
 	 * @return Tx_Commerce_Dao_BasicDaoObject
 	 */
-	public function &getObject() {
+	public function getObject() {
 		return $this->object;
 	}
 
 	/**
 	 * Setter
 	 *
-	 * @param Tx_Commerce_Dao_BasicDaoObject &$object
+	 * @param Tx_Commerce_Dao_BasicDaoObject $object Object
+	 *
 	 * @return void
 	 */
-	public function setObject(&$object) {
+	public function setObject(Tx_Commerce_Dao_BasicDaoObject &$object) {
 		$this->object = $object;
 	}
 
 	/**
 	 * Getter
 	 *
-	 * @return integer
+	 * @return int
 	 */
 	public function getId() {
 		return $this->object->getId();
@@ -107,7 +105,8 @@ class Tx_Commerce_Dao_BasicDao {
 	/**
 	 * Setter
 	 *
-	 * @param integer $value
+	 * @param int $value Id
+	 *
 	 * @return void
 	 */
 	public function setId($value) {
@@ -117,7 +116,8 @@ class Tx_Commerce_Dao_BasicDao {
 	/**
 	 * Getter
 	 *
-	 * @param string $propertyName
+	 * @param string $propertyName Property name
+	 *
 	 * @return mixed
 	 */
 	public function get($propertyName) {
@@ -134,8 +134,9 @@ class Tx_Commerce_Dao_BasicDao {
 	/**
 	 * Setter
 	 *
-	 * @param string $propertyName
-	 * @param mixed $value
+	 * @param string $propertyName Property name
+	 * @param mixed $value Value
+	 *
 	 * @return void
 	 */
 	public function set($propertyName, $value) {
@@ -152,8 +153,9 @@ class Tx_Commerce_Dao_BasicDao {
 	/**
 	 * Check if property is empty
 	 *
-	 * @param string $propertyName
-	 * @return boolean
+	 * @param string $propertyName Property name
+	 *
+	 * @return bool
 	 */
 	public function isEmpty($propertyName) {
 		$properties = get_object_vars($this->object);
@@ -164,8 +166,9 @@ class Tx_Commerce_Dao_BasicDao {
 	/**
 	 * Check if property exists
 	 *
-	 * @param string $propertyName
-	 * @return boolean
+	 * @param string $propertyName Property name
+	 *
+	 * @return bool
 	 */
 	public function issetProperty($propertyName) {
 		$properties = get_object_vars($this->object);

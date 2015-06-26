@@ -1,29 +1,16 @@
 <?php
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2003-2011 Rene Fritz <r.fritz@colorcube.de>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *  A copy is found in the textfile GPL.txt and important notices to the license
- *  from the author is found in LICENSE.txt distributed with these scripts.
- *
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -47,39 +34,57 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * parameters and render the field with TCEforms.
  *
  * Might be possible with AJAX ...
+ *
+ * Class Tx_Commerce_ViewHelpers_TreelibBrowser
+ *
+ * @author 2003-2011 Rene Fritz <r.fritz@colorcube.de>
  */
 class Tx_Commerce_ViewHelpers_TreelibBrowser extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 	/**
+	 * Table
+	 *
 	 * @var string
 	 */
 	protected $table;
 
 	/**
+	 * Field
+	 *
 	 * @var string
 	 */
 	protected $field;
 
 	/**
-	 * @var integer
+	 * Uid
+	 *
+	 * @var int
 	 */
 	protected $uid;
 
 	/**
+	 * Item form element name
+	 *
 	 * @var string
 	 */
 	protected $itemFormElName;
 
 	/**
+	 * Flex config
+	 *
 	 * @var string
 	 */
 	protected $flexConfig;
 
 	/**
+	 * Back path
+	 *
 	 * @var string
 	 */
 	protected $backPath;
 
 	/**
+	 * Current sub script
+	 *
 	 * @var string
 	 */
 	protected $currentSubScript;
@@ -113,7 +118,11 @@ class Tx_Commerce_ViewHelpers_TreelibBrowser extends \TYPO3\CMS\Backend\Module\B
 		$this->backPath = $GLOBALS['BACK_PATH'];
 
 		// Initialize template object
-		/** @var \TYPO3\CMS\Backend\Template\DocumentTemplate $doc */
+		/**
+		 * Document template
+		 *
+		 * @var \TYPO3\CMS\Backend\Template\DocumentTemplate $doc
+		 */
 		$doc = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
 		$this->doc = $doc;
 		$this->doc->docType = 'xhtml_trans';
@@ -190,7 +199,11 @@ class Tx_Commerce_ViewHelpers_TreelibBrowser extends \TYPO3\CMS\Backend\Module\B
 
 		$this->content .= $this->doc->startPage('Treeview Browser');
 
-		/** @var \TYPO3\CMS\Backend\Form\FormEngine $form */
+		/**
+		 * Form engine
+		 *
+		 * @var \TYPO3\CMS\Backend\Form\FormEngine $form
+		 */
 		$form = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Form\\FormEngine');
 		$form->initDefaultBEmode();
 		$form->backPath = $this->backPath;
@@ -239,12 +252,17 @@ class Tx_Commerce_ViewHelpers_TreelibBrowser extends \TYPO3\CMS\Backend\Module\B
 	protected function getRecordProcessed() {
 		// This will render MM relation fields in the correct way.
 		// Read the whole record, which is not needed, but there's no other way.
-		/** @var \TYPO3\CMS\Backend\Form\DataPreprocessor $trData */
+		/**
+		 * Data preprocessor
+		 *
+		 * @var \TYPO3\CMS\Backend\Form\DataPreprocessor $trData
+		 */
 		$trData = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Form\\DataPreprocessor');
 		$trData->addRawData = TRUE;
 		$trData->lockRecords = TRUE;
 		$trData->fetchRecord($this->table, $this->uid, '');
 		reset($trData->regTableItems_data);
+
 		$row = current($trData->regTableItems_data);
 
 		return $row;

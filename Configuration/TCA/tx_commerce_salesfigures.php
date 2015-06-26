@@ -14,14 +14,14 @@ return array(
 	'feInterface' => array(
 		'fe_admin_fieldList' => 'year, month, day, dow, hour, pricegross, pricenet, amount, orders',
 	),
-	'interface' => Array(
+	'interface' => array(
 		'showRecordFieldList' => 'year,month,day,dow,hour,pricegross, pricenet,amount,orders'
 	),
-	'columns' => Array(
-		'year' => Array(
+	'columns' => array(
+		'year' => array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_salesfigures.year',
-			'config' => Array(
+			'config' => array(
 				'type' => 'input',
 				'size' => '11',
 				'max' => '11',
@@ -29,10 +29,10 @@ return array(
 				'default' => 0
 			)
 		),
-		'month' => Array(
+		'month' => array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_salesfigures.month',
-			'config' => Array(
+			'config' => array(
 				'type' => 'input',
 				'size' => '11',
 				'max' => '11',
@@ -40,10 +40,10 @@ return array(
 				'default' => 0
 			)
 		),
-		'day' => Array(
+		'day' => array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_salesfigures.day',
-			'config' => Array(
+			'config' => array(
 				'type' => 'input',
 				'size' => '11',
 				'max' => '11',
@@ -51,10 +51,10 @@ return array(
 				'default' => 0
 			)
 		),
-		'dow' => Array(
+		'dow' => array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_salesfigures.dow',
-			'config' => Array(
+			'config' => array(
 				'type' => 'input',
 				'size' => '11',
 				'max' => '11',
@@ -62,10 +62,10 @@ return array(
 				'default' => 0
 			)
 		),
-		'hour' => Array(
+		'hour' => array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_salesfigures.hour',
-			'config' => Array(
+			'config' => array(
 				'type' => 'input',
 				'size' => '11',
 				'max' => '11',
@@ -73,10 +73,10 @@ return array(
 				'default' => 0
 			)
 		),
-		'pricegross' => Array(
+		'pricegross' => array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_salesfigures.pricegross',
-			'config' => Array(
+			'config' => array(
 				'type' => 'input',
 				'size' => '11',
 				'max' => '11',
@@ -84,10 +84,10 @@ return array(
 				'default' => 0
 			)
 		),
-		'pricenet' => Array(
+		'pricenet' => array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_salesfigures.pricenet',
-			'config' => Array(
+			'config' => array(
 				'type' => 'input',
 				'size' => '11',
 				'max' => '11',
@@ -95,10 +95,10 @@ return array(
 				'default' => 0
 			)
 		),
-		'amount' => Array(
+		'amount' => array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_salesfigures.amount',
-			'config' => Array(
+			'config' => array(
 				'type' => 'input',
 				'size' => '11',
 				'max' => '11',
@@ -106,10 +106,10 @@ return array(
 				'default' => 0
 			)
 		),
-		'orders' => Array(
+		'orders' => array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_salesfigures.orders',
-			'config' => Array(
+			'config' => array(
 				'type' => 'input',
 				'size' => '11',
 				'max' => '11',
@@ -118,10 +118,10 @@ return array(
 			)
 		),
 	),
-	'types' => Array(
-		'0' => Array('showitem' => 'year;;;;1-1-1, month, day, dow, hour, pricegross, pricenet, amount, orders')
+	'types' => array(
+		'0' => array('showitem' => 'year;;;;1-1-1, month, day, dow, hour, pricegross, pricenet, amount, orders')
 	),
-	'palettes' => Array(
-		'1' => Array('showitem' => '')
+	'palettes' => array(
+		'1' => array('showitem' => '')
 	)
 );

@@ -1,23 +1,16 @@
 <?php
-/***************************************************************
- *  Copyright notice
- *  (c) 2005-2011 Ingo Schmitt <is@marketing-factory.de>
- *  All rights reserved
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *  A copy is found in the textfile GPL.txt and important notices to the license
- *  from the author is found in LICENSE.txt distributed with these scripts.
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+/*
+ * This file is part of the TYPO3 CMS project.
+ *
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
+ *
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ *
+ * The TYPO3 project - inspiring people to share!
+ */
 
 /**
  * Libary for Frontend-Rendering of attribute values. This class
@@ -29,19 +22,29 @@
  * desribes the technical data of an article
  * Do not acces class variables directly, allways use the get and set methods,
  * variables will be changed in php5 to private
+ *
+ * Class Tx_Commerce_Domain_Model_AttributeValue
+ *
+ * @author 2005-2011 Ingo Schmitt <is@marketing-factory.de>
  */
 class Tx_Commerce_Domain_Model_AttributeValue extends Tx_Commerce_Domain_Model_AbstractEntity {
 	/**
+	 * Database class name
+	 *
 	 * @var string
 	 */
 	protected $databaseClass = 'Tx_Commerce_Domain_Repository_AttributeValueRepository';
 
 	/**
+	 * Database connection
+	 *
 	 * @var Tx_Commerce_Domain_Repository_AttributeValueRepository
 	 */
 	public $databaseConnection;
 
 	/**
+	 * Field list
+	 *
 	 * @var array
 	 */
 	protected $fieldlist = array(
@@ -67,9 +70,9 @@ class Tx_Commerce_Domain_Model_AttributeValue extends Tx_Commerce_Domain_Model_A
 	protected $value = '';
 
 	/**
-	 * if this value should be shown in Fe output
+	 * If this value should be shown in Fe output
 	 *
-	 * @var boolean show value
+	 * @var bool show value
 	 */
 	protected $showvalue = 1;
 
@@ -81,6 +84,8 @@ class Tx_Commerce_Domain_Model_AttributeValue extends Tx_Commerce_Domain_Model_A
 	protected $icon = '';
 
 	/**
+	 * Show icon
+	 *
 	 * @var string
 	 */
 	protected $showicon;
@@ -88,8 +93,9 @@ class Tx_Commerce_Domain_Model_AttributeValue extends Tx_Commerce_Domain_Model_A
 	/**
 	 * Constructor, basically calls init
 	 *
-	 * @param integer $uid
-	 * @param integer $languageUid
+	 * @param int $uid Attribute value uid
+	 * @param int $languageUid Language uid
+	 *
 	 * @return self
 	 */
 	public function __construct($uid, $languageUid = 0) {
@@ -101,8 +107,9 @@ class Tx_Commerce_Domain_Model_AttributeValue extends Tx_Commerce_Domain_Model_A
 	/**
 	 * Init Class
 	 *
-	 * @param integer $uid or attribute
-	 * @param integer $languageUid language uid, default 0
+	 * @param int $uid Attribute
+	 * @param int $languageUid Language uid, default 0
+	 *
 	 * @return void
 	 */
 	public function init($uid, $languageUid = 0) {
@@ -111,16 +118,16 @@ class Tx_Commerce_Domain_Model_AttributeValue extends Tx_Commerce_Domain_Model_A
 		$this->databaseConnection = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance($this->databaseClass);
 
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_attribute_value.php']['postinit'])) {
-			\TYPO3\CMS\Core\Utility\GeneralUtility::deprecationLog(
-				'
-								hook
-								$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_attribute_value.php\'][\'postinit\']
-								is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
-								$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Domain/Model/AttributeValue.php\'][\'postinit\']
-							'
-			);
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_attribute_value.php']['postinit'] as $classRef) {
-				$hookObj = & \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
+			\TYPO3\CMS\Core\Utility\GeneralUtility::deprecationLog('
+				hook
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_attribute_value.php\'][\'postinit\']
+				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
+				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Domain/Model/AttributeValue.php\'][\'postinit\']
+			');
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_attribute_value.php']['postinit'] as
+				$classRef
+			) {
+				$hookObj = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
 				if (method_exists($hookObj, 'postinit')) {
 					$hookObj->postinit($this);
 				}
@@ -128,7 +135,7 @@ class Tx_Commerce_Domain_Model_AttributeValue extends Tx_Commerce_Domain_Model_A
 		}
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Model/AttributeValue.php']['postinit'])) {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Model/AttributeValue.php']['postinit'] as $classRef) {
-				$hookObj = & \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
+				$hookObj = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
 				if (method_exists($hookObj, 'postinit')) {
 					$hookObj->postinit($this);
 				}
@@ -139,7 +146,7 @@ class Tx_Commerce_Domain_Model_AttributeValue extends Tx_Commerce_Domain_Model_A
 	/**
 	 * Overwrite get_attributes as attribute_values can't have attributes
 	 *
-	 * @return boolean FALSE
+	 * @return bool FALSE
 	 */
 	public function getAttributes() {
 		return FALSE;
@@ -157,20 +164,21 @@ class Tx_Commerce_Domain_Model_AttributeValue extends Tx_Commerce_Domain_Model_A
 	/**
 	 * Get show value
 	 *
-	 * @return boolean
+	 * @return bool
 	 */
 	public function getShowvalue() {
 		return $this->showvalue;
 	}
 
 	/**
-	 * gets the attribute title
+	 * Gets the attribute value
 	 *
-	 * @param boolean $checkvalue optional check if value shoudl be show in FE
+	 * @param bool $checkvalue Check if value should be show in FE
+	 *
 	 * @return string title
 	 */
 	public function getValue($checkvalue = FALSE) {
-		if (($checkvalue) && ($this->showvalue)) {
+		if ($checkvalue && $this->showvalue) {
 			return $this->value;
 		} elseif ($checkvalue == FALSE) {
 			return $this->value;
@@ -183,7 +191,7 @@ class Tx_Commerce_Domain_Model_AttributeValue extends Tx_Commerce_Domain_Model_A
 	/**
 	 * Gets the showicon value
 	 *
-	 * @return integer
+	 * @return int
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, never was returning a value
 	 * remove $this->showicon with this method
 	 */
@@ -196,7 +204,7 @@ class Tx_Commerce_Domain_Model_AttributeValue extends Tx_Commerce_Domain_Model_A
 	/**
 	 * Overwrite get_attributes as attribute_values can't have attributes
 	 *
-	 * @return boolean FALSE
+	 * @return bool FALSE
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getValue
 	 */
 	public function get_attributes() {
@@ -206,7 +214,10 @@ class Tx_Commerce_Domain_Model_AttributeValue extends Tx_Commerce_Domain_Model_A
 	}
 
 	/**
-	 * @param boolean $checkvalue
+	 * Get value
+	 *
+	 * @param bool $checkvalue Check value
+	 *
 	 * @return string
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getValue
 	 */

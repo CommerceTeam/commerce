@@ -1,31 +1,22 @@
 <?php
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c)  2005 Robert Lemke <robert@typo3.org>, Franz Ripfel <typo3@abezet.de>
- *  (c)  2010 Ingo Schmitt <is@marketing-factory.de>
- * All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
 
 /**
  * Code library for display of different currencies
  * widely used in EXT: commerce
+ *
+ * Class Tx_Commerce_ViewHelpers_Money
  *
  * @author Robert Lemke <robert@typo3.org>
  * @author Franz Ripfel <typo3@abezet.de>
@@ -33,18 +24,19 @@
  */
 class Tx_Commerce_ViewHelpers_Money {
 	/**
-	 * use this function from TS, example:
+	 * Use this function from TS, example:
 	 * includeLibs.moneylib = EXT:commerce/Classes/ViewHelpers/Money.php
 	 * price_net = stdWrap
 	 * price_net.postUserFunc = Tx_Commerce_ViewHelpers_Money->user_tsFormat
 	 * price_net.postUserFunc.currency = EUR
 	 * price_net.postUserFunc.withSymbol = 0
 	 *
-	 * @param string $content
-	 * @param string $conf
+	 * @param string $content Content
+	 * @param array $conf Config
+	 *
 	 * @return string representation of the amount including currency symbol(s)
 	 */
-	public function user_tsFormat($content, $conf) {
+	public function user_tsFormat($content, array $conf) {
 		$withSymbol = is_null($conf['withSymbol']) ? TRUE : $conf['withSymbol'];
 		return (string)self::format($content, $conf['currency'], $withSymbol);
 	}
@@ -54,7 +46,7 @@ class Tx_Commerce_ViewHelpers_Money {
 	 * given currency.
 	 * IMPORTANT NOTE:
 	 * The amount must always be the smallest unit passed as a string
-	 * or integer! It is a very bad idea to use float for monetary
+	 * or int! It is a very bad idea to use float for monetary
 	 * calculations if you need exact values, therefore
 	 * this method won't accept float values.
 	 * Examples:
@@ -64,17 +56,17 @@ class Tx_Commerce_ViewHelpers_Money {
 	 *
 	 * @param int|string $amount Amount to be formatted. Must be the smalles unit
 	 * @param string $currency ISO 3 letter code of the currency, for example "EUR"
-	 * @param boolean $withSymbol If set the currency symbol will be rendered
+	 * @param bool $withSymbol If set the currency symbol will be rendered
+	 *
 	 * @return string|bool String representation of the amount including currency
 	 * 	symbol(s) or FALSE if $amount was of the type float
 	 */
 	public static function format($amount, $currency, $withSymbol = TRUE) {
-		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
-		$database = $GLOBALS['TYPO3_DB'];
-
 		if (is_float($amount)) {
 			return FALSE;
 		}
+
+		$database = self::getDatabaseConnection();
 
 		$row = $database->exec_SELECTgetSingleRow(
 			'cu_symbol_left, cu_symbol_right, cu_sub_symbol_left, cu_sub_symbol_right, cu_decimal_point, cu_thousands_point,
@@ -104,5 +96,15 @@ class Tx_Commerce_ViewHelpers_Money {
 		}
 
 		return $wholeString;
+	}
+
+
+	/**
+	 * Get database connection
+	 *
+	 * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+	 */
+	protected static function getDatabaseConnection() {
+		return $GLOBALS['TYPO3_DB'];
 	}
 }

@@ -1,35 +1,26 @@
 <?php
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2008-2011 Erik Frister <typo3@marketing-factory.de>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *  A copy is found in the textfile GPL.txt and important notices to the license
- *  from the author is found in LICENSE.txt distributed with these scripts.
- *
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Implements a Categorytree
  * A tree can have n leafs, and leafs can in itself contain other leafs
+ *
+ * Class Tx_Commerce_Tree_CategoryTree
+ *
+ * @author 2008-2011 Erik Frister <typo3@marketing-factory.de>
  */
 class Tx_Commerce_Tree_CategoryTree extends Tx_Commerce_Tree_Browsetree {
 	/**
@@ -42,27 +33,35 @@ class Tx_Commerce_Tree_CategoryTree extends Tx_Commerce_Tree_Browsetree {
 	/**
 	 * Should the tree be only Categories? Or also Products and Articles?
 	 *
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $bare = TRUE;
 
 	/**
+	 * Min category permission
+	 *
 	 * @var string
 	 */
 	protected $minCategoryPerms = 'show';
 
 	/**
+	 * No click list
+	 *
 	 * @var string
 	 */
 	protected $noClickList = '';
 
 	/**
-	 * @var boolean
+	 * Simple mode
+	 *
+	 * @var bool
 	 */
 	protected $simpleMode = FALSE;
 
 	/**
-	 * @var boolean
+	 * Real values
+	 *
+	 * @var bool
 	 */
 	protected $realValues = FALSE;
 
@@ -76,17 +75,31 @@ class Tx_Commerce_Tree_CategoryTree extends Tx_Commerce_Tree_Browsetree {
 		parent::init();
 
 		// Create the category leaf
-		/** @var Tx_Commerce_Tree_Leaf_Category $categoryLeaf */
+		/**
+		 * Category leaf
+		 *
+		 * @var Tx_Commerce_Tree_Leaf_Category $categoryLeaf
+		 */
 		$categoryLeaf = GeneralUtility::makeInstance('Tx_Commerce_Tree_Leaf_Category');
 
-		// Instantiate the categorydata, -view and set the permission mask (or the string rep.)
-		/** @var Tx_Commerce_Tree_Leaf_CategoryData $categorydata */
+		// Instantiate the categorydata, -view and set
+		// the permission mask (or the string rep.)
+		/**
+		 * Category data
+		 *
+		 * @var Tx_Commerce_Tree_Leaf_CategoryData $categorydata
+		 */
 		$categorydata = GeneralUtility::makeInstance('Tx_Commerce_Tree_Leaf_CategoryData');
 		$categorydata->setPermsMask(Tx_Commerce_Utility_BackendUtility::getPermMask($this->minCategoryPerms));
 
-		/** @var Tx_Commerce_Tree_Leaf_CategoryView $categoryview */
+		/**
+		 * Category view
+		 *
+		 * @var Tx_Commerce_Tree_Leaf_CategoryView $categoryview
+		 */
 		$categoryview = GeneralUtility::makeInstance('Tx_Commerce_Tree_Leaf_CategoryView');
-		// disable the root onclick if the perms are set to editcontent - this way we cannot select the root as a parent for any content item
+		// disable the root onclick if the perms are set to editcontent
+		// this way we cannot select the root as a parent for any content item
 		$categoryview->noRootOnclick(($this->minCategoryPerms == 'editcontent'));
 
 			// Configure real values
@@ -107,12 +120,24 @@ class Tx_Commerce_Tree_CategoryTree extends Tx_Commerce_Tree_Browsetree {
 		// - Productleaf will be added to Categoryleaf,
 		// - Articleleaf will be added to Productleaf
 		if (!$this->bare) {
-			/** @var Tx_Commerce_Tree_Leaf_Product $productleaf */
+			/**
+			 * Product leaf
+			 *
+			 * @var Tx_Commerce_Tree_Leaf_Product $productleaf
+			 */
 			$productleaf = GeneralUtility::makeInstance('Tx_Commerce_Tree_Leaf_Product');
-			/** @var Tx_Commerce_Tree_Leaf_Article $articleleaf */
+			/**
+			 * Article leaf
+			 *
+			 * @var Tx_Commerce_Tree_Leaf_Article $articleleaf
+			 */
 			$articleleaf = GeneralUtility::makeInstance('Tx_Commerce_Tree_Leaf_Article');
 
-			/** @var Tx_Commerce_Tree_Leaf_ProductView $productview */
+			/**
+			 * Product view
+			 *
+			 * @var Tx_Commerce_Tree_Leaf_ProductView $productview
+			 */
 			$productview = GeneralUtility::makeInstance('Tx_Commerce_Tree_Leaf_ProductView');
 
 				// Configure the noOnclick for the leaf
@@ -125,7 +150,11 @@ class Tx_Commerce_Tree_CategoryTree extends Tx_Commerce_Tree_Browsetree {
 				$productview->substituteRealValues();
 			}
 
-			/** @var Tx_Commerce_Tree_Leaf_ArticleView $articleview */
+			/**
+			 * Article view
+			 *
+			 * @var Tx_Commerce_Tree_Leaf_ArticleView $articleview
+			 */
 			$articleview = GeneralUtility::makeInstance('Tx_Commerce_Tree_Leaf_ArticleView');
 
 				// Configure the noOnclick for the leaf
@@ -138,10 +167,18 @@ class Tx_Commerce_Tree_CategoryTree extends Tx_Commerce_Tree_Browsetree {
 				$articleview->substituteRealValues();
 			}
 
-			/** @var Tx_Commerce_Tree_Leaf_ProductData $productData */
+			/**
+			 * Product data
+			 *
+			 * @var Tx_Commerce_Tree_Leaf_ProductData $productData
+			 */
 			$productData = GeneralUtility::makeInstance('Tx_Commerce_Tree_Leaf_ProductData');
 			$productleaf->initBasic($productview, $productData);
-			/** @var Tx_Commerce_Tree_Leaf_ArticleData $articleData */
+			/**
+			 * Article data
+			 *
+			 * @var Tx_Commerce_Tree_Leaf_ArticleData $articleData
+			 */
 			$articleData = GeneralUtility::makeInstance('Tx_Commerce_Tree_Leaf_ArticleData');
 			$articleleaf->initBasic($articleview, $articleData);
 
@@ -158,12 +195,14 @@ class Tx_Commerce_Tree_CategoryTree extends Tx_Commerce_Tree_Browsetree {
 	 * Sets the minimum Permissions needed for the Category Leaf
 	 * Must be called BEFORE calling init
 	 *
-	 * @param string $perm String-Representation of the right. Can be 'show, new, delete, editcontent, cut, move, copy, edit'
+	 * @param string $perm String-Representation of the right.
+	 * 	Can be 'show, new, delete, editcontent, cut, move, copy, edit'
+	 *
 	 * @return void
 	 */
 	public function setMinCategoryPerms($perm) {
 		if (!$this->isInit) {
-				// store the string and let it be added once init is called
+			// store the string and let it be added once init is called
 			$this->minCategoryPerms = $perm;
 		}
 	}
@@ -171,7 +210,9 @@ class Tx_Commerce_Tree_CategoryTree extends Tx_Commerce_Tree_Browsetree {
 	/**
 	 * Sets the noclick list for the leafs
 	 *
-	 * @param string $noClickList comma-separated list of leafs to disallow clicks
+	 * @param string $noClickList Comma-separated list
+	 *	of leafs to disallow clicks
+	 *
 	 * @return void
 	 */
 	public function disallowClick($noClickList = '') {
@@ -181,14 +222,15 @@ class Tx_Commerce_Tree_CategoryTree extends Tx_Commerce_Tree_Browsetree {
 	/**
 	 * Sets the tree's Bare Mode - bare means only category leaf is added
 	 *
-	 * @param boolean $bare Flag
+	 * @param bool $bare Flag
+	 *
 	 * @return void
 	 */
 	public function setBare($bare = TRUE) {
 		if (!is_bool($bare)) {
 				// only issue warning but transform the value to bool anyways
 			if (TYPO3_DLOG) {
-				GeneralUtility::devLog('Bare-Mode of the tree was set with a non-boolean flag!', COMMERCE_EXTKEY, 2);
+				GeneralUtility::devLog('Bare-Mode of the tree was set with a non-bool flag!', COMMERCE_EXTKEY, 2);
 			}
 		}
 		$this->bare = $bare;
@@ -197,7 +239,8 @@ class Tx_Commerce_Tree_CategoryTree extends Tx_Commerce_Tree_Browsetree {
 	/**
 	 * Sets if we are running in simple mode.
 	 *
-	 * @param integer $simpleMode SimpleMode?
+	 * @param int $simpleMode SimpleMode?
+	 *
 	 * @return void
 	 */
 	public function setSimpleMode($simpleMode = 1) {
@@ -218,7 +261,8 @@ class Tx_Commerce_Tree_CategoryTree extends Tx_Commerce_Tree_Browsetree {
 	 * Returns the record of the category with the corresponding uid
 	 * Categories must have been loaded already - the DB is NOT queried
 	 *
-	 * @param integer $uid uid of the category
+	 * @param int $uid Uid of the category
+	 *
 	 * @return array record
 	 */
 	public function getCategory($uid) {

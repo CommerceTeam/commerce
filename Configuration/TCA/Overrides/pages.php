@@ -5,7 +5,6 @@ $GLOBALS['TCA']['pages']['columns']['module']['config']['items'][] = array(
 	'commerce'
 );
 
-
 $tempColumns = array(
 	'tx_commerce_foldereditorder' => array(
 		'displayCond' => 'FIELD:tx_graytree_foldername:REQ:true',

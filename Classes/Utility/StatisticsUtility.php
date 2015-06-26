@@ -1,33 +1,24 @@
 <?php
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2008-2011 Ingo Schmitt <is@marketing-factory.de>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *  A copy is found in the textfile GPL.txt and important notices to the license
- *  from the author is found in LICENSE.txt distributed with these scripts.
- *
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
 
 /**
  * This class inculdes all methods for generating statistics data,
  * used for the statistics module and for the cli script
+ *
+ * Class Tx_Commerce_Utility_StatisticsUtility
+ *
+ * @author 2008-2011 Ingo Schmitt <is@marketing-factory.de>
  */
 class Tx_Commerce_Utility_StatisticsUtility {
 	/**
@@ -39,16 +30,17 @@ class Tx_Commerce_Utility_StatisticsUtility {
 	public $excludePids;
 
 	/**
-	 * How mayn dasys the update agregation wil recaluclate
+	 * How many days the update aggregation wil recalculate
 	 *
-	 * @var integer
+	 * @var int
 	 */
 	public $daysback = 10;
 
 	/**
 	 * Initialization
 	 *
-	 * @param string $excludePids
+	 * @param string $excludePids Exclude pids
+	 *
 	 * @return void
 	 */
 	public function init($excludePids) {
@@ -58,7 +50,7 @@ class Tx_Commerce_Utility_StatisticsUtility {
 	/**
 	 * Public method to return days back
 	 *
-	 * @return integer
+	 * @return int
 	 */
 	public function getDaysBack() {
 		return $this->daysback;
@@ -68,13 +60,13 @@ class Tx_Commerce_Utility_StatisticsUtility {
 	 * Aggregate ans Insert the Salesfigures per Hour in the timespare from
 	 * $starttime to $enttime
 	 *
-	 * @param integer $starttime Timestamp of timecode to start the aggregation
-	 * @param integer $endtime Timestamp of timecode to end the aggregation
-	 * @return boolean result of aggregation
+	 * @param int $starttime Timestamp of timecode to start the aggregation
+	 * @param int $endtime Timestamp of timecode to end the aggregation
+	 *
+	 * @return bool result of aggregation
 	 */
 	public function doSalesAggregation($starttime, $endtime) {
-		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
-		$database = $GLOBALS['TYPO3_DB'];
+		$database = $this->getDatabaseConnection();
 
 		$hour = date('H', $starttime);
 		$day = date('d', $starttime);
@@ -102,7 +94,7 @@ class Tx_Commerce_Utility_StatisticsUtility {
 				'toa.pid'
 			);
 
-			while ($statrow = $database->sql_fetch_row($statres)) {
+			while (($statrow = $database->sql_fetch_row($statres))) {
 				$insertStatArray = array(
 					'pid' => $statrow[3],
 					'year' => date('Y', $oldtimeend),
@@ -134,14 +126,14 @@ class Tx_Commerce_Utility_StatisticsUtility {
 	 * Aggregate and Update the Salesfigures per Hour in the timespare from
 	 * $starttime to $enttime
 	 *
-	 * @param integer $starttime Timestamp of timecode to start the aggregation
-	 * @param integer $endtime Timestamp of timecode to end the aggregation
-	 * @param boolean $doOutput Boolen, if output should be genared whiel caluclating, shoudl be fals for cli
-	 * @return boolean result of aggregation
+	 * @param int $starttime Timestamp of timecode to start the aggregation
+	 * @param int $endtime Timestamp of timecode to end the aggregation
+	 * @param bool $doOutput If output should be generated while calculating
+	 *
+	 * @return bool result of aggregation
 	 */
 	public function doSalesUpdateAggregation($starttime, $endtime, $doOutput = TRUE) {
-		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
-		$database = $GLOBALS['TYPO3_DB'];
+		$database = $this->getDatabaseConnection();
 
 		$hour = date('H', $starttime);
 		$day = date('d', $starttime);
@@ -168,7 +160,7 @@ class Tx_Commerce_Utility_StatisticsUtility {
 					AND tco.deleted = 0',
 				'toa.pid'
 			);
-			while ($statrow = $database->sql_fetch_row($statres)) {
+			while (($statrow = $database->sql_fetch_row($statres))) {
 				$updateStatArray = array(
 					'pid' => $statrow[3],
 					'year' => date('Y', $oldtimeend),
@@ -207,13 +199,13 @@ class Tx_Commerce_Utility_StatisticsUtility {
 	 * Aggregate and Insert the New Users (Registrations in fe_user)) per hour
 	 * in the timespare from $starttime to $enttime
 	 *
-	 * @param integer $starttime Timestamp of timecode to start the aggregation
-	 * @param integer $endtime Timestamp of timecode to end the aggregation
-	 * @return boolean result of aggregation
+	 * @param int $starttime Timestamp of timecode to start the aggregation
+	 * @param int $endtime Timestamp of timecode to end the aggregation
+	 *
+	 * @return bool result of aggregation
 	 */
 	public function doClientAggregation($starttime, $endtime) {
-		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
-		$database = $GLOBALS['TYPO3_DB'];
+		$database = $this->getDatabaseConnection();
 
 		$hour = date('H', $starttime);
 		$day = date('d', $starttime);
@@ -230,7 +222,7 @@ class Tx_Commerce_Utility_StatisticsUtility {
 				'crdate >= ' . $oldtimestart . ' AND crdate <= ' . $oldtimeend,
 				'pid'
 			);
-			while ($statrow = $database->sql_fetch_row($statres)) {
+			while (($statrow = $database->sql_fetch_row($statres))) {
 				$insertStatArray = array(
 					'pid' => $statrow[1],
 					'year' => date('Y', $oldtimeend),
@@ -255,8 +247,9 @@ class Tx_Commerce_Utility_StatisticsUtility {
 	/**
 	 * Retursn the first second of a day as Timestamp
 	 *
-	 * @param integer $timestamp
-	 * @return integer Timestamp
+	 * @param int $timestamp Timestamp
+	 *
+	 * @return int Timestamp
 	 */
 	public function firstSecondOfDay($timestamp) {
 		return (int) mktime(0, 0, 0, strftime('%m', $timestamp), strftime('%d', $timestamp), strftime('%Y', $timestamp));
@@ -265,10 +258,21 @@ class Tx_Commerce_Utility_StatisticsUtility {
 	/**
 	 * Retursn the last second of a day as Timestamp
 	 *
-	 * @param integer $timestamp
-	 * @return integer Timestamp
+	 * @param int $timestamp Timestamp
+	 *
+	 * @return int Timestamp
 	 */
 	public function lastSecondOfDay($timestamp) {
 		return (int) mktime(23, 59, 59, strftime('%m', $timestamp), strftime('%d', $timestamp), strftime('%Y', $timestamp));
+	}
+
+
+	/**
+	 * Get database connection
+	 *
+	 * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+	 */
+	protected function getDatabaseConnection() {
+		return $GLOBALS['TYPO3_DB'];
 	}
 }

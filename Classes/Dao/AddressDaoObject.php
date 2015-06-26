@@ -1,51 +1,50 @@
 <?php
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2005-2011 Carsten Lausen <cl@e-netconsulting.de>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *  A copy is found in the textfile GPL.txt and important notices to the license
- *  from the author is found in LICENSE.txt distributed with these scripts.
- *
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
 
 /**
- * address object & Dao database access classes
+ * Address object & Dao database access classes
  * These classes handle tt_address objects.
+ *
+ * Class Tx_Commerce_Dao_AddressDaoObject
+ *
+ * @author 2005-2011 Carsten Lausen <cl@e-netconsulting.de>
  */
 class Tx_Commerce_Dao_AddressDaoObject extends Tx_Commerce_Dao_BasicDaoObject {
 	/**
-	 * @var integer
+	 * Frontend user uid
+	 *
+	 * @var int
 	 */
 	public $tx_commerce_fe_user_id;
 
 	/**
-	 * @var integer
+	 * Address type uid
+	 *
+	 * @var int
 	 */
 	public $tx_commerce_address_type_id;
 
 	/**
-	 * @var boolean
+	 * Flag if address is main
+	 *
+	 * @var bool
 	 */
 	public $tx_commerce_is_main_address;
 
 	/**
+	 * Name
+	 *
 	 * @var string
 	 */
 	protected $name;
@@ -57,7 +56,11 @@ class Tx_Commerce_Dao_AddressDaoObject extends Tx_Commerce_Dao_BasicDaoObject {
 	 */
 	public function __construct() {
 		// add mapped fields to object
-		/** @var Tx_Commerce_Dao_FeuserAddressFieldmapper $feuserAddressMapper */
+		/**
+		 * Frontend address mapper
+		 *
+		 * @var Tx_Commerce_Dao_FeuserAddressFieldmapper $feuserAddressMapper
+		 */
 		$feuserAddressMapper = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Dao_FeuserAddressFieldmapper');
 		$fields = $feuserAddressMapper->getAddressFields();
 
@@ -78,7 +81,8 @@ class Tx_Commerce_Dao_AddressDaoObject extends Tx_Commerce_Dao_BasicDaoObject {
 	/**
 	 * Setter
 	 *
-	 * @param string $name
+	 * @param string $name Name
+	 *
 	 * @return void
 	 */
 	public function setName($name) {

@@ -1,61 +1,62 @@
 <?php
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2005-2013 Daniel Schöttgen <ds@marketing-factory.de>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *  A copy is found in the textfile GPL.txt and important notices to the license
- *  from the author is found in LICENSE.txt distributed with these scripts.
- *
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Backend\Utility\IconUtility;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * Renders order list in the BE order module
+ * Renders order listin the BE order module
+ *
+ * Class Tx_Commerce_ViewHelpers_OrderRecordList
+ *
+ * @author 2005-2013 Daniel Schöttgen <ds@marketing-factory.de>
  */
 class Tx_Commerce_ViewHelpers_OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordList {
 	/**
-	 * @var integer
+	 * Order pid
+	 *
+	 * @var int
 	 */
 	public $orderPid;
 
 	/**
+	 * Additional out top
+	 *
 	 * @var string
 	 */
 	public $additionalOutTop;
 
 	/**
+	 * Default fields
+	 *
 	 * @var array
 	 */
 	protected $defaultFieldArray = array(
 		'order_type_uid_noName', 'tstamp', 'numarticles', 'sum_price_gross', 'cu_iso_3', 'company', 'name', 'email', 'phone_1');
 
 	/**
+	 * Additional fields
+	 *
 	 * @var array
 	 */
 	protected $additionalFieldArray = array(
 		'crdate', 'article_number', 'article_name', 'delivery', 'payment', 'address', 'zip', 'city', 'email', 'phone_2', 'uid', 'pid');
 
 	/**
+	 * Csv fields
+	 *
 	 * @var array
 	 */
 	protected $csvFieldArray = array('order_id', 'crdate', 'tstamp', 'delivery', 'payment', 'numarticles', 'sum_price_gross',
@@ -63,11 +64,15 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends \TYPO3\CMS\Recordlist\Reco
 		'internalcomment', 'articles');
 
 	/**
-	 * @var boolean
+	 * Disable single table view
+	 *
+	 * @var bool
 	 */
 	public $disableSingleTableView;
 
 	/**
+	 * Module menu
+	 *
 	 * @var array
 	 */
 	public $MOD_MENU = array();
@@ -76,37 +81,37 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends \TYPO3\CMS\Recordlist\Reco
 	 * Create the panel of buttons for submitting
 	 * the form or otherwise perform operations.
 	 *
-	 * @param array $row
+	 * @param array $row Data
+	 *
 	 * @return array all available buttons as an assoc. array
 	 */
-	public function getButtons($row) {
-		/** @var \TYPO3\CMS\Lang\LanguageService $language */
-		$language = $GLOBALS['LANG'];
+	public function getButtons(array $row) {
+		$language = $this->getLanguageService();
 
 		$buttons = array(
 			'csh' => '',
-				// group left 1
+			// group left 1
 			'level_up' => '',
 			'back' => '',
-				// group left 2
+			// group left 2
 			'new_record' => '',
 			'paste' => '',
-				// group left 3
+			// group left 3
 			'view' => '',
 			'edit' => '',
 			'move' => '',
 			'hide_unhide' => '',
-				// group left 4
+			// group left 4
 			'csv' => '',
 			'export' => '',
-				// group right 1
+			// group right 1
 			'cache' => '',
 			'reload' => '',
 			'shortcut' => '',
 		);
 
 		if ($this->id) {
-				// Setting title of page + the "Go up" link:
+			// Setting title of page + the "Go up" link:
 			$buttons['level_up'] = '<a href="' . htmlspecialchars($this->listURL($row['pid'])) .
 				'" onclick="setHighlight(' . $row['pid'] . ')">' .
 				IconUtility::getSpriteIcon(
@@ -116,7 +121,7 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends \TYPO3\CMS\Recordlist\Reco
 				'</a>';
 		}
 
-			// Add "CSV" link, if a specific table is shown:
+		// Add "CSV" link, if a specific table is shown:
 		if ($this->table) {
 			$buttons['csv'] = '<a href="' . htmlspecialchars($this->listURL() . '&csv=1') . '">' .
 				IconUtility::getSpriteIcon(
@@ -125,7 +130,7 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends \TYPO3\CMS\Recordlist\Reco
 				) . '</a>';
 		}
 
-			// Add "Export" link, if a specific table is shown:
+		// Add "Export" link, if a specific table is shown:
 		if ($this->table && ExtensionManagementUtility::isLoaded('impexp')) {
 			$buttons['export'] = '<a href="' . htmlspecialchars($this->backPath . ExtensionManagementUtility::extRelPath('impexp') .
 				'app/index.php?tx_impexp[action]=export&tx_impexp[list][]=' . rawurlencode($this->table . ':' . $this->id)) . '">' .
@@ -135,7 +140,7 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends \TYPO3\CMS\Recordlist\Reco
 				) . '</a>';
 		}
 
-			// Add "refresh" link:
+		// Add "refresh" link:
 		$buttons['reload'] = '<a href="' . htmlspecialchars($this->listURL()) . '">' .
 			IconUtility::getSpriteIcon(
 				'actions-system-refresh',
@@ -147,23 +152,21 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends \TYPO3\CMS\Recordlist\Reco
 	}
 
 	/**
-	 * @param string $table
-	 * @param integer $id
-	 * @param string $rowlist
-	 * @throws UnexpectedValueException
+	 * Get table
+	 *
+	 * @param string $table Table
+	 * @param int $id Uid
+	 * @param string $rowlist Row list
+	 *
 	 * @return string
+	 * @throws UnexpectedValueException If hook is of wrong interface
 	 */
 	public function getTable($table, $id, $rowlist) {
-		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
-		$database = $GLOBALS['TYPO3_DB'];
-		/** @var \TYPO3\CMS\Lang\LanguageService $language */
-		$language = $GLOBALS['LANG'];
-		/**
-		 * @var \TYPO3\CMS\Core\Authentication\BackendUserAuthentication $backendUser
-		 */
-		$backendUser = $GLOBALS['BE_USER'];
+		$database = $this->getDatabaseConnection();
+		$language = $this->getLanguageService();
+		$backendUser = $this->getBackendUser();
 
-			// Init
+		// Init
 		$addWhere = '';
 		$titleCol = $GLOBALS['TCA'][$table]['ctrl']['label'];
 		$thumbsCol = $GLOBALS['TCA'][$table]['ctrl']['thumbnail'];
@@ -172,34 +175,34 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends \TYPO3\CMS\Recordlist\Reco
 			&& !$GLOBALS['TCA'][$table]['ctrl']['transOrigPointerTable'];
 		$tableCollapsed = (!$this->tablesCollapsed[$table]) ? FALSE : TRUE;
 
-			// prepare space icon
+		// prepare space icon
 		$this->spaceIcon = IconUtility::getSpriteIcon('empty-empty', array('style' => 'background-position: 0 10px;'));
 
 		// Cleaning rowlist for duplicates and place
 		// the $titleCol as the first column always!
 		$this->fieldArray = array();
-			// Add title column
+		// Add title column
 		$this->fieldArray[] = $titleCol;
 
-			// Control-Panel
+		// Control-Panel
 		if (!GeneralUtility::inList($rowlist, '_CONTROL_')) {
 			$this->fieldArray[] = '_CONTROL_';
 			$this->fieldArray[] = '_AFTERCONTROL_';
 		}
-			// Clipboard
+		// Clipboard
 		if ($this->showClipboard) {
 			$this->fieldArray[] = '_CLIPBOARD_';
 		}
-			// Ref
+		// Ref
 		if (!$this->dontShowClipControlPanels) {
 			$this->fieldArray[] = '_REF_';
 			$this->fieldArray[] = '_AFTERREF_';
 		}
-			// Path
+		// Path
 		if ($this->searchLevels) {
 			$this->fieldArray[] = '_PATH_';
 		}
-			// Localization
+		// Localization
 		if ($this->localizationView && $l10nEnabled) {
 			$this->fieldArray[] = '_LOCALIZATION_';
 			$this->fieldArray[] = '_LOCALIZATION_b';
@@ -210,7 +213,7 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends \TYPO3\CMS\Recordlist\Reco
 			)';
 		}
 
-			// Cleaning up:
+		// Cleaning up:
 		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['showArticleNumber'] == 1) {
 			$this->defaultFieldArray[] = 'article_number';
 		}
@@ -227,12 +230,12 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends \TYPO3\CMS\Recordlist\Reco
 			$this->fieldArray = array_keys($tempArray);
 		}
 
-			// Creating the list of fields to include in the SQL query:
+		// Creating the list of fields to include in the SQL query:
 		$selectFields = $this->fieldArray;
 		$selectFields[] = 'uid';
 		$selectFields[] = 'pid';
 		if ($thumbsCol) {
-				// adding column for thumbnails
+			// adding column for thumbnails
 			$selectFields[] = $thumbsCol;
 		}
 		if ($table == 'pages') {
@@ -267,16 +270,16 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends \TYPO3\CMS\Recordlist\Reco
 			$selectFields = array_merge($selectFields, GeneralUtility::trimExplode(',', $GLOBALS['TCA'][$table]['ctrl']['label_alt'], 1));
 		}
 
-			// Unique list!
+		// Unique list!
 		$selectFields = array_unique($selectFields);
-			// Making sure that the fields in the field-list ARE in the field-list from TCA!
+		// Making sure that the fields in the field-list ARE in the field-list from TCA!
 		$selectFields = array_intersect($selectFields, $this->makeFieldList($table, 1));
-			// implode it into a list of fields for the SQL-statement.
+		// implode it into a list of fields for the SQL-statement.
 		$selFieldList = implode(',', $selectFields);
 		$this->selFieldList = $selFieldList;
 
 		/**
-		 * @hook DB-List getTable
+		 * DB-List getTable
 		 * @date 2007-11-16
 		 * @request Malte Jansen <mail@maltejansen.de>
 		 */
@@ -285,24 +288,27 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends \TYPO3\CMS\Recordlist\Reco
 				$hookObject = GeneralUtility::getUserObj($classData);
 
 				if (!($hookObject instanceof \TYPO3\CMS\Backend\RecordList\RecordListGetTableHookInterface)) {
-					throw new UnexpectedValueException('$hookObject must implement interface t3lib_localRecordListGetTableHook', 1195114460);
+					throw new UnexpectedValueException(
+						'$hookObject must implement interface \TYPO3\CMS\Backend\RecordList\RecordListGetTableHookInterface',
+						1195114460
+					);
 				}
 
 				$hookObject->getDBlistQuery($table, $id, $addWhere, $selFieldList, $this);
 			}
 		}
 
-			// Create the SQL query for selecting the elements in the listing:
-			// do not do paging when outputting as CSV
+		// Create the SQL query for selecting the elements in the listing:
+		// do not do paging when outputting as CSV
 		if ($this->csvOutput) {
 			$this->iLimit = 0;
 		}
 
 		if ($this->firstElementNumber > 2 && $this->iLimit > 0) {
-				// Get the two previous rows for sorting if displaying page > 1
+			// Get the two previous rows for sorting if displaying page > 1
 			$this->firstElementNumber = $this->firstElementNumber - 2;
 			$this->iLimit = $this->iLimit + 2;
-				// (API function from class.db_list.inc)
+			// (API function from class.db_list.inc)
 			$queryParts = $this->makeQueryArray($table, $id, $addWhere, $selFieldList);
 			$this->firstElementNumber = $this->firstElementNumber + 2;
 			$this->iLimit = $this->iLimit - 2;
@@ -315,7 +321,7 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends \TYPO3\CMS\Recordlist\Reco
 		// page (API function from class.db_list.inc)
 		$this->setTotalItems($queryParts);
 
-			// Init:
+		// Init:
 		$dbCount = 0;
 		$out = '';
 		$listOnlyInSingleTableMode = $this->listOnlyInSingleTableMode && !$this->table;
@@ -329,7 +335,7 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends \TYPO3\CMS\Recordlist\Reco
 			if ($listOnlyInSingleTableMode || (!$this->table && $tableCollapsed)) {
 				$dbCount = $this->totalItems;
 			} else {
-					// set the showLimit to the number of records when outputting as CSV
+				// set the showLimit to the number of records when outputting as CSV
 				if ($this->csvOutput) {
 					$this->showLimit = $this->totalItems;
 					$this->iLimit = $this->totalItems;
@@ -339,9 +345,9 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends \TYPO3\CMS\Recordlist\Reco
 			}
 		}
 
-			// If any records was selected, render the list:
+		// If any records was selected, render the list:
 		if ($dbCount) {
-				// Half line is drawn between tables:
+			// Half line is drawn between tables:
 			if (!$listOnlyInSingleTableMode) {
 				$theData = Array();
 				if (!$this->table && !$rowlist) {
@@ -357,7 +363,7 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends \TYPO3\CMS\Recordlist\Reco
 				$out .= $this->addelement(0, '', $theData, 'class="c-table-row-spacer"', $this->leftMargin);
 			}
 
-				// Header line is drawn
+			// Header line is drawn
 			$theData = Array();
 			if ($this->disableSingleTableView) {
 				$theData[$titleCol] = '<span class="c-table">' .
@@ -381,7 +387,7 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends \TYPO3\CMS\Recordlist\Reco
 						<td class="t3-row-header" style="width: 95%;">' . BackendUtility::wrapInHelp($table, '', $theData[$titleCol]) . '</td>
 					</tr>';
 			} else {
-					// Render collapse button if in multi table mode
+				// Render collapse button if in multi table mode
 				$collapseIcon = '';
 				if (!$this->table) {
 					$href = htmlspecialchars($this->listURL() . '&collapse[' . $table . ']=' . ($tableCollapsed ? '0' : '1'));
@@ -417,10 +423,10 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends \TYPO3\CMS\Recordlist\Reco
 					$prevUid = $row['uid'];
 				}
 
-					// Accumulate rows here
+				// Accumulate rows here
 				$accRows = array();
 				while (($row = $database->sql_fetch_assoc($result))) {
-						// In offline workspace, look for alternative record:
+					// In offline workspace, look for alternative record:
 					BackendUtility::workspaceOL($table, $row, $GLOBALS['BE_USER']->workspace, TRUE);
 
 					if (is_array($row)) {
@@ -477,7 +483,7 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends \TYPO3\CMS\Recordlist\Reco
 												'" AND t3ver_wsid=' . $row['t3ver_wsid'] . BackendUtility::deleteClause($table),
 											$selFieldList
 										);
-										$lRow = is_array($tmpRow)?$tmpRow:$lRow;
+										$lRow = is_array($tmpRow) ? $tmpRow : $lRow;
 									}
 
 									// In offline workspace, look for alternative record:
@@ -500,7 +506,7 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends \TYPO3\CMS\Recordlist\Reco
 				if ($this->table) {
 					$iOut = $this->renderListNavigation('top') . $iOut . $this->renderListNavigation('bottom');
 				} else {
-						// show that there are more records than shown
+					// show that there are more records than shown
 					if ($this->totalItems > $this->itemsLimitPerTable) {
 						$countOnFirstPage = $this->totalItems > $this->itemsLimitSingleTable ? $this->itemsLimitSingleTable : $this->totalItems;
 						$hasMore = ($this->totalItems > $this->itemsLimitSingleTable);
@@ -512,18 +518,18 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends \TYPO3\CMS\Recordlist\Reco
 					}
 				}
 
-					// The header row for the table is now created:
+				// The header row for the table is now created:
 				$out .= $this->renderListHeader($table, $currentIdList);
 			}
 
-				// The list of records is added after the header:
+			// The list of records is added after the header:
 			$out .= $iOut;
 			unset($iOut);
 
-				// Build the selector
+			// Build the selector
 			$moveToSelector = $this->renderMoveToSelector($table);
 
-				// ... and it is all wrapped in a table:
+			// ... and it is all wrapped in a table:
 			$out = '
 
 			<!--
@@ -534,14 +540,14 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends \TYPO3\CMS\Recordlist\Reco
 					' . $out . $moveToSelector . '
 				</table>';
 
-				// Output csv if...
-				// This ends the page with exit.
+			// Output csv if...
+			// This ends the page with exit.
 			if ($this->csvOutput) {
 				$this->outputCSV($table);
 			}
 		}
 
-			// Return content:
+		// Return content:
 		return $out;
 	}
 
@@ -550,47 +556,46 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends \TYPO3\CMS\Recordlist\Reco
 	 *
 	 * @param string $table Table name
 	 * @param array $row Current record
-	 * @param integer $cc Counter, counting for each time an element is rendered
+	 * @param int $cc Counter, counting for each time an element is rendered
 	 * 	(used for alternating colors)
 	 * @param string $titleCol Table field (column) where header value is found
 	 * @param string $thumbsCol Table field (column) where (possible) thumbnails
 	 * 	can be found
-	 * @param integer $indent Indent from left.
+	 * @param int $indent Indent from left.
+	 *
 	 * @return string Table row for the element
 	 * @see getTable()
 	 */
-	public function renderListRow($table, $row, $cc, $titleCol, $thumbsCol, $indent = 0) {
-		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
-		$database = $GLOBALS['TYPO3_DB'];
-		/** @var \TYPO3\CMS\Lang\LanguageService $language */
-		$language = $GLOBALS['LANG'];
+	public function renderListRow($table, array $row, $cc, $titleCol, $thumbsCol, $indent = 0) {
+		$database = $this->getDatabaseConnection();
+		$language = $this->getLanguageService();
 
 		$iOut = '';
 
-		if (substr(TYPO3_version, 0, 3)  >= '4.0') {
+		if (substr(TYPO3_version, 0, 3) >= '4.0') {
 				// In offline workspace, look for alternative record:
 			BackendUtility::workspaceOL($table, $row, $GLOBALS['BE_USER']->workspace);
 		}
-			// Background color, if any:
+		// Background color, if any:
 		$rowBackgroundColor = '';
 		if ($this->alternateBgColors) {
 			$rowBackgroundColor =
 				$cc % 2 ? '' : ' bgcolor="' . GeneralUtility::modifyHTMLColor($GLOBALS['SOBE']->doc->bgColor4, 10, 10, 10) . '"';
 		}
 
-			// Overriding with versions background color if any:
+		// Overriding with versions background color if any:
 		$rowBackgroundColor = $row['_CSSCLASS'] ? ' class="' . $row['_CSSCLASS'] . '"' : $rowBackgroundColor;
 
-			// Initialization
+		// Initialization
 		$alttext = BackendUtility::getRecordIconAltText($row, $table);
 
-			// Incr. counter.
+		// Incr. counter.
 		$this->counter++;
 
 		$indentStyle = ($indent ? ' style="margin-left: ' . $indent . 'px;"' : '');
 		$iconAttributes = 'title="' . htmlspecialchars($alttext) . '"' . $indentStyle;
 
-			// Icon for order comment and delivery address
+		// Icon for order comment and delivery address
 		$iconPath = '';
 		$iconImg = '';
 		if ($row['comment'] != '' && $row['internalcomment'] != '') {
@@ -630,7 +635,7 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends \TYPO3\CMS\Recordlist\Reco
 		$theIcon = $this->clickMenuEnabled ? $GLOBALS['SOBE']->doc->wrapClickMenuOnIcon($iconImg, $table, $row['uid']) : $iconImg;
 
 		$extConf = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf'];
-			// Preparing and getting the data-array
+		// Preparing and getting the data-array
 		$theData = Array();
 
 		foreach ($this->fieldArray as $fCol) {
@@ -737,7 +742,7 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends \TYPO3\CMS\Recordlist\Reco
 				$theData[$fCol] = $lC1;
 				$theData[$fCol . 'b'] = $lC2;
 			} elseif ($fCol == '_LOCALIZATION_b') {
-					// Do nothing, has been done above.
+				// Do nothing, has been done above.
 				$theData[$fCol] .= '';
 			} elseif ($fCol == 'order_id') {
 				$theData[$fCol] = $row[$fCol];
@@ -749,10 +754,14 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends \TYPO3\CMS\Recordlist\Reco
 			}
 		}
 
-			// Add row to CSV list:
+		// Add row to CSV list:
 		if ($this->csvOutput) {
-				// Charset Conversion
-			/** @var \TYPO3\CMS\Core\Charset\CharsetConverter $csObj */
+			// Charset Conversion
+			/**
+			 * Charset converter
+			 *
+			 * @var \TYPO3\CMS\Core\Charset\CharsetConverter $csObj
+			 */
 			$csObj = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Charset\\CharsetConverter');
 			$csObj->initCharset($GLOBALS['TYPO3_CONF_VARS']['BE']['forceCharset']);
 
@@ -764,14 +773,14 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends \TYPO3\CMS\Recordlist\Reco
 			$this->addToCSV($row);
 		}
 
-			// Create element in table cells:
+		// Create element in table cells:
 		$iOut .= $this->addelement(1, $theIcon, $theData, $rowBackgroundColor);
-			// Render thumbnails if a thumbnail column exists and there is content in it:
+		// Render thumbsnails if a thumbnail column exists and there is content in it:
 		if ($this->thumbs && trim($row[$thumbsCol])) {
 			$iOut .= $this->addelement(4, '', array($titleCol => $this->thumbCode($row, $table, $thumbsCol)), $rowBackgroundColor);
 		}
 
-			// Finally, return table row element:
+		// Finally, return table row element:
 		return $iOut;
 	}
 
@@ -779,14 +788,14 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends \TYPO3\CMS\Recordlist\Reco
 	 * Create the selector box for selecting fields to display from a table:
 	 *
 	 * @param string $table Table name
-	 * @param bool|integer $formFields If true, form-fields will be wrapped
+	 * @param bool|int $formFields If true, form-fields will be wrapped
 	 * 	around the table.
+	 *
 	 * @return string HTML table with the selector box
 	 * 	(name: displayFields['.$table.'][])
 	 */
 	public function fieldSelectBox($table, $formFields = 1) {
-		/** @var \TYPO3\CMS\Lang\LanguageService $language */
-		$language = $GLOBALS['LANG'];
+		$language = $this->getLanguageService();
 
 		// Init:
 		$formElements = array('', '');
@@ -819,14 +828,13 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends \TYPO3\CMS\Recordlist\Reco
 					BackendUtility::getItemLabel($table, $fN, 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_orders.xml:|')
 				) :
 				'[' . $fN . ']';
-				// Field label
+			// Field label
 			$fL = is_array($GLOBALS['TCA'][$table]['columns'][$fN]) ?
 				rtrim($language->sL($GLOBALS['TCA'][$table]['columns'][$fN]['label']), ':') :
 				$fl;
 			$opt[] = '
-				<option value="' . $fN . '"' . (in_array($fN, $setFields) ?
-				' selected="selected"' :
-				'') . '>' . htmlspecialchars($fL) . '</option>';
+				<option value="' . $fN . '"' .
+				(in_array($fN, $setFields) ? ' selected="selected"' : '') . '>' . htmlspecialchars($fL) . '</option>';
 		}
 
 		// Compile the options into a multiple selector box:
@@ -855,19 +863,18 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends \TYPO3\CMS\Recordlist\Reco
 	/**
 	 * Query the table to build dropdown list
 	 *
-	 * @param string $table
+	 * @param string $table Table
+	 *
 	 * @return string
 	 */
 	protected function renderMoveToSelector($table) {
-		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
-		$database = $GLOBALS['TYPO3_DB'];
-		/** @var \TYPO3\CMS\Lang\LanguageService $language */
-		$language = $GLOBALS['LANG'];
+		$database = $this->getDatabaseConnection();
+		$language = $this->getLanguageService();
 
-			// Init:
+		// Init:
 		$theData = Array();
 
-			// Traverse the fields:
+		// Traverse the fields:
 		foreach ($this->fieldArray as $fCol) {
 			switch ((string) $fCol) {
 					// Path
@@ -907,20 +914,22 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends \TYPO3\CMS\Recordlist\Reco
 			};
 		}
 
-			// Create and return header table row:
+		// Create and return header table row:
 		return $this->addelement(1, '', $theData, '', '');
 	}
 
 	/**
-	 * @param string $table
-	 * @param integer $id
-	 * @param string $addWhere
-	 * @param string $fieldList
+	 * Make query array
+	 *
+	 * @param string $table Table
+	 * @param int $id Id
+	 * @param string $addWhere Additional where
+	 * @param string $fieldList Field list
+	 *
 	 * @return array
 	 */
 	public function makeQueryArray($table, $id, $addWhere = '', $fieldList = '*') {
-		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
-		$database = $GLOBALS['TYPO3_DB'];
+		$database = $this->getDatabaseConnection();
 
 		$hookObjectsArr = array();
 		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/class.db_list.inc']['makeQueryArray'])) {
@@ -1057,23 +1066,24 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends \TYPO3\CMS\Recordlist\Reco
 	 * Returns a table-row with the content from the fields in the input data array.
 	 * OBS: $this->fieldArray MUST be set! (represents the list of fields to display)
 	 *
-	 * @param integer $h is an integer >=0 and denotes how tall a element is. Set to
+	 * @param int $h Is an int >=0 and denotes how tall a element is. Set to
 	 * 	'0' makes a halv line, -1 = full line, set to 1 makes a 'join' and above
 	 * 	makes 'line'
-	 * @param string $icon is the <img>+<a> of the record. If not supplied the first
+	 * @param string $icon Is the <img>+<a> of the record. If not supplied the first
 	 * 	'join'-icon will be a 'line' instead
-	 * @param array $data is the dataarray, record with the fields. Notice: These
+	 * @param array $data Is the dataarray, record with the fields. Notice: These
 	 * 	fields are (currently) NOT htmlspecialchar'ed before being wrapped in
 	 * 	<td>-tags
-	 * @param string $trParams is insert in the <td>-tags. Must carry a ' ' as
+	 * @param string $trParams Is insert in the <td>-tags. Must carry a ' ' as
 	 * 	first character
-	 * @param integer|string $lMargin OBSOLETE - NOT USED ANYMORE. $lMargin is
-	 * 	the leftMargin (integer)
-	 * @param string $altLine is the HTML <img>-tag for an alternative
+	 * @param int|string $lMargin OBSOLETE - NOT USED ANYMORE. $lMargin is
+	 * 	the leftMargin (int)
+	 * @param string $altLine Is the HTML <img>-tag for an alternative
 	 * 	'gfx/ol/line.gif'-icon (used in the top)
+	 *
 	 * @return string HTML content for the table row
 	 */
-	public function addElement($h, $icon, $data, $trParams = '', $lMargin = '', $altLine = '') {
+	public function addElement($h, $icon, array $data, $trParams = '', $lMargin = '', $altLine = '') {
 		$noWrap = ($this->no_noWrap) ? '' : ' nowrap="nowrap"';
 
 		// Start up:
@@ -1161,7 +1171,7 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends \TYPO3\CMS\Recordlist\Reco
 	 * As we can't use BackendUtility::getModuleUrl this method needs to be
 	 * overridden to set the url to $this->script
 	 *
-	 * @NOTE: Since Typo3 4.5 we can't use listURL from parent class we need
+	 * NOTE: Since Typo3 4.5 we can't use listURL from parent class we need
 	 * to link to $this->script instead of web_list
 	 *
 	 * Creates the URL to this script, including all relevant GPvars
@@ -1175,6 +1185,7 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends \TYPO3\CMS\Recordlist\Reco
 	 * 	Enter "-1" for the current table.
 	 * @param string $excludeList Commalist of fields NOT
 	 * 	to include ("sortField" or "sortRev")
+	 *
 	 * @return string URL
 	 */
 	public function listURL($altId = '', $table = -1, $excludeList = '') {
@@ -1221,21 +1232,21 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends \TYPO3\CMS\Recordlist\Reco
 	 * Makes the list of fields to select for a table
 	 *
 	 * @param string $table Table name
-	 * @param boolean|integer $dontCheckUser If set, users access to the
+	 * @param bool|int $dontCheckUser If set, users access to the
 	 * 	field (non-exclude-fields) is NOT checked.
-	 * @param boolean|integer $addDateFields If set, also adds crdate and
+	 * @param bool|int $addDateFields If set, also adds crdate and
 	 * 	tstamp fields (note: they will also be added if user is admin or
 	 * 	dontCheckUser is set)
+	 *
 	 * @return array Array, where values are fieldnames to include in query
 	 */
 	public function makeFieldList($table, $dontCheckUser = 0, $addDateFields = 0) {
-		/** @var \TYPO3\CMS\Core\Authentication\BackendUserAuthentication $backendUser */
-		$backendUser = $GLOBALS['BE_USER'];
+		$backendUser = $this->getBackendUser();
 
-			// Init fieldlist array:
+		// Init fieldlist array:
 		$fieldListArr = array();
 
-			// Check table:
+		// Check table:
 		if (is_array($GLOBALS['TCA'][$table])) {
 			if (isset($GLOBALS['TCA'][$table]['columns']) && is_array($GLOBALS['TCA'][$table]['columns'])) {
 				// Traverse configured columns and add them to field array,
@@ -1254,13 +1265,13 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends \TYPO3\CMS\Recordlist\Reco
 					$fieldListArr[] = $fN;
 				}
 
-					// Add special fields:
+				// Add special fields:
 				if ($dontCheckUser || $backendUser->isAdmin()) {
 					$fieldListArr[] = 'uid';
 					$fieldListArr[] = 'pid';
 				}
 
-					// Add date fields
+				// Add date fields
 				if ($dontCheckUser || $backendUser->isAdmin() || $addDateFields) {
 					if ($GLOBALS['TCA'][$table]['ctrl']['tstamp']) {
 						$fieldListArr[] = $GLOBALS['TCA'][$table]['ctrl']['tstamp'];
@@ -1270,7 +1281,7 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends \TYPO3\CMS\Recordlist\Reco
 					}
 				}
 
-					// Add more special fields:
+				// Add more special fields:
 				if ($dontCheckUser || $backendUser->isAdmin()) {
 					if ($GLOBALS['TCA'][$table]['ctrl']['cruser_id']) {
 						$fieldListArr[] = $GLOBALS['TCA'][$table]['ctrl']['cruser_id'];
@@ -1296,11 +1307,39 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends \TYPO3\CMS\Recordlist\Reco
 			}
 		}
 
-			// CSV Export
+		// CSV Export
 		if ($this->csvOutput) {
 			$fieldListArr = $this->csvFieldArray;
 		}
 
 		return $fieldListArr;
+	}
+
+
+	/**
+	 * Get backend user
+	 *
+	 * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
+	 */
+	protected function getBackendUser() {
+		return $GLOBALS['BE_USER'];
+	}
+
+	/**
+	 * Get database connection
+	 *
+	 * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+	 */
+	protected function getDatabaseConnection() {
+		return $GLOBALS['TYPO3_DB'];
+	}
+
+	/**
+	 * Get language service
+	 *
+	 * @return \TYPO3\CMS\Lang\LanguageService
+	 */
+	protected function getLanguageService() {
+		return $GLOBALS['LANG'];
 	}
 }

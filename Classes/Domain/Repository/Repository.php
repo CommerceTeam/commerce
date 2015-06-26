@@ -1,29 +1,16 @@
 <?php
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2005-2011 Ingo Schmitt <is@marketing-factory.de>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *  A copy is found in the textfile GPL.txt and important notices to the license
- *  from the author is found in LICENSE.txt distributed with these scripts.
- *
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
 
 /**
  * Abstract Class for handling almost all Database-Calls for all
@@ -36,42 +23,58 @@
  * tx_commerce_category
  * tx_commerce_attribute
  *
+ * Class Tx_Commerce_Domain_Repository_Repository
+ *
+ * @author 2005-2011 Ingo Schmitt <is@marketing-factory.de>
  */
 class Tx_Commerce_Domain_Repository_Repository {
 	/**
-	 * @var string Database table concerning the data
+	 * Database table concerning the data
+	 *
+	 * @var string
 	 */
 	protected $databaseTable = '';
 
 	/**
-	 * @var string Order field for most select statments
+	 * Order field for most select statments
+	 *
+	 * @var string
 	 */
 	protected $orderField = ' sorting ';
 
 	/**
-	 * Stores the relation for the attributes to product,category, article
+	 * Stores the relation for the attributes to product, category, article
+	 *
 	 * @var string Database attribute rel table
 	 */
 	protected $databaseAttributeRelationTable = '';
 
 	/**
-	 * debugmode for errorHandling
-	 * @var boolean debugMode Boolean
+	 * Debugmode for errorHandling
+	 *
+	 * @var bool
 	 */
 	protected $debugMode = FALSE;
 
 	/**
-	 * @var string Translation Mode for getRecordOverlay
+	 * Translation mode for getRecordOverlay
+	 *
+	 * @var string
 	 */
 	protected $translationMode = 'hideNonTranslated';
 
 	/**
-	 * @var integer
+	 * Uid
+	 *
+	 * @var int
 	 */
 	protected $uid;
 
 	/**
+	 * Database connection
+	 *
 	 * @var \TYPO3\CMS\Core\Database\DatabaseConnection
+	 * @deprecated Since 2.0.0 will be removed in 4.0.0
 	 */
 	protected $database;
 
@@ -81,19 +84,21 @@ class Tx_Commerce_Domain_Repository_Repository {
 	 * @return self
 	 */
 	public function __construct() {
-		$this->database = $GLOBALS['TYPO3_DB'];
+		$this->database = $this->getDatabaseConnection();
 	}
 
 	/**
 	 * Get data
 	 *
-	 * @param integer $uid UID for Data
-	 * @param integer $langUid Language Uid
-	 * @param boolean $translationMode Translation Mode for recordset
+	 * @param int $uid UID for Data
+	 * @param int $langUid Language Uid
+	 * @param bool $translationMode Translation Mode for recordset
+	 *
 	 * @return array assoc Array with data
 	 * @todo implement access_check concering category tree
 	 */
 	public function getData($uid, $langUid = -1, $translationMode = FALSE) {
+		$database = $this->getDatabaseConnection();
 		if ($translationMode == FALSE) {
 			$translationMode = $this->translationMode;
 		}
@@ -104,8 +109,8 @@ class Tx_Commerce_Domain_Repository_Repository {
 			$langUid = 0;
 		}
 
-		if ((($langUid == 0) || empty($langUid)) && ($GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid'] > 0)) {
-			$langUid = $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid'];
+		if (empty($langUid) && $this->getFrontendController()->tmpl->setup['config.']['sys_language_uid'] > 0) {
+			$langUid = $this->getFrontendController()->tmpl->setup['config.']['sys_language_uid'];
 		}
 
 		$proofSql = '';
@@ -113,18 +118,18 @@ class Tx_Commerce_Domain_Repository_Repository {
 			$proofSql = $this->enableFields($this->databaseTable, $GLOBALS['TSFE']->showHiddenRecords);
 		}
 
-		$result = $this->database->exec_SELECTquery(
+		$result = $database->exec_SELECTquery(
 			'*',
 			$this->databaseTable,
 			'uid = ' . $uid . $proofSql
 		);
 
-			// Result should contain only one Dataset
-		if ($this->database->sql_num_rows($result) == 1) {
-			$returnData = $this->database->sql_fetch_assoc($result);
-			$this->database->sql_free_result($result);
+		// Result should contain only one Dataset
+		if ($database->sql_num_rows($result) == 1) {
+			$returnData = $database->sql_fetch_assoc($result);
+			$database->sql_free_result($result);
 
-				// @since 8.10.2008: get workspace version if available
+			// @since 8.10.2008: get workspace version if available
 			if (!empty($GLOBALS['TSFE']->sys_page)) {
 				$GLOBALS['TSFE']->sys_page->versionOL($this->databaseTable, $returnData);
 			}
@@ -134,15 +139,21 @@ class Tx_Commerce_Domain_Repository_Repository {
 				return FALSE;
 			}
 
-			if (($langUid > 0)) {
+			if ($langUid > 0) {
 				/**
 				 * Get Overlay, if available
 				 */
 				switch($translationMode) {
 					case 'basket':
-						// special Treatment for basket, so you could have a product not translated init a language
+						// special Treatment for basket, so you could have
+						// a product not translated init a language
 						// but the basket is in the not translated laguage
-						$newData = $GLOBALS['TSFE']->sys_page->getRecordOverlay($this->databaseTable, $returnData, $langUid, $this->translationMode);
+						$newData = $GLOBALS['TSFE']->sys_page->getRecordOverlay(
+							$this->databaseTable,
+							$returnData,
+							$langUid,
+							$this->translationMode
+						);
 
 						if (!empty($newData)) {
 							$returnData = $newData;
@@ -150,7 +161,12 @@ class Tx_Commerce_Domain_Repository_Repository {
 						break;
 
 					default:
-						$returnData = $GLOBALS['TSFE']->sys_page->getRecordOverlay($this->databaseTable, $returnData, $langUid, $this->translationMode);
+						$returnData = $GLOBALS['TSFE']->sys_page->getRecordOverlay(
+							$this->databaseTable,
+							$returnData,
+							$langUid,
+							$this->translationMode
+						);
 				}
 			}
 
@@ -163,35 +179,41 @@ class Tx_Commerce_Domain_Repository_Repository {
 	}
 
 	/**
-	 * checks if one given UID is availiabe
+	 * Checks if one given UID is availiabe
 	 *
-	 * @param integer $uid
-	 * @return boolean true id availiabe
+	 * @param int $uid Uid
+	 *
+	 * @return bool true id availiabe
 	 * @todo implement access_check
 	 */
 	public function isUid($uid) {
+		$database = $this->getDatabaseConnection();
+
 		if (!$uid) {
 			return FALSE;
 		}
 
-		$result = $this->database->exec_SELECTquery(
+		$result = $database->exec_SELECTquery(
 			'uid',
 			$this->databaseTable,
 			'uid = ' . (int) $uid
 		);
 
-		return $this->database->sql_num_rows($result) == 1;
+		return $database->sql_num_rows($result) == 1;
 	}
 
 	/**
 	 * Checks in the Database if a UID is accessiblbe,
 	 * basically checks against the enableFields
 	 *
-	 * @param integer $uid Record Uid
-	 * @return boolean	TRUE if is accessible
-	 * 					FALSE	if is not accessible
+	 * @param int $uid Record Uid
+	 *
+	 * @return bool	TRUE if is accessible
+	 * 				FALSE if is not accessible
 	 */
 	public function isAccessible($uid) {
+		$database = $this->getDatabaseConnection();
+
 		$return = FALSE;
 		$uid = (int) $uid;
 		if ($uid > 0) {
@@ -200,17 +222,17 @@ class Tx_Commerce_Domain_Repository_Repository {
 				$proofSql = $this->enableFields($this->databaseTable, $GLOBALS['TSFE']->showHiddenRecords);
 			}
 
-			$result = $this->database->exec_SELECTquery(
+			$result = $database->exec_SELECTquery(
 				'*',
 				$this->databaseTable,
 				'uid = ' . $uid . $proofSql
 			);
 
-			if ($this->database->sql_num_rows($result) == 1) {
+			if ($database->sql_num_rows($result) == 1) {
 				$return = TRUE;
 			}
 
-			$this->database->sql_free_result($result);
+			$database->sql_free_result($result);
 		}
 		return $return;
 	}
@@ -219,6 +241,7 @@ class Tx_Commerce_Domain_Repository_Repository {
 	 * Error Handling Funktion
 	 *
 	 * @param string $err Errortext
+	 *
 	 * @return void
 	 */
 	public function error($err) {
@@ -228,13 +251,15 @@ class Tx_Commerce_Domain_Repository_Repository {
 	}
 
 	/**
-	 * gets all attributes from this product
+	 * Gets all attributes from this product
 	 *
-	 * @param integer $uid Product uid
-	 * @param array $attributeCorrelationTypeList list of corelation_types
+	 * @param int $uid Product uid
+	 * @param array|NULL $attributeCorrelationTypeList Corelation types
+	 *
 	 * @return array of attribute UID
 	 */
 	public function getAttributes($uid, $attributeCorrelationTypeList = NULL) {
+		$database = $this->getDatabaseConnection();
 		$uid = (int) $uid;
 		if ($this->databaseAttributeRelationTable == '') {
 			return FALSE;
@@ -246,21 +271,22 @@ class Tx_Commerce_Domain_Repository_Repository {
 				implode(',', $attributeCorrelationTypeList) . ')';
 		}
 
-		$result = $this->database->exec_SELECT_mm_query(
+		$result = $database->exec_SELECT_mm_query(
 			'tx_commerce_attributes.uid',
 			$this->databaseTable,
 			$this->databaseAttributeRelationTable,
 			'tx_commerce_attributes',
-			'AND ' . $this->databaseTable . '.uid = ' . $uid . $additionalWhere . ' order by ' . $this->databaseAttributeRelationTable . '.sorting'
+			'AND ' . $this->databaseTable . '.uid = ' . $uid . $additionalWhere . ' order by ' .
+				$this->databaseAttributeRelationTable . '.sorting'
 		);
 
 		$attributeUidList = FALSE;
-		if (($result) && ($this->database->sql_num_rows($result) > 0)) {
+		if (($result) && ($database->sql_num_rows($result) > 0)) {
 			$attributeUidList = array();
-			while (($returnData = $this->database->sql_fetch_assoc($result))) {
+			while (($returnData = $database->sql_fetch_assoc($result))) {
 				$attributeUidList[] = (int) $returnData['uid'];
 			}
-			$this->database->sql_free_result($result);
+			$database->sql_free_result($result);
 		}
 		return $attributeUidList;
 	}
@@ -268,9 +294,10 @@ class Tx_Commerce_Domain_Repository_Repository {
 	/**
 	 * Update record data
 	 *
-	 * @param integer $uid uid of the item
+	 * @param int $uid Uid of the item
 	 * @param array $fields Assoc. array with update fields
-	 * @return boolean
+	 *
+	 * @return bool
 	 */
 	public function updateRecord($uid, array $fields) {
 		if (!is_numeric($uid) || !is_array($fields)) {
@@ -280,8 +307,7 @@ class Tx_Commerce_Domain_Repository_Repository {
 			return FALSE;
 		}
 
-		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
-		$database = $GLOBALS['TYPO3_DB'];
+		$database = $this->getDatabaseConnection();
 		$database->exec_UPDATEquery($this->databaseTable, 'uid = ' . $uid, $fields);
 		if ($database->sql_error()) {
 			if (TYPO3_DLOG) {
@@ -295,8 +321,9 @@ class Tx_Commerce_Domain_Repository_Repository {
 	/**
 	 * Get enableFields
 	 *
-	 * @param string $tableName
-	 * @param boolean $showHiddenRecords
+	 * @param string $tableName Table name
+	 * @param bool|int $showHiddenRecords Show hidden records
+	 *
 	 * @return string
 	 */
 	public function enableFields($tableName, $showHiddenRecords = -1) {
@@ -313,13 +340,34 @@ class Tx_Commerce_Domain_Repository_Repository {
 	/**
 	 * gets all attributes from this product
 	 *
-	 * @param integer $uid Product uid
+	 * @param int $uid Product uid
 	 * @param array $attributeCorrelationTypeList array of corelation_types
+	 *
 	 * @return array of attribute UID
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use Tx_Commerce_Domain_Repository_Repository::getAttributes instead
 	 */
 	public function get_attributes($uid, $attributeCorrelationTypeList = NULL) {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		return $this->getAttributes($uid, $attributeCorrelationTypeList);
+	}
+
+
+	/**
+	 * Get database connection
+	 *
+	 * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+	 */
+	protected function getDatabaseConnection() {
+		return $GLOBALS['TYPO3_DB'];
+	}
+
+	/**
+	 * Get typoscript frontend controller
+	 *
+	 * @return \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController
+	 */
+	protected function getFrontendController() {
+		return $GLOBALS['TSFE'];
 	}
 }

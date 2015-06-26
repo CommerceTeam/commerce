@@ -1,47 +1,44 @@
 <?php
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2008-2014 Erik Frister <typo3@marketing-factory.de>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *  A copy is found in the textfile GPL.txt and important notices to the license
- *  from the author is found in LICENSE.txt distributed with these scripts.
- *
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
 use TYPO3\CMS\Backend\Utility\IconUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Implements the view of the leaf
+ *
+ * Class Tx_Commerce_Tree_Leaf_View
+ *
+ * @author 2008-2014 Erik Frister <typo3@marketing-factory.de>
  */
 class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 	/**
-	 * @var boolean
+	 * Leaf index
+	 *
+	 * @var bool
 	 */
 	protected $leafIndex = FALSE;
 
 	/**
+	 * Parent indices
+	 *
 	 * @var array
 	 */
 	protected $parentIndices;
 
 	/**
+	 * Table
+	 *
 	 * @var string
 	 */
 	protected $table;
@@ -54,6 +51,8 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 	protected $iconPath = '../typo3conf/ext/commerce/Resources/Public/Icons/Table/';
 
 	/**
+	 * Icon name
+	 *
 	 * @var string
 	 */
 	protected $iconName;
@@ -82,7 +81,7 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 	/**
 	 * Item UID of the Mount for this View
 	 *
-	 * @var integer
+	 * @var int
 	 */
 	protected $bank;
 
@@ -94,11 +93,15 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 	protected $treeName;
 
 	/**
+	 * Root icon name
+	 *
 	 * @var string
 	 */
 	protected $rootIconName = 'commerce_globus.gif';
 
 	/**
+	 * Command
+	 *
 	 * @var string
 	 */
 	protected $cmd;
@@ -106,29 +109,29 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 	/**
 	 * Should clickmenu be enabled
 	 *
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $noClickmenu;
 
 	/**
 	 * Should the root item have a title-onclick?
 	 *
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $noRootOnclick = FALSE;
 
 	/**
-	 * should the otem in general have a title-onclick?
+	 * Should the otem in general have a title-onclick?
 	 *
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $noOnclick = FALSE;
 
 	/**
-	 * use real values for leafs that otherwise just have "edit"
+	 * Use real values for leafs that otherwise just have "edit"
 	 * this is needed for the parent category tree in records
 	 *
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $realValues = FALSE;
 
@@ -140,16 +143,22 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 	protected $icon;
 
 	/**
-	 * @var boolean
+	 * Icon generated
+	 *
+	 * @var bool
 	 */
 	protected $iconGenerated = FALSE;
 
 	/**
-	 * @var boolean
+	 * Show default title attribute
+	 *
+	 * @var bool
 	 */
 	public $showDefaultTitleAttribute = FALSE;
 
 	/**
+	 * Parent category
+	 *
 	 * @var int
 	 */
 	protected $parentCategory = 0;
@@ -180,7 +189,8 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 	/**
 	 * Sets the Leaf Index
 	 *
-	 * @param integer $index Leaf Index
+	 * @param int $index Leaf Index
+	 *
 	 * @return void
 	 */
 	public function setLeafIndex($index) {
@@ -196,8 +206,9 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 	/**
 	 * Sets the parent indices
 	 *
-	 * @return void
 	 * @param array $indices Array with the Parent Indices
+	 *
+	 * @return void
 	 */
 	public function setParentIndices(array $indices) {
 		$this->parentIndices = $indices;
@@ -206,7 +217,8 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 	/**
 	 * Sets the bank
 	 *
-	 * @param integer $bank - Category UID of the Mount (aka Bank)
+	 * @param int $bank Category UID of the Mount (aka Bank)
+	 *
 	 * @return void
 	 */
 	public function setBank($bank) {
@@ -222,8 +234,9 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 	/**
 	 * Sets the Tree Name of the Parent Tree
 	 *
-	 * @return void
 	 * @param string $name Name of the tree
+	 *
+	 * @return void
 	 */
 	public function setTreeName($name) {
 		if (!is_string($name)) {
@@ -241,7 +254,8 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 	/**
 	 * Sets if the clickmenu should be enabled for this Tx_Commerce_Tree_Leaf_View
 	 *
-	 * @param boolean $flag [optional] Flag
+	 * @param bool $flag Flag
+	 *
 	 * @return void
 	 */
 	public function noClickmenu($flag = TRUE) {
@@ -251,8 +265,9 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 	/**
 	 * Sets if the root onlick should be enabled for this Tx_Commerce_Tree_Leaf_View
 	 *
+	 * @param bool $flag Flag
+	 *
 	 * @return void
-	 * @param boolean $flag Flag
 	 */
 	public function noRootOnclick($flag = TRUE) {
 		$this->noRootOnclick = (bool)$flag;
@@ -261,8 +276,9 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 	/**
 	 * Sets the noClick for the title
 	 *
+	 * @param bool $flag Value to set
+	 *
 	 * @return void
-	 * @param boolean $flag
 	 */
 	public function noOnclick($flag = TRUE) {
 		$this->noOnclick = $flag;
@@ -284,9 +300,10 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 	 * 	try to get icon based on those values.
 	 *
 	 * @param array $row Item row.
+	 *
 	 * @return string Image tag.
 	 */
-	public function getIcon($row) {
+	public function getIcon(array $row) {
 		if ($this->iconPath && $this->iconName) {
 			$icon = '<img' . IconUtility::skinImg('', $this->iconPath . $this->iconName, 'width="18" height="16"') . ' alt=""' .
 				($this->showDefaultTitleAttribute ? ' title="UID: ' . $row['uid'] . '"' : '') . ' />';
@@ -304,10 +321,11 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 	 * Get the icon for the root
 	 * $this->iconPath and $this->rootIconName have to be set
 	 *
-	 * @param array $row
+	 * @param array $row Data
+	 *
 	 * @return string Image tag
 	 */
-	public function getRootIcon($row) {
+	public function getRootIcon(array $row) {
 		if (!is_array($row)) {
 			if (TYPO3_DLOG) {
 				GeneralUtility::devLog('getRootIcon (Tx_Commerce_Tree_Leaf_View) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
@@ -324,12 +342,13 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 	/**
 	 * Wraps the Icon in a <span>
 	 *
-	 * @param string $icon
-	 * @param array $row
-	 * @param string $additionalParams
+	 * @param string $icon Icon
+	 * @param array $row Data
+	 * @param string $additionalParams Additional params
+	 *
 	 * @return string HTML Code
 	 */
-	public function wrapIcon($icon, $row, $additionalParams = '') {
+	public function wrapIcon($icon, array $row, $additionalParams = '') {
 		if (!is_array($row) || !is_string($additionalParams)) {
 			if (TYPO3_DLOG) {
 				GeneralUtility::devLog('wrapIcon (Tx_Commerce_Tree_Leaf_View) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
@@ -357,7 +376,11 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 
 			// Wrap the Context Menu on the Icon if it is allowed
 		if (isset($GLOBALS['TBE_TEMPLATE']) && !$this->noClickmenu) {
-			/** @var \TYPO3\CMS\Backend\Template\DocumentTemplate $template */
+			/**
+			 * Template
+			 *
+			 * @var template $template
+			 */
 			$template = $GLOBALS['TBE_TEMPLATE'];
 			$template->backPath = $this->backPath;
 			$icon = $template->wrapClickMenuOnIcon($icon, $this->table, $row['uid'], 0, $additionalParams);
@@ -368,16 +391,20 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 	/**
 	 * Wrapping $title in a-tags.
 	 *
-	 * @param string $title string
-	 * @param string $row item record
-	 * @param integer $bank pointer (which mount point number)
+	 * @param string $title Title
+	 * @param string $row Item record
+	 * @param int $bank Pointer (which mount point number)
+	 *
 	 * @return string
-	 * @access private
 	 */
 	public function wrapTitle($title, $row, $bank = 0) {
 		if (!is_array($row) || !is_numeric($bank)) {
 			if (TYPO3_DLOG) {
-				GeneralUtility::devLog('wrapTitle (Tx_Commerce_Tree_Leaf_View) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
+					'wrapTitle (Tx_Commerce_Tree_Leaf_View) gets passed invalid parameters.',
+					COMMERCE_EXTKEY,
+					3
+				);
 			}
 			return '';
 		}
@@ -388,9 +415,11 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 		$aOnClick = 'return jumpTo(\'' . $this->getJumpToParam($row) . '\',this,\'' . $this->domIdPrefix .
 			$row['uid'] . '_' . $bank . '\',\'\');';
 
-		$res = (($this->noRootOnclick && 0 == $row['uid']) || $this->noOnclick) ?
-			htmlspecialchars(strip_tags($title)) :
-			'<a href="#" onclick="' . htmlspecialchars($aOnClick) . '">' . htmlspecialchars(strip_tags($title)) . '</a>';
+		if (($this->noRootOnclick && 0 == $row['uid']) || $this->noOnclick) {
+			$res = htmlspecialchars(strip_tags($title));
+		} else {
+			$res = '<a href="#" onclick="' . htmlspecialchars($aOnClick) . '">' . htmlspecialchars(strip_tags($title)) . '</a>';
+		}
 
 		return $res;
 	}
@@ -400,20 +429,21 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 	 *
 	 * @param array $row The input row array (where the key "title"
 	 * 	is used for the title)
+	 *
 	 * @return string The attribute value (is htmlspecialchared() already)
-	 * @see wrapIcon()
 	 */
-	public function getTitleAttrib($row) {
+	public function getTitleAttrib(array $row) {
 		return htmlspecialchars('[' . $row['uid'] . '] ' . $row['title']);
 	}
 
 	/**
-	 * returns the link from the tree used to jump to a destination
+	 * Link from the tree used to jump to a destination
 	 *
-	 * @param array $row - Array with the ID Information
+	 * @param array $row Array with the ID Information
+	 *
 	 * @return string
 	 */
-	public function getJumpToParam($row) {
+	public function getJumpToParam(array $row) {
 		if (!is_array($row)) {
 			if (TYPO3_DLOG) {
 				GeneralUtility::devLog('getJumpToParam (Tx_Commerce_Tree_Leaf_View) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
@@ -428,16 +458,17 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 	/**
 	 * Generate the plus/minus icon for the browsable tree.
 	 *
-	 * @param array $row record for the entry
-	 * @param integer $isLast The current entry number
-	 * @param integer $isExpanded The total number of entries.
+	 * @param array $row Record for the entry
+	 * @param int $isLast The current entry number
+	 * @param int $isExpanded The total number of entries.
 	 * 	If equal to $a, a "bottom" element is returned.
-	 * @param boolean $isBank The element was expanded to render
+	 * @param bool $isBank The element was expanded to render
 	 * 	subelements if this flag is set.
-	 * @param boolean $hasChildren The Element is a Bank if this flag is set.
+	 * @param bool $hasChildren The Element is a Bank if this flag is set.
+	 *
 	 * @return string Image tag with the plus/minus icon.
 	 */
-	public function PMicon($row, $isLast, $isExpanded, $isBank = FALSE, $hasChildren = FALSE) {
+	public function PMicon(array $row, $isLast, $isExpanded, $isBank = FALSE, $hasChildren = FALSE) {
 		if (!is_array($row)) {
 			if (TYPO3_DLOG) {
 				GeneralUtility::devLog('PMicon (Tx_Commerce_Tree_Leaf_View) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
@@ -452,7 +483,7 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 		$icon = '<img alt="" src="/' . TYPO3_mainDir . 'clear.gif" class="x-tree-ec-icon x-tree-elbow' . $bottom . $plusMinus . '">';
 
 		if ($hasChildren) {
-				// Calculate the command
+			// Calculate the command
 			$indexFirst = (0 >= count($this->parentIndices)) ? $this->leafIndex : $this->parentIndices[0];
 
 			$cmd = array($this->treeName, $indexFirst, $this->bank, ($isExpanded ? 0 : 1));
@@ -462,21 +493,21 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 			if (0 < count($this->parentIndices)) {
 				$l = count($this->parentIndices);
 
-					// Add parent indices - first parent Index is already in the command
+				// Add parent indices - first parent Index is already in the command
 				for ($i = 1; $i < $l; $i++) {
 					$cmd[] = $this->parentIndices[$i];
 				}
 
-					// Add its own index at the very end
+				// Add its own index at the very end
 				$cmd[] = $this->leafIndex;
 			}
 
-				// Append the row UID | Parent Item under which this row stands
+			// Append the row UID | Parent Item under which this row stands
 			$cmd[] = $row['uid'] . '|' . $row['item_parent'];
-				// Overwrite the Flag for expanded
+			// Overwrite the Flag for expanded
 			$cmd[3] = ($isExpanded ? 0 : 1);
 
-				// Make the string-command
+			// Make the string-command
 			$cmd = implode('_', $cmd);
 
 			$icon = $this->PMiconATagWrap($icon, $cmd, !$isExpanded);
@@ -489,7 +520,8 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 	 *
 	 * @param string $icon HTML string to wrap, probably an image tag.
 	 * @param string $cmd Command for 'PM' get var
-	 * @param boolean $isExpand
+	 * @param bool $isExpand If the node is expanded
+	 *
 	 * @return string Link-wrapped input string
 	 */
 	protected function PMiconATagWrap($icon, $cmd, $isExpand = TRUE) {
@@ -501,7 +533,7 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 		}
 
 			// activate dynamic ajax-based tree
-		$js = htmlspecialchars('Tree.load(' . GeneralUtility::quoteJSvalue($cmd) . ', ' . (int)$isExpand . ', this);');
+		$js = htmlspecialchars('Tree.load(' . GeneralUtility::quoteJSvalue($cmd) . ', ' . (int) $isExpand . ', this);');
 		return '<a class="pm" onclick="' . $js . '">' . $icon . '</a>';
 	}
 }

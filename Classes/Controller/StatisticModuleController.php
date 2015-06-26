@@ -1,55 +1,63 @@
 <?php
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2004-2011 Joerg Sprung <jsp@marketing-factory.de>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *  A copy is found in the textfile GPL.txt and important notices to the license
- *  from the author is found in LICENSE.txt distributed with these scripts.
- *
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
 
 /**
  * Module 'Statistics' for the 'commerce' extension.
+ *
+ * Class Tx_Commerce_Controller_StatisticModuleController
+ *
+ * @author 2004-2011 Joerg Sprung <jsp@marketing-factory.de>
  */
 class Tx_Commerce_Controller_StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 	/**
+	 * Document template
+	 *
+	 * @var \TYPO3\CMS\Backend\Template\DocumentTemplate
+	 */
+	public $doc;
+
+	/**
+	 * Extension configuration
+	 *
 	 * @var array
 	 */
 	protected $extConf;
 
 	/**
+	 * Exclude pids
+	 *
 	 * @var string
 	 */
 	protected $excludePids;
 
 	/**
+	 * Page information
+	 *
 	 * @var array
 	 */
 	protected $pageinfo;
 
 	/**
+	 * Order page id
+	 *
 	 * @var array
 	 */
 	protected $orderPageId;
 
 	/**
+	 * Statistics
+	 *
 	 * @var Tx_Commerce_Utility_StatisticsUtility
 	 */
 	protected $statistics;
@@ -60,7 +68,7 @@ class Tx_Commerce_Controller_StatisticModuleController extends \TYPO3\CMS\Backen
 	 * @return void
 	 */
 	public function init() {
-		$language = $GLOBALS['LANG'];
+		$language = $this->getLanguageService();
 		$language->includeLLFile('EXT:commerce/Resources/Private/Language/locallang_mod_statistic.xml');
 		$language->includeLLFile('EXT:lang/locallang_mod_web_list.php');
 
@@ -72,7 +80,9 @@ class Tx_Commerce_Controller_StatisticModuleController extends \TYPO3\CMS\Backen
 		$this->statistics = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Utility_StatisticsUtility');
 		$this->statistics->init($this->extConf['excludeStatisticFolders'] != '' ? $this->extConf['excludeStatisticFolders'] : 0);
 
-		$this->orderPageId = current(array_unique(Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Orders', 'Commerce', 0, 'Commerce')));
+		$this->orderPageId = current(array_unique(
+			Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Orders', 'Commerce', 0, 'Commerce')
+		));
 
 		/**
 		 * If we get an id via GP use this, else use the default id
@@ -99,7 +109,7 @@ class Tx_Commerce_Controller_StatisticModuleController extends \TYPO3\CMS\Backen
 
 		$this->doc->form = '<form action="" method="POST" name="editform">';
 
-			// JavaScript
+		// JavaScript
 		$this->doc->JScode = $this->doc->wrapScriptTags('
 			script_ended = 0;
 			function jumpToUrl(URL) {
@@ -120,8 +130,7 @@ class Tx_Commerce_Controller_StatisticModuleController extends \TYPO3\CMS\Backen
 	 * @return void
 	 */
 	public function menuConfig() {
-		/** @var \TYPO3\CMS\Lang\LanguageService $language */
-		$language = $GLOBALS['LANG'];
+		$language = $this->getLanguageService();
 
 		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['allowAggregation'] == 1) {
 			$this->MOD_MENU = array(
@@ -148,12 +157,8 @@ class Tx_Commerce_Controller_StatisticModuleController extends \TYPO3\CMS\Backen
 	 * @return void
 	 */
 	public function main() {
-		/**
-		 * @var \TYPO3\CMS\Core\Authentication\BackendUserAuthentication $backendUser
-		 */
-		$backendUser = $GLOBALS['BE_USER'];
-		/** @var \TYPO3\CMS\Lang\LanguageService $language */
-		$language = $GLOBALS['LANG'];
+		$backendUser = $this->getBackendUser();
+		$language = $this->getLanguageService();
 
 		// Access check!
 		// The page will show only if there is a valid page and if
@@ -166,7 +171,7 @@ class Tx_Commerce_Controller_StatisticModuleController extends \TYPO3\CMS\Backen
 			// Render content:
 			$this->moduleContent();
 		} else {
-				// If no access or if ID == zero
+			// If no access or if ID == zero
 			$this->content .= $this->doc->header($language->getLL('statistic'));
 		}
 
@@ -186,7 +191,7 @@ class Tx_Commerce_Controller_StatisticModuleController extends \TYPO3\CMS\Backen
 			)
 		);
 
-			// put it all together
+		// put it all together
 		$this->content = $this->doc->startPage($language->getLL('statistic'));
 		$this->content .= $this->doc->moduleBody($this->pageinfo, $docHeaderButtons, $markers);
 		$this->content .= $this->doc->endPage();
@@ -230,41 +235,37 @@ class Tx_Commerce_Controller_StatisticModuleController extends \TYPO3\CMS\Backen
 	 * @return array all available buttons as an assoc. array
 	 */
 	protected function getHeaderButtons() {
-		/**
-		 * @var \TYPO3\CMS\Core\Authentication\BackendUserAuthentication $backendUser
-		 */
-		$backendUser = $GLOBALS['BE_USER'];
-		/** @var \TYPO3\CMS\Lang\LanguageService $language */
-		$language = $GLOBALS['LANG'];
+		$backendUser = $this->getBackendUser();
+		$language = $this->getLanguageService();
 
 		$buttons = array(
 			'csh' => '',
-				// group left 1
+			// group left 1
 			'level_up' => '',
 			'back' => '',
-				// group left 2
+			// group left 2
 			'new_record' => '',
 			'paste' => '',
-				// group left 3
+			// group left 3
 			'view' => '',
 			'edit' => '',
 			'move' => '',
 			'hide_unhide' => '',
-				// group left 4
+			// group left 4
 			'csv' => '',
 			'export' => '',
-				// group right 1
+			// group right 1
 			'cache' => '',
 			'reload' => '',
 			'shortcut' => '',
 		);
 
-			// CSH
+		// CSH
 		$buttons['csh'] = \TYPO3\CMS\Backend\Utility\BackendUtility::cshItem(
 			'_MOD_commerce_statistic', '', $GLOBALS['BACK_PATH'], '', TRUE
 		);
 
-			// Shortcut
+		// Shortcut
 		if ($backendUser->mayMakeShortcut()) {
 			$buttons['shortcut'] = $this->doc->makeShortcutIcon(
 				'id, edit_record, pointer, new_unique_uid, search_field, search_levels, showLimit',
@@ -273,7 +274,7 @@ class Tx_Commerce_Controller_StatisticModuleController extends \TYPO3\CMS\Backen
 			);
 		}
 
-			// If access to Web>List for user, then link to that module.
+		// If access to Web>List for user, then link to that module.
 		if ($backendUser->check('modules', 'web_list')) {
 			$href = $GLOBALS['BACK_PATH'] . 'db_list.php?id=' . $this->pageinfo['uid'] . '&returnUrl=' .
 				rawurlencode(\TYPO3\CMS\Core\Utility\GeneralUtility::getIndpEnv('REQUEST_URI'));
@@ -292,8 +293,7 @@ class Tx_Commerce_Controller_StatisticModuleController extends \TYPO3\CMS\Backen
 	 * @return string Content to show in BE
 	 */
 	protected function completeAggregation() {
-		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
-		$database = $GLOBALS['TYPO3_DB'];
+		$database = $this->getDatabaseConnection();
 
 		$result = '';
 		if (isset($GLOBALS['HTTP_POST_VARS']['fullaggregation'])) {
@@ -304,7 +304,7 @@ class Tx_Commerce_Controller_StatisticModuleController extends \TYPO3\CMS\Backen
 				$endtime2 = $endrow[0];
 			}
 
-			$endtime =  $endtime2 > mktime(0, 0, 0) ? mktime(0, 0, 0) : strtotime('+1 hour', $endtime2);
+			$endtime = $endtime2 > mktime(0, 0, 0) ? mktime(0, 0, 0) : strtotime('+1 hour', $endtime2);
 
 			$startselect = 'SELECT min(crdate) FROM tx_commerce_order_articles WHERE crdate > 0';
 			$startres = $database->sql_query($startselect);
@@ -334,10 +334,9 @@ class Tx_Commerce_Controller_StatisticModuleController extends \TYPO3\CMS\Backen
 				$result .= '<br />no client data available';
 			}
 		} else {
-			/** @var \TYPO3\CMS\Lang\LanguageService $language */
-			$language = $GLOBALS['LANG'];
+			$language = $this->getLanguageService();
 
-			$result = 'Dieser Vorgang kann eventuell lange dauern<br /><br />';
+			$result = $language->getLL('may_take_long_periode') . '<br /><br />';
 			$result .= sprintf ('<input type="submit" name="fullaggregation" value="%s" />', $language->getLL('complete_aggregation'));
 		}
 
@@ -350,8 +349,7 @@ class Tx_Commerce_Controller_StatisticModuleController extends \TYPO3\CMS\Backen
 	 * @return String Content to show in BE
 	 */
 	protected function incrementalAggregation() {
-		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
-		$database = $GLOBALS['TYPO3_DB'];
+		$database = $this->getDatabaseConnection();
 
 		$result = '';
 		if (isset($GLOBALS['HTTP_POST_VARS']['incrementalaggregation'])) {
@@ -375,7 +373,7 @@ class Tx_Commerce_Controller_StatisticModuleController extends \TYPO3\CMS\Backen
 			$starttime = $this->statistics->firstSecondOfDay($lastAggregationTimeValue);
 
 			if ($starttime <= $this->statistics->firstSecondOfDay($endtime2) AND $endtime2 != NULL) {
-				$endtime =  $endtime2 > mktime(0, 0, 0) ? mktime(0, 0, 0) : strtotime('+1 hour', $endtime2);
+				$endtime = $endtime2 > mktime(0, 0, 0) ? mktime(0, 0, 0) : strtotime('+1 hour', $endtime2);
 
 				echo 'Incremental Sales Agregation for sales for the period from ' . strftime('%d.%m.%Y', $starttime) . ' to ' .
 					strftime('%d.%m.%Y', $endtime) . ' (DD.MM.YYYY)<br />' . LF;
@@ -391,9 +389,8 @@ class Tx_Commerce_Controller_StatisticModuleController extends \TYPO3\CMS\Backen
 			$changeDaysArray = array();
 			$changes = 0;
 			while ($changeres AND ($changerow = $database->sql_fetch_assoc($changeres))) {
-
-				$starttime =  $this->statistics->firstSecondOfDay($changerow['crdate']);
-				$endtime =  $this->statistics->lastSecondOfDay($changerow['crdate']);
+				$starttime = $this->statistics->firstSecondOfDay($changerow['crdate']);
+				$endtime = $this->statistics->lastSecondOfDay($changerow['crdate']);
 
 				if (!in_array($starttime, $changeDaysArray)) {
 					$changeDaysArray[] = $starttime;
@@ -418,7 +415,7 @@ class Tx_Commerce_Controller_StatisticModuleController extends \TYPO3\CMS\Backen
 				$endtime2 = $endrow[0];
 			}
 			if ($lastAggregationTimeValue <= $endtime2 AND $endtime2 != NULL AND $lastAggregationTimeValue != NULL) {
-				$endtime =  $endtime2 > mktime(0, 0, 0) ? mktime(0, 0, 0) : strtotime('+1 hour', $endtime2);
+				$endtime = $endtime2 > mktime(0, 0, 0) ? mktime(0, 0, 0) : strtotime('+1 hour', $endtime2);
 
 				$starttime = strtotime('0', $lastAggregationTimeValue);
 				if (empty($starttime)) {
@@ -432,11 +429,13 @@ class Tx_Commerce_Controller_StatisticModuleController extends \TYPO3\CMS\Backen
 				$result .= 'No new Customers<br />';
 			}
 		} else {
-			/** @var \TYPO3\CMS\Lang\LanguageService $language */
-			$language = $GLOBALS['LANG'];
+			$language = $this->getLanguageService();
 
-			$result = 'Dieser Vorgang kann eventuelle eine hohe Laufzeit haben<br /><br />';
-			$result .= sprintf ('<input type="submit" name="incrementalaggregation" value="%s" />', $language->getLL('incremental_aggregation'));
+			$result = $language->getLL('may_take_long_periode') . '<br /><br />';
+			$result .= sprintf(
+				'<input type="submit" name="incrementalaggregation" value="%s" />',
+				$language->getLL('incremental_aggregation')
+			);
 		}
 
 		return $result;
@@ -448,10 +447,8 @@ class Tx_Commerce_Controller_StatisticModuleController extends \TYPO3\CMS\Backen
 	 * @return string statistictables in HTML
 	 */
 	protected function showStatistics() {
-		/** @var \TYPO3\CMS\Lang\LanguageService $language */
-		$language = $GLOBALS['LANG'];
-		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
-		$database = $GLOBALS['TYPO3_DB'];
+		$language = $this->getLanguageService();
+		$database = $this->getDatabaseConnection();
 
 		$whereClause = '';
 		if ($this->id != $this->orderPageId) {
@@ -470,7 +467,7 @@ class Tx_Commerce_Controller_StatisticModuleController extends \TYPO3\CMS\Backen
 		$tables = '';
 		if (\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('show')) {
 			$whereClause = $whereClause != '' ? $whereClause . ' AND' : '';
-			$whereClause .=  ' month = ' . \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('month') . '  AND year = ' .
+			$whereClause .= ' month = ' . \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('month') . '  AND year = ' .
 				\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('year');
 
 			$tables .= '<h2>' . \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('month') . ' - ' .
@@ -486,15 +483,25 @@ class Tx_Commerce_Controller_StatisticModuleController extends \TYPO3\CMS\Backen
 			while (($statRow = $database->sql_fetch_assoc($statResult))) {
 				$daystat[$statRow['day']] = $statRow;
 			}
-			$lastday = date('d', mktime(0, 0, 0, \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('month') + 1, 0,
-				\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('year')));
+			$lastday = date(
+				'd',
+				mktime(
+					0,
+					0,
+					0,
+					\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('month') + 1,
+					0,
+					\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('year')
+				)
+			);
 			for ($i = 1; $i <= $lastday; ++$i) {
 				if (array_key_exists($i, $daystat)) {
 					$tablestemp = '<tr><td>' . $daystat[$i]['day'] . '</a></td><td align="right">%01.2f</td><td align="right">' .
 						$daystat[$i]['salesfigures'] . '</td><td align="right">' . $daystat[$i]['sumorders'] . '</td></tr>';
 					$tables .= sprintf($tablestemp, ($daystat[$i]['turnover'] / 100));
 				} else {
-					$tablestemp = '<tr><td>' . $i . '</a></td><td align="right">%01.2f</td><td align="right">0</td><td align="right">0</td></tr>';
+					$tablestemp = '<tr><td>' . $i .
+						'</a></td><td align="right">%01.2f</td><td align="right">0</td><td align="right">0</td></tr>';
 					$tables .= sprintf($tablestemp, (0));
 				}
 			}
@@ -518,7 +525,8 @@ class Tx_Commerce_Controller_StatisticModuleController extends \TYPO3\CMS\Backen
 						$daystat[$i]['salesfigures'] . '</td><td align="right">' . $daystat[$i]['sumorders'] . '</td></tr>';
 					$tables .= sprintf($tablestemp, ($daystat[$i]['turnover'] / 100));
 				} else {
-					$tablestemp = '<tr><td>' . $weekdays[$i] . '</a></td><td align="right">%01.2f</td><td align="right">0</td><td align="right">0</td></tr>';
+					$tablestemp = '<tr><td>' . $weekdays[$i] .
+						'</a></td><td align="right">%01.2f</td><td align="right">0</td><td align="right">0</td></tr>';
 					$tables .= sprintf($tablestemp, 0);
 				}
 			}
@@ -542,7 +550,8 @@ class Tx_Commerce_Controller_StatisticModuleController extends \TYPO3\CMS\Backen
 						$daystat[$i]['salesfigures'] . '</td><td align="right">' . $daystat[$i]['sumorders'] . '</td></tr>';
 					$tables .= sprintf($tablestemp, ($daystat[$i]['turnover'] / 100));
 				} else {
-					$tablestemp = '<tr><td>' . $i . '</a></td><td align="right">%01.2f</td><td align="right">0</td><td align="right">0</td></tr>';
+					$tablestemp = '<tr><td>' . $i .
+						'</a></td><td align="right">%01.2f</td><td align="right">0</td><td align="right">0</td></tr>';
 					$tables .= sprintf($tablestemp, 0);
 				}
 			}
@@ -567,5 +576,33 @@ class Tx_Commerce_Controller_StatisticModuleController extends \TYPO3\CMS\Backen
 			$tables .= '</table>';
 		}
 		return $tables;
+	}
+
+
+	/**
+	 * Get backend user
+	 *
+	 * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
+	 */
+	protected function getBackendUser() {
+		return $GLOBALS['BE_USER'];
+	}
+
+	/**
+	 * Get database connection
+	 *
+	 * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+	 */
+	protected function getDatabaseConnection() {
+		return $GLOBALS['TYPO3_DB'];
+	}
+
+	/**
+	 * Get language service
+	 *
+	 * @return \TYPO3\CMS\Lang\LanguageService
+	 */
+	protected function getLanguageService() {
+		return $GLOBALS['LANG'];
 	}
 }

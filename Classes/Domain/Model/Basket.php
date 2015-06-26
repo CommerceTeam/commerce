@@ -1,29 +1,16 @@
 <?php
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2005-2013 Ingo Schmitt <is@marketing-factory.de>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *  A copy is found in the textfile GPL.txt and important notices to the license
- *  from the author is found in LICENSE.txt distributed with these scripts.
- *
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
 
 /**
  * Frontend libary for handling the basket. This class should be used
@@ -31,41 +18,59 @@
  *
  * The basket object is stored as object within the Frontend user
  * fe_user->tx_commerce_basket, you could acces the Basket object in the Frontend
- * via $GLOBALS['TSFE']->fe_user->tx_commerce_basket;
+ * via frontend user basket;
  *
  * Do not acces class variables directly, allways use the get and set methods,
  * variables will be changed in php5 to private
  *
  * Basic class for basket_handeling inhertited from tx_commerce_basic_basket
+ *
+ * Class Tx_Commerce_Domain_Model_Basket
+ *
+ * @author 2005-2013 Ingo Schmitt <is@marketing-factory.de>
  */
 class Tx_Commerce_Domain_Model_Basket extends Tx_Commerce_Domain_Model_BasicBasket {
 	/**
+	 * Database connection
+	 *
 	 * @var \TYPO3\CMS\Core\Database\DatabaseConnection
+	 * @deprecated since commerce 2.0.0, this property will be removed in commerce 4.0.0
 	 */
 	protected $database;
 
 	/**
-	 * @var string  Storage-type for the data
+	 * Storage-type for the data
+	 *
+	 * @var string
 	 */
 	protected $storageType = 'database';
 
 	/**
-	 * @var string  Not session id, as session_id is PHP5 method
+	 * Not session id, as session_id is PHP5 method
+	 *
+	 * @var string
 	 */
 	protected $sessionId = '';
 
 	/**
-	 * @var array The unserialized commerce configuration from localconf.php
+	 * The unserialized commerce configuration
+	 *
+	 * @var array
 	 */
 	protected $extensionConfigration = array();
 
 	/**
+	 * Flag if already loaded
+	 *
 	 * @var bool
 	 */
 	protected $isAlreadyLoaded = FALSE;
 
 	/**
-	 * Constructor for a commerce basket. Loads configuration data
+	 * Constructor for a commerce basket.
+	 * Loads configuration data
+	 *
+	 * @return self
 	 */
 	public function __construct() {
 		$this->extensionConfigration = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['commerce']);
@@ -73,13 +78,14 @@ class Tx_Commerce_Domain_Model_Basket extends Tx_Commerce_Domain_Model_BasicBask
 			$this->storageType = 'persistent';
 		}
 
-		$this->database = $GLOBALS['TYPO3_DB'];
+		$this->database = $this->getDatabaseConnection();
 	}
 
 	/**
 	 * Set the session ID
 	 *
 	 * @param string $sessionId Session ID
+	 *
 	 * @return void
 	 */
 	public function setSessionId($sessionId) {
@@ -127,9 +133,11 @@ class Tx_Commerce_Domain_Model_Basket extends Tx_Commerce_Domain_Model_BasicBask
 			'finished_time' => $GLOBALS['EXEC_TIME'],
 		);
 
-		$this->database->exec_UPDATEquery(
+		$database = $this->getDatabaseConnection();
+
+		$database->exec_UPDATEquery(
 			'tx_commerce_baskets',
-			'sid = ' . $this->database->fullQuoteStr($this->sessionId, 'tx_commerce_baskets') . ' AND finished_time = 0',
+			'sid = ' . $database->fullQuoteStr($this->getSessionId(), 'tx_commerce_baskets') . ' AND finished_time = 0',
 			$updateArray
 		);
 	}
@@ -165,6 +173,8 @@ class Tx_Commerce_Domain_Model_Basket extends Tx_Commerce_Domain_Model_BasicBask
 	}
 
 	/**
+	 * Set unloaded
+	 *
 	 * @return void
 	 */
 	public function setUnloaded() {
@@ -172,6 +182,8 @@ class Tx_Commerce_Domain_Model_Basket extends Tx_Commerce_Domain_Model_BasicBask
 	}
 
 	/**
+	 * Set loaded
+	 *
 	 * @return void
 	 */
 	public function setLoaded() {
@@ -189,10 +201,12 @@ class Tx_Commerce_Domain_Model_Basket extends Tx_Commerce_Domain_Model_BasicBask
 			$where .= ' AND pid = ' . $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['BasketStoragePid'];
 		}
 
-		$rows = $this->database->exec_SELECTgetRows(
+		$database = $this->getDatabaseConnection();
+
+		$rows = $database->exec_SELECTgetRows(
 			'*',
 			'tx_commerce_baskets',
-			'sid = ' . $this->database->fullQuoteStr($this->sessionId, 'tx_commerce_baskets') .
+			'sid = ' . $database->fullQuoteStr($this->getSessionId(), 'tx_commerce_baskets') .
 				' AND finished_time = 0' . $where,
 			'',
 			'pos'
@@ -200,19 +214,23 @@ class Tx_Commerce_Domain_Model_Basket extends Tx_Commerce_Domain_Model_BasicBask
 
 		if (is_array($rows) && count($rows)) {
 			$hookObjectsArr = array();
-			if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_basket.php']['load_data_from_database'])) {
+			if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_basket.php']['load_data_from_database'])) {
 				\TYPO3\CMS\Core\Utility\GeneralUtility::deprecationLog('
 					hook
 					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_basket.php\'][\'load_data_from_database\']
 					is deprecated since commerce 1.0.0, this hook will be removed in commerce 1.4.0, please use instead
 					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Domain/Model/Basket.php\'][\'loadDataFromDatabase\']
 				');
-				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_basket.php']['load_data_from_database'] as $classRef) {
+				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_basket.php']['load_data_from_database'] as
+					$classRef
+				) {
 					$hookObjectsArr[] = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
 				}
 			}
 			if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Model/Basket.php']['loadDataFromDatabase'])) {
-				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Model/Basket.php']['loadDataFromDatabase'] as $classRef) {
+				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Model/Basket.php']['loadDataFromDatabase'] as
+					$classRef
+				) {
 					$hookObjectsArr[] = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
 				}
 			}
@@ -252,15 +270,18 @@ class Tx_Commerce_Domain_Model_Basket extends Tx_Commerce_Domain_Model_BasicBask
 	/**
 	 * Loads the Basket Data from the database
 	 *
-	 * @param string $sessionId
+	 * @param string $sessionId Session id
+	 *
 	 * @return void
 	 * @todo handling for special prices
 	 */
 	protected function loadPersistentDataFromDatabase($sessionId) {
-		$rows = $this->database->exec_SELECTgetRows(
+		$database = $this->getDatabaseConnection();
+
+		$rows = $database->exec_SELECTgetRows(
 			'*',
 			'tx_commerce_baskets',
-			'sid = ' . $this->database->fullQuoteStr($sessionId, 'tx_commerce_baskets') . ' AND finished_time = 0 AND pid = ' .
+			'sid = ' . $database->fullQuoteStr($sessionId, 'tx_commerce_baskets') . ' AND finished_time = 0 AND pid = ' .
 				$this->extensionConfigration['BasketStoragePid'],
 			'',
 			'pos'
@@ -268,9 +289,9 @@ class Tx_Commerce_Domain_Model_Basket extends Tx_Commerce_Domain_Model_BasicBask
 
 		if (is_array($rows) && count($rows)) {
 			$hookObjectsArr = array();
-			if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Model/Basket.php']['loadPersistantDataFromDatabase'])) {
+			if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Model/Basket.php']['loadPersistantDataFromDatabase'])) {
 				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Model/Basket.php']['loadPersistantDataFromDatabase'] as $classRef) {
-					$hookObjectsArr[] = &\TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
+					$hookObjectsArr[] = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
 				}
 			}
 
@@ -336,24 +357,30 @@ class Tx_Commerce_Domain_Model_Basket extends Tx_Commerce_Domain_Model_BasicBask
 	 * @return void
 	 */
 	protected function storeDataToDatabase() {
-		$this->database->exec_DELETEquery(
+		$database = $this->getDatabaseConnection();
+
+		$database->exec_DELETEquery(
 			'tx_commerce_baskets',
-			'sid = ' . $this->database->fullQuoteStr($this->sessionId, 'tx_commerce_baskets') . ' AND finished_time = 0'
+			'sid = ' . $database->fullQuoteStr($this->getSessionId(), 'tx_commerce_baskets') . ' AND finished_time = 0'
 		);
 		$hookObjectsArr = array();
-		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_basket.php']['store_data_to_database'])) {
+		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_basket.php']['store_data_to_database'])) {
 			\TYPO3\CMS\Core\Utility\GeneralUtility::deprecationLog('
 				hook
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_basket.php\'][\'store_data_to_database\']
 				is deprecated since commerce 1.0.0, this hook will be removed in commerce 1.4.0, please use instead
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Domain/Model/Basket.php\'][\'storeDataToDatabase\']
 			');
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_basket.php']['store_data_to_database'] as $classRef) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_basket.php']['store_data_to_database'] as
+				$classRef
+			) {
 				$hookObjectsArr[] = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
 			}
 		}
-		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Model/Basket.php']['storeDataToDatabase'])) {
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Model/Basket.php']['storeDataToDatabase'] as $classRef) {
+		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Model/Basket.php']['storeDataToDatabase'])) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Model/Basket.php']['storeDataToDatabase'] as
+				$classRef
+			) {
 				$hookObjectsArr[] = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
 			}
 		}
@@ -364,7 +391,11 @@ class Tx_Commerce_Domain_Model_Basket extends Tx_Commerce_Domain_Model_BasicBask
 		$arBasketItemsKeys = array_flip($arBasketItemsKeys);
 
 		$oneuid = 0;
-		/** @var Tx_Commerce_Domain_Model_BasketItem $oneItem */
+		/**
+		 * Basket item
+		 *
+		 * @var Tx_Commerce_Domain_Model_BasketItem $oneItem
+		 */
 		foreach ($this->basketItems as $oneuid => $oneItem) {
 			$insertData = array();
 			$insertData['pid'] = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['BasketStoragePid'];
@@ -401,7 +432,7 @@ class Tx_Commerce_Domain_Model_Basket extends Tx_Commerce_Domain_Model_BasicBask
 				}
 			}
 
-			$this->database->exec_INSERTquery('tx_commerce_baskets', $insertData);
+			$database->exec_INSERTquery('tx_commerce_baskets', $insertData);
 		}
 
 		$oneItem = $this->basketItems[$oneuid];
@@ -415,12 +446,14 @@ class Tx_Commerce_Domain_Model_Basket extends Tx_Commerce_Domain_Model_BasicBask
 	/**
 	 * Loads the Basket Data from the database
 	 *
-	 * @param string $sessionId
+	 * @param string $sessionId Session id
+	 *
 	 * @return void
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use loadPersistentDataFromDatabase instead
 	 */
 	protected function loadPersistantDataFromDatabase($sessionId) {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		$this->loadPersistentDataFromDatabase($sessionId);
 	}
 
@@ -432,6 +465,7 @@ class Tx_Commerce_Domain_Model_Basket extends Tx_Commerce_Domain_Model_BasicBask
 	 */
 	protected function load_data_from_database() {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		$this->loadDataFromDatabase();
 	}
 
@@ -443,6 +477,7 @@ class Tx_Commerce_Domain_Model_Basket extends Tx_Commerce_Domain_Model_BasicBask
 	 */
 	protected function store_data_to_database() {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		$this->storeDataToDatabase();
 	}
 
@@ -456,6 +491,7 @@ class Tx_Commerce_Domain_Model_Basket extends Tx_Commerce_Domain_Model_BasicBask
 	 */
 	public function store_data() {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		$this->storeData();
 	}
 
@@ -463,11 +499,13 @@ class Tx_Commerce_Domain_Model_Basket extends Tx_Commerce_Domain_Model_BasicBask
 	 * Set the session ID
 	 *
 	 * @param string $sessionId Session ID
+	 *
 	 * @return void
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use setSessionId instead
 	 */
 	public function set_session_id($sessionId) {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		$this->setSessionId($sessionId);
 	}
 
@@ -479,6 +517,17 @@ class Tx_Commerce_Domain_Model_Basket extends Tx_Commerce_Domain_Model_BasicBask
 	 */
 	public function get_session_id() {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		return $this->getSessionId();
+	}
+
+
+	/**
+	 * Get database connection
+	 *
+	 * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+	 */
+	protected function getDatabaseConnection() {
+		return $GLOBALS['TYPO3_DB'];
 	}
 }

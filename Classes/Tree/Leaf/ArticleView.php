@@ -1,32 +1,23 @@
 <?php
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2008-2014 Erik Frister <typo3@marketing-factory.de>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *  A copy is found in the textfile GPL.txt and important notices to the license
- *  from the author is found in LICENSE.txt distributed with these scripts.
- *
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
 
 /**
  * Implements the View for Articles
+ *
+ * Class Tx_Commerce_Tree_Leaf_ArticleView
+ *
+ * @author 2008-2014 Erik Frister <typo3@marketing-factory.de>
  */
 class Tx_Commerce_Tree_Leaf_ArticleView extends Tx_Commerce_Tree_Leaf_View {
 	/**
@@ -37,6 +28,8 @@ class Tx_Commerce_Tree_Leaf_ArticleView extends Tx_Commerce_Tree_Leaf_View {
 	protected $table = 'tx_commerce_articles';
 
 	/**
+	 * Dom id prefix
+	 *
 	 * @var string
 	 */
 	protected $domIdPrefix = 'txcommerceArticle';
@@ -44,11 +37,11 @@ class Tx_Commerce_Tree_Leaf_ArticleView extends Tx_Commerce_Tree_Leaf_View {
 	/**
 	 * Wrapping $title in a-tags.
 	 *
-	 * @param string $title string
-	 * @param string &$row record
-	 * @param integer $bank pointer (which mount point number)
+	 * @param string $title Title
+	 * @param string $row Record
+	 * @param int $bank Pointer (which mount point number)
+	 *
 	 * @return string
-	 * @access private
 	 */
 	public function wrapTitle($title, &$row, $bank = 0) {
 		if (!is_array($row) || !is_numeric($bank)) {
@@ -59,29 +52,27 @@ class Tx_Commerce_Tree_Leaf_ArticleView extends Tx_Commerce_Tree_Leaf_View {
 			return '';
 		}
 
-			// Max. size for Title of 255
-		$title = (
-			'' != trim($title)) ?
-			\TYPO3\CMS\Core\Utility\GeneralUtility::fixed_lgd_cs($title, 255) :
-			$this->getLL('leaf.noTitle'
-		);
+		// Max. size for Title of 255
+		$title = trim($title) ? \TYPO3\CMS\Core\Utility\GeneralUtility::fixed_lgd_cs($title, 255) : $this->getLL('leaf.noTitle');
 
-		$aOnClick = 'if(top.content.list_frame){top.content.list_frame.location.href=top.TS.PATH_typo3+\'alt_doc.php?returnUrl=\'+top.rawurlencode(top.content.list_frame.document.location.pathname+top.content.list_frame.document.location.search)+\'&' . $this->getJumpToParam($row) . '\';}';
+		$aOnClick = 'if(top.content.list_frame){top.content.list_frame.location.href=top.TS.PATH_typo3+\'alt_doc.php?' .
+			'returnUrl=\'+top.rawurlencode(top.content.list_frame.document.location.pathname+' .
+			'top.content.list_frame.document.location.search)+\'&' . $this->getJumpToParam($row) . '\';}';
 
-		$res = ($this->noOnclick) ?
-			$title :
-			'<a href="#" onclick="' . htmlspecialchars($aOnClick) . '">' . htmlspecialchars(strip_tags($title)) . '</a>';
+		$res = ($this->noOnclick) ? $title : '<a href="#" onclick="' . htmlspecialchars($aOnClick) . '">' .
+			htmlspecialchars(strip_tags($title)) . '</a>';
 
 		return $res;
 	}
 
 	/**
-	 * returns the link from the tree used to jump to a destination
+	 * Returns the link from the tree used to jump to a destination
 	 *
-	 * @param array $row - Array with the ID Information
+	 * @param array $row Array with the ID Information
+	 *
 	 * @return string
 	 */
-	public function getJumpToParam(&$row) {
+	public function getJumpToParam(array &$row) {
 		if (!is_array($row)) {
 			if (TYPO3_DLOG) {
 				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('getJumpToParam gets passed invalid parameters.', COMMERCE_EXTKEY, 3);

@@ -1,53 +1,45 @@
 <?php
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2005-2011 Ingo Schmitt <is@marketing-factory.de>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *  A copy is found in the textfile GPL.txt and important notices to the license
- *  from the author is found in LICENSE.txt distributed with these scripts.
- *
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 
 /**
  * User Class for displaying Orders
+ *
+ * @author 2005-2011 Ingo Schmitt <is@marketing-factory.de>
  */
 class Tx_Commerce_ViewHelpers_AttributeEditFunc {
 	/**
-	 * renders the value list to a value
+	 * Renders the value list to a value
 	 *
-	 * @param array $parameter
+	 * @param array $parameter Parameter
+	 *
 	 * @return string HTML-Content
 	 */
-	public function valuelist($parameter) {
-		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
-		$database = $GLOBALS['TYPO3_DB'];
-		/** @var \TYPO3\CMS\Lang\LanguageService $language */
-		$language = $GLOBALS['LANG'];
+	public function valuelist(array $parameter) {
+		$database = $this->getDatabaseConnection();
+		$language = $this->getLanguageService();
 
 		$content = '';
 		$foreignTable = 'tx_commerce_attribute_values';
 		$table = 'tx_commerce_attributes';
 
-		/** @var \TYPO3\CMS\Backend\Template\DocumentTemplate $doc */
-		$doc = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
+		/**
+		 * Document template
+		 *
+		 * @var \TYPO3\CMS\Backend\Template\SmallDocumentTemplate $doc
+		 */
+		$doc = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\SmallDocumentTemplate');
 		$doc->backPath = $GLOBALS['BACK_PATH'];
 
 		$attributeStoragePid = $parameter['row']['pid'];
@@ -56,9 +48,7 @@ class Tx_Commerce_ViewHelpers_AttributeEditFunc {
 		 * Select Attribute Values
 		 */
 
-		/**
-		 * @todo TS config of fields in list
-		 */
+		// @todo TS config of fields in list
 		$rowFields = array('attributes_uid', 'value');
 		$titleCol = $GLOBALS['TCA'][$foreignTable]['ctrl']['label'];
 
@@ -175,12 +165,33 @@ class Tx_Commerce_ViewHelpers_AttributeEditFunc {
 		 */
 		$params = '&edit[' . $foreignTable . '][' . $attributeStoragePid . ']=new&defVals[' . $foreignTable . '][attributes_uid]=' .
 			urlencode($attributeUid);
+		$onClickAction = 'onclick="' . htmlspecialchars(BackendUtility::editOnClick($params, $GLOBALS['BACK_PATH'])) . '"';
+
 		$content .= '<div id="typo3-newRecordLink">
-			<a href="#" onclick="' . htmlspecialchars(BackendUtility::editOnClick($params, $GLOBALS['BACK_PATH'])) . '">
+			<a href="#" ' . $onClickAction . '>
 				' . $language->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:attributeview.addvalue', 1) .
 				'</a>
 			</div>';
 
 		return $content;
+	}
+
+
+	/**
+	 * Get database connection
+	 *
+	 * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+	 */
+	protected function getDatabaseConnection() {
+		return $GLOBALS['TYPO3_DB'];
+	}
+
+	/**
+	 * Get language service
+	 *
+	 * @return \TYPO3\CMS\Lang\LanguageService
+	 */
+	protected function getLanguageService() {
+		return $GLOBALS['LANG'];
 	}
 }

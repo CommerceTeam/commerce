@@ -54,8 +54,8 @@ return array(
 					array('', 0),
 				),
 				'foreign_table' => 'tx_commerce_attribute_values',
-				'foreign_table_where' =>
-					'AND tx_commerce_attribute_values.pid=###CURRENT_PID### AND tx_commerce_attribute_values.sys_language_uid IN (-1,0)',
+				'foreign_table_where' => ' AND tx_commerce_attribute_values.pid = ###CURRENT_PID###
+					AND tx_commerce_attribute_values.sys_language_uid IN (-1,0)',
 			)
 		),
 		'l18n_diffsource' => array(

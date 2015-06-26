@@ -1,36 +1,26 @@
 <?php
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2005-2011 Carsten Lausen <cl@e-netconsulting.de>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *  A copy is found in the textfile GPL.txt and important notices to the license
- *  from the author is found in LICENSE.txt distributed with these scripts.
- *
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
 
 /**
- * class Tx_Commerce_Dao_AddressObserver for the takeaday feuser extension
+ * Class Tx_Commerce_Dao_AddressObserver
+ * for the takeaday feuser extension
  * The class satisfies the observer design pattern.
  * The method update() from this class is called as static by "hooksHandler"
  * classes
  * This class handles tt_address updates
+ *
+ * @author 2005-2011 Carsten Lausen <cl@e-netconsulting.de>
  */
 class Tx_Commerce_Dao_AddressObserver {
 	/**
@@ -45,7 +35,8 @@ class Tx_Commerce_Dao_AddressObserver {
 	 * Link observer and observable
 	 * Not needed for typo3 hook concept.
 	 *
-	 * @param object &$observable : observed object
+	 * @param object $observable Observed object
+	 *
 	 * @return self
 	 */
 	public function __construct(&$observable) {
@@ -59,13 +50,18 @@ class Tx_Commerce_Dao_AddressObserver {
 	 * Keep this method static for efficient integration into hookHandlers.
 	 * Communicate using push principle to avoid errors.
 	 *
-	 * @param string $status : update or new
-	 * @param string $id : database table
+	 * @param string $status Status [update,new]
+	 * @param string $id Database table id
+	 *
 	 * @return void
 	 */
 	public static function update($status, $id) {
 		// get complete address object
-		/** @var Tx_Commerce_Dao_AddressDao $addressDao */
+		/**
+		 * Address data access object
+		 *
+		 * @var Tx_Commerce_Dao_AddressDao $addressDao
+		 */
 		$addressDao = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Dao_AddressDao', $id);
 
 		// get feuser id
@@ -73,11 +69,19 @@ class Tx_Commerce_Dao_AddressObserver {
 
 		if (!empty($feuserId)) {
 			// get associated feuser object
-			/** @var Tx_Commerce_Dao_FeuserDao $feuserDao */
+			/**
+			 * Frontend user data access object
+			 *
+			 * @var Tx_Commerce_Dao_FeuserDao $feuserDao
+			 */
 			$feuserDao = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Dao_FeuserDao', $feuserId);
 
 			// update feuser object
-			/** @var Tx_Commerce_Dao_FeuserAddressFieldmapper $fieldMapper */
+			/**
+			 * Frontend user address field mapper
+			 *
+			 * @var Tx_Commerce_Dao_FeuserAddressFieldmapper $fieldMapper
+			 */
 			$fieldMapper = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Dao_FeuserAddressFieldmapper');
 			$fieldMapper->mapAddressToFeuser($addressDao, $feuserDao);
 
@@ -90,25 +94,25 @@ class Tx_Commerce_Dao_AddressObserver {
 	/**
 	 * Check if address may get deleted
 	 *
-	 * @param integer $id
-	 * @return boolean|string
+	 * @param int $uid Uid
+	 *
+	 * @return bool|string
 	 */
-	public static function checkDelete($id) {
+	public static function checkDelete($uid) {
 		$dbFields = 'uid';
 		$dbTable = 'fe_users';
-		$dbWhere = '(tx_commerce_tt_address_id="' . (int) $id . '") AND (deleted="0")';
+		$dbWhere = 'tx_commerce_tt_address_id = "' . (int) $uid . '" AND deleted = "0"';
 
-		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
-		$database = $GLOBALS['TYPO3_DB'];
+		$database = self::getDatabaseConnection();
 
 		$res = $database->exec_SELECTquery($dbFields, $dbTable, $dbWhere);
 
-			// check dependencies (selected rows)
+		// check dependencies (selected rows)
 		if ($database->sql_num_rows($res) > 0) {
-				// errormessage
+			// errormessage
 			$msg = 'Main feuser address. You can not delete this address.';
 		} else {
-				// no errormessage
+			// no errormessage
 			$msg = FALSE;
 		}
 
@@ -116,5 +120,15 @@ class Tx_Commerce_Dao_AddressObserver {
 		$database->sql_free_result($res);
 
 		return $msg;
+	}
+
+
+	/**
+	 * Get database connection
+	 *
+	 * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+	 */
+	protected static function getDatabaseConnection() {
+		return $GLOBALS['TYPO3_DB'];
 	}
 }

@@ -1,32 +1,18 @@
 <?php
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2006-2008 Carsten Lausen <cl@e-netconsulting.de>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *  A copy is found in the textfile GPL.txt and important notices to the license
- *  from the author is found in LICENSE.txt distributed with these scripts.
- *
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
 
 /**
- * class basic Dao mapper
  * This class used by the Dao for database storage.
  * It defines how to insert, update, find and delete a transfer object in
  * the database.
@@ -36,31 +22,43 @@
  * Object <-> model (transfer object) mapping and all model design is done by
  * the parser.
  * The class needs a parser for object <-> model (transfer object) mapping.
+ *
+ * Class Tx_Commerce_Dao_BasicDaoMapper
+ *
+ * @author 2006-2008 Carsten Lausen <cl@e-netconsulting.de>
  */
 class Tx_Commerce_Dao_BasicDaoMapper {
 	/**
-	 * dbtable for persistence
+	 * Table for persistence
 	 *
 	 * @var null|string
 	 */
 	protected $dbTable = '';
 
 	/**
+	 * Database connection
+	 *
 	 * @var \TYPO3\CMS\Core\Database\DatabaseConnection
 	 */
 	protected $database;
 
 	/**
+	 * Parser
+	 *
 	 * @var Tx_Commerce_Dao_BasicDaoParser
 	 */
 	protected $parser;
 
 	/**
-	 * @var integer
+	 * Create pid
+	 *
+	 * @var int
 	 */
 	protected $createPid = 0;
 
 	/**
+	 * Error
+	 *
 	 * @var array
 	 */
 	protected $error = array();
@@ -68,14 +66,15 @@ class Tx_Commerce_Dao_BasicDaoMapper {
 	/**
 	 * Constructor
 	 *
-	 * @param Tx_Commerce_Dao_BasicDaoParser &$parser
-	 * @param integer $createPid
-	 * @param string $dbTable
+	 * @param Tx_Commerce_Dao_BasicDaoParser $parser Parser
+	 * @param int $createPid Create pid
+	 * @param string $dbTable Table
+	 *
 	 * @return self
 	 */
-	public function __construct(&$parser, $createPid = 0, $dbTable = NULL) {
+	public function __construct(Tx_Commerce_Dao_BasicDaoParser &$parser, $createPid = 0, $dbTable = NULL) {
 		$this->init();
-		$this->parser = & $parser;
+		$this->parser = &$parser;
 		if (!empty($createPid)) {
 			$this->createPid = $createPid;
 		}
@@ -96,10 +95,11 @@ class Tx_Commerce_Dao_BasicDaoMapper {
 	/**
 	 * Load object
 	 *
-	 * @param Tx_Commerce_Dao_BasicDaoObject &$object
+	 * @param Tx_Commerce_Dao_BasicDaoObject $object Object
+	 *
 	 * @return void
 	 */
-	public function load(&$object) {
+	public function load(Tx_Commerce_Dao_BasicDaoObject &$object) {
 		if ($object->issetId()) {
 			$this->dbSelectById($object->getId(), $object);
 		}
@@ -108,10 +108,11 @@ class Tx_Commerce_Dao_BasicDaoMapper {
 	/**
 	 * Save object
 	 *
-	 * @param Tx_Commerce_Dao_BasicDaoObject &$object
+	 * @param Tx_Commerce_Dao_BasicDaoObject $object Object
+	 *
 	 * @return void
 	 */
-	public function save(&$object) {
+	public function save(Tx_Commerce_Dao_BasicDaoObject &$object) {
 		if ($object->issetId()) {
 			$this->dbUpdate($object->getId(), $object);
 		} else {
@@ -122,10 +123,11 @@ class Tx_Commerce_Dao_BasicDaoMapper {
 	/**
 	 * Remove object
 	 *
-	 * @param Tx_Commerce_Dao_BasicDaoObject &$object
+	 * @param Tx_Commerce_Dao_BasicDaoObject $object Object
+	 *
 	 * @return void
 	 */
-	public function remove(&$object) {
+	public function remove(Tx_Commerce_Dao_BasicDaoObject &$object) {
 		if ($object->issetId()) {
 			$this->dbDelete($object->getId(), $object);
 		}
@@ -134,20 +136,21 @@ class Tx_Commerce_Dao_BasicDaoMapper {
 	/**
 	 * Db add object
 	 *
-	 * @param Tx_Commerce_Dao_BasicDaoObject &$object
+	 * @param Tx_Commerce_Dao_BasicDaoObject $object Object
+	 *
 	 * @return void
 	 */
-	protected function dbInsert(&$object) {
+	protected function dbInsert(Tx_Commerce_Dao_BasicDaoObject &$object) {
 		$dbTable = $this->dbTable;
 		$dbModel = $this->parser->parseObjectToModel($object);
 
-			// set pid
+		// set pid
 		$this->parser->setPid($dbModel, $this->createPid);
 
-			// execute query
+		// execute query
 		$this->database->exec_INSERTquery($dbTable, $dbModel);
 
-			// any errors
+		// any errors
 		$error = $this->database->sql_error();
 		if (!empty($error)) {
 			$this->addError(array(
@@ -157,26 +160,27 @@ class Tx_Commerce_Dao_BasicDaoMapper {
 			));
 		}
 
-			// set object id
+		// set object id
 		$object->setId($this->database->sql_insert_id());
 	}
 
 	/**
 	 * Db update object
 	 *
-	 * @param integer $uid
-	 * @param Tx_Commerce_Dao_BasicDaoObject &$object
+	 * @param int $uid Uid
+	 * @param Tx_Commerce_Dao_BasicDaoObject $object Object
+	 *
 	 * @return void
 	 */
-	protected function dbUpdate($uid, &$object) {
+	protected function dbUpdate($uid, Tx_Commerce_Dao_BasicDaoObject &$object) {
 		$dbTable = $this->dbTable;
-		$dbWhere = 'uid="' . (int) $uid . '"';
+		$dbWhere = 'uid = ' . (int) $uid;
 		$dbModel = $this->parser->parseObjectToModel($object);
 
-			// execute query
+		// execute query
 		$this->database->exec_UPDATEquery($dbTable, $dbWhere, $dbModel);
 
-			// any errors
+		// any errors
 		$error = $this->database->sql_error();
 		if (!empty($error)) {
 			$this->addError(array(
@@ -190,17 +194,18 @@ class Tx_Commerce_Dao_BasicDaoMapper {
 	/**
 	 * Db delete object
 	 *
-	 * @param integer $uid
-	 * @param Tx_Commerce_Dao_BasicDaoObject &$object
+	 * @param int $uid Uid
+	 * @param Tx_Commerce_Dao_BasicDaoObject $object Object
+	 *
 	 * @return void
 	 */
-	protected function dbDelete($uid, &$object) {
-		$dbWhere = 'uid="' . (int) $uid . '"';
+	protected function dbDelete($uid, Tx_Commerce_Dao_BasicDaoObject &$object) {
+		$dbWhere = 'uid = ' . (int) $uid;
 
-			// execute query
+		// execute query
 		$this->database->exec_DELETEquery($this->dbTable, $dbWhere);
 
-			// any errors
+		// any errors
 		$error = $this->database->sql_error();
 		if (!empty($error)) {
 			$this->addError(array(
@@ -209,54 +214,56 @@ class Tx_Commerce_Dao_BasicDaoMapper {
 			));
 		}
 
-			// remove object itself
+		// remove object itself
 		$object->destroy();
 	}
 
 	/**
 	 * DB select object by id
 	 *
-	 * @param integer $uid
-	 * @param Tx_Commerce_Dao_BasicDaoObject &$object
+	 * @param int $uid Uid
+	 * @param Tx_Commerce_Dao_BasicDaoObject $object Object
+	 *
 	 * @return void
 	 */
-	protected function dbSelectById($uid, &$object) {
+	protected function dbSelectById($uid, Tx_Commerce_Dao_BasicDaoObject &$object) {
 		$dbFields = '*';
 		$dbTable = $this->dbTable;
-		$dbWhere = '(uid="' . (int) $uid . '")';
-		$dbWhere .= 'AND (deleted="0")';
+		$dbWhere = 'uid = ' . (int) $uid;
+		$dbWhere .= 'AND deleted = 0';
 
-			// execute query
+		// execute query
 		$res = $this->database->exec_SELECTquery($dbFields, $dbTable, $dbWhere);
 
-			// insert into object
+		// insert into object
 		$model = $this->database->sql_fetch_assoc($res);
 		if ($model) {
-				// parse into object
+			// parse into object
 			$this->parser->parseModelToObject($model, $object);
 		} else {
-				// no object found, empty obj and id
+			// no object found, empty obj and id
 			$object->clear();
 		}
 
-			// free results
+		// free results
 		$this->database->sql_free_result($res);
 	}
 
 	/**
 	 * Add error message
 	 *
-	 * @param array $error
+	 * @param array $error Error
+	 *
 	 * @return void
 	 */
-	protected function addError($error) {
+	protected function addError(array $error) {
 		$this->error[] = $error;
 	}
 
 	/**
 	 * Check if error was raised
 	 *
-	 * @return boolean
+	 * @return bool
 	 */
 	protected function isError() {
 		return !empty($this->error);
@@ -265,7 +272,7 @@ class Tx_Commerce_Dao_BasicDaoMapper {
 	/**
 	 * Get error
 	 *
-	 * @return array|boolean
+	 * @return array|bool
 	 */
 	protected function getError() {
 		return $this->error ?: FALSE;

@@ -1,37 +1,30 @@
 <?php
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2005-2011 Ingo Schmitt <is@marketing-factory.de>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *  A copy is found in the textfile GPL.txt and important notices to the license
- *  from the author is found in LICENSE.txt distributed with these scripts.
- *
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Main script class for the tree edit navigation frame
+ *
+ * Class Tx_Commerce_ViewHelpers_Navigation_OrdersViewHelper
+ *
+ * @author 2005-2011 Ingo Schmitt <is@marketing-factory.de>
  */
 class Tx_Commerce_ViewHelpers_Navigation_OrdersViewHelper extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 	/**
+	 * Page tree
+	 *
 	 * @var Tx_Commerce_Tree_OrderTree
 	 */
 	protected $pagetree;
@@ -39,16 +32,20 @@ class Tx_Commerce_ViewHelpers_Navigation_OrdersViewHelper extends \TYPO3\CMS\Bac
 	/**
 	 * Temporary mount point (record), if any
 	 *
-	 * @var integer
+	 * @var int
 	 */
 	protected $activeTemporaryMountPoint = 0;
 
 	/**
+	 * Current sub script
+	 *
 	 * @var string
 	 */
 	protected $currentSubScript;
 
 	/**
+	 * Cmr Parameter
+	 *
 	 * @var string
 	 */
 	protected $cMR;
@@ -61,9 +58,18 @@ class Tx_Commerce_ViewHelpers_Navigation_OrdersViewHelper extends \TYPO3\CMS\Bac
 	protected $setTemporaryDatabaseMount;
 
 	/**
-	 * @var boolean
+	 * Do highlight
+	 *
+	 * @var bool
 	 */
 	protected $doHighlight;
+
+	/**
+	 * Document template
+	 *
+	 * @var \TYPO3\CMS\Backend\Template\DocumentTemplate
+	 */
+	public $doc;
 
 	/**
 	 * Initialiation of the class
@@ -72,10 +78,7 @@ class Tx_Commerce_ViewHelpers_Navigation_OrdersViewHelper extends \TYPO3\CMS\Bac
 	 * @return void
 	 */
 	public function init() {
-		/**
-		 * @var \TYPO3\CMS\Core\Authentication\BackendUserAuthentication $backendUser
-		 */
-		$backendUser = $GLOBALS['BE_USER'];
+		$backendUser = $this->getBackendUser();
 
 		// Setting GPvars:
 		$this->currentSubScript = GeneralUtility::_GP('currentSubScript');
@@ -113,7 +116,11 @@ class Tx_Commerce_ViewHelpers_Navigation_OrdersViewHelper extends \TYPO3\CMS\Bac
 	 * @return void
 	 */
 	public function initPage() {
-		/** @var \TYPO3\CMS\Backend\Template\DocumentTemplate $doc */
+		/**
+		 * Document template
+		 *
+		 * @var \TYPO3\CMS\Backend\Template\DocumentTemplate $doc
+		 */
 		$doc = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
 		$this->doc = $doc;
 		$this->doc->backPath = $GLOBALS['BACK_PATH'];
@@ -271,7 +278,10 @@ class Tx_Commerce_ViewHelpers_Navigation_OrdersViewHelper extends \TYPO3\CMS\Bac
 	}
 
 	/**
-	 * @param integer $pageId
+	 * Setting temporary mount point
+	 *
+	 * @param int $pageId Page id
+	 *
 	 * @return void
 	 */
 	protected function settingTemporaryMountPoint($pageId) {
@@ -281,6 +291,8 @@ class Tx_Commerce_ViewHelpers_Navigation_OrdersViewHelper extends \TYPO3\CMS\Bac
 
 
 	/**
+	 * Get backend user
+	 *
 	 * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
 	 */
 	protected function getBackendUser() {
@@ -288,6 +300,8 @@ class Tx_Commerce_ViewHelpers_Navigation_OrdersViewHelper extends \TYPO3\CMS\Bac
 	}
 
 	/**
+	 * Get language service
+	 *
 	 * @return \TYPO3\CMS\Lang\LanguageService
 	 */
 	protected function getLanguageService() {

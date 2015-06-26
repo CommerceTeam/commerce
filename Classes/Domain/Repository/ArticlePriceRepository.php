@@ -1,29 +1,16 @@
 <?php
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2005-2011 Ingo Schmitt <is@marketing-factory.de>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *  A copy is found in the textfile GPL.txt and important notices to the license
- *  from the author is found in LICENSE.txt distributed with these scripts.
- *
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
 
 /**
  * Database Class for tx_commerce_article_prices. All database calle should
@@ -34,17 +21,24 @@
  * Basic abtract Class for Database Query for
  * Database retrival class fro product
  * inherited from Tx_Commerce_Domain_Repository_Repository
+ *
+ * Class Tx_Commerce_Domain_Repository_ArticlePriceRepository
+ *
+ * @author 2005-2011 Ingo Schmitt <is@marketing-factory.de>
  */
 class Tx_Commerce_Domain_Repository_ArticlePriceRepository extends Tx_Commerce_Domain_Repository_Repository {
 	/**
-	 * @var string table concerning the data
+	 * Table concerning the prices
+	 *
+	 * @var string
 	 */
 	protected $databaseTable = 'tx_commerce_article_prices';
 
 	/**
 	 * Get data
 	 *
-	 * @param integer $uid UID for Data
+	 * @param int $uid UID for Data
+	 *
 	 * @return array assoc Array with data
 	 * @todo implement access_check concering category tree
 	 * Special Implementation for prices, as they don't have a localisation'
@@ -53,8 +47,7 @@ class Tx_Commerce_Domain_Repository_ArticlePriceRepository extends Tx_Commerce_D
 		$uid = (int) $uid;
 
 		$proofSql = '';
-		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
-		$database = $GLOBALS['TYPO3_DB'];
+		$database = $this->getDatabaseConnection();
 
 		if (is_object($GLOBALS['TSFE']->sys_page)) {
 			$proofSql = $this->enableFields($this->databaseTable, $GLOBALS['TSFE']->showHiddenRecords);
@@ -62,7 +55,7 @@ class Tx_Commerce_Domain_Repository_ArticlePriceRepository extends Tx_Commerce_D
 
 		$result = $database->exec_SELECTquery('*', $this->databaseTable, 'uid = ' . $uid . $proofSql);
 
-			// Result should contain only one Dataset
+		// Result should contain only one Dataset
 		if ($database->sql_num_rows($result) == 1) {
 			$returnData = $database->sql_fetch_assoc($result);
 			$database->sql_free_result($result);
@@ -72,5 +65,15 @@ class Tx_Commerce_Domain_Repository_ArticlePriceRepository extends Tx_Commerce_D
 
 		$this->error('exec_SELECTquery(\'*\',' . $this->databaseTable . ',\'uid = ' . $uid . '\'); returns no or more than one Result');
 		return FALSE;
+	}
+
+
+	/**
+	 * Get database connection
+	 *
+	 * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+	 */
+	protected function getDatabaseConnection() {
+		return $GLOBALS['TYPO3_DB'];
 	}
 }

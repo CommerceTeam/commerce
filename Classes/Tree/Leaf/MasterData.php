@@ -1,64 +1,55 @@
 <?php
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2008-2009 Erik Frister <typo3@marketing-factory.de>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *  A copy is found in the textfile GPL.txt and important notices to the license
- *  from the author is found in LICENSE.txt distributed with these scripts.
- *
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
 
 /**
  * Implements the data view for a master leaf
+ *
+ * Class Tx_Commerce_Tree_Leaf_MasterData
+ *
+ * @author 2008-2009 Erik Frister <typo3@marketing-factory.de>
  */
 abstract class Tx_Commerce_Tree_Leaf_MasterData extends Tx_Commerce_Tree_Leaf_Data {
 	/**
 	 * Do we want to read the leafs by Mountpoints
 	 *
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $useMountpoints = FALSE;
 
 	/**
 	 * UID of the Items that acts as UBER-Parent (in case we read byUid not byMounts)
 	 *
-	 * @var integer
+	 * @var int
 	 */
 	protected $uid;
 
 	/**
 	 * Recursive Depth if we are reading by UIDs
 	 *
-	 * @var integer
+	 * @var int
 	 */
 	protected $depth;
 
 	/**
 	 * Flag if mounts should be ignored
 	 *
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $ignoreMounts = FALSE;
 
 	/**
-	 * to be overridden by child classes
+	 * To be overridden by child classes
 	 *
 	 * @return void
 	 */
@@ -68,63 +59,73 @@ abstract class Tx_Commerce_Tree_Leaf_MasterData extends Tx_Commerce_Tree_Leaf_Da
 	/**
 	 * Initializes the item records
 	 *
-	 * @param array $index
-	 * @param array $indices
+	 * @param int $index Index
+	 * @param array $indices Indices
+	 *
 	 * @return void
 	 */
-	public function initRecords($index, &$indices) {
+	public function initRecords($index, array &$indices) {
 		if (!is_numeric($index) || !is_array($indices)) {
 			if (TYPO3_DLOG) {
 				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
-					'initRecords (Tx_Commerce_Tree_Leaf_MasterData) gets passed invalid parameters.', COMMERCE_EXTKEY, 3
+					'initRecords (Tx_Commerce_Tree_Leaf_MasterData) gets passed invalid parameters.',
+					COMMERCE_EXTKEY,
+					3
 				);
 			}
 			return;
 		}
 
-		/**
-		 * @TODO
-		 * Error Handling should be improved in this case, since in case of no access to records, no records would be read
-		 * when selecting the mounts and the error woudl be no Mounts
+		/*
+		 * @todo
+		 * Error Handling should be improved in this case, since in case
+		 * of no access to records, no records would be read when selecting
+		 * the mounts and the error woudl be no Mounts
 		 */
-			// Check if User's Group may view the records
-		/** @var \TYPO3\CMS\Core\Authentication\BackendUserAuthentication $backendUser */
-		$backendUser = & $GLOBALS['BE_USER'];
+		// Check if User's Group may view the records
+		$backendUser = $this->getBackendUser();
 		if (!$backendUser->check('tables_select', $this->table)) {
 			if (TYPO3_DLOG) {
 				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
-					'initRecords (Tx_Commerce_Tree_Leaf_MasterData): Usergroup is not allowed to view the records. ', COMMERCE_EXTKEY, 2
+					'initRecords (Tx_Commerce_Tree_Leaf_MasterData): Usergroup is not allowed to view the records.',
+					COMMERCE_EXTKEY,
+					2
 				);
 			}
 			$this->records = NULL;
 			return;
 		}
 
-			// Check if we have access to the records.
+		// Check if we have access to the records.
 		if (!$backendUser->check('tables_select', $this->table)) {
 			return;
 		}
 
-			// Get the records
+		// Get the records
 		if ($this->useMountpoints) {
-				// Get the records by Mountpoint
-			$this->records = &$this->getRecordsByMountpoints($index, $indices);
+			// Get the records by Mountpoint
+			$this->records = $this->getRecordsByMountpoints($index, $indices);
 		} else {
-				// Get the records by Uid
-			$this->records = &$this->getRecordsByUid();
+			// Get the records by Uid
+			$this->records = $this->getRecordsByUid();
 		}
 	}
 
 	/**
 	 * Sets the Mount Ids
 	 *
-	 * @param array $mountIds - Array with the item uids which are mounts for the user
+	 * @param array $mountIds Array with the item uids which are mounts for the user
+	 *
 	 * @return void
 	 */
-	public function setMounts($mountIds) {
+	public function setMounts(array $mountIds) {
 		if (!is_array($mountIds)) {
 			if (TYPO3_DLOG) {
-				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('setMounts (Tx_Commerce_Tree_Leaf_MasterData) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
+					'setMounts (Tx_Commerce_Tree_Leaf_MasterData) gets passed invalid parameters.',
+					COMMERCE_EXTKEY,
+					3
+				);
 			}
 			return;
 		}
@@ -136,13 +137,19 @@ abstract class Tx_Commerce_Tree_Leaf_MasterData extends Tx_Commerce_Tree_Leaf_Da
 	/**
 	 * Sets the UID of the item which acts as the uber-parent
 	 *
+	 * @param int $uid UID of the Uber-item
+	 * 	(could be a mountpoint, but a separate function exists for those)
+	 *
 	 * @return void
-	 * @param integer $uid - UID of the Uber-item (could be a mountpoint, but a separate function exists for those)
 	 */
 	public function setUid($uid) {
 		if (!is_numeric($uid)) {
 			if (TYPO3_DLOG) {
-				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('setUid (Tx_Commerce_Tree_Leaf_MasterData) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
+					'setUid (Tx_Commerce_Tree_Leaf_MasterData) gets passed invalid parameters.',
+					COMMERCE_EXTKEY,
+					3
+				);
 			}
 			return;
 		}
@@ -151,7 +158,9 @@ abstract class Tx_Commerce_Tree_Leaf_MasterData extends Tx_Commerce_Tree_Leaf_Da
 	}
 
 	/**
-	 * @return integer
+	 * Get uid
+	 *
+	 * @return int
 	 */
 	public function getUid() {
 		return $this->uid;
@@ -160,13 +169,18 @@ abstract class Tx_Commerce_Tree_Leaf_MasterData extends Tx_Commerce_Tree_Leaf_Da
 	/**
 	 * Sets the depth of the recursion
 	 *
+	 * @param int $depth Depth of Recursion
+	 *
 	 * @return void
-	 * @param integer $depth - Depth of Recursion
 	 */
 	public function setDepth($depth) {
 		if (!is_numeric($depth)) {
 			if (TYPO3_DLOG) {
-				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('setDepth (Tx_Commerce_Tree_Leaf_MasterData) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
+					'setDepth (Tx_Commerce_Tree_Leaf_MasterData) gets passed invalid parameters.',
+					COMMERCE_EXTKEY,
+					3
+				);
 			}
 			return;
 		}
@@ -177,38 +191,45 @@ abstract class Tx_Commerce_Tree_Leaf_MasterData extends Tx_Commerce_Tree_Leaf_Da
 	/**
 	 * Initializes the Records by the Mountpoints
 	 *
+	 * @param int $index Index of the current leaf
+	 * @param array $indices Array with parent indices
+	 *
 	 * @return array Records-Array
-	 * @param $index {int}		Index of the current leaf
-	 * @param $indices {array}	Array with parent indices
 	 */
-	protected function &getRecordsByMountpoints($index, &$indices) {
+	protected function getRecordsByMountpoints($index, array &$indices) {
 		if (!is_numeric($index) || !is_array($indices) || !is_array($this->mountIds) || 0 == count($this->mountIds)) {
 			if (TYPO3_DLOG) {
 				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
-					'getRecordsByMountpoints (Tx_Commerce_Tree_Leaf_MasterData) gets passed invalid parameters.', COMMERCE_EXTKEY, 3
+					'getRecordsByMountpoints (Tx_Commerce_Tree_Leaf_MasterData) gets passed invalid parameters.',
+					COMMERCE_EXTKEY,
+					3
 				);
 			}
 			return NULL;
 		}
 
-			// First prepare user defined objects (if any) for hooks which extend this function:
+		// First prepare hook objects
 		$hookObjectsArr = array();
 		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['commerce/class.leafMasterData.php']['getRecordsByMountpointsClass'])) {
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['commerce/class.leafMasterData.php']['getRecordsByMountpointsClass'] as $classRef) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['commerce/class.leafMasterData.php']['getRecordsByMountpointsClass'] as
+				$classRef
+			) {
 				$hookObjectsArr[] = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
 			}
 		}
 
 		$positions = $this->getPositionsByIndices($index, $indices);
 
-			// Add the subquery - this makes sure that we not only read all categories that are currently visible, but also their ("hidden") children
+		// Add the subquery - this makes sure that we not only read all
+		// categories that are currently visible, but also their ("hidden") children
 		if ($this->useMMTable) {
 			$subquery = 'SELECT uid_local FROM ' . $this->mmTable . ' WHERE uid_foreign IN (' .
 				implode(',', array_merge($positions, $this->mountIds)) . ') OR uid_local IN (' . implode(',', $this->mountIds) . ')';
 
-				// uids of the items that are used as parents - this gets all the children from the parent items
+			// uids of the items that are used as parents
+			// this gets all the children from the parent items
 			$this->where['uid_foreign'] = $subquery;
-				// uids of the items that are the parents - this gets the mounts
+			// uids of the items that are the parents - this gets the mounts
 			$this->where['uid_local'] = $subquery;
 		} else {
 			$subquery = 'SELECT uid FROM ' . $this->itemTable . ' WHERE ' . $this->itemParentField . ' IN (' .
@@ -218,7 +239,7 @@ abstract class Tx_Commerce_Tree_Leaf_MasterData extends Tx_Commerce_Tree_Leaf_Da
 			$this->where['uid'] = $subquery;
 		}
 
-			// Hook: getRecordsByMountpoints_preLoadRecords
+		// Hook: getRecordsByMountpoints_preLoadRecords
 		foreach ($hookObjectsArr as $hookObj) {
 			if (method_exists($hookObj, 'getRecordsByMountpoints_preLoadRecords')) {
 				$hookObj->getRecordsByMountpoints_preLoadRecords($positions, $this);
@@ -228,8 +249,10 @@ abstract class Tx_Commerce_Tree_Leaf_MasterData extends Tx_Commerce_Tree_Leaf_Da
 		$records = $this->loadRecords();
 
 		// Hook: getRecordsByMountpoints_postProcessRecords
-		// useful especially if you are reading your tree items from an MM table and have the mountpoint 0 - that mountpoint is not in the DB and thus you won't see the correct tree
-		// if you belong to that group, use this mount to create the relations in the MM table to the fictional root record
+		// useful especially if you are reading your tree items from an MM table and
+		// have the mountpoint 0 - that mountpoint is not in the DB and thus you won't
+		// see the correct tree if you belong to that group, use this mount to create
+		// the relations in the MM table to the fictional root record
 		foreach ($hookObjectsArr as $hookObj) {
 			if (method_exists($hookObj, 'getRecordsByMountpoints_postProcessRecords')) {
 				$hookObj->getRecordsByMountpoints_postProcessRecords($records, $this);
@@ -244,32 +267,39 @@ abstract class Tx_Commerce_Tree_Leaf_MasterData extends Tx_Commerce_Tree_Leaf_Da
 	 *
 	 * @return array
 	 */
-	protected function &getRecordsByUid() {
-			// Get all Uids
+	protected function getRecordsByUid() {
+		// Get all Uids
 		$uids = $this->getRecursiveUids($this->uid, $this->depth);
 
 		if (!is_array($uids) || 0 == count($uids)) {
-			return NULL;
+			$result = NULL;
+		} else {
+			$this->where['uid_local'] = implode(',', $uids);
+			$this->where['uid_foreign'] = '0';
+
+			$result = $this->loadRecords();
 		}
 
-		$this->where['uid_local'] = implode(',', $uids);
-		$this->where['uid_foreign'] = '0';
-
-		return $this->loadRecords();
+		return $result;
 	}
 
 	/**
 	 * Returns an array with all Uids that should be read
 	 *
-	 * @param integer $uid - UID to be added and recursed
-	 * @param integer $depth - Recursive Depth
-	 * @param array|NULL $array
+	 * @param int $uid UID to be added and recursed
+	 * @param int $depth Recursive Depth
+	 * @param array|NULL $array Result
+	 *
 	 * @return array
 	 */
-	protected function &getRecursiveUids($uid, $depth, &$array = NULL) {
+	protected function getRecursiveUids($uid, $depth, &$array = NULL) {
 		if (!is_numeric($uid) || !is_numeric($depth)) {
 			if (TYPO3_DLOG) {
-				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('getRecursiveUids (Tx_Commerce_Tree_Leaf_MasterData) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
+					'getRecursiveUids (Tx_Commerce_Tree_Leaf_MasterData) gets passed invalid parameters.',
+					COMMERCE_EXTKEY,
+					3
+				);
 			}
 			return array();
 		}
@@ -283,15 +313,14 @@ abstract class Tx_Commerce_Tree_Leaf_MasterData extends Tx_Commerce_Tree_Leaf_Da
 
 		$array[] = $uid;
 
-		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
-		$database = & $GLOBALS['TYPO3_DB'];
+		$database = $this->getDatabaseConnection();
 		if ($this->useMMTable) {
 			$res = $database->exec_SELECTquery('uid_local AS uid', $this->mmTable, 'uid_foreign = ' . $uid);
 		} else {
 			$res = $database->exec_SELECTquery('uid', $this->itemTable, $this->itemParentField . ' = ' . $uid);
 		}
 
-		while ($row = $database->sql_fetch_assoc($res)) {
+		while (($row = $database->sql_fetch_assoc($res))) {
 			$this->getRecursiveUids($row['uid'], $depth - 1, $array);
 		}
 
@@ -307,7 +336,13 @@ abstract class Tx_Commerce_Tree_Leaf_MasterData extends Tx_Commerce_Tree_Leaf_Da
 		$rows = parent::loadRecords();
 
 			// Add the root if it is the starting ID or in the mounts
-		if (!$this->ignoreMounts && ((!$this->useMountpoints && $this->uid == 0) || ($this->useMountpoints && in_array(0, $this->mountIds)))) {
+		if (
+			!$this->ignoreMounts
+			&& (
+				(!$this->useMountpoints && $this->uid == 0)
+				|| ($this->useMountpoints && in_array(0, $this->mountIds))
+			)
+		) {
 			$rows['uid'][0] = $this->getRootRecord();
 		}
 
@@ -333,5 +368,24 @@ abstract class Tx_Commerce_Tree_Leaf_MasterData extends Tx_Commerce_Tree_Leaf_Da
 		$root['item_parent'] = 0;
 
 		return $root;
+	}
+
+
+	/**
+	 * Get backend user
+	 *
+	 * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
+	 */
+	protected function getBackendUser() {
+		return $GLOBALS['BE_USER'];
+	}
+
+	/**
+	 * Get database connection
+	 *
+	 * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+	 */
+	protected function getDatabaseConnection() {
+		return $GLOBALS['TYPO3_DB'];
 	}
 }

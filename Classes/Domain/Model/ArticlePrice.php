@@ -1,45 +1,43 @@
 <?php
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2005-2011 Ingo Schmitt <is@marketing-factory.de>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *  A copy is found in the textfile GPL.txt and important notices to the license
- *  from the author is found in LICENSE.txt distributed with these scripts.
- *
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
+use TYPO3\CMS\Backend\Utility\BackendUtility;
 
 /**
  * Libary for frontend rendering of article prices.
+ *
+ * Class Tx_Commerce_Domain_Model_ArticlePrice
+ *
+ * @author 2005-2011 Ingo Schmitt <is@marketing-factory.de>
  */
 class Tx_Commerce_Domain_Model_ArticlePrice extends Tx_Commerce_Domain_Model_AbstractEntity {
 	/**
+	 * Database class name
+	 *
 	 * @var string
 	 */
 	protected $databaseClass = 'Tx_Commerce_Domain_Repository_ArticlePriceRepository';
 
 	/**
+	 * Database connection
+	 *
 	 * @var Tx_Commerce_Domain_Repository_ArticlePriceRepository
 	 */
 	public $databaseConnection;
 
 	/**
+	 * Field list
+	 *
 	 * @var array
 	 */
 	protected $fieldlist = array(
@@ -51,38 +49,50 @@ class Tx_Commerce_Domain_Model_ArticlePrice extends Tx_Commerce_Domain_Model_Abs
 	);
 
 	/**
-	 * @var String Currency for price
+	 * Currency for price
+	 *
+	 * @var string
 	 */
 	protected $currency = 'EUR';
 
 	/**
-	 * @var integer Price scale amount start
+	 * Price scale amount start
+	 *
+	 * @var int
 	 */
 	protected $price_scale_amount_start = 1;
 
 	/**
-	 * @var integer Price scale amount end
+	 * Price scale amount end
+	 *
+	 * @var int
 	 */
 	protected $price_scale_amount_end = 1;
 
 	/**
-	 * @var integer Price gross
+	 * Price gross
+	 *
+	 * @var int
 	 */
 	protected $price_gross = 0;
 
 	/**
-	 * @var integer Price net
+	 * Price net
+	 *
+	 * @var int
 	 */
 	protected $price_net = 0;
 
+
 	/**
-	 * Constructor Method, calls init method
+	 * Constructor Method, calles init method
 	 *
-	 * @param int $uid
-	 * @param int $languageUid
+	 * @param int $uid Uid
+	 * @param int $languageUid Language uid
+	 *
 	 * @return self
 	 */
-	public function __construct($uid, $languageUid = 0) {
+	public function __construct($uid = 0, $languageUid = 0) {
 		if ((int) $uid) {
 			$this->init($uid, $languageUid);
 		}
@@ -91,9 +101,10 @@ class Tx_Commerce_Domain_Model_ArticlePrice extends Tx_Commerce_Domain_Model_Abs
 	/**
 	 * Usual init method
 	 *
-	 * @param integer $uid Uid of product
-	 * @param integer $languageUid Uid of language, unused
-	 * @return boolean TRUE if $uid is > 0
+	 * @param int $uid Uid of product
+	 * @param int $languageUid Uid of language, unused
+	 *
+	 * @return bool TRUE if $uid is > 0
 	 */
 	public function init($uid, $languageUid = 0) {
 		$initializationResult = FALSE;
@@ -108,10 +119,11 @@ class Tx_Commerce_Domain_Model_ArticlePrice extends Tx_Commerce_Domain_Model_Abs
 					is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
 					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Domain/Model/ArticlePrice.php\'][\'postinit\']
 				');
-				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_article_price.php']['postinit'] as $classRef) {
+				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_article_price.php']['postinit'] as
+					$classRef
+				) {
 					$hookObj = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
 					if (method_exists($hookObj, 'postinit')) {
-						/** @noinspection PhpUndefinedMethodInspection */
 						$hookObj->postinit($this);
 					}
 				}
@@ -120,7 +132,6 @@ class Tx_Commerce_Domain_Model_ArticlePrice extends Tx_Commerce_Domain_Model_Abs
 				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Model/ArticlePrice.php']['postinit'] as $classRef) {
 					$hookObj = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
 					if (method_exists($hookObj, 'postinit')) {
-						/** @noinspection PhpUndefinedMethodInspection */
 						$hookObj->postinit($this);
 					}
 				}
@@ -134,9 +145,10 @@ class Tx_Commerce_Domain_Model_ArticlePrice extends Tx_Commerce_Domain_Model_Abs
 	}
 
 	/**
-	 * Setter
+	 * Set currency
 	 *
-	 * @param String $currency
+	 * @param string $currency Currency
+	 *
 	 * @return void
 	 */
 	public function setCurrency($currency) {
@@ -144,14 +156,19 @@ class Tx_Commerce_Domain_Model_ArticlePrice extends Tx_Commerce_Domain_Model_Abs
 	}
 
 	/**
-	 * @return String
+	 * Get currency
+	 *
+	 * @return string
 	 */
 	public function getCurrency() {
 		return $this->currency;
 	}
 
 	/**
-	 * @param integer $priceNet
+	 * Set price net
+	 *
+	 * @param int $priceNet Price net
+	 *
 	 * @return void
 	 */
 	public function setPriceNet($priceNet) {
@@ -161,7 +178,7 @@ class Tx_Commerce_Domain_Model_ArticlePrice extends Tx_Commerce_Domain_Model_Abs
 	/**
 	 * Get net price
 	 *
-	 * @return integer Price net
+	 * @return int Price net
 	 */
 	public function getPriceNet() {
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_article_price.php']['postpricenet'])) {
@@ -171,19 +188,21 @@ class Tx_Commerce_Domain_Model_ArticlePrice extends Tx_Commerce_Domain_Model_Abs
 				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Domain/Model/ArticlePrice.php\'][\'postPriceNet\']
 			');
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_article_price.php']['postpricenet'] as $classRef) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_article_price.php']['postpricenet'] as
+				$classRef
+			) {
 				$hookObj = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
 				if (method_exists($hookObj, 'postpricenet')) {
-					/** @noinspection PhpUndefinedMethodInspection */
 					$hookObj->postpricenet($this);
 				}
 			}
 		}
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Model/ArticlePrice.php']['postPriceNet'])) {
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Model/ArticlePrice.php']['postPriceNet'] as $classRef) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Model/ArticlePrice.php']['postPriceNet'] as
+				$classRef
+			) {
 				$hookObj = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
 				if (method_exists($hookObj, 'postpricenet')) {
-					/** @noinspection PhpUndefinedMethodInspection */
 					$hookObj->postpricenet($this);
 				}
 			}
@@ -193,7 +212,10 @@ class Tx_Commerce_Domain_Model_ArticlePrice extends Tx_Commerce_Domain_Model_Abs
 	}
 
 	/**
-	 * @param integer $priceGross
+	 * Price gross
+	 *
+	 * @param int $priceGross Price gross
+	 *
 	 * @return void
 	 */
 	public function setPriceGross($priceGross) {
@@ -203,7 +225,7 @@ class Tx_Commerce_Domain_Model_ArticlePrice extends Tx_Commerce_Domain_Model_Abs
 	/**
 	 * Get price gross
 	 *
-	 * @return integer price gross
+	 * @return int price gross
 	 */
 	public function getPriceGross() {
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_article_price.php']['postpricegross'])) {
@@ -213,19 +235,21 @@ class Tx_Commerce_Domain_Model_ArticlePrice extends Tx_Commerce_Domain_Model_Abs
 				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
 				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Domain/Model/ArticlePrice.php\'][\'postPriceGross\']
 			');
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_article_price.php']['postpricegross'] as $classRef) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_article_price.php']['postpricegross'] as
+				$classRef
+			) {
 				$hookObj = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
 				if (method_exists($hookObj, 'postpricegross')) {
-					/** @noinspection PhpUndefinedMethodInspection */
 					$hookObj->postpricegross($this);
 				}
 			}
 		}
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Model/ArticlePrice.php']['postPriceGross'])) {
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Model/ArticlePrice.php']['postPriceGross'] as $classRef) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Model/ArticlePrice.php']['postPriceGross'] as
+				$classRef
+			) {
 				$hookObj = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
 				if (method_exists($hookObj, 'postpricegross')) {
-					/** @noinspection PhpUndefinedMethodInspection */
 					$hookObj->postpricegross($this);
 				}
 			}
@@ -237,7 +261,7 @@ class Tx_Commerce_Domain_Model_ArticlePrice extends Tx_Commerce_Domain_Model_Abs
 	/**
 	 * Get price scale amount start
 	 *
-	 * @return integer Scale amount start
+	 * @return int Scale amount start
 	 */
 	public function getPriceScaleAmountStart() {
 		return $this->price_scale_amount_start;
@@ -246,7 +270,7 @@ class Tx_Commerce_Domain_Model_ArticlePrice extends Tx_Commerce_Domain_Model_Abs
 	/**
 	 * Get price scale amount end
 	 *
-	 * @return integer Scale amount end
+	 * @return int Scale amount end
 	 */
 	public function getPriceScaleAmountEnd() {
 		return $this->price_scale_amount_end;
@@ -255,49 +279,41 @@ class Tx_Commerce_Domain_Model_ArticlePrice extends Tx_Commerce_Domain_Model_Abs
 	/**
 	 * Returns TCA label, used in TCA only
 	 *
-	 * @param array &$params Record value
+	 * @param array $params Record value
+	 *
 	 * @return void
 	 */
-	public function getTcaRecordTitle(&$params) {
-		/** @var \TYPO3\CMS\Lang\LanguageService $language */
-		$language = & $GLOBALS['LANG'];
-		$params['title'] =
-			$language->sL(\TYPO3\CMS\Backend\Utility\BackendUtility::getItemLabel('tx_commerce_article_prices', 'price_gross'), 1) . ': ' .
-				sprintf('%01.2f', $params['row']['price_gross'] / 100) .
-				', ' . $language->sL(
-					\TYPO3\CMS\Backend\Utility\BackendUtility::getItemLabel('tx_commerce_article_prices', 'price_net'),
-					1
-				) . ': ' .
-				sprintf('%01.2f', $params['row']['price_net'] / 100) .
-				' (' . $language->sL(
-					\TYPO3\CMS\Backend\Utility\BackendUtility::getItemLabel('tx_commerce_article_prices', 'price_scale_amount_start'),
-					1
-				) . ': ' .
-				$params['row']['price_scale_amount_start'] .
-				' ' . $language->sL(
-					\TYPO3\CMS\Backend\Utility\BackendUtility::getItemLabel('tx_commerce_article_prices', 'price_scale_amount_end'),
-					1
-				) . ': ' .
-				$params['row']['price_scale_amount_end'] . ') ' .
-				' ' . ($params['row']['fe_group'] ? (
-					$language->sL(
-						\TYPO3\CMS\Backend\Utility\BackendUtility::getItemLabel('tx_commerce_article_prices', 'fe_group'),
-						1
-					) . ' ' .
-					\TYPO3\CMS\Backend\Utility\BackendUtility::getProcessedValueExtra(
-						'tx_commerce_article_prices',
-						'fe_group',
-						$params['row']['fe_group'],
-						100,
-						$params['row']['uid']
-					)
-				) : '');
+	public function getTcaRecordTitle(array &$params) {
+		$language = $this->getLanguageService();
+
+		$feGroup = '';
+		if ($params['row']['fe_group']) {
+			$feGroup = $language->sL(BackendUtility::getItemLabel('tx_commerce_article_prices', 'fe_group'), 1) .
+				BackendUtility::getProcessedValueExtra(
+					'tx_commerce_article_prices',
+					'fe_group',
+					$params['row']['fe_group'],
+					100,
+					$params['row']['uid']
+				);
+		}
+
+		$params['title'] = $language->sL(BackendUtility::getItemLabel('tx_commerce_article_prices', 'price_gross'), 1) . ': ' .
+			sprintf('%01.2f', $params['row']['price_gross'] / 100) .
+			', ' . $language->sL(BackendUtility::getItemLabel('tx_commerce_article_prices', 'price_net'), 1) . ': ' .
+			sprintf('%01.2f', $params['row']['price_net'] / 100) .
+			' (' . $language->sL(BackendUtility::getItemLabel('tx_commerce_article_prices', 'price_scale_amount_start'), 1) . ': ' .
+			$params['row']['price_scale_amount_start'] .
+			' ' . $language->sL(BackendUtility::getItemLabel('tx_commerce_article_prices', 'price_scale_amount_end'), 1) . ': ' .
+			$params['row']['price_scale_amount_end'] . ') ' . $feGroup;
 	}
 
 
 	/**
+	 * Price net
+	 *
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getPriceNet instead
-	 * @return integer
+	 * @return int
 	 */
 	public function get_price_net() {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
@@ -306,12 +322,24 @@ class Tx_Commerce_Domain_Model_ArticlePrice extends Tx_Commerce_Domain_Model_Abs
 	}
 
 	/**
+	 * Price gross
+	 *
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getPriceGross instead
-	 * @return integer
+	 * @return int
 	 */
 	public function get_price_gross() {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
 
 		return $this->getPriceGross();
+	}
+
+
+	/**
+	 * Get language service
+	 *
+	 * @return \TYPO3\CMS\Lang\LanguageService
+	 */
+	protected function getLanguageService() {
+		return $GLOBALS['LANG'];
 	}
 }

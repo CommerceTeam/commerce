@@ -1,49 +1,45 @@
 <?php
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2005-2012 Carsten Lausen <cl@e-netconsulting.de>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *  A copy is found in the textfile GPL.txt and important notices to the license
- *  from the author is found in LICENSE.txt distributed with these scripts.
- *
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
 
 /**
- * class feuser address mapper
  * This class handles basic database storage by object mapping.
  * It defines how to insert, update, find and delete a transfer object in
  * the database.
  * The class needs a parser for object <-> model (transfer object) mapping.
+ *
+ * Class Tx_Commerce_Dao_FeuserAddressFieldmapper
+ *
+ * @author 2005-2012 Carsten Lausen <cl@e-netconsulting.de>
  */
 class Tx_Commerce_Dao_FeuserAddressFieldmapper {
 	/**
+	 * Mapping
+	 *
 	 * @var string
 	 */
 	protected $mapping;
 
 	/**
+	 * Frontend user fields
+	 *
 	 * @var array
 	 */
 	protected $feuserFields = array();
 
 	/**
+	 * Address fields
+	 *
 	 * @var array
 	 */
 	protected $addressFields = array();
@@ -86,11 +82,12 @@ class Tx_Commerce_Dao_FeuserAddressFieldmapper {
 	/**
 	 * Map feuser to address
 	 *
-	 * @param Tx_Commerce_Dao_FeuserDao &$feuser
-	 * @param Tx_Commerce_Dao_AddressDao &$address
+	 * @param Tx_Commerce_Dao_FeuserDao $feuser Frontend user
+	 * @param Tx_Commerce_Dao_AddressDao $address Address
+	 *
 	 * @return void
 	 */
-	public function mapFeuserToAddress(&$feuser, &$address) {
+	public function mapFeuserToAddress(Tx_Commerce_Dao_FeuserDao &$feuser, Tx_Commerce_Dao_AddressDao &$address) {
 		if (empty($this->feuserFields)) {
 			$this->explodeMapping();
 		}
@@ -102,11 +99,12 @@ class Tx_Commerce_Dao_FeuserAddressFieldmapper {
 	/**
 	 * Map address to feuser
 	 *
-	 * @param Tx_Commerce_Dao_AddressDao &$address
-	 * @param Tx_Commerce_Dao_FeuserDao &$feuser
+	 * @param Tx_Commerce_Dao_AddressDao $address Address
+	 * @param Tx_Commerce_Dao_FeuserDao $feuser Frontend user
+	 *
 	 * @return void
 	 */
-	public function mapAddressToFeuser(&$address, &$feuser) {
+	public function mapAddressToFeuser(Tx_Commerce_Dao_AddressDao &$address, Tx_Commerce_Dao_FeuserDao &$feuser) {
 		if (empty($this->addressFields)) {
 			$this->explodeMapping();
 		}

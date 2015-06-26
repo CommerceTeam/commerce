@@ -1,29 +1,16 @@
 <?php
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2009-2011 Volker Graubaum <vg@e-netconsulting.de>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *  A copy is found in the textfile GPL.txt and important notices to the license
- *  from the author is found in LICENSE.txt distributed with these scripts.
- *
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
 
 /**
  * Wirecard payment provider implementation
@@ -37,20 +24,29 @@
  * Carte Blanche		3000 0000 0000 04
  * Discover				6011 0000 0000 0004
  * JCB					3088 0000 0000 0009
+ *
+ * Class Tx_Commerce_Payment_Provider_Wirecard
+ *
+ * @author 2009-2011 Volker Graubaum <vg@e-netconsulting.de>
  */
 class Tx_Commerce_Payment_Provider_Wirecard extends Tx_Commerce_Payment_Provider_ProviderAbstract {
-
 	/**
-	 * @var string Provider type
+	 * Provider type
+	 *
+	 * @var string
 	 */
 	protected $type = 'wirecard';
 
 	/**
-	 * @var string Payment type
+	 * Payment type
+	 *
+	 * @var string
 	 */
 	public $LOCAL_LANG = array();
 
 	/**
+	 * Payment reference id
+	 *
 	 * @var string
 	 */
 	public $paymentRefId;
@@ -59,10 +55,10 @@ class Tx_Commerce_Payment_Provider_Wirecard extends Tx_Commerce_Payment_Provider
 	 * Returns an array containing some configuration for
 	 * the fields the customer shall enter his data into.
 	 *
-	 * @return mixed NULL for no data
+	 * @return array
 	 */
 	public function getAdditionalFieldsConfig() {
-		$result = array(
+		return array(
 			'cc_type.' => array (
 				'mandatory' => 1,
 				'type' => 'select',
@@ -94,29 +90,32 @@ class Tx_Commerce_Payment_Provider_Wirecard extends Tx_Commerce_Payment_Provider
 				'mandatory' => 1
 			),
 		);
-
-		return $result;
 	}
 
 	/**
-	 * This method is called in the last step. Here can be made
-	 * some final checks or whatever is
-	 * needed to be done before saving some data in the database.
+	 * This method is called in the last step. Here can be made some final checks
+	 * or whatever is needed to be done before saving some data in the database.
 	 * Write any errors into $this->errorMessages!
 	 * To save some additional data in the database use the method updateOrder().
 	 *
 	 * @param array $config Configuration from TYPO3_CONF_VARS
 	 * @param array $session Current session data
 	 * @param Tx_Commerce_Domain_Model_Basket $basket Basket object
-	 * @return boolean TRUE if everything was ok
+	 *
+	 * @return bool Check if everything was ok
 	 */
 	public function finishingFunction(array $config = array(), array $session = array(),
-			Tx_Commerce_Domain_Model_Basket $basket = NULL) {
-		/** @var Tx_Commerce_Payment_Payment $paymentLib */
+		Tx_Commerce_Domain_Model_Basket $basket = NULL
+	) {
+		/**
+		 * Payment library
+		 *
+		 * @var Tx_Commerce_Payment_Payment $paymentLib
+		 */
 		$paymentLib = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Payment_Payment');
 
-			// I think there is a new URL for testing with wirecard, so overwrite
-			// the old value. you can replace this with your own.
+		// I think there is a new URL for testing with wirecard, so overwrite
+		// the old value. you can replace this with your own.
 		$paymentLib->setUrl('https://c3-test.wirecard.com');
 		$paymentLib->paymentmethod = 'creditcard';
 		$paymentLib->paymenttype = 'cc';
@@ -129,9 +128,8 @@ class Tx_Commerce_Payment_Provider_Wirecard extends Tx_Commerce_Payment_Provider
 			'cvc' => $session['payment']['cc_checksum']
 		));
 
-		$actCurrency = $this->paymentObject->getParentObject()->conf['currency'] != '' ?
-			$this->paymentObject->getParentObject()->conf['currency'] :
-			'EUR';
+		$parent = $this->paymentObject->getParentObject();
+		$actCurrency = $parent->conf['currency'] != '' ? $parent->conf['currency'] : 'EUR';
 
 		$paymentLib->setTransactionData(array(
 			'amount' => $basket->getSumGross(),
@@ -145,33 +143,43 @@ class Tx_Commerce_Payment_Provider_Wirecard extends Tx_Commerce_Payment_Provider
 		if (!$back) {
 			$this->errorMessages = array_merge($this->errorMessages, (array)$paymentLib->getError());
 			return FALSE;
+		} else {
+			$this->paymentRefId = $paymentLib->referenzID;
+			// The ReferenceID should be stored here, so that it can be
+			// added to the record in updateOrder()
+			return TRUE;
 		}
-
-		$this->paymentRefId = $paymentLib->referenzID;
-		// The ReferenceID should be stored here, so that it can be
-		// added to the record in updateOrder()
-		return TRUE;
 	}
 
 	/**
 	 * Update order data after order has been finished
 	 *
-	 * @param integer $orderUid Id of this order
+	 * @param int $orderUid Id of this order
 	 * @param array $session Session data
+	 *
 	 * @return void
 	 */
 	public function updateOrder($orderUid, array $session = array()) {
 		// Update order that was created by checkout process
-		// With credit card payment a reference ID has to be
-		// stored in field payment_ref_id (I
-		// have no idea where it comes from, maybe it is given by wirecard?!)
+		// With credit card payment a reference ID has to be stored in field
+		// payment_ref_id (I have no idea where it comes from, maybe it is
+		// given by wirecard?!)
 		// To update the order something like this should be sufficient:
 		// $this->paymentRefId should probably be set in finishingFunction()
-		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
-		$database = $GLOBALS['TYPO3_DB'];
-		$database->exec_UPDATEquery(
-			'tx_commerce_orders', 'uid = ' . $orderUid,
+		$this->getDatabaseConnection()->exec_UPDATEquery(
+			'tx_commerce_orders',
+			'uid = ' . (int) $orderUid,
 			array('payment_ref_id' => $this->paymentRefId)
 		);
+	}
+
+
+	/**
+	 * Get database connection
+	 *
+	 * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+	 */
+	protected function getDatabaseConnection() {
+		return $GLOBALS['TYPO3_DB'];
 	}
 }

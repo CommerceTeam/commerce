@@ -1,59 +1,60 @@
 <?php
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2008-2011 Christian Ehret <chris@ehret.name>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *  A copy is found in the textfile GPL.txt and important notices to the license
- *  from the author is found in LICENSE.txt distributed with these scripts.
- *
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Hook to adjust linkwizard (linkbrowser)
+ *
+ * Class Tx_Commerce_Hook_BrowselinksHooks
+ *
+ * @author 2008-2011 Christian Ehret <chris@ehret.name>
  */
 class Tx_Commerce_Hook_BrowselinksHooks implements \TYPO3\CMS\Core\ElementBrowser\ElementBrowserHookInterface {
 	/**
-	 * Sauvegarde locale du cObj parent
+	 * Local content object cObj parent
 	 *
 	 * @var tx_rtehtmlarea_browse_links
 	 */
 	protected $pObj;
 
 	/**
+	 * Category tree
+	 *
 	 * @var Tx_Commerce_ViewHelpers_Browselinks_CategoryTree
 	 */
 	protected $treeObj;
 
 	/**
+	 * Script
+	 *
 	 * @var string
 	 */
 	protected $script;
 
+	/**
+	 * Commerce tab
+	 *
+	 * @var string
+	 */
 	protected $tabKey = 'commerce_tab';
 
 	/**
-	 * Initialisation (additionalParameters est un tableau vide)
+	 * Initialisation (additionalParameters is an empty array)
 	 *
-	 * @param tx_rtehtmlarea_browse_links $parentObject
-	 * @param array $additionalParameters
+	 * @param tx_rtehtmlarea_browse_links $parentObject Parent object
+	 * @param array $additionalParameters Parameter
+	 *
 	 * @return void
 	 */
 	public function init($parentObject, $additionalParameters) {
@@ -112,7 +113,8 @@ class Tx_Commerce_Hook_BrowselinksHooks implements \TYPO3\CMS\Core\ElementBrowse
 	/**
 	 * Add allowed items
 	 *
-	 * @param array $currentlyAllowedItems
+	 * @param array $currentlyAllowedItems Allowed items
+	 *
 	 * @return array
 	 */
 	public function addAllowedItems($currentlyAllowedItems) {
@@ -124,7 +126,8 @@ class Tx_Commerce_Hook_BrowselinksHooks implements \TYPO3\CMS\Core\ElementBrowse
 	/**
 	 * Modify menu definition
 	 *
-	 * @param array $menuDefinition
+	 * @param array $menuDefinition Menu definition
+	 *
 	 * @return array
 	 */
 	public function modifyMenuDefinition($menuDefinition) {
@@ -143,7 +146,8 @@ class Tx_Commerce_Hook_BrowselinksHooks implements \TYPO3\CMS\Core\ElementBrowse
 	/**
 	 * Content of new tab
 	 *
-	 * @param string $act
+	 * @param string $act Active tab
+	 *
 	 * @return string
 	 */
 	public function getTab($act) {
@@ -218,9 +222,10 @@ class Tx_Commerce_Hook_BrowselinksHooks implements \TYPO3\CMS\Core\ElementBrowse
 	/**
 	 * Parse current url for commerce fragments
 	 *
-	 * @param string $href
-	 * @param string $siteUrl
-	 * @param array $info
+	 * @param string $href Link
+	 * @param string $siteUrl Site url
+	 * @param array $info Information
+	 *
 	 * @return array
 	 */
 	public function parseCurrentUrl($href, $siteUrl, $info) {
@@ -235,15 +240,16 @@ class Tx_Commerce_Hook_BrowselinksHooks implements \TYPO3\CMS\Core\ElementBrowse
 	/**
 	 * Check if call of hook is valid
 	 *
-	 * @param string $type
-	 * @return boolean
+	 * @param string $type Type
+	 *
+	 * @return bool
 	 */
 	public function isValid($type) {
 		return $type === 'rte';
 	}
 
 	/**
-	 * returns additional addon parameters - required to keep several
+	 * Returns additional addon parameters - required to keep several
 	 * informations for the RTE linkwizard
 	 *
 	 * @return string
@@ -261,7 +267,7 @@ class Tx_Commerce_Hook_BrowselinksHooks implements \TYPO3\CMS\Core\ElementBrowse
 	/**
 	 * Check if mode is rte
 	 *
-	 * @return boolean
+	 * @return bool
 	 */
 	protected function isRichTextEditor() {
 		return $this->pObj->mode == 'rte';
@@ -271,11 +277,12 @@ class Tx_Commerce_Hook_BrowselinksHooks implements \TYPO3\CMS\Core\ElementBrowse
 	 * Makes the AJAX call to expand or collapse the categorytree.
 	 * Called by typo3/ajax.php
 	 *
-	 * @param array $params additional parameters (not used here)
-	 * @param TYPO3AJAX &$ajaxObj reference of the TYPO3AJAX object of this request
+	 * @param array $params Additional parameters (not used here)
+	 * @param \TYPO3\CMS\Core\Http\AjaxRequestHandler $ajaxObj Ajax object
+	 *
 	 * @return void
 	 */
-	public function ajaxExpandCollapse($params, &$ajaxObj) {
+	public function ajaxExpandCollapse(array $params, \TYPO3\CMS\Core\Http\AjaxRequestHandler &$ajaxObj) {
 		$parameter = GeneralUtility::_GP('PM');
 			// IE takes anchor as parameter
 		if (($parameterPosition = strpos($parameter, '#')) !== FALSE) {

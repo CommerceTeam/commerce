@@ -1,34 +1,25 @@
 <?php
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2008-2011 Erik Frister <typo3@marketing-factory.de>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *  A copy is found in the textfile GPL.txt and important notices to the license
- *  from the author is found in LICENSE.txt distributed with these scripts.
- *
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Implements the data view of the leaf
+ *
+ * Class Tx_Commerce_Tree_Leaf_Data
+ *
+ * @author 2008-2011 Erik Frister <typo3@marketing-factory.de>
  */
 class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 	/**
@@ -56,7 +47,7 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 	/**
 	 * Item UID of the Mount for this Data
 	 *
-	 * @var integer
+	 * @var int
 	 */
 	protected $bank;
 
@@ -118,28 +109,28 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 	protected $defaultFields = 'uid, pid';
 
 	/**
-	 * field that will be aliased as item_parent; MANDATORY!
+	 * Field that will be aliased as item_parent; MANDATORY!
 	 *
 	 * @var string
 	 */
 	protected $item_parent = '';
 
 	/**
-	 * table to read the leafitems from
+	 * Table to read the leafitems from
 	 *
 	 * @var string
 	 */
 	protected $itemTable;
 
 	/**
-	 * table that is to be used to find parent items
+	 * Table that is to be used to find parent items
 	 *
 	 * @var string
 	 */
 	protected $mmTable;
 
 	/**
-	 * if no mm table is used, this field will be used to get the parents
+	 * If no mm table is used, this field will be used to get the parents
 	 *
 	 * @var string
 	 */
@@ -160,11 +151,15 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 	protected $where;
 
 	/**
-	 * @var boolean
+	 * Sorted
+	 *
+	 * @var bool
 	 */
 	protected $sorted = FALSE;
 
 	/**
+	 * Sorted by
+	 *
 	 * @var array
 	 */
 	protected $sortedArray = NULL;
@@ -217,8 +212,9 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 	/**
 	 * Returns true if this leaf is currently expanded
 	 *
-	 * @param integer $uid uid of the current row
-	 * @return boolean
+	 * @param int $uid Uid of the current row
+	 *
+	 * @return bool
 	 */
 	public function isExpanded($uid) {
 		if (!is_numeric($uid)) {
@@ -234,10 +230,11 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 	/**
 	 * Sets the position Ids
 	 *
-	 * @param array $positionIds - Array with the Category uids which are current
+	 * @param array $positionIds Array with the Category uids which are current
+	 *
 	 * @return void
 	 */
-	public function setPositions(&$positionIds) {
+	public function setPositions(array &$positionIds) {
 		if (!is_array($positionIds)) {
 			if (TYPO3_DLOG) {
 				GeneralUtility::devLog('setPositions (Tx_Commerce_Tree_Leaf_Data) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
@@ -250,11 +247,12 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 	/**
 	 * Returns an array of Positions
 	 *
-	 * @return array
-	 * @param integer $index Index of this leaf
+	 * @param int $index Index of this leaf
 	 * @param array $indices Parent Indices
+	 *
+	 * @return array
 	 */
-	public function getPositionsByIndices($index, $indices) {
+	public function getPositionsByIndices($index, array $indices) {
 		if (!is_numeric($index) || !is_array($indices)) {
 			if (TYPO3_DLOG) {
 				GeneralUtility::devLog('getPositionsByIndices (productdata) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
@@ -264,14 +262,14 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 
 		$m = count($indices);
 
-			// Construct the Array of Position Ids
+		// Construct the Array of Position Ids
 		$firstIndex = (0 >= $m) ? $index : $indices[0];
 
-			// normally we read the mounts
+		// normally we read the mounts
 		$mounts = $this->mountIds;
 		$l = count($mounts);
 
-			// if we didn't find mounts, exit
+		// if we didn't find mounts, exit
 		if ($l == 0) {
 			if (TYPO3_DLOG) {
 				GeneralUtility::devLog(
@@ -288,27 +286,27 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 		for ($i = 0; $i < $l; $i++) {
 			$posIds = $this->positionArray[$firstIndex][$mounts[$i]];
 
-				// Go to the correct Leaf in the Positions
+			// Go to the correct Leaf in the Positions
 			if (0 < $m) {
-					// Go to correct parentleaf
+				// Go to correct parentleaf
 				for ($j = 1; $j < $m; $j++) {
 					$posIds = $posIds[$indices[$j]];
 				}
-					// select current leaf
+				// select current leaf
 				$posIds = $posIds[$index];
 			}
 
-				// If no Items are set for the current Leaf, skip it
+			// If no Items are set for the current Leaf, skip it
 			if (!is_array($posIds['items'])) {
 				continue;
 			}
 
-				// Get the position uids
+			// Get the position uids
 			$positionUids = array_keys($posIds['items']);
 
-				// Store in the Mount - PosUids Array
+			// Store in the Mount - PosUids Array
 			$this->positionMountUids[$mounts[$i]] = $positionUids;
-				// Store in Array of all UIDS
+			// Store in Array of all UIDS
 			$positions = array_merge($positions, $positionUids);
 		}
 
@@ -320,7 +318,8 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 	/**
 	 * Sets the bank
 	 *
-	 * @param integer $bank - Category UID of the Mount (aka Bank)
+	 * @param int $bank Category UID of the Mount (aka Bank)
+	 *
 	 * @return void
 	 */
 	public function setBank($bank) {
@@ -367,7 +366,7 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 	/**
 	 * Returns whether this Tx_Commerce_Tree_Leaf_Data has been loaded
 	 *
-	 * @return boolean
+	 * @return bool
 	 */
 	public function isLoaded() {
 		return ($this->records != NULL);
@@ -377,10 +376,11 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 	 * Sorts the records to represent the linar structure of the tree
 	 * Stores the resulting array in an internal variable
 	 *
-	 * @param integer $rootUid - UID of the Item that will act as root
-	 * @param integer $depth
-	 * @param boolean $last
-	 * @param integer $crazyRecursionLimiter
+	 * @param int $rootUid UID of the Item that will act as root
+	 * @param int $depth Depth
+	 * @param bool $last Last
+	 * @param int $crazyRecursionLimiter Recursion limit
+	 *
 	 * @return void
 	 */
 	public function sort($rootUid, $depth = 0, $last = FALSE, $crazyRecursionLimiter = 999) {
@@ -397,7 +397,6 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 		}
 
 		if (isset($this->records['uid'][$rootUid])) {
-
 			// Place the current record in the array
 			$entry = array();
 			// deprecated key should not be used anymore to be more compatible to pagetree
@@ -430,7 +429,7 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 	 * Returns the sorted array
 	 * False if the data has not been sorted yet
 	 *
-	 * @return array|boolean
+	 * @return array|bool
 	 */
 	public function &getSortedArray() {
 		if (!$this->sorted) {
@@ -443,7 +442,7 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 	/**
 	 * Returns if the data has loaded any records
 	 *
-	 * @return boolean
+	 * @return bool
 	 */
 	public function hasRecords() {
 		if (!$this->isLoaded()) {
@@ -457,7 +456,8 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 	 * Returns a record from the 'uid' array
 	 * Returns null if the index is not found
 	 *
-	 * @param integer $uid - UID for which we will look
+	 * @param int $uid UID for which we will look
+	 *
 	 * @return array
 	 */
 	public function &getChildByUid($uid) {
@@ -479,7 +479,8 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 	 * Returns a subset of records from the 'pid' array
 	 * Returns null if PID is not found
 	 *
-	 * @param integer $pid
+	 * @param int $pid Page id
+	 *
 	 * @return array
 	 */
 	public function &getChildrenByPid($pid) {
@@ -526,15 +527,17 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 			}
 		}
 
-			// Add the extended fields to the select statement
-		$select = (is_string($this->extendedFields) && '' != $this->extendedFields) ?
-			$this->defaultFields . ',' . $this->extendedFields :
-			$this->defaultFields;
+		// Add the extended fields to the select statement
+		if (is_string($this->extendedFields) && '' != $this->extendedFields) {
+			$select = $this->defaultFields . ',' . $this->extendedFields;
+		} else {
+			$select = $this->defaultFields;
+		}
 
-			// add item parent
+		// add item parent
 		$select .= ',' . $this->item_parent . ' AS item_parent';
 
-			// add the item search
+		// add the item search
 		$where = '';
 		if ($this->useMMTable) {
 			$where .= ('' == $this->whereClause) ? '' : ' AND ' . $this->whereClause;
@@ -546,10 +549,9 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 				') OR uid IN(' . $this->where['uid'] . '))';
 		}
 
-		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $database */
-		$database = $GLOBALS['TYPO3_DB'];
+		$database = $this->getDatabaseConnection();
 
-			// exec the query
+		// exec the query
 		if ($this->useMMTable) {
 			$res = $database->exec_SELECT_mm_query($select, $this->itemTable, $this->mmTable, '', $where, '', $this->order, $this->limit);
 		} else {
@@ -567,15 +569,15 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 			return array();
 		}
 
-			// Will hold a record to check rights against after this loop.
+		// Will hold a record to check rights against after this loop.
 		$checkRightRow = FALSE;
 
 		$rows = array();
 		while (($row = $database->sql_fetch_assoc($res))) {
-				// get the version overlay if wanted
-				// store parent item
+			// get the version overlay if wanted
+			// store parent item
 			$parentItem = $row['item_parent'];
-				// unset the pseudo-field (no pseudo-fields allowed for workspaceOL)
+			// unset the pseudo-field (no pseudo-fields allowed for workspaceOL)
 			unset($row['item_parent']);
 
 			BackendUtility::workspaceOL($this->itemTable, $row);
@@ -588,21 +590,21 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 				);
 				continue;
 			} else {
-					// write the pseudo field again
+				// write the pseudo field again
 				$row['item_parent'] = $parentItem;
 			}
 
-				// the row will by default start with being the last node
+			// the row will by default start with being the last node
 			$row['lastNode'] = FALSE;
 
-				// Set the row in the 'uid' part
+			// Set the row in the 'uid' part
 			$rows['uid'][$row['uid']] = $row;
 
-				// Set the row in the 'pid' part
+			// Set the row in the 'pid' part
 			if (!isset($rows['pid'][$row['item_parent']])) {
 				$rows['pid'][$row['item_parent']] = array($row);
 			} else {
-					// store
+				// store
 				$rows['pid'][$row['item_parent']][] = $row;
 			}
 
@@ -611,7 +613,7 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 
 		$database->sql_free_result($res);
 
-			// Check perms on Commerce folders.
+		// Check perms on Commerce folders.
 		if ($checkRightRow !== FALSE && !$this->checkAccess($this->itemTable, $checkRightRow)) {
 			if (TYPO3_DLOG) {
 				GeneralUtility::devLog(
@@ -624,7 +626,7 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 			return array();
 		}
 
-			// Calculate the records which are last
+		// Calculate the records which are last
 		if (is_array($rows['pid'])) {
 			$keys = array_keys($rows['pid']);
 			$l = count($keys);
@@ -653,10 +655,11 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 	 * taken from alt_doc.php) as well as the table access rights
 	 * of the user.
 	 *
+	 * @param string $table The table to check access
+	 * @param string $row The record uid of the table
+	 *
+	 * @return bool Returns true is the user has access, or false if not
 	 * @see tx_recycler
-	 * @param string $table: The table to check access for
-	 * @param string $row: The record uid of the table
-	 * @return	boolean		Returns true is the user has access, or false if not
 	 */
 	public function checkAccess($table, $row) {
 		// Checking if the user has permissions?
@@ -685,10 +688,22 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 		return $hasAccess ? TRUE : FALSE;
 	}
 
+
 	/**
+	 * Get backend user
+	 *
 	 * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
 	 */
 	protected function getBackendUser() {
 		return $GLOBALS['BE_USER'];
+	}
+
+	/**
+	 * Get database connection
+	 *
+	 * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+	 */
+	protected function getDatabaseConnection() {
+		return $GLOBALS['TYPO3_DB'];
 	}
 }

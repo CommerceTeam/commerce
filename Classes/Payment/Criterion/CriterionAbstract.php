@@ -1,42 +1,36 @@
 <?php
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2009-2011 Volker Graubaum <vg@e-netconsulting.com>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *  A copy is found in the textfile GPL.txt and important notices to the license
- *  from the author is found in LICENSE.txt distributed with these scripts.
- *
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
 
 /**
  * Abstract payment criterion implementation
+ *
+ * Class Tx_Commerce_Payment_Criterion_CriterionAbstract
+ *
+ * @author 2009-2011 Volker Graubaum <vg@e-netconsulting.com>
  */
 abstract class Tx_Commerce_Payment_Criterion_CriterionAbstract implements Tx_Commerce_Payment_Interface_Criterion {
-
 	/**
-	 * @var Tx_Commerce_Controller_BaseController Parent commerce pibase object
+	 * Parent commerce pibase object
+	 *
+	 * @var Tx_Commerce_Controller_BaseController
 	 */
 	protected $pibaseObject = NULL;
 
 	/**
-	 * @var Tx_Commerce_Payment_Interface_Payment Parent payment object
+	 * Payment object
+	 *
+	 * @var Tx_Commerce_Payment_Interface_Payment
 	 */
 	protected $paymentObject = NULL;
 
@@ -50,8 +44,9 @@ abstract class Tx_Commerce_Payment_Criterion_CriterionAbstract implements Tx_Com
 	/**
 	 * Constructor
 	 *
-	 * @param Tx_Commerce_Payment_Interface_Payment $paymentObject Parent payment object
+	 * @param Tx_Commerce_Payment_Interface_Payment $paymentObject Payment object
 	 * @param array $options Configuration array
+	 *
 	 * @return self
 	 */
 	public function __construct(Tx_Commerce_Payment_Interface_Payment $paymentObject, array $options = array()) {

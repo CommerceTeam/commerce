@@ -1,181 +1,232 @@
 <?php
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2005-2012 Ingo Schmitt <is@marketing-factory.de>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *  A copy is found in the textfile GPL.txt and important notices to the license
- *  from the author is found in LICENSE.txt distributed with these scripts.
- *
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
 
 /**
  * Main script class for the handling of categories. Categories contains
  * categories (Reverse data structure) and products
+ *
+ * Class Tx_Commerce_Domain_Model_Category
+ *
+ * @author 2005-2012 Ingo Schmitt <is@marketing-factory.de>
  */
 class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_AbstractEntity {
 	/**
+	 * Database class name
+	 *
 	 * @var string
 	 */
 	protected $databaseClass = 'Tx_Commerce_Domain_Repository_CategoryRepository';
 
 	/**
+	 * Database connection
+	 *
 	 * @var Tx_Commerce_Domain_Repository_CategoryRepository
 	 */
 	public $databaseConnection;
 
 	/**
-	 * @var string Title
+	 * Title
+	 *
+	 * @var string
 	 */
 	protected $title = '';
 
 	/**
-	 * @var string Subtitle
+	 * Subtitle
+	 *
+	 * @var string
 	 */
 	protected $subtitle = '';
 
 	/**
-	 * @var string Description
+	 * Description
+	 *
+	 * @var string
 	 */
 	protected $description = '';
 
 	/**
-	 * @var string Images for the category
+	 * Images
+	 *
+	 * @var string
 	 */
 	protected $images = '';
 
 	/**
-	 * @var array Image-Array for the category
+	 * Images as array
+	 *
+	 * @var array
 	 */
 	protected $images_array = array();
 
 	/**
-	 * @var string Title for navigation an Menu Rendering
+	 * Title for navigation an Menu Rendering
+	 *
+	 * @var string
 	 */
 	protected $navtitle = '';
 
 	/**
-	 * @var string Keywords for meta informations
+	 * Keywords for meta informations
+	 *
+	 * @var string
 	 */
 	protected $keywords = '';
 
 	/**
-	 * @var array Array of tx_commerce_category_uid
+	 * Array with child category uids
+	 *
+	 * @var array
 	 */
 	protected $categories_uid = array();
 
 	/**
-	 * @var integer UID of parent category
+	 * Parent category uid
+	 *
+	 * @var int
 	 */
 	protected $parent_category_uid = 0;
 
 	/**
-	 * @var Tx_Commerce_Domain_Model_Category Parent category object
+	 * Parent category object
+	 *
+	 * @var Tx_Commerce_Domain_Model_Category
 	 */
 	protected $parent_category = FALSE;
 
 	/**
-	 * @var array Array of tx_commerce_product_uid
+	 * Array with product uids
+	 *
+	 * @var array
 	 */
 	protected $products_uid = array();
 
 	/**
+	 * Array with category objects
+	 *
 	 * @var array Array of tx_commerce_categories
 	 */
 	protected $categories = NULL;
 
 	/**
-	 * @var array Array of tx_commerce_products
+	 * Array of product objects
+	 *
+	 * @var array
 	 */
 	protected $products = NULL;
 
 	/**
-	 * @var string Teaser text
+	 * Teaser text
+	 *
+	 * @var string
 	 */
 	protected $teaser = '';
 
 	/**
-	 * @var string Images database field
+	 * Teaser images
+	 *
+	 * @var string
 	 */
 	protected $teaserimages = '';
 
 	/**
-	 * @var array Images for the category
+	 * Images as array
+	 *
+	 * @var array
 	 */
 	protected $teaserImagesArray = array();
 
 	/**
-	 * @var boolean Is true when data is loaded
+	 * Is true when data is loaded
+	 *
+	 * @var bool
 	 */
 	protected $data_loaded = FALSE;
 
 	/**
-	 * @var array The permissions array with the fields from the category
+	 * The permissions array
+	 *
+	 * @var array
 	 */
 	public $perms_record = array();
 
 	/**
-	 * @var integer The uid of the user owning the category
+	 * The uid of the user owning the category
+	 *
+	 * @var int
 	 */
 	public $perms_userid = 0;
 
 	/**
-	 * @var integer The uid of the group owning the category
+	 * The uid of the group owning the category
+	 *
+	 * @var int
 	 */
 	public $perms_groupid = 0;
 
 	/**
-	 * @var integer User permissions
+	 * User permissions
+	 *
+	 * @var int
 	 */
 	public $perms_user = 0;
 
 	/**
-	 * @var integer Group permissions
+	 * Group permissions
+	 *
+	 * @var int
 	 */
 	public $perms_group = 0;
 
 	/**
-	 * @var integer Everybody permissions
+	 * Everybody permissions
+	 *
+	 * @var int
 	 */
 	public $perms_everybody = 0;
 
 	/**
-	 * @var integer Editlock-flag
+	 * Editlock-flag
+	 *
+	 * @var int
 	 */
 	public $editlock = 0;
 
 	/**
-	 * @var boolean Flag if permissions have been loaded
+	 * Flag if permissions have been loaded
+	 *
+	 * @var bool
 	 */
 	public $permsLoaded = FALSE;
 
 	/**
+	 * Category typoscript config
+	 *
 	 * @var array
 	 */
 	protected $categoryTSconfig = array();
 
 	/**
+	 * Typoscript config
+	 *
 	 * @var array
 	 */
 	protected $tsConfig = array();
 
 	/**
+	 * Field list
+	 *
 	 * @var array
 	 */
 	protected $fieldlist = array(
@@ -195,8 +246,9 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	/**
 	 * Constructor, basically calls init
 	 *
-	 * @param integer $uid
-	 * @param integer $languageUid
+	 * @param int $uid Category uid
+	 * @param int $languageUid Language uid
+	 *
 	 * @return self
 	 */
 	public function __construct($uid, $languageUid = 0) {
@@ -208,9 +260,10 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	/**
 	 * Init called by the constructor
 	 *
-	 * @param integer $uid Uid of category
-	 * @param integer $languageUid Language_uid , default 0
-	 * @return boolean TRUE on success, FALSE if no $uid is submitted
+	 * @param int $uid Uid of category
+	 * @param int $languageUid Language_uid , default 0
+	 *
+	 * @return bool TRUE on success, FALSE if no $uid is submitted
 	 */
 	public function init($uid, $languageUid = 0) {
 		$uid = (int) $uid;
@@ -229,7 +282,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Domain/Model/Category.php\'][\'postinit\']
 				');
 				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_category.php']['postinit'] as $classRef) {
-					$hookObj = & \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
+					$hookObj = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
 					if (method_exists($hookObj, 'postinit')) {
 						$hookObj->postinit($this);
 					}
@@ -237,7 +290,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 			}
 			if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Model/Category.php']['postinit'])) {
 				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Model/Category.php']['postinit'] as $classRef) {
-					$hookObj = & \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
+					$hookObj = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
 					if (method_exists($hookObj, 'postinit')) {
 						$hookObj->postinit($this);
 					}
@@ -254,7 +307,8 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	 * Returns recursivly the category path as text
 	 * path segments are glued with $separatora
 	 *
-	 * @param string $separator default '-'
+	 * @param string $separator Default ','
+	 *
 	 * @return string Category path segment
 	 */
 	public function getCategoryPath($separator = ',') {
@@ -284,11 +338,19 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	 * @return array of categories as array of category objects
 	 */
 	public function getChildCategories() {
-		if (is_null($this->categories)) {
+		if (is_null($this->categories) && is_array($this->categories_uid)) {
 			$this->categories = array();
 			foreach ($this->categories_uid as $childCategoryUid) {
-				/** @var Tx_Commerce_Domain_Model_Category $childCategory */
-				$childCategory = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Category', $childCategoryUid, $this->lang_uid);
+				/**
+				 * Child category
+				 *
+				 * @var Tx_Commerce_Domain_Model_Category $childCategory
+				 */
+				$childCategory = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+					'Tx_Commerce_Domain_Model_Category',
+					$childCategoryUid,
+					$this->lang_uid
+				);
 
 				$this->categories[$childCategoryUid] = $childCategory;
 			}
@@ -298,10 +360,13 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	}
 
 	/**
-	 * @param array $categories
+	 * Set child categories
+	 *
+	 * @param array $categories Child categories
+	 *
 	 * @return void
 	 */
-	public function setChildCategories($categories) {
+	public function setChildCategories(array $categories) {
 		if (is_array($categories)) {
 			$this->categories = $categories;
 		}
@@ -310,7 +375,8 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	/**
 	 * Returns a list of all child categories from this category
 	 *
-	 * @param boolean|integer $depth Maximum depth for going recursive
+	 * @param bool|int $depth Maximum depth for going recursive
+	 *
 	 * @return array List of category uids
 	 */
 	public function getChildCategoriesUidlist($depth = FALSE) {
@@ -323,7 +389,11 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 		$returnList = array();
 		if (count($this->categories) > 0) {
 			if (($depth === FALSE) || ($depth > 0)) {
-				/** @var Tx_Commerce_Domain_Model_Category $category */
+				/**
+				 * Category
+				 *
+				 * @var Tx_Commerce_Domain_Model_Category $category
+				 */
 				foreach ($this->categories as $category) {
 					$returnList = array_merge($returnList, $category->getChildCategoriesUidlist($depth));
 				}
@@ -337,7 +407,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	/**
 	 * Returns the number of child categories
 	 *
-	 * @return integer Number of child categories
+	 * @return int Number of child categories
 	 */
 	public function getChildCategoriesCount() {
 		return is_array($this->categories_uid) ? count($this->categories_uid) : 0;
@@ -351,8 +421,16 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	public function getChildProducts() {
 		if ($this->products === NULL) {
 			foreach ($this->products_uid as $productUid) {
-				/** @var Tx_Commerce_Domain_Model_Product $childProduct */
-				$childProduct = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Product', $productUid, $this->lang_uid);
+				/**
+				 * Child product
+				 *
+				 * @var Tx_Commerce_Domain_Model_Product $childProduct
+				 */
+				$childProduct = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+					'Tx_Commerce_Domain_Model_Product',
+					$productUid,
+					$this->lang_uid
+				);
 
 				$this->products[$productUid] = $childProduct;
 			}
@@ -373,7 +451,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	/**
 	 * Returns the editlock flag
 	 *
-	 * @return integer Editlock-Flag
+	 * @return int Editlock-Flag
 	 */
 	public function getEditlock() {
 		return $this->editlock;
@@ -423,7 +501,11 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	 */
 	public function getParentCategory() {
 		if ($this->parent_category_uid && !$this->parent_category) {
-			$this->parent_category = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Category', $this->parent_category_uid, $this->lang_uid);
+			$this->parent_category = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+				'Tx_Commerce_Domain_Model_Category',
+				$this->parent_category_uid,
+				$this->lang_uid
+			);
 		}
 
 		return $this->parent_category;
@@ -439,8 +521,16 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 		$parents = $this->databaseConnection->getParentCategories($this->uid);
 		$parentCats = array();
 		foreach ($parents as $parent) {
-			/** @var Tx_Commerce_Domain_Model_Category $category */
-			$category = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Category', $parent);
+			/**
+			 * Category
+			 *
+			 * @var Tx_Commerce_Domain_Model_Category $category
+			 */
+			$category = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+				'Tx_Commerce_Domain_Model_Category',
+				$parent,
+				$this->lang_uid
+			);
 			$parentCats[] = $category;
 		}
 
@@ -466,7 +556,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	/**
 	 * Returns the Group-ID of the category
 	 *
-	 * @return integer UID of group
+	 * @return int UID of group
 	 */
 	public function getPermsGroupId() {
 		return $this->perms_groupid;
@@ -475,7 +565,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	/**
 	 * Returns the User-ID of the category
 	 *
-	 * @return integer UID of user
+	 * @return int UID of user
 	 */
 	public function getPermsUserId() {
 		return $this->perms_userid;
@@ -484,7 +574,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	/**
 	 * Returns the permissions for everybody
 	 *
-	 * @return integer Permissions for everybody
+	 * @return int Permissions for everybody
 	 */
 	public function getPermsEverybody() {
 		return $this->perms_everybody;
@@ -493,7 +583,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	/**
 	 * Returns the Permissions for the group
 	 *
-	 * @return integer Permissions for group
+	 * @return int Permissions for group
 	 */
 	public function getPermsGroup() {
 		return $this->perms_group;
@@ -502,7 +592,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	/**
 	 * Returns the Permissions for the user
 	 *
-	 * @return integer Permissions for user
+	 * @return int Permissions for user
 	 */
 	public function getPermsUser() {
 		return $this->perms_user;
@@ -511,7 +601,8 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	/**
 	 * Returns a list of all products under this category
 	 *
-	 * @param boolean|integer $depth Depth maximum depth for going recursive
+	 * @param bool|int $depth Depth maximum depth for going recursive
+	 *
 	 * @return array Array with list of product UIDs
 	 */
 	public function getProducts($depth = FALSE) {
@@ -522,8 +613,16 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 		if ($depth > 0) {
 			$childCategoriesList = $this->getChildCategoriesUidlist($depth);
 			foreach ($childCategoriesList as $oneCategoryUid) {
-				/** @var Tx_Commerce_Domain_Model_Category $category */
-				$category = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Category', $oneCategoryUid, $this->lang_uid);
+				/**
+				 * Category
+				 *
+				 * @var Tx_Commerce_Domain_Model_Category $category
+				 */
+				$category = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+					'Tx_Commerce_Domain_Model_Category',
+					$oneCategoryUid,
+					$this->lang_uid
+				);
 				$category->loadData();
 				$returnList = array_merge($returnList, $category->getProductUids());
 			}
@@ -553,7 +652,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	/**
 	 * Returns the category teaser
 	 *
-	 * @return string Teaser;
+	 * @return string Teaser
 	 */
 	public function getTeaser() {
 		return $this->teaser;
@@ -608,7 +707,11 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 			$tSdataArray = \TYPO3\CMS\Core\TypoScript\Parser\TypoScriptParser::checkIncludeLines_array($tSdataArray);
 			$categoryTs = implode(chr(10) . '[GLOBAL]' . chr(10), $tSdataArray);
 
-			/** @var \TYPO3\CMS\Core\TypoScript\Parser\TypoScriptParser $parseObj */
+			/**
+			 * Typoscript parser
+			 *
+			 * @var \TYPO3\CMS\Core\TypoScript\Parser\TypoScriptParser $parseObj
+			 */
 			$parseObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\TypoScript\\Parser\\TypoScriptParser');
 			$parseObj->parse($categoryTs);
 			$this->categoryTSconfig = $parseObj->setup;
@@ -618,9 +721,9 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	}
 
 	/**
-	 * Returns the UID of the category
+	 * Returns the uid of the category
 	 *
-	 * @return integer UID of the category
+	 * @return int
 	 */
 	public function getUid() {
 		return $this->uid;
@@ -630,8 +733,9 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	/**
 	 * Loads the data
 	 *
-	 * @param boolean $translationMode Transaltionmode of the record,
+	 * @param bool $translationMode Translation mode of the record,
 	 * 		default FALSE to use the default way of translation
+	 *
 	 * @return void
 	 */
 	public function loadData($translationMode = FALSE) {
@@ -677,8 +781,9 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	/**
 	 * Returns whether the permission is set and allowed for the current usera
 	 *
-	 * @param integer $perm Permission
-	 * @return boolean TRUE if permission is set, FALSE if permission is not set
+	 * @param int $perm Permission
+	 *
+	 * @return bool TRUE if permission is set, FALSE if permission is not set
 	 */
 	public function isPermissionSet($perm) {
 		if (!is_string($perm)) {
@@ -686,13 +791,13 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 		}
 		$this->loadPermissions();
 
-		return Tx_Commerce_Utility_BackendUtility::isPSet($perm, $this->perms_record);
+		return Tx_Commerce_Utility_BackendUtility::isPermissionSet($perm, $this->perms_record);
 	}
 
 	/**
 	 * Returns if the actual category has subcategories
 	 *
-	 * @return boolean TRUE if the category has subcategories, FALSE if not
+	 * @return bool TRUE if the category has subcategories, FALSE if not
 	 */
 	public function hasSubcategories() {
 		return count($this->categories_uid) > 0;
@@ -701,7 +806,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	/**
 	 * Returns if this category has products
 	 *
-	 * @return boolean TRUE, if this category has products, FALSE if not
+	 * @return bool TRUE, if this category has products, FALSE if not
 	 */
 	public function hasProducts() {
 		return count($this->getProductUids());
@@ -710,7 +815,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	/**
 	 * Returns if this category has products with stock
 	 *
-	 * @return boolean TRUE, if this category has products with stock, FALSE if not
+	 * @return bool TRUE, if this category has products with stock, FALSE if not
 	 */
 	public function hasProductsWithStock() {
 		$result = FALSE;
@@ -726,9 +831,10 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	 * Returns TRUE if this category has active products or
 	 * if sub categories have active products
 	 *
-	 * @param boolean|integer $depth maximum depth for going recursive,
+	 * @param bool|int $depth maximum depth for going recursive,
 	 * 		if not set go for maximum
-	 * @return boolean Returns TRUE, if category/subcategories hav active products
+	 *
+	 * @return bool Returns TRUE, if category/subcategories hav active products
 	 */
 	public function hasProductsInSubCategories($depth = FALSE) {
 		if ($this->hasProducts()) {
@@ -757,9 +863,10 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	 * Carries out the move of the category to the new parent
 	 * Permissions are NOT checked, this MUST be done beforehand
 	 *
-	 * @param integer $uid UID of the move target
+	 * @param int $uid UID of the move target
 	 * @param string $op Operation of move (can be 'after' or 'into')
-	 * @return boolean TRUE if the move was successfull, FALSE if not
+	 *
+	 * @return bool TRUE if the move was successful, FALSE if not
 	 */
 	public function move($uid, $op = 'after') {
 		if ($op == 'into') {
@@ -788,24 +895,28 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	/**
 	 * Returns whether the permission is set and allowed for the current usera
 	 *
-	 * @param integer $perm Permission
-	 * @return boolean TRUE if permission is set, FALSE if permission is not set
+	 * @param int $perm Permission
+	 *
+	 * @return bool TRUE if permission is set, FALSE if permission is not set
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use isPermissionSet instead
 	 */
 	public function isPSet($perm) {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		return $this->isPermissionSet($perm);
 	}
 
 	/**
 	 * Returns a list of all child categories from this category
 	 *
-	 * @param boolean|integer $depth Maximum depth for going recursive
+	 * @param bool|int $depth Maximum depth for going recursive
+	 *
 	 * @return array List of category uids
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getChildCategoriesUidlist instead
 	 */
 	public function get_rec_child_categories_uidlist($depth = FALSE) {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		return $this->getChildCategoriesUidlist($depth);
 	}
 
@@ -817,18 +928,23 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	 */
 	public function get_categorie_rootline_uidlist() {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		return $this->getParentCategoriesUidlist();
 	}
 
 	/**
-	 * Returns TRUE if this category has active products or if sub categories have active products
+	 * Returns TRUE if this category has active products
+	 * or if sub categories have active products
 	 *
-	 * @param boolean|integer $depth maximum deepth for going recursive, if not set go for maximum
-	 * @return boolean Returns TRUE, if category/subcategories hav active products
+	 * @param bool|int $depth Maximum depth for going recursive,
+	 * 	if not set go for maximum
+	 *
+	 * @return bool Returns TRUE, if category/subcategories hav active products
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use hasProductsInSubCategories instead
 	 */
 	public function ProductsBelowCategory($depth = FALSE) {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		return $this->hasProductsInSubCategories($depth);
 	}
 
@@ -840,6 +956,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	 */
 	public function get_l18n_categories() {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		return $this->getL18nCategories();
 	}
 
@@ -851,17 +968,19 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	 */
 	public function getCategoryTSconfig() {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		return $this->getTyposcriptConfig();
 	}
 
 	/**
 	 * Returns the number of child categories
 	 *
-	 * @return integer Number of child categories
+	 * @return int Number of child categories
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getChildCategoriesCount instead
 	 */
 	public function numOfChildCategories() {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		return $this->getChildCategoriesCount();
 	}
 
@@ -873,6 +992,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	 */
 	public function get_subproducts() {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		if (count($this->products) == 0) {
 			return $this->getChildProducts();
 		} else {
@@ -888,32 +1008,31 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	 */
 	public function get_child_products() {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		return $this->getChildProducts();
 	}
 
 	/**
 	 * Returns if the actual category has subproducts
 	 *
-	 * @return boolean TRUE if the category has subproducts, FALSE if not
+	 * @return bool TRUE if the category has subproducts, FALSE if not
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use hasProducts instead
 	 */
 	public function has_subproducts() {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
-		if (count($this->products_uid) > 0) {
-			return TRUE;
-		}
 
-		return FALSE;
+		return count($this->products_uid) > 0;
 	}
 
 	/**
 	 * Returns if the actual category has subcategories
 	 *
-	 * @return boolean TRUE if the category has subcategories, FALSE if not
+	 * @return bool TRUE if the category has subcategories, FALSE if not
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use hasSubcategories instead
 	 */
 	public function has_subcategories() {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		return $this->hasSubcategories();
 	}
 
@@ -925,6 +1044,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	 */
 	public function getSubcategories() {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		if (count($this->categories) == 0) {
 			return $this->getChildCategories();
 		} else {
@@ -940,6 +1060,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	 */
 	public function get_child_categories() {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		return $this->getChildCategories();
 	}
 
@@ -947,12 +1068,14 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	 * Returns recursivly the category path as text
 	 * path segments are glued with $separatora
 	 *
-	 * @param string $separator default '-'
+	 * @param string $separator Default ','
+	 *
 	 * @return string Category path segment
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getCategoryPath instead
 	 */
 	public function get_category_path($separator = ',') {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		return $this->getCategoryPath($separator);
 	}
 
@@ -964,6 +1087,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	 */
 	public function get_keywords() {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		return $this->getKeywords();
 	}
 
@@ -975,6 +1099,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	 */
 	public function get_parent_category() {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		return $this->getParentCategory();
 	}
 
@@ -982,11 +1107,13 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	 * Returns a list of all products under this category
 	 *
 	 * @param bool|int $depth Depth maximum depth for going recursive
+	 *
 	 * @return array Array with list of product UIDs
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getProducts instead
 	 */
 	public function getAllProducts($depth = FALSE) {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		return $this->getProducts($depth);
 	}
 
@@ -998,6 +1125,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	 */
 	public function load_perms() {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		$this->loadPermissions();
 	}
 
@@ -1009,6 +1137,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	 */
 	public function get_navtitle() {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		return $this->getNavtitle();
 	}
 
@@ -1020,6 +1149,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	 */
 	public function get_description() {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		return $this->getDescription();
 	}
 
@@ -1031,6 +1161,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	 */
 	public function get_images() {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		return $this->getImages();
 	}
 
@@ -1042,6 +1173,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	 */
 	public function get_teaser() {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		return $this->getTeaser();
 	}
 
@@ -1053,6 +1185,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	 */
 	public function get_subtitle() {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		return $this->getSubtitle();
 	}
 
@@ -1064,16 +1197,21 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	 */
 	public function get_title() {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		return $this->getTitle();
 	}
 
 	/**
 	 * Constructor, basically calls init
 	 *
+	 * @param bool $translationMode Translation mode
+	 *
+	 * @return void
 	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use loadData instead
 	 */
 	public function load_data($translationMode = FALSE) {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
 		$this->loadData($translationMode = FALSE);
 	}
 }

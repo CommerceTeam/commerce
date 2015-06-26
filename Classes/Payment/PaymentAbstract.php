@@ -1,43 +1,36 @@
 <?php
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2011-2012 Volker Graubaum <vg@e-netconsulting.com>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *  A copy is found in the textfile GPL.txt and important notices to the license
- *  from the author is found in LICENSE.txt distributed with these scripts.
- *
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
 
 /**
  * Abstract payment implementation
+ *
+ * Class Tx_Commerce_Payment_PaymentAbstract
+ *
+ * @author 2011-2012 Volker Graubaum <vg@e-netconsulting.com>
  */
 abstract class Tx_Commerce_Payment_PaymentAbstract implements Tx_Commerce_Payment_Interface_Payment {
 	/**
-	 * @var array Error messages, keys are field names
+	 * Error messages, keys are field names
+	 *
+	 * @var array
 	 */
 	public $errorMessages = array();
 
 	/**
-	 * @var Tx_Commerce_Controller_CheckoutController Reference to parent object,
-	 * 	usually Tx_Commerce_Controller_BasketController
-	 * 	or Tx_Commerce_Controller_CheckoutController
+	 * Parent object
+	 *
+	 * @var Tx_Commerce_Controller_BaseController
 	 */
 	protected $parentObject = NULL;
 
@@ -49,28 +42,30 @@ abstract class Tx_Commerce_Payment_PaymentAbstract implements Tx_Commerce_Paymen
 	protected $type = '';
 
 	/**
-	 * @var Tx_Commerce_Payment_Provider_ProviderAbstract Payment proivder configured
+	 * Payment provider configured
+	 *
+	 * @var Tx_Commerce_Payment_Provider_ProviderAbstract
 	 */
 	protected $provider = NULL;
 
 	/**
-	 * @var array Criterion objects that check if a payment is allowed
+	 * Criterion objects that check if a payment is allowed
+	 *
+	 * @var array
 	 */
 	protected $criteria = array();
 
 	/**
 	 * Default constructor
 	 *
-	 * @param Tx_Commerce_Controller_BaseController|Tx_Commerce_Controller_CheckoutController|Tx_Commerce_Controller_BasketController $parentObject Parent object
-	 * @throws Exception If type was not set or criteria are not valid
+	 * @param Tx_Commerce_Controller_BaseController $parentObject Parent object
+	 *
 	 * @return self
+	 * @throws Exception If type was not set or criteria are not valid
 	 */
 	public function __construct(Tx_Commerce_Controller_BaseController $parentObject) {
 		if (!strlen($this->type) > 0) {
-			throw new Exception(
-				'$type not set.',
-				1306266978
-			);
+			throw new Exception($this->type . ' not set.', 1306266978);
 		}
 
 		$this->parentObject = $parentObject;
@@ -100,10 +95,14 @@ abstract class Tx_Commerce_Payment_PaymentAbstract implements Tx_Commerce_Paymen
 	/**
 	 * Return TRUE if this payment type is allowed.
 	 *
-	 * @return boolean
+	 * @return bool
 	 */
 	public function isAllowed() {
-		/** @var Tx_Commerce_Payment_Criterion_CriterionAbstract $criterion */
+		/**
+		 * Criterion
+		 *
+		 * @var Tx_Commerce_Payment_Criterion_CriterionAbstract $criterion
+		 */
 		foreach ($this->criteria as $criterion) {
 			if ($criterion->isAllowed() === FALSE) {
 				return FALSE;
@@ -124,11 +123,11 @@ abstract class Tx_Commerce_Payment_PaymentAbstract implements Tx_Commerce_Paymen
 	/**
 	 * Find configured criterion
 	 *
-	 * @throws Exception
 	 * @return void
+	 * @throws Exception If configured criterion class is not of correct interface
 	 */
 	protected function findCriterion() {
-			// Create criterion objects if defined
+		// Create criterion objects if defined
 		$criteraConfigurations = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['SYSPRODUCTS']['PAYMENT']['types'][$this->type]['criteria'];
 		if (is_array($criteraConfigurations)) {
 			foreach ($criteraConfigurations as $criterionConfiguration) {
@@ -136,7 +135,11 @@ abstract class Tx_Commerce_Payment_PaymentAbstract implements Tx_Commerce_Paymen
 					$criterionConfiguration['options'] = array();
 				}
 
-				/** @var Tx_Commerce_Payment_Interface_Criterion $criterion */
+				/**
+				 * Criterion
+				 *
+				 * @var Tx_Commerce_Payment_Interface_Criterion $criterion
+				 */
 				$criterion = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
 					$criterionConfiguration['class'],
 					$this,
@@ -156,8 +159,8 @@ abstract class Tx_Commerce_Payment_PaymentAbstract implements Tx_Commerce_Paymen
 	/**
 	 * Find appropriate provider for this payment
 	 *
-	 * @throws Exception
 	 * @return void
+	 * @throws Exception If payment provider is not of corret interface
 	 */
 	protected function findProvider() {
 			// Check if type has criteria, create all needed objects
@@ -165,7 +168,11 @@ abstract class Tx_Commerce_Payment_PaymentAbstract implements Tx_Commerce_Paymen
 
 		if (is_array($providerConfigurations)) {
 			foreach ($providerConfigurations as $providerConfiguration) {
-				/** @var Tx_Commerce_Payment_Interface_Provider $provider */
+				/**
+				 * Provider
+				 *
+				 * @var Tx_Commerce_Payment_Interface_Provider $provider
+				 */
 				$provider = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance($providerConfiguration['class'], $this);
 				if (!($provider instanceof Tx_Commerce_Payment_Interface_Provider)) {
 					throw new Exception(
@@ -185,7 +192,7 @@ abstract class Tx_Commerce_Payment_PaymentAbstract implements Tx_Commerce_Paymen
 	/**
 	 * Determine if additional data is needed
 	 *
-	 * @return boolean True if additional data is needed
+	 * @return bool True if additional data is needed
 	 */
 	public function needAdditionalData() {
 		$result = FALSE;
@@ -212,7 +219,8 @@ abstract class Tx_Commerce_Payment_PaymentAbstract implements Tx_Commerce_Paymen
 	 * Check if provided data is ok
 	 *
 	 * @param array $formData Current form data
-	 * @return boolean TRUE if data is ok
+	 *
+	 * @return bool TRUE if data is ok
 	 */
 	public function proofData(array $formData = array()) {
 		$result = TRUE;
@@ -228,10 +236,12 @@ abstract class Tx_Commerce_Payment_PaymentAbstract implements Tx_Commerce_Paymen
 	 * @param array $config Current configuration
 	 * @param array $session Session data
 	 * @param Tx_Commerce_Domain_Model_Basket $basket Basket object
-	 * @return boolean True is finishing order is allowed
+	 *
+	 * @return bool True is finishing order is allowed
 	 */
 	public function finishingFunction(array $config = array(), array $session = array(),
-			Tx_Commerce_Domain_Model_Basket $basket = NULL) {
+		Tx_Commerce_Domain_Model_Basket $basket = NULL
+	) {
 		$result = TRUE;
 		if ($this->provider !== NULL) {
 			$result = $this->provider->finishingFunction($config, $session, $basket);
@@ -242,9 +252,10 @@ abstract class Tx_Commerce_Payment_PaymentAbstract implements Tx_Commerce_Paymen
 	/**
 	 * Method called in finishIt function
 	 *
-	 * @param array $globalRequest _REQUEST
+	 * @param array $globalRequest Global request
 	 * @param array $session Session array
-	 * @return boolean TRUE if data is ok
+	 *
+	 * @return bool TRUE if data is ok
 	 */
 	public function checkExternalData(array $globalRequest = array(), array $session = array()) {
 		$result = TRUE;
@@ -257,8 +268,9 @@ abstract class Tx_Commerce_Payment_PaymentAbstract implements Tx_Commerce_Paymen
 	/**
 	 * Update order data after order has been finished
 	 *
-	 * @param integer $orderUid Id of this order
+	 * @param int $orderUid Id of this order
 	 * @param array $session Session data
+	 *
 	 * @return void
 	 */
 	public function updateOrder($orderUid, array $session = array()) {
@@ -281,6 +293,7 @@ abstract class Tx_Commerce_Payment_PaymentAbstract implements Tx_Commerce_Paymen
 
 		return $result;
 	}
+
 
 	/**
 	 * Get parent object
