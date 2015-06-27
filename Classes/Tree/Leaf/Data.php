@@ -504,26 +504,10 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 	 * @return array Records array
 	 */
 	public function loadRecords() {
-		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/tree/class.leafData.php']['loadRecords'])) {
-			GeneralUtility::deprecationLog('
-				hook
-				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/tree/class.leafData.php\'][\'loadRecords\']
-				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
-				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Tree/Leaf/Data.php\'][\'loadRecords\']
-			');
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/tree/class.leafData.php']['loadRecords'] as $classRef) {
-				$hookObj = &GeneralUtility::getUserObj($classRef);
-				if (method_exists($hookObj, 'addExtendedFields')) {
-					$this->extendedFields .= $hookObj->addExtendedFields($this->itemTable, $this->extendedFields);
-				}
-			}
-		}
-		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Tree/Leaf/Data.php']['loadRecords'])) {
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Tree/Leaf/Data.php']['loadRecords'] as $classRef) {
-				$hookObj = &GeneralUtility::getUserObj($classRef);
-				if (method_exists($hookObj, 'addExtendedFields')) {
-					$this->extendedFields .= $hookObj->addExtendedFields($this->itemTable, $this->extendedFields);
-				}
+		$hooks = \CommerceTeam\Commerce\Factory\HookFactory::getHooks('Tree/Leaf/Data', 'loadRecords');
+		foreach ($hooks as $hook) {
+			if (method_exists($hook, 'addExtendedFields')) {
+				$this->extendedFields .= $hook->addExtendedFields($this->itemTable, $this->extendedFields);
 			}
 		}
 

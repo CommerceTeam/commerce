@@ -11,7 +11,9 @@
  *
  * The TYPO3 project - inspiring people to share!
  */
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+
+use \TYPO3\CMS\Core\Utility\GeneralUtility;
+use \CommerceTeam\Commerce\Factory\HookFactory;
 
 /**
  * Class Tx_Commerce_Controller_BaseController
@@ -309,28 +311,10 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	 * @return void
 	 */
 	public function addAdditionalLocallang() {
-		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['locallang'])) {
-			GeneralUtility::deprecationLog(
-				'
-					hook
-					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_pibase.php\'][\'locallang\']
-					is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
-					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/BaseController.php\'][\'locallang\']
-				'
-			);
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['locallang'] as $classRef) {
-				$hookObj = & GeneralUtility::getUserObj($classRef);
-				if (method_exists($hookObj, 'loadAdditionalLocallang')) {
-					$hookObj->loadAdditionalLocallang($this);
-				}
-			}
-		}
-		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BaseController.php']['locallang'])) {
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BaseController.php']['locallang'] as $classRef) {
-				$hookObj = & GeneralUtility::getUserObj($classRef);
-				if (method_exists($hookObj, 'loadAdditionalLocallang')) {
-					$hookObj->loadAdditionalLocallang($this);
-				}
+		$hooks = HookFactory::getHooks('Controller/BaseController', 'addAdditionalLocallang');
+		foreach ($hooks as $hook) {
+			if (method_exists($hook, 'loadAdditionalLocallang')) {
+				$hook->loadAdditionalLocallang($this);
 			}
 		}
 	}
@@ -544,13 +528,6 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	 * @return string the content for the list view
 	 */
 	public function makeListView() {
-		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/ListController.php']['preRenderListView'])) {
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/ListController.php']['preRenderListView'] as
-				$classRef
-			) {
-				$hookObjectsArr[] = GeneralUtility::getUserObj($classRef);
-			}
-		}
 		/**
 		 * Category LIST
 		 */
@@ -733,28 +710,10 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 			$markerArray['CATEGORY_BROWSEBOX'] = '';
 		}
 
-		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['listview'])) {
-			GeneralUtility::deprecationLog(
-				'
-					hook
-					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_pibase.php\'][\'listview\']
-					is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
-					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/BaseController.php\'][\'listView\']
-				'
-			);
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['listview'] as $classRef) {
-				$hookObj = & GeneralUtility::getUserObj($classRef);
-				if (method_exists($hookObj, 'additionalMarker')) {
-					$markerArray = $hookObj->additionalMarker($markerArray, $this);
-				}
-			}
-		}
-		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BaseController.php']['listView'])) {
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BaseController.php']['listView'] as $classRef) {
-				$hookObj = GeneralUtility::getUserObj($classRef);
-				if (method_exists($hookObj, 'additionalMarker')) {
-					$markerArray = $hookObj->additionalMarker($markerArray, $this);
-				}
+		$hooks = HookFactory::getHooks('Controller/BaseController', 'makeListView');
+		foreach ($hooks as $hook) {
+			if (method_exists($hook, 'additionalMarker')) {
+				$markerArray = $hook->additionalMarker($markerArray, $this);
 			}
 		}
 
@@ -879,37 +838,17 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 		$markerArray['DELIVERY_PRICE_NET'] = Tx_Commerce_ViewHelpers_Money::format($article->getDeliveryCostNet(), $this->currency);
 		$markerArray['DELIVERY_PRICE_GROSS'] = Tx_Commerce_ViewHelpers_Money::format($article->getDeliveryCostGross(), $this->currency);
 
-		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['articleMarker'])) {
-			GeneralUtility::deprecationLog('
-				hook
-				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_pibase.php\'][\'articleMarker\']
-				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
-				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/BaseController.php\'][\'articleMarker\']
-			');
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['articleMarker'] as $classRef) {
-				$hookObj = & GeneralUtility::getUserObj($classRef);
-				if (method_exists($hookObj, 'additionalMarkerArticle')) {
-					$markerArray = $hookObj->additionalMarkerArticle($markerArray, $article, $this);
-				}
-			}
-		}
-		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BaseController.php']['articleMarker'])) {
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BaseController.php']['articleMarker'] as
-				$classRef
-			) {
-				$hookObj = & GeneralUtility::getUserObj($classRef);
-				if (method_exists($hookObj, 'additionalMarkerArticle')) {
-					$markerArray = $hookObj->additionalMarkerArticle($markerArray, $article, $this);
-				}
+		$hooks = HookFactory::getHooks('Controller/BaseController', 'getArticleMarker');
+		foreach ($hooks as $hook) {
+			if (method_exists($hook, 'additionalMarkerArticle')) {
+				$markerArray = $hook->additionalMarkerArticle($markerArray, $article, $this);
 			}
 		}
 
 		return $markerArray;
 	}
 
-	/**
-	 * Basker and Checkout Methods
-	 */
+	/* Basker and Checkout Methods */
 
 	/**
 	 * Renders on Adress in the template
@@ -1000,31 +939,10 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 			$content = $this->cObj->substituteSubpart($template, '###LISTING_ARTICLE###', '');
 		}
 
-		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['makeBasketView'])) {
-			GeneralUtility::deprecationLog('
-				hook
-				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_pibase.php\'][\'makeBasketView\']
-				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
-				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/BaseController.php\'][\'makeBasketView\']
-			');
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['makeBasketView'] as $classRef) {
-				$hookObj = & GeneralUtility::getUserObj($classRef);
-				if (method_exists($hookObj, 'postBasketView')) {
-					$content = $hookObj->postBasketView($content, $articletypes, $lineTemplate, $template, $basketObj, $this);
-				}
-			}
-		}
-		if (is_array(
-			$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BaseController.php']['makeBasketView']
-		)
-		) {
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BaseController.php']['makeBasketView'] as
-				$classRef
-			) {
-				$hookObj = GeneralUtility::getUserObj($classRef);
-				if (method_exists($hookObj, 'postBasketView')) {
-					$content = $hookObj->postBasketView($content, $articletypes, $lineTemplate, $template, $basketObj, $this);
-				}
+		$hooks = HookFactory::getHooks('Controller/BaseController', 'makeBasketView');
+		foreach ($hooks as $hook) {
+			if (method_exists($hook, 'postBasketView')) {
+				$content = $hook->postBasketView($content, $articletypes, $lineTemplate, $template, $basketObj, $this);
 			}
 		}
 
@@ -1113,34 +1031,10 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 		/**
 		 * Hook for processing Taxes
 		 */
-		$hookObjectsArr = array();
-		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['makeBasketInformation'])) {
-			GeneralUtility::deprecationLog(
-				'
-					hook
-					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_pibase.php\'][\'makeBasketInformation\']
-					is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
-					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/BaseController.php\'][\'makeBasketInformation\']
-				'
-			);
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['makeBasketInformation'] as
-				$classRef
-			) {
-				$hookObjectsArr[] = GeneralUtility::getUserObj($classRef);
-			}
-		}
-		if (
-			is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BaseController.php']['makeBasketInformation'])
-		) {
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BaseController.php']['makeBasketInformation'] as
-				$classRef
-			) {
-				$hookObjectsArr[] = GeneralUtility::getUserObj($classRef);
-			}
-		}
-		foreach ($hookObjectsArr as $hookObj) {
-			if (method_exists($hookObj, 'processMarkerTaxInformation')) {
-				$taxRateRows = $hookObj->processMarkerTaxInformation($taxRateTemplate, $basketObj, $this);
+		$hooks = HookFactory::getHooks('Controller/BaseController', 'makeBasketInformation');
+		foreach ($hooks as $hook) {
+			if (method_exists($hook, 'processMarkerTaxInformation')) {
+				$taxRateRows = $hook->processMarkerTaxInformation($taxRateTemplate, $basketObj, $this);
 			}
 		}
 
@@ -1149,9 +1043,9 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 		/**
 		 * Hook for processing Marker Array
 		 */
-		foreach ($hookObjectsArr as $hookObj) {
-			if (method_exists($hookObj, 'processMarkerBasketInformation')) {
-				$markerArray = $hookObj->processMarkerBasketInformation($markerArray, $basketObj, $this);
+		foreach ($hooks as $hook) {
+			if (method_exists($hook, 'processMarkerBasketInformation')) {
+				$markerArray = $hook->processMarkerBasketInformation($markerArray, $basketObj, $this);
 			}
 		}
 
@@ -1217,30 +1111,10 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 			), TRUE, TRUE, $this->conf['listPid']
 		);
 
-		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['makeLineView'])) {
-			GeneralUtility::deprecationLog(
-				'
-					hook
-					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_pibase.php\'][\'makeLineView\']
-					is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
-					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/BaseController.php\'][\'makeLineView\']
-				'
-			);
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['makeLineView'] as $classRef) {
-				$hookObj = & GeneralUtility::getUserObj($classRef);
-				if (method_exists($hookObj, 'processMarkerLineView')) {
-					$markerArray = $hookObj->processMarkerLineView($markerArray, $basketItemObj, $this);
-				}
-			}
-		}
-		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BaseController.php']['makeLineView'])) {
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BaseController.php']['makeLineView'] as
-				$classRef
-			) {
-				$hookObj = & GeneralUtility::getUserObj($classRef);
-				if (method_exists($hookObj, 'processMarkerLineView')) {
-					$markerArray = $hookObj->processMarkerLineView($markerArray, $basketItemObj, $this);
-				}
+		$hooks = HookFactory::getHooks('Controller/BaseController', 'makeLineView');
+		foreach ($hooks as $hook) {
+			if (method_exists($hook, 'processMarkerLineView')) {
+				$markerArray = $hook->processMarkerLineView($markerArray, $basketItemObj, $this);
 			}
 		}
 
@@ -1465,42 +1339,19 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 				$output = htmlspecialchars(strip_tags($value));
 		}
 
-		$hookObjectsArr = array();
-		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['renderValue'])) {
-			GeneralUtility::deprecationLog(
-				'
-					hook
-					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_pibase.php\'][\'renderValue\']
-					is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
-					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/BaseController.php\'][\'renderValue\']
-				'
-			);
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['renderValue'] as $classRef) {
-				$hookObjectsArr[] = & GeneralUtility::getUserObj($classRef);
-			}
-		}
-		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BaseController.php']['renderValue'])) {
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BaseController.php']['renderValue'] as
-				$classRef
-			) {
-				$hookObjectsArr[] = & GeneralUtility::getUserObj($classRef);
-			}
-		}
-
-		if (is_array($hookObjectsArr)) {
-			foreach ($hookObjectsArr as $hookObj) {
-				if (method_exists($hookObj, 'postRenderValue')) {
-					$output = $hookObj->postRenderValue(
-						$output, array(
-							$value,
-							$typoscriptType,
-							$typoscriptConfig,
-							$field,
-							$table,
-							$uid
-						)
-					);
-				}
+		$hooks = HookFactory::getHooks('Controller/BaseController', 'renderValue');
+		foreach ($hooks as $hook) {
+			if (method_exists($hook, 'postRenderValue')) {
+				$output = $hook->postRenderValue(
+					$output, array(
+						$value,
+						$typoscriptType,
+						$typoscriptConfig,
+						$field,
+						$table,
+						$uid
+					)
+				);
 			}
 		}
 
@@ -1572,28 +1423,10 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 
 		$markerArray = $this->generateMarkerArray($data, $typoscript);
 
-		$hookObjectsArr = array();
-		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['generalElement'])) {
-			GeneralUtility::deprecationLog('
-				hook
-				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_pibase.php\'][\'generalElement\']
-				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
-				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/BaseController.php\'][\'generalElement\']
-			');
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['generalElement'] as $classRef) {
-				$hookObjectsArr[] = & GeneralUtility::getUserObj($classRef);
-			}
-		}
-		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BaseController.php']['renderElement'])) {
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BaseController.php']['renderElement'] as
-				$classRef
-			) {
-				$hookObjectsArr[] = & GeneralUtility::getUserObj($classRef);
-			}
-		}
-		foreach ($hookObjectsArr as $hookObj) {
-			if (method_exists($hookObj, 'additionalMarkerElement')) {
-				$markerArray = $hookObj->additionalMarkerElement($markerArray, $element, $this);
+		$hooks = HookFactory::getHooks('Controller/BaseController', 'renderElement');
+		foreach ($hooks as $hook) {
+			if (method_exists($hook, 'additionalMarkerElement')) {
+				$markerArray = $hook->additionalMarkerElement($markerArray, $element, $this);
 			}
 		}
 
@@ -1629,23 +1462,8 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 		if (!is_array($matrix)) {
 			return $return;
 		}
-		$hookObj = array();
-		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['formatAttributeValue']) {
-			GeneralUtility::deprecationLog('
-				hook
-				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_pibase.php\'][\'formatAttributeValue\']
-				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
-				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/BaseController.php\'][\'formatAttributeValue\']
-			');
-			$hookObj = GeneralUtility::getUserObj(
-				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['formatAttributeValue']
-			);
-		}
-		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BaseController.php']['formatAttributeValue']) {
-			$hookObj = GeneralUtility::getUserObj(
-				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BaseController.php']['formatAttributeValue']
-			);
-		}
+
+		$hookObject = HookFactory::getHook('Controller/BaseController', 'formatAttributeValue');
 
 		$i = 0;
 		$attributeValues = count($matrix[$myAttributeUid]['values']);
@@ -1661,8 +1479,8 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 					$return2 = sprintf($matrix[$myAttributeUid]['valueformat'], $value);
 				}
 			}
-			if ($hookObj && method_exists($hookObj, 'formatAttributeValue')) {
-				$return2 = $hookObj->formatAttributeValue(
+			if (is_object($hookObject) && method_exists($hookObject, 'formatAttributeValue')) {
+				$return2 = $hookObject->formatAttributeValue(
 					$key, $myAttributeUid, $matrix[$myAttributeUid]['valueuidlist'][$key], $return2, $this
 				);
 			}
@@ -1774,36 +1592,12 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	public function renderProductsForList(array $categoryProducts, array $templateMarker, $iterations, $typoscriptMarker = '') {
 		$markerArray = array();
 
-		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['renderProductsForList'])) {
-			GeneralUtility::deprecationLog('
-				hook
-				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_pibase.php\'][\'renderProductsForList\']
-				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
-				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/BaseController.php\'][\'renderProductsForList\']
-			');
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['renderProductsForList'] as
-				$classRef
-			) {
-				$hookObj = & GeneralUtility::getUserObj($classRef);
-				if (method_exists($hookObj, 'preProcessorProductsListView')) {
-					$markerArray = $hookObj->preProcessorProductsListView(
-						$categoryProducts, $templateMarker, $iterations, $typoscriptMarker, $this
-					);
-				}
-			}
-		}
-		if (
-			is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BaseController.php']['renderProductsForList'])
-		) {
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BaseController.php']['renderProductsForList'] as
-				$classRef
-			) {
-				$hookObj = & GeneralUtility::getUserObj($classRef);
-				if (method_exists($hookObj, 'preProcessorProductsListView')) {
-					$markerArray = $hookObj->preProcessorProductsListView(
-						$categoryProducts, $templateMarker, $iterations, $typoscriptMarker, $this
-					);
-				}
+		$hooks = HookFactory::getHooks('Controller/BaseController', 'renderProductsForList');
+		foreach ($hooks as $hook) {
+			if (method_exists($hook, 'preProcessorProductsListView')) {
+				$markerArray = $hook->preProcessorProductsListView(
+					$categoryProducts, $templateMarker, $iterations, $typoscriptMarker, $this
+				);
 			}
 		}
 
@@ -1880,25 +1674,7 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 			return $this->error('renderProduct', __LINE__, 'No ArticleMarker defined in renderProduct ');
 		}
 
-		$hookObjectsArr = array();
-		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['product'])) {
-			GeneralUtility::deprecationLog('
-				hook
-				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_pibase.php\'][\'product\']
-				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
-				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/BaseController.php\'][\'renderProduct\']
-			');
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['product'] as $classRef) {
-				$hookObjectsArr[] = & GeneralUtility::getUserObj($classRef);
-			}
-		}
-		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BaseController.php']['renderProduct'])) {
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/BaseController.php']['renderProduct'] as
-				$classRef
-			) {
-				$hookObjectsArr[] = & GeneralUtility::getUserObj($classRef);
-			}
-		}
+		$hooks = HookFactory::getHooks('Controller/BaseController', 'renderProduct');
 
 		$data = $product->returnAssocArray();
 
@@ -1966,7 +1742,7 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 		if (is_numeric($this->piVars['mDepth'])) {
 			$linkArray['mDepth'] = $this->piVars['mDepth'];
 		}
-		foreach ($hookObjectsArr as $hookObj) {
+		foreach ($hooks as $hookObj) {
 			if (method_exists($hookObj, 'postProcessLinkArray')) {
 				$linkArray = $hookObj->postProcessLinkArray($linkArray, $product, $this);
 			}
@@ -2031,12 +1807,12 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 			$this->currency
 		);
 
-		foreach ($hookObjectsArr as $hookObj) {
+		foreach ($hooks as $hookObj) {
 			if (method_exists($hookObj, 'additionalMarkerProduct')) {
 				$markerArray = $hookObj->additionalMarkerProduct($markerArray, $product, $this);
 			}
 		}
-		foreach ($hookObjectsArr as $hookObj) {
+		foreach ($hooks as $hookObj) {
 			if (method_exists($hookObj, 'additionalSubpartsProduct')) {
 				$subpartArray = $hookObj->additionalSubpartsProduct($subpartArray, $product, $this);
 			}
@@ -2049,7 +1825,7 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 			);
 		}
 
-		foreach ($hookObjectsArr as $hookObj) {
+		foreach ($hooks as $hookObj) {
 			if (method_exists($hookObj, 'ModifyContentProduct')) {
 				$content = $hookObj->ModifyContentProduct($content, $product, $this);
 			}

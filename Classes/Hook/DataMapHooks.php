@@ -327,7 +327,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 		$incomingFieldArray['crdate'] = NULL;
 
 		if (isset($incomingFieldArray['newpid'])) {
-			$hookObjectsArr = $this->getMoveOrderHooks();
+			$hooks = \CommerceTeam\Commerce\Factory\HookFactory::getHooks('Hook/DataMapHooks', 'preProcessOrder');
 
 			$database = $this->getDatabaseConnection();
 
@@ -346,7 +346,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 						$incomingFieldArray['order_sys_language_uid'] = $order['order_sys_language_uid'];
 					}
 
-					foreach ($hookObjectsArr as $hookObj) {
+					foreach ($hooks as $hookObj) {
 						if (method_exists($hookObj, 'moveOrders_preMoveOrder')) {
 							$hookObj->moveOrders_preMoveOrder($order, $incomingFieldArray);
 						}
@@ -376,7 +376,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 					$order['tstamp'] = time();
 					$database->exec_UPDATEquery('tx_commerce_orders', 'uid=' . $order['uid'], $order);
 
-					foreach ($hookObjectsArr as $hookObj) {
+					foreach ($hooks as $hookObj) {
 						if (method_exists($hookObj, 'moveOrders_postMoveOrder')) {
 							$hookObj->moveOrders_postMoveOrder($order, $incomingFieldArray);
 						}
@@ -1655,36 +1655,6 @@ class Tx_Commerce_Hook_DataMapHooks {
 		}
 
 		return $result;
-	}
-
-	/**
-	 * Get move order hooks
-	 *
-	 * @return array
-	 */
-	protected function getMoveOrderHooks() {
-		$hookObjectsArr = array();
-
-		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Hook/class.tx_commerce_dmhooks.php']['moveOrders'])) {
-			GeneralUtility::deprecationLog('
-				hook
-				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Hook/class.tx_commerce_dmhooks.php\'][\'moveOrders\']
-				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
-				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Hook/DataMapHooks.php\'][\'moveOrders\']
-			');
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Hook/class.tx_commerce_dmhooks.php']['moveOrders'] as
-					$classRef) {
-				$hookObjectsArr[] = GeneralUtility::getUserObj($classRef);
-			}
-		}
-
-		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Hook/DataMapHooks.php']['moveOrders'])) {
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Hook/DataMapHooks.php']['moveOrders'] as $classRef) {
-				$hookObjectsArr[] = GeneralUtility::getUserObj($classRef);
-			}
-		}
-
-		return $hookObjectsArr;
 	}
 
 

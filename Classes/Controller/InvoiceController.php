@@ -12,6 +12,8 @@
  * The TYPO3 project - inspiring people to share!
  */
 
+use \CommerceTeam\Commerce\Factory\HookFactory;
+
 /**
  * Plugin 'commerce_invoice' for the 'commerce_invoice' extension.
  *
@@ -103,7 +105,7 @@ class Tx_Commerce_Controller_InvoiceController extends Tx_Commerce_Controller_Ba
 
 		// If it's an automated process, no caching
 		if ($_SERVER['REMOTE_ADDR'] == $_SERVER['SERVER_ADDR']) {
-			$$frontend->set_no_cache();
+			$frontend->set_no_cache();
 		}
 
 		// Lets make this multilingual, eh?
@@ -129,18 +131,18 @@ class Tx_Commerce_Controller_InvoiceController extends Tx_Commerce_Controller_Ba
 			return $this->error('init', __LINE__, 'Template File not defined in TS: ');
 		}
 
-			// Grab the template
+		// Grab the template
 		$this->templateCode = $this->cObj->fileResource($this->conf['templateFile']);
 		if (empty($this->templateCode)) {
 			return $this->error('init', __LINE__, 'Template File not loaded, maybe it doesn\'t exist: ' . $this->conf['templateFile']);
 		}
 
-			// Get subparts
+		// Get subparts
 		$templateMarker = '###TEMPLATE###';
 		$this->template['invoice'] = $this->cObj->getSubpart($this->templateCode, $templateMarker);
 		$this->template['item'] = $this->cObj->getSubpart($this->template['invoice'], '###LISTING_ARTICLE###');
 
-			// Markers and content, ready to be populated
+		// Markers and content, ready to be populated
 		$markerArray = array();
 		$this->content = '';
 		$this->order = $this->getOrderData();
@@ -174,30 +176,12 @@ class Tx_Commerce_Controller_InvoiceController extends Tx_Commerce_Controller_Ba
 			$markerArray['###INVOICE_INTRO_MESSAGE###'] = $this->cObj->TEXT($this->conf['intro.']);
 			$markerArray['###INVOICE_THANKYOU###'] = $this->cObj->TEXT($this->conf['thankyou.']);
 
-				// Hook to process new/changed marker
-			$hookObjectsArr = array();
-			if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi6/class.tx_commerce_pi6.php']['invoice'])) {
-				\TYPO3\CMS\Core\Utility\GeneralUtility::deprecationLog('
-					hook
-					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/pi6/class.tx_commerce_pi6.php\'][\'invoice\']
-					is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
-					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/InvoiceController.php\'][\'invoice\']
-				');
-				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi6/class.tx_commerce_pi6.php']['invoice'] as $classRef) {
-					$hookObjectsArr[] = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
-				}
-			}
-			if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/InvoiceController.php']['invoice'])) {
-				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/InvoiceController.php']['invoice'] as
-					$classRef
-				) {
-					$hookObjectsArr[] = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
-				}
-			}
+			// Hook to process new/changed marker
+			$hooks = HookFactory::getHooks('Controller/InvoiceController', 'main');
 			$subpartArray = array();
-			foreach ($hookObjectsArr as $hookObj) {
-				if (method_exists($hookObj, 'additionalMarker')) {
-					$markerArray = $hookObj->additionalMarker($markerArray, $subpartArray, $this);
+			foreach ($hooks as $hook) {
+				if (method_exists($hook, 'additionalMarker')) {
+					$markerArray = $hook->additionalMarker($markerArray, $subpartArray, $this);
 				}
 			}
 
@@ -212,7 +196,7 @@ class Tx_Commerce_Controller_InvoiceController extends Tx_Commerce_Controller_Ba
 			);
 			$this->content = $this->substituteMarkerArrayNoCached($this->template['invoice'], array(), $subpartArray);
 
-				// Buid content from template + array
+			// Buid content from template + array
 			$this->content = $this->cObj->substituteSubpart($this->content, '###LISTING_PAYMENT_ROW###', $this->orderPayment);
 			$this->content = $this->cObj->substituteSubpart($this->content, '###LISTING_SHIPPING_ROW###', $this->orderDelivery);
 			$this->content = $this->cObj->substituteMarkerArray($this->content, $markerArray);
@@ -416,7 +400,7 @@ class Tx_Commerce_Controller_InvoiceController extends Tx_Commerce_Controller_Ba
 		$content = '';
 		while (($row = $database->sql_fetch_assoc($res))) {
 			$subpart = $this->cObj->getSubpart($this->templateCode, '###LISTING_' . $prefix . 'ROW###');
-			// @todo Use $markerArray = $this->generateMarkerArray($row,'',$prefix);
+			// @todo Use $markerArray = $this->generateMarkerArray($row, '', $prefix);
 			$markerArray['###' . $prefix . 'AMOUNT###'] = $row['amount'];
 			$markerArray['###' . $prefix . 'METHOD###'] = $row['title'];
 			$markerArray['###' . $prefix . 'COST###'] = Tx_Commerce_ViewHelpers_Money::format(

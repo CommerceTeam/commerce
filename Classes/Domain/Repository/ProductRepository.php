@@ -72,67 +72,16 @@ class Tx_Commerce_Domain_Repository_ProductRepository extends Tx_Commerce_Domain
 		$return = FALSE;
 		if ($uid) {
 			$localOrderField = $this->orderField;
-			if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_product.php']['articleOrder']) {
-				\TYPO3\CMS\Core\Utility\GeneralUtility::deprecationLog('
-					hook
-					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_product.php\'][\'articleOrder\']
-					is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
-					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Domain/Repository/ProductRepository.php\'][\'storeDataToDatabase\']
-				');
-				$hookObj = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj(
-					$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_product.php']['articleOrder']
-				);
-				if (method_exists($hookObj, 'articleOrder')) {
-					$localOrderField = $hookObj->articleOrder($this->orderField);
-				}
-			}
-			if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Repository/ProductRepository.php']['articleOrder']) {
-				$hookObj = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj(
-					$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Repository/ProductRepository.php']['articleOrder']
-				);
-				if (method_exists($hookObj, 'articleOrder')) {
-					$localOrderField = $hookObj->articleOrder($this->orderField);
-				}
+			$hookObject = \CommerceTeam\Commerce\Factory\HookFactory::getHook('Domain/Repository/ProductRepository', 'getArticles');
+			if (is_object($hookObject) && method_exists($hookObject, 'articleOrder')) {
+				$localOrderField = $hookObject->articleOrder($this->orderField);
 			}
 
 			$where = 'uid_product = ' . $uid . $this->enableFields('tx_commerce_articles', $GLOBALS['TSFE']->showHiddenRecords);
 			$additionalWhere = '';
 
-			if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_product.php']['aditionalWhere']) {
-				\TYPO3\CMS\Core\Utility\GeneralUtility::deprecationLog('
-					hook
-					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_product.php\'][\'aditionalWhere\']
-					is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
-					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Domain/Repository/ProductRepository.php\'][\'additionalWhere\']
-				');
-				$hookObj = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj(
-					$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_product.php']['aditionalWhere']
-				);
-				if (method_exists($hookObj, 'aditionalWhere')) {
-					$additionalWhere = $hookObj->aditionalWhere($where);
-				}
-			}
-			if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_product.php']['additionalWhere']) {
-				\TYPO3\CMS\Core\Utility\GeneralUtility::deprecationLog('
-					hook
-					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_product.php\'][\'additionalWhere\']
-					is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
-					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Domain/Repository/ProductRepository.php\'][\'additionalWhere\']
-				');
-				$hookObj = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj(
-					$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_product.php']['additionalWhere']
-				);
-				if (method_exists($hookObj, 'additionalWhere')) {
-					$additionalWhere = $hookObj->additionalWhere($where);
-				}
-			}
-			if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Repository/ProductRepository.php']['additionalWhere']) {
-				$hookObj = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj(
-					$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Repository/ProductRepository.php']['additionalWhere']
-				);
-				if (method_exists($hookObj, 'additionalWhere')) {
-					$additionalWhere = $hookObj->additionalWhere($where);
-				}
+			if (is_object($hookObject) && method_exists($hookObject, 'additionalWhere')) {
+				$additionalWhere = $hookObject->additionalWhere($where);
 			}
 
 			$database = $this->getDatabaseConnection();

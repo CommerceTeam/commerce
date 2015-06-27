@@ -713,26 +713,13 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 				$itemArray[] = $value . '|' . $category->getTitle();
 			} else {
 				// Hook:
-				if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/treelib/class.tx_commerce_treelib_tceforms.php']['processItemArrayForBrowseableTreeDefault'])) {
-					GeneralUtility::deprecationLog('
-						hook
-						$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/treelib/class.tx_commerce_treelib_tceforms.php\'][\'processItemArrayForBrowseableTreeDefault\']
-						is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
-						$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/ViewHelpers/TreelibTceforms.php\'][\'processItemArrayForBrowseableTreeDefault\']
-					');
-					foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/treelib/class.tx_commerce_treelib_tceforms.php']['processItemArrayForBrowseableTreeDefault'] as $classRef) {
-						$hookObj = & GeneralUtility::getUserObj($classRef);
-						if (method_exists($hookObj, 'processDefault')) {
-							$itemArray[] = $hookObj->processDefault($itemFormElValue, $table, $uid);
-						}
-					}
-				}
-				if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/ViewHelpers/TreelibTceforms.php']['processItemArrayForBrowseableTreeDefault'])) {
-					foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/ViewHelpers/TreelibTceforms.php']['processItemArrayForBrowseableTreeDefault'] as $classRef) {
-						$hookObj = & GeneralUtility::getUserObj($classRef);
-						if (method_exists($hookObj, 'processDefault')) {
-							$itemArray[] = $hookObj->processDefault($itemFormElValue, $table, $uid);
-						}
+				$hooks = \CommerceTeam\Commerce\Factory\HookFactory::getHooks(
+					'ViewHelpers/TreelibTceforms',
+					'processItemArrayForBrowseableTreeDefault'
+				);
+				foreach ($hooks as $hook) {
+					if (method_exists($hook, 'processDefault')) {
+						$itemArray[] = $hook->processDefault($itemFormElValue, $table, $uid);
 					}
 				}
 			}

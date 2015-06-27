@@ -294,29 +294,8 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 		// are existing and we can immediately copy
 		$noActionReq = FALSE;
 
-		// First prepare user defined objects (if any)
-		// for hooks which extend this function:
-		$hookObjectsArr = array();
-		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/mod_cce/class.tx_commerce_cce_db.php']['copyWizardClass'])) {
-			\TYPO3\CMS\Core\Utility\GeneralUtility::deprecationLog('
-				hook
-				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/mod_cce/class.tx_commerce_cce_db.php\'][\'copyWizardClass\']
-				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
-				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Utility/DataHandlerUtility.php\'][\'copyWizard\']
-			');
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/mod_cce/class.tx_commerce_cce_db.php']['copyWizardClass'] as
-				$classRef
-			) {
-				$hookObjectsArr[] = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
-			}
-		}
-		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Utility/DataHandlerUtility.php']['copyWizard'])) {
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Utility/DataHandlerUtility.php']['copyWizard'] as
-				$classRef
-			) {
-				$hookObjectsArr[] = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
-			}
-		}
+		// First prepare user defined hooks
+		$hooks = \CommerceTeam\Commerce\Factory\HookFactory::getHooks('Utility/DataHandlerUtility', 'showCopyWizard');
 
 		switch ($command) {
 			case 'overwrite':
@@ -374,7 +353,7 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 				// Hook: beforeFormClose
 				$userIgnoreClose = FALSE;
 
-				foreach ($hookObjectsArr as $hookObj) {
+				foreach ($hooks as $hookObj) {
 					if (method_exists($hookObj, 'beforeFormClose')) {
 						// set $user_ignoreClose to true if you want to
 						// force the script to print out the execute button
@@ -462,7 +441,7 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 				// Hook: beforeFormClose
 				$userIgnoreClose = FALSE;
 
-				foreach ($hookObjectsArr as $hookObj) {
+				foreach ($hooks as $hookObj) {
 					if (method_exists($hookObj, 'beforeFormClose')) {
 						$str .= $hookObj->beforeFormClose($uidClip, $uidTarget, $command, $userIgnoreClose);
 					}
@@ -510,7 +489,7 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 		}
 
 		// Hook: beforeTransform
-		foreach ($hookObjectsArr as $hookObj) {
+		foreach ($hooks as $hookObj) {
 			if (method_exists($hookObj, 'beforeTransform')) {
 				$str .= $hookObj->beforeTransform($uidClip, $uidTarget, $command);
 			}
@@ -545,31 +524,11 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 	 * @return void
 	 */
 	protected function commitCommand($uidClip, $uidTarget, $command) {
-		// First prepare user defined objects (if any)
-		// for hooks which extend this function:
-		$hookObjectsArr = array();
-		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/mod_cce/class.tx_commerce_cce_db.php']['commitCommandClass'])) {
-			\TYPO3\CMS\Core\Utility\GeneralUtility::deprecationLog('
-				hook
-				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/mod_cce/class.tx_commerce_cce_db.php\'][\'storeDataToDatabase\']
-				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
-				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Utility/DataHandlerUtility.php\'][\'commitCommand\']
-			');
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/mod_cce/class.tx_commerce_cce_db.php']['commitCommandClass'] as
-				$classRef
-			) {
-				$hookObjectsArr[] = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
-			}
-		}
-		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Utility/DataHandlerUtility.php']['commitCommand'])) {
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Utility/DataHandlerUtility.php']['commitCommand'] as
-				$classRef
-			) {
-				$hookObjectsArr[] = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
-			}
-		}
+		// First prepare user defined hooks
+		$hooks = \CommerceTeam\Commerce\Factory\HookFactory::getHooks('Utility/DataHandlerUtility', 'commitCommand');
+
 		// Hook: beforeCommit
-		foreach ($hookObjectsArr as $hookObj) {
+		foreach ($hooks as $hookObj) {
 			if (method_exists($hookObj, 'beforeCommit')) {
 				$hookObj->beforeCommit($uidClip, $uidTarget, $command);
 			}
@@ -594,7 +553,7 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 		}
 
 		// Hook: afterCommit
-		foreach ($hookObjectsArr as $hookObj) {
+		foreach ($hooks as $hookObj) {
 			if (method_exists($hookObj, 'afterCommit')) {
 				$hookObj->afterCommit($uidClip, $uidTarget, $command);
 			}

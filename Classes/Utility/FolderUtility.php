@@ -49,20 +49,6 @@ class Tx_Commerce_Utility_FolderUtility {
 		Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Waiting', 'commerce', $orderPid);
 		Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Delivered', 'commerce', $orderPid);
 
-		$hookObjectsArr = array();
-		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/class.tx_commerce_create_folder.php']['postcreatefolder'])) {
-			\TYPO3\CMS\Core\Utility\GeneralUtility::deprecationLog('
-				hook
-				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/class.tx_commerce_create_folder.php\'][\'postcreatefolder\']
-				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0 as no method was used
-			');
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/class.tx_commerce_create_folder.php']['postcreatefolder'] as
-				$classRef
-			) {
-				$hookObjectsArr[] = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
-			}
-		}
-
 		// Create System Product for payment and other things.
 		$now = time();
 		$addArray = array('tstamp' => $now, 'crdate' => $now, 'pid' => $prodPid);
@@ -78,19 +64,7 @@ class Tx_Commerce_Utility_FolderUtility {
 		);
 		$catUid = $database->sql_fetch_assoc($res);
 		$catUid = $catUid['uid'];
-		$hookObjectsArr = array();
-		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/class.tx_commerce_create_folder.php']['precreatesyscategory'])) {
-			\TYPO3\CMS\Core\Utility\GeneralUtility::deprecationLog('
-				hook
-				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/class.tx_commerce_create_folder.php\'][\'precreatesyscategory\']
-				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0 as no method was used
-			');
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/class.tx_commerce_create_folder.php']['precreatesyscategory'] as
-				$classRef
-			) {
-				$hookObjectsArr[] = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
-			}
-		}
+
 		if (!$res || (int) $catUid == 0) {
 			$catArray = $addArray;
 			$catArray['title'] = 'SYSTEM';
@@ -98,35 +72,10 @@ class Tx_Commerce_Utility_FolderUtility {
 			$database->exec_INSERTquery('tx_commerce_categories', $catArray);
 			$catUid = $database->sql_insert_id();
 		}
-		$hookObjectsArr = array();
-		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/class.tx_commerce_create_folder.php']['postcreatesyscategory'])) {
-			\TYPO3\CMS\Core\Utility\GeneralUtility::deprecationLog('
-				hook
-				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/class.tx_commerce_create_folder.php\'][\'postcreatesyscategory\']
-				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0 as no method was used
-			');
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/class.tx_commerce_create_folder.php']['postcreatesyscategory'] as
-				$classRef
-			) {
-				$hookObjectsArr[] = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
-			}
-		}
+
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['SYSPRODUCTS'])) {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['SYSPRODUCTS'] as $type => $_) {
 				self::makeSystemCatsProductsArtcilesAndPrices($catUid, strtoupper($type), $addArray);
-			}
-		}
-		$hookObjectsArr = array();
-		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/class.tx_commerce_create_folder.php']['postcreatediliveryarticles'])) {
-			\TYPO3\CMS\Core\Utility\GeneralUtility::deprecationLog('
-				hook
-				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/class.tx_commerce_create_folder.php\'][\'postcreatediliveryarticles\']
-				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0 as no method was used
-			');
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/class.tx_commerce_create_folder.php']['postcreatediliveryarticles'] as
-				$classRef
-			) {
-				$hookObjectsArr[] = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
 			}
 		}
 	}

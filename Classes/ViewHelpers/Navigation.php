@@ -635,27 +635,9 @@ class Tx_Commerce_ViewHelpers_Navigation {
 		/**
 		 * Add some hooks for custom sorting
 		 */
-		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_db_navigation.php']['sortingOrder']) {
-			GeneralUtility::deprecationLog('
-				hook
-				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_db_navigation.php\'][\'sortingOrder\']
-				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
-				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/ViewHelpers/Navigation.php\'][\'sortingOrder\']
-			');
-			$hookObj = & GeneralUtility::getUserObj(
-				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_db_navigation.php']['sortingOrder']
-			);
-			if (method_exists($hookObj, 'sortingOrder')) {
-				$sorting = $hookObj->sortingOrder($sorting, $uidRoot, $mainTable, $tableMm, $mDepth, $path, $this);
-			}
-		}
-		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/ViewHelpers/Navigation.php']['sortingOrder']) {
-			$hookObj = & GeneralUtility::getUserObj(
-				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/ViewHelpers/Navigation.php']['sortingOrder']
-			);
-			if (method_exists($hookObj, 'sortingOrder')) {
-				$sorting = $hookObj->sortingOrder($sorting, $uidRoot, $mainTable, $tableMm, $mDepth, $path, $this);
-			}
+		$hookObject = \CommerceTeam\Commerce\Factory\HookFactory::getHook('ViewHelpers/Navigation', 'makeArrayPostRender');
+		if (is_object($hookObject) && method_exists($hookObject, 'sortingOrder')) {
+			$sorting = $hookObject->sortingOrder($sorting, $uidRoot, $mainTable, $tableMm, $mDepth, $path, $this);
 		}
 
 		$sql .= $sorting;
@@ -819,27 +801,9 @@ class Tx_Commerce_ViewHelpers_Navigation {
 		/**
 		 * Add some hooks for custom sorting
 		 */
-		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_db_navigation.php']['sortingOrder']) {
-			GeneralUtility::deprecationLog('
-				hook
-				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_db_navigation.php\'][\'sortingOrder\']
-				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
-				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/ViewHelpers/Navigation.php\'][\'sortingOrder\']
-			');
-			$hookObj = & GeneralUtility::getUserObj(
-				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_db_navigation.php']['sortingOrder']
-			);
-			if (method_exists($hookObj, 'sortingOrder')) {
-				$sorting = $hookObj->sortingOrder($sorting, $categoryUid, $mainTable, $mmTable, $mDepth, $path, $this);
-			}
-		}
-		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/ViewHelpers/Navigation.php']['sortingOrder']) {
-			$hookObj = & GeneralUtility::getUserObj(
-				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/ViewHelpers/Navigation.php']['sortingOrder']
-			);
-			if (method_exists($hookObj, 'sortingOrder')) {
-				$sorting = $hookObj->sortingOrder($sorting, $categoryUid, $mainTable, $mmTable, $mDepth, $path, $this);
-			}
+		$hookObject = \CommerceTeam\Commerce\Factory\HookFactory::getHook('ViewHelpers/Navigation', 'makeSubChildArrayPostRender');
+		if (is_object($hookObject) && method_exists($hookObject, 'sortingOrder')) {
+			$sorting = $hookObject->sortingOrder($sorting, $categoryUid, $mainTable, $mmTable, $mDepth, $path, $this);
 		}
 
 		$sql .= $sorting;

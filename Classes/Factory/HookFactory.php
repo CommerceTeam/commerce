@@ -45,9 +45,32 @@ class HookFactory {
 	 * @param string $className Class name
 	 * @param string $hookName Hook name
 	 *
+	 * @return NULL|object
+	 */
+	public static function getHook($className, $hookName) {
+		$className = 'commerce/' . $className;
+		$result = NULL;
+
+		static::mapClassName($className);
+		static::mapHookName($className, $hookName);
+
+		$extConf = & $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'];
+		if (isset($extConf[$className][$hookName])) {
+			$result = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($extConf[$className][$hookName]);
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Get hook objects
+	 *
+	 * @param string $className Class name
+	 * @param string $hookName Hook name
+	 *
 	 * @return array
 	 */
-	public static function getHookObjects($className, $hookName) {
+	public static function getHooks($className, $hookName) {
 		$className = 'commerce/' . $className;
 		$result = array();
 

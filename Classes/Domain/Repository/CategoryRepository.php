@@ -215,28 +215,9 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 		// We are using $this->databaseTable.sorting
 
 		$localOrderField = $this->categoryOrderField;
-
-		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_db_category.php']['categoryOrder']) {
-			GeneralUtility::deprecationLog('
-				hook
-				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_db_category.php\'][\'categoryOrder\']
-				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
-				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Domain/Repository/CategoryRepository.php\'][\'categoryOrder\']
-			');
-			$hookObj = GeneralUtility::getUserObj(
-				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_db_category.php']['categoryOrder']
-			);
-			if (method_exists($hookObj, 'categoryOrder')) {
-				$localOrderField = $hookObj->categoryOrder($this->categoryOrderField, $this);
-			}
-		}
-		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Repository/CategoryRepository.php']['categoryOrder']) {
-			$hookObj = GeneralUtility::getUserObj(
-				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Repository/CategoryRepository.php']['categoryOrder']
-			);
-			if (method_exists($hookObj, 'categoryOrder')) {
-				$localOrderField = $hookObj->categoryOrder($this->categoryOrderField, $this);
-			}
+		$hookObject = \CommerceTeam\Commerce\Factory\HookFactory::getHook('Domain/Repository/CategoryRepository', 'getChildCategories');
+		if (is_object($hookObject) && method_exists($hookObject, 'categoryOrder')) {
+			$localOrderField = $hookObject->categoryOrder($this->categoryOrderField, $this);
 		}
 
 		$additionalWhere = $this->enableFields($this->databaseTable, $GLOBALS['TSFE']->showHiddenRecords);
@@ -274,27 +255,8 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 				}
 			}
 
-			if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_db_category.php']['categoryQueryPostHook']) {
-				GeneralUtility::deprecationLog('
-					hook
-					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_db_category.php\'][\'categoryQueryPostHook\']
-					is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
-					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Domain/Repository/CategoryRepository.php\'][\'categoryQueryPostHook\']
-				');
-				$hookObj = GeneralUtility::getUserObj(
-					$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_db_category.php']['categoryQueryPostHook']
-				);
-				if (is_object($hookObj) && method_exists($hookObj, 'categoryQueryPostHook')) {
-					$data = $hookObj->categoryQueryPostHook($data, $this);
-				}
-			}
-			if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Repository/CategoryRepository.php']['categoryQueryPostHook']) {
-				$hookObj = GeneralUtility::getUserObj(
-					$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Repository/CategoryRepository.php']['categoryQueryPostHook']
-				);
-				if (is_object($hookObj) && method_exists($hookObj, 'categoryQueryPostHook')) {
-					$data = $hookObj->categoryQueryPostHook($data, $this);
-				}
+			if (is_object($hookObject) && method_exists($hookObject, 'categoryQueryPostHook')) {
+				$data = $hookObject->categoryQueryPostHook($data, $this);
 			}
 
 			$database->sql_free_result($result);
@@ -327,27 +289,9 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 
 		$localOrderField = $this->productOrderField;
 
-		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_db_category.php']['productOrder']) {
-			GeneralUtility::deprecationLog('
-				hook
-				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_db_category.php\'][\'productOrder\']
-				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
-				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Domain/Repository/CategoryRepository.php\'][\'productOrder\']
-			');
-			$hookObj = GeneralUtility::getUserObj(
-				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_db_category.php']['productOrder']
-			);
-			if (is_object($hookObj) && method_exists($hookObj, 'productOrder')) {
-				$localOrderField = $hookObj->productOrder($localOrderField, $this);
-			}
-		}
-		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Repository/CategoryRepository.php']['productOrder']) {
-			$hookObj = GeneralUtility::getUserObj(
-				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Repository/CategoryRepository.php']['productOrder']
-			);
-			if (is_object($hookObj) && method_exists($hookObj, 'productOrder')) {
-				$localOrderField = $hookObj->productOrder($localOrderField, $this);
-			}
+		$hookObject = \CommerceTeam\Commerce\Factory\HookFactory::getHook('Domain/Repository/CategoryRepository', 'getChildProducts');
+		if (is_object($hookObject) && method_exists($hookObject, 'productOrder')) {
+			$localOrderField = $hookObject->productOrder($localOrderField, $this);
 		}
 
 		$whereClause = 'AND tx_commerce_products_categories_mm.uid_foreign = ' . (int) $uid . '
@@ -370,27 +314,8 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 			'LIMIT' => ''
 		);
 
-		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_db_category.php']['productQueryPreHook']) {
-			GeneralUtility::deprecationLog('
-				hook
-				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_db_category.php\'][\'productQueryPreHook\']
-				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
-				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Domain/Repository/CategoryRepository.php\'][\'productQueryPreHook\']
-			');
-			$hookObj = GeneralUtility::getUserObj(
-				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_db_category.php']['productQueryPreHook']
-			);
-			if (is_object($hookObj) && method_exists($hookObj, 'productQueryPreHook')) {
-				$queryArray = $hookObj->productQueryPreHook($queryArray, $this);
-			}
-		}
-		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Repository/CategoryRepository.php']['productQueryPreHook']) {
-			$hookObj = GeneralUtility::getUserObj(
-				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Repository/CategoryRepository.php']['productQueryPreHook']
-			);
-			if (is_object($hookObj) && method_exists($hookObj, 'productQueryPreHook')) {
-				$queryArray = $hookObj->productQueryPreHook($queryArray, $this);
-			}
+		if (is_object($hookObject) && method_exists($hookObject, 'productQueryPreHook')) {
+			$queryArray = $hookObject->productQueryPreHook($queryArray, $this);
 		}
 
 		$database = $this->getDatabaseConnection();
@@ -417,27 +342,8 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 			}
 			$database->sql_free_result($result);
 
-			if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_db_category.php']['productQueryPostHook']) {
-				GeneralUtility::deprecationLog('
-					hook
-					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_db_category.php\'][\'productQueryPostHook\']
-					is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
-					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Domain/Repository/CategoryRepository.php\'][\'productQueryPostHook\']
-				');
-				$hookObj = GeneralUtility::getUserObj(
-					$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_db_category.php']['productQueryPostHook']
-				);
-				if (is_object($hookObj) && method_exists($hookObj, 'productQueryPostHook')) {
-					$data = $hookObj->productQueryPostHook($data, $this);
-				}
-			}
-			if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Repository/CategoryRepository.php']['productQueryPostHook']) {
-				$hookObj = GeneralUtility::getUserObj(
-					$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Repository/CategoryRepository.php']['productQueryPostHook']
-				);
-				if (is_object($hookObj) && method_exists($hookObj, 'productQueryPostHook')) {
-					$data = $hookObj->productQueryPostHook($data, $this);
-				}
+			if (is_object($hookObject) && method_exists($hookObject, 'productQueryPostHook')) {
+				$data = $hookObject->productQueryPostHook($data, $this);
 			}
 
 			$return = $data;

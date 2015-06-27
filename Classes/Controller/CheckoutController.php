@@ -11,7 +11,9 @@
  *
  * The TYPO3 project - inspiring people to share!
  */
+
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use \CommerceTeam\Commerce\Factory\HookFactory;
 
 /**
  * Plugin 'checkout' for the 'commerce' extension.
@@ -186,10 +188,10 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		$this->checkoutSteps[3] = 'listing';
 		$this->checkoutSteps[4] = 'finish';
 
-		$hookObjectsArr = $this->getHookObjectArray('init');
-		foreach ($hookObjectsArr as $hookObj) {
-			if (method_exists($hookObj, 'CheckoutSteps')) {
-				$hookObj->CheckoutSteps($this->checkoutSteps, $this);
+		$hooks = HookFactory::getHooks('Controller/CheckoutController', 'init');
+		foreach ($hooks as $hook) {
+			if (method_exists($hook, 'CheckoutSteps')) {
+				$hook->CheckoutSteps($this->checkoutSteps, $this);
 			}
 		}
 	}
@@ -212,7 +214,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 
 		$this->debug($this->piVars, 'piVars', __FILE__ . ' ' . __LINE__);
 
-		$hookObjectsArr = $this->getHookObjectArray('main');
+		$hooks = HookFactory::getHooks('Controller/CheckoutController', 'main');
 
 		// Set basket to readonly, if set in extension configuration
 		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['extConf']['lockBasket'] == 1) {
@@ -241,7 +243,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		}
 
 		// Hook for handling own steps and information
-		foreach ($hookObjectsArr as $hookObj) {
+		foreach ($hooks as $hookObj) {
 			if (method_exists($hookObj, 'processData')) {
 				$hookObj->processData($this);
 			}
@@ -271,7 +273,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			$this->currentStep = 'delivery';
 		}
 
-		foreach ($hookObjectsArr as $hookObj) {
+		foreach ($hooks as $hookObj) {
 			if (method_exists($hookObj, 'preSwitch')) {
 				$hookObj->preSwitch($this->currentStep, $this);
 			}
@@ -314,7 +316,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 					break;
 
 				default:
-					foreach ($hookObjectsArr as $hookObj) {
+					foreach ($hooks as $hookObj) {
 						if (method_exists($hookObj, $this->currentStep)) {
 							$content = $hookObj->{$this->currentStep}($this);
 						}
@@ -331,7 +333,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			$content = 'Been redirected internally ' . $finiteloop . ' times, this suggest a configuration error';
 		}
 
-		foreach ($hookObjectsArr as $hookObj) {
+		foreach ($hooks as $hookObj) {
 			if (method_exists($hookObj, 'postSwitch')) {
 				$content = $hookObj->postSwitch($this->currentStep, $content, $this);
 			}
@@ -342,7 +344,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 
 		$content = $this->renderSteps($content);
 
-		foreach ($hookObjectsArr as $hookObj) {
+		foreach ($hooks as $hookObj) {
 			if (method_exists($hookObj, 'postRender')) {
 				$content = $hookObj->postRender($this->currentStep, $content, $this);
 			}
@@ -627,10 +629,10 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 
 		$markerArray = $this->addFormMarker($markerArray, '###|###');
 
-		$hookObjectsArr = $this->getHookObjectArray('getBillingAddress');
-		foreach ($hookObjectsArr as $hookObj) {
-			if (method_exists($hookObj, 'ProcessMarker')) {
-				$markerArray = $hookObj->ProcessMarker($markerArray, $this);
+		$hooks = HookFactory::getHooks('Controller/CheckoutController', 'getBillingAddress');
+		foreach ($hooks as $hook) {
+			if (method_exists($hook, 'ProcessMarker')) {
+				$markerArray = $hook->ProcessMarker($markerArray, $this);
 			}
 		}
 
@@ -744,10 +746,10 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 
 		$markerArray = $this->addFormMarker($markerArray, '###|###');
 
-		$hookObjectsArr = $this->getHookObjectArray('getDeliveryAddress');
-		foreach ($hookObjectsArr as $hookObj) {
-			if (method_exists($hookObj, 'ProcessMarker')) {
-				$markerArray = $hookObj->ProcessMarker($markerArray, $this);
+		$hooks = HookFactory::getHooks('Controller/CheckoutController', 'getDeliveryAddress');
+		foreach ($hooks as $hook) {
+			if (method_exists($hook, 'ProcessMarker')) {
+				$markerArray = $hook->ProcessMarker($markerArray, $this);
 			}
 		}
 
@@ -766,8 +768,8 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	 * @return string Substituted template
 	 */
 	public function handlePayment(Tx_Commerce_Payment_Interface_Payment $paymentObj = NULL) {
-		$hookObjectsArr = $this->getHookObjectArray('handlePayment');
-		foreach ($hookObjectsArr as $hookObj) {
+		$hooks = HookFactory::getHooks('Controller/CheckoutController', 'handlePayment');
+		foreach ($hooks as $hookObj) {
 			if (method_exists($hookObj, 'alternativePaymentStep')) {
 				return $hookObj->alternativePaymentStep($paymentObj, $this);
 			}
@@ -872,7 +874,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			return FALSE;
 		}
 
-		foreach ($hookObjectsArr as $hookObj) {
+		foreach ($hooks as $hookObj) {
 			if (method_exists($hookObj, 'ProcessMarker')) {
 				$markerArray = $hookObj->ProcessMarker($markerArray, $this);
 			}
@@ -954,10 +956,10 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		$markerArray['###LISTING_COMMENT_FIELD###'] = '<textarea name="' . $this->prefixId . '[comment]" rows="4" cols="40">' .
 			$comment . '</textarea>';
 
-		$hookObjectsArr = $this->getHookObjectArray('getListing');
-		foreach ($hookObjectsArr as $hookObj) {
-			if (method_exists($hookObj, 'ProcessMarker')) {
-				$markerArray = $hookObj->ProcessMarker($markerArray, $this);
+		$hooks = HookFactory::getHooks('Controller/CheckoutController', 'getListing');
+		foreach ($hooks as $hook) {
+			if (method_exists($hook, 'ProcessMarker')) {
+				$markerArray = $hook->ProcessMarker($markerArray, $this);
 			}
 		}
 
@@ -1032,8 +1034,8 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		 */
 		$basket = $feUser->tx_commerce_basket;
 
-		$hookObjectsArr = $this->getHookObjectArray('finishIt');
-		foreach ($hookObjectsArr as $hookObj) {
+		$hooks = HookFactory::getHooks('Controller/CheckoutController', 'finishIt');
+		foreach ($hooks as $hookObj) {
 			if (method_exists($hookObj, 'prepayment')) {
 				$hookObj->prepayment($paymentObj, $basket);
 			}
@@ -1055,7 +1057,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			return $this->handlePayment($paymentObj);
 		}
 
-		foreach ($hookObjectsArr as $hookObj) {
+		foreach ($hooks as $hookObj) {
 			if (method_exists($hookObj, 'postpayment')) {
 				$hookObj->postpayment($paymentObj, $basket, $this);
 			}
@@ -1099,7 +1101,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		$this->userMailOk = $this->sendUserMail($orderId, $orderData);
 		$this->adminMailOk = $this->sendAdminMail($orderId, $orderData);
 
-		foreach ($hookObjectsArr as $hookObj) {
+		foreach ($hooks as $hookObj) {
 			if (method_exists($hookObj, 'afterMailSend')) {
 				$markerArray = $hookObj->afterMailSend($orderData, $this);
 			}
@@ -1146,7 +1148,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 
 		$markerArray = $this->finishItRenderGoodBadMarker($markerArray);
 
-		foreach ($hookObjectsArr as $hookObj) {
+		foreach ($hooks as $hookObj) {
 			if (method_exists($hookObj, 'ProcessMarker')) {
 				$markerArray = $hookObj->ProcessMarker($markerArray, $this);
 			}
@@ -1157,7 +1159,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			$this->languageMarker
 		);
 
-		foreach ($hookObjectsArr as $hookObj) {
+		foreach ($hooks as $hookObj) {
 			if (method_exists($hookObj, 'postFinish')) {
 				$hookObj->postFinish($basket, $this);
 			}
@@ -1190,21 +1192,24 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	}
 
 	/**
+	 * Get order id
+	 *
 	 * @return string
 	 */
 	public function getOrderId() {
+		$feUser = $this->getFrontendController()->fe_user;
 		/**
-		 * @var $feUser \TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication
+		 * Basket
+		 *
+		 * @var $basket Tx_Commerce_Domain_Model_Basket
 		 */
-		$feUser = & $GLOBALS['TSFE']->fe_user;
-		/** @var $basket Tx_Commerce_Domain_Model_Basket */
-		$basket = & $feUser->tx_commerce_basket;
-		$hookObjectsArr = $this->getHookObjectArray('finishIt');
+		$basket = $feUser->tx_commerce_basket;
+		$hooks = HookFactory::getHooks('Controller/CheckoutController', 'getInstanceOfTceMain');
 
 		$orderId = $feUser->getKey('ses', 'orderId');
 		if (empty($orderId)) {
 			// Hook to generate OrderId
-			foreach ($hookObjectsArr as $hookObj) {
+			foreach ($hooks as $hookObj) {
 				if (method_exists($hookObj, 'generateOrderId')) {
 					$orderId = $hookObj->generateOrderId($orderId, $basket, $this);
 				}
@@ -1313,7 +1318,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		 *
 		 * @var $basket Tx_Commerce_Domain_Model_Basket
 		 */
-		$basket = $GLOBALS['TSFE']->fe_user->tx_commerce_basket;
+		$basket = $this->getFrontendController()->fe_user->tx_commerce_basket;
 
 		$template = $this->cObj->getSubpart($this->templateCode, '###LISTING_BASKET_' . strtoupper($type) . '###');
 
@@ -1377,10 +1382,10 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		$markerArray['###LABEL_SUM_PAYMENT_NET###'] = $this->pi_getLL('label_sum_payment_net');
 		$markerArray['###PAYMENT_TITLE###'] = $paymentTitle;
 
-		$hookObjectsArr = $this->getHookObjectArray('getBasketSum');
-		foreach ($hookObjectsArr as $hookObj) {
-			if (method_exists($hookObj, 'ProcessMarker')) {
-				$markerArray = $hookObj->ProcessMarker($markerArray, $this);
+		$hooks = HookFactory::getHooks('Controller/CheckoutController', 'getBasketSum');
+		foreach ($hooks as $hook) {
+			if (method_exists($hook, 'ProcessMarker')) {
+				$markerArray = $hook->ProcessMarker($markerArray, $this);
 			}
 		}
 
@@ -1435,17 +1440,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		$config = $this->conf[$typeLower . '.'];
 		$returnVal = TRUE;
 
-		GeneralUtility::deprecationLog(
-			'
-				hook
-				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/pi3/class.tx_commerce_pi3.php\'][\'bevorValidateAddress\']
-				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
-				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/CheckoutController.php\'][\'beforeValidateAddress\'
-			'
-		);
-		$hookObjectsArr = $this->getHookObjectArray('bevorValidateAddress');
-		// @todo remove merge after above hook is removed
-		$hookObjectsArr = array_merge($hookObjectsArr, $this->getHookObjectArray('beforeValidateAddress'));
+		$hooks = HookFactory::getHooks('Controller/CheckoutController', 'validateAddress');
 
 		$this->debug($config, 'TS Config', __FILE__ . ' ' . __LINE__);
 
@@ -1530,7 +1525,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 					default:
 						if (!empty($method[0])) {
 							$actMethod = 'validationMethod_' . strtolower($method[0]);
-							foreach ($hookObjectsArr as $hookObj) {
+							foreach ($hooks as $hookObj) {
 								if (method_exists($hookObj, $actMethod)) {
 									if (!$hookObj->$actMethod($this, $name, $value)) {
 										$returnVal = FALSE;
@@ -1541,7 +1536,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 				}
 			}
 
-			foreach ($hookObjectsArr as $hookObj) {
+			foreach ($hooks as $hookObj) {
 				if (method_exists($hookObj, 'validateField')) {
 					$params = array(
 						'fieldName' => $name,
@@ -1706,7 +1701,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	 * @return string Form HTML
 	 */
 	public function getInputForm(array $config, $step, $parseList = TRUE) {
-		$hookObjectsArr = $this->getHookObjectArray('processInputForm');
+		$hooks = HookFactory::getHooks('Controller/CheckoutController', 'getInputForm');
 
 		// Build a query for selecting an address from database
 		// if we have a logged in user
@@ -1766,7 +1761,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 				$fieldCodeTemplate = $fieldTemplate;
 			}
 
-			foreach ($hookObjectsArr as $hookObj) {
+			foreach ($hooks as $hookObj) {
 				if (method_exists($hookObj, 'processInputForm')) {
 					$hookObj->processInputForm($fieldName, $fieldMarkerArray, $config, $step, $fieldCodeTemplate, $this);
 				}
@@ -1789,13 +1784,12 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	 * @return int uid of user
 	 */
 	public function handleAddress($type) {
-		$database = $this->getDatabaseConnection();
-
 		if (!is_array($this->sessionData[$type])) {
 			return 0;
 		}
 
-		$hookObjectsArr = $this->getHookObjectArray('handleAddress');
+		$database = $this->getDatabaseConnection();
+		$hooks = HookFactory::getHooks('Controller/CheckoutController', 'handleAddress');
 
 		$config = $this->conf[$type . '.'];
 
@@ -1860,8 +1854,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 					$feuData['first_name'] = $this->sessionData['billing']['name'];
 					$feuData['last_name'] = $this->sessionData['billing']['surname'];
 
-					$hookObjectsArr = $this->getHookObjectArray('handleAddress');
-					foreach ($hookObjectsArr as $hookObj) {
+					foreach ($hooks as $hookObj) {
 						if (method_exists($hookObj, 'preProcessUserData')) {
 							$hookObj->preProcessUserData($feuData, $this);
 						}
@@ -1873,7 +1866,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 
 					$GLOBALS['TSFE']->fe_user->user['uid'] = $dataArray[$config['userConnection']];
 
-					foreach ($hookObjectsArr as $hookObj) {
+					foreach ($hooks as $hookObj) {
 						if (method_exists($hookObj, 'postProcessUserData')) {
 							$hookObj->postProcessUserData($feuData, $this);
 						}
@@ -1896,7 +1889,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			// First address should be main address by default
 			$dataArray['tx_commerce_is_main_address'] = 1;
 
-			foreach ($hookObjectsArr as $hookObj) {
+			foreach ($hooks as $hookObj) {
 				if (method_exists($hookObj, 'preProcessAddressData')) {
 					$dataArray = $hookObj->preProcessAddressData($dataArray, $this);
 				}
@@ -2173,14 +2166,14 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 
 		$myCheck = FALSE;
 
-		$hookObjectsArr = $this->getHookObjectArray('canMakeCheckout');
-		foreach ($hookObjectsArr as $hookObj) {
+		$hooks = HookFactory::getHooks('Controller/CheckoutController', 'canMakeCheckout');
+		foreach ($hooks as $hookObj) {
 			if (method_exists($hookObj, 'canMakeCheckoutOwnTests')) {
 				$hookObj->canMakeCheckoutOwnTests($checks, $myCheck);
 			}
 		}
 
-		foreach ($hookObjectsArr as $hookObj) {
+		foreach ($hooks as $hookObj) {
 			if (method_exists($hookObj, 'canMakeCheckoutOwnAdvancedTests')) {
 				$params = array(
 					'checks' => &$checks,
@@ -2235,7 +2228,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	 * @return bool TRUE on success
 	 */
 	public function sendUserMail($orderUid, array $orderData) {
-		$hookObjectsArr = $this->getHookObjectArray('sendUserMail');
+		$hooks = HookFactory::getHooks('Controller/CheckoutController', 'sendUserMail');
 
 		if (strlen($this->sessionData['billing']['email'])) {
 			// If user has email in the formular, use this
@@ -2249,7 +2242,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		$userMail = Tx_Commerce_Utility_GeneralUtility::validEmailList($userMail);
 
 		if ($userMail && !preg_match("/\r/i", $userMail) && !preg_match("/\n/i", $userMail)) {
-			foreach ($hookObjectsArr as $hookObj) {
+			foreach ($hooks as $hookObj) {
 				if (method_exists($hookObj, 'getUserMail')) {
 					$hookObj->getUserMail($userMail, $orderUid, $orderData);
 				}
@@ -2273,7 +2266,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 				$userMailObj->generateLanguageMarker();
 				$userMailObj->userData = $this->userData;
 
-				foreach ($hookObjectsArr as $hookObj) {
+				foreach ($hooks as $hookObj) {
 					if (method_exists($hookObj, 'preGenerateMail')) {
 						$hookObj->preGenerateMail($userMailObj, $this);
 					}
@@ -2288,7 +2281,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 				 * @var $basket Tx_Commerce_Domain_Model_Basket
 				 */
 				$basket = $GLOBALS['TSFE']->fe_user->tx_commerce_basket;
-				foreach ($hookObjectsArr as $hookObj) {
+				foreach ($hooks as $hookObj) {
 					if (method_exists($hookObj, 'PostGenerateMail')) {
 						$hookObj->PostGenerateMail($userMailObj, $this, $basket, $mailcontent);
 					}
@@ -2299,7 +2292,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 					$userMailObj->templateCode = $this->cObj->fileResource($this->conf['usermail.']['templateFileHtml']);
 					$htmlContent = $userMailObj->generateMail($orderUid, $orderData, $userMarker);
 					$userMailObj->isHtmlMail = TRUE;
-					foreach ($hookObjectsArr as $hookObj) {
+					foreach ($hooks as $hookObj) {
 						if (method_exists($hookObj, 'PostGenerateMail')) {
 							$hookObj->PostGenerateMail($userMailObj, $this, $basket, $htmlContent);
 						}
@@ -2390,7 +2383,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	 * @return bool TRUE on success
 	 */
 	public function sendAdminMail($orderUid, array $orderData) {
-		$hookObjectsArr = $this->getHookObjectArray('sendAdminMail');
+		$hooks = HookFactory::getHooks('Controller/CheckoutController', 'sendAdminMail');
 
 		if (is_array($GLOBALS['TSFE']->fe_user->user && strlen($GLOBALS['TSFE']->fe_user->user['email']))) {
 			$userMail = $GLOBALS['TSFE']->fe_user->user['email'];
@@ -2422,7 +2415,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			$adminMailObj->generateLanguageMarker();
 			$adminMailObj->userData = $this->userData;
 
-			foreach ($hookObjectsArr as $hookObj) {
+			foreach ($hooks as $hookObj) {
 				if (method_exists($hookObj, 'preGenerateMail')) {
 					$hookObj->preGenerateMail($adminMailObj, $this);
 				}
@@ -2436,7 +2429,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			 * @var $basket Tx_Commerce_Domain_Model_Basket
 			 */
 			$basket = & $GLOBALS['TSFE']->fe_user->tx_commerce_basket;
-			foreach ($hookObjectsArr as $hookObj) {
+			foreach ($hooks as $hookObj) {
 				if (method_exists($hookObj, 'PostGenerateMail')) {
 					$hookObj->PostGenerateMail($adminMailObj, $this, $basket, $mailcontent, $this);
 				}
@@ -2448,7 +2441,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 				$htmlContent = $adminMailObj->generateMail($orderUid, $orderData, array());
 				$adminMailObj->isHtmlMail = TRUE;
 
-				foreach ($hookObjectsArr as $hookObj) {
+				foreach ($hooks as $hookObj) {
 					if (method_exists($hookObj, 'PostGenerateMail')) {
 						$hookObj->PostGenerateMail($adminMailObj, $this, $basket, $htmlContent);
 					}
@@ -2603,8 +2596,8 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		$content = $this->cObj->substituteSubpart($content, '###BILLING_ADDRESS###', $billingAdress);
 
 		// Hook to process marker array
-		$hookObjectsArr = $this->getHookObjectArray('generateMail');
-		foreach ($hookObjectsArr as $hookObj) {
+		$hooks = HookFactory::getHooks('Controller/CheckoutController', 'generateMail');
+		foreach ($hooks as $hookObj) {
 			if (method_exists($hookObj, 'ProcessMarker')) {
 				$markerArray = $hookObj->ProcessMarker($markerArray, $this);
 			}
@@ -2723,11 +2716,11 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		}
 
 		// Get hook objects
-		$hookObjectsArr = array();
+		$hooks = array();
 		if ($doHook) {
-			$hookObjectsArr = $this->getHookObjectArray('finishIt');
+			$hooks = HookFactory::getHooks('Controller/CheckoutController', 'saveOrder');
 			// Insert order
-			foreach ($hookObjectsArr as $hookObj) {
+			foreach ($hooks as $hookObj) {
 				if (method_exists($hookObj, 'preinsert')) {
 					$hookObj->preinsert($orderData, $this);
 				}
@@ -2758,7 +2751,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		$paymentObj->updateOrder($orderUid, $this->sessionData);
 
 		// Insert order
-		foreach ($hookObjectsArr as $hookObj) {
+		foreach ($hooks as $hookObj) {
 			if (method_exists($hookObj, 'modifyBasketPreSave')) {
 				$hookObj->modifyBasketPreSave($basket, $this);
 			}
@@ -2800,7 +2793,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 				$this->debug($orderArticleData, '$orderArticleData', __FILE__ . ' ' . __LINE__);
 
 				$newUid = 0;
-				foreach ($hookObjectsArr as $hookObj) {
+				foreach ($hooks as $hookObj) {
 					if (method_exists($hookObj, 'modifyOrderArticlePreSave')) {
 						$hookObj->modifyOrderArticlePreSave($newUid, $orderArticleData, $this, $basketItem);
 					}
@@ -2822,7 +2815,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 
 				$newUid = $tceMain->substNEWwithIDs[$newUid];
 
-				foreach ($hookObjectsArr as $hookObj) {
+				foreach ($hooks as $hookObj) {
 					if (method_exists($hookObj, 'modifyOrderArticlePostSave')) {
 						$hookObj->modifyOrderArticlePostSave($newUid, $orderArticleData, $this);
 					}
@@ -2843,10 +2836,10 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	 * @return \TYPO3\CMS\Core\DataHandling\DataHandler
 	 */
 	public function getInstanceOfTceMain($pid) {
-		$hookObjectsArr = $this->getHookObjectArray('postTcaInit');
-		foreach ($hookObjectsArr as $hookObj) {
-			if (method_exists($hookObj, 'postTcaInit')) {
-				$hookObj->postTcaInit();
+		$hooks = HookFactory::getHooks('Controller/CheckoutController', 'getInstanceOfTceMain');
+		foreach ($hooks as $hook) {
+			if (method_exists($hook, 'postTcaInit')) {
+				$hook->postTcaInit();
 			}
 		}
 
@@ -2960,38 +2953,6 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		}
 
 		return $result;
-	}
-
-	/**
-	 * Get hooks
-	 *
-	 * @param string $type Hook type
-	 *
-	 * @return array
-	 */
-	public function getHookObjectArray($type) {
-		$hookObjectsArr = array();
-
-		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi3/class.tx_commerce_pi3.php'][$type])) {
-			GeneralUtility::deprecationLog(
-				'
-					hook
-					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/pi3/class.tx_commerce_pi3.php\'][\'' . $type . '\']
-					is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
-					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/CheckoutController.php\'][\'' . $type . '\']
-				'
-			);
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi3/class.tx_commerce_pi3.php'][$type] as $classRef) {
-				$hookObjectsArr[] = & GeneralUtility::getUserObj($classRef);
-			}
-		}
-		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/CheckoutController.php'][$type])) {
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/CheckoutController.php'][$type] as $classRef) {
-				$hookObjectsArr[] = & GeneralUtility::getUserObj($classRef);
-			}
-		}
-
-		return $hookObjectsArr;
 	}
 
 

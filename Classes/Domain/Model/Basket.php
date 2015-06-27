@@ -213,27 +213,7 @@ class Tx_Commerce_Domain_Model_Basket extends Tx_Commerce_Domain_Model_BasicBask
 		);
 
 		if (is_array($rows) && count($rows)) {
-			$hookObjectsArr = array();
-			if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_basket.php']['load_data_from_database'])) {
-				\TYPO3\CMS\Core\Utility\GeneralUtility::deprecationLog('
-					hook
-					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_basket.php\'][\'load_data_from_database\']
-					is deprecated since commerce 1.0.0, this hook will be removed in commerce 1.4.0, please use instead
-					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Domain/Model/Basket.php\'][\'loadDataFromDatabase\']
-				');
-				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_basket.php']['load_data_from_database'] as
-					$classRef
-				) {
-					$hookObjectsArr[] = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
-				}
-			}
-			if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Model/Basket.php']['loadDataFromDatabase'])) {
-				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Model/Basket.php']['loadDataFromDatabase'] as
-					$classRef
-				) {
-					$hookObjectsArr[] = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
-				}
-			}
+			$hooks = \CommerceTeam\Commerce\Factory\HookFactory::getHooks('Domain/Model/Basket', 'loadDataFromDatabase');
 
 			$basketReadonly = FALSE;
 			foreach ($rows as $returnData) {
@@ -241,15 +221,8 @@ class Tx_Commerce_Domain_Model_Basket extends Tx_Commerce_Domain_Model_BasicBask
 					$this->addArticle($returnData['article_id'], $returnData['quantity'], $returnData['price_id']);
 					$this->changePrices($returnData['article_id'], $returnData['price_gross'], $returnData['price_net']);
 					$this->crdate = $returnData['crdate'];
-					if (is_array($hookObjectsArr)) {
-						foreach ($hookObjectsArr as $hookObj) {
-							if (method_exists($hookObj, 'load_data_from_database')) {
-								\TYPO3\CMS\Core\Utility\GeneralUtility::deprecationLog('
-									hook method load_data_from_database
-									is deprecated since commerce 1.0.0, this hook will be removed in commerce 1.4.0, please use loadDataFromDatabase instead
-								');
-								$hookObj->load_data_from_database($returnData, $this);
-							}
+					if (is_array($hooks)) {
+						foreach ($hooks as $hookObj) {
 							if (method_exists($hookObj, 'loadDataFromDatabase')) {
 								$hookObj->loadDataFromDatabase($returnData, $this);
 							}
@@ -363,27 +336,7 @@ class Tx_Commerce_Domain_Model_Basket extends Tx_Commerce_Domain_Model_BasicBask
 			'tx_commerce_baskets',
 			'sid = ' . $database->fullQuoteStr($this->getSessionId(), 'tx_commerce_baskets') . ' AND finished_time = 0'
 		);
-		$hookObjectsArr = array();
-		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_basket.php']['store_data_to_database'])) {
-			\TYPO3\CMS\Core\Utility\GeneralUtility::deprecationLog('
-				hook
-				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_basket.php\'][\'store_data_to_database\']
-				is deprecated since commerce 1.0.0, this hook will be removed in commerce 1.4.0, please use instead
-				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Domain/Model/Basket.php\'][\'storeDataToDatabase\']
-			');
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_basket.php']['store_data_to_database'] as
-				$classRef
-			) {
-				$hookObjectsArr[] = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
-			}
-		}
-		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Model/Basket.php']['storeDataToDatabase'])) {
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Model/Basket.php']['storeDataToDatabase'] as
-				$classRef
-			) {
-				$hookObjectsArr[] = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
-			}
-		}
+		$hooks = \CommerceTeam\Commerce\Factory\HookFactory::getHooks('Domain/Model/Basket', 'storeDataToDatabase');
 
 		// Get array keys from basket items to store correct position in basket
 		$arBasketItemsKeys = array_keys($this->basketItems);
@@ -415,17 +368,8 @@ class Tx_Commerce_Domain_Model_Basket extends Tx_Commerce_Domain_Model_BasicBask
 				$insertData['crdate'] = $insertData['tstamp'];
 			}
 
-			if (is_array($hookObjectsArr)) {
-				foreach ($hookObjectsArr as $hookObj) {
-					if (method_exists($hookObj, 'store_data_to_database')) {
-						\TYPO3\CMS\Core\Utility\GeneralUtility::deprecationLog('
-							hook
-							$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_basket.php\'][\'store_data_to_database\']
-							is deprecated since commerce 1.0.0, this hook will be removed in commerce 1.4.0, please use instead
-							$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Domain/Model/Basket.php\'][\'storeDataToDatabase\']
-						');
-						$insertData = $hookObj->store_data_to_database($oneItem, $insertData);
-					}
+			if (is_array($hooks)) {
+				foreach ($hooks as $hookObj) {
 					if (method_exists($hookObj, 'storeDataToDatabase')) {
 						$insertData = $hookObj->storeDataToDatabase($oneItem, $insertData);
 					}

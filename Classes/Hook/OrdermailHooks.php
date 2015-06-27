@@ -116,28 +116,10 @@ class Tx_Commerce_Hook_OrdermailHooks {
 		$mailconf['plain']['content'] = $this->csConvObj->conv($mailconf['plain']['content'], 'utf-8', 'utf-8');
 		$mailconf['alternateSubject'] = $this->csConvObj->conv($mailconf['alternateSubject'], 'utf-8', 'utf-8');
 
-		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Hook/class.tx_commerce_ordermailhooks.php']['ordermoveSendMail'])) {
-			GeneralUtility::deprecationLog('
-				hook
-				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Hook/class.tx_commerce_ordermailhooks.php\'][\'ordermoveSendMail\']
-				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
-				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Hook/OrdermailHooks.php\'][\'ordermoveSendMail\']
-			');
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Hook/class.tx_commerce_ordermailhooks.php']['ordermoveSendMail'] as $classRef) {
-				$hookObj = GeneralUtility::getUserObj($classRef);
-				if (method_exists($hookObj, 'postOrdermoveSendMail')) {
-					$hookObj->postOrdermoveSendMail($mailconf, $orderdata, $template);
-				}
-			}
-		}
-		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Hook/OrdermailHooks.php']['ordermoveSendMail'])) {
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Hook/OrdermailHooks.php']['ordermoveSendMail'] as
-				$classRef
-			) {
-				$hookObj = GeneralUtility::getUserObj($classRef);
-				if (method_exists($hookObj, 'postOrdermoveSendMail')) {
-					$hookObj->postOrdermoveSendMail($mailconf, $orderdata, $template);
-				}
+		$hooks = \CommerceTeam\Commerce\Factory\HookFactory::getHooks('Domain/Hook/OrdermailHooks', 'ordermoveSendMail');
+		foreach ($hooks as $hook) {
+			if (method_exists($hook, 'postOrdermoveSendMail')) {
+				$hook->postOrdermoveSendMail($mailconf, $orderdata, $template);
 			}
 		}
 
@@ -334,28 +316,11 @@ class Tx_Commerce_Hook_OrdermailHooks {
 		/**
 		 * Hook for processing Marker Array
 		 */
-		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce_ordermails/mod1/class.tx_commerce_moveordermail.php']['generateMail'])) {
-			GeneralUtility::deprecationLog('
-				hook
-				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce_ordermails/mod1/class.tx_commerce_moveordermail.php\'][\'generateMail\']
-				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
-				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Hook/OrdermailHooks.php\'][\'generateMail\']
-			');
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce_ordermails/mod1/class.tx_commerce_moveordermail.php']['generateMail'] as $classRef) {
-				$hookObj = GeneralUtility::getUserObj($classRef);
-				if (method_exists($hookObj, 'ProcessMarker')) {
-					$markerArray = $hookObj->ProcessMarker($markerArray, $this);
-				}
-			}
+		$hookObject = \CommerceTeam\Commerce\Factory\HookFactory::getHook('Hook/OrdermailHooks', 'generateMail');
+		if (is_object($hookObject) && method_exists($hookObject, 'ProcessMarker')) {
+			$markerArray = $hookObject->ProcessMarker($markerArray, $this);
 		}
-		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Hook/OrdermailHooks.php']['generateMail'])) {
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Hook/OrdermailHooks.php']['generateMail'] as $classRef) {
-				$hookObj = GeneralUtility::getUserObj($classRef);
-				if (method_exists($hookObj, 'ProcessMarker')) {
-					$markerArray = $hookObj->ProcessMarker($markerArray, $this);
-				}
-			}
-		}
+
 		$content = $this->cObj->substituteMarkerArray($content, $markerArray);
 
 		return ltrim($content);

@@ -1724,25 +1724,8 @@ class Tx_Commerce_Utility_BackendUtility {
 			return FALSE;
 		}
 
-		// First prepare user defined objects (if any)
-		// for hooks which extend this function:
-		$hookObjectsArr = array();
-		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_belib.php']['copyProductClass'])) {
-			GeneralUtility::deprecationLog('
-				hook
-				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_belib.php\'][\'copyProductClass\']
-				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
-				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Utility/BackendUtility.php\'][\'copyProduct\']
-			');
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_belib.php']['copyProductClass'] as $classRef) {
-				$hookObjectsArr[] = &GeneralUtility::getUserObj($classRef);
-			}
-		}
-		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Utility/BackendUtility.php']['copyProduct'])) {
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Utility/BackendUtility.php']['copyProduct'] as $classRef) {
-				$hookObjectsArr[] = &GeneralUtility::getUserObj($classRef);
-			}
-		}
+		// First prepare user defined hooks
+		$hooks = \CommerceTeam\Commerce\Factory\HookFactory::getHooks('Utility/BackendUtility', 'copyProduct');
 
 		$backendUser = self::getBackendUser();
 		$database = self::getDatabaseConnection();
@@ -1787,7 +1770,7 @@ class Tx_Commerce_Utility_BackendUtility {
 		$overrideArray = array('categories' => $categoryUid);
 
 		// Hook: beforeCopy
-		foreach ($hookObjectsArr as $hookObj) {
+		foreach ($hooks as $hookObj) {
 			if (method_exists($hookObj, 'beforeCopy')) {
 				$hookObj->beforeCopy($uid, $uidLast, $overrideArray);
 			}
@@ -1796,7 +1779,7 @@ class Tx_Commerce_Utility_BackendUtility {
 		$newUid = $tce->copyRecord('tx_commerce_products', $uid, $uidLast, 1, $overrideArray);
 
 		// Hook: afterCopy
-		foreach ($hookObjectsArr as $hookObj) {
+		foreach ($hooks as $hookObj) {
 			if (method_exists($hookObj, 'afterCopy')) {
 				$hookObj->afterCopy($newUid, $uid, $$overrideArray);
 			}
@@ -2117,27 +2100,8 @@ class Tx_Commerce_Utility_BackendUtility {
 			return FALSE;
 		}
 
-		// First prepare user defined objects (if any)
-		// for hooks which extend this function:
-		$hookObjectsArr = array();
-		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_belib.php']['copyCategoryClass'])) {
-			GeneralUtility::deprecationLog('
-				hook
-				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_belib.php\'][\'copyCategoryClass\']
-				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
-				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Utility/BackendUtility.php\'][\'copyCategory\']
-			');
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_belib.php']['copyCategoryClass'] as
-				$classRef
-			) {
-				$hookObjectsArr[] = &GeneralUtility::getUserObj($classRef);
-			}
-		}
-		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Utility/BackendUtility.php']['copyCategory'])) {
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Utility/BackendUtility.php']['copyCategory'] as $classRef) {
-				$hookObjectsArr[] = &GeneralUtility::getUserObj($classRef);
-			}
-		}
+		// First prepare user defined hooks
+		$hooks = \CommerceTeam\Commerce\Factory\HookFactory::getHooks('Utility/BackendUtility', 'copyCategory');
 
 		$database = self::getDatabaseConnection();
 
@@ -2184,7 +2148,7 @@ class Tx_Commerce_Utility_BackendUtility {
 		);
 
 		// Hook: beforeCopy
-		foreach ($hookObjectsArr as $hookObj) {
+		foreach ($hooks as $hookObj) {
 			if (method_exists($hookObj, 'beforeCopy')) {
 				$hookObj->beforeCopy($uid, $uidLast, $overrideArray);
 			}
@@ -2193,7 +2157,7 @@ class Tx_Commerce_Utility_BackendUtility {
 		$newUid = $tce->copyRecord('tx_commerce_categories', $uid, $uidLast, 1, $overrideArray);
 
 		// Hook: afterCopy
-		foreach ($hookObjectsArr as $hookObj) {
+		foreach ($hooks as $hookObj) {
 			if (method_exists($hookObj, 'afterCopy')) {
 				$hookObj->afterCopy($newUid, $uid, $overrideArray);
 			}
@@ -2948,29 +2912,8 @@ class Tx_Commerce_Utility_BackendUtility {
 			return FALSE;
 		}
 
-		// First prepare user defined objects (if any)
-		// for hooks which extend this function:
-		$hookObjectsArr = array();
-		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_belib.php']['overwriteProductClass'])) {
-			GeneralUtility::deprecationLog('
-				hook
-				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_belib.php\'][\'overwriteProductClass\']
-				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
-				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Utility/BackendUtility.php\'][\'overwriteProduct\']
-			');
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_belib.php']['overwriteProductClass'] as
-				$classRef
-			) {
-				$hookObjectsArr[] = &GeneralUtility::getUserObj($classRef);
-			}
-		}
-		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Utility/BackendUtility.php']['overwriteProduct'])) {
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Utility/BackendUtility.php']['overwriteProduct'] as
-				$classRef
-			) {
-				$hookObjectsArr[] = &GeneralUtility::getUserObj($classRef);
-			}
-		}
+		// First prepare user defined hooks
+		$hooks = \CommerceTeam\Commerce\Factory\HookFactory::getHooks('Utility/BackendUtility', 'overwriteProduct');
 
 		$data = self::getOverwriteData($table, $uidFrom, $uidTo);
 
@@ -3000,7 +2943,7 @@ class Tx_Commerce_Utility_BackendUtility {
 		}
 
 		// Hook: beforeOverwrite
-		foreach ($hookObjectsArr as $hookObj) {
+		foreach ($hooks as $hookObj) {
 			if (method_exists($hookObj, 'beforeOverwrite')) {
 				$hookObj->beforeOverwrite($uidFrom, $uidTo, $datamap);
 			}
@@ -3010,7 +2953,7 @@ class Tx_Commerce_Utility_BackendUtility {
 		$tce->process_datamap();
 
 		// Hook: afterOverwrite
-		foreach ($hookObjectsArr as $hookObj) {
+		foreach ($hooks as $hookObj) {
 			if (method_exists($hookObj, 'beforeCopy')) {
 				$hookObj->beforeCopy($uidFrom, $uidTo, $datamap, $tce);
 			}

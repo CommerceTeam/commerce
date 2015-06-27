@@ -144,26 +144,10 @@ class Tx_Commerce_Domain_Model_Attribute extends Tx_Commerce_Domain_Model_Abstra
 			$this->lang_uid = (int) $languageUid;
 			$this->databaseConnection = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance($this->databaseClass);
 
-			if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_attribute.php']['postinit'])) {
-				\TYPO3\CMS\Core\Utility\GeneralUtility::deprecationLog('
-					hook
-					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_attribute.php\'][\'postinit\']
-					is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
-					$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Domain/Model/Attribute.php\'][\'postinit\']
-				');
-				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_attribute.php']['postinit'] as $classRef) {
-					$hookObj = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
-					if (method_exists($hookObj, 'postinit')) {
-						$hookObj->postinit($this);
-					}
-				}
-			}
-			if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Model/Attribute.php']['postinit'])) {
-				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Model/Attribute.php']['postinit'] as $classRef) {
-					$hookObj = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
-					if (method_exists($hookObj, 'postinit')) {
-						$hookObj->postinit($this);
-					}
+			$hooks = \CommerceTeam\Commerce\Factory\HookFactory::getHooks('Domain/Model/Attribute', 'init');
+			foreach ($hooks as $hook) {
+				if (method_exists($hook, 'postinit')) {
+					$hook->postinit($this);
 				}
 			}
 

@@ -193,28 +193,10 @@ class Tx_Commerce_Utility_GeneralUtility {
 			$sessionKey = $key . ':' . $GLOBALS['TSFE']->fe_user->user['uid'];
 		}
 
-		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_div.php']['generateSessionKey'])) {
-			\TYPO3\CMS\Core\Utility\GeneralUtility::deprecationLog('
-				hook
-				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_div.php\'][\'generateSessionKey\']
-				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
-				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Utility/GeneralUtility.php\'][\'generateSessionKey\']
-			');
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_div.php']['generateSessionKey'] as $classRef) {
-				$hookObj = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
-				if (method_exists($hookObj, 'postGenerateSessionKey')) {
-					$sessionKey = $hookObj->postGenerateSessionKey($key);
-				}
-			}
-		}
-		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Utility/GeneralUtility.php']['generateSessionKey'])) {
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Utility/GeneralUtility.php']['generateSessionKey'] as
-				$classRef
-			) {
-				$hookObj = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
-				if (method_exists($hookObj, 'postGenerateSessionKey')) {
-					$sessionKey = $hookObj->postGenerateSessionKey($key);
-				}
+		$hooks = \CommerceTeam\Commerce\Factory\HookFactory::getHooks('Utility/GeneralUtility', 'generateSessionKey');
+		foreach ($hooks as $hook) {
+			if (method_exists($hook, 'postGenerateSessionKey')) {
+				$sessionKey = $hook->postGenerateSessionKey($key);
 			}
 		}
 
@@ -254,39 +236,23 @@ class Tx_Commerce_Utility_GeneralUtility {
 	 * @return bool
 	 */
 	public static function sendMail(array $mailconf) {
-		$hookObjectsArr = array();
-		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_div.php']['sendMail'])) {
-			\TYPO3\CMS\Core\Utility\GeneralUtility::deprecationLog('
-				hook
-				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_div.php\'][\'sendMail\']
-				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
-				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Utility/GeneralUtility.php\'][\'sendMail\']
-			');
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_div.php']['sendMail'] as $classRef) {
-				$hookObjectsArr[] = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
-			}
-		}
-		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Utility/GeneralUtility.php']['sendMail'])) {
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Utility/GeneralUtility.php']['sendMail'] as $classRef) {
-				$hookObjectsArr[] = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
-			}
-		}
+		$hooks = \CommerceTeam\Commerce\Factory\HookFactory::getHooks('Utility/GeneralUtility', 'sendMail');
 
 		$additionalData = array();
 		if ($mailconf['additionalData']) {
 			$additionalData = $mailconf['additionalData'];
 		}
 
-		foreach ($hookObjectsArr as $hookObj) {
+		foreach ($hooks as $hookObj) {
 			// this is the current hook
 			if (method_exists($hookObj, 'preProcessMail')) {
 				$hookObj->preProcessMail($mailconf, $additionalData);
 			}
 		}
 
-		foreach ($hookObjectsArr as $hookObj) {
+		foreach ($hooks as $hookObj) {
 			if (method_exists($hookObj, 'ownMailRendering')) {
-				return $hookObj->ownMailRendering($mailconf, $additionalData, $hookObjectsArr);
+				return $hookObj->ownMailRendering($mailconf, $additionalData, $hooks);
 			}
 		}
 
@@ -358,7 +324,7 @@ class Tx_Commerce_Utility_GeneralUtility {
 				}
 			}
 
-			foreach ($hookObjectsArr as $hookObj) {
+			foreach ($hooks as $hookObj) {
 				if (method_exists($hookObj, 'postProcessMail')) {
 					$message = $hookObj->postProcessMail($message, $mailconf, $additionalData);
 				}

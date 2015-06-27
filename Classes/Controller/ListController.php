@@ -12,6 +12,8 @@
  * The TYPO3 project - inspiring people to share!
  */
 
+use \CommerceTeam\Commerce\Factory\HookFactory;
+
 /**
  * Product list and single view
  *
@@ -111,26 +113,10 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 			}
 		}
 
-		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi1/class.tx_commerce_pi1.php']['init'])) {
-			\TYPO3\CMS\Core\Utility\GeneralUtility::deprecationLog('
-				hook
-				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/pi1/class.tx_commerce_pi1.php\'][\'init\']
-				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
-				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/ListController.php\'][\'init\']
-			');
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi1/class.tx_commerce_pi1.php']['init'] as $classRef) {
-				$hookObj = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
-				if (method_exists($hookObj, 'preInit')) {
-					$hookObj->preInit($this);
-				}
-			}
-		}
-		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/ListController.php']['init'])) {
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/ListController.php']['init'] as $classRef) {
-				$hookObj = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
-				if (method_exists($hookObj, 'preInit')) {
-					$hookObj->preInit($this);
-				}
+		$hooks = HookFactory::getHooks('Controller/ListController', 'init');
+		foreach ($hooks as $hook) {
+			if (method_exists($hook, 'preInit')) {
+				$hook->preInit($this);
 			}
 		}
 
@@ -378,26 +364,9 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 			$this->handle = FALSE;
 		}
 
-		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi1/class.tx_commerce_pi1.php']['postInit'])) {
-			\TYPO3\CMS\Core\Utility\GeneralUtility::deprecationLog('
-				hook
-				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/pi1/class.tx_commerce_pi1.php\'][\'postInit\']
-				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
-				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/ListController.php\'][\'postInit\']
-			');
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi1/class.tx_commerce_pi1.php']['postInit'] as $classRef) {
-				$hookObj = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
-				if (method_exists($hookObj, 'postInit')) {
-					$hookObj->postInit($this);
-				}
-			}
-		}
-		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/ListController.php']['postInit'])) {
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/ListController.php']['postInit'] as $classRef) {
-				$hookObj = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
-				if (method_exists($hookObj, 'postInit')) {
-					$hookObj->postInit($this);
-				}
+		foreach ($hooks as $hook) {
+			if (method_exists($hook, 'postInit')) {
+				$hook->postInit($this);
 			}
 		}
 	}
@@ -462,16 +431,13 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 	public function initSingleView($productId) {
 		$productId = (int) $productId;
 
+		$result = FALSE;
 		if ($productId > 0) {
 			$database = $this->getDatabaseConnection();
 
 			// Get not localized product
-			$mainProductRes = $database->exec_SELECTquery('l18n_parent', 'tx_commerce_products', 'uid = ' . $productId);
-			if (
-				$database->sql_num_rows($mainProductRes) == 1
-				&& $row = $database->sql_fetch_assoc($mainProductRes)
-				&& $row['l18n_parent'] != 0
-			) {
+			$row = $database->exec_SELECTgetSingleRow('l18n_parent', 'tx_commerce_products', 'uid = ' . $productId);
+			if (is_array($row) && $row['l18n_parent'] != 0) {
 				$productId = $row['l18n_parent'];
 			}
 
@@ -494,21 +460,21 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 				// or if it was rendered as a leaf from the category view
 				if ($this->conf['singleView.']['renderProductNameAsPageTitle'] == 1) {
 					$this->product->setPageTitle();
-				} elseif (($this->conf['singleView.']['renderProductNameAsPageTitle'] == 2) && ($this->singleViewAsPlugin === FALSE)) {
+				} elseif ($this->conf['singleView.']['renderProductNameAsPageTitle'] == 2 && $this->singleViewAsPlugin === FALSE) {
 					$this->product->setPageTitle();
 				}
 
 				$this->master_cat = $this->product->getMasterparentCategory();
 
 				// Write the current page to the session to have a back to last product link
-				$GLOBALS['TSFE']->fe_user->setKey('ses', 'tx_commerce_lastproducturl', $this->pi_linkTP_keepPIvars_url());
-				return TRUE;
+				$this->getFrontendController()->fe_user->setKey('ses', 'tx_commerce_lastproducturl', $this->pi_linkTP_keepPIvars_url());
+				$result = TRUE;
 			} else {
 				// If product ist not valid (url manipulation) go to listview
 				$this->handle = 'listView';
 			}
 		}
-		return FALSE;
+		return $result;
 	}
 
 	/**
@@ -523,28 +489,10 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 	 */
 	public function renderSingleView(Tx_Commerce_Domain_Model_Product $product, Tx_Commerce_Domain_Model_Category $category,
 			$subpartName, $subpartNameNostock) {
-		$hookObjectsArr = array();
-		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['singleview'])) {
-			\TYPO3\CMS\Core\Utility\GeneralUtility::deprecationLog('
-				hook
-				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_pibase.php\'][\'singleview\']
-				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
-				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/ListController.php\'][\'renderSingleView\']
-			');
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['singleview'] as $classRef) {
-				$hookObjectsArr[] = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
-			}
-		}
-		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/ListController.php']['renderSingleView'])) {
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/ListController.php']['renderSingleView'] as
-				$classRef
-			) {
-				$hookObjectsArr[] = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
-			}
-		}
+		$hooks = HookFactory::getHooks('Controller/CheckoutController', 'renderSingleView');
 
 		$result = NULL;
-		foreach ($hookObjectsArr as $hookObj) {
+		foreach ($hooks as $hookObj) {
 			if (method_exists($hookObj, 'preRenderSingleView')) {
 				$result = $hookObj->preRenderSingleView($product, $category, $subpartName, $subpartNameNostock, $this);
 			}
@@ -662,7 +610,7 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 		}
 
 		$markerArray = array();
-		foreach ($hookObjectsArr as $hookObj) {
+		foreach ($hooks as $hookObj) {
 			if (method_exists($hookObj, 'additionalMarker')) {
 				$markerArray = $hookObj->additionalMarker($markerArray, $this);
 			}
@@ -686,23 +634,7 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 	 */
 	public function makeArticleView($viewKind, array $conf = array(), Tx_Commerce_Domain_Model_Product $product,
 			$templateMarkerArray = '', $template = '') {
-		$hookObjectsArr = array();
-		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['articleview'])) {
-			\TYPO3\CMS\Core\Utility\GeneralUtility::deprecationLog('
-				hook
-				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/lib/class.tx_commerce_pibase.php\'][\'articleview\']
-				is deprecated since commerce 1.0.0, it will be removed in commerce 1.4.0, please use instead
-				$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'commerce/Classes/Controller/ListController.php\'][\'articleView\']
-			');
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/lib/class.tx_commerce_pibase.php']['articleview'] as $classRef) {
-				$hookObjectsArr[] = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
-			}
-		}
-		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/ListController.php']['articleView'])) {
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/ListController.php']['articleView'] as $classRef) {
-				$hookObjectsArr[] = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
-			}
-		}
+		$hooks = HookFactory::getHooks('Controller/CheckoutController', 'makeArticleView');
 
 		$count = is_array($product->getArticleUids()) ? count($product->getArticleUids()) : FALSE;
 
@@ -844,7 +776,7 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 						$this->conf['singleView.']['articleAttributesSelectList.']
 					);
 
-					foreach ($hookObjectsArr as $hookObj) {
+					foreach ($hooks as $hookObj) {
 						if (method_exists($hookObj, 'additionalMarker')) {
 							$markerArray = (array) $hookObj->additionalMarker($markerArray, $this,
 								$product->getArticle($product->getArticleUid($i)));
@@ -977,7 +909,7 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 								');
 							}
 							$markerArrayItem['###SELECT_ATTRIBUTES_VALUE_SELECTED###'] = $markerArrayItem['###SELECT_ATTRIBUTES_VALUE_STATUS###'];
-							foreach ($hookObjectsArr as $hookObj) {
+							foreach ($hooks as $hookObj) {
 								if (method_exists($hookObj, 'additionalAttributeMarker')) {
 									$markerArrayItem = $hookObj->additionalAttributeMarker($markerArrayItem, $this, $val->getUid());
 								}
@@ -1008,7 +940,7 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 				$markerArray['SUBPART_ARTICLE_ATTRIBUTES'] = $this->makeArticleAttributList($product, array($artId));
 				$markerArray['ARTICLE_SELECT_ATTRIBUTES'] = $attCode;
 
-				foreach ($hookObjectsArr as $hookObj) {
+				foreach ($hooks as $hookObj) {
 					if (method_exists($hookObj, 'additionalMarker')) {
 						$markerArray = (array) $hookObj->additionalMarker($markerArray, $this, $product->getArticle($artId));
 					}
@@ -1060,7 +992,7 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 			$content = $this->cObj->substituteMarkerArray($localContent, $markerArray, '###|###', 1);
 
 			$markerArray = array();
-			foreach ($hookObjectsArr as $hookObj) {
+			foreach ($hooks as $hookObj) {
 				if (method_exists($hookObj, 'additionalMarkerMakeArticleView')) {
 					$markerArray = (array) $hookObj->additionalMarkerMakeArticleView($markerArray, $product, $this);
 				}
