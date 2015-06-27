@@ -300,49 +300,6 @@ class Tx_Commerce_Domain_Repository_ArticleRepository extends Tx_Commerce_Domain
 
 
 	/**
-	 * Get parent product uid
-	 *
-	 * @param int $uid Product uid
-	 * @param bool $translationMode Translation mode
-	 *
-	 * @return int
-	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use Tx_Commerce_Domain_Repository_ArticleRepository::getParentProductUid instead
-	 */
-	public function get_parent_product_uid($uid, $translationMode = FALSE) {
-		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
-		return $this->getParentProductUid($uid, $translationMode);
-	}
-
-	/**
-	 * Gets all prices form database related to this product
-	 *
-	 * @param int $uid Article uid
-	 * @param int $count Number of Articles for price_scale_amount, default 1
-	 * @param string $orderField Order field
-	 *
-	 * @return array of Price UID
-	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use Tx_Commerce_Domain_Repository_ArticleRepository::getPrices instead
-	 */
-	public function get_prices($uid, $count = 1, $orderField = 'price_net') {
-		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
-		return $this->getPrices($uid, $count, $orderField);
-	}
-
-	/**
-	 * Gets all attributes from this product
-	 *
-	 * @param int $uid Product uid
-	 *
-	 * @return array of attribute UID
-	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use Tx_Commerce_Domain_Repository_ArticleRepository::getAttributes instead
-	 */
-	public function get_attributes($uid) {
-		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
-		return $this->getAttributes($uid);
-	}
-
-
-	/**
 	 * Get database connection
 	 *
 	 * @return \TYPO3\CMS\Core\Database\DatabaseConnection

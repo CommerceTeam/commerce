@@ -328,28 +328,12 @@ class Tx_Commerce_Domain_Repository_Repository {
 	 */
 	public function enableFields($tableName, $showHiddenRecords = -1) {
 		if (TYPO3_MODE === 'FE') {
-			$result = $GLOBALS['TSFE']->sys_page->enableFields($tableName, $showHiddenRecords);
+			$result = $this->getFrontendController()->sys_page->enableFields($tableName, $showHiddenRecords);
 		} else {
 			$result = \TYPO3\CMS\Backend\Utility\BackendUtility::BEenableFields($tableName);
 		}
 
 		return $result;
-	}
-
-
-	/**
-	 * gets all attributes from this product
-	 *
-	 * @param int $uid Product uid
-	 * @param array $attributeCorrelationTypeList array of corelation_types
-	 *
-	 * @return array of attribute UID
-	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use Tx_Commerce_Domain_Repository_Repository::getAttributes instead
-	 */
-	public function get_attributes($uid, $attributeCorrelationTypeList = NULL) {
-		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
-
-		return $this->getAttributes($uid, $attributeCorrelationTypeList);
 	}
 
 

@@ -310,31 +310,6 @@ class Tx_Commerce_Domain_Model_ArticlePrice extends Tx_Commerce_Domain_Model_Abs
 
 
 	/**
-	 * Price net
-	 *
-	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getPriceNet instead
-	 * @return int
-	 */
-	public function get_price_net() {
-		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
-
-		return $this->getPriceNet();
-	}
-
-	/**
-	 * Price gross
-	 *
-	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getPriceGross instead
-	 * @return int
-	 */
-	public function get_price_gross() {
-		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
-
-		return $this->getPriceGross();
-	}
-
-
-	/**
 	 * Get language service
 	 *
 	 * @return \TYPO3\CMS\Lang\LanguageService

@@ -98,21 +98,6 @@ class Tx_Commerce_Domain_Repository_AttributeRepository extends Tx_Commerce_Doma
 
 
 	/**
-	 * Gets a list of attribute value uids
-	 *
-	 * @param int $uid Uid
-	 *
-	 * @return array
-	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0 - Use tx_commerce_db_attribute::getAttributeValueUids() instead
-	 */
-	public function get_attribute_value_uids($uid) {
-		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
-
-		return $this->getAttributeValueUids($uid);
-	}
-
-
-	/**
 	 * Get database connection
 	 *
 	 * @return \TYPO3\CMS\Core\Database\DatabaseConnection

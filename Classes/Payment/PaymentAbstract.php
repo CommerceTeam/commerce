@@ -293,17 +293,4 @@ abstract class Tx_Commerce_Payment_PaymentAbstract implements Tx_Commerce_Paymen
 
 		return $result;
 	}
-
-
-	/**
-	 * Get parent object
-	 *
-	 * @return Tx_Commerce_Controller_CheckoutController Parent object instance
-	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getParentObject instead
-	 */
-	public function getPObj() {
-		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
-
-		return $this->getParentObject();
-	}
 }

@@ -409,21 +409,6 @@ class Tx_Commerce_Utility_GeneralUtility {
 
 
 	/**
-	 * Formates a price for the designated output
-	 *
-	 * @param float $price Value
-	 *
-	 * @return string formated Price
-	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use getAttributes instead
-	 */
-	public static function formatPrice($price) {
-		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
-
-		return sprintf('%01.2f', $price);
-	}
-
-
-	/**
 	 * Get typoscript frontend controller
 	 *
 	 * @return \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController

@@ -256,45 +256,6 @@ class Tx_Commerce_Hook_TcehooksHandlerHooks {
 
 
 	/**
-	 * Notify feuser observer
-	 * get id and notify observer
-	 *
-	 * @param string $status Status [update,new]
-	 * @param string $table Database table
-	 * @param string $id Id
-	 * @param array $fieldArray Reference to the incoming fields
-	 * @param DataHandler $pObj Data handler
-	 *
-	 * @return void
-	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use Tx_Commerce_Hook_TcehooksHandlerHooks::notifyFeuserObserver instead
-	 */
-	protected function notify_feuserObserver($status, $table, $id, array &$fieldArray, DataHandler &$pObj) {
-		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
-
-		$this->notifyFeuserObserver($status, $table, $id, $fieldArray, $pObj);
-	}
-
-	/**
-	 * Notify address observer
-	 * check status and notify observer
-	 *
-	 * @param string $status Status [update,new]
-	 * @param string $table Database table
-	 * @param string $id Id
-	 * @param array $fieldArray Reference to the incoming fields
-	 * @param DataHandler $pObj Data handler
-	 *
-	 * @return void
-	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use Tx_Commerce_Hook_TcehooksHandlerHooks::notifyAddressObserver instead
-	 */
-	protected function notify_addressObserver($status, $table, $id, array &$fieldArray, DataHandler &$pObj) {
-		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
-
-		$this->notifyAddressObserver($status, $table, $id, $fieldArray, $pObj);
-	}
-
-
-	/**
 	 * Get database connection
 	 *
 	 * @return \TYPO3\CMS\Core\Database\DatabaseConnection

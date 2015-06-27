@@ -223,9 +223,7 @@ class Tx_Commerce_Controller_PermissionModuleController extends \TYPO3\CMS\Perm\
 		return $buttons;
 	}
 
-	/*****************************
-	 * Listing and Form rendering
-	 *****************************/
+	/* Listing and Form rendering */
 
 	/**
 	 * Creating form for editing the permissions	($this->edit = true)

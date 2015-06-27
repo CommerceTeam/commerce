@@ -105,21 +105,6 @@ class Tx_Commerce_Domain_Repository_FolderRepository {
 
 
 	/**
-	 * Returns pidList of extension Folders
-	 *
-	 * @param string $module Module
-	 *
-	 * @return string commalist of PIDs
-	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, this wont get replaced as it was removed from the api
-	 */
-	public function getFolderPidList($module = 'commerce') {
-		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
-
-		return implode(',', array_keys(self::getFolders($module)));
-	}
-
-
-	/**
 	 * Get database connection
 	 *
 	 * @return \TYPO3\CMS\Dbal\Database\DatabaseConnection

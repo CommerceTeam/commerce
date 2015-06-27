@@ -270,18 +270,6 @@ class Tx_Commerce_Utility_FolderUtility {
 		return $aUid;
 	}
 
-	/**
-	 * Initializes the folders for tx_commerce
-	 *
-	 * @return void
-	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, please use init_folders instead
-	 */
-	public static function init_folders() {
-		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
-
-		self::initFolders();
-	}
-
 
 	/**
 	 * Get database connection

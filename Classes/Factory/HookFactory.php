@@ -27,6 +27,7 @@ class HookFactory {
 	 */
 	protected static $classNameMap = array(
 		'commerce/Controller/ListController' => 'commerce/Classes/Controller/ListController.php',
+		'commerce/Controller/AddressesController' => 'commerce/Classes/Controller/AddressesController.php',
 	);
 
 	/**
@@ -47,6 +48,7 @@ class HookFactory {
 	 * @return array
 	 */
 	public static function getHookObjects($className, $hookName) {
+		$className = 'commerce/' . $className;
 		$result = array();
 
 		static::mapClassName($className);
