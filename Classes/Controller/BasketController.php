@@ -459,10 +459,6 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 		$basketArray['###PRICE_GROSS###'] = Tx_Commerce_ViewHelpers_Money::format($this->basket->getSumGross(), $this->currency);
 		$basketArray['###PRICE_NET###'] = Tx_Commerce_ViewHelpers_Money::format($this->basket->getSumNet(), $this->currency);
 
-		// @deprecated ###ITEMS###
-		$basketArray['###ITEMS###'] = 'DEPRECATED WILL BE REMOVED IN COMMERCE 3.0.0! ' .
-			$this->basket->getArticleTypeCountFromList($articleTypes);
-
 		$basketArray['###BASKET_ITEMS###'] = $this->basket->getArticleTypeCountFromList($articleTypes);
 		$this->pi_linkTP('', array(), 0, $this->conf['basketPid']);
 		$basketArray['###BASKETURL###'] = $this->cObj->lastTypoLinkUrl;
@@ -952,9 +948,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 			'[artAddUid][' . $article->getUid() . '][price_id]=' . $basketItem->getPriceUid();
 		$typoLinkConf['additionalParams'] .= $this->argSeparator . $this->prefixId .
 			'[artAddUid][' . $article->getUid() . '][count]=0';
-		// DELIOTMFROMBASKETLINK is deprecated
 		$markerArray['###DELETEFROMBASKETLINK###'] = $this->cObj->typoLink($this->pi_getLL('lang_basket_delete_item'), $typoLinkConf);
-		$markerArray['###DELIOTMFROMBASKETLINK###'] = $markerArray['###DELETEFROMBASKETLINK###'];
 
 		$templateMarker = '###PRODUCT_BASKET_FORM_SMALL###';
 		$template = $this->cObj->getSubpart($this->getTemplateCode(), $templateMarker);

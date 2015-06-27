@@ -26,22 +26,6 @@ class Tx_Commerce_Task_StatisticTask extends \TYPO3\CMS\Scheduler\Task\AbstractT
 	protected $selectedAggregation = '';
 
 	/**
-	 * Backend user
-	 *
-	 * @var \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
-	 * @deprecated Since 2.0.0 will be removed in 4.0.0
-	 */
-	protected $backendUser;
-
-	/**
-	 * Database connection
-	 *
-	 * @var \TYPO3\CMS\Core\Database\DatabaseConnection
-	 * @deprecated Since 2.0.0 will be removed in 4.0.0
-	 */
-	protected $database;
-
-	/**
 	 * Statistics utility
 	 *
 	 * @var Tx_Commerce_Utility_StatisticsUtility
@@ -61,9 +45,6 @@ class Tx_Commerce_Task_StatisticTask extends \TYPO3\CMS\Scheduler\Task\AbstractT
 	 * @return void
 	 */
 	protected function init() {
-		$this->backendUser = $this->getBackendUser();
-		$this->database = $this->getDatabaseConnection();
-
 		$excludeStatisticFolders = 0;
 		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['excludeStatisticFolders'] != '') {
 			$excludeStatisticFolders = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['excludeStatisticFolders'];

@@ -661,8 +661,6 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 		$baseMarkerArray['###ADDRESS_FORM_IS_MAIN_ADDRESS_FIELD###'] = $isMainAddressCodeField;
 		$baseMarkerArray['###ADDRESS_FORM_IS_MAIN_ADDRESS_LABEL###'] = $isMainAddressCodeLabel;
 
-		// @deprecated Obsolete Marker, use Field and label instead
-		$baseMarkerArray['###ADDRESS_FORM_IS_MAIN_ADDRESS###'] = $isMainAddressCodeField . ' ' . $isMainAddressCodeLabel;
 		$baseMarkerArray['###ADDRESS_TYPE###'] = $this->pi_getLL('label_address_of_type_' . $this->piVars['addressType']);
 
 		// Get action link

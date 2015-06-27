@@ -399,8 +399,6 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 		if (isset($this->records['uid'][$rootUid])) {
 			// Place the current record in the array
 			$entry = array();
-			// deprecated key should not be used anymore to be more compatible to pagetree
-			$entry['record'] = $this->records['uid'][$rootUid];
 			// new key to be more compatible to pagetree
 			$entry['row'] = $this->records['uid'][$rootUid];
 			$entry['depth'] = $depth;

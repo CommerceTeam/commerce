@@ -21,14 +21,6 @@
  */
 class Tx_Commerce_Tree_Leaf_Base {
 	/**
-	 * Holds a reference to the global $LANG object
-	 *
-	 * @var \TYPO3\CMS\Lang\LanguageService
-	 * @deprecated Since 2.0.0 will be removed in 4.0.0
-	 */
-	protected $language;
-
-	/**
 	 * Flag if is loaded
 	 *
 	 * @var bool
@@ -48,7 +40,6 @@ class Tx_Commerce_Tree_Leaf_Base {
 	 * @return self
 	 */
 	public function __construct() {
-		$this->language = $this->getLanguageService();
 		$this->loadLL();
 	}
 

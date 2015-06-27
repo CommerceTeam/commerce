@@ -137,14 +137,6 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 	 */
 	public $treeBrowserScript;
 
-	/**
-	 * Language service
-	 *
-	 * @var \TYPO3\CMS\Lang\LanguageService
-	 * @deprecated Since 2.0.0 will be removed in 4.0.0
-	 */
-	public $language;
-
 	/* Getter / Setter */
 
 	/**
@@ -163,9 +155,7 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 		$this->row = $parameter['row'];
 		$this->config = $parameter['fieldConf']['config'];
 
-		$this->language = $this->getLanguageService();
-
-			// set currently selected items
+		// set currently selected items
 		$itemArray = GeneralUtility::trimExplode(',', $this->PA['itemFormElValue'], TRUE);
 		$this->setItemArray($itemArray);
 

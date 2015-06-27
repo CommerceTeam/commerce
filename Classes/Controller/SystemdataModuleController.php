@@ -24,30 +24,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class Tx_Commerce_Controller_SystemdataModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 	/**
-	 * Database connection
-	 *
-	 * @var \TYPO3\CMS\Core\Database\DatabaseConnection
-	 * @deprecated Since 2.0.0 will be removed in 4.0.0
-	 */
-	protected $database;
-
-	/**
-	 * Language
-	 *
-	 * @var \TYPO3\CMS\Lang\LanguageService
-	 * @deprecated Since 2.0.0 will be removed in 4.0.0
-	 */
-	protected $language;
-
-	/**
-	 * Backend user
-	 *
-	 * @var \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
-	 * @deprecated Since 2.0.0 will be removed in 4.0.0
-	 */
-	protected $user;
-
-	/**
 	 * Page record
 	 *
 	 * @var array
@@ -106,10 +82,6 @@ class Tx_Commerce_Controller_SystemdataModuleController extends \TYPO3\CMS\Backe
 
 		$language = $this->getLanguageService();
 		$language->includeLLFile('EXT:commerce/Resources/Private/Language/locallang_mod_systemdata.xml');
-
-		$this->database = $this->getDatabaseConnection();
-		$this->language = $this->getLanguageService();
-		$this->user = $this->getBackendUser();
 
 		$this->id = $this->modPid = (int) reset(Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Commerce', 'commerce'));
 		$this->attributePid = (int) reset(

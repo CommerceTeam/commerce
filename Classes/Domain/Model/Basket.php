@@ -31,14 +31,6 @@
  */
 class Tx_Commerce_Domain_Model_Basket extends Tx_Commerce_Domain_Model_BasicBasket {
 	/**
-	 * Database connection
-	 *
-	 * @var \TYPO3\CMS\Core\Database\DatabaseConnection
-	 * @deprecated since commerce 2.0.0, this property will be removed in commerce 4.0.0
-	 */
-	protected $database;
-
-	/**
 	 * Storage-type for the data
 	 *
 	 * @var string
@@ -77,8 +69,6 @@ class Tx_Commerce_Domain_Model_Basket extends Tx_Commerce_Domain_Model_BasicBask
 		if ($this->extensionConfigration['basketType'] == 'persistent') {
 			$this->storageType = 'persistent';
 		}
-
-		$this->database = $this->getDatabaseConnection();
 	}
 
 	/**

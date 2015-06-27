@@ -71,23 +71,6 @@ class Tx_Commerce_Domain_Repository_Repository {
 	protected $uid;
 
 	/**
-	 * Database connection
-	 *
-	 * @var \TYPO3\CMS\Core\Database\DatabaseConnection
-	 * @deprecated Since 2.0.0 will be removed in 4.0.0
-	 */
-	protected $database;
-
-	/**
-	 * Constructor
-	 *
-	 * @return self
-	 */
-	public function __construct() {
-		$this->database = $this->getDatabaseConnection();
-	}
-
-	/**
 	 * Get data
 	 *
 	 * @param int $uid UID for Data

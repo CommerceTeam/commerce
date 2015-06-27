@@ -1013,21 +1013,7 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends \TYPO3\CMS\Recordlist\Reco
 			// get Module TSConfig
 		$moduleConfig = BackendUtility::getModTSconfig($id, 'mod.txcommerceM1_orders');
 
-		if ($moduleConfig['properties']['delProdUid']) {
-			GeneralUtility::deprecationLog(
-				'mod.txcommerceM1_orders.delProdUid is deprecated since commerce 1.0.0, this setting will be removed in commerce
-				 1.4.0, please use mod.txcommerceM1_orders.deliveryProductUid instead'
-			);
-		}
-		if ($moduleConfig['properties']['payProdUid']) {
-			GeneralUtility::deprecationLog(
-				'mod.txcommerceM1_orders.payProdUid is deprecated since commerce 1.0.0, this setting will be removed in commerce
-				 1.4.0, please use mod.txcommerceM1_orders.paymentProductUid instead'
-			);
-		}
-
 		$deliveryProductUid = $moduleConfig['properties']['deliveryProductUid'] ? $moduleConfig['properties']['deliveryProductUid'] : 0;
-		$deliveryProductUid = $moduleConfig['properties']['delProdUid'] ? $moduleConfig['properties']['delProdUid'] : $deliveryProductUid;
 		if ($deliveryProductUid > 0) {
 			$deliveryArticles = Tx_Commerce_Utility_BackendUtility::getArticlesOfProductAsUidList($deliveryProductUid);
 
@@ -1037,7 +1023,6 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends \TYPO3\CMS\Recordlist\Reco
 		}
 
 		$paymentProductUid = $moduleConfig['properties']['paymentProductUid'] ? $moduleConfig['properties']['paymentProductUid'] : 0;
-		$paymentProductUid = $moduleConfig['properties']['payProdUid'] ? $moduleConfig['properties']['payProdUid'] : $paymentProductUid;
 		if ($paymentProductUid > 0) {
 			$paymentArticles = Tx_Commerce_Utility_BackendUtility::getArticlesOfProductAsUidList($paymentProductUid);
 

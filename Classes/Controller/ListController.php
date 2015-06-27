@@ -861,13 +861,6 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 						$markerArray['###SELECT_ATTRIBUTES_HTML_ELEMENT_KEY###'] = $this->prefixId . '_' . $attrUid;
 						$markerArray['###SELECT_ATTRIBUTES_HTML_ELEMENT_NAME###'] = $this->prefixId . '[attsel_' . $attrUid . ']';
 
-						if (strpos($templateAttrSelector, '###SELECT_ATTRIBUTES_ITEM_TEXT_ALL###') !== FALSE) {
-							\TYPO3\CMS\Core\Utility\GeneralUtility::deprecationLog('
-								marker ###SELECT_ATTRIBUTES_ITEM_TEXT_ALL### is deprecated since commerce 1.0.0,
-								it will be removed in commerce 1.4.0
-							');
-						}
-						$markerArray['###SELECT_ATTRIBUTES_ITEM_TEXT_ALL###'] = '';
 						$markerArray['###SELECT_ATTRIBUTES_UNIT###'] = $attributeObj->getUnit();
 
 						$itemsContent = '';
@@ -902,13 +895,6 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 								$markerArrayItem['###SELECT_ATTRIBUTES_VALUE_STATUS###'] = '';
 							}
 
-							if (strpos($templateAttrSelector, '###SELECT_ATTRIBUTES_ITEM_TEXT_ALL###') !== FALSE) {
-								\TYPO3\CMS\Core\Utility\GeneralUtility::deprecationLog('
-									marker ###SELECT_ATTRIBUTES_VALUE_SELECTED### is deprecated since commerce 1.0.0,
-									it will be removed in commerce 1.4.0, please use ###SELECT_ATTRIBUTES_VALUE_STATUS### instead
-								');
-							}
-							$markerArrayItem['###SELECT_ATTRIBUTES_VALUE_SELECTED###'] = $markerArrayItem['###SELECT_ATTRIBUTES_VALUE_STATUS###'];
 							foreach ($hooks as $hookObj) {
 								if (method_exists($hookObj, 'additionalAttributeMarker')) {
 									$markerArrayItem = $hookObj->additionalAttributeMarker($markerArrayItem, $this, $val->getUid());

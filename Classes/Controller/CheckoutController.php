@@ -609,8 +609,6 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			$this->conf['billing.']['deliveryAddress.']['nodelivery_label.']
 		);
 
-		// @deprecated marker, use marker above instead (see example Template)
-		$markerArray['###ADDRESS_FORM_FIELDS###'] = $billingForm;
 		$markerArray['###ADDRESS_FORM_SUBMIT###'] = '<input type="submit" value="' . $this->pi_getLL('billing_submit') . '" />';
 
 		// We are thrown back because address data is not valid
