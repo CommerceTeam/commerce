@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Tree\Leaf;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -11,16 +12,17 @@
  *
  * The TYPO3 project - inspiring people to share!
  */
+
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * Implements the Tx_Commerce_Tree_Leaf_View for Product
+ * Implements the \CommerceTeam\Commerce\Tree\Leaf\View for Product
  *
- * Class Tx_Commerce_Tree_Leaf_ProductView
+ * Class \CommerceTeam\Commerce\Tree\Leaf\ProductView
  *
  * @author 2008-2014 Erik Frister <typo3@marketing-factory.de>
  */
-class Tx_Commerce_Tree_Leaf_ProductView extends Tx_Commerce_Tree_Leaf_View {
+class ProductView extends View {
 	/**
 	 * DB Table
 	 *

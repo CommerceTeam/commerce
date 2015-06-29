@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Payment;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -15,11 +16,11 @@
 /**
  * Abstract payment implementation
  *
- * Class Tx_Commerce_Payment_PaymentAbstract
+ * Class \CommerceTeam\Commerce\Payment\PaymentAbstract
  *
  * @author 2011-2012 Volker Graubaum <vg@e-netconsulting.com>
  */
-abstract class Tx_Commerce_Payment_PaymentAbstract implements Tx_Commerce_Payment_Interface_Payment {
+abstract class PaymentAbstract implements PaymentInterface {
 	/**
 	 * Error messages, keys are field names
 	 *
@@ -30,7 +31,7 @@ abstract class Tx_Commerce_Payment_PaymentAbstract implements Tx_Commerce_Paymen
 	/**
 	 * Parent object
 	 *
-	 * @var Tx_Commerce_Controller_BaseController
+	 * @var \CommerceTeam\Commerce\Controller\CheckoutController
 	 */
 	protected $parentObject = NULL;
 
@@ -44,7 +45,7 @@ abstract class Tx_Commerce_Payment_PaymentAbstract implements Tx_Commerce_Paymen
 	/**
 	 * Payment provider configured
 	 *
-	 * @var Tx_Commerce_Payment_Provider_ProviderAbstract
+	 * @var \CommerceTeam\Commerce\Payment\Provider\ProviderAbstract
 	 */
 	protected $provider = NULL;
 
@@ -58,14 +59,14 @@ abstract class Tx_Commerce_Payment_PaymentAbstract implements Tx_Commerce_Paymen
 	/**
 	 * Default constructor
 	 *
-	 * @param Tx_Commerce_Controller_BaseController $parentObject Parent object
+	 * @param \CommerceTeam\Commerce\Controller\BaseController $parentObject Parent
 	 *
 	 * @return self
-	 * @throws Exception If type was not set or criteria are not valid
+	 * @throws \Exception If type was not set or criteria are not valid
 	 */
-	public function __construct(Tx_Commerce_Controller_BaseController $parentObject) {
+	public function __construct(\CommerceTeam\Commerce\Controller\BaseController $parentObject) {
 		if (!strlen($this->type) > 0) {
-			throw new Exception($this->type . ' not set.', 1306266978);
+			throw new \Exception($this->type . ' not set.', 1306266978);
 		}
 
 		$this->parentObject = $parentObject;
@@ -77,7 +78,7 @@ abstract class Tx_Commerce_Payment_PaymentAbstract implements Tx_Commerce_Paymen
 	/**
 	 * Get parent object
 	 *
-	 * @return Tx_Commerce_Controller_CheckoutController Parent object instance
+	 * @return \CommerceTeam\Commerce\Controller\CheckoutController Parent object
 	 */
 	public function getParentObject() {
 		return $this->parentObject;
@@ -101,7 +102,7 @@ abstract class Tx_Commerce_Payment_PaymentAbstract implements Tx_Commerce_Paymen
 		/**
 		 * Criterion
 		 *
-		 * @var Tx_Commerce_Payment_Criterion_CriterionAbstract $criterion
+		 * @var \CommerceTeam\Commerce\Payment\Criterion\CriterionAbstract $criterion
 		 */
 		foreach ($this->criteria as $criterion) {
 			if ($criterion->isAllowed() === FALSE) {
@@ -114,7 +115,7 @@ abstract class Tx_Commerce_Payment_PaymentAbstract implements Tx_Commerce_Paymen
 	/**
 	 * Get payment provider
 	 *
-	 * @return Tx_Commerce_Payment_Interface_Provider
+	 * @return \CommerceTeam\Commerce\Payment\Provider\ProviderInterface
 	 */
 	public function getProvider() {
 		return $this->provider;
@@ -124,11 +125,12 @@ abstract class Tx_Commerce_Payment_PaymentAbstract implements Tx_Commerce_Paymen
 	 * Find configured criterion
 	 *
 	 * @return void
-	 * @throws Exception If configured criterion class is not of correct interface
+	 * @throws \Exception If configured criterion class is not of correct interface
 	 */
 	protected function findCriterion() {
 		// Create criterion objects if defined
-		$criteraConfigurations = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['SYSPRODUCTS']['PAYMENT']['types'][$this->type]['criteria'];
+		$commerceConfiguration = & $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY];
+		$criteraConfigurations = $commerceConfiguration['SYSPRODUCTS']['PAYMENT']['types'][$this->type]['criteria'];
 		if (is_array($criteraConfigurations)) {
 			foreach ($criteraConfigurations as $criterionConfiguration) {
 				if (!is_array($criterionConfiguration['options'])) {
@@ -138,16 +140,17 @@ abstract class Tx_Commerce_Payment_PaymentAbstract implements Tx_Commerce_Paymen
 				/**
 				 * Criterion
 				 *
-				 * @var Tx_Commerce_Payment_Interface_Criterion $criterion
+				 * @var \CommerceTeam\Commerce\Payment\Criterion\CriterionInterface $criterion
 				 */
 				$criterion = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
 					$criterionConfiguration['class'],
 					$this,
 					$criterionConfiguration['options']
 				);
-				if (!($criterion instanceof Tx_Commerce_Payment_Interface_Criterion)) {
-					throw new Exception(
-						'Criterion ' . $criterionConfiguration['class'] . ' must implement interface Tx_Commerce_Payment_Interface_Criterion',
+				if (!($criterion instanceof \CommerceTeam\Commerce\Payment\Criterion\CriterionInterface)) {
+					throw new \Exception(
+						'Criterion ' . $criterionConfiguration['class'] .
+							' must implement interface \CommerceTeam\Commerce\Payment\Criterion\CriterionInterface',
 						1306267908
 					);
 				}
@@ -160,23 +163,25 @@ abstract class Tx_Commerce_Payment_PaymentAbstract implements Tx_Commerce_Paymen
 	 * Find appropriate provider for this payment
 	 *
 	 * @return void
-	 * @throws Exception If payment provider is not of corret interface
+	 * @throws \Exception If payment provider is not of corret interface
 	 */
 	protected function findProvider() {
-			// Check if type has criteria, create all needed objects
-		$providerConfigurations = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['SYSPRODUCTS']['PAYMENT']['types'][$this->type]['provider'];
+		// Check if type has criteria, create all needed objects
+		$commerceConfiguration = & $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY];
+		$providerConfigurations = $commerceConfiguration['SYSPRODUCTS']['PAYMENT']['types'][$this->type]['provider'];
 
 		if (is_array($providerConfigurations)) {
 			foreach ($providerConfigurations as $providerConfiguration) {
 				/**
 				 * Provider
 				 *
-				 * @var Tx_Commerce_Payment_Interface_Provider $provider
+				 * @var \CommerceTeam\Commerce\Payment\Provider\ProviderInterface $provider
 				 */
 				$provider = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance($providerConfiguration['class'], $this);
-				if (!($provider instanceof Tx_Commerce_Payment_Interface_Provider)) {
-					throw new Exception(
-						'Provider ' . $providerConfiguration['class'] . ' must implement interface Tx_Commerce_Payment_Interface_Provider',
+				if (!($provider instanceof \CommerceTeam\Commerce\Payment\Provider\ProviderInterface)) {
+					throw new \Exception(
+						'Provider ' . $providerConfiguration['class'] .
+							' must implement interface \CommerceTeam\Commerce\Payment\Provider\ProviderInterface',
 						1307705798
 					);
 				}
@@ -235,12 +240,12 @@ abstract class Tx_Commerce_Payment_PaymentAbstract implements Tx_Commerce_Paymen
 	 *
 	 * @param array $config Current configuration
 	 * @param array $session Session data
-	 * @param Tx_Commerce_Domain_Model_Basket $basket Basket object
+	 * @param \CommerceTeam\Commerce\Domain\Model\Basket $basket Basket object
 	 *
 	 * @return bool True is finishing order is allowed
 	 */
 	public function finishingFunction(array $config = array(), array $session = array(),
-		Tx_Commerce_Domain_Model_Basket $basket = NULL
+		\CommerceTeam\Commerce\Domain\Model\Basket $basket = NULL
 	) {
 		$result = TRUE;
 		if ($this->provider !== NULL) {

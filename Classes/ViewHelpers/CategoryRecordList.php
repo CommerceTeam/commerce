@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\ViewHelpers;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -19,11 +20,11 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Extension of DatabaseRecordList to render category and product lists
  *
- * Class Tx_Commerce_ViewHelpers_CategoryRecordList
+ * Class \CommerceTeam\Commerce\ViewHelpers\CategoryRecordList
  *
  * @author 2005-2012 Franz Holzinger <kontakt@fholzinger.com>
  */
-class Tx_Commerce_ViewHelpers_CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordList {
+class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordList {
 	/**
 	 * Parent uid
 	 *
@@ -202,7 +203,7 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends \TYPO3\CMS\Recordlist\R
 	 * 	Pseudo fields will be added including the record header.
 	 *
 	 * @return string HTML table with the listing for the record.
-	 * @throws UnexpectedValueException If hook was of wrong interface
+	 * @throws \UnexpectedValueException If hook was of wrong interface
 	 */
 	public function getTable($table, $id, $rowlist) {
 		$database = $this->getDatabaseConnection();
@@ -324,7 +325,7 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends \TYPO3\CMS\Recordlist\R
 				$hookObject = GeneralUtility::getUserObj($classData);
 
 				if (!($hookObject instanceof \TYPO3\CMS\Backend\RecordList\RecordListGetTableHookInterface)) {
-					throw new UnexpectedValueException(
+					throw new \UnexpectedValueException(
 						'$hookObject must implement interface \TYPO3\CMS\Backend\RecordList\RecordListGetTableHookInterface',
 						1195114460
 					);
@@ -787,7 +788,7 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends \TYPO3\CMS\Recordlist\R
 	 * @param array $currentIdList Array of the currently displayed uids of the table
 	 *
 	 * @return string Header table row
-	 * @throws UnexpectedValueException If hook was of wrong interface
+	 * @throws \UnexpectedValueException If hook was of wrong interface
 	 */
 	public function renderListHeader($table, array $currentIdList) {
 		$language = & $this->getLanguageService();
@@ -887,7 +888,7 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends \TYPO3\CMS\Recordlist\R
 						foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/class.db_list_extra.inc']['actions'] as $classData) {
 							$hookObject = GeneralUtility::getUserObj($classData);
 							if (!($hookObject instanceof \TYPO3\CMS\Recordlist\RecordList\RecordListHookInterface)) {
-								throw new UnexpectedValueException(
+								throw new \UnexpectedValueException(
 									'$hookObject must implement interface \TYPO3\CMS\Recordlist\RecordList\RecordListHookInterface', 1195567850
 								);
 							}
@@ -1017,7 +1018,7 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends \TYPO3\CMS\Recordlist\R
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/class.db_list_extra.inc']['actions'] as $classData) {
 				$hookObject = GeneralUtility::getUserObj($classData);
 				if (!($hookObject instanceof \TYPO3\CMS\Recordlist\RecordList\RecordListHookInterface)) {
-					throw new UnexpectedValueException(
+					throw new \UnexpectedValueException(
 						'$hookObject must implement interface \TYPO3\CMS\Recordlist\RecordList\RecordListHookInterface', 1195567855
 					);
 				}
@@ -1036,7 +1037,7 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends \TYPO3\CMS\Recordlist\R
 	 * @param array $row The record for which to make the control panel.
 	 *
 	 * @return string HTML table with the control panel (unless disabled)
-	 * @throws UnexpectedValueException If hook was of wrong interface
+	 * @throws \UnexpectedValueException If hook was of wrong interface
 	 */
 	public function makeControl($table, array $row) {
 		$backendUser = $this->getBackendUser();
@@ -1344,7 +1345,7 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends \TYPO3\CMS\Recordlist\R
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/class.db_list_extra.inc']['actions'] as $classData) {
 				$hookObject = GeneralUtility::getUserObj($classData);
 				if (!($hookObject instanceof \TYPO3\CMS\Recordlist\RecordList\RecordListHookInterface)) {
-					throw new UnexpectedValueException(
+					throw new \UnexpectedValueException(
 						'$hookObject must implement interface \TYPO3\CMS\Recordlist\RecordList\RecordListHookInterface', 1195567840
 					);
 				}
@@ -1365,7 +1366,7 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends \TYPO3\CMS\Recordlist\R
 	 * @param array $row The record for which to make the clipboard panel.
 	 *
 	 * @return string HTML table with the clipboard panel (unless disabled)
-	 * @throws UnexpectedValueException If hook was of wrong interface
+	 * @throws \UnexpectedValueException If hook was of wrong interface
 	 */
 	public function makeClip($table, array $row) {
 		$language = $this->getLanguageService();
@@ -1477,7 +1478,7 @@ class Tx_Commerce_ViewHelpers_CategoryRecordList extends \TYPO3\CMS\Recordlist\R
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/class.db_list_extra.inc']['actions'] as $classData) {
 				$hookObject = GeneralUtility::getUserObj($classData);
 				if (!($hookObject instanceof \TYPO3\CMS\Recordlist\RecordList\RecordListHookInterface)) {
-					throw new UnexpectedValueException(
+					throw new \UnexpectedValueException(
 						'$hookObject must implement interface \TYPO3\CMS\Recordlist\RecordList\RecordListHookInterface', 1195567845
 					);
 				}

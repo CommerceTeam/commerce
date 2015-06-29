@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Hook;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -15,11 +16,11 @@
 use TYPO3\CMS\Backend\Form\Element\InlineElement;
 
 /**
- * Class Tx_Commerce_Hook_IrreHooks
+ * Class \CommerceTeam\Commerce\Hook\IrreHooks
  *
  * @author 2008-2011 Ingo Schmitt <is@marketing-factory.de>
  */
-class Tx_Commerce_Hook_IrreHooks implements \TYPO3\CMS\Backend\Form\Element\InlineElementHookInterface {
+class IrreHooks implements \TYPO3\CMS\Backend\Form\Element\InlineElementHookInterface {
 	/**
 	 * Parent object
 	 *

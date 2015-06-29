@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Domain\Model;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -18,24 +19,24 @@ use \CommerceTeam\Commerce\Factory\HookFactory;
  * Main script class for the handling of articles. Normaly used
  * for frontend rendering. This class provides basic methodes for acessing
  * articles.
- * Inherited from Tx_Commerce_Domain_Model_AbstractEntity
+ * Inherited from \CommerceTeam\Commerce\Domain\Model\AbstractEntity
  *
- * Class Tx_Commerce_Domain_Model_Article
+ * Class \CommerceTeam\Commerce\Domain\Model\Article
  *
  * @author 2005-2011 Ingo Schmitt <is@marketing-factory.de>
  */
-class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_AbstractEntity {
+class Article extends AbstractEntity {
 	/**
 	 * Database class name
 	 *
 	 * @var string
 	 */
-	protected $databaseClass = 'Tx_Commerce_Domain_Repository_ArticleRepository';
+	protected $databaseClass = 'CommerceTeam\\Commerce\\Domain\\Repository\\ArticleRepository';
 
 	/**
 	 * Database connection
 	 *
-	 * @var Tx_Commerce_Domain_Repository_ArticleRepository
+	 * @var \CommerceTeam\Commerce\Domain\Repository\ArticleRepository
 	 */
 	public $databaseConnection;
 
@@ -128,7 +129,7 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 	/**
 	 * Parent product
 	 *
-	 * @var Tx_Commerce_Domain_Model_Product
+	 * @var \CommerceTeam\Commerce\Domain\Model\Product
 	 */
 	protected $parentProduct;
 
@@ -187,7 +188,7 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 	/**
 	 * Price object
 	 *
-	 * @var Tx_Commerce_Domain_Model_ArticlePrice
+	 * @var \CommerceTeam\Commerce\Domain\Model\ArticlePrice
 	 */
 	protected $price;
 
@@ -448,7 +449,7 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 	public function getPriceGross() {
 		$result = 'no valid price';
 
-		if ($this->price instanceof Tx_Commerce_Domain_Model_ArticlePrice) {
+		if ($this->price instanceof \CommerceTeam\Commerce\Domain\Model\ArticlePrice) {
 			$result = $this->price->getPriceGross();
 		}
 
@@ -463,7 +464,7 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 	public function getPriceNet() {
 		$result = 'no valid price';
 
-		if ($this->price instanceof Tx_Commerce_Domain_Model_ArticlePrice) {
+		if ($this->price instanceof \CommerceTeam\Commerce\Domain\Model\ArticlePrice) {
 			$result = $this->price->getPriceNet();
 		}
 
@@ -473,7 +474,7 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 	/**
 	 * Get price object
 	 *
-	 * @return Tx_Commerce_Domain_Model_ArticlePrice Price object
+	 * @return \CommerceTeam\Commerce\Domain\Model\ArticlePrice Price object
 	 */
 	public function getPriceObj() {
 		return $this->price;
@@ -497,10 +498,10 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 					/**
 					 * Article price
 					 *
-					 * @var Tx_Commerce_Domain_Model_ArticlePrice $price
+					 * @var \CommerceTeam\Commerce\Domain\Model\ArticlePrice $price
 					 */
 					$price = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-						'Tx_Commerce_Domain_Model_ArticlePrice',
+						'CommerceTeam\\Commerce\\Domain\\Model\\ArticlePrice',
 						$pricdUid
 					);
 					$price->loadData();
@@ -546,12 +547,12 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 	/**
 	 * Parent product as object
 	 *
-	 * @return Tx_Commerce_Domain_Model_Product Product object
+	 * @return \CommerceTeam\Commerce\Domain\Model\Product Product object
 	 */
 	public function getParentProduct() {
 		if ($this->parentProduct == NULL) {
 			$this->parentProduct = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-				'Tx_Commerce_Domain_Model_Product',
+				'CommerceTeam\\Commerce\\Domain\\Model\\Product',
 				$this->getParentProductUid()
 			);
 		}
@@ -683,7 +684,7 @@ class Tx_Commerce_Domain_Model_Article extends Tx_Commerce_Domain_Model_Abstract
 				$this->price_uid = $priceData[0];
 
 				$this->price = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-					'Tx_Commerce_Domain_Model_ArticlePrice',
+					'CommerceTeam\\Commerce\\Domain\\Model\\ArticlePrice',
 					$this->price_uid
 				);
 				if ($this->price) {

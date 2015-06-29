@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Payment\Provider;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -15,11 +16,11 @@
 /**
  * Abstract payment provider implementation
  *
- * Class Tx_Commerce_Payment_Provider_ProviderAbstract
+ * Class \CommerceTeam\Commerce\Payment\Provider\ProviderAbstract
  *
  * @author 2009-2011 Volker Graubaum <vg@e-netconsulting.de>
  */
-abstract class Tx_Commerce_Payment_Provider_ProviderAbstract implements Tx_Commerce_Payment_Interface_Provider {
+abstract class ProviderAbstract implements ProviderInterface {
 	/**
 	 * Error messages (keys are field names)
 	 *
@@ -30,7 +31,7 @@ abstract class Tx_Commerce_Payment_Provider_ProviderAbstract implements Tx_Comme
 	/**
 	 * Payment object
 	 *
-	 * @var Tx_Commerce_Payment_Interface_Payment
+	 * @var \CommerceTeam\Commerce\Payment\PaymentInterface
 	 */
 	protected $paymentObject = NULL;
 
@@ -51,11 +52,11 @@ abstract class Tx_Commerce_Payment_Provider_ProviderAbstract implements Tx_Comme
 	/**
 	 * Construct this payment provider
 	 *
-	 * @param Tx_Commerce_Payment_Interface_Payment $paymentObject Payment object
+	 * @param \CommerceTeam\Commerce\Payment\PaymentInterface $paymentObject Payment
 	 *
 	 * @return self
 	 */
-	public function __construct(Tx_Commerce_Payment_Interface_Payment $paymentObject) {
+	public function __construct(\CommerceTeam\Commerce\Payment\PaymentInterface $paymentObject) {
 		$this->paymentObject = $paymentObject;
 		$this->loadCriteria();
 	}
@@ -64,11 +65,14 @@ abstract class Tx_Commerce_Payment_Provider_ProviderAbstract implements Tx_Comme
 	 * Load configured criteria
 	 *
 	 * @return void
-	 * @throws Exception If criteria was not of correct interface
+	 * @throws \Exception If criteria was not of correct interface
 	 */
 	protected function loadCriteria() {
 		// Get and instantiate registered criteria of this payment provider
-		$criteraConfigurations = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['SYSPRODUCTS']['PAYMENT']['types'][$this->paymentObject->getType()]['provider'][$this->type]['criteria'];
+		$commerceConfiguration = & $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY];
+		$paymentConfiguration = & $commerceConfiguration['SYSPRODUCTS']['PAYMENT']['types'][$this->paymentObject->getType()];
+		$criteraConfigurations = $paymentConfiguration['provider'][$this->type]['criteria'];
+
 		if (is_array($criteraConfigurations)) {
 			foreach ($criteraConfigurations as $criterionConfiguration) {
 				if (!is_array($criterionConfiguration['options'])) {
@@ -77,17 +81,17 @@ abstract class Tx_Commerce_Payment_Provider_ProviderAbstract implements Tx_Comme
 				/**
 				 * Criterion
 				 *
-				 * @var $criterion Tx_Commerce_Payment_Interface_ProviderCriterion
+				 * @var $criterion ProviderCriterionInterface
 				 */
 				$criterion = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
 					$criterionConfiguration['class'],
 					$this,
 					$criterionConfiguration['options']
 				);
-				if (!($criterion instanceof Tx_Commerce_Payment_Interface_ProviderCriterion)) {
-					throw new Exception(
+				if (!($criterion instanceof ProviderCriterionInterface)) {
+					throw new \Exception(
 						'Criterion ' . $criterionConfiguration['class'] .
-							' must implement interface Tx_Commerce_Payment_Interface_ProviderCriterion',
+							' must implement interface \CommerceTeam\Commerce\Payment\Provider\ProviderCriterionInterface',
 						1307720945
 					);
 				}
@@ -99,7 +103,7 @@ abstract class Tx_Commerce_Payment_Provider_ProviderAbstract implements Tx_Comme
 	/**
 	 * Get parent payment object
 	 *
-	 * @return Tx_Commerce_Payment_Interface_Payment Parent payment object
+	 * @return \CommerceTeam\Commerce\Payment\PaymentInterface Parent payment object
 	 */
 	public function getPaymentObject() {
 		return $this->paymentObject;
@@ -125,7 +129,7 @@ abstract class Tx_Commerce_Payment_Provider_ProviderAbstract implements Tx_Comme
 		/**
 		 * Criterion
 		 *
-		 * @var Tx_Commerce_Payment_Criterion_CriterionAbstract $criterion
+		 * @var \CommerceTeam\Commerce\Payment\Criterion\CriterionAbstract $criterion
 		 */
 		foreach ($this->criteria as $criterion) {
 			if ($criterion->isAllowed() === FALSE) {
@@ -172,12 +176,12 @@ abstract class Tx_Commerce_Payment_Provider_ProviderAbstract implements Tx_Comme
 	 *
 	 * @param array $config Current configuration
 	 * @param array $session Session data
-	 * @param Tx_Commerce_Domain_Model_Basket $basket Basket object
+	 * @param \CommerceTeam\Commerce\Domain\Model\Basket $basket Basket object
 	 *
 	 * @return bool TRUE if finishing order is allowed
 	 */
 	public function finishingFunction(array $config = array(), array $session = array(),
-		Tx_Commerce_Domain_Model_Basket $basket = NULL
+		\CommerceTeam\Commerce\Domain\Model\Basket $basket = NULL
 	) {
 		return TRUE;
 	}

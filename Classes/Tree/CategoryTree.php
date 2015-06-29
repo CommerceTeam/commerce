@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Tree;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -18,11 +19,11 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * Implements a Categorytree
  * A tree can have n leafs, and leafs can in itself contain other leafs
  *
- * Class Tx_Commerce_Tree_CategoryTree
+ * Class \CommerceTeam\Commerce\Tree\CategoryTree
  *
  * @author 2008-2011 Erik Frister <typo3@marketing-factory.de>
  */
-class Tx_Commerce_Tree_CategoryTree extends Tx_Commerce_Tree_Browsetree {
+class CategoryTree extends Browsetree {
 	/**
 	 * Set the Tree Name
 	 *
@@ -78,37 +79,37 @@ class Tx_Commerce_Tree_CategoryTree extends Tx_Commerce_Tree_Browsetree {
 		/**
 		 * Category leaf
 		 *
-		 * @var Tx_Commerce_Tree_Leaf_Category $categoryLeaf
+		 * @var \CommerceTeam\Commerce\Tree\Leaf\Category $categoryLeaf
 		 */
-		$categoryLeaf = GeneralUtility::makeInstance('Tx_Commerce_Tree_Leaf_Category');
+		$categoryLeaf = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\Leaf\\Category');
 
 		// Instantiate the categorydata, -view and set
 		// the permission mask (or the string rep.)
 		/**
 		 * Category data
 		 *
-		 * @var Tx_Commerce_Tree_Leaf_CategoryData $categorydata
+		 * @var \CommerceTeam\Commerce\Tree\Leaf\CategoryData $categorydata
 		 */
-		$categorydata = GeneralUtility::makeInstance('Tx_Commerce_Tree_Leaf_CategoryData');
-		$categorydata->setPermsMask(Tx_Commerce_Utility_BackendUtility::getPermMask($this->minCategoryPerms));
+		$categorydata = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\Leaf\\CategoryData');
+		$categorydata->setPermsMask(\CommerceTeam\Commerce\Utility\BackendUtility::getPermMask($this->minCategoryPerms));
 
 		/**
 		 * Category view
 		 *
-		 * @var Tx_Commerce_Tree_Leaf_CategoryView $categoryview
+		 * @var \CommerceTeam\Commerce\Tree\Leaf\CategoryView $categoryview
 		 */
-		$categoryview = GeneralUtility::makeInstance('Tx_Commerce_Tree_Leaf_CategoryView');
+		$categoryview = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\Leaf\\CategoryView');
 		// disable the root onclick if the perms are set to editcontent
 		// this way we cannot select the root as a parent for any content item
 		$categoryview->noRootOnclick(($this->minCategoryPerms == 'editcontent'));
 
-			// Configure real values
+		// Configure real values
 		if ($this->realValues) {
 			$categoryview->substituteRealValues();
 		}
 
-			// Configure the noOnclick for the leaf
-		if (GeneralUtility::inList($this->noClickList, 'Tx_Commerce_Tree_Leaf_Category')) {
+		// Configure the noOnclick for the leaf
+		if (GeneralUtility::inList($this->noClickList, 'CommerceTeam\\Commerce\\Tree\\Leaf\\Category')) {
 			$categoryview->noOnclick();
 		}
 
@@ -123,25 +124,25 @@ class Tx_Commerce_Tree_CategoryTree extends Tx_Commerce_Tree_Browsetree {
 			/**
 			 * Product leaf
 			 *
-			 * @var Tx_Commerce_Tree_Leaf_Product $productleaf
+			 * @var \CommerceTeam\Commerce\Tree\Leaf\Product $productleaf
 			 */
-			$productleaf = GeneralUtility::makeInstance('Tx_Commerce_Tree_Leaf_Product');
+			$productleaf = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\Leaf\\Product');
 			/**
 			 * Article leaf
 			 *
-			 * @var Tx_Commerce_Tree_Leaf_Article $articleleaf
+			 * @var \CommerceTeam\Commerce\Tree\Leaf\Article $articleleaf
 			 */
-			$articleleaf = GeneralUtility::makeInstance('Tx_Commerce_Tree_Leaf_Article');
+			$articleleaf = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\Leaf\\Article');
 
 			/**
 			 * Product view
 			 *
-			 * @var Tx_Commerce_Tree_Leaf_ProductView $productview
+			 * @var \CommerceTeam\Commerce\Tree\Leaf\ProductView $productview
 			 */
-			$productview = GeneralUtility::makeInstance('Tx_Commerce_Tree_Leaf_ProductView');
+			$productview = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\Leaf\\ProductView');
 
 				// Configure the noOnclick for the leaf
-			if (GeneralUtility::inList($this->noClickList, 'Tx_Commerce_Tree_Leaf_Product')) {
+			if (GeneralUtility::inList($this->noClickList, 'CommerceTeam\\Commerce\\Tree\\Leaf\\Product')) {
 				$productview->noOnclick();
 			}
 
@@ -153,12 +154,12 @@ class Tx_Commerce_Tree_CategoryTree extends Tx_Commerce_Tree_Browsetree {
 			/**
 			 * Article view
 			 *
-			 * @var Tx_Commerce_Tree_Leaf_ArticleView $articleview
+			 * @var \CommerceTeam\Commerce\Tree\Leaf\ArticleView $articleview
 			 */
-			$articleview = GeneralUtility::makeInstance('Tx_Commerce_Tree_Leaf_ArticleView');
+			$articleview = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\Leaf\\ArticleView');
 
 				// Configure the noOnclick for the leaf
-			if (GeneralUtility::inList($this->noClickList, 'Tx_Commerce_Tree_Leaf_Article')) {
+			if (GeneralUtility::inList($this->noClickList, 'CommerceTeam\\Commerce\\Tree\\Leaf\\Article')) {
 				$articleview->noOnclick();
 			}
 
@@ -170,16 +171,16 @@ class Tx_Commerce_Tree_CategoryTree extends Tx_Commerce_Tree_Browsetree {
 			/**
 			 * Product data
 			 *
-			 * @var Tx_Commerce_Tree_Leaf_ProductData $productData
+			 * @var \CommerceTeam\Commerce\Tree\Leaf\ProductData $productData
 			 */
-			$productData = GeneralUtility::makeInstance('Tx_Commerce_Tree_Leaf_ProductData');
+			$productData = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\Leaf\\ProductData');
 			$productleaf->initBasic($productview, $productData);
 			/**
 			 * Article data
 			 *
-			 * @var Tx_Commerce_Tree_Leaf_ArticleData $articleData
+			 * @var \CommerceTeam\Commerce\Tree\Leaf\ArticleData $articleData
 			 */
-			$articleData = GeneralUtility::makeInstance('Tx_Commerce_Tree_Leaf_ArticleData');
+			$articleData = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\Leaf\\ArticleData');
 			$articleleaf->initBasic($articleview, $articleData);
 
 			$categoryLeaf->addLeaf($productleaf);

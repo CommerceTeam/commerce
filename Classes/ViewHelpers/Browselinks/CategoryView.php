@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\ViewHelpers\Browselinks;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -13,13 +14,13 @@
  */
 
 /**
- * Implements the Tx_Commerce_Tree_Leaf_View for the Category
+ * Implements the \CommerceTeam\Commerce\Tree\Leaf\View for the Category
  *
- * Class Tx_Commerce_ViewHelpers_Browselinks_CategoryView
+ * Class \CommerceTeam\Commerce\ViewHelpers\Browselinks\CategoryView
  *
  * @author 2008-2011 Erik Frister <typo3@marketing-factory.de>
  */
-class Tx_Commerce_ViewHelpers_Browselinks_CategoryView extends Tx_Commerce_Tree_Leaf_View {
+class CategoryView extends \CommerceTeam\Commerce\Tree\Leaf\View {
 	/**
 	 * DB Table
 	 *
@@ -52,7 +53,7 @@ class Tx_Commerce_ViewHelpers_Browselinks_CategoryView extends Tx_Commerce_Tree_
 		if (!is_array($row)) {
 			if (TYPO3_DLOG) {
 				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
-					'getJumpToParam (Tx_Commerce_Tree_Leaf_View) gets passed invalid parameters.',
+					'getJumpToParam (CommerceTeam\\Commerce\\Tree\\Leaf\\View) gets passed invalid parameters.',
 					COMMERCE_EXTKEY,
 					3
 				);
@@ -83,11 +84,11 @@ class Tx_Commerce_ViewHelpers_Browselinks_CategoryView extends Tx_Commerce_Tree_
 	 *
 	 * @return string
 	 */
-	protected function wrapTitle($title, $row, $bank = 0) {
+	public function wrapTitle($title, $row, $bank = 0) {
 		if (!is_array($row) || !is_numeric($bank)) {
 			if (TYPO3_DLOG) {
 				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
-					'wrapTitle (Tx_Commerce_Tree_Leaf_View) gets passed invalid parameters.',
+					'wrapTitle (CommerceTeam\\Commerce\\Tree\\Leaf\\View) gets passed invalid parameters.',
 					COMMERCE_EXTKEY,
 					3
 				);

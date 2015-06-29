@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Utility;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -31,11 +32,11 @@ require_once($BACK_PATH . 'init.php');
 $LANG->includeLLFile('EXT:commerce/Resources/Private/Language/locallang_mod_cce.xml');
 
 /**
- * Class Tx_Commerce_Utility_DataHandlerUtility
+ * Class \CommerceTeam\Commerce\Utility\DataHandlerUtility
  *
  * @author 2008-2011 Erik Frister <typo3@marketing-factory.de>
  */
-class Tx_Commerce_Utility_DataHandlerUtility {
+class DataHandlerUtility {
 	/**
 	 * Id
 	 *
@@ -141,7 +142,7 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 	/**
 	 * Commerce Core Engine
 	 *
-	 * @var Tx_Commerce_Utility_DataHandlerUtility
+	 * @var DataHandlerUtility
 	 */
 	public $cce;
 
@@ -283,8 +284,8 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 
 		$str = '';
 
-		$this->pageinfo = Tx_Commerce_Utility_BackendUtility::readCategoryAccess(
-			$uidTarget, Tx_Commerce_Utility_BackendUtility::getCategoryPermsClause(1)
+		$this->pageinfo = BackendUtility::readCategoryAccess(
+			$uidTarget, BackendUtility::getCategoryPermsClause(1)
 		);
 
 		$str .= $this->doc->header($language->getLL('Copy'));
@@ -305,9 +306,12 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 				/**
 				 * Product
 				 *
-				 * @var Tx_Commerce_Domain_Model_Product $product
+				 * @var \CommerceTeam\Commerce\Domain\Model\Product $product
 				 */
-				$product = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Product', $uidClip);
+				$product = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+					'CommerceTeam\\Commerce\\Domain\\Model\\Product',
+					$uidClip
+				);
 				$product->loadData();
 				$prods = $product->getL18nProducts();
 
@@ -341,9 +345,9 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 					/**
 					 * Product data
 					 *
-					 * @var Tx_Commerce_Tree_Leaf_ProductData $treedb
+					 * @var \CommerceTeam\Commerce\Tree\Leaf\ProductData $treedb
 					 */
-					$treedb = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Tree_Leaf_ProductData');
+					$treedb = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\Leaf\\ProductData');
 					$treedb->init();
 
 					$records = $treedb->getRecordsDbList($uidTarget);
@@ -395,9 +399,12 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 				/**
 				 * Category
 				 *
-				 * @var Tx_Commerce_Domain_Model_Category $category
+				 * @var \CommerceTeam\Commerce\Domain\Model\Category $category
 				 */
-				$category = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Category', $uidClip);
+				$category = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+					'CommerceTeam\\Commerce\\Domain\\Model\\Category',
+					$uidClip
+				);
 				$category->loadData();
 				$cats = $category->getL18nCategories();
 
@@ -429,9 +436,9 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 				/**
 				 * Category data
 				 *
-				 * @var Tx_Commerce_Tree_Leaf_CategoryData $treedb
+				 * @var \CommerceTeam\Commerce\Tree\Leaf\CategoryData $treedb
 				 */
-				$treedb = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Tree_Leaf_CategoryData');
+				$treedb = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\Leaf\\CategoryData');
 				$treedb->init();
 
 				$records = $treedb->getRecordsDbList($uidTarget);
@@ -537,15 +544,15 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 		// we got all info we need - commit command
 		switch ($command) {
 			case 'overwrite':
-				Tx_Commerce_Utility_BackendUtility::overwriteProduct($uidClip, $uidTarget, $this->locales);
+				BackendUtility::overwriteProduct($uidClip, $uidTarget, $this->locales);
 				break;
 
 			case 'pasteProduct':
-				Tx_Commerce_Utility_BackendUtility::copyProduct($uidClip, $uidTarget, FALSE, $this->locales, $this->sorting);
+				BackendUtility::copyProduct($uidClip, $uidTarget, FALSE, $this->locales, $this->sorting);
 				break;
 
 			case 'pasteCategory':
-				Tx_Commerce_Utility_BackendUtility::copyCategory($uidClip, $uidTarget, $this->locales, $this->sorting);
+				BackendUtility::copyCategory($uidClip, $uidTarget, $this->locales, $this->sorting);
 				break;
 
 			default:
@@ -606,9 +613,9 @@ class Tx_Commerce_Utility_DataHandlerUtility {
 /**
  * Service object
  *
- * @var Tx_Commerce_Utility_DataHandlerUtility $SOBE
+ * @var DataHandlerUtility $SOBE
  */
-$SOBE = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Utility_DataHandlerUtility');
+$SOBE = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('DataHandlerUtility');
 $SOBE->init();
 $SOBE->initClipboard();
 $SOBE->main();

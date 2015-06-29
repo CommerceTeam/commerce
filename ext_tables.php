@@ -57,12 +57,12 @@ if (TYPO3_MODE == 'BE') {
 		PATH_TXCOMMERCE . 'Classes/Module/Category/'
 	);
 	\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::registerAjaxHandler(
-		'Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper::ajaxExpandCollapseWithoutProduct',
-		'Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper->ajaxExpandCollapseWithoutProduct'
+		'CommerceTeam\\Commerce\\ViewHelpers\\Navigation\\CategoryViewHelper::ajaxExpandCollapseWithoutProduct',
+		'CommerceTeam\\Commerce\\ViewHelpers\\Navigation\\CategoryViewHelper->ajaxExpandCollapseWithoutProduct'
 	);
 	\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::registerAjaxHandler(
-		'Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper::ajaxExpandCollapse',
-		'Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper->ajaxExpandCollapse'
+		'CommerceTeam\\Commerce\\ViewHelpers\\Navigation\\CategoryViewHelper::ajaxExpandCollapse',
+		'CommerceTeam\\Commerce\\ViewHelpers\\Navigation\\CategoryViewHelper->ajaxExpandCollapse'
 	);
 
 	// Access Module
@@ -73,8 +73,8 @@ if (TYPO3_MODE == 'BE') {
 		PATH_TXCOMMERCE . 'Classes/Module/Permission/'
 	);
 	\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::registerAjaxHandler(
-		'Tx_Commerce_Controller_PermissionAjaxController::dispatch',
-		'Tx_Commerce_Controller_PermissionAjaxController->dispatch'
+		'CommerceTeam\\Commerce\\Controller\\PermissionAjaxController::dispatch',
+		'CommerceTeam\\Commerce\\Controller\\PermissionAjaxController->dispatch'
 	);
 
 	// Orders module
@@ -144,7 +144,7 @@ if (TYPO3_MODE == 'BE') {
 
 // Add context menu for category trees in BE
 $GLOBALS['TBE_MODULES_EXT']['xMOD_alt_clickmenu']['extendCMclasses'][] = array(
-	'name' => 'Tx_Commerce_Utility_ClickmenuUtility',
+	'name' => 'CommerceTeam\\Commerce\\Utility\\ClickmenuUtility',
 	'path' => PATH_TXCOMMERCE . 'Classes/Utility/ClickmenuUtility.php'
 );
 

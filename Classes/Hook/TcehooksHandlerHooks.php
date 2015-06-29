@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Hook;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -17,11 +18,11 @@ use TYPO3\CMS\Core\DataHandling\DataHandler;
 /**
  * This class handles backend updates
  *
- * Class Tx_Commerce_Hook_TcehooksHandlerHooks
+ * Class \CommerceTeam\Commerce\Hook\TcehooksHandlerHooks
  *
  * @author 2005-2013 Carsten Lausen <cl@e-netconsulting.de>
  */
-class Tx_Commerce_Hook_TcehooksHandlerHooks {
+class TcehooksHandlerHooks {
 	/**
 	 * At this place we process prices, before they are written to the database.
 	 * We use this for tax calculation
@@ -215,7 +216,7 @@ class Tx_Commerce_Hook_TcehooksHandlerHooks {
 		}
 
 		// notify observer
-		Tx_Commerce_Dao_FeuserObserver::update($status, $id);
+		\CommerceTeam\Commerce\Dao\FeuserObserver::update($status, $id);
 	}
 
 	/**
@@ -239,7 +240,7 @@ class Tx_Commerce_Hook_TcehooksHandlerHooks {
 		// if address is updated
 		if ($status == 'update') {
 			// notify observer
-			Tx_Commerce_Dao_AddressObserver::update($status, $id);
+			\CommerceTeam\Commerce\Dao\AddressObserver::update($status, $id);
 		}
 	}
 
@@ -251,7 +252,7 @@ class Tx_Commerce_Hook_TcehooksHandlerHooks {
 	 * @return bool|string
 	 */
 	protected function checkAddressDelete($id) {
-		return Tx_Commerce_Dao_AddressObserver::checkDelete($id);
+		return \CommerceTeam\Commerce\Dao\AddressObserver::checkDelete($id);
 	}
 
 

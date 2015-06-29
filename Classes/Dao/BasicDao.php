@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Dao;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -21,29 +22,29 @@
  * The class needs a mapper for database storage.
  * The class needs a parser for object <-> model (transfer object) mapping.
  *
- * Class Tx_Commerce_Dao_BasicDao
+ * Class \CommerceTeam\Commerce\Dao\BasicDao
  *
  * @author 2006-2011 Carsten Lausen <cl@e-netconsulting.de>
  */
-class Tx_Commerce_Dao_BasicDao {
+class BasicDao {
 	/**
 	 * Dao object
 	 *
-	 * @var Tx_Commerce_Dao_BasicDaoObject
+	 * @var BasicDaoObject
 	 */
 	protected $object;
 
 	/**
 	 * Parser
 	 *
-	 * @var Tx_Commerce_Dao_BasicDaoParser
+	 * @var BasicDaoParser
 	 */
 	protected $parser;
 
 	/**
 	 * Mapper
 	 *
-	 * @var Tx_Commerce_Dao_BasicDaoMapper
+	 * @var BasicDaoMapper
 	 */
 	protected $mapper;
 
@@ -68,15 +69,18 @@ class Tx_Commerce_Dao_BasicDao {
 	 * @return void
 	 */
 	protected function init() {
-		$this->parser = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Dao_BasicDaoParser');
-		$this->mapper = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Dao_BasicDaoMapper', $this->parser);
-		$this->object = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Dao_BasicDaoObject');
+		$this->parser = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Dao\\BasicDaoParser');
+		$this->mapper = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+			'CommerceTeam\\Commerce\\Dao\\BasicDaoMapper',
+			$this->parser
+		);
+		$this->object = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Dao\\BasicDaoObject');
 	}
 
 	/**
 	 * Getter
 	 *
-	 * @return Tx_Commerce_Dao_BasicDaoObject
+	 * @return BasicDaoObject
 	 */
 	public function getObject() {
 		return $this->object;
@@ -85,11 +89,11 @@ class Tx_Commerce_Dao_BasicDao {
 	/**
 	 * Setter
 	 *
-	 * @param Tx_Commerce_Dao_BasicDaoObject $object Object
+	 * @param BasicDaoObject $object Object
 	 *
 	 * @return void
 	 */
-	public function setObject(Tx_Commerce_Dao_BasicDaoObject &$object) {
+	public function setObject(BasicDaoObject &$object) {
 		$this->object = $object;
 	}
 

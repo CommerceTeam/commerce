@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Tree;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -16,11 +17,11 @@
  * Extension class for the BrowseTreeView class,
  * specially made for browsing pages in the Web module
  *
- * Class Tx_Commerce_Tree_OrderTree
+ * Class \CommerceTeam\Commerce\Tree\OrderTree
  *
  * @author 2010-2011 Ingo Schmitt <is@marketing-factory.de>
  */
-class Tx_Commerce_Tree_OrderTree extends \TYPO3\CMS\Backend\Tree\View\BrowseTreeView {
+class OrderTree extends \TYPO3\CMS\Backend\Tree\View\BrowseTreeView {
 	/**
 	 * Extension page id
 	 *
@@ -36,6 +37,8 @@ class Tx_Commerce_Tree_OrderTree extends \TYPO3\CMS\Backend\Tree\View\BrowseTree
 	public $ext_IconMode;
 
 	/**
+	 * This script
+	 *
 	 * @var string
 	 */
 	public $thisScript = 'navigation.php';

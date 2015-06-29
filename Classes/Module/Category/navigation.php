@@ -34,9 +34,11 @@ if (!(TYPO3_REQUESTTYPE & TYPO3_REQUESTTYPE_AJAX)) {
 	/**
 	 * Category navigation viewhelper
 	 *
-	 * @var Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper $SOBE
+	 * @var \CommerceTeam\Commerce\ViewHelpers\Navigation\CategoryViewHelper $SOBE
 	 */
-	$SOBE = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper');
+	$SOBE = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+		'CommerceTeam\\Commerce\\ViewHelpers\\Navigation\\CategoryViewHelper'
+	);
 	$SOBE->init();
 	$SOBE->initPage();
 	$SOBE->main();

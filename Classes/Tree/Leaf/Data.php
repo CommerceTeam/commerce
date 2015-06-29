@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Tree\Leaf;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -11,17 +12,18 @@
  *
  * The TYPO3 project - inspiring people to share!
  */
+
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Implements the data view of the leaf
  *
- * Class Tx_Commerce_Tree_Leaf_Data
+ * Class \CommerceTeam\Commerce\Tree\Leaf\Data
  *
  * @author 2008-2011 Erik Frister <typo3@marketing-factory.de>
  */
-class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
+class Data extends Base {
 	/**
 	 * Complete Array of position IDs
 	 *
@@ -219,7 +221,11 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 	public function isExpanded($uid) {
 		if (!is_numeric($uid)) {
 			if (TYPO3_DLOG) {
-				GeneralUtility::devLog('isExpanded (Tx_Commerce_Tree_Leaf_Data) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				GeneralUtility::devLog(
+					'isExpanded (CommerceTeam\\Commerce\\Tree\\Leaf\\Data) gets passed invalid parameters.',
+					COMMERCE_EXTKEY,
+					3
+				);
 			}
 			return FALSE;
 		}
@@ -237,7 +243,11 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 	public function setPositions(array &$positionIds) {
 		if (!is_array($positionIds)) {
 			if (TYPO3_DLOG) {
-				GeneralUtility::devLog('setPositions (Tx_Commerce_Tree_Leaf_Data) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				GeneralUtility::devLog(
+					'setPositions (CommerceTeam\\Commerce\\Tree\\Leaf\\Data) gets passed invalid parameters.',
+					COMMERCE_EXTKEY,
+					3
+				);
 			}
 			return;
 		}
@@ -273,7 +283,7 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 		if ($l == 0) {
 			if (TYPO3_DLOG) {
 				GeneralUtility::devLog(
-					'getPositionsByIndices (Tx_Commerce_Tree_Leaf_Data) cannot proceed because it did not find mounts',
+					'getPositionsByIndices (CommerceTeam\\Commerce\\Tree\\Leaf\\Data) cannot proceed because it did not find mounts',
 					COMMERCE_EXTKEY,
 					3
 				);
@@ -325,7 +335,11 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 	public function setBank($bank) {
 		if (!is_numeric($bank)) {
 			if (TYPO3_DLOG) {
-				GeneralUtility::devLog('setBank (Tx_Commerce_Tree_Leaf_Data) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				GeneralUtility::devLog(
+					'setBank (CommerceTeam\\Commerce\\Tree\\Leaf\\Data) gets passed invalid parameters.',
+					COMMERCE_EXTKEY,
+					3
+				);
 			}
 			return;
 		}
@@ -364,7 +378,7 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 	}
 
 	/**
-	 * Returns whether this Tx_Commerce_Tree_Leaf_Data has been loaded
+	 * Returns whether this \CommerceTeam\Commerce\Tree\Leaf\Data has been loaded
 	 *
 	 * @return bool
 	 */
@@ -386,7 +400,11 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 	public function sort($rootUid, $depth = 0, $last = FALSE, $crazyRecursionLimiter = 999) {
 		if (!is_numeric($rootUid) || !is_numeric($depth) || !is_numeric($crazyRecursionLimiter)) {
 			if (TYPO3_DLOG) {
-				GeneralUtility::devLog('sort (Tx_Commerce_Tree_Leaf_Data) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				GeneralUtility::devLog(
+					'sort (CommerceTeam\\Commerce\\Tree\\Leaf\\Data) gets passed invalid parameters.',
+					COMMERCE_EXTKEY,
+					3
+				);
 			}
 			return;
 		}
@@ -461,7 +479,11 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 	public function &getChildByUid($uid) {
 		if (!is_numeric($uid)) {
 			if (TYPO3_DLOG) {
-				GeneralUtility::devLog('getChildByUid (Tx_Commerce_Tree_Leaf_Data) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				GeneralUtility::devLog(
+					'getChildByUid (CommerceTeam\\Commerce\\Tree\\Leaf\\Data) gets passed invalid parameters.',
+					COMMERCE_EXTKEY,
+					3
+				);
 			}
 			return NULL;
 		}
@@ -484,7 +506,11 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 	public function &getChildrenByPid($pid) {
 		if (!is_numeric($pid)) {
 			if (TYPO3_DLOG) {
-				GeneralUtility::devLog('getChildrenByPid (Tx_Commerce_Tree_Leaf_Data) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				GeneralUtility::devLog(
+					'getChildrenByPid (CommerceTeam\\Commerce\\Tree\\Leaf\\Data) gets passed invalid parameters.',
+					COMMERCE_EXTKEY,
+					3
+				);
 			}
 			return NULL;
 		}
@@ -543,7 +569,7 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 		if ($database->sql_error()) {
 			if (TYPO3_DLOG) {
 				GeneralUtility::devLog(
-					'loadRecords (Tx_Commerce_Tree_Leaf_Data) could not load records. Possible sql error. Empty rows returned.',
+					'loadRecords (CommerceTeam\\Commerce\\Tree\\Leaf\\Data) could not load records. Possible sql error. Empty rows returned.',
 					COMMERCE_EXTKEY,
 					3
 				);
@@ -599,7 +625,7 @@ class Tx_Commerce_Tree_Leaf_Data extends Tx_Commerce_Tree_Leaf_Base {
 		if ($checkRightRow !== FALSE && !$this->checkAccess($this->itemTable, $checkRightRow)) {
 			if (TYPO3_DLOG) {
 				GeneralUtility::devLog(
-					'loadRecords (Tx_Commerce_Tree_Leaf_Data) could not load records because it doesn\'t
+					'loadRecords (CommerceTeam\\Commerce\\Tree\\Leaf\\Data) could not load records because it doesn\'t
 						have permissions on the commerce folder. Return empty array.',
 					COMMERCE_EXTKEY,
 					3

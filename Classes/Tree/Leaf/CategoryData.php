@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Tree\Leaf;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -13,13 +14,13 @@
  */
 
 /**
- * Implements the Tx_Commerce_Tree_Leaf_Data for the Category
+ * Implements the \CommerceTeam\Commerce\Tree\Leaf\Data for the Category
  *
- * Class Tx_Commerce_Tree_Leaf_CategoryData
+ * Class \CommerceTeam\Commerce\Tree\Leaf\CategoryData
  *
  * @author 2008-2009 Erik Frister <typo3@marketing-factory.de>
  */
-class Tx_Commerce_Tree_Leaf_CategoryData extends Tx_Commerce_Tree_Leaf_MasterData {
+class CategoryData extends MasterData {
 	/**
 	 * Permission Mask for reading Categories
 	 *
@@ -98,7 +99,8 @@ class Tx_Commerce_Tree_Leaf_CategoryData extends Tx_Commerce_Tree_Leaf_MasterDat
 	 * @return void
 	 */
 	public function init() {
-		$this->whereClause = ' deleted = 0 AND ' . Tx_Commerce_Utility_BackendUtility::getCategoryPermsClause($this->permsMask);
+		$this->whereClause = ' deleted = 0 AND ' .
+			\CommerceTeam\Commerce\Utility\BackendUtility::getCategoryPermsClause($this->permsMask);
 		$this->order = 'tx_commerce_categories.sorting ASC';
 	}
 

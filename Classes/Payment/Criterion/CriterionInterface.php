@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Payment\Criterion;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -15,20 +16,20 @@
 /**
  * Payment criterion interface
  *
- * Class Tx_Commerce_Payment_Interface_Criterion
+ * Class \CommerceTeam\Commerce\Payment\Criterion\CriterionInterface
  *
  * @author 2011 Christian Kuhn <lolli@schwarzbu.ch>
  */
-interface Tx_Commerce_Payment_Interface_Criterion {
+interface CriterionInterface {
 	/**
 	 * Constructor
 	 *
-	 * @param Tx_Commerce_Payment_Interface_Payment $paymentObject Parent payment
+	 * @param \CommerceTeam\Commerce\Payment\PaymentInterface $paymentObject Parent
 	 * @param array $options Configuration array
 	 *
 	 * @return self
 	 */
-	public function __construct(Tx_Commerce_Payment_Interface_Payment $paymentObject, array $options = array());
+	public function __construct(\CommerceTeam\Commerce\Payment\PaymentInterface $paymentObject, array $options = array());
 
 	/**
 	 * Return TRUE if this payment type is allowed.

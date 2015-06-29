@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Domain\Model;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -17,27 +18,28 @@
  * Libary for Frontend-Rendering of products. This class
  * should be used for all Frontend renderings. No database calls
  * to the commerce tables should be made directly.
- * This Class is inhertited from Tx_Commerce_Domain_Model_AbstractEntity, all
+ * This Class is inhertited from
+ * \CommerceTeam\Commerce\Domain\Model\AbstractEntity, all
  * basic database calls are made from a separate database Class
  * Do not acces class variables directly, allways use the get and set methods,
  * variables will be changed in php5 to private
  *
- * Class Tx_Commerce_Domain_Model_Product
+ * Class \CommerceTeam\Commerce\Domain\Model\Product
  *
  * @author 2005-2012 Ingo Schmitt <is@marketing-factory.de>
  */
-class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_AbstractEntity {
+class Product extends AbstractEntity {
 	/**
 	 * Database class name
 	 *
 	 * @var string
 	 */
-	protected $databaseClass = 'Tx_Commerce_Domain_Repository_ProductRepository';
+	protected $databaseClass = 'CommerceTeam\\Commerce\\Domain\\Repository\\ProductRepository';
 
 	/**
 	 * Database connection
 	 *
-	 * @var Tx_Commerce_Domain_Repository_ProductRepository
+	 * @var \CommerceTeam\Commerce\Domain\Repository\ProductRepository
 	 */
 	public $databaseConnection;
 
@@ -303,7 +305,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	 *
 	 * @param int $uid Article uid
 	 *
-	 * @return Tx_Commerce_Domain_Model_Article Article uids
+	 * @return \CommerceTeam\Commerce\Domain\Model\Article Article uids
 	 */
 	public function getArticle($uid) {
 		return $this->articles[$uid];
@@ -452,10 +454,10 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 			/**
 			 * Article
 			 *
-			 * @var Tx_Commerce_Domain_Model_Article $article
+			 * @var \CommerceTeam\Commerce\Domain\Model\Article $article
 			 */
 			$article = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-				'Tx_Commerce_Domain_Model_Article',
+				'CommerceTeam\\Commerce\\Domain\\Model\\Article',
 				$rawArticleUid,
 				$this->lang_uid
 			);
@@ -857,7 +859,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 		$articleCount = count($this->articles_uids);
 		for ($j = 0; $j < $articleCount; $j++) {
 			$article = & $this->articles[$this->articles_uids[$j]];
-			if (is_object($article) && $article instanceof Tx_Commerce_Domain_Model_Article) {
+			if (is_object($article) && $article instanceof \CommerceTeam\Commerce\Domain\Model\Article) {
 				$priceArr[$article->getUid()] = $usePriceNet ? $article->getPriceNet() : $article->getPriceGross();
 			}
 		}
@@ -972,10 +974,10 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 					/**
 					 * Product
 					 *
-					 * @var Tx_Commerce_Domain_Model_Product $product
+					 * @var \CommerceTeam\Commerce\Domain\Model\Product $product
 					 */
 					$product = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-						'Tx_Commerce_Domain_Model_Product',
+						'CommerceTeam\\Commerce\\Domain\\Model\\Product',
 						$productId,
 						$this->lang_uid
 					);
@@ -1257,10 +1259,10 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 				/**
 				 * Attribute
 				 *
-				 * @var Tx_Commerce_Domain_Model_Attribute $attribute
+				 * @var \CommerceTeam\Commerce\Domain\Model\Attribute $attribute
 				 */
 				$attribute = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-					'Tx_Commerce_Domain_Model_Attribute',
+					'CommerceTeam\\Commerce\\Domain\\Model\\Attribute',
 					$attributeUid,
 					$this->getFrontendController()->tmpl->setup['config.']['sys_language_uid']
 				);
@@ -1357,10 +1359,10 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 					/**
 					 * Article
 					 *
-					 * @var Tx_Commerce_Domain_Model_Article $article
+					 * @var \CommerceTeam\Commerce\Domain\Model\Article $article
 					 */
 					$article = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-						'Tx_Commerce_Domain_Model_Article',
+						'CommerceTeam\\Commerce\\Domain\\Model\\Article',
 						$articleUid,
 						$this->lang_uid
 					);
@@ -1385,7 +1387,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 	 * @param mixed $translationMode Translation mode of the record,
 	 *	default FALSE to use the default way of translation
 	 *
-	 * @return Tx_Commerce_Domain_Model_Product
+	 * @return \CommerceTeam\Commerce\Domain\Model\Product
 	 */
 	public function loadData($translationMode = FALSE) {
 		$return = parent::loadData($translationMode);
@@ -1408,7 +1410,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 		/**
 		 * Article
 		 *
-		 * @var Tx_Commerce_Domain_Model_Article $article
+		 * @var \CommerceTeam\Commerce\Domain\Model\Article $article
 		 */
 		foreach ($this->articles as $article) {
 			if ($article->getStock()) {
@@ -1443,9 +1445,9 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 		// Update relations only, if parent_category was successfully set
 		if ($set) {
 			$catList = array($parentUid);
-			$catList = Tx_Commerce_Utility_BackendUtility::getUidListFromList($catList);
-			$catList = Tx_Commerce_Utility_BackendUtility::extractFieldArray($catList, 'uid_foreign', TRUE);
-			Tx_Commerce_Utility_BackendUtility::saveRelations($this->uid, $catList, 'tx_commerce_products_categories_mm', TRUE);
+			$catList = \CommerceTeam\Commerce\Utility\BackendUtility::getUidListFromList($catList);
+			$catList = \CommerceTeam\Commerce\Utility\BackendUtility::extractFieldArray($catList, 'uid_foreign', TRUE);
+			\CommerceTeam\Commerce\Utility\BackendUtility::saveRelations($this->uid, $catList, 'tx_commerce_products_categories_mm', TRUE);
 		} else {
 			return FALSE;
 		}

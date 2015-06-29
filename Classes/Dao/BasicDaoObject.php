@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Dao;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -17,11 +18,11 @@
  * Basic methods for object handling are in this class.
  * Extend this class to fit specific needs.
  *
- * Class Tx_Commerce_Dao_BasicDaoObject
+ * Class \CommerceTeam\Commerce\Dao\BasicDaoObject
  *
  * @author 2006-2008 Carsten Lausen <cl@e-netconsulting.de>
  */
-class Tx_Commerce_Dao_BasicDaoObject {
+class BasicDaoObject {
 	/**
 	 * Object id
 	 *

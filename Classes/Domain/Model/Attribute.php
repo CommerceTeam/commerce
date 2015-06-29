@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Domain\Model;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -18,28 +19,29 @@
  * Libary for Frontend-Rendering of attributes. This class
  * should be used for all Fronten-Rendering, no Database calls
  * to the commerce tables should be made directly
- * This Class is inhertited from Tx_Commerce_Domain_Model_AbstractEntity, all
+ * This Class is inhertited from
+ * \CommerceTeam\Commerce\Domain\Model\AbstractEntity, all
  * basic Database calls are made from a separate Database Class
  * Do not acces class variables directly, allways use the get and set methods,
  * variables will be changed in php5 to private
  * Basic class for handleing attributes
  *
- * Class Tx_Commerce_Domain_Model_Attribute
+ * Class \CommerceTeam\Commerce\Domain\Model\Attribute
  *
  * @author 2005-2011 Ingo Schmitt <is@marketing-factory.de>
  */
-class Tx_Commerce_Domain_Model_Attribute extends Tx_Commerce_Domain_Model_AbstractEntity {
+class Attribute extends AbstractEntity {
 	/**
 	 * Database class name
 	 *
 	 * @var string
 	 */
-	protected $databaseClass = 'Tx_Commerce_Domain_Repository_AttributeRepository';
+	protected $databaseClass = 'CommerceTeam\\Commerce\\Domain\\Repository\\AttributeRepository';
 
 	/**
 	 * Database connection
 	 *
-	 * @var Tx_Commerce_Domain_Repository_AttributeRepository
+	 * @var \CommerceTeam\Commerce\Domain\Repository\AttributeRepository
 	 */
 	public $databaseConnection;
 
@@ -95,7 +97,7 @@ class Tx_Commerce_Domain_Model_Attribute extends Tx_Commerce_Domain_Model_Abstra
 	/**
 	 * Attribute
 	 *
-	 * @var int|Tx_Commerce_Domain_Model_Attribute
+	 * @var int|\CommerceTeam\Commerce\Domain\Model\Attribute
 	 */
 	protected $parent = 0;
 
@@ -170,7 +172,7 @@ class Tx_Commerce_Domain_Model_Attribute extends Tx_Commerce_Domain_Model_Abstra
 		/**
 		 * Attribute value
 		 *
-		 * @var $attributeValue Tx_Commerce_Domain_Model_AttributeValue
+		 * @var $attributeValue \CommerceTeam\Commerce\Domain\Model\AttributeValue
 		 */
 		if ($this->attributeValuesLoaded === FALSE) {
 			if (($this->attribute_value_uids = $this->databaseConnection->getAttributeValueUids($this->uid))) {
@@ -178,10 +180,10 @@ class Tx_Commerce_Domain_Model_Attribute extends Tx_Commerce_Domain_Model_Abstra
 					/**
 					 * Attribute value
 					 *
-					 * @var $attributeValue Tx_Commerce_Domain_Model_AttributeValue
+					 * @var $attributeValue \CommerceTeam\Commerce\Domain\Model\AttributeValue
 					 */
 					$attributValue = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-						'Tx_Commerce_Domain_Model_AttributeValue',
+						'CommerceTeam\\Commerce\\Domain\\Model\\AttributeValue',
 						$valueUid,
 						$this->lang_uid
 					);
@@ -267,7 +269,7 @@ class Tx_Commerce_Domain_Model_Attribute extends Tx_Commerce_Domain_Model_Abstra
 				/**
 				 * Attribute value
 				 *
-				 * @var $attributeValue Tx_Commerce_Domain_Model_AttributeValue
+				 * @var $attributeValue \CommerceTeam\Commerce\Domain\Model\AttributeValue
 				 */
 				$attributeValue = $this->attribute_values[$uid];
 				$result = $attributeValue->getValue();
@@ -309,14 +311,14 @@ class Tx_Commerce_Domain_Model_Attribute extends Tx_Commerce_Domain_Model_Abstra
 	 *
 	 * @param bool|string $translationMode Translation mode
 	 *
-	 * @return int|Tx_Commerce_Domain_Model_Attribute
+	 * @return int|\CommerceTeam\Commerce\Domain\Model\Attribute
 	 */
 	public function getParent($translationMode = FALSE) {
 		if (is_int($this->parent) && $this->parent > 0) {
 			/**
 			 * Attribute
 			 *
-			 * @var $parent Tx_Commerce_Domain_Model_Attribute
+			 * @var $parent \CommerceTeam\Commerce\Domain\Model\Attribute
 			 */
 			$parent = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(get_class($this));
 			$parent->init($this->parent, $this->lang_uid);
@@ -343,7 +345,7 @@ class Tx_Commerce_Domain_Model_Attribute extends Tx_Commerce_Domain_Model_Abstra
 				/**
 				 * Attribute
 				 *
-				 * @var $parent Tx_Commerce_Domain_Model_Attribute
+				 * @var $parent \CommerceTeam\Commerce\Domain\Model\Attribute
 				 */
 				$attribute = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(get_class($this));
 				$attribute->init($childAttributeUid, $this->lang_uid);

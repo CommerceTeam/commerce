@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Controller;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -12,6 +13,8 @@
  * The TYPO3 project - inspiring people to share!
  */
 
+use CommerceTeam\Commerce\Domain\Model\Category;
+use CommerceTeam\Commerce\Domain\Model\Product;
 use \CommerceTeam\Commerce\Factory\HookFactory;
 
 /**
@@ -19,7 +22,7 @@ use \CommerceTeam\Commerce\Factory\HookFactory;
  *
  * @author 2005-2012 Volker Graubaum <vg@e-netconsulting.de>
  */
-class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseController {
+class ListController extends BaseController {
 	/**
 	 * Same as class name
 	 *
@@ -52,7 +55,7 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 	/**
 	 * Master category model
 	 *
-	 * @var Tx_Commerce_Domain_Model_Category
+	 * @var Category
 	 */
 	public $masterCategoryObj;
 
@@ -224,13 +227,13 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 		/**
 		 * Temporary category
 		 *
-		 * @var Tx_Commerce_Domain_Model_Category $tmpCategory
+		 * @var Category $tmpCategory
 		 */
 		$tmpCategory = NULL;
 		if ($this->piVars['catUid']) {
 			$this->cat = (int) $this->piVars['catUid'];
 			$tmpCategory = \TYPO3\CMS\Core\Utility\GeneralUtility::makeinstance(
-				'Tx_Commerce_Domain_Model_Category',
+				'CommerceTeam\\Commerce\\Domain\\Model\\Category',
 				$this->cat,
 				$this->getFrontendController()->tmpl->setup['config.']['sys_language_uid']
 			);
@@ -241,7 +244,7 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 		if (!$this->piVars['catUid'] || !$accessible) {
 			$this->cat = (int) $this->master_cat;
 			$tmpCategory = \TYPO3\CMS\Core\Utility\GeneralUtility::makeinstance(
-				'Tx_Commerce_Domain_Model_Category',
+				'CommerceTeam\\Commerce\\Domain\\Model\\Category',
 				$this->cat,
 				$this->getFrontendController()->tmpl->setup['config.']['sys_language_uid']
 			);
@@ -281,7 +284,7 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 		if (($this->piVars['catUid']) && ($this->conf['checkCategoryTree'] == 1)) {
 			// Validate given CAT UID, if is below master_cat
 			$this->masterCategoryObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeinstance(
-				'Tx_Commerce_Domain_Model_Category',
+				'CommerceTeam\\Commerce\\Domain\\Model\\Category',
 				$this->master_cat,
 				$this->getFrontendController()->tmpl->setup['config.']['sys_language_uid']
 			);
@@ -289,7 +292,7 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 			/**
 			 * Master category
 			 *
-			 * @var Tx_Commerce_Domain_Model_Category masterCategoryObj
+			 * @var Category masterCategoryObj
 			 */
 			$masterCategorySubCategories = $this->masterCategoryObj->getChildCategoriesUidlist();
 			if (in_array($this->piVars['catUid'], $masterCategorySubCategories)) {
@@ -308,10 +311,10 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 			/**
 			 * Category
 			 *
-			 * @var Tx_Commerce_Domain_Model_Category category
+			 * @var Category category
 			 */
 			$this->category = \TYPO3\CMS\Core\Utility\GeneralUtility::makeinstance(
-				'Tx_Commerce_Domain_Model_Category',
+				'CommerceTeam\\Commerce\\Domain\\Model\\Category',
 				$this->cat,
 				$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']
 			);
@@ -352,7 +355,7 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 					$this->category_products = $this->category->getProducts(0);
 				}
 				if ($this->conf['useStockHandling'] == 1) {
-					$this->category_products = Tx_Commerce_Utility_GeneralUtility::removeNoStockProducts(
+					$this->category_products = \CommerceTeam\Commerce\Utility\GeneralUtility::removeNoStockProducts(
 						$this->category_products,
 						$this->conf['products.']['showWithNoStock']
 					);
@@ -442,7 +445,7 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 			}
 
 			$this->product = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-				'Tx_Commerce_Domain_Model_Product',
+				'CommerceTeam\\Commerce\\Domain\\Model\\Product',
 				$productId,
 				$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']
 			);
@@ -480,15 +483,14 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 	/**
 	 * Render the single view for the current products
 	 *
-	 * @param Tx_Commerce_Domain_Model_Product $product Product object
-	 * @param Tx_Commerce_Domain_Model_Category $category Category object
+	 * @param Product $product Product object
+	 * @param Category $category Category object
 	 * @param string $subpartName Name of a subpart
 	 * @param string $subpartNameNostock Name of a subpart for product without stock
 	 *
 	 * @return string The content for a single product
 	 */
-	public function renderSingleView(Tx_Commerce_Domain_Model_Product $product, Tx_Commerce_Domain_Model_Category $category,
-			$subpartName, $subpartNameNostock) {
+	public function renderSingleView(Product $product, Category $category, $subpartName, $subpartNameNostock) {
 		$hooks = HookFactory::getHooks('Controller/CheckoutController', 'renderSingleView');
 
 		$result = NULL;
@@ -565,7 +567,7 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 		/**
 		 * Product
 		 *
-		 * @var Tx_Commerce_Domain_Model_Product $relatedProduct
+		 * @var Product $relatedProduct
 		 */
 		foreach ($product->getRelatedProducts() as $relatedProduct) {
 			if ($this->conf['useStockHandling'] == 1 && !$relatedProduct->hasStock()) {
@@ -626,13 +628,13 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 	 *
 	 * @param string $viewKind Kind of view for choosing the right template
 	 * @param array $conf TSconfig for handling the articles
-	 * @param Tx_Commerce_Domain_Model_Product $product The parent product
+	 * @param Product $product The parent product
 	 * @param array|string $templateMarkerArray Current template marker array
 	 * @param string $template Template text
 	 *
 	 * @return string the content for a single product
 	 */
-	public function makeArticleView($viewKind, array $conf = array(), Tx_Commerce_Domain_Model_Product $product,
+	public function makeArticleView($viewKind, array $conf = array(), Product $product,
 			$templateMarkerArray = '', $template = '') {
 		$hooks = HookFactory::getHooks('Controller/CheckoutController', 'makeArticleView');
 
@@ -655,8 +657,10 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 		} else {
 			$templateMarker[] = '###' . strtoupper($this->conf['templateMarker.'][$viewKind . '_productArticleList']) . '###';
 			$templateMarker[] = '###' . strtoupper($this->conf['templateMarker.'][$viewKind . '_productArticleList2']) . '###';
-			$templateMarkerNostock[] = '###' . strtoupper($this->conf['templateMarker.'][$viewKind . '_productArticleList']) . '_NOSTOCK###';
-			$templateMarkerNostock[] = '###' . strtoupper($this->conf['templateMarker.'][$viewKind . '_productArticleList2']) . '_NOSTOCK###';
+			$templateMarkerNostock[] = '###' . strtoupper($this->conf['templateMarker.'][$viewKind . '_productArticleList']) .
+				'_NOSTOCK###';
+			$templateMarkerNostock[] = '###' . strtoupper($this->conf['templateMarker.'][$viewKind . '_productArticleList2']) .
+				'_NOSTOCK###';
 		}
 
 		$content = '';
@@ -738,10 +742,10 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 							/**
 							 * Attribute
 							 *
-							 * @var Tx_Commerce_Domain_Model_Attribute $attributeObj
+							 * @var \CommerceTeam\Commerce\Domain\Model\Attribute $attributeObj
 							 */
 							$attributeObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-								'Tx_Commerce_Domain_Model_Attribute',
+								'CommerceTeam\\Commerce\\Domain\\Model\\Attribute',
 								$attributeUid,
 								$this->getFrontendController()->tmpl->setup['config.']['sys_language_uid']
 							);
@@ -767,10 +771,6 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 					}
 
 					$markerArray = (array) $this->getArticleMarker($product->getArticle($product->getArticleUid($i)));
-					$markerArray['SUBPART_ARTICLE_ATTRIBUTES'] = $this->cObj->stdWrap(
-						$this->makeArticleAttributList($product, array($product->getArticleUid($i))),
-						$this->conf['singleView.']['articleAttributesList.']
-					);
 					$markerArray['ARTICLE_SELECT_ATTRIBUTES'] = $this->cObj->stdWrap(
 						$attCode,
 						$this->conf['singleView.']['articleAttributesSelectList.']
@@ -786,7 +786,7 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 					/**
 					 * Article
 					 *
-					 * @var Tx_Commerce_Domain_Model_Article $article
+					 * @var \CommerceTeam\Commerce\Domain\Model\Article $article
 					 */
 					$article = $product->getArticle($product->getArticleUid($i));
 					if ($this->conf['useStockHandling'] == 1 and $article->getStock() <= 0) {
@@ -830,10 +830,10 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 						/**
 						 * Attribute
 						 *
-						 * @var Tx_Commerce_Domain_Model_Attribute $attributeObj
+						 * @var \CommerceTeam\Commerce\Domain\Model\Attribute $attributeObj
 						 */
 						$attributeObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-							'Tx_Commerce_Domain_Model_Attribute',
+							'CommerceTeam\\Commerce\\Domain\\Model\\Attribute',
 							$attrUid,
 							$this->getFrontendController()->tmpl->setup['config.']['sys_language_uid']
 						);
@@ -869,7 +869,7 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 						/**
 						 * Attribute value
 						 *
-						 * @var Tx_Commerce_Domain_Model_AttributeValue $val
+						 * @var \CommerceTeam\Commerce\Domain\Model\AttributeValue $val
 						 */
 						foreach ($attributeValues as $val) {
 							$markerArrayItem = $markerArray;
@@ -923,7 +923,6 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 				}
 
 				$markerArray = (array) $this->getArticleMarker($product->getArticle($artId));
-				$markerArray['SUBPART_ARTICLE_ATTRIBUTES'] = $this->makeArticleAttributList($product, array($artId));
 				$markerArray['ARTICLE_SELECT_ATTRIBUTES'] = $attCode;
 
 				foreach ($hooks as $hookObj) {
@@ -936,7 +935,7 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 				/**
 				 * Article
 				 *
-				 * @var Tx_Commerce_Domain_Model_Article $article
+				 * @var \CommerceTeam\Commerce\Domain\Model\Article $article
 				 */
 				$article = $product->getArticle($artId);
 				if ($this->conf['useStockHandling'] == 1 and $article->getStock() <= 0) {

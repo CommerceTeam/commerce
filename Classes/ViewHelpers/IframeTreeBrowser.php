@@ -35,9 +35,9 @@ $LANG->includeLLFile('EXT:lang/locallang_misc.xml');
 /**
  * Treelib browser
  *
- * @var Tx_Commerce_ViewHelpers_TreelibBrowser $SOBE
+ * @var \CommerceTeam\Commerce\ViewHelpers\TreelibBrowser $SOBE
  */
-$SOBE = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_ViewHelpers_TreelibBrowser');
+$SOBE = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('CommerceTeam\\Commerce\\ViewHelpers\\TreelibBrowser');
 $SOBE->init();
 $SOBE->main();
 $SOBE->printContent();

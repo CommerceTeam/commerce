@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Tree\Leaf;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -15,9 +16,9 @@
 /**
  * Implements the Leaf for the Products
  *
- * Class Tx_Commerce_Tree_Leaf_Product
+ * Class \CommerceTeam\Commerce\Tree\Leaf\Product
  *
  * @author 2008 Erik Frister <typo3@marketing-factory.de>
  */
-class Tx_Commerce_Tree_Leaf_Product extends Tx_Commerce_Tree_Leaf_Slave {
+class Product extends Slave {
 }

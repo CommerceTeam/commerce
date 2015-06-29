@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Utility;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -12,22 +13,24 @@
  * The TYPO3 project - inspiring people to share!
  */
 
+use CommerceTeam\Commerce\Domain\Repository\FolderRepository;
+
 /**
  * This class creates the systemfolders for TX_commerce
  * Handling of sysfolders inside tx_commerce. Basically creates
  * needed sysfolders and system_articles.
  *
  * The method of this class should be called by
- * tx_commerce_create_folder::methodname
+ * \CommerceTeam\Commerce\Utility\FolderUtility::methodname
  *
  * Creation of tx_commerce_basic folders
  * call: tx_commerce_create_folder::initFolders()
  *
- * Class Tx_Commerce_Utility_FolderUtility
+ * Class \CommerceTeam\Commerce\Utility\FolderUtility
  *
  * @author 2005-2011 Ingo Schmitt <is@marketing-factory.de>
  */
-class Tx_Commerce_Utility_FolderUtility {
+class FolderUtility {
 	/**
 	 * Initializes the folders for tx_commerce
 	 *
@@ -39,15 +42,15 @@ class Tx_Commerce_Utility_FolderUtility {
 		 *
 		 * @todo Get list from Order folders from TS
 		 */
-		list($modPid) = Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Commerce', 'commerce');
-		list($prodPid) = Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Products', 'commerce', $modPid);
-		Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Attributes', 'commerce', $modPid);
+		list($modPid) = FolderRepository::initFolders('Commerce', 'commerce');
+		list($prodPid) = FolderRepository::initFolders('Products', 'commerce', $modPid);
+		FolderRepository::initFolders('Attributes', 'commerce', $modPid);
 
-		list($orderPid) = Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Orders', 'commerce', $modPid);
-		Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Incoming', 'commerce', $orderPid);
-		Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Working', 'commerce', $orderPid);
-		Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Waiting', 'commerce', $orderPid);
-		Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Delivered', 'commerce', $orderPid);
+		list($orderPid) = FolderRepository::initFolders('Orders', 'commerce', $modPid);
+		FolderRepository::initFolders('Incoming', 'commerce', $orderPid);
+		FolderRepository::initFolders('Working', 'commerce', $orderPid);
+		FolderRepository::initFolders('Waiting', 'commerce', $orderPid);
+		FolderRepository::initFolders('Delivered', 'commerce', $orderPid);
 
 		// Create System Product for payment and other things.
 		$now = time();
@@ -194,9 +197,9 @@ class Tx_Commerce_Utility_FolderUtility {
 		/**
 		 * Backend library
 		 *
-		 * @var Tx_Commerce_Utility_BackendUtility $belib
+		 * @var BackendUtility $belib
 		 */
-		$belib = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Utility_BackendUtility');
+		$belib = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Utility\\BackendUtility');
 		$articles = $belib->getArticlesOfProduct($pUid, 'classname=\'' . $key . '\'');
 
 		if (is_array($articles) AND count($articles) > 0) {

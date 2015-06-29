@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\ViewHelpers;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -11,6 +12,7 @@
  *
  * The TYPO3 project - inspiring people to share!
  */
+
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -35,11 +37,11 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * Might be possible with AJAX ...
  *
- * Class Tx_Commerce_ViewHelpers_TreelibBrowser
+ * Class \CommerceTeam\Commerce\ViewHelpers\TreelibBrowser
  *
  * @author 2003-2011 Rene Fritz <r.fritz@colorcube.de>
  */
-class Tx_Commerce_ViewHelpers_TreelibBrowser extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
+class TreelibBrowser extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 	/**
 	 * Table
 	 *
@@ -164,12 +166,12 @@ class Tx_Commerce_ViewHelpers_TreelibBrowser extends \TYPO3\CMS\Backend\Module\B
 		if ($allowProducts) {
 			// Check if we need to allow browsing of products.
 			$this->doc->JScode .= $this->doc->wrapScriptTags('
-				Tree.ajaxID = "Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper::ajaxExpandCollapse";
+				Tree.ajaxID = "CommerceTeam\\Commerce\\ViewHelpers\\Navigation\\CategoryViewHelper::ajaxExpandCollapse";
 			');
 		} else {
 			// Check if we need to allow browsing of products.
 			$this->doc->JScode .= $this->doc->wrapScriptTags('
-				Tree.ajaxID = "Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper::ajaxExpandCollapseWithoutProduct";
+				Tree.ajaxID = "CommerceTeam\\Commerce\\ViewHelpers\\Navigation\\CategoryViewHelper::ajaxExpandCollapseWithoutProduct";
 			');
 		}
 

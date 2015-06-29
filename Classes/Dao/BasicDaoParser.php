@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Dao;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -18,11 +19,11 @@
  * All knowledge about the database model is in this class.
  * Extend this class to fit specific needs.
  *
- * Class Tx_Commerce_Dao_BasicDaoParser
+ * Class \CommerceTeam\Commerce\Dao\BasicDaoParser
  *
  * @author 2005-2008 Carsten Lausen <cl@e-netconsulting.de>
  */
-class Tx_Commerce_Dao_BasicDaoParser {
+class BasicDaoParser {
 	/**
 	 * Constructor
 	 *
@@ -34,11 +35,11 @@ class Tx_Commerce_Dao_BasicDaoParser {
 	/**
 	 * Parse object to model
 	 *
-	 * @param Tx_Commerce_Dao_BasicDaoObject $object Object
+	 * @param BasicDaoObject $object Object
 	 *
 	 * @return array
 	 */
-	public function parseObjectToModel(Tx_Commerce_Dao_BasicDaoObject $object) {
+	public function parseObjectToModel(BasicDaoObject $object) {
 		$model = array();
 
 			// parse attribs
@@ -61,11 +62,11 @@ class Tx_Commerce_Dao_BasicDaoParser {
 	 * Parse model to object
 	 *
 	 * @param array $model Model
-	 * @param Tx_Commerce_Dao_BasicDaoObject $object Object
+	 * @param BasicDaoObject $object Object
 	 *
 	 * @return void
 	 */
-	public function parseModelToObject(array $model, Tx_Commerce_Dao_BasicDaoObject &$object) {
+	public function parseModelToObject(array $model, BasicDaoObject &$object) {
 			// parse attribs
 		$propertyNames = array_keys(get_object_vars($object));
 		foreach ($propertyNames as $attrib) {

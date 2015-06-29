@@ -15,9 +15,9 @@
 /**
  * Module 'Category' for the 'commerce' extension.
  *
- * @var Tx_Commerce_Controller_CategoryModuleController $SOBE
+ * @var \CommerceTeam\Commerce\Controller\CategoryModuleController $SOBE
  */
-$SOBE = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Controller_CategoryModuleController');
+$SOBE = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Controller\\CategoryModuleController');
 $SOBE->init();
 $SOBE->main();
 $SOBE->printContent();

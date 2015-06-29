@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Task;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -13,11 +14,11 @@
  */
 
 /**
- * Class Tx_Commerce_Task_StatisticTask
+ * Class \CommerceTeam\Commerce\Task\StatisticTask
  *
  * @author 2013 Sebastian Fischer <typo3@marketing-factory.de>
  */
-class Tx_Commerce_Task_StatisticTask extends \TYPO3\CMS\Scheduler\Task\AbstractTask {
+class StatisticTask extends \TYPO3\CMS\Scheduler\Task\AbstractTask {
 	/**
 	 * Selected aggregation
 	 *
@@ -28,7 +29,7 @@ class Tx_Commerce_Task_StatisticTask extends \TYPO3\CMS\Scheduler\Task\AbstractT
 	/**
 	 * Statistics utility
 	 *
-	 * @var Tx_Commerce_Utility_StatisticsUtility
+	 * @var \CommerceTeam\Commerce\Utility\StatisticsUtility
 	 */
 	protected $statistics;
 
@@ -50,7 +51,7 @@ class Tx_Commerce_Task_StatisticTask extends \TYPO3\CMS\Scheduler\Task\AbstractT
 			$excludeStatisticFolders = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['excludeStatisticFolders'];
 		}
 
-		$this->statistics = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Utility_StatisticsUtility');
+		$this->statistics = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Utility\\StatisticsUtility');
 		$this->statistics->init($excludeStatisticFolders);
 
 		$this->extConf = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf'];

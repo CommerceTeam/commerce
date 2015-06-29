@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Tree\Leaf;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -15,15 +16,15 @@
 /**
  * Implements a leaf specific for holding categories
  *
- * Class Tx_Commerce_Tree_Leaf_Category
+ * Class \CommerceTeam\Commerce\Tree\Leaf\Category
  *
  * @author 2008 Erik Frister <typo3@marketing-factory.de>
  */
-class Tx_Commerce_Tree_Leaf_Category extends Tx_Commerce_Tree_Leaf_Master {
+class Category extends Master {
 	/**
 	 * Mount class
 	 *
 	 * @var string
 	 */
-	protected $mountClass = 'Tx_Commerce_Tree_CategoryMounts';
+	protected $mountClass = 'CommerceTeam\\Commerce\\Tree\\CategoryMounts';
 }

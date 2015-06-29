@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Payment;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -15,11 +16,11 @@
 /**
  * Debit payment implementation
  *
- * Class Tx_Commerce_Payment_Debit
+ * Class \CommerceTeam\Commerce\Payment\Debit
  *
  * @author 2005-2011 Thomas Hempel <thomas@work.de>
  */
-class Tx_Commerce_Payment_Debit extends Tx_Commerce_Payment_PaymentAbstract {
+class Debit extends PaymentAbstract {
 	/**
 	 * Payment type
 	 *
@@ -89,9 +90,9 @@ class Tx_Commerce_Payment_Debit extends Tx_Commerce_Payment_PaymentAbstract {
 	 * @return bool Check if data is ok
 	 */
 	public function proofData(array $formData = array()) {
-		// If formData is empty we know that this is the very first
-		// call from Tx_Commerce_Controller_CheckoutController->handlePayment and
-		// at this time there can't be form data.
+		// If formData is empty we know that this is the very first call from
+		// \CommerceTeam\Commerce\Controller\CheckoutController->handlePayment
+		// and at this time there can't be form data.
 		if (empty($formData)) {
 			return FALSE;
 		}

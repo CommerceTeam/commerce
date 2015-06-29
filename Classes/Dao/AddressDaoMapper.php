@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Dao;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -17,11 +18,11 @@
  * This class used by the Dao for database storage.
  * It extends the basic Dao mapper.
  *
- * Class Tx_Commerce_Dao_AddressDaoMapper
+ * Class \CommerceTeam\Commerce\Dao\AddressDaoMapper
  *
  * @author 2006-2008 Carsten Lausen <cl@e-netconsulting.de>
  */
-class Tx_Commerce_Dao_AddressDaoMapper extends Tx_Commerce_Dao_BasicDaoMapper {
+class AddressDaoMapper extends BasicDaoMapper {
 	/**
 	 * Table for persistence
 	 *

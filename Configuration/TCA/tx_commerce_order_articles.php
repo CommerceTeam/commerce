@@ -124,7 +124,7 @@ return array(
 			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_order_articles.order_id',
 			'config' => array(
 				'type' => 'user',
-				'userFunc' => 'Tx_Commerce_ViewHelpers_OrderEditFunc->articleOrderId',
+				'userFunc' => 'CommerceTeam\\Commerce\\ViewHelpers\\OrderEditFunc->articleOrderId',
 				'readOnly' => TRUE,
 			)
 		),

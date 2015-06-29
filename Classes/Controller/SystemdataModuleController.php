@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Controller;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -11,6 +12,8 @@
  *
  * The TYPO3 project - inspiring people to share!
  */
+
+use CommerceTeam\Commerce\Domain\Repository\FolderRepository;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Backend\Utility\IconUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -18,11 +21,11 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Module 'Systemdata' for the 'commerce' extension.
  *
- * Class Tx_Commerce_Controller_SystemdataModuleController
+ * Class \CommerceTeam\Commerce\Controller\SystemdataModuleController
  *
  * @author 2005-2013 Ingo Schmitt <is@marketing-factory.de>
  */
-class Tx_Commerce_Controller_SystemdataModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
+class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 	/**
 	 * Page record
 	 *
@@ -83,9 +86,9 @@ class Tx_Commerce_Controller_SystemdataModuleController extends \TYPO3\CMS\Backe
 		$language = $this->getLanguageService();
 		$language->includeLLFile('EXT:commerce/Resources/Private/Language/locallang_mod_systemdata.xml');
 
-		$this->id = $this->modPid = (int) reset(Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Commerce', 'commerce'));
+		$this->id = $this->modPid = (int) reset(FolderRepository::initFolders('Commerce', 'commerce'));
 		$this->attributePid = (int) reset(
-			Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Attributes', 'commerce', $this->modPid)
+			FolderRepository::initFolders('Attributes', 'commerce', $this->modPid)
 		);
 
 		$this->perms_clause = $this->getBackendUser()->getPagePermsClause(1);
@@ -305,7 +308,7 @@ class Tx_Commerce_Controller_SystemdataModuleController extends \TYPO3\CMS\Backe
 	/**
 	 * Fetch attributes from db
 	 *
-	 * @return mysqli_result
+	 * @return \mysqli_result
 	 */
 	protected function fetchAttributes() {
 		return $this->getDatabaseConnection()->exec_SELECTquery(
@@ -322,7 +325,7 @@ class Tx_Commerce_Controller_SystemdataModuleController extends \TYPO3\CMS\Backe
 	 *
 	 * @param int $uid Attribute uid
 	 *
-	 * @return mysqli_result
+	 * @return \mysqli_result
 	 */
 	protected function fetchAttributeTranslation($uid) {
 		return $this->getDatabaseConnection()->exec_SELECTquery(
@@ -338,11 +341,11 @@ class Tx_Commerce_Controller_SystemdataModuleController extends \TYPO3\CMS\Backe
 	/**
 	 * Render attribute rows
 	 *
-	 * @param mysqli_result $result Result
+	 * @param \mysqli_result $result Result
 	 *
 	 * @return string
 	 */
-	protected function renderAttributeRows(mysqli_result $result) {
+	protected function renderAttributeRows(\mysqli_result $result) {
 		$language = $this->getLanguageService();
 		$database = $this->getDatabaseConnection();
 
@@ -474,12 +477,12 @@ class Tx_Commerce_Controller_SystemdataModuleController extends \TYPO3\CMS\Backe
 	/**
 	 * Render manufacturer row
 	 *
-	 * @param mysqli_result $result Result
+	 * @param \mysqli_result $result Result
 	 * @param array $fields Fields
 	 *
 	 * @return string
 	 */
-	protected function renderManufacturerRows(mysqli_result $result, array $fields) {
+	protected function renderManufacturerRows(\mysqli_result $result, array $fields) {
 		$language = $this->getLanguageService();
 		$output = '';
 
@@ -545,12 +548,12 @@ class Tx_Commerce_Controller_SystemdataModuleController extends \TYPO3\CMS\Backe
 	/**
 	 * Render supplier row
 	 *
-	 * @param mysqli_result $result Result
+	 * @param \mysqli_result $result Result
 	 * @param array $fields Fields
 	 *
 	 * @return string
 	 */
-	protected function renderSupplierRows(mysqli_result $result, array $fields) {
+	protected function renderSupplierRows(\mysqli_result $result, array $fields) {
 		$language = $this->getLanguageService();
 		$output = '';
 
@@ -592,7 +595,7 @@ class Tx_Commerce_Controller_SystemdataModuleController extends \TYPO3\CMS\Backe
 	 *
 	 * @param string $table Table
 	 *
-	 * @return mysqli_result
+	 * @return \mysqli_result
 	 */
 	protected function fetchDataByTable($table) {
 		return $this->getDatabaseConnection()->exec_SELECTquery(

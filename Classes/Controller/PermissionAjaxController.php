@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Controller;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -18,11 +19,11 @@
  * (including category ownership (user and group)) via new
  * \TYPO3\CMS\Core\Http\AjaxRequestHandler facility
  *
- * Class Tx_Commerce_Controller_PermissionAjaxController
+ * Class \CommerceTeam\Commerce\Controller\PermissionAjaxController
  *
  * @author 2007-2008 mehrwert <typo3@mehrwert.de>
  */
-class Tx_Commerce_Controller_PermissionAjaxController extends \TYPO3\CMS\Perm\Controller\PermissionAjaxController {
+class PermissionAjaxController extends \TYPO3\CMS\Perm\Controller\PermissionAjaxController {
 	/**
 	 * The main dispatcher function. Collect data and prepare HTML output.
 	 *

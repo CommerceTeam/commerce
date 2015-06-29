@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\ViewHelpers\Navigation;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -18,9 +19,11 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Main script class for the systemData navigation frame
  *
+ * Class \CommerceTeam\Commerce\ViewHelpers\Navigation\SystemdataViewHelper
+ *
  * @author Sebastian Fischer <typo3@marketing-factory.de>
  */
-class Tx_Commerce_ViewHelpers_Navigation_SystemdataViewHelper extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
+class SystemdataViewHelper extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 	/**
 	 * Has filter box
 	 *
@@ -36,7 +39,7 @@ class Tx_Commerce_ViewHelpers_Navigation_SystemdataViewHelper extends \TYPO3\CMS
 	public function init() {
 		$this->getLanguageService()->includeLLFile('EXT:commerce/Resources/Private/Language/locallang_mod_systemdata.xml');
 
-		$this->id = reset(Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Commerce', 'commerce'));
+		$this->id = reset(\CommerceTeam\Commerce\Domain\Repository\FolderRepository::initFolders('Commerce', 'commerce'));
 	}
 
 	/**

@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Dao;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -13,16 +14,17 @@
  */
 
 /**
- * Class Tx_Commerce_Dao_AddressObserver
- * for the takeaday feuser extension
+ * For the takeaday feuser extension
  * The class satisfies the observer design pattern.
  * The method update() from this class is called as static by "hooksHandler"
  * classes
  * This class handles tt_address updates
  *
+ * Class \CommerceTeam\Commerce\Dao\AddressObserver
+ *
  * @author 2005-2011 Carsten Lausen <cl@e-netconsulting.de>
  */
-class Tx_Commerce_Dao_AddressObserver {
+class AddressObserver {
 	/**
 	 * Link to observable
 	 *
@@ -60,9 +62,9 @@ class Tx_Commerce_Dao_AddressObserver {
 		/**
 		 * Address data access object
 		 *
-		 * @var Tx_Commerce_Dao_AddressDao $addressDao
+		 * @var AddressDao $addressDao
 		 */
-		$addressDao = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Dao_AddressDao', $id);
+		$addressDao = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Dao\\AddressDao', $id);
 
 		// get feuser id
 		$feuserId = $addressDao->get('tx_commerce_fe_user_id');
@@ -72,17 +74,17 @@ class Tx_Commerce_Dao_AddressObserver {
 			/**
 			 * Frontend user data access object
 			 *
-			 * @var Tx_Commerce_Dao_FeuserDao $feuserDao
+			 * @var FeuserDao $feuserDao
 			 */
-			$feuserDao = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Dao_FeuserDao', $feuserId);
+			$feuserDao = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Dao\\FeuserDao', $feuserId);
 
 			// update feuser object
 			/**
 			 * Frontend user address field mapper
 			 *
-			 * @var Tx_Commerce_Dao_FeuserAddressFieldmapper $fieldMapper
+			 * @var FeuserAddressFieldmapper $fieldMapper
 			 */
-			$fieldMapper = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Dao_FeuserAddressFieldmapper');
+			$fieldMapper = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Dao\\FeuserAddressFieldmapper');
 			$fieldMapper->mapAddressToFeuser($addressDao, $feuserDao);
 
 			// set main address id in feuser

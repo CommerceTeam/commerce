@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Utility;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -15,11 +16,11 @@
 /**
  * Misc COMMERCE functions
  *
- * Class Tx_Commerce_Utility_GeneralUtility
+ * Class \CommerceTeam\Commerce\Utility\GeneralUtility
  *
  * @author 2005-2011 Ingo Schmitt <is@marketing-factory.de>
  */
-class Tx_Commerce_Utility_GeneralUtility {
+class GeneralUtility {
 	/**
 	 * Removes XSS code and strips tags from an array recursivly
 	 *
@@ -67,7 +68,7 @@ class Tx_Commerce_Utility_GeneralUtility {
 		/**
 		 * Basket
 		 *
-		 * @var Tx_Commerce_Domain_Model_Basket $basket
+		 * @var \CommerceTeam\Commerce\Domain\Model\Basket $basket
 		 */
 		$basket = & $feUser->tx_commerce_basket;
 
@@ -87,7 +88,7 @@ class Tx_Commerce_Utility_GeneralUtility {
 				self::setCookie($basketId);
 			}
 
-			$basket = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Basket');
+			$basket = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Basket');
 			$basket->setSessionId($basketId);
 			$basket->loadData();
 
@@ -133,9 +134,12 @@ class Tx_Commerce_Utility_GeneralUtility {
 			/**
 			 * Product
 			 *
-			 * @var Tx_Commerce_Domain_Model_Product $productObj
+			 * @var \CommerceTeam\Commerce\Domain\Model\Product $productObj
 			 */
-			$productObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Product', $productUid);
+			$productObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+				'CommerceTeam\\Commerce\\Domain\\Model\\Product',
+				$productUid
+			);
 			$productObj->loadData();
 
 			if (!($productObj->hasStock())) {
@@ -151,12 +155,12 @@ class Tx_Commerce_Utility_GeneralUtility {
 	 * Remove article from product for frontendviewing, if articles
 	 * with no stock should not shown
 	 *
-	 * @param Tx_Commerce_Domain_Model_Product $productObj ProductObject to work on
+	 * @param \CommerceTeam\Commerce\Domain\Model\Product $productObj Product
 	 * @param int $dontRemoveArticles Switch to show or not show articles
 	 *
-	 * @return Tx_Commerce_Domain_Model_Product Cleaned up Productobjectt
+	 * @return \CommerceTeam\Commerce\Domain\Model\Product Cleaned up Productobjectt
 	 */
-	public static function removeNoStockArticles(Tx_Commerce_Domain_Model_Product $productObj, $dontRemoveArticles = 1) {
+	public static function removeNoStockArticles(\CommerceTeam\Commerce\Domain\Model\Product $productObj, $dontRemoveArticles = 1) {
 		if ($dontRemoveArticles == 1) {
 			return $productObj;
 		}
@@ -167,7 +171,7 @@ class Tx_Commerce_Utility_GeneralUtility {
 			/**
 			 * Article
 			 *
-			 * @var Tx_Commerce_Domain_Model_Article $article
+			 * @var \CommerceTeam\Commerce\Domain\Model\Article $article
 			 */
 			$article = $articles[$articleUid];
 			if ($article->getStock() <= 0) {
@@ -279,9 +283,9 @@ class Tx_Commerce_Utility_GeneralUtility {
 			$message->setCharset($mailconf['defaultCharset']);
 
 			if ($mailconf['encoding'] == 'base64') {
-				$message->setEncoder(Swift_Encoding::getBase64Encoding());
+				$message->setEncoder(\Swift_Encoding::getBase64Encoding());
 			} elseif ($mailconf['encoding'] == '8bit') {
-				$message->setEncoder(Swift_Encoding::get8BitEncoding());
+				$message->setEncoder(\Swift_Encoding::get8BitEncoding());
 			}
 
 			$message->setSubject($subject);
@@ -319,7 +323,7 @@ class Tx_Commerce_Utility_GeneralUtility {
 			if (is_array($mailconf['attach'])) {
 				foreach ($mailconf['attach'] as $file) {
 					if ($file && file_exists($file)) {
-						$message->attach(Swift_Attachment::fromPath($file));
+						$message->attach(\Swift_Attachment::fromPath($file));
 					}
 				}
 			}

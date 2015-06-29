@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Utility;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -15,11 +16,11 @@
 /**
  * ItemProc Methods for flexforms
  *
- * Class Tx_Commerce_Utility_TceformsUtility
+ * Class \CommerceTeam\Commerce\Utility\TceformsUtility
  *
  * @author 2005-2011 Ingo Schmitt <is@marketing-factory.de>
  */
-class Tx_Commerce_Utility_TceformsUtility {
+class TceformsUtility {
 	/**
 	 * Products selector
 	 * Result is returned via reference

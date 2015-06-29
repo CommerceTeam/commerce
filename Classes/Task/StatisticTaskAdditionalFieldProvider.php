@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Task;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -15,11 +16,11 @@
 use TYPO3\CMS\Scheduler\Controller\SchedulerModuleController;
 
 /**
- * Class Tx_Commerce_Task_StatisticTaskAdditionalFieldProvider
+ * Class \CommerceTeam\Commerce\Task\StatisticTaskAdditionalFieldProvider
  *
  * @author 2013 Sebastian Fischer <typo3@marketing-factory.de>
  */
-class Tx_Commerce_Task_StatisticTaskAdditionalFieldProvider implements \TYPO3\CMS\Scheduler\AdditionalFieldProviderInterface {
+class StatisticTaskAdditionalFieldProvider implements \TYPO3\CMS\Scheduler\AdditionalFieldProviderInterface {
 	/**
 	 * Submitted data
 	 *
@@ -41,7 +42,7 @@ class Tx_Commerce_Task_StatisticTaskAdditionalFieldProvider implements \TYPO3\CM
 	 * Add a multi select box with all available cache backends.
 	 *
 	 * @param array $taskInfo Reference to the array containing the info used
-	 * @param Tx_Commerce_Task_StatisticTask $task When editing, reference to
+	 * @param StatisticTask $task When editing, reference to
 	 * 	the current task object. Null when adding.
 	 * @param SchedulerModuleController $parentObject Reference to the calling object
 	 *
@@ -118,7 +119,7 @@ class Tx_Commerce_Task_StatisticTaskAdditionalFieldProvider implements \TYPO3\CM
 		/**
 		 * Task
 		 *
-		 * @var Tx_Commerce_Task_StatisticTask $task
+		 * @var StatisticTask $task
 		 */
 		$task->setSelectedAggregation($submittedData[$uid]['commerce_statisticTask_aggregation']);
 	}

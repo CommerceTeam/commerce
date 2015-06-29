@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Domain\Repository;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -16,13 +17,13 @@
  * Database Class for tx_commerce_products. All database calle should
  * be made by this class. In most cases you should use the methodes
  * provided by tx_commerce_product to get informations for articles.
- * Inherited from Tx_Commerce_Domain_Repository_Repository
+ * Inherited from \CommerceTeam\Commerce\Domain\Repository\Repository
  *
- * Class Tx_Commerce_Domain_Repository_ProductRepository
+ * Class \CommerceTeam\Commerce\Domain\Repository\ProductRepository
  *
  * @author 2005-2011 Ingo Schmitt <is@marketing-factory.de>
  */
-class Tx_Commerce_Domain_Repository_ProductRepository extends Tx_Commerce_Domain_Repository_Repository {
+class ProductRepository extends Repository {
 	/**
 	 * Database table
 	 *

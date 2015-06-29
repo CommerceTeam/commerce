@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Tree\Leaf;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -13,13 +14,13 @@
  */
 
 /**
- * Implements the Tx_Commerce_Tree_Leaf_View for the Category
+ * Implements the \CommerceTeam\Commerce\Tree\Leaf\View for the Category
  *
- * Class Tx_Commerce_Tree_Leaf_CategoryView
+ * Class \CommerceTeam\Commerce\Tree\Leaf\CategoryView
  *
  * @author 2008-2011 Erik Frister <typo3@marketing-factory.de>
  */
-class Tx_Commerce_Tree_Leaf_CategoryView extends Tx_Commerce_Tree_Leaf_View {
+class CategoryView extends View {
 	/**
 	 * DB Table isn't this read automatically?
 	 *
@@ -45,7 +46,7 @@ class Tx_Commerce_Tree_Leaf_CategoryView extends Tx_Commerce_Tree_Leaf_View {
 		if (!is_array($row)) {
 			if (TYPO3_DLOG) {
 				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
-					'getJumpToParam (Tx_Commerce_Tree_Leaf_View) gets passed invalid parameters.',
+					'getJumpToParam (CommerceTeam\\Commerce\\Tree\\Leaf\\View) gets passed invalid parameters.',
 					COMMERCE_EXTKEY,
 					3
 				);
@@ -54,7 +55,7 @@ class Tx_Commerce_Tree_Leaf_CategoryView extends Tx_Commerce_Tree_Leaf_View {
 		}
 
 		// get the UID of the Products SysFolder
-		$productPid = Tx_Commerce_Utility_BackendUtility::getProductFolderUid();
+		$productPid = \CommerceTeam\Commerce\Utility\BackendUtility::getProductFolderUid();
 
 		$res = '&id=' . $productPid . '&control[' . $this->table . '][uid]=' . $row['uid'];
 

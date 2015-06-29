@@ -20,7 +20,7 @@ use TYPO3\CMS\Backend\Utility\BackendUtility;
 /**
  * A metaclass for creating inputfield fields in the backend.
  *
- * Class BackendUserUtility
+ * Class \CommerceTeam\Commerce\Utility\BackendUserUtility
  *
  * @author 2005-2012 Thomas Hempel <thomas@work.de>
  */
@@ -219,9 +219,9 @@ class BackendUserUtility implements SingletonInterface {
 			/**
 			 * Category repository
 			 *
-			 * @var \Tx_Commerce_Domain_Repository_CategoryRepository $repository
+			 * @var \CommerceTeam\Commerce\Domain\Repository\CategoryRepository $repository
 			 */
-			$repository = GeneralUtility::makeInstance('Tx_Commerce_Domain_Repository_CategoryRepository');
+			$repository = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Repository\\CategoryRepository');
 			$output = $repository->getCategoryRootline((int) $uid, $clause);
 
 			$categoryRootlineCache[$uid] = $output;

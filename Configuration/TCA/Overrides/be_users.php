@@ -10,7 +10,7 @@ $tempColumns = array(
 			// see: tx_dam_treelib_tceforms::getMountsForTree()
 			'type' => 'passthrough',
 			'form_type' => 'user',
-			'userFunc' => 'Tx_Commerce_ViewHelpers_TceFunc->getSingleField_selectCategories',
+			'userFunc' => 'CommerceTeam\\Commerce\\ViewHelpers\\TceFunc->getSingleField_selectCategories',
 			'treeViewBrowseable' => TRUE,
 			'size' => 10,
 			'autoSizeMax' => 30,

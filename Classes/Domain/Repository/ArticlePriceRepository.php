@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Domain\Repository;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -16,17 +17,17 @@
  * Database Class for tx_commerce_article_prices. All database calle should
  * be made by this class. In most cases you should use the methodes
  * provided by tx_commerce_article_price to get informations for articles.
- * Inherited from Tx_Commerce_Domain_Repository_Repository
+ * Inherited from \CommerceTeam\Commerce\Domain\Repository\Repository
  *
  * Basic abtract Class for Database Query for
  * Database retrival class fro product
- * inherited from Tx_Commerce_Domain_Repository_Repository
+ * inherited from \CommerceTeam\Commerce\Domain\Repository\Repository
  *
- * Class Tx_Commerce_Domain_Repository_ArticlePriceRepository
+ * Class \CommerceTeam\Commerce\Domain\Repository\ArticlePriceRepository
  *
  * @author 2005-2011 Ingo Schmitt <is@marketing-factory.de>
  */
-class Tx_Commerce_Domain_Repository_ArticlePriceRepository extends Tx_Commerce_Domain_Repository_Repository {
+class ArticlePriceRepository extends Repository {
 	/**
 	 * Table concerning the prices
 	 *

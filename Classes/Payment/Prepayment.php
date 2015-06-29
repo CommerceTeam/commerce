@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Payment;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -15,11 +16,11 @@
 /**
  * Pre payment payment implementaton
  *
- * Class Tx_Commerce_Payment_Prepayment
+ * Class \CommerceTeam\Commerce\Payment\Prepayment
  *
  * @author 2005-2011 Thomas Hempel <thomas@work.de>
  */
-class Tx_Commerce_Payment_Prepayment extends Tx_Commerce_Payment_PaymentAbstract {
+class Prepayment extends PaymentAbstract {
 	/**
 	 * Payment type
 	 *

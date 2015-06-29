@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Configuration\Dca;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -15,11 +16,11 @@
 /**
  * Implements the dynaflex config for the 'tx_commerce_articles' table
  *
- * Class Tx_Commerce_Configuration_Dca_Articles
+ * Class \CommerceTeam\Commerce\Configuration\Dca\Articles
  *
  * @author 2005-2006 Thomas Hempel <thomas@work.de>
  */
-class Tx_Commerce_Configuration_Dca_Articles {
+class Articles {
 
 	/**
 	 * Rows to check
@@ -54,7 +55,7 @@ class Tx_Commerce_Configuration_Dca_Articles {
 						'where' => 'uid_local=###uid###',
 						'orderby' => 'sorting'
 					),
-					'allUserFunc' => 'Tx_Commerce_Utility_AttributeEditorUtility->getAttributeEditFields',
+					'allUserFunc' => 'CommerceTeam\\Commerce\\Utility\\AttributeEditorUtility->getAttributeEditFields',
 				),
 			),
 		),

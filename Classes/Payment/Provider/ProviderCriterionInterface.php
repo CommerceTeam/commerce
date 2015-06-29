@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Payment\Provider;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -15,20 +16,20 @@
 /**
  * Payment provider criterion interface
  *
- * Class Tx_Commerce_Payment_Interface_ProviderCriterion
+ * Class \CommerceTeam\Commerce\Payment\Provider\ProviderCriterionInterface
  *
  * @author 2011 Christian Kuhn <lolli@schwarzbu.ch>
  */
-interface Tx_Commerce_Payment_Interface_ProviderCriterion {
+interface ProviderCriterionInterface {
 	/**
 	 * Constructor
 	 *
-	 * @param Tx_Commerce_Payment_Interface_Provider $providerObject Parent payment
+	 * @param ProviderInterface $providerObject Parent payment
 	 * @param array $options Configuration array
 	 *
 	 * @return self
 	 */
-	public function __construct(Tx_Commerce_Payment_Interface_Provider $providerObject, array $options = array());
+	public function __construct(ProviderInterface $providerObject, array $options = array());
 
 	/**
 	 * Return TRUE if this payment type is allowed.

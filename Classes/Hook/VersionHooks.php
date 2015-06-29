@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Hook;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -15,11 +16,11 @@
 /**
  * Implements the hooks for versioning and swapping
  *
- * Class Tx_Commerce_Hook_VersionHooks
+ * Class \CommerceTeam\Commerce\Hook\VersionHooks
  *
  * @author 2008-2011 Erik Frister <typo3@marketing-factory.de>
  */
-class Tx_Commerce_Hook_VersionHooks {
+class VersionHooks {
 	/**
 	 * After versioning for tx_commerce_products, this also
 	 * 1) copies the Attributes (flex and mm)
@@ -38,10 +39,10 @@ class Tx_Commerce_Hook_VersionHooks {
 			$copy = !is_null($swapIntoWorkspace);
 
 			// give Attributes from swapWith to id
-			Tx_Commerce_Utility_BackendUtility::swapProductAttributes($swapWith, $id, $copy);
+			\CommerceTeam\Commerce\Utility\BackendUtility::swapProductAttributes($swapWith, $id, $copy);
 
 			// give Articles from swapWith to id
-			Tx_Commerce_Utility_BackendUtility::swapProductArticles($swapWith, $id, $copy);
+			\CommerceTeam\Commerce\Utility\BackendUtility::swapProductArticles($swapWith, $id, $copy);
 		}
 	}
 }

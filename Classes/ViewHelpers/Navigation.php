@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\ViewHelpers;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -11,6 +12,7 @@
  *
  * The TYPO3 project - inspiring people to share!
  */
+
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -19,11 +21,11 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * Thanks to Daniel Thomas, who build a class for his mediadb, which was
  * the basic for this class
  *
- * Class Tx_Commerce_ViewHelpers_Navigation
+ * Class \CommerceTeam\Commerce\ViewHelpers\Navigation
  *
  * @author 2005-2013 Volker Graubaum <vg_typo3@e-netconsulting.de>
  */
-class Tx_Commerce_ViewHelpers_Navigation {
+class Navigation {
 	/**
 	 * Navigation ident
 	 *
@@ -248,14 +250,14 @@ class Tx_Commerce_ViewHelpers_Navigation {
 	/**
 	 * Category object
 	 *
-	 * @var Tx_Commerce_Domain_Model_Category
+	 * @var \CommerceTeam\Commerce\Domain\Model\Category
 	 */
 	protected $catObj;
 
 	/**
 	 * Category object
 	 *
-	 * @var Tx_Commerce_Domain_Model_Category
+	 * @var \CommerceTeam\Commerce\Domain\Model\Category
 	 */
 	protected $category;
 
@@ -281,7 +283,7 @@ class Tx_Commerce_ViewHelpers_Navigation {
 			$GLOBALS['TSFE']->id;
 		$this->gpVars = GeneralUtility::_GPmerged($this->prefixId);
 
-		Tx_Commerce_Utility_GeneralUtility::initializeFeUserBasket();
+		\CommerceTeam\Commerce\Utility\GeneralUtility::initializeFeUserBasket();
 
 		$this->gpVars['basketHashValue'] = $GLOBALS['TSFE']->fe_user->tx_commerce_basket->getBasketHashValue();
 		$this->pageRootline = $GLOBALS['TSFE']->rootLine;
@@ -405,9 +407,9 @@ class Tx_Commerce_ViewHelpers_Navigation {
 			/**
 			 * Product
 			 *
-			 * @var Tx_Commerce_Domain_Model_Product $myProduct
+			 * @var \CommerceTeam\Commerce\Domain\Model\Product $myProduct
 			 */
-			$myProduct = GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Product', $this->gpVars['showUid']);
+			$myProduct = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Product', $this->gpVars['showUid']);
 			$myProduct->loadData();
 			$this->choosenCat = $myProduct->getMasterparentCategory();
 		}
@@ -419,9 +421,9 @@ class Tx_Commerce_ViewHelpers_Navigation {
 			/**
 			 * Build the path by or own
 			 *
-			 * @var Tx_Commerce_Domain_Model_Category $myCat
+			 * @var \CommerceTeam\Commerce\Domain\Model\Category $myCat
 			 */
-			$myCat = GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Category', $this->choosenCat);
+			$myCat = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Category', $this->choosenCat);
 			$myCat->loadData();
 			// MODIF DE LUC >AMEOS : Get the right path with custom method
 			$aPath = $this->getRootLine($this->mTree, $this->choosenCat, $this->expandAll);
@@ -589,7 +591,7 @@ class Tx_Commerce_ViewHelpers_Navigation {
 		$i = 1;
 		foreach ($conf as $k) {
 			if ($k == $i . '.') {
-				$conf[$i . '.']['itemArrayProcFunc'] = 'Tx_Commerce_ViewHelpers_Navigation->clear';
+				$conf[$i . '.']['itemArrayProcFunc'] = 'CommerceTeam\\Commerce\\ViewHelpers\\Navigation->clear';
 				$i++;
 			}
 		}
@@ -1027,10 +1029,10 @@ class Tx_Commerce_ViewHelpers_Navigation {
 			/**
 			 * Category
 			 *
-			 * @var Tx_Commerce_Domain_Model_Category $localCategory
+			 * @var \CommerceTeam\Commerce\Domain\Model\Category $localCategory
 			 */
 			$localCategory = GeneralUtility::makeinstance(
-				'Tx_Commerce_Domain_Model_Category', $row[0]['uid'], $row[0]['sys_language_uid']
+				'CommerceTeam\\Commerce\\Domain\\Model\\Category', $row[0]['uid'], $row[0]['sys_language_uid']
 			);
 			$localCategory->loadData();
 			if (!$localCategory->hasProductsInSubCategories()) {
@@ -1169,12 +1171,12 @@ class Tx_Commerce_ViewHelpers_Navigation {
 		$this->pid = (int) ($this->mConf['overridePid'] ? $this->mConf['overridePid'] : $GLOBALS['TSFE']->id);
 		$this->gpVars = GeneralUtility::_GPmerged($this->prefixId);
 
-		Tx_Commerce_Utility_GeneralUtility::initializeFeUserBasket();
+		\CommerceTeam\Commerce\Utility\GeneralUtility::initializeFeUserBasket();
 
 		$this->gpVars['basketHashValue'] = $GLOBALS['TSFE']->fe_user->tx_commerce_basket->getBasketHashValue();
 		if (!is_object($this->category)) {
 			$this->category = GeneralUtility::makeInstance(
-				'Tx_Commerce_Domain_Model_Category', $this->mConf['category'], $this->getFrontendController()->sys_language_uid
+				'CommerceTeam\\Commerce\\Domain\\Model\\Category', $this->mConf['category'], $this->getFrontendController()->sys_language_uid
 			);
 			$this->category->loadData();
 		}
@@ -1190,10 +1192,10 @@ class Tx_Commerce_ViewHelpers_Navigation {
 			/**
 			 * Product
 			 *
-			 * @var Tx_Commerce_Domain_Model_Product $productObject
+			 * @var \CommerceTeam\Commerce\Domain\Model\Product $productObject
 			 */
 			$productObject = GeneralUtility::makeInstance(
-				'Tx_Commerce_Domain_Model_Product',
+				'CommerceTeam\\Commerce\\Domain\\Model\\Product',
 				$this->gpVars['showUid'],
 				$this->getFrontendController()->sys_language_uid
 			);
@@ -1202,10 +1204,10 @@ class Tx_Commerce_ViewHelpers_Navigation {
 			/**
 			 * Category
 			 *
-			 * @var Tx_Commerce_Domain_Model_Category $categoryObject
+			 * @var \CommerceTeam\Commerce\Domain\Model\Category $categoryObject
 			 */
 			$categoryObject = GeneralUtility::makeInstance(
-				'Tx_Commerce_Domain_Model_Category',
+				'CommerceTeam\\Commerce\\Domain\\Model\\Category',
 				$this->gpVars['catUid'],
 				$this->getFrontendController()->sys_language_uid
 			);
@@ -1257,10 +1259,10 @@ class Tx_Commerce_ViewHelpers_Navigation {
 			/**
 			 * Category
 			 *
-			 * @var Tx_Commerce_Domain_Model_Category $categoryObject
+			 * @var \CommerceTeam\Commerce\Domain\Model\Category $categoryObject
 			 */
 			$categoryObject = GeneralUtility::makeInstance(
-				'Tx_Commerce_Domain_Model_Category', $categoryUid, $this->getFrontendController()->sys_language_uid
+				'CommerceTeam\\Commerce\\Domain\\Model\\Category', $categoryUid, $this->getFrontendController()->sys_language_uid
 			);
 			$categoryObject->loadData();
 
@@ -1465,9 +1467,9 @@ class Tx_Commerce_ViewHelpers_Navigation {
 				/**
 				 * Product
 				 *
-				 * @var Tx_Commerce_Domain_Model_Product $product
+				 * @var \CommerceTeam\Commerce\Domain\Model\Product $product
 				 */
-				$product = GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Product', $productRow['uid']);
+				$product = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Product', $productRow['uid']);
 				$product->loadData();
 
 				$manufacturerTitle = htmlspecialchars(strip_tags($product->getManufacturerTitle()));

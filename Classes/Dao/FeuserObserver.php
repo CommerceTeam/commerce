@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Dao;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -19,11 +20,11 @@
  * classes
  * This class handles feuser updates
  *
- * Class Tx_Commerce_Dao_FeuserObserver
+ * Class \CommerceTeam\Commerce\Dao\FeuserObserver
  *
  * @author 2005-2011 Carsten Lausen <cl@e-netconsulting.de>
  */
-class Tx_Commerce_Dao_FeuserObserver {
+class FeuserObserver {
 	/**
 	 * Link to observable
 	 *
@@ -60,9 +61,9 @@ class Tx_Commerce_Dao_FeuserObserver {
 		/**
 		 * Frontend user data access object
 		 *
-		 * @var Tx_Commerce_Dao_FeuserDao $feuserDao
+		 * @var FeuserDao $feuserDao
 		 */
-		$feuserDao = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Dao_FeuserDao', $id);
+		$feuserDao = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Dao\\FeuserDao', $id);
 
 		// get main address id from feuser object
 		$topId = $feuserDao->get('tx_commerce_tt_address_id');
@@ -72,9 +73,9 @@ class Tx_Commerce_Dao_FeuserObserver {
 			/**
 			 * Address data access object
 			 *
-			 * @var Tx_Commerce_Dao_AddressDao $addressDao
+			 * @var AddressDao $addressDao
 			 */
-			$addressDao = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Dao_AddressDao');
+			$addressDao = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Dao\\AddressDao');
 
 			// set feuser uid and main address flag
 			$addressDao->set('tx_commerce_fe_user_id', $feuserDao->get('id'));
@@ -86,16 +87,16 @@ class Tx_Commerce_Dao_FeuserObserver {
 			}
 		} else {
 			// get existing address object
-			$addressDao = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Dao_AddressDao', $topId);
+			$addressDao = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Dao\\AddressDao', $topId);
 		}
 
 		// apply changes to address object
 		/**
 		 * Field mapper
 		 *
-		 * @var Tx_Commerce_Dao_FeuserAddressFieldmapper $fieldMapper
+		 * @var FeuserAddressFieldmapper $fieldMapper
 		 */
-		$fieldMapper = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Dao_FeuserAddressFieldmapper');
+		$fieldMapper = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Dao\\FeuserAddressFieldmapper');
 		$fieldMapper->mapFeuserToAddress($feuserDao, $addressDao);
 
 		// save address object

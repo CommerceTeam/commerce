@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\ViewHelpers;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -19,11 +20,11 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * User Class for displaying Orders
  *
- * Class Tx_Commerce_ViewHelpers_OrderEditFunc
+ * Class \CommerceTeam\Commerce\ViewHelpers\OrderEditFunc
  *
  * @author 2005-2011 Ingo Schmitt <is@marketing-factory.de>
  */
-class Tx_Commerce_ViewHelpers_OrderEditFunc {
+class OrderEditFunc {
 	/**
 	 * Page info
 	 *
@@ -84,7 +85,7 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 	 */
 	public function sumPriceGrossFormat(array $parameter) {
 		$content = '<input type="text" disabled name="' . $parameter['itemFormElName'] . '" value="' .
-			Tx_Commerce_ViewHelpers_Money::format($parameter['itemFormElValue'] / 100, '') . '">';
+			\CommerceTeam\Commerce\ViewHelpers\Money::format($parameter['itemFormElValue'] / 100, '') . '">';
 		return $content;
 	}
 
@@ -204,8 +205,8 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 				$sum['price_net_value'] += $row['price_net'] / 100;
 				$sum['price_gross_value'] += $row['price_gross'] / 100;
 
-				$row['price_net'] = Tx_Commerce_ViewHelpers_Money::format($row['price_net'] / 100, '');
-				$row['price_gross'] = Tx_Commerce_ViewHelpers_Money::format($row['price_gross'] / 100, '');
+				$row['price_net'] = \CommerceTeam\Commerce\ViewHelpers\Money::format($row['price_net'] / 100, '');
+				$row['price_gross'] = \CommerceTeam\Commerce\ViewHelpers\Money::format($row['price_gross'] / 100, '');
 
 				$rowBgColor = ($cc % 2 ? '' : ' bgcolor="' .
 					GeneralUtility::modifyHTMLColor($GLOBALS['SOBE']->doc->bgColor4, + 10, + 10, + 10) . '"');
@@ -267,8 +268,8 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 			 * Cerate the summ row
 			 */
 			$out .= '<tr>';
-			$sum['price_net'] = Tx_Commerce_ViewHelpers_Money::format($sum['price_net_value'], '');
-			$sum['price_gross'] = Tx_Commerce_ViewHelpers_Money::format($sum['price_gross_value'], '');
+			$sum['price_net'] = \CommerceTeam\Commerce\ViewHelpers\Money::format($sum['price_net_value'], '');
+			$sum['price_gross'] = \CommerceTeam\Commerce\ViewHelpers\Money::format($sum['price_gross_value'], '');
 
 			foreach ($fieldRows as $field) {
 				switch ($field) {
@@ -324,7 +325,7 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 		/**
 		 * Create folder if not existing
 		 */
-		Tx_Commerce_Utility_FolderUtility::initFolders();
+		\CommerceTeam\Commerce\Utility\FolderUtility::initFolders();
 
 		/**
 		 * Create a new data item array
@@ -333,7 +334,7 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 
 		// Find the right pid for the Ordersfolder
 		list($orderPid) = array_unique(
-			Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Orders', 'Commerce', 0, 'Commerce')
+			\CommerceTeam\Commerce\Domain\Repository\FolderRepository::initFolders('Orders', 'Commerce', 0, 'Commerce')
 		);
 
 		/**
@@ -375,7 +376,7 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 			}
 		}
 
-		$data['items'] = Tx_Commerce_Utility_BackendUtility::getOrderFolderSelector(
+		$data['items'] = \CommerceTeam\Commerce\Utility\BackendUtility::getOrderFolderSelector(
 			$orderPid,
 			$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['OrderFolderRecursiveLevel']
 		);
@@ -514,9 +515,9 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 		/**
 		 * Order record list
 		 *
-		 * @var Tx_Commerce_ViewHelpers_OrderRecordlist $dblist
+		 * @var \CommerceTeam\Commerce\ViewHelpers\OrderRecordlist $dblist
 		 */
-		$dblist = GeneralUtility::makeInstance('Tx_Commerce_ViewHelpers_OrderRecordlist');
+		$dblist = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\ViewHelpers\\OrderRecordlist');
 		$dblist->backPath = $GLOBALS['BACK_PATH'];
 		$dblist->script = 'index.php';
 		$dblist->calcPerms = $this->getBackendUser()->calcPerms($this->pageinfo);

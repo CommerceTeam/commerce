@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\ViewHelpers;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -19,11 +20,11 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Renders order listin the BE order module
  *
- * Class Tx_Commerce_ViewHelpers_OrderRecordList
+ * Class \CommerceTeam\Commerce\ViewHelpers\OrderRecordList
  *
  * @author 2005-2013 Daniel Schöttgen <ds@marketing-factory.de>
  */
-class Tx_Commerce_ViewHelpers_OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordList {
+class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordList {
 	/**
 	 * Order pid
 	 *
@@ -159,7 +160,7 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends \TYPO3\CMS\Recordlist\Reco
 	 * @param string $rowlist Row list
 	 *
 	 * @return string
-	 * @throws UnexpectedValueException If hook is of wrong interface
+	 * @throws \UnexpectedValueException If hook is of wrong interface
 	 */
 	public function getTable($table, $id, $rowlist) {
 		$database = $this->getDatabaseConnection();
@@ -288,7 +289,7 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends \TYPO3\CMS\Recordlist\Reco
 				$hookObject = GeneralUtility::getUserObj($classData);
 
 				if (!($hookObject instanceof \TYPO3\CMS\Backend\RecordList\RecordListGetTableHookInterface)) {
-					throw new UnexpectedValueException(
+					throw new \UnexpectedValueException(
 						'$hookObject must implement interface \TYPO3\CMS\Backend\RecordList\RecordListGetTableHookInterface',
 						1195114460
 					);
@@ -645,7 +646,7 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends \TYPO3\CMS\Recordlist\Reco
 				if ($this->csvOutput) {
 					$row[$fCol] = $row[$fCol] / 100;
 				} else {
-					$theData[$fCol] = Tx_Commerce_ViewHelpers_Money::format($row[$fCol], $row['cu_iso_3'], FALSE);
+					$theData[$fCol] = \CommerceTeam\Commerce\ViewHelpers\Money::format($row[$fCol], $row['cu_iso_3'], FALSE);
 				}
 			} elseif ($fCol == 'crdate') {
 				$theData[$fCol] = BackendUtility::date($row[$fCol]);
@@ -890,7 +891,7 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends \TYPO3\CMS\Recordlist\Reco
 						$moveToSelectorRow = '';
 						if (($parentRow = $database->sql_fetch_assoc($resParent))) {
 								// Get the pages below $orderPid
-							$ret = Tx_Commerce_Utility_BackendUtility::getOrderFolderSelector(
+							$ret = \CommerceTeam\Commerce\Utility\BackendUtility::getOrderFolderSelector(
 								$this->orderPid,
 								$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['OrderFolderRecursiveLevel']
 							);
@@ -963,14 +964,14 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends \TYPO3\CMS\Recordlist\Reco
 		if ($id > 0) {
 			$pidWhere = ' AND tx_commerce_orders.pid=' . $id;
 		} else {
-			Tx_Commerce_Utility_FolderUtility::initFolders();
+			\CommerceTeam\Commerce\Utility\FolderUtility::initFolders();
 
 			// Find the right pid for the Ordersfolder
 			$orderPid = current(
-				array_unique(Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Orders', 'Commerce', 0, 'Commerce'))
+				array_unique(\CommerceTeam\Commerce\Domain\Repository\FolderRepository::initFolders('Orders', 'Commerce', 0, 'Commerce'))
 			);
 
-			$orderFolders = Tx_Commerce_Utility_BackendUtility::getOrderFolderSelector($orderPid, PHP_INT_MAX);
+			$orderFolders = \CommerceTeam\Commerce\Utility\BackendUtility::getOrderFolderSelector($orderPid, PHP_INT_MAX);
 
 			$list = array();
 			foreach ($orderFolders as $orderFolder) {
@@ -1015,7 +1016,7 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends \TYPO3\CMS\Recordlist\Reco
 
 		$deliveryProductUid = $moduleConfig['properties']['deliveryProductUid'] ? $moduleConfig['properties']['deliveryProductUid'] : 0;
 		if ($deliveryProductUid > 0) {
-			$deliveryArticles = Tx_Commerce_Utility_BackendUtility::getArticlesOfProductAsUidList($deliveryProductUid);
+			$deliveryArticles = \CommerceTeam\Commerce\Utility\BackendUtility::getArticlesOfProductAsUidList($deliveryProductUid);
 
 			if (count($deliveryArticles)) {
 				$queryParts['WHERE'] .= ' AND delivery_table.article_uid IN (' . implode(',', $deliveryArticles) . ') ';
@@ -1024,7 +1025,7 @@ class Tx_Commerce_ViewHelpers_OrderRecordList extends \TYPO3\CMS\Recordlist\Reco
 
 		$paymentProductUid = $moduleConfig['properties']['paymentProductUid'] ? $moduleConfig['properties']['paymentProductUid'] : 0;
 		if ($paymentProductUid > 0) {
-			$paymentArticles = Tx_Commerce_Utility_BackendUtility::getArticlesOfProductAsUidList($paymentProductUid);
+			$paymentArticles = \CommerceTeam\Commerce\Utility\BackendUtility::getArticlesOfProductAsUidList($paymentProductUid);
 
 			if (count($paymentArticles)) {
 				$queryParts['WHERE'] .= ' AND delivery_table.article_uid IN (' . implode(',', $paymentArticles) . ') ';

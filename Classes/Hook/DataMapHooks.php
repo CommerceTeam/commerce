@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Hook;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -12,6 +13,7 @@
  * The TYPO3 project - inspiring people to share!
  */
 
+use CommerceTeam\Commerce\Domain\Repository\FolderRepository;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -20,15 +22,15 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * This class contains some hooks for processing formdata.
  * Hook for saving order data and order_articles.
  *
- * Class Tx_Commerce_Hook_DataMapHooks
+ * Class \CommerceTeam\Commerce\Hook\DataMapHooks
  *
  * @author 2005-2013 Thomas Hempel <thomas@work.de>
  */
-class Tx_Commerce_Hook_DataMapHooks {
+class DataMapHooks {
 	/**
 	 * Backend utility
 	 *
-	 * @var Tx_Commerce_Utility_BackendUtility
+	 * @var \CommerceTeam\Commerce\Utility\BackendUtility
 	 */
 	protected $belib;
 
@@ -52,7 +54,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 	 * @return self
 	 */
 	public function __construct() {
-		$this->belib = GeneralUtility::makeInstance('Tx_Commerce_Utility_BackendUtility');
+		$this->belib = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Utility\\BackendUtility');
 	}
 
 
@@ -201,9 +203,9 @@ class Tx_Commerce_Hook_DataMapHooks {
 				/**
 				 * Product
 				 *
-				 * @var Tx_Commerce_Domain_Model_Product $productObj
+				 * @var \CommerceTeam\Commerce\Domain\Model\Product $productObj
 				 */
-				$productObj = GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Product', $id);
+				$productObj = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Product', $id);
 				$productObj->loadData();
 
 				$parentCategory = $productObj->getMasterparentCategory();
@@ -243,8 +245,8 @@ class Tx_Commerce_Hook_DataMapHooks {
 			$incomingFieldArray['create_new_scale_prices_count'] = 0;
 
 			// get pid
-			list($commercePid) = Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Commerce', 'commerce');
-			list($productPid) = Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Products', 'commerce', $commercePid);
+			list($commercePid) = FolderRepository::initFolders('Commerce', 'commerce');
+			list($productPid) = FolderRepository::initFolders('Products', 'commerce', $commercePid);
 
 			// set some status vars
 			$myScaleAmountStart = $pricesStartamount;
@@ -556,24 +558,24 @@ class Tx_Commerce_Hook_DataMapHooks {
 				/**
 				 * Category
 				 *
-				 * @var Tx_Commerce_Domain_Model_Category $category
+				 * @var \CommerceTeam\Commerce\Domain\Model\Category $category
 				 */
-				$category = GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Category', $checkId);
+				$category = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Category', $checkId);
 				$category->loadData();
 
 					// Use the l18n parent as category for permission checks.
 				if ($l18nParent || $category->getField('l18n_parent') > 0) {
 					$checkId = $l18nParent ?: $category->getField('l18n_parent');
-					$category = GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Category', $checkId);
+					$category = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Category', $checkId);
 				}
 
 				// check if the category is in mount
 				/**
 				 * Category mounts
 				 *
-				 * @var Tx_Commerce_Tree_CategoryMounts $mounts
+				 * @var \CommerceTeam\Commerce\Tree\CategoryMounts $mounts
 				 */
-				$mounts = GeneralUtility::makeInstance('Tx_Commerce_Tree_CategoryMounts');
+				$mounts = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryMounts');
 				$mounts->init($backendUser->user['uid']);
 
 				// check
@@ -631,7 +633,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 				/**
 				 * Parent category
 				 *
-				 * @var Tx_Commerce_Domain_Model_Category $parent
+				 * @var \CommerceTeam\Commerce\Domain\Model\Category $parent
 				 */
 				foreach ($parentCategories as $parent) {
 					$existingParents[] = $parent->getUid();
@@ -639,9 +641,9 @@ class Tx_Commerce_Hook_DataMapHooks {
 					/**
 					 * Category mounts
 					 *
-					 * @var Tx_Commerce_Tree_CategoryMounts $mounts
+					 * @var \CommerceTeam\Commerce\Tree\CategoryMounts $mounts
 					 */
-					$mounts = GeneralUtility::makeInstance('Tx_Commerce_Tree_CategoryMounts');
+					$mounts = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryMounts');
 					$mounts->init($backendUser->user['uid']);
 
 					// if the user has no right to see one of the parent categories or its not
@@ -661,9 +663,9 @@ class Tx_Commerce_Hook_DataMapHooks {
 				/**
 				 * Category mounts
 				 *
-				 * @var Tx_Commerce_Tree_CategoryMounts $mounts
+				 * @var \CommerceTeam\Commerce\Tree\CategoryMounts $mounts
 				 */
-				$mounts = GeneralUtility::makeInstance('Tx_Commerce_Tree_CategoryMounts');
+				$mounts = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryMounts');
 				$mounts->init($backendUser->user['uid']);
 
 				if ($mounts->isInCommerceMounts(0)) {
@@ -696,16 +698,16 @@ class Tx_Commerce_Hook_DataMapHooks {
 					/**
 					 * Category
 					 *
-					 * @var Tx_Commerce_Domain_Model_Category $cat
+					 * @var \CommerceTeam\Commerce\Domain\Model\Category $cat
 					 */
-					$category = GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Category', $uid);
+					$category = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Category', $uid);
 
 					/**
 					 * Category mounts
 					 *
-					 * @var Tx_Commerce_Tree_CategoryMounts $mounts
+					 * @var \CommerceTeam\Commerce\Tree\CategoryMounts $mounts
 					 */
-					$mounts = GeneralUtility::makeInstance('Tx_Commerce_Tree_CategoryMounts');
+					$mounts = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryMounts');
 					$mounts->init($backendUser->user['uid']);
 
 					// abort if the parent category is not in the webmounts
@@ -770,9 +772,9 @@ class Tx_Commerce_Hook_DataMapHooks {
 					/**
 					 * Category
 					 *
-					 * @var Tx_Commerce_Domain_Model_Category $catDirect
+					 * @var \CommerceTeam\Commerce\Domain\Model\Category $catDirect
 					 */
-					$catDirect = GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Category', $catUid);
+					$catDirect = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Category', $catUid);
 					$catDirect->loadData();
 
 					$tmpCats = $catDirect->getParentCategories();
@@ -829,14 +831,17 @@ class Tx_Commerce_Hook_DataMapHooks {
 			/**
 			 * Product
 			 *
-			 * @var Tx_Commerce_Domain_Model_Product $item
+			 * @var \CommerceTeam\Commerce\Domain\Model\Product $item
 			 */
-			$item = GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Product', $id);
+			$item = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Product', $id);
 
 			$parentCategories = $item->getParentCategories();
 
 			// check existing categories
-			if (!Tx_Commerce_Utility_BackendUtility::checkPermissionsOnCategoryContent($parentCategories, array('editcontent'))) {
+			if (!\CommerceTeam\Commerce\Utility\BackendUtility::checkPermissionsOnCategoryContent(
+				$parentCategories,
+				array('editcontent')
+			)) {
 				$pObj->newlog('You dont have the permissions to edit the product.', 1);
 				$fieldArray = array();
 			}
@@ -860,7 +865,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 				$parentCategories
 			);
 
-			if (!Tx_Commerce_Utility_BackendUtility::checkPermissionsOnCategoryContent($newCats, array('editcontent'))) {
+			if (!\CommerceTeam\Commerce\Utility\BackendUtility::checkPermissionsOnCategoryContent($newCats, array('editcontent'))) {
 				$pObj->newlog('You do not have the permissions to add one or all categories you added.' .
 					GeneralUtility::uniqueList($data['categories']), 1);
 				$fieldArray = array();
@@ -895,27 +900,27 @@ class Tx_Commerce_Hook_DataMapHooks {
 			/**
 			 * Article
 			 *
-			 * @var Tx_Commerce_Domain_Model_Article $article
+			 * @var \CommerceTeam\Commerce\Domain\Model\Article $article
 			 */
-			$article = GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Article', $id);
+			$article = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Article', $id);
 			$article->loadData();
 
 			// get the parent categories of the product
 			/**
 			 * Product
 			 *
-			 * @var Tx_Commerce_Domain_Model_Product $product
+			 * @var \CommerceTeam\Commerce\Domain\Model\Product $product
 			 */
-			$product = GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Product', $article->getParentProductUid());
+			$product = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Product', $article->getParentProductUid());
 			$product->loadData();
 
 			if ($product->getL18nParent()) {
 				/**
 				 * Product
 				 *
-				 * @var Tx_Commerce_Domain_Model_Product $product
+				 * @var \CommerceTeam\Commerce\Domain\Model\Product $product
 				 */
-				$product = GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Product', $product->getL18nParent());
+				$product = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Product', $product->getL18nParent());
 				$product->loadData();
 			}
 
@@ -923,7 +928,10 @@ class Tx_Commerce_Hook_DataMapHooks {
 		}
 
 		// read new assigned product
-		if (!Tx_Commerce_Utility_BackendUtility::checkPermissionsOnCategoryContent($parentCategories, array('editcontent'))) {
+		if (!\CommerceTeam\Commerce\Utility\BackendUtility::checkPermissionsOnCategoryContent(
+			$parentCategories,
+			array('editcontent')
+		)) {
 			$pObj->newlog('You dont have the permissions to edit the article.', 1);
 			$fieldArray = array();
 		}
@@ -1035,9 +1043,9 @@ class Tx_Commerce_Hook_DataMapHooks {
 			/**
 			 * Product
 			 *
-			 * @var Tx_Commerce_Domain_Model_Product $product
+			 * @var \CommerceTeam\Commerce\Domain\Model\Product $product
 			 */
-			$product = GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Product', $id);
+			$product = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Product', $id);
 			$product->loadData();
 
 			if (isset($fieldArray['categories'])) {
@@ -1068,23 +1076,26 @@ class Tx_Commerce_Hook_DataMapHooks {
 			/**
 			 * Product
 			 *
-			 * @var Tx_Commerce_Domain_Model_Product $product
+			 * @var \CommerceTeam\Commerce\Domain\Model\Product $product
 			 */
-			$product = GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Product', $id);
+			$product = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Product', $id);
 
 			$parentCategories = $product->getParentCategories();
 
 			// check existing categories
-			if (!Tx_Commerce_Utility_BackendUtility::checkPermissionsOnCategoryContent($parentCategories, array('editcontent'))) {
+			if (!\CommerceTeam\Commerce\Utility\BackendUtility::checkPermissionsOnCategoryContent(
+				$parentCategories,
+				array('editcontent')
+			)) {
 				$pObj->newlog('You dont have the permissions to create a new article.', 1);
 			} else {
 				// init the article creator
 				/**
 				 * Article creator
 				 *
-				 * @var Tx_Commerce_Utility_ArticleCreatorUtility $articleCreator
+				 * @var \CommerceTeam\Commerce\Utility\ArticleCreatorUtility $articleCreator
 				 */
-				$articleCreator = GeneralUtility::makeInstance('Tx_Commerce_Utility_ArticleCreatorUtility');
+				$articleCreator = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Utility\\ArticleCreatorUtility');
 				$articleCreator->init($id, $this->belib->getProductFolderUid());
 
 				// create new articles
@@ -1134,7 +1145,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 		$backendUser->uc['txcommerce_afterDatabaseOperations'] = 1;
 		$backendUser->writeUC();
 
-		$dynaFlexConf = Tx_Dynaflex_Utility_TcaUtility::loadDynaFlexConfig($table, $record['pid'], $record);
+		$dynaFlexConf = \Tx_Dynaflex_Utility_TcaUtility::loadDynaFlexConfig($table, $record['pid'], $record);
 		$dynaFlexConf = $dynaFlexConf['DCA'];
 
 		$backendUser->uc['txcommerce_afterDatabaseOperations'] = 0;
@@ -1156,7 +1167,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 			/**
 			 * Dynaflex
 			 *
-			 * @var Tx_Dynaflex_Utility_TcaUtility $dynaflex
+			 * @var \Tx_Dynaflex_Utility_TcaUtility $dynaflex
 			 */
 			$dynaflex = GeneralUtility::makeInstance('Tx_Dynaflex_Utility_TcaUtility', $GLOBALS['TCA'], $dynaFlexConf);
 			$GLOBALS['TCA'] = $dynaflex->getDynamicTCA();

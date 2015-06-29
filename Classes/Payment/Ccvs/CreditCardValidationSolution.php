@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Payment\Ccvs;
 /**
  * Credit Card Validation Solution, PHP Edition.
  * <p>Ensures credit card numbers are keyed in correctly.</p>

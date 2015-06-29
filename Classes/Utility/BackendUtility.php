@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Utility;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -12,20 +13,19 @@
  * The TYPO3 project - inspiring people to share!
  */
 
-use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * Class Tx_Commerce_Utility_BackendUtility
- *
  * This metaclass provides several helper methods for handling relations in
  * the backend. This is quite useful because attributes for an article can
  * come from products and categories. And products can be assigned to several
  * categories and a category can have a lot of parent categories.
  *
+ * Class \CommerceTeam\Commerce\Utility\BackendUtility
+ *
  * @author Thomas Hempel <thomas@work.de>
  */
-class Tx_Commerce_Utility_BackendUtility {
+class BackendUtility {
 	/**
 	 * This gets all categories for a product from the database
 	 * (even those that are not direct).
@@ -467,7 +467,10 @@ class Tx_Commerce_Utility_BackendUtility {
 						$result[] = $value['value'];
 					}
 				}
-				return '<ul><li>' . implode('</li><li>', Tx_Commerce_Utility_GeneralUtility::removeXSSStripTagsArray($result)) . '</li></ul>';
+				return '<ul><li>' . implode(
+					'</li><li>',
+					\CommerceTeam\Commerce\Utility\GeneralUtility::removeXSSStripTagsArray($result)
+				) . '</li></ul>';
 
 			} else {
 				// fetch data from attribute values table
@@ -773,9 +776,9 @@ class Tx_Commerce_Utility_BackendUtility {
 	 * @return string A SQL-string with the enable fields
 	 */
 	public function enableFields($table, $getDeleted = FALSE) {
-		$result = BackendUtility::BEenableFields($table);
+		$result = \TYPO3\CMS\Backend\Utility\BackendUtility::BEenableFields($table);
 		if (!$getDeleted) {
-			$result .= BackendUtility::deleteClause($table);
+			$result .= \TYPO3\CMS\Backend\Utility\BackendUtility::deleteClause($table);
 		}
 		return $result;
 	}
@@ -1263,7 +1266,7 @@ class Tx_Commerce_Utility_BackendUtility {
 		$result = $database->exec_SELECTquery(
 			'*',
 			$GLOBALS['TCA']['tx_commerce_orders']['columns']['newpid']['config']['foreign_table'],
-			'pid = ' . $pid . BackendUtility::deleteClause(
+			'pid = ' . $pid . \TYPO3\CMS\Backend\Utility\BackendUtility::deleteClause(
 				$GLOBALS['TCA']['tx_commerce_orders']['columns']['newpid']['config']['foreign_table']
 			),
 			'',
@@ -1348,7 +1351,7 @@ class Tx_Commerce_Utility_BackendUtility {
 		if (!is_numeric($pUidFrom) || !is_numeric($pUidTo)) {
 			if (TYPO3_DLOG) {
 				GeneralUtility::devLog(
-					'swapProductAttributes (Tx_Commerce_Utility_BackendUtility) gets passed invalid parameters.',
+					'swapProductAttributes (CommerceTeam\\Commerce\\Utility\\BackendUtility) gets passed invalid parameters.',
 					COMMERCE_EXTKEY,
 					3
 				);
@@ -1412,7 +1415,7 @@ class Tx_Commerce_Utility_BackendUtility {
 		if (!is_numeric($pUidFrom) || !is_numeric($pUidTo)) {
 			if (TYPO3_DLOG) {
 				GeneralUtility::devLog(
-					'swapProductArticles (Tx_Commerce_Utility_BackendUtility) gets passed invalid parameters.',
+					'swapProductArticles (CommerceTeam\\Commerce\\Utility\\BackendUtility) gets passed invalid parameters.',
 					COMMERCE_EXTKEY,
 					3
 				);
@@ -1707,7 +1710,12 @@ class Tx_Commerce_Utility_BackendUtility {
 		// check, only check if we are not accidentally copying a
 		// placeholder or deleted product)
 		// also hidden products are not allowed to be copied
-		$record = BackendUtility::getRecordWSOL('tx_commerce_products', $uid, '*', ' AND hidden = 0 AND t3ver_state = 0');
+		$record = \TYPO3\CMS\Backend\Utility\BackendUtility::getRecordWSOL(
+			'tx_commerce_products',
+			$uid,
+			'*',
+			' AND hidden = 0 AND t3ver_state = 0'
+		);
 
 		if (!$record) {
 			return FALSE;
@@ -1832,7 +1840,7 @@ class Tx_Commerce_Utility_BackendUtility {
 
 		if ($GLOBALS['TCA'][$table] && $uidCopied) {
 			// make data
-			$rec = BackendUtility::getRecordLocalization($table, $uidCopied, $languageUid);
+			$rec = \TYPO3\CMS\Backend\Utility\BackendUtility::getRecordLocalization($table, $uidCopied, $languageUid);
 
 			// if the item is not localized, return
 			if (FALSE == $rec) {
@@ -1863,9 +1871,9 @@ class Tx_Commerce_Utility_BackendUtility {
 				/**
 				 * Article
 				 *
-				 * @var Tx_Commerce_Domain_Model_Article $article
+				 * @var \CommerceTeam\Commerce\Domain\Model\Article $article
 				 */
-				$article = GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Article', $uidNew);
+				$article = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Article', $uidNew);
 				$productUid = $article->getParentProductUid();
 
 				// load uid of the localized product
@@ -1951,8 +1959,8 @@ class Tx_Commerce_Utility_BackendUtility {
 		// check if table is defined in the TCA
 		if ($GLOBALS['TCA'][$table] && $uidCopied) {
 			// make data
-			$recFrom = BackendUtility::getRecordLocalization($table, $uidCopied, $loc);
-			$recTo = BackendUtility::getRecordLocalization($table, $uidOverwrite, $loc);
+			$recFrom = \TYPO3\CMS\Backend\Utility\BackendUtility::getRecordLocalization($table, $uidCopied, $loc);
+			$recTo = \TYPO3\CMS\Backend\Utility\BackendUtility::getRecordLocalization($table, $uidOverwrite, $loc);
 
 			// if the item is not localized, return
 			if (FALSE == $recFrom) {
@@ -2612,9 +2620,9 @@ class Tx_Commerce_Utility_BackendUtility {
 				}
 			} else {
 				$pageinfo = self::getCategoryForRootline($id, ($permsClause ? ' AND ' . $permsClause : ''), FALSE);
-				BackendUtility::workspaceOL('tx_commerce_categories', $pageinfo);
+				\TYPO3\CMS\Backend\Utility\BackendUtility::workspaceOL('tx_commerce_categories', $pageinfo);
 				if (is_array($pageinfo)) {
-					BackendUtility::fixVersioningPid('tx_commerce_categories', $pageinfo);
+					\TYPO3\CMS\Backend\Utility\BackendUtility::fixVersioningPid('tx_commerce_categories', $pageinfo);
 					list($pageinfo['_thePath'], $pageinfo['_thePathFull']) = self::getCategoryPath(
 						(int) $pageinfo['uid'],
 						$permsClause,
@@ -2780,16 +2788,17 @@ class Tx_Commerce_Utility_BackendUtility {
 					INNER JOIN pages ON tx_commerce_categories.pid = pages.uid
 					INNER JOIN tx_commerce_categories_parent_category_mm AS mm ON tx_commerce_categories.uid = mm.uid_local',
 					// whereClauseMightContainGroupOrderBy
-				'tx_commerce_categories.uid = ' . (int) $uid . ' ' . BackendUtility::deleteClause('tx_commerce_categories') . ' ' . $clause
+				'tx_commerce_categories.uid = ' . (int) $uid . ' ' .
+					\TYPO3\CMS\Backend\Utility\BackendUtility::deleteClause('tx_commerce_categories') . ' ' . $clause
 			);
 
 			$row = $database->sql_fetch_assoc($res);
 			if ($row) {
 				if ($workspaceOl) {
-					BackendUtility::workspaceOL('tx_commerce_categories', $row);
+					\TYPO3\CMS\Backend\Utility\BackendUtility::workspaceOL('tx_commerce_categories', $row);
 				}
 				if (is_array($row)) {
-					BackendUtility::fixVersioningPid('tx_commerce_categories', $row);
+					\TYPO3\CMS\Backend\Utility\BackendUtility::fixVersioningPid('tx_commerce_categories', $row);
 					$getPageForRootlineCache[$ident] = $row;
 				}
 			}
@@ -2819,9 +2828,9 @@ class Tx_Commerce_Utility_BackendUtility {
 		/**
 		 * Category mount
 		 *
-		 * @var Tx_Commerce_Tree_CategoryMounts $mounts
+		 * @var \CommerceTeam\Commerce\Tree\CategoryMounts $mounts
 		 */
-		$mounts = GeneralUtility::makeInstance('Tx_Commerce_Tree_CategoryMounts');
+		$mounts = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryMounts');
 		$mounts->init($backendUser->user['uid']);
 
 		foreach ($categoryUids as $categoryUid) {
@@ -2833,9 +2842,9 @@ class Tx_Commerce_Utility_BackendUtility {
 			/**
 			 * Category
 			 *
-			 * @var Tx_Commerce_Domain_Model_Category $category
+			 * @var \CommerceTeam\Commerce\Domain\Model\Category $category
 			 */
-			$category = GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Category', $categoryUid);
+			$category = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Category', $categoryUid);
 			// check perms
 			foreach ($perms as $perm) {
 				if (!$category->isPermissionSet($perm)) {
@@ -2862,8 +2871,8 @@ class Tx_Commerce_Utility_BackendUtility {
 	 * @return int UID
 	 */
 	public static function getProductFolderUid() {
-		list($modPid) = Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Commerce', 'commerce');
-		list($prodPid) = Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Products', 'commerce', $modPid);
+		list($modPid) = \CommerceTeam\Commerce\Domain\Repository\FolderRepository::initFolders('Commerce', 'commerce');
+		list($prodPid) = \CommerceTeam\Commerce\Domain\Repository\FolderRepository::initFolders('Products', 'commerce', $modPid);
 
 		return $prodPid;
 	}
@@ -2891,7 +2900,12 @@ class Tx_Commerce_Utility_BackendUtility {
 		// check if we may actually copy the product (no permission check, only
 		// check if we are not accidentally copying a placeholder or shadow or
 		// deleted product)
-		$recordFrom = BackendUtility::getRecordWSOL($table, $uidFrom, '*', ' AND pid != -1 AND t3ver_state != 1 AND deleted = 0');
+		$recordFrom = \TYPO3\CMS\Backend\Utility\BackendUtility::getRecordWSOL(
+			$table,
+			$uidFrom,
+			'*',
+			' AND pid != -1 AND t3ver_state != 1 AND deleted = 0'
+		);
 
 		if (!$recordFrom) {
 			return FALSE;
@@ -2900,7 +2914,12 @@ class Tx_Commerce_Utility_BackendUtility {
 		// check if we may actually overwrite the product (no permission check,
 		// only check if we are not accidentaly overwriting a placeholder or
 		// shadow or deleted product)
-		$recordTo = BackendUtility::getRecordWSOL($table, $uidTo, '*', ' AND pid != -1 AND t3ver_state != 1 AND deleted = 0');
+		$recordTo = \TYPO3\CMS\Backend\Utility\BackendUtility::getRecordWSOL(
+			$table,
+			$uidTo,
+			'*',
+			' AND pid != -1 AND t3ver_state != 1 AND deleted = 0'
+		);
 
 		if (!$recordTo) {
 			return FALSE;
@@ -3055,7 +3074,7 @@ class Tx_Commerce_Utility_BackendUtility {
 			));
 
 			// So it copies (and localized) content from workspace...
-			$row = BackendUtility::getRecordWSOL($table, $uid);
+			$row = \TYPO3\CMS\Backend\Utility\BackendUtility::getRecordWSOL($table, $uid);
 			if (is_array($row)) {
 				// Initializing:
 				$theNewId = $destPid;
@@ -3073,7 +3092,7 @@ class Tx_Commerce_Utility_BackendUtility {
 				// Page TSconfig related:
 				// NOT using BackendUtility::getTSCpid() because we need the
 				// real pid - not the ID of a page, if the input is a page...
-				$tscPid = BackendUtility::getTSconfig_pidValue($table, $uid, - $destPid);
+				$tscPid = \TYPO3\CMS\Backend\Utility\BackendUtility::getTSconfig_pidValue($table, $uid, - $destPid);
 				$tsConfig = $tce->getTCEMAIN_TSconfig($tscPid);
 				$tE = $tce->getTableEntries($table, $tsConfig);
 
@@ -3184,8 +3203,8 @@ class Tx_Commerce_Utility_BackendUtility {
 		}
 
 		// get the records
-		$recordFrom = BackendUtility::getRecordWSOL($table, $uidFrom, '*');
-		$recordTo = BackendUtility::getRecordWSOL($table, $uidTo, '*');
+		$recordFrom = \TYPO3\CMS\Backend\Utility\BackendUtility::getRecordWSOL($table, $uidFrom, '*');
+		$recordTo = \TYPO3\CMS\Backend\Utility\BackendUtility::getRecordWSOL($table, $uidTo, '*');
 
 		if (!$recordFrom || !$recordTo) {
 			return FALSE;

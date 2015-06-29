@@ -16,24 +16,24 @@ Removed methods since 4.x
 	:depth: 1
 
 
-.. _Tx_Commerce_Controller_BaseController:
+.. _\CommerceTeam\Commerce\Controller\BaseController:
 .. csv-table::
 	:header: Class, Method, Replacement
 	:widths: 30, 35, 35
 
-	Tx_Commerce_Controller_BaseController, addTypoLinkToTS, addTypoLinkToTypoScript
+	\CommerceTeam\Commerce\Controller\BaseController, addTypoLinkToTS, addTypoLinkToTypoScript
 	, makeControl, "Method got removed from the api. Method was not used in pibase context"
 	, makeproductAttributList, "Method got removed from the api"
 	, makeArticleAttributList, "Method got removed from the api"
 	, makeSingleView, "Method got removed from the api"
 
 
-.. _Tx_Commerce_Domain_Model_AbstractEntity:
+.. _\CommerceTeam\Commerce\Domain\Model\AbstractEntity:
 .. csv-table::
 	:header: Class, Method, Replacement
 	:widths: 30, 35, 35
 
-	Tx_Commerce_Domain_Model_AbstractEntity, getMarkerArray, "please use Tx_Commerce_Controller_BaseController->renderElement in combination with Tx_Commerce_Domain_Model_AbstractEntity::returnAssocArray instead"
+	\CommerceTeam\Commerce\Domain\Model\AbstractEntity, getMarkerArray, "please use \CommerceTeam\Commerce\Controller\BaseController->renderElement in combination with \CommerceTeam\Commerce\Domain\Model\AbstractEntity::returnAssocArray instead"
 	, get_uid, getUid
 	, get_LOCALIZED_UID, getLocalizedUid
 	, get_lang, getLang
@@ -45,12 +45,12 @@ Removed methods since 4.x
 	, load_data, loadData
 
 
-.. _Tx_Commerce_Domain_Model_Article:
+.. _\CommerceTeam\Commerce\Domain\Model\Article:
 .. csv-table::
 	:header: Class, Method, Replacement
 	:widths: 30, 35, 35
 
-	Tx_Commerce_Domain_Model_Article, get_title, getTitle
+	\CommerceTeam\Commerce\Domain\Model\Article, get_title, getTitle
 	, get_subtitle, getSubtitle
 	, get_classname, getClassname
 	, get_description_extra, getDescriptionExtra
@@ -67,21 +67,21 @@ Removed methods since 4.x
 	, load_prices, loadPrices
 
 
-.. _Tx_Commerce_Domain_Model_ArticlePrice:
+.. _\CommerceTeam\Commerce\Domain\Model\ArticlePrice:
 .. csv-table::
 	:header: Class, Method, Replacement
 	:widths: 30, 35, 35
 
-	Tx_Commerce_Domain_Model_ArticlePrice, get_price_net, getPriceNet
+	\CommerceTeam\Commerce\Domain\Model\ArticlePrice, get_price_net, getPriceNet
 	, get_price_gross, getPriceGross
 
 
-.. _Tx_Commerce_Domain_Model_Attribute:
+.. _\CommerceTeam\Commerce\Domain\Model\Attribute:
 .. csv-table::
 	:header: Class, Method, Replacement
 	:widths: 30, 35, 35
 
-	Tx_Commerce_Domain_Model_Attribute, get_all_values, getAllValues
+	\CommerceTeam\Commerce\Domain\Model\Attribute, get_all_values, getAllValues
 	, get_values, getValues
 	, get_value, getValue
 	, get_title, getTitle
@@ -89,22 +89,22 @@ Removed methods since 4.x
 	, get_unit, getUnit
 
 
-.. _Tx_Commerce_Domain_Model_AttributeValue:
+.. _\CommerceTeam\Commerce\Domain\Model\AttributeValue:
 .. csv-table::
 	:header: Class, Method, Replacement
 	:widths: 30, 35, 35
 
-	Tx_Commerce_Domain_Model_AttributeValue, getshowicon, "Method got removed from the api"
+	\CommerceTeam\Commerce\Domain\Model\AttributeValue, getshowicon, "Method got removed from the api"
 	, get_attributes, getAttributes
 	, get_value, getValue
 
 
-.. _Tx_Commerce_Domain_Model_BasicBasket:
+.. _\CommerceTeam\Commerce\Domain\Model\BasicBasket:
 .. csv-table::
 	:header: Class, Method, Replacement
 	:widths: 30, 35, 35
 
-	Tx_Commerce_Domain_Model_BasicBasket, recalculate_sums, recalculateSums
+	\CommerceTeam\Commerce\Domain\Model\BasicBasket, recalculate_sums, recalculateSums
 	, delete_all_articles, deleteAllArticles
 	, delete_article, deleteArticle
 	, change_quantity, changeQuantity
@@ -117,12 +117,12 @@ Removed methods since 4.x
 	, get_net_sum, getSumNet
 
 
-.. _Tx_Commerce_Domain_Model_Basket:
+.. _\CommerceTeam\Commerce\Domain\Model\Basket:
 .. csv-table::
 	:header: Class, Method, Replacement
 	:widths: 30, 35, 35
 
-	Tx_Commerce_Domain_Model_Basket, loadPersistantDataFromDatabase, loadPersistentDataFromDatabase
+	\CommerceTeam\Commerce\Domain\Model\Basket, loadPersistantDataFromDatabase, loadPersistentDataFromDatabase
 	, load_data_from_database, loadDataFromDatabase
 	, store_data_to_database, storeDataToDatabase
 	, store_data, storeData
@@ -130,12 +130,12 @@ Removed methods since 4.x
 	, get_session_id, getSessionId
 
 
-.. _Tx_Commerce_Domain_Model_BasketItem:
+.. _\CommerceTeam\Commerce\Domain\Model\BasketItem:
 .. csv-table::
 	:header: Class, Method, Replacement
 	:widths: 30, 35, 35
 
-	Tx_Commerce_Domain_Model_BasketItem, recalculate_item_sums, recalculateItemSums
+	\CommerceTeam\Commerce\Domain\Model\BasketItem, recalculate_item_sums, recalculateItemSums
 	, calculate_gross_sum, calculateGrossSum
 	, calculate_net_sum, calculateNetSum
 	, change_quantity, changeQuantity
@@ -154,12 +154,12 @@ Removed methods since 4.x
 	, get_quantity, getQuantity
 
 
-.. _Tx_Commerce_Domain_Model_Category:
+.. _\CommerceTeam\Commerce\Domain\Model\Category:
 .. csv-table::
 	:header: Class, Method, Replacement
 	:widths: 30, 35, 35
 
-	Tx_Commerce_Domain_Model_Category, isPSet, isPermissionSet
+	\CommerceTeam\Commerce\Domain\Model\Category, isPSet, isPermissionSet
 	, get_rec_child_categories_uidlist, getChildCategoriesUidlist
 	, get_categorie_rootline_uidlist, getParentCategoriesUidlist
 	, ProductsBelowCategory, hasProductsInSubCategories
@@ -186,12 +186,12 @@ Removed methods since 4.x
 	, load_data, loadData
 
 
-.. _Tx_Commerce_Domain_Model_Product:
+.. _\CommerceTeam\Commerce\Domain\Model\Product:
 .. csv-table::
 	:header: Class, Method, Replacement
 	:widths: 30, 35, 35
 
-	_Tx_Commerce_Domain_Model_Product, getRelevantArticles, "Method got removed from the api"
+	_\CommerceTeam\Commerce\Domain\Model\Product, getRelevantArticles, "Method got removed from the api"
 	, get_selectattribute_matrix, getSelectAttributeMatrix
 	, get_Articles_by_Attribute, getArticlesByAttribute
 	, get_Articles_by_AttributeArray, getArticlesByAttributeArray
@@ -217,30 +217,30 @@ Removed methods since 4.x
 	, load_articles, loadArticles
 
 
-.. _Tx_Commerce_Domain_Repository_ArticleRepository:
+.. _\CommerceTeam\Commerce\Domain\Repository\ArticleRepository:
 .. csv-table::
 	:header: Class, Method, Replacement
 	:widths: 30, 35, 35
 
-	Tx_Commerce_Domain_Repository_ArticleRepository, get_parent_product_uid, getParentProductUid
+	\CommerceTeam\Commerce\Domain\Repository\ArticleRepository, get_parent_product_uid, getParentProductUid
 	, get_prices, getPrices
 	, get_attributes, getAttributes
 
 
-.. _Tx_Commerce_Domain_Repository_AttributeRepository:
+.. _\CommerceTeam\Commerce\Domain\Repository\AttributeRepository:
 .. csv-table::
 	:header: Class, Method, Replacement
 	:widths: 30, 35, 35
 
-	Tx_Commerce_Domain_Repository_AttributeRepository, get_attribute_value_uids, getAttributeValueUids
+	\CommerceTeam\Commerce\Domain\Repository\AttributeRepository, get_attribute_value_uids, getAttributeValueUids
 
 
-.. _Tx_Commerce_Domain_Repository_CategoryRepository:
+.. _\CommerceTeam\Commerce\Domain\Repository\CategoryRepository:
 .. csv-table::
 	:header: Class, Method, Replacement
 	:widths: 30, 35, 35
 
-	Tx_Commerce_Domain_Repository_CategoryRepository, getUid, "Method got removed from the api"
+	\CommerceTeam\Commerce\Domain\Repository\CategoryRepository, getUid, "Method got removed from the api"
 	, getLangUid, "Method got removed from the api"
 	, get_parent_category, getParentCategory
 	, get_parent_categories, getParentCategories
@@ -248,20 +248,20 @@ Removed methods since 4.x
 	, get_child_categories, getChildCategories
 	, get_child_products, getChildProducts
 
-.. _Tx_Commerce_Domain_Repository_FolderRepository:
+.. _\CommerceTeam\Commerce\Domain\Repository\FolderRepository:
 .. csv-table::
 	:header: Class, Method, Replacement
 	:widths: 30, 35, 35
 
-	Tx_Commerce_Domain_Repository_FolderRepository, getFolderPidList, "Method got removed from the api"
+	\CommerceTeam\Commerce\Domain\Repository\FolderRepository, getFolderPidList, "Method got removed from the api"
 
 
-.. _Tx_Commerce_Domain_Repository_ProductRepository:
+.. _\CommerceTeam\Commerce\Domain\Repository\ProductRepository:
 .. csv-table::
 	:header: Class, Method, Replacement
 	:widths: 30, 35, 35
 
-	Tx_Commerce_Domain_Repository_ProductRepository, get_articles, getArticles
+	\CommerceTeam\Commerce\Domain\Repository\ProductRepository, get_articles, getArticles
 	, get_attributes, getAttributes
 	, get_l18n_products, getL18nProducts
 	, get_related_product_uids, getRelatedProductUids
@@ -270,100 +270,100 @@ Removed methods since 4.x
 	, get_parent_categories, getParentCategories
 
 
-.. _Tx_Commerce_Domain_Repository_Repository:
+.. _\CommerceTeam\Commerce\Domain\Repository\Repository:
 .. csv-table::
 	:header: Class, Method, Replacement
 	:widths: 30, 35, 35
 
-	Tx_Commerce_Domain_Repository_Repository, get_attributes, getAttributes
+	\CommerceTeam\Commerce\Domain\Repository\Repository, get_attributes, getAttributes
 
 
-.. _Tx_Commerce_Hook_Pi4Hooks:
+.. _\CommerceTeam\Commerce\Hook\Pi4Hooks:
 .. csv-table::
 	:header: Class, Method, Replacement
 	:widths: 30, 35, 35
 
-	Tx_Commerce_Hook_Pi4Hooks, deleteAddress, beforeDeleteAddress
+	\CommerceTeam\Commerce\Hook\Pi4Hooks, deleteAddress, beforeDeleteAddress
 	, beforeAddressSave, "Method got removed from the api"
 	, beforeAddressEdit, "Method got removed from the api"
 	, notify_addressObserver, "afterAddressSave or afterAddressEdit"
 	, checkAddressDelete, "Method got removed from the api"
 
 
-.. _Tx_Commerce_Hook_TcehooksHandlerHooks:
+.. _\CommerceTeam\Commerce\Hook\TcehooksHandlerHooks:
 .. csv-table::
 	:header: Class, Method, Replacement
 	:widths: 30, 35, 35
 
-	Tx_Commerce_Hook_TcehooksHandlerHooks, notify_feuserObserver, notifyFeuserObserver
+	\CommerceTeam\Commerce\Hook\TcehooksHandlerHooks, notify_feuserObserver, notifyFeuserObserver
 	, notify_addressObserver, notifyAddressObserver
 
 
-.. _Tx_Commerce_Payment_PaymentAbstract:
+.. _\CommerceTeam\Commerce\Payment\PaymentAbstract:
 .. csv-table::
 	:header: Class, Method, Replacement
 	:widths: 30, 35, 35
 
-	Tx_Commerce_Payment_PaymentAbstract, getPObj, getParentObject
+	\CommerceTeam\Commerce\Payment\PaymentAbstract, getPObj, getParentObject
 
 
-.. _Tx_Commerce_Utility_ArticleCreatorUtility:
+.. _\CommerceTeam\Commerce\Utility\ArticleCreatorUtility:
 .. csv-table::
 	:header: Class, Method, Replacement
 	:widths: 30, 35, 35
 
-	Tx_Commerce_Utility_ArticleCreatorUtility, createNewPriceCB, "Method got removed from the api"
+	\CommerceTeam\Commerce\Utility\ArticleCreatorUtility, createNewPriceCB, "Method got removed from the api"
 	, createNewScalePricesCount, "Method got removed from the api"
 	, createNewScalePricesSteps, "Method got removed from the api"
 	, createNewScalePricesStartAmount, "Method got removed from the api"
 	, deletePriceButton, "Method got removed from the api"
 
 
-.. _Tx_Commerce_Utility_BackendUtility:
+.. _\CommerceTeam\Commerce\Utility\BackendUtility:
 .. csv-table::
 	:header: Class, Method, Replacement
 	:widths: 30, 35, 35
 
-	Tx_Commerce_Utility_BackendUtility, savePriceFlexformWithArticle, "Method got removed from the api"
+	\CommerceTeam\Commerce\Utility\BackendUtility, savePriceFlexformWithArticle, "Method got removed from the api"
 	, fix_articles_price, updatePriceXMLFromDatabase
 	, fix_product_atributte, updateXML
 	, fix_category_atributte, updateXML
 	, isPSet, isPermissionSet
 
 
-.. _Tx_Commerce_Utility_FolderUtility:
+.. _\CommerceTeam\Commerce\Utility\FolderUtility:
 .. csv-table::
 	:header: Class, Method, Replacement
 	:widths: 30, 35, 35
 
-	Tx_Commerce_Utility_FolderUtility, init_folders, initFolders
+	\CommerceTeam\Commerce\Utility\FolderUtility, init_folders, initFolders
 
 
-.. _Tx_Commerce_Utility_GeneralUtility:
+.. _\CommerceTeam\Commerce\Utility\GeneralUtility:
 .. csv-table::
 	:header: Class, Method, Replacement
 	:widths: 30, 35, 35
 
-	Tx_Commerce_Utility_GeneralUtility, formatPrice, getAttributes
+	\CommerceTeam\Commerce\Utility\GeneralUtility, formatPrice, getAttributes
 
 
-.. _Tx_Commerce_ViewHelpers_Navigation:
+.. _\CommerceTeam\Commerce\ViewHelpers\Navigation:
 .. csv-table::
 	:header: Class, Method, Replacement
 	:widths: 30, 35, 35
 
-	Tx_Commerce_ViewHelpers_Navigation, getManuAsCat, getManufacturerAsCategory
+	\CommerceTeam\Commerce\ViewHelpers\Navigation, getManuAsCat, getManufacturerAsCategory
 	, getCategoryRootlineforTS, getCategoryRootlineforTypoScript
 	, getActiveCats, "Method got removed from the api"
 	, CommerceRootline, renderRootline
 
 
-.. _Tx_Commerce_ViewHelpers_OrderEditFunc:
+.. _\CommerceTeam\Commerce\ViewHelpers\OrderEditFunc:
 .. csv-table::
 	:header: Class, Method, Replacement
 	:widths: 30, 35, 35
 
-	Tx_Commerce_ViewHelpers_OrderEditFunc, article_order_id, articleOrderId
+	\CommerceTeam\Commerce\ViewHelpers\OrderEditFunc, article_order_id, articleOrderId
 	, sum_price_gross_format, sumPriceGrossFormat
 	, order_articles, orderArticles
 	, order_status, orderStatus
@@ -376,12 +376,12 @@ Removed methods since 4.x
 Removed hooks since 4.x
 =======================
 
-.. _Tx_Commerce_Controller_AddressesController_hooks:
+.. _\CommerceTeam\Commerce\Controller\AddressesController_hooks:
 .. csv-table::
 	:header: Class, Method, Hook, Replacement
 	:widths: 25, 10, 35, 30
 
-	Tx_Commerce_Controller_AddressesController, getListing, ['commerce/pi4/class.tx_commerce_pi4.php']['getListing'], ['commerce/Controller/AddressesController']['getListing']
+	\CommerceTeam\Commerce\Controller\AddressesController, getListing, ['commerce/pi4/class.tx_commerce_pi4.php']['getListing'], ['commerce/Controller/AddressesController']['getListing']
 	, , ['commerce/Classes/Controller/AddressesController.php']['getListing'], ['commerce/Controller/AddressesController']['getListing']
 	, getAddressForm, ['commerce/pi4/class.tx_commerce_pi4.php']['getAddressFormItem'], ['commerce/Controller/AddressesController']['getAddressForm']
 	, , ['commerce/Classes/Controller/AddressesController.php']['getAddressFormItem'], ['commerce/Controller/AddressesController']['getAddressForm']
@@ -395,12 +395,12 @@ Removed hooks since 4.x
 	, , ['commerce/Classes/Controller/AddressesController.php']['getAddresses'], ['commerce/Controller/AddressesController']['getAddresses']
 
 
-.. _Tx_Commerce_Controller_BaseController_hooks:
+.. _\CommerceTeam\Commerce\Controller\BaseController_hooks:
 .. csv-table::
 	:header: Class, Method, Hook, Replacement
 	:widths: 25, 10, 35, 30
 
-	Tx_Commerce_Controller_BaseController, addAdditionalLocallang, ['commerce/lib/class.tx_commerce_pibase.php']['locallang'], ['commerce/Controller/BaseController']['addAdditionalLocallang']
+	\CommerceTeam\Commerce\Controller\BaseController, addAdditionalLocallang, ['commerce/lib/class.tx_commerce_pibase.php']['locallang'], ['commerce/Controller/BaseController']['addAdditionalLocallang']
 	, , ['commerce/Classes/Controller/BaseController.php']['locallang'], ['commerce/Controller/BaseController']['addAdditionalLocallang']
 	, makeListView, ['commerce/Classes/Controller/ListController.php']['preRenderListView'], "Removed because no methods of this hook were used"
 	, , ['commerce/lib/class.tx_commerce_pibase.php']['listview'], ['commerce/Controller/BaseController']['makeListView']
@@ -425,12 +425,12 @@ Removed hooks since 4.x
 	, , ['commerce/Classes/Controller/BaseController.php']['renderProduct'], ['commerce/Controller/BaseController']['renderProduct']
 
 
-.. _Tx_Commerce_Controller_BasketController_hooks:
+.. _\CommerceTeam\Commerce\Controller\BasketController_hooks:
 .. csv-table::
 	:header: Class, Method, Hook, Replacement
 	:widths: 25, 10, 35, 30
 
-	Tx_Commerce_Controller_BasketController, main, ['commerce/pi2/class.tx_commerce_pi2.php']['main'], ['commerce/Controller/BasketController']['main']
+	\CommerceTeam\Commerce\Controller\BasketController, main, ['commerce/pi2/class.tx_commerce_pi2.php']['main'], ['commerce/Controller/BasketController']['main']
 	, , ['commerce/Classes/Controller/BasketController.php']['main'], ['commerce/Controller/BasketController']['main']
 	, handleDeleteBasket, ['commerce/pi2/class.tx_commerce_pi2.php']['postdelBasket'], ['commerce/Controller/BasketController']['handleDeleteBasket']
 	, , ['commerce/Classes/Controller/BasketController.php']['postDeleteBasket'], ['commerce/Controller/BasketController']['handleDeleteBasket']
@@ -458,12 +458,12 @@ Removed hooks since 4.x
 	, , ['commerce/Classes/Controller/BasketController.php']['alternativePrefixId'], ['commerce/Controller/BasketController']['alternativePrefixId']
 
 
-.. _Tx_Commerce_Controller_CheckoutController_hooks:
+.. _\CommerceTeam\Commerce\Controller\CheckoutController_hooks:
 .. csv-table::
 	:header: Class, Method, Hook, Replacement
 	:widths: 25, 10, 35, 30
 
-	Tx_Commerce_Controller_CheckoutController, validateAddress, ['commerce/pi3/class.tx_commerce_pi3.php']['bevorValidateAddress'], ['commerce/Controller/CheckoutController']['validateAddress']
+	\CommerceTeam\Commerce\Controller\CheckoutController, validateAddress, ['commerce/pi3/class.tx_commerce_pi3.php']['bevorValidateAddress'], ['commerce/Controller/CheckoutController']['validateAddress']
 	, , ['commerce/Classes/Controller/CheckoutController.php']['bevorValidateAddress'], ['commerce/Controller/CheckoutController']['validateAddress']
 	, , ['commerce/pi3/class.tx_commerce_pi3.php']['beforeValidateAddress'], ['commerce/Controller/CheckoutController']['validateAddress']
 	, , ['commerce/Classes/Controller/CheckoutController.php']['beforeValidateAddress'], ['commerce/Controller/CheckoutController']['validateAddress']
@@ -503,21 +503,21 @@ Removed hooks since 4.x
 	, , ['commerce/Classes/Controller/CheckoutController.php']['sendAdminMail'], ['commerce/Controller/CheckoutController']['sendAdminMail']
 
 
-.. _Tx_Commerce_Controller_InvoiceController_hooks:
+.. _\CommerceTeam\Commerce\Controller\InvoiceController_hooks:
 .. csv-table::
 	:header: Class, Method, Hook, Replacement
 	:widths: 25, 10, 35, 30
 
-	Tx_Commerce_Controller_InvoiceController, main, ['commerce/pi6/class.tx_commerce_pi6.php']['invoice'], ['commerce/Controller/InvoiceController']['main']
+	\CommerceTeam\Commerce\Controller\InvoiceController, main, ['commerce/pi6/class.tx_commerce_pi6.php']['invoice'], ['commerce/Controller/InvoiceController']['main']
 	, , ['commerce/Classes/Controller/InvoiceController.php']['invoice'], ['commerce/Controller/InvoiceController']['main']
 
 
-.. _Tx_Commerce_Controller_ListController_hooks:
+.. _\CommerceTeam\Commerce\Controller\ListController_hooks:
 .. csv-table::
 	:header: Class, Method, Hook, Replacement
 	:widths: 25, 10, 35, 30
 
-	Tx_Commerce_Controller_ListController, init, ['commerce/pi1/class.tx_commerce_pi1.php']['init'], ['commerce/Controller/ListController']['init']
+	\CommerceTeam\Commerce\Controller\ListController, init, ['commerce/pi1/class.tx_commerce_pi1.php']['init'], ['commerce/Controller/ListController']['init']
 	, , ['commerce/Classes/Controller/ListController.php']['init'], ['commerce/Controller/ListController']['init']
 	, , ['commerce/pi1/class.tx_commerce_pi1.php']['postInit'], ['commerce/Controller/ListController']['init']
 	, , ['commerce/Classes/Controller/ListController.php']['postInit'], ['commerce/Controller/ListController']['init']
@@ -527,12 +527,12 @@ Removed hooks since 4.x
 	, , ['commerce/Classes/Controller/ListController.php']['articleView'], ['commerce/Controller/ListController']['makeArticleView']
 
 
-.. _Tx_Commerce_Domain_Model_Article_hooks:
+.. _\CommerceTeam\Commerce\Domain\Model\Article_hooks:
 .. csv-table::
 	:header: Class, Method, Hook, Replacement
 	:widths: 25, 10, 35, 30
 
-	Tx_Commerce_Domain_Model_Article, init, ['commerce/lib/class.tx_commerce_article.php']['postinit'], ['commerce/Domain/Model/Article']['init']
+	\CommerceTeam\Commerce\Domain\Model\Article, init, ['commerce/lib/class.tx_commerce_article.php']['postinit'], ['commerce/Domain/Model/Article']['init']
 	, , ['commerce/Classes/Domain/Model/Article.php']['postinit'], ['commerce/Domain/Model/Article']['init']
 	, getActualPriceforScaleUid, ['commerce/lib/class.tx_commerce_article.php']['getActualPriceforScaleUid'], ['commerce/Domain/Model/Article']['getActualPriceforScaleUid']
 	, , ['commerce/Classes/Domain/Model/Article.php']['getActualPriceforScaleUid'], ['commerce/Domain/Model/Article']['getActualPriceforScaleUid']
@@ -542,12 +542,12 @@ Removed hooks since 4.x
 	, , ['commerce/Classes/Domain/Model/Article.php']['calculateDeliveryCost'], ['commerce/Domain/Model/Article']['calculateDeliveryCosts']
 
 
-.. _Tx_Commerce_Domain_Model_ArticlePrice_hooks:
+.. _\CommerceTeam\Commerce\Domain\Model\ArticlePrice_hooks:
 .. csv-table::
 	:header: Class, Method, Hook, Replacement
 	:widths: 25, 10, 35, 30
 
-	Tx_Commerce_Domain_Model_ArticlePrice, init, ['commerce/lib/class.tx_commerce_article_price.php']['postinit'], ['commerce/Domain/Model/ArticlePrice']['init']
+	\CommerceTeam\Commerce\Domain\Model\ArticlePrice, init, ['commerce/lib/class.tx_commerce_article_price.php']['postinit'], ['commerce/Domain/Model/ArticlePrice']['init']
 	, , ['commerce/Classes/Domain/Model/ArticlePrice.php']['postinit'], ['commerce/Domain/Model/ArticlePrice']['init']
 	, getPriceNet, ['commerce/lib/class.tx_commerce_article_price.php']['postpricenet'], ['commerce/Domain/Model/ArticlePrice']['getPriceNet']
 	, , ['commerce/Classes/Domain/Model/ArticlePrice.php']['postPriceNet'], ['commerce/Domain/Model/ArticlePrice']['getPriceNet']
@@ -555,71 +555,71 @@ Removed hooks since 4.x
 	, , ['commerce/Classes/Domain/Model/ArticlePrice.php']['postPriceGross'], ['commerce/Domain/Model/ArticlePrice']['getPriceGross']
 
 
-.. _Tx_Commerce_Domain_Model_Attribute_hooks:
+.. _\CommerceTeam\Commerce\Domain\Model\Attribute_hooks:
 .. csv-table::
 	:header: Class, Method, Hook, Replacement
 	:widths: 25, 10, 35, 30
 
-	Tx_Commerce_Domain_Model_Attribute, init, ['commerce/lib/class.tx_commerce_attribute.php']['postinit'], ['commerce/Domain/Model/Attribute']['init']
+	\CommerceTeam\Commerce\Domain\Model\Attribute, init, ['commerce/lib/class.tx_commerce_attribute.php']['postinit'], ['commerce/Domain/Model/Attribute']['init']
 	, , ['commerce/Classes/Domain/Model/Attribute.php']['postinit'], ['commerce/Domain/Model/Attribute']['init']
 
 
-.. _Tx_Commerce_Domain_Model_AttributeValue_hooks:
+.. _\CommerceTeam\Commerce\Domain\Model\AttributeValue_hooks:
 .. csv-table::
 	:header: Class, Method, Hook, Replacement
 	:widths: 25, 10, 35, 30
 
-	Tx_Commerce_Domain_Model_AttributeValue, init, ['commerce/lib/class.tx_commerce_attribute_value.php']['postinit'], ['commerce/Domain/Model/AttributeValue']['init']
+	\CommerceTeam\Commerce\Domain\Model\AttributeValue, init, ['commerce/lib/class.tx_commerce_attribute_value.php']['postinit'], ['commerce/Domain/Model/AttributeValue']['init']
 	, , ['commerce/Classes/Domain/Model/AttributeValue.php']['postinit'], ['commerce/Domain/Model/AttributeValue']['init']
 
 
-.. _Tx_Commerce_Domain_Model_Basket_hooks:
+.. _\CommerceTeam\Commerce\Domain\Model\Basket_hooks:
 .. csv-table::
 	:header: Class, Method, Hook, Replacement
 	:widths: 25, 10, 35, 30
 
-	Tx_Commerce_Domain_Model_Basket, loadDataFromDatabase, ['commerce/lib/class.tx_commerce_basket.php']['load_data_from_database'], ['commerce/Domain/Model/Basket']['loadDataFromDatabase']
+	\CommerceTeam\Commerce\Domain\Model\Basket, loadDataFromDatabase, ['commerce/lib/class.tx_commerce_basket.php']['load_data_from_database'], ['commerce/Domain/Model/Basket']['loadDataFromDatabase']
 	, , ['commerce/Classes/Domain/Model/Basket.php']['loadDataFromDatabase'], ['commerce/Domain/Model/Basket']['loadDataFromDatabase']
 	, storeDataToDatabase, ['commerce/lib/class.tx_commerce_basket.php']['store_data_to_database'], ['commerce/Domain/Model/Basket']['storeDataToDatabase']
 	, , ['commerce/Classes/Domain/Model/Basket.php']['storeDataToDatabase'], ['commerce/Domain/Model/Basket']['storeDataToDatabase']
 
 
-.. _Tx_Commerce_Domain_Model_Category_hooks:
+.. _\CommerceTeam\Commerce\Domain\Model\Category_hooks:
 .. csv-table::
 	:header: Class, Method, Hook, Replacement
 	:widths: 25, 10, 35, 30
 
-	Tx_Commerce_Domain_Model_Category, init, ['commerce/lib/class.tx_commerce_category.php']['postinit'], ['commerce/Domain/Model/Category']['init']
+	\CommerceTeam\Commerce\Domain\Model\Category, init, ['commerce/lib/class.tx_commerce_category.php']['postinit'], ['commerce/Domain/Model/Category']['init']
 	, , ['commerce/Classes/Domain/Model/Category.php']['postinit'], ['commerce/Domain/Model/Category']['init']
 
 
-.. _Tx_Commerce_Domain_Model_Product_hooks:
+.. _\CommerceTeam\Commerce\Domain\Model\Product_hooks:
 .. csv-table::
 	:header: Class, Method, Hook, Replacement
 	:widths: 25, 10, 35, 30
 
 
-	Tx_Commerce_Domain_Model_Product, init, ['commerce/lib/class.tx_commerce_product.php']['postinit'], ['commerce/Domain/Model/Product']['init']
+	\CommerceTeam\Commerce\Domain\Model\Product, init, ['commerce/lib/class.tx_commerce_product.php']['postinit'], ['commerce/Domain/Model/Product']['init']
 	, , ['commerce/Classes/Domain/Model/Product.php']['postinit'], ['commerce/Domain/Model/Product']['init']
 
 
-.. _Tx_Commerce_Domain_Repository_ArticleRepository_hooks:
+.. _\CommerceTeam\Commerce\Domain\Repository\ArticleRepository_hooks:
 .. csv-table::
 	:header: Class, Method, Hook, Replacement
 	:widths: 25, 10, 35, 30
 
-	Tx_Commerce_Domain_Repository_ArticleRepository, getPrices, ['commerce/lib/class.tx_commerce_article.php']['priceOrder'], ['commerce/Domain/Repository/ArticleRepository']['getPrices']
+	\CommerceTeam\Commerce\Domain\Repository\ArticleRepository, getPrices, ['commerce/lib/class.tx_commerce_article.php']['priceOrder'], ['commerce/Domain/Repository/ArticleRepository']['getPrices']
 	, , ['commerce/Classes/Domain/Repository/ArticleRepository.php']['priceOrder'], ['commerce/Domain/Repository/ArticleRepository']['getPrices']
 	, , ['commerce/lib/class.tx_commerce_article.php']['additionalPriceWhere'], ['commerce/Domain/Repository/ArticleRepository']['getPrices']
 	, , ['commerce/Classes/Domain/Repository/ArticleRepository.php']['additionalPriceWhere'], ['commerce/Domain/Repository/ArticleRepository']['getPrices']
 
 
-.. _Tx_Commerce_Domain_Repository_CategoryRepository_hooks:
+.. _\CommerceTeam\Commerce\Domain\Repository\CategoryRepository_hooks:
 .. csv-table::
 	:header: Class, Method, Hook, Replacement
 	:widths: 25, 10, 35, 30
 
-	Tx_Commerce_Domain_Repository_CategoryRepository, getChildCategories, ['commerce/lib/class.tx_commerce_db_category.php']['categoryOrder'], ['commerce/Domain/Repository/CategoryRepository']['getChildCategories']
+	\CommerceTeam\Commerce\Domain\Repository\CategoryRepository, getChildCategories, ['commerce/lib/class.tx_commerce_db_category.php']['categoryOrder'], ['commerce/Domain/Repository/CategoryRepository']['getChildCategories']
 	, , ['commerce/Classes/Domain/Repository/CategoryRepository.php']['categoryOrder'], ['commerce/Domain/Repository/CategoryRepository']['getChildCategories']
 	, , ['commerce/lib/class.tx_commerce_db_category.php']['categoryQueryPostHook'], ['commerce/Domain/Repository/CategoryRepository']['getChildCategories']
 	, , ['commerce/Classes/Domain/Repository/CategoryRepository.php']['categoryQueryPostHook'], ['commerce/Domain/Repository/CategoryRepository']['getChildCategories']
@@ -631,62 +631,62 @@ Removed hooks since 4.x
 	, , ['commerce/Classes/Domain/Repository/CategoryRepository.php']['productQueryPostHook'], ['commerce/Domain/Repository/CategoryRepository']['getChildProducts']
 
 
-.. _Tx_Commerce_Domain_Repository_ProductRepository_hooks:
+.. _\CommerceTeam\Commerce\Domain\Repository\ProductRepository_hooks:
 .. csv-table::
 	:header: Class, Method, Hook, Replacement
 	:widths: 25, 10, 35, 30
 
-	Tx_Commerce_Domain_Repository_ProductRepository, getArticles, ['commerce/lib/class.tx_commerce_product.php']['articleOrder'], ['commerce/Domain/Repository/ProductRepository']['getArticles']
+	\CommerceTeam\Commerce\Domain\Repository\ProductRepository, getArticles, ['commerce/lib/class.tx_commerce_product.php']['articleOrder'], ['commerce/Domain/Repository/ProductRepository']['getArticles']
 	, , ['commerce/Classes/Domain/Repository/ProductRepository.php']['articleOrder'], ['commerce/Domain/Repository/ProductRepository']['getArticles']
 	, , ['commerce/lib/class.tx_commerce_product.php']['aditionalWhere'], ['commerce/Domain/Repository/ProductRepository']['getArticles']
 	, , ['commerce/lib/class.tx_commerce_product.php']['additionalWhere'], ['commerce/Domain/Repository/ProductRepository']['getArticles']
 	, , ['commerce/Classes/Domain/Repository/ProductRepository.php']['additionalWhere'], ['commerce/Domain/Repository/ProductRepository']['getArticles']
 
 
-.. _Tx_Commerce_Hook_DataMapHooks_hooks:
+.. _\CommerceTeam\Commerce\Hook\DataMapHooks_hooks:
 .. csv-table::
 	:header: Class, Method, Hook, Replacement
 	:widths: 25, 10, 35, 30
 
-	Tx_Commerce_Hook_DataMapHooks, preProcessOrder, ['commerce/Classes/Hook/class.tx_commerce_dmhooks.php']['moveOrders'], ['commerce/Hook/DataMapHooks']['preProcessOrder']
+	\CommerceTeam\Commerce\Hook\DataMapHooks, preProcessOrder, ['commerce/Classes/Hook/class.tx_commerce_dmhooks.php']['moveOrders'], ['commerce/Hook/DataMapHooks']['preProcessOrder']
 	, , ['commerce/Classes/Hook/DataMapHooks.php']['moveOrders'], ['commerce/Hook/DataMapHooks']['preProcessOrder']
 
 
-.. _Tx_Commerce_Hook_OrdermailHooks_hooks:
+.. _\CommerceTeam\Commerce\Hook\OrdermailHooks_hooks:
 .. csv-table::
 	:header: Class, Method, Hook, Replacement
 	:widths: 25, 10, 35, 30
 
-	Tx_Commerce_Hook_OrdermailHooks, ordermoveSendMail, ['commerce/Classes/Hook/class.tx_commerce_ordermailhooks.php']['ordermoveSendMail'], ['commerce/Hook/OrdermailHooks']['ordermoveSendMail']
+	\CommerceTeam\Commerce\Hook\OrdermailHooks, ordermoveSendMail, ['commerce/Classes/Hook/class.tx_commerce_ordermailhooks.php']['ordermoveSendMail'], ['commerce/Hook/OrdermailHooks']['ordermoveSendMail']
 	, , ['commerce/Classes/Hook/OrdermailHooks.php']['ordermoveSendMail'], ['commerce/Hook/OrdermailHooks']['ordermoveSendMail']
 	, generateMail, ['commerce_ordermails/mod1/class.tx_commerce_moveordermail.php']['generateMail'], ['commerce/Hook/OrdermailHooks']['generateMail']
 	, , ['commerce/Classes/Hook/OrdermailHooks.php']['generateMail'], ['commerce/Hook/OrdermailHooks']['generateMail']
 
 
-.. _Tx_Commerce_Tree_Leaf_Data_hooks:
+.. _\CommerceTeam\Commerce\Tree\Leaf\Data_hooks:
 .. csv-table::
 	:header: Class, Method, Hook, Replacement
 	:widths: 25, 10, 35, 30
 
-	Tx_Commerce_Tree_Leaf_Data, loadRecords, ['commerce/tree/class.leafData.php']['loadRecords'], ['commerce/Tree/Leaf/Data']['loadRecords']
+	\CommerceTeam\Commerce\Tree\Leaf\Data, loadRecords, ['commerce/tree/class.leafData.php']['loadRecords'], ['commerce/Tree/Leaf/Data']['loadRecords']
 	, , ['commerce/Classes/Tree/Leaf/Data.php']['loadRecords'], ['commerce/Tree/Leaf/Data']['loadRecords']
 
 
-.. _Tx_Commerce_Utility_ArticleCreatorUtility_hooks:
+.. _\CommerceTeam\Commerce\Utility\ArticleCreatorUtility_hooks:
 .. csv-table::
 	:header: Class, Method, Hook, Replacement
 	:widths: 25, 10, 35, 30
 
-	Tx_Commerce_Utility_ArticleCreatorUtility, createArticle, ['commerce/class.tx_commerce_articlecreator.php']['preinsert'], ['commerce/Utility/ArticleCreatorUtility']['createArticle']
+	\CommerceTeam\Commerce\Utility\ArticleCreatorUtility, createArticle, ['commerce/class.tx_commerce_articlecreator.php']['preinsert'], ['commerce/Utility/ArticleCreatorUtility']['createArticle']
 	, , ['commerce/Classes/Utility/ArticleCreatorUtility.php']['createArticlePreInsert'], ['commerce/Utility/ArticleCreatorUtility']['createArticle']
 
 
-.. _Tx_Commerce_Utility_BackendUtility_hooks:
+.. _\CommerceTeam\Commerce\Utility\BackendUtility_hooks:
 .. csv-table::
 	:header: Class, Method, Hook, Replacement
 	:widths: 25, 10, 35, 30
 
-	Tx_Commerce_Utility_BackendUtility, copyProduct, ['commerce/lib/class.tx_commerce_belib.php']['copyProductClass'], ['commerce/Utility/BackendUtility']['copyProduct']
+	\CommerceTeam\Commerce\Utility\BackendUtility, copyProduct, ['commerce/lib/class.tx_commerce_belib.php']['copyProductClass'], ['commerce/Utility/BackendUtility']['copyProduct']
 	, , ['commerce/Classes/Utility/BackendUtility.php']['copyProduct'], ['commerce/Utility/BackendUtility']['copyProduct']
 	, copyCategory, ['commerce/lib/class.tx_commerce_belib.php']['copyCategoryClass'], ['commerce/Utility/BackendUtility']['copyCategory']
 	, , ['commerce/Classes/Utility/BackendUtility.php']['copyCategory'], ['commerce/Utility/BackendUtility']['copyCategory']
@@ -694,54 +694,54 @@ Removed hooks since 4.x
 	, , ['commerce/Classes/Utility/BackendUtility.php']['overwriteProduct'], ['commerce/Utility/BackendUtility']['overwriteProduct']
 
 
-.. _Tx_Commerce_Utility_DataHandlerUtility_hooks:
+.. _\CommerceTeam\Commerce\Utility\DataHandlerUtility_hooks:
 .. csv-table::
 	:header: Class, Method, Hook, Replacement
 	:widths: 25, 10, 35, 30
 
-	Tx_Commerce_Utility_DataHandlerUtility, showCopyWizard, ['commerce/mod_cce/class.tx_commerce_cce_db.php']['copyWizardClass'], ['commerce/Utility/DataHandlerUtility']['showCopyWizard']
+	\CommerceTeam\Commerce\Utility\DataHandlerUtility, showCopyWizard, ['commerce/mod_cce/class.tx_commerce_cce_db.php']['copyWizardClass'], ['commerce/Utility/DataHandlerUtility']['showCopyWizard']
 	, , ['commerce/Classes/Utility/DataHandlerUtility.php']['copyWizard'], ['commerce/Utility/DataHandlerUtility']['showCopyWizard']
 	, commitCommand, ['commerce/mod_cce/class.tx_commerce_cce_db.php']['commitCommandClass'], ['commerce/Utility/DataHandlerUtility']['commitCommand']
 	, , ['commerce/Classes/Utility/DataHandlerUtility.php']['commitCommand'], ['commerce/Utility/DataHandlerUtility']['commitCommand']
 
 
-.. _Tx_Commerce_Utility_FolderUtility_hooks:
+.. _\CommerceTeam\Commerce\Utility\FolderUtility_hooks:
 .. csv-table::
 	:header: Class, Method, Hook, Replacement
 	:widths: 25, 10, 35, 30
 
-	Tx_Commerce_Utility_FolderUtility, initFolders, ['commerce/class.tx_commerce_create_folder.php']['postcreatefolder'], "Method got removed from the api"
+	\CommerceTeam\Commerce\Utility\FolderUtility, initFolders, ['commerce/class.tx_commerce_create_folder.php']['postcreatefolder'], "Method got removed from the api"
 	, , ['commerce/class.tx_commerce_create_folder.php']['precreatesyscategory'], "Method got removed from the api"
 	, , ['commerce/class.tx_commerce_create_folder.php']['postcreatesyscategory'], "Method got removed from the api"
 	, , ['commerce/class.tx_commerce_create_folder.php']['postcreatediliveryarticles'], "Method got removed from the api"
 
 
-.. _Tx_Commerce_Utility_GeneralUtility_hooks:
+.. _\CommerceTeam\Commerce\Utility\GeneralUtility_hooks:
 .. csv-table::
 	:header: Class, Method, Hook, Replacement
 	:widths: 25, 10, 35, 30
 
-	Tx_Commerce_Utility_GeneralUtility, generateSessionKey, ['commerce/lib/class.tx_commerce_div.php']['generateSessionKey'], ['commerce/Utility/GeneralUtility']['generateSessionKey']
+	\CommerceTeam\Commerce\Utility\GeneralUtility, generateSessionKey, ['commerce/lib/class.tx_commerce_div.php']['generateSessionKey'], ['commerce/Utility/GeneralUtility']['generateSessionKey']
 	, , ['commerce/Classes/Utility/GeneralUtility.php']['generateSessionKey'], ['commerce/Utility/GeneralUtility']['generateSessionKey']
 	, sendMail, ['commerce/lib/class.tx_commerce_div.php']['sendMail'], ['commerce/Utility/GeneralUtility']['sendMail']
 	, , ['commerce/Classes/Utility/GeneralUtility.php']['sendMail'], ['commerce/Utility/GeneralUtility']['sendMail']
 
 
-.. _Tx_Commerce_ViewHelpers_Navigation_hooks:
+.. _\CommerceTeam\Commerce\ViewHelpers\Navigation_hooks:
 .. csv-table::
 	:header: Class, Method, Hook, Replacement
 	:widths: 25, 10, 35, 30
 
-	Tx_Commerce_ViewHelpers_Navigation, makeArrayPostRender, ['commerce/lib/class.tx_commerce_db_navigation.php']['sortingOrder'], ['commerce/ViewHelpers/Navigation']['makeArrayPostRender']
+	\CommerceTeam\Commerce\ViewHelpers\Navigation, makeArrayPostRender, ['commerce/lib/class.tx_commerce_db_navigation.php']['sortingOrder'], ['commerce/ViewHelpers/Navigation']['makeArrayPostRender']
 	, , ['commerce/Classes/ViewHelpers/Navigation.php']['sortingOrder'], ['commerce/ViewHelpers/Navigation']['makeArrayPostRender']
 	, makeSubChildArrayPostRender, ['commerce/lib/class.tx_commerce_db_navigation.php']['sortingOrder'], ['commerce/ViewHelpers/Navigation']['makeSubChildArrayPostRender']
 	, , ['commerce/Classes/ViewHelpers/Navigation.php']['sortingOrder'], ['commerce/ViewHelpers/Navigation']['makeSubChildArrayPostRender']
 
 
-.. _Tx_Commerce_ViewHelpers_TreelibTceforms_hooks:
+.. _\CommerceTeam\Commerce\ViewHelpers\TreelibTceforms_hooks:
 .. csv-table::
 	:header: Class, Method, Hook, Replacement
 	:widths: 25, 10, 35, 30
 
-	Tx_Commerce_ViewHelpers_TreelibTceforms, processItemArrayForBrowseableTreeDefault, ['commerce/treelib/class.tx_commerce_treelib_tceforms.php']['processItemArrayForBrowseableTreeDefault'], ['commerce/ViewHelpers/TreelibTceforms']['processItemArrayForBrowseableTreeDefault']
+	\CommerceTeam\Commerce\ViewHelpers\TreelibTceforms, processItemArrayForBrowseableTreeDefault, ['commerce/treelib/class.tx_commerce_treelib_tceforms.php']['processItemArrayForBrowseableTreeDefault'], ['commerce/ViewHelpers/TreelibTceforms']['processItemArrayForBrowseableTreeDefault']
 	, , ['commerce/Classes/ViewHelpers/TreelibTceforms.php']['processItemArrayForBrowseableTreeDefault'], ['commerce/ViewHelpers/TreelibTceforms']['processItemArrayForBrowseableTreeDefault']

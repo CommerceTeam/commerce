@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Domain\Repository;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -17,11 +18,11 @@
  * be made by this class. In most cases you should use the methodes
  * provided by tx_commerce_attribute to get informations for articles.
  *
- * Class Tx_Commerce_Domain_Repository_AttributeRepository
+ * Class \CommerceTeam\Commerce\Domain\Repository\AttributeRepository
  *
  * @author 2005-2011 Ingo Schmitt <is@marketing-factory.de>
  */
-class Tx_Commerce_Domain_Repository_AttributeRepository extends Tx_Commerce_Domain_Repository_Repository {
+class AttributeRepository extends Repository {
 	/**
 	 * Database table
 	 *

@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Domain\Model;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -25,11 +26,11 @@
  *
  * Basic class for basket_handeling inhertited from tx_commerce_basic_basket
  *
- * Class Tx_Commerce_Domain_Model_Basket
+ * Class \CommerceTeam\Commerce\Domain\Model\Basket
  *
  * @author 2005-2013 Ingo Schmitt <is@marketing-factory.de>
  */
-class Tx_Commerce_Domain_Model_Basket extends Tx_Commerce_Domain_Model_BasicBasket {
+class Basket extends BasicBasket {
 	/**
 	 * Storage-type for the data
 	 *
@@ -337,7 +338,7 @@ class Tx_Commerce_Domain_Model_Basket extends Tx_Commerce_Domain_Model_BasicBask
 		/**
 		 * Basket item
 		 *
-		 * @var Tx_Commerce_Domain_Model_BasketItem $oneItem
+		 * @var \CommerceTeam\Commerce\Domain\Model\BasketItem $oneItem
 		 */
 		foreach ($this->basketItems as $oneuid => $oneItem) {
 			$insertData = array();

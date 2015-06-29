@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Payment;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -15,9 +16,11 @@
 /**
  * Credit card payment implementation
  *
+ * Class \CommerceTeam\Commerce\Payment\Creditcard
+ *
  * @author 2005-2011 Thomas Hempel <thomas@work.de>
  */
-class Tx_Commerce_Payment_Creditcard extends Tx_Commerce_Payment_PaymentAbstract {
+class Creditcard extends PaymentAbstract {
 	/**
 	 * Locallang array, only needed if individual fields are defined
 	 *
@@ -75,9 +78,9 @@ class Tx_Commerce_Payment_Creditcard extends Tx_Commerce_Payment_PaymentAbstract
 		/**
 		 * Credit card validation service
 		 *
-		 * @var $ccvs Tx_Commerce_Payment_Ccvs
+		 * @var $ccvs \CommerceTeam\Commerce\Payment\Ccvs
 		 */
-		$ccvs = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Payment_Ccvs');
+		$ccvs = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Payment\\Ccvs');
 		$result = $ccvs->validateCreditCard($formData['cc_number'], $formData['cc_checksum']);
 		$this->errorMessages[] = $ccvs->CCVSError;
 

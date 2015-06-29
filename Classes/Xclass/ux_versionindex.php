@@ -73,10 +73,10 @@ class ux_tx_version_cm1 extends \TYPO3\CMS\Version\Controller\VersionModuleContr
 				/**
 				 * Product
 				 *
-				 * @var $product Tx_Commerce_Domain_Model_Product
+				 * @var $product \CommerceTeam\Commerce\Domain\Model\Product
 				 */
 				$product = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-					'Tx_Commerce_Domain_Model_Product',
+					'CommerceTeam\\Commerce\\Domain\\Model\\Product',
 					$row['t3ver_oid'],
 					$sysLanguageUid
 				);

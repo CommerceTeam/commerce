@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Payment\Criterion;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -15,22 +16,22 @@
 /**
  * Abstract payment criterion implementation
  *
- * Class Tx_Commerce_Payment_Criterion_CriterionAbstract
+ * Class \CommerceTeam\Commerce\Payment\Criterion\CriterionAbstract
  *
  * @author 2009-2011 Volker Graubaum <vg@e-netconsulting.com>
  */
-abstract class Tx_Commerce_Payment_Criterion_CriterionAbstract implements Tx_Commerce_Payment_Interface_Criterion {
+abstract class CriterionAbstract implements \CommerceTeam\Commerce\Payment\Criterion\CriterionInterface {
 	/**
 	 * Parent commerce pibase object
 	 *
-	 * @var Tx_Commerce_Controller_BaseController
+	 * @var \CommerceTeam\Commerce\Controller\BaseController
 	 */
 	protected $pibaseObject = NULL;
 
 	/**
 	 * Payment object
 	 *
-	 * @var Tx_Commerce_Payment_Interface_Payment
+	 * @var \CommerceTeam\Commerce\Payment\PaymentInterface
 	 */
 	protected $paymentObject = NULL;
 
@@ -44,12 +45,12 @@ abstract class Tx_Commerce_Payment_Criterion_CriterionAbstract implements Tx_Com
 	/**
 	 * Constructor
 	 *
-	 * @param Tx_Commerce_Payment_Interface_Payment $paymentObject Payment object
+	 * @param \CommerceTeam\Commerce\Payment\PaymentInterface $paymentObject Payment
 	 * @param array $options Configuration array
 	 *
 	 * @return self
 	 */
-	public function __construct(Tx_Commerce_Payment_Interface_Payment $paymentObject, array $options = array()) {
+	public function __construct(\CommerceTeam\Commerce\Payment\PaymentInterface $paymentObject, array $options = array()) {
 		$this->paymentObject = $paymentObject;
 		$this->pibaseObject = $this->paymentObject->getParentObject();
 		$this->options = $options;

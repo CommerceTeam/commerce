@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Controller;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -12,6 +13,8 @@
  * The TYPO3 project - inspiring people to share!
  */
 
+use CommerceTeam\Commerce\Domain\Model\Article;
+use CommerceTeam\Commerce\Domain\Model\Product;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use \CommerceTeam\Commerce\Factory\HookFactory;
 
@@ -22,11 +25,11 @@ use \CommerceTeam\Commerce\Factory\HookFactory;
  * The basket itself is stored inside
  * frontend user basket
  *
- * Class Tx_Commerce_Controller_BasketController
+ * Class \CommerceTeam\Commerce\Controller\BasketController
  *
  * @author Volker Graubaum <vg@e-netconsulting.de>
  */
-class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_BaseController {
+class BasketController extends BaseController {
 	/**
 	 * Same as class name
 	 *
@@ -51,7 +54,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 	/**
 	 * Delivery product
 	 *
-	 * @var Tx_Commerce_Domain_Model_Product
+	 * @var Product
 	 */
 	public $deliveryProduct;
 
@@ -65,7 +68,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 	/**
 	 * Payment product
 	 *
-	 * @var Tx_Commerce_Domain_Model_Product
+	 * @var Product
 	 */
 	public $paymentProduct;
 
@@ -79,7 +82,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 	/**
 	 * Basket object
 	 *
-	 * @var Tx_Commerce_Domain_Model_Basket
+	 * @var \CommerceTeam\Commerce\Domain\Model\Basket
 	 */
 	protected $basket = NULL;
 
@@ -280,7 +283,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 				/**
 				 * Basket item
 				 *
-				 * @var Tx_Commerce_Domain_Model_BasketItem $basketItem
+				 * @var \CommerceTeam\Commerce\Domain\Model\BasketItem $basketItem
 				 */
 				$basketItem = $this->basket->getBasketItem($articleUid);
 
@@ -309,9 +312,9 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 					/**
 					 * Article
 					 *
-					 * @var $articleObj Tx_Commerce_Domain_Model_Article
+					 * @var $articleObj Article
 					 */
-					$articleObj = GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Article', $articleUid);
+					$articleObj = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Article', $articleUid);
 					$articleObj->loadData('basket');
 
 					$productObj = $articleObj->getParentProduct();
@@ -456,8 +459,8 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 		$template = $this->cObj->getSubpart($this->getTemplateCode(), $templateMarker);
 
 		$basketArray = $this->languageMarker;
-		$basketArray['###PRICE_GROSS###'] = Tx_Commerce_ViewHelpers_Money::format($this->basket->getSumGross(), $this->currency);
-		$basketArray['###PRICE_NET###'] = Tx_Commerce_ViewHelpers_Money::format($this->basket->getSumNet(), $this->currency);
+		$basketArray['###PRICE_GROSS###'] = \CommerceTeam\Commerce\ViewHelpers\Money::format($this->basket->getSumGross(), $this->currency);
+		$basketArray['###PRICE_NET###'] = \CommerceTeam\Commerce\ViewHelpers\Money::format($this->basket->getSumNet(), $this->currency);
 
 		$basketArray['###BASKET_ITEMS###'] = $this->basket->getArticleTypeCountFromList($articleTypes);
 		$this->pi_linkTP('', array(), 0, $this->conf['basketPid']);
@@ -526,19 +529,22 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 		foreach ($taxRates as $taxRate => $taxRateSum) {
 			$taxRowArray = array();
 			$taxRowArray['###TAX_RATE###'] = $taxRate;
-			$taxRowArray['###TAX_RATE_SUM###'] = Tx_Commerce_ViewHelpers_Money::format($taxRateSum, $this->currency);
+			$taxRowArray['###TAX_RATE_SUM###'] = \CommerceTeam\Commerce\ViewHelpers\Money::format($taxRateSum, $this->currency);
 			$taxRateRows .= $this->cObj->substituteMarkerArray($taxRateTemplate, $taxRowArray);
 		}
 
 		$template = $this->cObj->substituteSubpart($template, '###TAX_RATE_SUMS###', $taxRateRows);
 
-		$basketArray['###BASKET_NET_PRICE###'] = Tx_Commerce_ViewHelpers_Money::format($this->basket->getSumNet(), $this->currency);
-		$basketArray['###BASKET_GROSS_PRICE###'] = Tx_Commerce_ViewHelpers_Money::format($this->basket->getSumGross(), $this->currency);
-		$basketArray['###BASKET_TAX_PRICE###'] = Tx_Commerce_ViewHelpers_Money::format(
+		$basketArray['###BASKET_NET_PRICE###'] = \CommerceTeam\Commerce\ViewHelpers\Money::format($this->basket->getSumNet(), $this->currency);
+		$basketArray['###BASKET_GROSS_PRICE###'] = \CommerceTeam\Commerce\ViewHelpers\Money::format(
+			$this->basket->getSumGross(),
+			$this->currency
+		);
+		$basketArray['###BASKET_TAX_PRICE###'] = \CommerceTeam\Commerce\ViewHelpers\Money::format(
 			$this->basket->getSumGross() - $this->basket->getSumNet(),
 			$this->currency
 		);
-		$basketArray['###BASKET_VALUE_ADDED_TAX###'] = Tx_Commerce_ViewHelpers_Money::format(
+		$basketArray['###BASKET_VALUE_ADDED_TAX###'] = \CommerceTeam\Commerce\ViewHelpers\Money::format(
 			$this->basket->getSumGross() - $this->basket->getSumNet(),
 			$this->currency
 		);
@@ -550,27 +556,27 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 			1
 		);
 		$basketArray['###BASKET_NEXTBUTTON###'] = $this->cObj->stdWrap($this->makeCheckOutLink(), $this->conf['nextbutton.']);
-		$basketArray['###BASKET_ARTICLES_NET_SUM###'] = Tx_Commerce_ViewHelpers_Money::format(
+		$basketArray['###BASKET_ARTICLES_NET_SUM###'] = \CommerceTeam\Commerce\ViewHelpers\Money::format(
 			$this->basket->getArticleTypeSumNet(NORMALARTICLETYPE),
 			$this->currency
 		);
-		$basketArray['###BASKET_ARTICLES_GROSS_SUM###'] = Tx_Commerce_ViewHelpers_Money::format(
+		$basketArray['###BASKET_ARTICLES_GROSS_SUM###'] = \CommerceTeam\Commerce\ViewHelpers\Money::format(
 			$this->basket->getArticleTypeSumGross(NORMALARTICLETYPE),
 			$this->currency
 		);
-		$basketArray['###BASKET_DELIVERY_NET_SUM###'] = Tx_Commerce_ViewHelpers_Money::format(
+		$basketArray['###BASKET_DELIVERY_NET_SUM###'] = \CommerceTeam\Commerce\ViewHelpers\Money::format(
 			$this->basket->getArticleTypeSumNet(DELIVERYARTICLETYPE),
 			$this->currency
 		);
-		$basketArray['###BASKET_DELIVERY_GROSS_SUM###'] = Tx_Commerce_ViewHelpers_Money::format(
+		$basketArray['###BASKET_DELIVERY_GROSS_SUM###'] = \CommerceTeam\Commerce\ViewHelpers\Money::format(
 			$this->basket->getArticleTypeSumGross(DELIVERYARTICLETYPE),
 			$this->currency
 		);
-		$basketArray['###BASKET_PAYMENT_NET_SUM###'] = Tx_Commerce_ViewHelpers_Money::format(
+		$basketArray['###BASKET_PAYMENT_NET_SUM###'] = \CommerceTeam\Commerce\ViewHelpers\Money::format(
 			$this->basket->getArticleTypeSumNet(PAYMENTARTICLETYPE),
 			$this->currency
 		);
-		$basketArray['###BASKET_PAYMENT_GROSS_SUM###'] = Tx_Commerce_ViewHelpers_Money::format(
+		$basketArray['###BASKET_PAYMENT_GROSS_SUM###'] = \CommerceTeam\Commerce\ViewHelpers\Money::format(
 			$this->basket->getArticleTypeSumGross(PAYMENTARTICLETYPE),
 			$this->currency
 		);
@@ -620,7 +626,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 	 */
 	public function makeDelivery(array $basketArray = array()) {
 		$this->deliveryProduct = GeneralUtility::makeInstance(
-			'Tx_Commerce_Domain_Model_Product',
+			'CommerceTeam\\Commerce\\Domain\\Model\\Product',
 			$this->conf['delProdId'],
 			$this->getFrontendController()->tmpl->setup['config.']['sys_language_uid']
 		);
@@ -655,7 +661,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 		/**
 		 * Article
 		 *
-		 * @var $deliveryArticle Tx_Commerce_Domain_Model_Article
+		 * @var $deliveryArticle Article
 		 */
 		foreach ($this->deliveryProduct->getArticleObjects() as $deliveryArticle) {
 			if ($allArticlesAllowed || in_array($deliveryArticle->getUid(), $allowedArticles)) {
@@ -663,15 +669,15 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 
 				if ($deliveryArticle->getUid() == $this->basketDeliveryArticles[0]) {
 					$selected = $activeFlag;
-					$priceNet = Tx_Commerce_ViewHelpers_Money::format($deliveryArticle->getPriceNet(), $this->currency);
-					$priceGross = Tx_Commerce_ViewHelpers_Money::format($deliveryArticle->getPriceGross(), $this->currency);
+					$priceNet = \CommerceTeam\Commerce\ViewHelpers\Money::format($deliveryArticle->getPriceNet(), $this->currency);
+					$priceGross = \CommerceTeam\Commerce\ViewHelpers\Money::format($deliveryArticle->getPriceGross(), $this->currency);
 				} elseif (!$first) {
 					if (empty($this->basketDeliveryArticles[0])) {
 						$selected = $activeFlag;
 					}
 
-					$priceNet = Tx_Commerce_ViewHelpers_Money::format($deliveryArticle->getPriceNet(), $this->currency);
-					$priceGross = Tx_Commerce_ViewHelpers_Money::format($deliveryArticle->getPriceGross(), $this->currency);
+					$priceNet = \CommerceTeam\Commerce\ViewHelpers\Money::format($deliveryArticle->getPriceNet(), $this->currency);
+					$priceGross = \CommerceTeam\Commerce\ViewHelpers\Money::format($deliveryArticle->getPriceGross(), $this->currency);
 					if (!is_array($this->basketDeliveryArticles) || count($this->basketDeliveryArticles) < 1) {
 						$this->getBasket()->addArticle($deliveryArticle->getUid());
 						$this->getBasket()->storeData();
@@ -709,7 +715,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 	 */
 	public function makePayment(array $basketArray = array()) {
 		$this->paymentProduct = GeneralUtility::makeInstance(
-			'Tx_Commerce_Domain_Model_Product',
+			'CommerceTeam\\Commerce\\Domain\\Model\\Product',
 			$this->conf['payProdId'],
 			$this->getFrontendController()->tmpl->setup['config.']['sys_language_uid']
 		);
@@ -745,7 +751,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 		/**
 		 * Article
 		 *
-		 * @var Tx_Commerce_Domain_Model_Article $article
+		 * @var Article $article
 		 */
 		foreach ($this->paymentProduct->getArticleObjects() as $articleUid => $article) {
 			if (!count($allowedArticles) || in_array($articleUid, $allowedArticles)) {
@@ -783,7 +789,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 		/**
 		 * Article
 		 *
-		 * @var $article Tx_Commerce_Domain_Model_Article
+		 * @var $article Article
 		 */
 		foreach ($this->paymentProduct->getArticleObjects() as $articleUid => $article) {
 			if (!count($allowedArticles) || in_array($articleUid, $allowedArticles)) {
@@ -797,11 +803,11 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 					$first = TRUE;
 					$select .= ' selected="selected"';
 					$this->basket->addArticle($articleUid);
-					$priceNet = Tx_Commerce_ViewHelpers_Money::format($article->getPriceNet(), $this->currency);
-					$priceGross = Tx_Commerce_ViewHelpers_Money::format($article->getPriceGross(), $this->currency);
+					$priceNet = \CommerceTeam\Commerce\ViewHelpers\Money::format($article->getPriceNet(), $this->currency);
+					$priceGross = \CommerceTeam\Commerce\ViewHelpers\Money::format($article->getPriceGross(), $this->currency);
 				} elseif (!$first) {
-					$priceNet = Tx_Commerce_ViewHelpers_Money::format($article->getPriceNet(), $this->currency);
-					$priceGross = Tx_Commerce_ViewHelpers_Money::format($article->getPriceGross(), $this->currency);
+					$priceNet = \CommerceTeam\Commerce\ViewHelpers\Money::format($article->getPriceNet(), $this->currency);
+					$priceGross = \CommerceTeam\Commerce\ViewHelpers\Money::format($article->getPriceGross(), $this->currency);
 					$this->basket->deleteArticle($articleUid);
 				}
 				$select .= '>' . $article->getTitle() . '</option>';
@@ -812,8 +818,8 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 
 		// Set Prices to 0, if "please select " is shown
 		if ($addPleaseSelect) {
-			$priceGross = Tx_Commerce_ViewHelpers_Money::format(0, $this->currency);
-			$priceNet = Tx_Commerce_ViewHelpers_Money::format(0, $this->currency);
+			$priceGross = \CommerceTeam\Commerce\ViewHelpers\Money::format(0, $this->currency);
+			$priceNet = \CommerceTeam\Commerce\ViewHelpers\Money::format(0, $this->currency);
 		}
 
 		$basketArray['###PAYMENT_SELECT_BOX###'] = $select;
@@ -837,12 +843,12 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 	/**
 	 * Make article view
 	 *
-	 * @param Tx_Commerce_Domain_Model_Article $article Article
-	 * @param Tx_Commerce_Domain_Model_Product $product Product
+	 * @param Article $article Article
+	 * @param Product $product Product
 	 *
 	 * @return string
 	 */
-	public function makeArticleView(Tx_Commerce_Domain_Model_Article $article, Tx_Commerce_Domain_Model_Product $product) {
+	public function makeArticleView(Article $article, Product $product) {
 		// Getting the select attributes for view
 		$attCode = '';
 		if (is_object($product)) {
@@ -855,10 +861,10 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 					/**
 					 * Attribute
 					 *
-					 * @var $attributeObj Tx_Commerce_Domain_Model_Attribute
+					 * @var $attributeObj \CommerceTeam\Commerce\Domain\Model\Attribute
 					 */
 					$attributeObj = GeneralUtility::makeInstance(
-						'Tx_Commerce_Domain_Model_Attribute',
+						'CommerceTeam\\Commerce\\Domain\\Model\\Attribute',
 						$attributeUid,
 						$this->getFrontendController()->tmpl->setup['config.']['sys_language_uid']
 					);
@@ -877,7 +883,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 		/**
 		 * Basket item
 		 *
-		 * @var Tx_Commerce_Domain_Model_BasketItem $basketItem
+		 * @var \CommerceTeam\Commerce\Domain\Model\BasketItem $basketItem
 		 */
 		$basketItem = $this->basket->getBasketItem($article->getUid());
 
@@ -909,28 +915,28 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 			'[artAddUid][' . $article->getUid() . '][price_id]" value="' . $basketItem->getPriceUid() . '" />';
 		$markerArray['###QTY_INPUT_VALUE###'] = $basketItem->getQuantity();
 		$markerArray['###QTY_INPUT_NAME###'] = $this->prefixId . '[artAddUid][' . $article->getUid() . '][count]';
-		$markerArray['###BASKET_ITEM_PRICENET###'] = Tx_Commerce_ViewHelpers_Money::format(
+		$markerArray['###BASKET_ITEM_PRICENET###'] = \CommerceTeam\Commerce\ViewHelpers\Money::format(
 			$basketItem->getPriceNet(),
 			$this->currency
 		);
-		$markerArray['###BASKET_ITEM_PRICEGROSS###'] = Tx_Commerce_ViewHelpers_Money::format(
+		$markerArray['###BASKET_ITEM_PRICEGROSS###'] = \CommerceTeam\Commerce\ViewHelpers\Money::format(
 			$basketItem->getPriceGross(),
 			$this->currency
 		);
-		$markerArray['###BASKET_ITEM_PRICENETNOSCALE###'] = Tx_Commerce_ViewHelpers_Money::format(
+		$markerArray['###BASKET_ITEM_PRICENETNOSCALE###'] = \CommerceTeam\Commerce\ViewHelpers\Money::format(
 			$basketItem->getNoScalePriceNet(),
 			$this->currency
 		);
-		$markerArray['###BASKET_ITEM_PRICEGROSSNOSCALE###'] = Tx_Commerce_ViewHelpers_Money::format(
+		$markerArray['###BASKET_ITEM_PRICEGROSSNOSCALE###'] = \CommerceTeam\Commerce\ViewHelpers\Money::format(
 			$basketItem->getNoScalePriceGross(),
 			$this->currency
 		);
 		$markerArray['###BASKET_ITEM_COUNT###'] = $basketItem->getQuantity();
-		$markerArray['###BASKET_ITEM_PRICESUM_NET###'] = Tx_Commerce_ViewHelpers_Money::format(
+		$markerArray['###BASKET_ITEM_PRICESUM_NET###'] = \CommerceTeam\Commerce\ViewHelpers\Money::format(
 			$basketItem->getItemSumNet(),
 			$this->currency
 		);
-		$markerArray['###BASKET_ITEM_PRICESUM_GROSS###'] = Tx_Commerce_ViewHelpers_Money::format(
+		$markerArray['###BASKET_ITEM_PRICESUM_GROSS###'] = \CommerceTeam\Commerce\ViewHelpers\Money::format(
 			$basketItem->getItemSumGross(),
 			$this->currency
 		);
@@ -1006,7 +1012,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 			/**
 			 * Basket item
 			 *
-			 * @var $basketItem Tx_Commerce_Domain_Model_BasketItem
+			 * @var $basketItem \CommerceTeam\Commerce\Domain\Model\BasketItem
 			 */
 			$basketItem = $this->basket->getBasketItem($basketItemId);
 
@@ -1044,14 +1050,13 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 
 				$this->prefixId = $altPrefixSingle;
 
-				$wrapMarkerArray['###PRODUCT_LINK_DETAIL###'] =
-					explode(
-						'|',
-						$this->pi_list_linkSingle(
-							'|', $basketItem->getProduct()->getUid(), 1,
-							array('catUid' => (int) $basketItem->getProduct()->getMasterparentCategory()), FALSE, $this->conf['listPid']
-						)
-					);
+				$wrapMarkerArray['###PRODUCT_LINK_DETAIL###'] = explode(
+					'|',
+					$this->pi_list_linkSingle(
+						'|', $basketItem->getProduct()->getUid(), 1,
+						array('catUid' => (int) $basketItem->getProduct()->getMasterparentCategory()), FALSE, $this->conf['listPid']
+					)
+				);
 
 				$this->prefixId = $safePrefix;
 
@@ -1108,7 +1113,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 	/**
 	 * Get basket
 	 *
-	 * @return Tx_Commerce_Domain_Model_Basket
+	 * @return \CommerceTeam\Commerce\Domain\Model\Basket
 	 */
 	public function getBasket() {
 		return $this->basket;

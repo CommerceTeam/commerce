@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Tree\Leaf;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -11,27 +12,28 @@
  *
  * The TYPO3 project - inspiring people to share!
  */
+
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * Implements an abstract leaf of the Tx_Commerce_Tree_Browsetree
+ * Implements an abstract leaf of the \CommerceTeam\Commerce\Tree\Browsetree
  *
- * Class Tx_Commerce_Tree_Leaf_Leaf
+ * Class \CommerceTeam\Commerce\Tree\Leaf\Leaf
  *
  * @author 2008-2011 Erik Frister <typo3@marketing-factory.de>
  */
-abstract class Tx_Commerce_Tree_Leaf_Leaf extends Tx_Commerce_Tree_Leaf_Base {
+abstract class Leaf extends Base {
 	/**
 	 * LeafView Object of the Leaf
 	 *
-	 * @var Tx_Commerce_Tree_Leaf_View
+	 * @var \CommerceTeam\Commerce\Tree\Leaf\View
 	 */
 	public $view;
 
 	/**
 	 * LeafData Object of the Leaf
 	 *
-	 * @var Tx_Commerce_Tree_Leaf_Data
+	 * @var \CommerceTeam\Commerce\Tree\Leaf\Data
 	 */
 	public $data;
 
@@ -87,12 +89,12 @@ abstract class Tx_Commerce_Tree_Leaf_Leaf extends Tx_Commerce_Tree_Leaf_Base {
 	/**
 	 * Sets the View and the Data of the Leaf
 	 *
-	 * @param Tx_Commerce_Tree_Leaf_View $view LeafView of the Leaf
-	 * @param Tx_Commerce_Tree_Leaf_Data $data LeafData of the Leaf
+	 * @param \CommerceTeam\Commerce\Tree\Leaf\View $view LeafView of the Leaf
+	 * @param \CommerceTeam\Commerce\Tree\Leaf\Data $data LeafData of the Leaf
 	 *
 	 * @return void
 	 */
-	public function initBasic(Tx_Commerce_Tree_Leaf_View &$view, Tx_Commerce_Tree_Leaf_Data &$data) {
+	public function initBasic(\CommerceTeam\Commerce\Tree\Leaf\View &$view, \CommerceTeam\Commerce\Tree\Leaf\Data &$data) {
 		if (is_null($view) || is_null($data)) {
 			if (TYPO3_DLOG) {
 				GeneralUtility::devLog('initBasic (leaf) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
@@ -127,11 +129,11 @@ abstract class Tx_Commerce_Tree_Leaf_Leaf extends Tx_Commerce_Tree_Leaf_Base {
 	/**
 	 * Adds a child leaf to the leaf
 	 *
-	 * @param Tx_Commerce_Tree_Leaf_Slave $leaf Slave Leaf-Object
+	 * @param \CommerceTeam\Commerce\Tree\Leaf\Slave $leaf Slave Leaf-Object
 	 *
 	 * @return bool
 	 */
-	public function addLeaf(Tx_Commerce_Tree_Leaf_Slave &$leaf) {
+	public function addLeaf(\CommerceTeam\Commerce\Tree\Leaf\Slave &$leaf) {
 		if (NULL == $leaf) {
 			if (TYPO3_DLOG) {
 				GeneralUtility::devLog('addLeaf (leaf) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
@@ -169,7 +171,7 @@ abstract class Tx_Commerce_Tree_Leaf_Leaf extends Tx_Commerce_Tree_Leaf_Base {
 	 *
 	 * @param int $index Index of the childleaf
 	 *
-	 * @return Tx_Commerce_Tree_Leaf_Slave Childleaf
+	 * @return \CommerceTeam\Commerce\Tree\Leaf\Slave Childleaf
 	 */
 	public function getChildLeaf($index) {
 		if (!is_numeric($index)) {
@@ -237,7 +239,7 @@ abstract class Tx_Commerce_Tree_Leaf_Leaf extends Tx_Commerce_Tree_Leaf_Base {
 			/**
 			 * Slave
 			 *
-			 * @var Tx_Commerce_Tree_Leaf_Slave $leaf
+			 * @var \CommerceTeam\Commerce\Tree\Leaf\Slave $leaf
 			 */
 			$leaf = & $this->leafs[$i];
 			$leaf->setParentLeaf($this);
@@ -268,7 +270,7 @@ abstract class Tx_Commerce_Tree_Leaf_Leaf extends Tx_Commerce_Tree_Leaf_Base {
 			/**
 			 * Leaf
 			 *
-			 * @var Tx_Commerce_Tree_Leaf_Leaf $leaf
+			 * @var \CommerceTeam\Commerce\Tree\Leaf\Leaf $leaf
 			 */
 			$leaf = & $this->leafs[$i];
 			$leaf->setDataPositions($positions);
@@ -298,7 +300,7 @@ abstract class Tx_Commerce_Tree_Leaf_Leaf extends Tx_Commerce_Tree_Leaf_Base {
 			/**
 			 * Leaf
 			 *
-			 * @var Tx_Commerce_Tree_Leaf_Leaf $leaf
+			 * @var \CommerceTeam\Commerce\Tree\Leaf\Leaf $leaf
 			 */
 			$leaf = & $this->leafs[$i];
 			$leaf->sort($rootUid);
@@ -318,7 +320,7 @@ abstract class Tx_Commerce_Tree_Leaf_Leaf extends Tx_Commerce_Tree_Leaf_Base {
 			/**
 			 * Leaf
 			 *
-			 * @var Tx_Commerce_Tree_Leaf_Leaf $leaf
+			 * @var \CommerceTeam\Commerce\Tree\Leaf\Leaf $leaf
 			 */
 			$leaf = & $this->leafs[$i];
 			$sortedData = array_merge($sortedData, $leaf->getSortedArray());
@@ -403,7 +405,7 @@ abstract class Tx_Commerce_Tree_Leaf_Leaf extends Tx_Commerce_Tree_Leaf_Base {
 				/**
 				 * Leaf
 				 *
-				 * @var Tx_Commerce_Tree_Leaf_Leaf $leaf
+				 * @var \CommerceTeam\Commerce\Tree\Leaf\Leaf $leaf
 				 */
 				$leaf = & $this->leafs[$i];
 				$hasChildren = $leaf->hasSubitems($row);

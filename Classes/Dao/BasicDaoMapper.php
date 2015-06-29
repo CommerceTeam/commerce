@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Dao;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -23,11 +24,11 @@
  * the parser.
  * The class needs a parser for object <-> model (transfer object) mapping.
  *
- * Class Tx_Commerce_Dao_BasicDaoMapper
+ * Class \CommerceTeam\Commerce\Dao\BasicDaoMapper
  *
  * @author 2006-2008 Carsten Lausen <cl@e-netconsulting.de>
  */
-class Tx_Commerce_Dao_BasicDaoMapper {
+class BasicDaoMapper {
 	/**
 	 * Table for persistence
 	 *
@@ -45,7 +46,7 @@ class Tx_Commerce_Dao_BasicDaoMapper {
 	/**
 	 * Parser
 	 *
-	 * @var Tx_Commerce_Dao_BasicDaoParser
+	 * @var BasicDaoParser
 	 */
 	protected $parser;
 
@@ -66,13 +67,13 @@ class Tx_Commerce_Dao_BasicDaoMapper {
 	/**
 	 * Constructor
 	 *
-	 * @param Tx_Commerce_Dao_BasicDaoParser $parser Parser
+	 * @param BasicDaoParser $parser Parser
 	 * @param int $createPid Create pid
 	 * @param string $dbTable Table
 	 *
 	 * @return self
 	 */
-	public function __construct(Tx_Commerce_Dao_BasicDaoParser &$parser, $createPid = 0, $dbTable = NULL) {
+	public function __construct(BasicDaoParser &$parser, $createPid = 0, $dbTable = NULL) {
 		$this->init();
 		$this->parser = &$parser;
 		if (!empty($createPid)) {
@@ -95,11 +96,11 @@ class Tx_Commerce_Dao_BasicDaoMapper {
 	/**
 	 * Load object
 	 *
-	 * @param Tx_Commerce_Dao_BasicDaoObject $object Object
+	 * @param BasicDaoObject $object Object
 	 *
 	 * @return void
 	 */
-	public function load(Tx_Commerce_Dao_BasicDaoObject &$object) {
+	public function load(BasicDaoObject &$object) {
 		if ($object->issetId()) {
 			$this->dbSelectById($object->getId(), $object);
 		}
@@ -108,11 +109,11 @@ class Tx_Commerce_Dao_BasicDaoMapper {
 	/**
 	 * Save object
 	 *
-	 * @param Tx_Commerce_Dao_BasicDaoObject $object Object
+	 * @param BasicDaoObject $object Object
 	 *
 	 * @return void
 	 */
-	public function save(Tx_Commerce_Dao_BasicDaoObject &$object) {
+	public function save(BasicDaoObject &$object) {
 		if ($object->issetId()) {
 			$this->dbUpdate($object->getId(), $object);
 		} else {
@@ -123,11 +124,11 @@ class Tx_Commerce_Dao_BasicDaoMapper {
 	/**
 	 * Remove object
 	 *
-	 * @param Tx_Commerce_Dao_BasicDaoObject $object Object
+	 * @param BasicDaoObject $object Object
 	 *
 	 * @return void
 	 */
-	public function remove(Tx_Commerce_Dao_BasicDaoObject &$object) {
+	public function remove(BasicDaoObject &$object) {
 		if ($object->issetId()) {
 			$this->dbDelete($object->getId(), $object);
 		}
@@ -136,11 +137,11 @@ class Tx_Commerce_Dao_BasicDaoMapper {
 	/**
 	 * Db add object
 	 *
-	 * @param Tx_Commerce_Dao_BasicDaoObject $object Object
+	 * @param BasicDaoObject $object Object
 	 *
 	 * @return void
 	 */
-	protected function dbInsert(Tx_Commerce_Dao_BasicDaoObject &$object) {
+	protected function dbInsert(BasicDaoObject &$object) {
 		$dbTable = $this->dbTable;
 		$dbModel = $this->parser->parseObjectToModel($object);
 
@@ -168,11 +169,11 @@ class Tx_Commerce_Dao_BasicDaoMapper {
 	 * Db update object
 	 *
 	 * @param int $uid Uid
-	 * @param Tx_Commerce_Dao_BasicDaoObject $object Object
+	 * @param BasicDaoObject $object Object
 	 *
 	 * @return void
 	 */
-	protected function dbUpdate($uid, Tx_Commerce_Dao_BasicDaoObject &$object) {
+	protected function dbUpdate($uid, BasicDaoObject &$object) {
 		$dbTable = $this->dbTable;
 		$dbWhere = 'uid = ' . (int) $uid;
 		$dbModel = $this->parser->parseObjectToModel($object);
@@ -195,11 +196,11 @@ class Tx_Commerce_Dao_BasicDaoMapper {
 	 * Db delete object
 	 *
 	 * @param int $uid Uid
-	 * @param Tx_Commerce_Dao_BasicDaoObject $object Object
+	 * @param BasicDaoObject $object Object
 	 *
 	 * @return void
 	 */
-	protected function dbDelete($uid, Tx_Commerce_Dao_BasicDaoObject &$object) {
+	protected function dbDelete($uid, BasicDaoObject &$object) {
 		$dbWhere = 'uid = ' . (int) $uid;
 
 		// execute query
@@ -222,11 +223,11 @@ class Tx_Commerce_Dao_BasicDaoMapper {
 	 * DB select object by id
 	 *
 	 * @param int $uid Uid
-	 * @param Tx_Commerce_Dao_BasicDaoObject $object Object
+	 * @param BasicDaoObject $object Object
 	 *
 	 * @return void
 	 */
-	protected function dbSelectById($uid, Tx_Commerce_Dao_BasicDaoObject &$object) {
+	protected function dbSelectById($uid, BasicDaoObject &$object) {
 		$dbFields = '*';
 		$dbTable = $this->dbTable;
 		$dbWhere = 'uid = ' . (int) $uid;

@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Hook;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -15,11 +16,11 @@
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 /**
- * Class Tx_Commerce_Hook_LinkhandlerHooks
+ * Class \CommerceTeam\Commerce\Hook\LinkhandlerHooks
  *
  * @author 2008-2009 Ingo Schmitt <is@marketing-factory.de>
  */
-class Tx_Commerce_Hook_LinkhandlerHooks {
+class LinkhandlerHooks {
 	/**
 	 * Parent object
 	 *

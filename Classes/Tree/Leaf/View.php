@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Tree\Leaf;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -11,17 +12,18 @@
  *
  * The TYPO3 project - inspiring people to share!
  */
+
 use TYPO3\CMS\Backend\Utility\IconUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Implements the view of the leaf
  *
- * Class Tx_Commerce_Tree_Leaf_View
+ * Class \CommerceTeam\Commerce\Tree\Leaf\View
  *
  * @author 2008-2014 Erik Frister <typo3@marketing-factory.de>
  */
-class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
+class View extends Base {
 	/**
 	 * Leaf index
 	 *
@@ -196,7 +198,11 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 	public function setLeafIndex($index) {
 		if (!is_numeric($index)) {
 			if (TYPO3_DLOG) {
-				GeneralUtility::devLog('setLeafIndex (Tx_Commerce_Tree_Leaf_View) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				GeneralUtility::devLog(
+					'setLeafIndex (CommerceTeam\\Commerce\\Tree\\Leaf\\View) gets passed invalid parameters.',
+					COMMERCE_EXTKEY,
+					3
+				);
 			}
 			return;
 		}
@@ -224,7 +230,11 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 	public function setBank($bank) {
 		if (!is_numeric($bank)) {
 			if (TYPO3_DLOG) {
-				GeneralUtility::devLog('setBank (Tx_Commerce_Tree_Leaf_View) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				GeneralUtility::devLog(
+					'setBank (CommerceTeam\\Commerce\\Tree\\Leaf\\View) gets passed invalid parameters.',
+					COMMERCE_EXTKEY,
+					3
+				);
 			}
 			return;
 		}
@@ -242,7 +252,7 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 		if (!is_string($name)) {
 			if (TYPO3_DLOG) {
 				GeneralUtility::devLog(
-					'setTreeName (Tx_Commerce_Tree_Leaf_View) gets passed wrong-cast parameters. Should be string but is not.',
+					'setTreeName (CommerceTeam\\Commerce\\Tree\\Leaf\\View) gets passed wrong-cast parameters. Should be string but is not.',
 					COMMERCE_EXTKEY,
 					2
 				);
@@ -252,7 +262,8 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 	}
 
 	/**
-	 * Sets if the clickmenu should be enabled for this Tx_Commerce_Tree_Leaf_View
+	 * Sets if the clickmenu should be enabled for
+	 * this \CommerceTeam\Commerce\Tree\Leaf\View
 	 *
 	 * @param bool $flag Flag
 	 *
@@ -263,7 +274,8 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 	}
 
 	/**
-	 * Sets if the root onlick should be enabled for this Tx_Commerce_Tree_Leaf_View
+	 * Sets if the root onlick should be enabled
+	 * for this \CommerceTeam\Commerce\Tree\Leaf\View
 	 *
 	 * @param bool $flag Flag
 	 *
@@ -328,7 +340,11 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 	public function getRootIcon(array $row) {
 		if (!is_array($row)) {
 			if (TYPO3_DLOG) {
-				GeneralUtility::devLog('getRootIcon (Tx_Commerce_Tree_Leaf_View) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				GeneralUtility::devLog(
+					'getRootIcon (CommerceTeam\\Commerce\\Tree\\Leaf\\View) gets passed invalid parameters.',
+					COMMERCE_EXTKEY,
+					3
+				);
 			}
 			return '';
 		}
@@ -351,7 +367,11 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 	public function wrapIcon($icon, array $row, $additionalParams = '') {
 		if (!is_array($row) || !is_string($additionalParams)) {
 			if (TYPO3_DLOG) {
-				GeneralUtility::devLog('wrapIcon (Tx_Commerce_Tree_Leaf_View) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				GeneralUtility::devLog(
+					'wrapIcon (CommerceTeam\\Commerce\\Tree\\Leaf\\View) gets passed invalid parameters.',
+					COMMERCE_EXTKEY,
+					3
+				);
 			}
 			return '';
 		}
@@ -360,11 +380,11 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 			$additionalParams = '&control[' . $this->table . '][uid]=' . $row['uid'];
 
 			switch (get_class($this)) {
-				case 'Tx_Commerce_Tree_Leaf_CategoryView':
+				case 'CommerceTeam\\Commerce\\Tree\\Leaf\\CategoryView':
 					$additionalParams .= '&parentCategory=' . $row['uid'];
 					break;
 
-				case 'Tx_Commerce_Tree_Leaf_ProductView':
+				case 'CommerceTeam\\Commerce\\Tree\\Leaf\\ProductView':
 					$additionalParams .= '&parentCategory=' . $row['item_parent'];
 					break;
 
@@ -379,7 +399,7 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 			/**
 			 * Template
 			 *
-			 * @var template $template
+			 * @var \TYPO3\CMS\Backend\Template\DocumentTemplate $template
 			 */
 			$template = $GLOBALS['TBE_TEMPLATE'];
 			$template->backPath = $this->backPath;
@@ -401,7 +421,7 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 		if (!is_array($row) || !is_numeric($bank)) {
 			if (TYPO3_DLOG) {
 				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
-					'wrapTitle (Tx_Commerce_Tree_Leaf_View) gets passed invalid parameters.',
+					'wrapTitle (CommerceTeam\\Commerce\\Tree\\Leaf\\View) gets passed invalid parameters.',
 					COMMERCE_EXTKEY,
 					3
 				);
@@ -446,7 +466,11 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 	public function getJumpToParam(array $row) {
 		if (!is_array($row)) {
 			if (TYPO3_DLOG) {
-				GeneralUtility::devLog('getJumpToParam (Tx_Commerce_Tree_Leaf_View) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				GeneralUtility::devLog(
+					'getJumpToParam (CommerceTeam\\Commerce\\Tree\\Leaf\\View) gets passed invalid parameters.',
+					COMMERCE_EXTKEY,
+					3
+				);
 			}
 			return '';
 		}
@@ -471,7 +495,11 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 	public function PMicon(array $row, $isLast, $isExpanded, $isBank = FALSE, $hasChildren = FALSE) {
 		if (!is_array($row)) {
 			if (TYPO3_DLOG) {
-				GeneralUtility::devLog('PMicon (Tx_Commerce_Tree_Leaf_View) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				GeneralUtility::devLog(
+					'PMicon (CommerceTeam\\Commerce\\Tree\\Leaf\\View) gets passed invalid parameters.',
+					COMMERCE_EXTKEY,
+					3
+				);
 			}
 			return '';
 		}
@@ -527,7 +555,11 @@ class Tx_Commerce_Tree_Leaf_View extends Tx_Commerce_Tree_Leaf_Base {
 	protected function PMiconATagWrap($icon, $cmd, $isExpand = TRUE) {
 		if (!is_string($icon) || !is_string($cmd)) {
 			if (TYPO3_DLOG) {
-				GeneralUtility::devLog('PMiconATagWrap (Tx_Commerce_Tree_Leaf_View) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				GeneralUtility::devLog(
+					'PMiconATagWrap (CommerceTeam\\Commerce\\Tree\\Leaf\\View) gets passed invalid parameters.',
+					COMMERCE_EXTKEY,
+					3
+				);
 			}
 			return '';
 		}

@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Controller;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -16,11 +17,11 @@ use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * Class Tx_Commerce_Controller_OrdersModuleController
+ * Class \CommerceTeam\Commerce\Controller\OrdersModuleController
  *
  * @author Sebastian Fischer <typo3@marketing-factory.de>
  */
-class Tx_Commerce_Controller_OrdersModuleController extends \TYPO3\CMS\Recordlist\RecordList {
+class OrdersModuleController extends \TYPO3\CMS\Recordlist\RecordList {
 	/**
 	 * The script for the wizard of the command 'new'
 	 *
@@ -55,7 +56,7 @@ class Tx_Commerce_Controller_OrdersModuleController extends \TYPO3\CMS\Recordlis
 		$this->id = (int) GeneralUtility::_GP('id');
 		// Find the right pid for the Ordersfolder
 		$this->orderPid = current(
-			array_unique(Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Orders', 'Commerce', 0, 'Commerce'))
+			array_unique(\CommerceTeam\Commerce\Domain\Repository\FolderRepository::initFolders('Orders', 'Commerce', 0, 'Commerce'))
 		);
 		if ($this->id == $this->orderPid) {
 			$this->id = 0;
@@ -146,9 +147,9 @@ class Tx_Commerce_Controller_OrdersModuleController extends \TYPO3\CMS\Recordlis
 		/**
 		 * Order record list
 		 *
-		 * @var $dblist Tx_Commerce_ViewHelpers_OrderRecordList
+		 * @var $dblist \CommerceTeam\Commerce\ViewHelpers\OrderRecordList
 		 */
-		$dblist = GeneralUtility::makeInstance('Tx_Commerce_ViewHelpers_OrderRecordList');
+		$dblist = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\ViewHelpers\\OrderRecordList');
 		$dblist->backPath = $GLOBALS['BACK_PATH'];
 		$dblist->script = BackendUtility::getModuleUrl('txcommerceM1_orders', array(), '');
 		$dblist->calcPerms = $this->getBackendUser()->calcPerms($this->pageinfo);

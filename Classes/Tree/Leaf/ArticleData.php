@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Tree\Leaf;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -15,11 +16,11 @@
 /**
  * Implements the Data for the Article Leaf
  *
- * Class Tx_Commerce_Tree_Leaf_ArticleData
+ * Class \CommerceTeam\Commerce\Tree\Leaf\ArticleData
  *
  * @author 2008 Erik Frister <typo3@marketing-factory.de>
  */
-class Tx_Commerce_Tree_Leaf_ArticleData extends Tx_Commerce_Tree_Leaf_SlaveData {
+class ArticleData extends SlaveData {
 	/**
 	 * Fields that should be read from the products
 	 *

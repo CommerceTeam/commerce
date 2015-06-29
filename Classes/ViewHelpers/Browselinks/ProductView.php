@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\ViewHelpers\Browselinks;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -13,13 +14,13 @@
  */
 
 /**
- * Implements the Tx_Commerce_Tree_Leaf_View for Product
+ * Implements the \CommerceTeam\Commerce\Tree\Leaf\View for Product
  *
- * Class Tx_Commerce_ViewHelpers_Browselinks_ProductView
+ * Class \CommerceTeam\Commerce\ViewHelpers\Browselinks\ProductView
  *
  * @author 2008-2011 Erik Frister <typo3@marketing-factory.de>
  */
-class Tx_Commerce_ViewHelpers_Browselinks_ProductView extends Tx_Commerce_Tree_Leaf_View {
+class ProductView extends \CommerceTeam\Commerce\Tree\Leaf\View {
 	/**
 	 * DB Table
 	 *
@@ -50,7 +51,7 @@ class Tx_Commerce_ViewHelpers_Browselinks_ProductView extends Tx_Commerce_Tree_L
 	 *
 	 * @return string
 	 */
-	protected function wrapTitle($title, array &$row, $bank = 0) {
+	public function wrapTitle($title, array &$row, $bank = 0) {
 		if (!is_array($row) || !is_numeric($bank)) {
 			if (TYPO3_DLOG) {
 				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('wrapTitle (productview) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);

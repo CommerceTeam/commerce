@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\ViewHelpers;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -18,11 +19,11 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Holds the TCE Functions
  *
- * Class Tx_Commerce_ViewHelpers_TceFunc
+ * Class \CommerceTeam\Commerce\ViewHelpers\TceFunc
  *
  * @author 2008-2011 Erik Frister <typo3@marketing-factory.de>
  */
-class Tx_Commerce_ViewHelpers_TceFunc {
+class TceFunc {
 	/**
 	 * Form engine
 	 *
@@ -82,9 +83,9 @@ class Tx_Commerce_ViewHelpers_TceFunc {
 		/**
 		 * Category tree
 		 *
-		 * @var Tx_Commerce_Tree_CategoryTree $browseTrees
+		 * @var \CommerceTeam\Commerce\Tree\CategoryTree $browseTrees
 		 */
-		$browseTrees = GeneralUtility::makeInstance('Tx_Commerce_Tree_CategoryTree');
+		$browseTrees = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryTree');
 		// disabled clickmenu
 		$browseTrees->noClickmenu();
 		// set the minimum permissions
@@ -101,7 +102,7 @@ class Tx_Commerce_ViewHelpers_TceFunc {
 		/**
 		 * Disallows clicks on certain leafs
 		 * Values is a comma-separated list of leaf names
-		 * (e.g. Tx_Commerce_Tree_Leaf_Category)
+		 * (e.g. \CommerceTeam\Commerce\Tree\Leaf\Category)
 		 */
 		$browseTrees->disallowClick($config['disallowClick']);
 
@@ -110,9 +111,9 @@ class Tx_Commerce_ViewHelpers_TceFunc {
 		/**
 		 * Browse tree
 		 *
-		 * @var Tx_Commerce_ViewHelpers_TreelibTceforms $renderBrowseTrees
+		 * @var \CommerceTeam\Commerce\ViewHelpers\TreelibTceforms $renderBrowseTrees
 		 */
-		$renderBrowseTrees = GeneralUtility::makeInstance('Tx_Commerce_ViewHelpers_TreelibTceforms');
+		$renderBrowseTrees = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\ViewHelpers\\TreelibTceforms');
 		$renderBrowseTrees->init($parameter);
 		$renderBrowseTrees->setIframeTreeBrowserScript(
 			$this->tceForms->backPath . PATH_TXCOMMERCE_REL . 'Classes/ViewHelpers/IframeTreeBrowser.php'
@@ -190,10 +191,10 @@ class Tx_Commerce_ViewHelpers_TceFunc {
 					/**
 					 * Category
 					 *
-					 * @var Tx_Commerce_Domain_Model_Category $category
+					 * @var \CommerceTeam\Commerce\Domain\Model\Category $category
 					 */
 					$category = GeneralUtility::makeInstance(
-						'Tx_Commerce_Domain_Model_Category',
+						'CommerceTeam\\Commerce\\Domain\\Model\\Category',
 						$defVals['tx_commerce_categories']['parent_category']
 					);
 					$category->loadData();
@@ -204,10 +205,10 @@ class Tx_Commerce_ViewHelpers_TceFunc {
 					/**
 					 * Category
 					 *
-					 * @var Tx_Commerce_Domain_Model_Category $category
+					 * @var \CommerceTeam\Commerce\Domain\Model\Category $category
 					 */
 					$category = GeneralUtility::makeInstance(
-						'Tx_Commerce_Domain_Model_Category',
+						'CommerceTeam\\Commerce\\Domain\\Model\\Category',
 						$defVals['tx_commerce_products']['categories']
 					);
 					$category->loadData();

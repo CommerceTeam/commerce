@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Payment\Provider;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -25,11 +26,11 @@
  * Discover				6011 0000 0000 0004
  * JCB					3088 0000 0000 0009
  *
- * Class Tx_Commerce_Payment_Provider_Wirecard
+ * Class \CommerceTeam\Commerce\Payment\Provider\Wirecard
  *
  * @author 2009-2011 Volker Graubaum <vg@e-netconsulting.de>
  */
-class Tx_Commerce_Payment_Provider_Wirecard extends Tx_Commerce_Payment_Provider_ProviderAbstract {
+class Wirecard extends ProviderAbstract {
 	/**
 	 * Provider type
 	 *
@@ -100,19 +101,19 @@ class Tx_Commerce_Payment_Provider_Wirecard extends Tx_Commerce_Payment_Provider
 	 *
 	 * @param array $config Configuration from TYPO3_CONF_VARS
 	 * @param array $session Current session data
-	 * @param Tx_Commerce_Domain_Model_Basket $basket Basket object
+	 * @param \CommerceTeam\Commerce\Domain\Model\Basket $basket Basket object
 	 *
 	 * @return bool Check if everything was ok
 	 */
 	public function finishingFunction(array $config = array(), array $session = array(),
-		Tx_Commerce_Domain_Model_Basket $basket = NULL
+		\CommerceTeam\Commerce\Domain\Model\Basket $basket = NULL
 	) {
 		/**
 		 * Payment library
 		 *
-		 * @var Tx_Commerce_Payment_Payment $paymentLib
+		 * @var \CommerceTeam\Commerce\Payment\Payment $paymentLib
 		 */
-		$paymentLib = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Payment_Payment');
+		$paymentLib = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Payment\\Payment');
 
 		// I think there is a new URL for testing with wirecard, so overwrite
 		// the old value. you can replace this with your own.

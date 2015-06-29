@@ -26,9 +26,11 @@ require_once($BACK_PATH . 'init.php');
 /**
  * System data navigation viewhelper
  *
- * @var $SOBE Tx_Commerce_ViewHelpers_Navigation_SystemdataViewHelper
+ * @var $SOBE \CommerceTeam\Commerce\ViewHelpers\Navigation\SystemdataViewHelper
  */
-$SOBE = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_ViewHelpers_Navigation_SystemdataViewHelper');
+$SOBE = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+	'CommerceTeam\\Commerce\\ViewHelpers\\Navigation\\SystemdataViewHelper'
+);
 $SOBE->init();
 $SOBE->initPage();
 $SOBE->main();

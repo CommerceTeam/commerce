@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Tree;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -11,16 +12,17 @@
  *
  * The TYPO3 project - inspiring people to share!
  */
+
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Gives functionality for Categorymounts
  *
- * Class Tx_Commerce_Tree_CategoryMounts
+ * Class \CommerceTeam\Commerce\Tree\CategoryMounts
  *
  * @author 2008-2011 Erik Frister <typo3@marketing-factory.de>
  */
-class Tx_Commerce_Tree_CategoryMounts extends Tx_Commerce_Tree_Leaf_Mounts {
+class CategoryMounts extends \CommerceTeam\Commerce\Tree\Leaf\Mounts {
 	/**
 	 * Overwrite necessary variable
 	 *
@@ -53,9 +55,9 @@ class Tx_Commerce_Tree_CategoryMounts extends Tx_Commerce_Tree_Leaf_Mounts {
 				/**
 				 * Category
 				 *
-				 * @var Tx_Commerce_Domain_Model_Category $category
+				 * @var \CommerceTeam\Commerce\Domain\Model\Category $category
 				 */
-				$category = GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Category', $id);
+				$category = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Category', $id);
 				$category->loadData();
 
 				$title = ($category->isPermissionSet('show') && $this->isInCommerceMounts($category->getUid())) ?
@@ -98,9 +100,9 @@ class Tx_Commerce_Tree_CategoryMounts extends Tx_Commerce_Tree_Leaf_Mounts {
 		/**
 		 * Category
 		 *
-		 *@var Tx_Commerce_Domain_Model_Category $category
+		 *@var \CommerceTeam\Commerce\Domain\Model\Category $category
 		 */
-		$category = GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Category', $categoryUid);
+		$category = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Category', $categoryUid);
 		$category->loadData();
 
 		$tmpCats = $category->getParentCategories();

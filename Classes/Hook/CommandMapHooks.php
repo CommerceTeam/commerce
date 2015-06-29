@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Hook;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -12,6 +13,7 @@
  * The TYPO3 project - inspiring people to share!
  */
 
+use CommerceTeam\Commerce\Domain\Repository\FolderRepository;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 
 /**
@@ -19,11 +21,11 @@ use TYPO3\CMS\Core\DataHandling\DataHandler;
  * This class contains some hooks for processing formdata.
  * Hook for saving order data and order_articles.
  *
- * Class Tx_Commerce_Hook_CommandMapHooks
+ * Class \CommerceTeam\Commerce\Hook\CommandMapHooks
  *
  * @author 2005-2011 Franz Holzinger <kontakt@fholzinger.com>
  */
-class Tx_Commerce_Hook_CommandMapHooks {
+class CommandMapHooks {
 	/**
 	 * Attribute without localized title
 	 *
@@ -49,7 +51,7 @@ class Tx_Commerce_Hook_CommandMapHooks {
 	/**
 	 * Backend utility
 	 *
-	 * @var Tx_Commerce_Utility_BackendUtility
+	 * @var \CommerceTeam\Commerce\Utility\BackendUtility
 	 */
 	protected $belib;
 
@@ -65,7 +67,7 @@ class Tx_Commerce_Hook_CommandMapHooks {
 	 * This is just a constructor to instanciate the backend library
 	 */
 	public function __construct() {
-		$this->belib = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Utility_BackendUtility');
+		$this->belib = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Utility\\BackendUtility');
 	}
 
 
@@ -114,9 +116,12 @@ class Tx_Commerce_Hook_CommandMapHooks {
 			/**
 			 * Category
 			 *
-			 * @var Tx_Commerce_Domain_Model_Category $category
+			 * @var \CommerceTeam\Commerce\Domain\Model\Category $category
 			 */
-			$category = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Category', $categoryUid);
+			$category = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+				'CommerceTeam\\Commerce\\Domain\\Model\\Category',
+				$categoryUid
+			);
 			$category->loadData();
 
 			// check if category is a translation and get l18n parent for access rights
@@ -124,10 +129,10 @@ class Tx_Commerce_Hook_CommandMapHooks {
 				/**
 				 * Category
 				 *
-				 * @var Tx_Commerce_Domain_Model_Category $category
+				 * @var \CommerceTeam\Commerce\Domain\Model\Category $category
 				 */
 				$category = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-					'Tx_Commerce_Domain_Model_Category',
+					'CommerceTeam\\Commerce\\Domain\\Model\\Category',
 					$category->getL18nParent()
 				);
 			}
@@ -136,9 +141,9 @@ class Tx_Commerce_Hook_CommandMapHooks {
 			/**
 			 * Category mounts
 			 *
-			 * @var Tx_Commerce_Tree_CategoryMounts $mounts
+			 * @var \CommerceTeam\Commerce\Tree\CategoryMounts $mounts
 			 */
-			$mounts = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Tree_CategoryMounts');
+			$mounts = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryMounts');
 			$mounts->init($GLOBALS['BE_USER']->user['uid']);
 
 			if (!$category->isPermissionSet($command) || !$mounts->isInCommerceMounts($category->getUid())) {
@@ -183,21 +188,24 @@ class Tx_Commerce_Hook_CommandMapHooks {
 			/**
 			 * Product
 			 *
-			 * @var Tx_Commerce_Domain_Model_Product $product
+			 * @var \CommerceTeam\Commerce\Domain\Model\Product $product
 			 */
-			$product = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Product', $productUid);
+			$product = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+				'CommerceTeam\\Commerce\\Domain\\Model\\Product',
+				$productUid
+			);
 
 			// check if product or if translated the translation parent category
 			if (!current($product->getParentCategories())) {
 				$product = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-					'Tx_Commerce_Domain_Model_Product',
+					'CommerceTeam\\Commerce\\Domain\\Model\\Product',
 					$product->getL18nParent()
 				);
 			}
 
 			// check existing categories
 			if (
-				!Tx_Commerce_Utility_BackendUtility::checkPermissionsOnCategoryContent(
+				!\CommerceTeam\Commerce\Utility\BackendUtility::checkPermissionsOnCategoryContent(
 					$product->getParentCategories(),
 					array('editcontent')
 				)
@@ -229,28 +237,31 @@ class Tx_Commerce_Hook_CommandMapHooks {
 			/**
 			 * Article
 			 *
-			 * @var Tx_Commerce_Domain_Model_Article $article
+			 * @var \CommerceTeam\Commerce\Domain\Model\Article $article
 			 */
-			$article = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Article', $articleUid);
+			$article = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+				'CommerceTeam\\Commerce\\Domain\\Model\\Article',
+				$articleUid
+			);
 			$article->loadData();
 
 			/**
 			 * Product
 			 *
-			 * @var Tx_Commerce_Domain_Model_Product $product
+			 * @var \CommerceTeam\Commerce\Domain\Model\Product $product
 			 */
 			$product = $article->getParentProduct();
 
 			// check if product or if translated the translation parent category
 			if (!current($product->getParentCategories())) {
 				$product = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-					'Tx_Commerce_Domain_Model_Product',
+					'CommerceTeam\\Commerce\\Domain\\Model\\Product',
 					$product->getL18nParent()
 				);
 			}
 
 			if (
-				!Tx_Commerce_Utility_BackendUtility::checkPermissionsOnCategoryContent(
+				!\CommerceTeam\Commerce\Utility\BackendUtility::checkPermissionsOnCategoryContent(
 					$product->getParentCategories(),
 					array('editcontent')
 				)
@@ -529,8 +540,8 @@ class Tx_Commerce_Hook_CommandMapHooks {
 	 * @return array
 	 */
 	protected function getLocale() {
-		list($commercePid) = Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Commerce', 'commerce');
-		list($productPid) = Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Products', 'commerce', $commercePid);
+		list($commercePid) = FolderRepository::initFolders('Commerce', 'commerce');
+		list($productPid) = FolderRepository::initFolders('Products', 'commerce', $commercePid);
 
 		$database = $this->getDatabaseConnection();
 
@@ -637,7 +648,8 @@ class Tx_Commerce_Hook_CommandMapHooks {
 	 * @return void
 	 */
 	protected function deleteChildCategoriesProductsArticlesPricesOfCategory($categoryUid) {
-		// we dont use Tx_Commerce_Domain_Model_Category::getChildCategoriesUidlist
+		// we dont use
+		// \CommerceTeam\Commerce\Domain\Model\Category::getChildCategoriesUidlist
 		// because of performance issues
 		// @todo is there realy a performance issue?
 		$childCategories = array();
@@ -839,7 +851,7 @@ class Tx_Commerce_Hook_CommandMapHooks {
 		$submitLabel = $language->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:continue', 1);
 		$onClickAction = 'onclick="document.location=\'' . htmlspecialchars($_SERVER['HTTP_REFERER']) . '\'; return false;"';
 
-		$content = $errorDocument->startPage('Tx_Commerce_Hook_CommandMapHooks error Output');
+		$content = $errorDocument->startPage('CommerceTeam\\Commerce\\Hook\\CommandMapHooks error Output');
 		$content .= '
 			<br/>
 			<br/>

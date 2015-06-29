@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Dao;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -16,11 +17,11 @@
  * Feuser object & Dao database access classes
  * These classes handle feuser objects.
  *
- * Class Tx_Commerce_Dao_FeuserDaoObject
+ * Class \CommerceTeam\Commerce\Dao\FeuserDaoObject
  *
  * @author 2005-2011 Carsten Lausen <cl@e-netconsulting.de>
  */
-class Tx_Commerce_Dao_FeuserDaoObject extends Tx_Commerce_Dao_BasicDaoObject {
+class FeuserDaoObject extends BasicDaoObject {
 	/**
 	 * Address id
 	 *
@@ -45,9 +46,11 @@ class Tx_Commerce_Dao_FeuserDaoObject extends Tx_Commerce_Dao_BasicDaoObject {
 		/**
 		 * Frontend user address mapper
 		 *
-		 * @var Tx_Commerce_Dao_FeuserAddressFieldmapper $feuserAddressMapper
+		 * @var FeuserAddressFieldmapper $feuserAddressMapper
 		 */
-		$feuserAddressMapper = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Dao_FeuserAddressFieldmapper');
+		$feuserAddressMapper = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+			'CommerceTeam\\Commerce\\Dao\\FeuserAddressFieldmapper'
+		);
 		$fields = $feuserAddressMapper->getFeuserFields();
 
 		foreach ($fields as $field) {

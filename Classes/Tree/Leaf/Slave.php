@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Tree\Leaf;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -13,31 +14,31 @@
  */
 
 /**
- * Implements a slave leaf of the Tx_Commerce_Tree_Browsetree
+ * Implements a slave leaf of the \CommerceTeam\Commerce\Tree\Browsetree
  *
- * Tx_Commerce_Tree_Leaf_Slave
+ * \CommerceTeam\Commerce\Tree\Leaf\Slave
  *
  * @author 2008-2013 Erik Frister <typo3@marketing-factory.de>
  */
-class Tx_Commerce_Tree_Leaf_Slave extends Tx_Commerce_Tree_Leaf_Leaf {
+class Slave extends Leaf {
 	/**
 	 * Parent leaf
 	 *
-	 * @var Tx_Commerce_Tree_Leaf_Leaf
+	 * @var \CommerceTeam\Commerce\Tree\Leaf\Leaf
 	 */
 	protected $parentLeaf;
 
 	/**
 	 * Slave data
 	 *
-	 * @var Tx_Commerce_Tree_Leaf_SlaveData
+	 * @var \CommerceTeam\Commerce\Tree\Leaf\SlaveData
 	 */
 	public $data;
 
 	/**
 	 * Leaf view
 	 *
-	 * @var Tx_Commerce_Tree_Leaf_View
+	 * @var \CommerceTeam\Commerce\Tree\Leaf\View
 	 */
 	public $view;
 
@@ -51,15 +52,15 @@ class Tx_Commerce_Tree_Leaf_Slave extends Tx_Commerce_Tree_Leaf_Leaf {
 	/**
 	 * Sets the parent leaf of this leaf
 	 *
-	 * @param Tx_Commerce_Tree_Leaf_Leaf $parentLeaf Parent of this leaf
+	 * @param \CommerceTeam\Commerce\Tree\Leaf\Leaf $parentLeaf Parent of this leaf
 	 *
 	 * @return void
 	 */
-	public function setParentLeaf(Tx_Commerce_Tree_Leaf_Leaf &$parentLeaf) {
+	public function setParentLeaf(\CommerceTeam\Commerce\Tree\Leaf\Leaf &$parentLeaf) {
 		if (is_null($parentLeaf)) {
 			if (TYPO3_DLOG) {
 				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
-					'setParentLeaf (Tx_Commerce_Tree_Leaf_Slave) gets passed invalid parameters.',
+					'setParentLeaf (CommerceTeam\\Commerce\\Tree\\Leaf\\Slave) gets passed invalid parameters.',
 					COMMERCE_EXTKEY, 3
 				);
 			}
@@ -81,14 +82,14 @@ class Tx_Commerce_Tree_Leaf_Slave extends Tx_Commerce_Tree_Leaf_Leaf {
 		if (!is_numeric($index) || !is_array($parentIndices)) {
 			if (TYPO3_DLOG) {
 				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
-					'init (Tx_Commerce_Tree_Leaf_Slave) gets passed invalid parameters.',
+					'init (CommerceTeam\\Commerce\\Tree\\Leaf\\Slave) gets passed invalid parameters.',
 					COMMERCE_EXTKEY, 3
 				);
 			}
 			return;
 		}
 
-		// Initialize the Tx_Commerce_Tree_Leaf_Data
+		// Initialize the \CommerceTeam\Commerce\Tree\Leaf\Data
 		$this->data->init();
 		$this->data->initRecords($index, $parentIndices, $this->parentLeaf->data);
 
@@ -110,7 +111,7 @@ class Tx_Commerce_Tree_Leaf_Slave extends Tx_Commerce_Tree_Leaf_Leaf {
 		if (!is_numeric($startUid) || !is_numeric($bank)) {
 			if (TYPO3_DLOG) {
 				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
-					'printChildleafsByLoop (Tx_Commerce_Tree_Leaf_Slave) gets passed invalid parameters.',
+					'printChildleafsByLoop (CommerceTeam\\Commerce\\Tree\\Leaf\\Slave) gets passed invalid parameters.',
 					COMMERCE_EXTKEY, 3
 				);
 			}
@@ -135,7 +136,7 @@ class Tx_Commerce_Tree_Leaf_Slave extends Tx_Commerce_Tree_Leaf_Leaf {
 		if (NULL == $child) {
 			if (TYPO3_DLOG) {
 				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
-					'printChildleafsByLoop (Tx_Commerce_Tree_Leaf_Slave) cannot find the starting category by its uid.',
+					'printChildleafsByLoop (CommerceTeam\\Commerce\\Tree\\Leaf\\Slave) cannot find the starting category by its uid.',
 					COMMERCE_EXTKEY, 3
 				);
 			}
@@ -190,7 +191,7 @@ class Tx_Commerce_Tree_Leaf_Slave extends Tx_Commerce_Tree_Leaf_Leaf {
 				/**
 				 * Slave
 				 *
-				 * @var Tx_Commerce_Tree_Leaf_Slave $leaf
+				 * @var \CommerceTeam\Commerce\Tree\Leaf\Slave $leaf
 				 */
 				$leaf = & $this->leafs[$i];
 				$out .= $leaf->printChildleafsByParent($child['uid'], $bank);
@@ -217,7 +218,7 @@ class Tx_Commerce_Tree_Leaf_Slave extends Tx_Commerce_Tree_Leaf_Leaf {
 		if (!is_numeric($pid) || !is_numeric($bank)) {
 			if (TYPO3_DLOG) {
 				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
-					'printChildleafsByParent (Tx_Commerce_Tree_Leaf_Slave) gets passed invalid parameters.',
+					'printChildleafsByParent (CommerceTeam\\Commerce\\Tree\\Leaf\\Slave) gets passed invalid parameters.',
 					COMMERCE_EXTKEY, 3
 				);
 			}
@@ -242,7 +243,7 @@ class Tx_Commerce_Tree_Leaf_Slave extends Tx_Commerce_Tree_Leaf_Leaf {
 			// DLOG
 		if (TYPO3_DLOG) {
 			\TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
-				'printChildleafsByParent (Tx_Commerce_Tree_Leaf_Slave) did ' . $l . ' loops!',
+				'printChildleafsByParent (CommerceTeam\\Commerce\\Tree\\Leaf\\Slave) did ' . $l . ' loops!',
 				COMMERCE_EXTKEY, 1
 			);
 		}

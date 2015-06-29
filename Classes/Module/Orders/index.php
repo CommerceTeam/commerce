@@ -19,9 +19,9 @@
 /**
  * Orders module
  *
- * @var Tx_Commerce_Controller_OrdersModuleController $SOBE
+ * @var \CommerceTeam\Commerce\Controller\OrdersModuleController $SOBE
  */
-$SOBE = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Controller_OrdersModuleController');
+$SOBE = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Controller\\OrdersModuleController');
 $SOBE->init();
 $SOBE->main();
 $SOBE->printContent();

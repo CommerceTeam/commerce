@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Domain\Repository;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -23,11 +24,11 @@
  * tx_commerce_category
  * tx_commerce_attribute
  *
- * Class Tx_Commerce_Domain_Repository_Repository
+ * Class \CommerceTeam\Commerce\Domain\Repository\Repository
  *
  * @author 2005-2011 Ingo Schmitt <is@marketing-factory.de>
  */
-class Tx_Commerce_Domain_Repository_Repository {
+class Repository {
 	/**
 	 * Database table concerning the data
 	 *

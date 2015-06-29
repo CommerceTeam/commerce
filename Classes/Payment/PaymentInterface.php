@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Payment;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -15,24 +16,24 @@
 /**
  * Payment interface
  *
- * Class Tx_Commerce_Payment_Interface_Payment
+ * Class \CommerceTeam\Commerce\Payment\PaymentInterface
  *
  * @author 2011 Christian Kuhn <lolli@schwarzbu.ch>
  */
-interface Tx_Commerce_Payment_Interface_Payment {
+interface PaymentInterface {
 	/**
 	 * Constructor gets parent object
 	 *
-	 * @param Tx_Commerce_Controller_BaseController $pObj Parent object
+	 * @param \CommerceTeam\Commerce\Controller\BaseController $pObj Parent object
 	 *
 	 * @return self
 	 */
-	public function __construct(Tx_Commerce_Controller_BaseController $pObj);
+	public function __construct(\CommerceTeam\Commerce\Controller\BaseController $pObj);
 
 	/**
 	 * Get parent object
 	 *
-	 * @return Tx_Commerce_Controller_BaseController Parent object instance
+	 * @return \CommerceTeam\Commerce\Controller\BaseController Parent object
 	 */
 	public function getParentObject();
 
@@ -53,7 +54,7 @@ interface Tx_Commerce_Payment_Interface_Payment {
 	/**
 	 * Get payment provider
 	 *
-	 * @return Tx_Commerce_Payment_Interface_Provider
+	 * @return \CommerceTeam\Commerce\Payment\PaymentInterface
 	 */
 	public function getProvider();
 
@@ -85,12 +86,12 @@ interface Tx_Commerce_Payment_Interface_Payment {
 	 *
 	 * @param array $config Current configuration
 	 * @param array $session Session data
-	 * @param Tx_Commerce_Domain_Model_Basket $basket Basket object
+	 * @param \CommerceTeam\Commerce\Domain\Model\Basket $basket Basket object
 	 *
 	 * @return bool TRUE if finishing order is allowed
 	 */
 	public function finishingFunction(array $config = array(), array $session = array(),
-		Tx_Commerce_Domain_Model_Basket $basket = NULL
+		\CommerceTeam\Commerce\Domain\Model\Basket $basket = NULL
 	);
 
 	/**

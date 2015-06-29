@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Payment;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -34,11 +35,11 @@
  * getErrorOfErrorcode    - Gibt den Fehlertext zur�ck
  * getErrortype            - Warning, schwer, unbekannt, usw.
  *
- * Class Tx_Commerce_Payment_Payment
+ * Class \CommerceTeam\Commerce\Payment\Payment
  *
  * @author 2005-2008 Marco Klawonn <info@webprog.de>
  */
-class Tx_Commerce_Payment_Payment extends Tx_Commerce_Payment_Wirecard {
+class Payment extends Wirecard {
 	/**
 	 * Error
 	 *

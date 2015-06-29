@@ -257,9 +257,9 @@ $GLOBALS['TCA']['tx_commerce_products'] = array(
 				'internal_type' => 'passthrough',
 				'allowed' => 'tx_commerce_categories',
 				'form_type' => 'user',
-				'userFunc' => 'Tx_Commerce_ViewHelpers_TceFunc->getSingleField_selectCategories',
+				'userFunc' => 'CommerceTeam\\Commerce\\ViewHelpers\\TceFunc->getSingleField_selectCategories',
 				'treeView' => 1,
-				'treeClass' => 'Tx_Commerce_ViewHelpers_TceFunc_CategoryTree',
+				'treeClass' => 'CommerceTeam\\Commerce\\ViewHelpers\\TceFunc\\CategoryTree',
 				'size' => 7,
 				'autoSizeMax' => 10,
 				'minitems' => 1,
@@ -371,7 +371,7 @@ $GLOBALS['TCA']['tx_commerce_products'] = array(
 						<TCEforms>
 							<config>
 								<type>user</type>
-								<userFunc>Tx_Commerce_Utility_ArticleCreatorUtility->existingArticles</userFunc>
+								<userFunc>CommerceTeam\\Commerce\\ViewHelpers\\ArticleCreatorUtility->existingArticles</userFunc>
 							</config>
 						</TCEforms>
 					</existingArticles>
@@ -389,7 +389,7 @@ $GLOBALS['TCA']['tx_commerce_products'] = array(
 						<TCEforms>
 							<config>
 								<type>user</type>
-								<userFunc>Tx_Commerce_Utility_ArticleCreatorUtility->producibleArticles</userFunc>
+								<userFunc>CommerceTeam\\Commerce\\ViewHelpers\\ArticleCreatorUtility->producibleArticles</userFunc>
 							</config>
 						</TCEforms>
 					</producibleArticles>
@@ -425,7 +425,7 @@ $GLOBALS['TCA']['tx_commerce_products'] = array(
 						<TCEforms>
 							<config>
 								<type>user</type>
-								<userFunc>Tx_Commerce_Utility_ArticleCreatorUtility->existingArticles</userFunc>
+								<userFunc>CommerceTeam\\Commerce\\ViewHelpers\\ArticleCreatorUtility->existingArticles</userFunc>
 							</config>
 						</TCEforms>
 					</existingArticles>

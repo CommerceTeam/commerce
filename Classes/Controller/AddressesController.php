@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Controller;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -18,11 +19,11 @@ use \CommerceTeam\Commerce\Factory\HookFactory;
  * Plugin 'addresses' for the 'commerce' extension.
  * This class handles all the address stuff, like creating, editing and deleting.
  *
- * Class Tx_Commerce_Controller_AddressesController
+ * Class \CommerceTeam\Commerce\Controller\AddressesController
  *
  * @author 2006-2011 Thomas Hempel <thomas@work.de>
  */
-class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_BaseController {
+class AddressesController extends BaseController {
 	/**
 	 * Same as class name
 	 *
@@ -319,7 +320,7 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 			$linkMarkerArray = array();
 
 			// Fill marker array
-			$address = Tx_Commerce_Utility_GeneralUtility::removeXSSStripTagsArray($address);
+			$address = \CommerceTeam\Commerce\Utility\GeneralUtility::removeXSSStripTagsArray($address);
 			foreach ($address as $key => $value) {
 				$valueHidden = '';
 				$upperKey = strtoupper($key);
@@ -551,7 +552,7 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 		if ($this->formErrors()) {
 			$addressData = $this->piVars;
 		}
-		$addressData = Tx_Commerce_Utility_GeneralUtility::removeXSSStripTagsArray($addressData);
+		$addressData = \CommerceTeam\Commerce\Utility\GeneralUtility::removeXSSStripTagsArray($addressData);
 		if ($addressData['tx_commerce_address_type_id'] == NULL) {
 			$addressData['tx_commerce_address_type_id'] = (int)$this->piVars['addressType'];
 		}
@@ -676,7 +677,10 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 			'',
 			array(
 				'tx_commerce_pi3' => array(
-					'step' => $GLOBALS['TSFE']->fe_user->getKey('ses', Tx_Commerce_Utility_GeneralUtility::generateSessionKey('currentStep'))
+					'step' => $GLOBALS['TSFE']->fe_user->getKey(
+						'ses',
+						\CommerceTeam\Commerce\Utility\GeneralUtility::generateSessionKey('currentStep')
+					)
 				)
 			)
 		);
@@ -1163,7 +1167,7 @@ class Tx_Commerce_Controller_AddressesController extends Tx_Commerce_Controller_
 
 		$result = array();
 		foreach ($rows as $address) {
-			$result[$address['uid']] = Tx_Commerce_Utility_GeneralUtility::removeXSSStripTagsArray($address);
+			$result[$address['uid']] = \CommerceTeam\Commerce\Utility\GeneralUtility::removeXSSStripTagsArray($address);
 		}
 
 		return $result;

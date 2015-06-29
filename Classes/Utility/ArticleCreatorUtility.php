@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Utility;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -11,6 +12,7 @@
  *
  * The TYPO3 project - inspiring people to share!
  */
+
 use TYPO3\CMS\Backend\Form\FormEngine;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Backend\Utility\IconUtility;
@@ -23,11 +25,11 @@ require_once(PATH_TXCOMMERCE . 'Classes/Utility/GeneralUtility.php');
  * a product. It provides the user fields and creates the entries in the
  * database.
  *
- * Class Tx_Commerce_Utility_ArticleCreatorUtility
+ * Class \CommerceTeam\Commerce\Utility\ArticleCreatorUtility
  *
  * @author 2005-2012 Thomas Hempel <thomas@work.de>
  */
-class Tx_Commerce_Utility_ArticleCreatorUtility {
+class ArticleCreatorUtility {
 	/**
 	 * Existing articles
 	 *
@@ -66,7 +68,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	/**
 	 * Backend utility
 	 *
-	 * @var Tx_Commerce_Utility_BackendUtility
+	 * @var \CommerceTeam\Commerce\Utility\BackendUtility
 	 */
 	protected $belib;
 
@@ -83,7 +85,7 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 	 * @return self
 	 */
 	public function __construct() {
-		$this->belib = GeneralUtility::makeInstance('Tx_Commerce_Utility_BackendUtility');
+		$this->belib = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Utility\\BackendUtility');
 		$this->returnUrl = htmlspecialchars(urlencode(GeneralUtility::_GP('returnUrl')));
 	}
 
@@ -420,11 +422,17 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 						htmlspecialchars($hashData) . '" /></td>';
 
 					$resultRows .= '<td style="' . $class . '">' .
-						implode('</td><td style="' . $class . '">', Tx_Commerce_Utility_GeneralUtility::removeXSSStripTagsArray($labelData)) .
+						implode(
+							'</td><td style="' . $class . '">',
+							\CommerceTeam\Commerce\Utility\GeneralUtility::removeXSSStripTagsArray($labelData)
+						) .
 						'</td>';
 					if (count($extraRowData) > 0) {
 						$resultRows .= '<td style="' . $class . '">' .
-							implode('</td><td style="' . $class . '">', Tx_Commerce_Utility_GeneralUtility::removeXSSStripTagsArray($extraRowData)) .
+							implode(
+								'</td><td style="' . $class . '">',
+								\CommerceTeam\Commerce\Utility\GeneralUtility::removeXSSStripTagsArray($extraRowData)
+							) .
 							'</td>';
 					}
 					$resultRows .= '</tr>';
@@ -468,7 +476,10 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 		}
 
 		if ($acBefore != NULL) {
-			$result .= '<th>' . implode('</th><th>', Tx_Commerce_Utility_GeneralUtility::removeXSSStripTagsArray($acBefore)) . '</th>';
+			$result .= '<th>' . implode(
+				'</th><th>',
+				\CommerceTeam\Commerce\Utility\GeneralUtility::removeXSSStripTagsArray($acBefore)
+			) . '</th>';
 		}
 
 		if (is_array($this->attributes['ct1'])) {
@@ -479,7 +490,10 @@ class Tx_Commerce_Utility_ArticleCreatorUtility {
 		}
 
 		if ($acAfter != NULL) {
-			$result .= '<th>' . implode('</th><th>', Tx_Commerce_Utility_GeneralUtility::removeXSSStripTagsArray($acAfter)) . '</th>';
+			$result .= '<th>' . implode(
+				'</th><th>',
+				\CommerceTeam\Commerce\Utility\GeneralUtility::removeXSSStripTagsArray($acAfter)
+			) . '</th>';
 		}
 
 		if ($addTr) {

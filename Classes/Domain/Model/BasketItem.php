@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Domain\Model;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -19,29 +20,29 @@
  * Do not acces class variables directly, allways use the get and set methods,
  * variables will be changed in php5 to private
  *
- * Class Tx_Commerce_Domain_Model_BasketItem
+ * Class \CommerceTeam\Commerce\Domain\Model\BasketItem
  *
  * @author 2005-2013 Ingo Schmitt <is@marketing-factory.de>
  */
-class Tx_Commerce_Domain_Model_BasketItem {
+class BasketItem {
 	/**
 	 * Article
 	 *
-	 * @var Tx_Commerce_Domain_Model_Article
+	 * @var \CommerceTeam\Commerce\Domain\Model\Article
 	 */
 	public $article;
 
 	/**
 	 * Product
 	 *
-	 * @var Tx_Commerce_Domain_Model_Product
+	 * @var \CommerceTeam\Commerce\Domain\Model\Product
 	 */
 	public $product;
 
 	/**
 	 * Price
 	 *
-	 * @var Tx_Commerce_Domain_Model_ArticlePrice
+	 * @var \CommerceTeam\Commerce\Domain\Model\ArticlePrice
 	 */
 	protected $price;
 
@@ -153,9 +154,13 @@ class Tx_Commerce_Domain_Model_BasketItem {
 		/**
 		 * Article
 		 *
-		 * @var Tx_Commerce_Domain_Model_Article $article
+		 * @var \CommerceTeam\Commerce\Domain\Model\Article $article
 		 */
-		$article = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Article', $uid, $this->lang_uid);
+		$article = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+			'CommerceTeam\\Commerce\\Domain\\Model\\Article',
+			$uid,
+			$this->lang_uid
+		);
 
 		if (is_object($article)) {
 			$article->loadData('basket');
@@ -170,10 +175,10 @@ class Tx_Commerce_Domain_Model_BasketItem {
 			/**
 			 * Price
 			 *
-			 * @var Tx_Commerce_Domain_Model_ArticlePrice $price
+			 * @var \CommerceTeam\Commerce\Domain\Model\ArticlePrice $price
 			 */
 			$price = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-				'Tx_Commerce_Domain_Model_ArticlePrice',
+				'CommerceTeam\\Commerce\\Domain\\Model\\ArticlePrice',
 				$priceid,
 				$this->lang_uid
 			);
@@ -215,7 +220,7 @@ class Tx_Commerce_Domain_Model_BasketItem {
 	/**
 	 * Get article object
 	 *
-	 * @return Tx_Commerce_Domain_Model_Article Article object
+	 * @return \CommerceTeam\Commerce\Domain\Model\Article Article object
 	 */
 	public function getArticle() {
 		return $this->article;
@@ -402,7 +407,7 @@ class Tx_Commerce_Domain_Model_BasketItem {
 	/**
 	 * Get product object of item
 	 *
-	 * @return Tx_Commerce_Domain_Model_Product Product object
+	 * @return \CommerceTeam\Commerce\Domain\Model\Product Product object
 	 */
 	public function getProduct() {
 		return $this->product;
@@ -535,7 +540,7 @@ class Tx_Commerce_Domain_Model_BasketItem {
 		$this->priceid = $this->article->getActualPriceforScaleUid($quantity);
 
 		$this->price = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-			'Tx_Commerce_Domain_Model_ArticlePrice',
+			'CommerceTeam\\Commerce\\Domain\\Model\\ArticlePrice',
 			$this->priceid,
 			$this->lang_uid
 		);

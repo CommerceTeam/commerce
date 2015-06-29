@@ -24,10 +24,9 @@ require_once(PATH_site . 'typo3conf/ext/commerce/Classes/Utility/UpdateUtility.p
  *
  * @author 2008 - 2009 Ingo Schmitt <is@marketing-factory.de>
  */
-class ext_update extends Tx_Commerce_Utility_UpdateUtility {
+class ext_update extends \CommerceTeam\Commerce\Utility\UpdateUtility {
 }
 
 if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/class.ext_update.php']) {
-	/** @noinspection PhpIncludeInspection */
 	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/class.ext_update.php']);
 }

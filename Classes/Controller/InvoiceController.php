@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Controller;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -19,7 +20,7 @@ use \CommerceTeam\Commerce\Factory\HookFactory;
  *
  * @author 2005-2011 Franz Ripfel <fr@abezet.de>
  */
-class Tx_Commerce_Controller_InvoiceController extends Tx_Commerce_Controller_BaseController {
+class InvoiceController extends BaseController {
 	/**
 	 * Same as class name
 	 *
@@ -150,18 +151,18 @@ class Tx_Commerce_Controller_InvoiceController extends Tx_Commerce_Controller_Ba
 			$this->orderPayment = $this->getOrderSystemArticles($this->order['uid'], '2', 'PAYMENT_');
 			$this->orderDelivery = $this->getOrderSystemArticles($this->order['uid'], '3', 'SHIPPING_');
 
-			$markerArray['###ORDER_TAX###'] = Tx_Commerce_ViewHelpers_Money::format(
+			$markerArray['###ORDER_TAX###'] = \CommerceTeam\Commerce\ViewHelpers\Money::format(
 				$this->order['sum_price_gross'] - $this->order['sum_price_net'],
 				$this->conf['currency'],
 				(bool) $this->conf['showCurrencySign']
 			);
-			$markerArray['###ORDER_TOTAL###'] = Tx_Commerce_ViewHelpers_Money::format(
+			$markerArray['###ORDER_TOTAL###'] = \CommerceTeam\Commerce\ViewHelpers\Money::format(
 				$this->order['sum_price_gross'], $this->conf['currency'], (bool) $this->conf['showCurrencySign']
 			);
-			$markerArray['###ORDER_NET_TOTAL###'] = Tx_Commerce_ViewHelpers_Money::format(
+			$markerArray['###ORDER_NET_TOTAL###'] = \CommerceTeam\Commerce\ViewHelpers\Money::format(
 				$this->order['sum_price_net'], $this->conf['currency'], (bool) $this->conf['showCurrencySign']
 			);
-			$markerArray['###ORDER_GROSS_TOTAL###'] = Tx_Commerce_ViewHelpers_Money::format(
+			$markerArray['###ORDER_GROSS_TOTAL###'] = \CommerceTeam\Commerce\ViewHelpers\Money::format(
 				$this->order['sum_price_gross'], $this->conf['currency'], (bool) $this->conf['showCurrencySign']
 			);
 			$markerArray['###ORDER_ID###'] = $this->order['order_id'];
@@ -267,22 +268,22 @@ class Tx_Commerce_Controller_InvoiceController extends Tx_Commerce_Controller_Ba
 		$out = '';
 		while (($row = $database->sql_fetch_assoc($res))) {
 			$markerArray = $this->generateMarkerArray($row, $typoScript, $prefix, 'tx_commerce_order_articles');
-			$markerArray['ARTICLE_PRICE'] = Tx_Commerce_ViewHelpers_Money::format(
+			$markerArray['ARTICLE_PRICE'] = \CommerceTeam\Commerce\ViewHelpers\Money::format(
 				$row['price_gross'], $this->conf['currency'], (bool) $this->conf['showCurrencySign']
 			);
-			$markerArray['ARTICLE_PRICE_GROSS'] = Tx_Commerce_ViewHelpers_Money::format(
+			$markerArray['ARTICLE_PRICE_GROSS'] = \CommerceTeam\Commerce\ViewHelpers\Money::format(
 				$row['price_gross'], $this->conf['currency'], (bool) $this->conf['showCurrencySign']
 			);
-			$markerArray['ARTICLE_PRICE_NET'] = Tx_Commerce_ViewHelpers_Money::format(
+			$markerArray['ARTICLE_PRICE_NET'] = \CommerceTeam\Commerce\ViewHelpers\Money::format(
 				$row['price_net'], $this->conf['currency'], (bool) $this->conf['showCurrencySign']
 			);
-			$markerArray['ARTICLE_TOTAL'] = Tx_Commerce_ViewHelpers_Money::format(
+			$markerArray['ARTICLE_TOTAL'] = \CommerceTeam\Commerce\ViewHelpers\Money::format(
 				($row['amount'] * $row['price_gross']), $this->conf['currency'], (bool) $this->conf['showCurrencySign']
 			);
-			$markerArray['ARTICLE_TOTAL_GROSS'] = Tx_Commerce_ViewHelpers_Money::format(
+			$markerArray['ARTICLE_TOTAL_GROSS'] = \CommerceTeam\Commerce\ViewHelpers\Money::format(
 				($row['amount'] * $row['price_gross']), $this->conf['currency'], (bool) $this->conf['showCurrencySign']
 			);
-			$markerArray['ARTICLE_TOTAL_NET'] = Tx_Commerce_ViewHelpers_Money::format(
+			$markerArray['ARTICLE_TOTAL_NET'] = \CommerceTeam\Commerce\ViewHelpers\Money::format(
 				($row['amount'] * $row['price_net']), $this->conf['currency'], (bool) $this->conf['showCurrencySign']
 			);
 			$markerArray['ARTICLE_POSITION'] = $orderpos++;
@@ -403,7 +404,7 @@ class Tx_Commerce_Controller_InvoiceController extends Tx_Commerce_Controller_Ba
 			// @todo Use $markerArray = $this->generateMarkerArray($row, '', $prefix);
 			$markerArray['###' . $prefix . 'AMOUNT###'] = $row['amount'];
 			$markerArray['###' . $prefix . 'METHOD###'] = $row['title'];
-			$markerArray['###' . $prefix . 'COST###'] = Tx_Commerce_ViewHelpers_Money::format(
+			$markerArray['###' . $prefix . 'COST###'] = \CommerceTeam\Commerce\ViewHelpers\Money::format(
 				($row['amount'] * $row['price_gross']), $this->conf['currency'], (bool) $this->conf['showCurrencySign']
 			);
 			$content .= $this->cObj->substituteMarkerArray($subpart, $markerArray);

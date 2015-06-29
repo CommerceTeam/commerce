@@ -26,9 +26,9 @@ require_once($BACK_PATH . 'init.php');
 /**
  * Orders navigation viewhelper
  *
- * @var Tx_Commerce_ViewHelpers_Navigation_OrdersViewHelper $SOBE
+ * @var \CommerceTeam\Commerce\ViewHelpers\Navigation\OrdersViewHelper $SOBE
  */
-$SOBE = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_ViewHelpers_Navigation_OrdersViewHelper');
+$SOBE = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('CommerceTeam\\Commerce\\ViewHelpers\\Navigation\\OrdersViewHelper');
 $SOBE->init();
 $SOBE->initPage();
 $SOBE->main();

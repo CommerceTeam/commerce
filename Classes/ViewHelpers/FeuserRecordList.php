@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\ViewHelpers;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -19,11 +20,11 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Renders the Orderlist in the BE oredrmodule
  *
- * Class Tx_Commerce_ViewHelpers_FeuserRecordList
+ * Class \CommerceTeam\Commerce\ViewHelpers\FeuserRecordList
  *
  * @author 2006-2011 Volker Graubau <vg_typo3@e-netconsulting.de>
  */
-class Tx_Commerce_ViewHelpers_FeuserRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordList {
+class FeuserRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordList {
 	/**
 	 * Alternate background color
 	 *

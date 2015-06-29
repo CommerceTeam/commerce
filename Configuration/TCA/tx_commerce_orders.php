@@ -24,7 +24,7 @@ return array(
 			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_orders.cust_deliveryaddress',
 			'config' => array(
 				'type' => 'user',
-				'userFunc' => 'Tx_Commerce_ViewHelpers_OrderEditFunc->deliveryAddress',
+				'userFunc' => 'CommerceTeam\\Commerce\\ViewHelpers\\OrderEditFunc->deliveryAddress',
 			)
 		),
 		'order_type_uid' => array(
@@ -69,7 +69,7 @@ return array(
 			'config' => array(
 				'type' => 'select',
 				'foreign_table' => 'pages',
-				'itemsProcFunc' => 'Tx_Commerce_ViewHelpers_OrderEditFunc->orderStatus',
+				'itemsProcFunc' => 'CommerceTeam\\Commerce\\ViewHelpers\\OrderEditFunc->orderStatus',
 			)
 		),
 		'cust_fe_user' => array(
@@ -99,7 +99,7 @@ return array(
 			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_orders.cust_invoice',
 			'config' => array(
 				'type' => 'user',
-				'userFunc' => 'Tx_Commerce_ViewHelpers_OrderEditFunc->invoiceAddress',
+				'userFunc' => 'CommerceTeam\\Commerce\\ViewHelpers\\OrderEditFunc->invoiceAddress',
 			)
 		),
 		'paymenttype' => array(
@@ -114,14 +114,14 @@ return array(
 			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_orders.sum_price_net',
 			'config' => array(
 				'type' => 'user',
-				'userFunc' => 'Tx_Commerce_ViewHelpers_OrderEditFunc->orderArticles',
+				'userFunc' => 'CommerceTeam\\Commerce\\ViewHelpers\\OrderEditFunc->orderArticles',
 			)
 		),
 		'sum_price_gross' => array(
 			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_orders.sum_price_gross',
 			'config' => array(
 				'type' => 'user',
-				'userFunc' => 'Tx_Commerce_ViewHelpers_OrderEditFunc->sumPriceGrossFormat',
+				'userFunc' => 'CommerceTeam\\Commerce\\ViewHelpers\\OrderEditFunc->sumPriceGrossFormat',
 			)
 		),
 		'payment_ref_id' => array(

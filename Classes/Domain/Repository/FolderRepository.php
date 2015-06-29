@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Domain\Repository;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -15,11 +16,11 @@
 /**
  * Misc commerce db functions
  *
- * Class Tx_Commerce_Domain_Repository_FolderRepository
+ * Class \CommerceTeam\Commerce\Domain\Repository\FolderRepository
  *
  * @author 2008-2011 Eric Frister <ef@marketing-factory.de>
  */
-class Tx_Commerce_Domain_Repository_FolderRepository {
+class FolderRepository {
 	/**
 	 * Find the extension folders or create one.
 	 *

@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Utility;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -18,9 +19,11 @@
  * Basically checks for the new Tree, if all records have a MM
  * relation to Record UID 0 if not, these records are created
  *
+ * Class \CommerceTeam\Commerce\Utility\UpdateUtility
+ *
  * @author 2008-2011 Ingo Schmitt <is@marketing-factory.de>
  */
-class Tx_Commerce_Utility_UpdateUtility {
+class UpdateUtility {
 	/**
 	 * Performes the Updates
 	 * Outputs HTML Content
@@ -63,8 +66,8 @@ class Tx_Commerce_Utility_UpdateUtility {
 		/**
 		 * Get data from folder
 		 */
-		list($modPid) = Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Commerce', 'commerce');
-		list($prodPid) = Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Products', 'commerce', $modPid);
+		list($modPid) = \CommerceTeam\Commerce\Domain\Repository\FolderRepository::initFolders('Commerce', 'commerce');
+		list($prodPid) = \CommerceTeam\Commerce\Domain\Repository\FolderRepository::initFolders('Products', 'commerce', $modPid);
 		$resrights = $database->exec_SELECTquery(
 			'perms_userid, perms_groupid, perms_user, perms_group, perms_everybody',
 			'pages',

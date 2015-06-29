@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Hook;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -13,11 +14,11 @@
  */
 
 /**
- * Class Tx_Commerce_Hook_TceFormsHooks
+ * Class \CommerceTeam\Commerce\Hook\TceFormsHooks
  *
  * @author 2008-2009 Ingo Schmitt <is@marketing-factory.de>
  */
-class Tx_Commerce_Hook_TceFormsHooks {
+class TceFormsHooks {
 	/**
 	 * Extension configuration
 	 *
@@ -110,7 +111,7 @@ class Tx_Commerce_Hook_TceFormsHooks {
 	 *
 	 * @return void
 	 */
-	public function getSingleField_postProcess($table, $field, $row, &$out, $palette, $extra) {
+	public function getSingleField_postProcess($table, $field, array $row, &$out, $palette, $extra) {
 		// This value is set, if the preProcess updated the tca earlyer
 		if ($this->lastMaxItems !== FALSE) {
 			$GLOBALS['TCA']['tx_commerce_products']['columns']['articles']['config']['maxitems'] = $this->lastMaxItems;

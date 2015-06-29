@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Controller;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -12,16 +13,17 @@
  * The TYPO3 project - inspiring people to share!
  */
 
+use CommerceTeam\Commerce\Domain\Repository\FolderRepository;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Backend\Utility\IconUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * Class Tx_Commerce_Controller_CategoryModuleController
+ * Class \CommerceTeam\Commerce\Controller\CategoryModuleController
  *
  * @author Sebastian Fischer <typo3@marketing-factory.de>
  */
-class Tx_Commerce_Controller_CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList {
+class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList {
 	/**
 	 * The script for the wizard of the command 'new'
 	 *
@@ -54,9 +56,9 @@ class Tx_Commerce_Controller_CategoryModuleController extends \TYPO3\CMS\Recordl
 		// Setting GPvars:
 		$this->id = (int) GeneralUtility::_GP('id');
 		if (!$this->id) {
-			Tx_Commerce_Utility_FolderUtility::initFolders();
+			\CommerceTeam\Commerce\Utility\FolderUtility::initFolders();
 			$this->id = current(
-				array_unique(Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Products', 'Commerce', 0, 'Commerce'))
+				array_unique(FolderRepository::initFolders('Products', 'Commerce', 0, 'Commerce'))
 			);
 		}
 
@@ -83,7 +85,7 @@ class Tx_Commerce_Controller_CategoryModuleController extends \TYPO3\CMS\Recordl
 		// Module name;
 		$this->MCONF = $GLOBALS['MCONF'];
 		// Page select clause:
-		$this->perms_clause = Tx_Commerce_Utility_BackendUtility::getCategoryPermsClause(1);
+		$this->perms_clause = \CommerceTeam\Commerce\Utility\BackendUtility::getCategoryPermsClause(1);
 
 		$this->initPage();
 		$this->clearCache();
@@ -122,11 +124,11 @@ class Tx_Commerce_Controller_CategoryModuleController extends \TYPO3\CMS\Recordl
 		if (!$this->modTSconfig['properties']['noCreateRecordsLink']) {
 			$controls = array(
 				'category' => array(
-					'dataClass' => 'Tx_Commerce_Tree_Leaf_CategoryData',
+					'dataClass' => 'CommerceTeam\\Commerce\\Tree\\Leaf\\CategoryData',
 					'parent' => 'parent_category'
 				),
 				'product' => array(
-					'dataClass' => 'Tx_Commerce_Tree_Leaf_ProductData',
+					'dataClass' => 'CommerceTeam\\Commerce\\Tree\\Leaf\\ProductData',
 					'parent' => 'categories'
 				)
 			);
@@ -136,7 +138,7 @@ class Tx_Commerce_Controller_CategoryModuleController extends \TYPO3\CMS\Recordl
 				/**
 				 * Tree data
 				 *
-				 * @var Tx_Commerce_Tree_Leaf_Data $treeData
+				 * @var \CommerceTeam\Commerce\Tree\Leaf\Data $treeData
 				 */
 				$treeData = GeneralUtility::makeInstance($controlData['dataClass']);
 				$treeData->init();
@@ -159,7 +161,7 @@ class Tx_Commerce_Controller_CategoryModuleController extends \TYPO3\CMS\Recordl
 		// The page will show only if there is a valid page
 		// and if this page may be viewed by the user
 		if ($this->categoryUid) {
-			$this->pageinfo = Tx_Commerce_Utility_BackendUtility::readCategoryAccess($this->categoryUid, $this->perms_clause);
+			$this->pageinfo = \CommerceTeam\Commerce\Utility\BackendUtility::readCategoryAccess($this->categoryUid, $this->perms_clause);
 		} else {
 			$this->pageinfo = BackendUtility::readPageAccess($this->id, $this->getBackendUser()->getPagePermsClause(1));
 		}
@@ -188,9 +190,9 @@ class Tx_Commerce_Controller_CategoryModuleController extends \TYPO3\CMS\Recordl
 		/**
 		 * Category record list
 		 *
-		 * @var $dbList Tx_Commerce_ViewHelpers_CategoryRecordList
+		 * @var $dbList \CommerceTeam\Commerce\ViewHelpers\CategoryRecordList
 		 */
-		$dbList = GeneralUtility::makeInstance('Tx_Commerce_ViewHelpers_CategoryRecordList');
+		$dbList = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\ViewHelpers\\CategoryRecordList');
 		$dbList->backPath = $GLOBALS['BACK_PATH'];
 		$dbList->script = BackendUtility::getModuleUrl('txcommerceM1_category', array(), '');
 

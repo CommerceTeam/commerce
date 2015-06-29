@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Controller;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -15,11 +16,11 @@
 /**
  * Module 'Statistics' for the 'commerce' extension.
  *
- * Class Tx_Commerce_Controller_StatisticModuleController
+ * Class \CommerceTeam\Commerce\Controller\StatisticModuleController
  *
  * @author 2004-2011 Joerg Sprung <jsp@marketing-factory.de>
  */
-class Tx_Commerce_Controller_StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
+class StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 	/**
 	 * Document template
 	 *
@@ -58,7 +59,7 @@ class Tx_Commerce_Controller_StatisticModuleController extends \TYPO3\CMS\Backen
 	/**
 	 * Statistics
 	 *
-	 * @var Tx_Commerce_Utility_StatisticsUtility
+	 * @var \CommerceTeam\Commerce\Utility\StatisticsUtility
 	 */
 	protected $statistics;
 
@@ -77,11 +78,11 @@ class Tx_Commerce_Controller_StatisticModuleController extends \TYPO3\CMS\Backen
 
 		$this->excludePids = $this->extConf['excludeStatisticFolders'] != '' ? $this->extConf['excludeStatisticFolders'] : 0;
 
-		$this->statistics = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Utility_StatisticsUtility');
+		$this->statistics = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Utility\\StatisticsUtility');
 		$this->statistics->init($this->extConf['excludeStatisticFolders'] != '' ? $this->extConf['excludeStatisticFolders'] : 0);
 
 		$this->orderPageId = current(array_unique(
-			Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Orders', 'Commerce', 0, 'Commerce')
+			\CommerceTeam\Commerce\Domain\Repository\FolderRepository::initFolders('Orders', 'Commerce', 0, 'Commerce')
 		));
 
 		/**

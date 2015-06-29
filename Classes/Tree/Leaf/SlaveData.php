@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Tree\Leaf;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -15,11 +16,11 @@
 /**
  * Implements the data view for leaf slave
  *
- * Class Tx_Commerce_Tree_Leaf_SlaveData
+ * Class \CommerceTeam\Commerce\Tree\Leaf\SlaveData
  *
  * @author 2008 Erik Frister <typo3@marketing-factory.de>
  */
-abstract class Tx_Commerce_Tree_Leaf_SlaveData extends Tx_Commerce_Tree_Leaf_Data {
+abstract class SlaveData extends Data {
 	/**
 	 * Returns an array of Positions
 	 *
@@ -44,7 +45,7 @@ abstract class Tx_Commerce_Tree_Leaf_SlaveData extends Tx_Commerce_Tree_Leaf_Dat
 		if (!is_array($this->positionArray[$firstIndex])) {
 			if (TYPO3_DLOG) {
 				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
-					'getPositionsByIndices (Tx_Commerce_Tree_Leaf_SlaveData) does not find the first Index in the position array.',
+					'getPositionsByIndices (CommerceTeam\\Commerce\\Tree\\Leaf\\SlaveData) does not find the first Index in the position array.',
 					COMMERCE_EXTKEY, 2
 				);
 			}
@@ -63,15 +64,15 @@ abstract class Tx_Commerce_Tree_Leaf_SlaveData extends Tx_Commerce_Tree_Leaf_Dat
 	 *
 	 * @param int $index Leaf index
 	 * @param array $parentIndices Parent Indices
-	 * @param Tx_Commerce_Tree_Leaf_Data $parentLeafData LeafData of parent
+	 * @param \CommerceTeam\Commerce\Tree\Leaf\Data $parentLeafData Parent leafData
 	 *
 	 * @return void
 	 */
-	public function initRecords($index, array $parentIndices, Tx_Commerce_Tree_Leaf_Data &$parentLeafData) {
+	public function initRecords($index, array $parentIndices, \CommerceTeam\Commerce\Tree\Leaf\Data &$parentLeafData) {
 		if (!is_numeric($index) || !is_array($parentIndices) || is_null($parentLeafData)) {
 			if (TYPO3_DLOG) {
 				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
-					'initRecords (Tx_Commerce_Tree_Leaf_SlaveData) gets passed invalid parameters.',
+					'initRecords (CommerceTeam\\Commerce\\Tree\\Leaf\\SlaveData) gets passed invalid parameters.',
 					COMMERCE_EXTKEY, 3
 				);
 			}

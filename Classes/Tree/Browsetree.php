@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Tree;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -11,16 +12,17 @@
  *
  * The TYPO3 project - inspiring people to share!
  */
+
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Implements a browseable AJAX tree
  *
- * Class Tx_Commerce_Tree_Browsetree
+ * Class \CommerceTeam\Commerce\Tree\Browsetree
  *
  * @author 2008 Erik Frister <typo3@marketing-factory.de>
  */
-abstract class Tx_Commerce_Tree_Browsetree {
+abstract class Browsetree {
 	/**
 	 * Name of the table
 	 *
@@ -43,7 +45,7 @@ abstract class Tx_Commerce_Tree_Browsetree {
 	protected $leafs;
 
 	/**
-	 * has the tree already been initialized?
+	 * Has the tree already been initialized?
 	 *
 	 * @var bool
 	 */
@@ -87,7 +89,7 @@ abstract class Tx_Commerce_Tree_Browsetree {
 		$this->leafcount = 0;
 		$this->isInit = FALSE;
 		$this->noClickmenu = FALSE;
-		$this->renderBy = 'Tx_Commerce_Tree_Leaf_Mounts';
+		$this->renderBy = 'CommerceTeam\\Commerce\\Tree\\Leaf\\Mounts';
 		$this->startingUid = 0;
 	}
 
@@ -113,7 +115,7 @@ abstract class Tx_Commerce_Tree_Browsetree {
 		if (!is_bool($flag)) {
 			if (TYPO3_DLOG) {
 				GeneralUtility::devLog(
-					'noClickmenu (Tx_Commerce_Tree_Browsetree) gets a non-bool parameter (expected bool)!',
+					'noClickmenu (CommerceTeam\\Commerce\\Tree\\Browsetree) gets a non-bool parameter (expected bool)!',
 					COMMERCE_EXTKEY,
 					2
 				);
@@ -125,12 +127,13 @@ abstract class Tx_Commerce_Tree_Browsetree {
 	/**
 	 * Adds a leaf to the Tree
 	 *
-	 * @param Tx_Commerce_Tree_Leaf_Master $leaf Treeleaf Object which
-	 * 	holds the Tx_Commerce_Tree_Leaf_Data and the Tx_Commerce_Tree_Leaf_View
+	 * @param \CommerceTeam\Commerce\Tree\Leaf\Master $leaf Treeleaf Object which
+	 *	holds the \CommerceTeam\Commerce\Tree\Leaf\Data
+	 *	and the \CommerceTeam\Commerce\Tree\Leaf\View
 	 *
 	 * @return bool
 	 */
-	public function addLeaf(Tx_Commerce_Tree_Leaf_Master &$leaf) {
+	public function addLeaf(\CommerceTeam\Commerce\Tree\Leaf\Master &$leaf) {
 		// pass tree vars to the new leaf
 		$leaf->setTreeName($this->treeName);
 		$leaf->noClickmenu($this->noClickmenu);
@@ -146,12 +149,12 @@ abstract class Tx_Commerce_Tree_Browsetree {
 	 *
 	 * @param int $index Leaf index
 	 *
-	 * @return Tx_Commerce_Tree_Leaf_Master
+	 * @return \CommerceTeam\Commerce\Tree\Leaf\Master
 	 */
 	public function getLeaf($index) {
 		if (!is_numeric($index) || !isset($this->leafs[$index])) {
 			if (TYPO3_DLOG) {
-				GeneralUtility::devLog('getLeaf (Tx_Commerce_Tree_Browsetree) has an invalid parameter.', COMMERCE_EXTKEY, 3);
+				GeneralUtility::devLog('getLeaf (CommerceTeam\\Commerce\\Tree\\Browsetree) has an invalid parameter.', COMMERCE_EXTKEY, 3);
 			}
 			return NULL;
 		}
@@ -171,14 +174,15 @@ abstract class Tx_Commerce_Tree_Browsetree {
 	}
 
 	/**
-	 * Sets the internal rendering method to 'Tx_Commerce_Tree_Leaf_Mounts'
+	 * Sets the internal rendering method to
+	 * \CommerceTeam\Commerce\Tree\Leaf\Mounts
 	 * Call BEFORE initializing
 	 *
 	 * @return void
 	 */
 	public function readByMounts() {
 		// set internal var
-		$this->renderBy = 'Tx_Commerce_Tree_Leaf_Mounts';
+		$this->renderBy = 'CommerceTeam\\Commerce\\Tree\\Leaf\\Mounts';
 	}
 
 	/**
@@ -193,7 +197,11 @@ abstract class Tx_Commerce_Tree_Browsetree {
 	public function readRecursively($uid, $depth = 100) {
 		if (!is_numeric($uid)) {
 			if (TYPO3_DLOG) {
-				GeneralUtility::devLog('readRecursively (Tx_Commerce_Tree_Browsetree) has an invalid parameter.', COMMERCE_EXTKEY, 3);
+				GeneralUtility::devLog(
+					'readRecursively (CommerceTeam\\Commerce\\Tree\\Browsetree) has an invalid parameter.',
+					COMMERCE_EXTKEY,
+					3
+				);
 			}
 			return;
 		}
@@ -214,7 +222,7 @@ abstract class Tx_Commerce_Tree_Browsetree {
 		$return = '';
 
 		switch ($this->renderBy) {
-			case 'Tx_Commerce_Tree_Leaf_Mounts':
+			case 'CommerceTeam\\Commerce\\Tree\\Leaf\\Mounts':
 				$this->getTreeByMountpoints();
 				$return = $this->printTreeByMountpoints();
 				break;
@@ -280,7 +288,7 @@ abstract class Tx_Commerce_Tree_Browsetree {
 			/**
 			 * Leaf
 			 *
-			 * @var Tx_Commerce_Tree_Leaf_Master $leaf
+			 * @var \CommerceTeam\Commerce\Tree\Leaf\Master $leaf
 			 */
 			$leaf = & $this->leafs[$i];
 			$leaf->byMounts();
@@ -304,7 +312,7 @@ abstract class Tx_Commerce_Tree_Browsetree {
 			/**
 			 * Leaf
 			 *
-			 * @var Tx_Commerce_Tree_Leaf_Master $leaf
+			 * @var \CommerceTeam\Commerce\Tree\Leaf\Master $leaf
 			 */
 			$leaf = & $this->leafs[$i];
 			$leaf->setUid($uid);
@@ -351,7 +359,7 @@ abstract class Tx_Commerce_Tree_Browsetree {
 		/**
 		 * Leaf
 		 *
-		 * @var Tx_Commerce_Tree_Leaf_Master $leaf
+		 * @var \CommerceTeam\Commerce\Tree\Leaf\Master $leaf
 		 */
 		$leaf = &$this->leafs[$indexFirst];
 
@@ -399,7 +407,7 @@ abstract class Tx_Commerce_Tree_Browsetree {
 			/**
 			 * Leaf
 			 *
-			 * @var Tx_Commerce_Tree_Leaf_Master $leaf
+			 * @var \CommerceTeam\Commerce\Tree\Leaf\Master $leaf
 			 */
 			$leaf = & $this->leafs[$i];
 			$out .= $leaf->printLeafByMounts();
@@ -435,7 +443,7 @@ abstract class Tx_Commerce_Tree_Browsetree {
 			/**
 			 * Leaf
 			 *
-			 * @var Tx_Commerce_Tree_Leaf_Master $leaf
+			 * @var \CommerceTeam\Commerce\Tree\Leaf\Master $leaf
 			 */
 			$leaf = $this->leafs[$i];
 			if ($leaf->data->hasRecords()) {
@@ -476,7 +484,7 @@ abstract class Tx_Commerce_Tree_Browsetree {
 			/**
 			 * Leaf
 			 *
-			 * @var Tx_Commerce_Tree_Leaf_Master $leaf
+			 * @var \CommerceTeam\Commerce\Tree\Leaf\Master $leaf
 			 */
 			$leaf = $this->leafs[$i];
 
@@ -504,7 +512,7 @@ abstract class Tx_Commerce_Tree_Browsetree {
 	/**
 	 * Will initialize the User Position
 	 * Saves it in the Session and gives
-	 * the Position UIDs to the Tx_Commerce_Tree_Leaf_Data
+	 * the Position UIDs to the \CommerceTeam\Commerce\Tree\Leaf\Data
 	 *
 	 * @return void
 	 */
@@ -579,7 +587,7 @@ abstract class Tx_Commerce_Tree_Browsetree {
 			/**
 			 * Leaf
 			 *
-			 * @var Tx_Commerce_Tree_Leaf_Master $leaf
+			 * @var \CommerceTeam\Commerce\Tree\Leaf\Master $leaf
 			 */
 			$leaf = & $this->leafs[$i];
 			$leaf->setDataPositions($positions);

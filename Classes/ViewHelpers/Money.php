@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\ViewHelpers;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -16,18 +17,18 @@
  * Code library for display of different currencies
  * widely used in EXT: commerce
  *
- * Class Tx_Commerce_ViewHelpers_Money
+ * Class \CommerceTeam\Commerce\ViewHelpers\Money
  *
  * @author Robert Lemke <robert@typo3.org>
  * @author Franz Ripfel <typo3@abezet.de>
  * @author Ingo Schmitt <is@marketing-factory.de>
  */
-class Tx_Commerce_ViewHelpers_Money {
+class Money {
 	/**
 	 * Use this function from TS, example:
 	 * includeLibs.moneylib = EXT:commerce/Classes/ViewHelpers/Money.php
 	 * price_net = stdWrap
-	 * price_net.postUserFunc = Tx_Commerce_ViewHelpers_Money->user_tsFormat
+	 * price_net.postUserFunc = CommerceTeam\\Commerce\\ViewHelpers\\Money->user_tsFormat
 	 * price_net.postUserFunc.currency = EUR
 	 * price_net.postUserFunc.withSymbol = 0
 	 *

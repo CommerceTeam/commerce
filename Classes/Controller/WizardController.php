@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Controller;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -13,11 +14,11 @@
  */
 
 /**
- * Class Tx_Commerce_Controller_WizardController
+ * Class \CommerceTeam\Commerce\Controller\WizardController
  *
  * @author 2008-2011 Ingo Schmitt <is@marketing-factory.de>
  */
-class Tx_Commerce_Controller_WizardController {
+class WizardController {
 	/**
 	 * Page info
 	 *
@@ -153,7 +154,7 @@ class Tx_Commerce_Controller_WizardController {
 		// The page id to operate from
 		$this->id = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('id') ?
 			(int) \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('id') :
-			Tx_Commerce_Utility_BackendUtility::getProductFolderUid();
+			\CommerceTeam\Commerce\Utility\BackendUtility::getProductFolderUid();
 		$this->returnUrl = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('returnUrl');
 
 		// this to be accomplished from the caller: &edit['.$table.'][-'.$uid.']=new&

@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Hook;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -13,18 +14,18 @@
  */
 
 /**
- * Class Tx_Commerce_Hook_LocalRecordListHooks
+ * Class \CommerceTeam\Commerce\Hook\LocalRecordListHooks
  *
  * @author 2014 Sebastian Fischer <typo3@evoweb.de>
  */
-class Tx_Commerce_Hook_LocalRecordListHooks implements \TYPO3\CMS\Recordlist\RecordList\RecordListHookInterface {
+class LocalRecordListHooks implements \TYPO3\CMS\Recordlist\RecordList\RecordListHookInterface {
 	/**
 	 * Modifies Web>List clip icons (copy, cut, paste, etc.) of a displayed row
 	 *
 	 * @param string $table Database table
 	 * @param array $row Record row
 	 * @param array $cells Clip-icons to get modified
-	 * @param Tx_Commerce_ViewHelpers_CategoryRecordList $parentObject Calling object
+	 * @param \CommerceTeam\Commerce\ViewHelpers\CategoryRecordList $parentObject Parent
 	 *
 	 * @return array the modified clip-icons
 	 */
@@ -48,7 +49,7 @@ class Tx_Commerce_Hook_LocalRecordListHooks implements \TYPO3\CMS\Recordlist\Rec
 	 * @param string $table The current database table
 	 * @param array $row The current record row
 	 * @param array $cells The default control-icons to get modified
-	 * @param Tx_Commerce_ViewHelpers_CategoryRecordList $parentObject Calling object
+	 * @param \CommerceTeam\Commerce\ViewHelpers\CategoryRecordList $parentObject Parent
 	 *
 	 * @return array the modified control-icons
 	 */
@@ -62,14 +63,14 @@ class Tx_Commerce_Hook_LocalRecordListHooks implements \TYPO3\CMS\Recordlist\Rec
 	 * @param string $table Table
 	 * @param array $currentIdList Current id list
 	 * @param array $headerColumns Header columns
-	 * @param Tx_Commerce_ViewHelpers_CategoryRecordList $parentObject Parent
+	 * @param \CommerceTeam\Commerce\ViewHelpers\OrderRecordList $parentObject Parent
 	 *
 	 * @return array
 	 */
 	public function renderListHeader($table, $currentIdList, $headerColumns, &$parentObject) {
 		$language = $this->getLanguageService();
 
-		if (get_class($parentObject) == 'Tx_Commerce_ViewHelpers_OrderRecordList') {
+		if (get_class($parentObject) == 'CommerceTeam\\Commerce\\ViewHelpers\\OrderRecordList') {
 			$icon = '';
 			foreach ($parentObject->fieldArray as $fCol) {
 				// Calculate users permissions to edit records in the table:

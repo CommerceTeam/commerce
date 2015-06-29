@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Tree\Leaf;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -15,11 +16,11 @@
 /**
  * Implements the View for Articles
  *
- * Class Tx_Commerce_Tree_Leaf_ArticleView
+ * Class \CommerceTeam\Commerce\Tree\Leaf\ArticleView
  *
  * @author 2008-2014 Erik Frister <typo3@marketing-factory.de>
  */
-class Tx_Commerce_Tree_Leaf_ArticleView extends Tx_Commerce_Tree_Leaf_View {
+class ArticleView extends View {
 	/**
 	 * DB Table
 	 *

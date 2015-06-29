@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Hook;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -19,11 +20,11 @@
  *
  * This class handles frontend feuser updates
  *
- * Class Tx_Commerce_Hook_SrfeuserregisterPi1Hook
+ * Class \CommerceTeam\Commerce\Hook\SrfeuserregisterPi1Hook
  *
  * @author 2005-2008 Carsten Lausen <cl@e-netconsulting.de>
  */
-class Tx_Commerce_Hook_SrfeuserregisterPi1Hook {
+class SrfeuserregisterPi1Hook {
 	/**
 	 * After save create
 	 *
@@ -36,7 +37,7 @@ class Tx_Commerce_Hook_SrfeuserregisterPi1Hook {
 	 */
 	public function registrationProcess_afterSaveCreate($theTable, array $dataArray) {
 		// notify observer
-		Tx_Commerce_Dao_FeuserObserver::update('new', $dataArray['uid']);
+		\CommerceTeam\Commerce\Dao\FeuserObserver::update('new', $dataArray['uid']);
 	}
 
 	/**
@@ -50,7 +51,7 @@ class Tx_Commerce_Hook_SrfeuserregisterPi1Hook {
 	 * @return void
 	 */
 	public function registrationProcess_afterSaveEdit($theTable, array $dataArray) {
-			// notify observer
-		Tx_Commerce_Dao_FeuserObserver::update('update', $dataArray['uid']);
+		// notify observer
+		\CommerceTeam\Commerce\Dao\FeuserObserver::update('update', $dataArray['uid']);
 	}
 }

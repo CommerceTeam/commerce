@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Payment;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -13,9 +14,9 @@
  */
 
 /**
- * Class Tx_Commerce_Payment_Ccvs
+ * Class \CommerceTeam\Commerce\Payment\Ccvs
  *
  * @author 2005-2011 Ingo Schmitt <is@marketing-factory.de>
  */
-class Tx_Commerce_Payment_Ccvs extends CreditCardValidationSolution {
+class Ccvs extends \CommerceTeam\Commerce\Payment\Ccvs\CreditCardValidationSolution {
 }

@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\ViewHelpers\Navigation;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -11,21 +12,22 @@
  *
  * The TYPO3 project - inspiring people to share!
  */
+
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Main script class for the tree edit navigation frame
  *
- * Class Tx_Commerce_ViewHelpers_Navigation_OrdersViewHelper
+ * Class \CommerceTeam\Commerce\ViewHelpers\Navigation\OrdersViewHelper
  *
  * @author 2005-2011 Ingo Schmitt <is@marketing-factory.de>
  */
-class Tx_Commerce_ViewHelpers_Navigation_OrdersViewHelper extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
+class OrdersViewHelper extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 	/**
 	 * Page tree
 	 *
-	 * @var Tx_Commerce_Tree_OrderTree
+	 * @var \CommerceTeam\Commerce\Tree\OrderTree
 	 */
 	protected $pagetree;
 
@@ -86,10 +88,10 @@ class Tx_Commerce_ViewHelpers_Navigation_OrdersViewHelper extends \TYPO3\CMS\Bac
 		$this->setTemporaryDatabaseMount = GeneralUtility::_GP('setTempDBmount');
 
 		// Generate Folder if necessary
-		Tx_Commerce_Utility_FolderUtility::initFolders();
+		\CommerceTeam\Commerce\Utility\FolderUtility::initFolders();
 
 		// Create page tree object:
-		$this->pagetree = GeneralUtility::makeInstance('Tx_Commerce_Tree_OrderTree');
+		$this->pagetree = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\OrderTree');
 		$this->pagetree->ext_IconMode = $backendUser->getTSConfigVal('options.pageTree.disableIconLinkToContextmenu');
 		$this->pagetree->ext_showPageId = $backendUser->getTSConfigVal('options.pageTree.showPageIdWithTitle');
 		$this->pagetree->addField('alias');
@@ -102,7 +104,7 @@ class Tx_Commerce_ViewHelpers_Navigation_OrdersViewHelper extends \TYPO3\CMS\Bac
 
 		// Temporary DB mounts:
 		$this->pagetree->MOUNTS = array_unique(
-			Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Orders', 'Commerce', 0, 'Commerce')
+			\CommerceTeam\Commerce\Domain\Repository\FolderRepository::initFolders('Orders', 'Commerce', 0, 'Commerce')
 		);
 		$this->initializeTemporaryDatabaseMount();
 

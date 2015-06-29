@@ -19,9 +19,9 @@
 /**
  * Permission module
  *
- * @var Tx_Commerce_Controller_PermissionModuleController $SOBE
+ * @var \CommerceTeam\Commerce\Controller\PermissionModuleController $SOBE
  */
-$SOBE = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Controller_PermissionModuleController');
+$SOBE = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Controller\\PermissionModuleController');
 $SOBE->init();
 $SOBE->main();
 $SOBE->printContent();

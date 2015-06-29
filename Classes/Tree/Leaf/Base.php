@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Tree\Leaf;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -15,11 +16,11 @@
 /**
  * Implements the i18n base for the tree
  *
- * Class Tx_Commerce_Tree_Leaf_Base
+ * Class \CommerceTeam\Commerce\Tree\Leaf\Base
  *
  * @author 2008-2009 Erik Frister <typo3@marketing-factory.de>
  */
-class Tx_Commerce_Tree_Leaf_Base {
+class Base {
 	/**
 	 * Flag if is loaded
 	 *

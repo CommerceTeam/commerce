@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Controller;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -12,6 +13,7 @@
  * The TYPO3 project - inspiring people to share!
  */
 
+use CommerceTeam\Commerce\Domain\Repository\FolderRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use \CommerceTeam\Commerce\Factory\HookFactory;
 
@@ -23,11 +25,11 @@ use \CommerceTeam\Commerce\Factory\HookFactory;
  * provides several methods for displaying forms, checking data and
  * storing data.
  *
- * Class Tx_Commerce_Controller_CheckoutController
+ * Class \CommerceTeam\Commerce\Controller\CheckoutController
  *
  * @author Ingo Schmitt <is@marketing-factory.de>
  */
-class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_BaseController {
+class CheckoutController extends BaseController {
 	/**
 	 * Same as class name
 	 *
@@ -173,7 +175,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		/**
 		 * Basket
 		 *
-		 * @var $basket Tx_Commerce_Domain_Model_Basket
+		 * @var $basket \CommerceTeam\Commerce\Domain\Model\Basket
 		 */
 		$basket = & $GLOBALS['TSFE']->fe_user->tx_commerce_basket;
 		$basket->setTaxCalculationMethod($this->conf['priceFromNet']);
@@ -206,7 +208,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	 */
 	public function main($content, array $conf = array()) {
 		$this->debug(
-			$GLOBALS['TSFE']->fe_user->getKey('ses', Tx_Commerce_Utility_GeneralUtility::generateSessionKey('billing')),
+			$GLOBALS['TSFE']->fe_user->getKey('ses', \CommerceTeam\Commerce\Utility\GeneralUtility::generateSessionKey('billing')),
 			'billingsession', __FILE__ . ' ' . __LINE__
 		);
 
@@ -221,7 +223,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			/**
 			 * Basket
 			 *
-			 * @var $basket Tx_Commerce_Domain_Model_Basket
+			 * @var $basket \CommerceTeam\Commerce\Domain\Model\Basket
 			 */
 			$basket = & $GLOBALS['TSFE']->fe_user->tx_commerce_basket;
 			$basket->setReadOnly();
@@ -340,7 +342,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		}
 
 		$feUser = $this->getFrontendController()->fe_user;
-		$feUser->setKey('ses', Tx_Commerce_Utility_GeneralUtility::generateSessionKey('currentStep'), $this->currentStep);
+		$feUser->setKey('ses', \CommerceTeam\Commerce\Utility\GeneralUtility::generateSessionKey('currentStep'), $this->currentStep);
 
 		$content = $this->renderSteps($content);
 
@@ -362,16 +364,16 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		$feUser = $this->getFrontendController()->fe_user;
 		// Write the billing address into session, if it is present in the REQUEST
 		if (isset($this->piVars['billing'])) {
-			$this->piVars['billing'] = Tx_Commerce_Utility_GeneralUtility::removeXSSStripTagsArray($this->piVars['billing']);
-			$feUser->setKey('ses', Tx_Commerce_Utility_GeneralUtility::generateSessionKey('billing'), $this->piVars['billing']);
+			$this->piVars['billing'] = \CommerceTeam\Commerce\Utility\GeneralUtility::removeXSSStripTagsArray($this->piVars['billing']);
+			$feUser->setKey('ses', \CommerceTeam\Commerce\Utility\GeneralUtility::generateSessionKey('billing'), $this->piVars['billing']);
 		}
 		if (isset($this->piVars['delivery'])) {
-			$this->piVars['delivery'] = Tx_Commerce_Utility_GeneralUtility::removeXSSStripTagsArray($this->piVars['delivery']);
-			$feUser->setKey('ses', Tx_Commerce_Utility_GeneralUtility::generateSessionKey('delivery'), $this->piVars['delivery']);
+			$this->piVars['delivery'] = \CommerceTeam\Commerce\Utility\GeneralUtility::removeXSSStripTagsArray($this->piVars['delivery']);
+			$feUser->setKey('ses', \CommerceTeam\Commerce\Utility\GeneralUtility::generateSessionKey('delivery'), $this->piVars['delivery']);
 		}
 		if (isset($this->piVars['payment'])) {
-			$this->piVars['payment'] = Tx_Commerce_Utility_GeneralUtility::removeXSSStripTagsArray($this->piVars['payment']);
-			$feUser->setKey('ses', Tx_Commerce_Utility_GeneralUtility::generateSessionKey('payment'), $this->piVars['payment']);
+			$this->piVars['payment'] = \CommerceTeam\Commerce\Utility\GeneralUtility::removeXSSStripTagsArray($this->piVars['payment']);
+			$feUser->setKey('ses', \CommerceTeam\Commerce\Utility\GeneralUtility::generateSessionKey('payment'), $this->piVars['payment']);
 		}
 
 		// Fetch the address data from hidden fields if address_id is set.
@@ -385,7 +387,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			}
 			$this->piVars[$this->piVars['address_uid']]['uid'] = (int) $this->piVars['address_uid'];
 			$feUser->setKey(
-				'ses', Tx_Commerce_Utility_GeneralUtility::generateSessionKey($this->piVars['check']),
+				'ses', \CommerceTeam\Commerce\Utility\GeneralUtility::generateSessionKey($this->piVars['check']),
 				$this->piVars[(int) $this->piVars['address_uid']]
 			);
 		}
@@ -398,21 +400,21 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	 */
 	protected function fetchSessionDataIntoSessionAttribute() {
 		$feUser = $this->getFrontendController()->fe_user;
-		$this->sessionData['billing'] = Tx_Commerce_Utility_GeneralUtility::removeXSSStripTagsArray(
-			$feUser->getKey('ses', Tx_Commerce_Utility_GeneralUtility::generateSessionKey('billing'))
+		$this->sessionData['billing'] = \CommerceTeam\Commerce\Utility\GeneralUtility::removeXSSStripTagsArray(
+			$feUser->getKey('ses', \CommerceTeam\Commerce\Utility\GeneralUtility::generateSessionKey('billing'))
 		);
-		$this->sessionData['delivery'] = Tx_Commerce_Utility_GeneralUtility::removeXSSStripTagsArray(
-			$feUser->getKey('ses', Tx_Commerce_Utility_GeneralUtility::generateSessionKey('delivery'))
+		$this->sessionData['delivery'] = \CommerceTeam\Commerce\Utility\GeneralUtility::removeXSSStripTagsArray(
+			$feUser->getKey('ses', \CommerceTeam\Commerce\Utility\GeneralUtility::generateSessionKey('delivery'))
 		);
-		$this->sessionData['payment'] = Tx_Commerce_Utility_GeneralUtility::removeXSSStripTagsArray(
-			$feUser->getKey('ses', Tx_Commerce_Utility_GeneralUtility::generateSessionKey('payment'))
+		$this->sessionData['payment'] = \CommerceTeam\Commerce\Utility\GeneralUtility::removeXSSStripTagsArray(
+			$feUser->getKey('ses', \CommerceTeam\Commerce\Utility\GeneralUtility::generateSessionKey('payment'))
 		);
-		$this->sessionData['mails'] = $feUser->getKey('ses', Tx_Commerce_Utility_GeneralUtility::generateSessionKey('mails'));
+		$this->sessionData['mails'] = $feUser->getKey('ses', \CommerceTeam\Commerce\Utility\GeneralUtility::generateSessionKey('mails'));
 
 		if ($this->piVars['check'] == 'billing' && $this->piVars['step'] == 'payment') {
 			// Remove reference to delivery address
 			$this->sessionData['delivery'] = FALSE;
-			$feUser->setKey('ses', Tx_Commerce_Utility_GeneralUtility::generateSessionKey('delivery'), FALSE);
+			$feUser->setKey('ses', \CommerceTeam\Commerce\Utility\GeneralUtility::generateSessionKey('delivery'), FALSE);
 		}
 	}
 
@@ -544,9 +546,9 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			/**
 			 * Addresses controller
 			 *
-			 * @var Tx_Commerce_Controller_AddressesController $addressMgm
+			 * @var \CommerceTeam\Commerce\Controller\AddressesController $addressMgm
 			 */
-			$addressMgm = GeneralUtility::makeInstance('Tx_Commerce_Controller_AddressesController');
+			$addressMgm = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Controller\\AddressesController');
 			$addressMgm->cObj = $this->cObj;
 			$addressMgm->templateCode = $this->templateCode;
 			$addressMgm->init($addressManagerConf, FALSE);
@@ -699,9 +701,9 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			/**
 			 * Addresses controller
 			 *
-			 * @var Tx_Commerce_Controller_AddressesController $addressMgm
+			 * @var \CommerceTeam\Commerce\Controller\AddressesController $addressMgm
 			 */
-			$addressMgm = GeneralUtility::makeInstance('Tx_Commerce_Controller_AddressesController');
+			$addressMgm = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Controller\\AddressesController');
 			$addressMgm->cObj = $this->cObj;
 			$addressMgm->templateCode = $this->templateCode;
 			$addressMgm->init($addressManagerConf, FALSE);
@@ -761,11 +763,11 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	/**
 	 * Handles all the stuff concerning the payment.
 	 *
-	 * @param Tx_Commerce_Payment_Interface_Payment $paymentObj The payment object
+	 * @param \CommerceTeam\Commerce\Payment\PaymentInterface $paymentObj The payment
 	 *
 	 * @return string Substituted template
 	 */
-	public function handlePayment(Tx_Commerce_Payment_Interface_Payment $paymentObj = NULL) {
+	public function handlePayment(\CommerceTeam\Commerce\Payment\PaymentInterface $paymentObj = NULL) {
 		$hooks = HookFactory::getHooks('Controller/CheckoutController', 'handlePayment');
 		foreach ($hooks as $hookObj) {
 			if (method_exists($hookObj, 'alternativePaymentStep')) {
@@ -842,7 +844,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 				/**
 				 * Payment provider
 				 *
-				 * @var $paymentProvider Tx_Commerce_Payment_Provider_ProviderAbstract
+				 * @var $paymentProvider \CommerceTeam\Commerce\Payment\Provider\ProviderAbstract
 				 */
 				$paymentProvider = $paymentObj->getProvider();
 				if (method_exists($paymentProvider, 'getAlternativFormAction')) {
@@ -899,7 +901,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		/**
 		 * Basket
 		 *
-		 * @var $basket Tx_Commerce_Domain_Model_Basket
+		 * @var $basket \CommerceTeam\Commerce\Domain\Model\Basket
 		 */
 		$basket = & $GLOBALS['TSFE']->fe_user->tx_commerce_basket;
 		$this->debug($basket, '$basket', __FILE__ . ' ' . __LINE__);
@@ -973,12 +975,12 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	/**
 	 * Finishing Page from Checkout
 	 *
-	 * @param Tx_Commerce_Payment_Interface_Payment $paymentObj The payment
+	 * @param \CommerceTeam\Commerce\Payment\PaymentInterface $paymentObj The payment
 	 *
 	 * @return string HTML-Content
-	 * @throws Exception If no payment type was configured
+	 * @throws \Exception If no payment type was configured
 	 */
-	public function finishIt(Tx_Commerce_Payment_Interface_Payment $paymentObj = NULL) {
+	public function finishIt(\CommerceTeam\Commerce\Payment\PaymentInterface $paymentObj = NULL) {
 		$database = $this->getDatabaseConnection();
 
 		$orderId = $this->getOrderId();
@@ -989,7 +991,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['SYSPRODUCTS']['PAYMENT']['types'][strtolower((string) $paymentType)];
 
 			if (!isset($config['class']) || !file_exists($config['path'])) {
-				throw new Exception('FINISHING: FATAL! No payment possible because no payment handler is configured!', 1395665876);
+				throw new \Exception('FINISHING: FATAL! No payment possible because no payment handler is configured!', 1395665876);
 			}
 
 			$paymentObj = GeneralUtility::makeInstance($config['class'], $this);
@@ -997,7 +999,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			$config = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['SYSPRODUCTS']['PAYMENT']['types'][$paymentObj->getType()];
 		}
 
-		if ($paymentObj instanceof Tx_Commerce_Payment_Interface_Payment) {
+		if ($paymentObj instanceof \CommerceTeam\Commerce\Payment\PaymentInterface) {
 			$paymentDone = $paymentObj->checkExternalData($_REQUEST, $this->sessionData);
 		} else {
 			$paymentDone = FALSE;
@@ -1028,7 +1030,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		/**
 		 * Basket
 		 *
-		 * @var $basket Tx_Commerce_Domain_Model_Basket
+		 * @var $basket \CommerceTeam\Commerce\Domain\Model\Basket
 		 */
 		$basket = $feUser->tx_commerce_basket;
 
@@ -1086,9 +1088,9 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			$orderData['pid'] = $this->conf['newOrderPid'];
 		}
 		if (empty($orderData['pid']) || ($orderData['pid'] < 0)) {
-			$comPid = array_keys(Tx_Commerce_Domain_Repository_FolderRepository::getFolders($this->extKey, 0, 'COMMERCE'));
-			$ordPid = array_keys(Tx_Commerce_Domain_Repository_FolderRepository::getFolders($this->extKey, $comPid[0], 'Orders'));
-			$incPid = array_keys(Tx_Commerce_Domain_Repository_FolderRepository::getFolders($this->extKey, $ordPid[0], 'Incoming'));
+			$comPid = array_keys(FolderRepository::getFolders($this->extKey, 0, 'COMMERCE'));
+			$ordPid = array_keys(FolderRepository::getFolders($this->extKey, $comPid[0], 'Orders'));
+			$incPid = array_keys(FolderRepository::getFolders($this->extKey, $ordPid[0], 'Incoming'));
 			$orderData['pid'] = $incPid[0];
 		}
 
@@ -1165,9 +1167,9 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 
 		// At last remove some things from the session
 		if ($this->clearSessionAfterCheckout == TRUE) {
-			$feUser->setKey('ses', Tx_Commerce_Utility_GeneralUtility::generateSessionKey('payment'), NULL);
-			$feUser->setKey('ses', Tx_Commerce_Utility_GeneralUtility::generateSessionKey('delivery'), NULL);
-			$feUser->setKey('ses', Tx_Commerce_Utility_GeneralUtility::generateSessionKey('billing'), NULL);
+			$feUser->setKey('ses', \CommerceTeam\Commerce\Utility\GeneralUtility::generateSessionKey('payment'), NULL);
+			$feUser->setKey('ses', \CommerceTeam\Commerce\Utility\GeneralUtility::generateSessionKey('delivery'), NULL);
+			$feUser->setKey('ses', \CommerceTeam\Commerce\Utility\GeneralUtility::generateSessionKey('billing'), NULL);
 		}
 
 		$basket->finishOrder();
@@ -1176,9 +1178,9 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		/**
 		 * Basket
 		 *
-		 * @var Tx_Commerce_Domain_Model_Basket $basket
+		 * @var \CommerceTeam\Commerce\Domain\Model\Basket $basket
 		 */
-		$basket = GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Basket');
+		$basket = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Basket');
 		$basket->setSessionId(md5($feUser->id . ':' . rand(0, PHP_INT_MAX)));
 		$basket->loadData();
 
@@ -1199,7 +1201,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		/**
 		 * Basket
 		 *
-		 * @var $basket Tx_Commerce_Domain_Model_Basket
+		 * @var $basket \CommerceTeam\Commerce\Domain\Model\Basket
 		 */
 		$basket = $feUser->tx_commerce_basket;
 		$hooks = HookFactory::getHooks('Controller/CheckoutController', 'getInstanceOfTceMain');
@@ -1268,20 +1270,20 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			/**
 			 * Basket
 			 *
-			 * @var $basket Tx_Commerce_Domain_Model_Basket
+			 * @var $basket \CommerceTeam\Commerce\Domain\Model\Basket
 			 */
 			$basket = $GLOBALS['TSFE']->fe_user->tx_commerce_basket;
 			if (is_array($basket->getBasketItems())) {
 				/**
 				 * Basket item
 				 *
-				 * @var $basketItem Tx_Commerce_Domain_Model_BasketItem
+				 * @var $basketItem \CommerceTeam\Commerce\Domain\Model\BasketItem
 				 */
 				foreach ($basket->getBasketItems() as $artUid => $basketItem) {
 					/**
 					 * Article
 					 *
-					 * @var $article Tx_Commerce_Domain_Model_Article
+					 * @var $article \CommerceTeam\Commerce\Domain\Model\Article
 					 */
 					$article = $basketItem->article;
 					$this->debug($article, '$article', __FILE__ . ' ' . __LINE__);
@@ -1314,7 +1316,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		/**
 		 * Basket
 		 *
-		 * @var $basket Tx_Commerce_Domain_Model_Basket
+		 * @var $basket \CommerceTeam\Commerce\Domain\Model\Basket
 		 */
 		$basket = $this->getFrontendController()->fe_user->tx_commerce_basket;
 
@@ -1333,7 +1335,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			/**
 			 * Basket item
 			 *
-			 * @var Tx_Commerce_Domain_Model_BasketItem $basketItem
+			 * @var \CommerceTeam\Commerce\Domain\Model\BasketItem $basketItem
 			 */
 			$basketItem = $basket->getBasketItem($oneDeliveryArticle);
 			$sumShippingNet += $basketItem->getPriceNet();
@@ -1349,7 +1351,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			/**
 			 * Basket item
 			 *
-			 * @var Tx_Commerce_Domain_Model_BasketItem $basketItem
+			 * @var \CommerceTeam\Commerce\Domain\Model\BasketItem $basketItem
 			 */
 			$basketItem = $basket->getBasketItem($onePaymentArticle);
 			$sumPaymentNet += $basketItem->getPriceNet();
@@ -1361,21 +1363,21 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		$markerArray = array();
 		$markerArray['###LABEL_SUM_ARTICLE_NET###'] = $this->pi_getLL('listing_article_net');
 		$markerArray['###LABEL_SUM_ARTICLE_GROSS###'] = $this->pi_getLL('listing_article_gross');
-		$markerArray['###SUM_ARTICLE_NET###'] = Tx_Commerce_ViewHelpers_Money::format($sumNet, $this->currency);
-		$markerArray['###SUM_ARTICLE_GROSS###'] = Tx_Commerce_ViewHelpers_Money::format($sumGross, $this->currency);
+		$markerArray['###SUM_ARTICLE_NET###'] = \CommerceTeam\Commerce\ViewHelpers\Money::format($sumNet, $this->currency);
+		$markerArray['###SUM_ARTICLE_GROSS###'] = \CommerceTeam\Commerce\ViewHelpers\Money::format($sumGross, $this->currency);
 		$markerArray['###LABEL_SUM_SHIPPING_NET###'] = $this->pi_getLL('listing_shipping_net');
 		$markerArray['###LABEL_SUM_SHIPPING_GROSS##'] = $this->pi_getLL('listing_shipping_gross');
-		$markerArray['###SUM_SHIPPING_NET###'] = Tx_Commerce_ViewHelpers_Money::format($sumShippingNet, $this->currency);
-		$markerArray['###SUM_SHIPPING_GROSS###'] = Tx_Commerce_ViewHelpers_Money::format($sumShippingGross, $this->currency);
+		$markerArray['###SUM_SHIPPING_NET###'] = \CommerceTeam\Commerce\ViewHelpers\Money::format($sumShippingNet, $this->currency);
+		$markerArray['###SUM_SHIPPING_GROSS###'] = \CommerceTeam\Commerce\ViewHelpers\Money::format($sumShippingGross, $this->currency);
 		$markerArray['###LABEL_SUM_NET###'] = $this->pi_getLL('listing_sum_net');
-		$markerArray['###SUM_NET###'] = Tx_Commerce_ViewHelpers_Money::format($sumNet, $this->currency);
+		$markerArray['###SUM_NET###'] = \CommerceTeam\Commerce\ViewHelpers\Money::format($sumNet, $this->currency);
 		$markerArray['###LABEL_SUM_TAX###'] = $this->pi_getLL('listing_tax');
-		$markerArray['###SUM_TAX###'] = Tx_Commerce_ViewHelpers_Money::format($sumTax, $this->currency);
+		$markerArray['###SUM_TAX###'] = \CommerceTeam\Commerce\ViewHelpers\Money::format($sumTax, $this->currency);
 
 		$markerArray['###LABEL_SUM_GROSS###'] = $this->pi_getLL('listing_sum_gross');
-		$markerArray['###SUM_GROSS###'] = Tx_Commerce_ViewHelpers_Money::format($sumGross, $this->currency);
-		$markerArray['###SUM_PAYMENT_NET###'] = Tx_Commerce_ViewHelpers_Money::format($sumPaymentNet, $this->currency);
-		$markerArray['###SUM_PAYMENT_GROSS###'] = Tx_Commerce_ViewHelpers_Money::format($sumPaymentGross, $this->currency);
+		$markerArray['###SUM_GROSS###'] = \CommerceTeam\Commerce\ViewHelpers\Money::format($sumGross, $this->currency);
+		$markerArray['###SUM_PAYMENT_NET###'] = \CommerceTeam\Commerce\ViewHelpers\Money::format($sumPaymentNet, $this->currency);
+		$markerArray['###SUM_PAYMENT_GROSS###'] = \CommerceTeam\Commerce\ViewHelpers\Money::format($sumPaymentGross, $this->currency);
 		$markerArray['###LABEL_SUM_PAYMENT_GROSS###'] = $this->pi_getLL('label_sum_payment_gross');
 		$markerArray['###LABEL_SUM_PAYMENT_NET###'] = $this->pi_getLL('label_sum_payment_net');
 		$markerArray['###PAYMENT_TITLE###'] = $paymentTitle;
@@ -1607,7 +1609,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	 *
 	 * @param string $paymentType Payment type
 	 *
-	 * @return Tx_Commerce_Payment_Interface_Payment
+	 * @return \CommerceTeam\Commerce\Payment\PaymentAbstract
 	 */
 	public function getPaymentObject($paymentType = '') {
 		if (empty($paymentType)) {
@@ -1621,7 +1623,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	/**
 	 * Get payment from request if set
 	 *
-	 * @throws Exception If no payment article could be found
+	 * @throws \Exception If no payment article could be found
 	 * @return void
 	 */
 	public function getPaymentFromRequest() {
@@ -1629,7 +1631,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			/**
 			 * Basket
 			 *
-			 * @var $basket Tx_Commerce_Domain_Model_Basket
+			 * @var $basket \CommerceTeam\Commerce\Domain\Model\Basket
 			 */
 			$basket = $GLOBALS['TSFE']->fe_user->tx_commerce_basket;
 			$database = $this->getDatabaseConnection();
@@ -1643,7 +1645,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 				$basket->removeCurrentPaymentArticle();
 				$GLOBALS['TSFE']->fe_user->setKey(
 					'ses',
-					Tx_Commerce_Utility_GeneralUtility::generateSessionKey('payment'),
+					\CommerceTeam\Commerce\Utility\GeneralUtility::generateSessionKey('payment'),
 					$this->piVars['payArt']
 				);
 
@@ -1657,7 +1659,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 					$basket->addArticle($articleRow['uid']);
 					$basket->storeData();
 				} else {
-					throw new Exception('Unknow payment type given for adding to basket', 1395653485);
+					throw new \Exception('Unknow payment type given for adding to basket', 1395653485);
 				}
 			}
 		}
@@ -1676,7 +1678,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		/**
 		 * Basket
 		 *
-		 * @var $basket Tx_Commerce_Domain_Model_Basket
+		 * @var $basket \CommerceTeam\Commerce\Domain\Model\Basket
 		 */
 		$basket = $GLOBALS['TSFE']->fe_user->tx_commerce_basket;
 		$payment = $basket->getArticlesByArticleTypeUidAsUidlist(PAYMENTARTICLETYPE);
@@ -1768,7 +1770,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		}
 
 		$GLOBALS['TSFE']->fe_user->setKey(
-			'ses', Tx_Commerce_Utility_GeneralUtility::generateSessionKey('mails'), $this->sessionData['mails']
+			'ses', \CommerceTeam\Commerce\Utility\GeneralUtility::generateSessionKey('mails'), $this->sessionData['mails']
 		);
 
 		return $fieldCode;
@@ -1808,7 +1810,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 				$dataArray['pid'] = $this->conf['addressPid'];
 			} else {
 				$modPid = 0;
-				list($commercePid) = Tx_Commerce_Domain_Repository_FolderRepository::initFolders($this->extKey, $this->extKey, $modPid);
+				list($commercePid) = FolderRepository::initFolders($this->extKey, $this->extKey, $modPid);
 				$dataArray['pid'] = $commercePid;
 			}
 
@@ -2189,7 +2191,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		/**
 		 * Basket
 		 *
-		 * @var $basket Tx_Commerce_Domain_Model_Basket
+		 * @var $basket \CommerceTeam\Commerce\Domain\Model\Basket
 		 */
 		$basket = $GLOBALS['TSFE']->fe_user->tx_commerce_basket;
 
@@ -2237,7 +2239,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			return FALSE;
 		}
 
-		$userMail = Tx_Commerce_Utility_GeneralUtility::validEmailList($userMail);
+		$userMail = \CommerceTeam\Commerce\Utility\GeneralUtility::validEmailList($userMail);
 
 		if ($userMail && !preg_match("/\r/i", $userMail) && !preg_match("/\n/i", $userMail)) {
 			foreach ($hooks as $hookObj) {
@@ -2250,9 +2252,9 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 				/**
 				 * Checkout controller
 				 *
-				 * @var $userMailObj Tx_Commerce_Controller_CheckoutController
+				 * @var $userMailObj \CommerceTeam\Commerce\Controller\CheckoutController
 				 */
-				$userMailObj = GeneralUtility::makeInstance('Tx_Commerce_Controller_CheckoutController');
+				$userMailObj = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Controller\\CheckoutController');
 				$userMailObj->conf = $this->conf;
 				$userMailObj->pi_setPiVarDefaults();
 				$userMailObj->cObj = $this->cObj;
@@ -2276,7 +2278,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 				/**
 				 * Basket
 				 *
-				 * @var $basket Tx_Commerce_Domain_Model_Basket
+				 * @var $basket \CommerceTeam\Commerce\Domain\Model\Basket
 				 */
 				$basket = $GLOBALS['TSFE']->fe_user->tx_commerce_basket;
 				foreach ($hooks as $hookObj) {
@@ -2362,7 +2364,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 					'additionalData' => $this
 				);
 
-				Tx_Commerce_Utility_GeneralUtility::sendMail($mailconf);
+				\CommerceTeam\Commerce\Utility\GeneralUtility::sendMail($mailconf);
 
 				return TRUE;
 			}
@@ -2399,9 +2401,9 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			/**
 			 * Checkout controller
 			 *
-			 * @var $adminMailObj Tx_Commerce_Controller_CheckoutController
+			 * @var $adminMailObj \CommerceTeam\Commerce\Controller\CheckoutController
 			 */
-			$adminMailObj = GeneralUtility::makeInstance('Tx_Commerce_Controller_CheckoutController');
+			$adminMailObj = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Controller\\CheckoutController');
 			$adminMailObj->conf = $this->conf;
 			$adminMailObj->pi_setPiVarDefaults();
 			$adminMailObj->cObj = $this->cObj;
@@ -2424,7 +2426,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			/**
 			 * Basket
 			 *
-			 * @var $basket Tx_Commerce_Domain_Model_Basket
+			 * @var $basket \CommerceTeam\Commerce\Domain\Model\Basket
 			 */
 			$basket = & $GLOBALS['TSFE']->fe_user->tx_commerce_basket;
 			foreach ($hooks as $hookObj) {
@@ -2519,7 +2521,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 				$mailconf['fromName'] = $this->conf['adminmail.']['from_name'];
 			}
 
-			Tx_Commerce_Utility_GeneralUtility::sendMail($mailconf);
+			\CommerceTeam\Commerce\Utility\GeneralUtility::sendMail($mailconf);
 
 			return TRUE;
 		}
@@ -2616,7 +2618,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	 * @param array $typoScript TypoScript for addresshandling for this type
 	 *
 	 * @return array Address data
-	 * @throws Exception If configuration is not correct
+	 * @throws \Exception If configuration is not correct
 	 */
 	public function parseRawData(array $data = array(), array $typoScript) {
 		if (!is_array($data)) {
@@ -2649,7 +2651,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			} elseif ($fieldConfig['type'] == 'select' && is_array($fieldConfig['values.'])) {
 				$newdata[$key] = $fieldConfig['values.'][$value];
 			} elseif ($fieldConfig['type'] == 'select') {
-				throw new Exception('Neither table nor value-list defined for select field ' . $key, 1304333953);
+				throw new \Exception('Neither table nor value-list defined for select field ' . $key, 1304333953);
 			}
 
 			if ($fieldConfig['type'] == 'static_info_tables') {
@@ -2668,15 +2670,16 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	 *
 	 * @param int $orderId Uid of the order
 	 * @param int $pid Uid of the folder to save the order in
-	 * @param Tx_Commerce_Domain_Model_Basket $basket Basket object of the user
-	 * @param Tx_Commerce_Payment_Interface_Payment $paymentObj Payment Object
+	 * @param \CommerceTeam\Commerce\Domain\Model\Basket $basket Basket object
+	 * 	of the user
+	 * @param \CommerceTeam\Commerce\Payment\PaymentInterface $paymentObj Payment
 	 * @param bool $doHook Flag if the hooks should be executed
 	 * @param bool $doStock Flag if stock reduce should be executed
 	 *
 	 * @return array $orderData Array with all the order data
 	 */
-	public function saveOrder($orderId, $pid, Tx_Commerce_Domain_Model_Basket $basket,
-		Tx_Commerce_Payment_Interface_Payment$paymentObj, $doHook = TRUE, $doStock = TRUE
+	public function saveOrder($orderId, $pid, \CommerceTeam\Commerce\Domain\Model\Basket $basket,
+		\CommerceTeam\Commerce\Payment\PaymentInterface $paymentObj, $doHook = TRUE, $doStock = TRUE
 	) {
 		$database = $this->getDatabaseConnection();
 
@@ -2760,13 +2763,13 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 			/**
 			 * Basket item
 			 *
-			 * @var $basketItem Tx_Commerce_Domain_Model_BasketItem
+			 * @var $basketItem \CommerceTeam\Commerce\Domain\Model\BasketItem
 			 */
 			foreach ($basket->getBasketItems() as $artUid => $basketItem) {
 				/**
 				 * Article
 				 *
-				 * @var $article Tx_Commerce_Domain_Model_Article
+				 * @var $article \CommerceTeam\Commerce\Domain\Model\Article
 				 */
 				$article = $basketItem->article;
 

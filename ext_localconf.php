@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * This file is part of the TYPO3 CMS project.
  *
  * It is free software; you can redistribute it and/or modify it under
@@ -77,26 +77,26 @@ $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['SYSPRODUCTS']['PAYMENT'
 	),
 	'types' => array(
 		'invoice' => array(
-			'class' => 'Tx_Commerce_Payment_Invoice',
+			'class' => 'CommerceTeam\\Commerce\\Payment\\Invoice',
 			'type' => PAYMENTARTICLETYPE,
 		),
 		'prepayment' => array(
-			'class' => 'Tx_Commerce_Payment_Prepayment',
+			'class' => 'CommerceTeam\\Commerce\\Payment\\Prepayment',
 			'type' => PAYMENTARTICLETYPE,
 		),
 		'cashondelivery' => array(
-			'class' => 'Tx_Commerce_Payment_Cashondelivery',
+			'class' => 'CommerceTeam\\Commerce\\Payment\\Cashondelivery',
 			'type' => PAYMENTARTICLETYPE,
 		),
 		'creditcard' => array(
-			'class' => 'Tx_Commerce_Payment_Creditcard',
+			'class' => 'CommerceTeam\\Commerce\\Payment\\Creditcard',
 			'type' => PAYMENTARTICLETYPE,
 				// Language file for external credit card check
 			'ccvs_language_files' => PATH_TXCOMMERCE . 'payment/ccvs/language',
 			'provider' => array(
 				'wirecard' => array(
 					// @todo: Remove this implementation if it turns out that it does not work
-					'class' => 'Tx_Commerce_Payment_Provider_Wirecard',
+					'class' => 'CommerceTeam\\Commerce\\Payment\\Provider\\Wirecard',
 				),
 			),
 		),
@@ -136,7 +136,7 @@ if (TYPO3_MODE == 'BE') {
 
 	// For TYPO3 6.2
 	$GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects']['TYPO3\\CMS\\Backend\\Controller\\NewRecordController'] = array(
-		'className' => 'NewRecordController'
+		'className' => 'CommerceTeam\\Commerce\\Xclass\\NewRecordController'
 	);
 
 	require_once(PATH_TXCOMMERCE . 'Classes/Utility/TyposcriptConfig.php');
@@ -145,64 +145,64 @@ if (TYPO3_MODE == 'BE') {
 
 // Add linkhandler for "commerce"
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_content.php']['typolinkLinkHandler']['commerce'] =
-	'EXT:commerce/Classes/Hook/LinkhandlerHooks.php:&Tx_Commerce_Hook_LinkhandlerHooks';
+	'EXT:commerce/Classes/Hook/LinkhandlerHooks.php:&CommerceTeam\\Commerce\\Hook\\LinkhandlerHooks';
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/class.browse_links.php']['browseLinksHook'][] =
-	'EXT:commerce/Classes/Hook/BrowselinksHooks.php:Tx_Commerce_Hook_BrowselinksHooks';
+	'EXT:commerce/Classes/Hook/BrowselinksHooks.php:CommerceTeam\\Commerce\\Hook\\BrowselinksHooks';
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/rtehtmlarea/mod3/class.tx_rtehtmlarea_browse_links.php']['browseLinksHook'][] =
-	'EXT:commerce/Classes/Hook/BrowselinksHooks.php:Tx_Commerce_Hook_BrowselinksHooks';
+	'EXT:commerce/Classes/Hook/BrowselinksHooks.php:CommerceTeam\\Commerce\\Hook\\BrowselinksHooks';
 
 // Add ajax listener for tree in linkcommerce
-$GLOBALS['TYPO3_CONF_VARS']['BE']['AJAX']['Tx_Commerce_Hook_BrowselinksHooks::ajaxExpandCollapse'] =
-	'EXT:commerce/Classes/Hook/BrowselinksHooks.php:Tx_Commerce_Hook_BrowselinksHooks->ajaxExpandCollapse';
+$GLOBALS['TYPO3_CONF_VARS']['BE']['AJAX']['CommerceTeam\\Commerce\\Hook\\BrowselinksHooks::ajaxExpandCollapse'] =
+	'EXT:commerce/Classes/Hook/BrowselinksHooks.php:CommerceTeam\\Commerce\\Hook\\BrowselinksHooks->ajaxExpandCollapse';
 
 
 // Hooks for datamap procesing
 // For processing the order sfe, when changing the pid
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass']['commerce'] =
-	'EXT:commerce/Classes/Hook/DataMapHooks.php:Tx_Commerce_Hook_DataMapHooks';
+	'EXT:commerce/Classes/Hook/DataMapHooks.php:CommerceTeam\\Commerce\\Hook\\DataMapHooks';
 
 // Hooks for commandmap processing
 // For new drawing of the category tree after having deleted a record
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass']['commerce'] =
-	'EXT:commerce/Classes/Hook/CommandMapHooks.php:Tx_Commerce_Hook_CommandMapHooks';
+	'EXT:commerce/Classes/Hook/CommandMapHooks.php:CommerceTeam\\Commerce\\Hook\\CommandMapHooks';
 
 // Hooks for version swap procesing
 // For processing the order sfe, when changing the pid
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processVersionSwapClass']['commerce'] =
-	'EXT:commerce/Classes/Hook/VersionHooks.php:Tx_Commerce_Hook_VersionHooks';
+	'EXT:commerce/Classes/Hook/VersionHooks.php:CommerceTeam\\Commerce\\Hook\\VersionHooks';
 
 
 // Adding some hooks for tx_commerce_article_processing
 // As basic hook for calculation the delivery_costs
 if (empty($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Model/Article.php']['calculateDeliveryCost'])) {
 	$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Model/Article.php']['calculateDeliveryCost'] =
-		'EXT:commerce/Classes/Hook/ArticleHooks.php:Tx_Commerce_Hook_ArticleHooks';
+		'EXT:commerce/Classes/Hook/ArticleHooks.php:CommerceTeam\\Commerce\\Hook\\ArticleHooks';
 }
 
 if (empty($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Hook/DataMapHooks.php']['moveOrders'])) {
 	$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Hook/DataMapHooks.php']['moveOrders'][] =
-		'EXT:commerce/Classes/Hook/OrdermailHooks.php:Tx_Commerce_Hook_OrdermailHooks';
+		'EXT:commerce/Classes/Hook/OrdermailHooks.php:CommerceTeam\\Commerce\\Hook\\OrdermailHooks';
 }
 
 // Configuration to process the code selectConf
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tceforms.php']['getSingleFieldClass']['commerce'] =
-	'EXT:commerce/Classes/Hook/TcehooksHandlerHooks.php:Tx_Commerce_Hook_TcehooksHandlerHooks';
+	'EXT:commerce/Classes/Hook/TcehooksHandlerHooks.php:CommerceTeam\\Commerce\\Hook\\TcehooksHandlerHooks';
 
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tceforms_inline.php']['tceformsInlineHook'][] =
-	'EXT:commerce/Classes/Hook/IrreHooks.php:Tx_Commerce_Hook_IrreHooks';
+	'EXT:commerce/Classes/Hook/IrreHooks.php:CommerceTeam\\Commerce\\Hook\\IrreHooks';
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tceforms.php']['getSingleFieldClass'][] =
-	'EXT:commerce/Classes/Hook/TceFormsHooks.php:Tx_Commerce_Hook_TceFormsHooks';
+	'EXT:commerce/Classes/Hook/TceFormsHooks.php:CommerceTeam\\Commerce\\Hook\\TceFormsHooks';
 
 // Hook to render recordlist parts differently
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/class.db_list_extra.inc']['actions'][] =
-	'EXT:commerce/Classes/Hook/LocalRecordListHooks.php:Tx_Commerce_Hook_LocalRecordListHooks';
+	'EXT:commerce/Classes/Hook/LocalRecordListHooks.php:CommerceTeam\\Commerce\\Hook\\LocalRecordListHooks';
 
 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['sr_feuser_register']['tx_srfeuserregister_pi1']['registrationProcess'][] =
-	'EXT:commerce/Classes/Hook/SrfeuserregisterPi1Hook.php:Tx_Commerce_Hook_SrfeuserregisterPi1Hook';
+	'EXT:commerce/Classes/Hook/SrfeuserregisterPi1Hook.php:CommerceTeam\\Commerce\\Hook\\SrfeuserregisterPi1Hook';
 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/AddressesController.php']['deleteAddress'][] =
-	'EXT:commerce/Classes/Hook/Pi4Hooks.php:Tx_Commerce_Hook_Pi4Hooks';
+	'EXT:commerce/Classes/Hook/Pi4Hooks.php:CommerceTeam\\Commerce\\Hook\\Pi4Hooks';
 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/AddressesController.php']['saveAddress'][] =
-	'EXT:commerce/Classes/Hook/Pi4Hooks.php:Tx_Commerce_Hook_Pi4Hooks';
+	'EXT:commerce/Classes/Hook/Pi4Hooks.php:CommerceTeam\\Commerce\\Hook\\Pi4Hooks';
 
 // CLI Script configuration
 if (TYPO3_MODE == 'BE') {
@@ -214,19 +214,19 @@ if (TYPO3_MODE == 'BE') {
 
 	// Add statistic task
 	/** @noinspection PhpUndefinedVariableInspection */
-	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['Tx_Commerce_Task_StatisticTask'] = array(
+	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['CommerceTeam\\Commerce\\Task\\StatisticTask'] = array(
 		'extension' => $_EXTKEY,
 		'title' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang_be.xml:tx_commerce_task_statistictask.name',
-		'description' =>
-			'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang_be.xml:tx_commerce_task_statistictask.description',
-		'additionalFields' => 'Tx_Commerce_Task_StatisticTaskAdditionalFieldProvider',
+		'description' => 'LLL:EXT:' . $_EXTKEY .
+			'/Resources/Private/Language/locallang_be.xml:tx_commerce_task_statistictask.description',
+		'additionalFields' => 'CommerceTeam\\Commerce\\Task\\StatisticTaskAdditionalFieldProvider',
 	);
 }
 
 // Register dynaflex dca files
 $GLOBALS['T3_VAR']['ext']['dynaflex']['tx_commerce_categories'][] =
-	'EXT:commerce/Configuration/DCA/Categories.php:Tx_Commerce_Configuration_Dca_Categories';
+	'EXT:commerce/Configuration/DCA/Categories.php:CommerceTeam\\Commerce\\Configuration\\Dca\\Categories';
 $GLOBALS['T3_VAR']['ext']['dynaflex']['tx_commerce_products'][] =
-	'EXT:commerce/Configuration/DCA/Product.php:Tx_Commerce_Configuration_Dca_Products';
+	'EXT:commerce/Configuration/DCA/Product.php:CommerceTeam\\Commerce\\Configuration\\Dca\\Products';
 $GLOBALS['T3_VAR']['ext']['dynaflex']['tx_commerce_articles'][] =
-	'EXT:commerce/Configuration/DCA/Articles.php:Tx_Commerce_Configuration_Dca_Articles';
+	'EXT:commerce/Configuration/DCA/Articles.php:CommerceTeam\\Commerce\\Configuration\\Dca\\Articles';

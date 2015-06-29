@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Payment;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -15,11 +16,11 @@
 /**
  * Invoice payment implementation
  *
- * Class Tx_Commerce_Payment_Invoice
+ * Class \CommerceTeam\Commerce\Payment\Invoice
  *
  * @author 2005-2011 Thomas Hempel <thomas@work.de>
  */
-class Tx_Commerce_Payment_Invoice extends Tx_Commerce_Payment_PaymentAbstract {
+class Invoice extends PaymentAbstract {
 	/**
 	 * Payment type
 	 *

@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Tree;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -13,11 +14,11 @@
  */
 
 /**
- * Class Tx_Commerce_Tree_StatisticTree
+ * Class \CommerceTeam\Commerce\Tree\StatisticTree
  *
  * @author Ingo Schmitt <is@marketing-factory.de>
  */
-class Tx_Commerce_Tree_StatisticTree extends \TYPO3\CMS\Backend\Tree\View\BrowseTreeView {
+class StatisticTree extends \TYPO3\CMS\Backend\Tree\View\BrowseTreeView {
 	/**
 	 * Extension show page id
 	 *
@@ -83,7 +84,7 @@ class Tx_Commerce_Tree_StatisticTree extends \TYPO3\CMS\Backend\Tree\View\Browse
 			/**
 			 * Template
 			 *
-			 * @var template $tbeTemplate
+			 * @var \TYPO3\CMS\Backend\Template\DocumentTemplate $tbeTemplate
 			 */
 			$tbeTemplate = $GLOBALS['TBE_TEMPLATE'];
 

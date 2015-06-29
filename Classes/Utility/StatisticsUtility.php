@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Utility;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -16,11 +17,11 @@
  * This class inculdes all methods for generating statistics data,
  * used for the statistics module and for the cli script
  *
- * Class Tx_Commerce_Utility_StatisticsUtility
+ * Class \CommerceTeam\Commerce\Utility\StatisticsUtility
  *
  * @author 2008-2011 Ingo Schmitt <is@marketing-factory.de>
  */
-class Tx_Commerce_Utility_StatisticsUtility {
+class StatisticsUtility {
 	/**
 	 * List of exclude PIDs, PIDs whcih should not be used when calculation
 	 * the statistics. This List should be definable in Extension configuration

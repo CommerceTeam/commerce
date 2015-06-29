@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\ViewHelpers\Navigation;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -17,15 +18,15 @@ use TYPO3\CMS\Core\Http\AjaxRequestHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * Class Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper
+ * Class \CommerceTeam\Commerce\ViewHelpers\Navigation\CategoryViewHelper
  *
  * @author Sebastian Fischer <typo3@marketing-factory.de>
  */
-class Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
+class CategoryViewHelper extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 	/**
 	 * Category tree
 	 *
-	 * @var Tx_Commerce_Tree_CategoryTree
+	 * @var \CommerceTeam\Commerce\Tree\CategoryTree
 	 */
 	protected $categoryTree;
 
@@ -59,7 +60,7 @@ class Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper extends \TYPO3\CMS\B
 	 */
 	public function init($bare = FALSE) {
 		// Get the Category Tree
-		$this->categoryTree = GeneralUtility::makeInstance('Tx_Commerce_Tree_CategoryTree');
+		$this->categoryTree = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryTree');
 		$this->categoryTree->setBare($bare);
 		$this->categoryTree->setSimpleMode((int) $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['simpleMode']);
 		$this->categoryTree->init();
@@ -154,7 +155,7 @@ class Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper extends \TYPO3\CMS\B
 		$this->doc->loadJavascriptLib('contrib/prototype/prototype.js');
 		$this->doc->loadJavascriptLib('js/tree.js');
 		$this->doc->JScode .= $this->doc->wrapScriptTags('
-			Tree.ajaxID = "Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper::ajaxExpandCollapse' .
+			Tree.ajaxID = "CommerceTeam\\Commerce\\ViewHelpers\\Navigation\\CategoryViewHelper::ajaxExpandCollapse' .
 			($bare ? 'WithoutProduct' : '') . '";
 		');
 
@@ -247,9 +248,9 @@ class Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper extends \TYPO3\CMS\B
 		/**
 		 * Updater
 		 *
-		 * @var Tx_Commerce_Utility_UpdateUtility $updater
+		 * @var \CommerceTeam\Commerce\Utility\UpdateUtility $updater
 		 */
-		$updater = GeneralUtility::makeInstance('Tx_Commerce_Utility_UpdateUtility');
+		$updater = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Utility\\UpdateUtility');
 
 		return $updater->access();
 	}

@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\ViewHelpers\Browselinks;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -16,11 +17,11 @@
  * Implements a Categorytree for the Link-Commerce Module
  * A tree can have n leafs, and leafs can in itself contain other leafs
  *
- * Class Tx_Commerce_ViewHelpers_Browselinks_CategoryTree
+ * Class \CommerceTeam\Commerce\ViewHelpers\Browselinks\CategoryTree
  *
  * @author 2008-2011 Erik Frister <typo3@marketing-factory.de>
  */
-class Tx_Commerce_ViewHelpers_Browselinks_CategoryTree extends Tx_Commerce_Tree_Browsetree {
+class CategoryTree extends \CommerceTeam\Commerce\Tree\Browsetree {
 	/**
 	 * Set the Tree Name
 	 *
@@ -68,32 +69,34 @@ class Tx_Commerce_ViewHelpers_Browselinks_CategoryTree extends Tx_Commerce_Tree_
 		/**
 		 * Category leaf
 		 *
-		 * @var Tx_Commerce_Tree_Leaf_Category $categoryLeaf
+		 * @var \CommerceTeam\Commerce\Tree\Leaf\Category $categoryLeaf
 		 */
-		$categoryLeaf = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Tree_Leaf_Category');
+		$categoryLeaf = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\Leaf\\Category');
 
 		// Instantiate the categorydata, -view and set
 		// the permission mask (or the string rep.)
 		/**
 		 * Category data
 		 *
-		 * @var Tx_Commerce_Tree_Leaf_CategoryData $categorydata
+		 * @var \CommerceTeam\Commerce\Tree\Leaf\CategoryData $categorydata
 		 */
-		$categorydata = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Tree_Leaf_CategoryData');
-		$categorydata->setPermsMask(Tx_Commerce_Utility_BackendUtility::getPermMask($this->minCategoryPerms));
+		$categorydata = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\Leaf\\CategoryData');
+		$categorydata->setPermsMask(\CommerceTeam\Commerce\Utility\BackendUtility::getPermMask($this->minCategoryPerms));
 
 		/**
 		 * Category view
 		 *
-		 * @var Tx_Commerce_ViewHelpers_Browselinks_CategoryView $categoryview
+		 * @var \CommerceTeam\Commerce\ViewHelpers\Browselinks\CategoryView $categoryview
 		 */
-		$categoryview = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_ViewHelpers_Browselinks_CategoryView');
+		$categoryview = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+			'CommerceTeam\\Commerce\\ViewHelpers\\Browselinks\\CategoryView'
+		);
 		// disable the root onclick if the perms are set to editcontent
 		// - this way we cannot select the root as a parent for any content item
 		$categoryview->noRootOnclick(($this->minCategoryPerms == 'editcontent'));
 
 			// Configure the noOnclick for the leaf
-		if (\TYPO3\CMS\Core\Utility\GeneralUtility::inList($this->noClickList, 'Tx_Commerce_Tree_Leaf_Category')) {
+		if (\TYPO3\CMS\Core\Utility\GeneralUtility::inList($this->noClickList, 'CommerceTeam\\Commerce\\Tree\\Leaf\\Category')) {
 			$categoryview->noOnclick();
 		}
 
@@ -105,28 +108,30 @@ class Tx_Commerce_ViewHelpers_Browselinks_CategoryTree extends Tx_Commerce_Tree_
 		/**
 		 * Product leaf
 		 *
-		 * @var Tx_Commerce_Tree_Leaf_Product $productleaf
+		 * @var \CommerceTeam\Commerce\Tree\Leaf\Product $productleaf
 		 */
-		$productleaf = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Tree_Leaf_Product');
+		$productleaf = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\Leaf\\Product');
 
 		/**
 		 * Product view
 		 *
-		 * @var Tx_Commerce_ViewHelpers_Browselinks_ProductView $productview
+		 * @var \CommerceTeam\Commerce\ViewHelpers\Browselinks\ProductView $productview
 		 */
-		$productview = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_ViewHelpers_Browselinks_ProductView');
+		$productview = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+			'CommerceTeam\\Commerce\\ViewHelpers\\Browselinks\\ProductView'
+		);
 
 		// Configure the noOnclick for the leaf
-		if (\TYPO3\CMS\Core\Utility\GeneralUtility::inList($this->noClickList, 'Tx_Commerce_Tree_Leaf_Product')) {
+		if (\TYPO3\CMS\Core\Utility\GeneralUtility::inList($this->noClickList, 'CommerceTeam\\Commerce\\Tree\\Leaf\\Product')) {
 			$productview->noOnclick();
 		}
 
 		/**
 		 * Product data
 		 *
-		 * @var Tx_Commerce_Tree_Leaf_ProductData $productData
+		 * @var \CommerceTeam\Commerce\Tree\Leaf\ProductData $productData
 		 */
-		$productData = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Tree_Leaf_ProductData');
+		$productData = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\Leaf\\ProductData');
 
 		$productleaf->initBasic($productview, $productData);
 
@@ -174,7 +179,7 @@ class Tx_Commerce_ViewHelpers_Browselinks_CategoryTree extends Tx_Commerce_Tree_
 		/**
 		 * Product view
 		 *
-		 * @var Tx_Commerce_ViewHelpers_Browselinks_ProductView $productView
+		 * @var \CommerceTeam\Commerce\ViewHelpers\Browselinks\ProductView $productView
 		 */
 		$productView = $this->getLeaf(0)->getChildLeaf(0)->view;
 		$productView->setOpenProduct($uid);
@@ -194,7 +199,7 @@ class Tx_Commerce_ViewHelpers_Browselinks_CategoryTree extends Tx_Commerce_Tree_
 		/**
 		 * Category view
 		 *
-		 * @var Tx_Commerce_ViewHelpers_Browselinks_CategoryView $categoryView
+		 * @var \CommerceTeam\Commerce\ViewHelpers\Browselinks\CategoryView $categoryView
 		 */
 		$categoryView = $this->getLeaf(0)->view;
 		$categoryView->setOpenCategory($uid);
@@ -242,7 +247,7 @@ class Tx_Commerce_ViewHelpers_Browselinks_CategoryTree extends Tx_Commerce_Tree_
 	/**
 	 * Will initialize the User Position
 	 * Saves it in the Session and gives the Position
-	 * UIDs to the Tx_Commerce_Tree_Leaf_Data
+	 * UIDs to the \CommerceTeam\Commerce\Tree\Leaf\Data
 	 *
 	 * @return void
 	 */
@@ -325,9 +330,9 @@ class Tx_Commerce_ViewHelpers_Browselinks_CategoryTree extends Tx_Commerce_Tree_
 			/**
 			 * Category mount
 			 *
-			 * @var Tx_Commerce_Tree_CategoryMounts $mounts
+			 * @var \CommerceTeam\Commerce\Tree\CategoryMounts $mounts
 			 */
-			$mounts = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Tree_CategoryMounts');
+			$mounts = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryMounts');
 			$mounts->init($this->getBackendUser()->user['uid']);
 
 			// only go if the item is in the mounts
@@ -339,9 +344,12 @@ class Tx_Commerce_ViewHelpers_Browselinks_CategoryTree extends Tx_Commerce_Tree_
 				/**
 				 * Category
 				 *
-				 * @var Tx_Commerce_Domain_Model_Category $cat
+				 * @var \CommerceTeam\Commerce\Domain\Model\Category $cat
 				 */
-				$cat = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Category', $this->openCategory);
+				$cat = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+					'CommerceTeam\\Commerce\\Domain\\Model\\Category',
+					$this->openCategory
+				);
 				$cat->loadData();
 
 				$tmpCats = $cat->getParentCategories();
@@ -407,7 +415,7 @@ class Tx_Commerce_ViewHelpers_Browselinks_CategoryTree extends Tx_Commerce_Tree_
 			/**
 			 * Leaf
 			 *
-			 * @var Tx_Commerce_Tree_Leaf_Leaf $leaf
+			 * @var \CommerceTeam\Commerce\Tree\Leaf\Leaf $leaf
 			 */
 			$leaf = $this->leafs[$i];
 			$leaf->setDataPositions($positions);

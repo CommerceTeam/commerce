@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\ViewHelpers;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -11,14 +12,17 @@
  *
  * The TYPO3 project - inspiring people to share!
  */
+
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 
 /**
  * User Class for displaying Orders
  *
+ * Class \CommerceTeam\Commerce\ViewHelpers\AttributeEditFunc
+ *
  * @author 2005-2011 Ingo Schmitt <is@marketing-factory.de>
  */
-class Tx_Commerce_ViewHelpers_AttributeEditFunc {
+class AttributeEditFunc {
 	/**
 	 * Renders the value list to a value
 	 *
@@ -72,7 +76,7 @@ class Tx_Commerce_ViewHelpers_AttributeEditFunc {
 			$fieldCount = count($rowFields);
 			$out .= '
 					<tr>
-						<td class="c-headLineTable" style="width:95%;" colspan="' . ($fieldCount + 1) . '">' . $theData[$titleCol] . '</td>
+						<td class="c-headLineTable" style="width: 95%;" colspan="' . ($fieldCount + 1) . '">' . $theData[$titleCol] . '</td>
 					</tr>';
 			/**
 			 * Header colum

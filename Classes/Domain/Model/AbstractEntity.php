@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Domain\Model;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -11,8 +12,6 @@
  *
  * The TYPO3 project - inspiring people to share!
  */
-
-use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 /**
  * Constants definition for Attribute correlation_types
@@ -62,11 +61,11 @@ define ('ATTRIB_product', ATTRIB_PRODUCT);
  * tx_commerce_category
  * tx_commerce_attribute
  *
- * Class Tx_Commerce_Domain_Model_AbstractEntity
+ * Class \CommerceTeam\Commerce\Domain\Model\AbstractEntity
  *
  * @author 2005-2012 Ingo Schmitt <is@marketing-factory.de>
  */
-class Tx_Commerce_Domain_Model_AbstractEntity {
+class AbstractEntity {
 	/**
 	 * Uid of element
 	 *
@@ -93,12 +92,12 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 	 *
 	 * @var string
 	 */
-	protected $databaseClass = 'Tx_Commerce_Domain_Repository_Repository';
+	protected $databaseClass = 'CommerceTeam\\Commerce\\Domain\\Repository\\Repository';
 
 	/**
 	 * Database connection
 	 *
-	 * @var Tx_Commerce_Domain_Repository_Repository
+	 * @var \CommerceTeam\Commerce\Domain\Repository\Repository
 	 */
 	protected $databaseConnection;
 
@@ -190,10 +189,10 @@ class Tx_Commerce_Domain_Model_AbstractEntity {
 				/**
 				 * Attribute
 				 *
-				 * @var Tx_Commerce_Domain_Model_Attribute $attribute
+				 * @var \CommerceTeam\Commerce\Domain\Model\Attribute $attribute
 				 */
 				$attribute = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-					'Tx_Commerce_Domain_Model_Attribute',
+					'CommerceTeam\\Commerce\\Domain\\Model\\Attribute',
 					$attributeUid,
 					$this->lang_uid
 				);

@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Domain\Model;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -11,27 +12,28 @@
  *
  * The TYPO3 project - inspiring people to share!
  */
+
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 
 /**
  * Libary for frontend rendering of article prices.
  *
- * Class Tx_Commerce_Domain_Model_ArticlePrice
+ * Class \CommerceTeam\Commerce\Domain\Model\ArticlePrice
  *
  * @author 2005-2011 Ingo Schmitt <is@marketing-factory.de>
  */
-class Tx_Commerce_Domain_Model_ArticlePrice extends Tx_Commerce_Domain_Model_AbstractEntity {
+class ArticlePrice extends AbstractEntity {
 	/**
 	 * Database class name
 	 *
 	 * @var string
 	 */
-	protected $databaseClass = 'Tx_Commerce_Domain_Repository_ArticlePriceRepository';
+	protected $databaseClass = 'CommerceTeam\\Commerce\\Domain\\Repository\\ArticlePriceRepository';
 
 	/**
 	 * Database connection
 	 *
-	 * @var Tx_Commerce_Domain_Repository_ArticlePriceRepository
+	 * @var \CommerceTeam\Commerce\Domain\Repository\ArticlePriceRepository
 	 */
 	public $databaseConnection;
 

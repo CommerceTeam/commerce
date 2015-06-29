@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Domain\Model;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -16,29 +17,30 @@
  * Libary for Frontend-Rendering of attribute values. This class
  * should be used for all Fronten-Rendering, no Database calls
  * to the commerce tables should be made directly
- * This Class is inhertited from Tx_Commerce_Domain_Model_AbstractEntity, all
+ * This Class is inhertited from
+ * \CommerceTeam\Commerce\Domain\Model\AbstractEntity, all
  * basic Database calls are made from a separate Database Class
  * Main script class for the handling of attribute Values. An attribute_value
  * desribes the technical data of an article
  * Do not acces class variables directly, allways use the get and set methods,
  * variables will be changed in php5 to private
  *
- * Class Tx_Commerce_Domain_Model_AttributeValue
+ * Class \CommerceTeam\Commerce\Domain\Model\AttributeValue
  *
  * @author 2005-2011 Ingo Schmitt <is@marketing-factory.de>
  */
-class Tx_Commerce_Domain_Model_AttributeValue extends Tx_Commerce_Domain_Model_AbstractEntity {
+class AttributeValue extends AbstractEntity {
 	/**
 	 * Database class name
 	 *
 	 * @var string
 	 */
-	protected $databaseClass = 'Tx_Commerce_Domain_Repository_AttributeValueRepository';
+	protected $databaseClass = 'CommerceTeam\\Commerce\\Domain\\Repository\\AttributeValueRepository';
 
 	/**
 	 * Database connection
 	 *
-	 * @var Tx_Commerce_Domain_Repository_AttributeValueRepository
+	 * @var \CommerceTeam\Commerce\Domain\Repository\AttributeValueRepository
 	 */
 	public $databaseConnection;
 

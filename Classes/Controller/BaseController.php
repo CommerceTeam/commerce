@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Controller;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -12,15 +13,20 @@
  * The TYPO3 project - inspiring people to share!
  */
 
-use \TYPO3\CMS\Core\Utility\GeneralUtility;
-use \CommerceTeam\Commerce\Factory\HookFactory;
+use CommerceTeam\Commerce\Domain\Model\AbstractEntity;
+use CommerceTeam\Commerce\Domain\Model\Basket;
+use CommerceTeam\Commerce\Domain\Model\BasketItem;
+use CommerceTeam\Commerce\Domain\Model\Category;
+use CommerceTeam\Commerce\Domain\Model\Product;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use CommerceTeam\Commerce\Factory\HookFactory;
 
 /**
- * Class Tx_Commerce_Controller_BaseController
+ * Class \CommerceTeam\Commerce\Controller\BaseController
  *
  * @author 2005-2013 Volker Graubaum <vg@e-netconsulting.de>
  */
-abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
+abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 	/**
 	 * The extension key.
 	 *
@@ -117,7 +123,7 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	/**
 	 * Category
 	 *
-	 * @var Tx_Commerce_Domain_Model_Category
+	 * @var Category
 	 */
 	public $category;
 
@@ -131,7 +137,7 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	/**
 	 * If rendering a category list this is the current
 	 *
-	 * @var Tx_Commerce_Domain_Model_Category
+	 * @var Category
 	 */
 	public $currentCategory;
 
@@ -145,7 +151,7 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	/**
 	 * Product
 	 *
-	 * @var Tx_Commerce_Domain_Model_Product
+	 * @var Product
 	 */
 	public $product;
 
@@ -249,7 +255,7 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 		$this->pi_loadLL();
 		$this->pi_initPIflexForm();
 
-		Tx_Commerce_Utility_GeneralUtility::initializeFeUserBasket();
+		\CommerceTeam\Commerce\Utility\GeneralUtility::initializeFeUserBasket();
 
 		$this->pid = $this->getFrontendController()->id;
 		$this->basketHashValue = $this->getFrontendController()->fe_user->tx_commerce_basket->getBasketHashValue();
@@ -274,32 +280,32 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	 *
 	 * @param string $paymentType Payment type to get
 	 *
-	 * @return Tx_Commerce_Payment_PaymentAbstract Current payment object
-	 * @throws Exception If payment object can not be created or is invalid
+	 * @return \CommerceTeam\Commerce\Payment\PaymentAbstract Current payment object
+	 * @throws \Exception If payment object can not be created or is invalid
 	 */
 	protected function getPaymentObject($paymentType = '') {
 		if (!is_string($paymentType)) {
-			throw new Exception(
+			throw new \Exception(
 				'Expected variable of type string for ' . $paymentType . ' but a ' . getType($paymentType) . ' was given.',
 				1305675802
 			);
 		}
 		if (strlen($paymentType) < 1) {
-			throw new Exception('Empty payment type given.', 1307015821);
+			throw new \Exception('Empty payment type given.', 1307015821);
 		}
 
 		$config = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['SYSPRODUCTS']['PAYMENT']['types'][$paymentType];
 
 		if (!is_array($config)) {
-			throw new Exception('No configuration found for payment type ' . $paymentType, 1305675991);
+			throw new \Exception('No configuration found for payment type ' . $paymentType, 1305675991);
 		}
 		if (!isset($config['class'])) {
-			throw new Exception('No target implementation found for payment type ' . $paymentType, 1305676132);
+			throw new \Exception('No target implementation found for payment type ' . $paymentType, 1305676132);
 		}
 
 		$paymentObject = GeneralUtility::makeInstance($config['class'], $this);
-		if (!$paymentObject instanceof Tx_Commerce_Payment_Interface_Payment) {
-			throw new Exception($config['class'] . ' must implement Tx_Commerce_Payment_Interface_Payment');
+		if (!$paymentObject instanceof \CommerceTeam\Commerce\Payment\PaymentInterface) {
+			throw new \Exception($config['class'] . ' must implement \\CommerceTeam\\Commerce\\Payment\\PaymentInterface');
 		}
 
 		return $paymentObject;
@@ -350,13 +356,13 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	 * define a number of templates for interations.
 	 * when defining 2 templates you have an odd / even layout
 	 *
-	 * @param Tx_Commerce_Domain_Model_Product $prodObj Product Object
+	 * @param Product $prodObj Product Object
 	 * @param array $subpartNameArray Subpart names
 	 * @param bool|array $typoScript Typoscript
 	 *
 	 * @return string HTML-Output rendert
 	 */
-	public function renderProductAttributeList(Tx_Commerce_Domain_Model_Product $prodObj, array $subpartNameArray = array(),
+	public function renderProductAttributeList(Product $prodObj, array $subpartNameArray = array(),
 			$typoScript = FALSE) {
 		if ($typoScript == FALSE) {
 			$typoScript = $this->conf['singleView.']['attributes.'];
@@ -421,13 +427,13 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	 * define a number of templates for interations.
 	 * when defining 2 templates you have an odd / even layout
 	 *
-	 * @param Tx_Commerce_Domain_Model_Product $product Current product
+	 * @param Product $product Current product
 	 * @param array $articleId ArticleIds for filtering attributss
 	 * @param array $subpartNameArray Suppart Names
 	 *
 	 * @return string Stringoutput for attributes
 	 */
-	public function renderArticleAttributeList(Tx_Commerce_Domain_Model_Product &$product, array $articleId = array(),
+	public function renderArticleAttributeList(Product &$product, array $articleId = array(),
 			array $subpartNameArray = array()) {
 		$templateArray = array();
 		foreach ($subpartNameArray as $oneSubpartName) {
@@ -539,7 +545,7 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 			/**
 			 * Category
 			 *
-			 * @var $oneCategory Tx_Commerce_Domain_Model_Category
+			 * @var $oneCategory Category
 			 */
 			foreach ($this->category->getChildCategories() as $oneCategory) {
 				$oneCategory->loadData();
@@ -627,7 +633,7 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 				) {
 					$categoryProducts = $oneCategory->getProducts();
 					if ($this->conf['useStockHandling'] == 1) {
-						$categoryProducts = Tx_Commerce_Utility_GeneralUtility::removeNoStockProducts(
+						$categoryProducts = \CommerceTeam\Commerce\Utility\GeneralUtility::removeNoStockProducts(
 							$categoryProducts, $this->conf['products.']['showWithNoStock']
 						);
 					}
@@ -729,11 +735,11 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	/**
 	 * Get category path
 	 *
-	 * @param Tx_Commerce_Domain_Model_Category $category Category
+	 * @param Category $category Category
 	 *
 	 * @return string
 	 */
-	public function getPathCat(Tx_Commerce_Domain_Model_Category $category) {
+	public function getPathCat(Category $category) {
 		$rootline = $category->getParentCategoriesUidlist();
 		array_pop($rootline);
 		$active = array_reverse($rootline);
@@ -756,13 +762,14 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	 * a basket form. This Method will not replace the Subpart, you have to
 	 * replace your subpart in your template by you own
 	 *
-	 * @param Tx_Commerce_Domain_Model_Article $article Article the marker based on
+	 * @param \CommerceTeam\Commerce\Domain\Model\Article $article Article the
+	 * 	marker based on
 	 * @param bool $priceid If set true (default) the price-id will be rendered
 	 *        into the hiddenfields, otherwhise not
 	 *
 	 * @return array $markerArray markers needed for the article and the basket form
 	 */
-	public function getArticleMarker(Tx_Commerce_Domain_Model_Article $article, $priceid = FALSE) {
+	public function getArticleMarker(\CommerceTeam\Commerce\Domain\Model\Article $article, $priceid = FALSE) {
 		if (
 			$this->handle
 			&& is_array($this->conf[$this->handle . '.'])
@@ -833,10 +840,13 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 		$markerArray['ARTICLE_NUMBER'] = $article->getOrdernumber();
 		$markerArray['ARTICLE_ORDERNUMBER'] = $article->getOrdernumber();
 
-		$markerArray['ARTICLE_PRICE_NET'] = Tx_Commerce_ViewHelpers_Money::format($article->getPriceNet(), $this->currency);
-		$markerArray['ARTICLE_PRICE_GROSS'] = Tx_Commerce_ViewHelpers_Money::format($article->getPriceGross(), $this->currency);
-		$markerArray['DELIVERY_PRICE_NET'] = Tx_Commerce_ViewHelpers_Money::format($article->getDeliveryCostNet(), $this->currency);
-		$markerArray['DELIVERY_PRICE_GROSS'] = Tx_Commerce_ViewHelpers_Money::format($article->getDeliveryCostGross(), $this->currency);
+		$markerArray['ARTICLE_PRICE_NET'] = \CommerceTeam\Commerce\ViewHelpers\Money::format($article->getPriceNet(), $this->currency);
+		$markerArray['ARTICLE_PRICE_GROSS'] = \CommerceTeam\Commerce\ViewHelpers\Money::format($article->getPriceGross(), $this->currency);
+		$markerArray['DELIVERY_PRICE_NET'] = \CommerceTeam\Commerce\ViewHelpers\Money::format($article->getDeliveryCostNet(), $this->currency);
+		$markerArray['DELIVERY_PRICE_GROSS'] = \CommerceTeam\Commerce\ViewHelpers\Money::format(
+			$article->getDeliveryCostGross(),
+			$this->currency
+		);
 
 		$hooks = HookFactory::getHooks('Controller/BaseController', 'getArticleMarker');
 		foreach ($hooks as $hook) {
@@ -873,14 +883,14 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	 * This Method will not replace the Subpart, you have to replace your subpart
 	 * in your template by you own
 	 *
-	 * @param Tx_Commerce_Domain_Model_Basket $basketObj Basket
+	 * @param Basket $basketObj Basket
 	 * @param array $subpartMarker Subpart Template Subpart
 	 * @param array|bool $articletypes Articletypes
 	 * @param string $lineTemplate Line templates
 	 *
 	 * @return string $content HTML-Ccontent from the given Subpart
 	 */
-	public function makeBasketView(Tx_Commerce_Domain_Model_Basket $basketObj, array $subpartMarker, array $articletypes = array(),
+	public function makeBasketView(Basket $basketObj, array $subpartMarker, array $articletypes = array(),
 			$lineTemplate = '###LISTING_ARTICLE###') {
 		$template = $this->cObj->getSubpart($this->templateCode, $subpartMarker);
 
@@ -914,7 +924,7 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 			/**
 			 * Item
 			 *
-			 * @var $itemObj Tx_Commerce_Domain_Model_BasketItem
+			 * @var $itemObj BasketItem
 			 */
 			foreach ($basketObj->getBasketItems() as $itemObj) {
 				$part = $count % $templateElements;
@@ -958,7 +968,7 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	 * This Method will not replace the Subpart, you have to replace your subpart
 	 * in your template by you own
 	 *
-	 * @param Tx_Commerce_Domain_Model_Basket $basketObj Basket
+	 * @param Basket $basketObj Basket
 	 * @param array $subpartMarker Subpart Template Subpart
 	 *
 	 * @return string $content HTML-Ccontent from the given Subpart
@@ -974,13 +984,13 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	 * ###SUM_TAX###
 	 * ###LABEL_SUM_GROSS### ###SUM_GROSS###
 	 */
-	public function makeBasketInformation(Tx_Commerce_Domain_Model_Basket $basketObj, array $subpartMarker) {
+	public function makeBasketInformation(Basket $basketObj, array $subpartMarker) {
 		$template = $this->cObj->getSubpart($this->templateCode, $subpartMarker);
 		$basketObj->recalculateSums();
-		$markerArray['###SUM_NET###'] = Tx_Commerce_ViewHelpers_Money::format(
+		$markerArray['###SUM_NET###'] = \CommerceTeam\Commerce\ViewHelpers\Money::format(
 			$basketObj->getSumNet(), $this->currency, $this->showCurrency
 		);
-		$markerArray['###SUM_GROSS###'] = Tx_Commerce_ViewHelpers_Money::format(
+		$markerArray['###SUM_GROSS###'] = \CommerceTeam\Commerce\ViewHelpers\Money::format(
 			$basketObj->getSumGross(), $this->currency, $this->showCurrency
 		);
 
@@ -992,28 +1002,28 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 			$sumArticleGross += $basketObj->getArticleTypeSumGross($regularArticleType);
 		}
 
-		$markerArray['###SUM_ARTICLE_NET###'] = Tx_Commerce_ViewHelpers_Money::format(
+		$markerArray['###SUM_ARTICLE_NET###'] = \CommerceTeam\Commerce\ViewHelpers\Money::format(
 			$sumArticleNet, $this->currency, $this->showCurrency
 		);
-		$markerArray['###SUM_ARTICLE_GROSS###'] = Tx_Commerce_ViewHelpers_Money::format(
+		$markerArray['###SUM_ARTICLE_GROSS###'] = \CommerceTeam\Commerce\ViewHelpers\Money::format(
 			$sumArticleGross, $this->currency, $this->showCurrency
 		);
-		$markerArray['###SUM_SHIPPING_NET###'] = Tx_Commerce_ViewHelpers_Money::format(
+		$markerArray['###SUM_SHIPPING_NET###'] = \CommerceTeam\Commerce\ViewHelpers\Money::format(
 			$basketObj->getArticleTypeSumNet(DELIVERYARTICLETYPE), $this->currency, $this->showCurrency
 		);
-		$markerArray['###SUM_SHIPPING_GROSS###'] = Tx_Commerce_ViewHelpers_Money::format(
+		$markerArray['###SUM_SHIPPING_GROSS###'] = \CommerceTeam\Commerce\ViewHelpers\Money::format(
 			$basketObj->getArticleTypeSumGross(DELIVERYARTICLETYPE), $this->currency, $this->showCurrency
 		);
 		$markerArray['###SHIPPING_TITLE###'] = $basketObj->getFirstArticleTypeTitle(DELIVERYARTICLETYPE);
-		$markerArray['###SUM_PAYMENT_NET###'] = Tx_Commerce_ViewHelpers_Money::format(
+		$markerArray['###SUM_PAYMENT_NET###'] = \CommerceTeam\Commerce\ViewHelpers\Money::format(
 			$basketObj->getArticleTypeSumNet(PAYMENTARTICLETYPE), $this->currency, $this->showCurrency
 		);
-		$markerArray['###SUM_PAYMENT_GROSS###'] = Tx_Commerce_ViewHelpers_Money::format(
+		$markerArray['###SUM_PAYMENT_GROSS###'] = \CommerceTeam\Commerce\ViewHelpers\Money::format(
 			$basketObj->getArticleTypeSumGross(PAYMENTARTICLETYPE), $this->currency, $this->showCurrency
 		);
 		$markerArray['###PAYMENT_TITLE###'] = $basketObj->getFirstArticleTypeTitle(PAYMENTARTICLETYPE);
 		$markerArray['###PAYMENT_DESCRIPTION###'] = $basketObj->getFirstArticleTypeDescription(PAYMENTARTICLETYPE);
-		$markerArray['###SUM_TAX###'] = Tx_Commerce_ViewHelpers_Money::format(
+		$markerArray['###SUM_TAX###'] = \CommerceTeam\Commerce\ViewHelpers\Money::format(
 			$basketObj->getTaxSum(), $this->currency, $this->showCurrency
 		);
 
@@ -1023,7 +1033,7 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 		foreach ($taxRates as $taxRate => $taxRateSum) {
 			$taxRowArray = array();
 			$taxRowArray['###TAX_RATE###'] = $taxRate;
-			$taxRowArray['###TAX_RATE_SUM###'] = Tx_Commerce_ViewHelpers_Money::format($taxRateSum, $this->currency, $this->showCurrency);
+			$taxRowArray['###TAX_RATE_SUM###'] = \CommerceTeam\Commerce\ViewHelpers\Money::format($taxRateSum, $this->currency, $this->showCurrency);
 
 			$taxRateRows .= $this->cObj->substituteMarkerArray($taxRateTemplate, $taxRowArray);
 		}
@@ -1060,7 +1070,7 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	 * This Method will not replace the Subpart, you have to replace your subpart
 	 * in your template by you own
 	 *
-	 * @param Tx_Commerce_Domain_Model_BasketItem $basketItemObj Basket Object
+	 * @param BasketItem $basketItemObj Basket Object
 	 * @param array $subpartMarker Subpart Template Subpart
 	 *
 	 * @return string $content HTML-Ccontent from the given Subpart
@@ -1078,29 +1088,29 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	 * ###LANG_PRICESUM_NET### ###BASKET_ITEM_PRICESUM_NET### <br/>
 	 * ###LANG_PRICESUM_GROSS### ###BASKET_ITEM_PRICESUM_GROSS### <br/>
 	 */
-	public function makeLineView(Tx_Commerce_Domain_Model_BasketItem $basketItemObj, array $subpartMarker) {
+	public function makeLineView(BasketItem $basketItemObj, array $subpartMarker) {
 		$markerArray = array();
 		$template = $this->cObj->getSubpart($this->templateCode, $subpartMarker);
 
 		/**
 		 * Basket Item Elements
 		 */
-		$markerArray['###BASKET_ITEM_PRICENET###'] = Tx_Commerce_ViewHelpers_Money::format(
+		$markerArray['###BASKET_ITEM_PRICENET###'] = \CommerceTeam\Commerce\ViewHelpers\Money::format(
 			$basketItemObj->getPriceNet(), $this->currency, $this->showCurrency
 		);
-		$markerArray['###BASKET_ITEM_PRICEGROSS###'] = Tx_Commerce_ViewHelpers_Money::format(
+		$markerArray['###BASKET_ITEM_PRICEGROSS###'] = \CommerceTeam\Commerce\ViewHelpers\Money::format(
 			$basketItemObj->getPriceGross(), $this->currency, $this->showCurrency
 		);
-		$markerArray['###BASKET_ITEM_PRICESUM_NET###'] = Tx_Commerce_ViewHelpers_Money::format(
+		$markerArray['###BASKET_ITEM_PRICESUM_NET###'] = \CommerceTeam\Commerce\ViewHelpers\Money::format(
 			$basketItemObj->getItemSumNet(), $this->currency, $this->showCurrency
 		);
-		$markerArray['###BASKET_ITEM_PRICESUM_GROSS###'] = Tx_Commerce_ViewHelpers_Money::format(
+		$markerArray['###BASKET_ITEM_PRICESUM_GROSS###'] = \CommerceTeam\Commerce\ViewHelpers\Money::format(
 			$basketItemObj->getItemSumGross(), $this->currency, $this->showCurrency
 		);
 		$markerArray['###BASKET_ITEM_ORDERNUMBER###'] = $basketItemObj->getOrderNumber();
 
 		$markerArray['###BASKET_ITEM_TAX_PERCENT###'] = $basketItemObj->getTax();
-		$markerArray['###BASKET_ITEM_TAX_VALUE###'] = Tx_Commerce_ViewHelpers_Money::format(
+		$markerArray['###BASKET_ITEM_TAX_VALUE###'] = \CommerceTeam\Commerce\ViewHelpers\Money::format(
 			(int) $basketItemObj->getItemSumTax(), $this->currency, $this->showCurrency
 		);
 		$markerArray['###BASKET_ITEM_COUNT###'] = $basketItemObj->getQuantity();
@@ -1368,7 +1378,7 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	/**
 	 * Reders a category as output
 	 *
-	 * @param Tx_Commerce_Domain_Model_Category $category Category
+	 * @param Category $category Category
 	 * @param string $subpartName Template subpart name
 	 * @param array $typoscript TypoScript array for rendering
 	 * @param string $prefix Prefix for Marker, optional#
@@ -1376,7 +1386,7 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	 *
 	 * @return string HTML-Content
 	 */
-	public function renderCategory(Tx_Commerce_Domain_Model_Category $category, $subpartName, array $typoscript, $prefix = '',
+	public function renderCategory(Category $category, $subpartName, array $typoscript, $prefix = '',
 			$template = ''
 	) {
 		return $this->renderElement($category, $subpartName, $typoscript, $prefix, '###CATEGORY_', $template);
@@ -1385,7 +1395,7 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	/**
 	 * Reders an element as output
 	 *
-	 * @param Tx_Commerce_Domain_Model_AbstractEntity $element Element
+	 * @param AbstractEntity $element Element
 	 * @param string $subpartName Template subpart name
 	 * @param array $typoscript TypoScript array for rendering
 	 * @param string $prefix Prefix for Marker, optional#
@@ -1394,12 +1404,12 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	 *
 	 * @return string HTML-Content
 	 */
-	public function renderElement(Tx_Commerce_Domain_Model_AbstractEntity $element, $subpartName, array $typoscript, $prefix = '',
+	public function renderElement(AbstractEntity $element, $subpartName, array $typoscript, $prefix = '',
 			$markerWrap = '###', $template = ''
 	) {
 		if (empty($subpartName)) {
 			return $this->error(
-				'renderElement', __LINE__, 'No supart defined for class.Tx_Commerce_Controller_BaseController::renderElement'
+				'renderElement', __LINE__, 'No supart defined for class.CommerceTeam\\Commerce\\Controller\\BaseController::renderElement'
 			);
 		}
 		if (strlen($template) < 1) {
@@ -1563,7 +1573,7 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 		/**
 		 * Basket item
 		 *
-		 * @var Tx_Commerce_Domain_Model_BasketItem $basketItem
+		 * @var BasketItem $basketItem
 		 */
 		$basketItem = $GLOBALS['TSFE']->fe_user->tx_commerce_basket->getBasketItem($articleId);
 		if (is_object($basketItem)) {
@@ -1614,10 +1624,10 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 				/**
 				 * Product
 				 *
-				 * @var Tx_Commerce_Domain_Model_Product $myProduct
+				 * @var Product $myProduct
 				 */
 				$myProduct = GeneralUtility::makeInstance(
-					'Tx_Commerce_Domain_Model_Product',
+					'CommerceTeam\\Commerce\\Domain\\Model\\Product',
 					$myProductId,
 					$this->getFrontendController()->tmpl->setup['config.']['sys_language_uid']
 				);
@@ -1656,7 +1666,7 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	/**
 	 * This method renders a product to a template
 	 *
-	 * @param Tx_Commerce_Domain_Model_Product $product Product
+	 * @param Product $product Product
 	 * @param string $template TYPO3 Template
 	 * @param array $typoscript TypoScript
 	 * @param array $articleMarker Marker for the article description
@@ -1664,10 +1674,10 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	 *
 	 * @return string rendered HTML
 	 */
-	public function renderProduct(Tx_Commerce_Domain_Model_Product $product, $template, array $typoscript, array $articleMarker,
+	public function renderProduct(Product $product, $template, array $typoscript, array $articleMarker,
 			$articleSubpart = ''
 	) {
-		if (!($product instanceof Tx_Commerce_Domain_Model_Product)) {
+		if (!($product instanceof Product)) {
 			return FALSE;
 		}
 		if (empty($articleMarker)) {
@@ -1708,7 +1718,7 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 
 		$localTs = $this->addTypoLinkToTypoScript($localTs, $typoLinkConf);
 
-		$markerArray = $this->generateMarkerArray($data, $localTs, '', 'Tx_Commerce_Domain_Model_Products');
+		$markerArray = $this->generateMarkerArray($data, $localTs, '', 'CommerceTeam\\Commerce\\Domain\\Model\\Products');
 		$markerArrayUp = array();
 		foreach ($markerArray as $k => $v) {
 			$markerArrayUp[strtoupper($k)] = $v;
@@ -1753,7 +1763,7 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 		$articleTemplate = $this->cObj->getSubpart($template, '###' . strtoupper($articleSubpart) . '###');
 
 		if ($this->conf['useStockHandling'] == 1) {
-			$product = Tx_Commerce_Utility_GeneralUtility::removeNoStockArticles(
+			$product = \CommerceTeam\Commerce\Utility\GeneralUtility::removeNoStockArticles(
 				$product, $this->conf['articles.']['showWithNoStock']
 			);
 		}
@@ -1782,13 +1792,13 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 		/**
 		 * Cheapest Article
 		 *
-		 * @var Tx_Commerce_Domain_Model_Article $cheapestArticle
+		 * @var \CommerceTeam\Commerce\Domain\Model\Article $cheapestArticle
 		 */
-		$cheapestArticle = GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Article', $cheapestArticleUid);
+		$cheapestArticle = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Article', $cheapestArticleUid);
 		$cheapestArticle->loadData();
 		$cheapestArticle->loadPrices();
 
-		$markerArray['###PRODUCT_CHEAPEST_PRICE_GROSS###'] = Tx_Commerce_ViewHelpers_Money::format(
+		$markerArray['###PRODUCT_CHEAPEST_PRICE_GROSS###'] = \CommerceTeam\Commerce\ViewHelpers\Money::format(
 			$cheapestArticle->getPriceGross(), $this->currency
 		);
 
@@ -1796,13 +1806,13 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 		/**
 		 * Cheapest Article
 		 *
-		 * @var Tx_Commerce_Domain_Model_Article $cheapestArticle
+		 * @var \CommerceTeam\Commerce\Domain\Model\Article $cheapestArticle
 		 */
-		$cheapestArticle = GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Article', $cheapestArticleUid);
+		$cheapestArticle = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Article', $cheapestArticleUid);
 		$cheapestArticle->loadData();
 		$cheapestArticle->loadPrices();
 
-		$markerArray['###PRODUCT_CHEAPEST_PRICE_NET###'] = Tx_Commerce_ViewHelpers_Money::format(
+		$markerArray['###PRODUCT_CHEAPEST_PRICE_NET###'] = \CommerceTeam\Commerce\ViewHelpers\Money::format(
 			$cheapestArticle->getPriceNet(),
 			$this->currency
 		);
@@ -1821,7 +1831,7 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 		$content = $this->substituteMarkerArrayNoCached($template, $markerArray, $subpartArray, $wrapMarkerArray);
 		if ($typoscript['editPanel'] == 1) {
 			$content = $this->cObj->editPanel(
-				$content, $typoscript['editPanel.'], 'Tx_Commerce_Domain_Model_Products:' . $product->getUid()
+				$content, $typoscript['editPanel.'], '\CommerceTeam\Commerce\Domain\Model\Products:' . $product->getUid()
 			);
 		}
 
@@ -1869,13 +1879,13 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	 *
 	 * @param string $kind Kind
 	 * @param array $articles Articles
-	 * @param Tx_Commerce_Domain_Model_Product $product Product
+	 * @param Product $product Product
 	 * @param string $articleMarker Article marker
 	 * @param string $articleTemplate Article template
 	 *
 	 * @return string
 	 */
-	public function makeArticleView($kind, $articles, $product, $articleMarker = '', $articleTemplate = '') {
+	public function makeArticleView($kind, array $articles, Product $product, $articleMarker = '', $articleTemplate = '') {
 		return '';
 	}
 
@@ -1889,21 +1899,21 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	 *
 	 * @return string
 	 */
-	public function renderTable($data, $typoscript, $template, $prefix) {
+	public function renderTable(array $data, array $typoscript, $template, $prefix) {
 		return '';
 	}
 
 	/**
 	 * Render single view
 	 *
-	 * @param Tx_Commerce_Domain_Model_Product $product Product
-	 * @param Tx_Commerce_Domain_Model_Category $category Category
+	 * @param Product $product Product
+	 * @param Category $category Category
 	 * @param string $subpartName Subpart
 	 * @param string $subpartNameNostock Subport no stock
 	 *
 	 * @return string
 	 */
-	public function renderSingleView($product, $category, $subpartName, $subpartNameNostock) {
+	public function renderSingleView(Product $product, Category $category, $subpartName, $subpartNameNostock) {
 		return '';
 	}
 

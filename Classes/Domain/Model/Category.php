@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Domain\Model;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -16,22 +17,22 @@
  * Main script class for the handling of categories. Categories contains
  * categories (Reverse data structure) and products
  *
- * Class Tx_Commerce_Domain_Model_Category
+ * Class \CommerceTeam\Commerce\Domain\Model\Category
  *
  * @author 2005-2012 Ingo Schmitt <is@marketing-factory.de>
  */
-class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_AbstractEntity {
+class Category extends AbstractEntity {
 	/**
 	 * Database class name
 	 *
 	 * @var string
 	 */
-	protected $databaseClass = 'Tx_Commerce_Domain_Repository_CategoryRepository';
+	protected $databaseClass = 'CommerceTeam\\Commerce\\Domain\\Repository\\CategoryRepository';
 
 	/**
 	 * Database connection
 	 *
-	 * @var Tx_Commerce_Domain_Repository_CategoryRepository
+	 * @var \CommerceTeam\Commerce\Domain\Repository\CategoryRepository
 	 */
 	public $databaseConnection;
 
@@ -101,7 +102,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	/**
 	 * Parent category object
 	 *
-	 * @var Tx_Commerce_Domain_Model_Category
+	 * @var \CommerceTeam\Commerce\Domain\Model\Category
 	 */
 	protected $parent_category = FALSE;
 
@@ -328,10 +329,10 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 				/**
 				 * Child category
 				 *
-				 * @var Tx_Commerce_Domain_Model_Category $childCategory
+				 * @var \CommerceTeam\Commerce\Domain\Model\Category $childCategory
 				 */
 				$childCategory = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-					'Tx_Commerce_Domain_Model_Category',
+					'CommerceTeam\\Commerce\\Domain\\Model\\Category',
 					$childCategoryUid,
 					$this->lang_uid
 				);
@@ -376,7 +377,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 				/**
 				 * Category
 				 *
-				 * @var Tx_Commerce_Domain_Model_Category $category
+				 * @var \CommerceTeam\Commerce\Domain\Model\Category $category
 				 */
 				foreach ($this->categories as $category) {
 					$returnList = array_merge($returnList, $category->getChildCategoriesUidlist($depth));
@@ -408,10 +409,10 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 				/**
 				 * Child product
 				 *
-				 * @var Tx_Commerce_Domain_Model_Product $childProduct
+				 * @var \CommerceTeam\Commerce\Domain\Model\Product $childProduct
 				 */
 				$childProduct = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-					'Tx_Commerce_Domain_Model_Product',
+					'CommerceTeam\\Commerce\\Domain\\Model\\Product',
 					$productUid,
 					$this->lang_uid
 				);
@@ -480,13 +481,13 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	/**
 	 * Loads the parent category in the parent-category variable
 	 *
-	 * @return Tx_Commerce_Domain_Model_Category|FALSE category object or FALSE
-	 * 		if this category is already the topmost category
+	 * @return \CommerceTeam\Commerce\Domain\Model\Category|FALSE category
+	 * 	object or FALSE if this category is already the topmost category
 	 */
 	public function getParentCategory() {
 		if ($this->parent_category_uid && !$this->parent_category) {
 			$this->parent_category = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-				'Tx_Commerce_Domain_Model_Category',
+				'CommerceTeam\\Commerce\\Domain\\Model\\Category',
 				$this->parent_category_uid,
 				$this->lang_uid
 			);
@@ -508,10 +509,10 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 			/**
 			 * Category
 			 *
-			 * @var Tx_Commerce_Domain_Model_Category $category
+			 * @var \CommerceTeam\Commerce\Domain\Model\Category $category
 			 */
 			$category = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-				'Tx_Commerce_Domain_Model_Category',
+				'CommerceTeam\\Commerce\\Domain\\Model\\Category',
 				$parent,
 				$this->lang_uid
 			);
@@ -600,10 +601,10 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 				/**
 				 * Category
 				 *
-				 * @var Tx_Commerce_Domain_Model_Category $category
+				 * @var \CommerceTeam\Commerce\Domain\Model\Category $category
 				 */
 				$category = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-					'Tx_Commerce_Domain_Model_Category',
+					'CommerceTeam\\Commerce\\Domain\\Model\\Category',
 					$oneCategoryUid,
 					$this->lang_uid
 				);
@@ -775,7 +776,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 		}
 		$this->loadPermissions();
 
-		return Tx_Commerce_Utility_BackendUtility::isPermissionSet($perm, $this->perms_record);
+		return \CommerceTeam\Commerce\Utility\BackendUtility::isPermissionSet($perm, $this->perms_record);
 	}
 
 	/**
@@ -805,7 +806,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 		$result = FALSE;
 
 		if ($this->hasProducts()) {
-			$result = count(Tx_Commerce_Utility_GeneralUtility::removeNoStockProducts($this->getProducts(), 0));
+			$result = count(\CommerceTeam\Commerce\Utility\GeneralUtility::removeNoStockProducts($this->getProducts(), 0));
 		}
 
 		return $result;
@@ -815,7 +816,7 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 	 * Returns TRUE if this category has active products or
 	 * if sub categories have active products
 	 *
-	 * @param bool|int $depth maximum depth for going recursive,
+	 * @param bool|int $depth Maximum depth for going recursive,
 	 * 		if not set go for maximum
 	 *
 	 * @return bool Returns TRUE, if category/subcategories hav active products
@@ -830,8 +831,16 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 		if ($depth > 0) {
 			$childCategoriesList = $this->getChildCategoriesUidlist($depth);
 			foreach ($childCategoriesList as $oneCategoryUid) {
-				/** @var Tx_Commerce_Domain_Model_Category $category */
-				$category = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Category', $oneCategoryUid, $this->lang_uid);
+				/**
+				 * Category
+				 *
+				 * @var \CommerceTeam\Commerce\Domain\Model\Category $category
+				 */
+				$category = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+					'CommerceTeam\\Commerce\\Domain\\Model\\Category',
+					$oneCategoryUid,
+					$this->lang_uid
+				);
 				$category->loadData();
 				$returnValue = $category->hasProductsInSubCategories($depth);
 				if ($returnValue == TRUE) {
@@ -864,10 +873,15 @@ class Tx_Commerce_Domain_Model_Category extends Tx_Commerce_Domain_Model_Abstrac
 			// Only update relations if parent_category was successfully set
 		if ($set) {
 			$catList = array($parentUid);
-			$catList = Tx_Commerce_Utility_BackendUtility::getUidListFromList($catList);
-			$catList = Tx_Commerce_Utility_BackendUtility::extractFieldArray($catList, 'uid_foreign', TRUE);
+			$catList = \CommerceTeam\Commerce\Utility\BackendUtility::getUidListFromList($catList);
+			$catList = \CommerceTeam\Commerce\Utility\BackendUtility::extractFieldArray($catList, 'uid_foreign', TRUE);
 
-			Tx_Commerce_Utility_BackendUtility::saveRelations($this->uid, $catList, 'tx_commerce_categories_parent_category_mm', TRUE);
+			\CommerceTeam\Commerce\Utility\BackendUtility::saveRelations(
+				$this->uid,
+				$catList,
+				'tx_commerce_categories_parent_category_mm',
+				TRUE
+			);
 		} else {
 			return FALSE;
 		}

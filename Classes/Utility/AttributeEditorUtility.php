@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Utility;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -12,21 +13,22 @@
  * The TYPO3 project - inspiring people to share!
  */
 
+use CommerceTeam\Commerce\Domain\Repository\FolderRepository;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * A metaclass for creating inputfield fields in the backend.
  *
- * Class Tx_Commerce_Utility_AttributeEditorUtility
+ * Class \CommerceTeam\Commerce\Utility\AttributeEditorUtility
  *
  * @author 2005-2012 Thomas Hempel <thomas@work.de>
  */
-class Tx_Commerce_Utility_AttributeEditorUtility {
+class AttributeEditorUtility {
 	/**
 	 * Backend utility
 	 *
-	 * @var Tx_Commerce_Utility_BackendUtility
+	 * @var \CommerceTeam\Commerce\Utility\BackendUtility
 	 */
 	protected $belib;
 
@@ -36,7 +38,7 @@ class Tx_Commerce_Utility_AttributeEditorUtility {
 	 * @return self
 	 */
 	public function __construct() {
-		$this->belib = GeneralUtility::makeInstance('Tx_Commerce_Utility_BackendUtility');
+		$this->belib = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Utility\\BackendUtility');
 	}
 
 	/**
@@ -109,10 +111,10 @@ class Tx_Commerce_Utility_AttributeEditorUtility {
 		/**
 		 * Get PID to select only the Attribute Values in the correct PID
 		 */
-		Tx_Commerce_Utility_FolderUtility::initFolders();
-		$modPid = current(Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Commerce', 'commerce'));
-		Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Products', 'commerce', $modPid);
-		$attrPid = current(Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Attributes', 'commerce', $modPid));
+		FolderUtility::initFolders();
+		$modPid = current(FolderRepository::initFolders('Commerce', 'commerce'));
+		FolderRepository::initFolders('Products', 'commerce', $modPid);
+		$attrPid = current(FolderRepository::initFolders('Attributes', 'commerce', $modPid));
 
 		if ($aData['has_valuelist'] == 1) {
 			$config['config'] = array(

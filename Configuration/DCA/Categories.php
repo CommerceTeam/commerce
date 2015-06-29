@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Configuration\Dca;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -15,11 +16,11 @@
 /**
  * Implements the dynaflex config for the 'tx_commerce_categories' table
  *
- * Class Tx_Commerce_Configuration_Dca_Categories
+ * Class \CommerceTeam\Commerce\Configuration\Dca\Categories
  *
  * @author 2008 Erik Frister <efrister@marketing-factory.de>
  */
-class Tx_Commerce_Configuration_Dca_Categories {
+class Categories {
 	/**
 	 * Rows to check
 	 *

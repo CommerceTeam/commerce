@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Controller;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -28,11 +29,11 @@ use TYPO3\CMS\Perm\Controller\PermissionAjaxController;
  * $this->MOD_SETTINGS['mode']: 'perms' / '': decides if we view a user-overview
  * 		or the permissions.
  *
- * Class Tx_Commerce_Controller_PermissionModuleController
+ * Class \CommerceTeam\Commerce\Controller\PermissionModuleController
  *
  * @author 2008-2012 Erik Frister <typo3@marketing-factory.de>
  */
-class Tx_Commerce_Controller_PermissionModuleController extends \TYPO3\CMS\Perm\Controller\PermissionModuleController {
+class PermissionModuleController extends \TYPO3\CMS\Perm\Controller\PermissionModuleController {
 	/**
 	 * Categorory uid
 	 *
@@ -58,9 +59,9 @@ class Tx_Commerce_Controller_PermissionModuleController extends \TYPO3\CMS\Perm\
 		// Setting GPvars:
 		$this->id = (int) GeneralUtility::_GP('id');
 		if (!$this->id) {
-			Tx_Commerce_Utility_FolderUtility::initFolders();
+			\CommerceTeam\Commerce\Utility\FolderUtility::initFolders();
 			$this->id = current(
-				array_unique(Tx_Commerce_Domain_Repository_FolderRepository::initFolders('Products', 'Commerce', 0, 'Commerce'))
+				array_unique(\CommerceTeam\Commerce\Domain\Repository\FolderRepository::initFolders('Products', 'Commerce', 0, 'Commerce'))
 			);
 		}
 
@@ -78,7 +79,7 @@ class Tx_Commerce_Controller_PermissionModuleController extends \TYPO3\CMS\Perm\
 		// Module name;
 		$this->MCONF = $GLOBALS['MCONF'];
 		// Page select clause:
-		$this->perms_clause = Tx_Commerce_Utility_BackendUtility::getCategoryPermsClause(1);
+		$this->perms_clause = \CommerceTeam\Commerce\Utility\BackendUtility::getCategoryPermsClause(1);
 
 		$this->initPage();
 
@@ -109,7 +110,7 @@ class Tx_Commerce_Controller_PermissionModuleController extends \TYPO3\CMS\Perm\
 
 		// override attributes of WebPermissions found in sysext/perm/mod1/perm.js
 		$doc->JScode .= $doc->wrapScriptTags('
-			WebPermissions.thisScript = TYPO3.settings.ajaxUrls["Tx_Commerce_Controller_PermissionAjaxController::dispatch"];
+			WebPermissions.thisScript = TYPO3.settings.ajaxUrls["CommerceTeam\\Commerce\\Controller\\PermissionAjaxController::dispatch"];
 		');
 
 		$this->doc = $doc;
@@ -128,7 +129,7 @@ class Tx_Commerce_Controller_PermissionModuleController extends \TYPO3\CMS\Perm\
 		// The page will show only if there is a valid page and if this page
 		// may be viewed by the user
 		if ($this->categoryUid) {
-			$this->pageinfo = Tx_Commerce_Utility_BackendUtility::readCategoryAccess($this->categoryUid, $this->perms_clause);
+			$this->pageinfo = \CommerceTeam\Commerce\Utility\BackendUtility::readCategoryAccess($this->categoryUid, $this->perms_clause);
 		} else {
 			$this->pageinfo = BackendUtility::readPageAccess($this->id, $this->perms_clause);
 		}
@@ -437,9 +438,9 @@ class Tx_Commerce_Controller_PermissionModuleController extends \TYPO3\CMS\Perm\
 		/**
 		 * Category tree
 		 *
-		 * @var Tx_Commerce_Tree_CategoryTree $tree
+		 * @var \CommerceTeam\Commerce\Tree\CategoryTree $tree
 		 */
-		$tree = GeneralUtility::makeInstance('Tx_Commerce_Tree_CategoryTree');
+		$tree = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryTree');
 		$tree->setBare();
 		$tree->init();
 		$tree->readRecursively($this->categoryUid, $this->MOD_SETTINGS['depth']);
@@ -654,9 +655,9 @@ class Tx_Commerce_Controller_PermissionModuleController extends \TYPO3\CMS\Perm\
 		/**
 		 * Category tree
 		 *
-		 * @var Tx_Commerce_Tree_CategoryTree $tree
+		 * @var \CommerceTeam\Commerce\Tree\CategoryTree $tree
 		 */
-		$tree = GeneralUtility::makeInstance('Tx_Commerce_Tree_CategoryTree');
+		$tree = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryTree');
 		$tree->setBare();
 		$tree->readRecursively($this->categoryUid, $this->getLevels);
 		$tree->init();

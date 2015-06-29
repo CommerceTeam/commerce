@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Hook;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -19,21 +20,21 @@
  * This class is ment as programming-tutorial
  * for programming hooks for delivery_costs
  *
- * Class Tx_Commerce_Hook_ArticleHooks
+ * Class \CommerceTeam\Commerce\Hook\ArticleHooks
  *
  * @author 2005-2011 Ingo Schmitt <is@marketing-factory.de>
  */
-class Tx_Commerce_Hook_ArticleHooks {
+class ArticleHooks {
 	/**
 	 * Basic Method to calculate the delivereycost (net)
 	 * Ment as Programming tutorial. Mostly you have to change or add functionality
 	 *
 	 * @param int $netPrice Net price
-	 * @param Tx_Commerce_Domain_Model_Article $article Article
+	 * @param \CommerceTeam\Commerce\Domain\Model\Article $article Article
 	 *
 	 * @return void
 	 */
-	public function calculateDeliveryCostNet(&$netPrice, Tx_Commerce_Domain_Model_Article &$article) {
+	public function calculateDeliveryCostNet(&$netPrice, \CommerceTeam\Commerce\Domain\Model\Article &$article) {
 		$deliveryArticle = $this->getDeliveryArticle($article);
 		if ($deliveryArticle) {
 			$netPrice = $deliveryArticle->getPriceNet();
@@ -47,11 +48,11 @@ class Tx_Commerce_Hook_ArticleHooks {
 	 * Ment as Programming tutorial. Mostly you have to change or add functionality
 	 *
 	 * @param int $grossPrice Gross price
-	 * @param Tx_Commerce_Domain_Model_Article $article Article
+	 * @param \CommerceTeam\Commerce\Domain\Model\Article $article Article
 	 *
 	 * @return void
 	 */
-	public function calculateDeliveryCostGross(&$grossPrice, Tx_Commerce_Domain_Model_Article &$article) {
+	public function calculateDeliveryCostGross(&$grossPrice, \CommerceTeam\Commerce\Domain\Model\Article &$article) {
 		$deliveryArticle = $this->getDeliveryArticle($article);
 		if ($deliveryArticle) {
 			$grossPrice = $deliveryArticle->getPriceGross();
@@ -63,11 +64,11 @@ class Tx_Commerce_Hook_ArticleHooks {
 	/**
 	 * Load the deliveryArticle
 	 *
-	 * @param Tx_Commerce_Domain_Model_Article $article Article
+	 * @param \CommerceTeam\Commerce\Domain\Model\Article $article Article
 	 *
-	 * @return Tx_Commerce_Domain_Model_Article $result
+	 * @return \CommerceTeam\Commerce\Domain\Model\Article $result
 	 */
-	protected function getDeliveryArticle(Tx_Commerce_Domain_Model_Article &$article) {
+	protected function getDeliveryArticle(\CommerceTeam\Commerce\Domain\Model\Article &$article) {
 		$deliveryConf = ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['SYSPRODUCTS']['DELIVERY']['types']);
 		$classname = array_shift(array_keys($deliveryConf));
 
@@ -84,10 +85,10 @@ class Tx_Commerce_Hook_ArticleHooks {
 			/**
 			 * Instantiate article class
 			 *
-			 * @var Tx_Commerce_Domain_Model_Article $deliveryArticle
+			 * @var \CommerceTeam\Commerce\Domain\Model\Article $deliveryArticle
 			 */
 			$deliveryArticle = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-				'Tx_Commerce_Domain_Model_Article',
+				'CommerceTeam\\Commerce\\Domain\\Model\\Article',
 				$row['uid'],
 				$article->getLang()
 			);

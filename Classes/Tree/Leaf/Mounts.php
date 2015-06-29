@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Tree\Leaf;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -13,13 +14,13 @@
  */
 
 /**
- * Implements the mounts for Tx_Commerce_Tree_Leaf_Master
+ * Implements the mounts for \CommerceTeam\Commerce\Tree\Leaf\Master
  *
- * Class Tx_Commerce_Tree_Leaf_Mounts
+ * Class \CommerceTeam\Commerce\Tree\Leaf\Mounts
  *
  * @author 2008-2011 Erik Frister <typo3@marketing-factory.de>
  */
-class Tx_Commerce_Tree_Leaf_Mounts extends Tx_Commerce_Tree_Leaf_Base {
+class Mounts extends Base {
 	/**
 	 * Uid of the User
 	 *
@@ -137,7 +138,7 @@ class Tx_Commerce_Tree_Leaf_Mounts extends Tx_Commerce_Tree_Leaf_Base {
 		if (!is_numeric($uid) || $this->field == NULL) {
 			if (TYPO3_DLOG) {
 				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
-					'init (Tx_Commerce_Tree_Leaf_Mounts) gets passed invalid parameters. Script is aborted.',
+					'init (CommerceTeam\\Commerce\\Tree\\Leaf\\Mounts) gets passed invalid parameters. Script is aborted.',
 					COMMERCE_EXTKEY,
 					2
 				);

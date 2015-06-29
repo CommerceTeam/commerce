@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Hook;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -11,27 +12,28 @@
  *
  * The TYPO3 project - inspiring people to share!
  */
+
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Hook to adjust linkwizard (linkbrowser)
  *
- * Class Tx_Commerce_Hook_BrowselinksHooks
+ * Class \CommerceTeam\Commerce\Hook\BrowselinksHooks
  *
  * @author 2008-2011 Christian Ehret <chris@ehret.name>
  */
-class Tx_Commerce_Hook_BrowselinksHooks implements \TYPO3\CMS\Core\ElementBrowser\ElementBrowserHookInterface {
+class BrowselinksHooks implements \TYPO3\CMS\Core\ElementBrowser\ElementBrowserHookInterface {
 	/**
 	 * Local content object cObj parent
 	 *
-	 * @var tx_rtehtmlarea_browse_links
+	 * @var \tx_rtehtmlarea_browse_links
 	 */
 	protected $pObj;
 
 	/**
 	 * Category tree
 	 *
-	 * @var Tx_Commerce_ViewHelpers_Browselinks_CategoryTree
+	 * @var \CommerceTeam\Commerce\ViewHelpers\Browselinks\CategoryTree
 	 */
 	protected $treeObj;
 
@@ -52,7 +54,7 @@ class Tx_Commerce_Hook_BrowselinksHooks implements \TYPO3\CMS\Core\ElementBrowse
 	/**
 	 * Initialisation (additionalParameters is an empty array)
 	 *
-	 * @param tx_rtehtmlarea_browse_links $parentObject Parent object
+	 * @param \tx_rtehtmlarea_browse_links $parentObject Parent object
 	 * @param array $additionalParameters Parameter
 	 *
 	 * @return void
@@ -70,7 +72,7 @@ class Tx_Commerce_Hook_BrowselinksHooks implements \TYPO3\CMS\Core\ElementBrowse
 
 		$this->script = '<script src="' . $linkToTreeJs . '" type="text/javascript"></script>';
 		$this->script .= GeneralUtility::wrapJS('
-			Tree.ajaxID = "Tx_Commerce_Hook_BrowselinksHooks::ajaxExpandCollapse";
+			Tree.ajaxID = "CommerceTeam\\Commerce\\Hook\\BrowselinksHooks::ajaxExpandCollapse";
 		');
 
 		if ($parentObject->RTEtsConfigParams) {
@@ -106,7 +108,7 @@ class Tx_Commerce_Hook_BrowselinksHooks implements \TYPO3\CMS\Core\ElementBrowse
 	 */
 	protected function initTree() {
 		// initialize the tree
-		$this->treeObj = GeneralUtility::makeInstance('Tx_Commerce_ViewHelpers_Browselinks_CategoryTree');
+		$this->treeObj = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\ViewHelpers\\Browselinks\\CategoryTree');
 		$this->treeObj->init();
 	}
 

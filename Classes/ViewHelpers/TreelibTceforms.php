@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\ViewHelpers;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -25,11 +26,11 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * know anything about trees. It just set parameters and render the field with
  * TCEforms.
  *
- * Class Tx_Commerce_ViewHelpers_TreelibTceforms
+ * Class \CommerceTeam\Commerce\ViewHelpers\TreelibTceforms
  *
  * @author 2003-2012 Rene Fritz <r.fritz@colorcube.de>
  */
-class Tx_Commerce_ViewHelpers_TreelibTceforms {
+class TreelibTceforms {
 	/**
 	 * Count rendered tree items - just for frame height calculation
 	 *
@@ -53,7 +54,7 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 	protected $treeContent = '';
 
 	/**
-	 * itemArray for usage in TCEforms
+	 * ItemArray for usage in TCEforms
 	 * This holds the original values
 	 *
 	 * @var array
@@ -62,7 +63,7 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 	protected $itemArray = array();
 
 	/**
-	 * itemArray for usage in TCEforms
+	 * ItemArray for usage in TCEforms
 	 * This holds the processed values with titles/labels
 	 *
 	 * @var array
@@ -291,7 +292,7 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 		$divFrame .= '</script>';
 		$divFrame .= '<script src="' . $this->tceforms->backPath . 'js/tree.js"></script>
 			<script type="text/javascript">
-			Tree.ajaxID = "Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper::ajaxExpandCollapse";
+			Tree.ajaxID = "CommerceTeam\\Commerce\\ViewHelpers\\Navigation\\CategoryViewHelper::ajaxExpandCollapse";
 			</script>
 		';
 
@@ -321,7 +322,7 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 	 */
 	public function renderIframe($width = NULL, $height = NULL) {
 		if (!$this->treeBrowserScript) {
-			die ('Tx_Commerce_ViewHelpers_TreelibTceforms: treeBrowserScript is not set!');
+			die ('CommerceTeam\\Commerce\\ViewHelpers\\TreelibTceforms: treeBrowserScript is not set!');
 		}
 
 		if ($width == NULL) {
@@ -429,9 +430,9 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 		/**
 		 * Category mount
 		 *
-		 * @var Tx_Commerce_Tree_CategoryMounts $mounts
+		 * @var \CommerceTeam\Commerce\Tree\CategoryMounts $mounts
 		 */
-		$mounts = GeneralUtility::makeInstance('Tx_Commerce_Tree_CategoryMounts');
+		$mounts = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryMounts');
 		$mounts->init($userid);
 
 		$preselected = $mounts->getMountDataLabeled();
@@ -464,9 +465,9 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 		/**
 		 * Category mount
 		 *
-		 * @var Tx_Commerce_Tree_CategoryMounts $mounts
+		 * @var \CommerceTeam\Commerce\Tree\CategoryMounts $mounts
 		 */
-		$mounts = GeneralUtility::makeInstance('Tx_Commerce_Tree_CategoryMounts');
+		$mounts = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryMounts');
 		$mounts->initByGroup($groupuid);
 
 		$preselected = $mounts->getMountDataLabeled();
@@ -503,9 +504,9 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 		/**
 		 * Category
 		 *
-		 * @var Tx_Commerce_Domain_Model_Category $cat
+		 * @var \CommerceTeam\Commerce\Domain\Model\Category $cat
 		 */
-		$cat = GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Category', $catUid);
+		$cat = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Category', $catUid);
 		$cat->loadData();
 		$parent = $cat->getParentCategories();
 
@@ -514,9 +515,9 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 		/**
 		 * Category mounts
 		 *
-		 * @var Tx_Commerce_Tree_CategoryMounts $mounts
+		 * @var \CommerceTeam\Commerce\Tree\CategoryMounts $mounts
 		 */
-		$mounts = GeneralUtility::makeInstance('Tx_Commerce_Tree_CategoryMounts');
+		$mounts = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryMounts');
 		$mounts->init($GLOBALS['BE_USER']->user['uid']);
 
 		if (is_array($parent)) {
@@ -524,7 +525,7 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 				/**
 				 * Category
 				 *
-				 * @var Tx_Commerce_Domain_Model_Category $parentObject
+				 * @var \CommerceTeam\Commerce\Domain\Model\Category $parentObject
 				 */
 				$parentObject = & $parent[$i];
 				$parentObject->loadData();
@@ -562,9 +563,9 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 		/**
 		 * Category
 		 *
-		 * @var Tx_Commerce_Domain_Model_Category $category
+		 * @var \CommerceTeam\Commerce\Domain\Model\Category $category
 		 */
-		$category = GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Category', $catUid);
+		$category = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Category', $catUid);
 		$category->loadData();
 
 		$this->itemArrayProcessed = array();
@@ -572,9 +573,9 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 		/**
 		 * Category mounts
 		 *
-		 * @var Tx_Commerce_Tree_CategoryMounts $mounts
+		 * @var \CommerceTeam\Commerce\Tree\CategoryMounts $mounts
 		 */
-		$mounts = GeneralUtility::makeInstance('Tx_Commerce_Tree_CategoryMounts');
+		$mounts = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryMounts');
 		$mounts->init($GLOBALS['BE_USER']->user['uid']);
 
 		// Separate Key and Title with a |
@@ -609,12 +610,12 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 		/**
 		 * Product
 		 *
-		 * @var Tx_Commerce_Domain_Model_Product $prod
+		 * @var \CommerceTeam\Commerce\Domain\Model\Product $prod
 		 */
-		$prod = GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Product', $uid);
+		$prod = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Product', $uid);
 		$prod->loadData();
 
-			// read parent categories from the live product
+		// read parent categories from the live product
 		if ($prod->getT3verOid() != 0) {
 			$prod->init($prod->getT3verOid());
 			$prod->loadData();
@@ -622,7 +623,7 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 
 		$parent = $prod->getParentCategories();
 
-			// Load each category and push into the array
+		// Load each category and push into the array
 		$cat = NULL;
 		$itemArray = array();
 
@@ -630,9 +631,9 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 			/**
 			 * Category
 			 *
-			 * @var Tx_Commerce_Domain_Model_Category $category
+			 * @var \CommerceTeam\Commerce\Domain\Model\Category $category
 			 */
-			$category = GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Category', $parent[$i]);
+			$category = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Category', $parent[$i]);
 			$category->loadData();
 
 			$title = ($category->isPermissionSet('show')) ?
@@ -675,9 +676,9 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 				/**
 				 * Product
 				 *
-				 * @var Tx_Commerce_Domain_Model_Product $prod
+				 * @var \CommerceTeam\Commerce\Domain\Model\Product $prod
 				 */
-				$prod = GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Product', $uid);
+				$prod = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Product', $uid);
 				$prod->loadData();
 
 				$itemArray[] = $value . '|' . $prod->getTitle();
@@ -685,9 +686,9 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 				/**
 				 * Article
 				 *
-				 * @var Tx_Commerce_Domain_Model_Article $article
+				 * @var \CommerceTeam\Commerce\Domain\Model\Article $article
 				 */
-				$article = GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Article', $uid);
+				$article = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Article', $uid);
 				$article->loadData();
 
 				$itemArray[] = $value . '|' . $article->getTitle();
@@ -695,9 +696,9 @@ class Tx_Commerce_ViewHelpers_TreelibTceforms {
 				/**
 				 * Category
 				 *
-				 * @var Tx_Commerce_Domain_Model_Category $category
+				 * @var \CommerceTeam\Commerce\Domain\Model\Category $category
 				 */
-				$category = GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Category', $uid);
+				$category = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Category', $uid);
 				$category->loadData();
 
 				$itemArray[] = $value . '|' . $category->getTitle();

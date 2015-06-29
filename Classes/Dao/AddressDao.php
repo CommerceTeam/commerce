@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Dao;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -17,19 +18,22 @@
  * This class handles object persistence using the Dao design pattern.
  * It extends the basic Dao object.
  *
- * Class Tx_Commerce_Dao_AddressDao
+ * Class \CommerceTeam\Commerce\Dao\AddressDao
  *
  * @author 2005-2011 Carsten Lausen <cl@e-netconsulting.de>
  */
-class Tx_Commerce_Dao_AddressDao extends Tx_Commerce_Dao_BasicDao {
+class AddressDao extends BasicDao {
 	/**
 	 * Initialization
 	 *
 	 * @return void
 	 */
 	protected function init() {
-		$this->parser = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Dao_AddressDaoParser');
-		$this->mapper = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Dao_AddressDaoMapper', $this->parser);
-		$this->object = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Commerce_Dao_AddressDaoObject');
+		$this->parser = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Dao\\AddressDaoParser');
+		$this->mapper = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+			'CommerceTeam\\Commerce\\Dao\\AddressDaoMapper',
+			$this->parser
+		);
+		$this->object = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Dao\\AddressDaoObject');
 	}
 }

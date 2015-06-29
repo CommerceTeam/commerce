@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Dao;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -16,9 +17,9 @@
  * This class is used by the Dao for object/model parsing.
  * It extends the basic Dao parser.
  *
- * Class Tx_Commerce_Dao_FeuserDaoParser
+ * Class \CommerceTeam\Commerce\Dao\FeuserDaoParser
  *
  * @author 2005-2011 Carsten Lausen <cl@e-netconsulting.de>
  */
-class Tx_Commerce_Dao_FeuserDaoParser extends Tx_Commerce_Dao_BasicDaoParser {
+class FeuserDaoParser extends BasicDaoParser {
 }

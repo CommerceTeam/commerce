@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Configuration\Dca;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -15,11 +16,11 @@
 /**
  * Implements the dynaflex config for the 'tx_commerce_products' table
  *
- * Class Tx_Commerce_Configuration_Dca_Products
+ * Class \CommerceTeam\Commerce\Configuration\Dca\Products
  *
  * @author 2005 - 2006 Thomas Hempel <thomas@work.de>
  */
-class Tx_Commerce_Configuration_Dca_Products {
+class Products {
 	/**
 	 * Row checks
 	 *
@@ -163,7 +164,7 @@ class Tx_Commerce_Configuration_Dca_Products {
 						'orderby' => 'sorting',
 					),
 					'field_config' => array(
-						'singleUserFunc' => 'Tx_Commerce_Utility_AttributeEditorUtility->getAttributeEditField',
+						'singleUserFunc' => 'CommerceTeam\\Commerce\\Utility\\AttributeEditorUtility->getAttributeEditField',
 					),
 				),
 			),

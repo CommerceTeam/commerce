@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Tree\Leaf;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -11,22 +12,23 @@
  *
  * The TYPO3 project - inspiring people to share!
  */
+
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * Implements a master leaf for the Tx_Commerce_Tree_Browsetree
+ * Implements a master leaf for the \CommerceTeam\Commerce\Tree\Browsetree
  *
- * Class Tx_Commerce_Tree_Leaf_Master
+ * Class \CommerceTeam\Commerce\Tree\Leaf\Master
  *
  * @author 2008-2009 Erik Frister <typo3@marketing-factory.de>
  */
-class Tx_Commerce_Tree_Leaf_Master extends Tx_Commerce_Tree_Leaf_Leaf {
+class Master extends Leaf {
 	/**
 	 * Mount class
 	 *
 	 * @var string
 	 */
-	protected $mountClass = 'Tx_Commerce_Tree_Leaf_Mounts';
+	protected $mountClass = 'CommerceTeam\\Commerce\\Tree\\Leaf\\Mounts';
 
 	/**
 	 * Flag if the Leafitems shall be read by specific mountpoints
@@ -38,14 +40,14 @@ class Tx_Commerce_Tree_Leaf_Master extends Tx_Commerce_Tree_Leaf_Leaf {
 	/**
 	 * Mountpoint-Object with the mountpoints of the leaf (if it is a treeleaf)
 	 *
-	 * @var Tx_Commerce_Tree_Leaf_Mounts
+	 * @var \CommerceTeam\Commerce\Tree\Leaf\Mounts
 	 */
 	protected $mounts;
 
 	/**
 	 * Leaf data
 	 *
-	 * @var Tx_Commerce_Tree_Leaf_MasterData
+	 * @var \CommerceTeam\Commerce\Tree\Leaf\MasterData
 	 */
 	public $data;
 
@@ -81,12 +83,12 @@ class Tx_Commerce_Tree_Leaf_Master extends Tx_Commerce_Tree_Leaf_Leaf {
 	/**
 	 * Sets the View and the Data of the Leaf
 	 *
-	 * @param Tx_Commerce_Tree_Leaf_View $view LeafView of the Leaf
-	 * @param Tx_Commerce_Tree_Leaf_Data $data LeafData of the Leaf
+	 * @param \CommerceTeam\Commerce\Tree\Leaf\View $view LeafView of the Leaf
+	 * @param \CommerceTeam\Commerce\Tree\Leaf\Data $data LeafData of the Leaf
 	 *
 	 * @return void
 	 */
-	public function initBasic(Tx_Commerce_Tree_Leaf_View &$view, Tx_Commerce_Tree_Leaf_Data &$data) {
+	public function initBasic(\CommerceTeam\Commerce\Tree\Leaf\View &$view, \CommerceTeam\Commerce\Tree\Leaf\Data &$data) {
 		if (is_null($view) || is_null($data)) {
 			if (TYPO3_DLOG) {
 				GeneralUtility::devLog('initBasic (leaf) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
@@ -121,7 +123,11 @@ class Tx_Commerce_Tree_Leaf_Master extends Tx_Commerce_Tree_Leaf_Leaf {
 	public function setMounts(array $mountIds) {
 		if (!is_array($mountIds)) {
 			if (TYPO3_DLOG) {
-				GeneralUtility::devLog('setMounts (Tx_Commerce_Tree_Leaf_Master) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				GeneralUtility::devLog(
+					'setMounts (CommerceTeam\\Commerce\\Tree\\Leaf\\Master) gets passed invalid parameters.',
+					COMMERCE_EXTKEY,
+					3
+				);
 			}
 			return;
 		}
@@ -150,7 +156,11 @@ class Tx_Commerce_Tree_Leaf_Master extends Tx_Commerce_Tree_Leaf_Leaf {
 	public function setUid($uid) {
 		if (!is_numeric($uid)) {
 			if (TYPO3_DLOG) {
-				GeneralUtility::devLog('setUid (Tx_Commerce_Tree_Leaf_Master) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				GeneralUtility::devLog(
+					'setUid (CommerceTeam\\Commerce\\Tree\\Leaf\\Master) gets passed invalid parameters.',
+					COMMERCE_EXTKEY,
+					3
+				);
 			}
 			return;
 		}
@@ -176,7 +186,11 @@ class Tx_Commerce_Tree_Leaf_Master extends Tx_Commerce_Tree_Leaf_Leaf {
 	public function setDepth($depth) {
 		if (!is_numeric($depth)) {
 			if (TYPO3_DLOG) {
-				GeneralUtility::devLog('setDepth (Tx_Commerce_Tree_Leaf_Master) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				GeneralUtility::devLog(
+					'setDepth (CommerceTeam\\Commerce\\Tree\\Leaf\\Master) gets passed invalid parameters.',
+					COMMERCE_EXTKEY,
+					3
+				);
 			}
 			return;
 		}
@@ -240,7 +254,11 @@ class Tx_Commerce_Tree_Leaf_Master extends Tx_Commerce_Tree_Leaf_Leaf {
 	public function hasChildren(array $row) {
 		if (!is_array($row)) {
 			if (TYPO3_DLOG) {
-				GeneralUtility::devLog('hasChildren (Tx_Commerce_Tree_Leaf_Master) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+				GeneralUtility::devLog(
+					'hasChildren (CommerceTeam\\Commerce\\Tree\\Leaf\\Master) gets passed invalid parameters.',
+					COMMERCE_EXTKEY,
+					3
+				);
 			}
 			return FALSE;
 		}
@@ -272,7 +290,7 @@ class Tx_Commerce_Tree_Leaf_Master extends Tx_Commerce_Tree_Leaf_Leaf {
 		if (!is_numeric($startUid) || !is_numeric($bank)) {
 			if (TYPO3_DLOG) {
 				GeneralUtility::devLog(
-					'printChildleafsByLoop (Tx_Commerce_Tree_Leaf_Master) gets passed invalid parameters.',
+					'printChildleafsByLoop (CommerceTeam\\Commerce\\Tree\\Leaf\\Master) gets passed invalid parameters.',
 					COMMERCE_EXTKEY,
 					3
 				);
@@ -308,7 +326,7 @@ class Tx_Commerce_Tree_Leaf_Master extends Tx_Commerce_Tree_Leaf_Leaf {
 		if ($child == NULL) {
 			if (TYPO3_DLOG) {
 				GeneralUtility::devLog(
-					'printChildleafsByLoop (Tx_Commerce_Tree_Leaf_Master) cannot find the starting item by its uid.',
+					'printChildleafsByLoop (CommerceTeam\\Commerce\\Tree\\Leaf\\Master) cannot find the starting item by its uid.',
 					COMMERCE_EXTKEY,
 					3
 				);
@@ -427,7 +445,7 @@ class Tx_Commerce_Tree_Leaf_Master extends Tx_Commerce_Tree_Leaf_Leaf {
 		// DLOG
 		if (TYPO3_DLOG) {
 			GeneralUtility::devLog(
-				'printChildLeafsByLoop (Tx_Commerce_Tree_Leaf_Master) did ' . ($crazyStart - $crazyRecursion) . ' loops!',
+				'printChildLeafsByLoop (CommerceTeam\\Commerce\\Tree\\Leaf\\Master) did ' . ($crazyStart - $crazyRecursion) . ' loops!',
 				COMMERCE_EXTKEY,
 				1
 			);
@@ -448,7 +466,8 @@ class Tx_Commerce_Tree_Leaf_Master extends Tx_Commerce_Tree_Leaf_Leaf {
 		if ($crazyRecursion <= 0) {
 			if (TYPO3_DLOG) {
 				GeneralUtility::devLog(
-					'printChildleafsByLoop (Tx_Commerce_Tree_Leaf_Master) was put to hold because there was a danger of endless recursion.',
+					'printChildleafsByLoop (CommerceTeam\\Commerce\\Tree\\Leaf\\Master) was put to hold because there was a
+						danger of endless recursion.',
 					COMMERCE_EXTKEY,
 					3
 				);
@@ -473,7 +492,7 @@ class Tx_Commerce_Tree_Leaf_Master extends Tx_Commerce_Tree_Leaf_Leaf {
 		/**
 		 * Leaf
 		 *
-		 * @var Tx_Commerce_Tree_Leaf_Slave $leaf
+		 * @var \CommerceTeam\Commerce\Tree\Leaf\Slave $leaf
 		 */
 		foreach ($this->leafs as $leaf) {
 			$out .= $leaf->printChildleafsByParent($pid, $bank);

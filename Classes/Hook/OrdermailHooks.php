@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Hook;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -11,17 +12,18 @@
  *
  * The TYPO3 project - inspiring people to share!
  */
+
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * This class contains some hooks for processing formdata.
  * Hook for saving order data and order_articles.
  *
- * Class Tx_Commerce_Hook_OrdermailHooks
+ * Class \CommerceTeam\Commerce\Hook\OrdermailHooks
  *
  * @author 2006-2011 Joerg Sprung <jsp@marketing-factory.de>
  */
-class Tx_Commerce_Hook_OrdermailHooks {
+class OrdermailHooks {
 	/**
 	 * Content object
 	 *
@@ -123,7 +125,7 @@ class Tx_Commerce_Hook_OrdermailHooks {
 			}
 		}
 
-		return Tx_Commerce_Utility_GeneralUtility::sendMail($mailconf);
+		return \CommerceTeam\Commerce\Utility\GeneralUtility::sendMail($mailconf);
 	}
 
 	/**

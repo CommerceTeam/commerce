@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Utility;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -15,11 +16,11 @@
 /**
  * Typoscript config functions
  *
- * Class Tx_Commerce_Utility_TyposcriptConfig
+ * Class \CommerceTeam\Commerce\Utility\TyposcriptConfig
  *
  * @author 2014 Sebastian Fischer <typo3@marketing-factory.de>
  */
-class Tx_Commerce_Utility_TyposcriptConfig {
+class TyposcriptConfig {
 	/**
 	 * Is commerce page check
 	 *
@@ -41,5 +42,5 @@ class Tx_Commerce_Utility_TyposcriptConfig {
  * @return bool
  */
 function user_isCommercePage() {
-	return Tx_Commerce_Utility_TyposcriptConfig::isCommercePage();
+	return \CommerceTeam\Commerce\Utility\TyposcriptConfig::isCommercePage();
 }

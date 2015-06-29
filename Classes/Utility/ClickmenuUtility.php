@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Utility;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -22,11 +23,11 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * Basically does the same as the alt_clickmenu.php, only that for Categories
  * the output needs to be overridden depending on the rights
  *
- * Class Tx_Commerce_Utility_ClickmenuUtility
+ * Class \CommerceTeam\Commerce\Utility\ClickmenuUtility
  *
  * @author 2008-2012 Erik Frister <typo3@marketing-factory.de>
  */
-class Tx_Commerce_Utility_ClickmenuUtility extends ClickMenu {
+class ClickmenuUtility extends ClickMenu {
 	/**
 	 * Back path
 	 *
@@ -315,15 +316,15 @@ class Tx_Commerce_Utility_ClickmenuUtility extends ClickMenu {
 		}
 
 		// get the rights for this category
-		$rights['delete'] = Tx_Commerce_Utility_BackendUtility::checkPermissionsOnCategoryContent(
+		$rights['delete'] = \CommerceTeam\Commerce\Utility\BackendUtility::checkPermissionsOnCategoryContent(
 			array($categoryToCheckRightsOn),
 			array('delete')
 		);
-		$rights['edit'] = Tx_Commerce_Utility_BackendUtility::checkPermissionsOnCategoryContent(
+		$rights['edit'] = \CommerceTeam\Commerce\Utility\BackendUtility::checkPermissionsOnCategoryContent(
 			array($categoryToCheckRightsOn),
 			array('edit')
 		);
-		$rights['new'] = Tx_Commerce_Utility_BackendUtility::checkPermissionsOnCategoryContent(
+		$rights['new'] = \CommerceTeam\Commerce\Utility\BackendUtility::checkPermissionsOnCategoryContent(
 			array($categoryToCheckRightsOn),
 			array('new')
 		);
@@ -340,16 +341,16 @@ class Tx_Commerce_Utility_ClickmenuUtility extends ClickMenu {
 			/**
 			 * Category
 			 *
-			 * @var Tx_Commerce_Domain_Model_Category $category
+			 * @var \CommerceTeam\Commerce\Domain\Model\Category $category
 			 */
-			$category = GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Category', $clipRecord['uid']);
+			$category = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Category', $clipRecord['uid']);
 			$category->loadData();
 			$childCategories = $category->getChildCategories();
 
 			/**
 			 * Child category
 			 *
-			 * @var Tx_Commerce_Domain_Model_Category $childCategory
+			 * @var \CommerceTeam\Commerce\Domain\Model\Category $childCategory
 			 */
 			foreach ($childCategories as $childCategory) {
 				if ($uid == $childCategory->getUid()) {
@@ -359,7 +360,10 @@ class Tx_Commerce_Utility_ClickmenuUtility extends ClickMenu {
 			}
 		} elseif (count($this->clickMenu->clipObj->elFromTable('tx_commerce_products'))) {
 			// if product is in clipboard, check editcontent right
-			$rights['paste'] = Tx_Commerce_Utility_BackendUtility::checkPermissionsOnCategoryContent(array($uid), array('editcontent'));
+			$rights['paste'] = \CommerceTeam\Commerce\Utility\BackendUtility::checkPermissionsOnCategoryContent(
+				array($uid),
+				array('editcontent')
+			);
 		}
 
 		$rights['editLock'] = ($backendUser->isAdmin()) ? FALSE : $this->rec['editlock'];
@@ -368,9 +372,9 @@ class Tx_Commerce_Utility_ClickmenuUtility extends ClickMenu {
 		/**
 		 * Category mounts
 		 *
-		 * @var Tx_Commerce_Tree_CategoryMounts $mounts
+		 * @var \CommerceTeam\Commerce\Tree\CategoryMounts $mounts
 		 */
-		$mounts = GeneralUtility::makeInstance('Tx_Commerce_Tree_CategoryMounts');
+		$mounts = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryMounts');
 		$mounts->init($backendUser->user['uid']);
 		$rights['DBmount'] = (in_array($uid, $mounts->getMountData()));
 
@@ -378,9 +382,9 @@ class Tx_Commerce_Utility_ClickmenuUtility extends ClickMenu {
 		/**
 		 * Category
 		 *
-		 * @var Tx_Commerce_Domain_Model_Category $category
+		 * @var \CommerceTeam\Commerce\Domain\Model\Category $category
 		 */
-		$category = GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Category', $categoryToCheckRightsOn);
+		$category = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Category', $categoryToCheckRightsOn);
 		if ($categoryToCheckRightsOn) {
 			$rights['DBmount'] = count($category->getParentCategories()) ? $rights['DBmount'] : TRUE;
 		} else {
@@ -415,14 +419,14 @@ class Tx_Commerce_Utility_ClickmenuUtility extends ClickMenu {
 		/**
 		 * Product
 		 *
-		 * @var Tx_Commerce_Domain_Model_Product $product
+		 * @var \CommerceTeam\Commerce\Domain\Model\Product $product
 		 */
-		$product = GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Product', $uid);
+		$product = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Product', $uid);
 
 		$parentCategories = $product->getParentCategories();
 
 			// store the rights in the flags
-		$rights['delete'] = Tx_Commerce_Utility_BackendUtility::checkPermissionsOnCategoryContent(
+		$rights['delete'] = \CommerceTeam\Commerce\Utility\BackendUtility::checkPermissionsOnCategoryContent(
 			$parentCategories,
 			array('editcontent')
 		);
@@ -434,7 +438,9 @@ class Tx_Commerce_Utility_ClickmenuUtility extends ClickMenu {
 			// make sure we do not allowed to overwrite a product with itself
 		if (count($this->clipObj->elFromTable('tx_commerce_products'))) {
 			$set = 0;
-			if ($this->clipObj->clipData[$this->clipObj->current]['el']['tx_commerce_products|' . $uid . '|' . $this->additionalParameter['category']]) {
+			if ($this->clipObj->clipData[$this->clipObj->current]['el']['tx_commerce_products|' . $uid . '|' .
+				$this->additionalParameter['category']]
+			) {
 				$set = 1;
 				$this->clipObj->clipData[$this->clipObj->current]['el']['tx_commerce_products|' . $uid] = 1;
 			}
@@ -467,15 +473,15 @@ class Tx_Commerce_Utility_ClickmenuUtility extends ClickMenu {
 		/**
 		 * Article
 		 *
-		 * @var Tx_Commerce_Domain_Model_Article $article
+		 * @var \CommerceTeam\Commerce\Domain\Model\Article $article
 		 */
-		$article = GeneralUtility::makeInstance('Tx_Commerce_Domain_Model_Article', $uid);
+		$article = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Article', $uid);
 
 		// get the parent categories of the product
 		$parentCategories = $article->getParentProduct()->getParentCategories();
 
 		// store the rights in the flags
-		$rights['edit'] = $rights['delete'] = Tx_Commerce_Utility_BackendUtility::checkPermissionsOnCategoryContent(
+		$rights['edit'] = $rights['delete'] = \CommerceTeam\Commerce\Utility\BackendUtility::checkPermissionsOnCategoryContent(
 			$parentCategories,
 			array('editcontent')
 		);
