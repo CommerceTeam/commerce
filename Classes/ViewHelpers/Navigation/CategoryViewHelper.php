@@ -51,6 +51,17 @@ class Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper extends \TYPO3\CMS\B
 	protected $hasFilterBox;
 
 	/**
+	 * Setter for currentSubScript
+	 *
+	 * @param string $currentSubScript
+	 *
+	 * @return void
+	 */
+	public function setCurrentSubScript($currentSubScript) {
+		$this->currentSubScript = $currentSubScript;
+	}
+
+	/**
 	 * Initializes the Tree
 	 *
 	 * @param bool $bare If TRUE only categories get rendered
