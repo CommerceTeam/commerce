@@ -793,7 +793,10 @@ class Tx_Commerce_Hook_CommandMapHooks {
 
 		$translatedArticles = array();
 		foreach ($productList as $productId) {
-			$translatedArticles = array_merge($translatedArticles, $this->belib->getArticlesOfProductAsUidList($productId));
+			$articlesOfProduct = $this->belib->getArticlesOfProductAsUidList($productId);
+			if (is_array($articlesOfProduct) && count($articlesOfProduct)) {
+				$translatedArticles = array_merge($translatedArticles, $articlesOfProduct);
+			}
 		}
 		$translatedArticles = array_unique($translatedArticles);
 
