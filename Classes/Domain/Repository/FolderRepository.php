@@ -99,9 +99,9 @@ class FolderRepository {
 		$fieldValues['crdate'] = time();
 		$fieldValues['tstamp'] = time();
 
-		$this->getDatabaseConnection()->exec_INSERTquery('pages', $fieldValues);
+		self::getDatabaseConnection()->exec_INSERTquery('pages', $fieldValues);
 
-		return $this->getDatabaseConnection()->sql_insert_id();
+		return self::getDatabaseConnection()->sql_insert_id();
 	}
 
 
@@ -110,7 +110,7 @@ class FolderRepository {
 	 *
 	 * @return \TYPO3\CMS\Dbal\Database\DatabaseConnection
 	 */
-	protected function getDatabaseConnection() {
+	protected static function getDatabaseConnection() {
 		return $GLOBALS['TYPO3_DB'];
 	}
 }

@@ -318,13 +318,9 @@ $GLOBALS['TCA']['tx_commerce_products'] = array(
 	<meta>
 		<langDisable>1</langDisable>
 	</meta>
-	<sheets>
-		<sDEF>
-			<ROOT>
-				<type>array</type>
-			</ROOT>
-		</sDEF>
-	</sheets>
+	<ROOT>
+		<type>array</type>
+	</ROOT>
 </T3DataStructure>'
 				),
 			),
@@ -371,7 +367,7 @@ $GLOBALS['TCA']['tx_commerce_products'] = array(
 						<TCEforms>
 							<config>
 								<type>user</type>
-								<userFunc>CommerceTeam\\Commerce\\ViewHelpers\\ArticleCreatorUtility->existingArticles</userFunc>
+								<userFunc>CommerceTeam\\Commerce\\Utility\\ArticleCreatorUtility->existingArticles</userFunc>
 							</config>
 						</TCEforms>
 					</existingArticles>
@@ -389,7 +385,7 @@ $GLOBALS['TCA']['tx_commerce_products'] = array(
 						<TCEforms>
 							<config>
 								<type>user</type>
-								<userFunc>CommerceTeam\\Commerce\\ViewHelpers\\ArticleCreatorUtility->producibleArticles</userFunc>
+								<userFunc>CommerceTeam\\Commerce\\Utility\\ArticleCreatorUtility->producibleArticles</userFunc>
 							</config>
 						</TCEforms>
 					</producibleArticles>
@@ -425,7 +421,7 @@ $GLOBALS['TCA']['tx_commerce_products'] = array(
 						<TCEforms>
 							<config>
 								<type>user</type>
-								<userFunc>CommerceTeam\\Commerce\\ViewHelpers\\ArticleCreatorUtility->existingArticles</userFunc>
+								<userFunc>CommerceTeam\\Commerce\\Utility\\ArticleCreatorUtility->existingArticles</userFunc>
 							</config>
 						</TCEforms>
 					</existingArticles>
@@ -455,8 +451,14 @@ $GLOBALS['TCA']['tx_commerce_products'] = array(
 	),
 	'palettes' => array(
 		'1' => array('showitem' => 'starttime, endtime, --linebreak--, fe_group'),
-		'access' => array('showitem' => 'starttime, endtime, --linebreak--, fe_group'),
-		'visibility' => array('showitem' => 'hidden'),
+		'access' => array(
+			'showitem' => 'starttime, endtime, --linebreak--, fe_group',
+			'canNotCollapse' => 1,
+		),
+		'visibility' => array(
+			'showitem' => 'hidden',
+			'canNotCollapse' => 1,
+		),
 	)
 );
 

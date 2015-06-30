@@ -52,6 +52,17 @@ class CategoryViewHelper extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 	protected $hasFilterBox;
 
 	/**
+	 * Setter for currentSubScript
+	 *
+	 * @param string $currentSubScript
+	 *
+	 * @return void
+	 */
+	public function setCurrentSubScript($currentSubScript) {
+		$this->currentSubScript = $currentSubScript;
+	}
+
+	/**
 	 * Initializes the Tree
 	 *
 	 * @param bool $bare If TRUE only categories get rendered
