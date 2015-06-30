@@ -30,6 +30,7 @@ class Tx_Commerce_Utility_UpdateUtility {
 	public function main() {
 		$createdRelations = $this->createParentMmRecords();
 		$createDefaultRights = $this->createDefaultRights();
+		$createBackendUser = $this->createBackendUser();
 
 		$htmlCode = array();
 
@@ -43,7 +44,9 @@ class Tx_Commerce_Utility_UpdateUtility {
 		if ($createDefaultRights > 0) {
 			$htmlCode[] = '<li>' . $createDefaultRights .
 				' updated User-rights on categories. Set to rights on the commerce products folder</li>';
-
+		}
+		if ($createBackendUser) {
+			$htmlCode[] = '<li>Default user created</li>';
 		}
 		$htmlCode[] = '</ul>';
 
@@ -117,18 +120,34 @@ class Tx_Commerce_Utility_UpdateUtility {
 	/**
 	 * Creates the missing MM records for categories below the root (UID=0) element
 	 *
-	 * @return void
+	 * @return int
 	 */
 	public function createBackendUser() {
-		$data = array(
-			'pid' => 0,
-			'username' => '_fe_commerce',
-			'password' => 'MD5(RAND())',
-			'tstamp' => $GLOBALS['EXEC_TIME'],
-			'crdate' => $GLOBALS['EXEC_TIME'],
-		);
+		$userId = 0;
+		$database = $this->getDatabaseConnection();
 
-		$this->getDatabaseConnection()->exec_INSERTquery('be_users', $data, array('password', 'tstamp', 'crdate'));
+		$result = $database->exec_SELECTquery('uid', 'be_users', 'username = \'_fe_commerce\'');
+		if ($result && $database->sql_num_rows($result) == 0) {
+			$data = array(
+				'pid' => 0,
+				'username' => '_fe_commerce',
+				'password' => 'MD5(RAND())',
+				'tstamp' => $GLOBALS['EXEC_TIME'],
+				'crdate' => $GLOBALS['EXEC_TIME'],
+			);
+
+			$database->exec_INSERTquery(
+				'be_users',
+				$data,
+				array(
+					'password',
+					'tstamp',
+					'crdate'
+				)
+			);
+			$userId = $this->getDatabaseConnection()->sql_insert_id();
+		}
+		return $userId;
 	}
 
 	/**
