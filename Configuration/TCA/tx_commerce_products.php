@@ -455,8 +455,14 @@ $GLOBALS['TCA']['tx_commerce_products'] = array(
 	),
 	'palettes' => array(
 		'1' => array('showitem' => 'starttime, endtime, --linebreak--, fe_group'),
-		'access' => array('showitem' => 'starttime, endtime, --linebreak--, fe_group'),
-		'visibility' => array('showitem' => 'hidden'),
+		'access' => array(
+			'showitem' => 'starttime, endtime, --linebreak--, fe_group',
+			'canNotCollapse' => 1,
+		),
+		'visibility' => array(
+			'showitem' => 'hidden',
+			'canNotCollapse' => 1,
+		),
 	)
 );
 
