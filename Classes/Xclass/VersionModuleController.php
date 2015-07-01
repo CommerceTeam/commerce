@@ -1,4 +1,5 @@
 <?php
+namespace CommerceTeam\Commerce\Xclass;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -19,7 +20,7 @@
  *
  * @author 2008-2013 Ingo Schmitt <is@marketing-factory.de>
  */
-class ux_tx_version_cm1 extends \TYPO3\CMS\Version\Controller\VersionModuleController {
+class VersionModuleController extends \TYPO3\CMS\Version\Controller\VersionModuleController {
 	/**
 	 * Document template object
 	 *
@@ -99,6 +100,7 @@ class ux_tx_version_cm1 extends \TYPO3\CMS\Version\Controller\VersionModuleContr
 			return $adminLink;
 		}
 	}
+
 
 	/**
 	 * Get language service

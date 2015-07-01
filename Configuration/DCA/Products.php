@@ -170,9 +170,9 @@ class Products {
 			),
 		),
 		/*
-		 * At last we have to decide which tabs have to be displayed. We do this with a
-		 * dynaflex condition and if it triggers, we append something at the showitem
-		 * value in the products TCA.
+		 * At last we have to decide which tabs have to be displayed. We do
+		 * this with a dynaflex condition and if it triggers, we append
+		 * something at the showitem value in the products TCA.
 		 */
 		3 => array(
 			'path' => 'tx_commerce_products/types/0/showitem',
@@ -315,14 +315,14 @@ class Products {
 	 *
 	 * @var string
 	 */
-	public $cleanUpField = 'attributes';
+	public $cleanUpField = 'attributes, attributesedit';
 
 	/**
 	 * Hooks
 	 *
 	 * @var array
 	 */
-	public $hooks = array('tx_commerce_configuration_dca_products');
+	public $hooks = array('CommerceTeam\\Commerce\\Configuration\\Dca\\Products');
 
 	/**
 	 * Constructor

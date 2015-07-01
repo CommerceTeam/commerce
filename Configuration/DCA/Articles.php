@@ -92,7 +92,7 @@ class Articles {
 	 *
 	 * @var array
 	 */
-	public $hooks = array();
+	public $hooks = array('CommerceTeam\\Commerce\\Configuration\\Dca\\Articles');
 
 	/**
 	 * Alter dca on load

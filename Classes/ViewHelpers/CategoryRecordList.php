@@ -1141,10 +1141,11 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
 							$versionIcon = count($vers) - 1;
 						}
 
-						$cells['version'] = '<a href="' . htmlspecialchars($this->backPath . ExtensionManagementUtility::extRelPath('version') .
-							'cm1/index.php?table=' . rawurlencode($table) . '&uid=' . rawurlencode($row['uid'])) . '" title="' .
-							$language->getLL('displayVersions', TRUE) . '">' . IconUtility::getSpriteIcon('status-version-' . $versionIcon) .
-							'</a>';
+						$cells['version'] = '<a href="' . htmlspecialchars(
+								$this->backPath . BackendUtility::getModuleUrl('web_txversionM1', array('table' => $table, 'uid' => $row['uid']))
+							) . '" title="' . $this->getLanguageService()->getLL('displayVersions', TRUE) . '">' .
+							IconUtility::getSpriteIcon(('status-version-' . $versionIcon)) . '</a>';
+
 					} elseif (!$this->table) {
 						$cells['version'] = $this->spaceIcon;
 					}
@@ -1192,9 +1193,9 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
 					$cells['new'] = $this->spaceIcon;
 				}
 
-					// "Up/Down" links
+				// "Up/Down" links
 				if ($permsEdit && $GLOBALS['TCA'][$table]['ctrl']['sortby'] && !$this->sortField && !$this->searchLevels) {
-						// Up
+					// Up
 					if (isset($this->currentTable['prev'][$row['uid']])) {
 						$params = '&cmd[' . $table . '][' . $row['uid'] . '][move]=' . $this->currentTable['prev'][$row['uid']];
 						$cells['moveUp'] = '<a href="#" onclick="' .
@@ -1204,7 +1205,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
 					} else {
 						$cells['moveUp'] = $this->spaceIcon;
 					}
-						// Down
+					// Down
 					if ($this->currentTable['next'][$row['uid']]) {
 						$params = '&cmd[' . $table . '][' . $row['uid'] . '][move]=' . $this->currentTable['next'][$row['uid']];
 						$cells['moveDown'] = '<a href="#" onclick="' .

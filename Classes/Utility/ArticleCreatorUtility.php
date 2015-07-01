@@ -18,8 +18,6 @@ use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Backend\Utility\IconUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-require_once(PATH_TXCOMMERCE . 'Classes/Utility/GeneralUtility.php');
-
 /**
  * This class provides several methods for creating articles from within
  * a product. It provides the user fields and creates the entries in the
@@ -114,7 +112,6 @@ class ArticleCreatorUtility {
 	 * @return string a HTML-table with the articles
 	 */
 	public function existingArticles(array $parameter) {
-		$backendUser = $this->getBackendUser();
 		$database = $this->getDatabaseConnection();
 
 		$this->uid = (int)$parameter['row']['uid'];
@@ -135,7 +132,7 @@ class ArticleCreatorUtility {
 		}
 
 		// generate the security token
-		$formSecurityToken = '&prErr=1&vC=' . $backendUser->veriCode() . BackendUtility::getUrlToken('tceAction');
+		$formSecurityToken = '&prErr=1&vC=' . $this->getBackendUser()->veriCode() . BackendUtility::getUrlToken('tceAction');
 
 		$colCount = 0;
 		$headRow = $this->getHeadRow($colCount, NULL, NULL, FALSE);
@@ -148,11 +145,20 @@ class ArticleCreatorUtility {
 
 		$result .= '<tr><td>&nbsp;</td>' . $headRow . '</td><td colspan="5">&nbsp;</td></tr>';
 
+		$buttonUp = IconUtility::getSpriteIcon('actions-move-up');
+		$buttonDown = IconUtility::getSpriteIcon('actions-move-down');
+		$clear = '<img src="/' . TYPO3_mainDir . 'clear.gif" width="11" height="10">';
+		$delete = IconUtility::getSpriteIcon('actions-edit-delete');
+		$edit = IconUtility::getSpriteIcon('actions-document-open');
+		$hide = IconUtility::getSpriteIcon('actions-edit-hide');
+		$unhide = IconUtility::getSpriteIcon('actions-edit-unhide');
+
 		for ($i = 0, $articleCount = count($this->existingArticles); $i < $articleCount; $i++) {
 			$article = $this->existingArticles[$i];
+			$articleUid = (int) $article['uid'];
 
 			$result .= '<tr><td style="border-top:1px black solid; border-right: 1px gray dotted"><strong>' .
-				htmlspecialchars($article['title']) . '</strong><br />UID:' . (int) $article['uid'] . '</td>';
+				htmlspecialchars($article['title']) . '</strong><br />UID:' . $articleUid . '</td>';
 
 			if (is_array($this->attributes['ct1'])) {
 				foreach ($this->attributes['ct1'] as $attribute) {
@@ -160,7 +166,7 @@ class ArticleCreatorUtility {
 					$atrRes = $database->exec_SELECTquery(
 						'uid_valuelist, default_value, value_char',
 						'tx_commerce_articles_article_attributes_mm',
-						'uid_local=' . $article['uid'] . ' AND uid_foreign=' . $attribute['uid_foreign']
+						'uid_local = ' . $articleUid . ' AND uid_foreign = ' . $attribute['uid_foreign']
 					);
 
 					$cellStyle = 'border-top:1px black solid; border-right: 1px gray dotted';
@@ -169,7 +175,7 @@ class ArticleCreatorUtility {
 							if ($attributeData['uid_valuelist'] == 0) {
 									// if the attribute has no value, create a select box with valid values
 								$result .= '<td style="' . $cellStyle . '"><select name="updateData[' .
-									(int) $article['uid'] . '][' . (int) $attribute['uid_foreign'] . ']" />';
+									$articleUid . '][' . (int) $attribute['uid_foreign'] . ']" />';
 								$result .= '<option value="0" selected="selected"></option>';
 								foreach ($attribute['valueList'] as $attrValueUid => $attrValueData) {
 									$result .= '<option value="' . (int) $attrValueUid . '">' . htmlspecialchars($attrValueData['value']) . '</option>';
@@ -193,26 +199,20 @@ class ArticleCreatorUtility {
 			// the edit pencil (with jump back to this dataset)
 			$result .= '<td style="border-top:1px black solid">
 				<a href="#" onclick="document.location=\'alt_doc.php?returnUrl=alt_doc.php?edit[tx_commerce_products][' .
-				(int) $this->uid . ']=edit&amp;edit[tx_commerce_articles][' . (int) $article['uid'] . ']=edit\'; return false;">';
-			$result .= IconUtility::getSpriteIcon('actions-document-open') . '</a></td>';
+				$this->uid . ']=edit&amp;edit[tx_commerce_articles][' . $articleUid . ']=edit\'; return false;">';
+			$result .= $edit . '</a></td>';
 
 			// add the hide button
+			$params = '&data[tx_commerce_articles][' . $articleUid . '][hidden]=' . (int) (!$article['hidden']) .
+				'&redirect=alt_doc.php?edit[tx_commerce_products][' . $this->uid . ']=edit' . $formSecurityToken;
 			$result .= '<td style="border-top:1px black solid">
-				<a href="#" onclick="return jumpToUrl(\'tce_db.php?&amp;data[tx_commerce_articles][' .
-				(int) $article['uid'] . '][hidden]=' . (!$article['hidden']) . '&amp;redirect=alt_doc.php?edit[tx_commerce_products][' .
-				(int) $this->uid . ']=edit\');">';
-			$result .= '<td style="border-top:1px black solid">
-				<a href="#" onclick="return jumpToUrl(\'tce_db.php?&amp;data[tx_commerce_articles][' .
-				$article['uid'] . '][hidden]=' . (!$article['hidden']) . '&amp;redirect=alt_doc.php?edit[tx_commerce_products][' .
-				$this->uid . ']=edit' . $formSecurityToken . '\');">';
-			$result .= '<img src="/' . TYPO3_mainDir . '/gfx/button_' . (($article['hidden']) ?
-					'un' :
-					'') . 'hide.gif" border="0" /></a></td>';
+				<a href="#" onclick="return jumpToUrl(\'' . $GLOBALS['SOBE']->doc->issueCommand($params, -1) . '\');">' .
+				($article['hidden'] ? $unhide : $hide) . '</a></td>';
 
-			$buttonUp = '<img src="/' . TYPO3_mainDir . '/gfx/button_up.gif" width="11" height="10" align="top" />';
-			$buttonDown = '<img src="/' . TYPO3_mainDir . '/gfx/button_down.gif" width="11" height="10" align="top" />';
-			$clear = '<img src="/' . TYPO3_mainDir . 'clear.gif" width="11" height="10">';
-			$garbage = '<img src="/' . TYPO3_mainDir . '/gfx/garbage.gif" />';
+			$result .= '<td style="border-top:1px black solid">
+				<a href="#" onclick="return jumpToUrl(\'tce_db.php?&amp;data[tx_commerce_articles][' .
+				$articleUid . '][hidden]=' . (!$article['hidden']) . '&amp;redirect=alt_doc.php?edit[tx_commerce_products][' .
+				$this->uid . ']=edit' . $formSecurityToken . '\');">' . ($article['hidden'] ? $unhide : $hide) . '</a></td>';
 
 			// add the sorting buttons
 			// UP
@@ -223,7 +223,7 @@ class ArticleCreatorUtility {
 					$moveItTo = (int) $article['pid'];
 				}
 
-				$params = 'cmd[tx_commerce_articles][' . (int) $article['uid'] . '][move]=' . $moveItTo;
+				$params = 'cmd[tx_commerce_articles][' . $articleUid . '][move]=' . $moveItTo;
 				$result .= '<td style="border-top:1px black solid"><a href="#" onClick="return jumpToUrl(\'tce_db.php?' . $params .
 					'&redirect=alt_doc.php?edit[tx_commerce_products][' . (int) $this->uid .
 					']=edit\');">' . $buttonUp . '</a></td>';
@@ -236,7 +236,7 @@ class ArticleCreatorUtility {
 
 			// DOWN
 			if (isset($this->existingArticles[$i + 1])) {
-				$params = 'cmd[tx_commerce_articles][' . (int) $article['uid'] . '][move]=-' . (int) $this->existingArticles[$i + 1]['uid'];
+				$params = 'cmd[tx_commerce_articles][' . $articleUid . '][move]=-' . (int) $this->existingArticles[$i + 1]['uid'];
 				$result .= '<td style="border-top:1px black solid"><a href="#" onClick="return jumpToUrl(\'tce_db.php?' . $params .
 					'&redirect=alt_doc.php?edit[tx_commerce_products][' . (int) $this->uid .
 					']=edit\');">' . $buttonDown . '</a></td>';
@@ -247,14 +247,15 @@ class ArticleCreatorUtility {
 				$result .= '<td>' . $clear . '</td>';
 			}
 
+			$onClick = 'onclick="deleteRecord(\'tx_commerce_articles\', ' . $articleUid .
+				', \'alt_doc.php?edit[tx_commerce_products][' . (int) $this->uid . ']=edit\');"';
+
 			// add the delete icon
-			$result .= '<td style="border-top:1px black solid"><a href="#" onclick="deleteRecord(\'tx_commerce_articles\', ' .
-				(int) $article['uid'] . ', \'alt_doc.php?edit[tx_commerce_products][' . (int) $this->uid .
-				']=edit\');">' . $garbage . '</a></td>';
+			$result .= '<td style="border-top:1px black solid"><a href="#" ' . $onClick . '>' . $delete . '</a></td>';
 			$result .= '</tr>';
 
-			if ($article['uid'] > $lastUid) {
-				$lastUid = $article['uid'];
+			if ($articleUid > $lastUid) {
+				$lastUid = $articleUid;
 			}
 		}
 
@@ -310,19 +311,20 @@ class ArticleCreatorUtility {
 			$fObj->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.empty_article') .
 			'</td></tr>';
 
-			// create a checkbox for selecting all articles
+		// create a checkbox for selecting all articles
 		$selectJs = '<script language="JavaScript">
 			function updateArticleList() {
 				var sourceSB = document.getElementById("selectAllArticles");
 				for (var i = 1; i <= ' . $rowCount . '; i++) {
-					document.getElementById("createRow_" +i).checked = sourceSB.checked;
+					document.getElementById("createRow_" + i).checked = sourceSB.checked;
 				}
 			}
 		</script>';
 
 		$selectAllRow = '';
 		if (count($valueMatrix) > 0) {
-			$selectAllRow = '<tr><td><input type="checkbox" id="selectAllArticles" onclick="updateArticleList()" /></td>';
+			$onClick = 'onclick="updateArticleList()"';
+			$selectAllRow = '<tr><td><input type="checkbox" id="selectAllArticles" ' . $onClick . '/></td>';
 			$selectAllRow .= '<td colspan="' . ($colCount - 1) . '">' .
 				$fObj->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.select_all_articles') .
 				'</td></tr>';

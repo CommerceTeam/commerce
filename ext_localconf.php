@@ -51,7 +51,7 @@ if (!defined ('PATH_txcommerce_icon_tree_rel')) {
 	define('PATH_txcommerce_icon_tree_rel', PATH_TXCOMMERCE_ICON_TREE_REL);
 }
 
-	// Define special article types
+// Define special article types
 define('NORMALARTICLETYPE', 1);
 define('NORMALArticleType', NORMALARTICLETYPE);
 
@@ -118,21 +118,50 @@ $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['SYSPRODUCTS']['DELIVERY
 
 
 // Add frontend plugins to content.default static template
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43(COMMERCE_EXTKEY, 'Classes/Controller/ListController.php', '_pi1', 'list_type', 1);
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43(COMMERCE_EXTKEY, 'Classes/Controller/BasketController.php', '_pi2', 'list_type', 0);
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43(COMMERCE_EXTKEY, 'Classes/Controller/CheckoutController.php', '_pi3', 'list_type', 0);
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43(COMMERCE_EXTKEY, 'Classes/Controller/AddressesController.php', '_pi4', 'list_type', 0);
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43(COMMERCE_EXTKEY, 'Classes/Controller/InvoiceController.php', '_pi6', 'list_type', 0);
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43(
+	COMMERCE_EXTKEY,
+	'Classes/Controller/ListController.php',
+	'_pi1',
+	'list_type',
+	1
+);
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43(
+	COMMERCE_EXTKEY,
+	'Classes/Controller/BasketController.php',
+	'_pi2',
+	'list_type',
+	0
+);
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43(
+	COMMERCE_EXTKEY,
+	'Classes/Controller/CheckoutController.php',
+	'_pi3',
+	'list_type',
+	0
+);
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43(
+	COMMERCE_EXTKEY,
+	'Classes/Controller/AddressesController.php',
+	'_pi4',
+	'list_type',
+	0
+);
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43(
+	COMMERCE_EXTKEY,
+	'Classes/Controller/InvoiceController.php',
+	'_pi6',
+	'list_type',
+	0
+);
 
 
 if (TYPO3_MODE == 'BE') {
 	// XCLASS for version preview
 	// This XCLASS will create a link to singlePID / previewPageID
 	// in version module for commerce products
-	$GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/version/cm1/index.php'] =
-		PATH_TXCOMMERCE . 'Classes/Xclass/ux_versionindex.php';
-
-	require_once(PATH_TXCOMMERCE .'Classes/Xclass/NewRecordController.php');
+	$GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects']['TYPO3\\CMS\\Version\\Controller\\VersionModuleController'] = array(
+		'className' => 'CommerceTeam\\Commerce\\Xclass\\VersionModuleController'
+	);
 
 	// For TYPO3 6.2
 	$GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects']['TYPO3\\CMS\\Backend\\Controller\\NewRecordController'] = array(
@@ -227,6 +256,6 @@ if (TYPO3_MODE == 'BE') {
 $GLOBALS['T3_VAR']['ext']['dynaflex']['tx_commerce_categories'][] =
 	'EXT:commerce/Configuration/DCA/Categories.php:CommerceTeam\\Commerce\\Configuration\\Dca\\Categories';
 $GLOBALS['T3_VAR']['ext']['dynaflex']['tx_commerce_products'][] =
-	'EXT:commerce/Configuration/DCA/Product.php:CommerceTeam\\Commerce\\Configuration\\Dca\\Products';
+	'EXT:commerce/Configuration/DCA/Products.php:CommerceTeam\\Commerce\\Configuration\\Dca\\Products';
 $GLOBALS['T3_VAR']['ext']['dynaflex']['tx_commerce_articles'][] =
 	'EXT:commerce/Configuration/DCA/Articles.php:CommerceTeam\\Commerce\\Configuration\\Dca\\Articles';
