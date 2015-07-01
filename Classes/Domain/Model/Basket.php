@@ -13,17 +13,17 @@
  */
 
 /**
- * Frontend libary for handling the basket. This class should be used
+ * Frontend library for handling the basket. This class should be used
  * when rendering the basket and changing the basket items.
  *
  * The basket object is stored as object within the Frontend user
- * fe_user->tx_commerce_basket, you could acces the Basket object in the Frontend
- * via frontend user basket;
+ * fe_user->tx_commerce_basket, you could access the Basket object in the
+ * Frontend via frontend user basket;
  *
- * Do not acces class variables directly, allways use the get and set methods,
+ * Do not access class variables directly, always use the get and set methods,
  * variables will be changed in php5 to private
  *
- * Basic class for basket_handeling inhertited from tx_commerce_basic_basket
+ * Basic class for basket_handling inherited from tx_commerce_basic_basket
  *
  * Class Tx_Commerce_Domain_Model_Basket
  *

@@ -462,6 +462,26 @@ class Tx_Commerce_Domain_Model_BasicBasket {
 	}
 
 	/**
+	 * Getter for pricefromnet
+	 *
+	 * @return int
+	 */
+	public function getPricefromnet() {
+		return $this->pricefromnet;
+	}
+
+	/**
+	 * Setter for pricefromnet
+	 *
+	 * @param int $pricefromnet Price from net
+	 *
+	 * @return void
+	 */
+	public function setPricefromnet($pricefromnet) {
+		$this->pricefromnet = $pricefromnet;
+	}
+
+	/**
 	 * Get basket gross sum
 	 *
 	 * @return int Basket gross sum
