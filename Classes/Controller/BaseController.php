@@ -1987,6 +1987,7 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 			$product->setRenderMaxArticles((int) $localTs['maxArticles']);
 		}
 
+		$subpartArray = array();
 		if (
 			$this->conf['disableArticleViewForProductlist'] == 1
 			&& !$this->piVars['showUid']
