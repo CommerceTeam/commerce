@@ -136,7 +136,7 @@ class ArticleCreatorUtility {
 
 		$colCount = 0;
 		$headRow = $this->getHeadRow($colCount, NULL, NULL, FALSE);
-		$result = '
+		$result = '<script>' . $this->redirectUrls() . '</script>
 			<input type="hidden" name="deleteaid" value="0" />
 			<table border="0">
 				';
@@ -197,7 +197,7 @@ class ArticleCreatorUtility {
 			}
 
 			// the edit pencil (with jump back to this dataset)
-			$result .= '<td style="border-top:1px black solid">
+			$result .= '<td style="border-top: 1px black solid">
 				<a href="#" onclick="document.location=\'alt_doc.php?returnUrl=alt_doc.php?edit[tx_commerce_products][' .
 				$this->uid . ']=edit&amp;edit[tx_commerce_articles][' . $articleUid . ']=edit\'; return false;">';
 			$result .= $edit . '</a></td>';
@@ -209,10 +209,10 @@ class ArticleCreatorUtility {
 				<a href="#" onclick="return jumpToUrl(\'' . $GLOBALS['SOBE']->doc->issueCommand($params, -1) . '\');">' .
 				($article['hidden'] ? $unhide : $hide) . '</a></td>';
 
-			$result .= '<td style="border-top:1px black solid">
+			/*$result .= '<td style="border-top:1px black solid">
 				<a href="#" onclick="return jumpToUrl(\'tce_db.php?&amp;data[tx_commerce_articles][' .
 				$articleUid . '][hidden]=' . (!$article['hidden']) . '&amp;redirect=alt_doc.php?edit[tx_commerce_products][' .
-				$this->uid . ']=edit' . $formSecurityToken . '\');">' . ($article['hidden'] ? $unhide : $hide) . '</a></td>';
+				$this->uid . ']=edit' . $formSecurityToken . '\');">' . ($article['hidden'] ? $unhide : $hide) . '</a></td>';*/
 
 			// add the sorting buttons
 			// UP
@@ -262,6 +262,33 @@ class ArticleCreatorUtility {
 		$result .= '</table>';
 
 		return $result;
+	}
+
+	/**
+	 * Returns JavaScript variables setting the returnUrl and thisScript location for use by JavaScript on the page.
+	 * Used in fx. db_list.php (Web>List)
+	 *
+	 * @param string $thisLocation URL to "this location" / current script
+	 * @return string Urls are returned as JavaScript variables T3_RETURN_URL and T3_THIS_LOCATION
+	 * @see typo3/db_list.php
+	 * @todo Define visibility
+	 */
+	public function redirectUrls($thisLocation = '') {
+		$thisLocation = $thisLocation ? $thisLocation : GeneralUtility::linkThisScript(array(
+			'CB' => '',
+			'SET' => '',
+			'cmd' => '',
+			'popViewId' => ''
+		));
+		$out = '
+			var T3_RETURN_URL = \'' . str_replace(
+				'%20',
+				'',
+				rawurlencode(GeneralUtility::sanitizeLocalUrl(GeneralUtility::_GP('returnUrl')))
+			) . '\';
+			var T3_THIS_LOCATION = \'' . str_replace('%20', '', rawurlencode($thisLocation)) . '\';
+		';
+		return $out;
 	}
 
 	/**
