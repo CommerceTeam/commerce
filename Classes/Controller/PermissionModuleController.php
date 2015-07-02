@@ -110,7 +110,7 @@ class PermissionModuleController extends \TYPO3\CMS\Perm\Controller\PermissionMo
 
 		// override attributes of WebPermissions found in sysext/perm/mod1/perm.js
 		$doc->JScode .= $doc->wrapScriptTags('
-			WebPermissions.thisScript = TYPO3.settings.ajaxUrls["CommerceTeam\\Commerce\\Controller\\PermissionAjaxController::dispatch"];
+			WebPermissions.thisScript = TYPO3.settings.ajaxUrls["CommerceTeam_Commerce_PermissionAjaxController::dispatch"];
 		');
 
 		$this->doc = $doc;

@@ -54,7 +54,7 @@ class CategoryViewHelper extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 	/**
 	 * Setter for currentSubScript
 	 *
-	 * @param string $currentSubScript
+	 * @param string $currentSubScript Current sub script
 	 *
 	 * @return void
 	 */
@@ -166,7 +166,7 @@ class CategoryViewHelper extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 		$this->doc->loadJavascriptLib('contrib/prototype/prototype.js');
 		$this->doc->loadJavascriptLib('js/tree.js');
 		$this->doc->JScode .= $this->doc->wrapScriptTags('
-			Tree.ajaxID = "CommerceTeam\\Commerce\\ViewHelpers\\Navigation\\CategoryViewHelper::ajaxExpandCollapse' .
+			Tree.ajaxID = "CommerceTeam_Commerce_CategoryViewHelper::ajaxExpandCollapse' .
 			($bare ? 'WithoutProduct' : '') . '";
 		');
 

@@ -166,12 +166,12 @@ class TreelibBrowser extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 		if ($allowProducts) {
 			// Check if we need to allow browsing of products.
 			$this->doc->JScode .= $this->doc->wrapScriptTags('
-				Tree.ajaxID = "CommerceTeam\\Commerce\\ViewHelpers\\Navigation\\CategoryViewHelper::ajaxExpandCollapse";
+				Tree.ajaxID = "CommerceTeam_Commerce_CategoryViewHelper::ajaxExpandCollapse";
 			');
 		} else {
 			// Check if we need to allow browsing of products.
 			$this->doc->JScode .= $this->doc->wrapScriptTags('
-				Tree.ajaxID = "CommerceTeam\\Commerce\\ViewHelpers\\Navigation\\CategoryViewHelper::ajaxExpandCollapseWithoutProduct";
+				Tree.ajaxID = "CommerceTeam_Commerce_CategoryViewHelper::ajaxExpandCollapseWithoutProduct";
 			');
 		}
 

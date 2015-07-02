@@ -33,11 +33,10 @@ if (TYPO3_MODE == 'BE') {
 		$presetSkinImgs = is_array($GLOBALS['TBE_STYLES']['skinImg']) ? $GLOBALS['TBE_STYLES']['skinImg'] : array();
 
 		$GLOBALS['TBE_STYLES']['skinImg'] = array_merge($presetSkinImgs, array(
-			'MOD:txcommerceM1_permission/../../../Resources/Public/Icons/mod_access.gif' =>
-				array(
-					\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('t3skin') . 'icons/module_web_perms.png',
-					'width="24" height="24"'
-				),
+			'MOD:txcommerceM1_permission/../../../Resources/Public/Icons/mod_access.gif' => array(
+				\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('t3skin') . 'icons/module_web_perms.png',
+				'width="24" height="24"'
+			),
 		));
 	}
 
@@ -57,11 +56,11 @@ if (TYPO3_MODE == 'BE') {
 		PATH_TXCOMMERCE . 'Classes/Module/Category/'
 	);
 	\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::registerAjaxHandler(
-		'CommerceTeam\\Commerce\\ViewHelpers\\Navigation\\CategoryViewHelper::ajaxExpandCollapseWithoutProduct',
+		'CommerceTeam_Commerce_CategoryViewHelper::ajaxExpandCollapseWithoutProduct',
 		'CommerceTeam\\Commerce\\ViewHelpers\\Navigation\\CategoryViewHelper->ajaxExpandCollapseWithoutProduct'
 	);
 	\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::registerAjaxHandler(
-		'CommerceTeam\\Commerce\\ViewHelpers\\Navigation\\CategoryViewHelper::ajaxExpandCollapse',
+		'CommerceTeam_Commerce_CategoryViewHelper::ajaxExpandCollapse',
 		'CommerceTeam\\Commerce\\ViewHelpers\\Navigation\\CategoryViewHelper->ajaxExpandCollapse'
 	);
 
@@ -73,7 +72,7 @@ if (TYPO3_MODE == 'BE') {
 		PATH_TXCOMMERCE . 'Classes/Module/Permission/'
 	);
 	\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::registerAjaxHandler(
-		'CommerceTeam\\Commerce\\Controller\\PermissionAjaxController::dispatch',
+		'CommerceTeam_Commerce_PermissionAjaxController::dispatch',
 		'CommerceTeam\\Commerce\\Controller\\PermissionAjaxController->dispatch'
 	);
 
