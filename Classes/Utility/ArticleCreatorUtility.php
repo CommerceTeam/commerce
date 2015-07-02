@@ -209,11 +209,6 @@ class ArticleCreatorUtility {
 				<a href="#" onclick="return jumpToUrl(\'' . $GLOBALS['SOBE']->doc->issueCommand($params, -1) . '\');">' .
 				($article['hidden'] ? $unhide : $hide) . '</a></td>';
 
-			/*$result .= '<td style="border-top:1px black solid">
-				<a href="#" onclick="return jumpToUrl(\'tce_db.php?&amp;data[tx_commerce_articles][' .
-				$articleUid . '][hidden]=' . (!$article['hidden']) . '&amp;redirect=alt_doc.php?edit[tx_commerce_products][' .
-				$this->uid . ']=edit' . $formSecurityToken . '\');">' . ($article['hidden'] ? $unhide : $hide) . '</a></td>';*/
-
 			// add the sorting buttons
 			// UP
 			if (isset($this->existingArticles[$i - 1])) {
@@ -265,15 +260,15 @@ class ArticleCreatorUtility {
 	}
 
 	/**
-	 * Returns JavaScript variables setting the returnUrl and thisScript location for use by JavaScript on the page.
+	 * Returns JavaScript variables setting the returnUrl and thisScript
+	 * location for use by JavaScript on the page.
 	 * Used in fx. db_list.php (Web>List)
 	 *
 	 * @param string $thisLocation URL to "this location" / current script
-	 * @return string Urls are returned as JavaScript variables T3_RETURN_URL and T3_THIS_LOCATION
-	 * @see typo3/db_list.php
-	 * @todo Define visibility
+	 *
+	 * @return string Urls are returned as T3_RETURN_URL and T3_THIS_LOCATION
 	 */
-	public function redirectUrls($thisLocation = '') {
+	protected function redirectUrls($thisLocation = '') {
 		$thisLocation = $thisLocation ? $thisLocation : GeneralUtility::linkThisScript(array(
 			'CB' => '',
 			'SET' => '',
