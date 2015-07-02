@@ -1098,8 +1098,11 @@ class DataMapHooks {
 				$articleCreator = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Utility\\ArticleCreatorUtility');
 				$articleCreator->init($id, $this->belib->getProductFolderUid());
 
-				// create new articles
-				$articleCreator->createArticles($pObj->datamap[$table][$this->unsubstitutedId ? $this->unsubstitutedId : $id]);
+				$datamap = $pObj->datamap[$table][$this->unsubstitutedId ? $this->unsubstitutedId : $id];
+				if (is_array($datamap) && !empty($datamap)) {
+					// create new articles
+					$articleCreator->createArticles($datamap);
+				}
 
 				// update articles if new attributes were added
 				$articleCreator->updateArticles();
