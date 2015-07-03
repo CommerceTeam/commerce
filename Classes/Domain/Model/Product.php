@@ -374,21 +374,21 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 				// attribute char is not used, thats why we check for id
 				if (is_string($uidValuePair['AttributeValue'])) {
 					$addwheretmp .= ' OR (tx_commerce_attributes.uid = ' . (int) $uidValuePair['AttributeUid'] .
-						' AND tx_commerce_articles_article_attributes_mm.value_char="' .
-						$database->quoteStr($uidValuePair['AttributeValue'], 'tx_commerce_articles_article_attributes_mm') . '" )';
+									' AND tx_commerce_articles_article_attributes_mm.value_char="' .
+									$database->quoteStr($uidValuePair['AttributeValue'], 'tx_commerce_articles_article_attributes_mm') . '" )';
 				}
 
 				// Nach dem charwert immer ueberpruefen, solange value_char noch nicht drin ist.
 				if (is_float($uidValuePair['AttributeValue']) || (int) $uidValuePair['AttributeValue']) {
 					$addwheretmp .= ' OR (tx_commerce_attributes.uid = ' . (int) $uidValuePair['AttributeUid'] .
-						' AND tx_commerce_articles_article_attributes_mm.default_value in ("' .
-						$database->quoteStr($uidValuePair['AttributeValue'], 'tx_commerce_articles_article_attributes_mm') . '" ) )';
+									' AND tx_commerce_articles_article_attributes_mm.default_value in ("' .
+									$database->quoteStr($uidValuePair['AttributeValue'], 'tx_commerce_articles_article_attributes_mm') . '" ) )';
 				}
 
 				if (is_float($uidValuePair['AttributeValue']) || (int) $uidValuePair['AttributeValue']) {
 					$addwheretmp .= ' OR (tx_commerce_attributes.uid = ' . (int) $uidValuePair['AttributeUid'] .
-						' AND tx_commerce_articles_article_attributes_mm.uid_valuelist in ("' .
-						$database->quoteStr($uidValuePair['AttributeValue'], 'tx_commerce_articles_article_attributes_mm') . '") )';
+									' AND tx_commerce_articles_article_attributes_mm.uid_valuelist in ("' .
+									$database->quoteStr($uidValuePair['AttributeValue'], 'tx_commerce_articles_article_attributes_mm') . '") )';
 				}
 
 				$addwhere = ' AND (0 ' . $addwheretmp . ') ';
@@ -701,10 +701,10 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 					// Ignore row if this value list has already been calculated
 					// This might happen if method is called with multiple article uid's
 					if (count(
-							array_intersect(
-								array($valueListArrayRow['uid']), $targetDataArray[$currentAttributeUid]['valueuidlist']
-							)
+						array_intersect(
+							array($valueListArrayRow['uid']), $targetDataArray[$currentAttributeUid]['valueuidlist']
 						)
+					)
 					) {
 						continue;
 					}
@@ -838,11 +838,11 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 
 		// Get enabled rows only
 		$selectWhere[] = ' 1 ' . $GLOBALS['TSFE']->sys_page->enableFields(
-			'tx_commerce_attributes', $GLOBALS['TSFE']->showHiddenRecords
-		);
+				'tx_commerce_attributes', $GLOBALS['TSFE']->showHiddenRecords
+			);
 		$selectWhere[] = ' 1 ' . $GLOBALS['TSFE']->sys_page->enableFields(
-			$parentTable, $GLOBALS['TSFE']->showHiddenRecords
-		);
+				$parentTable, $GLOBALS['TSFE']->showHiddenRecords
+			);
 
 		// Order rows by given sorting table
 		$selectOrder = $sortingTable . '.sorting';
@@ -1075,7 +1075,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 					' . $sortingTable . '.sorting', 'tx_commerce_articles', 'tx_commerce_articles_article_attributes_mm',
 				'tx_commerce_attributes',
 				' AND tx_commerce_articles.uid_product = ' . $this->uid . ' ' . $addwhere . $addwhere2 . ' order by ' .
-					$sortingTable . '.sorting'
+				$sortingTable . '.sorting'
 			);
 
 			$addwhere = $addwhere2;
@@ -1126,7 +1126,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 						'distinct tx_commerce_articles_article_attributes_mm.uid_valuelist', 'tx_commerce_articles',
 						'tx_commerce_articles_article_attributes_mm', 'tx_commerce_attributes',
 						' AND tx_commerce_articles_article_attributes_mm.uid_valuelist>0 AND tx_commerce_articles.uid_product = ' .
-							$this->uid . ' AND tx_commerce_attributes.uid=' . $attributeUid . $addwhere
+						$this->uid . ' AND tx_commerce_attributes.uid=' . $attributeUid . $addwhere
 					);
 					if (($valueshown == FALSE) && ($attributeValueResult)
 						&& ($database->sql_num_rows(
@@ -1526,22 +1526,22 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 						SELECT uid_local AS article_id, uid_valuelist
 						FROM tx_commerce_articles_article_attributes_mm, tx_commerce_articles
 						WHERE uid_local = uid AND uid_valuelist = ' . (int) $attr['AttributeValue'] .
-							' AND tx_commerce_articles.uid_product = ' . $this->uid .
-							' AND uid_foreign = ' . (int) $attr['AttributeUid'] .
-							$GLOBALS['TSFE']->sys_page->enableFields('tx_commerce_articles', $GLOBALS['TSFE']->showHiddenRecords);
+									  ' AND tx_commerce_articles.uid_product = ' . $this->uid .
+									  ' AND uid_foreign = ' . (int) $attr['AttributeUid'] .
+									  $GLOBALS['TSFE']->sys_page->enableFields('tx_commerce_articles', $GLOBALS['TSFE']->showHiddenRecords);
 				} else {
 					$unionSelects[] = '
 						SELECT uid_local AS article_id, uid_valuelist
 						FROM tx_commerce_articles_article_attributes_mm, tx_commerce_articles
 						WHERE uid_local = uid AND tx_commerce_articles.uid_product = ' . $this->uid .
-							' AND uid_foreign = ' . (int) $attr['AttributeUid'] .
-							$GLOBALS['TSFE']->sys_page->enableFields('tx_commerce_articles', $GLOBALS['TSFE']->showHiddenRecords);
+									  ' AND uid_foreign = ' . (int) $attr['AttributeUid'] .
+									  $GLOBALS['TSFE']->sys_page->enableFields('tx_commerce_articles', $GLOBALS['TSFE']->showHiddenRecords);
 				}
 			}
 			$sql = '';
 			if (is_array($unionSelects)) {
 				$sql .= ' SELECT count(article_id) AS counter, article_id FROM (' . implode(' UNION ', $unionSelects) .
-					') AS data GROUP BY article_id having COUNT(article_id) >= ' . (count($unionSelects) - 1) . '';
+						') AS data GROUP BY article_id having COUNT(article_id) >= ' . (count($unionSelects) - 1) . '';
 			}
 
 			$database = $this->getDatabaseConnection();
@@ -1556,6 +1556,18 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 		}
 
 		return FALSE;
+	}
+
+	/**
+	 * Compare an array record by its sorting value
+	 *
+	 * @param array $array1 Left
+	 * @param array $array2 Right
+	 *
+	 * @return int
+	 */
+	public static function compareBySorting($array1, $array2) {
+		return $array1['sorting'] - $array2['sorting'];
 	}
 
 	/**
@@ -1614,21 +1626,6 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
 
 		return $this->getArticlesByAttributeArray($attribute_Array, $proofUid);
-	}
-
-	/**
-	 * Compare an array record by its sorting value
-	 *
-	 * @param array $array1 Left
-	 * @param array $array2 Right
-	 *
-	 * @return int
-	 * @deprecated since commerce 1.0.0, this function will be removed in commerce 1.4.0, is not used in commerce
-	 */
-	public static function compareBySorting($array1, $array2) {
-		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
-
-		return $array1['sorting'] - $array2['sorting'];
 	}
 
 	/**
