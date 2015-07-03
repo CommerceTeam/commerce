@@ -917,12 +917,12 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	 * in your template by you own
 	 *
 	 * @param array $addressArray Address Array (as result from Select DB or Session)
-	 * @param array $subpartMarker Subpart Template subpart
+	 * @param string $subpartTemplate Subpart Template subpart
 	 *
 	 * @return string $content string HTML-Content from the given Subpart.
 	 */
-	public function makeAdressView(array $addressArray, array $subpartMarker) {
-		$template = $this->cObj->getSubpart($this->templateCode, $subpartMarker);
+	public function makeAdressView(array $addressArray, $subpartTemplate) {
+		$template = $this->cObj->getSubpart($this->templateCode, $subpartTemplate);
 
 		$content = $this->cObj->substituteMarkerArray($template, $addressArray, '###|###', 1);
 
