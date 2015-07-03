@@ -1155,7 +1155,7 @@ class Tx_Commerce_Domain_Model_Product extends Tx_Commerce_Domain_Model_Abstract
 						}
 						usort(
 							$valuelist, array(
-								'tx_commerce_product',
+								'Tx_Commerce_Domain_Model_Product',
 								'compareBySorting'
 							)
 						);
