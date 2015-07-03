@@ -1041,7 +1041,7 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	 * in your template by you own
 	 *
 	 * @param Tx_Commerce_Domain_Model_Basket $basketObj Basket
-	 * @param array $subpartMarker Subpart Template Subpart
+	 * @param string $subpartTemplate Subpart Template Subpart
 	 *
 	 * @return string $content HTML-Ccontent from the given Subpart
 	 * @abstract
@@ -1056,8 +1056,8 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	 * ###SUM_TAX###
 	 * ###LABEL_SUM_GROSS### ###SUM_GROSS###
 	 */
-	public function makeBasketInformation(Tx_Commerce_Domain_Model_Basket $basketObj, array $subpartMarker) {
-		$template = $this->cObj->getSubpart($this->templateCode, $subpartMarker);
+	public function makeBasketInformation(Tx_Commerce_Domain_Model_Basket $basketObj, $subpartTemplate) {
+		$template = $this->cObj->getSubpart($this->templateCode, $subpartTemplate);
 		$basketObj->recalculateSums();
 		$markerArray['###SUM_NET###'] = Tx_Commerce_ViewHelpers_Money::format(
 			$basketObj->getSumNet(), $this->currency, $this->showCurrency
