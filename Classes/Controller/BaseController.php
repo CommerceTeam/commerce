@@ -1314,7 +1314,7 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 			foreach ($data as $fieldName => $columnValue) {
 				// get TS config
 				$type = $typoscript['fields.'][$fieldName];
-				$config = $typoscript['fields.'][$fieldName . '.'];
+				$config = (array) $typoscript['fields.'][$fieldName . '.'];
 
 				if (empty($type)) {
 					$type = $typoscript['defaultField'];

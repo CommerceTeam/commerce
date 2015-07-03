@@ -1284,14 +1284,13 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 
 				$this->prefixId = $altPrefixSingle;
 
-				$wrapMarkerArray['###PRODUCT_LINK_DETAIL###'] =
-					explode(
-						'|',
-						$this->pi_list_linkSingle(
-							'|', $basketItem->getProduct()->getUid(), 1,
-							array('catUid' => (int) $basketItem->getProduct()->getMasterparentCategory()), FALSE, $this->conf['listPid']
-						)
-					);
+				$wrapMarkerArray['###PRODUCT_LINK_DETAIL###'] = explode(
+					'|',
+					$this->pi_list_linkSingle(
+						'|', $basketItem->getProduct()->getUid(), 1,
+						array('catUid' => (int) $basketItem->getProduct()->getMasterparentCategory()), FALSE, $this->conf['listPid']
+					)
+				);
 
 				$this->prefixId = $safePrefix;
 
