@@ -52,7 +52,7 @@ class Tx_Commerce_ViewHelpers_Browselinks_CategoryView extends Tx_Commerce_Tree_
 		if (!is_array($row)) {
 			if (TYPO3_DLOG) {
 				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
-					'getJumpToParam (Tx_Commerce_Tree_Leaf_View) gets passed invalid parameters.',
+					'getJumpToParam (Tx_Commerce_ViewHelpers_Browselinks_CategoryView) gets passed invalid parameters.',
 					COMMERCE_EXTKEY,
 					3
 				);
@@ -75,7 +75,7 @@ class Tx_Commerce_ViewHelpers_Browselinks_CategoryView extends Tx_Commerce_Tree_
 	}
 
 	/**
-	 * Wrapping $title in a-tags.
+	 * Wrapping title in a-tags.
 	 *
 	 * @param string $title Title
 	 * @param string $row Record
@@ -83,7 +83,7 @@ class Tx_Commerce_ViewHelpers_Browselinks_CategoryView extends Tx_Commerce_Tree_
 	 *
 	 * @return string
 	 */
-	protected function wrapTitle($title, $row, $bank = 0) {
+	public function wrapTitle($title, $row, $bank = 0) {
 		if (!is_array($row) || !is_numeric($bank)) {
 			if (TYPO3_DLOG) {
 				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
@@ -95,7 +95,7 @@ class Tx_Commerce_ViewHelpers_Browselinks_CategoryView extends Tx_Commerce_Tree_
 			return '';
 		}
 
-			// Max. size for Title of 30
+		// Max. size for Title of 30
 		$title = ('' != $title) ? \TYPO3\CMS\Core\Utility\GeneralUtility::fixed_lgd_cs($title, 30) : $this->getLL('leaf.noTitle');
 
 		$aOnClick = 'return link_commerce(\'' . $this->getJumpToParam($row) . '\');';

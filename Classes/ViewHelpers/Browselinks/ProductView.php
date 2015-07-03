@@ -42,7 +42,40 @@ class Tx_Commerce_ViewHelpers_Browselinks_ProductView extends Tx_Commerce_Tree_L
 	protected $openProd = 0;
 
 	/**
-	 * Wrapping $title in a-tags.
+	 * Returns the link from the tree used to jump to a destination
+	 *
+	 * @param array $row Array with the ID Information
+	 *
+	 * @return string
+	 */
+	public function getJumpToParam(array $row) {
+		if (!is_array($row)) {
+			if (TYPO3_DLOG) {
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
+					'getJumpToParam (Tx_Commerce_ViewHelpers_Browselinks_ProductView) gets passed invalid parameters.',
+					COMMERCE_EXTKEY,
+					3
+				);
+			}
+			return '';
+		}
+
+		return 'commerce:tx_commerce_products:' . $row['uid'] . '|tx_commerce_categories:' . $row['item_parent'];
+	}
+
+	/**
+	 * Set open product
+	 *
+	 * @param int $uid Uid
+	 *
+	 * @return void
+	 */
+	public function setOpenProduct($uid) {
+		$this->openProd = $uid;
+	}
+
+	/**
+	 * Wrapping title in a-tags.
 	 *
 	 * @param string $title Title string
 	 * @param array $row Item record
@@ -50,7 +83,7 @@ class Tx_Commerce_ViewHelpers_Browselinks_ProductView extends Tx_Commerce_Tree_L
 	 *
 	 * @return string
 	 */
-	protected function wrapTitle($title, array &$row, $bank = 0) {
+	public function wrapTitle($title, array &$row, $bank = 0) {
 		if (!is_array($row) || !is_numeric($bank)) {
 			if (TYPO3_DLOG) {
 				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('wrapTitle (productview) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
@@ -66,39 +99,6 @@ class Tx_Commerce_ViewHelpers_Browselinks_ProductView extends Tx_Commerce_Tree_L
 		$style = ($row['uid'] == $this->openProd) ? 'style="color: red; font-weight: bold"' : '';
 		$res = '<a href="#" onclick="' . htmlspecialchars($aOnClick) . '" ' . $style . '>' . $title . '</a>';
 
-		return $res;
-	}
-
-	/**
-	 * Setter
-	 *
-	 * @param int $uid Uid
-	 *
-	 * @return void
-	 */
-	public function setOpenProduct($uid) {
-		$this->openProd = $uid;
-	}
-
-	/**
-	 * Returns the link from the tree used to jump to a destination
-	 *
-	 * @param array $row Array with the ID Information
-	 *
-	 * @return string
-	 */
-	public function getJumpToParam(array &$row) {
-		if (!is_array($row)) {
-			if (TYPO3_DLOG) {
-				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
-					'getJumpToParam (productview) gets passed invalid parameters.',
-					COMMERCE_EXTKEY,
-					3
-				);
-			}
-			return '';
-		}
-		$res = 'commerce:tx_commerce_products:' . $row['uid'] . '|tx_commerce_categories:' . $row['item_parent'];
 		return $res;
 	}
 }
