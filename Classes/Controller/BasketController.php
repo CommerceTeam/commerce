@@ -1067,7 +1067,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 
 		$tmpArray = $this->generateMarkerArray(
 			$article->returnAssocArray(),
-			$this->conf['articleTS.'],
+			(array) $this->conf['articleTS.'],
 			'article_',
 			'tx_commerce_articles'
 		);
