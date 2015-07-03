@@ -1167,7 +1167,7 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	 * in your template by you own
 	 *
 	 * @param Tx_Commerce_Domain_Model_BasketItem $basketItemObj Basket Object
-	 * @param array $subpartMarker Subpart Template Subpart
+	 * @param string $subpartTemplate Subpart Template Subpart
 	 *
 	 * @return string $content HTML-Ccontent from the given Subpart
 	 * @abstract
@@ -1184,9 +1184,9 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 	 * ###LANG_PRICESUM_NET### ###BASKET_ITEM_PRICESUM_NET### <br/>
 	 * ###LANG_PRICESUM_GROSS### ###BASKET_ITEM_PRICESUM_GROSS### <br/>
 	 */
-	public function makeLineView(Tx_Commerce_Domain_Model_BasketItem $basketItemObj, array $subpartMarker) {
+	public function makeLineView(Tx_Commerce_Domain_Model_BasketItem $basketItemObj, $subpartTemplate) {
 		$markerArray = array();
-		$template = $this->cObj->getSubpart($this->templateCode, $subpartMarker);
+		$template = $this->cObj->getSubpart($this->templateCode, $subpartTemplate);
 
 		/**
 		 * Basket Item Elements
