@@ -1318,7 +1318,7 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 
 				if (empty($type)) {
 					$type = $typoscript['defaultField'];
-					$config = $typoscript['defaultField.'];
+					$config = (array) $typoscript['defaultField.'];
 				}
 				if ($type == 'IMAGE') {
 					$config['altText'] = $data['title'];
