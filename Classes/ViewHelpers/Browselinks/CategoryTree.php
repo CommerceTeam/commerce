@@ -421,14 +421,4 @@ class CategoryTree extends \CommerceTeam\Commerce\Tree\Browsetree {
 			$leaf->setDataPositions($positions);
 		}
 	}
-
-
-	/**
-	 * Get backend user
-	 *
-	 * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
-	 */
-	protected function getBackendUser() {
-		return $GLOBALS['BE_USER'];
-	}
 }

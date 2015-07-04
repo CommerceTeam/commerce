@@ -14,8 +14,9 @@ namespace CommerceTeam\Commerce\Controller;
  */
 
 use CommerceTeam\Commerce\Domain\Repository\FolderRepository;
+use CommerceTeam\Commerce\Factory\HookFactory;
+use CommerceTeam\Commerce\Factory\SettingsFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use \CommerceTeam\Commerce\Factory\HookFactory;
 
 /**
  * Plugin 'checkout' for the 'commerce' extension.
@@ -159,7 +160,7 @@ class CheckoutController extends BaseController {
 	public function init($conf) {
 		parent::init($conf);
 
-		$this->conf['basketPid'] = $GLOBALS['TSFE']->id;
+		$this->conf['basketPid'] = $this->getFrontendController()->id;
 
 		/**
 		 * Static info tables
@@ -170,14 +171,9 @@ class CheckoutController extends BaseController {
 		$staticInfo->init();
 		$this->staticInfo = $staticInfo;
 
-		$this->extConf = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['extConf'];
+		$this->extConf = SettingsFactory::getInstance()->getExtConfComplete();
 
-		/**
-		 * Basket
-		 *
-		 * @var $basket \CommerceTeam\Commerce\Domain\Model\Basket
-		 */
-		$basket = & $GLOBALS['TSFE']->fe_user->tx_commerce_basket;
+		$basket = $this->getBasket();
 		$basket->setTaxCalculationMethod($this->conf['priceFromNet']);
 
 		if ($this->conf['currency'] <> '') {
@@ -208,7 +204,7 @@ class CheckoutController extends BaseController {
 	 */
 	public function main($content, array $conf = array()) {
 		$this->debug(
-			$GLOBALS['TSFE']->fe_user->getKey('ses', \CommerceTeam\Commerce\Utility\GeneralUtility::generateSessionKey('billing')),
+			$this->getFrontendUser()->getKey('ses', \CommerceTeam\Commerce\Utility\GeneralUtility::generateSessionKey('billing')),
 			'billingsession', __FILE__ . ' ' . __LINE__
 		);
 
@@ -219,13 +215,8 @@ class CheckoutController extends BaseController {
 		$hooks = HookFactory::getHooks('Controller/CheckoutController', 'main');
 
 		// Set basket to readonly, if set in extension configuration
-		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['extConf']['lockBasket'] == 1) {
-			/**
-			 * Basket
-			 *
-			 * @var $basket \CommerceTeam\Commerce\Domain\Model\Basket
-			 */
-			$basket = & $GLOBALS['TSFE']->fe_user->tx_commerce_basket;
+		if ($this->extConf['lockBasket'] == 1) {
+			$basket = $this->getBasket();
 			$basket->setReadOnly();
 			$basket->storeData();
 		}
@@ -341,8 +332,11 @@ class CheckoutController extends BaseController {
 			}
 		}
 
-		$feUser = $this->getFrontendController()->fe_user;
-		$feUser->setKey('ses', \CommerceTeam\Commerce\Utility\GeneralUtility::generateSessionKey('currentStep'), $this->currentStep);
+		$this->getFrontendUser()->setKey(
+			'ses',
+			\CommerceTeam\Commerce\Utility\GeneralUtility::generateSessionKey('currentStep'),
+			$this->currentStep
+		);
 
 		$content = $this->renderSteps($content);
 
@@ -361,7 +355,7 @@ class CheckoutController extends BaseController {
 	 * @return void
 	 */
 	protected function storeRequestDataIntoSession() {
-		$feUser = $this->getFrontendController()->fe_user;
+		$feUser = $this->getFrontendUser();
 		// Write the billing address into session, if it is present in the REQUEST
 		if (isset($this->piVars['billing'])) {
 			$this->piVars['billing'] = \CommerceTeam\Commerce\Utility\GeneralUtility::removeXSSStripTagsArray($this->piVars['billing']);
@@ -369,7 +363,11 @@ class CheckoutController extends BaseController {
 		}
 		if (isset($this->piVars['delivery'])) {
 			$this->piVars['delivery'] = \CommerceTeam\Commerce\Utility\GeneralUtility::removeXSSStripTagsArray($this->piVars['delivery']);
-			$feUser->setKey('ses', \CommerceTeam\Commerce\Utility\GeneralUtility::generateSessionKey('delivery'), $this->piVars['delivery']);
+			$feUser->setKey(
+				'ses',
+				\CommerceTeam\Commerce\Utility\GeneralUtility::generateSessionKey('delivery'),
+				$this->piVars['delivery']
+			);
 		}
 		if (isset($this->piVars['payment'])) {
 			$this->piVars['payment'] = \CommerceTeam\Commerce\Utility\GeneralUtility::removeXSSStripTagsArray($this->piVars['payment']);
@@ -383,7 +381,7 @@ class CheckoutController extends BaseController {
 			// because we need to be sure to have at least one correct mail address
 			// This way email is not necessarily mandatory for billing/delivery address
 			if (!$this->conf['randomUser'] && !GeneralUtility::validEmail($this->piVars[$this->piVars['address_uid']]['email'])) {
-				$this->piVars[$this->piVars['address_uid']]['email'] = $GLOBALS['TSFE']->fe_user->user['email'];
+				$this->piVars[$this->piVars['address_uid']]['email'] = $feUser->user['email'];
 			}
 			$this->piVars[$this->piVars['address_uid']]['uid'] = (int) $this->piVars['address_uid'];
 			$feUser->setKey(
@@ -399,7 +397,7 @@ class CheckoutController extends BaseController {
 	 * @return void
 	 */
 	protected function fetchSessionDataIntoSessionAttribute() {
-		$feUser = $this->getFrontendController()->fe_user;
+		$feUser = $this->getFrontendUser();
 		$this->sessionData['billing'] = \CommerceTeam\Commerce\Utility\GeneralUtility::removeXSSStripTagsArray(
 			$feUser->getKey('ses', \CommerceTeam\Commerce\Utility\GeneralUtility::generateSessionKey('billing'))
 		);
@@ -409,7 +407,10 @@ class CheckoutController extends BaseController {
 		$this->sessionData['payment'] = \CommerceTeam\Commerce\Utility\GeneralUtility::removeXSSStripTagsArray(
 			$feUser->getKey('ses', \CommerceTeam\Commerce\Utility\GeneralUtility::generateSessionKey('payment'))
 		);
-		$this->sessionData['mails'] = $feUser->getKey('ses', \CommerceTeam\Commerce\Utility\GeneralUtility::generateSessionKey('mails'));
+		$this->sessionData['mails'] = $feUser->getKey(
+			'ses',
+			\CommerceTeam\Commerce\Utility\GeneralUtility::generateSessionKey('mails')
+		);
 
 		if ($this->piVars['check'] == 'billing' && $this->piVars['step'] == 'payment') {
 			// Remove reference to delivery address
@@ -425,7 +426,7 @@ class CheckoutController extends BaseController {
 	 */
 	public function storeSessionData() {
 		$database = $this->getDatabaseConnection();
-		$feUser = $this->getFrontendController()->fe_user;
+		$feUser = $this->getFrontendUser();
 
 		// Saves UC and SesData if changed.
 		if ($feUser->userData_change) {
@@ -439,7 +440,7 @@ class CheckoutController extends BaseController {
 			} else {
 				// Write new session-data
 				$insertFields = array(
-					'hash' => $GLOBALS['TSFE']->fe_user->id,
+					'hash' => $feUser->id,
 					'content' => serialize($feUser->sesData),
 					'tstamp' => $GLOBALS['EXEC_TIME'],
 				);
@@ -509,6 +510,8 @@ class CheckoutController extends BaseController {
 	 * @return string $content
 	 */
 	public function getBillingAddress($withTitle = 1) {
+		$frontendController = $this->getFrontendController();
+
 		$this->debug($this->sessionData, 'sessionData', __FILE__ . ' ' . __LINE__);
 		if ($this->conf['billing.']['subpartMarker.']['containerWrap']) {
 			$template = $this->cObj->getSubpart(
@@ -528,17 +531,18 @@ class CheckoutController extends BaseController {
 
 		// Get the form
 		$markerArray['###ADDRESS_FORM_TAG###'] = '<form name="addressForm" action="' .
-			$this->pi_getPageLink($GLOBALS['TSFE']->id) . '" method="post" ' . $this->conf[$this->step . '.']['formParams'] . '>';
+			$this->pi_getPageLink($frontendController->id) . '" method="post" ' . $this->conf[$this->step .
+			'.']['formParams'] . '>';
 		$markerArray['###ADDRESS_FORM_HIDDENFIELDS###'] = '<input type="hidden" name="' . $this->prefixId .
 			'[check]" value="billing" />';
 
-		$billingForm = '<form name="addressForm" action="' . $this->pi_getPageLink($GLOBALS['TSFE']->id) . '" method="post">';
+		$billingForm = '<form name="addressForm" action="' . $this->pi_getPageLink($frontendController->id) . '" method="post">';
 		$billingForm .= '<input type="hidden" name="' . $this->prefixId . '[check]" value="billing" />';
 
 		$markerArray['###HIDDEN_STEP###'] = '<input type="hidden" name="' . $this->prefixId . '[check]" value="billing" />';
 
 		// If a user is logged in, get the form from the address management
-		if ($GLOBALS['TSFE']->loginUser) {
+		if ($frontendController->loginUser) {
 			$addressManagerConf = $this->conf;
 			$addressManagerConf['formFields.'] = $this->conf['billing.']['sourceFields.'];
 			$addressManagerConf['addressPid'] = $this->conf['addressPid'];
@@ -553,9 +557,9 @@ class CheckoutController extends BaseController {
 			$addressMgm->templateCode = $this->templateCode;
 			$addressMgm->init($addressManagerConf, FALSE);
 			$addressMgm->addresses = $addressMgm->getAddresses(
-				$GLOBALS['TSFE']->fe_user->user['uid'], $this->conf['billing.']['addressType']
+				$this->getFrontendUser()->user['uid'], $this->conf['billing.']['addressType']
 			);
-			$addressMgm->piVars['backpid'] = $GLOBALS['TSFE']->id;
+			$addressMgm->piVars['backpid'] = $frontendController->id;
 
 			$markerArray['###ADDRESS_FORM_INPUTFIELDS###'] = $addressMgm->getListing(
 				$this->conf['billing.']['addressType'], TRUE, $this->prefixId, $this->sessionData['billing']['uid']
@@ -651,6 +655,7 @@ class CheckoutController extends BaseController {
 	 * @return string $content
 	 */
 	public function getDeliveryAddress($withTitle = 1) {
+		$frontendController = $this->getFrontendController();
 		$this->debug($this->sessionData, 'sessionData', __FILE__ . ' ' . __LINE__);
 
 		if (!$this->validateAddress('billing')) {
@@ -676,16 +681,15 @@ class CheckoutController extends BaseController {
 
 		// Get form
 		// @depricated Marker
-		$markerArray['###ADDRESS_FORM_TAG###'] = '<form name="addressForm" action="' . $this->pi_getPageLink(
-				$GLOBALS['TSFE']->id
-			) . '" method="post" ' . $this->conf[$this->step . '.']['formParams'] . '>';
+		$markerArray['###ADDRESS_FORM_TAG###'] = '<form name="addressForm" action="' .
+			$this->pi_getPageLink($frontendController->id) . '" method="post" ' . $this->conf[$this->step . '.']['formParams'] . '>';
 
 		$nextstep = $this->getStepAfter('delivery');
 
 		$markerArray['###ADDRESS_FORM_HIDDENFIELDS###'] = '<input type="hidden" name="' . $this->prefixId . '[step]" value="' .
 			$nextstep . '" /><input type="hidden" name="' . $this->prefixId . '[check]" value="delivery" />';
 
-		$deliveryForm = '<form name="addressForm" action="' . $this->pi_getPageLink($GLOBALS['TSFE']->id) . '" method="post">';
+		$deliveryForm = '<form name="addressForm" action="' . $this->pi_getPageLink($frontendController->id) . '" method="post">';
 		$deliveryForm .= '<input type="hidden" name="' . $this->prefixId . '[step]" value="' . $nextstep . '" />';
 		$deliveryForm .= '<input type="hidden" name="' . $this->prefixId . '[check]" value="delivery" />';
 
@@ -693,7 +697,7 @@ class CheckoutController extends BaseController {
 		$markerArray['###HIDDEN_STEP###'] .= '<input type="hidden" name="' . $this->prefixId . '[check]" value="delivery" />';
 
 		// If a user is logged in, get form from the address management
-		if ($GLOBALS['TSFE']->loginUser) {
+		if ($frontendController->loginUser) {
 			$addressManagerConf = $this->conf;
 			$addressManagerConf['formFields.'] = $this->conf['delivery.']['sourceFields.'];
 			$addressManagerConf['addressPid'] = $this->conf['addressPid'];
@@ -708,12 +712,16 @@ class CheckoutController extends BaseController {
 			$addressMgm->templateCode = $this->templateCode;
 			$addressMgm->init($addressManagerConf, FALSE);
 			$addressMgm->addresses = $addressMgm->getAddresses(
-				$GLOBALS['TSFE']->fe_user->user['uid'], $this->conf['delivery.']['addressType']
+				$this->getFrontendUser()->user['uid'],
+				$this->conf['delivery.']['addressType']
 			);
-			$addressMgm->piVars['backpid'] = $GLOBALS['TSFE']->id;
+			$addressMgm->piVars['backpid'] = $frontendController->id;
 
 			$markerArray['###ADDRESS_FORM_INPUTFIELDS###'] = $addressMgm->getListing(
-				$this->conf['delivery.']['addressType'], TRUE, $this->prefixId, $this->sessionData['delivery']['uid']
+				$this->conf['delivery.']['addressType'],
+				TRUE,
+				$this->prefixId,
+				$this->sessionData['delivery']['uid']
 			);
 		} else {
 			$markerArray['###ADDRESS_FORM_INPUTFIELDS###'] = $this->getInputForm($this->conf['delivery.'], 'delivery');
@@ -839,7 +847,7 @@ class CheckoutController extends BaseController {
 				}
 			}
 
-			$formAction = $this->pi_getPageLink($GLOBALS['TSFE']->id);
+			$formAction = $this->pi_getPageLink($this->getFrontendController()->id);
 			if (method_exists($paymentObj, 'getProvider')) {
 				/**
 				 * Payment provider
@@ -898,15 +906,12 @@ class CheckoutController extends BaseController {
 			$template = $this->cObj->getSubpart($this->templateCode, '###LISTING###');
 		}
 
-		/**
-		 * Basket
-		 *
-		 * @var $basket \CommerceTeam\Commerce\Domain\Model\Basket
-		 */
-		$basket = & $GLOBALS['TSFE']->fe_user->tx_commerce_basket;
+		$frontendController = $this->getFrontendController();
+
+		$basket = $this->getBasket();
 		$this->debug($basket, '$basket', __FILE__ . ' ' . __LINE__);
 
-		$listingForm = '<form name="listingForm" action="' . $this->pi_getPageLink($GLOBALS['TSFE']->id) . '" method="post">';
+		$listingForm = '<form name="listingForm" action="' . $this->pi_getPageLink($frontendController->id) . '" method="post">';
 
 		$nextStep = $this->getStepAfter($this->currentStep);
 
@@ -987,8 +992,7 @@ class CheckoutController extends BaseController {
 
 		if (!is_object($paymentObj)) {
 			$paymentType = $this->getPaymentType();
-			$config =
-				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['SYSPRODUCTS']['PAYMENT']['types'][strtolower((string) $paymentType)];
+			$config = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['SYSPRODUCTS']['PAYMENT']['types'][strtolower((string) $paymentType)];
 
 			if (!isset($config['class']) || !file_exists($config['path'])) {
 				throw new \Exception('FINISHING: FATAL! No payment possible because no payment handler is configured!', 1395665876);
@@ -1026,13 +1030,8 @@ class CheckoutController extends BaseController {
 		}
 
 		// Handle orders
-		$feUser = $this->getFrontendController()->fe_user;
-		/**
-		 * Basket
-		 *
-		 * @var $basket \CommerceTeam\Commerce\Domain\Model\Basket
-		 */
-		$basket = $feUser->tx_commerce_basket;
+		$feUser = $this->getFrontendUser();
+		$basket = $this->getBasket();
 
 		$hooks = HookFactory::getHooks('Controller/CheckoutController', 'finishIt');
 		foreach ($hooks as $hookObj) {
@@ -1197,13 +1196,8 @@ class CheckoutController extends BaseController {
 	 * @return string
 	 */
 	public function getOrderId() {
-		$feUser = $this->getFrontendController()->fe_user;
-		/**
-		 * Basket
-		 *
-		 * @var $basket \CommerceTeam\Commerce\Domain\Model\Basket
-		 */
-		$basket = $feUser->tx_commerce_basket;
+		$feUser = $this->getFrontendUser();
+		$basket = $this->getBasket();
 		$hooks = HookFactory::getHooks('Controller/CheckoutController', 'getInstanceOfTceMain');
 
 		$orderId = $feUser->getKey('ses', 'orderId');
@@ -1267,12 +1261,7 @@ class CheckoutController extends BaseController {
 		$result = TRUE;
 
 		if ($this->conf['useStockHandling'] == 1 AND $this->conf['checkStock'] == 1) {
-			/**
-			 * Basket
-			 *
-			 * @var $basket \CommerceTeam\Commerce\Domain\Model\Basket
-			 */
-			$basket = $GLOBALS['TSFE']->fe_user->tx_commerce_basket;
+			$basket = $this->getBasket();
 			if (is_array($basket->getBasketItems())) {
 				/**
 				 * Basket item
@@ -1313,12 +1302,7 @@ class CheckoutController extends BaseController {
 	 * @return string Basket sum
 	 */
 	public function getBasketSum($type = 'WEB') {
-		/**
-		 * Basket
-		 *
-		 * @var $basket \CommerceTeam\Commerce\Domain\Model\Basket
-		 */
-		$basket = $this->getFrontendController()->fe_user->tx_commerce_basket;
+		$basket = $this->getBasket();
 
 		$template = $this->cObj->getSubpart($this->templateCode, '###LISTING_BASKET_' . strtoupper($type) . '###');
 
@@ -1475,7 +1459,7 @@ class CheckoutController extends BaseController {
 						break;
 
 					case 'username':
-						if ($GLOBALS['TSFE']->loginUser) {
+						if ($this->getFrontendController()->loginUser) {
 							break;
 						}
 						if (!$this->checkUserName($value)) {
@@ -1565,19 +1549,15 @@ class CheckoutController extends BaseController {
 		$database = $this->getDatabaseConnection();
 
 		$table = 'fe_users';
-		$fields = 'uid';
-		$select = 'username = ' . $database->fullQuoteStr($username, $table) . ' ';
-		$select .= \TYPO3\CMS\Backend\Utility\BackendUtility::deleteClause($table);
-		$select .= ' AND pid = ' . $this->conf['userPID'];
 
-		$res = $database->exec_SELECTquery($fields, $table, $select);
-		$row = $database->sql_fetch_assoc($res);
+		$row = $database->exec_SELECTgetSingleRow(
+			'uid',
+			$table,
+			'username = ' . $database->fullQuoteStr($username, $table) . ' ' .
+				\TYPO3\CMS\Backend\Utility\BackendUtility::deleteClause($table) . ' AND pid = ' . $this->conf['userPID']
+		);
 
-		if (is_array($row) && count($row)) {
-			return FALSE;
-		}
-
-		return TRUE;
+		return is_array($row) && !empty($row) ? FALSE : TRUE;
 	}
 
 	/**
@@ -1628,12 +1608,7 @@ class CheckoutController extends BaseController {
 	 */
 	public function getPaymentFromRequest() {
 		if ($this->piVars['payArt']) {
-			/**
-			 * Basket
-			 *
-			 * @var $basket \CommerceTeam\Commerce\Domain\Model\Basket
-			 */
-			$basket = $GLOBALS['TSFE']->fe_user->tx_commerce_basket;
+			$basket = $this->getBasket();
 			$database = $this->getDatabaseConnection();
 
 			$paymentBasketItem = $basket->getCurrentPaymentBasketItem();
@@ -1643,7 +1618,7 @@ class CheckoutController extends BaseController {
 				|| !is_object($paymentBasketItem)
 			) {
 				$basket->removeCurrentPaymentArticle();
-				$GLOBALS['TSFE']->fe_user->setKey(
+				$this->getFrontendUser()->setKey(
 					'ses',
 					\CommerceTeam\Commerce\Utility\GeneralUtility::generateSessionKey('payment'),
 					$this->piVars['payArt']
@@ -1675,12 +1650,7 @@ class CheckoutController extends BaseController {
 	 *        if not $id is set, otherwise returns the id of the paymentarticle
 	 */
 	public function getPaymentType($id = FALSE) {
-		/**
-		 * Basket
-		 *
-		 * @var $basket \CommerceTeam\Commerce\Domain\Model\Basket
-		 */
-		$basket = $GLOBALS['TSFE']->fe_user->tx_commerce_basket;
+		$basket = $this->getBasket();
 		$payment = $basket->getArticlesByArticleTypeUidAsUidlist(PAYMENTARTICLETYPE);
 
 		if ($id) {
@@ -1769,7 +1739,7 @@ class CheckoutController extends BaseController {
 			$fieldCode .= $this->cObj->substituteMarkerArray($fieldCodeTemplate, $fieldMarkerArray);
 		}
 
-		$GLOBALS['TSFE']->fe_user->setKey(
+		$this->getFrontendUser()->setKey(
 			'ses', \CommerceTeam\Commerce\Utility\GeneralUtility::generateSessionKey('mails'), $this->sessionData['mails']
 		);
 
@@ -1802,7 +1772,7 @@ class CheckoutController extends BaseController {
 
 		// Check if a uid is set, so address handling can be used.
 		// Only possible if user is logged in
-		if ($this->sessionData[$type]['uid'] && $GLOBALS['TSFE']->loginUser) {
+		if ($this->sessionData[$type]['uid'] && $this->getFrontendController()->loginUser) {
 			$uid = $this->sessionData[$type]['uid'];
 		} else {
 			// Create
@@ -1814,8 +1784,8 @@ class CheckoutController extends BaseController {
 				$dataArray['pid'] = $commercePid;
 			}
 
-			if (isset($GLOBALS['TSFE']->fe_user->user['uid'])) {
-				$dataArray[$config['userConnection']] = $GLOBALS['TSFE']->fe_user->user['uid'];
+			if (isset($this->getFrontendUser()->user['uid'])) {
+				$dataArray[$config['userConnection']] = $this->getFrontendUser()->user['uid'];
 			} else {
 				// Create new user if no user is logged in and the option is set
 				if ($this->conf['createNewUsers']) {
@@ -1864,7 +1834,7 @@ class CheckoutController extends BaseController {
 
 					$dataArray[$config['userConnection']] = $database->sql_insert_id();
 
-					$GLOBALS['TSFE']->fe_user->user['uid'] = $dataArray[$config['userConnection']];
+					$this->getFrontendUser()->user['uid'] = $dataArray[$config['userConnection']];
 
 					foreach ($hooks as $hookObj) {
 						if (method_exists($hookObj, 'postProcessUserData')) {
@@ -2188,12 +2158,7 @@ class CheckoutController extends BaseController {
 			return $myCheck;
 		}
 
-		/**
-		 * Basket
-		 *
-		 * @var $basket \CommerceTeam\Commerce\Domain\Model\Basket
-		 */
-		$basket = $GLOBALS['TSFE']->fe_user->tx_commerce_basket;
+		$basket = $this->getBasket();
 
 		// Check if basket is empty
 		if (in_array('noarticles', $checks) && !$basket->getFirstArticleTypeTitle(NORMALARTICLETYPE)) {
@@ -2229,12 +2194,13 @@ class CheckoutController extends BaseController {
 	 */
 	public function sendUserMail($orderUid, array $orderData) {
 		$hooks = HookFactory::getHooks('Controller/CheckoutController', 'sendUserMail');
+		$frontendController = $this->getFrontendController();
 
 		if (strlen($this->sessionData['billing']['email'])) {
 			// If user has email in the formular, use this
 			$userMail = $this->sessionData['billing']['email'];
-		} elseif (is_array($GLOBALS['TSFE']->fe_user->user) && strlen($GLOBALS['TSFE']->fe_user->user['email'])) {
-			$userMail = $GLOBALS['TSFE']->fe_user->user['email'];
+		} elseif (is_array($this->getFrontendUser()->user) && strlen($this->getFrontendUser()->user['email'])) {
+			$userMail = $this->getFrontendUser()->user['email'];
 		} else {
 			return FALSE;
 		}
@@ -2275,12 +2241,7 @@ class CheckoutController extends BaseController {
 				$userMarker = array();
 				$mailcontent = $userMailObj->generateMail($orderUid, $orderData, $userMarker);
 
-				/**
-				 * Basket
-				 *
-				 * @var $basket \CommerceTeam\Commerce\Domain\Model\Basket
-				 */
-				$basket = $GLOBALS['TSFE']->fe_user->tx_commerce_basket;
+				$basket = $this->getBasket();
 				foreach ($hooks as $hookObj) {
 					if (method_exists($hookObj, 'PostGenerateMail')) {
 						$hookObj->PostGenerateMail($userMailObj, $this, $basket, $mailcontent);
@@ -2309,7 +2270,7 @@ class CheckoutController extends BaseController {
 				// Check if charset ist set by TS
 				// Otherwise set to default Charset
 				if (!$this->conf['usermail.']['charset']) {
-					$this->conf['usermail.']['charset'] = $GLOBALS['TSFE']->renderCharset;
+					$this->conf['usermail.']['charset'] = $frontendController->renderCharset;
 				}
 
 				// Checck if mailencoding ist set
@@ -2319,13 +2280,13 @@ class CheckoutController extends BaseController {
 				}
 
 				// Convert Text to charset
-				$GLOBALS['TSFE']->csConvObj->initCharset($GLOBALS['TSFE']->renderCharset);
-				$GLOBALS['TSFE']->csConvObj->initCharset(strtolower($this->conf['usermail.']['charset']));
-				$plainMessage = $GLOBALS['TSFE']->csConvObj->conv(
-					$plainMessage, $GLOBALS['TSFE']->renderCharset, strtolower($this->conf['usermail.']['charset'])
+				$frontendController->csConvObj->initCharset($frontendController->renderCharset);
+				$frontendController->csConvObj->initCharset(strtolower($this->conf['usermail.']['charset']));
+				$plainMessage = $frontendController->csConvObj->conv(
+					$plainMessage, $frontendController->renderCharset, strtolower($this->conf['usermail.']['charset'])
 				);
-				$subject = $GLOBALS['TSFE']->csConvObj->conv(
-					$subject, $GLOBALS['TSFE']->renderCharset, strtolower($this->conf['usermail.']['charset'])
+				$subject = $frontendController->csConvObj->conv(
+					$subject, $frontendController->renderCharset, strtolower($this->conf['usermail.']['charset'])
 				);
 
 				if ($this->debug) {
@@ -2384,15 +2345,16 @@ class CheckoutController extends BaseController {
 	 */
 	public function sendAdminMail($orderUid, array $orderData) {
 		$hooks = HookFactory::getHooks('Controller/CheckoutController', 'sendAdminMail');
+		$frontendController = $this->getFrontendController();
 
-		if (is_array($GLOBALS['TSFE']->fe_user->user && strlen($GLOBALS['TSFE']->fe_user->user['email']))) {
-			$userMail = $GLOBALS['TSFE']->fe_user->user['email'];
+		if (is_array($this->getFrontendUser()->user && strlen($this->getFrontendUser()->user['email']))) {
+			$userMail = $this->getFrontendUser()->user['email'];
 		} else {
 			$userMail = $this->sessionData['billing']['email'];
 		}
 
-		if (is_array($GLOBALS['TSFE']->fe_user->user && strlen($GLOBALS['TSFE']->fe_user->user['email']))) {
-			$userName = $GLOBALS['TSFE']->fe_user->user['name'] . ' ' . $GLOBALS['TSFE']->fe_user->user['surname'];
+		if (is_array($this->getFrontendUser()->user && strlen($this->getFrontendUser()->user['name']))) {
+			$userName = $this->getFrontendUser()->user['name'] . ' ' . $this->getFrontendUser()->user['surname'];
 		} else {
 			$userName = $this->sessionData['billing']['name'] . ' ' . $this->sessionData['billing']['surname'];
 		}
@@ -2423,12 +2385,7 @@ class CheckoutController extends BaseController {
 
 			$mailcontent = $adminMailObj->generateMail($orderUid, $orderData);
 
-			/**
-			 * Basket
-			 *
-			 * @var $basket \CommerceTeam\Commerce\Domain\Model\Basket
-			 */
-			$basket = & $GLOBALS['TSFE']->fe_user->tx_commerce_basket;
+			$basket = $this->getBasket();
 			foreach ($hooks as $hookObj) {
 				if (method_exists($hookObj, 'PostGenerateMail')) {
 					$hookObj->PostGenerateMail($adminMailObj, $this, $basket, $mailcontent, $this);
@@ -2458,7 +2415,7 @@ class CheckoutController extends BaseController {
 			// Check if charset ist set by TS
 			// Otherwise set to default Charset
 			if (!$this->conf['adminmail.']['charset']) {
-				$this->conf['adminmail.']['charset'] = $GLOBALS['TSFE']->renderCharset;
+				$this->conf['adminmail.']['charset'] = $frontendController->renderCharset;
 			}
 
 			// Checck if mailencoding ist set
@@ -2468,15 +2425,15 @@ class CheckoutController extends BaseController {
 			}
 
 			// Convert Text to charset
-			$GLOBALS['TSFE']->csConvObj->initCharset($GLOBALS['TSFE']->renderCharset);
-			$GLOBALS['TSFE']->csConvObj->initCharset(strtolower($this->conf['adminmail.']['charset']));
-			$plainMessage = $GLOBALS['TSFE']->csConvObj->conv(
-				$plainMessage, $GLOBALS['TSFE']->renderCharset, strtolower($this->conf['adminmail.']['charset'])
+			$frontendController->csConvObj->initCharset($frontendController->renderCharset);
+			$frontendController->csConvObj->initCharset(strtolower($this->conf['adminmail.']['charset']));
+			$plainMessage = $frontendController->csConvObj->conv(
+				$plainMessage, $frontendController->renderCharset, strtolower($this->conf['adminmail.']['charset'])
 			);
-			$subject = $GLOBALS['TSFE']->csConvObj->conv(
-				$subject, $GLOBALS['TSFE']->renderCharset, strtolower($this->conf['adminmail.']['charset'])
+			$subject = $frontendController->csConvObj->conv(
+				$subject, $frontendController->renderCharset, strtolower($this->conf['adminmail.']['charset'])
 			);
-			$usernameMailencoded = $GLOBALS['TSFE']->csConvObj->specCharsToASCII($GLOBALS['TSFE']->renderCharset, $userName);
+			$usernameMailencoded = $frontendController->csConvObj->specCharsToASCII($frontendController->renderCharset, $userName);
 
 			if ($this->debug) {
 				print '<b>Adminmail from </b><pre>' . $plainMessage . '</pre>' . LF;
@@ -2562,7 +2519,7 @@ class CheckoutController extends BaseController {
 		$content = $this->cObj->substituteSubpart($template, '###NEW_USER###', $templateUser);
 
 		$basketContent = $this->makeBasketView(
-			$GLOBALS['TSFE']->fe_user->tx_commerce_basket, '###BASKET_VIEW###',
+			$this->getBasket(), '###BASKET_VIEW###',
 			GeneralUtility::intExplode(',', $this->conf['regularArticleTypes']), array(
 				'###LISTING_ARTICLE###',
 				'###LISTING_ARTICLE2###'
@@ -2697,9 +2654,9 @@ class CheckoutController extends BaseController {
 
 		// create backend user for inserting the order data
 		$orderData = array();
-		$orderData['cust_deliveryaddress'] = ((isset($uids['delivery']) && !empty($uids['delivery'])) ?
+		$orderData['cust_deliveryaddress'] = (isset($uids['delivery']) && !empty($uids['delivery'])) ?
 			$uids['delivery'] :
-			$uids['billing']);
+			$uids['billing'];
 		$orderData['cust_invoice'] = $uids['billing'];
 		$orderData['paymenttype'] = $this->getPaymentType(TRUE);
 		$orderData['sum_price_net'] = $basket->getSumNet();
@@ -2712,8 +2669,8 @@ class CheckoutController extends BaseController {
 		$orderData['cu_iso_3_uid'] = $this->conf['currencyId'];
 		$orderData['comment'] = GeneralUtility::removeXSS(strip_tags($this->piVars['comment']));
 
-		if (is_array($GLOBALS['TSFE']->fe_user->user)) {
-			$orderData['cust_fe_user'] = $GLOBALS['TSFE']->fe_user->user['uid'];
+		if (is_array($this->getFrontendUser()->user)) {
+			$orderData['cust_fe_user'] = $this->getFrontendUser()->user['uid'];
 		}
 
 		// Get hook objects
@@ -2866,7 +2823,7 @@ class CheckoutController extends BaseController {
 	 * @return void
 	 */
 	protected function initializeBackendUser() {
-		if (!($GLOBALS['BE_USER'] instanceof \TYPO3\CMS\Core\Authentication\BackendUserAuthentication)) {
+		if (!($this->getBackendUser() instanceof \TYPO3\CMS\Core\Authentication\BackendUserAuthentication)) {
 			/**
 			 * Backend user
 			 *
@@ -2954,24 +2911,5 @@ class CheckoutController extends BaseController {
 		}
 
 		return $result;
-	}
-
-
-	/**
-	 * Get database connection
-	 *
-	 * @return \TYPO3\CMS\Core\Database\DatabaseConnection
-	 */
-	protected function getDatabaseConnection() {
-		return $GLOBALS['TYPO3_DB'];
-	}
-
-	/**
-	 * Get typoscript frontend controller
-	 *
-	 * @return \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController
-	 */
-	protected function getFrontendController() {
-		return $GLOBALS['TSFE'];
 	}
 }

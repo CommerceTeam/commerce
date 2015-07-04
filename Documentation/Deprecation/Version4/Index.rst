@@ -393,6 +393,7 @@ Removed hooks since 4.x
 	, , ['commerce/Classes/Controller/AddressesController.php']['saveAddress'], ['commerce/Controller/AddressesController']['saveAddress']
 	, getAddresses, ['commerce/pi4/class.tx_commerce_pi4.php']['getAddresses'], ['commerce/Controller/AddressesController']['getAddresses']
 	, , ['commerce/Classes/Controller/AddressesController.php']['getAddresses'], ['commerce/Controller/AddressesController']['getAddresses']
+	, getInputField, ['commerce/pi2/class.tx_commerce_pi2.php']['getInputField'], ['commerce/Controller/AddressesController']['getInputField']
 
 
 .. _\CommerceTeam\Commerce\Controller\BaseController_hooks:
@@ -582,6 +583,7 @@ Removed hooks since 4.x
 	, , ['commerce/Classes/Domain/Model/Basket.php']['loadDataFromDatabase'], ['commerce/Domain/Model/Basket']['loadDataFromDatabase']
 	, storeDataToDatabase, ['commerce/lib/class.tx_commerce_basket.php']['store_data_to_database'], ['commerce/Domain/Model/Basket']['storeDataToDatabase']
 	, , ['commerce/Classes/Domain/Model/Basket.php']['storeDataToDatabase'], ['commerce/Domain/Model/Basket']['storeDataToDatabase']
+	, loadPersistentDataFromDatabase, ['commerce/Classes/Domain/Model/Basket.php']['loadPersistantDataFromDatabase'], ['commerce/Domain/Model/Basket']['loadPersistentDataFromDatabase']
 
 
 .. _\CommerceTeam\Commerce\Domain\Model\Category_hooks:
@@ -745,3 +747,11 @@ Removed hooks since 4.x
 
 	\CommerceTeam\Commerce\ViewHelpers\TreelibTceforms, processItemArrayForBrowseableTreeDefault, ['commerce/treelib/class.tx_commerce_treelib_tceforms.php']['processItemArrayForBrowseableTreeDefault'], ['commerce/ViewHelpers/TreelibTceforms']['processItemArrayForBrowseableTreeDefault']
 	, , ['commerce/Classes/ViewHelpers/TreelibTceforms.php']['processItemArrayForBrowseableTreeDefault'], ['commerce/ViewHelpers/TreelibTceforms']['processItemArrayForBrowseableTreeDefault']
+
+
+.. _\CommerceTeam\Commerce\Tree\Leaf\MasterData_hooks:
+.. csv-table::
+	:header: Class, Method, Hook, Replacement
+	:widths: 25, 10, 35, 30
+
+	\CommerceTeam\Commerce\Tree\Leaf\MasterData, getRecordsByMountpoints, $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['commerce/class.leafMasterData.php']['getRecordsByMountpointsClass'], $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Tree/Leaf/MasterData']['getRecordsByMountpoints']

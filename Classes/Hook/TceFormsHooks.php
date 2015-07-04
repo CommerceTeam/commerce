@@ -13,6 +13,8 @@ namespace CommerceTeam\Commerce\Hook;
  * The TYPO3 project - inspiring people to share!
  */
 
+use CommerceTeam\Commerce\Factory\SettingsFactory;
+
 /**
  * Class \CommerceTeam\Commerce\Hook\TceFormsHooks
  *
@@ -39,7 +41,7 @@ class TceFormsHooks {
 	 * @return self
 	 */
 	public function __construct() {
-		$this->extconf = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf'];
+		$this->extconf = SettingsFactory::getInstance()->getExtConfComplete();
 	}
 
 	/**
@@ -53,28 +55,19 @@ class TceFormsHooks {
 	 * @return void
 	 */
 	public function getSingleField_preProcess($table, $field, &$row) {
-		if (
-			$table == 'tx_commerce_products'
-			&& $this->extconf['simpleMode'] == 1
-			&& $row['uid'] != $this->extconf['paymentID']
-			&& $row['uid'] != $this->extconf['deliveryID']
-			&& $row['l18n_parent'] != $this->extconf['paymentID']
-			&& $row['l18n_parent'] != $this->extconf['deliveryID']
-		) {
-			$this->lastMaxItems = $GLOBALS['TCA']['tx_commerce_products']['columns']['articles']['config']['maxitems'];
-			$GLOBALS['TCA']['tx_commerce_products']['columns']['articles']['config']['maxitems'] = 1;
-		} elseif (
-			$table == 'tx_commerce_products'
-			&& $this->extconf['simpleMode'] == 1
-			&& (
-				$row['uid'] == $this->extconf['paymentID']
-				|| $row['l18n_parent'] == $this->extconf['paymentID']
-				|| $row['l18n_parent'] == $this->extconf['deliveryID']
-			)
-		) {
-			$articlesArray = explode(',', $row['articles']);
-			$this->lastMaxItems = $GLOBALS['TCA']['tx_commerce_products']['columns']['articles']['config']['maxitems'];
-			$GLOBALS['TCA']['tx_commerce_products']['columns']['articles']['config']['maxitems'] = count($articlesArray);
+		if ($table == 'tx_commerce_products' && $this->extconf['simpleMode'] == 1) {
+			$this->lastMaxItems = SettingsFactory::getInstance()->getTcaValue('tx_commerce_products.columns.articles.config.maxitems');
+			$productColumns = & $GLOBALS['TCA']['tx_commerce_products']['columns'];
+
+			if ($row['uid'] != $this->extconf['paymentID']
+				&& $row['uid'] != $this->extconf['deliveryID']
+				&& $row['l18n_parent'] != $this->extconf['paymentID']
+				&& $row['l18n_parent'] != $this->extconf['deliveryID']
+			) {
+				$productColumns['articles']['config']['maxitems'] = 1;
+			} else {
+				$productColumns['articles']['config']['maxitems'] = count(explode(',', $row['articles']));
+			}
 		}
 
 		if ($table == 'tx_commerce_article_prices') {

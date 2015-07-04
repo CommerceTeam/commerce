@@ -84,7 +84,7 @@ class AddressesController extends BaseController {
 	public function main($content, array $conf = array()) {
 		$this->init($conf);
 
-		if (!$GLOBALS['TSFE']->loginUser) {
+		if (!$this->getFrontendController()->loginUser) {
 			return $this->noUser();
 		}
 
@@ -94,7 +94,7 @@ class AddressesController extends BaseController {
 			$formValid = FALSE;
 		}
 
-		if ($formValid && isset($this->piVars['check']) && (int)$this->piVars['backpid'] != $GLOBALS['TSFE']->id) {
+		if ($formValid && isset($this->piVars['check']) && (int)$this->piVars['backpid'] != $this->getFrontendController()->id) {
 			unset($this->piVars['check']);
 			header('Location: ' .
 				\TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl(
@@ -209,8 +209,8 @@ class AddressesController extends BaseController {
 		$this->templateCode = $this->cObj->fileResource($this->conf['templateFile']);
 
 		// Check for logged in user
-		if (!empty($GLOBALS['TSFE']->fe_user->user)) {
-			$this->user = $GLOBALS['TSFE']->fe_user->user;
+		if (!empty($this->getFrontendUser()->user)) {
+			$this->user = $this->getFrontendUser()->user;
 		}
 
 		if (isset($this->piVars['check']) && $this->piVars['action'] == 'edit' && $this->checkAddressForm()) {
@@ -379,10 +379,10 @@ class AddressesController extends BaseController {
 
 			// Create a pivars array for merging with link to edit page
 			if ($this->conf['editAddressPid'] > 0) {
-				$piArray = array('backpid' => $GLOBALS['TSFE']->id);
+				$piArray = array('backpid' => $this->getFrontendController()->id);
 				$linkTarget = $this->conf['editAddressPid'];
 			} else {
-				$piArray = array('backpid' => $GLOBALS['TSFE']->id);
+				$piArray = array('backpid' => $this->getFrontendController()->id);
 				$linkTarget = $this->conf['addressMgmPid'];
 			}
 
@@ -448,7 +448,7 @@ class AddressesController extends BaseController {
 
 		// Create a pivars array for merging with link to edit page
 		if ($this->conf['editAddressPid'] > 0) {
-			$piArray = array('backpid' => $GLOBALS['TSFE']->id);
+			$piArray = array('backpid' => $this->getFrontendController()->id);
 			$linkTarget = $this->conf['editAddressPid'];
 		} else {
 			$piArray = array();
@@ -677,7 +677,7 @@ class AddressesController extends BaseController {
 			'',
 			array(
 				'tx_commerce_pi3' => array(
-					'step' => $GLOBALS['TSFE']->fe_user->getKey(
+					'step' => $this->getFrontendUser()->getKey(
 						'ses',
 						\CommerceTeam\Commerce\Utility\GeneralUtility::generateSessionKey('currentStep')
 					)
@@ -805,13 +805,10 @@ class AddressesController extends BaseController {
 		/**
 		 * Hook for processing the content
 		 */
-		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['getInputField'])) {
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/pi2/class.tx_commerce_pi2.php']['getInputField'] as $classRef) {
-				$hookObj = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
-
-				if (method_exists($hookObj, 'postGetInputField')) {
-					$content = $hookObj->postGetInputField($content, $fieldName, $fieldConfig, $fieldValue, $this);
-				}
+		$hooks = HookFactory::getHooks('Controller/AddressesController', 'getInputField');
+		foreach ($hooks as $hook) {
+			if (method_exists($hook, 'postGetInputField')) {
+				$content = $hook->postGetInputField($content, $fieldName, $fieldConfig, $fieldValue, $this);
 			}
 		}
 
@@ -1091,7 +1088,7 @@ class AddressesController extends BaseController {
 			}
 
 			$sWhere = 'uid = ' . (int) $this->piVars['addressid'] . ' AND tx_commerce_fe_user_id = ' .
-				$GLOBALS['TSFE']->fe_user->user['uid'];
+				$this->getFrontendUser()->user['uid'];
 
 			$database->exec_UPDATEquery('tt_address', $sWhere, $newData);
 
@@ -1203,24 +1200,5 @@ class AddressesController extends BaseController {
 	 */
 	public function setFormError($fieldName, $errorMsg) {
 		$this->formError[$fieldName] = $errorMsg;
-	}
-
-
-	/**
-	 * Get database connection
-	 *
-	 * @return \TYPO3\CMS\Core\Database\DatabaseConnection
-	 */
-	protected function getDatabaseConnection() {
-		return $GLOBALS['TYPO3_DB'];
-	}
-
-	/**
-	 * Get typoscript frontend controller
-	 *
-	 * @return \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController
-	 */
-	protected function getFrontendController() {
-		return $GLOBALS['TSFE'];
 	}
 }

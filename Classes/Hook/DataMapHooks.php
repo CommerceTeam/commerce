@@ -14,6 +14,7 @@ namespace CommerceTeam\Commerce\Hook;
  */
 
 use CommerceTeam\Commerce\Domain\Repository\FolderRepository;
+use CommerceTeam\Commerce\Factory\SettingsFactory;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -188,14 +189,14 @@ class DataMapHooks {
 		}
 
 		// direct preview
-		if (isset($GLOBALS['_POST']['_savedokview_x'])) {
+		if (GeneralUtility::_POST('_savedokview_x')) {
 			// if "savedokview" has been pressed and  the beUser works in the LIVE workspace
 			// open current record in single view get page TSconfig
-			$pagesTypoScriptConfig = BackendUtility::getPagesTSconfig($GLOBALS['_POST']['popViewId']);
+			$pagesTypoScriptConfig = BackendUtility::getPagesTSconfig(GeneralUtility::_POST('popViewId'));
 			if ($pagesTypoScriptConfig['tx_commerce.']['singlePid']) {
 				$previewPageId = $pagesTypoScriptConfig['tx_commerce.']['singlePid'];
 			} else {
-				$previewPageId = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['previewPageID'];
+				$previewPageId = SettingsFactory::getInstance()->getExtConf('previewPageID');
 			}
 
 			if ($previewPageId > 0) {
@@ -1340,7 +1341,7 @@ class DataMapHooks {
 		$database = $this->getDatabaseConnection();
 
 		// create an article and a new price for a new product
-		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['simpleMode'] && $productId != NULL) {
+		if (SettingsFactory::getInstance()->getExtConf('simpleMode') && $productId != NULL) {
 			// search for an article of this product
 			$res = $database->exec_SELECTquery('*', 'tx_commerce_articles', 'uid_product = ' . $productId, '', '', 1);
 

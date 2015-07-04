@@ -13,6 +13,7 @@ namespace CommerceTeam\Commerce\Hook;
  * The TYPO3 project - inspiring people to share!
  */
 
+use CommerceTeam\Commerce\Factory\SettingsFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -74,19 +75,11 @@ class OrdermailHooks {
 	protected $tablename = 'tx_commerce_moveordermails';
 
 	/**
-	 * Containing the Module configurationoptions
-	 *
-	 * @var array
-	 */
-	protected $extConf;
-
-	/**
 	 * This is just a constructor to instanciate the backend library
 	 *
 	 * @return self
 	 */
 	public function __construct() {
-		$this->extConf = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf'];
 		$this->cObj = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
 		$this->csConvObj = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Charset\\CharsetConverter');
 		$this->templatePath = PATH_site . 'uploads/tx_commerce/';
@@ -180,10 +173,11 @@ class OrdermailHooks {
 			$this->templateCode = GeneralUtility::getURL($this->templatePath . $template['mailtemplate']);
 			$this->templateCodeHtml = GeneralUtility::getURL($this->templatePath . $template['htmltemplate']);
 
-			$senderemail = $template['senderemail'] == '' ? $this->extConf['defEmailAddress'] : $template['senderemail'];
+			$settingsFactory = SettingsFactory::getInstance();
+			$senderemail = $template['senderemail'] == '' ? $settingsFactory->getExtConf('defEmailAddress') : $template['senderemail'];
 			if ($template['sendername'] == '') {
-				if ($senderemail == $this->extConf['defEmailAddress']) {
-					$sendername = $this->extConf['defEmailSendername'];
+				if ($senderemail == $settingsFactory->getExtConf('defEmailAddress')) {
+					$sendername = $settingsFactory->getExtConf('defEmailSendername');
 				} else {
 					$sendername = $senderemail;
 				}

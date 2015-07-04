@@ -435,7 +435,7 @@ class Product extends AbstractEntity {
 		}
 
 		$where .= ' and article_type_uid=1';
-		$where .= $GLOBALS['TSFE']->sys_page->enableFields($table, $GLOBALS['TSFE']->showHiddenRecords);
+		$where .= $this->getFrontendController()->sys_page->enableFields($table, $this->getFrontendController()->showHiddenRecords);
 		$groupBy = '';
 		$orderBy = 'sorting';
 		$limit = '';
@@ -642,7 +642,7 @@ class Product extends AbstractEntity {
 					$localizedArticleUid = $database->exec_SELECTgetRows(
 						'uid', $parentTable,
 						'l18n_parent=' . $attributeDataRow['parent_uid'] . ' AND sys_language_uid=' . $this->lang_uid .
-						$this->getFrontendController()->sys_page->enableFields($parentTable, $GLOBALS['TSFE']->showHiddenRecords)
+						$this->getFrontendController()->sys_page->enableFields($parentTable, $this->getFrontendController()->showHiddenRecords)
 					);
 
 					// Fetch the article-attribute mm record with localized article uid
@@ -695,7 +695,7 @@ class Product extends AbstractEntity {
 					// Value lists must be localized.
 					// So overwrite current row with localization record
 					if ($this->lang_uid > 0) {
-						$valueListArrayRow = $GLOBALS['TSFE']->sys_page->getRecordOverlay(
+						$valueListArrayRow = $this->getFrontendController()->sys_page->getRecordOverlay(
 							'tx_commerce_attribute_values', $valueListArrayRow, $this->lang_uid, $this->translationMode
 						);
 					}
@@ -820,11 +820,11 @@ class Product extends AbstractEntity {
 		}
 
 		// Get enabled rows only
-		$selectWhere[] = ' 1 ' . $GLOBALS['TSFE']->sys_page->enableFields(
-			'tx_commerce_attributes', $GLOBALS['TSFE']->showHiddenRecords
+		$selectWhere[] = ' 1 ' . $this->getFrontendController()->sys_page->enableFields(
+			'tx_commerce_attributes', $this->getFrontendController()->showHiddenRecords
 		);
-		$selectWhere[] = ' 1 ' . $GLOBALS['TSFE']->sys_page->enableFields(
-			$parentTable, $GLOBALS['TSFE']->showHiddenRecords
+		$selectWhere[] = ' 1 ' . $this->getFrontendController()->sys_page->enableFields(
+			$parentTable, $this->getFrontendController()->showHiddenRecords
 		);
 
 		// Order rows by given sorting table
@@ -1068,9 +1068,9 @@ class Product extends AbstractEntity {
 					// Language overlay
 					if ($this->lang_uid > 0) {
 						$proofSql = '';
-						if (is_object($GLOBALS['TSFE']->sys_page)) {
-							$proofSql = $GLOBALS['TSFE']->sys_page->enableFields(
-								'tx_commerce_attributes', $GLOBALS['TSFE']->showHiddenRecords
+						if (is_object($this->getFrontendController()->sys_page)) {
+							$proofSql = $this->getFrontendController()->sys_page->enableFields(
+								'tx_commerce_attributes', $this->getFrontendController()->showHiddenRecords
 							);
 						}
 						$attributeResult = $database->exec_SELECTquery(
@@ -1080,7 +1080,7 @@ class Product extends AbstractEntity {
 						// Result should contain only one Dataset
 						if ($database->sql_num_rows($attributeResult) == 1) {
 							$attributeData = $database->sql_fetch_assoc($attributeResult);
-							$attributeData = $GLOBALS['TSFE']->sys_page->getRecordOverlay(
+							$attributeData = $this->getFrontendController()->sys_page->getRecordOverlay(
 								'tx_commerce_attributes', $attributeData, $this->lang_uid, $this->translationMode
 							);
 
@@ -1123,14 +1123,14 @@ class Product extends AbstractEntity {
 								);
 								$row = $database->sql_fetch_assoc($resvalue);
 								if ($this->lang_uid > 0) {
-									$row = $GLOBALS['TSFE']->sys_page->getRecordOverlay(
+									$row = $this->getFrontendController()->sys_page->getRecordOverlay(
 										'tx_commerce_attribute_values', $row, $this->lang_uid, $this->translationMode
 									);
 									if (!is_array($row)) {
 										continue;
 									}
 								}
-								if (($showHiddenValues == TRUE) || (($showHiddenValues == FALSE) && ($row['showvalue'] == 1))) {
+								if (($showHiddenValues == TRUE) || ($showHiddenValues == FALSE && $row['showvalue'] == 1)) {
 									$valuelist[$row['uid']] = $row;
 									$valueshown = TRUE;
 								}
@@ -1344,7 +1344,7 @@ class Product extends AbstractEntity {
 			$uidToLoadFrom = $this->uid;
 			if (
 				$this->getT3verOid() > 0 && $this->getT3verOid() <> $this->uid &&
-				(is_Object($GLOBALS['TSFE']) && $GLOBALS['TSFE']->beUserLogin)
+				(is_Object($this->getFrontendController()) && $this->getFrontendController()->beUserLogin)
 			) {
 				$uidToLoadFrom = $this->getT3verOid();
 			}

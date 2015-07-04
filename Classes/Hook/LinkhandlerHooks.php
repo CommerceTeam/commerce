@@ -13,6 +13,7 @@ namespace CommerceTeam\Commerce\Hook;
  * The TYPO3 project - inspiring people to share!
  */
 
+use CommerceTeam\Commerce\Factory\SettingsFactory;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 /**
@@ -77,9 +78,9 @@ class LinkhandlerHooks {
 		 */
 		$localcObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
 
-		$displayPageId = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_commerce_pi1.']['overridePid'];
+		$displayPageId = $this->getFrontendController()->tmpl->setup['plugin.']['tx_commerce_pi1.']['overridePid'];
 		if (empty($displayPageId)) {
-			$displayPageId = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['previewPageID'];
+			$displayPageId = SettingsFactory::getInstance()->getExtConf('previewPageID');
 		}
 
 		// remove the first param of '$link_param' (this is the page id wich is
@@ -103,5 +104,15 @@ class LinkhandlerHooks {
 		$lconf['additionalParams'] .= $addparams;
 
 		return $localcObj->typoLink($linktxt, $lconf);
+	}
+
+
+	/**
+	 * Get typoscript frontend controller
+	 *
+	 * @return \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController
+	 */
+	protected function getFrontendController() {
+		return $GLOBALS['TSFE'];
 	}
 }

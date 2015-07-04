@@ -12,7 +12,9 @@ namespace CommerceTeam\Commerce\Domain\Model;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
 use CommerceTeam\Commerce\Factory\HookFactory;
+use CommerceTeam\Commerce\Factory\SettingsFactory;
 
 /**
  * Frontend library for handling the basket. This class should be used
@@ -47,13 +49,6 @@ class Basket extends BasicBasket {
 	protected $sessionId = '';
 
 	/**
-	 * The unserialized commerce configuration
-	 *
-	 * @var array
-	 */
-	protected $extensionConfigration = array();
-
-	/**
 	 * Flag if already loaded
 	 *
 	 * @var bool
@@ -67,8 +62,7 @@ class Basket extends BasicBasket {
 	 * @return self
 	 */
 	public function __construct() {
-		$this->extensionConfigration = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['commerce']);
-		if ($this->extensionConfigration['basketType'] == 'persistent') {
+		if (SettingsFactory::getInstance()->getExtConf('basketType') == 'persistent') {
 			$this->storageType = 'persistent';
 		}
 	}
@@ -102,8 +96,8 @@ class Basket extends BasicBasket {
 	public function finishOrder() {
 		switch ($this->storageType) {
 			case 'persistent':
-				$GLOBALS['TSFE']->fe_user->setKey('ses', 'txCommercePersistantSessionId', '');
-				$GLOBALS['TSFE']->fe_user->storeSessionData();
+				$this->getFrontendUser()->setKey('ses', 'txCommercePersistantSessionId', '');
+				$this->getFrontendUser()->storeSessionData();
 				$this->finishOrderInDatabase();
 				break;
 
@@ -189,8 +183,8 @@ class Basket extends BasicBasket {
 	 */
 	protected function loadDataFromDatabase() {
 		$where = '';
-		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['BasketStoragePid'] > 0) {
-			$where .= ' AND pid = ' . $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['BasketStoragePid'];
+		if (SettingsFactory::getInstance()->getExtConf('BasketStoragePid') > 0) {
+			$where .= ' AND pid = ' . SettingsFactory::getInstance()->getExtConf('BasketStoragePid');
 		}
 
 		$database = $this->getDatabaseConnection();
@@ -247,7 +241,7 @@ class Basket extends BasicBasket {
 			'*',
 			'tx_commerce_baskets',
 			'sid = ' . $database->fullQuoteStr($sessionId, 'tx_commerce_baskets') . ' AND finished_time = 0 AND pid = ' .
-				$this->extensionConfigration['BasketStoragePid'],
+				SettingsFactory::getInstance()->getExtConf('BasketStoragePid'),
 			'',
 			'pos'
 		);
@@ -277,12 +271,12 @@ class Basket extends BasicBasket {
 	 * @return void
 	 */
 	private function restoreBasket() {
-		if ($GLOBALS['TSFE']->fe_user->user) {
-			$userSessionId = $GLOBALS['TSFE']->fe_user->getKey('user', 'txCommercePersistantSessionId');
+		if ($$this->getFrontendUser()->user) {
+			$userSessionId = $this->getFrontendUser()->getKey('user', 'txCommercePersistantSessionId');
 			if ($userSessionId && $userSessionId != $this->sessionId) {
 				$this->loadPersistentDataFromDatabase($userSessionId);
 				$this->loadDataFromDatabase();
-				$GLOBALS['TSFE']->fe_user->setKey('user', 'txCommercePersistantSessionId', $this->sessionId);
+				$this->getFrontendUser()->setKey('user', 'txCommercePersistantSessionId', $this->sessionId);
 				$this->storeDataToDatabase();
 			} else {
 				$this->loadDataFromDatabase();
@@ -338,7 +332,7 @@ class Basket extends BasicBasket {
 		 */
 		foreach ($this->basketItems as $oneuid => $oneItem) {
 			$insertData = array();
-			$insertData['pid'] = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['BasketStoragePid'];
+			$insertData['pid'] = SettingsFactory::getInstance()->getExtConf('BasketStoragePid');
 			$insertData['pos'] = $arBasketItemsKeys[$oneuid];
 			$insertData['sid'] = $this->sessionId;
 			$insertData['article_id'] = $oneItem->getArticleUid();
@@ -381,5 +375,23 @@ class Basket extends BasicBasket {
 	 */
 	protected function getDatabaseConnection() {
 		return $GLOBALS['TYPO3_DB'];
+	}
+
+	/**
+	 * Get typoscript frontend controller
+	 *
+	 * @return \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController
+	 */
+	protected function getFrontendController() {
+		return $GLOBALS['TSFE'];
+	}
+
+	/**
+	 * Get frontend user
+	 *
+	 * @return \TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication
+	 */
+	protected function getFrontendUser() {
+		return $this->getFrontendController()->fe_user;
 	}
 }

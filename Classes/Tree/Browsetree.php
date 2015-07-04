@@ -518,7 +518,7 @@ abstract class Browsetree {
 	 */
 	protected function initializePositionSaving() {
 		// Get stored tree structure:
-		$positions = unserialize($GLOBALS['BE_USER']->uc['browseTrees'][$this->treeName]);
+		$positions = unserialize($this->getBackendUser()->uc['browseTrees'][$this->treeName]);
 
 		// In case the array is not set, initialize it
 		if (!is_array($positions) || 0 >= count($positions) || key($positions[0][key($positions[0])]) !== 'items') {

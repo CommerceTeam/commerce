@@ -94,15 +94,15 @@ class OrdersModuleController extends \TYPO3\CMS\Recordlist\RecordList {
 	 */
 	public function initPage() {
 		$this->doc = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
-		$this->doc->backPath = $GLOBALS['BACK_PATH'];
+		$this->doc->backPath = $this->getBackPath();
 		$this->doc->docType = 'xhtml_trans';
 		$this->doc->setModuleTemplate(PATH_TXCOMMERCE . 'Resources/Private/Backend/mod_index.html');
 
 		if (!$this->doc->moduleTemplate) {
 			GeneralUtility::devLog('cannot set moduleTemplate', 'commerce', 2, array(
-				'backpath' => $this->doc->backPath,
+				'backpath' => $this->getBackPath(),
 				'filename from TBE_STYLES' => $GLOBALS['TBE_STYLES']['htmlTemplates']['commerce/Resources/Private/Backend/mod_index.html'],
-				'full path' => $this->doc->backPath .
+				'full path' => $this->getBackPath() .
 					$GLOBALS['TBE_STYLES']['htmlTemplates']['commerce/Resources/Private/Backend/mod_index.html']
 			));
 			$templateFile = PATH_TXCOMMERCE_REL . 'Resources/Private/Backend/mod_index.html';
@@ -150,7 +150,7 @@ class OrdersModuleController extends \TYPO3\CMS\Recordlist\RecordList {
 		 * @var $dblist \CommerceTeam\Commerce\ViewHelpers\OrderRecordList
 		 */
 		$dblist = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\ViewHelpers\\OrderRecordList');
-		$dblist->backPath = $GLOBALS['BACK_PATH'];
+		$dblist->backPath = $this->getBackPath();
 		$dblist->script = BackendUtility::getModuleUrl('txcommerceM1_orders', array(), '');
 		$dblist->calcPerms = $this->getBackendUser()->calcPerms($this->pageinfo);
 		$dblist->thumbs = $this->getBackendUser()->uc['thumbnailsByDefault'];
@@ -291,7 +291,7 @@ class OrdersModuleController extends \TYPO3\CMS\Recordlist\RecordList {
 				' . $this->doc->redirectUrls($listUrl) . '
 				' . $dblist->CBfunctions() . '
 				function editRecords(table, idList, addParams, CBflag) {
-					window.location.href = "' . $GLOBALS['BACK_PATH'] . 'alt_doc.php?returnUrl=' .
+					window.location.href = "' . $this->getBackPath() . 'alt_doc.php?returnUrl=' .
 					rawurlencode(GeneralUtility::getIndpEnv('REQUEST_URI')) . '&edit[" + table + "][" + idList + "]=edit" + addParams;
 				}
 				function editList(table,idList) {	//
@@ -432,7 +432,7 @@ class OrdersModuleController extends \TYPO3\CMS\Recordlist\RecordList {
 		$language = $this->getLanguageService();
 
 		// CSH
-		$buttons['csh'] = BackendUtility::cshItem('_MOD_commerce_orders', '', $GLOBALS['BACK_PATH'], '', TRUE);
+		$buttons['csh'] = BackendUtility::cshItem('_MOD_commerce_orders', '', $this->getBackPath(), '', TRUE);
 
 		// Shortcut
 		if ($backendUser->mayMakeShortcut()) {
@@ -445,7 +445,7 @@ class OrdersModuleController extends \TYPO3\CMS\Recordlist\RecordList {
 
 		// If access to Web>List for user, then link to that module.
 		if ($backendUser->check('modules', 'web_list')) {
-			$href = $GLOBALS['BACK_PATH'] . 'db_list.php?id=' . $this->pageinfo['uid'] . '&returnUrl=' .
+			$href = $this->getBackPath() . 'db_list.php?id=' . $this->pageinfo['uid'] . '&returnUrl=' .
 				rawurlencode(GeneralUtility::getIndpEnv('REQUEST_URI'));
 			$buttons['record_list'] = '<a href="' . htmlspecialchars($href) . '">' .
 				\TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon(
@@ -473,5 +473,14 @@ class OrdersModuleController extends \TYPO3\CMS\Recordlist\RecordList {
 	 */
 	protected function getLanguageService() {
 		return $GLOBALS['LANG'];
+	}
+
+	/**
+	 * Get back path
+	 *
+	 * @return string
+	 */
+	protected function getBackPath() {
+		return $GLOBALS['BACK_PATH'];
 	}
 }

@@ -14,6 +14,7 @@ namespace CommerceTeam\Commerce\Controller;
  */
 
 use CommerceTeam\Commerce\Domain\Repository\FolderRepository;
+use CommerceTeam\Commerce\Factory\SettingsFactory;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Backend\Utility\IconUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -95,15 +96,15 @@ class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptCla
 		$this->pageRow = BackendUtility::readPageAccess($this->id, $this->perms_clause);
 
 		$this->doc = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
-		$this->doc->backPath = $GLOBALS['BACK_PATH'];
+		$this->doc->backPath = $this->getBackPath();
 		$this->doc->docType = 'xhtml_trans';
 		$this->doc->setModuleTemplate(PATH_TXCOMMERCE . 'Resources/Private/Backend/mod_index.html');
 
 		if (!$this->doc->moduleTemplate) {
 			GeneralUtility::devLog('cannot set moduleTemplate', 'commerce', 2, array(
-				'backpath' => $this->doc->backPath,
+				'backpath' => $this->getBackPath(),
 				'filename from TBE_STYLES' => $GLOBALS['TBE_STYLES']['htmlTemplates']['mod_index.html'],
-				'full path' => $this->doc->backPath . $GLOBALS['TBE_STYLES']['htmlTemplates']['mod_index.html']
+				'full path' => $this->getBackPath() . $GLOBALS['TBE_STYLES']['htmlTemplates']['mod_index.html']
 			));
 			$templateFile = PATH_TXCOMMERCE_REL . 'Resources/Private/Backend/mod_index.html';
 			$this->doc->moduleTemplate = GeneralUtility::getURL(PATH_site . $templateFile);
@@ -134,8 +135,8 @@ class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptCla
 	public function main() {
 		$listUrl = GeneralUtility::getIndpEnv('REQUEST_URI');
 
-			// Access check!
-			// The page will show only if there is a valid page and if user may access it
+		// Access check!
+		// The page will show only if there is a valid page and if user may access it
 		if ($this->id && (is_array($this->pageRow) ? 1 : 0)) {
 				// JavaScript
 			$this->doc->JScode = $this->doc->wrapScriptTags('
@@ -143,12 +144,11 @@ class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptCla
 				function jumpToUrl(URL) {
 					document.location = URL;
 				}
-				function deleteRecord(table,id,url,warning) {
+				function deleteRecord(table, id, url, warning) {
 					if (
 						confirm(eval(warning))
 					)	{
-						window.location.href = "' . $this->doc->backPath .
-							'tce_db.php?cmd["+table+"]["+id+"][delete]=1&redirect="+escape(url);
+						window.location.href = "' . $this->getBackPath() . 'tce_db.php?cmd["+table+"]["+id+"][delete]=1&redirect="+escape(url);
 					}
 					return false;
 				}
@@ -223,17 +223,17 @@ class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptCla
 
 			// CSH
 		if (!strlen($this->id)) {
-			$buttons['csh'] = BackendUtility::cshItem('_MOD_web_txcommerceM1', 'list_module_noId', $GLOBALS['BACK_PATH'], '', TRUE);
+			$buttons['csh'] = BackendUtility::cshItem('_MOD_web_txcommerceM1', 'list_module_noId', $this->getBackPath(), '', TRUE);
 		} elseif (!$this->id) {
-			$buttons['csh'] = BackendUtility::cshItem('_MOD_web_txcommerceM1', 'list_module_root', $GLOBALS['BACK_PATH'], '', TRUE);
+			$buttons['csh'] = BackendUtility::cshItem('_MOD_web_txcommerceM1', 'list_module_root', $this->getBackPath(), '', TRUE);
 		} else {
-			$buttons['csh'] = BackendUtility::cshItem('_MOD_web_txcommerceM1', 'list_module', $GLOBALS['BACK_PATH'], '', TRUE);
+			$buttons['csh'] = BackendUtility::cshItem('_MOD_web_txcommerceM1', 'list_module', $this->getBackPath(), '', TRUE);
 		}
 
 		// New
 		$newParams = '&edit[tx_commerce_' . $this->tableForNewLink . '][' . (int) $this->modPid . ']=new';
 		$buttons['new_record'] = '<a href="#" onclick="' .
-			htmlspecialchars(BackendUtility::editOnClick($newParams, $GLOBALS['BACK_PATH'], -1)) .
+			htmlspecialchars(BackendUtility::editOnClick($newParams, $this->getBackPath(), -1)) .
 			'" title="' . $this->getLanguageService()->getLL('create_' . $this->tableForNewLink) . '">' .
 			IconUtility::getSpriteIcon('actions-document-new') .
 			'</a>';
@@ -355,7 +355,7 @@ class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptCla
 		 * @var \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordList $recordList
 		 */
 		$recordList = GeneralUtility::makeInstance('TYPO3\\CMS\\Recordlist\\RecordList\\DatabaseRecordList');
-		$recordList->backPath = $this->doc->backPath;
+		$recordList->backPath = $this->getBackPath();
 		$recordList->initializeLanguages();
 
 		$output = '';
@@ -374,7 +374,7 @@ class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptCla
 			$deleteParams = '&cmd[' . $table . '][' . (int) $attribute['uid'] . '][delete]=1';
 
 			$output .= '<tr><td class="bgColor4" align="center" valign="top"> ' .
-				BackendUtility::thumbCode($attribute, 'tx_commerce_attributes', 'icon', $this->doc->backPath) . '</td>';
+				BackendUtility::thumbCode($attribute, 'tx_commerce_attributes', 'icon', $this->getBackPath()) . '</td>';
 			if ($attribute['internal_title']) {
 				$output .= '<td valign="top" class="bgColor4"><strong>' . htmlspecialchars($attribute['internal_title']) . '</strong> (' .
 					htmlspecialchars($attribute['title']) . ')';
@@ -410,7 +410,7 @@ class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptCla
 			$output .= ' <strong>' . $language->getLL('products') . '</strong>: ' . $proCount;
 			$output .= '</td>';
 
-			$onClickAction = 'onclick="' . htmlspecialchars(BackendUtility::editOnClick($editParams, $this->doc->backPath, -1)) . '"';
+			$onClickAction = 'onclick="' . htmlspecialchars(BackendUtility::editOnClick($editParams, $this->getBackPath(), -1)) . '"';
 
 			$output .= '<td><a href="#" ' . $onClickAction . '>' .
 				IconUtility::getSpriteIcon('actions-document-open', array('title' => $language->getLL('edit', TRUE))) . '</a>';
@@ -456,7 +456,7 @@ class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptCla
 	 * @return string
 	 */
 	protected function getManufacturerListing() {
-		$fields = explode(',', $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['coManufacturers']);
+		$fields = explode(',', SettingsFactory::getInstance()->getExtConf('coManufacturers'));
 
 		$headerRow = '<tr><td></td>';
 		foreach ($fields as $field) {
@@ -499,7 +499,7 @@ class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptCla
 			$editParams = '&edit[' . $table . '][' . (int) $row['uid'] . ']=edit';
 			$deleteParams = '&cmd[' . $table . '][' . (int) $row['uid'] . '][delete]=1';
 
-			$onClickAction = 'onclick="' . htmlspecialchars(BackendUtility::editOnClick($editParams, $this->doc->backPath, -1)) . '"';
+			$onClickAction = 'onclick="' . htmlspecialchars(BackendUtility::editOnClick($editParams, $this->getBackPath(), -1)) . '"';
 
 			$output .= '<tr><td><a href="#" ' . $onClickAction . '>' .
 				IconUtility::getSpriteIcon('actions-document-open', array('title' => $language->getLL('edit', TRUE))) . '</a>';
@@ -527,7 +527,7 @@ class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptCla
 	 * @return string
 	 */
 	protected function getSupplierListing() {
-		$fields = explode(',', $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['coSuppliers']);
+		$fields = explode(',', SettingsFactory::getInstance()->getExtConf('coSuppliers'));
 
 		$headerRow = '<tr><td></td>';
 		foreach ($fields as $field) {
@@ -568,7 +568,7 @@ class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptCla
 			$editParams = '&edit[' . $table . '][' . (int) $row['uid'] . ']=edit';
 			$deleteParams = '&cmd[' . $table . '][' . (int) $row['uid'] . '][delete]=1';
 
-			$onClickAction = 'onclick="' . htmlspecialchars(BackendUtility::editOnClick($editParams, $this->doc->backPath, -1)) . '"';
+			$onClickAction = 'onclick="' . htmlspecialchars(BackendUtility::editOnClick($editParams, $this->getBackPath(), -1)) . '"';
 
 			$output .= '<tr><td><a href="#" ' . $onClickAction . '>' .
 				IconUtility::getSpriteIcon('actions-document-open', array('title' => $language->getLL('edit', TRUE))) . '</a>';
@@ -677,5 +677,14 @@ class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptCla
 	 */
 	protected function getBackendUser() {
 		return $GLOBALS['BE_USER'];
+	}
+
+	/**
+	 * Get back path
+	 *
+	 * @return string
+	 */
+	protected function getBackPath() {
+		return $GLOBALS['BACK_PATH'];
 	}
 }

@@ -55,7 +55,7 @@ class SystemdataViewHelper extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 		 */
 		$doc = GeneralUtility::makeInstance('\TYPO3\CMS\Backend\Template\DocumentTemplate');
 		$this->doc = $doc;
-		$this->doc->backPath = $GLOBALS['BACK_PATH'];
+		$this->doc->backPath = $this->getBackPath();
 		$this->doc->setModuleTemplate('EXT:commerce/Resources/Private/Backend/mod_systemdata_navigation.html');
 		$this->doc->showFlashMessages = FALSE;
 
@@ -147,9 +147,19 @@ class SystemdataViewHelper extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 		$buttons['csh'] = str_replace(
 			'typo3-csh-inline',
 			'typo3-csh-inline show-right',
-			BackendUtility::cshItem('xMOD_csh_commercebe', 'systemdata', $this->doc->backPath)
+			BackendUtility::cshItem('xMOD_csh_commercebe', 'systemdata', $this->getBackPath())
 		);
 
 		return $buttons;
+	}
+
+
+	/**
+	 * Get back path
+	 *
+	 * @return string
+	 */
+	protected function getBackPath() {
+		return $GLOBALS['BACK_PATH'];
 	}
 }

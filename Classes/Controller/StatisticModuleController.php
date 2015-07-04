@@ -13,6 +13,8 @@ namespace CommerceTeam\Commerce\Controller;
  * The TYPO3 project - inspiring people to share!
  */
 
+use CommerceTeam\Commerce\Factory\SettingsFactory;
+
 /**
  * Module 'Statistics' for the 'commerce' extension.
  *
@@ -74,7 +76,7 @@ class StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClas
 		$language->includeLLFile('EXT:lang/locallang_mod_web_list.php');
 
 		parent::init();
-		$this->extConf = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf'];
+		$this->extConf = SettingsFactory::getInstance()->getExtConfComplete();
 
 		$this->excludePids = $this->extConf['excludeStatisticFolders'] != '' ? $this->extConf['excludeStatisticFolders'] : 0;
 
@@ -94,15 +96,15 @@ class StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClas
 		}
 
 		$this->doc = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
-		$this->doc->backPath = $GLOBALS['BACK_PATH'];
+		$this->doc->backPath = $this->getBackPath();
 		$this->doc->docType = 'xhtml_trans';
 		$this->doc->setModuleTemplate(PATH_TXCOMMERCE . 'Resources/Private/Backend/mod_index.html');
 
 		if (!$this->doc->moduleTemplate) {
 			\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('cannot set moduleTemplate', 'commerce', 2, array(
-				'backpath' => $this->doc->backPath,
+				'backpath' => $this->getBackPath(),
 				'filename from TBE_STYLES' => $GLOBALS['TBE_STYLES']['htmlTemplates']['mod_index.html'],
-				'full path' => $this->doc->backPath . $GLOBALS['TBE_STYLES']['htmlTemplates']['mod_index.html']
+				'full path' => $this->getBackPath() . $GLOBALS['TBE_STYLES']['htmlTemplates']['mod_index.html']
 			));
 			$templateFile = PATH_TXCOMMERCE_REL . 'Resources/Private/Backend/mod_index.html';
 			$this->doc->moduleTemplate = \TYPO3\CMS\Core\Utility\GeneralUtility::getURL(PATH_site . $templateFile);
@@ -133,7 +135,7 @@ class StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClas
 	public function menuConfig() {
 		$language = $this->getLanguageService();
 
-		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['allowAggregation'] == 1) {
+		if (SettingsFactory::getInstance()->getExtConf('allowAggregation') == 1) {
 			$this->MOD_MENU = array(
 				'function' => array(
 					'1' => $language->getLL('statistics'),
@@ -263,7 +265,7 @@ class StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClas
 
 		// CSH
 		$buttons['csh'] = \TYPO3\CMS\Backend\Utility\BackendUtility::cshItem(
-			'_MOD_commerce_statistic', '', $GLOBALS['BACK_PATH'], '', TRUE
+			'_MOD_commerce_statistic', '', $this->getBackPath(), '', TRUE
 		);
 
 		// Shortcut
@@ -277,7 +279,7 @@ class StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClas
 
 		// If access to Web>List for user, then link to that module.
 		if ($backendUser->check('modules', 'web_list')) {
-			$href = $GLOBALS['BACK_PATH'] . 'db_list.php?id=' . $this->pageinfo['uid'] . '&returnUrl=' .
+			$href = $this->getBackPath() . 'db_list.php?id=' . $this->pageinfo['uid'] . '&returnUrl=' .
 				rawurlencode(\TYPO3\CMS\Core\Utility\GeneralUtility::getIndpEnv('REQUEST_URI'));
 			$buttons['record_list'] = '<a href="' . htmlspecialchars($href) . '">' .
 				\TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon(
@@ -605,5 +607,14 @@ class StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClas
 	 */
 	protected function getLanguageService() {
 		return $GLOBALS['LANG'];
+	}
+
+	/**
+	 * Get back path
+	 *
+	 * @return string
+	 */
+	protected function getBackPath() {
+		return $GLOBALS['BACK_PATH'];
 	}
 }

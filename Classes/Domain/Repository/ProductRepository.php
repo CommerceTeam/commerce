@@ -78,7 +78,10 @@ class ProductRepository extends Repository {
 				$localOrderField = $hookObject->articleOrder($this->orderField);
 			}
 
-			$where = 'uid_product = ' . $uid . $this->enableFields('tx_commerce_articles', $GLOBALS['TSFE']->showHiddenRecords);
+			$where = 'uid_product = ' . $uid . $this->enableFields(
+				'tx_commerce_articles',
+				$this->getFrontendController()->showHiddenRecords
+			);
 			$additionalWhere = '';
 
 			if (is_object($hookObject) && method_exists($hookObject, 'additionalWhere')) {
@@ -256,15 +259,5 @@ class ProductRepository extends Repository {
 		);
 
 		return is_array($row) && isset($row['title']) ? $row['title'] : '';
-	}
-
-
-	/**
-	 * Get database connection
-	 *
-	 * @return \TYPO3\CMS\Dbal\Database\DatabaseConnection
-	 */
-	protected function getDatabaseConnection() {
-		return $GLOBALS['TYPO3_DB'];
 	}
 }

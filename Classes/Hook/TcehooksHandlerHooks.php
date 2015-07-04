@@ -13,6 +13,7 @@ namespace CommerceTeam\Commerce\Hook;
  * The TYPO3 project - inspiring people to share!
  */
 
+use CommerceTeam\Commerce\Factory\SettingsFactory;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 
 /**
@@ -106,7 +107,7 @@ class TcehooksHandlerHooks {
 
 		if (
 			$table == 'tx_commerce_articles'
-			&& $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['simpleMode']
+			&& SettingsFactory::getInstance()->getExtConf('simpleMode')
 			&& ($articleId = $pObj->substNEWwithIDs[$id])
 		) {
 			$database = $this->getDatabaseConnection();
@@ -174,7 +175,7 @@ class TcehooksHandlerHooks {
 	 * @return void
 	 */
 	protected function calculateTax(array &$fieldArray, $tax) {
-		$extConf = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf'];
+		$extConf = SettingsFactory::getInstance()->getExtConfComplete();
 		if ($extConf['genprices'] > 0) {
 			if (
 				$extConf['genprices'] == 2

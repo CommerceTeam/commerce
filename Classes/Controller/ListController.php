@@ -261,7 +261,7 @@ class ListController extends BaseController {
 
 		$frontend = $this->getFrontendController();
 
-		if ((!$this->conf['singleProduct']) && ((int)$this->piVars['showUid'] > 0) && (!$GLOBALS['TSFE']->beUserLogin)) {
+		if (!$this->conf['singleProduct'] && (int)$this->piVars['showUid'] > 0 && !$this->getFrontendController()->beUserLogin) {
 			if (is_array($categorySubproducts)) {
 				if (!in_array($this->piVars['showUid'], $categorySubproducts)) {
 					$categoryAllSubproducts = $this->category->getProducts();
@@ -316,7 +316,7 @@ class ListController extends BaseController {
 			$this->category = \TYPO3\CMS\Core\Utility\GeneralUtility::makeinstance(
 				'CommerceTeam\\Commerce\\Domain\\Model\\Category',
 				$this->cat,
-				$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']
+				$this->getFrontendController()->tmpl->setup['config.']['sys_language_uid']
 			);
 			$this->category->loadData();
 		}
@@ -409,7 +409,7 @@ class ListController extends BaseController {
 				$this->content = $this->renderSingleView($this->product, $this->category, $subpartName, $subpartNameNostock);
 				$this->content = $this->cObj->substituteMarkerArray($this->content, $this->languageMarker);
 				$this->content = $this->cObj->substituteMarkerArray($this->content, $this->addFormMarker(array()), '###|###', 1);
-				$GLOBALS['TSFE']->fe_user->setKey('ses', 'tx_commerce_lastproducturl', $this->pi_linkTP_keepPIvars_url());
+				$this->getFrontendUser()->setKey('ses', 'tx_commerce_lastproducturl', $this->pi_linkTP_keepPIvars_url());
 				break;
 
 			case 'listView':
@@ -447,7 +447,7 @@ class ListController extends BaseController {
 			$this->product = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
 				'CommerceTeam\\Commerce\\Domain\\Model\\Product',
 				$productId,
-				$GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']
+				$this->getFrontendController()->tmpl->setup['config.']['sys_language_uid']
 			);
 			$this->product->loadData();
 
@@ -820,7 +820,7 @@ class ListController extends BaseController {
 					// Makes pi1 a user int so form values are updated as one selects an attribute
 					$getVars['commerce_pi1_user_int'] = 1;
 					$attCode = '<form name="attList_' . $product->getUid() . '" id="attList_' . $product->getUid() . '" action="' .
-							$this->pi_getPageLink($GLOBALS['TSFE']->id, '_self', $getVars) . '#att"  method="post">' .
+							$this->pi_getPageLink($this->getFrontendController()->id, '_self', $getVars) . '#att"  method="post">' .
 						'<input type="hidden" name="' . $this->prefixId . '[changedProductUid]" value="' . $product->getUid() . '" />' .
 						'<input type="hidden" name="' . $this->prefixId . '[attList_' . $product->getUid() .
 							'_changed]" id="attList_' . $product->getUid() . '_changed" value="1" />' .
@@ -986,24 +986,5 @@ class ListController extends BaseController {
 		$content = $this->cObj->substituteMarkerArray($content, $markerArray);
 
 		return $content;
-	}
-
-
-	/**
-	 * Get database connection
-	 *
-	 * @return \TYPO3\CMS\Core\Database\DatabaseConnection
-	 */
-	protected function getDatabaseConnection() {
-		return $GLOBALS['TYPO3_DB'];
-	}
-
-	/**
-	 * Get typoscript frontend controller
-	 *
-	 * @return \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController
-	 */
-	protected function getFrontendController() {
-		return $GLOBALS['TSFE'];
 	}
 }

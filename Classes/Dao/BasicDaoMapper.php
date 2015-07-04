@@ -90,7 +90,6 @@ class BasicDaoMapper {
 	 * @return void
 	 */
 	protected function init() {
-		$this->database = $GLOBALS['TYPO3_DB'];
 	}
 
 	/**
@@ -148,21 +147,22 @@ class BasicDaoMapper {
 		// set pid
 		$this->parser->setPid($dbModel, $this->createPid);
 
+		$database = $this->getDatabaseConnection();
 		// execute query
-		$this->database->exec_INSERTquery($dbTable, $dbModel);
+		$database->exec_INSERTquery($dbTable, $dbModel);
 
 		// any errors
-		$error = $this->database->sql_error();
+		$error = $database->sql_error();
 		if (!empty($error)) {
 			$this->addError(array(
 				$error,
-				$this->database->INSERTquery($dbTable, $dbModel),
+				$database->INSERTquery($dbTable, $dbModel),
 				'$dbModel' => $dbModel
 			));
 		}
 
 		// set object id
-		$object->setId($this->database->sql_insert_id());
+		$object->setId($database->sql_insert_id());
 	}
 
 	/**
@@ -178,15 +178,17 @@ class BasicDaoMapper {
 		$dbWhere = 'uid = ' . (int) $uid;
 		$dbModel = $this->parser->parseObjectToModel($object);
 
+		$database = $this->getDatabaseConnection();
+
 		// execute query
-		$this->database->exec_UPDATEquery($dbTable, $dbWhere, $dbModel);
+		$database->exec_UPDATEquery($dbTable, $dbWhere, $dbModel);
 
 		// any errors
-		$error = $this->database->sql_error();
+		$error = $database->sql_error();
 		if (!empty($error)) {
 			$this->addError(array(
 				$error,
-				$this->database->UPDATEquery($dbTable, $dbWhere, $dbModel),
+				$database->UPDATEquery($dbTable, $dbWhere, $dbModel),
 				'$dbModel' => $dbModel
 			));
 		}
@@ -201,17 +203,17 @@ class BasicDaoMapper {
 	 * @return void
 	 */
 	protected function dbDelete($uid, BasicDaoObject &$object) {
-		$dbWhere = 'uid = ' . (int) $uid;
+		$database = $this->getDatabaseConnection();
 
 		// execute query
-		$this->database->exec_DELETEquery($this->dbTable, $dbWhere);
+		$database->exec_DELETEquery($this->dbTable, 'uid = ' . (int) $uid);
 
 		// any errors
-		$error = $this->database->sql_error();
+		$error = $database->sql_error();
 		if (!empty($error)) {
 			$this->addError(array(
 				$error,
-				$this->database->DELETEquery($this->dbTable, $dbWhere)
+				$database->DELETEquery($this->dbTable, 'uid = ' . (int) $uid)
 			));
 		}
 
@@ -233,11 +235,13 @@ class BasicDaoMapper {
 		$dbWhere = 'uid = ' . (int) $uid;
 		$dbWhere .= 'AND deleted = 0';
 
+		$database = $this->getDatabaseConnection();
+
 		// execute query
-		$res = $this->database->exec_SELECTquery($dbFields, $dbTable, $dbWhere);
+		$res = $database->exec_SELECTquery($dbFields, $dbTable, $dbWhere);
 
 		// insert into object
-		$model = $this->database->sql_fetch_assoc($res);
+		$model = $database->sql_fetch_assoc($res);
 		if ($model) {
 			// parse into object
 			$this->parser->parseModelToObject($model, $object);
@@ -247,7 +251,7 @@ class BasicDaoMapper {
 		}
 
 		// free results
-		$this->database->sql_free_result($res);
+		$database->sql_free_result($res);
 	}
 
 	/**
@@ -277,5 +281,15 @@ class BasicDaoMapper {
 	 */
 	protected function getError() {
 		return $this->error ?: FALSE;
+	}
+
+
+	/**
+	 * Get database connection
+	 *
+	 * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+	 */
+	protected static function getDatabaseConnection() {
+		return $GLOBALS['TYPO3_DB'];
 	}
 }

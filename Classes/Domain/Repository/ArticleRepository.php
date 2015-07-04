@@ -85,7 +85,7 @@ class ArticleRepository extends Repository {
 
 		if ($uid > 0) {
 			$priceUidList = array();
-			$proofSql = $this->enableFields('tx_commerce_article_prices', $GLOBALS['TSFE']->showHiddenRecords);
+			$proofSql = $this->enableFields('tx_commerce_article_prices', $this->getFrontendController()->showHiddenRecords);
 
 			$database = $this->getDatabaseConnection();
 
@@ -132,7 +132,7 @@ class ArticleRepository extends Repository {
 		$count = (int) $count;
 		if ($uid > 0) {
 			$priceUidList = array();
-			$proofSql = $this->enableFields('tx_commerce_article_prices', $GLOBALS['TSFE']->showHiddenRecords);
+			$proofSql = $this->enableFields('tx_commerce_article_prices', $this->getFrontendController()->showHiddenRecords);
 
 			$database = $this->getDatabaseConnection();
 
@@ -181,7 +181,7 @@ class ArticleRepository extends Repository {
 
 		if ($uid > 0) {
 			// First select attribute, to detecxt if is valuelist
-			$proofSql = $this->enableFields('tx_commerce_attributes', $GLOBALS['TSFE']->showHiddenRecords);
+			$proofSql = $this->enableFields('tx_commerce_attributes', $this->getFrontendController()->showHiddenRecords);
 
 			$database = $this->getDatabaseConnection();
 
@@ -259,15 +259,5 @@ class ArticleRepository extends Repository {
 			}
 		}
 		return FALSE;
-	}
-
-
-	/**
-	 * Get database connection
-	 *
-	 * @return \TYPO3\CMS\Core\Database\DatabaseConnection
-	 */
-	protected function getDatabaseConnection() {
-		return $GLOBALS['TYPO3_DB'];
 	}
 }

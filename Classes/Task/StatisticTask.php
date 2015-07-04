@@ -12,6 +12,7 @@ namespace CommerceTeam\Commerce\Task;
  *
  * The TYPO3 project - inspiring people to share!
  */
+use CommerceTeam\Commerce\Factory\SettingsFactory;
 
 /**
  * Class \CommerceTeam\Commerce\Task\StatisticTask
@@ -34,27 +35,18 @@ class StatisticTask extends \TYPO3\CMS\Scheduler\Task\AbstractTask {
 	protected $statistics;
 
 	/**
-	 * Extension configuration
-	 *
-	 * @var array
-	 */
-	protected $extConf = array();
-
-	/**
 	 * Initialization
 	 *
 	 * @return void
 	 */
 	protected function init() {
 		$excludeStatisticFolders = 0;
-		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['excludeStatisticFolders'] != '') {
-			$excludeStatisticFolders = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['excludeStatisticFolders'];
+		if (SettingsFactory::getInstance()->getExtConf('excludeStatisticFolders') != '') {
+			$excludeStatisticFolders = SettingsFactory::getInstance()->getExtConf('excludeStatisticFolders');
 		}
 
 		$this->statistics = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Utility\\StatisticsUtility');
 		$this->statistics->init($excludeStatisticFolders);
-
-		$this->extConf = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf'];
 	}
 
 	/**

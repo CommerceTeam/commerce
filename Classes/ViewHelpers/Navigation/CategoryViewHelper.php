@@ -13,6 +13,7 @@ namespace CommerceTeam\Commerce\ViewHelpers\Navigation;
  * The TYPO3 project - inspiring people to share!
  */
 
+use CommerceTeam\Commerce\Factory\SettingsFactory;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Http\AjaxRequestHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -73,7 +74,7 @@ class CategoryViewHelper extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 		// Get the Category Tree
 		$this->categoryTree = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryTree');
 		$this->categoryTree->setBare($bare);
-		$this->categoryTree->setSimpleMode((int) $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['simpleMode']);
+		$this->categoryTree->setSimpleMode((int) SettingsFactory::getInstance()->getExtConf('simpleMode'));
 		$this->categoryTree->init();
 	}
 
@@ -92,7 +93,7 @@ class CategoryViewHelper extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 		 */
 		$doc = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
 		$this->doc = $doc;
-		$this->doc->backPath = $GLOBALS['BACK_PATH'];
+		$this->doc->backPath = $this->getBackPath();
 		$this->doc->setModuleTemplate('EXT:commerce/Resources/Private/Backend/mod_navigation.html');
 		$this->doc->showFlashMessages = FALSE;
 
@@ -244,7 +245,7 @@ class CategoryViewHelper extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 		$buttons['csh'] = str_replace(
 			'typo3-csh-inline',
 			'typo3-csh-inline show-right',
-			BackendUtility::cshItem('xMOD_csh_commercebe', 'categorytree', $this->doc->backPath)
+			BackendUtility::cshItem('xMOD_csh_commercebe', 'categorytree', $this->getBackPath())
 		);
 
 		return $buttons;
@@ -316,5 +317,15 @@ class CategoryViewHelper extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 			$parameter = substr($parameter, 0, $parameterPosition);
 		}
 		return explode('_', $parameter);
+	}
+
+
+	/**
+	 * Get back path
+	 *
+	 * @return string
+	 */
+	protected function getBackPath() {
+		return $GLOBALS['BACK_PATH'];
 	}
 }

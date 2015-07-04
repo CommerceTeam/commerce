@@ -14,6 +14,7 @@ namespace CommerceTeam\Commerce\Hook;
  */
 
 use CommerceTeam\Commerce\Domain\Repository\FolderRepository;
+use CommerceTeam\Commerce\Factory\SettingsFactory;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 
 /**
@@ -144,7 +145,7 @@ class CommandMapHooks {
 			 * @var \CommerceTeam\Commerce\Tree\CategoryMounts $mounts
 			 */
 			$mounts = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryMounts');
-			$mounts->init($GLOBALS['BE_USER']->user['uid']);
+			$mounts->init($this->getBackendUser()->user['uid']);
 
 			if (!$category->isPermissionSet($command) || !$mounts->isInCommerceMounts($category->getUid())) {
 				// Log the error
@@ -414,7 +415,7 @@ class CommandMapHooks {
 					unset($localizedProductAttribute['attributeData']);
 					unset($localizedProductAttribute['has_valuelist']);
 
-					switch ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['attributeLocalizationType']) {
+					switch (SettingsFactory::getInstance()->getExtConf('attributeLocalizationType')) {
 						case self::ATTRIBUTE_LOCALIZATION_TITLE_EMPTY:
 							unset($localizedProductAttribute['default_value']);
 							break;

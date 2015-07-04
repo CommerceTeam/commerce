@@ -695,23 +695,4 @@ class Data extends Base {
 
 		return $hasAccess ? TRUE : FALSE;
 	}
-
-
-	/**
-	 * Get backend user
-	 *
-	 * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
-	 */
-	protected function getBackendUser() {
-		return $GLOBALS['BE_USER'];
-	}
-
-	/**
-	 * Get database connection
-	 *
-	 * @return \TYPO3\CMS\Core\Database\DatabaseConnection
-	 */
-	protected function getDatabaseConnection() {
-		return $GLOBALS['TYPO3_DB'];
-	}
 }

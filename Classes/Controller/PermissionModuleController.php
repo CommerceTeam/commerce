@@ -99,9 +99,9 @@ class PermissionModuleController extends \TYPO3\CMS\Perm\Controller\PermissionMo
 		 * @var \TYPO3\CMS\Backend\Template\DocumentTemplate $doc
 		 */
 		$doc = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
-		$doc->backPath = $GLOBALS['BACK_PATH'];
+		$doc->backPath = $this->getBackPath();
 		$doc->setModuleTemplate('EXT:perm/Resources/Private/Templates/perm.html');
-		$doc->form = '<form action="' . $GLOBALS['BACK_PATH'] . 'tce_db.php" method="post" name="editform">';
+		$doc->form = '<form action="' . $this->getBackPath() . 'tce_db.php" method="post" name="editform">';
 		$doc->loadJavascriptLib('js/jsfunc.updateform.js');
 		$doc->getPageRenderer()->loadPrototype();
 		$doc->loadJavascriptLib(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('perm') . 'mod1/perm.js');
@@ -201,12 +201,12 @@ class PermissionModuleController extends \TYPO3\CMS\Perm\Controller\PermissionMo
 		);
 
 		// CSH
-		$buttons['csh'] = BackendUtility::cshItem('_MOD_web_info', '', $GLOBALS['BACK_PATH'], '', TRUE);
+		$buttons['csh'] = BackendUtility::cshItem('_MOD_web_info', '', $this->getBackPath(), '', TRUE);
 		// View page
 		$buttons['view'] = '<a href="#" onclick="' .
 			htmlspecialchars(BackendUtility::viewonclick(
 				$this->id,
-				$GLOBALS['BACK_PATH'],
+				$this->getBackPath(),
 				BackendUtility::BEgetRootLine($this->pageinfo['uid'])
 			)) .
 			'" title="' . $this->getLanguageService()->sL('LLL:EXT:lang/locallang_core.xlf:labels.showPage', TRUE) .
@@ -384,7 +384,7 @@ class PermissionModuleController extends \TYPO3\CMS\Perm\Controller\PermissionMo
 		$this->content .= $this->doc->section($language->getLL('permissions'), $code, TRUE);
 
 		// CSH for permissions setting
-		$this->content .= BackendUtility::cshItem('xMOD_csh_corebe', 'perm_module_setting', $this->doc->backPath, '<br /><br />');
+		$this->content .= BackendUtility::cshItem('xMOD_csh_corebe', 'perm_module_setting', $this->getBackPath(), '<br /><br />');
 
 		// Adding help text:
 		if (TRUE || $backendUser->uc['helpText']) {
@@ -600,7 +600,7 @@ class PermissionModuleController extends \TYPO3\CMS\Perm\Controller\PermissionMo
 		$this->content .= $this->doc->section('', $code);
 
 		// CSH for permissions setting
-		$this->content .= BackendUtility::cshItem('xMOD_csh_corebe', 'perm_module', $this->doc->backPath, '<br />|');
+		$this->content .= BackendUtility::cshItem('xMOD_csh_corebe', 'perm_module', $this->getBackPath(), '<br />|');
 
 		// Creating legend table:
 		$legendText = '<strong>' . $language->getLL('1', TRUE) . '</strong>: ' . $language->getLL('1_t', TRUE);
@@ -610,7 +610,7 @@ class PermissionModuleController extends \TYPO3\CMS\Perm\Controller\PermissionMo
 		$legendText .= '<br /><strong>' . $language->getLL('8', TRUE) . '</strong>: ' . $language->getLL('8_t', TRUE);
 
 		$code = '<div id="permission-information">
-					<img' . IconUtility::skinImg($this->doc->backPath, 'gfx/legend.gif', 'width="86" height="75"') . ' alt="" />
+					<img' . IconUtility::skinImg($this->getBackPath(), 'gfx/legend.gif', 'width="86" height="75"') . ' alt="" />
 				<div class="text">' . $legendText . '</div></div>';
 
 		$code .= '<div id="perm-legend">' . $language->getLL('def', TRUE);
@@ -634,7 +634,7 @@ class PermissionModuleController extends \TYPO3\CMS\Perm\Controller\PermissionMo
 	 * @return string HTML checkbox
 	 */
 	public function printCheckBox($checkName, $num) {
-		$onclick = 'checkChange(\'check[' . $checkName . ']\', \'data[tx_commerce_categories][' . $GLOBALS['SOBE']->categoryUid . '][' .
+		$onclick = 'checkChange(\'check[' . $checkName . ']\', \'data[tx_commerce_categories][' . $this->categoryUid . '][' .
 			$checkName . ']\')';
 		return '<input type="checkbox" name="check[' . $checkName . '][' . $num . ']" onclick="' . htmlspecialchars($onclick) .
 			'" /><br />';
@@ -728,5 +728,14 @@ class PermissionModuleController extends \TYPO3\CMS\Perm\Controller\PermissionMo
 	 */
 	protected function getLanguageService() {
 		return $GLOBALS['LANG'];
+	}
+
+	/**
+	 * Get back path
+	 *
+	 * @return string
+	 */
+	protected function getBackPath() {
+		return $GLOBALS['BACK_PATH'];
 	}
 }

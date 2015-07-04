@@ -83,6 +83,8 @@ class Repository {
 	 */
 	public function getData($uid, $langUid = -1, $translationMode = FALSE) {
 		$database = $this->getDatabaseConnection();
+		$frontend = $this->getFrontendController();
+
 		if ($translationMode == FALSE) {
 			$translationMode = $this->translationMode;
 		}
@@ -93,13 +95,13 @@ class Repository {
 			$langUid = 0;
 		}
 
-		if (empty($langUid) && $this->getFrontendController()->tmpl->setup['config.']['sys_language_uid'] > 0) {
-			$langUid = $this->getFrontendController()->tmpl->setup['config.']['sys_language_uid'];
+		if (empty($langUid) && $frontend->tmpl->setup['config.']['sys_language_uid'] > 0) {
+			$langUid = $frontend->tmpl->setup['config.']['sys_language_uid'];
 		}
 
 		$proofSql = '';
-		if (is_object($GLOBALS['TSFE']->sys_page)) {
-			$proofSql = $this->enableFields($this->databaseTable, $GLOBALS['TSFE']->showHiddenRecords);
+		if (is_object($frontend->sys_page)) {
+			$proofSql = $this->enableFields($this->databaseTable, $frontend->showHiddenRecords);
 		}
 
 		$result = $database->exec_SELECTquery(
@@ -114,8 +116,8 @@ class Repository {
 			$database->sql_free_result($result);
 
 			// @since 8.10.2008: get workspace version if available
-			if (!empty($GLOBALS['TSFE']->sys_page)) {
-				$GLOBALS['TSFE']->sys_page->versionOL($this->databaseTable, $returnData);
+			if (!empty($frontend->sys_page)) {
+				$frontend->sys_page->versionOL($this->databaseTable, $returnData);
 			}
 
 			if (!is_array($returnData)) {
@@ -132,7 +134,7 @@ class Repository {
 						// special Treatment for basket, so you could have
 						// a product not translated init a language
 						// but the basket is in the not translated laguage
-						$newData = $GLOBALS['TSFE']->sys_page->getRecordOverlay(
+						$newData = $frontend->sys_page->getRecordOverlay(
 							$this->databaseTable,
 							$returnData,
 							$langUid,
@@ -145,7 +147,7 @@ class Repository {
 						break;
 
 					default:
-						$returnData = $GLOBALS['TSFE']->sys_page->getRecordOverlay(
+						$returnData = $frontend->sys_page->getRecordOverlay(
 							$this->databaseTable,
 							$returnData,
 							$langUid,
@@ -202,8 +204,8 @@ class Repository {
 		$uid = (int) $uid;
 		if ($uid > 0) {
 			$proofSql = '';
-			if (is_object($GLOBALS['TSFE']->sys_page)) {
-				$proofSql = $this->enableFields($this->databaseTable, $GLOBALS['TSFE']->showHiddenRecords);
+			if (is_object($this->getFrontendController()->sys_page)) {
+				$proofSql = $this->enableFields($this->databaseTable, $this->getFrontendController()->showHiddenRecords);
 			}
 
 			$result = $database->exec_SELECTquery(

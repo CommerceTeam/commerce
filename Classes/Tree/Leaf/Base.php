@@ -68,11 +68,29 @@ class Base {
 
 
 	/**
+	 * Get database connection
+	 *
+	 * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+	 */
+	protected function getDatabaseConnection() {
+		return $GLOBALS['TYPO3_DB'];
+	}
+
+	/**
 	 * Get language service
 	 *
 	 * @return \TYPO3\CMS\Lang\LanguageService
 	 */
 	protected function getLanguageService() {
 		return $GLOBALS['LANG'];
+	}
+
+	/**
+	 * Get backend user
+	 *
+	 * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
+	 */
+	protected function getBackendUser() {
+		return $GLOBALS['BE_USER'];
 	}
 }

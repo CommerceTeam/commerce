@@ -283,7 +283,10 @@ class BasicBasket {
 	public function getBasketHashValue() {
 		$result = FALSE;
 
-		if (!$GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_commerce_pi1.']['dontUseBasketHashValue'] && count($this->basketItems) > 0) {
+		if (
+			!$this->getFrontendController()->tmpl->setup['plugin.']['tx_commerce_pi1.']['dontUseBasketHashValue']
+			&& count($this->basketItems) > 0
+		) {
 			$result = \TYPO3\CMS\Core\Utility\GeneralUtility::shortMD5(serialize($this->basketItems));
 		}
 

@@ -13,7 +13,8 @@ namespace CommerceTeam\Commerce\Controller;
  * The TYPO3 project - inspiring people to share!
  */
 
-use \CommerceTeam\Commerce\Factory\HookFactory;
+use CommerceTeam\Commerce\Factory\HookFactory;
+use CommerceTeam\Commerce\Factory\SettingsFactory;
 
 /**
  * Plugin 'commerce_invoice' for the 'commerce_invoice' extension.
@@ -94,14 +95,14 @@ class InvoiceController extends BaseController {
 		$this->pi_loadLL();
 
 		// Checking backend user login
-		$this->invoiceBackendOnly($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['invoiceBackendOnly']);
+		$this->invoiceBackendOnly(SettingsFactory::getInstance()->getExtConf('invoiceBackendOnly'));
 
 		// Check for the logged in USER
 		// It could be an FE USer, a BE User or an automated script
-		if ((empty($frontend->fe_user->user)) && (!$backendUser->user['uid']) && ($_SERVER['REMOTE_ADDR'] != $_SERVER['SERVER_ADDR'])) {
+		if (empty($this->getFrontendUser()->user) && !$backendUser->user['uid'] && $_SERVER['REMOTE_ADDR'] != $_SERVER['SERVER_ADDR']) {
 			return $this->pi_getLL('not_logged_in');
-		} elseif ($frontend->fe_user->user && !$backendUser->user['uid']) {
-			$this->user = $GLOBALS['TSFE']->fe_user->user;
+		} elseif ($this->getFrontendUser()->user && !$backendUser->user['uid']) {
+			$this->user = $this->getFrontendUser()->user;
 		}
 
 		// If it's an automated process, no caching
@@ -222,7 +223,7 @@ class InvoiceController extends BaseController {
 	 * @return void
 	 */
 	protected function invoiceBackendOnly($enabled = FALSE) {
-		if ($enabled && !$GLOBALS['BE_USER']->user['uid'] && ($_SERVER['REMOTE_ADDR'] != $_SERVER['SERVER_ADDR'])) {
+		if ($enabled && !$this->getBackendUser()->user['uid'] && ($_SERVER['REMOTE_ADDR'] != $_SERVER['SERVER_ADDR'])) {
 			/**
 			 * Error message
 			 *
@@ -411,33 +412,5 @@ class InvoiceController extends BaseController {
 		}
 
 		return $content;
-	}
-
-
-	/**
-	 * Get backend user
-	 *
-	 * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
-	 */
-	protected function getBackendUser() {
-		return $GLOBALS['BE_USER'];
-	}
-
-	/**
-	 * Get database connection
-	 *
-	 * @return \TYPO3\CMS\Core\Database\DatabaseConnection
-	 */
-	protected function getDatabaseConnection() {
-		return $GLOBALS['TYPO3_DB'];
-	}
-
-	/**
-	 * Get typoscript frontend controller
-	 *
-	 * @return \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController
-	 */
-	protected function getFrontendController() {
-		return $GLOBALS['TSFE'];
 	}
 }

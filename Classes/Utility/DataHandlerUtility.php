@@ -185,11 +185,11 @@ class DataHandlerUtility {
 
 		// Initializing document template object:
 		$this->doc = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
-		$this->doc->backPath = $GLOBALS['BACK_PATH'];
+		$this->doc->backPath = $this->getBackPath();
 		$this->doc->docType = 'xhtml_trans';
 		$this->doc->setModuleTemplate(PATH_TXCOMMERCE . 'Resources/Private/Backend/mod_index.html');
 		$this->doc->loadJavascriptLib('contrib/prototype/prototype.js');
-		$this->doc->loadJavascriptLib($this->doc->backPath . PATH_TXCOMMERCE_REL . 'Resources/Public/Javascript/copyPaste.js');
+		$this->doc->loadJavascriptLib($this->getBackPath() . PATH_TXCOMMERCE_REL . 'Resources/Public/Javascript/copyPaste.js');
 		$this->doc->form = '<form action="DataHandlerUtility.php?' . $cbString . '&vC=' . $this->vC . '&uPT=' . $this->uPT .
 			'&redirect=' . rawurlencode($this->redirect) . '&prErr=' . $this->prErr .
 			'&cmd=commit" method="post" name="localeform" id="localeform">';
@@ -327,7 +327,7 @@ class DataHandlerUtility {
 						$tmpProd = $prods[$i];
 
 						$flag = ($tmpProd['flag'] != '') ?
-							'<img src="' . $this->doc->backPath . 'gfx/flags/' . $tmpProd['flag'] . '" alt="Flag" />' :
+							'<img src="' . $this->getBackPath() . 'gfx/flags/' . $tmpProd['flag'] . '" alt="Flag" />' :
 							'';
 
 						$str .= '<li><input type="checkbox" name="locale[]" id="loc_' . $tmpProd['uid'] . '" value="' .
@@ -372,10 +372,10 @@ class DataHandlerUtility {
 				} elseif (0 < $l) {
 					// at least 1 item - offer choice
 					$icon = '<img' . \TYPO3\CMS\Backend\Utility\IconUtility::skinImg(
-							$this->doc->backPath, 'gfx/newrecord_marker_d.gif', 'width="281" height="8"'
+							$this->getBackPath(), 'gfx/newrecord_marker_d.gif', 'width="281" height="8"'
 						) . ' alt="" title="Insert the category" />';
 					$prodIcon = \TYPO3\CMS\Backend\Utility\IconUtility::getIconImage(
-						'tx_commerce_products', array('uid' => $uidTarget), $this->doc->backPath, 'align="top" class="c-recIcon"'
+						'tx_commerce_products', array('uid' => $uidTarget), $this->getBackPath(), 'align="top" class="c-recIcon"'
 					);
 					$str .= '<h1>' . $language->getLL('copy.position') . '</h1>';
 
@@ -420,7 +420,7 @@ class DataHandlerUtility {
 						$tmpCat = $cats[$i];
 
 						$flag = ($tmpCat['flag'] != '') ?
-							'<img src="' . $this->doc->backPath . 'gfx/flags/' . $tmpCat['flag'] . '" alt="Flag" />' :
+							'<img src="' . $this->getBackPath() . 'gfx/flags/' . $tmpCat['flag'] . '" alt="Flag" />' :
 							'';
 
 						$str .= '<li><input type="checkbox" name="locale[]" id="loc_' . $tmpCat['uid'] . '" value="' .
@@ -460,10 +460,10 @@ class DataHandlerUtility {
 				} elseif (0 < $l) {
 					// at least 1 item - offer choice
 					$icon = '<img' . \TYPO3\CMS\Backend\Utility\IconUtility::skinImg(
-							$this->doc->backPath, 'gfx/newrecord_marker_d.gif', 'width="281" height="8"'
+							$this->getBackPath(), 'gfx/newrecord_marker_d.gif', 'width="281" height="8"'
 						) . ' alt="" title="Insert the category" />';
 					$catIcon = \TYPO3\CMS\Backend\Utility\IconUtility::getIconImage(
-						'tx_commerce_categories', array('uid' => $uidTarget), $this->doc->backPath,
+						'tx_commerce_categories', array('uid' => $uidTarget), $this->getBackPath(),
 						'align="top" class="c-recIcon"'
 					);
 					$str .= '<h1>' . $language->getLL('copy.position') . '</h1>';
@@ -606,6 +606,15 @@ class DataHandlerUtility {
 	 */
 	protected function getLanguageService() {
 		return $GLOBALS['LANG'];
+	}
+
+	/**
+	 * Get back path
+	 *
+	 * @return string
+	 */
+	protected function getBackPath() {
+		return $GLOBALS['BACK_PATH'];
 	}
 }
 

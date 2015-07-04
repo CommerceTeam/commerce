@@ -18,8 +18,8 @@ use CommerceTeam\Commerce\Domain\Model\Basket;
 use CommerceTeam\Commerce\Domain\Model\BasketItem;
 use CommerceTeam\Commerce\Domain\Model\Category;
 use CommerceTeam\Commerce\Domain\Model\Product;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use CommerceTeam\Commerce\Factory\HookFactory;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class \CommerceTeam\Commerce\Controller\BaseController
@@ -258,7 +258,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin 
 		\CommerceTeam\Commerce\Utility\GeneralUtility::initializeFeUserBasket();
 
 		$this->pid = $this->getFrontendController()->id;
-		$this->basketHashValue = $this->getFrontendController()->fe_user->tx_commerce_basket->getBasketHashValue();
+		$this->basketHashValue = $this->getBasket()->getBasketHashValue();
 		$this->piVars['basketHashValue'] = $this->basketHashValue;
 		$this->argSeparator = ini_get('arg_separator.output');
 		$this->addAdditionalLocallang();
@@ -687,7 +687,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin 
 
 		if (!$this->conf['hideProductsInList']) {
 			// Write the current page to The session to have a back to last product link
-			$GLOBALS['TSFE']->fe_user->setKey('ses', 'tx_commerce_lastproducturl', $this->pi_linkTP_keepPIvars_url());
+			$this->getFrontendController()->fe_user->setKey('ses', 'tx_commerce_lastproducturl', $this->pi_linkTP_keepPIvars_url());
 			$markerArray['SUBPART_CATEGORY_ITEMS_LISTVIEW'] = $this->renderProductsForList(
 				$this->category_products, $this->conf['templateMarker.']['categoryProductList.'],
 				$this->conf['templateMarker.']['categoryProductListIterations']
@@ -1581,12 +1581,13 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin 
 		}
 
 		$amount = 0;
+		$basket = $this->getBasket();
 		/**
 		 * Basket item
 		 *
 		 * @var BasketItem $basketItem
 		 */
-		$basketItem = $GLOBALS['TSFE']->fe_user->tx_commerce_basket->getBasketItem($articleId);
+		$basketItem = $basket->getBasketItem($articleId);
 		if (is_object($basketItem)) {
 			$amount = $basketItem->getQuantity();
 		} else {
@@ -2060,5 +2061,23 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin 
 	 */
 	protected function getFrontendController() {
 		return $GLOBALS['TSFE'];
+	}
+
+	/**
+	 * Get frontend user
+	 *
+	 * @return \TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication
+	 */
+	protected function getFrontendUser() {
+		return $this->getFrontendController()->fe_user;
+	}
+
+	/**
+	 * Get basket
+	 *
+	 * @return \CommerceTeam\Commerce\Domain\Model\Basket
+	 */
+	protected function getBasket() {
+		return $this->getFrontendUser()->tx_commerce_basket;
 	}
 }

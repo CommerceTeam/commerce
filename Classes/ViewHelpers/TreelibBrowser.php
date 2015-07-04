@@ -13,6 +13,7 @@ namespace CommerceTeam\Commerce\ViewHelpers;
  * The TYPO3 project - inspiring people to share!
  */
 
+use CommerceTeam\Commerce\Factory\SettingsFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -117,8 +118,6 @@ class TreelibBrowser extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 			$this->flexConfig = unserialize(base64_decode($this->flexConfig));
 		}
 
-		$this->backPath = $GLOBALS['BACK_PATH'];
-
 		// Initialize template object
 		/**
 		 * Document template
@@ -128,7 +127,7 @@ class TreelibBrowser extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 		$doc = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
 		$this->doc = $doc;
 		$this->doc->docType = 'xhtml_trans';
-		$this->doc->backPath = $this->backPath;
+		$this->doc->backPath = $this->getBackPath();
 
 		// from tx_dam_SCbase
 		$buttonColor = '#e3dfdb';
@@ -208,7 +207,7 @@ class TreelibBrowser extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 		 */
 		$form = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Form\\FormEngine');
 		$form->initDefaultBEmode();
-		$form->backPath = $this->backPath;
+		$form->backPath = $this->getBackPath();
 
 		$row['uid'] = $this->uid;
 
@@ -221,9 +220,10 @@ class TreelibBrowser extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 				'defaultExtras' => $this->flexConfig['defaultExtras']
 			);
 		} else {
+			$settingsFactory = SettingsFactory::getInstance();
 			$parameter['fieldConf'] = array(
-				'label' => $form->sL($GLOBALS['TCA'][$this->table]['columns'][$this->field]['label']),
-				'config' => $GLOBALS['TCA'][$this->table]['columns'][$this->field]['config']
+				'label' => $form->sL($settingsFactory->getTcaValue($this->table . '.columns.' . $this->field . '.label')),
+				'config' => $settingsFactory->getTcaValue($this->table . '.columns.' . $this->field . '.config')
 			);
 		}
 
@@ -268,5 +268,15 @@ class TreelibBrowser extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 		$row = current($trData->regTableItems_data);
 
 		return $row;
+	}
+
+
+	/**
+	 * Get back path
+	 *
+	 * @return string
+	 */
+	protected function getBackPath() {
+		return $GLOBALS['BACK_PATH'];
 	}
 }

@@ -13,6 +13,11 @@ namespace CommerceTeam\Commerce\Xclass;
  * The TYPO3 project - inspiring people to share!
  */
 
+use CommerceTeam\Commerce\Factory\SettingsFactory;
+use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Backend\Utility\IconUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 /**
  * This class replaces the version preview of version index.php
  *
@@ -44,10 +49,9 @@ class VersionModuleController extends \TYPO3\CMS\Version\Controller\VersionModul
 
 			// Edit link:
 			$adminLink = '<a href="#" onclick="' .
-				htmlspecialchars(\TYPO3\CMS\Backend\Utility\BackendUtility::editOnClick(
-					'&edit[' . $table . '][' . $row['uid'] . ']=edit', $this->doc->backPath
-				)) . '">' .
-				\TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon(
+				htmlspecialchars(BackendUtility::editOnClick('&edit[' . $table . '][' . $row['uid'] . ']=edit', $this->getBackPath())) .
+				'">' .
+				IconUtility::getSpriteIcon(
 					'actions-document-open',
 					array('title' => $language->sL('LLL:EXT:lang/locallang_core.xml:cm.edit', TRUE))
 				) . '</a>';
@@ -55,18 +59,18 @@ class VersionModuleController extends \TYPO3\CMS\Version\Controller\VersionModul
 			// Delete link:
 			$adminLink .= '<a href="' .
 				htmlspecialchars($this->doc->issueCommand('&cmd[' . $table . '][' . $row['uid'] . '][delete]=1')) . '">' .
-				\TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon(
+				IconUtility::getSpriteIcon(
 					'actions-edit-delete',
 					array('title' => $language->sL('LLL:EXT:lang/locallang_core.php:cm.delete', TRUE))
 				) . '</a>';
 
 			if ($row['pid'] == -1) {
 				// get page TSconfig
-				$pagesTyposcriptConfig = \TYPO3\CMS\Backend\Utility\BackendUtility::getPagesTSconfig($GLOBALS['_POST']['popViewId']);
+				$pagesTyposcriptConfig = BackendUtility::getPagesTSconfig(GeneralUtility::_POST('popViewId'));
 				if ($pagesTyposcriptConfig['tx_commerce.']['singlePid']) {
 					$previewPageId = $pagesTyposcriptConfig['tx_commerce.']['singlePid'];
 				} else {
-					$previewPageId = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['previewPageID'];
+					$previewPageId = SettingsFactory::getInstance()->getExtConf('previewPageID');
 				}
 
 				$sysLanguageUid = (int) $row['sys_language_uid'];
@@ -89,12 +93,12 @@ class VersionModuleController extends \TYPO3\CMS\Version\Controller\VersionModul
 					'&tx_commerce_pi1[catUid]=' . current($product->getMasterparentCategory());
 
 				$adminLink .= '<a href="#" onclick="' .
-					htmlspecialchars(\TYPO3\CMS\Backend\Utility\BackendUtility::viewOnClick(
+					htmlspecialchars(BackendUtility::viewOnClick(
 						$previewPageId,
-						$this->doc->backPath,
-						\TYPO3\CMS\Backend\Utility\BackendUtility::BEgetRootLine($row['_REAL_PID']), '', '', $getVars)
+						$this->getBackPath(),
+						BackendUtility::BEgetRootLine($row['_REAL_PID']), '', '', $getVars)
 					) .
-					'">' . \TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon('actions-document-view') . '</a>';
+					'">' . IconUtility::getSpriteIcon('actions-document-view') . '</a>';
 			}
 
 			return $adminLink;
@@ -109,5 +113,14 @@ class VersionModuleController extends \TYPO3\CMS\Version\Controller\VersionModul
 	 */
 	protected function getLanguageService() {
 		return $GLOBALS['LANG'];
+	}
+
+	/**
+	 * Get back path
+	 *
+	 * @return string
+	 */
+	protected function getBackPath() {
+		return $GLOBALS['BACK_PATH'];
 	}
 }

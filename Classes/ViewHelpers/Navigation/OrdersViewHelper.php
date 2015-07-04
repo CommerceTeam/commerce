@@ -125,7 +125,7 @@ class OrdersViewHelper extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 		 */
 		$doc = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
 		$this->doc = $doc;
-		$this->doc->backPath = $GLOBALS['BACK_PATH'];
+		$this->doc->backPath = $this->getBackPath();
 		$this->doc->setModuleTemplate('EXT:commerce/Resources/Private/Backend/mod_navigation.html');
 		$this->doc->showFlashMessages = FALSE;
 
@@ -133,7 +133,7 @@ class OrdersViewHelper extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 		$highlight = $this->doHighlight ? 'hilight_row("txcommerceM1",highLightID);' : '';
 		$formstyle = !$GLOBALS['CLIENT']['FORMSTYLE'] ? '' : 'if (linkObj) { linkObj.blur(); }';
 
-			// Setting JavaScript for menu.
+		// Setting JavaScript for menu.
 		$this->doc->JScode = $this->doc->wrapScriptTags(
 			$subScript . '
 
@@ -236,13 +236,13 @@ class OrdersViewHelper extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 		// Refresh
 		$buttons['refresh'] = '<a href="' . htmlspecialchars(GeneralUtility::getIndpEnv('REQUEST_URI')) . '">' .
 			\TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon('actions-system-refresh') .
-		'</a>';
+			'</a>';
 
 		// CSH
 		$buttons['csh'] = str_replace(
 			'typo3-csh-inline',
 			'typo3-csh-inline show-right',
-			BackendUtility::cshItem('xMOD_csh_commercebe', 'orderstree', $this->doc->backPath)
+			BackendUtility::cshItem('xMOD_csh_commercebe', 'orderstree', $this->getBackPath())
 		);
 
 		return $buttons;
@@ -308,5 +308,14 @@ class OrdersViewHelper extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 	 */
 	protected function getLanguageService() {
 		return $GLOBALS['LANG'];
+	}
+
+	/**
+	 * Get back path
+	 *
+	 * @return string
+	 */
+	protected function getBackPath() {
+		return $GLOBALS['BACK_PATH'];
 	}
 }

@@ -13,6 +13,7 @@ namespace CommerceTeam\Commerce\Hook;
  * The TYPO3 project - inspiring people to share!
  */
 
+use CommerceTeam\Commerce\Factory\SettingsFactory;
 use TYPO3\CMS\Backend\Form\Element\InlineElement;
 
 /**
@@ -41,7 +42,7 @@ class IrreHooks implements \TYPO3\CMS\Backend\Form\Element\InlineElementHookInte
 	 * @return self
 	 */
 	public function __construct() {
-		$this->extconf = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf'];
+		$this->extconf = SettingsFactory::getInstance()->getExtConfComplete();
 	}
 
 	/**

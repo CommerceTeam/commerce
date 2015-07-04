@@ -13,6 +13,8 @@ namespace CommerceTeam\Commerce\Hook;
  * The TYPO3 project - inspiring people to share!
  */
 
+use CommerceTeam\Commerce\Factory\SettingsFactory;
+
 /**
  * Class \CommerceTeam\Commerce\Hook\LocalRecordListHooks
  *
@@ -32,7 +34,7 @@ class LocalRecordListHooks implements \TYPO3\CMS\Recordlist\RecordList\RecordLis
 	public function makeClip($table, $row, $cells, &$parentObject) {
 		if (
 			$parentObject->id
-			&& !$GLOBALS['TCA'][$table]['ctrl']['readOnly']
+			&& !SettingsFactory::getInstance()->getTcaValue($table . '.ctrl.readOnly')
 			&& $GLOBALS['SOBE']->MOD_SETTINGS['bigControlPanel']
 			&& $table == 'tx_commerce_orders'
 		) {
@@ -101,7 +103,7 @@ class LocalRecordListHooks implements \TYPO3\CMS\Recordlist\RecordList\RecordLis
 					case '_CLIPBOARD_':
 						if (
 							$parentObject->id
-							&& !$GLOBALS['TCA'][$table]['ctrl']['readOnly']
+							&& !SettingsFactory::getInstance()->getTcaValue($table . '.ctrl.readOnly')
 							&& $GLOBALS['SOBE']->MOD_SETTINGS['bigControlPanel']
 						) {
 							$headerColumns[$fCol] = $language->getLL('moveorderto');
@@ -112,7 +114,7 @@ class LocalRecordListHooks implements \TYPO3\CMS\Recordlist\RecordList\RecordLis
 
 					// Control panel:
 					case '_CONTROL_':
-						if (!$GLOBALS['TCA'][$table]['ctrl']['readOnly']) {
+						if (!SettingsFactory::getInstance()->getTcaValue($table . '.ctrl.readOnly')) {
 							// If new records can be created on this page, add links:
 							if (
 								$parentObject->calcPerms & ($table == 'pages' ? 8 : 16)
@@ -195,7 +197,11 @@ class LocalRecordListHooks implements \TYPO3\CMS\Recordlist\RecordList\RecordLis
 
 							// If the table can be edited, add link for
 							// editing THIS field for all listed records:
-							if (!$GLOBALS['TCA'][$table]['ctrl']['readOnly'] && $permsEdit && $GLOBALS['TCA'][$table]['columns'][$fCol]) {
+							if (
+								!SettingsFactory::getInstance()->getTcaValue($table . '.ctrl.readOnly')
+								&& $permsEdit
+								&& SettingsFactory::getInstance()->getTcaValue($table . '.columns.' . $fCol)
+							) {
 								$editIdList = implode(',', $currentIdList);
 								if ($parentObject->clipNumPane()) {
 									$editIdList = "'+editList('" . $table . "','" . $editIdList . "')+'";

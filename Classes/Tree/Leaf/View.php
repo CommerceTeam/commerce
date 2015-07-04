@@ -180,8 +180,8 @@ class View extends Base {
 			$rootPathT3 = '/';
 		}
 
-		if ($GLOBALS['BACK_PATH']) {
-			$this->backPath = $GLOBALS['BACK_PATH'];
+		if ($this->getBackPath()) {
+			$this->backPath = $this->getBackPath();
 		} else {
 			$this->backPath = $rootPathT3 . TYPO3_mainDir;
 		}
@@ -567,5 +567,15 @@ class View extends Base {
 			// activate dynamic ajax-based tree
 		$js = htmlspecialchars('Tree.load(' . GeneralUtility::quoteJSvalue($cmd) . ', ' . (int) $isExpand . ', this);');
 		return '<a class="pm" onclick="' . $js . '">' . $icon . '</a>';
+	}
+
+
+	/**
+	 * Get back path
+	 *
+	 * @return string
+	 */
+	protected function getBackPath() {
+		return $GLOBALS['BACK_PATH'];
 	}
 }

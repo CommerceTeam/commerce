@@ -13,6 +13,10 @@ namespace CommerceTeam\Commerce\Controller;
  * The TYPO3 project - inspiring people to share!
  */
 
+use CommerceTeam\Commerce\Factory\SettingsFactory;
+use CommerceTeam\Commerce\Utility\BackendUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 /**
  * Class \CommerceTeam\Commerce\Controller\WizardController
  *
@@ -152,18 +156,16 @@ class WizardController {
 
 		// Setting GPvars:
 		// The page id to operate from
-		$this->id = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('id') ?
-			(int) \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('id') :
-			\CommerceTeam\Commerce\Utility\BackendUtility::getProductFolderUid();
-		$this->returnUrl = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('returnUrl');
+		$this->id = GeneralUtility::_GP('id') ? (int) GeneralUtility::_GP('id') : BackendUtility::getProductFolderUid();
+		$this->returnUrl = GeneralUtility::_GP('returnUrl');
 
 		// this to be accomplished from the caller: &edit['.$table.'][-'.$uid.']=new&
-		$this->param = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('edit');
-		$this->defVals = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('defVals');
+		$this->param = GeneralUtility::_GP('edit');
+		$this->defVals = GeneralUtility::_GP('defVals');
 
 		// Create instance of template class for output
-		$this->doc = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
-		$this->doc->backPath = $GLOBALS['BACK_PATH'];
+		$this->doc = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
+		$this->doc->backPath = $this->getBackPath();
 		$this->doc->docType = 'xhtml_trans';
 		$this->doc->JScode = '';
 
@@ -215,7 +217,7 @@ class WizardController {
 				$this->pageinfo['uid'],
 				'mod.web_list'
 			);
-			$this->allowedNewTables = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(
+			$this->allowedNewTables = GeneralUtility::trimExplode(
 				',',
 				$this->web_list_modTSconfig['properties']['allowedNewTables'],
 				1
@@ -226,7 +228,7 @@ class WizardController {
 				$this->pageinfo['pid'],
 				'mod.web_list'
 			);
-			$this->allowedNewTables_pid = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(
+			$this->allowedNewTables_pid = GeneralUtility::trimExplode(
 				',',
 				$this->web_list_modTSconfig_pid['properties']['allowedNewTables'],
 				1
@@ -274,7 +276,7 @@ class WizardController {
 
 		// Slight spacer from header:
 		$this->code .= '<img' . \TYPO3\CMS\Backend\Utility\IconUtility::skinImg(
-				$this->doc->backPath,
+				$this->getBackPath(),
 				'gfx/ol/halfline.gif',
 				'width="18" height="8"'
 			) . ' alt="" /><br />';
@@ -293,22 +295,22 @@ class WizardController {
 					case 'new':
 						// Create new link for record:
 						$rowContent = '<img' . \TYPO3\CMS\Backend\Utility\IconUtility::skinImg(
-								$this->doc->backPath,
+								$this->getBackPath(),
 								'gfx/ol/join.gif',
 								'width="18" height="16"'
 							) . ' alt="" />' .
 							$this->linkWrap(
 								\TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIconForRecord($table, array()) .
-									$language->sL($GLOBALS['TCA'][$table]['ctrl']['title'], 1),
+									$language->sL(SettingsFactory::getInstance()->getTcaValue($table . '.ctrl.title'), 1),
 								$table,
 								$this->id
 							);
 
-							// Compile table row:
+						// Compile table row:
 						$tRows[] = '
 				<tr>
 					<td nowrap="nowrap">' . $rowContent . '</td>
-					<td>' . \TYPO3\CMS\Backend\Utility\BackendUtility::cshItem($table, '', $GLOBALS['BACK_PATH'], '') . '</td>
+					<td>' . \TYPO3\CMS\Backend\Utility\BackendUtility::cshItem($table, '', $this->getBackPath(), '') . '</td>
 				</tr>
 				';
 						break;
@@ -318,11 +320,11 @@ class WizardController {
 			}
 		}
 
-			// Compile table row:
+		// Compile table row:
 		$tRows[] = '
 			<tr>
 				<td><img' . \TYPO3\CMS\Backend\Utility\IconUtility::skinImg(
-				$this->doc->backPath,
+				$this->getBackPath(),
 				'gfx/ol/stopper.gif',
 				'width="18" height="16"'
 			) . ' alt="" /></td>
@@ -330,18 +332,18 @@ class WizardController {
 			</tr>
 		';
 
-			// Make table:
+		// Make table:
 		$this->code .= '
 			<table border="0" cellpadding="0" cellspacing="0" id="typo3-newRecord">
 			' . implode('', $tRows) . '
 			</table>
 		';
 
-			// Add CSH:
+		// Add CSH:
 		$this->code .= \TYPO3\CMS\Backend\Utility\BackendUtility::cshItem(
 			'xMOD_csh_corebe',
 			'new_regular',
-			$GLOBALS['BACK_PATH'],
+			$this->getBackPath(),
 			'<br/>'
 		);
 	}
@@ -359,7 +361,7 @@ class WizardController {
 	 */
 	protected function linkWrap($code, $table, $pid) {
 		$params = '&edit[' . $table . '][' . $pid . ']=new' . $this->compileDefVals($table);
-		$onClick = \TYPO3\CMS\Backend\Utility\BackendUtility::editOnClick($params, $GLOBALS['BACK_PATH'], $this->returnUrl);
+		$onClick = \TYPO3\CMS\Backend\Utility\BackendUtility::editOnClick($params, $this->getBackPath(), $this->returnUrl);
 
 		return '<a href="#" onclick="' . htmlspecialchars($onClick) . '">' . $code . '</a>';
 	}
@@ -372,7 +374,7 @@ class WizardController {
 	 * @return string
 	 */
 	protected function compileDefVals($table) {
-		$data = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('defVals');
+		$data = GeneralUtility::_GP('defVals');
 		if (is_array($data[$table])) {
 			$result = '';
 			foreach ($data[$table] as $key => $value) {
@@ -398,7 +400,7 @@ class WizardController {
 		$result = FALSE;
 
 		if (!is_array($row)) {
-			if ($GLOBALS['BE_USER']->user['admin']) {
+			if ($this->getBackendUser()->user['admin']) {
 				$result = TRUE;
 			} else {
 				$result = FALSE;
@@ -415,7 +417,7 @@ class WizardController {
 				}
 
 					// If all tables or the table is listed as a allowed type, return true
-				if (strstr($allowedTableList, '*') || \TYPO3\CMS\Core\Utility\GeneralUtility::inList($allowedTableList, $checkTable)) {
+				if (strstr($allowedTableList, '*') || GeneralUtility::inList($allowedTableList, $checkTable)) {
 					$result = TRUE;
 				}
 			}
@@ -456,5 +458,14 @@ class WizardController {
 	 */
 	protected function getLanguageService() {
 		return $GLOBALS['LANG'];
+	}
+
+	/**
+	 * Get back path
+	 *
+	 * @return string
+	 */
+	protected function getBackPath() {
+		return $GLOBALS['BACK_PATH'];
 	}
 }

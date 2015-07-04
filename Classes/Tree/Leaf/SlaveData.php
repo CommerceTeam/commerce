@@ -112,14 +112,4 @@ abstract class SlaveData extends Data {
 
 		$this->records = $this->loadRecords();
 	}
-
-
-	/**
-	 * Get backend user
-	 *
-	 * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
-	 */
-	protected function getBackendUser() {
-		return $GLOBALS['BE_USER'];
-	}
 }

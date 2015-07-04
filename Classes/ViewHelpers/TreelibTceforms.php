@@ -12,6 +12,7 @@ namespace CommerceTeam\Commerce\ViewHelpers;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -70,15 +71,6 @@ class TreelibTceforms {
 	 * @access private
 	 */
 	protected $itemArrayProcessed = array();
-
-	/**
-	 * Defines if the content of the iframe should be
-	 * rendered instead of the iframe itself.
-	 * This is for iframe mode.
-	 *
-	 * @var bool
-	 */
-	protected $iframeContentRendering = FALSE;
 
 	/**
 	 * Defines the prefix used for JS code to call the parent window.
@@ -159,42 +151,6 @@ class TreelibTceforms {
 		// set currently selected items
 		$itemArray = GeneralUtility::trimExplode(',', $this->PA['itemFormElValue'], TRUE);
 		$this->setItemArray($itemArray);
-
-		$this->setIframeContentRendering($this->config['treeViewBrowseable'] === 'iframeContent');
-	}
-
-	/**
-	 * Enable the iframe content rendering mode
-	 *
-	 * @param bool $iFrameContentRendering Iframe rendering
-	 * @param string $jsParent Javascript parent
-	 *
-	 * @return void
-	 */
-	public function setIframeContentRendering($iFrameContentRendering = TRUE, $jsParent = 'parent.') {
-		if (($this->iframeContentRendering = $iFrameContentRendering)) {
-			$this->jsParent = $jsParent;
-		} else {
-			$this->jsParent = '';
-		}
-	}
-
-	/**
-	 * Returns true if iframe content rendering mode is enabled
-	 *
-	 * @return bool
-	 */
-	public function isIframeContentRendering() {
-		return $this->iframeContentRendering;
-	}
-
-	/**
-	 * Returns true if iframe content rendering mode is enabled
-	 *
-	 * @return bool
-	 */
-	public function isIframeRendering() {
-		return ($this->config['treeViewBrowseable'] && !$this->iframeContentRendering);
 	}
 
 	/**
@@ -233,15 +189,6 @@ class TreelibTceforms {
 	 */
 	public function getItemCountTrees() {
 		return $this->treesC;
-	}
-
-	/**
-	 * Returns the rendered trees (HTML)
-	 *
-	 * @return string
-	 */
-	public function getTreeContent() {
-		return $this->treeContent;
 	}
 
 	/* Rendering */
@@ -283,99 +230,20 @@ class TreelibTceforms {
 			// include function
 		$divFrame .= '<script type="text/javascript">';
 		$divFrame .= '
-			function jumpTo(id,linkObj,highLightID,script)	{
+			function jumpTo(id, linkObj, highLightID, script) {
 				var catUid = id.substr(id.lastIndexOf("=") + 1); //We can leave out the "="
-				var text   = (linkObj.firstChild) ? linkObj.firstChild.nodeValue : "Unknown";
+				var text = (linkObj.firstChild) ? linkObj.firstChild.nodeValue : "Unknown";
 				//Params (field, value, caption)
 				setFormValueFromBrowseWin("' . $this->PA['itemFormElName'] . '", catUid, text);
 			}';
 		$divFrame .= '</script>';
 		$divFrame .= '<script src="' . $this->tceforms->backPath . 'js/tree.js"></script>
 			<script type="text/javascript">
-			Tree.ajaxID = "CommerceTeam_Commerce_CategoryViewHelper::ajaxExpandCollapse";
+			Tree.ajaxID = "CommerceTeam_Commerce_CategoryViewHelper::ajaxExpandCollapseWithoutProduct";
 			</script>
 		';
 
 		return $divFrame;
-	}
-
-	/* IFrame specific stuff */
-
-	/**
-	 * Set the script to be called for the iframe tree browser.
-	 *
-	 * @param string $script Path to the script
-	 *
-	 * @return void
-	 */
-	public function setIframeTreeBrowserScript($script) {
-		$this->treeBrowserScript = $script;
-	}
-
-	/**
-	 * Returns iframe HTML code to call the tree browser script.
-	 *
-	 * @param string $width CSS width definition
-	 * @param string $height CSS height definition
-	 *
-	 * @return string HTML content
-	 */
-	public function renderIframe($width = NULL, $height = NULL) {
-		if (!$this->treeBrowserScript) {
-			die ('CommerceTeam\\Commerce\\ViewHelpers\\TreelibTceforms: treeBrowserScript is not set!');
-		}
-
-		if ($width == NULL) {
-			list($width, $height) = $this->calcFrameSizeCss();
-		}
-
-		$table = $GLOBALS['TCA'][$this->table]['orig_table'] ? $GLOBALS['TCA'][$this->table]['orig_table'] : $this->table;
-
-		$iFrameParameter = $this->getIframeParameter($table, $this->field, $this->row['uid']);
-
-		$divStyle = 'height:' . $height . '; width:' . $width . '; border:solid 1px #000; background:#fff;';
-		$iFrame = '<iframe src="' . htmlspecialchars($this->treeBrowserScript . '?' . $iFrameParameter ) .
-			'" name="' . $this->PA['itemFormElName'] . '_selTree" border="1" style="' . htmlspecialchars($divStyle) . '">';
-		$iFrame .= '</iframe>';
-
-		return $iFrame;
-	}
-
-	/**
-	 * Returns GET parameter string to be passed to the tree browser script.
-	 *
-	 * @param string $table Table
-	 * @param string $field Field
-	 * @param string $uid Uid
-	 *
-	 * @return string
-	 * @see tx_dam_treelib_browser
-	 */
-	public function getIframeParameter($table, $field, $uid) {
-		$params = array();
-
-		$config = '';
-		if ($GLOBALS['TCA'][$table]['columns'][$field]['config']['type'] == 'flex') {
-			$config = base64_encode(serialize($this->PA['fieldConf']));
-		}
-
-		$allowProducts = 0;
-
-		if (1 == $this->config['allowProducts']) {
-			$allowProducts = 1;
-		}
-
-		$params['table'] = $table;
-		$params['field'] = $field;
-		$params['uid'] = $uid;
-		$params['elname'] = $this->PA['itemFormElName'];
-		$params['config'] = $config;
-		$params['allowProducts'] = $allowProducts;
-		$params['seckey'] = GeneralUtility::shortMD5(
-			implode('|', $params) . '|' . $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey']
-		);
-
-		return GeneralUtility::implodeArrayForUrl('', $params);
 	}
 
 	/* Rendering tools */
@@ -518,7 +386,7 @@ class TreelibTceforms {
 		 * @var \CommerceTeam\Commerce\Tree\CategoryMounts $mounts
 		 */
 		$mounts = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryMounts');
-		$mounts->init($GLOBALS['BE_USER']->user['uid']);
+		$mounts->init($this->getBackendUser()->user['uid']);
 
 		if (is_array($parent)) {
 			for ($i = 0, $l = count($parent); $i < $l; $i++) {
@@ -576,7 +444,7 @@ class TreelibTceforms {
 		 * @var \CommerceTeam\Commerce\Tree\CategoryMounts $mounts
 		 */
 		$mounts = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryMounts');
-		$mounts->init($GLOBALS['BE_USER']->user['uid']);
+		$mounts->init($this->getBackendUser()->user['uid']);
 
 		// Separate Key and Title with a |
 		$title = ($category->isPermissionSet('show') && $mounts->isInCommerceMounts($category->getUid())) ?
@@ -745,5 +613,14 @@ class TreelibTceforms {
 	 */
 	protected function getLanguageService() {
 		return $GLOBALS['LANG'];
+	}
+
+	/**
+	 * Get backend user
+	 *
+	 * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
+	 */
+	protected function getBackendUser() {
+		return $GLOBALS['BE_USER'];
 	}
 }

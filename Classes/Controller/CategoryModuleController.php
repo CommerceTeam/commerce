@@ -106,7 +106,7 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList {
 		 * @var \TYPO3\CMS\Backend\Template\DocumentTemplate $doc
 		 */
 		$doc = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
-		$doc->backPath = $GLOBALS['BACK_PATH'];
+		$doc->backPath = $this->getBackPath();
 		$doc->setModuleTemplate(PATH_TXCOMMERCE . 'Resources/Private/Backend/mod_category_index.html');
 		$this->doc = $doc;
 	}
@@ -193,7 +193,7 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList {
 		 * @var $dbList \CommerceTeam\Commerce\ViewHelpers\CategoryRecordList
 		 */
 		$dbList = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\ViewHelpers\\CategoryRecordList');
-		$dbList->backPath = $GLOBALS['BACK_PATH'];
+		$dbList->backPath = $this->getBackPath();
 		$dbList->script = BackendUtility::getModuleUrl('txcommerceM1_category', array(), '');
 
 		/**
@@ -318,18 +318,18 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList {
 			$listUrl = $dbList->listURL();
 			// Add JavaScript functions to the page:
 			$this->doc->JScode = $this->doc->wrapScriptTags('
-				function jumpExt(URL,anchor) {	//
-					var anc = anchor?anchor:"";
-					window.location.href = URL+(T3_THIS_LOCATION?"&returnUrl="+T3_THIS_LOCATION:"")+anc;
+				function jumpExt(URL, anchor) {
+					var anc = anchor ? anchor : "";
+					window.location.href = URL + (T3_THIS_LOCATION ? "&returnUrl=" + T3_THIS_LOCATION : "") + anc;
 					return false;
 				}
-				function jumpSelf(URL) {	//
-					window.location.href = URL+(T3_RETURN_URL?"&returnUrl="+T3_RETURN_URL:"");
+				function jumpSelf(URL) {
+					window.location.href = URL + (T3_RETURN_URL ? "&returnUrl=" + T3_RETURN_URL : "");
 					return false;
 				}
 
-				function setHighlight(id) {	//
-					top.fsMod.recentIds["web"]=id;
+				function setHighlight(id) {
+					top.fsMod.recentIds["web"] = id;
 					top.fsMod.navFrameHighlightedID["web"]="pages"+id+"_"+top.fsMod.currentBank;	// For highlighting
 
 					if (top.content && top.content.nav_frame && top.content.nav_frame.refresh_nav) {
@@ -338,25 +338,25 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList {
 				}
 				' . $this->doc->redirectUrls($listUrl) . '
 				' . $dbList->CBfunctions() . '
-				function editRecords(table,idList,addParams,CBflag) {	//
-					window.location.href="' . $GLOBALS['BACK_PATH'] . 'alt_doc.php?returnUrl=' .
+				function editRecords(table,idList,addParams,CBflag) {
+					window.location.href="' . $this->getBackPath() . 'alt_doc.php?returnUrl=' .
 					rawurlencode(GeneralUtility::getIndpEnv('REQUEST_URI')) . '&edit["+table+"]["+idList+"]=edit"+addParams;
 				}
-				function editList(table,idList) {	//
-					var list="";
+				function editList(table, idList) {
+					var list = "";
 
-						// Checking how many is checked, how many is not
-					var pointer=0;
+					// Checking how many is checked, how many is not
+					var pointer = 0;
 					var pos = idList.indexOf(",");
-					while (pos!=-1) {
-						if (cbValue(table+"|"+idList.substr(pointer,pos-pointer))) {
-							list+=idList.substr(pointer,pos-pointer)+",";
+					while (pos != -1) {
+						if (cbValue(table + "|" + idList.substr(pointer, pos-pointer))) {
+							list += idList.substr(pointer, pos-pointer) + ",";
 						}
-						pointer=pos+1;
-						pos = idList.indexOf(",",pointer);
+						pointer = pos + 1;
+						pos = idList.indexOf(",", pointer);
 					}
-					if (cbValue(table+"|"+idList.substr(pointer))) {
-						list+=idList.substr(pointer)+",";
+					if (cbValue(table + "|" + idList.substr(pointer))) {
+						list += idList.substr(pointer) + ",";
 					}
 
 					return list ? list : idList;
@@ -531,22 +531,23 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList {
 				'tx_commerce_categories', $categoryRecord, array('title' => $alttext)
 			);
 			// Make Icon:
-			$theIcon = $GLOBALS['SOBE']->doc->wrapClickMenuOnIcon($iconImg, 'tx_commerce_categories', $categoryRecord['uid']);
+			$theIcon = $this->doc->wrapClickMenuOnIcon($iconImg, 'tx_commerce_categories', $categoryRecord['uid']);
 			$uid = $categoryRecord['uid'];
 			$title = BackendUtility::getRecordTitle('tx_commerce_categories', $categoryRecord);
 		} else {
+			$title = $GLOBALS['TYPO3_CONF_VARS']['SYS']['sitename'];
+
 			// On root-level of page tree
 			// Make Icon
-			$iconImg = IconUtility::getSpriteIcon(
-				'apps-pagetree-root', array('title' => htmlspecialchars($GLOBALS['TYPO3_CONF_VARS']['SYS']['sitename']))
-			);
-			if ($this->getBackendUser()->user['admin']) {
-				$theIcon = $GLOBALS['SOBE']->doc->wrapClickMenuOnIcon($iconImg, 'tx_commerce_categories', 0);
+			$iconImg = IconUtility::getSpriteIcon('apps-pagetree-root', array('title' => htmlspecialchars($title)));
+
+			if ($this->getBackendUser()->isAdmin()) {
+				$theIcon = $this->doc->wrapClickMenuOnIcon($iconImg, 'tx_commerce_categories', 0);
 			} else {
 				$theIcon = $iconImg;
 			}
+
 			$uid = '0';
-			$title = $GLOBALS['TYPO3_CONF_VARS']['SYS']['sitename'];
 		}
 
 		// Setting icon with clickmenu + uid
@@ -608,22 +609,23 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList {
 			$alttext = BackendUtility::getRecordIconAltText($pageRecord, 'pages');
 			$iconImg = IconUtility::getSpriteIconForRecord('pages', $pageRecord, array('title' => $alttext));
 			// Make Icon:
-			$theIcon = $GLOBALS['SOBE']->doc->wrapClickMenuOnIcon($iconImg, 'pages', $pageRecord['uid']);
+			$theIcon = $this->doc->wrapClickMenuOnIcon($iconImg, 'pages', $pageRecord['uid']);
 			$uid = $pageRecord['uid'];
 			$title = BackendUtility::getRecordTitle('pages', $pageRecord);
 		} else {
+			$title = $GLOBALS['TYPO3_CONF_VARS']['SYS']['sitename'];
+
 			// On root-level of page tree
 			// Make Icon
-			$iconImg = IconUtility::getSpriteIcon(
-				'apps-pagetree-root', array('title' => htmlspecialchars($GLOBALS['TYPO3_CONF_VARS']['SYS']['sitename']))
-			);
-			if ($this->getBackendUser()->user['admin']) {
-				$theIcon = $GLOBALS['SOBE']->doc->wrapClickMenuOnIcon($iconImg, 'pages', 0);
+			$iconImg = IconUtility::getSpriteIcon('apps-pagetree-root', array('title' => htmlspecialchars($title)));
+
+			if ($this->getBackendUser()->isAdmin()) {
+				$theIcon = $this->doc->wrapClickMenuOnIcon($iconImg, 'pages', 0);
 			} else {
 				$theIcon = $iconImg;
 			}
+
 			$uid = '0';
-			$title = $GLOBALS['TYPO3_CONF_VARS']['SYS']['sitename'];
 		}
 
 		// Setting icon with clickmenu + uid
@@ -632,6 +634,15 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList {
 		return $pageInfo;
 	}
 
+
+	/**
+	 * Get back path
+	 *
+	 * @return string
+	 */
+	protected function getBackPath() {
+		return $GLOBALS['BACK_PATH'];
+	}
 
 	/**
 	 * Get backend user

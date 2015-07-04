@@ -407,9 +407,9 @@ class AbstractEntity {
 	 * @return void
 	 */
 	public function setPageTitle($field = 'title') {
-		$this->getFrontendController()->page['title'] = $this->$field . ' : ' . $GLOBALS['TSFE']->page['title'];
+		$this->getFrontendController()->page['title'] = $this->$field . ' : ' . $this->getFrontendController()->page['title'];
 		// set pagetitle for indexed search also
-		$this->getFrontendController()->indexedDocTitle = $this->$field . ' : ' . $GLOBALS['TSFE']->indexedDocTitle;
+		$this->getFrontendController()->indexedDocTitle = $this->$field . ' : ' . $this->getFrontendController()->indexedDocTitle;
 	}
 
 

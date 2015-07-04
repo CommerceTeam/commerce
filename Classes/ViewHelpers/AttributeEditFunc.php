@@ -13,6 +13,7 @@ namespace CommerceTeam\Commerce\ViewHelpers;
  * The TYPO3 project - inspiring people to share!
  */
 
+use CommerceTeam\Commerce\Factory\SettingsFactory;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 
 /**
@@ -44,7 +45,7 @@ class AttributeEditFunc {
 		 * @var \TYPO3\CMS\Backend\Template\SmallDocumentTemplate $doc
 		 */
 		$doc = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\SmallDocumentTemplate');
-		$doc->backPath = $GLOBALS['BACK_PATH'];
+		$doc->backPath = $this->getBackPath();
 
 		$attributeStoragePid = $parameter['row']['pid'];
 		$attributeUid = $parameter['row']['uid'];
@@ -54,7 +55,7 @@ class AttributeEditFunc {
 
 		// @todo TS config of fields in list
 		$rowFields = array('attributes_uid', 'value');
-		$titleCol = $GLOBALS['TCA'][$foreignTable]['ctrl']['label'];
+		$titleCol = SettingsFactory::getInstance()->getTcaValue($foreignTable . '.ctrl.label');
 
 			// Create the SQL query for selecting the elements in the listing:
 		$result = $database->exec_SELECTquery(
@@ -96,9 +97,8 @@ class AttributeEditFunc {
 			while (($row = $database->sql_fetch_assoc($result))) {
 				$cc++;
 				$rowBackgroundColor = (
-					($cc % 2) ?
-					'' :
-					' bgcolor="' . \TYPO3\CMS\Core\Utility\GeneralUtility::modifyHTMLColor($GLOBALS['SOBE']->doc->bgColor4, 10, 10, 10) . '"'
+					($cc % 2) ? '' : ' bgcolor="' .
+					\TYPO3\CMS\Core\Utility\GeneralUtility::modifyHTMLColor($GLOBALS['SOBE']->doc->bgColor4, 10, 10, 10) . '"'
 				);
 
 				/**
@@ -115,7 +115,7 @@ class AttributeEditFunc {
 						case $titleCol:
 							$params = '&edit[' . $foreignTable . '][' . $row['uid'] . ']=edit';
 							$wrap = array(
-								'<a href="#" onclick="' . htmlspecialchars(BackendUtility::editOnClick($params, $GLOBALS['BACK_PATH'])) . '">',
+								'<a href="#" onclick="' . htmlspecialchars(BackendUtility::editOnClick($params, $this->getBackPath())) . '">',
 								'</a>'
 							);
 							break;
@@ -169,7 +169,7 @@ class AttributeEditFunc {
 		 */
 		$params = '&edit[' . $foreignTable . '][' . $attributeStoragePid . ']=new&defVals[' . $foreignTable . '][attributes_uid]=' .
 			urlencode($attributeUid);
-		$onClickAction = 'onclick="' . htmlspecialchars(BackendUtility::editOnClick($params, $GLOBALS['BACK_PATH'])) . '"';
+		$onClickAction = 'onclick="' . htmlspecialchars(BackendUtility::editOnClick($params, $this->getBackPath())) . '"';
 
 		$content .= '<div id="typo3-newRecordLink">
 			<a href="#" ' . $onClickAction . '>
@@ -197,5 +197,14 @@ class AttributeEditFunc {
 	 */
 	protected function getLanguageService() {
 		return $GLOBALS['LANG'];
+	}
+
+	/**
+	 * Get back path
+	 *
+	 * @return string
+	 */
+	protected function getBackPath() {
+		return $GLOBALS['BACK_PATH'];
 	}
 }

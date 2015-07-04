@@ -106,11 +106,11 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
 		$localCalcPerms = $this->getBackendUser()->calcPerms($row);
 		// CSH
 		if (!strlen($this->id)) {
-			$buttons['csh'] = BackendUtility::cshItem('xMOD_csh_commerce', 'list_module_noId', $GLOBALS['BACK_PATH'], '', TRUE);
+			$buttons['csh'] = BackendUtility::cshItem('xMOD_csh_commerce', 'list_module_noId', $this->getBackPath(), '', TRUE);
 		} elseif (!$this->id) {
-			$buttons['csh'] = BackendUtility::cshItem('xMOD_csh_commerce', 'list_module_root', $GLOBALS['BACK_PATH'], '', TRUE);
+			$buttons['csh'] = BackendUtility::cshItem('xMOD_csh_commerce', 'list_module_root', $this->getBackPath(), '', TRUE);
 		} else {
-			$buttons['csh'] = BackendUtility::cshItem('xMOD_csh_commerce', 'list_module', $GLOBALS['BACK_PATH'], '', TRUE);
+			$buttons['csh'] = BackendUtility::cshItem('xMOD_csh_commerce', 'list_module', $this->getBackPath(), '', TRUE);
 		}
 		if (isset($this->id)) {
 			// New record
@@ -1714,5 +1714,14 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
 	 */
 	protected function getDocumentTemplate() {
 		return $GLOBALS['TBE_TEMPLATE'];
+	}
+
+	/**
+	 * Get back path
+	 *
+	 * @return string
+	 */
+	protected function getBackPath() {
+		return $GLOBALS['BACK_PATH'];
 	}
 }

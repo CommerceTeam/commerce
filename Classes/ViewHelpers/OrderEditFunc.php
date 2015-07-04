@@ -111,7 +111,7 @@ class OrderEditFunc {
 		 * @var \TYPO3\CMS\Backend\Template\DocumentTemplate $doc
 		 */
 		$doc = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
-		$doc->backPath = $GLOBALS['BACK_PATH'];
+		$doc->backPath = $this->getBackPath();
 
 		/**
 		 * GET Storage PID and order_id from Data
@@ -224,7 +224,7 @@ class OrderEditFunc {
 							if ($orderEditable) {
 								$params = '&edit[' . $foreignTable . '][' . $row['uid'] . ']=edit';
 								$wrap = array(
-									'<a href="#" onclick="' . htmlspecialchars(BackendUtility::editOnClick($params, $GLOBALS['BACK_PATH'])) . '">',
+									'<a href="#" onclick="' . htmlspecialchars(BackendUtility::editOnClick($params, $this->getBackPath())) . '">',
 									'</a>'
 								);
 							}
@@ -234,7 +234,7 @@ class OrderEditFunc {
 							$iOut .= '<td>';
 							if ($orderEditable) {
 								$params = '&edit[' . $foreignTable . '][' . $row['uid'] . ']=edit&columnsOnly=amount';
-								$onclickAction = 'onclick="' . htmlspecialchars(BackendUtility::editOnClick($params, $GLOBALS['BACK_PATH'])) . '"';
+								$onclickAction = 'onclick="' . htmlspecialchars(BackendUtility::editOnClick($params, $this->getBackPath())) . '"';
 								$wrap = array(
 									'<b><a href="#" ' . $onclickAction . '>' . IconUtility::getSpriteIcon('actions-document-open'),
 									'</a></b>'
@@ -465,7 +465,7 @@ class OrderEditFunc {
 			 */
 			$params = '&edit[' . $table . '][' . $uid . ']=edit';
 
-			$onclickAction = 'onclick="' . htmlspecialchars(BackendUtility::editOnClick($params, $GLOBALS['BACK_PATH'])) . '"';
+			$onclickAction = 'onclick="' . htmlspecialchars(BackendUtility::editOnClick($params, $this->getBackPath())) . '"';
 			$headerWrap = array(
 				'<b><a href="#" ' . $onclickAction . '>',
 				'</a></b>'
@@ -518,10 +518,10 @@ class OrderEditFunc {
 		 * @var \CommerceTeam\Commerce\ViewHelpers\OrderRecordlist $dblist
 		 */
 		$dblist = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\ViewHelpers\\OrderRecordlist');
-		$dblist->backPath = $GLOBALS['BACK_PATH'];
+		$dblist->backPath = $this->getBackPath();
 		$dblist->script = 'index.php';
 		$dblist->calcPerms = $this->getBackendUser()->calcPerms($this->pageinfo);
-		$dblist->thumbs = $GLOBALS['BE_USER']->uc['thumbnailsByDefault'];
+		$dblist->thumbs = $this->getBackendUser()->uc['thumbnailsByDefault'];
 		$dblist->returnUrl = $this->returnUrl;
 		$dblist->allFields = 1;
 		$dblist->localizationView = $this->MOD_SETTINGS['localization'];
@@ -573,5 +573,14 @@ class OrderEditFunc {
 	 */
 	protected function getLanguageService() {
 		return $GLOBALS['LANG'];
+	}
+
+	/**
+	 * Get back path
+	 *
+	 * @return string
+	 */
+	protected function getBackPath() {
+		return $GLOBALS['BACK_PATH'];
 	}
 }

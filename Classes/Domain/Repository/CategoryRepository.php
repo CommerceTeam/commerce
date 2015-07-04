@@ -133,9 +133,13 @@ class CategoryRepository extends Repository {
 		}
 
 		$database = $this->getDatabaseConnection();
+		$frontend = $this->getFrontendController();
 		$this->uid = $uid;
-		if (is_object($GLOBALS['TSFE']->sys_page)) {
-			$additionalWhere = $GLOBALS['TSFE']->sys_page->enableFields($this->databaseTable, $GLOBALS['TSFE']->showHiddenRecords);
+		if (is_object($frontend->sys_page)) {
+			$additionalWhere = $frontend->sys_page->enableFields(
+				$this->databaseTable,
+				$frontend->showHiddenRecords
+			);
 		} else {
 			$additionalWhere = ' AND ' . $this->databaseTable . '.deleted = 0';
 		}
@@ -204,8 +208,9 @@ class CategoryRepository extends Repository {
 			$languageUid = 0;
 		}
 		$this->uid = $uid;
-		if ($languageUid == 0 && $this->getFrontendController()->tmpl->setup['config.']['sys_language_uid'] > 0) {
-			$languageUid = $this->getFrontendController()->tmpl->setup['config.']['sys_language_uid'];
+		$frontend = $this->getFrontendController();
+		if ($languageUid == 0 && $frontend->tmpl->setup['config.']['sys_language_uid'] > 0) {
+			$languageUid = $frontend->tmpl->setup['config.']['sys_language_uid'];
 		}
 		$this->lang_uid = $languageUid;
 
@@ -220,7 +225,7 @@ class CategoryRepository extends Repository {
 			$localOrderField = $hookObject->categoryOrder($this->categoryOrderField, $this);
 		}
 
-		$additionalWhere = $this->enableFields($this->databaseTable, $GLOBALS['TSFE']->showHiddenRecords);
+		$additionalWhere = $this->enableFields($this->databaseTable, $frontend->showHiddenRecords);
 
 		$database = $this->getDatabaseConnection();
 
@@ -246,7 +251,7 @@ class CategoryRepository extends Repository {
 						'uid',
 						'tx_commerce_categories',
 						'l18n_parent = ' . (int) $row['uid_local'] . ' AND sys_language_uid=' . $languageUid .
-							$this->enableFields('tx_commerce_categories', $GLOBALS['TSFE']->showHiddenRecords)
+							$this->enableFields('tx_commerce_categories', $frontend->showHiddenRecords)
 					);
 
 					if ($database->sql_num_rows($lresult)) {
@@ -282,8 +287,9 @@ class CategoryRepository extends Repository {
 			$languageUid = 0;
 		}
 		$this->uid = $uid;
-		if ($languageUid == 0 && $this->getFrontendController()->tmpl->setup['config.']['sys_language_uid'] > 0) {
-			$languageUid = $this->getFrontendController()->tmpl->setup['config.']['sys_language_uid'];
+		$frontend = $this->getFrontendController();
+		if ($languageUid == 0 && $frontend->tmpl->setup['config.']['sys_language_uid'] > 0) {
+			$languageUid = $frontend->tmpl->setup['config.']['sys_language_uid'];
 		}
 		$this->lang_uid = $languageUid;
 
@@ -297,10 +303,10 @@ class CategoryRepository extends Repository {
 		$whereClause = 'AND tx_commerce_products_categories_mm.uid_foreign = ' . (int) $uid . '
 			AND tx_commerce_products.uid=tx_commerce_articles.uid_product
 			AND tx_commerce_articles.uid=tx_commerce_article_prices.uid_article ';
-		if (is_object($GLOBALS['TSFE']->sys_page)) {
-			$whereClause .= $this->enableFields('tx_commerce_products', $GLOBALS['TSFE']->showHiddenRecords);
-			$whereClause .= $this->enableFields('tx_commerce_articles', $GLOBALS['TSFE']->showHiddenRecords);
-			$whereClause .= $this->enableFields('tx_commerce_article_prices', $GLOBALS['TSFE']->showHiddenRecords);
+		if (is_object($frontend->sys_page)) {
+			$whereClause .= $this->enableFields('tx_commerce_products', $frontend->showHiddenRecords);
+			$whereClause .= $this->enableFields('tx_commerce_articles', $frontend->showHiddenRecords);
+			$whereClause .= $this->enableFields('tx_commerce_article_prices', $frontend->showHiddenRecords);
 		}
 
 			// Versioning - no deleted or versioned records, nor live placeholders
@@ -335,7 +341,7 @@ class CategoryRepository extends Repository {
 					$lresult = $database->exec_SELECTquery(
 						'uid',
 						'tx_commerce_products', 'l18n_parent = ' . (int) $row['uid'] . ' AND sys_language_uid=' . $languageUid .
-							$this->enableFields('tx_commerce_products', $GLOBALS['TSFE']->showHiddenRecords)
+							$this->enableFields('tx_commerce_products', $frontend->showHiddenRecords)
 					);
 					if ($database->sql_num_rows($lresult)) {
 						$data[] = (int) $row['uid'];
@@ -370,7 +376,7 @@ class CategoryRepository extends Repository {
 				'tx_commerce_categories
 					INNER JOIN tx_commerce_categories_parent_category_mm AS mm ON tx_commerce_categories.uid = mm.uid_local',
 				'tx_commerce_categories.uid = ' . (int) $categoryUid .
-				$this->enableFields('tx_commerce_categories', $GLOBALS['TSFE']->showHiddenRecords)
+				$this->enableFields('tx_commerce_categories', $this->getFrontendController()->showHiddenRecords)
 			);
 
 			if (is_array($row) && count($row) && $row['parent'] <> $categoryUid) {
@@ -383,24 +389,5 @@ class CategoryRepository extends Repository {
 		}
 
 		return $result;
-	}
-
-
-	/**
-	 * Get database connection
-	 *
-	 * @return \TYPO3\CMS\Dbal\Database\DatabaseConnection
-	 */
-	protected function getDatabaseConnection() {
-		return $GLOBALS['TYPO3_DB'];
-	}
-
-	/**
-	 * Get typoscript frontend controller
-	 *
-	 * @return \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController
-	 */
-	protected function getFrontendController() {
-		return $GLOBALS['TSFE'];
 	}
 }

@@ -141,7 +141,7 @@ class Master extends Leaf {
 	 */
 	protected function loadMountpoints() {
 		$this->mounts = GeneralUtility::makeInstance($this->mountClass);
-		$this->mounts->init($GLOBALS['BE_USER']->user['uid']);
+		$this->mounts->init($this->getBackendUser()->user['uid']);
 
 		$this->setMounts($this->mounts->getMountData());
 	}

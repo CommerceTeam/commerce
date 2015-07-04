@@ -138,14 +138,4 @@ class CategoryMounts extends \CommerceTeam\Commerce\Tree\Leaf\Mounts {
 
 		return FALSE;
 	}
-
-
-	/**
-	 * Get backend user
-	 *
-	 * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
-	 */
-	protected function getBackendUser() {
-		return $GLOBALS['BE_USER'];
-	}
 }

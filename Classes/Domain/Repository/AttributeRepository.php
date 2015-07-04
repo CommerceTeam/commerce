@@ -96,14 +96,4 @@ class AttributeRepository extends Repository {
 
 		return $childAttributeList;
 	}
-
-
-	/**
-	 * Get database connection
-	 *
-	 * @return \TYPO3\CMS\Core\Database\DatabaseConnection
-	 */
-	protected function getDatabaseConnection() {
-		return $GLOBALS['TYPO3_DB'];
-	}
 }

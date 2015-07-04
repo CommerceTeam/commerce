@@ -12,6 +12,7 @@ namespace CommerceTeam\Commerce\Tree\Leaf;
  *
  * The TYPO3 project - inspiring people to share!
  */
+use CommerceTeam\Commerce\Factory\HookFactory;
 
 /**
  * Implements the data view for a master leaf
@@ -210,14 +211,7 @@ abstract class MasterData extends Data {
 		}
 
 		// First prepare hook objects
-		$hookObjectsArr = array();
-		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['commerce/class.leafMasterData.php']['getRecordsByMountpointsClass'])) {
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['commerce/class.leafMasterData.php']['getRecordsByMountpointsClass'] as
-				$classRef
-			) {
-				$hookObjectsArr[] = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
-			}
-		}
+		$hooks = HookFactory::getHooks('commerce/Tree/Leaf/MasterData', 'getRecordsByMountpoints');
 
 		$positions = $this->getPositionsByIndices($index, $indices);
 
@@ -241,7 +235,7 @@ abstract class MasterData extends Data {
 		}
 
 		// Hook: getRecordsByMountpoints_preLoadRecords
-		foreach ($hookObjectsArr as $hookObj) {
+		foreach ($hooks as $hookObj) {
 			if (method_exists($hookObj, 'getRecordsByMountpoints_preLoadRecords')) {
 				$hookObj->getRecordsByMountpoints_preLoadRecords($positions, $this);
 			}
@@ -254,7 +248,7 @@ abstract class MasterData extends Data {
 		// have the mountpoint 0 - that mountpoint is not in the DB and thus you won't
 		// see the correct tree if you belong to that group, use this mount to create
 		// the relations in the MM table to the fictional root record
-		foreach ($hookObjectsArr as $hookObj) {
+		foreach ($hooks as $hookObj) {
 			if (method_exists($hookObj, 'getRecordsByMountpoints_postProcessRecords')) {
 				$hookObj->getRecordsByMountpoints_postProcessRecords($records, $this);
 			}
@@ -363,30 +357,11 @@ abstract class MasterData extends Data {
 		$root['uid'] = 0;
 		$root['pid'] = 0;
 		$root['title'] = $this->getLL('leaf.leaf.root');
-			// root always has pm icon
+		// root always has pm icon
 		$root['hasChildren'] = 1;
 		$root['lastNode'] = TRUE;
 		$root['item_parent'] = 0;
 
 		return $root;
-	}
-
-
-	/**
-	 * Get backend user
-	 *
-	 * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
-	 */
-	protected function getBackendUser() {
-		return $GLOBALS['BE_USER'];
-	}
-
-	/**
-	 * Get database connection
-	 *
-	 * @return \TYPO3\CMS\Core\Database\DatabaseConnection
-	 */
-	protected function getDatabaseConnection() {
-		return $GLOBALS['TYPO3_DB'];
 	}
 }

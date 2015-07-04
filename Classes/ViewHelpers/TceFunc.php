@@ -115,38 +115,14 @@ class TceFunc {
 		 */
 		$renderBrowseTrees = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\ViewHelpers\\TreelibTceforms');
 		$renderBrowseTrees->init($parameter);
-		$renderBrowseTrees->setIframeTreeBrowserScript(
-			$this->tceForms->backPath . PATH_TXCOMMERCE_REL . 'Classes/ViewHelpers/IframeTreeBrowser.php'
-		);
 
 		// Render the tree
 		$renderBrowseTrees->renderBrowsableMountTrees($browseTrees);
 
 		$thumbnails = '';
 		if (!$disabled) {
-			// @todo remove iframe part. only div rendering is sufficent enough
-			if ($renderBrowseTrees->isIframeContentRendering()) {
-				// just the trees are needed - we're inside of an iframe!
-				return $renderBrowseTrees->getTreeContent();
-			} elseif ($renderBrowseTrees->isIframeRendering()) {
-				// If we want to display a browseable tree, we need to run the tree in an iframe
-				// element. In the logic of tceforms the iframe is displayed in the "thumbnails"
-				// position. In consequence this means that the current function is both
-				// responsible for displaying the iframe
-				// and displaying the tree. It will be called twice then. Once from alt_doc.php
-				// and from dam/mod_treebrowser/index.php
-
-				// Within this if-condition the iframe is written
-				// The source of the iframe is dam/mod_treebrowser/index.php which will be
-				// called with the current _GET variables. In the configuration of the TCA
-				// treeViewBrowseable is set to TRUE. The value 'iframeContent' for
-				// treeViewBrowseable will be set in dam/mod_treebrowser/index.php as
-				// internal configuration logic
-				$thumbnails = $renderBrowseTrees->renderIframe();
-			} else {
-				// tree frame <div>
-				$thumbnails = $renderBrowseTrees->renderDivBox();
-			}
+			// tree frame <div>
+			$thumbnails = $renderBrowseTrees->renderDivBox();
 		}
 
 		// get selected processed items - depending on the table we want to insert
@@ -289,7 +265,7 @@ class TceFunc {
 		}
 
 		.x-tree-root-ct ul li.expanded ul {
-			background: url("/' . TYPO3_mainDir . '/sysext/t3skin/icons/gfx/ol/line.gif") repeat-y scroll left top transparent;
+			background: url("/' . TYPO3_mainDir . 'sysext/t3skin/icons/gfx/ol/line.gif") repeat-y scroll left top transparent;
 		}
 
 		.x-tree-root-ct ul li.expanded.last ul {

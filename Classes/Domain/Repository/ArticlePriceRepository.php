@@ -50,8 +50,8 @@ class ArticlePriceRepository extends Repository {
 		$proofSql = '';
 		$database = $this->getDatabaseConnection();
 
-		if (is_object($GLOBALS['TSFE']->sys_page)) {
-			$proofSql = $this->enableFields($this->databaseTable, $GLOBALS['TSFE']->showHiddenRecords);
+		if (is_object($this->getFrontendController()->sys_page)) {
+			$proofSql = $this->enableFields($this->databaseTable, $this->getFrontendController()->showHiddenRecords);
 		}
 
 		$result = $database->exec_SELECTquery('*', $this->databaseTable, 'uid = ' . $uid . $proofSql);
@@ -66,15 +66,5 @@ class ArticlePriceRepository extends Repository {
 
 		$this->error('exec_SELECTquery(\'*\',' . $this->databaseTable . ',\'uid = ' . $uid . '\'); returns no or more than one Result');
 		return FALSE;
-	}
-
-
-	/**
-	 * Get database connection
-	 *
-	 * @return \TYPO3\CMS\Core\Database\DatabaseConnection
-	 */
-	protected function getDatabaseConnection() {
-		return $GLOBALS['TYPO3_DB'];
 	}
 }
