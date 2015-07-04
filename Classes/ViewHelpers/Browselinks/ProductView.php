@@ -43,45 +43,6 @@ class ProductView extends \CommerceTeam\Commerce\Tree\Leaf\View {
 	protected $openProd = 0;
 
 	/**
-	 * Wrapping $title in a-tags.
-	 *
-	 * @param string $title Title string
-	 * @param array $row Item record
-	 * @param int $bank Bank pointer (which mount point number)
-	 *
-	 * @return string
-	 */
-	public function wrapTitle($title, array &$row, $bank = 0) {
-		if (!is_array($row) || !is_numeric($bank)) {
-			if (TYPO3_DLOG) {
-				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('wrapTitle (productview) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
-			}
-			return '';
-		}
-
-		// Max. size for Title of 30
-		$title = ('' != trim($title)) ? \TYPO3\CMS\Core\Utility\GeneralUtility::fixed_lgd_cs($title, 30) : $this->getLL('leaf.noTitle');
-
-		$aOnClick = 'return link_commerce(\'' . $this->getJumpToParam($row) . '\');';
-
-		$style = ($row['uid'] == $this->openProd) ? 'style="color: red; font-weight: bold"' : '';
-		$res = '<a href="#" onclick="' . htmlspecialchars($aOnClick) . '" ' . $style . '>' . $title . '</a>';
-
-		return $res;
-	}
-
-	/**
-	 * Setter
-	 *
-	 * @param int $uid Uid
-	 *
-	 * @return void
-	 */
-	public function setOpenProduct($uid) {
-		$this->openProd = $uid;
-	}
-
-	/**
 	 * Returns the link from the tree used to jump to a destination
 	 *
 	 * @param array $row Array with the ID Information
@@ -100,6 +61,49 @@ class ProductView extends \CommerceTeam\Commerce\Tree\Leaf\View {
 			return '';
 		}
 		$res = 'commerce:tx_commerce_products:' . $row['uid'] . '|tx_commerce_categories:' . $row['item_parent'];
+		return $res;
+	}
+
+	/**
+	 * Setter
+	 *
+	 * @param int $uid Uid
+	 *
+	 * @return void
+	 */
+	public function setOpenProduct($uid) {
+		$this->openProd = $uid;
+	}
+
+	/**
+	 * Wrapping $title in a-tags.
+	 *
+	 * @param string $title Title string
+	 * @param array $row Item record
+	 * @param int $bank Bank pointer (which mount point number)
+	 *
+	 * @return string
+	 */
+	public function wrapTitle($title, array &$row, $bank = 0) {
+		if (!is_array($row) || !is_numeric($bank)) {
+			if (TYPO3_DLOG) {
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
+					'wrapTitle (CommerceTeam\\Commerce\\ViewHelpers\\Browselinks\\ProductView) gets passed invalid parameters.',
+					COMMERCE_EXTKEY,
+					3
+				);
+			}
+			return '';
+		}
+
+		// Max. size for Title of 30
+		$title = ('' != trim($title)) ? \TYPO3\CMS\Core\Utility\GeneralUtility::fixed_lgd_cs($title, 30) : $this->getLL('leaf.noTitle');
+
+		$aOnClick = 'return link_commerce(\'' . $this->getJumpToParam($row) . '\');';
+
+		$style = ($row['uid'] == $this->openProd) ? 'style="color: red; font-weight: bold"' : '';
+		$res = '<a href="#" onclick="' . htmlspecialchars($aOnClick) . '" ' . $style . '>' . $title . '</a>';
+
 		return $res;
 	}
 }

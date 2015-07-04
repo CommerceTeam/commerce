@@ -36,6 +36,6 @@ class FeuserDaoMapper extends BasicDaoMapper {
 	 */
 	public function init() {
 		parent::init();
-		$this->createPid = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce']['create_feuser_pid'];
+		$this->createPid = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['create_feuser_pid'];
 	}
 }

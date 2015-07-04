@@ -889,7 +889,7 @@ class BasketController extends BaseController {
 
 		$tmpArray = $this->generateMarkerArray(
 			$article->returnAssocArray(),
-			$this->conf['articleTS.'],
+			(array) $this->conf['articleTS.'],
 			'article_',
 			'tx_commerce_articles'
 		);

@@ -366,6 +366,29 @@ $GLOBALS['TCA']['tx_commerce_products'] = array(
 					<existingArticles>
 						<TCEforms>
 							<config>
+								<!--<type>inline</type>
+								<foreign_field>uid_product</foreign_field>
+								<foreign_label>title</foreign_label>
+								<foreign_sortby>sorting</foreign_sortby>
+								<appearance>
+									<collapseAll>TRUE</collapseAll>
+									<expandSingle>TRUE</expandSingle>
+									<useSortable>TRUE</useSortable>
+									<levelLinksPosition>none</levelLinksPosition>
+									<showPossibleLocalizationRecords>FALSE</showPossibleLocalizationRecords>
+									<showRemovedLocalizationRecords>FALSE</showRemovedLocalizationRecords>
+									<showSynchronizationLink>FALSE</showSynchronizationLink>
+									<showAllLocalizationLink></showAllLocalizationLink>
+									<enabledControls>
+										<info>FALSE</info>
+										<new>FALSE</new>
+										<dragdrop>TRUE</dragdrop>
+										<sort>TRUE</sort>
+										<hide>TRUE</hide>
+										<delete>TRUE</delete>
+										<localize>FALSE</localize>
+									</enabledControls>
+								</appearance>-->
 								<type>user</type>
 								<userFunc>CommerceTeam\\Commerce\\Utility\\ArticleCreatorUtility->existingArticles</userFunc>
 							</config>

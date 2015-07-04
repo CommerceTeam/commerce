@@ -76,7 +76,7 @@ class CategoryView extends \CommerceTeam\Commerce\Tree\Leaf\View {
 	}
 
 	/**
-	 * Wrapping $title in a-tags.
+	 * Wrapping title in a-tags.
 	 *
 	 * @param string $title Title
 	 * @param string $row Record
@@ -88,7 +88,7 @@ class CategoryView extends \CommerceTeam\Commerce\Tree\Leaf\View {
 		if (!is_array($row) || !is_numeric($bank)) {
 			if (TYPO3_DLOG) {
 				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
-					'wrapTitle (CommerceTeam\\Commerce\\Tree\\Leaf\\View) gets passed invalid parameters.',
+					'wrapTitle (CommerceTeam\\Commerce\\ViewHelpers\\Browselinks\\CategoryView) gets passed invalid parameters.',
 					COMMERCE_EXTKEY,
 					3
 				);
@@ -96,14 +96,13 @@ class CategoryView extends \CommerceTeam\Commerce\Tree\Leaf\View {
 			return '';
 		}
 
-			// Max. size for Title of 30
+		// Max. size for Title of 30
 		$title = ('' != $title) ? \TYPO3\CMS\Core\Utility\GeneralUtility::fixed_lgd_cs($title, 30) : $this->getLL('leaf.noTitle');
 
 		$aOnClick = 'return link_commerce(\'' . $this->getJumpToParam($row) . '\');';
 		$style = ($row['uid'] == $this->openCat && 0 != $this->openCat) ? 'style="color: red; font-weight: bold"' : '';
-		$res = (($this->noRootOnclick && 0 == $row['uid']) || $this->noOnclick) ?
-			$title :
-			'<a href="#" onclick="' . htmlspecialchars($aOnClick) . '" ' . $style . '>' . $title . '</a>';
+		$res = (($this->noRootOnclick && 0 == $row['uid']) || $this->noOnclick) ? $title : '<a href="#" onclick="' .
+			htmlspecialchars($aOnClick) . '" ' . $style . '>' . $title . '</a>';
 
 		return $res;
 	}

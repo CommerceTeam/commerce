@@ -15,7 +15,7 @@ if (TYPO3_MODE == 'BE') {
 		'<INCLUDE_TYPOSCRIPT: source="FILE:EXT:' . COMMERCE_EXTKEY . '/Configuration/PageTS/ModWizards.ts">'
 	);
 
-		// add module after 'File'
+	// add module after 'File'
 	if (!isset($TBE_MODULES['txcommerceM1'])) {
 		$tbeModules = array();
 		foreach ($TBE_MODULES as $key => $val) {

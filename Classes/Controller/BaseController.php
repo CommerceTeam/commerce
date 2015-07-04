@@ -840,9 +840,18 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin 
 		$markerArray['ARTICLE_NUMBER'] = $article->getOrdernumber();
 		$markerArray['ARTICLE_ORDERNUMBER'] = $article->getOrdernumber();
 
-		$markerArray['ARTICLE_PRICE_NET'] = \CommerceTeam\Commerce\ViewHelpers\Money::format($article->getPriceNet(), $this->currency);
-		$markerArray['ARTICLE_PRICE_GROSS'] = \CommerceTeam\Commerce\ViewHelpers\Money::format($article->getPriceGross(), $this->currency);
-		$markerArray['DELIVERY_PRICE_NET'] = \CommerceTeam\Commerce\ViewHelpers\Money::format($article->getDeliveryCostNet(), $this->currency);
+		$markerArray['ARTICLE_PRICE_NET'] = \CommerceTeam\Commerce\ViewHelpers\Money::format(
+			$article->getPriceNet(),
+			$this->currency
+		);
+		$markerArray['ARTICLE_PRICE_GROSS'] = \CommerceTeam\Commerce\ViewHelpers\Money::format(
+			$article->getPriceGross(),
+			$this->currency
+		);
+		$markerArray['DELIVERY_PRICE_NET'] = \CommerceTeam\Commerce\ViewHelpers\Money::format(
+			$article->getDeliveryCostNet(),
+			$this->currency
+		);
 		$markerArray['DELIVERY_PRICE_GROSS'] = \CommerceTeam\Commerce\ViewHelpers\Money::format(
 			$article->getDeliveryCostGross(),
 			$this->currency
@@ -866,12 +875,12 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin 
 	 * in your template by you own
 	 *
 	 * @param array $addressArray Address Array (as result from Select DB or Session)
-	 * @param array $subpartMarker Subpart Template subpart
+	 * @param string $subpartTemplate Subpart Template subpart
 	 *
 	 * @return string $content string HTML-Content from the given Subpart.
 	 */
-	public function makeAdressView(array $addressArray, array $subpartMarker) {
-		$template = $this->cObj->getSubpart($this->templateCode, $subpartMarker);
+	public function makeAdressView(array $addressArray, $subpartTemplate) {
+		$template = $this->cObj->getSubpart($this->templateCode, $subpartTemplate);
 
 		$content = $this->cObj->substituteMarkerArray($template, $addressArray, '###|###', 1);
 
@@ -969,7 +978,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin 
 	 * in your template by you own
 	 *
 	 * @param Basket $basketObj Basket
-	 * @param array $subpartMarker Subpart Template Subpart
+	 * @param string $subpartTemplate Subpart Template Subpart
 	 *
 	 * @return string $content HTML-Ccontent from the given Subpart
 	 * @abstract
@@ -984,8 +993,8 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin 
 	 * ###SUM_TAX###
 	 * ###LABEL_SUM_GROSS### ###SUM_GROSS###
 	 */
-	public function makeBasketInformation(Basket $basketObj, array $subpartMarker) {
-		$template = $this->cObj->getSubpart($this->templateCode, $subpartMarker);
+	public function makeBasketInformation(Basket $basketObj, $subpartTemplate) {
+		$template = $this->cObj->getSubpart($this->templateCode, $subpartTemplate);
 		$basketObj->recalculateSums();
 		$markerArray['###SUM_NET###'] = \CommerceTeam\Commerce\ViewHelpers\Money::format(
 			$basketObj->getSumNet(), $this->currency, $this->showCurrency
@@ -1033,7 +1042,9 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin 
 		foreach ($taxRates as $taxRate => $taxRateSum) {
 			$taxRowArray = array();
 			$taxRowArray['###TAX_RATE###'] = $taxRate;
-			$taxRowArray['###TAX_RATE_SUM###'] = \CommerceTeam\Commerce\ViewHelpers\Money::format($taxRateSum, $this->currency, $this->showCurrency);
+			$taxRowArray['###TAX_RATE_SUM###'] = \CommerceTeam\Commerce\ViewHelpers\Money::format(
+				$taxRateSum, $this->currency, $this->showCurrency
+			);
 
 			$taxRateRows .= $this->cObj->substituteMarkerArray($taxRateTemplate, $taxRowArray);
 		}
@@ -1071,7 +1082,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin 
 	 * in your template by you own
 	 *
 	 * @param BasketItem $basketItemObj Basket Object
-	 * @param array $subpartMarker Subpart Template Subpart
+	 * @param string $subpartTemplate Subpart Template Subpart
 	 *
 	 * @return string $content HTML-Ccontent from the given Subpart
 	 * @abstract
@@ -1088,9 +1099,9 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin 
 	 * ###LANG_PRICESUM_NET### ###BASKET_ITEM_PRICESUM_NET### <br/>
 	 * ###LANG_PRICESUM_GROSS### ###BASKET_ITEM_PRICESUM_GROSS### <br/>
 	 */
-	public function makeLineView(BasketItem $basketItemObj, array $subpartMarker) {
+	public function makeLineView(BasketItem $basketItemObj, $subpartTemplate) {
 		$markerArray = array();
-		$template = $this->cObj->getSubpart($this->templateCode, $subpartMarker);
+		$template = $this->cObj->getSubpart($this->templateCode, $subpartTemplate);
 
 		/**
 		 * Basket Item Elements
@@ -1198,11 +1209,11 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin 
 			foreach ($data as $fieldName => $columnValue) {
 				// get TS config
 				$type = $typoscript['fields.'][$fieldName];
-				$config = $typoscript['fields.'][$fieldName . '.'];
+				$config = (array) $typoscript['fields.'][$fieldName . '.'];
 
 				if (empty($type)) {
 					$type = $typoscript['defaultField'];
-					$config = $typoscript['defaultField.'];
+					$config = (array) $typoscript['defaultField.'];
 				}
 				if ($type == 'IMAGE') {
 					$config['altText'] = $data['title'];
@@ -1773,6 +1784,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin 
 			$product->setRenderMaxArticles((int) $localTs['maxArticles']);
 		}
 
+		$subpartArray = array();
 		if (
 			$this->conf['disableArticleViewForProductlist'] == 1
 			&& !$this->piVars['showUid']

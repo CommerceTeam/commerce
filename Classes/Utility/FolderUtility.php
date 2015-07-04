@@ -95,7 +95,7 @@ class FolderUtility {
 	public static function makeSystemCatsProductsArtcilesAndPrices($catUid, $type, array $addArray) {
 		$pUid = self::makeProduct($catUid, $type, $addArray);
 			// create some articles, depending on the PAYMENT types
-		foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce']['SYSPRODUCTS'][$type]['types'] as $key => $value) {
+		foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['SYSPRODUCTS'][$type]['types'] as $key => $value) {
 			self::makeArticle($pUid, $key, $value, $addArray);
 		}
 	}

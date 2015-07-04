@@ -86,7 +86,7 @@ class OrdermailHooks {
 	 * @return self
 	 */
 	public function __construct() {
-		$this->extConf = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce']['extConf'];
+		$this->extConf = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf'];
 		$this->cObj = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
 		$this->csConvObj = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Charset\\CharsetConverter');
 		$this->templatePath = PATH_site . 'uploads/tx_commerce/';

@@ -12,19 +12,20 @@ namespace CommerceTeam\Commerce\Domain\Model;
  *
  * The TYPO3 project - inspiring people to share!
  */
+use CommerceTeam\Commerce\Factory\HookFactory;
 
 /**
- * Frontend libary for handling the basket. This class should be used
+ * Frontend library for handling the basket. This class should be used
  * when rendering the basket and changing the basket items.
  *
  * The basket object is stored as object within the Frontend user
- * fe_user->tx_commerce_basket, you could acces the Basket object in the Frontend
- * via frontend user basket;
+ * fe_user->tx_commerce_basket, you could access the Basket object in the
+ * Frontend via frontend user basket;
  *
- * Do not acces class variables directly, allways use the get and set methods,
+ * Do not access class variables directly, always use the get and set methods,
  * variables will be changed in php5 to private
  *
- * Basic class for basket_handeling inhertited from tx_commerce_basic_basket
+ * Basic class for basket_handling inherited from tx_commerce_basic_basket
  *
  * Class \CommerceTeam\Commerce\Domain\Model\Basket
  *
@@ -204,7 +205,7 @@ class Basket extends BasicBasket {
 		);
 
 		if (is_array($rows) && count($rows)) {
-			$hooks = \CommerceTeam\Commerce\Factory\HookFactory::getHooks('Domain/Model/Basket', 'loadDataFromDatabase');
+			$hooks = HookFactory::getHooks('Domain/Model/Basket', 'loadDataFromDatabase');
 
 			$basketReadonly = FALSE;
 			foreach ($rows as $returnData) {
@@ -251,20 +252,15 @@ class Basket extends BasicBasket {
 			'pos'
 		);
 
-		if (is_array($rows) && count($rows)) {
-			$hookObjectsArr = array();
-			if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Model/Basket.php']['loadPersistantDataFromDatabase'])) {
-				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Model/Basket.php']['loadPersistantDataFromDatabase'] as $classRef) {
-					$hookObjectsArr[] = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
-				}
-			}
+		if (is_array($rows) && !empty($rows)) {
+			$hooks = HookFactory::getHooks('Domain/Model/Basket', 'loadPersistentDataFromDatabase');
 
 			foreach ($rows as $returnData) {
 				if ($returnData['quantity'] > 0 && $returnData['price_id'] > 0) {
 					$this->addArticle($returnData['article_id'], $returnData['quantity']);
 					$this->crdate = $returnData['crdate'];
-					if (is_array($hookObjectsArr)) {
-						foreach ($hookObjectsArr as $hookObj) {
+					if (is_array($hooks)) {
+						foreach ($hooks as $hookObj) {
 							if (method_exists($hookObj, 'loadPersistantDataFromDatabase')) {
 								$hookObj->loadPersistantDataFromDatabase($returnData, $this);
 							}
@@ -327,7 +323,7 @@ class Basket extends BasicBasket {
 			'tx_commerce_baskets',
 			'sid = ' . $database->fullQuoteStr($this->getSessionId(), 'tx_commerce_baskets') . ' AND finished_time = 0'
 		);
-		$hooks = \CommerceTeam\Commerce\Factory\HookFactory::getHooks('Domain/Model/Basket', 'storeDataToDatabase');
+		$hooks = HookFactory::getHooks('Domain/Model/Basket', 'storeDataToDatabase');
 
 		// Get array keys from basket items to store correct position in basket
 		$arBasketItemsKeys = array_keys($this->basketItems);

@@ -402,7 +402,7 @@ class Product extends AbstractEntity {
 				}
 			}
 
-			if (count($attributeUids) > 0) {
+			if (!empty($attributeUids)) {
 				sort($attributeUids);
 
 				return $attributeUids;
@@ -468,7 +468,7 @@ class Product extends AbstractEntity {
 			}
 		}
 
-		return count($articleUidList) ? $articleUidList : array();
+		return !empty($articleUidList) ? $articleUidList : array();
 	}
 
 	/**
@@ -573,7 +573,7 @@ class Product extends AbstractEntity {
 			// overlay of the attribute
 			if (
 				$this->lang_uid > 0
-				&& count(array_intersect(array($currentAttributeUid), $attributeLanguageOverlayBlacklist))
+				&& !empty(array_intersect(array($currentAttributeUid), $attributeLanguageOverlayBlacklist))
 			) {
 				continue;
 			}
@@ -686,12 +686,9 @@ class Product extends AbstractEntity {
 				foreach ($valueListArrayRows as $valueListArrayRow) {
 					// Ignore row if this value list has already been calculated
 					// This might happen if method is called with multiple article uid's
-					if (count(
-							array_intersect(
-								array($valueListArrayRow['uid']), $targetDataArray[$currentAttributeUid]['valueuidlist']
-							)
-						)
-					) {
+					if (!empty(
+						array_intersect(array($valueListArrayRow['uid']), $targetDataArray[$currentAttributeUid]['valueuidlist'])
+					)) {
 						continue;
 					}
 
@@ -720,7 +717,7 @@ class Product extends AbstractEntity {
 
 		// Return "I didn't found anything, so I'm not an array"
 		// This hack is a re-implementation of the original matrix behaviour
-		if (count($targetDataArray) == 0) {
+		if (empty($targetDataArray)) {
 			return FALSE;
 		}
 
@@ -787,7 +784,7 @@ class Product extends AbstractEntity {
 			// value_char is only available in article->attribute mm table
 			$selectFields[] = $mmTable . '.value_char';
 			// Restrict article list if given
-			if (is_array($articleList) && count($articleList) > 0) {
+			if (is_array($articleList) && !empty($articleList)) {
 				$selectWhere[] = $parentTable . '.uid IN (' . implode(',', $articleList) . ')';
 			}
 		} else {
@@ -851,7 +848,7 @@ class Product extends AbstractEntity {
 	 */
 	public function getCheapestArticle($usePriceNet = 0) {
 		$this->loadArticles();
-		if (!is_array($this->articles_uids) || !count($this->articles_uids)) {
+		if (!is_array($this->articles_uids) || empty($this->articles_uids)) {
 			return FALSE;
 		}
 
@@ -969,7 +966,7 @@ class Product extends AbstractEntity {
 	public function getRelatedProducts() {
 		if (!$this->relatedProducts_loaded) {
 			$this->relatedProduct_uids = $this->databaseConnection->getRelatedProductUids($this->uid);
-			if (count($this->relatedProduct_uids)) {
+			if (!empty($this->relatedProduct_uids)) {
 				foreach (array_keys($this->relatedProduct_uids) as $productId) {
 					/**
 					 * Product
@@ -1048,7 +1045,7 @@ class Product extends AbstractEntity {
 			}
 
 			$addwhere2 = '';
-			if (is_array($articleList) && count($articleList) > 0) {
+			if (is_array($articleList) && !empty($articleList)) {
 				$queryArticleList = implode(',', $articleList);
 				$addwhere2 = ' AND tx_commerce_articles.uid in (' . $queryArticleList . ')';
 			}
@@ -1141,7 +1138,7 @@ class Product extends AbstractEntity {
 						}
 						usort(
 							$valuelist, array(
-								'tx_commerce_product',
+								'CommerceTeam\\Commerce\\Domain\\Model\\Product',
 								'compareBySorting'
 							)
 						);
@@ -1184,7 +1181,7 @@ class Product extends AbstractEntity {
 			$articleList = $this->loadArticles();
 
 			$addWhere = '';
-			if (is_array($articleList) && count($articleList) > 0) {
+			if (is_array($articleList) && !empty($articleList)) {
 				$queryArticleList = implode(',', $articleList);
 				$addWhere = 'uid_local IN (' . $queryArticleList . ')';
 			}
@@ -1206,14 +1203,13 @@ class Product extends AbstractEntity {
 				$attributeValuesList[] = $articleAttribute['uid_valuelist'];
 				if ($article != $articleAttribute['uid_local']) {
 					$current = & $values;
-					if (count($levels)) {
-						foreach ($levels as $level) {
-							if (!isset($current[$level])) {
-								$current[$level] = array();
-							}
-							$current = & $current[$level];
+					foreach ($levels as $level) {
+						if (!isset($current[$level])) {
+							$current[$level] = array();
 						}
+						$current = & $current[$level];
 					}
+
 					$levels = array();
 					$levelAttributes = array();
 					$article = $articleAttribute['uid_local'];
@@ -1223,17 +1219,15 @@ class Product extends AbstractEntity {
 			}
 
 			$current = & $values;
-			if (count($levels)) {
-				foreach ($levels as $level) {
-					if (!isset($current[$level])) {
-						$current[$level] = array();
-					}
-					$current = & $current[$level];
+			foreach ($levels as $level) {
+				if (!isset($current[$level])) {
+					$current[$level] = array();
 				}
+				$current = & $current[$level];
 			}
 
 			// Get the sorting value for all attribute values
-			if (count($attributeValuesList)) {
+			if (!empty($attributeValuesList)) {
 				$attributeValuesList = array_unique($attributeValuesList);
 				$attributeValuesList = implode($attributeValuesList, ',');
 				$attributeValueSortQuery = $database->exec_SELECTquery(
@@ -1475,6 +1469,18 @@ class Product extends AbstractEntity {
 	 */
 	public function removeArticle($uid) {
 		unset($this->articles[$uid]);
+	}
+
+	/**
+	 * Compare an array record by its sorting value
+	 *
+	 * @param array $array1 Left
+	 * @param array $array2 Right
+	 *
+	 * @return int
+	 */
+	public static function compareBySorting(array $array1, array $array2) {
+		return $array1['sorting'] - $array2['sorting'];
 	}
 
 

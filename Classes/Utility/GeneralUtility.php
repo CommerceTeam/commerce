@@ -76,7 +76,7 @@ class GeneralUtility {
 			$basketId = $feUser->getKey('ses', 'commerceBasketId');
 			if (
 				empty($basketId) &&
-				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce']['extConf']['useCookieAsBasketIdFallback']
+				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['useCookieAsBasketIdFallback']
 				&& $_COOKIE['commerceBasketId']
 			) {
 				$basketId = $_COOKIE['commerceBasketId'];
@@ -93,7 +93,7 @@ class GeneralUtility {
 			$basket->loadData();
 
 			if (
-				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce']['extConf']['useCookieAsBasketIdFallback']
+				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['useCookieAsBasketIdFallback']
 				&& !$_COOKIE['commerceBasketId']
 			) {
 				self::setCookie($basketId);

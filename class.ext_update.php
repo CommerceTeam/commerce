@@ -26,7 +26,3 @@ require_once(PATH_site . 'typo3conf/ext/commerce/Classes/Utility/UpdateUtility.p
  */
 class ext_update extends \CommerceTeam\Commerce\Utility\UpdateUtility {
 }
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/class.ext_update.php']) {
-	require_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/commerce/class.ext_update.php']);
-}
