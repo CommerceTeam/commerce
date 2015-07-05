@@ -1951,7 +1951,9 @@ class CheckoutController extends BaseController {
 
 			case 'static_info_country':
 				$countries = $this->staticInfo->initCountries(
-					$fieldConfig['country_association'], $this->getFrontendController()->tmpl->setup['config.']['language'], 1,
+					$fieldConfig['country_association'],
+					$this->getFrontendController()->tmpl->setup['config.']['language'],
+					1,
 					$fieldConfig['select']
 				);
 				asort($countries, SORT_LOCALE_STRING);
@@ -1960,8 +1962,13 @@ class CheckoutController extends BaseController {
 
 				$result = '<select id="' . $step . '-' . $fieldName . '" name="' . $this->prefixId . '[' . $step . '][' .
 					$fieldName . ']" class="' . $fieldConfig['cssClass'] . '">' . LF;
-				$result .= $this->staticInfo->optionsConstructor($countries, array($selected), array());
-				$result .= '</select>' . LF;
+				$options = array();
+				$result .= \SJBR\StaticInfoTables\Utility\HtmlElementUtility::optionsConstructor(
+					$countries,
+					array($selected),
+					$options
+				);
+				$result .= implode(LF, $options) . '</select>' . LF;
 				break;
 
 			case 'check':
