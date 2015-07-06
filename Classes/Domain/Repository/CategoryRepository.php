@@ -280,7 +280,7 @@ class CategoryRepository extends Repository {
 	 */
 	public function getChildProducts($uid, $languageUid = -1) {
 		if (empty($uid) || !is_numeric($uid)) {
-			return FALSE;
+			return array();
 		}
 
 		if ($languageUid == -1) {
@@ -328,7 +328,7 @@ class CategoryRepository extends Repository {
 
 		$database = $this->getDatabaseConnection();
 
-		$return = FALSE;
+		$return = array();
 		$result = $database->exec_SELECT_queryArray($queryArray);
 		if ($result !== FALSE) {
 			$data = array();
