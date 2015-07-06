@@ -13,31 +13,19 @@
 Commerce: TYPO3 commerce shopping system
 ==================================================================
 
-:Extension Key:
-	commerce
-
-:Language:
-	en
-
-:Keywords:
-	forEditors, forAdmins, forBeginners, forIntermediates
-
-:Copyright:
-	2015
-
-:Author:
-	Sebastian Fischer
-
-:Email:
-	typo3@evoweb.de
-
-:License:
-	Open Content License_
+:Extension Key: commerce
+:Language: en
+:Keywords: forEditors, forAdmins, forBeginners, forIntermediates
+:Copyright: 2015
+:Author: Sebastian Fischer
+:Email: typo3@evoweb.de
+:License: Open Content License_
 
 :Rendered:
 	|today|
 
- |img-logo| Commerce: TYPO3 commerce shopping system
+
+|img-logo| Commerce: TYPO3 commerce shopping system
 
 The content of this document is related to TYPO3,
 
@@ -48,7 +36,9 @@ a GNU/GPL CMS/Framework available from www.typo3.org_
    :titlesonly:
    :glob:
 
+   Configuration/Index
    Deprecation/Index
+   BreakingChanges/Index
    Targets
 
 .. _License: http://www.opencontent.org/opl.shtml
