@@ -395,15 +395,9 @@ class View extends Base {
 		}
 
 			// Wrap the Context Menu on the Icon if it is allowed
-		if (isset($GLOBALS['TBE_TEMPLATE']) && !$this->noClickmenu) {
-			/**
-			 * Template
-			 *
-			 * @var \TYPO3\CMS\Backend\Template\DocumentTemplate $template
-			 */
-			$template = $GLOBALS['TBE_TEMPLATE'];
-			$template->backPath = $this->backPath;
-			$icon = $template->wrapClickMenuOnIcon($icon, $this->table, $row['uid'], 0, $additionalParams);
+		if ($this->getDocumentTemplate() && !$this->noClickmenu) {
+			$this->getDocumentTemplate()->backPath = $this->getBackPath();
+			$icon = $this->getDocumentTemplate()->wrapClickMenuOnIcon($icon, $this->table, $row['uid'], 0, $additionalParams);
 		}
 		return $icon;
 	}
@@ -577,5 +571,14 @@ class View extends Base {
 	 */
 	protected function getBackPath() {
 		return $GLOBALS['BACK_PATH'];
+	}
+
+	/**
+	 * Get document template
+	 *
+	 * @return \TYPO3\CMS\Backend\Template\DocumentTemplate
+	 */
+	protected function getDocumentTemplate() {
+		return $GLOBALS['TBE_TEMPLATE'];
 	}
 }

@@ -81,14 +81,13 @@ class StatisticTree extends \TYPO3\CMS\Backend\Tree\View\BrowseTreeView {
 
 		// Wrap icon in click-menu link.
 		if (!$this->ext_IconMode) {
-			/**
-			 * Template
-			 *
-			 * @var \TYPO3\CMS\Backend\Template\DocumentTemplate $tbeTemplate
-			 */
-			$tbeTemplate = $GLOBALS['TBE_TEMPLATE'];
-
-			$thePageIcon = $tbeTemplate->wrapClickMenuOnIcon($thePageIcon, 'pages', $row['uid'], 0, '&bank=' . $this->bank);
+			$thePageIcon = $this->getDocumentTemplate()->wrapClickMenuOnIcon(
+				$thePageIcon,
+				'pages',
+				$row['uid'],
+				0,
+				'&bank=' . $this->bank
+			);
 		} elseif (!strcmp($this->ext_IconMode, 'titlelink')) {
 			$aOnClick = 'return jumpTo(\'' . $this->getJumpToParam($row) . '\',this,\'' . $this->treeName . '\');';
 			$thePageIcon = '<a href="#" onclick="' . htmlspecialchars($aOnClick) . '">' . $thePageIcon . '</a>';
@@ -130,5 +129,14 @@ class StatisticTree extends \TYPO3\CMS\Backend\Tree\View\BrowseTreeView {
 	 */
 	protected function getLanguageService() {
 		return $GLOBALS['LANG'];
+	}
+
+	/**
+	 * Get document template
+	 *
+	 * @return \TYPO3\CMS\Backend\Template\DocumentTemplate
+	 */
+	protected function getDocumentTemplate() {
+		return $GLOBALS['TBE_TEMPLATE'];
 	}
 }

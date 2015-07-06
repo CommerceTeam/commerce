@@ -122,11 +122,13 @@ class NewRecordController extends \TYPO3\CMS\Backend\Controller\NewRecordControl
 	public function linkWrap($linkText, $table, $pid, $addContentTable = FALSE) {
 		$parameters = '&edit[' . $table . '][' . $pid . ']=new';
 
+		$contentTable = $GLOBALS['TYPO3_CONF_VARS']['SYS']['contentTable'];
+		$contentTableConfig = SettingsFactory::getInstance()->getTcaValue($contentTable);
 		if ($table == 'pages'
-			&& $GLOBALS['TYPO3_CONF_VARS']['SYS']['contentTable']
-			&& isset($GLOBALS['TCA'][$GLOBALS['TYPO3_CONF_VARS']['SYS']['contentTable']])
+			&& $contentTable
+			&& $contentTableConfig
 			&& $addContentTable) {
-			$parameters .= '&edit[' . $GLOBALS['TYPO3_CONF_VARS']['SYS']['contentTable'] . '][prev]=new&returnNewPageId=1';
+			$parameters .= '&edit[' . $contentTable . '][prev]=new&returnNewPageId=1';
 		} elseif ($table == 'pages_language_overlay') {
 			$parameters .= '&overrideVals[pages_language_overlay][doktype]=' . (int)$this->pageinfo['doktype'];
 		}

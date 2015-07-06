@@ -12,17 +12,19 @@ namespace CommerceTeam\Commerce\ViewHelpers;
  *
  * The TYPO3 project - inspiring people to share!
  */
+use CommerceTeam\Commerce\Factory\SettingsFactory;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Backend\Utility\IconUtility;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * Renders the Orderlist in the BE oredrmodule
+ * Renders the Orderlist in the BE ordermodule
  *
  * Class \CommerceTeam\Commerce\ViewHelpers\FeuserRecordList
  *
- * @author 2006-2011 Volker Graubau <vg_typo3@e-netconsulting.de>
+ * @todo discuss if this class can be removed
+ * @author 2006-2011 Volker Graubaum <vg_typo3@e-netconsulting.de>
  */
 class FeuserRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordList {
 	/**
@@ -82,7 +84,7 @@ class FeuserRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLi
 			// If edit permissions are set
 		if ($localCalcPerms & 2) {
 				// Adding "New record" icon:
-			if (!$GLOBALS['SOBE']->modTSconfig['properties']['noCreateRecordsLink']) {
+			if (!$this->getController()->modTSconfig['properties']['noCreateRecordsLink']) {
 				$theCtrlPanel[] = '<a href="#" onclick="' . htmlspecialchars('return jumpExt(\'db_new.php?id=' . $this->id . '\');') . '">' .
 					IconUtility::getSpriteIcon('actions-document-new', array('title' => $language->getLL('newRecordGeneral', 1))) .
 					'</a>';
@@ -94,13 +96,15 @@ class FeuserRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLi
 				if ($row['hidden']) {
 					$params = '&data[pages][' . $row['uid'] . '][hidden]=0';
 					$theCtrlPanel[] = '<a href="#" onclick="' .
-						htmlspecialchars('return jumpToUrl(\'' . $GLOBALS['SOBE']->doc->issueCommand($params, -1) . '\');') . '">' .
+						htmlspecialchars('return jumpToUrl(\'' . $this->getControllerDocumentTemplate()->issueCommand($params, -1) .
+						'\');') . '">' .
 						IconUtility::getSpriteIcon('actions-edit-unhide', array('title' => $language->getLL('unHidePage', 1))) .
 						'</a>';
 				} else {
 					$params = '&data[pages][' . $row['uid'] . '][hidden]=1';
 					$theCtrlPanel[] = '<a href="#" onclick="' .
-						htmlspecialchars('return jumpToUrl(\'' . $GLOBALS['SOBE']->doc->issueCommand($params, -1) . '\');') . '">' .
+						htmlspecialchars('return jumpToUrl(\'' . $this->getControllerDocumentTemplate()->issueCommand($params, -1) .
+						'\');') . '">' .
 						IconUtility::getSpriteIcon('actions-edit-hide', array('title' => $language->getLL('hidePage', 1))) .
 						'</a>';
 				}
@@ -176,7 +180,7 @@ class FeuserRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLi
 
 			// Make Icon:
 			if ($this->clickMenuEnabled) {
-				$theIcon = $GLOBALS['SOBE']->doc->wrapClickMenuOnIcon($iconImg, 'pages', $this->id);
+				$theIcon = $this->getControllerDocumentTemplate()->wrapClickMenuOnIcon($iconImg, 'pages', $this->id);
 			} else {
 				$theIcon = $iconImg;
 			}
@@ -265,25 +269,24 @@ class FeuserRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLi
 	 */
 	public function generateList() {
 		$backendUser = $this->getBackendUser();
+		$settingsFactory = SettingsFactory::getInstance();
 
 		// @todo auf eine tabelle beschränken, keine while liste mehr
 		foreach ($GLOBALS['TCA'] as $tableName) {
-				// Checking if the table should be rendered:
-				// Checks that we see only permitted/requested tables:
+			// Checking if the table should be rendered:
+			// Checks that we see only permitted/requested tables:
 			if (
 				(!$this->table || $tableName == $this->table)
 				&& (!$this->tableList || GeneralUtility::inList($this->tableList, $tableName))
 				&& $backendUser->check('tables_select', $tableName)
 			) {
-					// iLimit is set depending on whether we're in single- or multi-table mode
+				// iLimit is set depending on whether we're in single- or multi-table mode
 				if ($this->table) {
-					$this->iLimit = (isset($GLOBALS['TCA'][$tableName]['interface']['maxSingleDBListItems']) ?
-						(int) $GLOBALS['TCA'][$tableName]['interface']['maxSingleDBListItems'] :
-						$this->itemsLimitSingleTable);
+					$maxSingleDdListItems = $settingsFactory->getTcaValue($tableName . '.interface.maxSingleDBListItems');
+					$this->iLimit = $maxSingleDdListItems ? (int) $maxSingleDdListItems : $this->itemsLimitSingleTable;
 				} else {
-					$this->iLimit = (isset($GLOBALS['TCA'][$tableName]['interface']['maxDBListItems']) ?
-						(int) $GLOBALS['TCA'][$tableName]['interface']['maxDBListItems'] :
-						$this->itemsLimitPerTable);
+					$maxDdListItems = $settingsFactory->getTcaValue($tableName . '.interface.maxDBListItems');
+					$this->iLimit = $maxDdListItems ? (int) $maxDdListItems : $this->itemsLimitPerTable;
 				}
 				if ($this->showLimit) {
 					$this->iLimit = $this->showLimit;
@@ -344,22 +347,25 @@ class FeuserRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLi
 		$backendUser = $this->getBackendUser();
 
 		$iOut = '';
-		$extConf = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf'];
 
 		if (substr(TYPO3_version, 0, 3) >= '4.0') {
 			// In offline workspace, look for alternative record:
-			BackendUtility::workspaceOL($table, $row, $GLOBALS['BE_USER']->workspace);
+			BackendUtility::workspaceOL($table, $row, $this->getBackendUser()->workspace);
 		}
 
 		$rowBackgroundColor = '';
 		if ($this->alternateBgColors) {
-			$rowBackgroundColor = $cc % 2 ?
-				'' :
-				' bgcolor="' . GeneralUtility::modifyHTMLColor($GLOBALS['SOBE']->doc->bgColor4, 10, 10, 10) . '"';
+			$rowBackgroundColor = $cc % 2 ? '' : ' bgcolor="' . GeneralUtility::modifyHTMLColor(
+					$this->getControllerDocumentTemplate()->bgColor4,
+				10,
+				10,
+				10
+			) . '"';
 		}
 
 		if ($backendUser->getModuleData('commerce_orders/index.php/userid', 'ses') == $row['uid']) {
-			$rowBackgroundColor = ' bgcolor="' . GeneralUtility::modifyHTMLColor($GLOBALS['SOBE']->doc->bgColor4, 30, 30, 30) . '"';
+			$rowBackgroundColor = ' bgcolor="' .
+				GeneralUtility::modifyHTMLColor($this->getControllerDocumentTemplate()->bgColor4, 30, 30, 30) . '"';
 		}
 
 		// Overriding with versions background color if any:
@@ -377,9 +383,9 @@ class FeuserRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLi
 			IconUtility::getIcon($table, $row),
 			'title="' . htmlspecialchars($alttext) . '"' . ($indent ? ' style="margin-left: ' . $indent . 'px;"' : '')
 		);
-		$theIcon = $this->clickMenuEnabled ?
-			$GLOBALS['SOBE']->doc->wrapClickMenuOnIcon($iconImg, $table, $row['uid']) :
-			$iconImg;
+		$theIcon = $this->clickMenuEnabled ? $this->getControllerDocumentTemplate()->wrapClickMenuOnIcon(
+			$iconImg, $table, $row['uid']
+		) : $iconImg;
 
 		// Preparing and getting the data-array
 		$theData = Array();
@@ -422,6 +428,7 @@ class FeuserRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLi
 
 		// Add row to CSV list:
 		if ($this->csvOutput) {
+			$beCsvCharset = SettingsFactory::getInstance()->getExtConf('BECSVCharset');
 			// Charset Conversion
 			/**
 			 * Charset converter
@@ -431,12 +438,12 @@ class FeuserRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLi
 			$csObj = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Charset\\CharsetConverter');
 			$csObj->initCharset($GLOBALS['TYPO3_CONF_VARS']['BE']['forceCharset']);
 
-			if (!$extConf['BECSVCharset']) {
-				$extConf['BECSVCharset'] = 'iso-8859-1';
+			if (!$beCsvCharset) {
+				$beCsvCharset = 'iso-8859-1';
 			}
-			$csObj->initCharset($extConf['BECSVCharset']);
+			$csObj->initCharset($beCsvCharset);
 
-			$csObj->convArray($row, $GLOBALS['TYPO3_CONF_VARS']['BE']['forceCharset'], $extConf['BECSVCharset']);
+			$csObj->convArray($row, $GLOBALS['TYPO3_CONF_VARS']['BE']['forceCharset'], $beCsvCharset);
 
 			$this->addToCSV($row);
 		}
@@ -487,7 +494,7 @@ class FeuserRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLi
 			$tables = array('fe_users');
 			$temporaryData = '';
 			foreach ($tables as $workTable) {
-				if ($GLOBALS['TCA'][$workTable]['columns'][$fCol]) {
+				if (SettingsFactory::getInstance()->getTcaValue($workTable . '.columns.' . $fCol)) {
 					$temporaryData = $this->addSortLink(
 						$language->sL(BackendUtility::getItemLabel($workTable, $fCol, '<i>[|]</i>')),
 						$fCol,
@@ -496,10 +503,10 @@ class FeuserRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLi
 				}
 			}
 			if ($temporaryData) {
-					// Only if we have a entry in locallang
+				// Only if we have a entry in locallang
 				$theData[$fCol] = $temporaryData;
 			} else {
-					// default handling
+				// default handling
 				$theData[$fCol] .= $this->addSortLink(
 					$language->sL(BackendUtility::getItemLabel($table, $fCol, '<i>[|]</i>')),
 					$fCol,
@@ -524,13 +531,15 @@ class FeuserRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLi
 	public function getTable($table, $id, array $rowlist) {
 		// Loading all TCA details for this table:
 
+		$tableConfig = SettingsFactory::getInstance()->getTcaValue($table);
+
 		// Init
 		$addWhere = '';
-		$titleCol = $GLOBALS['TCA'][$table]['ctrl']['label'];
-		$thumbsCol = $GLOBALS['TCA'][$table]['ctrl']['thumbnail'];
-		$l10nEnabled = $GLOBALS['TCA'][$table]['ctrl']['languageField']
-			&& $GLOBALS['TCA'][$table]['ctrl']['transOrigPointerField']
-			&& !$GLOBALS['TCA'][$table]['ctrl']['transOrigPointerTable'];
+		$titleCol = $tableConfig['ctrl']['label'];
+		$thumbsCol = $tableConfig['ctrl']['thumbnail'];
+		$l10nEnabled = $tableConfig['ctrl']['languageField']
+			&& $tableConfig['ctrl']['transOrigPointerField']
+			&& !$tableConfig['ctrl']['transOrigPointerTable'];
 
 		// Cleaning rowlist for duplicates and place
 		// the $titleCol as the first column always!
@@ -540,7 +549,7 @@ class FeuserRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLi
 
 		if ($this->localizationView && $l10nEnabled) {
 			$this->fieldArray[] = '_LOCALIZATION_';
-			$addWhere .= ' AND ' . $GLOBALS['TCA'][$table]['ctrl']['languageField'] . '<=0';
+			$addWhere .= ' AND ' . $tableConfig['ctrl']['languageField'] . '<=0';
 		}
 		if ($this->showClipboard) {
 			$this->fieldArray[] = '_CLIPBOARD_';
@@ -574,25 +583,25 @@ class FeuserRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLi
 			}
 			$selectFields[] = 'doktype';
 		}
-		if (is_array($GLOBALS['TCA'][$table]['ctrl']['enablecolumns'])) {
-			$selectFields = array_merge($selectFields, $GLOBALS['TCA'][$table]['ctrl']['enablecolumns']);
+		if (is_array($tableConfig['ctrl']['enablecolumns'])) {
+			$selectFields = array_merge($selectFields, $tableConfig['ctrl']['enablecolumns']);
 		}
-		if ($GLOBALS['TCA'][$table]['ctrl']['type']) {
-			$selectFields[] = $GLOBALS['TCA'][$table]['ctrl']['type'];
+		if ($tableConfig['ctrl']['type']) {
+			$selectFields[] = $tableConfig['ctrl']['type'];
 		}
 
-		if ($GLOBALS['TCA'][$table]['ctrl']['typeicon_column']) {
-			$selectFields[] = $GLOBALS['TCA'][$table]['ctrl']['typeicon_column'];
+		if ($tableConfig['ctrl']['typeicon_column']) {
+			$selectFields[] = $tableConfig['ctrl']['typeicon_column'];
 		}
-		if ($GLOBALS['TCA'][$table]['ctrl']['versioning']) {
+		if ($tableConfig['ctrl']['versioning']) {
 			$selectFields[] = 't3ver_id';
 		}
 		if ($l10nEnabled) {
-			$selectFields[] = $GLOBALS['TCA'][$table]['ctrl']['languageField'];
-			$selectFields[] = $GLOBALS['TCA'][$table]['ctrl']['transOrigPointerField'];
+			$selectFields[] = $tableConfig['ctrl']['languageField'];
+			$selectFields[] = $tableConfig['ctrl']['transOrigPointerField'];
 		}
-		if ($GLOBALS['TCA'][$table]['ctrl']['label_alt']) {
-			$selectFields = array_merge($selectFields, GeneralUtility::trimExplode(',', $GLOBALS['TCA'][$table]['ctrl']['label_alt'], 1));
+		if ($tableConfig['ctrl']['label_alt']) {
+			$selectFields = array_merge($selectFields, GeneralUtility::trimExplode(',', $tableConfig['ctrl']['label_alt'], 1));
 		}
 
 		// Unique list!
@@ -632,7 +641,7 @@ class FeuserRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLi
 				$theData = Array();
 				if (!$this->table && !$rowlist) {
 					$theData[$titleCol] = '<img src="/' . TYPO3_mainDir . '/clear.gif" width="' .
-						($GLOBALS['SOBE']->MOD_SETTINGS['bigControlPanel'] ? '230' : '350') . '" height="1" alt="" />';
+						($this->getController()->MOD_SETTINGS['bigControlPanel'] ? '230' : '350') . '" height="1" alt="" />';
 				}
 				$out .= $this->addelement(0, '', $theData, '', $this->leftMargin);
 			}
@@ -641,14 +650,14 @@ class FeuserRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLi
 			$theData = Array();
 			if ($this->disableSingleTableView) {
 				$theData[$titleCol] = '<span class="c-table">' .
-						$language->sL($GLOBALS['TCA'][$table]['ctrl']['title'], 1) .
+						$language->sL($tableConfig['ctrl']['title'], 1) .
 					'</span> (' . $this->totalItems . ')';
 			} else {
 				$title = $language->getLL(!$this->table ? 'expandView' : 'contractView', 1);
 				$icon = IconUtility::getSpriteIcon('actions-view-table-' . ($this->table ? 'collapse' : 'expand'), array('title' => $title));
 				$theData[$titleCol] = $this->linkWrapTable(
 					$table,
-					'<span class="c-table">' . $language->sL($GLOBALS['TCA'][$table]['ctrl']['title'], 1) .
+					'<span class="c-table">' . $language->sL($tableConfig['ctrl']['title'], 1) .
 					'</span> (' . $this->totalItems . ') <img' . $icon
 				);
 			}
@@ -664,7 +673,7 @@ class FeuserRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLi
 						<td class="c-headLineTable" style="width: 95%;" ' . $theData[$titleCol] . '</td>
 					</tr>';
 
-				if ($GLOBALS['BE_USER']->uc['edit_showFieldHelp']) {
+				if ($this->getBackendUser()->uc['edit_showFieldHelp']) {
 					$language->loadSingleTableDescription($table);
 					if (isset($GLOBALS['TCA_DESCR'][$table]['columns'][''])) {
 						$out .= '
@@ -690,7 +699,7 @@ class FeuserRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLi
 					// Fixing a order table for sortby tables
 				$this->currentTable = array();
 				$currentIdList = array();
-				$doSort = ($GLOBALS['TCA'][$table]['ctrl']['sortby'] && !$this->sortField);
+				$doSort = ($tableConfig['ctrl']['sortby'] && !$this->sortField);
 
 				$prevUid = 0;
 				$prevPrevUid = 0;
@@ -711,23 +720,23 @@ class FeuserRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLi
 				}
 				$database->sql_free_result($result);
 
-					// CSV initiated
+				// CSV initiated
 				if ($this->csvOutput) {
 					$this->initCSV();
 				}
 
-					// Render items:
+				// Render items:
 				$this->CBnames = array();
 				$this->duplicateStack = array();
 				$this->eCounter = $this->firstElementNumber;
 
 				$cc = 0;
 				foreach ($accRows as $row) {
-						// Forward/Backwards navigation links:
+					// Forward/Backwards navigation links:
 					list($flag, $code) = $this->fwd_rwd_nav($table);
 					$iOut .= $code;
 
-						// If render item, increment counter and call function
+					// If render item, increment counter and call function
 					if ($flag) {
 						$cc++;
 						$row[$titleCol] = '<a href="' . GeneralUtility::getIndpEnv('REQUEST_URI') . '&userId=' . $row['uid'] . '">' .
@@ -738,16 +747,16 @@ class FeuserRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLi
 						// default or All language and here we will not select translations which point
 						// to the main record:
 						if ($this->localizationView && $l10nEnabled) {
-								// Look for translations of this record:
+							// Look for translations of this record:
 							$translations = $database->exec_SELECTgetRows(
 								$selFieldList,
 								$table,
-								'pid=' . $row['pid'] . ' AND ' . $GLOBALS['TCA'][$table]['ctrl']['languageField'] . ' > 0 AND ' .
-									$GLOBALS['TCA'][$table]['ctrl']['transOrigPointerField'] . '=' . (int) $row['uid'] .
+								'pid=' . $row['pid'] . ' AND ' . $tableConfig['ctrl']['languageField'] . ' > 0 AND ' .
+									$tableConfig['ctrl']['transOrigPointerField'] . '=' . (int) $row['uid'] .
 									BackendUtility::deleteClause($table)
 							);
 
-								// For each available translation, render the record:
+							// For each available translation, render the record:
 							foreach ($translations as $lRow) {
 								$iOut .= $this->renderListRow($table, $lRow, $cc, $titleCol, $thumbsCol, 18);
 							}
@@ -770,9 +779,8 @@ class FeuserRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLi
 			<!--
 				DB listing of elements:	"' . htmlspecialchars($table) . '"
 			-->
-				<table border="0" cellpadding="0" cellspacing="0" class="typo3-dblist' . ($listOnlyInSingleTableMode ?
-					' typo3-dblist-overview' :
-					'') . '">
+				<table border="0" cellpadding="0" cellspacing="0" class="typo3-dblist' .
+					($listOnlyInSingleTableMode ? ' typo3-dblist-overview' : '') . '">
 					' . $out . '
 				</table>';
 
@@ -812,5 +820,26 @@ class FeuserRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLi
 	 */
 	protected function getLanguageService() {
 		return $GLOBALS['LANG'];
+	}
+
+	/**
+	 * Get controller
+	 *
+	 * @return \CommerceTeam\Commerce\Controller\OrdersModuleController
+	 */
+	protected function getController() {
+		return $GLOBALS['SOBE'];
+	}
+
+	/**
+	 * Get controller document template
+	 *
+	 * @return \TYPO3\CMS\Backend\Template\DocumentTemplate
+	 */
+	protected function getControllerDocumentTemplate() {
+		// $GLOBALS['SOBE'] might be any kind of PHP class (controller most
+		// of the times) These class do not inherit from any common class,
+		// but they all seem to have a "doc" member
+		return $this->getController()->doc;
 	}
 }

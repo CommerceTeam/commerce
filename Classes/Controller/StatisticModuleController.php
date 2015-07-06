@@ -32,20 +32,6 @@ class StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClas
 	public $doc;
 
 	/**
-	 * Extension configuration
-	 *
-	 * @var array
-	 */
-	protected $extConf;
-
-	/**
-	 * Exclude pids
-	 *
-	 * @var string
-	 */
-	protected $excludePids;
-
-	/**
 	 * Page information
 	 *
 	 * @var array
@@ -76,13 +62,12 @@ class StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClas
 		$language->includeLLFile('EXT:commerce/Resources/Private/Language/locallang_mod_statistic.xml');
 		$language->includeLLFile('EXT:lang/locallang_mod_web_list.php');
 
+		$this->MCONF = $GLOBALS['MCONF'];
+
 		parent::init();
-		$this->extConf = SettingsFactory::getInstance()->getExtConfComplete();
 
-		$this->excludePids = $this->extConf['excludeStatisticFolders'] != '' ? $this->extConf['excludeStatisticFolders'] : 0;
-
-		$this->statistics = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Utility\\StatisticsUtility');
-		$this->statistics->init($this->extConf['excludeStatisticFolders'] != '' ? $this->extConf['excludeStatisticFolders'] : 0);
+		$this->statistics = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Utility\\StatisticsUtility');
+		$this->statistics->init((int) SettingsFactory::getInstance()->getExtConf('excludeStatisticFolders'));
 
 		$this->orderPageId = current(array_unique(
 			\CommerceTeam\Commerce\Domain\Repository\FolderRepository::initFolders('Orders', 'Commerce', 0, 'Commerce')
@@ -91,12 +76,12 @@ class StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClas
 		/**
 		 * If we get an id via GP use this, else use the default id
 		 */
-		$this->id = (int) \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('id');
+		$this->id = (int) GeneralUtility::_GP('id');
 		if (!$this->id) {
 			$this->id = $this->orderPageId;
 		}
 
-		$this->doc = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
+		$this->doc = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
 		$this->doc->backPath = $this->getBackPath();
 		$this->doc->docType = 'xhtml_trans';
 		$this->doc->setModuleTemplate(PATH_TXCOMMERCE . 'Resources/Private/Backend/mod_index.html');

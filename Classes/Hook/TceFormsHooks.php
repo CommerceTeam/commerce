@@ -22,27 +22,11 @@ use CommerceTeam\Commerce\Factory\SettingsFactory;
  */
 class TceFormsHooks {
 	/**
-	 * Extension configuration
-	 *
-	 * @var array
-	 */
-	protected $extconf;
-
-	/**
 	 * Last max items
 	 *
 	 * @var bool
 	 */
 	protected $lastMaxItems = FALSE;
-
-	/**
-	 * Constructor
-	 *
-	 * @return self
-	 */
-	public function __construct() {
-		$this->extconf = SettingsFactory::getInstance()->getExtConfComplete();
-	}
 
 	/**
 	 * This hook gets called before a field in tceforms gets rendered. We use this
@@ -55,14 +39,16 @@ class TceFormsHooks {
 	 * @return void
 	 */
 	public function getSingleField_preProcess($table, $field, &$row) {
-		if ($table == 'tx_commerce_products' && $this->extconf['simpleMode'] == 1) {
-			$this->lastMaxItems = SettingsFactory::getInstance()->getTcaValue('tx_commerce_products.columns.articles.config.maxitems');
+		$settingsFactory = SettingsFactory::getInstance();
+
+		if ($table == 'tx_commerce_products' && $settingsFactory->getExtConf('simpleMode') == 1) {
+			$this->lastMaxItems = $settingsFactory->getTcaValue('tx_commerce_products.columns.articles.config.maxitems');
 			$productColumns = & $GLOBALS['TCA']['tx_commerce_products']['columns'];
 
-			if ($row['uid'] != $this->extconf['paymentID']
-				&& $row['uid'] != $this->extconf['deliveryID']
-				&& $row['l18n_parent'] != $this->extconf['paymentID']
-				&& $row['l18n_parent'] != $this->extconf['deliveryID']
+			if ($row['uid'] != $settingsFactory->getExtConf('paymentID')
+				&& $row['uid'] != $settingsFactory->getExtConf('deliveryID')
+				&& $row['l18n_parent'] != $settingsFactory->getExtConf('paymentID')
+				&& $row['l18n_parent'] != $settingsFactory->getExtConf('deliveryID')
 			) {
 				$productColumns['articles']['config']['maxitems'] = 1;
 			} else {
@@ -105,6 +91,7 @@ class TceFormsHooks {
 	 * @return void
 	 */
 	public function getSingleField_postProcess($table, $field, array $row, &$out, $palette, $extra) {
+		$settingsFactory = SettingsFactory::getInstance();
 		// This value is set, if the preProcess updated the tca earlyer
 		if ($this->lastMaxItems !== FALSE) {
 			$GLOBALS['TCA']['tx_commerce_products']['columns']['articles']['config']['maxitems'] = $this->lastMaxItems;
@@ -115,8 +102,8 @@ class TceFormsHooks {
 			$table == 'tx_commerce_articles'
 			&& $field == 'prices'
 			&& !$row['sys_language_uid']
-			&& strpos($row['uid_product'], '_' . $this->extconf['paymentID'] . '|') === FALSE
-			&& strpos($row['uid_product'], '_' . $this->extconf['deliveryID'] . '|') === FALSE
+			&& strpos($row['uid_product'], '_' . $settingsFactory->getExtConf('paymentID') . '|') === FALSE
+			&& strpos($row['uid_product'], '_' . $settingsFactory->getExtConf('deliveryID') . '|') === FALSE
 			&& is_numeric($row['uid'])
 		) {
 			$splitText = '<div class="typo3-newRecordLink">';

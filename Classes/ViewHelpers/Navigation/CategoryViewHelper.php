@@ -71,6 +71,8 @@ class CategoryViewHelper extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 	 * @return void
 	 */
 	public function init($bare = FALSE) {
+		$this->getLanguageService()->includeLLFile('EXT:commerce/Resources/Private/Language/locallang_mod_category.xml');
+
 		// Get the Category Tree
 		$this->categoryTree = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryTree');
 		$this->categoryTree->setBare($bare);

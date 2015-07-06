@@ -109,7 +109,7 @@ class OrdersModuleController extends \TYPO3\CMS\Recordlist\RecordList {
 	public function main() {
 		$language = $this->getLanguageService();
 
-			// Loading current page record and checking access:
+		// Loading current page record and checking access:
 		$this->pageinfo = BackendUtility::readPageAccess($this->id ? $this->id : $this->orderPid, $this->perms_clause);
 		$access = is_array($this->pageinfo) ? 1 : 0;
 		// Apply predefined values for hidden checkboxes
@@ -132,7 +132,7 @@ class OrdersModuleController extends \TYPO3\CMS\Recordlist\RecordList {
 			$this->MOD_SETTINGS['localization'] = FALSE;
 		}
 
-			// Initialize the dblist object:
+		// Initialize the dblist object:
 		/**
 		 * Order record list
 		 *
@@ -244,12 +244,12 @@ class OrdersModuleController extends \TYPO3\CMS\Recordlist\RecordList {
 				}
 			}
 
-				// Initialize the listing object, dblist, for rendering the list:
+			// Initialize the listing object, dblist, for rendering the list:
 			$this->pointer = max(min($this->pointer, 100000), 0);
 			$dblist->start($this->id, $this->table, $this->pointer, $this->search_field, $this->search_levels, $this->showLimit);
 			$dblist->setDispFields();
 
-				// Render versioning selector:
+			// Render versioning selector:
 			if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('version')) {
 				$dblist->HTMLcode .= $this->doc->getVersionSelector($this->id);
 			}

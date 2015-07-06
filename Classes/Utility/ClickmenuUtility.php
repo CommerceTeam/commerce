@@ -13,6 +13,7 @@ namespace CommerceTeam\Commerce\Utility;
  * The TYPO3 project - inspiring people to share!
  */
 
+use CommerceTeam\Commerce\Factory\SettingsFactory;
 use TYPO3\CMS\Backend\ClickMenu\ClickMenu;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
@@ -140,10 +141,12 @@ class ClickmenuUtility extends ClickMenu {
 			'copyType' => 'after',
 		);
 
+		$settingsFactory = SettingsFactory::getInstance();
+
 		// used to hide cut,copy icons for l10n-records
 		// should only be performed for overlay-records within the same table
-		if (BackendUtility::isTableLocalizable($table) && !isset($GLOBALS['TCA'][$table]['ctrl']['transOrigPointerTable'])) {
-			$rights['l10nOverlay'] = intval($this->rec[$GLOBALS['TCA'][$table]['ctrl']['transOrigPointerField']]) != 0;
+		if (BackendUtility::isTableLocalizable($table) && !$settingsFactory->getTcaValue($table . '.ctrl.transOrigPointerTable')) {
+			$rights['l10nOverlay'] = intval($this->rec[$settingsFactory->getTcaValue($table . '.ctrl.transOrigPointerField')]) != 0;
 		}
 
 		// get rights based on the table
@@ -172,10 +175,13 @@ class ClickmenuUtility extends ClickMenu {
 			if (!$rights['root'] && !$rights['editLock'] && $rights['edit']) {
 				if (
 					!in_array('hide', $this->disabledItems)
-					&& is_array($GLOBALS['TCA'][$table]['ctrl']['enablecolumns'])
-					&& $GLOBALS['TCA'][$table]['ctrl']['enablecolumns']['disabled']
+					&& $settingsFactory->getTcaValue($table . '.ctrl.enablecolumns.disabled')
 				) {
-					$menuItems['hide'] = $this->DB_hideUnhide($table, $this->rec, $GLOBALS['TCA'][$table]['ctrl']['enablecolumns']['disabled']);
+					$menuItems['hide'] = $this->DB_hideUnhide(
+						$table,
+						$this->rec,
+						$settingsFactory->getTcaValue($table . '.ctrl.enablecolumns.disabled')
+					);
 				}
 
 				if (!in_array('edit', $this->disabledItems)) {
@@ -230,9 +236,9 @@ class ClickmenuUtility extends ClickMenu {
 				$elInfo = array(
 					GeneralUtility::fixed_lgd_cs($selItem['_RECORD_TITLE'], $backendUser->uc['titleLen']),
 					(
-						$rights['root'] ?
-							$GLOBALS['TYPO3_CONF_VARS']['SYS']['sitename'] :
-							GeneralUtility::fixed_lgd_cs(BackendUtility::getRecordTitle($table, $this->rec), $backendUser->uc['titleLen'])
+						$rights['root'] ? $GLOBALS['TYPO3_CONF_VARS']['SYS']['sitename'] : GeneralUtility::fixed_lgd_cs(
+							BackendUtility::getRecordTitle($table, $this->rec), $backendUser->uc['titleLen']
+						)
 					),
 					$this->clipObj->currentMode()
 				);
@@ -259,7 +265,7 @@ class ClickmenuUtility extends ClickMenu {
 					}
 				}
 
-				if (!$rights['root'] && !$rights['DBmount'] && $elFromTable && $GLOBALS['TCA'][$table]['ctrl']['sortby']) {
+				if (!$rights['root'] && !$rights['DBmount'] && $elFromTable && $settingsFactory->getTcaValue($table . '.ctrl.sortby')) {
 					$menuItems['pasteafter'] = $this->DB_paste($table, '-' . $pasteUid, 'after', $elInfo);
 				}
 			}

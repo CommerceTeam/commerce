@@ -283,8 +283,8 @@ class Navigation {
 
 		\CommerceTeam\Commerce\Utility\GeneralUtility::initializeFeUserBasket();
 
-		$this->gpVars['basketHashValue'] = $GLOBALS['TSFE']->fe_user->tx_commerce_basket->getBasketHashValue();
-		$this->pageRootline = $GLOBALS['TSFE']->rootLine;
+		$this->gpVars['basketHashValue'] = $this->getBasket()->getBasketHashValue();
+		$this->pageRootline = $this->getFrontendController()->rootLine;
 		$this->menuType = $this->mConf['1'];
 		$this->entryLevel = (int) $this->mConf['entryLevel'];
 
@@ -302,8 +302,8 @@ class Navigation {
 		 * rights on the commerce tree, so consider this whe calculation the cache hash.
 		 */
 		$usergroups = '';
-		if (is_array($GLOBALS['TSFE']->fe_user->user)) {
-			$usergroups = $GLOBALS['TSFE']->fe_user->user['usergroup'];
+		if (is_array($this->getFrontendUser()->user)) {
+			$usergroups = $this->getFrontendUser()->user['usergroup'];
 		}
 
 		$this->cat = $this->getRootCategory();
@@ -315,17 +315,17 @@ class Navigation {
 		$this->path = $this->gpVars['path'] ? $this->gpVars['path'] : 0;
 		$this->expandAll = $this->mConf['expandAll'] ? $this->mConf['expandAll'] : 0;
 
-		$menueErrorName = array();
+		$menuErrorName = array();
 		if (!($this->cat > 0)) {
-			$menueErrorName[] = 'No category defined in TypoScript: lib.tx_commerce.navigation.special.category';
+			$menuErrorName[] = 'No category defined in TypoScript: lib.tx_commerce.navigation.special.category';
 		}
 
 		if (!($this->pid > 0)) {
-			$menueErrorName[] = 'No OveridePID defined in TypoScript: lib.tx_commerce.navigation.special.overridePid';
+			$menuErrorName[] = 'No OveridePID defined in TypoScript: lib.tx_commerce.navigation.special.overridePid';
 		}
 
-		if (count($menueErrorName) > 0) {
-			foreach ($menueErrorName as $oneError) {
+		if (count($menuErrorName) > 0) {
+			foreach ($menuErrorName as $oneError) {
 				\TYPO3\CMS\Core\Utility\DebugUtility::debug($this->mConf, $oneError);
 			}
 
@@ -337,7 +337,7 @@ class Navigation {
 		 */
 		$hash = md5(
 			'tx_commerce_navigation:' . implode('-', $this->mConf) . ':' . $usergroups . ':' .
-			$GLOBALS['TSFE']->linkVars . ':' . GeneralUtility::getIndpEnv('HTTP_HOST')
+			$this->getFrontendController()->linkVars . ':' . GeneralUtility::getIndpEnv('HTTP_HOST')
 		);
 
 		$cachedMatrix = $this->getHash($hash, 0);
@@ -345,7 +345,7 @@ class Navigation {
 		/**
 		 * Render Menue Array and store in cache, if possible
 		 */
-		if (($GLOBALS['TSFE']->no_cache == 1)) {
+		if (($this->getFrontendController()->no_cache == 1)) {
 			// Build directly and don't sore, if no_cache=1'
 			$this->mTree = $this->makeArrayPostRender(
 				$this->pid, 'tx_commerce_categories', 'tx_commerce_categories_parent_category_mm', 'tx_commerce_products',
@@ -448,7 +448,7 @@ class Navigation {
 				}
 			}
 
-			if ($this->mConf['groupOptions.']['onOptions'] == 1 && $GLOBALS['TSFE']->fe_user->user['usergroup'] != '') {
+			if ($this->mConf['groupOptions.']['onOptions'] == 1 && $this->getFrontendUser()->user['usergroup'] != '') {
 				$this->fixPathParents($this->pathParents, $keys[0]);
 			}
 
@@ -527,10 +527,10 @@ class Navigation {
 			$chosenCatUid = array();
 			for ($i = 1; $i <= $catOptionsCount; $i++) {
 				$chosenGroups = GeneralUtility::trimExplode(',', $this->mConf['groupOptions.'][$i . '.']['group']);
-				if ($GLOBALS['TSFE']->fe_user->user['usergroup'] == '') {
+				if ($this->getFrontendUser()->user['usergroup'] == '') {
 					return $this->mConf['category'];
 				}
-				$feGroups = explode(',', $GLOBALS['TSFE']->fe_user->user['usergroup']);
+				$feGroups = explode(',', $this->getFrontendUser()->user['usergroup']);
 
 				foreach ($chosenGroups as $group) {
 					if (in_array($group, $feGroups) === TRUE) {
@@ -715,7 +715,7 @@ class Navigation {
 
 						$this->arrayMerge($nodeArray['--subLevel--'], $arraySubChild);
 
-						if ($this->mConf['groupOptions.']['onOptions'] == 1 && $GLOBALS['TSFE']->fe_user->user['usergroup'] != '') {
+						if ($this->mConf['groupOptions.']['onOptions'] == 1 && $this->getFrontendUser()->user['usergroup'] != '') {
 							$arraySubChild = $this->makeSubChildArrayPostRender(
 								$uidPage, $tableSubMain, $tableSubMm, $row['uid_local'], $mDepth + 1, $nodeArray['path'],
 								$maxLevel
@@ -755,7 +755,7 @@ class Navigation {
 				}
 
 				$nodeArray['_ADD_GETVARS'] .= $this->separator . 'cHash=' .
-					$this->generateChash($nodeArray['_ADD_GETVARS'] . $GLOBALS['TSFE']->linkVars);
+					$this->generateChash($nodeArray['_ADD_GETVARS'] . $this->getFrontendController()->linkVars);
 
 				$treeList[$row['uid_local']] = $nodeArray;
 			}
@@ -855,7 +855,7 @@ class Navigation {
 				}
 
 				$nodeArray['_ADD_GETVARS'] .= $this->separator . 'cHash=' .
-					$this->generateChash($nodeArray['_ADD_GETVARS'] . $GLOBALS['TSFE']->linkVars);
+					$this->generateChash($nodeArray['_ADD_GETVARS'] . $this->getFrontendController()->linkVars);
 
 				if ($this->gpVars['manufacturer']) {
 					$nodeArray['_ADD_GETVARS'] .= '&' . $this->prefixId . '[manufacturer]=' . $this->gpVars['manufacturer'];
@@ -1007,7 +1007,7 @@ class Navigation {
 		if ($uid == '' or $tableName == '') {
 			return '';
 		}
-		$addWhere = $GLOBALS['TSFE']->sys_page->enableFields($tableName, $GLOBALS['TSFE']->showHiddenRecords);
+		$addWhere = $this->getFrontendController()->sys_page->enableFields($tableName, $this->getFrontendController()->showHiddenRecords);
 		$where = 'uid = ' . (int) $uid;
 		$row = $database->exec_SELECTgetRows(
 			'*', $tableName, $where . $addWhere, $groupBy = '', $orderBy = '', '1', ''
@@ -1019,7 +1019,7 @@ class Navigation {
 			/**
 			 * Get Overlay, if available
 			 */
-			$row[0] = $GLOBALS['TSFE']->sys_page->getRecordOverlay($tableName, $row[0], $langUid, $this->translationMode);
+			$row[0] = $this->getFrontendController()->sys_page->getRecordOverlay($tableName, $row[0], $langUid, $this->translationMode);
 		}
 
 		if ($this->mConf['hideEmptyCategories'] == 1 && $tableName == 'tx_commerce_categories' && is_array($row[0])) {
@@ -1166,12 +1166,12 @@ class Navigation {
 	 */
 	public function renderRootline($content, array $conf) {
 		$this->mConf = $this->processConf($conf);
-		$this->pid = (int) ($this->mConf['overridePid'] ? $this->mConf['overridePid'] : $GLOBALS['TSFE']->id);
+		$this->pid = (int) ($this->mConf['overridePid'] ? $this->mConf['overridePid'] : $this->getFrontendController()->id);
 		$this->gpVars = GeneralUtility::_GPmerged($this->prefixId);
 
 		\CommerceTeam\Commerce\Utility\GeneralUtility::initializeFeUserBasket();
 
-		$this->gpVars['basketHashValue'] = $GLOBALS['TSFE']->fe_user->tx_commerce_basket->getBasketHashValue();
+		$this->gpVars['basketHashValue'] = $this->getBasket()->getBasketHashValue();
 		if (!is_object($this->category)) {
 			$this->category = GeneralUtility::makeInstance(
 				'CommerceTeam\\Commerce\\Domain\\Model\\Category', $this->mConf['category'], $this->getFrontendController()->sys_language_uid
@@ -1216,7 +1216,7 @@ class Navigation {
 			if (is_string($this->gpVars['basketHashValue'])) {
 				$addGetvars .= $this->separator . $this->prefixId . '[basketHashValue]=' . $this->gpVars['basketHashValue'];
 			}
-			$cHash = $this->generateChash($addGetvars . $GLOBALS['TSFE']->linkVars);
+			$cHash = $this->generateChash($addGetvars . $this->getFrontendController()->linkVars);
 
 			/**
 			 * Currentyl no Navtitle in tx_commerce_products
@@ -1276,7 +1276,7 @@ class Navigation {
 			if (is_string($this->gpVars['basketHashValue'])) {
 				$additionalParams .= $this->separator . $this->prefixId . '[basketHashValue]=' . $this->gpVars['basketHashValue'];
 			}
-			$cHash = $this->generateChash($additionalParams . $GLOBALS['TSFE']->linkVars);
+			$cHash = $this->generateChash($additionalParams . $this->getFrontendController()->linkVars);
 
 			if ($this->mConf['showProducts'] == 1 && $this->gpVars['showUid'] > 0) {
 				$itemState = 'NO';
@@ -1473,7 +1473,7 @@ class Navigation {
 				$manufacturerTitle = htmlspecialchars(strip_tags($product->getManufacturerTitle()));
 				$addGet = $this->separator . $this->prefixId . '[catUid]=' . $categoryUid . $this->separator . $this->prefixId .
 					'[manufacturer]=' . $productRow['manufacturer_uid'] . '';
-				$cHash = $this->generateChash($addGet . $GLOBALS['TSFE']->linkVars);
+				$cHash = $this->generateChash($addGet . $this->getFrontendController()->linkVars);
 				$addGet .= $this->separator . 'cHash=' . $cHash;
 				$aLevel = array(
 					'pid' => $pid,
@@ -1588,5 +1588,23 @@ class Navigation {
 	 */
 	protected function getFrontendController() {
 		return $GLOBALS['TSFE'];
+	}
+
+	/**
+	 * Get frontend user
+	 *
+	 * @return \TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication
+	 */
+	protected function getFrontendUser() {
+		return $this->getFrontendController()->fe_user;
+	}
+
+	/**
+	 * Get basket
+	 *
+	 * @return \CommerceTeam\Commerce\Domain\Model\Basket
+	 */
+	protected function getBasket() {
+		return $this->getFrontendUser()->tx_commerce_basket;
 	}
 }

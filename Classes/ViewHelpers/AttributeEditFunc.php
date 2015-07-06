@@ -98,7 +98,7 @@ class AttributeEditFunc {
 				$cc++;
 				$rowBackgroundColor = (
 					($cc % 2) ? '' : ' bgcolor="' .
-					\TYPO3\CMS\Core\Utility\GeneralUtility::modifyHTMLColor($GLOBALS['SOBE']->doc->bgColor4, 10, 10, 10) . '"'
+					\TYPO3\CMS\Core\Utility\GeneralUtility::modifyHTMLColor($this->getControllerDocumentTemplate()->bgColor4, 10, 10, 10) . '"'
 				);
 
 				/**
@@ -206,5 +206,17 @@ class AttributeEditFunc {
 	 */
 	protected function getBackPath() {
 		return $GLOBALS['BACK_PATH'];
+	}
+
+	/**
+	 * Get controller document template
+	 *
+	 * @return \TYPO3\CMS\Backend\Template\DocumentTemplate
+	 */
+	protected function getControllerDocumentTemplate() {
+		// $GLOBALS['SOBE'] might be any kind of PHP class (controller most
+		// of the times) These class do not inherit from any common class,
+		// but they all seem to have a "doc" member
+		return $GLOBALS['SOBE']->doc;
 	}
 }

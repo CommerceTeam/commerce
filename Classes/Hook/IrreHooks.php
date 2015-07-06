@@ -30,22 +30,6 @@ class IrreHooks implements \TYPO3\CMS\Backend\Form\Element\InlineElementHookInte
 	protected $parentObject;
 
 	/**
-	 * Extension configuration
-	 *
-	 * @var array
-	 */
-	protected $extconf;
-
-	/**
-	 * Constructor
-	 *
-	 * @return self
-	 */
-	public function __construct() {
-		$this->extconf = SettingsFactory::getInstance()->getExtConfComplete();
-	}
-
-	/**
 	 * Initializes this hook object.
 	 *
 	 * @param InlineElement $parentObject Calling object
@@ -71,13 +55,14 @@ class IrreHooks implements \TYPO3\CMS\Backend\Form\Element\InlineElementHookInte
 	 */
 	public function renderForeignRecordHeaderControl_preProcess($parentUid, $foreignTable, array $childRecord, array $childConfig,
 		$isVirtual, array &$enabledControls) {
+		$settingsFactory = SettingsFactory::getInstance();
 		if (
-			$this->extconf['simpleMode'] == 1
+			$settingsFactory->getExtConf('simpleMode') == 1
 			&& $foreignTable == 'tx_commerce_articles'
-			&& $parentUid == $this->extconf['deliveryID']
+			&& $parentUid == $settingsFactory->getExtConf('deliveryID')
 		) {
 			$enabledControls = array('new' => TRUE, 'hide' => TRUE, 'delete' => TRUE);
-		} elseif ($this->extconf['simpleMode'] == 1 && $foreignTable == 'tx_commerce_articles') {
+		} elseif ($settingsFactory->getExtConf('simpleMode') == 1 && $foreignTable == 'tx_commerce_articles') {
 			$enabledControls = array('hide' => TRUE);
 		} elseif ($foreignTable == 'tx_commerce_article_prices') {
 			$enabledControls = array('new' => TRUE, 'sort' => TRUE, 'hide' => TRUE, 'delete' => TRUE);

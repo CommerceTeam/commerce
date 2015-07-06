@@ -14,6 +14,7 @@ namespace CommerceTeam\Commerce\Utility;
  */
 
 use CommerceTeam\Commerce\Domain\Repository\FolderRepository;
+use CommerceTeam\Commerce\Factory\SettingsFactory;
 
 /**
  * This class creates the systemfolders for TX_commerce
@@ -76,8 +77,9 @@ class FolderUtility {
 			$catUid = $database->sql_insert_id();
 		}
 
-		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['SYSPRODUCTS'])) {
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['SYSPRODUCTS'] as $type => $_) {
+		$sysProducts = SettingsFactory::getInstance()->getConfiguration('SYSPRODUCTS');
+		if (is_array($sysProducts)) {
+			foreach ($sysProducts as $type => $_) {
 				self::makeSystemCatsProductsArtcilesAndPrices($catUid, strtoupper($type), $addArray);
 			}
 		}
@@ -93,10 +95,11 @@ class FolderUtility {
 	 * @return void
 	 */
 	public static function makeSystemCatsProductsArtcilesAndPrices($catUid, $type, array $addArray) {
-		$pUid = self::makeProduct($catUid, $type, $addArray);
-			// create some articles, depending on the PAYMENT types
-		foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['SYSPRODUCTS'][$type]['types'] as $key => $value) {
-			self::makeArticle($pUid, $key, $value, $addArray);
+		$productUid = self::makeProduct($catUid, $type, $addArray);
+		// create some articles, depending on the PAYMENT types
+		$sysProductTypes = (array) SettingsFactory::getInstance()->getConfiguration('SYSPRODUCTS.' . $type . '.types');
+		foreach ($sysProductTypes as $key => $value) {
+			self::makeArticle($productUid, $key, $value, $addArray);
 		}
 	}
 

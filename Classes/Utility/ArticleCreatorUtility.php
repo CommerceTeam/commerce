@@ -206,7 +206,7 @@ class ArticleCreatorUtility {
 			$params = '&data[tx_commerce_articles][' . $articleUid . '][hidden]=' . (int) (!$article['hidden']) .
 				'&redirect=alt_doc.php?edit[tx_commerce_products][' . $this->uid . ']=edit' . $formSecurityToken;
 			$result .= '<td style="border-top:1px black solid">
-				<a href="#" onclick="return jumpToUrl(\'' . $GLOBALS['SOBE']->doc->issueCommand($params, -1) . '\');">' .
+				<a href="#" onclick="return jumpToUrl(\'' . $this->getControllerDocumentTemplate()->issueCommand($params, -1) . '\');">' .
 				($article['hidden'] ? $unhide : $hide) . '</a></td>';
 
 			// add the sorting buttons
@@ -858,5 +858,17 @@ class ArticleCreatorUtility {
 	 */
 	protected function getLanguageService() {
 		return $GLOBALS['LANG'];
+	}
+
+	/**
+	 * Get controller document template
+	 *
+	 * @return \TYPO3\CMS\Backend\Template\DocumentTemplate
+	 */
+	protected function getControllerDocumentTemplate() {
+		// $GLOBALS['SOBE'] might be any kind of PHP class (controller most
+		// of the times) These class do not inherit from any common class,
+		// but they all seem to have a "doc" member
+		return $GLOBALS['SOBE']->doc;
 	}
 }

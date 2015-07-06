@@ -35,7 +35,7 @@ class LocalRecordListHooks implements \TYPO3\CMS\Recordlist\RecordList\RecordLis
 		if (
 			$parentObject->id
 			&& !SettingsFactory::getInstance()->getTcaValue($table . '.ctrl.readOnly')
-			&& $GLOBALS['SOBE']->MOD_SETTINGS['bigControlPanel']
+			&& $this->getController()->MOD_SETTINGS['bigControlPanel']
 			&& $table == 'tx_commerce_orders'
 		) {
 			$cells['moveOrder'] = '<input type="checkbox" name="orderUid[]" value="' . $row['uid'] . '" class="smallCheckboxes">';
@@ -104,7 +104,7 @@ class LocalRecordListHooks implements \TYPO3\CMS\Recordlist\RecordList\RecordLis
 						if (
 							$parentObject->id
 							&& !SettingsFactory::getInstance()->getTcaValue($table . '.ctrl.readOnly')
-							&& $GLOBALS['SOBE']->MOD_SETTINGS['bigControlPanel']
+							&& $this->getController()->MOD_SETTINGS['bigControlPanel']
 						) {
 							$headerColumns[$fCol] = $language->getLL('moveorderto');
 						} else {
@@ -255,5 +255,14 @@ class LocalRecordListHooks implements \TYPO3\CMS\Recordlist\RecordList\RecordLis
 	 */
 	protected function getLanguageService() {
 		return $GLOBALS['LANG'];
+	}
+
+	/**
+	 * Get controller
+	 *
+	 * @return \CommerceTeam\Commerce\Controller\CategoryModuleController
+	 */
+	protected function getController() {
+		return $GLOBALS['SOBE'];
 	}
 }

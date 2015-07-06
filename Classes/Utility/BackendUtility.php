@@ -13,6 +13,7 @@ namespace CommerceTeam\Commerce\Utility;
  * The TYPO3 project - inspiring people to share!
  */
 
+use CommerceTeam\Commerce\Factory\SettingsFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -1201,24 +1202,24 @@ class BackendUtility {
 	 * @return string XML-Flex-Form
 	 */
 	public function buildLocalisedAttributeValues($flexValue, $langIdent) {
-		$attrFlexformData = GeneralUtility::xml2array($flexValue);
+		$attributeFlexformData = GeneralUtility::xml2array($flexValue);
 
 		$result = '';
-		if (is_array($attrFlexformData)) {
+		if (is_array($attributeFlexformData)) {
 			// change the language
-			$attrFlexformData['data']['sDEF']['l' . $langIdent] = $attrFlexformData['data']['sDEF']['lDEF'];
+			$attributeFlexformData['data']['sDEF']['l' . $langIdent] = $attributeFlexformData['data']['sDEF']['lDEF'];
 
 			/**
 			 * Decide on what to to on lokalisation, how to act
 			 * @see ext_conf_template
-			 * attributeLokalisationType[0|1|2]
+			 * attributeLocalizationType[0|1|2]
 			 * 0: set blank
 			 * 1: Copy
 			 * 2: prepend [Translate to .$langRec['title'].:]
 			 */
-			switch ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['attributeLokalisationType']) {
+			switch (SettingsFactory::getInstance()->getExtConf('attributeLocalizationType')) {
 				case 0:
-					unset($attrFlexformData['data']['sDEF']['lDEF']);
+					unset($attributeFlexformData['data']['sDEF']['lDEF']);
 					break;
 
 				case 1:
@@ -1226,18 +1227,18 @@ class BackendUtility {
 
 				case 2:
 					/**
-					 * Walk thru the array and prepend text
+					 * Iterate over the array and prepend text
 					 */
 					$prepend = '[Translate to ' . $langIdent . ':] ';
-					foreach (array_keys($attrFlexformData['data']['sDEF']['lDEF']) as $attribKey) {
-						$attrFlexformData['data']['sDEF']['lDEF'][$attribKey]['vDEF'] = $prepend .
-							$attrFlexformData['data']['sDEF']['lDEF'][$attribKey]['vDEF'];
+					foreach (array_keys($attributeFlexformData['data']['sDEF']['lDEF']) as $attribKey) {
+						$attributeFlexformData['data']['sDEF']['lDEF'][$attribKey]['vDEF'] = $prepend .
+							$attributeFlexformData['data']['sDEF']['lDEF'][$attribKey]['vDEF'];
 					}
 					break;
 
 				default:
 			}
-			$result = GeneralUtility::array2xml($attrFlexformData, '', 0, 'T3FlexForms');
+			$result = GeneralUtility::array2xml($attributeFlexformData, '', 0, 'T3FlexForms');
 		}
 		return $result;
 	}
@@ -1263,12 +1264,11 @@ class BackendUtility {
 
 		$database = self::getDatabaseConnection();
 
+		$foreignTable = SettingsFactory::getInstance()->getTcaValue('tx_commerce_orders.columns.newpid.config.foreign_table');
 		$result = $database->exec_SELECTquery(
 			'*',
-			$GLOBALS['TCA']['tx_commerce_orders']['columns']['newpid']['config']['foreign_table'],
-			'pid = ' . $pid . \TYPO3\CMS\Backend\Utility\BackendUtility::deleteClause(
-				$GLOBALS['TCA']['tx_commerce_orders']['columns']['newpid']['config']['foreign_table']
-			),
+			$foreignTable,
+			'pid = ' . $pid . \TYPO3\CMS\Backend\Utility\BackendUtility::deleteClause($foreignTable),
 			'',
 			'sorting'
 		);
@@ -1838,7 +1838,8 @@ class BackendUtility {
 		$backendUser = self::getBackendUser();
 		$database = self::getDatabaseConnection();
 
-		if ($GLOBALS['TCA'][$table] && $uidCopied) {
+		$tableConfig = SettingsFactory::getInstance()->getTcaValue($table);
+		if ($tableConfig && $uidCopied) {
 			// make data
 			$rec = \TYPO3\CMS\Backend\Utility\BackendUtility::getRecordLocalization($table, $uidCopied, $languageUid);
 
@@ -1853,13 +1854,13 @@ class BackendUtility {
 			unset($rec[0]['uid']);
 
 			// unset all fields that are not supposed to be copied on localized versions
-			foreach ($GLOBALS['TCA'][$table]['columns'] as $fN => $fCfg) {
+			foreach ($tableConfig['columns'] as $fN => $fCfg) {
 				// Otherwise, do not copy field (unless it is the
 				// language field or pointer to the original language)
 				if (
 					GeneralUtility::inList('exclude,noCopy,mergeIfNotBlank', $fCfg['l10n_mode'])
-					&& $fN != $GLOBALS['TCA'][$table]['ctrl']['languageField']
-					&& $fN != $GLOBALS['TCA'][$table]['ctrl']['transOrigPointerField']
+					&& $fN != $tableConfig['ctrl']['languageField']
+					&& $fN != $tableConfig['ctrl']['transOrigPointerField']
 				) {
 					unset($rec[0][$fN]);
 				}
@@ -1956,8 +1957,9 @@ class BackendUtility {
 			return FALSE;
 		}
 
+		$tableConfig = SettingsFactory::getInstance()->getTcaValue($table);
 		// check if table is defined in the TCA
-		if ($GLOBALS['TCA'][$table] && $uidCopied) {
+		if ($tableConfig && $uidCopied) {
 			// make data
 			$recFrom = \TYPO3\CMS\Backend\Utility\BackendUtility::getRecordLocalization($table, $uidCopied, $loc);
 			$recTo = \TYPO3\CMS\Backend\Utility\BackendUtility::getRecordLocalization($table, $uidOverwrite, $loc);
@@ -1979,13 +1981,13 @@ class BackendUtility {
 			unset($recFrom[0]['uid']);
 
 			// unset all fields that are not supposed to be copied on localized versions
-			foreach ($GLOBALS['TCA'][$table]['columns'] as $fN => $fCfg) {
+			foreach ($tableConfig['columns'] as $fN => $fCfg) {
 				// Otherwise, do not copy field (unless it is the
 				// language field or pointer to the original language)
 				if (
 					GeneralUtility::inList('exclude,noCopy,mergeIfNotBlank', $fCfg['l10n_mode'])
-					&& $fN != $GLOBALS['TCA'][$table]['ctrl']['languageField']
-					&& $fN != $GLOBALS['TCA'][$table]['ctrl']['transOrigPointerField']
+					&& $fN != $tableConfig['ctrl']['languageField']
+					&& $fN != $tableConfig['ctrl']['transOrigPointerField']
 				) {
 					unset($recFrom[0][$fN]);
 				} elseif (isset($fCfg['config']['type']) && 'flex' == $fCfg['config']['type'] && isset($recFrom[0][$fN])) {
@@ -3060,8 +3062,9 @@ class BackendUtility {
 		$language = 0;
 		$uid = $origUid = (int) $uidFrom;
 
+		$tableConfig = SettingsFactory::getInstance()->getTcaValue($table);
 		// Only copy if the table is defined in TCA, a uid is given
-		if ($GLOBALS['TCA'][$table] && $uid) {
+		if ($tableConfig && $uid) {
 			// This checks if the record can be selected
 			// which is all that a copy action requires.
 			$data = Array();
@@ -3078,10 +3081,8 @@ class BackendUtility {
 			if (is_array($row)) {
 				// Initializing:
 				$theNewId = $destPid;
-				$enableField = isset($GLOBALS['TCA'][$table]['ctrl']['enablecolumns']) ?
-					$GLOBALS['TCA'][$table]['ctrl']['enablecolumns']['disabled'] :
-					'';
-				$headerField = $GLOBALS['TCA'][$table]['ctrl']['label'];
+				$enableField = isset($tableConfig['ctrl']['enablecolumns']) ? $tableConfig['ctrl']['enablecolumns']['disabled'] : '';
+				$headerField = $tableConfig['ctrl']['label'];
 
 				// Getting default data:
 				$defaultData = $tce->newFieldArray($table);
@@ -3100,7 +3101,7 @@ class BackendUtility {
 				foreach ($row as $field => $value) {
 					if (!in_array($field, $nonFields)) {
 						// Get TCA configuration for the field:
-						$conf = $GLOBALS['TCA'][$table]['columns'][$field]['config'];
+						$conf = $tableConfig['columns'][$field]['config'];
 
 						// Preparation/Processing of the value:
 						// "pid" is hardcoded of course:
@@ -3114,8 +3115,8 @@ class BackendUtility {
 							$value = $copyAfterFields[$field];
 							// Revert to default for some fields:
 						} elseif (
-							$GLOBALS['TCA'][$table]['ctrl']['setToDefaultOnCopy']
-							&& GeneralUtility::inList($GLOBALS['TCA'][$table]['ctrl']['setToDefaultOnCopy'], $field)
+							$tableConfig['ctrl']['setToDefaultOnCopy']
+							&& GeneralUtility::inList($tableConfig['ctrl']['setToDefaultOnCopy'], $field)
 						) {
 							$value = $defaultData[$field];
 						} else {
@@ -3123,7 +3124,7 @@ class BackendUtility {
 							if (
 								$first
 								&& $field == $enableField
-								&& $GLOBALS['TCA'][$table]['ctrl']['hideAtCopy']
+								&& $tableConfig['ctrl']['hideAtCopy']
 								&& !$tce->neverHideAtCopy
 								&& !$tE['disableHideAtCopy']
 							) {
@@ -3131,7 +3132,7 @@ class BackendUtility {
 							}
 
 							// Prepend label on copy:
-							if ($first && $field == $headerField && $GLOBALS['TCA'][$table]['ctrl']['prependAtCopy'] && !$tE['disablePrependAtCopy']) {
+							if ($first && $field == $headerField && $tableConfig['ctrl']['prependAtCopy'] && !$tE['disablePrependAtCopy']) {
 								// @todo this can't work resolvePid and clearPrefixFromValue are not implement in any file of commerce
 								$value = $tce->getCopyHeader(
 									$table,
@@ -3152,13 +3153,13 @@ class BackendUtility {
 				}
 
 				// Overriding values:
-				if ($GLOBALS['TCA'][$table]['ctrl']['editlock']) {
-					$data[$table][$theNewId][$GLOBALS['TCA'][$table]['ctrl']['editlock']] = 0;
+				if ($tableConfig['ctrl']['editlock']) {
+					$data[$table][$theNewId][$tableConfig['ctrl']['editlock']] = 0;
 				}
 
 				// Setting original UID:
-				if ($GLOBALS['TCA'][$table]['ctrl']['origUid']) {
-					$data[$table][$theNewId][$GLOBALS['TCA'][$table]['ctrl']['origUid']] = $uid;
+				if ($tableConfig['ctrl']['origUid']) {
+					$data[$table][$theNewId][$tableConfig['ctrl']['origUid']] = $uid;
 				}
 
 				return $data;

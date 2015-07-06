@@ -12,6 +12,7 @@ namespace CommerceTeam\Commerce\ViewHelpers;
  *
  * The TYPO3 project - inspiring people to share!
  */
+use CommerceTeam\Commerce\Factory\SettingsFactory;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Backend\Utility\IconUtility;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
@@ -167,13 +168,15 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
 		$language = $this->getLanguageService();
 		$backendUser = $this->getBackendUser();
 
+		$tableConfig = SettingsFactory::getInstance()->getTcaValue($table);
+
 		// Init
 		$addWhere = '';
-		$titleCol = $GLOBALS['TCA'][$table]['ctrl']['label'];
-		$thumbsCol = $GLOBALS['TCA'][$table]['ctrl']['thumbnail'];
-		$l10nEnabled = $GLOBALS['TCA'][$table]['ctrl']['languageField']
-			&& $GLOBALS['TCA'][$table]['ctrl']['transOrigPointerField']
-			&& !$GLOBALS['TCA'][$table]['ctrl']['transOrigPointerTable'];
+		$titleCol = $tableConfig['ctrl']['label'];
+		$thumbsCol = $tableConfig['ctrl']['thumbnail'];
+		$l10nEnabled = $tableConfig['ctrl']['languageField']
+			&& $tableConfig['ctrl']['transOrigPointerField']
+			&& !$tableConfig['ctrl']['transOrigPointerTable'];
 		$tableCollapsed = (!$this->tablesCollapsed[$table]) ? FALSE : TRUE;
 
 		// prepare space icon
@@ -208,17 +211,17 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
 			$this->fieldArray[] = '_LOCALIZATION_';
 			$this->fieldArray[] = '_LOCALIZATION_b';
 			$addWhere .= ' AND (
-				' . $GLOBALS['TCA'][$table]['ctrl']['languageField'] . '<=0
+				' . $tableConfig['ctrl']['languageField'] . '<=0
 				OR
-				' . $GLOBALS['TCA'][$table]['ctrl']['transOrigPointerField'] . ' = 0
+				' . $tableConfig['ctrl']['transOrigPointerField'] . ' = 0
 			)';
 		}
 
 		// Cleaning up:
-		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['showArticleNumber'] == 1) {
+		if (SettingsFactory::getInstance()->getExtConf('showArticleNumber') == 1) {
 			$this->defaultFieldArray[] = 'article_number';
 		}
-		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['showArticleTitle'] == 1) {
+		if (SettingsFactory::getInstance()->getExtConf('showArticleTitle') == 1) {
 			$this->defaultFieldArray[] = 'article_name';
 		}
 		$this->fieldArray = array_merge($this->fieldArray, $this->defaultFieldArray);
@@ -247,16 +250,16 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
 			}
 			$selectFields[] = 'doktype';
 		}
-		if (is_array($GLOBALS['TCA'][$table]['ctrl']['enablecolumns'])) {
-			$selectFields = array_merge($selectFields, $GLOBALS['TCA'][$table]['ctrl']['enablecolumns']);
+		if (is_array($tableConfig['ctrl']['enablecolumns'])) {
+			$selectFields = array_merge($selectFields, $tableConfig['ctrl']['enablecolumns']);
 		}
-		if ($GLOBALS['TCA'][$table]['ctrl']['type']) {
-			$selectFields[] = $GLOBALS['TCA'][$table]['ctrl']['type'];
+		if ($tableConfig['ctrl']['type']) {
+			$selectFields[] = $tableConfig['ctrl']['type'];
 		}
-		if ($GLOBALS['TCA'][$table]['ctrl']['typeicon_column']) {
-			$selectFields[] = $GLOBALS['TCA'][$table]['ctrl']['typeicon_column'];
+		if ($tableConfig['ctrl']['typeicon_column']) {
+			$selectFields[] = $tableConfig['ctrl']['typeicon_column'];
 		}
-		if ($GLOBALS['TCA'][$table]['ctrl']['versioningWS']) {
+		if ($tableConfig['ctrl']['versioningWS']) {
 			$selectFields[] = 't3ver_id';
 			$selectFields[] = 't3ver_state';
 			$selectFields[] = 't3ver_wsid';
@@ -264,11 +267,11 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
 			$selectFields[] = 't3ver_swapmode';
 		}
 		if ($l10nEnabled) {
-			$selectFields[] = $GLOBALS['TCA'][$table]['ctrl']['languageField'];
-			$selectFields[] = $GLOBALS['TCA'][$table]['ctrl']['transOrigPointerField'];
+			$selectFields[] = $tableConfig['ctrl']['languageField'];
+			$selectFields[] = $tableConfig['ctrl']['transOrigPointerField'];
 		}
-		if ($GLOBALS['TCA'][$table]['ctrl']['label_alt']) {
-			$selectFields = array_merge($selectFields, GeneralUtility::trimExplode(',', $GLOBALS['TCA'][$table]['ctrl']['label_alt'], 1));
+		if ($tableConfig['ctrl']['label_alt']) {
+			$selectFields = array_merge($selectFields, GeneralUtility::trimExplode(',', $tableConfig['ctrl']['label_alt'], 1));
 		}
 
 		// Unique list!
@@ -353,7 +356,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
 				$theData = Array();
 				if (!$this->table && !$rowlist) {
 					$theData[$titleCol] = '<img src="/' . TYPO3_mainDir . '/clear.gif" width="' .
-						($GLOBALS['SOBE']->MOD_SETTINGS['bigControlPanel'] ? '230' : '350') . '" height="1" alt="" />';
+						($this->getController()->MOD_SETTINGS['bigControlPanel'] ? '230' : '350') . '" height="1" alt="" />';
 					if (in_array('_CONTROL_', $this->fieldArray)) {
 						$theData['_CONTROL_'] = '';
 					}
@@ -368,13 +371,13 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
 			$theData = Array();
 			if ($this->disableSingleTableView) {
 				$theData[$titleCol] = '<span class="c-table">' .
-						BackendUtility::wrapInHelp($table, '', $language->sL($GLOBALS['TCA'][$table]['ctrl']['title'], TRUE)) .
+						BackendUtility::wrapInHelp($table, '', $language->sL($tableConfig['ctrl']['title'], TRUE)) .
 					'</span> (' . $this->totalItems . ')';
 			} else {
 				$theData[$titleCol] = $this->linkWrapTable(
 					$table,
 					'<span class="c-table">' .
-						$language->sL($GLOBALS['TCA'][$table]['ctrl']['title'], TRUE) .
+						$language->sL($tableConfig['ctrl']['title'], TRUE) .
 					'</span> (' . $this->totalItems . ') ' .
 						($this->table ?
 							IconUtility::getSpriteIcon('actions-view-table-collapse', array('title' => $language->getLL('contractView', TRUE))) :
@@ -411,7 +414,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
 				// Fixing a order table for sortby tables
 				$this->currentTable = array();
 				$currentIdList = array();
-				$doSort = ($GLOBALS['TCA'][$table]['ctrl']['sortby'] && !$this->sortField);
+				$doSort = ($tableConfig['ctrl']['sortby'] && !$this->sortField);
 
 				$prevUid = 0;
 				$prevPrevUid = 0;
@@ -428,7 +431,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
 				$accRows = array();
 				while (($row = $database->sql_fetch_assoc($result))) {
 					// In offline workspace, look for alternative record:
-					BackendUtility::workspaceOL($table, $row, $GLOBALS['BE_USER']->workspace, TRUE);
+					BackendUtility::workspaceOL($table, $row, $this->getBackendUser()->workspace, TRUE);
 
 					if (is_array($row)) {
 						$accRows[] = $row;
@@ -488,8 +491,8 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
 									}
 
 									// In offline workspace, look for alternative record:
-									BackendUtility::workspaceOL($table, $lRow, $GLOBALS['BE_USER']->workspace, TRUE);
-									if (is_array($lRow) && $backendUser->checkLanguageAccess($lRow[$GLOBALS['TCA'][$table]['ctrl']['languageField']])) {
+									BackendUtility::workspaceOL($table, $lRow, $this->getBackendUser()->workspace, TRUE);
+									if (is_array($lRow) && $backendUser->checkLanguageAccess($lRow[$tableConfig['ctrl']['languageField']])) {
 										$currentIdList[] = $lRow['uid'];
 										$iOut .= $this->renderListRow($table, $lRow, $cc, $titleCol, $thumbsCol, 18);
 									}
@@ -575,13 +578,17 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
 
 		if (substr(TYPO3_version, 0, 3) >= '4.0') {
 				// In offline workspace, look for alternative record:
-			BackendUtility::workspaceOL($table, $row, $GLOBALS['BE_USER']->workspace);
+			BackendUtility::workspaceOL($table, $row, $this->getBackendUser()->workspace);
 		}
 		// Background color, if any:
 		$rowBackgroundColor = '';
 		if ($this->alternateBgColors) {
-			$rowBackgroundColor =
-				$cc % 2 ? '' : ' bgcolor="' . GeneralUtility::modifyHTMLColor($GLOBALS['SOBE']->doc->bgColor4, 10, 10, 10) . '"';
+			$rowBackgroundColor = $cc % 2 ? '' : ' bgcolor="' . GeneralUtility::modifyHTMLColor(
+				$this->getControllerDocumentTemplate()->bgColor4,
+				10,
+				10,
+				10
+			) . '"';
 		}
 
 		// Overriding with versions background color if any:
@@ -633,9 +640,12 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
 			) . '/>';
 		}
 
-		$theIcon = $this->clickMenuEnabled ? $GLOBALS['SOBE']->doc->wrapClickMenuOnIcon($iconImg, $table, $row['uid']) : $iconImg;
+		$theIcon = $this->clickMenuEnabled ? $this->getControllerDocumentTemplate()->wrapClickMenuOnIcon(
+			$iconImg,
+			$table,
+			$row['uid']
+		) : $iconImg;
 
-		$extConf = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf'];
 		// Preparing and getting the data-array
 		$theData = Array();
 
@@ -720,7 +730,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
 				while (($localRow = $database->sql_fetch_assoc($typesResult))) {
 					if ($localRow['icon']) {
 						$filepath = $this->backPath .
-							$GLOBALS['TCA']['tx_commerce_order_types']['columns']['icon']['config']['uploadfolder'] . '/' .
+							SettingsFactory::getInstance()->getTcaValue('tx_commerce_order_types.columns.icon.config.uploadfolder') . '/' .
 							$localRow['icon'];
 
 						$theData[$fCol] = '<img' . IconUtility::skinImg(
@@ -757,6 +767,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
 
 		// Add row to CSV list:
 		if ($this->csvOutput) {
+			$beCsvCharset = SettingsFactory::getInstance()->getExtConf('BECSVCharset');
 			// Charset Conversion
 			/**
 			 * Charset converter
@@ -766,11 +777,11 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
 			$csObj = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Charset\\CharsetConverter');
 			$csObj->initCharset($GLOBALS['TYPO3_CONF_VARS']['BE']['forceCharset']);
 
-			if (!$extConf['BECSVCharset']) {
-				$extConf['BECSVCharset'] = 'iso-8859-1';
+			if (!$beCsvCharset) {
+				$beCsvCharset = 'iso-8859-1';
 			}
-			$csObj->initCharset($extConf['BECSVCharset']);
-			$csObj->convArray($row, $GLOBALS['TYPO3_CONF_VARS']['BE']['forceCharset'], $extConf['BECSVCharset']);
+			$csObj->initCharset($beCsvCharset);
+			$csObj->convArray($row, $GLOBALS['TYPO3_CONF_VARS']['BE']['forceCharset'], $beCsvCharset);
 			$this->addToCSV($row);
 		}
 
@@ -822,17 +833,11 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
 		$opt = array();
 		$opt[] = '<option value=""></option>';
 		foreach ($fields as $fN) {
-			$fl = $language->sL(
-					BackendUtility::getItemLabel($table, $fN, 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_orders.xml:|')
-				) ?
-				$language->sL(
-					BackendUtility::getItemLabel($table, $fN, 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_orders.xml:|')
-				) :
-				'[' . $fN . ']';
+			$label = BackendUtility::getItemLabel($table, $fN, 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_orders.xml:|');
+			$fl = $label ? $label : '[' . $fN . ']';
 			// Field label
-			$fL = is_array($GLOBALS['TCA'][$table]['columns'][$fN]) ?
-				rtrim($language->sL($GLOBALS['TCA'][$table]['columns'][$fN]['label']), ':') :
-				$fl;
+			$labelForField = SettingsFactory::getInstance()->getTcaValue($table . '.columns.' . $fN . 'label');
+			$fL = $labelForField ? rtrim($language->sL($labelForField), ':') : $fl;
 			$opt[] = '
 				<option value="' . $fN . '"' .
 				(in_array($fN, $setFields) ? ' selected="selected"' : '') . '>' . htmlspecialchars($fL) . '</option>';
@@ -872,6 +877,8 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
 		$database = $this->getDatabaseConnection();
 		$language = $this->getLanguageService();
 
+		$tableReadOnly = SettingsFactory::getInstance()->getTcaValue($table . '.ctrl.readOnly');
+
 		// Init:
 		$theData = Array();
 
@@ -880,20 +887,20 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
 			switch ((string) $fCol) {
 					// Path
 				case '_CLIPBOARD_':
-					if ($this->id && !$GLOBALS['TCA'][$table]['ctrl']['readOnly'] && $GLOBALS['SOBE']->MOD_SETTINGS['bigControlPanel']) {
+					if ($this->id && !$tableReadOnly && $this->getController()->MOD_SETTINGS['bigControlPanel']) {
+						$foreignTable = SettingsFactory::getInstance()->getTcaValue('tx_commerce_orders.columns.newpid.config.foreign_table');
 						$resParent = $database->exec_SELECTquery(
 							'pid',
-							'pages',
-							'uid = ' . $this->id . ' ' .
-								BackendUtility::deleteClause($GLOBALS['TCA']['tx_commerce_orders']['columns']['newpid']['config']['foreign_table'])
+							$foreignTable,
+							'uid = ' . $this->id . ' ' . BackendUtility::deleteClause($foreignTable)
 						);
 
 						$moveToSelectorRow = '';
 						if (($parentRow = $database->sql_fetch_assoc($resParent))) {
-								// Get the pages below $orderPid
+							// Get the pages below $orderPid
 							$ret = \CommerceTeam\Commerce\Utility\BackendUtility::getOrderFolderSelector(
 								$this->orderPid,
-								$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['OrderFolderRecursiveLevel']
+								SettingsFactory::getInstance()->getExtConf('OrderFolderRecursiveLevel')
 							);
 							$moveToSelectorRow .= '<select name="modeDestUid" size="1">
 								<option value="" selected="selected">' . $language->getLL('movedestination') . '</option>';
@@ -939,10 +946,10 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
 			}
 		}
 
-			// Set ORDER BY:
-		$orderBy = $GLOBALS['TCA'][$table]['ctrl']['sortby'] ?
-			'ORDER BY ' . $table . '.' . $GLOBALS['TCA'][$table]['ctrl']['sortby'] :
-			$GLOBALS['TCA'][$table]['ctrl']['default_sortby'];
+		$tableControl = SettingsFactory::getInstance()->getTcaValue($table . '.ctrl');
+
+		// Set ORDER BY:
+		$orderBy = $tableControl['sortby'] ? 'ORDER BY ' . $table . '.' . $tableControl['sortby'] : $tableControl['default_sortby'];
 		if ($this->sortField) {
 			if (in_array($this->sortField, $this->makeFieldList($table, 1))) {
 				$orderBy = 'ORDER BY ' . $table . '.' . $this->sortField;
@@ -981,7 +988,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
 			$pidWhere = ' AND tx_commerce_orders.pid in (' . implode(',', $list) . ')';
 		}
 
-			// Adding search constraints:
+		// Adding search constraints:
 		$search = $this->makeSearchString($table);
 
 		$queryParts = array(
@@ -1011,7 +1018,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
 			'LIMIT' => $limit,
 		);
 
-			// get Module TSConfig
+		// get Module TSConfig
 		$moduleConfig = BackendUtility::getModTSconfig($id, 'mod.txcommerceM1_orders');
 
 		$deliveryProductUid = $moduleConfig['properties']['deliveryProductUid'] ? $moduleConfig['properties']['deliveryProductUid'] : 0;
@@ -1032,7 +1039,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
 			}
 		}
 
-			// Apply hook as requested in http://bugs.typo3.org/view.php?id=4361
+		// Apply hook as requested in http://bugs.typo3.org/view.php?id=4361
 		foreach ($hookObjectsArr as $hookObj) {
 			if (method_exists($hookObj, 'makeQueryArray_post')) {
 				$parameter = array(
@@ -1229,15 +1236,17 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
 	public function makeFieldList($table, $dontCheckUser = 0, $addDateFields = 0) {
 		$backendUser = $this->getBackendUser();
 
+		$tableConfig = SettingsFactory::getInstance()->getTcaValue($table);
+
 		// Init fieldlist array:
 		$fieldListArr = array();
 
 		// Check table:
-		if (is_array($GLOBALS['TCA'][$table])) {
-			if (isset($GLOBALS['TCA'][$table]['columns']) && is_array($GLOBALS['TCA'][$table]['columns'])) {
+		if (is_array($tableConfig)) {
+			if (isset($tableConfig['columns']) && is_array($tableConfig['columns'])) {
 				// Traverse configured columns and add them to field array,
 				// if available for user.
-				foreach ($GLOBALS['TCA'][$table]['columns'] as $fN => $fieldValue) {
+				foreach ($tableConfig['columns'] as $fN => $fieldValue) {
 					if (
 						$dontCheckUser
 						|| ((!$fieldValue['exclude'] || $backendUser->check('non_exclude_fields', $table . ':' . $fN))
@@ -1259,23 +1268,23 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
 
 				// Add date fields
 				if ($dontCheckUser || $backendUser->isAdmin() || $addDateFields) {
-					if ($GLOBALS['TCA'][$table]['ctrl']['tstamp']) {
-						$fieldListArr[] = $GLOBALS['TCA'][$table]['ctrl']['tstamp'];
+					if ($tableConfig['ctrl']['tstamp']) {
+						$fieldListArr[] = $tableConfig['ctrl']['tstamp'];
 					}
-					if ($GLOBALS['TCA'][$table]['ctrl']['crdate']) {
-						$fieldListArr[] = $GLOBALS['TCA'][$table]['ctrl']['crdate'];
+					if ($tableConfig['ctrl']['crdate']) {
+						$fieldListArr[] = $tableConfig['ctrl']['crdate'];
 					}
 				}
 
 				// Add more special fields:
 				if ($dontCheckUser || $backendUser->isAdmin()) {
-					if ($GLOBALS['TCA'][$table]['ctrl']['cruser_id']) {
-						$fieldListArr[] = $GLOBALS['TCA'][$table]['ctrl']['cruser_id'];
+					if ($tableConfig['ctrl']['cruser_id']) {
+						$fieldListArr[] = $tableConfig['ctrl']['cruser_id'];
 					}
-					if ($GLOBALS['TCA'][$table]['ctrl']['sortby']) {
-						$fieldListArr[] = $GLOBALS['TCA'][$table]['ctrl']['sortby'];
+					if ($tableConfig['ctrl']['sortby']) {
+						$fieldListArr[] = $tableConfig['ctrl']['sortby'];
 					}
-					if ($GLOBALS['TCA'][$table]['ctrl']['versioningWS']) {
+					if ($tableConfig['ctrl']['versioningWS']) {
 						$fieldListArr[] = 't3ver_id';
 						$fieldListArr[] = 't3ver_state';
 						$fieldListArr[] = 't3ver_wsid';
@@ -1327,5 +1336,26 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
 	 */
 	protected function getLanguageService() {
 		return $GLOBALS['LANG'];
+	}
+
+	/**
+	 * Get controller
+	 *
+	 * @return \CommerceTeam\Commerce\Controller\OrdersModuleController
+	 */
+	protected function getController() {
+		return $GLOBALS['SOBE'];
+	}
+
+	/**
+	 * Get controller document template
+	 *
+	 * @return \TYPO3\CMS\Backend\Template\DocumentTemplate
+	 */
+	protected function getControllerDocumentTemplate() {
+		// $GLOBALS['SOBE'] might be any kind of PHP class (controller most
+		// of the times) These class do not inherit from any common class,
+		// but they all seem to have a "doc" member
+		return $this->getController()->doc;
 	}
 }

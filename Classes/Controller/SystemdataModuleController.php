@@ -92,6 +92,8 @@ class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptCla
 			FolderRepository::initFolders('Attributes', 'commerce', $this->modPid)
 		);
 
+		$this->MCONF = $GLOBALS['MCONF'];
+
 		$this->perms_clause = $this->getBackendUser()->getPagePermsClause(1);
 		$this->pageRow = BackendUtility::readPageAccess($this->id, $this->perms_clause);
 

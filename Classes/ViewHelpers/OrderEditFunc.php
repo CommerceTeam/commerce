@@ -13,6 +13,7 @@ namespace CommerceTeam\Commerce\ViewHelpers;
  * The TYPO3 project - inspiring people to share!
  */
 
+use CommerceTeam\Commerce\Factory\SettingsFactory;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Backend\Utility\IconUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -100,6 +101,7 @@ class OrderEditFunc {
 	public function orderArticles(array $parameter) {
 		$database = $this->getDatabaseConnection();
 		$language = $this->getLanguageService();
+		$settingsFactory = SettingsFactory::getInstance();
 
 		$content = '';
 		$foreignTable = 'tx_commerce_order_articles';
@@ -129,7 +131,7 @@ class OrderEditFunc {
 		/**
 		 * Taken from class.db_list_extra.php
 		 */
-		$titleCol = $GLOBALS['TCA'][$foreignTable]['ctrl']['label'];
+		$titleCol = $settingsFactory->getTcaValue($foreignTable . '.ctrl.label');
 
 		// Check if Orders in this folder are editable
 		$orderEditable = FALSE;
@@ -162,11 +164,10 @@ class OrderEditFunc {
 				$language->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:order_view.items.article_list', 1) .
 				'</span> (' . $dbCount . ')';
 
-			$extConf = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf'];
-
-			if ($extConf['invoicePageID'] > 0) {
-				$theData[$titleCol] .= '<a href="../index.php?id=' . $extConf['invoicePageID'] . '&amp;tx_commerce_pi6[order_id]=' .
-					$orderId . '&amp;type=' . $extConf['invoicePageType'] . '" target="_blank">' .
+			if ($settingsFactory->getExtConf('invoicePageID')) {
+				$theData[$titleCol] .= '<a href="../index.php?id=' . $settingsFactory->getExtConf('invoicePageID') .
+					'&amp;tx_commerce_pi6[order_id]=' . $orderId . '&amp;type=' . $settingsFactory->getExtConf('invoicePageType') .
+					'" target="_blank">' .
 					$language->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:order_view.items.print_invoice', 1) . ' *</a>';
 			}
 
@@ -205,11 +206,11 @@ class OrderEditFunc {
 				$sum['price_net_value'] += $row['price_net'] / 100;
 				$sum['price_gross_value'] += $row['price_gross'] / 100;
 
-				$row['price_net'] = \CommerceTeam\Commerce\ViewHelpers\Money::format($row['price_net'] / 100, '');
-				$row['price_gross'] = \CommerceTeam\Commerce\ViewHelpers\Money::format($row['price_gross'] / 100, '');
+				$row['price_net'] = Money::format($row['price_net'] / 100, '');
+				$row['price_gross'] = Money::format($row['price_gross'] / 100, '');
 
 				$rowBgColor = ($cc % 2 ? '' : ' bgcolor="' .
-					GeneralUtility::modifyHTMLColor($GLOBALS['SOBE']->doc->bgColor4, + 10, + 10, + 10) . '"');
+					GeneralUtility::modifyHTMLColor($this->getControllerDocumentTemplate()->bgColor4, + 10, + 10, + 10) . '"');
 
 				/**
 				 * Not very noice to render html_code directly
@@ -268,8 +269,8 @@ class OrderEditFunc {
 			 * Cerate the summ row
 			 */
 			$out .= '<tr>';
-			$sum['price_net'] = \CommerceTeam\Commerce\ViewHelpers\Money::format($sum['price_net_value'], '');
-			$sum['price_gross'] = \CommerceTeam\Commerce\ViewHelpers\Money::format($sum['price_gross_value'], '');
+			$sum['price_net'] = Money::format($sum['price_net_value'], '');
+			$sum['price_gross'] = Money::format($sum['price_gross_value'], '');
 
 			foreach ($fieldRows as $field) {
 				switch ($field) {
@@ -378,7 +379,7 @@ class OrderEditFunc {
 
 		$data['items'] = \CommerceTeam\Commerce\Utility\BackendUtility::getOrderFolderSelector(
 			$orderPid,
-			$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['OrderFolderRecursiveLevel']
+			SettingsFactory::getInstance()->getExtConf('OrderFolderRecursiveLevel')
 		);
 	}
 
@@ -442,14 +443,18 @@ class OrderEditFunc {
 		 * @var \TYPO3\CMS\Backend\Template\DocumentTemplate $doc
 		 */
 		$doc = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
-		$doc->backPath = $GLOBALS['BACK_PATH'];
+		$doc->backPath = $this->getBackPath();
 
 		$content = '';
 
 		/**
 		 * First select Data from Database
 		 */
-		if (($data = BackendUtility::getRecord($table, $uid, 'uid,' . $GLOBALS['TCA'][$table]['interface']['showRecordFieldList']))) {
+		if (($data = BackendUtility::getRecord(
+			$table,
+			$uid,
+			'uid,' . SettingsFactory::getInstance()->getTcaValue($table . '.interface.showRecordFieldList')
+		))) {
 			/**
 			 * We should get just one Result
 			 * So Render Result as $arr for template::table()
@@ -474,13 +479,14 @@ class OrderEditFunc {
 			$content .= $doc->spacer(10);
 
 			$display = array();
+			$showRecordFieldList = SettingsFactory::getInstance()->getTcaValue($table . '.interface.showRecordFieldList');
 			foreach ($data as $key => $value) {
 				/**
 				 * Walk through rowset,
 				 * get TCA values
 				 * and LL Names
 				 */
-				if (GeneralUtility::inList($GLOBALS['TCA'][$table]['interface']['showRecordFieldList'], $key)) {
+				if (GeneralUtility::inList($showRecordFieldList, $key)) {
 					/**
 					 * Get The label
 					 */
@@ -582,5 +588,17 @@ class OrderEditFunc {
 	 */
 	protected function getBackPath() {
 		return $GLOBALS['BACK_PATH'];
+	}
+
+	/**
+	 * Get controller document template
+	 *
+	 * @return \TYPO3\CMS\Backend\Template\DocumentTemplate
+	 */
+	protected function getControllerDocumentTemplate() {
+		// $GLOBALS['SOBE'] might be any kind of PHP class (controller most
+		// of the times) These class do not inherit from any common class,
+		// but they all seem to have a "doc" member
+		return $GLOBALS['SOBE']->doc;
 	}
 }

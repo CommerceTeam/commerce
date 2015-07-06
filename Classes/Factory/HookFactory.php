@@ -22,6 +22,7 @@ class HookFactory {
 	/**
 	 * Class name map
 	 *
+	 * @todo this map needs to be extendes to all supported maps
 	 * @var array
 	 */
 	protected static $classNameMap = array(

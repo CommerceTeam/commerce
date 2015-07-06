@@ -78,7 +78,7 @@ class SettingsFactory implements SingletonInterface {
 	/**
 	 * Constructor
 	 *
-	 * Block external instanciation
+	 * Block external instantiation
 	 */
 	protected function __construct() {
 	}
@@ -131,7 +131,7 @@ class SettingsFactory implements SingletonInterface {
 				if (isset($configuration[$pathPart])) {
 					$configuration = $configuration[$pathPart];
 				} else {
-					$configuration = '';
+					$configuration = FALSE;
 					break;
 				}
 			}
@@ -143,20 +143,13 @@ class SettingsFactory implements SingletonInterface {
 	}
 
 	/**
-	 * Return all extension configuration
-	 *
-	 * @return array
-	 */
-	public function getExtConfComplete() {
-		return $this->settings['extConf'];
-	}
-
-	/**
 	 * Get configuration located in [COMMERCE_EXTKEY]
+	 *
+	 * @param string $path Path to get value of
 	 *
 	 * @return array|string|int|bool
 	 */
-	public function getConfiguration() {
+	public function getConfiguration($path) {
 		if (!isset($this->configurationValueCache[$path])) {
 			$pathParts = GeneralUtility::trimExplode('.', $path);
 
@@ -194,7 +187,7 @@ class SettingsFactory implements SingletonInterface {
 				if (isset($configuration[$pathPart])) {
 					$configuration = $configuration[$pathPart];
 				} else {
-					$configuration = '';
+					$configuration = FALSE;
 					break;
 				}
 			}

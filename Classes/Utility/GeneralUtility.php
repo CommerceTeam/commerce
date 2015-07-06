@@ -12,6 +12,7 @@ namespace CommerceTeam\Commerce\Utility;
  *
  * The TYPO3 project - inspiring people to share!
  */
+use CommerceTeam\Commerce\Factory\SettingsFactory;
 
 /**
  * Misc COMMERCE functions
@@ -64,21 +65,16 @@ class GeneralUtility {
 	 * @return void
 	 */
 	public static function initializeFeUserBasket() {
-		$feUser = self::getFrontendController()->fe_user;
-		/**
-		 * Basket
-		 *
-		 * @var \CommerceTeam\Commerce\Domain\Model\Basket $basket
-		 */
-		$basket = & $feUser->tx_commerce_basket;
+		$feUser = self::getFrontendUser();
+		$basket = self::getBasket();
+
+		$settingsFactory = SettingsFactory::getInstance();
 
 		if (!is_object($basket)) {
 			$basketId = $feUser->getKey('ses', 'commerceBasketId');
-			if (
-				empty($basketId) &&
-				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['useCookieAsBasketIdFallback']
-				&& $_COOKIE['commerceBasketId']
-			) {
+			$useCookieAsBasketIdFallback = $settingsFactory->getExtConf('useCookieAsBasketIdFallback');
+
+			if (empty($basketId) && $useCookieAsBasketIdFallback && $_COOKIE['commerceBasketId']) {
 				$basketId = $_COOKIE['commerceBasketId'];
 			}
 
@@ -92,10 +88,7 @@ class GeneralUtility {
 			$basket->setSessionId($basketId);
 			$basket->loadData();
 
-			if (
-				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['useCookieAsBasketIdFallback']
-				&& !$_COOKIE['commerceBasketId']
-			) {
+			if ($useCookieAsBasketIdFallback && !$_COOKIE['commerceBasketId']) {
 				self::setCookie($basketId);
 			}
 		}
@@ -191,10 +184,11 @@ class GeneralUtility {
 	 * @return string Encoded Key as mixture of key and FE-User Uid
 	 */
 	public static function generateSessionKey($key) {
-		if ((int) $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['userSessionMd5Encrypt']) {
-			$sessionKey = md5($key . ':' . $GLOBALS['TSFE']->fe_user->user['uid']);
+		$frontendUser = self::getFrontendUser();
+		if (SettingsFactory::getInstance()->getExtConf('userSessionMd5Encrypt')) {
+			$sessionKey = md5($key . ':' . $frontendUser->user['uid']);
 		} else {
-			$sessionKey = $key . ':' . $GLOBALS['TSFE']->fe_user->user['uid'];
+			$sessionKey = $key . ':' . $frontendUser->user['uid'];
 		}
 
 		$hooks = \CommerceTeam\Commerce\Factory\HookFactory::getHooks('Utility/GeneralUtility', 'generateSessionKey');
@@ -385,5 +379,23 @@ class GeneralUtility {
 	 */
 	protected static function getFrontendController() {
 		return $GLOBALS['TSFE'];
+	}
+
+	/**
+	 * Get frontend user
+	 *
+	 * @return \TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication
+	 */
+	protected static function getFrontendUser() {
+		return self::getFrontendController()->fe_user;
+	}
+
+	/**
+	 * Get basket
+	 *
+	 * @return \CommerceTeam\Commerce\Domain\Model\Basket
+	 */
+	protected static function getBasket() {
+		return self::getFrontendUser()->tx_commerce_basket;
 	}
 }

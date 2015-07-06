@@ -175,10 +175,10 @@ class TcehooksHandlerHooks {
 	 * @return void
 	 */
 	protected function calculateTax(array &$fieldArray, $tax) {
-		$extConf = SettingsFactory::getInstance()->getExtConfComplete();
-		if ($extConf['genprices'] > 0) {
+		$generatePrices = SettingsFactory::getInstance()->getExtConf('genprices');
+		if ($generatePrices > 0) {
 			if (
-				$extConf['genprices'] == 2
+				$generatePrices == 2
 				|| !isset($fieldArray['price_gross'])
 				|| $fieldArray['price_gross'] === ''
 				|| strlen($fieldArray['price_gross']) == 0
@@ -187,7 +187,7 @@ class TcehooksHandlerHooks {
 				$fieldArray['price_gross'] = round(($fieldArray['price_net'] * 100) * (100 + $tax) / 100) / 100;
 			}
 			if (
-				$extConf['genprices'] == 3
+				$generatePrices == 3
 				|| !isset($fieldArray['price_net'])
 				|| $fieldArray['price_net'] === ''
 				|| strlen($fieldArray['price_net']) == 0

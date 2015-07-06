@@ -102,13 +102,6 @@ class CheckoutController extends BaseController {
 	public $checkoutSteps = array();
 
 	/**
-	 * Array of the extConf
-	 *
-	 * @var array
-	 */
-	public $extConf = array();
-
-	/**
 	 * String to clear session after checkout
 	 *
 	 * @var array
@@ -171,8 +164,6 @@ class CheckoutController extends BaseController {
 		$staticInfo->init();
 		$this->staticInfo = $staticInfo;
 
-		$this->extConf = SettingsFactory::getInstance()->getExtConfComplete();
-
 		$basket = $this->getBasket();
 		$basket->setTaxCalculationMethod($this->conf['priceFromNet']);
 
@@ -215,7 +206,7 @@ class CheckoutController extends BaseController {
 		$hooks = HookFactory::getHooks('Controller/CheckoutController', 'main');
 
 		// Set basket to readonly, if set in extension configuration
-		if ($this->extConf['lockBasket'] == 1) {
+		if (SettingsFactory::getInstance()->getExtConf('lockBasket') == 1) {
 			$basket = $this->getBasket();
 			$basket->setReadOnly();
 			$basket->storeData();
@@ -224,7 +215,7 @@ class CheckoutController extends BaseController {
 		// Store current step
 		$this->currentStep = strtolower($this->piVars['step']);
 
-		// Set deliverytype as current step, if comes from pi4 to create a new address
+		// Set deliveryType as current step, if comes from pi4 to create a new address
 		if (empty($this->currentStep) && $this->piVars['addressType']) {
 			switch ($this->piVars['addressType']) {
 				case '2':
@@ -2868,7 +2859,7 @@ class CheckoutController extends BaseController {
 			 * @var \TYPO3\CMS\Lang\LanguageService $language
 			 */
 			$language = GeneralUtility::makeInstance('TYPO3\\CMS\\Lang\\LanguageService');
-			$language->init($GLOBALS['BE_USER']->uc['lang']);
+			$language->init($this->getBackendUser()->uc['lang']);
 			$GLOBALS['LANG'] = $language;
 		}
 	}

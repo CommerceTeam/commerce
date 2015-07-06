@@ -12,6 +12,7 @@ namespace CommerceTeam\Commerce\ViewHelpers;
  *
  * The TYPO3 project - inspiring people to share!
  */
+use CommerceTeam\Commerce\Factory\SettingsFactory;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Backend\Utility\IconUtility;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
@@ -114,7 +115,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
 		}
 		if (isset($this->id)) {
 			// New record
-			if (!$GLOBALS['SOBE']->modTSconfig['properties']['noCreateRecordsLink']) {
+			if (!$this->getController()->modTSconfig['properties']['noCreateRecordsLink']) {
 				$params = '&parentCategory=' . $this->parentUid;
 				$buttons['new_record'] = '<a href="#" onclick="' .
 					htmlspecialchars(('return jumpExt(\'' . $this->backPath . 'db_new.php?id=' . $this->id . $params . '\');')) .
@@ -142,9 +143,9 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
 				}
 			}
 			if (
-				$this->table && (!isset($GLOBALS['SOBE']->modTSconfig['properties']['noExportRecordsLinks']) ||
-				(isset($GLOBALS['SOBE']->modTSconfig['properties']['noExportRecordsLinks']) &&
-				!$GLOBALS['SOBE']->modTSconfig['properties']['noExportRecordsLinks']))
+				$this->table && (!isset($this->getController()->modTSconfig['properties']['noExportRecordsLinks']) ||
+				(isset($this->getController()->modTSconfig['properties']['noExportRecordsLinks']) &&
+				!$this->getController()->modTSconfig['properties']['noExportRecordsLinks']))
 			) {
 				// CSV
 				$buttons['csv'] = '<a href="' . htmlspecialchars(($this->listURL() . '&csv=1')) . '" title="' .
@@ -210,13 +211,15 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
 		$language = $this->getLanguageService();
 		$backendUser = $this->getBackendUser();
 
+		$tableConfig = SettingsFactory::getInstance()->getTcaValue($table);
+
 		// Init
 		$addWhere = '';
-		$titleCol = $GLOBALS['TCA'][$table]['ctrl']['label'];
-		$thumbsCol = $GLOBALS['TCA'][$table]['ctrl']['thumbnail'];
-		$l10nEnabled = $GLOBALS['TCA'][$table]['ctrl']['languageField'] &&
-			$GLOBALS['TCA'][$table]['ctrl']['transOrigPointerField'] &&
-			!$GLOBALS['TCA'][$table]['ctrl']['transOrigPointerTable'];
+		$titleCol = $tableConfig['ctrl']['label'];
+		$thumbsCol = $tableConfig['ctrl']['thumbnail'];
+		$l10nEnabled = $tableConfig['ctrl']['languageField'] &&
+			$tableConfig['ctrl']['transOrigPointerField'] &&
+			!$tableConfig['ctrl']['transOrigPointerTable'];
 		$tableCollapsed = (!$this->tablesCollapsed[$table]) ? FALSE : TRUE;
 
 		// prepare space icon
@@ -252,9 +255,9 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
 			$this->fieldArray[] = '_LOCALIZATION_';
 			$this->fieldArray[] = '_LOCALIZATION_b';
 			$addWhere .= ' AND (
-				' . $GLOBALS['TCA'][$table]['ctrl']['languageField'] . ' <= 0
+				' . $tableConfig['ctrl']['languageField'] . ' <= 0
 				OR
-				' . $GLOBALS['TCA'][$table]['ctrl']['transOrigPointerField'] . ' = 0
+				' . $tableConfig['ctrl']['transOrigPointerField'] . ' = 0
 			)';
 		}
 		// Cleaning up:
@@ -283,16 +286,16 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
 			}
 			$selectFields[] = 'doktype';
 		}
-		if (is_array($GLOBALS['TCA'][$table]['ctrl']['enablecolumns'])) {
-			$selectFields = array_merge($selectFields, $GLOBALS['TCA'][$table]['ctrl']['enablecolumns']);
+		if (is_array($tableConfig['ctrl']['enablecolumns'])) {
+			$selectFields = array_merge($selectFields, $tableConfig['ctrl']['enablecolumns']);
 		}
-		if ($GLOBALS['TCA'][$table]['ctrl']['type']) {
-			$selectFields[] = $GLOBALS['TCA'][$table]['ctrl']['type'];
+		if ($tableConfig['ctrl']['type']) {
+			$selectFields[] = $tableConfig['ctrl']['type'];
 		}
-		if ($GLOBALS['TCA'][$table]['ctrl']['typeicon_column']) {
-			$selectFields[] = $GLOBALS['TCA'][$table]['ctrl']['typeicon_column'];
+		if ($tableConfig['ctrl']['typeicon_column']) {
+			$selectFields[] = $tableConfig['ctrl']['typeicon_column'];
 		}
-		if ($GLOBALS['TCA'][$table]['ctrl']['versioningWS']) {
+		if ($tableConfig['ctrl']['versioningWS']) {
 			$selectFields[] = 't3ver_id';
 			$selectFields[] = 't3ver_state';
 			$selectFields[] = 't3ver_wsid';
@@ -300,11 +303,11 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
 			$selectFields[] = 't3ver_swapmode';
 		}
 		if ($l10nEnabled) {
-			$selectFields[] = $GLOBALS['TCA'][$table]['ctrl']['languageField'];
-			$selectFields[] = $GLOBALS['TCA'][$table]['ctrl']['transOrigPointerField'];
+			$selectFields[] = $tableConfig['ctrl']['languageField'];
+			$selectFields[] = $tableConfig['ctrl']['transOrigPointerField'];
 		}
-		if ($GLOBALS['TCA'][$table]['ctrl']['label_alt']) {
-			$selectFields = array_merge($selectFields, GeneralUtility::trimExplode(',', $GLOBALS['TCA'][$table]['ctrl']['label_alt'], 1));
+		if ($tableConfig['ctrl']['label_alt']) {
+			$selectFields = array_merge($selectFields, GeneralUtility::trimExplode(',', $tableConfig['ctrl']['label_alt'], 1));
 		}
 		// Unique list!
 		$selectFields = array_unique($selectFields);
@@ -388,7 +391,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
 				$theData = array();
 				if (!$this->table && !$rowlist) {
 					$theData[$titleCol] = '<img src="/' . TYPO3_mainDir . '/clear.gif" width="' .
-						($GLOBALS['SOBE']->MOD_SETTINGS['bigControlPanel'] ? '230' : '350') . '" height="1" alt="" />';
+						($this->getController()->MOD_SETTINGS['bigControlPanel'] ? '230' : '350') . '" height="1" alt="" />';
 					if (in_array('_CONTROL_', $this->fieldArray)) {
 						$theData['_CONTROL_'] = '';
 					}
@@ -403,12 +406,12 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
 			$theData = Array();
 			if ($this->disableSingleTableView) {
 				$theData[$titleCol] = '<span class="c-table">' .
-					BackendUtility::wrapInHelp($table, '', $language->sL($GLOBALS['TCA'][$table]['ctrl']['title'], TRUE)) .
+					BackendUtility::wrapInHelp($table, '', $language->sL($tableConfig['ctrl']['title'], TRUE)) .
 					'</span> (' . $this->totalItems . ')';
 			} else {
 				$theData[$titleCol] = $this->linkWrapTable(
 					$table,
-					'<span class="c-table">' . $language->sL($GLOBALS['TCA'][$table]['ctrl']['title'], TRUE) .
+					'<span class="c-table">' . $language->sL($tableConfig['ctrl']['title'], TRUE) .
 						'</span> (' . $this->totalItems . ') ' .
 					(
 						$this->table ?
@@ -458,7 +461,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
 					// Fixing a order table for sortby tables
 				$this->currentTable = array();
 				$currentIdList = array();
-				$doSort = ($GLOBALS['TCA'][$table]['ctrl']['sortby'] && !$this->sortField);
+				$doSort = ($tableConfig['ctrl']['sortby'] && !$this->sortField);
 
 				$prevUid = 0;
 				$prevPrevUid = 0;
@@ -536,7 +539,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
 
 									// In offline workspace, look for alternative record:
 									BackendUtility::workspaceOL($table, $lRow, $this->getBackendUser()->workspace, TRUE);
-									if (is_array($lRow) && $backendUser->checkLanguageAccess($lRow[$GLOBALS['TCA'][$table]['ctrl']['languageField']])) {
+									if (is_array($lRow) && $backendUser->checkLanguageAccess($lRow[$tableConfig['ctrl']['languageField']])) {
 										$currentIdList[] = $lRow['uid'];
 										$iOut .= $this->renderListRow($table, $lRow, $cc, $titleCol, $thumbsCol, 18);
 									}
@@ -620,10 +623,10 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
 			}
 		}
 
+		$tableControl = SettingsFactory::getInstance()->getTcaValue($table . '.ctrl');
+
 		// Set ORDER BY:
-		$orderBy = $GLOBALS['TCA'][$table]['ctrl']['sortby'] ?
-			'ORDER BY ' . $table . '.' . $GLOBALS['TCA'][$table]['ctrl']['sortby'] :
-			$GLOBALS['TCA'][$table]['ctrl']['default_sortby'];
+		$orderBy = $tableControl['sortby'] ? 'ORDER BY ' . $table . '.' . $tableControl['sortby'] : $tableControl['default_sortby'];
 		if ($this->sortField) {
 			if (in_array($this->sortField, $this->makeFieldList($table, 1))) {
 				$orderBy = 'ORDER BY ' . $table . '.' . $this->sortField;
@@ -791,7 +794,8 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
 	 * @throws \UnexpectedValueException If hook was of wrong interface
 	 */
 	public function renderListHeader($table, array $currentIdList) {
-		$language = & $this->getLanguageService();
+		$language = $this->getLanguageService();
+		$tableConfig = SettingsFactory::getInstance()->getTcaValue($table);
 
 		// Init:
 		$theData = Array();
@@ -862,7 +866,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
 							IconUtility::getSpriteIcon('actions-edit-delete', array('title' => $language->getLL('clip_deleteMarked', TRUE))),
 							$table,
 							'delete',
-							sprintf($language->getLL('clip_deleteMarkedWarning'), $language->sL($GLOBALS['TCA'][$table]['ctrl']['title']))
+							sprintf($language->getLL('clip_deleteMarkedWarning'), $language->sL($tableConfig['ctrl']['title']))
 						);
 
 							// The "Select all" link:
@@ -900,7 +904,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
 
 					// Control panel:
 				case '_CONTROL_':
-					if (!$GLOBALS['TCA'][$table]['ctrl']['readOnly']) {
+					if (!$tableConfig['ctrl']['readOnly']) {
 						// If new records can be created on this page, add links:
 						if ($this->calcPerms & ($table == 'tx_commerce_categories' ? 8 : 16) && $this->showNewRecLink($table) && $this->parentUid) {
 							if ($table == 'tt_content' && $this->newWizards) {
@@ -985,7 +989,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
 						}
 
 						// If the table can be edited, add link for editing THIS field for all records:
-						if (!$GLOBALS['TCA'][$table]['ctrl']['readOnly'] && $permsEdit && $GLOBALS['TCA'][$table]['columns'][$fCol]) {
+						if (!$tableConfig['ctrl']['readOnly'] && $permsEdit && $tableConfig['columns'][$fCol]) {
 							$editIdList = implode(',', $currentIdList);
 							if ($this->clipNumPane()) {
 								$editIdList = "'+editList('" . $table . "','" . $editIdList . "')+'";
@@ -1042,6 +1046,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
 	public function makeControl($table, array $row) {
 		$backendUser = $this->getBackendUser();
 		$language = $this->getLanguageService();
+		$tableConfig = SettingsFactory::getInstance()->getTcaValue($table);
 
 		if ($this->dontShowClipControlPanels) {
 			return '';
@@ -1088,7 +1093,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
 			$cells['edit'] = '<a href="#" onclick="' . htmlspecialchars(BackendUtility::editOnClick($params, $this->backPath, -1)) .
 				'" title="' . $language->getLL('edit', TRUE) . '">' .
 				(
-					$GLOBALS['TCA'][$table]['ctrl']['readOnly'] ?
+					$tableConfig['ctrl']['readOnly'] ?
 					IconUtility::getSpriteIcon('actions-document-open-read-only') :
 					IconUtility::getSpriteIcon('actions-document-open')
 				) .
@@ -1113,7 +1118,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
 		}
 
 		// If the extended control panel is enabled OR if we are seeing a single table:
-		if ($GLOBALS['SOBE']->MOD_SETTINGS['bigControlPanel'] || $this->table) {
+		if ($this->getController()->MOD_SETTINGS['bigControlPanel'] || $this->table) {
 			// "Info": (All records)
 			$cells['viewBig'] = '<a href="#" onclick="' .
 				htmlspecialchars('top.launchView(\'' . $table . '\', \'' . $row['uid'] . '\'); return false;') .
@@ -1121,7 +1126,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
 				'</a>';
 
 			// If the table is NOT a read-only table, then show these links:
-			if (!$GLOBALS['TCA'][$table]['ctrl']['readOnly']) {
+			if (!$tableConfig['ctrl']['readOnly']) {
 				// "Revert" link (history/undo)
 				$cells['history'] = '<a href="#" onclick="' .
 					htmlspecialchars(
@@ -1170,7 +1175,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
 
 				// "New record after" link (ONLY if the records in the table are sorted
 				// by a "sortby"-row or if default values can depend on previous record):
-				if ($GLOBALS['TCA'][$table]['ctrl']['sortby'] || $GLOBALS['TCA'][$table]['ctrl']['useColumnsForDefaultValues']) {
+				if ($tableConfig['ctrl']['sortby'] || $tableConfig['ctrl']['useColumnsForDefaultValues']) {
 					if (
 						// For NON-tx_commerce_categories, must have permission to edit content
 						($table != 'tx_commerce_categories' && ($this->calcPerms & 16))
@@ -1194,12 +1199,12 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
 				}
 
 				// "Up/Down" links
-				if ($permsEdit && $GLOBALS['TCA'][$table]['ctrl']['sortby'] && !$this->sortField && !$this->searchLevels) {
+				if ($permsEdit && $tableConfig['ctrl']['sortby'] && !$this->sortField && !$this->searchLevels) {
 					// Up
 					if (isset($this->currentTable['prev'][$row['uid']])) {
 						$params = '&cmd[' . $table . '][' . $row['uid'] . '][move]=' . $this->currentTable['prev'][$row['uid']];
 						$cells['moveUp'] = '<a href="#" onclick="' .
-							htmlspecialchars('return jumpToUrl(\'' . $GLOBALS['SOBE']->doc->issueCommand($params, -1) . '\');') .
+							htmlspecialchars('return jumpToUrl(\'' . $this->getControllerDocumentTemplate()->issueCommand($params, -1) . '\');') .
 							'" title="' . $language->getLL('moveUp', TRUE) . '">' . IconUtility::getSpriteIcon('actions-move-up') .
 							'</a>';
 					} else {
@@ -1209,7 +1214,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
 					if ($this->currentTable['next'][$row['uid']]) {
 						$params = '&cmd[' . $table . '][' . $row['uid'] . '][move]=' . $this->currentTable['next'][$row['uid']];
 						$cells['moveDown'] = '<a href="#" onclick="' .
-							htmlspecialchars('return jumpToUrl(\'' . $GLOBALS['SOBE']->doc->issueCommand($params, -1) . '\');') .
+							htmlspecialchars('return jumpToUrl(\'' . $this->getControllerDocumentTemplate()->issueCommand($params, -1) . '\');') .
 							'" title="' . $language->getLL('moveDown', TRUE) . '">' . IconUtility::getSpriteIcon('actions-move-down') .
 							'</a>';
 					} else {
@@ -1221,27 +1226,27 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
 				}
 
 				// "Hide/Unhide" links:
-				$hiddenField = $GLOBALS['TCA'][$table]['ctrl']['enablecolumns']['disabled'];
+				$hiddenField = $tableConfig['ctrl']['enablecolumns']['disabled'];
 				if (
 					$permsEdit
 					&& $hiddenField
-					&& $GLOBALS['TCA'][$table]['columns'][$hiddenField]
+					&& $tableConfig['columns'][$hiddenField]
 					&& (
-						!$GLOBALS['TCA'][$table]['columns'][$hiddenField]['exclude']
+						!$tableConfig['columns'][$hiddenField]['exclude']
 						|| $backendUser->check('non_exclude_fields', $table . ':' . $hiddenField)
 					)
 				) {
 					if ($row[$hiddenField]) {
 						$params = '&data[' . $table . '][' . $rowUid . '][' . $hiddenField . ']=0';
 						$cells['hide'] = '<a href="#" onclick="' .
-							htmlspecialchars('return jumpToUrl(\'' . $GLOBALS['SOBE']->doc->issueCommand($params, -1) . '\');') .
+							htmlspecialchars('return jumpToUrl(\'' . $this->getControllerDocumentTemplate()->issueCommand($params, -1) . '\');') .
 							'" title="' . $language->getLL('unHide' . ($table == 'tx_commerce_categories' ? 'Category' : ''), TRUE) . '">' .
 							IconUtility::getSpriteIcon('actions-edit-unhide') .
 							'</a>';
 					} else {
 						$params = '&data[' . $table . '][' . $rowUid . '][' . $hiddenField . ']=1';
 						$cells['hide'] = '<a href="#" onclick="' .
-							htmlspecialchars('return jumpToUrl(\'' . $GLOBALS['SOBE']->doc->issueCommand($params, -1) . '\');') .
+							htmlspecialchars('return jumpToUrl(\'' . $this->getControllerDocumentTemplate()->issueCommand($params, -1) . '\');') .
 							'" title="' . $language->getLL('hide' . ($table == 'tx_commerce_categories' ? 'Category' : ''), TRUE) . '">' .
 							IconUtility::getSpriteIcon('actions-edit-hide') .
 							'</a>';
@@ -1273,7 +1278,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
 					$cells['delete'] = '<a href="#" onclick="' .
 						htmlspecialchars(
 							'if (confirm(' . $language->JScharCode($language->getLL('deleteWarning') . ' "' . $title . '" ' . $refCountMsg
-						) . ')) {jumpToUrl(\'' . $GLOBALS['SOBE']->doc->issueCommand($params, -1) . '\');} return false;') .
+						) . ')) {jumpToUrl(\'' . $this->getControllerDocumentTemplate()->issueCommand($params, -1) . '\');} return false;') .
 						'">' .
 						IconUtility::getSpriteIcon('actions-edit-delete', array('title' => $language->getLL('delete', TRUE))) .
 						'</a>';
@@ -1288,7 +1293,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
 					if ($this->calcPerms & 8) {
 						$params = '&cmd[' . $table . '][' . $row['uid'] . '][move]=' . - $this->id;
 						$cells['moveLeft'] = '<a href="#" onclick="' .
-							htmlspecialchars('return jumpToUrl(\'' . $GLOBALS['SOBE']->doc->issueCommand($params, -1) . '\');') .
+							htmlspecialchars('return jumpToUrl(\'' . $this->getControllerDocumentTemplate()->issueCommand($params, -1) . '\');') .
 							'" title="' . $language->getLL('prevLevel', TRUE) . '">' . IconUtility::getSpriteIcon('actions-move-left') . '</a>';
 					}
 						// Down (Paste as subpage to the page right above)
@@ -1300,7 +1305,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
 						if ($localCalcPerms & 8) {
 							$params = '&cmd[' . $table . '][' . $row['uid'] . '][move]=' . $this->currentTable['prevUid'][$row['uid']];
 							$cells['moveRight'] = '<a href="#" onclick="' .
-								htmlspecialchars('return jumpToUrl(\'' . $GLOBALS['SOBE']->doc->issueCommand($params, -1) . '\');') .
+								htmlspecialchars('return jumpToUrl(\'' . $this->getControllerDocumentTemplate()->issueCommand($params, -1) . '\');') .
 								'" title="' . $language->getLL('nextLevel', TRUE) . '">' .
 								IconUtility::getSpriteIcon('actions-move-right') .
 								'</a>';
@@ -1383,7 +1388,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
 		// enables to hide the copy, cut and paste icons for localized records
 		// - doesn't make much sense to perform these options for them
 		$isL10nOverlay = $this->localizationView && $table != 'pages_language_overlay' &&
-			$row[$GLOBALS['TCA'][$table]['ctrl']['transOrigPointerField']] != 0;
+			$row[SettingsFactory::getInstance()->getTcaValue($table . '.ctrl.transOrigPointerField')] != 0;
 		// Return blank, if disabled:
 		// Whether a numeric clipboard pad is active or the normal
 		// pad we will see different content of the panel:
@@ -1445,7 +1450,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
 		$elFromTable = $this->clipObj->elFromTable($table);
 		// IF elements are found and they can be individually ordered,
 		// then add a "paste after" icon:
-		if (count($elFromTable) && $GLOBALS['TCA'][$table]['ctrl']['sortby']) {
+		if (count($elFromTable) && SettingsFactory::getInstance()->getTcaValue($table . '.ctrl.sortby')) {
 			$cells['pasteAfter'] = $isL10nOverlay ? $this->spaceIcon : '<a href="' .
 				htmlspecialchars($this->clipObj->pasteUrl($table, - $row['uid'])) . '" onclick="' .
 				htmlspecialchars('return ' . $this->clipObj->confirmMsg($table, $row, 'after', $elFromTable)) .
@@ -1509,8 +1514,8 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
 		$this->translations = array();
 		$translations = $this->translateTools->translationInfo($table, $row['uid'], 0, $row, $this->selFieldList);
 
-			// Language title and icon:
-		$out[0] = $this->languageFlag($row[$GLOBALS['TCA'][$table]['ctrl']['languageField']]);
+		// Language title and icon:
+		$out[0] = $this->languageFlag($row[SettingsFactory::getInstance()->getTcaValue($table . '.ctrl.languageField')]);
 
 		if (is_array($translations)) {
 			$this->translations = $translations['translations'];
@@ -1527,7 +1532,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
 						$lC = $this->languageIconTitles[$overlayUid]['title'];
 					}
 					$lC = '<a href="#" onclick="' .
-						htmlspecialchars('return jumpToUrl(\'' . $GLOBALS['SOBE']->doc->issueCommand($params, -1) . '\');') .
+						htmlspecialchars('return jumpToUrl(\'' . $this->getControllerDocumentTemplate()->issueCommand($params, -1) . '\');') .
 						'" title="' . htmlspecialchars($language['title']) . '">' . $lC . '</a> ';
 
 					$lNew .= $lC;
@@ -1723,5 +1728,26 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
 	 */
 	protected function getBackPath() {
 		return $GLOBALS['BACK_PATH'];
+	}
+
+	/**
+	 * Get controller
+	 *
+	 * @return \CommerceTeam\Commerce\Controller\CategoryModuleController
+	 */
+	protected function getController() {
+		return $GLOBALS['SOBE'];
+	}
+
+	/**
+	 * Get controller document template
+	 *
+	 * @return \TYPO3\CMS\Backend\Template\DocumentTemplate
+	 */
+	protected function getControllerDocumentTemplate() {
+		// $GLOBALS['SOBE'] might be any kind of PHP class (controller most
+		// of the times) These class do not inherit from any common class,
+		// but they all seem to have a "doc" member
+		return $this->getController()->doc;
 	}
 }
