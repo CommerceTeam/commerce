@@ -1015,7 +1015,7 @@ class BasketController extends BaseController {
 			// Check stock
 			$stockOk = TRUE;
 			if ($this->conf['checkStock'] == 1) {
-				if (!$basketItem->article->hasStock($basketItem->getQuantity())) {
+				if (!$basketItem->getArticle()->hasStock($basketItem->getQuantity())) {
 					$stockOk = FALSE;
 				}
 			}

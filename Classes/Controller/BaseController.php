@@ -894,13 +894,13 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin 
 	 * in your template by you own
 	 *
 	 * @param Basket $basketObj Basket
-	 * @param array $subpartMarker Subpart Template Subpart
+	 * @param string $subpartMarker Subpart Template Subpart
 	 * @param array|bool $articletypes Articletypes
 	 * @param string $lineTemplate Line templates
 	 *
 	 * @return string $content HTML-Ccontent from the given Subpart
 	 */
-	public function makeBasketView(Basket $basketObj, array $subpartMarker, array $articletypes = array(),
+	public function makeBasketView(Basket $basketObj, $subpartMarker, array $articletypes = array(),
 			$lineTemplate = '###LISTING_ARTICLE###') {
 		$template = $this->cObj->getSubpart($this->templateCode, $subpartMarker);
 
